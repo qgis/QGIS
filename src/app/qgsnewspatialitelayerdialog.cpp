@@ -200,9 +200,9 @@ void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
 {
   // first get list of supported SRID from the selected SpatiaLite database
   // to build filter for projection selector
-  sqlite3 *db = nullptr;
+  sqlite3_database_unique_ptr database;
   bool status = true;
-  int rc = sqlite3_open_v2( mDatabaseComboBox->currentText().toUtf8(), &db, SQLITE_OPEN_READONLY, nullptr );
+  int rc = database.open_v2( mDatabaseComboBox->currentText(), SQLITE_OPEN_READONLY, nullptr );
   if ( rc != SQLITE_OK )
   {
     QMessageBox::warning( this, tr( "SpatiaLite Database" ), tr( "Unable to open the database" ) );
@@ -210,54 +210,48 @@ void QgsNewSpatialiteLayerDialog::pbnFindSRID_clicked()
   }
 
   // load up the srid table
-  const char *pzTail = nullptr;
-  sqlite3_stmt *ppStmt = nullptr;
+  sqlite3_statement_unique_ptr statement;
   QString sql = QStringLiteral( "select auth_name || ':' || auth_srid from spatial_ref_sys order by srid asc" );
 
   QSet<QString> myCRSs;
 
-  rc = sqlite3_prepare( db, sql.toUtf8(), sql.toUtf8().length(), &ppStmt, &pzTail );
+  statement = database.prepare( sql, rc );
   // XXX Need to free memory from the error msg if one is set
   if ( rc == SQLITE_OK )
   {
     // get the first row of the result set
-    while ( sqlite3_step( ppStmt ) == SQLITE_ROW )
+    while ( sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      myCRSs.insert( QString::fromUtf8( ( const char * )sqlite3_column_text( ppStmt, 0 ) ) );
+      myCRSs.insert( QString::fromUtf8( ( const char * )sqlite3_column_text( statement.get(), 0 ) ) );
     }
   }
   else
   {
     // XXX query failed -- warn the user some how
-    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Failed to load SRIDS: %1" ).arg( sqlite3_errmsg( db ) ) );
+    QMessageBox::warning( nullptr, tr( "Error" ), tr( "Failed to load SRIDS: %1" ).arg( database.errorMessage() ) );
     status = false;
   }
-  // close the statement
-  sqlite3_finalize( ppStmt );
-  sqlite3_close( db );
 
-  if ( !status )
+  if ( status )
   {
-    return;
-  }
+    // prepare projection selector
+    QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
+    mySelector->setMessage( QString() );
+    mySelector->setOgcWmsCrsFilter( myCRSs );
+    mySelector->setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mCrsId ) );
 
-  // prepare projection selector
-  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  mySelector->setMessage( QString() );
-  mySelector->setOgcWmsCrsFilter( myCRSs );
-  mySelector->setCrs( QgsCoordinateReferenceSystem::fromOgcWmsCrs( mCrsId ) );
-
-  if ( mySelector->exec() )
-  {
-    QgsCoordinateReferenceSystem srs = mySelector->crs();
-    QString crsId = srs.authid();
-    if ( crsId != mCrsId )
+    if ( mySelector->exec() )
     {
-      mCrsId = crsId;
-      leSRID->setText( srs.authid() + " - " + srs.description() );
+      QgsCoordinateReferenceSystem srs = mySelector->crs();
+      QString crsId = srs.authid();
+      if ( crsId != mCrsId )
+      {
+        mCrsId = crsId;
+        leSRID->setText( srs.authid() + " - " + srs.description() );
+      }
     }
+    delete mySelector;
   }
-  delete mySelector;
 }
 
 void QgsNewSpatialiteLayerDialog::nameChanged( const QString &name )
