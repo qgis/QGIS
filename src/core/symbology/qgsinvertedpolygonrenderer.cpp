@@ -93,6 +93,8 @@ void QgsInvertedPolygonRenderer::checkLegendSymbolItem( const QString &key, bool
 
 void QgsInvertedPolygonRenderer::startRender( QgsRenderContext &context, const QgsFields &fields )
 {
+  QgsFeatureRenderer::startRender( context, fields );
+
   if ( !mSubRenderer )
   {
     return;
@@ -243,6 +245,8 @@ bool QgsInvertedPolygonRenderer::renderFeature( QgsFeature &feature, QgsRenderCo
 
 void QgsInvertedPolygonRenderer::stopRender( QgsRenderContext &context )
 {
+  QgsFeatureRenderer::stopRender( context );
+
   if ( !mSubRenderer )
   {
     return;

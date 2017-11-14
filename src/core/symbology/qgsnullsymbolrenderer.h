@@ -38,7 +38,6 @@ class CORE_EXPORT QgsNullSymbolRenderer : public QgsFeatureRenderer
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context ) override;
 
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false ) override;
-    virtual void startRender( QgsRenderContext &context, const QgsFields &fields ) override;
     virtual void stopRender( QgsRenderContext &context ) override;
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context ) override;
 
