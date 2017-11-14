@@ -25,7 +25,8 @@
 int spatialite_database_unique_ptr::open( const QString &path )
 {
 #if defined(SPATIALITE_HAS_INIT_EX)
-  get_deleter().mSpatialiteContext = spatialite_alloc_connection();
+  auto &deleter = get_deleter();
+  deleter.mSpatialiteContext = spatialite_alloc_connection();
 #else
   spatialite_init( 0 );
 #endif
@@ -36,7 +37,7 @@ int spatialite_database_unique_ptr::open( const QString &path )
 
 #if defined(SPATIALITE_HAS_INIT_EX)
   if ( result == SQLITE_OK )
-    spatialite_init_ex( database, get_deleter().mSpatialiteContext, 0 );
+    spatialite_init_ex( database, deleter.mSpatialiteContext, 0 );
 #endif
 
   return result;
@@ -45,7 +46,8 @@ int spatialite_database_unique_ptr::open( const QString &path )
 int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, const char *zVfs )
 {
 #if defined(SPATIALITE_HAS_INIT_EX)
-  get_deleter().mSpatialiteContext = spatialite_alloc_connection();
+  auto &deleter = get_deleter();
+  deleter.mSpatialiteContext = spatialite_alloc_connection();
 #else
   spatialite_init( 0 );
 #endif
@@ -56,7 +58,7 @@ int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, con
 
 #if defined(SPATIALITE_HAS_INIT_EX)
   if ( result == SQLITE_OK )
-    spatialite_init_ex( database, get_deleter().mSpatialiteContext, 0 );
+    spatialite_init_ex( database, deleter.mSpatialiteContext, 0 );
 #endif
 
   return result;
@@ -80,7 +82,6 @@ sqlite3_statement_unique_ptr spatialite_database_unique_ptr::prepare( const QStr
 
 void QgsSpatialiteCloser::operator()( sqlite3 *handle )
 {
-
 #if defined(SPATIALITE_HAS_INIT_EX)
   spatialite_cleanup_ex( mSpatialiteContext );
   mSpatialiteContext = nullptr;
