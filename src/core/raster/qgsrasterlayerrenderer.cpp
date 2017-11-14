@@ -52,14 +52,29 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer* layer, QgsRender
   if ( rendererContext.coordinateTransform() )
   {
     QgsDebugMsgLevel( "coordinateTransform set -> project extents.", 4 );
-    try
+    if ( rendererContext.extent().xMinimum() == -DBL_MAX &&
+         rendererContext.extent().yMinimum() == -DBL_MAX &&
+         rendererContext.extent().xMaximum() == DBL_MAX &&
+         rendererContext.extent().yMaximum() == DBL_MAX )
     {
-      myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox( rendererContext.extent() );
+      // We get in this situation if the view CRS is geographical and the
+      // extent goes beyond -180,-90,180,90. To avoid reprojection issues to the
+      // layer CRS, then this dummy extent is returned by QgsMapRendererJob::reprojectToLayerExtent()
+      // Don't try to reproject it now to view extent as this would return
+      // a null rectangle.
+      myProjectedViewExtent = rendererContext.extent();
     }
-    catch ( QgsCsException &cs )
+    else
     {
-      QgsMessageLog::logMessage( QObject::tr( "Could not reproject view extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
-      myProjectedViewExtent.setMinimal();
+      try
+      {
+        myProjectedViewExtent = rendererContext.coordinateTransform()->transformBoundingBox( rendererContext.extent() );
+      }
+      catch ( QgsCsException &cs )
+      {
+        QgsMessageLog::logMessage( QObject::tr( "Could not reproject view extent: %1" ).arg( cs.what() ), QObject::tr( "Raster" ) );
+        myProjectedViewExtent.setMinimal();
+      }
     }
 
     try
