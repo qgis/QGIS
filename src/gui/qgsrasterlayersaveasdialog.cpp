@@ -491,9 +491,9 @@ QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const
 
 QgsRasterLayerSaveAsDialog::ResampleAlgo QgsRasterLayerSaveAsDialog::resample() const
 {
-	if (mBilinearRadioButton->isChecked()) return Bilinear;
-	if (mCubicRadioButton->isChecked()) return Cubic;
-	return NearestNeighbour;
+  if ( mBilinearRadioButton->isChecked() ) return Bilinear;
+  if ( mCubicRadioButton->isChecked() ) return Cubic;
+  return NearestNeighbour;
 }
 
 

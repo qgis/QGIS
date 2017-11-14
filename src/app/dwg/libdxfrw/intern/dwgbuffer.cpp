@@ -711,7 +711,8 @@ std::string dwgBuffer::getCP8Text()
 
 //TU unicode 16 bit (UCS) text converted to utf8
 
-/** Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1)
+/**
+ * Reads 2-bytes char (UCS2, nullptr terminated) and convert to std::string (only for Latin-1)
    ts= total input size in bytes.
 **/
 std::string dwgBuffer::getUCSStr( duint16 ts )

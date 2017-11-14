@@ -6738,29 +6738,29 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
     }
 
 
-	if (d.resample()!= QgsRasterLayerSaveAsDialog::NearestNeighbour)
-	{
-		QgsRasterResampleFilter *resampler = new QgsRasterResampleFilter;
-		QgsRasterResampler *r = nullptr;
-		QgsRasterResampler *avg = new QgsBilinearRasterResampler();
-		switch(d.resample())
-		{
-			case QgsRasterLayerSaveAsDialog::Bilinear:
-				r = new QgsBilinearRasterResampler();
-				break;
-			case QgsRasterLayerSaveAsDialog::Cubic:
-				r = new QgsCubicRasterResampler();
+    if ( d.resample() != QgsRasterLayerSaveAsDialog::NearestNeighbour )
+    {
+      QgsRasterResampleFilter *resampler = new QgsRasterResampleFilter;
+      QgsRasterResampler *r = nullptr;
+      QgsRasterResampler *avg = new QgsBilinearRasterResampler();
+      switch ( d.resample() )
+      {
+        case QgsRasterLayerSaveAsDialog::Bilinear:
+          r = new QgsBilinearRasterResampler();
+          break;
+        case QgsRasterLayerSaveAsDialog::Cubic:
+          r = new QgsCubicRasterResampler();
 
-		}
-		resampler->setZoomedInResampler(r);
-		resampler->setZoomedOutResampler(avg);
+      }
+      resampler->setZoomedInResampler( r );
+      resampler->setZoomedOutResampler( avg );
 
-		if (!pipe->insert(3, resampler))
-		{
-			QgsDebugMsg("Cannot set pipe resampler");
-			return;
-		}
-	}
+      if ( !pipe->insert( 3, resampler ) )
+      {
+        QgsDebugMsg( "Cannot set pipe resampler" );
+        return;
+      }
+    }
   }
   else // RenderedImageMode
   {

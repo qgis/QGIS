@@ -392,7 +392,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         print( "\nFeatures on layer2 (after duplication)")
         for f in layer2.getFeatures():
             print( f.attributes() )
-            
+
         print( "\nAll Features and relations")
         featit=layer1.getFeatures()
         f=QgsFeature()

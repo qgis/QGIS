@@ -244,7 +244,7 @@ void TestQgsLayoutItem::registry()
   QVERIFY( registry.itemTypes().isEmpty() );
   QVERIFY( !registry.createItem( 1, nullptr ) );
 
-  auto create = []( QgsLayout * layout )->QgsLayoutItem*
+  auto create = []( QgsLayout * layout )->QgsLayoutItem *
   {
     return new TestItem( layout );
   };

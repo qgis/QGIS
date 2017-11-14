@@ -135,7 +135,7 @@ class ParametersPanel(BASE, WIDGET):
 
                     widget.setToolTip(self.formatParameterTooltip(param))
 
-                    if type(widget) is QCheckBox:
+                    if isinstance(widget, QCheckBox):
                         # checkbox widget - so description is embedded in widget rather than a separate
                         # label
                         widget.setText(desc)

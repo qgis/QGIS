@@ -3398,7 +3398,8 @@ bool dxfRW::processImageDef()
   return true;
 }
 
-/** Utility function
+/**
+ * Utility function
  * convert a int to string in hex
  **/
 std::string dxfRW::toHexStr( int n )

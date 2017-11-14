@@ -50,7 +50,8 @@ namespace DRW
 #define SETOBJFRIENDS  friend class dxfRW; \
   friend class dwgReader;
 
-/** Base class for tables entries
+/**
+ * Base class for tables entries
  *  @author Rallaz
  */
 class DRW_TableEntry
@@ -125,7 +126,8 @@ class DRW_TableEntry
 };
 
 
-/** Class to handle dim style symbol table entries
+/**
+ * Class to handle dim style symbol table entries
  *  @author Rallaz
  */
 class DRW_Dimstyle : public DRW_TableEntry
@@ -238,7 +240,8 @@ class DRW_Dimstyle : public DRW_TableEntry
 };
 
 
-/** Class to handle line type symbol table entries
+/**
+ * Class to handle line type symbol table entries
  *  @author Rallaz
  * @todo handle complex lineType
  */
@@ -275,7 +278,8 @@ class DRW_LType : public DRW_TableEntry
 };
 
 
-/** Class to handle layer symbol table entries
+/**
+ * Class to handle layer symbol table entries
  *  @author Rallaz
  */
 class DRW_Layer : public DRW_TableEntry
@@ -312,7 +316,8 @@ class DRW_Layer : public DRW_TableEntry
     dwgHandle lTypeH;
 };
 
-/** Class to handle block record table entries
+/**
+ * Class to handle block record table entries
  *  @author Rallaz
  */
 class DRW_Block_Record : public DRW_TableEntry
@@ -346,7 +351,8 @@ class DRW_Block_Record : public DRW_TableEntry
     std::vector<duint32>entMap;
 };
 
-/** Class to handle text style symbol table entries
+/**
+ * Class to handle text style symbol table entries
  *  @author Rallaz
  */
 class DRW_Textstyle : public DRW_TableEntry
@@ -381,7 +387,8 @@ class DRW_Textstyle : public DRW_TableEntry
     int fontFamily;         //!< Ttf font family, italic and bold flags, code 1071
 };
 
-/** Class to handle vport symbol table entries
+/**
+ * Class to handle vport symbol table entries
  *  @author Rallaz
  */
 class DRW_Vport : public DRW_TableEntry
@@ -441,7 +448,8 @@ class DRW_Vport : public DRW_TableEntry
     int snapIsopair;         //!< Snap isopair, code 78
     int gridBehavior;        //!< Grid behavior, code 60, undocumented
 
-    /** Code 60, bit coded possible value are
+    /**
+     * Code 60, bit coded possible value are
      * bit 1 (1) show out of limits
      * bit 2 (2) adaptive grid
      * bit 3 (4) allow subdivision
@@ -450,7 +458,8 @@ class DRW_Vport : public DRW_TableEntry
 };
 
 
-/** Class to handle image definitions object entries
+/**
+ * Class to handle image definitions object entries
  *  @author Rallaz
  */
 class DRW_ImageDef : public DRW_TableEntry  //
@@ -487,7 +496,8 @@ class DRW_ImageDef : public DRW_TableEntry  //
     std::map<std::string, std::string> reactors;
 };
 
-/** Class to handle AppId symbol table entries
+/**
+ * Class to handle AppId symbol table entries
  *  @author Rallaz
  */
 class DRW_AppId : public DRW_TableEntry

@@ -28,6 +28,7 @@ from processing.gui.wrappers import (
 
 
 class MapThemeWrapper(BasicWidgetWrapper):
+
     """
     WidgetWrapper for ParameterString that createe a combobox widget
     with the existing map themes.
