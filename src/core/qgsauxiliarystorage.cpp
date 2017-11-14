@@ -683,20 +683,17 @@ bool QgsAuxiliaryStorage::createTable( const QString &type, const QString &table
 
 spatialite_database_unique_ptr QgsAuxiliaryStorage::createDB( const QString &filename )
 {
-  int rc;
-
-  // open/create database
   spatialite_database_unique_ptr database;
+
+  int rc;
   rc = database.open_v2( filename, SQLITE_OPEN_READWRITE | SQLITE_OPEN_CREATE, nullptr );
   if ( rc )
   {
     debugMsg( QStringLiteral( "sqlite3_open_v2" ), database.get() );
-    return database;
   }
-
-  // activating Foreign Key constraints
-  if ( !exec( QStringLiteral( "PRAGMA foreign_keys = 1" ), database.get() ) )
-    return database;
+  else
+    // activating Foreign Key constraints
+    exec( QStringLiteral( "PRAGMA foreign_keys = 1" ), database.get() );
 
   return database;
 }
