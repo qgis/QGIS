@@ -802,7 +802,7 @@ double QgsCompoundCurve::vertexAngle( QgsVertexId vertex ) const
 
 double QgsCompoundCurve::segmentLength( QgsVertexId startVertex ) const
 {
-  QList< QPair<int, QgsVertexId> > curveIds = curveVertexId( startVertex );
+  QVector< QPair<int, QgsVertexId> > curveIds = curveVertexId( startVertex );
   double length = 0.0;
   for ( auto it = curveIds.constBegin(); it != curveIds.constEnd(); ++it )
   {
