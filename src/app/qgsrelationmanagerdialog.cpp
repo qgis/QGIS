@@ -92,9 +92,9 @@ void QgsRelationManagerDialog::on_mBtnAddRelation_clicked()
     QString relationId = addDlg.relationId();
     if ( addDlg.relationId() == "" )
       relationId = QString( "%1_%2_%3_%4" )
-                   .arg( addDlg.referencingLayerId(),
+                   .arg( addDlg.referencingLayerId().left( 10 ),
                          addDlg.references().at( 0 ).first,
-                         addDlg.referencedLayerId(),
+                         addDlg.referencedLayerId().left( 10 ),
                          addDlg.references().at( 0 ).second );
 
     QStringList existingNames;
