@@ -351,8 +351,8 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         for i in range(100):
             iterators.append(self.vl.getFeatures(request))
 
-    def testTransactionNotDirty(self):
-        # create a vector ayer based on postgres
+    def testTransactionDirty(self):
+        # create a vector layer based on postgres
         vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
         self.assertTrue(vl.isValid())
 
@@ -397,7 +397,24 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         ft1 = vl.getFeatures('pk=1')
         self.assertFalse(ft1.nextFeature(f))
 
-        p.setAutoTransaction(False)
+    def testTransactionTuple(self):
+        # create a vector layer based on postgres
+        vl = QgsVectorLayer(self.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'postgres')
+        self.assertTrue(vl.isValid())
+
+        # prepare a project with transactions enabled
+        p = QgsProject()
+        p.setAutoTransaction(True)
+        p.addMapLayers([vl])
+        vl.startEditing()
+
+        # execute a query which returns a tuple
+        tr = vl.dataProvider().transaction()
+        sql = "select * from qgis_test.some_poly_data"
+        self.assertTrue(tr.executeSql(sql, False)[0])
+
+        # underlying data has not been modified
+        self.assertFalse(vl.isModified())
 
     def testDomainTypes(self):
         """Test that domain types are correctly mapped"""
