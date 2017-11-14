@@ -201,8 +201,8 @@ bool QgsOfflineEditing::isOfflineProject() const
 void QgsOfflineEditing::synchronize()
 {
   // open logging db
-  sqlite3 *db = openLoggingDb();
-  if ( !db )
+  sqlite3_database_unique_ptr database = openLoggingDb();
+  if ( !database )
   {
     return;
   }
@@ -261,46 +261,46 @@ void QgsOfflineEditing::synchronize()
       // apply layer edit log
       QString qgisLayerId = layer->id();
       QString sql = QStringLiteral( "SELECT \"id\" FROM 'log_layer_ids' WHERE \"qgis_id\" = '%1'" ).arg( qgisLayerId );
-      int layerId = sqlQueryInt( db, sql, -1 );
+      int layerId = sqlQueryInt( database.get(), sql, -1 );
       if ( layerId != -1 )
       {
         remoteLayer->startEditing();
 
         // TODO: only get commitNos of this layer?
-        int commitNo = getCommitNo( db );
+        int commitNo = getCommitNo( database.get() );
         QgsDebugMsgLevel( QString( "Found %1 commits" ).arg( commitNo ), 4 );
         for ( int i = 0; i < commitNo; i++ )
         {
           QgsDebugMsgLevel( "Apply commits chronologically", 4 );
           // apply commits chronologically
-          applyAttributesAdded( remoteLayer, db, layerId, i );
-          applyAttributeValueChanges( offlineLayer, remoteLayer, db, layerId, i );
-          applyGeometryChanges( remoteLayer, db, layerId, i );
+          applyAttributesAdded( remoteLayer, database.get(), layerId, i );
+          applyAttributeValueChanges( offlineLayer, remoteLayer, database.get(), layerId, i );
+          applyGeometryChanges( remoteLayer, database.get(), layerId, i );
         }
 
-        applyFeaturesAdded( offlineLayer, remoteLayer, db, layerId );
-        applyFeaturesRemoved( remoteLayer, db, layerId );
+        applyFeaturesAdded( offlineLayer, remoteLayer, database.get(), layerId );
+        applyFeaturesRemoved( remoteLayer, database.get(), layerId );
 
         if ( remoteLayer->commitChanges() )
         {
           // update fid lookup
-          updateFidLookup( remoteLayer, db, layerId );
+          updateFidLookup( remoteLayer, database.get(), layerId );
 
           // clear edit log for this layer
           sql = QStringLiteral( "DELETE FROM 'log_added_attrs' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
+          sqlExec( database.get(), sql );
           sql = QStringLiteral( "DELETE FROM 'log_added_features' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
+          sqlExec( database.get(), sql );
           sql = QStringLiteral( "DELETE FROM 'log_removed_features' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
+          sqlExec( database.get(), sql );
           sql = QStringLiteral( "DELETE FROM 'log_feature_updates' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
+          sqlExec( database.get(), sql );
           sql = QStringLiteral( "DELETE FROM 'log_geometry_updates' WHERE \"layer_id\" = %1" ).arg( layerId );
-          sqlExec( db, sql );
+          sqlExec( database.get(), sql );
 
           // reset commitNo
           QString sql = QStringLiteral( "UPDATE 'log_indices' SET 'last_index' = 0 WHERE \"name\" = 'commit_no'" );
-          sqlExec( db, sql );
+          sqlExec( database.get(), sql );
         }
         else
         {
@@ -332,8 +332,6 @@ void QgsOfflineEditing::synchronize()
   }
 
   emit progressStopped();
-
-  sqlite3_close( db );
 }
 
 void QgsOfflineEditing::initializeSpatialMetadata( sqlite3 *sqlite_handle )
@@ -996,27 +994,25 @@ void QgsOfflineEditing::showWarning( const QString &message )
   emit warning( tr( "Offline Editing Plugin" ), message );
 }
 
-sqlite3 *QgsOfflineEditing::openLoggingDb()
+sqlite3_database_unique_ptr QgsOfflineEditing::openLoggingDb()
 {
-  sqlite3 *db = nullptr;
+  sqlite3_database_unique_ptr database;
   QString dbPath = QgsProject::instance()->readEntry( PROJECT_ENTRY_SCOPE_OFFLINE, PROJECT_ENTRY_KEY_OFFLINE_DB_PATH );
   if ( !dbPath.isEmpty() )
   {
     QString absoluteDbPath = QgsProject::instance()->readPath( dbPath );
-    int rc = sqlite3_open( absoluteDbPath.toUtf8().constData(), &db );
+    int rc = database.open( absoluteDbPath );
     if ( rc != SQLITE_OK )
     {
       QgsDebugMsg( "Could not open the SpatiaLite logging database" );
       showWarning( tr( "Could not open the SpatiaLite logging database" ) );
-      sqlite3_close( db );
-      db = nullptr;
     }
   }
   else
   {
     QgsDebugMsg( "dbPath is empty!" );
   }
-  return db;
+  return database;
 }
 
 int QgsOfflineEditing::getOrCreateLayerId( sqlite3 *db, const QString &qgisLayerId )
@@ -1241,13 +1237,13 @@ QgsOfflineEditing::GeometryChanges QgsOfflineEditing::sqlQueryGeometryChanges( s
 
 void QgsOfflineEditing::committedAttributesAdded( const QString &qgisLayerId, const QList<QgsField> &addedAttributes )
 {
-  sqlite3 *db = openLoggingDb();
-  if ( !db )
+  sqlite3_database_unique_ptr database = openLoggingDb();
+  if ( !database.get() )
     return;
 
   // insert log
-  int layerId = getOrCreateLayerId( db, qgisLayerId );
-  int commitNo = getCommitNo( db );
+  int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
+  int commitNo = getCommitNo( database.get() );
 
   for ( QList<QgsField>::const_iterator it = addedAttributes.begin(); it != addedAttributes.end(); ++it )
   {
@@ -1260,21 +1256,21 @@ void QgsOfflineEditing::committedAttributesAdded( const QString &qgisLayerId, co
                   .arg( field.length() )
                   .arg( field.precision() )
                   .arg( field.comment() );
-    sqlExec( db, sql );
+    sqlExec( database.get(), sql );
   }
 
-  increaseCommitNo( db );
-  sqlite3_close( db );
+  increaseCommitNo( database.get() );
+  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, const QgsFeatureList &addedFeatures )
 {
-  sqlite3 *db = openLoggingDb();
-  if ( !db )
+  sqlite3_database_unique_ptr database = openLoggingDb();
+  if ( !database.get() )
     return;
 
   // insert log
-  int layerId = getOrCreateLayerId( db, qgisLayerId );
+  int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
 
   // get new feature ids from db
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( qgisLayerId );
@@ -1282,61 +1278,61 @@ void QgsOfflineEditing::committedFeaturesAdded( const QString &qgisLayerId, cons
 
   // only store feature ids
   QString sql = QStringLiteral( "SELECT ROWID FROM '%1' ORDER BY ROWID DESC LIMIT %2" ).arg( uri.table() ).arg( addedFeatures.size() );
-  QList<int> newFeatureIds = sqlQueryInts( db, sql );
+  QList<int> newFeatureIds = sqlQueryInts( database.get(), sql );
   for ( int i = newFeatureIds.size() - 1; i >= 0; i-- )
   {
     QString sql = QStringLiteral( "INSERT INTO 'log_added_features' VALUES ( %1, %2 )" )
                   .arg( layerId )
                   .arg( newFeatureIds.at( i ) );
-    sqlExec( db, sql );
+    sqlExec( database.get(), sql );
   }
 
-  sqlite3_close( db );
+  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::committedFeaturesRemoved( const QString &qgisLayerId, const QgsFeatureIds &deletedFeatureIds )
 {
-  sqlite3 *db = openLoggingDb();
-  if ( !db )
+  sqlite3_database_unique_ptr database = openLoggingDb();
+  if ( !database.get() )
     return;
 
   // insert log
-  int layerId = getOrCreateLayerId( db, qgisLayerId );
+  int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
 
   for ( QgsFeatureIds::const_iterator it = deletedFeatureIds.begin(); it != deletedFeatureIds.end(); ++it )
   {
-    if ( isAddedFeature( db, layerId, *it ) )
+    if ( isAddedFeature( database.get(), layerId, *it ) )
     {
       // remove from added features log
       QString sql = QStringLiteral( "DELETE FROM 'log_added_features' WHERE \"layer_id\" = %1 AND \"fid\" = %2" ).arg( layerId ).arg( *it );
-      sqlExec( db, sql );
+      sqlExec( database.get(), sql );
     }
     else
     {
       QString sql = QStringLiteral( "INSERT INTO 'log_removed_features' VALUES ( %1, %2)" )
                     .arg( layerId )
                     .arg( *it );
-      sqlExec( db, sql );
+      sqlExec( database.get(), sql );
     }
   }
 
-  sqlite3_close( db );
+  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLayerId, const QgsChangedAttributesMap &changedAttrsMap )
 {
-  sqlite3 *db = openLoggingDb();
-  if ( !db )
+  sqlite3_database_unique_ptr database = openLoggingDb();
+  if ( !database.get() )
     return;
 
   // insert log
-  int layerId = getOrCreateLayerId( db, qgisLayerId );
-  int commitNo = getCommitNo( db );
+  int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
+  int commitNo = getCommitNo( database.get() );
 
   for ( QgsChangedAttributesMap::const_iterator cit = changedAttrsMap.begin(); cit != changedAttrsMap.end(); ++cit )
   {
     QgsFeatureId fid = cit.key();
-    if ( isAddedFeature( db, layerId, fid ) )
+    if ( isAddedFeature( database.get(), layerId, fid ) )
     {
       // skip added features
       continue;
@@ -1350,28 +1346,28 @@ void QgsOfflineEditing::committedAttributeValuesChanges( const QString &qgisLaye
                     .arg( fid )
                     .arg( it.key() ) // attr
                     .arg( it.value().toString() ); // value
-      sqlExec( db, sql );
+      sqlExec( database.get(), sql );
     }
   }
 
-  increaseCommitNo( db );
-  sqlite3_close( db );
+  increaseCommitNo( database.get() );
+  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::committedGeometriesChanges( const QString &qgisLayerId, const QgsGeometryMap &changedGeometries )
 {
-  sqlite3 *db = openLoggingDb();
-  if ( !db )
+  sqlite3_database_unique_ptr database = openLoggingDb();
+  if ( !database.get() )
     return;
 
   // insert log
-  int layerId = getOrCreateLayerId( db, qgisLayerId );
-  int commitNo = getCommitNo( db );
+  int layerId = getOrCreateLayerId( database.get(), qgisLayerId );
+  int commitNo = getCommitNo( database.get() );
 
   for ( QgsGeometryMap::const_iterator it = changedGeometries.begin(); it != changedGeometries.end(); ++it )
   {
     QgsFeatureId fid = it.key();
-    if ( isAddedFeature( db, layerId, fid ) )
+    if ( isAddedFeature( database.get(), layerId, fid ) )
     {
       // skip added features
       continue;
@@ -1382,13 +1378,13 @@ void QgsOfflineEditing::committedGeometriesChanges( const QString &qgisLayerId, 
                   .arg( commitNo )
                   .arg( fid )
                   .arg( geom.exportToWkt() );
-    sqlExec( db, sql );
+    sqlExec( database.get(), sql );
 
     // TODO: use WKB instead of WKT?
   }
 
-  increaseCommitNo( db );
-  sqlite3_close( db );
+  increaseCommitNo( database.get() );
+  sqlite3_close( database.get() );
 }
 
 void QgsOfflineEditing::startListenFeatureChanges()

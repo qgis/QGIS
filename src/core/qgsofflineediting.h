@@ -22,13 +22,13 @@
 #include "qgis_core.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
+#include "qgssqliteutils.h"
 
 #include <QObject>
 #include <QString>
 
 class QgsMapLayer;
 class QgsVectorLayer;
-struct sqlite3;
 
 /**
  * \ingroup core
@@ -138,7 +138,7 @@ class CORE_EXPORT QgsOfflineEditing : public QObject
 
     void showWarning( const QString &message );
 
-    sqlite3 *openLoggingDb();
+    sqlite3_database_unique_ptr openLoggingDb();
     int getOrCreateLayerId( sqlite3 *db, const QString &qgisLayerId );
     int getCommitNo( sqlite3 *db );
     void increaseCommitNo( sqlite3 *db );

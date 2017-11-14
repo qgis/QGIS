@@ -28,6 +28,7 @@
 
 #include <sqlite3.h>
 
+#include "qgssqliteutils.h"
 #include "qgs3drendererregistry.h"
 #include "qgsabstract3drenderer.h"
 #include "qgsapplication.h"
@@ -1091,9 +1092,9 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
   bool resultFlag = false;
 
   // read from database
-  sqlite3 *myDatabase = nullptr;
-  sqlite3_stmt *myPreparedStatement = nullptr;
-  const char *myTail = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
+
   int myResult;
 
   QgsDebugMsgLevel( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
@@ -1101,30 +1102,25 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
 
-  myResult = sqlite3_open_v2( db.toUtf8().data(), &myDatabase, SQLITE_OPEN_READONLY, nullptr );
+  myResult = database.open_v2( db, SQLITE_OPEN_READONLY, nullptr );
   if ( myResult != SQLITE_OK )
   {
     return false;
   }
 
   QString mySql = QStringLiteral( "select qml from tbl_styles where style=?" );
-  myResult = sqlite3_prepare( myDatabase, mySql.toUtf8().data(), mySql.toUtf8().length(), &myPreparedStatement, &myTail );
+  statement = database.prepare( mySql, myResult );
   if ( myResult == SQLITE_OK )
   {
     QByteArray param = uri.toUtf8();
 
-    if ( sqlite3_bind_text( myPreparedStatement, 1, param.data(), param.length(), SQLITE_STATIC ) == SQLITE_OK &&
-         sqlite3_step( myPreparedStatement ) == SQLITE_ROW )
+    if ( sqlite3_bind_text( statement.get(), 1, param.data(), param.length(), SQLITE_STATIC ) == SQLITE_OK &&
+         sqlite3_step( statement.get() ) == SQLITE_ROW )
     {
-      qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( myPreparedStatement, 0 ) ) );
+      qml = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( statement.get(), 0 ) ) );
       resultFlag = true;
     }
-
-    sqlite3_finalize( myPreparedStatement );
   }
-
-  sqlite3_close( myDatabase );
-
   return resultFlag;
 }
 
