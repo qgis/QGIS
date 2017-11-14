@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "topolError.h"
-#include <qgsmessagelog.h>
+#include "qgsmessagelog.h"
 #include "qgsfeatureiterator.h"
 
 //TODO: tell dock to parse errorlist when feature is deleted
@@ -94,11 +94,11 @@ bool TopolError::fixSnap()
 
   QgsGeometry ge = f1.geometry();
 
-  QgsPolyline line = ge.asPolyline();
-  QgsPolyline conflictLine = mConflict.asPolyline();
+  QgsPolylineXY line = ge.asPolyline();
+  QgsPolylineXY conflictLine = mConflict.asPolyline();
   line.last() = conflictLine.last();
 
-  QgsGeometry newG = QgsGeometry::fromPolyline( line );
+  QgsGeometry newG = QgsGeometry::fromPolylineXY( line );
   bool ret = fl.layer->changeGeometry( f1.id(), newG );
 
   return ret;

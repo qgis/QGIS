@@ -22,6 +22,7 @@
 #include <QString>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
@@ -29,10 +30,11 @@
  * See details in QEP #17
  ****************************************************************************/
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsWkbTypes
  * \brief Handles storage of information regarding WKB types and their properties.
- * \note Added in version 2.10
+ * \since QGIS 2.10
  */
 
 class CORE_EXPORT QgsWkbTypes
@@ -68,19 +70,21 @@ class CORE_EXPORT QgsWkbTypes
       Point = 1,
       LineString = 2,
       Polygon = 3,
+      Triangle = 17,
       MultiPoint = 4,
       MultiLineString = 5,
       MultiPolygon = 6,
       GeometryCollection = 7,
       CircularString = 8,
       CompoundCurve = 9,
-      CurvePolygon =  10, //13, //should be 10. Seems to be correct in newer postgis versions
+      CurvePolygon = 10, //13, //should be 10. Seems to be correct in newer PostGIS versions
       MultiCurve = 11,
       MultiSurface = 12,
       NoGeometry = 100, //attributes only
       PointZ = 1001,
       LineStringZ = 1002,
       PolygonZ = 1003,
+      TriangleZ = 1017,
       MultiPointZ = 1004,
       MultiLineStringZ = 1005,
       MultiPolygonZ = 1006,
@@ -93,6 +97,7 @@ class CORE_EXPORT QgsWkbTypes
       PointM = 2001,
       LineStringM = 2002,
       PolygonM = 2003,
+      TriangleM = 2017,
       MultiPointM = 2004,
       MultiLineStringM = 2005,
       MultiPolygonM = 2006,
@@ -114,6 +119,7 @@ class CORE_EXPORT QgsWkbTypes
       CurvePolygonZM = 3010,
       MultiCurveZM = 3011,
       MultiSurfaceZM = 3012,
+      TriangleZM = 3017,
       Point25D = 0x80000001,
       LineString25D,
       Polygon25D,
@@ -126,7 +132,7 @@ class CORE_EXPORT QgsWkbTypes
      * The geometry types are used to group QgsWkbTypes::Type in a
      * coarse way.
      *
-     * @see geometryType( QgsWkbTypes::Type )
+     * \see geometryType( QgsWkbTypes::Type )
      */
     enum GeometryType
     {
@@ -137,10 +143,11 @@ class CORE_EXPORT QgsWkbTypes
       NullGeometry
     };
 
-    /** Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
-     * @see isSingleType()
-     * @see multiType()
-     * @see flatType()
+    /**
+     * Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
+     * \see isSingleType()
+     * \see multiType()
+     * \see flatType()
      */
     static Type singleType( Type type )
     {
@@ -201,6 +208,22 @@ class CORE_EXPORT QgsWkbTypes
         case MultiPolygonZM:
           return PolygonZM;
 
+        case Triangle:
+          // case MultiTriangle:
+          return Triangle;
+
+        case TriangleZ:
+          // case MultiTriangleZ:
+          return TriangleZ;
+
+        case TriangleM:
+          // case MultiTriangleM:
+          return TriangleM;
+
+        case TriangleZM:
+          // case MultiTriangleZM:
+          return TriangleZM;
+
         case CircularString:
           return CircularString;
 
@@ -259,20 +282,26 @@ class CORE_EXPORT QgsWkbTypes
         case Polygon25D:
         case MultiPolygon25D:
           return Polygon25D;
+
       }
       return Unknown;
     }
 
-    /** Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
-     * @see isMultiType()
-     * @see singleType()
-     * @see flatType()
+    /**
+     * Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
+     * \see isMultiType()
+     * \see singleType()
+     * \see flatType()
      */
     static Type multiType( Type type )
     {
       switch ( type )
       {
         case Unknown:
+        case Triangle:
+        case TriangleZ:
+        case TriangleM:
+        case TriangleZM:
           return Unknown;
 
         case GeometryCollection:
@@ -389,10 +418,11 @@ class CORE_EXPORT QgsWkbTypes
       return Unknown;
     }
 
-    /** Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
+    /**
+     * Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
      * For example, for PolygonZM WKB types the single type would be Polygon.
-     * @see singleType()
-     * @see multiType()
+     * \see singleType()
+     * \see multiType()
      */
     static Type flatType( Type type )
     {
@@ -421,6 +451,12 @@ class CORE_EXPORT QgsWkbTypes
         case PolygonZM:
         case Polygon25D:
           return Polygon;
+
+        case Triangle:
+        case TriangleZ:
+        case TriangleM:
+        case TriangleZM:
+          return Triangle;
 
         case MultiPoint:
         case MultiPointZ:
@@ -497,23 +533,26 @@ class CORE_EXPORT QgsWkbTypes
       return type;
     }
 
-    /** Attempts to extract the WKB type from a WKT string.
-     * @param wktStr a valid WKT string
+    /**
+     * Attempts to extract the WKB type from a WKT string.
+     * \param wktStr a valid WKT string
      */
     static Type parseType( const QString &wktStr );
 
-    /** Returns true if the WKB type is a single type.
-     * @see isMultiType()
-     * @see singleType()
+    /**
+     * Returns true if the WKB type is a single type.
+     * \see isMultiType()
+     * \see singleType()
      */
     static bool isSingleType( Type type )
     {
       return ( type != Unknown && !isMultiType( type ) );
     }
 
-    /** Returns true if the WKB type is a multi type.
-     * @see isSingleType()
-     * @see multiType()
+    /**
+     * Returns true if the WKB type is a multi type.
+     * \see isSingleType()
+     * \see multiType()
      */
     static bool isMultiType( Type type )
     {
@@ -523,6 +562,7 @@ class CORE_EXPORT QgsWkbTypes
         case Point:
         case LineString:
         case Polygon:
+        case Triangle:
         case CircularString:
         case CompoundCurve:
         case CurvePolygon:
@@ -530,18 +570,21 @@ class CORE_EXPORT QgsWkbTypes
         case PointZ:
         case LineStringZ:
         case PolygonZ:
+        case TriangleZ:
         case CircularStringZ:
         case CompoundCurveZ:
         case CurvePolygonZ:
         case PointM:
         case LineStringM:
         case PolygonM:
+        case TriangleM:
         case CircularStringM:
         case CompoundCurveM:
         case CurvePolygonM:
         case PointZM:
         case LineStringZM:
         case PolygonZM:
+        case TriangleZM:
         case CircularStringZM:
         case CompoundCurveZM:
         case CurvePolygonZM:
@@ -556,8 +599,9 @@ class CORE_EXPORT QgsWkbTypes
       }
     }
 
-    /** Returns true if the WKB type is a curved type or can contain curved geometries.
-     * @note added in QGIS 2.14
+    /**
+     * Returns true if the WKB type is a curved type or can contain curved geometries.
+     * \since QGIS 2.14
      */
     static bool isCurvedType( Type type )
     {
@@ -575,11 +619,12 @@ class CORE_EXPORT QgsWkbTypes
       }
     }
 
-    /** Returns the inherent dimension of the geometry type as an integer. Returned value will
+    /**
+     * Returns the inherent dimension of the geometry type as an integer. Returned value will
      * always be less than or equal to the coordinate dimension.
-     * @returns 0 for point geometries, 1 for line geometries, 2 for polygon geometries
+     * \returns 0 for point geometries, 1 for line geometries, 2 for polygon geometries
      * Invalid geometry types will return a dimension of 0.
-     * @see coordDimensions()
+     * \see coordDimensions()
      */
     static int wkbDimensions( Type type )
     {
@@ -595,11 +640,12 @@ class CORE_EXPORT QgsWkbTypes
       }
     }
 
-    /** Returns the coordinate dimension of the geometry type as an integer. Returned value will
+    /**
+     * Returns the coordinate dimension of the geometry type as an integer. Returned value will
      * be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
      * Invalid geometry types will return a dimension of 0.
-     * @note added in QGIS 2.14
-     * @see wkbDimensions()
+     * \since QGIS 2.14
+     * \see wkbDimensions()
      */
     static int coordDimensions( Type type )
     {
@@ -609,7 +655,8 @@ class CORE_EXPORT QgsWkbTypes
       return 2 + hasZ( type ) + hasM( type );
     }
 
-    /** Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
+    /**
+     * Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
      * PolygonGeometry geometry type.
      * GeometryCollections are reported as QgsWkbTypes::UnknownGeometry.
      */
@@ -662,12 +709,16 @@ class CORE_EXPORT QgsWkbTypes
 
         case Polygon:
         case MultiPolygon:
+        case Triangle:
         case PolygonZ:
+        case TriangleZ:
         case MultiPolygonZ:
         case PolygonM:
+        case TriangleM:
         case MultiPolygonM:
         case PolygonZM:
         case MultiPolygonZM:
+        case TriangleZM:
         case Polygon25D:
         case MultiPolygon25D:
         case CurvePolygon:
@@ -687,7 +738,8 @@ class CORE_EXPORT QgsWkbTypes
       return UnknownGeometry;
     }
 
-    /** Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
+    /**
+     * Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
      */
     static QString displayString( Type type );
 
@@ -703,14 +755,15 @@ class CORE_EXPORT QgsWkbTypes
      * - No Geometry
      * - Invalid Geometry
      *
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     static QString geometryDisplayString( GeometryType type );
 
-    /** Tests whether a WKB type contains the z-dimension.
-     * @returns true if type has z values
-     * @see addZ()
-     * @see hasM()
+    /**
+     * Tests whether a WKB type contains the z-dimension.
+     * \returns true if type has z values
+     * \see addZ()
+     * \see hasM()
      */
     static bool hasZ( Type type )
     {
@@ -719,6 +772,7 @@ class CORE_EXPORT QgsWkbTypes
         case PointZ:
         case LineStringZ:
         case PolygonZ:
+        case TriangleZ:
         case MultiPointZ:
         case MultiLineStringZ:
         case MultiPolygonZ:
@@ -731,6 +785,7 @@ class CORE_EXPORT QgsWkbTypes
         case PointZM:
         case LineStringZM:
         case PolygonZM:
+        case TriangleZM:
         case MultiPointZM:
         case MultiLineStringZM:
         case MultiPolygonZM:
@@ -754,10 +809,11 @@ class CORE_EXPORT QgsWkbTypes
       }
     }
 
-    /** Tests whether a WKB type contains m values.
-     * @returns true if type has m values
-     * @see addM()
-     * @see hasZ()
+    /**
+     * Tests whether a WKB type contains m values.
+     * \returns true if type has m values
+     * \see addM()
+     * \see hasZ()
      */
     static bool hasM( Type type )
     {
@@ -766,6 +822,7 @@ class CORE_EXPORT QgsWkbTypes
         case PointM:
         case LineStringM:
         case PolygonM:
+        case TriangleM:
         case MultiPointM:
         case MultiLineStringM:
         case MultiPolygonM:
@@ -778,6 +835,7 @@ class CORE_EXPORT QgsWkbTypes
         case PointZM:
         case LineStringZM:
         case PolygonZM:
+        case TriangleZM:
         case MultiPointZM:
         case MultiLineStringZM:
         case MultiPolygonZM:
@@ -795,12 +853,13 @@ class CORE_EXPORT QgsWkbTypes
       }
     }
 
-    /** Adds the z dimension to a WKB type and returns the new type
-     * @param type original type
-     * @note added in QGIS 2.12
-     * @see addM()
-     * @see dropZ()
-     * @see hasZ()
+    /**
+     * Adds the z dimension to a WKB type and returns the new type
+     * \param type original type
+     * \since QGIS 2.12
+     * \see addM()
+     * \see dropZ()
+     * \see hasZ()
      */
     static Type addZ( Type type )
     {
@@ -819,12 +878,13 @@ class CORE_EXPORT QgsWkbTypes
         return static_cast< QgsWkbTypes::Type >( flat + 1000 );
     }
 
-    /** Adds the m dimension to a WKB type and returns the new type
-     * @param type original type
-     * @note added in QGIS 2.12
-     * @see addZ()
-     * @see dropM()
-     * @see hasM()
+    /**
+     * Adds the m dimension to a WKB type and returns the new type
+     * \param type original type
+     * \since QGIS 2.12
+     * \see addZ()
+     * \see dropM()
+     * \see hasM()
      */
     static Type addM( Type type )
     {
@@ -850,11 +910,12 @@ class CORE_EXPORT QgsWkbTypes
         return static_cast< QgsWkbTypes::Type >( flat + 2000 );
     }
 
-    /** Drops the z dimension (if present) for a WKB type and returns the new type.
-     * @param type original type
-     * @note added in QGIS 2.14
-     * @see dropM()
-     * @see addZ()
+    /**
+     * Drops the z dimension (if present) for a WKB type and returns the new type.
+     * \param type original type
+     * \since QGIS 2.14
+     * \see dropM()
+     * \see addZ()
      */
     static Type dropZ( Type type )
     {
@@ -867,11 +928,12 @@ class CORE_EXPORT QgsWkbTypes
       return returnType;
     }
 
-    /** Drops the m dimension (if present) for a WKB type and returns the new type.
-     * @param type original type
-     * @note added in QGIS 2.14
-     * @see dropZ()
-     * @see addM()
+    /**
+     * Drops the m dimension (if present) for a WKB type and returns the new type.
+     * \param type original type
+     * \since QGIS 2.14
+     * \see dropZ()
+     * \see addM()
      */
     static Type dropM( Type type )
     {
@@ -886,8 +948,8 @@ class CORE_EXPORT QgsWkbTypes
 
     /**
      * Will convert the 25D version of the flat type if supported or Unknown if not supported.
-     * @param type The type to convert
-     * @return the 25D version of the type or Unknown
+     * \param type The type to convert
+     * \returns the 25D version of the type or Unknown
      */
     static Type to25D( Type type )
     {

@@ -24,15 +24,18 @@ class QLineEdit;
 #include "qgseditorwidgetwrapper.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
 
 
-/** \ingroup gui
+
+/**
+ * \ingroup gui
  * Wraps a file name widget. Will offer a file browser to choose files.
  * \note not available in Python bindings
  */
 
 /**
- * @brief The QgsExternalResourceWidgetWrapper class wraps a external resource widget
+ * \brief The QgsExternalResourceWidgetWrapper class wraps a external resource widget
  */
 class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrapper
 {
@@ -51,6 +54,7 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     bool valid() const override;
 
   public slots:
+    void setFeature( const QgsFeature &feature ) override;
     void setValue( const QVariant &value ) override;
     void setEnabled( bool enabled ) override;
 
@@ -60,8 +64,6 @@ class GUI_EXPORT QgsExternalResourceWidgetWrapper : public QgsEditorWidgetWrappe
     QLineEdit *mLineEdit = nullptr;
     QLabel *mLabel = nullptr;
     QgsExternalResourceWidget *mQgsWidget = nullptr;
-
-
 };
 
 #endif // QGSEXTERNALRESOURCEWIDGETWRAPPER_H

@@ -20,16 +20,14 @@
 
 QgsVersionInfo::QgsVersionInfo( QObject *parent )
   : QObject( parent )
-  , mLatestVersion( 0 )
-  , mError( QNetworkReply::NoError )
 {
 
 }
 
 void QgsVersionInfo::checkVersion()
 {
-  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "https://ubuntu.qgis.org/version.txt" ) ) ) );
-  connect( reply, SIGNAL( finished() ), this, SLOT( versionReplyFinished() ) );
+  QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( QNetworkRequest( QUrl( QStringLiteral( "https://version.qgis.org/version.txt" ) ) ) );
+  connect( reply, &QNetworkReply::finished, this, &QgsVersionInfo::versionReplyFinished );
 }
 
 bool QgsVersionInfo::newVersionAvailable() const
@@ -81,7 +79,7 @@ void QgsVersionInfo::versionReplyFinished()
       mErrorString = tr( "The host name %1 could not be resolved. Check your DNS settings or contact your system administrator." ).arg( reply->request().url().host() );
       break;
     case QNetworkReply::NoError:
-      mErrorString = QLatin1String( "" );
+      mErrorString.clear();
       break;
     default:
       mErrorString = reply->errorString();

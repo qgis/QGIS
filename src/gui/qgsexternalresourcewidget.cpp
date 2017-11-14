@@ -29,12 +29,6 @@
 
 QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
   : QWidget( parent )
-  , mFileWidgetVisible( true )
-  , mDocumentViewerContent( NoContent )
-  , mDocumentViewerHeight( 0 )
-  , mDocumentViewerWidth( 0 )
-  , mRelativeStorage( QgsFileWidget::Absolute )
-
 {
   setBackgroundRole( QPalette::Window );
   setAutoFillBackground( true );
@@ -58,7 +52,8 @@ QgsExternalResourceWidget::QgsExternalResourceWidget( QWidget *parent )
 
   setLayout( layout );
 
-  connect( mFileWidget, SIGNAL( fileChanged( QString ) ), this, SLOT( loadDocument( QString ) ) );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::loadDocument );
+  connect( mFileWidget, &QgsFileWidget::fileChanged, this, &QgsExternalResourceWidget::valueChanged );
 }
 
 QVariant QgsExternalResourceWidget::documentPath( QVariant::Type type ) const

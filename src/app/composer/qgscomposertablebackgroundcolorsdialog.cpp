@@ -28,6 +28,8 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
   , mComposerTable( table )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsComposerTableBackgroundColorsDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsComposerTableBackgroundColorsDialog::buttonBox_rejected );
 
   mCheckBoxMap.insert( QgsComposerTableV2::OddColumns, mOddColumnsCheckBox );
   mCheckBoxMap.insert( QgsComposerTableV2::EvenColumns, mEvenColumnsCheckBox );
@@ -49,10 +51,10 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
   mColorButtonMap.insert( QgsComposerTableV2::FirstRow, mFirstRowColorButton );
   mColorButtonMap.insert( QgsComposerTableV2::LastRow, mLastRowColorButton );
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsComposerTableBackgroundColorsDialog::apply );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ) ).toByteArray() );
 
   setGuiElementValues();
 }
@@ -60,7 +62,7 @@ QgsComposerTableBackgroundColorsDialog::QgsComposerTableBackgroundColorsDialog( 
 QgsComposerTableBackgroundColorsDialog::~QgsComposerTableBackgroundColorsDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ComposerTableBackgroundColorsDialog/geometry" ), saveGeometry() );
 }
 
 void QgsComposerTableBackgroundColorsDialog::apply()
@@ -95,13 +97,13 @@ void QgsComposerTableBackgroundColorsDialog::apply()
   mComposerTable->update();
 }
 
-void QgsComposerTableBackgroundColorsDialog::on_buttonBox_accepted()
+void QgsComposerTableBackgroundColorsDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsComposerTableBackgroundColorsDialog::on_buttonBox_rejected()
+void QgsComposerTableBackgroundColorsDialog::buttonBox_rejected()
 {
   reject();
 }
@@ -119,13 +121,13 @@ void QgsComposerTableBackgroundColorsDialog::setGuiElementValues()
       continue;
     button->setEnabled( mComposerTable->cellStyle( styleGroup )->enabled );
     button->setColor( mComposerTable->cellStyle( styleGroup )->cellBackgroundColor );
-    button->setAllowAlpha( true );
-    button->setColorDialogTitle( tr( "Select background color" ) );
+    button->setAllowOpacity( true );
+    button->setColorDialogTitle( tr( "Select Background Color" ) );
   }
 
   mDefaultColorButton->setColor( mComposerTable->backgroundColor() );
-  mDefaultColorButton->setAllowAlpha( true );
-  mDefaultColorButton->setColorDialogTitle( tr( "Select background color" ) );
+  mDefaultColorButton->setAllowOpacity( true );
+  mDefaultColorButton->setColorDialogTitle( tr( "Select Background Color" ) );
   mDefaultColorButton->setShowNoColor( true );
   mDefaultColorButton->setNoColorString( tr( "No background" ) );
 }

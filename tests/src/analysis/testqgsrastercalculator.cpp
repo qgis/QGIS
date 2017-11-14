@@ -24,16 +24,12 @@ Email                : nyall dot dawson at gmail dot com
 
 Q_DECLARE_METATYPE( QgsRasterCalcNode::Operator )
 
-
 class TestQgsRasterCalculator : public QObject
 {
     Q_OBJECT
 
   public:
-    TestQgsRasterCalculator()
-      : mpLandsatRasterLayer( 0 )
-      , mpLandsatRasterLayer4326( 0 )
-    {}
+    TestQgsRasterCalculator() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -212,7 +208,7 @@ void TestQgsRasterCalculator::singleOp()
   QVERIFY( node.calculate( rasterData, result ) );
 
   qDebug() << "Result: " << result.number() << " expected: " << expected;
-  QVERIFY( qgsDoubleNear( result.number(), expected, 0.0000000001 ) );
+  QGSCOMPARENEAR( result.number(), expected, 0.0000000001 );
 
 }
 

@@ -24,8 +24,9 @@
 #define QGSWMSUTILS_H
 
 #include "qgsmodule.h"
-#include "qgswmsconfigparser.h"
 #include "qgswmsserviceexception.h"
+
+class QgsRectangle;
 
 /**
  * \ingroup server
@@ -35,7 +36,6 @@
 //! WMS implementation
 namespace QgsWms
 {
-
   //! Supported image output format
   enum ImageOutputFormat
   {
@@ -47,42 +47,39 @@ namespace QgsWms
     JPEG
   };
 
-  /** Return the highest version supported by this implementation
+  /**
+   * Return the highest version supported by this implementation
    */
   QString ImplementationVersion();
 
-  /** Return WMS service URL
+  /**
+   * Return WMS service URL
    */
   QUrl serviceUrl( const QgsServerRequest &request, const QgsProject *project );
 
   /**
-   * Return the wms config parser (Transitional)
-   *
-   * XXX This is needed in the current implementation.
-   * This should disappear as soon we get rid of singleton.
-   */
-  QgsWmsConfigParser *getConfigParser( QgsServerInterface *serverIface );
-
-  /** Parse image format parameter
-   *  @return OutputFormat
+   * Parse image format parameter
+   *  \returns OutputFormat
    */
   ImageOutputFormat parseImageFormat( const QString &format );
 
-  /** Write image response
+  /**
+   * Write image response
    */
   void writeImage( QgsServerResponse &response, QImage &img, const QString &formatStr,
                    int imageQuality = -1 );
 
   /**
    * Parse bbox parameter
-   * @param bboxstr the bbox string as comma separated values
-   * @return QgsRectangle
+   * \param bboxstr the bbox string as comma separated values
+   * \returns QgsRectangle
    *
    * If the parsing fail then an empty bbox is returned
    */
   QgsRectangle parseBbox( const QString &bboxstr );
 
-  /** Reads the layers and style lists from the parameters LAYERS and STYLES
+  /**
+   * Reads the layers and style lists from the parameters LAYERS and STYLES
    */
   void readLayersAndStyles( const QgsServerRequest::Parameters &parameters, QStringList &layersList, QStringList &stylesList );
 

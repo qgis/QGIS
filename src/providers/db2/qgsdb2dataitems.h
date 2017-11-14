@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsdb2provider.h"
-#include "qgsdb2sourceselect.h"
-#include <qgsdataitem.h>
+#include "qgsdb2tablemodel.h"
+
+#include "qgsdataitem.h"
 
 class QgsDb2RootItem;
 class QgsDb2Connection;
@@ -25,8 +26,8 @@ class QgsDb2SchemaItem;
 class QgsDb2LayerItem;
 
 /**
- * @class QgsDb2RootItem
- * @brief Browser Panel DB2 root object.
+ * \class QgsDb2RootItem
+ * \brief Browser Panel DB2 root object.
  */
 class QgsDb2RootItem : public QgsDataCollectionItem
 {
@@ -34,32 +35,34 @@ class QgsDb2RootItem : public QgsDataCollectionItem
 
   public:
     QgsDb2RootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2RootItem();
 
     /**
      * Add saved connections as children.
      */
     QVector<QgsDataItem *> createChildren() override;
 
+#ifdef HAVE_GUI
     virtual QWidget *paramWidget() override;
 
-    virtual QList<QAction *> actions() override;
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     //void connectionsChanged();
     void newConnection();
+#endif
 };
 
 /**
- * @class QgsDb2ConnectionItem
- * @brief Browser Panel DB2 connection object (under root).
+ * \class QgsDb2ConnectionItem
+ * \brief Browser Panel DB2 connection object (under root).
  */
 class QgsDb2ConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
     QgsDb2ConnectionItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2ConnectionItem();
 
     static bool ConnInfoFromSettings( const QString connName,
                                       QString &connInfo, QString &errorMsg );
@@ -83,10 +86,10 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
-    /**
-     * Add Refresh, Edit, and Delete actions for every QgsDb2ConnectionItem.
-     */
-    virtual QList<QAction *> actions() override;
+#ifdef HAVE_GUI
+
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
     virtual bool acceptDrop() override { return true; }
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
@@ -99,6 +102,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
     void addGeometryColumn( QgsDb2LayerProperty );
 
   public slots:
+#ifdef HAVE_GUI
 
     /**
      * Refresh with saved connection data.
@@ -114,6 +118,7 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
      * Delete saved connection data and remove from Browser Panel.
      */
     void deleteConnection();
+#endif
     //void setAllowGeometrylessTables( bool allow );
 
     //void setLayerType( QgsDb2LayerProperty layerProperty );
@@ -125,15 +130,14 @@ class QgsDb2ConnectionItem : public QgsDataCollectionItem
 };
 
 /**
- * @class QgsDb2SchemaItem
- * @brief Browser Panel DB2 schema object (under connections).
+ * \class QgsDb2SchemaItem
+ * \brief Browser Panel DB2 schema object (under connections).
  */
 class QgsDb2SchemaItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
     QgsDb2SchemaItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsDb2SchemaItem();
 
     QVector<QgsDataItem *> createChildren() override;
 
@@ -146,8 +150,8 @@ class QgsDb2SchemaItem : public QgsDataCollectionItem
 };
 
 /**
- * @class QgsDb2LayerItem
- * @brief Browser Panel DB2 layer object (under schemas).
+ * \class QgsDb2LayerItem
+ * \brief Browser Panel DB2 layer object (under schemas).
  */
 class QgsDb2LayerItem : public QgsLayerItem
 {
@@ -155,7 +159,6 @@ class QgsDb2LayerItem : public QgsLayerItem
 
   public:
     QgsDb2LayerItem( QgsDataItem *parent, QString name, QString path, QgsLayerItem::LayerType layerType, QgsDb2LayerProperty layerProperties );
-    ~QgsDb2LayerItem();
 
     QString createUri();
 

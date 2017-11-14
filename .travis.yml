@@ -3,72 +3,70 @@ matrix:
   include:
     # QT5 based build with Python 3 // using container based builds and prebuild binary dependencies in osgeo4travis
     - os: linux
+      services: docker
       language: python # This lets us use newer python versions from virtualenv
       env:
-        - LLVM_VERSION=3.8
         - TRAVIS_CONFIG=linux
+        - DOCKER_COMPOSE=${TRAVIS_BUILD_DIR}/.docker/docker-compose.travis.yml
+        - DOCKER_TAG=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && echo $TRAVIS_BRANCH | sed 's/master/latest/' || echo "latest" )
+        - DOCKER_PUSH=$( [[ $TRAVIS_REPO_SLUG =~ qgis/QGIS ]] && [[ $TRAVIS_PULL_REQUEST =~ false ]] && echo "true" || echo "false" )
+        - CCACHE_DIR=${HOME}/.ccache
+      dist: trusty
       sudo: false
       cache:
         apt: true
         pip: true
         directories:
           - $HOME/.ccache
-          - $HOME/depcache
         timeout: 1000
       compiler: clang
-      python: "3.3"
+      python: "3.5"
       addons:
-        postgresql: "9.4"
         apt:
           sources:
-            - llvm-toolchain-precise-3.8
-            - george-edison55-precise-backports # doxygen 1.8.3
-            - ubuntu-toolchain-r-test
           packages:
-            - doxygen
-            - bison
-            - flex
-            - graphviz
-            - libpq-dev
-            - libfcgi-dev
-            - libfftw3-3
-            - libgsl0-dev
-            - pkg-config
-            - poppler-utils
-            - txt2tags
-            - xvfb
-            - clang-3.8
 
 
     - os: linux
-      language: python # This lets us use newer python versions from virtualenv
+      language: python
+      python: "3.5"
       env:
         - TRAVIS_CONFIG=code_layout
       dist: trusty
       sudo: false
       cache:
         apt: true
-      #compiler: clang
-      #python: "3.3"
       addons:
         apt:
           sources:
             - sourceline: 'ppa:jonathonf/backports'  # silversearcher-ag backport
+            - sourceline: 'ppa:sergey-dryabzhinsky/packages' # doxygen
           packages:
+            - doxygen
+            - graphviz
+            - txt2tags
             - pkg-config
             - xvfb
             - flip
             # used for spell checks
-            - perl  # lookahead regex in spell check script
+            - perl  # sipify, lookahead regex in spell check script
             - silversearcher-ag
             - expect-dev  # unbuffer
             - coreutils
+            - libyaml-tiny-perl
     # OSX based build with QT4 and Python 2
-    # - os: osx
-    #  env:
-    #    - BUILD=osx
-    #    - IGNORE_BUILD_FAILURES=YES
-
+#    - os: osx
+#      osx_image: xcode8.3 # MacOS 10.12: Sierra
+#      cache:
+#        pip: true
+#        directories:
+#          - $HOME/.ccache
+#      env:
+#        - TRAVIS_CONFIG=macos
+#        - IGNORE_BUILD_FAILURES=YES
+#
+#  allow_failures:
+#    - os: osx
 
 git:
   depth: 30
@@ -88,16 +86,16 @@ notifications:
     on_start: never # default: never
 
 before_install:
-  - ./ci/travis/${TRAVIS_CONFIG}/before_install.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/before_install.sh
 
 install:
-  - ./ci/travis/${TRAVIS_CONFIG}/install.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/install.sh
 
 before_script:
-  - ./ci/travis/${TRAVIS_CONFIG}/before_script.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/before_script.sh
 
 script:
-  - ./ci/travis/${TRAVIS_CONFIG}/script.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/script.sh
 
 after_script:
-  - ./ci/travis/${TRAVIS_CONFIG}/after_script.sh
+  - ./.ci/travis/${TRAVIS_CONFIG}/after_script.sh

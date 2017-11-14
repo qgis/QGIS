@@ -25,6 +25,7 @@ class QProgressBar;
 
 class QgsGrassImportItem;
 
+#ifdef HAVE_GUI
 /* Qt does not allow inheritance from multiple QObjects, that is why we have QgsGrassItemActions
  * to keep common actions. QgsGrassItemActions must be children of data items, so that when a data item
  * is moved to to another thread, it moves also QgsGrassItemActions and signals work.
@@ -36,7 +37,7 @@ class QgsGrassItemActions : public QObject
   public:
     QgsGrassItemActions( const QgsGrassObject &grassObject, bool valid, QObject *parent );
 
-    QList<QAction *> actions();
+    QList<QAction *> actions( QWidget *parent );
 
   public slots:
     void newMapset();
@@ -57,6 +58,10 @@ class QgsGrassItemActions : public QObject
     // Grass object is valid
     bool mValid;
 };
+#else
+// just a forward declaration
+class QgsGrassItemActions;
+#endif
 
 class QgsGrassObjectItemBase
 {
@@ -72,13 +77,17 @@ class QgsGrassObjectItemBase
 
 class QgsGrassLocationItem : public QgsDirectoryItem, public QgsGrassObjectItemBase
 {
+    Q_OBJECT
+
   public:
     QgsGrassLocationItem( QgsDataItem *parent, QString dirPath, QString path );
 
     QIcon icon() override { return QgsDataItem::icon(); }
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual QList<QAction *> actions() override { return mActions->actions(); }
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
+#endif
 
   private:
     QgsGrassItemActions *mActions = nullptr;
@@ -95,7 +104,9 @@ class QgsGrassMapsetItem : public QgsDirectoryItem, public QgsGrassObjectItemBas
     QIcon icon() override;
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual QList<QAction *> actions() override { return mActions->actions(); }
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
+#endif
     virtual bool acceptDrop() override;
     virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
@@ -122,7 +133,9 @@ class QgsGrassObjectItem : public QgsLayerItem, public QgsGrassObjectItemBase
                         QString name, QString path, QString uri,
                         LayerType layerType, QString providerKey );
 
-    virtual QList<QAction *> actions() override { return mActions->actions(); }
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
+#endif
     virtual bool equal( const QgsDataItem *other ) override;
 
   protected:
@@ -136,10 +149,12 @@ class QgsGrassVectorItem : public QgsDataCollectionItem, public QgsGrassObjectIt
     Q_OBJECT
   public:
     // labelName - name to be displayed in tree if it should be different from grassObject.name() (e.g. invalid vector)
-    QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject grassObject, QString path, QString labelName = QString::null, bool valid = true );
+    QgsGrassVectorItem( QgsDataItem *parent, QgsGrassObject grassObject, QString path, QString labelName = QString(), bool valid = true );
     ~QgsGrassVectorItem();
 
-    virtual QList<QAction *> actions() override { return mActions->actions(); }
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override { return mActions->actions( parent ); }
+#endif
     virtual bool equal( const QgsDataItem *other ) override;
 
   public slots:
@@ -193,6 +208,7 @@ class QgsGrassGroupItem : public QgsGrassObjectItem
 
 };
 
+#ifdef HAVE_GUI
 class QgsGrassImportItemWidget : public QWidget
 {
     Q_OBJECT
@@ -208,6 +224,7 @@ class QgsGrassImportItemWidget : public QWidget
     QTextEdit *mTextEdit = nullptr;
     QProgressBar *mProgressBar = nullptr;
 };
+#endif
 
 // item representing a layer being imported
 class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
@@ -219,13 +236,17 @@ class QgsGrassImportItem : public QgsDataItem, public QgsGrassObjectItemBase
     //virtual void setState( State state ) override {
     //  QgsDataItem::setState(state);
     //} // do nothing to keep Populating
-    virtual QList<QAction *> actions() override;
-    virtual QIcon icon() override;
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
+#endif
+    virtual QIcon icon() override;
 
   public slots:
     virtual void refresh() override {}
+#ifdef HAVE_GUI
     void cancel();
+#endif
 
   protected:
     // override refresh to keep Populating state

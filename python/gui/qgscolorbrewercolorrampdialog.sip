@@ -1,73 +1,102 @@
-/** \ingroup gui
- * \class QgsColorBrewerColorRampDialog
- * A widget which allows users to modify the properties of a QgsColorBrewerColorRamp.
- * \note added in QGIS 3.0
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorbrewercolorrampdialog.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 class QgsColorBrewerColorRampWidget : QgsPanelWidget
 {
-%TypeHeaderCode
-#include <qgscolorbrewercolorrampdialog.h>
+%Docstring
+ A widget which allows users to modify the properties of a QgsColorBrewerColorRamp.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgscolorbrewercolorrampdialog.h"
+%End
   public:
 
-    /** Constructor for QgsColorBrewerColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
-     */
-    QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+    QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsColorBrewerColorRampWidget.
+ \param ramp initial ramp to show in dialog
+ \param parent parent widget
+%End
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
-     */
     QgsColorBrewerColorRamp ramp() const;
+%Docstring
+ Returns a color ramp representing the current settings from the dialog.
+.. seealso:: setRamp()
+ :rtype: QgsColorBrewerColorRamp
+%End
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
-     */
-    void setRamp( const QgsColorBrewerColorRamp& ramp );
+    void setRamp( const QgsColorBrewerColorRamp &ramp );
+%Docstring
+ Sets the color ramp to show in the dialog.
+ \param ramp color ramp
+.. seealso:: ramp()
+%End
 
   signals:
 
-    //! Emitted when the dialog settings change
     void changed();
-};
+%Docstring
+Emitted when the dialog settings change
+%End
 
-/** \ingroup gui
- * \class QgsColorBrewerColorRampDialog
- * A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
- * \note added in QGIS 3.0
- */
+};
 
 class QgsColorBrewerColorRampDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgscolorbrewercolorrampdialog.h>
+%Docstring
+ A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgscolorbrewercolorrampdialog.h"
+%End
   public:
 
-    /** Constructor for QgsColorBrewerColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
-     */
-    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp& ramp, QWidget* parent /TransferThis/ = nullptr );
+    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsColorBrewerColorRampDialog.
+ \param ramp initial ramp to show in dialog
+ \param parent parent widget
+%End
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
-     */
     QgsColorBrewerColorRamp ramp() const;
+%Docstring
+ Returns a color ramp representing the current settings from the dialog.
+.. seealso:: setRamp()
+ :rtype: QgsColorBrewerColorRamp
+%End
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
-     */
-    void setRamp( const QgsColorBrewerColorRamp& ramp );
+    void setRamp( const QgsColorBrewerColorRamp &ramp );
+%Docstring
+ Sets the color ramp to show in the dialog.
+ \param ramp color ramp
+.. seealso:: ramp()
+%End
 
   signals:
 
-    //! Emitted when the dialog settings change
     void changed();
+%Docstring
+Emitted when the dialog settings change
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscolorbrewercolorrampdialog.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

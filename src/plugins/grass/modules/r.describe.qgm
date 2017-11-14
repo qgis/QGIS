@@ -7,9 +7,9 @@
 	<flag key="n" />
 	<flag key="d" />
 	<flag key="i" />
-	<flag key="q" version_max="6"/>
+
 	<option key="map" />
-	<option key="nv" version_max="6"/>
-	<option key="null_value" version_min="7"/>
+
+	<option key="null_value"/>
 	<option key="nsteps" />
 </qgisgrassmodule>

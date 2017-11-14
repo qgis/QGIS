@@ -35,7 +35,8 @@
 
 class QgsRasterPyramid;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A call back function for showing progress of gdal operations.
  */
 int CPL_STDCALL progressCallback( double dfComplete,
@@ -62,14 +63,15 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * Constructor for the provider.
      *
-     * \param   uri   HTTP URL of the Web Server.  If needed a proxy will be used
-     *                otherwise we contact the host directly.
+     * \param   uri         file name
+     * \param   update      whether to open in update mode
+     * \param   newDataset  handle of newly created dataset.
      *
      */
-    QgsGdalProvider( QString const &uri = QString(), bool update = false );
+    QgsGdalProvider( QString const &uri = QString(), bool update = false, GDALDatasetH newDataset = nullptr );
 
     //! Create invalid provider with error
-    QgsGdalProvider( QString const &uri, QgsError error );
+    QgsGdalProvider( QString const &uri, const QgsError &error );
 
 
     ~QgsGdalProvider();
@@ -81,7 +83,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     virtual QgsCoordinateReferenceSystem crs() const override;
     virtual QgsRectangle extent() const override;
     bool isValid() const override;
-    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     int capabilities() const override;
@@ -115,7 +117,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsRasterBandStats bandStatistics( int bandNo,
                                        int stats = QgsRasterBandStats::All,
                                        const QgsRectangle &boundingBox = QgsRectangle(),
-                                       int sampleSize = 0 ) override;
+                                       int sampleSize = 0, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     bool hasHistogram( int bandNo,
                        int binCount = 0,
@@ -131,20 +133,17 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
                                   double maximum = std::numeric_limits<double>::quiet_NaN(),
                                   const QgsRectangle &boundingBox = QgsRectangle(),
                                   int sampleSize = 0,
-                                  bool includeOutOfRange = false ) override;
+                                  bool includeOutOfRange = false, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     QString buildPyramids( const QList<QgsRasterPyramid> &rasterPyramidList,
                            const QString &resamplingMethod = "NEAREST",
                            QgsRaster::RasterPyramidsFormat format = QgsRaster::PyramidsGTiff,
-                           const QStringList &createOptions = QStringList() ) override;
+                           const QStringList &createOptions = QStringList(),
+                           QgsRasterBlockFeedback *feedback = nullptr ) override;
     QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() ) override;
 
     //! \brief Close data set and release related data
     void closeDataset();
-
-    //! Emit a signal to notify of the progress event.
-    void emitProgress( int type, double value, const QString &message );
-    void emitProgressUpdate( int progress );
 
     static QMap<QString, QString> supportedMimes();
 
@@ -171,22 +170,23 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     /**
      * Flag indicating if the layer data source is a valid layer
      */
-    bool mValid;
+    bool mValid = false;
 
     //! \brief Whether this raster has overviews / pyramids or not
-    bool mHasPyramids;
+    bool mHasPyramids = false;
 
-    /** \brief Gdal data types used to represent data in in QGIS,
+    /**
+     * \brief Gdal data types used to represent data in in QGIS,
      * may be longer than source data type to keep nulls
      * indexed from 0
      */
     QList<GDALDataType> mGdalDataType;
 
     QgsRectangle mExtent;
-    int mWidth;
-    int mHeight;
-    int mXBlockSize;
-    int mYBlockSize;
+    int mWidth = 0;
+    int mHeight = 0;
+    int mXBlockSize = 0;
+    int mYBlockSize = 0;
 
     //mutable QList<bool> mMinMaxComputed;
 
@@ -197,10 +197,10 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //mutable QList<double> mMaximum;
 
     //! \brief Pointer to the gdaldataset
-    GDALDatasetH mGdalBaseDataset;
+    GDALDatasetH mGdalBaseDataset = nullptr;
 
     //! \brief Pointer to the gdaldataset (possibly warped vrt)
-    GDALDatasetH mGdalDataset;
+    GDALDatasetH mGdalDataset = nullptr;
 
     //! \brief Values for mapping pixel to world coordinates. Contents of this array are the same as the GDAL adfGeoTransform
     double mGeoTransform[6];

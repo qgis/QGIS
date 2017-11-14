@@ -20,6 +20,7 @@
 #include <QString>
 #include <QObject>
 
+#include "qgis.h"
 #include "qgis_core.h"
 
 class QgsFieldFormatter;
@@ -30,7 +31,7 @@ class QgsFieldFormatter;
  * A reference to the QgsFieldFormatterRegistry can be obtained from
  * QgsApplication::fieldFormatterRegistry().
  *
- * @note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
 {
@@ -43,7 +44,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      *
      * Use the one provided by `QgsApplication::fieldFormatterRegistry()` instead.
      */
-    explicit QgsFieldFormatterRegistry( QObject *parent = nullptr );
+    explicit QgsFieldFormatterRegistry( QObject *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsFieldFormatterRegistry();
 
     /**
@@ -52,7 +53,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      *
      * Ownership is transferred to the registry.
      */
-    void addFieldFormatter( QgsFieldFormatter *formatter );
+    void addFieldFormatter( QgsFieldFormatter *formatter SIP_TRANSFER );
 
     /**
      * Remove a field formatter from the registry.

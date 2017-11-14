@@ -17,13 +17,6 @@
 #include "qgsfields.h"
 #include <QStringList>
 
-QgsAttributeTableConfig::QgsAttributeTableConfig()
-  : mActionWidgetStyle( DropDown )
-  , mSortOrder( Qt::AscendingOrder )
-{
-
-}
-
 QVector<QgsAttributeTableConfig::ColumnConfig> QgsAttributeTableConfig::columns() const
 {
   return mColumns;
@@ -80,7 +73,7 @@ void QgsAttributeTableConfig::update( const QgsFields &fields )
     }
   }
 
-  Q_FOREACH ( const QgsField &field, fields )
+  for ( const auto &field : fields )
   {
     if ( !columns.contains( field.name() ) )
     {
@@ -197,7 +190,8 @@ void QgsAttributeTableConfig::readXml( const QDomNode &node )
   }
 
   mSortExpression = configNode.toElement().attribute( QStringLiteral( "sortExpression" ) );
-  mSortOrder = static_cast<Qt::SortOrder>( configNode.toElement().attribute( QStringLiteral( "sortOrder" ) ).toInt() );
+  Qt::SortOrder sortOrder = static_cast<Qt::SortOrder>( configNode.toElement().attribute( QStringLiteral( "sortOrder" ) ).toInt() );
+  setSortOrder( sortOrder );
 }
 
 QString QgsAttributeTableConfig::sortExpression() const
@@ -242,6 +236,12 @@ Qt::SortOrder QgsAttributeTableConfig::sortOrder() const
 
 void QgsAttributeTableConfig::setSortOrder( Qt::SortOrder sortOrder )
 {
+  // fix https://hub.qgis.org/issues/15803
+  if ( sortOrder != Qt::AscendingOrder && sortOrder != Qt::DescendingOrder )
+  {
+    sortOrder = Qt::AscendingOrder;
+  }
+
   mSortOrder = sortOrder;
 }
 

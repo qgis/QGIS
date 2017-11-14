@@ -24,14 +24,12 @@
 #include <QColor>
 #include <memory>
 
-QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand ):
-  QgsRasterRenderer( input, QStringLiteral( "singlebandgray" ) ), mGrayBand( grayBand ), mGradient( BlackToWhite ), mContrastEnhancement( nullptr )
+QgsSingleBandGrayRenderer::QgsSingleBandGrayRenderer( QgsRasterInterface *input, int grayBand )
+  : QgsRasterRenderer( input, QStringLiteral( "singlebandgray" ) )
+  , mGrayBand( grayBand )
+  , mGradient( BlackToWhite )
+  , mContrastEnhancement( nullptr )
 {
-}
-
-QgsSingleBandGrayRenderer::~QgsSingleBandGrayRenderer()
-{
-  delete mContrastEnhancement;
 }
 
 QgsSingleBandGrayRenderer *QgsSingleBandGrayRenderer::clone() const
@@ -76,11 +74,10 @@ QgsRasterRenderer *QgsSingleBandGrayRenderer::create( const QDomElement &elem, Q
 
 void QgsSingleBandGrayRenderer::setContrastEnhancement( QgsContrastEnhancement *ce )
 {
-  delete mContrastEnhancement;
-  mContrastEnhancement = ce;
+  mContrastEnhancement.reset( ce );
 }
 
-QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
+QgsRasterBlock *QgsSingleBandGrayRenderer::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
   QgsDebugMsgLevel( QString( "width = %1 height = %2" ).arg( width ).arg( height ), 4 );

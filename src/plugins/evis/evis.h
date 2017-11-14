@@ -70,8 +70,8 @@
 
 #include <QObject>
 
-#include <qgisplugin.h>
-#include <qgisinterface.h>
+#include "qgisplugin.h"
+#include "qgisinterface.h"
 
 //forward declarations
 class QAction;
@@ -93,8 +93,6 @@ class eVis: public QObject, public QgisPlugin
 
     //! Constructor
     explicit eVis( QgisInterface *interface );
-
-    ~eVis();
 
   public slots:
     //! init the gui

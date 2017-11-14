@@ -45,6 +45,16 @@
 #define QT_NO_DEBUG_OUTPUT
 #endif
 
+#if __cplusplus >= 201500
+#define FALLTHROUGH [[fallthrough]];
+#elif defined(__clang__)
+#define FALLTHROUGH //[[clang::fallthrough]]
+#elif defined(__GNUC__) && __GNUC__ >= 7
+#define FALLTHROUGH [[gnu::fallthrough]];
+#else
+#define FALLTHROUGH
+#endif
+
 #include "qsql_ocispatial.h"
 #include "wkbptr.h"
 
@@ -663,7 +673,7 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
         const QOCISpatialRowIdPointer rptr = qvariant_cast<QOCISpatialRowIdPointer>( val );
         r = OCIBindByPos( sql, hbnd, err,
                           pos + 1,
-                          // it's an IN value, so const_cast is ok
+                          // it's an IN value, so const_cast is OK
                           const_cast<OCIRowid **>( &rptr->id ),
                           -1,
                           SQLT_RDD, indPtr, 0, 0, 0, 0, OCI_DEFAULT );
@@ -699,7 +709,10 @@ int QOCISpatialResultPrivate::bindValue( OCIStmt *sql, OCIBind **hbnd, OCIError 
           setCharset( *hbnd, OCI_HTYPE_BIND );
         break;
       }
-    } // fall through for OUT values
+
+      FALLTHROUGH
+    }
+
     default:
     {
       const QString s = val.toString();
@@ -2006,6 +2019,9 @@ bool QOCISpatialCols::execBatch( QOCISpatialResultPrivate *d, QVector<QVariant> 
               columns[i].lengths[row] = 0;
               break;
             }
+
+            FALLTHROUGH
+
           case QVariant::ByteArray:
           default:
           {

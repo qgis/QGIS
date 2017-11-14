@@ -23,7 +23,7 @@
 QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAttributeEditorContext &context, QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
   , mLayer( layer )
-  , mMessageBar( nullptr )
+
 {
   QgsAttributeEditorContext dlgContext = context;
   dlgContext.setFormMode( QgsAttributeEditorContext::StandaloneDialog );
@@ -39,18 +39,18 @@ QgsSelectByFormDialog::QgsSelectByFormDialog( QgsVectorLayer *layer, const QgsAt
 
   vLayout->addWidget( mForm );
 
-  connect( mForm, SIGNAL( closed() ), this, SLOT( close() ) );
+  connect( mForm, &QgsAttributeForm::closed, this, &QWidget::close );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/SelectByForm/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/SelectByForm/geometry" ) ).toByteArray() );
 
-  setWindowTitle( tr( "Select features by value" ) );
+  setWindowTitle( tr( "Select Features by Value" ) );
 }
 
 QgsSelectByFormDialog::~QgsSelectByFormDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/SelectByForm/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/SelectByForm/geometry" ), saveGeometry() );
 }
 
 void QgsSelectByFormDialog::setMessageBar( QgsMessageBar *messageBar )
@@ -63,12 +63,11 @@ void QgsSelectByFormDialog::setMapCanvas( QgsMapCanvas *canvas )
 {
   mMapCanvas = canvas;
   connect( mForm, &QgsAttributeForm::zoomToFeatures, this, &QgsSelectByFormDialog::zoomToFeatures );
+  connect( mForm, &QgsAttributeForm::flashFeatures, this, &QgsSelectByFormDialog::flashFeatures );
 }
 
 void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
 {
-  QgsFeatureIds ids;
-
   QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
 
   QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
@@ -84,7 +83,7 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
   while ( features.nextFeature( feat ) )
   {
     QgsGeometry geom = feat.geometry();
-    if ( geom.isNull() || geom.geometry()->isEmpty() )
+    if ( geom.isNull() || geom.constGet()->isEmpty() )
       continue;
 
     QgsRectangle r = mMapCanvas->mapSettings().layerExtentToOutputExtent( mLayer, geom.boundingBox() );
@@ -94,7 +93,7 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
   features.close();
 
   QgsSettings settings;
-  int timeout = settings.value( QStringLiteral( "/qgis/messageTimeout" ), 5 ).toInt();
+  int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
   if ( featureCount > 0 )
   {
     mMapCanvas->zoomToFeatureExtent( bbox );
@@ -105,6 +104,38 @@ void QgsSelectByFormDialog::zoomToFeatures( const QString &filter )
                                 QgsMessageBar::INFO,
                                 timeout );
     }
+  }
+  else if ( mMessageBar )
+  {
+    mMessageBar->pushMessage( QString(),
+                              tr( "No matching features found" ),
+                              QgsMessageBar::INFO,
+                              timeout );
+  }
+}
+
+void QgsSelectByFormDialog::flashFeatures( const QString &filter )
+{
+  QgsExpressionContext context( QgsExpressionContextUtils::globalProjectLayerScopes( mLayer ) );
+
+  QgsFeatureRequest request = QgsFeatureRequest().setFilterExpression( filter )
+                              .setExpressionContext( context )
+                              .setSubsetOfAttributes( QgsAttributeList() );
+
+  QgsFeatureIterator features = mLayer->getFeatures( request );
+  QgsFeature feat;
+  QList< QgsGeometry > geoms;
+  while ( features.nextFeature( feat ) )
+  {
+    if ( feat.hasGeometry() )
+      geoms << feat.geometry();
+  }
+
+  QgsSettings settings;
+  int timeout = settings.value( QStringLiteral( "qgis/messageTimeout" ), 5 ).toInt();
+  if ( !geoms.empty() )
+  {
+    mMapCanvas->flashGeometries( geoms, mLayer->crs() );
   }
   else if ( mMessageBar )
   {

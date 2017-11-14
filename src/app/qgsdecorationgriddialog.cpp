@@ -25,16 +25,25 @@
 #include "qgssymbol.h"
 #include "qgssymbolselectordialog.h"
 #include "qgisapp.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgssettings.h"
 
 QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidget *parent )
   : QDialog( parent )
   , mDeco( deco )
-  , mLineSymbol( nullptr )
-  , mMarkerSymbol( nullptr )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationGridDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationGridDialog::buttonBox_rejected );
+  connect( mGridTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsDecorationGridDialog::mGridTypeComboBox_currentIndexChanged );
+  connect( mPbtnUpdateFromExtents, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromExtents_clicked );
+  connect( mPbtnUpdateFromLayer, &QPushButton::clicked, this, &QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationGridDialog::showHelp );
+
+  mMarkerSymbolButton->setSymbolType( QgsSymbol::Marker );
+  mLineSymbolButton->setSymbolType( QgsSymbol::Line );
+
+  mAnnotationFontButton->setMode( QgsFontButton::ModeQFont );
 
   QgsSettings settings;
   //  restoreGeometry( settings.value( "/Windows/DecorationGrid/geometry" ).toByteArray() );
@@ -61,8 +70,11 @@ QgsDecorationGridDialog::QgsDecorationGridDialog( QgsDecorationGrid &deco, QWidg
 
   updateGuiElements();
 
-  connect( buttonBox->button( QDialogButtonBox::Apply ), SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( buttonBox->button( QDialogButtonBox::Apply ), &QAbstractButton::clicked, this, &QgsDecorationGridDialog::apply );
+  connect( mAnnotationFontButton, &QgsFontButton::changed, this, &QgsDecorationGridDialog::annotationFontChanged );
 
+  mMarkerSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
+  mLineSymbolButton->setMapCanvas( QgisApp::instance()->mapCanvas() );
 }
 
 void QgsDecorationGridDialog::updateGuiElements()
@@ -86,22 +98,10 @@ void QgsDecorationGridDialog::updateGuiElements()
   // mLineWidthSpinBox->setValue( gridPen.widthF() );
   // mLineColorButton->setColor( gridPen.color() );
 
-  if ( mLineSymbol )
-    delete mLineSymbol;
-  if ( mDeco.lineSymbol() )
-  {
-    mLineSymbol = static_cast<QgsLineSymbol *>( mDeco.lineSymbol()->clone() );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
-    mLineSymbolButton->setIcon( icon );
-  }
-  if ( mMarkerSymbol )
-    delete mMarkerSymbol;
-  if ( mDeco.markerSymbol() )
-  {
-    mMarkerSymbol = static_cast<QgsMarkerSymbol *>( mDeco.markerSymbol()->clone() );
-    QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
-    mMarkerSymbolButton->setIcon( icon );
-  }
+  mLineSymbolButton->setSymbol( mDeco.lineSymbol()->clone() );
+  mMarkerSymbolButton->setSymbol( mDeco.markerSymbol()->clone() );
+
+  whileBlocking( mAnnotationFontButton )->setCurrentFont( mDeco.gridAnnotationFont() );
 
   updateInterval( false );
 
@@ -153,34 +153,22 @@ void QgsDecorationGridDialog::updateDecoFromGui()
     mDeco.setGridAnnotationDirection( QgsDecorationGrid::BoundaryDirection );
   }
   mDeco.setGridAnnotationPrecision( mCoordinatePrecisionSpinBox->value() );
-  if ( mLineSymbol )
-  {
-    mDeco.setLineSymbol( mLineSymbol );
-    mLineSymbol = mDeco.lineSymbol()->clone();
-  }
-  if ( mMarkerSymbol )
-  {
-    mDeco.setMarkerSymbol( mMarkerSymbol );
-    mMarkerSymbol = mDeco.markerSymbol()->clone();
-  }
+  mDeco.setLineSymbol( mLineSymbolButton->clonedSymbol< QgsLineSymbol >() );
+  mDeco.setMarkerSymbol( mMarkerSymbolButton->clonedSymbol< QgsMarkerSymbol >() );
 }
 
 QgsDecorationGridDialog::~QgsDecorationGridDialog()
 {
   QgsSettings settings;
   settings.setValue( QStringLiteral( "/Windows/DecorationGrid/geometry" ), saveGeometry() );
-  if ( mLineSymbol )
-    delete mLineSymbol;
-  if ( mMarkerSymbol )
-    delete mMarkerSymbol;
 }
 
-void QgsDecorationGridDialog::on_buttonBox_helpRequested()
+void QgsDecorationGridDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#grid" ) );
 }
 
-void QgsDecorationGridDialog::on_buttonBox_accepted()
+void QgsDecorationGridDialog::buttonBox_accepted()
 {
   updateDecoFromGui();
   // mDeco.update();
@@ -194,71 +182,24 @@ void QgsDecorationGridDialog::apply()
   //accept();
 }
 
-void QgsDecorationGridDialog::on_buttonBox_rejected()
+void QgsDecorationGridDialog::buttonBox_rejected()
 {
   reject();
 }
 
-void QgsDecorationGridDialog::on_mGridTypeComboBox_currentIndexChanged( int index )
+void QgsDecorationGridDialog::mGridTypeComboBox_currentIndexChanged( int index )
 {
   mLineSymbolButton->setEnabled( index == QgsDecorationGrid::Line );
   // mCrossWidthSpinBox->setEnabled( index == QgsDecorationGrid::Cross );
   mMarkerSymbolButton->setEnabled( index == QgsDecorationGrid::Marker );
 }
 
-
-void QgsDecorationGridDialog::on_mLineSymbolButton_clicked()
-{
-  if ( ! mLineSymbol )
-    return;
-
-  QgsLineSymbol *lineSymbol = mLineSymbol->clone();
-  QgsSymbolSelectorDialog dlg( lineSymbol, QgsStyle::defaultStyle(), nullptr, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    delete lineSymbol;
-  }
-  else
-  {
-    delete mLineSymbol;
-    mLineSymbol = lineSymbol;
-    if ( mLineSymbol )
-    {
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mLineSymbol, mLineSymbolButton->iconSize() );
-      mLineSymbolButton->setIcon( icon );
-    }
-  }
-}
-
-void QgsDecorationGridDialog::on_mMarkerSymbolButton_clicked()
-{
-  if ( ! mMarkerSymbol )
-    return;
-
-  QgsMarkerSymbol *markerSymbol = mMarkerSymbol->clone();
-  QgsSymbolSelectorDialog dlg( markerSymbol, QgsStyle::defaultStyle(), nullptr, this );
-  if ( dlg.exec() == QDialog::Rejected )
-  {
-    delete markerSymbol;
-  }
-  else
-  {
-    delete mMarkerSymbol;
-    mMarkerSymbol = markerSymbol;
-    if ( mMarkerSymbol )
-    {
-      QIcon icon = QgsSymbolLayerUtils::symbolPreviewIcon( mMarkerSymbol, mMarkerSymbolButton->iconSize() );
-      mMarkerSymbolButton->setIcon( icon );
-    }
-  }
-}
-
-void QgsDecorationGridDialog::on_mPbtnUpdateFromExtents_clicked()
+void QgsDecorationGridDialog::mPbtnUpdateFromExtents_clicked()
 {
   updateInterval( true );
 }
 
-void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
+void QgsDecorationGridDialog::mPbtnUpdateFromLayer_clicked()
 {
   double values[4];
   if ( mDeco.getIntervalFromCurrentLayer( values ) )
@@ -274,14 +215,9 @@ void QgsDecorationGridDialog::on_mPbtnUpdateFromLayer_clicked()
   }
 }
 
-void QgsDecorationGridDialog::on_mAnnotationFontButton_clicked()
+void QgsDecorationGridDialog::annotationFontChanged()
 {
-  bool ok;
-  QFont newFont = QgisGui::getFont( ok, mDeco.gridAnnotationFont() );
-  if ( ok )
-  {
-    mDeco.setGridAnnotationFont( newFont );
-  }
+  mDeco.setGridAnnotationFont( mAnnotationFontButton->currentFont() );
 }
 
 void QgsDecorationGridDialog::updateInterval( bool force )

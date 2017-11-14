@@ -21,7 +21,7 @@
 #include "qgswcsdescribecoverage.h"
 
 #include "qgsproject.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsmaplayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsmapserviceexception.h"
@@ -87,14 +87,14 @@ namespace QgsWcs
     QStringList coveNameList;
     if ( !coveNames.isEmpty() )
     {
-      coveNameList = coveNames.split( QStringLiteral( "," ) );
+      coveNameList = coveNames.split( ',' );
       for ( int i = 0; i < coveNameList.size(); ++i )
       {
         coveNameList.replace( i, coveNameList.at( i ).trimmed() );
       }
     }
 
-    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayers( *project );
+    QStringList wcsLayersId = QgsServerProjectUtils::wcsLayerIds( *project );
     for ( int i = 0; i < wcsLayersId.size(); ++i )
     {
       QgsMapLayer *layer = project->mapLayer( wcsLayersId.at( i ) );
@@ -111,7 +111,7 @@ namespace QgsWcs
       QString name = layer->name();
       if ( !layer->shortName().isEmpty() )
         name = layer->shortName();
-      name = name.replace( QLatin1String( " " ), QLatin1String( "_" ) );
+      name = name.replace( ' ', '_' );
 
       if ( coveNameList.size() == 0 || coveNameList.contains( name ) )
       {

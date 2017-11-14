@@ -16,12 +16,11 @@
  ***************************************************************************/
 
 #include "qgsprocessingregistry.h"
+#include "qgsvectorfilewriter.h"
 
-QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent )
+QgsProcessingRegistry::QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS )
   : QObject( parent )
-{
-
-}
+{}
 
 QgsProcessingRegistry::~QgsProcessingRegistry()
 {
@@ -39,6 +38,10 @@ bool QgsProcessingRegistry::addProvider( QgsProcessingProvider *provider )
   if ( mProviders.contains( provider->id() ) )
     return false;
 
+  if ( !provider->load() )
+    return false;
+
+  provider->setParent( this );
   mProviders[ provider->id()] = provider;
   emit providerAdded( provider->id() );
   return true;
@@ -53,6 +56,8 @@ bool QgsProcessingRegistry::removeProvider( QgsProcessingProvider *provider )
 
   if ( !mProviders.contains( id ) )
     return false;
+
+  provider->unload();
 
   delete mProviders.take( id );
   emit providerRemoved( id );
@@ -69,3 +74,46 @@ QgsProcessingProvider *QgsProcessingRegistry::providerById( const QString &id )
 {
   return mProviders.value( id, nullptr );
 }
+
+QList< const QgsProcessingAlgorithm * > QgsProcessingRegistry::algorithms() const
+{
+  QList< const QgsProcessingAlgorithm * > algs;
+  QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
+  for ( ; it != mProviders.constEnd(); ++it )
+  {
+    algs.append( it.value()->algorithms() );
+  }
+  return algs;
+}
+
+const QgsProcessingAlgorithm *QgsProcessingRegistry::algorithmById( const QString &id ) const
+{
+  QMap<QString, QgsProcessingProvider *>::const_iterator it = mProviders.constBegin();
+  for ( ; it != mProviders.constEnd(); ++it )
+  {
+    Q_FOREACH ( const QgsProcessingAlgorithm *alg, it.value()->algorithms() )
+      if ( alg->id() == id )
+        return alg;
+  }
+
+  // try mapping 'qgis' algs to 'native' algs - this allows us to freely move algorithms
+  // from the python 'qgis' provider to the c++ 'native' provider without breaking API
+  // or existing models
+  if ( id.startsWith( QStringLiteral( "qgis:" ) ) )
+  {
+    QString newId = QStringLiteral( "native:" ) + id.mid( 5 );
+    return algorithmById( newId );
+  }
+  return nullptr;
+}
+
+QgsProcessingAlgorithm *QgsProcessingRegistry::createAlgorithmById( const QString &id, const QVariantMap &configuration ) const
+{
+  const QgsProcessingAlgorithm *alg = algorithmById( id );
+  if ( !alg )
+    return nullptr;
+
+  std::unique_ptr< QgsProcessingAlgorithm > creation( alg->create( configuration ) );
+  return creation.release();
+}
+

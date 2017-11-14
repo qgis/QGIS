@@ -39,7 +39,6 @@ from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.postgis import uri_from_name, GeoDB
 from processing.tools.system import isWindows
-from processing.tools.vector import ogrConnectionString, ogrLayerName
 
 
 class Ogr2OgrToPostGisList(GdalAlgorithm):
@@ -84,9 +83,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         GdalAlgorithm.__init__(self)
         self.processing = False
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Import Vector into PostGIS database (available connections)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector miscellaneous')
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterString(
             self.DATABASE,
             self.tr('Database (connection name)'),
@@ -170,12 +167,21 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         self.addParameter(ParameterString(self.OPTIONS,
                                           self.tr('Additional creation options'), '', optional=True))
 
-    def processAlgorithm(self, feedback):
+    def name(self):
+        return 'importvectorintopostgisdatabaseavailableconnections'
+
+    def displayName(self):
+        return self.tr('Import Vector into PostGIS database (available connections)')
+
+    def group(self):
+        return self.tr('Vector miscellaneous')
+
+    def processAlgorithm(self, parameters, context, feedback):
         self.processing = True
-        GdalAlgorithm.processAlgorithm(self, feedback)
+        GdalAlgorithm.processAlgorithm(parameters, None, self)
         self.processing = False
 
-    def getConsoleCommands(self):
+    def getConsoleCommands(self, parameters, context, feedback):
         connection = self.getParameterValue(self.DATABASE)
         uri = uri_from_name(connection)
         if self.processing:
@@ -183,7 +189,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             uri = GeoDB(uri=uri).uri
 
         inLayer = self.getParameterValue(self.INPUT_LAYER)
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
         shapeEncoding = self.getParameterValue(self.SHAPE_ENCODING)
         ssrs = self.getParameterValue(self.S_SRS)
         tsrs = self.getParameterValue(self.T_SRS)
@@ -197,6 +203,8 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         simplify = self.getParameterValue(self.SIMPLIFY)
         segmentize = self.getParameterValue(self.SEGMENTIZE)
         spat = self.getParameterValue(self.SPAT)
+        if not spat:
+            spat = QgsProcessingUtils.combineLayerExtents([inLayer])
         clip = self.getParameterValue(self.CLIP)
         where = self.getParameterValue(self.WHERE)
         gt = self.getParameterValue(self.GT)
@@ -226,7 +234,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         arguments.append('"')
         arguments.append("-lco DIM=" + dim)
         arguments.append(ogrLayer)
-        arguments.append(ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         if index:
             arguments.append("-lco SPATIAL_INDEX=OFF")
         if launder:
@@ -247,7 +255,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
         if not table:
-            table = ogrLayerName(inLayer).lower()
+            table = GdalUtils.ogrLayerName(inLayer).lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')

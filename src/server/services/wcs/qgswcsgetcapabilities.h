@@ -41,13 +41,14 @@ namespace QgsWcs
       const QgsProject *project, const QString &version,
       const QgsServerRequest &request );
 
-  /** Output WCS  GetCapabilities response
+  /**
+   * Output WCS  GetCapabilities response
    */
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
                              const QString &version, const QgsServerRequest &request,
                              QgsServerResponse &response );
 
-} // samespace QgsWcs
+} // namespace QgsWcs
 
 #endif
 

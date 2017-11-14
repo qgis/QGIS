@@ -25,35 +25,43 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.outputs import OutputVector
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.tools import dataobjects
+from qgis.core import (QgsProcessingParameterVectorLayer,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingException)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 
-class TruncateTable(GeoAlgorithm):
+class TruncateTable(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Truncate table')
-        self.tags = self.tr('empty,delete,layer,clear,features')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
+    def tags(self):
+        return self.tr('empty,delete,layer,clear,features').split(',')
 
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input Layer')))
-        self.addOutput(OutputVector(self.OUTPUT,
-                                    self.tr('Truncated layer'), True))
+    def group(self):
+        return self.tr('Vector general')
 
-    def processAlgorithm(self, feedback):
-        file_name = self.getParameterValue(self.INPUT)
-        layer = dataobjects.getObjectFromUri(file_name)
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input Layer')))
+        self.addOutput(QgsProcessingOutputVectorLayer(self.OUTPUT, self.tr('Truncated layer')))
+
+    def name(self):
+        return 'truncatetable'
+
+    def displayName(self):
+        return self.tr('Truncate table')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
         provider = layer.dataProvider()
 
         if not provider.truncate():
-            raise GeoAlgorithmExecutionException(
+            raise QgsProcessingException(
                 self.tr('Could not truncate table.'))
 
-        self.setOutputValue(self.OUTPUT, file_name)
+        return {self.OUTPUT: layer.id()}

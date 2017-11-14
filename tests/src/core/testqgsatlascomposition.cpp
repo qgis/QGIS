@@ -37,18 +37,7 @@ class TestQgsAtlasComposition : public QObject
     Q_OBJECT
 
   public:
-    TestQgsAtlasComposition()
-      : mComposition( 0 )
-      , mLabel1( 0 )
-      , mLabel2( 0 )
-      , mAtlasMap( 0 )
-      , mOverview( 0 )
-      , mVectorLayer( 0 )
-      , mVectorLayer2( 0 )
-      , mAtlas( 0 )
-    {}
-
-    ~TestQgsAtlasComposition();
+    TestQgsAtlasComposition() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -110,10 +99,6 @@ void TestQgsAtlasComposition::initTestCase()
   mReport = QStringLiteral( "<h1>Composer Atlas Tests</h1>\n" );
 }
 
-TestQgsAtlasComposition::~TestQgsAtlasComposition()
-{}
-
-
 void TestQgsAtlasComposition::cleanupTestCase()
 {
   delete mComposition;
@@ -151,9 +136,7 @@ void TestQgsAtlasComposition::init()
   // the atlas map
   mAtlasMap = new QgsComposerMap( mComposition, 20, 20, 130, 130 );
   mAtlasMap->setFrameEnabled( true );
-  // Make sure it doesn't try to render a map for caching onto a still 0-sized image
-  mAtlasMap->setPreviewMode( QgsComposerMap::Rectangle );
-  mComposition->addComposerMap( mAtlasMap, false );
+  mComposition->addComposerMap( mAtlasMap );
   mAtlasMap->setLayers( QList<QgsMapLayer *>() << mVectorLayer );
 
   mAtlas = &mComposition->atlasComposition();
@@ -165,9 +148,8 @@ void TestQgsAtlasComposition::init()
   mOverview = new QgsComposerMap( mComposition, 180, 20, 50, 50 );
   mOverview->setFrameEnabled( true );
   mOverview->overview()->setFrameMap( mAtlasMap->id() );
-  mOverview->setPreviewMode( QgsComposerMap::Rectangle );
   mOverview->setLayers( QList<QgsMapLayer *>() << mVectorLayer );
-  mComposition->addComposerMap( mOverview, false );
+  mComposition->addComposerMap( mOverview );
   mOverview->setNewExtent( QgsRectangle( 49670.718, 6415139.086, 699672.519, 7065140.887 ) );
 
   // set the fill symbol of the overview map

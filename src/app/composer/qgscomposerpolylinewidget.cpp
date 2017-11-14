@@ -26,6 +26,7 @@ QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline *compo
   , mComposerPolyline( composerPolyline )
 {
   setupUi( this );
+  connect( mLineStyleButton, &QPushButton::clicked, this, &QgsComposerPolylineWidget::mLineStyleButton_clicked );
   setPanelTitle( tr( "Polyline properties" ) );
 
   //add widget for general composer item properties
@@ -39,14 +40,10 @@ QgsComposerPolylineWidget::QgsComposerPolylineWidget( QgsComposerPolyline *compo
   updatePolylineStyle();
 
   if ( mComposerPolyline )
-    connect( mComposerPolyline, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( mComposerPolyline, &QgsComposerObject::itemChanged, this, &QgsComposerPolylineWidget::setGuiElementValues );
 }
 
-QgsComposerPolylineWidget::~QgsComposerPolylineWidget()
-{
-}
-
-void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
+void QgsComposerPolylineWidget::mLineStyleButton_clicked()
 {
   if ( !mComposerPolyline )
     return;
@@ -62,8 +59,8 @@ void QgsComposerPolylineWidget::on_mLineStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerPolylineWidget::updateStyleFromWidget );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerPolylineWidget::cleanUpStyleSelector );
   openPanel( d );
   mComposerPolyline->beginCommand( tr( "Polyline style changed" ) );
 }
@@ -80,7 +77,7 @@ void QgsComposerPolylineWidget::updateStyleFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposerPolyline->setPolylineStyleSymbol( dynamic_cast< QgsLineSymbol * >( w->symbol() ) );
+    mComposerPolyline->setPolylineStyleSymbol( static_cast< QgsLineSymbol * >( w->symbol() ) );
     mComposerPolyline->update();
   }
 }

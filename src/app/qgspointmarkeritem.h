@@ -26,7 +26,8 @@
 
 class QgsMarkerSymbol;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * \class QgsPointMarkerItem
  * \brief An item that shows a point marker symbol centered on a map location.
  */
@@ -39,55 +40,63 @@ class APP_EXPORT QgsPointMarkerItem: public QgsMapCanvasItem
 
     void paint( QPainter *painter ) override;
 
-    /** Sets the center point of the marker symbol (in map coordinates)
-     * @param p center point
+    /**
+     * Sets the center point of the marker symbol (in map coordinates)
+     * \param p center point
     */
-    void setPointLocation( const QgsPoint &p );
+    void setPointLocation( const QgsPointXY &p );
 
-    /** Sets the marker symbol to use for rendering the point. Note - you may need to call
+    /**
+     * Sets the marker symbol to use for rendering the point. Note - you may need to call
      * updateSize() after setting the symbol.
-     * @param symbol marker symbol. Ownership is transferred to item.
-     * @see symbol()
-     * @see updateSize()
+     * \param symbol marker symbol. Ownership is transferred to item.
+     * \see symbol()
+     * \see updateSize()
      */
     void setSymbol( QgsMarkerSymbol *symbol );
 
-    /** Returns the marker symbol used for rendering the point.
-     * @see setSymbol()
+    /**
+     * Returns the marker symbol used for rendering the point.
+     * \see setSymbol()
      */
     QgsMarkerSymbol *symbol();
 
-    /** Sets the feature used for rendering the marker symbol. The feature's attributes
+    /**
+     * Sets the feature used for rendering the marker symbol. The feature's attributes
      * may affect the rendered symbol if data defined overrides are in place.
-     * @param feature feature for symbol
-     * @see feature()
-     * @see updateSize()
+     * \param feature feature for symbol
+     * \see feature()
+     * \see updateSize()
      */
     void setFeature( const QgsFeature &feature );
 
-    /** Returns the feature used for rendering the marker symbol.
-     * @see setFeature()
+    /**
+     * Returns the feature used for rendering the marker symbol.
+     * \see setFeature()
      */
     QgsFeature feature() const { return mFeature; }
 
-    /** Must be called after setting the symbol or feature and when the symbol's size may
+    /**
+     * Must be called after setting the symbol or feature and when the symbol's size may
      * have changed.
      */
     void updateSize();
 
-    /** Sets the transparency for the marker.
-     * @param transparency double between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * @see transparency()
+    /**
+     * Sets the \a opacity for the marker.
+     * \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see opacity()
      */
-    void setTransparency( double transparency );
+    void setOpacity( double opacity );
 
-    /** Returns the transparency for the marker.
-     * @returns transparency value between 0 and 1 inclusive, where 0 is fully opaque
-     * and 1 is fully transparent
-     * @see setTransparency()
+    /**
+     * Returns the opacity for the marker.
+     * \returns opacity value between 0 and 1 inclusive, where 0 is fully transparent
+     * and 1 is fully opaque
+     * \see setOpacity()
      */
-    double transparency() const;
+    double opacity() const;
 
   private:
 

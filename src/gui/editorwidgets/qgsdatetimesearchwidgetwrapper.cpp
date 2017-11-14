@@ -27,8 +27,7 @@
 
 QgsDateTimeSearchWidgetWrapper::QgsDateTimeSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mDateTimeEdit( nullptr )
-  , mLayer( nullptr )
+
 {
 }
 
@@ -37,7 +36,7 @@ bool QgsDateTimeSearchWidgetWrapper::applyDirectly()
   return true;
 }
 
-QString QgsDateTimeSearchWidgetWrapper::expression()
+QString QgsDateTimeSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -113,8 +112,9 @@ bool QgsDateTimeSearchWidgetWrapper::valid() const
   return true;
 }
 
-void QgsDateTimeSearchWidgetWrapper::setExpression( QString exp )
+void QgsDateTimeSearchWidgetWrapper::setExpression( const QString &expression )
 {
+  QString exp = expression;
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
   QString str = QStringLiteral( "%1 = '%3'" )
@@ -168,7 +168,7 @@ void QgsDateTimeSearchWidgetWrapper::initWidget( QWidget *editor )
 
     mDateTimeEdit->setEmpty();
 
-    connect( mDateTimeEdit, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( dateTimeChanged( QDateTime ) ) );
+    connect( mDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeSearchWidgetWrapper::dateTimeChanged );
   }
 }
 

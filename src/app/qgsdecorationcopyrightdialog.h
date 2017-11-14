@@ -29,10 +29,10 @@ class APP_EXPORT QgsDecorationCopyrightDialog : public QDialog, private Ui::QgsD
     ~QgsDecorationCopyrightDialog();
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
-    void on_pbnColorChooser_colorChanged( const QColor &c );
+    void buttonBox_accepted();
+    void buttonBox_rejected();
+    void showHelp();
+    void pbnColorChooser_colorChanged( const QColor &c );
     void apply();
 
   protected:

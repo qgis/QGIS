@@ -25,6 +25,8 @@
 #include <memory>
 #include <QProgressDialog>
 #include <QPushButton>
+#include <QMutex>
+#include <QWaitCondition>
 
 class QgsWFSProvider;
 class QgsWFSSharedData;
@@ -40,7 +42,6 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
     Q_OBJECT
   public:
     explicit QgsWFSFeatureHitsAsyncRequest( QgsWFSDataSourceURI &uri );
-    ~QgsWFSFeatureHitsAsyncRequest();
 
     void launch( const QUrl &url );
 
@@ -72,14 +73,15 @@ class QgsWFSProgressDialog: public QProgressDialog
     void resizeEvent( QResizeEvent *ev ) override;
 
   signals:
-    void hide();
+    void hideRequest();
 
   private:
     QPushButton *mCancel = nullptr;
     QPushButton *mHide = nullptr;
 };
 
-/** This class runs one (or several if paging is needed) GetFeature request,
+/**
+ * This class runs one (or several if paging is needed) GetFeature request,
     process the results as soon as they arrived and notify them to the
     serializer to fill the case, and to the iterator that subscribed
     Instances of this class may be run in a dedicated thread (QgsWFSThreadedFeatureDownloader)
@@ -93,9 +95,10 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     explicit QgsWFSFeatureDownloader( QgsWFSSharedData *shared );
     ~QgsWFSFeatureDownloader();
 
-    /** Start the download.
-     * @param serializeFeatures whether to notify the sharedData serializer.
-     * @param maxFeatures user-defined limit of features to download. Overrides
+    /**
+     * Start the download.
+     * \param serializeFeatures whether to notify the sharedData serializer.
+     * \param maxFeatures user-defined limit of features to download. Overrides
      *                    the one defined in the URI. Typically by the QgsWFSProvider,
      *                    when it cannot guess the geometry type.
      */
@@ -141,9 +144,10 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     //! Whether the download should stop
     bool mStop;
     //! Progress dialog
-    QProgressDialog *mProgressDialog = nullptr;
+    QgsWFSProgressDialog *mProgressDialog = nullptr;
 
-    /** If the progress dialog should be shown immediately, or if it should be
+    /**
+     * If the progress dialog should be shown immediately, or if it should be
         let to QProgressDialog logic to decide when to show it */
     bool mProgressDialogShowImmediately;
     bool mSupportsPaging;
@@ -166,12 +170,11 @@ class QgsWFSThreadedFeatureDownloader: public QThread
     //! Return downloader object
     QgsWFSFeatureDownloader *downloader() { return mDownloader; }
 
+    //! Starts thread and wait for it to be started
+    void startAndWait();
+
     //! Stops (synchronously) the download
     void stop();
-
-  signals:
-    //! Emitted when the thread is ready
-    void ready();
 
   protected:
     //! Inherited from QThread. Starts the download
@@ -180,11 +183,14 @@ class QgsWFSThreadedFeatureDownloader: public QThread
   private:
     QgsWFSSharedData *mShared;  //!< Mutable data shared between provider and feature sources
     QgsWFSFeatureDownloader *mDownloader = nullptr;
+    QWaitCondition mWaitCond;
+    QMutex mWaitMutex;
 };
 
 class QgsWFSFeatureSource;
 
-/** Feature iterator. The iterator will internally both subscribe to a live
+/**
+ * Feature iterator. The iterator will internally both subscribe to a live
     downloader to receive 'fresh' features, and to a iterator on the features
     already cached. It will actually start by consuming cache features for
     initial feedback, and then process the live downloaded features. */
@@ -203,7 +209,7 @@ class QgsWFSFeatureIterator : public QObject,
     void setInterruptionChecker( QgsInterruptionChecker *interruptionChecker ) override;
 
     //! Used by QgsWFSSharedData::registerToCache()
-    void connectSignals( QObject *downloader );
+    void connectSignals( QgsWFSFeatureDownloader *downloader );
 
   private slots:
     void featureReceived( int featureCount );
@@ -244,6 +250,9 @@ class QgsWFSFeatureIterator : public QObject,
     QFile *mReaderFile = nullptr;
     QDataStream *mReaderStream = nullptr;
     bool mFetchGeometry;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 //! Feature source
@@ -251,13 +260,13 @@ class QgsWFSFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsWFSFeatureSource( const QgsWFSProvider *p );
-    ~QgsWFSFeatureSource();
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
 
     std::shared_ptr<QgsWFSSharedData> mShared;  //!< Mutable data shared between provider and feature sources
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsWFSFeatureIterator;
 };

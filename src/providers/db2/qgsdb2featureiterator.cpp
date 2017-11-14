@@ -22,6 +22,7 @@
 #include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgsgeometry.h"
+#include "qgsexception.h"
 
 #include <QObject>
 #include <QTextStream>
@@ -32,8 +33,21 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
   : QgsAbstractFeatureIteratorFromSource<QgsDb2FeatureSource>( source, ownSource, request )
 {
   mClosed = false;
-  mQuery = nullptr;
-  mFetchCount = 0;
+
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    mClosed = true;
+    return;
+  }
 
   BuildStatement( request );
 
@@ -48,7 +62,7 @@ QgsDb2FeatureIterator::QgsDb2FeatureIterator( QgsDb2FeatureSource *source, bool 
   }
 
   // create sql query
-  mQuery = new QSqlQuery( mDatabase );
+  mQuery.reset( new QSqlQuery( mDatabase ) );
 
   // start selection
   rewind();
@@ -64,7 +78,7 @@ QgsDb2FeatureIterator::~QgsDb2FeatureIterator()
 void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 {
   bool limitAtProvider = ( mRequest.limit() >= 0 );
-  QString delim = QLatin1String( "" );
+  QString delim;
 
   // build sql statement
   mStatement = QStringLiteral( "SELECT " );
@@ -115,11 +129,11 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   bool filterAdded = false;
   // set spatial filter
-  if ( !request.filterRect().isNull() && mSource->isSpatial() && !request.filterRect().isEmpty() )
+  if ( !mFilterRect.isNull() && mSource->isSpatial() && !mFilterRect.isEmpty() )
   {
     if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
     {
-      QString rectangleWkt = request.filterRect().asWktPolygon();
+      QString rectangleWkt = mFilterRect.asWktPolygon();
       QgsDebugMsg( "filter polygon: " + rectangleWkt );
       mStatement += QStringLiteral( " WHERE DB2GSE.ST_Intersects(%1, DB2GSE.ST_POLYGON('%2', %3)) = 1" ).arg(
                       mSource->mGeometryColName,
@@ -130,10 +144,10 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
     {
       mStatement += QStringLiteral( " WHERE DB2GSE.ENVELOPESINTERSECT(%1, %2, %3, %4, %5, %6) = 1" ).arg(
                       mSource->mGeometryColName,
-                      qgsDoubleToString( request.filterRect().xMinimum() ),
-                      qgsDoubleToString( request.filterRect().yMinimum() ),
-                      qgsDoubleToString( request.filterRect().xMaximum() ),
-                      qgsDoubleToString( request.filterRect().yMaximum() ),
+                      qgsDoubleToString( mFilterRect.xMinimum() ),
+                      qgsDoubleToString( mFilterRect.yMinimum() ),
+                      qgsDoubleToString( mFilterRect.xMaximum() ),
+                      qgsDoubleToString( mFilterRect.yMaximum() ),
                       QString::number( mSource->mSRId ) );
     }
     filterAdded = true;
@@ -185,8 +199,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
   mCompileStatus = NoCompilation;
   if ( request.filterType() == QgsFeatureRequest::FilterExpression )
   {
-    QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QgsSettings().value( "/qgis/compileExpressions", true ).toString() ) );
-    if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+    QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QgsSettings().value( "qgis/compileExpressions", true ).toString() ) );
+    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
       QgsDb2ExpressionCompiler compiler = QgsDb2ExpressionCompiler( mSource );
       QgsDebugMsg( "expression dump: " + request.filterExpression()->dump() );
@@ -218,8 +232,8 @@ void QgsDb2FeatureIterator::BuildStatement( const QgsFeatureRequest &request )
 
   QStringList orderByParts;
   mOrderByCompiled = true;
-  QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QgsSettings().value( "/qgis/compileExpressions", true ).toString() ) );
-  if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() && limitAtProvider )
+  QgsDebugMsg( QString( "compileExpressions: %1" ).arg( QgsSettings().value( "qgis/compileExpressions", true ).toString() ) );
+  if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() && limitAtProvider )
   {
     Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
     {
@@ -374,6 +388,7 @@ bool QgsDb2FeatureIterator::fetchFeature( QgsFeature &feature )
     }
     feature.setValid( true );
     mFetchCount++;
+    geometryToDestinationCrs( feature, mTransform );
     if ( mFetchCount % 100 == 0 )
     {
       QgsDebugMsg( QString( "Fetch count: %1" ).arg( mFetchCount ) );
@@ -428,7 +443,7 @@ bool QgsDb2FeatureIterator::close()
     {
       mQuery->finish();
     }
-    delete mQuery;
+    mQuery.reset();
   }
 
   if ( mDatabase.isOpen() )
@@ -447,19 +462,15 @@ bool QgsDb2FeatureIterator::close()
 QgsDb2FeatureSource::QgsDb2FeatureSource( const QgsDb2Provider *p )
   : mFields( p->mAttributeFields )
   , mFidColName( p->mFidColName )
+  , mSRId( p->mSRId )
   , mGeometryColName( p->mGeometryColName )
   , mGeometryColType( p->mGeometryColType )
   , mSchemaName( p->mSchemaName )
   , mTableName( p->mTableName )
   , mConnInfo( p->mConnInfo )
   , mSqlWhereClause( p->mSqlWhereClause )
-{
-  mSRId = p->mSRId;
-}
-
-QgsDb2FeatureSource::~QgsDb2FeatureSource()
-{
-}
+  , mCrs( p->crs() )
+{}
 
 QgsFeatureIterator QgsDb2FeatureSource::getFeatures( const QgsFeatureRequest &request )
 {

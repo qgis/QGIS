@@ -56,13 +56,13 @@ QgsGrassImportProgress::QgsGrassImportProgress( QProcess *process, QObject *pare
   , mProgressMax( 0 )
   , mProgressValue( 0 )
 {
-  connect( mProcess, SIGNAL( readyReadStandardError() ), SLOT( onReadyReadStandardError() ) );
+  connect( mProcess, &QProcess::readyReadStandardError, this, &QgsGrassImportProgress::onReadyReadStandardError );
 }
 
 void QgsGrassImportProgress::setProcess( QProcess *process )
 {
   mProcess = process;
-  connect( mProcess, SIGNAL( readyReadStandardError() ), SLOT( onReadyReadStandardError() ) );
+  connect( mProcess, &QProcess::readyReadStandardError, this, &QgsGrassImportProgress::onReadyReadStandardError );
 }
 
 void QgsGrassImportProgress::onReadyReadStandardError()
@@ -76,7 +76,7 @@ void QgsGrassImportProgress::onReadyReadStandardError()
       QgsDebugMsg( "line = '" + line + "'" );
       QString text, html;
       int value;
-      QgsGrass::ModuleOutput type =  QgsGrass::parseModuleOutput( line, text, html, value );
+      QgsGrass::ModuleOutput type = QgsGrass::parseModuleOutput( line, text, html, value );
       if ( type == QgsGrass::OutputPercent )
       {
         mProgressMin = 0;
@@ -124,17 +124,14 @@ void QgsGrassImportProgress::setValue( int value )
 
 //------------------------------ QgsGrassImport ------------------------------------
 QgsGrassImport::QgsGrassImport( const QgsGrassObject &grassObject )
-  : QObject()
-  , mGrassObject( grassObject )
+  : mGrassObject( grassObject )
   , mCanceled( false )
-  , mProcess( 0 )
-  , mProgress( 0 )
   , mFutureWatcher( 0 )
 {
   // QMovie used by QgsAnimatedIcon is using QTimer which cannot be start from another thread
   // (it works on Linux however) so we cannot start it connecting from QgsGrassImportItem and
   // connect it also here (QgsGrassImport is constructed on the main thread) to a slot doing nothing.
-  QgsGrassImportIcon::instance()->connectFrameChanged( this, SLOT( frameChanged() ) );
+  QgsGrassImportIcon::instance()->connectFrameChanged( this, &QgsGrassImport::frameChanged );
 }
 
 QgsGrassImport::~QgsGrassImport()
@@ -144,7 +141,7 @@ QgsGrassImport::~QgsGrassImport()
     QgsDebugMsg( "mFutureWatcher not finished -> waitForFinished()" );
     mFutureWatcher->waitForFinished();
   }
-  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, SLOT( frameChanged() ) );
+  QgsGrassImportIcon::instance()->disconnectFrameChanged( this, &QgsGrassImport::frameChanged );
 }
 
 void QgsGrassImport::setError( const QString &error )
@@ -161,7 +158,7 @@ QString QgsGrassImport::error()
 void QgsGrassImport::importInThread()
 {
   mFutureWatcher = new QFutureWatcher<bool>( this );
-  connect( mFutureWatcher, SIGNAL( finished() ), SLOT( onFinished() ) );
+  connect( mFutureWatcher, &QFutureWatcherBase::finished, this, &QgsGrassImport::onFinished );
   mFutureWatcher->setFuture( QtConcurrent::run( run, this ) );
 }
 
@@ -250,15 +247,15 @@ bool QgsGrassRasterImport::import()
   {
     QgsDebugMsg( QString( "band = %1" ).arg( band ) );
     int colorInterpretation = provider->colorInterpretation( band );
-    if ( colorInterpretation ==  QgsRaster::RedBand )
+    if ( colorInterpretation == QgsRaster::RedBand )
     {
       redBand = band;
     }
-    else if ( colorInterpretation ==  QgsRaster::GreenBand )
+    else if ( colorInterpretation == QgsRaster::GreenBand )
     {
       greenBand = band;
     }
-    else if ( colorInterpretation ==  QgsRaster::BlueBand )
+    else if ( colorInterpretation == QgsRaster::BlueBand )
     {
       blueBand = band;
     }
@@ -411,7 +408,7 @@ bool QgsGrassRasterImport::import()
 
         outStream << byteArray;
 
-        // Without waitForBytesWritten() it does not finish ok on Windows (process timeout)
+        // Without waitForBytesWritten() it does not finish OK on Windows (process timeout)
         mProcess->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
@@ -435,14 +432,16 @@ bool QgsGrassRasterImport::import()
     // TODO: best timeout?
     mProcess->waitForFinished( 30000 );
 
-    QString stdoutString = mProcess->readAllStandardOutput().constData();
     QString stderrString = mProcess->readAllStandardError().constData();
 
+#ifdef QGISDEBUG
+    QString stdoutString = mProcess->readAllStandardOutput().constData();
     QString processResult = QStringLiteral( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                             .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
                             .arg( mProcess->error() ).arg( mProcess->errorString(),
                                 stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
     QgsDebugMsg( "processResult: " + processResult );
+#endif
 
     if ( mProcess->exitStatus() != QProcess::NormalExit )
     {
@@ -652,14 +651,14 @@ bool QgsGrassVectorImport::import()
       outStream << false; // not canceled
       outStream << feature;
 
-      // Without waitForBytesWritten() it does not finish ok on Windows (data lost)
+      // Without waitForBytesWritten() it does not finish OK on Windows (data lost)
       mProcess->waitForBytesWritten( -1 );
 
 #ifndef Q_OS_WIN
       // wait until the feature is written to allow quick cancel (don't send data to buffer)
 
       // Feedback disabled because it was sometimes hanging on Linux, for example, when importing polygons
-      // the features were written ok in the first run, but after cleaning of polygons, which takes some time
+      // the features were written OK in the first run, but after cleaning of polygons, which takes some time
       // it was hanging here for few seconds after each feature, but data did not arrive to the modulee anyway,
       // QFSFileEnginePrivate::nativeRead() was hanging on fgetc()
 
@@ -713,14 +712,18 @@ bool QgsGrassVectorImport::import()
   QgsDebugMsg( "waitForFinished" );
   mProcess->waitForFinished( 30000 );
 
+#ifdef QGISDEBUG
   QString stdoutString = mProcess->readAllStandardOutput().constData();
+#endif
   QString stderrString = mProcess->readAllStandardError().constData();
 
+#ifdef QGISDEBUG
   QString processResult = QStringLiteral( "exitStatus=%1, exitCode=%2, error=%3, errorString=%4 stdout=%5, stderr=%6" )
                           .arg( mProcess->exitStatus() ).arg( mProcess->exitCode() )
                           .arg( mProcess->error() ).arg( mProcess->errorString(),
                               stdoutString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ), stderrString.replace( QLatin1String( "\n" ), QLatin1String( ", " ) ) );
   QgsDebugMsg( "processResult: " + processResult );
+#endif
 
   if ( mProcess->exitStatus() != QProcess::NormalExit )
   {

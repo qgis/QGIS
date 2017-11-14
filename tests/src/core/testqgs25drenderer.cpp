@@ -34,16 +34,15 @@
 #include "qgscomposermap.h"
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for 25d renderer.
  */
 class TestQgs25DRenderer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgs25DRenderer()
-      : mpPolysLayer( nullptr )
-    {}
+    TestQgs25DRenderer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -115,7 +114,7 @@ void TestQgs25DRenderer::render()
   mReport += QLatin1String( "<h2>Render</h2>\n" );
 
   //setup 25d renderer
-  Qgs25DRenderer *renderer = new Qgs25DRenderer( );
+  Qgs25DRenderer *renderer = new Qgs25DRenderer();
   renderer->setShadowEnabled( false );
   renderer->setWallShadingEnabled( false );
   renderer->setRoofColor( QColor( "#fdbf6f" ) );

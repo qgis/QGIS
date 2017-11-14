@@ -19,6 +19,7 @@
 #include "qgssettings.h"
 
 #include "qgsprojectionselectiondialog.h"
+#include "qgshelp.h"
 #include <QApplication>
 
 QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
@@ -26,14 +27,15 @@ QgsProjectionSelectionDialog::QgsProjectionSelectionDialog( QWidget *parent,
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsProjectionSelectionDialog::showHelp );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ProjectionSelector/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ProjectionSelector/geometry" ) ).toByteArray() );
 
   //we will show this only when a message is set
   textEdit->hide();
 
-  //apply selected projection upon double click on item
+  //apply selected projection upon double-click on item
   connect( projectionSelector, &QgsProjectionSelectionTreeWidget::projectionDoubleClicked, this, &QgsProjectionSelectionDialog::accept );
 }
 
@@ -72,7 +74,7 @@ bool QgsProjectionSelectionDialog::showNoProjection() const
 QgsProjectionSelectionDialog::~QgsProjectionSelectionDialog()
 {
   QSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ProjectionSelector/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ProjectionSelector/geometry" ), saveGeometry() );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionDialog::crs() const
@@ -88,4 +90,9 @@ void QgsProjectionSelectionDialog::setCrs( const QgsCoordinateReferenceSystem &c
 void QgsProjectionSelectionDialog::setOgcWmsCrsFilter( const QSet<QString> &crsFilter )
 {
   projectionSelector->setOgcWmsCrsFilter( crsFilter );
+}
+
+void QgsProjectionSelectionDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_projections/working_with_projections.html" ) );
 }

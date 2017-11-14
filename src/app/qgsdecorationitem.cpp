@@ -21,9 +21,10 @@
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapdecoration.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsproject.h"
 #include "qgssymbollayerutils.h" //for pointOnLineWithDistance
 #include "qgsunittypes.h"
@@ -45,15 +46,7 @@
 
 QgsDecorationItem::QgsDecorationItem( QObject *parent )
   : QObject( parent )
-  , mEnabled( false )
-  , mPlacement( TopLeft )
-  , mMarginUnit( QgsUnitTypes::RenderMillimeters )
 {
-}
-
-QgsDecorationItem::~QgsDecorationItem()
-{
-
 }
 
 void QgsDecorationItem::update()

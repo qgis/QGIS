@@ -19,7 +19,7 @@
 #ifndef QGS_GLOBE_PLUGIN_H
 #define QGS_GLOBE_PLUGIN_H
 
-#include <qgisplugin.h>
+#include "qgisplugin.h"
 #include <QObject>
 #include <osg/ref_ptr>
 #include <osgEarth/Version>
@@ -36,7 +36,7 @@ class QgsGlobeLayerPropertiesFactory;
 class QgsGlobePluginDialog;
 class QgsGlobeWidget;
 class QgsMapLayer;
-class QgsPoint;
+class QgsPointXY;
 class QgsRectangle;
 class QgsGlobeFrustumHighlightCallback;
 class QgsGlobeFeatureIdentifyCallback;
@@ -125,6 +125,7 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
     osgEarth::QtGui::ViewerWidget *mViewerWidget = nullptr;
     QgsGlobeWidget *mDockWidget = nullptr;
     QgsGlobePluginDialog *mSettingsDialog = nullptr;
+
     QString mBaseLayerUrl;
     QList<QgsGlobePluginDialog::LayerDataSource> mImagerySources;
     QList<QgsGlobePluginDialog::LayerDataSource> mElevationSources;
@@ -171,9 +172,9 @@ class GLOBE_EXPORT GlobePlugin : public QObject, public QgisPlugin
 
   signals:
     //! emits current mouse position
-    void xyCoordinates( const QgsPoint &p );
+    void xyCoordinates( const QgsPointXY &p );
     //! emits position of right click on globe
-    void newCoordinatesSelected( const QgsPoint &p );
+    void newCoordinatesSelected( const QgsPointXY &p );
 };
 
 #endif // QGS_GLOBE_PLUGIN_H

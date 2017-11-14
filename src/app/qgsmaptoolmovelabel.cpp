@@ -27,10 +27,12 @@ QgsMapToolMoveLabel::QgsMapToolMoveLabel( QgsMapCanvas *canvas )
   , mClickOffsetY( 0 )
 {
   mToolName = tr( "Move label" );
-}
 
-QgsMapToolMoveLabel::~QgsMapToolMoveLabel()
-{
+  mPalProperties << QgsPalLayerSettings::PositionX;
+  mPalProperties << QgsPalLayerSettings::PositionY;
+
+  mDiagramProperties << QgsDiagramLayerSettings::PositionX;
+  mDiagramProperties << QgsDiagramLayerSettings::PositionY;
 }
 
 void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
@@ -47,17 +49,38 @@ void QgsMapToolMoveLabel::canvasPressEvent( QgsMapMouseEvent *e )
   mCurrentLabel = LabelDetails( labelPos );
 
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
-  if ( !vlayer || !vlayer->isEditable() )
+  if ( !vlayer )
   {
     return;
   }
 
-  int xCol, yCol;
-  if ( labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) ||
-       diagramMoveable( vlayer, xCol, yCol ) )
+  int xCol = -1, yCol = -1;
+
+  if ( !mCurrentLabel.pos.isDiagram &&  !labelMoveable( vlayer, mCurrentLabel.settings, xCol, yCol ) )
+  {
+    QgsPalIndexes indexes;
+
+    if ( createAuxiliaryFields( indexes ) )
+      return;
+
+    xCol = indexes[ QgsPalLayerSettings::PositionX ];
+    yCol = indexes[ QgsPalLayerSettings::PositionY ];
+  }
+  else if ( mCurrentLabel.pos.isDiagram && !diagramMoveable( vlayer, xCol, yCol ) )
+  {
+    QgsDiagramIndexes indexes;
+
+    if ( createAuxiliaryFields( indexes ) )
+      return;
+
+    xCol = indexes[ QgsDiagramLayerSettings::PositionX ];
+    yCol = indexes[ QgsDiagramLayerSettings::PositionY ];
+  }
+
+  if ( xCol >= 0 && yCol >= 0 )
   {
     mStartPointMapCoords = toMapCoordinates( e->pos() );
-    QgsPoint referencePoint;
+    QgsPointXY referencePoint;
     if ( !currentLabelRotationPoint( referencePoint, !currentLabelPreserveRotation(), false ) )
     {
       referencePoint.setX( mCurrentLabel.pos.labelRect.xMinimum() );
@@ -73,7 +96,7 @@ void QgsMapToolMoveLabel::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   if ( mLabelRubberBand )
   {
-    QgsPoint pointCanvasCoords = toMapCoordinates( e->pos() );
+    QgsPointXY pointCanvasCoords = toMapCoordinates( e->pos() );
     double offsetX = pointCanvasCoords.x() - mStartPointMapCoords.x();
     double offsetY = pointCanvasCoords.y() - mStartPointMapCoords.y();
     mLabelRubberBand->setTranslationOffset( offsetX, offsetY );
@@ -95,12 +118,12 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
   deleteRubberBands();
 
   QgsVectorLayer *vlayer = mCurrentLabel.layer;
-  if ( !vlayer || !vlayer->isEditable() )
+  if ( !vlayer )
   {
     return;
   }
 
-  QgsPoint releaseCoords = toMapCoordinates( e->pos() );
+  QgsPointXY releaseCoords = toMapCoordinates( e->pos() );
   double xdiff = releaseCoords.x() - mStartPointMapCoords.x();
   double ydiff = releaseCoords.y() - mStartPointMapCoords.y();
 
@@ -124,7 +147,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
   {
     //transform to map crs first, because xdiff,ydiff are in map coordinates
     const QgsMapSettings &ms = mCanvas->mapSettings();
-    QgsPoint transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPoint( xPosOrig, yPosOrig ) );
+    QgsPointXY transformedPoint = ms.layerToMapCoordinates( vlayer, QgsPointXY( xPosOrig, yPosOrig ) );
     xPosOrig = transformedPoint.x();
     yPosOrig = transformedPoint.y();
     xPosNew = xPosOrig + xdiff;
@@ -135,7 +158,7 @@ void QgsMapToolMoveLabel::canvasReleaseEvent( QgsMapMouseEvent *e )
   if ( mCanvas )
   {
     const QgsMapSettings &s = mCanvas->mapSettings();
-    QgsPoint transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPoint( xPosNew, yPosNew ) );
+    QgsPointXY transformedPoint = s.mapToLayerCoordinates( vlayer, QgsPointXY( xPosNew, yPosNew ) );
     xPosNew = transformedPoint.x();
     yPosNew = transformedPoint.y();
   }

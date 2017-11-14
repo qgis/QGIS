@@ -33,9 +33,7 @@ class TestQgsMapToolIdentifyAction : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolIdentifyAction()
-      : canvas( 0 )
-    {}
+    TestQgsMapToolIdentifyAction() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -121,9 +119,9 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
-  QgsPolyline line3111;
-  line3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 );
-  QgsGeometry line3111G = QgsGeometry::fromPolyline( line3111 ) ;
+  QgsPolylineXY line3111;
+  line3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 );
+  QgsGeometry line3111G = QgsGeometry::fromPolylineXY( line3111 ) ;
   f1.setGeometry( line3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -135,14 +133,14 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
-  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   QString derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length" )];
   double length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QVERIFY( qgsDoubleNear( length, 26932.2, 0.1 ) );
+  QGSCOMPARENEAR( length, 26932.2, 0.1 );
 
   //check that project units are respected
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceFeet );
@@ -150,7 +148,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length" )];
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QVERIFY( qgsDoubleNear( length, 88360.1, 0.1 ) );
+  QGSCOMPARENEAR( length, 88360.1, 0.1 );
 
   //test unchecked "keep base units" setting
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
@@ -158,7 +156,7 @@ void TestQgsMapToolIdentifyAction::lengthCalculation()
   QCOMPARE( result.length(), 1 );
   derivedLength = result.at( 0 ).mDerivedAttributes[tr( "Length" )];
   length = derivedLength.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QVERIFY( qgsDoubleNear( length, 16.735, 0.001 ) );
+  QGSCOMPARENEAR( length, 16.735, 0.001 );
 }
 
 void TestQgsMapToolIdentifyAction::perimeterCalculation()
@@ -172,11 +170,11 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
-  QgsPolyline polygonRing3111;
-  polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
-  QgsPolygon polygon3111;
+  QgsPolylineXY polygonRing3111;
+  polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
+  QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 ) ;
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -188,7 +186,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setDistanceUnits( QgsUnitTypes::DistanceMeters );
 
-  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
@@ -203,7 +201,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter" )];
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QVERIFY( qgsDoubleNear( perimeter, 420896.0, 0.1 ) );
+  QGSCOMPARENEAR( perimeter, 420896.0, 0.1 );
 
   //test unchecked "keep base units" setting
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
@@ -211,7 +209,7 @@ void TestQgsMapToolIdentifyAction::perimeterCalculation()
   QCOMPARE( result.length(), 1 );
   derivedPerimeter = result.at( 0 ).mDerivedAttributes[tr( "Perimeter" )];
   perimeter = derivedPerimeter.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QVERIFY( qgsDoubleNear( perimeter, 79.715, 0.001 ) );
+  QGSCOMPARENEAR( perimeter, 79.715, 0.001 );
 }
 
 void TestQgsMapToolIdentifyAction::areaCalculation()
@@ -226,11 +224,11 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   f1.setAttribute( QStringLiteral( "pk" ), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), 0.0 );
 
-  QgsPolyline polygonRing3111;
-  polygonRing3111 << QgsPoint( 2484588, 2425722 ) << QgsPoint( 2482767, 2398853 ) << QgsPoint( 2520109, 2397715 ) << QgsPoint( 2520792, 2425494 ) << QgsPoint( 2484588, 2425722 );
-  QgsPolygon polygon3111;
+  QgsPolylineXY polygonRing3111;
+  polygonRing3111 << QgsPointXY( 2484588, 2425722 ) << QgsPointXY( 2482767, 2398853 ) << QgsPointXY( 2520109, 2397715 ) << QgsPointXY( 2520792, 2425494 ) << QgsPointXY( 2484588, 2425722 );
+  QgsPolygonXY polygon3111;
   polygon3111 << polygonRing3111;
-  QgsGeometry polygon3111G = QgsGeometry::fromPolygon( polygon3111 ) ;
+  QgsGeometry polygon3111G = QgsGeometry::fromPolygonXY( polygon3111 ) ;
   f1.setGeometry( polygon3111G );
   tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
@@ -242,14 +240,14 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QgsProject::instance()->setEllipsoid( QStringLiteral( "WGS84" ) );
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMeters );
 
-  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
 
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << tempLayer.get() );
   QCOMPARE( result.length(), 1 );
   QString derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
   double area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QVERIFY( qgsDoubleNear( area, 1009089817.0, 1.0 ) );
+  QGSCOMPARENEAR( area, 1009089817.0, 1.0 );
 
   //check that project units are respected
   QgsProject::instance()->setAreaUnits( QgsUnitTypes::AreaSquareMiles );
@@ -257,7 +255,7 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QVERIFY( qgsDoubleNear( area, 389.6117, 0.001 ) );
+  QGSCOMPARENEAR( area, 389.6117, 0.001 );
 
   //test unchecked "keep base units" setting
   s.setValue( QStringLiteral( "/qgis/measure/keepbaseunit" ), false );
@@ -266,14 +264,14 @@ void TestQgsMapToolIdentifyAction::areaCalculation()
   QCOMPARE( result.length(), 1 );
   derivedArea = result.at( 0 ).mDerivedAttributes[tr( "Area" )];
   area = derivedArea.remove( ',' ).split( ' ' ).at( 0 ).toDouble();
-  QVERIFY( qgsDoubleNear( area, 389.6117, 0.001 ) );
+  QGSCOMPARENEAR( area, 389.6117, 0.001 );
 }
 
 // private
 QString TestQgsMapToolIdentifyAction::testIdentifyRaster( QgsRasterLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
   if ( result.length() != 1 )
     return QLatin1String( "" );
@@ -285,7 +283,7 @@ QList<QgsMapToolIdentify::IdentifyResult>
 TestQgsMapToolIdentifyAction::testIdentifyVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolIdentifyAction > action( new QgsMapToolIdentifyAction( canvas ) );
-  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
   QList<QgsMapToolIdentify::IdentifyResult> result = action->identify( mapPoint.x(), mapPoint.y(), QList<QgsMapLayer *>() << layer );
   return result;
 }

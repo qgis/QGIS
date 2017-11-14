@@ -21,7 +21,7 @@
 
 QgsCapabilitiesCache::QgsCapabilitiesCache()
 {
-  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString & ) ), this, SLOT( removeChangedEntry( const QString & ) ) );
+  QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsCapabilitiesCache::removeChangedEntry );
 }
 
 const QDomDocument *QgsCapabilitiesCache::searchCapabilitiesDocument( const QString &configFilePath, const QString &key )

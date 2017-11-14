@@ -98,11 +98,7 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
   if ( mExceptList.contains( layer ) )
     return false;
 
-  QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vl && mExcludedProviders.contains( vl->dataProvider()->name() ) )
-    return false;
-  QgsRasterLayer *rl = qobject_cast<QgsRasterLayer *>( layer );
-  if ( rl && mExcludedProviders.contains( rl->dataProvider()->name() ) )
+  if ( mExcludedProviders.contains( layer->dataProvider()->name() ) )
     return false;
 
   if ( mFilters.testFlag( WritableLayer ) && layer->readOnly() )
@@ -122,9 +118,9 @@ bool QgsMapLayerProxyModel::filterAcceptsRow( int source_row, const QModelIndex 
                         mFilters.testFlag( HasGeometry );
   if ( detectGeometry && layer->type() == QgsMapLayer::VectorLayer )
   {
-    if ( vl )
+    if ( QgsVectorLayer *vl = qobject_cast< QgsVectorLayer *>( layer ) )
     {
-      if ( mFilters.testFlag( HasGeometry ) && vl->hasGeometryType() )
+      if ( mFilters.testFlag( HasGeometry ) && vl->isSpatial() )
         return true;
       if ( mFilters.testFlag( NoGeometry ) && vl->geometryType() == QgsWkbTypes::NullGeometry )
         return true;

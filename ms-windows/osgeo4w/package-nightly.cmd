@@ -99,7 +99,7 @@ set PYTHONPATH=
 if exist "%PF86%\CMake\bin" path %PATH%;c:\cygwin\bin;%PF86%\CMake\bin
 if exist "%PROGRAMFILES%\CMake\bin" path %PATH%;c:\cygwin\bin;%PROGRAMFILES%\CMake\bin
 
-PROMPT qgis%VERSION%$g 
+PROMPT qgis%VERSION%$g
 
 set BUILDCONF=RelWithDebInfo
 
@@ -165,7 +165,7 @@ cmake -G Ninja ^
 	-D WITH_SERVER=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS6=FALSE ^
+	-D WITH_3D=TRUE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
 	-D WITH_GLOBE=FALSE ^
@@ -185,18 +185,6 @@ cmake -G Ninja ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
-	-D WITH_INTERNAL_JINJA2=FALSE ^
-	-D WITH_INTERNAL_MARKUPSAFE=FALSE ^
-	-D WITH_INTERNAL_PYGMENTS=FALSE ^
-	-D WITH_INTERNAL_REQUESTS=FALSE ^
-	-D WITH_INTERNAL_DATEUTIL=FALSE ^
-	-D WITH_INTERNAL_PYTZ=FALSE ^
-	-D WITH_INTERNAL_SIX=FALSE ^
-	-D WITH_INTERNAL_NOSE2=FALSE ^
-	-D WITH_INTERNAL_MOCK=FALSE ^
-	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
-	-D WITH_INTERNAL_FUTURE=FALSE ^
-	-D WITH_PYSPATIALITE=TRUE ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
@@ -331,11 +319,12 @@ goto end
 :usage
 echo usage: %0 version package packagename arch [sha [site]]
 echo sample: %0 2.11.0 38 qgis-dev x86_64 339dbf1 qgis.org
-exit
+exit /b 1
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%
 if exist %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2 del %PACKAGENAME%-%VERSION%-%PACKAGE%.tar.bz2
+exit /b 1
 
 :end
 echo FINISHED: %DATE% %TIME%

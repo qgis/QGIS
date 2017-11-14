@@ -27,13 +27,10 @@
 
 QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   : QTableView( parent )
-  , mGCPList( nullptr )
   , mGCPListModel( new QgsGCPListModel( this ) )
   , mNonEditableDelegate( new QgsNonEditableDelegate( this ) )
   , mDmsAndDdDelegate( new QgsDmsAndDdDelegate( this ) )
   , mCoordDelegate( new QgsCoordDelegate( this ) )
-  , mPrevRow( 0 )
-  , mPrevColumn( 0 )
 {
   // Create a proxy model, which will handle dynamic sorting
   QSortFilterProxyModel *proxyModel = new QSortFilterProxyModel( this );
@@ -59,20 +56,17 @@ QgsGCPListWidget::QgsGCPListWidget( QWidget *parent )
   setItemDelegateForColumn( 7, mNonEditableDelegate ); // dY
   setItemDelegateForColumn( 8, mNonEditableDelegate ); // residual
 
-  connect( this, SIGNAL( doubleClicked( QModelIndex ) ),
-           this, SLOT( itemDoubleClicked( QModelIndex ) ) );
-  connect( this, SIGNAL( clicked( QModelIndex ) ),
-           this, SLOT( itemClicked( QModelIndex ) ) );
-  connect( this, SIGNAL( customContextMenuRequested( QPoint ) ),
-           this, SLOT( showContextMenu( QPoint ) ) );
+  connect( this, &QAbstractItemView::doubleClicked,
+           this, &QgsGCPListWidget::itemDoubleClicked );
+  connect( this, &QAbstractItemView::clicked,
+           this, &QgsGCPListWidget::itemClicked );
+  connect( this, &QWidget::customContextMenuRequested,
+           this, &QgsGCPListWidget::showContextMenu );
 
-  connect( this, SIGNAL( replaceDataPoint( QgsGeorefDataPoint *, int ) ),
-           mGCPListModel, SLOT( replaceDataPoint( QgsGeorefDataPoint *, int ) ) );
-
-  connect( mDmsAndDdDelegate, SIGNAL( closeEditor( QWidget * ) ),
-           this, SLOT( updateItemCoords( QWidget * ) ) );
-  connect( mCoordDelegate, SIGNAL( closeEditor( QWidget * ) ),
-           this, SLOT( updateItemCoords( QWidget * ) ) );
+  connect( mDmsAndDdDelegate, &QAbstractItemDelegate::closeEditor,
+           this, &QgsGCPListWidget::updateItemCoords );
+  connect( mCoordDelegate, &QAbstractItemDelegate::closeEditor,
+           this, &QgsGCPListWidget::updateItemCoords );
 }
 
 void QgsGCPListWidget::setGCPList( QgsGCPList *theGCPList )
@@ -148,8 +142,8 @@ void QgsGCPListWidget::updateItemCoords( QWidget *editor )
   if ( lineEdit )
   {
     double value = lineEdit->text().toDouble();
-    QgsPoint newMapCoords( dataPoint->mapCoords() );
-    QgsPoint newPixelCoords( dataPoint->pixelCoords() );
+    QgsPointXY newMapCoords( dataPoint->mapCoords() );
+    QgsPointXY newPixelCoords( dataPoint->pixelCoords() );
     if ( mPrevColumn == 2 ) // srcX
     {
       newPixelCoords.setX( value );
@@ -193,11 +187,11 @@ void QgsGCPListWidget::showContextMenu( QPoint p )
   setCurrentIndex( index );
 
   QAction *jumpToPointAction = new QAction( tr( "Recenter" ), this );
-  connect( jumpToPointAction, SIGNAL( triggered() ), this, SLOT( jumpToPoint() ) );
+  connect( jumpToPointAction, &QAction::triggered, this, &QgsGCPListWidget::jumpToPoint );
   m.addAction( jumpToPointAction );
 
   QAction *removeAction = new QAction( tr( "Remove" ), this );
-  connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeRow() ) );
+  connect( removeAction, &QAction::triggered, this, &QgsGCPListWidget::removeRow );
   m.addAction( removeAction );
   m.exec( QCursor::pos(), removeAction );
 

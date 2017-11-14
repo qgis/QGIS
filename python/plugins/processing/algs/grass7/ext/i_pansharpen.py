@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
@@ -29,7 +28,7 @@ __revision__ = '$Format:%H$'
 from processing.core.parameters import getParameterFromString
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
 
     # Temporary remove outputs:
     outputs = [alg.getOutputFromName('{}output'.format(f)) for f in ['red', 'green', 'blue']]

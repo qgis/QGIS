@@ -18,6 +18,7 @@
 #define QGSAUTHAUTHORITIESEDITOR_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QSslCertificate>
 
 #include "ui_qgsauthauthoritieseditor.h"
@@ -29,7 +30,8 @@ class QgsMessageBar;
 class QMenu;
 class QAction;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing and editing authentication identities database
  */
 class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthAuthoritiesEditor
@@ -40,9 +42,9 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     /**
      * Widget for viewing and editing certificate authorities directly in database
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
-    explicit QgsAuthAuthoritiesEditor( QWidget *parent = nullptr );
+    explicit QgsAuthAuthoritiesEditor( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private slots:
     void populateCaCertsView();
@@ -59,21 +61,21 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
 
     void handleDoubleClick( QTreeWidgetItem *item, int col );
 
-    void on_btnAddCa_clicked();
+    void btnAddCa_clicked();
 
-    void on_btnRemoveCa_clicked();
+    void btnRemoveCa_clicked();
 
-    void on_btnInfoCa_clicked();
+    void btnInfoCa_clicked();
 
-    void on_btnGroupByOrg_toggled( bool checked );
+    void btnGroupByOrg_toggled( bool checked );
 
     void editDefaultTrustPolicy();
 
     void defaultTrustPolicyChanged( QgsAuthCertUtils::CertTrustPolicy trustpolicy );
 
-    void on_btnCaFile_clicked();
+    void btnCaFile_clicked();
 
-    void on_btnCaFileClear_clicked();
+    void btnCaFileClear_clicked();
 
     void showTrustedCertificateAuthorities();
 
@@ -127,11 +129,11 @@ class GUI_EXPORT QgsAuthAuthoritiesEditor : public QWidget, private Ui::QgsAuthA
     QTreeWidgetItem *mFileCaSecItem = nullptr;
     QTreeWidgetItem *mDbCaSecItem = nullptr;
 
-    QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy;
+    QgsAuthCertUtils::CertTrustPolicy mDefaultTrustPolicy = QgsAuthCertUtils::DefaultTrust;
     QMap<QgsAuthCertUtils::CertTrustPolicy, QStringList > mCertTrustCache;
 
     QMenu *mUtilitiesMenu = nullptr;
-    bool mDisabled;
+    bool mDisabled = false;
     QAction *mActionDefaultTrustPolicy = nullptr;
     QAction *mActionShowTrustedCAs = nullptr;
 };

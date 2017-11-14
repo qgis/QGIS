@@ -16,8 +16,6 @@
 
 #include <QDomElement>
 #include <QFileDialog>
-#include <QMessageBox>
-#include <QScrollArea>
 #include <QTextCodec>
 
 #include "qgisinterface.h"
@@ -30,6 +28,7 @@
 #include "qgsrasterlayer.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
+#include "qgsscrollarea.h"
 
 #include "qgsgrass.h"
 #include "qgsgrassmodule.h"
@@ -37,14 +36,6 @@
 #include "qgsgrassmoduleoptions.h"
 #include "qgsgrassmoduleparam.h"
 #include "qgsgrassplugin.h"
-
-extern "C"
-{
-#if GRASS_VERSION_MAJOR < 7
-#else
-#define G_adjust_Cell_head(cellhd,row_flag,col_flag) (G_adjust_Cell_head(cellhd,row_flag,col_flag),0)
-#endif
-}
 
 /******************* QgsGrassModuleOptions *******************/
 
@@ -54,16 +45,11 @@ QgsGrassModuleOptions::QgsGrassModuleOptions(
   : mIface( iface )
   , mTools( tools )
   , mModule( module )
-  , mRegionModeComboBox( 0 )
   , mDirect( direct )
 {
   QgsDebugMsg( "called." );
 
   mCanvas = mIface->mapCanvas();
-}
-
-QgsGrassModuleOptions::~QgsGrassModuleOptions()
-{
 }
 
 QStringList QgsGrassModuleOptions::arguments()
@@ -90,7 +76,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
   //
   QVBoxLayout *mypOuterLayout = new QVBoxLayout( this );
   mypOuterLayout->setContentsMargins( 0, 0, 0, 0 );
-  QScrollArea *mypScrollArea = new QScrollArea();
+  QgsScrollArea *mypScrollArea = new QgsScrollArea();
   //transfers scroll area ownership so no need to call delete
   mypOuterLayout->addWidget( mypScrollArea );
   QFrame *mypInnerFrame = new QFrame();
@@ -121,7 +107,7 @@ QgsGrassModuleStandardOptions::QgsGrassModuleStandardOptions(
 
   QFrame *mypAdvancedPushButtonFrame = new QFrame();
   QHBoxLayout *mypAdvancedPushButtonFrameLayout = new QHBoxLayout( mypAdvancedPushButtonFrame );
-  connect( &mAdvancedPushButton, SIGNAL( clicked() ), this, SLOT( switchAdvanced() ) );
+  connect( &mAdvancedPushButton, &QAbstractButton::clicked, this, &QgsGrassModuleStandardOptions::switchAdvanced );
   mypAdvancedPushButtonFrameLayout->addWidget( &mAdvancedPushButton );
   mypAdvancedPushButtonFrameLayout->addStretch( 1 );
 
@@ -877,11 +863,6 @@ bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput *in
   return true;
 }
 
-
-QgsGrassModuleStandardOptions::~QgsGrassModuleStandardOptions()
-{
-}
-
 QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QString &xname, QStringList &errors )
 {
   QDomDocument gDoc( QStringLiteral( "task" ) );
@@ -937,7 +918,7 @@ QDomDocument QgsGrassModuleStandardOptions::readInterfaceDescription( const QStr
 
   // GRASS commands usually output text in system default encoding.
   // Let's use the System codec whether Qt doesn't recognize the encoding
-  // of the interface description (see http://hub.qgis.org/issues/4547)
+  // of the interface description (see https://issues.qgis.org/issues/4547)
   QTextCodec *codec = 0;
 
   QgsDebugMsg( "trying to get encoding name from XML interface description..." );

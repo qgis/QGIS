@@ -21,13 +21,14 @@ import tempfile
 
 from qgis.core import (QgsVectorLayer,
                        QgsVectorDataProvider,
-                       QgsPoint,
+                       QgsPointXY,
                        QgsFeature,
                        QgsGeometry,
                        QgsProject,
                        QgsFieldConstraints,
                        QgsVectorLayerUtils,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsDefaultValue)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -36,8 +37,8 @@ from qgis.PyQt.QtCore import QVariant
 
 from qgis.utils import spatialite_connect
 
-# Pass no_exit=True: for some reason this crashes on exit on Travis MacOSX
-start_app(sys.platform != 'darwin')
+# Pass no_exit=True: for some reason this crashes sometimes on exit on Travis
+start_app(True)
 TEST_DATA_DIR = unitTestDataPath()
 
 
@@ -61,10 +62,11 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def setUpClass(cls):
         """Run before all tests"""
+        print(' ### Setup Spatialite Provider Test Class')
         # setup provider for base tests
         cls.vl = QgsVectorLayer('dbname=\'{}/provider/spatialite.db\' table="somedata" (geom) sql='.format(TEST_DATA_DIR), 'test', 'spatialite')
         assert(cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
 
         cls.vl_poly = QgsVectorLayer('dbname=\'{}/provider/spatialite.db\' table="somepolydata" (geom) sql='.format(TEST_DATA_DIR), 'test', 'spatialite')
         assert(cls.vl_poly.isValid())
@@ -159,13 +161,15 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
+        print(' ### Tear Down Spatialite Provider Test Class')
+
         # for the time being, keep the file to check with qgis
         # if os.path.exists(cls.dbname) :
         #    os.remove(cls.dbname)
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 
-    def getEditableLayer(self):
+    def getSource(self):
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
@@ -176,6 +180,9 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
             'dbname=\'{}\' table="somedata" (geom) sql='.format(datasource), 'test',
             'spatialite')
         return vl
+
+    def getEditableLayer(self):
+        return self.getSource()
 
     def setUp(self):
         """Run before each test."""
@@ -251,24 +258,24 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
                     ])
 
     def test_SplitFeature(self):
-        """Create spatialite database"""
+        """Create SpatiaLite database"""
         layer = QgsVectorLayer("dbname=%s table=test_pg (geometry)" % self.dbname, "test_pg", "spatialite")
         self.assertTrue(layer.isValid())
-        self.assertTrue(layer.hasGeometryType())
+        self.assertTrue(layer.isSpatial())
         layer.startEditing()
-        self.assertEqual(layer.splitFeatures([QgsPoint(0.75, -0.5), QgsPoint(0.75, 1.5)], 0), 0)
-        self.assertEqual(layer.splitFeatures([QgsPoint(-0.5, 0.25), QgsPoint(1.5, 0.25)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.75, -0.5), QgsPointXY(0.75, 1.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPointXY(-0.5, 0.25), QgsPointXY(1.5, 0.25)], 0), 0)
         self.assertTrue(layer.commitChanges())
         self.assertEqual(layer.featureCount(), 4)
 
     def test_SplitFeatureWithMultiKey(self):
-        """Create spatialite database"""
+        """Create SpatiaLite database"""
         layer = QgsVectorLayer("dbname=%s table=test_pg_mk (geometry)" % self.dbname, "test_pg_mk", "spatialite")
         self.assertTrue(layer.isValid())
-        self.assertTrue(layer.hasGeometryType())
+        self.assertTrue(layer.isSpatial())
         layer.startEditing()
-        self.assertEqual(layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0), 0)
-        self.assertEqual(layer.splitFeatures([QgsPoint(-0.5, 0.5), QgsPoint(1.5, 0.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0), 0)
+        self.assertEqual(layer.splitFeatures([QgsPointXY(-0.5, 0.5), QgsPointXY(1.5, 0.5)], 0), 0)
         self.assertTrue(layer.commitChanges())
 
     def test_queries(self):
@@ -315,7 +322,8 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         shutil.copy(self.dbname, corrupt_dbname)
         layer = QgsVectorLayer("dbname=%s table=test_pg (geometry)" % corrupt_dbname, "test_pg", "spatialite")
         # Corrupt the database
-        open(corrupt_dbname, 'wb').write(b'')
+        with open(corrupt_dbname, 'wb') as f:
+            f.write(b'')
         layer.getFeatures()
         layer = None
         os.unlink(corrupt_dbname)
@@ -550,7 +558,7 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 5.7, None])
 
         # test that vector layer default value expression overrides provider default literal
-        vl.setDefaultValueExpression(3, "4*3")
+        vl.setDefaultValueDefinition(3, QgsDefaultValue("4*3"))
         f = QgsVectorLayerUtils.createFeature(vl, attributes={1: 'qgis is great', 0: 3})
         self.assertEqual(f.attributes(), [3, "qgis 'is good", 5, 12, None])
 

@@ -18,6 +18,22 @@
 
 #include <QWidget>
 
+
+const QgsPropertiesDefinition &QgsWidgetWrapper::propertyDefinitions()
+{
+  static QgsPropertiesDefinition properties;
+
+  if ( properties.isEmpty() )
+  {
+    properties =
+    {
+      { RootPath, QgsPropertyDefinition( "propertyRootPath", QgsPropertyDefinition::DataTypeString, QObject::tr( "Root path" ), QObject::tr( "string of variable length representing root path to attachment" ) ) },
+      { DocumentViewerContent, QgsPropertyDefinition( "documentViewerContent", QgsPropertyDefinition::DataTypeString, QObject::tr( "Document viewer content" ), QObject::tr( "string" ) + "<b>NoContent</b>|<b>Image</b>|<b>Web</b>" ) }
+    };
+  }
+  return properties;
+}
+
 QgsWidgetWrapper::QgsWidgetWrapper( QgsVectorLayer *vl, QWidget *editor, QWidget *parent )
   : QObject( parent )
   , mWidget( editor )

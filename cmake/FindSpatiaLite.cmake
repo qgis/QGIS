@@ -31,7 +31,7 @@ IF (APPLE)
     SET (CMAKE_FIND_FRAMEWORK_save ${CMAKE_FIND_FRAMEWORK} CACHE STRING "" FORCE)
     SET (CMAKE_FIND_FRAMEWORK "ONLY" CACHE STRING "" FORCE)
     FIND_PATH(SPATIALITE_INCLUDE_DIR SQLite3/spatialite.h)
-    # if no spatialite header, we don't want sqlite find below to succeed
+    # if no SpatiaLite header, we don't want SQLite find below to succeed
     IF (SPATIALITE_INCLUDE_DIR)
       FIND_LIBRARY(SPATIALITE_LIBRARY SQLite3)
       # FIND_PATH doesn't add "Headers" for a framework

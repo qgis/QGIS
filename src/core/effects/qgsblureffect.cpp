@@ -26,16 +26,6 @@ QgsPaintEffect *QgsBlurEffect::create( const QgsStringMap &map )
   return newEffect;
 }
 
-QgsBlurEffect::QgsBlurEffect()
-  : QgsPaintEffect()
-  , mBlurLevel( 10 )
-  , mBlurMethod( StackBlur )
-  , mTransparency( 0.0 )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-{
-
-}
-
 void QgsBlurEffect::draw( QgsRenderContext &context )
 {
   if ( !source() || !enabled() || !context.painter() )
@@ -68,8 +58,8 @@ void QgsBlurEffect::drawGaussianBlur( QgsRenderContext &context )
 
 void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )
 {
-  //transparency
-  QgsImageOperation::multiplyOpacity( image, 1.0 - mTransparency );
+  //opacity
+  QgsImageOperation::multiplyOpacity( image, mOpacity );
 
   QPainter *painter = context.painter();
   painter->save();
@@ -81,10 +71,10 @@ void QgsBlurEffect::drawBlurredImage( QgsRenderContext &context, QImage &image )
 QgsStringMap QgsBlurEffect::properties() const
 {
   QgsStringMap props;
-  props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
+  props.insert( QStringLiteral( "enabled" ), mEnabled ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( static_cast< int >( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( static_cast< int >( mBlendMode ) ) );
-  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
   props.insert( QStringLiteral( "blur_method" ), QString::number( static_cast< int >( mBlurMethod ) ) );
   return props;
@@ -98,11 +88,23 @@ void QgsBlurEffect::readProperties( const QgsStringMap &props )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
-  if ( ok )
+  if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    mTransparency = transparency;
+    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = 1.0 - transparency;
+    }
   }
+  else
+  {
+    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = opacity;
+    }
+  }
+
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
   int level = props.value( QStringLiteral( "blur_level" ) ).toInt( &ok );

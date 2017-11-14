@@ -24,7 +24,6 @@
 #include "qgsdxfwriter.h"
 #include "qgswmsgetcapabilities.h"
 #include "qgswmsgetmap.h"
-#include "qgswmsgetstyle.h"
 #include "qgswmsgetstyles.h"
 #include "qgswmsgetcontext.h"
 #include "qgswmsgetschemaextension.h"
@@ -97,7 +96,7 @@ namespace QgsWms
           QString format = params.value( QStringLiteral( "FORMAT" ) );
           if QSTR_COMPARE( format, "application/dxf" )
           {
-            writeAsDxf( mServerIface, versionString, request, response );
+            writeAsDxf( mServerIface, project, versionString, request, response );
           }
           else
           {
@@ -118,11 +117,11 @@ namespace QgsWms
         }
         else if ( QSTR_COMPARE( req, "GetStyle" ) )
         {
-          writeGetStyle( mServerIface, versionString, request, response );
+          writeGetStyle( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "GetStyles" ) )
         {
-          writeGetStyles( mServerIface, versionString, request, response );
+          writeGetStyles( mServerIface, project, versionString, request, response );
         }
         else if ( QSTR_COMPARE( req, "DescribeLayer" ) )
         {

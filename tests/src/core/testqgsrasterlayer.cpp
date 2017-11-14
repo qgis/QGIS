@@ -45,23 +45,16 @@
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
-#include "qgstestutils.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsRasterLayer : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsRasterLayer()
-      : mpRasterLayer( nullptr )
-      , mpLandsatRasterLayer( nullptr )
-      , mpFloat32RasterLayer( nullptr )
-      , mPngRasterLayer( nullptr )
-      , mGeoJp2RasterLayer( nullptr )
-      , mMapSettings( nullptr )
-    {}
+    TestQgsRasterLayer() = default;
     ~TestQgsRasterLayer()
     {
       delete mMapSettings;
@@ -120,9 +113,8 @@ class TestSignalReceiver : public QObject
   public:
     TestSignalReceiver()
       : QObject( nullptr )
-      , rendererChanged( false )
     {}
-    bool rendererChanged;
+    bool rendererChanged =  false ;
   public slots:
     void onRendererChanged()
     {
@@ -398,16 +390,16 @@ void TestQgsRasterLayer::checkStats()
   //QVERIFY( myStatistics.elementCount == 100 );
   QVERIFY( myStatistics.minimumValue == 0 );
   QVERIFY( myStatistics.maximumValue == 9 );
-  QVERIFY( qgsDoubleNear( myStatistics.mean, 4.5 ) );
+  QGSCOMPARENEAR( myStatistics.mean, 4.5, 4 * DBL_EPSILON );
   double stdDev = 2.87228132326901431;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
   mReport += QStringLiteral( "stdDev = %1 expected = %2<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev );
-  QVERIFY( qgsDoubleNear( myStatistics.stdDev, stdDev, 0.00000000000001 ) );
+  QGSCOMPARENEAR( myStatistics.stdDev, stdDev, 0.00000000000001 );
   mReport += QLatin1String( "<p>Passed</p>" );
 }
 
 // test scale_factor and offset - uses netcdf file which may not be supported
-// see http://hub.qgis.org/issues/8417
+// see https://issues.qgis.org/issues/8417
 void TestQgsRasterLayer::checkScaleOffset()
 {
   mReport += QLatin1String( "<h2>Check Stats with scale/offset</h2>\n" );
@@ -435,22 +427,22 @@ void TestQgsRasterLayer::checkScaleOffset()
   QVERIFY( myRasterLayer->height() == 10 );
   //QVERIFY( myStatistics.elementCount == 100 );
   double minVal = 0.0;
-  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.minimumValue ).arg( minVal ).arg( fabs( myStatistics.minimumValue - minVal ) );
+  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.minimumValue ).arg( minVal ).arg( std::fabs( myStatistics.minimumValue - minVal ) );
   double maxVal = 9.0;
-  mReport += QStringLiteral( "max = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.maximumValue ).arg( maxVal ).arg( fabs( myStatistics.maximumValue - maxVal ) );
+  mReport += QStringLiteral( "max = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.maximumValue ).arg( maxVal ).arg( std::fabs( myStatistics.maximumValue - maxVal ) );
   double meanVal = 4.5;
-  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.mean ).arg( meanVal ).arg( fabs( myStatistics.mean - meanVal ) );
-  QVERIFY( fabs( myStatistics.minimumValue - minVal ) < 0.0000001 );
-  QVERIFY( fabs( myStatistics.maximumValue - maxVal ) < 0.0000001 );
-  QVERIFY( fabs( myStatistics.mean - meanVal ) < 0.0000001 );
+  mReport += QStringLiteral( "min = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.mean ).arg( meanVal ).arg( std::fabs( myStatistics.mean - meanVal ) );
+  QVERIFY( std::fabs( myStatistics.minimumValue - minVal ) < 0.0000001 );
+  QVERIFY( std::fabs( myStatistics.maximumValue - maxVal ) < 0.0000001 );
+  QVERIFY( std::fabs( myStatistics.mean - meanVal ) < 0.0000001 );
 
   double stdDev = 2.87228615;
   // TODO: verify why GDAL stdDev is so different from generic (2.88675)
-  mReport += QStringLiteral( "stdDev = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev ).arg( fabs( myStatistics.stdDev - stdDev ) );
-  QVERIFY( fabs( myStatistics.stdDev - stdDev ) < 0.0000001 );
+  mReport += QStringLiteral( "stdDev = %1 expected = %2 diff = %3<br>\n" ).arg( myStatistics.stdDev ).arg( stdDev ).arg( std::fabs( myStatistics.stdDev - stdDev ) );
+  QVERIFY( std::fabs( myStatistics.stdDev - stdDev ) < 0.0000001 );
 
   QgsRasterDataProvider *myProvider = myRasterLayer->dataProvider();
-  QgsPoint myPoint( 1535030, 5083350 );
+  QgsPointXY myPoint( 1535030, 5083350 );
   QgsRectangle myRect( 1535030 - 5, 5083350 - 5, 1535030 + 5, 5083350 + 5 );
   QgsRasterIdentifyResult identifyResult = myProvider->identify( myPoint, QgsRaster::IdentifyFormatValue, myRect, 1, 1 );
 
@@ -474,8 +466,8 @@ void TestQgsRasterLayer::checkScaleOffset()
         double value = values.value( bandNo ).toDouble();
         valueString = QgsRasterBlock::printValue( value );
         mReport += QStringLiteral( " %1 = %2 <br>\n" ).arg( myProvider->generateBandName( bandNo ), valueString );
-        mReport += QStringLiteral( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( fabs( value - expected ) );
-        QVERIFY( fabs( value - expected ) < 0.0000001 );
+        mReport += QStringLiteral( " value = %1 expected = %2 diff = %3 <br>\n" ).arg( value ).arg( expected ).arg( std::fabs( value - expected ) );
+        QVERIFY( std::fabs( value - expected ) < 0.0000001 );
       }
     }
   }
@@ -505,7 +497,7 @@ void TestQgsRasterLayer::buildExternalOverviews()
   QVERIFY( mypLayer->isValid() );
 
   //
-  // Ok now we can go on to test
+  // OK now we can go on to test
   //
 
   QgsRaster::RasterPyramidsFormat myFormatFlag = QgsRaster::PyramidsGTiff;

@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -43,7 +52,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>
      </property>
@@ -55,8 +64,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>366</width>
-        <height>1241</height>
+        <width>368</width>
+        <height>1340</height>
        </rect>
       </property>
       <property name="sizePolicy">
@@ -81,28 +90,10 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout_5">
-          <item row="1" column="1">
-           <layout class="QHBoxLayout" name="horizontalLayout_6">
-            <item>
-             <widget class="QLineEdit" name="mScaleLineEdit">
-              <property name="inputMask">
-               <string/>
-              </property>
-             </widget>
-            </item>
-            <item>
-             <widget class="QgsPropertyOverrideButton" name="mScaleDDBtn">
-              <property name="text">
-               <string>...</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mMapRotationLabel">
+          <item row="3" column="0">
+           <widget class="QLabel" name="mMapRotationLabel_2">
             <property name="text">
-             <string>Map rotation</string>
+             <string>CRS</string>
             </property>
            </widget>
           </item>
@@ -110,8 +101,14 @@
            <layout class="QHBoxLayout" name="horizontalLayout_7">
             <item>
              <widget class="QgsDoubleSpinBox" name="mMapRotationSpinBox">
+              <property name="wrapping">
+               <bool>true</bool>
+              </property>
               <property name="suffix">
                <string> °</string>
+              </property>
+              <property name="minimum">
+               <double>-360.000000000000000</double>
               </property>
               <property name="maximum">
                <double>360.000000000000000</double>
@@ -121,7 +118,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mMapRotationDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -134,22 +131,19 @@
             </property>
            </widget>
           </item>
-          <item row="0" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_2">
+          <item row="1" column="1">
+           <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
-             <widget class="QComboBox" name="mPreviewModeComboBox">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
+             <widget class="QLineEdit" name="mScaleLineEdit">
+              <property name="inputMask">
+               <string/>
               </property>
              </widget>
             </item>
             <item>
-             <widget class="QPushButton" name="mUpdatePreviewButton">
+             <widget class="QgsPropertyOverrideButton" name="mScaleDDBtn">
               <property name="text">
-               <string>Update preview</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -165,17 +159,24 @@
             </property>
            </widget>
           </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="mMapRotationLabel_2">
-            <property name="text">
-             <string>CRS</string>
-            </property>
-           </widget>
-          </item>
           <item row="3" column="1">
            <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
             <property name="focusPolicy">
              <enum>Qt::StrongFocus</enum>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mMapRotationLabel">
+            <property name="text">
+             <string>Map rotation</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="0" colspan="2">
+           <widget class="QPushButton" name="mUpdatePreviewButton">
+            <property name="text">
+             <string>Update preview</string>
             </property>
            </widget>
           </item>
@@ -203,7 +204,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mStylePresetsDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -240,7 +241,7 @@
             <item>
              <widget class="QToolButton" name="mLayerListFromPresetButton">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
               <property name="popupMode">
                <enum>QToolButton::InstantPopup</enum>
@@ -250,7 +251,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mLayersDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -305,7 +306,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mXMinDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -332,7 +333,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mYMinDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -359,7 +360,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mXMaxDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -386,7 +387,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mYMaxDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -464,7 +465,7 @@
             <item>
              <widget class="QgsPropertyOverrideButton" name="mAtlasMarginDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -780,10 +781,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
-   <container>1</container>
+   <class>QgsPropertyOverrideButton</class>
+   <extends>QToolButton</extends>
+   <header>qgspropertyoverridebutton.h</header>
   </customwidget>
   <customwidget>
    <class>QgsDoubleSpinBox</class>
@@ -796,14 +796,21 @@
    <header>qgsspinbox.h</header>
   </customwidget>
   <customwidget>
-   <class>QgsPropertyOverrideButton</class>
-   <extends>QToolButton</extends>
-   <header>qgspropertyoverridebutton.h</header>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsBlendModeComboBox</class>
    <extends>QComboBox</extends>
    <header>qgsblendmodecombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsComposerItemComboBox</class>
@@ -820,7 +827,6 @@
  <tabstops>
   <tabstop>scrollArea</tabstop>
   <tabstop>groupBox</tabstop>
-  <tabstop>mPreviewModeComboBox</tabstop>
   <tabstop>mUpdatePreviewButton</tabstop>
   <tabstop>mScaleLineEdit</tabstop>
   <tabstop>mScaleDDBtn</tabstop>
@@ -876,6 +882,30 @@
   <tabstop>mGridPropertiesButton</tabstop>
  </tabstops>
  <resources>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
  </resources>
  <connections/>

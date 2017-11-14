@@ -53,8 +53,8 @@ QgsColorBrewerColorRampWidget::QgsColorBrewerColorRampWidget( const QgsColorBrew
   }
 
   updateUi();
-  connect( cboSchemeName, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setSchemeName() ) );
-  connect( cboColors, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setColors() ) );
+  connect( cboSchemeName, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorBrewerColorRampWidget::setSchemeName );
+  connect( cboColors, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsColorBrewerColorRampWidget::setColors );
 }
 
 void QgsColorBrewerColorRampWidget::setRamp( const QgsColorBrewerColorRamp &ramp )
@@ -125,9 +125,9 @@ QgsColorBrewerColorRampDialog::QgsColorBrewerColorRampDialog( const QgsColorBrew
   mWidget = new QgsColorBrewerColorRampWidget( ramp );
   vLayout->addWidget( mWidget );
   QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
-  connect( bbox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( bbox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( bbox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( bbox, &QDialogButtonBox::rejected, this, &QDialog::reject );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
-  connect( mWidget, SIGNAL( changed() ), this, SIGNAL( changed() ) );
+  connect( mWidget, &QgsColorBrewerColorRampWidget::changed, this, &QgsColorBrewerColorRampDialog::changed );
 }

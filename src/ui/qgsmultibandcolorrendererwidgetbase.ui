@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>3</number>
+   </property>
+   <property name="topMargin">
+    <number>3</number>
+   </property>
+   <property name="rightMargin">
+    <number>3</number>
+   </property>
+   <property name="bottomMargin">
     <number>3</number>
    </property>
    <item>
@@ -45,11 +54,11 @@ enhancement</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
        <property name="text">
         <string>Min</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -61,11 +70,11 @@ enhancement</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
        <property name="text">
         <string>Max</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -77,7 +86,7 @@ enhancement</string>
       </widget>
      </item>
      <item row="0" column="1" colspan="4">
-      <widget class="QComboBox" name="mRedBandComboBox"/>
+      <widget class="QgsRasterBandComboBox" name="mRedBandComboBox"/>
      </item>
      <item row="5" column="1">
       <widget class="QLabel" name="mBlueMinLabel">
@@ -87,11 +96,11 @@ enhancement</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
        <property name="text">
         <string>Min</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -103,16 +112,16 @@ enhancement</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
        <property name="text">
         <string>Max</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
      <item row="2" column="1" colspan="4">
-      <widget class="QComboBox" name="mGreenBandComboBox"/>
+      <widget class="QgsRasterBandComboBox" name="mGreenBandComboBox"/>
      </item>
      <item row="3" column="1">
       <widget class="QLabel" name="mGreenMinLabel">
@@ -122,11 +131,11 @@ enhancement</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
        <property name="text">
         <string>Min</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -138,16 +147,16 @@ enhancement</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
        <property name="text">
         <string>Max</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
      <item row="4" column="1" colspan="4">
-      <widget class="QComboBox" name="mBlueBandComboBox"/>
+      <widget class="QgsRasterBandComboBox" name="mBlueBandComboBox"/>
      </item>
      <item row="1" column="4">
       <widget class="QLineEdit" name="mRedMaxLineEdit">
@@ -171,11 +180,11 @@ enhancement</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
        <property name="text">
         <string>Blue band</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -201,11 +210,11 @@ enhancement</string>
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
-       <property name="alignment">
-        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-       </property>
        <property name="text">
         <string>Green band</string>
+       </property>
+       <property name="alignment">
+        <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
        </property>
       </widget>
      </item>
@@ -218,11 +227,18 @@ enhancement</string>
      </item>
     </layout>
    </item>
-   <item row="4" column="0" colspan="5"> 
+   <item>
     <widget class="QWidget" name="mMinMaxContainerWidget" native="true"/>
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>raster/qgsrasterbandcombobox.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mRedBandComboBox</tabstop>
   <tabstop>mRedMinLineEdit</tabstop>

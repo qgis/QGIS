@@ -18,17 +18,16 @@
 """
 
 
-from qgis.core import QgsSettings
+from qgis.core import (QgsSettings,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterExpression,
+                       QgsProcessingOutputString,
+                       QgsProcessingParameterString)
+
 from qgis.PyQt.QtWidgets import QComboBox
 
-from processing.core.parameters import (
-    ParameterString,
-    ParameterNumber,
-    ParameterFile,
-    ParameterTableField,
-    ParameterExpression
-)
-from processing.core.outputs import OutputString
 from processing.gui.wrappers import (
     WidgetWrapper,
     ExpressionWidgetWrapperMixin,
@@ -48,7 +47,7 @@ class ConnectionWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         for group in self.items():
             self._combo.addItem(*group)
         self._combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
-        return self.wrapWithExpressionButton(self._combo)
+        return self._combo
 
     def items(self):
         settings = QgsSettings()
@@ -57,8 +56,8 @@ class ConnectionWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
 
         if self.dialogType == DIALOG_MODELER:
             strings = self.dialog.getAvailableValuesOfType(
-                [ParameterString, ParameterNumber, ParameterFile,
-                 ParameterTableField, ParameterExpression], OutputString)
+                [QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile,
+                 QgsProcessingParameterField, QgsProcessingParameterExpression], QgsProcessingOutputString)
             items = items + [(self.dialog.resolveValueDescription(s), s) for s in strings]
 
         return items
@@ -87,11 +86,11 @@ class SchemaWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         self._combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
         self._combo.lineEdit().editingFinished.connect(lambda: self.widgetValueHasChanged.emit(self))
 
-        return self.wrapWithExpressionButton(self._combo)
+        return self._combo
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.param.name == self._connection_param:
+            if wrapper.param.name() == self._connection_param:
                 self.connection_wrapper = wrapper
                 self.setConnection(wrapper.value())
                 wrapper.widgetValueHasChanged.connect(self.connectionChanged)
@@ -105,7 +104,8 @@ class SchemaWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
 
     def setConnection(self, connection):
         self._connection = connection
-        if isinstance(connection, str):
+        # when there is NO connection (yet), this get's called with a ''-connection
+        if isinstance(connection, str) and connection != '':
             self._database = GeoDB.from_name(connection)
         else:
             self._database = None
@@ -123,8 +123,8 @@ class SchemaWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
 
         if self.dialogType == DIALOG_MODELER:
             strings = self.dialog.getAvailableValuesOfType(
-                [ParameterString, ParameterNumber, ParameterFile,
-                 ParameterTableField, ParameterExpression], OutputString)
+                [QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile,
+                 QgsProcessingParameterField, QgsProcessingParameterExpression], QgsProcessingOutputString)
             for text, data in [(self.dialog.resolveValueDescription(s), s) for s in strings]:
                 self._combo.addItem(text, data)
 
@@ -158,11 +158,11 @@ class TableWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         self._combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
         self._combo.lineEdit().editingFinished.connect(lambda: self.widgetValueHasChanged.emit(self))
 
-        return self.wrapWithExpressionButton(self._combo)
+        return self._combo
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
-            if wrapper.param.name == self._schema_param:
+            if wrapper.param.name() == self._schema_param:
                 self.schema_wrapper = wrapper
                 self.setSchema(wrapper.database(), wrapper.value())
                 wrapper.widgetValueHasChanged.connect(self.schemaChanged)
@@ -192,8 +192,8 @@ class TableWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
 
         if self.dialogType == DIALOG_MODELER:
             strings = self.dialog.getAvailableValuesOfType(
-                [ParameterString, ParameterNumber, ParameterFile,
-                 ParameterTableField, ParameterExpression], OutputString)
+                [QgsProcessingParameterString, QgsProcessingParameterNumber, QgsProcessingParameterFile,
+                 QgsProcessingParameterField, QgsProcessingParameterExpression], QgsProcessingOutputString)
             for text, data in [(self.dialog.resolveValueDescription(s), s) for s in strings]:
                 self._combo.addItem(text, data)
 

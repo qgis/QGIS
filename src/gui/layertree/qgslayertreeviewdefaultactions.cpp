@@ -34,14 +34,14 @@ QgsLayerTreeViewDefaultActions::QgsLayerTreeViewDefaultActions( QgsLayerTreeView
 QAction *QgsLayerTreeViewDefaultActions::actionAddGroup( QObject *parent )
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddGroup.svg" ) ), tr( "&Add Group" ), parent );
-  connect( a, SIGNAL( triggered() ), this, SLOT( addGroup() ) );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::addGroup );
   return a;
 }
 
 QAction *QgsLayerTreeViewDefaultActions::actionRemoveGroupOrLayer( QObject *parent )
 {
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionRemoveLayer.svg" ) ), tr( "&Remove" ), parent );
-  connect( a, SIGNAL( triggered() ), this, SLOT( removeGroupOrLayer() ) );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::removeGroupOrLayer );
   return a;
 }
 
@@ -52,7 +52,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject *parent )
     return nullptr;
 
   QAction *a = new QAction( tr( "&Show in Overview" ), parent );
-  connect( a, SIGNAL( triggered() ), this, SLOT( showInOverview() ) );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::showInOverview );
   a->setCheckable( true );
   a->setChecked( node->customProperty( QStringLiteral( "overview" ), 0 ).toInt() );
   return a;
@@ -61,7 +61,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowInOverview( QObject *parent )
 QAction *QgsLayerTreeViewDefaultActions::actionRenameGroupOrLayer( QObject *parent )
 {
   QAction *a = new QAction( tr( "Re&name" ), parent );
-  connect( a, SIGNAL( triggered() ), this, SLOT( renameGroupOrLayer() ) );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::renameGroupOrLayer );
   return a;
 }
 
@@ -72,7 +72,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionShowFeatureCount( QObject *parent
     return nullptr;
 
   QAction *a = new QAction( tr( "Show Feature Count" ), parent );
-  connect( a, SIGNAL( triggered() ), this, SLOT( showFeatureCount() ) );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::showFeatureCount );
   a->setCheckable( true );
   a->setChecked( node->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() );
   return a;
@@ -83,7 +83,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToLayer( QgsMapCanvas *canvas
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
                             tr( "&Zoom to Layer" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
-  connect( a, SIGNAL( triggered() ), this, SLOT( zoomToLayer() ) );
+  connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToLayer ) );
   return a;
 }
 
@@ -92,21 +92,21 @@ QAction *QgsLayerTreeViewDefaultActions::actionZoomToGroup( QgsMapCanvas *canvas
   QAction *a = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionZoomToLayer.svg" ) ),
                             tr( "&Zoom to Group" ), parent );
   a->setData( QVariant::fromValue( reinterpret_cast<void *>( canvas ) ) );
-  connect( a, SIGNAL( triggered() ), this, SLOT( zoomToGroup() ) );
+  connect( a, &QAction::triggered, this, static_cast<void ( QgsLayerTreeViewDefaultActions::* )()>( &QgsLayerTreeViewDefaultActions::zoomToGroup ) );
   return a;
 }
 
 QAction *QgsLayerTreeViewDefaultActions::actionMakeTopLevel( QObject *parent )
 {
   QAction *a = new QAction( tr( "&Move to Top-level" ), parent );
-  connect( a, SIGNAL( triggered() ), this, SLOT( makeTopLevel() ) );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::makeTopLevel );
   return a;
 }
 
 QAction *QgsLayerTreeViewDefaultActions::actionGroupSelected( QObject *parent )
 {
   QAction *a = new QAction( tr( "&Group Selected" ), parent );
-  connect( a, SIGNAL( triggered() ), this, SLOT( groupSelected() ) );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::groupSelected );
   return a;
 }
 
@@ -119,7 +119,7 @@ QAction *QgsLayerTreeViewDefaultActions::actionMutuallyExclusiveGroup( QObject *
   QAction *a = new QAction( tr( "Mutually Exclusive Group" ), parent );
   a->setCheckable( true );
   a->setChecked( QgsLayerTree::toGroup( node )->isMutuallyExclusive() );
-  connect( a, SIGNAL( triggered() ), this, SLOT( mutuallyExclusiveGroup() ) );
+  connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::mutuallyExclusiveGroup );
   return a;
 }
 

@@ -19,6 +19,7 @@
 #define QGSCOMPOSERITEMCOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
 #include <QDomDocument>
 
 #include "qgis_core.h"
@@ -26,13 +27,14 @@
 class QgsComposerItem;
 class QgsComposerMultiFrame;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Undo command to undo/redo all composer item related changes
 */
 class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
 {
   public:
-    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent = nullptr );
+    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
 
     //! Reverses the command
     void undo() override;
@@ -50,8 +52,9 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     //! Returns true if previous state and after state are valid and different
     bool containsChange() const;
 
-    /** Returns the target item the command applies to.
-     * @returns target composer item
+    /**
+     * Returns the target item the command applies to.
+     * \returns target composer item
      */
     QgsComposerItem *item() const;
 
@@ -63,8 +66,10 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     //! XML containing the state after executing the command
     QDomDocument mAfterState;
 
-    //! Parameters for frame items
-    //! Parent multiframe
+    /**
+     * Parameters for frame items
+     * Parent multiframe
+     */
     QgsComposerMultiFrame *mMultiFrame = nullptr;
     int mFrameNumber;
 
@@ -75,7 +80,8 @@ class CORE_EXPORT QgsComposerItemCommand: public QUndoCommand
     void restoreState( QDomDocument &stateDoc ) const;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
   newest after state. The purpose is to avoid too many micro changes in the history
 */
@@ -153,7 +159,7 @@ class CORE_EXPORT QgsComposerMergeCommand: public QgsComposerItemCommand
       ItemBackgroundColor,
       ItemMove,
       ItemRotation,
-      ItemTransparency,
+      ItemOpacity, //!< Item opacity
       ItemZoomContent
     };
 

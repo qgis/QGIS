@@ -36,22 +36,53 @@ QgsLabelPropertyDialog::QgsLabelPropertyDialog( const QString &layerId, const QS
   QDialog( parent, f ), mLabelFont( labelFont ), mCurLabelField( -1 )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::clicked, this, &QgsLabelPropertyDialog::buttonBox_clicked );
+  connect( mShowLabelChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mShowLabelChkbx_toggled );
+  connect( mAlwaysShowChkbx, &QCheckBox::toggled, this, &QgsLabelPropertyDialog::mAlwaysShowChkbx_toggled );
+  connect( mLabelDistanceSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mLabelDistanceSpinBox_valueChanged );
+  connect( mXCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mXCoordSpinBox_valueChanged );
+  connect( mYCoordSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged );
+  connect( mFontFamilyCmbBx, &QFontComboBox::currentFontChanged, this, &QgsLabelPropertyDialog::mFontFamilyCmbBx_currentFontChanged );
+  connect( mFontStyleCmbBx, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mFontStyleCmbBx_currentIndexChanged );
+  connect( mFontUnderlineBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontUnderlineBtn_toggled );
+  connect( mFontStrikethroughBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontStrikethroughBtn_toggled );
+  connect( mFontBoldBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontBoldBtn_toggled );
+  connect( mFontItalicBtn, &QToolButton::toggled, this, &QgsLabelPropertyDialog::mFontItalicBtn_toggled );
+  connect( mFontSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mFontSizeSpinBox_valueChanged );
+  connect( mBufferSizeSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mBufferSizeSpinBox_valueChanged );
+  connect( mRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLabelPropertyDialog::mRotationSpinBox_valueChanged );
+  connect( mFontColorButton, &QgsColorButton::colorChanged, this, &QgsLabelPropertyDialog::mFontColorButton_colorChanged );
+  connect( mBufferColorButton, &QgsColorButton::colorChanged, this, &QgsLabelPropertyDialog::mBufferColorButton_colorChanged );
+  connect( mHaliComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mHaliComboBox_currentIndexChanged );
+  connect( mValiComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLabelPropertyDialog::mValiComboBox_currentIndexChanged );
+  connect( mLabelTextLineEdit, &QLineEdit::textChanged, this, &QgsLabelPropertyDialog::mLabelTextLineEdit_textChanged );
+  mRotationSpinBox->setClearValue( 0 );
   fillHaliComboBox();
   fillValiComboBox();
 
   init( layerId, providerId, featureId, labelText );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ChangeLabelProps/geometry" ) ).toByteArray() );
+  connect( mMinScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsLabelPropertyDialog::minScaleChanged );
+  connect( mMaxScaleWidget, &QgsScaleWidget::scaleChanged, this, &QgsLabelPropertyDialog::maxScaleChanged );
 }
 
 QgsLabelPropertyDialog::~QgsLabelPropertyDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ChangeLabelProps/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ChangeLabelProps/geometry" ), saveGeometry() );
 }
 
-void QgsLabelPropertyDialog::on_buttonBox_clicked( QAbstractButton *button )
+void QgsLabelPropertyDialog::setMapCanvas( QgsMapCanvas *canvas )
+{
+  mMinScaleWidget->setMapCanvas( canvas );
+  mMinScaleWidget->setShowCurrentScaleButton( true );
+  mMaxScaleWidget->setMapCanvas( canvas );
+  mMaxScaleWidget->setShowCurrentScaleButton( true );
+}
+
+void QgsLabelPropertyDialog::buttonBox_clicked( QAbstractButton *button )
 {
   if ( buttonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {
@@ -82,7 +113,7 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
 
   blockElementSignals( true );
 
-  QgsPalLayerSettings layerSettings = vlayer->labeling()->settings( vlayer, providerId );
+  QgsPalLayerSettings layerSettings = vlayer->labeling()->settings( providerId );
 
   //get label field and fill line edit
   if ( layerSettings.isExpression && !labelText.isNull() )
@@ -93,13 +124,19 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   }
   else
   {
-    QString labelFieldName = vlayer->customProperty( QStringLiteral( "labeling/fieldName" ) ).toString();
+    QString labelFieldName = layerSettings.fieldName;
     if ( !labelFieldName.isEmpty() )
     {
       mCurLabelField = vlayer->fields().lookupField( labelFieldName );
       if ( mCurLabelField >= 0 )
       {
         mLabelTextLineEdit->setText( attributeValues.at( mCurLabelField ).toString() );
+
+        if ( vlayer->isEditable() )
+          mLabelTextLineEdit->setEnabled( true );
+        else
+          mLabelTextLineEdit->setEnabled( false );
+
         const QgsFields &layerFields = vlayer->fields();
         switch ( layerFields.at( mCurLabelField ).type() )
         {
@@ -142,12 +179,12 @@ void QgsLabelPropertyDialog::init( const QString &layerId, const QString &provid
   mShowLabelChkbx->setChecked( true );
   mFontColorButton->setColor( format.color() );
   mBufferColorButton->setColor( buffer.color() );
-  mMinScaleSpinBox->setValue( layerSettings.scaleMin );
-  mMaxScaleSpinBox->setValue( layerSettings.scaleMax );
+  mMinScaleWidget->setScale( layerSettings.minimumScale );
+  mMaxScaleWidget->setScale( layerSettings.maximumScale );
   mHaliComboBox->setCurrentIndex( mHaliComboBox->findData( "Left" ) );
   mValiComboBox->setCurrentIndex( mValiComboBox->findData( "Bottom" ) );
-  mFontColorButton->setColorDialogTitle( tr( "Font color" ) );
-  mBufferColorButton->setColorDialogTitle( tr( "Buffer color" ) );
+  mFontColorButton->setColorDialogTitle( tr( "Font Color" ) );
+  mBufferColorButton->setColorDialogTitle( tr( "Buffer Color" ) );
 
   disableGuiElements();
 
@@ -165,8 +202,8 @@ void QgsLabelPropertyDialog::disableGuiElements()
 {
   mShowLabelChkbx->setEnabled( false );
   mAlwaysShowChkbx->setEnabled( false );
-  mMinScaleSpinBox->setEnabled( false );
-  mMaxScaleSpinBox->setEnabled( false );
+  mMinScaleWidget->setEnabled( false );
+  mMaxScaleWidget->setEnabled( false );
   mFontFamilyCmbBx->setEnabled( false );
   mFontStyleCmbBx->setEnabled( false );
   mFontUnderlineBtn->setEnabled( false );
@@ -189,8 +226,8 @@ void QgsLabelPropertyDialog::blockElementSignals( bool block )
 {
   mShowLabelChkbx->blockSignals( block );
   mAlwaysShowChkbx->blockSignals( block );
-  mMinScaleSpinBox->blockSignals( block );
-  mMaxScaleSpinBox->blockSignals( block );
+  mMinScaleWidget->blockSignals( block );
+  mMaxScaleWidget->blockSignals( block );
   mFontFamilyCmbBx->blockSignals( block );
   mFontStyleCmbBx->blockSignals( block );
   mFontUnderlineBtn->blockSignals( block );
@@ -248,21 +285,21 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::AlwaysShow:
         mAlwaysShowChkbx->setChecked( result.toBool() );
         break;
-      case QgsPalLayerSettings::MinScale:
+      case QgsPalLayerSettings::MinimumScale:
       {
-        int minScale = result.toInt( &ok );
+        double minScale = result.toDouble( &ok );
         if ( ok )
         {
-          mMinScaleSpinBox->setValue( minScale );
+          mMinScaleWidget->setScale( minScale );
         }
         break;
       }
-      case QgsPalLayerSettings::MaxScale:
+      case QgsPalLayerSettings::MaximumScale:
       {
-        int maxScale = result.toInt( &ok );
+        double maxScale = result.toDouble( &ok );
         if ( ok )
         {
-          mMaxScaleSpinBox->setValue( maxScale );
+          mMaxScaleWidget->setScale( maxScale );
         }
         break;
       }
@@ -314,7 +351,7 @@ void QgsLabelPropertyDialog::setDataDefinedValues( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::Color:
         mFontColorButton->setColor( QColor( result.toString() ) );
         break;
-      case QgsPalLayerSettings::Rotation:
+      case QgsPalLayerSettings::LabelRotation:
       {
         double rot = result.toDouble( &ok );
         if ( ok )
@@ -377,11 +414,11 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::AlwaysShow:
         mAlwaysShowChkbx->setEnabled( true );
         break;
-      case QgsPalLayerSettings::MinScale:
-        mMinScaleSpinBox->setEnabled( true );
+      case QgsPalLayerSettings::MinimumScale:
+        mMinScaleWidget->setEnabled( true );
         break;
-      case QgsPalLayerSettings::MaxScale:
-        mMaxScaleSpinBox->setEnabled( true );
+      case QgsPalLayerSettings::MaximumScale:
+        mMaxScaleWidget->setEnabled( true );
         break;
       case QgsPalLayerSettings::BufferSize:
         mBufferSizeSpinBox->setEnabled( true );
@@ -407,7 +444,7 @@ void QgsLabelPropertyDialog::enableDataDefinedWidgets( QgsVectorLayer *vlayer )
       case QgsPalLayerSettings::Color:
         mFontColorButton->setEnabled( true );
         break;
-      case QgsPalLayerSettings::Rotation:
+      case QgsPalLayerSettings::LabelRotation:
         mRotationSpinBox->setEnabled( true );
         break;
       //font related properties
@@ -493,27 +530,27 @@ void QgsLabelPropertyDialog::fillValiComboBox()
   mValiComboBox->addItem( tr( "Top" ), "Top" );
 }
 
-void QgsLabelPropertyDialog::on_mShowLabelChkbx_toggled( bool chkd )
+void QgsLabelPropertyDialog::mShowLabelChkbx_toggled( bool chkd )
 {
   insertChangedValue( QgsPalLayerSettings::Show, ( chkd ? 1 : 0 ) );
 }
 
-void QgsLabelPropertyDialog::on_mAlwaysShowChkbx_toggled( bool chkd )
+void QgsLabelPropertyDialog::mAlwaysShowChkbx_toggled( bool chkd )
 {
   insertChangedValue( QgsPalLayerSettings::AlwaysShow, ( chkd ? 1 : 0 ) );
 }
 
-void QgsLabelPropertyDialog::on_mMinScaleSpinBox_valueChanged( int i )
+void QgsLabelPropertyDialog::minScaleChanged( double scale )
 {
-  insertChangedValue( QgsPalLayerSettings::MinScale, i );
+  insertChangedValue( QgsPalLayerSettings::MinimumScale, scale );
 }
 
-void QgsLabelPropertyDialog::on_mMaxScaleSpinBox_valueChanged( int i )
+void QgsLabelPropertyDialog::maxScaleChanged( double scale )
 {
-  insertChangedValue( QgsPalLayerSettings::MaxScale, i );
+  insertChangedValue( QgsPalLayerSettings::MaximumScale, scale );
 }
 
-void QgsLabelPropertyDialog::on_mLabelDistanceSpinBox_valueChanged( double d )
+void QgsLabelPropertyDialog::mLabelDistanceSpinBox_valueChanged( double d )
 {
   QVariant distance( d );
   if ( d < 0 )
@@ -524,7 +561,7 @@ void QgsLabelPropertyDialog::on_mLabelDistanceSpinBox_valueChanged( double d )
   insertChangedValue( QgsPalLayerSettings::LabelDistance, distance );
 }
 
-void QgsLabelPropertyDialog::on_mXCoordSpinBox_valueChanged( double d )
+void QgsLabelPropertyDialog::mXCoordSpinBox_valueChanged( double d )
 {
   QVariant x( d );
   if ( d < mXCoordSpinBox->minimum() + mXCoordSpinBox->singleStep() )
@@ -535,7 +572,7 @@ void QgsLabelPropertyDialog::on_mXCoordSpinBox_valueChanged( double d )
   insertChangedValue( QgsPalLayerSettings::PositionX, x );
 }
 
-void QgsLabelPropertyDialog::on_mYCoordSpinBox_valueChanged( double d )
+void QgsLabelPropertyDialog::mYCoordSpinBox_valueChanged( double d )
 {
   QVariant y( d );
   if ( d < mYCoordSpinBox->minimum() + mYCoordSpinBox->singleStep() )
@@ -546,49 +583,49 @@ void QgsLabelPropertyDialog::on_mYCoordSpinBox_valueChanged( double d )
   insertChangedValue( QgsPalLayerSettings::PositionY, y );
 }
 
-void QgsLabelPropertyDialog::on_mFontFamilyCmbBx_currentFontChanged( const QFont &f )
+void QgsLabelPropertyDialog::mFontFamilyCmbBx_currentFontChanged( const QFont &f )
 {
   mLabelFont.setFamily( f.family() );
   updateFont( mLabelFont );
   insertChangedValue( QgsPalLayerSettings::Family, f.family() );
 }
 
-void QgsLabelPropertyDialog::on_mFontStyleCmbBx_currentIndexChanged( const QString &text )
+void QgsLabelPropertyDialog::mFontStyleCmbBx_currentIndexChanged( const QString &text )
 {
   QgsFontUtils::updateFontViaStyle( mLabelFont, text );
   updateFont( mLabelFont );
   insertChangedValue( QgsPalLayerSettings::FontStyle, text );
 }
 
-void QgsLabelPropertyDialog::on_mFontUnderlineBtn_toggled( bool ckd )
+void QgsLabelPropertyDialog::mFontUnderlineBtn_toggled( bool ckd )
 {
   mLabelFont.setUnderline( ckd );
   updateFont( mLabelFont );
   insertChangedValue( QgsPalLayerSettings::Underline, ckd );
 }
 
-void QgsLabelPropertyDialog::on_mFontStrikethroughBtn_toggled( bool ckd )
+void QgsLabelPropertyDialog::mFontStrikethroughBtn_toggled( bool ckd )
 {
   mLabelFont.setStrikeOut( ckd );
   updateFont( mLabelFont );
   insertChangedValue( QgsPalLayerSettings::Strikeout, ckd );
 }
 
-void QgsLabelPropertyDialog::on_mFontBoldBtn_toggled( bool ckd )
+void QgsLabelPropertyDialog::mFontBoldBtn_toggled( bool ckd )
 {
   mLabelFont.setBold( ckd );
   updateFont( mLabelFont );
   insertChangedValue( QgsPalLayerSettings::Bold, ckd );
 }
 
-void QgsLabelPropertyDialog::on_mFontItalicBtn_toggled( bool ckd )
+void QgsLabelPropertyDialog::mFontItalicBtn_toggled( bool ckd )
 {
   mLabelFont.setItalic( ckd );
   updateFont( mLabelFont );
   insertChangedValue( QgsPalLayerSettings::Italic, ckd );
 }
 
-void QgsLabelPropertyDialog::on_mFontSizeSpinBox_valueChanged( double d )
+void QgsLabelPropertyDialog::mFontSizeSpinBox_valueChanged( double d )
 {
   QVariant size( d );
   if ( d <= 0 )
@@ -599,7 +636,7 @@ void QgsLabelPropertyDialog::on_mFontSizeSpinBox_valueChanged( double d )
   insertChangedValue( QgsPalLayerSettings::Size, size );
 }
 
-void QgsLabelPropertyDialog::on_mBufferSizeSpinBox_valueChanged( double d )
+void QgsLabelPropertyDialog::mBufferSizeSpinBox_valueChanged( double d )
 {
   QVariant size( d );
   if ( d < 0 )
@@ -610,7 +647,7 @@ void QgsLabelPropertyDialog::on_mBufferSizeSpinBox_valueChanged( double d )
   insertChangedValue( QgsPalLayerSettings::BufferSize, size );
 }
 
-void QgsLabelPropertyDialog::on_mRotationSpinBox_valueChanged( double d )
+void QgsLabelPropertyDialog::mRotationSpinBox_valueChanged( double d )
 {
   QVariant rotation( d );
   if ( d < 0 )
@@ -618,30 +655,30 @@ void QgsLabelPropertyDialog::on_mRotationSpinBox_valueChanged( double d )
     //null value so that size is reset to default
     rotation.clear();
   }
-  insertChangedValue( QgsPalLayerSettings::Rotation, rotation );
+  insertChangedValue( QgsPalLayerSettings::LabelRotation, rotation );
 }
 
-void QgsLabelPropertyDialog::on_mFontColorButton_colorChanged( const QColor &color )
+void QgsLabelPropertyDialog::mFontColorButton_colorChanged( const QColor &color )
 {
   insertChangedValue( QgsPalLayerSettings::Color, color.name() );
 }
 
-void QgsLabelPropertyDialog::on_mBufferColorButton_colorChanged( const QColor &color )
+void QgsLabelPropertyDialog::mBufferColorButton_colorChanged( const QColor &color )
 {
   insertChangedValue( QgsPalLayerSettings::BufferColor, color.name() );
 }
 
-void QgsLabelPropertyDialog::on_mHaliComboBox_currentIndexChanged( const int index )
+void QgsLabelPropertyDialog::mHaliComboBox_currentIndexChanged( const int index )
 {
   insertChangedValue( QgsPalLayerSettings::Hali, mHaliComboBox->itemData( index ) );
 }
 
-void QgsLabelPropertyDialog::on_mValiComboBox_currentIndexChanged( const int index )
+void QgsLabelPropertyDialog::mValiComboBox_currentIndexChanged( const int index )
 {
   insertChangedValue( QgsPalLayerSettings::Vali, mValiComboBox->itemData( index ) );
 }
 
-void QgsLabelPropertyDialog::on_mLabelTextLineEdit_textChanged( const QString &text )
+void QgsLabelPropertyDialog::mLabelTextLineEdit_textChanged( const QString &text )
 {
   if ( mCurLabelField != -1 )
   {

@@ -22,11 +22,5 @@
       <ElementPath>MEAN_Y</ElementPath>
       <Type>Real</Type>
     </PropertyDefn>
-    <PropertyDefn>
-      <Name>UID</Name>
-      <ElementPath>UID</ElementPath>
-      <Type>String</Type>
-      <Width>12</Width>
-    </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>

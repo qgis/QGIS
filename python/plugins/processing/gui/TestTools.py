@@ -27,38 +27,36 @@ __copyright__ = '(C) 2013, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 import os
+import posixpath
 import re
 import yaml
 import hashlib
+import ast
 
 from osgeo import gdal
 from osgeo.gdalconst import GA_ReadOnly
 
 from numpy import nan_to_num
 
+from qgis.core import (QgsApplication,
+                       QgsProcessing,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterBoolean,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFile,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterMultipleLayers,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingParameterEnum)
 from qgis.PyQt.QtCore import QCoreApplication, QMetaObject
 from qgis.PyQt.QtWidgets import QDialog, QVBoxLayout, QTextEdit, QMessageBox
-
-from processing.core.Processing import Processing
-from processing.core.outputs import (
-    OutputNumber,
-    OutputString,
-    OutputRaster,
-    OutputVector,
-    OutputHTML,
-    OutputFile
-)
-
-from processing.core.parameters import (
-    ParameterRaster,
-    ParameterVector,
-    ParameterMultipleInput,
-    ParameterFile,
-    ParameterString,
-    ParameterNumber,
-    ParameterBoolean,
-    ParameterTable
-)
 
 
 def extractSchemaPath(filepath):
@@ -85,7 +83,8 @@ def extractSchemaPath(filepath):
         if part == 'testdata' and not localpath:
             localparts = parts
             localparts.reverse()
-            localpath = os.path.join(*localparts)
+            # we always want posix style paths here
+            localpath = posixpath.join(*localparts)
 
         parts.append(part)
 
@@ -130,31 +129,43 @@ def parseParameters(command):
         pos = m.end(0)
 
 
+def splitAlgIdAndParameters(command):
+    """
+    Extracts the algorithm ID and input parameter list from a processing runalg command
+    """
+    exp = re.compile(r"""['"](.*?)['"]\s*,\s*(.*)""")
+    m = exp.search(command[len('processing.run('):-1])
+    return m.group(1), ast.literal_eval(m.group(2))
+
+
 def createTest(text):
     definition = {}
 
-    tokens = list(parseParameters(text[len('processing.runalg('):-1]))
-    cmdname = tokens[0]
-    alg = Processing.getAlgorithm(cmdname)
+    alg_id, parameters = splitAlgIdAndParameters(text)
 
-    definition['name'] = 'Test ({})'.format(cmdname)
-    definition['algorithm'] = cmdname
+    alg = QgsApplication.processingRegistry().createAlgorithmById(alg_id)
+
+    definition['name'] = 'Test ({})'.format(alg_id)
+    definition['algorithm'] = alg_id
 
     params = {}
     results = {}
 
     i = 0
-    for param in alg.parameters:
-        if param.hidden:
+    for param in alg.parameterDefinitions():
+        if param.flags() & QgsProcessingParameterDefinition.FlagHidden or param.isDestination():
+            continue
+
+        if not param.name() in parameters:
             continue
 
         i += 1
-        token = tokens[i]
+        token = parameters[param.name()]
         # Handle empty parameters that are optionals
-        if param.optional and token is None:
+        if param.flags() & QgsProcessingParameterDefinition.FlagOptional and token is None:
             continue
 
-        if isinstance(param, ParameterVector):
+        if isinstance(param, (QgsProcessingParameterVectorLayer, QgsProcessingParameterFeatureSource)):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'vector',
@@ -163,8 +174,8 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
-        elif isinstance(param, ParameterRaster):
+            params[param.name()] = p
+        elif isinstance(param, QgsProcessingParameterRasterLayer):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'raster',
@@ -173,28 +184,19 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
-        elif isinstance(param, ParameterTable):
-            schema, filepath = extractSchemaPath(token)
-            p = {
-                'type': 'table',
-                'name': filepath
-            }
-            if not schema:
-                p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
-
-            params[param.name] = p
-        elif isinstance(param, ParameterMultipleInput):
-            multiparams = token.split(';')
+            params[param.name()] = p
+        elif isinstance(param, QgsProcessingParameterMultipleLayers):
+            multiparams = token
             newparam = []
 
             # Handle datatype detection
-            dataType = param.dataType()
-            if dataType in ['points', 'lines', 'polygons', 'any vectors']:
+            dataType = param.layerType()
+            if dataType in [QgsProcessing.TypeVectorAnyGeometry, QgsProcessing.TypeVectorPoint, QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVector]:
                 dataType = 'vector'
             else:
                 dataType = 'raster'
 
+            schema = None
             for mp in multiparams:
                 schema, filepath = extractSchemaPath(mp)
                 newparam.append({
@@ -208,8 +210,8 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
-        elif isinstance(param, ParameterFile):
+            params[param.name()] = p
+        elif isinstance(param, QgsProcessingParameterFile):
             schema, filepath = extractSchemaPath(token)
             p = {
                 'type': 'file',
@@ -218,31 +220,36 @@ def createTest(text):
             if not schema:
                 p['location'] = '[The source data is not in the testdata directory. Please use data in the processing/tests/testdata folder.]'
 
-            params[param.name] = p
-        elif isinstance(param, ParameterString):
-            params[param.name] = token
-        elif isinstance(param, ParameterBoolean):
-            params[param.name] = token
-        elif isinstance(param, ParameterNumber):
-            if param.isInteger:
-                params[param.name] = int(token)
+            params[param.name()] = p
+        elif isinstance(param, QgsProcessingParameterString):
+            params[param.name()] = token
+        elif isinstance(param, QgsProcessingParameterBoolean):
+            params[param.name()] = token
+        elif isinstance(param, QgsProcessingParameterNumber):
+            if param.dataType() == QgsProcessingParameterNumber.Integer:
+                params[param.name()] = int(token)
             else:
-                params[param.name] = float(token)
-        else:
+                params[param.name()] = float(token)
+        elif isinstance(param, QgsProcessingParameterEnum):
+            if isinstance(token, list):
+                params[param.name()] = [int(t) for t in token]
+            else:
+                params[param.name()] = int(token)
+        elif isinstance(param, QgsProcessingParameterBand):
+            params[param.name()] = int(token)
+        elif token:
             if token[0] == '"':
                 token = token[1:]
             if token[-1] == '"':
                 token = token[:-1]
-            params[param.name] = token
+            params[param.name()] = token
 
     definition['params'] = params
 
-    for i, out in enumerate([out for out in alg.outputs if not out.hidden]):
-        token = tokens[i - alg.getVisibleOutputsCount()]
+    for i, out in enumerate([out for out in alg.destinationParameterDefinitions() if not out.flags() & QgsProcessingParameterDefinition.FlagHidden]):
+        token = parameters[out.name()]
 
-        if isinstance(out, (OutputNumber, OutputString)):
-            results[out.name] = str(out)
-        elif isinstance(out, OutputRaster):
+        if isinstance(out, QgsProcessingParameterRasterDestination):
             if token is None:
                 QMessageBox.warning(None,
                                     tr('Error'),
@@ -256,26 +263,26 @@ def createTest(text):
             dataArray = nan_to_num(dataset.ReadAsArray(0))
             strhash = hashlib.sha224(dataArray.data).hexdigest()
 
-            results[out.name] = {
+            results[out.name()] = {
                 'type': 'rasterhash',
                 'hash': strhash
             }
-        elif isinstance(out, OutputVector):
+        elif isinstance(out, (QgsProcessingParameterVectorDestination, QgsProcessingParameterFeatureSink)):
             schema, filepath = extractSchemaPath(token)
-            results[out.name] = {
+            results[out.name()] = {
                 'type': 'vector',
                 'name': filepath
             }
             if not schema:
-                results[out.name]['location'] = '[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]'
-        elif isinstance(out, OutputHTML) or isinstance(out, OutputFile):
+                results[out.name()]['location'] = '[The expected result data is not in the testdata directory. Please write it to processing/tests/testdata/expected. Prefer gml files.]'
+        elif isinstance(out, QgsProcessingParameterFileDestination):
             schema, filepath = extractSchemaPath(token)
-            results[out.name] = {
+            results[out.name()] = {
                 'type': 'file',
                 'name': filepath
             }
             if not schema:
-                results[out.name]['location'] = '[The expected result file is not in the testdata directory. Please redirect the output to processing/tests/testdata/expected.]'
+                results[out.name()]['location'] = '[The expected result file is not in the testdata directory. Please redirect the output to processing/tests/testdata/expected.]'
 
     definition['results'] = results
     dlg = ShowTestDialog(yaml.dump([definition], default_flow_style=False))

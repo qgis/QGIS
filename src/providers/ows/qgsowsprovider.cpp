@@ -29,10 +29,6 @@ QgsOwsProvider::QgsOwsProvider( const QString &uri )
 {
 }
 
-QgsOwsProvider::~QgsOwsProvider()
-{
-}
-
 QGISEXTERN QgsOwsProvider *classFactory( const QString *uri )
 {
   return new QgsOwsProvider( *uri );

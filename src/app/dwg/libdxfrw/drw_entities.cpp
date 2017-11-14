@@ -28,15 +28,15 @@
     throw e; \
   }
 
-//! Calculate arbitary axis
+//! Calculate arbitrary axis
 /*!
-*   Calculate arbitary axis for apply extrusions
+*   Calculate arbitrary axis for apply extrusions
 *  @author Rallaz
 */
 void DRW_Entity::calculateAxis( DRW_Coord extPoint )
 {
   //Follow the arbitrary DXF definitions for extrusion axes.
-  if ( fabs( extPoint.x ) < 0.015625 && fabs( extPoint.y ) < 0.015625 )
+  if ( std::fabs( extPoint.x ) < 0.015625 && std::fabs( extPoint.y ) < 0.015625 )
   {
     //If we get here, implement Ax = Wy x N where Wy is [0,1,0] per the DXF spec.
     //The cross product works out to Wy.y*N.z-Wy.z*N.y, Wy.z*N.x-Wy.x*N.z, Wy.x*N.y-Wy.y*N.x
@@ -65,9 +65,9 @@ void DRW_Entity::calculateAxis( DRW_Coord extPoint )
   extAxisY.unitize();
 }
 
-//! Extrude a point using arbitary axis
+//! Extrude a point using arbitrary axis
 /*!
-*   apply extrusion in a point using arbitary axis (previous calculated)
+*   apply extrusion in a point using arbitrary axis (previously calculated)
 *  @author Rallaz
 */
 void DRW_Entity::extrudePoint( DRW_Coord extPoint, DRW_Coord *point )
@@ -299,7 +299,7 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strB
         for ( int i = 0; i < strLength + 1; i++ ) //string length + null terminating char
         {
           duint8 dxfChar = tmpExtDataBuf.getRawChar8();
-          l << QString( "0x%1" ).arg( dxfChar, 0, 16 );
+          l << QStringLiteral( "0x%1" ).arg( dxfChar, 0, 16 );
         }
 
         QgsDebugMsg( QString( "strLength:%1; str codepage:%2; %3" ).arg( strLength ).arg( cp ).arg( l.join( " " ) ) );
@@ -376,7 +376,7 @@ bool DRW_Entity::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *strB
     QgsDebugMsg( QString( "haveNextLinks (forced): %1" ).arg( haveNextLinks ) );
   }
 //ENC color
-  color = buf->getEnColor( version, color24, transparency ); //BS or CMC //ok for R14 or negate
+  color = buf->getEnColor( version, color24, transparency ); //BS or CMC //OK for R14 or negate
   ltypeScale = buf->getBitDouble(); //BD
   QgsDebugMsg( QString( " entity color:%1 ltScale:%2" ).arg( color ).arg( ltypeScale ) );
 
@@ -797,7 +797,7 @@ void DRW_Arc::applyExtrusion()
     // Note that the following code only handles the special case where there is a 2D
     // drawing with the z axis heading into the paper (or rather screen). An arbitrary
     // extrusion axis (with x and y values greater than 1/64) may still have issues.
-    if ( fabs( extPoint.x ) < 0.015625 && fabs( extPoint.y ) < 0.015625 && extPoint.z < 0.0 )
+    if ( std::fabs( extPoint.x ) < 0.015625 && std::fabs( extPoint.y ) < 0.015625 && extPoint.z < 0.0 )
     {
       staangle = M_PI - staangle;
       endangle = M_PI - endangle;
@@ -881,11 +881,11 @@ void DRW_Ellipse::applyExtrusion()
   {
     calculateAxis( extPoint );
     extrudePoint( extPoint, &secPoint );
-    double intialparam = staparam;
+    double initialparam = staparam;
     if ( extPoint.z < 0. )
     {
       staparam = M_PIx2 - endparam;
-      endparam = M_PIx2 - intialparam;
+      endparam = M_PIx2 - initialparam;
     }
   }
 }
@@ -902,7 +902,7 @@ void DRW_Ellipse::correctAxis()
   }
   if ( ratio > 1 )
   {
-    if ( fabs( endparam - staparam - M_PIx2 ) < 1.0e-10 )
+    if ( std::fabs( endparam - staparam - M_PIx2 ) < 1.0e-10 )
       complete = true;
     double incX = secPoint.x;
     secPoint.x = -( secPoint.y * ratio );
@@ -954,12 +954,12 @@ bool DRW_Ellipse::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 //parts are the number of vertices to split the polyline, default 128
 void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
 {
-  double radMajor = sqrt( secPoint.x * secPoint.x + secPoint.y * secPoint.y );
+  double radMajor = std::sqrt( secPoint.x * secPoint.x + secPoint.y * secPoint.y );
   double radMinor = radMajor * ratio;
-  //calculate sin & cos of included angle
-  double incAngle = atan2( secPoint.y, secPoint.x );
-  double cosRot = cos( incAngle );
-  double sinRot = sin( incAngle );
+  //calculate sin & std::cos of included angle
+  double incAngle = std::atan2( secPoint.y, secPoint.x );
+  double cosRot = std::cos( incAngle );
+  double sinRot = std::sin( incAngle );
 
   incAngle = M_PIx2 / parts;
   double curAngle = staparam;
@@ -969,15 +969,15 @@ void DRW_Ellipse::toPolyline( DRW_Polyline *pol, int parts ) const
 
   while ( curAngle < endAngle )
   {
-    double cosCurr = cos( curAngle );
-    double sinCurr = sin( curAngle );
+    double cosCurr = std::cos( curAngle );
+    double sinCurr = std::sin( curAngle );
     double x = basePoint.x + cosCurr * cosRot * radMajor - sinCurr * sinRot * radMinor;
     double y = basePoint.y + cosCurr * sinRot * radMajor + sinCurr * cosRot * radMinor;
     pol->addVertex( DRW_Vertex( x, y, 0.0, 0.0 ) );
     curAngle += incAngle;
   }
 
-  if ( fabs( endAngle - staparam - M_PIx2 ) < 1.0e-10 )
+  if ( std::fabs( endAngle - staparam - M_PIx2 ) < 1.0e-10 )
   {
     pol->flags = 1;
   }
@@ -1139,7 +1139,7 @@ bool DRW_3Dface::parseDwg( DRW::Version v, dwgBuffer *buf, duint32 bs )
     invisibleflag = has_no_flag ? ( int )NoEdge : buf->getBitShort();
   }
   drw_assert( invisibleflag >= NoEdge );
-  drw_assert( invisibleflag <= AllEdges );
+  drw_assert( invisibleflag <= AllEdges );  //#spellok
 
   QgsDebugMsg( QString( "base:%1 sec:%2 third:%3 fourth:%4 invisibleFlag:%5" )
                .arg( QString( "%1,%2,%3" ).arg( basePoint.x ).arg( basePoint.y ).arg( basePoint.z ) )
@@ -1633,7 +1633,7 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   duint8 data_flags = 0x00;
   if ( version > DRW::AC1014 )  //2000+
   {
-    data_flags = buf->getRawChar8(); /* DataFlags RC Used to determine presence of subsquent data */
+    data_flags = buf->getRawChar8(); /* DataFlags RC Used to determine presence of subsequent data */
 
     QgsDebugMsg( QString( "data_flags:%1" ).arg( data_flags, 0, 16 ) );
 
@@ -1681,11 +1681,11 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   if ( version > DRW::AC1014 )  //2000+
   {
-    if ( !( data_flags & 0x04 ) ) /* Oblique ang RD 51 present if !(DataFlags & 0x04) */
+    if ( !( data_flags & 0x04 ) ) /* Oblique angle RD 51 present if !(DataFlags & 0x04) */
     {
       oblique = buf->getRawDouble();
     }
-    if ( !( data_flags & 0x08 ) ) /* Rotation ang RD 50 present if !(DataFlags & 0x08) */
+    if ( !( data_flags & 0x08 ) ) /* Rotation angle RD 50 present if !(DataFlags & 0x08) */
     {
       angle = buf->getRawDouble();
     }
@@ -1697,13 +1697,13 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   }
   else  //14-
   {
-    oblique = buf->getBitDouble(); /* Oblique ang BD 51 */
-    angle = buf->getBitDouble(); /* Rotation ang BD 50 */
+    oblique = buf->getBitDouble(); /* Oblique angle BD 51 */
+    angle = buf->getBitDouble(); /* Rotation angle BD 50 */
     height = buf->getBitDouble(); /* Height BD 40 */
     widthscale = buf->getBitDouble(); /* Width factor BD 41 */
   }
 
-  QgsDebugMsg( QString( "thickness:%1, Oblique ang:%2, Width:%3, rotation:%4, height:%5" )
+  QgsDebugMsg( QString( "thickness:%1, Oblique angle:%2, Width:%3, rotation:%4, height:%5" )
                .arg( thickness ).arg( oblique ).arg( widthscale ).arg( angle ).arg( height )
              );
 
@@ -1711,7 +1711,7 @@ bool DRW_Text::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   QgsDebugMsg( QString( "text string:%1" ).arg( text.c_str() ) );
 
-  //textgen, alignH, alignV always present in R14-, data_flags set in initialisation
+  //textgen, alignH, alignV always present in R14-, data_flags set in initialization
   if ( !( data_flags & 0x20 ) ) /* Generation BS 71 present if !(DataFlags & 0x20) */
   {
     textgen = buf->getBitShort();
@@ -1807,7 +1807,7 @@ bool DRW_MText::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   DRW_UNUSED( ext_ht );
   /* Extents wid BD Undocumented and not present in DXF or entget The extents
   rectangle, when rotated the same as the text, fits the actual text image on
-  the screen (altough we've seen it include an extra row of text in height). */
+  the screen (although we've seen it include an extra row of text in height). */
   double ext_wid = buf->getBitDouble();
   DRW_UNUSED( ext_wid );
   /* Text TV 1 All text in one long string (without '\n's 3 for line wrapping).
@@ -1860,7 +1860,7 @@ void DRW_MText::updateAngle()
 {
   if ( haveXAxis )
   {
-    angle = atan2( secPoint.y, secPoint.x ) * 180 / M_PI;
+    angle = std::atan2( secPoint.y, secPoint.x ) * 180 / M_PI;
   }
 }
 
@@ -2065,7 +2065,7 @@ bool DRW_Vertex::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs, dou
 
     stawidth = buf->getBitDouble();
     if ( stawidth < 0 )
-      endwidth = stawidth = fabs( stawidth );
+      endwidth = stawidth = std::fabs( stawidth );
     else
       endwidth = buf->getBitDouble();
     bulge = buf->getBitDouble();
@@ -2244,7 +2244,7 @@ bool DRW_Hatch::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
 
   QgsDebugMsg( "***************************** parsing hatch *********************************************" );
 
-  //Gradient data, RLZ: is ok or if grad > 0 continue read ?
+  //Gradient data, RLZ: is OK or if grad > 0 continue read ?
   if ( version > DRW::AC1015 ) //2004+
   {
     dint32 isGradient = buf->getBitLong();
@@ -2675,7 +2675,7 @@ bool DRW_Spline::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   else
   {
     QgsDebugMsg( QString( "spline, unknown scenario %1" ).arg( scenario ) );
-    return false; //RLZ: from doc only 1 or 2 are ok ?
+    return false; //RLZ: from doc only 1 or 2 are OK ?
   }
 
   RESERVE( knotslist, nknots );

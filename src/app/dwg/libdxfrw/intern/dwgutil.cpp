@@ -16,6 +16,16 @@
 #include "rscodec.h"
 #include "../libdwgr.h"
 
+#if __cplusplus >= 201500
+#define FALLTHROUGH [[fallthrough]];
+#elif defined(__clang__)
+#define FALLTHROUGH //[[clang::fallthrough]]
+#elif defined(__GNUC__) && __GNUC__ >= 7
+#define FALLTHROUGH [[gnu::fallthrough]];
+#else
+#define FALLTHROUGH
+#endif
+
 #include "qgslogger.h"
 
 /** Utility function
@@ -179,7 +189,7 @@ void dwgCompressor::decompress18( duint8 *cbuf, duint8 *dbuf, duint32 csize, dui
   pos = 0; //current position in compressed buffer
   rpos = 0; //current position in resulting decompressed buffer
   litCount = litLength18();
-  //copy first lileral lenght
+  //copy first literal length
   for ( duint32 i = 0; i < litCount; ++i )
   {
     bufD[rpos++] = bufC[pos++];
@@ -452,28 +462,28 @@ void dwgCompressor::copyCompBytes21( duint8 *cbuf, duint8 *dbuf, duint32 l, duin
   {
     case 0:
       break;
-    case 1: //Ok
+    case 1: //OK
       dbuf[dix] = cbuf[six];
       break;
-    case 2: //Ok
+    case 2: //OK
       dbuf[dix++] = cbuf[six + 1];
       dbuf[dix] = cbuf[six];
       break;
-    case 3: //Ok
+    case 3: //OK
       dbuf[dix++] = cbuf[six + 2];
       dbuf[dix++] = cbuf[six + 1];
       dbuf[dix] = cbuf[six];
       break;
-    case 4: //Ok
+    case 4: //OK
       for ( int i = 0; i < 4; i++ ) //RLZ is OK, or are inverse?, OK
         dbuf[dix++] = cbuf[six++];
       break;
-    case 5: //Ok
+    case 5: //OK
       dbuf[dix++] = cbuf[six + 4];
       for ( int i = 0; i < 4; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
-    case 6: //Ok
+    case 6: //OK
       dbuf[dix++] = cbuf[six + 5];
       for ( int i = 1; i < 5; i++ )
         dbuf[dix++] = cbuf[six + i];
@@ -486,16 +496,19 @@ void dwgCompressor::copyCompBytes21( duint8 *cbuf, duint8 *dbuf, duint32 l, duin
       for ( int i = 1; i < 5; i++ )
         dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
-    case 8: //Ok
+
+      FALLTHROUGH
+
+    case 8: //OK
       for ( int i = 0; i < 8; i++ ) //RLZ 4[0],4[4] or 4[4],4[0]
         dbuf[dix++] = cbuf[six++];
       break;
-    case 9: //Ok
+    case 9: //OK
       dbuf[dix++] = cbuf[six + 8];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
-    case 10: //Ok
+    case 10: //OK
       dbuf[dix++] = cbuf[six + 9];
       for ( int i = 1; i < 9; i++ )
         dbuf[dix++] = cbuf[six + i];
@@ -509,20 +522,20 @@ void dwgCompressor::copyCompBytes21( duint8 *cbuf, duint8 *dbuf, duint32 l, duin
         dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
       break;
-    case 12: //Ok
+    case 12: //OK
       for ( int i = 8; i < 12; i++ )
         dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
-    case 13: //Ok
+    case 13: //OK
       dbuf[dix++] = cbuf[six + 12];
       for ( int i = 8; i < 12; i++ )
         dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
-    case 14: //Ok
+    case 14: //OK
       dbuf[dix++] = cbuf[six + 13];
       for ( int i = 9; i < 13; i++ )
         dbuf[dix++] = cbuf[six + i];
@@ -540,13 +553,13 @@ void dwgCompressor::copyCompBytes21( duint8 *cbuf, duint8 *dbuf, duint32 l, duin
         dbuf[dix++] = cbuf[six + i];
       dbuf[dix] = cbuf[six];
       break;
-    case 16: //Ok
+    case 16: //OK
       for ( int i = 8; i < 16; i++ )
         dbuf[dix++] = cbuf[six + i];
       for ( int i = 0; i < 8; i++ )
         dbuf[dix++] = cbuf[six++];
       break;
-    case 17: //Seems Ok
+    case 17: //Seems OK
       for ( int i = 9; i < 17; i++ )
         dbuf[dix++] = cbuf[six + i];
       dbuf[dix++] = cbuf[six + 8];
@@ -728,7 +741,7 @@ secEnum::DWGSection secEnum::getEnum( std::string nameSec )
   }
   else if ( nameSec == "AcDb:SummaryInfo" )
   {
-    return SUMARYINFO;
+    return SUMMARYINFO;
   }
   else if ( nameSec == "AcDb:Preview" )
   {

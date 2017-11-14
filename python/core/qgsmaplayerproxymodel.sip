@@ -1,14 +1,25 @@
-/**
- * @brief The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
- * @note added in 2.3
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerproxymodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsMapLayerProxyModel : QSortFilterProxyModel
 {
+%Docstring
+ The QgsMapLayerProxyModel class provides an easy to use model to display the list of layers in widgets.
+.. versionadded:: 2.3
+%End
 
 %TypeHeaderCode
 #include "qgsmaplayerproxymodel.h"
 %End
-
   public:
     enum Filter
     {
@@ -25,53 +36,80 @@ class QgsMapLayerProxyModel : QSortFilterProxyModel
     };
     typedef QFlags<QgsMapLayerProxyModel::Filter> Filters;
 
-    /**
-     * @brief QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
-     * It can be used to filter the layers list in a widget.
-     */
+
     explicit QgsMapLayerProxyModel( QObject *parent /TransferThis/ = 0 );
+%Docstring
+ QgsMapLayerProxModel creates a proxy model with a QgsMapLayerModel as source model.
+ It can be used to filter the layers list in a widget.
+%End
 
-    /**
-     * @brief layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
-     */
-    QgsMapLayerModel* sourceLayerModel() const;
+    QgsMapLayerModel *sourceLayerModel() const;
+%Docstring
+ layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
+ :rtype: QgsMapLayerModel
+%End
 
-    /**
-     * @brief setFilters set flags that affect how layers are filtered
-     * @param filters are Filter flags
-     * @note added in 2.3
-     */
-    QgsMapLayerProxyModel* setFilters( Filters filters );
-    const Filters& filters() const;
+    QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
+%Docstring
+ setFilters set flags that affect how layers are filtered
+ \param filters are Filter flags
+.. versionadded:: 2.3
+ :rtype: QgsMapLayerProxyModel
+%End
+    const Filters &filters() const;
+%Docstring
+ :rtype: Filters
+%End
 
-    //! offer the possibility to except some layers to be listed
-    void setExceptedLayerList( const QList<QgsMapLayer*>& exceptList );
-    //! Get the list of maplayers which are excluded from the list
-    QList<QgsMapLayer*> exceptedLayerList();
+    void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
+%Docstring
+offer the possibility to except some layers to be listed
+%End
+    QList<QgsMapLayer *> exceptedLayerList();
+%Docstring
+Get the list of maplayers which are excluded from the list
+ :rtype: list of QgsMapLayer
+%End
 
-    //! Set the list of maplayer ids which are excluded from the list
-    void setExceptedLayerIds( const QStringList& ids );
-    //! Get the list of maplayer ids which are excluded from the list
+    void setExceptedLayerIds( const QStringList &ids );
+%Docstring
+Set the list of maplayer ids which are excluded from the list
+%End
     QStringList exceptedLayerIds() const;
+%Docstring
+Get the list of maplayer ids which are excluded from the list
+ :rtype: list of str
+%End
 
-    /**
-     * Sets a list of data providers which should be excluded from the model.
-     * @note added in QGIS 3.0
-     * @see excludedProviders()
-     */
-    void setExcludedProviders( const QStringList& providers );
+    void setExcludedProviders( const QStringList &providers );
+%Docstring
+ Sets a list of data providers which should be excluded from the model.
+.. versionadded:: 3.0
+.. seealso:: excludedProviders()
+%End
 
-    /**
-     * Returns the list of data providers which are excluded from the model.
-     * @see setExcludedProviders()
-     * @note added in QGIS 3.0
-     */
     QStringList excludedProviders() const;
+%Docstring
+ Returns the list of data providers which are excluded from the model.
+.. seealso:: setExcludedProviders()
+.. versionadded:: 3.0
+ :rtype: list of str
+%End
 
-    // QSortFilterProxyModel interface
-  public:
-    bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
-    bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+    virtual bool filterAcceptsRow( int source_row, const QModelIndex &source_parent ) const;
+
+    virtual bool lessThan( const QModelIndex &left, const QModelIndex &right ) const;
+
+
 };
 
 QFlags<QgsMapLayerProxyModel::Filter> operator|(QgsMapLayerProxyModel::Filter f1, QFlags<QgsMapLayerProxyModel::Filter> f2);
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsmaplayerproxymodel.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

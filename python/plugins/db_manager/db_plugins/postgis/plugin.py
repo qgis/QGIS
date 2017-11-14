@@ -310,12 +310,22 @@ class PGRasterTable(PGTable, RasterTable):
     def gdalUri(self, uri=None):
         if not uri:
             uri = self.database().uri()
+        service = (u'service=%s' % uri.service()) if uri.service() else ''
         schema = (u'schema=%s' % self.schemaName()) if self.schemaName() else ''
         dbname = (u'dbname=%s' % uri.database()) if uri.database() else ''
         host = (u'host=%s' % uri.host()) if uri.host() else ''
         user = (u'user=%s' % uri.username()) if uri.username() else ''
         passw = (u'password=%s' % uri.password()) if uri.password() else ''
         port = (u'port=%s' % uri.port()) if uri.port() else ''
+
+        if not dbname:
+            # GDAL postgisraster driver *requires* ad dbname
+            # See: https://trac.osgeo.org/gdal/ticket/6910
+            # TODO: cache this ?
+            connector = self.database().connector
+            r = connector._execute(None, "SELECT current_database()")
+            dbname = (u'dbname=%s' % connector._fetchone(r)[0])
+            connector._close_cursor(r)
 
         # Find first raster field
         col = ''
@@ -324,8 +334,8 @@ class PGRasterTable(PGTable, RasterTable):
                 col = u'column=%s' % fld.name
                 break
 
-        gdalUri = u'PG: %s %s %s %s %s mode=2 %s %s table=%s' % \
-                  (dbname, host, user, passw, port, schema, col, self.name)
+        gdalUri = u'PG: %s %s %s %s %s %s mode=2 %s %s table=%s' % \
+                  (service, dbname, host, user, passw, port, schema, col, self.name)
 
         return gdalUri
 

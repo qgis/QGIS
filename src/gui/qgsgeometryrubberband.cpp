@@ -18,11 +18,11 @@
 #include "qgsgeometryrubberband.h"
 #include "qgsabstractgeometry.h"
 #include "qgsmapcanvas.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include <QPainter>
 
 QgsGeometryRubberBand::QgsGeometryRubberBand( QgsMapCanvas *mapCanvas, QgsWkbTypes::GeometryType geomType ): QgsMapCanvasItem( mapCanvas ),
-  mGeometry( nullptr ), mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
+  mIconSize( 5 ), mIconType( ICON_BOX ), mGeometryType( geomType )
 {
   mPen = QPen( QColor( 255, 0, 0 ) );
   mBrush = QBrush( QColor( 255, 0, 0 ) );
@@ -61,7 +61,7 @@ void QgsGeometryRubberBand::paint( QPainter *painter )
 
   //draw vertices
   QgsVertexId vertexId;
-  QgsPointV2 vertex;
+  QgsPoint vertex;
   while ( paintGeom->nextVertex( vertexId, vertex ) )
   {
     drawVertex( painter, vertex.x(), vertex.y() );
@@ -118,7 +118,7 @@ void QgsGeometryRubberBand::setGeometry( QgsAbstractGeometry *geom )
   }
 }
 
-void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPointV2 &newPos )
+void QgsGeometryRubberBand::moveVertex( QgsVertexId id, const QgsPoint &newPos )
 {
   if ( mGeometry )
   {
@@ -157,5 +157,5 @@ QgsRectangle QgsGeometryRubberBand::rubberBandRectangle() const
   qreal scale = mMapCanvas->mapUnitsPerPixel();
   qreal s = ( mIconSize - 1 ) / 2.0 * scale;
   qreal p = mPen.width() * scale;
-  return mGeometry->boundingBox().buffer( s + p );
+  return mGeometry->boundingBox().buffered( s + p );
 }

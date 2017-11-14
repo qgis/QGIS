@@ -19,10 +19,11 @@
 #include "qgis_core.h"
 #include <QVariantMap>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Holder for the widget type and its configuration for a field.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsEditorWidgetSetup
 {
@@ -36,20 +37,21 @@ class CORE_EXPORT QgsEditorWidgetSetup
       , mConfig( config )
     {}
 
-    QgsEditorWidgetSetup() {}
+    //! Constructor for QgsEditorWidgetSetup
+    QgsEditorWidgetSetup() = default;
 
     /**
-     * @return the widget type to use
+     * \returns the widget type to use
      */
     QString type() const { return mType; }
 
     /**
-     * @return the widget configuration to used
+     * \returns the widget configuration to used
      */
     QVariantMap config() const { return mConfig; }
 
     /**
-     * @return true if there is no widget configured.
+     * \returns true if there is no widget configured.
      */
     bool isNull() const { return mType.isEmpty(); }
 

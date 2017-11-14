@@ -28,18 +28,17 @@
 #include <QToolTip>
 #include <QPlainTextEdit>
 #include <QScrollBar>
+#include <QDebug>
 
-
-QgsMessageLogViewer::QgsMessageLogViewer( QStatusBar *statusBar, QWidget *parent, Qt::WindowFlags fl )
+QgsMessageLogViewer::QgsMessageLogViewer( QWidget *parent, Qt::WindowFlags fl )
   : QDialog( parent, fl )
 {
-  Q_UNUSED( statusBar )
   setupUi( this );
 
-  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
-           this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
+  connect( QgsApplication::messageLog(), static_cast<void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLog::messageReceived ),
+           this, static_cast<void ( QgsMessageLogViewer::* )( const QString &, const QString &, QgsMessageLog::MessageLevel )>( &QgsMessageLogViewer::logMessage ) );
 
-  connect( tabWidget, SIGNAL( tabCloseRequested( int ) ), this, SLOT( closeTab( int ) ) );
+  connect( tabWidget, &QTabWidget::tabCloseRequested, this, &QgsMessageLogViewer::closeTab );
 }
 
 void QgsMessageLogViewer::closeEvent( QCloseEvent *e )
@@ -51,14 +50,14 @@ void QgsMessageLogViewer::reject()
 {
 }
 
-void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level )
+void QgsMessageLogViewer::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
 {
-  if ( tag.isNull() )
-    tag = tr( "General" );
+  QString cleanedTag = tag;
+  if ( cleanedTag.isNull() )
+    cleanedTag = tr( "General" );
 
   int i;
-  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ) != tag; i++ )
-    ;
+  for ( i = 0; i < tabWidget->count() && tabWidget->tabText( i ).remove( QChar( '&' ) ) != cleanedTag; i++ );
 
   QPlainTextEdit *w = nullptr;
   if ( i < tabWidget->count() )
@@ -70,15 +69,33 @@ void QgsMessageLogViewer::logMessage( QString message, QString tag, QgsMessageLo
   {
     w = new QPlainTextEdit( this );
     w->setReadOnly( true );
-    tabWidget->addTab( w, tag );
+    tabWidget->addTab( w, cleanedTag );
     tabWidget->setCurrentIndex( tabWidget->count() - 1 );
     tabWidget->setTabsClosable( true );
   }
 
+  QString levelString;
+  switch ( level )
+  {
+    case QgsMessageLog::INFO:
+      levelString = QStringLiteral( "INFO" );
+      break;
+    case QgsMessageLog::WARNING:
+      levelString = QStringLiteral( "WARNING" );
+      break;
+    case QgsMessageLog::CRITICAL:
+      levelString = QStringLiteral( "CRITICAL" );
+      break;
+    case QgsMessageLog::NONE:
+      levelString = QStringLiteral( "NONE" );
+      break;
+  }
+
   QString prefix = QStringLiteral( "%1\t%2\t" )
-                   .arg( QDateTime::currentDateTime().toString( Qt::ISODate ) )
-                   .arg( level );
-  w->appendPlainText( message.prepend( prefix ).replace( '\n', QLatin1String( "\n\t\t\t" ) ) );
+                   .arg( QDateTime::currentDateTime().toString( Qt::ISODate ), levelString );
+  QString cleanedMessage = message;
+  cleanedMessage = cleanedMessage.prepend( prefix ).replace( '\n', QLatin1String( "\n\t\t\t" ) );
+  w->appendPlainText( cleanedMessage );
   w->verticalScrollBar()->setValue( w->verticalScrollBar()->maximum() );
 }
 

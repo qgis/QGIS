@@ -16,26 +16,28 @@
 #ifndef QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H
 #define QGSLAYERTREEEMBEDDEDCONFIGWIDGET_H
 
-#include "ui_qgslayertreeembeddedconfigwidget.h"
+#include "ui_qgslayertreeembeddedconfigwidgetbase.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsMapLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayerTreeEmbeddedConfigWidget
  * A widget to configure layer tree embedded widgets for a particular map layer.
- * @note introduced in QGIS 2.16
+ * \since QGIS 2.16
  */
-class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidget
+class GUI_EXPORT QgsLayerTreeEmbeddedConfigWidget : public QWidget, protected Ui::QgsLayerTreeEmbeddedConfigWidgetBase
 {
     Q_OBJECT
   public:
 
     /**
      * A widget to configure layer tree embedded widgets for a particular map layer.
-     * @param parent The parent of the widget.
+     * \param parent The parent of the widget.
      */
-    QgsLayerTreeEmbeddedConfigWidget( QWidget *parent = nullptr );
+    QgsLayerTreeEmbeddedConfigWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! Initialize widget with a map layer
     void setLayer( QgsMapLayer *layer );

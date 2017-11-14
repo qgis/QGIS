@@ -17,6 +17,8 @@
 
 #include "qgscomposershape.h"
 #include "qgscomposition.h"
+#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include "qgssymbol.h"
 #include "qgssymbollayerutils.h"
 #include "qgscomposermodel.h"
@@ -29,7 +31,6 @@ QgsComposerShape::QgsComposerShape( QgsComposition *composition )
   , mShape( Ellipse )
   , mCornerRadius( 0 )
   , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
-  , mShapeStyleSymbol( nullptr )
   , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
@@ -39,7 +40,7 @@ QgsComposerShape::QgsComposerShape( QgsComposition *composition )
   {
     //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( repaint() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
   }
 }
 
@@ -48,7 +49,6 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
   , mShape( Ellipse )
   , mCornerRadius( 0 )
   , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
-  , mShapeStyleSymbol( nullptr )
   , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
@@ -59,7 +59,7 @@ QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height,
   {
     //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( repaint() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
   }
 }
 
@@ -281,7 +281,10 @@ bool QgsComposerShape::writeXml( QDomElement &elem, QDomDocument &doc ) const
   composerShapeElem.setAttribute( QStringLiteral( "shapeType" ), mShape );
   composerShapeElem.setAttribute( QStringLiteral( "cornerRadius" ), mCornerRadius );
 
-  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol, doc );
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
+  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol, doc, context );
   composerShapeElem.appendChild( shapeStyleElem );
 
   elem.appendChild( composerShapeElem );
@@ -309,11 +312,14 @@ bool QgsComposerShape::readXml( const QDomElement &itemElem, const QDomDocument 
     _readXml( composerItemElem, doc );
   }
 
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   QDomElement shapeStyleSymbolElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !shapeStyleSymbolElem.isNull() )
   {
     delete mShapeStyleSymbol;
-    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem );
+    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context );
   }
   else
   {

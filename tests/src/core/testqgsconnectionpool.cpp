@@ -17,7 +17,7 @@
 #include "qgsapplication.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
 #include "qgslinestring.h"
 #include "qgsvectorlayer.h"
 #include <QEventLoop>
@@ -116,21 +116,21 @@ void TestQgsConnectionPool::layersFromSameDatasetGPX()
   for ( int i = 0, n = layer1Features.count(); i < n; ++i )
   {
     QgsGeometry featureGeom = layer1Features[i].geometry();
-    const QgsPointV2 *geom = dynamic_cast<const QgsPointV2 *>( featureGeom.geometry() );
-    QVERIFY( geom != nullptr );
+    const QgsPoint *geom = dynamic_cast<const QgsPoint *>( featureGeom.constGet() );
+    QVERIFY( geom );
     QVERIFY( qFuzzyCompare( geom->x(), i ) );
     QVERIFY( qFuzzyCompare( geom->y(), i ) );
   }
   for ( int i = 0, n = layer2Features.count(); i < n; ++i )
   {
     QgsGeometry featureGeom = layer2Features[i].geometry();
-    const QgsLineString *geom = dynamic_cast<const QgsLineString *>( featureGeom.geometry() );
-    QVERIFY( geom != nullptr );
+    const QgsLineString *geom = dynamic_cast<const QgsLineString *>( featureGeom.constGet() );
+    QVERIFY( geom );
     int nVtx = geom->vertexCount();
     QVERIFY( nVtx == nRoutePts );
     for ( int j = 0; j < nVtx; ++j )
     {
-      QgsPointV2 p = geom->vertexAt( QgsVertexId( 0, 0, j ) );
+      QgsPoint p = geom->vertexAt( QgsVertexId( 0, 0, j ) );
       QVERIFY( qFuzzyCompare( p.x(), j ) );
       QVERIFY( qFuzzyCompare( p.y(), i ) );
     }

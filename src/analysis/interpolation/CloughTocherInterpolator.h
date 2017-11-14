@@ -18,60 +18,81 @@
 #define CLOUGHTOCHERINTERPOLATOR_H
 
 #include "TriangleInterpolator.h"
-#include "Point3D.h"
+#include "qgspoint.h"
 #include "qgis_analysis.h"
 
 class NormVecDecorator;
 
-/** \ingroup analysis
- * This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation. The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * This is an implementation of a Clough-Tocher interpolator based on a triangular tessellation. The derivatives orthogonal to the boundary curves are interpolated linearly along a triangle edge.
+ * \note Not available in Python bindings
+*/
 class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 {
   protected:
     //! Association with a triangulation object
     NormVecDecorator *mTIN = nullptr;
     //! Tolerance of the barycentric coordinates at the borders of the triangles (to prevent errors because of very small negativ baricentric coordinates)
-    double mEdgeTolerance;
+    double mEdgeTolerance = 0.00001;
     //! First point of the triangle in x-,y-,z-coordinates
-    Point3D point1;
+    QgsPoint point1 = QgsPoint( 0, 0, 0 );
     //! Second point of the triangle in x-,y-,z-coordinates
-    Point3D point2;
+    QgsPoint point2 = QgsPoint( 0, 0, 0 );
     //! Third point of the triangle in x-,y-,z-coordinates
-    Point3D point3;
-    Point3D cp1;
-    Point3D cp2;
-    Point3D cp3;
-    Point3D cp4;
-    Point3D cp5;
-    Point3D cp6;
-    Point3D cp7;
-    Point3D cp8;
-    Point3D cp9;
-    Point3D cp10;
-    Point3D cp11;
-    Point3D cp12;
-    Point3D cp13;
-    Point3D cp14;
-    Point3D cp15;
-    Point3D cp16;
+    QgsPoint point3 = QgsPoint( 0, 0, 0 );
+    //! Control point 1
+    QgsPoint cp1 = QgsPoint( 0, 0, 0 );
+    //! Control point 2
+    QgsPoint cp2 = QgsPoint( 0, 0, 0 );
+    //! Control point 3
+    QgsPoint cp3 = QgsPoint( 0, 0, 0 );
+    //! Control point 4
+    QgsPoint cp4 = QgsPoint( 0, 0, 0 );
+    //! Control point 5
+    QgsPoint cp5 = QgsPoint( 0, 0, 0 );
+    //! Control point 6
+    QgsPoint cp6 = QgsPoint( 0, 0, 0 );
+    //! Control point 7
+    QgsPoint cp7 = QgsPoint( 0, 0, 0 );
+    //! Control point 8
+    QgsPoint cp8 = QgsPoint( 0, 0, 0 );
+    //! Control point 9
+    QgsPoint cp9 = QgsPoint( 0, 0, 0 );
+    //! Control point 10
+    QgsPoint cp10 = QgsPoint( 0, 0, 0 );
+    //! Control point 11
+    QgsPoint cp11 = QgsPoint( 0, 0, 0 );
+    //! Control point 12
+    QgsPoint cp12 = QgsPoint( 0, 0, 0 );
+    //! Control point 13
+    QgsPoint cp13 = QgsPoint( 0, 0, 0 );
+    //! Control point 14
+    QgsPoint cp14 = QgsPoint( 0, 0, 0 );
+    //! Control point 15
+    QgsPoint cp15 = QgsPoint( 0, 0, 0 );
+    //! Control point 16
+    QgsPoint cp16 = QgsPoint( 0, 0, 0 );
     //! Derivative in x-direction at point1
-    double der1X;
+    double der1X = 0.0;
     //! Derivative in y-direction at point1
-    double der1Y;
+    double der1Y = 0.0;
     //! Derivative in x-direction at point2
-    double der2X;
+    double der2X = 0.0;
     //! Derivative in y-direction at point2
-    double der2Y;
+    double der2Y = 0.0;
     //! Derivative in x-direction at point3
-    double der3X;
+    double der3X = 0.0;
     //! Derivative in y-direction at point3
-    double der3Y;
+    double der3Y = 0.0;
     //! Stores point1 of the last run
-    Point3D lpoint1;
+    QgsPoint lpoint1 = QgsPoint( 0, 0, 0 );
     //! Stores point2 of the last run
-    Point3D lpoint2;
+    QgsPoint lpoint2 = QgsPoint( 0, 0, 0 );
     //! Stores point3 of the last run
-    Point3D lpoint3;
+    QgsPoint lpoint3 = QgsPoint( 0, 0, 0 );
     //! Finds out, in which triangle the point with the coordinates x and y is
     void init( double x, double y );
     //! Calculates the Bernsteinpolynomials to calculate the Beziertriangle. 'n' is three in the cubical case, 'i', 'j', 'k' are the indices of the controllpoint and 'u', 'v', 'w' are the barycentric coordinates of the point
@@ -79,14 +100,14 @@ class ANALYSIS_EXPORT CloughTocherInterpolator : public TriangleInterpolator
 
   public:
     //! Standard constructor
-    CloughTocherInterpolator();
+    CloughTocherInterpolator() = default;
+
     //! Constructor with a pointer to the triangulation as argument
     CloughTocherInterpolator( NormVecDecorator *tin );
-    virtual ~CloughTocherInterpolator();
+
     //! Calculates the normal vector and assigns it to vec (not implemented at the moment)
-    virtual bool calcNormVec( double x, double y, Vector3D *result ) override;
-    //! Performs a linear interpolation in a triangle and assigns the x-,y- and z-coordinates to point
-    virtual bool calcPoint( double x, double y, Point3D *result ) override;
+    virtual bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     virtual void setTriangulation( NormVecDecorator *tin );
 };
 

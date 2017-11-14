@@ -26,69 +26,89 @@ __copyright__ = '(C) 2017, Nyall Dawson'
 __revision__ = '$Format:%H$'
 
 import os
-import codecs
 
 from qgis.core import (QgsGeometry,
-                       QgsRectangle,
+                       QgsFeature,
+                       QgsFeatureSink,
+                       QgsField,
+                       QgsFields,
                        QgsCoordinateReferenceSystem,
-                       QgsCoordinateTransform)
+                       QgsCoordinateTransform,
+                       QgsWkbTypes,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterExtent,
+                       QgsProcessingParameterCrs,
+                       QgsProcessingParameterFeatureSink)
+from qgis.PyQt.QtCore import QVariant
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterExtent
-from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects
-
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class FindProjection(GeoAlgorithm):
+class FindProjection(QgisAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
+    INPUT = 'INPUT'
     TARGET_AREA = 'TARGET_AREA'
     TARGET_AREA_CRS = 'TARGET_AREA_CRS'
-    OUTPUT_HTML_FILE = 'OUTPUT_HTML_FILE'
+    OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Find projection')
-        self.group, self.i18n_group = self.trAlgorithm('Vector general tools')
-        self.tags = self.tr('crs,srs,coordinate,reference,system,guess,estimate,finder,determine')
+    def tags(self):
+        return self.tr('crs,srs,coordinate,reference,system,guess,estimate,finder,determine').split(',')
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        extent_parameter = ParameterExtent(self.TARGET_AREA,
-                                           self.tr('Target area for layer'),
-                                           self.INPUT_LAYER)
-        extent_parameter.skip_crs_check = True
+    def group(self):
+        return self.tr('Vector general')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        extent_parameter = QgsProcessingParameterExtent(self.TARGET_AREA,
+                                                        self.tr('Target area for layer'))
+        #extent_parameter.skip_crs_check = True
         self.addParameter(extent_parameter)
-        self.addParameter(ParameterCrs(self.TARGET_AREA_CRS, 'Target area CRS'))
+        self.addParameter(QgsProcessingParameterCrs(self.TARGET_AREA_CRS, 'Target area CRS'))
 
-        self.addOutput(OutputHTML(self.OUTPUT_HTML_FILE,
-                                  self.tr('Candidates')))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('CRS candidates')))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def name(self):
+        return 'findprojection'
 
-        extent = self.getParameterValue(self.TARGET_AREA).split(',')
-        target_crs = QgsCoordinateReferenceSystem(self.getParameterValue(self.TARGET_AREA_CRS))
+    def displayName(self):
+        return self.tr('Find projection')
 
-        target_geom = QgsGeometry.fromRect(QgsRectangle(float(extent[0]), float(extent[2]),
-                                                        float(extent[1]), float(extent[3])))
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
 
-        output_file = self.getOutputValue(self.OUTPUT_HTML_FILE)
+        extent = self.parameterAsExtent(parameters, self.TARGET_AREA, context)
+        target_crs = self.parameterAsCrs(parameters, self.TARGET_AREA_CRS, context)
+
+        target_geom = QgsGeometry.fromRect(extent)
+
+        fields = QgsFields()
+        fields.append(QgsField('auth_id', QVariant.String, '', 20))
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.NoGeometry, QgsCoordinateReferenceSystem())
 
         # make intersection tests nice and fast
-        engine = QgsGeometry.createGeometryEngine(target_geom.geometry())
+        engine = QgsGeometry.createGeometryEngine(target_geom.constGet())
         engine.prepareGeometry()
 
-        layer_bounds = QgsGeometry.fromRect(layer.extent())
+        layer_bounds = QgsGeometry.fromRect(source.sourceExtent())
 
-        results = []
+        crses_to_check = QgsCoordinateReferenceSystem.validSrsIds()
+        total = 100.0 / len(crses_to_check)
 
-        for srs_id in QgsCoordinateReferenceSystem.validSrsIds():
+        found_results = 0
+
+        for current, srs_id in enumerate(crses_to_check):
+            if feedback.isCanceled():
+                break
+
             candidate_crs = QgsCoordinateReferenceSystem.fromSrsId(srs_id)
             if not candidate_crs.isValid():
                 continue
@@ -101,16 +121,16 @@ class FindProjection(GeoAlgorithm):
             except:
                 continue
 
-            if engine.intersects(transformed_bounds.geometry()):
-                results.append(candidate_crs.authid())
+            if engine.intersects(transformed_bounds.constGet()):
+                feedback.pushInfo(self.tr('Found candidate CRS: {}').format(candidate_crs.authid()))
+                f = QgsFeature(fields)
+                f.setAttributes([candidate_crs.authid()])
+                sink.addFeature(f, QgsFeatureSink.FastInsert)
+                found_results += 1
 
-        self.createHTML(output_file, results)
+            feedback.setProgress(int(current * total))
 
-    def createHTML(self, outputFile, candidates):
-        with codecs.open(outputFile, 'w', encoding='utf-8') as f:
-            f.write('<html><head>\n')
-            f.write('<meta http-equiv="Content-Type" content="text/html; \
-                    charset=utf-8" /></head><body>\n')
-            for c in candidates:
-                f.write('<p>' + c + '</p>\n')
-            f.write('</body></html>\n')
+        if found_results == 0:
+            feedback.reportError(self.tr('No matching projections found'))
+
+        return {self.OUTPUT: dest_id}

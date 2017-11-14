@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Discover relations</string>
+   <string>Discover Relations</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout">
    <item>
@@ -60,6 +60,11 @@
      <column>
       <property name="text">
        <string>Referenced Field</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>Strength</string>
       </property>
      </column>
     </widget>

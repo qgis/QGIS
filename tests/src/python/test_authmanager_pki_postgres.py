@@ -14,7 +14,7 @@ Configuration from the environment:
 
 From build dir, run: ctest -R PyQgsAuthManagerPKIPostgresTest -V
 
-or, if your postgresql path differs from the default:
+or, if your PostgreSQL path differs from the default:
 
 QGIS_POSTGRES_EXECUTABLE_PATH=/usr/lib/postgresql/<your_version_goes_here>/bin \
     ctest -R PyQgsAuthManagerPKIPostgresTest -V
@@ -35,6 +35,7 @@ from shutil import rmtree
 
 from utilities import unitTestDataPath
 from qgis.core import (
+    QgsApplication,
     QgsAuthManager,
     QgsAuthMethodConfig,
     QgsVectorLayer,
@@ -97,7 +98,7 @@ class TestAuthManager(unittest.TestCase):
     @classmethod
     def setUpAuth(cls):
         """Run before all tests and set up authentication"""
-        authm = QgsAuthManager.instance()
+        authm = QgsApplication.authManager()
         assert (authm.setMasterPassword('masterpassword', True))
         cls.pg_conf = os.path.join(cls.tempfolder, 'postgresql.conf')
         cls.pg_hba = os.path.join(cls.tempfolder, 'pg_hba.conf')
@@ -175,7 +176,7 @@ class TestAuthManager(unittest.TestCase):
             if line.find(b"database system is ready to accept") != -1:
                 break
             if time.time() > end:
-                raise Exception("Timeout connecting to postgresql")
+                raise Exception("Timeout connecting to PostgreSQL")
         # Create a DB
         subprocess.check_call([os.path.join(QGIS_POSTGRES_EXECUTABLE_PATH, 'createdb'), '-h', 'localhost', '-p', cls.port, 'test_pki'])
         # Inject test SQL from test path

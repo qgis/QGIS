@@ -30,12 +30,16 @@
 #ifndef PALSTAT_H
 #define PALSTAT_H
 
+#define SIP_NO_FILE
+
+
 #include <QStringList>
 
 namespace pal
 {
 
-  /** \ingroup core
+  /**
+   * \ingroup core
    * \brief Summary statistics of labeling problem.
    * \class pal::PalStat
    * \note not available in Python bindings

@@ -21,6 +21,7 @@
 #include "qgslayertreemodellegendnode.h"
 #include "qgslayertreeviewdefaultactions.h"
 #include "qgsmaplayer.h"
+#include "qgsgui.h"
 
 #include <QMenu>
 #include <QContextMenuEvent>
@@ -28,8 +29,7 @@
 
 QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   : QTreeView( parent )
-  , mDefaultActions( nullptr )
-  , mMenuProvider( nullptr )
+
 {
   setHeaderHidden( true );
 
@@ -42,8 +42,8 @@ QgsLayerTreeView::QgsLayerTreeView( QWidget *parent )
   setSelectionMode( ExtendedSelection );
   setDefaultDropAction( Qt::MoveAction );
 
-  connect( this, SIGNAL( collapsed( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
-  connect( this, SIGNAL( expanded( QModelIndex ) ), this, SLOT( updateExpandedStateToNode( QModelIndex ) ) );
+  connect( this, &QTreeView::collapsed, this, &QgsLayerTreeView::updateExpandedStateToNode );
+  connect( this, &QTreeView::expanded, this, &QgsLayerTreeView::updateExpandedStateToNode );
 }
 
 QgsLayerTreeView::~QgsLayerTreeView()
@@ -56,16 +56,16 @@ void QgsLayerTreeView::setModel( QAbstractItemModel *model )
   if ( !qobject_cast<QgsLayerTreeModel *>( model ) )
     return;
 
-  connect( model, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( modelRowsInserted( QModelIndex, int, int ) ) );
-  connect( model, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelRowsRemoved() ) );
+  connect( model, &QAbstractItemModel::rowsInserted, this, &QgsLayerTreeView::modelRowsInserted );
+  connect( model, &QAbstractItemModel::rowsRemoved, this, &QgsLayerTreeView::modelRowsRemoved );
 
   QTreeView::setModel( model );
 
-  connect( layerTreeModel()->rootGroup(), SIGNAL( expandedChanged( QgsLayerTreeNode *, bool ) ), this, SLOT( onExpandedChanged( QgsLayerTreeNode *, bool ) ) );
+  connect( layerTreeModel()->rootGroup(), &QgsLayerTreeNode::expandedChanged, this, &QgsLayerTreeView::onExpandedChanged );
 
-  connect( selectionModel(), SIGNAL( currentChanged( QModelIndex, QModelIndex ) ), this, SLOT( onCurrentChanged() ) );
+  connect( selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsLayerTreeView::onCurrentChanged );
 
-  connect( layerTreeModel(), SIGNAL( modelReset() ), this, SLOT( onModelReset() ) );
+  connect( layerTreeModel(), &QAbstractItemModel::modelReset, this, &QgsLayerTreeView::onModelReset );
 
   updateExpandedStateFromNode( layerTreeModel()->rootGroup() );
 }
@@ -142,7 +142,7 @@ void QgsLayerTreeView::modelRowsInserted( const QModelIndex &index, int start, i
       for ( int i = 0; i < widgetsCount; ++i )
       {
         QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
-        if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
+        if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
         {
           QModelIndex index = layerTreeModel()->legendNode2index( legendNodes[i] );
           setIndexWidget( index, provider->createWidget( layer, i ) );
@@ -253,20 +253,23 @@ void QgsLayerTreeView::updateExpandedStateFromNode( QgsLayerTreeNode *node )
 
 QgsMapLayer *QgsLayerTreeView::layerForIndex( const QModelIndex &index ) const
 {
-  QgsLayerTreeNode *node = layerTreeModel()->index2node( index );
-  if ( node )
+  // Check if model has been set and index is valid
+  if ( layerTreeModel() && index.isValid() )
   {
-    if ( QgsLayerTree::isLayer( node ) )
-      return QgsLayerTree::toLayer( node )->layer();
+    QgsLayerTreeNode *node = layerTreeModel()->index2node( index );
+    if ( node )
+    {
+      if ( QgsLayerTree::isLayer( node ) )
+        return QgsLayerTree::toLayer( node )->layer();
+    }
+    else
+    {
+      // possibly a legend node
+      QgsLayerTreeModelLegendNode *legendNode = layerTreeModel()->index2legendNode( index );
+      if ( legendNode )
+        return legendNode->layerNode()->layer();
+    }
   }
-  else
-  {
-    // possibly a legend node
-    QgsLayerTreeModelLegendNode *legendNode = layerTreeModel()->index2legendNode( index );
-    if ( legendNode )
-      return legendNode->layerNode()->layer();
-  }
-
   return nullptr;
 }
 
@@ -352,7 +355,7 @@ static void _expandAllLegendNodes( QgsLayerTreeLayer *nodeLayer, bool expanded, 
         lst << parentKey;
     }
   }
-  nodeLayer->setCustomProperty( "expandedLegendNodes", lst );
+  nodeLayer->setCustomProperty( QStringLiteral( "expandedLegendNodes" ), lst );
 }
 
 
@@ -403,4 +406,13 @@ void QgsLayerTreeView::keyPressEvent( QKeyEvent *event )
     layerTreeModel()->setFlags( oldFlags & ~QgsLayerTreeModel::ActionHierarchical );
   QTreeView::keyPressEvent( event );
   layerTreeModel()->setFlags( oldFlags );
+}
+
+void QgsLayerTreeView::dropEvent( QDropEvent *event )
+{
+  if ( event->keyboardModifiers() & Qt::AltModifier )
+  {
+    event->accept();
+  }
+  QTreeView::dropEvent( event );
 }

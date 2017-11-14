@@ -18,61 +18,75 @@
 #ifndef QGSGEOMETRYFACTORY_H
 #define QGSGEOMETRYFACTORY_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include <QString>
+#include <memory>
 
 class QgsAbstractGeometry;
 class QgsLineString;
 class QgsConstWkbPtr;
 class QgsRectangle;
+class QgsGeometryCollection;
+class QgsMultiPoint;
+class QgsMultiLineString;
+class QgsPolygon;
+class QgsMultiPolygon;
 
 //compatibility with old classes
-#include "qgspoint.h"
-typedef QVector<QgsPoint> QgsPolyline;
-typedef QVector<QgsPolyline> QgsPolygon;
-typedef QVector<QgsPoint> QgsMultiPoint;
-typedef QVector<QgsPolyline> QgsMultiPolyline;
-typedef QVector<QgsPolygon> QgsMultiPolygon;
+#include "qgspointxy.h"
+typedef QVector<QgsPointXY> QgsPolylineXY;
+typedef QVector<QgsPolylineXY> QgsPolygonXY;
+typedef QVector<QgsPointXY> QgsMultiPointXY;
+typedef QVector<QgsPolylineXY> QgsMultiPolylineXY;
+typedef QVector<QgsPolygonXY> QgsMultiPolygonXY;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGeometryFactory
  * \brief Contains geometry creation routines.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
+ * \since QGIS 2.10
  * \note not available in Python bindings
  */
 class CORE_EXPORT QgsGeometryFactory
 {
   public:
 
-    /** Construct geometry from a WKB string.
+    /**
+     * Construct geometry from a WKB string.
      * Updates position of the passed WKB pointer.
      */
-    static QgsAbstractGeometry *geomFromWkb( QgsConstWkbPtr &wkb );
+    static std::unique_ptr< QgsAbstractGeometry > geomFromWkb( QgsConstWkbPtr &wkb );
 
-    /** Construct geometry from a WKT string.
+    /**
+     * Construct geometry from a WKT string.
      */
-    static QgsAbstractGeometry *geomFromWkt( const QString &text );
+    static std::unique_ptr< QgsAbstractGeometry > geomFromWkt( const QString &text );
 
     //! Construct geometry from a point
-    static QgsAbstractGeometry *fromPoint( const QgsPoint &point );
+    static std::unique_ptr< QgsAbstractGeometry > fromPointXY( const QgsPointXY &point );
     //! Construct geometry from a multipoint
-    static QgsAbstractGeometry *fromMultiPoint( const QgsMultiPoint &multipoint );
+    static std::unique_ptr<QgsMultiPoint> fromMultiPointXY( const QgsMultiPointXY &multipoint );
     //! Construct geometry from a polyline
-    static QgsAbstractGeometry *fromPolyline( const QgsPolyline &polyline );
+    static std::unique_ptr< QgsAbstractGeometry > fromPolylineXY( const QgsPolylineXY &polyline );
     //! Construct geometry from a multipolyline
-    static QgsAbstractGeometry *fromMultiPolyline( const QgsMultiPolyline &multiline );
+    static std::unique_ptr<QgsMultiLineString> fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
     //! Construct geometry from a polygon
-    static QgsAbstractGeometry *fromPolygon( const QgsPolygon &polygon );
+    static std::unique_ptr<QgsPolygon> fromPolygonXY( const QgsPolygonXY &polygon );
     //! Construct geometry from a multipolygon
-    static QgsAbstractGeometry *fromMultiPolygon( const QgsMultiPolygon &multipoly );
-    //! Construct geometry from a rectangle
-    static QgsAbstractGeometry *fromRect( const QgsRectangle &rect );
+    static std::unique_ptr<QgsMultiPolygon> fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
     //! Return empty geometry from wkb type
-    static QgsAbstractGeometry *geomFromWkbType( QgsWkbTypes::Type t );
+    static std::unique_ptr< QgsAbstractGeometry > geomFromWkbType( QgsWkbTypes::Type t );
+
+    /**
+     * Returns a new geometry collection matching a specified WKB \a type. For instance, if
+     * type is PolygonM the returned geometry will be a QgsMultiPolygon with M values.
+     */
+    static std::unique_ptr< QgsGeometryCollection > createCollectionOfType( QgsWkbTypes::Type type );
 
   private:
-    static QgsLineString *linestringFromPolyline( const QgsPolyline &polyline );
+    static std::unique_ptr< QgsLineString > linestringFromPolyline( const QgsPolylineXY &polyline );
 };
 
 #endif // QGSGEOMETRYFACTORY_H

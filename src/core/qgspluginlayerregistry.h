@@ -20,13 +20,15 @@
 #define QGSPLUGINLAYERREGSITRY_H
 
 #include <QMap>
+#include "qgis.h"
 #include <QDomNode>
 
 #include "qgis_core.h"
 
 class QgsPluginLayer;
 
-/** \ingroup core
+/**
+ * \ingroup core
     class for creating plugin specific layers
 */
 class CORE_EXPORT QgsPluginLayerType
@@ -39,12 +41,13 @@ class CORE_EXPORT QgsPluginLayerType
     QString name();
 
     //! Return new layer of this type. Return NULL on error
-    virtual QgsPluginLayer *createLayer();
+    virtual QgsPluginLayer *createLayer() SIP_FACTORY;
 
-    /** Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
-     * @note added in 2.10
+    /**
+     * Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
+     * \since QGIS 2.10
      */
-    virtual QgsPluginLayer *createLayer( const QString &uri );
+    virtual QgsPluginLayer *createLayer( const QString &uri ) SIP_FACTORY;
 
     //! Show plugin layer properties dialog. Return false if the dialog cannot be shown.
     virtual bool showLayerProperties( QgsPluginLayer *layer );
@@ -55,7 +58,8 @@ class CORE_EXPORT QgsPluginLayerType
 
 //=============================================================================
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A registry of plugin layers types.
  *
  * QgsPluginLayerRegistry is not usually directly created, but rather accessed through
@@ -65,7 +69,10 @@ class CORE_EXPORT QgsPluginLayerRegistry
 {
   public:
 
-    QgsPluginLayerRegistry();
+    /**
+     * Constructor for QgsPluginLayerRegistry.
+     */
+    QgsPluginLayerRegistry() = default;
     ~QgsPluginLayerRegistry();
 
     //! QgsPluginLayerRegistry cannot be copied.
@@ -73,12 +80,13 @@ class CORE_EXPORT QgsPluginLayerRegistry
     //! QgsPluginLayerRegistry cannot be copied.
     QgsPluginLayerRegistry &operator=( const QgsPluginLayerRegistry &rh ) = delete;
 
-    /** List all known layer types
-     *  \note added in v2.1 */
+    /**
+     * List all known layer types
+     *  \since QGIS */
     QStringList pluginLayerTypes();
 
     //! Add plugin layer type (take ownership) and return true on success
-    bool addPluginLayerType( QgsPluginLayerType *pluginLayerType );
+    bool addPluginLayerType( QgsPluginLayerType *pluginLayerType SIP_TRANSFER );
 
     //! Remove plugin layer type and return true on success
     bool removePluginLayerType( const QString &typeName );
@@ -86,12 +94,16 @@ class CORE_EXPORT QgsPluginLayerRegistry
     //! Return plugin layer type metadata or NULL if doesn't exist
     QgsPluginLayerType *pluginLayerType( const QString &typeName );
 
-    /** Return new layer if corresponding plugin has been found, else return NULL.
-     * @note optional param uri added in 2.10
+    /**
+     * Returns new layer if corresponding plugin has been found else returns a nullptr.
+     * \note parameter uri has been added in QGIS 2.10
      */
-    QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() );
+    QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) SIP_FACTORY;
 
   private:
+#ifdef SIP_RUN
+    QgsPluginLayerRegistry( const QgsPluginLayerRegistry &rh );
+#endif
 
     typedef QMap<QString, QgsPluginLayerType *> PluginLayerTypes;
 

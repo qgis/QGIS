@@ -68,7 +68,7 @@ bool QgsComposerTextTableV2::getTableContents( QgsComposerTableContents &content
 void QgsComposerTextTableV2::addFrame( QgsComposerFrame *frame, bool recalcFrameSizes )
 {
   mFrameItems.push_back( frame );
-  connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
+  connect( frame, &QgsComposerItem::sizeChanged, this, &QgsComposerTableV2::recalculateFrameSizes );
 
   if ( mComposition )
   {

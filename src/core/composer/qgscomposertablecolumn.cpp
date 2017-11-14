@@ -19,12 +19,7 @@
 
 QgsComposerTableColumn::QgsComposerTableColumn( const QString &heading )
   : mBackgroundColor( Qt::transparent )
-  , mHAlignment( Qt::AlignLeft )
-  , mVAlignment( Qt::AlignVCenter )
   , mHeading( heading )
-  , mSortByRank( 0 )
-  , mSortOrder( Qt::AscendingOrder )
-  , mWidth( 0.0 )
 {
 
 }

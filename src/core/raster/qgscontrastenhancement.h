@@ -26,13 +26,15 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 
 #include "qgis.h"
 #include "qgsraster.h"
+#include <memory>
 
 class QgsContrastEnhancementFunction;
 class QDomDocument;
 class QDomElement;
 class QString;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Manipulates raster pixel values so that they enhanceContrast or clip into a
  * specified numerical range according to the specified
  * ContrastEnhancementAlgorithm.
@@ -116,14 +118,18 @@ class CORE_EXPORT QgsContrastEnhancement
     void readXml( const QDomElement &elem );
 
   private:
+#ifdef SIP_RUN
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & );
+#endif
+
     //! \brief Current contrast enhancement algorithm
-    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm;
+    ContrastEnhancementAlgorithm mContrastEnhancementAlgorithm = NoEnhancement;
 
     //! \brief Pointer to the contrast enhancement function
-    QgsContrastEnhancementFunction *mContrastEnhancementFunction = nullptr;
+    std::unique_ptr< QgsContrastEnhancementFunction > mContrastEnhancementFunction;
 
     //! \brief Flag indicating if the lookup table needs to be regenerated
-    bool mEnhancementDirty;
+    bool mEnhancementDirty = false;
 
     //! \brief Scalar so that values can be used as array indices
     double mLookupTableOffset;

@@ -22,8 +22,6 @@
 #include "qgsdatasourceuri.h"
 
 QgsMssqlTableModel::QgsMssqlTableModel()
-  : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -90,11 +88,11 @@ void QgsMssqlTableModel::addTableEntry( const QgsMssqlLayerProperty &layerProper
   QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
   sridItem->setEditable( false );
 
-  QString pkText, pkCol = QLatin1String( "" );
+  QString pkText;
+  QString pkCol;
   switch ( layerProperty.pkCols.size() )
   {
     case 0:
-      pkText = QLatin1String( "" );
       break;
     case 1:
       pkText = layerProperty.pkCols[0];
@@ -350,12 +348,12 @@ bool QgsMssqlTableModel::setData( const QModelIndex &idx, const QVariant &value,
 QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
-    return QString::null;
+    return QString();
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
   if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
-    return QString::null;
+    return QString();
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
@@ -363,7 +361,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
   if ( !pkItem->data( Qt::UserRole + 1 ).toStringList().isEmpty() &&
        !pkItem->data( Qt::UserRole + 1 ).toStringList().contains( pkColumnName ) )
     // no valid primary candidate selected
-    return QString::null;
+    return QString();
 
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
   QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
@@ -378,7 +376,7 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
     bool ok;
     srid.toInt( &ok );
     if ( !ok )
-      return QString::null;
+      return QString();
   }
 
   bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;
@@ -397,61 +395,5 @@ QString QgsMssqlTableModel::layerURI( const QModelIndex &index, const QString &c
 QgsWkbTypes::Type QgsMssqlTableModel::wkbTypeFromMssql( QString type )
 {
   type = type.toUpper();
-
-  if ( type == QLatin1String( "POINT" ) )
-  {
-    return QgsWkbTypes::Point;
-  }
-  else if ( type == QLatin1String( "POINTM" ) )
-  {
-    return QgsWkbTypes::Point25D;
-  }
-  else if ( type == QLatin1String( "MULTIPOINT" ) )
-  {
-    return QgsWkbTypes::MultiPoint;
-  }
-  else if ( type == QLatin1String( "MULTIPOINTM" ) )
-  {
-    return QgsWkbTypes::MultiPoint25D;
-  }
-  else if ( type == QLatin1String( "LINESTRING" ) )
-  {
-    return QgsWkbTypes::LineString;
-  }
-  else if ( type == QLatin1String( "LINESTRINGM" ) )
-  {
-    return QgsWkbTypes::LineString25D;
-  }
-  else if ( type == QLatin1String( "MULTILINESTRING" ) )
-  {
-    return QgsWkbTypes::MultiLineString;
-  }
-  else if ( type == QLatin1String( "MULTILINESTRINGM" ) )
-  {
-    return QgsWkbTypes::MultiLineString25D;
-  }
-  else if ( type == QLatin1String( "POLYGON" ) )
-  {
-    return QgsWkbTypes::Polygon;
-  }
-  else if ( type == QLatin1String( "POLYGONM" ) )
-  {
-    return QgsWkbTypes::Polygon25D;
-  }
-  else if ( type == QLatin1String( "MULTIPOLYGON" ) )
-  {
-    return QgsWkbTypes::MultiPolygon;
-  }
-  else if ( type == QLatin1String( "MULTIPOLYGONM" ) )
-  {
-    return QgsWkbTypes::MultiPolygon25D;
-  }
-  else if ( type == QLatin1String( "NONE" ) )
-  {
-    return QgsWkbTypes::NoGeometry;
-  }
-  else
-  {
-    return QgsWkbTypes::Unknown;
-  }
+  return QgsWkbTypes::parseType( type );
 }

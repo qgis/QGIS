@@ -21,13 +21,15 @@
 #include "qgscolorramp.h"
 #include "ui_qgscolorbrewercolorrampwidgetbase.h"
 #include "qgis_gui.h"
+#include "qgis.h"
 
 class QgsColorBrewerColorRamp;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorBrewerColorRampWidget
  * A widget which allows users to modify the properties of a QgsColorBrewerColorRamp.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private Ui::QgsColorBrewerColorRampWidgetBase
 {
@@ -36,20 +38,23 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
 
   public:
 
-    /** Constructor for QgsColorBrewerColorRampWidget.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
+    /**
+     * Constructor for QgsColorBrewerColorRampWidget.
+     * \param ramp initial ramp to show in dialog
+     * \param parent parent widget
      */
-    QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent = nullptr );
+    QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+    /**
+     * Returns a color ramp representing the current settings from the dialog.
+     * \see setRamp()
      */
     QgsColorBrewerColorRamp ramp() const { return mRamp; }
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
+    /**
+     * Sets the color ramp to show in the dialog.
+     * \param ramp color ramp
+     * \see ramp()
      */
     void setRamp( const QgsColorBrewerColorRamp &ramp );
 
@@ -71,10 +76,11 @@ class GUI_EXPORT QgsColorBrewerColorRampWidget : public QgsPanelWidget, private 
     QgsColorBrewerColorRamp mRamp;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorBrewerColorRampDialog
  * A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
 {
@@ -83,20 +89,23 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
 
   public:
 
-    /** Constructor for QgsColorBrewerColorRampDialog.
-     * @param ramp initial ramp to show in dialog
-     * @param parent parent widget
+    /**
+     * Constructor for QgsColorBrewerColorRampDialog.
+     * \param ramp initial ramp to show in dialog
+     * \param parent parent widget
      */
-    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent = nullptr );
+    QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    /** Returns a color ramp representing the current settings from the dialog.
-     * @see setRamp()
+    /**
+     * Returns a color ramp representing the current settings from the dialog.
+     * \see setRamp()
      */
     QgsColorBrewerColorRamp ramp() const { return mWidget->ramp(); }
 
-    /** Sets the color ramp to show in the dialog.
-     * @param ramp color ramp
-     * @see ramp()
+    /**
+     * Sets the color ramp to show in the dialog.
+     * \param ramp color ramp
+     * \see ramp()
      */
     void setRamp( const QgsColorBrewerColorRamp &ramp ) { mWidget->setRamp( ramp ); }
 

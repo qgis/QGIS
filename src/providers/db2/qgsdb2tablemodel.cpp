@@ -23,8 +23,6 @@
 #include "qgsapplication.h"
 
 QgsDb2TableModel::QgsDb2TableModel()
-  : QStandardItemModel()
-  , mTableCount( 0 )
 {
   QStringList headerLabels;
   headerLabels << tr( "Schema" );
@@ -38,9 +36,6 @@ QgsDb2TableModel::QgsDb2TableModel()
   setHorizontalHeaderLabels( headerLabels );
 }
 
-QgsDb2TableModel::~QgsDb2TableModel()
-{
-}
 void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
 {
   QgsDebugMsg( QString( " DB2 **** %1.%2.%3 type=%4 srid=%5 pk=%6 sql=%7" )
@@ -94,11 +89,11 @@ void QgsDb2TableModel::addTableEntry( const QgsDb2LayerProperty &layerProperty )
   QStandardItem *sridItem = new QStandardItem( layerProperty.srid );
   sridItem->setEditable( false );
 
-  QString pkText, pkCol = QLatin1String( "" );
+  QString pkText;
+  QString pkCol;
   switch ( layerProperty.pkCols.size() )
   {
     case 0:
-      pkText = QLatin1String( "" );
       break;
     case 1:
       pkText = layerProperty.pkCols[0];
@@ -354,12 +349,12 @@ bool QgsDb2TableModel::setData( const QModelIndex &idx, const QVariant &value, i
 QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &connInfo, bool useEstimatedMetadata )
 {
   if ( !index.isValid() )
-    return QString::null;
+    return QString();
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
   if ( wkbType == QgsWkbTypes::Unknown )
     // no geometry type selected
-    return QString::null;
+    return QString();
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
   QString pkColumnName = pkItem->data( Qt::UserRole + 2 ).toString();
@@ -367,7 +362,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
   if ( pkItem->data( Qt::UserRole + 1 ).toStringList().size() > 0 &&
        !pkItem->data( Qt::UserRole + 1 ).toStringList().contains( pkColumnName ) )
     // no valid primary candidate selected
-    return QString::null;
+    return QString();
 
   QString schemaName = index.sibling( index.row(), DbtmSchema ).data( Qt::DisplayRole ).toString();
   QString tableName = index.sibling( index.row(), DbtmTable ).data( Qt::DisplayRole ).toString();
@@ -382,7 +377,7 @@ QString QgsDb2TableModel::layerURI( const QModelIndex &index, const QString &con
     bool ok;
     srid.toInt( &ok );
     if ( !ok )
-      return QString::null;
+      return QString();
   }
 
   bool selectAtId = itemFromIndex( index.sibling( index.row(), DbtmSelectAtId ) )->checkState() == Qt::Checked;

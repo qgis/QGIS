@@ -34,7 +34,9 @@ QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::exclusiveFilte
          << Contains
          << DoesNotContain
          << IsNull
-         << IsNotNull;
+         << IsNotNull
+         << StartsWith
+         << EndsWith;
 }
 
 QList<QgsSearchWidgetWrapper::FilterFlag> QgsSearchWidgetWrapper::nonExclusiveFilterFlags()
@@ -73,7 +75,10 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
       return QObject::tr( "Is missing (null)" );
     case IsNotNull:
       return QObject::tr( "Is not missing (not null)" );
-
+    case StartsWith:
+      return QObject::tr( "Starts with" );
+    case EndsWith:
+      return QObject::tr( "Ends with" );
   }
   return QString();
 }
@@ -94,7 +99,6 @@ QgsSearchWidgetWrapper::FilterFlags QgsSearchWidgetWrapper::defaultFlags() const
 {
   return FilterFlags();
 }
-
 
 void QgsSearchWidgetWrapper::setFeature( const QgsFeature &feature )
 {

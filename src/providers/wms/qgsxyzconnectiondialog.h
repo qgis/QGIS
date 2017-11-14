@@ -20,6 +20,7 @@
 
 #include "ui_qgsxyzconnectiondialog.h"
 
+
 struct QgsXyzConnection;
 
 
@@ -33,6 +34,10 @@ class QgsXyzConnectionDialog : public QDialog, public Ui::QgsXyzConnectionDialog
 
     QgsXyzConnection connection() const;
 
+  private:
+
+    QString mBaseKey;
+    QString mCredentialsBaseKey;
 };
 
 #endif // QGSXYZCONNECTIONDIALOG_H

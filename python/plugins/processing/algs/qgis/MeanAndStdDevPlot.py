@@ -28,45 +28,55 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 from processing.tools import vector
-from processing.tools import dataobjects
 
 
-class MeanAndStdDevPlot(GeoAlgorithm):
+class MeanAndStdDevPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Mean and standard deviation plot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def group(self):
+        return self.tr('Graphics')
 
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'), self.INPUT,
-                                              ParameterTableField.DATA_TYPE_ANY))
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'), self.INPUT))
+    def __init__(self):
+        super().__init__()
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Plot')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input table')))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'), parentLayerParameterName=self.INPUT,
+                                                      type=QgsProcessingParameterField.Any))
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        namefieldname = self.getParameterValue(self.NAME_FIELD)
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Plot'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Plot')))
 
-        output = self.getOutputValue(self.OUTPUT)
+    def name(self):
+        return 'meanandstandarddeviationplot'
 
-        values = vector.values(layer, namefieldname, valuefieldname)
+    def displayName(self):
+        return self.tr('Mean and standard deviation plot')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)
+        valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
+
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+
+        values = vector.values(source, namefieldname, valuefieldname)
 
         d = {}
         for i in range(len(values[namefieldname])):
@@ -83,3 +93,5 @@ class MeanAndStdDevPlot(GeoAlgorithm):
                                name=k
                                ))
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

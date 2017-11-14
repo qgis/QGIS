@@ -19,6 +19,7 @@
 #define QGSRASTERPIPE_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QImage>
 #include <QMap>
 #include <QObject>
@@ -38,7 +39,8 @@ class QgsRasterDataProvider;
 #undef interface
 #endif
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for processing modules.
  */
 class CORE_EXPORT QgsRasterPipe
@@ -57,28 +59,47 @@ class CORE_EXPORT QgsRasterPipe
       HueSaturationRole = 7
     };
 
-    QgsRasterPipe();
-    QgsRasterPipe( const QgsRasterPipe &pipe );
+    /**
+     * Constructor for QgsRasterPipe.
+     */
+    QgsRasterPipe() = default;
+
+    QgsRasterPipe( const QgsRasterPipe &pipe ) SIP_SKIP;
 
     ~QgsRasterPipe();
 
     QgsRasterPipe &operator=( const QgsRasterPipe &rh ) = delete;
 
-    /** Try to insert interface at specified index and connect
+    /**
+     * Try to insert interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool insert( int idx, QgsRasterInterface *interface );
+    bool insert( int idx, QgsRasterInterface *interface SIP_TRANSFER );
+#ifdef SIP_RUN
+    % MethodCode
+    sipRes = sipCpp->insert( a0, a1 );
+    if ( !sipRes )
+    {
+      // if insertion failed transfer ownership back to python
+      PyObject *o = sipGetPyObject( a1, sipType_QgsRasterInterface );
+      if ( o )
+        sipTransferBreak( o );
+    }
+    % End
+#endif
 
-    /** Try to replace interface at specified index and connect
+    /**
+     * Try to replace interface at specified index and connect
      * if connection would fail, the interface is not inserted and false is returned */
-    bool replace( int idx, QgsRasterInterface *interface );
+    bool replace( int idx, QgsRasterInterface *interface SIP_TRANSFER );
 
-    /** Insert a new known interface in default place or replace interface of the same
+    /**
+     * Insert a new known interface in default place or replace interface of the same
      * role if it already exists. Known interfaces are: QgsRasterDataProvider,
      * QgsRasterRenderer, QgsRasterResampleFilter, QgsRasterProjector and their
      * subclasses. For unknown interfaces it mus be explicitly specified position
      * where it should be inserted using insert() method.
      */
-    bool set( QgsRasterInterface *interface );
+    bool set( QgsRasterInterface *interface SIP_TRANSFER );
 
     //! Remove and delete interface at given index if possible
     bool remove( int idx );
@@ -90,7 +111,8 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterInterface *at( int idx ) const { return mInterfaces.at( idx ); }
     QgsRasterInterface *last() const { return mInterfaces.last(); }
 
-    /** Set interface at index on/off
+    /**
+     * Set interface at index on/off
      *  Returns true on success */
     bool setOn( int idx, bool on );
 
@@ -107,6 +129,10 @@ class CORE_EXPORT QgsRasterPipe
     QgsRasterNuller *nuller() const;
 
   private:
+#ifdef SIP_RUN
+    QgsRasterPipe( const QgsRasterPipe &pipe );
+#endif
+
     //! Get known parent type_info of interface parent
     Role interfaceRole( QgsRasterInterface *iface ) const;
 
@@ -127,7 +153,8 @@ class CORE_EXPORT QgsRasterPipe
     //! Get known interface by role
     QgsRasterInterface *interface( Role role ) const;
 
-    /** \brief Try to connect interfaces in pipe and to the provider at beginning.
+    /**
+     * \brief Try to connect interfaces in pipe and to the provider at beginning.
         Returns true if connected or false if connection failed */
     bool connect( QVector<QgsRasterInterface *> interfaces );
 

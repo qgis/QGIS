@@ -1,6 +1,3 @@
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 # -*- coding: utf-8 -*-
 ###############################################################################
 #
@@ -33,7 +30,7 @@ import zipfile
 from paver.easy import (call_task, cmdopts, error, info, options, path,
                         sh, task, Bunch)
 
-from owslib.csw import CatalogueServiceWeb
+from owslib.csw import CatalogueServiceWeb  # spellok
 
 PLUGIN_NAME = 'MetaSearch'
 BASEDIR = os.path.abspath(os.path.dirname(__file__))
@@ -187,7 +184,7 @@ def test_default_csw_connections():
 
     for conn in conns.findall('csw'):
         try:
-            csw = CatalogueServiceWeb(conn.attrib.get('url'))
+            csw = CatalogueServiceWeb(conn.attrib.get('url'))  # spellok
             info('Success: %s', csw.identification.title)
             csw.getrecords2()
         except Exception as err:
@@ -215,7 +212,7 @@ def generate_csw_connections_file():
             if not url:  # blank line
                 continue
             try:
-                csw = CatalogueServiceWeb(url)
+                csw = CatalogueServiceWeb(url)  # spellok
                 title = str(csw.identification.title)
                 etree.SubElement(conns, 'csw', name=title, url=url)
             except Exception as err:

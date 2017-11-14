@@ -21,7 +21,10 @@
 #include <QComboBox>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsClassificationWidgetWrapper
  * \note not available in Python bindings
  */

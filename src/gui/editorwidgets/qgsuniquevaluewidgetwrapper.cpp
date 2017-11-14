@@ -23,8 +23,7 @@
 
 QgsUniqueValuesWidgetWrapper::QgsUniqueValuesWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mComboBox( nullptr )
-  , mLineEdit( nullptr )
+
 {
 }
 
@@ -61,9 +60,7 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
 
   QStringList sValues;
 
-  QList<QVariant> values;
-
-  layer()->uniqueValues( fieldIdx(), values );
+  QSet< QVariant> values = layer()->uniqueValues( fieldIdx() );
 
   Q_FOREACH ( const QVariant &v, values )
   {
@@ -91,12 +88,14 @@ void QgsUniqueValuesWidgetWrapper::initWidget( QWidget *editor )
     c->setCompletionMode( QCompleter::PopupCompletion );
     mLineEdit->setCompleter( c );
 
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this,
+             static_cast<void ( QgsEditorWidgetWrapper::* )( const QString & )>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
 
   if ( mComboBox )
   {
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
 }
 

@@ -133,10 +133,10 @@ QgsRasterRenderer *QgsMultiBandColorRenderer::create( const QDomElement &elem, Q
 QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  const &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   Q_UNUSED( bandNo );
-  QgsRasterBlock *outputBlock = new QgsRasterBlock();
+  std::unique_ptr< QgsRasterBlock > outputBlock( new QgsRasterBlock() );
   if ( !mInput )
   {
-    return outputBlock;
+    return outputBlock.release();
   }
 
   //In some (common) cases, we can simplify the drawing loop considerably and save render time
@@ -157,11 +157,11 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   {
     bands << mBlueBand;
   }
-  if ( bands.size() < 1 )
+  if ( bands.empty() )
   {
     // no need to draw anything if no band is set
     // TODO:: we should probably return default color block
-    return outputBlock;
+    return outputBlock.release();
   }
 
   if ( mAlphaBand > 0 )
@@ -185,7 +185,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
   bandIt = bands.constBegin();
   for ( ; bandIt != bands.constEnd(); ++bandIt )
   {
-    bandBlocks[*bandIt] =  mInput->block( *bandIt, extent, width, height, feedback );
+    bandBlocks[*bandIt] = mInput->block( *bandIt, extent, width, height, feedback );
     if ( !bandBlocks[*bandIt] )
     {
       // We should free the alloced mem from block().
@@ -195,7 +195,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
       {
         delete bandBlocks[*bandIt];
       }
-      return outputBlock;
+      return outputBlock.release();
     }
   }
 
@@ -222,7 +222,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     {
       delete bandBlocks.value( i );
     }
-    return outputBlock;
+    return outputBlock.release();
   }
 
   QRgb myDefaultColor = NODATA_COLOR;
@@ -323,7 +323,7 @@ QgsRasterBlock *QgsMultiBandColorRenderer::block( int bandNo, QgsRectangle  cons
     delete bandDelIt.value();
   }
 
-  return outputBlock;
+  return outputBlock.release();
 }
 
 void QgsMultiBandColorRenderer::writeXml( QDomDocument &doc, QDomElement &parentElem ) const

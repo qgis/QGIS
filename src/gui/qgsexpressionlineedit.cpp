@@ -29,17 +29,12 @@
 
 QgsExpressionLineEdit::QgsExpressionLineEdit( QWidget *parent )
   : QWidget( parent )
-  , mLineEdit( nullptr )
-  , mCodeEditor( nullptr )
-  , mExpressionDialogTitle( tr( "Expression dialog" ) )
-  , mDa( nullptr )
-  , mExpressionContextGenerator( nullptr )
-  , mLayer( nullptr )
+  , mExpressionDialogTitle( tr( "Expression Dialog" ) )
 {
   mButton = new QToolButton();
   mButton->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
   mButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
-  connect( mButton, SIGNAL( clicked() ), this, SLOT( editExpression() ) );
+  connect( mButton, &QAbstractButton::clicked, this, &QgsExpressionLineEdit::editExpression );
 
   //sets up layout
   setMultiLine( false );
@@ -80,7 +75,7 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     setFocusProxy( mCodeEditor );
-    connect( mCodeEditor, SIGNAL( textChanged() ), this, SLOT( expressionEdited() ) );
+    connect( mCodeEditor, &QsciScintilla::textChanged, this, static_cast < void ( QgsExpressionLineEdit::* )() > ( &QgsExpressionLineEdit::expressionEdited ) );
 
     setExpression( exp );
   }
@@ -102,7 +97,7 @@ void QgsExpressionLineEdit::setMultiLine( bool multiLine )
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Minimum );
 
     setFocusProxy( mLineEdit );
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( expressionEdited( QString ) ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, static_cast < void ( QgsExpressionLineEdit::* )( const QString & ) > ( &QgsExpressionLineEdit::expressionEdited ) );
 
     setExpression( exp );
   }

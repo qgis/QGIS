@@ -17,13 +17,13 @@
 
 #include "qgsmaplayer.h"
 #include "qgslayertreeembeddedwidgetregistry.h"
-
+#include "qgsgui.h"
 #include <QStringListModel>
 #include <QStandardItemModel>
 
 QgsLayerTreeEmbeddedConfigWidget::QgsLayerTreeEmbeddedConfigWidget( QWidget *parent )
   : QWidget( parent )
-  , mLayer( nullptr )
+
 {
   setupUi( this );
 }
@@ -32,16 +32,16 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
 {
   mLayer = layer;
 
-  connect( mBtnAdd, SIGNAL( clicked( bool ) ), this, SLOT( onAddClicked() ) );
-  connect( mBtnRemove, SIGNAL( clicked( bool ) ), this, SLOT( onRemoveClicked() ) );
+  connect( mBtnAdd, &QAbstractButton::clicked, this, &QgsLayerTreeEmbeddedConfigWidget::onAddClicked );
+  connect( mBtnRemove, &QAbstractButton::clicked, this, &QgsLayerTreeEmbeddedConfigWidget::onRemoveClicked );
 
   QStandardItemModel *modelAvailable = new QStandardItemModel( this );
   QStandardItemModel *modelUsed = new QStandardItemModel( this );
 
   // populate available
-  Q_FOREACH ( const QString &providerId, QgsLayerTreeEmbeddedWidgetRegistry::instance()->providers() )
+  Q_FOREACH ( const QString &providerId, QgsGui::layerTreeEmbeddedWidgetRegistry()->providers() )
   {
-    QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
+    QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId );
     QStandardItem *item = new QStandardItem( provider->name() );
     item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
     item->setData( provider->id(), Qt::UserRole + 1 );
@@ -54,7 +54,7 @@ void QgsLayerTreeEmbeddedConfigWidget::setLayer( QgsMapLayer *layer )
   for ( int i = 0; i < widgetsCount; ++i )
   {
     QString providerId = layer->customProperty( QStringLiteral( "embeddedWidgets/%1/id" ).arg( i ) ).toString();
-    if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId ) )
+    if ( QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId ) )
     {
       QStandardItem *item = new QStandardItem( provider->name() );
       item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable );
@@ -71,7 +71,7 @@ void QgsLayerTreeEmbeddedConfigWidget::onAddClicked()
     return;
 
   QString providerId = mListAvailable->model()->data( mListAvailable->currentIndex(), Qt::UserRole + 1 ).toString();
-  QgsLayerTreeEmbeddedWidgetProvider *provider = QgsLayerTreeEmbeddedWidgetRegistry::instance()->provider( providerId );
+  QgsLayerTreeEmbeddedWidgetProvider *provider = QgsGui::layerTreeEmbeddedWidgetRegistry()->provider( providerId );
   if ( !provider )
     return;
 

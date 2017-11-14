@@ -22,7 +22,7 @@
 #include "qgsvectorfilewriter.h" //logic for writing shpfiles
 #include "qgsfeature.h" //we will need to pass a bunch of these for each rec
 #include "qgsgeometry.h" //each feature needs a geometry
-#include "qgspoint.h" //we will use point geometry
+#include "qgspointxy.h" //we will use point geometry
 #include "qgscoordinatereferencesystem.h" //needed for creating a srs
 #include "qgsapplication.h" //search path for srs.db
 #include "qgslogger.h"
@@ -33,7 +33,8 @@
 #include <langinfo.h>
 #endif
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsVectorFileWriter class.
  *
  *  Possible QVariant::Type s
@@ -77,26 +78,22 @@ class TestQgsVectorFileWriter: public QObject
     void polygonGridTest();
     //! As above but using a projected CRS
     void projectedPlygonGridTest();
-    //! This is a regression test ticket 1141 (broken Polish characters support since r8592) http://hub.qgis.org/issues/1141
+    //! This is a regression test ticket 1141 (broken Polish characters support since r8592) https://issues.qgis.org/issues/1141
     void regression1141();
 
   private:
     // a little util fn used by all tests
     bool cleanupFile( QString fileBase );
     QString mEncoding;
-    QgsVectorFileWriter::WriterError mError;
+    QgsVectorFileWriter::WriterError mError =  QgsVectorFileWriter::NoError ;
     QgsCoordinateReferenceSystem mCRS;
     QgsFields mFields;
-    QgsPoint mPoint1;
-    QgsPoint mPoint2;
-    QgsPoint mPoint3;
+    QgsPointXY mPoint1;
+    QgsPointXY mPoint2;
+    QgsPointXY mPoint3;
 };
 
-TestQgsVectorFileWriter::TestQgsVectorFileWriter()
-  : mError( QgsVectorFileWriter::NoError )
-{
-
-}
+TestQgsVectorFileWriter::TestQgsVectorFileWriter() = default;
 
 void TestQgsVectorFileWriter::initTestCase()
 {
@@ -115,9 +112,9 @@ void TestQgsVectorFileWriter::initTestCase()
   QgsField myField1( QStringLiteral( "Field1" ), QVariant::String, QStringLiteral( "String" ), 10, 0, QStringLiteral( "Field 1 comment" ) );
   mFields.append( myField1 );
   mCRS = QgsCoordinateReferenceSystem( GEOWKT );
-  mPoint1 = QgsPoint( 10.0, 10.0 );
-  mPoint2 = QgsPoint( 15.0, 10.0 );
-  mPoint3 = QgsPoint( 15.0, 12.0 );
+  mPoint1 = QgsPointXY( 10.0, 10.0 );
+  mPoint2 = QgsPointXY( 15.0, 10.0 );
+  mPoint3 = QgsPointXY( 15.0, 12.0 );
 }
 
 void TestQgsVectorFileWriter::cleanupTestCase()
@@ -145,7 +142,7 @@ void TestQgsVectorFileWriter::createPoint()
   // Create a feature
   //
   //
-  QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( mPoint1 );
+  QgsGeometry mypPointGeometry = QgsGeometry::fromPointXY( mPoint1 );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPointGeometry );
   myFeature.initAttributes( 1 );
@@ -187,9 +184,9 @@ void TestQgsVectorFileWriter::createLine()
   //
   // Create a feature
   //
-  QgsPolyline myPolyline;
+  QgsPolylineXY myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3;
-  QgsGeometry mypLineGeometry = QgsGeometry::fromPolyline( myPolyline );
+  QgsGeometry mypLineGeometry = QgsGeometry::fromPolylineXY( myPolyline );
   QgsFeature myFeature;
   myFeature.setGeometry( mypLineGeometry );
   myFeature.initAttributes( 1 );
@@ -232,14 +229,14 @@ void TestQgsVectorFileWriter::createPolygon()
   //
   // Create a polygon feature
   //
-  QgsPolyline myPolyline;
+  QgsPolylineXY myPolyline;
   myPolyline << mPoint1 << mPoint2 << mPoint3 << mPoint1;
-  QgsPolygon myPolygon;
+  QgsPolygonXY myPolygon;
   myPolygon << myPolyline;
   //polygon: first item of the list is outer ring,
   // inner rings (if any) start from second item
   //
-  QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+  QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygonXY( myPolygon );
   QgsFeature myFeature;
   myFeature.setGeometry( mypPolygonGeometry );
   myFeature.initAttributes( 1 );
@@ -285,18 +282,18 @@ void TestQgsVectorFileWriter::polygonGridTest()
       //
       // Create a polygon feature
       //
-      QgsPolyline myPolyline;
-      QgsPoint myPoint1 = QgsPoint( i, j );
-      QgsPoint myPoint2 = QgsPoint( i + myInterval, j );
-      QgsPoint myPoint3 = QgsPoint( i + myInterval, j + myInterval );
-      QgsPoint myPoint4 = QgsPoint( i, j + myInterval );
+      QgsPolylineXY myPolyline;
+      QgsPointXY myPoint1 = QgsPointXY( i, j );
+      QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
+      QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
+      QgsPointXY myPoint4 = QgsPointXY( i, j + myInterval );
       myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
-      QgsPolygon myPolygon;
+      QgsPolygonXY myPolygon;
       myPolygon << myPolyline;
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygonXY( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -355,18 +352,18 @@ void TestQgsVectorFileWriter::projectedPlygonGridTest()
       //
       // Create a polygon feature
       //
-      QgsPolyline myPolyline;
-      QgsPoint myPoint1 = QgsPoint( i, j );
-      QgsPoint myPoint2 = QgsPoint( i + myInterval, j );
-      QgsPoint myPoint3 = QgsPoint( i + myInterval, j + myInterval );
-      QgsPoint myPoint4 = QgsPoint( i, j + myInterval );
+      QgsPolylineXY myPolyline;
+      QgsPointXY myPoint1 = QgsPointXY( i, j );
+      QgsPointXY myPoint2 = QgsPointXY( i + myInterval, j );
+      QgsPointXY myPoint3 = QgsPointXY( i + myInterval, j + myInterval );
+      QgsPointXY myPoint4 = QgsPointXY( i, j + myInterval );
       myPolyline << myPoint1 << myPoint2 << myPoint3 << myPoint4 << myPoint1;
-      QgsPolygon myPolygon;
+      QgsPolygonXY myPolygon;
       myPolygon << myPolyline;
       //polygon: first item of the list is outer ring,
       // inner rings (if any) start from second item
       //
-      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygon( myPolygon );
+      QgsGeometry mypPolygonGeometry = QgsGeometry::fromPolygonXY( myPolygon );
       QgsFeature myFeature;
       myFeature.setGeometry( mypPolygonGeometry );
       myFeature.initAttributes( 1 );
@@ -427,8 +424,8 @@ void TestQgsVectorFileWriter::regression1141()
                                   QgsWkbTypes::Point,
                                   crs );
 
-    QgsPoint myPoint = QgsPoint( 10.0, 10.0 );
-    QgsGeometry mypPointGeometry = QgsGeometry::fromPoint( myPoint );
+    QgsPointXY myPoint = QgsPointXY( 10.0, 10.0 );
+    QgsGeometry mypPointGeometry = QgsGeometry::fromPointXY( myPoint );
     QgsFeature myFeature;
     myFeature.setGeometry( mypPointGeometry );
     myFeature.initAttributes( 1 );
@@ -456,7 +453,7 @@ void TestQgsVectorFileWriter::regression1141()
     QVERIFY( error == QgsVectorFileWriter::NoError );
   }
 
-  // Now check we can delete it again ok
+  // Now check we can delete it again OK
   QVERIFY( QgsVectorFileWriter::deleteShapeFile( fileName ) );
 }
 

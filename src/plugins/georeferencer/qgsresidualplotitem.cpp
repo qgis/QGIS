@@ -20,12 +20,9 @@
 #include <cfloat>
 #include <cmath>
 
-QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition *c ): QgsComposerItem( c ), mConvertScaleToMapUnits( false )
-{
-
-}
-
-QgsResidualPlotItem::~QgsResidualPlotItem()
+QgsResidualPlotItem::QgsResidualPlotItem( QgsComposition *c )
+  : QgsComposerItem( c )
+  , mConvertScaleToMapUnits( false )
 {
 
 }
@@ -56,7 +53,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   QgsGCPList::const_iterator gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    QgsPoint gcpCoords = ( *gcpIt )->pixelCoords();
+    QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
     double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
 
@@ -84,7 +81,7 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   gcpIt = mGCPList.constBegin();
   for ( ; gcpIt != mGCPList.constEnd(); ++gcpIt )
   {
-    QgsPoint gcpCoords = ( *gcpIt )->pixelCoords();
+    QgsPointXY gcpCoords = ( *gcpIt )->pixelCoords();
     double gcpItemMMX = ( gcpCoords.x() - mExtent.xMinimum() ) / mExtent.width() * widthMM;
     double gcpItemMMY = ( 1 - ( gcpCoords.y() - mExtent.yMinimum() ) / mExtent.height() ) * heightMM;
     if ( ( *gcpIt )->isEnabled() )
@@ -111,17 +108,17 @@ void QgsResidualPlotItem::paint( QPainter *painter, const QStyleOptionGraphicsIt
   int nDecPlaces;
   if ( scaleBarWidthUnits < 1 )
   {
-    nDecPlaces = -floor( log10( scaleBarWidthUnits ) );
-    scaleBarWidthUnits *= pow( 10.0, nDecPlaces );
+    nDecPlaces = -std::floor( std::log10( scaleBarWidthUnits ) );
+    scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
     scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
-    scaleBarWidthUnits /= pow( 10.0, nDecPlaces );
+    scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
   }
   else
   {
-    nDecPlaces = ( int )log10( scaleBarWidthUnits );
-    scaleBarWidthUnits /= pow( 10.0, nDecPlaces );
+    nDecPlaces = ( int )std::log10( scaleBarWidthUnits );
+    scaleBarWidthUnits /= std::pow( 10.0, nDecPlaces );
     scaleBarWidthUnits = ( int )( scaleBarWidthUnits + 0.5 );
-    scaleBarWidthUnits *= pow( 10.0, nDecPlaces );
+    scaleBarWidthUnits *= std::pow( 10.0, nDecPlaces );
   }
   initialScaleBarWidth = scaleBarWidthUnits * minMMPixelRatio;
 
@@ -199,7 +196,7 @@ double QgsResidualPlotItem::maxMMToPixelRatioForGCP( const QgsGeorefDataPoint *p
     }
   }
 
-  double resTot = sqrt( residual.x() * residual.x() + residual.y() * residual.y() );
+  double resTot = std::sqrt( residual.x() * residual.x() + residual.y() * residual.y() );
   if ( leftRightDist <= upDownDist )
   {
     return leftRightDist / resTot;
@@ -228,5 +225,5 @@ double QgsResidualPlotItem::dist( QPointF p1, QPointF p2 ) const
 {
   double dx = p2.x() - p1.x();
   double dy = p2.y() - p1.y();
-  return sqrt( dx * dx + dy * dy );
+  return std::sqrt( dx * dx + dy * dy );
 }

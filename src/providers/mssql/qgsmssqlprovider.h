@@ -20,7 +20,7 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsfields.h"
 
 #include <QStringList>
@@ -66,7 +66,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     virtual QStringList subLayers() const override;
     virtual QVariant minimumValue( int index ) const override;
     virtual QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
     virtual QgsWkbTypes::Type wkbType() const override;
@@ -101,7 +101,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
 
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
@@ -126,7 +126,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QString defaultValueClause( int fieldId ) const override;
 
     //! Import a vector layer into the database
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -150,6 +150,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     //! Fields
     QgsFields mAttributeFields;
     QMap<int, QString> mDefaultValues;
+    QList<QString> mComputedColumns;
 
     mutable QgsMssqlGeometryParser mParser;
 
@@ -162,9 +163,9 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
 
-    long mNumberFeatures;
+    long mNumberFeatures = 0;
     QString mFidColName;
-    int mFidColIdx;
+    int mFidColIdx = -1;
     mutable long mSRId;
     QString mGeometryColName;
     QString mGeometryColType;
@@ -175,7 +176,7 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // Coordinate reference system
     mutable QgsCoordinateReferenceSystem mCrs;
 
-    mutable QgsWkbTypes::Type mWkbType;
+    mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     // The database object
     QSqlDatabase mDatabase;
@@ -206,13 +207,10 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QString mSqlWhereClause;
 
     // Sets the error messages
-    void setLastError( const QString &error )
-    {
-      mLastError = error;
-    }
+    void setLastError( const QString &error );
 
     static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
-    static QgsWkbTypes::Type getWkbType( const QString &wkbType, int dim );
+    static QgsWkbTypes::Type getWkbType( const QString &wkbType );
 
     friend class QgsMssqlFeatureSource;
 

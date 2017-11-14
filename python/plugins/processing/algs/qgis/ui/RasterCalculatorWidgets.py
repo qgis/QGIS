@@ -1,3 +1,6 @@
+from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProject)
 from processing.gui.wrappers import WidgetWrapper, DIALOG_STANDARD, DIALOG_BATCH
 from processing.tools import dataobjects
 from processing.tools.system import userFolder
@@ -170,7 +173,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
 
     def createWidget(self):
         if self.dialogType == DIALOG_STANDARD:
-            layers = dataobjects.getRasterLayers(sorting=False)
+            layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
             options = {}
             for lyr in layers:
                 for n in range(lyr.bandCount()):
@@ -185,7 +188,7 @@ class ExpressionWidgetWrapper(WidgetWrapper):
             return self._panel(options)
 
     def refresh(self):
-        layers = dataobjects.getRasterLayers()
+        layers = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance())
         options = {}
         for lyr in layers:
             for n in range(lyr.bandCount()):
@@ -229,17 +232,17 @@ class LayersListWidgetWrapper(WidgetWrapper):
                 return self.param.setValue(self.widget.selectedoptions)
             else:
                 if self.param.datatype == dataobjects.TYPE_RASTER:
-                    options = dataobjects.getRasterLayers(sorting=False)
+                    options = QgsProcessingUtils.compatibleRasterLayers(QgsProject.instance(), False)
                 elif self.param.datatype == dataobjects.TYPE_VECTOR_ANY:
-                    options = dataobjects.getVectorLayers(sorting=False)
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [], False)
                 else:
-                    options = dataobjects.getVectorLayers([self.param.datatype], sorting=False)
+                    options = QgsProcessingUtils.compatibleVectorLayers(QgsProject.instance(), [self.param.datatype], False)
                 return [options[i] for i in self.widget.selectedoptions]
         elif self.dialogType == DIALOG_BATCH:
             return self.widget.getText()
         else:
             options = self._getOptions()
             values = [options[i] for i in self.widget.selectedoptions]
-            if len(values) == 0 and not self.param.optional:
+            if len(values) == 0 and not self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 raise InvalidParameterValue()
             return values

@@ -21,12 +21,14 @@ email                : ersts@amnh.org
 #define QGSRASTERSHADER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 
 class QDomDocument;
 class QDomElement;
 class QgsRasterShaderFunction;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Interface for all raster shaders.
  */
 class CORE_EXPORT QgsRasterShader
@@ -34,7 +36,6 @@ class CORE_EXPORT QgsRasterShader
 
   public:
     QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
-    ~QgsRasterShader();
 
     //! QgsRasterShader cannot be copied
     QgsRasterShader( const QgsRasterShader &rh ) = delete;
@@ -52,8 +53,8 @@ class CORE_EXPORT QgsRasterShader
     //! \brief Return the minimum value for the raster shader
     double minimumValue() { return mMinimumValue; }
 
-    QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction; }
-    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction; }
+    QgsRasterShaderFunction *rasterShaderFunction() { return mRasterShaderFunction.get(); }
+    const QgsRasterShaderFunction *rasterShaderFunction() const { return mRasterShaderFunction.get(); } SIP_SKIP
 
     /*
      *
@@ -61,14 +62,26 @@ class CORE_EXPORT QgsRasterShader
      *
      */
     //! \brief generates and new RGBA value based on one input value
-    bool shade( double, int *, int *, int *, int * );
+    bool shade( double value,
+                int *returnRedValue SIP_OUT,
+                int *returnGreenValue SIP_OUT,
+                int *returnBlueValue SIP_OUT,
+                int *returnAlpha SIP_OUT );
 
     //! \brief generates and new RGBA value based on original RGBA value
-    bool shade( double, double, double, double, int *, int *, int *, int * );
+    bool shade( double redValue,
+                double greenValue,
+                double blueValue,
+                double alphaValue,
+                int *returnRedValue SIP_OUT,
+                int *returnGreenValue SIP_OUT,
+                int *returnBlueValue SIP_OUT,
+                int *returnAlpha SIP_OUT );
 
-    /** \brief A public method that allows the user to set their own shader function
+    /**
+     * \brief A public method that allows the user to set their own shader function
       \note Raster shader takes ownership of the shader function instance */
-    void setRasterShaderFunction( QgsRasterShaderFunction * );
+    void setRasterShaderFunction( QgsRasterShaderFunction *function SIP_TRANSFER );
 
     //! \brief Set the maximum value
     void setMaximumValue( double );
@@ -87,6 +100,10 @@ class CORE_EXPORT QgsRasterShader
     void readXml( const QDomElement &elem );
 
   private:
+#ifdef SIP_RUN
+    QgsRasterShader( const QgsRasterShader &rh );
+#endif
+
     //! \brief User defineable minimum value for the raster shader
     double mMinimumValue;
 
@@ -94,7 +111,7 @@ class CORE_EXPORT QgsRasterShader
     double mMaximumValue;
 
     //! \brief Pointer to the shader function
-    QgsRasterShaderFunction *mRasterShaderFunction = nullptr;
+    std::unique_ptr< QgsRasterShaderFunction > mRasterShaderFunction;
 
 };
 #endif

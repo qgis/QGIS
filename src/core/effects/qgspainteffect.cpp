@@ -24,30 +24,9 @@
 Q_GUI_EXPORT extern int qt_defaultDpiX();
 Q_GUI_EXPORT extern int qt_defaultDpiY();
 
-QgsPaintEffect::QgsPaintEffect()
-  : mEnabled( true )
-  , mDrawMode( ModifyAndRender )
-  , requiresQPainterDpiFix( true )
-  , mPicture( nullptr )
-  , mSourceImage( nullptr )
-  , mOwnsImage( false )
-  , mPrevPainter( nullptr )
-  , mEffectPainter( nullptr )
-  , mTempPicture( nullptr )
-{
-
-}
-
 QgsPaintEffect::QgsPaintEffect( const QgsPaintEffect &other )
   : mEnabled( other.enabled() )
   , mDrawMode( other.drawMode() )
-  , requiresQPainterDpiFix( true )
-  , mPicture( nullptr )
-  , mSourceImage( nullptr )
-  , mOwnsImage( false )
-  , mPrevPainter( nullptr )
-  , mEffectPainter( nullptr )
-  , mTempPicture( nullptr )
 {
 
 }
@@ -247,14 +226,6 @@ QRectF QgsPaintEffect::imageBoundingRect( const QgsRenderContext &context ) cons
 // QgsDrawSourceEffect
 //
 
-QgsDrawSourceEffect::QgsDrawSourceEffect()
-  : QgsPaintEffect()
-  , mTransparency( 0.0 )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-{
-
-}
-
 QgsPaintEffect *QgsDrawSourceEffect::create( const QgsStringMap &map )
 {
   QgsDrawSourceEffect *effect = new QgsDrawSourceEffect();
@@ -269,7 +240,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
 
   QPainter *painter = context.painter();
 
-  if ( mBlendMode == QPainter::CompositionMode_SourceOver && qgsDoubleNear( mTransparency, 0.0 ) )
+  if ( mBlendMode == QPainter::CompositionMode_SourceOver && qgsDoubleNear( mOpacity, 1.0 ) )
   {
     //just draw unmodified source
     drawSource( *painter );
@@ -278,7 +249,7 @@ void QgsDrawSourceEffect::draw( QgsRenderContext &context )
   {
     //rasterize source and apply modifications
     QImage image = sourceAsImage( context )->copy();
-    QgsImageOperation::multiplyOpacity( image, 1.0 - mTransparency );
+    QgsImageOperation::multiplyOpacity( image, mOpacity );
     painter->save();
     painter->setCompositionMode( mBlendMode );
     painter->drawImage( imageOffset( context ), image );
@@ -297,7 +268,7 @@ QgsStringMap QgsDrawSourceEffect::properties() const
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
-  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   return props;
 }
 
@@ -309,10 +280,21 @@ void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
-  if ( ok )
+  if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    mTransparency = transparency;
+    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = 1.0 - transparency;
+    }
+  }
+  else
+  {
+    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = opacity;
+    }
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
@@ -325,7 +307,7 @@ void QgsDrawSourceEffect::readProperties( const QgsStringMap &props )
 
 QgsEffectPainter::QgsEffectPainter( QgsRenderContext &renderContext )
   : mRenderContext( renderContext )
-  , mEffect( nullptr )
+
 {
   mPainter = renderContext.painter();
   mPainter->save();

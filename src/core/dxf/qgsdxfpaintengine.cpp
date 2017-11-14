@@ -160,10 +160,10 @@ void QgsDxfPaintEngine::endPolygon()
 
 void QgsDxfPaintEngine::endCurve()
 {
-  if ( mCurrentCurve.size() < 1 )
+  if ( mCurrentCurve.empty() )
     return;
 
-  if ( mCurrentPolygon.size() < 1 )
+  if ( mCurrentPolygon.empty() )
   {
     mCurrentCurve.clear();
     return;
@@ -198,13 +198,13 @@ void QgsDxfPaintEngine::drawLines( const QLineF *lines, int lineCount )
   }
 }
 
-QgsPointV2 QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
+QgsPoint QgsDxfPaintEngine::toDxfCoordinates( QPointF pt ) const
 {
   if ( !mPaintDevice || !mDxf )
-    return QgsPointV2( pt.x(), pt.y() );
+    return QgsPoint( pt.x(), pt.y() );
 
   QPointF dxfPt = mPaintDevice->dxfCoordinates( mTransform.map( pt ) ) + mShift;
-  return QgsPointV2( dxfPt.x(), dxfPt.y() );
+  return QgsPoint( dxfPt.x(), dxfPt.y() );
 }
 
 
@@ -262,7 +262,7 @@ double QgsDxfPaintEngine::power( double a, int b )
     return 1;
 
   double tmp = a;
-  for ( int i = 2; i <= qAbs( static_cast< double >( b ) ); i++ )
+  for ( int i = 2; i <= std::abs( b ); i++ )
     a *= tmp;
 
   if ( b > 0 )

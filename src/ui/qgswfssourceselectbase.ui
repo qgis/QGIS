@@ -53,11 +53,11 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="btnConnect">
-          <property name="toolTip">
-           <string>Connect to selected service</string>
-          </property>
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Connect to selected service</string>
           </property>
           <property name="text">
            <string>C&amp;onnect</string>
@@ -76,11 +76,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnEdit">
-          <property name="toolTip">
-           <string>Edit selected service connection</string>
-          </property>
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Edit selected service connection</string>
           </property>
           <property name="text">
            <string>Edit</string>
@@ -89,11 +89,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnDelete">
-          <property name="toolTip">
-           <string>Remove connection to selected service</string>
-          </property>
           <property name="enabled">
            <bool>false</bool>
+          </property>
+          <property name="toolTip">
+           <string>Remove connection to selected service</string>
           </property>
           <property name="text">
            <string>Remove</string>
@@ -177,7 +177,7 @@
       <enum>Qt::Horizontal</enum>
      </property>
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>

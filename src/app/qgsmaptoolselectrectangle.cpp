@@ -22,7 +22,7 @@
 #include "qgsvectorlayer.h"
 #include "qgscursors.h"
 #include "qgsgeometry.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis.h"
 
 #include <QMouseEvent>

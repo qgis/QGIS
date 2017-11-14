@@ -39,9 +39,9 @@ QgsSimplifyDialog::QgsSimplifyDialog( QgsMapToolSimplify *tool, QWidget *parent 
   cboToleranceUnits->setCurrentIndex( ( int ) mTool->toleranceUnits() );
 
   // communication with map tool
-  connect( spinTolerance, SIGNAL( valueChanged( double ) ), mTool, SLOT( setTolerance( double ) ) );
-  connect( cboToleranceUnits, SIGNAL( currentIndexChanged( int ) ), mTool, SLOT( setToleranceUnits( int ) ) );
-  connect( okButton, SIGNAL( clicked() ), mTool, SLOT( storeSimplified() ) );
+  connect( spinTolerance, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), mTool, &QgsMapToolSimplify::setTolerance );
+  connect( cboToleranceUnits, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), mTool, &QgsMapToolSimplify::setToleranceUnits );
+  connect( okButton, &QAbstractButton::clicked, mTool, &QgsMapToolSimplify::storeSimplified );
 }
 
 void QgsSimplifyDialog::updateStatusText()
@@ -66,15 +66,14 @@ void QgsSimplifyDialog::closeEvent( QCloseEvent *e )
 
 QgsMapToolSimplify::QgsMapToolSimplify( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mSelectionRubberBand( nullptr )
   , mDragging( false )
   , mOriginalVertexCount( 0 )
   , mReducedVertexCount( 0 )
   , mReducedHasErrors( false )
 {
   QgsSettings settings;
-  mTolerance = settings.value( QStringLiteral( "/digitizing/simplify_tolerance" ), 1 ).toDouble();
-  mToleranceUnits = ( QgsTolerance::UnitType ) settings.value( QStringLiteral( "/digitizing/simplify_tolerance_units" ), 0 ).toInt();
+  mTolerance = settings.value( QStringLiteral( "digitizing/simplify_tolerance" ), 1 ).toDouble();
+  mToleranceUnits = ( QgsTolerance::UnitType ) settings.value( QStringLiteral( "digitizing/simplify_tolerance_units" ), 0 ).toInt();
 
   mSimplifyDialog = new QgsSimplifyDialog( this, canvas->topLevelWidget() );
 }
@@ -91,7 +90,7 @@ void QgsMapToolSimplify::setTolerance( double tolerance )
   mTolerance = tolerance;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/digitizing/simplify_tolerance" ), tolerance );
+  settings.setValue( QStringLiteral( "digitizing/simplify_tolerance" ), tolerance );
 
   if ( !mSelectedFeatures.isEmpty() )
     updateSimplificationPreview();
@@ -102,7 +101,7 @@ void QgsMapToolSimplify::setToleranceUnits( int units )
   mToleranceUnits = ( QgsTolerance::UnitType ) units;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/digitizing/simplify_tolerance_units" ), units );
+  settings.setValue( QStringLiteral( "digitizing/simplify_tolerance_units" ), units );
 
   if ( !mSelectedFeatures.isEmpty() )
     updateSimplificationPreview();
@@ -143,7 +142,7 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry &g ) const
       int count = 0;
       if ( g.isMultipart() )
       {
-        Q_FOREACH ( const QgsPolyline &polyline, g.asMultiPolyline() )
+        Q_FOREACH ( const QgsPolylineXY &polyline, g.asMultiPolyline() )
           count += polyline.count();
       }
       else
@@ -155,13 +154,13 @@ int QgsMapToolSimplify::vertexCount( const QgsGeometry &g ) const
       int count = 0;
       if ( g.isMultipart() )
       {
-        Q_FOREACH ( const QgsPolygon &polygon, g.asMultiPolygon() )
-          Q_FOREACH ( const QgsPolyline &ring, polygon )
+        Q_FOREACH ( const QgsPolygonXY &polygon, g.asMultiPolygon() )
+          Q_FOREACH ( const QgsPolylineXY &ring, polygon )
             count += ring.count();
       }
       else
       {
-        Q_FOREACH ( const QgsPolyline &ring, g.asPolygon() )
+        Q_FOREACH ( const QgsPolylineXY &ring, g.asPolygon() )
           count += ring.count();
       }
       return count;
@@ -293,13 +292,13 @@ void QgsMapToolSimplify::canvasReleaseEvent( QgsMapMouseEvent *e )
 void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  QgsPoint layerCoords = toLayerCoordinates( vlayer, canvasPoint );
+  QgsPointXY layerCoords = toLayerCoordinates( vlayer, canvasPoint );
   double r = QgsTolerance::vertexSearchRadius( vlayer, mCanvas->mapSettings() );
   QgsRectangle selectRect = QgsRectangle( layerCoords.x() - r, layerCoords.y() - r,
                                           layerCoords.x() + r, layerCoords.y() + r );
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( selectRect ).setSubsetOfAttributes( QgsAttributeList() ) );
 
-  QgsGeometry geometry = QgsGeometry::fromPoint( layerCoords );
+  QgsGeometry geometry = QgsGeometry::fromPointXY( layerCoords );
   double minDistance = DBL_MAX;
   double currentDistance;
   QgsFeature minDistanceFeature;
@@ -324,8 +323,8 @@ void QgsMapToolSimplify::selectOneFeature( QPoint canvasPoint )
 void QgsMapToolSimplify::selectFeaturesInRect()
 {
   QgsVectorLayer *vlayer = currentVectorLayer();
-  QgsPoint pt1 = toMapCoordinates( mSelectionRect.topLeft() );
-  QgsPoint pt2 = toMapCoordinates( mSelectionRect.bottomRight() );
+  QgsPointXY pt1 = toMapCoordinates( mSelectionRect.topLeft() );
+  QgsPointXY pt2 = toMapCoordinates( mSelectionRect.bottomRight() );
   QgsRectangle rect = toLayerCoordinates( vlayer, QgsRectangle( pt1, pt2 ) );
 
   QgsFeature f;

@@ -59,10 +59,10 @@ public:
   /**
    * Constructs a new character.
    *
-   * @param _c The unicode character value of this character.
-   * @param _f The foreground color used to draw the character.
-   * @param _b The color used to draw the character's background.
-   * @param _r A set of rendition flags which specify how this character is to be drawn.
+   * \param _c The unicode character value of this character.
+   * \param _f The foreground color used to draw the character.
+   * \param _b The color used to draw the character's background.
+   * \param _r A set of rendition flags which specify how this character is to be drawn.
    */
   inline Character(quint16 _c = ' ',
             CharacterColor  _f = CharacterColor(COLOR_SPACE_DEFAULT,DEFAULT_FORE_COLOR),
@@ -187,19 +187,19 @@ public:
      * If the same sequence already exists in the table, the hash
      * of the existing sequence will be returned.
      *
-     * @param unicodePoints An array of unicode character points
-     * @param length Length of @p unicodePoints
+     * \param unicodePoints An array of unicode character points
+     * \param length Length of @p unicodePoints
      */
     ushort createExtendedChar(ushort* unicodePoints , ushort length);
     /**
      * Looks up and returns a pointer to a sequence of unicode characters
      * which was added to the table using createExtendedChar().
      *
-     * @param hash The hash key returned by createExtendedChar()
-     * @param length This variable is set to the length of the
+     * \param hash The hash key returned by createExtendedChar()
+     * \param length This variable is set to the length of the
      * character sequence.
      *
-     * @return A unicode character sequence of size @p length.
+     * \returns A unicode character sequence of size @p length.
      */
     ushort* lookupExtendedChar(ushort hash , ushort& length) const;
 

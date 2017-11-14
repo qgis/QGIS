@@ -36,7 +36,8 @@
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the Marker Line symbol
  */
 class TestQgsMarkerLineSymbol : public QObject
@@ -44,8 +45,6 @@ class TestQgsMarkerLineSymbol : public QObject
     Q_OBJECT
   public:
     TestQgsMarkerLineSymbol()
-      : mLinesLayer( 0 )
-      , mMapSettings( 0 )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -102,10 +101,7 @@ void TestQgsMarkerLineSymbol::initTestCase()
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
-TestQgsMarkerLineSymbol::~TestQgsMarkerLineSymbol()
-{
-
-}
+TestQgsMarkerLineSymbol::~TestQgsMarkerLineSymbol() = default;
 
 //runs after all tests
 void TestQgsMarkerLineSymbol::cleanupTestCase()
@@ -128,7 +124,7 @@ void TestQgsMarkerLineSymbol::lineOffset()
   mMapSettings->setLayers( QList<QgsMapLayer *>() << mLinesLayer );
 
   // Negative offset on marker line
-  // See http://hub.qgis.org/issues/13811
+  // See https://issues.qgis.org/issues/13811
 
   QString qml = mTestDataDir + "marker_line_offset.qml";
   bool success = false;
@@ -139,7 +135,7 @@ void TestQgsMarkerLineSymbol::lineOffset()
   QVERIFY( render( "line_offset" ) );
 
   // TODO: -0.0 offset, see
-  // http://hub.qgis.org/issues/13811#note-1
+  // https://issues.qgis.org/issues/13811#note-1
 }
 
 void TestQgsMarkerLineSymbol::pointNumInterval()

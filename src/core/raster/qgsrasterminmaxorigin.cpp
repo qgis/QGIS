@@ -22,17 +22,14 @@
 #include <QDomElement>
 
 QgsRasterMinMaxOrigin::QgsRasterMinMaxOrigin()
-  : mLimits( None )
-  , mExtent( WholeRaster )
-  , mAccuracy( Estimated )
-  , mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
+  : mCumulativeCutLower( CUMULATIVE_CUT_LOWER )
   , mCumulativeCutUpper( CUMULATIVE_CUT_UPPER )
   , mStdDevFactor( DEFAULT_STDDEV_FACTOR )
 {
   QgsSettings mySettings;
-  mCumulativeCutLower = mySettings.value( QStringLiteral( "/Raster/cumulativeCutLower" ), CUMULATIVE_CUT_LOWER ).toDouble();
-  mCumulativeCutUpper = mySettings.value( QStringLiteral( "/Raster/cumulativeCutUpper" ), CUMULATIVE_CUT_UPPER ).toDouble();
-  mStdDevFactor = mySettings.value( QStringLiteral( "/Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();
+  mCumulativeCutLower = mySettings.value( QStringLiteral( "Raster/cumulativeCutLower" ), CUMULATIVE_CUT_LOWER ).toDouble();
+  mCumulativeCutUpper = mySettings.value( QStringLiteral( "Raster/cumulativeCutUpper" ), CUMULATIVE_CUT_UPPER ).toDouble();
+  mStdDevFactor = mySettings.value( QStringLiteral( "Raster/defaultStandardDeviation" ), DEFAULT_STDDEV_FACTOR ).toDouble();
 }
 
 bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) const
@@ -40,9 +37,9 @@ bool QgsRasterMinMaxOrigin::operator ==( const QgsRasterMinMaxOrigin &other ) co
   return mLimits == other.mLimits &&
          mExtent == other.mExtent &&
          mAccuracy == other.mAccuracy &&
-         qAbs( mCumulativeCutLower - other.mCumulativeCutLower ) < 1e-5 &&
-         qAbs( mCumulativeCutUpper - other.mCumulativeCutUpper ) < 1e-5 &&
-         qAbs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
+         std::fabs( mCumulativeCutLower - other.mCumulativeCutLower ) < 1e-5 &&
+         std::fabs( mCumulativeCutUpper - other.mCumulativeCutUpper ) < 1e-5 &&
+         std::fabs( mStdDevFactor - other.mStdDevFactor ) < 1e-5;
 }
 
 QString QgsRasterMinMaxOrigin::limitsString( Limits limits )

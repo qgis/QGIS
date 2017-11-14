@@ -32,7 +32,7 @@ class QgsScaleComboBox;
 
 /**
   * Widget to define scale of the map canvas.
-  * @note added in 2.16
+  * \since QGIS 2.16
   */
 class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
 {
@@ -40,23 +40,21 @@ class APP_EXPORT QgsStatusBarScaleWidget : public QWidget
   public:
     explicit QgsStatusBarScaleWidget( QgsMapCanvas *canvas, QWidget *parent = 0 );
 
-
-    virtual ~QgsStatusBarScaleWidget();
-
     /**
-     * @brief setScale set the selected scale from double
-     * @param scale
+     * Set the selected \a scale from double.
+     * The \a scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
      */
     void setScale( double scale );
 
     /**
-     * @brief isLocked check if the scale should be locked to use magnifier instead of scale to zoom in/out
-     * @return True if the scale shall be locked
+     * \brief isLocked check if the scale should be locked to use magnifier instead of scale to zoom in/out
+     * \returns True if the scale shall be locked
      */
     bool isLocked() const;
 
-    /** Set the font of the text
-      * @param font the font to use
+    /**
+     * Set the font of the text
+      * \param font the font to use
       */
     void setFont( const QFont &font );
 

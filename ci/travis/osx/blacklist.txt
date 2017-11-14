@@ -1,9 +1,0 @@
-qgis_openstreetmaptest
-qgis_wcsprovidertest
-PyQgsServer
-ProcessingGdalAlgorithmsTest
-PyQgsOfflineEditingWFS
-ProcessingGrass7AlgorithmsImageryTest
-ProcessingGrass7AlgorithmsRasterTest
-qgis_composerhtmltest
-PyQgsOfflineEditingWFS

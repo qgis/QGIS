@@ -17,23 +17,29 @@
 #define QGSBROWSERTREEVIEW_H
 
 #include <QTreeView>
+#include "qgis.h"
 #include "qgis_gui.h"
 
-//class QgsBrowserModel;
+class QgsBrowserModel;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * The QgsBrowserTreeView class extends QTreeView with save/restore tree state functionality.
  *
- * @see QgsBrowserModel
- * @note added in 2.8
+ * \see QgsBrowserModel
+ * \since QGIS 2.8
  */
 class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    QgsBrowserTreeView( QWidget *parent = nullptr );
+    QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     virtual void setModel( QAbstractItemModel *model ) override;
+    //! Set the browser model
+    void setBrowserModel( QgsBrowserModel *model );
+    //! Return the browser model
+    QgsBrowserModel *browserModel() { return mBrowserModel; }
     virtual void showEvent( QShowEvent *e ) override;
     virtual void hideEvent( QHideEvent *e ) override;
 
@@ -63,6 +69,7 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 
     // returns true if expanded from root to item
     bool treeExpanded( const QModelIndex &index );
+    QgsBrowserModel *mBrowserModel = nullptr;
 };
 
 #endif // QGSBROWSERTREEVIEW_H

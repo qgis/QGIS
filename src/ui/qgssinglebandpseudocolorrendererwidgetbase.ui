@@ -115,7 +115,7 @@
     <widget class="QComboBox" name="mColorInterpolationComboBox"/>
    </item>
    <item row="0" column="1" colspan="4">
-    <widget class="QComboBox" name="mBandComboBox"/>
+    <widget class="QgsRasterBandComboBox" name="mBandComboBox"/>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="mBandLabel">
@@ -310,6 +310,11 @@ suffix</string>
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsRasterBandComboBox</class>
+   <extends>QComboBox</extends>
+   <header>raster/qgsrasterbandcombobox.h</header>
+  </customwidget>
   <customwidget>
    <class>QgsColorRampButton</class>
    <extends>QToolButton</extends>

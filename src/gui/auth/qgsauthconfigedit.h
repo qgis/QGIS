@@ -23,10 +23,13 @@
 #include "ui_qgsauthconfigedit.h"
 #include "qgis_gui.h"
 
+#define SIP_NO_FILE
+
 class QgsAuthMethodEdit;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing an authentication configuration
  * \note not available in Python bindings
  */
@@ -45,9 +48,9 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
 
     /**
      * Create a dialog for editing an authentication configuration
-     * @param parent Parent widget
-     * @param authcfg Authentication config id for a existing config in auth database
-     * @param dataprovider The provider origin of the edit, to allow for customized code and filtering
+     * \param parent Parent widget
+     * \param authcfg Authentication config id for a existing config in auth database
+     * \param dataprovider The provider origin of the edit, to allow for customized code and filtering
      */
     explicit QgsAuthConfigEdit( QWidget *parent = nullptr, const QString &authcfg = QString(),
                                 const QString &dataprovider = QString() );
@@ -69,12 +72,12 @@ class GUI_EXPORT QgsAuthConfigEdit : public QDialog, private Ui::QgsAuthConfigEd
     void resetConfig();
     void saveConfig();
 
-    void on_btnClear_clicked();
+    void btnClear_clicked();
     void clearAll();
 
     void validateAuth();
 
-    void on_leName_textChanged( const QString &txt );
+    void leName_textChanged( const QString &txt );
 
   private:
     int authMethodIndex( const QString &authMethodKey );

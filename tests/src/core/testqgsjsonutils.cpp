@@ -16,7 +16,7 @@
 #include "qgstest.h"
 #include <qgsjsonutils.h>
 
-class TestQgsJSONUtils : public QObject
+class TestQgsJsonUtils : public QObject
 {
     Q_OBJECT
   private slots:
@@ -25,17 +25,17 @@ class TestQgsJSONUtils : public QObject
       QStringList list;
 
       {
-        const QString json = QgsJSONUtils::encodeValue( list );
+        const QString json = QgsJsonUtils::encodeValue( list );
         QCOMPARE( json, QString( "[]" ) );
-        const QVariant back = QgsJSONUtils::parseArray( json, QVariant::String );
+        const QVariant back = QgsJsonUtils::parseArray( json, QVariant::String );
         QCOMPARE( back.toStringList(), list );
       }
 
       {
         list << QStringLiteral( "one" ) << QStringLiteral( "<',\"\\>" ) << QStringLiteral( "two" );
-        const QString json = QgsJSONUtils::encodeValue( list );
+        const QString json = QgsJsonUtils::encodeValue( list );
         QCOMPARE( json, QString( "[\"one\",\"<',\\\"\\\\>\",\"two\"]" ) );
-        const QVariant back = QgsJSONUtils::parseArray( json, QVariant::String );
+        const QVariant back = QgsJsonUtils::parseArray( json, QVariant::String );
         QCOMPARE( back.toStringList(), list );
       }
     }
@@ -46,16 +46,16 @@ class TestQgsJSONUtils : public QObject
 
       {
         list << 1 << -2;
-        const QString json = QgsJSONUtils::encodeValue( list );
+        const QString json = QgsJsonUtils::encodeValue( list );
         QCOMPARE( json, QString( "[1,-2]" ) );
-        const QVariantList back = QgsJSONUtils::parseArray( json, QVariant::Int );
+        const QVariantList back = QgsJsonUtils::parseArray( json, QVariant::Int );
         QCOMPARE( back, list );
         QCOMPARE( back.at( 0 ).type(), QVariant::Int );
       }
 
       {
         // check invalid entries are ignored
-        const QVariantList back = QgsJSONUtils::parseArray( QStringLiteral( "[1,\"a\",-2]" ), QVariant::Int );
+        const QVariantList back = QgsJsonUtils::parseArray( QStringLiteral( "[1,\"a\",-2]" ), QVariant::Int );
         QCOMPARE( back, list );
       }
     }
@@ -65,13 +65,13 @@ class TestQgsJSONUtils : public QObject
       QVariantList list;
 
       list << 1.0 << -2.2456;
-      const QString json = QgsJSONUtils::encodeValue( list );
+      const QString json = QgsJsonUtils::encodeValue( list );
       QCOMPARE( json, QString( "[1,-2.2456]" ) );
-      const QVariantList back = QgsJSONUtils::parseArray( json, QVariant::Double );
+      const QVariantList back = QgsJsonUtils::parseArray( json, QVariant::Double );
       QCOMPARE( back, list );
       QCOMPARE( back.at( 0 ).type(), QVariant::Double );
     }
 };
 
-QGSTEST_MAIN( TestQgsJSONUtils )
+QGSTEST_MAIN( TestQgsJsonUtils )
 #include "testqgsjsonutils.moc"

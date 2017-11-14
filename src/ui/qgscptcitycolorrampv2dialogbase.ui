@@ -17,7 +17,7 @@
    </sizepolicy>
   </property>
   <property name="windowTitle">
-   <string>cpt-city color ramp</string>
+   <string>Cpt-city Color Ramp</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_4">
    <property name="sizeConstraint">

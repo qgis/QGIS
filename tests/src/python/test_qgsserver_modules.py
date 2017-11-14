@@ -18,7 +18,7 @@ class Response(QgsServerResponse):
         self._buffer = QBuffer()
         self._buffer.open(QIODevice.ReadWrite)
 
-    def setReturnCode(self, code):
+    def setStatusCode(self, code):
         pass
 
     def setHeader(self, key, val):

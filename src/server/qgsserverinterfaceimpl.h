@@ -19,6 +19,9 @@
 #ifndef QGSSERVERINTERFACEIMPL_H
 #define QGSSERVERINTERFACEIMPL_H
 
+#define SIP_NO_FILE
+
+
 #include "qgsserverinterface.h"
 #include "qgscapabilitiescache.h"
 
@@ -53,8 +56,9 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     //
     void registerAccessControl( QgsAccessControlFilter *accessControl, int priority = 0 ) override;
 
-    /** Gets the helper over all the registered access control filters
-     * @return the access control helper
+    /**
+     * Gets the helper over all the registered access control filters
+     * \returns the access control helper
      */
     QgsAccessControl *accessControls() const override { return mAccessControls; }
     QString getEnv( const QString &name ) const override;

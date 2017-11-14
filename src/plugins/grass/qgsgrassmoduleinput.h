@@ -42,11 +42,7 @@
 
 extern "C"
 {
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 }
 
 class QgsGrassModuleInputModel : public QStandardItemModel
@@ -62,7 +58,6 @@ class QgsGrassModuleInputModel : public QStandardItemModel
     };
 
     explicit QgsGrassModuleInputModel( QObject *parent = 0 );
-    ~QgsGrassModuleInputModel();
 
     //! Get singleton instance of this class.
     static QgsGrassModuleInputModel *instance();
@@ -156,6 +151,8 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
 
 class QgsGrassModuleInputCompleter : public QCompleter
 {
+    Q_OBJECT
+
   public:
     explicit QgsGrassModuleInputCompleter( QAbstractItemModel *model, QWidget *parent = 0 );
 
@@ -164,9 +161,10 @@ class QgsGrassModuleInputCompleter : public QCompleter
 
 class QgsGrassModuleInputComboBox : public QComboBox
 {
+    Q_OBJECT
+
   public:
     explicit QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent = 0 );
-    ~QgsGrassModuleInputComboBox();
 
     virtual bool eventFilter( QObject *watched, QEvent *event ) override;
     virtual void showPopup() override;
@@ -224,7 +222,8 @@ class QgsGrassModuleInputSelectedView : public QTreeView
 };
 
 
-/** \class QgsGrassModuleInput
+/**
+ * \class QgsGrassModuleInput
  *  \brief Class representing raster or vector module input
  */
 class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
@@ -233,7 +232,8 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
 
   public:
 
-    /** \brief Constructor
+    /**
+     * \brief Constructor
      * \param qdesc option element in QGIS module description XML file
      * \param gdesc GRASS module XML description file
      */
@@ -241,9 +241,6 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
                          QgsGrassModuleStandardOptions *options, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
                          bool direct, QWidget *parent = 0 );
-
-
-    ~QgsGrassModuleInput();
 
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;
@@ -328,7 +325,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     QComboBox *mLayerComboBox = nullptr;
 
     //! List of multiple selected maps
-    QTreeView *mSelectedTreeView = nullptr;
+    QgsGrassModuleInputSelectedView *mSelectedTreeView = nullptr;
 
     // Vector type checkboxes
     QMap<int, QCheckBox *> mTypeCheckBoxes;
@@ -344,7 +341,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
     // List of vector layers matching mGeometryTypes for currently selected vector
     QList<QgsGrassVectorLayer *> mLayers;
 
-    //! The imput map will be updated -> must be from current mapset
+    //! The input map will be updated -> must be from current mapset
     // TODO
     bool mUpdate;
 

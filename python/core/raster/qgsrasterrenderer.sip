@@ -1,68 +1,151 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrenderer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 
 class QgsRasterRenderer : QgsRasterInterface
 {
+%Docstring
+ Raster renderer pipe that applies colors to a raster.
+%End
+
 %TypeHeaderCode
 #include "qgsrasterrenderer.h"
 %End
-
   public:
 
     static const QRgb NODATA_COLOR;
 
-    QgsRasterRenderer( QgsRasterInterface* input = 0, const QString& type = "" );
+    QgsRasterRenderer( QgsRasterInterface *input = 0, const QString &type = QString() );
+%Docstring
+ Constructor for QgsRasterRenderer.
+%End
     virtual ~QgsRasterRenderer();
 
-    virtual QgsRasterRenderer * clone() const = 0 /Factory/;
+
+    virtual QgsRasterRenderer *clone() const = 0 /Factory/;
+
+%Docstring
+QgsRasterRenderer cannot be copied. Use clone() instead.
+ :rtype: QgsRasterRenderer
+%End
 
     virtual int bandCount() const;
 
     virtual Qgis::DataType dataType( int bandNo ) const;
 
     virtual QString type() const;
+%Docstring
+ :rtype: str
+%End
 
-    virtual bool setInput( QgsRasterInterface* input );
+    virtual bool setInput( QgsRasterInterface *input );
 
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback* feedback = nullptr ) = 0 / Factory /;
+    virtual QgsRasterBlock *block( int bandNo,
+                                   const QgsRectangle &extent,
+                                   int width,
+                                   int height,
+                                   QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
 
     bool usesTransparency() const;
+%Docstring
+ :rtype: bool
+%End
 
     void setOpacity( double opacity );
-    double opacity() const;
+%Docstring
+ Sets the ``opacity`` for the renderer, where ``opacity`` is a value between 0 (totally transparent)
+ and 1.0 (fully opaque).
+.. seealso:: opacity()
+%End
 
-    void setRasterTransparency( QgsRasterTransparency* t /Transfer/);
-    const QgsRasterTransparency* rasterTransparency() const;
+    double opacity() const;
+%Docstring
+ Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
+ and 1.0 (fully opaque).
+.. seealso:: setOpacity()
+ :rtype: float
+%End
+
+    void setRasterTransparency( QgsRasterTransparency *t /Transfer/ );
+    const QgsRasterTransparency *rasterTransparency() const;
+%Docstring
+ :rtype: QgsRasterTransparency
+%End
 
     void setAlphaBand( int band );
     int alphaBand() const;
+%Docstring
+ :rtype: int
+%End
 
-    /** Get symbology items if provided by renderer*/
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
+%Docstring
+Get symbology items if provided by renderer
+%End
 
-    /** Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXml( const QDomElement& rendererElem );
+    virtual void readXml( const QDomElement &rendererElem );
 
-    /** Copies common properties like opacity / transparency data from other renderer.
-     *  Useful when cloning renderers.
-     *  @note added in 2.16  */
-    void copyCommonProperties( const QgsRasterRenderer* other, bool copyMinMaxOrigin = true );
+%Docstring
+Sets base class members from xml. Usually called from create() methods of subclasses
+%End
 
-    /** Returns a list of band numbers used by the renderer*/
+    void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
+%Docstring
+ Copies common properties like opacity / transparency data from other renderer.
+  Useful when cloning renderers.
+.. versionadded:: 2.16
+%End
+
     virtual QList<int> usesBands() const;
+%Docstring
+Returns a list of band numbers used by the renderer
+ :rtype: list of int
+%End
 
-    //! Returns const reference to origin of min/max values
-    const QgsRasterMinMaxOrigin& minMaxOrigin() const;
+    const QgsRasterMinMaxOrigin &minMaxOrigin() const;
+%Docstring
+Returns const reference to origin of min/max values
+ :rtype: QgsRasterMinMaxOrigin
+%End
 
-    //! Sets origin of min/max values
-    void setMinMaxOrigin( const QgsRasterMinMaxOrigin& origin );
+    void setMinMaxOrigin( const QgsRasterMinMaxOrigin &origin );
+%Docstring
+Sets origin of min/max values
+%End
 
   protected:
 
-    /** Write upper class info into rasterrenderer element (called by writeXML method of subclasses)*/
-    void _writeXml( QDomDocument& doc, QDomElement& rasterRendererElem ) const;
+    void _writeXml( QDomDocument &doc, QDomElement &rasterRendererElem ) const;
+%Docstring
+Write upper class info into rasterrenderer element (called by writeXml method of subclasses)
+%End
+
+
+
+
 
   private:
-
-    QgsRasterRenderer( const QgsRasterRenderer& );
-    const QgsRasterRenderer& operator=( const QgsRasterRenderer& );
-
+    QgsRasterRenderer( const QgsRasterRenderer & );
+    const QgsRasterRenderer &operator=( const QgsRasterRenderer & );
+%Docstring
+ :rtype: QgsRasterRenderer
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrenderer.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

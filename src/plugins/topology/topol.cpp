@@ -16,10 +16,10 @@
  ***************************************************************************/
 
 // QGIS Specific includes
-#include <qgsmaplayer.h>
-#include <qgsapplication.h>
-#include <qgisinterface.h>
-#include <qgisgui.h>
+#include "qgsmaplayer.h"
+#include "qgsapplication.h"
+#include "qgisinterface.h"
+#include "qgsguiutils.h"
 
 // Qt4 Related Includes
 #include <QAction>
@@ -51,13 +51,8 @@ static const QString sPluginIcon = QStringLiteral( ":/topology/mActionTopologyCh
 Topol::Topol( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mQActionPointer( nullptr )
 {
   mDock = nullptr;
-}
-
-Topol::~Topol()
-{
 }
 
 /*
@@ -79,7 +74,7 @@ void Topol::initGui()
   // Set the what's this text
   mQActionPointer->setWhatsThis( tr( "Topology Checker for vector layer" ) );
   // Connect the action to the run
-  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( showOrHide() ) );
+  connect( mQActionPointer, &QAction::triggered, this, &Topol::showOrHide );
   // Add the icon to the toolbar
   mQGisIface->addVectorToolBarIcon( mQActionPointer );
   mQGisIface->addPluginToVectorMenu( tr( "&Topology Checker" ), mQActionPointer );
@@ -109,7 +104,7 @@ void Topol::run()
 {
   mDock = new checkDock( mQGisIface );
   mQGisIface->addDockWidget( Qt::RightDockWidgetArea, mDock );
-  connect( mDock, SIGNAL( visibilityChanged( bool ) ), mQActionPointer, SLOT( setChecked( bool ) ) );
+  connect( mDock, &QDockWidget::visibilityChanged, mQActionPointer, &QAction::setChecked );
   //mDock->show();
 }
 

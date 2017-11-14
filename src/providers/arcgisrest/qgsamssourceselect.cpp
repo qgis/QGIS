@@ -25,13 +25,9 @@
 #include <QMessageBox>
 
 
-QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
-  : QgsSourceSelectDialog( QStringLiteral( "ArcGisMapServer" ), QgsSourceSelectDialog::MapService, parent, fl )
+QgsAmsSourceSelect::QgsAmsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisMapServer" ), QgsArcGisServiceSourceSelect::MapService, parent, fl, widgetMode )
 {
-  if ( embeddedMode )
-  {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
-  }
 
   // import/export of connections not supported yet
   btnLoad->hide();
@@ -100,4 +96,9 @@ QString QgsAmsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
   ds.setParam( QStringLiteral( "crs" ), crs );
   ds.setParam( QStringLiteral( "format" ), getSelectedImageEncoding() );
   return ds.uri();
+}
+
+void QgsAmsSourceSelect::addServiceLayer( QString uri, QString typeName )
+{
+  emit addRasterLayer( uri, typeName, QStringLiteral( "arcgismapserver" ) );
 }

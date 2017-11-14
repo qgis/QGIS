@@ -17,8 +17,9 @@
 #define QGSGRAPHBUILDER_H
 
 #include "qgsgraphbuilderinterface.h"
+#include "qgis.h"
 
-#include <qgsspatialindex.h>
+#include "qgsspatialindex.h"
 #include "qgis_analysis.h"
 
 class QgsDistanceArea;
@@ -45,18 +46,20 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
     /*
      * MANDATORY BUILDER PROPERTY DECLARATION
      */
-    virtual void addVertex( int id, const QgsPoint &pt ) override;
+    void addVertex( int id, const QgsPointXY &pt ) override;
 
-    virtual void addEdge( int pt1id, const QgsPoint &pt1, int pt2id, const QgsPoint &pt2, const QVector< QVariant > &prop ) override;
+    void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop ) override;
 
     /**
      * Returns generated QgsGraph
      */
-    QgsGraph *graph();
+    QgsGraph *graph() SIP_FACTORY;
 
   private:
 
     QgsGraph *mGraph = nullptr;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSGRAPHBUILDER_H

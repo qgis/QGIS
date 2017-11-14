@@ -28,11 +28,11 @@
 
 struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
-  explicit FilterExcludePoint( const QgsPoint &p ) : mPoint( p ) {}
+  explicit FilterExcludePoint( const QgsPointXY &p ) : mPoint( p ) {}
 
   bool acceptMatch( const QgsPointLocator::Match &match ) { return match.point() != mPoint; }
 
-  QgsPoint mPoint;
+  QgsPointXY mPoint;
 };
 
 
@@ -40,9 +40,7 @@ class TestQgsSnappingUtils : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsSnappingUtils()
-      : mVL( 0 )
-    {}
+    TestQgsSnappingUtils() = default;
 
   private:
     QgsVectorLayer *mVL = nullptr;
@@ -64,11 +62,11 @@ class TestQgsSnappingUtils : public QObject
       //           + (1,0)
       mVL = new QgsVectorLayer( QStringLiteral( "Polygon" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
       QgsFeature ff( 0 );
-      QgsPolygon polygon;
-      QgsPolyline polyline;
-      polyline << QgsPoint( 0, 1 ) << QgsPoint( 1, 0 ) << QgsPoint( 1, 1 ) << QgsPoint( 0, 1 );
+      QgsPolygonXY polygon;
+      QgsPolylineXY polyline;
+      polyline << QgsPointXY( 0, 1 ) << QgsPointXY( 1, 0 ) << QgsPointXY( 1, 1 ) << QgsPointXY( 0, 1 );
       polygon << polyline;
-      QgsGeometry polygonGeom = QgsGeometry::fromPolygon( polygon );
+      QgsGeometry polygonGeom = QgsGeometry::fromPolygonXY( polygon );
       ff.setGeometry( polygonGeom );
       QgsFeatureList flist;
       flist << ff;
@@ -113,7 +111,7 @@ class TestQgsSnappingUtils : public QObject
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );
-      QCOMPARE( m.point(), QgsPoint( 1, 0 ) );
+      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
 
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 0, 100 ) );
       QVERIFY( !m2.isValid() );
@@ -126,7 +124,7 @@ class TestQgsSnappingUtils : public QObject
       u.setConfig( snappingConfig );
 
       // test with filtering
-      FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
+      FilterExcludePoint myFilter( QgsPointXY( 1, 0 ) );
       QgsPointLocator::Match m3 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
       QVERIFY( !m3.isValid() );
     }
@@ -156,7 +154,7 @@ class TestQgsSnappingUtils : public QObject
 
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( m2.isValid() );
-      QCOMPARE( m2.point(), QgsPoint( 1, 0 ) );
+      QCOMPARE( m2.point(), QgsPointXY( 1, 0 ) );
     }
 
     void testSnapModeAdvanced()
@@ -177,10 +175,10 @@ class TestQgsSnappingUtils : public QObject
       QgsPointLocator::Match m = u.snapToMap( QPoint( 100, 100 ) );
       QVERIFY( m.isValid() );
       QVERIFY( m.hasVertex() );
-      QCOMPARE( m.point(), QgsPoint( 1, 0 ) );
+      QCOMPARE( m.point(), QgsPointXY( 1, 0 ) );
 
       // test with filtering
-      FilterExcludePoint myFilter( QgsPoint( 1, 0 ) );
+      FilterExcludePoint myFilter( QgsPointXY( 1, 0 ) );
       QgsPointLocator::Match m2 = u.snapToMap( QPoint( 100, 100 ), &myFilter );
       QVERIFY( !m2.isValid() );
     }
@@ -193,14 +191,14 @@ class TestQgsSnappingUtils : public QObject
       //         /\    .
       // (0,0)  x  x (1,0)
       QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "LineString" ), QStringLiteral( "x" ), QStringLiteral( "memory" ) );
-      QgsPolyline polyline1, polyline2;
-      polyline1 << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
-      polyline2 << QgsPoint( 1, 0 ) << QgsPoint( 0, 1 );
+      QgsPolylineXY polyline1, polyline2;
+      polyline1 << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 );
+      polyline2 << QgsPointXY( 1, 0 ) << QgsPointXY( 0, 1 );
       QgsFeature f1;
-      QgsGeometry f1g = QgsGeometry::fromPolyline( polyline1 ) ;
+      QgsGeometry f1g = QgsGeometry::fromPolylineXY( polyline1 ) ;
       f1.setGeometry( f1g );
       QgsFeature f2;
-      QgsGeometry f2g = QgsGeometry::fromPolyline( polyline2 );
+      QgsGeometry f2g = QgsGeometry::fromPolylineXY( polyline2 );
       f2.setGeometry( f2g );
       QgsFeatureList flist;
       flist << f1 << f2;
@@ -223,16 +221,16 @@ class TestQgsSnappingUtils : public QObject
       u.setConfig( snappingConfig );
 
       // no snapping on intersections by default - should find nothing
-      QgsPointLocator::Match m = u.snapToMap( QgsPoint( 0.45, 0.5 ) );
+      QgsPointLocator::Match m = u.snapToMap( QgsPointXY( 0.45, 0.5 ) );
       QVERIFY( !m.isValid() );
 
       snappingConfig.setIntersectionSnapping( true );
       u.setConfig( snappingConfig );
 
-      QgsPointLocator::Match m2 = u.snapToMap( QgsPoint( 0.45, 0.5 ) );
+      QgsPointLocator::Match m2 = u.snapToMap( QgsPointXY( 0.45, 0.5 ) );
       QVERIFY( m2.isValid() );
       QCOMPARE( m2.type(), QgsPointLocator::Vertex );
-      QCOMPARE( m2.point(), QgsPoint( 0.5, 0.5 ) );
+      QCOMPARE( m2.point(), QgsPointXY( 0.5, 0.5 ) );
 
       delete vl;
     }

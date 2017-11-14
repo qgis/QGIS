@@ -29,8 +29,7 @@
 
 QgsDateTimeEditWrapper::QgsDateTimeEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mQDateTimeEdit( nullptr )
-  , mQgsDateTimeEdit( nullptr )
+
 {
 }
 
@@ -91,11 +90,11 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
 
   if ( mQgsDateTimeEdit )
   {
-    connect( mQgsDateTimeEdit, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( dateTimeChanged( QDateTime ) ) );
+    connect( mQgsDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEditWrapper::dateTimeChanged );
   }
   else
   {
-    connect( mQDateTimeEdit, SIGNAL( dateTimeChanged( QDateTime ) ), this,  SLOT( dateTimeChanged( QDateTime ) ) );
+    connect( mQDateTimeEdit, &QDateTimeEdit::dateTimeChanged, this,  &QgsDateTimeEditWrapper::dateTimeChanged );
   }
 }
 

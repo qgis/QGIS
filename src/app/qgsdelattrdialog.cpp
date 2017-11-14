@@ -23,7 +23,6 @@
 #include "qgssettings.h"
 
 QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
-  : QDialog()
 {
   setupUi( this );
   if ( vl )
@@ -60,13 +59,13 @@ QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
   }
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QgsDelAttrDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsDelAttrDialog/geometry" ) ).toByteArray() );
 }
 
 QgsDelAttrDialog::~QgsDelAttrDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QgsDelAttrDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QgsDelAttrDialog/geometry" ), saveGeometry() );
 }
 
 QList<int> QgsDelAttrDialog::selectedAttributes()

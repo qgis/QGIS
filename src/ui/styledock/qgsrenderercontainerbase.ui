@@ -55,7 +55,7 @@
     </layout>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -76,8 +76,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QStackedWidget" name="mStackedWidget">
-        </widget>
+        <widget class="QStackedWidget" name="mStackedWidget"/>
        </item>
       </layout>
      </widget>
@@ -85,6 +84,14 @@
    </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>

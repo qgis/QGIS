@@ -1,9 +1,0 @@
-[Desktop Entry]
-Type=MimeType
-MimeType=application/x-qgis-project
-Hidden=false
-Comment=QGIS Project
-Comment[de]=QGIS-Projekt
-Patterns=*.qgs;
-Icon=qgis-qgs-mime
-X-KDE-IsAlso=application/x-qgis

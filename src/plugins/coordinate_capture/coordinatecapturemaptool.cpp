@@ -28,7 +28,6 @@
 
 CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas )
   : QgsMapTool( thepCanvas )
-  , mpRubberBand( nullptr )
 {
   // set cursor
   QPixmap myCursor = QPixmap( ( const char ** ) capture_point_cursor );
@@ -39,13 +38,9 @@ CoordinateCaptureMapTool::CoordinateCaptureMapTool( QgsMapCanvas *thepCanvas )
   mpRubberBand->setWidth( 1 );
 }
 
-CoordinateCaptureMapTool::~CoordinateCaptureMapTool()
-{
-}
-
 void CoordinateCaptureMapTool::canvasMoveEvent( QgsMapMouseEvent *thepEvent )
 {
-  QgsPoint myOriginalPoint =
+  QgsPointXY myOriginalPoint =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x(), thepEvent->y() );
   emit mouseMoved( myOriginalPoint );
 }
@@ -57,19 +52,19 @@ void CoordinateCaptureMapTool::canvasPressEvent( QgsMapMouseEvent *thepEvent )
 
 void CoordinateCaptureMapTool::canvasReleaseEvent( QgsMapMouseEvent *thepEvent )
 {
-  QgsPoint myOriginalPoint =
+  QgsPointXY myOriginalPoint =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x(), thepEvent->y() );
   emit mouseClicked( myOriginalPoint );
 
   //make a little box for display
 
-  QgsPoint myPoint1 =
+  QgsPointXY myPoint1 =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x() - 1, thepEvent->y() - 1 );
-  QgsPoint myPoint2 =
+  QgsPointXY myPoint2 =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x() + 1, thepEvent->y() - 1 );
-  QgsPoint myPoint3 =
+  QgsPointXY myPoint3 =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x() + 1, thepEvent->y() + 1 );
-  QgsPoint myPoint4 =
+  QgsPointXY myPoint4 =
     mCanvas->getCoordinateTransform()->toMapCoordinates( thepEvent->x() - 1, thepEvent->y() + 1 );
 
   mpRubberBand->reset( QgsWkbTypes::PolygonGeometry );

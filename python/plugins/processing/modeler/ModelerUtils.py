@@ -35,7 +35,6 @@ from processing.core.ProcessingConfig import ProcessingConfig
 class ModelerUtils(object):
 
     MODELS_FOLDER = 'MODELS_FOLDER'
-    ACTIVATE_MODELS = 'ACTIVATE_MODELS'
 
     @staticmethod
     def defaultModelsFolder():

@@ -16,6 +16,7 @@
 #include "qgsmaptoolreshape.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometry.h"
+#include "qgslinestring.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
@@ -25,10 +26,6 @@
 
 QgsMapToolReshape::QgsMapToolReshape( QgsMapCanvas *canvas )
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), QgsMapToolCapture::CaptureLine )
-{
-}
-
-QgsMapToolReshape::~QgsMapToolReshape()
 {
 }
 
@@ -77,12 +74,16 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       stopCapturing();
       return;
     }
-    QgsPoint firstPoint = points().at( 0 );
+    QgsPointXY firstPoint = points().at( 0 );
     QgsRectangle bbox( firstPoint.x(), firstPoint.y(), firstPoint.x(), firstPoint.y() );
     for ( int i = 1; i < size(); ++i )
     {
       bbox.combineExtentWith( points().at( i ).x(), points().at( i ).y() );
     }
+
+    QgsLineString reshapeLineString( points() );
+    if ( QgsWkbTypes::hasZ( vlayer->wkbType() ) )
+      reshapeLineString.addZValue( defaultZValue() );
 
     //query all the features that intersect bounding box of capture line
     QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setFilterRect( bbox ).setSubsetOfAttributes( QgsAttributeList() ) );
@@ -99,7 +100,7 @@ void QgsMapToolReshape::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       QgsGeometry geom = f.geometry();
       if ( !geom.isNull() )
       {
-        reshapeReturn = geom.reshapeGeometry( points() );
+        reshapeReturn = geom.reshapeGeometry( reshapeLineString );
         if ( reshapeReturn == 0 )
         {
           //avoid intersections on polygon layers

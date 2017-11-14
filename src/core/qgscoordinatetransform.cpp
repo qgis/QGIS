@@ -19,9 +19,9 @@
 #include "qgsapplication.h"
 #include "qgsmessagelog.h"
 #include "qgslogger.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 
 //qt includes
 #include <QDomNode>
@@ -86,7 +86,7 @@ QgsCoordinateReferenceSystem QgsCoordinateTransform::destinationCrs() const
   return d->mDestCRS;
 }
 
-QgsPoint QgsCoordinateTransform::transform( const QgsPoint &point, TransformDirection direction ) const
+QgsPointXY QgsCoordinateTransform::transform( const QgsPointXY &point, TransformDirection direction ) const
 {
   if ( !d->mIsValid || d->mShortCircuit )
     return point;
@@ -106,15 +106,15 @@ QgsPoint QgsCoordinateTransform::transform( const QgsPoint &point, TransformDire
     throw;
   }
 
-  return QgsPoint( x, y );
+  return QgsPointXY( x, y );
 }
 
 
-QgsPoint QgsCoordinateTransform::transform( const double theX, const double theY = 0.0, TransformDirection direction ) const
+QgsPointXY QgsCoordinateTransform::transform( const double theX, const double theY = 0.0, TransformDirection direction ) const
 {
   try
   {
-    return transform( QgsPoint( theX, theY ), direction );
+    return transform( QgsPointXY( theX, theY ), direction );
   }
   catch ( const QgsCsException & )
   {
@@ -343,7 +343,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   if ( rect.isEmpty() )
   {
-    QgsPoint p = transform( rect.xMinimum(), rect.yMinimum(), direction );
+    QgsPointXY p = transform( rect.xMinimum(), rect.yMinimum(), direction );
     return QgsRectangle( p, p );
   }
 
@@ -352,9 +352,9 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
   // even with 1000 points it takes < 1ms
   // TODO: how to effectively and precisely reproject bounding box?
   const int nPoints = 1000;
-  double d = sqrt( ( rect.width() * rect.height() ) / pow( sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
-  int nXPoints = static_cast< int >( ceil( rect.width() / d ) ) + 1;
-  int nYPoints = static_cast< int >( ceil( rect.height() / d ) ) + 1;
+  double d = std::sqrt( ( rect.width() * rect.height() ) / std::pow( std::sqrt( static_cast< double >( nPoints ) ) - 1, 2.0 ) );
+  int nXPoints = static_cast< int >( std::ceil( rect.width() / d ) ) + 1;
+  int nYPoints = static_cast< int >( std::ceil( rect.height() / d ) ) + 1;
 
   QgsRectangle bb_rect;
   bb_rect.setMinimal();
@@ -410,7 +410,7 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
 
   for ( int i = 0; i < nXPoints * nYPoints; i++ )
   {
-    if ( !qIsFinite( x[i] ) || !qIsFinite( y[i] ) )
+    if ( !std::isfinite( x[i] ) || !std::isfinite( y[i] ) )
     {
       continue;
     }
@@ -474,8 +474,12 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   // if the source/destination projection is lat/long, convert the points to radians
   // prior to transforming
-  if ( ( pj_is_latlong( d->mDestinationProjection ) && ( direction == ReverseTransform ) )
-       || ( pj_is_latlong( d->mSourceProjection ) && ( direction == ForwardTransform ) ) )
+  QPair<projPJ, projPJ> projData = d->threadLocalProjData();
+  projPJ sourceProj = projData.first;
+  projPJ destProj = projData.second;
+
+  if ( ( pj_is_latlong( destProj ) && ( direction == ReverseTransform ) )
+       || ( pj_is_latlong( sourceProj ) && ( direction == ForwardTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {
@@ -487,13 +491,13 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   int projResult;
   if ( direction == ReverseTransform )
   {
-    projResult = pj_transform( d->mDestinationProjection, d->mSourceProjection, numPoints, 0, x, y, z );
+    projResult = pj_transform( destProj, sourceProj, numPoints, 0, x, y, z );
   }
   else
   {
-    Q_ASSERT( d->mSourceProjection );
-    Q_ASSERT( d->mDestinationProjection );
-    projResult = pj_transform( d->mSourceProjection, d->mDestinationProjection, numPoints, 0, x, y, z );
+    Q_ASSERT( sourceProj );
+    Q_ASSERT( destProj );
+    projResult = pj_transform( sourceProj, destProj, numPoints, 0, x, y, z );
   }
 
   if ( projResult != 0 )
@@ -515,8 +519,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
     QString dir = ( direction == ForwardTransform ) ? QObject::tr( "forward transform" ) : QObject::tr( "inverse transform" );
 
-    char *srcdef = pj_get_def( d->mSourceProjection, 0 );
-    char *dstdef = pj_get_def( d->mDestinationProjection, 0 );
+    char *srcdef = pj_get_def( sourceProj, 0 );
+    char *dstdef = pj_get_def( destProj, 0 );
 
     QString msg = QObject::tr( "%1 of\n"
                                "%2"
@@ -538,8 +542,8 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
 
   // if the result is lat/long, convert the results from radians back
   // to degrees
-  if ( ( pj_is_latlong( d->mDestinationProjection ) && ( direction == ForwardTransform ) )
-       || ( pj_is_latlong( d->mSourceProjection ) && ( direction == ReverseTransform ) ) )
+  if ( ( pj_is_latlong( destProj ) && ( direction == ForwardTransform ) )
+       || ( pj_is_latlong( sourceProj ) && ( direction == ReverseTransform ) ) )
   {
     for ( int i = 0; i < numPoints; ++i )
     {

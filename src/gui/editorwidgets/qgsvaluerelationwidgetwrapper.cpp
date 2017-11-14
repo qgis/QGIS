@@ -29,10 +29,7 @@
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mComboBox( nullptr )
-  , mListWidget( nullptr )
-  , mLineEdit( nullptr )
-  , mLayer( nullptr )
+  , mUpdating( false )
 {
 }
 
@@ -69,7 +66,7 @@ QVariant QgsValueRelationWidgetWrapper::value() const
     {
       if ( item.value == mLineEdit->text() )
       {
-        v = item.value;
+        v = item.key;
         break;
       }
     }
@@ -113,7 +110,8 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
       mComboBox->addItem( element.value, element.key );
     }
 
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
   else if ( mListWidget )
   {
@@ -125,7 +123,7 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget *editor )
 
       mListWidget->addItem( item );
     }
-    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( valueChanged() ) );
+    connect( mListWidget, &QListWidget::itemChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
   else if ( mLineEdit )
   {
@@ -196,4 +194,27 @@ void QgsValueRelationWidgetWrapper::showIndeterminateState()
   {
     whileBlocking( mLineEdit )->clear();
   }
+}
+
+void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
+{
+  if ( mUpdating )
+    return;
+
+  if ( mListWidget )
+  {
+    mUpdating = true;
+    for ( int i = 0; i < mListWidget->count(); ++i )
+    {
+      QListWidgetItem *item = mListWidget->item( i );
+
+      if ( enabled )
+        item->setFlags( item->flags() | Qt::ItemIsEnabled );
+      else
+        item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+    }
+    mUpdating = false;
+  }
+  else
+    QgsEditorWidgetWrapper::setEnabled( enabled );
 }

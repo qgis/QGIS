@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
@@ -29,9 +28,9 @@ __revision__ = '$Format:%H$'
 from . import r_mask
 
 
-def processCommand(alg):
-    r_mask.processCommand(alg)
+def processCommand(alg, parameters, context):
+    r_mask.processCommand(alg, parameters, context)
 
 
 def processOutputs(alg):
-    r_mask.processOutputs(alg)
+    r_mask.processOutputs(alg, parameters, context)

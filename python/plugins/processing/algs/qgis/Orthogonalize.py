@@ -25,68 +25,67 @@ __copyright__ = '(C) 2016, Nyall Dawson'
 
 __revision__ = '$Format:%H$'
 
+from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameterNumber)
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector, ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
 
+class Orthogonalize(QgisFeatureBasedAlgorithm):
 
-class Orthogonalize(GeoAlgorithm):
-
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
     MAX_ITERATIONS = 'MAX_ITERATIONS'
     DISTANCE_THRESHOLD = 'DISTANCE_THRESHOLD'
     ANGLE_TOLERANCE = 'ANGLE_TOLERANCE'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Orthogonalize')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
-        self.tags = self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise')
+    def tags(self):
+        return self.tr('rectangle,perpendicular,right,angles,square,quadrilateralise').split(',')
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_LINE,
-                                                                   dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterNumber(self.ANGLE_TOLERANCE,
-                                          self.tr('Maximum angle tolerance (degrees)'),
-                                          0.0, 45.0, 15.0))
+    def group(self):
+        return self.tr('Vector geometry')
 
-        max_iterations = ParameterNumber(self.MAX_ITERATIONS,
-                                         self.tr('Maximum algorithm iterations'),
-                                         1, 10000, 1000)
-        max_iterations.isAdvanced = True
+    def __init__(self):
+        super().__init__()
+        self.max_iterations = None
+        self.angle_tolerance = None
+
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.ANGLE_TOLERANCE,
+                                                       self.tr('Maximum angle tolerance (degrees)'),
+                                                       type=QgsProcessingParameterNumber.Double,
+                                                       minValue=0.0, maxValue=45.0, defaultValue=15.0))
+
+        max_iterations = QgsProcessingParameterNumber(self.MAX_ITERATIONS,
+                                                      self.tr('Maximum algorithm iterations'),
+                                                      type=QgsProcessingParameterNumber.Integer,
+                                                      minValue=1, maxValue=10000, defaultValue=1000)
+        max_iterations.setFlags(max_iterations.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
         self.addParameter(max_iterations)
 
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Orthogonalized')))
+    def name(self):
+        return 'orthogonalize'
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
-        max_iterations = self.getParameterValue(self.MAX_ITERATIONS)
-        angle_tolerance = self.getParameterValue(self.ANGLE_TOLERANCE)
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields(),
-                layer.wkbType(),
-                layer.crs())
+    def displayName(self):
+        return self.tr('Orthogonalize')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def outputName(self):
+        return self.tr('Orthogonalized')
 
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = input_geometry.orthogonalize(1.0e-8, max_iterations, angle_tolerance)
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error orthogonalizing geometry'))
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorPolygon, QgsProcessing.TypeVectorLine]
 
-                output_feature.setGeometry(output_geometry)
+    def prepareAlgorithm(self, parameters, context, feedback):
+        self.max_iterations = self.parameterAsInt(parameters, self.MAX_ITERATIONS, context)
+        self.angle_tolerance = self.parameterAsDouble(parameters, self.ANGLE_TOLERANCE, context)
+        return True
 
-            writer.addFeature(output_feature)
-            feedback.setProgress(int(current * total))
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.orthogonalize(1.0e-8, self.max_iterations, self.angle_tolerance)
+            if not output_geometry:
+                raise QgsProcessingException(
+                    self.tr('Error orthogonalizing geometry'))
 
-        del writer
+            feature.setGeometry(output_geometry)
+        return feature

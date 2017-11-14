@@ -25,13 +25,8 @@
 QgsDisplayAngle::QgsDisplayAngle( QgsMapToolMeasureAngle *tool, Qt::WindowFlags f )
   : QDialog( tool->canvas()->topLevelWidget(), f )
   , mTool( tool )
-  , mValue( 0.0 )
 {
   setupUi( this );
-}
-
-QgsDisplayAngle::~QgsDisplayAngle()
-{
 }
 
 void QgsDisplayAngle::setValueInRadians( double value )
@@ -43,7 +38,7 @@ void QgsDisplayAngle::setValueInRadians( double value )
 void QgsDisplayAngle::updateUi()
 {
   QgsSettings settings;
-  QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( QStringLiteral( "/qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
-  int decimals = settings.value( QStringLiteral( "/qgis/measure/decimalplaces" ), "3" ).toInt();
+  QgsUnitTypes::AngleUnit unit = QgsUnitTypes::decodeAngleUnit( settings.value( QStringLiteral( "qgis/measure/angleunits" ), QgsUnitTypes::encodeUnit( QgsUnitTypes::AngleDegrees ) ).toString() );
+  int decimals = settings.value( QStringLiteral( "qgis/measure/decimalplaces" ), "3" ).toInt();
   mAngleLineEdit->setText( QgsUnitTypes::formatAngle( mValue * QgsUnitTypes::fromUnitToUnitFactor( QgsUnitTypes::AngleRadians, unit ), decimals, unit ) );
 }

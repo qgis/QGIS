@@ -21,6 +21,7 @@
 #define QGSREQUESTHANDLER_H
 
 #include <QMap>
+#include "qgis_sip.h"
 #include <QString>
 #include <QStringList>
 #include <QPair>
@@ -47,34 +48,47 @@ class SERVER_EXPORT QgsRequestHandler
 {
   public:
 
-    /** Constructor
+    /**
+     * Constructor
      *
      * Note that QgsServerRequest and QgsServerResponse MUST live in the same scope
      */
     explicit QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response );
-    ~QgsRequestHandler();
 
     //! Allow plugins to return a QgsMapServiceException
     void setServiceException( const QgsServerException &ex );
 
-    /** Send out HTTP headers and flush output buffer
+    /**
+     * Send out HTTP headers and flush output buffer
      *
      *  This method is intended only for streaming
      *  partial content.
      */
     void sendResponse();
 
-    //! Set an HTTP header
-    void setHeader( const QString &name, const QString &value );
+    //! Set an HTTP response header
+    void setResponseHeader( const QString &name, const QString &value );
 
-    //! Remove an HTTP header
-    void removeHeader( const QString &name );
+    //! Remove an HTTP response header
+    void removeResponseHeader( const QString &name );
 
-    //! Retrieve header value
-    QString getHeader( const QString &name ) const;
+    //! Retrieve response header value
+    QString responseHeader( const QString &name ) const;
 
-    //! Return the list of all header keys
-    QList<QString> headerKeys() const;
+    //! Return the response headers
+    QMap<QString, QString> responseHeaders() const;
+
+    //! Set an HTTP request header
+    void setRequestHeader( const QString &name, const QString &value );
+
+    //! Remove an HTTP request header
+    void removeRequestHeader( const QString &name );
+
+    //! Retrieve request header value
+    QString requestHeader( const QString &name ) const;
+
+    //! Return the Request headers
+    QMap<QString, QString> requestHeaders() const;
 
     //! Clears the response body and headers
     void clear();
@@ -85,7 +99,26 @@ class SERVER_EXPORT QgsRequestHandler
     //! Pointer to last raised exception
     bool exceptionRaised() const;
 
-    /** Return the parsed parameters as a key-value pair, to modify
+    //! Clear response buffer
+    void clearBody();
+
+    //! Return response body data
+    QByteArray body() const;
+
+    //! Return request POST data (can be null)
+    QByteArray data() const;
+
+    //! Return request url
+    QString url() const;
+
+    //! Set response http status code
+    void setStatusCode( int code );
+
+    //! Return response http status code
+    int statusCode() const;
+
+    /**
+     * Return the parsed parameters as a key-value pair, to modify
      * a parameter setParameter( const QString &key, const QString &value)
      * and removeParameter(const QString &key) must be used
      */
@@ -100,10 +133,11 @@ class SERVER_EXPORT QgsRequestHandler
     //! Remove a request parameter
     void removeParameter( const QString &key );
 
-    /** Parses the input and creates a request neutral Parameter/Value map
-     * @note not available in Python bindings
+    /**
+     * Parses the input and creates a request neutral Parameter/Value map
+     * \note not available in Python bindings
      */
-    void parseInput();
+    void parseInput() SIP_SKIP;
 
     //! Return the requested format string
     QString format() const { return mFormat; }

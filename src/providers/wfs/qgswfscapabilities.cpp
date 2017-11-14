@@ -22,17 +22,15 @@
 #include "qgsogcutils.h"
 #include "qgssettings.h"
 
+#include <cpl_minixml.h>
+
 #include <QDomDocument>
 #include <QStringList>
 
 QgsWfsCapabilities::QgsWfsCapabilities( const QString &uri )
   : QgsWfsRequest( uri )
 {
-  connect( this, SIGNAL( downloadFinished() ), this, SLOT( capabilitiesReplyFinished() ) );
-}
-
-QgsWfsCapabilities::~QgsWfsCapabilities()
-{
+  connect( this, &QgsWfsRequest::downloadFinished, this, &QgsWfsCapabilities::capabilitiesReplyFinished );
 }
 
 bool QgsWfsCapabilities::requestCapabilities( bool synchronous, bool forceRefresh )
@@ -66,7 +64,7 @@ void QgsWfsCapabilities::Capabilities::clear()
   supportsHits = false;
   supportsPaging = false;
   supportsJoins = false;
-  version = QLatin1String( "" );
+  version.clear();
   featureTypes.clear();
   spatialPredicatesList.clear();
   functionList.clear();
@@ -85,6 +83,35 @@ QString QgsWfsCapabilities::Capabilities::addPrefixIfNeeded( const QString &name
   return mapUnprefixedTypenameToPrefixedTypename[name];
 }
 
+class CPLXMLTreeUniquePointer
+{
+  public:
+    //! Constructor
+    explicit CPLXMLTreeUniquePointer( CPLXMLNode *data ) { the_data_ = data; }
+
+    //! Destructor
+    ~CPLXMLTreeUniquePointer()
+    {
+      if ( the_data_ ) CPLDestroyXMLNode( the_data_ );
+    }
+
+    /**
+     * Returns the node pointer/
+     * Modifying the contents pointed to by the return is allowed.
+     * @return the node pointer */
+    CPLXMLNode *get() const { return the_data_; }
+
+    /**
+     * Returns the node pointer/
+     * Modifying the contents pointed to by the return is allowed.
+     * @return the node pointer */
+    CPLXMLNode *operator->() const { return get(); }
+
+  private:
+    CPLXMLNode *the_data_;
+};
+
+
 void QgsWfsCapabilities::capabilitiesReplyFinished()
 {
   const QByteArray &buffer = mResponse;
@@ -101,6 +128,8 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     emit gotCapabilities();
     return;
   }
+
+  CPLXMLTreeUniquePointer oCPLXML( CPLParseXMLString( buffer.constData() ) );
 
   QDomElement doc = capabilitiesDocument.documentElement();
 
@@ -140,6 +169,32 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
 
   // Note: for conveniency, we do not use the elementsByTagNameNS() method as
   // the WFS and OWS namespaces URI are not the same in all versions
+
+  if ( mCaps.version.startsWith( QLatin1String( "1.0" ) ) )
+  {
+    QDomElement capabilityElem = doc.firstChildElement( QStringLiteral( "Capability" ) );
+    if ( !capabilityElem.isNull() )
+    {
+      QDomElement requestElem = capabilityElem.firstChildElement( QStringLiteral( "Request" ) );
+      if ( !requestElem.isNull() )
+      {
+        QDomElement getFeatureElem = requestElem.firstChildElement( QStringLiteral( "GetFeature" ) );
+        if ( !getFeatureElem.isNull() )
+        {
+          QDomElement resultFormatElem = getFeatureElem.firstChildElement( QStringLiteral( "ResultFormat" ) );
+          if ( !resultFormatElem.isNull() )
+          {
+            QDomElement child = resultFormatElem.firstChildElement();
+            while ( !child.isNull() )
+            {
+              mCaps.outputFormats << child.tagName();
+              child = child.nextSiblingElement();
+            }
+          }
+        }
+      }
+    }
+  }
 
   // find <ows:OperationsMetadata>
   QDomElement operationsMetadataElem = doc.firstChildElement( QStringLiteral( "OperationsMetadata" ) );
@@ -230,6 +285,15 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
               }
             }
           }
+          else if ( parameter.attribute( QStringLiteral( "name" ) ) == QLatin1String( "outputFormat" ) )
+          {
+            QDomNodeList valueList = parameter.elementsByTagName( QStringLiteral( "Value" ) );
+            for ( int k = 0; k < valueList.size(); ++k )
+            {
+              QDomElement value = valueList.at( k ).toElement();
+              mCaps.outputFormats << value.text();
+            }
+          }
         }
 
         break;
@@ -259,17 +323,31 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
   }
   else // WFS 2.0.0 tested on GeoServer
   {
-    QDomNodeList operationNodes = doc.elementsByTagName( "Operation" );
+    QDomNodeList operationNodes = doc.elementsByTagName( QStringLiteral( "Operation" ) );
     for ( int i = 0; i < operationNodes.count(); i++ )
     {
-      QDomElement operationElement = operationNodes.at( i ).toElement( );
-      if ( operationElement.isElement( ) && "Transaction" == operationElement.attribute( "name" ) )
+      QDomElement operationElement = operationNodes.at( i ).toElement();
+      if ( operationElement.isElement() && "Transaction" == operationElement.attribute( QStringLiteral( "name" ) ) )
       {
         insertCap = true;
         updateCap = true;
         deleteCap = true;
       }
     }
+  }
+
+  // This is messy, but there's apparently no way to get the xmlns:ci attribute value with QDom API
+  // in snippets like
+  //  <wfs:FeatureType xmlns:ci="http://www.interactive-instruments.de/namespaces/demo/cities/4.0/cities">
+  //    <wfs:Name>ci:City</wfs:Name>
+  // so fallback to using GDAL XML parser for that...
+
+  CPLXMLNode *psFeatureTypeIter = nullptr;
+  if ( oCPLXML.get() )
+  {
+    psFeatureTypeIter = CPLGetXMLNode( oCPLXML.get(), "=wfs:WFS_Capabilities.wfs:FeatureTypeList" );
+    if ( psFeatureTypeIter )
+      psFeatureTypeIter = psFeatureTypeIter->psChild;
   }
 
   // get the <FeatureType> elements
@@ -279,12 +357,35 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
     FeatureType featureType;
     QDomElement featureTypeElem = featureTypeList.at( i ).toElement();
 
+    for ( ; psFeatureTypeIter; psFeatureTypeIter = psFeatureTypeIter->psNext )
+    {
+      if ( psFeatureTypeIter->eType != CXT_Element )
+        continue;
+      break;
+    }
+
     //Name
     QDomNodeList nameList = featureTypeElem.elementsByTagName( QStringLiteral( "Name" ) );
     if ( nameList.length() > 0 )
     {
       featureType.name = nameList.at( 0 ).toElement().text();
+
+      QgsDebugMsg( QString( "featureType.name = %1" ) . arg( featureType.name ) );
+      if ( featureType.name.contains( ':' ) )
+      {
+        QString prefixOfTypename = featureType.name.section( ':', 0, 0 );
+
+        // for some Deegree servers that requires a NAMESPACES parameter for GetFeature
+        if ( psFeatureTypeIter )
+        {
+          featureType.nameSpace = CPLGetXMLValue( psFeatureTypeIter, ( "xmlns:" + prefixOfTypename ).toUtf8().constData(), "" );
+        }
+      }
     }
+
+    if ( psFeatureTypeIter )
+      psFeatureTypeIter = psFeatureTypeIter->psNext;
+
     //Title
     QDomNodeList titleList = featureTypeElem.elementsByTagName( QStringLiteral( "Title" ) );
     if ( titleList.length() > 0 )
@@ -359,19 +460,19 @@ void QgsWfsCapabilities::capabilitiesReplyFinished()
           QgsCoordinateReferenceSystem crsWGS84 = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "CRS:84" ) );
           QgsCoordinateTransform ct( crsWGS84, crs );
 
-          QgsPoint ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
-          QgsPoint ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
-          QgsPoint ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
-          QgsPoint ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMin( featureType.bbox.xMinimum(), featureType.bbox.yMinimum() );
+          QgsPointXY ptMinBack( ct.transform( ct.transform( ptMin, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
+          QgsPointXY ptMax( featureType.bbox.xMaximum(), featureType.bbox.yMaximum() );
+          QgsPointXY ptMaxBack( ct.transform( ct.transform( ptMax, QgsCoordinateTransform::ForwardTransform ), QgsCoordinateTransform::ReverseTransform ) );
 
           QgsDebugMsg( featureType.bbox.toString() );
           QgsDebugMsg( ptMinBack.toString() );
           QgsDebugMsg( ptMaxBack.toString() );
 
-          if ( fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
-               fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
-               fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
-               fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
+          if ( std::fabs( featureType.bbox.xMinimum() - ptMinBack.x() ) < 1e-5 &&
+               std::fabs( featureType.bbox.yMinimum() - ptMinBack.y() ) < 1e-5 &&
+               std::fabs( featureType.bbox.xMaximum() - ptMaxBack.x() ) < 1e-5 &&
+               std::fabs( featureType.bbox.yMaximum() - ptMaxBack.y() ) < 1e-5 )
           {
             QgsDebugMsg( "Values of LatLongBoundingBox are consistent with WGS84 long/lat bounds, so as the CRS is projected, assume they are indeed in WGS84 and not in the CRS units" );
             featureType.bboxSRSIsWGS84 = true;
@@ -482,7 +583,7 @@ QString QgsWfsCapabilities::NormalizeSRSName( QString crsName )
 int QgsWfsCapabilities::defaultExpirationInSec()
 {
   QgsSettings s;
-  return s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
+  return s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60;
 }
 
 void QgsWfsCapabilities::parseSupportedOperations( const QDomElement &operationsElem,

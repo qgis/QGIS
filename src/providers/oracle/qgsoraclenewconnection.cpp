@@ -17,10 +17,10 @@
 
 #include <QMessageBox>
 #include <QInputDialog>
+#include <QRegExpValidator>
 
 #include "qgssettings.h"
 #include "qgsoraclenewconnection.h"
-#include "qgscontexthelp.h"
 #include "qgsdatasourceuri.h"
 #include "qgsoracletablemodel.h"
 #include "qgsoracleconnpool.h"
@@ -29,6 +29,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
   : QDialog( parent, fl ), mOriginalConnName( connName )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOracleNewConnection::showHelp );
 
   if ( !connName.isEmpty() )
   {
@@ -80,6 +81,7 @@ QgsOracleNewConnection::QgsOracleNewConnection( QWidget *parent, const QString &
 
     txtName->setText( connName );
   }
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
 }
 //! Autoconnected SLOTS *
 void QgsOracleNewConnection::accept()
@@ -90,7 +92,7 @@ void QgsOracleNewConnection::accept()
 
   if ( chkStorePassword->isChecked() &&
        QMessageBox::question( this,
-                              tr( "Saving passwords" ),
+                              tr( "Saving Passwords" ),
                               tr( "WARNING: You have opted to save your password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\n" ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -102,7 +104,7 @@ void QgsOracleNewConnection::accept()
        ( settings.contains( baseKey + txtName->text() + "/service" ) ||
          settings.contains( baseKey + txtName->text() + "/host" ) ) &&
        QMessageBox::question( this,
-                              tr( "Save connection" ),
+                              tr( "Save Connection" ),
                               tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
                               QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
   {
@@ -150,18 +152,15 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
   if ( conn )
   {
     // Database successfully opened; we can now issue SQL commands.
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection to %1 was successful" ).arg( txtDatabase->text() ) );
-
+    bar->pushMessage( tr( "Connection to %1 was successful." ).arg( txtDatabase->text() ),
+                      QgsMessageBar::INFO );
     // free connection resources
     QgsOracleConnPool::instance()->releaseConnection( conn );
   }
   else
   {
-    QMessageBox::information( this,
-                              tr( "Test connection" ),
-                              tr( "Connection failed - consult message log for details.\n\n" ) );
+    bar->pushMessage( tr( "Connection failed - consult message log for details." ),
+                      QgsMessageBar::WARNING );
   }
 }
 
@@ -169,4 +168,10 @@ void QgsOracleNewConnection::on_btnConnect_clicked()
 
 QgsOracleNewConnection::~QgsOracleNewConnection()
 {
+}
+
+
+void QgsOracleNewConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/opening_data.html#connecting-to-oracle-spatial" ) );
 }

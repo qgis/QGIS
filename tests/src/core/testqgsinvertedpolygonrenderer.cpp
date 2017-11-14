@@ -27,10 +27,13 @@
 #include <qgsapplication.h>
 #include <qgsproviderregistry.h>
 #include <qgsproject.h>
+#include "qgsrenderer.h"
+
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsInvertedPolygon : public QObject
@@ -48,6 +51,7 @@ class TestQgsInvertedPolygon : public QObject
 
     void singleSubRenderer();
     void graduatedSubRenderer();
+    void checkSymbolItem();
     void preprocess();
     void projectionTest();
 #if defined(GDAL_VERSION_NUM) && GDAL_VERSION_MAJOR >= 2
@@ -55,7 +59,7 @@ class TestQgsInvertedPolygon : public QObject
 #endif
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( QgsVectorLayer *vlayer, const QString &qmlFile );
     bool imageCheck( const QString &type, const QgsRectangle * = 0 );
     QgsMapSettings mMapSettings;
@@ -65,12 +69,7 @@ class TestQgsInvertedPolygon : public QObject
 };
 
 
-TestQgsInvertedPolygon::TestQgsInvertedPolygon()
-  : mTestHasError( false )
-  , mpPolysLayer( nullptr )
-{
-
-}
+TestQgsInvertedPolygon::TestQgsInvertedPolygon() = default;
 
 void TestQgsInvertedPolygon::initTestCase()
 {
@@ -128,6 +127,15 @@ void TestQgsInvertedPolygon::graduatedSubRenderer()
   QVERIFY( imageCheck( "inverted_polys_graduated" ) );
 }
 
+void TestQgsInvertedPolygon::checkSymbolItem()
+{
+  QVERIFY( setQml( mpPolysLayer, "inverted_polys_rule.qml" ) );
+  QString firstRuleKey = mpPolysLayer->renderer()->legendSymbolItems().first().ruleKey();
+  QVERIFY( mpPolysLayer->renderer()->legendSymbolItemChecked( firstRuleKey ) );
+  mpPolysLayer->renderer()->checkLegendSymbolItem( firstRuleKey, false );
+  QVERIFY( !mpPolysLayer->renderer()->legendSymbolItemChecked( firstRuleKey ) );
+}
+
 void TestQgsInvertedPolygon::preprocess()
 {
   // FIXME will have to find some overlapping polygons
@@ -140,7 +148,7 @@ void TestQgsInvertedPolygon::projectionTest()
 {
   mReport += QLatin1String( "<h2>Inverted polygon renderer, projection test</h2>\n" );
   mMapSettings.setDestinationCrs( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:2154" ) ) );
-  QgsRectangle extent( QgsPoint( -8639421, 8382691 ), QgsPoint( -3969110, 12570905 ) );
+  QgsRectangle extent( QgsPointXY( -8639421, 8382691 ), QgsPointXY( -3969110, 12570905 ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_single.qml" ) );
   QVERIFY( imageCheck( "inverted_polys_projection", &extent ) );
   QVERIFY( setQml( mpPolysLayer, "inverted_polys_preprocess.qml" ) );

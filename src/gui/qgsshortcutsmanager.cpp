@@ -19,16 +19,6 @@
 
 #include <QShortcut>
 
-QgsShortcutsManager *QgsShortcutsManager::sInstance = nullptr;
-
-
-QgsShortcutsManager *QgsShortcutsManager::instance()
-{
-  if ( !sInstance )
-    sInstance = new QgsShortcutsManager( nullptr );
-  return sInstance;
-}
-
 QgsShortcutsManager::QgsShortcutsManager( QObject *parent, const QString &settingsRoot )
   : QObject( parent )
   , mSettingsPath( settingsRoot )
@@ -48,7 +38,7 @@ void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursi
     QList< QAction * > actions = object->findChildren< QAction * >();
     Q_FOREACH ( QAction *a, actions )
     {
-      registerAction( a, a->shortcut() );
+      registerAction( a, a->shortcut().toString() );
     }
   }
   else
@@ -57,7 +47,7 @@ void QgsShortcutsManager::registerAllChildActions( QObject *object, bool recursi
     {
       if ( QAction *a = qobject_cast<QAction *>( child ) )
       {
-        registerAction( a, a->shortcut() );
+        registerAction( a, a->shortcut().toString() );
       }
     }
   }
@@ -70,7 +60,7 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
     QList< QShortcut * > shortcuts = object->findChildren< QShortcut * >();
     Q_FOREACH ( QShortcut *s, shortcuts )
     {
-      registerShortcut( s, s->key() );
+      registerShortcut( s, s->key().toString() );
     }
   }
   else
@@ -79,7 +69,7 @@ void QgsShortcutsManager::registerAllChildShortcuts( QObject *object, bool recur
     {
       if ( QShortcut *s = qobject_cast<QShortcut *>( child ) )
       {
-        registerShortcut( s, s->key() );
+        registerShortcut( s, s->key().toString() );
       }
     }
   }
@@ -94,7 +84,7 @@ bool QgsShortcutsManager::registerAction( QAction *action, const QString &defaul
 #endif
 
   mActions.insert( action, defaultSequence );
-  connect( action, SIGNAL( destroyed() ), this, SLOT( actionDestroyed() ) );
+  connect( action, &QObject::destroyed, this, &QgsShortcutsManager::actionDestroyed );
 
   QString actionText = action->text();
   actionText.remove( '&' ); // remove the accelerator
@@ -119,7 +109,7 @@ bool QgsShortcutsManager::registerShortcut( QShortcut *shortcut, const QString &
 #endif
 
   mShortcuts.insert( shortcut, defaultSequence );
-  connect( shortcut, SIGNAL( destroyed() ), this, SLOT( shortcutDestroyed() ) );
+  connect( shortcut, &QObject::destroyed, this, &QgsShortcutsManager::shortcutDestroyed );
 
   QString shortcutName = shortcut->objectName();
 
@@ -317,7 +307,7 @@ void QgsShortcutsManager::updateActionToolTip( QAction *action, const QString &s
   QString current = action->toolTip();
   // Remove the old shortcut.
   QRegExp rx( "\\(.*\\)" );
-  current.replace( rx, "" );
+  current.replace( rx, QLatin1String( "" ) );
 
   if ( !sequence.isEmpty() )
   {

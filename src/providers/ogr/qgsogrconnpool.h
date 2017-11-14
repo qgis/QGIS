@@ -18,13 +18,13 @@
 
 #include "qgsconnectionpool.h"
 #include "qgsogrprovider.h"
-#include <ogr_api.h>
+#include <gdal.h>
 
 
 struct QgsOgrConn
 {
   QString path;
-  OGRDataSourceH ds;
+  GDALDatasetH ds;
   bool valid;
 };
 
@@ -37,14 +37,14 @@ inline void qgsConnectionPool_ConnectionCreate( const QString &connInfo, QgsOgrC
 {
   c = new QgsOgrConn;
   QString filePath = connInfo.left( connInfo.indexOf( QLatin1String( "|" ) ) );
-  c->ds = OGROpen( filePath.toUtf8().constData(), false, nullptr );
+  c->ds = QgsOgrProviderUtils::GDALOpenWrapper( filePath.toUtf8().constData(), false, nullptr, nullptr );
   c->path = connInfo;
   c->valid = true;
 }
 
 inline void qgsConnectionPool_ConnectionDestroy( QgsOgrConn *c )
 {
-  QgsOgrProviderUtils::OGRDestroyWrapper( c->ds );
+  QgsOgrProviderUtils::GDALCloseWrapper( c->ds );
   delete c;
 }
 
@@ -111,9 +111,9 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     static void cleanupInstance();
 
     /**
-     * @brief Increases the reference count on the connection pool for the specified connection.
-     * @param connInfo The connection string.
-     * @note
+     * \brief Increases the reference count on the connection pool for the specified connection.
+     * \param connInfo The connection string.
+     * \note
      *     Any user of the connection pool needs to increase the reference count
      *     before it acquires any connections and decrease the reference count after
      *     releasing all acquired connections to ensure that all open OGR handles
@@ -122,16 +122,16 @@ class QgsOgrConnPool : public QgsConnectionPool<QgsOgrConn *, QgsOgrConnPoolGrou
     void ref( const QString &connInfo )
     {
       mMutex.lock();
-      T_Groups::const_iterator it = mGroups.constFind( connInfo );
-      if ( it == mGroups.constEnd() )
+      T_Groups::iterator it = mGroups.find( connInfo );
+      if ( it == mGroups.end() )
         it = mGroups.insert( connInfo, new QgsOgrConnPoolGroup( connInfo ) );
       it.value()->ref();
       mMutex.unlock();
     }
 
     /**
-     * @brief Decrease the reference count on the connection pool for the specified connection.
-     * @param connInfo The connection string.
+     * \brief Decrease the reference count on the connection pool for the specified connection.
+     * \param connInfo The connection string.
      */
     void unref( const QString &connInfo )
     {

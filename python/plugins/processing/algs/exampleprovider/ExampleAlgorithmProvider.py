@@ -25,46 +25,47 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from processing.core.AlgorithmProvider import AlgorithmProvider
+from qgis.core import QgsProcessingProvider
 from processing.core.ProcessingConfig import Setting, ProcessingConfig
 from exampleprovider.ExampleAlgorithm import ExampleAlgorithm
 
 
-class ExampleAlgorithmProvider(AlgorithmProvider):
+class ExampleAlgorithmProvider(QgsProcessingProvider):
 
     MY_DUMMY_SETTING = 'MY_DUMMY_SETTING'
 
     def __init__(self):
         super().__init__()
 
-        # Deactivate provider by default
-        self.activate = False
-
-        # Load algorithms
-        self.alglist = [ExampleAlgorithm()]
-        for alg in self.alglist:
-            alg.provider = self
-
-    def initializeSettings(self):
+    def load(self):
         """In this method we add settings needed to configure our
         provider.
-
-        Do not forget to call the parent method, since it takes care
-        or automatically adding a setting for activating or
-        deactivating the algorithms in the provider.
         """
-        AlgorithmProvider.initializeSettings(self)
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        # Deactivate provider by default
+        ProcessingConfig.addSetting(Setting(self.name(), 'ACTIVATE_EXAMPLE',
+                                            'Activate', False))
         ProcessingConfig.addSetting(Setting('Example algorithms',
                                             ExampleAlgorithmProvider.MY_DUMMY_SETTING,
                                             'Example setting', 'Default value'))
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
+        return True
 
     def unload(self):
         """Setting should be removed here, so they do not appear anymore
         when the plugin is unloaded.
         """
-        AlgorithmProvider.unload(self)
+        ProcessingConfig.removeSetting('ACTIVATE_EXAMPLE')
         ProcessingConfig.removeSetting(
             ExampleAlgorithmProvider.MY_DUMMY_SETTING)
+
+    def isActive(self):
+        """Return True if the provider is activated and ready to run algorithms"""
+        return ProcessingConfig.getSetting('ACTIVATE_EXAMPLE')
+
+    def setActive(self, active):
+        ProcessingConfig.setSettingValue('ACTIVATE_EXAMPLE', active)
 
     def id(self):
         """This is the name that will appear on the toolbox group.
@@ -72,19 +73,19 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         It is also used to create the command line name of all the
         algorithms from this provider.
         """
-        return 'Example provider'
+        return 'example'
 
     def name(self):
-        """This is the provired full name.
+        """This is the localised full name.
         """
         return 'Example algorithms'
 
     def icon(self):
         """We return the default icon.
         """
-        return AlgorithmProvider.icon(self)
+        return QgsProcessingProvider.icon(self)
 
-    def _loadAlgorithms(self):
+    def loadAlgorithms(self):
         """Here we fill the list of algorithms in self.algs.
 
         This method is called whenever the list of algorithms should
@@ -98,4 +99,5 @@ class ExampleAlgorithmProvider(AlgorithmProvider):
         even if the list does not change, since the self.algs list is
         cleared before calling this method.
         """
-        self.algs = self.alglist
+        for alg in [ExampleAlgorithm()]:
+            self.addAlgorithm(alg)

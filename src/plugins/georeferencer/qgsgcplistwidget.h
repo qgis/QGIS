@@ -26,7 +26,7 @@ class QgsGCPList;
 class QgsGCPListModel;
 class QgsGeorefTransform;
 class QgsGeorefDataPoint;
-class QgsPoint;
+class QgsPointXY;
 
 class QgsGCPListWidget : public QTableView
 {
@@ -47,7 +47,6 @@ class QgsGCPListWidget : public QTableView
 
   signals:
     void jumpToGCP( uint theGCPIndex );
-//  void replaceDataPoint(QgsGeorefDataPoint *pnt, int row);
     void pointEnabled( QgsGeorefDataPoint *pnt, int i );
     void deleteDataPoint( int index );
 
@@ -70,8 +69,8 @@ class QgsGCPListWidget : public QTableView
     QgsDmsAndDdDelegate      *mDmsAndDdDelegate = nullptr;
     QgsCoordDelegate         *mCoordDelegate = nullptr;
 
-    int mPrevRow;
-    int mPrevColumn;
+    int mPrevRow = 0;
+    int mPrevColumn = 0;
 };
 
 #endif

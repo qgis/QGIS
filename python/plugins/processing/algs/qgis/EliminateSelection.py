@@ -30,20 +30,23 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry
+from qgis.core import (QgsFeatureRequest,
+                       QgsFeature,
+                       QgsFeatureSink,
+                       QgsGeometry,
+                       QgsProcessingException,
+                       QgsProcessingUtils,
+                       QgsProcessingParameterVectorLayer,
+                       QgsProcessingParameterEnum,
+                       QgsProcessing,
+                       QgsProcessingParameterFeatureSink)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class EliminateSelection(GeoAlgorithm):
+class EliminateSelection(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
@@ -53,49 +56,61 @@ class EliminateSelection(GeoAlgorithm):
     MODE_SMALLEST_AREA = 1
     MODE_BOUNDARY = 2
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'eliminate.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Eliminate selected polygons')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.modes = [self.tr('Largest area'),
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
+        self.modes = [self.tr('Largest Area'),
                       self.tr('Smallest Area'),
-                      self.tr('Largest common boundary')]
+                      self.tr('Largest Common Boundary')]
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'), [dataobjects.TYPE_VECTOR_POLYGON]))
-        self.addParameter(ParameterSelection(self.MODE,
-                                             self.tr('Merge selection with the neighbouring polygon with the'),
-                                             self.modes))
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Eliminated'), datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterVectorLayer(self.INPUT,
+                                                            self.tr('Input layer'), [QgsProcessing.TypeVectorPolygon]))
+        self.addParameter(QgsProcessingParameterEnum(self.MODE,
+                                                     self.tr('Merge selection with the neighbouring polygon with the'),
+                                                     options=self.modes))
 
-    def processAlgorithm(self, feedback):
-        inLayer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        boundary = self.getParameterValue(self.MODE) == self.MODE_BOUNDARY
-        smallestArea = self.getParameterValue(self.MODE) == self.MODE_SMALLEST_AREA
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Eliminated'), QgsProcessing.TypeVectorPolygon))
+
+    def name(self):
+        return 'eliminateselectedpolygons'
+
+    def displayName(self):
+        return self.tr('Eliminate selected polygons')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        inLayer = self.parameterAsVectorLayer(parameters, self.INPUT, context)
+        boundary = self.parameterAsEnum(parameters, self.MODE, context) == self.MODE_BOUNDARY
+        smallestArea = self.parameterAsEnum(parameters, self.MODE, context) == self.MODE_SMALLEST_AREA
 
         if inLayer.selectedFeatureCount() == 0:
-            ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                   self.tr('{0}: (No selection in input layer "{1}")').format(self.commandLineName(), self.getParameterValue(self.INPUT)))
+            feedback.reportError(self.tr('{0}: (No selection in input layer "{1}")').format(self.displayName(), parameters[self.INPUT]))
 
         featToEliminate = []
         selFeatIds = inLayer.selectedFeatureIds()
-        output = self.getOutputFromName(self.OUTPUT)
-        writer = output.getVectorWriter(inLayer.fields(),
-                                        inLayer.wkbType(), inLayer.crs())
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               inLayer.fields(), inLayer.wkbType(), inLayer.sourceCrs())
 
         for aFeat in inLayer.getFeatures():
+            if feedback.isCanceled():
+                break
+
             if aFeat.id() in selFeatIds:
                 # Keep references to the features to eliminate
                 featToEliminate.append(aFeat)
             else:
                 # write the others to output
-                writer.addFeature(aFeat)
+                sink.addFeature(aFeat, QgsFeatureSink.FastInsert)
 
         # Delete all features to eliminate in processLayer
-        processLayer = output.layer
+        processLayer = QgsProcessingUtils.mapLayerFromString(dest_id, context)
         processLayer.startEditing()
 
         # ANALYZE
@@ -117,6 +132,9 @@ class EliminateSelection(GeoAlgorithm):
 
             # Iterate over the polygons to eliminate
             for i in range(len(featToEliminate)):
+                if feedback.isCanceled():
+                    break
+
                 feat = featToEliminate.pop()
                 geom2Eliminate = feat.geometry()
                 bbox = geom2Eliminate.boundingBox()
@@ -129,13 +147,16 @@ class EliminateSelection(GeoAlgorithm):
                 selFeat = QgsFeature()
 
                 # use prepared geometries for faster intersection tests
-                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.geometry())
+                engine = QgsGeometry.createGeometryEngine(geom2Eliminate.constGet())
                 engine.prepareGeometry()
 
                 while fit.nextFeature(selFeat):
+                    if feedback.isCanceled():
+                        break
+
                     selGeom = selFeat.geometry()
 
-                    if engine.intersects(selGeom.geometry()):
+                    if engine.intersects(selGeom.constGet()):
                         # We have a candidate
                         iGeom = geom2Eliminate.intersection(selGeom)
 
@@ -181,7 +202,7 @@ class EliminateSelection(GeoAlgorithm):
                     if processLayer.changeGeometry(mergeWithFid, newGeom):
                         madeProgress = True
                     else:
-                        raise GeoAlgorithmExecutionException(
+                        raise QgsProcessingException(
                             self.tr('Could not replace geometry of feature with id {0}').format(mergeWithFid))
 
                     start = start + add
@@ -195,7 +216,12 @@ class EliminateSelection(GeoAlgorithm):
 
         # End while
         if not processLayer.commitChanges():
-            raise GeoAlgorithmExecutionException(self.tr('Could not commit changes'))
+            raise QgsProcessingException(self.tr('Could not commit changes'))
 
         for feature in featNotEliminated:
-            writer.addFeature(feature)
+            if feedback.isCanceled():
+                break
+
+            sink.addFeature(feature, QgsFeatureSink.FastInsert)
+
+        return {self.OUTPUT: dest_id}

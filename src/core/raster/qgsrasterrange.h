@@ -19,13 +19,15 @@
 #define QGSRASTERRANGE_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QList>
 
 class QgsRasterRange;
 
 typedef QList<QgsRasterRange> QgsRasterRangeList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Raster values range container. Represents range of values between min and max
  * including min and max value.
  */
@@ -33,13 +35,15 @@ class CORE_EXPORT QgsRasterRange
 {
   public:
 
-    /** \brief Constructor.
+    /**
+     * \brief Constructor.
      */
     QgsRasterRange();
 
-    /** \brief Constructor
-     *  @param min minimum value
-     *  @param max max value
+    /**
+     * \brief Constructor
+     *  \param min minimum value
+     *  \param max max value
      */
     QgsRasterRange( double min, double max );
 
@@ -54,13 +58,14 @@ class CORE_EXPORT QgsRasterRange
       return qgsDoubleNear( mMin, o.mMin ) && qgsDoubleNear( mMax, o.mMax );
     }
 
-    /** \brief Test if value is within the list of ranges
-     *  @param value value
-     *  @param rangeList list of ranges
-     *  @return true if value is in at least one of ranges
-     *  @note not available in python bindings
+    /**
+     * \brief Test if value is within the list of ranges
+     *  \param value value
+     *  \param rangeList list of ranges
+     *  \returns true if value is in at least one of ranges
+     *  \note not available in Python bindings
      */
-    static bool contains( double value, const QgsRasterRangeList &rangeList );
+    static bool contains( double value, const QgsRasterRangeList &rangeList ) SIP_SKIP;
 
   private:
     double mMin;

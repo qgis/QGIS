@@ -1,9 +1,27 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgswkbtypes.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
 class QgsWkbTypes
 {
-%TypeHeaderCode
-#include <qgswkbtypes.h>
+%Docstring
+ Handles storage of information regarding WKB types and their properties.
+.. versionadded:: 2.10
 %End
 
+%TypeHeaderCode
+#include "qgswkbtypes.h"
+%End
   public:
 
     enum Type
@@ -12,6 +30,7 @@ class QgsWkbTypes
       Point,
       LineString,
       Polygon,
+      Triangle,
       MultiPoint,
       MultiLineString,
       MultiPolygon,
@@ -25,6 +44,7 @@ class QgsWkbTypes
       PointZ,
       LineStringZ,
       PolygonZ,
+      TriangleZ,
       MultiPointZ,
       MultiLineStringZ,
       MultiPolygonZ,
@@ -37,6 +57,7 @@ class QgsWkbTypes
       PointM,
       LineStringM,
       PolygonM,
+      TriangleM,
       MultiPointM,
       MultiLineStringM,
       MultiPolygonM,
@@ -58,6 +79,7 @@ class QgsWkbTypes
       CurvePolygonZM,
       MultiCurveZM,
       MultiSurfaceZM,
+      TriangleZM,
       Point25D,
       LineString25D,
       Polygon25D,
@@ -75,145 +97,194 @@ class QgsWkbTypes
       NullGeometry
     };
 
-    /** Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
-     * @see isSingleType()
-     * @see multiType()
-     * @see flatType()
-     */
     static Type singleType( Type type );
+%Docstring
+ Returns the single type for a WKB type. For example, for MultiPolygon WKB types the single type would be Polygon.
+.. seealso:: isSingleType()
+.. seealso:: multiType()
+.. seealso:: flatType()
+ :rtype: Type
+%End
 
-    /** Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
-     * @see isMultiType()
-     * @see singleType()
-     * @see flatType()
-     */
     static Type multiType( Type type );
+%Docstring
+ Returns the multi type for a WKB type. For example, for Polygon WKB types the multi type would be MultiPolygon.
+.. seealso:: isMultiType()
+.. seealso:: singleType()
+.. seealso:: flatType()
+ :rtype: Type
+%End
 
-    /** Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
-     * For example, for PolygonZM WKB types the single type would be Polygon.
-     * @see singleType()
-     * @see multiType()
-     */
     static Type flatType( Type type );
+%Docstring
+ Returns the flat type for a WKB type. This is the WKB type minus any Z or M dimensions.
+ For example, for PolygonZM WKB types the single type would be Polygon.
+.. seealso:: singleType()
+.. seealso:: multiType()
+ :rtype: Type
+%End
 
-    /** Returns the modified input geometry type according to hasZ / hasM */
     static Type zmType( Type type, bool hasZ, bool hasM );
+%Docstring
+Returns the modified input geometry type according to hasZ / hasM
+ :rtype: Type
+%End
 
-    /** Attempts to extract the WKB type from a WKT string.
-     * @param wktStr a valid WKT string
-     */
-    static Type parseType( const QString& wktStr );
+    static Type parseType( const QString &wktStr );
+%Docstring
+ Attempts to extract the WKB type from a WKT string.
+ \param wktStr a valid WKT string
+ :rtype: Type
+%End
 
-    /** Returns true if the WKB type is a single type.
-     * @see isMultiType()
-     * @see singleType()
-     */
     static bool isSingleType( Type type );
+%Docstring
+ Returns true if the WKB type is a single type.
+.. seealso:: isMultiType()
+.. seealso:: singleType()
+ :rtype: bool
+%End
 
-    /** Returns true if the WKB type is a multi type.
-     * @see isSingleType()
-     * @see multiType()
-     */
     static bool isMultiType( Type type );
+%Docstring
+ Returns true if the WKB type is a multi type.
+.. seealso:: isSingleType()
+.. seealso:: multiType()
+ :rtype: bool
+%End
 
-    /** Returns true if the WKB type is a curved type or can contain curved geometries.
-     * @note added in QGIS 2.14
-     */
     static bool isCurvedType( Type type );
+%Docstring
+ Returns true if the WKB type is a curved type or can contain curved geometries.
+.. versionadded:: 2.14
+ :rtype: bool
+%End
 
-    /** Returns the inherent dimension of the geometry type as an integer. Returned value will
-     * always be less than or equal to the coordinate dimension.
-     * @returns 0 for point geometries, 1 for line geometries, 2 for polygon geometries
-     * Invalid geometry types will return a dimension of 0.
-     * @see coordDimensions()
-     */
     static int wkbDimensions( Type type );
+%Docstring
+ Returns the inherent dimension of the geometry type as an integer. Returned value will
+ always be less than or equal to the coordinate dimension.
+ :return: 0 for point geometries, 1 for line geometries, 2 for polygon geometries
+ Invalid geometry types will return a dimension of 0.
+.. seealso:: coordDimensions()
+ :rtype: int
+%End
 
-    /** Returns the coordinate dimension of the geometry type as an integer. Returned value will
-     * be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
-     * Invalid geometry types will return a dimension of 0.
-     * @note added in QGIS 2.14
-     * @see wkbDimensions()
-     */
     static int coordDimensions( Type type );
+%Docstring
+ Returns the coordinate dimension of the geometry type as an integer. Returned value will
+ be between 2-4, depending on whether the geometry type contains the Z or M dimensions.
+ Invalid geometry types will return a dimension of 0.
+.. versionadded:: 2.14
+.. seealso:: wkbDimensions()
+ :rtype: int
+%End
 
-    /** Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
-     * PolygonGeometry geometry type.
-     */
     static GeometryType geometryType( Type type );
+%Docstring
+ Returns the geometry type for a WKB type, e.g., both MultiPolygon and CurvePolygon would have a
+ PolygonGeometry geometry type.
+ GeometryCollections are reported as QgsWkbTypes.UnknownGeometry.
+ :rtype: GeometryType
+%End
 
-    /** Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
-     */
     static QString displayString( Type type );
+%Docstring
+ Returns a display string type for a WKB type, e.g., the geometry name used in WKT geometry representations.
+ :rtype: str
+%End
 
-    /**
-     * Return a display string for a geometry type.
-     *
-     * This will return one of the following strings:
-     *
-     * - Point
-     * - Line
-     * - Polygon
-     * - Unknown Geometry
-     * - No Geometry
-     * - Invalid Geometry
-     *
-     * @note added in QGIS 3.0
-     */
     static QString geometryDisplayString( GeometryType type );
+%Docstring
+ Return a display string for a geometry type.
 
-    /** Tests whether a WKB type contains the z-dimension.
-     * @returns true if type has z values
-     * @see addZ()
-     * @see hasM()
-     */
+ This will return one of the following strings:
+
+ - Point
+ - Line
+ - Polygon
+ - Unknown Geometry
+ - No Geometry
+ - Invalid Geometry
+
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
     static bool hasZ( Type type );
+%Docstring
+ Tests whether a WKB type contains the z-dimension.
+ :return: true if type has z values
+.. seealso:: addZ()
+.. seealso:: hasM()
+ :rtype: bool
+%End
 
-    /** Tests whether a WKB type contains m values.
-     * @returns true if type has m values
-     * @see addM()
-     * @see hasZ()
-     */
     static bool hasM( Type type );
+%Docstring
+ Tests whether a WKB type contains m values.
+ :return: true if type has m values
+.. seealso:: addM()
+.. seealso:: hasZ()
+ :rtype: bool
+%End
 
-    /** Adds the z dimension to a WKB type and returns the new type
-     * @param type original type
-     * @note added in QGIS 2.12
-     * @see addM()
-     * @see dropZ()
-     * @see hasZ()
-     */
     static Type addZ( Type type );
+%Docstring
+ Adds the z dimension to a WKB type and returns the new type
+ \param type original type
+.. versionadded:: 2.12
+.. seealso:: addM()
+.. seealso:: dropZ()
+.. seealso:: hasZ()
+ :rtype: Type
+%End
 
-    /** Adds the m dimension to a WKB type and returns the new type
-     * @param type original type
-     * @note added in QGIS 2.12
-     * @see addZ()
-     * @see dropM()
-     * @see hasM()
-     */
     static Type addM( Type type );
+%Docstring
+ Adds the m dimension to a WKB type and returns the new type
+ \param type original type
+.. versionadded:: 2.12
+.. seealso:: addZ()
+.. seealso:: dropM()
+.. seealso:: hasM()
+ :rtype: Type
+%End
 
-    /** Drops the z dimension (if present) for a WKB type and returns the new type.
-     * @param type original type
-     * @note added in QGIS 2.14
-     * @see dropM()
-     * @see addZ()
-     */
     static Type dropZ( Type type );
+%Docstring
+ Drops the z dimension (if present) for a WKB type and returns the new type.
+ \param type original type
+.. versionadded:: 2.14
+.. seealso:: dropM()
+.. seealso:: addZ()
+ :rtype: Type
+%End
 
-    /** Drops the m dimension (if present) for a WKB type and returns the new type.
-     * @param type original type
-     * @note added in QGIS 2.14
-     * @see dropZ()
-     * @see addM()
-     */
     static Type dropM( Type type );
+%Docstring
+ Drops the m dimension (if present) for a WKB type and returns the new type.
+ \param type original type
+.. versionadded:: 2.14
+.. seealso:: dropZ()
+.. seealso:: addM()
+ :rtype: Type
+%End
 
-    /**
-     * Will convert the 25D version of the flat type if supported or Unknown if not supported.
-     * @param type The type to convert
-     * @return the 25D version of the type or Unknown
-     */
     static Type to25D( Type type );
+%Docstring
+ Will convert the 25D version of the flat type if supported or Unknown if not supported.
+ \param type The type to convert
+ :return: the 25D version of the type or Unknown
+ :rtype: Type
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/geometry/qgswkbtypes.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

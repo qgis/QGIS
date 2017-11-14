@@ -50,7 +50,7 @@ QgsComposerNodesItem::QgsComposerNodesItem( const QString &tagName,
 double QgsComposerNodesItem::computeDistance( QPointF pt1,
     QPointF pt2 ) const
 {
-  return sqrt( pow( pt1.x() - pt2.x(), 2 ) + pow( pt1.y() - pt2.y(), 2 ) );
+  return std::sqrt( std::pow( pt1.x() - pt2.x(), 2 ) + std::pow( pt1.y() - pt2.y(), 2 ) );
 }
 
 bool QgsComposerNodesItem::addNode( QPointF pt,
@@ -76,17 +76,17 @@ bool QgsComposerNodesItem::addNode( QPointF pt,
     const double b = pt1.y() - coef * pt1.x();
 
     double distance = std::numeric_limits<double>::max();
-    if ( qIsInf( coef ) )
-      distance = qAbs( pt1.x() - start.x() );
+    if ( std::isinf( coef ) )
+      distance = std::fabs( pt1.x() - start.x() );
     else
     {
       const double coef2 = ( -1 / coef );
       const double b2 = start.y() - coef2 * start.x();
 
       QPointF inter;
-      if ( qIsInf( coef2 ) )
+      if ( std::isinf( coef2 ) )
       {
-        distance = qAbs( pt1.y() - start.y() );
+        distance = std::fabs( pt1.y() - start.y() );
         inter.setX( start.x() );
         inter.setY( pt1.y() );
       }
@@ -104,7 +104,7 @@ bool QgsComposerNodesItem::addNode( QPointF pt,
       const double length3 = computeDistance( pt1, pt2 );
       const double length4 = length1 + length2;
 
-      if ( qAbs( length3 - length4 ) < std::numeric_limits<float>::epsilon() )
+      if ( std::fabs( length3 - length4 ) < std::numeric_limits<float>::epsilon() )
         distance = computeDistance( inter, start );
     }
 
@@ -189,6 +189,11 @@ void QgsComposerNodesItem::paint( QPainter *painter,
   if ( !painter )
     return;
 
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
+
   painter->save();
   painter->setPen( Qt::NoPen );
   painter->setBrush( Qt::NoBrush );
@@ -267,6 +272,7 @@ bool QgsComposerNodesItem::moveNode( const int index, QPointF pt )
 bool QgsComposerNodesItem::readXml( const QDomElement &itemElem,
                                     const QDomDocument &doc )
 {
+
   // restore general composer item properties
   const QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
   if ( !composerItemList.isEmpty() )
@@ -306,8 +312,8 @@ void QgsComposerNodesItem::rescaleToFitBoundingBox()
   const QRectF boundingRect = mPolygon.boundingRect();
 
   // compute x/y ratio
-  const float ratioX =  rect().width() / boundingRect.width();
-  const float ratioY =  rect().height() / boundingRect.height();
+  const float ratioX = rect().width() / boundingRect.width();
+  const float ratioY = rect().height() / boundingRect.height();
 
   // scaling
   QTransform trans;

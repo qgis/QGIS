@@ -26,14 +26,14 @@ class QgsMapCanvasAnnotationItem;
 class QgsMarkerSymbol;
 class QgsFillSymbol;
 
-/** A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotation
+/**
+ * A configuration widget to configure the annotation item properties. Usually embedded by QgsAnnotation
 subclass configuration dialogs*/
 class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationWidgetBase
 {
     Q_OBJECT
   public:
     QgsAnnotationWidget( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsAnnotationWidget();
 
     void apply();
 
@@ -42,14 +42,8 @@ class APP_EXPORT QgsAnnotationWidget: public QWidget, private Ui::QgsAnnotationW
     //! Emitted when the background color of the annotation is changed
     void backgroundColorChanged( const QColor &color );
 
-  private slots:
-    void on_mMapMarkerButton_clicked();
-    void on_mFrameStyleButton_clicked();
-
   private:
     QgsMapCanvasAnnotationItem *mItem = nullptr;
-    std::unique_ptr< QgsMarkerSymbol > mMarkerSymbol;
-    std::unique_ptr< QgsFillSymbol > mFillSymbol;
 
     void blockAllSignals( bool block );
     void updateCenterIcon();

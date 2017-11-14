@@ -17,6 +17,7 @@
 #define QGSMAPLAYERACTIONREGISTRY_H
 
 #include <QObject>
+#include "qgis.h"
 #include <QList>
 #include <QMap>
 #include <QAction>
@@ -26,7 +27,8 @@
 
 class QgsFeature;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
 * An action which can run on map layers
 */
 class GUI_EXPORT QgsMapLayerAction : public QAction
@@ -44,15 +46,17 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     };
     Q_DECLARE_FLAGS( Targets, Target )
 
-    //! Creates a map layer action which can run on any layer
-    //! @note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
-    QgsMapLayerAction( const QString &name, QObject *parent, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    /**
+     * Creates a map layer action which can run on any layer
+     * \note using AllActions as a target probably does not make a lot of sense. This default action was settled for API compatibility reasons.
+     */
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, Targets targets = AllActions, const QIcon &icon = QIcon() );
 
     //! Creates a map layer action which can run only on a specific layer
-    QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer *layer, Targets targets = AllActions, const QIcon &icon = QIcon() );
 
     //! Creates a map layer action which can run on a specific type of layer
-    QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon() );
+    QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon() );
 
     ~QgsMapLayerAction();
 
@@ -101,16 +105,26 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsMapLayerAction::Targets )
 
-/** \ingroup gui
-* This class tracks map layer actions
+/**
+ * \ingroup gui
+* This class tracks map layer actions.
+*
+* QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+* QgsGui::mapLayerActionRegistry().
 */
 class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
 {
     Q_OBJECT
 
   public:
-    //! Returns the instance pointer, creating the object on the first call
-    static QgsMapLayerActionRegistry *instance();
+
+    /**
+     * Constructor for QgsMapLayerActionRegistry.
+     *
+     * QgsMapLayerActionRegistry is not usually directly created, but rather accessed through
+     * QgsGui::mapLayerActionRegistry().
+     */
+    QgsMapLayerActionRegistry( QObject *parent = nullptr );
 
     //! Adds a map layer action to the registry
     void addMapLayerAction( QgsMapLayerAction *action );
@@ -127,8 +141,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     QgsMapLayerAction *defaultActionForLayer( QgsMapLayer *layer );
 
   protected:
-    //! protected constructor
-    QgsMapLayerActionRegistry( QObject *parent = nullptr );
 
     QList< QgsMapLayerAction * > mMapLayerActionList;
 
@@ -137,8 +149,6 @@ class GUI_EXPORT QgsMapLayerActionRegistry : public QObject
     void changed();
 
   private:
-
-    static QgsMapLayerActionRegistry *sInstance;
 
     QMap< QgsMapLayer *, QgsMapLayerAction * > mDefaultLayerActionMap;
 

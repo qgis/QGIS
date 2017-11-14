@@ -18,7 +18,8 @@
 #define QGSNEWSPATIALITELAYERDIALOG_H
 
 #include "ui_qgsnewspatialitelayerdialogbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgshelp.h"
 
 #include "qgis.h"
@@ -35,22 +36,21 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-    QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
     ~QgsNewSpatialiteLayerDialog();
 
   protected slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mTypeBox_currentIndexChanged( int index );
-    void on_pbnFindSRID_clicked();
-    void on_toolButtonNewDatabase_clicked();
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mTypeBox_currentIndexChanged( int index );
+    void pbnFindSRID_clicked();
+    void toolButtonNewDatabase_clicked();
     void nameChanged( const QString & );
     void selectionChanged();
     void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/editing_geometry_attributes.html#vector-create-spatialite" ) ); }
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   private:
     //! Returns the selected geometry type
@@ -60,6 +60,8 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     bool createDb();
 
     bool apply();
+
+    void showHelp();
 
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );

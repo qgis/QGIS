@@ -13,7 +13,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <math.h> // M_PI
+#include <cmath> // M_PI
 
 #include "qgswfsconstants.h"
 #include "qgswfsshareddata.h"
@@ -38,14 +38,12 @@
 QgsWFSSharedData::QgsWFSSharedData( const QString &uri )
   : mURI( uri )
   , mSourceCRS( 0 )
-  , mCacheDataProvider( nullptr )
   , mMaxFeatures( 0 )
   , mMaxFeaturesWasSetFromDefaultForPaging( false )
   , mHideProgressDialog( mURI.hideDownloadProgressDialog() )
   , mDistinctSelect( false )
   , mHasWarnedAboutMissingFeatureId( false )
   , mGetFeatureEPSGDotHonoursEPSGOrder( false )
-  , mDownloader( nullptr )
   , mDownloadFinished( false )
   , mGenCounter( 0 )
   , mFeatureCount( 0 )
@@ -195,7 +193,7 @@ bool QgsWFSSharedData::computeFilter( QString &errorMsg )
 }
 
 // We have an issue with GDAL 1.10 and older that is using spatialite_init() which is
-// incompatible with how the QGIS spatialite provider works.
+// incompatible with how the QGIS SpatiaLite provider works.
 // The symptom of the issue is the error message
 // 'Unable to Initialize SpatiaLite Metadata: no such function: InitSpatialMetadata'
 // So in that case we must use only QGIS functions to avoid the conflict
@@ -216,7 +214,7 @@ bool QgsWFSSharedData::createCache()
 
   static int sTmpCounter = 0;
   ++sTmpCounter;
-  mCacheDbname =  QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( sTmpCounter ) );
+  mCacheDbname = QDir( QgsWFSUtils::acquireCacheDirectory() ).filePath( QStringLiteral( "wfs_cache_%1.sqlite" ).arg( sTmpCounter ) );
 
   QgsFields cacheFields;
   Q_FOREACH ( const QgsField &field, mFields )
@@ -248,7 +246,7 @@ bool QgsWFSSharedData::createCache()
   bool useReservedNames = cacheFields.lookupField( QStringLiteral( "ogc_fid" ) ) >= 0;
   if ( !useReservedNames )
   {
-    // Creating a spatialite database can be quite slow on some file systems
+    // Creating a SpatiaLite database can be quite slow on some file systems
     // so we create a GDAL in-memory file, and then copy it on
     // the file system.
     QString vsimemFilename;
@@ -256,8 +254,8 @@ bool QgsWFSSharedData::createCache()
     QStringList layerOptions;
     datasourceOptions.push_back( QStringLiteral( "INIT_WITH_EPSG=NO" ) );
     layerOptions.push_back( QStringLiteral( "LAUNDER=NO" ) ); // to get exact matches for field names, especially regarding case
-    layerOptions.push_back( "FID=__ogc_fid" );
-    layerOptions.push_back( "GEOMETRY_NAME=__spatialite_geometry" );
+    layerOptions.push_back( QStringLiteral( "FID=__ogc_fid" ) );
+    layerOptions.push_back( QStringLiteral( "GEOMETRY_NAME=__spatialite_geometry" ) );
     vsimemFilename.sprintf( "/vsimem/qgis_wfs_cache_template_%p/features.sqlite", this );
     mCacheTablename = CPLGetBasename( vsimemFilename.toStdString().c_str() );
     VSIUnlink( vsimemFilename.toStdString().c_str() );
@@ -304,7 +302,7 @@ bool QgsWFSSharedData::createCache()
     QMutexLocker mutexDBnameCreationHolder( &sMutexDBnameCreation );
     if ( sCachedDBTemplate.size() == 0 )
     {
-      // Create a template Spatialite DB
+      // Create a template SpatiaLite DB
       QTemporaryFile tempFile;
       tempFile.open();
       tempFile.setAutoRemove( false );
@@ -315,7 +313,7 @@ bool QgsWFSSharedData::createCache()
       bool created = false;
       if ( loaded )
       {
-        QgsDebugMsg( "spatialite provider loaded" );
+        QgsDebugMsg( "SpatiaLite provider loaded" );
 
         typedef bool ( *createDbProc )( const QString &, QString & );
         createDbProc createDbPtr = ( createDbProc ) cast_to_fptr( myLib->resolve( "createDb" ) );
@@ -340,7 +338,7 @@ bool QgsWFSSharedData::createCache()
       QFile::remove( tempFile.fileName() );
     }
 
-    // Copy the in-memory template Spatialite DB into the target DB
+    // Copy the in-memory template SpatiaLite DB into the target DB
     QFile dbFile( mCacheDbname );
     if ( !dbFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
@@ -371,7 +369,7 @@ bool QgsWFSSharedData::createCache()
     {
       mCacheTablename = QStringLiteral( "features" );
       sql = QStringLiteral( "CREATE TABLE %1 (%2 INTEGER PRIMARY KEY" ).arg( mCacheTablename, fidName );
-      Q_FOREACH ( const QgsField &field, cacheFields )
+      for ( const QgsField &field : qgis::as_const( cacheFields ) )
       {
         QString type( QStringLiteral( "VARCHAR" ) );
         if ( field.type() == QVariant::Int )
@@ -451,7 +449,7 @@ bool QgsWFSSharedData::createCache()
   pragmas << QStringLiteral( "synchronous=OFF" );
   pragmas << QStringLiteral( "journal_mode=WAL" ); // WAL is needed to avoid reader to block writers
   dsURI.setParam( QStringLiteral( "pragma" ), pragmas );
-  mCacheDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->provider(
+  mCacheDataProvider = ( QgsVectorDataProvider * )( QgsProviderRegistry::instance()->createProvider(
                          QStringLiteral( "spatialite" ), dsURI.uri() ) );
   if ( mCacheDataProvider && !mCacheDataProvider->isValid() )
   {
@@ -542,10 +540,7 @@ int QgsWFSSharedData::registerToCache( QgsWFSFeatureIterator *iterator, const Qg
     mDownloadFinished = false;
     mComputedExtent = QgsRectangle();
     mDownloader = new QgsWFSThreadedFeatureDownloader( this );
-    QEventLoop loop;
-    connect( mDownloader, SIGNAL( ready() ), &loop, SLOT( quit() ) );
-    mDownloader->start();
-    loop.exec( QEventLoop::ExcludeUserInputEvents );
+    mDownloader->startAndWait();
   }
   if ( mDownloadFinished )
     return -1;
@@ -683,7 +678,6 @@ QString QgsWFSSharedData::findGmlId( QgsFeatureId fid )
 
   QgsFeatureIterator iterGmlIds( mCacheDataProvider->getFeatures( request ) );
   QgsFeature gmlidFeature;
-  QSet<QString> setExistingGmlIds;
   while ( iterGmlIds.nextFeature( gmlidFeature ) )
   {
     const QVariant &v = gmlidFeature.attributes().value( gmlidIdx );
@@ -884,7 +878,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
         const QVariant &v = gmlFeature.attributes().value( i );
         if ( v.type() == QVariant::DateTime && !v.isNull() )
           cachedFeature.setAttribute( idx, QVariant( v.toDateTime().toMSecsSinceEpoch() ) );
-        else if ( v.type() !=  dataProviderFields.at( idx ).type() )
+        else if ( v.type() != dataProviderFields.at( idx ).type() )
           cachedFeature.setAttribute( idx, QgsVectorDataProvider::convertValue( dataProviderFields.at( idx ).type(), v.toString() ) );
         else
           cachedFeature.setAttribute( idx, v );
@@ -1182,10 +1176,6 @@ QgsWFSFeatureHitsRequest::QgsWFSFeatureHitsRequest( QgsWFSDataSourceURI &uri )
 {
 }
 
-QgsWFSFeatureHitsRequest::~QgsWFSFeatureHitsRequest()
-{
-}
-
 int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
     const QString &filter )
 {
@@ -1221,7 +1211,7 @@ int QgsWFSFeatureHitsRequest::getFeatureCount( const QString &WFSVersion,
   QDomElement doc = domDoc.documentElement();
   QString numberOfFeatures =
     ( WFSVersion.startsWith( QLatin1String( "1.1" ) ) ) ? doc.attribute( QStringLiteral( "numberOfFeatures" ) ) :
-    /* 2.0 */                         doc.attribute( QStringLiteral( "numberMatched" ) ) ;
+    /* 2.0 */                         doc.attribute( QStringLiteral( "numberMatched" ) );
   if ( !numberOfFeatures.isEmpty() )
   {
     bool isValid;
@@ -1245,10 +1235,6 @@ QString QgsWFSFeatureHitsRequest::errorMessageWithReason( const QString &reason 
 
 QgsWFSSingleFeatureRequest::QgsWFSSingleFeatureRequest( QgsWFSSharedData *shared )
   : QgsWfsRequest( shared->mURI.uri() ), mShared( shared )
-{
-}
-
-QgsWFSSingleFeatureRequest::~QgsWFSSingleFeatureRequest()
 {
 }
 
@@ -1281,7 +1267,6 @@ QgsRectangle QgsWFSSingleFeatureRequest::getExtent()
   {
     QVector<QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair> featurePtrList =
       parser->getAndStealReadyFeatures();
-    QVector<QgsWFSFeatureGmlIdPair> featureList;
     for ( int i = 0; i < featurePtrList.size(); i++ )
     {
       QgsGmlStreamingParser::QgsGmlFeaturePtrGmlIdPair &featPair = featurePtrList[i];

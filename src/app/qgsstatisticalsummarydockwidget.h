@@ -24,6 +24,7 @@
 #include "qgsdockwidget.h"
 #include "qgis_app.h"
 
+class QMenu;
 class QgsBrowserModel;
 class QModelIndex;
 class QgsDockBrowserTreeView;
@@ -31,7 +32,8 @@ class QgsLayerItem;
 class QgsDataItem;
 class QgsBrowserTreeFilterProxyModel;
 
-/** A dock widget which displays a statistical summary of the values in a field or expression
+/**
+ * A dock widget which displays a statistical summary of the values in a field or expression
  */
 class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private Ui::QgsStatisticalSummaryWidgetBase, private QgsExpressionContextGenerator
 {
@@ -39,16 +41,17 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
 
   public:
     QgsStatisticalSummaryDockWidget( QWidget *parent = nullptr );
-    ~QgsStatisticalSummaryDockWidget();
 
-    /** Returns the currently active layer for the widget
-     * @note added in QGIS 2.12
+    /**
+     * Returns the currently active layer for the widget
+     * \since QGIS 2.12
      */
     QgsVectorLayer *layer() const { return mLayer; }
 
   public slots:
 
-    /** Recalculates the displayed statistics
+    /**
+     * Recalculates the displayed statistics
      */
     void refreshStatistics();
 
@@ -60,6 +63,14 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     void layerSelectionChanged();
 
   private:
+
+    //! Enumeration of supported statistics types
+    enum DataType
+    {
+      Numeric,  //!< Numeric fields: int, double, etc
+      String,  //!< String fields
+      DateTime  //!< Date and DateTime fields
+    };
 
     QgsVectorLayer *mLayer = nullptr;
 
@@ -74,6 +85,13 @@ class APP_EXPORT QgsStatisticalSummaryDockWidget : public QgsDockWidget, private
     void addRow( int row, const QString &name, const QString &value, bool showValue );
 
     QgsExpressionContext createExpressionContext() const override;
+
+    void refreshStatisticsMenu();
+    DataType fieldType( const QString &fieldName );
+
+    QMenu *mStatisticsMenu = nullptr;
+    DataType mFieldType;
+    DataType mPreviousFieldType;
 };
 
 #endif // QGSSTATISTICALSUMMARYDOCKWIDGET_H

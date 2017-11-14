@@ -22,24 +22,24 @@
 #include <QTemporaryFile>
 #include "qgstest.h"
 
-#include <qgsapplication.h>
-#include <qgscoordinatereferencesystem.h>
+#include "qgsapplication.h"
+#include "qgscoordinatereferencesystem.h"
 #include "qgsfeatureiterator.h"
-#include <qgsgeometry.h>
-#include <qgslinestring.h>
-#include <qgspointv2.h>
-#include <qgspolygon.h>
-#include <qgsproviderregistry.h>
-#include <qgsrasterbandstats.h>
+#include "qgsgeometry.h"
+#include "qgslinestring.h"
+#include "qgspoint.h"
+#include "qgspolygon.h"
+#include "qgsproviderregistry.h"
+#include "qgsrasterbandstats.h"
 #include "qgsrasterdataprovider.h"
-#include <qgsrasterlayer.h>
+#include "qgsrasterlayer.h"
 #include "qgsrasterprojector.h"
-#include <qgsvectordataprovider.h>
-#include <qgsvectorlayer.h>
+#include "qgsvectordataprovider.h"
+#include "qgsvectorlayer.h"
 
-#include <qgsgrass.h>
-#include <qgsgrassimport.h>
-#include <qgsgrassprovider.h>
+#include "qgsgrass.h"
+#include "qgsgrassimport.h"
+#include "qgsgrassprovider.h"
 
 extern "C"
 {
@@ -55,10 +55,10 @@ extern "C"
 class TestQgsGrassFeature : public QgsFeature
 {
   public:
-    TestQgsGrassFeature() : grassType( 0 ) { setValid( true ); }
+    TestQgsGrassFeature() { setValid( true ); }
     explicit TestQgsGrassFeature( int type ) : grassType( type ) { setValid( true ); }
 
-    int grassType;
+    int grassType =  0 ;
 };
 
 // Command which can be composed of more GRASS features, e.g. boundaries + centroid equivalent
@@ -81,27 +81,19 @@ class TestQgsGrassCommand
       RedoAll
     };
 
-    TestQgsGrassCommand()
-      : command( AddFeature )
-      , verify( true )
-      , fid( 0 )
-      , geometry( 0 )
-    {}
+    TestQgsGrassCommand() = default;
     explicit TestQgsGrassCommand( Command c )
       : command( c )
-      , verify( true )
-      , fid( 0 )
-      , geometry( 0 )
     {}
 
     QString toString() const;
-    Command command;
+    Command command =  AddFeature ;
     // some commands (in case of multiple commands making single change) must not be verified
-    bool verify;
+    bool verify =  true ;
 
     QList<TestQgsGrassFeature> grassFeatures;
     QgsFeature expectedFeature; // simple feature for verification
-    QgsFeatureId fid;
+    QgsFeatureId fid =  0 ;
     QgsField field;
     QgsGeometry *geometry = nullptr;
     QVariant value;
@@ -190,7 +182,8 @@ class TestQgsGrassCommandGroup
     QMap<QgsFeatureId, QgsFeatureId> expectedFids;
 };
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsRasterLayer class.
  */
 class TestQgsGrassProvider: public QObject
@@ -340,7 +333,7 @@ bool TestQgsGrassProvider::compare( const QStringList &expected, const QStringLi
 
 bool TestQgsGrassProvider::compare( double expected, double got, bool &ok )
 {
-  if ( qAbs( got - expected ) > TINY_VALUE )
+  if ( std::fabs( got - expected ) > TINY_VALUE )
   {
     ok = false;
     return false;
@@ -806,7 +799,7 @@ void TestQgsGrassProvider::rasterImport()
     QString uri = QStringLiteral( TEST_DATA_DIR ) + "/" + rasterFile;
     QString name = QFileInfo( uri ).baseName();
     reportRow( "input raster: " + uri );
-    QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->provider( QStringLiteral( "gdal" ), uri ) );
+    QgsRasterDataProvider *provider = qobject_cast<QgsRasterDataProvider *>( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "gdal" ), uri ) );
     if ( !provider )
     {
       reportRow( "Cannot create provider " + uri );
@@ -878,7 +871,7 @@ void TestQgsGrassProvider::vectorImport()
     QString uri = QStringLiteral( TEST_DATA_DIR ) + "/" + file;
     QString name = QFileInfo( uri ).baseName();
     reportRow( "input vector: " + uri );
-    QgsVectorDataProvider *provider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->provider( QStringLiteral( "ogr" ), uri ) );
+    QgsVectorDataProvider *provider = qobject_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( QStringLiteral( "ogr" ), uri ) );
     if ( !provider )
     {
       reportRow( "Cannot create provider " + uri );
@@ -917,7 +910,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   TestQgsGrassFeature grassFeature;
   QgsLineString *line = nullptr;
   QgsGeometry *geometry = nullptr;
-  QList<QgsPointV2> pointList;
+  QVector<QgsPoint> pointList;
 
   // Start editing
   command = TestQgsGrassCommand( TestQgsGrassCommand::StartEditing );
@@ -929,7 +922,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   command = TestQgsGrassCommand( TestQgsGrassCommand::AddFeature );
   grassFeature = TestQgsGrassFeature( GV_POINT );
   grassFeature.setId( 1 );
-  geometry = new QgsGeometry( new QgsPointV2( QgsWkbTypes::Point, 10, 10, 0 ) );
+  geometry = new QgsGeometry( new QgsPoint( QgsWkbTypes::Point, 10, 10, 0 ) );
   grassFeature.setGeometry( *geometry );
   delete geometry;
   command.grassFeatures << grassFeature;
@@ -939,7 +932,7 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   // Change geometry
   command = TestQgsGrassCommand( TestQgsGrassCommand::ChangeGeometry );
   command.fid = 1;
-  command.geometry = new QgsGeometry( new QgsPointV2( QgsWkbTypes::Point, 20, 20, 0 ) );
+  command.geometry = new QgsGeometry( new QgsPoint( QgsWkbTypes::Point, 20, 20, 0 ) );
   commandGroup.commands << command;
 
   // Add field
@@ -1021,8 +1014,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   grassFeature.setId( 1 );
   line = new QgsLineString();
   pointList.clear();
-  pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
-  pointList << QgsPointV2( QgsWkbTypes::Point, 20, 10, 0 );
+  pointList << QgsPoint( QgsWkbTypes::Point, 0, 0, 0 );
+  pointList << QgsPoint( QgsWkbTypes::Point, 20, 10, 0 );
   line->setPoints( pointList );
   pointList.clear();
   geometry = new QgsGeometry( line );
@@ -1062,8 +1055,8 @@ QList< TestQgsGrassCommandGroup > TestQgsGrassProvider::createCommands()
   grassFeature.setId( 1 );
   line = new QgsLineString();
   pointList.clear();
-  pointList << QgsPointV2( QgsWkbTypes::Point, 0, 0, 0 );
-  pointList << QgsPointV2( QgsWkbTypes::Point, 20, 10, 0 );
+  pointList << QgsPoint( QgsWkbTypes::Point, 0, 0, 0 );
+  pointList << QgsPoint( QgsWkbTypes::Point, 20, 10, 0 );
   line->setPoints( pointList );
   pointList.clear();
   geometry = new QgsGeometry( line );
@@ -1385,7 +1378,7 @@ void TestQgsGrassProvider::edit()
       }
       else if ( command.command == TestQgsGrassCommand::UndoAll )
       {
-        if ( grassLayer->undoStack()->count() !=  editCommands.size() ||
+        if ( grassLayer->undoStack()->count() != editCommands.size() ||
              grassLayer->undoStack()->count() != expectedLayer->undoStack()->count() )
         {
           reportRow( QStringLiteral( "Different undo stack size: %1, expected: %2, editCommands: %3" )
@@ -1407,14 +1400,14 @@ void TestQgsGrassProvider::edit()
             }
             else
             {
-              reportRow( QStringLiteral( "undo ok" ) );
+              reportRow( QStringLiteral( "undo OK" ) );
             }
           }
         }
       }
       else if ( command.command == TestQgsGrassCommand::RedoAll )
       {
-        if ( grassLayer->undoStack()->count() !=  editCommands.size() ||
+        if ( grassLayer->undoStack()->count() != editCommands.size() ||
              grassLayer->undoStack()->count() != expectedLayer->undoStack()->count() )
         {
           reportRow( QStringLiteral( "Different undo stack size: %1, expected: %2, editCommands: %3" )
@@ -1436,7 +1429,7 @@ void TestQgsGrassProvider::edit()
             }
             else
             {
-              reportRow( QStringLiteral( "redo ok" ) );
+              reportRow( QStringLiteral( "redo OK" ) );
             }
           }
         }
@@ -1464,7 +1457,7 @@ void TestQgsGrassProvider::edit()
         }
         else
         {
-          reportRow( QStringLiteral( "command ok" ) );
+          reportRow( QStringLiteral( "command OK" ) );
         }
       }
     }
@@ -1591,7 +1584,7 @@ bool TestQgsGrassProvider::compare( QMap<QString, QgsVectorLayer *> layers, bool
     }
     else
     {
-      reportRow( "comparison ok: " + grassUri );
+      reportRow( "comparison OK: " + grassUri );
     }
   }
   return ok;
@@ -1618,7 +1611,7 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   bool sharedOk = compare( features, expectedFeatures, ok );
   if ( sharedOk )
   {
-    //reportRow( "comparison with shared layer ok" );
+    //reportRow( "comparison with shared layer OK" );
   }
   else
   {
@@ -1628,7 +1621,6 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   // We cannot test attribute table changes with independent layer in GRASS 6, which is using
   // DBF files, which are written when driver is closed (map layer keeps driver open during editing)
   bool independentOk = true;
-#if GRASS_VERSION_MAJOR >= 7
   // Open an independent layer which does not share data with edited one
   // build topology
   G_TRY
@@ -1644,11 +1636,9 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
       throw QgsGrass::Exception( "Cannot open map " + mapObject.name() );
     }
 
-#if ( GRASS_VERSION_MAJOR == 6 && GRASS_VERSION_MINOR >= 4 ) || GRASS_VERSION_MAJOR > 6
+
     Vect_build( map );
-#else
-    Vect_build( map, stderr );
-#endif
+
     //Vect_set_release_support( map );
     Vect_close( map );
     QgsGrass::vectDestroyMapStruct( map );
@@ -1678,13 +1668,12 @@ bool TestQgsGrassProvider::compare( QString uri, QgsVectorLayer *expectedLayer, 
   independentOk = compare( features, expectedFeatures, ok );
   if ( independentOk )
   {
-    //reportRow( "comparison with independent layer ok" );
+    //reportRow( "comparison with independent layer OK" );
   }
   else
   {
     reportRow( QStringLiteral( "comparison with independent layer failed" ) );
   }
-#endif // GRASS_VERSION_MAJOR >= 7
 
   return sharedOk && independentOk;
 }

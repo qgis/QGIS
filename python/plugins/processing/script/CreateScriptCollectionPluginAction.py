@@ -53,7 +53,7 @@ email=$email$
 tags=analysis,processing
 
 homepage=http://qgis.org
-tracker=https://hub.qgis.org/projects/QGIS/issues
+tracker=https://issues.qgis.org/projects/QGIS/issues
 repository=https://github.com/qgis/QGIS
 '''
 

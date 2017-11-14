@@ -14,9 +14,12 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-from qgis.core import QgsSymbolLayerUtils
+from qgis.core import QgsSymbolLayerUtils, QgsMarkerSymbol
+from qgis.PyQt.QtGui import QColor
 from qgis.PyQt.QtCore import QSizeF, QPointF
-from qgis.testing import unittest
+from qgis.testing import unittest, start_app
+
+start_app()
 
 
 class PyQgsSymbolLayerUtils(unittest.TestCase):
@@ -48,6 +51,20 @@ class PyQgsSymbolLayerUtils(unittest.TestCase):
         # bad string
         s2 = QgsSymbolLayerUtils.decodePoint('')
         self.assertEqual(s2, QPointF())
+
+    def testSymbolToFromMimeData(self):
+        """
+        Test converting symbols to and from mime data
+        """
+        symbol = QgsMarkerSymbol.createSimple({})
+        symbol.setColor(QColor(255, 0, 255))
+        self.assertFalse(QgsSymbolLayerUtils.symbolFromMimeData(None))
+        self.assertFalse(QgsSymbolLayerUtils.symbolToMimeData(None))
+        mime = QgsSymbolLayerUtils.symbolToMimeData(symbol)
+        self.assertTrue(mime is not None)
+        symbol2 = QgsSymbolLayerUtils.symbolFromMimeData(mime)
+        self.assertTrue(symbol2 is not None)
+        self.assertEqual(symbol2.color().name(), symbol.color().name())
 
 
 if __name__ == '__main__':

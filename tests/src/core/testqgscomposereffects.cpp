@@ -30,11 +30,7 @@ class TestQgsComposerEffects : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerEffects()
-      : mComposition( 0 )
-      , mComposerRect1( 0 )
-      , mComposerRect2( 0 )
-    {}
+    TestQgsComposerEffects() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -111,7 +107,7 @@ void TestQgsComposerEffects::blend_modes()
 
 void TestQgsComposerEffects::transparency()
 {
-  mComposerRect2->setTransparency( 50 );
+  mComposerRect2->setItemOpacity( 0.5 );
 
   QgsCompositionChecker checker( QStringLiteral( "composereffects_transparency" ), mComposition );
   checker.setControlPathPrefix( QStringLiteral( "composer_effects" ) );

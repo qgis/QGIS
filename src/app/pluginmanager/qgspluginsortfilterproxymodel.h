@@ -30,12 +30,11 @@ const int PLUGIN_STATUS_ROLE = Qt::UserRole + 6;       // for filtering and sort
 const int PLUGIN_DOWNLOADS_ROLE = Qt::UserRole + 7;    // for sorting
 const int PLUGIN_VOTE_ROLE = Qt::UserRole + 8;         // for sorting
 const int PLUGIN_REPOSITORY_ROLE = Qt::UserRole + 9;   // for sorting
-const int PLUGIN_TRUSTED_ROLE = Qt::UserRole + 10;     // for highlighting
 const int SPACER_ROLE = Qt::UserRole + 20;  // for sorting
 
 
 
-/*!
+/**
  * \brief Proxy model for filtering and sorting items in Plugin Manager
 */
 class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
@@ -45,11 +44,11 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
   public:
     explicit QgsPluginSortFilterProxyModel( QObject *parent = nullptr );
 
-    //! (Re)configire the status filter
+    //! (Re)configure the status filter
     void setAcceptedStatuses( const QStringList &statuses );
 
-    //! (Re)configire the spacer filter
-    void setAcceptedSpacers( const QString &spacers = "" );
+    //! (Re)configure the spacer filter
+    void setAcceptedSpacers( const QString &spacers = QString() );
 
     //! Return number of item with status filter matching (no other filters are considered)
     int countWithCurrentStatus();
@@ -74,5 +73,7 @@ class QgsPluginSortFilterProxyModel : public QSortFilterProxyModel
     QStringList mAcceptedStatuses;
     QString mAcceptedSpacers;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

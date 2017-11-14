@@ -32,17 +32,37 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
   , mLayer( layer )
 {
   setupUi( this );
+  connect( btnEqual, &QPushButton::clicked, this, &QgsQueryBuilder::btnEqual_clicked );
+  connect( btnLessThan, &QPushButton::clicked, this, &QgsQueryBuilder::btnLessThan_clicked );
+  connect( btnGreaterThan, &QPushButton::clicked, this, &QgsQueryBuilder::btnGreaterThan_clicked );
+  connect( btnPct, &QPushButton::clicked, this, &QgsQueryBuilder::btnPct_clicked );
+  connect( btnIn, &QPushButton::clicked, this, &QgsQueryBuilder::btnIn_clicked );
+  connect( btnNotIn, &QPushButton::clicked, this, &QgsQueryBuilder::btnNotIn_clicked );
+  connect( btnLike, &QPushButton::clicked, this, &QgsQueryBuilder::btnLike_clicked );
+  connect( btnILike, &QPushButton::clicked, this, &QgsQueryBuilder::btnILike_clicked );
+  connect( lstFields, &QListView::clicked, this, &QgsQueryBuilder::lstFields_clicked );
+  connect( lstFields, &QListView::doubleClicked, this, &QgsQueryBuilder::lstFields_doubleClicked );
+  connect( lstValues, &QListView::doubleClicked, this, &QgsQueryBuilder::lstValues_doubleClicked );
+  connect( btnLessEqual, &QPushButton::clicked, this, &QgsQueryBuilder::btnLessEqual_clicked );
+  connect( btnGreaterEqual, &QPushButton::clicked, this, &QgsQueryBuilder::btnGreaterEqual_clicked );
+  connect( btnNotEqual, &QPushButton::clicked, this, &QgsQueryBuilder::btnNotEqual_clicked );
+  connect( btnAnd, &QPushButton::clicked, this, &QgsQueryBuilder::btnAnd_clicked );
+  connect( btnNot, &QPushButton::clicked, this, &QgsQueryBuilder::btnNot_clicked );
+  connect( btnOr, &QPushButton::clicked, this, &QgsQueryBuilder::btnOr_clicked );
+  connect( btnGetAllValues, &QPushButton::clicked, this, &QgsQueryBuilder::btnGetAllValues_clicked );
+  connect( btnSampleValues, &QPushButton::clicked, this, &QgsQueryBuilder::btnSampleValues_clicked );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsQueryBuilder::showHelp );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/QueryBuilder/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QueryBuilder/geometry" ) ).toByteArray() );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( test() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::test );
 
   pbn = new QPushButton( tr( "&Clear" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsQueryBuilder::clear );
 
   setupGuiViews();
 
@@ -59,7 +79,7 @@ QgsQueryBuilder::QgsQueryBuilder( QgsVectorLayer *layer,
 QgsQueryBuilder::~QgsQueryBuilder()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/QueryBuilder/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/QueryBuilder/geometry" ), saveGeometry() );
 }
 
 void QgsQueryBuilder::showEvent( QShowEvent *event )
@@ -117,33 +137,31 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
   mModelValues->clear();
 
   // determine the field type
-  QList<QVariant> values;
-  mLayer->uniqueValues( idx, values, limit );
+  QSet<QVariant> values = mLayer->uniqueValues( idx, limit );
 
-  QgsSettings settings;
   QString nullValue = QgsApplication::nullRepresentation();
 
   QgsDebugMsg( QString( "nullValue: %1" ).arg( nullValue ) );
 
-  for ( int i = 0; i < values.size(); i++ )
+  Q_FOREACH ( const QVariant &var, values )
   {
     QString value;
-    if ( values[i].isNull() )
+    if ( var.isNull() )
       value = nullValue;
-    else if ( values[i].type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
-      value = values[i].toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
+    else if ( var.type() == QVariant::Date && mLayer->providerType() == QLatin1String( "ogr" ) && mLayer->storageType() == QLatin1String( "ESRI Shapefile" ) )
+      value = var.toDate().toString( QStringLiteral( "yyyy/MM/dd" ) );
     else
-      value = values[i].toString();
+      value = var.toString();
 
     QStandardItem *myItem = new QStandardItem( value );
     myItem->setEditable( false );
-    myItem->setData( values[i], Qt::UserRole + 1 );
+    myItem->setData( var, Qt::UserRole + 1 );
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
-    QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( values[i].isNull() ).arg( values[i].isNull() ? nullValue : values[i].toString() ) );
+    QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
   }
 }
 
-void QgsQueryBuilder::on_btnSampleValues_clicked()
+void QgsQueryBuilder::btnSampleValues_clicked()
 {
   lstValues->setCursor( Qt::WaitCursor );
 
@@ -170,7 +188,7 @@ void QgsQueryBuilder::on_btnSampleValues_clicked()
   lstValues->setCursor( Qt::ArrowCursor );
 }
 
-void QgsQueryBuilder::on_btnGetAllValues_clicked()
+void QgsQueryBuilder::btnGetAllValues_clicked()
 {
   lstValues->setCursor( Qt::WaitCursor );
 
@@ -259,43 +277,43 @@ void QgsQueryBuilder::reject()
   QDialog::reject();
 }
 
-void QgsQueryBuilder::on_btnEqual_clicked()
+void QgsQueryBuilder::btnEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " = " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnLessThan_clicked()
+void QgsQueryBuilder::btnLessThan_clicked()
 {
   txtSQL->insertText( QStringLiteral( " < " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnGreaterThan_clicked()
+void QgsQueryBuilder::btnGreaterThan_clicked()
 {
   txtSQL->insertText( QStringLiteral( " > " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnPct_clicked()
+void QgsQueryBuilder::btnPct_clicked()
 {
   txtSQL->insertText( QStringLiteral( "%" ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnIn_clicked()
+void QgsQueryBuilder::btnIn_clicked()
 {
   txtSQL->insertText( QStringLiteral( " IN " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnNotIn_clicked()
+void QgsQueryBuilder::btnNotIn_clicked()
 {
   txtSQL->insertText( QStringLiteral( " NOT IN " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnLike_clicked()
+void QgsQueryBuilder::btnLike_clicked()
 {
   txtSQL->insertText( QStringLiteral( " LIKE " ) );
   txtSQL->setFocus();
@@ -311,7 +329,7 @@ void QgsQueryBuilder::setSql( const QString &sqlStatement )
   txtSQL->setText( sqlStatement );
 }
 
-void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
+void QgsQueryBuilder::lstFields_clicked( const QModelIndex &index )
 {
   if ( mPreviousFieldRow != index.row() )
   {
@@ -324,13 +342,13 @@ void QgsQueryBuilder::on_lstFields_clicked( const QModelIndex &index )
   }
 }
 
-void QgsQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
+void QgsQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 {
   txtSQL->insertText( '\"' + mLayer->fields().at( mModelFields->data( index, Qt::UserRole + 1 ).toInt() ).name() + '\"' );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
+void QgsQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
   QVariant value = mModelValues->data( index, Qt::UserRole + 1 );
   if ( value.isNull() )
@@ -345,37 +363,37 @@ void QgsQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnLessEqual_clicked()
+void QgsQueryBuilder::btnLessEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " <= " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnGreaterEqual_clicked()
+void QgsQueryBuilder::btnGreaterEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " >= " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnNotEqual_clicked()
+void QgsQueryBuilder::btnNotEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " != " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnAnd_clicked()
+void QgsQueryBuilder::btnAnd_clicked()
 {
   txtSQL->insertText( QStringLiteral( " AND " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnNot_clicked()
+void QgsQueryBuilder::btnNot_clicked()
 {
   txtSQL->insertText( QStringLiteral( " NOT " ) );
   txtSQL->setFocus();
 }
 
-void QgsQueryBuilder::on_btnOr_clicked()
+void QgsQueryBuilder::btnOr_clicked()
 {
   txtSQL->insertText( QStringLiteral( " OR " ) );
   txtSQL->setFocus();
@@ -388,7 +406,7 @@ void QgsQueryBuilder::clear()
   mUseUnfilteredLayer->setDisabled( true );
 }
 
-void QgsQueryBuilder::on_btnILike_clicked()
+void QgsQueryBuilder::btnILike_clicked()
 {
   txtSQL->insertText( QStringLiteral( " ILIKE " ) );
   txtSQL->setFocus();
@@ -397,4 +415,9 @@ void QgsQueryBuilder::on_btnILike_clicked()
 void QgsQueryBuilder::setDatasourceDescription( const QString &uri )
 {
   lblDataUri->setText( uri );
+}
+
+void QgsQueryBuilder::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
 }

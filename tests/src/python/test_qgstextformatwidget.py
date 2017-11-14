@@ -19,7 +19,8 @@ from qgis.core import (QgsTextBufferSettings,
                        QgsTextShadowSettings,
                        QgsTextFormat,
                        QgsUnitTypes,
-                       QgsMapUnitScale)
+                       QgsMapUnitScale,
+                       QgsBlurEffect)
 from qgis.gui import (QgsTextFormatWidget, QgsTextFormatDialog)
 from qgis.PyQt.QtGui import (QColor, QPainter)
 from qgis.PyQt.QtCore import (Qt, QSizeF, QPointF)
@@ -42,6 +43,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setOpacity(0.5)
         s.setJoinStyle(Qt.RoundJoin)
         s.setBlendMode(QPainter.CompositionMode_Difference)
+        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '10', 'enabled': '1'}))
         return s
 
     def checkBufferSettings(self, s):
@@ -55,6 +57,8 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.opacity(), 0.5)
         self.assertEqual(s.joinStyle(), Qt.RoundJoin)
         self.assertEqual(s.blendMode(), QPainter.CompositionMode_Difference)
+        self.assertTrue(s.paintEffect())
+        self.assertEqual(s.paintEffect().blurLevel(), 10)
 
     def createBackgroundSettings(self):
         s = QgsTextBackgroundSettings()
@@ -81,6 +85,7 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         s.setStrokeWidth(7)
         s.setStrokeWidthUnit(QgsUnitTypes.RenderMapUnits)
         s.setStrokeWidthMapUnitScale(QgsMapUnitScale(QgsMapUnitScale(25, 26)))
+        s.setPaintEffect(QgsBlurEffect.create({'blur_level': '6', 'enabled': '1'}))
         return s
 
     def checkBackgroundSettings(self, s):
@@ -108,6 +113,8 @@ class PyQgsTextFormatWidget(unittest.TestCase):
         self.assertEqual(s.strokeWidth(), 7)
         self.assertEqual(s.strokeWidthUnit(), QgsUnitTypes.RenderMapUnits)
         self.assertEqual(s.strokeWidthMapUnitScale(), QgsMapUnitScale(25, 26))
+        self.assertTrue(s.paintEffect())
+        self.assertEqual(s.paintEffect().blurLevel(), 6)
 
     def createShadowSettings(self):
         s = QgsTextShadowSettings()

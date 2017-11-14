@@ -17,7 +17,7 @@
 #define QGSLOADFILEFROMDBDIALOG_H
 
 #include "ui_qgsloadstylefromdbdialog.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgis_app.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
@@ -26,7 +26,7 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
 {
     QString mSelectedStyleId;
     QString mSelectedStyleName;
-    int mSectionLimit;
+    int mSectionLimit = 0;
     Q_OBJECT
   public:
     explicit QgsLoadStyleFromDBDialog( QWidget *parent = nullptr );

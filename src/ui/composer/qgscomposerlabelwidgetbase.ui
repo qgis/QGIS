@@ -23,7 +23,16 @@
    <property name="spacing">
     <number>0</number>
    </property>
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item>
@@ -43,7 +52,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -52,8 +61,8 @@
        <rect>
         <x>0</x>
         <y>0</y>
-        <width>302</width>
-        <height>682</height>
+        <width>446</width>
+        <height>665</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -117,14 +126,24 @@
           <bool>false</bool>
          </property>
          <layout class="QGridLayout" name="gridLayout">
-          <item row="1" column="0">
-           <widget class="QLabel" name="label_2">
+          <item row="4" column="0" colspan="2">
+           <widget class="QLabel" name="mHorizontalAlignementLabel">
             <property name="text">
-             <string>Font color</string>
+             <string>Horizontal alignment</string>
             </property>
            </widget>
           </item>
-          <item row="7" column="0" colspan="2">
+          <item row="3" column="1">
+           <widget class="QgsDoubleSpinBox" name="mMarginYDoubleSpinBox">
+            <property name="suffix">
+             <string> mm</string>
+            </property>
+            <property name="minimum">
+             <double>-99.989999999999995</double>
+            </property>
+           </widget>
+          </item>
+          <item row="8" column="0" colspan="2">
            <layout class="QHBoxLayout" name="horizontalLayout_6">
             <item>
              <widget class="QRadioButton" name="mTopRadioButton">
@@ -171,6 +190,20 @@
             </item>
            </layout>
           </item>
+          <item row="3" column="0">
+           <widget class="QLabel" name="mMarginYLabel">
+            <property name="text">
+             <string>Vertical margin</string>
+            </property>
+           </widget>
+          </item>
+          <item row="2" column="0">
+           <widget class="QLabel" name="mMarginXLabel">
+            <property name="text">
+             <string>Horizontal margin</string>
+            </property>
+           </widget>
+          </item>
           <item row="2" column="1">
            <widget class="QgsDoubleSpinBox" name="mMarginXDoubleSpinBox">
             <property name="prefix">
@@ -184,9 +217,16 @@
             </property>
            </widget>
           </item>
-          <item row="5" column="0" colspan="2">
-           <layout class="QHBoxLayout" name="horizontalLayout_5">
-            <item>
+          <item row="1" column="0">
+           <widget class="QLabel" name="label_2">
+            <property name="text">
+             <string>Font color</string>
+            </property>
+           </widget>
+          </item>
+          <item row="5" column="0">
+           <layout class="QGridLayout" name="gridLayout_3">
+            <item row="0" column="0">
              <widget class="QRadioButton" name="mLeftRadioButton">
               <property name="text">
                <string>Left</string>
@@ -196,17 +236,17 @@
               </attribute>
              </widget>
             </item>
-            <item>
-             <widget class="QRadioButton" name="mCenterRadioButton">
+            <item row="0" column="3">
+             <widget class="QRadioButton" name="mJustifyRadioButton">
               <property name="text">
-               <string>Center</string>
+               <string>Justify</string>
               </property>
               <attribute name="buttonGroup">
                <string notr="true">buttonGroup_2</string>
               </attribute>
              </widget>
             </item>
-            <item>
+            <item row="0" column="2">
              <widget class="QRadioButton" name="mRightRadioButton">
               <property name="text">
                <string>Right</string>
@@ -216,29 +256,19 @@
               </attribute>
              </widget>
             </item>
-            <item>
-             <spacer name="horizontalSpacer_4">
-              <property name="orientation">
-               <enum>Qt::Horizontal</enum>
+            <item row="0" column="1">
+             <widget class="QRadioButton" name="mCenterRadioButton">
+              <property name="text">
+               <string>Center</string>
               </property>
-              <property name="sizeHint" stdset="0">
-               <size>
-                <width>0</width>
-                <height>20</height>
-               </size>
-              </property>
-             </spacer>
+              <attribute name="buttonGroup">
+               <string notr="true">buttonGroup_2</string>
+              </attribute>
+             </widget>
             </item>
            </layout>
           </item>
-          <item row="4" column="0" colspan="2">
-           <widget class="QLabel" name="mHorizontalAlignementLabel">
-            <property name="text">
-             <string>Horizontal alignment</string>
-            </property>
-           </widget>
-          </item>
-          <item row="6" column="0" colspan="2">
+          <item row="7" column="0" colspan="2">
            <widget class="QLabel" name="mVerticalAlignementLabel">
             <property name="text">
              <string>Vertical alignment</string>
@@ -246,7 +276,7 @@
            </widget>
           </item>
           <item row="0" column="0" colspan="2">
-           <widget class="QPushButton" name="mFontButton">
+           <widget class="QgsFontButton" name="mFontButton">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
               <horstretch>0</horstretch>
@@ -254,14 +284,7 @@
              </sizepolicy>
             </property>
             <property name="text">
-             <string>Font...</string>
-            </property>
-           </widget>
-          </item>
-          <item row="2" column="0">
-           <widget class="QLabel" name="mMarginXLabel">
-            <property name="text">
-             <string>Horizontal margin</string>
+             <string>Font</string>
             </property>
            </widget>
           </item>
@@ -301,23 +324,6 @@
             </item>
            </layout>
           </item>
-          <item row="3" column="1">
-           <widget class="QgsDoubleSpinBox" name="mMarginYDoubleSpinBox">
-            <property name="suffix">
-             <string> mm</string>
-            </property>
-            <property name="minimum">
-             <double>-99.989999999999995</double>
-            </property>
-           </widget>
-          </item>
-          <item row="3" column="0">
-           <widget class="QLabel" name="mMarginYLabel">
-            <property name="text">
-             <string>Vertical margin</string>
-            </property>
-           </widget>
-          </item>
          </layout>
         </widget>
        </item>
@@ -330,9 +336,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header location="global">qgscollapsiblegroupbox.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -342,9 +348,20 @@
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
    <class>QgsDoubleSpinBox</class>
    <extends>QDoubleSpinBox</extends>
    <header>qgsdoublespinbox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsFontButton</class>
+   <extends>QToolButton</extends>
+   <header>qgsfontbutton.h</header>
   </customwidget>
  </customwidgets>
  <tabstops>

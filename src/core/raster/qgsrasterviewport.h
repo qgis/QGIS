@@ -17,11 +17,12 @@
 #ifndef QGSRASTERVIEWPORT_H
 #define QGSRASTERVIEWPORT_H
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrectangle.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  This class provides details of the viewable area that a raster will
  *  be rendered into.
  *
@@ -29,21 +30,29 @@
  *  by rasterlayer draw functions at the point of drawing to the screen.
  */
 
-struct QgsRasterViewPort
+struct CORE_EXPORT QgsRasterViewPort
 {
+#ifdef SIP_RUN
+  % TypeHeaderCode
+#include <qgsrasterviewport.h>
+  % End
+#endif
 
-  /** \brief Coordinate (in output device coordinate system) of top left corner
+  /**
+   * \brief Coordinate (in output device coordinate system) of top left corner
    *   of the part of the raster that is to be rendered.*/
-  QgsPoint mTopLeftPoint;
+  QgsPointXY mTopLeftPoint;
 
-  /** \brief Coordinate (in output device coordinate system) of bottom right corner
+  /**
+   * \brief Coordinate (in output device coordinate system) of bottom right corner
    *   of the part of the raster that is to be rendered.*/
-  QgsPoint mBottomRightPoint;
+  QgsPointXY mBottomRightPoint;
 
   //! \brief Width, number of columns to be rendered
   int mWidth;
 
-  /** \brief Distance in map units from bottom edge to top edge for the part of
+  /**
+   * \brief Distance in map units from bottom edge to top edge for the part of
    *  the raster that is to be rendered.*/
   //! \brief Height, number of rows to be rendered
   int mHeight;

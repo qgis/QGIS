@@ -24,15 +24,13 @@
 #include <QFileSystemWatcher>
 #include <QMap>
 #include <QObject>
+#include <QDomDocument>
 
 #include "qgis_server.h"
-#include "qgswmsconfigparser.h"
-#include "qgswfsprojectparser.h"
+#include "qgis_sip.h"
+#include "qgsproject.h"
 
-class QgsServerProjectParser;
 class QgsAccessControl;
-
-class QDomDocument;
 
 class SERVER_EXPORT QgsConfigCache : public QObject
 {
@@ -40,21 +38,19 @@ class SERVER_EXPORT QgsConfigCache : public QObject
   public:
     static QgsConfigCache *instance();
 
-    QgsServerProjectParser *serverConfiguration( const QString &filePath );
-    QgsWfsProjectParser *wfsConfiguration(
-      const QString &filePath
-      , const QgsAccessControl *accessControl
-    );
-    QgsWmsConfigParser *wmsConfiguration(
-      const QString &filePath
-      , const QgsAccessControl *accessControl
-      , const QMap<QString, QString> &parameterMap = ( QMap< QString, QString >() )
-    );
-
     void removeEntry( const QString &path );
 
+    /**
+     * If the project is not cached yet, then the project is read thank to the
+     *  path. If the project is not available, then a nullptr is returned.
+     * \param path the filename of the QGIS project
+     * \returns the project or nullptr if an error happened
+     * \since QGIS 3.0
+     */
+    const QgsProject *project( const QString &path );
+
   private:
-    QgsConfigCache();
+    QgsConfigCache() SIP_FORCE;
 
     //! Check for configuration file updates (remove entry from cache if file changes)
     QFileSystemWatcher mFileSystemWatcher;
@@ -63,8 +59,7 @@ class SERVER_EXPORT QgsConfigCache : public QObject
     QDomDocument *xmlDocument( const QString &filePath );
 
     QCache<QString, QDomDocument> mXmlDocumentCache;
-    QCache<QString, QgsWmsConfigParser> mWMSConfigCache;
-    QCache<QString, QgsWfsProjectParser> mWFSConfigCache;
+    QCache<QString, QgsProject> mProjectCache;
 
   private slots:
     //! Removes changed entry from this cache

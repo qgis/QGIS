@@ -30,8 +30,11 @@
 #ifndef PAL_GEOM_FUNCTION
 #define PAL_GEOM_FUNCTION
 
+#define SIP_NO_FILE
+
+
 #include "qgis_core.h"
-#include "math.h"
+#include <cmath>
 #include "qgsgeos.h"
 
 namespace pal
@@ -62,7 +65,7 @@ namespace pal
 
       static inline double dist_euc2d( double x1, double y1, double x2, double y2 )
       {
-        return sqrt( ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) );
+        return std::sqrt( ( x2 - x1 ) * ( x2 - x1 ) + ( y2 - y1 ) * ( y2 - y1 ) );
       }
 
       static inline double dist_euc2d_sq( double x1, double y1, double x2, double y2 )
@@ -81,7 +84,7 @@ namespace pal
        * \param y y coordinates
        * \param n Size of subset (vector id)
        * \param cHull returns the point id (id of id's vector...) whom are parts of the convex hull
-       * \return convexHull's size
+       * \returns convexHull's size
        */
       static int convexHullId( int *id, const double *const x, const double *const y, int n, int *&cHull );
 
@@ -102,14 +105,15 @@ namespace pal
       //! Reorder points to have cross prod ((x,y)[i], (x,y)[i+1), point) > 0 when point is outside
       static int reorderPolygon( int nbPoints, double *x, double *y );
 
-      /** Returns true if a GEOS prepared geometry totally contains a label candidate.
-       * @param geom GEOS prepared geometry
-       * @param x candidate x
-       * @param y candidate y
-       * @param width candidate width
-       * @param height candidate height
-       * @param alpha candidate angle
-       * @returns true if candidate is totally contained
+      /**
+       * Returns true if a GEOS prepared geometry totally contains a label candidate.
+       * \param geom GEOS prepared geometry
+       * \param x candidate x
+       * \param y candidate y
+       * \param width candidate width
+       * \param height candidate height
+       * \param alpha candidate angle
+       * \returns true if candidate is totally contained
        */
       static bool containsCandidate( const GEOSPreparedGeometry *geom, double x, double y, double width, double height, double alpha );
 

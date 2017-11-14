@@ -29,6 +29,8 @@
 #include "qgsgdalproviderbase.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatetransform.h"
+#include "qgsogrutils.h"
+#include "qgsapplication.h"
 
 #include <QString>
 #include <QStringList>
@@ -63,7 +65,7 @@ struct QgsWcsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkRequest( request, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkRequest( request, mAuthCfg );
     }
     else if ( !mUserName.isNull() || !mPassword.isNull() )
     {
@@ -77,7 +79,7 @@ struct QgsWcsAuthorization
   {
     if ( !mAuthCfg.isEmpty() )
     {
-      return QgsAuthManager::instance()->updateNetworkReply( reply, mAuthCfg );
+      return QgsApplication::authManager()->updateNetworkReply( reply, mAuthCfg );
     }
     return true;
   }
@@ -153,7 +155,8 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     bool isValid() const override;
 
-    /** Returns the base url
+    /**
+     * Returns the base url
      */
     virtual QString baseUrl() const;
 
@@ -171,7 +174,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int xSize() const override;
     int ySize() const override;
     QString metadata() override;
-    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
@@ -191,17 +194,9 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
      */
     static bool parseServiceExceptionReportDom( QByteArray const &xml, const QString &wcsVersion, QString &errorTitle, QString &errorText );
 
-
-  signals:
-
-    //! \brief emit a signal to notify of a progress event
-    void progressChanged( int progress, int totalSteps );
-
-    void dataChanged();
-
   private:
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     //! parse the WCS ServiceException XML element
     static void parseServiceException( QDomElement const &e, const QString &wcsVersion, QString &errorTitle, QString &errorText );
@@ -278,22 +273,23 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     mutable QgsRectangle mCoverageExtent;
 
     //! Coverage width, may be 0 if it could not be found in DescribeCoverage
-    int mWidth;
+    int mWidth = 0;
 
     //! Coverage width, may be 0 if it could not be found in DescribeCoverage
-    int mHeight;
+    int mHeight = 0;
 
     //! Block size
-    int mXBlockSize;
-    int mYBlockSize;
+    int mXBlockSize = 0;
+    int mYBlockSize = 0;
 
     //! Flag if size was parsed successfully
-    bool mHasSize;
+    bool mHasSize = false;
 
     //! Number of bands
-    int mBandCount;
+    int mBandCount = 0;
 
-    /** \brief Gdal data types used to represent data in in QGIS,
+    /**
+     * \brief Gdal data types used to represent data in in QGIS,
                may be longer than source data type to keep nulls
                indexed from 0 */
     QList<GDALDataType> mGdalDataType;
@@ -333,18 +329,18 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Name of memory file for cached data
     QString mCachedMemFilename;
 
-    mutable VSILFILE *mCachedMemFile;
+    mutable VSILFILE *mCachedMemFile = nullptr;
 
     //! Pointer to cached GDAL dataset
-    mutable GDALDatasetH mCachedGdalDataset;
+    mutable gdal::dataset_unique_ptr mCachedGdalDataset;
 
     //! Current cache error last getCache() error.
     mutable QgsError mCachedError;
 
     //! The previous parameters to draw().
     mutable QgsRectangle mCachedViewExtent;
-    mutable int mCachedViewWidth;
-    mutable int mCachedViewHeight;
+    mutable int mCachedViewWidth = 0;
+    mutable int mCachedViewHeight = 0;
 
     //! Maximum width and height of getmap requests
     int mMaxWidth;
@@ -364,7 +360,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     mutable QgsCoordinateTransform mCoordinateTransform;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
-    mutable bool mExtentDirty;
+    mutable bool mExtentDirty = true;
 
     //! Base URL for WCS GetFeatureInfo requests
     QString mGetFeatureInfoUrlBase;
@@ -376,7 +372,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //QMap<int, QStringList> mLayerParentNames;
 
     //! Errors counter
-    int mErrors;
+    int mErrors = 0;
 
     //! http authorization details
     mutable QgsWcsAuthorization mAuth;
@@ -390,12 +386,12 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsCoordinateReferenceSystem mCrs;
 
     // Fix for servers using bbox 1 px bigger
-    bool mFixBox;
+    bool mFixBox = false;
 
     // Fix for rasters rotated by GeoServer
-    bool mFixRotate;
+    bool mFixRotate = false;
 
-    QNetworkRequest::CacheLoadControl mCacheLoadControl;
+    QNetworkRequest::CacheLoadControl mCacheLoadControl = QNetworkRequest::PreferNetwork;
 
 };
 

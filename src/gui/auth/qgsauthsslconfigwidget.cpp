@@ -25,6 +25,7 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 static void setItemBold_( QTreeWidgetItem *item )
@@ -45,41 +46,31 @@ QgsAuthSslConfigWidget::QgsAuthSslConfigWidget( QWidget *parent,
   : QWidget( parent )
   , mCert( nullptr )
   , mConnectionCAs( connectionCAs )
-  , mProtocolItem( nullptr )
-  , mProtocolCmbBx( nullptr )
-  , mIgnoreErrorsItem( nullptr )
-  , mVerifyModeItem( nullptr )
-  , mVerifyPeerCmbBx( nullptr )
-  , mVerifyDepthItem( nullptr )
-  , mVerifyDepthSpnBx( nullptr )
-  , mCanSave( false )
-  , mDisabled( false )
-  , mAuthNotifyLayout( nullptr )
-  , mAuthNotify( nullptr )
 {
-  if ( QgsAuthManager::instance()->isDisabled() )
+  if ( QgsApplication::authManager()->isDisabled() )
   {
     mDisabled = true;
     mAuthNotifyLayout = new QVBoxLayout;
     this->setLayout( mAuthNotifyLayout );
-    mAuthNotify = new QLabel( QgsAuthManager::instance()->disabledMessage(), this );
+    mAuthNotify = new QLabel( QgsApplication::authManager()->disabledMessage(), this );
     mAuthNotifyLayout->addWidget( mAuthNotify );
   }
   else
   {
     setupUi( this );
+    connect( btnCertInfo, &QToolButton::clicked, this, &QgsAuthSslConfigWidget::btnCertInfo_clicked );
 
-    connect( grpbxSslConfig, SIGNAL( toggled( bool ) ), this, SIGNAL( configEnabledChanged( bool ) ) );
-    connect( this, SIGNAL( configEnabledChanged( bool ) ), this, SLOT( readyToSave() ) );
-    connect( this, SIGNAL( hostPortValidityChanged( bool ) ), this, SLOT( readyToSave() ) );
+    connect( grpbxSslConfig, &QGroupBox::toggled, this, &QgsAuthSslConfigWidget::configEnabledChanged );
+    connect( this, &QgsAuthSslConfigWidget::configEnabledChanged, this, &QgsAuthSslConfigWidget::readyToSave );
+    connect( this, &QgsAuthSslConfigWidget::hostPortValidityChanged, this, &QgsAuthSslConfigWidget::readyToSave );
 
     setUpSslConfigTree();
 
     lblLoadedConfig->setVisible( false );
-    lblLoadedConfig->setText( QLatin1String( "" ) );
+    lblLoadedConfig->clear();
 
-    connect( leHost, SIGNAL( textChanged( QString ) ),
-             this, SLOT( validateHostPortText( QString ) ) );
+    connect( leHost, &QLineEdit::textChanged,
+             this, &QgsAuthSslConfigWidget::validateHostPortText );
 
     if ( !cert.isNull() )
     {
@@ -259,7 +250,7 @@ void QgsAuthSslConfigWidget::setSslCertificate( const QSslCertificate &cert, con
 
   QString sha( QgsAuthCertUtils::shaHexForCert( cert ) );
   QgsAuthConfigSslServer config(
-    QgsAuthManager::instance()->getSslCertCustomConfig( sha, hostport.isEmpty() ? sslHost() : hostport ) );
+    QgsApplication::authManager()->sslCertCustomConfig( sha, hostport.isEmpty() ? sslHost() : hostport ) );
 
   emit certFoundInAuthDatabase( !config.isNull() );
 
@@ -316,7 +307,7 @@ void QgsAuthSslConfigWidget::saveSslCertConfig()
   {
     return;
   }
-  if ( !QgsAuthManager::instance()->storeSslCertCustomConfig( sslCustomConfig() ) )
+  if ( !QgsApplication::authManager()->storeSslCertCustomConfig( sslCustomConfig() ) )
   {
     QgsDebugMsg( "SSL custom config FAILED to store in authentication database" );
   }
@@ -335,7 +326,7 @@ void QgsAuthSslConfigWidget::resetSslCertConfig()
   leHost->clear();
 
   lblLoadedConfig->setVisible( false );
-  lblLoadedConfig->setText( QLatin1String( "" ) );
+  lblLoadedConfig->clear();
   resetSslProtocol();
   resetSslIgnoreErrors();
   resetSslPeerVerify();
@@ -574,7 +565,7 @@ void QgsAuthSslConfigWidget::setConfigCheckable( bool checkable )
   }
 }
 
-void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
+void QgsAuthSslConfigWidget::btnCertInfo_clicked()
 {
   if ( mCert.isNull() )
   {
@@ -593,15 +584,15 @@ void QgsAuthSslConfigWidget::on_btnCertInfo_clicked()
 
 QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent, const QSslCertificate &cert, const QString &hostport )
   : QDialog( parent )
-  , mSslConfigWdgt( nullptr )
+
 {
   setWindowTitle( tr( "Custom Certificate Configuration" ) );
   QVBoxLayout *layout = new QVBoxLayout( this );
   layout->setMargin( 6 );
 
   mSslConfigWdgt = new QgsAuthSslConfigWidget( this, cert, hostport );
-  connect( mSslConfigWdgt, SIGNAL( readyToSaveChanged( bool ) ),
-           this, SLOT( checkCanSave( bool ) ) );
+  connect( mSslConfigWdgt, &QgsAuthSslConfigWidget::readyToSaveChanged,
+           this, &QgsAuthSslConfigDialog::checkCanSave );
   layout->addWidget( mSslConfigWdgt );
 
   QDialogButtonBox *buttonBox = new QDialogButtonBox(
@@ -609,8 +600,8 @@ QgsAuthSslConfigDialog::QgsAuthSslConfigDialog( QWidget *parent, const QSslCerti
 
   buttonBox->button( QDialogButtonBox::Close )->setDefault( true );
   mSaveButton = buttonBox->button( QDialogButtonBox::Save );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( close() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAuthSslConfigDialog::accept );
   layout->addWidget( buttonBox );
 
   setLayout( layout );

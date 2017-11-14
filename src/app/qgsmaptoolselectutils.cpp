@@ -25,7 +25,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsgeometry.h"
 #include "qgsrenderer.h"
 #include "qgsrubberband.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgis.h"
 
@@ -49,10 +49,10 @@ QgsVectorLayer *QgsMapToolSelectUtils::getCurrentVectorLayer( QgsMapCanvas *canv
 void QgsMapToolSelectUtils::setRubberBand( QgsMapCanvas *canvas, QRect &selectRect, QgsRubberBand *rubberBand )
 {
   const QgsMapToPixel *transform = canvas->getCoordinateTransform();
-  QgsPoint ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
-  QgsPoint lr = transform->toMapCoordinates( selectRect.right(), selectRect.bottom() );
-  QgsPoint ul = transform->toMapCoordinates( selectRect.left(), selectRect.top() );
-  QgsPoint ur = transform->toMapCoordinates( selectRect.right(), selectRect.top() );
+  QgsPointXY ll = transform->toMapCoordinates( selectRect.left(), selectRect.bottom() );
+  QgsPointXY lr = transform->toMapCoordinates( selectRect.right(), selectRect.bottom() );
+  QgsPointXY ul = transform->toMapCoordinates( selectRect.left(), selectRect.top() );
+  QgsPointXY ur = transform->toMapCoordinates( selectRect.right(), selectRect.top() );
 
   if ( rubberBand )
   {
@@ -182,14 +182,14 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
     {
       // convert add more points to the edges of the rectangle
       // improve transformation result
-      QgsPolygon poly( selectGeomTrans.asPolygon() );
+      QgsPolygonXY poly( selectGeomTrans.asPolygon() );
       if ( poly.size() == 1 && poly.at( 0 ).size() == 5 )
       {
-        const QgsPolyline &ringIn = poly.at( 0 );
+        const QgsPolylineXY &ringIn = poly.at( 0 );
 
-        QgsPolygon newpoly( 1 );
+        QgsPolygonXY newpoly( 1 );
         newpoly[0].resize( 41 );
-        QgsPolyline &ringOut = newpoly[0];
+        QgsPolylineXY &ringOut = newpoly[0];
 
         ringOut[ 0 ] = ringIn.at( 0 );
 
@@ -204,7 +204,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
           }
           ringOut[ i++ ] = ringIn.at( j );
         }
-        selectGeomTrans = QgsGeometry::fromPolygon( newpoly );
+        selectGeomTrans = QgsGeometry::fromPolygonXY( newpoly );
       }
     }
 

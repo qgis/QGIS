@@ -36,7 +36,7 @@ endif
 
 QT_PLUGINS_DIR = usr/lib/$(DEB_BUILD_MULTIARCH)/qt5/plugins
 
-ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety"))
+ifneq ($(DISTRIBUTION),$(findstring $(DISTRIBUTION),"stretch xenial yakkety zesty artful"))
 	DISTRIBUTION := sid
 endif
 
@@ -54,6 +54,7 @@ QGIS_PATCH=$(shell sed -ne 's/SET(CPACK_PACKAGE_VERSION_PATCH "\([0-9]*\)")/\1/p
 QGIS_ABI=$(QGIS_MAJOR).$(QGIS_MINOR).$(QGIS_PATCH)
 GRASS=grass$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2))
 GRASSVER=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1))
+GRASSABI=$(subst .,,$(shell pkg-config --modversion grass|cut -d. -f1,2,3|sed -e 's/RC/-/'))
 
 CMAKE_OPTS := \
 	-G Ninja \
@@ -67,22 +68,11 @@ CMAKE_OPTS := \
 	-DWITH_APIDOC=TRUE \
 	-DGENERATE_QHP=TRUE \
 	-DWITH_CUSTOM_WIDGETS=TRUE \
-	-DWITH_INTERNAL_HTTPLIB2=FALSE \
-	-DWITH_INTERNAL_JINJA2=FALSE \
-	-DWITH_INTERNAL_MARKUPSAFE=FALSE \
-	-DWITH_INTERNAL_PYGMENTS=FALSE \
-	-DWITH_INTERNAL_REQUESTS=FALSE \
-	-DWITH_INTERNAL_DATEUTIL=FALSE \
-	-DWITH_INTERNAL_PYTZ=FALSE \
-	-DWITH_INTERNAL_YAML=FALSE \
-	-DWITH_INTERNAL_NOSE2=FALSE \
-        -DWITH_INTERNAL_SIX=FALSE \
 	-DWITH_GLOBE=FALSE \
 	-DWITH_SERVER=TRUE \
 	-DWITH_SERVER_PLUGINS=TRUE \
 	-DWITH_QWTPOLAR=FALSE \
 	-DWITH_QSPATIALITE=TRUE \
-	-DWITH_PYSPATIALITE=TRUE \
 	-DQT_PLUGINS_DIR=$(QT_PLUGINS_DIR) \
 	-DPYTHON_LIBRARY=$(shell python3-config --ldflags | sed -e 's\#-L\(.*\) -L/usr/lib -l\([^ ]*\) .*$$\#\1/lib\2.so\#') \
 	-DDOXYGEN_ON_DEMAND=TRUE
@@ -96,11 +86,6 @@ ifeq ($(GRASSVER),7)
 		-DWITH_GRASS=TRUE \
 		-DWITH_GRASS7=TRUE \
 		-DGRASS_PREFIX7=/usr/lib/$(GRASS)
-else
-	CMAKE_OPTS += \
-		-DWITH_GRASS=TRUE \
-		-DWITH_GRASS6=TRUE \
-		-DGRASS_PREFIX=/usr/lib/$(GRASS)
 endif
 
 ifneq (,$(filter parallel=%,$(DEB_BUILD_OPTIONS)))
@@ -117,8 +102,10 @@ ifneq (,$(findstring $(DISTRIBUTION),"sid stretch"))
 	CMAKE_OPTS += -DPOSTGRES_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libpq.so
 endif
 
-ifneq (,$(findstring $(DISTRIBUTION),"sid"))
-	CMAKE_OPTS += -DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
+ifneq (,$(findstring $(DISTRIBUTION),"artful sid"))
+	CMAKE_OPTS += \
+		-DWITH_3D=TRUE \
+		-DGEOS_LIBRARY=/usr/lib/$(DEB_BUILD_MULTIARCH)/libgeos_c.so
 endif
 
 
@@ -203,6 +190,7 @@ $(2): $(1)
 		-e "s/\{QGIS_ABI\}/$(QGIS_ABI)/g" \
 		-e "s/\{GRASS\}/$(GRASS)/g" \
 		-e "s/\{GRASSVER\}/$(GRASSVER)/g" \
+		-e "s/\{GRASSABI\}/$(GRASSABI)/g" \
 		-e "s/\{GRASSVER_QGISABI\}/$(GRASSVER)-$(QGIS_ABI)/g" \
 		$$^ >$$@
 
@@ -288,7 +276,7 @@ override_dh_auto_install:
 	# Install menu pixmap
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/pixmaps
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis_icon.svg $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.svg
-	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
+	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-icon-512x512.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis.png
 	install -o root -g root -m 644 $(CURDIR)/images/icons/qgis-mime-icon.png $(CURDIR)/debian/tmp/usr/share/pixmaps/qgis-mime.png
 
 	# Install MIME type icon
@@ -323,9 +311,6 @@ override_dh_auto_install:
 	# Mime info
 	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mime/packages
 	install -o root -g root -m 644 $(CURDIR)/debian/qgis.xml $(CURDIR)/debian/tmp/usr/share/mime/packages
-
-	install -o root -g root -d $(CURDIR)/debian/tmp/usr/share/mimelnk/application
-	install -o root -g root -m 644 $(CURDIR)/debian/mime/application/* $(CURDIR)/debian/tmp/usr/share/mimelnk/application
 
 	# qgis binaries
 	install -o root -g root -m 755 -d $(CURDIR)/debian/qgis/usr/bin

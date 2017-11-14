@@ -26,7 +26,7 @@ __copyright__ = '(C) 2016, Médéric Ribreux'
 __revision__ = '$Format:%H$'
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We temporary remove the output
     out = alg.getOutputFromName('output')
     mapParam = alg.getParameterValue('map')

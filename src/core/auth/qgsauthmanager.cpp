@@ -37,7 +37,10 @@
 #include <QSslConfiguration>
 #endif
 
-#include "qgsapplication.h"
+// QtKeyChain library
+#include "keychain.h"
+
+// QGIS includes
 #include "qgsauthcertutils.h"
 #include "qgsauthcrypto.h"
 #include "qgsauthmethod.h"
@@ -45,6 +48,8 @@
 #include "qgsauthmethodregistry.h"
 #include "qgscredentials.h"
 #include "qgslogger.h"
+#include "qgsmessagelog.h"
+#include "qgssettings.h"
 
 QgsAuthManager *QgsAuthManager::sInstance = nullptr;
 
@@ -59,13 +64,45 @@ const QString QgsAuthManager::AUTH_MAN_TAG = QObject::tr( "Authentication Manage
 const QString QgsAuthManager::AUTH_CFG_REGEX = QStringLiteral( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
 
 
+const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_KEY_NAME( "QGIS-Master-Password" );
+const QLatin1String QgsAuthManager::AUTH_PASSWORD_HELPER_FOLDER_NAME( "QGIS" );
+
+#if defined(Q_OS_MAC)
+const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Keychain" );
+static const QString sDescription = QObject::tr( "Master Password <-> KeyChain storage plugin. Store and retrieve your master password in your KeyChain" );
+#elif defined(Q_OS_WIN)
+const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manager" );
+static const QString sDescription = QObject::tr( "Master Password <-> Password Manager storage plugin. Store and retrieve your master password in your Password Manager" );
+#elif defined(Q_OS_LINUX)
+const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( QStringLiteral( "Wallet/KeyRing" ) );
+static const QString sDescription = QObject::tr( "Master Password <-> Wallet/KeyRing storage plugin. Store and retrieve your master password in your Wallet/KeyRing" );
+#else
+const QString QgsAuthManager::AUTH_PASSWORD_HELPER_DISPLAY_NAME( "Password Manager" );
+static const QString sDescription = QObject::tr( "Master Password <-> KeyChain storage plugin. Store and retrieve your master password in your Wallet/KeyChain/Password Manager" );
+#endif
+
+
+
 QgsAuthManager *QgsAuthManager::instance()
 {
   if ( !sInstance )
   {
-    sInstance = new QgsAuthManager();
+    static QMutex sMutex;
+    QMutexLocker locker( &sMutex );
+    if ( !sInstance )
+    {
+      sInstance = new QgsAuthManager( );
+    }
   }
   return sInstance;
+}
+
+
+QgsAuthManager::QgsAuthManager()
+{
+  mMutex = new QMutex( QMutex::Recursive );
+  connect( this, &QgsAuthManager::messageOut,
+           this, &QgsAuthManager::writeToConsole );
 }
 
 QSqlDatabase QgsAuthManager::authDatabaseConnection() const
@@ -97,7 +134,7 @@ QSqlDatabase QgsAuthManager::authDatabaseConnection() const
   return authdb;
 }
 
-bool QgsAuthManager::init( const QString &pluginPath )
+bool QgsAuthManager::init( const QString &pluginPath, const QString &authDatabasePath )
 {
   if ( mAuthInit )
     return true;
@@ -124,9 +161,9 @@ bool QgsAuthManager::init( const QString &pluginPath )
   }
 
   QgsDebugMsg( "Prioritizing qca-ossl over all other QCA providers..." );
-  QCA::ProviderList provds = QCA::providers();
+  const QCA::ProviderList provds = QCA::providers();
   QStringList prlist;
-  Q_FOREACH ( QCA::Provider *p, provds )
+  for ( QCA::Provider *p : provds )
   {
     QString pn = p->name();
     int pr = 0;
@@ -160,7 +197,7 @@ bool QgsAuthManager::init( const QString &pluginPath )
     return isDisabled();
   }
 
-  mAuthDbPath = QDir::cleanPath( QgsApplication::qgisAuthDatabaseFilePath() );
+  mAuthDbPath = QDir::cleanPath( authDatabasePath );
   QgsDebugMsg( QString( "Auth database path: %1" ).arg( authenticationDatabasePath() ) );
 
   QFileInfo dbinfo( authenticationDatabasePath() );
@@ -734,7 +771,7 @@ void QgsAuthManager::setScheduledAuthDatabaseErase( bool scheduleErase )
     if ( !mScheduledDbEraseTimer )
     {
       mScheduledDbEraseTimer = new QTimer( this );
-      connect( mScheduledDbEraseTimer, SIGNAL( timeout() ), this, SLOT( tryToStartDbErase() ) );
+      connect( mScheduledDbEraseTimer, &QTimer::timeout, this, &QgsAuthManager::tryToStartDbErase );
       mScheduledDbEraseTimer->start( mScheduledDbEraseRequestWait * 1000 );
     }
     else if ( !mScheduledDbEraseTimer->isActive() )
@@ -756,9 +793,10 @@ bool QgsAuthManager::registerCoreAuthMethods()
 
   qDeleteAll( mAuthMethods );
   mAuthMethods.clear();
-  Q_FOREACH ( const QString &authMethodKey, QgsAuthMethodRegistry::instance()->authMethodList() )
+  const QStringList methods = QgsAuthMethodRegistry::instance()->authMethodList();
+  for ( const auto &authMethodKey : methods )
   {
-    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->authMethod( authMethodKey ) );
+    mAuthMethods.insert( authMethodKey, QgsAuthMethodRegistry::instance()->authMethod( authMethodKey ).release() );
   }
 
   return !mAuthMethods.isEmpty();
@@ -779,7 +817,7 @@ const QString QgsAuthManager::uniqueConfigId() const
 
   while ( true )
   {
-    id = QLatin1String( "" );
+    id.clear();
     for ( int i = 0; i < len; i++ )
     {
       switch ( qrand() % 2 )
@@ -1376,7 +1414,6 @@ bool QgsAuthManager::updateNetworkRequest( QNetworkRequest &request, const QStri
     }
     return true;
   }
-
   return false;
 }
 
@@ -1432,6 +1469,32 @@ bool QgsAuthManager::updateDataSourceUriItems( QStringList &connectionItems, con
   return false;
 }
 
+bool QgsAuthManager::updateNetworkProxy( QNetworkProxy &proxy, const QString &authcfg, const QString &dataprovider )
+{
+  if ( isDisabled() )
+    return false;
+
+  QgsAuthMethod *authmethod = configAuthMethod( authcfg );
+  if ( authmethod )
+  {
+    if ( !( authmethod->supportedExpansions() & QgsAuthMethod::NetworkProxy ) )
+    {
+      QgsDebugMsg( QStringLiteral( "Proxy updating not supported by authcfg: %1" ).arg( authcfg ) );
+      return true;
+    }
+
+    if ( !authmethod->updateNetworkProxy( proxy, authcfg, dataprovider.toLower() ) )
+    {
+      authmethod->clearCachedConfig( authcfg );
+      return false;
+    }
+    QgsDebugMsg( QStringLiteral( "Proxy updated successfully from authcfg: %1" ).arg( authcfg ) );
+    return true;
+  }
+
+  return false;
+}
+
 bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant &value, bool encrypt )
 {
   if ( key.isEmpty() )
@@ -1472,7 +1535,7 @@ bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant &value
   return true;
 }
 
-QVariant QgsAuthManager::getAuthSetting( const QString &key, const QVariant &defaultValue, bool decrypt )
+QVariant QgsAuthManager::authSetting( const QString &key, const QVariant &defaultValue, bool decrypt )
 {
   if ( key.isEmpty() )
     return QVariant();
@@ -1631,7 +1694,7 @@ bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslK
   return true;
 }
 
-const QSslCertificate QgsAuthManager::getCertIdentity( const QString &id )
+const QSslCertificate QgsAuthManager::certIdentity( const QString &id )
 {
   QSslCertificate emptycert;
   QSslCertificate cert;
@@ -1664,7 +1727,7 @@ const QSslCertificate QgsAuthManager::getCertIdentity( const QString &id )
   return cert;
 }
 
-const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( const QString &id )
+const QPair<QSslCertificate, QSslKey> QgsAuthManager::certIdentityBundle( const QString &id )
 {
   QPair<QSslCertificate, QSslKey> bundle;
   if ( id.isEmpty() )
@@ -1688,8 +1751,8 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
     QSslKey key;
     if ( query.first() )
     {
-      key =  QSslKey( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 0 ).toString() ).toLatin1(),
-                      QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
+      key = QSslKey( QgsAuthCrypto::decrypt( mMasterPass, masterPasswordCiv(), query.value( 0 ).toString() ).toLatin1(),
+                     QSsl::Rsa, QSsl::Pem, QSsl::PrivateKey );
       if ( key.isNull() )
       {
         const char *err = QT_TR_NOOP( "Retrieve certificate identity bundle: FAILED to create private key" );
@@ -1718,17 +1781,17 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
   return bundle;
 }
 
-const QStringList QgsAuthManager::getCertIdentityBundleToPem( const QString &id )
+const QStringList QgsAuthManager::certIdentityBundleToPem( const QString &id )
 {
-  QPair<QSslCertificate, QSslKey> bundle( getCertIdentityBundle( id ) );
-  if ( bundle.first.isValid() && !bundle.second.isNull() )
+  QPair<QSslCertificate, QSslKey> bundle( certIdentityBundle( id ) );
+  if ( QgsAuthCertUtils::certIsViable( bundle.first ) && !bundle.second.isNull() )
   {
     return QStringList() << QString( bundle.first.toPem() ) << QString( bundle.second.toPem() );
   }
   return QStringList();
 }
 
-const QList<QSslCertificate> QgsAuthManager::getCertIdentities()
+const QList<QSslCertificate> QgsAuthManager::certIdentities()
 {
   QList<QSslCertificate> certs;
 
@@ -1749,7 +1812,7 @@ const QList<QSslCertificate> QgsAuthManager::getCertIdentities()
   return certs;
 }
 
-QStringList QgsAuthManager::getCertIdentityIds() const
+QStringList QgsAuthManager::certIdentityIds() const
 {
   QStringList identityids = QStringList();
 
@@ -1874,7 +1937,7 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
   return true;
 }
 
-const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QString &id, const QString &hostport )
+const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfig( const QString &id, const QString &hostport )
 {
   QgsAuthConfigSslServer config;
 
@@ -1915,7 +1978,7 @@ const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QStri
   return config;
 }
 
-const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfigByHost( const QString &hostport )
+const QgsAuthConfigSslServer QgsAuthManager::sslCertCustomConfigByHost( const QString &hostport )
 {
   QgsAuthConfigSslServer config;
 
@@ -1955,7 +2018,7 @@ const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfigByHost( const
   return config;
 }
 
-const QList<QgsAuthConfigSslServer> QgsAuthManager::getSslCertCustomConfigs()
+const QList<QgsAuthConfigSslServer> QgsAuthManager::sslCertCustomConfigs()
 {
   QList<QgsAuthConfigSslServer> configs;
 
@@ -2062,7 +2125,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
     while ( i != mIgnoredSslErrorsCache.constEnd() )
     {
       QStringList errs;
-      Q_FOREACH ( QSslError::SslError err, i.value() )
+      for ( auto err : i.value() )
       {
         errs << QgsAuthCertUtils::sslErrorEnumString( err );
       }
@@ -2126,7 +2189,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, co
   }
 
   QSet<QSslError::SslError> errs;
-  Q_FOREACH ( const QSslError &error, errors )
+  for ( const auto &error : errors )
   {
     if ( error.error() == QSslError::NoError )
       continue;
@@ -2210,13 +2273,13 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
 
 bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
 {
-  if ( certs.size() < 1 )
+  if ( certs.isEmpty() )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
     return false;
   }
 
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     if ( !storeCertAuthority( cert ) )
       return false;
@@ -2259,7 +2322,7 @@ bool QgsAuthManager::storeCertAuthority( const QSslCertificate &cert )
   return true;
 }
 
-const QSslCertificate QgsAuthManager::getCertAuthority( const QString &id )
+const QSslCertificate QgsAuthManager::certAuthority( const QString &id )
 {
   QSslCertificate emptycert;
   QSslCertificate cert;
@@ -2358,7 +2421,7 @@ bool QgsAuthManager::removeCertAuthority( const QSslCertificate &cert )
   return true;
 }
 
-const QList<QSslCertificate> QgsAuthManager::getSystemRootCAs()
+const QList<QSslCertificate> QgsAuthManager::systemRootCAs()
 {
 #ifndef Q_OS_MAC
   return QSslSocket::systemCaCertificates();
@@ -2368,15 +2431,15 @@ const QList<QSslCertificate> QgsAuthManager::getSystemRootCAs()
 #endif
 }
 
-const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
+const QList<QSslCertificate> QgsAuthManager::extraFileCAs()
 {
   QList<QSslCertificate> certs;
   QList<QSslCertificate> filecerts;
-  QVariant cafileval = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "cafile" ) );
+  QVariant cafileval = QgsAuthManager::instance()->authSetting( QStringLiteral( "cafile" ) );
   if ( cafileval.isNull() )
     return certs;
 
-  QVariant allowinvalid = QgsAuthManager::instance()->getAuthSetting( QStringLiteral( "cafileallowinvalid" ), QVariant( false ) );
+  QVariant allowinvalid = QgsAuthManager::instance()->authSetting( QStringLiteral( "cafileallowinvalid" ), QVariant( false ) );
   if ( allowinvalid.isNull() )
     return certs;
 
@@ -2386,7 +2449,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
     filecerts = QgsAuthCertUtils::certsFromFile( cafile );
   }
   // only CAs or certs capable of signing other certs are allowed
-  Q_FOREACH ( const QSslCertificate &cert, filecerts )
+  for ( const auto &cert : qgis::as_const( filecerts ) )
   {
     if ( !allowinvalid.toBool() && !cert.isValid() )
     {
@@ -2401,7 +2464,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
   return certs;
 }
 
-const QList<QSslCertificate> QgsAuthManager::getDatabaseCAs()
+const QList<QSslCertificate> QgsAuthManager::databaseCAs()
 {
   QList<QSslCertificate> certs;
 
@@ -2422,18 +2485,18 @@ const QList<QSslCertificate> QgsAuthManager::getDatabaseCAs()
   return certs;
 }
 
-const QMap<QString, QSslCertificate> QgsAuthManager::getMappedDatabaseCAs()
+const QMap<QString, QSslCertificate> QgsAuthManager::mappedDatabaseCAs()
 {
-  return QgsAuthCertUtils::mapDigestToCerts( getDatabaseCAs() );
+  return QgsAuthCertUtils::mapDigestToCerts( databaseCAs() );
 }
 
 bool QgsAuthManager::rebuildCaCertsCache()
 {
   mCaCertsCache.clear();
   // in reverse order of precedence, with regards to duplicates, so QMap inserts overwrite
-  insertCaCertInCache( QgsAuthCertUtils::SystemRoot, getSystemRootCAs() );
-  insertCaCertInCache( QgsAuthCertUtils::FromFile, getExtraFileCAs() );
-  insertCaCertInCache( QgsAuthCertUtils::InDatabase, getDatabaseCAs() );
+  insertCaCertInCache( QgsAuthCertUtils::SystemRoot, systemRootCAs() );
+  insertCaCertInCache( QgsAuthCertUtils::FromFile, extraFileCAs() );
+  insertCaCertInCache( QgsAuthCertUtils::InDatabase, databaseCAs() );
 
   bool res = !mCaCertsCache.isEmpty(); // should at least contain system root CAs
   QgsDebugMsg( QString( "Rebuild of CA certs cache %1" ).arg( res ? "SUCCEEDED" : "FAILED" ) );
@@ -2478,7 +2541,7 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
   return true;
 }
 
-QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSslCertificate &cert )
+QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certTrustPolicy( const QSslCertificate &cert )
 {
   if ( cert.isNull() )
   {
@@ -2517,13 +2580,13 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSsl
 
 bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &certs )
 {
-  if ( certs.size() < 1 )
+  if ( certs.empty() )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
     return false;
   }
 
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     if ( !removeCertTrustPolicy( cert ) )
       return false;
@@ -2561,7 +2624,7 @@ bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
   return true;
 }
 
-QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertificateTrustPolicy( const QSslCertificate &cert )
+QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::certificateTrustPolicy( const QSslCertificate &cert )
 {
   if ( cert.isNull() )
   {
@@ -2596,7 +2659,7 @@ bool QgsAuthManager::setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolic
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
 {
-  QVariant policy( getAuthSetting( QStringLiteral( "certdefaulttrust" ) ) );
+  QVariant policy( authSetting( QStringLiteral( "certdefaulttrust" ) ) );
   if ( policy.isNull() )
   {
     return QgsAuthCertUtils::Trusted;
@@ -2637,7 +2700,7 @@ bool QgsAuthManager::rebuildCertTrustCache()
   return true;
 }
 
-const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinvalid )
+const QList<QSslCertificate> QgsAuthManager::trustedCaCerts( bool includeinvalid )
 {
   QgsAuthCertUtils::CertTrustPolicy defaultpolicy( defaultCertTrustPolicy() );
   QStringList trustedids = mCertTrustCache.value( QgsAuthCertUtils::Trusted );
@@ -2656,7 +2719,7 @@ const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinva
     }
     else if ( defaultpolicy == QgsAuthCertUtils::Trusted && !untrustedids.contains( certid ) )
     {
-      if ( !includeinvalid && !cert.isValid() )
+      if ( !includeinvalid && !QgsAuthCertUtils::certIsViable( cert ) )
         continue;
       trustedcerts.append( cert );
     }
@@ -2670,7 +2733,7 @@ const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinva
   return trustedcerts;
 }
 
-const QList<QSslCertificate> QgsAuthManager::getUntrustedCaCerts( QList<QSslCertificate> trustedCAs )
+const QList<QSslCertificate> QgsAuthManager::untrustedCaCerts( QList<QSslCertificate> trustedCAs )
 {
   if ( trustedCAs.isEmpty() )
   {
@@ -2678,7 +2741,7 @@ const QList<QSslCertificate> QgsAuthManager::getUntrustedCaCerts( QList<QSslCert
     {
       rebuildTrustedCaCertsCache();
     }
-    trustedCAs = getTrustedCaCertsCache();
+    trustedCAs = trustedCaCertsCache();
   }
 
   const QList<QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate> > &certpairs( mCaCertsCache.values() );
@@ -2697,26 +2760,24 @@ const QList<QSslCertificate> QgsAuthManager::getUntrustedCaCerts( QList<QSslCert
 
 bool QgsAuthManager::rebuildTrustedCaCertsCache()
 {
-  mTrustedCaCertsCache = getTrustedCaCerts();
+  mTrustedCaCertsCache = trustedCaCerts();
   QgsDebugMsg( "Rebuilt trusted cert authorities cache" );
   // TODO: add some error trapping for the operation
   return true;
 }
 
-const QByteArray QgsAuthManager::getTrustedCaCertsPemText()
+const QByteArray QgsAuthManager::trustedCaCertsPemText()
 {
-  QByteArray capem;
-  QList<QSslCertificate> certs( getTrustedCaCertsCache() );
-  if ( !certs.isEmpty() )
+  return QgsAuthCertUtils::certsToPemText( trustedCaCertsCache() );
+}
+
+bool QgsAuthManager::passwordHelperSync()
+{
+  if ( masterPasswordIsSet() )
   {
-    QStringList certslist;
-    Q_FOREACH ( const QSslCertificate &cert, certs )
-    {
-      certslist << cert.toPem();
-    }
-    capem = certslist.join( QStringLiteral( "\n" ) ).toLatin1(); //+ "\n";
+    return passwordHelperWrite( mMasterPass );
   }
-  return capem;
+  return false;
 }
 
 
@@ -2729,7 +2790,8 @@ void QgsAuthManager::clearAllCachedConfigs()
   if ( isDisabled() )
     return;
 
-  Q_FOREACH ( QString authcfg, configIds() )
+  const QStringList ids = configIds();
+  for ( const auto &authcfg : ids )
   {
     clearCachedConfig( authcfg );
   }
@@ -2806,26 +2868,6 @@ void QgsAuthManager::tryToStartDbErase()
   QgsDebugMsg( "authDatabaseEraseRequest emit skipped" );
 }
 
-QgsAuthManager::QgsAuthManager()
-  : QObject()
-  , mAuthInit( false )
-  , mAuthDbPath( QString() )
-  , mQcaInitializer( nullptr )
-  , mMasterPass( QString() )
-  , mPassTries( 0 )
-  , mAuthDisabled( false )
-  , mScheduledDbEraseTimer( nullptr )
-  , mScheduledDbErase( false )
-  , mScheduledDbEraseRequestWait( 3 )
-  , mScheduledDbEraseRequestEmitted( false )
-  , mScheduledDbEraseRequestCount( 0 )
-  , mMutex( nullptr )
-  , mIgnoredSslErrorsCache( QHash<QString, QSet<QSslError::SslError> >() )
-{
-  mMutex = new QMutex( QMutex::Recursive );
-  connect( this, SIGNAL( messageOut( const QString &, const QString &, QgsAuthManager::MessageLevel ) ),
-           this, SLOT( writeToConsole( const QString &, const QString &, QgsAuthManager::MessageLevel ) ) );
-}
 
 QgsAuthManager::~QgsAuthManager()
 {
@@ -2847,20 +2889,242 @@ QgsAuthManager::~QgsAuthManager()
   QSqlDatabase::removeDatabase( QStringLiteral( "authentication.configs" ) );
 }
 
+
+QString QgsAuthManager::passwordHelperName() const
+{
+  return tr( "Password Helper" );
+}
+
+
+void QgsAuthManager::passwordHelperLog( const QString &msg ) const
+{
+  if ( passwordHelperLoggingEnabled() )
+  {
+    QgsMessageLog::logMessage( msg, passwordHelperName() );
+  }
+}
+
+bool QgsAuthManager::passwordHelperDelete()
+{
+  passwordHelperLog( tr( "Opening %1 for DELETE  ..." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+  bool result;
+  QKeychain::DeletePasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
+  QgsSettings settings;
+  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
+  job.setAutoDelete( false );
+  job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
+  QEventLoop loop;
+  connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
+  job.start();
+  loop.exec();
+  if ( job.error() )
+  {
+    mPasswordHelperErrorCode = job.error();
+    mPasswordHelperErrorMessage = tr( "Delete password failed: %1." ).arg( job.errorString() );
+    // Signals used in the tests to exit main application loop
+    emit passwordHelperFailure();
+    result = false;
+  }
+  else
+  {
+    // Signals used in the tests to exit main application loop
+    emit passwordHelperSuccess();
+    result = true;
+  }
+  passwordHelperProcessError();
+  return result;
+}
+
+QString QgsAuthManager::passwordHelperRead()
+{
+  // Retrieve it!
+  QString password( QLatin1String( "" ) );
+  passwordHelperLog( tr( "Opening %1 for READ ..." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+  QKeychain::ReadPasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
+  QgsSettings settings;
+  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
+  job.setAutoDelete( false );
+  job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
+  QEventLoop loop;
+  connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
+  job.start();
+  loop.exec();
+  if ( job.error() )
+  {
+    mPasswordHelperErrorCode = job.error();
+    mPasswordHelperErrorMessage = tr( "Retrieving password from your %1 failed: %2." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, job.errorString() );
+    // Signals used in the tests to exit main application loop
+    emit passwordHelperFailure();
+  }
+  else
+  {
+    password = job.textData();
+    // Password is there but it is empty, treat it like if it was not found
+    if ( password.isEmpty() )
+    {
+      mPasswordHelperErrorCode = QKeychain::EntryNotFound;
+      mPasswordHelperErrorMessage = tr( "Empty password retrieved from your %1." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME );
+      // Signals used in the tests to exit main application loop
+      emit passwordHelperFailure();
+    }
+    else
+    {
+      // Signals used in the tests to exit main application loop
+      emit passwordHelperSuccess();
+    }
+  }
+  passwordHelperProcessError();
+  return password;
+}
+
+bool QgsAuthManager::passwordHelperWrite( const QString &password )
+{
+  Q_ASSERT( !password.isEmpty() );
+  bool result;
+  passwordHelperLog( tr( "Opening %1 for WRITE ..." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+  QKeychain::WritePasswordJob job( AUTH_PASSWORD_HELPER_FOLDER_NAME );
+  QgsSettings settings;
+  job.setInsecureFallback( settings.value( QStringLiteral( "password_helper_insecure_fallback" ), false, QgsSettings::Section::Auth ).toBool() );
+  job.setAutoDelete( false );
+  job.setKey( AUTH_PASSWORD_HELPER_KEY_NAME );
+  job.setTextData( password );
+  QEventLoop loop;
+  connect( &job, &QKeychain::Job::finished, &loop, &QEventLoop::quit );
+  job.start();
+  loop.exec();
+  if ( job.error() )
+  {
+    mPasswordHelperErrorCode = job.error();
+    mPasswordHelperErrorMessage = tr( "Storing password in your %1 failed: %2." ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, job.errorString() );
+    // Signals used in the tests to exit main application loop
+    emit passwordHelperFailure();
+    result = false;
+  }
+  else
+  {
+    passwordHelperClearErrors();
+    // Signals used in the tests to exit main application loop
+    emit passwordHelperSuccess();
+    result = true;
+  }
+  passwordHelperProcessError();
+  return result;
+}
+
+bool QgsAuthManager::passwordHelperEnabled() const
+{
+  // Does the user want to store the password in the wallet?
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "use_password_helper" ), true, QgsSettings::Section::Auth ).toBool();
+}
+
+void QgsAuthManager::setPasswordHelperEnabled( const bool enabled )
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "use_password_helper" ),  enabled, QgsSettings::Section::Auth );
+  emit messageOut( enabled ? tr( "Your %1 will be <b>used from now</b> on to store and retrieve the master password." )
+                   .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) :
+                   tr( "Your %1 will <b>not be used anymore</b> to store and retrieve the master password." )
+                   .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ) );
+}
+
+bool QgsAuthManager::passwordHelperLoggingEnabled() const
+{
+  // Does the user want to store the password in the wallet?
+  QgsSettings settings;
+  return settings.value( QStringLiteral( "password_helper_logging" ), false, QgsSettings::Section::Auth ).toBool();
+}
+
+void QgsAuthManager::setPasswordHelperLoggingEnabled( const bool enabled )
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "password_helper_logging" ),  enabled, QgsSettings::Section::Auth );
+}
+
+void QgsAuthManager::passwordHelperClearErrors()
+{
+  mPasswordHelperErrorCode = QKeychain::NoError;
+  mPasswordHelperErrorMessage.clear();
+}
+
+void QgsAuthManager::passwordHelperProcessError()
+{
+  if ( mPasswordHelperErrorCode == QKeychain::AccessDenied ||
+       mPasswordHelperErrorCode == QKeychain::AccessDeniedByUser ||
+       mPasswordHelperErrorCode == QKeychain::NoBackendAvailable ||
+       mPasswordHelperErrorCode == QKeychain::NotImplemented )
+  {
+    // If the error is permanent or the user denied access to the wallet
+    // we also want to disable the wallet system to prevent annoying
+    // notification on each subsequent access.
+    setPasswordHelperEnabled( false );
+    mPasswordHelperErrorMessage = tr( "There was an error and integration with your %1 system has been disabled. "
+                                      "You can re-enable it at any time through the \"Utilities\" menu "
+                                      "in the Authentication pane of the options dialog. %2" )
+                                  .arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, mPasswordHelperErrorMessage );
+  }
+  if ( mPasswordHelperErrorCode != QKeychain::NoError )
+  {
+    // We've got an error from the wallet
+    passwordHelperLog( tr( "Error in %1: %2" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME, mPasswordHelperErrorMessage ) );
+    emit passwordHelperMessageOut( mPasswordHelperErrorMessage, authManTag(), CRITICAL );
+  }
+  passwordHelperClearErrors();
+}
+
+
 bool QgsAuthManager::masterPasswordInput()
 {
   if ( isDisabled() )
     return false;
 
   QString pass;
-  QgsCredentials *creds = QgsCredentials::instance();
-  creds->lock();
-  bool ok = creds->getMasterPassword( pass, masterPasswordHashInDatabase() );
-  creds->unlock();
+  bool storedPasswordIsValid = false;
+  bool ok = false;
 
-  if ( ok && !pass.isEmpty() && !masterPasswordSame( pass ) )
+  // Read the password from the wallet
+  if ( passwordHelperEnabled() )
+  {
+    pass = passwordHelperRead();
+    if ( ! pass.isEmpty() && ( mPasswordHelperErrorCode == QKeychain::NoError ) )
+    {
+      // Let's check the password!
+      if ( verifyMasterPassword( pass ) )
+      {
+        ok = true;
+        storedPasswordIsValid = true;
+        emit passwordHelperMessageOut( tr( "Master password has been successfully read from your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), INFO );
+      }
+      else
+      {
+        emit passwordHelperMessageOut( tr( "Master password stored in your %1 is not valid" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), WARNING );
+      }
+    }
+  }
+
+  if ( ! ok )
+  {
+    QgsCredentials *creds = QgsCredentials::instance();
+    creds->lock();
+    pass.clear();
+    ok = creds->getMasterPassword( pass, masterPasswordHashInDatabase() );
+    creds->unlock();
+  }
+
+  if ( ok && !pass.isEmpty() && mMasterPass != pass )
   {
     mMasterPass = pass;
+    if ( passwordHelperEnabled() && ! storedPasswordIsValid )
+    {
+      if ( passwordHelperWrite( pass ) )
+      {
+        emit passwordHelperMessageOut( tr( "Master password has been successfully written to your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), INFO );
+      }
+      else
+      {
+        emit passwordHelperMessageOut( tr( "Master password could not be written to your %1" ).arg( AUTH_PASSWORD_HELPER_DISPLAY_NAME ), authManTag(), WARNING );
+      }
+    }
     return true;
   }
   return false;
@@ -3045,7 +3309,8 @@ bool QgsAuthManager::reencryptAllAuthenticationConfigs( const QString &prevpass,
     return false;
 
   bool res = true;
-  Q_FOREACH ( QString configid, configIds() )
+  const QStringList ids = configIds();
+  for ( const auto &configid : ids )
   {
     res = res && reencryptAuthenticationConfig( configid, prevpass, prevciv );
   }
@@ -3133,7 +3398,7 @@ bool QgsAuthManager::reencryptAllAuthenticationSettings( const QString &prevpass
   QStringList encryptedsettings;
   encryptedsettings << "";
 
-  Q_FOREACH ( const QString &sett, encryptedsettings )
+  for ( const auto & sett, qgis::as_const( encryptedsettings ) )
   {
     if ( sett.isEmpty() || !existsAuthSetting( sett ) )
       continue;
@@ -3206,7 +3471,8 @@ bool QgsAuthManager::reencryptAllAuthenticationIdentities( const QString &prevpa
     return false;
 
   bool res = true;
-  Q_FOREACH ( const QString &identid, getCertIdentityIds() )
+  const QStringList ids = certIdentityIds();
+  for ( const auto &identid : ids )
   {
     res = res && reencryptAuthenticationIdentity( identid, prevpass, prevciv );
   }
@@ -3387,7 +3653,7 @@ bool QgsAuthManager::authDbTransactionQuery( QSqlQuery *query ) const
 
 void QgsAuthManager::insertCaCertInCache( QgsAuthCertUtils::CaCertSource source, const QList<QSslCertificate> &certs )
 {
-  Q_FOREACH ( const QSslCertificate &cert, certs )
+  for ( const auto &cert : certs )
   {
     mCaCertsCache.insert( QgsAuthCertUtils::shaHexForCert( cert ),
                           QPair<QgsAuthCertUtils::CaCertSource, QSslCertificate>( source, cert ) );

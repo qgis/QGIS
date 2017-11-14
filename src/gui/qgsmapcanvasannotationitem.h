@@ -27,7 +27,7 @@ class QgsAnnotation;
  * \class QgsMapCanvasAnnotationItem
  * \ingroup gui
  * An interactive map canvas item which displays a QgsAnnotation.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvasItem
 {
@@ -54,12 +54,13 @@ class GUI_EXPORT QgsMapCanvasAnnotationItem: public QObject, public QgsMapCanvas
     /**
      * Constructor for QgsMapCanvasAnnotationItem.
      */
-    QgsMapCanvasAnnotationItem( QgsAnnotation *annotation, QgsMapCanvas *mapCanvas );
+    QgsMapCanvasAnnotationItem( QgsAnnotation *annotation SIP_TRANSFER, QgsMapCanvas *mapCanvas SIP_TRANSFERTHIS );
 
     /**
      * Returns the item's annotation.
+     * \note not available in Python bindings
      */
-    const QgsAnnotation *annotation() const { return mAnnotation; }
+    const QgsAnnotation *annotation() const { return mAnnotation; } SIP_SKIP
 
     /**
      * Returns the item's annotation.

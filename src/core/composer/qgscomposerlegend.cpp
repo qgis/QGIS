@@ -32,51 +32,29 @@
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include "qgslayoutitemlegend.h"
 
 QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
   : QgsComposerItem( composition )
-  , mCustomLayerTree( nullptr )
-  , mComposerMap( nullptr )
-  , mLegendFilterByMap( false )
-  , mLegendFilterByExpression( false )
-  , mFilterOutAtlas( false )
-  , mFilterAskedForUpdate( false )
-  , mInAtlas( false )
-  , mInitialMapScaleCalculated( false )
-  , mForceResize( false )
-  , mSizeToContents( true )
+  , mLegendModel( new QgsLegendModel( mComposition->project()->layerTreeRoot() ) )
 {
-  mLegendModel = new QgsLegendModel( mComposition->project()->layerTreeRoot() );
-
-  connect( &composition->atlasComposition(), SIGNAL( renderEnded() ), this, SLOT( onAtlasEnded() ) );
-  connect( &composition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( onAtlasFeature( QgsFeature * ) ) );
+  connect( &composition->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsComposerLegend::onAtlasEnded );
+  connect( &composition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerLegend::onAtlasFeature );
 
   // Connect to the main layertreeroot.
   // It serves in "auto update mode" as a medium between the main app legend and this one
-  connect( mComposition->project()->layerTreeRoot(), SIGNAL( customPropertyChanged( QgsLayerTreeNode *, QString ) ), this, SLOT( nodeCustomPropertyChanged( QgsLayerTreeNode *, QString ) ) );
-}
-
-QgsComposerLegend::QgsComposerLegend()
-  : QgsComposerItem( nullptr )
-  , mLegendModel( nullptr )
-  , mCustomLayerTree( nullptr )
-  , mComposerMap( nullptr )
-  , mLegendFilterByMap( false )
-  , mLegendFilterByExpression( false )
-  , mFilterOutAtlas( false )
-  , mFilterAskedForUpdate( false )
-  , mInAtlas( false )
-  , mInitialMapScaleCalculated( false )
-  , mForceResize( false )
-  , mSizeToContents( true )
-{
-
+  connect( mComposition->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsComposerLegend::nodeCustomPropertyChanged );
 }
 
 QgsComposerLegend::~QgsComposerLegend()
 {
   delete mLegendModel;
-  delete mCustomLayerTree;
+}
+
+QgsComposerLegend::QgsComposerLegend()
+  : QgsComposerItem( nullptr )
+{
+
 }
 
 void QgsComposerLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
@@ -223,12 +201,16 @@ bool QgsComposerLegend::resizeToContents() const
   return mSizeToContents;
 }
 
-void QgsComposerLegend::setCustomLayerTree( QgsLayerTreeGroup *rootGroup )
+QgsLegendModel *QgsComposerLegend::model()
 {
-  mLegendModel->setRootGroup( rootGroup ? rootGroup : mComposition->project()->layerTreeRoot() );
+  return mLegendModel;
+}
 
-  delete mCustomLayerTree;
-  mCustomLayerTree = rootGroup;
+void QgsComposerLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
+{
+  mLegendModel->setRootGroup( rootGroup ? rootGroup : ( mComposition ? mComposition->project()->layerTreeRoot() : nullptr ) );
+
+  mCustomLayerTree.reset( rootGroup );
 }
 
 
@@ -237,7 +219,7 @@ void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
   if ( autoUpdate == autoUpdateModel() )
     return;
 
-  setCustomLayerTree( autoUpdate ? nullptr : QgsLayerTree::toGroup( mComposition->project()->layerTreeRoot()->clone() ) );
+  setCustomLayerTree( autoUpdate ? nullptr : mComposition->project()->layerTreeRoot()->clone() );
   adjustBoxSize();
   updateItem();
 }
@@ -348,6 +330,9 @@ void QgsComposerLegend::updateLegend()
 
 void QgsComposerLegend::updateItem()
 {
+  if ( !updatesEnabled() )
+    return;
+
   updateFilterByMap( false );
   QgsComposerItem::updateItem();
 }
@@ -358,6 +343,12 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
   {
     return false;
   }
+
+  QgsPathResolver  pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
 
   QDomElement composerLegendElem = doc.createElement( QStringLiteral( "ComposerLegend" ) );
   elem.appendChild( composerLegendElem );
@@ -404,55 +395,16 @@ bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
   if ( mCustomLayerTree )
   {
     // if not using auto-update - store the custom layer tree
-    mCustomLayerTree->writeXml( composerLegendElem );
+    mCustomLayerTree->writeXml( composerLegendElem, context );
   }
 
   if ( mLegendFilterByMap )
   {
     composerLegendElem.setAttribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "1" ) );
   }
+  composerLegendElem.setAttribute( QStringLiteral( "legendFilterByAtlas" ), mFilterOutAtlas ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
 
   return _writeXml( composerLegendElem, doc );
-}
-
-static void _readOldLegendGroup( QDomElement &elem, QgsLayerTreeGroup *parentGroup, QgsProject *project )
-{
-  QDomElement itemElem = elem.firstChildElement();
-
-  while ( !itemElem.isNull() )
-  {
-
-    if ( itemElem.tagName() == QLatin1String( "LayerItem" ) )
-    {
-      QString layerId = itemElem.attribute( QStringLiteral( "layerId" ) );
-      if ( QgsMapLayer *layer = project->mapLayer( layerId ) )
-      {
-        QgsLayerTreeLayer *nodeLayer = parentGroup->addLayer( layer );
-        QString userText = itemElem.attribute( QStringLiteral( "userText" ) );
-        if ( !userText.isEmpty() )
-          nodeLayer->setCustomProperty( QStringLiteral( "legend/title-label" ), userText );
-        QString style = itemElem.attribute( QStringLiteral( "style" ) );
-        if ( !style.isEmpty() )
-          nodeLayer->setCustomProperty( QStringLiteral( "legend/title-style" ), style );
-        QString showFeatureCount = itemElem.attribute( QStringLiteral( "showFeatureCount" ) );
-        if ( showFeatureCount.toInt() )
-          nodeLayer->setCustomProperty( QStringLiteral( "showFeatureCount" ), 1 );
-
-        // support for individual legend items (user text, order) not implemented yet
-      }
-    }
-    else if ( itemElem.tagName() == QLatin1String( "GroupItem" ) )
-    {
-      QgsLayerTreeGroup *nodeGroup = parentGroup->addGroup( itemElem.attribute( QStringLiteral( "userText" ) ) );
-      QString style = itemElem.attribute( QStringLiteral( "style" ) );
-      if ( !style.isEmpty() )
-        nodeGroup->setCustomProperty( QStringLiteral( "legend/title-style" ), style );
-
-      _readOldLegendGroup( itemElem, nodeGroup, project );
-    }
-
-    itemElem = itemElem.nextSiblingElement();
-  }
 }
 
 bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument &doc )
@@ -461,6 +413,12 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
   {
     return false;
   }
+
+  QgsPathResolver  pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
 
   //read general properties
   mTitle = itemElem.attribute( QStringLiteral( "title" ) );
@@ -508,7 +466,7 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
 
   mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
   mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
-  mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), "1.0" ).toDouble() );
+  mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );
 
   mSettings.setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
   mSettings.setRasterStrokeColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
@@ -524,21 +482,22 @@ bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument
   {
     setComposerMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
   }
+  mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
 
-  QDomElement oldLegendModelElem = itemElem.firstChildElement( QStringLiteral( "Model" ) );
-  if ( !oldLegendModelElem.isNull() )
+  // QGIS >= 2.6
+  QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree" ) );
+  if ( layerTreeElem.isNull() )
+    layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree-group" ) );
+
+  if ( !layerTreeElem.isNull() )
   {
-    // QGIS <= 2.4
-    QgsLayerTreeGroup *nodeRoot = new QgsLayerTreeGroup();
-    _readOldLegendGroup( oldLegendModelElem, nodeRoot, mComposition->project() );
-    setCustomLayerTree( nodeRoot );
+    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
+    if ( mComposition )
+      tree->resolveReferences( mComposition->project(), true );
+    setCustomLayerTree( tree.release() );
   }
   else
-  {
-    // QGIS >= 2.6
-    QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree-group" ) );
-    setCustomLayerTree( QgsLayerTreeGroup::readXml( layerTreeElem, mComposition->project() ) );
-  }
+    setCustomLayerTree( nullptr );
 
   //restore general composer item properties
   QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
@@ -621,20 +580,20 @@ void QgsComposerLegend::setComposerMap( const QgsComposerMap *map )
 {
   if ( mComposerMap )
   {
-    disconnect( mComposerMap, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
-    disconnect( mComposerMap, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
-    disconnect( mComposerMap, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
-    disconnect( mComposerMap, SIGNAL( layerStyleOverridesChanged() ), this, SLOT( mapLayerStyleOverridesChanged() ) );
+    disconnect( mComposerMap, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
+    disconnect( mComposerMap, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    disconnect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    disconnect( mComposerMap, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
   }
 
   mComposerMap = map;
 
   if ( map )
   {
-    QObject::connect( map, SIGNAL( destroyed( QObject * ) ), this, SLOT( invalidateCurrentMap() ) );
-    QObject::connect( map, SIGNAL( itemChanged() ), this, SLOT( updateFilterByMap() ) );
-    QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( updateFilterByMap() ) );
-    QObject::connect( map, SIGNAL( layerStyleOverridesChanged() ), this, SLOT( mapLayerStyleOverridesChanged() ) );
+    connect( map, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
+    connect( map, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
   }
 
   updateItem();
@@ -679,6 +638,11 @@ void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::Dat
   }
 
   QgsComposerObject::refreshDataDefinedProperty( property, context );
+}
+
+void QgsComposerLegend::updateFilterByMapAndRedraw()
+{
+  updateFilterByMap( true );
 }
 
 void QgsComposerLegend::mapLayerStyleOverridesChanged()
@@ -726,7 +690,7 @@ void QgsComposerLegend::doUpdateFilterByMap()
     mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
 
 
-  bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree : mComposition->project()->layerTreeRoot() ) );
+  bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mComposition->project()->layerTreeRoot() ) );
 
   if ( mComposerMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {
@@ -775,46 +739,4 @@ void QgsComposerLegend::onAtlasEnded()
 {
   mInAtlas = false;
   updateFilterByMap();
-}
-
-// -------------------------------------------------------------------------
-#include "qgslayertreemodellegendnode.h"
-#include "qgsvectorlayer.h"
-
-QgsLegendModel::QgsLegendModel( QgsLayerTreeGroup *rootNode, QObject *parent )
-  : QgsLayerTreeModel( rootNode, parent )
-{
-  setFlag( QgsLayerTreeModel::AllowLegendChangeState, false );
-  setFlag( QgsLayerTreeModel::AllowNodeReorder, true );
-}
-
-QVariant QgsLegendModel::data( const QModelIndex &index, int role ) const
-{
-  // handle custom layer node labels
-  if ( QgsLayerTreeNode *node = index2node( index ) )
-  {
-    if ( QgsLayerTree::isLayer( node ) && ( role == Qt::DisplayRole || role == Qt::EditRole ) && !node->customProperty( QStringLiteral( "legend/title-label" ) ).isNull() )
-    {
-      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
-      QString name = node->customProperty( QStringLiteral( "legend/title-label" ) ).toString();
-      if ( nodeLayer->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toInt() && role == Qt::DisplayRole )
-      {
-        QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
-        if ( vlayer && vlayer->featureCount() >= 0 )
-          name += QStringLiteral( " [%1]" ).arg( vlayer->featureCount() );
-      }
-      return name;
-    }
-  }
-
-  return QgsLayerTreeModel::data( index, role );
-}
-
-Qt::ItemFlags QgsLegendModel::flags( const QModelIndex &index ) const
-{
-  // make the legend nodes selectable even if they are not by default
-  if ( index2legendNode( index ) )
-    return QgsLayerTreeModel::flags( index ) | Qt::ItemIsSelectable;
-
-  return QgsLayerTreeModel::flags( index );
 }

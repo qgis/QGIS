@@ -34,7 +34,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
 
     QString mConnInfo;
 
@@ -51,6 +51,7 @@ class QgsPostgresFeatureSource : public QgsAbstractFeatureSource
     QList<int> mPrimaryKeyAttrs;
     QString mQuery;
     // TODO: loadFields()
+    QgsCoordinateReferenceSystem mCrs;
 
     std::shared_ptr<QgsPostgresSharedData> mShared;
 
@@ -83,6 +84,8 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod ) override;
 
+  private:
+
     QgsPostgresConn *mConn = nullptr;
 
 
@@ -108,9 +111,8 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
 
-    bool mIsTransactionConnection;
+    bool mIsTransactionConnection = false;
 
-  private:
     virtual bool providerCanSimplify( QgsSimplifyMethod::MethodType methodType ) const override;
 
     virtual bool prepareOrderBy( const QList<QgsFeatureRequest::OrderByClause> &orderBys ) override;
@@ -122,6 +124,9 @@ class QgsPostgresFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Q
     bool mOrderByCompiled;
     bool mLastFetch;
     bool mFilterRequiresGeometry;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSPOSTGRESFEATUREITERATOR_H

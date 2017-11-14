@@ -22,12 +22,6 @@
 #include "qgsserverexception.h"
 
 
-//! constructor
-QgsServerResponse::QgsServerResponse()
-{
-}
-
-
 void QgsServerResponse::write( const QString &data )
 {
   QIODevice *iodev = io();
@@ -87,7 +81,7 @@ void QgsServerResponse::write( const QgsServerException &ex )
   }
 
   clear();
-  setReturnCode( ex.responseCode() );
+  setStatusCode( ex.responseCode() );
   setHeader( "Content-Type", responseFormat );
   write( ba );
 }

@@ -38,7 +38,6 @@ pluginPath = os.path.split(os.path.dirname(__file__))[0]
 class CreateNewScriptAction(ToolboxAction):
 
     SCRIPT_PYTHON = 0
-    SCRIPT_R = 1
 
     def __init__(self, actionName, scriptType):
         self.name, self.i18n_name = self.trAction(actionName)
@@ -49,13 +48,9 @@ class CreateNewScriptAction(ToolboxAction):
     def getIcon(self):
         if self.scriptType == self.SCRIPT_PYTHON:
             return QgsApplication.getThemeIcon("/processingScript.svg")
-        elif self.scriptType == self.SCRIPT_R:
-            return QgsApplication.getThemeIcon("/providerR.svg")
 
     def execute(self):
         dlg = None
         if self.scriptType == self.SCRIPT_PYTHON:
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
-        if self.scriptType == self.SCRIPT_R:
-            dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
         dlg.show()

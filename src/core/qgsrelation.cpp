@@ -21,13 +21,6 @@
 #include "qgsproject.h"
 #include "qgsvectorlayer.h"
 
-QgsRelation::QgsRelation()
-  : mReferencingLayer( nullptr )
-  , mReferencedLayer( nullptr )
-  , mValid( false )
-{
-}
-
 QgsRelation QgsRelation::createFromXml( const QDomNode &node )
 {
   QDomElement elem = node.toElement();
@@ -43,6 +36,7 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   QString referencedLayerId = elem.attribute( QStringLiteral( "referencedLayer" ) );
   QString id = elem.attribute( QStringLiteral( "id" ) );
   QString name = elem.attribute( QStringLiteral( "name" ) );
+  QString strength = elem.attribute( QStringLiteral( "strength" ) );
 
   const QMap<QString, QgsMapLayer *> &mapLayers = QgsProject::instance()->mapLayers();
 
@@ -73,6 +67,14 @@ QgsRelation QgsRelation::createFromXml( const QDomNode &node )
   relation.mReferencedLayer = qobject_cast<QgsVectorLayer *>( referencedLayer );
   relation.mRelationId = id;
   relation.mRelationName = name;
+  if ( strength == "Composition" )
+  {
+    relation.mRelationStrength = RelationStrength::Composition;
+  }
+  else
+  {
+    relation.mRelationStrength = RelationStrength::Association;
+  }
 
   QDomNodeList references = elem.elementsByTagName( QStringLiteral( "fieldRef" ) );
   for ( int i = 0; i < references.size(); ++i )
@@ -97,6 +99,14 @@ void QgsRelation::writeXml( QDomNode &node, QDomDocument &doc ) const
   elem.setAttribute( QStringLiteral( "name" ), mRelationName );
   elem.setAttribute( QStringLiteral( "referencingLayer" ), mReferencingLayerId );
   elem.setAttribute( QStringLiteral( "referencedLayer" ), mReferencedLayerId );
+  if ( mRelationStrength == RelationStrength::Composition )
+  {
+    elem.setAttribute( QStringLiteral( "strength" ), QStringLiteral( "Composition" ) );
+  }
+  else
+  {
+    elem.setAttribute( QStringLiteral( "strength" ), QStringLiteral( "Association" ) );
+  }
 
   Q_FOREACH ( const FieldPair &fields, mFieldPairs )
   {
@@ -119,6 +129,12 @@ void QgsRelation::setId( const QString &id )
 void QgsRelation::setName( const QString &name )
 {
   mRelationName = name;
+}
+
+
+void QgsRelation::setStrength( const RelationStrength &strength )
+{
+  mRelationStrength = strength;
 }
 
 void QgsRelation::setReferencingLayer( const QString &id )
@@ -168,25 +184,8 @@ QString QgsRelation::getRelatedFeaturesFilter( const QgsFeature &feature ) const
 
   Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mFieldPairs )
   {
-    int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
-    QgsField referencingField = referencingLayer()->fields().at( referencingIdx );
-
     QVariant val( feature.attribute( fieldPair.referencedField() ) );
-
-    if ( val.isNull() )
-    {
-      conditions << QStringLiteral( "\"%1\" IS NULL" ).arg( fieldPair.referencingField() );
-    }
-    else if ( referencingField.type() == QVariant::String )
-    {
-      // Use quotes
-      conditions << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldPair.referencingField(), val.toString() );
-    }
-    else
-    {
-      // No quotes
-      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencingField(), val.toString() );
-    }
+    conditions << QgsExpression::createFieldEqualityExpression( fieldPair.referencingField(), val );
   }
 
   return conditions.join( QStringLiteral( " AND " ) );
@@ -198,21 +197,8 @@ QgsFeatureRequest QgsRelation::getReferencedFeatureRequest( const QgsAttributes 
 
   Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mFieldPairs )
   {
-    int referencedIdx = referencedLayer()->fields().indexFromName( fieldPair.referencedField() );
     int referencingIdx = referencingLayer()->fields().indexFromName( fieldPair.referencingField() );
-
-    QgsField referencedField = referencedLayer()->fields().at( referencedIdx );
-
-    if ( referencedField.type() == QVariant::String )
-    {
-      // Use quotes
-      conditions << QStringLiteral( "\"%1\" = '%2'" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
-    }
-    else
-    {
-      // No quotes
-      conditions << QStringLiteral( "\"%1\" = %2" ).arg( fieldPair.referencedField(), attributes.at( referencingIdx ).toString() );
-    }
+    conditions << QgsExpression::createFieldEqualityExpression( fieldPair.referencedField(), attributes.at( referencingIdx ) );
   }
 
   QgsFeatureRequest myRequest;
@@ -241,6 +227,11 @@ QgsFeature QgsRelation::getReferencedFeature( const QgsFeature &feature ) const
 QString QgsRelation::name() const
 {
   return mRelationName;
+}
+
+QgsRelation::RelationStrength QgsRelation::strength() const
+{
+  return mRelationStrength;
 }
 
 QString QgsRelation::id() const

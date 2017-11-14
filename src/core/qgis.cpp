@@ -27,7 +27,7 @@
 #include <QDateTime>
 #include "qgsconfig.h"
 #include "qgslogger.h"
-#include "geometry/qgswkbtypes.h"
+#include "qgswkbtypes.h"
 
 #include <ogr_api.h>
 
@@ -72,7 +72,6 @@ const QString GEO_NONE = QStringLiteral( "NONE" );
 
 const double Qgis::DEFAULT_SEARCH_RADIUS_MM = 2.;
 
-//! Default threshold between map coordinates and device coordinates for map2pixel simplification
 const float Qgis::DEFAULT_MAPTOPIXEL_THRESHOLD = 1.0f;
 
 const QColor Qgis::DEFAULT_HIGHLIGHT_COLOR = QColor( 255, 0, 0, 128 );
@@ -84,6 +83,12 @@ const double Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM = 1.0;
 const double Qgis::SCALE_PRECISION = 0.9999999999;
 
 const double Qgis::DEFAULT_Z_COORDINATE = 0.0;
+
+#ifdef Q_OS_WIN
+const double Qgis::UI_SCALE_FACTOR = 1.5;
+#else
+const double Qgis::UI_SCALE_FACTOR = 1;
+#endif
 
 double qgsPermissiveToDouble( QString string, bool &ok )
 {
@@ -172,7 +177,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QList<QVariant> &lhsl = lhs.toList();
       const QList<QVariant> &rhsl = rhs.toList();
 
-      int i, n = qMin( lhsl.size(), rhsl.size() );
+      int i, n = std::min( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i].type() == rhsl[i].type() && lhsl[i].isNull() == rhsl[i].isNull() && lhsl[i] == rhsl[i]; i++ )
         ;
 
@@ -187,7 +192,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs )
       const QStringList &lhsl = lhs.toStringList();
       const QStringList &rhsl = rhs.toStringList();
 
-      int i, n = qMin( lhsl.size(), rhsl.size() );
+      int i, n = std::min( lhsl.size(), rhsl.size() );
       for ( i = 0; i < n && lhsl[i] == rhsl[i]; i++ )
         ;
 
@@ -222,4 +227,71 @@ QString qgsVsiPrefix( const QString &path )
     return QStringLiteral( "/vsigzip/" );
   else
     return QLatin1String( "" );
+}
+
+uint qHash( const QVariant &variant )
+{
+  if ( !variant.isValid() || variant.isNull() )
+    return std::numeric_limits<uint>::max();
+
+  switch ( variant.type() )
+  {
+    case QVariant::Int:
+      return qHash( variant.toInt() );
+    case QVariant::UInt:
+      return qHash( variant.toUInt() );
+    case QVariant::Bool:
+      return qHash( variant.toBool() );
+    case QVariant::Double:
+      return qHash( variant.toDouble() );
+    case QVariant::LongLong:
+      return qHash( variant.toLongLong() );
+    case QVariant::ULongLong:
+      return qHash( variant.toULongLong() );
+    case QVariant::String:
+      return qHash( variant.toString() );
+    case QVariant::Char:
+      return qHash( variant.toChar() );
+    case QVariant::List:
+
+#if QT_VERSION >= 0x050600
+      return qHash( variant.toList() );
+#else
+      {
+        QVariantList list = variant.toList();
+        if ( list.isEmpty() )
+          return -1;
+        else
+          return qHash( list.at( 0 ) );
+      }
+#endif
+    case QVariant::StringList:
+#if QT_VERSION >= 0x050600
+      return qHash( variant.toStringList() );
+#else
+      {
+        QStringList list = variant.toStringList();
+        if ( list.isEmpty() )
+          return -1;
+        else
+          return qHash( list.at( 0 ) );
+      }
+#endif
+    case QVariant::ByteArray:
+      return qHash( variant.toByteArray() );
+    case QVariant::Date:
+      return qHash( variant.toDate() );
+    case QVariant::Time:
+      return qHash( variant.toTime() );
+    case QVariant::DateTime:
+      return qHash( variant.toDateTime() );
+    case QVariant::Url:
+    case QVariant::Locale:
+    case QVariant::RegExp:
+      return qHash( variant.toString() );
+    default:
+      break;
+  }
+
+  return std::numeric_limits<uint>::max();
 }

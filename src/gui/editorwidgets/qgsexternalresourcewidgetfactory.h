@@ -20,8 +20,11 @@
 #include "qgseditorwidgetfactory.h"
 #include "qgis_gui.h"
 
+SIP_NO_FILE
 
-/** \ingroup gui
+
+/**
+ * \ingroup gui
  * \class QgsExternalResourceWidgetFactory
  * \note not available in Python bindings
  */

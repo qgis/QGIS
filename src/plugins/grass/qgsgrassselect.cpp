@@ -25,12 +25,7 @@
 
 extern "C"
 {
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#define BOUND_BOX bound_box
-#endif
 }
 
 
@@ -42,8 +37,13 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
   QgsDebugMsg( QString( "QgsGrassSelect() type = %1" ).arg( type ) );
 
   setupUi( this );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( GisdbaseBrowse, &QPushButton::clicked, this, &QgsGrassSelect::GisdbaseBrowse_clicked );
+  connect( egisdbase, &QLineEdit::textChanged, this, &QgsGrassSelect::egisdbase_textChanged );
+  connect( elocation, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassSelect::elocation_activated );
+  connect( emapset, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassSelect::emapset_activated );
+  connect( emap, static_cast<void ( QComboBox::* )( int )>( &QComboBox::activated ), this, &QgsGrassSelect::emap_activated );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsGrassSelect::accept );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   if ( sFirst )
   {
@@ -56,14 +56,14 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
     else
     {
       QgsSettings settings;
-      sLastGisdbase = settings.value( QStringLiteral( "/GRASS/lastGisdbase" ) ).toString();
+      sLastGisdbase = settings.value( QStringLiteral( "GRASS/lastGisdbase" ) ).toString();
       //check we got something from qsettings otherwise default to users home dir
       if ( sLastGisdbase.isEmpty() )
       {
         QDir home = QDir::home();
         sLastGisdbase = QString( home.path() );
       }
-      sLastMapset = settings.value( QStringLiteral( "/GRASS/lastMapset" ) ).toString();
+      sLastMapset = settings.value( QStringLiteral( "GRASS/lastMapset" ) ).toString();
     }
     sFirst = false;
   }
@@ -86,7 +86,7 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
       /* Remove layer combo box */
       Layer->hide();
       elayer->hide();
-      setWindowTitle( tr( "Select GRASS mapcalc schema" ) );
+      setWindowTitle( tr( "Select GRASS Mapcalc Schema" ) );
       break;
 
     case QgsGrassSelect::MapSet:
@@ -102,10 +102,6 @@ QgsGrassSelect::QgsGrassSelect( QWidget *parent, int type )
 
   setLocations();
   adjustSize();
-}
-
-QgsGrassSelect::~QgsGrassSelect()
-{
 }
 
 bool QgsGrassSelect::sFirst = true;
@@ -400,7 +396,7 @@ void QgsGrassSelect::setLayers()
   }
 }
 
-void QgsGrassSelect::on_GisdbaseBrowse_clicked()
+void QgsGrassSelect::GisdbaseBrowse_clicked()
 {
   QString Gisdbase = QFileDialog::getExistingDirectory( this,
                      tr( "Choose existing GISDBASE" ), egisdbase->text() );
@@ -425,7 +421,7 @@ void QgsGrassSelect::accept()
 
   //write to qgsettings as gisdbase seems to be valid
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/GRASS/lastGisdbase" ), sLastGisdbase );
+  settings.setValue( QStringLiteral( "GRASS/lastGisdbase" ), sLastGisdbase );
 
   location = elocation->currentText();
   sLastLocation = location;
@@ -433,7 +429,7 @@ void QgsGrassSelect::accept()
   mapset = emapset->currentText();
   sLastMapset = mapset;
 
-  settings.setValue( QStringLiteral( "/GRASS/lastMapset" ), sLastMapset );
+  settings.setValue( QStringLiteral( "GRASS/lastMapset" ), sLastMapset );
 
   map = emap->currentText().trimmed();
 

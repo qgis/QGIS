@@ -1,0 +1,6 @@
+Union
+shapes_polygons
+QgsProcessingParameterFeatureSource|A|Layer A|-1|None|False
+QgsProcessingParameterFeatureSource|B|Layer B|-1|None|False
+QgsProcessingParameterVectorDestination|RESULT|Union
+QgsProcessingParameterBoolean|SPLIT|Split Parts|True

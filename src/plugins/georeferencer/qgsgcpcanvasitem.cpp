@@ -44,7 +44,7 @@ void QgsGCPCanvasItem::paint( QPainter *p )
   p->setRenderHint( QPainter::Antialiasing );
 
   bool enabled = true;
-  QgsPoint worldCoords;
+  QgsPointXY worldCoords;
   int id = -1;
 
   if ( mDataPoint )
@@ -108,7 +108,7 @@ QRectF QgsGCPCanvasItem::boundingRect() const
     residual = mDataPoint->residual();
   }
 
-  //only considering screen resolution is ok for the bounding box function
+  //only considering screen resolution is OK for the bounding box function
   double rf = residualToScreenFactor();
 
   if ( residual.x() > 0 )
@@ -134,7 +134,7 @@ QRectF QgsGCPCanvasItem::boundingRect() const
 
   QRectF residualArrowRect( QPointF( residualLeft, residualTop ), QPointF( residualRight, residualBottom ) );
   QRectF markerRect( -2, -2, mTextBounds.width() + 6, mTextBounds.height() + 6 );
-  QRectF boundingRect =  residualArrowRect.united( markerRect );
+  QRectF boundingRect = residualArrowRect.united( markerRect );
   if ( !mTextBoxRect.isNull() )
   {
     boundingRect = boundingRect.united( mTextBoxRect );

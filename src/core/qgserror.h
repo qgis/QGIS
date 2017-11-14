@@ -25,7 +25,8 @@
 // Macro to create Error message including info about where it was created.
 #define QGS_ERROR_MESSAGE(message, tag) QgsErrorMessage(QString(message),QString(tag), QString(__FILE__), QString(__FUNCTION__), __LINE__)
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsErrorMessage represents single error message.
 */
 class CORE_EXPORT QgsErrorMessage
@@ -38,19 +39,18 @@ class CORE_EXPORT QgsErrorMessage
       Html
     };
 
-    QgsErrorMessage()
-      : mLine( 0 )
-      , mFormat( Text )
-    {}
+    //! Constructor for QgsErrorMessage
+    QgsErrorMessage() = default;
 
-    /** Constructor.
-     *  @param message error message string
-     *  @param tag error label, for example GDAL, GDAL Provider, Raster layer
-     *  @param file the file where error was created
-     *  @param function the function where error was created
-     *  @param line the line where error was created
+    /**
+     * Constructor.
+     *  \param message error message string
+     *  \param tag error label, for example GDAL, GDAL Provider, Raster layer
+     *  \param file the file where error was created
+     *  \param function the function where error was created
+     *  \param line the line where error was created
      */
-    QgsErrorMessage( const QString &message, const QString &tag = QString::null, const QString &file = QString::null, const QString &function = QString::null, int line = 0 );
+    QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 
     QString message() const { return mMessage; }
     QString tag() const { return mTag; }
@@ -68,13 +68,14 @@ class CORE_EXPORT QgsErrorMessage
     //! Detailed debug info
     QString mFile;
     QString mFunction;
-    int mLine;
+    int mLine = 0;
 
     //! Message format
-    Format mFormat;
+    Format mFormat = Text;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * QgsError is container for error messages (report). It may contain chain
  * (sort of traceback) of error messages (e.g. GDAL - provider - layer).
  * Higher level messages are appended at the end.
@@ -83,43 +84,56 @@ class CORE_EXPORT QgsError
 {
   public:
 
-    QgsError() {}
+    //! Constructor for QgsError
+    QgsError() = default;
 
-    /** Constructor with single message.
-     *  @param message error message
-     *  @param tag short description, e.g. GDAL, Provider, Layer
+    /**
+     * Constructor with single message.
+     *  \param message error message
+     *  \param tag short description, e.g. GDAL, Provider, Layer
      */
     QgsError( const QString &message, const QString &tag );
 
-    /** Append new error message.
-     *  @param message error message string
-     *  @param tag error label, for example GDAL, GDAL Provider, Raster layer
+    /**
+     * Append new error message.
+     *  \param message error message string
+     *  \param tag error label, for example GDAL, GDAL Provider, Raster layer
      */
     void append( const QString &message, const QString &tag );
 
-    /** Append new error message.
-     *  @param message error message
+    /**
+     * Append new error message.
+     *  \param message error message
      */
     void append( const QgsErrorMessage &message );
 
-    /** Test if any error is set.
-     *  @return true if contains error
+    /**
+     * Test if any error is set.
+     *  \returns true if contains error
      */
     bool isEmpty() const { return mMessageList.isEmpty(); }
 
-    /** Full error messages description
-     *  @param format output format
-     *  @return error report
+    /**
+     * Full error messages description
+     *  \param format output format
+     *  \returns error report
      */
     QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
 
-    /** Short error description, usually the first error in chain, the real error.
-     *  @return error description
+    /**
+     * Short error description, usually the first error in chain, the real error.
+     *  \returns error description
      */
     QString summary() const;
 
     //! Clear error messages
     void clear() { mMessageList.clear(); }
+
+    /**
+     * \brief messageList return the list of current error messages
+     * \return current list of error messages
+     */
+    QList<QgsErrorMessage> messageList() const { return mMessageList; }
 
   private:
     //! List of messages

@@ -17,10 +17,10 @@
 
 #include "qgslogger.h"
 #include "qgsexpression.h"
+#include "qgsexpressionnodeimpl.h"
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
-#include <qmath.h>
 
 
 //
@@ -64,19 +64,37 @@ QgsPropertyTransformer &QgsPropertyTransformer::operator=( const QgsPropertyTran
   return *this;
 }
 
-bool QgsPropertyTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
+bool QgsPropertyTransformer::loadVariant( const QVariant &transformer )
 {
-  Q_UNUSED( doc );
-  transformerElem.setAttribute( "minValue", QString::number( mMinValue ) );
-  transformerElem.setAttribute( "maxValue", QString::number( mMaxValue ) );
+  QVariantMap transformerMap = transformer.toMap();
+
+  mMinValue = transformerMap.value( QStringLiteral( "minValue" ), 0.0 ).toDouble();
+  mMaxValue = transformerMap.value( QStringLiteral( "maxValue" ), 1.0 ).toDouble();
+  mCurveTransform.reset( nullptr );
+
+  QVariantMap curve = transformerMap.value( QStringLiteral( "curve" ) ).toMap();
+
+  if ( !curve.isEmpty() )
+  {
+    mCurveTransform.reset( new QgsCurveTransform() );
+    mCurveTransform->loadVariant( curve );
+  }
+
+  return true;
+}
+
+QVariant QgsPropertyTransformer::toVariant() const
+{
+  QVariantMap transformerMap;
+
+  transformerMap.insert( QStringLiteral( "minValue" ), mMinValue );
+  transformerMap.insert( QStringLiteral( "maxValue" ), mMaxValue );
 
   if ( mCurveTransform )
   {
-    QDomElement curveElement = doc.createElement( "curve" );
-    mCurveTransform->writeXml( curveElement, doc );
-    transformerElem.appendChild( curveElement );
+    transformerMap.insert( QStringLiteral( "curve" ), mCurveTransform->toVariant() );
   }
-  return true;
+  return transformerMap;
 }
 
 QgsPropertyTransformer *QgsPropertyTransformer::fromExpression( const QString &expression, QString &baseExpression, QString &fieldName )
@@ -104,23 +122,6 @@ double QgsPropertyTransformer::transformNumeric( double input ) const
   return mMinValue + ( mMaxValue - mMinValue ) * mCurveTransform->y( scaledInput );
 }
 
-bool QgsPropertyTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
-{
-  Q_UNUSED( doc );
-  mMinValue = transformerElem.attribute( "minValue", "0.0" ).toDouble();
-  mMaxValue = transformerElem.attribute( "maxValue", "1.0" ).toDouble();
-  mCurveTransform.reset( nullptr );
-
-  QDomNodeList curveNodeList = transformerElem.elementsByTagName( "curve" );
-  if ( !curveNodeList.isEmpty() )
-  {
-    QDomElement curveElem = curveNodeList.at( 0 ).toElement();
-    mCurveTransform.reset( new QgsCurveTransform() );
-    mCurveTransform->readXml( curveElem, doc );
-  }
-
-  return true;
-}
 
 //
 // QgsGenericNumericTransformer
@@ -134,25 +135,7 @@ QgsGenericNumericTransformer::QgsGenericNumericTransformer( double minValue, dou
   , mExponent( exponent )
 {}
 
-QgsGenericNumericTransformer::QgsGenericNumericTransformer( const QgsGenericNumericTransformer &other )
-  : QgsPropertyTransformer( other )
-  , mMinOutput( other.mMinOutput )
-  , mMaxOutput( other.mMaxOutput )
-  , mNullOutput( other.mNullOutput )
-  , mExponent( other.mExponent )
-{}
-
-QgsGenericNumericTransformer &QgsGenericNumericTransformer::operator=( const QgsGenericNumericTransformer &other )
-{
-  QgsPropertyTransformer::operator=( other );
-  mMinOutput = other.mMinOutput;
-  mMaxOutput = other.mMaxOutput;
-  mNullOutput = other.mNullOutput;
-  mExponent = other.mExponent;
-  return *this;
-}
-
-QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone()
+QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone() const
 {
   std::unique_ptr< QgsGenericNumericTransformer > t( new QgsGenericNumericTransformer( mMinValue,
       mMaxValue,
@@ -165,28 +148,28 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::clone()
   return t.release();
 }
 
-bool QgsGenericNumericTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
+QVariant QgsGenericNumericTransformer::toVariant() const
 {
-  if ( !QgsPropertyTransformer::writeXml( transformerElem, doc ) )
-    return false;
+  QVariantMap transformerMap = QgsPropertyTransformer::toVariant().toMap();
 
-  transformerElem.setAttribute( "minOutput", QString::number( mMinOutput ) );
-  transformerElem.setAttribute( "maxOutput", QString::number( mMaxOutput ) );
-  transformerElem.setAttribute( "nullOutput", QString::number( mNullOutput ) );
-  transformerElem.setAttribute( "exponent", QString::number( mExponent ) );
+  transformerMap.insert( QStringLiteral( "minOutput" ), mMinOutput );
+  transformerMap.insert( QStringLiteral( "maxOutput" ), mMaxOutput );
+  transformerMap.insert( QStringLiteral( "nullOutput" ), mNullOutput );
+  transformerMap.insert( QStringLiteral( "exponent" ), mExponent );
 
-  return true;
+  return transformerMap;
 }
 
-bool QgsGenericNumericTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
+bool QgsGenericNumericTransformer::loadVariant( const QVariant &transformer )
 {
-  if ( !QgsPropertyTransformer::readXml( transformerElem, doc ) )
-    return false;
+  QgsPropertyTransformer::loadVariant( transformer );
 
-  mMinOutput = transformerElem.attribute( "minOutput", "0.0" ).toDouble();
-  mMaxOutput = transformerElem.attribute( "maxOutput", "1.0" ).toDouble();
-  mNullOutput = transformerElem.attribute( "nullOutput", "0.0" ).toDouble();
-  mExponent = transformerElem.attribute( "exponent", "1.0" ).toDouble();
+  QVariantMap transformerMap = transformer.toMap();
+
+  mMinOutput = transformerMap.value( QStringLiteral( "minOutput" ), 0.0 ).toDouble();
+  mMaxOutput = transformerMap.value( QStringLiteral( "maxOutput" ), 1.0 ).toDouble();
+  mNullOutput = transformerMap.value( QStringLiteral( "nullOutput" ), 0.0 ).toDouble();
+  mExponent = transformerMap.value( QStringLiteral( "exponent" ), 1.0 ).toDouble();
   return true;
 }
 
@@ -196,7 +179,7 @@ double QgsGenericNumericTransformer::value( double input ) const
   if ( qgsDoubleNear( mExponent, 1.0 ) )
     return mMinOutput + ( qBound( mMinValue, input, mMaxValue ) - mMinValue ) * ( mMaxOutput - mMinOutput ) / ( mMaxValue - mMinValue );
   else
-    return mMinOutput + qPow( qBound( mMinValue, input, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / qPow( mMaxValue - mMinValue, mExponent );
+    return mMinOutput + std::pow( qBound( mMinValue, input, mMaxValue ) - mMinValue, mExponent ) * ( mMaxOutput - mMinOutput ) / std::pow( mMaxValue - mMinValue, mExponent );
 }
 
 QVariant QgsGenericNumericTransformer::transform( const QgsExpressionContext &context, const QVariant &v ) const
@@ -250,17 +233,17 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
   if ( !e.rootNode() )
     return nullptr;
 
-  const QgsExpression::NodeFunction *f = dynamic_cast<const QgsExpression::NodeFunction *>( e.rootNode() );
+  const QgsExpressionNodeFunction *f = dynamic_cast<const QgsExpressionNodeFunction *>( e.rootNode() );
   if ( !f )
     return nullptr;
 
-  QList<QgsExpression::Node *> args = f->args()->list();
+  QList<QgsExpressionNode *> args = f->args()->list();
 
   // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
   // to be drawn with the default size
   if ( "coalesce" == QgsExpression::Functions()[f->fnIndex()]->name() )
   {
-    f = dynamic_cast<const QgsExpression::NodeFunction *>( args[0] );
+    f = dynamic_cast<const QgsExpressionNodeFunction *>( args[0] );
     if ( !f )
       return nullptr;
     nullValue = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
@@ -297,9 +280,9 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
     return nullptr;
   }
 
-  if ( args[0]->nodeType() == QgsExpression::ntColumnRef )
+  if ( args[0]->nodeType() == QgsExpressionNode::ntColumnRef )
   {
-    fieldName = static_cast< QgsExpression::NodeColumnRef * >( args[0] )->name();
+    fieldName = static_cast< QgsExpressionNodeColumnRef * >( args[0] )->name();
   }
   else
   {
@@ -315,7 +298,6 @@ QgsGenericNumericTransformer *QgsGenericNumericTransformer::fromExpression( cons
 //
 QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValue, double maxValue, double minSize, double maxSize, double nullSize, double exponent )
   : QgsPropertyTransformer( minValue, maxValue )
-  , mType( Linear )
   , mMinSize( minSize )
   , mMaxSize( maxSize )
   , mNullSize( nullSize )
@@ -324,27 +306,7 @@ QgsSizeScaleTransformer::QgsSizeScaleTransformer( ScaleType type, double minValu
   setType( type );
 }
 
-QgsSizeScaleTransformer::QgsSizeScaleTransformer( const QgsSizeScaleTransformer &other )
-  : QgsPropertyTransformer( other )
-  , mType( other.mType )
-  , mMinSize( other.mMinSize )
-  , mMaxSize( other.mMaxSize )
-  , mNullSize( other.mNullSize )
-  , mExponent( other.mExponent )
-{}
-
-QgsSizeScaleTransformer &QgsSizeScaleTransformer::operator=( const QgsSizeScaleTransformer &other )
-{
-  QgsPropertyTransformer::operator=( other );
-  mType = other.mType;
-  mMinSize = other.mMinSize;
-  mMaxSize = other.mMaxSize;
-  mNullSize = other.mNullSize;
-  mExponent = other.mExponent;
-  return *this;
-}
-
-QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone()
+QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone() const
 {
   std::unique_ptr< QgsSizeScaleTransformer > t( new QgsSizeScaleTransformer( mType,
       mMinValue,
@@ -358,30 +320,31 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::clone()
   return t.release();
 }
 
-bool QgsSizeScaleTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
+QVariant QgsSizeScaleTransformer::toVariant() const
 {
-  if ( !QgsPropertyTransformer::writeXml( transformerElem, doc ) )
-    return false;
+  QVariantMap transformerMap = QgsPropertyTransformer::toVariant().toMap();
 
-  transformerElem.setAttribute( "scaleType", QString::number( static_cast< int >( mType ) ) );
-  transformerElem.setAttribute( "minSize", QString::number( mMinSize ) );
-  transformerElem.setAttribute( "maxSize", QString::number( mMaxSize ) );
-  transformerElem.setAttribute( "nullSize", QString::number( mNullSize ) );
-  transformerElem.setAttribute( "exponent", QString::number( mExponent ) );
+  transformerMap.insert( QStringLiteral( "scaleType" ), static_cast< int >( mType ) );
+  transformerMap.insert( QStringLiteral( "minSize" ), mMinSize );
+  transformerMap.insert( QStringLiteral( "maxSize" ), mMaxSize );
+  transformerMap.insert( QStringLiteral( "nullSize" ), mNullSize );
+  transformerMap.insert( QStringLiteral( "exponent" ), mExponent );
 
-  return true;
+  return transformerMap;
 }
 
-bool QgsSizeScaleTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
+bool QgsSizeScaleTransformer::loadVariant( const QVariant &transformer )
 {
-  if ( !QgsPropertyTransformer::readXml( transformerElem, doc ) )
-    return false;
+  QgsPropertyTransformer::loadVariant( transformer );
 
-  mType = static_cast< ScaleType >( transformerElem.attribute( "scaleType", "0" ).toInt() );
-  mMinSize = transformerElem.attribute( "minSize", "0.0" ).toDouble();
-  mMaxSize = transformerElem.attribute( "maxSize", "1.0" ).toDouble();
-  mNullSize = transformerElem.attribute( "nullSize", "0.0" ).toDouble();
-  mExponent = transformerElem.attribute( "exponent", "1.0" ).toDouble();
+  QVariantMap transformerMap = transformer.toMap();
+
+  mType = static_cast< ScaleType >( transformerMap.value( QStringLiteral( "scaleType" ), Linear ).toInt() );
+  mMinSize = transformerMap.value( QStringLiteral( "minSize" ), 0.0 ).toDouble();
+  mMaxSize = transformerMap.value( QStringLiteral( "maxSize" ), 1.0 ).toDouble();
+  mNullSize = transformerMap.value( QStringLiteral( "nullSize" ), 0.0 ).toDouble();
+  mExponent = transformerMap.value( QStringLiteral( "exponent" ), 1.0 ).toDouble();
+
   return true;
 }
 
@@ -397,7 +360,7 @@ double QgsSizeScaleTransformer::size( double value ) const
     case Area:
     case Flannery:
     case Exponential:
-      return mMinSize + qPow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / qPow( mMaxValue - mMinValue, mExponent );
+      return mMinSize + std::pow( qBound( mMinValue, value, mMaxValue ) - mMinValue, mExponent ) * ( mMaxSize - mMinSize ) / std::pow( mMaxValue - mMinValue, mExponent );
 
   }
   return 0;
@@ -483,17 +446,17 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
   if ( !e.rootNode() )
     return nullptr;
 
-  const QgsExpression::NodeFunction *f = dynamic_cast<const QgsExpression::NodeFunction *>( e.rootNode() );
+  const QgsExpressionNodeFunction *f = dynamic_cast<const QgsExpressionNodeFunction *>( e.rootNode() );
   if ( !f )
     return nullptr;
 
-  QList<QgsExpression::Node *> args = f->args()->list();
+  QList<QgsExpressionNode *> args = f->args()->list();
 
   // the scale function may be enclosed in a coalesce(expr, 0) to avoid NULL value
   // to be drawn with the default size
   if ( "coalesce" == QgsExpression::Functions()[f->fnIndex()]->name() )
   {
-    f = dynamic_cast<const QgsExpression::NodeFunction *>( args[0] );
+    f = dynamic_cast<const QgsExpressionNodeFunction *>( args[0] );
     if ( !f )
       return nullptr;
     nullSize = QgsExpression( args[1]->dump() ).evaluate().toDouble( &ok );
@@ -538,9 +501,9 @@ QgsSizeScaleTransformer *QgsSizeScaleTransformer::fromExpression( const QString 
     return nullptr;
   }
 
-  if ( args[0]->nodeType() == QgsExpression::ntColumnRef )
+  if ( args[0]->nodeType() == QgsExpressionNode::ntColumnRef )
   {
-    fieldName = static_cast< QgsExpression::NodeColumnRef * >( args[0] )->name();
+    fieldName = static_cast< QgsExpressionNodeColumnRef * >( args[0] )->name();
   }
   else
   {
@@ -584,7 +547,7 @@ QgsColorRampTransformer &QgsColorRampTransformer::operator=( const QgsColorRampT
   return *this;
 }
 
-QgsColorRampTransformer *QgsColorRampTransformer::clone()
+QgsColorRampTransformer *QgsColorRampTransformer::clone() const
 {
   std::unique_ptr< QgsColorRampTransformer > c( new QgsColorRampTransformer( mMinValue, mMaxValue,
       mGradientRamp ? mGradientRamp->clone() : nullptr,
@@ -595,36 +558,34 @@ QgsColorRampTransformer *QgsColorRampTransformer::clone()
   return c.release();
 }
 
-bool QgsColorRampTransformer::writeXml( QDomElement &transformerElem, QDomDocument &doc ) const
+QVariant QgsColorRampTransformer::toVariant() const
 {
-  if ( !QgsPropertyTransformer::writeXml( transformerElem, doc ) )
-    return false;
+  QVariantMap transformerMap = QgsPropertyTransformer::toVariant().toMap();
 
   if ( mGradientRamp )
   {
-    QDomElement colorRampElem = QgsSymbolLayerUtils::saveColorRamp( "[source]", mGradientRamp.get(), doc );
-    transformerElem.appendChild( colorRampElem );
+    transformerMap.insert( QStringLiteral( "colorramp" ), QgsSymbolLayerUtils::colorRampToVariant( QStringLiteral( "[source]" ), mGradientRamp.get() ) );
   }
-  transformerElem.setAttribute( "nullColor", QgsSymbolLayerUtils::encodeColor( mNullColor ) );
-  transformerElem.setAttribute( "rampName", mRampName );
+  transformerMap.insert( QStringLiteral( "nullColor" ), QgsSymbolLayerUtils::encodeColor( mNullColor ) );
+  transformerMap.insert( QStringLiteral( "rampName" ), mRampName );
 
-  return true;
+  return transformerMap;
 }
 
-bool QgsColorRampTransformer::readXml( const QDomElement &transformerElem, const QDomDocument &doc )
+bool QgsColorRampTransformer::loadVariant( const QVariant &definition )
 {
-  if ( !QgsPropertyTransformer::readXml( transformerElem, doc ) )
-    return false;
+  QVariantMap transformerMap = definition.toMap();
+
+  QgsPropertyTransformer::loadVariant( definition );
 
   mGradientRamp.reset( nullptr );
-  QDomElement sourceColorRampElem = transformerElem.firstChildElement( "colorramp" );
-  if ( !sourceColorRampElem.isNull() && sourceColorRampElem.attribute( "name" ) == "[source]" )
+  if ( transformerMap.contains( QStringLiteral( "colorramp" ) ) )
   {
-    setColorRamp( QgsSymbolLayerUtils::loadColorRamp( sourceColorRampElem ) );
+    setColorRamp( QgsSymbolLayerUtils::loadColorRamp( transformerMap.value( QStringLiteral( "colorramp" ) ).toMap() ) );
   }
 
-  mNullColor = QgsSymbolLayerUtils::decodeColor( transformerElem.attribute( "nullColor", "0,0,0,0" ) );
-  mRampName = transformerElem.attribute( "rampName", QString() );
+  mNullColor = QgsSymbolLayerUtils::decodeColor( transformerMap.value( QStringLiteral( "nullColor" ), QStringLiteral( "0,0,0,0" ) ).toString() );
+  mRampName = transformerMap.value( QStringLiteral( "rampName" ) ).toString();
   return true;
 }
 
@@ -688,18 +649,18 @@ void QgsColorRampTransformer::setColorRamp( QgsColorRamp *ramp )
 // QgsCurveTransform
 //
 
-bool sortByX( const QgsPoint &a, const QgsPoint &b )
+bool sortByX( const QgsPointXY &a, const QgsPointXY &b )
 {
   return a.x() < b.x();
 }
 
 QgsCurveTransform::QgsCurveTransform()
 {
-  mControlPoints << QgsPoint( 0, 0 ) << QgsPoint( 1, 1 );
+  mControlPoints << QgsPointXY( 0, 0 ) << QgsPointXY( 1, 1 );
   calcSecondDerivativeArray();
 }
 
-QgsCurveTransform::QgsCurveTransform( const QList<QgsPoint> &controlPoints )
+QgsCurveTransform::QgsCurveTransform( const QList<QgsPointXY> &controlPoints )
   : mControlPoints( controlPoints )
 {
   std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
@@ -733,21 +694,21 @@ QgsCurveTransform &QgsCurveTransform::operator=( const QgsCurveTransform &other 
   return *this;
 }
 
-void QgsCurveTransform::setControlPoints( const QList<QgsPoint> &points )
+void QgsCurveTransform::setControlPoints( const QList<QgsPointXY> &points )
 {
   mControlPoints = points;
   std::sort( mControlPoints.begin(), mControlPoints.end(), sortByX );
   for ( int i = 0; i < mControlPoints.count(); ++i )
   {
-    mControlPoints[ i ] = QgsPoint( qBound( 0.0, mControlPoints.at( i ).x(), 1.0 ),
-                                    qBound( 0.0, mControlPoints.at( i ).y(), 1.0 ) );
+    mControlPoints[ i ] = QgsPointXY( qBound( 0.0, mControlPoints.at( i ).x(), 1.0 ),
+                                      qBound( 0.0, mControlPoints.at( i ).y(), 1.0 ) );
   }
   calcSecondDerivativeArray();
 }
 
 void QgsCurveTransform::addControlPoint( double x, double y )
 {
-  QgsPoint point( x, y );
+  QgsPointXY point( x, y );
   if ( mControlPoints.contains( point ) )
     return;
 
@@ -784,7 +745,7 @@ double QgsCurveTransform::y( double x ) const
     // linear
     if ( x <= mControlPoints.at( 0 ).x() )
       return qBound( 0.0, mControlPoints.at( 0 ).y(), 1.0 );
-    else if ( x >=  mControlPoints.at( n - 1 ).x() )
+    else if ( x >= mControlPoints.at( n - 1 ).x() )
       return qBound( 0.0, mControlPoints.at( 1 ).y(), 1.0 );
     else
     {
@@ -801,10 +762,10 @@ double QgsCurveTransform::y( double x ) const
     return qBound( 0.0, mControlPoints.at( n - 1 ).y(), 1.0 );
 
   // find corresponding segment
-  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
-  QgsPoint currentControlPoint = *pointIt;
+  QList<QgsPointXY>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPointXY currentControlPoint = *pointIt;
   ++pointIt;
-  QgsPoint nextControlPoint = *pointIt;
+  QgsPointXY nextControlPoint = *pointIt;
 
   for ( int i = 0; i < n - 1; ++i )
   {
@@ -851,10 +812,10 @@ QVector<double> QgsCurveTransform::y( const QVector<double> &x ) const
   }
 
   // find corresponding segment
-  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
-  QgsPoint currentControlPoint = *pointIt;
+  QList<QgsPointXY>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPointXY currentControlPoint = *pointIt;
   ++pointIt;
-  QgsPoint nextControlPoint = *pointIt;
+  QgsPointXY nextControlPoint = *pointIt;
 
   int xIndex = 0;
   double currentX = x.at( xIndex );
@@ -913,7 +874,7 @@ bool QgsCurveTransform::readXml( const QDomElement &elem, const QDomDocument & )
   if ( xVals.count() != yVals.count() )
     return false;
 
-  QList< QgsPoint > newPoints;
+  QList< QgsPointXY > newPoints;
   bool ok = false;
   for ( int i = 0; i < xVals.count(); ++i )
   {
@@ -923,7 +884,7 @@ bool QgsCurveTransform::readXml( const QDomElement &elem, const QDomDocument & )
     double y = yVals.at( i ).toDouble( &ok );
     if ( !ok )
       return false;
-    newPoints << QgsPoint( x, y );
+    newPoints << QgsPointXY( x, y );
   }
   setControlPoints( newPoints );
   return true;
@@ -933,7 +894,7 @@ bool QgsCurveTransform::writeXml( QDomElement &transformElem, QDomDocument & ) c
 {
   QStringList x;
   QStringList y;
-  Q_FOREACH ( const QgsPoint &p, mControlPoints )
+  Q_FOREACH ( const QgsPointXY &p, mControlPoints )
   {
     x << qgsDoubleToString( p.x() );
     y << qgsDoubleToString( p.y() );
@@ -942,6 +903,52 @@ bool QgsCurveTransform::writeXml( QDomElement &transformElem, QDomDocument & ) c
   transformElem.setAttribute( QStringLiteral( "x" ), x.join( ',' ) );
   transformElem.setAttribute( QStringLiteral( "y" ), y.join( ',' ) );
 
+  return true;
+}
+
+QVariant QgsCurveTransform::toVariant() const
+{
+  QVariantMap transformMap;
+
+  QStringList x;
+  QStringList y;
+  Q_FOREACH ( const QgsPointXY &p, mControlPoints )
+  {
+    x << qgsDoubleToString( p.x() );
+    y << qgsDoubleToString( p.y() );
+  }
+
+  transformMap.insert( QStringLiteral( "x" ), x.join( ',' ) );
+  transformMap.insert( QStringLiteral( "y" ), y.join( ',' ) );
+
+  return transformMap;
+}
+
+bool QgsCurveTransform::loadVariant( const QVariant &transformer )
+{
+  QVariantMap transformMap = transformer.toMap();
+
+  QString xString = transformMap.value( QStringLiteral( "x" ) ).toString();
+  QString yString = transformMap.value( QStringLiteral( "y" ) ).toString();
+
+  QStringList xVals = xString.split( ',' );
+  QStringList yVals = yString.split( ',' );
+  if ( xVals.count() != yVals.count() )
+    return false;
+
+  QList< QgsPointXY > newPoints;
+  bool ok = false;
+  for ( int i = 0; i < xVals.count(); ++i )
+  {
+    double x = xVals.at( i ).toDouble( &ok );
+    if ( !ok )
+      return false;
+    double y = yVals.at( i ).toDouble( &ok );
+    if ( !ok )
+      return false;
+    newPoints << QgsPointXY( x, y );
+  }
+  setControlPoints( newPoints );
   return true;
 }
 
@@ -963,12 +970,12 @@ void QgsCurveTransform::calcSecondDerivativeArray()
   matrix[1] = 1;
   matrix[2] = 0;
   result[0] = 0;
-  QList<QgsPoint>::const_iterator pointIt = mControlPoints.constBegin();
-  QgsPoint pointIm1 = *pointIt;
+  QList<QgsPointXY>::const_iterator pointIt = mControlPoints.constBegin();
+  QgsPointXY pointIm1 = *pointIt;
   ++pointIt;
-  QgsPoint pointI = *pointIt;
+  QgsPointXY pointI = *pointIt;
   ++pointIt;
-  QgsPoint pointIp1 = *pointIt;
+  QgsPointXY pointIp1 = *pointIt;
 
   for ( int i = 1; i < n - 1; ++i )
   {

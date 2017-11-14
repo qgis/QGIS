@@ -1,9 +1,25 @@
-class QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanvasItem
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapcanvasannotationitem.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsMapCanvasAnnotationItem: QObject, QgsMapCanvasItem
 {
-%TypeHeaderCode
-#include <qgsmapcanvasannotationitem.h>
+%Docstring
+ An interactive map canvas item which displays a QgsAnnotation.
+.. versionadded:: 3.0
 %End
 
+%TypeHeaderCode
+#include "qgsmapcanvasannotationitem.h"
+%End
   public:
 
     enum MouseMoveAction
@@ -18,29 +34,48 @@ class QgsMapCanvasAnnotationItem : public QObject, public QgsMapCanvasItem
       ResizeFrameLeftUp,
       ResizeFrameRightUp,
       ResizeFrameLeftDown,
-      ResizeFrameRightDown,
+      ResizeFrameRightDown
     };
 
-    QgsMapCanvasAnnotationItem( QgsAnnotation* annotation /Transfer/, QgsMapCanvas* mapCanvas /TransferThis/ );
-    ~QgsMapCanvasAnnotationItem();
+    QgsMapCanvasAnnotationItem( QgsAnnotation *annotation /Transfer/, QgsMapCanvas *mapCanvas /TransferThis/ );
+%Docstring
+ Constructor for QgsMapCanvasAnnotationItem.
+%End
 
-    //const QgsAnnotation* annotation() const { return mAnnotation; }
-    QgsAnnotation* annotation();
 
-    void updatePosition();
+    QgsAnnotation *annotation();
+%Docstring
+ Returns the item's annotation.
+ :rtype: QgsAnnotation
+%End
 
-    QRectF boundingRect() const;
+    virtual void updatePosition();
 
-    void paint( QPainter * painter );
 
-    /**
-     * Returns the mouse move behavior for a given position in scene coordinates
-     */
+    virtual QRectF boundingRect() const;
+
+
+    virtual void paint( QPainter *painter );
+
+
     MouseMoveAction moveActionForPosition( QPointF pos ) const;
+%Docstring
+ Returns the mouse move behavior for a given position in scene coordinates
+ :rtype: MouseMoveAction
+%End
 
-    /**
-     * Returns matching cursor shape for a mouse move action.
-     */
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
+%Docstring
+ Returns matching cursor shape for a mouse move action.
+ :rtype: Qt.CursorShape
+%End
 
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmapcanvasannotationitem.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

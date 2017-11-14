@@ -19,7 +19,7 @@
 #include "qgslogger.h"
 #include <QStringList>
 
-#include <assert.h>
+#include <cassert>
 
 DRW_Header::DRW_Header()
   : curr( nullptr )
@@ -1699,7 +1699,7 @@ void DRW_Header::write( dxfWriter *writer, DRW::Version ver )
     else
       writer->writeDouble( 40, 50.0 );
     writer->writeString( 9, "$CAMERAHEIGHT" );
-    if ( getDouble( "$CAMERAHEIGTH", &varDouble ) )
+    if ( getDouble( "$CAMERAHEIGHT", &varDouble ) )
       writer->writeDouble( 40, varDouble );
     else
       writer->writeDouble( 40, 0.0 );
@@ -2179,7 +2179,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
 //    vars["TDUSRTIMER"]=new DRW_Variant(40, buf->getBitLong());//RLZ: TODO convert to day.msec
 //    vars["TDUSRTIMER"]=new DRW_Variant(40, buf->getBitLong());//RLZ: TODO convert to day.msec
   vars["CECOLOR"] = new DRW_Variant( 62, buf->getCmColor( version ) );//RLZ: TODO read CMC or EMC color
-  dwgHandle HANDSEED = buf->getHandle();//allways present in data stream
+  dwgHandle HANDSEED = buf->getHandle();//always present in data stream
   QgsDebugMsg( QString( "HANDSEED: %1.%2 0x%3" ).arg( HANDSEED.code ).arg( HANDSEED.size ).arg( HANDSEED.ref, 0, 16 ) );
   dwgHandle CLAYER = hBbuf->getHandle();
   QgsDebugMsg( QString( "CLAYER: %1.%2 0x%3" ).arg( CLAYER.code ).arg( CLAYER.size ).arg( CLAYER.ref, 0, 16 ) );
@@ -2708,7 +2708,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   for ( int i = 0; i < 16; i++ )
   {
     t = buf->getRawChar8();
-    l << QString( "0x%1" ).arg( t, 0, 16 );
+    l << QStringLiteral( "0x%1" ).arg( t, 0, 16 );
   }
   QgsDebugMsg( QString( "dwg header end sentinel=%1" ).arg( l.join( " " ) ) );
 
@@ -2753,7 +2753,7 @@ bool DRW_Header::parseDwg( DRW::Version version, dwgBuffer *buf, dwgBuffer *hBbu
   for ( int i = 0; i < 16; i++ )
   {
     t = buf->getRawChar8();
-    l << QString( "0x%1" ).arg( t, 0, 16 );
+    l << QStringLiteral( "0x%1" ).arg( t, 0, 16 );
   }
   QgsDebugMsg( QString( "dwg header end sentinel=%1" ).arg( l.join( " " ) ) );
 

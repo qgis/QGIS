@@ -22,16 +22,19 @@ class QgsOWSConnectionItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsOWSConnectionItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsOWSConnectionItem();
 
     QVector<QgsDataItem *> createChildren() override;
     virtual bool equal( const QgsDataItem *other ) override;
 
-    virtual QList<QAction *> actions() override;
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
 
   private:
     void replacePath( QgsDataItem *item, QString before, QString after );
@@ -42,18 +45,20 @@ class QgsOWSRootItem : public QgsDataCollectionItem
     Q_OBJECT
   public:
     QgsOWSRootItem( QgsDataItem *parent, QString name, QString path );
-    ~QgsOWSRootItem();
 
     QVector<QgsDataItem *> createChildren() override;
 
-    virtual QList<QAction *> actions() override;
-
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
+#endif
 
   public slots:
-    void connectionsChanged();
+#ifdef HAVE_GUI
+    void onConnectionsChanged();
 
     void newConnection();
+#endif
 };
 
 #endif // QGSOWSDATAITEMS_H

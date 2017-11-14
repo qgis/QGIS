@@ -28,12 +28,16 @@ class QgsAmsRootItem : public QgsDataCollectionItem
     QgsAmsRootItem( QgsDataItem *parent, QString name, QString path );
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual QList<QAction *> actions() override;
+#ifdef HAVE_GUI
+    virtual QList<QAction *> actions( QWidget *parent ) override;
     virtual QWidget *paramWidget() override;
+#endif
 
   public slots:
-    void connectionsChanged();
+#ifdef HAVE_GUI
+    void onConnectionsChanged();
     void newConnection();
+#endif
 };
 
 
@@ -44,11 +48,15 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
     QgsAmsConnectionItem( QgsDataItem *parent, QString name, QString path, QString url );
     QVector<QgsDataItem *> createChildren() override;
     bool equal( const QgsDataItem *other ) override;
-    QList<QAction *> actions() override;
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
 
   private:
     QString mUrl;
@@ -56,6 +64,8 @@ class QgsAmsConnectionItem : public QgsDataCollectionItem
 
 class QgsAmsLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
+
   public:
     QgsAmsLayerItem( QgsDataItem *parent, const QString &name, const QString &url, const QString &id, const QString &title, const QString &authid, const QString &format );
 };

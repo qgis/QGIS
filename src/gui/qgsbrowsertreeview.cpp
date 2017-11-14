@@ -33,6 +33,11 @@ void QgsBrowserTreeView::setModel( QAbstractItemModel *model )
   restoreState();
 }
 
+void QgsBrowserTreeView::setBrowserModel( QgsBrowserModel *model )
+{
+  mBrowserModel = model;
+}
+
 void QgsBrowserTreeView::showEvent( QShowEvent *e )
 {
   Q_UNUSED( e );
@@ -56,7 +61,7 @@ void QgsBrowserTreeView::saveState()
   QgsSettings settings;
   QStringList expandedPaths = expandedPathsList( QModelIndex() );
   settings.setValue( expandedPathsKey(), expandedPaths );
-  QgsDebugMsg( "expandedPaths = " + expandedPaths.join( " " ) );
+  QgsDebugMsgLevel( "expandedPaths = " + expandedPaths.join( " " ), 4 );
 }
 
 void QgsBrowserTreeView::restoreState()
@@ -64,7 +69,7 @@ void QgsBrowserTreeView::restoreState()
   QgsSettings settings;
   mExpandPaths = settings.value( expandedPathsKey(), QVariant() ).toStringList();
 
-  QgsDebugMsg( "mExpandPaths = " + mExpandPaths.join( " " ) );
+  QgsDebugMsgLevel( "mExpandPaths = " + mExpandPaths.join( " " ), 4 );
   if ( !mExpandPaths.isEmpty() )
   {
     QSet<QModelIndex> expandIndexSet;
@@ -72,10 +77,28 @@ void QgsBrowserTreeView::restoreState()
     {
       QModelIndex expandIndex = QgsBrowserModel::findPath( model(), path, Qt::MatchStartsWith );
       if ( expandIndex.isValid() )
-        expandIndexSet.insert( expandIndex );
+      {
+        QModelIndex modelIndex = browserModel()->findPath( path, Qt::MatchExactly );
+        if ( modelIndex.isValid() )
+        {
+          QgsDataItem *ptr = browserModel()->dataItem( modelIndex );
+          if ( ptr && ( ptr->capabilities2() & QgsDataItem::Capability::Collapse ) )
+          {
+            QgsDebugMsgLevel( "do not expand index for path " + path, 4 );
+            QModelIndex parentIndex = model()->parent( expandIndex );
+            // Still we need to store the parent in order to expand it
+            if ( parentIndex.isValid() )
+              expandIndexSet.insert( parentIndex );
+          }
+          else
+          {
+            expandIndexSet.insert( expandIndex );
+          }
+        }
+      }
       else
       {
-        QgsDebugMsg( "index for path " + path + " not found" );
+        QgsDebugMsgLevel( "index for path " + path + " not found", 4 );
       }
     }
     Q_FOREACH ( const QModelIndex &expandIndex, expandIndexSet )
@@ -83,12 +106,10 @@ void QgsBrowserTreeView::restoreState()
       expandTree( expandIndex );
     }
   }
-  else
-  {
-    // expand root favorites item
-    QModelIndex index = QgsBrowserModel::findPath( model(), QStringLiteral( "favorites:" ) );
-    expand( index );
-  }
+
+  // expand root favorites item
+  QModelIndex index = QgsBrowserModel::findPath( model(), QStringLiteral( "favorites:" ) );
+  expand( index );
 }
 
 void QgsBrowserTreeView::expandTree( const QModelIndex &index )
@@ -96,7 +117,7 @@ void QgsBrowserTreeView::expandTree( const QModelIndex &index )
   if ( !model() )
     return;
 
-  QgsDebugMsg( "itemPath = " + model()->data( index, QgsBrowserModel::PathRole ).toString() );
+  QgsDebugMsgLevel( "itemPath = " + model()->data( index, QgsBrowserModel::PathRole ).toString(), 4 );
 
   expand( index );
   QModelIndex parentIndex = model()->parent( index );
@@ -122,7 +143,7 @@ bool QgsBrowserTreeView::hasExpandedDescendant( const QModelIndex &index ) const
   if ( !model() )
     return false;
 
-  for ( int i = 0 ; i < model()->rowCount( index ); i++ )
+  for ( int i = 0; i < model()->rowCount( index ); i++ )
   {
     QModelIndex childIndex = model()->index( i, 0, index );
     if ( isExpanded( childIndex ) )

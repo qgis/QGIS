@@ -32,7 +32,6 @@ QgsMapToolRotatePointSymbols::QgsMapToolRotatePointSymbols( QgsMapCanvas *canvas
   , mCurrentMouseAzimut( 0.0 )
   , mCurrentRotationFeature( 0.0 )
   , mRotating( false )
-  , mRotationItem( nullptr )
   , mCtrlPressed( false )
 {}
 
@@ -73,14 +72,10 @@ void QgsMapToolRotatePointSymbols::canvasPressEvent( QgsMapMouseEvent *e )
   QgsMapToolPointSymbol::canvasPressEvent( e );
 }
 
-void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPoint &snappedPoint )
+void QgsMapToolRotatePointSymbols::canvasPressOnFeature( QgsMapMouseEvent *e, const QgsFeature &feature, const QgsPointXY &snappedPoint )
 {
   //find out initial arrow direction
   QVariant attrVal = feature.attribute( mCurrentRotationAttributes.toList().at( 0 ) );
-  if ( !attrVal.isValid() )
-  {
-    return;
-  }
 
   mCurrentRotationFeature = attrVal.toDouble();
   createPixmapItem( mMarkerSymbol.get() );
@@ -208,7 +203,7 @@ double QgsMapToolRotatePointSymbols::calculateAzimut( QPoint mousePos )
 {
   int dx = mousePos.x() - mSnappedPoint.x();
   int dy = mousePos.y() - mSnappedPoint.y();
-  return 180 - atan2( ( double ) dx, ( double ) dy ) * 180.0 / M_PI;
+  return 180 - std::atan2( ( double ) dx, ( double ) dy ) * 180.0 / M_PI;
 }
 
 void QgsMapToolRotatePointSymbols::createPixmapItem( QgsMarkerSymbol *markerSymbol )

@@ -25,7 +25,7 @@
  * This represents a date, time or datetime value based on
  * the field configuration.
  *
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
 {
@@ -33,6 +33,11 @@ class CORE_EXPORT QgsDateTimeFieldFormatter : public QgsFieldFormatter
     static const QString DEFAULT_DATE_FORMAT;
     static const QString DEFAULT_TIME_FORMAT;
     static const QString DEFAULT_DATETIME_FORMAT;
+
+    /**
+      * Default constructor of field formatter for a date time field.
+      */
+    QgsDateTimeFieldFormatter() = default;
 
     virtual QString id() const override;
 

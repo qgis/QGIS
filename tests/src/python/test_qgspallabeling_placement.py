@@ -23,10 +23,12 @@ import sys
 
 from qgis.PyQt.QtCore import QThreadPool, qDebug
 
-from qgis.core import (QgsPalLayerSettings,
+from qgis.core import (QgsLabelingEngineSettings,
+                       QgsPalLayerSettings,
                        QgsSingleSymbolRenderer,
                        QgsMarkerSymbol,
-                       QgsProperty)
+                       QgsProperty,
+                       QgsVectorLayerSimpleLabeling)
 from utilities import getTempfilePath, renderMapToImage, mapSettingsString
 
 from test_qgspallabeling_base import TestQgsPalLabeling, runSuite
@@ -39,8 +41,6 @@ class TestPlacementBase(TestQgsPalLabeling):
     def setUpClass(cls):
         if not cls._BaseSetup:
             TestQgsPalLabeling.setUpClass()
-        cls._Pal.setDrawLabelRectOnly(True)
-        cls._Pal.saveEngineSettings()
 
     @classmethod
     def tearDownClass(cls):
@@ -54,15 +54,20 @@ class TestPlacementBase(TestQgsPalLabeling):
         self.removeAllLayers()
         self.configTest('pal_placement', 'sp')
         self._TestImage = ''
-        # ensure per test map settings stay encapsulated
-        self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
+
         self._Mismatch = 0
         self._ColorTol = 0
         self._Mismatches.clear()
         self._ColorTols.clear()
 
+        # render only rectangles of the placed labels
+        engine_settings = QgsLabelingEngineSettings()
+        engine_settings.setFlag(QgsLabelingEngineSettings.DrawLabelRectOnly)
+        self._MapSettings.setLabelingEngineSettings(engine_settings)
+
     def checkTest(self, **kwargs):
-        self.lyr.writeToLayer(self.layer)
+        if kwargs.get('apply_simple_labeling', True):
+            self.layer.setLabeling(QgsVectorLayerSimpleLabeling(self.lyr))
 
         ms = self._MapSettings  # class settings
         settings_type = 'Class'
@@ -168,8 +173,7 @@ class TestPointPlacement(TestPlacementBase):
         # is INSIDE the polygon
         self.layer = TestQgsPalLabeling.loadFeatureLayer('polygon_rule_based')
         self._TestMapSettings = self.cloneMapSettings(self._MapSettings)
-        self.lyr.placement = QgsPalLayerSettings.Horizontal
-        self.checkTest()
+        self.checkTest(apply_simple_labeling=False)
         self.removeMapLayer(self.layer)
         self.layer = None
 

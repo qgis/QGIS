@@ -32,12 +32,12 @@ namespace QgsWcs
   QDomDocument createDescribeCoverageDocument( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
       const QgsServerRequest &request );
 
-  /** Output WCS DescribeCoverage response
+  /**
+   * Output WCS DescribeCoverage response
    */
   void writeDescribeCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                               const QgsServerRequest &request, QgsServerResponse &response );
 
-} // samespace QgsWcs
+} // namespace QgsWcs
 
 #endif
-

@@ -18,7 +18,7 @@
 #include "qgsattributeform.h"
 
 QgsListWidgetWrapper::QgsListWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ):
-  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent ), mWidget( nullptr )
+  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
 {
 }
 
@@ -53,7 +53,7 @@ void QgsListWidgetWrapper::initWidget( QWidget *editor )
     mWidget = editor->findChild<QgsListWidget *>();
   }
 
-  connect( mWidget, SIGNAL( valueChanged() ), this, SLOT( onValueChanged() ) );
+  connect( mWidget, &QgsListWidget::valueChanged, this, &QgsListWidgetWrapper::onValueChanged );
 }
 
 bool QgsListWidgetWrapper::valid() const

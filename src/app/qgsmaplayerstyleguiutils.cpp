@@ -35,14 +35,14 @@ QAction *QgsMapLayerStyleGuiUtils::actionAddStyle( QgsMapLayer *layer, QObject *
 {
   QAction *a = new QAction( tr( "Add..." ), parent );
   a->setData( QVariant::fromValue<QObject *>( layer ) );
-  connect( a, SIGNAL( triggered() ), this, SLOT( addStyle() ) );
+  connect( a, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::addStyle );
   return a;
 }
 
 QAction *QgsMapLayerStyleGuiUtils::actionRemoveStyle( QgsMapLayer *layer, QObject *parent )
 {
   QAction *a = new QAction( tr( "Remove Current" ), parent );
-  a->connect( a, SIGNAL( triggered() ), this, SLOT( removeStyle() ) );
+  connect( a, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::removeStyle );
   a->setData( QVariant::fromValue<QObject *>( layer ) );
   a->setEnabled( layer->styleManager()->styles().count() > 1 );
   return a;
@@ -51,7 +51,7 @@ QAction *QgsMapLayerStyleGuiUtils::actionRemoveStyle( QgsMapLayer *layer, QObjec
 QAction *QgsMapLayerStyleGuiUtils::actionRenameStyle( QgsMapLayer *layer, QObject *parent )
 {
   QAction *a = new QAction( tr( "Rename Current..." ), parent );
-  a->connect( a, SIGNAL( triggered() ), this, SLOT( renameStyle() ) );
+  connect( a, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::renameStyle );
   a->setData( QVariant::fromValue<QObject *>( layer ) );
   return a;
 }
@@ -62,13 +62,11 @@ QList<QAction *> QgsMapLayerStyleGuiUtils::actionsUseStyle( QgsMapLayer *layer, 
   bool onlyOneStyle = mgr->styles().count() == 1;
 
   QList<QAction *> actions;
-  Q_FOREACH ( QString name, mgr->styles() )
+  Q_FOREACH ( const QString &name, mgr->styles() )
   {
     bool active = name == mgr->currentStyle();
-    if ( name.isEmpty() )
-      name = defaultStyleName();
     QAction *actionUse = new QAction( name, parent );
-    connect( actionUse, SIGNAL( triggered() ), this, SLOT( useStyle() ) );
+    connect( actionUse, &QAction::triggered, this, &QgsMapLayerStyleGuiUtils::useStyle );
     actionUse->setCheckable( true );
     actionUse->setChecked( active );
     actionUse->setEnabled( !onlyOneStyle );
@@ -89,12 +87,6 @@ void QgsMapLayerStyleGuiUtils::addStyleManagerActions( QMenu *m, QgsMapLayer *la
   Q_FOREACH ( QAction *a, actionsUseStyle( layer, m ) )
     m->addAction( a );
 }
-
-QString QgsMapLayerStyleGuiUtils::defaultStyleName()
-{
-  return tr( "(default)" );
-}
-
 
 void QgsMapLayerStyleGuiUtils::addStyle()
 {
@@ -133,8 +125,6 @@ void QgsMapLayerStyleGuiUtils::useStyle()
   if ( !layer )
     return;
   QString name = a->text();
-  if ( name == defaultStyleName() )
-    name.clear();
 
   bool res = layer->styleManager()->setCurrentStyle( name );
   if ( !res )

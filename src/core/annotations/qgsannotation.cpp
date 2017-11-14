@@ -55,7 +55,7 @@ void QgsAnnotation::setHasFixedMapPosition( bool fixed )
   emit moved();
 }
 
-void QgsAnnotation::setMapPosition( const QgsPoint &position )
+void QgsAnnotation::setMapPosition( const QgsPointXY &position )
 {
   mMapPosition = position;
   emit moved();
@@ -145,6 +145,16 @@ void QgsAnnotation::setMapLayer( QgsMapLayer *layer )
   emit mapLayerChanged();
 }
 
+void QgsAnnotation::setAssociatedFeature( const QgsFeature &feature )
+{
+  mFeature = feature;
+}
+
+QSizeF QgsAnnotation::minimumFrameSize() const
+{
+  return QSizeF( 0, 0 );
+}
+
 void QgsAnnotation::updateBalloon()
 {
   //first test if the point is in the frame. In that case we don't need a balloon.
@@ -167,13 +177,13 @@ void QgsAnnotation::updateBalloon()
   double minEdgeDist = DBL_MAX;
   int minEdgeIndex = -1;
   QLineF minEdge;
-  QgsPoint minEdgePoint;
-  QgsPoint origin( 0, 0 );
+  QgsPointXY minEdgePoint;
+  QgsPointXY origin( 0, 0 );
 
   for ( int i = 0; i < 4; ++i )
   {
     QLineF currentSegment = segmentList.at( i );
-    QgsPoint currentMinDistPoint;
+    QgsPointXY currentMinDistPoint;
     double currentMinDist = origin.sqrDistToSegment( currentSegment.x1(), currentSegment.y1(), currentSegment.x2(), currentSegment.y2(), currentMinDistPoint );
     if ( currentMinDist < minEdgeDist )
     {
@@ -195,7 +205,7 @@ void QgsAnnotation::updateBalloon()
   mBalloonSegment = minEdgeIndex;
   QPointF minEdgeEnd = minEdge.p2();
   mBalloonSegmentPoint1 = QPointF( minEdgePoint.x(), minEdgePoint.y() );
-  if ( sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < segmentPointWidth )
+  if ( std::sqrt( minEdgePoint.sqrDist( minEdgeEnd.x(), minEdgeEnd.y() ) ) < segmentPointWidth )
   {
     mBalloonSegmentPoint1 = pointOnLineWithDistance( minEdge.p2(), minEdge.p1(), segmentPointWidth );
   }
@@ -251,7 +261,7 @@ QPointF QgsAnnotation::pointOnLineWithDistance( QPointF startPoint, QPointF dire
 {
   double dx = directionPoint.x() - startPoint.x();
   double dy = directionPoint.y() - startPoint.y();
-  double length = sqrt( dx * dx + dy * dy );
+  double length = std::sqrt( dx * dx + dy * dy );
   double scaleFactor = distance / length;
   return QPointF( startPoint.x() + dx * scaleFactor, startPoint.y() + dy * scaleFactor );
 }
@@ -300,7 +310,7 @@ void QgsAnnotation::drawMarkerSymbol( QgsRenderContext &context ) const
   }
 }
 
-void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc ) const
+void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   if ( itemElem.isNull() )
   {
@@ -326,7 +336,7 @@ void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc ) const
   }
   if ( mMarkerSymbol )
   {
-    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol.get(), doc );
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "marker symbol" ), mMarkerSymbol.get(), doc, context );
     if ( !symbolElem.isNull() )
     {
       annotationElem.appendChild( symbolElem );
@@ -335,7 +345,7 @@ void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc ) const
   if ( mFillSymbol )
   {
     QDomElement fillElem = doc.createElement( QStringLiteral( "fillSymbol" ) );
-    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), mFillSymbol.get(), doc );
+    QDomElement symbolElem = QgsSymbolLayerUtils::saveSymbol( QStringLiteral( "fill symbol" ), mFillSymbol.get(), doc, context );
     if ( !symbolElem.isNull() )
     {
       fillElem.appendChild( symbolElem );
@@ -345,9 +355,8 @@ void QgsAnnotation::_writeXml( QDomElement &itemElem, QDomDocument &doc ) const
   itemElem.appendChild( annotationElem );
 }
 
-void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QDomDocument &doc )
+void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QgsReadWriteContext &context )
 {
-  Q_UNUSED( doc );
   if ( annotationElem.isNull() )
   {
     return;
@@ -359,7 +368,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QDomDocum
     mRelativePosition = QPointF();
   else
     mRelativePosition = pos;
-  QgsPoint mapPos;
+  QgsPointXY mapPos;
   mapPos.setX( annotationElem.attribute( QStringLiteral( "mapPosX" ), QStringLiteral( "0" ) ).toDouble() );
   mapPos.setY( annotationElem.attribute( QStringLiteral( "mapPosY" ), QStringLiteral( "0" ) ).toDouble() );
   mMapPosition = mapPos;
@@ -385,7 +394,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QDomDocum
   QDomElement symbolElem = annotationElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !symbolElem.isNull() )
   {
-    QgsMarkerSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem );
+    QgsMarkerSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsMarkerSymbol>( symbolElem, context );
     if ( symbol )
     {
       mMarkerSymbol.reset( symbol );
@@ -399,7 +408,7 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QDomDocum
     QDomElement symbolElem = fillElem.firstChildElement( QStringLiteral( "symbol" ) );
     if ( !symbolElem.isNull() )
     {
-      QgsFillSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem );
+      QgsFillSymbol *symbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElem, context );
       if ( symbol )
       {
         mFillSymbol.reset( symbol );
@@ -429,5 +438,24 @@ void QgsAnnotation::_readXml( const QDomElement &annotationElem, const QDomDocum
 
   updateBalloon();
   emit mapLayerChanged();
+}
+
+void QgsAnnotation::copyCommonProperties( QgsAnnotation *target ) const
+{
+  target->mVisible = mVisible;
+  target->mHasFixedMapPosition = mHasFixedMapPosition;
+  target->mMapPosition = mMapPosition;
+  target->mMapPositionCrs = mMapPositionCrs;
+  target->mRelativePosition = mRelativePosition;
+  target->mOffsetFromReferencePoint = mOffsetFromReferencePoint;
+  target->mFrameSize = mFrameSize;
+  target->mMarkerSymbol.reset( mMarkerSymbol ? mMarkerSymbol->clone() : nullptr );
+  target->mContentsMargins = mContentsMargins;
+  target->mFillSymbol.reset( mFillSymbol ? mFillSymbol->clone() : nullptr );
+  target->mBalloonSegment = mBalloonSegment;
+  target->mBalloonSegmentPoint1 = mBalloonSegmentPoint1;
+  target->mBalloonSegmentPoint2 = mBalloonSegmentPoint2;
+  target->mMapLayer = mMapLayer;
+  target->mFeature = mFeature;
 }
 

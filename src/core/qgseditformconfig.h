@@ -19,16 +19,19 @@
 #define QGSEDITFORMCONFIG_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include <QMap>
 #include <QDomElement>
 #include <QDomDocument>
 
 #include "qgsattributeeditorelement.h"
 
+class QgsReadWriteContext;
 class QgsRelationManager;
 class QgsEditFormConfigPrivate;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsEditFormConfig
  */
 class CORE_EXPORT QgsEditFormConfig
@@ -45,7 +48,8 @@ class CORE_EXPORT QgsEditFormConfig
 
     struct GroupData
     {
-      GroupData() {}
+      //! Constructor for GroupData
+      GroupData() = default;
       GroupData( const QString &name, const QList<QString> &fields )
         : mName( name )
         , mFields( fields )
@@ -56,15 +60,16 @@ class CORE_EXPORT QgsEditFormConfig
 
     struct TabData
     {
-      TabData() {}
-      TabData( const QString &name, const QList<QString> &fields, const QList<GroupData> &groups )
+      //! Constructor for TabData
+      TabData() = default;
+      TabData( const QString &name, const QList<QString> &fields, const QList<QgsEditFormConfig::GroupData> &groups )
         : mName( name )
         , mFields( fields )
         , mGroups( groups )
       {}
       QString mName;
       QList<QString> mFields;
-      QList<GroupData> mGroups;
+      QList<QgsEditFormConfig::GroupData> mGroups;
     };
 
     /**
@@ -78,20 +83,20 @@ class CORE_EXPORT QgsEditFormConfig
     };
 
     /**
-     * The python init code source options.
+     * The Python init code source options.
      */
     enum PythonInitCodeSource
     {
-      CodeSourceNone = 0,             //!< Do not use python code at all
-      CodeSourceFile = 1,             //!< Load the python code from an external file
-      CodeSourceDialog = 2,           //!< Use the python code provided in the dialog
-      CodeSourceEnvironment = 3       //!< Use the python code available in the python environment
+      CodeSourceNone = 0,             //!< Do not use Python code at all
+      CodeSourceFile = 1,             //!< Load the Python code from an external file
+      CodeSourceDialog = 2,           //!< Use the Python code provided in the dialog
+      CodeSourceEnvironment = 3       //!< Use the Python code available in the Python environment
     };
 
     /**
      * Copy constructor
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     QgsEditFormConfig( const QgsEditFormConfig &o );
     ~QgsEditFormConfig();
@@ -105,7 +110,7 @@ class CORE_EXPORT QgsEditFormConfig
      *
      * This is only useful in combination with EditorLayout::TabLayout.
      */
-    void addTab( QgsAttributeEditorElement *data );
+    void addTab( QgsAttributeEditorElement *data SIP_TRANSFER );
 
     /**
      * Returns a list of tabs for EditorLayout::TabLayout obtained from the invisible root container.
@@ -120,7 +125,7 @@ class CORE_EXPORT QgsEditFormConfig
     /**
      * Get the invisible root container for the drag and drop designer form (EditorLayout::TabLayout).
      *
-     * @note Added in QGIS 3
+     * \since QGIS 3
      */
     QgsAttributeEditorContainer *invisibleRootContainer();
 
@@ -151,30 +156,30 @@ class CORE_EXPORT QgsEditFormConfig
      *   layer.setEditFormConfig(editFormConfig)
      * \endcode
      *
-     * @param widgetName  The name of the widget to configure
-     * @param config      The config to set for this widget
-     * @returns false if a field exists with the provided widgetName. In this case
+     * \param widgetName  The name of the widget to configure
+     * \param config      The config to set for this widget
+     * \returns false if a field exists with the provided widgetName. In this case
      *          QgsVectorLayer::setEditorWidgetSetup should be used.
      *
-     * @see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
+     * \see QgsVectorLayer::setEditorWidgetSetup() for field configurations.
      */
     bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
 
     /**
      * Get the configuration for the editor widget with the given name.
      *
-     * @param widgetName The name of the widget.
+     * \param widgetName The name of the widget.
      *
-     * @return The configuration for the editor widget or an empty config if the field does not exist
+     * \returns The configuration for the editor widget or an empty config if the field does not exist
      */
     QVariantMap widgetConfig( const QString &widgetName ) const;
 
     /**
      * Remove the configuration for the editor widget with the given name
      *
-     * @param widgetName The name of the widget.
+     * \param widgetName The name of the widget.
      *
-     * @return true if a configuration has been removed
+     * \returns true if a configuration has been removed
      */
     bool removeWidgetConfig( const QString &widgetName );
 
@@ -208,52 +213,53 @@ class CORE_EXPORT QgsEditFormConfig
     // Python form init function stuff
 
     /**
-     * Get python function for edit form initialization.
-     * Will be looked up in a python file relative to the project folder if it
+     * Get Python function for edit form initialization.
+     * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
-     * in the python code set with @link setInitCode @endlink.
+     * in the Python code set with setInitCode().
      */
     QString initFunction() const;
 
     /**
-     * Set python function for edit form initialization.
-     * Will be looked up in a python file relative to the project folder if it
+     * Set Python function for edit form initialization.
+     * Will be looked up in a Python file relative to the project folder if it
      * includes a module name or if it's a pure function name it will searched
-     * in the python code set with @link setInitCode @endlink.
+     * in the Python code set with setInitCode().
      */
     void setInitFunction( const QString &function );
 
     /**
-     * Get python code for edit form initialization.
+     * Get Python code for edit form initialization.
      */
     QString initCode() const;
 
     /**
-     * Set python code for edit form initialization.
+     * Set Python code for edit form initialization.
      * Make sure that you also set the appropriate function name in
-     * @link setInitFunction @endlink
+     * setInitFunction().
      */
     void setInitCode( const QString &code );
 
     /**
-     * Get python external file path for edit form initialization.
+     * Get Python external file path for edit form initialization.
      */
     QString initFilePath() const;
 
     /**
-     * Set python external file path for edit form initialization.
+     * Set Python external file path for edit form initialization.
      * Make sure that you also set the appropriate function name in
-     * @link setInitFunction @endlink
+     * setInitFunction().
      */
     void setInitFilePath( const QString &filePath );
 
-    /** Return python code source for edit form initialization
+    /**
+     * Return Python code source for edit form initialization
      *  (if it shall be loaded from a file, read from the
      *  provided dialog editor or inherited from the environment)
      */
     PythonInitCodeSource initCodeSource() const;
 
-    //! Set if python code shall be used for edit form initialization and its origin
+    //! Set if Python code shall be used for edit form initialization and its origin
     void setInitCodeSource( PythonInitCodeSource initCodeSource );
 
     //! Type of feature form pop-up suppression after feature creation (overrides app setting)
@@ -267,13 +273,13 @@ class CORE_EXPORT QgsEditFormConfig
      * Read XML information
      * Deserialize on project load
      */
-    void readXml( const QDomNode &node );
+    void readXml( const QDomNode &node, const QgsReadWriteContext &context );
 
     /**
      * Write XML information
      * Serialize on project save
      */
-    void writeXml( QDomNode &node ) const;
+    void writeXml( QDomNode &node, const QgsReadWriteContext &context ) const;
 
     /**
      * Deserialize drag and drop designer elements.

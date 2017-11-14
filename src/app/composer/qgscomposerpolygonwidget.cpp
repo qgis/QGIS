@@ -26,6 +26,7 @@ QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon *composer
   , mComposerPolygon( composerPolygon )
 {
   setupUi( this );
+  connect( mPolygonStyleButton, &QPushButton::clicked, this, &QgsComposerPolygonWidget::mPolygonStyleButton_clicked );
   setPanelTitle( tr( "Polygon properties" ) );
 
   //add widget for general composer item properties
@@ -41,15 +42,11 @@ QgsComposerPolygonWidget::QgsComposerPolygonWidget( QgsComposerPolygon *composer
 
   if ( mComposerPolygon )
   {
-    connect( mComposerPolygon, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( mComposerPolygon, &QgsComposerObject::itemChanged, this, &QgsComposerPolygonWidget::setGuiElementValues );
   }
 }
 
-QgsComposerPolygonWidget::~QgsComposerPolygonWidget()
-{
-}
-
-void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
+void QgsComposerPolygonWidget::mPolygonStyleButton_clicked()
 {
   if ( !mComposerPolygon )
   {
@@ -67,8 +64,8 @@ void QgsComposerPolygonWidget::on_mPolygonStyleButton_clicked()
   symbolContext.setExpressionContext( &context );
   d->setContext( symbolContext );
 
-  connect( d, SIGNAL( widgetChanged() ), this, SLOT( updateStyleFromWidget() ) );
-  connect( d, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( cleanUpStyleSelector( QgsPanelWidget * ) ) );
+  connect( d, &QgsPanelWidget::widgetChanged, this, &QgsComposerPolygonWidget::updateStyleFromWidget );
+  connect( d, &QgsPanelWidget::panelAccepted, this, &QgsComposerPolygonWidget::cleanUpStyleSelector );
   openPanel( d );
   mComposerPolygon->beginCommand( tr( "Polygon style changed" ) );
 }
@@ -87,7 +84,7 @@ void QgsComposerPolygonWidget::updateStyleFromWidget()
 {
   if ( QgsSymbolSelectorWidget *w = qobject_cast<QgsSymbolSelectorWidget *>( sender() ) )
   {
-    mComposerPolygon->setPolygonStyleSymbol( dynamic_cast< QgsFillSymbol * >( w->symbol() ) );
+    mComposerPolygon->setPolygonStyleSymbol( static_cast< QgsFillSymbol * >( w->symbol() ) );
     mComposerPolygon->update();
   }
 }

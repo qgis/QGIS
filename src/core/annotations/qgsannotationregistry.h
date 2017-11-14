@@ -16,6 +16,8 @@
 #ifndef QGSANNOTATIONREGISTRY_H
 #define QGSANNOTATIONREGISTRY_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include "qgsannotation.h"
 #include "qgstextannotation.h"
@@ -35,7 +37,7 @@ typedef std::function < QgsAnnotation*() > QgsCreateAnnotationFunc;
  * \class QgsAnnotationMetadata
  * \ingroup core
  * Metadata item for an annotation type within a QgsAnnotationRegistry.
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAnnotationMetadata
 {
@@ -74,7 +76,7 @@ class CORE_EXPORT QgsAnnotationMetadata
  * \class QgsAnnotationRegistry
  * \ingroup core
  * Handles registration and creation of annotation item types.
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsAnnotationRegistry
 {

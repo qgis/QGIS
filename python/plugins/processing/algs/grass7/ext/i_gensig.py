@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'March 2016'
@@ -31,7 +30,7 @@ from os import path
 from ..Grass7Utils import Grass7Utils
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # Transform output files in string parameter
     signatureFile = alg.getOutputFromName('signaturefile')
     origSigFile = signatureFile.value
@@ -41,7 +40,7 @@ def processCommand(alg):
     signatureFile = file2Output(alg, 'signaturefile')
 
     # Regroup rasters
-    group, subgroup = regroupRasters(alg, 'input', 'group', 'subgroup')
+    group, subgroup = regroupRasters(alg, parameters, 'input', 'group', 'subgroup')
 
     # Re-add signature files
     alg.addOutput(signatureFile)

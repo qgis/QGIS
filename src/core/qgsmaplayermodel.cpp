@@ -24,24 +24,16 @@
 
 QgsMapLayerModel::QgsMapLayerModel( const QList<QgsMapLayer *> &layers, QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayersChecked( QMap<QString, Qt::CheckState>() )
-  , mItemCheckable( false )
-  , mAllowEmpty( false )
-  , mShowCrs( false )
 {
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( layers );
 }
 
 QgsMapLayerModel::QgsMapLayerModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mLayersChecked( QMap<QString, Qt::CheckState>() )
-  , mItemCheckable( false )
-  , mAllowEmpty( false )
-  , mShowCrs( false )
 {
-  connect( QgsProject::instance(), SIGNAL( layersAdded( QList<QgsMapLayer *> ) ), this, SLOT( addLayers( QList<QgsMapLayer *> ) ) );
-  connect( QgsProject::instance(), SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( removeLayers( QStringList ) ) );
+  connect( QgsProject::instance(), &QgsProject::layersAdded, this, &QgsMapLayerModel::addLayers );
+  connect( QgsProject::instance(), static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsMapLayerModel::removeLayers );
   addLayers( QgsProject::instance()->mapLayers().values() );
 }
 
@@ -52,9 +44,10 @@ void QgsMapLayerModel::setItemsCheckable( bool checkable )
 
 void QgsMapLayerModel::checkAll( Qt::CheckState checkState )
 {
-  Q_FOREACH ( const QString &key, mLayersChecked.keys() )
+  QMap<QString, Qt::CheckState>::iterator i = mLayersChecked.begin();
+  for ( ; i != mLayersChecked.end(); ++i )
   {
-    mLayersChecked[key] = checkState;
+    *i = checkState;
   }
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
@@ -106,6 +99,11 @@ QModelIndex QgsMapLayerModel::indexFromLayer( QgsMapLayer *layer ) const
   if ( r >= 0 && mAllowEmpty )
     r++;
   return index( r, 0 );
+}
+
+QgsMapLayer *QgsMapLayerModel::layerFromIndex( const QModelIndex &index ) const
+{
+  return static_cast<QgsMapLayer *>( index.internalPointer() );
 }
 
 void QgsMapLayerModel::setAdditionalItems( const QStringList &items )
@@ -284,12 +282,24 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       QgsMapLayer *layer = static_cast<QgsMapLayer *>( index.internalPointer() );
       if ( layer )
       {
-        QString tooltip = "<b>" +
-                          ( layer->title().isEmpty() ? layer->shortName() : layer->title() ) + "</b>";
+        QStringList parts;
+        QString title = layer->title().isEmpty() ? layer->shortName() : layer->title();
+        if ( title.isEmpty() )
+          title = layer->name();
+        title = "<b>" + title + "</b>";
+        if ( layer->crs().isValid() )
+        {
+          if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( layer ) )
+            title = tr( "%1 (%2 - %3)" ).arg( title, QgsWkbTypes::displayString( vl->wkbType() ), layer->crs().authid() );
+          else
+            title = tr( "%1 (%2) " ).arg( title, layer->crs().authid() );
+        }
+        parts << title;
+
         if ( !layer->abstract().isEmpty() )
-          tooltip += "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
-        tooltip += "<br/><i>" + layer->publicSource() + "</i>";
-        return tooltip;
+          parts << "<br/>" + layer->abstract().replace( QLatin1String( "\n" ), QLatin1String( "<br/>" ) );
+        parts << "<i>" + layer->publicSource() + "</i>";
+        return parts.join( QStringLiteral( "<br/>" ) );
       }
       return QVariant();
     }
@@ -303,54 +313,7 @@ QVariant QgsMapLayerModel::data( const QModelIndex &index, int role ) const
       if ( !layer )
         return QVariant();
 
-      QgsMapLayer::LayerType type = layer->type();
-      if ( role == Qt::DecorationRole )
-      {
-        switch ( type )
-        {
-          case QgsMapLayer::RasterLayer:
-          {
-            return QgsLayerItem::iconRaster();
-          }
-
-          case QgsMapLayer::VectorLayer:
-          {
-            QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
-            if ( !vl )
-            {
-              return QIcon();
-            }
-            QgsWkbTypes::GeometryType geomType = vl->geometryType();
-            switch ( geomType )
-            {
-              case QgsWkbTypes::PointGeometry:
-              {
-                return QgsLayerItem::iconPoint();
-              }
-              case QgsWkbTypes::PolygonGeometry :
-              {
-                return QgsLayerItem::iconPolygon();
-              }
-              case QgsWkbTypes::LineGeometry :
-              {
-                return QgsLayerItem::iconLine();
-              }
-              case QgsWkbTypes::NullGeometry :
-              {
-                return QgsLayerItem::iconTable();
-              }
-              default:
-              {
-                return QIcon();
-              }
-            }
-          }
-          default:
-          {
-            return QIcon();
-          }
-        }
-      }
+      return iconForLayer( layer );
     }
   }
 
@@ -382,6 +345,54 @@ Qt::ItemFlags QgsMapLayerModel::flags( const QModelIndex &index ) const
     flags |= Qt::ItemIsUserCheckable;
   }
   return flags;
+}
+
+QIcon QgsMapLayerModel::iconForLayer( QgsMapLayer *layer )
+{
+  switch ( layer->type() )
+  {
+    case QgsMapLayer::RasterLayer:
+    {
+      return QgsLayerItem::iconRaster();
+    }
+
+    case QgsMapLayer::VectorLayer:
+    {
+      QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( layer );
+      if ( !vl )
+      {
+        return QIcon();
+      }
+      QgsWkbTypes::GeometryType geomType = vl->geometryType();
+      switch ( geomType )
+      {
+        case QgsWkbTypes::PointGeometry:
+        {
+          return QgsLayerItem::iconPoint();
+        }
+        case QgsWkbTypes::PolygonGeometry :
+        {
+          return QgsLayerItem::iconPolygon();
+        }
+        case QgsWkbTypes::LineGeometry :
+        {
+          return QgsLayerItem::iconLine();
+        }
+        case QgsWkbTypes::NullGeometry :
+        {
+          return QgsLayerItem::iconTable();
+        }
+        default:
+        {
+          return QIcon();
+        }
+      }
+    }
+    default:
+    {
+      return QIcon();
+    }
+  }
 }
 
 

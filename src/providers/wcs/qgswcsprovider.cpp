@@ -30,7 +30,12 @@
 #include "qgsnetworkaccessmanager.h"
 #include "qgsnetworkreplyparser.h"
 #include "qgsmessagelog.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
+
+#ifdef HAVE_GUI
+#include "qgswcssourceselect.h"
+#include "qgssourceselectprovider.h"
+#endif
 
 #include <QNetworkRequest>
 #include <QNetworkReply>
@@ -62,27 +67,7 @@ static QString DEFAULT_LATLON_CRS = QStringLiteral( "CRS:84" );
 
 QgsWcsProvider::QgsWcsProvider( const QString &uri )
   : QgsRasterDataProvider( uri )
-  , QgsGdalProviderBase()
-  , mHttpUri( QString::null )
-  , mCoverageSummary()
-  , mWidth( 0 )
-  , mHeight( 0 )
-  , mXBlockSize( 0 )
-  , mYBlockSize( 0 )
-  , mHasSize( false )
-  , mBandCount( 0 )
-  , mCoverageCrs()
-  , mCachedMemFile( nullptr )
-  , mCachedGdalDataset( nullptr )
   , mCachedViewExtent( 0 )
-  , mCachedViewWidth( 0 )
-  , mCachedViewHeight( 0 )
-  , mExtentDirty( true )
-  , mGetFeatureInfoUrlBase( QLatin1String( "" ) )
-  , mErrors( 0 )
-  , mFixBox( false )
-  , mFixRotate( false )
-  , mCacheLoadControl( QNetworkRequest::PreferNetwork )
 {
   QgsDebugMsg( "constructing with uri '" + mHttpUri + "'." );
 
@@ -211,7 +196,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri )
   }
   double xRes = box.width() / width;
   double yRes = box.height() / height;
-  QgsPoint p = box.center();
+  QgsPointXY p = box.center();
 
   // width and height different to recognize rotation
   int requestWidth = 6;
@@ -235,12 +220,12 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri )
     return;
   }
 
-  mBandCount = GDALGetRasterCount( mCachedGdalDataset );
+  mBandCount = GDALGetRasterCount( mCachedGdalDataset.get() );
   QgsDebugMsg( QString( "mBandCount = %1" ).arg( mBandCount ) );
 
   // Check for server particularities (bbox, rotation)
-  int responseWidth = GDALGetRasterXSize( mCachedGdalDataset );
-  int responseHeight = GDALGetRasterYSize( mCachedGdalDataset );
+  int responseWidth = GDALGetRasterXSize( mCachedGdalDataset.get() );
+  int responseHeight = GDALGetRasterYSize( mCachedGdalDataset.get() );
 
   QgsDebugMsg( QString( "requestWidth = %1 requestHeight = %2 responseWidth = %3 responseHeight = %4)" ).arg( requestWidth ).arg( requestHeight ).arg( responseWidth ).arg( responseHeight ) );
   // GeoServer and ArcGIS are using for 1.1 box "pixel" edges
@@ -268,7 +253,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri )
   mGdalDataType.reserve( mBandCount );
   for ( int i = 1; i <= mBandCount; i++ )
   {
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
+    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset.get(), i );
     GDALDataType myGdalDataType = GDALGetRasterDataType( gdalBand );
 
     QgsDebugMsg( QString( "myGdalDataType[%1] = %2" ).arg( i - 1 ).arg( myGdalDataType ) );
@@ -349,7 +334,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri )
 
     // Create and store color table
     // TODO: never tested because mapserver (6.0.3) does not support color tables
-    mColorTables.append( QgsGdalProviderBase::colorTable( mCachedGdalDataset, i ) );
+    mColorTables.append( QgsGdalProviderBase::colorTable( mCachedGdalDataset.get(), i ) );
   }
 
   clearCache();
@@ -367,7 +352,7 @@ QgsWcsProvider::QgsWcsProvider( const QString &uri )
   }
 
   mValid = true;
-  QgsDebugMsg( "Constructed ok, provider valid." );
+  QgsDebugMsg( "Constructed OK, provider valid." );
 }
 
 bool QgsWcsProvider::parseUri( const QString &uriString )
@@ -520,14 +505,14 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
     // Unfortunately if the received raster does not have a CRS, the extent is the raster size
     // and in that case it cannot be used to verify extent
     QgsCoordinateReferenceSystem cacheCrs;
-    if ( !cacheCrs.createFromWkt( GDALGetProjectionRef( mCachedGdalDataset ) ) &&
-         !cacheCrs.createFromWkt( GDALGetGCPProjection( mCachedGdalDataset ) ) )
+    if ( !cacheCrs.createFromWkt( GDALGetProjectionRef( mCachedGdalDataset.get() ) ) &&
+         !cacheCrs.createFromWkt( GDALGetGCPProjection( mCachedGdalDataset.get() ) ) )
     {
       QgsDebugMsg( "Cached does not have CRS" );
     }
     QgsDebugMsg( "Cache CRS: " + cacheCrs.authid() + ' ' + cacheCrs.description() );
 
-    QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
+    QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset.get() );
     QgsDebugMsg( "viewExtent = " + viewExtent.toString() );
     QgsDebugMsg( "cacheExtent = " + cacheExtent.toString() );
     // TODO: check also rotated
@@ -550,11 +535,11 @@ void QgsWcsProvider::readBlock( int bandNo, QgsRectangle  const &viewExtent, int
       }
     }
 
-    int width = GDALGetRasterXSize( mCachedGdalDataset );
-    int height = GDALGetRasterYSize( mCachedGdalDataset );
+    int width = GDALGetRasterXSize( mCachedGdalDataset.get() );
+    int height = GDALGetRasterYSize( mCachedGdalDataset.get() );
     QgsDebugMsg( QString( "cached data width = %1 height = %2 (expected %3 x %4)" ).arg( width ).arg( height ).arg( pixelWidth ).arg( pixelHeight ) );
 
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, bandNo );
+    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset.get(), bandNo );
     // TODO: check type?, check band count?
     if ( mFixRotate && width == pixelHeight && height == pixelWidth )
     {
@@ -796,7 +781,7 @@ void QgsWcsProvider::getCache( int bandNo, QgsRectangle  const &viewExtent, int 
   QgsDebugMsg( "Memory file created" );
 
   CPLErrorReset();
-  mCachedGdalDataset = GDALOpen( mCachedMemFilename.toUtf8().constData(), GA_ReadOnly );
+  mCachedGdalDataset.reset( GDALOpen( mCachedMemFilename.toUtf8().constData(), GA_ReadOnly ) );
   if ( !mCachedGdalDataset )
   {
     QgsMessageLog::logMessage( QString::fromUtf8( CPLGetLastErrorMsg() ), tr( "WCS" ) );
@@ -878,8 +863,7 @@ void QgsWcsProvider::clearCache() const
   if ( mCachedGdalDataset )
   {
     QgsDebugMsg( "Close mCachedGdalDataset" );
-    GDALClose( mCachedGdalDataset );
-    mCachedGdalDataset = nullptr;
+    mCachedGdalDataset.reset();
     QgsDebugMsg( "Closed" );
   }
   if ( mCachedMemFile )
@@ -902,7 +886,7 @@ QList<QgsColorRampShader::ColorRampItem> QgsWcsProvider::colorTable( int bandNum
 
 int QgsWcsProvider::colorInterpretation( int bandNo ) const
 {
-  GDALRasterBandH myGdalBand = GDALGetRasterBand( mCachedGdalDataset, bandNo );
+  GDALRasterBandH myGdalBand = GDALGetRasterBand( mCachedGdalDataset.get(), bandNo );
   return colorInterpretationFromGdal( GDALGetRasterColorInterpretation( myGdalBand ) );
 }
 
@@ -1002,7 +986,7 @@ void QgsWcsProvider::parseServiceException( QDomElement const &e, const QString 
       seCode = e.attribute( QStringLiteral( "locator" ) );
       if ( ! exceptions.contains( seCode ) )
       {
-        seCode = QLatin1String( "" );
+        seCode.clear();
       }
     }
     seText = QgsWcsCapabilities::firstChildText( e, QStringLiteral( "ExceptionText" ) );
@@ -1125,12 +1109,12 @@ bool QgsWcsProvider::calculateExtent() const
   getCache( 1, mCoverageExtent, 10, 10 );
   if ( mCachedGdalDataset )
   {
-    QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset );
+    QgsRectangle cacheExtent = QgsGdalProviderBase::extent( mCachedGdalDataset.get() );
     QgsDebugMsg( "mCoverageExtent = " + mCoverageExtent.toString() );
     QgsDebugMsg( "cacheExtent = " + cacheExtent.toString() );
     QgsCoordinateReferenceSystem cacheCrs;
-    if ( !cacheCrs.createFromWkt( GDALGetProjectionRef( mCachedGdalDataset ) ) &&
-         !cacheCrs.createFromWkt( GDALGetGCPProjection( mCachedGdalDataset ) ) )
+    if ( !cacheCrs.createFromWkt( GDALGetProjectionRef( mCachedGdalDataset.get() ) ) &&
+         !cacheCrs.createFromWkt( GDALGetGCPProjection( mCachedGdalDataset.get() ) ) )
     {
       QgsDebugMsg( "Cached does not have CRS" );
     }
@@ -1218,7 +1202,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   // TODO(?): supportedCrs and supportedFormat are not available in 1.0
   // until coverage is described - it would be confusing to show it only if available
 #if 0
-  for ( int j = 0; j < qMin( coverage.supportedCrs.size(), 10 ); j++ )
+  for ( int j = 0; j < std::min( coverage.supportedCrs.size(), 10 ); j++ )
   {
     metadata += htmlRow( tr( "Available in CRS" ), coverage.supportedCrs.value( j ) );
   }
@@ -1228,7 +1212,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
     metadata += htmlRow( tr( "Available in CRS" ), tr( "(and %n more)", "crs", coverage.supportedCrs.size() - 10 ) );
   }
 
-  for ( int j = 0; j < qMin( coverage.supportedFormat.size(), 10 ); j++ )
+  for ( int j = 0; j < std::min( coverage.supportedFormat.size(), 10 ); j++ )
   {
     metadata += htmlRow( tr( "Available in format" ), coverage.supportedFormat.value( j ) );
   }
@@ -1248,7 +1232,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
 
 QString QgsWcsProvider::metadata()
 {
-  QString metadata = QLatin1String( "" );
+  QString metadata;
 
   metadata += QLatin1String( "<tr><td>" );
 
@@ -1284,7 +1268,7 @@ QString QgsWcsProvider::metadata()
 
   metadata += htmlRow( ( "WCS Version" ), mCapabilities.version() );
   metadata += htmlRow( tr( "Title" ), mCapabilities.capabilities().title );
-  metadata +=  htmlRow( tr( "Abstract" ), mCapabilities.capabilities().abstract );
+  metadata += htmlRow( tr( "Abstract" ), mCapabilities.capabilities().abstract );
 #if 0
   // TODO: probably apply stylesheet in QgsWcsCapabilities and save as html
   metadata += htmlRow( tr( "Keywords" ), mCapabilities.service.keywordList.join( "<br />" ) );
@@ -1338,9 +1322,9 @@ QString QgsWcsProvider:: htmlRow( const QString &text1, const QString &text2 )
   return "<tr>" + htmlCell( text1 ) +  htmlCell( text2 ) + "</tr>";
 }
 
-QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
-  QgsDebugMsg( QString( "thePoint =  %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
+  QgsDebugMsg( QString( "thePoint = %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
   QgsDebugMsg( QString( "theWidth = %1 height = %2" ).arg( width ).arg( height ) );
   QgsDebugMsg( "boundingBox = " + boundingBox.toString() );
   QMap<int, QVariant> results;
@@ -1413,8 +1397,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint &point, QgsRast
                                 point.x() + xRes * width / 2,
                                 point.y() + yRes * height / 2 );
 
-    double xResDiff = qAbs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
-    double yResDiff = qAbs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
+    double xResDiff = std::fabs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
+    double yResDiff = std::fabs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
 
     if ( !mCachedGdalDataset ||
          !mCachedViewExtent.contains( point ) ||
@@ -1434,8 +1418,8 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint &point, QgsRast
     double xRes = finalExtent.width() / width;
     double yRes = finalExtent.height() / height;
     QgsDebugMsg( QString( "width = %1 height = %2 xRes = %3 yRes = %4" ).arg( finalExtent.width() ).arg( finalExtent.height() ).arg( xRes ).arg( yRes ) );
-    double xResDiff = qAbs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
-    double yResDiff = qAbs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
+    double xResDiff = std::fabs( mCachedViewExtent.width() / mCachedViewWidth - xRes );
+    double yResDiff = std::fabs( mCachedViewExtent.height() / mCachedViewHeight - yRes );
     QgsDebugMsg( QString( "xRes diff = %1 yRes diff = %2 relative xResDiff = %3 relative yResDiff = %4" ).arg( xResDiff ).arg( yResDiff ).arg( xResDiff / xRes ).arg( yResDiff / yRes ) );
     if ( !mCachedGdalDataset ||
          !mCachedViewExtent.contains( point ) ||
@@ -1479,14 +1463,14 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint &point, QgsRast
   double yRes = mCachedViewExtent.height() / mCachedViewHeight;
 
   // Offset, not the cell index -> flor
-  int col = ( int ) floor( ( x - mCachedViewExtent.xMinimum() ) / xRes );
-  int row = ( int ) floor( ( mCachedViewExtent.yMaximum() - y ) / yRes );
+  int col = ( int ) std::floor( ( x - mCachedViewExtent.xMinimum() ) / xRes );
+  int row = ( int ) std::floor( ( mCachedViewExtent.yMaximum() - y ) / yRes );
 
   QgsDebugMsg( "row = " + QString::number( row ) + " col = " + QString::number( col ) );
 
-  for ( int i = 1; i <= GDALGetRasterCount( mCachedGdalDataset ); i++ )
+  for ( int i = 1; i <= GDALGetRasterCount( mCachedGdalDataset.get() ); i++ )
   {
-    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset, i );
+    GDALRasterBandH gdalBand = GDALGetRasterBand( mCachedGdalDataset.get(), i );
 
     double value;
     CPLErr err = GDALRasterIO( gdalBand, GF_Read, col, row, 1, 1,
@@ -1500,7 +1484,7 @@ QgsRasterIdentifyResult QgsWcsProvider::identify( const QgsPoint &point, QgsRast
 
     // Apply no data and user no data
     if ( ( sourceHasNoDataValue( i ) && useSourceNoDataValue( i ) &&
-           ( qIsNaN( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
+           ( std::isnan( value ) || qgsDoubleNear( value, sourceNoDataValue( i ) ) ) ) ||
          ( QgsRasterRange::contains( value, userNoDataValues( i ) ) ) )
     {
       results.insert( i, QVariant() );
@@ -1626,7 +1610,6 @@ int QgsWcsDownloadHandler::sErrors = 0;
 QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorization &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback )
   : mAuth( auth )
   , mEventLoop( new QEventLoop )
-  , mCacheReply( nullptr )
   , mCachedData( cachedData )
   , mWcsVersion( wcsVersion )
   , mCachedError( cachedError )
@@ -1634,7 +1617,7 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorizati
 {
   if ( feedback )
   {
-    connect( feedback, SIGNAL( canceled() ), this, SLOT( canceled() ), Qt::QueuedConnection );
+    connect( feedback, &QgsFeedback::canceled, this, &QgsWcsDownloadHandler::canceled, Qt::QueuedConnection );
 
     // rendering could have been canceled before we started to listen to canceled() signal
     // so let's check before doing the download and maybe quit prematurely
@@ -1662,8 +1645,8 @@ QgsWcsDownloadHandler::QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorizati
     finish();
     return;
   }
-  connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
-  connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+  connect( mCacheReply, &QNetworkReply::finished, this, &QgsWcsDownloadHandler::cacheReplyFinished );
+  connect( mCacheReply, &QNetworkReply::downloadProgress, this, &QgsWcsDownloadHandler::cacheReplyProgress );
 }
 
 QgsWcsDownloadHandler::~QgsWcsDownloadHandler()
@@ -1709,8 +1692,8 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
         finish();
         return;
       }
-      connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ) );
-      connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ) );
+      connect( mCacheReply, &QNetworkReply::finished, this, &QgsWcsDownloadHandler::cacheReplyFinished );
+      connect( mCacheReply, &QNetworkReply::downloadProgress, this, &QgsWcsDownloadHandler::cacheReplyProgress );
 
       return;
     }
@@ -1721,7 +1704,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
     {
       QVariant phrase = mCacheReply->attribute( QNetworkRequest::HttpReasonPhraseAttribute );
 
-      QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Reason phrase: %2; URL:%3)" )
+      QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Reason phrase: %2; URL: %3)" )
                                  .arg( status.toInt() )
                                  .arg( phrase.toString(),
                                        mCacheReply->url().toString() ), tr( "WCS" ) );
@@ -1759,7 +1742,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       }
       else
       {
-        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL:%3)" )
+        QgsMessageLog::logMessage( tr( "Map request error (Status: %1; Response: %2; URL: %3)" )
                                    .arg( status.toInt() )
                                    .arg( QString::fromUtf8( text ),
                                          mCacheReply->url().toString() ), tr( "WCS" ) );
@@ -1815,13 +1798,13 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
         QString errorTitle, errorText;
         if ( QgsWcsProvider::parseServiceExceptionReportDom( body, mWcsVersion, errorTitle, errorText ) )
         {
-          QgsMessageLog::logMessage( tr( "Map request error (Title:%1; Error:%2; URL: %3)" )
+          QgsMessageLog::logMessage( tr( "Map request error (Title: %1; Error: %2; URL: %3)" )
                                      .arg( errorTitle, errorText,
                                            mCacheReply->url().toString() ), tr( "WCS" ) );
         }
         else
         {
-          QgsMessageLog::logMessage( tr( "Map request error (Response: %1; URL:%2)" )
+          QgsMessageLog::logMessage( tr( "Map request error (Response: %1; URL: %2)" )
                                      .arg( QString::fromUtf8( body ),
                                            mCacheReply->url().toString() ), tr( "WCS" ) );
         }
@@ -1885,8 +1868,8 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
           finish();
           return;
         }
-        connect( mCacheReply, SIGNAL( finished() ), this, SLOT( cacheReplyFinished() ), Qt::DirectConnection );
-        connect( mCacheReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( cacheReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+        connect( mCacheReply, &QNetworkReply::finished, this, &QgsWcsDownloadHandler::cacheReplyFinished, Qt::DirectConnection );
+        connect( mCacheReply, &QNetworkReply::downloadProgress, this, &QgsWcsDownloadHandler::cacheReplyProgress, Qt::DirectConnection );
 
         return;
       }
@@ -1894,7 +1877,7 @@ void QgsWcsDownloadHandler::cacheReplyFinished()
       sErrors++;
       if ( sErrors < 100 )
       {
-        QgsMessageLog::logMessage( tr( "Map request failed [error:%1 url:%2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
+        QgsMessageLog::logMessage( tr( "Map request failed [error: %1 url: %2]" ).arg( mCacheReply->errorString(), mCacheReply->url().toString() ), tr( "WCS" ) );
       }
       else if ( sErrors == 100 )
       {
@@ -1925,3 +1908,32 @@ void QgsWcsDownloadHandler::canceled()
     mCacheReply->abort();
   }
 }
+
+#ifdef HAVE_GUI
+
+//! Provider for WCS layers source select
+class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "wcs" ); }
+    virtual QString text() const override { return QObject::tr( "WCS" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsWCSSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsWcsSourceSelectProvider;
+
+  return providers;
+}
+#endif

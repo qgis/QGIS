@@ -36,7 +36,6 @@ from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.script.WrongScriptException import WrongScriptException
 from processing.script.ScriptUtils import ScriptUtils
-from processing.core.alglist import algList
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
@@ -71,7 +70,7 @@ class AddScriptFromFileAction(ToolboxAction):
                 except WrongScriptException:
                     wrongAlgs.append(os.path.basename(filename))
             if validAlgs:
-                algList.reloadProvider('script')
+                QgsApplication.processingRegistry().providerById('script').refreshAlgorithms()
             if wrongAlgs:
                 QMessageBox.warning(self.toolbox,
                                     self.tr('Error reading scripts', 'AddScriptFromFileAction'),

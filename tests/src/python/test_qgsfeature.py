@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 import os
-from qgis.core import QgsFeature, QgsGeometry, QgsPoint, QgsVectorLayer, NULL, QgsFields, QgsField
+from qgis.core import QgsFeature, QgsGeometry, QgsPointXY, QgsVectorLayer, NULL, QgsFields, QgsField
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 
@@ -28,7 +28,7 @@ class TestQgsFeature(unittest.TestCase):
         feat = QgsFeature()
         feat.initAttributes(1)
         feat.setAttribute(0, "text")
-        feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123, 456)))
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
         myId = feat.id()
         myExpectedId = 0
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedId, myId)
@@ -45,6 +45,26 @@ class TestQgsFeature(unittest.TestCase):
         myValidValue = feat.isValid()
         myMessage = '\nExpected: %s\nGot: %s' % ("True", myValidValue)
         assert myValidValue, myMessage
+
+    def test_Validity(self):
+        f = QgsFeature()
+        self.assertFalse(f.isValid())
+        f.setGeometry(QgsGeometry())
+        self.assertTrue(f.isValid())
+        f.setValid(False)
+        self.assertFalse(f.isValid())
+        fields = QgsFields()
+        field1 = QgsField('my_field')
+        fields.append(field1)
+        field2 = QgsField('my_field2')
+        fields.append(field2)
+        f.setFields(fields)
+        f.setAttribute(0, 0)
+        self.assertTrue(f.isValid())
+        f.setValid(False)
+        self.assertFalse(f.isValid())
+        f.setId(27)
+        self.assertTrue(f.isValid())
 
     def test_Attributes(self):
         myPath = os.path.join(unitTestDataPath(), 'lines.shp')
@@ -112,7 +132,7 @@ class TestQgsFeature(unittest.TestCase):
 
     def test_SetGeometry(self):
         feat = QgsFeature()
-        feat.setGeometry(QgsGeometry.fromPoint(QgsPoint(123, 456)))
+        feat.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(123, 456)))
         myGeometry = feat.geometry()
         myExpectedGeometry = "!None"
         myMessage = '\nExpected: %s\nGot: %s' % (myExpectedGeometry, myGeometry)

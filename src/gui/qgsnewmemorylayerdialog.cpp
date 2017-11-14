@@ -23,6 +23,7 @@
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgssettings.h"
+#include "qgsmemoryproviderutils.h"
 
 #include <QPushButton>
 #include <QComboBox>
@@ -30,27 +31,18 @@
 #include <QUuid>
 #include <QFileDialog>
 
-QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent )
+QgsVectorLayer *QgsNewMemoryLayerDialog::runAndCreateLayer( QWidget *parent, const QgsCoordinateReferenceSystem &defaultCrs )
 {
   QgsNewMemoryLayerDialog dialog( parent );
+  dialog.setCrs( defaultCrs );
   if ( dialog.exec() == QDialog::Rejected )
   {
     return nullptr;
   }
 
   QgsWkbTypes::Type geometrytype = dialog.selectedType();
-
-  QString geomType = QgsWkbTypes::displayString( geometrytype );
-  if ( geomType.isNull() )
-    geomType = "none";
-
-  QString layerProperties = QStringLiteral( "%1?" ).arg( geomType );
-  if ( QgsWkbTypes::NoGeometry != geometrytype )
-    layerProperties.append( QStringLiteral( "crs=%1&" ).arg( dialog.crs().authid() ) );
-  layerProperties.append( QStringLiteral( "memoryid=%1" ).arg( QUuid::createUuid().toString() ) );
-
   QString name = dialog.layerName().isEmpty() ? tr( "New scratch layer" ) : dialog.layerName();
-  QgsVectorLayer *newLayer = new QgsVectorLayer( layerProperties, name, QStringLiteral( "memory" ) );
+  QgsVectorLayer *newLayer = QgsMemoryProviderUtils::createMemoryLayer( name, QgsFields(), geometrytype, dialog.crs() );
   return newLayer;
 }
 
@@ -60,21 +52,18 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   setupUi( this );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
 
   mPointRadioButton->setChecked( true );
-
-  QgsCoordinateReferenceSystem defaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( settings.value( QStringLiteral( "/Projections/layerDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString() );
-  defaultCrs.validate();
-  mCrsSelector->setCrs( defaultCrs );
-
   mNameLineEdit->setText( tr( "New scratch layer" ) );
+
+  connect( mButtonBox, &QDialogButtonBox::helpRequested, this, &QgsNewMemoryLayerDialog::showHelp );
 }
 
 QgsNewMemoryLayerDialog::~QgsNewMemoryLayerDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/NewMemoryLayer/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/NewMemoryLayer/geometry" ), saveGeometry() );
 }
 
 QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
@@ -115,6 +104,11 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
   return wkbType;
 }
 
+void QgsNewMemoryLayerDialog::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrsSelector->setCrs( crs );
+}
+
 QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const
 {
   return mCrsSelector->crs();
@@ -123,4 +117,9 @@ QgsCoordinateReferenceSystem QgsNewMemoryLayerDialog::crs() const
 QString QgsNewMemoryLayerDialog::layerName() const
 {
   return mNameLineEdit->text();
+}
+
+void QgsNewMemoryLayerDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "managing_data_source/create_layers.html#creating-a-new-temporary-scratch-layer" ) );
 }

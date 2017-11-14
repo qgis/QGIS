@@ -29,11 +29,13 @@ QgsOrderByDialog::QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent )
 {
   setupUi( this );
 
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( QHeaderView::Stretch );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 1, QHeaderView::ResizeToContents );
-  mOrderByTableWidget->horizontalHeader()->setResizeMode( 2, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( QHeaderView::Stretch );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( 1, QHeaderView::ResizeToContents );
+  mOrderByTableWidget->horizontalHeader()->setSectionResizeMode( 2, QHeaderView::ResizeToContents );
 
   mOrderByTableWidget->installEventFilter( this );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOrderByDialog::showHelp );
 }
 
 void QgsOrderByDialog::setOrderBy( const QgsFeatureRequest::OrderBy &orderBy )
@@ -113,7 +115,7 @@ void QgsOrderByDialog::setRow( int row, const QgsFeatureRequest::OrderByClause &
   QgsFieldExpressionWidget *fieldExpression = new QgsFieldExpressionWidget();
   fieldExpression->setLayer( mLayer );
   fieldExpression->setField( orderByClause.expression().expression() );
-  connect( fieldExpression, SIGNAL( fieldChanged( QString ) ), this, SLOT( onExpressionChanged( QString ) ) );
+  connect( fieldExpression, static_cast < void ( QgsFieldExpressionWidget::* )( const QString & ) >( &QgsFieldExpressionWidget::fieldChanged ), this, &QgsOrderByDialog::onExpressionChanged );
 
   QComboBox *ascComboBox = new QComboBox();
   ascComboBox->addItem( tr( "Ascending" ) );
@@ -150,3 +152,7 @@ bool QgsOrderByDialog::eventFilter( QObject *obj, QEvent *e )
   return false;
 }
 
+void QgsOrderByDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#layer-rendering" ) );
+}

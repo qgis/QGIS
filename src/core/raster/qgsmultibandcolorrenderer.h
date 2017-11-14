@@ -19,12 +19,14 @@
 #define QGSMULTIBANDCOLORRENDERER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterrenderer.h"
 
 class QgsContrastEnhancement;
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Renderer for multiband images with the color components
 */
 class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
@@ -40,11 +42,11 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
     //! QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
     const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & ) = delete;
 
-    QgsMultiBandColorRenderer *clone() const override;
+    QgsMultiBandColorRenderer *clone() const override SIP_FACTORY;
 
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     int redBand() const { return mRedBand; }
     void setRedBand( int band ) { mRedBand = band; }
@@ -55,21 +57,26 @@ class CORE_EXPORT QgsMultiBandColorRenderer: public QgsRasterRenderer
 
     const QgsContrastEnhancement *redContrastEnhancement() const { return mRedContrastEnhancement; }
     //! Takes ownership
-    void setRedContrastEnhancement( QgsContrastEnhancement *ce );
+    void setRedContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
     const QgsContrastEnhancement *greenContrastEnhancement() const { return mGreenContrastEnhancement; }
     //! Takes ownership
-    void setGreenContrastEnhancement( QgsContrastEnhancement *ce );
+    void setGreenContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
     const QgsContrastEnhancement *blueContrastEnhancement() const { return mBlueContrastEnhancement; }
     //! Takes ownership
-    void setBlueContrastEnhancement( QgsContrastEnhancement *ce );
+    void setBlueContrastEnhancement( QgsContrastEnhancement *ce SIP_TRANSFER );
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     QList<int> usesBands() const override;
 
   private:
+#ifdef SIP_RUN
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & );
+    const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & );
+#endif
+
     int mRedBand;
     int mGreenBand;
     int mBlueBand;

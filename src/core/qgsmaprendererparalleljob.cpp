@@ -19,12 +19,12 @@
 #include "qgslabelingengine.h"
 #include "qgslogger.h"
 #include "qgsmaplayerrenderer.h"
-#include "qgspallabeling.h"
 #include "qgsproject.h"
 #include "qgsmaplayer.h"
 #include "qgsmaplayerlistutils.h"
 
 #include <QtConcurrentMap>
+#include <QtConcurrentRun>
 
 QgsMapRendererParallelJob::QgsMapRendererParallelJob( const QgsMapSettings &settings )
   : QgsMapRendererQImageJob( settings )
@@ -54,7 +54,6 @@ void QgsMapRendererParallelJob::start()
   if ( mSettings.testFlag( QgsMapSettings::DrawLabeling ) )
   {
     mLabelingEngineV2.reset( new QgsLabelingEngine() );
-    mLabelingEngineV2->readSettingsFromProject( QgsProject::instance() );
     mLabelingEngineV2->setMapSettings( mSettings );
   }
 
@@ -244,12 +243,14 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
     return;
 
   if ( job.img )
+  {
     job.img->fill( 0 );
+    job.imageInitialized = true;
+  }
 
   QTime t;
   t.start();
   QgsDebugMsgLevel( QString( "job %1 start (layer %2)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.layer ? job.layer->id() : QString() ), 2 );
-
   try
   {
     job.renderer->render();
@@ -262,13 +263,12 @@ void QgsMapRendererParallelJob::renderLayerStatic( LayerRenderJob &job )
   catch ( std::exception &e )
   {
     Q_UNUSED( e );
-    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+    QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
   }
   catch ( ... )
   {
     QgsDebugMsg( "Caught unhandled unknown exception" );
   }
-
   job.renderingTime = t.elapsed();
   QgsDebugMsgLevel( QString( "job %1 end [%2 ms] (layer %3)" ).arg( reinterpret_cast< quint64 >( &job ), 0, 16 ).arg( job.renderingTime ).arg( job.layer ? job.layer->id() : QString() ), 2 );
 }
@@ -307,7 +307,7 @@ void QgsMapRendererParallelJob::renderLabelsStatic( QgsMapRendererParallelJob *s
     catch ( std::exception &e )
     {
       Q_UNUSED( e );
-      QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromAscii( e.what() ) );
+      QgsDebugMsg( "Caught unhandled std::exception: " + QString::fromLatin1( e.what() ) );
     }
     catch ( ... )
     {

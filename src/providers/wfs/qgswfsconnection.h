@@ -20,11 +20,13 @@
 
 class QgsWfsConnection : public QgsOwsConnection
 {
+    Q_OBJECT
+
   public:
 
     /**
      * Constructor
-     * @param connName connection name
+     * \param connName connection name
      */
     explicit QgsWfsConnection( const QString &connName );
 

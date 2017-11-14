@@ -50,11 +50,11 @@
 //
 // QGIS Specific includes
 //
-#include <qgsapplication.h>
-#include <qgsrasterlayer.h>
-#include <qgisinterface.h>
-#include <qgsmaplayer.h>
-#include <qgisgui.h>
+#include "qgsapplication.h"
+#include "qgsrasterlayer.h"
+#include "qgisinterface.h"
+#include "qgsmaplayer.h"
+#include "qgsguiutils.h"
 
 //the gui subclass
 #include "evisdatabaseconnectiongui.h"
@@ -85,15 +85,8 @@ static const QString sIcon = QStringLiteral( ":/evis/eVisEventBrowser.png" );
 eVis::eVis( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mDatabaseConnectionActionPointer( nullptr )
-  , mEventIdToolActionPointer( nullptr )
-  , mEventBrowserActionPointer( nullptr )
 {
   mIdTool = nullptr;
-}
-
-eVis::~eVis()
-{
 }
 
 void eVis::initGui()
@@ -116,9 +109,9 @@ void eVis::initGui()
   mEventBrowserActionPointer->setWhatsThis( tr( "Open an Event Browser to explore the current layer's features" ) );
 
   // Connect the action to the runmQGisIface->mapCanvas()
-  connect( mDatabaseConnectionActionPointer, SIGNAL( triggered() ), this, SLOT( launchDatabaseConnection() ) );
-  connect( mEventIdToolActionPointer, SIGNAL( triggered() ), this, SLOT( launchEventIdTool() ) );
-  connect( mEventBrowserActionPointer, SIGNAL( triggered() ), this, SLOT( launchEventBrowser() ) );
+  connect( mDatabaseConnectionActionPointer, &QAction::triggered, this, &eVis::launchDatabaseConnection );
+  connect( mEventIdToolActionPointer, &QAction::triggered, this, &eVis::launchEventIdTool );
+  connect( mEventBrowserActionPointer, &QAction::triggered, this, &eVis::launchEventBrowser );
 
 
   // Add the icon to the toolbar
@@ -141,10 +134,10 @@ void eVis::help()
 
 void eVis::launchDatabaseConnection()
 {
-  eVisDatabaseConnectionGui *myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  eVisDatabaseConnectionGui *myPluginGui = new eVisDatabaseConnectionGui( &mTemporaryFileList, mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
-  connect( myPluginGui, SIGNAL( drawVectorLayer( QString, QString, QString ) ), this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
+  connect( myPluginGui, &eVisDatabaseConnectionGui::drawVectorLayer, this, &eVis::drawVectorLayer );
   myPluginGui->show();
 }
 
@@ -163,7 +156,7 @@ void eVis::launchEventIdTool()
 
 void eVis::launchEventBrowser()
 {
-  eVisGenericEventBrowserGui *myPluginGui = new eVisGenericEventBrowserGui( mQGisIface->mainWindow(), mQGisIface, QgisGui::ModalDialogFlags );
+  eVisGenericEventBrowserGui *myPluginGui = new eVisGenericEventBrowserGui( mQGisIface->mainWindow(), mQGisIface, QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 }
 

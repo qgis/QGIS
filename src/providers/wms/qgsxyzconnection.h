@@ -24,6 +24,15 @@ struct QgsXyzConnection
   QString url;
   int zMin = -1;
   int zMax = -1;
+  // Authentication configuration id
+  QString authCfg;
+  // HTTP Basic username
+  QString username;
+  // HTTP Basic password
+  QString password;
+  // Referer
+  QString referer;
+  bool hidden = false;
 
   QString encodedUri() const;
 };
@@ -32,7 +41,7 @@ struct QgsXyzConnection
 class QgsXyzConnectionUtils
 {
   public:
-    //! Returns list of existing connections
+    //! Returns list of existing connections, unless the hidden ones
     static QStringList connectionList();
 
     //! Returns connection details

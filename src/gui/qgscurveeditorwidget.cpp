@@ -16,7 +16,6 @@
 
 #include "qgscurveeditorwidget.h"
 
-#include <qmath.h>
 #include <QPainter>
 #include <QVBoxLayout>
 #include <QMouseEvent>
@@ -35,17 +34,12 @@
 #include <qwt_symbol.h>
 #include <qwt_legend.h>
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 #include <qwt_plot_renderer.h>
 #include <qwt_plot_histogram.h>
-#else
-#include "../raster/qwt5_histogram_item.h"
-#endif
 
 QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTransform &transform )
   : QWidget( parent )
   , mCurve( transform )
-  , mCurrentPlotMarkerIndex( -1 )
 {
   mPlot = new QwtPlot();
   mPlot->setMinimumSize( QSize( 0, 100 ) );
@@ -60,13 +54,9 @@ QgsCurveEditorWidget::QgsCurveEditorWidget( QWidget *parent, const QgsCurveTrans
 
   // hide the ugly canvas frame
   mPlot->setFrameStyle( QFrame::NoFrame );
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   QFrame *plotCanvasFrame = dynamic_cast<QFrame *>( mPlot->canvas() );
   if ( plotCanvasFrame )
     plotCanvasFrame->setFrameStyle( QFrame::NoFrame );
-#else
-  mPlot->canvas()->setFrameStyle( QFrame::NoFrame );
-#endif
 
   mPlot->enableAxis( QwtPlot::yLeft, false );
   mPlot->enableAxis( QwtPlot::xBottom, false );
@@ -162,7 +152,7 @@ void QgsCurveEditorWidget::keyPressEvent( QKeyEvent *event )
 {
   if ( event->key() == Qt::Key_Delete || event->key() == Qt::Key_Backspace )
   {
-    QList< QgsPoint > cp = mCurve.controlPoints();
+    QList< QgsPointXY > cp = mCurve.controlPoints();
     if ( mCurrentPlotMarkerIndex > 0 && mCurrentPlotMarkerIndex < cp.count() - 1 )
     {
       cp.removeAt( mCurrentPlotMarkerIndex );
@@ -192,13 +182,13 @@ int QgsCurveEditorWidget::findNearestControlPoint( QPointF point ) const
   double minDist = 3.0 / mPlot->width();
   int currentPlotMarkerIndex = -1;
 
-  QList< QgsPoint > controlPoints = mCurve.controlPoints();
+  QList< QgsPointXY > controlPoints = mCurve.controlPoints();
 
   for ( int i = 0; i < controlPoints.count(); ++i )
   {
-    QgsPoint currentPoint = controlPoints.at( i );
+    QgsPointXY currentPoint = controlPoints.at( i );
     double currentDist;
-    currentDist = qPow( point.x() - currentPoint.x(), 2.0 ) + qPow( point.y() - currentPoint.y(), 2.0 );
+    currentDist = std::pow( point.x() - currentPoint.x(), 2.0 ) + std::pow( point.y() - currentPoint.y(), 2.0 );
     if ( currentDist < minDist )
     {
       minDist = currentDist;
@@ -218,11 +208,11 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   if ( mCurrentPlotMarkerIndex < 0 )
     return;
 
-  QList< QgsPoint > cp = mCurve.controlPoints();
+  QList< QgsPointXY > cp = mCurve.controlPoints();
   bool removePoint = false;
   if ( mCurrentPlotMarkerIndex == 0 )
   {
-    point.setX( qMin( point.x(), cp.at( 1 ).x() - 0.01 ) );
+    point.setX( std::min( point.x(), cp.at( 1 ).x() - 0.01 ) );
   }
   else
   {
@@ -230,7 +220,7 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   }
   if ( mCurrentPlotMarkerIndex == cp.count() - 1 )
   {
-    point.setX( qMax( point.x(), cp.at( mCurrentPlotMarkerIndex - 1 ).x() + 0.01 ) );
+    point.setX( std::max( point.x(), cp.at( mCurrentPlotMarkerIndex - 1 ).x() + 0.01 ) );
     removePoint = false;
   }
   else
@@ -245,7 +235,7 @@ void QgsCurveEditorWidget::plotMouseMove( QPointF point )
   }
   else
   {
-    cp[ mCurrentPlotMarkerIndex ] = QgsPoint( point.x(), point.y() );
+    cp[ mCurrentPlotMarkerIndex ] = QgsPointXY( point.x(), point.y() );
   }
   mCurve.setControlPoints( cp );
   updatePlot();
@@ -259,11 +249,7 @@ void QgsCurveEditorWidget::addPlotMarker( double x, double y, bool isSelected )
   QColor brushColor = isSelected ? borderColor : QColor( 255, 255, 255, 0 );
 
   QwtPlotMarker *marker = new QwtPlotMarker();
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   marker->setSymbol( new QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
-#else
-  marker->setSymbol( QwtSymbol( QwtSymbol::Ellipse,  QBrush( brushColor ), QPen( borderColor, isSelected ? 2 : 1 ), QSize( 8, 8 ) ) );
-#endif
   marker->setValue( x, y );
   marker->attach( mPlot );
   marker->setRenderHint( QwtPlotItem::RenderAntialiased, true );
@@ -278,16 +264,9 @@ void QgsCurveEditorWidget::updateHistogram()
   //draw histogram
   QBrush histoBrush( QColor( 0, 0, 0, 70 ) );
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   delete mPlotHistogram;
   mPlotHistogram = createPlotHistogram( histoBrush );
   QVector<QwtIntervalSample> dataHisto;
-#else
-  delete mPlotHistogramItem;
-  mPlotHistogramItem = createHistoItem( histoBrush );
-  QwtArray<QwtDoubleInterval> intervalsHisto;
-  QwtArray<double> valuesHisto;
-#endif
 
   int bins = 40;
   QList<double> edges = mHistogram->binEdges( bins );
@@ -309,21 +288,11 @@ void QgsCurveEditorWidget::updateHistogram()
 
     double upperEdge = edges.at( bin + 1 );
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
     dataHisto << QwtIntervalSample( binValue, edges.at( bin ), upperEdge );
-#else
-    intervalsHisto.append( QwtDoubleInterval( edges.at( bin ), upperEdge ) );
-    valuesHisto.append( double( binValue ) );
-#endif
   }
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotHistogram->setSamples( dataHisto );
   mPlotHistogram->attach( mPlot );
-#else
-  mPlotHistogramItem->setData( QwtIntervalData( intervalsHisto, valuesHisto ) );
-  mPlotHistogramItem->attach( mPlot );
-#endif
   mPlot->replot();
 }
 
@@ -341,7 +310,7 @@ void QgsCurveEditorWidget::updatePlot()
   QVector< double > x;
 
   int i = 0;
-  Q_FOREACH ( const QgsPoint &point, mCurve.controlPoints() )
+  Q_FOREACH ( const QgsPointXY &point, mCurve.controlPoints() )
   {
     x << point.x();
     addPlotMarker( point.x(), point.y(), mCurrentPlotMarkerIndex == i );
@@ -362,16 +331,10 @@ void QgsCurveEditorWidget::updatePlot()
     curvePoints << QPointF( x.at( j ), y.at( j ) );
   }
 
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
   mPlotCurve->setSamples( curvePoints );
-#else
-  mPlotCurve->setData( curvePoints );
-#endif
   mPlot->replot();
 }
 
-
-#if defined(QWT_VERSION) && QWT_VERSION>=0x060000
 QwtPlotHistogram *QgsCurveEditorWidget::createPlotHistogram( const QBrush &brush, const QPen &pen ) const
 {
   QwtPlotHistogram *histogram = new QwtPlotHistogram( QString() );
@@ -394,28 +357,6 @@ QwtPlotHistogram *QgsCurveEditorWidget::createPlotHistogram( const QBrush &brush
   }
   return histogram;
 }
-#else
-HistogramItem *QgsCurveEditorWidget::createHistoItem( const QBrush &brush, const QPen &pen ) const
-{
-  HistogramItem *item = new HistogramItem( QString() );
-  item->setColor( brush.color() );
-  item->setFlat( true );
-  item->setSpacing( 0 );
-  if ( pen != Qt::NoPen )
-  {
-    item->setPen( pen );
-  }
-  else if ( brush.color().lightness() > 200 )
-  {
-    QPen p;
-    p.setColor( brush.color().darker( 150 ) );
-    p.setWidth( 0 );
-    p.setCosmetic( true );
-    item->setPen( p );
-  }
-  return item;
-}
-#endif
 
 /// @cond PRIVATE
 

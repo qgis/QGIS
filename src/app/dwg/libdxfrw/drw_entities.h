@@ -121,7 +121,7 @@ class DRW_Entity
       , colorName( std::string() )
       , transparency( DRW::Opaque )
       , plotStyle( DRW::DefaultPlotStyle )
-      , shadow( DRW::CastAndReceieveShadows )
+      , shadow( DRW::CastAndReceiveShadows )
       , haveExtrusion( false )
       , extData()
       , haveNextLinks( 0 )
@@ -515,7 +515,7 @@ class DRW_3Dface : public DRW_Trace
       SecondEdge = 0x02,
       ThirdEdge = 0x04,
       FourthEdge = 0x08,
-      AllEdges = 0x0F
+      AllEdges = 0x0F  //#spellok
     };
 
     DRW_3Dface( enum DRW::ETYPE type = DRW::E3DFACE )
@@ -1422,7 +1422,7 @@ class DRW_DimDiametric : public DRW_Dimension
 
     DRW_Coord getDiameter1Point() const {return getPt5();}      //!< First definition point for diameter, code 15, 25 & 35
     void setDiameter1Point( const DRW_Coord &p ) {setPt5( p );}
-    DRW_Coord getDiameter2Point() const {return getDefPoint();} //!< Oposite point for diameter, code 10, 20 & 30
+    DRW_Coord getDiameter2Point() const {return getDefPoint();} //!< Opposite point for diameter, code 10, 20 & 30
     void setDiameter2Point( const DRW_Coord &p ) {setDefPoint( p );}
     double getLeaderLength() const {return getRa40();}          //!< Leader length, code 40
     void setLeaderLength( const double d ) {setRa40( d );}

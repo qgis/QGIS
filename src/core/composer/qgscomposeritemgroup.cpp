@@ -58,7 +58,7 @@ void QgsComposerItemGroup::addItem( QgsComposerItem *item )
     return;
   }
 
-  connect( item, SIGNAL( destroyed() ), this, SLOT( itemDestroyed() ) );
+  connect( item, &QObject::destroyed, this, &QgsComposerItemGroup::itemDestroyed );
 
   mItems.insert( item );
   item->setSelected( false );

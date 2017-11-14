@@ -6,8 +6,8 @@ SET(QGIS_APP_SRCS
   qgisappstylesheet.cpp
   qgsabout.cpp
   qgsalignrasterdialog.cpp
+  qgsappbrowserproviders.cpp
   qgsapplayertreeviewmenuprovider.cpp
-  qgssponsors.cpp
   qgsaddattrdialog.cpp
   qgsaddtaborgroup.cpp
   qgsjoindialog.cpp
@@ -15,15 +15,18 @@ SET(QGIS_APP_SRCS
   qgsattributeactiondialog.cpp
   qgsattributeactionpropertiesdialog.cpp
   qgsattributetypedialog.cpp
+  qgsattributerelationedit.cpp
+  qgsattributesforminitcode.cpp
   qgsattributetabledialog.cpp
   qgsbookmarks.cpp
-  qgsbrowserdockwidget.cpp
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
   qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
+  qgsdecorationlayoutextent.cpp
+  qgsdecorationlayoutextentdialog.cpp
   qgsdecorationnortharrow.cpp
   qgsdecorationnortharrowdialog.cpp
   qgsdecorationscalebar.cpp
@@ -39,7 +42,8 @@ SET(QGIS_APP_SRCS
   qgsdiagramproperties.cpp
   qgsdisplayangle.cpp
   qgsfieldcalculator.cpp
-  qgsfieldsproperties.cpp
+  qgssourcefieldsproperties.cpp
+  qgsattributesformproperties.cpp
   qgsidentifyresultsdialog.cpp
   qgsfeatureaction.cpp
   qgslabelpropertydialog.cpp
@@ -47,7 +51,10 @@ SET(QGIS_APP_SRCS
   qgslabelinggui.cpp
   qgslabelingwidget.cpp
   qgsloadstylefromdbdialog.cpp
+  qgsmapcanvasdockwidget.cpp
   qgsmaplayerstyleguiutils.cpp
+  qgsmapsavedialog.cpp
+  qgsversionmigration.cpp
   qgsrulebasedlabelingwidget.cpp
   qgssavestyletodbdialog.cpp
   qgssnappinglayertreemodel.cpp
@@ -96,10 +103,10 @@ SET(QGIS_APP_SRCS
   qgsmaptoolsvgannotation.cpp
   qgsmaptooltextannotation.cpp
 
-  nodetool/qgsmaptoolnodetool.cpp
   nodetool/qgsselectedfeature.cpp
   nodetool/qgsvertexentry.cpp
   nodetool/qgsnodeeditor.cpp
+  nodetool/qgsnodetool.cpp
 
   qgslayerstylingwidget.cpp
   qgsmeasuredialog.cpp
@@ -121,14 +128,31 @@ SET(QGIS_APP_SRCS
   qgstextannotationdialog.cpp
   qgssvgannotationdialog.cpp
   qgsundowidget.cpp
-  qgstipgui.cpp
-  qgstipfactory.cpp
   qgsvectorlayerproperties.cpp
   qgsmapthemes.cpp
   qgshandlebadlayers.cpp
   qgsmaptooladdcircularstring.cpp
   qgsmaptoolcircularstringcurvepoint.cpp
   qgsmaptoolcircularstringradius.cpp
+  qgsmaptooladdcircle.cpp
+  qgsmaptoolcircle2points.cpp
+  qgsmaptoolcircle3points.cpp
+  qgsmaptoolcircle3tangents.cpp
+  qgsmaptoolcircle2tangentspoint.cpp
+  qgsmaptoolcirclecenterpoint.cpp
+  qgsmaptooladdellipse.cpp
+  qgsmaptoolellipsefoci.cpp
+  qgsmaptoolellipseextent.cpp
+  qgsmaptoolellipsecenterpoint.cpp
+  qgsmaptoolellipsecenter2points.cpp
+  qgsmaptooladdrectangle.cpp
+  qgsmaptooladdregularpolygon.cpp
+  qgsmaptoolrectanglecenter.cpp
+  qgsmaptoolrectangleextent.cpp
+  qgsmaptoolrectangle3points.cpp
+  qgsmaptoolregularpolygon2points.cpp
+  qgsmaptoolregularpolygoncenterpoint.cpp
+  qgsmaptoolregularpolygoncentercorner.cpp
 
   composer/qgsattributeselectiondialog.cpp
   composer/qgscomposer.cpp
@@ -152,17 +176,29 @@ SET(QGIS_APP_SRCS
   composer/qgscompositionwidget.cpp
   composer/qgsatlascompositionwidget.cpp
 
-  ogr/qgsogrhelperfunctions.cpp
-  ogr/qgsopenvectorlayerdialog.cpp
-  ogr/qgsnewogrconnection.cpp
-  ogr/qgsvectorlayersaveasdialog.cpp
+  layout/qgslayoutaddpagesdialog.cpp
+  layout/qgslayoutapputils.cpp
+  layout/qgslayoutdesignerdialog.cpp
+  layout/qgslayoutguidewidget.cpp
+  layout/qgslayoutitemslistview.cpp
+  layout/qgslayoutappmenuprovider.cpp
+  layout/qgslayoutlabelwidget.cpp
+  layout/qgslayoutlegendlayersdialog.cpp
+  layout/qgslayoutlegendwidget.cpp
+  layout/qgslayoutmapwidget.cpp
+  layout/qgslayoutmapgridwidget.cpp
+  layout/qgslayoutpagepropertieswidget.cpp
+  layout/qgslayoutpicturewidget.cpp
+  layout/qgslayoutpolygonwidget.cpp
+  layout/qgslayoutpolylinewidget.cpp
+  layout/qgslayoutpropertieswidget.cpp
+  layout/qgslayoutshapewidget.cpp
+
+  locator/qgsinbuiltlocatorfilters.cpp
+  locator/qgslocatoroptionswidget.cpp
 
   gps/qgsgpsinformationwidget.cpp
   gps/qgsgpsmarker.cpp
-
-  openstreetmap/qgsosmdownloaddialog.cpp
-  openstreetmap/qgsosmimportdialog.cpp
-  openstreetmap/qgsosmexportdialog.cpp
 
   dwg/qgsdwgimportdialog.cpp
   dwg/qgsdwgimporter.cpp
@@ -177,6 +213,7 @@ SET(QGIS_APP_SRCS
 
   qgssettingstree.cpp
   qgsvariantdelegate.cpp
+  qgscrashhandler.cpp
 )
 
 SET (QGIS_APP_MOC_HDRS
@@ -186,6 +223,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsabout.h
   qgsaddattrdialog.h
   qgsalignrasterdialog.h
+  qgsappbrowserproviders.h
   qgsjoindialog.h
   qgsaddtaborgroup.h
   qgsannotationwidget.h
@@ -193,15 +231,18 @@ SET (QGIS_APP_MOC_HDRS
   qgsattributeactiondialog.h
   qgsattributeactionpropertiesdialog.h
   qgsattributetypedialog.h
+  qgsattributerelationedit.h
+  qgsattributesforminitcode.h
   qgsattributetabledialog.h
   qgsbookmarks.h
-  qgsbrowserdockwidget.h
   qgsclipboard.h
   qgscustomization.h
   qgscustomprojectiondialog.h
   qgsdecorationitem.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h
+  qgsdecorationlayoutextent.h
+  qgsdecorationlayoutextentdialog.h
   qgsdecorationnortharrow.h
   qgsdecorationnortharrowdialog.h
   qgsdecorationscalebar.h
@@ -215,7 +256,8 @@ SET (QGIS_APP_MOC_HDRS
   qgsdxfexportdialog.h
   qgsfeatureaction.h
   qgsfieldcalculator.h
-  qgsfieldsproperties.h
+  qgssourcefieldsproperties.h
+  qgsattributesformproperties.h
   qgsformannotationdialog.h
   qgsguivectorlayertools.h
   qgshtmlannotationdialog.h
@@ -225,7 +267,9 @@ SET (QGIS_APP_MOC_HDRS
   qgslabelingwidget.h
   qgslabelpropertydialog.h
   qgsloadstylefromdbdialog.h
+  qgsmapcanvasdockwidget.h
   qgsmaplayerstyleguiutils.h
+  qgsmapsavedialog.h
   qgsrulebasedlabelingwidget.h
   qgssavestyletodbdialog.h
   qgssnappinglayertreemodel.h
@@ -275,10 +319,29 @@ SET (QGIS_APP_MOC_HDRS
   qgsmaptooltextannotation.h
   qgsmaptooladdcircularstring.h
   qgsmaptoolcircularstringcurvepoint.h
+  qgsmaptooladdcircle.h
+  qgsmaptoolcircle2points.h
+  qgsmaptoolcircle3points.h
+  qgsmaptoolcircle3tangents.h
+  qgsmaptoolcircle2tangentspoint.h
+  qgsmaptoolcirclecenterpoint.h
+  qgsmaptooladdellipse.h
+  qgsmaptoolellipsefoci.h
+  qgsmaptoolellipseextent.h
+  qgsmaptoolellipsecenterpoint.h
+  qgsmaptoolellipsecenter2points.h
+  qgsmaptooladdrectangle.h
+  qgsmaptooladdregularpolygon.h
+  qgsmaptoolrectanglecenter.h
+  qgsmaptoolrectangleextent.h
+  qgsmaptoolrectangle3points.h
+  qgsmaptoolregularpolygon2points.h
+  qgsmaptoolregularpolygoncenterpoint.h
+  qgsmaptoolregularpolygoncentercorner.h
 
-  nodetool/qgsmaptoolnodetool.h
   nodetool/qgsselectedfeature.h
   nodetool/qgsnodeeditor.h
+  nodetool/qgsnodetool.h
 
   qgslayerstylingwidget.h
   qgsmeasuredialog.h
@@ -292,12 +355,9 @@ SET (QGIS_APP_MOC_HDRS
   qgsrelationmanagerdialog.h
   qgsrelationadddlg.h
   qgsselectbyformdialog.h
-  qgssponsors.h
   qgsstatisticalsummarydockwidget.h
   qgssvgannotationdialog.h
   qgstextannotationdialog.h
-  qgstipgui.h
-  qgstipfactory.h
   qgsundowidget.h
   qgsvectorlayerproperties.h
   qgsmapthemes.h
@@ -325,15 +385,27 @@ SET (QGIS_APP_MOC_HDRS
   composer/qgscompositionwidget.h
   composer/qgsatlascompositionwidget.h
 
-  ogr/qgsopenvectorlayerdialog.h
-  ogr/qgsnewogrconnection.h
-  ogr/qgsvectorlayersaveasdialog.h
+  layout/qgslayoutaddpagesdialog.h
+  layout/qgslayoutappmenuprovider.h
+  layout/qgslayoutdesignerdialog.h
+  layout/qgslayoutguidewidget.h
+  layout/qgslayoutitemslistview.h
+  layout/qgslayoutlabelwidget.h
+  layout/qgslayoutlegendwidget.h
+  layout/qgslayoutlegendlayersdialog.h
+  layout/qgslayoutmapwidget.h
+  layout/qgslayoutmapgridwidget.h
+  layout/qgslayoutpagepropertieswidget.h
+  layout/qgslayoutpicturewidget.h
+  layout/qgslayoutpolygonwidget.h
+  layout/qgslayoutpolylinewidget.h
+  layout/qgslayoutpropertieswidget.h
+  layout/qgslayoutshapewidget.h
+
+  locator/qgsinbuiltlocatorfilters.h
+  locator/qgslocatoroptionswidget.h
 
   gps/qgsgpsinformationwidget.h
-
-  openstreetmap/qgsosmdownloaddialog.h
-  openstreetmap/qgsosmimportdialog.h
-  openstreetmap/qgsosmexportdialog.h
 
   dwg/qgsdwgimportdialog.h
 
@@ -347,6 +419,34 @@ SET (QGIS_APP_MOC_HDRS
   qgssettingstree.h
   qgsvariantdelegate.h
   )
+
+
+IF (WITH_3D)
+  SET(QGIS_APP_SRCS
+    ${QGIS_APP_SRCS}
+    3d/qgs3dmapcanvas.cpp
+    3d/qgs3dmapcanvasdockwidget.cpp
+    3d/qgs3dmapconfigwidget.cpp
+    3d/qgsline3dsymbolwidget.cpp
+    3d/qgspoint3dsymbolwidget.cpp
+    3d/qgspolygon3dsymbolwidget.cpp
+    3d/qgsphongmaterialwidget.cpp
+    3d/qgsvectorlayer3drendererwidget.cpp
+  )
+
+  SET (QGIS_APP_MOC_HDRS
+    ${QGIS_APP_MOC_HDRS}
+    3d/qgs3dmapcanvas.h
+    3d/qgs3dmapcanvasdockwidget.h
+    3d/qgs3dmapconfigwidget.h
+    3d/qgsline3dsymbolwidget.h
+    3d/qgspoint3dsymbolwidget.h
+    3d/qgspolygon3dsymbolwidget.h
+    3d/qgsphongmaterialwidget.h
+    3d/qgsvectorlayer3drendererwidget.h
+  )
+ENDIF (WITH_3D)
+
 
 SET (WITH_QWTPOLAR FALSE CACHE BOOL "Determines whether QwtPolar should be built")
 
@@ -364,94 +464,35 @@ IF (WITH_QWTPOLAR)
   SET (WITH_INTERNAL_QWTPOLAR DEFAULT_WITH_INTERNAL_QWTPOLAR CACHE BOOL "Use internal build of QwtPolar")
 
   IF(WITH_INTERNAL_QWTPOLAR)
-    IF(QWT_VERSION_STR VERSION_LESS "6.0.0")
-      SET(QGIS_APP_SRCS
-        ${QGIS_APP_SRCS}
-        gps/qwtpolar-0.1/qwt_polar_canvas.cpp
-        gps/qwtpolar-0.1/qwt_polar_curve.cpp
-        gps/qwtpolar-0.1/qwt_polar_fitter.cpp
-        gps/qwtpolar-0.1/qwt_polar_grid.cpp
-        gps/qwtpolar-0.1/qwt_polar_itemdict.cpp
-        gps/qwtpolar-0.1/qwt_polar_item.cpp
-        gps/qwtpolar-0.1/qwt_polar_layout.cpp
-        gps/qwtpolar-0.1/qwt_polar_magnifier.cpp
-        gps/qwtpolar-0.1/qwt_polar_marker.cpp
-        gps/qwtpolar-0.1/qwt_polar_panner.cpp
-        gps/qwtpolar-0.1/qwt_polar_plot.cpp
-        gps/qwtpolar-0.1/qwt_polar_point.cpp
-        gps/qwtpolar-0.1/qwt_polar_spectrogram.cpp
-      )
+    SET(QGIS_APP_SRCS
+      ${QGIS_APP_SRCS}
+      gps/qwtpolar-1.1.1/qwt_polar_canvas.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_curve.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_fitter.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_grid.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_item.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_itemdict.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_layout.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_magnifier.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_marker.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_panner.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_picker.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_plot.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_renderer.cpp
+      gps/qwtpolar-1.1.1/qwt_polar_spectrogram.cpp
+    )
 
-      SET (QGIS_APP_MOC_HDRS
-        ${QGIS_APP_MOC_HDRS}
-        gps/qwtpolar-0.1/qwt_polar_canvas.h
-        gps/qwtpolar-0.1/qwt_polar_magnifier.h
-        gps/qwtpolar-0.1/qwt_polar_panner.h
-        gps/qwtpolar-0.1/qwt_polar_plot.h
-      )
+    SET (QGIS_APP_MOC_HDRS
+      ${QGIS_APP_MOC_HDRS}
+      gps/qwtpolar-1.1.1/qwt_polar_canvas.h
+      gps/qwtpolar-1.1.1/qwt_polar_magnifier.h
+      gps/qwtpolar-1.1.1/qwt_polar_panner.h
+      gps/qwtpolar-1.1.1/qwt_polar_picker.h
+      gps/qwtpolar-1.1.1/qwt_polar_plot.h
+      gps/qwtpolar-1.1.1/qwt_polar_renderer.h
+    )
 
-      SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-0.1)
-    ELSEIF(QWT_VERSION_STR VERSION_LESS "6.1.0")
-      SET(QGIS_APP_SRCS
-        ${QGIS_APP_SRCS}
-        gps/qwtpolar-1.0/qwt_polar_canvas.cpp
-        gps/qwtpolar-1.0/qwt_polar_curve.cpp
-        gps/qwtpolar-1.0/qwt_polar_fitter.cpp
-        gps/qwtpolar-1.0/qwt_polar_grid.cpp
-        gps/qwtpolar-1.0/qwt_polar_item.cpp
-        gps/qwtpolar-1.0/qwt_polar_itemdict.cpp
-        gps/qwtpolar-1.0/qwt_polar_layout.cpp
-        gps/qwtpolar-1.0/qwt_polar_magnifier.cpp
-        gps/qwtpolar-1.0/qwt_polar_marker.cpp
-        gps/qwtpolar-1.0/qwt_polar_panner.cpp
-        gps/qwtpolar-1.0/qwt_polar_picker.cpp
-        gps/qwtpolar-1.0/qwt_polar_plot.cpp
-        gps/qwtpolar-1.0/qwt_polar_renderer.cpp
-        gps/qwtpolar-1.0/qwt_polar_spectrogram.cpp
-      )
-
-      SET (QGIS_APP_MOC_HDRS
-        ${QGIS_APP_MOC_HDRS}
-        gps/qwtpolar-1.0/qwt_polar_canvas.h
-        gps/qwtpolar-1.0/qwt_polar_magnifier.h
-        gps/qwtpolar-1.0/qwt_polar_panner.h
-        gps/qwtpolar-1.0/qwt_polar_picker.h
-        gps/qwtpolar-1.0/qwt_polar_plot.h
-        gps/qwtpolar-1.0/qwt_polar_renderer.h
-      )
-
-      SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-1.0)
-    ELSE(QWT_VERSION_STR VERSION_LESS "6.1.0")
-      SET(QGIS_APP_SRCS
-        ${QGIS_APP_SRCS}
-        gps/qwtpolar-1.1.1/qwt_polar_canvas.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_curve.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_fitter.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_grid.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_item.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_itemdict.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_layout.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_magnifier.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_marker.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_panner.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_picker.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_plot.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_renderer.cpp
-        gps/qwtpolar-1.1.1/qwt_polar_spectrogram.cpp
-      )
-
-      SET (QGIS_APP_MOC_HDRS
-        ${QGIS_APP_MOC_HDRS}
-        gps/qwtpolar-1.1.1/qwt_polar_canvas.h
-        gps/qwtpolar-1.1.1/qwt_polar_magnifier.h
-        gps/qwtpolar-1.1.1/qwt_polar_panner.h
-        gps/qwtpolar-1.1.1/qwt_polar_picker.h
-        gps/qwtpolar-1.1.1/qwt_polar_plot.h
-        gps/qwtpolar-1.1.1/qwt_polar_renderer.h
-      )
-
-      SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-1.1.1)
-    ENDIF(QWT_VERSION_STR VERSION_LESS "6.0.0")
+    SET(QWTPOLAR_INCLUDE_DIR gps/qwtpolar-1.1.1)
 
     SET(QWTPOLAR_LIBRARY "")
   ENDIF(WITH_INTERNAL_QWTPOLAR)
@@ -513,7 +554,7 @@ IF(PEDANTIC)
     SET_SOURCE_FILES_PROPERTIES(
         qgisappinterface.cpp
         ${CMAKE_BINARY_DIR}/src/app/moc_qgisappinterface.cxx
-	PROPERTIES COMPILE_FLAGS "/wd4996"
+    PROPERTIES COMPILE_FLAGS "/wd4996"
     )
   ELSE(MSVC)
     SET_SOURCE_FILES_PROPERTIES(
@@ -524,16 +565,76 @@ IF(PEDANTIC)
   ENDIF(MSVC)
 ENDIF(PEDANTIC)
 
+IF(MSVC)
+# -wd4091 Avoid 'typedef' ignored on left of '' when no variable is declared warning in DbgHelp.h
+SET_SOURCE_FILES_PROPERTIES(
+  qgisapp.cpp
+  main.cpp
+  qgscrashhandler.cpp
+  PROPERTIES COMPILE_FLAGS -wd4091)
+ENDIF(MSVC)
+
 INCLUDE_DIRECTORIES(
-  ${CMAKE_CURRENT_SOURCE_DIR} composer legend pluginmanager
-  ${CMAKE_CURRENT_BINARY_DIR}
-  ${CMAKE_CURRENT_BINARY_DIR}/../ui
+  ${CMAKE_SOURCE_DIR}/src/app
+  ${CMAKE_SOURCE_DIR}/src/app/composer
+  ${CMAKE_SOURCE_DIR}/src/app/layout
+  ${CMAKE_SOURCE_DIR}/src/app/pluginmanager
+  ${CMAKE_SOURCE_DIR}/src/app/gps
+  ${CMAKE_SOURCE_DIR}/src/app/dwg
+  ${CMAKE_SOURCE_DIR}/src/app/dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/src/app/locator
+  ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/annotations
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/gps
+  ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/geocms/geonode
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/layertree
+  ${CMAKE_SOURCE_DIR}/src/core/locator
+  ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/core/scalebar
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
+  ${CMAKE_SOURCE_DIR}/src/gui
+  ${CMAKE_SOURCE_DIR}/src/gui/symbology
+  ${CMAKE_SOURCE_DIR}/src/gui/attributetable
+  ${CMAKE_SOURCE_DIR}/src/gui/auth
+  ${CMAKE_SOURCE_DIR}/src/gui/ogr
+  ${CMAKE_SOURCE_DIR}/src/gui/raster
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets
+  ${CMAKE_SOURCE_DIR}/src/gui/editorwidgets/core
+  ${CMAKE_SOURCE_DIR}/src/gui/layertree
+  ${CMAKE_SOURCE_DIR}/src/gui/locator
+  ${CMAKE_SOURCE_DIR}/src/plugins
+  ${CMAKE_SOURCE_DIR}/src/python
+  ${CMAKE_SOURCE_DIR}/src/native
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/python
   ${CMAKE_BINARY_DIR}/src/analysis
   ${CMAKE_BINARY_DIR}/src/app
+  ${CMAKE_BINARY_DIR}/src/ui
+  ${CMAKE_BINARY_DIR}/src/native
 )
+
+IF (WITH_3D)
+  INCLUDE_DIRECTORIES(
+    ${CMAKE_SOURCE_DIR}/src/app/3d
+    ${CMAKE_SOURCE_DIR}/src/core/3d
+    ${CMAKE_SOURCE_DIR}/src/3d
+    ${CMAKE_SOURCE_DIR}/src/3d/symbols
+    ${CMAKE_SOURCE_DIR}/src/3d/terrain
+    ${CMAKE_SOURCE_DIR}/src/3d/chunks
+    ${CMAKE_BINARY_DIR}/src/3d
+  )
+ENDIF (WITH_3D)
+
 INCLUDE_DIRECTORIES(SYSTEM
   ${QWT_INCLUDE_DIR}
   ${QT_QTUITOOLS_INCLUDE_DIR}
@@ -541,8 +642,8 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${QEXTSERIALPORT_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES(
+  ../analysis/processing
   ../analysis/raster
-  ../analysis/openstreetmap
   ../core
   ../core/annotations
   ../core/auth
@@ -550,23 +651,32 @@ INCLUDE_DIRECTORIES(
   ../core/composer
   ../core/dxf
   ../core/geometry
+  ../core/geocms/geonode
+  ../core/layout
+  ../core/metadata
   ../core/layertree
+  ../core/processing
+  ../core/providers/memory
   ../core/raster
-  ../core/symbology-ng
+  ../core/scalebar
+  ../core/symbology
   ../gui
-  ../gui/symbology-ng
+  ../gui/symbology
   ../gui/attributetable
   ../gui/auth
+  ../gui/ogr
   ../gui/raster
   ../gui/editorwidgets
   ../gui/editorwidgets/core
   ../gui/layertree
+  ../gui/layout
   ../plugins
   ../python
   gps
-  openstreetmap
   dwg
   dwg/libdxfrw
+  ${CMAKE_SOURCE_DIR}/src/native
+  ${CMAKE_BINARY_DIR}/src/native
 )
 INCLUDE_DIRECTORIES(SYSTEM
   ${SPATIALITE_INCLUDE_DIR}
@@ -576,7 +686,8 @@ INCLUDE_DIRECTORIES(SYSTEM
   ${GDAL_INCLUDE_DIR}
   ${QWTPOLAR_INCLUDE_DIR}
   ${QCA_INCLUDE_DIR}
-  )
+  ${QTKEYCHAIN_INCLUDE_DIR}
+)
 
 IF(ENABLE_MODELTEST)
   INCLUDE_DIRECTORIES(../../tests/qt_modeltest)
@@ -585,6 +696,10 @@ ENDIF(ENABLE_MODELTEST)
 IF (ANDROID)
   INCLUDE_DIRECTORIES(SYSTEM ${ANDROID_NDK_TOOLCHAIN_ROOT}/sysroot/usr/include)
 ENDIF (ANDROID)
+
+IF (APPLE)
+  INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/src/native/mac)
+ENDIF (APPLE)
 
 IF (POSTGRES_FOUND)
   INCLUDE_DIRECTORIES(SYSTEM ${POSTGRES_INCLUDE_DIR})
@@ -613,8 +728,15 @@ TARGET_LINK_LIBRARIES(qgis_app
   qgis_core
   qgis_gui
   qgis_analysis
+  qgis_native
   libdxfrw
 )
+
+IF (WITH_3D)
+  TARGET_LINK_LIBRARIES(qgis_app
+    qgis_3d
+  )
+ENDIF (WITH_3D)
 
 GENERATE_EXPORT_HEADER(
    qgis_app
@@ -633,9 +755,18 @@ IF (APPLE)
   TARGET_LINK_LIBRARIES(qgis_app ${APP_SERVICES_LIBRARY})
 ENDIF(APPLE)
 
+
 if(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
   SET_TARGET_PROPERTIES(qgis_app PROPERTIES STATIC_LIBRARY_FLAGS "/machine:x64")
 ENDIF(MSVC AND CMAKE_SIZEOF_VOID_P EQUAL 8)
+
+# clang-tidy
+IF(CLANG_TIDY_EXE)
+  SET_TARGET_PROPERTIES(
+    qgis_app PROPERTIES
+    CXX_CLANG_TIDY "${DO_CLANG_TIDY}"
+  )
+ENDIF(CLANG_TIDY_EXE)
 
 IF(NOT WIN32)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_app)
@@ -647,13 +778,14 @@ ENDIF (ANDROID)
 
 IF(WIN32)
   ADD_DEFINITIONS(-DQWT_DLL)
+  ADD_DEFINITIONS(-DQSCINTILLA_DLL)
   TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} DbgHelp)
   TARGET_LINK_LIBRARIES(qgis_app DbgHelp Qt5::WinExtras)
 ENDIF(WIN32)
 
-IF (APPLE)
-  TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} ${APP_SERVICES_LIBRARY})
+TARGET_LINK_LIBRARIES(${QGIS_APP_NAME} qgis_native)
 
+IF (APPLE)
   SET_TARGET_PROPERTIES(${QGIS_APP_NAME} PROPERTIES
     INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
     INSTALL_RPATH_USE_LINK_PATH true

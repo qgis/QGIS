@@ -29,6 +29,7 @@ class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
 class QgsHighlight;
 class QgsAttributeDialog;
+class QgsExpressionContextScope;
 
 class APP_EXPORT QgsFeatureAction : public QAction
 {
@@ -47,11 +48,11 @@ class APP_EXPORT QgsFeatureAction : public QAction
      * Will set the default values to recently used or provider defaults based on settings
      * and override with values in defaultAttributes if provided.
      *
-     * @param defaultAttributes  Provide some default attributes here if desired.
+     * \param defaultAttributes  Provide some default attributes here if desired.
      *
-     * @return true if feature was added if showModal is true. If showModal is false, returns true in every case
+     * \returns true if feature was added if showModal is true. If showModal is false, returns true in every case
      */
-    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
 
   private slots:
     void onFeatureSaved( const QgsFeature &feature );

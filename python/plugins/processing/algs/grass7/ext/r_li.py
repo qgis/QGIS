@@ -29,6 +29,7 @@ import shutil
 from processing.tools.system import isWindows, mkdir
 from processing.core.parameters import getParameterFromString
 import os
+from copy import deepcopy
 
 # for MS-Windows users who have MBCS chars in their name:
 if os.name == 'nt':
@@ -44,9 +45,9 @@ def rliPath():
         return os.path.join(os.path.expanduser("~"), '.grass7', 'r.li')
 
 
-def removeConfigFile(alg):
+def removeConfigFile(alg, parameters, context):
     """ Remove the r.li user dir config file """
-    configPath = alg.getParameterValue('config')
+    configPath = alg.parameterAsString(parameters, 'config', context)
     if isWindows():
         command = "DEL {}".format(os.path.join(rliPath(), configPath))
     else:
@@ -54,10 +55,10 @@ def removeConfigFile(alg):
     alg.commands.append(command)
 
 
-def checkMovingWindow(alg, outputTxt=False):
+def checkMovingWindow(alg, parameters, context, outputTxt=False):
     """ Verify if we have the right parameters """
-    configTxt = alg.getParameterValue('config_txt')
-    config = alg.getParameterValue('config')
+    configTxt = alg.parameterAsString(parameters, 'config_txt', context)
+    config = alg.parameterAsString(parameters, 'config', context)
     if configTxt and config:
         return alg.tr("You need to set either inline configuration or a configuration file!")
 
@@ -83,29 +84,33 @@ def checkMovingWindow(alg, outputTxt=False):
     return None
 
 
-def configFile(alg, outputTxt=False):
-    """ Handle inline configuration """
+def configFile(alg, parameters, context, outputTxt=False):
+    """ Handle inline configuration
+    :param parameters:
+    """
     # Where is the GRASS7 user directory ?
+
+    new_parameters = deepcopy(parameters)
+
     userGrass7Path = rliPath()
     if not os.path.isdir(userGrass7Path):
         mkdir(userGrass7Path)
     if not os.path.isdir(os.path.join(userGrass7Path, 'output')):
         mkdir(os.path.join(userGrass7Path, 'output'))
-    origConfigFile = alg.getParameterValue('config')
+    origConfigFile = new_parameters['config']
 
     # Handle inline configuration
-    configTxt = alg.getParameterFromName('config_txt')
-    if configTxt.value:
+    if new_parameters['config_txt']:
         # Creates a temporary txt file in user r.li directory
         tempConfig = alg.getTempFilename()
         configFilePath = os.path.join(userGrass7Path, tempConfig)
         # Inject rules into temporary txt file
         with open(configFilePath, "w") as f:
-            f.write(configTxt.value)
+            f.write(new_parameters['config_txt'])
 
         # Use temporary file as rules file
-        alg.setParameterValue('config', os.path.basename(configFilePath))
-        alg.parameters.remove(configTxt)
+        new_parameters['config'] = os.path.basename(configFilePath)
+        del new_parameters['config_txt']
 
     # If we have a configuration file, we need to copy it into user dir
     if origConfigFile:
@@ -114,30 +119,25 @@ def configFile(alg, outputTxt=False):
         shutil.copy(origConfigFile, configFilePath)
 
         # Change the parameter value
-        alg.setParameterValue('config', os.path.basename(configFilePath))
+        new_parameters['config'] = os.path.basename(configFilePath)
 
     origOutput = alg.getOutputFromName('output')
-    if outputTxt:
+    if new_parameters['output']:
         param = getParameterFromString("ParameterString|output|txt output|None|False|True")
-        param.value = os.path.basename(origOutput.value)
-        alg.addParameter(param)
+        new_parameters[param.name()] = origOutput.value
         alg.removeOutputFromName('output')
 
-    alg.processCommand()
+    alg.processCommand(new_parameters, context)
 
     # Remove Config file:
-    removeConfigFile(alg)
+    removeConfigFile(alg, new_parameters, context)
 
     # re-add configTxt
-    alg.addParameter(configTxt)
-    alg.setParameterValue('config', origConfigFile)
     if outputTxt:
-        for param in [f for f in alg.parameters if f.name == 'output']:
-            alg.parameters.remove(param)
         alg.addOutput(origOutput)
 
 
-def moveOutputTxtFile(alg):
+def moveOutputTxtFile(alg, parameters, context):
     # Find output file name:
     origOutput = alg.getOutputValue('output')
     userGrass7Path = rliPath()

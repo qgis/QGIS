@@ -21,7 +21,6 @@
 
 QgsRelationReferenceWidgetWrapper::QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QgsMapCanvas *canvas, QgsMessageBar *messageBar, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mWidget( nullptr )
   , mCanvas( canvas )
   , mMessageBar( messageBar )
   , mIndeterminateState( false )
@@ -46,15 +45,17 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setEditorContext( context(), mCanvas, mMessageBar );
 
-  bool showForm = config( QStringLiteral( "ShowForm" ), true ).toBool();
+  bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
   bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
   bool readOnlyWidget = config( QStringLiteral( "ReadOnly" ), false ).toBool();
   bool orderByValue = config( QStringLiteral( "OrderByValue" ), false ).toBool();
+  bool showOpenFormButton = config( QStringLiteral( "ShowOpenFormButton" ), true ).toBool();
 
   mWidget->setEmbedForm( showForm );
   mWidget->setReadOnlySelector( readOnlyWidget );
   mWidget->setAllowMapIdentification( mapIdent );
   mWidget->setOrderByValue( orderByValue );
+  mWidget->setOpenFormButtonVisible( showOpenFormButton );
   if ( config( QStringLiteral( "FilterFields" ), QVariant() ).isValid() )
   {
     mWidget->setFilterFields( config( QStringLiteral( "FilterFields" ) ).toStringList() );
@@ -84,7 +85,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget->setRelation( relation, config( QStringLiteral( "AllowNULL" ) ).toBool() );
 
-  connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this,  SLOT( foreignKeyChanged( QVariant ) ) );
+  connect( mWidget, &QgsRelationReferenceWidget::foreignKeyChanged, this, &QgsRelationReferenceWidgetWrapper::foreignKeyChanged );
 }
 
 QVariant QgsRelationReferenceWidgetWrapper::value() const
@@ -120,7 +121,7 @@ void QgsRelationReferenceWidgetWrapper::showIndeterminateState()
 
 void QgsRelationReferenceWidgetWrapper::setValue( const QVariant &val )
 {
-  if ( !mWidget || ( !mIndeterminateState && val == value() ) )
+  if ( !mWidget || ( !mIndeterminateState && val == value() && val.isNull() == value().isNull() ) )
     return;
 
   mIndeterminateState = false;

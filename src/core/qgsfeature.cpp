@@ -30,18 +30,6 @@ email                : sherman at mrcc.com
  ****************************************************************************/
 
 
-QgsAttributeMap QgsAttributes::toMap() const
-{
-  QgsAttributeMap map;
-  for ( int idx = 0; idx < count(); ++idx )
-  {
-    QVariant v = at( idx );
-    if ( v.isValid() )
-      map.insert( idx, v );
-  }
-  return map;
-}
-
 //
 // QgsFeature
 //
@@ -128,6 +116,7 @@ void QgsFeature::setId( QgsFeatureId id )
 
   d.detach();
   d->fid = id;
+  d->valid = true;
 }
 
 QgsAttributes QgsFeature::attributes() const
@@ -142,12 +131,14 @@ void QgsFeature::setAttributes( const QgsAttributes &attrs )
 
   d.detach();
   d->attributes = attrs;
+  d->valid = true;
 }
 
 void QgsFeature::setGeometry( const QgsGeometry &geometry )
 {
   d.detach();
   d->geometry = geometry;
+  d->valid = true;
 }
 
 void QgsFeature::clearGeometry()
@@ -214,12 +205,13 @@ bool QgsFeature::setAttribute( int idx, const QVariant &value )
 {
   if ( idx < 0 || idx >= d->attributes.size() )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString::null, QgsMessageLog::WARNING );
+    QgsMessageLog::logMessage( QObject::tr( "Attribute index %1 out of bounds [0;%2]" ).arg( idx ).arg( d->attributes.size() ), QString(), QgsMessageLog::WARNING );
     return false;
   }
 
   d.detach();
   d->attributes[idx] = value;
+  d->valid = true;
   return true;
 }
 
@@ -237,6 +229,7 @@ bool QgsFeature::setAttribute( const QString &name, const QVariant &value )
 
   d.detach();
   d->attributes[fieldIdx] = value;
+  d->valid = true;
   return true;
 }
 

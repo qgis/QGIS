@@ -25,9 +25,10 @@
 
 class QgsLineSymbol;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Composer item for polylines.
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
 {
@@ -35,14 +36,16 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
 
   public:
 
-    /** Constructor
-     * @param c parent composition
+    /**
+     * Constructor
+     * \param c parent composition
      */
     QgsComposerPolyline( QgsComposition *c );
 
-    /** Constructor
-     * @param polyline nodes of the shape
-     * @param c parent composition
+    /**
+     * Constructor
+     * \param polyline nodes of the shape
+     * \param c parent composition
      */
     QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c );
 
@@ -63,7 +66,8 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     //! QgsSymbol use to draw the shape.
     std::unique_ptr<QgsLineSymbol> mPolylineStyleSymbol;
 
-    /** Add the node newPoint at the given position according to some
+    /**
+     * Add the node newPoint at the given position according to some
      * criteres. */
     bool _addNode( const int indexPoint, QPointF newPoint, const double radius ) override;
 

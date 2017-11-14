@@ -30,7 +30,10 @@ __revision__ = '$Format:%H$'
 import os
 
 from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
-from qgis.core import NULL, QgsApplication, QgsSettings
+from qgis.core import (NULL,
+                       QgsApplication,
+                       QgsSettings,
+                       QgsVectorFileWriter)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -50,7 +53,6 @@ class ProcessingConfig(object):
     VECTOR_LINE_STYLE = 'VECTOR_LINE_STYLE'
     VECTOR_POLYGON_STYLE = 'VECTOR_POLYGON_STYLE'
     SHOW_RECENT_ALGORITHMS = 'SHOW_RECENT_ALGORITHMS'
-    USE_SELECTED = 'USE_SELECTED'
     FILTER_INVALID_GEOMETRIES = 'FILTER_INVALID_GEOMETRIES'
     USE_FILENAME_AS_LAYER_NAME = 'USE_FILENAME_AS_LAYER_NAME'
     KEEP_DIALOG_OPEN = 'KEEP_DIALOG_OPEN'
@@ -81,10 +83,6 @@ class ProcessingConfig(object):
             ProcessingConfig.tr('General'),
             ProcessingConfig.KEEP_DIALOG_OPEN,
             ProcessingConfig.tr('Keep dialog open after running an algorithm'), False))
-        ProcessingConfig.addSetting(Setting(
-            ProcessingConfig.tr('General'),
-            ProcessingConfig.USE_SELECTED,
-            ProcessingConfig.tr('Use only selected features'), True))
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.USE_FILENAME_AS_LAYER_NAME,
@@ -165,7 +163,7 @@ class ProcessingConfig(object):
             valuetype=Setting.SELECTION,
             options=invalidFeaturesOptions))
 
-        extensions = processing.tools.dataobjects.getSupportedOutputVectorLayerExtensions()
+        extensions = QgsVectorFileWriter.supportedFormatExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_VECTOR_LAYER_EXT,

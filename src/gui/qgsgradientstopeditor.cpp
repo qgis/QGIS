@@ -31,7 +31,6 @@
 
 QgsGradientStopEditor::QgsGradientStopEditor( QWidget *parent, QgsGradientColorRamp *ramp )
   : QWidget( parent )
-  , mSelectedStop( 0 )
 {
   if ( ramp )
     mGradient = *ramp;
@@ -285,7 +284,7 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   int i = 1;
   Q_FOREACH ( const QgsGradientStop &stop, mGradient.stops() )
   {
-    currentDiff = qAbs( relativePositionToPoint( stop.offset ) + 1 - x );
+    currentDiff = std::abs( relativePositionToPoint( stop.offset ) + 1 - x );
     if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
     {
       closestStop = i;
@@ -295,7 +294,7 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   }
 
   //first stop
-  currentDiff = qAbs( relativePositionToPoint( 0.0 ) + 1 - x );
+  currentDiff = std::abs( relativePositionToPoint( 0.0 ) + 1 - x );
   if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
   {
     closestStop = 0;
@@ -303,7 +302,7 @@ int QgsGradientStopEditor::findClosestStop( int x, int threshold ) const
   }
 
   //last stop
-  currentDiff = qAbs( relativePositionToPoint( 1.0 ) + 1 - x );
+  currentDiff = std::abs( relativePositionToPoint( 1.0 ) + 1 - x );
   if ( ( threshold < 0 || currentDiff < threshold ) && currentDiff < closestDiff )
   {
     closestStop = mGradient.count() - 1;
@@ -392,7 +391,7 @@ void QgsGradientStopEditor::drawStopMarker( QPainter &painter, QPoint topMiddle,
   painter.setBrush( selected ?  QColor( 150, 150, 150 ) : Qt::white );
   painter.setPen( selected ? Qt::black : QColor( 150, 150, 150 ) );
   // 0.5 offsets to make edges pixel grid aligned
-  painter.translate( qRound( topMiddle.x() - MARKER_WIDTH / 2.0 ) + 0.5, topMiddle.y() + 0.5 );
+  painter.translate( std::round( topMiddle.x() - MARKER_WIDTH / 2.0 ) + 0.5, topMiddle.y() + 0.5 );
   painter.drawPolygon( sOuterTriangle );
 
   // draw the checkerboard background for marker

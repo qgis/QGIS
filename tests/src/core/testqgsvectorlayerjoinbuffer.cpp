@@ -21,14 +21,16 @@
 #include <qgsvectorlayer.h>
 #include "qgsfeatureiterator.h"
 #include "qgslayertreegroup.h"
-#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include <qgsvectordataprovider.h>
 #include <qgsapplication.h>
 #include <qgsvectorlayerjoinbuffer.h>
 #include <qgslayerdefinition.h>
 #include <qgsproject.h>
+#include "qgslayertree.h"
 
-/** @ingroup UnitTests
+/**
+ * @ingroup UnitTests
  * This is a unit test for the vector layer join buffer
  *
  * @see QgsVectorLayerJoinBuffer
@@ -502,14 +504,14 @@ void TestVectorLayerJoinBuffer::testJoinLayerDefinitionFile()
   // Generate QLR
   QDomDocument qlrDoc( QStringLiteral( "qgis-layer-definition" ) );
   QString errorMessage;
-  r = QgsLayerDefinition::exportLayerDefinition( qlrDoc, mProject.layerTreeRoot()->children(), errorMessage, QgsPathResolver() );
+  r = QgsLayerDefinition::exportLayerDefinition( qlrDoc, mProject.layerTreeRoot()->children(), errorMessage, QgsReadWriteContext() );
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Clear
   mProject.removeAllMapLayers();
 
   // Load QLR
-  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, &mProject, mProject.layerTreeRoot(), errorMessage, QgsPathResolver() );
+  r = QgsLayerDefinition::loadLayerDefinition( qlrDoc, &mProject, mProject.layerTreeRoot(), errorMessage, QgsReadWriteContext() );
   QVERIFY2( r, errorMessage.toUtf8().constData() );
 
   // Get layer

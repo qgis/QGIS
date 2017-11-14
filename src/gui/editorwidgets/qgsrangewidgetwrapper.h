@@ -22,13 +22,16 @@
 #include <QDoubleSpinBox>
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 class QAbstractSlider;
 class QSlider;
 class QDial;
 class QgsSlider;
 class QgsDial;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a range widget.
  *
  * Options:

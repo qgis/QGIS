@@ -24,7 +24,9 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgscurve.h"
-#include "qgspointv2.h"
+#include "qgspoint.h"
+
+#define SIP_NO_FILE
 
 #ifndef _EFFECTIVEAREA_H
 #define _EFFECTIVEAREA_H 1
@@ -32,7 +34,7 @@
 
 #define LWDEBUG //
 #define LWDEBUGF //
-#define FP_MAX qMax
+#define FP_MAX std::max
 #define FLAGS_GET_Z( flags ) ( ( flags ) & 0x01 )
 #define LW_MSG_MAXLEN 256
 #define lwalloc qgsMalloc
@@ -42,7 +44,7 @@
 
 /**
  * This structure is placed in an array with one member per point.
- * It has links into the minheap rtee and kepps track of eliminated points.
+ * It has links into the minheap rtee and keeps track of eliminated points.
  */
 struct areanode
 {
@@ -66,14 +68,12 @@ struct MINHEAP
 };
 
 /**
- * Structure to hold pointarray and it's arealist.
+ * Structure to hold point array and its arealist.
  */
 struct EFFECTIVE_AREAS
 {
   EFFECTIVE_AREAS( const QgsCurve &curve )
     : is3d( curve.is3D() )
-    , initial_arealist( nullptr )
-    , res_arealist( nullptr )
   {
     curve.points( inpts );
     initial_arealist = new areanode[ inpts.size()];

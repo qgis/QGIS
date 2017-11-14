@@ -17,18 +17,20 @@
 #define QGSLAYERTREEEMBEDDEDWIDGETREGISTRY_H
 
 #include <QMap>
+#include "qgis.h"
 #include <QWidget>
 #include "qgis_gui.h"
 
 
 class QgsMapLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayerTreeEmbeddedWidgetProvider
  * Provider interface to be implemented in order to introduce new kinds of embedded widgets for use in layer tree.
  * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
- * @see QgsLayerTreeEmbeddedWidgetRegistry
- * @note introduced in QGIS 2.16
+ * \see QgsLayerTreeEmbeddedWidgetRegistry
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
 {
@@ -41,30 +43,41 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetProvider
     //! Human readable name - may be translatable with tr()
     virtual QString name() const = 0;
 
-    //! Factory to create widgets. The returned widget is owned by the caller.
-    //! The widgetIndex argument may be used to identify which widget is being
-    //! created (useful when using multiple widgets from the same provider for one layer).
-    virtual QWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) = 0;
+    /**
+     * Factory to create widgets. The returned widget is owned by the caller.
+     * The widgetIndex argument may be used to identify which widget is being
+     * created (useful when using multiple widgets from the same provider for one layer).
+     */
+    virtual QWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) = 0 SIP_FACTORY;
 
     //! Whether it makes sense to use this widget for a particular layer
     virtual bool supportsLayer( QgsMapLayer *layer ) = 0;
 };
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsLayerTreeEmbeddedWidgetRegistry
  * Registry of widgets that may be embedded into layer tree view.
  * Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
  * Layer tree must have UseEmbeddedWidgets flag enabled in order to show assigned widgets.
  *
- * @see QgsLayerTreeEmbeddedWidgetRegistry
- * @note introduced in QGIS 2.16
+ * QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
+ * QgsGui::layerTreeEmbeddedWidgetRegistry().
+ *
+ * \see QgsLayerTreeEmbeddedWidgetRegistry
+ * \since QGIS 2.16
  */
 class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
 {
   public:
 
-    //! Means of accessing canonical single instance
-    static QgsLayerTreeEmbeddedWidgetRegistry *instance();
+    /**
+     * Constructor for QgsLayerTreeEmbeddedWidgetRegistry/
+     *
+     * QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
+     * QgsGui::layerTreeEmbeddedWidgetRegistry().
+     */
+    QgsLayerTreeEmbeddedWidgetRegistry();
 
     ~QgsLayerTreeEmbeddedWidgetRegistry();
 
@@ -79,20 +92,25 @@ class GUI_EXPORT QgsLayerTreeEmbeddedWidgetRegistry
     //! Get provider object from the provider's ID
     QgsLayerTreeEmbeddedWidgetProvider *provider( const QString &providerId ) const;
 
-    /** Register a provider, takes ownership of the object.
+    /**
+     * Register a provider, takes ownership of the object.
      * Returns true on success, false if the provider is already registered. */
-    bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider );
+    bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider SIP_TRANSFER );
 
-    /** Unregister a provider, the provider object is deleted.
+    /**
+     * Unregister a provider, the provider object is deleted.
      * Returns true on success, false if the provider was not registered. */
     bool removeProvider( const QString &providerId );
 
   protected:
-    //! Protected constructor - use instance() to access the registry.
-    QgsLayerTreeEmbeddedWidgetRegistry();
 
     //! storage of all the providers
     QMap<QString, QgsLayerTreeEmbeddedWidgetProvider *> mProviders;
+
+  private:
+#ifdef SIP_RUN
+    QgsLayerTreeEmbeddedWidgetRegistry( const QgsLayerTreeEmbeddedWidgetRegistry &other );
+#endif
 
 };
 

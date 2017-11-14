@@ -30,6 +30,9 @@
 #ifndef PAL_UTIL_H
 #define PAL_UTIL_H
 
+#define SIP_NO_FILE
+
+
 #include <QList>
 
 namespace pal
@@ -47,15 +50,12 @@ namespace pal
   class Feats
   {
     public:
-      Feats()
-        : feature( nullptr )
-        , shape( nullptr )
-        , priority( 0 )
-      {}
+      //! Constructor for Feats
+      Feats() = default;
 
       FeaturePart *feature = nullptr;
       PointSet *shape = nullptr;
-      double priority;
+      double priority = 0;
       QList< LabelPosition *> lPos;
   };
 

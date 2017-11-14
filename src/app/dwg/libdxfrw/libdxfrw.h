@@ -33,9 +33,9 @@ class dxfRW
     /*!
      * An interface must be provided. It is used by the class to signal various
      * components being added.
-     * @param interface_ the interface to use
-     * @param ext should the extrusion be applied to convert in 2D?
-     * @return true for success
+     * \param interface_ the interface to use
+     * \param ext should the extrusion be applied to convert in 2D?
+     * \returns true for success
      */
     bool read( DRW_Interface *interface_, bool ext );
     void setBinary( bool b ) {binFile = b;}

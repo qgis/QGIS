@@ -18,7 +18,6 @@
 #include "diagram/qgsdiagram.h"
 
 #include "qgsdiagramrenderer.h"
-#include "qgsgeometrycache.h"
 #include "qgsmessagelog.h"
 #include "qgspallabeling.h"
 #include "qgsrenderer.h"
@@ -33,14 +32,11 @@
 #include "qgsvectorlayerlabelprovider.h"
 #include "qgspainteffect.h"
 #include "qgsfeaturefilterprovider.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 
 #include <QPicture>
-
-// TODO:
-// - passing of cache to QgsVectorLayer
 
 
 QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRenderContext &context )
@@ -49,12 +45,8 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   , mInterruptionChecker( context )
   , mLayer( layer )
   , mFields( layer->fields() )
-  , mRenderer( nullptr )
-  , mCache( nullptr )
   , mLabeling( false )
   , mDiagrams( false )
-  , mLabelProvider( nullptr )
-  , mDiagramProvider( nullptr )
 {
   mSource = new QgsVectorLayerFeatureSource( layer );
 
@@ -66,14 +58,13 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   mGeometryType = layer->geometryType();
 
   mFeatureBlendMode = layer->featureBlendMode();
-
   mSimplifyMethod = layer->simplifyMethod();
   mSimplifyGeometry = layer->simplifyDrawingCanbeApplied( mContext, QgsVectorSimplifyMethod::GeometrySimplification );
 
   QgsSettings settings;
-  mVertexMarkerOnlyForSelection = settings.value( QStringLiteral( "/qgis/digitizing/marker_only_for_selected" ), true ).toBool();
+  mVertexMarkerOnlyForSelection = settings.value( QStringLiteral( "qgis/digitizing/marker_only_for_selected" ), true ).toBool();
 
-  QString markerTypeString = settings.value( QStringLiteral( "/qgis/digitizing/marker_style" ), "Cross" ).toString();
+  QString markerTypeString = settings.value( QStringLiteral( "qgis/digitizing/marker_style" ), "Cross" ).toString();
   if ( markerTypeString == QLatin1String( "Cross" ) )
   {
     mVertexMarkerStyle = QgsVectorLayer::Cross;
@@ -87,7 +78,7 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     mVertexMarkerStyle = QgsVectorLayer::NoMarker;
   }
 
-  mVertexMarkerSize = settings.value( QStringLiteral( "/qgis/digitizing/marker_size" ), 3 ).toInt();
+  mVertexMarkerSize = settings.value( QStringLiteral( "qgis/digitizing/marker_size" ), 3 ).toInt();
 
   if ( !mRenderer )
     return;
@@ -99,7 +90,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
     // set editing vertex markers style
     mRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
   }
-
   mContext.expressionContext() << QgsExpressionContextUtils::layerScope( layer );
 
   mAttrNames = mRenderer->usedAttributes( context );
@@ -107,7 +97,6 @@ QgsVectorLayerRenderer::QgsVectorLayerRenderer( QgsVectorLayer *layer, QgsRender
   //register label and diagram layer to the labeling engine
   prepareLabeling( layer, mAttrNames );
   prepareDiagrams( layer, mAttrNames );
-
 }
 
 
@@ -185,7 +174,7 @@ bool QgsVectorLayerRenderer::render()
     {
       try
       {
-        QgsPoint center = mContext.extent().center();
+        QgsPointXY center = mContext.extent().center();
         double rectSize = ct.sourceCrs().isGeographic() ? 0.0008983 /* ~100/(40075014/360=111319.4833) */ : 100;
 
         QgsRectangle sourceRect = QgsRectangle( center.x(), center.y(), center.x() + rectSize, center.y() + rectSize );
@@ -196,13 +185,13 @@ bool QgsVectorLayerRenderer::render()
 
         if ( !sourceRect.isEmpty() && sourceRect.isFinite() && !targetRect.isEmpty() && targetRect.isFinite() )
         {
-          QgsPoint minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
-          QgsPoint maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
-          QgsPoint minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
-          QgsPoint maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
+          QgsPointXY minimumSrcPoint( sourceRect.xMinimum(), sourceRect.yMinimum() );
+          QgsPointXY maximumSrcPoint( sourceRect.xMaximum(), sourceRect.yMaximum() );
+          QgsPointXY minimumDstPoint( targetRect.xMinimum(), targetRect.yMinimum() );
+          QgsPointXY maximumDstPoint( targetRect.xMaximum(), targetRect.yMaximum() );
 
-          double sourceHypothenuse = sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
-          double targetHypothenuse = sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
+          double sourceHypothenuse = std::sqrt( minimumSrcPoint.sqrDist( maximumSrcPoint ) );
+          double targetHypothenuse = std::sqrt( minimumDstPoint.sqrDist( maximumDstPoint ) );
 
           QgsDebugMsgLevel( QString( "Simplify - SourceHypothenuse=%1" ).arg( sourceHypothenuse ), 4 );
           QgsDebugMsgLevel( QString( "Simplify - TargetHypothenuse=%1" ).arg( targetHypothenuse ), 4 );
@@ -265,18 +254,6 @@ bool QgsVectorLayerRenderer::render()
   return true;
 }
 
-void QgsVectorLayerRenderer::setGeometryCachePointer( QgsGeometryCache *cache )
-{
-  mCache = cache;
-
-  if ( mCache )
-  {
-    // Destroy all cached geometries and clear the references to them
-    mCache->setCachedGeometriesRect( mContext.extent() );
-  }
-}
-
-
 
 void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 {
@@ -294,19 +271,13 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
         break;
       }
 
-      if ( !fet.hasGeometry() )
+      if ( !fet.hasGeometry() || fet.geometry().isEmpty() )
         continue; // skip features without geometry
 
       mContext.expressionContext().setFeature( fet );
 
       bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fet.id() );
       bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
-
-      if ( mCache )
-      {
-        // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-        mCache->cacheGeometry( fet.id(), fet.geometry() );
-      }
 
       // render feature
       bool rendered = mRenderer->renderFeature( fet, mContext, -1, sel, drawMarker );
@@ -317,12 +288,12 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
         // new labeling engine
         if ( mContext.labelingEngine() && ( mLabelProvider || mDiagramProvider ) )
         {
-          std::unique_ptr<QgsGeometry> obstacleGeometry;
+          QgsGeometry obstacleGeometry;
           QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
 
           if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
           {
-            obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
+            obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols );
           }
 
           if ( !symbols.isEmpty() )
@@ -332,11 +303,11 @@ void QgsVectorLayerRenderer::drawRenderer( QgsFeatureIterator &fit )
 
           if ( mLabelProvider )
           {
-            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
+            mLabelProvider->registerFeature( fet, mContext, obstacleGeometry );
           }
           if ( mDiagramProvider )
           {
-            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
+            mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry );
           }
         }
       }
@@ -361,7 +332,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
   QgsSingleSymbolRenderer *selRenderer = nullptr;
   if ( !mSelectedFeatureIds.isEmpty() )
   {
-    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) ) ;
+    selRenderer = new QgsSingleSymbolRenderer( QgsSymbol::defaultSymbol( mGeometryType ) );
     selRenderer->symbol()->setColor( mContext.selectionColor() );
     selRenderer->setVertexMarkerAppearance( mVertexMarkerStyle, mVertexMarkerSize );
     selRenderer->startRender( mContext, mFields );
@@ -398,21 +369,15 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
     }
     features[sym].append( fet );
 
-    if ( mCache )
-    {
-      // Cache this for the use of (e.g.) modifying the feature's uncommitted geometry.
-      mCache->cacheGeometry( fet.id(), fet.geometry() );
-    }
-
     // new labeling engine
     if ( mContext.labelingEngine() )
     {
-      std::unique_ptr<QgsGeometry> obstacleGeometry;
+      QgsGeometry obstacleGeometry;
       QgsSymbolList symbols = mRenderer->originalSymbolsForFeature( fet, mContext );
 
       if ( !symbols.isEmpty() && fet.geometry().type() == QgsWkbTypes::PointGeometry )
       {
-        obstacleGeometry.reset( QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols ) );
+        obstacleGeometry = QgsVectorLayerLabelProvider::getPointObstacleGeometry( fet, mContext, symbols );
       }
 
       if ( !symbols.isEmpty() )
@@ -422,11 +387,11 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
 
       if ( mLabelProvider )
       {
-        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
+        mLabelProvider->registerFeature( fet, mContext, obstacleGeometry );
       }
       if ( mDiagramProvider )
       {
-        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry.get() );
+        mDiagramProvider->registerFeature( fet, mContext, obstacleGeometry );
       }
     }
   }
@@ -474,7 +439,7 @@ void QgsVectorLayerRenderer::drawRendererLevels( QgsFeatureIterator &fit )
           return;
         }
 
-        bool sel = mSelectedFeatureIds.contains( fit->id() );
+        bool sel = mContext.showSelection() && mSelectedFeatureIds.contains( fit->id() );
         // maybe vertex markers should be drawn only during the last pass...
         bool drawMarker = ( mDrawVertexMarkers && mContext.drawEditingInformation() && ( !mVertexMarkerOnlyForSelection || sel ) );
 

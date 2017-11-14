@@ -19,11 +19,13 @@ INCLUDE_DIRECTORIES (
   ../../core
   ../../core/auth
   ../../core/geometry
+  ../../core/metadata
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
 )
 INCLUDE_DIRECTORIES (SYSTEM
   ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
 )
 INCLUDE_DIRECTORIES (
   ../../gui

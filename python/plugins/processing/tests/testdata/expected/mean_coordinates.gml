@@ -16,7 +16,6 @@
       <ogr:geometryProperty><gml:Point srsName="EPSG:4326"><gml:coordinates>3.33333333333333,0.111111111111111</gml:coordinates></gml:Point></ogr:geometryProperty>
       <ogr:MEAN_X>3.333333333333333</ogr:MEAN_X>
       <ogr:MEAN_Y>0.111111111111111</ogr:MEAN_Y>
-      <ogr:UID>Single class</ogr:UID>
     </ogr:mean_coordinates>
   </gml:featureMember>
 </ogr:FeatureCollection>

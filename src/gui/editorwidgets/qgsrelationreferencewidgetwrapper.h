@@ -17,13 +17,15 @@
 #define QGSRELATIONREFERENCEWIDGETWRAPPER_H
 
 #include "qgseditorwidgetwrapper.h"
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QgsRelationReferenceWidget;
 class QgsMapCanvas;
 class QgsMessageBar;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a relation reference widget.
  *
  * Options:
@@ -47,7 +49,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
         QWidget *editor,
         QgsMapCanvas *canvas,
         QgsMessageBar *messageBar,
-        QWidget *parent = nullptr );
+        QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     virtual QWidget *createWidget( QWidget *parent ) override;
     virtual void initWidget( QWidget *editor ) override;

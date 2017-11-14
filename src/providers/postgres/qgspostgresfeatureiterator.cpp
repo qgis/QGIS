@@ -21,6 +21,7 @@
 #include "qgslogger.h"
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
+#include "qgsexception.h"
 
 #include <QElapsedTimer>
 #include <QObject>
@@ -35,6 +36,13 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   , mLastFetch( false )
   , mFilterRequiresGeometry( false )
 {
+  if ( request.filterType() == QgsFeatureRequest::FilterFids && request.filterFids().isEmpty() )
+  {
+    mClosed = true;
+    iteratorClosed();
+    return;
+  }
+
   if ( !source->mTransactionConnection )
   {
     mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
@@ -53,6 +61,21 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     return;
   }
 
+  if ( mRequest.destinationCrs().isValid() && mRequest.destinationCrs() != mSource->mCrs )
+  {
+    mTransform = QgsCoordinateTransform( mSource->mCrs, mRequest.destinationCrs() );
+  }
+  try
+  {
+    mFilterRect = filterRectToSourceCrs( mTransform );
+  }
+  catch ( QgsCsException & )
+  {
+    // can't reproject mFilterRect
+    close();
+    return;
+  }
+
   mCursorName = mConn->uniqueCursorName();
   QString whereClause;
 
@@ -61,7 +84,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
   bool useFallbackWhereClause = false;
   QString fallbackWhereClause;
 
-  if ( !request.filterRect().isNull() && !mSource->mGeometryColumn.isNull() )
+  if ( !mFilterRect.isNull() && !mSource->mGeometryColumn.isNull() )
   {
     whereClause = whereClauseRect();
   }
@@ -96,7 +119,7 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     }
     mFilterRequiresGeometry = request.filterExpression()->needsGeometry();
 
-    if ( QgsSettings().value( QStringLiteral( "/qgis/compileExpressions" ), true ).toBool() )
+    if ( QgsSettings().value( QStringLiteral( "qgis/compileExpressions" ), true ).toBool() )
     {
       //IMPORTANT - this MUST be the last clause added!
       QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
@@ -120,85 +143,99 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     }
   }
 
-  QStringList orderByParts;
+  if ( !mClosed )
+  {
+    QStringList orderByParts;
 
-  mOrderByCompiled = true;
+    mOrderByCompiled = true;
 
-  // THIS CODE IS BROKEN - since every retrieved column is cast as text during declareCursor, this method of sorting will always be
-  // performed using a text sort.
-  // TODO - fix ordering by so that instead of
-  //     SELECT my_int_col::text FROM some_table ORDER BY my_int_col
-  // we instead use
-  //     SELECT my_int_col::text FROM some_table ORDER BY some_table.my_int_col
-  // but that's non-trivial
+    // THIS CODE IS BROKEN - since every retrieved column is cast as text during declareCursor, this method of sorting will always be
+    // performed using a text sort.
+    // TODO - fix ordering by so that instead of
+    //     SELECT my_int_col::text FROM some_table ORDER BY my_int_col
+    // we instead use
+    //     SELECT my_int_col::text FROM some_table ORDER BY some_table.my_int_col
+    // but that's non-trivial
 #if 0
-  if ( QgsSettings().value( "/qgis/compileExpressions", true ).toBool() )
-  {
-    Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
+    if ( QgsSettings().value( "qgis/compileExpressions", true ).toBool() )
     {
-      QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
-      QgsExpression expression = clause.expression();
-      if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+      Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, request.orderBy() )
       {
-        QString part;
-        part = compiler.result();
-        part += clause.ascending() ? " ASC" : " DESC";
-        part += clause.nullsFirst() ? " NULLS FIRST" : " NULLS LAST";
-        orderByParts << part;
-      }
-      else
-      {
-        // Bail out on first non-complete compilation.
-        // Most important clauses at the beginning of the list
-        // will still be sent and used to pre-sort so the local
-        // CPU can use its cycles for fine-tuning.
-        mOrderByCompiled = false;
-        break;
+        QgsPostgresExpressionCompiler compiler = QgsPostgresExpressionCompiler( source );
+        QgsExpression expression = clause.expression();
+        if ( compiler.compile( &expression ) == QgsSqlExpressionCompiler::Complete )
+        {
+          QString part;
+          part = compiler.result();
+          part += clause.ascending() ? " ASC" : " DESC";
+          part += clause.nullsFirst() ? " NULLS FIRST" : " NULLS LAST";
+          orderByParts << part;
+        }
+        else
+        {
+          // Bail out on first non-complete compilation.
+          // Most important clauses at the beginning of the list
+          // will still be sent and used to pre-sort so the local
+          // CPU can use its cycles for fine-tuning.
+          mOrderByCompiled = false;
+          break;
+        }
       }
     }
-  }
-  else
+    else
 #endif
-  {
-    mOrderByCompiled = false;
-  }
-
-  if ( !mOrderByCompiled )
-    limitAtProvider = false;
-
-  bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QStringLiteral( "," ) ) );
-  if ( !success && useFallbackWhereClause )
-  {
-    //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
-    success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QStringLiteral( "," ) ) );
-    if ( success )
-      mExpressionCompiled = false;
-  }
-
-  if ( !success && !orderByParts.isEmpty() )
-  {
-    //try with no order by clause
-    success = declareCursor( whereClause, -1, false );
-    if ( success )
-      mOrderByCompiled = false;
-  }
-
-  if ( !success && useFallbackWhereClause && !orderByParts.isEmpty() )
-  {
-    //try with no expression compilation AND no order by clause
-    success = declareCursor( fallbackWhereClause, -1, false );
-    if ( success )
     {
-      mExpressionCompiled = false;
-      mOrderByCompiled = false;
+      mOrderByCompiled = mRequest.orderBy().isEmpty();
     }
-  }
 
-  if ( !success )
-  {
-    close();
-    mClosed = true;
-    iteratorClosed();
+    // ensure that all attributes required for order by are fetched
+    if ( !mOrderByCompiled && mRequest.flags() & QgsFeatureRequest::SubsetOfAttributes )
+    {
+      QgsAttributeList attrs = mRequest.subsetOfAttributes();
+      Q_FOREACH ( const QString &attr, mRequest.orderBy().usedAttributes() )
+      {
+        int attrIndex = mSource->mFields.lookupField( attr );
+        if ( !attrs.contains( attrIndex ) )
+          attrs << attrIndex;
+      }
+      mRequest.setSubsetOfAttributes( attrs );
+    }
+
+    if ( !mOrderByCompiled )
+      limitAtProvider = false;
+
+    bool success = declareCursor( whereClause, limitAtProvider ? mRequest.limit() : -1, false, orderByParts.join( QStringLiteral( "," ) ) );
+    if ( !success && useFallbackWhereClause )
+    {
+      //try with the fallback where clause, e.g., for cases when using compiled expression failed to prepare
+      success = declareCursor( fallbackWhereClause, -1, false, orderByParts.join( QStringLiteral( "," ) ) );
+      if ( success )
+        mExpressionCompiled = false;
+    }
+
+    if ( !success && !orderByParts.isEmpty() )
+    {
+      //try with no order by clause
+      success = declareCursor( whereClause, -1, false );
+      if ( success )
+        mOrderByCompiled = false;
+    }
+
+    if ( !success && useFallbackWhereClause && !orderByParts.isEmpty() )
+    {
+      //try with no expression compilation AND no order by clause
+      success = declareCursor( fallbackWhereClause, -1, false );
+      if ( success )
+      {
+        mExpressionCompiled = false;
+        mOrderByCompiled = false;
+      }
+    }
+
+    if ( !success )
+    {
+      close();
+    }
   }
 
   mFetched = 0;
@@ -284,6 +321,7 @@ bool QgsPostgresFeatureIterator::fetchFeature( QgsFeature &feature )
 
   feature.setValid( true );
   feature.setFields( mSource->mFields ); // allow name-based attribute lookups
+  geometryToDestinationCrs( feature, mTransform );
 
   return true;
 }
@@ -388,7 +426,7 @@ bool QgsPostgresFeatureIterator::close()
 
 QString QgsPostgresFeatureIterator::whereClauseRect()
 {
-  QgsRectangle rect = mRequest.filterRect();
+  QgsRectangle rect = mFilterRect;
   if ( mSource->mSpatialColType == SctGeography )
   {
     rect = QgsRectangle( -180.0, -90.0, 180.0, 90.0 ).intersect( &rect );
@@ -427,7 +465,7 @@ QString QgsPostgresFeatureIterator::whereClauseRect()
 
   if ( mRequest.flags() & QgsFeatureRequest::ExactIntersect )
   {
-    QString curveToLineFn; // in postgis < 1.5 the st_curvetoline function does not exist
+    QString curveToLineFn; // in PostGIS < 1.5 the st_curvetoline function does not exist
     if ( mConn->majorVersion() >= 2 || ( mConn->majorVersion() == 1 && mConn->minorVersion() >= 5 ) )
       curveToLineFn = QStringLiteral( "st_curvetoline" ); // st_ prefix is always used
     whereClause += QStringLiteral( " AND %1(%2(%3%4),%5)" )
@@ -504,7 +542,7 @@ bool QgsPostgresFeatureIterator::declareCursor( const QString &whereClause, long
 
       // Simplify again with st_simplify after first simplification ?
       bool postSimplification;
-      postSimplification = false; // default to false. Set to true only for postgis >= 2.2 when using st_removerepeatedpoints
+      postSimplification = false; // default to false. Set to true only for PostGIS >= 2.2 when using st_removerepeatedpoints
 
       if ( mRequest.simplifyMethod().methodType() == QgsSimplifyMethod::OptimizeForRendering )
       {
@@ -799,6 +837,7 @@ void QgsPostgresFeatureIterator::getFeatureAttribute( int idx, QgsPostgresResult
 QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p )
   : mConnInfo( p->mUri.connectionInfo( false ) )
   , mGeometryColumn( p->mGeometryColumn )
+  , mSqlWhereClause( p->filterWhereClause() )
   , mFields( p->mAttributeFields )
   , mSpatialColType( p->mSpatialColType )
   , mRequestedSrid( p->mRequestedSrid )
@@ -809,10 +848,9 @@ QgsPostgresFeatureSource::QgsPostgresFeatureSource( const QgsPostgresProvider *p
   , mPrimaryKeyType( p->mPrimaryKeyType )
   , mPrimaryKeyAttrs( p->mPrimaryKeyAttrs )
   , mQuery( p->mQuery )
+  , mCrs( p->crs() )
   , mShared( p->mShared )
 {
-  mSqlWhereClause = p->filterWhereClause();
-
   if ( mSqlWhereClause.startsWith( QLatin1String( " WHERE " ) ) )
     mSqlWhereClause = mSqlWhereClause.mid( 7 );
 

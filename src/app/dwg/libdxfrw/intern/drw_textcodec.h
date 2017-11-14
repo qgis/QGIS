@@ -34,7 +34,7 @@ class DRW_Converter
     DRW_Converter( const int *t, int l )
     {
       table = t;
-      cpLenght = l;
+      cpLength = l;
     }
     virtual ~DRW_Converter() = default;
     virtual std::string fromUtf8( std::string *s ) {return *s;}
@@ -44,7 +44,7 @@ class DRW_Converter
     std::string encodeNum( int c );
     int decodeNum( std::string s, int *b );
     const int *table = nullptr;
-    int cpLenght;
+    int cpLength;
 };
 
 class DRW_ConvUTF16 : public DRW_Converter

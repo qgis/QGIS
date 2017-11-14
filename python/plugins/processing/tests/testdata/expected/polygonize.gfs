@@ -12,15 +12,5 @@
       <ExtentYMin>-0.31429</ExtentYMin>
       <ExtentYMax>0.60000</ExtentYMax>
     </DatasetSpecificInfo>
-    <PropertyDefn>
-      <Name>area</Name>
-      <ElementPath>area</ElementPath>
-      <Type>Real</Type>
-    </PropertyDefn>
-    <PropertyDefn>
-      <Name>perimeter</Name>
-      <ElementPath>perimeter</ElementPath>
-      <Type>Real</Type>
-    </PropertyDefn>
   </GMLFeatureClass>
 </GMLFeatureClassList>

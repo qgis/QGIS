@@ -16,10 +16,13 @@
 #ifndef QGSINDEXEDFEATURE_H
 #define QGSINDEXEDFEATURE_H
 
+#define SIP_NO_FILE
+
 #include <QVector>
 #include "qgsfeature.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Temporarily used structure to cache order by information
  * \note not available in Python bindings
  */

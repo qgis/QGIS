@@ -102,9 +102,13 @@ void QgsRasterDrawer::draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsM
 
     delete block;
 
-    p->setCompositionMode( QPainter::CompositionMode_SourceOver );  // go back to the default composition mode
+    if ( feedback && feedback->renderPartialOutput() )
+    {
+      // go back to the default composition mode
+      p->setCompositionMode( QPainter::CompositionMode_SourceOver );
+    }
 
-    // ok this does not matter much anyway as the tile size quite big so most of the time
+    // OK this does not matter much anyway as the tile size quite big so most of the time
     // there would be just one tile for the whole display area, but it won't hurt...
     if ( feedback && feedback->isCanceled() )
       break;

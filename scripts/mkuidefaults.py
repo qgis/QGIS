@@ -37,35 +37,40 @@ QCoreApplication.setApplicationName("QGIS3")
 
 s = QSettings()
 
-ba = s.value("/UI/geometry").toByteArray()
+ba = bytes(s.value("/UI/geometry"))
 
 f = open("src/app/ui_defaults.h", "w")
 
 f.write("#ifndef UI_DEFAULTS_H\n#define UI_DEFAULTS_H\n\nstatic const unsigned char defaultUIgeometry[] =\n{\n")
 
 for chunk in chunks(ba, 16):
-    f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % ord(x), chunk)))
+    f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % x, chunk)))
 
 f.write("};\n\nstatic const unsigned char defaultUIstate[] =\n{\n")
 
-ba = s.value("/UI/state").toByteArray()
+ba = bytes(s.value("/UI/state"))
 
 for chunk in chunks(ba, 16):
-    f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % ord(x), chunk)))
+    f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % x, chunk)))
 
-ba = s.value("/Composer/geometry").toByteArray()
+try:
+    ba = bytes(s.value("/Composer/geometry"))
 
-f.write("};\n\nstatic const unsigned char defaultComposerUIgeometry[] =\n{\n")
+    f.write("};\n\nstatic const unsigned char defaultComposerUIgeometry[] =\n{\n")
 
-for chunk in chunks(ba, 16):
-    f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % ord(x), chunk)))
+    for chunk in chunks(ba, 16):
+        f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % x, chunk)))
+except TypeError as ex:
+    pass
 
-f.write("};\n\nstatic const unsigned char defaultComposerUIstate[] =\n{\n")
+try:
+    ba = bytes(s.value("/ComposerUI/state"))
+    f.write("};\n\nstatic const unsigned char defaultComposerUIstate[] =\n{\n")
 
-ba = s.value("/ComposerUI/state").toByteArray()
-
-for chunk in chunks(ba, 16):
-    f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % ord(x), chunk)))
+    for chunk in chunks(ba, 16):
+        f.write("  %s,\n" % ", ".join(map(lambda x: "0x%02x" % x, chunk)))
+except TypeError as ex:
+    pass
 
 f.write("};\n\n#endif // UI_DEFAULTS_H\n")
 

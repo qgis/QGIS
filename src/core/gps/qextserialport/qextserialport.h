@@ -2,6 +2,8 @@
 #ifndef QEXTSERIALPORT_H
 #define QEXTSERIALPORT_H
 
+#define SIP_NO_FILE
+
 
 /*if all warning messages are turned off, flag portability warnings to be turned off as well*/
 #ifdef _TTY_NOWARN_
@@ -150,7 +152,7 @@ to use, since you never have to worry about checking for new data.
 \b Example
 \code
 QextSerialPort* port = new QextSerialPort("COM1", QextSerialPort::EventDriven);
-connect(port, SIGNAL(readyRead()), myClass, SLOT(onDataAvailable()));
+connect(port, &QextSerialPort::readyRead, myClass, &MyObject::onDataAvailable);
 port->open();
 
 void MyClass::onDataAvailable() {
@@ -200,7 +202,7 @@ class QextSerialPort: public QIODevice
 
         /**!
          * Get query mode.
-         * \return query mode.
+         * \returns query mode.
          */
         inline QueryMode queryMode() const { return _queryMode; }
 

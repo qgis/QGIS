@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
-from future import standard_library
-standard_library.install_aliases()
-from builtins import str
 
 __author__ = 'Martin Dobias'
 __date__ = 'November 2009'
@@ -34,9 +30,10 @@ QGIS utilities module
 
 from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
 from qgis.PyQt.QtWidgets import QPushButton, QApplication
-from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes, QgsApplication
+from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes
 from qgis.gui import QgsMessageBar
 
+import os
 import sys
 import traceback
 import glob
@@ -80,7 +77,8 @@ def showWarning(message, category, filename, lineno, file=None, line=None):
     )
 
 
-warnings.showwarning = showWarning
+if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
+    warnings.showwarning = showWarning
 
 
 def showException(type, value, tb, msg, messagebar=False):
@@ -137,7 +135,7 @@ def show_message_log(pop_error=True):
 
 
 def open_stack_dialog(type, value, tb, msg, pop_error=True):
-    if pop_error:
+    if pop_error and iface is not None:
         iface.messageBar().popWidget()
 
     if msg is None:
@@ -193,7 +191,7 @@ def open_stack_dialog(type, value, tb, msg, pop_error=True):
 
 def qgis_excepthook(type, value, tb):
     # detect if running in the main thread
-    in_main_thread = QThread.currentThread() == QgsApplication.instance().thread()
+    in_main_thread = QCoreApplication.instance() is None or QThread.currentThread() == QCoreApplication.instance().thread()
 
     # only use messagebar if running in main thread - otherwise it will crash!
     showException(type, value, tb, None, messagebar=in_main_thread)
@@ -208,7 +206,8 @@ def uninstallErrorHook():
 
 
 # install error hook() on module load
-installErrorHook()
+if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
+    installErrorHook()
 
 # initialize 'iface' object
 iface = None
@@ -590,43 +589,61 @@ def startServerPlugin(packageName):
 
 
 def spatialite_connect(*args, **kwargs):
-    """returns a dbapi2.Connection to a spatialite db
-either using pyspatialite if it is present
-or using the "mod_spatialite" extension (python3)"""
-    try:
-        from pyspatialite import dbapi2
-    except ImportError:
-        import sqlite3
-        con = sqlite3.dbapi2.connect(*args, **kwargs)
-        con.enable_load_extension(True)
-        cur = con.cursor()
-        libs = [
-            # Spatialite >= 4.2 and Sqlite >= 3.7.17, should work on all platforms
-            ("mod_spatialite", "sqlite3_modspatialite_init"),
-            # Spatialite >= 4.2 and Sqlite < 3.7.17 (Travis)
-            ("mod_spatialite.so", "sqlite3_modspatialite_init"),
-            # Spatialite < 4.2 (linux)
-            ("libspatialite.so", "sqlite3_extension_init")
-        ]
-        found = False
-        for lib, entry_point in libs:
-            try:
-                cur.execute("select load_extension('{}', '{}')".format(lib, entry_point))
-            except sqlite3.OperationalError:
-                continue
-            else:
-                found = True
-                break
-        if not found:
-            raise RuntimeError("Cannot find any suitable spatialite module")
-        cur.close()
-        con.enable_load_extension(False)
-        return con
-    return dbapi2.connect(*args, **kwargs)
+    """returns a dbapi2.Connection to a SpatiaLite db
+using the "mod_spatialite" extension (python3)"""
+    import sqlite3
+    con = sqlite3.dbapi2.connect(*args, **kwargs)
+    con.enable_load_extension(True)
+    cur = con.cursor()
+    libs = [
+        # SpatiaLite >= 4.2 and Sqlite >= 3.7.17, should work on all platforms
+        ("mod_spatialite", "sqlite3_modspatialite_init"),
+        # SpatiaLite >= 4.2 and Sqlite < 3.7.17 (Travis)
+        ("mod_spatialite.so", "sqlite3_modspatialite_init"),
+        # SpatiaLite < 4.2 (linux)
+        ("libspatialite.so", "sqlite3_extension_init")
+    ]
+    found = False
+    for lib, entry_point in libs:
+        try:
+            cur.execute("select load_extension('{}', '{}')".format(lib, entry_point))
+        except sqlite3.OperationalError:
+            continue
+        else:
+            found = True
+            break
+    if not found:
+        raise RuntimeError("Cannot find any suitable spatialite module")
+    cur.close()
+    con.enable_load_extension(False)
+    return con
 
+
+class OverrideCursor():
+    """
+    Executes a code block with a different cursor set and makes sure the cursor
+    is restored even if exceptions are raised or an intermediate ``return``
+    statement is hit.
+
+    Example:
+    ```
+    with OverrideCursor(Qt.WaitCursor):
+        do_a_slow(operation)
+    ```
+    """
+
+    def __init__(self, cursor):
+        self.cursor = cursor
+
+    def __enter__(self):
+        QApplication.setOverrideCursor(self.cursor)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        QApplication.restoreOverrideCursor()
 
 #######################
 # IMPORT wrapper
+
 
 _uses_builtins = True
 try:
@@ -664,7 +681,8 @@ def _import(name, globals={}, locals={}, fromlist=[], level=None):
     return mod
 
 
-if _uses_builtins:
-    builtins.__import__ = _import
-else:
-    __builtin__.__import__ = _import
+if not os.environ.get('QGIS_NO_OVERRIDE_IMPORT'):
+    if _uses_builtins:
+        builtins.__import__ = _import
+    else:
+        __builtin__.__import__ = _import

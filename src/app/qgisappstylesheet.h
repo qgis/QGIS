@@ -23,8 +23,9 @@
 #include <QMap>
 #include "qgis_app.h"
 
-/** @class QgisAppStyleSheet
- * @brief Adjustable stylesheet for the Qgis application
+/**
+ * \class QgisAppStyleSheet
+ * \brief Adjustable stylesheet for the Qgis application
  */
 class APP_EXPORT QgisAppStyleSheet: public QObject
 {
@@ -32,14 +33,14 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
 
   public:
     QgisAppStyleSheet( QObject *parent = nullptr );
-    ~QgisAppStyleSheet();
 
     //! Return changeable options built from settings and/or defaults
     QMap<QString, QVariant> defaultOptions();
 
-    /** Generate stylesheet
-     * @param opts generated default option values, or a changed copy of them
-     * @note on success emits appStyleSheetChanged
+    /**
+     * Generate stylesheet
+     * \param opts generated default option values, or a changed copy of them
+     * \note on success emits appStyleSheetChanged
      */
     void buildStyleSheet( const QMap<QString, QVariant> &opts );
 
@@ -51,8 +52,9 @@ class APP_EXPORT QgisAppStyleSheet: public QObject
 
   signals:
 
-    /** Signal the successful stylesheet build results
-     * @note connect to (app|widget)->setStyleSheet or similar custom slot
+    /**
+     * Signal the successful stylesheet build results
+     * \note connect to (app|widget)->setStyleSheet or similar custom slot
      */
     void appStyleSheetChanged( const QString &appStyleSheet );
 

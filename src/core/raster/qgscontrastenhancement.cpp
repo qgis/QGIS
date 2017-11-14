@@ -30,11 +30,7 @@ class originally created circa 2004 by T.Sutton, Gary E.Sherman, Steve Halasz
 #include <QDomElement>
 
 QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
-  : mContrastEnhancementAlgorithm( NoEnhancement )
-  , mContrastEnhancementFunction( nullptr )
-  , mEnhancementDirty( false )
-  , mLookupTable( nullptr )
-  , mRasterDataType( dataType )
+  : mRasterDataType( dataType )
 {
   mMinimumValue = minimumValuePossible( mRasterDataType );
   mMaximumValue = maximumValuePossible( mRasterDataType );
@@ -42,7 +38,7 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
 
   mLookupTableOffset = mMinimumValue * -1;
 
-  mContrastEnhancementFunction = new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue );
+  mContrastEnhancementFunction.reset( new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue ) );
 
   //If the data type is larger than 16-bit do not generate a lookup table
   if ( mRasterDataTypeRange <= 65535.0 )
@@ -53,9 +49,7 @@ QgsContrastEnhancement::QgsContrastEnhancement( Qgis::DataType dataType )
 }
 
 QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement &ce )
-  : mContrastEnhancementFunction( nullptr )
-  , mEnhancementDirty( true )
-  , mLookupTable( nullptr )
+  : mEnhancementDirty( true )
   , mMinimumValue( ce.mMinimumValue )
   , mMaximumValue( ce.mMaximumValue )
   , mRasterDataType( ce.mRasterDataType )
@@ -76,7 +70,6 @@ QgsContrastEnhancement::QgsContrastEnhancement( const QgsContrastEnhancement &ce
 QgsContrastEnhancement::~QgsContrastEnhancement()
 {
   delete [] mLookupTable;
-  delete mContrastEnhancementFunction;
 }
 /*
  *
@@ -182,7 +175,10 @@ int QgsContrastEnhancement::enhanceContrast( double value )
 
   if ( mLookupTable && NoEnhancement != mContrastEnhancementAlgorithm )
   {
-    return mLookupTable[static_cast <int>( value + mLookupTableOffset )];
+    double shiftedValue = value + mLookupTableOffset;
+    if ( shiftedValue >= 0 && shiftedValue < mRasterDataTypeRange + 1 )
+      return mLookupTable[static_cast <int>( shiftedValue )];
+    return 0;
   }
   else
   {
@@ -249,23 +245,19 @@ void QgsContrastEnhancement::setContrastEnhancementAlgorithm( ContrastEnhancemen
   switch ( algorithm )
   {
     case StretchToMinimumMaximum :
-      delete mContrastEnhancementFunction;
-      mContrastEnhancementFunction = new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
+      mContrastEnhancementFunction.reset( new QgsLinearMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue ) );
       break;
     case StretchAndClipToMinimumMaximum :
-      delete mContrastEnhancementFunction;
-      mContrastEnhancementFunction = new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue );
+      mContrastEnhancementFunction.reset( new QgsLinearMinMaxEnhancementWithClip( mRasterDataType, mMinimumValue, mMaximumValue ) );
       break;
     case ClipToMinimumMaximum :
-      delete mContrastEnhancementFunction;
-      mContrastEnhancementFunction = new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue );
+      mContrastEnhancementFunction.reset( new QgsClipToMinMaxEnhancement( mRasterDataType, mMinimumValue, mMaximumValue ) );
       break;
     case UserDefinedEnhancement :
       //Do nothing
       break;
     default:
-      delete mContrastEnhancementFunction;
-      mContrastEnhancementFunction = new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue );
+      mContrastEnhancementFunction.reset( new QgsContrastEnhancementFunction( mRasterDataType, mMinimumValue, mMaximumValue ) );
       break;
   }
 
@@ -289,8 +281,7 @@ void QgsContrastEnhancement::setContrastEnhancementFunction( QgsContrastEnhancem
 
   if ( function )
   {
-    delete mContrastEnhancementFunction;
-    mContrastEnhancementFunction = function;
+    mContrastEnhancementFunction.reset( function );
     mContrastEnhancementAlgorithm = UserDefinedEnhancement;
     generateLookupTable();
   }

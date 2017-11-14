@@ -19,8 +19,10 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Base class for feedback objects to be used for cancelation of something running in a worker thread.
  * The class may be used as is or it may be subclassed for extended functionality
  * for a particular operation (e.g. report progress or pass some data for preview).
@@ -37,17 +39,47 @@
  * subclass and available with QgsMapLayerRenderer::feedback() method. When a map rendering job
  * gets canceled, the cancel() method is called on the feedback object of all layers.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsFeedback : public QObject
 {
     Q_OBJECT
   public:
     //! Construct a feedback object
-    QgsFeedback( QObject *parent = nullptr )
+    QgsFeedback( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QObject( parent )
-      , mCanceled( false )
     {}
+
+    //! Tells whether the operation has been canceled already
+    bool isCanceled() const { return mCanceled; }
+
+    /**
+     * Sets the current progress for the feedback object. The \a progress
+     * argument is in percentage and valid values range from 0-100.
+     * \see progress()
+     * \see progressChanged()
+     * \since QGIS 3.0
+     */
+    void setProgress( double progress )
+    {
+      // avoid flooding with too many events
+      if ( static_cast< int >( mProgress * 10 ) != static_cast< int >( progress * 10 ) )
+        emit progressChanged( progress );
+
+      mProgress = progress;
+    }
+
+    /**
+     * Returns the current progress reported by the feedback object. Depending on how the
+     * feedback object is used progress reporting may not be supported. The returned value
+     * is in percentage and ranges from 0-100.
+     * \see setProgress()
+     * \see progressChanged()
+     * \since QGIS 3.0
+     */
+    double progress() const { return mProgress; }
+
+  public slots:
 
     //! Tells the internal routines that the current operation should be canceled. This should be run by the main thread
     void cancel()
@@ -58,28 +90,6 @@ class CORE_EXPORT QgsFeedback : public QObject
       emit canceled();
     }
 
-    //! Tells whether the operation has been canceled already
-    bool isCanceled() const { return mCanceled; }
-
-    /**
-     * Sets the current progress for the feedback object. The \a progress
-     * argument is in percentage and valid values range from 0-100.
-     * @see progress()
-     * @see progressChanged()
-     * @note added in QGIS 3.0
-     */
-    void setProgress( double progress ) { mProgress = progress; emit progressChanged( mProgress ); }
-
-    /**
-     * Returns the current progress reported by the feedback object. Depending on how the
-     * feedback object is used progress reporting may not be supported. The returned value
-     * is in percentage and ranges from 0-100.
-     * @see setProgress()
-     * @see progressChanged()
-     * @note added in QGIS 3.0
-     */
-    double progress() const { return mProgress; }
-
   signals:
     //! Internal routines can connect to this signal if they use event loop
     void canceled();
@@ -88,15 +98,15 @@ class CORE_EXPORT QgsFeedback : public QObject
      * Emitted when the feedback object reports a progress change. Depending on how the
      * feedback object is used progress reporting may not be supported. The \a progress
      * argument is in percentage and ranges from 0-100.
-     * @note added in QGIS 3.0
-     * @see setProgress()
-     * @see progress()
+     * \since QGIS 3.0
+     * \see setProgress()
+     * \see progress()
      */
     void progressChanged( double progress );
 
   private:
     //! Whether the operation has been canceled already. False by default.
-    bool mCanceled;
+    bool mCanceled = false;
 
     double mProgress = 0.0;
 };

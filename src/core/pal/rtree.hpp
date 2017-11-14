@@ -44,7 +44,8 @@ namespace pal
   class RTFileStream;  // File I/O helper class, look below for implementation and notes.
 
 
-  /** \ingroup core
+  /**
+   * \ingroup core
      Implementation of RTree, a multidimensional bounding rectangle tree.
      Example usage: For a 3-dimensional tree use RTree<Object*, float, 3> myTree;
 
@@ -123,7 +124,8 @@ namespace pal
       /// Save tree contents to stream
       bool Save( RTFileStream &a_stream );
 
-      /** \ingroup core
+      /**
+       * \ingroup core
        * Iterator is not remove safe.
        */
       class Iterator
@@ -134,12 +136,8 @@ namespace pal
 
           struct StackElement
           {
-            StackElement()
-              : m_node( NULL )
-              , m_branchIndex( 0 )
-            {}
             Node *m_node = nullptr;
-            int m_branchIndex;
+            int m_branchIndex = 0;
           };
 
         public:
@@ -362,7 +360,8 @@ namespace pal
   // Because there is not stream support, this is a quick and dirty file I/O helper.
   // Users will likely replace its usage with a Stream implementation from their favorite API.
 
-  /** \ingroup core
+  /**
+   * \ingroup core
    */
   class RTFileStream
   {
@@ -381,17 +380,18 @@ namespace pal
         Close();
       }
 
+      //! RTFileStream cannot be copied
+      RTFileStream( const RTFileStream &other ) = delete;
+      //! RTFileStream cannot be copied
+      RTFileStream &operator=( const RTFileStream &other ) = delete;
+
       bool OpenRead( const char *a_fileName )
       {
         if ( m_file )
           fclose( m_file );
 
         m_file = fopen( a_fileName, "rb" );
-        if ( !m_file )
-        {
-          return false;
-        }
-        return true;
+        return m_file != nullptr;
       }
 
       bool OpenWrite( const char *a_fileName )
@@ -400,11 +400,7 @@ namespace pal
           fclose( m_file );
 
         m_file = fopen( a_fileName, "wb" );
-        if ( !m_file )
-        {
-          return false;
-        }
-        return true;
+        return m_file != nullptr;
       }
 
       void Close()
@@ -444,10 +440,6 @@ namespace pal
         return fread( static_cast< void * >( a_array ), sizeof( TYPE ) * a_count, 1, m_file );
       }
 
-    private:
-
-      RTFileStream( const RTFileStream &other );
-      RTFileStream &operator=( const RTFileStream &other );
   };
 
 
@@ -1055,7 +1047,7 @@ namespace pal
     ELEMTYPEREAL increase;
     ELEMTYPEREAL bestIncr = static_cast< ELEMTYPEREAL >( -1 );
     ELEMTYPEREAL area;
-    ELEMTYPEREAL bestArea =  0;
+    ELEMTYPEREAL bestArea = 0;
     int best = 0;
     Rect tempRect;
 
@@ -1093,8 +1085,8 @@ namespace pal
 
     for ( int index = 0; index < NUMDIMS; ++index )
     {
-      newRect.m_min[index] = qMin( a_rectA->m_min[index], a_rectB->m_min[index] );
-      newRect.m_max[index] = qMax( a_rectA->m_max[index], a_rectB->m_max[index] );
+      newRect.m_min[index] = std::min( a_rectA->m_min[index], a_rectB->m_min[index] );
+      newRect.m_max[index] = std::max( a_rectA->m_max[index], a_rectB->m_max[index] );
     }
 
     return newRect;
@@ -1167,7 +1159,7 @@ namespace pal
       sumOfSquares += halfExtent * halfExtent;
     }
 
-    radius = static_cast< ELEMTYPEREAL >( sqrt( sumOfSquares ) );
+    radius = static_cast< ELEMTYPEREAL >( std::sqrt( sumOfSquares ) );
 
     // Pow maybe slow, so test for common dims like 2,3 and just use x*x, x*x*x.
     if ( NUMDIMS == 3 )
@@ -1180,7 +1172,7 @@ namespace pal
     }
     else
     {
-      return static_cast< ELEMTYPEREAL >( pow( radius, NUMDIMS ) * m_unitSphereVolume );
+      return static_cast< ELEMTYPEREAL >( std::pow( radius, NUMDIMS ) * m_unitSphereVolume );
     }
   }
 

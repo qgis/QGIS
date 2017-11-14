@@ -27,22 +27,26 @@ QgsProjectProperty::QgsProjectProperty() //NOLINT
 
 void QgsProjectPropertyValue::dump( int tabs ) const
 {
+  Q_UNUSED( tabs );
+#ifdef QGISDEBUG
+
   QString tabString;
   tabString.fill( '\t', tabs );
 
   if ( QVariant::StringList == mValue.type() )
   {
-    QStringList sl = mValue.toStringList();
+    const QStringList sl = mValue.toStringList();
 
-    for ( QStringList::const_iterator i = sl.begin(); i != sl.end(); ++i )
+    for ( const auto &string : sl )
     {
-      QgsDebugMsg( QString( "%1[%2] " ).arg( tabString, *i ) );
+      QgsDebugMsg( QString( "%1[%2] " ).arg( tabString, string ) );
     }
   }
   else
   {
     QgsDebugMsg( QString( "%1%2" ).arg( tabString, mValue.toString() ) );
   }
+#endif
 }
 
 bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
@@ -53,7 +57,7 @@ bool QgsProjectPropertyValue::readXml( const QDomNode &keyNode )
   // get the type so that we can properly parse the key value
   QString typeString = subkeyElement.attribute( QStringLiteral( "type" ) );
 
-  if ( QString::null == typeString )
+  if ( typeString.isNull() )
   {
     QgsDebugMsg( QString( "null ``type'' attribute for %1" ).arg( keyNode.nodeName() ) );
 

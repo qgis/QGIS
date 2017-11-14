@@ -16,12 +16,13 @@
 #ifndef QGSNETWORKSPEEDSTRATEGY_H
 #define QGSNETWORKSPEEDSTRATEGY_H
 
-#include <qgsnetworkstrategy.h>
+#include "qgsnetworkstrategy.h"
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
+/**
+ * \ingroup analysis
  * \class QgsNetworkSpeedStrategy
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  * \brief Strategy for calculating edge cost based on travel time. Should be
  * used for finding fastest path between two points.
  */
@@ -34,14 +35,8 @@ class ANALYSIS_EXPORT QgsNetworkSpeedStrategy : public QgsNetworkStrategy
      */
     QgsNetworkSpeedStrategy( int attributeId, double defaultValue, double toMetricFactor );
 
-    //! Returns edge cost
     QVariant cost( double distance, const QgsFeature &f ) const override;
-
-    /**
-     * Returns list of the source layer attributes needed for cost calculation.
-     * This method called by QgsGraphDirector.
-     */
-    QgsAttributeList requiredAttributes() const override;
+    QSet< int > requiredAttributes() const override;
 
   private:
     int mAttributeId;

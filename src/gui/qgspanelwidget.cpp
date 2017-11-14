@@ -23,8 +23,6 @@
 
 QgsPanelWidget::QgsPanelWidget( QWidget *parent )
   : QWidget( parent )
-  , mAutoDelete( true )
-  , mDockMode( false )
 {
 }
 
@@ -38,8 +36,8 @@ void QgsPanelWidget::connectChildPanels( const QList<QgsPanelWidget *> &panels )
 
 void QgsPanelWidget::connectChildPanel( QgsPanelWidget *panel )
 {
-  connect( panel, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( openPanel( QgsPanelWidget * ) ) );
-  connect( panel, SIGNAL( widgetChanged() ), this, SIGNAL( widgetChanged() ) );
+  connect( panel, &QgsPanelWidget::showPanel, this, &QgsPanelWidget::openPanel );
+  connect( panel, &QgsPanelWidget::widgetChanged, this, &QgsPanelWidget::widgetChanged );
 }
 
 void QgsPanelWidget::setDockMode( bool dockMode )
@@ -80,14 +78,14 @@ void QgsPanelWidget::openPanel( QgsPanelWidget *panel )
   {
     // Show the dialog version if no one is connected
     QDialog *dlg = new QDialog();
-    QString key =  QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
+    QString key = QStringLiteral( "/UI/paneldialog/%1" ).arg( panel->panelTitle() );
     QgsSettings settings;
     dlg->restoreGeometry( settings.value( key ).toByteArray() );
     dlg->setWindowTitle( panel->panelTitle() );
     dlg->setLayout( new QVBoxLayout() );
     dlg->layout()->addWidget( panel );
     QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
-    connect( buttonBox, SIGNAL( accepted() ), dlg, SLOT( accept() ) );
+    connect( buttonBox, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
     dlg->layout()->addWidget( buttonBox );
     dlg->exec();
     settings.setValue( key, dlg->saveGeometry() );

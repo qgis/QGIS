@@ -17,8 +17,8 @@
 
 #include <QWidget>
 
-#include <ui_qgslabelingwidget.h>
-#include <qgspallabeling.h>
+#include "ui_qgslabelingwidget.h"
+#include "qgspallabeling.h"
 #include "qgsvectorlayerlabeling.h"
 
 #include "qgsmaplayerconfigwidget.h"
@@ -38,9 +38,15 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
   public:
     QgsLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
+    /**
+     * Returns the labeling gui widget or a nullptr if none.
+     *
+     * \since QGIS 3.0
+     */
+    QgsLabelingGui *labelingGui();
+
   public slots:
     void setLayer( QgsMapLayer *layer );
-    void setDockMode( bool enabled );
     //! save config to layer
     void writeSettingsToLayer();
 
@@ -53,7 +59,8 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     void resetSettings();
 
   signals:
-    void widgetChanged();
+
+    void auxiliaryFieldCreated();
 
   protected slots:
     void labelModeChanged( int index );
@@ -64,9 +71,8 @@ class QgsLabelingWidget : public QgsMapLayerConfigWidget, private Ui::QgsLabelin
     QgsMapCanvas *mCanvas = nullptr;
 
     QWidget *mWidget = nullptr;
-    QgsLabelingGui *mLabelGui = nullptr;
+    std::unique_ptr< QgsPalLayerSettings > mSimpleSettings;
     std::unique_ptr< QgsAbstractVectorLayerLabeling > mOldSettings;
-    QgsPalLayerSettings mOldPalSettings;
 };
 
 #endif // QGSLABELINGWIDGET_H

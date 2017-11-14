@@ -26,7 +26,7 @@
 #include "geometry/qgsmultipoint.h"
 #include "geometry/qgsmulticurve.h"
 #include "geometry/qgspolygon.h"
-#include "geometry/qgspointv2.h"
+#include "geometry/qgspoint.h"
 
 #include <QEventLoop>
 #include <QNetworkRequest>
@@ -100,7 +100,7 @@ QgsWkbTypes::Type QgsArcGisRestUtils::mapEsriGeometryType( const QString &esriGe
   return QgsWkbTypes::Unknown;
 }
 
-static QgsPointV2 *parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType )
+static QgsPoint *parsePoint( const QVariantList &coordList, QgsWkbTypes::Type pointType )
 {
   int nCoords = coordList.size();
   if ( nCoords < 2 )
@@ -112,19 +112,19 @@ static QgsPointV2 *parsePoint( const QVariantList &coordList, QgsWkbTypes::Type 
     return nullptr;
   double z = nCoords >= 3 ? coordList[2].toDouble() : 0;
   double m = nCoords >= 4 ? coordList[3].toDouble() : 0;
-  return new QgsPointV2( pointType, x, y, z, m );
+  return new QgsPoint( pointType, x, y, z, m );
 }
 
-static QgsCircularString *parseCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPointV2 &startPoint )
+static QgsCircularString *parseCircularString( const QVariantMap &curveData, QgsWkbTypes::Type pointType, const QgsPoint &startPoint )
 {
   QVariantList coordsList = curveData[QStringLiteral( "c" )].toList();
   if ( coordsList.isEmpty() )
     return nullptr;
-  QList<QgsPointV2> points;
+  QVector<QgsPoint> points;
   points.append( startPoint );
   foreach ( const QVariant &coordData, coordsList )
   {
-    QgsPointV2 *point = parsePoint( coordData.toList(), pointType );
+    QgsPoint *point = parsePoint( coordData.toList(), pointType );
     if ( !point )
     {
       return nullptr;
@@ -147,7 +147,7 @@ static QgsCompoundCurve *parseCompoundCurve( const QVariantList &curvesList, Qgs
   {
     if ( curveData.type() == QVariant::List )
     {
-      QgsPointV2 *point = parsePoint( curveData.toList(), pointType );
+      QgsPoint *point = parsePoint( curveData.toList(), pointType );
       if ( !point )
       {
         delete compoundCurve;
@@ -191,7 +191,7 @@ static QgsAbstractGeometry *parseEsriGeometryPoint( const QVariantMap &geometryD
     return nullptr;
   double z = geometryData[QStringLiteral( "z" )].toDouble();
   double m = geometryData[QStringLiteral( "m" )].toDouble();
-  return new QgsPointV2( pointType, x, y, z, m );
+  return new QgsPoint( pointType, x, y, z, m );
 }
 
 static QgsAbstractGeometry *parseEsriGeometryMultiPoint( const QVariantMap &geometryData, QgsWkbTypes::Type pointType )
@@ -201,11 +201,11 @@ static QgsAbstractGeometry *parseEsriGeometryMultiPoint( const QVariantMap &geom
   if ( coordsList.isEmpty() )
     return nullptr;
 
-  QgsMultiPointV2 *multiPoint = new QgsMultiPointV2();
+  QgsMultiPoint *multiPoint = new QgsMultiPoint();
   Q_FOREACH ( const QVariant &coordData, coordsList )
   {
     QVariantList coordList = coordData.toList();
-    QgsPointV2 *p = parsePoint( coordList, pointType );
+    QgsPoint *p = parsePoint( coordList, pointType );
     if ( !p )
     {
       delete multiPoint;
@@ -282,12 +282,12 @@ static QgsAbstractGeometry *parseEsriEnvelope( const QVariantMap &geometryData )
   if ( !xminOk || !yminOk || !xmaxOk || !ymaxOk )
     return nullptr;
   QgsLineString *ext = new QgsLineString();
-  ext->addVertex( QgsPointV2( xmin, ymin ) );
-  ext->addVertex( QgsPointV2( xmax, ymin ) );
-  ext->addVertex( QgsPointV2( xmax, ymax ) );
-  ext->addVertex( QgsPointV2( xmin, ymax ) );
-  ext->addVertex( QgsPointV2( xmin, ymin ) );
-  QgsPolygonV2 *poly = new QgsPolygonV2();
+  ext->addVertex( QgsPoint( xmin, ymin ) );
+  ext->addVertex( QgsPoint( xmax, ymin ) );
+  ext->addVertex( QgsPoint( xmax, ymax ) );
+  ext->addVertex( QgsPoint( xmin, ymax ) );
+  ext->addVertex( QgsPoint( xmin, ymin ) );
+  QgsPolygon *poly = new QgsPolygon();
   poly->setExteriorRing( ext );
   return poly;
 }
@@ -427,7 +427,7 @@ QByteArray QgsArcGisRestUtils::queryService( const QUrl &url, QString &errorTitl
   while ( true )
   {
     reply = nam->get( request );
-    QObject::connect( reply, SIGNAL( finished() ), &loop, SLOT( quit() ) );
+    QObject::connect( reply, &QNetworkReply::finished, &loop, &QEventLoop::quit );
 
     loop.exec( QEventLoop::ExcludeUserInputEvents );
 
@@ -481,8 +481,6 @@ QVariantMap QgsArcGisRestUtils::queryServiceJSON( const QUrl &url, QString &erro
 
 QgsArcGisAsyncQuery::QgsArcGisAsyncQuery( QObject *parent )
   : QObject( parent )
-  , mReply( nullptr )
-  , mResult( nullptr )
 {
 }
 
@@ -502,7 +500,7 @@ void QgsArcGisAsyncQuery::start( const QUrl &url, QByteArray *result, bool allow
     request.setAttribute( QNetworkRequest::CacheSaveControlAttribute, true );
   }
   mReply = QgsNetworkAccessManager::instance()->get( request );
-  connect( mReply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
+  connect( mReply, &QNetworkReply::finished, this, &QgsArcGisAsyncQuery::handleReply );
 }
 
 void QgsArcGisAsyncQuery::handleReply()
@@ -524,7 +522,7 @@ void QgsArcGisAsyncQuery::handleReply()
     QgsDebugMsg( "redirecting to " + redirect.toUrl().toString() );
     request.setUrl( redirect.toUrl() );
     mReply = QgsNetworkAccessManager::instance()->get( request );
-    connect( mReply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
+    connect( mReply, &QNetworkReply::finished, this, &QgsArcGisAsyncQuery::handleReply );
     return;
   }
 
@@ -537,8 +535,6 @@ void QgsArcGisAsyncQuery::handleReply()
 
 QgsArcGisAsyncParallelQuery::QgsArcGisAsyncParallelQuery( QObject *parent )
   : QObject( parent )
-  , mResults( nullptr )
-  , mPendingRequests( 0 )
 {
 }
 
@@ -559,7 +555,7 @@ void QgsArcGisAsyncParallelQuery::start( const QVector<QUrl> &urls, QVector<QByt
     }
     QNetworkReply *reply = QgsNetworkAccessManager::instance()->get( request );
     reply->setProperty( "idx", i );
-    connect( reply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
+    connect( reply, &QNetworkReply::finished, this, &QgsArcGisAsyncParallelQuery::handleReply );
   }
 }
 
@@ -583,11 +579,11 @@ void QgsArcGisAsyncParallelQuery::handleReply()
     request.setUrl( redirect.toUrl() );
     reply = QgsNetworkAccessManager::instance()->get( request );
     reply->setProperty( "idx", idx );
-    connect( reply, SIGNAL( finished() ), this, SLOT( handleReply() ) );
+    connect( reply, &QNetworkReply::finished, this, &QgsArcGisAsyncParallelQuery::handleReply );
   }
   else
   {
-    // All ok
+    // All OK
     ( *mResults )[idx] = reply->readAll();
     --mPendingRequests;
   }

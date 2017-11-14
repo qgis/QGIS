@@ -15,14 +15,13 @@
 
 #include "nodetool/qgsvertexentry.h"
 
-QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, const QgsPointV2 &p, QgsVertexId vertexId, const QString &tooltip, QgsVertexMarker::IconType type, int penWidth )
+QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, const QgsPoint &p, QgsVertexId vertexId, const QString &tooltip, QgsVertexMarker::IconType type, int penWidth )
   : mSelected( false )
   , mPoint( p )
   , mVertexId( vertexId )
   , mPenWidth( penWidth )
   , mToolTip( tooltip )
   , mType( type )
-  , mMarker( nullptr )
   , mCanvas( canvas )
   , mLayer( layer )
 {
@@ -36,7 +35,7 @@ QgsVertexEntry::~QgsVertexEntry()
 
 void QgsVertexEntry::placeMarker()
 {
-  QgsPoint pm = mCanvas->mapSettings().layerToMapCoordinates( mLayer, pointV1() );
+  QgsPointXY pm = mCanvas->mapSettings().layerToMapCoordinates( mLayer, pointV1() );
 
   if ( mCanvas->extent().contains( pm ) )
   {

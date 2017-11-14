@@ -17,19 +17,21 @@
 #define QGSDATAITEMPROVIDERREGISTRY_H
 
 #include <QList>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
 class QgsDataItemProvider;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * This class keeps a list of data item providers that may add items to the browser tree.
  * When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
  *
  * QgsDataItemProviderRegistry is not usually directly created, but rather accessed through
  * QgsApplication::dataItemProviderRegistry().
  *
- * @note added in 2.10
+ * \since QGIS 2.10
  */
 class CORE_EXPORT QgsDataItemProviderRegistry
 {
@@ -48,12 +50,15 @@ class CORE_EXPORT QgsDataItemProviderRegistry
     QList<QgsDataItemProvider *> providers() const { return mProviders; }
 
     //! Add a provider implementation. Takes ownership of the object.
-    void addProvider( QgsDataItemProvider *provider );
+    void addProvider( QgsDataItemProvider *provider SIP_TRANSFER );
 
     //! Remove provider implementation from the list (provider object is deleted)
     void removeProvider( QgsDataItemProvider *provider );
 
   private:
+#ifdef SIP_RUN
+    QgsDataItemProviderRegistry( const QgsDataItemProviderRegistry &rh );
+#endif
 
     //! available providers. this class owns the pointers
     QList<QgsDataItemProvider *> mProviders;

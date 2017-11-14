@@ -23,10 +23,11 @@
 
 QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent )
   : QgsRasterRendererWidget( layer, extent )
-  , mMinMaxWidget( nullptr )
   , mDisableMinMaxWidgetRefresh( false )
 {
   setupUi( this );
+  connect( mMinLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged );
+  connect( mMaxLineEdit, &QLineEdit::textChanged, this, &QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged );
 
   mGradientComboBox->insertItem( 0, tr( "Black to white" ), QgsSingleBandGrayRenderer::BlackToWhite );
   mGradientComboBox->insertItem( 1, tr( "White to black" ), QgsSingleBandGrayRenderer::WhiteToBlack );
@@ -57,12 +58,7 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
     connect( mMinMaxWidget, &QgsRasterMinMaxWidget::load,
              this, &QgsSingleBandGrayRendererWidget::loadMinMax );
 
-    //fill available bands into combo box
-    int nBands = provider->bandCount();
-    for ( int i = 1; i <= nBands; ++i ) //band numbering seem to start at 1
-    {
-      mGrayBandComboBox->addItem( displayBandName( i ), i );
-    }
+    mGrayBandComboBox->setLayer( mRasterLayer );
 
     //contrast enhancement algorithms
     mContrastEnhancementComboBox->addItem( tr( "No enhancement" ), QgsContrastEnhancement::NoEnhancement );
@@ -72,8 +68,9 @@ QgsSingleBandGrayRendererWidget::QgsSingleBandGrayRendererWidget( QgsRasterLayer
 
     setFromRenderer( layer->renderer() );
 
-    connect( mGradientComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
-    connect( mContrastEnhancementComboBox, SIGNAL( currentIndexChanged( int ) ), this, SIGNAL( widgetChanged() ) );
+    connect( mGrayBandComboBox, &QgsRasterBandComboBox::bandChanged, this, &QgsSingleBandGrayRendererWidget::bandChanged );
+    connect( mGradientComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterRendererWidget::widgetChanged );
+    connect( mContrastEnhancementComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsRasterRendererWidget::widgetChanged );
   }
 }
 
@@ -88,7 +85,7 @@ QgsRasterRenderer *QgsSingleBandGrayRendererWidget::renderer()
   {
     return nullptr;
   }
-  int band = mGrayBandComboBox->currentData().toInt();
+  int band = mGrayBandComboBox->currentBand();
 
   QgsContrastEnhancement *e = new QgsContrastEnhancement( ( Qgis::DataType )(
         provider->dataType( band ) ) );
@@ -116,12 +113,12 @@ void QgsSingleBandGrayRendererWidget::setMapCanvas( QgsMapCanvas *canvas )
   mMinMaxWidget->setMapCanvas( canvas );
 }
 
-void QgsSingleBandGrayRendererWidget::on_mMinLineEdit_textChanged( const QString & )
+void QgsSingleBandGrayRendererWidget::mMinLineEdit_textChanged( const QString & )
 {
   minMaxModified();
 }
 
-void QgsSingleBandGrayRendererWidget::on_mMaxLineEdit_textChanged( const QString & )
+void QgsSingleBandGrayRendererWidget::mMaxLineEdit_textChanged( const QString & )
 {
   minMaxModified();
 }
@@ -148,7 +145,7 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double
   QgsDebugMsg( QString( "theBandNo = %1 min = %2 max = %3" ).arg( bandNo ).arg( min ).arg( max ) );
 
   mDisableMinMaxWidgetRefresh = true;
-  if ( qIsNaN( min ) )
+  if ( std::isnan( min ) )
   {
     mMinLineEdit->clear();
   }
@@ -157,7 +154,7 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double
     mMinLineEdit->setText( QString::number( min ) );
   }
 
-  if ( qIsNaN( max ) )
+  if ( std::isnan( max ) )
   {
     mMaxLineEdit->clear();
   }
@@ -168,10 +165,10 @@ void QgsSingleBandGrayRendererWidget::loadMinMax( int bandNo, double min, double
   mDisableMinMaxWidgetRefresh = false;
 }
 
-void QgsSingleBandGrayRendererWidget::on_mGrayBandComboBox_currentIndexChanged( int index )
+void QgsSingleBandGrayRendererWidget::bandChanged()
 {
   QList<int> myBands;
-  myBands.append( mGrayBandComboBox->itemData( index ).toInt() );
+  myBands.append( mGrayBandComboBox->currentBand() );
   mMinMaxWidget->setBands( myBands );
   emit widgetChanged();
 }
@@ -182,7 +179,7 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer *
   if ( gr )
   {
     //band
-    mGrayBandComboBox->setCurrentIndex( mGrayBandComboBox->findData( gr->grayBand() ) );
+    mGrayBandComboBox->setBand( gr->grayBand() );
     const QgsContrastEnhancement *ce = gr->contrastEnhancement();
 
     mGradientComboBox->setCurrentIndex( mGradientComboBox->findData( gr->gradient() ) );

@@ -18,11 +18,13 @@
 #define QGSORACLESOURCESELECT_H
 
 #include "ui_qgsdbsourceselectbase.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsdbfilterproxymodel.h"
 #include "qgsoracletablemodel.h"
 #include "qgshelp.h"
 #include "qgsoracleconnpool.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 #include <QMap>
 #include <QPair>
@@ -73,20 +75,21 @@ class QgsOracleSourceSelectDelegate : public QItemDelegate
 };
 
 
-/** \class QgsOracleSourceSelect
+/**
+ * \class QgsOracleSourceSelect
  * \brief Dialog to create connections and add tables from Oracle.
  *
  * This dialog allows the user to define and save connection information
  * for Oracle databases. The user can then connect and add
  * tables from the database to the map canvas.
  */
-class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
+class QgsOracleSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDbSourceSelectBase
 {
     Q_OBJECT
 
   public:
     //! Constructor
-    QgsOracleSourceSelect( QWidget *parent = 0, Qt::WindowFlags fl = QgisGui::ModalDialogFlags, bool managerMode = false, bool embeddedMode = false );
+    QgsOracleSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     //! Destructor
     ~QgsOracleSourceSelect();
     //! Populate the connection list combo box
@@ -96,16 +99,16 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
   signals:
     void addDatabaseLayers( QStringList const &layerPathList, QString const &providerKey );
-    void connectionsChanged();
     void progress( int, int );
     void progressMessage( QString );
 
   public slots:
     //! Determines the tables the user selected and closes the dialog
-    void addTables();
+    void addButtonClicked() override;
     void buildQuery();
 
-    /** Connects to the database using the stored connection parameters.
+    /**
+     * Connects to the database using the stored connection parameters.
      * Once connected, available layers are displayed.
      */
     void on_btnConnect_clicked();
@@ -134,19 +137,11 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
     //!Sets a new regular expression to the model
     void setSearchExpression( const QString &regexp );
 
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "working_with_vector/supported_data.html#oracle-spatial-layers" ) ); }
-
     void columnThreadFinished();
 
   private:
     typedef QPair<QString, QString> geomPair;
     typedef QList<geomPair> geomCol;
-
-    //! Connections manager mode
-    bool mManagerMode;
-
-    //! Embedded mode, without 'Close'
-    bool mEmbeddedMode;
 
     //! try to load list of tables from local cache
     void loadTableFromCache();
@@ -179,6 +174,9 @@ class QgsOracleSourceSelect : public QDialog, private Ui::QgsDbSourceSelectBase
 
     void finishList();
     bool mIsConnected;
+
+    void showHelp();
+
 };
 
 #endif // QGSORACLESOURCESELECT_H

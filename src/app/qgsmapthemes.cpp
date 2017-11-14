@@ -86,15 +86,12 @@ QList<QgsMapLayer *> QgsMapThemes::orderedPresetVisibleLayers( const QString &na
   QStringList visibleIds = QgsProject::instance()->mapThemeCollection()->mapThemeVisibleLayerIds( name );
 
   // also make sure to order the layers according to map canvas order
-  QgsLayerTreeMapCanvasBridge *bridge = QgisApp::instance()->layerTreeCanvasBridge();
-  QStringList order = bridge->hasCustomLayerOrder() ? bridge->customLayerOrder() : bridge->defaultLayerOrder();
   QList<QgsMapLayer *> lst;
-  Q_FOREACH ( const QString &layerID, order )
+  Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->layerTreeRoot()->layerOrder() )
   {
-    if ( visibleIds.contains( layerID ) )
+    if ( visibleIds.contains( layer->id() ) )
     {
-      if ( QgsMapLayer *layer = QgsProject::instance()->mapLayer( layerID ) )
-        lst << layer;
+      lst << layer;
     }
   }
   return lst;
@@ -113,7 +110,7 @@ void QgsMapThemes::addPreset()
   dlg.setWindowTitle( tr( "Map Themes" ) );
   dlg.setHintString( tr( "Name of the new theme" ) );
   dlg.setOverwriteEnabled( false );
-  dlg.setConflictingNameWarning( tr( "A theme with this name already exists" ) );
+  dlg.setConflictingNameWarning( tr( "A theme with this name already exists." ) );
   if ( dlg.exec() != QDialog::Accepted || dlg.name().isEmpty() )
     return;
 
@@ -136,7 +133,7 @@ void QgsMapThemes::replaceTriggered()
   if ( !actionPreset )
     return;
 
-  int res = QMessageBox::question( mMenu, tr( "Replace theme" ),
+  int res = QMessageBox::question( mMenu, tr( "Replace Theme" ),
                                    trUtf8( "Are you sure you want to replace the existing theme “%1”?" ).arg( actionPreset->text() ),
                                    QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
   if ( res != QMessageBox::Yes )

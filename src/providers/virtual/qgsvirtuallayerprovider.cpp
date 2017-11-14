@@ -36,6 +36,11 @@ extern "C"
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerqueryparser.h"
 
+#ifdef HAVE_GUI
+#include "qgssourceselectprovider.h"
+#include "qgsvirtuallayersourceselect.h"
+#endif
+
 const QString VIRTUAL_LAYER_KEY = QStringLiteral( "virtual" );
 const QString VIRTUAL_LAYER_DESCRIPTION = QStringLiteral( "Virtual layer data provider" );
 
@@ -51,9 +56,6 @@ static QString quotedColumn( QString name )
 
 QgsVirtualLayerProvider::QgsVirtualLayerProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
-  , mValid( true )
-  , mCachedStatistics( false )
-  , mFeatureCount( 0 )
 {
   mError.clear();
 
@@ -119,9 +121,9 @@ bool QgsVirtualLayerProvider::loadSourceLayers()
       QgsVectorLayer *vl = static_cast<QgsVectorLayer *>( l );
       mLayers << SourceLayer( vl, layer.name() );
       // connect to modification signals to invalidate statistics
-      connect( vl, SIGNAL( featureAdded( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
-      connect( vl, SIGNAL( featureDeleted( QgsFeatureId ) ), this, SLOT( invalidateStatistics() ) );
-      connect( vl, SIGNAL( geometryChanged( QgsFeatureId, const QgsGeometry & ) ), this, SLOT( invalidateStatistics() ) );
+      connect( vl, &QgsVectorLayer::featureAdded, this, &QgsVirtualLayerProvider::invalidateStatistics );
+      connect( vl, &QgsVectorLayer::featureDeleted, this, &QgsVirtualLayerProvider::invalidateStatistics );
+      connect( vl, &QgsVectorLayer::geometryChanged, this, &QgsVirtualLayerProvider::invalidateStatistics );
     }
     else
     {
@@ -313,7 +315,6 @@ bool QgsVirtualLayerProvider::createIt()
   }
 
   QgsFields tfields;
-  QList<QString> geometryFields;
   if ( !mDefinition.query().isEmpty() )
   {
     // look for column types of the query
@@ -444,10 +445,6 @@ bool QgsVirtualLayerProvider::createIt()
   }
 
   return true;
-}
-
-QgsVirtualLayerProvider::~QgsVirtualLayerProvider()
-{
 }
 
 void QgsVirtualLayerProvider::resetSqlite()
@@ -621,7 +618,8 @@ QGISEXTERN QgsVirtualLayerProvider *classFactory( const QString *uri )
   return new QgsVirtualLayerProvider( *uri );
 }
 
-/** Required key function (used to map the plugin to a data store type)
+/**
+ * Required key function (used to map the plugin to a data store type)
 */
 QGISEXTERN QString providerKey()
 {
@@ -648,3 +646,34 @@ QGISEXTERN bool isProvider()
 QGISEXTERN void cleanupProvider()
 {
 }
+
+
+#ifdef HAVE_GUI
+
+//! Provider for virtual layers source select
+class QgsVirtualSourceSelectProvider : public QgsSourceSelectProvider
+{
+  public:
+
+    virtual QString providerKey() const override { return QStringLiteral( "virtual" ); }
+    virtual QString text() const override { return QObject::tr( "Virtual Layer" ); }
+    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 50; }
+    virtual QString toolTip() const override { return QObject::tr( "Add Virtual Layer" ); }
+    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddVirtualLayer.svg" ) ); }
+    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    {
+      return new QgsVirtualLayerSourceSelect( parent, fl, widgetMode );
+    }
+};
+
+
+QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
+{
+  QList<QgsSourceSelectProvider *> *providers = new QList<QgsSourceSelectProvider *>();
+
+  *providers
+      << new QgsVirtualSourceSelectProvider;
+
+  return providers;
+}
+#endif

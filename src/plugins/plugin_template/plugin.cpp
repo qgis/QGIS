@@ -20,7 +20,7 @@
 //
 
 #include <qgisinterface.h>
-#include <qgisgui.h>
+#include "qgsguiutils.h"
 
 #include "[pluginlcasename].h"
 #include "[pluginlcasename]gui.h"
@@ -93,7 +93,7 @@ void [pluginname]::help()
 // not be enough
 void [pluginname]::run()
 {
-  [pluginname]Gui *myPluginGui = new [pluginname]Gui( mQGisIface->mainWindow(), QgisGui::ModalDialogFlags );
+  [pluginname]Gui *myPluginGui = new [pluginname]Gui( mQGisIface->mainWindow(), QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
 
   myPluginGui->show();

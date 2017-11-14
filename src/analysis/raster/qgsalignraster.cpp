@@ -20,7 +20,6 @@
 #include <cpl_conv.h>
 #include <limits>
 
-#include <qmath.h>
 #include <QPair>
 #include <QString>
 
@@ -30,18 +29,18 @@
 
 static double ceil_with_tolerance( double value )
 {
-  if ( qAbs( value - qRound( value ) ) < 1e-6 )
-    return qRound( value );
+  if ( std::fabs( value - std::round( value ) ) < 1e-6 )
+    return std::round( value );
   else
-    return qCeil( value );
+    return std::ceil( value );
 }
 
 static double floor_with_tolerance( double value )
 {
-  if ( qAbs( value - qRound( value ) ) < 1e-6 )
-    return qRound( value );
+  if ( std::fabs( value - std::round( value ) ) < 1e-6 )
+    return std::round( value );
   else
-    return qFloor( value );
+    return std::floor( value );
 }
 
 static double fmod_with_tolerance( double num, double denom )
@@ -117,7 +116,6 @@ static CPLErr rescalePostWarpChunkProcessor( void *pKern, void *pArg )
 
 
 QgsAlignRaster::QgsAlignRaster()
-  : mProgressHandler( nullptr )
 {
   // parameters
   mCellSizeX = mCellSizeY = 0;
@@ -390,7 +388,7 @@ void QgsAlignRaster::dump() const
 int QgsAlignRaster::suggestedReferenceLayer() const
 {
   int bestIndex = -1;
-  double bestCellArea = qInf();
+  double bestCellArea = INFINITY;
   QSizeF cs;
   int i = 0;
 
@@ -428,7 +426,7 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
   }
 
   // Open the source file.
-  GDALDatasetH hSrcDS = GDALOpen( raster.inputFilename.toLocal8Bit().constData(), GA_ReadOnly );
+  gdal::dataset_unique_ptr hSrcDS( GDALOpen( raster.inputFilename.toLocal8Bit().constData(), GA_ReadOnly ) );
   if ( !hSrcDS )
   {
     mErrorMessage = QObject::tr( "Unable to open input file: %1" ).arg( raster.inputFilename );
@@ -437,37 +435,35 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
 
   // Create output with same datatype as first input band.
 
-  int bandCount = GDALGetRasterCount( hSrcDS );
-  GDALDataType eDT = GDALGetRasterDataType( GDALGetRasterBand( hSrcDS, 1 ) );
+  int bandCount = GDALGetRasterCount( hSrcDS.get() );
+  GDALDataType eDT = GDALGetRasterDataType( GDALGetRasterBand( hSrcDS.get(), 1 ) );
 
   // Create the output file.
-  GDALDatasetH hDstDS;
-  hDstDS = GDALCreate( hDriver, raster.outputFilename.toLocal8Bit().constData(), mXSize, mYSize,
-                       bandCount, eDT, nullptr );
+  gdal::dataset_unique_ptr hDstDS( GDALCreate( hDriver, raster.outputFilename.toLocal8Bit().constData(), mXSize, mYSize,
+                                   bandCount, eDT, nullptr ) );
   if ( !hDstDS )
   {
-    GDALClose( hSrcDS );
     mErrorMessage = QObject::tr( "Unable to create output file: %1" ).arg( raster.outputFilename );
     return false;
   }
 
   // Write out the projection definition.
-  GDALSetProjection( hDstDS, mCrsWkt.toLatin1().constData() );
-  GDALSetGeoTransform( hDstDS, mGeoTransform );
+  GDALSetProjection( hDstDS.get(), mCrsWkt.toLatin1().constData() );
+  GDALSetGeoTransform( hDstDS.get(), mGeoTransform );
 
   // Copy the color table, if required.
-  GDALColorTableH hCT = GDALGetRasterColorTable( GDALGetRasterBand( hSrcDS, 1 ) );
+  GDALColorTableH hCT = GDALGetRasterColorTable( GDALGetRasterBand( hSrcDS.get(), 1 ) );
   if ( hCT )
-    GDALSetRasterColorTable( GDALGetRasterBand( hDstDS, 1 ), hCT );
+    GDALSetRasterColorTable( GDALGetRasterBand( hDstDS.get(), 1 ), hCT );
 
   // -----------------------------------------------------------------------
 
   // Setup warp options.
-  GDALWarpOptions *psWarpOptions = GDALCreateWarpOptions();
-  psWarpOptions->hSrcDS = hSrcDS;
-  psWarpOptions->hDstDS = hDstDS;
+  gdal::warp_options_unique_ptr psWarpOptions( GDALCreateWarpOptions() );
+  psWarpOptions->hSrcDS = hSrcDS.get();
+  psWarpOptions->hDstDS = hDstDS.get();
 
-  psWarpOptions->nBandCount = GDALGetRasterCount( hSrcDS );
+  psWarpOptions->nBandCount = GDALGetRasterCount( hSrcDS.get() );
   psWarpOptions->panSrcBands = ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
   psWarpOptions->panDstBands = ( int * ) CPLMalloc( sizeof( int ) * psWarpOptions->nBandCount );
   for ( int i = 0; i < psWarpOptions->nBandCount; ++i )
@@ -484,8 +480,8 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
 
   // Establish reprojection transformer.
   psWarpOptions->pTransformerArg =
-    GDALCreateGenImgProjTransformer( hSrcDS, GDALGetProjectionRef( hSrcDS ),
-                                     hDstDS, GDALGetProjectionRef( hDstDS ),
+    GDALCreateGenImgProjTransformer( hSrcDS.get(), GDALGetProjectionRef( hSrcDS.get() ),
+                                     hDstDS.get(), GDALGetProjectionRef( hDstDS.get() ),
                                      FALSE, 0.0, 1 );
   psWarpOptions->pfnTransformer = GDALGenImgProjTransform;
 
@@ -504,14 +500,10 @@ bool QgsAlignRaster::createAndWarp( const Item &raster )
 
   // Initialize and execute the warp operation.
   GDALWarpOperation oOperation;
-  oOperation.Initialize( psWarpOptions );
+  oOperation.Initialize( psWarpOptions.get() );
   oOperation.ChunkAndWarpImage( 0, 0, mXSize, mYSize );
 
   GDALDestroyGenImgProjTransformer( psWarpOptions->pTransformerArg );
-  GDALDestroyWarpOptions( psWarpOptions );
-
-  GDALClose( hDstDS );
-  GDALClose( hSrcDS );
   return true;
 }
 
@@ -521,7 +513,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
   // to destination georeferenced coordinates (not destination
   // pixel line).  We do that by omitting the destination dataset
   // handle (setting it to nullptr).
-  void *hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset, info.mCrsWkt.toLatin1().constData(), nullptr, destWkt.toLatin1().constData(), FALSE, 0, 1 );
+  void *hTransformArg = GDALCreateGenImgProjTransformer( info.mDataset.get(), info.mCrsWkt.toLatin1().constData(), nullptr, destWkt.toLatin1().constData(), FALSE, 0, 1 );
   if ( !hTransformArg )
     return false;
 
@@ -530,7 +522,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
   double extents[4];
   int nPixels = 0, nLines = 0;
   CPLErr eErr;
-  eErr = GDALSuggestedWarpOutput2( info.mDataset,
+  eErr = GDALSuggestedWarpOutput2( info.mDataset.get(),
                                    GDALGenImgProjTransform, hTransformArg,
                                    adfDstGeoTransform, &nPixels, &nLines, extents, 0 );
   GDALDestroyGenImgProjTransformer( hTransformArg );
@@ -538,7 +530,7 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
   if ( eErr != CE_None )
     return false;
 
-  QSizeF cs( qAbs( adfDstGeoTransform[1] ), qAbs( adfDstGeoTransform[5] ) );
+  QSizeF cs( std::fabs( adfDstGeoTransform[1] ), std::fabs( adfDstGeoTransform[5] ) );
 
   if ( rect )
     *rect = QgsRectangle( extents[0], extents[1], extents[2], extents[3] );
@@ -555,34 +547,25 @@ bool QgsAlignRaster::suggestedWarpOutput( const QgsAlignRaster::RasterInfo &info
 
 
 QgsAlignRaster::RasterInfo::RasterInfo( const QString &layerpath )
-  : mXSize( 0 )
-  , mYSize( 0 )
-  , mBandCnt( 0 )
 {
-  mDataset = GDALOpen( layerpath.toLocal8Bit().constData(), GA_ReadOnly );
+  mDataset.reset( GDALOpen( layerpath.toLocal8Bit().constData(), GA_ReadOnly ) );
   if ( !mDataset )
     return;
 
-  mXSize = GDALGetRasterXSize( mDataset );
-  mYSize = GDALGetRasterYSize( mDataset );
+  mXSize = GDALGetRasterXSize( mDataset.get() );
+  mYSize = GDALGetRasterYSize( mDataset.get() );
 
-  ( void ) GDALGetGeoTransform( mDataset, mGeoTransform );
+  ( void ) GDALGetGeoTransform( mDataset.get(), mGeoTransform );
 
   // TODO: may be null or empty string
-  mCrsWkt = QString::fromAscii( GDALGetProjectionRef( mDataset ) );
+  mCrsWkt = QString::fromLatin1( GDALGetProjectionRef( mDataset.get() ) );
 
-  mBandCnt = GDALGetBandNumber( mDataset );
-}
-
-QgsAlignRaster::RasterInfo::~RasterInfo()
-{
-  if ( mDataset )
-    GDALClose( mDataset );
+  mBandCnt = GDALGetBandNumber( mDataset.get() );
 }
 
 QSizeF QgsAlignRaster::RasterInfo::cellSize() const
 {
-  return QSizeF( qAbs( mGeoTransform[1] ), qAbs( mGeoTransform[5] ) );
+  return QSizeF( std::fabs( mGeoTransform[1] ), std::fabs( mGeoTransform[5] ) );
 }
 
 QPointF QgsAlignRaster::RasterInfo::gridOffset() const
@@ -618,7 +601,7 @@ void QgsAlignRaster::RasterInfo::dump() const
 
 double QgsAlignRaster::RasterInfo::identify( double mx, double my )
 {
-  GDALRasterBandH hBand = GDALGetRasterBand( mDataset, 1 );
+  GDALRasterBandH hBand = GDALGetRasterBand( mDataset.get(), 1 );
 
   // must not be rotated in order for this to work
   int px = int( ( mx - mGeoTransform[0] ) / mGeoTransform[1] );

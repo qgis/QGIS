@@ -1,7 +1,7 @@
 r.out.vrml
 Export a raster layer to the Virtual Reality Modeling Language (VRML)
 Raster (r.*)
-ParameterRaster|elevation|Elevation layer|False
-ParameterRaster|color|Color layer|False
-ParameterNumber|exaggeration|Vertical exaggeration|None|None|1.0
-OutputFile|output|VRML
+QgsProcessingParameterRasterLayer|elevation|Elevation layer|None|False
+QgsProcessingParameterRasterLayer|color|Color layer|None|False
+QgsProcessingParameterNumber|exaggeration|Vertical exaggeration|QgsProcessingParameterNumber.Double|1.0|False|None|None
+QgsProcessingParameterFileDestination|output|VRML|Txt files (*.txt)|None|False

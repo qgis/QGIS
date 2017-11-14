@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import print_function
-from builtins import zip
-from builtins import str
-from builtins import object
 
 __author__ = 'Matthias Kuhn'
 __date__ = 'January 2016'
@@ -43,23 +39,23 @@ import tempfile
 
 from osgeo.gdalconst import GA_ReadOnly
 from numpy import nan_to_num
+from copy import deepcopy
 
-import processing
-from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
-from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
-from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider  # NOQA
-from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
-from processing.algs.r.RAlgorithmProvider import RAlgorithmProvider  # NOQA
-from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
-from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
-
-
-from qgis.core import QgsVectorLayer, QgsRasterLayer, QgsProject
+from qgis.core import (QgsVectorLayer,
+                       QgsRasterLayer,
+                       QgsFeatureRequest,
+                       QgsMapLayer,
+                       QgsProject,
+                       QgsApplication,
+                       QgsProcessingContext,
+                       QgsProcessingUtils,
+                       QgsProcessingFeedback)
 
 from qgis.testing import _UnexpectedSuccess
-
 from utilities import unitTestDataPath
+
+import processing
+from processing.script.ScriptAlgorithm import ScriptAlgorithm  # NOQA
 
 
 def processingTestDataPath():
@@ -68,8 +64,6 @@ def processingTestDataPath():
 
 class AlgorithmsTest(object):
 
-    in_place_layers = {}
-
     def test_algorithms(self):
         """
         This is the main test function. All others will be executed based on the definitions in testdata/algorithm_tests.yaml
@@ -77,8 +71,10 @@ class AlgorithmsTest(object):
         with open(os.path.join(processingTestDataPath(), self.test_definition_file()), 'r') as stream:
             algorithm_tests = yaml.load(stream)
 
-        for algtest in algorithm_tests['tests']:
-            yield self.check_algorithm, algtest['name'], algtest
+        if 'tests' in algorithm_tests and algorithm_tests['tests'] is not None:
+            for idx, algtest in enumerate(algorithm_tests['tests']):
+                print('About to start {} of {}: "{}"'.format(idx, len(algorithm_tests['tests']), algtest['name']))
+                yield self.check_algorithm, algtest['name'], algtest
 
     def check_algorithm(self, name, defs):
         """
@@ -86,38 +82,57 @@ class AlgorithmsTest(object):
         :param name: The identifier name used in the test output heading
         :param defs: A python dict containing a test algorithm definition
         """
+        self.vector_layer_params = {}
         QgsProject.instance().removeAllMapLayers()
 
         params = self.load_params(defs['params'])
 
-        alg = processing.Processing.getAlgorithm(defs['algorithm']).getCopy()
+        if defs['algorithm'].startswith('script:'):
+            filePath = os.path.join(processingTestDataPath(), 'scripts', '{}.py'.format(defs['algorithm'][len('script:'):]))
+            alg = ScriptAlgorithm(filePath)
+            alg.initAlgorithm()
+        else:
+            print('Running alg: "{}"'.format(defs['algorithm']))
+            alg = QgsApplication.processingRegistry().createAlgorithmById(defs['algorithm'])
 
+        parameters = {}
         if isinstance(params, list):
-            for param in zip(alg.parameters, params):
-                param[0].setValue(param[1])
+            for param in zip(alg.parameterDefinitions(), params):
+                parameters[param[0].name()] = param[1]
         else:
             for k, p in list(params.items()):
-                alg.setParameterValue(k, p)
+                parameters[k] = p
 
         for r, p in list(defs['results'].items()):
-            alg.setOutputValue(r, self.load_result_param(p))
+            if not 'in_place_result' in p or not p['in_place_result']:
+                parameters[r] = self.load_result_param(p)
 
         expectFailure = False
         if 'expectedFailure' in defs:
             exec(('\n'.join(defs['expectedFailure'][:-1])), globals(), locals())
             expectFailure = eval(defs['expectedFailure'][-1])
 
+        # ignore user setting for invalid geometry handling
+        context = QgsProcessingContext()
+        context.setProject(QgsProject.instance())
+
+        if 'skipInvalid' in defs and defs['skipInvalid']:
+            context.setInvalidGeometryCheck(QgsFeatureRequest.GeometrySkipInvalid)
+
+        feedback = QgsProcessingFeedback()
+
         if expectFailure:
             try:
-                alg.execute()
-                self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
+                results, ok = alg.run(parameters, context, feedback)
+                self.check_results(results, context, defs['params'], defs['results'])
+                if ok:
+                    raise _UnexpectedSuccess
             except Exception:
                 pass
-            else:
-                raise _UnexpectedSuccess
         else:
-            alg.execute()
-            self.check_results(alg.getOutputValuesAsDictionary(), defs['params'], defs['results'])
+            results, ok = alg.run(parameters, context, feedback)
+            self.assertTrue(ok, 'params: {}, results: {}'.format(parameters, results))
+            self.check_results(results, context, defs['params'], defs['results'])
 
     def load_params(self, params):
         """
@@ -137,7 +152,7 @@ class AlgorithmsTest(object):
         """
         try:
             if param['type'] in ('vector', 'raster', 'table'):
-                return self.load_layer(id, param)
+                return self.load_layer(id, param).id()
             elif param['type'] == 'multi':
                 return [self.load_param(p) for p in param['params']]
             elif param['type'] == 'file':
@@ -164,17 +179,36 @@ class AlgorithmsTest(object):
         if param['type'] in ['vector', 'file', 'table', 'regex']:
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
-            basename = os.path.basename(param['name'])
+            if isinstance(param['name'], str):
+                basename = os.path.basename(param['name'])
+            else:
+                basename = os.path.basename(param['name'][0])
             filepath = os.path.join(outdir, basename)
             return filepath
         elif param['type'] == 'rasterhash':
             outdir = tempfile.mkdtemp()
             self.cleanup_paths.append(outdir)
-            basename = 'raster.tif'
+            if self.test_definition_file().lower().startswith('saga'):
+                basename = 'raster.sdat'
+            else:
+                basename = 'raster.tif'
             filepath = os.path.join(outdir, basename)
             return filepath
 
         raise KeyError("Unknown type '{}' specified for parameter".format(param['type']))
+
+    def load_layers(self, id, param):
+        layers = []
+        if param['type'] in ('vector', 'table') and isinstance(param['name'], str):
+            layers.append(self.load_layer(id, param))
+        elif param['type'] in ('vector', 'table'):
+            for n in param['name']:
+                layer_param = deepcopy(param)
+                layer_param['name'] = n
+                layers.append(self.load_layer(id, layer_param))
+        else:
+            layers.append(self.load_layer(id, param))
+        return layers
 
     def load_layer(self, id, param):
         """
@@ -182,26 +216,31 @@ class AlgorithmsTest(object):
         """
         filepath = self.filepath_from_param(param)
 
-        try:
+        if 'in_place' in param and param['in_place']:
             # check if alg modifies layer in place
-            if param['in_place']:
-                tmpdir = tempfile.mkdtemp()
-                self.cleanup_paths.append(tmpdir)
-                path, file_name = os.path.split(filepath)
-                base, ext = os.path.splitext(file_name)
-                for file in glob.glob(os.path.join(path, '{}.*'.format(base))):
-                    shutil.copy(os.path.join(path, file), tmpdir)
-                filepath = os.path.join(tmpdir, file_name)
-                self.in_place_layers[id] = filepath
-        except:
-            pass
+            tmpdir = tempfile.mkdtemp()
+            self.cleanup_paths.append(tmpdir)
+            path, file_name = os.path.split(filepath)
+            base, ext = os.path.splitext(file_name)
+            for file in glob.glob(os.path.join(path, '{}.*'.format(base))):
+                shutil.copy(os.path.join(path, file), tmpdir)
+            filepath = os.path.join(tmpdir, file_name)
+            self.in_place_layers[id] = filepath
 
         if param['type'] in ('vector', 'table'):
-            lyr = QgsVectorLayer(filepath, param['name'], 'ogr')
-        elif param['type'] == 'raster':
-            lyr = QgsRasterLayer(filepath, param['name'], 'gdal')
+            if filepath in self.vector_layer_params:
+                return self.vector_layer_params[filepath]
 
-        self.assertTrue(lyr.isValid(), 'Could not load layer "{}"'.format(filepath))
+            options = QgsVectorLayer.LayerOptions()
+            options.loadDefaultStyle = False
+            lyr = QgsVectorLayer(filepath, param['name'], 'ogr', options)
+            self.vector_layer_params[filepath] = lyr
+        elif param['type'] == 'raster':
+            options = QgsRasterLayer.LayerOptions()
+            options.loadDefaultStyle = False
+            lyr = QgsRasterLayer(filepath, param['name'], 'gdal', options)
+
+        self.assertTrue(lyr.isValid(), 'Could not load layer "{}" from param {}'.format(filepath, param))
         QgsProject.instance().addMapLayer(lyr)
         return lyr
 
@@ -215,26 +254,49 @@ class AlgorithmsTest(object):
 
         return os.path.join(prefix, param['name'])
 
-    def check_results(self, results, params, expected):
+    def check_results(self, results, context, params, expected):
         """
         Checks if result produced by an algorithm matches with the expected specification.
         """
         for id, expected_result in list(expected.items()):
             if expected_result['type'] in ('vector', 'table'):
-                expected_lyr = self.load_layer(id, expected_result)
+                if 'compare' in expected_result and not expected_result['compare']:
+                    # skipping the comparison, so just make sure output is valid
+                    if isinstance(results[id], QgsMapLayer):
+                        result_lyr = results[id]
+                    else:
+                        result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                    self.assertTrue(result_lyr.isValid())
+                    continue
+
+                expected_lyrs = self.load_layers(id, expected_result)
                 if 'in_place_result' in expected_result:
-                    result_lyr = QgsVectorLayer(self.in_place_layers[id], id, 'ogr')
+                    result_lyr = QgsProcessingUtils.mapLayerFromString(self.in_place_layers[id], context)
+                    self.assertTrue(result_lyr.isValid(), self.in_place_layers[id])
                 else:
                     try:
                         results[id]
                     except KeyError as e:
                         raise KeyError('Expected result {} does not exist in {}'.format(str(e), list(results.keys())))
 
-                    result_lyr = QgsVectorLayer(results[id], id, 'ogr')
+                    if isinstance(results[id], QgsMapLayer):
+                        result_lyr = results[id]
+                    else:
+                        result_lyr = QgsProcessingUtils.mapLayerFromString(results[id], context)
+                    self.assertTrue(result_lyr, results[id])
 
                 compare = expected_result.get('compare', {})
+                pk = expected_result.get('pk', None)
 
-                self.assertLayersEqual(expected_lyr, result_lyr, compare=compare)
+                if len(expected_lyrs) == 1:
+                    self.assertLayersEqual(expected_lyrs[0], result_lyr, compare=compare, pk=pk)
+                else:
+                    res = False
+                    for l in expected_lyrs:
+                        if self.checkLayersEqual(l, result_lyr, compare=compare, pk=pk):
+                            res = True
+                            break
+                    self.assertTrue(res, 'Could not find matching layer in expected results')
 
             elif 'rasterhash' == expected_result['type']:
                 print("id:{} result:{}".format(id, results[id]))
@@ -242,7 +304,10 @@ class AlgorithmsTest(object):
                 dataArray = nan_to_num(dataset.ReadAsArray(0))
                 strhash = hashlib.sha224(dataArray.data).hexdigest()
 
-                self.assertEqual(strhash, expected_result['hash'])
+                if not isinstance(expected_result['hash'], str):
+                    self.assertIn(strhash, expected_result['hash'])
+                else:
+                    self.assertEqual(strhash, expected_result['hash'])
             elif 'file' == expected_result['type']:
                 expected_filepath = self.filepath_from_param(expected_result)
                 result_filepath = results[id]

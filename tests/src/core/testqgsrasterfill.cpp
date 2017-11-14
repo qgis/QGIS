@@ -34,7 +34,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for raster fill types.
  */
 class TestQgsRasterFill : public QObject
@@ -42,13 +43,7 @@ class TestQgsRasterFill : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRasterFill()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mRasterFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsRasterFill() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -63,7 +58,7 @@ class TestQgsRasterFill : public QObject
     void width();
 
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;
@@ -139,7 +134,7 @@ void TestQgsRasterFill::init()
   mRasterFill->setWidth( 30.0 );
   mRasterFill->setWidthUnit( QgsUnitTypes::RenderPixels );
   mRasterFill->setCoordinateMode( QgsRasterFillSymbolLayer::Feature );
-  mRasterFill->setAlpha( 1.0 );
+  mRasterFill->setOpacity( 1.0 );
   mRasterFill->setOffset( QPointF( 0, 0 ) );
 }
 
@@ -166,7 +161,7 @@ void TestQgsRasterFill::coordinateMode()
 void TestQgsRasterFill::alpha()
 {
   mReport += QLatin1String( "<h2>Raster fill alpha</h2>\n" );
-  mRasterFill->setAlpha( 0.5 );
+  mRasterFill->setOpacity( 0.5 );
   bool result = imageCheck( QStringLiteral( "rasterfill_alpha" ) );
   QVERIFY( result );
 }

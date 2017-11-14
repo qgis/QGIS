@@ -54,25 +54,6 @@
 
 QgsComposerView::QgsComposerView( QWidget *parent, const char *name, Qt::WindowFlags f )
   : QGraphicsView( parent )
-  , mCurrentTool( Select )
-  , mPreviousTool( Select )
-  , mRubberBandItem( nullptr )
-  , mRubberBandLineItem( nullptr )
-  , mMoveContentItem( nullptr )
-  , mMarqueeSelect( false )
-  , mMarqueeZoom( false )
-  , mTemporaryZoomStatus( QgsComposerView::Inactive )
-  , mPaintingEnabled( true )
-  , mHorizontalRuler( nullptr )
-  , mVerticalRuler( nullptr )
-  , mMoveContentSearchRadius( 25 )
-  , mNodesItem( nullptr )
-  , mNodesItemIndex( -1 )
-  , mToolPanning( false )
-  , mMousePanning( false )
-  , mKeyPanning( false )
-  , mMovingItemContent( false )
-  , mPreviewEffect( nullptr )
 {
   Q_UNUSED( f );
   Q_UNUSED( name );
@@ -444,7 +425,7 @@ void QgsComposerView::mousePressEvent( QMouseEvent *e )
         QList<const QgsComposerMap *> mapItemList = composition()->composerMapItems();
         if ( !mapItemList.isEmpty() )
         {
-          newScaleBar->setComposerMap( mapItemList.at( 0 ) );
+          newScaleBar->setComposerMap( const_cast< QgsComposerMap *>( mapItemList.at( 0 ) ) );
         }
         newScaleBar->applyDefaultSize(); //4 segments, 1/5 of composer map width
 
@@ -753,7 +734,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
 
   //was this just a click? or a click and drag?
   bool clickOnly = false;
-  if ( qAbs( diffX ) < 2 && qAbs( diffY ) < 2 )
+  if ( std::fabs( diffX ) < 2 && std::fabs( diffY ) < 2 )
   {
     clickOnly = true;
   }
@@ -831,7 +812,7 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
       {
         if ( mPolygonItem && mPolylineItem )
         {
-          // ignore the last point due to release event before doubleClick event
+          // ignore the last point due to release event before doubleClick event # spellok
           QPolygonF poly = mPolygonItem->polygon();
 
           // last (temporary) point is removed
@@ -998,13 +979,11 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
       else
       {
         QgsComposerMap *composerMap = new QgsComposerMap( composition(), mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), mRubberBandItem->rect().width(), mRubberBandItem->rect().height() );
+        composition()->addComposerMap( composerMap );
         if ( mCanvas )
         {
           composerMap->zoomToExtent( mCanvas->mapSettings().visibleExtent() );
-          composerMap->setLayers( mCanvas->mapSettings().layers() );
         }
-
-        composition()->addComposerMap( composerMap );
 
         composition()->setAllDeselected();
         composerMap->setSelected( true );
@@ -1051,8 +1030,8 @@ void QgsComposerView::mouseReleaseEvent( QMouseEvent *e )
         newLabelItem->adjustSizeToText();
 
         //make sure label size is sufficient to fit text
-        double labelWidth = qMax( mRubberBandItem->rect().width(), newLabelItem->rect().width() );
-        double labelHeight = qMax( mRubberBandItem->rect().height(), newLabelItem->rect().height() );
+        double labelWidth = std::max( mRubberBandItem->rect().width(), newLabelItem->rect().width() );
+        double labelHeight = std::max( mRubberBandItem->rect().height(), newLabelItem->rect().height() );
         newLabelItem->setSceneRect( QRectF( mRubberBandItem->transform().dx(), mRubberBandItem->transform().dy(), labelWidth, labelHeight ) );
 
         composition()->addComposerLabel( newLabelItem );
@@ -1317,14 +1296,14 @@ void QgsComposerView::updateRubberBandRect( QPointF &pos, const bool constrainSq
 
   if ( constrainSquare )
   {
-    if ( fabs( dx ) > fabs( dy ) )
+    if ( std::fabs( dx ) > std::fabs( dy ) )
     {
-      width = fabs( dx );
+      width = std::fabs( dx );
       height = width;
     }
     else
     {
-      height = fabs( dy );
+      height = std::fabs( dy );
       width = height;
     }
 
@@ -1543,7 +1522,7 @@ void QgsComposerView::pasteItems( PasteMode mode )
           pt = mapToScene( viewport()->rect().center() );
         }
         bool pasteInPlace = ( mode == PasteModeInPlace );
-        composition()->addItemsFromXml( docElem, doc, nullptr, true, &pt, pasteInPlace );
+        composition()->addItemsFromXml( docElem, doc, true, &pt, pasteInPlace );
       }
     }
   }
@@ -1981,14 +1960,14 @@ void QgsComposerView::wheelEvent( QWheelEvent *event )
       {
         QgsSettings settings;
         //read zoom mode
-        QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( QStringLiteral( "/qgis/wheel_action" ), 2 ).toInt();
+        QgsComposerItem::ZoomMode zoomMode = ( QgsComposerItem::ZoomMode )settings.value( QStringLiteral( "qgis/wheel_action" ), 2 ).toInt();
         if ( zoomMode == QgsComposerItem::NoZoom )
         {
           //do nothing
           return;
         }
 
-        double zoomFactor = settings.value( QStringLiteral( "/qgis/zoom_factor" ), 2.0 ).toDouble();
+        double zoomFactor = settings.value( QStringLiteral( "qgis/zoom_factor" ), 2.0 ).toDouble();
         if ( event->modifiers() & Qt::ControlModifier )
         {
           //holding ctrl while wheel zooming results in a finer zoom
@@ -2014,16 +1993,19 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
 {
   //get mouse wheel zoom behavior settings
   QgsSettings mySettings;
-  double zoomFactor = mySettings.value( QStringLiteral( "/qgis/zoom_factor" ), 2 ).toDouble();
+  double zoomFactor = mySettings.value( QStringLiteral( "qgis/zoom_factor" ), 2 ).toDouble();
+
+  // "Normal" mouse have an angle delta of 120, precision mouses provide data faster, in smaller steps
+  zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 120.0 * std::fabs( event->angleDelta().y() );
 
   if ( event->modifiers() & Qt::ControlModifier )
   {
     //holding ctrl while wheel zooming results in a finer zoom
-    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 10.0;
+    zoomFactor = 1.0 + ( zoomFactor - 1.0 ) / 20.0;
   }
 
   //calculate zoom scale factor
-  bool zoomIn = event->delta() > 0;
+  bool zoomIn = event->angleDelta().y() > 0;
   double scaleFactor = ( zoomIn ? 1 / zoomFactor : zoomFactor );
 
   //get current visible part of scene
@@ -2034,9 +2016,9 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   QPointF scenePoint = mapToScene( event->pos() );
 
   //adjust view center
-  QgsPoint oldCenter( visibleRect.center() );
-  QgsPoint newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
-                      scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
+  QgsPointXY oldCenter( visibleRect.center() );
+  QgsPointXY newCenter( scenePoint.x() + ( ( oldCenter.x() - scenePoint.x() ) * scaleFactor ),
+                        scenePoint.y() + ( ( oldCenter.y() - scenePoint.y() ) * scaleFactor ) );
   centerOn( newCenter.x(), newCenter.y() );
 
   //zoom composition
@@ -2053,17 +2035,6 @@ void QgsComposerView::wheelZoom( QWheelEvent *event )
   emit zoomLevelChanged();
   updateRulers();
   update();
-  //redraw cached map items
-  QList<QGraphicsItem *> itemList = composition()->items();
-  QList<QGraphicsItem *>::iterator itemIt = itemList.begin();
-  for ( ; itemIt != itemList.end(); ++itemIt )
-  {
-    QgsComposerMap *mypItem = dynamic_cast<QgsComposerMap *>( *itemIt );
-    if ( ( mypItem ) && ( mypItem->previewMode() == QgsComposerMap::Render ) )
-    {
-      mypItem->updateCachedImage();
-    }
-  }
 }
 
 void QgsComposerView::setZoomLevel( double zoomLevel )

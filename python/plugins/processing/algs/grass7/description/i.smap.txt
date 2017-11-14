@@ -1,9 +1,9 @@
 i.smap
 Performs contextual image classification using sequential maximum a posteriori (SMAP) estimation.
 Imagery (i.*)
-ParameterMultipleInput|input|Input rasters|3|False
-ParameterFile|signaturefile|Name of input file containing signatures|False|False
-ParameterNumber|blocksize|Size of submatrix to process at one time|1|None|1024|True
-*ParameterBoolean|-m|Use maximum likelihood estimation (instead of smap)|False
-OutputRaster|output|Classification
-OutputRaster|goodness|Goodness_of_fit
+QgsProcessingParameterMultipleLayers|input|Input rasters|3|None|False
+QgsProcessingParameterFile|signaturefile|Name of input file containing signatures|0|txt|None|False
+QgsProcessingParameterNumber|blocksize|Size of submatrix to process at one time|QgsProcessingParameterNumber.Integer|1024|True|1|None
+*QgsProcessingParameterBoolean|-m|Use maximum likelihood estimation (instead of smap)|False
+QgsProcessingParameterRasterDestination|output|Classification
+QgsProcessingParameterRasterDestination|goodness|Goodness_of_fit

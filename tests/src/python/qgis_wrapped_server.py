@@ -6,6 +6,11 @@ This script launches a QGIS Server listening on port 8081 or on the port
 specified on the environment variable QGIS_SERVER_PORT.
 QGIS_SERVER_HOST (defaults to 127.0.0.1)
 
+A XYZ map service is also available for multithreading testing:
+
+  ?MAP=/path/to/projects.qgs&SERVICE=XYZ&X=1&Y=0&Z=1&LAYERS=world
+
+
 For testing purposes, HTTP Basic can be enabled by setting the following
 environment variables:
 
@@ -34,9 +39,6 @@ the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
 """
 
-from future import standard_library
-standard_library.install_aliases()
-
 __author__ = 'Alessandro Pasotti'
 __date__ = '05/15/2016'
 __copyright__ = 'Copyright 2016, The QGIS Project'
@@ -45,13 +47,21 @@ __revision__ = '$Format:%H$'
 
 
 import os
+
+# Needed on Qt 5 so that the serialization of XML is consistent among all executions
+os.environ['QT_HASH_SEED'] = '1'
+
 import sys
 import signal
 import ssl
+import math
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from qgis.core import QgsApplication
-from qgis.server import QgsServer
+from socketserver import ThreadingMixIn
+import threading
+
+from qgis.core import QgsApplication, QgsCoordinateTransform, QgsCoordinateReferenceSystem
+from qgis.server import QgsServer, QgsServerRequest, QgsBufferServerRequest, QgsBufferServerResponse, QgsServerFilter
 
 QGIS_SERVER_PORT = int(os.environ.get('QGIS_SERVER_PORT', '8081'))
 QGIS_SERVER_HOST = os.environ.get('QGIS_SERVER_HOST', '127.0.0.1')
@@ -76,42 +86,76 @@ qgs_server = QgsServer()
 
 
 if os.environ.get('QGIS_SERVER_HTTP_BASIC_AUTH') is not None:
-    from qgis.server import QgsServerFilter
     import base64
 
     class HTTPBasicFilter(QgsServerFilter):
 
         def responseComplete(self):
-            request = self.serverInterface().requestHandler()
-            if self.serverInterface().getEnv('HTTP_AUTHORIZATION'):
-                username, password = base64.b64decode(self.serverInterface().getEnv('HTTP_AUTHORIZATION')[6:]).split(b':')
+            handler = self.serverInterface().requestHandler()
+            auth = self.serverInterface().requestHandler().requestHeader('HTTP_AUTHORIZATION')
+            if auth:
+                username, password = base64.b64decode(auth[6:]).split(b':')
                 if (username.decode('utf-8') == os.environ.get('QGIS_SERVER_USERNAME', 'username') and
                         password.decode('utf-8') == os.environ.get('QGIS_SERVER_PASSWORD', 'password')):
                     return
             # No auth ...
-            request.clear()
-            request.setHeader('Status', '401 Authorization required')
-            request.setHeader('WWW-Authenticate', 'Basic realm="QGIS Server"')
-            request.appendBody(b'<h1>Authorization required</h1>')
+            handler.clear()
+            handler.setResponseHeader('Status', '401 Authorization required')
+            handler.setResponseHeader('WWW-Authenticate', 'Basic realm="QGIS Server"')
+            handler.appendBody(b'<h1>Authorization required</h1>')
 
     filter = HTTPBasicFilter(qgs_server.serverInterface())
     qgs_server.serverInterface().registerFilter(filter)
 
 
+def num2deg(xtile, ytile, zoom):
+    """This returns the NW-corner of the square. Use the function with xtile+1 and/or ytile+1 
+    to get the other corners. With xtile+0.5 & ytile+0.5 it will return the center of the tile."""
+    n = 2.0 ** zoom
+    lon_deg = xtile / n * 360.0 - 180.0
+    lat_rad = math.atan(math.sinh(math.pi * (1 - 2 * ytile / n)))
+    lat_deg = math.degrees(lat_rad)
+    return (lat_deg, lon_deg)
+
+
+class XYZFilter(QgsServerFilter):
+    """XYZ server, example: ?MAP=/path/to/projects.qgs&SERVICE=XYZ&X=1&Y=0&Z=1&LAYERS=world"""
+
+    def requestReady(self):
+        handler = self.serverInterface().requestHandler()
+        if handler.parameter('SERVICE') == 'XYZ':
+            x = int(handler.parameter('X'))
+            y = int(handler.parameter('Y'))
+            z = int(handler.parameter('Z'))
+            # NW corner
+            lat_deg, lon_deg = num2deg(x, y, z)
+            # SE corner
+            lat_deg2, lon_deg2 = num2deg(x + 1, y + 1, z)
+            handler.setParameter('SERVICE', 'WMS')
+            handler.setParameter('REQUEST', 'GetMap')
+            handler.setParameter('VERSION', '1.3.0')
+            handler.setParameter('SRS', 'EPSG:4326')
+            handler.setParameter('HEIGHT', '256')
+            handler.setParameter('WIDTH', '256')
+            handler.setParameter('BBOX', "{},{},{},{}".format(lat_deg2, lon_deg, lat_deg, lon_deg2))
+
+
+xyzfilter = XYZFilter(qgs_server.serverInterface())
+qgs_server.serverInterface().registerFilter(xyzfilter)
+
+
 class Handler(BaseHTTPRequestHandler):
 
-    def do_GET(self):
+    def do_GET(self, post_body=None):
         # CGI vars:
+        headers = {}
         for k, v in self.headers.items():
-            qgs_server.putenv('HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper(), v)
-        qgs_server.putenv('SERVER_PORT', str(self.server.server_port))
-        if https:
-            qgs_server.putenv('HTTPS', 'ON')
-        qgs_server.putenv('SERVER_NAME', self.server.server_name)
-        qgs_server.putenv('REQUEST_URI', self.path)
-        parsed_path = urllib.parse.urlparse(self.path)
-        headers, body = qgs_server.handleRequest(parsed_path.query)
-        headers_dict = dict(h.split(': ', 1) for h in headers.decode().split('\n') if h)
+            headers['HTTP_%s' % k.replace(' ', '-').replace('-', '_').replace(' ', '-').upper()] = v
+        request = QgsBufferServerRequest(self.path, (QgsServerRequest.PostMethod if post_body is not None else QgsServerRequest.GetMethod), headers, post_body)
+        response = QgsBufferServerResponse()
+        qgs_server.handleRequest(request, response)
+
+        headers_dict = response.headers()
         try:
             self.send_response(int(headers_dict['Status'].split(' ')[0]))
         except:
@@ -119,20 +163,22 @@ class Handler(BaseHTTPRequestHandler):
         for k, v in headers_dict.items():
             self.send_header(k, v)
         self.end_headers()
-        self.wfile.write(body)
+        self.wfile.write(response.body())
         return
 
     def do_POST(self):
         content_len = int(self.headers.get('content-length', 0))
-        post_body = self.rfile.read(content_len).decode()
-        request = post_body[1:post_body.find(' ')]
-        self.path = self.path + '&REQUEST_BODY=' + \
-            post_body.replace('&amp;', '') + '&REQUEST=' + request
-        return self.do_GET()
+        post_body = self.rfile.read(content_len)
+        return self.do_GET(post_body)
+
+
+class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
+    """Handle requests in a separate thread."""
+    pass
 
 
 if __name__ == '__main__':
-    server = HTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
+    server = ThreadedHTTPServer((QGIS_SERVER_HOST, QGIS_SERVER_PORT), Handler)
     if https:
         server.socket = ssl.wrap_socket(server.socket,
                                         certfile=QGIS_SERVER_PKI_CERTIFICATE,

@@ -28,39 +28,56 @@ __revision__ = '$Format:%H$'
 import plotly as plt
 import plotly.graph_objs as go
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterNumber
-from processing.core.parameters import ParameterRaster
-from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects, raster
+from qgis.core import (QgsProcessingParameterRasterLayer,
+                       QgsProcessingParameterBand,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import raster
 
 
-class RasterLayerHistogram(GeoAlgorithm):
+class RasterLayerHistogram(QgisAlgorithm):
 
     INPUT = 'INPUT'
     BINS = 'BINS'
-    PLOT = 'PLOT'
+    OUTPUT = 'OUTPUT'
+    BAND = 'BAND'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Raster layer histogram')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def group(self):
+        return self.tr('Graphics')
 
-        self.addParameter(ParameterRaster(self.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterNumber(self.BINS,
-                                          self.tr('Number of bins'), 2, None, 10))
+    def __init__(self):
+        super().__init__()
 
-        self.addOutput(OutputHTML(self.PLOT, self.tr('Histogram')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterRasterLayer(self.INPUT,
+                                                            self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterBand(self.BAND,
+                                                     self.tr('Band number'),
+                                                     1,
+                                                     self.INPUT))
+        self.addParameter(QgsProcessingParameterNumber(self.BINS,
+                                                       self.tr('number of bins'), minValue=2, defaultValue=10))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        nbins = self.getParameterValue(self.BINS)
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Histogram'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Histogram')))
 
-        output = self.getOutputValue(self.PLOT)
+    def name(self):
+        return 'rasterlayerhistogram'
+
+    def displayName(self):
+        return self.tr('Raster layer histogram')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        layer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
+        band = self.parameterAsInt(parameters, self.BAND, context)
+        nbins = self.parameterAsInt(parameters, self.BINS, context)
+
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
 
         # ALERT: this is potentially blocking if the layer is too big
-        values = raster.scanraster(layer, feedback)
+        values = raster.scanraster(layer, feedback, band)
 
         valueslist = []
         for v in values:
@@ -70,3 +87,5 @@ class RasterLayerHistogram(GeoAlgorithm):
         data = [go.Histogram(x=valueslist,
                              nbinsx=nbins)]
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

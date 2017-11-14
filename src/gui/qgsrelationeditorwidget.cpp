@@ -28,15 +28,13 @@
 #include "qgsproject.h"
 #include "qgstransactiongroup.h"
 #include "qgslogger.h"
+#include "qgsvectorlayerutils.h"
 
 #include <QHBoxLayout>
 #include <QLabel>
 
 QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
   : QgsCollapsibleGroupBox( parent )
-  , mViewMode( QgsDualView::AttributeEditor )
-  , mShowLabel( true )
-  , mVisible( false )
 {
   QVBoxLayout *topLayout = new QVBoxLayout( this );
   topLayout->setContentsMargins( 0, 9, 0, 0 );
@@ -126,15 +124,16 @@ QgsRelationEditorWidget::QgsRelationEditorWidget( QWidget *parent )
 
   mRelationLayout->addWidget( mDualView );
 
-  connect( this, SIGNAL( collapsedStateChanged( bool ) ), this, SLOT( onCollapsedStateChanged( bool ) ) );
-  connect( mViewModeButtonGroup, SIGNAL( buttonClicked( int ) ), this, SLOT( setViewMode( int ) ) );
-  connect( mToggleEditingButton, SIGNAL( clicked( bool ) ), this, SLOT( toggleEditing( bool ) ) );
-  connect( mSaveEditsButton, SIGNAL( clicked() ), this, SLOT( saveEdits() ) );
-  connect( mAddFeatureButton, SIGNAL( clicked() ), this, SLOT( addFeature() ) );
-  connect( mDeleteFeatureButton, SIGNAL( clicked() ), this, SLOT( deleteFeature() ) );
-  connect( mLinkFeatureButton, SIGNAL( clicked() ), this, SLOT( linkFeature() ) );
-  connect( mUnlinkFeatureButton, SIGNAL( clicked() ), this, SLOT( unlinkFeature() ) );
-  connect( mFeatureSelectionMgr, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SLOT( updateButtons() ) );
+  connect( this, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsRelationEditorWidget::onCollapsedStateChanged );
+  connect( mViewModeButtonGroup, static_cast<void ( QButtonGroup::* )( int )>( &QButtonGroup::buttonClicked ),
+           this, static_cast<void ( QgsRelationEditorWidget::* )( int )>( &QgsRelationEditorWidget::setViewMode ) );
+  connect( mToggleEditingButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::toggleEditing );
+  connect( mSaveEditsButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::saveEdits );
+  connect( mAddFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::addFeature );
+  connect( mDeleteFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::deleteFeature );
+  connect( mLinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::linkFeature );
+  connect( mUnlinkFeatureButton, &QAbstractButton::clicked, this, &QgsRelationEditorWidget::unlinkFeature );
+  connect( mFeatureSelectionMgr, &QgsIFeatureSelectionManager::selectionChanged, this, &QgsRelationEditorWidget::updateButtons );
 
   // Set initial state for add/remove etc. buttons
   updateButtons();
@@ -144,15 +143,15 @@ void QgsRelationEditorWidget::setRelationFeature( const QgsRelation &relation, c
 {
   if ( mRelation.isValid() )
   {
-    disconnect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
-    disconnect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
+    disconnect( mRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
+    disconnect( mRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
   }
 
   mRelation = relation;
   mFeature = feature;
 
-  connect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
-  connect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
+  connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
+  connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
 
   if ( mShowLabel )
     setTitle( relation.name() );
@@ -188,14 +187,14 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
 {
   if ( mRelation.isValid() )
   {
-    disconnect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
-    disconnect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
+    disconnect( mRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
+    disconnect( mRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
   }
 
   if ( mNmRelation.isValid() )
   {
-    disconnect( mNmRelation.referencedLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
-    disconnect( mNmRelation.referencedLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
+    disconnect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
+    disconnect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
   }
 
   mRelation = relation;
@@ -206,22 +205,23 @@ void QgsRelationEditorWidget::setRelations( const QgsRelation &relation, const Q
 
   mToggleEditingButton->setVisible( true );
 
-  Q_FOREACH ( QgsTransactionGroup *tg, QgsProject::instance()->transactionGroups().values() )
+  const auto transactionGroups = QgsProject::instance()->transactionGroups();
+  for ( auto it = transactionGroups.constBegin(); it != transactionGroups.constEnd(); ++it )
   {
-    if ( tg->layers().contains( mRelation.referencingLayer() ) )
+    if ( it.value()->layers().contains( mRelation.referencingLayer() ) )
     {
       mToggleEditingButton->setVisible( false );
       mSaveEditsButton->setVisible( false );
     }
   }
 
-  connect( mRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
-  connect( mRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
+  connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
+  connect( mRelation.referencingLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
 
   if ( mNmRelation.isValid() )
   {
-    connect( mNmRelation.referencingLayer(), SIGNAL( editingStarted() ), this, SLOT( updateButtons() ) );
-    connect( mNmRelation.referencingLayer(), SIGNAL( editingStopped() ), this, SLOT( updateButtons() ) );
+    connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStarted, this, &QgsRelationEditorWidget::updateButtons );
+    connect( mNmRelation.referencedLayer(), &QgsVectorLayer::editingStopped, this, &QgsRelationEditorWidget::updateButtons );
   }
 
   setTitle( relation.name() );
@@ -306,12 +306,27 @@ void QgsRelationEditorWidget::addFeature()
     QgsFeature f;
     if ( vlTools->addFeature( mNmRelation.referencedLayer(), QgsAttributeMap(), QgsGeometry(), &f ) )
     {
-      QgsFeature flink( mRelation.referencingLayer()->fields() ); // Linking feature
+      // Fields of the linking table
+      const QgsFields fields = mRelation.referencingLayer()->fields();
 
-      flink.setAttribute( mRelation.fieldPairs().at( 0 ).first, mFeature.attribute( mRelation.fieldPairs().at( 0 ).second ) );
-      flink.setAttribute( mNmRelation.referencingFields().at( 0 ), f.attribute( mNmRelation.referencedFields().at( 0 ) ) );
+      // Expression context for the linking table
+      QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
 
-      mRelation.referencingLayer()->addFeature( flink );
+      QgsAttributeMap linkAttributes;
+      Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
+      {
+        int index = fields.indexOf( fieldPair.first );
+        linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
+      }
+
+      Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mNmRelation.fieldPairs() )
+      {
+        int index = fields.indexOf( fieldPair.first );
+        linkAttributes.insert( index, f.attribute( fieldPair.second ) );
+      }
+      QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
+
+      mRelation.referencingLayer()->addFeature( linkFeature );
 
       updateUi();
     }
@@ -352,24 +367,38 @@ void QgsRelationEditorWidget::linkFeature()
       QgsFeature relatedFeature;
 
       QgsFeatureList newFeatures;
-      QgsFeature linkFeature( mRelation.referencingLayer()->fields() );
 
+      // Fields of the linking table
+      const QgsFields fields = mRelation.referencingLayer()->fields();
+
+      // Expression context for the linking table
+      QgsExpressionContext context = mRelation.referencingLayer()->createExpressionContext();
+
+      QgsAttributeMap linkAttributes;
       Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mRelation.fieldPairs() )
       {
-        linkFeature.setAttribute( fieldPair.first, mFeature.attribute( fieldPair.second ) );
+        int index = fields.indexOf( fieldPair.first );
+        linkAttributes.insert( index,  mFeature.attribute( fieldPair.second ) );
       }
 
       while ( it.nextFeature( relatedFeature ) )
       {
         Q_FOREACH ( const QgsRelation::FieldPair &fieldPair, mNmRelation.fieldPairs() )
         {
-          linkFeature.setAttribute( fieldPair.first, relatedFeature.attribute( fieldPair.second ) );
+          int index = fields.indexOf( fieldPair.first );
+          linkAttributes.insert( index, relatedFeature.attribute( fieldPair.second ) );
         }
+        const QgsFeature linkFeature = QgsVectorLayerUtils::createFeature( mRelation.referencingLayer(), QgsGeometry(), linkAttributes, &context );
 
         newFeatures << linkFeature;
       }
 
       mRelation.referencingLayer()->addFeatures( newFeatures );
+      QgsFeatureIds ids;
+      Q_FOREACH ( const QgsFeature &f, newFeatures )
+        ids << f.id();
+      mRelation.referencingLayer()->selectByIds( ids );
+
 
       updateUi();
     }

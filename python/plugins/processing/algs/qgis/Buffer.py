@@ -25,27 +25,35 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import QgsFeature, QgsGeometry
+from qgis.core import (QgsFeature,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsFeatureSink)
 
-from processing.tools import vector
 
-
-def buffering(feedback, writer, distance, field, useField, layer, dissolve,
-              segments, endCapStyle=1, joinStyle=1, mitreLimit=2):
+def buffering(feedback, context, sink, distance, field, useField, source, dissolve, segments, endCapStyle=1,
+              joinStyle=1, miterLimit=2):
 
     if useField:
-        field = layer.fields().lookupField(field)
+        field = source.fields().lookupField(field)
 
     outFeat = QgsFeature()
 
     current = 0
-    features = vector.features(layer)
-    total = 100.0 / float(len(features))
+    total = 100.0 / source.featureCount() if source.featureCount() else 0
 
     # With dissolve
     if dissolve:
+        attributes_to_fetch = []
+        if useField:
+            attributes_to_fetch.append(field)
+
+        features = source.getFeatures(QgsFeatureRequest().setSubsetOfAttributes(attributes_to_fetch))
         buffered_geometries = []
         for inFeat in features:
+            if feedback.isCanceled():
+                break
+
             attrs = inFeat.attributes()
             if useField:
                 value = attrs[field]
@@ -54,7 +62,7 @@ def buffering(feedback, writer, distance, field, useField, layer, dissolve,
 
             inGeom = inFeat.geometry()
 
-            buffered_geometries.append(inGeom.buffer(float(value), segments, endCapStyle, joinStyle, mitreLimit))
+            buffered_geometries.append(inGeom.buffer(float(value), segments, endCapStyle, joinStyle, miterLimit))
 
             current += 1
             feedback.setProgress(int(current * total))
@@ -62,10 +70,15 @@ def buffering(feedback, writer, distance, field, useField, layer, dissolve,
         final_geometry = QgsGeometry.unaryUnion(buffered_geometries)
         outFeat.setGeometry(final_geometry)
         outFeat.setAttributes(attrs)
-        writer.addFeature(outFeat)
+        sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
     else:
+
+        features = source.getFeatures()
+
         # Without dissolve
         for inFeat in features:
+            if feedback.isCanceled():
+                break
             attrs = inFeat.attributes()
             if useField:
                 value = attrs[field]
@@ -73,11 +86,9 @@ def buffering(feedback, writer, distance, field, useField, layer, dissolve,
                 value = distance
             inGeom = inFeat.geometry()
             outFeat = QgsFeature()
-            outGeom = inGeom.buffer(float(value), segments, endCapStyle, joinStyle, mitreLimit)
+            outGeom = inGeom.buffer(float(value), segments, endCapStyle, joinStyle, miterLimit)
             outFeat.setGeometry(outGeom)
             outFeat.setAttributes(attrs)
-            writer.addFeature(outFeat)
+            sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
             current += 1
             feedback.setProgress(int(current * total))
-
-    del writer

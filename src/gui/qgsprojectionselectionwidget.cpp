@@ -26,6 +26,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
 {
   mDialog = new QgsProjectionSelectionDialog( this );
 
+
   QHBoxLayout *layout = new QHBoxLayout();
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
@@ -39,7 +40,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   addProjectCrsOption();
 
   QgsSettings settings;
-  QString defCrsString = settings.value( QStringLiteral( "/Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
+  QString defCrsString = settings.value( QStringLiteral( "Projections/projectDefaultCrs" ), GEO_EPSG_CRS_AUTHID ).toString();
   mDefaultCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrsString );
   if ( mDefaultCrs.authid() != mProjectCrs.authid() )
   {
@@ -61,7 +62,7 @@ QgsProjectionSelectionWidget::QgsProjectionSelectionWidget( QWidget *parent )
   setFocusProxy( mButton );
 
   connect( mButton, &QToolButton::clicked, this, &QgsProjectionSelectionWidget::selectCrs );
-  connect( mCrsComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboIndexChanged( int ) ) );
+  connect( mCrsComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsProjectionSelectionWidget::comboIndexChanged );
 }
 
 QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
@@ -71,9 +72,9 @@ QgsCoordinateReferenceSystem QgsProjectionSelectionWidget::crs() const
     case QgsProjectionSelectionWidget::LayerCrs:
       return mLayerCrs;
     case QgsProjectionSelectionWidget::ProjectCrs:
-      return mProjectCrs ;
+      return mProjectCrs;
     case QgsProjectionSelectionWidget::DefaultCrs:
-      return mDefaultCrs ;
+      return mDefaultCrs;
     case QgsProjectionSelectionWidget::CurrentCrs:
       return mCrs;
     case QgsProjectionSelectionWidget::RecentCrs:
@@ -259,11 +260,11 @@ void QgsProjectionSelectionWidget::setLayerCrs( const QgsCoordinateReferenceSyst
   {
     if ( layerItemIndex > -1 )
     {
-      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS (%1, %2)" ).arg( crs.authid(), crs.description() ) );
+      mCrsComboBox->setItemText( layerItemIndex, tr( "Layer CRS: %1 - %2" ).arg( crs.authid(), crs.description() ) );
     }
     else
     {
-      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS (%1, %2)" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
+      mCrsComboBox->insertItem( firstRecentCrsIndex(), tr( "Layer CRS: %1 - %2" ).arg( crs.authid(), crs.description() ), QgsProjectionSelectionWidget::LayerCrs );
     }
   }
   else
@@ -280,13 +281,13 @@ void QgsProjectionSelectionWidget::addProjectCrsOption()
 {
   if ( mProjectCrs.isValid() )
   {
-    mCrsComboBox->addItem( tr( "Project CRS (%1 - %2)" ).arg( mProjectCrs.authid(), mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
+    mCrsComboBox->addItem( tr( "Project CRS: %1 - %2" ).arg( mProjectCrs.authid(), mProjectCrs.description() ), QgsProjectionSelectionWidget::ProjectCrs );
   }
 }
 
 void QgsProjectionSelectionWidget::addDefaultCrsOption()
 {
-  mCrsComboBox->addItem( tr( "Default CRS (%1 - %2)" ).arg( mDefaultCrs.authid(), mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
+  mCrsComboBox->addItem( tr( "Default CRS: %1 - %2" ).arg( mDefaultCrs.authid(), mDefaultCrs.description() ), QgsProjectionSelectionWidget::DefaultCrs );
 }
 
 void QgsProjectionSelectionWidget::addCurrentCrsOption()
@@ -299,7 +300,7 @@ void QgsProjectionSelectionWidget::addCurrentCrsOption()
 QString QgsProjectionSelectionWidget::currentCrsOptionText( const QgsCoordinateReferenceSystem &crs ) const
 {
   if ( crs.isValid() )
-    return tr( "Selected CRS (%1, %2)" ).arg( crs.authid(), crs.description() );
+    return tr( "%1 - %2" ).arg( crs.authid(), crs.description() );
   else
     return tr( "invalid projection" );
 }

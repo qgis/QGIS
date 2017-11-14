@@ -38,7 +38,8 @@ import tempfile
 from utilities import unitTestDataPath, waitServer
 from qgis.core import (
     QgsVectorLayer,
-    QgsAuthManager
+    QgsAuthManager,
+    QgsApplication
 )
 
 from qgis.testing import (
@@ -135,7 +136,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         self.counter += 1
         uri = ' '.join([("%s='%s'" % (k, v)) for k, v in list(parms.items())])
         wfs_layer = QgsVectorLayer(uri, layer_name, 'WFS')
-        wfs_layer.setParent(QgsAuthManager.instance())
+        wfs_layer.setParent(QgsApplication.authManager())
         assert wfs_layer.isValid()
         return wfs_layer
 
@@ -146,7 +147,7 @@ class TestWFST(unittest.TestCase, OfflineTestBase):
         """
         path = cls.testdata_path + layer_name + '.shp'
         layer = QgsVectorLayer(path, layer_name, "ogr")
-        layer.setParent(QgsAuthManager.instance())
+        layer.setParent(QgsApplication.authManager())
         assert layer.isValid()
         return layer
 

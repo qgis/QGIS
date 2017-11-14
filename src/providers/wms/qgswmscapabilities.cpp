@@ -27,7 +27,7 @@
 #include "qgsmessagelog.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsunittypes.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgsapplication.h"
 
 // %%% copied from qgswmsprovider.cpp
@@ -41,6 +41,16 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   QgsDataSourceUri uri;
   uri.setEncodedUri( uriString );
 
+  // Setup authentication
+  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
+  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
+
+  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
+  {
+    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
+  }
+
+  mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
   mXyz = false;  // assume WMS / WMTS
 
   if ( uri.param( QStringLiteral( "type" ) ) == QLatin1String( "xyz" ) )
@@ -54,10 +64,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
     mMaxHeight = 0;
     mHttpUri = uri.param( QStringLiteral( "url" ) );
     mBaseUrl = mHttpUri;
-    mAuth.mUserName.clear();
-    mAuth.mPassword.clear();
-    mAuth.mReferer.clear();
-    mAuth.mAuthCfg.clear();
     mIgnoreGetMapUrl = false;
     mIgnoreGetFeatureInfoUrl = false;
     mSmoothPixmapTransform = true;
@@ -86,21 +92,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
   mSmoothPixmapTransform = uri.hasParam( QStringLiteral( "SmoothPixmapTransform" ) );
 
   mDpiMode = uri.hasParam( QStringLiteral( "dpiMode" ) ) ? static_cast< QgsWmsDpiMode >( uri.param( QStringLiteral( "dpiMode" ) ).toInt() ) : DpiAll;
-
-  mAuth.mUserName = uri.param( QStringLiteral( "username" ) );
-  QgsDebugMsg( "set username to " + mAuth.mUserName );
-
-  mAuth.mPassword = uri.param( QStringLiteral( "password" ) );
-  QgsDebugMsg( "set password to " + mAuth.mPassword );
-
-  if ( uri.hasParam( QStringLiteral( "authcfg" ) ) )
-  {
-    mAuth.mAuthCfg = uri.param( QStringLiteral( "authcfg" ) );
-  }
-  QgsDebugMsg( "set authcfg to " + mAuth.mAuthCfg );
-
-  mAuth.mReferer = uri.param( QStringLiteral( "referer" ) );
-  QgsDebugMsg( "set referer to " + mAuth.mReferer );
 
   mActiveSubLayers = uri.params( QStringLiteral( "layers" ) );
   mActiveSubStyles = uri.params( QStringLiteral( "styles" ) );
@@ -141,7 +132,7 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
       QStringList kv = param.split( '=' );
       if ( kv.size() == 1 )
       {
-        mTileDimensionValues.insert( kv[0], QString::null );
+        mTileDimensionValues.insert( kv[0], QString() );
       }
       else if ( kv.size() == 2 )
       {
@@ -167,13 +158,6 @@ bool QgsWmsSettings::parseUri( const QString &uriString )
 
 // ----------------------
 
-
-QgsWmsCapabilities::QgsWmsCapabilities()
-  : mValid( false )
-  , mLayerCount( -1 )
-  , mCapabilities()
-{
-}
 
 bool QgsWmsCapabilities::parseResponse( const QByteArray &response, QgsWmsParserSettings settings )
 {
@@ -300,7 +284,7 @@ bool QgsWmsCapabilities::parseCapabilitiesDom( QByteArray const &xml, QgsWmsCapa
   {
     mErrorCaption = QObject::tr( "Dom Exception" );
     mErrorFormat = QStringLiteral( "text/plain" );
-    mError = QObject::tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag:%3\nResponse was:\n%4" )
+    mError = QObject::tr( "Could not get WMS capabilities in the expected format (DTD): no %1 or %2 found.\nThis might be due to an incorrect WMS Server URL.\nTag: %3\nResponse was:\n%4" )
              .arg( QStringLiteral( "WMS_Capabilities" ),
                    QStringLiteral( "WMT_MS_Capabilities" ),
                    docElem.tagName(),
@@ -759,9 +743,9 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
 // TODO: Delete this stanza completely, depending on success of "Inherit things into the sublayer" below.
 #if 0
   // enforce WMS non-inheritance rules
-  layerProperty.name =        QString::null;
-  layerProperty.title =       QString::null;
-  layerProperty.abstract =    QString::null;
+  layerProperty.name = QString();
+  layerProperty.title = QString();
+  layerProperty.abstract = QString();
   layerProperty.keywordList.clear();
 #endif
 
@@ -843,7 +827,7 @@ void QgsWmsCapabilities::parseLayer( QDomElement const &e, QgsWmsLayerProperty &
           {
             QgsCoordinateReferenceSystem src = QgsCoordinateReferenceSystem::fromOgcWmsCrs( e1.attribute( QStringLiteral( "SRS" ) ) );
 
-            QgsCoordinateReferenceSystem dst =  QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
+            QgsCoordinateReferenceSystem dst = QgsCoordinateReferenceSystem::fromOgcWmsCrs( DEFAULT_LATLON_CRS );
 
             QgsCoordinateTransform ct( src, dst );
             layerProperty.ex_GeographicBoundingBox = ct.transformBoundingBox( layerProperty.ex_GeographicBoundingBox );
@@ -1295,9 +1279,9 @@ void QgsWmsCapabilities::parseTileSetProfile( QDomElement const &e )
     double r = rS.toDouble();
     m.identifier = QString::number( i );
     Q_ASSERT( l.boundingBoxes.size() == 1 );
-    m.matrixWidth  = ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
-    m.matrixHeight = ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
-    m.topLeft = QgsPoint( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
+    m.matrixWidth  = std::ceil( l.boundingBoxes.at( 0 ).box.width() / m.tileWidth / r );
+    m.matrixHeight = std::ceil( l.boundingBoxes.at( 0 ).box.height() / m.tileHeight / r );
+    m.topLeft = QgsPointXY( l.boundingBoxes.at( 0 ).box.xMinimum(), l.boundingBoxes.at( 0 ).box.yMinimum() + m.matrixHeight * m.tileHeight * r );
     m.tres = r;
     ms.tileMatrices.insert( r, m );
     i++;
@@ -1431,8 +1415,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
       if ( ll.size() == 2 && ur.size() == 2 )
       {
         bb.crs = DEFAULT_LATLON_CRS;
-        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        bb.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         l.boundingBoxes << bb;
       }
@@ -1447,8 +1431,8 @@ void QgsWmsCapabilities::parseWMTSContents( QDomElement const &e )
 
       if ( ll.size() == 2 && ur.size() == 2 )
       {
-        bb.box = QgsRectangle( QgsPoint( ll[0].toDouble(), ll[1].toDouble() ),
-                               QgsPoint( ur[0].toDouble(), ur[1].toDouble() ) );
+        bb.box = QgsRectangle( QgsPointXY( ll[0].toDouble(), ll[1].toDouble() ),
+                               QgsPointXY( ur[0].toDouble(), ur[1].toDouble() ) );
 
         if ( bbox.hasAttribute( QStringLiteral( "SRS" ) ) )
           bb.crs = bbox.attribute( QStringLiteral( "SRS" ) );
@@ -1843,8 +1827,8 @@ bool QgsWmsCapabilities::detectTileLayerBoundingBox( QgsWmtsTileLayer &l )
   // the magic number below is "standardized rendering pixel size" defined
   // in WMTS (and WMS 1.3) standard, being 0.28 pixel
   double res = tm.scaleDenom * 0.00028 / metersPerUnit;
-  QgsPoint bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
-                        tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
+  QgsPointXY bottomRight( tm.topLeft.x() + res * tm.tileWidth * tm.matrixWidth,
+                          tm.topLeft.y() - res * tm.tileHeight * tm.matrixHeight );
 
   QgsDebugMsg( QString( "detecting WMTS layer bounding box: tileset %1 matrix %2 crs %3 res %4" )
                .arg( tmsIt->identifier, tm.identifier, tmsIt->crs ).arg( res ) );
@@ -1895,9 +1879,9 @@ int QgsWmsCapabilities::identifyCapabilities() const
 {
   int capability = QgsRasterInterface::NoCapabilities;
 
-  Q_FOREACH ( QgsRaster::IdentifyFormat f, mIdentifyFormats.keys() )
+  for ( auto it = mIdentifyFormats.constBegin(); it != mIdentifyFormats.constEnd(); ++it )
   {
-    capability |= QgsRasterDataProvider::identifyFormatToCapability( f );
+    capability |= QgsRasterDataProvider::identifyFormatToCapability( it.key() );
   }
 
   return capability;
@@ -1909,7 +1893,6 @@ int QgsWmsCapabilities::identifyCapabilities() const
 
 QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( bool forceRefresh, QObject *parent )
   : QObject( parent )
-  , mCapabilitiesReply( nullptr )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {
@@ -1919,7 +1902,6 @@ QgsWmsCapabilitiesDownload::QgsWmsCapabilitiesDownload( const QString &baseUrl, 
   : QObject( parent )
   , mBaseUrl( baseUrl )
   , mAuth( auth )
-  , mCapabilitiesReply( nullptr )
   , mIsAborted( false )
   , mForceRefresh( forceRefresh )
 {
@@ -1972,11 +1954,11 @@ bool QgsWmsCapabilitiesDownload::downloadCapabilities()
     QgsMessageLog::logMessage( mError, tr( "WMS" ) );
     return false;
   }
-  connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-  connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+  connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyFinished, Qt::DirectConnection );
+  connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyProgress, Qt::DirectConnection );
 
   QEventLoop loop;
-  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
+  connect( this, &QgsWmsCapabilitiesDownload::downloadFinished, &loop, &QEventLoop::quit );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   return mError.isEmpty();
@@ -2005,7 +1987,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
   {
     if ( mCapabilitiesReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply ok" );
+      QgsDebugMsg( "reply OK" );
       QVariant redirect = mCapabilitiesReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
@@ -2050,8 +2032,8 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
             return;
           }
 
-          connect( mCapabilitiesReply, SIGNAL( finished() ), this, SLOT( capabilitiesReplyFinished() ), Qt::DirectConnection );
-          connect( mCapabilitiesReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( capabilitiesReplyProgress( qint64, qint64 ) ), Qt::DirectConnection );
+          connect( mCapabilitiesReply, &QNetworkReply::finished, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyFinished, Qt::DirectConnection );
+          connect( mCapabilitiesReply, &QNetworkReply::downloadProgress, this, &QgsWmsCapabilitiesDownload::capabilitiesReplyProgress, Qt::DirectConnection );
           return;
         }
       }
@@ -2075,7 +2057,7 @@ void QgsWmsCapabilitiesDownload::capabilitiesReplyFinished()
           if ( cmd.expirationDate().isNull() )
           {
             QgsSettings s;
-            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "/qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
+            cmd.setExpirationDate( QDateTime::currentDateTime().addSecs( s.value( QStringLiteral( "qgis/defaultCapabilitiesExpiry" ), "24" ).toInt() * 60 * 60 ) );
           }
 
           nam->cache()->updateMetaData( cmd );
@@ -2155,10 +2137,10 @@ void QgsWmtsTileMatrix::viewExtentIntersection( const QgsRectangle &viewExtent, 
     //             .arg( minTileRow ).arg( maxTileRow ) );
   }
 
-  col0 = qBound( minTileCol, ( int ) floor( ( viewExtent.xMinimum() - topLeft.x() ) / twMap ), maxTileCol );
-  row0 = qBound( minTileRow, ( int ) floor( ( topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
-  col1 = qBound( minTileCol, ( int ) floor( ( viewExtent.xMaximum() - topLeft.x() ) / twMap ), maxTileCol );
-  row1 = qBound( minTileRow, ( int ) floor( ( topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
+  col0 = qBound( minTileCol, ( int ) std::floor( ( viewExtent.xMinimum() - topLeft.x() ) / twMap ), maxTileCol );
+  row0 = qBound( minTileRow, ( int ) std::floor( ( topLeft.y() - viewExtent.yMaximum() ) / thMap ), maxTileRow );
+  col1 = qBound( minTileCol, ( int ) std::floor( ( viewExtent.xMaximum() - topLeft.x() ) / twMap ), maxTileCol );
+  row1 = qBound( minTileRow, ( int ) std::floor( ( topLeft.y() - viewExtent.yMinimum() ) / thMap ), maxTileRow );
 }
 
 const QgsWmtsTileMatrix *QgsWmtsTileMatrixSet::findNearestResolution( double vres ) const

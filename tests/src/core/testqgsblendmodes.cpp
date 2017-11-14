@@ -33,7 +33,8 @@
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for layer blend modes
  */
 class TestQgsBlendModes : public QObject
@@ -41,14 +42,7 @@ class TestQgsBlendModes : public QObject
     Q_OBJECT
 
   public:
-    TestQgsBlendModes()
-      : mMapSettings( 0 )
-      , mpPointsLayer( 0 )
-      , mpPolysLayer( 0 )
-      , mpLinesLayer( 0 )
-      , mRasterLayer1( 0 )
-      , mRasterLayer2( 0 )
-    {}
+    TestQgsBlendModes() = default;
     ~TestQgsBlendModes()
     {
       delete mMapSettings;
@@ -198,12 +192,12 @@ void TestQgsBlendModes::vectorLayerTransparency()
   mMapSettings->setLayers( myLayers );
 
   //Set feature blending modes for point layer
-  mpLinesLayer->setLayerTransparency( 50 );
+  mpLinesLayer->setOpacity( 0.50 );
   mMapSettings->setExtent( mExtent );
   bool res = imageCheck( QStringLiteral( "vector_layertransparency" ) );
 
   //Reset layers
-  mpLinesLayer->setLayerTransparency( 0 );
+  mpLinesLayer->setOpacity( 1.0 );
 
   QVERIFY( res );
 }

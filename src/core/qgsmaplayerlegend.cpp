@@ -40,11 +40,6 @@ QgsMapLayerLegend *QgsMapLayerLegend::defaultRasterLegend( QgsRasterLayer *rl )
   return new QgsDefaultRasterLayerLegend( rl );
 }
 
-QgsMapLayerLegend *QgsMapLayerLegend::defaultPluginLegend( QgsPluginLayer *pl )
-{
-  return new QgsDefaultPluginLayerLegend( pl );
-}
-
 // -------------------------------------------------------------------------
 
 
@@ -179,7 +174,7 @@ void QgsMapLayerLegendUtils::applyLayerNodeProperties( QgsLayerTreeLayer *nodeLa
 QgsDefaultVectorLayerLegend::QgsDefaultVectorLayerLegend( QgsVectorLayer *vl )
   : mLayer( vl )
 {
-  connect( mLayer, SIGNAL( rendererChanged() ), this, SIGNAL( itemsChanged() ) );
+  connect( mLayer, &QgsMapLayer::rendererChanged, this, &QgsMapLayerLegend::itemsChanged );
 }
 
 QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
@@ -194,15 +189,17 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
     mLayer->countSymbolFeatures();
 
   QgsSettings settings;
-  if ( settings.value( QStringLiteral( "/qgis/showLegendClassifiers" ), false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
+  if ( settings.value( QStringLiteral( "qgis/showLegendClassifiers" ), false ).toBool() && !r->legendClassificationAttribute().isEmpty() )
   {
     nodes.append( new QgsSimpleLegendNode( nodeLayer, r->legendClassificationAttribute() ) );
   }
 
-  Q_FOREACH ( const QgsLegendSymbolItem &i, r->legendSymbolItemsV2() )
+  Q_FOREACH ( const QgsLegendSymbolItem &i, r->legendSymbolItems() )
   {
-    QgsSymbolLegendNode *n = new QgsSymbolLegendNode( nodeLayer, i );
-    nodes.append( n );
+    if ( i.dataDefinedSizeLegendSettings() )
+      nodes << new QgsDataDefinedSizeLegendNode( nodeLayer, *i.dataDefinedSizeLegendSettings() );
+    else
+      nodes << new QgsSymbolLegendNode( nodeLayer, i );
   }
 
   if ( nodes.count() == 1 && nodes[0]->data( Qt::EditRole ).toString().isEmpty() )
@@ -229,7 +226,7 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultVectorLayerLegend::createLayerTre
 QgsDefaultRasterLayerLegend::QgsDefaultRasterLayerLegend( QgsRasterLayer *rl )
   : mLayer( rl )
 {
-  connect( mLayer, SIGNAL( rendererChanged() ), this, SIGNAL( itemsChanged() ) );
+  connect( mLayer, &QgsMapLayer::rendererChanged, this, &QgsMapLayerLegend::itemsChanged );
 }
 
 QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
@@ -266,32 +263,3 @@ QList<QgsLayerTreeModelLegendNode *> QgsDefaultRasterLayerLegend::createLayerTre
 
   return nodes;
 }
-
-
-// -------------------------------------------------------------------------
-
-
-QgsDefaultPluginLayerLegend::QgsDefaultPluginLayerLegend( QgsPluginLayer *pl )
-  : mLayer( pl )
-{
-}
-
-QList<QgsLayerTreeModelLegendNode *> QgsDefaultPluginLayerLegend::createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer )
-{
-  QList<QgsLayerTreeModelLegendNode *> nodes;
-
-  QSize iconSize( 16, 16 );
-  QgsLegendSymbologyList symbologyList = mLayer->legendSymbologyItems( iconSize );
-
-  if ( symbologyList.isEmpty() )
-    return nodes;
-
-  typedef QPair<QString, QPixmap> XY;
-  Q_FOREACH ( const XY &item, symbologyList )
-  {
-    nodes << new QgsSimpleLegendNode( nodeLayer, item.first, QIcon( item.second ) );
-  }
-
-  return nodes;
-}
-

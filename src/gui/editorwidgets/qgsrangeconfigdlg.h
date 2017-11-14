@@ -20,7 +20,10 @@
 #include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsRangeConfigDlg
  * \note not available in Python bindings
  */

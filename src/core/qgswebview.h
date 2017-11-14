@@ -17,6 +17,8 @@
 #define QGSWEBVIEW_H
 
 
+#define SIP_NO_FILE
+
 #include <QWidget>
 
 #ifdef WITH_QTWEBKIT
@@ -26,7 +28,8 @@
 #include "qgis_core.h"
 
 
-/** \ingroup core
+/**
+ * \ingroup core
  */
 class CORE_EXPORT QgsWebView : public QWebView
 {
@@ -47,11 +50,12 @@ class CORE_EXPORT QgsWebView : public QWebView
 #else
 #include "qgswebpage.h"
 #include <QTextBrowser>
+
 class QPrinter;
 
-
-/** \ingroup core
- * @brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
+/**
+ * \ingroup core
+ * \brief The QgsWebView class is a collection of stubs to mimic the API of QWebView on systems where the real
  * library is not available. It should be used instead of QWebView inside QGIS.
  *
  * If QGIS is compiled WITH_QTWEBKIT This will simply be a subclass of QWebView. If it is compiled with
@@ -69,8 +73,8 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
       , mSettings( new QWebSettings() )
       , mPage( new QWebPage( this ) )
     {
-      connect( this, SIGNAL( anchorClicked( const QUrl & ) ), this, SIGNAL( linkClicked( const QUrl & ) ) );
-      connect( this, SIGNAL( pageLoadFinished( bool ) ), mPage, SIGNAL( loadFinished( bool ) ) );
+      connect( this, &QTextBrowser::anchorClicked, this, &QgsWebView::linkClicked );
+      connect( this, &QgsWebView::pageLoadFinished, mPage, &QWebPage::loadFinished );
     }
 
     ~QgsWebView()

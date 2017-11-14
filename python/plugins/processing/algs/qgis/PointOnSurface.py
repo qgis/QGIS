@@ -27,60 +27,49 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from qgis.core import QgsWkbTypes
+from qgis.core import (QgsProcessing,
+                       QgsProcessingException,
+                       QgsWkbTypes)
 
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.GeoAlgorithmExecutionException import GeoAlgorithmExecutionException
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class PointOnSurface(GeoAlgorithm):
+class PointOnSurface(QgisFeatureBasedAlgorithm):
 
-    INPUT_LAYER = 'INPUT_LAYER'
-    OUTPUT_LAYER = 'OUTPUT_LAYER'
-
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'centroids.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Point on surface')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.addParameter(ParameterVector(self.INPUT_LAYER,
-                                          self.tr('Input layer')))
-        self.addOutput(OutputVector(self.OUTPUT_LAYER, self.tr('Point'), datatype=[dataobjects.TYPE_VECTOR_POINT]))
+    def __init__(self):
+        super().__init__()
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_LAYER))
+    def name(self):
+        return 'pointonsurface'
 
-        writer = self.getOutputFromName(
-            self.OUTPUT_LAYER).getVectorWriter(
-                layer.fields().toList(),
-                QgsWkbTypes.Point,
-                layer.crs())
+    def displayName(self):
+        return self.tr('Point on surface')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
+    def outputName(self):
+        return self.tr('Point')
 
-        for current, input_feature in enumerate(features):
-            output_feature = input_feature
-            input_geometry = input_feature.geometry()
-            if input_geometry:
-                output_geometry = input_geometry.pointOnSurface()
-                if not output_geometry:
-                    raise GeoAlgorithmExecutionException(
-                        self.tr('Error calculating point on surface'))
+    def outputType(self):
+        return QgsProcessing.TypeVectorPoint
 
-                output_feature.setGeometry(output_geometry)
+    def outputWkbType(self, input_wkb_type):
+        return QgsWkbTypes.Point
 
-            writer.addFeature(output_feature)
-            feedback.setProgress(int(current * total))
+    def processFeature(self, feature, feedback):
+        input_geometry = feature.geometry()
+        if input_geometry:
+            output_geometry = input_geometry.pointOnSurface()
+            if not output_geometry:
+                raise QgsProcessingException(self.tr('Error calculating point on surface: `{error_message}`'.format(error_message=output_geometry.error())))
 
-        del writer
+            feature.setGeometry(output_geometry)
+        return feature

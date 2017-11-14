@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 
-#include <QDateTime>
 #include <QDir>
 #include <QDomDocument>
 #include <QDomElement>
@@ -29,6 +28,8 @@
 
 #include <sqlite3.h>
 
+#include "qgs3drendererregistry.h"
+#include "qgsabstract3drenderer.h"
 #include "qgsapplication.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsdatasourceuri.h"
@@ -42,34 +43,31 @@
 #include "qgsproject.h"
 #include "qgsproviderregistry.h"
 #include "qgsrasterlayer.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrectangle.h"
 #include "qgsvectorlayer.h"
 #include "qgsvectordataprovider.h"
 #include "qgsxmlutils.h"
 #include "qgssettings.h" // TODO: get rid of it [MD]
-
+#include "qgsstringutils.h"
 
 QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
                           const QString &lyrname,
                           const QString &source )
-  : mValid( false ) // assume the layer is invalid
-  , mDataSource( source )
-  , mLayerOrigName( lyrname ) // store the original name
-  , mID( QLatin1String( "" ) )
+  : mDataSource( source )
   , mLayerType( type )
-  , mBlendMode( QPainter::CompositionMode_SourceOver ) // Default to normal blending
-  , mLegend( nullptr )
   , mStyleManager( new QgsMapLayerStyleManager( this ) )
 {
   // Set the display name = internal name
-  mLayerName = capitalizeLayerName( mLayerOrigName );
+  mLayerName = lyrname;
 
-  mShortName = QLatin1String( "" );
   //mShortName.replace( QRegExp( "[\\W]" ), "_" );
 
   // Generate the unique ID of this layer
-  QDateTime dt = QDateTime::currentDateTime();
-  mID = lyrname + dt.toString( QStringLiteral( "yyyyMMddhhmmsszzz" ) );
+  QString uuid = QUuid::createUuid().toString();
+  // trim { } from uuid
+  mID = lyrname + '_' + uuid.mid( 1, uuid.length() - 2 );
+
   // Tidy the ID up to avoid characters that may cause problems
   // elsewhere (e.g in some parts of XML). Replaces every non-word
   // character (word characters are the alphabet, numbers and
@@ -89,8 +87,41 @@ QgsMapLayer::QgsMapLayer( QgsMapLayer::LayerType type,
 
 QgsMapLayer::~QgsMapLayer()
 {
+  delete m3DRenderer;
   delete mLegend;
   delete mStyleManager;
+}
+
+void QgsMapLayer::clone( QgsMapLayer *layer ) const
+{
+  layer->setBlendMode( blendMode() );
+
+  Q_FOREACH ( const QString &s, styleManager()->styles() )
+  {
+    layer->styleManager()->addStyle( s, styleManager()->style( s ) );
+  }
+
+  layer->setName( name() );
+  layer->setShortName( shortName() );
+  layer->setExtent( extent() );
+  layer->setMaximumScale( maximumScale() );
+  layer->setMinimumScale( minimumScale() );
+  layer->setScaleBasedVisibility( hasScaleBasedVisibility() );
+  layer->setTitle( title() );
+  layer->setAbstract( abstract() );
+  layer->setKeywordList( keywordList() );
+  layer->setDataUrl( dataUrl() );
+  layer->setDataUrlFormat( dataUrlFormat() );
+  layer->setAttribution( attribution() );
+  layer->setAttributionUrl( attributionUrl() );
+  layer->setMetadataUrl( metadataUrl() );
+  layer->setMetadataUrlType( metadataUrlType() );
+  layer->setMetadataUrlFormat( metadataUrlFormat() );
+  layer->setLegendUrl( legendUrl() );
+  layer->setLegendUrlFormat( legendUrlFormat() );
+  layer->setDependencies( dependencies() );
+  layer->setCrs( crs() );
+  layer->setCustomProperties( mCustomProperties );
 }
 
 QgsMapLayer::LayerType QgsMapLayer::type() const
@@ -98,7 +129,6 @@ QgsMapLayer::LayerType QgsMapLayer::type() const
   return mLayerType;
 }
 
-//! Get this layer's unique ID
 QString QgsMapLayer::id() const
 {
   return mID;
@@ -106,21 +136,28 @@ QString QgsMapLayer::id() const
 
 void QgsMapLayer::setName( const QString &name )
 {
-  QString newName = capitalizeLayerName( name );
-  if ( name == mLayerOrigName && newName == mLayerName )
+  if ( name == mLayerName )
     return;
 
-  mLayerOrigName = name; // store the new original name
-  mLayerName = newName;
+  mLayerName = name;
 
   emit nameChanged();
 }
 
-//! Read property of QString layerName.
 QString QgsMapLayer::name() const
 {
   QgsDebugMsgLevel( "returning name '" + mLayerName + '\'', 4 );
   return mLayerName;
+}
+
+QgsDataProvider *QgsMapLayer::dataProvider()
+{
+  return nullptr;
+}
+
+const QgsDataProvider *QgsMapLayer::dataProvider() const
+{
+  return nullptr;
 }
 
 QString QgsMapLayer::publicSource() const
@@ -141,7 +178,6 @@ QgsRectangle QgsMapLayer::extent() const
   return mExtent;
 }
 
-//! Write blend mode for layer
 void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
 {
   mBlendMode = blendMode;
@@ -149,14 +185,13 @@ void QgsMapLayer::setBlendMode( QPainter::CompositionMode blendMode )
   emit styleChanged();
 }
 
-//! Read blend mode for layer
 QPainter::CompositionMode QgsMapLayer::blendMode() const
 {
   return mBlendMode;
 }
 
 
-bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathResolver &pathResolver )
+bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context )
 {
   bool layerError;
 
@@ -177,29 +212,28 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
   // if the layer needs authentication, ensure the master password is set
   QRegExp rx( "authcfg=([a-z]|[A-Z]|[0-9]){7}" );
   if ( ( rx.indexIn( mDataSource ) != -1 )
-       && !QgsAuthManager::instance()->setMasterPassword( true ) )
+       && !QgsApplication::authManager()->setMasterPassword( true ) )
   {
     return false;
   }
 
   // TODO: this should go to providers
-  // see also QgsProject::createEmbeddedLayer
   if ( provider == QLatin1String( "spatialite" ) )
   {
     QgsDataSourceUri uri( mDataSource );
-    uri.setDatabase( pathResolver.readPath( uri.database() ) );
+    uri.setDatabase( context.pathResolver().readPath( uri.database() ) );
     mDataSource = uri.uri();
   }
   else if ( provider == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = mDataSource.split( '|' );
-    theURIParts[0] = pathResolver.readPath( theURIParts[0] );
+    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
     mDataSource = theURIParts.join( QStringLiteral( "|" ) );
   }
   else if ( provider == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = mDataSource.split( '?' );
-    theURIParts[0] = pathResolver.readPath( theURIParts[0] );
+    theURIParts[0] = context.pathResolver().readPath( theURIParts[0] );
     mDataSource = theURIParts.join( QStringLiteral( "?" ) );
   }
   else if ( provider == QLatin1String( "delimitedtext" ) )
@@ -213,9 +247,9 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
       urlSource.setPath( file.path() );
     }
 
-    QUrl urlDest = QUrl::fromLocalFile( pathResolver.readPath( urlSource.toLocalFile() ) );
+    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().readPath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
-    mDataSource = QString::fromAscii( urlDest.toEncoded() );
+    mDataSource = QString::fromLatin1( urlDest.toEncoded() );
   }
   else if ( provider == QLatin1String( "wms" ) )
   {
@@ -311,7 +345,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
           QString filename = r.cap( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "NETCDF:\"" + pathResolver.readPath( filename ) + "\":" + r.cap( 2 );
+          mDataSource = "NETCDF:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
           handled = true;
         }
       }
@@ -325,7 +359,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
           QString filename = r.cap( 2 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + pathResolver.readPath( filename ) + "\":" + r.cap( 3 );
+          mDataSource = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 3 );
           handled = true;
         }
       }
@@ -339,7 +373,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
           QString filename = r.cap( 1 );
           if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
             filename = filename.mid( 1, filename.length() - 2 );
-          mDataSource = "HDF5:\"" + pathResolver.readPath( filename ) + "\":" + r.cap( 2 );
+          mDataSource = "HDF5:\"" + context.pathResolver().readPath( filename ) + "\":" + r.cap( 2 );
           handled = true;
         }
       }
@@ -350,14 +384,14 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
         QRegExp r( "([^:]+):([^:]+):(.+)" );
         if ( r.exactMatch( mDataSource ) )
         {
-          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + pathResolver.readPath( r.cap( 3 ) );
+          mDataSource = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().readPath( r.cap( 3 ) );
           handled = true;
         }
       }
     }
 
     if ( !handled )
-      mDataSource = pathResolver.readPath( mDataSource );
+      mDataSource = context.pathResolver().readPath( mDataSource );
   }
 
   // Set the CRS from project file, asking the user if necessary.
@@ -381,8 +415,12 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
   savedValidation = QgsCoordinateReferenceSystem::customCrsValidation();
   QgsCoordinateReferenceSystem::setCustomCrsValidation( nullptr );
 
+  // read custom properties before passing reading further to a subclass, so that
+  // the subclass can also read custom properties
+  readCustomProperties( layerElement );
+
   // now let the children grab what they need from the Dom node.
-  layerError = !readXml( layerElement );
+  layerError = !readXml( layerElement, context );
 
   // overwrite CRS with what we read from project file before the raster/vector
   // file reading functions changed it. They will if projections is specified in the file.
@@ -413,17 +451,23 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
 
   // use scale dependent visibility flag
   setScaleBasedVisibility( layerElement.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
-  setMinimumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
-  setMaximumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
+  if ( layerElement.hasAttribute( QStringLiteral( "minimumScale" ) ) )
+  {
+    // older element, when scales were reversed
+    setMaximumScale( layerElement.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
+    setMinimumScale( layerElement.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
+  }
+  else
+  {
+    setMaximumScale( layerElement.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
+    setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
+  }
 
   setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), 0 ).toInt() );
   setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
+  setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
+  setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );
 
-  QDomNode extentNode = layerElement.namedItem( QStringLiteral( "extent" ) );
-  if ( !extentNode.isNull() )
-  {
-    setExtent( QgsXmlUtils::readRectangle( extentNode.toElement() ) );
-  }
 
   // set name
   mnl = layerElement.namedItem( QStringLiteral( "layername" ) );
@@ -496,27 +540,31 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsPathRe
     mMetadataUrlFormat = metaUrlElem.attribute( QStringLiteral( "format" ), QLatin1String( "" ) );
   }
 
-#if 0
-  //read transparency level
-  QDomNode transparencyNode = layer_node.namedItem( "transparencyLevelInt" );
-  if ( ! transparencyNode.isNull() )
-  {
-    // set transparency level only if it's in project
-    // (otherwise it sets the layer transparent)
-    QDomElement myElement = transparencyNode.toElement();
-    setTransparency( myElement.text().toInt() );
-  }
-#endif
+  // mMetadata.readFromLayer( this );
+  QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
+  mMetadata.readMetadataXml( metadataElem );
 
-  readCustomProperties( layerElement );
+  QgsAbstract3DRenderer *r3D = nullptr;
+  QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
+  if ( !renderer3DElem.isNull() )
+  {
+    QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
+    Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
+    if ( meta3D )
+    {
+      r3D = meta3D->createRenderer( renderer3DElem, context );
+    }
+  }
+  setRenderer3D( r3D );
 
   return true;
 } // bool QgsMapLayer::readLayerXML
 
 
-bool QgsMapLayer::readXml( const QDomNode &layer_node )
+bool QgsMapLayer::readXml( const QDomNode &layer_node, const QgsReadWriteContext &context )
 {
   Q_UNUSED( layer_node );
+  Q_UNUSED( context );
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
@@ -524,20 +572,23 @@ bool QgsMapLayer::readXml( const QDomNode &layer_node )
 
 
 
-bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsPathResolver &pathResolver ) const
+bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   // use scale dependent visibility flag
   layerElement.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
-  layerElement.setAttribute( QStringLiteral( "minimumScale" ), QString::number( minimumScale() ) );
-  layerElement.setAttribute( QStringLiteral( "maximumScale" ), QString::number( maximumScale() ) );
+  layerElement.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
+  layerElement.setAttribute( QStringLiteral( "minScale" ), QString::number( minimumScale() ) );
 
-  if ( !mExtent.isNull() )
+  if ( !extent().isNull() )
   {
     layerElement.appendChild( QgsXmlUtils::writeRectangle( mExtent, document ) );
   }
 
   layerElement.setAttribute( QStringLiteral( "autoRefreshTime" ), QString::number( mRefreshTimer.interval() ) );
   layerElement.setAttribute( QStringLiteral( "autoRefreshEnabled" ), mRefreshTimer.isActive() ? 1 : 0 );
+  layerElement.setAttribute( QStringLiteral( "refreshOnNotifyEnabled" ),  mIsRefreshOnNofifyEnabled ? 1 : 0 );
+  layerElement.setAttribute( QStringLiteral( "refreshOnNotifyMessage" ),  mRefreshOnNofifyMessage );
+
 
   // ID
   QDomElement layerId = document.createElement( QStringLiteral( "id" ) );
@@ -556,28 +607,28 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   if ( vlayer && vlayer->providerType() == QLatin1String( "spatialite" ) )
   {
     QgsDataSourceUri uri( src );
-    QString database = pathResolver.writePath( uri.database() );
+    QString database = context.pathResolver().writePath( uri.database() );
     uri.setConnection( uri.host(), uri.port(), database, uri.username(), uri.password() );
     src = uri.uri();
   }
   else if ( vlayer && vlayer->providerType() == QLatin1String( "ogr" ) )
   {
     QStringList theURIParts = src.split( '|' );
-    theURIParts[0] = pathResolver.writePath( theURIParts[0] );
+    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
     src = theURIParts.join( QStringLiteral( "|" ) );
   }
   else if ( vlayer && vlayer->providerType() == QLatin1String( "gpx" ) )
   {
     QStringList theURIParts = src.split( '?' );
-    theURIParts[0] = pathResolver.writePath( theURIParts[0] );
+    theURIParts[0] = context.pathResolver().writePath( theURIParts[0] );
     src = theURIParts.join( QStringLiteral( "?" ) );
   }
   else if ( vlayer && vlayer->providerType() == QLatin1String( "delimitedtext" ) )
   {
     QUrl urlSource = QUrl::fromEncoded( src.toLatin1() );
-    QUrl urlDest = QUrl::fromLocalFile( pathResolver.writePath( urlSource.toLocalFile() ) );
+    QUrl urlDest = QUrl::fromLocalFile( context.pathResolver().writePath( urlSource.toLocalFile() ) );
     urlDest.setQueryItems( urlSource.queryItems() );
-    src = QString::fromAscii( urlDest.toEncoded() );
+    src = QString::fromLatin1( urlDest.toEncoded() );
   }
   else if ( vlayer && vlayer->providerType() == QLatin1String( "memory" ) )
   {
@@ -604,7 +655,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
             QString filename = r.cap( 1 );
             if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
               filename = filename.mid( 1, filename.length() - 2 );
-            src = "NETCDF:\"" + pathResolver.writePath( filename ) + "\":" + r.cap( 2 );
+            src = "NETCDF:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
             handled = true;
           }
         }
@@ -618,7 +669,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
             QString filename = r.cap( 2 );
             if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
               filename = filename.mid( 1, filename.length() - 2 );
-            src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + pathResolver.writePath( filename ) + "\":" + r.cap( 3 );
+            src = "HDF4_SDS:" + r.cap( 1 ) + ":\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 3 );
             handled = true;
           }
         }
@@ -632,7 +683,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
             QString filename = r.cap( 1 );
             if ( filename.startsWith( '"' ) && filename.endsWith( '"' ) )
               filename = filename.mid( 1, filename.length() - 2 );
-            src = "HDF5:\"" + pathResolver.writePath( filename ) + "\":" + r.cap( 2 );
+            src = "HDF5:\"" + context.pathResolver().writePath( filename ) + "\":" + r.cap( 2 );
             handled = true;
           }
         }
@@ -643,7 +694,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
           QRegExp r( "([^:]+):([^:]+):(.+)" );
           if ( r.exactMatch( src ) )
           {
-            src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + pathResolver.writePath( r.cap( 3 ) );
+            src = r.cap( 1 ) + ':' + r.cap( 2 ) + ':' + context.pathResolver().writePath( r.cap( 3 ) );
             handled = true;
           }
         }
@@ -651,7 +702,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
     }
 
     if ( !handled )
-      src = pathResolver.writePath( src );
+      src = context.pathResolver().writePath( src );
   }
 
   QDomText dataSourceText = document.createTextNode( src );
@@ -662,7 +713,7 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
 
   // layer name
   QDomElement layerName = document.createElement( QStringLiteral( "layername" ) );
-  QDomText layerNameText = document.createTextNode( originalName() );
+  QDomText layerNameText = document.createTextNode( name() );
   layerName.appendChild( layerNameText );
   layerElement.appendChild( layerName );
 
@@ -773,31 +824,43 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   mCRS.writeXml( mySrsElement, document );
   layerElement.appendChild( mySrsElement );
 
-#if 0
-  // <transparencyLevelInt>
-  QDomElement transparencyLevelIntElement = document.createElement( "transparencyLevelInt" );
-  QDomText    transparencyLevelIntText    = document.createTextNode( QString::number( getTransparency() ) );
-  transparencyLevelIntElement.appendChild( transparencyLevelIntText );
-  maplayer.appendChild( transparencyLevelIntElement );
-#endif
+  // layer metadata
+  QDomElement myMetadataElem = document.createElement( QStringLiteral( "resourceMetadata" ) );
+  mMetadata.writeMetadataXml( myMetadataElem, document );
+  layerElement.appendChild( myMetadataElem );
+
+  if ( m3DRenderer )
+  {
+    QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
+    renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
+    m3DRenderer->writeXml( renderer3DElem, context );
+    layerElement.appendChild( renderer3DElem );
+  }
 
   // now append layer node to map layer node
 
   writeCustomProperties( layerElement, document );
 
-  return writeXml( layerElement, document );
+  return writeXml( layerElement, document, context );
 
-} // bool QgsMapLayer::writeXml
+}
 
 
-bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document ) const
+bool QgsMapLayer::writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( layer_node );
   Q_UNUSED( document );
+  Q_UNUSED( context );
   // NOP by default; children will over-ride with behavior specific to them
 
   return true;
 } // void QgsMapLayer::writeXml
+
+void QgsMapLayer::resolveReferences( QgsProject *project )
+{
+  if ( m3DRenderer )
+    m3DRenderer->resolveReferences( *project );
+}
 
 
 void QgsMapLayer::readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith )
@@ -834,13 +897,6 @@ bool QgsMapLayer::isValid() const
   return mValid;
 }
 
-
-void QgsMapLayer::invalidTransformInput()
-{
-  QgsDebugMsg( "called" );
-  // TODO: emit a signal - it will be used to update legend
-}
-
 #if 0
 void QgsMapLayer::connectNotify( const char *signal )
 {
@@ -851,7 +907,9 @@ void QgsMapLayer::connectNotify( const char *signal )
 
 bool QgsMapLayer::isInScaleRange( double scale ) const
 {
-  return !mScaleBasedVisibility || ( mMinScale * Qgis::SCALE_PRECISION < scale && scale < mMaxScale );
+  return !mScaleBasedVisibility ||
+         ( ( mMinScale == 0 || mMinScale * Qgis::SCALE_PRECISION < scale )
+           && ( mMaxScale == 0 || scale < mMaxScale ) );
 }
 
 bool QgsMapLayer::hasScaleBasedVisibility() const
@@ -893,18 +951,23 @@ void QgsMapLayer::setAutoRefreshEnabled( bool enabled )
   emit autoRefreshIntervalChanged( mRefreshTimer.isActive() ? mRefreshTimer.interval() : 0 );
 }
 
-void QgsMapLayer::setMinimumScale( double scale )
+const QgsLayerMetadata &QgsMapLayer::metadata() const
+{
+  return mMetadata;
+}
+
+void QgsMapLayer::setMaximumScale( double scale )
 {
   mMinScale = scale;
 }
 
-double QgsMapLayer::minimumScale() const
+double QgsMapLayer::maximumScale() const
 {
   return mMinScale;
 }
 
 
-void QgsMapLayer::setMaximumScale( double scale )
+void QgsMapLayer::setMinimumScale( double scale )
 {
   mMaxScale = scale;
 }
@@ -914,7 +977,7 @@ void QgsMapLayer::setScaleBasedVisibility( const bool enabled )
   mScaleBasedVisibility = enabled;
 }
 
-double QgsMapLayer::maximumScale() const
+double QgsMapLayer::minimumScale() const
 {
   return mMaxScale;
 }
@@ -956,18 +1019,11 @@ void QgsMapLayer::setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSign
     emit crsChanged();
 }
 
-QString QgsMapLayer::capitalizeLayerName( const QString &name )
+QString QgsMapLayer::formatLayerName( const QString &name )
 {
-  // Capitalize the first letter of the layer name if requested
-  QgsSettings settings;
-  bool capitalizeLayerName =
-    settings.value( QStringLiteral( "/qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
-
   QString layerName( name );
-
-  if ( capitalizeLayerName && !layerName.isEmpty() )
-    layerName = layerName.at( 0 ).toUpper() + layerName.mid( 1 );
-
+  layerName.replace( '_', ' ' );
+  layerName = QgsStringUtils::capitalize( layerName, QgsStringUtils::ForceFirstLetterToCapital );
   return layerName;
 }
 
@@ -1030,7 +1086,7 @@ QString QgsMapLayer::loadDefaultStyle( bool &resultFlag )
 
 bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml )
 {
-  QgsDebugMsg( QString( "db = %1 uri = %2" ).arg( db, uri ) );
+  QgsDebugMsgLevel( QString( "db = %1 uri = %2" ).arg( db, uri ), 4 );
 
   bool resultFlag = false;
 
@@ -1040,7 +1096,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
   const char *myTail = nullptr;
   int myResult;
 
-  QgsDebugMsg( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ) );
+  QgsDebugMsgLevel( QString( "Trying to load style for \"%1\" from \"%2\"" ).arg( uri, db ), 4 );
 
   if ( db.isEmpty() || !QFile( db ).exists() )
     return false;
@@ -1075,7 +1131,7 @@ bool QgsMapLayer::loadNamedStyleFromDatabase( const QString &db, const QString &
 
 QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
 {
-  QgsDebugMsg( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ) );
+  QgsDebugMsgLevel( QString( "uri = %1 myURI = %2" ).arg( uri, publicSource() ), 4 );
 
   resultFlag = false;
 
@@ -1097,7 +1153,7 @@ QString QgsMapLayer::loadNamedStyle( const QString &uri, bool &resultFlag )
   else
   {
     QFileInfo project( QgsProject::instance()->fileName() );
-    QgsDebugMsg( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ) );
+    QgsDebugMsgLevel( QString( "project fileName: %1" ).arg( project.absoluteFilePath() ), 4 );
 
     QString qml;
     if ( loadNamedStyleFromDatabase( QDir( QgsApplication::qgisSettingsDirPath() ).absoluteFilePath( QStringLiteral( "qgis.qmldb" ) ), uri, qml ) ||
@@ -1162,22 +1218,19 @@ bool QgsMapLayer::importNamedStyle( QDomDocument &myDocument, QString &myErrorMe
 
   // use scale dependent visibility flag
   setScaleBasedVisibility( myRoot.attribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ) ).toInt() == 1 );
-  setMinimumScale( myRoot.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
-  setMaximumScale( myRoot.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
-
-#if 0
-  //read transparency level
-  QDomNode transparencyNode = myRoot.namedItem( "transparencyLevelInt" );
-  if ( ! transparencyNode.isNull() )
+  if ( myRoot.hasAttribute( QStringLiteral( "minimumScale" ) ) )
   {
-    // set transparency level only if it's in project
-    // (otherwise it sets the layer transparent)
-    QDomElement myElement = transparencyNode.toElement();
-    setTransparency( myElement.text().toInt() );
+    //older scale element, when min/max were reversed
+    setMaximumScale( myRoot.attribute( QStringLiteral( "minimumScale" ) ).toDouble() );
+    setMinimumScale( myRoot.attribute( QStringLiteral( "maximumScale" ) ).toDouble() );
   }
-#endif
+  else
+  {
+    setMaximumScale( myRoot.attribute( QStringLiteral( "maxScale" ) ).toDouble() );
+    setMinimumScale( myRoot.attribute( QStringLiteral( "minScale" ) ).toDouble() );
+  }
 
-  return readSymbology( myRoot, myErrorMessage );
+  return readSymbology( myRoot, myErrorMessage, QgsReadWriteContext() ); // TODO: support relative paths in QML?
 }
 
 void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
@@ -1191,18 +1244,10 @@ void QgsMapLayer::exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const
   myDocument.appendChild( myRootNode );
 
   myRootNode.setAttribute( QStringLiteral( "hasScaleBasedVisibilityFlag" ), hasScaleBasedVisibility() ? 1 : 0 );
-  myRootNode.setAttribute( QStringLiteral( "minimumScale" ), QString::number( minimumScale() ) );
-  myRootNode.setAttribute( QStringLiteral( "maximumScale" ), QString::number( maximumScale() ) );
+  myRootNode.setAttribute( QStringLiteral( "maxScale" ), QString::number( maximumScale() ) );
+  myRootNode.setAttribute( QStringLiteral( "mincale" ), QString::number( minimumScale() ) );
 
-#if 0
-  // <transparencyLevelInt>
-  QDomElement transparencyLevelIntElement = myDocument.createElement( "transparencyLevelInt" );
-  QDomText    transparencyLevelIntText    = myDocument.createTextNode( QString::number( getTransparency() ) );
-  transparencyLevelIntElement.appendChild( transparencyLevelIntText );
-  myRootNode.appendChild( transparencyLevelIntElement );
-#endif
-
-  if ( !writeSymbology( myRootNode, myDocument, errorMsg ) )
+  if ( !writeSymbology( myRootNode, myDocument, errorMsg, QgsReadWriteContext() ) )  // TODO: support relative paths in QML?
   {
     errorMsg = QObject::tr( "Could not save symbology because:\n%1" ).arg( errorMsg );
     return;
@@ -1490,8 +1535,6 @@ QString QgsMapLayer::saveSldStyle( const QString &uri, bool &resultFlag ) const
 
 QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
 {
-  QgsDebugMsg( "Entered." );
-
   resultFlag = false;
 
   QDomDocument myDocument;
@@ -1549,18 +1592,20 @@ QString QgsMapLayer::loadSldStyle( const QString &uri, bool &resultFlag )
   return QLatin1String( "" );
 }
 
-bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage )
+bool QgsMapLayer::readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context )
 {
   Q_UNUSED( node );
   Q_UNUSED( errorMessage );
+  Q_UNUSED( context );
   return false;
 }
 
-bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const
+bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( node );
   Q_UNUSED( doc );
   Q_UNUSED( errorMessage );
+  Q_UNUSED( context );
   return false;
 }
 
@@ -1576,9 +1621,19 @@ QUndoStack *QgsMapLayer::undoStackStyles()
 }
 
 
+QStringList QgsMapLayer::customPropertyKeys() const
+{
+  return mCustomProperties.keys();
+}
+
 void QgsMapLayer::setCustomProperty( const QString &key, const QVariant &value )
 {
   mCustomProperties.setValue( key, value );
+}
+
+void QgsMapLayer::setCustomProperties( const QgsObjectCustomProperties &properties )
+{
+  mCustomProperties = properties;
 }
 
 QVariant QgsMapLayer::customProperty( const QString &value, const QVariant &defaultValue ) const
@@ -1591,11 +1646,21 @@ void QgsMapLayer::removeCustomProperty( const QString &key )
   mCustomProperties.remove( key );
 }
 
+QgsError QgsMapLayer::error() const
+{
+  return mError;
+}
+
 
 
 bool QgsMapLayer::isEditable() const
 {
   return false;
+}
+
+bool QgsMapLayer::isSpatial() const
+{
+  return true;
 }
 
 void QgsMapLayer::setValid( bool valid )
@@ -1627,14 +1692,41 @@ QgsMapLayerStyleManager *QgsMapLayer::styleManager() const
   return mStyleManager;
 }
 
+void QgsMapLayer::setRenderer3D( QgsAbstract3DRenderer *renderer )
+{
+  if ( renderer == m3DRenderer )
+    return;
+
+  delete m3DRenderer;
+  m3DRenderer = renderer;
+  emit renderer3DChanged();
+}
+
+QgsAbstract3DRenderer *QgsMapLayer::renderer3D() const
+{
+  return m3DRenderer;
+}
+
 void QgsMapLayer::triggerRepaint( bool deferredUpdate )
 {
   emit repaintRequested( deferredUpdate );
 }
 
-QString QgsMapLayer::metadata() const
+void QgsMapLayer::setMetadata( const QgsLayerMetadata &metadata )
+{
+  mMetadata = metadata;
+//  mMetadata.saveToLayer( this );
+  emit metadataChanged();
+}
+
+QString QgsMapLayer::htmlMetadata() const
 {
   return QString();
+}
+
+QDateTime QgsMapLayer::timestamp() const
+{
+  return QDateTime();
 }
 
 void QgsMapLayer::emitStyleChanged()
@@ -1692,6 +1784,11 @@ bool QgsMapLayer::hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers 
   return _depHasCycleDFS( this, marks, this, layers );
 }
 
+bool QgsMapLayer::isReadOnly() const
+{
+  return true;
+}
+
 QSet<QgsMapLayerDependency> QgsMapLayer::dependencies() const
 {
   return mDependencies;
@@ -1712,3 +1809,28 @@ bool QgsMapLayer::setDependencies( const QSet<QgsMapLayerDependency> &oDeps )
   emit dependenciesChanged();
   return true;
 }
+
+void QgsMapLayer::setRefreshOnNotifyEnabled( bool enabled )
+{
+  if ( !dataProvider() )
+    return;
+
+  if ( enabled && !isRefreshOnNotifyEnabled() )
+  {
+    dataProvider()->setListening( enabled );
+    connect( dataProvider(), &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+  }
+  else if ( !enabled && isRefreshOnNotifyEnabled() )
+  {
+    // we don't want to disable provider listening because someone else could need it (e.g. actions)
+    disconnect( dataProvider(), &QgsVectorDataProvider::notify, this, &QgsMapLayer::onNotifiedTriggerRepaint );
+  }
+  mIsRefreshOnNofifyEnabled = enabled;
+}
+
+void QgsMapLayer::onNotifiedTriggerRepaint( const QString &message )
+{
+  if ( refreshOnNotifyMessage().isEmpty() || refreshOnNotifyMessage() == message )
+    triggerRepaint();
+}
+

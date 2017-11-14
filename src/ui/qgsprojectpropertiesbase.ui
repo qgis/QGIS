@@ -55,7 +55,7 @@
         <number>0</number>
        </property>
        <item>
-        <widget class="QLineEdit" name="mSearchLineEdit"/>
+        <widget class="QgsFilterLineEdit" name="mSearchLineEdit"/>
        </item>
        <item>
         <widget class="QListWidget" name="mOptionsListWidget">
@@ -118,7 +118,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Identify layers</string>
+           <string>Identify Layers</string>
           </property>
           <property name="toolTip">
            <string>Identifiable layers</string>
@@ -130,7 +130,7 @@
          </item>
          <item>
           <property name="text">
-           <string>Default styles</string>
+           <string>Default Styles</string>
           </property>
           <property name="toolTip">
            <string>Default styles</string>
@@ -142,10 +142,10 @@
          </item>
          <item>
           <property name="text">
-           <string>OWS server</string>
+           <string>QGIS Server</string>
           </property>
           <property name="toolTip">
-           <string>WMS/WFS Server Configuration</string>
+           <string>WMS/WFS/WCS Server Configuration</string>
           </property>
           <property name="icon">
            <iconset resource="../../images/images.qrc">
@@ -232,7 +232,7 @@
          <property name="currentIndex">
           <number>1</number>
          </property>
-         <widget class="QWidget" name="mProjOpts_01">
+         <widget class="QWidget" name="mProjOptsGeneral">
           <layout class="QVBoxLayout" name="verticalLayout_6">
            <property name="leftMargin">
             <number>0</number>
@@ -247,7 +247,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_2">
+            <widget class="QgsScrollArea" name="scrollArea_2">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -259,8 +259,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>565</width>
+                <height>697</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -279,6 +279,52 @@
                   <string notr="true">projgeneral</string>
                  </property>
                  <layout class="QGridLayout" name="gridLayout_26">
+                  <item row="3" column="0">
+                   <widget class="QLabel" name="label_3">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Save paths</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>cbxAbsolutePath</cstring>
+                    </property>
+                   </widget>
+                  </item>
+                  <item row="3" column="1">
+                   <widget class="QComboBox" name="cbxAbsolutePath">
+                    <item>
+                     <property name="text">
+                      <string>absolute</string>
+                     </property>
+                    </item>
+                    <item>
+                     <property name="text">
+                      <string>relative</string>
+                     </property>
+                    </item>
+                   </widget>
+                  </item>
+                  <item row="0" column="0">
+                   <widget class="QLabel" name="label_4">
+                    <property name="sizePolicy">
+                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                      <horstretch>0</horstretch>
+                      <verstretch>0</verstretch>
+                     </sizepolicy>
+                    </property>
+                    <property name="text">
+                     <string>Project file</string>
+                    </property>
+                    <property name="buddy">
+                     <cstring>titleEdit</cstring>
+                    </property>
+                   </widget>
+                  </item>
                   <item row="2" column="0" colspan="5">
                    <layout class="QHBoxLayout" name="horizontalLayout_5">
                     <item>
@@ -379,22 +425,6 @@
                     </property>
                    </widget>
                   </item>
-                  <item row="0" column="0">
-                   <widget class="QLabel" name="label_4">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Project file</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>titleEdit</cstring>
-                    </property>
-                   </widget>
-                  </item>
                   <item row="3" column="3" colspan="2">
                    <spacer>
                     <property name="orientation">
@@ -407,36 +437,6 @@
                      </size>
                     </property>
                    </spacer>
-                  </item>
-                  <item row="3" column="1">
-                   <widget class="QComboBox" name="cbxAbsolutePath">
-                    <item>
-                     <property name="text">
-                      <string>absolute</string>
-                     </property>
-                    </item>
-                    <item>
-                     <property name="text">
-                      <string>relative</string>
-                     </property>
-                    </item>
-                   </widget>
-                  </item>
-                  <item row="3" column="0">
-                   <widget class="QLabel" name="label_3">
-                    <property name="sizePolicy">
-                     <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                      <horstretch>0</horstretch>
-                      <verstretch>0</verstretch>
-                     </sizepolicy>
-                    </property>
-                    <property name="text">
-                     <string>Save paths</string>
-                    </property>
-                    <property name="buddy">
-                     <cstring>cbxAbsolutePath</cstring>
-                    </property>
-                   </widget>
                   </item>
                   <item row="4" column="0" colspan="5">
                    <widget class="QCheckBox" name="mMapTileRenderingCheckBox">
@@ -459,11 +459,32 @@
                    </widget>
                   </item>
                   <item row="0" column="1" colspan="4">
-                   <widget class="QLineEdit" name="mProjectFileLineEdit">
-                    <property name="readOnly">
-                     <bool>true</bool>
-                    </property>
-                   </widget>
+                   <layout class="QHBoxLayout" name="horizontalLayout_13">
+                    <item>
+                     <widget class="QLineEdit" name="mProjectFileLineEdit">
+                      <property name="readOnly">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                    <item>
+                     <widget class="QToolButton" name="mButtonOpenProjectFolder">
+                      <property name="toolTip">
+                       <string>Open folder containing the project</string>
+                      </property>
+                      <property name="text">
+                       <string>…</string>
+                      </property>
+                      <property name="icon">
+                       <iconset resource="../../images/images.qrc">
+                        <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
+                      </property>
+                      <property name="autoRaise">
+                       <bool>true</bool>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
                   </item>
                  </layout>
                 </widget>
@@ -644,7 +665,7 @@
                     <item>
                      <widget class="QToolButton" name="pbnAddScale">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -655,7 +676,7 @@
                     <item>
                      <widget class="QToolButton" name="pbnRemoveScale">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -666,7 +687,7 @@
                     <item>
                      <widget class="QToolButton" name="pbnImportScales">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -677,7 +698,7 @@
                     <item>
                      <widget class="QToolButton" name="pbnExportScales">
                       <property name="text">
-                       <string>...</string>
+                       <string>…</string>
                       </property>
                       <property name="icon">
                        <iconset resource="../../images/images.qrc">
@@ -722,7 +743,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_02">
+         <widget class="QWidget" name="mProjOptsCRS">
           <layout class="QVBoxLayout" name="verticalLayout_5">
            <property name="leftMargin">
             <number>0</number>
@@ -737,7 +758,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea">
+            <widget class="QgsScrollArea" name="scrollArea">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -749,8 +770,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>676</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_7">
@@ -781,7 +802,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_03">
+         <widget class="QWidget" name="mProjOptsLayers">
           <layout class="QVBoxLayout" name="verticalLayout_9">
            <property name="leftMargin">
             <number>0</number>
@@ -796,7 +817,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_3">
+            <widget class="QgsScrollArea" name="scrollArea_3">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -808,8 +829,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>132</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -867,7 +888,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_04">
+         <widget class="QWidget" name="mProjOptsSymbols">
           <layout class="QVBoxLayout" name="verticalLayout_11">
            <property name="leftMargin">
             <number>0</number>
@@ -882,7 +903,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_4">
+            <widget class="QgsScrollArea" name="scrollArea_4">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -894,8 +915,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>685</width>
-                <height>778</height>
+                <width>269</width>
+                <height>597</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -914,7 +935,7 @@
                   <item row="0" column="5">
                    <widget class="QToolButton" name="pbtnStyleMarker">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -967,7 +988,7 @@
                   <item row="1" column="5">
                    <widget class="QToolButton" name="pbtnStyleLine">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -1056,7 +1077,7 @@
                   <item row="2" column="5">
                    <widget class="QToolButton" name="pbtnStyleFill">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -1103,7 +1124,7 @@
                   <item row="3" column="5">
                    <widget class="QToolButton" name="pbtnStyleColorRamp">
                     <property name="text">
-                     <string>...</string>
+                     <string>…</string>
                     </property>
                     <property name="icon">
                      <iconset resource="../../images/images.qrc">
@@ -1124,64 +1145,20 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_18">
                   <item>
-                   <layout class="QHBoxLayout" name="horizontalLayout_6">
+                   <layout class="QHBoxLayout" name="horizontalLayout_6" stretch="0,1">
                     <item>
-                     <widget class="QLabel" name="mTransparencyLabel">
+                     <widget class="QLabel" name="label_27">
                       <property name="text">
-                       <string>Transparency</string>
+                       <string>Opacity</string>
                       </property>
                      </widget>
                     </item>
                     <item>
-                     <widget class="QSlider" name="mTransparencySlider">
-                      <property name="sizePolicy">
-                       <sizepolicy hsizetype="MinimumExpanding" vsizetype="Fixed">
-                        <horstretch>0</horstretch>
-                        <verstretch>0</verstretch>
-                       </sizepolicy>
-                      </property>
-                      <property name="minimumSize">
-                       <size>
-                        <width>150</width>
-                        <height>0</height>
-                       </size>
-                      </property>
-                      <property name="maximumSize">
-                       <size>
-                        <width>150</width>
-                        <height>16777215</height>
-                       </size>
-                      </property>
-                      <property name="maximum">
-                       <number>100</number>
-                      </property>
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
+                     <widget class="QgsOpacityWidget" name="mDefaultOpacityWidget" native="true">
+                      <property name="focusPolicy">
+                       <enum>Qt::StrongFocus</enum>
                       </property>
                      </widget>
-                    </item>
-                    <item>
-                     <widget class="QSpinBox" name="mTransparencySpinBox">
-                      <property name="suffix">
-                       <string> %</string>
-                      </property>
-                      <property name="maximum">
-                       <number>100</number>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_5">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>40</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
                     </item>
                    </layout>
                   </item>
@@ -1334,7 +1311,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_05">
+         <widget class="QWidget" name="mProjOptsOWS">
           <layout class="QVBoxLayout" name="verticalLayout_14">
            <property name="leftMargin">
             <number>0</number>
@@ -1349,7 +1326,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_5">
+            <widget class="QgsScrollArea" name="scrollArea_5">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -1361,8 +1338,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>671</width>
-                <height>2451</height>
+                <width>598</width>
+                <height>2361</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -2414,7 +2391,7 @@
            </item>
           </layout>
          </widget>
-         <widget class="QWidget" name="mProjOpts_06">
+         <widget class="QWidget" name="mProjOptsMacros">
           <layout class="QVBoxLayout" name="verticalLayout_15">
            <property name="leftMargin">
             <number>0</number>
@@ -2429,7 +2406,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QScrollArea" name="scrollArea_6">
+            <widget class="QgsScrollArea" name="scrollArea_6">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -2441,8 +2418,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>165</width>
-                <height>57</height>
+                <width>156</width>
+                <height>59</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2511,6 +2488,16 @@
              </property>
              <property name="text">
               <string>Evaluate default values on provider side</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QCheckBox" name="mTrustProjectCheckBox">
+             <property name="toolTip">
+              <string>Speed up project loading by skipping data checks. Useful in qgis server context or project with huge database views or materialized views.</string>
+             </property>
+             <property name="text">
+              <string>Trust project when data source has no metadata</string>
              </property>
             </widget>
            </item>
@@ -2586,27 +2573,44 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsColorButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsColorSchemeList</class>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorbutton.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
    <extends>QWidget</extends>
-   <header location="global">qgscolorschemelist.h</header>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsColorSchemeList</class>
+   <extends>QWidget</extends>
+   <header location="global">qgscolorschemelist.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2625,20 +2629,18 @@
  <tabstops>
   <tabstop>mOptionsListWidget</tabstop>
   <tabstop>scrollArea_2</tabstop>
-  <tabstop>titleBox</tabstop>
   <tabstop>mProjectFileLineEdit</tabstop>
+  <tabstop>mButtonOpenProjectFolder</tabstop>
   <tabstop>titleEdit</tabstop>
   <tabstop>pbnSelectionColor</tabstop>
   <tabstop>pbnCanvasColor</tabstop>
   <tabstop>cbxAbsolutePath</tabstop>
   <tabstop>mMapTileRenderingCheckBox</tabstop>
-  <tabstop>btnGrpMeasureEllipsoid</tabstop>
   <tabstop>cmbEllipsoid</tabstop>
   <tabstop>leSemiMajor</tabstop>
   <tabstop>leSemiMinor</tabstop>
   <tabstop>mDistanceUnitsCombo</tabstop>
   <tabstop>mAreaUnitsCombo</tabstop>
-  <tabstop>mCoordinateDisplayGroup</tabstop>
   <tabstop>mCoordinateDisplayComboBox</tabstop>
   <tabstop>radAutomatic</tabstop>
   <tabstop>radManual</tabstop>
@@ -2650,11 +2652,9 @@
   <tabstop>pbnExportScales</tabstop>
   <tabstop>lstScales</tabstop>
   <tabstop>scrollArea</tabstop>
-  <tabstop>cbxProjectionEnabled</tabstop>
   <tabstop>scrollArea_3</tabstop>
   <tabstop>twIdentifyLayers</tabstop>
   <tabstop>scrollArea_4</tabstop>
-  <tabstop>groupBox</tabstop>
   <tabstop>cboStyleMarker</tabstop>
   <tabstop>pbtnStyleMarker</tabstop>
   <tabstop>cboStyleLine</tabstop>
@@ -2663,12 +2663,9 @@
   <tabstop>pbtnStyleFill</tabstop>
   <tabstop>cboStyleColorRamp</tabstop>
   <tabstop>pbtnStyleColorRamp</tabstop>
-  <tabstop>groupBox_2</tabstop>
-  <tabstop>mTransparencySlider</tabstop>
-  <tabstop>mTransparencySpinBox</tabstop>
+  <tabstop>mDefaultOpacityWidget</tabstop>
   <tabstop>cbxStyleRandomColors</tabstop>
   <tabstop>pbtnStyleManager</tabstop>
-  <tabstop>groupBox_7</tabstop>
   <tabstop>mButtonAddColor</tabstop>
   <tabstop>mButtonRemoveColor</tabstop>
   <tabstop>mButtonCopyColors</tabstop>
@@ -2689,7 +2686,6 @@
   <tabstop>mWMSFeesCb</tabstop>
   <tabstop>mWMSAccessConstraintsCb</tabstop>
   <tabstop>mWMSKeywordList</tabstop>
-  <tabstop>grpWMSCapabilities</tabstop>
   <tabstop>grpWMSExt</tabstop>
   <tabstop>mWMSExtMinX</tabstop>
   <tabstop>mWMSExtMinY</tabstop>
@@ -2726,23 +2722,21 @@
   <tabstop>mMaxWidthLineEdit</tabstop>
   <tabstop>mMaxHeightLineEdit</tabstop>
   <tabstop>mWMSImageQualitySpinBox</tabstop>
-  <tabstop>grpWFSCapabilities</tabstop>
   <tabstop>twWFSLayers</tabstop>
   <tabstop>pbnWFSLayersSelectAll</tabstop>
   <tabstop>pbnWFSLayersDeselectAll</tabstop>
   <tabstop>mWFSUrlLineEdit</tabstop>
-  <tabstop>grpWCSCapabilities</tabstop>
   <tabstop>twWCSLayers</tabstop>
   <tabstop>pbnWCSLayersSelectAll</tabstop>
   <tabstop>pbnWCSLayersDeselectAll</tabstop>
   <tabstop>mWCSUrlLineEdit</tabstop>
-  <tabstop>mOWSCheckerGroupBox</tabstop>
   <tabstop>pbnLaunchOWSChecker</tabstop>
   <tabstop>teOWSChecker</tabstop>
   <tabstop>scrollArea_6</tabstop>
   <tabstop>grpPythonMacros</tabstop>
   <tabstop>mAutoTransaction</tabstop>
   <tabstop>mEvaluateDefaultValues</tabstop>
+  <tabstop>mSearchLineEdit</tabstop>
  </tabstops>
  <resources>
   <include location="../../images/images.qrc"/>

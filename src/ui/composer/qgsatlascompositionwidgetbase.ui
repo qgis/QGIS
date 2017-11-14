@@ -96,7 +96,7 @@
        </spacer>
       </item>
       <item row="1" column="0" colspan="3">
-       <widget class="QScrollArea" name="scrollArea">
+       <widget class="QgsScrollArea" name="scrollArea">
         <property name="focusPolicy">
          <enum>Qt::WheelFocus</enum>
         </property>
@@ -146,7 +146,7 @@
                 <string>Sort direction</string>
                </property>
                <property name="text">
-                <string>...</string>
+                <string>…</string>
                </property>
                <property name="arrowType">
                 <enum>Qt::UpArrow</enum>
@@ -166,7 +166,7 @@
              <item row="3" column="2">
               <widget class="QToolButton" name="mAtlasFeatureFilterButton">
                <property name="text">
-                <string>...</string>
+                <string>…</string>
                </property>
                <property name="icon">
                 <iconset resource="../../../images/images.qrc">
@@ -271,7 +271,7 @@
              <item row="1" column="2">
               <widget class="QToolButton" name="mAtlasFilenameExpressionButton">
                <property name="text">
-                <string>...</string>
+                <string>…</string>
                </property>
                <property name="icon">
                 <iconset resource="../../../images/images.qrc">
@@ -286,6 +286,16 @@
               <widget class="QCheckBox" name="mAtlasSingleFileCheckBox">
                <property name="text">
                 <string>Single file export when possible</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1" colspan="2">
+              <widget class="QComboBox" name="mAtlasFileFormat"/>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="mFileFormatLabel">
+               <property name="text">
+                <string>Image export format</string>
                </property>
               </widget>
              </item>
@@ -316,15 +326,21 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBoxBasic</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsMapLayerComboBox</class>
    <extends>QComboBox</extends>
    <header location="global">qgsmaplayercombobox.h</header>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBoxBasic</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
+   <container>1</container>
   </customwidget>
   <customwidget>
    <class>QgsFieldComboBox</class>

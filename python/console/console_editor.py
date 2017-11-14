@@ -18,15 +18,13 @@ email                : lrssvtml (at) gmail (dot) com
  ***************************************************************************/
 Some portions of code were taken from https://code.google.com/p/pydee/
 """
-from __future__ import print_function
-from builtins import str
-from builtins import range
 from qgis.PyQt.QtCore import Qt, QObject, QEvent, QCoreApplication, QFileInfo, QSize
-from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor
+from qgis.PyQt.QtGui import QFont, QFontMetrics, QColor, QKeySequence, QCursor, QFontDatabase
 from qgis.PyQt.QtWidgets import QShortcut, QMenu, QApplication, QWidget, QGridLayout, QSpacerItem, QSizePolicy, QFileDialog, QTabWidget, QTreeWidgetItem, QFrame, QLabel, QToolButton, QMessageBox
 from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs, QsciStyle
 from qgis.core import QgsApplication, QgsSettings
 from qgis.gui import QgsMessageBar
+from qgis.utils import OverrideCursor
 import sys
 import os
 import subprocess
@@ -36,6 +34,7 @@ from operator import itemgetter
 import traceback
 import codecs
 import re
+import importlib
 
 
 class KeyFilter(QObject):
@@ -97,10 +96,7 @@ class Editor(QsciScintilla):
         self.setUtf8(True)
 
         # Set the default font
-        font = QFont()
-        font.setFamily('Courier')
-        font.setFixedPitch(True)
-        font.setPointSize(10)
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
         self.setFont(font)
         self.setMarginsFont(font)
         # Margin 0 is used for line numbers
@@ -226,16 +222,14 @@ class Editor(QsciScintilla):
         self.lexer.setFoldComments(True)
         self.lexer.setFoldQuotes(True)
 
-        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor", "Monospace")
-        fontSize = self.settings.value("pythonConsole/fontsizeEditor", 10, type=int)
+        font = QFontDatabase.systemFont(QFontDatabase.FixedFont)
 
-        font = QFont(loadFont)
-        font.setFixedPitch(True)
-        font.setPointSize(fontSize)
-        font.setStyleHint(QFont.TypeWriter)
-        font.setStretch(QFont.SemiCondensed)
-        font.setLetterSpacing(QFont.PercentageSpacing, 87.0)
-        font.setBold(False)
+        loadFont = self.settings.value("pythonConsole/fontfamilytextEditor")
+        if loadFont:
+            font.setFamily(loadFont)
+        fontSize = self.settings.value("pythonConsole/fontsizeEditor", type=int)
+        if fontSize:
+            font.setPointSize(fontSize)
 
         self.lexer.setDefaultFont(font)
         self.lexer.setDefaultColor(QColor(self.settings.value("pythonConsole/defaultFontColorEditor", QColor(Qt.black))))
@@ -527,7 +521,7 @@ class Editor(QsciScintilla):
         if dir not in sys.path:
             sys.path.append(dir)
         if name in sys.modules:
-            reload(sys.modules[name])  # NOQA
+            importlib.reload(sys.modules[name])  # NOQA
         try:
             # set creationflags for running command without shell window
             if sys.platform.startswith('win'):
@@ -731,10 +725,9 @@ class Editor(QsciScintilla):
             file = open(pathfile, "r")
             fileLines = file.readlines()
             file.close()
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            for line in reversed(fileLines):
-                self.insert(line)
-            QApplication.restoreOverrideCursor()
+            with OverrideCursor(Qt.WaitCursor):
+                for line in reversed(fileLines):
+                    self.insert(line)
             self.setModified(False)
             self.endUndoAction()
 
@@ -790,11 +783,10 @@ class EditorTab(QWidget):
         fn = codecs.open(filename, "rb", encoding='utf-8')
         txt = fn.read()
         fn.close()
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        self.newEditor.setText(txt)
-        if self.readOnly:
-            self.newEditor.setReadOnly(self.readOnly)
-        QApplication.restoreOverrideCursor()
+        with OverrideCursor(Qt.WaitCursor):
+            self.newEditor.setText(txt)
+            if self.readOnly:
+                self.newEditor.setReadOnly(self.readOnly)
         self.newEditor.setModified(modified)
         self.newEditor.recolor()
 
@@ -1183,7 +1175,7 @@ class EditorTabWidget(QTabWidget):
                     sys.path.append(pathFile)
                     found = True
                 try:
-                    reload(pyclbr)  # NOQA
+                    importlib.reload(pyclbr)  # NOQA
                     dictObject = {}
                     readModule = pyclbr.readmodule(module)
                     readModuleFunction = pyclbr.readmodule_ex(module)
@@ -1245,10 +1237,10 @@ class EditorTabWidget(QTabWidget):
                     iconWarning = QgsApplication.getThemeIcon("console/iconSyntaxErrorConsole.png")
                     msgItem.setIcon(0, iconWarning)
                     self.parent.listClassMethod.addTopLevelItem(msgItem)
-#                     s = traceback.format_exc()
-#                     print '## Error: '
-#                     sys.stderr.write(s)
-#                     pass
+                    # s = traceback.format_exc()
+                    # print('## Error: ')
+                    # sys.stderr.write(s)
+                    # pass
 
     def refreshSettingsEditor(self):
         countTab = self.count()
@@ -1264,9 +1256,8 @@ class EditorTabWidget(QTabWidget):
         if objInspectorEnabled:
             cW = self.currentWidget()
             if cW and not self.parent.listClassMethod.isVisible():
-                QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-                self.listObject(cW)
-                QApplication.restoreOverrideCursor()
+                with OverrideCursor(Qt.WaitCursor):
+                    self.listObject(cW)
 
     def changeLastDirPath(self, tab):
         tabWidget = self.widget(tab)

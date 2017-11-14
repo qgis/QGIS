@@ -1,6 +1,6 @@
 v.segment
 Creates points/segments from input vector lines and positions.
 Vector (v.*)
-ParameterVector|input|Input lines layer|1|False
-ParameterFile|file|File containing segment rules|False
-OutputVector|output|Segments
+QgsProcessingParameterVectorLayer|input|Input lines layer|1|None|False
+QgsProcessingParameterFile|file|File containing segment rules|0|txt|None|False
+QgsProcessingParameterVectorDestination|output|Segments

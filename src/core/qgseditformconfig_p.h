@@ -27,11 +27,7 @@ class QgsEditFormConfigPrivate : public QSharedData
 {
   public:
     QgsEditFormConfigPrivate()
-      : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString::null, nullptr ) )
-      , mConfiguredRootContainer( false )
-      , mEditorLayout( QgsEditFormConfig::GeneratedLayout )
-      , mInitCodeSource( QgsEditFormConfig::CodeSourceNone )
-      , mSuppressForm( QgsEditFormConfig::SuppressDefault )
+      : mInvisibleRootContainer( new QgsAttributeEditorContainer( QString(), nullptr ) )
     {}
 
     QgsEditFormConfigPrivate( const QgsEditFormConfigPrivate &o )
@@ -60,7 +56,7 @@ class QgsEditFormConfigPrivate : public QSharedData
     QgsAttributeEditorContainer *mInvisibleRootContainer = nullptr;
 
     //! This flag is set if the root container was configured by the user
-    bool mConfiguredRootContainer;
+    bool mConfiguredRootContainer = false;
 
     QMap< QString, bool> mFieldEditables;
     QMap< QString, bool> mLabelOnTop;
@@ -69,21 +65,21 @@ class QgsEditFormConfigPrivate : public QSharedData
     QMap<QString, QVariantMap > mWidgetConfigs;
 
     //! Defines the default layout to use for the attribute editor (Drag and drop, UI File, Generated)
-    QgsEditFormConfig::EditorLayout mEditorLayout;
+    QgsEditFormConfig::EditorLayout mEditorLayout = QgsEditFormConfig::GeneratedLayout;
 
     //! Init form instance
     QString mUiFormPath;
-    //! Name of the python form init function
+    //! Name of the Python form init function
     QString mInitFunction;
-    //! Path of the python external file to be loaded
+    //! Path of the Python external file to be loaded
     QString mInitFilePath;
     //! Choose the source of the init founction
-    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource;
+    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
     //! Python init code provided in the dialog
     QString mInitCode;
 
     //! Type of feature form suppression after feature creation
-    QgsEditFormConfig::FeatureFormSuppress mSuppressForm;
+    QgsEditFormConfig::FeatureFormSuppress mSuppressForm = QgsEditFormConfig::SuppressDefault;
 
     QgsFields mFields;
 };

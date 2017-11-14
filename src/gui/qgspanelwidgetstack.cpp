@@ -29,13 +29,13 @@ QgsPanelWidgetStack::QgsPanelWidgetStack( QWidget *parent )
   setupUi( this );
   clear();
 
-  connect( mBackButton, SIGNAL( pressed() ), this, SLOT( acceptCurrentPanel() ) );
+  connect( mBackButton, &QAbstractButton::pressed, this, &QgsPanelWidgetStack::acceptCurrentPanel );
 }
 
 void QgsPanelWidgetStack::setMainPanel( QgsPanelWidget *panel )
 {
   // TODO Don't allow adding another main widget or else that would be strange for the user.
-  connect( panel, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( showPanel( QgsPanelWidget * ) ),
+  connect( panel, &QgsPanelWidget::showPanel, this, &QgsPanelWidgetStack::showPanel,
            // using unique connection because addMainPanel() may be called multiple times
            // for a panel, so showPanel() slot could be invoked more times from one signal
            Qt::UniqueConnection );
@@ -118,8 +118,8 @@ void QgsPanelWidgetStack::showPanel( QgsPanelWidget *panel )
 {
   mTitles.push( panel->panelTitle() );
 
-  connect( panel, SIGNAL( panelAccepted( QgsPanelWidget * ) ), this, SLOT( closePanel( QgsPanelWidget * ) ) );
-  connect( panel, SIGNAL( showPanel( QgsPanelWidget * ) ), this, SLOT( showPanel( QgsPanelWidget * ) ) );
+  connect( panel, &QgsPanelWidget::panelAccepted, this, &QgsPanelWidgetStack::closePanel );
+  connect( panel, &QgsPanelWidget::showPanel, this, &QgsPanelWidgetStack::showPanel );
 
   int index = mStackedWidget->addWidget( panel );
   mStackedWidget->setCurrentIndex( index );
@@ -145,6 +145,14 @@ void QgsPanelWidgetStack::closePanel( QgsPanelWidget *panel )
     mTitleText->hide();
   }
   this->updateBreadcrumb();
+}
+
+void QgsPanelWidgetStack::mouseReleaseEvent( QMouseEvent *e )
+{
+  if ( e->button() == Qt::BackButton )
+  {
+    acceptCurrentPanel();
+  }
 }
 
 void QgsPanelWidgetStack::updateBreadcrumb()

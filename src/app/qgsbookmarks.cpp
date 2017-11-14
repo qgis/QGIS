@@ -17,7 +17,6 @@
 #include "qgisapp.h"
 #include "qgsapplication.h"
 #include "qgsbookmarks.h"
-#include "qgscontexthelp.h"
 #include "qgsmapcanvas.h"
 #include "qgsproject.h"
 #include "qgsmessagelog.h"
@@ -35,10 +34,10 @@
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
   : QgsDockWidget( parent )
-  , mQgisModel( nullptr )
-  , mProjectModel( nullptr )
+
 {
   setupUi( this );
+  connect( lstBookmarks, &QTreeView::doubleClicked, this, &QgsBookmarks::lstBookmarks_doubleClicked );
   restorePosition();
 
   bookmarksDockContents->layout()->setMargin( 0 );
@@ -56,13 +55,13 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   QAction *btnImport = share->addAction( tr( "&Import" ) );
   btnExport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingExport.svg" ) ) );
   btnImport->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionSharingImport.svg" ) ) );
-  connect( btnExport, SIGNAL( triggered() ), this, SLOT( exportToXml() ) );
-  connect( btnImport, SIGNAL( triggered() ), this, SLOT( importFromXml() ) );
+  connect( btnExport, &QAction::triggered, this, &QgsBookmarks::exportToXml );
+  connect( btnImport, &QAction::triggered, this, &QgsBookmarks::importFromXml );
   btnImpExp->setMenu( share );
 
-  connect( actionAdd, SIGNAL( triggered() ), this, SLOT( addClicked() ) );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteClicked() ) );
-  connect( actionZoomTo, SIGNAL( triggered() ), this, SLOT( zoomToBookmark() ) );
+  connect( actionAdd, &QAction::triggered, this, &QgsBookmarks::addClicked );
+  connect( actionDelete, &QAction::triggered, this, &QgsBookmarks::deleteClicked );
+  connect( actionZoomTo, &QAction::triggered, this, &QgsBookmarks::zoomToBookmark );
 
   mBookmarkToolbar->addWidget( btnImpExp );
 
@@ -103,7 +102,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   lstBookmarks->setModel( mModel.get() );
 
   QgsSettings settings;
-  lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "/Windows/Bookmarks/headerstate" ) ).toByteArray() );
+  lstBookmarks->header()->restoreState( settings.value( QStringLiteral( "Windows/Bookmarks/headerstate" ) ).toByteArray() );
 
 #ifndef QGISDEBUG
   lstBookmarks->setColumnHidden( 0, true );
@@ -121,14 +120,14 @@ QgsBookmarks::~QgsBookmarks()
 void QgsBookmarks::restorePosition()
 {
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/Bookmarks/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/Bookmarks/geometry" ) ).toByteArray() );
 }
 
 void QgsBookmarks::saveWindowLocation()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/Bookmarks/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/Bookmarks/headerstate" ), lstBookmarks->header()->saveState() );
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/headerstate" ), lstBookmarks->header()->saveState() );
 }
 
 void QgsBookmarks::addClicked()
@@ -139,9 +138,9 @@ void QgsBookmarks::addClicked()
   QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
   Q_ASSERT( canvas );
 
-  QSqlQuery query( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
-                   "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)",
-                   mQgisModel->database() );
+  QSqlQuery query( mQgisModel->database() );
+  query.prepare( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
+                 "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)" );
 
   QString projStr( QLatin1String( "" ) );
   if ( QgsProject::instance() )
@@ -174,7 +173,7 @@ void QgsBookmarks::addClicked()
   }
   else
   {
-    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver:%1\nDatabase:%2" )
+    QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
                           .arg( query.lastError().driverText(),
                                 query.lastError().databaseText() ) );
   }
@@ -195,7 +194,7 @@ void QgsBookmarks::deleteClicked()
     return;
 
   // make sure the user really wants to delete these bookmarks
-  if ( QMessageBox::Cancel == QMessageBox::information( this, tr( "Really Delete?" ),
+  if ( QMessageBox::Cancel == QMessageBox::information( this, tr( "Delete Bookmarks" ),
        tr( "Are you sure you want to delete %n bookmark(s)?", "number of rows", rows.size() ),
        QMessageBox::Ok | QMessageBox::Cancel ) )
     return;
@@ -208,7 +207,7 @@ void QgsBookmarks::deleteClicked()
   }
 }
 
-void QgsBookmarks::on_lstBookmarks_doubleClicked( const QModelIndex &index )
+void QgsBookmarks::lstBookmarks_doubleClicked( const QModelIndex &index )
 {
   Q_UNUSED( index );
   zoomToBookmark();
@@ -237,7 +236,7 @@ void QgsBookmarks::zoomToBookmark()
     rect = ct.transform( rect );
     if ( rect.isEmpty() )
     {
-      QMessageBox::warning( this, tr( "Empty extent" ), tr( "Reprojected extent is empty." ) );
+      QMessageBox::warning( this, tr( "Empty Extent" ), tr( "Reprojected extent is empty." ) );
       return;
     }
   }
@@ -251,7 +250,7 @@ void QgsBookmarks::importFromXml()
 {
   QgsSettings settings;
 
-  QString lastUsedDir = settings.value( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
+  QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
   QString fileName = QFileDialog::getOpenFileName( this, tr( "Import Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *XML)" ) );
   if ( fileName.isEmpty() )
@@ -326,8 +325,8 @@ void QgsBookmarks::exportToXml()
 {
   QgsSettings settings;
 
-  QString lastUsedDir = settings.value( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export bookmarks" ), lastUsedDir,
+  QString lastUsedDir = settings.value( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QDir::homePath() ).toString();
+  QString fileName = QFileDialog::getSaveFileName( this, tr( "Export Bookmarks" ), lastUsedDir,
                      tr( "XML files (*.xml *.XML)" ) );
   if ( fileName.isEmpty() )
   {
@@ -345,7 +344,7 @@ void QgsBookmarks::exportToXml()
   doc.appendChild( root );
 
   int rowCount = mModel->rowCount();
-  int colCount = mModel->columnCount();
+  int colCount = mModel->columnCount() - 1;  // exclude virtual "In project" column
 
   QList<QString> headerList;
   headerList
@@ -389,14 +388,14 @@ void QgsBookmarks::exportToXml()
   doc.save( out, 2 );
   f.close();
 
-  settings.setValue( QStringLiteral( "/Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
+  settings.setValue( QStringLiteral( "Windows/Bookmarks/LastUsedDirectory" ), QFileInfo( fileName ).path() );
 }
 
 QgsProjectBookmarksTableModel::QgsProjectBookmarksTableModel()
 {
-  QObject::connect(
-    QgisApp::instance(), SIGNAL( projectRead() ),
-    this, SLOT( projectRead() ) );
+  connect(
+    QgisApp::instance(), &QgisApp::projectRead,
+    this, &QgsProjectBookmarksTableModel::projectRead );
 }
 
 int QgsProjectBookmarksTableModel::rowCount( const QModelIndex &parent ) const
@@ -446,10 +445,10 @@ bool QgsProjectBookmarksTableModel::setData( const QModelIndex &index, const QVa
   switch ( index.column() )
   {
     case 1:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ), value.value<QString>() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Name" ).arg( index.row() ), value.toString() );
       return true;
     case 2:
-      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ), value.value<QString>() );
+      QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/Project" ).arg( index.row() ), value.toString() );
       return true;
     case 3:
       QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MinX" ).arg( index.row() ), value.toDouble() );
@@ -485,7 +484,7 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
 
   for ( int newRow = row ; newRow < rowCount() - count ; newRow++ )
   {
-    for ( int column = 0 ; column < columnCount() ; column++ )
+    for ( int column = 0; column < columnCount() ; column++ )
     {
       setData( index( newRow, column ), data( index( newRow + count, column ) ) );
     }
@@ -507,25 +506,25 @@ QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel 
   , mProjectOpen( false )
 {
   connect(
-    QgisApp::instance(), SIGNAL( projectRead() ),
-    this, SLOT( projectRead() ) );
+    QgisApp::instance(), &QgisApp::projectRead,
+    this, &QgsMergedBookmarksTableModel::projectRead );
 
   connect(
-    &mQgisTableModel, SIGNAL( layoutChanged() ),
-    this, SLOT( allLayoutChanged() ) );
+    &mQgisTableModel, &QAbstractTableModel::layoutChanged,
+    this, &QgsMergedBookmarksTableModel::allLayoutChanged );
   connect(
-    &mQgisTableModel, SIGNAL( dataChanged( const QModelIndex &, const QModelIndex & ) ),
-    this, SLOT( qgisDataChanged( const QModelIndex &, const QModelIndex & ) ) );
+    &mQgisTableModel, &QAbstractTableModel::dataChanged,
+    this, &QgsMergedBookmarksTableModel::qgisDataChanged );
   connect(
-    &mQgisTableModel, SIGNAL( rowsInserted( const QModelIndex &, int, int ) ),
-    this, SLOT( allLayoutChanged() ) );
+    &mQgisTableModel, &QAbstractTableModel::rowsInserted,
+    this, &QgsMergedBookmarksTableModel::allLayoutChanged );
   connect(
-    &mQgisTableModel, SIGNAL( rowsRemoved( const QModelIndex &, int, int ) ),
-    this, SLOT( allLayoutChanged() ) );
+    &mQgisTableModel, &QAbstractTableModel::rowsRemoved,
+    this, &QgsMergedBookmarksTableModel::allLayoutChanged );
 
   connect(
-    &projectTableModel, SIGNAL( layoutChanged() ),
-    this, SLOT( allLayoutChanged() ) );
+    &projectTableModel, &QAbstractTableModel::layoutChanged,
+    this, &QgsMergedBookmarksTableModel::allLayoutChanged );
 }
 
 int QgsMergedBookmarksTableModel::rowCount( const QModelIndex &parent ) const
@@ -662,7 +661,7 @@ QAbstractTableModel *QgsMergedBookmarksTableModel::qgisModel()
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
   QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
-  if ( qgisModel == NULL )
+  if ( !qgisModel )
   {
     modelTo.insertRow( -1 );
     for ( int column = 1 ; column < modelFrom.columnCount() ; column++ )

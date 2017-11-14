@@ -19,7 +19,7 @@
 
 #include "qgspanelwidget.h"
 
-#include <ui_qgsrulebasedlabelingwidget.h>
+#include "ui_qgsrulebasedlabelingwidget.h"
 
 #include "qgsrulebasedlabeling.h"
 #include "qgis_app.h"
@@ -85,11 +85,8 @@ class QgsRuleBasedLabelingWidget : public QgsPanelWidget, private Ui::QgsRuleBas
     QgsRuleBasedLabelingWidget( QgsVectorLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
     ~QgsRuleBasedLabelingWidget();
 
-    //! save config to layer
-    void writeSettingsToLayer();
-
-  signals:
-    void widgetChanged();
+    //! Gives access to the internal root of the rule tree
+    const QgsRuleBasedLabeling::Rule *rootRule() const { return mRootRule; }
 
   protected slots:
     void addRule();
@@ -143,9 +140,6 @@ class APP_EXPORT QgsLabelingRulePropsWidget : public QgsPanelWidget, private Ui:
     QgsRuleBasedLabeling::Rule *rule() { return mRule; }
 
     virtual void setDockMode( bool dockMode ) override;
-
-  signals:
-    void widgetChanged();
 
   public slots:
     void testFilter();

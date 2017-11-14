@@ -42,6 +42,12 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
 
   mTargetFieldComboBox->setLayer( mLayer );
 
+  mDynamicFormCheckBox->setToolTip( tr( "This option allows values of the joined fields to be automatically reloaded when the \"Target Field\" is changed" ) );
+
+  mEditableJoinLayer->setToolTip( tr( "This option allows values of the joined layers to be editable if they're themselves editable" ) );
+  mUpsertOnEditCheckBox->setToolTip( tr( "Automatically adds a matching row to the joined table, but if one already exists then update that matching row instead" ) );
+  mDeleteCascadeCheckBox->setToolTip( tr( "Automatically delete the corresponding feature of the linked layer if one exists" ) );
+
   mJoinLayerComboBox->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mJoinLayerComboBox->setExceptedLayerList( alreadyJoinedLayers );
   connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, mJoinFieldComboBox, &QgsFieldComboBox::setLayer );
@@ -57,14 +63,10 @@ QgsJoinDialog::QgsJoinDialog( QgsVectorLayer *layer, QList<QgsMapLayer *> alread
   }
 
   connect( mJoinLayerComboBox, &QgsMapLayerComboBox::layerChanged, this, &QgsJoinDialog::checkDefinitionValid );
-  connect( mJoinFieldComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( checkDefinitionValid() ) );
-  connect( mTargetFieldComboBox, SIGNAL( fieldChanged( QString ) ), this, SLOT( checkDefinitionValid() ) );
+  connect( mJoinFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsJoinDialog::checkDefinitionValid );
+  connect( mTargetFieldComboBox, &QgsFieldComboBox::fieldChanged, this, &QgsJoinDialog::checkDefinitionValid );
 
   checkDefinitionValid();
-}
-
-QgsJoinDialog::~QgsJoinDialog()
-{
 }
 
 void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
@@ -73,6 +75,11 @@ void QgsJoinDialog::setJoinInfo( const QgsVectorLayerJoinInfo &joinInfo )
   mJoinFieldComboBox->setField( joinInfo.joinFieldName() );
   mTargetFieldComboBox->setField( joinInfo.targetFieldName() );
   mCacheInMemoryCheckBox->setChecked( joinInfo.isUsingMemoryCache() );
+  mDynamicFormCheckBox->setChecked( joinInfo.isDynamicFormEnabled() );
+  mEditableJoinLayer->setChecked( joinInfo.isEditable() );
+  mUpsertOnEditCheckBox->setChecked( joinInfo.hasUpsertOnEdit() );
+  mDeleteCascadeCheckBox->setChecked( joinInfo.hasCascadedDelete() );
+
   if ( joinInfo.prefix().isNull() )
   {
     mUseCustomPrefix->setChecked( false );
@@ -110,11 +117,19 @@ QgsVectorLayerJoinInfo QgsJoinDialog::joinInfo() const
   info.setJoinFieldName( mJoinFieldComboBox->currentField() );
   info.setTargetFieldName( mTargetFieldComboBox->currentField() );
   info.setUsingMemoryCache( mCacheInMemoryCheckBox->isChecked() );
+  info.setDynamicFormEnabled( mDynamicFormCheckBox->isChecked() );
+
+  info.setEditable( mEditableJoinLayer->isChecked() );
+  if ( info.isEditable() )
+  {
+    info.setUpsertOnEdit( mUpsertOnEditCheckBox->isChecked() );
+    info.setCascadedDelete( mDeleteCascadeCheckBox->isChecked() );
+  }
 
   if ( mUseCustomPrefix->isChecked() )
     info.setPrefix( mCustomPrefix->text() );
   else
-    info.setPrefix( QString::null );
+    info.setPrefix( QString() );
 
   if ( mUseJoinFieldsSubset->isChecked() )
   {
@@ -152,7 +167,8 @@ void QgsJoinDialog::joinedLayerChanged( QgsMapLayer *layer )
 
   mUseJoinFieldsSubset->setChecked( false );
   QStandardItemModel *subsetModel = new QStandardItemModel( this );
-  Q_FOREACH ( const QgsField &field, vLayer->fields() )
+  const QgsFields layerFields = vLayer->fields();
+  for ( const QgsField &field : layerFields )
   {
     QStandardItem *subsetItem = new QStandardItem( field.name() );
     subsetItem->setCheckable( true );

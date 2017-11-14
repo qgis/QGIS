@@ -31,12 +31,11 @@
 #include "qgsproviderregistry.h"
 #include "qgslogger.h"
 #include "qgsmapserviceexception.h"
-#include "qgspallabeling.h"
 #include "qgsnetworkaccessmanager.h"
 #include "qgsserverlogger.h"
-#include "qgseditorwidgetregistry.h"
 #include "qgsserverrequest.h"
 #include "qgsbufferserverresponse.h"
+#include "qgsbufferserverrequest.h"
 #include "qgsfilterresponsedecorator.h"
 #include "qgsservice.h"
 #include "qgsserverprojectutils.h"
@@ -61,12 +60,12 @@ QString *QgsServer::sConfigFilePath = nullptr;
 QgsCapabilitiesCache *QgsServer::sCapabilitiesCache = nullptr;
 QgsServerInterfaceImpl *QgsServer::sServerInterface = nullptr;
 // Initialization must run once for all servers
-bool QgsServer::sInitialized =  false;
+bool QgsServer::sInitialized = false;
 QgsServerSettings QgsServer::sSettings;
 
-QgsServiceRegistry QgsServer::sServiceRegistry;
+QgsServiceRegistry *QgsServer::sServiceRegistry = nullptr;
 
-QgsServer::QgsServer( )
+QgsServer::QgsServer()
 {
   // QgsApplication must exist
   if ( qobject_cast<QgsApplication *>( qApp ) == nullptr )
@@ -75,6 +74,7 @@ QgsServer::QgsServer( )
     abort();
   }
   init();
+  mConfigCache = QgsConfigCache::instance();
 }
 
 QString &QgsServer::serverName()
@@ -122,7 +122,7 @@ QFileInfo QgsServer::defaultProjectFile()
   {
     QgsMessageLog::logMessage( projectFiles.at( x ).absoluteFilePath(), QStringLiteral( "Server" ), QgsMessageLog::INFO );
   }
-  if ( projectFiles.size() < 1 )
+  if ( projectFiles.isEmpty() )
   {
     return QFileInfo();
   }
@@ -183,7 +183,7 @@ QString QgsServer::configPath( const QString &defaultConfigPath, const QMap<QStr
 /**
  * Server initialization
  */
-bool QgsServer::init( )
+bool QgsServer::init()
 {
   if ( sInitialized )
   {
@@ -240,11 +240,11 @@ bool QgsServer::init( )
 
   QgsApplication::createDatabase(); //init qgis.db (e.g. necessary for user crs)
 
-  // Instantiate authentication system
+  // Initialize the authentication system
   //   creates or uses qgis-auth.db in ~/.qgis3/ or directory defined by QGIS_AUTH_DB_DIR_PATH env variable
   //   set the master password as first line of file defined by QGIS_AUTH_PASSWORD_FILE env variable
   //   (QGIS_AUTH_PASSWORD_FILE variable removed from environment after accessing)
-  QgsAuthManager::instance()->init( QgsApplication::pluginPath() );
+  QgsApplication::authManager()->init( QgsApplication::pluginPath(), QgsApplication::qgisAuthDatabaseFilePath() );
 
   QString defaultConfigFilePath;
   QFileInfo projectFileInfo = defaultProjectFile(); //try to find a .qgs file in the server directory
@@ -271,14 +271,14 @@ bool QgsServer::init( )
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Roman" ) << QStringLiteral( "Bold" ) );
 #endif
 
-  QgsEditorWidgetRegistry::initEditors();
+  sServiceRegistry = new QgsServiceRegistry();
 
-  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, &sServiceRegistry, &sSettings );
+  sServerInterface = new QgsServerInterfaceImpl( sCapabilitiesCache, sServiceRegistry, &sSettings );
 
   // Load service module
-  QString modulePath =  QgsApplication::libexecPath() + "server";
+  QString modulePath = QgsApplication::libexecPath() + "server";
   qDebug() << "Initializing server modules from " << modulePath << endl;
-  sServiceRegistry.init( modulePath,  sServerInterface );
+  sServiceRegistry->init( modulePath,  sServerInterface );
 
   sInitialized = true;
   QgsMessageLog::logMessage( QStringLiteral( "Server initialized" ), QStringLiteral( "Server" ), QgsMessageLog::INFO );
@@ -302,12 +302,10 @@ void QgsServer::putenv( const QString &var, const QString &val )
  * @param queryString
  * @return response headers and body
  */
-
-void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response )
+void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &response, const QgsProject *project )
 {
   QgsMessageLog::MessageLevel logLevel = QgsServerLogger::instance()->logLevel();
   QTime time; //used for measuring request time if loglevel < 1
-  QgsProject::instance()->removeAllMapLayers();
 
   qApp->processEvents();
 
@@ -349,26 +347,23 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       printRequestParameters( parameterMap, logLevel );
 
       //Config file path
-      QString configFilePath = configPath( *sConfigFilePath, parameterMap );
-
-      // load the project if needed and not empty
-      auto projectIt = mProjectRegistry.find( configFilePath );
-      if ( projectIt == mProjectRegistry.constEnd() )
+      if ( ! project )
       {
-        // load the project
-        QgsProject *project = new QgsProject();
-        project->setFileName( configFilePath );
-        if ( project->read() )
-        {
-          projectIt = mProjectRegistry.insert( configFilePath, project );
-        }
-        else
+        QString configFilePath = configPath( *sConfigFilePath, parameterMap );
+
+        // load the project if needed and not empty
+        project = mConfigCache->project( configFilePath );
+        if ( ! project )
         {
           throw QgsServerException( QStringLiteral( "Project file error" ) );
         }
-      }
 
-      sServerInterface->setConfigFilePath( configFilePath );
+        sServerInterface->setConfigFilePath( configFilePath );
+      }
+      else
+      {
+        sServerInterface->setConfigFilePath( project->fileName() );
+      }
 
       //Service parameter
       QString serviceString = parameterMap.value( QStringLiteral( "SERVICE" ) );
@@ -389,19 +384,19 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
       if ( !outputFileName.isEmpty() )
       {
-        requestHandler.setHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
       }
 
       // Lookup for service
-      QgsService *service = sServiceRegistry.getService( serviceString, versionString );
+      QgsService *service = sServiceRegistry->getService( serviceString, versionString );
       if ( service )
       {
-        service->executeRequest( request, responseDecorator, projectIt.value() );
+        service->executeRequest( request, responseDecorator, project );
       }
       else
       {
         throw QgsOgcServiceException( QStringLiteral( "Service configuration error" ),
-                                      QStringLiteral( "Service unknown or unsupported" ) ) ;
+                                      QStringLiteral( "Service unknown or unsupported" ) );
       }
     }
     catch ( QgsServerException &ex )
@@ -427,60 +422,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
 }
 
-QPair<QByteArray, QByteArray> QgsServer::handleRequest( const QString &queryString )
-{
-  /*
-   * This is mainly for python bindings, passing QUERY_STRING
-   * to handleRequest without using os.environment
-   *
-   * XXX To be removed because query string is now handled in QgsServerRequest
-   *
-   */
-  if ( ! queryString.isEmpty() )
-    putenv( QStringLiteral( "QUERY_STRING" ), queryString );
-
-  QgsServerRequest::Method method = QgsServerRequest::GetMethod;
-  QByteArray ba;
-
-  // XXX This is mainly used in tests
-  char *requestMethod = getenv( "REQUEST_METHOD" );
-  if ( requestMethod && strcmp( requestMethod, "POST" ) == 0 )
-  {
-    method = QgsServerRequest::PostMethod;
-    const char *data = getenv( "REQUEST_BODY" );
-    if ( data )
-    {
-      ba.append( data );
-    }
-  }
-
-  QUrl url;
-  url.setQuery( queryString );
-
-  QgsBufferServerRequest request( url, method, &ba );
-  QgsBufferServerResponse response;
-
-  handleRequest( request, response );
-
-  /*
-   * XXX For compatibility only:
-   * We should return a (moved) QgsBufferServerResponse instead
-   */
-  QByteArray headerBuffer;
-  QMap<QString, QString>::const_iterator it;
-  for ( it = response.headers().constBegin(); it != response.headers().constEnd(); ++it )
-  {
-    headerBuffer.append( it.key().toUtf8() );
-    headerBuffer.append( ": " );
-    headerBuffer.append( it.value().toUtf8() );
-    headerBuffer.append( "\n" );
-  }
-  headerBuffer.append( "\n" );
-
-  // TODO: check that this is not an evil bug!
-  return QPair<QByteArray, QByteArray>( headerBuffer, response.body() );
-
-}
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
 void QgsServer::initPython()

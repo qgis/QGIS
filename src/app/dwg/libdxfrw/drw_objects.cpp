@@ -505,7 +505,7 @@ void DRW_LType::update()
   size = path.size();
   for ( std::vector<double>::size_type i = 0;  i < size; i++ )
   {
-    d += fabs( path.at( i ) );
+    d += std::fabs( path.at( i ) );
   }
   length = d;
 }
@@ -571,7 +571,7 @@ bool DRW_LType::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
   QStringList l;
   for ( unsigned i = 0; i < path.size() ; i++ )
   {
-    l << QString( "%1" ).arg( path[i] );
+    l << QStringLiteral( "%1" ).arg( path[i] );
   }
   QgsDebugMsg( QString( "path=%1 rem:%2" ).arg( l.join( " " ) ).arg( buf->numRemainingBytes() ) );
 
@@ -1151,7 +1151,7 @@ bool DRW_Vport::parseDwg( DRW::Version version, dwgBuffer *buf, duint32 bs )
     /*dint16 xrefindex =*/
     buf->getBitShort();
   }
-  flags |= buf->getBit() << 4; //is refx dependant, style code 70, bit 5 (16)
+  flags |= buf->getBit() << 4; //is refx dependent, style code 70, bit 5 (16)
   height = buf->getBitDouble();
   ratio = buf->getBitDouble();
 

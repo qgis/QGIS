@@ -18,9 +18,9 @@
 #include "qgis_core.h"
 #include "qgsmaplayer.h"
 
-typedef QList< QPair<QString, QPixmap> > QgsLegendSymbologyList;
 
-/** \ingroup core
+/**
+ * \ingroup core
   Base class for plugin layers. These can be implemented by plugins
   and registered in QgsPluginLayerRegistry.
 
@@ -36,21 +36,24 @@ class CORE_EXPORT QgsPluginLayer : public QgsMapLayer
     QgsPluginLayer( const QString &layerType, const QString &layerName = QString() );
     ~QgsPluginLayer();
 
+    /**
+     * Returns a new instance equivalent to this one.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsPluginLayer *clone() const override = 0;
+
     //! Return plugin layer type (the same as used in QgsPluginLayerRegistry)
     QString pluginLayerType();
 
     //! Set extent of the layer
     void setExtent( const QgsRectangle &extent ) override;
 
-    /** Set source string. This is used for example in layer tree to show tooltip.
-     * @note added in 2.16
+    /**
+     * Set source string. This is used for example in layer tree to show tooltip.
+     * \since QGIS 2.16
      */
     void setSource( const QString &source );
-
-    //! return a list of symbology items for the legend
-    //! (default implementation returns nothing)
-    //! @note Added in v2.1
-    virtual QgsLegendSymbologyList legendSymbologyItems( QSize iconSize );
 
   protected:
     QString mPluginLayerType;

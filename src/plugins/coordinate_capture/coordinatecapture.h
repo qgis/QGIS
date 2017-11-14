@@ -42,8 +42,8 @@
 //QGIS includes
 #include "../qgisplugin.h"
 #include "coordinatecapturemaptool.h"
-#include <qgscoordinatereferencesystem.h>
-#include <qgscoordinatetransform.h>
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 
 //forward declarations
 class QAction;
@@ -56,7 +56,7 @@ class QIcon;
 class QLabel;
 
 class QgisInterface;
-class QgsPoint;
+class QgsPointXY;
 
 /**
 * \class Plugin
@@ -77,11 +77,9 @@ class CoordinateCapture: public QObject, public QgisPlugin
     /**
     * Constructor for a plugin. The QgisInterface pointer is passed by
     * QGIS when it attempts to instantiate the plugin.
-    * @param interface Pointer to the QgisInterface object.
+    * \param interface Pointer to the QgisInterface object.
      */
     explicit CoordinateCapture( QgisInterface *interface );
-
-    virtual ~CoordinateCapture();
 
   public slots:
     //! init the gui
@@ -97,13 +95,14 @@ class CoordinateCapture: public QObject, public QgisPlugin
     //! Set the Coordinate Reference System used for displaying non canvas CRS coord
     void setCRS();
     //! Called when mouse clicks on the canvas. Will populate text box with coords.
-    void mouseClicked( const QgsPoint &point );
+    void mouseClicked( const QgsPointXY &point );
 
-    /** Called when mouse moved over the canvas. If the tracking button is toggled,
+    /**
+     * Called when mouse moved over the canvas. If the tracking button is toggled,
      * the text box coords will be updated. */
-    void mouseMoved( const QgsPoint &point );
+    void mouseMoved( const QgsPointXY &point );
     //! Called when mouse is clicked on the canvas
-    void update( const QgsPoint &point );
+    void update( const QgsPointXY &point );
     //! Called when user clicks the copy button
     void copy();
     //! called when the project's CRS is changed

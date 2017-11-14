@@ -43,9 +43,6 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
       QgisInterface *iface,
       QWidget *parent = 0, Qt::WindowFlags f = 0 );
 
-
-    ~QgsGrassMapcalc();
-
     // Current tool
     enum Tool
     {
@@ -127,11 +124,11 @@ class QgsGrassMapcalc: public QMainWindow, private Ui::QgsGrassMapcalcBase,
     void mapChanged( const QString &text );
 
     //! Constant changed
-    void on_mConstantLineEdit_textChanged() { constantChanged(); }
+    void mConstantLineEdit_textChanged() { constantChanged(); }
     void constantChanged();
 
     //! Function selection changed
-    void on_mFunctionComboBox_activated() { functionChanged(); }
+    void mFunctionComboBox_activated() { functionChanged(); }
     void functionChanged();
 
     //! Save current state to file
@@ -215,11 +212,11 @@ class QgsGrassMapcalcFunction
       Function
     };
 
-    QgsGrassMapcalcFunction();
+    QgsGrassMapcalcFunction() = default;
     QgsGrassMapcalcFunction( int type, QString name, int count = 2,
                              QString description = "", QString label = "",
                              QString labels = "", bool drawLabel = true );
-    ~QgsGrassMapcalcFunction();
+    ~QgsGrassMapcalcFunction() = default;
 
     QString name() { return mName; }
     int     type() { return mType; }
@@ -233,10 +230,10 @@ class QgsGrassMapcalcFunction
     /* Value used in expression, e.g. 'if' */
     QString mName;
 
-    int mType;
+    int mType = 0;
 
     /* Number of inputs */
-    int mInputCount;
+    int mInputCount = 0;
 
     /* Identification name, e.g., 'if(x,a,b)' */
     //QString mName;
@@ -251,7 +248,7 @@ class QgsGrassMapcalcFunction
     QStringList mInputLabels;
 
     // Draw main label in box
-    bool mDrawLabel;
+    bool mDrawLabel = false;
 };
 
 /******************** CANVAS ITEMS *****************************/
@@ -262,8 +259,8 @@ class QgsGrassMapcalcFunction
 class QgsGrassMapcalcItem
 {
   public:
-    QgsGrassMapcalcItem();
-    virtual ~QgsGrassMapcalcItem();
+    QgsGrassMapcalcItem() = default;
+    virtual ~QgsGrassMapcalcItem() = default;
 
     virtual void setSelected( bool s ) { mSelected = s; }
     bool selected( void ) { return mSelected; }
@@ -274,9 +271,9 @@ class QgsGrassMapcalcItem
     void setId( int id ) { mId = id; }
 
   protected:
-    bool mSelected;
+    bool mSelected = false;
 
-    int mId;
+    int mId = -1;
 };
 
 /*
@@ -507,7 +504,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
     std::vector<QPoint> mPoints;
 
     // Selected end, -1 for whole connector
-    int mSelectedEnd;
+    int mSelectedEnd = -1;
 
     // Connected objects
     std::vector<QgsGrassMapcalcObject *> mSocketObjects;

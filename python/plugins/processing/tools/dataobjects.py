@@ -37,15 +37,21 @@ from qgis.core import (QgsVectorFileWriter,
                        QgsVectorLayer,
                        QgsProject,
                        QgsCoordinateReferenceSystem,
-                       QgsSettings)
+                       QgsSettings,
+                       QgsProcessingUtils,
+                       QgsProcessingContext,
+                       QgsFeatureRequest,
+                       QgsExpressionContext,
+                       QgsExpressionContextUtils,
+                       QgsExpressionContextScope)
 from qgis.gui import QgsSublayersDialog
+from qgis.PyQt.QtCore import QCoreApplication
+from qgis.utils import iface
 
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.algs.gdal.GdalUtils import GdalUtils
-from processing.tools.system import (getTempFilenameInTempFolder,
-                                     getTempFilename,
-                                     removeInvalidChars,
-                                     isWindows)
+from processing.tools.system import (getTempFilename,
+                                     removeInvalidChars)
 
 ALL_TYPES = [-1]
 
@@ -57,26 +63,47 @@ TYPE_RASTER = 3
 TYPE_FILE = 4
 TYPE_TABLE = 5
 
-_loadedLayers = {}
+
+def createContext(feedback=None):
+    """
+    Creates a default processing context
+    """
+    context = QgsProcessingContext()
+    context.setProject(QgsProject.instance())
+    context.setFeedback(feedback)
+
+    invalid_features_method = ProcessingConfig.getSetting(ProcessingConfig.FILTER_INVALID_GEOMETRIES)
+    if invalid_features_method is None:
+        invalid_features_method = QgsFeatureRequest.GeometryAbortOnInvalid
+    context.setInvalidGeometryCheck(invalid_features_method)
+
+    settings = QgsSettings()
+    context.setDefaultEncoding(settings.value("/Processing/encoding", "System"))
+
+    context.setExpressionContext(createExpressionContext())
+
+    return context
 
 
-def resetLoadedLayers():
-    global _loadedLayers
-    _loadedLayers = {}
+def createExpressionContext():
+    context = QgsExpressionContext()
+    context.appendScope(QgsExpressionContextUtils.globalScope())
+    context.appendScope(QgsExpressionContextUtils.projectScope(QgsProject.instance()))
 
+    if iface and iface.mapCanvas():
+        context.appendScope(QgsExpressionContextUtils.mapSettingsScope(iface.mapCanvas().mapSettings()))
 
-def getSupportedOutputVectorLayerExtensions():
-    formats = QgsVectorFileWriter.supportedFiltersAndFormats()
-    exts = []
-    for extension in list(formats.keys()):
-        extension = str(extension)
-        extension = extension[extension.find('*.') + 2:]
-        extension = extension[:extension.find(' ')]
-        if extension.lower() != 'shp':
-            exts.append(extension)
-    exts.sort()
-    exts.insert(0, 'shp')  # shp is the default, should be the first
-    return exts
+    processingScope = QgsExpressionContextScope()
+
+    if iface and iface.mapCanvas():
+        extent = iface.mapCanvas().fullExtent()
+        processingScope.setVariable('fullextent_minx', extent.xMinimum())
+        processingScope.setVariable('fullextent_miny', extent.yMinimum())
+        processingScope.setVariable('fullextent_maxx', extent.xMaximum())
+        processingScope.setVariable('fullextent_maxy', extent.yMaximum())
+
+    context.appendScope(processingScope)
+    return context
 
 
 def getSupportedOutputRasterLayerExtensions():
@@ -90,95 +117,25 @@ def getSupportedOutputRasterLayerExtensions():
     return allexts
 
 
-def getSupportedOutputTableExtensions():
-    exts = ['csv']
-    return exts
+def getSupportedOutputRasterFilters():
+    """
+    Return a list of file filters for supported raster formats.
+    Supported formats come from Gdal.
+    :return: a list of strings for Qt file filters.
+    """
+    allFilters = []
+    supported = GdalUtils.getSupportedOutputRasters()
+    formatList = sorted(supported.keys())
+    # Place GTiff as the first format
+    if 'GTiff' in formatList:
+        formatList.pop(formatList.index('GTiff'))
+    formatList.insert(0, 'GTiff')
+    for f in formatList:
+        allFilters.append('{0} files (*.{1})'.format(f, ' *.'.join(supported[f])))
+    return allFilters
 
 
-def getRasterLayers(sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
-    raster = [lay.layer() for lay in layers if lay.layer() is not None and canUseRasterLayer(lay.layer())]
-    if sorting:
-        return sorted(raster, key=lambda layer: layer.name().lower())
-    else:
-        return raster
-
-
-def getVectorLayers(shapetype=[-1], sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
-    vector = [lay.layer() for lay in layers if canUseVectorLayer(lay.layer(), shapetype)]
-    if sorting:
-        return sorted(vector, key=lambda layer: layer.name().lower())
-    else:
-        return vector
-
-
-def canUseVectorLayer(layer, shapetype):
-    if layer.type() == QgsMapLayer.VectorLayer and layer.dataProvider().name() != "grass":
-        if (layer.hasGeometryType() and
-                (shapetype == ALL_TYPES or layer.geometryType() in shapetype)):
-            return True
-    return False
-
-
-def canUseRasterLayer(layer):
-    if layer.type() == QgsMapLayer.RasterLayer:
-        if layer.providerType() == 'gdal':  # only gdal file-based layers
-            return True
-
-    return False
-
-
-def getAllLayers():
-    layers = []
-    layers += getRasterLayers()
-    layers += getVectorLayers()
-    return sorted(layers, key=lambda layer: layer.name().lower())
-
-
-def getTables(sorting=True):
-    layers = QgsProject.instance().layerTreeRoot().findLayers()
-    tables = []
-    for layer in layers:
-        mapLayer = layer.layer()
-        if mapLayer.type() == QgsMapLayer.VectorLayer:
-            tables.append(mapLayer)
-    if sorting:
-        return sorted(tables, key=lambda table: table.name().lower())
-    else:
-        return tables
-
-
-def extent(layers):
-    first = True
-    for layer in layers:
-        if not isinstance(layer, (QgsMapLayer.QgsRasterLayer, QgsMapLayer.QgsVectorLayer)):
-            layer = getObjectFromUri(layer)
-            if layer is None:
-                continue
-        if first:
-            xmin = layer.extent().xMinimum()
-            xmax = layer.extent().xMaximum()
-            ymin = layer.extent().yMinimum()
-            ymax = layer.extent().yMaximum()
-        else:
-            xmin = min(xmin, layer.extent().xMinimum())
-            xmax = max(xmax, layer.extent().xMaximum())
-            ymin = min(ymin, layer.extent().yMinimum())
-            ymax = max(ymax, layer.extent().yMaximum())
-        first = False
-    if first:
-        return '0,0,0,0'
-    else:
-        return str(xmin) + ',' + str(xmax) + ',' + str(ymin) + ',' + str(ymax)
-
-
-def loadList(layers):
-    for layer in layers:
-        load(layer)
-
-
-def load(fileName, name=None, crs=None, style=None):
+def load(fileName, name=None, crs=None, style=None, isRaster=False):
     """Loads a layer/table into the current project, given its file.
     """
 
@@ -191,20 +148,8 @@ def load(fileName, name=None, crs=None, style=None):
         settings.setValue('/Projections/defaultBehavior', '')
     if name is None:
         name = os.path.split(fileName)[1]
-    qgslayer = QgsVectorLayer(fileName, name, 'ogr')
-    if qgslayer.isValid():
-        if crs is not None and qgslayer.crs() is None:
-            qgslayer.setCrs(crs, False)
-        if style is None:
-            if qgslayer.geometryType() == QgsWkbTypes.PointGeometry:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
-            elif qgslayer.geometryType() == QgsWkbTypes.LineGeometry:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
-            else:
-                style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
-        qgslayer.loadNamedStyle(style)
-        QgsProject.instance().addMapLayers([qgslayer])
-    else:
+
+    if isRaster:
         qgslayer = QgsRasterLayer(fileName, name)
         if qgslayer.isValid():
             if crs is not None and qgslayer.crs() is None:
@@ -218,80 +163,25 @@ def load(fileName, name=None, crs=None, style=None):
                 settings.setValue('/Projections/defaultBehavior', prjSetting)
             raise RuntimeError('Could not load layer: ' + str(fileName) +
                                '\nCheck the processing framework log to look for errors')
+    else:
+        qgslayer = QgsVectorLayer(fileName, name, 'ogr')
+        if qgslayer.isValid():
+            if crs is not None and qgslayer.crs() is None:
+                qgslayer.setCrs(crs, False)
+            if style is None:
+                if qgslayer.geometryType() == QgsWkbTypes.PointGeometry:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POINT_STYLE)
+                elif qgslayer.geometryType() == QgsWkbTypes.LineGeometry:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_LINE_STYLE)
+                else:
+                    style = ProcessingConfig.getSetting(ProcessingConfig.VECTOR_POLYGON_STYLE)
+            qgslayer.loadNamedStyle(style)
+            QgsProject.instance().addMapLayers([qgslayer])
+
     if prjSetting:
         settings.setValue('/Projections/defaultBehavior', prjSetting)
 
     return qgslayer
-
-
-def getObjectFromName(name):
-    layers = getAllLayers()
-    for layer in layers:
-        if layer.name() == name:
-            return layer
-
-
-def getObject(uriorname):
-    ret = getObjectFromName(uriorname)
-    if ret is None:
-        ret = getObjectFromUri(uriorname)
-    return ret
-
-
-def normalizeLayerSource(source):
-    if isWindows():
-        source = source.replace('\\', '/')
-    source = source.replace('"', "'")
-    return source
-
-
-def getObjectFromUri(uri, forceLoad=True):
-    """Returns an object (layer/table) given a source definition.
-
-    if forceLoad is true, it tries to load it if it is not currently open
-    Otherwise, it will return the object only if it is loaded in QGIS.
-    """
-
-    if uri is None:
-        return None
-    if uri in _loadedLayers:
-        return _loadedLayers[uri]
-    layers = getRasterLayers()
-    for layer in layers:
-        if normalizeLayerSource(layer.source()) == normalizeLayerSource(uri):
-            return layer
-    layers = getVectorLayers()
-    for layer in layers:
-        if normalizeLayerSource(layer.source()) == normalizeLayerSource(uri):
-            return layer
-    tables = getTables()
-    for table in tables:
-        if normalizeLayerSource(table.source()) == normalizeLayerSource(uri):
-            return table
-    if forceLoad and os.path.exists(uri):
-        settings = QgsSettings()
-        prjSetting = settings.value('/Projections/defaultBehavior')
-        settings.setValue('/Projections/defaultBehavior', '')
-
-        # If is not opened, we open it
-        name = os.path.basename(uri)
-        for provider in ['ogr', 'postgres', 'spatialite', 'virtual']:
-            layer = QgsVectorLayer(uri, name, provider)
-            if layer.isValid():
-                if prjSetting:
-                    settings.setValue('/Projections/defaultBehavior', prjSetting)
-                _loadedLayers[normalizeLayerSource(layer.source())] = layer
-                return layer
-        layer = QgsRasterLayer(uri, name)
-        if layer.isValid():
-            if prjSetting:
-                settings.setValue('/Projections/defaultBehavior', prjSetting)
-            _loadedLayers[normalizeLayerSource(layer.source())] = layer
-            return layer
-        if prjSetting:
-            settings.setValue('/Projections/defaultBehavior', prjSetting)
-    else:
-        return None
 
 
 def exportVectorLayer(layer, supported=None):
@@ -317,17 +207,17 @@ def exportVectorLayer(layer, supported=None):
     if basename:
         if not basename.endswith("shp"):
             basename = os.path.splitext(basename)[0] + ".shp"
-        output = getTempFilenameInTempFolder(basename)
+        output = QgsProcessingUtils.generateTempFilename(basename)
     else:
         output = getTempFilename("shp")
-    useSelection = ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
+    useSelection = False # TODO ProcessingConfig.getSetting(ProcessingConfig.USE_SELECTED)
     if useSelection and layer.selectedFeatureCount() != 0:
         writer = QgsVectorFileWriter(output, systemEncoding,
                                      layer.fields(),
                                      layer.wkbType(), layer.crs())
         selection = layer.selectedFeatures()
         for feat in selection:
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer
         return output
     else:
@@ -338,7 +228,7 @@ def exportVectorLayer(layer, supported=None):
                 layer.crs()
             )
             for feat in layer.getFeatures():
-                writer.addFeature(feat)
+                writer.addFeature(feat, QgsFeatureSink.FastInsert)
             del writer
             return output
         else:
@@ -390,7 +280,7 @@ def exportTable(table):
                                      table.fields(), QgsWkbTypes.NullGeometry,
                                      QgsCoordinateReferenceSystem('4326'))
         for feat in table.getFeatures():
-            writer.addFeature(feat)
+            writer.addFeature(feat, QgsFeatureSink.FastInsert)
         del writer
         return output + '.dbf'
     else:

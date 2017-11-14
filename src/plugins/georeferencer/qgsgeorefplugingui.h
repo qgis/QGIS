@@ -35,10 +35,14 @@ class QgsGCPListWidget;
 class QgsMapTool;
 class QgsMapCanvas;
 class QgsMapCoordsDialog;
-class QgsPoint;
+class QgsPointXY;
 class QgsRasterLayer;
 class QgsRectangle;
 class QgsMessageBar;
+class QgsGeorefToolAddPoint;
+class QgsGeorefToolDeletePoint;
+class QgsGeorefToolMovePoint;
+class QgsGeorefToolMovePoint;
 
 class QgsGeorefDockWidget : public QgsDockWidget
 {
@@ -82,11 +86,11 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void linkQGisToGeoref( bool link );
 
     // gcps
-    void addPoint( const QgsPoint &pixelCoords, const QgsPoint &mapCoords,
+    void addPoint( const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
                    bool enable = true, bool finalize = true );
     void deleteDataPoint( QPoint pixelCoords );
     void deleteDataPoint( int index );
-    void showCoordDialog( const QgsPoint &pixelCoords );
+    void showCoordDialog( const QgsPointXY &pixelCoords );
 
     void selectPoint( QPoint );
     void movePoint( QPoint );
@@ -108,7 +112,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     void extentsChangedQGisCanvas();
 
     // canvas info
-    void showMouseCoords( const QgsPoint &pt );
+    void showMouseCoords( const QgsPointXY &pt );
     void updateMouseCoordinatePrecision();
 
     // Histogram stretch
@@ -158,7 +162,7 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
 
     // georeference
     bool georeference();
-    bool writeWorldFile( const QgsPoint &origin, double pixelXSize, double pixelYSize, double rotation );
+    bool writeWorldFile( const QgsPointXY &origin, double pixelXSize, double pixelYSize, double rotation );
     bool writePDFReportFile( const QString &fileName, const QgsGeorefTransform &transform );
     bool writePDFMapFile( const QString &fileName, const QgsGeorefTransform &transform );
     void updateTransformParamLabel();
@@ -192,8 +196,8 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
      * ground control points and transform method.
      * Note that the RMSE measure is adjusted for the degrees of freedom of the
      * used polynomial transform.
-     * @param error out: the mean error
-     * @return true in case of success
+     * \param error out: the mean error
+     * \returns true in case of success
      */
     bool calculateMeanError( double &error ) const;
 
@@ -242,10 +246,10 @@ class QgsGeorefPluginGui : public QMainWindow, private Ui::QgsGeorefPluginGuiBas
     QgsMapTool *mToolZoomIn = nullptr;
     QgsMapTool *mToolZoomOut = nullptr;
     QgsMapTool *mToolPan = nullptr;
-    QgsMapTool *mToolAddPoint = nullptr;
-    QgsMapTool *mToolDeletePoint = nullptr;
-    QgsMapTool *mToolMovePoint = nullptr;
-    QgsMapTool *mToolMovePointQgis = nullptr;
+    QgsGeorefToolAddPoint *mToolAddPoint = nullptr;
+    QgsGeorefToolDeletePoint *mToolDeletePoint = nullptr;
+    QgsGeorefToolMovePoint *mToolMovePoint = nullptr;
+    QgsGeorefToolMovePoint *mToolMovePointQgis = nullptr;
 
     QgsGeorefDataPoint *mMovingPoint = nullptr;
     QgsGeorefDataPoint *mMovingPointQgis = nullptr;

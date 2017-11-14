@@ -18,6 +18,7 @@
 
 #include "qgsapplication.h"
 #include "qgscategorizedsymbolrenderer.h"
+#include "qgsdatadefinedsizelegend.h"
 #include "qgsfontutils.h"
 #include "qgslayertree.h"
 #include "qgslayertreeutils.h"
@@ -94,13 +95,7 @@ class TestQgsLegendRenderer : public QObject
     Q_OBJECT
 
   public:
-    TestQgsLegendRenderer()
-      : mRoot( 0 )
-      , mVL1( 0 )
-      , mVL2( 0 )
-      , mVL3( 0 )
-      , mRL( 0 )
-    {}
+    TestQgsLegendRenderer() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -126,12 +121,13 @@ class TestQgsLegendRenderer : public QObject
     void testFilterByExpression();
     void testDiagramAttributeLegend();
     void testDiagramSizeLegend();
+    void testDataDefinedSizeCollapsed();
 
   private:
-    QgsLayerTreeGroup *mRoot = nullptr;
-    QgsVectorLayer *mVL1; // line
-    QgsVectorLayer *mVL2; // polygon
-    QgsVectorLayer *mVL3; // point
+    QgsLayerTree *mRoot = nullptr;
+    QgsVectorLayer *mVL1 =  0 ; // line
+    QgsVectorLayer *mVL2 =  0 ; // polygon
+    QgsVectorLayer *mVL3 =  0 ; // point
     QgsRasterLayer *mRL = nullptr;
     QString mReport;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );
@@ -189,15 +185,15 @@ void TestQgsLegendRenderer::init()
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );
     f1.setAttribute( 0, 1 );
-    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) );
+    QgsGeometry f1G = QgsGeometry::fromPointXY( QgsPointXY( 1.0, 1.0 ) );
     f1.setGeometry( f1G );
     QgsFeature f2( fields, 2 );
     f2.setAttribute( 0, 2 );
-    QgsGeometry f2G = QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) );
+    QgsGeometry f2G = QgsGeometry::fromPointXY( QgsPointXY( 9.0, 1.0 ) );
     f2.setGeometry( f2G );
     QgsFeature f3( fields, 3 );
     f3.setAttribute( 0, 3 );
-    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) ) ;
+    QgsGeometry f3G = QgsGeometry::fromPointXY( QgsPointXY( 5.0, 5.0 ) ) ;
     f3.setGeometry( f3G );
     features << f1 << f2 << f3;
     pr->addFeatures( features );
@@ -223,7 +219,7 @@ void TestQgsLegendRenderer::init()
   QgsCategorizedSymbolRenderer *r3 = new QgsCategorizedSymbolRenderer( QStringLiteral( "test_attr" ), cats );
   mVL3->setRenderer( r3 );
 
-  mRoot = new QgsLayerTreeGroup();
+  mRoot = new QgsLayerTree();
   QgsLayerTreeGroup *grp1 = mRoot->addGroup( QStringLiteral( "Line + Polygon" ) );
   grp1->addLayer( mVL1 );
   grp1->addLayer( mVL2 );
@@ -327,7 +323,7 @@ void TestQgsLegendRenderer::testMapUnits()
   sym->setSizeUnit( QgsUnitTypes::RenderMillimeters );
   catRenderer->updateCategorySymbol( 2, sym );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( mVL3 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -363,24 +359,24 @@ void TestQgsLegendRenderer::testTallSymbol()
 
 void TestQgsLegendRenderer::testLineSpacing()
 {
-  QString testName = "legend_line_spacing";
+  QString testName = QStringLiteral( "legend_line_spacing" );
 
   QgsCategorizedSymbolRenderer *catRenderer = dynamic_cast<QgsCategorizedSymbolRenderer *>( mVL3->renderer() );
   QVERIFY( catRenderer );
-  catRenderer->updateCategoryLabel( 1, "This is\nthree lines\nlong label" );
+  catRenderer->updateCategoryLabel( 1, QStringLiteral( "This is\nthree lines\nlong label" ) );
 
-  mVL2->setName( "This is a two lines\nlong label" );
+  mVL2->setName( QStringLiteral( "This is a two lines\nlong label" ) );
 
   QgsLayerTreeModel legendModel( mRoot );
 
   QgsLegendSettings settings;
-  settings.setWrapChar( "\n" );
+  settings.setWrapChar( QStringLiteral( "\n" ) );
   settings.setLineSpacing( 3 );
   _setStandardTestFont( settings );
   _renderLegend( testName, &legendModel, settings );
   QVERIFY( _verifyImage( testName, mReport ) );
 
-  mVL2->setName( "Polygon Layer" );
+  mVL2->setName( QStringLiteral( "Polygon Layer" ) );
 }
 
 void TestQgsLegendRenderer::testLongSymbolText()
@@ -449,15 +445,15 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
     QList<QgsFeature> features;
     QgsFeature f1( fields, 1 );
     f1.setAttribute( 0, 1 );
-    QgsGeometry f1G = QgsGeometry::fromPoint( QgsPoint( 1.0, 1.0 ) );
+    QgsGeometry f1G = QgsGeometry::fromPointXY( QgsPointXY( 1.0, 1.0 ) );
     f1.setGeometry( f1G );
     QgsFeature f2( fields, 2 );
     f2.setAttribute( 0, 2 );
-    QgsGeometry f2G =  QgsGeometry::fromPoint( QgsPoint( 9.0, 1.0 ) );
+    QgsGeometry f2G =  QgsGeometry::fromPointXY( QgsPointXY( 9.0, 1.0 ) );
     f2.setGeometry( f2G );
     QgsFeature f3( fields, 3 );
     f3.setAttribute( 0, 3 );
-    QgsGeometry f3G = QgsGeometry::fromPoint( QgsPoint( 5.0, 5.0 ) );
+    QgsGeometry f3G = QgsGeometry::fromPointXY( QgsPointXY( 5.0, 5.0 ) );
     f3.setGeometry( f3G );
     features << f1 << f2 << f3;
     pr->addFeatures( features );
@@ -481,7 +477,7 @@ void TestQgsLegendRenderer::testFilterByMapSameSymbol()
 
   QString testName = QStringLiteral( "legend_filter_by_map_dupe" );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -507,7 +503,7 @@ bool TestQgsLegendRenderer::_testLegendColumns( int itemCount, int columnCount, 
   QgsFillSymbol *sym = new QgsFillSymbol();
   sym->setColor( Qt::cyan );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
 
   QList< QgsVectorLayer * > layers;
   for ( int i = 1; i <= itemCount; ++i )
@@ -565,7 +561,7 @@ void TestQgsLegendRenderer::testRasterStroke()
 {
   QString testName = QStringLiteral( "legend_raster_border" );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( mRL );
 
   QgsLayerTreeModel legendModel( root.get() );
@@ -664,7 +660,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dr->setClassificationField( QString() );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
-  dr->setSizeLegend( false );
+  dr->setDataDefinedSizeLegend( nullptr );
   dr->setAttributeLegend( true );
   vl4->setDiagramRenderer( dr );
 
@@ -673,7 +669,7 @@ void TestQgsLegendRenderer::testDiagramAttributeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -701,10 +697,10 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dr->setLowerSize( QSizeF( 1, 1 ) );
   dr->setUpperValue( 10 );
   dr->setUpperSize( QSizeF( 20, 20 ) );
-  dr->setClassificationField( QString( "a" ) );
+  dr->setClassificationField( QStringLiteral( "a" ) );
   dr->setDiagram( new QgsPieDiagram() );
   dr->setDiagramSettings( ds );
-  dr->setSizeLegend( true );
+  dr->setDataDefinedSizeLegend( new QgsDataDefinedSizeLegend() );
   dr->setAttributeLegend( false );
   vl4->setDiagramRenderer( dr );
 
@@ -713,7 +709,7 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
   dls.setShowAllDiagrams( true );
   vl4->setDiagramLayerSettings( dls );
 
-  std::unique_ptr< QgsLayerTreeGroup > root( new QgsLayerTreeGroup() );
+  std::unique_ptr< QgsLayerTree > root( new QgsLayerTree() );
   root->addLayer( vl4 );
   QgsLayerTreeModel legendModel( root.get() );
 
@@ -724,6 +720,69 @@ void TestQgsLegendRenderer::testDiagramSizeLegend()
 
   QgsProject::instance()->removeMapLayer( vl4 );
 }
+
+
+void TestQgsLegendRenderer::testDataDefinedSizeCollapsed()
+{
+  QString testName = QStringLiteral( "legend_data_defined_size_collapsed" );
+
+  QgsVectorLayer *vlDataDefinedSize = new QgsVectorLayer( QStringLiteral( "Point" ), QStringLiteral( "Point Layer" ), QStringLiteral( "memory" ) );
+  {
+    QgsVectorDataProvider *pr = vlDataDefinedSize->dataProvider();
+    QList<QgsField> attrs;
+    attrs << QgsField( QStringLiteral( "test_attr" ), QVariant::Int );
+    pr->addAttributes( attrs );
+
+    QgsFields fields;
+    fields.append( attrs.back() );
+
+    QgsGeometry g = QgsGeometry::fromPointXY( QgsPointXY( 1.0, 1.0 ) );
+
+    QList<QgsFeature> features;
+    QgsFeature f1( fields, 1 );
+    f1.setAttribute( 0, 100 );
+    f1.setGeometry( g );
+    QgsFeature f2( fields, 2 );
+    f2.setAttribute( 0, 200 );
+    f2.setGeometry( g );
+    QgsFeature f3( fields, 3 );
+    f3.setAttribute( 0, 300 );
+    f3.setGeometry( g );
+    features << f1 << f2 << f3;
+    pr->addFeatures( features );
+    vlDataDefinedSize->updateFields();
+  }
+
+  QgsStringMap props;
+  props[QStringLiteral( "name" )] = QStringLiteral( "circle" );
+  props[QStringLiteral( "color" )] = QStringLiteral( "200,200,200" );
+  props[QStringLiteral( "outline_color" )] = QStringLiteral( "0,0,0" );
+  QgsMarkerSymbol *symbol = QgsMarkerSymbol::createSimple( props );
+  QgsProperty ddsProperty = QgsProperty::fromField( QStringLiteral( "test_attr" ) );
+  ddsProperty.setTransformer( new QgsSizeScaleTransformer( QgsSizeScaleTransformer::Linear, 100, 300, 10, 30 ) );  // takes ownership
+  symbol->setDataDefinedSize( ddsProperty );
+
+  QgsDataDefinedSizeLegend *ddsLegend = new QgsDataDefinedSizeLegend();
+  ddsLegend->setLegendType( QgsDataDefinedSizeLegend::LegendCollapsed );
+  ddsLegend->setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
+
+  QgsSingleSymbolRenderer *r = new QgsSingleSymbolRenderer( symbol );   // takes ownership
+  r->setDataDefinedSizeLegend( ddsLegend );
+  vlDataDefinedSize->setRenderer( r );
+
+  QgsLayerTree *root = new QgsLayerTree();
+  root->addLayer( vlDataDefinedSize );
+
+  QgsLayerTreeModel legendModel( root );
+
+  QgsLegendSettings settings;
+  _setStandardTestFont( settings );
+  _renderLegend( testName, &legendModel, settings );
+  QVERIFY( _verifyImage( testName, mReport ) );
+
+  delete root;
+}
+
 
 QGSTEST_MAIN( TestQgsLegendRenderer )
 #include "testqgslegendrenderer.moc"

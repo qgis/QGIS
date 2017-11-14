@@ -40,17 +40,12 @@
 QgsComposerHtml::QgsComposerHtml( QgsComposition *c, bool createUndoCommands )
   : QgsComposerMultiFrame( c, createUndoCommands )
   , mContentMode( QgsComposerHtml::Url )
-  , mWebPage( nullptr )
   , mLoaded( false )
   , mHtmlUnitsToMM( 1.0 )
-  , mRenderedPage( nullptr )
   , mEvaluateExpressions( true )
   , mUseSmartBreaks( true )
   , mMaxBreakDistance( 10 )
-  , mExpressionLayer( nullptr )
-  , mDistanceArea( nullptr )
   , mEnableUserStylesheet( false )
-  , mFetcher( nullptr )
 {
   mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToMM = htmlUnitsToMM();
@@ -65,10 +60,10 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition *c, bool createUndoCommands )
   mWebPage->setPalette( palette );
 
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-  QObject::connect( mWebPage, SIGNAL( loadFinished( bool ) ), this, SLOT( frameLoaded( bool ) ) );
+  connect( mWebPage, &QWebPage::loadFinished, this, &QgsComposerHtml::frameLoaded );
   if ( mComposition )
   {
-    QObject::connect( mComposition, SIGNAL( itemRemoved( QgsComposerItem * ) ), this, SLOT( handleFrameRemoval( QgsComposerItem * ) ) );
+    connect( mComposition, &QgsComposition::itemRemoved, this, &QgsComposerMultiFrame::handleFrameRemoval );
   }
 
   if ( mComposition && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
@@ -80,10 +75,10 @@ QgsComposerHtml::QgsComposerHtml( QgsComposition *c, bool createUndoCommands )
 
   //connect to atlas feature changes
   //to update the expression context
-  connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( refreshExpressionContext() ) );
+  connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerHtml::refreshExpressionContext );
 
   mFetcher = new QgsNetworkContentFetcher();
-  connect( mFetcher, SIGNAL( finished() ), this, SLOT( frameLoaded() ) );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, this, [ = ] { frameLoaded(); } );
 
 }
 
@@ -210,7 +205,7 @@ void QgsComposerHtml::loadHtml( const bool useCache, const QgsExpressionContext 
   if ( !mAtlasFeatureJSON.isEmpty() )
   {
     mWebPage->mainFrame()->evaluateJavaScript( QStringLiteral( "if ( typeof setFeature === \"function\" ) { setFeature(%1); }" ).arg( mAtlasFeatureJSON ) );
-    //needs an extra process events here to give javascript a chance to execute
+    //needs an extra process events here to give JavaScript a chance to execute
     qApp->processEvents();
   }
 
@@ -231,7 +226,7 @@ double QgsComposerHtml::maxFrameWidth() const
   QList<QgsComposerFrame *>::const_iterator frameIt = mFrameItems.constBegin();
   for ( ; frameIt != mFrameItems.constEnd(); ++frameIt )
   {
-    maxWidth = qMax( maxWidth, static_cast< double >( ( *frameIt )->boundingRect().width() ) );
+    maxWidth = std::max( maxWidth, static_cast< double >( ( *frameIt )->boundingRect().width() ) );
   }
 
   return maxWidth;
@@ -329,7 +324,7 @@ double QgsComposerHtml::htmlUnitsToMM()
 void QgsComposerHtml::addFrame( QgsComposerFrame *frame, bool recalcFrameSizes )
 {
   mFrameItems.push_back( frame );
-  QObject::connect( frame, SIGNAL( sizeChanged() ), this, SLOT( recalculateFrameSizes() ) );
+  connect( frame, &QgsComposerItem::sizeChanged, this, &QgsComposerHtml::recalculateFrameSizes );
   if ( mComposition )
   {
     mComposition->addComposerHtmlFrame( this, frame );
@@ -379,7 +374,7 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   bool previousPixelTransparent = false;
   QRgb pixelColor;
   QList< QPair<int, int> > candidates;
-  int minRow = qMax( idealPos - maxSearchDistance, 0 );
+  int minRow = std::max( idealPos - maxSearchDistance, 0 );
   for ( int candidateRow = idealPos; candidateRow >= minRow; --candidateRow )
   {
     changes = 0;
@@ -408,7 +403,7 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   std::sort( candidates.begin(), candidates.end(), candidateSort );
   //first candidate is now the largest row with smallest number of changes
 
-  //ok, now take the mid point of the best candidate position
+  //OK, now take the mid point of the best candidate position
   //we do this so that the spacing between text lines is likely to be split in half
   //otherwise the html will be broken immediately above a line of text, which
   //looks a little messy
@@ -536,23 +531,22 @@ void QgsComposerHtml::setExpressionContext( const QgsFeature &feature, QgsVector
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea->setSourceCrs( layer->crs().srsid() );
+    mDistanceArea->setSourceCrs( layer->crs() );
   }
   else if ( mComposition )
   {
     //set to composition's mapsettings' crs
     QgsComposerMap *referenceMap = mComposition->referenceMap();
     if ( referenceMap )
-      mDistanceArea->setSourceCrs( referenceMap->crs().srsid() );
+      mDistanceArea->setSourceCrs( referenceMap->crs() );
   }
   if ( mComposition )
   {
-    mDistanceArea->setEllipsoidalMode( true );
     mDistanceArea->setEllipsoid( mComposition->project()->ellipsoid() );
   }
 
   // create JSON representation of feature
-  QgsJSONExporter exporter( layer );
+  QgsJsonExporter exporter( layer );
   exporter.setIncludeRelated( true );
   mAtlasFeatureJSON = exporter.exportFeature( feature );
 }

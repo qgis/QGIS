@@ -1,16 +1,16 @@
 Change Detection
 imagery_classification
-ParameterRaster|INITIAL|Initial State|False
-ParameterTable|INI_LUT|Look-up Table|True
-ParameterTableField|INI_LUT_MIN|Value|INI_LUT|-1|False
-ParameterTableField|INI_LUT_MAX|Value (Maximum)|INI_LUT|-1|False
-ParameterTableField|INI_LUT_NAM|Name|INI_LUT|-1|False
-ParameterRaster|FINAL|Final State|False
-ParameterTable|FIN_LUT|Look-up Table|True
-ParameterTableField|FIN_LUT_MIN|Value|FIN_LUT|-1|False
-ParameterTableField|FIN_LUT_MAX|Value (Maximum)|FIN_LUT|-1|False
-ParameterTableField|FIN_LUT_NAM|Name|FIN_LUT|-1|False
-ParameterBoolean|NOCHANGE         |Report Unchanged Classes|True
-ParameterSelection|OUTPUT|Output as...|[0] cells;[1] percent;[2] area
-OutputRaster|CHANGE|Changes
+QgsProcessingParameterRasterLayer|INITIAL|Initial State|None|False
+QgsProcessingParameterFeatureSource|INI_LUT|Look-up Table|5|None|True
+QgsProcessingParameterField|INI_LUT_MIN|Value|None|INI_LUT|-1|False|False
+QgsProcessingParameterField|INI_LUT_MAX|Value (Maximum)|None|INI_LUT|-1|False|False
+QgsProcessingParameterField|INI_LUT_NAM|Name|None|INI_LUT|-1|False|False
+QgsProcessingParameterRasterLayer|FINAL|Final State|None|False
+QgsProcessingParameterFeatureSource|FIN_LUT|Look-up Table|5|None|True
+QgsProcessingParameterField|FIN_LUT_MIN|Value|None|FIN_LUT|-1|False|False
+QgsProcessingParameterField|FIN_LUT_MAX|Value (Maximum)|None|FIN_LUT|-1|False|False
+QgsProcessingParameterField|FIN_LUT_NAM|Name|None|FIN_LUT|-1|False|False
+QgsProcessingParameterBoolean|NOCHANGE         |Report Unchanged Classes|True
+QgsProcessingParameterEnum|OUTPUT|Output as...|[0] cells;[1] percent;[2] area
+QgsProcessingParameterRasterDestination|CHANGE|Changes
 OutputTable|CHANGES|Changes

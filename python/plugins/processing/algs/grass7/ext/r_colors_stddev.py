@@ -53,14 +53,14 @@ def processInputs(alg):
     if cellsize:
         command += ' res=' + str(cellsize)
     else:
-        command += ' res=' + str(alg.getDefaultCellsize())
+        command += ' res=' + str(alg.getDefaultCellsize(parameters, context))
     alignToResolution = alg.getParameterValue(alg.GRASS_REGION_ALIGN_TO_RESOLUTION)
     if alignToResolution:
         command += ' -a'
     alg.commands.append(command)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     # We need to remove output
     output = alg.getOutputFromName('output')
     alg.exportedLayers[output.value] = output.name + alg.uniqueSuffix

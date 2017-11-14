@@ -17,8 +17,11 @@
 #ifndef QGSCOMPOSERMOUSEHANDLES_H
 #define QGSCOMPOSERMOUSEHANDLES_H
 
+#define SIP_NO_FILE
+
 #include <QGraphicsRectItem>
 #include <QObject>
+#include <QPointer>
 
 #include "qgis_core.h"
 
@@ -26,7 +29,8 @@ class QgsComposition;
 class QgsComposerItem;
 class QGraphicsView;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Handles drawing of selection outlines and mouse handles. Responsible for mouse
  * interactions such as resizing and moving selected items.
  * \note not available in Python bindings
@@ -110,7 +114,7 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
   private:
 
     QgsComposition *mComposition; //reference to composition
-    QGraphicsView *mGraphicsView; //reference to QGraphicsView
+    QPointer< QGraphicsView > mGraphicsView; //reference to QGraphicsView
 
     QgsComposerMouseHandles::MouseAction mCurrentMouseMoveAction;
     //! Start point of the last mouse move action (in scene coordinates)
@@ -153,7 +157,8 @@ class CORE_EXPORT QgsComposerMouseHandles: public QObject, public QGraphicsRectI
     //! Draw outlines for selected items
     void drawSelectedItemBounds( QPainter *painter );
 
-    /** Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
+    /**
+     * Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
     item border for resizing*/
     double rectHandlerBorderTolerance();
 

@@ -26,20 +26,23 @@ QgsSaveStyleToDbDialog::QgsSaveStyleToDbDialog( QWidget *parent )
   : QDialog( parent )
 {
   setupUi( this );
-  setWindowTitle( QStringLiteral( "Save style in database" ) );
+  connect( mFilePickButton, &QToolButton::clicked, this, &QgsSaveStyleToDbDialog::mFilePickButton_clicked );
+  setWindowTitle( QStringLiteral( "Save Style in Database" ) );
   mDescriptionEdit->setTabChangesFocus( true );
   setTabOrder( mNameEdit, mDescriptionEdit );
   setTabOrder( mDescriptionEdit, mUseAsDefault );
   setTabOrder( mUseAsDefault, buttonBox );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/saveStyleToDb/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/saveStyleToDb/geometry" ) ).toByteArray() );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSaveStyleToDbDialog::showHelp );
 }
 
 QgsSaveStyleToDbDialog::~QgsSaveStyleToDbDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/saveStyleToDb/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/saveStyleToDb/geometry" ), saveGeometry() );
 }
 
 QString QgsSaveStyleToDbDialog::getName()
@@ -72,7 +75,7 @@ void QgsSaveStyleToDbDialog::accept()
   QDialog::accept();
 }
 
-void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
+void QgsSaveStyleToDbDialog::mFilePickButton_clicked()
 {
   QgsSettings myQSettings;  // where we keep last used filter in persistent state
   QString myLastUsedDir = myQSettings.value( QStringLiteral( "style/lastStyleDir" ), QDir::homePath() ).toString();
@@ -102,4 +105,9 @@ void QgsSaveStyleToDbDialog::on_mFilePickButton_clicked()
     mUIFileContent = content;
     mFileNameLabel->setText( myFI.fileName() );
   }
+}
+
+void QgsSaveStyleToDbDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#save-and-share-layer-properties" ) );
 }

@@ -170,7 +170,7 @@ void QgsWFSUtilsKeepAlive::run()
   QTimer timer;
   timer.setInterval( KEEP_ALIVE_DELAY );
   timer.start();
-  connect( &timer, SIGNAL( timeout() ), this, SLOT( updateTimestamp() ) );
+  connect( &timer, &QTimer::timeout, this, &QgsWFSUtilsKeepAlive::updateTimestamp );
   QThread::exec();
 }
 
@@ -204,7 +204,7 @@ QSharedMemory *QgsWFSUtils::createAndAttachSHM()
 void QgsWFSUtils::init()
 {
   QSharedMemory *sharedMemory = createAndAttachSHM();
-  sKeepAliveWorks = sharedMemory != nullptr;
+  sKeepAliveWorks = static_cast< bool >( sharedMemory );
   delete sharedMemory;
 
   if ( sKeepAliveWorks )

@@ -42,10 +42,10 @@ void QgsComposerUtils::drawArrowHead( QPainter *p, const double x, const double 
   QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
 
   QPointF p1Rotated, p2Rotated;
-  p1Rotated.setX( p1.x() * cos( angleRad ) + p1.y() * -sin( angleRad ) );
-  p1Rotated.setY( p1.x() * sin( angleRad ) + p1.y() * cos( angleRad ) );
-  p2Rotated.setX( p2.x() * cos( angleRad ) + p2.y() * -sin( angleRad ) );
-  p2Rotated.setY( p2.x() * sin( angleRad ) + p2.y() * cos( angleRad ) );
+  p1Rotated.setX( p1.x() * std::cos( angleRad ) + p1.y() * -std::sin( angleRad ) );
+  p1Rotated.setY( p1.x() * std::sin( angleRad ) + p1.y() * std::cos( angleRad ) );
+  p2Rotated.setX( p2.x() * std::cos( angleRad ) + p2.y() * -std::sin( angleRad ) );
+  p2Rotated.setY( p2.x() * std::sin( angleRad ) + p2.y() * std::cos( angleRad ) );
 
   QPolygonF arrowHeadPoly;
   arrowHeadPoly << middlePoint;
@@ -70,13 +70,13 @@ double QgsComposerUtils::angle( QPointF p1, QPointF p2 )
 {
   double xDiff = p2.x() - p1.x();
   double yDiff = p2.y() - p1.y();
-  double length = sqrt( xDiff * xDiff + yDiff * yDiff );
+  double length = std::sqrt( xDiff * xDiff + yDiff * yDiff );
   if ( length <= 0 )
   {
     return 0;
   }
 
-  double angle = acos( ( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
+  double angle = std::acos( ( -yDiff * length ) / ( length * length ) ) * 180 / M_PI;
   if ( xDiff < 0 )
   {
     return ( 360 - angle );
@@ -88,8 +88,8 @@ void QgsComposerUtils::rotate( const double angle, double &x, double &y )
 {
   double rotToRad = angle * M_PI / 180.0;
   double xRot, yRot;
-  xRot = x * cos( rotToRad ) - y * sin( rotToRad );
-  yRot = x * sin( rotToRad ) + y * cos( rotToRad );
+  xRot = x * std::cos( rotToRad ) - y * std::sin( rotToRad );
+  yRot = x * std::sin( rotToRad ) + y * std::cos( rotToRad );
   x = xRot;
   y = yRot;
 }
@@ -99,7 +99,7 @@ double QgsComposerUtils::normalizedAngle( const double angle )
   double clippedAngle = angle;
   if ( clippedAngle >= 360.0 || clippedAngle <= -360.0 )
   {
-    clippedAngle = fmod( clippedAngle, 360.0 );
+    clippedAngle = std::fmod( clippedAngle, 360.0 );
   }
   if ( clippedAngle < 0.0 )
   {
@@ -185,12 +185,12 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
 
   //convert angle to radians and flip
   double angleRad = -clippedRotation * M_DEG2RAD;
-  double cosAngle = cos( angleRad );
-  double sinAngle = sin( angleRad );
+  double cosAngle = std::cos( angleRad );
+  double sinAngle = std::sin( angleRad );
 
   //calculate size of bounds of rotated rectangle
-  double widthBoundsRotatedRect = originalWidth * fabs( cosAngle ) + originalHeight * fabs( sinAngle );
-  double heightBoundsRotatedRect = originalHeight * fabs( cosAngle ) + originalWidth * fabs( sinAngle );
+  double widthBoundsRotatedRect = originalWidth * std::fabs( cosAngle ) + originalHeight * std::fabs( sinAngle );
+  double heightBoundsRotatedRect = originalHeight * std::fabs( cosAngle ) + originalWidth * std::fabs( sinAngle );
 
   //compare ratio of rotated rect with bounds rect and calculate scaling of rotated
   //rect to fit within bounds
@@ -221,9 +221,9 @@ QRectF QgsComposerUtils::largestRotatedRectWithinBounds( const QRectF &originalR
 
   //now calculate offset position of rotated rectangle
   double offsetX = ratioBoundsRotatedRect > ratioBoundsRect ? 0 : ( boundsWidth - rectScale * widthBoundsRotatedRect ) / 2.0;
-  offsetX += fabs( minX );
+  offsetX += std::fabs( minX );
   double offsetY = ratioBoundsRotatedRect > ratioBoundsRect ? ( boundsHeight - rectScale * heightBoundsRotatedRect ) / 2.0 : 0;
-  offsetY += fabs( minY );
+  offsetY += std::fabs( minY );
 
   return QRectF( offsetX, offsetY, rectScaledWidth, rectScaledHeight );
 }
@@ -424,7 +424,7 @@ double QgsComposerUtils::textWidthMM( const QFont &font, const QString &text )
 
 double QgsComposerUtils::textHeightMM( const QFont &font, const QString &text, double multiLineHeight )
 {
-  QStringList multiLineSplit =  text.split( '\n' );
+  QStringList multiLineSplit = text.split( '\n' );
   int lines = multiLineSplit.size();
 
   //upscale using FONT_WORKAROUND_SCALE

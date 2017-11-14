@@ -19,7 +19,7 @@
 // includes
 
 #include "qgisinterface.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgsmaplayer.h"
@@ -65,8 +65,6 @@ static const QString icon_ = QStringLiteral( ":/gps_importer.svg" );
 QgsGPSPlugin::QgsGPSPlugin( QgisInterface *qgisInterFace )
   : QgisPlugin( name_, description_, category_, version_, type_ )
   , mQGisInterface( qgisInterFace )
-  , mQActionPointer( nullptr )
-  , mCreateGPXAction( nullptr )
 {
   setupBabel();
 }
@@ -99,8 +97,8 @@ void QgsGPSPlugin::initGui()
 
   mQActionPointer->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
   mCreateGPXAction->setWhatsThis( tr( "Creates a new GPX layer and displays it on the map canvas" ) );
-  connect( mQActionPointer, SIGNAL( triggered() ), this, SLOT( run() ) );
-  connect( mCreateGPXAction, SIGNAL( triggered() ), this, SLOT( createGPX() ) );
+  connect( mQActionPointer, &QAction::triggered, this, &QgsGPSPlugin::run );
+  connect( mCreateGPXAction, &QAction::triggered, this, &QgsGPSPlugin::createGPX );
 
   mQGisInterface->layerToolBar()->insertAction( nullptr, mCreateGPXAction );
   mQGisInterface->newLayerMenu()->addAction( mCreateGPXAction );
@@ -108,7 +106,7 @@ void QgsGPSPlugin::initGui()
   mQGisInterface->addVectorToolBarIcon( mQActionPointer );
 
   // this is called when the icon theme is changed
-  connect( mQGisInterface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisInterface, &QgisInterface::currentThemeChanged, this, &QgsGPSPlugin::setCurrentTheme );
 }
 
 //method defined in interface
@@ -137,28 +135,22 @@ void QgsGPSPlugin::run()
 
   QgsGPSPluginGui *myPluginGui =
     new QgsGPSPluginGui( mImporters, mDevices, gpxLayers, mQGisInterface->mainWindow(),
-                         QgisGui::ModalDialogFlags );
+                         QgsGuiUtils::ModalDialogFlags );
   myPluginGui->setAttribute( Qt::WA_DeleteOnClose );
   //listen for when the layer has been made so we can draw it
-  connect( myPluginGui, SIGNAL( drawVectorLayer( QString, QString, QString ) ),
-           this, SLOT( drawVectorLayer( QString, QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( loadGPXFile( QString, bool, bool, bool ) ),
-           this, SLOT( loadGPXFile( QString, bool, bool, bool ) ) );
-  connect( myPluginGui, SIGNAL( importGPSFile( QString, QgsBabelFormat *, bool,
-                                bool, bool, QString, QString ) ),
-           this, SLOT( importGPSFile( QString, QgsBabelFormat *, bool, bool,
-                                      bool, QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( convertGPSFile( QString, int,
-                                QString, QString ) ),
-           this, SLOT( convertGPSFile( QString, int,
-                                       QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( downloadFromGPS( QString, QString, bool, bool,
-                                bool, QString, QString ) ),
-           this, SLOT( downloadFromGPS( QString, QString, bool, bool, bool,
-                                        QString, QString ) ) );
-  connect( myPluginGui, SIGNAL( uploadToGPS( QgsVectorLayer *, QString, QString ) ),
-           this, SLOT( uploadToGPS( QgsVectorLayer *, QString, QString ) ) );
-  connect( this, SIGNAL( closeGui() ), myPluginGui, SLOT( close() ) );
+  connect( myPluginGui, &QgsGPSPluginGui::drawVectorLayer,
+           this, &QgsGPSPlugin::drawVectorLayer );
+  connect( myPluginGui, &QgsGPSPluginGui::loadGPXFile,
+           this, &QgsGPSPlugin::loadGPXFile );
+  connect( myPluginGui, &QgsGPSPluginGui::importGPSFile,
+           this, &QgsGPSPlugin::importGPSFile );
+  connect( myPluginGui, &QgsGPSPluginGui::convertGPSFile,
+           this, &QgsGPSPlugin::convertGPSFile );
+  connect( myPluginGui, &QgsGPSPluginGui::downloadFromGPS,
+           this, &QgsGPSPlugin::downloadFromGPS );
+  connect( myPluginGui, &QgsGPSPluginGui::uploadToGPS,
+           this, &QgsGPSPlugin::uploadToGPS );
+  connect( this, &QgsGPSPlugin::closeGui, myPluginGui, &QWidget::close );
 
   myPluginGui->show();
 }
@@ -166,7 +158,7 @@ void QgsGPSPlugin::run()
 void QgsGPSPlugin::createGPX()
 {
   QgsSettings settings;
-  QString dir = settings.value( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
+  QString dir = settings.value( QStringLiteral( "Plugin-GPS/gpxdirectory" ), QDir::homePath() ).toString();
   QString fileName =
     QFileDialog::getSaveFileName( mQGisInterface->mainWindow(),
                                   tr( "Save new GPX file as..." ),
@@ -188,16 +180,16 @@ void QgsGPSPlugin::createGPX()
                                 "directory." ) );
       return;
     }
-    settings.setValue( QStringLiteral( "/Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
+    settings.setValue( QStringLiteral( "Plugin-GPS/gpxdirectory" ), fileInfo.absolutePath() );
 
     ofs << "<gpx></gpx>" << std::endl;
 
-    emit drawVectorLayer( fileName + "?type=track",
-                          fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
-    emit drawVectorLayer( fileName + "?type=route",
-                          fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
-    emit drawVectorLayer( fileName + "?type=waypoint",
-                          fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=track",
+                     fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=route",
+                     fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=waypoint",
+                     fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
   }
 }
 
@@ -236,14 +228,14 @@ void QgsGPSPlugin::loadGPXFile( const QString &fileName, bool loadWaypoints, boo
 
   // add the requested layers
   if ( loadTracks )
-    emit drawVectorLayer( fileName + "?type=track",
-                          fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=track",
+                     fileInfo.baseName() + ", tracks", QStringLiteral( "gpx" ) );
   if ( loadRoutes )
-    emit drawVectorLayer( fileName + "?type=route",
-                          fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=route",
+                     fileInfo.baseName() + ", routes", QStringLiteral( "gpx" ) );
   if ( loadWaypoints )
-    emit drawVectorLayer( fileName + "?type=waypoint",
-                          fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
+    drawVectorLayer( fileName + "?type=waypoint",
+                     fileInfo.baseName() + ", waypoints", QStringLiteral( "gpx" ) );
 
   emit closeGui();
 }
@@ -303,14 +295,14 @@ void QgsGPSPlugin::importGPSFile( const QString &inputFileName, QgsBabelFormat *
 
   // add the layer
   if ( importTracks )
-    emit drawVectorLayer( outputFileName + "?type=track",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=track",
+                     layerName, QStringLiteral( "gpx" ) );
   if ( importRoutes )
-    emit drawVectorLayer( outputFileName + "?type=route",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=route",
+                     layerName, QStringLiteral( "gpx" ) );
   if ( importWaypoints )
-    emit drawVectorLayer( outputFileName + "?type=waypoint",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=waypoint",
+                     layerName, QStringLiteral( "gpx" ) );
 
   emit closeGui();
 }
@@ -383,16 +375,16 @@ void QgsGPSPlugin::convertGPSFile( const QString &inputFileName,
   {
     case 0:
     case 3:
-      emit drawVectorLayer( outputFileName + "?type=waypoint",
-                            layerName, QStringLiteral( "gpx" ) );
+      drawVectorLayer( outputFileName + "?type=waypoint",
+                       layerName, QStringLiteral( "gpx" ) );
       break;
     case 1:
-      emit drawVectorLayer( outputFileName + "?type=route",
-                            layerName, QStringLiteral( "gpx" ) );
+      drawVectorLayer( outputFileName + "?type=route",
+                       layerName, QStringLiteral( "gpx" ) );
       break;
     case 2:
-      emit drawVectorLayer( outputFileName + "?type=track",
-                            layerName, QStringLiteral( "gpx" ) );
+      drawVectorLayer( outputFileName + "?type=track",
+                       layerName, QStringLiteral( "gpx" ) );
       break;
     default:
       QgsDebugMsg( "Illegal conversion index!" );
@@ -470,19 +462,19 @@ void QgsGPSPlugin::downloadFromGPS( const QString &device, const QString &port,
 
   // add the layer
   if ( downloadWaypoints )
-    emit drawVectorLayer( outputFileName + "?type=waypoint",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=waypoint",
+                     layerName, QStringLiteral( "gpx" ) );
   if ( downloadRoutes )
-    emit drawVectorLayer( outputFileName + "?type=route",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=route",
+                     layerName, QStringLiteral( "gpx" ) );
   if ( downloadTracks )
-    emit drawVectorLayer( outputFileName + "?type=track",
-                          layerName, QStringLiteral( "gpx" ) );
+    drawVectorLayer( outputFileName + "?type=track",
+                     layerName, QStringLiteral( "gpx" ) );
 
   // everything was OK, remember the device and port for next time
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastdldevice" ), device );
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastdlport" ), port );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastdldevice" ), device );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastdlport" ), port );
 
   emit closeGui();
 }
@@ -560,8 +552,8 @@ void QgsGPSPlugin::uploadToGPS( QgsVectorLayer *gpxLayer, const QString &device,
 
   // everything was OK, remember this device for next time
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastuldevice" ), device );
-  settings.setValue( QStringLiteral( "/Plugin-GPS/lastulport" ), port );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastuldevice" ), device );
+  settings.setValue( QStringLiteral( "Plugin-GPS/lastulport" ), port );
 
   emit closeGui();
 }
@@ -570,7 +562,7 @@ void QgsGPSPlugin::setupBabel()
 {
   // where is gpsbabel?
   QgsSettings settings;
-  mBabelPath = settings.value( QStringLiteral( "/Plugin-GPS/gpsbabelpath" ), QString() ).toString();
+  mBabelPath = settings.value( QStringLiteral( "Plugin-GPS/gpsbabelpath" ), QString() ).toString();
   if ( mBabelPath.isEmpty() )
     mBabelPath = QStringLiteral( "gpsbabel" );
   // the importable formats
@@ -643,12 +635,12 @@ void QgsGPSPlugin::setupBabel()
                       QStringLiteral( "%babel -r -i gpx -o garmin %in %out" ),
                       QStringLiteral( "%babel -t -i garmin -o gpx %in %out" ),
                       QStringLiteral( "%babel -t -i gpx -o garmin %in %out" ) );
-  QStringList deviceNames = settings.value( QStringLiteral( "/Plugin-GPS/devicelist" ) ).
+  QStringList deviceNames = settings.value( QStringLiteral( "Plugin-GPS/devicelist" ) ).
                             toStringList();
 
   QStringList::const_iterator iter;
 
-  for ( iter = deviceNames.begin(); iter != deviceNames.end(); ++iter )
+  for ( iter = deviceNames.constBegin(); iter != deviceNames.constEnd(); ++iter )
   {
     QString wptDownload = settings.
                           value( QStringLiteral( "/Plugin-GPS/devices/%1/wptdownload" ).

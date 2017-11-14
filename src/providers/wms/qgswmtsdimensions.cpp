@@ -49,14 +49,14 @@ QgsWmtsDimensions::QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *pa
 
   QgsSettings settings;
   QgsDebugMsg( "restoring geometry" );
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/WMTSDimensions/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/WMTSDimensions/geometry" ) ).toByteArray() );
 }
 
 QgsWmtsDimensions::~QgsWmtsDimensions()
 {
   QgsSettings settings;
   QgsDebugMsg( "saving geometry" );
-  settings.setValue( QStringLiteral( "/Windows/WmtsDimensions/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/WmtsDimensions/geometry" ), saveGeometry() );
 }
 
 void QgsWmtsDimensions::selectedDimensions( QHash<QString, QString> &selected )

@@ -22,6 +22,7 @@
 #define QGSRASTERLAYER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QDateTime>
 #include <QList>
@@ -32,6 +33,7 @@
 #include "qgis.h"
 #include "qgsmaplayer.h"
 #include "qgsraster.h"
+#include "qgsrasterdataprovider.h"
 #include "qgsrasterpipe.h"
 #include "qgsrasterviewport.h"
 #include "qgsrasterminmaxorigin.h"
@@ -47,7 +49,8 @@ class QSlider;
 
 typedef QList < QPair< QString, QColor > > QgsLegendColorList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  *  This class provides qgis with the ability to render raster datasets
  *  onto the mapcanvas.
  *
@@ -163,7 +166,26 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Constructor. Provider is not set.
     QgsRasterLayer();
 
-    /** \brief This is the constructor for the RasterLayer class.
+    /**
+     * Setting options for loading raster layers.
+     * \since QGIS 3.0
+     */
+    struct LayerOptions
+    {
+
+      /**
+       * Constructor for LayerOptions.
+       */
+      explicit LayerOptions( bool loadDefaultStyle = true )
+        : loadDefaultStyle( loadDefaultStyle )
+      {}
+
+      //! Set to true if the default layer style should be loaded
+      bool loadDefaultStyle = true;
+    };
+
+    /**
+     * \brief This is the constructor for the RasterLayer class.
      *
      * The main tasks carried out by the constructor are:
      *
@@ -179,12 +201,20 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      *
      * -
      * */
-    QgsRasterLayer( const QString &uri,
-                    const QString &baseName = QString(),
-                    const QString &providerKey = "gdal",
-                    bool loadDefaultStyleFlag = true );
+    explicit QgsRasterLayer( const QString &uri,
+                             const QString &baseName = QString(),
+                             const QString &providerKey = "gdal",
+                             const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 
     ~QgsRasterLayer();
+
+    /**
+     * Returns a new instance equivalent to this one. A new provider is
+     *  created for the same data source and renderer is cloned too.
+     * \returns a new layer instance
+     * \since QGIS 3.0
+     */
+    virtual QgsRasterLayer *clone() const override SIP_FACTORY;
 
     //! \brief This enumerator describes the types of shading that can be used
     enum ColorShadingAlgorithm
@@ -205,7 +235,8 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
       ColorLayer
     };
 
-    /** This helper checks to see whether the file name appears to be a valid
+    /**
+     * This helper checks to see whether the file name appears to be a valid
      *  raster file name.  If the file name looks like it could be valid,
      *  but some sort of error occurs in processing the file, the error is
      *  returned in retError.
@@ -223,7 +254,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     LayerType rasterType() { return mRasterType; }
 
     //! Set raster renderer. Takes ownership of the renderer object
-    void setRenderer( QgsRasterRenderer *renderer );
+    void setRenderer( QgsRasterRenderer *renderer SIP_TRANSFER );
     QgsRasterRenderer *renderer() const { return mPipe.renderer(); }
 
     //! Set raster resample filter. Takes ownership of the resample filter object
@@ -247,21 +278,22 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Get the name of a band given its number
     QString bandName( int bandNoInt ) const;
 
-    //! Returns the data provider
-    QgsRasterDataProvider *dataProvider();
+    QgsRasterDataProvider *dataProvider() override;
 
-    /** Returns the data provider in a const-correct manner
-      @note available in python bindings as constDataProvider()
+    /**
+     * Returns the data provider in a const-correct manner
+      \note available in Python bindings as constDataProvider()
      */
-    const QgsRasterDataProvider *dataProvider() const;
+    const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 
     //! Synchronises with changes in the datasource
     virtual void reload() override;
 
-    /** Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-     * @note added in 2.4
+    /**
+     * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
+     * \since QGIS 2.4
      */
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override;
+    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
     void draw( QPainter *theQPainter,
@@ -273,8 +305,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
 
     virtual bool isSpatial() const override { return true; }
 
-    //! \brief Obtain GDAL Metadata for this layer
-    QString metadata() const override;
+    QString htmlMetadata() const override;
 
     //! \brief Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
     QPixmap paletteAsPixmap( int bandNumber = 1 );
@@ -287,50 +318,52 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! \brief Returns the number of raster units per each raster pixel in Y axis. In a world file, this is normally the first row (without the sign)
     double rasterUnitsPerPixelY() const;
 
-    /** \brief Set contrast enhancement algorithm
-     *  @param algorithm Contrast enhancement algorithm
-     *  @param limits Limits
-     *  @param extent Extent used to calculate limits, if empty, use full layer extent
-     *  @param sampleSize Size of data sample to calculate limits, if 0, use full resolution
-     *  @param generateLookupTableFlag Generate lookup table. */
+    /**
+     * \brief Set contrast enhancement algorithm
+     *  \param algorithm Contrast enhancement algorithm
+     *  \param limits Limits
+     *  \param extent Extent used to calculate limits, if empty, use full layer extent
+     *  \param sampleSize Size of data sample to calculate limits, if 0, use full resolution
+     *  \param generateLookupTableFlag Generate lookup table. */
 
 
     void setContrastEnhancement( QgsContrastEnhancement::ContrastEnhancementAlgorithm algorithm,
                                  QgsRasterMinMaxOrigin::Limits limits = QgsRasterMinMaxOrigin::MinMax,
                                  const QgsRectangle &extent = QgsRectangle(),
-                                 int sampleSize = SAMPLE_SIZE,
+                                 int sampleSize = QgsRasterLayer::SAMPLE_SIZE,
                                  bool generateLookupTableFlag = true );
 
-    /** \brief Refresh contrast enhancement with new extent.
-     *  @note not available in python bindings
+    /**
+     * \brief Refresh contrast enhancement with new extent.
+     *  \note not available in Python bindings
      */
     // Used by QgisApp::legendLayerStretchUsingCurrentExtent()
-    void refreshContrastEnhancement( const QgsRectangle &extent );
+    void refreshContrastEnhancement( const QgsRectangle &extent ) SIP_SKIP;
 
-    /** \brief Refresh renderer with new extent, if needed
-     *  @note not available in python bindings
+    /**
+     * \brief Refresh renderer with new extent, if needed
+     *  \note not available in Python bindings
      */
     // Used by QgsRasterLayerRenderer
-    void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent );
+    void refreshRendererIfNeeded( QgsRasterRenderer *rasterRenderer, const QgsRectangle &extent ) SIP_SKIP;
 
-    /** \brief Return default contrast enhancemnt settings for that type of raster.
-     *  @note not available in python bindings
+    /**
+     * \brief Return default contrast enhancemnt settings for that type of raster.
+     *  \note not available in Python bindings
      */
     bool defaultContrastEnhancementSettings(
       QgsContrastEnhancement::ContrastEnhancementAlgorithm &myAlgorithm,
-      QgsRasterMinMaxOrigin::Limits &myLimits ) const;
+      QgsRasterMinMaxOrigin::Limits &myLimits ) const SIP_SKIP;
 
     //! \brief Set default contrast enhancement
     void setDefaultContrastEnhancement();
 
-    //! \brief [ data provider interface ] A wrapper function to emit a progress update signal
-    void showProgress( int value );
-
     //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
     virtual QStringList subLayers() const override;
 
-    /** \brief Draws a preview of the rasterlayer into a QImage
-     @note added in 2.4 */
+    /**
+     * \brief Draws a preview of the rasterlayer into a QImage
+     \since QGIS 2.4 */
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
                            QImage::Format format = QImage::Format_ARGB32_Premultiplied );
 
@@ -353,31 +386,24 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
   public slots:
     void showStatusMessage( const QString &message );
 
-    //! \brief receive progress signal from provider
-    void onProgress( int, double, const QString & );
-
-  signals:
-    //! \brief Signal for notifying listeners of long running processes
-    void progressUpdate( int value );
-
   protected:
     //! \brief Read the symbology for the current layer from the Dom node supplied
-    bool readSymbology( const QDomNode &node, QString &errorMessage ) override;
+    bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     //! \brief Read the style information for the current layer from the Dom node supplied
-    bool readStyle( const QDomNode &node, QString &errorMessage ) override;
+    bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) override;
 
     //! \brief Reads layer specific state from project file Dom node
-    bool readXml( const QDomNode &layer_node ) override;
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
 
     //! \brief Write the symbology for the layer into the docment provided
-    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage ) const override;
+    bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! \brief Write the style for the layer into the docment provided
-    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage ) const override;
+    bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const override;
 
     //! \brief Write layer specific state to project file Dom node
-    bool writeXml( QDomNode &layer_node, QDomDocument &doc ) const override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
   private:
     //! \brief Initialize default values
@@ -428,5 +454,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! To save computations and possible infinite cycle of notifications
     QgsRectangle mLastRectangleUsedByRefreshContrastEnhancementIfNeeded;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif

@@ -25,7 +25,8 @@
 namespace QgsWms
 {
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsserviceException
    * \brief Exception class for WMS service exceptions.
    *
@@ -49,7 +50,8 @@ namespace QgsWms
 
   };
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsSecurityException
    * \brief Exception thrown when data access violates access controls
    */
@@ -61,7 +63,8 @@ namespace QgsWms
       {}
   };
 
-  /** \ingroup server
+  /**
+   * \ingroup server
    * \class  QgsBadRequestException
    * \brief Exception thrown in case of malformed request
    */

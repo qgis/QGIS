@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
-#include <math.h>
+#include <cmath>
 
 #include <QApplication>
 #include <QFileDialog>
@@ -67,6 +67,22 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   mPythonUtils = nullptr;
 
   setupUi( this );
+  connect( vwPlugins, &QListView::clicked, this, &QgsPluginManager::vwPlugins_clicked );
+  connect( vwPlugins, &QListView::doubleClicked, this, &QgsPluginManager::vwPlugins_doubleClicked );
+  connect( wvDetails, &QgsWebView::linkClicked, this, &QgsPluginManager::wvDetails_linkClicked );
+  connect( leFilter, &QgsFilterLineEdit::textChanged, this, &QgsPluginManager::leFilter_textChanged );
+  connect( buttonUpgradeAll, &QPushButton::clicked, this, &QgsPluginManager::buttonUpgradeAll_clicked );
+  connect( buttonInstall, &QPushButton::clicked, this, &QgsPluginManager::buttonInstall_clicked );
+  connect( buttonUninstall, &QPushButton::clicked, this, &QgsPluginManager::buttonUninstall_clicked );
+  connect( treeRepositories, &QTreeWidget::itemSelectionChanged, this, &QgsPluginManager::treeRepositories_itemSelectionChanged );
+  connect( treeRepositories, &QTreeWidget::doubleClicked, this, &QgsPluginManager::treeRepositories_doubleClicked );
+  connect( buttonAddRep, &QPushButton::clicked, this, &QgsPluginManager::buttonAddRep_clicked );
+  connect( buttonEditRep, &QPushButton::clicked, this, &QgsPluginManager::buttonEditRep_clicked );
+  connect( buttonDeleteRep, &QPushButton::clicked, this, &QgsPluginManager::buttonDeleteRep_clicked );
+  connect( buttonRefreshRepos, &QPushButton::clicked, this, &QgsPluginManager::buttonRefreshRepos_clicked );
+  connect( ckbExperimental, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbExperimental_toggled );
+  connect( ckbDeprecated, &QgsCollapsibleGroupBox::toggled, this, &QgsPluginManager::ckbDeprecated_toggled );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPluginManager::showHelp );
 
   // QgsOptionsDialogBase handles saving/restoring of geometry, splitter and current tab states,
   // switching vertical tabs between icon/text to icon-only modes (splitter collapsed to left),
@@ -75,10 +91,6 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
 
   // Don't let QgsOptionsDialogBase to narrow the vertical tab list widget
   mOptListWidget->setMaximumWidth( 16777215 );
-
-  // Restiore UI state for widgets not handled by QgsOptionsDialogBase
-  QgsSettings settings;
-  mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "/Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
 
   // load translated description strings from qgspluginmanager_texts
   initTabDescriptions();
@@ -102,21 +114,25 @@ QgsPluginManager::QgsPluginManager( QWidget *parent, bool pluginsAreEnabled, Qt:
   leFilter->setFocus( Qt::MouseFocusReason );
   wvDetails->page()->setLinkDelegationPolicy( QWebPage::DelegateAllLinks );
 
-  // Don't restore the last used tab from QgsSettings
-  mOptionsListWidget->setCurrentRow( 0 );
-
   // Connect other signals
-  connect( mOptionsListWidget, SIGNAL( currentRowChanged( int ) ), this, SLOT( setCurrentTab( int ) ) );
-  connect( vwPlugins->selectionModel(), SIGNAL( currentChanged( const QModelIndex &, const QModelIndex & ) ), this, SLOT( currentPluginChanged( const QModelIndex & ) ) );
-  connect( mModelPlugins, SIGNAL( itemChanged( QStandardItem * ) ), this, SLOT( pluginItemChanged( QStandardItem * ) ) );
-  // Force setting the status filter (if the active tab was 0, the setCurrentRow( 0 ) above doesn't take any action)
-  setCurrentTab( 0 );
+  connect( mOptionsListWidget, &QListWidget::currentRowChanged, this, &QgsPluginManager::setCurrentTab );
+  connect( vwPlugins->selectionModel(), &QItemSelectionModel::currentChanged, this, &QgsPluginManager::currentPluginChanged );
+  connect( mModelPlugins, &QStandardItemModel::itemChanged, this, &QgsPluginManager::pluginItemChanged );
+
+  // Restiore UI state for widgets not handled by QgsOptionsDialogBase
+  QgsSettings settings;
+  // 1) The second splitter state:
+  mPluginsDetailsSplitter->restoreState( settings.value( QStringLiteral( "Windows/PluginManager/secondSplitterState" ) ).toByteArray() );
+  // 2) The current mOptionsListWidget index (it will overwrite the "tab" setting of QgsOptionsDialogBase that handles the stackedWidget page
+  // instead of the mOptionsListWidget index). Then the signal connected above will update the relevant page as well.
+  mOptionsListWidget->setCurrentRow( settings.value( QStringLiteral( "Windows/PluginManager/option" ), 0 ).toInt() );
 
   // Hide widgets only suitable with Python support enabled (they will be uncovered back in setPythonUtils)
   buttonUpgradeAll->hide();
   buttonInstall->hide();
   buttonUninstall->hide();
   frameSettings->setHidden( true );
+  mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( true );
 
   voteRating->hide();
   voteLabel->hide();
@@ -140,7 +156,8 @@ QgsPluginManager::~QgsPluginManager()
   delete mModelPlugins;
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/PluginManager/secondSplitterState" ), mPluginsDetailsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/PluginManager/secondSplitterState" ), mPluginsDetailsSplitter->saveState() );
+  settings.setValue( QStringLiteral( "Windows/PluginManager/option" ), mOptionsListWidget->currentRow() );
 }
 
 
@@ -151,6 +168,7 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
 
   // Now enable Python support:
   // Show and preset widgets only suitable when Python support active
+  mOptionsListWidget->item( PLUGMAN_TAB_INSTALL_FROM_ZIP )->setHidden( false );
   buttonUpgradeAll->show();
   buttonInstall->show();
   buttonUninstall->show();
@@ -180,20 +198,26 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   vwPlugins->addAction( actionSortByVote );
   vwPlugins->addAction( actionSortByStatus );
   vwPlugins->setContextMenuPolicy( Qt::ActionsContextMenu );
-  connect( actionSortByName, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByName() ) );
-  connect( actionSortByDownloads, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByDownloads() ) );
-  connect( actionSortByVote, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByVote() ) );
-  connect( actionSortByStatus, SIGNAL( triggered() ), mModelProxy, SLOT( sortPluginsByStatus() ) );
+  connect( actionSortByName, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByName );
+  connect( actionSortByDownloads, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByDownloads );
+  connect( actionSortByVote, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByVote );
+  connect( actionSortByStatus, &QAction::triggered, mModelProxy, &QgsPluginSortFilterProxyModel::sortPluginsByStatus );
 
   // get the QgsSettings group from the installer
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
+  QgsSettings settings;
+
+  // Initialize the "Install from ZIP" tab widgets
+  mZipFileWidget->setDefaultRoot( settings.value( settingsGroup + "/lastZipDirectory", "." ).toString() );
+  mZipFileWidget->setFilter( tr( "Plugin packages (*.zip *.ZIP)" ) );
+  connect( mZipFileWidget, &QgsFileWidget::fileChanged, this, &QgsPluginManager::mZipFileWidget_fileChanged );
+  connect( buttonInstallFromZip, &QPushButton::clicked, this, &QgsPluginManager::buttonInstallFromZip_clicked );
 
   // Initialize list of allowed checking intervals
   mCheckingOnStartIntervals << 0 << 1 << 3 << 7 << 14 << 30;
 
   // Initialize the "Settings" tab widgets
-  QgsSettings settings;
   if ( settings.value( settingsGroup + "/checkOnStart", false ).toBool() )
   {
     ckbCheckUpdates->setChecked( true );
@@ -208,7 +232,6 @@ void QgsPluginManager::setPythonUtils( QgsPythonUtils *pythonUtils )
   {
     ckbDeprecated->setChecked( true );
   }
-
 
   int interval = settings.value( settingsGroup + "/checkOnStartInterval", "" ).toInt();
   int indx = mCheckingOnStartIntervals.indexOf( interval ); // if none found, just use -1 index.
@@ -503,7 +526,7 @@ void QgsPluginManager::reloadModelData()
       QString status = it->value( QStringLiteral( "status" ) );
       QString error = it->value( QStringLiteral( "error" ) );
 
-      QStandardItem *mypDetailItem = new QStandardItem( pluginName.left( 32 ) );
+      QStandardItem *mypDetailItem = new QStandardItem( pluginName );
 
       mypDetailItem->setData( baseName, PLUGIN_BASE_NAME_ROLE );
       mypDetailItem->setData( status, PLUGIN_STATUS_ROLE );
@@ -514,7 +537,6 @@ void QgsPluginManager::reloadModelData()
       mypDetailItem->setData( it->value( QStringLiteral( "downloads" ) ).rightJustified( 10, '0' ), PLUGIN_DOWNLOADS_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "zip_repository" ) ), PLUGIN_REPOSITORY_ROLE );
       mypDetailItem->setData( it->value( QStringLiteral( "average_vote" ) ), PLUGIN_VOTE_ROLE );
-      mypDetailItem->setData( it->value( QStringLiteral( "trusted" ) ), PLUGIN_TRUSTED_ROLE );
 
       if ( QFileInfo( iconPath ).isFile() )
       {
@@ -621,20 +643,19 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     return;
   }
 
-  QString html = QLatin1String( "" );
-  html += "<style>"
-          "  body, table {"
-          "    padding:0px;"
-          "    margin:0px;"
-          "    font-family:verdana;"
-          "    font-size: 10pt;"
-          "  }"
-          "  div#votes {"
-          "    width:360px;"
-          "    margin-left:98px;"
-          "    padding-top:3px;"
-          "  }"
-          "</style>";
+  QString html = "<style>"
+                 "  body, table {"
+                 "    padding:0px;"
+                 "    margin:0px;"
+                 "    font-family:verdana;"
+                 "    font-size: 10pt;"
+                 "  }"
+                 "  div#votes {"
+                 "    width:360px;"
+                 "    margin-left:98px;"
+                 "    padding-top:3px;"
+                 "  }"
+                 "</style>";
 
   if ( !metadata->value( QStringLiteral( "plugin_id" ) ).isEmpty() )
   {
@@ -698,8 +719,8 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     voteLabel->show();
     voteSlider->show();
     voteSubmit->show();
-    QgsDebugMsg( QString( "vote slider:%1" ).arg( qRound( metadata->value( "average_vote" ).toFloat() ) ) );
-    voteSlider->setValue( qRound( metadata->value( "average_vote" ).toFloat() ) );
+    QgsDebugMsg( QString( "vote slider:%1" ).arg( std::round( metadata->value( "average_vote" ).toFloat() ) ) );
+    voteSlider->setValue( std::round( metadata->value( "average_vote" ).toFloat() ) );
     mCurrentPluginId = metadata->value( "plugin_id" ).toInt();
   }
   else
@@ -779,13 +800,11 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
                      "</table>" ).arg( tr( "This plugin is deprecated" ) );
   }
 
-  if ( metadata->value( QStringLiteral( "trusted" ) ) == QLatin1String( "true" ) )
+  if ( metadata->value( QStringLiteral( "readonly" ) ) == QLatin1String( "true" ) )
   {
-    html += QString( "<table bgcolor=\"#90EE90\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
-                     "  <tr><td width=\"100%\" style=\"color:#660000\">"
-                     "    <img src=\"qrc:/images/themes/default/mIconSuccess.svg\" width=\"32\"><b>%1</b>"
-                     "  </td></tr>"
-                     "</table>" ).arg( tr( "This plugin is trusted" ) );
+    html += QString( "<table bgcolor=\"#90EEE9\" cellspacing=\"2\" cellpadding=\"2\" width=\"100%\">"
+                     "  <tr><td width=\"100%\" style=\"color:#660000\"><b>%1</b></td></tr>"
+                     "</table>" ).arg( tr( "This is a core plugin, so you can't uninstall it" ) );
   }
 
   // Now the metadata
@@ -899,7 +918,7 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   if ( ! metadata->value( QStringLiteral( "changelog" ) ).isEmpty() )
   {
     html += QLatin1String( "<br/>" );
-    QString changelog = tr( "changelog:<br/>%1 <br/>" ).arg( metadata->value( QStringLiteral( "changelog" ) ) );
+    QString changelog = QStringLiteral( "%1:<br/>%2 <br/>" ).arg( tr( "Changelog" ), metadata->value( QStringLiteral( "changelog" ) ) );
     html += changelog.replace( '\n', QLatin1String( "<br/>" ) );
   }
 
@@ -984,9 +1003,6 @@ const QMap<QString, QString> *QgsPluginManager::pluginMetadata( const QString &k
   return nullptr;
 }
 
-
-
-//! Clear the repository listWidget
 void QgsPluginManager::clearRepositoryList()
 {
   treeRepositories->clear();
@@ -999,9 +1015,6 @@ void QgsPluginManager::clearRepositoryList()
   }
 }
 
-
-
-//! Add repository to the repository listWidget
 void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &repository )
 {
   // If it's the second item on the tree, change the button text to plural form and add the filter context menu
@@ -1010,12 +1023,12 @@ void QgsPluginManager::addToRepositoryList( const QMap<QString, QString> &reposi
     buttonRefreshRepos->setText( tr( "Reload all repositories" ) );
     QAction *actionEnableThisRepositoryOnly = new QAction( tr( "Only show plugins from selected repository" ), treeRepositories );
     treeRepositories->addAction( actionEnableThisRepositoryOnly );
-    connect( actionEnableThisRepositoryOnly, SIGNAL( triggered() ), this, SLOT( setRepositoryFilter() ) );
+    connect( actionEnableThisRepositoryOnly, &QAction::triggered, this, &QgsPluginManager::setRepositoryFilter );
     treeRepositories->setContextMenuPolicy( Qt::ActionsContextMenu );
     QAction *actionClearFilter = new QAction( tr( "Clear filter" ), treeRepositories );
     actionClearFilter->setEnabled( repository.value( QStringLiteral( "inspection_filter" ) ) == QLatin1String( "true" ) );
     treeRepositories->addAction( actionClearFilter );
-    connect( actionClearFilter, SIGNAL( triggered() ), this, SLOT( clearRepositoryFilter() ) );
+    connect( actionClearFilter, &QAction::triggered, this, &QgsPluginManager::clearRepositoryFilter );
   }
 
   QString key = repository.value( QStringLiteral( "name" ) );
@@ -1092,14 +1105,16 @@ void QgsPluginManager::reject()
 
 void QgsPluginManager::setCurrentTab( int idx )
 {
-  if ( idx == ( mOptionsListWidget->count() - 1 ) )
+  if ( idx == PLUGMAN_TAB_SETTINGS )
   {
-    QgsDebugMsg( "Switching current tab to Settings" );
+    mOptionsStackedWidget->setCurrentIndex( 2 );
+  }
+  else if ( idx == PLUGMAN_TAB_INSTALL_FROM_ZIP )
+  {
     mOptionsStackedWidget->setCurrentIndex( 1 );
   }
   else
   {
-    QgsDebugMsg( "Switching current tab to Plugins" );
     mOptionsStackedWidget->setCurrentIndex( 0 );
 
     QStringList acceptedStatuses;
@@ -1140,7 +1155,7 @@ void QgsPluginManager::setCurrentTab( int idx )
     mModelProxy->setAcceptedStatuses( acceptedStatuses );
 
     // load tab description HTML to the detail browser
-    QString tabInfoHTML = QLatin1String( "" );
+    QString tabInfoHTML;
     QMap<QString, QString>::const_iterator it = mTabDescriptions.constFind( tabTitle );
     if ( it != mTabDescriptions.constEnd() )
     {
@@ -1171,13 +1186,13 @@ void QgsPluginManager::currentPluginChanged( const QModelIndex &index )
   if ( index.column() == 0 )
   {
     // Do exactly the same as if a plugin was clicked
-    on_vwPlugins_clicked( index );
+    vwPlugins_clicked( index );
   }
 }
 
 
 
-void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &index )
+void QgsPluginManager::vwPlugins_clicked( const QModelIndex &index )
 {
   if ( index.column() == 0 )
   {
@@ -1198,7 +1213,7 @@ void QgsPluginManager::on_vwPlugins_clicked( const QModelIndex &index )
 
 
 
-void QgsPluginManager::on_vwPlugins_doubleClicked( const QModelIndex &index )
+void QgsPluginManager::vwPlugins_doubleClicked( const QModelIndex &index )
 {
   if ( index.column() == 0 )
   {
@@ -1244,7 +1259,7 @@ void QgsPluginManager::sendVote( int pluginId, int vote )
   }
 }
 
-void QgsPluginManager::on_wvDetails_linkClicked( const QUrl &url )
+void QgsPluginManager::wvDetails_linkClicked( const QUrl &url )
 {
   if ( url.scheme() == QLatin1String( "rpc2" ) )
   {
@@ -1261,7 +1276,7 @@ void QgsPluginManager::on_wvDetails_linkClicked( const QUrl &url )
 }
 
 
-void QgsPluginManager::on_leFilter_textChanged( QString text )
+void QgsPluginManager::leFilter_textChanged( QString text )
 {
   if ( text.startsWith( QLatin1String( "tag:" ), Qt::CaseInsensitive ) )
   {
@@ -1283,28 +1298,43 @@ void QgsPluginManager::on_leFilter_textChanged( QString text )
 
 
 
-void QgsPluginManager::on_buttonUpgradeAll_clicked()
+void QgsPluginManager::buttonUpgradeAll_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().upgradeAllUpgradeable()" ) );
 }
 
 
 
-void QgsPluginManager::on_buttonInstall_clicked()
+void QgsPluginManager::buttonInstall_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
 }
 
 
 
-void QgsPluginManager::on_buttonUninstall_clicked()
+void QgsPluginManager::buttonUninstall_clicked()
 {
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().uninstallPlugin('%1')" ).arg( mCurrentlyDisplayedPlugin ) );
 }
 
 
 
-void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
+void QgsPluginManager::mZipFileWidget_fileChanged( const QString &filePath )
+{
+  buttonInstallFromZip->setEnabled( QFileInfo( filePath ).isFile() );
+}
+
+
+
+void QgsPluginManager::buttonInstallFromZip_clicked()
+{
+  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile('%1')" ).arg( mZipFileWidget->filePath() ) );
+  mZipFileWidget->setFilePath( "" );
+}
+
+
+
+void QgsPluginManager::treeRepositories_itemSelectionChanged()
 {
   buttonEditRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
   buttonDeleteRep->setEnabled( ! treeRepositories->selectedItems().isEmpty() );
@@ -1312,9 +1342,9 @@ void QgsPluginManager::on_treeRepositories_itemSelectionChanged()
 
 
 
-void QgsPluginManager::on_treeRepositories_doubleClicked( const QModelIndex & )
+void QgsPluginManager::treeRepositories_doubleClicked( const QModelIndex & )
 {
-  on_buttonEditRep_clicked();
+  buttonEditRep_clicked();
 }
 
 
@@ -1341,7 +1371,7 @@ void QgsPluginManager::clearRepositoryFilter()
 
 
 
-void QgsPluginManager::on_buttonRefreshRepos_clicked()
+void QgsPluginManager::buttonRefreshRepos_clicked()
 {
   QgsDebugMsg( "Refreshing repositories..." );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().reloadAndExportData()" ) );
@@ -1349,7 +1379,7 @@ void QgsPluginManager::on_buttonRefreshRepos_clicked()
 
 
 
-void QgsPluginManager::on_buttonAddRep_clicked()
+void QgsPluginManager::buttonAddRep_clicked()
 {
   QgsDebugMsg( "Adding repository connection..." );
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().addRepository()" ) );
@@ -1357,7 +1387,7 @@ void QgsPluginManager::on_buttonAddRep_clicked()
 
 
 
-void QgsPluginManager::on_buttonEditRep_clicked()
+void QgsPluginManager::buttonEditRep_clicked()
 {
   QTreeWidgetItem *current = treeRepositories->currentItem();
   if ( current )
@@ -1371,7 +1401,7 @@ void QgsPluginManager::on_buttonEditRep_clicked()
 
 
 
-void QgsPluginManager::on_buttonDeleteRep_clicked()
+void QgsPluginManager::buttonDeleteRep_clicked()
 {
   QTreeWidgetItem *current = treeRepositories->currentItem();
   if ( current )
@@ -1385,7 +1415,7 @@ void QgsPluginManager::on_buttonDeleteRep_clicked()
 
 
 
-void QgsPluginManager::on_ckbExperimental_toggled( bool state )
+void QgsPluginManager::ckbExperimental_toggled( bool state )
 {
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
@@ -1395,7 +1425,7 @@ void QgsPluginManager::on_ckbExperimental_toggled( bool state )
   QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().exportPluginsToManager()" ) );
 }
 
-void QgsPluginManager::on_ckbDeprecated_toggled( bool state )
+void QgsPluginManager::ckbDeprecated_toggled( bool state )
 {
   QString settingsGroup;
   QgsPythonRunner::eval( QStringLiteral( "pyplugin_installer.instance().exportSettingsGroup()" ), settingsGroup );
@@ -1542,7 +1572,7 @@ void QgsPluginManager::updateWindowTitle()
   if ( curitem )
   {
     QString title = QStringLiteral( "%1 | %2" ).arg( tr( "Plugins" ), curitem->text() );
-    if ( mOptionsListWidget->currentRow() < mOptionsListWidget->count() - 1 )
+    if ( mOptionsListWidget->currentRow() < mOptionsListWidget->count() - 2 && mModelPlugins )
     {
       // if it's not the Settings tab, add the plugin count
       title += QStringLiteral( " (%3)" ).arg( mModelProxy->countWithCurrentStatus() );
@@ -1582,4 +1612,7 @@ void QgsPluginManager::pushMessage( const QString &text, QgsMessageBar::MessageL
   msgBar->pushMessage( text, level, duration );
 }
 
-
+void QgsPluginManager::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins.html" ) );
+}

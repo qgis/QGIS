@@ -19,6 +19,7 @@
 #define QGSAUTHCERTIFICATEINFO_H
 
 #include <QFile>
+#include "qgis.h"
 
 #ifndef QT_NO_SSL
 #include <QtCrypto>
@@ -31,7 +32,8 @@
 #include "qgsauthcertutils.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for viewing detailed info on a certificate and its hierarchical trust chain
  */
 class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
@@ -41,7 +43,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
   public:
     explicit QgsAuthCertInfo( const QSslCertificate &cert,
                               bool manageCertTrust = false,
-                              QWidget *parent = nullptr,
+                              QWidget *parent SIP_TRANSFERTHIS = 0,
                               const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
@@ -53,7 +55,7 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
     void updateCurrentCert( QTreeWidgetItem *item );
 
-    void on_btnSaveTrust_clicked();
+    void btnSaveTrust_clicked();
 
     void currentPolicyIndexChanged( int indx );
 
@@ -134,7 +136,8 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain
  */
 class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
@@ -145,21 +148,22 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
 
     /**
      * Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
-     * @param cert Certificate object
-     * @param manageCertTrust Whether to show widgets to manage the trust policy of certs in hierarchy
-     * @param parent Parent widget
-     * @param connectionCAs List of hierarchical certificates in a connection
+     * \param cert Certificate object
+     * \param manageCertTrust Whether to show widgets to manage the trust policy of certs in hierarchy
+     * \param parent Parent widget
+     * \param connectionCAs List of hierarchical certificates in a connection
      */
     explicit QgsAuthCertInfoDialog( const QSslCertificate &cert,
                                     bool manageCertTrust,
-                                    QWidget *parent = nullptr,
+                                    QWidget *parent SIP_TRANSFERTHIS = 0,
                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     //! Get access to embedded info widget
     QgsAuthCertInfo *certInfoWidget() { return mCertInfoWdgt; }
 
-    /** Whether the trust cache has been rebuilt
-     * @note This happens when a trust policy has been adjusted for any cert in the hierarchy
+    /**
+     * Whether the trust cache has been rebuilt
+     * \note This happens when a trust policy has been adjusted for any cert in the hierarchy
      */
     bool trustCacheRebuilt() { return mCertInfoWdgt->trustCacheRebuilt(); }
 

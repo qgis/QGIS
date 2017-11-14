@@ -20,7 +20,7 @@ ASTYLEDIFF=/tmp/astyle.diff
 
 
 if [[ ! -z  $TRAVIS_PULL_REQUEST_BRANCH  ]]; then
-  # if on a PR, just analyse the changed files
+  # if on a PR, just analyze the changed files
   echo "TRAVIS PR BRANCH: $TRAVIS_PULL_REQUEST_BRANCH"
   FILES=$(git diff --diff-filter=AM --name-only $(git merge-base HEAD master) | tr '\n' ' ' )
 elif [[ ! -z  $TRAVIS_COMMIT_RANGE  ]]; then
@@ -36,7 +36,7 @@ for f in $FILES; do
 
 	echo "Checking $f" >>/tmp/ctest-important.log
 	case "$f" in
-	src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|scripts/customwidget_template*)
+	src/core/gps/qextserialport/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|src/3d/poly2tri/*|scripts/customwidget_template*)
 		echo "$f skipped"
 		continue
 		;;

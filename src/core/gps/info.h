@@ -64,8 +64,8 @@ typedef struct _nmeaPOS
 
 /**
  * Information about satellite
- * @see nmeaSATINFO
- * @see nmeaGPGSV
+ * \see nmeaSATINFO
+ * \see nmeaGPGSV
  */
 typedef struct _nmeaSATELLITE
 {
@@ -79,8 +79,8 @@ typedef struct _nmeaSATELLITE
 
 /**
  * Information about all satellites in view
- * @see nmeaINFO
- * @see nmeaGPGSV
+ * \see nmeaINFO
+ * \see nmeaGPGSV
  */
 typedef struct _nmeaSATINFO
 {
@@ -93,8 +93,8 @@ typedef struct _nmeaSATINFO
 /**
  * Summary GPS information from all parsed packets,
  * used also for generating NMEA stream
- * @see nmea_parse
- * @see nmea_GPGGA2info, nmea_...2info
+ * \see nmea_parse
+ * \see nmea_GPGGA2info, nmea_...2info
  */
 typedef struct _nmeaINFO
 {

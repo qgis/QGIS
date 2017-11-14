@@ -23,14 +23,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 
-QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings()
-  : mValid( false )
-  , mEnabled( false )
-  , mType( Vertex )
-  , mTolerance( 0 )
-  , mUnits( QgsTolerance::Pixels )
-{}
-
 
 QgsSnappingConfig::IndividualLayerSettings::IndividualLayerSettings( bool enabled, SnappingType type, double tolerance, QgsTolerance::UnitType units )
   : mValid( true )
@@ -265,7 +257,7 @@ QgsSnappingConfig::IndividualLayerSettings QgsSnappingConfig::individualLayerSet
 
 void QgsSnappingConfig::setIndividualLayerSettings( QgsVectorLayer *vl, const IndividualLayerSettings &individualLayerSettings )
 {
-  if ( !vl || mIndividualLayerSettings.value( vl ) == individualLayerSettings )
+  if ( !vl || !vl->isSpatial() || mIndividualLayerSettings.value( vl ) == individualLayerSettings )
   {
     return;
   }
@@ -354,12 +346,13 @@ void QgsSnappingConfig::writeProject( QDomDocument &doc )
   snapSettingsElem.setAttribute( QStringLiteral( "intersection-snapping" ), QString::number( mIntersectionSnapping ) );
 
   QDomElement ilsElement = doc.createElement( QStringLiteral( "individual-layer-settings" ) );
-  Q_FOREACH ( QgsVectorLayer *vl, mIndividualLayerSettings.keys() )
+  QHash<QgsVectorLayer *, IndividualLayerSettings>::const_iterator layerIt = mIndividualLayerSettings.constBegin();
+  for ( ; layerIt != mIndividualLayerSettings.constEnd(); ++layerIt )
   {
-    IndividualLayerSettings setting = mIndividualLayerSettings.value( vl );
+    const IndividualLayerSettings &setting = layerIt.value();
 
     QDomElement layerElement = doc.createElement( QStringLiteral( "layer-setting" ) );
-    layerElement.setAttribute( QStringLiteral( "id" ), vl->id() );
+    layerElement.setAttribute( QStringLiteral( "id" ), layerIt.key()->id() );
     layerElement.setAttribute( QStringLiteral( "enabled" ), QString::number( setting.enabled() ) );
     layerElement.setAttribute( QStringLiteral( "type" ), ( int )setting.type() );
     layerElement.setAttribute( QStringLiteral( "tolerance" ), setting.tolerance() );
@@ -382,7 +375,7 @@ bool QgsSnappingConfig::addLayers( const QList<QgsMapLayer *> &layers )
   Q_FOREACH ( QgsMapLayer *ml, layers )
   {
     QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( ml );
-    if ( vl )
+    if ( vl && vl->isSpatial() )
     {
       mIndividualLayerSettings.insert( vl, IndividualLayerSettings( enabled, type, tolerance, units ) );
       changed = true;
@@ -408,13 +401,13 @@ bool QgsSnappingConfig::removeLayers( const QList<QgsMapLayer *> &layers )
 
 void QgsSnappingConfig::readLegacySettings()
 {
+  //
   mMode = ActiveLayer;
-  mIndividualLayerSettings.clear();
 
   QString snapMode = mProject->readEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/SnappingMode" ) );
 
   mTolerance = mProject->readDoubleEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapTolerance" ), 0 );
-  mUnits =  static_cast< QgsTolerance::UnitType >( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), QgsTolerance::ProjectUnits ) );
+  mUnits = static_cast< QgsTolerance::UnitType >( mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/DefaultSnapToleranceUnit" ), QgsTolerance::ProjectUnits ) );
 
   mIntersectionSnapping = mProject->readNumEntry( QStringLiteral( "Digitizing" ), QStringLiteral( "/IntersectionSnapping" ), 0 );
 
@@ -449,7 +442,7 @@ void QgsSnappingConfig::readLegacySettings()
   for ( ; layerIt != layerIdList.constEnd(); ++layerIt, ++tolIt, ++tolUnitIt, ++snapIt, ++enabledIt )
   {
     QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mProject->mapLayer( *layerIt ) );
-    if ( !vlayer || !vlayer->hasGeometryType() )
+    if ( !vlayer || !vlayer->isSpatial() )
       continue;
 
     SnappingType t( *snapIt == QLatin1String( "to_vertex" ) ? Vertex :

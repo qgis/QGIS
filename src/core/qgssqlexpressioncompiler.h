@@ -16,17 +16,22 @@
 #ifndef QGSSQLEXPRESSIONCOMPILER_H
 #define QGSSQLEXPRESSIONCOMPILER_H
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
-#include "qgsexpression.h"
 #include "qgsfields.h"
 
-/** \ingroup core
+class QgsExpression;
+class QgsExpressionNode;
+
+/**
+ * \ingroup core
  * \class QgsSqlExpressionCompiler
  * \brief Generic expression compiler for translation to provider specific SQL WHERE clauses.
  *
  * This class is designed to be overridden by providers to take advantage of expression compilation,
  * so that feature requests can take advantage of the provider's native filtering support.
- * \note Added in version 2.14
+ * \since QGIS 2.14
  * \note Not part of stable API, may change in future versions of QGIS
  * \note Not available in Python bindings
  */
@@ -44,7 +49,8 @@ class CORE_EXPORT QgsSqlExpressionCompiler
       Fail //!< Provider cannot handle expression
     };
 
-    /** Enumeration of flags for how provider handles SQL clauses
+    /**
+     * Enumeration of flags for how provider handles SQL clauses
      */
     enum Flag
     {
@@ -56,57 +62,65 @@ class CORE_EXPORT QgsSqlExpressionCompiler
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    /** Constructor for expression compiler.
-     * @param fields fields from provider
-     * @param flags flags which control how expression is compiled
+    /**
+     * Constructor for expression compiler.
+     * \param fields fields from provider
+     * \param flags flags which control how expression is compiled
      */
     explicit QgsSqlExpressionCompiler( const QgsFields &fields, QgsSqlExpressionCompiler::Flags flags = Flags() );
     virtual ~QgsSqlExpressionCompiler() = default;
 
-    /** Compiles an expression and returns the result of the compilation.
+    /**
+     * Compiles an expression and returns the result of the compilation.
      */
     virtual Result compile( const QgsExpression *exp );
 
-    /** Returns the compiled expression string for use by the provider.
+    /**
+     * Returns the compiled expression string for use by the provider.
      */
-    virtual QString result() { return mResult; }
+    virtual QString result();
 
   protected:
 
-    /** Returns a quoted column identifier, in the format expected by the provider.
+    /**
+     * Returns a quoted column identifier, in the format expected by the provider.
      * Derived classes should override this if special handling of column identifiers
      * is required.
-     * @see quotedValue()
+     * \see quotedValue()
      */
     virtual QString quotedIdentifier( const QString &identifier );
 
-    /** Returns a quoted attribute value, in the format expected by the provider.
+    /**
+     * Returns a quoted attribute value, in the format expected by the provider.
      * Derived classes should override this if special handling of attribute values is required.
-     * @param value value to quote
-     * @param ok wil be set to true if value can be compiled
-     * @see quotedIdentifier()
+     * \param value value to quote
+     * \param ok wil be set to true if value can be compiled
+     * \see quotedIdentifier()
      */
     virtual QString quotedValue( const QVariant &value, bool &ok );
 
-    /** Compiles an expression node and returns the result of the compilation.
-     * @param node expression node to compile
-     * @param str string representing compiled node should be stored in this parameter
-     * @returns result of node compilation
+    /**
+     * Compiles an expression node and returns the result of the compilation.
+     * \param node expression node to compile
+     * \param str string representing compiled node should be stored in this parameter
+     * \returns result of node compilation
      */
-    virtual Result compileNode( const QgsExpression::Node *node, QString &str );
+    virtual Result compileNode( const QgsExpressionNode *node, QString &str );
 
-    /** Return the SQL function for the expression function.
+    /**
+     * Return the SQL function for the expression function.
      * Derived classes should override this to help compile functions
-     * @param fnName expression function name
-     * @returns the SQL function name
+     * \param fnName expression function name
+     * \returns the SQL function name
      */
     virtual QString sqlFunctionFromFunctionName( const QString &fnName ) const;
 
-    /** Return the Arguments for SQL function for the expression function.
+    /**
+     * Return the Arguments for SQL function for the expression function.
      * Derived classes should override this to help compile functions
-     * @param fnName expression function name
-     * @param fnArgs arguments from expression
-     * @returns the arguments updated for SQL Function
+     * \param fnName expression function name
+     * \param fnArgs arguments from expression
+     * \returns the arguments updated for SQL Function
      */
     virtual QStringList sqlArgumentsFromFunctionName( const QString &fnName, const QStringList &fnArgs ) const;
 
@@ -114,14 +128,14 @@ class CORE_EXPORT QgsSqlExpressionCompiler
      * Casts a value to a real result. Subclasses which indicate the IntegerDivisionResultsInInteger
      * flag must reimplement this to cast a numeric value to a real type value so that division results
      * in a real value result instead of integer.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QString castToReal( const QString &value ) const;
 
     /**
      * Casts a value to a integer result. Subclasses must reimplement this to cast a numeric value to a integer
      * type value so that integer division results in a integer value result instead of real.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QString castToInt( const QString &value ) const;
 
@@ -132,7 +146,7 @@ class CORE_EXPORT QgsSqlExpressionCompiler
 
     Flags mFlags;
 
-    bool nodeIsNullLiteral( const QgsExpression::Node *node ) const;
+    bool nodeIsNullLiteral( const QgsExpressionNode *node ) const;
 
 };
 

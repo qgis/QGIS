@@ -23,7 +23,8 @@
 #include "qgsserverexception.h"
 #include "qgis_server.h"
 
-/** \ingroup server
+/**
+ * \ingroup server
  * \class  QgsMapServiceException
  * \brief Exception class for WMS service exceptions (for compatibility only).
  *

@@ -21,7 +21,7 @@
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
 #include "qgsfeatureiterator.h"
-#include "qgscsexception.h"
+#include "qgsexception.h"
 #include "qgssymbollayerutils.h"
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"
@@ -33,9 +33,13 @@ QgsMapCanvasAnnotationItem::QgsMapCanvasAnnotationItem( QgsAnnotation *annotatio
   , mAnnotation( annotation )
 {
   setFlag( QGraphicsItem::ItemIsSelectable, true );
+  if ( mapCanvas && !mapCanvas->annotationsVisible() )
+    setVisible( false );
+
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, [this] { update(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, [this] { updatePosition(); } );
   connect( mAnnotation, &QgsAnnotation::moved, this, &QgsMapCanvasAnnotationItem::setFeatureForMapPosition );
+  connect( mMapCanvas, &QgsMapCanvas::destinationCrsChanged, this, [ = ] { updatePosition(); } );
 
   connect( mAnnotation, &QgsAnnotation::appearanceChanged, this, &QgsMapCanvasAnnotationItem::updateBoundingRect );
 
@@ -57,7 +61,7 @@ void QgsMapCanvasAnnotationItem::updatePosition()
   if ( mAnnotation->hasFixedMapPosition() )
   {
     QgsCoordinateTransform t( mAnnotation->mapPositionCrs(), mMapCanvas->mapSettings().destinationCrs() );
-    QgsPoint coord = mAnnotation->mapPosition();
+    QgsPointXY coord = mAnnotation->mapPosition();
     try
     {
       coord = t.transform( coord );
@@ -106,10 +110,10 @@ void QgsMapCanvasAnnotationItem::updateBoundingRect()
 
     QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0.0, 0.0 );
 
-    double xMinPos = qMin( -halfSymbolSize, offset.x() - fillSymbolBleed );
-    double xMaxPos = qMax( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
-    double yMinPos = qMin( -halfSymbolSize, offset.y() - fillSymbolBleed );
-    double yMaxPos = qMax( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
+    double xMinPos = std::min( -halfSymbolSize, offset.x() - fillSymbolBleed );
+    double xMaxPos = std::max( halfSymbolSize, offset.x() + frameSize.width() + fillSymbolBleed );
+    double yMinPos = std::min( -halfSymbolSize, offset.y() - fillSymbolBleed );
+    double yMaxPos = std::max( halfSymbolSize, offset.y() + frameSize.height() + fillSymbolBleed );
     mBoundingRect = QRectF( xMinPos, yMinPos, xMaxPos - xMinPos, yMaxPos - yMinPos );
   }
 }
@@ -136,7 +140,7 @@ void QgsMapCanvasAnnotationItem::setFeatureForMapPosition()
     return;
 
   double halfIdentifyWidth = QgsMapTool::searchRadiusMU( mMapCanvas );
-  QgsPoint mapPosition = mAnnotation->mapPosition();
+  QgsPointXY mapPosition = mAnnotation->mapPosition();
 
   try
   {
@@ -183,7 +187,7 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   int cursorSensitivity = 7;
 
   if ( mAnnotation && mAnnotation->hasFixedMapPosition() &&
-       qAbs( itemPos.x() ) < cursorSensitivity && qAbs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
+       std::fabs( itemPos.x() ) < cursorSensitivity && std::fabs( itemPos.y() ) < cursorSensitivity ) //move map point if position is close to the origin
   {
     return MoveMapPosition;
   }
@@ -192,10 +196,10 @@ QgsMapCanvasAnnotationItem::MouseMoveAction QgsMapCanvasAnnotationItem::moveActi
   QSizeF frameSize = mAnnotation ? mAnnotation->frameSize() : QSizeF( 0, 0 );
 
   bool left, right, up, down;
-  left = qAbs( itemPos.x() - offset.x() ) < cursorSensitivity;
-  right = qAbs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
-  up = qAbs( itemPos.y() - offset.y() ) < cursorSensitivity;
-  down = qAbs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
+  left = std::fabs( itemPos.x() - offset.x() ) < cursorSensitivity;
+  right = std::fabs( itemPos.x() - ( offset.x() + frameSize.width() ) ) < cursorSensitivity;
+  up = std::fabs( itemPos.y() - offset.y() ) < cursorSensitivity;
+  down = std::fabs( itemPos.y() - ( offset.y() + frameSize.height() ) ) < cursorSensitivity;
 
   if ( left && up )
   {

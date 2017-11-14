@@ -25,11 +25,12 @@
 
 class QgsVectorLayer;
 
-typedef QList<int> QgsAttributeList;
-typedef QSet<int> QgsAttributeIds;
+typedef QList<int> QgsAttributeList SIP_SKIP;
+typedef QSet<int> QgsAttributeIds SIP_SKIP;
 typedef QMap<QgsFeatureId, QgsFeature> QgsFeatureMap;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsVectorLayerEditBuffer
  */
 class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
@@ -42,9 +43,10 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     virtual bool isModified() const;
 
 
-    /** Adds a feature
-        @param f feature to add
-        @return True in case of success and False in case of error
+    /**
+     * Adds a feature
+        \param f feature to add
+        \returns True in case of success and False in case of error
      */
     virtual bool addFeature( QgsFeature &f );
 
@@ -63,17 +65,19 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     //! Changed an attribute value (but does not commit it)
     virtual bool changeAttributeValue( QgsFeatureId fid, int field, const QVariant &newValue, const QVariant &oldValue = QVariant() );
 
-    /** Add an attribute field (but does not commit it)
+    /**
+     * Add an attribute field (but does not commit it)
         returns true if the field was added */
     virtual bool addAttribute( const QgsField &field );
 
     //! Delete an attribute field (but does not commit it)
     virtual bool deleteAttribute( int attr );
 
-    /** Renames an attribute field (but does not commit it)
-     * @param attr attribute index
-     * @param newName new name of field
-     * @note added in QGIS 2.16
+    /**
+     * Renames an attribute field (but does not commit it)
+     * \param attr attribute index
+     * \param newName new name of field
+     * \since QGIS 2.16
     */
     virtual bool renameAttribute( int attr, const QString &newName );
 
@@ -97,67 +101,78 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     //! Stop editing and discard the edits
     virtual void rollBack();
 
-    /** Returns a map of new features which are not committed.
-     * @see isFeatureAdded()
+    /**
+     * Returns a map of new features which are not committed.
+     * \see isFeatureAdded()
     */
     QgsFeatureMap addedFeatures() const { return mAddedFeatures; }
 
-    /** Returns true if the specified feature ID has been added but not committed.
-     * @param id feature ID
-     * @note added in QGIS 3.0
-     * @see addedFeatures()
+    /**
+     * Returns true if the specified feature ID has been added but not committed.
+     * \param id feature ID
+     * \since QGIS 3.0
+     * \see addedFeatures()
      */
     bool isFeatureAdded( QgsFeatureId id ) const { return mAddedFeatures.contains( id ); }
 
-    /** Returns a map of features with changed attributes values which are not committed.
-     * @see isFeatureAttributesChanged()
+    /**
+     * Returns a map of features with changed attributes values which are not committed.
+     * \see isFeatureAttributesChanged()
     */
     QgsChangedAttributesMap changedAttributeValues() const { return mChangedAttributeValues; }
 
-    /** Returns true if the specified feature ID has had an attribute changed but not committed.
-     * @param id feature ID
-     * @note added in QGIS 3.0
-     * @see changedAttributeValues()
+    /**
+     * Returns true if the specified feature ID has had an attribute changed but not committed.
+     * \param id feature ID
+     * \since QGIS 3.0
+     * \see changedAttributeValues()
      */
     bool isFeatureAttributesChanged( QgsFeatureId id ) const { return mChangedAttributeValues.contains( id ); }
 
-    /** Returns a list of deleted attributes fields which are not committed. The list is kept sorted.
-     * @see isAttributeDeleted()
+    /**
+     * Returns a list of deleted attributes fields which are not committed. The list is kept sorted.
+     * \see isAttributeDeleted()
     */
     QgsAttributeList deletedAttributeIds() const { return mDeletedAttributeIds; }
 
-    /** Returns true if the specified attribute has been deleted but not committed.
-     * @param index attribute index
-     * @note added in QGIS 3.0
-     * @see deletedAttributeIds()
+    /**
+     * Returns true if the specified attribute has been deleted but not committed.
+     * \param index attribute index
+     * \since QGIS 3.0
+     * \see deletedAttributeIds()
      */
     bool isAttributeDeleted( int index ) const { return mDeletedAttributeIds.contains( index ); }
 
-    /** Returns a list of added attributes fields which are not committed.
+    /**
+     * Returns a list of added attributes fields which are not committed.
      */
     QList<QgsField> addedAttributes() const { return mAddedAttributes; }
 
-    /** Returns a map of features with changed geometries which are not committed.
-     * @see hasFeatureGeometryChange()
+    /**
+     * Returns a map of features with changed geometries which are not committed.
+     * \see hasFeatureGeometryChange()
      */
     QgsGeometryMap changedGeometries() const { return mChangedGeometries; }
 
-    /** Returns true if the specified feature ID has had its geometry changed but not committed.
-     * @param id feature ID
-     * @note added in QGIS 3.0
-     * @see changedGeometries()
+    /**
+     * Returns true if the specified feature ID has had its geometry changed but not committed.
+     * \param id feature ID
+     * \since QGIS 3.0
+     * \see changedGeometries()
      */
     bool isFeatureGeometryChanged( QgsFeatureId id ) const { return mChangedGeometries.contains( id ); }
 
-    /** Returns a list of deleted feature IDs which are not committed.
-     * @see isFeatureDeleted()
+    /**
+     * Returns a list of deleted feature IDs which are not committed.
+     * \see isFeatureDeleted()
     */
     QgsFeatureIds deletedFeatureIds() const { return mDeletedFeatureIds; }
 
-    /** Returns true if the specified feature ID has been deleted but not committed.
-     * @param id feature ID
-     * @note added in QGIS 3.0
-     * @see deletedFeatureIds()
+    /**
+     * Returns true if the specified feature ID has been deleted but not committed.
+     * \param id feature ID
+     * \since QGIS 3.0
+     * \see deletedFeatureIds()
      */
     bool isFeatureDeleted( QgsFeatureId id ) const { return mDeletedFeatureIds.contains( id ); }
 
@@ -173,9 +188,10 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     void featureAdded( QgsFeatureId fid );
     void featureDeleted( QgsFeatureId fid );
 
-    /** Emitted when a feature's geometry is changed.
-     * @param fid feature ID
-     * @param geom new feature geometry
+    /**
+     * Emitted when a feature's geometry is changed.
+     * \param fid feature ID
+     * \param geom new feature geometry
      */
     void geometryChanged( QgsFeatureId fid, const QgsGeometry &geom );
 
@@ -183,10 +199,11 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     void attributeAdded( int idx );
     void attributeDeleted( int idx );
 
-    /** Emitted when an attribute has been renamed
-     * @param idx attribute index
-     * @param newName new attribute name
-     * @note added in QGSI 2.16
+    /**
+     * Emitted when an attribute has been renamed
+     * \param idx attribute index
+     * \param newName new attribute name
+     * \since QGIS 2.16
      */
     void attributeRenamed( int idx, const QString &newName );
 
@@ -194,10 +211,11 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     void committedAttributesDeleted( const QString &layerId, const QgsAttributeList &deletedAttributes );
     void committedAttributesAdded( const QString &layerId, const QList<QgsField> &addedAttributes );
 
-    /** Emitted after committing an attribute rename
-     * @param layerId ID of layer
-     * @param renamedAttributes map of field index to new name
-     * @note added in QGIS 2.16
+    /**
+     * Emitted after committing an attribute rename
+     * \param layerId ID of layer
+     * \param renamedAttributes map of field index to new name
+     * \since QGIS 2.16
      */
     void committedAttributesRenamed( const QString &layerId, const QgsFieldNameMap &renamedAttributes );
     void committedFeaturesAdded( const QString &layerId, const QgsFeatureList &addedFeatures );
@@ -207,7 +225,8 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
 
   protected:
 
-    QgsVectorLayerEditBuffer() : L( nullptr ) {}
+    //! Constructor for QgsVectorLayerEditBuffer
+    QgsVectorLayerEditBuffer() = default;
 
     void updateFields( QgsFields &fields );
 
@@ -241,7 +260,18 @@ class CORE_EXPORT QgsVectorLayerEditBuffer : public QObject
     friend class QgsVectorLayerUndoCommandDeleteAttribute;
     friend class QgsVectorLayerUndoCommandRenameAttribute;
 
-    /** Deleted feature IDs which are not committed.  Note a feature can be added and then deleted
+    friend class QgsVectorLayerUndoPassthroughCommand;
+    friend class QgsVectorLayerUndoPassthroughCommandAddFeatures;
+    friend class QgsVectorLayerUndoPassthroughCommandDeleteFeatures;
+    friend class QgsVectorLayerUndoPassthroughCommandChangeGeometry;
+    friend class QgsVectorLayerUndoPassthroughCommandChangeAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandAddAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandDeleteAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandRenameAttribute;
+    friend class QgsVectorLayerUndoPassthroughCommandUpdate;
+
+    /**
+     * Deleted feature IDs which are not committed.  Note a feature can be added and then deleted
         again before the change is committed - in that case the added feature would be removed
         from mAddedFeatures only and *not* entered here.
      */

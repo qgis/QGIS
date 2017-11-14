@@ -28,22 +28,24 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QString &layerName, cons
   , mLayerName( layerName )
 {
   setupUi( this );
+  connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, &QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged );
+  connect( mDatumTransformTreeWidget, &QTreeWidget::currentItemChanged, this, &QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
   updateTitle();
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DatumTransformDialog/geometry" ) ).toByteArray() );
-  mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "/Windows/DatumTransformDialog/hideDeprecated" ), false ).toBool() );
-  mRememberSelectionCheckBox->setChecked( settings.value( QStringLiteral( "/Windows/DatumTransformDialog/rememberSelection" ), false ).toBool() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DatumTransformDialog/geometry" ) ).toByteArray() );
+  mHideDeprecatedCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), false ).toBool() );
+  mRememberSelectionCheckBox->setChecked( settings.value( QStringLiteral( "Windows/DatumTransformDialog/rememberSelection" ), false ).toBool() );
 
-  mLabelSrcDescription->setText( QLatin1String( "" ) );
-  mLabelDstDescription->setText( QLatin1String( "" ) );
+  mLabelSrcDescription->clear();
+  mLabelDstDescription->clear();
 
   for ( int i = 0; i < 2; i++ )
   {
-    mDatumTransformTreeWidget->setColumnWidth( i, settings.value( QStringLiteral( "/Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mDatumTransformTreeWidget->columnWidth( i ) ).toInt() );
+    mDatumTransformTreeWidget->setColumnWidth( i, settings.value( QStringLiteral( "Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mDatumTransformTreeWidget->columnWidth( i ) ).toInt() );
   }
 
   load();
@@ -126,13 +128,13 @@ void QgsDatumTransformDialog::load()
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DatumTransformDialog/geometry" ), saveGeometry() );
-  settings.setValue( QStringLiteral( "/Windows/DatumTransformDialog/hideDeprecated" ), mHideDeprecatedCheckBox->isChecked() );
-  settings.setValue( QStringLiteral( "/Windows/DatumTransformDialog/rememberSelection" ), mRememberSelectionCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/hideDeprecated" ), mHideDeprecatedCheckBox->isChecked() );
+  settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/rememberSelection" ), mRememberSelectionCheckBox->isChecked() );
 
   for ( int i = 0; i < 2; i++ )
   {
-    settings.setValue( QStringLiteral( "/Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mDatumTransformTreeWidget->columnWidth( i ) );
+    settings.setValue( QStringLiteral( "Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mDatumTransformTreeWidget->columnWidth( i ) );
   }
 
   QApplication::restoreOverrideCursor();
@@ -224,12 +226,12 @@ bool QgsDatumTransformDialog::testGridShiftFileAvailability( QTreeWidgetItem *it
   return true;
 }
 
-void QgsDatumTransformDialog::on_mHideDeprecatedCheckBox_stateChanged( int )
+void QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged( int )
 {
   load();
 }
 
-void QgsDatumTransformDialog::on_mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
+void QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem * )
 {
   if ( !current )
     return;

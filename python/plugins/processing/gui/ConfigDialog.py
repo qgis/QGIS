@@ -32,7 +32,6 @@ import os
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import Qt, QEvent
 from qgis.PyQt.QtWidgets import (QFileDialog,
-                                 QDialog,
                                  QStyle,
                                  QMessageBox,
                                  QStyledItemDelegate,
@@ -48,8 +47,11 @@ from qgis.PyQt.QtGui import (QIcon,
                              QStandardItem,
                              QCursor)
 
-from qgis.gui import QgsDoubleSpinBox, QgsSpinBox
+from qgis.gui import (QgsDoubleSpinBox,
+                      QgsSpinBox,
+                      QgsOptionsPageWidget)
 from qgis.core import NULL, QgsApplication, QgsSettings
+from qgis.utils import OverrideCursor
 
 from processing.core.ProcessingConfig import (ProcessingConfig,
                                               settingsWatcher,
@@ -64,13 +66,31 @@ WIDGET, BASE = uic.loadUiType(
     os.path.join(pluginPath, 'ui', 'DlgConfig.ui'))
 
 
+class ConfigOptionsPage(QgsOptionsPageWidget):
+
+    def __init__(self, parent):
+        super(ConfigOptionsPage, self).__init__(parent)
+        self.config_widget = ConfigDialog()
+        layout = QHBoxLayout()
+        layout.setContentsMargins(0, 0, 0, 0)
+        layout.setMargin(0)
+        self.setLayout(layout)
+        layout.addWidget(self.config_widget)
+        self.setObjectName('processingOptions')
+
+    def apply(self):
+        self.config_widget.accept()
+
+    def helpKey(self):
+        return 'processing/index.html'
+
+
 class ConfigDialog(BASE, WIDGET):
 
-    def __init__(self, toolbox):
+    def __init__(self):
         super(ConfigDialog, self).__init__(None)
         self.setupUi(self)
 
-        self.toolbox = toolbox
         self.groupIcon = QIcon()
         self.groupIcon.addPixmap(self.style().standardPixmap(
             QStyle.SP_DirClosedIcon), QIcon.Normal, QIcon.Off)
@@ -142,6 +162,9 @@ class ConfigDialog(BASE, WIDGET):
             emptyItem.setEditable(False)
 
             rootItem.insertRow(0, [groupItem, emptyItem])
+            if not group in settings:
+                continue
+
             # add menu item only if it has any search matches
             for setting in settings[group]:
                 if setting.hidden or setting.name.startswith("MENU_"):
@@ -209,22 +232,21 @@ class ConfigDialog(BASE, WIDGET):
         widget.setLayout(layout)
         self.tree.setIndexWidget(emptyItem.index(), widget)
 
-        providers = Processing.providers
-        for provider in providers:
+        for provider in QgsApplication.processingRegistry().providers():
             providerDescription = provider.name()
             groupItem = QStandardItem(providerDescription)
             icon = provider.icon()
             groupItem.setIcon(icon)
             groupItem.setEditable(False)
 
-            for alg in provider.algs:
-                algItem = QStandardItem(alg.i18n_name or alg.name)
+            for alg in provider.algorithms():
+                algItem = QStandardItem(alg.displayName())
                 algItem.setIcon(icon)
                 algItem.setEditable(False)
                 try:
-                    settingMenu = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
-                    settingButton = ProcessingConfig.settings["BUTTON_" + alg.commandLineName()]
-                    settingIcon = ProcessingConfig.settings["ICON_" + alg.commandLineName()]
+                    settingMenu = ProcessingConfig.settings["MENU_" + alg.id()]
+                    settingButton = ProcessingConfig.settings["BUTTON_" + alg.id()]
+                    settingIcon = ProcessingConfig.settings["ICON_" + alg.id()]
                 except:
                     continue
                 self.items[settingMenu] = SettingItem(settingMenu)
@@ -252,17 +274,15 @@ class ConfigDialog(BASE, WIDGET):
         self.adjustColumns()
 
     def resetMenusToDefaults(self):
-        providers = Processing.providers
-        for provider in providers:
-            for alg in provider.algs:
-                d = defaultMenuEntries.get(alg.commandLineName(), "")
-                setting = ProcessingConfig.settings["MENU_" + alg.commandLineName()]
+        for provider in QgsApplication.processingRegistry().providers():
+            for alg in provider.algorithms():
+                d = defaultMenuEntries.get(alg.id(), "")
+                setting = ProcessingConfig.settings["MENU_" + alg.id()]
                 item = self.items[setting]
                 item.setData(d, Qt.EditRole)
         self.saveMenus = True
 
     def accept(self):
-        QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
         qsettings = QgsSettings()
         for setting in list(self.items.keys()):
             if setting.group != menusSettingsGroup or self.saveMenus:
@@ -276,10 +296,12 @@ class ConfigDialog(BASE, WIDGET):
                                             self.tr('Wrong value for parameter "{0}":\n\n{1}').format(setting.description, str(e)))
                         return
                 setting.save(qsettings)
-        Processing.updateAlgsList()
+
+        with OverrideCursor(Qt.WaitCursor):
+            for p in QgsApplication.processingRegistry().providers():
+                p.refreshAlgorithms()
+
         settingsWatcher.settingsChanged.emit()
-        QApplication.restoreOverrideCursor()
-        QDialog.accept(self)
 
     def itemExpanded(self, idx):
         if idx == self.menusItem.index():
@@ -386,7 +408,7 @@ class FileDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)
@@ -433,7 +455,7 @@ class MultipleDirectorySelector(QWidget):
 
         # create gui
         self.btnSelect = QToolButton()
-        self.btnSelect.setText(self.tr('...'))
+        self.btnSelect.setText('…')
         self.lineEdit = QLineEdit()
         self.hbl = QHBoxLayout()
         self.hbl.setMargin(0)

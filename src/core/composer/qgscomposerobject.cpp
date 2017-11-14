@@ -35,9 +35,9 @@ void QgsComposerObject::initPropertyDefinitions()
     { QgsComposerObject::TestProperty, QgsPropertyDefinition( "dataDefinedProperty", QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
     {
       QgsComposerObject::PresetPaperSize, QgsPropertyDefinition( "dataDefinedPaperSize", QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QLatin1String( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
-      "<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
-      "<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
-      "<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
+          "<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
+          "<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
+          "<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
                                                                                                                                                                                                      ) )
     },
     { QgsComposerObject::PaperWidth, QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
@@ -50,7 +50,8 @@ void QgsComposerObject::initPropertyDefinitions()
     { QgsComposerObject::ItemWidth, QgsPropertyDefinition( "dataDefinedWidth", QObject::tr( "Width" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsComposerObject::ItemHeight, QgsPropertyDefinition( "dataDefinedHeight", QObject::tr( "Height" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsComposerObject::ItemRotation, QgsPropertyDefinition( "dataDefinedRotation", QObject::tr( "Rotation angle" ), QgsPropertyDefinition::Rotation ) },
-    { QgsComposerObject::Transparency, QgsPropertyDefinition( "dataDefinedTransparency", QObject::tr( "Transparency" ), QgsPropertyDefinition::Transparency ) },
+    { QgsComposerObject::Transparency, QgsPropertyDefinition( "dataDefinedTransparency", QObject::tr( "Transparency" ), QgsPropertyDefinition::Opacity ) },
+    { QgsComposerObject::Opacity, QgsPropertyDefinition( "dataDefinedOpacity", QObject::tr( "Opacity" ), QgsPropertyDefinition::Opacity ) },
     { QgsComposerObject::BlendMode, QgsPropertyDefinition( "dataDefinedBlendMode", QObject::tr( "Blend mode" ), QgsPropertyDefinition::BlendMode ) },
     { QgsComposerObject::ExcludeFromExports, QgsPropertyDefinition( "dataDefinedExcludeExports", QObject::tr( "Exclude item from exports" ), QgsPropertyDefinition::Boolean ) },
     { QgsComposerObject::FrameColor, QgsPropertyDefinition( "dataDefinedFrameColor", QObject::tr( "Frame color" ), QgsPropertyDefinition::ColorWithAlpha ) },
@@ -117,7 +118,7 @@ bool QgsComposerObject::writeXml( QDomElement &elem, QDomDocument &doc ) const
   }
 
   QDomElement ddPropsElement = doc.createElement( QStringLiteral( "dataDefinedProperties" ) );
-  mDataDefinedProperties.writeXml( ddPropsElement, doc, sPropertyDefinitions );
+  mDataDefinedProperties.writeXml( ddPropsElement, sPropertyDefinitions );
   elem.appendChild( ddPropsElement );
 
   //custom properties
@@ -140,7 +141,15 @@ bool QgsComposerObject::readXml( const QDomElement &itemElem, const QDomDocument
   QDomNode propsNode = itemElem.namedItem( QStringLiteral( "dataDefinedProperties" ) );
   if ( !propsNode.isNull() )
   {
-    mDataDefinedProperties.readXml( propsNode.toElement(), doc, sPropertyDefinitions );
+    mDataDefinedProperties.readXml( propsNode.toElement(), sPropertyDefinitions );
+  }
+  if ( mDataDefinedProperties.isActive( QgsComposerObject::Transparency ) )
+  {
+    // upgrade transparency -> opacity
+    QString exp = mDataDefinedProperties.property( QgsComposerObject::Transparency ).asExpression();
+    exp = QStringLiteral( "100.0 - (%1)" ).arg( exp );
+    mDataDefinedProperties.setProperty( QgsComposerObject::Opacity, QgsProperty::fromExpression( exp ) );
+    mDataDefinedProperties.setProperty( QgsComposerObject::Transparency, QgsProperty() );
   }
 
   //custom properties

@@ -29,11 +29,13 @@
 #include "qgspallabeling.h"
 #include "qgsfontutils.h"
 #include "qgsrasterdataprovider.h"
+#include "qgsvectorlayerlabeling.h"
 
 //qgis unit test includes
 #include <qgsrenderchecker.h>
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the map rotation feature
  */
 class TestQgsMapRotation : public QObject
@@ -41,10 +43,6 @@ class TestQgsMapRotation : public QObject
     Q_OBJECT
   public:
     TestQgsMapRotation()
-      : mRasterLayer( 0 )
-      , mPointsLayer( 0 )
-      , mLinesLayer( 0 )
-      , mMapSettings( 0 )
     {
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
@@ -111,10 +109,7 @@ void TestQgsMapRotation::initTestCase()
   QgsFontUtils::loadStandardTestFonts( QStringList() << QStringLiteral( "Bold" ) );
 }
 
-TestQgsMapRotation::~TestQgsMapRotation()
-{
-
-}
+TestQgsMapRotation::~TestQgsMapRotation() = default;
 
 //runs after all tests
 void TestQgsMapRotation::cleanupTestCase()
@@ -203,13 +198,15 @@ void TestQgsMapRotation::linesLayer()
   mLinesLayer->loadNamedStyle( qml, success );
 
   //use test font
-  QgsPalLayerSettings palSettings;
-  palSettings.readFromLayer( mLinesLayer );
+  QVERIFY( mLinesLayer->labeling() );
+  QVERIFY( mLinesLayer->labeling()->type() == QLatin1String( "simple" ) );
+  const QgsVectorLayerSimpleLabeling *labeling = static_cast<const QgsVectorLayerSimpleLabeling *>( mLinesLayer->labeling() );
+  QgsPalLayerSettings palSettings = labeling->settings();
   QgsTextFormat format = palSettings.format();
   format.setFont( QgsFontUtils::getStandardTestFont( QStringLiteral( "Bold" ) ) );
   format.setSize( 16 );
   palSettings.setFormat( format );
-  palSettings.writeToLayer( mLinesLayer );
+  mLinesLayer->setLabeling( new QgsVectorLayerSimpleLabeling( palSettings ) );
 
   QVERIFY( success );
   mMapSettings->setExtent( mLinesLayer->extent() ); //QgsRectangle(-150,-150,150,150) );

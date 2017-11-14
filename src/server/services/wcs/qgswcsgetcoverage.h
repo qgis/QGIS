@@ -24,7 +24,8 @@
 namespace QgsWcs
 {
 
-  /** Output WCS GetCoverage response
+  /**
+   * Output WCS GetCoverage response
    */
   void writeGetCoverage( QgsServerInterface *serverIface, const QgsProject *project, const QString &version,
                          const QgsServerRequest &request, QgsServerResponse &response );
@@ -34,7 +35,6 @@ namespace QgsWcs
    */
   QByteArray getCoverageData( QgsServerInterface *serverIface, const QgsProject *project, const QgsServerRequest &request );
 
-} // samespace QgsWcs
+} // namespace QgsWcs
 
 #endif
-

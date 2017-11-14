@@ -23,7 +23,6 @@
 
 QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   : QDialog( parent )
-  , mSectionLimit( 0 )
 {
   setupUi( this );
   setWindowTitle( QStringLiteral( "Database styles manager" ) );
@@ -54,13 +53,13 @@ QgsLoadStyleFromDBDialog::QgsLoadStyleFromDBDialog( QWidget *parent )
   setTabOrder( mDeleteButton, mLoadButton );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/loadStyleFromDb/geometry" ) ).toByteArray() );
 }
 
 QgsLoadStyleFromDBDialog::~QgsLoadStyleFromDBDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/loadStyleFromDb/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/loadStyleFromDb/geometry" ), saveGeometry() );
 }
 
 void QgsLoadStyleFromDBDialog::initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit )
@@ -167,7 +166,7 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
   QString msgError;
   QString opInfo = QObject::tr( "Delete style %1 from %2" ).arg( mSelectedStyleName, mLayer->providerType() );
 
-  if ( QMessageBox::question( nullptr, QObject::tr( "Delete style" ),
+  if ( QMessageBox::question( nullptr, QObject::tr( "Delete Style" ),
                               QObject::tr( "Are you sure you want to delete the style %1?" ).arg( mSelectedStyleName ),
                               QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
     return;
@@ -193,7 +192,7 @@ void QgsLoadStyleFromDBDialog::deleteStyleFromDB()
     int sectionLimit = mLayer->listStylesInDatabase( ids, names, descriptions, errorMsg );
     if ( !errorMsg.isNull() )
     {
-      QgisApp::instance()->messageBar()->pushMessage( tr( "Error occurred retrieving styles from database" ), errorMsg, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
+      QgisApp::instance()->messageBar()->pushMessage( tr( "Error occurred while retrieving styles from database" ), errorMsg, QgsMessageBar::WARNING, QgisApp::instance()->messageTimeout() );
     }
     else
     {

@@ -23,8 +23,10 @@
 #include "qgseditorwidgetregistry.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsgui.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the save as dialog
  */
 class TestQgsVectorLayerSaveAsDialog : public QObject
@@ -45,11 +47,7 @@ class TestQgsVectorLayerSaveAsDialog : public QObject
     QgisApp *mQgisApp = nullptr;
 };
 
-TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog()
-  : mQgisApp( nullptr )
-{
-
-}
+TestQgsVectorLayerSaveAsDialog::TestQgsVectorLayerSaveAsDialog() = default;
 
 //runs before all tests
 void TestQgsVectorLayerSaveAsDialog::initTestCase()
@@ -59,7 +57,7 @@ void TestQgsVectorLayerSaveAsDialog::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   mQgisApp = new QgisApp();
-  QgsEditorWidgetRegistry::initEditors();
+  QgsGui::editorWidgetRegistry()->initEditors();
 }
 
 //runs after all tests

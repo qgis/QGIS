@@ -305,7 +305,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   if ( !index.isValid() )
   {
     QgsDebugMsg( "invalid index" );
-    return QString::null;
+    return QString();
   }
 
   QgsWkbTypes::Type wkbType = ( QgsWkbTypes::Type ) itemFromIndex( index.sibling( index.row(), DbtmType ) )->data( Qt::UserRole + 2 ).toInt();
@@ -313,7 +313,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   {
     QgsDebugMsg( "unknown geometry type" );
     // no geometry type selected
-    return QString::null;
+    return QString();
   }
 
   QStandardItem *pkItem = itemFromIndex( index.sibling( index.row(), DbtmPkCol ) );
@@ -325,7 +325,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
   {
     // no valid primary candidate selected
     QgsDebugMsg( "no pk candidate selected" );
-    return QString::null;
+    return QString();
   }
 
   QString ownerName = index.sibling( index.row(), DbtmOwner ).data( Qt::DisplayRole ).toString();
@@ -343,7 +343,7 @@ QString QgsOracleTableModel::layerURI( const QModelIndex &index, const QgsDataSo
     if ( !ok )
     {
       QgsDebugMsg( "srid not numeric" );
-      return QString::null;
+      return QString();
     }
   }
 

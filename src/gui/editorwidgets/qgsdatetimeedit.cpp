@@ -26,16 +26,13 @@
 
 QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   : QDateTimeEdit( parent )
-  , mAllowNull( true )
-  , mIsNull( true )
-  , mIsEmpty( false )
 {
   mClearButton = new QToolButton( this );
   mClearButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClearText.svg" ) ) );
   mClearButton->setCursor( Qt::ArrowCursor );
   mClearButton->setStyleSheet( QStringLiteral( "position: absolute; border: none; padding: 0px;" ) );
   mClearButton->hide();
-  connect( mClearButton, SIGNAL( clicked() ), this, SLOT( clear() ) );
+  connect( mClearButton, &QAbstractButton::clicked, this, &QgsDateTimeEdit::clear );
 
   mNullLabel = new QLineEdit( QgsApplication::nullRepresentation(), this );
   mNullLabel->setReadOnly( true );
@@ -45,13 +42,14 @@ QgsDateTimeEdit::QgsDateTimeEdit( QWidget *parent )
   setStyleSheet( QStringLiteral( ".QWidget, QLineEdit, QToolButton { padding-right: %1px; }" ).arg( mClearButton->sizeHint().width() + spinButtonWidth() + frameWidth() + 1 ) );
 
   QSize msz = minimumSizeHint();
-  setMinimumSize( qMax( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
-                  qMax( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
+  setMinimumSize( std::max( msz.width(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ),
+                  std::max( msz.height(), mClearButton->sizeHint().height() + frameWidth() * 2 + 2 ) );
 
-  connect( this, SIGNAL( dateTimeChanged( QDateTime ) ), this, SLOT( changed( QDateTime ) ) );
+  connect( this, &QDateTimeEdit::dateTimeChanged, this, &QgsDateTimeEdit::changed );
 
   // init with current time so mIsNull is properly initialized
   QDateTimeEdit::setDateTime( QDateTime::currentDateTime() );
+  setMinimumEditDateTime();
 }
 
 void QgsDateTimeEdit::setAllowNull( bool allowNull )

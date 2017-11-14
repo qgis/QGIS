@@ -38,7 +38,7 @@ def run_with_kwargs(task, password, result):
         return result
 
 
-def cancellable(task):
+def cancelable(task):
     while not task.isCanceled():
         pass
     if task.isCanceled():
@@ -58,40 +58,16 @@ def run_no_result(task):
     return
 
 
-def finished_no_val(e):
-    assert e is None
-    finished_no_val.called = True
-    return
-
-
 def run_fail(task):
     raise Exception('fail')
-
-
-def finished_fail(e):
-    assert e
-    finished_fail.finished_exception = e
 
 
 def run_single_val_result(task):
     return 5
 
 
-def finished_single_value_result(e, value):
-    assert e is None
-    finished_single_value_result.value = value
-    return
-
-
 def run_multiple_val_result(task):
     return 5, 'whoo'
-
-
-def finished_multiple_value_result(e, results):
-    assert e is None
-    finished_multiple_value_result.value = results[0]
-    finished_multiple_value_result.statement = results[1]
-    return
 
 
 class TestQgsTaskManager(unittest.TestCase):
@@ -138,9 +114,9 @@ class TestQgsTaskManager(unittest.TestCase):
         self.assertFalse(task.exception)
         self.assertEqual(task.status(), QgsTask.Complete)
 
-    def testTaskFromFunctionIsCancellable(self):
+    def testTaskFromFunctionIsCancelable(self):
         """ test that task from function can check canceled status """
-        bad_task = QgsTask.fromFunction('test task4', cancellable)
+        bad_task = QgsTask.fromFunction('test task4', cancelable)
         QgsApplication.taskManager().addTask(bad_task)
         while bad_task.status() != QgsTask.Running:
             pass
@@ -174,6 +150,14 @@ class TestQgsTaskManager(unittest.TestCase):
 
     def testTaskFromFunctionFinished(self):
         """ test that task from function can have callback finished function"""
+        called = False
+
+        def finished_no_val(e):
+            nonlocal called
+            assert e is None
+            called = True
+            return
+
         task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_no_val)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
@@ -184,10 +168,17 @@ class TestQgsTaskManager(unittest.TestCase):
         # check that the finished function was called
         self.assertFalse(task.returned_values)
         self.assertFalse(task.exception)
-        self.assertTrue(finished_no_val.called)
+        self.assertTrue(called)
 
     def testTaskFromFunctionFinishedFail(self):
         """ test that task from function which fails calls finished with exception"""
+        finished_exception = None
+
+        def finished_fail(e):
+            nonlocal finished_exception
+            assert e
+            finished_exception = e
+
         task = QgsTask.fromFunction('test task', run_fail, on_finished=finished_fail)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
@@ -197,11 +188,18 @@ class TestQgsTaskManager(unittest.TestCase):
 
         # check that the finished function was called
         self.assertTrue(task.exception)
-        self.assertTrue(finished_fail.finished_exception)
-        self.assertEqual(task.exception, finished_fail.finished_exception)
+        self.assertTrue(finished_exception)
+        self.assertEqual(task.exception, finished_exception)
 
     def testTaskFromFunctionCanceledWhileQueued(self):
         """ test that task from finished is called with exception when task is terminated while queued"""
+        finished_exception = None
+
+        def finished_fail(e):
+            nonlocal finished_exception
+            assert e
+            finished_exception = e
+
         task = QgsTask.fromFunction('test task', run_no_result, on_finished=finished_fail)
         task.hold()
         QgsApplication.taskManager().addTask(task)
@@ -213,11 +211,19 @@ class TestQgsTaskManager(unittest.TestCase):
 
         # check that the finished function was called
         self.assertTrue(task.exception)
-        self.assertTrue(finished_fail.finished_exception)
-        self.assertEqual(task.exception, finished_fail.finished_exception)
+        self.assertTrue(finished_exception)
+        self.assertEqual(task.exception, finished_exception)
 
     def testTaskFromFunctionFinishedWithVal(self):
         """ test that task from function can have callback finished function and is passed result values"""
+        result_value = None
+
+        def finished_single_value_result(e, value):
+            nonlocal result_value
+            assert e is None
+            result_value = value
+            return
+
         task = QgsTask.fromFunction('test task', run_single_val_result, on_finished=finished_single_value_result)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
@@ -228,10 +234,20 @@ class TestQgsTaskManager(unittest.TestCase):
         # check that the finished function was called
         self.assertEqual(task.returned_values, (5))
         self.assertFalse(task.exception)
-        self.assertEqual(finished_single_value_result.value, 5)
+        self.assertEqual(result_value, 5)
 
     def testTaskFromFunctionFinishedWithMultipleValues(self):
         """ test that task from function can have callback finished function and is passed multiple result values"""
+        result_value = None
+        result_statement = None
+
+        def finished_multiple_value_result(e, results):
+            nonlocal result_value
+            nonlocal result_statement
+            assert e is None
+            result_value = results[0]
+            result_statement = results[1]
+
         task = QgsTask.fromFunction('test task', run_multiple_val_result, on_finished=finished_multiple_value_result)
         QgsApplication.taskManager().addTask(task)
         while task.status() not in [QgsTask.Complete, QgsTask.Terminated]:
@@ -242,8 +258,8 @@ class TestQgsTaskManager(unittest.TestCase):
         # check that the finished function was called
         self.assertEqual(task.returned_values, (5, 'whoo'))
         self.assertFalse(task.exception)
-        self.assertEqual(finished_multiple_value_result.value, 5)
-        self.assertEqual(finished_multiple_value_result.statement, 'whoo')
+        self.assertEqual(result_value, 5)
+        self.assertEqual(result_statement, 'whoo')
 
 
 if __name__ == '__main__':

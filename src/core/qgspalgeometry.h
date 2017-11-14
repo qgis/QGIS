@@ -17,15 +17,15 @@
 
 #include "qgsgeometry.h"
 #include "qgspallabeling.h"
-#include <pal/feature.h>
+#include "pal/feature.h"
 
 #include "qgslabelingengine.h"
 
 /**
  * Class that adds extra information to QgsLabelFeature for text labels
  *
- * @note not part of public API
- * @note not available in Python bindings
+ * \note not part of public API
+ * \note not available in Python bindings
  */
 class QgsTextLabelFeature : public QgsLabelFeature
 {
@@ -44,10 +44,11 @@ class QgsTextLabelFeature : public QgsLabelFeature
       delete mFontMetrics;
     }
 
-    /** Returns the text component corresponding to a specified label part
-     * @param partId Set to -1 for labels which are not broken into parts (e.g., non-curved labels), or the required
+    /**
+     * Returns the text component corresponding to a specified label part
+     * \param partId Set to -1 for labels which are not broken into parts (e.g., non-curved labels), or the required
      * part index for labels which are broken into parts (curved labels)
-     * @note added in QGIS 2.10
+     * \since QGIS 2.10
      */
     QString text( int partId ) const
     {

@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Gradient color ramp</string>
+   <string>Gradient Color Ramp</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="0,0,0,0">
    <item>
@@ -135,7 +135,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="frameShape">
       <enum>QFrame::NoFrame</enum>
      </property>
@@ -148,7 +148,7 @@
         <x>0</x>
         <y>0</y>
         <width>850</width>
-        <height>494</height>
+        <height>492</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2" stretch="0,1">
@@ -280,7 +280,7 @@
             <item>
              <widget class="QCheckBox" name="mPlotAlphaCheckbox">
               <property name="text">
-               <string>Alpha</string>
+               <string>Opacity</string>
               </property>
              </widget>
             </item>
@@ -321,7 +321,7 @@
         <enum>Qt::Horizontal</enum>
        </property>
        <property name="standardButtons">
-        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Ok</set>
+        <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
        </property>
       </widget>
      </item>
@@ -330,6 +330,12 @@
   </layout>
  </widget>
  <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
   <customwidget>
    <class>QgsCollapsibleGroupBox</class>
    <extends>QGroupBox</extends>

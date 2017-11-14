@@ -17,13 +17,17 @@
 #define QGSCODEEDITORSQL_H
 
 #include "qgscodeeditor.h"
+#include "qgis_sip.h"
 #include "qgis_gui.h"
+#include <Qsci/qscilexersql.h>
 
+SIP_IF_MODULE( HAVE_QSCI_SIP )
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * A SQL editor based on QScintilla2. Adds syntax highlighting and
  * code autocompletion.
- * \note added in 2.6
+ * \since QGIS 2.6
  * \note may not be available in Python bindings, depending on platform support
  */
 class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
@@ -31,12 +35,37 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorSQL( QWidget *parent = nullptr );
+    QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   private:
     //QgsCodeEditor *mSciWidget;
     //QWidget *mWidget;
     void setSciLexerSQL();
 };
+
+#ifndef SIP_RUN
+///@cond PRIVATE
+
+/**
+ * Internal use.
+
+   setAutoCompletionCaseSensitivity( false ) is not sufficient when installing
+   a lexer, since its caseSensitive() method is actually used, and defaults
+   to true.
+   \note not available in Python bindings
+   \ingroup gui
+*/
+class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
+{
+    Q_OBJECT
+
+  public:
+    //! constructor
+    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = 0 ) : QsciLexerSQL( parent ) {}
+
+    bool caseSensitive() const override { return false; }
+};
+///@endcond
+#endif
 
 #endif

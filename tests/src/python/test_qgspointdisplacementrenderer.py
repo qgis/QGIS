@@ -44,6 +44,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsPointClusterRenderer,
                        QgsMapSettings,
                        QgsProperty,
+                       QgsReadWriteContext,
                        QgsSymbolLayer
                        )
 from qgis.testing import start_app, unittest
@@ -87,7 +88,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         r.setLabelAttributeName('name')
         f = QgsFontUtils.getStandardTestFont('Bold Oblique', 14)
         r.setLabelFont(f)
-        r.setMaxLabelScaleDenominator(50000)
+        r.setMinimumLabelScale(50000)
         r.setLabelColor(QColor(255, 0, 0))
         r.setTolerance(5)
         r.setToleranceUnit(QgsUnitTypes.RenderMapUnits)
@@ -108,7 +109,7 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         self.assertEqual(r.labelAttributeName(), 'name')
         f = QgsFontUtils.getStandardTestFont('Bold Oblique', 14)
         self.assertEqual(r.labelFont().styleName(), f.styleName())
-        self.assertEqual(r.maxLabelScaleDenominator(), 50000)
+        self.assertEqual(r.minimumLabelScale(), 50000)
         self.assertEqual(r.labelColor(), QColor(255, 0, 0))
         self.assertEqual(r.tolerance(), 5)
         self.assertEqual(r.toleranceUnit(), QgsUnitTypes.RenderMapUnits)
@@ -138,8 +139,8 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         r = QgsPointDisplacementRenderer()
         self._setProperties(r)
         doc = QDomDocument("testdoc")
-        elem = r.save(doc)
-        c = QgsPointDisplacementRenderer.create(elem)
+        elem = r.save(doc, QgsReadWriteContext())
+        c = QgsPointDisplacementRenderer.create(elem, QgsReadWriteContext())
         self._checkProperties(c)
 
     def testConvert(self):
@@ -204,6 +205,26 @@ class TestQgsPointDisplacementRenderer(unittest.TestCase):
         result = renderchecker.runTest('expected_displacement_variables')
         self.layer.renderer().setCenterSymbol(old_marker)
         self.assertTrue(result)
+
+    def testRenderGrid(self):
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_grid')
+        self.assertTrue(renderchecker.runTest('expected_displacement_grid'))
+
+    def testRenderGridAdjust(self):
+        self.layer.renderer().setTolerance(10)
+        self.layer.renderer().setCircleRadiusAddition(5)
+        self.layer.renderer().setPlacement(QgsPointDisplacementRenderer.Grid)
+        self.layer.renderer().setCircleColor(QColor())
+        renderchecker = QgsMultiRenderChecker()
+        renderchecker.setMapSettings(self.mapsettings)
+        renderchecker.setControlPathPrefix('displacement_renderer')
+        renderchecker.setControlName('expected_displacement_adjust_grid')
+        self.assertTrue(renderchecker.runTest('expected_displacement_adjust_grid'))
 
 
 if __name__ == '__main__':

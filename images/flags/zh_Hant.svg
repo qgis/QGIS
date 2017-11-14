@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg>
+<svg width="900" height="600" viewBox="-60 -40 240 160" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+   <rect x="-60" y="-40" width="100%" height="100%" fill="#fe0000"/>
+   <rect x="-60" y="-40" width="50%" height="50%" fill="#000095"/>
+   <path id="four_rays" d="M 8,0 L 0,30 L -8,0 L 0,-30 M 0,8 L 30,0 L 0,-8 L -30,0" fill="#fff"/>
+   <use xlink:href="#four_rays" transform="rotate(30)"/>
+   <use xlink:href="#four_rays" transform="rotate(60)"/>
+   <circle r="17" fill="#000095"/>
+   <circle r="15" fill="#fff"/>
+</svg>

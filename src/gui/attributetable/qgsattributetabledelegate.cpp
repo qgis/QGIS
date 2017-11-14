@@ -29,7 +29,9 @@
 #include "qgslogger.h"
 #include "qgsvectordataprovider.h"
 #include "qgsactionmanager.h"
-
+#include "qgsgui.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
 QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
@@ -37,7 +39,7 @@ QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *mode
   if ( tm )
     return tm->layer();
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  const QgsAttributeTableFilterModel *fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
   if ( fm )
     return fm->layer();
 
@@ -50,7 +52,7 @@ const QgsAttributeTableModel *QgsAttributeTableDelegate::masterModel( const QAbs
   if ( tm )
     return tm;
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  const QgsAttributeTableFilterModel *fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
   if ( fm )
     return fm->masterModel();
 
@@ -67,13 +69,26 @@ QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleO
   int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
 
   QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
-  QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( vl, fieldIdx, nullptr, parent, context );
+  QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vl, fieldIdx, nullptr, parent, context );
   QWidget *w = eww->widget();
 
   w->setAutoFillBackground( true );
   w->setFocusPolicy( Qt::StrongFocus ); // to make sure QMouseEvents are propagated to the editor widget
 
-  eww->setEnabled( !vl->editFormConfig().readOnly( fieldIdx ) );
+  const int fieldOrigin = vl->fields().fieldOrigin( fieldIdx );
+  bool readOnly = true;
+  if ( fieldOrigin == QgsFields::OriginJoin )
+  {
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = vl->joinBuffer()->joinForFieldIndex( fieldIdx, vl->fields(), srcFieldIndex );
+
+    if ( info && info->isEditable() )
+      readOnly = info->joinLayer()->editFormConfig().readOnly( srcFieldIndex );
+  }
+  else
+    readOnly = vl->editFormConfig().readOnly( fieldIdx );
+
+  eww->setEnabled( !readOnly );
 
   return w;
 }
@@ -97,15 +112,24 @@ void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemMode
 
   if ( ( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
   {
-    vl->beginEditCommand( tr( "Attribute changed" ) );
-    vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
-    vl->endEditCommand();
+    // This fixes https://issues.qgis.org/issues/16492
+    QgsFeatureRequest request( fid );
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setSubsetOfAttributes( QgsAttributeList() );
+    QgsFeature feature;
+    vl->getFeatures( request ).nextFeature( feature );
+    if ( feature.isValid() )
+    {
+      vl->beginEditCommand( tr( "Attribute changed" ) );
+      vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
+      vl->endEditCommand();
+    }
   }
 }
 
 void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QgsEditorWidgetWrapper *eww =  QgsEditorWidgetWrapper::fromWidget( editor );
+  QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
   if ( !eww )
     return;
 

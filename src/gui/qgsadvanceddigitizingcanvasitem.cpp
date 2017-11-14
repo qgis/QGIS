@@ -38,18 +38,19 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     return;
 
   QgsRectangle mapRect = mMapCanvas->extent();
-  setRect( mapRect );
+  if ( rect() != mapRect )
+    setRect( mapRect );
 
   int nPoints = mAdvancedDigitizingDockWidget->pointsCount();
   if ( !nPoints )
     return;
 
   bool previousPointExist, penulPointExist;
-  const QgsPoint curPoint = mAdvancedDigitizingDockWidget->currentPoint();
-  const QgsPoint prevPoint = mAdvancedDigitizingDockWidget->previousPoint( &previousPointExist );
-  const QgsPoint penulPoint = mAdvancedDigitizingDockWidget->penultimatePoint( &penulPointExist );
+  const QgsPointXY curPoint = mAdvancedDigitizingDockWidget->currentPoint();
+  const QgsPointXY prevPoint = mAdvancedDigitizingDockWidget->previousPoint( &previousPointExist );
+  const QgsPointXY penulPoint = mAdvancedDigitizingDockWidget->penultimatePoint( &penulPointExist );
   const bool snappedToVertex = mAdvancedDigitizingDockWidget->snappedToVertex();
-  const QList<QgsPoint> snappedSegment = mAdvancedDigitizingDockWidget->snappedSegment();
+  const QList<QgsPointXY> snappedSegment = mAdvancedDigitizingDockWidget->snappedSegment();
   const bool hasSnappedSegment = snappedSegment.count() == 2;
 
   const bool curPointExist = mapRect.contains( curPoint );
@@ -107,7 +108,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
   }
 
   // Draw segment par/per input
-  if ( mAdvancedDigitizingDockWidget->additionalConstraint() !=   QgsAdvancedDigitizingDockWidget::NoConstraint && hasSnappedSegment )
+  if ( mAdvancedDigitizingDockWidget->additionalConstraint() != QgsAdvancedDigitizingDockWidget::NoConstraint && hasSnappedSegment )
   {
     painter->setPen( mConstruction2Pen );
     painter->drawLine( snapSegmentPix1.x(),
@@ -122,7 +123,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     double a0, a;
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->relative() && nPoints > 2 )
     {
-      a0 = qAtan2( -( prevPoint.y() - penulPoint.y() ), prevPoint.x() - penulPoint.x() );
+      a0 = std::atan2( -( prevPoint.y() - penulPoint.y() ), prevPoint.x() - penulPoint.x() );
     }
     else
     {
@@ -134,7 +135,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      a = qAtan2( -( curPoint.y() - prevPoint.y() ), curPoint.x() - prevPoint.x() );
+      a = std::atan2( -( curPoint.y() - prevPoint.y() ), curPoint.x() - prevPoint.x() );
     }
     painter->setPen( mConstruction2Pen );
     painter->drawArc( prevPointPix.x() - 20,
@@ -144,17 +145,17 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
                       ( int )16 * ( a0 - a ) * 180 / M_PI );
     painter->drawLine( prevPointPix.x(),
                        prevPointPix.y(),
-                       prevPointPix.x() + 60 * qCos( a0 ),
-                       prevPointPix.y() + 60 * qSin( a0 ) );
+                       prevPointPix.x() + 60 * std::cos( a0 ),
+                       prevPointPix.y() + 60 * std::sin( a0 ) );
 
     if ( mAdvancedDigitizingDockWidget->constraintAngle()->isLocked() )
     {
       painter->setPen( mLockedPen );
       double d = std::max( boundingRect().width(), boundingRect().height() );
-      painter->drawLine( prevPointPix.x() - d * qCos( a ),
-                         prevPointPix.y() - d * qSin( a ),
-                         prevPointPix.x() + d * qCos( a ),
-                         prevPointPix.y() + d * qSin( a ) );
+      painter->drawLine( prevPointPix.x() - d * std::cos( a ),
+                         prevPointPix.y() - d * std::sin( a ),
+                         prevPointPix.x() + d * std::cos( a ),
+                         prevPointPix.y() + d * std::sin( a ) );
     }
   }
 
@@ -185,7 +186,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      x = toCanvasCoordinates( QgsPoint( mAdvancedDigitizingDockWidget->constraintX()->value(), 0 ) ).x();
+      x = toCanvasCoordinates( QgsPointXY( mAdvancedDigitizingDockWidget->constraintX()->value(), 0 ) ).x();
     }
     if ( draw )
     {
@@ -216,7 +217,7 @@ void QgsAdvancedDigitizingCanvasItem::paint( QPainter *painter )
     }
     else
     {
-      y = toCanvasCoordinates( QgsPoint( 0, mAdvancedDigitizingDockWidget->constraintY()->value() ) ).y();
+      y = toCanvasCoordinates( QgsPointXY( 0, mAdvancedDigitizingDockWidget->constraintY()->value() ) ).y();
     }
     if ( draw )
     {

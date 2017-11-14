@@ -24,7 +24,8 @@
 
 #include <limits>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * The QgsRasterHistogram is a container for histogram of a single raster band.
  * It is used to cache computed histograms in raster providers.
  */
@@ -71,10 +72,11 @@ class CORE_EXPORT QgsRasterHistogram
     //! \brief Whether histogram includes out of range values (in first and last bin)
     bool includeOutOfRange;
 
-    /** \brief Store the histogram for a given layer
-      * @note not available via python binding
+    /**
+     * \brief Store the histogram for a given layer
+      * \note not available via Python binding
       */
-    HistogramVector histogramVector;
+    QgsRasterHistogram::HistogramVector histogramVector;
 
     //! \brief The maximum histogram value.
     double maximum;

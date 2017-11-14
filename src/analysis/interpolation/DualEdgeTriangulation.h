@@ -18,6 +18,7 @@
 #define DUALEDGETRIANGULATION_H
 
 #include "Triangulation.h"
+#include "qgis_sip.h"
 #include "HalfEdge.h"
 #include <QVector>
 #include <QList>
@@ -29,12 +30,16 @@
 #include <cfloat>
 #include <QBuffer>
 #include <QStringList>
-#include <QProgressDialog>
 #include <QCursor>
 #include "qgis_analysis.h"
 
-/** \ingroup analysis
- * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * DualEdgeTriangulation is an implementation of a triangulation class based on the dual edge data structure.
+ * \note Not available in Python bindings.
+*/
 class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
 {
   public:
@@ -42,29 +47,21 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     DualEdgeTriangulation( int nop, Triangulation *decorator );
     virtual ~DualEdgeTriangulation();
     void setDecorator( Triangulation *d ) {mDecorator = d;}
-    //! Adds a line (e.g. a break-, structure- or an isoline) to the triangulation. The class takes ownership of the line object and its points
-    void addLine( Line3D *line, bool breakline ) override;
-    //! Adds a point to the triangulation and returns the number of this point in case of success or -100 in case of failure
-    int addPoint( Point3D *p ) override;
+    void addLine( const QVector< QgsPoint > &points, QgsInterpolator::SourceType lineType ) override;
+    int addPoint( const QgsPoint &p ) override;
     //! Performs a consistency check, remove this later
     virtual void performConsistencyTest() override;
     //! Calculates the normal at a point on the surface
-    virtual bool calcNormal( double x, double y, Vector3D *result ) override;
-    //! Calculates x-, y and z-value of the point on the surface
-    virtual bool calcPoint( double x, double y, Point3D *result ) override;
+    virtual bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Draws the points, edges and the forced lines
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     //! Returns a pointer to the point with number i
-    virtual Point3D *getPoint( unsigned int i ) const override;
-    //! Returns the number of the point opposite to the triangle points p1, p2 (which have to be on a halfedge)
+    virtual QgsPoint *getPoint( int i ) const override;
     int getOppositePoint( int p1, int p2 ) override;
-    //! Finds out, in which triangle the point with coordinates x and y is and assigns the numbers of the vertices to 'n1', 'n2' and 'n3' and the vertices to 'p1', 'p2' and 'p3'
-    //! @note not available in python bindings
-    virtual bool getTriangle( double x, double y, Point3D *p1, int *n1, Point3D *p2, int *n2, Point3D *p3, int *n3 ) override;
-    //! Finds out, in which triangle the point with coordinates x and y is and assigns addresses to the points at the vertices to 'p1', 'p2' and 'p3
-    virtual bool getTriangle( double x, double y, Point3D *p1, Point3D *p2, Point3D *p3 ) override;
-    //! Returns a pointer to a value list with the information of the triangles surrounding (counterclockwise) a point. Four integer values describe a triangle, the first three are the number of the half edges of the triangle and the fourth is -10, if the third (and most counterclockwise) edge is a breakline, and -20 otherwise. The value list has to be deleted by the code which called the method
-    QList<int> *getSurroundingTriangles( int pointno ) override;
+    bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, int &n1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &n2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &n3 SIP_OUT ) SIP_PYNAME( getTriangleVertices ) override;
+    bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, QgsPoint &p2 SIP_OUT, QgsPoint &p3 SIP_OUT ) override;
+    QList<int> getSurroundingTriangles( int pointno ) override;
     //! Returns the largest x-coordinate value of the bounding box
     virtual double getXMax() const override { return xMax; }
     //! Returns the smallest x-coordinate value of the bounding box
@@ -100,23 +97,21 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method
     virtual QList<int> *getPointsAroundEdge( double x, double y ) override;
 
-    /** Saves the triangulation as a (line) shapefile
-    @return true in case of success*/
-    virtual bool saveAsShapefile( const QString &fileName ) const override;
+    virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
   protected:
     //! X-coordinate of the upper right corner of the bounding box
-    double xMax;
+    double xMax = 0;
     //! X-coordinate of the lower left corner of the bounding box
-    double xMin;
+    double xMin = 0;
     //! Y-coordinate of the upper right corner of the bounding box
-    double yMax;
+    double yMax = 0;
     //! Y-coordinate of the lower left corner of the bounding box
-    double yMin;
+    double yMin = 0;
     //! Default value for the number of storable points at the beginning
     static const unsigned int DEFAULT_STORAGE_FOR_POINTS = 100000;
     //! Stores pointers to all points in the triangulations (including the points contained in the lines)
-    QVector<Point3D *> mPointVector;
+    QVector<QgsPoint *> mPointVector;
     //! Default value for the number of storable HalfEdges at the beginning
     static const unsigned int DEFAULT_STORAGE_FOR_HALF_EDGES = 300006;
     //! Stores pointers to the HalfEdges
@@ -124,7 +119,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Association to an interpolator object
     TriangleInterpolator *mTriangleInterpolator = nullptr;
     //! Member to store the behavior in case of crossing forced segments
-    Triangulation::ForcedCrossBehavior mForcedCrossBehavior;
+    Triangulation::ForcedCrossBehavior mForcedCrossBehavior = Triangulation::DeleteFirst;
     //! Color to paint the normal edges
     QColor mEdgeColor;
     //! Color to paint the forced edges
@@ -133,10 +128,10 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     QColor mBreakEdgeColor;
     //! Pointer to the decorator using this triangulation. It it is used directly, mDecorator equals this
     Triangulation *mDecorator = nullptr;
-    //! Inserts an edge and makes sure, everything is ok with the storage of the edge. The number of the HalfEdge is returned
+    //! Inserts an edge and makes sure, everything is OK with the storage of the edge. The number of the HalfEdge is returned
     unsigned int insertEdge( int dual, int next, int point, bool mbreak, bool forced );
     //! Inserts a forced segment between the points with the numbers p1 and p2 into the triangulation and returns the number of a HalfEdge belonging to this forced edge or -100 in case of failure
-    int insertForcedSegment( int p1, int p2, bool breakline );
+    int insertForcedSegment( int p1, int p2, QgsInterpolator::SourceType segmentType );
     //! Threshold for the leftOfTest to handle numerical instabilities
     //const static double leftOfTresh=0.00001;
     //! Security to prevent endless loops in 'baseEdgeOfTriangle'. It there are more iteration then this number, the point will not be inserted
@@ -144,7 +139,7 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns the number of an edge which points to the point with number 'point' or -1 if there is an error
     int baseEdgeOfPoint( int point );
     //! Returns the number of a HalfEdge from a triangle in which 'point' is in. If the number -10 is returned, this means, that 'point' is outside the convex hull. If -5 is returned, then numerical problems with the leftOfTest occurred (and the value of the possible edge is stored in the variable 'mUnstableEdge'. -20 means, that the inserted point is exactly on an edge (the number is stored in the variable 'mEdgeWithPoint'). -25 means, that the point is already in the triangulation (the number of the point is stored in the member 'mTwiceInsPoint'. If -100 is returned, this means that something else went wrong
-    int baseEdgeOfTriangle( Point3D *point );
+    int baseEdgeOfTriangle( const QgsPoint &point );
     //! Checks, if 'edge' has to be swapped because of the empty circle criterion. If so, doSwap(...) is called.
     bool checkSwap( unsigned int edge, unsigned int recursiveDeep );
     //! Swaps 'edge' and test recursively for other swaps (delaunay criterion)
@@ -152,15 +147,15 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Swaps 'edge' and does no recursiv testing
     void doOnlySwap( unsigned int edge );
     //! Number of an edge which does not point to the virtual point. It continuously updated for a fast search
-    unsigned int mEdgeInside;
+    unsigned int mEdgeInside = 0;
     //! Number of an edge on the outside of the convex hull. It is updated in method 'baseEdgeOfTriangle' to enable insertion of points outside the convex hull
-    unsigned int mEdgeOutside;
+    unsigned int mEdgeOutside = 0;
     //! If an inserted point is exactly on an existing edge, 'baseEdgeOfTriangle' returns -20 and sets the variable 'mEdgeWithPoint'
-    unsigned int mEdgeWithPoint;
+    unsigned int mEdgeWithPoint = 0;
     //! If an instability occurs in 'baseEdgeOfTriangle', mUnstableEdge is set to the value of the current edge
-    unsigned int mUnstableEdge;
+    unsigned int mUnstableEdge = 0;
     //! If a point has been inserted twice, its number is stored in this member
-    int mTwiceInsPoint;
+    int mTwiceInsPoint = 0;
     //! Returns true, if it is possible to swap an edge, otherwise false(concave quad or edge on (or outside) the convex hull)
     bool swapPossible( unsigned int edge );
     //! Divides a polygon in a triangle and two polygons and calls itself recursively for these two polygons. 'poly' is a pointer to a list with the numbers of the edges of the polygon, 'free' is a pointer to a list of free halfedges, and 'mainedge' is the number of the edge, towards which the new triangle is inserted. Mainedge has to be the same as poly->begin(), otherwise the recursion does not work
@@ -174,46 +169,28 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Returns true, if a half edge is on the convex hull and false otherwise
     bool edgeOnConvexHull( int edge );
     //! Function needed for the ruppert algorithm. Tests, if point is in the circle through both endpoints of edge and the endpoint of edge->dual->next->point. If so, the function calls itself recursively for edge->next and edge->next->next. Stops, if it finds a forced edge or a convex hull edge
-    void evaluateInfluenceRegion( Point3D *point, int edge, QSet<int> &set );
+    void evaluateInfluenceRegion( QgsPoint *point, int edge, QSet<int> &set );
+
+    friend class TestQgsInterpolator;
 };
 
+#ifndef SIP_RUN
+
 inline DualEdgeTriangulation::DualEdgeTriangulation()
-  : xMax( 0 )
-  , xMin( 0 )
-  , yMax( 0 )
-  , yMin( 0 )
-  , mTriangleInterpolator( nullptr )
-  , mForcedCrossBehavior( Triangulation::DeleteFirst )
-  , mEdgeColor( 0, 255, 0 )
+  : mEdgeColor( 0, 255, 0 )
   , mForcedEdgeColor( 0, 0, 255 )
   , mBreakEdgeColor( 100, 100, 0 )
   , mDecorator( this )
-  , mEdgeInside( 0 )
-  , mEdgeOutside( 0 )
-  , mEdgeWithPoint( 0 )
-  , mUnstableEdge( 0 )
-  , mTwiceInsPoint( 0 )
 {
   mPointVector.reserve( DEFAULT_STORAGE_FOR_POINTS );
   mHalfEdge.reserve( DEFAULT_STORAGE_FOR_HALF_EDGES );
 }
 
 inline DualEdgeTriangulation::DualEdgeTriangulation( int nop, Triangulation *decorator )
-  : xMax( 0 )
-  , xMin( 0 )
-  , yMax( 0 )
-  , yMin( 0 )
-  , mTriangleInterpolator( nullptr )
-  , mForcedCrossBehavior( Triangulation::DeleteFirst )
-  , mEdgeColor( 0, 255, 0 )
+  : mEdgeColor( 0, 255, 0 )
   , mForcedEdgeColor( 0, 0, 255 )
   , mBreakEdgeColor( 100, 100, 0 )
   , mDecorator( decorator ? decorator : this )
-  , mEdgeInside( 0 )
-  , mEdgeOutside( 0 )
-  , mEdgeWithPoint( 0 )
-  , mUnstableEdge( 0 )
-  , mTwiceInsPoint( 0 )
 {
   mPointVector.reserve( nop );
   mHalfEdge.reserve( nop );
@@ -224,25 +201,29 @@ inline int DualEdgeTriangulation::getNumberOfPoints() const
   return mPointVector.count();
 }
 
-inline Point3D *DualEdgeTriangulation::getPoint( unsigned int i ) const
+inline QgsPoint *DualEdgeTriangulation::getPoint( int i ) const
 {
+  if ( i < 0 || i >= mPointVector.count() )
+    return nullptr;
+
   return mPointVector.at( i );
 }
 
 inline bool DualEdgeTriangulation::halfEdgeBBoxTest( int edge, double xlowleft, double ylowleft, double xupright, double yupright ) const
 {
   return (
-           ( getPoint( mHalfEdge[edge]->getPoint() )->getX() >= xlowleft &&
-             getPoint( mHalfEdge[edge]->getPoint() )->getX() <= xupright &&
-             getPoint( mHalfEdge[edge]->getPoint() )->getY() >= ylowleft &&
-             getPoint( mHalfEdge[edge]->getPoint() )->getY() <= yupright ) ||
-           ( getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getX() >= xlowleft &&
-             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getX() <= xupright &&
-             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getY() >= ylowleft &&
-             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->getY() <= yupright )
+           ( getPoint( mHalfEdge[edge]->getPoint() )->x() >= xlowleft &&
+             getPoint( mHalfEdge[edge]->getPoint() )->x() <= xupright &&
+             getPoint( mHalfEdge[edge]->getPoint() )->y() >= ylowleft &&
+             getPoint( mHalfEdge[edge]->getPoint() )->y() <= yupright ) ||
+           ( getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->x() >= xlowleft &&
+             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->x() <= xupright &&
+             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->y() >= ylowleft &&
+             getPoint( mHalfEdge[mHalfEdge[edge]->getDual()]->getPoint() )->y() <= yupright )
          );
 }
 
+#endif
 #endif
 
 

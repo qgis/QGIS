@@ -40,7 +40,7 @@ class TestPyQgsMssqlProvider(unittest.TestCase, ProviderTestCase):
         cls.vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POINT table="qgis_test"."someData" (geom) sql=', 'test', 'mssql')
         assert(cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
         cls.poly_vl = QgsVectorLayer(
             cls.dbconn + ' sslmode=disable key=\'pk\' srid=4326 type=POLYGON table="qgis_test"."some_poly_data" (geom) sql=', 'test', 'mssql')
         assert(cls.poly_vl.isValid())

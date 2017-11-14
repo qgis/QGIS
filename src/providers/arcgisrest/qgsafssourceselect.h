@@ -18,17 +18,18 @@
 #ifndef QGSAFSSOURCESELECT_H
 #define QGSAFSSOURCESELECT_H
 
-#include "qgssourceselectdialog.h"
+#include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsarcgisservicesourceselect.h"
 
 class QCheckBox;
 
-class QgsAfsSourceSelect: public QgsSourceSelectDialog
+class QgsAfsSourceSelect: public QgsArcGisServiceSourceSelect
 {
     Q_OBJECT
 
   public:
-    QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode = false );
-
+    QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
   protected:
     bool connectToService( const QgsOwsConnection &connection ) override;
     void buildQuery( const QgsOwsConnection &connection, const QModelIndex & ) override;
@@ -37,6 +38,10 @@ class QgsAfsSourceSelect: public QgsSourceSelectDialog
                          const QString &crs = QString(),
                          const QString &filter = QString(),
                          const QgsRectangle &bBox = QgsRectangle() ) const override;
+  private:
+    //! A layer is added from the dialog
+    virtual void addServiceLayer( QString uri, QString typeName ) override;
+
 };
 
 #endif // QGSAFSSOURCESELECT_H

@@ -33,7 +33,8 @@
 
 #include "qgsstyle.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test to verify that symbols are working correctly
  */
 class TestQgsSymbol : public QObject
@@ -70,13 +71,7 @@ class TestQgsSymbol : public QObject
     void symbolProperties();
 };
 
-TestQgsSymbol::TestQgsSymbol()
-  : mpPointsLayer( 0 )
-  , mpLinesLayer( 0 )
-  , mpPolysLayer( 0 )
-{
-
-}
+TestQgsSymbol::TestQgsSymbol() = default;
 
 // slots
 void TestQgsSymbol::initTestCase()

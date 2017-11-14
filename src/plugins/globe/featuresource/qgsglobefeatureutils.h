@@ -19,24 +19,24 @@
 #include <osgEarthFeatures/Feature>
 #include <osg/ValueObject>
 
-#include <qgsfield.h>
-#include <qgsgeometry.h>
-#include <qgsmultipoint.h>
-#include <qgsmultilinestring.h>
-#include <qgsmultipolygon.h>
-#include <qgspolygon.h>
-#include <qgslinestring.h>
-#include <qgsvectorlayer.h>
+#include "qgsfield.h"
+#include "qgsgeometry.h"
+#include "qgsmultipoint.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
+#include "qgsvectorlayer.h"
 
 class QgsGlobeFeatureUtils
 {
   public:
-    static inline QgsPointV2 qgsPointFromPoint( const osg::Vec3d &pt )
+    static inline QgsPoint qgsPointFromPoint( const osg::Vec3d &pt )
     {
-      return QgsPointV2( QgsWkbTypes::PointZ, pt.x(), pt.y(), pt.z() );
+      return QgsPoint( QgsWkbTypes::PointZ, pt.x(), pt.y(), pt.z() );
     }
 
-    static inline osg::Vec3d pointFromQgsPoint( const QgsPointV2 &pt )
+    static inline osg::Vec3d pointFromQgsPoint( const QgsPoint &pt )
     {
       return osg::Vec3d( pt.x(), pt.y(), pt.z() );
     }
@@ -53,9 +53,9 @@ class QgsGlobeFeatureUtils
       return retLineString;
     }
 
-    static inline osgEarth::Features::Polygon *polygonFromQgsPolygon( const QgsPolygonV2 *polygon )
+    static inline osgEarth::Features::Polygon *polygonFromQgsPolygon( const QgsPolygon *polygon )
     {
-      QgsPolygonV2 *linearPolygon = polygon->toPolygon();
+      QgsPolygon *linearPolygon = polygon->toPolygon();
       // a ring for osg earth is open (first point != last point)
       // an outer ring is oriented CCW, an inner ring is oriented CW
       osgEarth::Features::Polygon *retPoly = new osgEarth::Features::Polygon();
@@ -92,22 +92,22 @@ class QgsGlobeFeatureUtils
       std::cout << "srid = " << srid << std::endl;
 #endif
 
-      switch ( QgsWkbTypes::flatType( geom.geometry()->wkbType() ) )
+      switch ( QgsWkbTypes::flatType( geom.constGet()->wkbType() ) )
       {
         case QgsWkbTypes::Point:
         {
           osgEarth::Features::PointSet *pointSet = new osgEarth::Features::PointSet();
-          pointSet->push_back( pointFromQgsPoint( *static_cast<QgsPointV2 *>( geom.geometry() ) ) );
+          pointSet->push_back( pointFromQgsPoint( *static_cast<const QgsPoint *>( geom.constGet() ) ) );
           return pointSet;
         }
 
         case QgsWkbTypes::MultiPoint:
         {
           osgEarth::Features::PointSet *pointSet = new osgEarth::Features::PointSet();
-          QgsMultiPointV2 *multiPoint = static_cast<QgsMultiPointV2 *>( geom.geometry() );
+          const QgsMultiPoint *multiPoint = static_cast<const QgsMultiPoint *>( geom.constGet() );
           for ( int i = 0, n = multiPoint->numGeometries(); i < n; ++i )
           {
-            pointSet->push_back( pointFromQgsPoint( *static_cast<QgsPointV2 *>( multiPoint->geometryN( i ) ) ) );
+            pointSet->push_back( pointFromQgsPoint( *static_cast<const QgsPoint *>( multiPoint->geometryN( i ) ) ) );
           }
           return pointSet;
         }
@@ -116,16 +116,16 @@ class QgsGlobeFeatureUtils
         case QgsWkbTypes::CircularString:
         case QgsWkbTypes::CompoundCurve:
         {
-          return lineStringFromQgsLineString( static_cast<QgsLineString *>( geom.geometry() ) );
+          return lineStringFromQgsLineString( static_cast<const QgsLineString *>( geom.constGet() ) );
         }
 
         case QgsWkbTypes::MultiLineString:
         {
           osgEarth::Features::MultiGeometry *multiGeometry = new osgEarth::Features::MultiGeometry();
-          QgsMultiLineString *multiLineString = static_cast<QgsMultiLineString *>( geom.geometry() );
+          const QgsMultiLineString *multiLineString = static_cast<const QgsMultiLineString *>( geom.constGet() );
           for ( int i = 0, n = multiLineString->numGeometries(); i < n; ++i )
           {
-            multiGeometry->getComponents().push_back( lineStringFromQgsLineString( static_cast<QgsLineString *>( multiLineString->geometryN( i ) ) ) );
+            multiGeometry->getComponents().push_back( lineStringFromQgsLineString( static_cast<const QgsLineString *>( multiLineString->geometryN( i ) ) ) );
           }
           return multiGeometry;
         }
@@ -133,16 +133,16 @@ class QgsGlobeFeatureUtils
         case QgsWkbTypes::Polygon:
         case QgsWkbTypes::CurvePolygon:
         {
-          return polygonFromQgsPolygon( static_cast<QgsPolygonV2 *>( geom.geometry() ) );
+          return polygonFromQgsPolygon( static_cast<const QgsPolygon *>( geom.constGet() ) );
         }
 
         case QgsWkbTypes::MultiPolygon:
         {
           osgEarth::Features::MultiGeometry *multiGeometry = new osgEarth::Features::MultiGeometry();
-          QgsMultiPolygonV2 *multiPolygon = static_cast<QgsMultiPolygonV2 *>( geom.geometry() );
+          const QgsMultiPolygon *multiPolygon = static_cast<const QgsMultiPolygon *>( geom.constGet() );
           for ( int i = 0, n = multiPolygon->numGeometries(); i < n; ++i )
           {
-            multiGeometry->getComponents().push_back( polygonFromQgsPolygon( static_cast<QgsPolygonV2 *>( multiPolygon->geometryN( i ) ) ) );
+            multiGeometry->getComponents().push_back( polygonFromQgsPolygon( static_cast<const QgsPolygon *>( multiPolygon->geometryN( i ) ) ) );
           }
           return multiGeometry;
         }
@@ -156,7 +156,8 @@ class QgsGlobeFeatureUtils
     static osgEarth::Features::Feature *featureFromQgsFeature( QgsVectorLayer *layer, QgsFeature &feat )
     {
       osgEarth::Features::Geometry *nGeom = geometryFromQgsGeometry( feat.geometry() );
-      osgEarth::Features::Feature *retFeat = new osgEarth::Features::Feature( nGeom, 0, osgEarth::Style(), feat.id() );
+      osgEarth::SpatialReference *ref = osgEarth::SpatialReference::create( layer->crs().toWkt().toStdString() );
+      osgEarth::Features::Feature *retFeat = new osgEarth::Features::Feature( nGeom, ref, osgEarth::Style(), feat.id() );
 
       const QgsFields &fields = layer->pendingFields();
       const QgsAttributes &attrs = feat.attributes();

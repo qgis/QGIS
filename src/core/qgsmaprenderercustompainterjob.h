@@ -17,18 +17,20 @@
 #define QGSMAPRENDERERCUSTOMPAINTERJOB_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsmaprendererjob.h"
 
 #include <QEventLoop>
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Job implementation that renders everything sequentially using a custom painter.
  *
  * Also supports synchronous rendering in main thread for cases when rendering in background
  * is not an option because of some technical limitations (e.g. printing to printer on some
  * platforms).
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
 {
@@ -43,10 +45,10 @@ class CORE_EXPORT QgsMapRendererCustomPainterJob : public QgsMapRendererJob
     virtual void waitForFinished() override;
     virtual bool isActive() const override;
     virtual bool usedCachedLabels() const override;
-    virtual QgsLabelingResults *takeLabelingResults() override;
+    virtual QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
-    //! @note not available in python bindings
-    const LayerRenderJobs &jobs() const { return mLayerJobs; }
+    //! \note not available in Python bindings
+    const LayerRenderJobs &jobs() const { return mLayerJobs; } SIP_SKIP
 
     /**
      * Wait for the job to be finished - and keep the thread's event loop running while waiting.

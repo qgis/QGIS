@@ -23,7 +23,8 @@ from builtins import str
 
 from functools import cmp_to_key
 
-from qgis.PyQt.QtCore import QFile, Qgis
+from qgis.core import Qgis
+from qgis.PyQt.QtCore import QFile
 from qgis.PyQt.QtWidgets import QApplication
 
 from ..connector import DBConnector
@@ -81,7 +82,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return isValid
 
     def _checkSpatial(self):
-        """ check if it's a valid spatialite db """
+        """ check if it's a valid SpatiaLite db """
         self.has_spatial = self._checkGeometryColumnsTable()
         return self.has_spatial
 
@@ -117,7 +118,7 @@ class SpatiaLiteDBConnector(DBConnector):
         return c.fetchone()
 
     def getSpatialInfo(self):
-        """ returns tuple about spatialite support:
+        """ returns tuple about SpatiaLite support:
                 - lib version
                 - geos version
                 - proj version

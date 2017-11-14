@@ -31,6 +31,7 @@
 #include "qgsexpression.h"
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
+#include "qgshelp.h"
 
 QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
     QWidget *parent, Qt::WindowFlags fl )
@@ -38,27 +39,46 @@ QgsSearchQueryBuilder::QgsSearchQueryBuilder( QgsVectorLayer *layer,
   , mLayer( layer )
 {
   setupUi( this );
+  connect( btnEqual, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnEqual_clicked );
+  connect( btnLessThan, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnLessThan_clicked );
+  connect( btnGreaterThan, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnGreaterThan_clicked );
+  connect( btnLike, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnLike_clicked );
+  connect( btnILike, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnILike_clicked );
+  connect( btnPct, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnPct_clicked );
+  connect( btnIn, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnIn_clicked );
+  connect( btnNotIn, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnNotIn_clicked );
+  connect( lstFields, &QListView::doubleClicked, this, &QgsSearchQueryBuilder::lstFields_doubleClicked );
+  connect( lstValues, &QListView::doubleClicked, this, &QgsSearchQueryBuilder::lstValues_doubleClicked );
+  connect( btnLessEqual, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnLessEqual_clicked );
+  connect( btnGreaterEqual, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnGreaterEqual_clicked );
+  connect( btnNotEqual, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnNotEqual_clicked );
+  connect( btnAnd, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnAnd_clicked );
+  connect( btnNot, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnNot_clicked );
+  connect( btnOr, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnOr_clicked );
+  connect( btnGetAllValues, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnGetAllValues_clicked );
+  connect( btnSampleValues, &QPushButton::clicked, this, &QgsSearchQueryBuilder::btnSampleValues_clicked );
   setupListViews();
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsSearchQueryBuilder::showHelp );
 
-  setWindowTitle( tr( "Search query builder" ) );
+  setWindowTitle( tr( "Search Query Builder" ) );
 
   QPushButton *pbn = new QPushButton( tr( "&Test" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnTest_clicked() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::btnTest_clicked );
 
   pbn = new QPushButton( tr( "&Clear" ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( on_btnClear_clicked() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::btnClear_clicked );
 
   pbn = new QPushButton( tr( "&Save..." ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   pbn->setToolTip( tr( "Save query to an xml file" ) );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( saveQuery() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::saveQuery );
 
   pbn = new QPushButton( tr( "&Load..." ) );
   buttonBox->addButton( pbn, QDialogButtonBox::ActionRole );
   pbn->setToolTip( tr( "Load query from xml file" ) );
-  connect( pbn, SIGNAL( clicked() ), this, SLOT( loadQuery() ) );
+  connect( pbn, &QAbstractButton::clicked, this, &QgsSearchQueryBuilder::loadQuery );
 
   if ( layer )
     lblDataUri->setText( layer->name() );
@@ -126,7 +146,7 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   mModelValues->blockSignals( true );
   lstValues->setUpdatesEnabled( false );
 
-  //! MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems
+  // MH: keep already inserted values in a set. Querying is much faster compared to QStandardItemModel::findItems
   QSet<QString> insertedValues;
 
   while ( fit.nextFeature( feat ) &&
@@ -157,17 +177,17 @@ void QgsSearchQueryBuilder::getFieldValues( int limit )
   lstValues->setCursor( Qt::ArrowCursor );
 }
 
-void QgsSearchQueryBuilder::on_btnSampleValues_clicked()
+void QgsSearchQueryBuilder::btnSampleValues_clicked()
 {
   getFieldValues( 25 );
 }
 
-void QgsSearchQueryBuilder::on_btnGetAllValues_clicked()
+void QgsSearchQueryBuilder::btnGetAllValues_clicked()
 {
   getFieldValues( 0 );
 }
 
-void QgsSearchQueryBuilder::on_btnTest_clicked()
+void QgsSearchQueryBuilder::btnTest_clicked()
 {
   long count = countRecords( txtSQL->text() );
 
@@ -236,7 +256,7 @@ long QgsSearchQueryBuilder::countRecords( const QString &searchString )
 
 void QgsSearchQueryBuilder::on_btnOk_clicked()
 {
-  // if user hits Ok and there is no query, skip the validation
+  // if user hits OK and there is no query, skip the validation
   if ( txtSQL->text().trimmed().length() > 0 )
   {
     accept();
@@ -260,37 +280,37 @@ void QgsSearchQueryBuilder::on_btnOk_clicked()
 
 }
 
-void QgsSearchQueryBuilder::on_btnEqual_clicked()
+void QgsSearchQueryBuilder::btnEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " = " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnLessThan_clicked()
+void QgsSearchQueryBuilder::btnLessThan_clicked()
 {
   txtSQL->insertText( QStringLiteral( " < " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnGreaterThan_clicked()
+void QgsSearchQueryBuilder::btnGreaterThan_clicked()
 {
   txtSQL->insertText( QStringLiteral( " > " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnPct_clicked()
+void QgsSearchQueryBuilder::btnPct_clicked()
 {
   txtSQL->insertText( QStringLiteral( "%" ) );
 }
 
-void QgsSearchQueryBuilder::on_btnIn_clicked()
+void QgsSearchQueryBuilder::btnIn_clicked()
 {
   txtSQL->insertText( QStringLiteral( " IN " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnNotIn_clicked()
+void QgsSearchQueryBuilder::btnNotIn_clicked()
 {
   txtSQL->insertText( QStringLiteral( " NOT IN " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnLike_clicked()
+void QgsSearchQueryBuilder::btnLike_clicked()
 {
   txtSQL->insertText( QStringLiteral( " LIKE " ) );
 }
@@ -305,52 +325,52 @@ void QgsSearchQueryBuilder::setSearchString( const QString &searchString )
   txtSQL->setText( searchString );
 }
 
-void QgsSearchQueryBuilder::on_lstFields_doubleClicked( const QModelIndex &index )
+void QgsSearchQueryBuilder::lstFields_doubleClicked( const QModelIndex &index )
 {
   txtSQL->insertText( QgsExpression::quotedColumnRef( mModelFields->data( index ).toString() ) );
 }
 
-void QgsSearchQueryBuilder::on_lstValues_doubleClicked( const QModelIndex &index )
+void QgsSearchQueryBuilder::lstValues_doubleClicked( const QModelIndex &index )
 {
   txtSQL->insertText( mModelValues->data( index ).toString() );
 }
 
-void QgsSearchQueryBuilder::on_btnLessEqual_clicked()
+void QgsSearchQueryBuilder::btnLessEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " <= " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnGreaterEqual_clicked()
+void QgsSearchQueryBuilder::btnGreaterEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " >= " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnNotEqual_clicked()
+void QgsSearchQueryBuilder::btnNotEqual_clicked()
 {
   txtSQL->insertText( QStringLiteral( " != " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnAnd_clicked()
+void QgsSearchQueryBuilder::btnAnd_clicked()
 {
   txtSQL->insertText( QStringLiteral( " AND " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnNot_clicked()
+void QgsSearchQueryBuilder::btnNot_clicked()
 {
   txtSQL->insertText( QStringLiteral( " NOT " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnOr_clicked()
+void QgsSearchQueryBuilder::btnOr_clicked()
 {
   txtSQL->insertText( QStringLiteral( " OR " ) );
 }
 
-void QgsSearchQueryBuilder::on_btnClear_clicked()
+void QgsSearchQueryBuilder::btnClear_clicked()
 {
   txtSQL->clear();
 }
 
-void QgsSearchQueryBuilder::on_btnILike_clicked()
+void QgsSearchQueryBuilder::btnILike_clicked()
 {
   txtSQL->insertText( QStringLiteral( " ILIKE " ) );
 }
@@ -453,7 +473,7 @@ void QgsSearchQueryBuilder::loadQuery()
   for ( ; attIt != attributes.constEnd(); ++attIt )
   {
     //test if attribute is there
-    if ( !mFieldMap.contains( *attIt ) )
+    if ( !mFieldMap.contains( attIt ) )
     {
       bool ok;
       QString replaceAttribute = QInputDialog::getItem( 0, tr( "Select attribute" ), tr( "There is no attribute '%1' in the current vector layer. Please select an existing attribute" ).arg( *attIt ),
@@ -488,3 +508,7 @@ void QgsSearchQueryBuilder::loadQuery()
   txtSQL->insertText( newQueryText );
 }
 
+void QgsSearchQueryBuilder::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#query-builder" ) );
+}

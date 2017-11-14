@@ -22,11 +22,13 @@
 #include <QSslError>
 #include "ui_qgsauthsslerrorsdialog.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QNetworkReply;
 class QPushButton;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for reporting SSL errors and offering an option to store an SSL server exception into the authentication database
  */
 class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSslErrorsDialog
@@ -36,15 +38,15 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
 
     /**
      * Construct a dialog to handle SSL errors and saving SSL server certificate exceptions
-     * @param reply Network reply that hand error(s)
-     * @param sslErrors SSL errors that occurred
-     * @param parent Parent widget
-     * @param digest SHA digest of server certificate
-     * @param hostport Unique host:port to associate with the server certificate
+     * \param reply Network reply that hand error(s)
+     * \param sslErrors SSL errors that occurred
+     * \param parent Parent widget
+     * \param digest SHA digest of server certificate
+     * \param hostport Unique host:port to associate with the server certificate
      */
     QgsAuthSslErrorsDialog( QNetworkReply *reply,
                             const QList<QSslError> &sslErrors,
-                            QWidget *parent = nullptr,
+                            QWidget *parent SIP_TRANSFERTHIS = nullptr,
                             const QString &digest = QString(),
                             const QString &hostport = QString() );
 
@@ -60,13 +62,13 @@ class GUI_EXPORT QgsAuthSslErrorsDialog : public QDialog, private Ui::QgsAuthSsl
 
     void clearCertificateConfig();
 
-    void on_buttonBox_clicked( QAbstractButton *button );
+    void buttonBox_clicked( QAbstractButton *button );
 
-    void on_btnChainInfo_clicked();
+    void btnChainInfo_clicked();
 
-    void on_btnChainCAs_clicked();
+    void btnChainCAs_clicked();
 
-    void on_grpbxSslErrors_collapsedStateChanged( bool collapsed );
+    void grpbxSslErrors_collapsedStateChanged( bool collapsed );
 
   private:
     void populateErrorsList();

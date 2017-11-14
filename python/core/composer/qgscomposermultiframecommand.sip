@@ -1,51 +1,86 @@
-class QgsComposerMultiFrameCommand : QUndoCommand
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposermultiframecommand.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsComposerMultiFrameCommand: QUndoCommand
 {
+
 %TypeHeaderCode
-#include <qgscomposermultiframecommand.h>
+#include "qgscomposermultiframecommand.h"
 %End
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame* multiFrame, const QString& text, QUndoCommand* parent /TransferThis/ = 0 );
-    ~QgsComposerMultiFrameCommand();
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
 
-    void undo();
-    void redo();
+    virtual void undo();
+
+    virtual void redo();
+
 
     void savePreviousState();
     void saveAfterState();
 
     QDomDocument previousState() const;
+%Docstring
+ :rtype: QDomDocument
+%End
     QDomDocument afterState() const;
+%Docstring
+ :rtype: QDomDocument
+%End
 
-    /** Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
+%Docstring
+Returns true if previous state and after state are valid and different
+ :rtype: bool
+%End
 
-    const QgsComposerMultiFrame* multiFrame() const;
+    const QgsComposerMultiFrame *multiFrame() const;
+%Docstring
+ :rtype: QgsComposerMultiFrame
+%End
 
   protected:
 
+
+
     QgsComposerMultiFrameCommand(); //forbidden
-    void saveState( QDomDocument& stateDoc );
-    void restoreState( QDomDocument& stateDoc );
+    void saveState( QDomDocument &stateDoc );
+    void restoreState( QDomDocument &stateDoc );
     bool checkFirstRun();
+%Docstring
+ :rtype: bool
+%End
 };
 
-/** A composer command that merges together with other commands having the same context (=id)
- * for multi frame items. Keeps the oldest previous state and uses the newest after state.
- * The purpose is to avoid too many micro changes in the history*/
 class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand
 {
+%Docstring
+ A composer command that merges together with other commands having the same context (=id)
+ for multi frame items. Keeps the oldest previous state and uses the newest after state.
+ The purpose is to avoid too many micro changes in the history*
+%End
+
 %TypeHeaderCode
-#include <qgscomposermultiframecommand.h>
+#include "qgscomposermultiframecommand.h"
 %End
   public:
     enum Context
     {
-      Unknown = 0,
-      //composer html
+      Unknown,
+      //composer
       HtmlSource,
       HtmlStylesheet,
       HtmlBreakDistance,
-      //attribute table
+      //attribute
       TableMaximumFeatures,
       TableMargin,
       TableGridStrokeWidth,
@@ -56,11 +91,18 @@ class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand
       TableBackgroundColor,
     };
 
-    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame* multiFrame, const QString& text );
-    ~QgsComposerMultiFrameMergeCommand();
+    QgsComposerMultiFrameMergeCommand( Context c, QgsComposerMultiFrame *multiFrame, const QString &text );
 
-    bool mergeWith( const QUndoCommand * command );
-    int id() const;
+    virtual bool mergeWith( const QUndoCommand *command );
+
+    virtual int id() const;
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposermultiframecommand.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

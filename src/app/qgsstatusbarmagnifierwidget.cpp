@@ -22,15 +22,15 @@
 #include "qgsapplication.h"
 #include "qgsstatusbarmagnifierwidget.h"
 #include "qgsdoublespinbox.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 
 QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   : QWidget( parent )
 {
   QgsSettings settings;
-  int minimumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MIN;
-  int maximumFactor = 100 * QgisGui::CANVAS_MAGNIFICATION_MAX;
-  int defaultFactor = 100 * settings.value( QStringLiteral( "/qgis/magnifier_factor_default" ), 1.0 ).toDouble();
+  int minimumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MIN;
+  int maximumFactor = 100 * QgsGuiUtils::CANVAS_MAGNIFICATION_MAX;
+  int defaultFactor = 100 * settings.value( QStringLiteral( "qgis/magnifier_factor_default" ), 1.0 ).toDouble();
 
   // label
   mLabel = new QLabel();
@@ -53,7 +53,7 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   mSpinBox->setClearValueMode( QgsDoubleSpinBox::CustomValue );
   mSpinBox->setClearValue( defaultFactor );
 
-  connect( mSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( setMagnification( double ) ) );
+  connect( mSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsStatusBarMagnifierWidget::setMagnification );
 
   // layout
   mLayout = new QHBoxLayout( this );
@@ -64,10 +64,6 @@ QgsStatusBarMagnifierWidget::QgsStatusBarMagnifierWidget( QWidget *parent )
   mLayout->setSpacing( 0 );
 
   setLayout( mLayout );
-}
-
-QgsStatusBarMagnifierWidget::~QgsStatusBarMagnifierWidget()
-{
 }
 
 void QgsStatusBarMagnifierWidget::setDefaultFactor( double factor )

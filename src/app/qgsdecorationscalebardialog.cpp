@@ -25,12 +25,15 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationScaleBarDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationScaleBarDialog::buttonBox_rejected );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationScaleBarDialog::showHelp );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
-  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationScaleBarDialog::apply );
 
   // set the map units in the spin box
   spnSize->setShowClearButton( false );
@@ -71,18 +74,24 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar 
 
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
+  pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
   pbnChangeColor->setContext( QStringLiteral( "gui" ) );
-  pbnChangeColor->setColorDialogTitle( tr( "Select scalebar color" ) );
+  pbnChangeColor->setColorDialogTitle( tr( "Select Scale Bar Fill Color" ) );
+
+  pbnChangeOutlineColor->setAllowOpacity( true );
+  pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
+  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select Scale Bar Outline Color" ) );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationScaleBar/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
+void QgsDecorationScaleBarDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#scale-bar" ) );
 }
@@ -98,16 +107,17 @@ void QgsDecorationScaleBarDialog::apply()
   mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mStyleIndex = cboStyle->currentIndex();
   mDeco.mColor = pbnChangeColor->color();
+  mDeco.mOutlineColor = pbnChangeOutlineColor->color();
   mDeco.update();
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
+void QgsDecorationScaleBarDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_rejected()
+void QgsDecorationScaleBarDialog::buttonBox_rejected()
 {
   reject();
 }

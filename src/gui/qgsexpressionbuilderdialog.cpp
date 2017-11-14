@@ -23,7 +23,7 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   setupUi( this );
 
   QPushButton *okButton = buttonBox->button( QDialogButtonBox::Ok );
-  connect( builder, SIGNAL( expressionParsed( bool ) ), okButton, SLOT( setEnabled( bool ) ) );
+  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, okButton, &QWidget::setEnabled );
 
   builder->setExpressionContext( context );
   builder->setLayer( layer );
@@ -32,7 +32,9 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   builder->loadRecent( mRecentKey );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ) ).toByteArray() );
+
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
 
 QgsExpressionBuilderWidget *QgsExpressionBuilderDialog::expressionBuilder()
@@ -65,7 +67,7 @@ void QgsExpressionBuilderDialog::done( int r )
   QDialog::done( r );
 
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ExpressionBuilderDialog/geometry" ), saveGeometry() );
 }
 
 void QgsExpressionBuilderDialog::accept()
@@ -78,4 +80,9 @@ void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea &da )
 {
   // Store in child widget only.
   builder->setGeomCalculator( da );
+}
+
+void QgsExpressionBuilderDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/expression.html" ) );
 }

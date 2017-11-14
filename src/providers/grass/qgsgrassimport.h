@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsrasterpipe.h"
 #include "qgsvectordataprovider.h"
+#include "qgsanimatedicon.h"
 
 #include "qgsgrass.h"
 

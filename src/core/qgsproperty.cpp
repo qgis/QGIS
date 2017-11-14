@@ -20,17 +20,13 @@
 #include "qgsfeature.h"
 #include "qgssymbollayerutils.h"
 #include "qgscolorramp.h"
-#include <qmath.h>
 
-
-QgsPropertyDefinition::QgsPropertyDefinition()
-  : mTypes( DataTypeString )
-{}
-
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString &description, QgsPropertyDefinition::StandardPropertyTemplate type, const QString &origin, const QString &comment )
   : mName( name )
   , mDescription( description )
   , mStandardType( type )
+  , mOrigin( origin )
+  , mComment( comment )
 {
   switch ( mStandardType )
   {
@@ -79,14 +75,14 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
       mHelpText = QObject::tr( "string of variable length" );
       break;
 
-    case Transparency:
+    case Opacity:
       mTypes = DataTypeNumeric;
       mHelpText = QObject::tr( "int [0-100]" );
       break;
 
     case RenderUnits:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>MM</b>|<b>MapUnit</b>|<b>Pixel</b>|<b>Point</b>]" );
       break;
 
     case ColorWithAlpha:
@@ -101,14 +97,14 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case PenJoinStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>bevel</b>|<b>miter</b>|<b>round</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>bevel</b>|<b>miter</b>|<b>round</b>]" );
       break;
 
     case BlendMode:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
-                                              "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
-                                              "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>Normal</b>|<b>Lighten</b>|<b>Screen</b>|<b>Dodge</b>|<br>"
+                  "<b>Addition</b>|<b>Darken</b>|<b>Multiply</b>|<b>Burn</b>|<b>Overlay</b>|<br>"
+                  "<b>SoftLight</b>|<b>HardLight</b>|<b>Difference</b>|<b>Subtract</b>]" );
       break;
 
     case Point:
@@ -128,7 +124,7 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case LineStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>no</b>|<b>solid</b>|<b>dash</b>|<b>dot</b>|<b>dash dot</b>|<b>dash dot dot</b>]" );
       break;
 
     case StrokeWidth:
@@ -138,31 +134,31 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
 
     case FillStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
-                                              "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
-                                              "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
+      mHelpText = trString() + QStringLiteral( "[<b>solid</b>|<b>horizontal</b>|<b>vertical</b>|<b>cross</b>|<b>b_diagonal</b>|<b>f_diagonal"
+                  "</b>|<b>diagonal_x</b>|<b>dense1</b>|<b>dense2</b>|<b>dense3</b>|<b>dense4</b>|<b>dense5"
+                  "</b>|<b>dense6</b>|<b>dense7</b>|<b>no]" );
       break;
 
     case CapStyle:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>square</b>|<b>flat</b>|<b>round</b>]" );
       break;
 
     case HorizontalAnchor:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>left</b>|<b>center</b>|<b>right</b>]" );
       break;
 
     case VerticalAnchor:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
+      mHelpText = trString() + QStringLiteral( "[<b>top</b>|<b>center</b>|<b>bottom</b>]" );
       break;
 
     case SvgPath:
       mTypes = DataTypeString;
-      mHelpText = trString() + QLatin1String( "[<b>filepath</b>] as<br>"
-                                              "<b>''</b>=empty|absolute|search-paths-relative|<br>"
-                                              "project-relative|URL" );
+      mHelpText = trString() + QStringLiteral( "[<b>filepath</b>] as<br>"
+                  "<b>''</b>=empty|absolute|search-paths-relative|<br>"
+                  "project-relative|URL" );
       break;
 
     case Offset:
@@ -175,11 +171,13 @@ QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, const QString
   }
 }
 
-QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataTypes, const QString &description, const QString &helpText )
+QgsPropertyDefinition::QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin, const QString &comment )
   : mName( name )
   , mDescription( description )
-  , mTypes( dataTypes )
+  , mTypes( dataType )
   , mHelpText( helpText )
+  , mOrigin( origin )
+  , mComment( comment )
 {}
 
 bool QgsPropertyDefinition::supportsAssistant() const
@@ -605,7 +603,7 @@ int QgsProperty::valueAsInt( const QgsExpressionContext &context, int defaultVal
     {
       if ( ok )
         *ok = true;
-      return qRound( dbl );
+      return std::round( dbl );
     }
     else
     {
@@ -628,7 +626,7 @@ bool QgsProperty::valueAsBool( const QgsExpressionContext &context, bool default
   bool valOk = false;
   QVariant val = value( context, defaultValue, &valOk );
 
-  if ( !valOk || !val.isValid() )
+  if ( !valOk || !val.isValid() || val.isNull() )
     return defaultValue;
 
   if ( ok )
@@ -636,24 +634,26 @@ bool QgsProperty::valueAsBool( const QgsExpressionContext &context, bool default
   return val.toBool();
 }
 
-bool QgsProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
+QVariant QgsProperty::toVariant() const
 {
-  propertyElem.setAttribute( "active", d->active ? "1" : "0" );
-  propertyElem.setAttribute( "type", d->type );
+  QVariantMap propertyMap;
+
+  propertyMap.insert( QStringLiteral( "active" ), d->active );
+  propertyMap.insert( QStringLiteral( "type" ), d->type );
 
   switch ( d->type )
   {
     case StaticProperty:
-      propertyElem.setAttribute( "valType", d->staticValue.typeName() );
-      propertyElem.setAttribute( "val", d->staticValue.toString() );
+      // propertyMap.insert( QStringLiteral( "valType" ), d->staticValue.typeName() );
+      propertyMap.insert( QStringLiteral( "val" ), d->staticValue.toString() );
       break;
 
     case FieldBasedProperty:
-      propertyElem.setAttribute( "field", d->fieldName );
+      propertyMap.insert( QStringLiteral( "field" ), d->fieldName );
       break;
 
     case ExpressionBasedProperty:
-      propertyElem.setAttribute( "expression", d->expressionString );
+      propertyMap.insert( QStringLiteral( "expression" ), d->expressionString );
       break;
 
     case InvalidProperty:
@@ -662,36 +662,39 @@ bool QgsProperty::writeXml( QDomElement &propertyElem, QDomDocument &doc ) const
 
   if ( d->transformer )
   {
-    QDomElement transformerElem = doc.createElement( "transformer" );
-    transformerElem.setAttribute( "t", static_cast< int >( d->transformer->transformerType() ) );
-    if ( d->transformer->writeXml( transformerElem, doc ) )
-      propertyElem.appendChild( transformerElem );
+    QVariantMap transformer;
+    transformer.insert( QStringLiteral( "t" ), d->transformer->transformerType() );
+    transformer.insert( QStringLiteral( "d" ), d->transformer->toVariant() );
+
+    propertyMap.insert( QStringLiteral( "transformer" ), transformer );
   }
 
-  return true;
+  return propertyMap;
 }
 
-bool QgsProperty::readXml( const QDomElement &propertyElem, const QDomDocument &doc )
+bool QgsProperty::loadVariant( const QVariant &property )
 {
+  QVariantMap propertyMap = property.toMap();
+
   d.detach();
-  d->active = static_cast< bool >( propertyElem.attribute( "active", "1" ).toInt() );
-  d->type = static_cast< Type >( propertyElem.attribute( "type", "0" ).toInt() );
+  d->active = propertyMap.value( QStringLiteral( "active" ) ).toBool();
+  d->type = static_cast< Type >( propertyMap.value( QStringLiteral( "type" ), InvalidProperty ).toInt() );
 
   switch ( d->type )
   {
     case StaticProperty:
-      d->staticValue = QVariant( propertyElem.attribute( "val", "" ) );
-      d->staticValue.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
+      d->staticValue = propertyMap.value( QStringLiteral( "val" ) );
+      // d->staticValue.convert( QVariant::nameToType( propertyElem.attribute( "valType", "QString" ).toLocal8Bit().constData() ) );
       break;
 
     case FieldBasedProperty:
-      d->fieldName = propertyElem.attribute( "field" );
+      d->fieldName = propertyMap.value( QStringLiteral( "field" ) ).toString();
       if ( d->fieldName.isEmpty() )
         d->active = false;
       break;
 
     case ExpressionBasedProperty:
-      d->expressionString = propertyElem.attribute( "expression" );
+      d->expressionString = propertyMap.value( QStringLiteral( "expression" ) ).toString();
       if ( d->expressionString.isEmpty() )
         d->active = false;
 
@@ -709,15 +712,20 @@ bool QgsProperty::readXml( const QDomElement &propertyElem, const QDomDocument &
   if ( d->transformer )
     delete d->transformer;
   d->transformer = nullptr;
-  QDomNodeList transformerNodeList = propertyElem.elementsByTagName( "transformer" );
-  if ( !transformerNodeList.isEmpty() )
+
+
+  QVariant transform = propertyMap.value( QStringLiteral( "transformer" ) );
+
+  if ( transform.isValid() )
   {
-    QDomElement transformerElem = transformerNodeList.at( 0 ).toElement();
-    QgsPropertyTransformer::Type type = static_cast< QgsPropertyTransformer::Type >( transformerElem.attribute( "t", "0" ).toInt() );
+    QVariantMap transformerMap = transform.toMap();
+
+    QgsPropertyTransformer::Type type = static_cast< QgsPropertyTransformer::Type >( transformerMap.value( QStringLiteral( "t" ), QgsPropertyTransformer::GenericNumericTransformer ).toInt() );
     std::unique_ptr< QgsPropertyTransformer > transformer( QgsPropertyTransformer::create( type ) );
+
     if ( transformer )
     {
-      if ( transformer->readXml( transformerElem, doc ) )
+      if ( transformer->loadVariant( transformerMap.value( QStringLiteral( "d" ) ) ) )
         d->transformer = transformer.release();
     }
   }

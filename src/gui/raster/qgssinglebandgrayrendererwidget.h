@@ -19,12 +19,14 @@
 #define QGSSINGLEBANDGRAYRENDERERWIDGET_H
 
 #include "qgsrasterrendererwidget.h"
+#include "qgis_sip.h"
 #include "ui_qgssinglebandgrayrendererwidgetbase.h"
 #include "qgis_gui.h"
 
 class QgsRasterMinMaxWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsSingleBandGrayRendererWidget
  */
 class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandGrayRendererWidgetBase
@@ -33,7 +35,7 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
   public:
     QgsSingleBandGrayRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandGrayRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() override;
     void setMapCanvas( QgsMapCanvas *canvas ) override;
@@ -53,9 +55,9 @@ class GUI_EXPORT QgsSingleBandGrayRendererWidget: public QgsRasterRendererWidget
     void loadMinMax( int bandNo, double min, double max );
 
   private slots:
-    void on_mGrayBandComboBox_currentIndexChanged( int index );
-    void on_mMinLineEdit_textChanged( const QString & );
-    void on_mMaxLineEdit_textChanged( const QString & );
+    void bandChanged();
+    void mMinLineEdit_textChanged( const QString & );
+    void mMaxLineEdit_textChanged( const QString & );
 
   private:
     QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;

@@ -1,165 +1,220 @@
-/** \ingroup core
- * \class QgsStringStatisticalSummary
- * \brief Calculator for summary statistics and aggregates for a list of strings.
- *
- * Statistics are calculated by calling @link calculate @endlink and passing a list of strings. The
- * individual statistics can then be retrieved using the associated methods. Note that not all statistics
- * are calculated by default. Statistics which require slower computations are only calculated by
- * specifying the statistic in the constructor or via @link setStatistics @endlink.
- *
- * \note Added in version 2.16
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsstringstatisticalsummary.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 
 class QgsStringStatisticalSummary
 {
-%TypeHeaderCode
-#include <qgsstringstatisticalsummary.h>
+%Docstring
+ Calculator for summary statistics and aggregates for a list of strings.
+
+ Statistics are calculated by calling calculate() and passing a list of strings. The
+ individual statistics can then be retrieved using the associated methods. Note that not all statistics
+ are calculated by default. Statistics which require slower computations are only calculated by
+ specifying the statistic in the constructor or via setStatistics().
+
+.. versionadded:: 2.16
 %End
 
+%TypeHeaderCode
+#include "qgsstringstatisticalsummary.h"
+%End
   public:
 
-    public:
-
-    //! Enumeration of flags that specify statistics to be calculated
     enum Statistic
     {
-      Count,  //!< Count
-      CountDistinct,  //!< Number of distinct string values
-      CountMissing,  //!< Number of missing (null) values
-      Min, //!< Minimum string value
-      Max, //!< Maximum string value
-      MinimumLength, //!< Minimum length of string
-      MaximumLength, //!< Maximum length of string
-      MeanLength, //!< Mean length of strings
-      All, //! All statistics
+      Count,
+      CountDistinct,
+      CountMissing,
+      Min,
+      Max,
+      MinimumLength,
+      MaximumLength,
+      MeanLength,
+      All,
     };
     typedef QFlags<QgsStringStatisticalSummary::Statistic> Statistics;
 
-    /** Constructor for QgsStringStatistics
-     * @param stats flags for statistics to calculate
-     */
-    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = All );
 
-    /** Returns flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (e.g., count).
-     * @see setStatistics
-     */
+    QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = QgsStringStatisticalSummary::All );
+%Docstring
+ Constructor for QgsStringStatistics
+ \param stats flags for statistics to calculate
+%End
+
     Statistics statistics() const;
+%Docstring
+ Returns flags which specify which statistics will be calculated. Some statistics
+ are always calculated (e.g., count).
+.. seealso:: setStatistics
+ :rtype: Statistics
+%End
 
-    /** Sets flags which specify which statistics will be calculated. Some statistics
-     * are always calculated (e.g., count).
-     * @param stats flags for statistics to calculate
-     * @see statistics
-     */
-    void setStatistics( Statistics stats );
+    void setStatistics( QgsStringStatisticalSummary::Statistics stats );
+%Docstring
+ Sets flags which specify which statistics will be calculated. Some statistics
+ are always calculated (e.g., count).
+ \param stats flags for statistics to calculate
+.. seealso:: statistics
+%End
 
-    /** Resets the calculated values
-     */
     void reset();
+%Docstring
+ Resets the calculated values
+%End
 
-    /** Calculates summary statistics for an entire list of strings at once.
-     * @param values list of strings
-     * @see calculateFromVariants()
-     * @see addString()
-     */
-    void calculate( const QStringList& values );
+    void calculate( const QStringList &values );
+%Docstring
+ Calculates summary statistics for an entire list of strings at once.
+ \param values list of strings
+.. seealso:: calculateFromVariants()
+.. seealso:: addString()
+%End
 
-    /** Calculates summary statistics for an entire list of variants at once. Any
-     * non-string variants will be ignored.
-     * @param values list of variants
-     * @see calculate()
-     * @see addValue()
-     */
-    void calculateFromVariants( const QVariantList& values );
+    void calculateFromVariants( const QVariantList &values );
+%Docstring
+ Calculates summary statistics for an entire list of variants at once. Any
+ non-string variants will be ignored.
+ \param values list of variants
+.. seealso:: calculate()
+.. seealso:: addValue()
+%End
 
-    /** Adds a single string to the statistics calculation. Calling this method
-     * allows strings to be added to the calculation one at a time. For large
-     * quantities of strings this may be more efficient then first adding all the
-     * strings to a list and calling calculate().
-     * @param string string to add
-     * @note call reset() before adding the first string using this method
-     * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final string and before
-     * retrieving calculated statistics.
-     * @see calculate()
-     * @see addValue()
-     * @see finalize()
-     */
-    void addString( const QString& string );
+    void addString( const QString &string );
+%Docstring
+ Adds a single string to the statistics calculation. Calling this method
+ allows strings to be added to the calculation one at a time. For large
+ quantities of strings this may be more efficient then first adding all the
+ strings to a list and calling calculate().
+ \param string string to add
+.. note::
 
-    /** Adds a single variant to the statistics calculation. Calling this method
-     * allows variants to be added to the calculation one at a time. For large
-     * quantities of variants this may be more efficient then first adding all the
-     * variants to a list and calling calculateFromVariants().
-     * @param value variant to add
-     * @note call reset() before adding the first string using this method
-     * to clear the results from any previous calculations
-     * @note finalize() must be called after adding the final value and before
-     * retrieving calculated statistics.
-     * @see calculateFromVariants()
-     * @see finalize()
-     */
-    void addValue( const QVariant& value );
+   call reset() before adding the first string using this method
+ to clear the results from any previous calculations
+.. note::
 
-    /** Must be called after adding all strings with addString() and before retrieving
-     * any calculated string statistics.
-     * @see addString()
-     */
+   finalize() must be called after adding the final string and before
+ retrieving calculated statistics.
+.. seealso:: calculate()
+.. seealso:: addValue()
+.. seealso:: finalize()
+%End
+
+    void addValue( const QVariant &value );
+%Docstring
+ Adds a single variant to the statistics calculation. Calling this method
+ allows variants to be added to the calculation one at a time. For large
+ quantities of variants this may be more efficient then first adding all the
+ variants to a list and calling calculateFromVariants().
+ \param value variant to add
+.. note::
+
+   call reset() before adding the first string using this method
+ to clear the results from any previous calculations
+.. note::
+
+   finalize() must be called after adding the final value and before
+ retrieving calculated statistics.
+.. seealso:: calculateFromVariants()
+.. seealso:: finalize()
+%End
+
     void finalize();
+%Docstring
+ Must be called after adding all strings with addString() and before retrieving
+ any calculated string statistics.
+.. seealso:: addString()
+%End
 
-    /** Returns the value of a specified statistic
-     * @param stat statistic to return
-     * @returns calculated value of statistic
-     */
-    QVariant statistic( Statistic stat ) const;
+    QVariant statistic( QgsStringStatisticalSummary::Statistic stat ) const;
+%Docstring
+ Returns the value of a specified statistic
+ \param stat statistic to return
+ :return: calculated value of statistic
+ :rtype: QVariant
+%End
 
-    /** Returns the calculated count of values.
-     */
     int count() const;
+%Docstring
+ Returns the calculated count of values.
+ :rtype: int
+%End
 
-    /** Returns the number of distinct string values.
-     * @see distinctValues()
-     */
     int countDistinct() const;
+%Docstring
+ Returns the number of distinct string values.
+.. seealso:: distinctValues()
+ :rtype: int
+%End
 
-    /** Returns the set of distinct string values.
-     * @see countDistinct()
-     */
     QSet< QString > distinctValues() const;
+%Docstring
+ Returns the set of distinct string values.
+.. seealso:: countDistinct()
+ :rtype: set of str
+%End
 
-    /** Returns the number of missing (null) string values.
-     */
     int countMissing() const;
+%Docstring
+ Returns the number of missing (null) string values.
+ :rtype: int
+%End
 
-    /** Returns the minimum (non-null) string value.
-     */
     QString min() const;
+%Docstring
+ Returns the minimum (non-null) string value.
+ :rtype: str
+%End
 
-    /** Returns the maximum (non-null) string value.
-     */
     QString max() const;
+%Docstring
+ Returns the maximum (non-null) string value.
+ :rtype: str
+%End
 
-    /** Returns the minimum length of strings.
-     */
     int minLength() const;
+%Docstring
+ Returns the minimum length of strings.
+ :rtype: int
+%End
 
-    /** Returns the maximum length of strings.
-     */
     int maxLength() const;
+%Docstring
+ Returns the maximum length of strings.
+ :rtype: int
+%End
 
-    /**
-      * Returns the mean length of strings.
-      * @note added in QGIS 3.0
-      */
     double meanLength() const;
+%Docstring
+ Returns the mean length of strings.
+.. versionadded:: 3.0
+ :rtype: float
+%End
 
-    /** Returns the friendly display name for a statistic
-     * @param statistic statistic to return name for
-     */
-    static QString displayName( Statistic statistic );
+    static QString displayName( QgsStringStatisticalSummary::Statistic statistic );
+%Docstring
+ Returns the friendly display name for a statistic
+ \param statistic statistic to return name for
+ :rtype: str
+%End
 
 };
 
 QFlags<QgsStringStatisticalSummary::Statistic> operator|(QgsStringStatisticalSummary::Statistic f1, QFlags<QgsStringStatisticalSummary::Statistic> f2);
 
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsstringstatisticalsummary.h                               *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

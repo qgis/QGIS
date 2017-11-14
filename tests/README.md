@@ -9,6 +9,7 @@ Make sure that you have enabled building of tests in CMake.
 # Run tests
 
 You can run all tests using `make check`.
+Note you will need `xvfb-run` for that (sudo apt-get install xfvb).
 
 Individual tests can be run using `ctest`.
 
@@ -44,27 +45,28 @@ with something like this:
 ## Postgres
 
 Make sure that you have enabled building of postgres test in CMake.
-`cmake -DENABLE_PGTEST=ON ..`
+`cmake -DENABLE_TESTS=ON -DENABLE_PGTEST=ON ..`
 
 To test the postgres provider you will need to have a database available to
-which the postgres provider can connect. The server will need to have postgis
+which the postgres provider can connect. The server will need to have PostGIS
 support enabled.
 
-By default the test uses the following connection string:
+By default the test uses one of the following connection string:
 
     dbname=qgis_test
+    service=qgis_test
 
-If this does not match your setup you can set the environment variable
-`QGIS_PGTEST_DB` to the desired connection string, or you can rely
-on standard libpq environment variables to tweak host, port user and
-password (PGHOST, PGPORT, PGUSER, PGPASSWORD).
+If these do not match your setup you can set the environment variable
+`QGIS_PGTEST_DB` to the desired connection string. Note that you can
+rely on standard libpq environment variables to tweak host, port user
+and password (PGHOST, PGPORT, PGUSER, PGPASSWORD).
 
-Please note that the database needs to be initialized using
+Please note that the test database needs to be initialized using
 the sql-scripts:
 
     tests/testdata/provider/testdata_pg*.sql
 
-They take care of activating postgis for the test database and
+They take care of activating PostGIS for the test database and
 create some tables containing test data.
 
 For convenience, a shell script is provided to create the database

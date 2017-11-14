@@ -13,16 +13,16 @@
  *                                                                         *
  ***************************************************************************/
 
-/** QGIS - Plugin API
+/**
+ * QGIS - Plugin API
  *
  *  \section about  About QGis Plugins
  * Plugins provide additional functionality to QGis. Plugins must
  * implement several required methods in order to be registered with
  * QGis. These methods include:
- * <ul>name
- * <li>version
- * <li>description
- * </ul>
+ * name:
+ * - version
+ * - description
  *
  * All QGis plugins must inherit from the abstract base class QgisPlugin.
  * This list will grow as the API is expanded.
@@ -35,6 +35,8 @@
 #ifndef QGISPLUGIN_H
 #define QGISPLUGIN_H
 
+#define SIP_NO_FILE
+
 
 #include <QString>
 
@@ -42,7 +44,8 @@ class QgisInterface;
 
 //#include "qgisplugingui.h"
 
-/** \ingroup plugins
+/**
+ * \ingroup plugins
  * \class QgisPlugin
  * \brief Abstract base class from which all plugins must inherit
  * \note not available in Python bindings
@@ -89,8 +92,7 @@ class QgisPlugin
       , mType( type )
     {}
 
-    virtual ~QgisPlugin()
-    {}
+    virtual ~QgisPlugin() = default;
 
     //! Get the name of the plugin
     QString const &name() const

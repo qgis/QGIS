@@ -14,9 +14,12 @@
  ***************************************************************************/
 #include "qgseditformconfig_p.h"
 #include "qgseditformconfig.h"
+#include "qgspathresolver.h"
 #include "qgsproject.h"
+#include "qgsreadwritecontext.h"
 #include "qgsrelationmanager.h"
 #include "qgslogger.h"
+#include "qgsxmlutils.h"
 
 //#include "qgseditorwidgetregistry.h"
 
@@ -255,14 +258,14 @@ void QgsEditFormConfig::setSuppress( QgsEditFormConfig::FeatureFormSuppress s )
   d->mSuppressForm = s;
 }
 
-void QgsEditFormConfig::readXml( const QDomNode &node )
+void QgsEditFormConfig::readXml( const QDomNode &node, const QgsReadWriteContext &context )
 {
   d.detach();
   QDomNode editFormNode = node.namedItem( QStringLiteral( "editform" ) );
   if ( !editFormNode.isNull() )
   {
     QDomElement e = editFormNode.toElement();
-    d->mUiFormPath = QgsProject::instance()->readPath( e.text() );
+    d->mUiFormPath = context.pathResolver().readPath( e.text() );
   }
 
   QDomNode editFormInitNode = node.namedItem( QStringLiteral( "editforminit" ) );
@@ -299,7 +302,7 @@ void QgsEditFormConfig::readXml( const QDomNode &node )
   QDomNode editFormInitFilePathNode = node.namedItem( QStringLiteral( "editforminitfilepath" ) );
   if ( !editFormInitFilePathNode.isNull() && !editFormInitFilePathNode.toElement().text().isEmpty() )
   {
-    setInitFilePath( QgsProject::instance()->readPath( editFormInitFilePathNode.toElement().text() ) );
+    setInitFilePath( context.pathResolver().readPath( editFormInitFilePathNode.toElement().text() ) );
   }
 
   QDomNode fFSuppNode = node.namedItem( QStringLiteral( "featformsuppress" ) );
@@ -335,6 +338,16 @@ void QgsEditFormConfig::readXml( const QDomNode &node )
     }
   }
 
+  QDomNodeList widgetsNodeList = node.namedItem( QStringLiteral( "widgets" ) ).toElement().childNodes();
+
+  for ( int i = 0; i < widgetsNodeList.size(); ++i )
+  {
+    QDomElement widgetElement = widgetsNodeList.at( i ).toElement();
+    QVariant config = QgsXmlUtils::readVariant( widgetElement.firstChildElement( QStringLiteral( "config" ) ) );
+
+    d->mWidgetConfigs[widgetElement.attribute( QStringLiteral( "name" ) )] = config.toMap();
+  }
+
   // tabs and groups display info
   QDomNode attributeEditorFormNode = node.namedItem( QStringLiteral( "attributeEditorForm" ) );
   if ( !attributeEditorFormNode.isNull() )
@@ -353,16 +366,18 @@ void QgsEditFormConfig::readXml( const QDomNode &node )
         QgsAttributeEditorElement *attributeEditorWidget = attributeEditorElementFromDomElement( elem, nullptr );
         addTab( attributeEditorWidget );
       }
+
+      onRelationsLoaded();
     }
   }
 }
 
-void QgsEditFormConfig::writeXml( QDomNode &node ) const
+void QgsEditFormConfig::writeXml( QDomNode &node, const QgsReadWriteContext &context ) const
 {
   QDomDocument doc( node.ownerDocument() );
 
   QDomElement efField  = doc.createElement( QStringLiteral( "editform" ) );
-  QDomText efText = doc.createTextNode( QgsProject::instance()->writePath( uiForm() ) );
+  QDomText efText = doc.createTextNode( context.pathResolver().writePath( uiForm() ) );
   efField.appendChild( efText );
   node.appendChild( efField );
 
@@ -376,7 +391,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node ) const
   node.appendChild( eficsField );
 
   QDomElement efifpField  = doc.createElement( QStringLiteral( "editforminitfilepath" ) );
-  efifpField.appendChild( doc.createTextNode( QgsProject::instance()->writePath( initFilePath() ) ) );
+  efifpField.appendChild( doc.createTextNode( context.pathResolver().writePath( initFilePath() ) ) );
   node.appendChild( efifpField );
 
   QDomElement eficField  = doc.createElement( QStringLiteral( "editforminitcode" ) );
@@ -409,7 +424,7 @@ void QgsEditFormConfig::writeXml( QDomNode &node ) const
   node.appendChild( editorLayoutElem );
 
   // tabs and groups of edit form
-  if ( tabs().size() > 0 && d->mConfiguredRootContainer )
+  if ( !tabs().empty() && d->mConfiguredRootContainer )
   {
     QDomElement tabsElem = doc.createElement( QStringLiteral( "attributeEditorForm" ) );
 
@@ -424,37 +439,20 @@ void QgsEditFormConfig::writeXml( QDomNode &node ) const
     node.appendChild( tabsElem );
   }
 
-  //// TODO: MAKE THIS MORE GENERIC, SO INDIVIDUALL WIDGETS CAN NOT ONLY SAVE STRINGS
-  /// SEE QgsEditorWidgetFactory::writeConfig
-
   QDomElement widgetsElem = doc.createElement( QStringLiteral( "widgets" ) );
 
   QMap<QString, QVariantMap >::ConstIterator configIt( d->mWidgetConfigs.constBegin() );
 
   while ( configIt != d->mWidgetConfigs.constEnd() )
   {
-    if ( d->mFields.indexFromName( configIt.key() ) == -1 )
-    {
-      QDomElement widgetElem = doc.createElement( QStringLiteral( "widget" ) );
-      widgetElem.setAttribute( QStringLiteral( "name" ), configIt.key() );
-      // widgetElem.setAttribute( "notNull",  );
+    QDomElement widgetElem = doc.createElement( QStringLiteral( "widget" ) );
+    widgetElem.setAttribute( QStringLiteral( "name" ), configIt.key() );
+    // widgetElem.setAttribute( "notNull",  );
 
-      QDomElement configElem = doc.createElement( QStringLiteral( "config" ) );
-      widgetElem.appendChild( configElem );
-
-      QVariantMap::ConstIterator cfgIt( configIt.value().constBegin() );
-
-      while ( cfgIt != configIt.value().constEnd() )
-      {
-        QDomElement optionElem = doc.createElement( QStringLiteral( "option" ) );
-        optionElem.setAttribute( QStringLiteral( "key" ), cfgIt.key() );
-        optionElem.setAttribute( QStringLiteral( "value" ), cfgIt.value().toString() );
-        configElem.appendChild( optionElem );
-        ++cfgIt;
-      }
-
-      widgetsElem.appendChild( widgetElem );
-    }
+    QDomElement configElem = QgsXmlUtils::writeVariant( configIt.value(), doc );
+    configElem.setTagName( QStringLiteral( "config" ) );
+    widgetElem.appendChild( configElem );
+    widgetsElem.appendChild( widgetElem );
     ++configIt;
   }
 

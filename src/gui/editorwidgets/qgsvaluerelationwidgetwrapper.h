@@ -24,9 +24,12 @@
 #include <QLineEdit>
 #include "qgis_gui.h"
 
+SIP_NO_FILE
+
 class QgsValueRelationWidgetFactory;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wraps a value relation widget. This widget will offer a combobox with values from another layer
  * referenced by a foreign key (a constraint may be set but is not required on data level).
  * This is useful for having value lists on a separate layer containing codes and their
@@ -57,6 +60,8 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
 
     void showIndeterminateState() override;
 
+    void setEnabled( bool enabled ) override;
+
   protected:
     QWidget *createWidget( QWidget *parent ) override;
     void initWidget( QWidget *editor ) override;
@@ -73,7 +78,10 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
     QgsVectorLayer *mLayer = nullptr;
 
+    bool mUpdating;
+
     friend class QgsValueRelationWidgetFactory;
+    friend class TestQgsValueRelationWidgetWrapper;
 };
 
 #endif // QGSVALUERELATIONWIDGETWRAPPER_H

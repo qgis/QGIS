@@ -29,7 +29,7 @@ bool dwgReader21::readMetaData()
   if ( ! fileBuf->setPosition( 11 ) )
     return false;
   maintenanceVersion = fileBuf->getRawChar8();
-  DRW_DBG( "maintenance verion= " );
+  DRW_DBG( "maintenance version= " );
   DRW_DBGH( maintenanceVersion );
   DRW_DBG( "\nbyte at 0x0C= " );
   DRW_DBG( fileBuf->getRawChar8() );

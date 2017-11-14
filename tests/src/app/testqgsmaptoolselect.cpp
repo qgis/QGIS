@@ -32,9 +32,7 @@ class TestQgsMapToolSelect : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsMapToolSelect()
-      : canvas( 0 )
-    {}
+    TestQgsMapToolSelect() = default;
 
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
@@ -109,7 +107,7 @@ QgsFeatureList
 TestQgsMapToolSelect::testSelectVector( QgsVectorLayer *layer, double xGeoref, double yGeoref )
 {
   std::unique_ptr< QgsMapToolSelect > tool( new QgsMapToolSelect( canvas ) );
-  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
+  QgsPointXY mapPoint = canvas->getCoordinateTransform()->transform( xGeoref, yGeoref );
 
   // make given vector layer current
   canvas->setCurrentLayer( layer );

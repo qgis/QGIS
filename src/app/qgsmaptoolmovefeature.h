@@ -38,12 +38,11 @@ class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 
     virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    //! called when map tool is being deactivated
     void deactivate() override;
 
   private:
     //! Start point of the move in map coordinates
-    QgsPoint mStartPointMapCoords;
+    QgsPointXY mStartPointMapCoords;
 
     //! Rubberband that shows the feature being moved
     QgsRubberBand *mRubberBand = nullptr;

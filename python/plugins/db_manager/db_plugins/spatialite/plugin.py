@@ -90,7 +90,7 @@ class SpatiaLiteDBPlugin(DBPlugin):
     def addConnectionActionSlot(self, item, action, parent, index):
         QApplication.restoreOverrideCursor()
         try:
-            filename, selected_filter = QFileDialog.getOpenFileName(parent, "Choose Sqlite/Spatialite file")
+            filename, selected_filter = QFileDialog.getOpenFileName(parent, "Choose SQLite/SpatiaLite file")
             if not filename:
                 return
         finally:

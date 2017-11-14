@@ -86,7 +86,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
     Q_OBJECT
   public:
     explicit QgsCachedImageFetcher( const QImage &img );
-    virtual ~QgsCachedImageFetcher();
+    virtual ~QgsCachedImageFetcher() = default;
     virtual void start() override;
   private:
     const QImage _img; // copy is intentional
@@ -154,7 +154,8 @@ class QgsWmsProvider : public QgsRasterDataProvider
 
 #if 0
 
-    /** Returns true if layer has tile set profiles
+    /**
+     * Returns true if layer has tile set profiles
      */
     virtual bool hasTiles() const;
 #endif
@@ -200,7 +201,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
     QString metadata() override;
-    QgsRasterIdentifyResult identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
+    QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
     QString lastErrorFormat() override;
@@ -253,13 +254,6 @@ class QgsWmsProvider : public QgsRasterDataProvider
     } TilePosition;
     typedef QList<TilePosition> TilePositions;
 
-  signals:
-
-    //! \brief emit a signal to notify of a progress event
-    void progressChanged( int progress, int totalSteps );
-
-    void dataChanged();
-
   private slots:
     void identifyReplyFinished();
     void getLegendGraphicReplyFinished( const QImage & );
@@ -279,7 +273,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     bool extentForNonTiledLayer( const QString &layerName, const QString &crs, QgsRectangle &extent ) const;
 
     // case insensitive attribute value lookup
-    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString::null );
+    static QString nodeAttribute( const QDomElement &e, const QString &name, const QString &defValue = QString() );
 
     /**
      * Add the list of WMS layer names to be rendered by this server
@@ -346,14 +340,15 @@ class QgsWmsProvider : public QgsRasterDataProvider
     //! Get tiles from a different resolution to cover the missing areas
     void fetchOtherResTiles( QgsTileMode tileMode, const QgsRectangle &viewExtent, int imageWidth, QList<QRectF> &missing, double tres, int resOffset, QList<TileImage> &otherResTiles );
 
-    /** Return the full url to request legend graphic
+    /**
+     * Return the full url to request legend graphic
      * The visibleExtent isi only used if provider supports contextual
      * legends according to the QgsWmsSettings
-     * @added in 2.8
+     * \since QGIS 2.8
      */
     QUrl getLegendGraphicFullURL( double scale, const QgsRectangle &visibleExtent );
 
-    //QStringList identifyAs( const QgsPoint &point, QString format );
+    //QStringList identifyAs( const QgsPointXY &point, QString format );
 
     QString layerMetadata( QgsWmsLayerProperty &layer );
 
@@ -394,7 +389,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     /**
      * GetLegendGraphic scale for the WMS Pixmap result
      */
-    double mGetLegendGraphicScale;
+    double mGetLegendGraphicScale = 0.0;
 
     QgsRectangle mGetLegendGraphicExtent;
 
@@ -436,17 +431,18 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString mError;
 
 
-    /** The mime type of the message
+    /**
+     * The mime type of the message
      */
     QString mErrorFormat;
 
     //! See if calculateExtents() needs to be called before extent() returns useful data
-    mutable bool mExtentDirty;
+    mutable bool mExtentDirty = true;
 
     QString mServiceMetadataURL;
 
     //! tile request number, cache hits and misses
-    int mTileReqNo;
+    int mTileReqNo = 0;
 
     //! chosen tile layer
     QgsWmtsTileLayer        *mTileLayer = nullptr;
@@ -548,14 +544,10 @@ class QgsWmsStatistics
   public:
     struct Stat
     {
-      Stat()
-        : errors( 0 )
-        , cacheHits( 0 )
-        , cacheMisses( 0 )
-      {}
-      int errors;
-      int cacheHits;
-      int cacheMisses;
+      Stat() = default;
+      int errors = 0;
+      int cacheHits = 0;
+      int cacheMisses = 0;
     };
 
     //! get reference to layer's statistics - insert to map if does not exist yet

@@ -25,11 +25,17 @@
  * A value relation field formatter looks up the values from
  * features on another layer.
  *
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsRelationReferenceFieldFormatter : public QgsFieldFormatter
 {
   public:
+
+    /**
+      * Default constructor of field formatter for a relation reference field.
+      */
+    QgsRelationReferenceFieldFormatter() = default;
+
     virtual QString id() const override;
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;

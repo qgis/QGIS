@@ -27,7 +27,7 @@ from qgis.core import (
 )
 
 from qgis.gui import (
-    QgsEditorWidgetRegistry,
+    QgsGui,
     QgsRelationWidgetWrapper,
     QgsAttributeEditorContext
 )
@@ -47,7 +47,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         Setup the involved layers and relations for a n:m relation
         :return:
         """
-        QgsEditorWidgetRegistry.initEditors()
+        QgsGui.editorWidgetRegistry().initEditors()
         cls.dbconn = 'service=\'qgis_test\''
         if 'QGIS_PGTEST_DB' in os.environ:
             cls.dbconn = os.environ['QGIS_PGTEST_DB']
@@ -233,7 +233,7 @@ class TestQgsRelationEditWidget(unittest.TestCase):
         """
         lyrs = [self.vl_a, self.vl_b, self.vl_link]
 
-        self.transaction = QgsTransaction.create([l.id() for l in lyrs])
+        self.transaction = QgsTransaction.create(lyrs)
         self.transaction.begin()
         for l in lyrs:
             l.startEditing()

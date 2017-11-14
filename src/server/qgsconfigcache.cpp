@@ -18,9 +18,6 @@
 #include "qgsconfigcache.h"
 #include "qgsmessagelog.h"
 #include "qgsmslayercache.h"
-#include "qgswfsprojectparser.h"
-#include "qgswmsprojectparser.h"
-#include "qgssldconfigparser.h"
 #include "qgsaccesscontrol.h"
 #include "qgsproject.h"
 
@@ -38,106 +35,22 @@ QgsConfigCache *QgsConfigCache::instance()
 
 QgsConfigCache::QgsConfigCache()
 {
-  QObject::connect( &mFileSystemWatcher, SIGNAL( fileChanged( const QString & ) ), this, SLOT( removeChangedEntry( const QString & ) ) );
+  QObject::connect( &mFileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &QgsConfigCache::removeChangedEntry );
 }
 
-QgsServerProjectParser *QgsConfigCache::serverConfiguration( const QString &filePath )
+const QgsProject *QgsConfigCache::project( const QString &path )
 {
-  QgsMessageLog::logMessage(
-    QStringLiteral( "Open the project file '%1'." )
-    .arg( filePath ),
-    QStringLiteral( "Server" ), QgsMessageLog::INFO
-  );
-
-  QDomDocument *doc = xmlDocument( filePath );
-  if ( !doc )
+  if ( ! mProjectCache[ path ] )
   {
-    return nullptr;
+    std::unique_ptr<QgsProject> prj( new QgsProject() );
+    if ( prj->read( path ) )
+    {
+      mProjectCache.insert( path, prj.release() );
+      mFileSystemWatcher.addPath( path );
+    }
   }
 
-  QgsProjectVersion fileVersion = getVersion( *doc );
-  QgsProjectVersion thisVersion( Qgis::QGIS_VERSION );
-
-  if ( thisVersion != fileVersion )
-  {
-    QgsMessageLog::logMessage(
-      QString(
-        "\n========================================================================"
-        "\n= WARNING: This project file was saved by a different version of QGIS. ="
-        "\n========================================================================"
-      ), QStringLiteral( "Server" ), QgsMessageLog::WARNING
-    );
-  }
-  QgsMessageLog::logMessage(
-    QStringLiteral( "QGIS server version %1, project version %2" )
-    .arg( thisVersion.text(), fileVersion.text() ),
-    QStringLiteral( "Server" ), QgsMessageLog::INFO
-  );
-  return new QgsServerProjectParser( doc, filePath );
-}
-
-QgsWfsProjectParser *QgsConfigCache::wfsConfiguration(
-  const QString &filePath
-  , const QgsAccessControl *accessControl
-)
-{
-  QgsWfsProjectParser *p = mWFSConfigCache.object( filePath );
-  if ( !p )
-  {
-    QDomDocument *doc = xmlDocument( filePath );
-    if ( !doc )
-    {
-      return nullptr;
-    }
-    p = new QgsWfsProjectParser(
-      filePath
-      , accessControl
-    );
-    mWFSConfigCache.insert( filePath, p );
-    p = mWFSConfigCache.object( filePath );
-    Q_ASSERT( p );
-  }
-
-  QgsMSLayerCache::instance()->setProjectMaxLayers( p->wfsLayers().size() );
-  return p;
-}
-
-QgsWmsConfigParser *QgsConfigCache::wmsConfiguration(
-  const QString &filePath
-  , const QgsAccessControl *accessControl
-  , const QMap<QString, QString> &parameterMap
-)
-{
-  QgsWmsConfigParser *p = mWMSConfigCache.object( filePath );
-  if ( !p )
-  {
-    QDomDocument *doc = xmlDocument( filePath );
-    if ( !doc )
-    {
-      return nullptr;
-    }
-
-    //sld or QGIS project file?
-    //is it an sld document or a qgis project file?
-    QDomElement documentElem = doc->documentElement();
-    if ( documentElem.tagName() == QLatin1String( "StyledLayerDescriptor" ) )
-    {
-      p = new QgsSLDConfigParser( doc, parameterMap );
-    }
-    else
-    {
-      p = new QgsWmsProjectParser(
-        filePath
-        , accessControl
-      );
-    }
-    mWMSConfigCache.insert( filePath, p );
-    p = mWMSConfigCache.object( filePath );
-    Q_ASSERT( p );
-  }
-
-  QgsMSLayerCache::instance()->setProjectMaxLayers( p->nLayers() );
-  return p;
+  return mProjectCache[ path ];
 }
 
 QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
@@ -181,8 +94,7 @@ QDomDocument *QgsConfigCache::xmlDocument( const QString &filePath )
 
 void QgsConfigCache::removeChangedEntry( const QString &path )
 {
-  mWMSConfigCache.remove( path );
-  mWFSConfigCache.remove( path );
+  mProjectCache.remove( path );
 
   //xml document must be removed last, as other config cache destructors may require it
   mXmlDocumentCache.remove( path );

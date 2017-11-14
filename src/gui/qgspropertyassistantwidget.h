@@ -19,6 +19,7 @@
 #define QGSPROPERTYASSISTANTWIDGET_H
 
 #include "qgspanelwidget.h"
+#include "qgis_sip.h"
 #include "ui_qgspropertyassistantwidgetbase.h"
 #include "ui_qgspropertysizeassistantwidget.h"
 #include "ui_qgspropertycolorassistantwidget.h"
@@ -32,6 +33,8 @@
 #include <QItemDelegate>
 
 class QgsMapCanvas;
+
+#ifndef SIP_RUN
 
 ///@cond PRIVATE
 
@@ -100,13 +103,14 @@ class GUI_EXPORT QgsPropertyColorAssistantWidget : public QgsPropertyAbstractTra
 
 ///@endcond PRIVATE
 
+#endif
 
 
 /**
  * \class QgsPropertyAssistantWidget
  * \ingroup gui
  * Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
- * \note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui::PropertyAssistantBase
 {
@@ -121,7 +125,8 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
      * The \a initialState dictates the initial state to show in the widget. A corresponding \a layer
      * can also be set to allow population of GUI widgets such as field selectors.
      */
-    QgsPropertyAssistantWidget( QWidget *parent = nullptr, const QgsPropertyDefinition &definition = QgsPropertyDefinition(),
+    QgsPropertyAssistantWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr,
+                                const QgsPropertyDefinition &definition = QgsPropertyDefinition(),
                                 const QgsProperty &initialState = QgsProperty(),
                                 const QgsVectorLayer *layer = nullptr );
 
@@ -140,9 +145,9 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
     /**
      * Sets a symbol which can be used for previews inside the widget. If not specified, default
      * created symbols will be used instead.
-     * @note not available in Python bindings
+     * \note not available in Python bindings
      */
-    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); }
+    void setSymbol( std::shared_ptr< QgsSymbol > symbol ) { mSymbol = symbol; updatePreview(); } SIP_SKIP
 
     void setDockMode( bool dockMode ) override;
 
@@ -169,6 +174,7 @@ class GUI_EXPORT QgsPropertyAssistantWidget : public QgsPanelWidget, private Ui:
 
 };
 
+#ifndef SIP_RUN
 
 /// @cond PRIVATE
 class QgsAssistantPreviewItemDelegate : public QItemDelegate
@@ -191,5 +197,7 @@ class QgsAssistantPreviewItemDelegate : public QItemDelegate
 };
 
 ///@endcond
+
+#endif
 
 #endif // QGSPROPERTYASSISTANTWIDGET_H

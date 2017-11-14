@@ -31,15 +31,11 @@
 #include <QMessageBox>
 
 
-QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup *rootNode, QObject *parent )
+QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObject *parent )
   : QgsLayerTreeModel( rootNode, parent )
 {
   setFlag( QgsLayerTreeModel::ShowLegend, false );
   setFlag( QgsLayerTreeModel::AllowNodeChangeVisibility, true );
-}
-
-QgsSelectLayerTreeModel::~QgsSelectLayerTreeModel()
-{
 }
 
 QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) const
@@ -70,18 +66,22 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget *parent, Qt::Win
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( mBrowseButton, &QPushButton::clicked, this, &QgsOfflineEditingPluginGui::mBrowseButton_clicked );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsOfflineEditingPluginGui::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsOfflineEditingPluginGui::buttonBox_rejected );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsOfflineEditingPluginGui::showHelp );
 
   restoreState();
 
   mOfflineDbFile = QStringLiteral( "offline.sqlite" );
   mOfflineDataPathLineEdit->setText( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) );
 
-  QgsLayerTreeGroup *rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
+  QgsLayerTree *rootNode = QgsProject::instance()->layerTreeRoot()->clone();
   QgsLayerTreeModel *treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
 
-  connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
-  connect( mDeselectAllButton, SIGNAL( clicked() ), this, SLOT( deSelectAll() ) );
+  connect( mSelectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::selectAll );
+  connect( mDeselectAllButton, &QAbstractButton::clicked, this, &QgsOfflineEditingPluginGui::deSelectAll );
 }
 
 QgsOfflineEditingPluginGui::~QgsOfflineEditingPluginGui()
@@ -111,7 +111,7 @@ bool QgsOfflineEditingPluginGui::onlySelected() const
   return mOnlySelectedCheckBox->checkState() == Qt::Checked;
 }
 
-void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
+void QgsOfflineEditingPluginGui::mBrowseButton_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this,
                      tr( "Select target database for offline data" ),
@@ -131,7 +131,7 @@ void QgsOfflineEditingPluginGui::on_mBrowseButton_clicked()
   }
 }
 
-void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
+void QgsOfflineEditingPluginGui::buttonBox_accepted()
 {
   if ( QFile( QDir( mOfflineDataPath ).absoluteFilePath( mOfflineDbFile ) ).exists() )
   {
@@ -159,13 +159,12 @@ void QgsOfflineEditingPluginGui::on_buttonBox_accepted()
   accept();
 }
 
-void QgsOfflineEditingPluginGui::on_buttonBox_rejected()
+void QgsOfflineEditingPluginGui::buttonBox_rejected()
 {
   reject();
 }
 
-// TODO: help
-void QgsOfflineEditingPluginGui::on_buttonBox_helpRequested()
+void QgsOfflineEditingPluginGui::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "plugins/plugins_offline_editing.html" ) );
 }

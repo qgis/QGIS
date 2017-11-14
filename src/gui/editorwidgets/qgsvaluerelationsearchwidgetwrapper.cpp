@@ -27,23 +27,16 @@
 
 QgsValueRelationSearchWidgetWrapper::QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mComboBox( nullptr )
-  , mListWidget( nullptr )
-  , mLineEdit( nullptr )
-  , mLayer( nullptr )
+
 {
 }
 
 bool QgsValueRelationSearchWidgetWrapper::applyDirectly()
 {
-  if ( mLineEdit )
-  {
-    return false;
-  }
-  return true;
+  return !mLineEdit;
 }
 
-QString QgsValueRelationSearchWidgetWrapper::expression()
+QString QgsValueRelationSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -196,9 +189,9 @@ void QgsValueRelationSearchWidgetWrapper::onValueChanged()
   emit expressionChanged( mExpression );
 }
 
-void QgsValueRelationSearchWidgetWrapper::setExpression( QString exp )
+void QgsValueRelationSearchWidgetWrapper::setExpression( const QString &expression )
 {
-  QgsSettings settings;
+  QString exp = expression;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
@@ -254,7 +247,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
       mComboBox->addItem( element.value, element.key );
     }
 
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onValueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
   }
   else if ( mListWidget )
   {
@@ -266,7 +259,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
 
       mListWidget->addItem( item );
     }
-    connect( mListWidget, SIGNAL( itemChanged( QListWidgetItem * ) ), this, SLOT( onValueChanged() ) );
+    connect( mListWidget, &QListWidget::itemChanged, this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
   }
   else if ( mLineEdit )
   {
@@ -281,7 +274,7 @@ void QgsValueRelationSearchWidgetWrapper::initWidget( QWidget *editor )
     QCompleter *completer = new QCompleter( m, mLineEdit );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( onValueChanged() ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, &QgsValueRelationSearchWidgetWrapper::onValueChanged );
   }
 }
 

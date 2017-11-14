@@ -18,33 +18,21 @@
 #include "qgsgridfilewriter.h"
 #include "qgsinterpolator.h"
 #include "qgsvectorlayer.h"
+#include "qgsfeedback.h"
 #include <QFile>
 #include <QFileInfo>
-#include <QProgressDialog>
 
-QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows, double cellSizeX, double cellSizeY )
+QgsGridFileWriter::QgsGridFileWriter( QgsInterpolator *i, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows )
   : mInterpolator( i )
   , mOutputFilePath( outputPath )
   , mInterpolationExtent( extent )
   , mNumColumns( nCols )
   , mNumRows( nRows )
-  , mCellSizeX( cellSizeX )
-  , mCellSizeY( cellSizeY )
-{
+  , mCellSizeX( extent.width() / nCols )
+  , mCellSizeY( extent.height() / nRows )
+{}
 
-}
-
-QgsGridFileWriter::QgsGridFileWriter()
-  : mInterpolator( nullptr )
-  , mNumColumns( 0 )
-  , mNumRows( 0 )
-  , mCellSizeX( 0 )
-  , mCellSizeY( 0 )
-{
-
-}
-
-int QgsGridFileWriter::writeFile( bool showProgressDialog )
+int QgsGridFileWriter::writeFile( QgsFeedback *feedback )
 {
   QFile outputFile( mOutputFilePath );
 
@@ -67,19 +55,12 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   double currentXValue;
   double interpolatedValue;
 
-  QProgressDialog *progressDialog = nullptr;
-  if ( showProgressDialog )
-  {
-    progressDialog = new QProgressDialog( QObject::tr( "Interpolating..." ), QObject::tr( "Abort" ), 0, mNumRows, nullptr );
-    progressDialog->setWindowModality( Qt::WindowModal );
-  }
-
   for ( int i = 0; i < mNumRows; ++i )
   {
     currentXValue = mInterpolationExtent.xMinimum() + mCellSizeX / 2.0; //calculate value in the center of the cell
     for ( int j = 0; j < mNumColumns; ++j )
     {
-      if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue ) == 0 )
+      if ( mInterpolator->interpolatePoint( currentXValue, currentYValue, interpolatedValue, feedback ) == 0 )
       {
         outStream << interpolatedValue << ' ';
       }
@@ -92,22 +73,22 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
     outStream << endl;
     currentYValue -= mCellSizeY;
 
-    if ( showProgressDialog )
+    if ( feedback )
     {
-      if ( progressDialog->wasCanceled() )
+      if ( feedback->isCanceled() )
       {
         outputFile.remove();
         return 3;
       }
-      progressDialog->setValue( i );
+      feedback->setProgress( 100.0 * i / static_cast< double >( mNumRows ) );
     }
   }
 
   // create prj file
   QgsInterpolator::LayerData ld;
-  ld = mInterpolator->layerData().first();
-  QgsVectorLayer *vl = ld.vectorLayer;
-  QString crs = vl->crs().toWkt();
+  ld = mInterpolator->layerData().at( 0 );
+  QgsFeatureSource *source = ld.source;
+  QString crs = source->sourceCrs().toWkt();
   QFileInfo fi( mOutputFilePath );
   QString fileName = fi.absolutePath() + '/' + fi.completeBaseName() + ".prj";
   QFile prjFile( fileName );
@@ -120,7 +101,6 @@ int QgsGridFileWriter::writeFile( bool showProgressDialog )
   prjStream << endl;
   prjFile.close();
 
-  delete progressDialog;
   return 0;
 }
 

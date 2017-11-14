@@ -44,11 +44,7 @@
 
 extern "C"
 {
-#if GRASS_VERSION_MAJOR < 7
-#include <grass/Vect.h>
-#else
 #include <grass/vector.h>
-#endif
 }
 
 #include "qgsgrassmoduleinput.h"
@@ -56,17 +52,16 @@ extern "C"
 /**************************** QgsGrassModuleInputModel ****************************/
 QgsGrassModuleInputModel::QgsGrassModuleInputModel( QObject *parent )
   : QStandardItemModel( parent )
-  , mWatcher( 0 )
 {
   setColumnCount( 1 );
 
   mWatcher = new QFileSystemWatcher( this );
-  connect( mWatcher, SIGNAL( directoryChanged( const QString & ) ), SLOT( onDirectoryChanged( const QString & ) ) );
-  connect( mWatcher, SIGNAL( fileChanged( const QString & ) ), SLOT( onFileChanged( const QString & ) ) );
+  connect( mWatcher, &QFileSystemWatcher::directoryChanged, this, &QgsGrassModuleInputModel::onDirectoryChanged );
+  connect( mWatcher, &QFileSystemWatcher::fileChanged, this, &QgsGrassModuleInputModel::onFileChanged );
 
-  connect( QgsGrass::instance(), SIGNAL( mapsetChanged() ), SLOT( onMapsetChanged() ) );
+  connect( QgsGrass::instance(), &QgsGrass::mapsetChanged, this, &QgsGrassModuleInputModel::onMapsetChanged );
 
-  connect( QgsGrass::instance(), SIGNAL( mapsetSearchPathChanged() ), SLOT( onMapsetSearchPathChanged() ) );
+  connect( QgsGrass::instance(), &QgsGrass::mapsetSearchPathChanged, this, &QgsGrassModuleInputModel::onMapsetSearchPathChanged );
 
   reload();
 }
@@ -117,9 +112,7 @@ void QgsGrassModuleInputModel::onDirectoryChanged( const QString &path )
       watch( path + "/" + watchedDir );
     }
     // TODO: use db path defined in mapset VAR
-#if GRASS_VERSION_MAJOR >= 7
     watch( path + "/tgis/sqlite.db" );
-#endif
   }
   else // cellhd or vector dir
   {
@@ -209,9 +202,7 @@ void QgsGrassModuleInputModel::refreshMapset( QStandardItem *mapsetItem, const Q
   if ( typesCopy.isEmpty() )
   {
     typesCopy << QgsGrassObject::Raster << QgsGrassObject::Vector;
-#if GRASS_VERSION_MAJOR >= 7
     typesCopy << QgsGrassObject::Strds << QgsGrassObject::Stvds << QgsGrassObject::Str3ds;
-#endif
   }
   Q_FOREACH ( QgsGrassObject::Type type, typesCopy )
   {
@@ -305,9 +296,7 @@ void QgsGrassModuleInputModel::reload()
     {
       watch( dirPath + "/" + watchedDir );
     }
-#if GRASS_VERSION_MAJOR >= 7
     watch( dirPath + "/tgis/sqlite.db" );
-#endif
   }
 }
 
@@ -324,10 +313,6 @@ void QgsGrassModuleInputModel::onMapsetSearchPathChanged()
   emit dataChanged( index( 0, 0 ), index( rowCount() - 1, 0 ) );
 }
 
-QgsGrassModuleInputModel::~QgsGrassModuleInputModel()
-{
-
-}
 
 QgsGrassModuleInputModel *QgsGrassModuleInputModel::instance()
 {
@@ -340,7 +325,7 @@ QVariant QgsGrassModuleInputModel::data( const QModelIndex &index, int role ) co
   QVariant data = QStandardItemModel::data( index, role );
   if ( role == Qt::DisplayRole  || role == Qt::EditRole ) // EditRole for combo
   {
-    int type =  QStandardItemModel::data( index, QgsGrassModuleInputModel::TypeRole ).toInt();
+    int type = QStandardItemModel::data( index, QgsGrassModuleInputModel::TypeRole ).toInt();
     if ( type == QgsGrassObject::Raster || type == QgsGrassObject::Vector )
     {
       QString mapset = QStandardItemModel::data( index, QgsGrassModuleInputModel::MapsetRole ).toString();
@@ -546,9 +531,6 @@ bool QgsGrassModuleInputCompleter::eventFilter( QObject *watched, QEvent *event 
 QgsGrassModuleInputComboBox::QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent )
   : QComboBox( parent )
   , mType( type )
-  , mModel( 0 )
-  , mProxy( 0 )
-  , mTreeView( 0 )
   , mSkipHide( false )
 {
   setEditable( true );
@@ -632,10 +614,6 @@ void QgsGrassModuleInputComboBox::hidePopup()
   //QComboBox::hidePopup();
   // reset state to fix the bug after drag
   mTreeView->resetState();
-}
-
-QgsGrassModuleInputComboBox::~QgsGrassModuleInputComboBox()
-{
 }
 
 void QgsGrassModuleInputComboBox::setCurrent( const QModelIndex &proxyIndex )
@@ -755,8 +733,8 @@ QgsGrassModuleInputSelectedView::QgsGrassModuleInputSelectedView( QWidget *paren
   installEventFilter( this );
   viewport()->installEventFilter( this );
 
-  connect( this, SIGNAL( pressed( const QModelIndex & ) ),
-           mDelegate, SLOT( handlePressed( const QModelIndex & ) ) );
+  connect( this, &QAbstractItemView::pressed,
+           mDelegate, &QgsGrassModuleInputSelectedDelegate::handlePressed );
 }
 
 void QgsGrassModuleInputSelectedView::setModel( QAbstractItemModel *model )
@@ -764,8 +742,8 @@ void QgsGrassModuleInputSelectedView::setModel( QAbstractItemModel *model )
   QTreeView::setModel( model );
   header()->hide();
   header()->setStretchLastSection( false );
-  header()->setResizeMode( 0, QHeaderView::Stretch );
-  header()->setResizeMode( 1, QHeaderView::Fixed );
+  header()->setSectionResizeMode( 0, QHeaderView::Stretch );
+  header()->setSectionResizeMode( 1, QHeaderView::Fixed );
   header()->resizeSection( 1, 16 );
 }
 
@@ -805,14 +783,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   : QgsGrassModuleGroupBoxItem( module, key, qdesc, gdesc, gnode, direct, parent )
   , mType( QgsGrassObject::Vector )
   , mModuleStandardOptions( options )
-  , mModel( 0 )
-  , mSelectedModel( 0 )
-  , mComboBox( 0 )
-  , mRegionButton( 0 )
-  , mLayerLabel( 0 )
-  , mLayerComboBox( 0 )
-  , mSelectedTreeView( 0 )
-  , mVector( 0 )
   , mUpdate( false )
   , mUsesRegion( false )
   , mRequired( false )
@@ -956,9 +926,9 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   mComboBox = new QgsGrassModuleInputComboBox( mType, this );
   mComboBox->setSizePolicy( QSizePolicy::Expanding, QSizePolicy:: Preferred );
   // QComboBox does not emit activated() when item is selected in completer popup
-  connect( mComboBox, SIGNAL( activated( const QString & ) ), this, SLOT( onActivated( const QString & ) ) );
-  connect( mComboBox->completer(), SIGNAL( activated( const QString & ) ), this, SLOT( onActivated( const QString & ) ) );
-  connect( mComboBox, SIGNAL( editTextChanged( const QString & ) ), this, SLOT( onChanged( const QString & ) ) );
+  connect( mComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::activated ), this, &QgsGrassModuleInput::onActivated );
+  connect( mComboBox->completer(), static_cast<void ( QCompleter::* )( const QString & )>( &QCompleter::activated ), this, &QgsGrassModuleInput::onActivated );
+  connect( mComboBox, &QComboBox::editTextChanged, this, &QgsGrassModuleInput::onChanged );
   mapLayout->addWidget( mComboBox );
 
   // Region button
@@ -979,7 +949,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     mSelectedModel = new QStandardItemModel( 0, 2 );
     mSelectedTreeView = new QgsGrassModuleInputSelectedView( this );
     mSelectedTreeView->setModel( mSelectedModel );
-    connect( mSelectedTreeView, SIGNAL( deleteItem( const QModelIndex & ) ), this, SLOT( deleteSelectedItem( const QModelIndex & ) ) );
+    connect( mSelectedTreeView, &QgsGrassModuleInputSelectedView::deleteItem, this, &QgsGrassModuleInput::deleteSelectedItem );
     layout->addWidget( mSelectedTreeView );
   }
 
@@ -993,7 +963,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     layerLayout->addWidget( mLayerLabel );
 
     mLayerComboBox = new QComboBox();
-    connect( mLayerComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( onLayerChanged() ) );
+    connect( mLayerComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsGrassModuleInput::onLayerChanged );
     layerLayout->addWidget( mLayerComboBox );
 
     QHBoxLayout *typeLayout = new QHBoxLayout();
@@ -1047,10 +1017,6 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
   onChanged( QLatin1String( "" ) );
 }
 
-QgsGrassModuleInput::~QgsGrassModuleInput()
-{
-}
-
 bool QgsGrassModuleInput::useRegion()
 {
 
@@ -1079,7 +1045,7 @@ QStringList QgsGrassModuleInput::options()
     {
       if ( !grassObject.name().isEmpty() )
       {
-        list << mKey + "=" + grassObject.fullName() ;
+        list << mKey + "=" + grassObject.fullName();
       }
     }
 

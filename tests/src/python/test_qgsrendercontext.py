@@ -16,12 +16,19 @@ import qgis  # NOQA
 
 from qgis.core import (QgsRenderContext,
                        QgsMapSettings,
-                       QgsRectangle,
+                       QgsDistanceArea,
+                       QgsRectangle, QgsPointXY,
+                       QgsCoordinateReferenceSystem,
                        QgsMapUnitScale,
                        QgsUnitTypes)
 from qgis.PyQt.QtCore import QSize
 from qgis.PyQt.QtGui import QPainter, QImage
-from qgis.testing import unittest
+from qgis.testing import start_app, unittest
+import math
+
+# Convenience instances in case you may need them
+# to find the srs.db
+start_app()
 
 
 class TestQgsRenderContext(unittest.TestCase):
@@ -50,6 +57,35 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertEqual(c.painter(), p)
         self.assertAlmostEqual(c.scaleFactor(), dots_per_m / 1000, 3)  # scaleFactor should be pixels/mm
 
+    def testRenderMetersInMapUnits(self):
+
+        crs_wsg84 = QgsCoordinateReferenceSystem.fromOgcWmsCrs('EPSG:4326')
+        rt_extent = QgsRectangle(13.37768985634235, 52.51625705830762, 13.37771931686235, 52.51628651882762)
+        point_berlin_wsg84 = QgsPointXY(13.37770458660236, 52.51627178856762)
+        length_wsg84_mapunits = 0.00001473026350140572
+        meters_test = 2.40
+        da_wsg84 = QgsDistanceArea()
+        da_wsg84.setSourceCrs(crs_wsg84)
+        if (da_wsg84.sourceCrs().isGeographic()):
+            da_wsg84.setEllipsoid(da_wsg84.sourceCrs().ellipsoidAcronym())
+        length_meter_mapunits = da_wsg84.measureLineProjected(point_berlin_wsg84, 1.0, (math.pi / 2))
+        meters_test_mapunits = meters_test * length_wsg84_mapunits
+        meters_test_pixel = meters_test * length_wsg84_mapunits
+        ms = QgsMapSettings()
+        ms.setDestinationCrs(crs_wsg84)
+        ms.setExtent(rt_extent)
+        r = QgsRenderContext.fromMapSettings(ms)
+        r.setExtent(rt_extent)
+        self.assertEqual(r.extent().center().toString(7), point_berlin_wsg84.toString(7))
+        c = QgsMapUnitScale()
+        r.setDistanceArea(da_wsg84)
+        result_test_painterunits = r.convertToPainterUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_painterunits, 7, QgsUnitTypes.DistanceUnknownUnit, True), QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceUnknownUnit, True))
+        result_test_mapunits = r.convertToMapUnits(meters_test, QgsUnitTypes.RenderMetersInMapUnits, c)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True), QgsDistanceArea.formatDistance(meters_test_mapunits, 7, QgsUnitTypes.DistanceDegrees, True))
+        result_test_meters = r.convertFromMapUnits(meters_test_mapunits, QgsUnitTypes.RenderMetersInMapUnits)
+        self.assertEqual(QgsDistanceArea.formatDistance(result_test_meters, 1, QgsUnitTypes.DistanceMeters, True), QgsDistanceArea.formatDistance(meters_test, 1, QgsUnitTypes.DistanceMeters, True))
+
     def testConvertSingleUnit(self):
 
         ms = QgsMapSettings()
@@ -76,7 +112,7 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
 
         # minimum scale greater than the renderer scale, so should be limited to minScale
-        c.minScale = 1 / 150000000.0
+        c.minScale = 150000000.0
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 3.89250455, places=5)
         # only conversion from mapunits should be affected
@@ -91,7 +127,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c.minScale = 0
 
         # maximum scale less than the renderer scale, so should be limited to maxScale
-        c.maxScale = 1 / 350000000.0
+        c.maxScale = 350000000.0
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 0.5, places=5)
         # only conversion from mapunits should be affected
@@ -215,7 +251,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c.maxSizeMMEnabled = False
 
         # test with minimum scale set
-        c.minScale = 1 / 150000000.0
+        c.minScale = 150000000.0
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(size, 15.57001821, places=5)
         # only conversion from mapunits should be affected
@@ -230,7 +266,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c.minScale = 0
 
         # test with maximum scale set
-        c.maxScale = 1 / 1550000000.0
+        c.maxScale = 1550000000.0
         size = r.convertToMapUnits(2, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(size, 1.50677595625, places=5)
         # only conversion from mapunits should be affected
@@ -269,7 +305,7 @@ class TestQgsRenderContext(unittest.TestCase):
         self.assertAlmostEqual(sf, 1.0, places=5)
 
         # minimum scale greater than the renderer scale, so should be limited to minScale
-        c.minScale = 1 / 150000000.0
+        c.minScale = 150000000.0
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 3.8925045, places=5)
         # only conversion from mapunits should be affected
@@ -284,7 +320,7 @@ class TestQgsRenderContext(unittest.TestCase):
         c.minScale = 0
 
         # maximum scale less than the renderer scale, so should be limited to maxScale
-        c.maxScale = 1 / 350000000.0
+        c.maxScale = 350000000.0
         sf = r.convertToPainterUnits(1, QgsUnitTypes.RenderMapUnits, c)
         self.assertAlmostEqual(sf, 0.5, places=5)
         # only conversion from mapunits should be affected

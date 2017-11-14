@@ -24,32 +24,54 @@
 #include <QObject>
 
 #include "qgis_core.h"
+#include "qgis.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * List of colors paired with a friendly display name identifying the color
- * \note Added in version 2.5
+ * \since QGIS 2.5
 */
 typedef QList< QPair< QColor, QString > > QgsNamedColorList;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsColorScheme
  * \brief Abstract base class for color schemes
  *
  * A color scheme for display in QgsColorButton. Color schemes return lists
  * of colors with an optional associated color name. The colors returned
  * can be generated using an optional base color.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsColorScheme
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsUserColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsUserColorScheme;
+    else if ( dynamic_cast<QgsRecentColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsRecentColorScheme;
+    else if ( dynamic_cast<QgsCustomColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsCustomColorScheme;
+    else if ( dynamic_cast<QgsProjectColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsProjectColorScheme;
+    else if ( dynamic_cast<QgsGplColorScheme *>( sipCpp ) != NULL )
+      sipType = sipType_QgsGplColorScheme;
+    else
+      sipType = sipType_QgsColorScheme;
+    SIP_END
+#endif
+
   public:
 
-    /** Flags for controlling behavior of color scheme
+    /**
+     * Flags for controlling behavior of color scheme
      */
     enum SchemeFlag
     {
       ShowInColorDialog = 0x01, //!< Show scheme in color picker dialog
-      ShowInColorButtonMenu = 0x02, //!< Show scheme in color button drop down menu
+      ShowInColorButtonMenu = 0x02, //!< Show scheme in color button drop-down menu
       ShowInAllContexts = ShowInColorDialog | ShowInColorButtonMenu //!< Show scheme in all contexts
     };
     Q_DECLARE_FLAGS( SchemeFlags, SchemeFlag )
@@ -61,62 +83,72 @@ class CORE_EXPORT QgsColorScheme
 
     virtual ~QgsColorScheme() = default;
 
-    /** Gets the name for the color scheme
-     * @returns color scheme name
+    /**
+     * Gets the name for the color scheme
+     * \returns color scheme name
      */
     virtual QString schemeName() const = 0;
 
-    /** Returns the current flags for the color scheme.
-     * @returns current flags
+    /**
+     * Returns the current flags for the color scheme.
+     * \returns current flags
      */
     virtual SchemeFlags flags() const { return ShowInColorDialog; }
 
-    /** Gets a list of colors from the scheme. The colors can optionally
+    /**
+     * Gets a list of colors from the scheme. The colors can optionally
      * be generated using the supplied context and base color.
-     * @param context string specifying an optional context for the returned
+     * \param context string specifying an optional context for the returned
      * colors. For instance, a "recent colors" scheme may filter returned colors
      * by context so that colors used only in a "composer" context are returned.
-     * @param baseColor base color for the scheme's colors. Some color schemes
+     * \param baseColor base color for the scheme's colors. Some color schemes
      * may take advantage of this to filter or modify their returned colors
      * to colors related to the base color.
-     * @returns a list of QPairs of color and color name
+     * \returns a list of QPairs of color and color name
      */
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) = 0;
 
-    /** Returns whether the color scheme is editable
-     * @returns true if scheme is editable
-     * @see setColors
+    /**
+     * Returns whether the color scheme is editable
+     * \returns true if scheme is editable
+     * \see setColors
      */
     virtual bool isEditable() const { return false; }
 
-    /** Sets the colors for the scheme. This method is only valid for editable color schemes.
-     * @param colors list of colors for the scheme
-     * @param context to set colors for
-     * @param baseColor base color to set colors for
-     * @returns true if colors were set successfully
-     * @see isEditable
+    /**
+     * Sets the colors for the scheme. This method is only valid for editable color schemes.
+     * \param colors list of colors for the scheme
+     * \param context to set colors for
+     * \param baseColor base color to set colors for
+     * \returns true if colors were set successfully
+     * \see isEditable
      */
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 
-    /** Clones a color scheme
-     * @returns copy of color scheme
+    /**
+     * Clones a color scheme
+     * \returns copy of color scheme
      */
-    virtual QgsColorScheme *clone() const = 0;
+    virtual QgsColorScheme *clone() const = 0 SIP_FACTORY;
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsColorScheme::SchemeFlags )
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsGplColorScheme
  * \brief A color scheme which stores its colors in a gpl palette file.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 {
   public:
 
-    QgsGplColorScheme();
+    /**
+     * Constructor for QgsGplColorScheme.
+     */
+    QgsGplColorScheme() = default;
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
@@ -125,49 +157,55 @@ class CORE_EXPORT QgsGplColorScheme : public QgsColorScheme
 
   protected:
 
-    /** Returns the file path for the associated gpl palette file
-     * @returns gpl file path
+    /**
+     * Returns the file path for the associated gpl palette file
+     * \returns gpl file path
      */
     virtual QString gplFilePath() = 0;
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsUserColorScheme
  * \brief A color scheme which stores its colors in a gpl palette file within the "palettes"
  * subfolder off the user's QGIS settings folder.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 {
   public:
 
-    /** Constructs a new user color scheme, using a specified gpl palette file
-     * @param filename filename of gpl palette file stored in the users "palettes" folder
+    /**
+     * Constructs a new user color scheme, using a specified gpl palette file
+     * \param filename filename of gpl palette file stored in the users "palettes" folder
      */
     QgsUserColorScheme( const QString &filename );
 
     virtual QString schemeName() const override;
 
-    virtual QgsUserColorScheme *clone() const override;
+    virtual QgsUserColorScheme *clone() const override SIP_FACTORY;
 
     virtual bool isEditable() const override { return true; }
 
     virtual QgsColorScheme::SchemeFlags flags() const override;
 
-    /** Sets the name for the scheme
-     * @param name new name
+    /**
+     * Sets the name for the scheme
+     * \param name new name
      */
     void setName( const QString &name ) { mName = name; }
 
-    /** Erases the associated gpl palette file from the users "palettes" folder
-     * @returns true if erase was successful
+    /**
+     * Erases the associated gpl palette file from the users "palettes" folder
+     * \returns true if erase was successful
      */
     bool erase();
 
-    /** Sets whether a this scheme should be shown in color button menus.
-     * @param show set to true to show in color button menus, or false to hide from menus
-     * @note added in QGIS 3.0
+    /**
+     * Sets whether a this scheme should be shown in color button menus.
+     * \param show set to true to show in color button menus, or false to hide from menus
+     * \since QGIS 3.0
      */
     void setShowSchemeInMenu( bool show );
 
@@ -181,16 +219,20 @@ class CORE_EXPORT QgsUserColorScheme : public QgsGplColorScheme
 
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsRecentColorScheme
  * \brief A color scheme which contains the most recently used colors.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
 {
   public:
 
-    QgsRecentColorScheme();
+    /**
+     * Constructor for QgsRecentColorScheme.
+     */
+    QgsRecentColorScheme() = default;
 
     virtual QString schemeName() const override { return QObject::tr( "Recent colors" ); }
 
@@ -199,32 +241,38 @@ class CORE_EXPORT QgsRecentColorScheme : public QgsColorScheme
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
                                            const QColor &baseColor = QColor() ) override;
 
-    QgsRecentColorScheme *clone() const override;
+    QgsRecentColorScheme *clone() const override SIP_FACTORY;
 
-    /** Adds a color to the list of recent colors.
-     * @param color color to add
-     * @note added in QGIS 2.14
-     * @see lastUsedColor()
+    /**
+     * Adds a color to the list of recent colors.
+     * \param color color to add
+     * \since QGIS 2.14
+     * \see lastUsedColor()
      */
     static void addRecentColor( const QColor &color );
 
-    /** Returns the most recently used color.
-     * @note added in QGIS 3.0
-     * @see addRecentColor()
+    /**
+     * Returns the most recently used color.
+     * \since QGIS 3.0
+     * \see addRecentColor()
      */
     static QColor lastUsedColor();
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsCustomColorScheme
  * \brief A color scheme which contains custom colors set through QGIS app options dialog.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 {
   public:
 
-    QgsCustomColorScheme();
+    /**
+     * Constructor for QgsCustomColorScheme.
+     */
+    QgsCustomColorScheme() = default;
 
     virtual QString schemeName() const override { return QObject::tr( "Standard colors" ); }
 
@@ -237,19 +285,23 @@ class CORE_EXPORT QgsCustomColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsCustomColorScheme *clone() const override;
+    QgsCustomColorScheme *clone() const override SIP_FACTORY;
 };
 
-/** \ingroup core
+/**
+ * \ingroup core
  * \class QgsProjectColorScheme
  * \brief A color scheme which contains project specific colors set through project properties dialog.
- * \note Added in version 2.5
+ * \since QGIS 2.5
  */
 class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 {
   public:
 
-    QgsProjectColorScheme();
+    /**
+     * Constructor for QgsProjectColorScheme.
+     */
+    QgsProjectColorScheme() = default;
 
     virtual QString schemeName() const override { return QObject::tr( "Project colors" ); }
 
@@ -262,7 +314,7 @@ class CORE_EXPORT QgsProjectColorScheme : public QgsColorScheme
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() ) override;
 
-    QgsProjectColorScheme *clone() const override;
+    QgsProjectColorScheme *clone() const override SIP_FACTORY;
 };
 
 #endif

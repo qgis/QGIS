@@ -18,7 +18,7 @@ email                : jpalmer at linz dot govt dot nz
 
 
 #include "qgsmaptool.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis_app.h"
 
 class QgsMapCanvas;
@@ -46,13 +46,13 @@ class APP_EXPORT QgsMapToolSelectRadius : public QgsMapTool
 
     //! sets the rubber band to a circle approximated using 40 segments.
     // The radius center point is defined in the canvasPressEvent event.
-    void setRadiusRubberBand( QgsPoint &radiusEdge );
+    void setRadiusRubberBand( QgsPointXY &radiusEdge );
 
     //! used for storing all of the maps point for the polygon
     QgsRubberBand *mRubberBand = nullptr;
 
     //! Center point for the radius
-    QgsPoint mRadiusCenter;
+    QgsPointXY mRadiusCenter;
 
     bool mDragging;
 

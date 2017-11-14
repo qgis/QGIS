@@ -16,22 +16,22 @@ email                : hugo dot mercier at oslandia dot com
 
 #include <string.h>
 #include <iostream>
-#include <stdint.h>
+#include <cstdint>
 #include <stdexcept>
 
 #include <QCoreApplication>
 #include <QBuffer>
 
-#include <qgsapplication.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectordataprovider.h>
-#include <qgsgeometry.h>
-#include <qgsproject.h>
-#include <qgsproviderregistry.h>
+#include "qgsapplication.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectordataprovider.h"
+#include "qgsgeometry.h"
+#include "qgsproject.h"
+#include "qgsproviderregistry.h"
 #include "qgsinterval.h"
 #include <sqlite3.h>
 #include <spatialite.h>
-#include <stdio.h>
+#include <cstdio>
 #include "qgsvirtuallayersqlitemodule.h"
 #include "qgsvirtuallayerblob.h"
 #include "qgsslottofunction.h"
@@ -91,7 +91,6 @@ struct VTable
       , nRef( 0 )
       , zErrMsg( nullptr )
       , mSql( db )
-      , mProvider( nullptr )
       , mLayer( layer )
       , mSlotToFunction( invalidateTable, this )
       , mName( layer->name() )
@@ -101,7 +100,7 @@ struct VTable
     {
       if ( mLayer )
       {
-        QObject::connect( layer, SIGNAL( destroyed() ), &mSlotToFunction, SLOT( onSignal() ) );
+        QObject::connect( layer, &QObject::destroyed, &mSlotToFunction, &QgsSlotToFunction::onSignal );
         init_();
       }
     }
@@ -111,14 +110,13 @@ struct VTable
       , nRef( 0 )
       , zErrMsg( nullptr )
       , mSql( db )
-      , mLayer( nullptr )
       , mName( name )
       , mEncoding( encoding )
       , mPkColumn( -1 )
       , mCrs( -1 )
       , mValid( true )
     {
-      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->provider( provider, source ) );
+      mProvider = static_cast<QgsVectorDataProvider *>( QgsProviderRegistry::instance()->createProvider( provider, source ) );
       if ( !mProvider )
       {
         throw std::runtime_error( "Invalid provider" );
@@ -164,8 +162,8 @@ struct VTable
 
   private:
 
-    VTable( const VTable &other );
-    VTable &operator=( const VTable &other );
+    VTable( const VTable &other ) = delete;
+    VTable &operator=( const VTable &other ) = delete;
 
     // connection
     sqlite3 *mSql = nullptr;
@@ -724,10 +722,10 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
   // convert from sqlite3 value to QVariant and then call the qgis expression function
   // the 3 basic sqlite3 types (int, float, text) are converted to their QVariant equivalent
   // Expression::Interval is handled specifically
-  // geometries are converted between spatialite and QgsGeometry
+  // geometries are converted between SpatiaLite and QgsGeometry
   // other data types (datetime mainly) are represented as BLOBs thanks to QVariant serializing functions
 
-  QgsExpression::Function *foo = reinterpret_cast<QgsExpression::Function *>( sqlite3_user_data( ctxt ) );
+  QgsExpressionFunction *foo = reinterpret_cast<QgsExpressionFunction *>( sqlite3_user_data( ctxt ) );
 
   QVariantList variants;
   for ( int i = 0; i < nArgs; i++ )
@@ -753,7 +751,7 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
       {
         int n = sqlite3_value_bytes( args[i] );
         const char *blob = reinterpret_cast<const char *>( sqlite3_value_blob( args[i] ) );
-        // spatialite blobs start with a 0 byte
+        // SpatiaLite blobs start with a 0 byte
         if ( n > 0 && blob[0] == 0 )
         {
           QgsGeometry geom = spatialiteBlobToQgsGeometry( blob, n );
@@ -779,8 +777,8 @@ void qgisFunctionWrapper( sqlite3_context *ctxt, int nArgs, sqlite3_value **args
     };
   }
 
-  QgsExpression parentExpr( QLatin1String( "" ) );
-  QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr );
+  QgsExpression parentExpr = QgsExpression( QString() );
+  QVariant ret = foo->func( variants, &qgisFunctionExpressionContext, &parentExpr, nullptr );
   if ( parentExpr.hasEvalError() )
   {
     QByteArray ba = parentExpr.evalErrorString().toUtf8();
@@ -849,7 +847,7 @@ void registerQgisFunctions( sqlite3 *db )
   QStringList reservedFunctions;
   reservedFunctions << QStringLiteral( "left" ) << QStringLiteral( "right" ) << QStringLiteral( "union" );
   // register QGIS expression functions
-  Q_FOREACH ( QgsExpression::Function *foo, QgsExpression::Functions() )
+  Q_FOREACH ( QgsExpressionFunction *foo, QgsExpression::Functions() )
   {
     if ( foo->usesGeometry( nullptr ) || foo->lazyEval() )
     {
@@ -875,7 +873,7 @@ void registerQgisFunctions( sqlite3 *db )
       int r = sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );
       if ( r != SQLITE_OK )
       {
-        // is it because a function of the same name already exist (in Spatialite for instance ?)
+        // is it because a function of the same name already exist (in SpatiaLite for instance ?)
         // we then try to recreate it with a prefix
         name = "qgis_" + name;
         sqlite3_create_function( db, name.toUtf8().constData(), foo->params(), SQLITE_UTF8, foo, qgisFunctionWrapper, nullptr, nullptr );

@@ -6,15 +6,15 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>364</width>
-    <height>664</height>
+    <width>358</width>
+    <height>602</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="8" column="1" rowspan="2">
+   <item row="8" column="2" rowspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_11">
      <item>
       <widget class="QLabel" name="label_7">
@@ -41,7 +41,7 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="1" rowspan="2">
+   <item row="6" column="2" rowspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_6">
      <item>
       <widget class="QLabel" name="label_5">
@@ -71,14 +71,14 @@
      </item>
     </layout>
    </item>
-   <item row="5" column="2">
+   <item row="5" column="3">
     <widget class="QgsPropertyOverrideButton" name="mSpreadDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="1">
+   <item row="1" column="2">
     <widget class="QgsColorButton" name="btnChangeColor2">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -113,27 +113,23 @@
    <item row="18" column="0">
     <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Offset X,Y</string>
+      <string>Offset</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_3">
+   <item row="4" column="2">
+    <widget class="QComboBox" name="cboCoordinateMode">
      <item>
-      <widget class="QComboBox" name="cboCoordinateMode">
-       <item>
-        <property name="text">
-         <string>Object</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Viewport</string>
-        </property>
-       </item>
-      </widget>
+      <property name="text">
+       <string>Object</string>
+      </property>
      </item>
-    </layout>
+     <item>
+      <property name="text">
+       <string>Viewport</string>
+      </property>
+     </item>
+    </widget>
    </item>
    <item row="3" column="0">
     <widget class="QLabel" name="label_2">
@@ -147,9 +143,12 @@
      <property name="text">
       <string>Reference Point 2</string>
      </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
-   <item row="2" column="1">
+   <item row="2" column="2">
     <widget class="QgsColorRampButton" name="btnColorRamp">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -171,37 +170,33 @@
      </property>
     </widget>
    </item>
-   <item row="8" column="2" rowspan="2">
+   <item row="8" column="3" rowspan="2">
     <widget class="QgsPropertyOverrideButton" name="mRefPoint1YDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="3" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_4">
+   <item row="3" column="2">
+    <widget class="QComboBox" name="cboGradientType">
      <item>
-      <widget class="QComboBox" name="cboGradientType">
-       <item>
-        <property name="text">
-         <string>Linear</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Radial</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Conical</string>
-        </property>
-       </item>
-      </widget>
+      <property name="text">
+       <string>Linear</string>
+      </property>
      </item>
-    </layout>
+     <item>
+      <property name="text">
+       <string>Radial</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Conical</string>
+      </property>
+     </item>
+    </widget>
    </item>
-   <item row="0" column="1">
+   <item row="0" column="2">
     <widget class="QgsColorButton" name="btnChangeColor">
      <property name="sizePolicy">
       <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
@@ -226,7 +221,7 @@
      </property>
     </widget>
    </item>
-   <item row="13" column="1" rowspan="2">
+   <item row="13" column="2" rowspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout_12">
      <item>
       <widget class="QLabel" name="label_10">
@@ -256,17 +251,17 @@
      </item>
     </layout>
    </item>
-   <item row="17" column="2">
+   <item row="17" column="3">
     <widget class="QgsPropertyOverrideButton" name="mAngleDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="4" column="2">
+   <item row="4" column="3">
     <widget class="QgsPropertyOverrideButton" name="mCoordinateModeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -277,67 +272,70 @@
      </property>
     </widget>
    </item>
-   <item row="5" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_5">
+   <item row="5" column="2">
+    <widget class="QComboBox" name="cboGradientSpread">
      <item>
-      <widget class="QComboBox" name="cboGradientSpread">
-       <item>
-        <property name="text">
-         <string>Pad</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Repeat</string>
-        </property>
-       </item>
-       <item>
-        <property name="text">
-         <string>Reflect</string>
-        </property>
-       </item>
-      </widget>
+      <property name="text">
+       <string>Pad</string>
+      </property>
      </item>
-    </layout>
+     <item>
+      <property name="text">
+       <string>Repeat</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Reflect</string>
+      </property>
+     </item>
+    </widget>
    </item>
-   <item row="3" column="2">
+   <item row="3" column="3">
     <widget class="QgsPropertyOverrideButton" name="mGradientTypeDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="10" column="1">
+   <item row="10" column="2">
     <widget class="QCheckBox" name="checkRefPoint1Centroid">
      <property name="text">
       <string>Centroid</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
+   <item row="0" column="3">
     <widget class="QgsPropertyOverrideButton" name="mStartColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="13" column="2" rowspan="2">
+   <item row="13" column="3" rowspan="2">
     <widget class="QgsPropertyOverrideButton" name="mRefPoint2YDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="15" column="2">
+   <item row="15" column="3">
     <widget class="QgsPropertyOverrideButton" name="mRefPoint2CentroidDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="18" column="1">
+   <item row="18" column="2">
     <layout class="QGridLayout" name="gridLayout_4">
      <item row="1" column="0">
+      <widget class="QLabel" name="label_13">
+       <property name="text">
+        <string>y</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
       <widget class="QgsDoubleSpinBox" name="spinOffsetY">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -360,6 +358,13 @@
       </widget>
      </item>
      <item row="0" column="0">
+      <widget class="QLabel" name="label_12">
+       <property name="text">
+        <string>x</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
       <widget class="QgsDoubleSpinBox" name="spinOffsetX">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
@@ -381,7 +386,7 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
+     <item row="0" column="2" rowspan="2">
       <widget class="QgsUnitSelectionWidget" name="mOffsetUnitWidget" native="true">
        <property name="minimumSize">
         <size>
@@ -400,24 +405,26 @@
      </property>
     </widget>
    </item>
-   <item row="17" column="1">
-    <layout class="QHBoxLayout" name="horizontalLayout_9">
-     <item>
-      <widget class="QgsDoubleSpinBox" name="mSpinAngle">
-       <property name="suffix">
-        <string> °</string>
-       </property>
-       <property name="maximum">
-        <double>360.000000000000000</double>
-       </property>
-       <property name="singleStep">
-        <double>0.500000000000000</double>
-       </property>
-      </widget>
-     </item>
-    </layout>
+   <item row="17" column="2">
+    <widget class="QgsDoubleSpinBox" name="mSpinAngle">
+     <property name="wrapping">
+      <bool>true</bool>
+     </property>
+     <property name="suffix">
+      <string> °</string>
+     </property>
+     <property name="minimum">
+      <double>0.000000000000000</double>
+     </property>
+     <property name="maximum">
+      <double>360.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.500000000000000</double>
+     </property>
+    </widget>
    </item>
-   <item row="15" column="1">
+   <item row="15" column="2">
     <widget class="QCheckBox" name="checkRefPoint2Centroid">
      <property name="text">
       <string>Centroid</string>
@@ -431,17 +438,17 @@
      </property>
     </widget>
    </item>
-   <item row="10" column="2">
+   <item row="10" column="3">
     <widget class="QgsPropertyOverrideButton" name="mRefPoint1CentroidDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="1" column="2">
+   <item row="1" column="3">
     <widget class="QgsPropertyOverrideButton" name="mEndColorDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -450,9 +457,12 @@
      <property name="text">
       <string>Reference Point 1</string>
      </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
-   <item row="12" column="1">
+   <item row="12" column="2">
     <layout class="QHBoxLayout" name="horizontalLayout_7">
      <item>
       <widget class="QLabel" name="label_9">
@@ -482,10 +492,10 @@
      </item>
     </layout>
    </item>
-   <item row="6" column="2" rowspan="2">
+   <item row="6" column="3" rowspan="2">
     <widget class="QgsPropertyOverrideButton" name="mRefPoint1XDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -496,14 +506,14 @@
      </property>
     </widget>
    </item>
-   <item row="12" column="2">
+   <item row="12" column="3">
     <widget class="QgsPropertyOverrideButton" name="mRefPoint2XDDBtn">
      <property name="text">
-      <string>...</string>
+      <string>…</string>
      </property>
     </widget>
    </item>
-   <item row="19" column="0" colspan="3">
+   <item row="19" column="0" colspan="4">
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
@@ -517,6 +527,11 @@
     </spacer>
    </item>
   </layout>
+  <zorder>btnChangeColor2</zorder>
+  <zorder>btnColorRamp</zorder>
+  <zorder>btnChangeColor</zorder>
+  <zorder>checkRefPoint1Centroid</zorder>
+  <zorder>checkRefPoint2Centroid</zorder>
   <zorder>label_6</zorder>
   <zorder>label_3</zorder>
   <zorder>radioColorRamp</zorder>
@@ -538,18 +553,16 @@
   <zorder>mRefPoint1XDDBtn</zorder>
   <zorder>mRefPoint1YDDBtn</zorder>
   <zorder>mRefPoint2CentroidDDBtn</zorder>
+  <zorder>cboGradientType</zorder>
+  <zorder>mSpinAngle</zorder>
+  <zorder>cboGradientSpread</zorder>
+  <zorder>cboCoordinateMode</zorder>
  </widget>
  <customwidgets>
   <customwidget>
    <class>QgsColorButton</class>
    <extends>QToolButton</extends>
    <header>qgscolorbutton.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsColorRampButton</class>
-   <extends>QToolButton</extends>
-   <header>qgscolorrampbutton.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -568,23 +581,41 @@
    <header>qgsunitselectionwidget.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsColorRampButton</class>
+   <extends>QToolButton</extends>
+   <header>qgscolorrampbutton.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>radioTwoColor</tabstop>
   <tabstop>btnChangeColor</tabstop>
+  <tabstop>mStartColorDDBtn</tabstop>
   <tabstop>btnChangeColor2</tabstop>
+  <tabstop>mEndColorDDBtn</tabstop>
   <tabstop>radioColorRamp</tabstop>
   <tabstop>btnColorRamp</tabstop>
   <tabstop>cboGradientType</tabstop>
+  <tabstop>mGradientTypeDDBtn</tabstop>
   <tabstop>cboCoordinateMode</tabstop>
+  <tabstop>mCoordinateModeDDBtn</tabstop>
   <tabstop>cboGradientSpread</tabstop>
+  <tabstop>mSpreadDDBtn</tabstop>
   <tabstop>spinRefPoint1X</tabstop>
+  <tabstop>mRefPoint1XDDBtn</tabstop>
   <tabstop>spinRefPoint1Y</tabstop>
+  <tabstop>mRefPoint1YDDBtn</tabstop>
   <tabstop>checkRefPoint1Centroid</tabstop>
+  <tabstop>mRefPoint1CentroidDDBtn</tabstop>
   <tabstop>spinRefPoint2X</tabstop>
+  <tabstop>mRefPoint2XDDBtn</tabstop>
   <tabstop>spinRefPoint2Y</tabstop>
+  <tabstop>mRefPoint2YDDBtn</tabstop>
   <tabstop>checkRefPoint2Centroid</tabstop>
+  <tabstop>mRefPoint2CentroidDDBtn</tabstop>
   <tabstop>mSpinAngle</tabstop>
+  <tabstop>mAngleDDBtn</tabstop>
   <tabstop>spinOffsetX</tabstop>
   <tabstop>spinOffsetY</tabstop>
  </tabstops>

@@ -41,8 +41,6 @@ from processing.core.outputs import OutputRaster
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 
-from processing.tools.vector import ogrConnectionString, ogrLayerName
-
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
@@ -62,16 +60,13 @@ class rasterize(GdalAlgorithm):
 
     RAST_EXT = 'RAST_EXT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'rasterize.png'))
 
-    def commandLineName(self):
-        return "gdal:rasterize"
+    def __init__(self):
+        super().__init__()
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Rasterize (vector to raster)')
-        self.group, self.i18n_group = self.trAlgorithm('Vector conversion')
-
+    def initAlgorithm(self, config=None):
         self.addParameter(ParameterVector(self.INPUT, self.tr('Input layer')))
         self.addParameter(ParameterTableField(self.FIELD,
                                               self.tr('Attribute field'), self.INPUT))
@@ -98,14 +93,25 @@ class rasterize(GdalAlgorithm):
         self.addOutput(OutputRaster(self.OUTPUT,
                                     self.tr('Rasterized')))
 
-    def getConsoleCommands(self):
+    def name(self):
+        return 'rasterize'
+
+    def displayName(self):
+        return self.tr('Rasterize (vector to raster)')
+
+    def group(self):
+        return self.tr('Vector conversion')
+
+    def getConsoleCommands(self, parameters, context, feedback):
         inLayer = self.getParameterValue(self.INPUT)
         noData = self.getParameterValue(self.NO_DATA)
         rastext = str(self.getParameterValue(self.RAST_EXT))
+        if not rastext:
+            rastext = QgsProcessingUtils.combineLayerExtents([inLayer])
         opts = self.getParameterValue(self.OPTIONS)
         out = self.getOutputValue(self.OUTPUT)
 
-        ogrLayer = ogrConnectionString(inLayer)[1:-1]
+        ogrLayer = GdalUtils.ogrConnectionString(inLayer, context)[1:-1]
 
         if noData is not None:
             noData = str(noData)
@@ -154,9 +160,12 @@ class rasterize(GdalAlgorithm):
 
         arguments.append('-l')
 
-        print(ogrLayerName(inLayer))
-        arguments.append(ogrLayerName(inLayer))
+        print(GdalUtils.ogrLayerName(inLayer))
+        arguments.append(GdalUtils.ogrLayerName(inLayer))
         arguments.append(ogrLayer)
 
         arguments.append(out)
         return ['gdal_rasterize', GdalUtils.escapeAndJoin(arguments)]
+
+    def commandName(self):
+        return "gdal_rasterize"

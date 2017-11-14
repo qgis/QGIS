@@ -30,11 +30,11 @@ QgsLayerTreeRegistryBridge::QgsLayerTreeRegistryBridge( QgsLayerTreeGroup *root,
   , mInsertionPointGroup( root )
   , mInsertionPointIndex( 0 )
 {
-  connect( mProject, SIGNAL( legendLayersAdded( QList<QgsMapLayer *> ) ), this, SLOT( layersAdded( QList<QgsMapLayer *> ) ) );
-  connect( mProject, SIGNAL( layersWillBeRemoved( QStringList ) ), this, SLOT( layersWillBeRemoved( QStringList ) ) );
+  connect( mProject, &QgsProject::legendLayersAdded, this, &QgsLayerTreeRegistryBridge::layersAdded );
+  connect( mProject, static_cast < void ( QgsProject::* )( const QStringList & ) >( &QgsProject::layersWillBeRemoved ), this, &QgsLayerTreeRegistryBridge::layersWillBeRemoved );
 
-  connect( mRoot, SIGNAL( willRemoveChildren( QgsLayerTreeNode *, int, int ) ), this, SLOT( groupWillRemoveChildren( QgsLayerTreeNode *, int, int ) ) );
-  connect( mRoot, SIGNAL( removedChildren( QgsLayerTreeNode *, int, int ) ), this, SLOT( groupRemovedChildren() ) );
+  connect( mRoot, &QgsLayerTreeNode::willRemoveChildren, this, &QgsLayerTreeRegistryBridge::groupWillRemoveChildren );
+  connect( mRoot, &QgsLayerTreeNode::removedChildren, this, &QgsLayerTreeRegistryBridge::groupRemovedChildren );
 }
 
 void QgsLayerTreeRegistryBridge::setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index )
@@ -74,7 +74,7 @@ void QgsLayerTreeRegistryBridge::layersAdded( const QList<QgsMapLayer *> &layers
 
 void QgsLayerTreeRegistryBridge::layersWillBeRemoved( const QStringList &layerIds )
 {
-  QgsDebugMsg( QString( "%1 layers will be removed, enabled:%2" ).arg( layerIds.count() ).arg( mEnabled ) );
+  QgsDebugMsgLevel( QString( "%1 layers will be removed, enabled:%2" ).arg( layerIds.count() ).arg( mEnabled ), 4 );
 
   if ( !mEnabled )
     return;
@@ -136,7 +136,7 @@ void QgsLayerTreeRegistryBridge::groupRemovedChildren()
       toRemove << layerId;
   mLayerIdsForRemoval.clear();
 
-  QgsDebugMsg( QString( "%1 layers will be removed" ).arg( toRemove.count() ) );
+  QgsDebugMsgLevel( QString( "%1 layers will be removed" ).arg( toRemove.count() ), 4 );
 
   // delay the removal of layers from the registry. There may be other slots connected to map layer registry's signals
   // that might disrupt the execution flow - e.g. a processEvents() call may force update of layer tree view with

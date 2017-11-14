@@ -36,6 +36,7 @@
 #include "qgsproject.h"
 #include "qgsrenderer.h"
 #include "qgsunittypes.h"
+#include "qgsstatusbar.h"
 
 #include "qgssettings.h"
 #include <QMouseEvent>
@@ -52,12 +53,12 @@ QgsMapToolIdentifyAction::QgsMapToolIdentifyAction( QgsMapCanvas *canvas )
   QPixmap myIdentifyQPixmap = QPixmap( ( const char ** ) identify_cursor );
   mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
 
-  connect( this, SIGNAL( changedRasterResults( QList<IdentifyResult> & ) ), this, SLOT( handleChangedRasterResults( QList<IdentifyResult> & ) ) );
+  connect( this, &QgsMapToolIdentify::changedRasterResults, this, &QgsMapToolIdentifyAction::handleChangedRasterResults );
 
   mIdentifyMenu->setAllowMultipleReturn( true );
 
   QgsMapLayerAction *attrTableAction = new QgsMapLayerAction( tr( "Show attribute table" ), mIdentifyMenu, QgsMapLayer::VectorLayer, QgsMapLayerAction::MultipleFeatures );
-  connect( attrTableAction, SIGNAL( triggeredForFeatures( QgsMapLayer *, const QList<QgsFeature> ) ), this, SLOT( showAttributeTable( QgsMapLayer *, const QList<QgsFeature> ) ) );
+  connect( attrTableAction, &QgsMapLayerAction::triggeredForFeatures, this, &QgsMapToolIdentifyAction::showAttributeTable );
   identifyMenu()->addCustomAction( attrTableAction );
 }
 
@@ -75,8 +76,8 @@ QgsIdentifyResultsDialog *QgsMapToolIdentifyAction::resultsDialog()
   {
     mResultsDialog = new QgsIdentifyResultsDialog( mCanvas, mCanvas->window() );
 
-    connect( mResultsDialog, SIGNAL( formatChanged( QgsRasterLayer * ) ), this, SLOT( formatChanged( QgsRasterLayer * ) ) );
-    connect( mResultsDialog, SIGNAL( copyToClipboard( QgsFeatureStore & ) ), this, SLOT( handleCopyToClipboard( QgsFeatureStore & ) ) );
+    connect( mResultsDialog.data(), static_cast<void ( QgsIdentifyResultsDialog::* )( QgsRasterLayer * )>( &QgsIdentifyResultsDialog::formatChanged ), this, &QgsMapToolIdentify::formatChanged );
+    connect( mResultsDialog.data(), &QgsIdentifyResultsDialog::copyToClipboard, this, &QgsMapToolIdentifyAction::handleCopyToClipboard );
   }
 
   return mResultsDialog;
@@ -115,8 +116,8 @@ void QgsMapToolIdentifyAction::canvasPressEvent( QgsMapMouseEvent *e )
 void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   resultsDialog()->clear();
-  connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
-  connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
+  connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
+  connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   identifyMenu()->setResultsIfExternalAction( false );
 
@@ -129,13 +130,13 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   QList<IdentifyResult> results = QgsMapToolIdentify::identify( e->x(), e->y(), mode );
 
-  disconnect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
-  disconnect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
+  disconnect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
+  disconnect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
 
   if ( results.isEmpty() )
   {
     resultsDialog()->clear();
-    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
   }
   else
   {
@@ -145,7 +146,7 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
       resultsDialog()->QDialog::show();
 
     QList<IdentifyResult>::const_iterator result;
-    for ( result = results.begin(); result != results.end(); ++result )
+    for ( result = results.constBegin(); result != results.constEnd(); ++result )
     {
       resultsDialog()->addFeature( *result );
     }
@@ -163,7 +164,7 @@ void QgsMapToolIdentifyAction::handleChangedRasterResults( QList<IdentifyResult>
   // Add new result after raster format change
   QgsDebugMsg( QString( "%1 raster results" ).arg( results.size() ) );
   QList<IdentifyResult>::const_iterator rresult;
-  for ( rresult = results.begin(); rresult != results.end(); ++rresult )
+  for ( rresult = results.constBegin(); rresult != results.constEnd(); ++rresult )
   {
     if ( rresult->mLayer->type() == QgsMapLayer::RasterLayer )
     {

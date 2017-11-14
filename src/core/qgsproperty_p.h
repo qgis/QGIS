@@ -26,6 +26,8 @@
 // version without notice, or even be removed.
 //
 
+#define SIP_NO_FILE
+
 #include "qgis_core.h"
 #include <QSharedData>
 #include <QVariant>
@@ -36,11 +38,7 @@ class QgsPropertyPrivate : public QSharedData
 {
   public:
 
-    QgsPropertyPrivate()
-      : type( 0 )
-      , active( true )
-      , transformer( nullptr )
-    {}
+    QgsPropertyPrivate() = default;
 
     QgsPropertyPrivate( const QgsPropertyPrivate &other )
       : QSharedData( other )

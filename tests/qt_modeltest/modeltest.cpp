@@ -376,7 +376,7 @@ void ModelTest::checkChildren( const QModelIndex &parent, int currentDepth )
       Q_ASSERT( index.row() == r );
       Q_ASSERT( index.column() == c );
       // While you can technically return a QVariant usually this is a sign
-      // of an bug in data()  Disable if this really is ok in your model.
+      // of an bug in data()  Disable if this really is OK in your model.
 //            Q_ASSERT ( model->data ( index, Qt::DisplayRole ).isValid() );
 
       // If the next test fails here is some somewhat useful debug you play with.

@@ -27,8 +27,6 @@
 
 QgsRelationReferenceSearchWidgetWrapper::QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mWidget( nullptr )
-  , mLayer( nullptr )
   , mCanvas( canvas )
 {
 
@@ -39,7 +37,7 @@ bool QgsRelationReferenceSearchWidgetWrapper::applyDirectly()
   return true;
 }
 
-QString QgsRelationReferenceSearchWidgetWrapper::expression()
+QString QgsRelationReferenceSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -143,9 +141,9 @@ void QgsRelationReferenceSearchWidgetWrapper::onValueChanged( const QVariant &va
   emit expressionChanged( mExpression );
 }
 
-void QgsRelationReferenceSearchWidgetWrapper::setExpression( QString exp )
+void QgsRelationReferenceSearchWidgetWrapper::setExpression( const QString &expression )
 {
-  QgsSettings settings;
+  QString exp = expression;
   QString nullValue = QgsApplication::nullRepresentation();
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
 
@@ -194,7 +192,7 @@ void QgsRelationReferenceSearchWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setRelation( relation, false );
 
   mWidget->showIndeterminateState();
-  connect( mWidget, SIGNAL( foreignKeyChanged( QVariant ) ), this, SLOT( onValueChanged( QVariant ) ) );
+  connect( mWidget, &QgsRelationReferenceWidget::foreignKeyChanged, this, &QgsRelationReferenceSearchWidgetWrapper::onValueChanged );
 }
 
 

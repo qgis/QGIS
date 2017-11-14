@@ -31,9 +31,11 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_CURRENT_BINARY_DIR}
   ../../../core 
   ../../../core/dxf
+  ../../../core/expression
   ../../../core/geometry 
+  ../../../core/metadata
   ../../../core/raster
-  ../../../core/symbology-ng
+  ../../../core/symbology
   ../../../core/composer
   ../../../core/layertree
   ../..

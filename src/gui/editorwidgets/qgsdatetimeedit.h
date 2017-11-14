@@ -17,13 +17,15 @@
 #define QGSDATETIMEEDIT_H
 
 #include <QDateTimeEdit>
+#include "qgis.h"
 #include "qgis_gui.h"
 
 class QToolButton;
 class QLineEdit;
 
-/** \ingroup gui
- * @brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
+/**
+ * \ingroup gui
+ * \brief The QgsDateTimeEdit class is a QDateTimeEdit with the capability of setting/reading null date/times.
  */
 class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
 {
@@ -31,32 +33,33 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull )
 
   public:
-    explicit QgsDateTimeEdit( QWidget *parent = nullptr );
+    explicit QgsDateTimeEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! Determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );
     bool allowNull() const {return mAllowNull;}
 
     /**
-     * @brief setDateTime set the date time in the widget and handles null date times.
-     * @note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
+     * \brief setDateTime set the date time in the widget and handles null date times.
+     * \note since QDateTimeEdit::setDateTime() is not virtual, setDateTime must be called for QgsDateTimeEdit.
      */
     void setDateTime( const QDateTime &dateTime );
 
     /**
-     * @brief dateTime returns the date time which can eventually be a null date/time
-     * @note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
+     * \brief dateTime returns the date time which can eventually be a null date/time
+     * \note since QDateTimeEdit::dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
      */
     QDateTime dateTime() const;
 
     /**
      * Set the current date as NULL
-     * @note if the widget is not configured to accept NULL dates, this will have no effect
+     * \note if the widget is not configured to accept NULL dates, this will have no effect
      */
     virtual void clear() override;
 
-    /** Resets the widget to show no value (ie, an "unknown" state).
-     * @note added in QGIS 2.16
+    /**
+     * Resets the widget to show no value (ie, an "unknown" state).
+     * \since QGIS 2.16
      */
     void setEmpty();
 
@@ -74,12 +77,28 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     int spinButtonWidth() const;
     int frameWidth() const;
 
-    bool mAllowNull;
-    bool mIsNull;
-    bool mIsEmpty;
+    bool mAllowNull = true;
+    bool mIsNull = true;
+    bool mIsEmpty = false;
 
     QLineEdit *mNullLabel = nullptr;
     QToolButton *mClearButton = nullptr;
+
+    /**
+     * Set the lowest Date that can be displayed with the Qt::ISODate format
+     *  - uses QDateTimeEdit::setMinimumDateTime (since Qt 4.4)
+     * \note
+     *  - QDate and QDateTime does not support minus years for the Qt::ISODate format
+     *  -> returns empty (toString) or invalid (fromString) values
+     *  - QDateTimeEdit::setMinimumDateTime does not support dates < '0100-01-01'
+     *  -> it is not for us to wonder why [defined in qdatetimeparser_p.h]
+    * \since QGIS 3.0
+    * \note not available in Python bindings
+    */
+    void setMinimumEditDateTime()
+    {
+      setMinimumDateTime( QDateTime::fromString( QStringLiteral( "0100-01-01" ), Qt::ISODate ) );
+    }
 
 };
 

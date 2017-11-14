@@ -63,7 +63,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         cls.basetestpolyfile = os.path.join(cls.basetestpath, 'shapefile_poly.shp')
         cls.vl = QgsVectorLayer('{}|layerid=0'.format(cls.basetestfile), 'test', 'ogr')
         assert(cls.vl.isValid())
-        cls.provider = cls.vl.dataProvider()
+        cls.source = cls.vl.dataProvider()
         cls.vl_poly = QgsVectorLayer('{}|layerid=0'.format(cls.basetestpolyfile), 'test', 'ogr')
         assert (cls.vl_poly.isValid())
         cls.poly_provider = cls.vl_poly.dataProvider()
@@ -76,7 +76,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         for dirname in cls.dirs_to_cleanup:
             shutil.rmtree(dirname, True)
 
-    def getEditableLayer(self):
+    def getSource(self):
         tmpdir = tempfile.mkdtemp()
         self.dirs_to_cleanup.append(tmpdir)
         srcpath = os.path.join(TEST_DATA_DIR, 'provider')
@@ -86,6 +86,9 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
 
         vl = QgsVectorLayer('{}|layerid=0'.format(datasource), 'test', 'ogr')
         return vl
+
+    def getEditableLayer(self):
+        return self.getSource()
 
     def enableCompiler(self):
         QgsSettings().setValue('/qgis/compileExpressions', True)
@@ -266,7 +269,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         values = [f_iter['pk'] for f_iter in features]
         self.assertEqual(values, [200])
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (2.0, 49.0))
 
         self.assertTrue(vl.dataProvider().changeGeometryValues({fid: QgsGeometry.fromWkt('Point (3 50)')}))
@@ -275,7 +278,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         features = [f_iter for f_iter in vl.getFeatures(QgsFeatureRequest().setFilterFid(fid))]
         values = [f_iter['pk'] for f_iter in features]
 
-        got_geom = [f_iter.geometry() for f_iter in features][0].geometry()
+        got_geom = [f_iter.geometry() for f_iter in features][0].constGet()
         self.assertEqual((got_geom.x(), got_geom.y()), (3.0, 50.0))
 
         self.assertTrue(vl.dataProvider().deleteFeatures([fid]))
@@ -456,7 +459,23 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # Test the content of the shapefile while it is still opened
         ds = osgeo.ogr.Open(datasource)
         # Test repacking has been done
-        self.assertTrue(ds.GetLayer(0).GetFeatureCount(), feature_count - 1)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 1)
+        ds = None
+
+        # Delete another feature while in update mode
+        self.assertTrue(2 == 2)
+        vl.dataProvider().enterUpdateMode()
+        vl.dataProvider().deleteFeatures([0])
+
+        # Test that repacking has not been done (since in update mode)
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 1)
+        ds = None
+
+        # Test that repacking was performed when leaving updateMode
+        vl.dataProvider().leaveUpdateMode()
+        ds = osgeo.ogr.Open(datasource)
+        self.assertTrue(ds.GetLayer(0).GetFeatureCount() == feature_count - 2)
         ds = None
 
         vl = None

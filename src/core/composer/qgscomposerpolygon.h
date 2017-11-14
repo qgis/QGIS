@@ -25,9 +25,10 @@
 
 class QgsFillSymbol;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Composer item for polygons.
- * @note added in QGIS 2.16
+ * \since QGIS 2.16
  */
 
 class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
@@ -36,14 +37,16 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
 
   public:
 
-    /** Constructor
-     * @param c parent composition
+    /**
+     * Constructor
+     * \param c parent composition
      */
     QgsComposerPolygon( QgsComposition *c );
 
-    /** Constructor
-     * @param polygon nodes of the shape
-     * @param c parent composition
+    /**
+     * Constructor
+     * \param polygon nodes of the shape
+     * \param c parent composition
      */
     QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c );
 
@@ -64,7 +67,8 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
     //! QgsSymbol use to draw the shape.
     std::unique_ptr<QgsFillSymbol> mPolygonStyleSymbol;
 
-    /** Add the node newPoint at the given position according to some
+    /**
+     * Add the node newPoint at the given position according to some
      * criteres. */
     bool _addNode( const int indexPoint, QPointF newPoint, const double radius ) override;
 

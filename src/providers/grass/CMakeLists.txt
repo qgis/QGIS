@@ -1,16 +1,19 @@
-#ADD_DEFINITIONS(-DGRASS_BASE=\\\"${GRASS_PREFIX}\\\")
+#ADD_DEFINITIONS(-DGRASS_BASE="${GRASS_PREFIX}")
 ########################################################
 # Build
 
 INCLUDE_DIRECTORIES(
-  ../../core
-  ../../core/geometry
-  ../../core/raster
-  ../../gui
-  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/gui
+
   ${CMAKE_BINARY_DIR}/src/core
   ${CMAKE_BINARY_DIR}/src/gui
   ${CMAKE_BINARY_DIR}/src/providers/grass
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 INCLUDE_DIRECTORIES (SYSTEM
   ${GDAL_INCLUDE_DIR}
@@ -28,11 +31,11 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     SET(GRASS_MINOR_VERSION ${GRASS_MINOR_VERSION${GRASS_BUILD_VERSION}})
     SET(GRASS_OFF_T_SIZE ${GRASS_OFF_T_SIZE${GRASS_BUILD_VERSION}})
 
-    QT5_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS
+    SET(GRASS_LIBRARY_MOC_HDRS
       ../qgsgrass.h
+      ../qgsgrassdatafile.h
       ../qgsgrassfeatureiterator.h
       ../qgsgrassimport.h
-      ../qgsgrassoptions.h
       ../qgsgrassprovider.h
       ../qgsgrassrasterprovider.h
       ../qgsgrassvector.h
@@ -46,7 +49,6 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassdatafile.cpp
       ../qgsgrassfeatureiterator.cpp
       ../qgsgrassimport.cpp
-      ../qgsgrassoptions.cpp
       ../qgsgrassprovider.cpp
       ../qgsgrassrasterprovider.cpp
       ../qgsgrassundocommand.cpp
@@ -54,6 +56,17 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
       ../qgsgrassvectormap.cpp
       ../qgsgrassvectormaplayer.cpp
     )
+
+    IF (WITH_GUI)
+      SET(GRASS_LIBRARY_MOC_HDRS ${GRASS_LIBRARY_MOC_HDRS}
+        ../qgsgrassoptions.h
+      )
+      SET(GRASS_LIBRARY_SRCS ${GRASS_LIBRARY_SRCS}
+        ../qgsgrassoptions.cpp
+      )
+    ENDIF ()
+
+    QT5_WRAP_CPP(GRASS_LIBRARY_MOC_SRCS ${GRASS_LIBRARY_MOC_HDRS})
 
     IF(MSVC)
       # 4611 setjmp
@@ -117,7 +130,6 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     IF (GRASS_MAJOR_VERSION LESS 7 )
       SET(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
           qgis_core
-          qgis_gui
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_vect}
           ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_I}
@@ -128,7 +140,6 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     ELSE (GRASS_MAJOR_VERSION LESS 7 )
       SET(GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}
         qgis_core
-        qgis_gui
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_gis}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_vector}
         ${GRASS_LIBRARY${GRASS_BUILD_VERSION}_raster}
@@ -140,6 +151,12 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     ENDIF (GRASS_MAJOR_VERSION LESS 7 )
 
     TARGET_LINK_LIBRARIES(qgisgrass${GRASS_BUILD_VERSION} ${GRASS_TARGET_LINK_LIBRARIES${GRASS_BUILD_VERSION}})
+
+    IF (WITH_GUI)
+      TARGET_LINK_LIBRARIES(qgisgrass${GRASS_BUILD_VERSION}
+        qgis_gui
+      )
+    ENDIF ()
 
     IF (APPLE)
       SET_TARGET_PROPERTIES(qgisgrass${GRASS_BUILD_VERSION} PROPERTIES BUILD_WITH_INSTALL_RPATH TRUE)
@@ -162,8 +179,13 @@ MACRO(ADD_GRASSLIB GRASS_BUILD_VERSION)
     )
     TARGET_LINK_LIBRARIES(grassprovider${GRASS_BUILD_VERSION}
       qgisgrass${GRASS_BUILD_VERSION}
-      qgis_gui
     )
+
+    IF (WITH_GUI)
+      TARGET_LINK_LIBRARIES(grassprovider${GRASS_BUILD_VERSION}
+        qgis_gui
+      )
+    ENDIF ()
 
     #
     # grass raster provider

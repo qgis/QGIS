@@ -25,7 +25,6 @@
 
 QgsAttributeDialog::QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent, bool showDialogButtons, const QgsAttributeEditorContext &context )
   : QDialog( parent )
-  , mHighlight( nullptr )
   , mOwnedFeature( featureOwner ? thepFeature : nullptr )
 {
   init( vl, thepFeature, context, showDialogButtons );
@@ -99,11 +98,11 @@ void QgsAttributeDialog::init( QgsVectorLayer *layer, QgsFeature *feature, const
   mAttributeForm->disconnectButtonBox();
   layout()->addWidget( mAttributeForm );
   QDialogButtonBox *buttonBox = mAttributeForm->findChild<QDialogButtonBox *>();
-  connect( buttonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( layer, SIGNAL( destroyed() ), this, SLOT( close() ) );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsAttributeDialog::reject );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsAttributeDialog::accept );
+  connect( layer, &QObject::destroyed, this, &QWidget::close );
 
-  QgsActionMenu *menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "AttributeTableRow" ), this );
+  QgsActionMenu *menu = new QgsActionMenu( layer, mAttributeForm->feature(), QStringLiteral( "Feature" ), this );
   if ( !menu->actions().isEmpty() )
   {
     QMenuBar *menuBar = new QMenuBar( this );

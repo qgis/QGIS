@@ -24,7 +24,8 @@ class QgsFeatureListModel;
 class QgsFeatureSelectionModel;
 class QPosition;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsFeatureListViewDelegate
  */
 class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
@@ -32,7 +33,7 @@ class GUI_EXPORT QgsFeatureListViewDelegate : public QItemDelegate
     Q_OBJECT
 
   public:
-    static int const ICON_SIZE = 24;
+    static const int ICON_SIZE = 24;
 
     enum Element
     {

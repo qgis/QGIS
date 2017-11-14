@@ -26,7 +26,7 @@
 
 QgsValueMapSearchWidgetWrapper::QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, fieldIdx, parent )
-  , mComboBox( nullptr )
+
 {
 }
 
@@ -58,7 +58,7 @@ bool QgsValueMapSearchWidgetWrapper::applyDirectly()
   return true;
 }
 
-QString QgsValueMapSearchWidgetWrapper::expression()
+QString QgsValueMapSearchWidgetWrapper::expression() const
 {
   return mExpression;
 }
@@ -143,7 +143,7 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
   {
     const QVariantMap cfg = config();
     QVariantMap::ConstIterator it = cfg.constBegin();
-    mComboBox->addItem( tr( "Please select" ), "" );
+    mComboBox->addItem( tr( "Please select" ), QString() );
 
     while ( it != cfg.constEnd() )
     {
@@ -151,12 +151,13 @@ void QgsValueMapSearchWidgetWrapper::initWidget( QWidget *editor )
         mComboBox->addItem( it.key(), it.value() );
       ++it;
     }
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboBoxIndexChanged( int ) ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsValueMapSearchWidgetWrapper::comboBoxIndexChanged );
   }
 }
 
-void QgsValueMapSearchWidgetWrapper::setExpression( QString exp )
+void QgsValueMapSearchWidgetWrapper::setExpression( const QString &expression )
 {
+  QString exp = expression;
   QString fieldName = layer()->fields().at( mFieldIdx ).name();
   QString str;
 

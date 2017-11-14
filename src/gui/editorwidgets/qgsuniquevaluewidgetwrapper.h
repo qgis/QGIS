@@ -22,7 +22,10 @@
 #include <QLineEdit>
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * Wraps a unique value widget. Will offer any value previously used for this field.
  *
  * Options:

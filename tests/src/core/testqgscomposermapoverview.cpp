@@ -33,11 +33,7 @@ class TestQgsComposerMapOverview : public QObject
     Q_OBJECT
 
   public:
-    TestQgsComposerMapOverview()
-      : mComposition( 0 )
-      , mComposerMap( 0 )
-      , mRasterLayer( 0 )
-    {}
+    TestQgsComposerMapOverview() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -50,6 +46,7 @@ class TestQgsComposerMapOverview : public QObject
     void overviewMapBlending(); //test if blend modes with overview map frame works
     void overviewMapInvert(); //test if invert of overview map frame works
     void overviewMapCenter(); //test if centering of overview map frame works
+    void overviewReprojected(); //test that overview frame is reprojected
 
   private:
     QgsComposition *mComposition = nullptr;
@@ -214,6 +211,28 @@ void TestQgsComposerMapOverview::overviewMapCenter()
 
   bool testResult = checker.testComposition( mReport, 0, 0 );
   mComposition->removeComposerItem( overviewMapCenter );
+  QVERIFY( testResult );
+}
+
+void TestQgsComposerMapOverview::overviewReprojected()
+{
+  QgsComposerMap *overviewMap = new QgsComposerMap( mComposition, 20, 130, 70, 70 );
+  overviewMap->setFrameEnabled( true );
+  //overviewMap->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
+  mComposition->addComposerMap( overviewMap );
+
+  mComposerMap->setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+  overviewMap->setCrs( QgsCoordinateReferenceSystem::fromEpsgId( 54030 ) );
+
+  mComposerMap->setNewExtent( QgsRectangle( 93, -64.245, 120.6, -45 ) );
+  overviewMap->setNewExtent( QgsRectangle( 4712502, -7620278, 10872777, -2531356 ) );
+  overviewMap->overview()->setFrameMap( mComposerMap->id() );
+
+  QgsCompositionChecker checker( QStringLiteral( "composermap_overview_reprojected" ), mComposition );
+  checker.setControlPathPrefix( QStringLiteral( "composer_mapoverview" ) );
+
+  bool testResult = checker.testComposition( mReport, 0, 0 );
+  mComposition->removeComposerItem( overviewMap );
   QVERIFY( testResult );
 }
 

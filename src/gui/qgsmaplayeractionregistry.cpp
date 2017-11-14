@@ -14,19 +14,17 @@
  ***************************************************************************/
 
 #include "qgsmaplayeractionregistry.h"
-
+#include "qgsgui.h"
 
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, Targets targets, const QIcon &icon )
   : QAction( icon, name, parent )
   , mSingleLayer( false )
-  , mActionLayer( nullptr )
   , mSpecificLayerType( false )
   , mLayerType( QgsMapLayer::VectorLayer )
   , mTargets( targets )
 {
 }
 
-//! Creates a map layer action which can run only on a specific layer
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer *layer, Targets targets, const QIcon &icon )
   : QAction( icon, name, parent )
   , mSingleLayer( true )
@@ -37,11 +35,9 @@ QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsM
 {
 }
 
-//! Creates a map layer action which can run on a specific type of layer
 QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsMapLayer::LayerType layerType, Targets targets, const QIcon &icon )
   : QAction( icon, name, parent )
   , mSingleLayer( false )
-  , mActionLayer( nullptr )
   , mSpecificLayerType( true )
   , mLayerType( layerType )
   , mTargets( targets )
@@ -51,7 +47,7 @@ QgsMapLayerAction::QgsMapLayerAction( const QString &name, QObject *parent, QgsM
 QgsMapLayerAction::~QgsMapLayerAction()
 {
   //remove action from registry
-  QgsMapLayerActionRegistry::instance()->removeMapLayerAction( this );
+  QgsGui::mapLayerActionRegistry()->removeMapLayerAction( this );
 }
 
 bool QgsMapLayerAction::canRunUsingLayer( QgsMapLayer *layer ) const
@@ -93,19 +89,6 @@ void QgsMapLayerAction::triggerForLayer( QgsMapLayer *layer )
 }
 
 //
-// Static calls to enforce singleton behavior
-//
-QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::sInstance = nullptr;
-QgsMapLayerActionRegistry *QgsMapLayerActionRegistry::instance()
-{
-  if ( !sInstance )
-  {
-    sInstance = new QgsMapLayerActionRegistry();
-  }
-  return sInstance;
-}
-
-//
 // Main class begins now...
 //
 
@@ -123,12 +106,12 @@ void QgsMapLayerActionRegistry::addMapLayerAction( QgsMapLayerAction *action )
 QList< QgsMapLayerAction * > QgsMapLayerActionRegistry::mapLayerActions( QgsMapLayer *layer, QgsMapLayerAction::Targets targets )
 {
   QList< QgsMapLayerAction * > validActions;
-  QList<QgsMapLayerAction *>::iterator actionIt;
-  for ( actionIt = mMapLayerActionList.begin(); actionIt != mMapLayerActionList.end(); ++actionIt )
+
+  Q_FOREACH ( QgsMapLayerAction *action, mMapLayerActionList )
   {
-    if ( ( *actionIt )->canRunUsingLayer( layer ) && ( targets & ( *actionIt )->targets() ) )
+    if ( action->canRunUsingLayer( layer ) && ( targets & action->targets() ) )
     {
-      validActions.append( ( *actionIt ) );
+      validActions.append( action );
     }
   }
   return validActions;

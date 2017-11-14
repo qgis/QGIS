@@ -21,8 +21,11 @@
 #include <QComboBox>
 #include "qgis_gui.h"
 
+SIP_NO_FILE
 
-/** \ingroup gui
+
+/**
+ * \ingroup gui
  * Wraps a value map widget.
  *
  * Options:

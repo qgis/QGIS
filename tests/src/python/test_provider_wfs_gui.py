@@ -90,7 +90,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         # if 'TRAVIS_OS_NAME' in os.environ and os.environ['TRAVIS_OS_NAME'] == 'osx':
         #    return
 
-        main_dialog = QgsProviderRegistry.instance().selectWidget("WFS")
+        main_dialog = QgsProviderRegistry.instance().createSelectionWidget("WFS")
         main_dialog.setProperty("hideDialogs", True)
 
         self.assertIsNotNone(main_dialog)
@@ -217,7 +217,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
         # Add layer
         self.addWfsLayer_uri = None
         self.addWfsLayer_layer_name = None
-        main_dialog.addWfsLayer.connect(self.slotAddWfsLayer)
+        main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
         self.assertEqual(self.addWfsLayer_uri, ' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')
@@ -290,7 +290,7 @@ class TestPyQgsWFSProviderGUI(unittest.TestCase):
 
         self.addWfsLayer_uri = None
         self.addWfsLayer_layer_name = None
-        main_dialog.addWfsLayer.connect(self.slotAddWfsLayer)
+        main_dialog.addVectorLayer.connect(self.slotAddWfsLayer)
         QTest.mouseClick(buttonAdd, Qt.LeftButton)
         self.assertEqual(self.addWfsLayer_uri, ' restrictToRequestBBOX=\'1\' srsname=\'EPSG:4326\' typename=\'my:typename\' url=\'' + "http://" + expected_endpoint + '\' version=\'auto\' table="" sql=SELECT * FROM typename WHERE 1 = 1')
         self.assertEqual(self.addWfsLayer_layer_name, 'my:typename')

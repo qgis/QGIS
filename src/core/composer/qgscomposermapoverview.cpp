@@ -22,28 +22,21 @@
 #include "qgssymbol.h"
 #include "qgsmapsettings.h"
 #include "qgspainting.h"
+#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
 #include "qgscomposerutils.h"
+#include "qgsexception.h"
 
 #include <QPainter>
 
 QgsComposerMapOverview::QgsComposerMapOverview( const QString &name, QgsComposerMap *map )
   : QgsComposerMapItem( name, map )
-  , mFrameMapId( -1 )
-  , mFrameSymbol( nullptr )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-  , mInverted( false )
-  , mCentered( false )
 {
   createDefaultFrameSymbol();
 }
 
 QgsComposerMapOverview::QgsComposerMapOverview()
   : QgsComposerMapItem( QString(), nullptr )
-  , mFrameMapId( -1 )
-  , mFrameSymbol( nullptr )
-  , mBlendMode( QPainter::CompositionMode_SourceOver )
-  , mInverted( false )
-  , mCentered( false )
 {
 }
 
@@ -55,7 +48,7 @@ void QgsComposerMapOverview::createDefaultFrameSymbol()
   properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
   properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
   mFrameSymbol = QgsFillSymbol::createSimple( properties );
-  mFrameSymbol->setAlpha( 0.3 );
+  mFrameSymbol->setOpacity( 0.3 );
 }
 
 QgsComposerMapOverview::~QgsComposerMapOverview()
@@ -82,6 +75,25 @@ void QgsComposerMapOverview::draw( QPainter *painter )
 
   //get polygon for other overview frame map's extent (use visibleExtentPolygon as it accounts for map rotation)
   QPolygonF otherExtent = overviewFrameMap->visibleExtentPolygon();
+  if ( overviewFrameMap->crs() !=
+       mComposerMap->crs() )
+  {
+    QgsGeometry g = QgsGeometry::fromQPolygonF( otherExtent );
+
+    // reproject extent
+    QgsCoordinateTransform ct( overviewFrameMap->crs(),
+                               mComposerMap->crs() );
+    g = g.densifyByCount( 20 );
+    try
+    {
+      g.transform( ct );
+    }
+    catch ( QgsCsException & )
+    {
+    }
+
+    otherExtent = g.asQPolygonF();
+  }
 
   //get current map's extent as a QPolygonF
   QPolygonF thisExtent = mComposerMap->visibleExtentPolygon();
@@ -160,7 +172,10 @@ bool QgsComposerMapOverview::writeXml( QDomElement &elem, QDomDocument &doc ) co
   overviewFrameElem.setAttribute( QStringLiteral( "inverted" ), mInverted );
   overviewFrameElem.setAttribute( QStringLiteral( "centered" ), mCentered );
 
-  QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol, doc );
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
+  QDomElement frameStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mFrameSymbol, doc, context );
   overviewFrameElem.appendChild( frameStyleElem );
 
   bool ok = QgsComposerMapItem::writeXml( overviewFrameElem, doc );
@@ -183,11 +198,14 @@ bool QgsComposerMapOverview::readXml( const QDomElement &itemElem, const QDomDoc
   mInverted = ( itemElem.attribute( QStringLiteral( "inverted" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
   mCentered = ( itemElem.attribute( QStringLiteral( "centered" ), QStringLiteral( "0" ) ) != QLatin1String( "0" ) );
 
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
   QDomElement frameStyleElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !frameStyleElem.isNull() )
   {
     delete mFrameSymbol;
-    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem );
+    mFrameSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( frameStyleElem, context );
   }
   return ok;
 }
@@ -211,7 +229,7 @@ void QgsComposerMapOverview::setFrameMap( const int mapId )
     const QgsComposerMap *map = mComposerMap->composition()->getComposerMapById( mFrameMapId );
     if ( map )
     {
-      QObject::disconnect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
+      disconnect( map, &QgsComposerMap::extentChanged, this, &QgsComposerMapOverview::overviewExtentChanged );
     }
   }
   mFrameMapId = mapId;
@@ -231,7 +249,7 @@ void QgsComposerMapOverview::connectSignals()
     const QgsComposerMap *map = mComposerMap->composition()->getComposerMapById( mFrameMapId );
     if ( map )
     {
-      QObject::connect( map, SIGNAL( extentChanged() ), this, SLOT( overviewExtentChanged() ) );
+      connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerMapOverview::overviewExtentChanged );
     }
   }
 }
@@ -279,7 +297,7 @@ void QgsComposerMapOverview::overviewExtentChanged()
     }
     QgsRectangle otherExtent = *overviewFrameMap->currentMapExtent();
 
-    QgsPoint center = otherExtent.center();
+    QgsPointXY center = otherExtent.center();
     QgsRectangle movedExtent( center.x() - extent.width() / 2,
                               center.y() - extent.height() / 2,
                               center.x() - extent.width() / 2 + extent.width(),
@@ -291,11 +309,11 @@ void QgsComposerMapOverview::overviewExtentChanged()
     mComposerMap->refreshDataDefinedProperty( QgsComposerObject::MapScale );
 
     //must invalidate cache so that map gets redrawn
-    mComposerMap->cache();
+    mComposerMap->invalidateCache();
   }
 
   //repaint map so that overview gets updated
-  mComposerMap->update();
+  mComposerMap->updateItem();
 }
 
 

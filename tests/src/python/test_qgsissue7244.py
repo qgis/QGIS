@@ -16,7 +16,7 @@ import qgis  # NOQA
 
 import os
 
-from qgis.core import QgsPoint, QgsVectorLayer
+from qgis.core import QgsPointXY, QgsVectorLayer
 
 from qgis.testing import start_app, unittest
 
@@ -94,11 +94,11 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
         """Split multipolygon"""
         layer = QgsVectorLayer("dbname=test.sqlite table=test_mpg (geometry)", "test_mpg", "spatialite")
         assert(layer.isValid())
-        assert(layer.hasGeometryType())
+        assert(layer.isSpatial())
         layer.featureCount() == 1 or die("wrong number of features")
         layer.startEditing()
-        layer.splitFeatures([QgsPoint(0.5, -0.5), QgsPoint(0.5, 1.5)], 0) == 0 or die("error in split of one polygon of multipolygon")
-        layer.splitFeatures([QgsPoint(2.5, -0.5), QgsPoint(2.5, 4)], 0) == 0 or die("error in split of two polygons of multipolygon at a time")
+        layer.splitFeatures([QgsPointXY(0.5, -0.5), QgsPointXY(0.5, 1.5)], 0) == 0 or die("error in split of one polygon of multipolygon")
+        layer.splitFeatures([QgsPointXY(2.5, -0.5), QgsPointXY(2.5, 4)], 0) == 0 or die("error in split of two polygons of multipolygon at a time")
         layer.commitChanges() or die("this commit should work")
         layer.featureCount() == 7 or die("wrong number of features after 2 split")
 
@@ -106,10 +106,10 @@ class TestQgsSpatialiteProvider(unittest.TestCase):
         """Try to creat a cut edge"""
         layer = QgsVectorLayer("dbname=test.sqlite table=test_pg (geometry)", "test_pg", "spatialite")
         assert(layer.isValid())
-        assert(layer.hasGeometryType())
+        assert(layer.isSpatial())
         layer.featureCount() == 1 or die("wrong number of features")
         layer.startEditing()
-        layer.splitFeatures([QgsPoint(1.5, -0.5), QgsPoint(1.5, 1.5)], 0) == 0 or die("error when trying to create an invalid polygon in split")
+        layer.splitFeatures([QgsPointXY(1.5, -0.5), QgsPointXY(1.5, 1.5)], 0) == 0 or die("error when trying to create an invalid polygon in split")
         layer.commitChanges() or die("this commit should work")
         layer.featureCount() == 1 or die("wrong number of features, polygon should be unafected by cut")
 

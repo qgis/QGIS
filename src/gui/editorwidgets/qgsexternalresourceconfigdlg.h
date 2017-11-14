@@ -21,7 +21,10 @@
 #include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsExternalResourceConfigDlg
  * \note not available in Python bindings
  */
@@ -44,9 +47,6 @@ class GUI_EXPORT QgsExternalResourceConfigDlg : public QgsEditorConfigWidget, pr
 
     //! Modify RelativeDefault according to mRootPath content
     void enableRelativeDefault();
-
-    //! Dynamic activation of RelativeGroupBox
-    void enableRelative( bool state );
 };
 
 #endif // QGSEXTERNALRESOURCECONFIGDLG_H

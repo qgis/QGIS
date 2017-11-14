@@ -37,13 +37,27 @@
 QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture ): QgsComposerItemBaseWidget( nullptr, picture ), mPicture( picture ), mPreviewsLoaded( false )
 {
   setupUi( this );
+  connect( mPictureBrowseButton, &QPushButton::clicked, this, &QgsComposerPictureWidget::mPictureBrowseButton_clicked );
+  connect( mPictureLineEdit, &QLineEdit::editingFinished, this, &QgsComposerPictureWidget::mPictureLineEdit_editingFinished );
+  connect( mPictureRotationSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerPictureWidget::mPictureRotationSpinBox_valueChanged );
+  connect( mPreviewListWidget, &QListWidget::currentItemChanged, this, &QgsComposerPictureWidget::mPreviewListWidget_currentItemChanged );
+  connect( mAddDirectoryButton, &QPushButton::clicked, this, &QgsComposerPictureWidget::mAddDirectoryButton_clicked );
+  connect( mRemoveDirectoryButton, &QPushButton::clicked, this, &QgsComposerPictureWidget::mRemoveDirectoryButton_clicked );
+  connect( mRotationFromComposerMapCheckBox, &QCheckBox::stateChanged, this, &QgsComposerPictureWidget::mRotationFromComposerMapCheckBox_stateChanged );
+  connect( mResizeModeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerPictureWidget::mResizeModeComboBox_currentIndexChanged );
+  connect( mAnchorPointComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerPictureWidget::mAnchorPointComboBox_currentIndexChanged );
+  connect( mFillColorButton, &QgsColorButton::colorChanged, this, &QgsComposerPictureWidget::mFillColorButton_colorChanged );
+  connect( mStrokeColorButton, &QgsColorButton::colorChanged, this, &QgsComposerPictureWidget::mStrokeColorButton_colorChanged );
+  connect( mStrokeWidthSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerPictureWidget::mStrokeWidthSpinBox_valueChanged );
+  connect( mPictureRotationOffsetSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerPictureWidget::mPictureRotationOffsetSpinBox_valueChanged );
+  connect( mNorthTypeComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsComposerPictureWidget::mNorthTypeComboBox_currentIndexChanged );
   setPanelTitle( tr( "Picture properties" ) );
 
-  mFillColorButton->setAllowAlpha( true );
-  mFillColorButton->setColorDialogTitle( tr( "Select fill color" ) );
+  mFillColorButton->setAllowOpacity( true );
+  mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
   mFillColorButton->setContext( QStringLiteral( "composer" ) );
-  mStrokeColorButton->setAllowAlpha( true );
-  mStrokeColorButton->setColorDialogTitle( tr( "Select stroke color" ) );
+  mStrokeColorButton->setAllowOpacity( true );
+  mStrokeColorButton->setColorDialogTitle( tr( "Select Stroke Color" ) );
   mStrokeColorButton->setContext( QStringLiteral( "composer" ) );
 
   mNorthTypeComboBox->blockSignals( true );
@@ -61,7 +75,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   {
     mComposerMapComboBox->setComposition( mPicture->composition() );
     mComposerMapComboBox->setItemType( QgsComposerItem::ComposerMap );
-    connect( mComposerMapComboBox, SIGNAL( itemChanged( QgsComposerItem * ) ), this, SLOT( composerMapChanged( QgsComposerItem * ) ) );
+    connect( mComposerMapComboBox, &QgsComposerItemComboBox::itemChanged, this, &QgsComposerPictureWidget::composerMapChanged );
   }
 
   setGuiElementValues();
@@ -72,10 +86,10 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   // mSearchDirectoriesGroupBox is a QgsCollapsibleGroupBoxBasic, so its collapsed state should not be saved/restored
   mSearchDirectoriesGroupBox->setCollapsed( true );
   // setup connection for loading previews on first expansion of group box
-  connect( mSearchDirectoriesGroupBox, SIGNAL( collapsedStateChanged( bool ) ), this, SLOT( loadPicturePreviews( bool ) ) );
+  connect( mSearchDirectoriesGroupBox, &QgsCollapsibleGroupBoxBasic::collapsedStateChanged, this, &QgsComposerPictureWidget::loadPicturePreviews );
 
-  connect( mPicture, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
-  connect( mPicture, SIGNAL( pictureRotationChanged( double ) ), this, SLOT( setPicRotationSpinValue( double ) ) );
+  connect( mPicture, &QgsComposerObject::itemChanged, this, &QgsComposerPictureWidget::setGuiElementValues );
+  connect( mPicture, &QgsComposerPicture::pictureRotationChanged, this, &QgsComposerPictureWidget::setPicRotationSpinValue );
 
   //connections for data defined buttons
   connect( mSourceDDBtn, &QgsPropertyOverrideButton::activated, mPictureLineEdit, &QLineEdit::setDisabled );
@@ -85,12 +99,7 @@ QgsComposerPictureWidget::QgsComposerPictureWidget( QgsComposerPicture *picture 
   registerDataDefinedButton( mStrokeWidthDDBtn, QgsComposerObject::PictureSvgStrokeWidth );
 }
 
-QgsComposerPictureWidget::~QgsComposerPictureWidget()
-{
-
-}
-
-void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
+void QgsComposerPictureWidget::mPictureBrowseButton_clicked()
 {
   QgsSettings s;
   QString openDir;
@@ -138,7 +147,7 @@ void QgsComposerPictureWidget::on_mPictureBrowseButton_clicked()
   }
 }
 
-void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
+void QgsComposerPictureWidget::mPictureLineEdit_editingFinished()
 {
   if ( mPicture )
   {
@@ -152,7 +161,7 @@ void QgsComposerPictureWidget::on_mPictureLineEdit_editingFinished()
   }
 }
 
-void QgsComposerPictureWidget::on_mPictureRotationSpinBox_valueChanged( double d )
+void QgsComposerPictureWidget::mPictureRotationSpinBox_valueChanged( double d )
 {
   if ( mPicture )
   {
@@ -162,7 +171,7 @@ void QgsComposerPictureWidget::on_mPictureRotationSpinBox_valueChanged( double d
   }
 }
 
-void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
+void QgsComposerPictureWidget::mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
   Q_UNUSED( previous );
   if ( !mPicture || !current )
@@ -179,7 +188,7 @@ void QgsComposerPictureWidget::on_mPreviewListWidget_currentItemChanged( QListWi
   updateSvgParamGui();
 }
 
-void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
+void QgsComposerPictureWidget::mAddDirectoryButton_clicked()
 {
   //let user select a directory
   QString directory = QFileDialog::getExistingDirectory( this, tr( "Select new preview directory" ) );
@@ -204,7 +213,7 @@ void QgsComposerPictureWidget::on_mAddDirectoryButton_clicked()
   s.setValue( QStringLiteral( "/Composer/PictureWidgetDirectories" ), userDirList );
 }
 
-void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
+void QgsComposerPictureWidget::mRemoveDirectoryButton_clicked()
 {
   QString directoryToRemove = mSearchDirectoriesComboBox->currentText();
   if ( directoryToRemove.isEmpty() )
@@ -230,7 +239,7 @@ void QgsComposerPictureWidget::on_mRemoveDirectoryButton_clicked()
   s.setValue( QStringLiteral( "/Composer/PictureWidgetDirectories" ), userDirList );
 }
 
-void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int index )
+void QgsComposerPictureWidget::mResizeModeComboBox_currentIndexChanged( int index )
 {
   if ( !mPicture )
   {
@@ -257,7 +266,7 @@ void QgsComposerPictureWidget::on_mResizeModeComboBox_currentIndexChanged( int i
   }
 }
 
-void QgsComposerPictureWidget::on_mAnchorPointComboBox_currentIndexChanged( int index )
+void QgsComposerPictureWidget::mAnchorPointComboBox_currentIndexChanged( int index )
 {
   if ( !mPicture )
   {
@@ -269,7 +278,7 @@ void QgsComposerPictureWidget::on_mAnchorPointComboBox_currentIndexChanged( int 
   mPicture->endCommand();
 }
 
-void QgsComposerPictureWidget::on_mRotationFromComposerMapCheckBox_stateChanged( int state )
+void QgsComposerPictureWidget::mRotationFromComposerMapCheckBox_stateChanged( int state )
 {
   if ( !mPicture )
   {
@@ -439,7 +448,7 @@ QIcon QgsComposerPictureWidget::svgToIcon( const QString &filePath ) const
     strokeWidth = 0.6;
 
   bool fitsInCache; // should always fit in cache at these sizes (i.e. under 559 px ^ 2, or half cache size)
-  const QImage &img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
+  QImage img = QgsApplication::svgCache()->svgAsImage( filePath, 30.0, fill, stroke, strokeWidth, 3.5 /*appr. 88 dpi*/, fitsInCache );
 
   return QIcon( QPixmap::fromImage( img ) );
 }
@@ -481,7 +490,7 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
     mFillColorButton->setColor( fill );
   }
   mFillColorButton->setEnabled( hasFillParam );
-  mFillColorButton->setAllowAlpha( hasFillOpacityParam );
+  mFillColorButton->setAllowOpacity( hasFillOpacityParam );
   if ( resetValues )
   {
     QColor stroke = mStrokeColorButton->color();
@@ -494,7 +503,7 @@ void QgsComposerPictureWidget::updateSvgParamGui( bool resetValues )
     mStrokeColorButton->setColor( stroke );
   }
   mStrokeColorButton->setEnabled( hasStrokeParam );
-  mStrokeColorButton->setAllowAlpha( hasStrokeOpacityParam );
+  mStrokeColorButton->setAllowOpacity( hasStrokeOpacityParam );
   if ( hasDefaultStrokeWidth && resetValues )
   {
     mStrokeWidthSpinBox->setValue( defaultStrokeWidth );
@@ -569,7 +578,7 @@ int QgsComposerPictureWidget::addDirectoryToPreview( const QString &path )
       listItem->setIcon( icon );
     }
 
-    listItem->setText( QLatin1String( "" ) );
+    listItem->setText( QString() );
     //store the absolute icon file path as user data
     listItem->setData( Qt::UserRole, fileIt->absoluteFilePath() );
     ++counter;
@@ -657,7 +666,7 @@ void QgsComposerPictureWidget::loadPicturePreviews( bool collapsed )
   }
 }
 
-void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor &color )
+void QgsComposerPictureWidget::mFillColorButton_colorChanged( const QColor &color )
 {
   mPicture->beginCommand( tr( "Picture fill color changed" ), QgsComposerMergeCommand::ComposerPictureFillColor );
   mPicture->setSvgFillColor( color );
@@ -665,7 +674,7 @@ void QgsComposerPictureWidget::on_mFillColorButton_colorChanged( const QColor &c
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::on_mStrokeColorButton_colorChanged( const QColor &color )
+void QgsComposerPictureWidget::mStrokeColorButton_colorChanged( const QColor &color )
 {
   mPicture->beginCommand( tr( "Picture stroke color changed" ), QgsComposerMergeCommand::ComposerPictureStrokeColor );
   mPicture->setSvgStrokeColor( color );
@@ -673,7 +682,7 @@ void QgsComposerPictureWidget::on_mStrokeColorButton_colorChanged( const QColor 
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
+void QgsComposerPictureWidget::mStrokeWidthSpinBox_valueChanged( double d )
 {
   mPicture->beginCommand( tr( "Picture stroke width changed" ) );
   mPicture->setSvgStrokeWidth( d );
@@ -681,7 +690,7 @@ void QgsComposerPictureWidget::on_mStrokeWidthSpinBox_valueChanged( double d )
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::on_mPictureRotationOffsetSpinBox_valueChanged( double d )
+void QgsComposerPictureWidget::mPictureRotationOffsetSpinBox_valueChanged( double d )
 {
   mPicture->beginCommand( tr( "Picture North offset changed" ), QgsComposerMergeCommand::ComposerPictureNorthOffset );
   mPicture->setNorthOffset( d );
@@ -689,7 +698,7 @@ void QgsComposerPictureWidget::on_mPictureRotationOffsetSpinBox_valueChanged( do
   mPicture->update();
 }
 
-void QgsComposerPictureWidget::on_mNorthTypeComboBox_currentIndexChanged( int index )
+void QgsComposerPictureWidget::mNorthTypeComboBox_currentIndexChanged( int index )
 {
   mPicture->beginCommand( tr( "Picture North mode changed" ) );
   mPicture->setNorthMode( static_cast< QgsComposerPicture::NorthMode >( mNorthTypeComboBox->itemData( index ).toInt() ) );

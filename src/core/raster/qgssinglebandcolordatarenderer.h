@@ -19,11 +19,13 @@
 #define QGSSINGLEBANDCOLORDATARENDERER_H
 
 #include "qgis_core.h"
+#include "qgis_sip.h"
 #include "qgsrasterrenderer.h"
 
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Raster renderer pipe for single band color.
   */
 class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
@@ -36,19 +38,23 @@ class CORE_EXPORT QgsSingleBandColorDataRenderer: public QgsRasterRenderer
     //! QgsSingleBandColorDataRenderer cannot be copied. Use clone() instead.
     const QgsSingleBandColorDataRenderer &operator=( const QgsSingleBandColorDataRenderer & ) = delete;
 
-    QgsSingleBandColorDataRenderer *clone() const override;
+    QgsSingleBandColorDataRenderer *clone() const override SIP_FACTORY;
 
-    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input );
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) SIP_FACTORY;
 
     bool setInput( QgsRasterInterface *input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
     QList<int> usesBands() const override;
 
   private:
+#ifdef SIP_RUN
+    QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer & );
+    const QgsSingleBandColorDataRenderer &operator=( const QgsSingleBandColorDataRenderer & );
+#endif
     int mBand;
 
 };

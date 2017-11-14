@@ -27,7 +27,6 @@
 
 QgsWfsRequest::QgsWfsRequest( const QString &uri )
   : mUri( uri )
-  , mReply( nullptr )
   , mErrorCode( QgsWfsRequest::NoError )
   , mIsAborted( false )
   , mForceRefresh( false )
@@ -35,7 +34,7 @@ QgsWfsRequest::QgsWfsRequest( const QString &uri )
   , mGotNonEmptyResponse( false )
 {
   QgsDebugMsg( "theUri = " + uri );
-  connect( QgsNetworkAccessManager::instance(), SIGNAL( requestTimedOut( QNetworkReply * ) ), this, SLOT( requestTimedOut( QNetworkReply * ) ) );
+  connect( QgsNetworkAccessManager::instance(), &QgsNetworkAccessManager::requestTimedOut, this, &QgsWfsRequest::requestTimedOut );
 }
 
 QgsWfsRequest::~QgsWfsRequest()
@@ -124,14 +123,14 @@ bool QgsWfsRequest::sendGET( const QUrl &url, bool synchronous, bool forceRefres
     QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
     return false;
   }
-  connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
-  connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
+  connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
+  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
 
   if ( !synchronous )
     return true;
 
   QEventLoop loop;
-  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
+  connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   return mErrorMessage.isEmpty();
@@ -175,11 +174,11 @@ bool QgsWfsRequest::sendPOST( const QUrl &url, const QString &contentTypeHeader,
     QgsMessageLog::logMessage( mErrorMessage, tr( "WFS" ) );
     return false;
   }
-  connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
-  connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
+  connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
+  connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
 
   QEventLoop loop;
-  connect( this, SIGNAL( downloadFinished() ), &loop, SLOT( quit() ) );
+  connect( this, &QgsWfsRequest::downloadFinished, &loop, &QEventLoop::quit );
   loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   return mErrorMessage.isEmpty();
@@ -224,7 +223,7 @@ void QgsWfsRequest::replyFinished()
   {
     if ( mReply->error() == QNetworkReply::NoError )
     {
-      QgsDebugMsg( "reply ok" );
+      QgsDebugMsg( "reply OK" );
       QVariant redirect = mReply->attribute( QNetworkRequest::RedirectionTargetAttribute );
       if ( !redirect.isNull() )
       {
@@ -267,8 +266,8 @@ void QgsWfsRequest::replyFinished()
             emit downloadFinished();
             return;
           }
-          connect( mReply, SIGNAL( finished() ), this, SLOT( replyFinished() ) );
-          connect( mReply, SIGNAL( downloadProgress( qint64, qint64 ) ), this, SLOT( replyProgress( qint64, qint64 ) ) );
+          connect( mReply, &QNetworkReply::finished, this, &QgsWfsRequest::replyFinished );
+          connect( mReply, &QNetworkReply::downloadProgress, this, &QgsWfsRequest::replyProgress );
           return;
         }
       }

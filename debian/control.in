@@ -13,14 +13,15 @@ Build-Depends:
  libexpat1-dev,
  libfcgi-dev,
  libgdal-dev (>= 1.11),
-#sid stretch xenial yakkety# libgsl-dev,
+#sid stretch xenial yakkety zesty artful# libgsl-dev,
  libgeos-dev (>= 3.0.0),
  libpq-dev,
  libproj-dev,
- libspatialite-dev,
+ libspatialite-dev, libsqlite3-mod-spatialite,
  libsqlite3-dev,
  libspatialindex-dev,
- qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtscript5-dev, qtpositioning5-dev,
+ libzip-dev,
+ qtbase5-dev, qttools5-dev-tools, qttools5-dev, qtscript5-dev, qtpositioning5-dev, qt5keychain-dev,
  libqt5svg5-dev, libqt5xmlpatterns5-dev, libqt5webkit5-dev, libqt5opengl5-dev, libqt5sql5-sqlite, libqt5scintilla2-dev,
  libqwt-qt5-dev, libqca-qt5-2-dev, libqca-qt5-2-plugins,
  python3-dev, python3-all-dev, python3-sip, python3-sip-dev,
@@ -37,12 +38,12 @@ Build-Depends:
  graphviz,
  xvfb, xauth,
  xfonts-base, xfonts-100dpi, xfonts-75dpi, xfonts-scalable,
-#sid# libosgearth-dev,
-#oracle# oracle-instantclient12.1-devel,
+#artful sid# libosgearth-dev, qt3d5-dev, qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
+#oracle# oracle-instantclient12.1-devel, oracle-instantclient12.1-basiclite, qtbase5-private-dev,
  locales, ca-certificates, ninja-build
 Build-Conflicts: libqgis-dev, qgis-dev
-#sid stretch xenial yakkety#Standards-Version: 3.9.7
-#xenial yakkety#XS-Python-Version: current
+#sid stretch xenial yakkety zesty artful#Standards-Version: 3.9.7
+#            xenial yakkety zesty artful#XS-Python-Version: current
 Vcs-Browser: https://github.com/qgis/QGIS/
 Vcs-Git: https://github.com/qgis/QGIS.git
 Homepage: http://qgis.org/
@@ -132,6 +133,31 @@ Description: QGIS - shared analysis library
  .
  This package contains the shared analysis library.
 
+Package: libqgis-native{QGIS_ABI}
+Architecture: any
+Section: libs
+Depends:
+ ${shlibs:Depends},
+ ${misc:Depends}
+Description: QGIS - shared native gui library
+ QGIS is a Geographic Information System (GIS) which manages, analyzes and
+ display databases of geographic information.
+ .
+ This package contains the shared native gui library.
+
+#artful sid#Package: libqgis-3d{QGIS_ABI}
+#artful sid#Architecture: any
+#artful sid#Section: libs
+#artful sid#Depends:
+#artful sid# qt3d-assimpsceneimport-plugin, qt3d-defaultgeometryloader-plugin, qt3d-gltfsceneio-plugin, qt3d-scene2d-plugin,
+#artful sid# ${shlibs:Depends},
+#artful sid# ${misc:Depends}
+#artful sid#Description: QGIS - shared 3d library
+#artful sid# QGIS is a Geographic Information System (GIS) which manages, analyzes and
+#artful sid# display databases of geographic information.
+#artful sid# .
+#artful sid# This package contains the shared 3d library.
+#artful sid#
 Package: libqgisgrass{GRASSVER}-{QGIS_ABI}
 Architecture: any
 Section: libs
@@ -188,7 +214,7 @@ Depends:
  libexpat1-dev,
  libgdal-dev (>= 1.11),
  libgeos-dev (>= 3.0.0),
-#sid stretch xenial yakkety# libgsl-dev,
+#sid stretch xenial yakkety zesty artful# libgsl-dev,
  libpq-dev,
  libproj-dev,
  libqgis-app{QGIS_ABI} (= ${binary:Version}),
@@ -260,7 +286,8 @@ Depends:
  qgis-provider-grass (= ${binary:Version}),
  ${shlibs:Depends},
  ${misc:Depends},
- grass-core
+ grass-core,
+ grass{GRASSABI}
 Description: GRASS plugin for QGIS
  QGIS is a Geographic Information System (GIS) which manages, analyzes and
  display databases of geographic information.
@@ -329,6 +356,9 @@ Depends:
  python3-yaml,
  python3-future,
  python3-plotly,
+ python3-pyproj,
+ python3-owslib,
+ libsqlite3-mod-spatialite,
  libqgispython{QGIS_ABI},
  ${shlibs:Depends},
  ${python:Depends},
@@ -418,7 +448,7 @@ Description: QGIS API documentation
 
 #oracle#Package: qgis-oracle-provider
 #oracle#Architecture: any
-#oracle#Depends: ${shlibs:Depends}, ${misc:Depends}
+#oracle#Depends: libaio1, ${shlibs:Depends}, ${misc:Depends}
 #oracle#Section: contrib/database
 #oracle#Description: QGIS oracle provider
 #oracle# QGIS is a Geographic Information System (GIS) which manages, analyzes and

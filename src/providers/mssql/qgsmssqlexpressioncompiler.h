@@ -27,7 +27,7 @@ class QgsMssqlExpressionCompiler : public QgsSqlExpressionCompiler
     explicit QgsMssqlExpressionCompiler( QgsMssqlFeatureSource *source );
 
   protected:
-    virtual Result compileNode( const QgsExpression::Node *node, QString &result ) override;
+    virtual Result compileNode( const QgsExpressionNode *node, QString &result ) override;
     virtual QString quotedValue( const QVariant &value, bool &ok ) override;
 
 };

@@ -30,16 +30,16 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
+  private:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
     QgsExpression *mSubsetExpression = nullptr;
     QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
-    QgsSpatialIndex *mSpatialIndex = nullptr;
+    std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
     bool mUseSubsetIndex;
     QList<quintptr> mSubsetIndex;
-    QgsDelimitedTextFile *mFile = nullptr;
+    std::unique_ptr< QgsDelimitedTextFile > mFile;
     QgsFields mFields;
     int mFieldCount;  // Note: this includes field count for wkt field
     int mXFieldIndex;
@@ -50,6 +50,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
     QString mDecimalPoint;
     bool mXyDms;
     QList<int> attributeColumns;
+    QgsCoordinateReferenceSystem mCrs;
 
     friend class QgsDelimitedTextFeatureIterator;
 };
@@ -72,11 +73,13 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     virtual bool close() override;
 
     // Tests whether the geometry is required, given that testGeometry is true.
-    bool wantGeometry( const QgsPoint &point ) const;
+    bool wantGeometry( const QgsPointXY &point ) const;
     bool wantGeometry( const QgsGeometry &geom ) const;
 
   protected:
     virtual bool fetchFeature( QgsFeature &feature ) override;
+
+  private:
 
     bool setNextFeatureId( qint64 fid );
 
@@ -86,12 +89,14 @@ class QgsDelimitedTextFeatureIterator : public QgsAbstractFeatureIteratorFromSou
     void fetchAttribute( QgsFeature &feature, int fieldIdx, const QStringList &tokens );
 
     QList<QgsFeatureId> mFeatureIds;
-    IteratorMode mMode;
-    long mNextId;
-    bool mTestSubset;
-    bool mTestGeometry;
-    bool mTestGeometryExact;
-    bool mLoadGeometry;
+    IteratorMode mMode = FileScan;
+    long mNextId = 0;
+    bool mTestSubset = false;
+    bool mTestGeometry = false;
+    bool mTestGeometryExact = false;
+    bool mLoadGeometry = false;
+    QgsRectangle mFilterRect;
+    QgsCoordinateTransform mTransform;
 };
 
 

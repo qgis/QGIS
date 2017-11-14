@@ -17,12 +17,14 @@
 #define QGSCUSTOMLAYERORDERWIDGET_H
 
 #include <QWidget>
+#include "qgis.h"
 #include <QAbstractListModel>
 #include "qgis_gui.h"
 
 class CustomLayerOrderModel;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeNode;
+class QgsMapLayer;
 
 class QCheckBox;
 class QListView;
@@ -35,26 +37,26 @@ class QListView;
  * propagated to the assigned QgsLayerTreeMapCanvasBridge. Also, any updates
  * to the layer tree cause refresh of the list.
  *
- * @see QgsLayerTreeMapCanvasBridge
- * @note added in 2.4
+ * \see QgsLayerTreeMapCanvasBridge
+ * \since QGIS 2.4
  */
 class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent = nullptr );
+    explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
   signals:
 
-  protected slots:
+  private slots:
     void bridgeHasCustomLayerOrderChanged( bool state );
-    void bridgeCustomLayerOrderChanged( const QStringList &order );
+    void bridgeCustomLayerOrderChanged();
     //! Slot triggered when the ivsibility of a node changes
     void nodeVisibilityChanged( QgsLayerTreeNode *node );
 
     void modelUpdated();
 
-  protected:
+  private:
     QgsLayerTreeMapCanvasBridge *mBridge = nullptr;
 
     QCheckBox *mChkOverride = nullptr;
@@ -63,6 +65,7 @@ class GUI_EXPORT QgsCustomLayerOrderWidget : public QWidget
 };
 
 
+#ifndef SIP_RUN
 ///@cond PRIVATE
 class CustomLayerOrderModel : public QAbstractListModel
 {
@@ -89,7 +92,7 @@ class CustomLayerOrderModel : public QAbstractListModel
 
     bool removeRows( int row, int count, const QModelIndex &parent ) override;
 
-    void refreshModel( const QStringList &order );
+    void refreshModel( const QList<QgsMapLayer *> &order );
 
     QStringList order() const { return mOrder; }
 
@@ -100,5 +103,6 @@ class CustomLayerOrderModel : public QAbstractListModel
     QStringList mOrder;
 };
 /// @endcond
+#endif
 
 #endif // QGSCUSTOMLAYERORDERWIDGET_H

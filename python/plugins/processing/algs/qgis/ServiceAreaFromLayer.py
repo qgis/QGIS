@@ -31,31 +31,39 @@ from collections import OrderedDict
 from qgis.PyQt.QtCore import QVariant
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsWkbTypes, QgsUnitTypes, QgsFeature, QgsGeometry, QgsField, QgsFields, QgsFeatureRequest
+from qgis.core import (QgsWkbTypes,
+                       QgsUnitTypes,
+                       QgsFeature,
+                       QgsFeatureSink,
+                       QgsFeatureRequest,
+                       QgsGeometry,
+                       QgsFields,
+                       QgsPointXY,
+                       QgsField,
+                       QgsProcessing,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterPoint,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterNumber,
+                       QgsProcessingParameterString,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterDefinition)
 from qgis.analysis import (QgsVectorLayerDirector,
                            QgsNetworkDistanceStrategy,
                            QgsNetworkSpeedStrategy,
                            QgsGraphBuilder,
                            QgsGraphAnalyzer
                            )
-from qgis.utils import iface
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import (ParameterVector,
-                                        ParameterNumber,
-                                        ParameterString,
-                                        ParameterTableField,
-                                        ParameterSelection
-                                        )
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class ServiceAreaFromLayer(GeoAlgorithm):
+class ServiceAreaFromLayer(QgisAlgorithm):
 
-    INPUT_VECTOR = 'INPUT_VECTOR'
+    INPUT = 'INPUT'
     START_POINTS = 'START_POINTS'
     STRATEGY = 'STRATEGY'
     TRAVEL_COST = 'TRAVEL_COST'
@@ -67,135 +75,126 @@ class ServiceAreaFromLayer(GeoAlgorithm):
     SPEED_FIELD = 'SPEED_FIELD'
     DEFAULT_SPEED = 'DEFAULT_SPEED'
     TOLERANCE = 'TOLERANCE'
-    OUTPUT_POINTS = 'OUTPUT_POINTS'
-    OUTPUT_POLYGON = 'OUTPUT_POLYGON'
+    OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'networkanalysis.svg'))
 
-    def defineCharacteristics(self):
+    def group(self):
+        return self.tr('Network analysis')
+
+    def __init__(self):
+        super().__init__()
+
+    def initAlgorithm(self, config=None):
         self.DIRECTIONS = OrderedDict([
             (self.tr('Forward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionForward),
-            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionForward)])
+            (self.tr('Backward direction'), QgsVectorLayerDirector.DirectionBackward),
+            (self.tr('Both directions'), QgsVectorLayerDirector.DirectionBoth)])
 
         self.STRATEGIES = [self.tr('Shortest'),
                            self.tr('Fastest')
                            ]
 
-        self.name, self.i18n_name = self.trAlgorithm('Service area (from layer)')
-        self.group, self.i18n_group = self.trAlgorithm('Network analysis')
-
-        self.addParameter(ParameterVector(self.INPUT_VECTOR,
-                                          self.tr('Vector layer representing network'),
-                                          [dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterVector(self.START_POINTS,
-                                          self.tr('Vector layer with start points'),
-                                          [dataobjects.TYPE_VECTOR_POINT]))
-        self.addParameter(ParameterSelection(self.STRATEGY,
-                                             self.tr('Path type to calculate'),
-                                             self.STRATEGIES,
-                                             default=0))
-        self.addParameter(ParameterNumber(self.TRAVEL_COST,
-                                          self.tr('Travel cost (distance for "Shortest", time for "Fastest")'),
-                                          0.0, 99999999.999999, 0.0))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Vector layer representing network'),
+                                                              [QgsProcessing.TypeVectorLine]))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.START_POINTS,
+                                                              self.tr('Vector layer with start points'),
+                                                              [QgsProcessing.TypeVectorPoint]))
+        self.addParameter(QgsProcessingParameterEnum(self.STRATEGY,
+                                                     self.tr('Path type to calculate'),
+                                                     self.STRATEGIES,
+                                                     defaultValue=0))
+        self.addParameter(QgsProcessingParameterNumber(self.TRAVEL_COST,
+                                                       self.tr('Travel cost (distance for "Shortest", time for "Fastest")'),
+                                                       QgsProcessingParameterNumber.Double,
+                                                       0.0, False, 0, 99999999.99))
 
         params = []
-        params.append(ParameterTableField(self.DIRECTION_FIELD,
-                                          self.tr('Direction field'),
-                                          self.INPUT_VECTOR,
-                                          optional=True))
-        params.append(ParameterString(self.VALUE_FORWARD,
-                                      self.tr('Value for forward direction'),
-                                      '',
-                                      optional=True))
-        params.append(ParameterString(self.VALUE_BACKWARD,
-                                      self.tr('Value for backward direction'),
-                                      '',
-                                      optional=True))
-        params.append(ParameterString(self.VALUE_BOTH,
-                                      self.tr('Value for both directions'),
-                                      '',
-                                      optional=True))
-        params.append(ParameterSelection(self.DEFAULT_DIRECTION,
-                                         self.tr('Default direction'),
-                                         list(self.DIRECTIONS.keys()),
-                                         default=2))
-        params.append(ParameterTableField(self.SPEED_FIELD,
-                                          self.tr('Speed field'),
-                                          self.INPUT_VECTOR,
-                                          optional=True))
-        params.append(ParameterNumber(self.DEFAULT_SPEED,
-                                      self.tr('Default speed (km/h)'),
-                                      0.0, 99999999.999999, 5.0))
-        params.append(ParameterNumber(self.TOLERANCE,
-                                      self.tr('Topology tolerance'),
-                                      0.0, 99999999.999999, 0.0))
+        params.append(QgsProcessingParameterField(self.DIRECTION_FIELD,
+                                                  self.tr('Direction field'),
+                                                  None,
+                                                  self.INPUT,
+                                                  optional=True))
+        params.append(QgsProcessingParameterString(self.VALUE_FORWARD,
+                                                   self.tr('Value for forward direction'),
+                                                   optional=True))
+        params.append(QgsProcessingParameterString(self.VALUE_BACKWARD,
+                                                   self.tr('Value for backward direction'),
+                                                   optional=True))
+        params.append(QgsProcessingParameterString(self.VALUE_BOTH,
+                                                   self.tr('Value for both directions'),
+                                                   optional=True))
+        params.append(QgsProcessingParameterEnum(self.DEFAULT_DIRECTION,
+                                                 self.tr('Default direction'),
+                                                 list(self.DIRECTIONS.keys()),
+                                                 defaultValue=2))
+        params.append(QgsProcessingParameterField(self.SPEED_FIELD,
+                                                  self.tr('Speed field'),
+                                                  None,
+                                                  self.INPUT,
+                                                  optional=True))
+        params.append(QgsProcessingParameterNumber(self.DEFAULT_SPEED,
+                                                   self.tr('Default speed (km/h)'),
+                                                   QgsProcessingParameterNumber.Double,
+                                                   5.0, False, 0, 99999999.99))
+        params.append(QgsProcessingParameterNumber(self.TOLERANCE,
+                                                   self.tr('Topology tolerance'),
+                                                   QgsProcessingParameterNumber.Double,
+                                                   0.0, False, 0, 99999999.99))
 
         for p in params:
-            p.isAdvanced = True
+            p.setFlags(p.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.addParameter(p)
 
-        self.addOutput(OutputVector(self.OUTPUT_POINTS,
-                                    self.tr('Service area (boundary nodes)'),
-                                    datatype=[dataobjects.TYPE_VECTOR_POINT]))
-        self.addOutput(OutputVector(self.OUTPUT_POLYGON,
-                                    self.tr('Service area (convex hull)'),
-                                    datatype=[dataobjects.TYPE_VECTOR_POLYGON]))
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT,
+                                                            self.tr('Service area (boundary nodes)'),
+                                                            QgsProcessing.TypeVectorPoint))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT_VECTOR))
-        startPoints = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.START_POINTS))
-        strategy = self.getParameterValue(self.STRATEGY)
-        travelCost = self.getParameterValue(self.TRAVEL_COST)
+    def name(self):
+        return 'serviceareafromlayer'
 
-        directionFieldName = self.getParameterValue(self.DIRECTION_FIELD)
-        forwardValue = self.getParameterValue(self.VALUE_FORWARD)
-        backwardValue = self.getParameterValue(self.VALUE_BACKWARD)
-        bothValue = self.getParameterValue(self.VALUE_BOTH)
-        defaultDirection = self.getParameterValue(self.DEFAULT_DIRECTION)
-        bothValue = self.getParameterValue(self.VALUE_BOTH)
-        defaultDirection = self.getParameterValue(self.DEFAULT_DIRECTION)
-        speedFieldName = self.getParameterValue(self.SPEED_FIELD)
-        defaultSpeed = self.getParameterValue(self.DEFAULT_SPEED)
-        tolerance = self.getParameterValue(self.TOLERANCE)
+    def displayName(self):
+        return self.tr('Service area (from layer)')
 
-        fields = QgsFields()
+    def processAlgorithm(self, parameters, context, feedback):
+        network = self.parameterAsSource(parameters, self.INPUT, context)
+        startPoints = self.parameterAsSource(parameters, self.START_POINTS, context)
+        strategy = self.parameterAsEnum(parameters, self.STRATEGY, context)
+        travelCost = self.parameterAsDouble(parameters, self.TRAVEL_COST, context)
+
+        directionFieldName = self.parameterAsString(parameters, self.DIRECTION_FIELD, context)
+        forwardValue = self.parameterAsString(parameters, self.VALUE_FORWARD, context)
+        backwardValue = self.parameterAsString(parameters, self.VALUE_BACKWARD, context)
+        bothValue = self.parameterAsString(parameters, self.VALUE_BOTH, context)
+        defaultDirection = self.parameterAsEnum(parameters, self.DEFAULT_DIRECTION, context)
+        speedFieldName = self.parameterAsString(parameters, self.SPEED_FIELD, context)
+        defaultSpeed = self.parameterAsDouble(parameters, self.DEFAULT_SPEED, context)
+        tolerance = self.parameterAsDouble(parameters, self.TOLERANCE, context)
+
+        fields = startPoints.fields()
         fields.append(QgsField('type', QVariant.String, '', 254, 0))
         fields.append(QgsField('start', QVariant.String, '', 254, 0))
 
         feat = QgsFeature()
         feat.setFields(fields)
 
-        writerPoints = self.getOutputFromName(
-            self.OUTPUT_POINTS).getVectorWriter(
-                fields,
-                QgsWkbTypes.MultiPoint,
-                layer.crs())
-
-        writerPolygons = self.getOutputFromName(
-            self.OUTPUT_POLYGON).getVectorWriter(
-                fields,
-                QgsWkbTypes.Polygon,
-                layer.crs())
-
         directionField = -1
-        if directionFieldName is not None:
-            directionField = layer.fields().lookupField(directionFieldName)
+        if directionFieldName:
+            directionField = network.fields().lookupField(directionFieldName)
         speedField = -1
-        if speedFieldName is not None:
-            speedField = layer.fields().lookupField(speedFieldName)
+        if speedFieldName:
+            speedField = network.fields().lookupField(speedFieldName)
 
-        director = QgsVectorLayerDirector(layer,
+        director = QgsVectorLayerDirector(network,
                                           directionField,
                                           forwardValue,
                                           backwardValue,
                                           bothValue,
                                           defaultDirection)
 
-        distUnit = iface.mapCanvas().mapSettings().destinationCrs().mapUnits()
+        distUnit = context.project().crs().mapUnits()
         multiplier = QgsUnitTypes.fromUnitToUnitFactor(distUnit, QgsUnitTypes.DistanceMeters)
         if strategy == 0:
             strategy = QgsNetworkDistanceStrategy()
@@ -205,72 +204,78 @@ class ServiceAreaFromLayer(GeoAlgorithm):
                                                multiplier * 1000.0 / 3600.0)
 
         director.addStrategy(strategy)
-        builder = QgsGraphBuilder(iface.mapCanvas().mapSettings().destinationCrs(),
+        builder = QgsGraphBuilder(network.sourceCrs(),
                                   True,
                                   tolerance)
 
         feedback.pushInfo(self.tr('Loading start points...'))
         request = QgsFeatureRequest()
-        request.setFlags(request.flags() ^ QgsFeatureRequest.SubsetOfAttributes)
-        features = vector.features(startPoints, request)
+        request.setDestinationCrs(network.sourceCrs())
+        features = startPoints.getFeatures(request)
+        total = 100.0 / startPoints.featureCount() if startPoints.featureCount() else 0
+
         points = []
-        for f in features:
-            points.append(f.geometry().asPoint())
+        source_attributes = {}
+        i = 0
+        for current, f in enumerate(features):
+            if feedback.isCanceled():
+                break
+
+            if not f.hasGeometry():
+                continue
+
+            for p in f.geometry().vertices():
+                points.append(QgsPointXY(p))
+                source_attributes[i] = f.attributes()
+                i += 1
+
+            feedback.setProgress(int(current * total))
 
         feedback.pushInfo(self.tr('Building graph...'))
-        snappedPoints = director.makeGraph(builder, points)
+        snappedPoints = director.makeGraph(builder, points, feedback)
 
         feedback.pushInfo(self.tr('Calculating service areas...'))
         graph = builder.graph()
 
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               fields, QgsWkbTypes.MultiPoint, network.sourceCrs())
+
         vertices = []
         upperBoundary = []
         lowerBoundary = []
-        total = 100.0 / len(snappedPoints)
+        total = 100.0 / len(snappedPoints) if snappedPoints else 1
         for i, p in enumerate(snappedPoints):
+            if feedback.isCanceled():
+                break
+
             idxStart = graph.findVertex(snappedPoints[i])
             origPoint = points[i].toString()
 
             tree, cost = QgsGraphAnalyzer.dijkstra(graph, idxStart, 0)
             for j, v in enumerate(cost):
                 if v > travelCost and tree[j] != -1:
-                    vertexId = graph.edge(tree[j]).outVertex()
+                    vertexId = graph.edge(tree[j]).fromVertex()
                     if cost[vertexId] <= travelCost:
                         vertices.append(j)
 
             for j in vertices:
-                upperBoundary.append(graph.vertex(graph.edge(tree[j]).inVertex()).point())
-                lowerBoundary.append(graph.vertex(graph.edge(tree[j]).outVertex()).point())
+                upperBoundary.append(graph.vertex(graph.edge(tree[j]).toVertex()).point())
+                lowerBoundary.append(graph.vertex(graph.edge(tree[j]).fromVertex()).point())
 
-            geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-            geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
+            geomUpper = QgsGeometry.fromMultiPointXY(upperBoundary)
+            geomLower = QgsGeometry.fromMultiPointXY(lowerBoundary)
 
             feat.setGeometry(geomUpper)
-            feat['type'] = 'upper'
-            feat['start'] = origPoint
-            writerPoints.addFeature(feat)
+
+            attrs = source_attributes[i]
+            attrs.extend(['upper', origPoint])
+            feat.setAttributes(attrs)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             feat.setGeometry(geomLower)
-            feat['type'] = 'lower'
-            feat['start'] = origPoint
-            writerPoints.addFeature(feat)
-
-            upperBoundary.append(origPoint)
-            lowerBoundary.append(origPoint)
-            geomUpper = QgsGeometry.fromMultiPoint(upperBoundary)
-            geomLower = QgsGeometry.fromMultiPoint(lowerBoundary)
-
-            geom = geomUpper.convexHull()
-            feat.setGeometry(geom)
-            feat['type'] = 'upper'
-            feat['start'] = origPoint
-            writerPolygons.addFeature(feat)
-
-            geom = geomLower.convexHull()
-            feat.setGeometry(geom)
-            feat['type'] = 'lower'
-            feat['start'] = origPoint
-            writerPolygons.addFeature(feat)
+            attrs[-2] = 'lower'
+            feat.setAttributes(attrs)
+            sink.addFeature(feat, QgsFeatureSink.FastInsert)
 
             vertices[:] = []
             upperBoundary[:] = []
@@ -278,5 +283,4 @@ class ServiceAreaFromLayer(GeoAlgorithm):
 
             feedback.setProgress(int(i * total))
 
-        del writerPoints
-        del writerPolygons
+        return {self.OUTPUT: dest_id}

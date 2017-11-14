@@ -70,7 +70,7 @@ QgsSettingsTree::QgsSettingsTree( QWidget *parent )
                        QIcon::Normal, QIcon::On );
   keyIcon.addPixmap( style()->standardPixmap( QStyle::SP_FileIcon ) );
 
-  connect( &refreshTimer, SIGNAL( timeout() ), this, SLOT( maybeRefresh() ) );
+  connect( &refreshTimer, &QTimer::timeout, this, &QgsSettingsTree::maybeRefresh );
 }
 
 void QgsSettingsTree::setSettingsObject( QgsSettings *settings )
@@ -125,29 +125,26 @@ void QgsSettingsTree::refresh()
   if ( !settings )
     return;
 
-  disconnect( this, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
-              this, SLOT( updateSetting( QTreeWidgetItem * ) ) );
+  disconnect( this, &QTreeWidget::itemChanged,
+              this, &QgsSettingsTree::updateSetting );
 
   settings->sync();
 
   // add any settings not in QgsSettings object, so it will show up in the tree view
-  if ( settings )
+  QMap<QString, QStringList>::const_iterator it = settingsMap.constBegin();
+  while ( it != settingsMap.constEnd() )
   {
-    QMap<QString, QStringList>::const_iterator it = settingsMap.constBegin();
-    while ( it != settingsMap.constEnd() )
+    if ( ! settings->contains( it.key() ) )
     {
-      if ( ! settings->contains( it.key() ) )
-      {
-        settings->setValue( it.key(), it.value().at( 3 ) );
-      }
-      ++it;
+      settings->setValue( it.key(), it.value().at( 3 ) );
     }
+    ++it;
   }
 
   updateChildItems( nullptr );
 
-  connect( this, SIGNAL( itemChanged( QTreeWidgetItem *, int ) ),
-           this, SLOT( updateSetting( QTreeWidgetItem * ) ) );
+  connect( this, &QTreeWidget::itemChanged,
+           this, &QgsSettingsTree::updateSetting );
 }
 
 bool QgsSettingsTree::event( QEvent *event )
@@ -259,10 +256,10 @@ QTreeWidgetItem *QgsSettingsTree::createItem( const QString &text,
   item->setFlags( item->flags() | Qt::ItemIsEditable );
 
   QString key = itemKey( item );
-  QgsDebugMsg( key );
+  QgsDebugMsgLevel( key, 4 );
   if ( settingsMap.contains( key ) )
   {
-    QgsDebugMsg( "contains!!!!" );
+    QgsDebugMsgLevel( "contains!!!!", 4 );
     QStringList values = settingsMap[ key ];
     item->setText( 3, values.at( 0 ) );
     item->setToolTip( 0, values.at( 1 ) );

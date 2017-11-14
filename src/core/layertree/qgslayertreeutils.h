@@ -31,10 +31,11 @@ class QgsLayerTreeLayer;
 class QgsMapLayer;
 class QgsProject;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Assorted functions for dealing with layer trees.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsLayerTreeUtils
 {
@@ -45,7 +46,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Try to load custom layer order from \verbatim <legend> \endverbatim tag from project files from QGIS 2.2 and below
     static bool readOldLegendLayerOrder( const QDomElement &legendElem, bool &hasCustomOrder, QStringList &order );
     //! Return \verbatim <legend> \endverbatim tag used in QGIS 2.2 and below
-    static QDomElement writeOldLegend( QDomDocument &doc, QgsLayerTreeGroup *root, bool hasCustomOrder, const QStringList &order );
+    static QDomElement writeOldLegend( QDomDocument &doc, QgsLayerTreeGroup *root, bool hasCustomOrder, const QList<QgsMapLayer *> &order );
 
     //! Convert Qt::CheckState to QString
     static QString checkStateToXml( Qt::CheckState state );
@@ -63,7 +64,7 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Remove subtree of embedded groups and replaces it with a custom property embedded-visible-layers
     static void replaceChildrenOfEmbeddedGroups( QgsLayerTreeGroup *group );
 
-    //! @note not available in python bindings
+    //! \note not available in Python bindings
     static void updateEmbeddedGroupsProjectPath( QgsLayerTreeGroup *group, const QgsProject *project );
 
     //! get invisible layers
@@ -76,11 +77,13 @@ class CORE_EXPORT QgsLayerTreeUtils
     //! Test if one of the layers in a group has an expression filter
     static bool hasLegendFilterExpression( const QgsLayerTreeGroup &group );
 
-    //! Insert a QgsMapLayer just below another one
-    //! @param group the tree group where layers are (can be the root group)
-    //! @param refLayer the reference layer
-    //! @param layerToInsert the new layer to insert just below the reference layer
-    //! @returns the new tree layer
+    /**
+     * Insert a QgsMapLayer just below another one
+     * \param group the tree group where layers are (can be the root group)
+     * \param refLayer the reference layer
+     * \param layerToInsert the new layer to insert just below the reference layer
+     * \returns the new tree layer
+     */
     static QgsLayerTreeLayer *insertLayerBelow( QgsLayerTreeGroup *group, const QgsMapLayer *refLayer, QgsMapLayer *layerToInsert );
 };
 

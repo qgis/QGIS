@@ -29,43 +29,55 @@ import plotly as plt
 import plotly.graph_objs as go
 import numpy as np
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterTable
-from processing.core.parameters import ParameterTableField
-from processing.core.outputs import OutputHTML
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterField,
+                       QgsProcessingParameterFileDestination,
+                       QgsProcessingOutputHtml)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
+from processing.tools import vector
 
 
-class PolarPlot(GeoAlgorithm):
+class PolarPlot(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OUTPUT = 'OUTPUT'
     NAME_FIELD = 'NAME_FIELD'
     VALUE_FIELD = 'VALUE_FIELD'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Polar plot')
-        self.group, self.i18n_group = self.trAlgorithm('Graphics')
+    def group(self):
+        return self.tr('Graphics')
 
-        self.addParameter(ParameterTable(self.INPUT,
-                                         self.tr('Input table')))
-        self.addParameter(ParameterTableField(self.NAME_FIELD,
-                                              self.tr('Category name field'), self.INPUT))  # FIXME unused?
-        self.addParameter(ParameterTableField(self.VALUE_FIELD,
-                                              self.tr('Value field'), self.INPUT))
+    def __init__(self):
+        super().__init__()
 
-        self.addOutput(OutputHTML(self.OUTPUT, self.tr('Polar plot')))
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterField(self.NAME_FIELD,
+                                                      self.tr('Category name field'), parentLayerParameterName=self.INPUT))  # FIXME unused?
+        self.addParameter(QgsProcessingParameterField(self.VALUE_FIELD,
+                                                      self.tr('Value field'), parentLayerParameterName=self.INPUT))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(
-            self.getParameterValue(self.INPUT))
-        namefieldname = self.getParameterValue(self.NAME_FIELD)  # NOQA  FIXME unused?
-        valuefieldname = self.getParameterValue(self.VALUE_FIELD)
+        self.addParameter(QgsProcessingParameterFileDestination(self.OUTPUT, self.tr('Polar plot'), self.tr('HTML files (*.html)')))
+        self.addOutput(QgsProcessingOutputHtml(self.OUTPUT, self.tr('Polar plot')))
 
-        output = self.getOutputValue(self.OUTPUT)
+    def name(self):
+        return 'polarplot'
 
-        values = vector.values(layer, valuefieldname)
+    def displayName(self):
+        return self.tr('Polar plot')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        source = self.parameterAsSource(parameters, self.INPUT, context)
+        namefieldname = self.parameterAsString(parameters, self.NAME_FIELD, context)  # NOQA  FIXME unused?
+        valuefieldname = self.parameterAsString(parameters, self.VALUE_FIELD, context)
+
+        output = self.parameterAsFileOutput(parameters, self.OUTPUT, context)
+
+        values = vector.values(source, valuefieldname)
 
         data = [go.Area(r=values[valuefieldname],
                         t=np.degrees(np.arange(0.0, 2 * np.pi, 2 * np.pi / len(values[valuefieldname]))))]
         plt.offline.plot(data, filename=output, auto_open=False)
+
+        return {self.OUTPUT: output}

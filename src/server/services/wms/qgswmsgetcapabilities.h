@@ -21,10 +21,51 @@
 #ifndef QGSWMSGETCAPABILITIES_H
 #define QGSWMSGETCAPABILITIES_H
 
+#include "qgslayertreenode.h"
+#include "qgslayertreegroup.h"
+#include "qgslayertreelayer.h"
+#include "qgslayertreemodel.h"
+#include "qgslayertree.h"
+
 namespace QgsWms
 {
 
-  /** Output GetCapabilities response
+  /**
+   * Create element for get capabilities document
+   */
+  QDomElement getLayersAndStylesCapabilitiesElement( QDomDocument &doc, QgsServerInterface *serverIface,
+      const QgsProject *project, const QString &version,
+      const QgsServerRequest &request, bool projectSettings );
+
+  /**
+   * Create WFSLayers element for get capabilities document
+   */
+  QDomElement getWFSLayersElement( QDomDocument &doc, const QgsProject *project );
+
+  /**
+   * Create ComposerTemplates element for get capabilities document
+   */
+  QDomElement getComposerTemplatesElement( QDomDocument &doc, const QgsProject *project );
+
+  /**
+   * Create InspireCapabilities element for get capabilities document
+   */
+  QDomElement getInspireCapabilitiesElement( QDomDocument &doc, const QgsProject *project );
+
+  /**
+   * Create Capability element for get capabilities document
+   */
+  QDomElement getCapabilityElement( QDomDocument &doc, const QgsProject *project, const QString &version,
+                                    const QgsServerRequest &request, bool projectSettings );
+
+  /**
+   * Create Service element for get capabilities document
+   */
+  QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version,
+                                 const QgsServerRequest &request );
+
+  /**
+   * Output GetCapabilities response
    */
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
                              const QString &version, const QgsServerRequest &request,
@@ -34,8 +75,8 @@ namespace QgsWms
    * Create WMS GetCapabilities document
    *
    * Returns an XML document with the capabilities description (as described in the WMS specs)
-   * @param version WMS version
-   * @param projectSettings If true: add extended project information (does not validate against WMS schema)
+   * \param version WMS version
+   * \param projectSettings If true: add extended project information (does not validate against WMS schema)
    */
   QDomDocument getCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
                                 const QString &version, const QgsServerRequest &request, bool projectSettings );

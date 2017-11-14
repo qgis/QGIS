@@ -28,7 +28,8 @@ class QgsRasterLayer;
 class QgsMapCanvas;
 class QgsRasterRendererWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRendererRasterPropertiesWidget
  */
 class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWidget, private Ui::QgsRendererRasterPropsWidgetBase
@@ -39,16 +40,17 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
 
     /**
      * A widget to hold the renderer properties for a raster layer.
-     * @param layer The raster layer to style
-     * @param canvas The canvas object used to calculate the max and min values from the extent.
-     * @param parent Parent object
+     * \param layer The raster layer to style
+     * \param canvas The canvas object used to calculate the max and min values from the extent.
+     * \param parent Parent object
      */
     QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-    /** Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+    /**
+     * Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
      * map scale and other properties from the canvas.
-     * @param canvas map canvas
-     * @note added in QGIS 2.12
+     * \param canvas map canvas
+     * \since QGIS 2.12
      */
     void setMapCanvas( QgsMapCanvas *canvas );
 
@@ -65,14 +67,14 @@ class GUI_EXPORT QgsRendererRasterPropertiesWidget : public QgsMapLayerConfigWid
     void apply();
 
     /**
-     * @brief Sync the widget to the given layer.
-     * @param layer The layer to use for the widget
+     * \brief Sync the widget to the given layer.
+     * \param layer The layer to use for the widget
      */
     void syncToLayer( QgsRasterLayer *layer );
 
   private slots:
     //! Slot to reset all color rendering options to default
-    void on_mResetColorRenderingBtn_clicked();
+    void mResetColorRenderingBtn_clicked();
 
     //! Enable or disable saturation controls depending on choice of grayscale mode
     void toggleSaturationControls( int grayscaleMode );

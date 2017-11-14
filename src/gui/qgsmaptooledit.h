@@ -25,7 +25,8 @@ class QgsGeometryRubberBand;
 class QgsVectorLayer;
 class QKeyEvent;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Base class for map tools that edit vector geometry
 */
 class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
@@ -52,24 +53,26 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
     //! Returns fill color for rubber bands (from global settings)
     static QColor digitizingFillColor();
 
-    /** Creates a rubber band with the color/line width from
+    /**
+     * Creates a rubber band with the color/line width from
      *   the QGIS settings. The caller takes ownership of the
      *   returned object
-     *   @param geometryType
-     *   @param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. defaut is false.
+     *   \param geometryType
+     *   \param alternativeBand if true, rubber band will be set with more transparency and a dash pattern. default is false.
      */
-    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false );
+    QgsRubberBand *createRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) SIP_FACTORY;
 
-    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const;
+    QgsGeometryRubberBand *createGeometryRubberBand( QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry, bool alternativeBand = false ) const SIP_FACTORY;
 
     //! Returns the current vector layer of the map canvas or 0
     QgsVectorLayer *currentVectorLayer();
 
-    /** Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
-     * @param geom list of points (in layer coordinate system)
-     * @return 0 in case of success
+    /**
+     * Adds vertices to other features to keep topology up to date, e.g. to neighbouring polygons.
+     * \param geom list of points (in layer coordinate system)
+     * \returns 0 in case of success
      */
-    int addTopologicalPoints( const QList<QgsPoint> &geom );
+    int addTopologicalPoints( const QVector<QgsPointXY> &geom );
 
     //! Display a timed message bar noting the active layer is not vector.
     void notifyNotVectorLayer();

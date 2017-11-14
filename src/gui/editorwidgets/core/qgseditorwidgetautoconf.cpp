@@ -15,12 +15,14 @@
 #include "qgseditorwidgetautoconf.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsvectordataprovider.h"
+#include "qgsgui.h"
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget auto conf plugin that guesses what widget type to use in function of what the widgets support.
  *
- * @note not available in Python bindings
- * @note added in QGIS 3.0
+ * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 {
@@ -29,7 +31,7 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
     {
       int bestScore = 0;
       QString bestType;
-      const QMap<QString, QgsEditorWidgetFactory *> factories = QgsEditorWidgetRegistry::instance()->factories();
+      const QMap<QString, QgsEditorWidgetFactory *> factories = QgsGui::editorWidgetRegistry()->factories();
       for ( QMap<QString, QgsEditorWidgetFactory *>::const_iterator i = factories.begin(); i != factories.end(); ++i )
       {
         const int index = vl->fields().lookupField( fieldName );
@@ -53,11 +55,12 @@ class FromFactoriesPlugin: public QgsEditorWidgetAutoConfPlugin
 };
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget auto conf plugin that reads the widget setup to use from what the data provider says.
  *
- * @note not available in Python bindings
- * @note added in QGIS 3.0
+ * \note not available in Python bindings
+ * \since QGIS 3.0
  */
 class FromDbTablePlugin: public QgsEditorWidgetAutoConfPlugin
 {

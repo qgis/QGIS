@@ -23,6 +23,7 @@ from builtins import str
 
 from qgis.PyQt.QtCore import Qt
 from qgis.PyQt.QtWidgets import QTextBrowser, QApplication
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import BaseError, DbError, DBPlugin, Schema, Table
 from .dlg_db_error import DlgDbError
@@ -47,15 +48,12 @@ class InfoViewer(QTextBrowser):
             return
 
         if url.scheme() == "action":
-            QApplication.setOverrideCursor(Qt.WaitCursor)
-            try:
-                if self.item.runAction(url.path()):
-                    self.refresh()
-            except BaseError as e:
-                DlgDbError.showError(e, self)
-                return
-            finally:
-                QApplication.restoreOverrideCursor()
+            with OverrideCursor(Qt.WaitCursor):
+                try:
+                    if self.item.runAction(url.path()):
+                        self.refresh()
+                except BaseError as e:
+                    DlgDbError.showError(e, self)
 
     def refresh(self):
         self.setDirty(True)

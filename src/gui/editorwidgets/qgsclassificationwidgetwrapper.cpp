@@ -20,7 +20,7 @@
 
 QgsClassificationWidgetWrapper::QgsClassificationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   :  QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mComboBox( nullptr )
+
 {
 }
 
@@ -60,7 +60,8 @@ void QgsClassificationWidgetWrapper::initWidget( QWidget *editor )
       }
     }
 
-    connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( valueChanged() ) );
+    connect( mComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+             this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
   }
 }
 

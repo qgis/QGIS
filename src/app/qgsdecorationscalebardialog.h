@@ -18,9 +18,6 @@
 
 class QgsDecorationScaleBar;
 
-/**
-@author Peter Brewer
-*/
 class APP_EXPORT QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDecorationScaleBarDialog
 {
     Q_OBJECT
@@ -30,9 +27,9 @@ class APP_EXPORT QgsDecorationScaleBarDialog : public QDialog, private Ui::QgsDe
     ~QgsDecorationScaleBarDialog();
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
+    void showHelp();
     void apply();
 
   protected:

@@ -27,10 +27,11 @@ class QgsRelationReferenceWidgetFactory;
 class QgsMapCanvas;
 class QgsRelationReferenceWidget;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsRelationReferenceSearchWidgetWrapper
  * Wraps a relation reference search widget.
- * \note Added in version 2.16
+ * \since QGIS 2.16
  */
 
 class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidgetWrapper
@@ -39,24 +40,26 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
 
   public:
 
-    /** Constructor for QgsRelationReferenceSearchWidgetWrapper
-     * @param vl associated vector layer
-     * @param fieldIdx associated field index
-     * @param canvas optional map canvas
-     * @param parent parent widget
+    /**
+     * Constructor for QgsRelationReferenceSearchWidgetWrapper
+     * \param vl associated vector layer
+     * \param fieldIdx associated field index
+     * \param canvas optional map canvas
+     * \param parent parent widget
      */
     explicit QgsRelationReferenceSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QgsMapCanvas *canvas, QWidget *parent = nullptr );
 
-    /** Returns a variant representing the current state of the widget.
+    /**
+     * Returns a variant representing the current state of the widget.
      */
     QVariant value() const;
 
     bool applyDirectly() override;
-    QString expression() override;
+    QString expression() const override;
     bool valid() const override;
-    FilterFlags supportedFlags() const override;
-    FilterFlags defaultFlags() const override;
-    virtual QString createExpression( FilterFlags flags ) const override;
+    QgsSearchWidgetWrapper::FilterFlags supportedFlags() const override;
+    QgsSearchWidgetWrapper::FilterFlags defaultFlags() const override;
+    virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const override;
 
   public slots:
 
@@ -73,7 +76,7 @@ class GUI_EXPORT QgsRelationReferenceSearchWidgetWrapper : public QgsSearchWidge
     void onValueChanged( const QVariant &value );
 
   protected slots:
-    void setExpression( QString exp ) override;
+    void setExpression( const QString &exp ) override;
 
   private:
 

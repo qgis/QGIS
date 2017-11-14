@@ -55,11 +55,7 @@ class TestQgsComposerHtml : public QObject
     QFont mTestFont;
 };
 
-TestQgsComposerHtml::TestQgsComposerHtml()
-  : mComposition( 0 )
-{
-
-}
+TestQgsComposerHtml::TestQgsComposerHtml() = default;
 
 void TestQgsComposerHtml::initTestCase()
 {

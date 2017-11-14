@@ -28,12 +28,16 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationCopyrightDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationCopyrightDialog::buttonBox_rejected );
+  connect( pbnColorChooser, &QgsColorButton::colorChanged, this, &QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationCopyrightDialog::showHelp );
 
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/DecorationCopyright/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationCopyright/geometry" ) ).toByteArray() );
 
   QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
-  connect( applyButton, SIGNAL( clicked() ), this, SLOT( apply() ) );
+  connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationCopyrightDialog::apply );
 
   grpEnable->setChecked( mDeco.enabled() );
   // text
@@ -50,34 +54,35 @@ QgsDecorationCopyrightDialog::QgsDecorationCopyrightDialog( QgsDecorationCopyrig
   wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
   // color
-  pbnColorChooser->setColor( mDeco.mLabelQColor );
+  pbnColorChooser->setAllowOpacity( true );
+  pbnColorChooser->setColor( mDeco.mColor );
   pbnColorChooser->setContext( QStringLiteral( "gui" ) );
-  pbnColorChooser->setColorDialogTitle( tr( "Select text color" ) );
+  pbnColorChooser->setColorDialogTitle( tr( "Select Text color" ) );
 
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();
-  txtCopyrightText->setTextColor( mDeco.mLabelQColor );
+  txtCopyrightText->setTextColor( mDeco.mColor );
   txtCopyrightText->setTextCursor( cursor );
 }
 
 QgsDecorationCopyrightDialog::~QgsDecorationCopyrightDialog()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/DecorationCopyright/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/DecorationCopyright/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationCopyrightDialog::on_buttonBox_accepted()
+void QgsDecorationCopyrightDialog::buttonBox_accepted()
 {
   apply();
   accept();
 }
 
-void QgsDecorationCopyrightDialog::on_buttonBox_rejected()
+void QgsDecorationCopyrightDialog::buttonBox_rejected()
 {
   reject();
 }
 
-void QgsDecorationCopyrightDialog::on_pbnColorChooser_colorChanged( const QColor &c )
+void QgsDecorationCopyrightDialog::pbnColorChooser_colorChanged( const QColor &c )
 {
   QTextCursor cursor = txtCopyrightText->textCursor();
   txtCopyrightText->selectAll();
@@ -89,7 +94,7 @@ void QgsDecorationCopyrightDialog::apply()
 {
   mDeco.mQFont = txtCopyrightText->currentFont();
   mDeco.mLabelQString = txtCopyrightText->toPlainText();
-  mDeco.mLabelQColor = pbnColorChooser->color();
+  mDeco.mColor = pbnColorChooser->color();
   mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
   mDeco.mMarginUnit = wgtUnitSelection->unit();
   mDeco.mMarginHorizontal = spnHorizontal->value();
@@ -98,7 +103,7 @@ void QgsDecorationCopyrightDialog::apply()
   mDeco.update();
 }
 
-void QgsDecorationCopyrightDialog::on_buttonBox_helpRequested()
+void QgsDecorationCopyrightDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#copyright-label" ) );
 }

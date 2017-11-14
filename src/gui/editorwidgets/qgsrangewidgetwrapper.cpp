@@ -24,12 +24,7 @@
 
 QgsRangeWidgetWrapper::QgsRangeWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mIntSpinBox( nullptr )
-  , mDoubleSpinBox( nullptr )
-  , mSlider( nullptr )
-  , mDial( nullptr )
-  , mQgsSlider( nullptr )
-  , mQgsDial( nullptr )
+
 {
 }
 
@@ -124,7 +119,8 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
     if ( config( QStringLiteral( "Suffix" ) ).isValid() )
       mDoubleSpinBox->setSuffix( config( QStringLiteral( "Suffix" ) ).toString() );
 
-    connect( mDoubleSpinBox, SIGNAL( valueChanged( double ) ), this, SLOT( valueChanged( double ) ) );
+    connect( mDoubleSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ),
+             this, static_cast < void ( QgsEditorWidgetWrapper::* )( double ) > ( &QgsEditorWidgetWrapper::valueChanged ) );
   }
   else if ( mIntSpinBox )
   {
@@ -145,9 +141,9 @@ void QgsRangeWidgetWrapper::initWidget( QWidget *editor )
   }
   else
   {
-    field().convertCompatible( min );
-    field().convertCompatible( max );
-    field().convertCompatible( step );
+    ( void )field().convertCompatible( min );
+    ( void )field().convertCompatible( max );
+    ( void )field().convertCompatible( step );
     if ( mQgsDial ) setupIntEditor( min, max, step, mQgsDial, this );
     else if ( mQgsSlider ) setupIntEditor( min, max, step, mQgsSlider, this );
     else if ( mDial ) setupIntEditor( min, max, step, mDial, this );

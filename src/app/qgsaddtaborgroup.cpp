@@ -32,6 +32,8 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
   , mTabs( tabList )
 {
   setupUi( this );
+  connect( mGroupButton, &QRadioButton::toggled, this, &QgsAddTabOrGroup::mGroupButton_toggled );
+  connect( mTabButton, &QRadioButton::toggled, this, &QgsAddTabOrGroup::mTabButton_toggled );
 
   mTabButton->setChecked( true );
   mTabList->setEnabled( false );
@@ -49,16 +51,11 @@ QgsAddTabOrGroup::QgsAddTabOrGroup( QgsVectorLayer *lyr, const QList < TabPair >
     mGroupButton->setEnabled( false );
   }
 
-  connect( mTabButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mTabButton_toggled( bool ) ) );
-  connect( mGroupButton, SIGNAL( toggled( bool ) ), this, SLOT( on_mGroupButton_toggled( bool ) ) );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsAddTabOrGroup::showHelp );
 
   mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
 
-  setWindowTitle( tr( "Add tab or group for %1" ).arg( mLayer->name() ) );
-} // QgsVectorLayerProperties ctor
-
-QgsAddTabOrGroup::~QgsAddTabOrGroup()
-{
+  setWindowTitle( tr( "Add Tab or Group for %1" ).arg( mLayer->name() ) );
 }
 
 QString QgsAddTabOrGroup::name()
@@ -99,7 +96,7 @@ void QgsAddTabOrGroup::accept()
   QDialog::accept();
 }
 
-void QgsAddTabOrGroup::on_mGroupButton_toggled( bool checked )
+void QgsAddTabOrGroup::mGroupButton_toggled( bool checked )
 {
   mTabList->setEnabled( checked );
 
@@ -109,9 +106,14 @@ void QgsAddTabOrGroup::on_mGroupButton_toggled( bool checked )
   }
 }
 
-void QgsAddTabOrGroup::on_mTabButton_toggled( bool checked )
+void QgsAddTabOrGroup::mTabButton_toggled( bool checked )
 {
   mTabList->setEnabled( !checked );
   if ( checked )
     mColumnCountSpinBox->setValue( QgsSettings().value( QStringLiteral( "/qgis/attributeForm/defaultTabColumnCount" ), 1 ).toInt() );
+}
+
+void QgsAddTabOrGroup::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#customize-a-form-for-your-data" ) );
 }

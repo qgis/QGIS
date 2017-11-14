@@ -32,8 +32,7 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
-  protected:
-    const QgsOgrProvider *mProvider = nullptr;
+  private:
     QString mDataSource;
     QString mLayerName;
     int mLayerIndex;
@@ -44,6 +43,8 @@ class QgsOgrFeatureSource : public QgsAbstractFeatureSource
     QgsFields mFieldsWithoutFid;
     OGRwkbGeometryType mOgrGeometryTypeFilter;
     QString mDriverName;
+    QgsCoordinateReferenceSystem mCrs;
+    QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     friend class QgsOgrFeatureIterator;
     friend class QgsOgrExpressionCompiler;
@@ -63,25 +64,28 @@ class QgsOgrFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOgr
     virtual bool fetchFeature( QgsFeature &feature ) override;
     bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
-    bool readFeature( OGRFeatureH fet, QgsFeature &feature ) const;
+  private:
+
+    bool readFeature( gdal::ogr_feature_unique_ptr fet, QgsFeature &feature ) const;
 
     //! Get an attribute associated with a feature
     void getFeatureAttribute( OGRFeatureH ogrFet, QgsFeature &f, int attindex ) const;
 
-    bool mFeatureFetched;
-
     QgsOgrConn *mConn = nullptr;
-    OGRLayerH ogrLayer;
+    OGRLayerH ogrLayer = nullptr;
 
     bool mSubsetStringSet;
+    bool mOrigFidAdded;
 
     //! Set to true, if geometry is in the requested columns
     bool mFetchGeometry;
 
-  private:
     bool mExpressionCompiled;
     QgsFeatureIds mFilterFids;
     QgsFeatureIds::const_iterator mFilterFidsIt;
+
+    QgsRectangle mFilterRect;
+    QgsCoordinateTransform mTransform;
 
     bool fetchFeatureWithId( QgsFeatureId id, QgsFeature &feature ) const;
 };

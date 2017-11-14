@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>332</width>
+    <width>334</width>
     <height>572</height>
    </rect>
   </property>
@@ -52,7 +52,7 @@
     </widget>
    </item>
    <item>
-    <widget class="QScrollArea" name="scrollArea">
+    <widget class="QgsScrollArea" name="scrollArea">
      <property name="widgetResizable">
       <bool>true</bool>
      </property>
@@ -60,9 +60,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>-275</y>
-        <width>316</width>
-        <height>827</height>
+        <y>-403</y>
+        <width>318</width>
+        <height>949</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="mainLayout">
@@ -108,14 +108,14 @@
                </size>
               </property>
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
             <item>
              <widget class="QgsPropertyOverrideButton" name="mSourceDDBtn">
               <property name="text">
-               <string>...</string>
+               <string>…</string>
               </property>
              </widget>
             </item>
@@ -377,7 +377,7 @@
           <item row="0" column="3">
            <widget class="QgsPropertyOverrideButton" name="mFillColorDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
@@ -455,14 +455,14 @@
           <item row="1" column="3">
            <widget class="QgsPropertyOverrideButton" name="mStrokeColorDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
           <item row="2" column="3">
            <widget class="QgsPropertyOverrideButton" name="mStrokeWidthDDBtn">
             <property name="text">
-             <string>...</string>
+             <string>…</string>
             </property>
            </widget>
           </item>
@@ -506,6 +506,9 @@
           </item>
           <item row="0" column="0" colspan="2">
            <widget class="QgsDoubleSpinBox" name="mPictureRotationSpinBox">
+            <property name="wrapping">
+             <bool>true</bool>
+            </property>
             <property name="suffix">
              <string> °</string>
             </property>
@@ -526,6 +529,9 @@
           </item>
           <item row="3" column="1">
            <widget class="QgsDoubleSpinBox" name="mPictureRotationOffsetSpinBox">
+            <property name="wrapping">
+             <bool>true</bool>
+            </property>
             <property name="suffix">
              <string> °</string>
             </property>
@@ -568,6 +574,12 @@
    <class>QgsCollapsibleGroupBoxBasic</class>
    <extends>QGroupBox</extends>
    <header location="global">qgscollapsiblegroupbox.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>

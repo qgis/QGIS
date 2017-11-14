@@ -25,9 +25,9 @@ QgsRelationManager::QgsRelationManager( QgsProject *project )
   : QObject( project )
   , mProject( project )
 {
-  connect( project, SIGNAL( readProject( const QDomDocument & ) ), SLOT( readProject( const QDomDocument & ) ) );
-  connect( project, SIGNAL( writeProject( QDomDocument & ) ), SLOT( writeProject( QDomDocument & ) ) );
-  connect( project, SIGNAL( layersRemoved( QStringList ) ), this, SLOT( layersRemoved( QStringList ) ) );
+  connect( project, &QgsProject::readProject, this, &QgsRelationManager::readProject );
+  connect( project, &QgsProject::writeProject, this, &QgsRelationManager::writeProject );
+  connect( project, &QgsProject::layersRemoved, this, &QgsRelationManager::layersRemoved );
 }
 
 void QgsRelationManager::setRelations( const QList<QgsRelation> &relations )

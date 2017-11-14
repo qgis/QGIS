@@ -23,13 +23,13 @@
 #include <QString>
 #include <QStringList>
 
-#include <qgsbabelformat.h>
+#include "qgsbabelformat.h"
 
 
 class QgsGPSDevice : public QgsBabelFormat
 {
   public:
-    QgsGPSDevice() { }
+    QgsGPSDevice() = default;
 
     QgsGPSDevice( const QString &wptDlCmd, const QString &wptUlCmd,
                   const QString &rteDlCmd, const QString &rteUlCmd,

@@ -56,6 +56,11 @@ const QMap<QgsWkbTypes::Type, QgsWkbTypes::wkbEntry> QgsWkbTypes::ENTRIES
   { PolygonM, wkbEntry( QStringLiteral( "PolygonM" ), false, MultiPolygonM, PolygonM, Polygon, PolygonGeometry, false, true ) },
   { PolygonZM, wkbEntry( QStringLiteral( "PolygonZM" ), false, MultiPolygonZM, PolygonZM, Polygon, PolygonGeometry, true, true ) },
   { Polygon25D, wkbEntry( QStringLiteral( "Polygon25D" ), false, MultiPolygon25D, Polygon25D, Polygon, PolygonGeometry, true, false ) },
+  //triangle
+  { Triangle, wkbEntry( QStringLiteral( "Triangle" ), false, Unknown, Triangle, Triangle, PolygonGeometry, false, false ) },
+  { TriangleZ, wkbEntry( QStringLiteral( "TriangleZ" ), false, Unknown, TriangleZ, Triangle, PolygonGeometry, true, false ) },
+  { TriangleM, wkbEntry( QStringLiteral( "TriangleM" ), false, Unknown, TriangleM, Triangle, PolygonGeometry, false, true ) },
+  { TriangleZM, wkbEntry( QStringLiteral( "TriangleZM" ), false, Unknown, TriangleZM, Triangle, PolygonGeometry, true, true ) },
   //curvepolygon
   { CurvePolygon, wkbEntry( QStringLiteral( "CurvePolygon" ), false, MultiSurface, CurvePolygon, CurvePolygon, PolygonGeometry, false, false ) },
   { CurvePolygonZ, wkbEntry( QStringLiteral( "CurvePolygonZ" ), false, MultiSurfaceZ, CurvePolygonZ, CurvePolygon, PolygonGeometry, true, false ) },
@@ -116,7 +121,7 @@ QString QgsWkbTypes::displayString( Type type )
   QMap< Type, wkbEntry >::const_iterator it = ENTRIES.constFind( type );
   if ( it == ENTRIES.constEnd() )
   {
-    return QString::null;
+    return QString();
   }
   return it->mName;
 }

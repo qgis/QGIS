@@ -20,7 +20,6 @@
 
 QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
   : QgsDockWidget( tr( "User Input Panel" ), parent )
-  , mLayoutHorizontal( true )
 {
   QWidget *w = new QWidget( nullptr );
   mLayout = new QBoxLayout( QBoxLayout::LeftToRight );
@@ -28,8 +27,8 @@ QgsUserInputDockWidget::QgsUserInputDockWidget( QWidget *parent )
   w->setLayout( mLayout );
   setWidget( w );
 
-  connect( this, SIGNAL( dockLocationChanged( Qt::DockWidgetArea ) ), this, SLOT( areaChanged( Qt::DockWidgetArea ) ) );
-  connect( this, SIGNAL( topLevelChanged( bool ) ), this, SLOT( floatingChanged( bool ) ) );
+  connect( this, &QDockWidget::dockLocationChanged, this, &QgsUserInputDockWidget::areaChanged );
+  connect( this, &QDockWidget::topLevelChanged, this, &QgsUserInputDockWidget::floatingChanged );
   hide();
 }
 
@@ -45,7 +44,7 @@ void QgsUserInputDockWidget::addUserInputWidget( QWidget *widget )
   }
   mLayout->addWidget( widget );
 
-  connect( widget, SIGNAL( destroyed( QObject * ) ), this, SLOT( widgetDestroyed( QObject * ) ) );
+  connect( widget, &QObject::destroyed, this, &QgsUserInputDockWidget::widgetDestroyed );
 
   mWidgetList.insert( widget, line );
 

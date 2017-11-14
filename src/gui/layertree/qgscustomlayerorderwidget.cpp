@@ -45,14 +45,14 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
   mView->setModel( mModel );
 
   mChkOverride = new QCheckBox( tr( "Control rendering order" ) );
-  bridgeHasCustomLayerOrderChanged( bridge->hasCustomLayerOrder() );
-  connect( mChkOverride, SIGNAL( toggled( bool ) ), bridge, SLOT( setHasCustomLayerOrder( bool ) ) );
+  bridgeHasCustomLayerOrderChanged( bridge->rootGroup()->hasCustomLayerOrder() );
+  connect( mChkOverride, &QAbstractButton::toggled, bridge->rootGroup(), &QgsLayerTree::setHasCustomLayerOrder );
 
-  connect( bridge, SIGNAL( hasCustomLayerOrderChanged( bool ) ), this, SLOT( bridgeHasCustomLayerOrderChanged( bool ) ) );
-  connect( bridge, SIGNAL( customLayerOrderChanged( QStringList ) ), this, SLOT( bridgeCustomLayerOrderChanged( QStringList ) ) );
+  connect( bridge->rootGroup(), &QgsLayerTree::hasCustomLayerOrderChanged, this, &QgsCustomLayerOrderWidget::bridgeHasCustomLayerOrderChanged );
+  connect( bridge->rootGroup(), &QgsLayerTree::customLayerOrderChanged, this, &QgsCustomLayerOrderWidget::bridgeCustomLayerOrderChanged );
 
-  connect( mModel, SIGNAL( rowsInserted( QModelIndex, int, int ) ), this, SLOT( modelUpdated() ) );
-  connect( mModel, SIGNAL( rowsRemoved( QModelIndex, int, int ) ), this, SLOT( modelUpdated() ) );
+  connect( mModel, &QAbstractItemModel::rowsInserted, this, &QgsCustomLayerOrderWidget::modelUpdated );
+  connect( mModel, &QAbstractItemModel::rowsRemoved, this, &QgsCustomLayerOrderWidget::modelUpdated );
 
   connect( bridge->rootGroup(), &QgsLayerTreeNode::visibilityChanged, this, &QgsCustomLayerOrderWidget::nodeVisibilityChanged );
 
@@ -66,14 +66,12 @@ QgsCustomLayerOrderWidget::QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridg
 void QgsCustomLayerOrderWidget::bridgeHasCustomLayerOrderChanged( bool state )
 {
   mChkOverride->setChecked( state );
-  mModel->refreshModel( mBridge->hasCustomLayerOrder() ? mBridge->customLayerOrder() : mBridge->defaultLayerOrder() );
   mView->setEnabled( state );
 }
 
-void QgsCustomLayerOrderWidget::bridgeCustomLayerOrderChanged( const QStringList &order )
+void QgsCustomLayerOrderWidget::bridgeCustomLayerOrderChanged()
 {
-  Q_UNUSED( order );
-  mModel->refreshModel( mBridge->hasCustomLayerOrder() ? mBridge->customLayerOrder() : mBridge->defaultLayerOrder() );
+  mModel->refreshModel( mBridge->rootGroup()->layerOrder() );
 }
 
 void QgsCustomLayerOrderWidget::nodeVisibilityChanged( QgsLayerTreeNode *node )
@@ -86,7 +84,7 @@ void QgsCustomLayerOrderWidget::nodeVisibilityChanged( QgsLayerTreeNode *node )
 
 void QgsCustomLayerOrderWidget::modelUpdated()
 {
-  mBridge->setCustomLayerOrder( mModel->order() );
+  mBridge->rootGroup()->setCustomLayerOrder( mModel->order() );
 }
 
 
@@ -215,11 +213,21 @@ bool CustomLayerOrderModel::removeRows( int row, int count, const QModelIndex &p
   return true;
 }
 
-void CustomLayerOrderModel::refreshModel( const QStringList &order )
+void CustomLayerOrderModel::refreshModel( const QList<QgsMapLayer *> &order )
 {
-  beginResetModel();
-  mOrder = order;
-  endResetModel();
+  QStringList orderedIds;
+  Q_FOREACH ( QgsMapLayer *layer, order )
+  {
+    if ( layer )
+      orderedIds.append( layer->id() );
+  }
+
+  if ( orderedIds != mOrder )
+  {
+    beginResetModel();
+    mOrder = orderedIds;
+    endResetModel();
+  }
 }
 
 void CustomLayerOrderModel::updateLayerVisibility( const QString &layerId )

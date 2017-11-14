@@ -49,10 +49,10 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     void restart();
 
     //! Add new point
-    void addPoint( const QgsPoint &point );
+    void addPoint( const QgsPointXY &point );
 
     //! Returns reference to array of the points
-    QList<QgsPoint> points();
+    QVector<QgsPointXY> points();
 
     // Inherited from QgsMapTool
 
@@ -79,7 +79,7 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
 
   protected:
 
-    QList<QgsPoint> mPoints;
+    QVector<QgsPointXY> mPoints;
 
     QgsMeasureDialog *mDialog = nullptr;
 
@@ -103,8 +103,8 @@ class APP_EXPORT QgsMeasureTool : public QgsMapTool
     QgsCoordinateReferenceSystem mDestinationCrs;
 
     //! Returns the snapped (map) coordinate
-    //@param p (pixel) coordinate
-    QgsPoint snapPoint( QPoint p );
+    //\param p (pixel) coordinate
+    QgsPointXY snapPoint( QPoint p );
 
     //! Removes the last vertex from mRubberBand
     void undo();

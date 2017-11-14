@@ -33,6 +33,7 @@ import types
 import functools
 from qgis._core import *
 
+
 # Boolean evaluation of QgsGeometry
 
 
@@ -40,11 +41,18 @@ def _geometryNonZero(self):
     return not self.isEmpty()
 
 
+def _isValid(self):
+    return self.isValid()
+
+
 QgsGeometry.__nonzero__ = _geometryNonZero
 QgsGeometry.__bool__ = _geometryNonZero
 
+QgsDefaultValue.__bool__ = _isValid
 
-def register_function(function, arg_count, group, usesgeometry=False, referenced_columns=[QgsFeatureRequest.ALL_ATTRIBUTES], **kwargs):
+
+def register_function(function, arg_count, group, usesgeometry=False,
+                      referenced_columns=[QgsFeatureRequest.ALL_ATTRIBUTES], **kwargs):
     """
     Register a Python function to be used as a expression function.
 
@@ -71,25 +79,32 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
     :param usesgeometry:
     :return:
     """
-    class QgsExpressionFunction(QgsExpression.Function):
 
-        def __init__(self, func, name, args, group, helptext='', usesGeometry=True, referencedColumns=QgsFeatureRequest.ALL_ATTRIBUTES, expandargs=False):
-            QgsExpression.Function.__init__(self, name, args, group, helptext)
+    class QgsPyExpressionFunction(QgsExpressionFunction):
+
+        def __init__(self, func, name, args, group, helptext='', usesGeometry=True,
+                     referencedColumns=QgsFeatureRequest.ALL_ATTRIBUTES, expandargs=False):
+            QgsExpressionFunction.__init__(self, name, args, group, helptext)
             self.function = func
             self.expandargs = expandargs
             self.uses_geometry = usesGeometry
             self.referenced_columns = referencedColumns
 
-        def func(self, values, context, parent):
+        def func(self, values, context, parent, node):
             feature = None
             if context:
                 feature = context.feature()
+
             try:
                 if self.expandargs:
                     values.append(feature)
                     values.append(parent)
+                    if inspect.getargspec(self.function).args[-1] == 'context':
+                        values.append(context)
                     return self.function(*values)
                 else:
+                    if inspect.getargspec(self.function).args[-1] == 'context':
+                        self.function(values, feature, parent, context)
                     return self.function(values, feature, parent)
             except Exception as ex:
                 parent.setEvalErrorString(str(ex))
@@ -103,7 +118,7 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
 
     helptemplate = string.Template("""<h3>$name function</h3><br>$doc""")
     name = kwargs.get('name', function.__name__)
-    helptext = function.__doc__ or ''
+    helptext = kwargs.get('helpText') or function.__doc__ or ''
     helptext = helptext.strip()
     expandargs = False
 
@@ -113,19 +128,24 @@ def register_function(function, arg_count, group, usesgeometry=False, referenced
         args = inspect.getargspec(function).args
         number = len(args)
         arg_count = number - 2
+        if args[-1] == 'context':
+            arg_count -= 1
         expandargs = True
 
     register = kwargs.get('register', True)
     if register and QgsExpression.isFunctionName(name):
         if not QgsExpression.unregisterFunction(name):
             msgtitle = QCoreApplication.translate("UserExpressions", "User expressions")
-            msg = QCoreApplication.translate("UserExpressions", "The user expression {0} already exists and could not be unregistered.").format(name)
+            msg = QCoreApplication.translate("UserExpressions",
+                                             "The user expression {0} already exists and could not be unregistered.").format(
+                name)
             QgsMessageLog.logMessage(msg + "\n", msgtitle, QgsMessageLog.WARNING)
             return None
 
     function.__name__ = name
     helptext = helptemplate.safe_substitute(name=name, doc=helptext)
-    f = QgsExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, referenced_columns, expandargs)
+    f = QgsPyExpressionFunction(function, name, arg_count, group, helptext, usesgeometry, referenced_columns,
+                                expandargs)
 
     # This doesn't really make any sense here but does when used from a decorator context
     # so it can stay.
@@ -156,6 +176,7 @@ def qgsfunction(args='auto', group='custom', **kwargs):
 
     def wrapper(func):
         return register_function(func, args, group, **kwargs)
+
     return wrapper
 
 
@@ -166,6 +187,7 @@ class QgsEditError(Exception):
 
     def __str__(self):
         return repr(self.value)
+
 
 # Define a `with edit(layer)` statement
 
@@ -257,3 +279,20 @@ def fromFunction(description, function, *args, on_finished=None, flags=QgsTask.A
 
 
 QgsTask.fromFunction = fromFunction
+
+
+# add some __repr__ methods to processing classes
+def processing_source_repr(self):
+    return "<QgsProcessingFeatureSourceDefinition {{'source':{}, 'selectedFeaturesOnly': {}}}>".format(
+        self.source.staticValue(), self.selectedFeaturesOnly)
+
+
+QgsProcessingFeatureSourceDefinition.__repr__ = processing_source_repr
+
+
+def processing_output_layer_repr(self):
+    return "<QgsProcessingOutputLayerDefinition {{'sink':{}, 'createOptions': {}}}>".format(self.sink.staticValue(),
+                                                                                            self.createOptions)
+
+
+QgsProcessingOutputLayerDefinition.__repr__ = processing_output_layer_repr

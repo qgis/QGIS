@@ -21,13 +21,14 @@
 
 class QgsMapRendererCustomPainterJob;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * Job implementation that renders everything sequentially in one thread.
  *
  * The resulting map image can be retrieved with renderedImage() function.
  * It is safe to call that function while rendering is active to see preview of the map.
  *
- * @note added in 2.4
+ * \since QGIS 2.4
  */
 class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
 {
@@ -43,7 +44,7 @@ class CORE_EXPORT QgsMapRendererSequentialJob : public QgsMapRendererQImageJob
     virtual bool isActive() const override;
 
     virtual bool usedCachedLabels() const override;
-    virtual QgsLabelingResults *takeLabelingResults() override;
+    virtual QgsLabelingResults *takeLabelingResults() SIP_TRANSFER override;
 
     // from QgsMapRendererJobWithPreview
     virtual QImage renderedImage() override;

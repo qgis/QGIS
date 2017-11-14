@@ -43,12 +43,8 @@ static bool cmpByDataItemName_( QgsDataItem *a, QgsDataItem *b )
 
 QgsBrowserModel::QgsBrowserModel( QObject *parent )
   : QAbstractItemModel( parent )
-  , mFavorites( nullptr )
-  , mProjectHome( nullptr )
+
 {
-  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
-  connect( QgsProject::instance(), SIGNAL( writeProject( QDomDocument & ) ), this, SLOT( updateProjectHome() ) );
-  addRootItems();
 }
 
 QgsBrowserModel::~QgsBrowserModel()
@@ -132,14 +128,16 @@ void QgsBrowserModel::addRootItems()
     int capabilities = pr->capabilities();
     if ( capabilities == QgsDataProvider::NoDataCapabilities )
     {
-      QgsDebugMsg( pr->name() + " does not have any dataCapabilities" );
+      QgsDebugMsgLevel( pr->name() + " does not have any dataCapabilities", 4 );
       continue;
     }
 
     QgsDataItem *item = pr->createDataItem( QLatin1String( "" ), nullptr );  // empty path -> top level
     if ( item )
     {
-      QgsDebugMsg( "Add new top level item : " + item->name() );
+      // Forward the signal from the root items to the model (and then to the app)
+      connect( item, &QgsDataItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
+      QgsDebugMsgLevel( "Add new top level item : " + item->name(), 4 );
       connectItem( item );
       providerMap.insertMulti( capabilities, item );
     }
@@ -169,6 +167,17 @@ void QgsBrowserModel::removeRootItems()
   }
 
   mRootItems.clear();
+}
+
+void QgsBrowserModel::initialize()
+{
+  if ( ! mInitialized )
+  {
+    connect( QgsProject::instance(), &QgsProject::readProject, this, &QgsBrowserModel::updateProjectHome );
+    connect( QgsProject::instance(), &QgsProject::writeProject, this, &QgsBrowserModel::updateProjectHome );
+    addRootItems();
+    mInitialized = true;
+  }
 }
 
 
@@ -298,7 +307,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
       QString itemPath = model->data( idx, PathRole ).toString();
       if ( itemPath == path )
       {
-        QgsDebugMsg( "Arrived " + itemPath );
+        QgsDebugMsgLevel( "Arrived " + itemPath, 4 );
         return idx; // we have found the item we have been looking for
       }
 
@@ -315,7 +324,7 @@ QModelIndex QgsBrowserModel::findPath( QAbstractItemModel *model, const QString 
   if ( matchFlag == Qt::MatchStartsWith )
     return index;
 
-  QgsDebugMsg( "path not found" );
+  QgsDebugMsgLevel( "path not found", 4 );
   return QModelIndex(); // not found
 }
 
@@ -408,23 +417,29 @@ void QgsBrowserModel::itemStateChanged( QgsDataItem *item, QgsDataItem::State ol
   QModelIndex idx = findItem( item );
   if ( !idx.isValid() )
     return;
-  QgsDebugMsg( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ) );
+  QgsDebugMsgLevel( QString( "item %1 state changed %2 -> %3" ).arg( item->path() ).arg( oldState ).arg( item->state() ), 4 );
   emit stateChanged( idx, oldState );
 }
+
 void QgsBrowserModel::connectItem( QgsDataItem *item )
 {
-  connect( item, SIGNAL( beginInsertItems( QgsDataItem *, int, int ) ),
-           this, SLOT( beginInsertItems( QgsDataItem *, int, int ) ) );
-  connect( item, SIGNAL( endInsertItems() ),
-           this, SLOT( endInsertItems() ) );
-  connect( item, SIGNAL( beginRemoveItems( QgsDataItem *, int, int ) ),
-           this, SLOT( beginRemoveItems( QgsDataItem *, int, int ) ) );
-  connect( item, SIGNAL( endRemoveItems() ),
-           this, SLOT( endRemoveItems() ) );
-  connect( item, SIGNAL( dataChanged( QgsDataItem * ) ),
-           this, SLOT( itemDataChanged( QgsDataItem * ) ) );
-  connect( item, SIGNAL( stateChanged( QgsDataItem *, QgsDataItem::State ) ),
-           this, SLOT( itemStateChanged( QgsDataItem *, QgsDataItem::State ) ) );
+  connect( item, &QgsDataItem::beginInsertItems,
+           this, &QgsBrowserModel::beginInsertItems );
+  connect( item, &QgsDataItem::endInsertItems,
+           this, &QgsBrowserModel::endInsertItems );
+  connect( item, &QgsDataItem::beginRemoveItems,
+           this, &QgsBrowserModel::beginRemoveItems );
+  connect( item, &QgsDataItem::endRemoveItems,
+           this, &QgsBrowserModel::endRemoveItems );
+  connect( item, &QgsDataItem::dataChanged,
+           this, &QgsBrowserModel::itemDataChanged );
+  connect( item, &QgsDataItem::stateChanged,
+           this, &QgsBrowserModel::itemStateChanged );
+
+  // if it's a collection item, also forwards connectionsChanged
+  QgsDataCollectionItem *collectionItem = dynamic_cast<QgsDataCollectionItem *>( item );
+  if ( collectionItem )
+    connect( collectionItem, &QgsDataCollectionItem::connectionsChanged, this, &QgsBrowserModel::connectionsChanged );
 }
 
 QStringList QgsBrowserModel::mimeTypes() const
@@ -470,7 +485,7 @@ bool QgsBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
   QgsDataItem *destItem = dataItem( parent );
   if ( !destItem )
   {
-    QgsDebugMsg( "DROP PROBLEM!" );
+    QgsDebugMsgLevel( "DROP PROBLEM!", 4 );
     return false;
   }
 
@@ -500,7 +515,7 @@ void QgsBrowserModel::fetchMore( const QModelIndex &parent )
   if ( !item || item->state() == QgsDataItem::Populating || item->state() == QgsDataItem::Populated )
     return;
 
-  QgsDebugMsg( "path = " + item->path() );
+  QgsDebugMsgLevel( "path = " + item->path(), 4 );
 
   item->populate();
 }
@@ -519,7 +534,7 @@ void QgsBrowserModel::refresh( const QModelIndex &index )
   if ( !item || item->state() == QgsDataItem::Populating )
     return;
 
-  QgsDebugMsg( "Refresh " + item->path() );
+  QgsDebugMsgLevel( "Refresh " + item->path(), 4 );
 
   item->refresh();
 }
@@ -542,7 +557,7 @@ void QgsBrowserModel::removeFavorite( const QModelIndex &index )
 void QgsBrowserModel::hidePath( QgsDataItem *item )
 {
   QgsSettings settings;
-  QStringList hiddenItems = settings.value( QStringLiteral( "/browser/hiddenPaths" ),
+  QStringList hiddenItems = settings.value( QStringLiteral( "browser/hiddenPaths" ),
                             QStringList() ).toStringList();
   int idx = hiddenItems.indexOf( item->path() );
   if ( idx != -1 )
@@ -553,7 +568,7 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   {
     hiddenItems << item->path();
   }
-  settings.setValue( QStringLiteral( "/browser/hiddenPaths" ), hiddenItems );
+  settings.setValue( QStringLiteral( "browser/hiddenPaths" ), hiddenItems );
   if ( item->parent() )
   {
     item->parent()->deleteChildItem( item );
@@ -561,9 +576,9 @@ void QgsBrowserModel::hidePath( QgsDataItem *item )
   else
   {
     int i = mRootItems.indexOf( item );
-    emit beginRemoveRows( QModelIndex(), i, i );
+    beginRemoveRows( QModelIndex(), i, i );
     mRootItems.remove( i );
     item->deleteLater();
-    emit endRemoveRows();
+    endRemoveRows();
   }
 }

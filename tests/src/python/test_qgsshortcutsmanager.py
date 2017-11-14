@@ -15,7 +15,7 @@ __revision__ = '$Format:%H$'
 import qgis  # NOQA
 
 from qgis.core import QgsSettings
-from qgis.gui import QgsShortcutsManager
+from qgis.gui import QgsShortcutsManager, QgsGui
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.PyQt.QtWidgets import QWidget, QAction, QShortcut
 
@@ -35,13 +35,13 @@ class TestQgsShortcutsManager(unittest.TestCase):
 
     def testInstance(self):
         """ test retrieving global instance """
-        self.assertTrue(QgsShortcutsManager.instance())
+        self.assertTrue(QgsGui.shortcutsManager())
 
         # register an action to the singleton
         action = QAction('test', None)
-        QgsShortcutsManager.instance().registerAction(action)
+        QgsGui.shortcutsManager().registerAction(action)
         # check that the same instance is returned
-        self.assertEqual(QgsShortcutsManager.instance().listActions(), [action])
+        self.assertEqual(QgsGui.shortcutsManager().listActions(), [action])
         s2 = QgsShortcutsManager()
         self.assertEqual(s2.listActions(), [])
 

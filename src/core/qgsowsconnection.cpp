@@ -42,10 +42,8 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
 
   QgsSettings settings;
 
-  QString key = "/Qgis/connections-" + mService.toLower() + '/' + mConnName;
-  QString credentialsKey = "/Qgis/" + mService + '/' + mConnName;
-
-  QStringList connStringParts;
+  QString key = "qgis/connections-" + mService.toLower() + '/' + mConnName;
+  QString credentialsKey = "qgis/" + mService + '/' + mConnName;
 
   mConnectionInfo = settings.value( key + "/url" ).toString();
   mUri.setParam( QStringLiteral( "url" ), settings.value( key + "/url" ).toString() );
@@ -67,28 +65,32 @@ QgsOwsConnection::QgsOwsConnection( const QString &service, const QString &connN
   }
   mConnectionInfo.append( ",authcfg=" + authcfg );
 
-  bool ignoreGetMap = settings.value( key + "/ignoreGetMapURI", false ).toBool();
-  bool ignoreGetFeatureInfo = settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool();
-  bool ignoreAxisOrientation = settings.value( key + "/ignoreAxisOrientation", false ).toBool();
-  bool invertAxisOrientation = settings.value( key + "/invertAxisOrientation", false ).toBool();
-  if ( ignoreGetMap )
+  if ( mService.compare( QStringLiteral( "WMS" ), Qt::CaseInsensitive ) == 0
+       || mService.compare( QStringLiteral( "WCS" ), Qt::CaseInsensitive ) == 0 )
   {
-    mUri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
+    addWmsWcsConnectionSettings( mUri, key );
   }
-  if ( ignoreGetFeatureInfo )
+  else if ( mService.compare( QStringLiteral( "WFS" ), Qt::CaseInsensitive ) == 0 )
   {
-    mUri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), QStringLiteral( "1" ) );
-  }
-  if ( ignoreAxisOrientation )
-  {
-    mUri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), QStringLiteral( "1" ) );
-  }
-  if ( invertAxisOrientation )
-  {
-    mUri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
+    addWfsConnectionSettings( mUri, key );
   }
 
   QgsDebugMsg( QString( "encoded uri: '%1'." ).arg( QString( mUri.encodedUri() ) ) );
+}
+
+QString QgsOwsConnection::connectionName() const
+{
+  return mConnName;
+}
+
+QString QgsOwsConnection::connectionInfo() const
+{
+  return mConnectionInfo;
+}
+
+QString QgsOwsConnection::service() const
+{
+  return mService;
 }
 
 QgsDataSourceUri QgsOwsConnection::uri() const
@@ -96,28 +98,93 @@ QgsDataSourceUri QgsOwsConnection::uri() const
   return mUri;
 }
 
+QgsDataSourceUri &QgsOwsConnection::addWmsWcsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey )
+{
+  addCommonConnectionSettings( uri, settingsKey );
+
+  QgsSettings settings;
+  QString referer = settings.value( settingsKey + "/referer" ).toString();
+  if ( !referer.isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "referer" ), referer );
+  }
+  if ( settings.value( settingsKey + QStringLiteral( "/ignoreGetMapURI" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "IgnoreGetMapUrl" ), QStringLiteral( "1" ) );
+  }
+  if ( settings.value( settingsKey + QStringLiteral( "/ignoreGetFeatureInfoURI" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "IgnoreGetFeatureInfoUrl" ), QStringLiteral( "1" ) );
+  }
+  if ( settings.value( settingsKey + QStringLiteral( "/smoothPixmapTransform" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "SmoothPixmapTransform" ), QStringLiteral( "1" ) );
+  }
+  QString dpiMode = settings.value( settingsKey + QStringLiteral( "/dpiMode" ), QStringLiteral( "all" ) ).toString();
+  if ( !dpiMode.isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "dpiMode" ), dpiMode );
+  }
+
+  return uri;
+}
+
+QgsDataSourceUri &QgsOwsConnection::addWfsConnectionSettings( QgsDataSourceUri &uri, const QString &settingsKey )
+{
+  addCommonConnectionSettings( uri, settingsKey );
+
+  QgsSettings settings;
+  QString version = settings.value( settingsKey + "/version" ).toString();
+  if ( !version.isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "version" ), version );
+  }
+
+  QString maxnumfeatures = settings.value( settingsKey + QStringLiteral( "/maxnumfeatures" ) ).toString();
+  if ( !maxnumfeatures.isEmpty() )
+  {
+    uri.setParam( QStringLiteral( "maxNumFeatures" ), maxnumfeatures );
+  }
+
+  return uri;
+}
+
 QStringList QgsOwsConnection::connectionList( const QString &service )
 {
   QgsSettings settings;
-  settings.beginGroup( "/Qgis/connections-" + service.toLower() );
+  settings.beginGroup( "qgis/connections-" + service.toLower() );
   return settings.childGroups();
 }
 
 QString QgsOwsConnection::selectedConnection( const QString &service )
 {
   QgsSettings settings;
-  return settings.value( "/Qgis/connections-" + service.toLower() + "/selected" ).toString();
+  return settings.value( "qgis/connections-" + service.toLower() + "/selected" ).toString();
 }
 
 void QgsOwsConnection::setSelectedConnection( const QString &service, const QString &name )
 {
   QgsSettings settings;
-  settings.setValue( "/Qgis/connections-" + service.toLower() + "/selected", name );
+  settings.setValue( "qgis/connections-" + service.toLower() + "/selected", name );
+}
+
+void QgsOwsConnection::addCommonConnectionSettings( QgsDataSourceUri &uri, const QString &key )
+{
+  QgsSettings settings;
+
+  if ( settings.value( key + QStringLiteral( "/ignoreAxisOrientation" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "IgnoreAxisOrientation" ), QStringLiteral( "1" ) );
+  }
+  if ( settings.value( key + QStringLiteral( "/invertAxisOrientation" ), false ).toBool() )
+  {
+    uri.setParam( QStringLiteral( "InvertAxisOrientation" ), QStringLiteral( "1" ) );
+  }
 }
 
 void QgsOwsConnection::deleteConnection( const QString &service, const QString &name )
 {
   QgsSettings settings;
-  settings.remove( "/Qgis/connections-" + service.toLower() + '/' + name );
-  settings.remove( "/Qgis/" + service + '/' + name );
+  settings.remove( "qgis/connections-" + service.toLower() + '/' + name );
+  settings.remove( "qgis/" + service + '/' + name );
 }

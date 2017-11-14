@@ -10,7 +10,7 @@
  *   (at your option) any later version.                                   *
  ***************************************************************************/
 #include "[pluginlcasename]gui.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 
 //qt includes
 
@@ -20,6 +20,7 @@
   : QDialog( parent, fl )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &[pluginname]Gui::showHelp );
 
   // Below is an example of how to make the translators job
   // much easier. Please follow this general guideline for LARGE
@@ -92,8 +93,8 @@ void [pluginname]Gui::on_buttonBox_rejected()
   reject();
 }
 
-void [pluginname]Gui::on_buttonBox_helpRequested()
+void [pluginname]Gui::showHelp()
 {
-  QgsContextHelp::run( context_id );
+  QgsHelp::openHelp( QStringLiteral( "plugins/plugins.html#[pluginname]" ) );
 }
 

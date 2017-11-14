@@ -28,11 +28,16 @@
  *
  * E.g. "color: yellow, amount: 5"
  *
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class CORE_EXPORT QgsKeyValueFieldFormatter : public QgsFieldFormatter
 {
   public:
+
+    /**
+      * Default constructor of field formatter for a key value field.
+      */
+    QgsKeyValueFieldFormatter() = default;
     virtual QString id() const override;
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const override;
 };

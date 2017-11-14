@@ -45,10 +45,10 @@
 // Required qgis includes
 //
 
-#include <qgisinterface.h>
-#include <qgsapplication.h>
-#include <qgsmaplayer.h>
-#include <qgsrasterlayer.h>
+#include "qgisinterface.h"
+#include "qgsapplication.h"
+#include "qgsmaplayer.h"
+#include "qgsrasterlayer.h"
 #include "qgsgeorefplugin.h"
 
 #include <QFile>
@@ -81,12 +81,6 @@ static const QString sPluginIcon = QStringLiteral( ":/icons/default/mGeorefRun.p
 QgsGeorefPlugin::QgsGeorefPlugin( QgisInterface *qgisInterface )
   : QgisPlugin( sName, sDescription, sCategory, sPluginVersion, sPluginType )
   , mQGisIface( qgisInterface )
-  , mActionRunGeoref( nullptr )
-  , mPluginGui( nullptr )
-{
-}
-
-QgsGeorefPlugin::~QgsGeorefPlugin()
 {
 }
 
@@ -102,11 +96,11 @@ void QgsGeorefPlugin::initGui()
   mActionRunGeoref->setObjectName( QStringLiteral( "mActionRunGeoref" ) );
 
   // Connect the action to the run
-  connect( mActionRunGeoref, SIGNAL( triggered() ), this, SLOT( run() ) );
+  connect( mActionRunGeoref, &QAction::triggered, this, &QgsGeorefPlugin::run );
 
   setCurrentTheme( QLatin1String( "" ) );
   // this is called when the icon theme is changed
-  connect( mQGisIface, SIGNAL( currentThemeChanged( QString ) ), this, SLOT( setCurrentTheme( QString ) ) );
+  connect( mQGisIface, &QgisInterface::currentThemeChanged, this, &QgsGeorefPlugin::setCurrentTheme );
 
   // Add to the toolbar & menu
   mQGisIface->addRasterToolBarIcon( mActionRunGeoref );

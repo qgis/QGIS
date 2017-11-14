@@ -22,13 +22,13 @@ QgsSearchWidgetToolButton::QgsSearchWidgetToolButton( QWidget *parent )
   , mAvailableFilterFlags( QgsSearchWidgetWrapper::EqualTo | QgsSearchWidgetWrapper::NotEqualTo | QgsSearchWidgetWrapper::CaseInsensitive )
   , mDefaultFilterFlags( QgsSearchWidgetWrapper::EqualTo )
   , mFilterFlags( QgsSearchWidgetWrapper::EqualTo )
-  , mMenu( nullptr )
+
 {
   setFocusPolicy( Qt::StrongFocus );
   setPopupMode( QToolButton::InstantPopup );
 
   mMenu = new QMenu( this );
-  connect( mMenu, SIGNAL( aboutToShow() ), this, SLOT( aboutToShowMenu() ) );
+  connect( mMenu, &QMenu::aboutToShow, this, &QgsSearchWidgetToolButton::aboutToShowMenu );
   setMenu( mMenu );
 
   // sets initial appearance
@@ -134,7 +134,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
     }
 
     QAction *action = mMenu->addAction( QgsSearchWidgetWrapper::toString( flag ) );
-    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( actionSelected() ) );
+    connect( action, &QAction::triggered, this, &QgsSearchWidgetToolButton::actionSelected );
     action->setData( flag );
     action->setCheckable( true );
     if ( mFilterFlags & flag )
@@ -145,7 +145,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
   }
 
   QAction *clearAction = mMenu->addAction( tr( "Exclude field" ) );
-  connect( clearAction, SIGNAL( triggered( bool ) ), this, SLOT( setInactive() ) );
+  connect( clearAction, &QAction::triggered, this, &QgsSearchWidgetToolButton::setInactive );
   clearAction->setCheckable( true );
   clearAction->setChecked( !fieldActive );
   if ( mMenu->actions().count() > 0 )
@@ -167,7 +167,7 @@ void QgsSearchWidgetToolButton::aboutToShowMenu()
     }
 
     QAction *action = mMenu->addAction( QgsSearchWidgetWrapper::toString( flag ) );
-    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( actionSelected() ) );
+    connect( action, &QAction::triggered, this, &QgsSearchWidgetToolButton::actionSelected );
     action->setData( flag );
     action->setCheckable( true );
     if ( mFilterFlags & flag )

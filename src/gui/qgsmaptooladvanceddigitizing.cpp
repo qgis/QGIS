@@ -20,75 +20,97 @@
 
 QgsMapToolAdvancedDigitizing::QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget )
   : QgsMapToolEdit( canvas )
-  , mCaptureMode( CapturePoint )
-  , mSnapOnPress( false )
-  , mSnapOnRelease( false )
-  , mSnapOnMove( false )
-  , mSnapOnDoubleClick( false )
   , mCadDockWidget( cadDockWidget )
 {
 }
 
 void QgsMapToolAdvancedDigitizing::canvasPressEvent( QgsMapMouseEvent *e )
 {
-  snap( e );
-  if ( !mCadDockWidget->canvasPressEvent( e ) )
-    cadCanvasPressEvent( e );
+  if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
+  {
+    mCadDockWidget->applyConstraints( e );  // updates event's map point
+
+    if ( mCadDockWidget->constructionMode() )
+      return;  // decided to eat the event and not pass it to the map tool (construction mode)
+  }
+  else if ( isAutoSnapEnabled() )
+  {
+    e->snapPoint();
+  }
+
+  cadCanvasPressEvent( e );
 }
 
 void QgsMapToolAdvancedDigitizing::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  snap( e );
-
-  QgsAdvancedDigitizingDockWidget::AdvancedDigitizingMode dockMode;
-  switch ( mCaptureMode )
+  if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
   {
-    case CaptureLine:
-    case CapturePolygon:
-      dockMode = QgsAdvancedDigitizingDockWidget::ManyPoints;
-      break;
-    case CaptureSegment:
-      dockMode = QgsAdvancedDigitizingDockWidget::TwoPoints;
-      break;
-    default:
-      dockMode = QgsAdvancedDigitizingDockWidget::SinglePoint;
-      break;
+    if ( e->button() == Qt::RightButton )
+    {
+      mCadDockWidget->clear();
+    }
+    else
+    {
+      mCadDockWidget->applyConstraints( e );  // updates event's map point
+
+      if ( mCadDockWidget->alignToSegment( e ) )
+      {
+        // Parallel or perpendicular mode and snapped to segment: do not pass the event to map tool
+        return;
+      }
+
+      mCadDockWidget->addPoint( e->mapPoint() );
+
+      mCadDockWidget->releaseLocks( false );
+
+      if ( mCadDockWidget->constructionMode() )
+        return;  // decided to eat the event and not pass it to the map tool (construction mode)
+    }
+  }
+  else if ( isAutoSnapEnabled() )
+  {
+    e->snapPoint();
   }
 
-  if ( !mCadDockWidget->canvasReleaseEvent( e, dockMode ) )
-    cadCanvasReleaseEvent( e );
+  cadCanvasReleaseEvent( e );
 }
 
 void QgsMapToolAdvancedDigitizing::canvasMoveEvent( QgsMapMouseEvent *e )
 {
-  snap( e );
-  if ( !mCadDockWidget->canvasMoveEvent( e ) )
-    cadCanvasMoveEvent( e );
+  if ( isAdvancedDigitizingAllowed() && mCadDockWidget->cadEnabled() )
+  {
+    mCadDockWidget->applyConstraints( e );     // updates event's map point
+
+    // perpendicular/parallel constraint
+    // do a soft lock when snapping to a segment
+    mCadDockWidget->alignToSegment( e, QgsAdvancedDigitizingDockWidget::CadConstraint::SoftLock );
+    mCadDockWidget->updateCadPaintItem();
+  }
+  else if ( isAutoSnapEnabled() )
+  {
+    e->snapPoint();
+  }
+
+  cadCanvasMoveEvent( e );
 }
 
 void QgsMapToolAdvancedDigitizing::activate()
 {
   QgsMapToolEdit::activate();
-  connect( mCadDockWidget, SIGNAL( pointChanged( QgsPoint ) ), this, SLOT( cadPointChanged( QgsPoint ) ) );
+  connect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->enable();
 }
 
 void QgsMapToolAdvancedDigitizing::deactivate()
 {
   QgsMapToolEdit::deactivate();
-  disconnect( mCadDockWidget, SIGNAL( pointChanged( QgsPoint ) ), this, SLOT( cadPointChanged( QgsPoint ) ) );
+  disconnect( mCadDockWidget, &QgsAdvancedDigitizingDockWidget::pointChanged, this, &QgsMapToolAdvancedDigitizing::cadPointChanged );
   mCadDockWidget->disable();
 }
 
-void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPoint &point )
+void QgsMapToolAdvancedDigitizing::cadPointChanged( const QgsPointXY &point )
 {
   Q_UNUSED( point );
   QMouseEvent *ev = new QMouseEvent( QEvent::MouseMove, mCanvas->mouseLastXY(), Qt::NoButton, Qt::NoButton, Qt::NoModifier );
   qApp->postEvent( mCanvas->viewport(), ev );  // event queue will delete the event when processed
-}
-
-void QgsMapToolAdvancedDigitizing::snap( QgsMapMouseEvent *e )
-{
-  if ( !mCadDockWidget->cadEnabled() )
-    e->snapPoint( QgsMapMouseEvent::SnapProjectConfig );
 }

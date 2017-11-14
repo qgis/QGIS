@@ -15,18 +15,12 @@
 
 #include "qgsmessagelog.h"
 #include "qgsapplication.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 #include <QDateTime>
 #include <QMetaType>
 #include <iostream>
 
 class QgsMessageLogConsole;
-
-QgsMessageLog::QgsMessageLog()
-  : QObject()
-{
-  qRegisterMetaType< QgsMessageLog::MessageLevel >( "QgsMessageLog::MessageLevel" );
-}
 
 void QgsMessageLog::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )
 {
@@ -47,8 +41,8 @@ void QgsMessageLog::emitMessage( const QString &message, const QString &tag, Qgs
 QgsMessageLogConsole::QgsMessageLogConsole()
   : QObject( QgsApplication::messageLog() )
 {
-  connect( QgsApplication::messageLog(), SIGNAL( messageReceived( QString, QString, QgsMessageLog::MessageLevel ) ),
-           this, SLOT( logMessage( QString, QString, QgsMessageLog::MessageLevel ) ) );
+  connect( QgsApplication::messageLog(), static_cast < void ( QgsMessageLog::* )( const QString &, const QString &, QgsMessageLog::MessageLevel ) >( &QgsMessageLog::messageReceived ),
+           this, &QgsMessageLogConsole::logMessage );
 }
 
 void QgsMessageLogConsole::logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level )

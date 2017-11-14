@@ -18,13 +18,15 @@
 #define QGSAUTHCERTIFICATEMANAGER_H
 
 #include "ui_qgsauthcertificatemanager.h"
+#include "qgis.h"
 
 #include <QWidget>
 #include <QDialog>
 #include "qgis_gui.h"
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Wrapper widget to manage available certificate editors
  */
 class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertManager
@@ -35,16 +37,22 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
 
     /**
      * Construct a widget to contain various certificate editors
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
-    explicit QgsAuthCertEditors( QWidget *parent = nullptr );
+    explicit QgsAuthCertEditors( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    /**
+     * Destructor: store last selected tab
+     */
+    ~QgsAuthCertEditors( );
 
 };
 
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper for widget to manage available certificate editors
  */
 class GUI_EXPORT QgsAuthCertManager : public QDialog
@@ -55,9 +63,9 @@ class GUI_EXPORT QgsAuthCertManager : public QDialog
 
     /**
      * Construct a dialog wrapper for widget to manage available certificate editors
-     * @param parent Parent widget
+     * \param parent Parent widget
      */
-    explicit QgsAuthCertManager( QWidget *parent = nullptr );
+    explicit QgsAuthCertManager( QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     //! Get access to embedded editors widget
     QgsAuthCertEditors *certEditorsWidget() { return mCertEditors; }

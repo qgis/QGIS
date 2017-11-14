@@ -38,7 +38,7 @@ extern "C"
 
 /**
  * Date and time data
- * @see nmea_time_now
+ * \see nmea_time_now
  */
 typedef struct _nmeaTIME
 {

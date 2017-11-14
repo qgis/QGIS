@@ -14,16 +14,17 @@
  ***************************************************************************/
 
 
-#include <stdlib.h>
+#include <cstdlib>
 #include <QFileInfo>
 #include <QSettings>
 #include <QDir>
 
 #include "qgssettings.h"
+#include "qgslogger.h"
 
 QString QgsSettings::sGlobalSettingsPath = QString();
 
-bool QgsSettings::setGlobalSettingsPath( QString path )
+bool QgsSettings::setGlobalSettingsPath( const QString &path )
 {
   if ( QFileInfo::exists( path ) )
   {
@@ -35,7 +36,7 @@ bool QgsSettings::setGlobalSettingsPath( QString path )
 
 void QgsSettings::init()
 {
-  if ( ! sGlobalSettingsPath.isEmpty( ) )
+  if ( ! sGlobalSettingsPath.isEmpty() )
   {
     mGlobalSettings = new QSettings( sGlobalSettingsPath, QSettings::IniFormat );
     mGlobalSettings->setIniCodec( "UTF-8" );
@@ -82,28 +83,29 @@ QgsSettings::~QgsSettings()
 }
 
 
-void QgsSettings::beginGroup( const QString &prefix )
+void QgsSettings::beginGroup( const QString &prefix, const QgsSettings::Section section )
 {
-  mUserSettings->beginGroup( sanitizeKey( prefix ) );
+  QString pKey = prefixedKey( prefix, section );
+  mUserSettings->beginGroup( pKey );
   if ( mGlobalSettings )
   {
-    mGlobalSettings->beginGroup( sanitizeKey( prefix ) );
+    mGlobalSettings->beginGroup( pKey );
   }
 }
 
 void QgsSettings::endGroup()
 {
-  mUserSettings->endGroup( );
+  mUserSettings->endGroup();
   if ( mGlobalSettings )
   {
-    mGlobalSettings->endGroup( );
+    mGlobalSettings->endGroup();
   }
 }
 
 
 QStringList QgsSettings::allKeys() const
 {
-  QStringList keys = mUserSettings->allKeys( );
+  QStringList keys = mUserSettings->allKeys();
   if ( mGlobalSettings )
   {
     for ( auto &s : mGlobalSettings->allKeys() )
@@ -120,7 +122,7 @@ QStringList QgsSettings::allKeys() const
 
 QStringList QgsSettings::childKeys() const
 {
-  QStringList keys = mUserSettings->childKeys( );
+  QStringList keys = mUserSettings->childKeys();
   if ( mGlobalSettings )
   {
     for ( auto &s : mGlobalSettings->childKeys() )
@@ -136,7 +138,7 @@ QStringList QgsSettings::childKeys() const
 
 QStringList QgsSettings::childGroups() const
 {
-  QStringList keys = mUserSettings->childGroups( );
+  QStringList keys = mUserSettings->childGroups();
   if ( mGlobalSettings )
   {
     for ( auto &s : mGlobalSettings->childGroups() )
@@ -146,6 +148,15 @@ QStringList QgsSettings::childGroups() const
         keys.append( s );
       }
     }
+  }
+  return keys;
+}
+QStringList QgsSettings::globalChildGroups() const
+{
+  QStringList keys;
+  if ( mGlobalSettings )
+  {
+    keys = mGlobalSettings->childGroups();
   }
   return keys;
 }
@@ -173,7 +184,7 @@ bool QgsSettings::contains( const QString &key, const QgsSettings::Section secti
 
 QString QgsSettings::fileName() const
 {
-  return mUserSettings->fileName( );
+  return mUserSettings->fileName();
 }
 
 void QgsSettings::sync()
@@ -181,9 +192,10 @@ void QgsSettings::sync()
   return mUserSettings->sync();
 }
 
-void QgsSettings::remove( const QString &key )
+void QgsSettings::remove( const QString &key, const QgsSettings::Section section )
 {
-  mUserSettings->remove( sanitizeKey( key ) );
+  QString pKey = prefixedKey( key, section );
+  mUserSettings->remove( pKey );
 }
 
 QString QgsSettings::prefixedKey( const QString &key, const Section section ) const
@@ -192,19 +204,28 @@ QString QgsSettings::prefixedKey( const QString &key, const Section section ) co
   switch ( section )
   {
     case Section::Core :
-      prefix = "core";
+      prefix = QStringLiteral( "core" );
       break;
     case Section::Server :
-      prefix = "server";
+      prefix = QStringLiteral( "server" );
       break;
     case Section::Gui :
-      prefix = "gui";
+      prefix = QStringLiteral( "gui" );
       break;
     case Section::Plugins :
-      prefix = "plugins";
+      prefix = QStringLiteral( "plugins" );
       break;
     case Section::Misc :
-      prefix = "misc";
+      prefix = QStringLiteral( "misc" );
+      break;
+    case Section::Auth :
+      prefix = QStringLiteral( "auth" );
+      break;
+    case Section::App :
+      prefix = QStringLiteral( "app" );
+      break;
+    case Section::Providers :
+      prefix = QStringLiteral( "providers" );
       break;
     case Section::NoSection:
     default:
@@ -223,6 +244,12 @@ int QgsSettings::beginReadArray( const QString &prefix )
     mUsingGlobalArray = ( size > 0 );
   }
   return size;
+}
+
+void QgsSettings::beginWriteArray( const QString &prefix, int size )
+{
+  mUsingGlobalArray = false;
+  mUserSettings->beginWriteArray( prefix, size );
 }
 
 void QgsSettings::endArray()
@@ -254,9 +281,9 @@ void QgsSettings::setValue( const QString &key, const QVariant &value, const Qgs
 }
 
 // To lower case and clean the path
-QString QgsSettings::sanitizeKey( QString key ) const
+QString QgsSettings::sanitizeKey( const QString &key ) const
 {
-  return QDir::cleanPath( key.toLower() );
+  return QDir::cleanPath( key );
 }
 
 void QgsSettings::clear()

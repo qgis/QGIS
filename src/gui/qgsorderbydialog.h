@@ -18,17 +18,20 @@
 #define QGSORDERBYDIALOG_H
 
 #include <QDialog>
+#include "qgis.h"
 
 #include "ui_qgsorderbydialogbase.h"
 #include "qgsfeaturerequest.h"
+#include "qgshelp.h"
 #include "qgis_gui.h"
 
 class QgsVectorLayer;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * This is a dialog to build and manage a list of order by clauses.
  *
- * @note added in 2.14
+ * \since QGIS 2.14
  */
 
 class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBase
@@ -40,10 +43,10 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
     /**
      * Create a new order by dialog. This helps building order by structures.
      *
-     * @param layer  The vector layer for which the order by should be produced
-     * @param parent The parent widget, optional
+     * \param layer  The vector layer for which the order by should be produced
+     * \param parent The parent widget, optional
      */
-    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent = nullptr );
+    QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
     /**
      * Set the order by to manage
@@ -61,6 +64,7 @@ class GUI_EXPORT QgsOrderByDialog : public QDialog, private Ui::OrderByDialogBas
 
   private slots:
     void onExpressionChanged( const QString &expression );
+    void showHelp();
 
   private:
 

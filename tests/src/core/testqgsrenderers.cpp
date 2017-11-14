@@ -22,15 +22,21 @@
 #include <QDesktopServices>
 
 //qgis includes...
-#include <qgsmaplayer.h>
-#include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgsproviderregistry.h>
-#include <qgsproject.h>
+#include "qgsmaplayer.h"
+#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgsproviderregistry.h"
+#include "qgsproject.h"
+#include "qgsmultipolygon.h"
+#include "qgspolygon.h"
+#include "qgslinestring.h"
+#include "qgsmultilinestring.h"
+#include "qgsmultipoint.h"
 //qgis test includes
 #include "qgsmultirenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the different renderers for vector layers.
  */
 class TestQgsRenderers : public QObject
@@ -38,13 +44,7 @@ class TestQgsRenderers : public QObject
     Q_OBJECT
 
   public:
-    TestQgsRenderers()
-      : mTestHasError( false )
-      , mMapSettings( 0 )
-      , mpPointsLayer( 0 )
-      , mpLinesLayer( 0 )
-      , mpPolysLayer( 0 )
-    {}
+    TestQgsRenderers() = default;
     ~TestQgsRenderers()
     {
       delete mMapSettings;
@@ -57,13 +57,15 @@ class TestQgsRenderers : public QObject
     void cleanup() {} // will be called after every testfunction.
 
     void singleSymbol();
+    void emptyGeometry();
 //    void uniqueValue();
 //    void graduatedSymbol();
 //    void continuousSymbol();
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type ); //uniquevalue / continuous / single /
     bool imageCheck( const QString &type ); //as above
+    bool checkEmptyRender( const QString &name, QgsVectorLayer *layer );
     QgsMapSettings *mMapSettings = nullptr;
     QgsMapLayer *mpPointsLayer = nullptr;
     QgsMapLayer *mpLinesLayer = nullptr;
@@ -150,6 +152,80 @@ void TestQgsRenderers::singleSymbol()
   mReport += QLatin1String( "<h2>Single symbol renderer test</h2>\n" );
   QVERIFY( setQml( "single" ) );
   QVERIFY( imageCheck( "single" ) );
+}
+
+void TestQgsRenderers::emptyGeometry()
+{
+  // test rendering an empty geometry
+  // note - this test is of limited use, because the features with empty geometries should not be rendered
+  // by the feature iterator given that renderer uses a filter rect on the request. It's placed here
+  // for manual testing by commenting out the part of the renderer which places the filterrect on the
+  // layer's feature request. The purpose of this test is to ensure that we do not crash for empty geometries,
+  // as it's possible that malformed providers OR bugs in underlying libraries will still return empty geometries
+  // even when a filter rect request was made, and we shouldn't crash for these.
+  QgsVectorLayer *vl = new QgsVectorLayer( QStringLiteral( "MultiPolygon?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+
+  QgsFeature f;
+  std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
+  mp->addGeometry( new QgsPolygon() );
+  f.setGeometry( QgsGeometry( std::move( mp ) ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "Multipolygon", vl ) );
+
+  // polygon
+  vl = new QgsVectorLayer( QStringLiteral( "Polygon?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+  f.setGeometry( QgsGeometry( new QgsPolygon() ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "Polygon", vl ) );
+
+  // linestring
+  vl = new QgsVectorLayer( QStringLiteral( "LineString?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+  f.setGeometry( QgsGeometry( new QgsLineString() ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "LineString", vl ) );
+
+  // multilinestring
+  vl = new QgsVectorLayer( QStringLiteral( "MultiLineString?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+  std::unique_ptr< QgsMultiLineString > mls = qgis::make_unique< QgsMultiLineString >();
+  mls->addGeometry( new QgsLineString() );
+  f.setGeometry( QgsGeometry( std::move( mls ) ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "MultiLineString", vl ) );
+
+  // multipoint
+  vl = new QgsVectorLayer( QStringLiteral( "MultiPoint?crs=epsg:4326&field=pk:int&field=col1:string" ), QStringLiteral( "vl" ), QStringLiteral( "memory" ) );
+  QVERIFY( vl->isValid() );
+  QgsProject::instance()->addMapLayer( vl );
+  std::unique_ptr< QgsMultiPoint > mlp = qgis::make_unique< QgsMultiPoint >();
+  f.setGeometry( QgsGeometry( std::move( mlp ) ) );
+  QVERIFY( vl->dataProvider()->addFeature( f ) );
+  QVERIFY( checkEmptyRender( "MultiPoint", vl ) );
+}
+
+bool TestQgsRenderers::checkEmptyRender( const QString &testName, QgsVectorLayer *layer )
+{
+  QgsMapSettings ms;
+  QgsRectangle extent( -180, -90, 180, 90 );
+  ms.setExtent( extent );
+  ms.setFlag( QgsMapSettings::ForceVectorOutput );
+  ms.setOutputDpi( 96 );
+  ms.setLayers( QList< QgsMapLayer * >() << layer );
+  QgsMultiRenderChecker myChecker;
+  myChecker.setControlName( "expected_emptygeometry" );
+  myChecker.setMapSettings( ms );
+  myChecker.setControlPathPrefix( "map_renderer" );
+  myChecker.setColorTolerance( 15 );
+  bool myResultFlag = myChecker.runTest( testName, 200 );
+  mReport += myChecker.report();
+  return myResultFlag;
 }
 
 //

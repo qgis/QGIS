@@ -19,13 +19,15 @@
 #define QGSADDREMOVEITEMCOMMAND_H
 
 #include <QUndoCommand>
+#include "qgis.h"
 
 #include "qgis_core.h"
 
 class QgsComposerItem;
 class QgsComposition;
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A composer command class for adding / removing composer items. If mState == Removed, the command owns the item
 */
 class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
@@ -40,7 +42,7 @@ class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent = nullptr );
+    QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
     ~QgsAddRemoveItemCommand();
 
     void redo() override;

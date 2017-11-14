@@ -1,7 +1,7 @@
 r.quantile
 Compute quantiles using two passes.
 Raster (r.*)
-ParameterRaster|input|Input raster layer|False
-ParameterNumber|quantiles|Number of quantiles|2|None|4
-*ParameterBoolean|-r|Generate recode rules based on quantile-defined intervals|False
-OutputHTML|html|Quantiles
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterNumber|quantiles|Number of quantiles|QgsProcessingParameterNumber.Double|4|False|None|2
+*QgsProcessingParameterBoolean|-r|Generate recode rules based on quantile-defined intervals|False
+QgsProcessingParameterFileDestination|html|Quantiles|Html files (*.html)|report.html|False

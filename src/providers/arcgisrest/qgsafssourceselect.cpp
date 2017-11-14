@@ -26,14 +26,9 @@
 #include <QMessageBox>
 
 
-QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, bool embeddedMode )
-  : QgsSourceSelectDialog( QStringLiteral( "ArcGisFeatureServer" ), QgsSourceSelectDialog::FeatureService, parent, fl )
+QgsAfsSourceSelect::QgsAfsSourceSelect( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
+  : QgsArcGisServiceSourceSelect( QStringLiteral( "ArcGisFeatureServer" ), QgsArcGisServiceSourceSelect::FeatureService, parent, fl, widgetMode )
 {
-  if ( embeddedMode )
-  {
-    buttonBox->button( QDialogButtonBox::Close )->hide();
-  }
-
   // import/export of connections not supported yet
   btnLoad->hide();
   btnSave->hide();
@@ -143,4 +138,10 @@ QString QgsAfsSourceSelect::getLayerURI( const QgsOwsConnection &connection,
     ds.setParam( QStringLiteral( "bbox" ), QStringLiteral( "%1,%2,%3,%4" ).arg( bBox.xMinimum() ).arg( bBox.yMinimum() ).arg( bBox.xMaximum() ).arg( bBox.yMaximum() ) );
   }
   return ds.uri();
+}
+
+
+void QgsAfsSourceSelect::addServiceLayer( QString uri, QString typeName )
+{
+  emit addVectorLayer( uri, typeName );
 }

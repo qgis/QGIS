@@ -18,6 +18,7 @@
 #define QGSAUTHSSLCONFIGWIDGET_H
 
 #include <QDialog>
+#include "qgis.h"
 #include <QWidget>
 #include "ui_qgsauthsslconfigwidget.h"
 
@@ -31,7 +32,8 @@ class QComboBox;
 class QGroupBox;
 class QSpinBox;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Widget for editing an SSL server configuration
  */
 class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSslConfigWidget
@@ -42,12 +44,12 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
 
     /**
      * Construct a widget for editing an SSL server certificate configuration
-     * @param parent Parent widget
-     * @param cert SSL server certificate object
-     * @param hostport Unique host:port to associate with the server certificate
-     * @param connectionCAs List of trusted Certificate Authorities objects
+     * \param parent Parent widget
+     * \param cert SSL server certificate object
+     * \param hostport Unique host:port to associate with the server certificate
+     * \param connectionCAs List of trusted Certificate Authorities objects
      */
-    explicit QgsAuthSslConfigWidget( QWidget *parent = nullptr,
+    explicit QgsAuthSslConfigWidget( QWidget *parent SIP_TRANSFERTHIS = 0,
                                      const QSslCertificate &cert = QSslCertificate(),
                                      const QString &hostport = QString(),
                                      const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
@@ -75,8 +77,9 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     //! Get the client's peer verify mode for connections
     QSslSocket::PeerVerifyMode sslPeerVerifyMode();
 
-    /** Get the client's peer verify depth for connections
-     * @note Value of 0 = unlimited
+    /**
+     * Get the client's peer verify depth for connections
+     * \note Value of 0 = unlimited
      */
     int sslPeerVerifyDepth();
 
@@ -147,7 +150,7 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     void readyToSaveChanged( bool cansave );
 
   private slots:
-    void on_btnCertInfo_clicked();
+    void btnCertInfo_clicked();
 
   private:
     enum ConfigType
@@ -172,16 +175,17 @@ class GUI_EXPORT QgsAuthSslConfigWidget : public QWidget, private Ui::QgsAuthSsl
     QTreeWidgetItem *mVerifyDepthItem = nullptr;
     QSpinBox *mVerifyDepthSpnBx = nullptr;
 
-    bool mCanSave;
+    bool mCanSave = false;
 
-    bool mDisabled;
+    bool mDisabled = false;
     QVBoxLayout *mAuthNotifyLayout = nullptr;
     QLabel *mAuthNotify = nullptr;
 };
 
 //////////////// Embed in dialog ///////////////////
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * Dialog wrapper of widget for editing an SSL server configuration
  */
 class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
@@ -192,9 +196,9 @@ class GUI_EXPORT QgsAuthSslConfigDialog : public QDialog
 
     /**
      * Construct wrapper dialog for the SSL config widget
-     * @param parent Parent widget
-     * @param cert SSL server certificate object
-     * @param hostport Unique host:port to associate with the server certificate
+     * \param parent Parent widget
+     * \param cert SSL server certificate object
+     * \param hostport Unique host:port to associate with the server certificate
      */
     explicit QgsAuthSslConfigDialog( QWidget *parent = nullptr,
                                      const QSslCertificate &cert = QSslCertificate(),

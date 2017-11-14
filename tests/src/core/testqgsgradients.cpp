@@ -34,7 +34,8 @@
 //qgis test includes
 #include "qgsrenderchecker.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for gradient fill types.
  */
 class TestQgsGradients : public QObject
@@ -42,13 +43,7 @@ class TestQgsGradients : public QObject
     Q_OBJECT
 
   public:
-    TestQgsGradients()
-      : mTestHasError( false )
-      , mpPolysLayer( 0 )
-      , mGradientFill( 0 )
-      , mFillSymbol( 0 )
-      , mSymbolRenderer( 0 )
-    {}
+    TestQgsGradients() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
@@ -69,7 +64,7 @@ class TestQgsGradients : public QObject
     void gradientSymbolRotate();
     void gradientSymbolFromQml();
   private:
-    bool mTestHasError;
+    bool mTestHasError =  false ;
     bool setQml( const QString &type );
     bool imageCheck( const QString &type );
     QgsMapSettings mMapSettings;

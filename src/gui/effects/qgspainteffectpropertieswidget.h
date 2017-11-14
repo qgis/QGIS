@@ -18,15 +18,17 @@
 
 #include "ui_qgseffectpropertieswidget.h"
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 
 class QgsPaintEffect;
 
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsPaintEffectPropertiesWidget
  * \brief A widget which modifies the properties of a QgsPaintEffect
  *
- * \note Added in version 2.9
+ * \since QGIS 2.9
  */
 
 class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::EffectPropertiesWidget
@@ -35,29 +37,34 @@ class GUI_EXPORT QgsPaintEffectPropertiesWidget : public QWidget, private Ui::Ef
 
   public:
 
-    /** QgsPaintEffectPropertiesWidget constructor
-     * @param effect QgsPaintEffect to modify in the widget
-     * @param parent parent widget
+    /**
+     * QgsPaintEffectPropertiesWidget constructor
+     * \param effect QgsPaintEffect to modify in the widget
+     * \param parent parent widget
      */
-    QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent = nullptr );
+    QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   public slots:
 
-    /** Update widget when effect type changes
+    /**
+     * Update widget when effect type changes
      */
     void effectTypeChanged();
 
-    /** Emits the changed signal
+    /**
+     * Emits the changed signal
      */
     void emitSignalChanged();
 
   signals:
 
-    /** Emitted when paint effect properties changes
+    /**
+     * Emitted when paint effect properties changes
      */
     void changed();
 
-    /** Emitted when paint effect type changes
+    /**
+     * Emitted when paint effect type changes
      */
     void changeEffect( QgsPaintEffect *effect );
 

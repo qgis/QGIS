@@ -36,7 +36,7 @@ class TestQgsXmlUtils(unittest.TestCase):
         elem = QgsXmlUtils.writeVariant(my_properties, doc)
 
         prop2 = QgsXmlUtils.readVariant(elem)
-        self.assertEquals(my_properties, prop2)
+        self.assertEqual(my_properties, prop2)
 
     def test_string(self):
         """
@@ -49,7 +49,7 @@ class TestQgsXmlUtils(unittest.TestCase):
 
         prop2 = QgsXmlUtils.readVariant(elem)
 
-        self.assertEquals(my_properties, prop2)
+        self.assertEqual(my_properties, prop2)
 
     def test_double(self):
         """
@@ -62,7 +62,7 @@ class TestQgsXmlUtils(unittest.TestCase):
 
         prop2 = QgsXmlUtils.readVariant(elem)
 
-        self.assertEquals(my_properties, prop2)
+        self.assertEqual(my_properties, prop2)
 
     def test_boolean(self):
         """
@@ -75,7 +75,19 @@ class TestQgsXmlUtils(unittest.TestCase):
 
         prop2 = QgsXmlUtils.readVariant(elem)
 
-        self.assertEquals(my_properties, prop2)
+        self.assertEqual(my_properties, prop2)
+
+    def test_list(self):
+        """
+        Test that lists are correctly loaded and written
+        """
+        doc = QDomDocument("properties")
+        my_properties = [1, 4, 'a', 'test', 7.9]
+        elem = QgsXmlUtils.writeVariant(my_properties, doc)
+
+        prop2 = QgsXmlUtils.readVariant(elem)
+
+        self.assertEqual(my_properties, prop2)
 
     def test_complex(self):
         """
@@ -88,7 +100,7 @@ class TestQgsXmlUtils(unittest.TestCase):
 
         prop2 = QgsXmlUtils.readVariant(elem)
 
-        self.assertEquals(my_properties, prop2)
+        self.assertEqual(my_properties, prop2)
 
 
 if __name__ == '__main__':

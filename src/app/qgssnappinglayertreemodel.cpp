@@ -141,14 +141,10 @@ QgsSnappingLayerTreeModel::QgsSnappingLayerTreeModel( QgsProject *project, QObje
   : QSortFilterProxyModel( parent )
   , mProject( project )
   , mIndividualLayerSettings( project->snappingConfig().individualLayerSettings() )
-  , mLayerTreeModel( nullptr )
+
 {
   connect( project, &QgsProject::snappingConfigChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
   connect( project, &QgsProject::avoidIntersectionsLayersChanged, this, &QgsSnappingLayerTreeModel::onSnappingSettingsChanged );
-}
-
-QgsSnappingLayerTreeModel::~QgsSnappingLayerTreeModel()
-{
 }
 
 int QgsSnappingLayerTreeModel::columnCount( const QModelIndex &parent ) const
@@ -196,7 +192,7 @@ Qt::ItemFlags QgsSnappingLayerTreeModel::flags( const QModelIndex &idx ) const
 
 QModelIndex QgsSnappingLayerTreeModel::index( int row, int column, const QModelIndex &parent ) const
 {
-  QModelIndex newIndex = QSortFilterProxyModel::index( row, 0, parent );
+  QModelIndex newIndex = QSortFilterProxyModel::index( row, LayerColumn, parent );
   if ( column == LayerColumn )
     return newIndex;
 
@@ -205,7 +201,7 @@ QModelIndex QgsSnappingLayerTreeModel::index( int row, int column, const QModelI
 
 QModelIndex QgsSnappingLayerTreeModel::parent( const QModelIndex &child ) const
 {
-  return QSortFilterProxyModel::parent( createIndex( child.row(), 0, child.internalId() ) );
+  return QSortFilterProxyModel::parent( createIndex( child.row(), LayerColumn, child.internalId() ) );
 }
 
 QModelIndex QgsSnappingLayerTreeModel::sibling( int row, int column, const QModelIndex &idx ) const
@@ -223,7 +219,7 @@ QgsVectorLayer *QgsSnappingLayerTreeModel::vectorLayer( const QModelIndex &idx )
   }
   else
   {
-    node = mLayerTreeModel->index2node( mapToSource( index( idx.row(), 0, idx.parent() ) ) );
+    node = mLayerTreeModel->index2node( mapToSource( index( idx.row(), LayerColumn, idx.parent() ) ) );
   }
 
   if ( !node || !QgsLayerTree::isLayer( node ) )
@@ -236,9 +232,9 @@ void QgsSnappingLayerTreeModel::onSnappingSettingsChanged()
 {
   const QHash<QgsVectorLayer *, QgsSnappingConfig::IndividualLayerSettings> oldSettings = mIndividualLayerSettings;
 
-  Q_FOREACH ( QgsVectorLayer *vl, oldSettings.keys() )
+  for ( auto it = oldSettings.constBegin(); it != oldSettings.constEnd(); ++it )
   {
-    if ( !mProject->snappingConfig().individualLayerSettings().contains( vl ) )
+    if ( !mProject->snappingConfig().individualLayerSettings().contains( it.key() ) )
     {
       beginResetModel();
       mIndividualLayerSettings = mProject->snappingConfig().individualLayerSettings();
@@ -298,7 +294,7 @@ void QgsSnappingLayerTreeModel::setLayerTreeModel( QgsLayerTreeModel *layerTreeM
 
 bool QgsSnappingLayerTreeModel::filterAcceptsRow( int sourceRow, const QModelIndex &sourceParent ) const
 {
-  QgsLayerTreeNode *node = mLayerTreeModel->index2node( mLayerTreeModel->index( sourceRow, 0, sourceParent ) );
+  QgsLayerTreeNode *node = mLayerTreeModel->index2node( mLayerTreeModel->index( sourceRow, LayerColumn, sourceParent ) );
   return nodeShown( node );
 }
 
@@ -320,7 +316,7 @@ bool QgsSnappingLayerTreeModel::nodeShown( QgsLayerTreeNode *node ) const
   else
   {
     QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( QgsLayerTree::toLayer( node )->layer() );
-    return layer && layer->hasGeometryType();
+    return layer && layer->isSpatial();
   }
 }
 
@@ -375,12 +371,12 @@ QVariant QgsSnappingLayerTreeModel::data( const QModelIndex &idx, int role ) con
       }
       else
       {
-        // i.e. this is a group, analyse its children
+        // i.e. this is a group, analyze its children
         bool hasChecked = false, hasUnchecked = false;
         int n;
         for ( n = 0; !hasChecked || !hasUnchecked; n++ )
         {
-          QVariant v = data( idx.child( n, 0 ), role );
+          QVariant v = data( idx.child( n, LayerColumn ), role );
           if ( !v.isValid() )
             break;
 
@@ -518,7 +514,7 @@ bool QgsSnappingLayerTreeModel::setData( const QModelIndex &index, const QVarian
       int i = 0;
       for ( i = 0; ; i++ )
       {
-        QModelIndex child = index.child( i, 0 );
+        QModelIndex child = index.child( i, LayerColumn );
         if ( !child.isValid() )
           break;
 

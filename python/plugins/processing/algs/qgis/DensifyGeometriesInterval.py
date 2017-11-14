@@ -27,105 +27,46 @@ __copyright__ = '(C) 2012, Anita Graser'
 
 __revision__ = '$Format:%H$'
 
-from math import sqrt
+from qgis.core import (QgsProcessingParameterNumber,
+                       QgsProcessing)
 
-from qgis.core import QgsPoint, QgsGeometry, QgsWkbTypes
-
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterNumber
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from processing.algs.qgis.QgisAlgorithm import QgisFeatureBasedAlgorithm
 
 
-class DensifyGeometriesInterval(GeoAlgorithm):
+class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
 
-    INPUT = 'INPUT'
     INTERVAL = 'INTERVAL'
-    OUTPUT = 'OUTPUT'
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Densify geometries given an interval')
-        self.group, self.i18n_group = self.trAlgorithm('Vector geometry tools')
+    def group(self):
+        return self.tr('Vector geometry')
 
-        self.addParameter(ParameterVector(self.INPUT,
-                                          self.tr('Input layer'),
-                                          [dataobjects.TYPE_VECTOR_POLYGON, dataobjects.TYPE_VECTOR_LINE]))
-        self.addParameter(ParameterNumber(self.INTERVAL,
-                                          self.tr('Interval between vertices to add'), 0.0, 10000000.0, 1.0))
+    def __init__(self):
+        super().__init__()
+        self.interval = None
 
-        self.addOutput(OutputVector(self.OUTPUT, self.tr('Densified')))
+    def initParameters(self, config=None):
+        self.addParameter(QgsProcessingParameterNumber(self.INTERVAL,
+                                                       self.tr('Interval between vertices to add'), QgsProcessingParameterNumber.Double,
+                                                       1, False, 0, 10000000))
 
-    def processAlgorithm(self, feedback):
-        layer = dataobjects.getObjectFromUri(self.getParameterValue(self.INPUT))
-        interval = self.getParameterValue(self.INTERVAL)
+    def name(self):
+        return 'densifygeometriesgivenaninterval'
 
-        isPolygon = layer.geometryType() == QgsWkbTypes.PolygonGeometry
+    def displayName(self):
+        return self.tr('Densify geometries given an interval')
 
-        writer = self.getOutputFromName(
-            self.OUTPUT).getVectorWriter(layer.fields().toList(),
-                                         layer.wkbType(), layer.crs())
+    def outputName(self):
+        return self.tr('Densified')
 
-        features = vector.features(layer)
-        total = 100.0 / len(features)
-        for current, f in enumerate(features):
-            feature = f
-            if feature.hasGeometry():
-                new_geometry = self.densifyGeometry(feature.geometry(), interval,
-                                                    isPolygon)
-                feature.setGeometry(new_geometry)
-            writer.addFeature(feature)
+    def inputLayerTypes(self):
+        return [QgsProcessing.TypeVectorLine, QgsProcessing.TypeVectorPolygon]
 
-            feedback.setProgress(int(current * total))
+    def prepareAlgorithm(self, parameters, context, feedback):
+        interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
+        return True
 
-        del writer
-
-    def densifyGeometry(self, geometry, interval, isPolygon):
-        output = []
-        if isPolygon:
-            if geometry.isMultipart():
-                polygons = geometry.asMultiPolygon()
-                for poly in polygons:
-                    p = []
-                    for ring in poly:
-                        p.append(self.densify(ring, interval))
-                    output.append(p)
-                return QgsGeometry.fromMultiPolygon(output)
-            else:
-                rings = geometry.asPolygon()
-                for ring in rings:
-                    output.append(self.densify(ring, interval))
-                return QgsGeometry.fromPolygon(output)
-        else:
-            if geometry.isMultipart():
-                lines = geometry.asMultiPolyline()
-                for points in lines:
-                    output.append(self.densify(points, interval))
-                return QgsGeometry.fromMultiPolyline(output)
-            else:
-                points = geometry.asPolyline()
-                output = self.densify(points, interval)
-                return QgsGeometry.fromPolyline(output)
-
-    def densify(self, polyline, interval):
-        output = []
-        for i in range(len(polyline) - 1):
-            p1 = polyline[i]
-            p2 = polyline[i + 1]
-            output.append(p1)
-
-            # Calculate necessary number of points between p1 and p2
-            pointsNumber = sqrt(p1.sqrDist(p2)) / interval
-            if pointsNumber > 1:
-                multiplier = 1.0 / float(pointsNumber)
-            else:
-                multiplier = 1
-            for j in range(int(pointsNumber)):
-                delta = multiplier * (j + 1)
-                x = p1.x() + delta * (p2.x() - p1.x())
-                y = p1.y() + delta * (p2.y() - p1.y())
-                output.append(QgsPoint(x, y))
-                if j + 1 == pointsNumber:
-                    break
-        output.append(polyline[len(polyline) - 1])
-        return output
+    def processFeature(self, feature, feedback):
+        if feature.hasGeometry():
+            new_geometry = feature.geometry().densifyByDistance(float(interval))
+            feature.setGeometry(new_geometry)
+        return feature

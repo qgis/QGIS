@@ -18,8 +18,11 @@
 #include "qgis.h"
 #include "qgsamsdataitems.h"
 #include "qgsamsprovider.h"
-#include "qgsamssourceselect.h"
 #include "qgsowsconnection.h"
+
+#ifdef HAVE_GUI
+#include "qgsamssourceselect.h"
+#endif
 
 const QString AMS_KEY = QStringLiteral( "arcgismapserver" );
 const QString AMS_DESCRIPTION = QStringLiteral( "ArcGIS Map Server data provider" );
@@ -45,10 +48,12 @@ QGISEXTERN bool isProvider()
   return true;
 }
 
-QGISEXTERN QgsAmsSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl )
+#ifdef HAVE_GUI
+QGISEXTERN QgsAmsSourceSelect *selectWidget( QWidget *parent, Qt::WindowFlags fl, QgsProviderRegistry::WidgetMode widgetMode )
 {
-  return new QgsAmsSourceSelect( parent, fl );
+  return new QgsAmsSourceSelect( parent, fl, widgetMode );
 }
+#endif
 
 QGISEXTERN int dataCapabilities()
 {
@@ -66,9 +71,9 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   if ( path.startsWith( QLatin1String( "ams:/" ) ) )
   {
     QString connectionName = path.split( '/' ).last();
-    if ( QgsOwsConnection::connectionList( QStringLiteral( "ArcGisMapServer" ) ).contains( connectionName ) )
+    if ( QgsOwsConnection::connectionList( QStringLiteral( "arcgismapserver" ) ).contains( connectionName ) )
     {
-      QgsOwsConnection connection( QStringLiteral( "ArcGisMapServer" ), connectionName );
+      QgsOwsConnection connection( QStringLiteral( "arcgismapserver" ), connectionName );
       return new QgsAmsConnectionItem( parentItem, QStringLiteral( "ArcGisMapServer" ), path, connection.uri().param( QStringLiteral( "url" ) ) );
     }
   }

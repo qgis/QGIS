@@ -24,8 +24,6 @@ email                : hugo dot mercier at oslandia dot com
 
 QgsVirtualLayerDefinition::QgsVirtualLayerDefinition( const QString &filePath )
   : mFilePath( filePath )
-  , mGeometryWkbType( QgsWkbTypes::Unknown )
-  , mGeometrySrid( 0 )
 {
 }
 

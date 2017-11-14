@@ -22,6 +22,7 @@
 #include "qgsauthguiutils.h"
 #include "qgsauthmanager.h"
 #include "qgslogger.h"
+#include "qgsapplication.h"
 
 
 QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
@@ -51,8 +52,8 @@ QgsAuthCertTrustPolicyComboBox::QgsAuthCertTrustPolicyComboBox( QWidget *parent,
 //  setEditable( true );
 //  lineEdit()->setReadOnly( true );
 
-  connect( this, SIGNAL( currentIndexChanged( int ) ),
-           this, SLOT( highlightCurrentIndex( int ) ) );
+  connect( this, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ),
+           this, &QgsAuthCertTrustPolicyComboBox::highlightCurrentIndex );
 
   setTrustPolicy( policy );
   setDefaultTrustPolicy( defaultpolicy );
@@ -109,9 +110,9 @@ const QString QgsAuthCertTrustPolicyComboBox::defaultTrustText( QgsAuthCertUtils
 {
   if ( defaultpolicy == QgsAuthCertUtils::DefaultTrust )
   {
-    if ( !QgsAuthManager::instance()->isDisabled() )
+    if ( !QgsApplication::authManager()->isDisabled() )
     {
-      defaultpolicy = QgsAuthManager::instance()->defaultCertTrustPolicy();
+      defaultpolicy = QgsApplication::authManager()->defaultCertTrustPolicy();
     }
     else
     {

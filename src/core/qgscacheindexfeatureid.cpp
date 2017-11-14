@@ -19,8 +19,7 @@
 #include "qgsvectorlayercache.h"
 
 QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVectorLayer )
-  : QgsAbstractCacheIndex()
-  , C( cachedVectorLayer )
+  : C( cachedVectorLayer )
 {
 
 }
@@ -63,7 +62,6 @@ bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterat
       break;
     }
     case QgsFeatureRequest::FilterNone:
-    case QgsFeatureRequest::FilterRect:
     case QgsFeatureRequest::FilterExpression:
     {
       if ( C->hasFullCache() )

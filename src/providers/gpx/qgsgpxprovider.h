@@ -54,7 +54,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     virtual QgsWkbTypes::Type wkbType() const override;
     virtual long featureCount() const override;
     virtual QgsFields fields() const override;
-    virtual bool addFeatures( QgsFeatureList &flist ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
@@ -75,8 +75,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     void changeAttributeValues( QgsGPSObject &obj,
                                 const QgsAttributeMap &attrs );
 
-    //! Adds one feature (used by addFeatures())
-    bool addFeature( QgsFeature &f );
+    bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = 0 ) override;
 
 
     enum DataType
@@ -105,14 +104,14 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     QString mFileName;
 
-    DataType mFeatureType;
+    DataType mFeatureType = WaypointType;
 
     static const char *ATTR[];
     static QVariant::Type attrType[];
     static DataType attrUsed[];
     static const int ATTR_COUNT;
 
-    bool mValid;
+    bool mValid = false;
 
     friend class QgsGPXFeatureSource;
 };

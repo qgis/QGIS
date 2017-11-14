@@ -18,6 +18,7 @@
 #include "qgsmaplayeractionregistry.h"
 #include "qgsactionmanager.h"
 #include "qgsfeatureiterator.h"
+#include "qgsgui.h"
 
 QgsActionMenu::QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget  *parent )
   : QMenu( parent )
@@ -42,7 +43,7 @@ void QgsActionMenu::init()
 {
   setTitle( tr( "&Actions" ) );
 
-  connect( QgsMapLayerActionRegistry::instance(), SIGNAL( changed() ), this, SLOT( reloadActions() ) );
+  connect( QgsGui::mapLayerActionRegistry(), &QgsMapLayerActionRegistry::changed, this, &QgsActionMenu::reloadActions );
 
   reloadActions();
 }
@@ -88,6 +89,7 @@ void QgsActionMenu::triggerAction()
   {
     // define custom substitutions: layer id and clicked coords
     QgsExpressionContext context = mLayer->createExpressionContext();
+    context.setFeature( mFeature );
 
     QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
     actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), mActionScope, true ) );
@@ -123,7 +125,7 @@ void QgsActionMenu::reloadActions()
     addAction( qAction );
   }
 
-  QList<QgsMapLayerAction *> mapLayerActions = QgsMapLayerActionRegistry::instance()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
+  QList<QgsMapLayerAction *> mapLayerActions = QgsGui::mapLayerActionRegistry()->mapLayerActions( mLayer, QgsMapLayerAction::SingleFeature );
 
   if ( !mapLayerActions.isEmpty() )
   {
@@ -157,10 +159,4 @@ QgsActionMenu::ActionData::ActionData( const QgsAction &action, QgsFeatureId fea
   , actionData( QVariant::fromValue<QgsAction>( action ) )
   , featureId( featureId )
   , mapLayer( mapLayer )
-{}
-
-QgsActionMenu::ActionData::ActionData()
-  : actionType( Invalid )
-  , featureId( 0 )
-  , mapLayer( nullptr )
 {}

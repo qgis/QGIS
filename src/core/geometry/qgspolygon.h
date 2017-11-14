@@ -19,55 +19,74 @@
 #define QGSPOLYGONV2_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgscurvepolygon.h"
 
-/** \ingroup core
- * \class QgsPolygonV2
+/**
+ * \ingroup core
+ * \class QgsPolygon
  * \brief Polygon geometry type.
- * \note added in QGIS 2.10
- * \note this API is not considered stable and may change for 2.12
+ * \since QGIS 2.10
  */
-class CORE_EXPORT QgsPolygonV2: public QgsCurvePolygon
+class CORE_EXPORT QgsPolygon: public QgsCurvePolygon
 {
   public:
-    QgsPolygonV2();
+    QgsPolygon();
 
-    bool operator==( const QgsPolygonV2 &other ) const;
-    bool operator!=( const QgsPolygonV2 &other ) const;
-
-    virtual QString geometryType() const override { return QStringLiteral( "Polygon" ); }
-    virtual QgsPolygonV2 *clone() const override;
+    QString geometryType() const override;
+    QgsPolygon *clone() const override SIP_FACTORY;
     void clear() override;
-
-    virtual bool fromWkb( QgsConstWkbPtr &wkb ) override;
-
-    // inherited: bool fromWkt( const QString &wkt );
-
+    bool fromWkb( QgsConstWkbPtr &wkb ) override;
     QByteArray asWkb() const override;
-    // inherited: QString asWkt( int precision = 17 ) const;
-    // inherited: QDomElement asGML2( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    // inherited: QDomElement asGML3( QDomDocument& doc, int precision = 17, const QString& ns = "gml" ) const;
-    // inherited: QString asJSON( int precision = 17 ) const;
+    QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 
-    QgsPolygonV2 *surfaceToPolygon() const override;
+    /**
+     * Returns the geometry converted to the more generic curve type QgsCurvePolygon
+     \returns the converted geometry. Caller takes ownership*/
+    QgsCurvePolygon *toCurveType() const override SIP_FACTORY;
 
-    /** Returns the geometry converted to the more generic curve type QgsCurvePolygon
-     @return the converted geometry. Caller takes ownership*/
-    QgsAbstractGeometry *toCurveType() const override;
-
-    void addInteriorRing( QgsCurve *ring ) override;
+    void addInteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
     //overridden to handle LineString25D rings
-    virtual void setExteriorRing( QgsCurve *ring ) override;
+    void setExteriorRing( QgsCurve *ring SIP_TRANSFER ) override;
 
-    virtual QgsAbstractGeometry *boundary() const override;
+    QgsAbstractGeometry *boundary() const override SIP_FACTORY;
 
     /**
      * Returns the distance from a point to the boundary of the polygon (either the
      * exterior ring or any closer interior rings). The returned distance will be
      * negative if the point lies outside the polygon.
-     * @note added in QGIS 3.0
+     * \since QGIS 3.0
      */
     double pointDistanceToBoundary( double x, double y ) const;
+
+#ifndef SIP_RUN
+
+    /**
+     * Cast the \a geom to a QgsPolygonV2.
+     * Should be used by qgsgeometry_cast<QgsPolygon *>( geometry ).
+     *
+     * \note Not available in Python. Objects will be automatically be converted to the appropriate target type.
+     * \since QGIS 3.0
+     */
+    inline const QgsPolygon *cast( const QgsAbstractGeometry *geom ) const
+    {
+      if ( !geom )
+        return nullptr;
+
+      QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( geom->wkbType() );
+
+      if ( flatType == QgsWkbTypes::Polygon
+           || flatType == QgsWkbTypes::Triangle )
+        return static_cast<const QgsPolygon *>( geom );
+      return nullptr;
+    }
+#endif
+
+  protected:
+
+    QgsPolygon *createEmptyWithSameType() const override SIP_FACTORY;
+
+    friend class QgsCurvePolygon;
 
 };
 #endif // QGSPOLYGONV2_H

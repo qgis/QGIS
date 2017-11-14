@@ -61,7 +61,8 @@ typedef SInt32 SRefCon;
 #include "qgslogger.h"
 
 
-/** Print usage text
+/**
+ * Print usage text
  */
 void usage( std::string const &appName )
 {
@@ -105,7 +106,7 @@ void usage( std::string const &appName )
 // AppleEvent handler as well as by the main routine argv processing
 
 // This behavior will cause QGIS to autoload a project
-static QString myProjectFileName = QLatin1String( "" );
+static QString myProjectFileName;
 
 // This is the 'leftover' arguments collection
 static QStringList sFileList;
@@ -131,12 +132,12 @@ int main( int argc, char *argv[] )
   //
 
   int myIterations = 1;
-  QString mySnapshotFileName = QLatin1String( "" );
-  QString myLogFileName = QLatin1String( "" );
-  QString myPrefixPath = QLatin1String( "" );
+  QString mySnapshotFileName;
+  QString myLogFileName;
+  QString myPrefixPath;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
-  QString myQuality = QLatin1String( "" );
+  QString myQuality;
   bool myParallel = false;
   QString myPrintTime = QStringLiteral( "total" );
 
@@ -144,7 +145,7 @@ int main( int argc, char *argv[] )
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
-  QString myInitialExtent = QLatin1String( "" );
+  QString myInitialExtent;
   if ( argc == 1 )
     myInitialExtent = QStringLiteral( "-1,-1,1,1" );
 
@@ -475,7 +476,7 @@ int main( int argc, char *argv[] )
     for ( int i = 0; i < argc; i++ )
     {
       QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.contains( QLatin1String( ".qgs" ) ) )
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
         break;
@@ -526,7 +527,7 @@ int main( int argc, char *argv[] )
     QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.contains( QLatin1String( ".qgs" ) ) )
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
@@ -582,12 +583,12 @@ int main( int argc, char *argv[] )
 
   qbench->render();
 
-  if ( mySnapshotFileName != QLatin1String( "" ) )
+  if ( !mySnapshotFileName.isEmpty() )
   {
     qbench->saveSnapsot( mySnapshotFileName );
   }
 
-  if ( myLogFileName != QLatin1String( "" ) )
+  if ( !myLogFileName.isEmpty() )
   {
     qbench->saveLog( myLogFileName );
   }

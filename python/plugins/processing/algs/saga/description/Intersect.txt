@@ -1,0 +1,6 @@
+Intersect
+shapes_polygons
+QgsProcessingParameterFeatureSource|A|Layer A|-1|None|False
+QgsProcessingParameterFeatureSource|B|Layer B|-1|None|False
+QgsProcessingParameterVectorDestination|RESULT|Intersect
+QgsProcessingParameterBoolean|SPLIT|Split Parts|True

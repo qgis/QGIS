@@ -20,10 +20,11 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgsrectangle.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 #include "qgsoracletablemodel.h"
 #include "qgsdatasourceuri.h"
 #include "qgsfields.h"
+#include "qgsproviderregistry.h"
 
 #include <QVector>
 #include <QQueue>
@@ -61,7 +62,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
   public:
 
     //! Import a vector layer into the database
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
       const QString &uri,
       const QgsFields &fields,
       QgsWkbTypes::Type wkbType,
@@ -75,7 +76,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     /**
      * Constructor for the provider. The uri must be in the following format:
      * host=localhost user=gsherman dbname=test password=xxx table=test.alaska (the_geom)
-     * @param uri String containing the required parameters to connect to the database
+     * \param uri String containing the required parameters to connect to the database
      * and query the table.
      */
     explicit QgsOracleProvider( QString const &uri = "" );
@@ -88,8 +89,9 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual QgsCoordinateReferenceSystem crs() const override;
     QgsWkbTypes::Type wkbType() const override;
 
-    /** Return the number of layers for the current data source
-     * @note Should this be subLayerCount() instead?
+    /**
+     * Return the number of layers for the current data source
+     * \note Should this be subLayerCount() instead?
      */
     size_t layerCount() const;
 
@@ -114,25 +116,27 @@ class QgsOracleProvider : public QgsVectorDataProvider
     virtual QgsRectangle extent() const override;
     virtual void updateExtents() override;
 
-    /** Determine the fields making up the primary key
+    /**
+     * Determine the fields making up the primary key
      */
     bool determinePrimaryKey();
 
     QgsFields fields() const override;
     QString dataComment() const override;
 
-    /** Reset the layer
+    /**
+     * Reset the layer
      */
     void rewind();
 
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 ) const override;
+    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
     bool isValid() const override;
     QgsAttributeList pkAttributeIndexes() const override { return mPrimaryKeyAttrs; }
-    QVariant defaultValue( QString fieldName, QString tableName = QString::null, QString schemaName = QString::null );
+    QVariant defaultValue( QString fieldName, QString tableName = QString(), QString schemaName = QString() );
     QVariant defaultValue( int fieldId ) const override;
-    bool addFeatures( QgsFeatureList &flist ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
     bool deleteAttributes( const QgsAttributeIds &ids ) override;
@@ -177,7 +181,8 @@ class QgsOracleProvider : public QgsVectorDataProvider
 
     QgsField field( int index ) const;
 
-    /** Load the field list
+    /**
+     * Load the field list
      */
     bool loadFields();
 
@@ -300,7 +305,7 @@ class QgsOracleProvider : public QgsVectorDataProvider
     bool mHasSpatialIndex;                   //! Geometry column is indexed
     QString mSpatialIndexName;               //! name of spatial index of geometry column
 
-    QSharedPointer<QgsOracleSharedData> mShared;
+    std::shared_ptr<QgsOracleSharedData> mShared;
 
     friend class QgsOracleFeatureIterator;
     friend class QgsOracleFeatureSource;
@@ -315,21 +320,22 @@ class QgsOracleUtils
                                 const QgsFields &fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int> &primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData,
+                                std::shared_ptr<QgsOracleSharedData> sharedData,
                                 QVariantList &params );
 
     static QString whereClause( QgsFeatureIds featureIds,
                                 const QgsFields &fields,
                                 QgsOraclePrimaryKeyType primaryKeyType,
                                 const QList<int> &primaryKeyAttrs,
-                                QSharedPointer<QgsOracleSharedData> sharedData,
+                                std::shared_ptr<QgsOracleSharedData> sharedData,
                                 QVariantList &params );
 
     static QString andWhereClauses( const QString &c1, const QString &c2 );
 };
 
 
-/** Data shared between provider class and its feature sources. Ideally there should
+/**
+ * Data shared between provider class and its feature sources. Ideally there should
  *  be as few members as possible because there could be simultaneous reads/writes
  *  from different threads and therefore locking has to be involved. */
 class QgsOracleSharedData

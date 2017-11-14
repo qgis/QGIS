@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="750" height="450" viewBox="0 0 250 150">
+<clipPath id="c">
+<circle r="25"/>
+</clipPath>
+<rect width="250" height="150" fill="#e8112d"/>
+<g transform="translate(125,75)">
+<g id="r20" transform="scale(0.25)">
+<g id="r4">
+<path id="r1" d="m-8.4,108c8.4,22 -9.6,56 8.4,72c-6,-24 14-50 8.4,-72s-25.2,-22 -16.8,0z" fill="#ffef00"/>
+<use xlink:href="#r1" transform="rotate(90)"/>
+<use xlink:href="#r1" transform="rotate(180)"/>
+<use xlink:href="#r1" transform="rotate(270)"/>
+</g>
+<use xlink:href="#r4" transform="rotate(18)"/>
+<use xlink:href="#r4" transform="rotate(36)"/>
+<use xlink:href="#r4" transform="rotate(54)"/>
+<use xlink:href="#r4" transform="rotate(72)"/>
+</g>
+<use xlink:href="#r20" transform="rotate(9)"/>
+<circle r="27" fill="#e8112d"/>
+<circle cy="-1.5" r="22.5" fill="#ffef00"/>
+<g id="x" fill="#e8112d" clip-path="url(#c)">
+<path d="M-23.055236,18a37.755236,37.755236 0 1,1 75.510472,0H52.760449a36.260449,36.260449 0 1,0 -72.520898,0z"/>
+<path d="M-17.601203,18a35.301203,35.301203 0 1,1 70.602406,0H53.424578a33.924578,33.924578 0 1,0 -67.849156,0z"/>
+<path d="M20.7,-15.052356a33.052356,33.052356 0 1,0 0,66.104712L22.5,49.819805a31.819805,31.819805 0 1,1 0,-63.63961z"/>
+</g>
+<use xlink:href="#x" transform="scale(-1,1)"/>
+</g>
+</svg>

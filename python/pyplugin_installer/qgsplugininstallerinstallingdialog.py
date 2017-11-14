@@ -30,7 +30,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.PyQt.QtNetwork import QNetworkRequest, QNetworkReply
 
 import qgis
-from qgis.core import QgsNetworkAccessManager, QgsAuthManager
+from qgis.core import QgsNetworkAccessManager, QgsApplication
 
 from .ui_qgsplugininstallerinstallingbase import Ui_QgsPluginInstallerInstallingDialogBase
 from .installer_data import removeDir, repositories
@@ -60,7 +60,7 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.request = QNetworkRequest(url)
         authcfg = repositories.all()[plugin["zip_repository"]]["authcfg"]
         if authcfg and isinstance(authcfg, str):
-            if not QgsAuthManager.instance().updateNetworkRequest(
+            if not QgsApplication.authManager().updateNetworkRequest(
                     self.request, authcfg.strip()):
                 self.mResult = self.tr(
                     "Update of network request with authentication "

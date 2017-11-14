@@ -19,11 +19,13 @@
 #define QGSBRIGHTNESSCONTRASTFILTER_H
 
 #include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Brightness/contrast filter pipe for rasters.
   */
 class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
@@ -31,7 +33,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
   public:
     QgsBrightnessContrastFilter( QgsRasterInterface *input = nullptr );
 
-    QgsBrightnessContrastFilter *clone() const override;
+    QgsBrightnessContrastFilter *clone() const override SIP_FACTORY;
 
     int bandCount() const override;
 
@@ -39,7 +41,7 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 
     bool setInput( QgsRasterInterface *input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
     int brightness() const { return mBrightness; }
@@ -57,10 +59,10 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     int  adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor ) const;
 
     //! Current brightness coefficient value. Default: 0. Range: -255...255
-    int mBrightness;
+    int mBrightness = 0;
 
     //! Current contrast coefficient value. Default: 0. Range: -100...100
-    double mContrast;
+    double mContrast = 0;
 };
 
 #endif // QGSBRIGHTNESSCONTRASTFILTER_H

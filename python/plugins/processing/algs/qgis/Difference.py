@@ -29,72 +29,90 @@ import os
 
 from qgis.PyQt.QtGui import QIcon
 
-from qgis.core import QgsFeatureRequest, QgsFeature, QgsGeometry, QgsWkbTypes
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.parameters import ParameterVector
-from processing.core.outputs import OutputVector
-from processing.tools import dataobjects, vector
+from qgis.core import (QgsFeature,
+                       QgsFeatureSink,
+                       QgsGeometry,
+                       QgsFeatureRequest,
+                       QgsWkbTypes,
+                       QgsProcessingParameterFeatureSource,
+                       QgsProcessingParameterFeatureSink,
+                       QgsSpatialIndex)
+from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
 
-class Difference(GeoAlgorithm):
+class Difference(QgisAlgorithm):
 
     INPUT = 'INPUT'
     OVERLAY = 'OVERLAY'
-    IGNORE_INVALID = 'IGNORE_INVALID'
     OUTPUT = 'OUTPUT'
 
-    def getIcon(self):
+    def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'ftools', 'difference.png'))
 
-    def defineCharacteristics(self):
-        self.name, self.i18n_name = self.trAlgorithm('Difference')
-        self.group, self.i18n_group = self.trAlgorithm('Vector overlay tools')
-        self.addParameter(ParameterVector(Difference.INPUT,
-                                          self.tr('Input layer')))
-        self.addParameter(ParameterVector(Difference.OVERLAY,
-                                          self.tr('Difference layer')))
-        self.addOutput(OutputVector(Difference.OUTPUT, self.tr('Difference')))
+    def group(self):
+        return self.tr('Vector overlay')
 
-    def processAlgorithm(self, feedback):
-        layerA = dataobjects.getObjectFromUri(
-            self.getParameterValue(Difference.INPUT))
-        layerB = dataobjects.getObjectFromUri(
-            self.getParameterValue(Difference.OVERLAY))
+    def __init__(self):
+        super().__init__()
 
-        geomType = QgsWkbTypes.multiType(layerA.wkbType())
-        writer = self.getOutputFromName(
-            Difference.OUTPUT).getVectorWriter(layerA.fields(),
-                                               geomType,
-                                               layerA.crs())
+    def initAlgorithm(self, config=None):
+        self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT,
+                                                              self.tr('Input layer')))
+        self.addParameter(QgsProcessingParameterFeatureSource(self.OVERLAY,
+                                                              self.tr('Difference layer')))
 
+        self.addParameter(QgsProcessingParameterFeatureSink(self.OUTPUT, self.tr('Difference')))
+
+    def name(self):
+        return 'difference'
+
+    def displayName(self):
+        return self.tr('Difference')
+
+    def processAlgorithm(self, parameters, context, feedback):
+        sourceA = self.parameterAsSource(parameters, self.INPUT, context)
+        sourceB = self.parameterAsSource(parameters, self.OVERLAY, context)
+
+        geomType = QgsWkbTypes.multiType(sourceA.wkbType())
+
+        (sink, dest_id) = self.parameterAsSink(parameters, self.OUTPUT, context,
+                                               sourceA.fields(), geomType, sourceA.sourceCrs())
+
+        featB = QgsFeature()
         outFeat = QgsFeature()
-        index = vector.spatialindex(layerB)
-        selectionA = vector.features(layerA)
-        total = 100.0 / len(selectionA)
-        for current, inFeatA in enumerate(selectionA):
-            geom = inFeatA.geometry()
-            diff_geom = QgsGeometry(geom)
-            attrs = inFeatA.attributes()
-            intersections = index.intersects(geom.boundingBox())
 
-            request = QgsFeatureRequest().setFilterFids(intersections).setSubsetOfAttributes([])
-            for inFeatB in layerB.getFeatures(request):
-                tmpGeom = inFeatB.geometry()
-                if diff_geom.intersects(tmpGeom):
-                    diff_geom = QgsGeometry(diff_geom.difference(tmpGeom))
+        indexB = QgsSpatialIndex(sourceB.getFeatures(QgsFeatureRequest().setSubsetOfAttributes([]).setDestinationCrs(sourceA.sourceCrs())), feedback)
 
-            try:
-                outFeat.setGeometry(diff_geom)
+        total = 100.0 / (sourceA.featureCount() * sourceB.featureCount()) if sourceA.featureCount() and sourceB.featureCount() else 1
+        count = 0
+
+        for featA in sourceA.getFeatures():
+            if feedback.isCanceled():
+                break
+
+            if featA.hasGeometry():
+                geom = featA.geometry()
+                diffGeom = QgsGeometry(geom)
+                attrs = featA.attributes()
+                intersects = indexB.intersects(geom.boundingBox())
+                request = QgsFeatureRequest().setFilterFids(intersects).setSubsetOfAttributes([])
+                request.setDestinationCrs(sourceA.sourceCrs())
+                for featB in sourceB.getFeatures(request):
+                    if feedback.isCanceled():
+                        break
+                    tmpGeom = featB.geometry()
+                    if diffGeom.intersects(tmpGeom):
+                        diffGeom = QgsGeometry(diffGeom.difference(tmpGeom))
+
+                outFeat.setGeometry(diffGeom)
                 outFeat.setAttributes(attrs)
-                writer.addFeature(outFeat)
-            except:
-                ProcessingLog.addToLog(ProcessingLog.LOG_WARNING,
-                                       self.tr('Feature geometry error: One or more output features ignored due to invalid geometry.'))
-                continue
+                sink.addFeature(outFeat, QgsFeatureSink.FastInsert)
+            else:
+                sink.addFeature(featA, QgsFeatureSink.FastInsert)
 
-            feedback.setProgress(int(current * total))
+            count += 1
+            feedback.setProgress(int(count * total))
 
-        del writer
+        return {self.OUTPUT: dest_id}

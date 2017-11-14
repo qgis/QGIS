@@ -19,7 +19,6 @@
 #include "qgsgeometry.h"
 #include "qgsfeature.h"
 #include "qgsvectorlayer.h"
-#include "qgsgeometrycache.h"
 #include "qgsvectorlayereditbuffer.h"
 
 #include "qgslogger.h"
@@ -51,18 +50,12 @@ void QgsVectorLayerUndoCommandAddFeature::undo()
 #endif
   mBuffer->mAddedFeatures.remove( mFeature.id() );
 
-  if ( mFeature.hasGeometry() )
-    cache()->removeGeometry( mFeature.id() );
-
   emit mBuffer->featureDeleted( mFeature.id() );
 }
 
 void QgsVectorLayerUndoCommandAddFeature::redo()
 {
   mBuffer->mAddedFeatures.insert( mFeature.id(), mFeature );
-
-  if ( mFeature.hasGeometry() )
-    cache()->cacheGeometry( mFeature.id(), mFeature.geometry() );
 
   emit mBuffer->featureAdded( mFeature.id() );
 }
@@ -127,8 +120,7 @@ QgsVectorLayerUndoCommandChangeGeometry::QgsVectorLayerUndoCommandChangeGeometry
   {
     bool changedAlready = mBuffer->mChangedGeometries.contains( mFid );
     QgsGeometry geom;
-    bool cachedGeom = cache()->geometry( mFid, geom );
-    mOldGeom = ( changedAlready && cachedGeom ) ? geom : QgsGeometry();
+    mOldGeom = changedAlready ? geom : QgsGeometry();
   }
 }
 
@@ -164,7 +156,6 @@ void QgsVectorLayerUndoCommandChangeGeometry::undo()
     Q_ASSERT( it != mBuffer->mAddedFeatures.end() );
     it.value().setGeometry( mOldGeom );
 
-    cache()->cacheGeometry( mFid, mOldGeom );
     emit mBuffer->geometryChanged( mFid, mOldGeom );
   }
   else
@@ -178,14 +169,12 @@ void QgsVectorLayerUndoCommandChangeGeometry::undo()
       QgsFeature f;
       if ( layer()->getFeatures( QgsFeatureRequest().setFilterFid( mFid ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) && f.hasGeometry() )
       {
-        cache()->cacheGeometry( mFid, f.geometry() );
         emit mBuffer->geometryChanged( mFid, f.geometry() );
       }
     }
     else
     {
       mBuffer->mChangedGeometries[mFid] = mOldGeom;
-      cache()->cacheGeometry( mFid, mOldGeom );
       emit mBuffer->geometryChanged( mFid, mOldGeom );
     }
   }
@@ -205,7 +194,6 @@ void QgsVectorLayerUndoCommandChangeGeometry::redo()
   {
     mBuffer->mChangedGeometries[ mFid ] = mNewGeom;
   }
-  cache()->cacheGeometry( mFid, mNewGeom );
   emit mBuffer->geometryChanged( mFid, mNewGeom );
 }
 

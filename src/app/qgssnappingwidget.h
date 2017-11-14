@@ -24,6 +24,7 @@ class QFont;
 class QToolButton;
 class QTreeView;
 
+class QgsDoubleSpinBox;
 class QgsLayerTreeGroup;
 class QgsLayerTreeNode;
 class QgsLayerTreeView;
@@ -49,9 +50,9 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
 
     /**
      * Constructor
-     * @param project The project with which this widget configuration will be synchronized
-     * @param canvas the map canvas (used for map units)
-     * @param parent is the parent widget. Based on the type of parent, it will
+     * \param project The project with which this widget configuration will be synchronized
+     * \param canvas the map canvas (used for map units)
+     * \param parent is the parent widget. Based on the type of parent, it will
      * be displayed a tool bar, in the status bar or as a widget/dialog.
      */
     QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas, QWidget *parent = nullptr );
@@ -74,8 +75,11 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
      */
     QAction *enableTracingAction() { return mEnableTracingAction; }
 
+    //! Returns spin box used to set offset for tracing
+    QgsDoubleSpinBox *tracingOffsetSpinBox() { return mTracingOffsetSpinBox; }
+
   signals:
-    void snappingConfigChanged( );
+    void snappingConfigChanged();
 
   private slots:
     void projectSnapSettingsChanged();
@@ -136,6 +140,7 @@ class APP_EXPORT QgsSnappingWidget : public QWidget
     QAction *mTopologicalEditingAction = nullptr;
     QAction *mIntersectionSnappingAction = nullptr;
     QAction *mEnableTracingAction = nullptr;
+    QgsDoubleSpinBox *mTracingOffsetSpinBox = nullptr;
     QTreeView *mLayerTreeView = nullptr;
 
     void cleanGroup( QgsLayerTreeNode *node );

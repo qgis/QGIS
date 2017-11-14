@@ -16,12 +16,6 @@
 
 #include "qgsoptionalexpression.h"
 
-QgsOptionalExpression::QgsOptionalExpression()
-  : QgsOptional<QgsExpression>()
-{
-
-}
-
 QgsOptionalExpression::QgsOptionalExpression( const QgsExpression &expression )
   : QgsOptional<QgsExpression>( expression )
 {

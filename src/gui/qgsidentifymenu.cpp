@@ -24,14 +24,7 @@
 #include "qgsvectorlayer.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
-
-
-/// @cond PRIVATE
-CustomActionRegistry::CustomActionRegistry( QObject *parent )
-  : QgsMapLayerActionRegistry( parent )
-{
-}
-///@endcond
+#include "qgsgui.h"
 
 QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   : QMenu( canvas )
@@ -43,7 +36,6 @@ QgsIdentifyMenu::QgsIdentifyMenu( QgsMapCanvas *canvas )
   , mMaxLayerDisplay( 10 )
   , mMaxFeatureDisplay( 10 )
   , mDefaultActionName( tr( "Identify" ) )
-  , mCustomActionRegistry( CustomActionRegistry::instance() )
 {
 }
 
@@ -134,7 +126,7 @@ QList<QgsMapToolIdentify::IdentifyResult> QgsIdentifyMenu::exec( const QList<Qgs
     addSeparator();
     QAction *allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( idResults.count() ), this );
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( nullptr ) ) );
-    connect( allAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+    connect( allAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     addAction( allAction );
   }
 
@@ -178,7 +170,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
   }
   if ( mShowFeatureActions )
   {
-    layerActions.append( QgsMapLayerActionRegistry::instance()->mapLayerActions( layer, QgsMapLayerAction::Layer ) );
+    layerActions.append( QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, QgsMapLayerAction::Layer ) );
     if ( layerActions.count() > nCustomActions )
     {
       separators.append( layerActions[nCustomActions] );
@@ -199,7 +191,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
   // add layer action to the top menu
   layerAction->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconRasterLayer.svg" ) ) );
   layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
-  connect( layerAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+  connect( layerAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
   addAction( layerAction );
 
   // no need to go further if there is no menu
@@ -208,7 +200,7 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
 
   // add default identify action
   QAction *identifyFeatureAction = new QAction( mDefaultActionName, layerMenu );
-  connect( identifyFeatureAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+  connect( identifyFeatureAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
   identifyFeatureAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
   layerMenu->addAction( identifyFeatureAction );
 
@@ -217,8 +209,8 @@ void QgsIdentifyMenu::addRasterLayer( QgsMapLayer *layer )
   {
     QAction *action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), layerMenu );
     action->setData( QVariant::fromValue<ActionData>( ActionData( layer, true ) ) );
-    connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
-    connect( action, SIGNAL( triggered() ), this, SLOT( triggerMapLayerAction() ) );
+    connect( action, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
+    connect( action, &QAction::triggered, this, &QgsIdentifyMenu::triggerMapLayerAction );
     layerMenu->addAction( action );
     if ( separators.contains( mapLayerAction ) )
     {
@@ -245,7 +237,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
   }
   if ( mShowFeatureActions )
   {
-    layerActions << QgsMapLayerActionRegistry::instance()->mapLayerActions( layer, targets );
+    layerActions << QgsGui::mapLayerActionRegistry()->mapLayerActions( layer, targets );
 
     if ( layerActions.count() > nCustomActions )
     {
@@ -267,7 +259,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     createMenu = !mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature ).isEmpty();
     if ( !createMenu && mShowFeatureActions )
     {
-      QgsActionMenu *featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "AttributeTableRow" ), this );
+      QgsActionMenu *featureActionMenu = new QgsActionMenu( layer, results[0].mFeature, QStringLiteral( "Feature" ), this );
       createMenu  = !featureActionMenu->actions().isEmpty();
       delete featureActionMenu;
     }
@@ -329,7 +321,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
 
     // add layer action to the top menu
     layerAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
-    connect( layerAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+    connect( layerAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     addAction( layerAction );
   }
 
@@ -352,7 +344,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     QList<QgsMapLayerAction *> customFeatureActions = mCustomActionRegistry.mapLayerActions( layer, QgsMapLayerAction::SingleFeature );
     if ( mShowFeatureActions )
     {
-      featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "AttributeTableRow" ), layerMenu );
+      featureActionMenu = new QgsActionMenu( layer, result.mFeature, QStringLiteral( "Feature" ), layerMenu );
     }
 
     // feature title
@@ -365,7 +357,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       featureAction = new QAction( featureTitle, layerMenu );
       // add the feature action (or menu) to the layer menu
       featureAction->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id() ) ) );
-      connect( featureAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      connect( featureAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
       layerMenu->addAction( featureAction );
     }
     else if ( results.count() == 1 )
@@ -383,7 +375,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       featureAction = featureMenu->menuAction();
       // add the feature action (or menu) to the layer menu
       featureAction->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id() ) ) );
-      connect( featureAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+      connect( featureAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
       layerMenu->addAction( featureAction );
     }
 
@@ -393,7 +385,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
 
     // add default identify action
     QAction *identifyFeatureAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), mDefaultActionName, featureMenu );
-    connect( identifyFeatureAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+    connect( identifyFeatureAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     identifyFeatureAction->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id() ) ) );
     featureMenu->addAction( identifyFeatureAction );
     featureMenu->addSeparator();
@@ -403,8 +395,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     {
       QAction *action = new QAction( mapLayerAction->icon(), mapLayerAction->text(), featureMenu );
       action->setData( QVariant::fromValue<ActionData>( ActionData( layer, result.mFeature.id(), mapLayerAction ) ) );
-      connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
-      connect( action, SIGNAL( triggered() ), this, SLOT( triggerMapLayerAction() ) );
+      connect( action, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
+      connect( action, &QAction::triggered, this, &QgsIdentifyMenu::triggerMapLayerAction );
       featureMenu->addAction( action );
     }
     // use QgsActionMenu for feature actions
@@ -412,7 +404,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     {
       Q_FOREACH ( QAction *action, featureActionMenu->actions() )
       {
-        connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+        connect( action, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
         featureMenu->addAction( action );
       }
     }
@@ -426,7 +418,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
     layerMenu->addSeparator();
     QAction *allAction = new QAction( QgsApplication::getThemeIcon( QStringLiteral( "/mActionIdentify.svg" ) ), tr( "%1 all (%2)" ).arg( mDefaultActionName ).arg( results.count() ), layerMenu );
     allAction->setData( QVariant::fromValue<ActionData>( ActionData( layer ) ) );
-    connect( allAction, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
+    connect( allAction, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
     layerMenu->addAction( allAction );
   }
 
@@ -438,8 +430,8 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer *layer, const QList<QgsMapT
       title.append( QStringLiteral( " (%1)" ).arg( results.count() ) );
     QAction *action = new QAction( mapLayerAction->icon(), title, layerMenu );
     action->setData( QVariant::fromValue<ActionData>( ActionData( layer, mapLayerAction ) ) );
-    connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
-    connect( action, SIGNAL( triggered() ), this, SLOT( triggerMapLayerAction() ) );
+    connect( action, &QAction::hovered, this, &QgsIdentifyMenu::handleMenuHover );
+    connect( action, &QAction::triggered, this, &QgsIdentifyMenu::triggerMapLayerAction );
     layerMenu->addAction( action );
     if ( separators.contains( mapLayerAction ) )
     {
@@ -603,17 +595,17 @@ void QgsIdentifyMenu::handleMenuHover()
 
     QgsHighlight *hl = new QgsHighlight( mCanvas, result.mFeature.geometry(), vl );
     QgsSettings settings;
-    QColor color = QColor( settings.value( QStringLiteral( "/Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
-    int alpha = settings.value( QStringLiteral( "/Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
-    double buffer = settings.value( QStringLiteral( "/Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
-    double minWidth = settings.value( QStringLiteral( "/Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
+    QColor color = QColor( settings.value( QStringLiteral( "Map/highlight/color" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.name() ).toString() );
+    int alpha = settings.value( QStringLiteral( "Map/highlight/colorAlpha" ), Qgis::DEFAULT_HIGHLIGHT_COLOR.alpha() ).toInt();
+    double buffer = settings.value( QStringLiteral( "Map/highlight/buffer" ), Qgis::DEFAULT_HIGHLIGHT_BUFFER_MM ).toDouble();
+    double minWidth = settings.value( QStringLiteral( "Map/highlight/minWidth" ), Qgis::DEFAULT_HIGHLIGHT_MIN_WIDTH_MM ).toDouble();
     hl->setColor( color ); // sets also fill with default alpha
     color.setAlpha( alpha );
     hl->setFillColor( color ); // sets fill with alpha
     hl->setBuffer( buffer );
     hl->setMinWidth( minWidth );
     mRubberBands.append( hl );
-    connect( vl, SIGNAL( destroyed() ), this, SLOT( layerDestroyed() ) );
+    connect( vl, &QObject::destroyed, this, &QgsIdentifyMenu::layerDestroyed );
   }
 }
 

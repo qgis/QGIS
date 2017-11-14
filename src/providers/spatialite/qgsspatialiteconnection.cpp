@@ -27,7 +27,7 @@
 QStringList QgsSpatiaLiteConnection::connectionList()
 {
   QgsSettings settings;
-  settings.beginGroup( QStringLiteral( "/SpatiaLite/connections" ) );
+  settings.beginGroup( QStringLiteral( "SpatiaLite/connections" ) );
   return settings.childGroups();
 }
 
@@ -52,7 +52,7 @@ QgsSpatiaLiteConnection::QgsSpatiaLiteConnection( const QString &name )
   // "name" can be either a saved connection or a path to database
 
   QgsSettings settings;
-  mPath = settings.value( QStringLiteral( "/SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
+  mPath = settings.value( QStringLiteral( "SpatiaLite/connections/%1/sqlitepath" ).arg( name ) ).toString();
   if ( mPath.isNull() )
     mPath = name; // not found in settings - probably it's a path
 }
@@ -609,7 +609,7 @@ bool QgsSpatiaLiteConnection::isRasterlite1Datasource( sqlite3 *handle, const ch
     return false;
   if ( strcmp( table_raster + len - 9, "_metadata" ) != 0 )
     return false;
-  // ok, possible candidate
+  // OK, possible candidate
   strcpy( table_raster + len - 9, "_rasters" );
 
   // checking if the related "_RASTERS table exists
@@ -751,7 +751,7 @@ QgsSqliteHandle *QgsSqliteHandle::openDb( const QString &dbPath, bool shared )
     return nullptr;
   }
   // activating Foreign Key constraints
-  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, 0, nullptr );
+  ( void )sqlite3_exec( sqlite_handle, "PRAGMA foreign_keys = 1", nullptr, nullptr, nullptr );
 
   QgsDebugMsg( "Connection to the database was successful" );
 

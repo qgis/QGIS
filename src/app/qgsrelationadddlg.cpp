@@ -33,6 +33,10 @@ QgsRelationAddDlg::QgsRelationAddDlg( QWidget *parent )
   mCbxReferencedLayer->setFilters( QgsMapLayerProxyModel::VectorLayer );
   mCbxReferencedField->setLayer( mCbxReferencedLayer->currentLayer() );
 
+  mCbxRelationStrength->addItem( "Association", QVariant::fromValue( QgsRelation::RelationStrength::Association ) );
+  mCbxRelationStrength->addItem( "Composition", QVariant::fromValue( QgsRelation::RelationStrength::Composition ) );
+  mCbxRelationStrength->setToolTip( QStringLiteral( "On composition, the child features will be duplicated too. Duplications are made by the feature duplication default action" ) );
+
   mTxtRelationId->setPlaceholderText( tr( "[Generated automatically]" ) );
   checkDefinitionValid();
 
@@ -74,6 +78,10 @@ QString QgsRelationAddDlg::relationName()
   return mTxtRelationName->text();
 }
 
+QgsRelation::RelationStrength QgsRelationAddDlg::relationStrength()
+{
+  return mCbxRelationStrength->currentData().value<QgsRelation::RelationStrength>();
+}
 
 void QgsRelationAddDlg::checkDefinitionValid()
 {

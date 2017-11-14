@@ -21,7 +21,7 @@
 #include "ui_qgsprojectpropertiesbase.h"
 #include "qgis.h"
 #include "qgsunittypes.h"
-#include "qgisgui.h"
+#include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
 
@@ -31,9 +31,10 @@ class QgsStyle;
 class QgsExpressionContext;
 class QgsLayerTreeGroup;
 
-/** Dialog to set project level properties
+/**
+ * Dialog to set project level properties
 
-  @note actual state is stored in QgsProject singleton instance
+  \note actual state is stored in QgsProject singleton instance
 
  */
 class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui::QgsProjectPropertiesBase
@@ -42,12 +43,12 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
   public:
     //! Constructor
-    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgisGui::ModalDialogFlags );
+    QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
     ~QgsProjectProperties();
 
-    /*!
+    /**
        Every project has a title
      */
     QString title() const;
@@ -57,91 +58,87 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QString projectionWkt();
 
   public slots:
-    /*!
+
+    /**
      * Slot called when apply button is pressed or dialog is accepted
      */
     void apply();
 
-    /*!
+    /**
      * Slot to show the projections tab when the dialog is opened
      */
     void showProjectionsTab();
 
-    /** Let the user add a scale to the list of project scales
+    /**
+     * Let the user add a scale to the list of project scales
      * used in scale combobox instead of global ones */
-    void on_pbnAddScale_clicked();
+    void pbnAddScale_clicked();
 
-    /** Let the user remove a scale from the list of project scales
+    /**
+     * Let the user remove a scale from the list of project scales
      * used in scale combobox instead of global ones */
-    void on_pbnRemoveScale_clicked();
+    void pbnRemoveScale_clicked();
 
     //! Let the user load scales from file
-    void on_pbnImportScales_clicked();
+    void pbnImportScales_clicked();
 
     //! Let the user load scales from file
-    void on_pbnExportScales_clicked();
+    void pbnExportScales_clicked();
 
     //! A scale in the list of project scales changed
     void scaleItemChanged( QListWidgetItem *changedScaleItem );
 
-    /*!
-     * Slots for WMS project settings
+    /**
+     * Set WMS default extent to current canvas extent
      */
-    void on_pbnWMSExtCanvas_clicked();
-    void on_pbnWMSAddSRS_clicked();
-    void on_pbnWMSRemoveSRS_clicked();
-    void on_pbnWMSSetUsedSRS_clicked();
-    void on_mAddWMSComposerButton_clicked();
-    void on_mRemoveWMSComposerButton_clicked();
-    void on_mAddLayerRestrictionButton_clicked();
-    void on_mRemoveLayerRestrictionButton_clicked();
-    void on_mWMSInspireScenario1_toggled( bool on );
-    void on_mWMSInspireScenario2_toggled( bool on );
+    void pbnWMSExtCanvas_clicked();
+    void pbnWMSAddSRS_clicked();
+    void pbnWMSRemoveSRS_clicked();
+    void pbnWMSSetUsedSRS_clicked();
+    void mAddWMSComposerButton_clicked();
+    void mRemoveWMSComposerButton_clicked();
+    void mAddLayerRestrictionButton_clicked();
+    void mRemoveLayerRestrictionButton_clicked();
+    void mWMSInspireScenario1_toggled( bool on );
+    void mWMSInspireScenario2_toggled( bool on );
 
-    /*!
+    /**
      * Slots to select/deselect all the WFS layers
      */
-    void on_pbnWFSLayersSelectAll_clicked();
-    void on_pbnWFSLayersDeselectAll_clicked();
+    void pbnWFSLayersSelectAll_clicked();
+    void pbnWFSLayersDeselectAll_clicked();
 
-    /*!
+    /**
      * Slots to select/deselect all the WCS layers
      */
-    void on_pbnWCSLayersSelectAll_clicked();
-    void on_pbnWCSLayersDeselectAll_clicked();
+    void pbnWCSLayersSelectAll_clicked();
+    void pbnWCSLayersDeselectAll_clicked();
 
-    /*!
+    /**
      * Slots to launch OWS test
      */
-    void on_pbnLaunchOWSChecker_clicked();
+    void pbnLaunchOWSChecker_clicked();
 
-    /*!
+    /**
      * Slots for Styles
      */
-    void on_pbtnStyleManager_clicked();
-    void on_pbtnStyleMarker_clicked();
-    void on_pbtnStyleLine_clicked();
-    void on_pbtnStyleFill_clicked();
-    void on_pbtnStyleColorRamp_clicked();
-    void on_mTransparencySlider_valueChanged( int value );
-    void on_mTransparencySpinBox_valueChanged( int value );
+    void pbtnStyleManager_clicked();
+    void pbtnStyleMarker_clicked();
+    void pbtnStyleLine_clicked();
+    void pbtnStyleFill_clicked();
+    void pbtnStyleColorRamp_clicked();
 
-    /*!
-     * Slot to show the context help for this dialog
-     */
-    void on_buttonBox_helpRequested() { QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#project-properties" ) ); }
-
-    /*!
+    /**
      * Slot to link WFS checkboxes
      */
     void cbxWFSPubliedStateChanged( int aIdx );
 
-    /*!
+    /**
      * Slot to link WCS checkboxes
      */
     void cbxWCSPubliedStateChanged( int aIdx );
 
-    /*!
+    /**
       * If user changes the CRS, set the corresponding map units
       */
     void srIdUpdated();
@@ -153,7 +150,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! sets the right ellipsoid for measuring (from settings)
     void projectionSelectorInitialized();
 
-    void on_mButtonAddColor_clicked();
+    void mButtonAddColor_clicked();
 
   signals:
     //! Signal used to inform listeners that the mouse display precision may have changed
@@ -161,9 +158,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
 
     //! Signal used to inform listeners that project scale list may have changed
     void scalesChanged( const QStringList &scales = QStringList() );
-
-    //! let listening canvases know to refresh
-    void refresh();
 
   private:
 
@@ -183,18 +177,18 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void populateStyles();
     void editSymbol( QComboBox *cbo );
 
-    /*!
+    /**
      * Function to save non-base dialog states
      */
     void saveState();
 
-    /*!
+    /**
      * Function to restore non-base dialog states
      */
     void restoreState();
 
-    /*!
-     * Reset the python macros
+    /**
+     * Reset the Python macros
      */
     void resetPythonMacros();
 
@@ -224,4 +218,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     static const char *GEO_NONE_DESC;
 
     void updateGuiForMapUnits( QgsUnitTypes::DistanceUnit units );
+
+    void showHelp();
 };

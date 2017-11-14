@@ -23,8 +23,11 @@
 class QWidget;
 class QgsMessageBar;
 
+#define SIP_NO_FILE
 
-/** \ingroup gui
+
+/**
+ * \ingroup gui
  * \brief Utility functions for use by authentication GUI widgets or standalone apps
  * \note not available in Python bindings
  */
@@ -80,6 +83,21 @@ class GUI_EXPORT QgsAuthGuiUtils
 
     //! Open file dialog for auth associated widgets
     static QString getOpenFileName( QWidget *parent, const QString &title, const QString &extfilter );
+
+    //! Remove master password from wallet
+    static void passwordHelperDelete( QgsMessageBar *msgbar, int timeout = 0, QWidget *parent = nullptr );
+
+    //! Store master password into the wallet
+    static void passwordHelperSync( QgsMessageBar *msgbar, int timeout = 0 );
+
+    //! Set password helper enabled (enable/disable)
+    static void passwordHelperEnable( bool enabled, QgsMessageBar *msgbar, int timeout = 0 );
+
+    //! Set password helper logging enabled (enable/disable)
+    static void passwordHelperLoggingEnable( bool enabled, QgsMessageBar *msgbar, int timeout = 0 );
+
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSAUTHGUIUTILS_H

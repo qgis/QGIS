@@ -45,11 +45,6 @@
 
 QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   : QgsRasterDataProvider( uri )
-  , mValid( false )
-  , mGrassDataType( 0 )
-  , mCols( 0 )
-  , mRows( 0 )
-  , mYBlockSize( 0 )
   , mNoDataValue( std::numeric_limits<double>::quiet_NaN() )
 {
   QgsDebugMsg( "QgsGrassRasterProvider: constructing with uri '" + uri + "'." );
@@ -123,7 +118,7 @@ QgsGrassRasterProvider::QgsGrassRasterProvider( QString const &uri )
   else if ( mGrassDataType == DCELL_TYPE )
   {
     // Don't use numeric limits, raster layer is using
-    //    qAbs( myValue - mNoDataValue ) <= TINY_VALUE
+    //    std::fabs( myValue - mNoDataValue ) <= TINY_VALUE
     // if the mNoDataValue would be a limit, the subtraction could overflow.
     // No data value is shown in GUI, use some nice number.
     // Choose values with small representation error.
@@ -284,7 +279,7 @@ void QgsGrassRasterProvider::readBlock( int bandNo, QgsRectangle  const &viewExt
   memcpy( block, data.data(), size );
 }
 
-QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize )
+QgsRasterBandStats QgsGrassRasterProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback * )
 {
   QgsDebugMsg( QString( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ) );
   QgsRasterBandStats myRasterBandStats;
@@ -412,7 +407,7 @@ int QgsGrassRasterProvider::yBlockSize() const
 int QgsGrassRasterProvider::xSize() const { return mCols; }
 int QgsGrassRasterProvider::ySize() const { return mRows; }
 
-QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
+QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
   Q_UNUSED( boundingBox );
   Q_UNUSED( width );
@@ -445,7 +440,7 @@ QgsRasterIdentifyResult QgsGrassRasterProvider::identify( const QgsPoint &point,
   }
 
   // no data?
-  if ( qIsNaN( value ) || qgsDoubleNear( value, mNoDataValue ) )
+  if ( std::isnan( value ) || qgsDoubleNear( value, mNoDataValue ) )
   {
     return noDataResult;
   }
@@ -604,11 +599,6 @@ void QgsGrassRasterProvider::thaw()
 }
 
 //-------------------------------- QgsGrassRasterValue ----------------------------------------
-
-QgsGrassRasterValue::QgsGrassRasterValue()
-  : mProcess( 0 )
-{
-}
 
 QgsGrassRasterValue::~QgsGrassRasterValue()
 {

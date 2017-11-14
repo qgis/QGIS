@@ -45,10 +45,10 @@ def processInputs(alg):
         alg.exportedLayers[rstable]
     )
     alg.commands.append(command)
-    alg.processInputs()
+    alg.processInputs(context, parameters)
 
 
-def processCommand(alg):
+def processCommand(alg, parameters):
     in_file = alg.getParameterValue('in_file')
     if in_file:
         # Creates a temporary txt file

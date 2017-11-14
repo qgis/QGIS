@@ -33,24 +33,6 @@
 QgsDelimitedTextFile::QgsDelimitedTextFile( const QString &url )
   : mFileName( QString() )
   , mEncoding( QStringLiteral( "UTF-8" ) )
-  , mFile( nullptr )
-  , mStream( nullptr )
-  , mUseWatcher( false )
-  , mWatcher( nullptr )
-  , mDefinitionValid( false )
-  , mUseHeader( true )
-  , mDiscardEmptyFields( false )
-  , mTrimFields( false )
-  , mSkipLines( 0 )
-  , mMaxFields( 0 )
-  , mMaxNameLength( 200 ) // Don't want field names to be too unweildy!
-  , mAnchoredRegexp( false )
-  , mLineNumber( -1 )
-  , mRecordLineNumber( -1 )
-  , mRecordNumber( -1 )
-  , mHoldCurrentRecord( false )
-  , mMaxRecordNumber( -1 )
-  , mMaxFieldCount( 0 )
   , mDefaultFieldName( QStringLiteral( "field_%1" ) )
     // field_ is optional in following regexp to simplify QgsDelimitedTextFile::fieldNumber()
   , mDefaultFieldRegexp( "^(?:field_)?(\\d+)$", Qt::CaseInsensitive )
@@ -107,14 +89,14 @@ bool QgsDelimitedTextFile::open()
       mStream = new QTextStream( mFile );
       if ( ! mEncoding.isEmpty() )
       {
-        QTextCodec *codec =  QTextCodec::codecForName( mEncoding.toLatin1() );
+        QTextCodec *codec = QTextCodec::codecForName( mEncoding.toLatin1() );
         mStream->setCodec( codec );
       }
       if ( mUseWatcher )
       {
         mWatcher = new QFileSystemWatcher();
         mWatcher->addPath( mFileName );
-        connect( mWatcher, SIGNAL( fileChanged( QString ) ), this, SLOT( updateFile() ) );
+        connect( mWatcher, &QFileSystemWatcher::fileChanged, this, &QgsDelimitedTextFile::updateFile );
       }
     }
   }
@@ -187,13 +169,13 @@ bool QgsDelimitedTextFile::setFromUrl( const QUrl &url )
     if ( type == QLatin1String( "plain" ) )
     {
       quote = QStringLiteral( "'\"" );
-      escape = QLatin1String( "" );
+      escape.clear();
     }
     else if ( type == QLatin1String( "regexp " ) )
     {
-      delimiter = QLatin1String( "" );
-      quote = QLatin1String( "" );
-      escape = QLatin1String( "" );
+      delimiter.clear();
+      quote.clear();
+      escape.clear();
     }
   }
   if ( url.hasQueryItem( QStringLiteral( "delimiter" ) ) )
@@ -455,9 +437,9 @@ void QgsDelimitedTextFile::setFieldNames( const QStringList &names )
       {
         suffix++;
         name = basename.arg( suffix );
-        // Not ok if it is already in the name list
+        // Not OK if it is already in the name list
         if ( mFieldNames.contains( name, Qt::CaseInsensitive ) ) continue;
-        // Not ok if it is already in proposed names
+        // Not OK if it is already in proposed names
         if ( names.contains( name, Qt::CaseInsensitive ) ) continue;
         break;
       }
@@ -773,7 +755,7 @@ QgsDelimitedTextFile::Status QgsDelimitedTextFile::parseQuoted( QString &buffer,
         else
         {
           quoted = false;
-          ended =  true;
+          ended = true;
         }
       }
       // quote char at start of field .. start of quoted fields

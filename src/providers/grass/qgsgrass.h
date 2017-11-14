@@ -35,7 +35,7 @@ extern "C"
 #include "qgsexception.h"
 #include "qgsfeature.h"
 #include "qgsfields.h"
-#include <qgsrectangle.h>
+#include "qgsrectangle.h"
 #include <QFileSystemWatcher>
 #include <QProcess>
 #include <QString>
@@ -53,29 +53,11 @@ class QgsRectangle;
 #define GRASS_VERSION_RELEASE_STRING EXPAND( GRASS_VERSION_RELEASE )
 
 // try/catch like macros using setjmp
-#if (GRASS_VERSION_MAJOR < 7)
-#define G_TRY try { if( !setjmp(QgsGrass::jumper) )
-#else
 #define G_TRY try { if( !setjmp(*G_fatal_longjmp(1)) )
-#endif
 #define G_CATCH else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); } } catch
 
 // Throw QgsGrass::Exception if G_fatal_error happens when calling F
-#if (GRASS_VERSION_MAJOR < 7)
-#define G_FATAL_THROW(F) if( !setjmp(QgsGrass::jumper) ) { F; } else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); }
-#else
 #define G_FATAL_THROW(F) if( !setjmp(*G_fatal_longjmp(1)) ) { F; } else { throw QgsGrass::Exception( QgsGrass::errorMessage() ); }
-#endif
-
-#if GRASS_VERSION_MAJOR >= 7
-#define G_available_mapsets G_get_available_mapsets
-#define G__mapset_permissions2 G_mapset_permissions2
-#define G_suppress_masking Rast_suppress_masking
-#define G__get_window(window,element,name,mapset) (G_get_element_window(window,element,name,mapset),0)
-#define G__getenv G_getenv_nofatal
-#define G__setenv G_setenv_nogisrc
-#define BOUND_BOX bound_box
-#endif
 
 // Element info container
 class GRASS_LIB_EXPORT QgsGrassObject
@@ -86,9 +68,9 @@ class GRASS_LIB_EXPORT QgsGrassObject
                 Strds, Stvds, Str3ds, Stds
               };
 
-    QgsGrassObject() : mType( None ) {}
-    QgsGrassObject( const QString &gisdbase, const QString &location = QString::null,
-                    const QString &mapset = QString::null, const QString &name = QString::null,
+    QgsGrassObject() = default;
+    QgsGrassObject( const QString &gisdbase, const QString &location = QString(),
+                    const QString &mapset = QString(), const QString &name = QString(),
                     Type type = None );
     QString gisdbase() const { return mGisdbase; }
     void setGisdbase( const QString &gisdbase ) { mGisdbase = gisdbase; }
@@ -101,11 +83,13 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString name() const { return mName; }
     void setName( const QString &name ) { mName = name; }
 
-    /** Return full name (map@mapset)
-     * @return full name or empty string if map name is empty */
+    /**
+     * Return full name (map@mapset)
+     * \returns full name or empty string if map name is empty */
     QString fullName() const;
 
-    /** Parse full name in map@mapset form and set map and mapset. If mapset is not
+    /**
+     * Parse full name in map@mapset form and set map and mapset. If mapset is not
      * specified, mapset is set to the current mapset. */
     void setFullName( const QString &fullName );
     Type type() const { return mType; }
@@ -135,10 +119,11 @@ class GRASS_LIB_EXPORT QgsGrassObject
     QString mLocation;
     QString mMapset;
     QString mName;  // map name
-    Type mType;
+    Type mType = None;
 };
 
-/** QString gisdbase()
+/**
+ * QString gisdbase()
    Methods for C library initialization and error handling.
 */
 class GRASS_LIB_EXPORT QgsGrass : public QObject
@@ -179,7 +164,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
       int red1, red2, green1, green2, blue1, blue2;
     };
 
-    QgsGrass();
+    QgsGrass() = default;
 
     //! Get singleton instance of this class. Used as signals proxy between provider and plugin.
     static QgsGrass *instance();
@@ -190,7 +175,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     //! Get info about the mode
 
-    /** QgsGrass may be running in active or passive mode.
+    /**
+     * QgsGrass may be running in active or passive mode.
      *  Active mode means that GISRC is set up and GISRC file is available,
      *  in that case default GISDBASE, LOCATION and MAPSET may be read by GetDefaul*() functions.
      *  Passive mode means, that GISRC is not available. */
@@ -215,28 +201,31 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Get default path to MAPSET (gisdbase/location/mapset) or empty string if not in active mode
     static QString getDefaultMapsetPath();
 
-    /** Init or reset GRASS library
+    /**
+     * Init or reset GRASS library
      *
-     * @param gisdbase full path to GRASS GISDBASE.
-     * @param location location name (not path!).
+     * \param gisdbase full path to GRASS GISDBASE.
+     * \param location location name (not path!).
      */
     static void setLocation( const QString &gisdbase, const QString &location );
 
     /*!
-     * @param gisdbase full path to GRASS GISDBASE.
-     * @param location location name (not path!).
-     * @param mapset current mupset. Note that some variables depend on mapset and
+     * \param gisdbase full path to GRASS GISDBASE.
+     * \param location location name (not path!).
+     * \param mapset current mupset. Note that some variables depend on mapset and
      * may influence behavior of some functions (e.g. search path etc.)
      */
     static void setMapset( const QString &gisdbase, const QString &location, const QString &mapset );
 
-    /** Set mapset according to object gisdbase, location and mapset
-     * @param grassObject
+    /**
+     * Set mapset according to object gisdbase, location and mapset
+     * \param grassObject
      */
     static void setMapset( const QgsGrassObject &grassObject );
 
-    /** Check if mapset is in search pat set by g.mapsets
-     *  @return true if in search path
+    /**
+     * Check if mapset is in search pat set by g.mapsets
+     *  \returns true if in search path
      */
     bool isMapsetInSearchPath( const QString &mapset );
 
@@ -269,18 +258,20 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Test is current user is owner of mapset
     static bool isOwner( const QString &gisdbase, const QString &location, const QString &mapset );
 
-    /** Open existing GRASS mapset.
+    /**
+     * Open existing GRASS mapset.
      * Emits signal mapsetChanged().
-     * \return Empty string or error message
+     * \returns Empty string or error message
      */
     static QString openMapset( const QString &gisdbase,
                                const QString &location, const QString &mapset );
 
-    /** \brief Close mapset if it was opened from QGIS.
+    /**
+     * \brief Close mapset if it was opened from QGIS.
      *         Delete GISRC, lock and temporary directory.
      *         Emits signal mapsetChanged().
      * \param showError show error dialog on error
-     * \return Empty string or error message
+     * \returns Empty string or error message
      */
     static QString closeMapset();
 
@@ -340,7 +331,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Set region extent
     static void setRegion( struct Cell_head *window, const QgsRectangle &rect );
 
-    /** Init region, set extent, rows and cols and adjust.
+    /**
+     * Init region, set extent, rows and cols and adjust.
      * Returns error if adjustment failed. */
     static QString setRegion( struct Cell_head *window, const QgsRectangle &rect, int rows, int cols );
 
@@ -359,14 +351,16 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static bool defaultRegion( const QString &gisdbase, const QString &location,
                                struct Cell_head *window );
 
-    /** Read mapset current region (WIND)
-     * @throws QgsGrass::Exception
+    /**
+     * Read mapset current region (WIND)
+     * \throws QgsGrass::Exception
      */
     static void region( const QString &gisdbase, const QString &location, const QString &mapset,
                         struct Cell_head *window );
 
-    /** Read default mapset current region (WIND)
-     * @throws QgsGrass::Exception
+    /**
+     * Read default mapset current region (WIND)
+     * \throws QgsGrass::Exception
      */
     static void region( struct Cell_head *window );
 
@@ -374,7 +368,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static bool writeRegion( const QString &gisbase, const QString &location, const QString &mapset,
                              const struct Cell_head *window );
 
-    /** Write current mapset region
+    /**
+     * Write current mapset region
      *  throws QgsGrass::Exception
      *  Emits regionChanged */
     void writeRegion( const struct Cell_head *window );
@@ -391,8 +386,9 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static void extendRegion( struct Cell_head *source,
                               struct Cell_head *target );
 
-    /** Initialize GRASS library. This has to be called before any other function is used.
-     * @return true if successfully initialized */
+    /**
+     * Initialize GRASS library. This has to be called before any other function is used.
+     * \returns true if successfully initialized */
     static bool init( void );
 
     //! test if the directory is location
@@ -407,17 +403,19 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // ! Get current gisrc path
     static QString gisrcFilePath();
 
-    /** Find a module trying to append .bat, .py and .exe on Windows. The module may be a full path
+    /**
+     * Find a module trying to append .bat, .py and .exe on Windows. The module may be a full path
      * without extension or just a module name in which case it is searched in grassModulesPaths().
-     * @param module module name or path to module without extension
-     * @return full path including extension or empty string */
+     * \param module module name or path to module without extension
+     * \returns full path including extension or empty string */
     static QString findModule( QString module );
 
-    /** Start a GRASS module in any gisdbase/location/mapset.
-     * @param mapset if empty a first mapset owned by user will be used, if no mapset is owned
+    /**
+     * Start a GRASS module in any gisdbase/location/mapset.
+     * \param mapset if empty a first mapset owned by user will be used, if no mapset is owned
      *               by user, exception is thrown.
-     * @param qgisModule append GRASS major version (for modules built in qgis)
-     * @throws QgsGrass::Exception */
+     * \param qgisModule append GRASS major version (for modules built in qgis)
+     * \throws QgsGrass::Exception */
     static QProcess *startModule( const QString &gisdbase, const QString  &location,
                                   const QString &mapset, const QString  &moduleName,
                                   const QStringList &arguments, QTemporaryFile &gisrcFile,
@@ -429,22 +427,23 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
                                  const QStringList &arguments, int timeOut = 30000,
                                  bool qgisModule = true );
 
-    /** \brief Get info string from qgis.g.info module
-     * @param info info type
-     * @gisdbase GISBASE path
-     * @location location name
-     * @mapset mapset name
-     * @map map name
-     * @type map type
-     * @x x coordinate for query
-     * @y y coordinate for query
-     * @extent extent for statistics
-     * @sampleSize sample size for statistics
-     * @timeOut timeout
+    /**
+     * \brief Get info string from qgis.g.info module
+     * \param info info type
+     * \param gisdbase GISBASE path
+     * \param location location name
+     * \param mapset mapset name
+     * \param map map name
+     * \param type map type
+     * \param x x coordinate for query
+     * \param y y coordinate for query
+     * \param extent extent for statistics
+     * \param sampleSize sample size for statistics
+     * \param timeOut timeout
      */
     static QString getInfo( const QString  &info, const QString  &gisdbase,
                             const QString &location, const QString  &mapset = "PERMANENT",
-                            const QString &map = QString::null, const QgsGrassObject::Type type = QgsGrassObject::None,
+                            const QString &map = QString(), const QgsGrassObject::Type type = QgsGrassObject::None,
                             double x = 0.0, double y = 0.0,
                             const QgsRectangle &extent = QgsRectangle(), int sampleRows = 0,
                             int sampleCols = 0, int timeOut = 30000 );
@@ -456,7 +455,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     static QgsCoordinateReferenceSystem crsDirect( const QString &gisdbase, const QString &location );
 
     // ! Get map extent
-    // @param error set to error if happens
+    // \param error set to error if happens
     static QgsRectangle extent( const QString &gisdbase, const QString &location,
                                 const QString &mapset, const QString &map,
                                 QgsGrassObject::Type type, QString &error );
@@ -467,7 +466,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     // ! Get raster info, info is either 'info' or 'stats'
     //   extent and sampleSize are stats options
-    // @param error set to error if happens
+    // \param error set to error if happens
     static QHash<QString, QString> info( const QString &gisdbase, const QString &location,
                                          const QString &mapset, const QString &map,
                                          QgsGrassObject::Type type,
@@ -493,14 +492,16 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // ! Delete map
     static bool deleteObject( const QgsGrassObject &object );
 
-    /** Ask user confirmation to delete a map
-     *  @return true if confirmed
+    /**
+     * Ask user confirmation to delete a map
+     *  \returns true if confirmed
      */
     static bool deleteObjectDialog( const QgsGrassObject &object );
 
-    /** Create new vector map
-     * @param object GRASS object specifying location/mapset/map
-     * @param error */
+    /**
+     * Create new vector map
+     * \param object GRASS object specifying location/mapset/map
+     * \param error */
     static void createVectorMap( const QgsGrassObject &object, QString &error );
 
     //! Create new table. Throws  QgsGrass::Exception
@@ -513,20 +514,23 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Returns true if object is link to external data (created by r.external)
     static bool isExternal( const QgsGrassObject &object );
 
-    /** Adjust cell header, G_adjust_Cell_head wrapper
-     * @throws QgsGrass::Exception */
+    /**
+     * Adjust cell header, G_adjust_Cell_head wrapper
+     * \throws QgsGrass::Exception */
     static void adjustCellHead( struct Cell_head *cellhd, int row_flag, int col_flag );
 
     //! Get map of vector types / names
     static QMap<int, QString> vectorTypeMap();
 
-    /** Get GRASS vector type from name
-     * @param point,centroid,line,boundary,area,face,kernel
-     * @returns type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE,GV_KERNEL  */
+    /**
+     * Get GRASS vector type from name
+     * \param point,centroid,line,boundary,area,face,kernel
+     * \returns type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE,GV_KERNEL  */
     static int vectorType( const QString &name );
 
-    /** Get name for vector primitive type
-     * @param type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE, GV_KERNEL  */
+    /**
+     * Get name for vector primitive type
+     * \param type GV_POINT, GV_CENTROID, GV_LINE, GV_BOUNDARY, GV_AREA, GV_FACE, GV_KERNEL  */
     static QString vectorTypeName( int type );
 
     //! Library version
@@ -603,11 +607,13 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Show warning dialog with exception message
     static void warning( QgsGrass::Exception &e );
 
-    /** Set mute mode, if set, warning() does not open dialog but prints only
+    /**
+     * Set mute mode, if set, warning() does not open dialog but prints only
      * debug message and sets the error which returns errorMessage() */
     static void setMute() { sMute = true; }
 
-    /** Allocate struct Map_info. Call to this function may result in G_fatal_error
+    /**
+     * Allocate struct Map_info. Call to this function may result in G_fatal_error
      * and must be surrounded by G_TRY/G_CATCH. */
     static struct Map_info *vectNewMapStruct();
     // Free struct Map_info
@@ -618,11 +624,12 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
 
     void emitNewLayer( const QString &uri, const QString &name ) { emit newLayer( uri, name ); }
 
-    /** Parse single line of output from GRASS modules run with GRASS_MESSAGE_FORMAT=gui
-     * @param input input string read from module stderr
-     * @param text parsed text
-     * @param html html formatted parsed text, e.g. + icons
-     * @param value percent 0-100 or progress as absolute number if total is unknown*/
+    /**
+     * Parse single line of output from GRASS modules run with GRASS_MESSAGE_FORMAT=gui
+     * \param input input string read from module stderr
+     * \param text parsed text
+     * \param html html formatted parsed text, e.g. + icons
+     * \param value percent 0-100 or progress as absolute number if total is unknown*/
     static ModuleOutput parseModuleOutput( const QString &input, QString &text, QString &html, int &value );
 
   public slots:
@@ -653,7 +660,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Emitted when modules debug mode changed
     void modulesDebugChanged();
 
-    /** Emitted when current region changed
+    /**
+     * Emitted when current region changed
      *  TODO: currently only emitted when writeRegion is called, add file system watcher
      *  to get also changes done outside QGIS or by modules.
      */
@@ -662,7 +670,8 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     //! Emitted when region pen changed
     void regionPenChanged();
 
-    /** Request from browser to open a new layer for editing, the plugin should connect
+    /**
+     * Request from browser to open a new layer for editing, the plugin should connect
      * to this signal and add the layer to canvas and start editing. */
     void newLayer( QString uri, QString name );
 
@@ -703,5 +712,7 @@ class GRASS_LIB_EXPORT QgsGrass : public QObject
     // Mute mode, do not show warning dialogs.
     static bool sMute;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSGRASS_H

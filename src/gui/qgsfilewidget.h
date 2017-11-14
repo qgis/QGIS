@@ -20,17 +20,31 @@
 class QLabel;
 class QToolButton;
 class QVariant;
-
-class QgsFilterLineEdit;
-
+class QgsFileDropEdit;
+class QHBoxLayout;
 #include <QWidget>
-#include "qgis_gui.h"
 
-/** \ingroup gui
- * @brief The QgsFileWidget class creates a widget for selecting a file or a folder.
+#include "qgis_gui.h"
+#include "qgis.h"
+#include "qgsfilterlineedit.h"
+
+/**
+ * \ingroup gui
+ * \brief The QgsFileWidget class creates a widget for selecting a file or a folder.
  */
 class GUI_EXPORT QgsFileWidget : public QWidget
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsFileWidget *>( sipCpp ) )
+      sipType = sipType_QgsFileWidget;
+    else
+      sipType = NULL;
+    SIP_END
+#endif
+
+
     Q_OBJECT
     Q_PROPERTY( bool fileWidgetButtonVisible READ fileWidgetButtonVisible WRITE setFileWidgetButtonVisible )
     Q_PROPERTY( bool useLink READ useLink WRITE setUseLink )
@@ -44,16 +58,17 @@ class GUI_EXPORT QgsFileWidget : public QWidget
   public:
 
     /**
-     * @brief The StorageMode enum determines if the file picker should pick files or directories
+     * \brief The StorageMode enum determines if the file picker should pick files or directories
      */
     enum StorageMode
     {
-      GetFile,
-      GetDirectory
+      GetFile, //! Select a single file
+      GetDirectory, //! Select a directory
+      GetMultipleFiles, //! Select multiple files
     };
 
     /**
-     * @brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
+     * \brief The RelativeStorage enum determines if path is absolute, relative to the current project path or relative to a defined default path.
      */
     enum RelativeStorage
     {
@@ -63,12 +78,23 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     };
 
     /**
-     * @brief QgsFileWidget creates a widget for selecting a file or a folder.
+     * \brief QgsFileWidget creates a widget for selecting a file or a folder.
      */
-    explicit QgsFileWidget( QWidget *parent = 0 );
+    explicit QgsFileWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    //! Returns the current file path
+    /**
+     * \brief Returns the current file path(s)
+     * when multiple files are selected, they are quoted and separated
+     * by a single space (for example: '"/path/foo" "path/bar"')
+     * \see filePaths
+     */
     QString filePath();
+
+    /**
+     * \brief Split the the quoted and space separated \a path and returns a QString list
+     * \see filePath
+     */
+    static QStringList splitFilePaths( const QString &path );
 
     //! Sets the file path
     void setFilePath( QString path );
@@ -80,8 +106,8 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QString dialogTitle() const;
 
     /**
-     * @brief setDialogTitle defines the open file dialog title
-     * @note if not defined, the title is "Select a file" or "Select a directory" depending on the configuration.
+     * \brief setDialogTitle defines the open file dialog title
+     * \note if not defined, the title is "Select a file" or "Select a directory" or "Select one or more files" depending on the configuration.
      */
     void setDialogTitle( const QString &title );
 
@@ -89,8 +115,8 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QString filter() const;
 
     /**
-     * @brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
-     * @param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
+     * \brief setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
+     * \param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
      */
     void setFilter( const QString &filter );
 
@@ -124,6 +150,13 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     //! determines if the relative path is with respect to the project path or the default path
     void setRelativeStorage( QgsFileWidget::RelativeStorage relativeStorage );
 
+    /**
+     * Returns a pointer to the widget's line edit, which can be used to customize
+     * the appearance and behavior of the line edit portion of the widget.
+     * \since QGIS 3.0
+     */
+    QLineEdit *lineEdit();
+
   signals:
     //! emitted as soon as the current file or directory is changed
     void fileChanged( const QString & );
@@ -134,18 +167,19 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
   private:
     QString mFilePath;
-    bool mButtonVisible;
-    bool mUseLink;
-    bool mFullUrl;
+    bool mButtonVisible = true;
+    bool mUseLink = false;
+    bool mFullUrl = false;
     QString mDialogTitle;
     QString mFilter;
     QString mDefaultRoot;
-    StorageMode mStorageMode;
-    RelativeStorage mRelativeStorage;
+    StorageMode mStorageMode = GetFile;
+    RelativeStorage mRelativeStorage = Absolute;
 
     QLabel *mLinkLabel = nullptr;
-    QgsFilterLineEdit *mLineEdit = nullptr;
+    QgsFileDropEdit *mLineEdit = nullptr;
     QToolButton *mFileWidgetButton = nullptr;
+    QHBoxLayout *mLayout = nullptr;
 
     //! returns a HTML code with a link to the given file path
     QString toUrl( const QString &path ) const;
@@ -155,5 +189,52 @@ class GUI_EXPORT QgsFileWidget : public QWidget
 
     friend class TestQgsFileWidget;
 };
+
+
+
+///@cond PRIVATE
+
+#ifndef SIP_RUN
+
+/**
+ * \ingroup gui
+ * A line edit for capturing file names that can have files dropped onto
+ * it via drag & drop.
+ *
+ * Dropping can be limited to files only, files with a specific extension
+ * or directories only. By default, dropping is limited to files only.
+ * \note not available in Python bindings
+ */
+class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
+{
+    Q_OBJECT
+
+  public:
+    QgsFileDropEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    void setStorageMode( QgsFileWidget::StorageMode storageMode ) { mStorageMode = storageMode; }
+
+    void setFilters( const QString &filters );
+
+  protected:
+
+    virtual void dragEnterEvent( QDragEnterEvent *event ) override;
+    virtual void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    virtual void dropEvent( QDropEvent *event ) override;
+    virtual void paintEvent( QPaintEvent *e ) override;
+
+  private:
+
+    //! Return file name if object meets drop criteria.
+    QString acceptableFilePath( QDropEvent *event ) const;
+
+    QStringList mAcceptableExtensions;
+    QgsFileWidget::StorageMode mStorageMode = QgsFileWidget::GetFile;
+    bool mDragActive;
+    friend class TestQgsFileWidget;
+};
+
+#endif
+///@endcond
 
 #endif // QGSFILEWIDGET_H

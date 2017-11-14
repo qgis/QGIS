@@ -30,7 +30,7 @@
  * editor is opened. This way they are able to provide an up-to-date expression
  * editor even when the environment changes.
  *
- * @note added in QGIS 3.0
+ * \since QGIS 3.0
  */
 
 class CORE_EXPORT QgsExpressionContextGenerator
@@ -41,7 +41,7 @@ class CORE_EXPORT QgsExpressionContextGenerator
      * This method needs to be reimplemented in all classes which implement this interface
      * and return an expression context.
      *
-     * @note Added in QGIS 3.0
+     * \since QGIS 3.0
      */
     virtual QgsExpressionContext createExpressionContext() const = 0;
 

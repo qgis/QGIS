@@ -18,6 +18,7 @@
 #include "qgsshortcutsmanager.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
+#include "qgsgui.h"
 
 #include <QKeyEvent>
 #include <QKeySequence>
@@ -31,23 +32,22 @@
 QgsConfigureShortcutsDialog::QgsConfigureShortcutsDialog( QWidget *parent, QgsShortcutsManager *manager )
   : QDialog( parent )
   , mManager( manager )
-  , mGettingShortcut( false )
-  , mModifiers( 0 )
-  , mKey( 0 )
 {
   setupUi( this );
+  connect( mLeFilter, &QgsFilterLineEdit::textChanged, this, &QgsConfigureShortcutsDialog::mLeFilter_textChanged );
 
   if ( !mManager )
-    mManager = QgsShortcutsManager::instance();
+    mManager = QgsGui::shortcutsManager();
 
-  connect( btnChangeShortcut, SIGNAL( clicked() ), this, SLOT( changeShortcut() ) );
-  connect( btnResetShortcut, SIGNAL( clicked() ), this, SLOT( resetShortcut() ) );
-  connect( btnSetNoShortcut, SIGNAL( clicked() ), this, SLOT( setNoShortcut() ) );
-  connect( btnSaveShortcuts, SIGNAL( clicked() ), this, SLOT( saveShortcuts() ) );
-  connect( btnLoadShortcuts, SIGNAL( clicked() ), this, SLOT( loadShortcuts() ) );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsConfigureShortcutsDialog::showHelp ); // Vérifier nommage des boutons
+  connect( btnChangeShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::changeShortcut );
+  connect( btnResetShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::resetShortcut );
+  connect( btnSetNoShortcut, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::setNoShortcut );
+  connect( btnSaveShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::saveShortcuts );
+  connect( btnLoadShortcuts, &QAbstractButton::clicked, this, &QgsConfigureShortcutsDialog::loadShortcuts );
 
-  connect( treeActions, SIGNAL( currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ),
-           this, SLOT( actionChanged( QTreeWidgetItem *, QTreeWidgetItem * ) ) );
+  connect( treeActions, &QTreeWidget::currentItemChanged,
+           this, &QgsConfigureShortcutsDialog::actionChanged );
 
   populateActions();
 
@@ -59,22 +59,16 @@ QgsConfigureShortcutsDialog::~QgsConfigureShortcutsDialog()
   saveState();
 }
 
-/*!
- * Function to save dialog window state
- */
 void QgsConfigureShortcutsDialog::saveState()
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ), saveGeometry() );
+  settings.setValue( QStringLiteral( "Windows/ShortcutsDialog/geometry" ), saveGeometry() );
 }
 
-/*!
- * Function to restore dialog window state
- */
 void QgsConfigureShortcutsDialog::restoreState()
 {
   QgsSettings settings;
-  restoreGeometry( settings.value( QStringLiteral( "/Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
+  restoreGeometry( settings.value( QStringLiteral( "Windows/ShortcutsDialog/geometry" ) ).toByteArray() );
 }
 
 void QgsConfigureShortcutsDialog::populateActions()
@@ -481,7 +475,7 @@ void QgsConfigureShortcutsDialog::setCurrentActionShortcut( const QKeySequence &
   actionChanged( treeActions->currentItem(), nullptr );
 }
 
-void QgsConfigureShortcutsDialog::on_mLeFilter_textChanged( const QString &text )
+void QgsConfigureShortcutsDialog::mLeFilter_textChanged( const QString &text )
 {
   for ( int i = 0; i < treeActions->topLevelItemCount(); i++ )
   {
@@ -495,4 +489,9 @@ void QgsConfigureShortcutsDialog::on_mLeFilter_textChanged( const QString &text 
       item->setHidden( false );
     }
   }
+}
+
+void QgsConfigureShortcutsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/qgis_configuration.html#keyboard-shortcuts" ) );
 }

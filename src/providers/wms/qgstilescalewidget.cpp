@@ -23,6 +23,7 @@
 #include "qgslogger.h"
 #include "qgsdockwidget.h"
 #include "qgssettings.h"
+#include "layertree/qgslayertreeview.h"
 
 #include <QMainWindow>
 #include <QMenu>
@@ -33,14 +34,11 @@ QgsTileScaleWidget::QgsTileScaleWidget( QgsMapCanvas *mapCanvas, QWidget *parent
   , mMapCanvas( mapCanvas )
 {
   setupUi( this );
+  connect( mSlider, &QSlider::valueChanged, this, &QgsTileScaleWidget::mSlider_valueChanged );
 
-  connect( mMapCanvas, SIGNAL( scaleChanged( double ) ), this, SLOT( scaleChanged( double ) ) );
+  connect( mMapCanvas, &QgsMapCanvas::scaleChanged, this, &QgsTileScaleWidget::scaleChanged );
 
   layerChanged( mMapCanvas->currentLayer() );
-}
-
-QgsTileScaleWidget::~QgsTileScaleWidget()
-{
 }
 
 void QgsTileScaleWidget::layerChanged( QgsMapLayer *layer )
@@ -102,7 +100,7 @@ void QgsTileScaleWidget::scaleChanged( double scale )
   mSlider->blockSignals( false );
 }
 
-void QgsTileScaleWidget::on_mSlider_valueChanged( int value )
+void QgsTileScaleWidget::mSlider_valueChanged( int value )
 {
   Q_UNUSED( value );
   QgsDebugMsg( QString( "slider released at %1: %2" ).arg( mSlider->value() ).arg( mResolutions.at( mSlider->value() ) ) );
@@ -129,11 +127,11 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
   QgsTileScaleWidget *tws = new QgsTileScaleWidget( canvas );
   tws->setObjectName( QStringLiteral( "theTileScaleWidget" ) );
 
-  QObject *legend = mainWindow->findChild<QObject *>( QStringLiteral( "theLayerTreeView" ) );
+  QgsLayerTreeView *legend = mainWindow->findChild<QgsLayerTreeView *>( QStringLiteral( "theLayerTreeView" ) );
   if ( legend )
   {
-    connect( legend, SIGNAL( currentLayerChanged( QgsMapLayer * ) ),
-             tws, SLOT( layerChanged( QgsMapLayer * ) ) );
+    connect( legend, &QgsLayerTreeView::currentLayerChanged,
+             tws, &QgsTileScaleWidget::layerChanged );
   }
   else
   {
@@ -160,14 +158,14 @@ void QgsTileScaleWidget::showTileScale( QMainWindow *mainWindow )
 
   dock->setWidget( tws );
 
-  connect( dock, SIGNAL( visibilityChanged( bool ) ), tws, SLOT( scaleEnabled( bool ) ) );
+  connect( dock, &QDockWidget::visibilityChanged, tws, &QgsTileScaleWidget::scaleEnabled );
 
   QgsSettings settings;
-  dock->setVisible( settings.value( QStringLiteral( "/UI/tileScaleEnabled" ), false ).toBool() );
+  dock->setVisible( settings.value( QStringLiteral( "UI/tileScaleEnabled" ), false ).toBool() );
 }
 
 void QgsTileScaleWidget::scaleEnabled( bool enabled )
 {
   QgsSettings settings;
-  settings.setValue( QStringLiteral( "/UI/tileScaleEnabled" ), enabled );
+  settings.setValue( QStringLiteral( "UI/tileScaleEnabled" ), enabled );
 }

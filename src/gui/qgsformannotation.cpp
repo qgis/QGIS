@@ -26,6 +26,7 @@
 #include "qgsproject.h"
 #include "qgsmaptool.h"
 #include "qgsvectorlayer.h"
+#include "qgsgui.h"
 #include <QDomElement>
 #include <QDir>
 #include <QFile>
@@ -39,6 +40,14 @@
 QgsFormAnnotation::QgsFormAnnotation( QObject *parent )
   : QgsAnnotation( parent )
 {}
+
+QgsFormAnnotation *QgsFormAnnotation::clone() const
+{
+  std::unique_ptr< QgsFormAnnotation > c( new QgsFormAnnotation() );
+  copyCommonProperties( c.get() );
+  c->setDesignerForm( mDesignerForm );
+  return c.release();
+}
 
 void QgsFormAnnotation::setDesignerForm( const QString &uiFile )
 {
@@ -86,7 +95,7 @@ QWidget *QgsFormAnnotation::createDesignerWidget( const QString &filePath )
         QWidget *attWidget = widget->findChild<QWidget *>( fields.at( i ).name() );
         if ( attWidget )
         {
-          QgsEditorWidgetWrapper *eww = QgsEditorWidgetRegistry::instance()->create( vectorLayer, i, attWidget, widget, context );
+          QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vectorLayer, i, attWidget, widget, context );
           if ( eww )
           {
             eww->setValue( attrs.at( i ) );
@@ -135,21 +144,21 @@ QSizeF QgsFormAnnotation::preferredFrameSize() const
   }
 }
 
-void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc ) const
+void QgsFormAnnotation::writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement formAnnotationElem = doc.createElement( QStringLiteral( "FormAnnotationItem" ) );
   formAnnotationElem.setAttribute( QStringLiteral( "designerForm" ), mDesignerForm );
-  _writeXml( formAnnotationElem, doc );
+  _writeXml( formAnnotationElem, doc, context );
   elem.appendChild( formAnnotationElem );
 }
 
-void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+void QgsFormAnnotation::readXml( const QDomElement &itemElem, const QgsReadWriteContext &context )
 {
   mDesignerForm = itemElem.attribute( QStringLiteral( "designerForm" ), QLatin1String( "" ) );
   QDomElement annotationElem = itemElem.firstChildElement( QStringLiteral( "AnnotationItem" ) );
   if ( !annotationElem.isNull() )
   {
-    _readXml( annotationElem, doc );
+    _readXml( annotationElem, context );
   }
   // upgrade old layer
   if ( !mapLayer() && itemElem.hasAttribute( QStringLiteral( "vectorLayer" ) ) )

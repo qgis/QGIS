@@ -18,6 +18,7 @@
 
 #include "qgslayertreemodellegendnode.h"
 
+#include "qgsdatadefinedsizelegend.h"
 #include "qgslayertree.h"
 #include "qgslayertreemodel.h"
 #include "qgslegendsettings.h"
@@ -59,9 +60,9 @@ QgsLayerTreeModelLegendNode::ItemMetrics QgsLayerTreeModelLegendNode::draw( cons
 
   double textHeight = settings.fontHeightCharacterMM( symbolLabelFont, QChar( '0' ) );
   // itemHeight here is not really item height, it is only for symbol
-  // vertical alignment purpose, i.e. ok take single line height
+  // vertical alignment purpose, i.e. OK take single line height
   // if there are more lines, thos run under the symbol
-  double itemHeight = qMax( static_cast< double >( settings.symbolSize().height() ), textHeight );
+  double itemHeight = std::max( static_cast< double >( settings.symbolSize().height() ), textHeight );
 
   ItemMetrics im;
   im.symbolSize = drawSymbol( settings, ctx, itemHeight );
@@ -100,7 +101,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
   {
     ctx->painter->setPen( settings.fontColor() );
 
-    labelX = ctx->point.x() + qMax( static_cast< double >( symbolSize.width() ), ctx->labelXOffset );
+    labelX = ctx->point.x() + std::max( static_cast< double >( symbolSize.width() ), ctx->labelXOffset );
     labelY = ctx->point.y();
 
     // Vertical alignment of label with symbol
@@ -112,7 +113,7 @@ QSizeF QgsLayerTreeModelLegendNode::drawSymbolText( const QgsLegendSettings &set
 
   for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
   {
-    labelSize.rwidth() = qMax( settings.textWidthMillimeters( symbolLabelFont, *itemPart ), double( labelSize.width() ) );
+    labelSize.rwidth() = std::max( settings.textWidthMillimeters( symbolLabelFont, *itemPart ), double( labelSize.width() ) );
 
     if ( ctx )
     {
@@ -135,6 +136,8 @@ QgsSymbolLegendNode::QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const Qg
   , mIconSize( 16, 16 )
 {
   updateLabel();
+  connect( qobject_cast<QgsVectorLayer *>( nodeLayer->layer() ), &QgsVectorLayer::symbolFeatureCountMapChanged, this, &QgsSymbolLegendNode::updateLabel );
+  connect( nodeLayer, &QObject::destroyed, this, [ = ]() { mLayerNode = nullptr; } );
 
   if ( mItem.symbol() )
     mSymbolUsesMapUnits = ( mItem.symbol()->outputUnit() != QgsUnitTypes::RenderMillimeters );
@@ -214,22 +217,23 @@ void QgsSymbolLegendNode::uncheckAllItems()
   checkAll( false );
 }
 
-inline
-QgsRenderContext *QgsSymbolLegendNode::createTemporaryRenderContext() const
+QgsRenderContext *QgsLayerTreeModelLegendNode::createTemporaryRenderContext() const
 {
   double scale = 0.0;
   double mupp = 0.0;
   int dpi = 0;
   if ( model() )
     model()->legendMapViewData( &mupp, &dpi, &scale );
-  bool validData = !qgsDoubleNear( mupp, 0.0 ) && dpi != 0 && !qgsDoubleNear( scale, 0.0 );
+
+  if ( qgsDoubleNear( mupp, 0.0 ) || dpi == 0 || qgsDoubleNear( scale, 0.0 ) )
+    return nullptr;
 
   // setup temporary render context
   std::unique_ptr<QgsRenderContext> context( new QgsRenderContext );
   context->setScaleFactor( dpi / 25.4 );
   context->setRendererScale( scale );
   context->setMapToPixel( QgsMapToPixel( mupp ) );
-  return validData ? context.release() : nullptr;
+  return context.release();
 }
 
 void QgsSymbolLegendNode::checkAll( bool state )
@@ -238,7 +242,7 @@ void QgsSymbolLegendNode::checkAll( bool state )
   if ( !vlayer || !vlayer->renderer() )
     return;
 
-  QgsLegendSymbolListV2 symbolList = vlayer->renderer()->legendSymbolItemsV2();
+  QgsLegendSymbolList symbolList = vlayer->renderer()->legendSymbolItems();
   Q_FOREACH ( const QgsLegendSymbolItem &item, symbolList )
   {
     vlayer->renderer()->checkLegendSymbolItem( item.ruleKey(), state );
@@ -386,7 +390,7 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
 
     int opacity = 255;
     if ( QgsVectorLayer *vectorLayer = dynamic_cast<QgsVectorLayer *>( layerNode()->layer() ) )
-      opacity = 255 - ( 255 * vectorLayer->layerTransparency() / 100 );
+      opacity = ( 255 * vectorLayer->opacity() );
 
     p->save();
     p->setRenderHint( QPainter::Antialiasing );
@@ -417,8 +421,8 @@ QSizeF QgsSymbolLegendNode::drawSymbol( const QgsLegendSettings &settings, ItemC
     p->restore();
   }
 
-  return QSizeF( qMax( width + 2 * widthOffset, static_cast< double >( settings.symbolSize().width() ) ),
-                 qMax( height + 2 * heightOffset, static_cast< double >( settings.symbolSize().height() ) ) );
+  return QSizeF( std::max( width + 2 * widthOffset, static_cast< double >( settings.symbolSize().width() ) ),
+                 std::max( height + 2 * heightOffset, static_cast< double >( settings.symbolSize().height() ) ) );
 }
 
 
@@ -441,6 +445,9 @@ void QgsSymbolLegendNode::invalidateMapBasedData()
 
 void QgsSymbolLegendNode::updateLabel()
 {
+  if ( !mLayerNode )
+    return;
+
   bool showFeatureCount = mLayerNode->customProperty( QStringLiteral( "showFeatureCount" ), 0 ).toBool();
   QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( mLayerNode->layer() );
 
@@ -458,8 +465,13 @@ void QgsSymbolLegendNode::updateLabel()
   {
     mLabel = mUserLabel.isEmpty() ? mItem.label() : mUserLabel;
     if ( showFeatureCount && vl )
-      mLabel += QStringLiteral( " [%1]" ).arg( vl->featureCount( mItem.ruleKey() ) );
+    {
+      qlonglong count = vl->featureCount( mItem.ruleKey() );
+      mLabel += QStringLiteral( " [%1]" ).arg( count != -1 ? QLocale().toString( count ) : tr( "N/A" ) );
+    }
   }
+
+  emit dataChanged();
 }
 
 
@@ -603,9 +615,9 @@ QImage QgsWmsLegendNode::getLegendGraphic() const
     mFetcher.reset( prov->getLegendGraphicFetcher( ms ) );
     if ( mFetcher )
     {
-      connect( mFetcher.get(), SIGNAL( finish( const QImage & ) ), this, SLOT( getLegendGraphicFinished( const QImage & ) ) );
-      connect( mFetcher.get(), SIGNAL( error( const QString & ) ), this, SLOT( getLegendGraphicErrored( const QString & ) ) );
-      connect( mFetcher.get(), SIGNAL( progress( qint64, qint64 ) ), this, SLOT( getLegendGraphicProgress( qint64, qint64 ) ) );
+      connect( mFetcher.get(), &QgsImageFetcher::finish, this, &QgsWmsLegendNode::getLegendGraphicFinished );
+      connect( mFetcher.get(), &QgsImageFetcher::error, this, &QgsWmsLegendNode::getLegendGraphicErrored );
+      connect( mFetcher.get(), &QgsImageFetcher::progress, this, &QgsWmsLegendNode::getLegendGraphicProgress );
       mFetcher->start();
     } // else QgsDebugMsg("XXX No legend supported?");
 
@@ -711,4 +723,82 @@ void QgsWmsLegendNode::invalidateMapBasedData()
   // TODO: do this only if this extent != prev extent ?
   mValid = false;
   emit dataChanged();
+}
+
+// -------------------------------------------------------------------------
+
+QgsDataDefinedSizeLegendNode::QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent )
+  : QgsLayerTreeModelLegendNode( nodeLayer, parent )
+  , mSettings( new QgsDataDefinedSizeLegend( settings ) )
+{
+}
+
+QgsDataDefinedSizeLegendNode::~QgsDataDefinedSizeLegendNode()
+{
+  delete mSettings;
+}
+
+QVariant QgsDataDefinedSizeLegendNode::data( int role ) const
+{
+  if ( role == Qt::DecorationRole )
+  {
+    cacheImage();
+    return QPixmap::fromImage( mImage );
+  }
+  else if ( role == Qt::SizeHintRole )
+  {
+    cacheImage();
+    return mImage.size();
+  }
+  return QVariant();
+}
+
+QgsLayerTreeModelLegendNode::ItemMetrics QgsDataDefinedSizeLegendNode::draw( const QgsLegendSettings &settings, QgsLayerTreeModelLegendNode::ItemContext *ctx )
+{
+  // setup temporary render context
+  QgsRenderContext context;
+  context.setScaleFactor( settings.dpi() / 25.4 );
+  context.setRendererScale( settings.mapScale() );
+  context.setMapToPixel( QgsMapToPixel( 1 / ( settings.mmPerMapUnit() * context.scaleFactor() ) ) );
+  context.setForceVectorOutput( true );
+
+  if ( ctx )
+  {
+    context.setPainter( ctx->painter );
+    ctx->painter->save();
+    ctx->painter->setRenderHint( QPainter::Antialiasing );
+    ctx->painter->translate( ctx->point );
+    ctx->painter->scale( 1 / context.scaleFactor(), 1 / context.scaleFactor() );
+  }
+
+  QgsDataDefinedSizeLegend ddsLegend( *mSettings );
+  ddsLegend.setFont( settings.style( QgsLegendStyle::SymbolLabel ).font() );
+  ddsLegend.setTextColor( settings.fontColor() );
+
+  QSize contentSize;
+  int labelXOffset;
+  ddsLegend.drawCollapsedLegend( context, &contentSize, &labelXOffset );
+
+  if ( ctx )
+    ctx->painter->restore();
+
+  ItemMetrics im;
+  im.symbolSize = QSizeF( ( contentSize.width() - labelXOffset ) / context.scaleFactor(), contentSize.height() / context.scaleFactor() );
+  im.labelSize = QSizeF( labelXOffset / context.scaleFactor(), contentSize.height() / context.scaleFactor() );
+  return im;
+}
+
+
+void QgsDataDefinedSizeLegendNode::cacheImage() const
+{
+  if ( mImage.isNull() )
+  {
+    std::unique_ptr<QgsRenderContext> context( createTemporaryRenderContext() );
+    if ( !context )
+    {
+      context.reset( new QgsRenderContext );
+      context->setScaleFactor( 96 / 25.4 );
+    }
+    mImage = mSettings->collapsedLegendImage( *context );
+  }
 }

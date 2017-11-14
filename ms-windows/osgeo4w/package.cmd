@@ -78,6 +78,8 @@ if not exist "%SETUPAPI_LIBRARY%" (echo SETUPAPI_LIBRARY not found & goto error)
 set CMAKE_OPT=^
 	-D SPATIALINDEX_LIBRARY=%O4W_ROOT%/lib/spatialindex-64.lib ^
 	-D SIP_BINARY_PATH=%O4W_ROOT%/apps/Python36/sip.exe ^
+	-D CMAKE_CXX_FLAGS_RELEASE="/MD /Zi /MP /O2 /Ob2 /D NDEBUG" ^
+	-D CMAKE_PDB_OUTPUT_DIRECTORY_RELEASE=%BUILDDIR%\apps\%PACKAGENAME%\pdb ^
 	-D SETUPAPI_LIBRARY="%SETUPAPI_LIBRARY%" ^
 	-D CMAKE_INSTALL_SYSTEM_RUNTIME_LIBS_NO_WARNINGS=TRUE
 
@@ -90,7 +92,7 @@ set GRASS_VERSIONS=%GRASS72_VERSION%
 set PYTHONPATH=
 path %PATH%;c:\cygwin\bin;%PF86%\CMake\bin
 
-PROMPT qgis%VERSION%$g 
+PROMPT qgis%VERSION%$g
 
 set BUILDCONF=Release
 
@@ -156,7 +158,6 @@ cmake -G Ninja ^
 	-D WITH_SERVER=TRUE ^
 	-D SERVER_SKIP_ECW=TRUE ^
 	-D WITH_GRASS=TRUE ^
-	-D WITH_GRASS6=FALSE ^
 	-D WITH_GRASS7=TRUE ^
 	-D GRASS_PREFIX7=%GRASS72_PATH:\=/% ^
 	-D WITH_GLOBE=FALSE ^
@@ -177,18 +178,6 @@ cmake -G Ninja ^
 	-D CMAKE_INSTALL_PREFIX=%O4W_ROOT%/apps/%PACKAGENAME% ^
 	-D FCGI_INCLUDE_DIR=%O4W_ROOT%/include ^
 	-D FCGI_LIBRARY=%O4W_ROOT%/lib/libfcgi.lib ^
-	-D WITH_INTERNAL_JINJA2=FALSE ^
-	-D WITH_INTERNAL_MARKUPSAFE=FALSE ^
-	-D WITH_INTERNAL_PYGMENTS=FALSE ^
-	-D WITH_INTERNAL_REQUESTS=FALSE ^
-	-D WITH_INTERNAL_DATEUTIL=FALSE ^
-	-D WITH_INTERNAL_PYTZ=FALSE ^
-	-D WITH_INTERNAL_SIX=FALSE ^
-	-D WITH_INTERNAL_NOSE2=FALSE ^
-	-D WITH_INTERNAL_MOCK=FALSE ^
-	-D WITH_INTERNAL_HTTPLIB2=FALSE ^
-	-D WITH_INTERNAL_FUTURE=FALSE ^
-	-D WITH_PYSPATIALITE=TRUE ^
 	-D QCA_INCLUDE_DIR=%OSGEO4W_ROOT%\apps\Qt5\include\QtCrypto ^
 	-D QCA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qca-qt5.lib ^
 	-D QSCINTILLA_LIBRARY=%OSGEO4W_ROOT%\apps\Qt5\lib\qscintilla2.lib ^
@@ -311,9 +300,9 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/plugins/basicauthmethod.dll" ^
 	"apps/%PACKAGENAME%/plugins/delimitedtextprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gdalprovider.dll" ^
+	"apps/%PACKAGENAME%/plugins/geonodeprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpxprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/identcertauthmethod.dll" ^
-	"apps/%PACKAGENAME%/plugins/memoryprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/mssqlprovider.dll" ^
 	"apps/%PACKAGENAME%/plugins/db2provider.dll" ^
 	"apps/%PACKAGENAME%/plugins/ogrprovider.dll" ^
@@ -331,7 +320,7 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-common/%PACKAGENAME
 	"apps/%PACKAGENAME%/resources/qgis.db" ^
 	"apps/%PACKAGENAME%/resources/spatialite.db" ^
 	"apps/%PACKAGENAME%/resources/srs.db" ^
-	"apps/%PACKAGENAME%/resources/symbology-ng-style.xml" ^
+	"apps/%PACKAGENAME%/resources/symbology-style.xml" ^
 	"apps/%PACKAGENAME%/resources/cpt-city-qgis-min/" ^
 	"apps/%PACKAGENAME%/svg/" ^
 	"apps/%PACKAGENAME%/crssync.exe" ^
@@ -392,10 +381,8 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"apps/%PACKAGENAME%/plugins/georefplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/gpsimporterplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/offlineeditingplugin.dll" ^
-	"apps/%PACKAGENAME%/plugins/spatialqueryplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/topolplugin.dll" ^
 	"apps/%PACKAGENAME%/plugins/geometrycheckerplugin.dll" ^
-	"apps/%PACKAGENAME%/qgis_help.exe" ^
 	"apps/%PACKAGENAME%/qtplugins/sqldrivers/qsqlspatialite.dll" ^
 	"apps/%PACKAGENAME%/qtplugins/designer/" ^
 	"apps/%PACKAGENAME%/python/" ^
@@ -406,6 +393,11 @@ tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%/%PACKAGENAME%-%VERS
 	"etc/postinstall/%PACKAGENAME%.bat" ^
 	"etc/preremove/%PACKAGENAME%.bat"
 if errorlevel 1 (echo tar desktop failed & goto error)
+
+if not exist %ARCH%\release\qgis\%PACKAGENAME%-pdb mkdir %ARCH%\release\qgis\%PACKAGENAME%-pdb
+tar -C %BUILDDIR% -cjf %ARCH%/release/qgis/%PACKAGENAME%-pdb/%PACKAGENAME%-pdb-%VERSION%-%PACKAGE%.tar.bz2 ^
+	apps/%PACKAGENAME%/pdb
+if errorlevel 1 (echo tar failed & goto error)
 
 tar -C %OSGEO4W_ROOT% -cjf %ARCH%/release/qgis/%PACKAGENAME%-grass-plugin-common/%PACKAGENAME%-grass-plugin-common-%VERSION%-%PACKAGE%.tar.bz2 ^
 	--exclude-from exclude ^
@@ -471,7 +463,7 @@ goto end
 :usage
 echo usage: %0 version package packagename arch [sha [site]]
 echo sample: %0 2.0.1 3 qgis x86 f802808
-exit
+exit /b 1
 
 :error
 echo BUILD ERROR %ERRORLEVEL%: %DATE% %TIME%

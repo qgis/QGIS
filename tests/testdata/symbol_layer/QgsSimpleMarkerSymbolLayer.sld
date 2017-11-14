@@ -9,6 +9,10 @@
           <se:Name>Single symbol</se:Name>
           <se:PointSymbolizer>
             <se:Graphic>
+              <se:Displacement>
+                <se:DisplacementX>3.3</se:DisplacementX>
+                <se:DisplacementY>6.6</se:DisplacementY>
+              </se:Displacement>
               <se:Mark>
                 <se:WellKnownName>pentagon</se:WellKnownName>
                 <se:Fill>

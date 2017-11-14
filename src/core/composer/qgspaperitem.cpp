@@ -43,7 +43,7 @@ void QgsPaperGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *ite
   //draw grid
   if ( mComposition )
   {
-    if ( mComposition->gridVisible() && mComposition->plotStyle() ==  QgsComposition::Preview
+    if ( mComposition->gridVisible() && mComposition->plotStyle() == QgsComposition::Preview
          && mComposition->snapGridResolution() > 0 )
     {
       int gridMultiplyX = static_cast< int >( mComposition->snapGridOffsetX() / mComposition->snapGridResolution() );
@@ -120,20 +120,20 @@ void QgsPaperGrid::paint( QPainter *painter, const QStyleOptionGraphicsItem *ite
 
 //QgsPaperItem
 
-QgsPaperItem::QgsPaperItem( QgsComposition *c ): QgsComposerItem( c, false ),
-  mPageGrid( nullptr )
+QgsPaperItem::QgsPaperItem( QgsComposition *c )
+  : QgsComposerItem( c, false )
 {
   initialize();
 }
 
-QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition ): QgsComposerItem( x, y, width, height, composition, false ),
-  mPageGrid( nullptr ), mPageMargin( 0 )
+QgsPaperItem::QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition )
+  : QgsComposerItem( x, y, width, height, composition, false )
 {
   initialize();
 }
 
-QgsPaperItem::QgsPaperItem(): QgsComposerItem( nullptr, false ),
-  mPageGrid( nullptr ), mPageMargin( 0 )
+QgsPaperItem::QgsPaperItem()
+  : QgsComposerItem( nullptr, false )
 {
   initialize();
 }
@@ -164,7 +164,7 @@ void QgsPaperItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *ite
 
   painter->save();
 
-  if ( mComposition->plotStyle() ==  QgsComposition::Preview )
+  if ( mComposition->plotStyle() == QgsComposition::Preview )
   {
     //if in preview mode, draw page border and shadow so that it's
     //still possible to tell where pages with a transparent style begin and end
@@ -254,6 +254,6 @@ void QgsPaperItem::initialize()
 
     //connect to atlas feature changes
     //to update symbol style (in case of data-defined symbology)
-    connect( &mComposition->atlasComposition(), SIGNAL( featureChanged( QgsFeature * ) ), this, SLOT( repaint() ) );
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
   }
 }

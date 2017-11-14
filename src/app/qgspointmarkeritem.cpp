@@ -64,7 +64,7 @@ void QgsPointMarkerItem::paint( QPainter *painter )
 
   QgsRenderContext rc = renderContext( painter );
 
-  bool useEffect = !qgsDoubleNear( mOpacityEffect->transparency(), 0.0 );
+  bool useEffect = !qgsDoubleNear( mOpacityEffect->opacity(), 1.0 );
   if ( useEffect )
   {
     //use a paint effect to reduce opacity. If we directly set the opacity on the painter, then the symbol will NOT
@@ -82,7 +82,7 @@ void QgsPointMarkerItem::paint( QPainter *painter )
   }
 }
 
-void QgsPointMarkerItem::setPointLocation( const QgsPoint &p )
+void QgsPointMarkerItem::setPointLocation( const QgsPointXY &p )
 {
   mLocation = toCanvasCoordinates( p );
 }
@@ -106,20 +106,20 @@ void QgsPointMarkerItem::updateSize()
 {
   QgsRenderContext rc = renderContext( nullptr );
   mMarkerSymbol->startRender( rc, mFeature.fields() );
-  QRectF bounds =  mMarkerSymbol->bounds( mLocation, rc, mFeature );
+  QRectF bounds = mMarkerSymbol->bounds( mLocation, rc, mFeature );
   mMarkerSymbol->stopRender( rc );
   QgsRectangle r( mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( bounds.x(), bounds.y() ),
                   mMapCanvas->mapSettings().mapToPixel().toMapCoordinates( bounds.x() + bounds.width() * 2, bounds.y() + bounds.height() * 2 ) );
   setRect( r );
 }
 
-void QgsPointMarkerItem::setTransparency( double transparency )
+void QgsPointMarkerItem::setOpacity( double opacity )
 {
-  mOpacityEffect->setTransparency( transparency );
+  mOpacityEffect->setOpacity( opacity );
 }
 
-double QgsPointMarkerItem::transparency() const
+double QgsPointMarkerItem::opacity() const
 {
-  return mOpacityEffect->transparency();
+  return mOpacityEffect->opacity();
 }
 

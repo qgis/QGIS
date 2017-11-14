@@ -23,9 +23,7 @@
 
 QgsTextEditWrapper::QgsTextEditWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mTextEdit( nullptr )
-  , mPlainTextEdit( nullptr )
-  , mLineEdit( nullptr )
+
 {
 }
 
@@ -107,10 +105,10 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
   mLineEdit = qobject_cast<QLineEdit *>( editor );
 
   if ( mTextEdit )
-    connect( mTextEdit, SIGNAL( textChanged() ), this, SLOT( valueChanged() ) );
+    connect( mTextEdit, &QTextEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
 
   if ( mPlainTextEdit )
-    connect( mPlainTextEdit, SIGNAL( textChanged() ), this, SLOT( valueChanged() ) );
+    connect( mPlainTextEdit, &QPlainTextEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )()>( &QgsEditorWidgetWrapper::valueChanged ) );
 
   if ( mLineEdit )
   {
@@ -133,8 +131,8 @@ void QgsTextEditWrapper::initWidget( QWidget *editor )
       fle->setNullValue( defVal.toString() );
     }
 
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( valueChanged( QString ) ) );
-    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged( QString ) ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, static_cast<void ( QgsEditorWidgetWrapper::* )( const QString & )>( &QgsEditorWidgetWrapper::valueChanged ) );
+    connect( mLineEdit, &QLineEdit::textChanged, this, &QgsTextEditWrapper::textChanged );
 
     mWritablePalette = mLineEdit->palette();
     mReadOnlyPalette = mLineEdit->palette();
@@ -239,4 +237,17 @@ void QgsTextEditWrapper::setWidgetValue( const QVariant &val )
 
   if ( mLineEdit )
     mLineEdit->setText( v );
+}
+
+void QgsTextEditWrapper::setHint( const QString &hintText )
+{
+  if ( hintText.isNull() )
+    mPlaceholderText = mPlaceholderTextBackup;
+  else
+  {
+    mPlaceholderTextBackup = mPlaceholderText;
+    mPlaceholderText = hintText;
+  }
+
+  mLineEdit->setPlaceholderText( mPlaceholderText );
 }

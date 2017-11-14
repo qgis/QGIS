@@ -31,11 +31,9 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
   , mExiting( existing )
   , mExtensions( extensions )
   , mCaseSensitivity( cs )
-  , mNamesLabel( nullptr )
   , mRegexp( regexp )
-  , mOverwriteEnabled( true )
 {
-  setWindowTitle( tr( "New name" ) );
+  setWindowTitle( tr( "New Name" ) );
   QDialog::layout()->setSizeConstraint( QLayout::SetMinimumSize );
   layout()->setSizeConstraint( QLayout::SetMinimumSize );
   layout()->setSpacing( 6 );
@@ -60,7 +58,7 @@ QgsNewNameDialog::QgsNewNameDialog( const QString &source, const QString &initia
     mLineEdit->setValidator( validator );
   }
   mLineEdit->setMinimumWidth( mLineEdit->fontMetrics().width( QStringLiteral( "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" ) ) );
-  connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( nameChanged() ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsNewNameDialog::nameChanged );
   layout()->addWidget( mLineEdit );
 
   mNamesLabel = new QLabel( QStringLiteral( " " ), this );

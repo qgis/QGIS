@@ -4,6 +4,6 @@
 <qgisgrassmodule label="Trace a flow through an elevation model" module="r.drain">
     <option key="input"/>
     <option key="output"/>
-    <option key="coordinate" version_max="6.4"/>
-    <option key="start_coordinates" version_min="7.0"/>
+
+    <option key="start_coordinates"/>
 </qgisgrassmodule>

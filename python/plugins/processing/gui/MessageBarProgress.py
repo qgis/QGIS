@@ -41,6 +41,7 @@ class MessageBarProgress(QgsProcessingFeedback):
         self.progressMessageBar = \
             iface.messageBar().createMessage(self.tr('Executing algorithm <i>{0}</i>'.format(algname if algname else '')))
         self.progress = QProgressBar()
+        self.progressChanged.connect(self.progress.setValue)
         self.progress.setMaximum(100)
         self.progress.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
         self.progressMessageBar.layout().addWidget(self.progress)
@@ -49,9 +50,6 @@ class MessageBarProgress(QgsProcessingFeedback):
 
     def reportError(self, msg):
         self.msg.append(msg)
-
-    def setProgress(self, i):
-        self.progress.setValue(i)
 
     def close(self):
         if self.msg:

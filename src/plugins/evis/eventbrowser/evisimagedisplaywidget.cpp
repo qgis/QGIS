@@ -27,6 +27,7 @@
 #include "evisimagedisplaywidget.h"
 
 #include "qgsapplication.h"
+#include "qgsscrollarea.h"
 
 #include <QVBoxLayout>
 #include <QHBoxLayout>
@@ -40,10 +41,6 @@
 */
 eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags fl )
   : QWidget( parent, fl )
-  , mCurrentHttpImageRequestId( 0 )
-  , mImageSizeRatio( 0.0 )
-  , mScaleFactor( 1.0 )
-  , mScaleToFit( 0.0 )
 {
   //Setup zoom buttons
   pbtnZoomIn = new QPushButton();
@@ -62,9 +59,9 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags
   pbtnZoomIn->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomIn.svg" ) ) );
   pbtnZoomOut->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomOut.svg" ) ) );
   pbtnZoomFull->setIcon( QIcon( QPixmap( myThemePath + "/mActionZoomFullExtent.svg" ) ) );
-  connect( pbtnZoomIn, SIGNAL( clicked() ), this, SLOT( on_pbtnZoomIn_clicked() ) );
-  connect( pbtnZoomOut, SIGNAL( clicked() ), this, SLOT( on_pbtnZoomOut_clicked() ) );
-  connect( pbtnZoomFull, SIGNAL( clicked() ), this, SLOT( on_pbtnZoomFull_clicked() ) );
+  connect( pbtnZoomIn, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::pbtnZoomIn_clicked );
+  connect( pbtnZoomOut, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::pbtnZoomOut_clicked );
+  connect( pbtnZoomFull, &QAbstractButton::clicked, this, &eVisImageDisplayWidget::pbtnZoomFull_clicked );
 
   //Setup zoom button layout
   QWidget *myButtonBar = new QWidget();
@@ -76,7 +73,7 @@ eVisImageDisplayWidget::eVisImageDisplayWidget( QWidget *parent, Qt::WindowFlags
   myButtonBar->setLayout( myButtonBarLayout );
 
   //setup display area
-  mDisplayArea = new QScrollArea();
+  mDisplayArea = new QgsScrollArea();
 
   QVBoxLayout *myLayout = new QVBoxLayout;
   myLayout->addWidget( myButtonBar );
@@ -261,7 +258,7 @@ void eVisImageDisplayWidget::displayUrlImage( int requestId, bool error )
 /**
 * Slot called when the pbtnZoomIn button is pressed
 */
-void eVisImageDisplayWidget::on_pbtnZoomIn_clicked()
+void eVisImageDisplayWidget::pbtnZoomIn_clicked()
 {
   if ( mCurrentZoomStep < ZOOM_STEPS )
   {
@@ -280,7 +277,7 @@ void eVisImageDisplayWidget::on_pbtnZoomIn_clicked()
 /**
 * Slot called when the pbtnZoomOut button is pressed
 */
-void eVisImageDisplayWidget::on_pbtnZoomOut_clicked()
+void eVisImageDisplayWidget::pbtnZoomOut_clicked()
 {
   if ( mCurrentZoomStep > 0 )
   {
@@ -299,7 +296,7 @@ void eVisImageDisplayWidget::on_pbtnZoomOut_clicked()
 /**
 * Slot called when the pbtnZoomFull button is pressed
 */
-void eVisImageDisplayWidget::on_pbtnZoomFull_clicked()
+void eVisImageDisplayWidget::pbtnZoomFull_clicked()
 {
   pbtnZoomOut->setEnabled( false );
   pbtnZoomFull->setEnabled( false );

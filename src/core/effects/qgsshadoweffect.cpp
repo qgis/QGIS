@@ -21,14 +21,7 @@
 #include "qgsunittypes.h"
 
 QgsShadowEffect::QgsShadowEffect()
-  : QgsPaintEffect()
-  , mBlurLevel( 10 )
-  , mOffsetAngle( 135 )
-  , mOffsetDist( 2.0 )
-  , mOffsetUnit( QgsUnitTypes::RenderMillimeters )
-  , mTransparency( 0.0 )
-  , mColor( Qt::black )
-  , mBlendMode( QPainter::CompositionMode_Multiply )
+  : mColor( Qt::black )
 {
 
 }
@@ -57,11 +50,11 @@ void QgsShadowEffect::draw( QgsRenderContext &context )
   double offsetDist = context.convertToPainterUnits( mOffsetDist, mOffsetUnit, mOffsetMapUnitScale );
 
   double   angleRad = mOffsetAngle * M_PI / 180; // to radians
-  QPointF transPt( -offsetDist * cos( angleRad + M_PI / 2 ),
-                   -offsetDist * sin( angleRad + M_PI / 2 ) );
+  QPointF transPt( -offsetDist * std::cos( angleRad + M_PI_2 ),
+                   -offsetDist * std::sin( angleRad + M_PI_2 ) );
 
   //transparency, scale
-  QgsImageOperation::multiplyOpacity( colorisedIm, 1.0 - mTransparency );
+  QgsImageOperation::multiplyOpacity( colorisedIm, mOpacity );
 
   if ( !exteriorShadow() )
   {
@@ -93,7 +86,7 @@ QgsStringMap QgsShadowEffect::properties() const
   props.insert( QStringLiteral( "enabled" ), mEnabled ? "1" : "0" );
   props.insert( QStringLiteral( "draw_mode" ), QString::number( int( mDrawMode ) ) );
   props.insert( QStringLiteral( "blend_mode" ), QString::number( int( mBlendMode ) ) );
-  props.insert( QStringLiteral( "transparency" ), QString::number( mTransparency ) );
+  props.insert( QStringLiteral( "opacity" ), QString::number( mOpacity ) );
   props.insert( QStringLiteral( "blur_level" ), QString::number( mBlurLevel ) );
   props.insert( QStringLiteral( "offset_angle" ), QString::number( mOffsetAngle ) );
   props.insert( QStringLiteral( "offset_distance" ), QString::number( mOffsetDist ) );
@@ -111,10 +104,21 @@ void QgsShadowEffect::readProperties( const QgsStringMap &props )
   {
     mBlendMode = mode;
   }
-  double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
-  if ( ok )
+  if ( props.contains( QStringLiteral( "transparency" ) ) )
   {
-    mTransparency = transparency;
+    double transparency = props.value( QStringLiteral( "transparency" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = 1.0 - transparency;
+    }
+  }
+  else
+  {
+    double opacity = props.value( QStringLiteral( "opacity" ) ).toDouble( &ok );
+    if ( ok )
+    {
+      mOpacity = opacity;
+    }
   }
   mEnabled = props.value( QStringLiteral( "enabled" ), QStringLiteral( "1" ) ).toInt();
   mDrawMode = static_cast< QgsPaintEffect::DrawMode >( props.value( QStringLiteral( "draw_mode" ), QStringLiteral( "2" ) ).toInt() );
@@ -168,9 +172,19 @@ QgsDropShadowEffect::QgsDropShadowEffect()
 
 }
 
+QString QgsDropShadowEffect::type() const
+{
+  return QStringLiteral( "dropShadow" );
+}
+
 QgsDropShadowEffect *QgsDropShadowEffect::clone() const
 {
   return new QgsDropShadowEffect( *this );
+}
+
+bool QgsDropShadowEffect::exteriorShadow() const
+{
+  return true;
 }
 
 
@@ -191,7 +205,17 @@ QgsInnerShadowEffect::QgsInnerShadowEffect()
 
 }
 
+QString QgsInnerShadowEffect::type() const
+{
+  return QStringLiteral( "innerShadow" );
+}
+
 QgsInnerShadowEffect *QgsInnerShadowEffect::clone() const
 {
   return new QgsInnerShadowEffect( *this );
+}
+
+bool QgsInnerShadowEffect::exteriorShadow() const
+{
+  return false;
 }

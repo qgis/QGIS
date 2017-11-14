@@ -18,17 +18,10 @@
 #include "qgslayertreeembeddedwidgetsimpl.h"
 
 
-
-QgsLayerTreeEmbeddedWidgetRegistry *QgsLayerTreeEmbeddedWidgetRegistry::instance()
-{
-  static QgsLayerTreeEmbeddedWidgetRegistry *sInstance( new QgsLayerTreeEmbeddedWidgetRegistry() );
-  return sInstance;
-}
-
 QgsLayerTreeEmbeddedWidgetRegistry::QgsLayerTreeEmbeddedWidgetRegistry()
 {
   // populate with default implementations
-  addProvider( new QgsLayerTreeTransparencyWidget::Provider() );
+  addProvider( new QgsLayerTreeOpacityWidget::Provider() );
 }
 
 QgsLayerTreeEmbeddedWidgetRegistry::~QgsLayerTreeEmbeddedWidgetRegistry()

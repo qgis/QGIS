@@ -15,16 +15,21 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsamsdataitems.h"
-#include "qgsamssourceselect.h"
 #include "qgsarcgisrestutils.h"
-#include "qgsnewhttpconnection.h"
 #include "qgsowsconnection.h"
+#include "qgsproviderregistry.h"
 
+#ifdef HAVE_GUI
+#include "qgsamssourceselect.h"
+#include "qgsnewhttpconnection.h"
+#endif
+
+#include <QImageReader>
 
 QgsAmsRootItem::QgsAmsRootItem( QgsDataItem *parent, QString name, QString path )
   : QgsDataCollectionItem( parent, name, path )
 {
-  mCapabilities |= Fast;
+  mCapabilities |= Fast | Collapse;
   mIconName = QStringLiteral( "mIconAms.svg" );
   populate();
 }
@@ -33,45 +38,47 @@ QVector<QgsDataItem *> QgsAmsRootItem::createChildren()
 {
   QVector<QgsDataItem *> connections;
 
-  Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( "ArcGisMapServer" ) )
+  Q_FOREACH ( const QString &connName, QgsOwsConnection::connectionList( "arcgismapserver" ) )
   {
-    QgsOwsConnection connection( QStringLiteral( "ArcGisMapServer" ), connName );
+    QgsOwsConnection connection( QStringLiteral( "arcgismapserver" ), connName );
     QString path = "ams:/" + connName;
     connections.append( new QgsAmsConnectionItem( this, connName, path, connection.uri().param( QStringLiteral( "url" ) ) ) );
   }
   return connections;
 }
 
-QList<QAction *> QgsAmsRootItem::actions()
+#ifdef HAVE_GUI
+QList<QAction *> QgsAmsRootItem::actions( QWidget *parent )
 {
-  QAction *actionNew = new QAction( tr( "New Connection..." ), this );
-  connect( actionNew, SIGNAL( triggered() ), this, SLOT( newConnection() ) );
+  QAction *actionNew = new QAction( tr( "New Connection..." ), parent );
+  connect( actionNew, &QAction::triggered, this, &QgsAmsRootItem::newConnection );
   return QList<QAction *>() << actionNew;
 }
 
 
 QWidget *QgsAmsRootItem::paramWidget()
 {
-  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, true );
-  connect( select, SIGNAL( connectionsChanged() ), this, SLOT( connectionsChanged() ) );
+  QgsAmsSourceSelect *select = new QgsAmsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
+  connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAmsRootItem::onConnectionsChanged );
   return select;
 }
 
-void QgsAmsRootItem::connectionsChanged()
+void QgsAmsRootItem::onConnectionsChanged()
 {
   refresh();
 }
 
 void QgsAmsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0 );
-  nc.setWindowTitle( tr( "Create a new AMS connection" ) );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ) );
+  nc.setWindowTitle( tr( "Create a New ArcGIS Map Server Connection" ) );
 
   if ( nc.exec() )
   {
-    refresh();
+    refreshConnections();
   }
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -79,7 +86,7 @@ QgsAmsConnectionItem::QgsAmsConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUrl( url )
 {
-  mIconName = QStringLiteral( "mIconAms.png" );
+  mIconName = QStringLiteral( "mIconConnect.png" );
 }
 
 QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
@@ -128,16 +135,17 @@ bool QgsAmsConnectionItem::equal( const QgsDataItem *other )
   return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
 }
 
-QList<QAction *> QgsAmsConnectionItem::actions()
+#ifdef HAVE_GUI
+QList<QAction *> QgsAmsConnectionItem::actions( QWidget *parent )
 {
   QList<QAction *> lst;
 
-  QAction *actionEdit = new QAction( tr( "Edit..." ), this );
-  connect( actionEdit, SIGNAL( triggered() ), this, SLOT( editConnection() ) );
+  QAction *actionEdit = new QAction( tr( "Edit..." ), parent );
+  connect( actionEdit, &QAction::triggered, this, &QgsAmsConnectionItem::editConnection );
   lst.append( actionEdit );
 
-  QAction *actionDelete = new QAction( tr( "Delete" ), this );
-  connect( actionDelete, SIGNAL( triggered() ), this, SLOT( deleteConnection() ) );
+  QAction *actionDelete = new QAction( tr( "Delete" ), parent );
+  connect( actionDelete, &QAction::triggered, this, &QgsAmsConnectionItem::deleteConnection );
   lst.append( actionDelete );
 
   return lst;
@@ -145,20 +153,21 @@ QList<QAction *> QgsAmsConnectionItem::actions()
 
 void QgsAmsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, QStringLiteral( "/Qgis/connections-afs/" ), mName );
-  nc.setWindowTitle( tr( "Modify AMS connection" ) );
+  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgismapserver/" ), mName );
+  nc.setWindowTitle( tr( "Modify ArcGIS Map Server Connection" ) );
 
   if ( nc.exec() )
   {
-    mParent->refresh();
+    mParent->refreshConnections();
   }
 }
 
 void QgsAmsConnectionItem::deleteConnection()
 {
-  QgsOwsConnection::deleteConnection( QStringLiteral( "ArcGisMapServer" ), mName );
-  mParent->refresh();
+  QgsOwsConnection::deleteConnection( QStringLiteral( "arcgismapserver" ), mName );
+  mParent->refreshConnections();
 }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 

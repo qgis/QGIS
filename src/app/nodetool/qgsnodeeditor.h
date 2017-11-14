@@ -85,7 +85,7 @@ class QgsNodeEditor : public QgsDockWidget
     QgsNodeEditorModel *mNodeModel = nullptr;
 
   signals:
-    void deleteSelectedRequested( );
+    void deleteSelectedRequested();
 
   protected:
     void keyPressEvent( QKeyEvent *event );

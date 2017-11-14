@@ -25,19 +25,10 @@ QgsPointRotationItem::QgsPointRotationItem( QgsMapCanvas *canvas )
   //setup font
   mFont.setPointSize( 12 );
   mFont.setBold( true );
-}
 
-QgsPointRotationItem::QgsPointRotationItem()
-  : QgsMapCanvasItem( nullptr )
-  , mOrientation( Clockwise )
-  , mRotation( 0.0 )
-{
-
-}
-
-QgsPointRotationItem::~QgsPointRotationItem()
-{
-
+  QImage im( 24, 24, QImage::Format_ARGB32 );
+  im.fill( Qt::transparent );
+  setSymbol( im );
 }
 
 void QgsPointRotationItem::paint( QPainter *painter )
@@ -54,10 +45,10 @@ void QgsPointRotationItem::paint( QPainter *painter )
   double h, dAngel;
   if ( mPixmap.width() > 0 && mPixmap.height() > 0 )
   {
-    h = sqrt( ( double ) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
-    dAngel = acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI; //the diagonal angel of the original rect
-    x = h * cos( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
-    y = h * sin( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
+    h = std::sqrt( ( double ) mPixmap.width() * mPixmap.width() + mPixmap.height() * mPixmap.height() ) / 2; //the half of the item diagonal
+    dAngel = std::acos( mPixmap.width() / ( h * 2 ) ) * 180 / M_PI; //the diagonal angel of the original rect
+    x = h * std::cos( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
+    y = h * std::sin( ( painterRotation( mRotation ) - dAngel ) * M_PI / 180 );
   }
 
   painter->rotate( painterRotation( mRotation ) );
@@ -72,7 +63,7 @@ void QgsPointRotationItem::paint( QPainter *painter )
   painter->drawText( mPixmap.width(), mPixmap.height() / 2.0 + fm.height() / 2.0, QString::number( mRotation ) );
 }
 
-void QgsPointRotationItem::setPointLocation( const QgsPoint &p )
+void QgsPointRotationItem::setPointLocation( const QgsPointXY &p )
 {
   QPointF transformedPoint = toCanvasCoordinates( p );
   setPos( transformedPoint.x() - mPixmap.width() / 2.0, transformedPoint.y() - mPixmap.height() / 2.0 );

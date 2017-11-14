@@ -25,13 +25,9 @@
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
-  , mTitle( QLatin1String( "" ) )
   , mText( text )
   , mLevel( level )
   , mDuration( duration )
-  , mWidget( nullptr )
-  , mUserIcon( QIcon() )
-  , mLayout( nullptr )
 {
   writeContent();
 }
@@ -42,9 +38,6 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   , mText( text )
   , mLevel( level )
   , mDuration( duration )
-  , mWidget( nullptr )
-  , mUserIcon( QIcon() )
-  , mLayout( nullptr )
 {
   writeContent();
 }
@@ -57,20 +50,18 @@ QgsMessageBarItem::QgsMessageBarItem( const QString &title, const QString &text,
   , mDuration( duration )
   , mWidget( widget )
   , mUserIcon( QIcon() )
-  , mLayout( nullptr )
+
 {
   writeContent();
 }
 
 QgsMessageBarItem::QgsMessageBarItem( QWidget *widget, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
-  , mTitle( QLatin1String( "" ) )
-  , mText( QLatin1String( "" ) )
   , mLevel( level )
   , mDuration( duration )
   , mWidget( widget )
   , mUserIcon( QIcon() )
-  , mLayout( nullptr )
+
 {
   writeContent();
 }
@@ -196,11 +187,21 @@ QgsMessageBarItem *QgsMessageBarItem::setText( const QString &text )
   return this;
 }
 
+QString QgsMessageBarItem::text() const
+{
+  return mText;
+}
+
 QgsMessageBarItem *QgsMessageBarItem::setTitle( const QString &title )
 {
   mTitle = title;
   writeContent();
   return this;
+}
+
+QString QgsMessageBarItem::title() const
+{
+  return mTitle;
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel level )
@@ -209,6 +210,11 @@ QgsMessageBarItem *QgsMessageBarItem::setLevel( QgsMessageBar::MessageLevel leve
   writeContent();
   emit styleChanged( mStyleSheet );
   return this;
+}
+
+QgsMessageBar::MessageLevel QgsMessageBarItem::level() const
+{
+  return mLevel;
 }
 
 QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
@@ -227,10 +233,20 @@ QgsMessageBarItem *QgsMessageBarItem::setWidget( QWidget *widget )
   return this;
 }
 
+QWidget *QgsMessageBarItem::widget() const
+{
+  return mWidget;
+}
+
 QgsMessageBarItem *QgsMessageBarItem::setIcon( const QIcon &icon )
 {
   mUserIcon = icon;
   return this;
+}
+
+QIcon QgsMessageBarItem::icon() const
+{
+  return mUserIcon;
 }
 
 

@@ -34,7 +34,7 @@ bool QgsRaster::isRepresentableValue( double value, Qgis::DataType dataType )
     case Qgis::Int32:
       return value >= std::numeric_limits<qint32>::min() && value <= std::numeric_limits<qint32>::max();
     case Qgis::Float32:
-      return qIsNaN( value ) || qIsInf( value ) ||
+      return std::isnan( value ) || std::isinf( value ) ||
              ( value >= -std::numeric_limits<float>::max() && value <= std::numeric_limits<float>::max() );
     default:
       return true;

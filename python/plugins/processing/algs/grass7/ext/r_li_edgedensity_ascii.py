@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from __future__ import absolute_import
 
 __author__ = 'Médéric Ribreux'
 __date__ = 'February 2016'
@@ -33,8 +32,8 @@ def checkParameterValuesBeforeExecuting(alg):
     return checkMovingWindow(alg, True)
 
 
-def processCommand(alg):
-    configFile(alg, True)
+def processCommand(alg, parameters):
+    configFile(alg, parameters, True)
 
 
 def processOutputs(alg):

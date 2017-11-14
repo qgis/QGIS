@@ -22,7 +22,10 @@
 #include "qgseditorconfigwidget.h"
 #include "qgis_gui.h"
 
-/** \ingroup gui
+SIP_NO_FILE
+
+/**
+ * \ingroup gui
  * \class QgsRelationReferenceConfigDlg
  * \note not available in Python bindings
  */
@@ -46,8 +49,8 @@ class GUI_EXPORT QgsRelationReferenceConfigDlg : public QgsEditorConfigWidget, p
 
   private slots:
     void relationChanged( int idx );
-    void on_mAddFilterButton_clicked();
-    void on_mRemoveFilterButton_clicked();
+    void mAddFilterButton_clicked();
+    void mRemoveFilterButton_clicked();
 };
 
 #endif // QGSRELATIONREFERENCECONFIGDLGBASE_H
