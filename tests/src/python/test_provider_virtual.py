@@ -86,11 +86,11 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         pass
 
     def test_filterfid_crossjoin(self):
-        l0 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr", False)
+        l0 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr")
         self.assertTrue(l0.isValid())
         QgsProject.instance().addMapLayer(l0)
 
-        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "points.shp"), "points", "ogr", False)
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "points.shp"), "points", "ogr")
         self.assertTrue(l1.isValid())
         QgsProject.instance().addMapLayer(l1)
 
