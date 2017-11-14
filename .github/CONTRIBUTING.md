@@ -19,6 +19,10 @@ Windows equivalent for a symlink using PowerShell in elevated priviledges mode f
 
     cmd /c mklink /H pre-commit ..\..\scripts\prepare-commit.sh
 
+Windows also requires all scripts to be in shell path, run this from QGIS repository root to achieve this:
+
+    export PATH=$PATH:scripts/
+
 Getting your pull request merged
 --------------------------------
 
