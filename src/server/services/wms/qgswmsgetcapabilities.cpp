@@ -1732,26 +1732,21 @@ namespace QgsWms
       keywordsElem.appendChild( keywordElem );
       parent.appendChild( keywordsElem );
       QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
-      if ( !keywords.isEmpty() )
+      for ( const QString &keyword : qgis::as_const( keywords ) )
       {
-        for ( int i = 0; i < keywords.size(); ++i )
+        if ( !keyword.isEmpty() )
         {
-          QString keyword = keywords.at( i );
-          if ( !keyword.isEmpty() )
+          keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
+          keywordText = doc.createTextNode( keyword );
+          keywordElem.appendChild( keywordText );
+          if ( sia2045 )
           {
-            keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
-            keywordText = doc.createTextNode( keyword );
-            keywordElem.appendChild( keywordText );
-            if ( sia2045 )
-            {
-              keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
-            }
-            keywordsElem.appendChild( keywordElem );
+            keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
           }
+          keywordsElem.appendChild( keywordElem );
         }
-
-        parent.appendChild( keywordsElem );
       }
+      parent.appendChild( keywordsElem );
     }
   }
 
