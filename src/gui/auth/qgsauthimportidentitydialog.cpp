@@ -192,7 +192,7 @@ void QgsAuthImportIdentityDialog::chkPkiPathsPassShow_stateChanged( int state )
 
 void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Client Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsCert->setText( fn );
@@ -202,7 +202,7 @@ void QgsAuthImportIdentityDialog::btnPkiPathsCert_clicked()
 
 void QgsAuthImportIdentityDialog::btnPkiPathsKey_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Private Key File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     lePkiPathsKey->setText( fn );
@@ -287,26 +287,8 @@ bool QgsAuthImportIdentityDialog::validatePkiPaths()
   //TODO: set enabled on cert info button, relative to cert validity
 
   // check for valid private key and that any supplied password works
-  bool keypem = keypath.endsWith( QLatin1String( ".pem" ), Qt::CaseInsensitive );
-  QByteArray keydata( QgsAuthCertUtils::fileData( keypath ) );
-
-  QSslKey clientkey;
-  QString keypass = lePkiPathsKeyPass->text();
-  clientkey = QSslKey( keydata,
-                       QSsl::Rsa,
-                       keypem ? QSsl::Pem : QSsl::Der,
-                       QSsl::PrivateKey,
-                       !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  if ( clientkey.isNull() )
-  {
-    // try DSA algorithm, since Qt can't seem to determine it otherwise
-    clientkey = QSslKey( keydata,
-                         QSsl::Dsa,
-                         keypem ? QSsl::Pem : QSsl::Der,
-                         QSsl::PrivateKey,
-                         !keypass.isEmpty() ? keypass.toUtf8() : QByteArray() );
-  }
-
+  QString keypass( lePkiPathsKeyPass->text() );
+  QSslKey clientkey( QgsAuthCertUtils::keyFromFile( keypath, keypass ) );
   if ( clientkey.isNull() )
   {
     writeValidation( tr( "Failed to load client private key from file" ), Invalid, true );

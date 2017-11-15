@@ -224,7 +224,7 @@ void QgsAuthImportCertDialog::validateCertificates()
 
 void QgsAuthImportCertDialog::btnImportFile_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leImportFile->setText( fn );
