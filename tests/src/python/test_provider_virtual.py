@@ -624,22 +624,22 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         l = QgsVectorLayer("?query=%s&geometry=geom:multipoint:0" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
         for f in l.getFeatures():
-            self.assertEqual(f.geometry().exportToWkt().lower().startswith("multipoint"), True)
-            self.assertEqual("),(" in f.geometry().exportToWkt(), True)  # has two points
+            self.assertEqual(f.geometry().asWkt().lower().startswith("multipoint"), True)
+            self.assertEqual("),(" in f.geometry().asWkt(), True)  # has two points
 
         query = toPercent("select geomfromtext('multipolygon(((0 0,1 0,1 1,0 1,0 0)),((0 1,1 1,1 2,0 2,0 1)))') as geom")
         l = QgsVectorLayer("?query=%s&geometry=geom:multipolygon:0" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
         for f in l.getFeatures():
-            self.assertEqual(f.geometry().exportToWkt().lower().startswith("multipolygon"), True)
-            self.assertEqual(")),((" in f.geometry().exportToWkt(), True)  # has two polygons
+            self.assertEqual(f.geometry().asWkt().lower().startswith("multipolygon"), True)
+            self.assertEqual(")),((" in f.geometry().asWkt(), True)  # has two polygons
 
         query = toPercent("select geomfromtext('multilinestring((0 0,1 0,1 1,0 1,0 0),(0 1,1 1,1 2,0 2,0 1))') as geom")
         l = QgsVectorLayer("?query=%s&geometry=geom:multilinestring:0" % query, "tt", "virtual", QgsVectorLayer.LayerOptions(False))
         self.assertEqual(l.isValid(), True)
         for f in l.getFeatures():
-            self.assertEqual(f.geometry().exportToWkt().lower().startswith("multilinestring"), True)
-            self.assertEqual("),(" in f.geometry().exportToWkt(), True)  # has two linestrings
+            self.assertEqual(f.geometry().asWkt().lower().startswith("multilinestring"), True)
+            self.assertEqual("),(" in f.geometry().asWkt(), True)  # has two linestrings
 
     def test_queryOnMemoryLayer(self):
         ml = QgsVectorLayer("Point?srid=EPSG:4326&field=a:int", "mem", "memory")

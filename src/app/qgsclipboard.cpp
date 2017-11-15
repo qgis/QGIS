@@ -115,7 +115,7 @@ QString QgsClipboard::generateClipboardText() const
         if ( format == AttributesWithWKT )
         {
           if ( it->hasGeometry() )
-            textFields += it->geometry().exportToWkt();
+            textFields += it->geometry().asWkt();
           else
           {
             textFields += QgsApplication::nullRepresentation();
@@ -249,7 +249,7 @@ void QgsClipboard::insert( const QgsFeature &feature )
 {
   mFeatureClipboard.push_back( feature );
 
-  QgsDebugMsgLevel( "inserted " + feature.geometry().exportToWkt(), 4 );
+  QgsDebugMsgLevel( "inserted " + feature.geometry().asWkt(), 4 );
   mUseSystemClipboard = false;
   emit changed();
 }

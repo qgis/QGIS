@@ -97,11 +97,11 @@ Adds a geometry and takes ownership. Returns true in case of success.
 
     virtual QString asWkt( int precision = 17 ) const;
 
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QString asJSON( int precision = 17 ) const;
+    virtual QString asJson( int precision = 17 ) const;
 
 
     virtual QgsRectangle boundingBox() const;

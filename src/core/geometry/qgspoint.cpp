@@ -247,7 +247,7 @@ QString QgsPoint::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsPoint::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsPoint::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemCoordinates = doc.createElementNS( ns, QStringLiteral( "coordinates" ) );
@@ -266,7 +266,7 @@ QDomElement QgsPoint::asGML2( QDomDocument &doc, int precision, const QString &n
   return elemPoint;
 }
 
-QDomElement QgsPoint::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsPoint::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemPoint = doc.createElementNS( ns, QStringLiteral( "Point" ) );
   QDomElement elemPosList = doc.createElementNS( ns, QStringLiteral( "pos" ) );
@@ -286,7 +286,7 @@ QDomElement QgsPoint::asGML3( QDomDocument &doc, int precision, const QString &n
  * See details in QEP #17
  ****************************************************************************/
 
-QString QgsPoint::asJSON( int precision ) const
+QString QgsPoint::asJson( int precision ) const
 {
   return "{\"type\": \"Point\", \"coordinates\": ["
          + qgsDoubleToString( mX, precision ) + ", " + qgsDoubleToString( mY, precision )

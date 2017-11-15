@@ -1252,7 +1252,7 @@ void QgsWFSFeatureIterator::copyFeature( const QgsFeature &srcFeature, QgsFeatur
   if ( !mShared->mGeometryAttribute.isEmpty() && !geometry.isNull() )
   {
     QgsGeometry g;
-    g.fromWkb( geometry.exportToWkb() );
+    g.fromWkb( geometry.asWkb() );
     dstFeature.setGeometry( g );
   }
   else

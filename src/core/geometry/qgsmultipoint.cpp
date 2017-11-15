@@ -67,7 +67,7 @@ void QgsMultiPoint::clear()
   mWkbType = QgsWkbTypes::MultiPoint;
 }
 
-QDomElement QgsMultiPoint::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiPoint::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
 
@@ -79,7 +79,7 @@ QDomElement QgsMultiPoint::asGML2( QDomDocument &doc, int precision, const QStri
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
-      elemPointMember.appendChild( geom->asGML2( doc, precision, ns ) );
+      elemPointMember.appendChild( geom->asGml2( doc, precision, ns ) );
       elemMultiPoint.appendChild( elemPointMember );
     }
   }
@@ -87,7 +87,7 @@ QDomElement QgsMultiPoint::asGML2( QDomDocument &doc, int precision, const QStri
   return elemMultiPoint;
 }
 
-QDomElement QgsMultiPoint::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiPoint::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiPoint = doc.createElementNS( ns, QStringLiteral( "MultiPoint" ) );
 
@@ -99,7 +99,7 @@ QDomElement QgsMultiPoint::asGML3( QDomDocument &doc, int precision, const QStri
     if ( qgsgeometry_cast<const QgsPoint *>( geom ) )
     {
       QDomElement elemPointMember = doc.createElementNS( ns, QStringLiteral( "pointMember" ) );
-      elemPointMember.appendChild( geom->asGML3( doc, precision, ns ) );
+      elemPointMember.appendChild( geom->asGml3( doc, precision, ns ) );
       elemMultiPoint.appendChild( elemPointMember );
     }
   }
@@ -107,7 +107,7 @@ QDomElement QgsMultiPoint::asGML3( QDomDocument &doc, int precision, const QStri
   return elemMultiPoint;
 }
 
-QString QgsMultiPoint::asJSON( int precision ) const
+QString QgsMultiPoint::asJson( int precision ) const
 {
   QString json = QStringLiteral( "{\"type\": \"MultiPoint\", \"coordinates\": " );
 

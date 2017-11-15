@@ -175,10 +175,10 @@ def dumpEditBuffer(layer):
     for fid, f in editBuffer.addedFeatures().items():
         print(("%d: %s | %s" % (
             f.id(), formatAttributes(f.attributes()),
-            f.geometry().exportToWkt())))
+            f.geometry().asWkt())))
     print("CHANGED GEOM:")
     for fid, geom in editBuffer.changedGeometries().items():
-        print(("%d | %s" % (f.id(), f.geometry().exportToWkt())))
+        print(("%d | %s" % (f.id(), f.geometry().asWkt())))
 
 
 class TestQgsVectorLayer(unittest.TestCase, FeatureSourceTestCase):

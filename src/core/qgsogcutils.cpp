@@ -1146,7 +1146,7 @@ QDomElement QgsOgcUtils::geometryToGML( const QgsGeometry &geometry, QDomDocumen
 
   bool hasZValue = false;
 
-  QByteArray wkb( geometry.exportToWkb() );
+  QByteArray wkb( geometry.asWkb() );
   QgsConstWkbPtr wkbPtr( wkb );
   try
   {

@@ -186,9 +186,9 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QByteArray asWkb() const override;
     QString asWkt( int precision = 17 ) const override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
 
     //curve interface
     double length() const override;

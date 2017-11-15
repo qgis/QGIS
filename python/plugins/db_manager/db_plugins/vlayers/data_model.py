@@ -100,7 +100,7 @@ class LSqlResultModel(BaseTableModel):
                 a = f.attributes()
                 if has_geometry:
                     if f.hasGeometry():
-                        a += [f.geometry().exportToWkt()]
+                        a += [f.geometry().asWkt()]
                     else:
                         a += [None]
                 data += [a]

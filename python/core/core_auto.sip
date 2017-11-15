@@ -21,6 +21,7 @@
 %Include qgscolorscheme.sip
 %Include qgscolorschemeregistry.sip
 %Include qgsconditionalstyle.sip
+%Include qgscoordinateformatter.sip
 %Include qgscoordinatetransform.sip
 %Include qgscrscache.sip
 %Include qgsdartmeasurement.sip

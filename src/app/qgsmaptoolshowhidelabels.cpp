@@ -214,7 +214,7 @@ bool QgsMapToolShowHideLabels::selectedFeatures( QgsVectorLayer *vlayer,
   QApplication::setOverrideCursor( Qt::WaitCursor );
 
   QgsDebugMsg( "Selection layer: " + vlayer->name() );
-  QgsDebugMsg( "Selection polygon: " + selectGeomTrans.exportToWkt() );
+  QgsDebugMsg( "Selection polygon: " + selectGeomTrans.asWkt() );
 
   QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest()
                            .setFilterRect( selectGeomTrans.boundingBox() )

@@ -101,7 +101,7 @@ QString QgsJsonExporter::exportFeature( const QgsFeature &feature, const QVarian
            qgsDoubleToString( box.yMaximum(), mPrecision ) );
     }
     s += QLatin1String( "   \"geometry\":\n   " );
-    s += geom.exportToGeoJSON( mPrecision );
+    s += geom.asJson( mPrecision );
     s += QLatin1String( ",\n" );
   }
   else

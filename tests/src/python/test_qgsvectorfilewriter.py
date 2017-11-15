@@ -287,7 +287,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
             created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
             f = next(created_layer.getFeatures(QgsFeatureRequest()))
             g = f.geometry()
-            wkt = g.exportToWkt()
+            wkt = g.asWkt()
             expWkt = 'PointZ (1 2 3)'
             self.assertTrue(compareWkt(expWkt, wkt),
                             "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
@@ -311,7 +311,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
             created_layer_from_shp = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
             f = next(created_layer_from_shp.getFeatures(QgsFeatureRequest()))
             g = f.geometry()
-            wkt = g.exportToWkt()
+            wkt = g.asWkt()
             self.assertTrue(compareWkt(expWkt, wkt),
                             "saving geometry with Z failed: mismatch Expected:\n%s\nGot:\n%s\n" % (expWkt, wkt))
 
@@ -350,7 +350,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         created_layer = QgsVectorLayer('{}|layerid=0'.format(dest_file_name), 'test', 'ogr')
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         g = f.geometry()
-        wkt = g.exportToWkt()
+        wkt = g.asWkt()
         expWkt = 'MultiPoint ((1 2))'
         self.assertTrue(compareWkt(expWkt, wkt),
                         "saving geometry with multi conversion failed: mismatch Expected:\n%s\nGot:\n%s\n" % (
@@ -435,7 +435,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         # even without attributes
         f = next(created_layer.getFeatures(QgsFeatureRequest()))
         g = f.geometry()
-        wkt = g.exportToWkt()
+        wkt = g.asWkt()
         expWkt = 'Point (1 2)'
         self.assertTrue(compareWkt(expWkt, wkt),
                         "geometry not saved correctly when saving without attributes : mismatch Expected:\n%s\nGot:\n%s\n" % (

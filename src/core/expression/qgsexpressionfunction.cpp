@@ -2662,7 +2662,7 @@ static QVariant fcnGeomToWKT( const QVariantList &values, const QgsExpressionCon
   qlonglong prec = 8;
   if ( values.length() == 2 )
     prec = QgsExpressionUtils::getIntValue( values.at( 1 ), parent );
-  QString wkt = fGeom.exportToWkt( prec );
+  QString wkt = fGeom.asWkt( prec );
   return QVariant( wkt );
 }
 

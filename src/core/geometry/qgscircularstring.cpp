@@ -306,15 +306,15 @@ QString QgsCircularString::asWkt( int precision ) const
   return wkt;
 }
 
-QDomElement QgsCircularString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCircularString::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   // GML2 does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QDomElement gml = line->asGML2( doc, precision, ns );
+  QDomElement gml = line->asGml2( doc, precision, ns );
   return gml;
 }
 
-QDomElement QgsCircularString::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsCircularString::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QgsPointSequence pts;
   points( pts );
@@ -332,11 +332,11 @@ QDomElement QgsCircularString::asGML3( QDomDocument &doc, int precision, const Q
   return elemCurve;
 }
 
-QString QgsCircularString::asJSON( int precision ) const
+QString QgsCircularString::asJson( int precision ) const
 {
   // GeoJSON does not support curves
   std::unique_ptr< QgsLineString > line( curveToLine() );
-  QString json = line->asJSON( precision );
+  QString json = line->asJson( precision );
   return json;
 }
 

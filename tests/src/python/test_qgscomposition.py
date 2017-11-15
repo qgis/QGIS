@@ -23,7 +23,8 @@ from qgis.core import (QgsComposition,
                        QgsPointXY,
                        QgsRasterLayer,
                        QgsMultiBandColorRenderer,
-                       QgsProject)
+                       QgsProject,
+                       QgsCoordinateFormatter)
 
 from qgis.testing import start_app, unittest
 from qgis.testing.mocked import get_iface
@@ -49,7 +50,7 @@ class TestQgsComposition(unittest.TestCase):
         """
         # Create a point and convert it to text containing a degree symbol.
         myPoint = QgsPointXY(12.3, -33.33)
-        myCoordinates = myPoint.toDegreesMinutesSeconds(2)
+        myCoordinates = QgsCoordinateFormatter.format(myPoint, QgsCoordinateFormatter.FormatDegreesMinutesSeconds, 2)
         myTokens = myCoordinates.split(',')
         myLongitude = myTokens[0]
         myLatitude = myTokens[1]

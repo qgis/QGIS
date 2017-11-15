@@ -21,7 +21,7 @@
 #include "qgsproject.h"
 #include "qgis.h"
 #include "qgsexception.h"
-
+#include "qgscoordinateformatter.h"
 ///@cond NOT_STABLE_API
 
 int QgsCoordinateUtils::calculateCoordinatePrecision( double mapUnitsPerPixel, const QgsCoordinateReferenceSystem &mapCrs )
@@ -85,16 +85,16 @@ QString QgsCoordinateUtils::formatCoordinateForProject( const QgsPointXY &point,
     }
 
     if ( format == QLatin1String( "DM" ) )
-      return geo.toDegreesMinutes( precision, true, true );
+      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutes, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix );
     else if ( format == QLatin1String( "DMS" ) )
-      return geo.toDegreesMinutesSeconds( precision, true, true );
+      return QgsCoordinateFormatter::format( geo, QgsCoordinateFormatter::FormatDegreesMinutesSeconds, precision, QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter::FlagDegreesUseStringSuffix );
     else
-      return geo.toString( precision );
+      return QgsCoordinateFormatter::asPair( geo.x(), geo.y(), precision );
   }
   else
   {
     // coordinates in map units
-    return point.toString( precision );
+    return QgsCoordinateFormatter::asPair( point.x(), point.y(), precision );
   }
 }
 

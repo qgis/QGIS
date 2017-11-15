@@ -224,7 +224,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
   }
 
   QgsDebugMsgLevel( "Selection layer: " + vlayer->name(), 3 );
-  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.exportToWkt(), 3 );
+  QgsDebugMsgLevel( "Selection polygon: " + selectGeomTrans.asWkt(), 3 );
   QgsDebugMsgLevel( "doContains: " + QString( doContains ? "T" : "F" ), 3 );
 
   QgsRenderContext context = QgsRenderContext::fromMapSettings( canvas->mapSettings() );

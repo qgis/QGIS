@@ -79,7 +79,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         val, ok = agg.calculate(QgsAggregateCalculator.GeometryCollect, '$geometry')
         self.assertTrue(ok)
         expwkt = "MultiPoint ((0 0), (1 1), (2 2))"
-        wkt = val.exportToWkt()
+        wkt = val.asWkt()
         self.assertTrue(compareWkt(expwkt, wkt), "Expected:\n%s\nGot:\n%s\n" % (expwkt, wkt))
 
     def testNumeric(self):
@@ -359,7 +359,7 @@ class TestQgsAggregateCalculator(unittest.TestCase):
         # geometry
         val, ok = agg.calculate(QgsAggregateCalculator.GeometryCollect, "make_point( coalesce(fldint,0), 2 )")
         self.assertTrue(ok)
-        self.assertTrue(val.exportToWkt(), 'MultiPoint((4 2, 2 2, 3 2, 2 2,5 2, 0 2,8 2))')
+        self.assertTrue(val.asWkt(), 'MultiPoint((4 2, 2 2, 3 2, 2 2,5 2, 0 2,8 2))')
 
         # try a bad expression
         val, ok = agg.calculate(QgsAggregateCalculator.Max, "not_a_field || ' oranges'")

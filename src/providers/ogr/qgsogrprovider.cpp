@@ -1263,7 +1263,7 @@ bool QgsOgrProvider::addFeaturePrivate( QgsFeature &f, Flags flags )
 
   if ( f.hasGeometry() )
   {
-    QByteArray wkb( f.geometry().exportToWkb() );
+    QByteArray wkb( f.geometry().asWkb() );
     OGRGeometryH geom = nullptr;
 
     if ( !wkb.isEmpty() )
@@ -1816,7 +1816,7 @@ bool QgsOgrProvider::changeGeometryValues( const QgsGeometryMap &geometry_map )
     mOgrLayer->ResetReading(); // needed for SQLite-based to clear iterator
 
     OGRGeometryH newGeometry = nullptr;
-    QByteArray wkb = it->exportToWkb();
+    QByteArray wkb = it->asWkb();
     // We might receive null geometries. It is OK, but don't go through the
     // OGR_G_CreateFromWkb() route then
     if ( !wkb.isEmpty() )

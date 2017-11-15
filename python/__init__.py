@@ -83,7 +83,7 @@ def mapping_feature(feature):
 
 
 def mapping_geometry(geometry):
-    geo = geometry.exportToGeoJSON()
+    geo = geometry.asJson()
     # We have to use eval because exportToGeoJSON() gives us
     # back a string that looks like a dictionary.
     return eval(geo)

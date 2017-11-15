@@ -243,7 +243,7 @@ class TestQgsVectorLayerUtils(unittest.TestCase):
         g = QgsGeometry.fromPointXY(QgsPointXY(100, 200))
         f = QgsVectorLayerUtils.createFeature(layer, g)
         self.assertTrue(f.hasGeometry())
-        self.assertEqual(f.geometry().exportToWkt(), g.exportToWkt())
+        self.assertEqual(f.geometry().asWkt(), g.asWkt())
 
         # using attribute map
         f = QgsVectorLayerUtils.createFeature(layer, attributes={0: 'a', 2: 6.0})

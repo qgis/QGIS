@@ -72,8 +72,7 @@ class CORE_EXPORT QgsTriangle : public QgsPolygon
 
     // inherited: QString asWkt( int precision = 17 ) const;
     // inherited (as a polygon): QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    // inherited: QString asJSON( int precision = 17 ) const;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
 
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
 

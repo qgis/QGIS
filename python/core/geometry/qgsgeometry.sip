@@ -1088,14 +1088,14 @@ Returns an extruded version of this geometry.
  :rtype: QgsGeometry
 %End
 
-    QByteArray exportToWkb() const;
+    QByteArray asWkb() const;
 %Docstring
  Export the geometry to WKB
 .. versionadded:: 3.0
  :rtype: QByteArray
 %End
 
-    QString exportToWkt( int precision = 17 ) const;
+    QString asWkt( int precision = 17 ) const;
 %Docstring
  Exports the geometry to WKT
 .. note::
@@ -1105,17 +1105,9 @@ Returns an extruded version of this geometry.
  :rtype: str
 %End
 
-    QString exportToGeoJSON( int precision = 17 ) const;
+    QString asJson( int precision = 17 ) const;
 %Docstring
- Exports the geometry to GeoJSON
- :return: a QString representing the geometry as GeoJSON
-.. versionadded:: 1.8
-.. note::
-
-   Available in Python bindings since QGIS 1.9
-.. note::
-
-   precision parameter added in QGIS 2.4
+ Exports the geometry to a GeoJSON string.
  :rtype: str
 %End
 

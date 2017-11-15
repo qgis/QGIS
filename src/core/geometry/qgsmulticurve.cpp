@@ -63,7 +63,7 @@ bool QgsMultiCurve::fromWkt( const QString &wkt )
                             QStringLiteral( "LineString" ) );
 }
 
-QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiCurve::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   // GML2 does not support curves
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
@@ -78,7 +78,7 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
       std::unique_ptr< QgsLineString > lineString( static_cast<const QgsCurve *>( geom )->curveToLine() );
 
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
-      elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
+      elemLineStringMember.appendChild( lineString->asGml2( doc, precision, ns ) );
       elemMultiLineString.appendChild( elemLineStringMember );
     }
   }
@@ -86,7 +86,7 @@ QDomElement QgsMultiCurve::asGML2( QDomDocument &doc, int precision, const QStri
   return elemMultiLineString;
 }
 
-QDomElement QgsMultiCurve::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiCurve::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
 
@@ -100,7 +100,7 @@ QDomElement QgsMultiCurve::asGML3( QDomDocument &doc, int precision, const QStri
       const QgsCurve *curve = static_cast<const QgsCurve *>( geom );
 
       QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
-      elemCurveMember.appendChild( curve->asGML3( doc, precision, ns ) );
+      elemCurveMember.appendChild( curve->asGml3( doc, precision, ns ) );
       elemMultiCurve.appendChild( elemCurveMember );
     }
   }
@@ -108,7 +108,7 @@ QDomElement QgsMultiCurve::asGML3( QDomDocument &doc, int precision, const QStri
   return elemMultiCurve;
 }
 
-QString QgsMultiCurve::asJSON( int precision ) const
+QString QgsMultiCurve::asJson( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );

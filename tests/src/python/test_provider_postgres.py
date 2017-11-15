@@ -169,7 +169,7 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
             vl = QgsVectorLayer('%s srid=4326 table="qgis_test".%s (geom) sql=' % (dbconn, table_name), "testgeom", "postgres")
             self.assertTrue(vl.isValid())
             for f in vl.getFeatures():
-                self.assertEqual(f.geometry().exportToWkt(), wkt)
+                self.assertEqual(f.geometry().asWkt(), wkt)
 
         test_table(self.dbconn, 'p2d', 'Polygon ((0 0, 1 0, 1 1, 0 1, 0 0))')
         test_table(self.dbconn, 'p3d', 'PolygonZ ((0 0 0, 1 0 0, 1 1 0, 0 1 0, 0 0 0))')

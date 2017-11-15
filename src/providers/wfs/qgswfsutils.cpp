@@ -359,7 +359,7 @@ QString QgsWFSUtils::getMD5( const QgsFeature &f )
   QgsGeometry geometry = f.geometry();
   if ( !geometry.isNull() )
   {
-    hash.addData( geometry.exportToWkb() );
+    hash.addData( geometry.asWkb() );
   }
 
   return hash.result().toHex();
