@@ -745,21 +745,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
        \param layerContainingSelection  The layer that the selection will be taken from
                                         (defaults to the active layer on the legend)
      */
-    void editCut( QgsMapLayer *layerContainingSelection = nullptr );
+    void cutSelectionToClipboard( QgsMapLayer *layerContainingSelection = nullptr );
     //! copies selected features on the active layer to the clipboard
 
     /**
        \param layerContainingSelection  The layer that the selection will be taken from
                                         (defaults to the active layer on the legend)
      */
-    void editCopy( QgsMapLayer *layerContainingSelection = nullptr );
+    void copySelectionToClipboard( QgsMapLayer *layerContainingSelection = nullptr );
     //! copies features on the clipboard to the active layer
 
     /**
        \param destinationLayer  The layer that the clipboard will be pasted to
                                 (defaults to the active layer on the legend)
      */
-    void editPaste( QgsMapLayer *destinationLayer = nullptr );
+    void pasteFromClipboard( QgsMapLayer *destinationLayer = nullptr );
     //! copies features on the clipboard to a new vector layer
     void pasteAsNewVector();
     //! copies features on the clipboard to a new memory vector layer

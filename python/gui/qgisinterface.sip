@@ -767,14 +767,16 @@ Start a blank project
  :rtype: bool
 %End
 
-    virtual void editCopy( QgsMapLayer * ) = 0;
+    virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
 %Docstring
-Copy selected features from the layer to clipboard
+ Copy selected features from the layer to clipboard
+.. versionadded:: 3.0
 %End
 
-    virtual void editPaste( QgsMapLayer * ) = 0;
+    virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
 %Docstring
-Paste features from clipboard to the layer
+ Paste features from clipboard to the layer
+.. versionadded:: 3.0
 %End
 
     virtual int addToolBarIcon( QAction *qAction ) = 0;
