@@ -186,12 +186,12 @@ bool QgisAppInterface::setActiveLayer( QgsMapLayer *layer )
   return qgis->setActiveLayer( layer );
 }
 
-void QgisAppInterface::copyFeatures( QgsMapLayer *layer )
+void QgisAppInterface::editCopy( QgsMapLayer *layer )
 {
   return qgis->editCopy( layer );
 }
 
-void QgisAppInterface::pasteFeatures( QgsMapLayer *layer )
+void QgisAppInterface::editPaste( QgsMapLayer *layer )
 {
   return qgis->editPaste( layer );
 }
