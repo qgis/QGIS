@@ -916,6 +916,7 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
  :rtype: bool
 %End
 
+
   public slots:
 
     void setMinimumScale( double scale );

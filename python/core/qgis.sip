@@ -241,6 +241,8 @@ const double DEFAULT_LINE_WIDTH;
 const double DEFAULT_SEGMENT_EPSILON;
 
 
+
+
 typedef unsigned long long qgssize;
 
 

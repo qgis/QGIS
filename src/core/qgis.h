@@ -440,6 +440,18 @@ const double DEFAULT_LINE_WIDTH = 0.26;
 //! Default snapping tolerance for segments
 const double DEFAULT_SEGMENT_EPSILON = 1e-8;
 
+///@cond PRIVATE
+#ifndef SIP_RUN
+
+//! Delay between the scheduling of 2 preview jobs
+const int PREVIEW_JOB_DELAY_MS = 250;
+
+//! Maximum rendering time for a layer of a preview job
+const int MAXIMUM_LAYER_PREVIEW_TIME_MS = 250;
+#endif
+
+///@endcond
+
 typedef QMap<QString, QString> QgsStringMap SIP_SKIP;
 
 /**
