@@ -423,6 +423,23 @@
     {
       "type": "Feature",
       "properties": {
+        "Name": "Paul Blottiere",
+        "Committer": "Yes",
+        "First Commit Message": "Add polygon and polyline tools in composer",
+        "First Commit Date": "04-03-2016",
+        "GIT Nickname": "pblottiere"
+      },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -4.6445492,
+          48.3748789
+        ]
+      }
+    },
+    {
+      "type": "Feature",
+      "properties": {
         "Name": "Germán Carrillo",
         "Committer": "No",
         "First Commit Message": "Applied patch to fix legend cursor. Provided by gcarrillo",
