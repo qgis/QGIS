@@ -24,21 +24,15 @@
 
 int spatialite_database_unique_ptr::open( const QString &path )
 {
-#if defined(SPATIALITE_HAS_INIT_EX)
   auto &deleter = get_deleter();
   deleter.mSpatialiteContext = spatialite_alloc_connection();
-#else
-  spatialite_init( 0 );
-#endif
 
   sqlite3 *database = nullptr;
   int result = sqlite3_open( path.toUtf8(), &database );
   std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset( database );
 
-#if defined(SPATIALITE_HAS_INIT_EX)
   if ( result == SQLITE_OK )
     spatialite_init_ex( database, deleter.mSpatialiteContext, 0 );
-#endif
 
   return result;
 }
@@ -50,21 +44,15 @@ void spatialite_database_unique_ptr::reset()
 
 int spatialite_database_unique_ptr::open_v2( const QString &path, int flags, const char *zVfs )
 {
-#if defined(SPATIALITE_HAS_INIT_EX)
   auto &deleter = get_deleter();
   deleter.mSpatialiteContext = spatialite_alloc_connection();
-#else
-  spatialite_init( 0 );
-#endif
 
   sqlite3 *database = nullptr;
   int result = sqlite3_open_v2( path.toUtf8(), &database, flags, zVfs );
   std::unique_ptr< sqlite3, QgsSpatialiteCloser>::reset( database );
 
-#if defined(SPATIALITE_HAS_INIT_EX)
   if ( result == SQLITE_OK )
     spatialite_init_ex( database, deleter.mSpatialiteContext, 0 );
-#endif
 
   return result;
 }
@@ -92,9 +80,7 @@ void QgsSpatialiteCloser::operator()( sqlite3 *handle )
   {
     QgsDebugMsg( QStringLiteral( "sqlite3_close() failed: %1" ).arg( res ) );
   }
-#if defined(SPATIALITE_HAS_INIT_EX)
+
   spatialite_cleanup_ex( mSpatialiteContext );
   mSpatialiteContext = nullptr;
-#endif
-
 }

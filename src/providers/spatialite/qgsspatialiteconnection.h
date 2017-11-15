@@ -92,9 +92,6 @@ class QgsSpatiaLiteConnection : public QObject
       \returns true if querying of tables was successful, false on error */
     bool getTableInfo( sqlite3 *handle, bool loadGeometrylessTables );
 
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-    // only if libspatialite version is >= 4.0.0
-
     /**
      * Inserts information about the spatial tables into mTables
      * please note: this method is fully based on the Abstract Interface
@@ -105,7 +102,6 @@ class QgsSpatiaLiteConnection : public QObject
      * thus completely freeing the client application to take care of them.
      */
     bool getTableInfoAbstractInterface( sqlite3 *handle, bool loadGeometrylessTables );
-#endif
 
     //! Cleaning well-formatted SQL strings
     QString quotedValue( QString value ) const;

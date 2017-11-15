@@ -77,27 +77,7 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
     return FailedToCheckMetadata;
   }
 
-  bool recentVersion = false;
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-  // only if libspatialite version is >= 4.0.0
-  recentVersion = true;
-#endif
-
-  if ( ret == LayoutCurrent && !recentVersion )
-  {
-    // obsolete library version
-    mErrorMsg = tr( "obsolete libspatialite: connecting to this DB requires using v.4.0 (or any subsequent)" );
-    return FailedToCheckMetadata;
-  }
-
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-  // only if libspatialite version is >= 4.0.0
-  // using v.4.0 Abstract Interface
   if ( !getTableInfoAbstractInterface( database.get(), loadGeometrylessTables ) )
-#else
-  // obsolete library: still using the traditional approach
-  if ( !getTableInfo( database.get(), loadGeometrylessTables ) )
-#endif
   {
     return FailedToGetTables;
   }
@@ -107,7 +87,6 @@ QgsSpatiaLiteConnection::Error QgsSpatiaLiteConnection::fetchTables( bool loadGe
 
 bool QgsSpatiaLiteConnection::updateStatistics()
 {
-#ifdef SPATIALITE_VERSION_GE_4_0_0
   QFileInfo fi( mPath );
   if ( !fi.exists() )
     return false;
@@ -120,9 +99,6 @@ bool QgsSpatiaLiteConnection::updateStatistics()
   ret = update_layer_statistics( database.get(), nullptr, nullptr );
 
   return ret;
-#else
-  return false;
-#endif
 }
 
 int QgsSpatiaLiteConnection::checkHasMetadataTables( sqlite3 *handle )
@@ -242,8 +218,6 @@ error:
   return false;
 }
 
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bool loadGeometrylessTables )
 {
   int ret;
@@ -353,7 +327,6 @@ error:
   }
   return false;
 }
-#endif
 
 bool QgsSpatiaLiteConnection::getTableInfo( sqlite3 *handle, bool loadGeometrylessTables )
 {
