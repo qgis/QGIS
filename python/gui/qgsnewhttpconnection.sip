@@ -35,6 +35,7 @@ class QgsNewHttpConnection : QDialog
     enum Flag
     {
       FlagShowTestConnection,
+      FlagHideAuthenticationGroup,
     };
     typedef QFlags<QgsNewHttpConnection::Flag> Flags;
 
