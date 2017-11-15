@@ -722,12 +722,11 @@ void QgsVectorLayerFeatureIterator::createOrderedJoinList()
       int joinField = mOrderedJoinInfoList.at( i ).joinField;
 
       QgsAttributeList attributes = mOrderedJoinInfoList.at( i ).attributes;
-      QgsAttributeList::const_iterator attIt = attributes.constBegin();
-      for ( ; attIt != attributes.constEnd(); ++attIt )
+      for ( int n = 0; n < attributes.size(); n++ )
       {
-        if ( *attIt != joinField )
+        if ( n != joinField )
         {
-          resolvedFields.insert( joinField < *attIt ? *attIt + offset - 1 : *attIt + offset );
+          resolvedFields.insert( joinField < n ? n + offset - 1 : n + offset );
         }
       }
     }
