@@ -84,7 +84,7 @@ class Grass7Utils:
         if Grass7Utils.grassPath() is None:
             return None
 
-        for command in ["grass73", "grass72", "grass71", "grass70", "grass"]:
+        for command in ["grass74", "grass72", "grass71", "grass70", "grass"]:
             proc = subprocess.Popen(
                 ["{} -v".format(command)],
                 shell=True,
