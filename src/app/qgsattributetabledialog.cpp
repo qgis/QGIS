@@ -730,12 +730,12 @@ void QgsAttributeTableDialog::mActionExpressionSelect_triggered()
 
 void QgsAttributeTableDialog::mActionCopySelectedRows_triggered()
 {
-  QgisApp::instance()->editCopy( mLayer );
+  QgisApp::instance()->copySelectionToClipboard( mLayer );
 }
 
 void QgsAttributeTableDialog::mActionPasteFeatures_triggered()
 {
-  QgisApp::instance()->editPaste( mLayer );
+  QgisApp::instance()->pasteFromClipboard( mLayer );
 }
 
 
