@@ -37,6 +37,7 @@ from processing.tools.postgis import GeoDB
 
 
 class ConnectionWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
+
     """
     WidgetWrapper for ParameterString that create and manage a combobox widget
     with existing postgis connections.
@@ -70,6 +71,7 @@ class ConnectionWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
 
 
 class SchemaWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
+
     """
     WidgetWrapper for ParameterString that create and manage a combobox widget
     with existing schemas from a parent connection parameter.
@@ -142,6 +144,7 @@ class SchemaWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
 
 
 class TableWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
+
     """
     WidgetWrapper for ParameterString that create and manage a combobox widget
     with existing tables from a parent schema parameter.

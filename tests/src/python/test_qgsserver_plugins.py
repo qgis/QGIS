@@ -107,6 +107,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
                     request.appendBody('Hello from Filter2!'.encode('utf-8'))
 
         class Filter3(QgsServerFilter):
+
             """Test get and set status code"""
 
             def responseComplete(self):
@@ -116,6 +117,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 status_code = request.statusCode()
 
         class Filter4(QgsServerFilter):
+
             """Body getter"""
 
             def responseComplete(self):
@@ -124,6 +126,7 @@ class TestQgsServerPlugins(QgsServerTestBase):
                 body2 = request.body()
 
         class Filter5(QgsServerFilter):
+
             """Body setter, clear body, keep headers"""
 
             def responseComplete(self):

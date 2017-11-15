@@ -50,6 +50,12 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       OriginalResolution,
       UserResolution
     };
+    enum ResampleAlgo
+    {
+      NearestNeighbour,
+      Bilinear,
+      Cubic
+    };
 
     QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
                                 QgsRasterDataProvider *sourceProvider,
@@ -60,6 +66,7 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
                                 Qt::WindowFlags f = 0 );
 
     Mode mode() const;
+    ResampleAlgo resample() const;
     int nColumns() const;
     int nRows() const;
     double xResolution() const;

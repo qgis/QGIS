@@ -48,6 +48,7 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class AlgorithmDialogFeedback(QgsProcessingFeedback):
+
     """
     Directs algorithm feedback to an algorithm dialog
     """

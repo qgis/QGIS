@@ -620,6 +620,7 @@ using the "mod_spatialite" extension (python3)"""
 
 
 class OverrideCursor():
+
     """
     Executes a code block with a different cursor set and makes sure the cursor
     is restored even if exceptions are raised or an intermediate ``return``

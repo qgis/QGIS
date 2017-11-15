@@ -51,6 +51,7 @@ class MyService(QgsService):
 
 
 class TestModules(unittest.TestCase):
+
     """
     """
 

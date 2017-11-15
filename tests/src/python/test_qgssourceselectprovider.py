@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 """
-Test the QgsSourceSelectProvider 
+Test the QgsSourceSelectProvider
 and QgsSourceSelectProviderRegistry classes
 
 Run with: ctest -V -R PyQgsSourceSelectProvider

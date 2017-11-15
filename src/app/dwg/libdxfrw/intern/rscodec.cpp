@@ -367,7 +367,8 @@ int RScodec::calcDecode( unsigned char *data, int *recd, int **elp, int *d, int 
   return count;
 }
 
-/** Take the string of symbols in data[i], i=0..(k-1) and encode systematically
+/**
+ * Take the string of symbols in data[i], i=0..(k-1) and encode systematically
    to produce 2*tt parity symbols in bd[0]..bd[2*tt-1]
    data[] is input and bd[] is output in polynomial form.
    Encoding is done by using a feedback shift register with appropriate

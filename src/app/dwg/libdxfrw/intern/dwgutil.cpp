@@ -28,7 +28,8 @@
 
 #include "qgslogger.h"
 
-/** Utility function
+/**
+ * Utility function
  * convert a int to string in hex
  **/
 namespace DRW

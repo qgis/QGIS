@@ -21,7 +21,8 @@ class dxfReader;
 class dxfWriter;
 class dwgBuffer;
 
-/** Class to handle classes table entries
+/**
+ * Class to handle classes table entries
  *  TODO: verify the dxf read/write part
  *  @author Rallaz
  */
