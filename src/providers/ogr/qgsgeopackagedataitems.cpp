@@ -507,6 +507,8 @@ void QgsGeoPackageCollectionItem::addTable()
   QgsNewGeoPackageLayerDialog dialog( nullptr );
   dialog.setDatabasePath( mPath );
   dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  dialog.setOverwriteBehavior( QgsNewGeoPackageLayerDialog::AddNewLayer );
+  dialog.lockDatabasePath();
   if ( dialog.exec() == QDialog::Accepted )
   {
     refreshConnections();

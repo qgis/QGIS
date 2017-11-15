@@ -119,6 +119,14 @@ void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &cr
   mCrsSelector->setCrs( crs );
 }
 
+void QgsNewGeoPackageLayerDialog::lockDatabasePath()
+{
+  mDatabaseEdit->setReadOnly( true );
+  mSelectDatabaseButton->hide();
+  mSelectDatabaseButton->deleteLater();
+  mSelectDatabaseButton = nullptr;
+}
+
 void QgsNewGeoPackageLayerDialog::mFieldTypeBox_currentIndexChanged( int )
 {
   QString myType = mFieldTypeBox->currentData( Qt::UserRole ).toString();
@@ -248,36 +256,54 @@ bool QgsNewGeoPackageLayerDialog::apply()
 {
   QString fileName( mDatabaseEdit->text() );
   bool createNewDb = false;
+
   if ( QFile( fileName ).exists( fileName ) )
   {
-    QMessageBox msgBox;
-    msgBox.setIcon( QMessageBox::Question );
-    msgBox.setWindowTitle( tr( "The File Already Exists." ) );
-    msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
-    QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
-    QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
-    msgBox.setStandardButtons( QMessageBox::Cancel );
-    msgBox.setDefaultButton( addNewLayerButton );
     bool overwrite = false;
-    bool cancel = false;
-    if ( property( "hideDialogs" ).toBool() )
+
+    switch ( mBehavior )
     {
-      overwrite = property( "question_existing_db_answer_overwrite" ).toBool();
-      if ( !overwrite )
-        cancel = !property( "question_existing_db_answer_add_new_layer" ).toBool();
-    }
-    else
-    {
-      int ret = msgBox.exec();
-      if ( ret == QMessageBox::Cancel )
-        cancel = true;
-      if ( msgBox.clickedButton() == overwriteButton )
+      case Prompt:
+      {
+        QMessageBox msgBox;
+        msgBox.setIcon( QMessageBox::Question );
+        msgBox.setWindowTitle( tr( "The File Already Exists." ) );
+        msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
+        QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
+        QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
+        msgBox.setStandardButtons( QMessageBox::Cancel );
+        msgBox.setDefaultButton( addNewLayerButton );
+        bool cancel = false;
+        if ( property( "hideDialogs" ).toBool() )
+        {
+          overwrite = property( "question_existing_db_answer_overwrite" ).toBool();
+          if ( !overwrite )
+            cancel = !property( "question_existing_db_answer_add_new_layer" ).toBool();
+        }
+        else
+        {
+          int ret = msgBox.exec();
+          if ( ret == QMessageBox::Cancel )
+            cancel = true;
+          if ( msgBox.clickedButton() == overwriteButton )
+            overwrite = true;
+        }
+        if ( cancel )
+        {
+          return false;
+        }
+        break;
+      }
+
+      case Overwrite:
         overwrite = true;
+        break;
+
+      case AddNewLayer:
+        overwrite = false;
+        break;
     }
-    if ( cancel )
-    {
-      return false;
-    }
+
     if ( overwrite )
     {
       QFile( fileName ).remove();
@@ -481,6 +507,11 @@ bool QgsNewGeoPackageLayerDialog::apply()
   }
 
   return false;
+}
+
+void QgsNewGeoPackageLayerDialog::setOverwriteBehavior( OverwriteBehavior behavior )
+{
+  mBehavior = behavior;
 }
 
 void QgsNewGeoPackageLayerDialog::showHelp()
