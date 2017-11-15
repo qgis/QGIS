@@ -46,6 +46,9 @@ class TestQgsServerWMS(QgsServerTestBase):
     # Set to True to re-generate reference files for this class
     regenerate_reference = False
 
+    # Avoid cleanup to avoid crash on exit
+    skipQgisCleanup = True
+
     def wms_request_compare(self, request, extra=None, reference_file=None, project='test_project.qgs'):
         project = self.testdata_path + project
         assert os.path.exists(project), "Project file not found: " + project
