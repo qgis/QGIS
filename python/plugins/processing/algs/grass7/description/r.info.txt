@@ -3,12 +3,7 @@ Output basic information about a raster layer.
 Raster (r.*)
 QgsProcessingParameterRasterLayer|map|Raster layer|None|False
 QgsProcessingParameterBoolean|-r|Print range only|False
-QgsProcessingParameterBoolean|-s|Print raster map resolution (NS-res, EW-res) only|False
-QgsProcessingParameterBoolean|-t|Print raster map type only|False
-QgsProcessingParameterBoolean|-g|Print map region only|False
+QgsProcessingParameterBoolean|-g|Print raster array information in shell script style|False
 QgsProcessingParameterBoolean|-h|Print raster history instead of info|False
-QgsProcessingParameterBoolean|-u|Print raster map data units only|False
-QgsProcessingParameterBoolean|-d|Print raster map vertical datum only|False
-QgsProcessingParameterBoolean|-m|Print map title only|False
-QgsProcessingParameterBoolean|-p|Print raster map timestamp (day.month.year hour:minute:seconds) only|False
+QgsProcessingParameterBoolean|-e|Print extended metadata information in shell script style|False
 QgsProcessingParameterFileDestination|html|Basic information|Html files (*.html)|report.html|False

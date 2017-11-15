@@ -2,6 +2,6 @@ r.surf.idw
 Surface interpolation utility for raster layers.
 Raster (r.*)
 QgsProcessingParameterRasterLayer|input|Name of input raster layer|None|False
-QgsProcessingParameterNumber|npoints|Number of interpolation points|QgsProcessingParameterNumber.Double|12|False|None|1
+QgsProcessingParameterNumber|npoints|Number of interpolation points|QgsProcessingParameterNumber.Integer|12|True|1|None
 QgsProcessingParameterBoolean|-e|Output is the interpolation error|False
 QgsProcessingParameterRasterDestination|output|Interpolated IDW

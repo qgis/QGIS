@@ -3,5 +3,5 @@ Generates watershed subbasins raster map.
 Raster (r.*)
 QgsProcessingParameterRasterLayer|cnetwork|Input coded stream network raster layer|None|False
 QgsProcessingParameterRasterLayer|tnetwork|Input thinned ridge network raster layer|None|False
-QgsProcessingParameterNumber|number|Number of passes through the dataset|QgsProcessingParameterNumber.Double|1|False|None|None
+QgsProcessingParameterNumber|number|Number of passes through the dataset|QgsProcessingParameterNumber.Integer|1|False|1|None
 QgsProcessingParameterRasterDestination|output|Watersheds

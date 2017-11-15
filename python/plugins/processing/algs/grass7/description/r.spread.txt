@@ -9,7 +9,7 @@ QgsProcessingParameterRasterLayer|spotting_distance|Raster map containing maxima
 QgsProcessingParameterRasterLayer|wind_speed|Raster map containing midflame wind speed (ft/min, required with -s)|None|True
 QgsProcessingParameterRasterLayer|fuel_moisture|Raster map containing fine fuel moisture of the cell receiving a spotting firebrand (%, required with -s)|None|True
 QgsProcessingParameterRasterLayer|backdrop|Name of raster map as a display backdrop|None|True
-QgsProcessingParameterEnum|least_size|Basic sampling window size needed to meet certain accuracy (3)|3;5;7;9;11;13;15|False|0
+QgsProcessingParameterEnum|least_size|Basic sampling window size needed to meet certain accuracy (3)|3;5;7;9;11;13;15|False|0|True
 QgsProcessingParameterNumber|comp_dens|Sampling density for additional computing (range: 0.0 - 1.0 (0.5))|QgsProcessingParameterNumber.Double|0.5|True|0.0|1.0
 QgsProcessingParameterNumber|init_time|Initial time for current simulation (0) (min)|QgsProcessingParameterNumber.Integer|0|True|0|None
 QgsProcessingParameterNumber|lag|Simulating time duration LAG (fill the region) (min)|QgsProcessingParameterNumber.Integer|0|True|0|None
