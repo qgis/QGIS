@@ -104,6 +104,20 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     bool execWithSingleResult() { return mExecWithSingleResult;}
 
     /**
+     * Sets an expression context scope used to resolve underlying actions.
+     *
+     * \since QGIS 3.0
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used to resolve underlying actions.
+     *
+     * \since QGIS 3.0
+     */
+    QgsExpressionContextScope expressionContextScope() const;
+
+    /**
      * \brief define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
      * \note custom actions will be shown in any case if they exist.
      * \note (1) attribute actions are defined by the user in the layer properties \see QgsAction
@@ -177,6 +191,8 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     bool mResultsIfExternalAction;
     int mMaxLayerDisplay;
     int mMaxFeatureDisplay;
+
+    QgsExpressionContextScope mExpressionContextScope;
 
     // name of the action to be displayed for feature default action, if other actions are shown
     QString mDefaultActionName;

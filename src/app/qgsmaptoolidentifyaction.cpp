@@ -37,6 +37,7 @@
 #include "qgsrenderer.h"
 #include "qgsunittypes.h"
 #include "qgsstatusbar.h"
+#include "qgsactionscoperegistry.h"
 
 #include "qgssettings.h"
 #include <QMouseEvent>
@@ -118,6 +119,8 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent *e )
   resultsDialog()->clear();
   connect( this, &QgsMapToolIdentifyAction::identifyProgress, QgisApp::instance(), &QgisApp::showProgress );
   connect( this, &QgsMapToolIdentifyAction::identifyMessage, QgisApp::instance(), &QgisApp::showStatusMessage );
+
+  setClickContextScope( toMapCoordinates( e->pos() ) );
 
   identifyMenu()->setResultsIfExternalAction( false );
 
@@ -201,4 +204,16 @@ void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore &featureSt
   emit copyToClipboard( featureStore );
 }
 
+void QgsMapToolIdentifyAction::setClickContextScope( const QgsPointXY &point )
+{
+  QgsExpressionContextScope clickScope;
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), point.x(), true ) );
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), point.y(), true ) );
 
+  resultsDialog()->setExpressionContextScope( clickScope );
+
+  if ( mIdentifyMenu )
+  {
+    mIdentifyMenu->setExpressionContextScope( clickScope );
+  }
+}

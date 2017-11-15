@@ -190,6 +190,20 @@ class CORE_EXPORT QgsAction
      */
     void writeXml( QDomNode &actionsNode ) const;
 
+    /**
+     * Sets an expression context scope to use for running the action.
+     *
+     * \since QGIS 3.0
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used for running the action.
+     *
+     * \since QGIS 3.0
+     */
+    QgsExpressionContextScope expressionContextScope() const;
+
   private:
     ActionType mType = Generic;
     QString mDescription;
@@ -201,6 +215,7 @@ class CORE_EXPORT QgsAction
     QString mNotificationMessage;
     mutable std::shared_ptr<QAction> mAction;
     QUuid mId;
+    QgsExpressionContextScope mExpressionContextScope;
 };
 
 Q_DECLARE_METATYPE( QgsAction )
