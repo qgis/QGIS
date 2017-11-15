@@ -498,7 +498,7 @@
     <string>Plugins Toolbar</string>
    </property>
    <property name="toolTip">
-    <string>Plugin Toolbar</string>
+    <string>Plugins Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
@@ -613,6 +613,9 @@
    <property name="windowTitle">
     <string>Snapping Toolbar</string>
    </property>
+   <property name="toolTip">
+    <string>Snapping Toolbar</string>
+   </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
    </attribute>
@@ -641,7 +644,10 @@
   </widget>
   <widget class="QToolBar" name="mRegularShapeDigitizeToolBar">
    <property name="windowTitle">
-    <string>toolBar</string>
+    <string>Regular Shape Digitizing Toolbar</string>
+   </property>
+   <property name="toolTip">
+    <string>Regular Shape Digitizing Toolbar</string>
    </property>
    <attribute name="toolBarArea">
     <enum>TopToolBarArea</enum>
