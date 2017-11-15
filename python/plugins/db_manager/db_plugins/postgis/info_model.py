@@ -40,6 +40,7 @@ class PGDatabaseInfo(DatabaseInfo):
 class PGTableInfo(TableInfo):
 
     def __init__(self, table):
+        super(PGTableInfo, self).__init__(table)
         self.table = table
 
     def generalInfo(self):
@@ -84,7 +85,7 @@ class PGTableInfo(TableInfo):
             if table_priv[0]:
                 privileges.append("select")
 
-                if self.table.rowCount is not None or self.table.rowCount >= 0:
+                if self.table.rowCount is not None and self.table.rowCount >= 0:
                     tbl.append((QApplication.translate("DBManagerPlugin", "Rows (counted):"),
                                 self.table.rowCount if self.table.rowCount is not None else QApplication.translate(
                                     "DBManagerPlugin", 'Unknown (<a href="action:rows/count">find out</a>)')))
