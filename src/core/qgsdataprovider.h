@@ -461,6 +461,21 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual void setListening( bool isListening );
 
+    /**
+     * Returns whether the layer must be rendered in preview jobs.
+     *
+     * The base implementation returns lastRenderingTimeMS <= maxRenderingTimeMS
+     *
+     * \param lastRenderingTimeMS last rendering time in milliseconds.
+     * \param maxRenderingTimeMS maximum allowed rendering time in milliseconds.
+     * \returns true if the layer must be rendered.
+     *
+     * \since QGIS 3.0
+     *
+     * \note not available in Python bindings
+     */
+    virtual bool renderInPreview( double lastRenderingTimeMS, double maxRenderingTimeMS ); // SIP_SKIP
+
   signals:
 
     /**

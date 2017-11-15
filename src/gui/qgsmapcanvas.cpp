@@ -66,7 +66,6 @@ email                : sherman at mrcc.com
 #include "qgsmapthemecollection.h"
 #include <cmath>
 
-
 /**
  * \ingroup gui
  * Deprecated to be deleted, stuff from here should be moved elsewhere.
@@ -2299,7 +2298,7 @@ void QgsMapCanvas::stopPreviewJobs()
 void QgsMapCanvas::schedulePreviewJob( int number )
 {
   mPreviewTimer.setSingleShot( true );
-  mPreviewTimer.setInterval( 250 );
+  mPreviewTimer.setInterval( PREVIEW_JOB_DELAY_MS );
   disconnect( mPreviewTimerConnection );
   mPreviewTimerConnection = connect( &mPreviewTimer, &QTimer::timeout, this, [ = ]()
   {

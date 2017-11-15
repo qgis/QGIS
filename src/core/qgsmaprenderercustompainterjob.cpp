@@ -265,6 +265,10 @@ void QgsMapRendererCustomPainterJob::doRender()
       job.renderer->render();
 
       job.renderingTime = layerTime.elapsed();
+      if ( job.layer )
+      {
+        job.layer->setLastRenderingTime( job.renderingTime );
+      }
     }
 
     if ( job.img )
