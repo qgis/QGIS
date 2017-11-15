@@ -34,7 +34,7 @@ from .db_plugins.plugin import Table
 class LayerPreview(QgsMapCanvas):
 
     def __init__(self, parent=None):
-        super(QgsMapCanvas, self).__init__(parent)
+        super(LayerPreview, self).__init__(parent)
         self.parent = parent
         self.setCanvasColor(QColor(255, 255, 255))
 
