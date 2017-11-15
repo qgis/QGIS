@@ -19,6 +19,14 @@ class QgsNewGeoPackageLayerDialog: QDialog
 #include "qgsnewgeopackagelayerdialog.h"
 %End
   public:
+
+    enum OverwriteBehavior
+    {
+      Prompt,
+      Overwrite,
+      AddNewLayer,
+    };
+
     QgsNewGeoPackageLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor
@@ -40,7 +48,22 @@ Constructor
 
     void setDatabasePath( const QString &path );
 %Docstring
- Sets the the database ``path``
+ Sets the initial database ``path``
+.. versionadded:: 3.0
+%End
+
+    void lockDatabasePath();
+%Docstring
+ Sets the database path widgets to a locked and read-only mode.
+.. versionadded:: 3.0
+%End
+
+    void setOverwriteBehavior( OverwriteBehavior behavior );
+%Docstring
+ Sets the ``behavior`` to use when a path to an existing geopackage file is used.
+
+ The default behavior is to prompt the user for an action to take.
+
 .. versionadded:: 3.0
 %End
 
