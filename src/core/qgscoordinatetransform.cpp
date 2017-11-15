@@ -690,31 +690,27 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
 
 void QgsCoordinateTransform::searchDatumTransform( const QString &sql, QList< int > &transforms )
 {
-  sqlite3 *db = nullptr;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, nullptr );
+  sqlite3_database_unique_ptr database;
+  int openResult = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
-    sqlite3_close( db );
     return;
   }
 
-  sqlite3_stmt *stmt = nullptr;
-  int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
+  sqlite3_statement_unique_ptr statement;
+  int prepareRes;
+  statement = database.prepare( sql, prepareRes );
   if ( prepareRes != SQLITE_OK )
   {
-    sqlite3_finalize( stmt );
-    sqlite3_close( db );
     return;
   }
 
   QString cOpCode;
-  while ( sqlite3_step( stmt ) == SQLITE_ROW )
+  while ( statement.step() == SQLITE_ROW )
   {
-    cOpCode = reinterpret_cast< const char * >( sqlite3_column_text( stmt, 0 ) );
+    cOpCode = statement.columnAsText( 0 );
     transforms.push_back( cOpCode.toInt() );
   }
-  sqlite3_finalize( stmt );
-  sqlite3_close( db );
 }
 
 QString QgsCoordinateTransform::datumTransformString( int datumTransform )
@@ -724,47 +720,41 @@ QString QgsCoordinateTransform::datumTransformString( int datumTransform )
 
 bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
 {
-  sqlite3 *db = nullptr;
-  int openResult = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().constData(), &db, SQLITE_OPEN_READONLY, nullptr );
+  sqlite3_database_unique_ptr database;
+  int openResult = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
-    sqlite3_close( db );
     return false;
   }
 
-  sqlite3_stmt *stmt = nullptr;
+  sqlite3_statement_unique_ptr statement;
   QString sql = QStringLiteral( "SELECT epsg_nr,source_crs_code,target_crs_code,remarks,scope,preferred,deprecated FROM tbl_datum_transform WHERE coord_op_code=%1" ).arg( datumTransform );
-  int prepareRes = sqlite3_prepare( db, sql.toLatin1(), sql.size(), &stmt, nullptr );
+  int prepareRes;
+  statement = database.prepare( sql, prepareRes );
   if ( prepareRes != SQLITE_OK )
   {
-    sqlite3_finalize( stmt );
-    sqlite3_close( db );
     return false;
   }
 
   int srcCrsId, destCrsId;
-  if ( sqlite3_step( stmt ) != SQLITE_ROW )
+  if ( statement.step() != SQLITE_ROW )
   {
-    sqlite3_finalize( stmt );
-    sqlite3_close( db );
     return false;
   }
 
-  epsgNr = sqlite3_column_int( stmt, 0 );
-  srcCrsId = sqlite3_column_int( stmt, 1 );
-  destCrsId = sqlite3_column_int( stmt, 2 );
-  remarks = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 3 ) ) );
-  scope = QString::fromUtf8( reinterpret_cast< const char * >( sqlite3_column_text( stmt, 4 ) ) );
-  preferred = sqlite3_column_int( stmt, 5 ) != 0;
-  deprecated = sqlite3_column_int( stmt, 6 ) != 0;
+  epsgNr = statement.columnAsInt64( 0 );
+  srcCrsId = statement.columnAsInt64( 1 );
+  destCrsId = statement.columnAsInt64( 2 );
+  remarks = statement.columnAsText( 3 );
+  scope = statement.columnAsText( 4 );
+  preferred = statement.columnAsInt64( 5 ) != 0;
+  deprecated = statement.columnAsInt64( 6 ) != 0;
 
   QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( srcCrsId ) );
   srcProjection = srcCrs.description();
   QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( destCrsId ) );
   dstProjection = destCrs.description();
 
-  sqlite3_finalize( stmt );
-  sqlite3_close( db );
   return true;
 }
 

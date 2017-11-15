@@ -34,9 +34,29 @@ int sqlite3_statement_unique_ptr::step()
   return sqlite3_step( get() );
 }
 
-QString sqlite3_statement_unique_ptr::columnAsText( int column )
+QString sqlite3_statement_unique_ptr::columnName( int column ) const
 {
-  return QString::fromUtf8( ( char * ) sqlite3_column_text( get(), column ) );
+  return QString::fromUtf8( static_cast<const char *>( sqlite3_column_name( get(), column ) ) );
+}
+
+double sqlite3_statement_unique_ptr::columnAsDouble( int column ) const
+{
+  return sqlite3_column_double( get(), column );
+}
+
+int sqlite3_statement_unique_ptr::columnCount() const
+{
+  return sqlite3_column_count( get() );
+}
+
+QString sqlite3_statement_unique_ptr::columnAsText( int column ) const
+{
+  return QString::fromUtf8( reinterpret_cast<const char *>( sqlite3_column_text( get(), column ) ) );
+}
+
+qlonglong sqlite3_statement_unique_ptr::columnAsInt64( int column ) const
+{
+  return sqlite3_column_int64( get(), column );
 }
 
 int sqlite3_database_unique_ptr::open( const QString &path )

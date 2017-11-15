@@ -32,6 +32,7 @@
 #include "qgis.h"
 #include "qgsunittypes.h"
 #include "qgsrectangle.h"
+#include "qgssqliteutils.h"
 
 class QDomNode;
 class QDomDocument;
@@ -731,7 +732,7 @@ class CORE_EXPORT QgsCoordinateReferenceSystem
      * Open SQLite db and show message if cannot be opened
      * \returns the same code as sqlite3_open
      */
-    static int openDatabase( const QString &path, sqlite3 **db, bool readonly = true );
+    static int openDatabase( const QString &path, sqlite3_database_unique_ptr &database, bool readonly = true );
 
     //! Work out the projection units and set the appropriate local variable
     void setMapUnits();
