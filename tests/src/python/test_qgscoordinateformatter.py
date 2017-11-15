@@ -13,11 +13,11 @@ __copyright__ = 'Copyright 2015, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis
-from utilities import unittest, TestCase
+from qgis.testing import unittest
 from qgis.core import QgsCoordinateFormatter
 
 
-class TestQgsCoordinateFormatter(TestCase):
+class TestQgsCoordinateFormatter(unittest.TestCase):
 
     def testFormatXPair(self):
         """Test formatting x as pair"""
@@ -208,7 +208,7 @@ class TestQgsCoordinateFormatter(TestCase):
         self.assertEqual(QgsCoordinateFormatter.formatX(-0.000001, QgsCoordinateFormatter.FormatDegreesMinutes, 5, QgsCoordinateFormatter.FormatFlags()), u"-0°0.00006′")
 
         # test with padding
-        padding_and_suffix = QgsCoordinateFormatter.FormatFlags(QgsCoordinateFormatter.FormatDegreesMinutes | QgsCoordinateFormatter.FlagDegreesUseStringSuffix)
+        padding_and_suffix = QgsCoordinateFormatter.FormatFlags(QgsCoordinateFormatter.FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter.FlagDegreesUseStringSuffix)
         self.assertEqual(QgsCoordinateFormatter.formatX(80, QgsCoordinateFormatter.FormatDegreesMinutes, 2, padding_and_suffix), u"80°00.00′E")
         self.assertEqual(QgsCoordinateFormatter.formatX(0, QgsCoordinateFormatter.FormatDegreesMinutes, 2, padding_and_suffix), u"0°00.00′")
         self.assertEqual(QgsCoordinateFormatter.formatX(-0.000001, QgsCoordinateFormatter.FormatDegreesMinutes, 2, padding_and_suffix), u"0°00.00′")
@@ -257,7 +257,7 @@ class TestQgsCoordinateFormatter(TestCase):
         self.assertEqual(QgsCoordinateFormatter.formatY(-0.000001, QgsCoordinateFormatter.FormatDegreesMinutes, 5, QgsCoordinateFormatter.FormatFlags()), u"-0°0.00006′")
 
         # test with padding
-        padding_and_suffix = QgsCoordinateFormatter.FormatFlags(QgsCoordinateFormatter.FormatDegreesMinutes | QgsCoordinateFormatter.FlagDegreesUseStringSuffix)
+        padding_and_suffix = QgsCoordinateFormatter.FormatFlags(QgsCoordinateFormatter.FlagDegreesPadMinutesSeconds | QgsCoordinateFormatter.FlagDegreesUseStringSuffix)
         self.assertEqual(QgsCoordinateFormatter.formatY(20, QgsCoordinateFormatter.FormatDegreesMinutes, 2, padding_and_suffix), u"20°00.00′N")
         self.assertEqual(QgsCoordinateFormatter.formatY(0, QgsCoordinateFormatter.FormatDegreesMinutes, 2, padding_and_suffix), u"0°00.00′")
         self.assertEqual(QgsCoordinateFormatter.formatY(-0.000001, QgsCoordinateFormatter.FormatDegreesMinutes, 2, padding_and_suffix), u"0°00.00′")

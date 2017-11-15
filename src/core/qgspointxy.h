@@ -149,8 +149,9 @@ class CORE_EXPORT QgsPointXY
 
     /**
      * Returns a string representation of the point (x, y) with a preset \a precision.
+     * If  \a precision is -1, then a default precision will be used.
      */
-    QString toString( int precision = 12 ) const;
+    QString toString( int precision = -1 ) const;
 
     /**
      * Return the well known text representation for the point (e.g. "POINT(x y)").

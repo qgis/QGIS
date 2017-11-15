@@ -44,9 +44,20 @@ QPointF QgsPointXY::toQPointF() const
 
 QString QgsPointXY::toString( int precision ) const
 {
-  QString x = std::isfinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
-  QString y = std::isfinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
-  return QStringLiteral( "%1,%2" ).arg( x, y );
+  if ( precision < 0 )
+  {
+    QString rep;
+    QTextStream ot( &rep );
+    ot.setRealNumberPrecision( 12 );
+    ot << mX << ", " << mY;
+    return rep;
+  }
+  else
+  {
+    QString x = std::isfinite( mX ) ? QString::number( mX, 'f', precision ) : QObject::tr( "infinite" );
+    QString y = std::isfinite( mY ) ? QString::number( mY, 'f', precision ) : QObject::tr( "infinite" );
+    return QStringLiteral( "%1,%2" ).arg( x, y );
+  }
 }
 
 QString QgsPointXY::asWkt() const

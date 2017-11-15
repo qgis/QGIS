@@ -105,9 +105,10 @@ Sets the x and y value of the point
  :rtype: QPointF
 %End
 
-    QString toString( int precision = 12 ) const;
+    QString toString( int precision = -1 ) const;
 %Docstring
  Returns a string representation of the point (x, y) with a preset ``precision``.
+ If  ``precision`` is -1, then a default precision will be used.
  :rtype: str
 %End
 
