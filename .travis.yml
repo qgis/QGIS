@@ -69,7 +69,7 @@ matrix:
 #    - os: osx
 
 git:
-  depth: 30
+  depth: 120
 
 notifications:
   irc: "chat.freenode.net#qgis-test"
