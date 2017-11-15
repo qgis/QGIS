@@ -5900,6 +5900,7 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
 
 QGISEXTERN void cleanupProvider()
 {
+  QgsSpatiaLiteConnPool::cleanupInstance();
   QgsSqliteHandle::closeAll();
 }
 

@@ -13,11 +13,30 @@
  *                                                                         *
  ***************************************************************************/
 
+#include <QMutex>
+#include <QMutexLocker>
+
 #include "qgsspatialiteconnpool.h"
 
-QgsSpatiaLiteConnPool QgsSpatiaLiteConnPool::sInstance;
+QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::sInstance = nullptr;
 
 QgsSpatiaLiteConnPool *QgsSpatiaLiteConnPool::instance()
 {
-  return &sInstance;
+  if ( ! sInstance )
+  {
+    static QMutex sMutex;
+    QMutexLocker locker( &sMutex );
+    if ( ! sInstance )
+    {
+      sInstance = new QgsSpatiaLiteConnPool();
+    }
+  }
+  return sInstance;
+}
+
+// static public
+void QgsSpatiaLiteConnPool::cleanupInstance()
+{
+  delete sInstance;
+  sInstance = nullptr;
 }
