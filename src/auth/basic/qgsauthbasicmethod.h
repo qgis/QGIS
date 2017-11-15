@@ -63,7 +63,6 @@ class QgsAuthBasicMethod : public QgsAuthMethod
 
     static QMap<QString, QgsAuthMethodConfig> sAuthConfigCache;
 
-    QMutex mConfigMutex;
 };
 
 #endif // QGSAUTHBASICMETHOD_H

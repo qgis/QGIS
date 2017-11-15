@@ -23,6 +23,7 @@
 #include <QNetworkRequest>
 #include <QStringList>
 #include <QUrl>
+#include <QMutex>
 
 #include "qgis_core.h"
 
@@ -57,6 +58,9 @@ class CORE_EXPORT QgsAuthMethod : public QObject
       All = NetworkRequest | NetworkReply | DataSourceUri | GenericDataSourceUri | NetworkProxy
     };
     Q_DECLARE_FLAGS( Expansions, Expansion )
+
+    //! Destructor: delete the mutex
+    ~QgsAuthMethod() { delete mMutex; }
 
     //! A non-translated short name representing the auth method
     virtual QString key() const = 0;
@@ -174,7 +178,9 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     explicit QgsAuthMethod()
       : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
       , mDataProviders( QStringList() )
+      , mMutex( new QMutex( QMutex::RecursionMode::Recursive ) )
     {}
+
 
     //! Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
     static QString authMethodTag() { return QObject::tr( "Authentication method" ); }
@@ -190,6 +196,8 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     QgsAuthMethod::Expansions mExpansions;
     QStringList mDataProviders;
     int mVersion = 0;
+    QMutex *mMutex;
+
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAuthMethod::Expansions )
 

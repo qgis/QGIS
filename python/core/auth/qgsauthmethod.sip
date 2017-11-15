@@ -34,6 +34,11 @@ class QgsAuthMethod : QObject
     typedef QFlags<QgsAuthMethod::Expansion> Expansions;
 
 
+    ~QgsAuthMethod();
+%Docstring
+Destructor: delete the mutex
+%End
+
     virtual QString key() const = 0;
 %Docstring
 A non-translated short name representing the auth method
@@ -151,6 +156,7 @@ Increment this if method is significantly updated, allow updater code to be writ
    Non-public since this is an abstract base class
 %End
 
+
     static QString authMethodTag();
 %Docstring
 Tag signifying that this is an authentcation method (e.g. for use as title in message log panel output)
@@ -170,6 +176,7 @@ Set the support expansions (points in providers where the authentication is inje
 %Docstring
 Set list of data providers this auth method supports
 %End
+
 
 };
 QFlags<QgsAuthMethod::Expansion> operator|(QgsAuthMethod::Expansion f1, QFlags<QgsAuthMethod::Expansion> f2);
