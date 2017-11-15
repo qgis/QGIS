@@ -16,7 +16,7 @@
 #include "qgscrscache.h"
 #include "qgsgeometryfollowboundariescheck.h"
 #include "qgsgeometryengine.h"
-
+#include "qgsspatialindex.h"
 
 QgsGeometryFollowBoundariesCheck::QgsGeometryFollowBoundariesCheck( QgsGeometryCheckerContext *context, QgsVectorLayer *checkLayer )
   : QgsGeometryCheck( FeatureNodeCheck, {QgsWkbTypes::PolygonGeometry}, context )

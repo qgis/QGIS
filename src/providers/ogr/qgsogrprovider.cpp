@@ -3452,9 +3452,13 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
       if ( !bSuccess )
       {
         if ( openedAsUpdate )
+        {
           QgsDebugMsg( "GPKG: Trying again" );
+        }
         else
+        {
           QgsDebugMsg( "GPKG: Trying to return to delete mode" );
+        }
         CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", "DELETE" );
         hDS = GDALOpenEx( datasetName.toUtf8().constData(), GDAL_OF_VECTOR | GDAL_OF_UPDATE, nullptr, nullptr, nullptr );
         CPLSetThreadLocalConfigOption( "OGR_SQLITE_JOURNAL", nullptr );
