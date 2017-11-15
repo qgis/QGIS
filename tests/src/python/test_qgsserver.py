@@ -105,7 +105,8 @@ class QgsServerTestBase(unittest.TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        cls.app.exitQgis()
+        if not hasattr(cls, 'skipQgisCleanup') or not cls.skipQgisCleanup:
+            cls.app.exitQgis()
 
     def setUp(self):
         """Create the server instance"""
