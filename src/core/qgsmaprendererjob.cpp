@@ -242,6 +242,13 @@ LayerRenderJobs QgsMapRendererJob::prepareJobs( QPainter *painter, QgsLabelingEn
       continue;
     }
 
+    if ( ( mSettings.flags() & QgsMapSettings::RenderPreviewJob ) &&
+         !ml->dataProvider()->renderInPreview( ml->lastRenderingTime(), MAXIMUM_LAYER_PREVIEW_TIME_MS ) )
+    {
+      QgsDebugMsgLevel( "Layer not rendered because it does not match the renderInPreview criterion", 3 );
+      continue;
+    }
+
     QgsRectangle r1 = mSettings.visibleExtent(), r2;
     QgsCoordinateTransform ct;
 
