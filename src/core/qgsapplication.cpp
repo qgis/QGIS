@@ -44,6 +44,7 @@
 #include "qgsreferencedgeometry.h"
 #include "qgs3drendererregistry.h"
 #include "qgslayoutcontext.h"
+#include "qgssqliteutils.h"
 
 #include "gps/qgsgpsconnectionregistry.h"
 #include "processing/qgsprocessingregistry.h"
@@ -1432,8 +1433,8 @@ bool QgsApplication::createDatabase( QString *errorMessage )
   else
   {
     // migrate if necessary
-    sqlite3 *db = nullptr;
-    if ( sqlite3_open( QgsApplication::qgisUserDatabaseFilePath().toUtf8().constData(), &db ) != SQLITE_OK )
+    sqlite3_database_unique_ptr database;
+    if ( database.open( QgsApplication::qgisUserDatabaseFilePath() ) != SQLITE_OK )
     {
       if ( errorMessage )
       {
@@ -1443,11 +1444,11 @@ bool QgsApplication::createDatabase( QString *errorMessage )
     }
 
     char *errmsg = nullptr;
-    int res = sqlite3_exec( db, "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
+    int res = sqlite3_exec( database.get(), "SELECT epsg FROM tbl_srs LIMIT 0", nullptr, nullptr, &errmsg );
     if ( res == SQLITE_OK )
     {
       // epsg column exists => need migration
-      if ( sqlite3_exec( db,
+      if ( sqlite3_exec( database.get(),
                          "ALTER TABLE tbl_srs RENAME TO tbl_srs_bak;"
                          "CREATE TABLE tbl_srs ("
                          "srs_id INTEGER PRIMARY KEY,"
@@ -1470,7 +1471,6 @@ bool QgsApplication::createDatabase( QString *errorMessage )
           *errorMessage = tr( "Migration of private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
         }
         sqlite3_free( errmsg );
-        sqlite3_close( db );
         return false;
       }
     }
@@ -1479,12 +1479,12 @@ bool QgsApplication::createDatabase( QString *errorMessage )
       sqlite3_free( errmsg );
     }
 
-    if ( sqlite3_exec( db, "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
+    if ( sqlite3_exec( database.get(), "DROP VIEW vw_srs", nullptr, nullptr, &errmsg ) != SQLITE_OK )
     {
       QgsDebugMsg( QString( "vw_srs didn't exists in private qgis.db: %1" ).arg( errmsg ) );
     }
 
-    if ( sqlite3_exec( db,
+    if ( sqlite3_exec( database.get(),
                        "CREATE VIEW vw_srs AS"
                        " SELECT"
                        " a.description AS description"
@@ -1505,11 +1505,8 @@ bool QgsApplication::createDatabase( QString *errorMessage )
         *errorMessage = tr( "Update of view in private qgis.db failed.\n%1" ).arg( QString::fromUtf8( errmsg ) );
       }
       sqlite3_free( errmsg );
-      sqlite3_close( db );
       return false;
     }
-
-    sqlite3_close( db );
   }
   return true;
 }

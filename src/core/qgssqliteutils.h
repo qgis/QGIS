@@ -73,10 +73,29 @@ class CORE_EXPORT sqlite3_statement_unique_ptr : public std::unique_ptr< sqlite3
     int step();
 
     /**
+     * Returns the name of \a column.
+     */
+    QString columnName( int column ) const;
+
+    /**
      * Returns the column value from the current statement row as a string.
      */
-    QString columnAsText( int column );
+    QString columnAsText( int column ) const;
 
+    /**
+     * Get column value from the current statement row as a long long integer (64 bits).
+     */
+    qlonglong columnAsInt64( int column ) const;
+
+    /**
+     * Get column value from the current statement row as a double.
+     */
+    double columnAsDouble( int column ) const;
+
+    /**
+     * Get the number of columns that this statement returns.
+     */
+    int columnCount() const;
 };
 
 

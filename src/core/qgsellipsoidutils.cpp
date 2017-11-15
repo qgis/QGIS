@@ -74,36 +74,31 @@ QgsEllipsoidUtils::EllipsoidParameters QgsEllipsoidUtils::ellipsoidParameters( c
   //
   // SQLITE3 stuff - get parameters for selected ellipsoid
   //
-  sqlite3 *database = nullptr;
-  const char *tail = nullptr;
-  sqlite3_stmt *preparedStatement = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
   // Continue with PROJ.4 list of ellipsoids.
 
   //check the db is available
-  int result = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+  int result = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( result )
   {
-    QgsMessageLog::logMessage( QObject::tr( "Can't open database: %1" ).arg( sqlite3_errmsg( database ) ) );
+    QgsMessageLog::logMessage( QObject::tr( "Can't open database: %1" ).arg( database.errorMessage() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     return params;
   }
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString sql = "select radius, parameter2 from tbl_ellipsoid where acronym='" + ellipsoid + '\'';
-  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &preparedStatement, &tail );
+  statement = database.prepare( sql, result );
   // XXX Need to free memory from the error msg if one is set
   if ( result == SQLITE_OK )
   {
-    if ( sqlite3_step( preparedStatement ) == SQLITE_ROW )
+    if ( statement.step() == SQLITE_ROW )
     {
-      radius = QString( reinterpret_cast< const char * >( sqlite3_column_text( preparedStatement, 0 ) ) );
-      parameter2 = QString( reinterpret_cast< const char * >( sqlite3_column_text( preparedStatement, 1 ) ) );
+      radius = statement.columnAsText( 0 );
+      parameter2 = statement.columnAsText( 1 );
     }
   }
-  // close the sqlite3 statement
-  sqlite3_finalize( preparedStatement );
-  sqlite3_close( database );
-
   // row for this ellipsoid wasn't found?
   if ( radius.isEmpty() || parameter2.isEmpty() )
   {
@@ -191,18 +186,17 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
   sDefinitionCacheLock.unlock();
 
   sDefinitionCacheLock.lockForWrite();
-  sqlite3 *database = nullptr;
-  const char *tail = nullptr;
-  sqlite3_stmt *preparedStatement = nullptr;
+  sqlite3_database_unique_ptr database;
+  sqlite3_statement_unique_ptr statement;
   int result;
 
   QList<QgsEllipsoidUtils::EllipsoidDefinition> defs;
 
   //check the db is available
-  result = sqlite3_open_v2( QgsApplication::srsDatabaseFilePath().toUtf8().data(), &database, SQLITE_OPEN_READONLY, nullptr );
+  result = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( result )
   {
-    QgsDebugMsg( QString( "Can't open database: %1" ).arg( sqlite3_errmsg( database ) ) );
+    QgsDebugMsg( QString( "Can't open database: %1" ).arg( database.errorMessage() ) );
     // XXX This will likely never happen since on open, sqlite creates the
     //     database if it does not exist.
     Q_ASSERT( result == 0 );
@@ -210,15 +204,15 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
 
   // Set up the query to retrieve the projection information needed to populate the ELLIPSOID list
   QString sql = QStringLiteral( "select acronym, name from tbl_ellipsoid order by name" );
-  result = sqlite3_prepare( database, sql.toUtf8(), sql.toUtf8().length(), &preparedStatement, &tail );
-  // XXX Need to free memory from the error msg if one is set
+  statement = database.prepare( sql, result );
+
   if ( result == SQLITE_OK )
   {
-    while ( sqlite3_step( preparedStatement ) == SQLITE_ROW )
+    while ( statement.step() == SQLITE_ROW )
     {
       EllipsoidDefinition def;
-      def.acronym = ( const char * )sqlite3_column_text( preparedStatement, 0 );
-      def.description = ( const char * )sqlite3_column_text( preparedStatement, 1 );
+      def.acronym = statement.columnAsText( 0 );
+      def.description = statement.columnAsText( 1 );
 
       // use ellipsoidParameters so that result is cached
       def.parameters = ellipsoidParameters( def.acronym );
@@ -226,10 +220,6 @@ QList<QgsEllipsoidUtils::EllipsoidDefinition> QgsEllipsoidUtils::definitions()
       defs << def;
     }
   }
-
-  // close the sqlite3 statement
-  sqlite3_finalize( preparedStatement );
-  sqlite3_close( database );
 
   sDefinitionCache = defs;
   sDefinitionCacheLock.unlock();
