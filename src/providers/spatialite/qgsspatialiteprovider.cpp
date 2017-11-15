@@ -475,8 +475,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   bool alreadyDone = false;
   bool ret = false;
 
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-  // only if libspatialite version is >= 4.0.0
   gaiaVectorLayersListPtr list = nullptr;
   gaiaVectorLayerPtr lyr = nullptr;
   bool specialCase = false;
@@ -500,7 +498,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     QgsDebugMsg( "Using checkLayerTypeAbstractInterface" );
     alreadyDone = true;
   }
-#endif
 
   if ( !alreadyDone )
   {
@@ -533,7 +530,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
 
   alreadyDone = false;
 
-#ifdef SPATIALITE_VERSION_GE_4_0_0
   if ( lyr )
   {
     // using the v.4.0 AbstractInterface
@@ -559,7 +555,6 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     gaiaFreeVectorLayersList( list );
     alreadyDone = true;
   }
-#endif
 
   if ( !alreadyDone )
   {
@@ -664,9 +659,6 @@ static TypeSubType getVariantType( const QString &type )
     // for sure any SQLite value can be represented as SQLITE_TEXT
     return TypeSubType( QVariant::String, QVariant::Invalid );
 }
-
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-// only if libspatialite version is >= 4.0.0
 
 void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr )
 {
@@ -774,7 +766,6 @@ void QgsSpatiaLiteProvider::loadFieldsAbstractInterface( gaiaVectorLayerPtr lyr 
 
   sqlite3_free_table( results );
 }
-#endif
 
 QString QgsSpatiaLiteProvider::spatialiteVersion()
 {
@@ -4185,16 +4176,9 @@ bool QgsSpatiaLiteProvider::addAttributes( const QList<QgsField> &attributes )
     handleError( sql, errMsg, true );
     return false;
   }
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-  sql = QStringLiteral( "UPDATE geometry_columns_statistics set last_verified = 0 WHERE f_table_name=\"%1\" AND f_geometry_column=\"%2\";" )
-        .arg( mTableName,
-              mGeometryColumn );
-  ret = sqlite3_exec( mSqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
+
+  gaiaStatisticsInvalidate( mSqliteHandle, mTableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
   update_layer_statistics( mSqliteHandle, mTableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
-#elif SPATIALITE_VERSION_G_4_1_1
-  gaiaStatisticsInvalidate( mSqliteHandle, tableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
-  update_layer_statistics( mSqliteHandle, mTableName.toUtf8().constData(), mGeometryColumn.toUtf8().constData() );
-#endif
 
   // reload columns
   loadFields();
@@ -4401,8 +4385,6 @@ QString QgsSpatiaLiteProvider::quotedValue( QString value )
   return value.prepend( '\'' ).append( '\'' );
 }
 
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr lyr )
 {
   if ( !lyr )
@@ -4444,7 +4426,6 @@ bool QgsSpatiaLiteProvider::checkLayerTypeAbstractInterface( gaiaVectorLayerPtr 
 
   return true;
 }
-#endif
 
 bool QgsSpatiaLiteProvider::checkLayerType()
 {
@@ -4626,8 +4607,6 @@ bool QgsSpatiaLiteProvider::checkLayerType()
   return count == 1;
 }
 
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::getGeometryDetailsAbstractInterface( gaiaVectorLayerPtr lyr )
 {
   if ( !lyr )
@@ -4728,7 +4707,6 @@ void QgsSpatiaLiteProvider::getViewSpatialIndexName()
   }
   sqlite3_free_table( results );
 }
-#endif
 
 bool QgsSpatiaLiteProvider::getGeometryDetails()
 {
@@ -5143,8 +5121,6 @@ bool QgsSpatiaLiteProvider::getSridDetails()
   return true;
 }
 
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-// only if libspatialite version is >= 4.0.0
 bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr lyr )
 {
   if ( !lyr )
@@ -5164,7 +5140,6 @@ bool QgsSpatiaLiteProvider::getTableSummaryAbstractInterface( gaiaVectorLayerPtr
 
   return true;
 }
-#endif
 
 bool QgsSpatiaLiteProvider::getTableSummary()
 {
@@ -5389,10 +5364,6 @@ QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QS
   }
   sqlite3 *sqlite_handle = hndl->handle();
   int ret;
-#ifdef SPATIALITE_VERSION_GE_4_0_0
-  // only if libspatialite version is >= 4.0.0
-  // if libspatialite is v.4.0 (or higher) using the internal library
-  // method is highly recommended
   if ( !gaiaDropTable( sqlite_handle, tableName.toUtf8().constData() ) )
   {
     // unexpected error
@@ -5400,30 +5371,6 @@ QGISEXTERN bool deleteLayer( const QString &dbPath, const QString &tableName, QS
     QgsSqliteHandle::closeDb( hndl );
     return false;
   }
-#else
-  // drop the table
-  QString sql = QString( "DROP TABLE " ) + QgsSpatiaLiteProvider::quotedIdentifier( tableName );
-  QgsDebugMsg( sql );
-  char *errMsg = nullptr;
-  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
-  if ( ret != SQLITE_OK )
-  {
-    errCause = QObject::tr( "Unable to delete table %1:\n" ).arg( tableName );
-    errCause += QString::fromUtf8( errMsg );
-    sqlite3_free( errMsg );
-    QgsSqliteHandle::closeDb( hndl );
-    return false;
-  }
-
-  // remove table from geometry columns
-  sql = QString( "DELETE FROM geometry_columns WHERE upper(f_table_name) = upper(%1)" )
-        .arg( QgsSpatiaLiteProvider::quotedValue( tableName ) );
-  ret = sqlite3_exec( sqlite_handle, sql.toUtf8().constData(), nullptr, nullptr, nullptr );
-  if ( ret != SQLITE_OK )
-  {
-    QgsDebugMsg( "sqlite error: " + QString::fromUtf8( sqlite3_errmsg( sqlite_handle ) ) );
-  }
-#endif
 
   // TODO: remove spatial indexes?
   // run VACUUM to free unused space and compact the database

@@ -65,14 +65,15 @@ IF (SPATIALITE_FOUND)
       MESSAGE(STATUS "Found SpatiaLite: ${SPATIALITE_LIBRARY}")
    ENDIF (NOT SPATIALITE_FIND_QUIETLY)
 
-   # Check for symbol gaiaDropTable
    IF(APPLE)
      # no extra LDFLAGS used in link test, may fail in OS X SDK
      SET(CMAKE_REQUIRED_LIBRARIES "-F/Library/Frameworks" ${CMAKE_REQUIRED_LIBRARIES})
    ENDIF(APPLE)
-   check_library_exists("${SPATIALITE_LIBRARY}" gaiaDropTable "" SPATIALITE_VERSION_GE_4_0_0)
-   check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_G_4_1_1)
-   check_library_exists("${SPATIALITE_LIBRARY}" spatialite_init_ex "" SPATIALITE_HAS_INIT_EX)
+
+   check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_GE_4_2_0)
+   IF (NOT SPATIALITE_VERSION_GE_4_2_0)
+     MESSAGE(FATAL_ERROR "Found SpatiaLite, but version is too old. Requires at least version 4.2.0")
+   ENDIF (NOT SPATIALITE_VERSION_GE_4_2_0)
 
 ELSE (SPATIALITE_FOUND)
 
