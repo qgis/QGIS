@@ -105,44 +105,11 @@ Sets the x and y value of the point
  :rtype: QPointF
 %End
 
-    QString toString() const;
+    QString toString( int precision = 12 ) const;
 %Docstring
-String representation of the point (x,y)
+ Returns a string representation of the point (x, y) with a preset ``precision``.
  :rtype: str
 %End
-
-    QString toString( int precision ) const;
-%Docstring
-As above but with precision for string representation of a point
- :rtype: str
-%End
-
-    QString toDegreesMinutesSeconds( int precision, const bool useSuffix = true, const bool padded = false ) const;
-%Docstring
- Return a string representation as degrees minutes seconds.
-  Its up to the calling function to ensure that this point can
-  be meaningfully represented in this form.
-  \param precision number of decimal points to use for seconds
-  \param useSuffix set to true to include a direction suffix (e.g., 'N'),
-  set to false to use a "-" prefix for west and south coordinates
-  \param padded set to true to force minutes and seconds to use two decimals,
-  e.g., '05' instead of '5'.
- :rtype: str
-%End
-
-    QString toDegreesMinutes( int precision, const bool useSuffix = true, const bool padded = false ) const;
-%Docstring
- Return a string representation as degrees minutes.
-  Its up to the calling function to ensure that this point can
-  be meaningfully represented in this form.
-  \param precision number of decimal points to use for minutes
-  \param useSuffix set to true to include a direction suffix (e.g., 'N'),
-  set to false to use a "-" prefix for west and south coordinates
-  \param padded set to true to force minutes to use two decimals,
-  e.g., '05' instead of '5'.
- :rtype: str
-%End
-
 
     QString wellKnownText() const;
 %Docstring

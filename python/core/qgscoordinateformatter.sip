@@ -74,6 +74,18 @@ class QgsCoordinateFormatter
  :rtype: str
 %End
 
+    static QString format( QgsPointXY point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
+%Docstring
+ Formats a ``point`` according to the specified parameters.
+
+ The ``format`` argument indicates the desired display format for the coordinate.
+
+ The ``precision`` argument gives the number of decimal places to include for coordinates.
+
+ Optional ``flags`` can be specified to control the output format.
+ :rtype: str
+%End
+
     static QString asPair( double x, double y, int precision = 12 );
 %Docstring
  Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`` (number
@@ -82,6 +94,9 @@ class QgsCoordinateFormatter
 %End
 
 };
+
+QFlags<QgsCoordinateFormatter::FormatFlag> operator|(QgsCoordinateFormatter::FormatFlag f1, QFlags<QgsCoordinateFormatter::FormatFlag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *

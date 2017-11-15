@@ -33,6 +33,7 @@
 #include "qgsexpressioncontext.h"
 #include "qgsexception.h"
 #include "qgssettings.h"
+#include "qgscoordinateformatter.h"
 
 #include <QPainter>
 #include <QPen>
@@ -1410,49 +1411,56 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
     return mGridAnnotationExpression->evaluate( &expressionContext ).toString();
   }
 
-  QgsPointXY p;
-  p.setX( coord == QgsLayoutItemMapGrid::Longitude ? value : 0 );
-  p.setY( coord == QgsLayoutItemMapGrid::Longitude ? 0 : value );
+  QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDecimalDegrees;
+  QgsCoordinateFormatter::FormatFlags flags = 0;
+  switch ( mGridAnnotationFormat )
+  {
+    case Decimal:
+    case DecimalWithSuffix:
+    case CustomFormat:
+      break; // already handled above
 
-  QString annotationString;
-  if ( mGridAnnotationFormat == QgsLayoutItemMapGrid::DegreeMinute )
-  {
-    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision );
-  }
-  else if ( mGridAnnotationFormat == QgsLayoutItemMapGrid::DegreeMinuteNoSuffix )
-  {
-    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision, false );
-  }
-  else if ( mGridAnnotationFormat == QgsLayoutItemMapGrid::DegreeMinutePadded )
-  {
-    annotationString = p.toDegreesMinutes( mGridAnnotationPrecision, true, true );
-  }
-  else if ( mGridAnnotationFormat == QgsLayoutItemMapGrid::DegreeMinuteSecond )
-  {
-    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision );
-  }
-  else if ( mGridAnnotationFormat == QgsLayoutItemMapGrid::DegreeMinuteSecondNoSuffix )
-  {
-    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision, false );
-  }
-  else if ( mGridAnnotationFormat == QgsLayoutItemMapGrid::DegreeMinuteSecondPadded )
-  {
-    annotationString = p.toDegreesMinutesSeconds( mGridAnnotationPrecision, true, true );
+    case DegreeMinute:
+      format = QgsCoordinateFormatter::FormatDegreesMinutes;
+      flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix;
+      break;
+
+    case DegreeMinuteSecond:
+      format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
+      flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix;
+      break;
+
+    case DegreeMinuteNoSuffix:
+      format = QgsCoordinateFormatter::FormatDegreesMinutes;
+      flags = 0;
+      break;
+
+    case DegreeMinutePadded:
+      format = QgsCoordinateFormatter::FormatDegreesMinutes;
+      flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix | QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds;
+      break;
+
+    case DegreeMinuteSecondNoSuffix:
+      format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
+      flags = 0;
+      break;
+
+    case DegreeMinuteSecondPadded:
+      format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
+      flags = QgsCoordinateFormatter::FlagDegreesUseStringSuffix | QgsCoordinateFormatter::FlagDegreesPadMinutesSeconds;
+      break;
   }
 
-  QStringList split = annotationString.split( ',' );
-  if ( coord == QgsLayoutItemMapGrid::Longitude )
+  switch ( coord )
   {
-    return split.at( 0 );
+    case Longitude:
+      return QgsCoordinateFormatter::formatX( value, format, flags );
+
+    case Latitude:
+      return QgsCoordinateFormatter::formatY( value, format, flags );
   }
-  else
-  {
-    if ( split.size() < 2 )
-    {
-      return QLatin1String( "" );
-    }
-    return split.at( 1 );
-  }
+
+  return QString(); // no warnings
 }
 
 int QgsLayoutItemMapGrid::xGridLines( QList< QPair< double, QLineF > > &lines ) const

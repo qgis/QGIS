@@ -19,6 +19,8 @@
 #define QGSCOORDINATEFORMATTER_H
 
 #include <QString>
+#include "qgis.h"
+#include "qgspointxy.h"
 
 /**
  * \ingroup core
@@ -87,6 +89,17 @@ class CORE_EXPORT QgsCoordinateFormatter
     static QString formatY( double y, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix );
 
     /**
+     * Formats a \a point according to the specified parameters.
+     *
+     * The \a format argument indicates the desired display format for the coordinate.
+     *
+     * The \a precision argument gives the number of decimal places to include for coordinates.
+     *
+     * Optional \a flags can be specified to control the output format.
+     */
+    static QString format( QgsPointXY point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
+
+    /**
      * Formats coordinates as an "\a x,\a y" pair, with optional decimal \a precision (number
      * of decimal places to include).
      */
@@ -105,5 +118,7 @@ class CORE_EXPORT QgsCoordinateFormatter
     static QString formatXAsDegrees( double val, int precision, FormatFlags flags );
     static QString formatYAsDegrees( double val, int precision, FormatFlags flags );
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsCoordinateFormatter::FormatFlags )
 
 #endif // QGSCOORDINATEFORMATTER_H

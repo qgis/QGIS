@@ -1963,6 +1963,7 @@ QgsPoint   {#qgis_api_break_3_0_QgsPoint}
 --------
 
 - onSegment() has been removed. Use sqrDistToSegment() instead for a more precise test.
+- toDegreesMinutesSeconds() and toDegreesMinutes() have been removed. Use QgsCoordinateFormatter instead.
 
 
 QgsPointDisplacementRenderer        {#qgis_api_break_3_0_QgsPointDisplacementRenderer}
