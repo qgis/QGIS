@@ -423,10 +423,10 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual bool setActiveLayer( QgsMapLayer * ) = 0;
 
     //! Copy selected features from the layer to clipboard
-    virtual void copyFeatures( QgsMapLayer * ) = 0;
+    virtual void editCopy( QgsMapLayer * ) = 0;
 
     //! Paste features from clipboard to the layer
-    virtual void pasteFeatures( QgsMapLayer * ) = 0;
+    virtual void editPaste( QgsMapLayer * ) = 0;
 
     //! Add an icon to the plugins toolbar
     virtual int addToolBarIcon( QAction *qAction ) = 0;

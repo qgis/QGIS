@@ -767,12 +767,12 @@ Start a blank project
  :rtype: bool
 %End
 
-    virtual void copyFeatures( QgsMapLayer * ) = 0;
+    virtual void editCopy( QgsMapLayer * ) = 0;
 %Docstring
 Copy selected features from the layer to clipboard
 %End
 
-    virtual void pasteFeatures( QgsMapLayer * ) = 0;
+    virtual void editPaste( QgsMapLayer * ) = 0;
 %Docstring
 Paste features from clipboard to the layer
 %End
