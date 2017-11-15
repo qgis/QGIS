@@ -299,7 +299,7 @@ bool QgsGeometryCollection::fromWkb( QgsConstWkbPtr &wkbPtr )
 
 bool QgsGeometryCollection::fromWkt( const QString &wkt )
 {
-  return fromCollectionWkt( wkt, QList<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon
+  return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsPoint << new QgsLineString << new QgsPolygon
                             << new QgsCircularString << new QgsCompoundCurve
                             << new QgsCurvePolygon
                             << new QgsMultiPoint << new QgsMultiLineString
@@ -310,7 +310,7 @@ bool QgsGeometryCollection::fromWkt( const QString &wkt )
 QByteArray QgsGeometryCollection::asWkb() const
 {
   int binarySize = sizeof( char ) + sizeof( quint32 ) + sizeof( quint32 );
-  QList<QByteArray> wkbForGeometries;
+  QVector<QByteArray> wkbForGeometries;
   for ( const QgsAbstractGeometry *geom : mGeometries )
   {
     if ( geom )
@@ -421,15 +421,12 @@ QgsRectangle QgsGeometryCollection::calculateBoundingBox() const
 void QgsGeometryCollection::clearCache() const
 {
   mBoundingBox = QgsRectangle();
-  mCoordinateSequence.clear();
   QgsAbstractGeometry::clearCache();
 }
 
 QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return mCoordinateSequence;
-
+  QgsCoordinateSequence sequence;
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
   for ( ; geomIt != mGeometries.constEnd(); ++geomIt )
   {
@@ -438,18 +435,15 @@ QgsCoordinateSequence QgsGeometryCollection::coordinateSequence() const
     QgsCoordinateSequence::const_iterator cIt = geomCoords.constBegin();
     for ( ; cIt != geomCoords.constEnd(); ++cIt )
     {
-      mCoordinateSequence.push_back( *cIt );
+      sequence.push_back( *cIt );
     }
   }
 
-  return mCoordinateSequence;
+  return sequence;
 }
 
 int QgsGeometryCollection::nCoordinates() const
 {
-  if ( !mCoordinateSequence.isEmpty() )
-    return QgsAbstractGeometry::nCoordinates();
-
   int count = 0;
 
   QVector< QgsAbstractGeometry * >::const_iterator geomIt = mGeometries.constBegin();
@@ -588,7 +582,7 @@ double QgsGeometryCollection::perimeter() const
   return perimeter;
 }
 
-bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType )
+bool QgsGeometryCollection::fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType )
 {
   clear();
 
@@ -693,6 +687,22 @@ double QgsGeometryCollection::vertexAngle( QgsVertexId vertex ) const
   }
 
   return geom->vertexAngle( vertex );
+}
+
+double QgsGeometryCollection::segmentLength( QgsVertexId startVertex ) const
+{
+  if ( startVertex.part < 0 || startVertex.part >= mGeometries.size() )
+  {
+    return 0.0;
+  }
+
+  const QgsAbstractGeometry *geom = mGeometries[startVertex.part];
+  if ( !geom )
+  {
+    return 0.0;
+  }
+
+  return geom->segmentLength( startVertex );
 }
 
 int QgsGeometryCollection::vertexCount( int part, int ring ) const

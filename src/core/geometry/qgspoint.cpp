@@ -461,6 +461,11 @@ QgsPoint *QgsPoint::toCurveType() const
   return clone();
 }
 
+double QgsPoint::segmentLength( QgsVertexId ) const
+{
+  return 0.0;
+}
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests.

@@ -3693,8 +3693,6 @@ void QgisApp::setupLayerTreeViewFromSettings()
   QgsSettings s;
 
   QgsLayerTreeModel *model = mLayerTreeView->layerTreeModel();
-  model->setFlag( QgsLayerTreeModel::ShowRasterPreviewIcon, s.value( QStringLiteral( "/qgis/createRasterLegendIcons" ), false ).toBool() );
-
   QFont fontLayer, fontGroup;
   fontLayer.setBold( true );
   fontGroup.setBold( false );
@@ -4164,6 +4162,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       QFileInfo fi( src );
       base = fi.completeBaseName();
     }
+    base = QgsMapLayer::formatLayerName( base );
 
     QgsDebugMsg( "completeBaseName: " + base );
 
@@ -4207,10 +4206,12 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       {
         //set friendly name for datasources with only one layer
         QStringList elements = sublayers.at( 0 ).split( ':' );
+        QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
 
-        if ( elements.size() >= 4 && layer->name() != elements.at( 1 ) )
+        if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
+             && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
         {
-          layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+          layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), elements.at( 1 ) ) );
         }
 
         myList << layer;
@@ -4643,8 +4644,6 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
 
     QgsDebugMsg( "Creating new vector layer using " + composedURI );
     QString name = fileName + " " + def.layerName;
-    if ( !layerGeometryType.isEmpty() )
-      name += " " + layerGeometryType;
     QgsVectorLayer::LayerOptions options;
     options.loadDefaultStyle = false;
     QgsVectorLayer *layer = new QgsVectorLayer( composedURI, name, QStringLiteral( "ogr" ), options );
@@ -9652,8 +9651,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
   QgsSettings mySettings;
   QString oldScales = mySettings.value( QStringLiteral( "Map/scales" ), PROJECT_SCALES ).toString();
 
-  bool oldCapitalize = mySettings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool();
-
   QList< QgsOptionsWidgetFactory * > factories;
   Q_FOREACH ( const QPointer< QgsOptionsWidgetFactory > &f, mOptionsWidgetFactories )
   {
@@ -9676,13 +9673,6 @@ void QgisApp::showOptionsDialog( QWidget *parent, const QString &currentPage )
     Q_FOREACH ( QgsMapCanvas *canvas, mapCanvases() )
     {
       applyDefaultSettingsToCanvas( canvas );
-    }
-
-    if ( oldCapitalize != mySettings.value( QStringLiteral( "qgis/capitalizeLayerName" ), QVariant( false ) ).toBool() )
-    {
-      // if the layer capitalization has changed, we need to update all layer names
-      Q_FOREACH ( QgsMapLayer *layer, QgsProject::instance()->mapLayers() )
-        layer->setName( layer->originalName() );
     }
 
     //update any open compositions so they reflect new composer settings
@@ -9976,14 +9966,13 @@ void QgisApp::reloadConnections()
 }
 
 
-QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &baseName, const QString &providerKey )
+QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
   bool wasfrozen = mMapCanvas->isFrozen();
 
   freezeCanvases();
 
-// Let render() do its own cursor management
-//  QApplication::setOverrideCursor(Qt::WaitCursor);
+  QString baseName = QgsMapLayer::formatLayerName( name );
 
   /* Eliminate the need to instantiate the layer based on provider type.
      The caller is responsible for cobbling together the needed information to
@@ -10038,10 +10027,12 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
       if ( !sublayers.isEmpty() )
       {
         QStringList elements = sublayers.at( 0 ).split( ':' );
+        QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
 
-        if ( elements.size() >= 4 && layer->name() != elements.at( 1 ) )
+        if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
+             && layer->name().compare( subLayerNameFormatted, Qt::CaseInsensitive ) != 0 )
         {
-          layer->setName( QStringLiteral( "%1 %2 %3" ).arg( layer->name(), elements.at( 1 ), elements.at( 3 ) ) );
+          layer->setName( QStringLiteral( "%1 %2" ).arg( layer->name(), elements.at( 1 ) ) );
         }
       }
 
@@ -11881,7 +11872,7 @@ bool QgisApp::addRasterLayer( QgsRasterLayer *rasterLayer )
 // this method is a blend of addRasterLayer() functions (with and without provider)
 // and addRasterLayers()
 QgsRasterLayer *QgisApp::addRasterLayerPrivate(
-  const QString &uri, const QString &baseName, const QString &providerKey,
+  const QString &uri, const QString &name, const QString &providerKey,
   bool guiWarning, bool guiUpdate )
 {
   if ( guiUpdate )
@@ -11890,6 +11881,8 @@ QgsRasterLayer *QgisApp::addRasterLayerPrivate(
     // QApplication::setOverrideCursor( Qt::WaitCursor );
     freezeCanvases();
   }
+
+  QString baseName =  QgsMapLayer::formatLayerName( name );
 
   QgsDebugMsg( "Creating new raster layer using " + uri
                + " with baseName of " + baseName );

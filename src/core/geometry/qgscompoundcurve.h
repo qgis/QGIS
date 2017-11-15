@@ -113,13 +113,8 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     void close();
 
     bool hasCurvedSegments() const override;
-
-    /**
-     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        \param vertex the vertex id
-        \returns rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
-
+    double segmentLength( QgsVertexId startVertex ) const override;
     QgsCompoundCurve *reversed() const override SIP_FACTORY;
 
     bool addZValue( double zValue = 0 ) override;
@@ -153,12 +148,12 @@ class CORE_EXPORT QgsCompoundCurve: public QgsCurve
     QgsCompoundCurve *createEmptyWithSameType() const override SIP_FACTORY;
 
   private:
-    QList< QgsCurve * > mCurves;
+    QVector< QgsCurve * > mCurves;
 
     /**
      * Turns a vertex id for the compound curve into one or more ids for the subcurves
         \returns the index of the subcurve or -1 in case of error*/
-    QList< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
+    QVector< QPair<int, QgsVertexId> > curveVertexId( QgsVertexId id ) const;
 
 };
 

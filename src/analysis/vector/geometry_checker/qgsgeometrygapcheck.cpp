@@ -22,7 +22,7 @@ void QgsGeometryGapCheck::collectErrors( QList<QgsGeometryCheckError *> &errors,
 {
   if ( progressCounter ) progressCounter->fetchAndAddRelaxed( 1 );
 
-  QList<QgsAbstractGeometry *> geomList;
+  QVector<QgsAbstractGeometry *> geomList;
 
   QMap<QString, QgsFeatureIds> featureIds = ids.isEmpty() ? allLayerFeatureIds() : ids;
   QgsGeometryCheckerUtils::LayerFeatures layerFeatures( mContext->featurePools, featureIds, mCompatibleGeometryTypes, 0, true );

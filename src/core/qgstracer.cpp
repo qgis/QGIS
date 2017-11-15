@@ -713,7 +713,7 @@ QVector<QgsPointXY> QgsTracer::findShortestPath( const QgsPointXY &p1, const Qgs
 
   if ( !points.isEmpty() && mOffset != 0 )
   {
-    QList<QgsPointXY> pointsInput( points.toList() );
+    QVector<QgsPointXY> pointsInput( points );
     QgsLineString linestring( pointsInput );
     std::unique_ptr<QgsGeometryEngine> linestringEngine( QgsGeometry::createGeometryEngine( &linestring ) );
     std::unique_ptr<QgsAbstractGeometry> linestringOffset( linestringEngine->offsetCurve( mOffset, mOffsetSegments, mOffsetJoinStyle, mOffsetMiterLimit ) );

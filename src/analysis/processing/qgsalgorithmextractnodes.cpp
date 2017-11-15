@@ -107,16 +107,15 @@ QVariantMap QgsExtractNodesAlgorithm::processAlgorithm( const QVariantMap &param
     else
     {
       QgsAbstractGeometry::vertex_iterator vi = inputGeom.constGet()->vertices_begin();
-      QgsPoint vertex;
+      double cumulativeDistance = 0.0;
       int vertexPos = 0;
       while ( vi != inputGeom.constGet()->vertices_end() )
       {
         QgsVertexId vertexId = vi.vertexId();
-        double distance = QgsGeometryUtils::distanceToVertex( *( inputGeom.constGet() ), vertexId );
         double angle = inputGeom.constGet()->vertexAngle( vertexId ) * 180 / M_PI;
         QgsAttributes attrs = f.attributes();
         attrs << vertexPos
-              << distance
+              << cumulativeDistance
               << angle;
         QgsFeature outputFeature = QgsFeature();
         outputFeature.setAttributes( attrs );
@@ -124,6 +123,10 @@ QVariantMap QgsExtractNodesAlgorithm::processAlgorithm( const QVariantMap &param
         sink->addFeature( outputFeature, QgsFeatureSink::FastInsert );
         vi++;
         vertexPos++;
+
+        // calculate distance to next vertex
+        double distanceToNext = inputGeom.constGet()->segmentLength( vertexId );
+        cumulativeDistance += distanceToNext;
       }
     }
     feedback->setProgress( i * step );

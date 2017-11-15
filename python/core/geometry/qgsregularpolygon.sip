@@ -164,7 +164,7 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
  :rtype: QgsTriangle
 %End
 
-    QList<QgsTriangle> triangulate() const;
+    QVector<QgsTriangle> triangulate() const;
 %Docstring
  Returns a triangulation (vertices from sides to the center) of the regular polygon.
  An empty list is returned if the regular polygon is empty.

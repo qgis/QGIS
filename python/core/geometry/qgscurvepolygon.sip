@@ -100,7 +100,7 @@ class QgsCurvePolygon: QgsSurface
 .. seealso:: exteriorRing()
 %End
 
-    void setInteriorRings( const QList<QgsCurve *> &rings /Transfer/ );
+    void setInteriorRings( const QVector<QgsCurve *> &rings /Transfer/ );
 %Docstring
 Sets all interior rings (takes ownership)
 %End
@@ -184,6 +184,8 @@ Adds an interior ring to the geometry (takes ownership)
     virtual int partCount() const;
 
     virtual QgsPoint vertexAt( QgsVertexId id ) const;
+
+    virtual double segmentLength( QgsVertexId startVertex ) const;
 
 
     virtual bool addZValue( double zValue = 0 );

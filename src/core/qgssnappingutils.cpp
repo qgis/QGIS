@@ -101,7 +101,7 @@ static QgsPointLocator::Match _findClosestSegmentIntersection( const QgsPointXY 
   QSet<QgsPointXY> endpoints;
 
   // make a geometry
-  QList<QgsGeometry> geoms;
+  QVector<QgsGeometry> geoms;
   Q_FOREACH ( const QgsPointLocator::Match &m, segments )
   {
     if ( m.hasEdge() )

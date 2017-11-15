@@ -10,9 +10,9 @@
 
 
 
-typedef QList< QgsPoint > QgsPointSequence;
-typedef QList< QList< QgsPoint > > QgsRingSequence;
-typedef QList< QList< QList< QgsPoint > > > QgsCoordinateSequence;
+typedef QVector< QgsPoint > QgsPointSequence;
+typedef QVector< QVector< QgsPoint > > QgsRingSequence;
+typedef QVector< QVector< QVector< QgsPoint > > > QgsCoordinateSequence;
 
 class QgsAbstractGeometry
 {
@@ -363,6 +363,13 @@ class QgsAbstractGeometry
  Returns the area of the geometry.
 .. seealso:: length()
 .. seealso:: perimeter()
+ :rtype: float
+%End
+
+    virtual double segmentLength( QgsVertexId startVertex ) const = 0;
+%Docstring
+ Returns the length of the segment of the geometry which begins at ``startVertex``.
+.. versionadded:: 3.0
  :rtype: float
 %End
 

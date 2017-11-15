@@ -78,7 +78,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * \param modifiedFeatureId if specified, feature ID for feature that ring was added to will be stored in this parameter
      * \return OperationResult result code: success or reason of failure
      */
-    QgsGeometry::OperationResult addRing( const QList<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
+    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, const QgsFeatureIds &targetFeatureIds = QgsFeatureIds(), QgsFeatureId *modifiedFeatureId = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  - QgsGeometry::GeometryEngineError
      *  - QgsGeometry::SplitCannotSplitPoint
      */
-    QgsGeometry::OperationResult splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Splits features cut by the given line
@@ -161,7 +161,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      *  0 in case of success,
      *  4 if there is a selection but no feature split
      */
-    QgsGeometry::OperationResult splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
@@ -187,7 +187,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * Little helper function that gives bounding box from a list of points.
      * \returns True in case of success
      */
-    bool boundingBoxFromPointList( const QList<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
+    bool boundingBoxFromPointList( const QVector<QgsPointXY> &list, double &xmin, double &ymin, double &xmax, double &ymax ) const;
 
     QgsVectorLayer *mLayer = nullptr;
 };

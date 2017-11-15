@@ -71,20 +71,8 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     double length() const override;
     QgsPoint startPoint() const override;
     QgsPoint endPoint() const override;
-
-    /**
-     * Returns a new line string geometry corresponding to a segmentized approximation
-     * of the curve.
-     * \param tolerance segmentation tolerance
-     * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve
-     *
-     * Uses a MaximumAngle tolerance of 1 degrees by default (360
-     * segments in a full circle)
-     */
     QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
-
     QgsCircularString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
-
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
@@ -98,21 +86,13 @@ class CORE_EXPORT QgsCircularString: public QgsCurve
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
     void sumUpArea( double &sum SIP_OUT ) const override;
     bool hasCurvedSegments() const override;
-
-    /**
-     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-        \param vertex the vertex id
-        \returns rotation in radians, clockwise from north*/
     double vertexAngle( QgsVertexId vertex ) const override;
-
+    double segmentLength( QgsVertexId startVertex ) const override;
     QgsCircularString *reversed() const override  SIP_FACTORY;
-
     bool addZValue( double zValue = 0 ) override;
     bool addMValue( double mValue = 0 ) override;
-
     bool dropZValue() override;
     bool dropMValue() override;
-
     double xAt( int index ) const override;
     double yAt( int index ) const override;
 #ifndef SIP_RUN

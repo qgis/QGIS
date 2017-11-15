@@ -45,7 +45,7 @@ class QgsLineString: QgsCurve
 .. versionadded:: 3.0
 %End
 
-    QgsLineString( const QList<QgsPointXY> &points );
+    QgsLineString( const QVector<QgsPointXY> &points );
 %Docstring
  Construct a linestring from list of points.
  This constructor is more efficient then calling setPoints()
@@ -255,6 +255,7 @@ Closes the line string by appending the first point to the end of the line, if i
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
+    virtual double segmentLength( QgsVertexId startVertex ) const;
 
     virtual bool addZValue( double zValue = 0 );
 

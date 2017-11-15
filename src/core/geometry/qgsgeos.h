@@ -135,8 +135,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     std::unique_ptr< QgsAbstractGeometry > subdivide( int maxNodes, QString *errorMsg = nullptr ) const;
 
     QgsAbstractGeometry *combine( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
-    QgsAbstractGeometry *combine( const QList<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const override;
-    QgsAbstractGeometry *combine( const QList< QgsGeometry > &, QString *errorMsg = nullptr ) const override;
+    QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const override;
+    QgsAbstractGeometry *combine( const QVector< QgsGeometry > &, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *symDifference( const QgsAbstractGeometry *geom, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = nullptr ) const override;
     QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = nullptr ) const override;
@@ -200,7 +200,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     bool isSimple( QString *errorMsg = nullptr ) const override;
 
     EngineOperationResult splitGeometry( const QgsLineString &splitLine,
-                                         QList< QgsGeometry > &newGeometries,
+                                         QVector<QgsGeometry> &newGeometries,
                                          bool topological,
                                          QgsPointSequence &topologyTestPoints,
                                          QString *errorMsg = nullptr ) const override;
@@ -279,7 +279,7 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * An empty geometry will be returned in the case of errors.
      * \since QGIS 3.0
      */
-    static QgsGeometry polygonize( const QList< const QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
+    static QgsGeometry polygonize( const QVector<const QgsAbstractGeometry *> &geometries, QString *errorMsg = nullptr );
 
     /**
      * Creates a Voronoi diagram for the nodes contained within the geometry.
@@ -368,8 +368,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
     //utils for geometry split
     bool topologicalTestPointsSplit( const GEOSGeometry *splitLine, QgsPointSequence &testPoints, QString *errorMsg = nullptr ) const;
     geos::unique_ptr linePointDifference( GEOSGeometry *GEOSsplitPoint ) const;
-    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry > &newGeometries ) const;
-    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsGeometry > &newGeometries ) const;
+    EngineOperationResult splitLinearGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries ) const;
+    EngineOperationResult splitPolygonGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry > &newGeometries ) const;
 
     //utils for reshape
     static geos::unique_ptr reshapeLine( const GEOSGeometry *line, const GEOSGeometry *reshapeLineGeos, double precision );

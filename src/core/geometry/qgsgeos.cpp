@@ -308,7 +308,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QgsAbstractGeometry *geom, QString 
   return overlay( geom, OverlayUnion, errorMsg ).release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QList<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const
 {
   QVector< GEOSGeometry * > geosGeometries;
   geosGeometries.reserve( geomList.size() );
@@ -332,7 +332,7 @@ QgsAbstractGeometry *QgsGeos::combine( const QList<QgsAbstractGeometry *> &geomL
   return result.release();
 }
 
-QgsAbstractGeometry *QgsGeos::combine( const QList<QgsGeometry> &geomList, QString *errorMsg ) const
+QgsAbstractGeometry *QgsGeos::combine( const QVector<QgsGeometry> &geomList, QString *errorMsg ) const
 {
   QVector< GEOSGeometry * > geosGeometries;
   geosGeometries.reserve( geomList.size() );
@@ -562,7 +562,7 @@ double QgsGeos::length( QString *errorMsg ) const
 }
 
 QgsGeometryEngine::EngineOperationResult QgsGeos::splitGeometry( const QgsLineString &splitLine,
-    QList<QgsGeometry> &newGeometries,
+    QVector<QgsGeometry> &newGeometries,
     bool topological,
     QgsPointSequence &topologyTestPoints,
     QString *errorMsg ) const
@@ -762,7 +762,7 @@ geos::unique_ptr QgsGeos::linePointDifference( GEOSGeometry *GEOSsplitPoint ) co
   return asGeos( &lines, mPrecision );
 }
 
-QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeometry *splitLine, QList<QgsGeometry> &newGeometries ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry> &newGeometries ) const
 {
   if ( !splitLine )
     return InvalidInput;
@@ -817,7 +817,7 @@ QgsGeometryEngine::EngineOperationResult QgsGeos::splitLinearGeometry( GEOSGeome
   return Success;
 }
 
-QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeometry *splitLine, QList<QgsGeometry> &newGeometries ) const
+QgsGeometryEngine::EngineOperationResult QgsGeos::splitPolygonGeometry( GEOSGeometry *splitLine, QVector<QgsGeometry> &newGeometries ) const
 {
   if ( !splitLine )
     return InvalidInput;
@@ -1129,7 +1129,7 @@ std::unique_ptr<QgsPolygon> QgsGeos::fromGeosPolygon( const GEOSGeometry *geos )
     polygon->setExteriorRing( sequenceToLinestring( ring, hasZ, hasM ).release() );
   }
 
-  QList<QgsCurve *> interiorRings;
+  QVector<QgsCurve *> interiorRings;
   for ( int i = 0; i < GEOSGetNumInteriorRings_r( geosinit.ctxt, geos ); ++i )
   {
     ring = GEOSGetInteriorRingN_r( geosinit.ctxt, geos, i );
@@ -2141,7 +2141,7 @@ double QgsGeos::lineLocatePoint( const QgsPoint &point, QString *errorMsg ) cons
   return distance;
 }
 
-QgsGeometry QgsGeos::polygonize( const QList<const QgsAbstractGeometry *> &geometries, QString *errorMsg )
+QgsGeometry QgsGeos::polygonize( const QVector<const QgsAbstractGeometry *> &geometries, QString *errorMsg )
 {
   GEOSGeometry **const lineGeosGeometries = new GEOSGeometry*[ geometries.size()];
   int validLines = 0;
@@ -2371,8 +2371,8 @@ geos::unique_ptr QgsGeos::reshapeLine( const GEOSGeometry *line, const GEOSGeome
       return nullptr;
   }
 
-  QList<GEOSGeometry *> resultLineParts; //collection with the line segments that will be contained in result
-  QList<GEOSGeometry *> probableParts; //parts where we can decide on inclusion only after going through all the candidates
+  QVector<GEOSGeometry *> resultLineParts; //collection with the line segments that will be contained in result
+  QVector<GEOSGeometry *> probableParts; //parts where we can decide on inclusion only after going through all the candidates
 
   for ( int i = 0; i < numMergedLines; ++i )
   {
@@ -2579,7 +2579,7 @@ geos::unique_ptr QgsGeos::reshapePolygon( const GEOSGeometry *polygon, const GEO
     newOuterRing = GEOSGeom_clone_r( geosinit.ctxt, outerRing );
 
   //check if all the rings are still inside the outer boundary
-  QList<GEOSGeometry *> ringList;
+  QVector<GEOSGeometry *> ringList;
   if ( nRings > 0 )
   {
     GEOSGeometry *outerRingPoly = GEOSGeom_createPolygon_r( geosinit.ctxt, GEOSGeom_clone_r( geosinit.ctxt, newOuterRing ), nullptr, 0 );

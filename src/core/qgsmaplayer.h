@@ -138,7 +138,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     /**
      * Returns the display name of the layer.
-     * \returns the layer name
      * \see setName()
      */
     QString name() const;
@@ -153,11 +152,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      * \note not available in Python bindings
      */
     virtual const QgsDataProvider *dataProvider() const SIP_SKIP;
-
-    /**
-     * Returns the original name of the layer.
-     */
-    QString originalName() const;
 
     /**
      * Sets the short name of the layer
@@ -524,8 +518,12 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Sets layer's spatial reference system
     void setCrs( const QgsCoordinateReferenceSystem &srs, bool emitSignal = true );
 
-    //! A convenience function to (un)capitalize the layer name
-    static QString capitalizeLayerName( const QString &name );
+    /**
+     * A convenience function to capitalize and format a layer \a name.
+     *
+     * \since QGIS 3.0
+     */
+    static QString formatLayerName( const QString &name );
 
     /**
      * Retrieve the style URI for this layer
@@ -1120,11 +1118,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
 
     //! Name of the layer - used for display
     QString mLayerName;
-
-    /**
-     * Original name of the layer
-     */
-    QString mLayerOrigName;
 
     QString mShortName;
     QString mTitle;

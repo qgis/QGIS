@@ -23,7 +23,7 @@ class QgsGeometryUtils
 %End
   public:
 
-    static QList<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) /Factory/;
+    static QVector<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) /Factory/;
 %Docstring
  Returns list of linestrings extracted from the passed geometry. The returned objects
   have to be deleted by the caller.
@@ -191,7 +191,7 @@ Calculates the direction angle of a circle tangent (clockwise from north in radi
 %End
 
     static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
-                               QList<QgsPoint>  &points /Out/, double tolerance = M_PI_2 / 90,
+                               QVector<QgsPoint>  &points /Out/, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
 %Docstring

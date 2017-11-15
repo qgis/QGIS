@@ -125,13 +125,8 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
      * \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*/
     QgsAbstractGeometry *segmentize( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const override SIP_FACTORY;
 
-    /**
-     * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     * \param vertex the vertex id
-     * \returns rotation in radians, clockwise from north
-     */
     double vertexAngle( QgsVertexId vertex ) const override;
-
+    double segmentLength( QgsVertexId startVertex ) const override;
     int vertexCount( int part = 0, int ring = 0 ) const override;
     int ringCount( int part = 0 ) const override;
     int partCount() const override;
@@ -177,7 +172,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     /**
      * Reads a collection from a WKT string.
      */
-    bool fromCollectionWkt( const QString &wkt, const QList<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
+    bool fromCollectionWkt( const QString &wkt, const QVector<QgsAbstractGeometry *> &subtypes, const QString &defaultChildWkbType = QString() );
 
     QgsRectangle calculateBoundingBox() const override;
     void clearCache() const override;
@@ -185,7 +180,6 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
   private:
 
     mutable QgsRectangle mBoundingBox;
-    mutable QgsCoordinateSequence mCoordinateSequence;
 };
 
 // clazy:excludeall=qstring-allocations

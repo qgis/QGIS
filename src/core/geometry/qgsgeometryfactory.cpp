@@ -168,7 +168,7 @@ std::unique_ptr<QgsPolygon> QgsGeometryFactory::fromPolygonXY( const QgsPolygonX
 {
   std::unique_ptr< QgsPolygon > poly = qgis::make_unique< QgsPolygon >();
 
-  QList<QgsCurve *> holes;
+  QVector<QgsCurve *> holes;
   for ( int i = 0; i < polygon.size(); ++i )
   {
     std::unique_ptr< QgsLineString > l = linestringFromPolyline( polygon.at( i ) );

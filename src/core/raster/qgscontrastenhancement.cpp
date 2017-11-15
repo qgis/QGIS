@@ -175,7 +175,10 @@ int QgsContrastEnhancement::enhanceContrast( double value )
 
   if ( mLookupTable && NoEnhancement != mContrastEnhancementAlgorithm )
   {
-    return mLookupTable[static_cast <int>( value + mLookupTableOffset )];
+    double shiftedValue = value + mLookupTableOffset;
+    if ( shiftedValue >= 0 && shiftedValue < mRasterDataTypeRange + 1 )
+      return mLookupTable[static_cast <int>( shiftedValue )];
+    return 0;
   }
   else
   {

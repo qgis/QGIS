@@ -1043,7 +1043,7 @@ Return the provider type for this layer
  :rtype: bool
 %End
 
-    int addRing( const QList<QgsPointXY> &ring, QgsFeatureId *featureId = 0 );
+    int addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = 0 );
 %Docstring
  :rtype: int
 %End
@@ -1081,12 +1081,12 @@ Return the provider type for this layer
  :rtype: int
 %End
 
-    int splitParts( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    int splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
  :rtype: int
 %End
 
-    int splitFeatures( const QList<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    int splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 %Docstring
  :rtype: int
 %End

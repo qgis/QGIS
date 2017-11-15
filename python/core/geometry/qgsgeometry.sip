@@ -204,7 +204,7 @@ Creates a new geometry from a QgsMultiPolygon
 Creates a new geometry from a QgsRectangle
  :rtype: QgsGeometry
 %End
-    static QgsGeometry collectGeometry( const QList< QgsGeometry > &geometries );
+    static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 %Docstring
 Creates a new multipart geometry from a list of QgsGeometry objects
  :rtype: QgsGeometry
@@ -503,7 +503,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    OperationResult addRing( const QList<QgsPointXY> &ring );
+    OperationResult addRing( const QVector<QgsPointXY> &ring );
 %Docstring
  Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
  \param ring The ring to be added
@@ -519,7 +519,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult addPart( const QList<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsXY/;
+    OperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsXY/;
 %Docstring
  Adds a new part to a the geometry.
  \param points points describing part to add
@@ -596,7 +596,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult splitGeometry( const QList<QgsPointXY> &splitLine, QList<QgsGeometry> &newGeometries /Out/, bool topological, QList<QgsPointXY> &topologyTestPoints /Out/ );
+    OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/ );
 %Docstring
  Splits this geometry according to a given line.
  \param splitLine the line that splits the geometry
@@ -1172,7 +1172,7 @@ Returns an extruded version of this geometry.
  :rtype: QgsMultiPolygonXY
 %End
 
-    QList<QgsGeometry> asGeometryCollection() const;
+    QVector<QgsGeometry> asGeometryCollection() const;
 %Docstring
  Return contents of the geometry as a list of geometries
 .. versionadded:: 1.1
@@ -1305,7 +1305,7 @@ Returns an extruded version of this geometry.
       ValidatorGeos,
     };
 
-    void validateGeometry( QList<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal ) const;
+    void validateGeometry( QVector<QgsGeometry::Error> &errors /Out/, ValidationMethod method = ValidatorQgisInternal ) const;
 %Docstring
  Validates geometry and produces a list of geometry errors.
  The ``method`` argument dictates which validator to utilize.
@@ -1316,7 +1316,7 @@ Returns an extruded version of this geometry.
 *
 %End
 
-    static QgsGeometry unaryUnion( const QList<QgsGeometry> &geometries );
+    static QgsGeometry unaryUnion( const QVector<QgsGeometry> &geometries );
 %Docstring
  Compute the unary union on a list of ``geometries``. May be faster than an iterative union on a set of geometries.
  The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
@@ -1324,7 +1324,7 @@ Returns an extruded version of this geometry.
  :rtype: QgsGeometry
 %End
 
-    static QgsGeometry polygonize( const QList< QgsGeometry> &geometries );
+    static QgsGeometry polygonize( const QVector<QgsGeometry> &geometries );
 %Docstring
  Creates a GeometryCollection geometry containing possible polygons formed from the constituent
  linework of a set of ``geometries``. The input geometries must be fully noded (i.e. nodes exist
@@ -1579,14 +1579,14 @@ Returns an extruded version of this geometry.
  :rtype: QgsGeometryEngine
 %End
 
-    static void convertPointList( const QList<QgsPointXY> &input, QgsPointSequence &output );
+    static void convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output );
 %Docstring
  Upgrades a point list from QgsPointXY to QgsPoint
  \param input list of QgsPointXY objects to be upgraded
  \param output destination for list of points converted to QgsPoint
 %End
 
-    static void convertPointList( const QgsPointSequence &input, QList<QgsPointXY> &output );
+    static void convertPointList( const QgsPointSequence &input, QVector<QgsPointXY> &output );
 %Docstring
  Downgrades a point list from QgsPoint to QgsPointXY
  \param input list of QgsPoint objects to be downgraded

@@ -39,7 +39,7 @@ class CORE_EXPORT QgsGeometryUtils
      * Returns list of linestrings extracted from the passed geometry. The returned objects
      *  have to be deleted by the caller.
      */
-    static QList<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) SIP_FACTORY;
+    static QVector<QgsLineString *> extractLineStrings( const QgsAbstractGeometry *geom ) SIP_FACTORY;
 
     /**
      * Returns the closest vertex to a geometry for a specified point.
@@ -145,7 +145,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \note not available in Python bindings
      * \since QGIS 2.12
      */
-    static QList<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
+    static QVector<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
     //! Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2
     static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
@@ -191,7 +191,7 @@ class CORE_EXPORT QgsGeometryUtils
      * \since 3.0
      */
     static void segmentizeArc( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &p3,
-                               QgsPointSequence SIP_PYALTERNATIVETYPE( QList<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
+                               QgsPointSequence SIP_PYALTERNATIVETYPE( QVector<QgsPoint> ) &points SIP_OUT, double tolerance = M_PI_2 / 90,
                                QgsAbstractGeometry::SegmentationToleranceType toleranceType = QgsAbstractGeometry::MaximumAngle,
                                bool hasZ = false, bool hasM = false );
 

@@ -221,9 +221,9 @@ QgsTriangle QgsRegularPolygon::toTriangle() const
   return QgsTriangle( pts.at( 0 ), pts.at( 1 ), pts.at( 2 ) );
 }
 
-QList<QgsTriangle> QgsRegularPolygon::triangulate() const
+QVector<QgsTriangle> QgsRegularPolygon::triangulate() const
 {
-  QList<QgsTriangle> l_tri;
+  QVector<QgsTriangle> l_tri;
   if ( isEmpty() )
   {
     return l_tri;

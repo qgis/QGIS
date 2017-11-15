@@ -124,7 +124,7 @@ QgsLineString::QgsLineString( const QVector<double> &x, const QVector<double> &y
   }
 }
 
-QgsLineString::QgsLineString( const QList<QgsPointXY> &points )
+QgsLineString::QgsLineString( const QVector<QgsPointXY> &points )
 {
   mWkbType = QgsWkbTypes::LineString;
   mX.reserve( points.size() );
@@ -1079,6 +1079,16 @@ double QgsLineString::vertexAngle( QgsVertexId vertex ) const
     double afterY = mY.at( vertex.vertex + 1 );
     return QgsGeometryUtils::averageAngle( previousX, previousY, currentX, currentY, afterX, afterY );
   }
+}
+
+double QgsLineString::segmentLength( QgsVertexId startVertex ) const
+{
+  if ( startVertex.vertex < 0 || startVertex.vertex >= mX.count() - 1 )
+    return 0.0;
+
+  double dx = mX.at( startVertex.vertex + 1 ) - mX.at( startVertex.vertex );
+  double dy = mY.at( startVertex.vertex + 1 ) - mY.at( startVertex.vertex );
+  return std::sqrt( dx * dx + dy * dy );
 }
 
 /***************************************************************************
