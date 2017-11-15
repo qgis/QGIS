@@ -43,6 +43,7 @@
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
+#include "qgsalgorithmpackage.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmremovenullgeometry.h"
@@ -118,6 +119,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
+  addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
