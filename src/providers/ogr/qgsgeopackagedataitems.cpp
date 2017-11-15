@@ -505,21 +505,11 @@ void QgsGeoPackageCollectionItem::deleteConnection()
 void QgsGeoPackageCollectionItem::addTable()
 {
   QgsNewGeoPackageLayerDialog dialog( nullptr );
-  QFileInfo fileInfo( mPath );
-  QString connName = fileInfo.fileName();
-  QgsOgrDbConnection connection( connName, QStringLiteral( "GPKG" ) );
-  if ( ! connection.path().isEmpty() )
+  dialog.setDatabasePath( mPath );
+  dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
+  if ( dialog.exec() == QDialog::Accepted )
   {
-    dialog.setDatabasePath( connection.path() );
-    dialog.setCrs( QgsProject::instance()->defaultCrsForNewLayers() );
-    if ( dialog.exec() == QDialog::Accepted )
-    {
-      refreshConnections();
-    }
-  }
-  else
-  {
-    QgsDebugMsg( QStringLiteral( "Cannot add Table: connection %1 does not exist or the path is empty!" ).arg( connName ) );
+    refreshConnections();
   }
 }
 
