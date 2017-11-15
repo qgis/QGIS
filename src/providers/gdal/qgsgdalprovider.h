@@ -166,11 +166,33 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QgsGdalProvider( const QgsGdalProvider &other );
 
-    // reference counter to know how many main and cloned provider instances are linked
-    int *mpRefCounter = nullptr;
+    //! Whether mGdalDataset and mGdalBaseDataset have been attempted to be set
+    bool mHasInit = false;
 
-    // mutex to protect access to mGdalDataset among main and cloned provider instances
+    //! Open mGdalDataset/mGdalBaseDataset if needed.
+    bool initIfNeeded();
+
+    // There are 2 cloning mechanisms.
+    // * Either the cloned provider use the same GDAL handles as the main provider
+    //   instance, in which case *mpRefCounter is used to count how many providers
+    //    use the main provider. And *mpMutex is used to protect access to the
+    //   GDAL resource.
+    // * Or the cloned provider use its own GDAL handles, but with a cache mechanism
+    //   to avoid constant opening/closing of datasets. In that case *mpParent is
+    //   used to point to the main provider, and *mpLightRefCounter to count how
+    //   many providers point to that main provider.
+
+    // reference counter to know how many main and shared provider instances are linked
+    QAtomicInt *mpRefCounter = nullptr;
+
+    // mutex to protect access to mGdalDataset among main and shared provider instances
     QMutex *mpMutex = nullptr;
+
+    // pointer to a QgsGdalProvider* that is the parent. Note when *mpParent == this, we are the parent.
+    QgsGdalProvider **mpParent = nullptr;
+
+    // reference counter to know how many main and related provider instances are linked
+    mutable QAtomicInt *mpLightRefCounter = nullptr;
 
     // update mode
     bool mUpdate;
@@ -201,6 +223,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int mHeight = 0;
     int mXBlockSize = 0;
     int mYBlockSize = 0;
+    int mBandCount = 1;
 
     //mutable QList<bool> mMinMaxComputed;
 
@@ -234,6 +257,29 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     //! \brief Close data set and release related data
     void closeDataset();
+
+    //! Pair of GDAL base dataset and "real" dataset handles.
+    struct DatasetPair
+    {
+      GDALDatasetH mGdalBaseDataset;
+      GDALDatasetH mGdalDataset;
+    };
+
+    // Dataset cache
+    static QMap< QgsGdalProvider *, QVector<DatasetPair> > mgDatasetCache;
+
+    // Number of cached datasets in mgDatasetCache ( == sum(iter.value().size() )
+    static int mgDatasetCacheSize;
+
+    //! Add handles to the cache if possible for the specified parent provider, in which case true is returned. If false returned, then the handles should be processed appropriately by the caller
+    static bool cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider, GDALDatasetH gdalBaseDataset, GDALDatasetH gdalDataset );
+
+    //! Get cached handles for the specified provider, in which case true is returned and 2 handles are set.
+    static bool getCachedGdalHandles( QgsGdalProvider *provider, GDALDatasetH &gdalBaseDataset, GDALDatasetH &gdalDataset );
+
+    //! Close all cached dataset for the specified provider.
+    static void closeCachedGdalHandlesFor( QgsGdalProvider *provider );
+
 };
 
 #endif

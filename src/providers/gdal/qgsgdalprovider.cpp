@@ -64,6 +64,24 @@
 static QString PROVIDER_KEY = QStringLiteral( "gdal" );
 static QString PROVIDER_DESCRIPTION = QStringLiteral( "GDAL provider" );
 
+// To avoid potential races when destroying related instances ("main" and clones)
+static QMutex gGdaProviderMutex( QMutex::Recursive );
+
+QMap< QgsGdalProvider *, QVector<QgsGdalProvider::DatasetPair> > QgsGdalProvider::mgDatasetCache;
+
+int QgsGdalProvider::mgDatasetCacheSize = 0;
+
+// Number of cached datasets from which we will try to do eviction when a
+// provider has 2 or more cached datasets
+const int MIN_THRESHOLD_FOR_CACHE_CLEANUP = 10;
+
+// Maximum number of cached datasets
+// We try to keep at least 1 cached dataset per parent provider between
+// MIN_THRESHOLD_FOR_CACHE_CLEANUP and MAX_CACHE_SIZE. But we don't want to
+// maintain more than MAX_CACHE_SIZE datasets opened to avoid running short of
+// file descriptors.
+const int MAX_CACHE_SIZE = 50;
+
 struct QgsGdalProgress
 {
   int type;
@@ -106,7 +124,8 @@ int CPL_STDCALL progressCallback( double dfComplete,
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
   : QgsRasterDataProvider( uri )
-  , mpRefCounter( new int( 1 ) )
+  , mpRefCounter( new QAtomicInt( 1 ) )
+  , mpLightRefCounter( new QAtomicInt( 1 ) )
   , mUpdate( false )
 {
   mGeoTransform[0] = 0;
@@ -120,8 +139,10 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, const QgsError &error )
 
 QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update, GDALDatasetH dataset )
   : QgsRasterDataProvider( uri )
-  , mpRefCounter( new int( 1 ) )
+  , mpRefCounter( new QAtomicInt( 1 ) )
   , mpMutex( new QMutex( QMutex::Recursive ) )
+  , mpParent( new QgsGdalProvider * ( this ) )
+  , mpLightRefCounter( new QAtomicInt( 1 ) )
   , mUpdate( update )
 {
   mGeoTransform[0] = 0;
@@ -162,45 +183,61 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update, GDALDatasetH 
   if ( dataset )
   {
     mGdalBaseDataset = dataset;
+    initBaseDataset();
   }
   else
   {
-    // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
-    QString vsiPrefix = QgsZipItem::vsiPrefix( uri );
-    if ( !vsiPrefix.isEmpty() )
-    {
-      if ( !uri.startsWith( vsiPrefix ) )
-        setDataSourceUri( vsiPrefix + uri );
-      QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix, dataSourceUri() ) );
-    }
-
-    QString gdalUri = dataSourceUri();
-
-    CPLErrorReset();
-    mGdalBaseDataset = gdalOpen( gdalUri.toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
-
-    if ( !mGdalBaseDataset )
-    {
-      QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
-      appendError( ERRMSG( msg ) );
-      return;
-    }
-
-    QgsDebugMsg( "GdalDataset opened" );
+    initIfNeeded();
   }
-  initBaseDataset();
 }
 
 QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   : QgsRasterDataProvider( other.dataSourceUri() )
-  , mpRefCounter( other.mpRefCounter )
-  , mpMutex( other.mpMutex )
   , mUpdate( false )
 {
-  QMutexLocker locker( mpMutex );
-  ( *mpRefCounter ) ++;
+  // The JP2OPENJPEG driver might consume too much memory on large datasets
+  // so make sure to really use a single one.
+  bool forceUseSameDataset =
+    ( other.mGdalBaseDataset &&
+      GDALGetDatasetDriver( other.mGdalBaseDataset ) == GDALGetDriverByName( "JP2OPENJPEG" ) ) ||
+    CSLTestBoolean( CPLGetConfigOption( "QGIS_GDAL_FORCE_USE_SAME_DATASET", "FALSE" ) );
 
-  mValid = other.mValid;
+  if ( forceUseSameDataset )
+  {
+    ++ ( *other.mpRefCounter );
+    mpRefCounter = other.mpRefCounter;
+    mpMutex = other.mpMutex;
+    mpLightRefCounter = new QAtomicInt( 1 );
+    mHasInit = other.mHasInit;
+    mValid = other.mValid;
+    mGdalBaseDataset = other.mGdalBaseDataset;
+    mGdalDataset = other.mGdalDataset;
+  }
+  else
+  {
+
+    ++ ( *other.mpLightRefCounter );
+
+    mpRefCounter = new QAtomicInt( 1 );
+    mpLightRefCounter = other.mpLightRefCounter;
+    mpMutex = new QMutex( QMutex::Recursive );
+    mpParent = other.mpParent;
+
+    if ( getCachedGdalHandles( const_cast<QgsGdalProvider *>( &other ), mGdalBaseDataset, mGdalDataset ) )
+    {
+      QgsDebugMsgLevel( "recycling already opened dataset", 5 );
+      mHasInit = true;
+      mValid = other.mValid;
+    }
+    else
+    {
+      QgsDebugMsgLevel( "will need to open new dataset", 5 );
+      mHasInit = false;
+      mValid = false;
+    }
+
+  }
+
   mHasPyramids = other.mHasPyramids;
   mGdalDataType = other.mGdalDataType;
   mExtent = other.mExtent;
@@ -208,25 +245,18 @@ QgsGdalProvider::QgsGdalProvider( const QgsGdalProvider &other )
   mHeight = other.mHeight;
   mXBlockSize = other.mXBlockSize;
   mYBlockSize = other.mYBlockSize;
-  mGdalBaseDataset = other.mGdalBaseDataset;
-  mGdalDataset = other.mGdalDataset;
   memcpy( mGeoTransform, other.mGeoTransform, sizeof( mGeoTransform ) );
   mCrs = other.mCrs;
   mPyramidList = other.mPyramidList;
   mSubLayers = other.mSubLayers;
   mMaskBandExposedAsAlpha = other.mMaskBandExposedAsAlpha;
+  mBandCount = other.mBandCount;
   copyBaseSettings( other );
 }
 
 QgsGdalProvider *QgsGdalProvider::clone() const
 {
-#if 0
-  QgsGdalProvider *provider = new QgsGdalProvider( dataSourceUri() );
-  provider->copyBaseSettings( *this );
-  return provider;
-#else
   return new QgsGdalProvider( *this );
-#endif
 }
 
 bool QgsGdalProvider::crsFromWkt( const char *wkt )
@@ -267,25 +297,163 @@ bool QgsGdalProvider::crsFromWkt( const char *wkt )
   return mCrs.isValid();
 }
 
+bool QgsGdalProvider::getCachedGdalHandles( QgsGdalProvider *provider,
+    GDALDatasetH &gdalBaseDataset,
+    GDALDatasetH &gdalDataset )
+{
+  QMutexLocker locker( &gGdaProviderMutex );
+
+  auto iter = mgDatasetCache.find( provider );
+  if ( iter == mgDatasetCache.end() )
+  {
+    return false;
+  }
+
+  if ( !iter.value().isEmpty() )
+  {
+    DatasetPair pair = iter.value().takeFirst();
+    mgDatasetCacheSize --;
+    gdalBaseDataset = pair.mGdalBaseDataset;
+    gdalDataset = pair.mGdalDataset;
+    return true;
+  }
+  return false;
+}
+
+bool QgsGdalProvider::cacheGdalHandlesForLaterReuse( QgsGdalProvider *provider,
+    GDALDatasetH gdalBaseDataset,
+    GDALDatasetH gdalDataset )
+{
+  QMutexLocker locker( &gGdaProviderMutex );
+
+  // If the cache size goes above the soft limit, try to do evict a cached
+  // dataset for the provider that has the most cached entries
+  if ( mgDatasetCacheSize >= MIN_THRESHOLD_FOR_CACHE_CLEANUP )
+  {
+    auto iter = mgDatasetCache.find( provider );
+    if ( iter == mgDatasetCache.end() || iter.value().isEmpty() )
+    {
+      QgsGdalProvider *candidateProvider = nullptr;
+      int nLargestCountOfCachedDatasets = 0;
+      for ( iter = mgDatasetCache.begin(); iter != mgDatasetCache.end(); ++iter )
+      {
+        if ( iter.value().size() > nLargestCountOfCachedDatasets )
+        {
+          candidateProvider = iter.key();
+          nLargestCountOfCachedDatasets = iter.value().size();
+        }
+      }
+
+      Q_ASSERT( candidateProvider );
+      Q_ASSERT( !mgDatasetCache[ candidateProvider ].isEmpty() );
+
+      // If the candidate is ourselves, then do nothing
+      if ( candidateProvider == provider )
+        return false;
+
+      // If the candidate provider has at least 2 cached datasets, then
+      // we can evict one.
+      // In the case where providers have at most one cached dataset, then
+      // evict one arbitrarily
+      if ( nLargestCountOfCachedDatasets >= 2 ||
+           mgDatasetCacheSize >= MAX_CACHE_SIZE )
+      {
+        mgDatasetCacheSize --;
+        DatasetPair pair = mgDatasetCache[ candidateProvider ].takeLast();
+        if ( pair.mGdalBaseDataset )
+        {
+          GDALDereferenceDataset( pair.mGdalBaseDataset );
+        }
+        if ( pair.mGdalDataset )
+        {
+          GDALClose( pair.mGdalDataset );
+        }
+      }
+    }
+    else
+    {
+      return false;
+    }
+  }
+
+  // Add handles to the cache
+  auto iter = mgDatasetCache.find( provider );
+  if ( iter == mgDatasetCache.end() )
+  {
+    mgDatasetCache[provider] = QVector<DatasetPair>();
+    iter = mgDatasetCache.find( provider );
+  }
+
+  mgDatasetCacheSize ++;
+  DatasetPair pair;
+  pair.mGdalBaseDataset = gdalBaseDataset;
+  pair.mGdalDataset = gdalDataset;
+  iter.value().push_back( pair );
+
+  return true;
+}
+
+void QgsGdalProvider::closeCachedGdalHandlesFor( QgsGdalProvider *provider )
+{
+  QMutexLocker locker( &gGdaProviderMutex );
+  auto iter = mgDatasetCache.find( provider );
+  if ( iter != mgDatasetCache.end() )
+  {
+    while ( !iter.value().isEmpty() )
+    {
+      mgDatasetCacheSize --;
+      DatasetPair pair = iter.value().takeLast();
+      if ( pair.mGdalBaseDataset )
+      {
+        GDALDereferenceDataset( pair.mGdalBaseDataset );
+      }
+      if ( pair.mGdalDataset )
+      {
+        GDALClose( pair.mGdalDataset );
+      }
+    }
+    mgDatasetCache.erase( iter );
+  }
+}
+
+
 QgsGdalProvider::~QgsGdalProvider()
 {
-  int refCounter;
-  {
-    QMutexLocker locker( mpMutex );
-    refCounter = -- ( *mpRefCounter );
-  }
+  QMutexLocker locker( &gGdaProviderMutex );
+
+  int lightRefCounter = -- ( *mpLightRefCounter );
+  int refCounter = -- ( *mpRefCounter );
   if ( refCounter == 0 )
   {
-    if ( mGdalBaseDataset )
+    if ( mpParent && *mpParent && *mpParent != this && mGdalBaseDataset &&
+         cacheGdalHandlesForLaterReuse( *mpParent, mGdalBaseDataset, mGdalDataset ) )
     {
-      GDALDereferenceDataset( mGdalBaseDataset );
+      // do nothing
     }
-    if ( mGdalDataset )
+    else
     {
-      GDALClose( mGdalDataset );
+      if ( mGdalBaseDataset )
+      {
+        GDALDereferenceDataset( mGdalBaseDataset );
+      }
+      if ( mGdalDataset )
+      {
+        GDALClose( mGdalDataset );
+      }
+
+      if ( mpParent && *mpParent == this )
+      {
+        *mpParent = nullptr;
+        closeCachedGdalHandlesFor( this );
+      }
     }
     delete mpMutex;
     delete mpRefCounter;
+    if ( lightRefCounter == 0 )
+    {
+      delete mpLightRefCounter;
+      delete mpParent;
+    }
   }
 }
 
@@ -309,6 +477,8 @@ void QgsGdalProvider::closeDataset()
 QString QgsGdalProvider::metadata()
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return QString();
   QString myMetadata;
   myMetadata += QString( GDALGetDescription( GDALGetDatasetDriver( mGdalDataset ) ) );
   myMetadata += QLatin1String( "<br>" );
@@ -444,6 +614,8 @@ QString QgsGdalProvider::metadata()
 QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback )
 {
   QgsRasterBlock *block = new QgsRasterBlock( dataType( bandNo ), width, height );
+  if ( !initIfNeeded() )
+    return block;
   if ( sourceHasNoDataValue( bandNo ) && useSourceNoDataValue( bandNo ) )
   {
     block->setNoDataValue( sourceNoDataValue( bandNo ) );
@@ -469,6 +641,8 @@ QgsRasterBlock *QgsGdalProvider::block( int bandNo, const QgsRectangle &extent, 
 void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return;
 
   // TODO!!!: Check data alignment!!! May it happen that nearest value which
   // is not nearest is assigned to an output cell???
@@ -488,6 +662,8 @@ void QgsGdalProvider::readBlock( int bandNo, int xBlock, int yBlock, void *block
 void QgsGdalProvider::readBlock( int bandNo, QgsRectangle  const &extent, int pixelWidth, int pixelHeight, void *block, QgsRasterBlockFeedback *feedback )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return;
 
   QgsDebugMsgLevel( "thePixelWidth = "  + QString::number( pixelWidth ), 5 );
   QgsDebugMsgLevel( "thePixelHeight = "  + QString::number( pixelHeight ), 5 );
@@ -921,6 +1097,9 @@ void QgsGdalProvider::computeMinMax( int bandNo ) const
  */
 QList<QgsColorRampShader::ColorRampItem> QgsGdalProvider::colorTable( int bandNumber )const
 {
+  QMutexLocker locker( mpMutex );
+  if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
+    return QList<QgsColorRampShader::ColorRampItem>();
   return QgsGdalProviderBase::colorTable( mGdalDataset, bandNumber );
 }
 
@@ -953,6 +1132,8 @@ int QgsGdalProvider::ySize() const { return mHeight; }
 QString QgsGdalProvider::generateBandName( int bandNumber ) const
 {
   QMutexLocker locker( mpMutex );
+  if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
+    return QString();
 
   if ( strcmp( GDALGetDriverShortName( GDALGetDatasetDriver( mGdalDataset ) ), "netCDF" ) == 0 )
   {
@@ -1022,6 +1203,10 @@ QString QgsGdalProvider::generateBandName( int bandNumber ) const
 
 QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox, int width, int height, int /*dpi*/ )
 {
+  QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return QgsRasterIdentifyResult( ERR( tr( "Cannot read data" ) ) );
+
   QgsDebugMsg( QString( "thePoint = %1 %2" ).arg( point.x(), 0, 'g', 10 ).arg( point.y(), 0, 'g', 10 ) );
 
   QMap<int, QVariant> results;
@@ -1110,6 +1295,8 @@ QgsRasterIdentifyResult QgsGdalProvider::identify( const QgsPointXY &point, QgsR
 int QgsGdalProvider::capabilities() const
 {
   QMutexLocker locker( mpMutex );
+  if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
+    return 0;
 
   int capability = QgsRasterDataProvider::Identify
                    | QgsRasterDataProvider::IdentifyValue
@@ -1130,6 +1317,8 @@ int QgsGdalProvider::capabilities() const
 Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
 {
   QMutexLocker locker( mpMutex );
+  if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
+    return dataTypeFromGdal( GDT_Byte );
 
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return dataTypeFromGdal( GDT_Byte );
@@ -1173,9 +1362,7 @@ Qgis::DataType QgsGdalProvider::sourceDataType( int bandNo ) const
 
 Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
 {
-  QMutexLocker locker( mpMutex );
-
-  if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
+  if ( mMaskBandExposedAsAlpha && bandNo == mBandCount )
     return dataTypeFromGdal( GDT_Byte );
 
   if ( bandNo <= 0 || bandNo > mGdalDataType.count() ) return Qgis::UnknownDataType;
@@ -1186,6 +1373,8 @@ Qgis::DataType QgsGdalProvider::dataType( int bandNo ) const
 double QgsGdalProvider::bandScale( int bandNo ) const
 {
   QMutexLocker locker( mpMutex );
+  if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
+    return 1.0;
 
   GDALRasterBandH myGdalBand = getBand( bandNo );
   int bGotScale;
@@ -1199,6 +1388,8 @@ double QgsGdalProvider::bandScale( int bandNo ) const
 double QgsGdalProvider::bandOffset( int bandNo ) const
 {
   QMutexLocker locker( mpMutex );
+  if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
+    return 0.0;
 
   GDALRasterBandH myGdalBand = getBand( bandNo );
   int bGotOffset;
@@ -1211,17 +1402,14 @@ double QgsGdalProvider::bandOffset( int bandNo ) const
 
 int QgsGdalProvider::bandCount() const
 {
-  QMutexLocker locker( mpMutex );
-
-  if ( mGdalDataset )
-    return GDALGetRasterCount( mGdalDataset ) + ( mMaskBandExposedAsAlpha ? 1 : 0 );
-  else
-    return 1;
+  return mBandCount;
 }
 
 int QgsGdalProvider::colorInterpretation( int bandNo ) const
 {
   QMutexLocker locker( mpMutex );
+  if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
+    return colorInterpretationFromGdal( GCI_Undefined );
 
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return colorInterpretationFromGdal( GCI_AlphaBand );
@@ -1297,6 +1485,8 @@ bool QgsGdalProvider::hasHistogram( int bandNo,
                                     bool includeOutOfRange )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return false;
 
   QgsDebugMsg( QString( "theBandNo = %1 binCount = %2 minimum = %3 maximum = %4 sampleSize = %5" ).arg( bandNo ).arg( binCount ).arg( minimum ).arg( maximum ).arg( sampleSize ) );
 
@@ -1382,6 +1572,8 @@ QgsRasterHistogram QgsGdalProvider::histogram( int bandNo,
     bool includeOutOfRange, QgsRasterBlockFeedback *feedback )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return QgsRasterHistogram();
 
   QgsDebugMsg( QString( "theBandNo = %1 binCount = %2 minimum = %3 maximum = %4 sampleSize = %5" ).arg( bandNo ).arg( binCount ).arg( minimum ).arg( maximum ).arg( sampleSize ) );
 
@@ -2200,6 +2392,8 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
                                      int sampleSize )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return false;
 
   QgsDebugMsg( QString( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ) );
 
@@ -2284,6 +2478,8 @@ bool QgsGdalProvider::hasStatistics( int bandNo,
 QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const QgsRectangle &boundingBox, int sampleSize, QgsRasterBlockFeedback *feedback )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return QgsRasterBandStats();
 
   QgsDebugMsg( QString( "theBandNo = %1 sampleSize = %2" ).arg( bandNo ).arg( sampleSize ) );
 
@@ -2444,8 +2640,47 @@ QgsRasterBandStats QgsGdalProvider::bandStatistics( int bandNo, int stats, const
 
 } // QgsGdalProvider::bandStatistics
 
+bool QgsGdalProvider::initIfNeeded()
+{
+  if ( mHasInit )
+    return mValid;
+
+  mHasInit = true;
+
+  QString gdalUri = dataSourceUri();
+
+  // Try to open using VSIFileHandler (see qgsogrprovider.cpp)
+  QString vsiPrefix = QgsZipItem::vsiPrefix( gdalUri );
+  if ( !vsiPrefix.isEmpty() )
+  {
+    if ( !gdalUri.startsWith( vsiPrefix ) )
+      setDataSourceUri( vsiPrefix + gdalUri );
+    QgsDebugMsg( QString( "Trying %1 syntax, uri= %2" ).arg( vsiPrefix, dataSourceUri() ) );
+  }
+
+  gdalUri = dataSourceUri();
+
+  CPLErrorReset();
+  mGdalBaseDataset = gdalOpen( gdalUri.toUtf8().constData(), mUpdate ? GA_Update : GA_ReadOnly );
+
+  if ( !mGdalBaseDataset )
+  {
+    QString msg = QStringLiteral( "Cannot open GDAL dataset %1:\n%2" ).arg( dataSourceUri(), QString::fromUtf8( CPLGetLastErrorMsg() ) );
+    appendError( ERRMSG( msg ) );
+    return false;
+  }
+
+  QgsDebugMsg( "GdalDataset opened" );
+
+  initBaseDataset();
+  return mValid;
+}
+
+
 void QgsGdalProvider::initBaseDataset()
 {
+  mHasInit = true;
+  mValid = true;
 #if 0
   for ( int i = 0; i < GDALGetRasterCount( mGdalBaseDataset ); i++ )
   {
@@ -2518,6 +2753,7 @@ void QgsGdalProvider::initBaseDataset()
 
       GDALClose( mGdalDataset );
       mGdalDataset = nullptr;
+      mValid = false;
       return;
     }
     // if there are subdatasets, leave the dataset open for subsequent queries
@@ -2525,6 +2761,7 @@ void QgsGdalProvider::initBaseDataset()
     {
       QgsDebugMsg( QObject::tr( "Cannot get GDAL raster band: %1" ).arg( msg ) +
                    QString( " but dataset has %1 subdatasets" ).arg( mSubLayers.size() ) );
+      mValid = false;
       return;
     }
   }
@@ -2580,13 +2817,22 @@ void QgsGdalProvider::initBaseDataset()
   mWidth = GDALGetRasterXSize( mGdalDataset );
   mHeight = GDALGetRasterYSize( mGdalDataset );
 
+  // Check if the dataset has a mask band, that applies to the whole dataset
+  // If so then expose it as an alpha band.
+  int nMaskFlags = GDALGetMaskFlags( myGDALBand );
+  const int bandCount = GDALGetRasterCount( mGdalDataset );
+  if ( ( nMaskFlags == 0 && bandCount == 1 ) || nMaskFlags == GMF_PER_DATASET )
+  {
+    mMaskBandExposedAsAlpha = true;
+  }
+
+  mBandCount = bandCount + ( mMaskBandExposedAsAlpha ? 1 : 0 );
 
   GDALGetBlockSize( GDALGetRasterBand( mGdalDataset, 1 ), &mXBlockSize, &mYBlockSize );
   //
   // Determine the nodata value and data type
   //
   //mValidNoDataValue = true;
-  const int bandCount = GDALGetRasterCount( mGdalBaseDataset );
   for ( int i = 1; i <= bandCount; i++ )
   {
     GDALRasterBandH myGdalBand = GDALGetRasterBand( mGdalDataset, i );
@@ -2693,19 +2939,13 @@ void QgsGdalProvider::initBaseDataset()
     //QgsDebugMsg( QString( "mInternalNoDataValue[%1] = %2" ).arg( i - 1 ).arg( mInternalNoDataValue[i-1] ) );
   }
 
-  // Check if the dataset has a mask band, that applies to the whole dataset
-  // If so then expose it as an alpha band.
-  int nMaskFlags = GDALGetMaskFlags( myGDALBand );
-  if ( ( nMaskFlags == 0 && bandCount == 1 ) || nMaskFlags == GMF_PER_DATASET )
+  if ( mMaskBandExposedAsAlpha )
   {
-    mMaskBandExposedAsAlpha = true;
     mSrcNoDataValue.append( std::numeric_limits<double>::quiet_NaN() );
     mSrcHasNoDataValue.append( false );
     mUseSrcNoDataValue.append( false );
     mGdalDataType.append( GDT_Byte );
   }
-
-  mValid = true;
 }
 
 char **papszFromStringList( const QStringList &list )
@@ -2764,6 +3004,8 @@ QGISEXTERN QgsGdalProvider *create(
 bool QgsGdalProvider::write( void *data, int band, int width, int height, int xOffset, int yOffset )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return false;
 
   if ( !mGdalDataset )
   {
@@ -2780,6 +3022,8 @@ bool QgsGdalProvider::write( void *data, int band, int width, int height, int xO
 bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return false;
 
   if ( !mGdalDataset )
   {
@@ -2803,6 +3047,8 @@ bool QgsGdalProvider::setNoDataValue( int bandNo, double noDataValue )
 bool QgsGdalProvider::remove()
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return false;
 
   while ( *mpRefCounter != 1 )
   {
@@ -2993,6 +3239,8 @@ bool QgsGdalProvider::isEditable() const
 bool QgsGdalProvider::setEditable( bool enabled )
 {
   QMutexLocker locker( mpMutex );
+  if ( !initIfNeeded() )
+    return false;
 
   if ( enabled == mUpdate )
     return false;
@@ -3031,6 +3279,8 @@ bool QgsGdalProvider::setEditable( bool enabled )
 GDALRasterBandH QgsGdalProvider::getBand( int bandNo ) const
 {
   QMutexLocker locker( mpMutex );
+  if ( !const_cast<QgsGdalProvider *>( this )->initIfNeeded() )
+    return nullptr;
 
   if ( mMaskBandExposedAsAlpha && bandNo == GDALGetRasterCount( mGdalDataset ) + 1 )
     return GDALGetMaskBand( GDALGetRasterBand( mGdalDataset, 1 ) );
