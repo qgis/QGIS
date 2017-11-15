@@ -714,7 +714,7 @@ bool QgsWFSSharedData::changeGeometryValues( const QgsGeometryMap &geometry_map 
   QgsChangedAttributesMap newChangedAttrMap;
   for ( QgsGeometryMap::const_iterator iter = geometry_map.constBegin(); iter != geometry_map.constEnd(); ++iter )
   {
-    QByteArray wkb = iter->exportToWkb();
+    QByteArray wkb = iter->asWkb();
     if ( !wkb.isEmpty() )
     {
       QgsAttributeMap newAttrMap;
@@ -850,7 +850,7 @@ void QgsWFSSharedData::serializeFeatures( QVector<QgsWFSFeatureGmlIdPair> &featu
     QgsGeometry geometry = gmlFeature.geometry();
     if ( !mGeometryAttribute.isEmpty() && !geometry.isNull() )
     {
-      QByteArray array( geometry.exportToWkb() );
+      QByteArray array( geometry.asWkb() );
 
       cachedFeature.setAttribute( hexwkbGeomIdx, QVariant( QString( array.toHex().data() ) ) );
 

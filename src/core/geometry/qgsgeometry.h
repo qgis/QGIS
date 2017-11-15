@@ -1107,23 +1107,19 @@ class CORE_EXPORT QgsGeometry
      * Export the geometry to WKB
      * \since QGIS 3.0
      */
-    QByteArray exportToWkb() const;
+    QByteArray asWkb() const;
 
     /**
      * Exports the geometry to WKT
      * \note precision parameter added in QGIS 2.4
      * \returns true in case of success and false else
      */
-    QString exportToWkt( int precision = 17 ) const;
+    QString asWkt( int precision = 17 ) const;
 
     /**
-     * Exports the geometry to GeoJSON
-     * \returns a QString representing the geometry as GeoJSON
-     * \since QGIS 1.8
-     * \note Available in Python bindings since QGIS 1.9
-     * \note precision parameter added in QGIS 2.4
+     * Exports the geometry to a GeoJSON string.
      */
-    QString exportToGeoJSON( int precision = 17 ) const;
+    QString asJson( int precision = 17 ) const;
 
     /**
      * Try to convert the geometry to the requested type

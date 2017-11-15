@@ -2912,7 +2912,7 @@ QgsGeometry QgsPalLabeling::prepareGeometry( const QgsGeometry &geometry, QgsRen
 
     if ( geom.rotate( m2p.mapRotation(), center ) )
     {
-      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom.exportToWkt() ) );
+      QgsDebugMsg( QString( "Error rotating geometry" ).arg( geom.asWkt() ) );
       return QgsGeometry();
     }
   }

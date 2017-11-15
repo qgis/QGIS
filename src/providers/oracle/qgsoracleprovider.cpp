@@ -1813,7 +1813,7 @@ void QgsOracleProvider::appendGeomParam( const QgsGeometry &geom, QSqlQuery &qry
 {
   QOCISpatialGeometry g;
 
-  QByteArray wkb = geom.exportToWkb();
+  QByteArray wkb = geom.asWkb();
 
   wkbPtr ptr;
   ptr.ucPtr = !geom.isEmpty() ? reinterpret_cast< unsigned char * >( const_cast<char *>( wkb.constData() ) ) : 0;

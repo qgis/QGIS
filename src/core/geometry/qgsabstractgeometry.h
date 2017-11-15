@@ -196,7 +196,7 @@ class CORE_EXPORT QgsAbstractGeometry
      * \see asWkt
      * \see asGML2
      * \see asGML3
-     * \see asJSON
+     * \see asJson()
      * \since QGIS 3.0
      */
     virtual QByteArray asWkb() const = 0;
@@ -204,10 +204,10 @@ class CORE_EXPORT QgsAbstractGeometry
     /**
      * Returns a WKT representation of the geometry.
      * \param precision number of decimal places for coordinates
-     * \see asWkb
-     * \see asGML2
-     * \see asGML3
-     * \see asJSON
+     * \see asWkb()
+     * \see asGml2()
+     * \see asGml3()
+     * \see asJson()
      */
     virtual QString asWkt( int precision = 17 ) const = 0;
 
@@ -216,34 +216,34 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param doc DOM document
      * \param precision number of decimal places for coordinates
      * \param ns XML namespace
-     * \see asWkb
-     * \see asWkt
-     * \see asGML3
-     * \see asJSON
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml3()
+     * \see asJson()
      */
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /**
      * Returns a GML3 representation of the geometry.
      * \param doc DOM document
      * \param precision number of decimal places for coordinates
      * \param ns XML namespace
-     * \see asWkb
-     * \see asWkt
-     * \see asGML2
-     * \see asJSON
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml2()
+     * \see asJson()
      */
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 
     /**
      * Returns a GeoJSON representation of the geometry.
      * \param precision number of decimal places for coordinates
-     * \see asWkb
-     * \see asWkt
-     * \see asGML2
-     * \see asGML3
+     * \see asWkb()
+     * \see asWkt()
+     * \see asGml2()
+     * \see asGml3()
      */
-    virtual QString asJSON( int precision = 17 ) const = 0;
+    virtual QString asJson( int precision = 17 ) const = 0;
 
     //render pipeline
 

@@ -39,7 +39,7 @@ namespace QTest
   // pretty printing of geometries in comparison tests
   template<> char *toString( const QgsGeometry &geom )
   {
-    QByteArray ba = geom.exportToWkt().toAscii();
+    QByteArray ba = geom.asWkt().toAscii();
     return qstrdup( ba.data() );
   }
 }

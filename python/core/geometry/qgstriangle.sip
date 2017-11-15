@@ -65,7 +65,7 @@ class QgsTriangle : QgsPolygon
     virtual bool fromWkt( const QString &wkt );
 
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
 
     virtual QgsPolygon *surfaceToPolygon() const /Factory/;

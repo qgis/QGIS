@@ -111,11 +111,10 @@ Sets the x and y value of the point
  :rtype: str
 %End
 
-    QString wellKnownText() const;
+    QString asWkt() const;
 %Docstring
- Return the well known text representation for the point.
+ Return the well known text representation for the point (e.g. "POINT(x y)").
  The wkt is created without an SRID.
- :return: Well known text in the form POINT(x y)
  :rtype: str
 %End
 

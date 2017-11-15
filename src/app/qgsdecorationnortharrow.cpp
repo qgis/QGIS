@@ -127,7 +127,7 @@ void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRend
         {
           mRotationInt = QgsBearingUtils:: bearingTrueNorth( mapSettings.destinationCrs(), context.extent().center() );
         }
-        catch ( QgsException &e )
+        catch ( QgsException & )
         {
           mRotationInt = 0.0;
           //QgsDebugMsg( "Can not get direction to true north. Probably project CRS is not defined." );

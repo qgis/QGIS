@@ -393,7 +393,7 @@ bool QgsOracleFeatureIterator::fetchFeature( QgsFeature &feature )
         {
           QgsGeometry g;
           g.fromWkb( ba );
-          v = g.exportToWkt();
+          v = g.asWkt();
         }
         else
         {

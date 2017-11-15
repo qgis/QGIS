@@ -1377,7 +1377,7 @@ void QgsOfflineEditing::committedGeometriesChanges( const QString &qgisLayerId, 
                   .arg( layerId )
                   .arg( commitNo )
                   .arg( fid )
-                  .arg( geom.exportToWkt() );
+                  .arg( geom.asWkt() );
     sqlExec( database.get(), sql );
 
     // TODO: use WKB instead of WKT?

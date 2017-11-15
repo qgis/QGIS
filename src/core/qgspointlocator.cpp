@@ -331,7 +331,7 @@ static QgsPointLocator::MatchList _geometrySegmentsInRect( QgsGeometry *geom, co
   // we need iterator for segments...
 
   QgsPointLocator::MatchList lst;
-  QByteArray wkb( geom->exportToWkb() );
+  QByteArray wkb( geom->asWkb() );
   if ( wkb.isEmpty() )
     return lst;
 

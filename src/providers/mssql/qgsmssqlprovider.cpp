@@ -1004,7 +1004,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
       QgsGeometry geom = it->geometry();
       if ( mUseWkb )
       {
-        QByteArray bytea = geom.exportToWkb();
+        QByteArray bytea = geom.asWkb();
         query.addBindValue( bytea, QSql::In | QSql::Binary );
       }
       else
@@ -1014,7 +1014,7 @@ bool QgsMssqlProvider::addFeatures( QgsFeatureList &flist, Flags flags )
         {
           // Z and M on the end of a WKT string isn't valid for
           // SQL Server so we have to remove it first.
-          wkt = geom.exportToWkt();
+          wkt = geom.asWkt();
           wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );
         }
         query.addBindValue( wkt );
@@ -1343,12 +1343,12 @@ bool QgsMssqlProvider::changeGeometryValues( const QgsGeometryMap &geometry_map 
     // add geometry param
     if ( mUseWkb )
     {
-      QByteArray bytea = it->exportToWkb();
+      QByteArray bytea = it->asWkb();
       query.addBindValue( bytea, QSql::In | QSql::Binary );
     }
     else
     {
-      QString wkt = it->exportToWkt();
+      QString wkt = it->asWkt();
       // Z and M on the end of a WKT string isn't valid for
       // SQL Server so we have to remove it first.
       wkt.replace( QRegExp( "[mzMZ]+\\s*\\(" ), QStringLiteral( "(" ) );

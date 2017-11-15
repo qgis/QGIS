@@ -107,7 +107,7 @@ class TestQgsFeatureSource(unittest.TestCase):
         new_features = {f[0]: f for f in new_layer.getFeatures()}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
-            self.assertEqual(new_features[id].geometry().exportToWkt(), f.geometry().exportToWkt())
+            self.assertEqual(new_features[id].geometry().asWkt(), f.geometry().asWkt())
 
         # materialize with no geometry
         request = QgsFeatureRequest().setFlags(QgsFeatureRequest.NoGeometry)
@@ -136,7 +136,7 @@ class TestQgsFeatureSource(unittest.TestCase):
                              5: 'Point (0 -0)'}
         for id, f in original_features.items():
             self.assertEqual(new_features[id].attributes(), f.attributes())
-            self.assertEqual(new_features[id].geometry().exportToWkt(0), expected_geometry[id])
+            self.assertEqual(new_features[id].geometry().asWkt(0), expected_geometry[id])
 
         # materialize with attribute subset
         request = QgsFeatureRequest().setSubsetOfAttributes([0, 2])

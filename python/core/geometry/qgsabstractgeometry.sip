@@ -166,7 +166,7 @@ class QgsAbstractGeometry
 .. seealso:: asWkt
 .. seealso:: asGML2
 .. seealso:: asGML3
-.. seealso:: asJSON
+.. seealso:: asJson()
 .. versionadded:: 3.0
  :rtype: QByteArray
 %End
@@ -175,47 +175,47 @@ class QgsAbstractGeometry
 %Docstring
  Returns a WKT representation of the geometry.
  \param precision number of decimal places for coordinates
-.. seealso:: asWkb
-.. seealso:: asGML2
-.. seealso:: asGML3
-.. seealso:: asJSON
+.. seealso:: asWkb()
+.. seealso:: asGml2()
+.. seealso:: asGml3()
+.. seealso:: asJson()
  :rtype: str
 %End
 
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 %Docstring
  Returns a GML2 representation of the geometry.
  \param doc DOM document
  \param precision number of decimal places for coordinates
  \param ns XML namespace
-.. seealso:: asWkb
-.. seealso:: asWkt
-.. seealso:: asGML3
-.. seealso:: asJSON
+.. seealso:: asWkb()
+.. seealso:: asWkt()
+.. seealso:: asGml3()
+.. seealso:: asJson()
  :rtype: QDomElement
 %End
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 %Docstring
  Returns a GML3 representation of the geometry.
  \param doc DOM document
  \param precision number of decimal places for coordinates
  \param ns XML namespace
-.. seealso:: asWkb
-.. seealso:: asWkt
-.. seealso:: asGML2
-.. seealso:: asJSON
+.. seealso:: asWkb()
+.. seealso:: asWkt()
+.. seealso:: asGml2()
+.. seealso:: asJson()
  :rtype: QDomElement
 %End
 
-    virtual QString asJSON( int precision = 17 ) const = 0;
+    virtual QString asJson( int precision = 17 ) const = 0;
 %Docstring
  Returns a GeoJSON representation of the geometry.
  \param precision number of decimal places for coordinates
-.. seealso:: asWkb
-.. seealso:: asWkt
-.. seealso:: asGML2
-.. seealso:: asGML3
+.. seealso:: asWkb()
+.. seealso:: asWkt()
+.. seealso:: asGml2()
+.. seealso:: asGml3()
  :rtype: str
 %End
 

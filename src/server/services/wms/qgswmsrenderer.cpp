@@ -1455,7 +1455,7 @@ namespace QgsWms
 
     if ( filterGeom )
     {
-      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( filterGeom->exportToWkt() ) );
+      fReq.setFilterExpression( QString( "intersects( $geometry, geom_from_wkt('%1') )" ).arg( filterGeom->asWkt() ) );
     }
 
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
@@ -1635,7 +1635,7 @@ namespace QgsWms
             }
             QDomElement geometryElement = infoDocument.createElement( QStringLiteral( "Attribute" ) );
             geometryElement.setAttribute( QStringLiteral( "name" ), QStringLiteral( "geometry" ) );
-            geometryElement.setAttribute( QStringLiteral( "value" ), geom.exportToWkt( getWMSPrecision() ) );
+            geometryElement.setAttribute( QStringLiteral( "value" ), geom.asWkt( getWMSPrecision() ) );
             geometryElement.setAttribute( QStringLiteral( "type" ), QStringLiteral( "derived" ) );
             featureElement.appendChild( geometryElement );
           }

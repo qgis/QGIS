@@ -36,9 +36,9 @@ class CORE_EXPORT QgsMultiPoint: public QgsGeometryCollection
     QgsMultiPoint *toCurveType() const override SIP_FACTORY;
     bool fromWkt( const QString &wkt ) override;
     void clear() override;
-    QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
-    QString asJSON( int precision = 17 ) const override;
+    QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const override;
+    QString asJson( int precision = 17 ) const override;
     int nCoordinates() const override;
     bool addGeometry( QgsAbstractGeometry *g SIP_TRANSFER ) override;
     bool insertGeometry( QgsAbstractGeometry *g SIP_TRANSFER, int index ) override;

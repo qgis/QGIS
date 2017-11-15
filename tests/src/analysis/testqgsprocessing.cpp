@@ -2064,7 +2064,7 @@ void TestQgsProcessing::parameterExtent()
   QGSCOMPARENEAR( ext.yMaximum(), 14.4, 0.001 );
 
   gExt = QgsProcessingParameters::parameterAsExtentGeometry( def.get(), params, context, QgsCoordinateReferenceSystem( "EPSG:3785" ) );
-  QCOMPARE( gExt.exportToWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
+  QCOMPARE( gExt.asWkt( 1 ), QStringLiteral( "Polygon ((11.1 12.2, 13.3 12.2, 13.3 14.4, 11.1 14.4, 11.1 12.2))" ) );
 
   p.setCrs( QgsCoordinateReferenceSystem( "EPSG:3785" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsExtentCrs( def.get(), params, context ).authid(), QStringLiteral( "EPSG:3785" ) );

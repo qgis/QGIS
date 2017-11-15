@@ -63,7 +63,7 @@ bool QgsMultiSurface::fromWkt( const QString &wkt )
                             QStringLiteral( "Polygon" ) );
 }
 
-QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiSurface::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   // GML2 does not support curves
   QDomElement elemMultiPolygon = doc.createElementNS( ns, QStringLiteral( "MultiPolygon" ) );
@@ -78,7 +78,7 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
       std::unique_ptr< QgsPolygon > polygon( static_cast<const QgsSurface *>( geom )->surfaceToPolygon() );
 
       QDomElement elemPolygonMember = doc.createElementNS( ns, QStringLiteral( "polygonMember" ) );
-      elemPolygonMember.appendChild( polygon->asGML2( doc, precision, ns ) );
+      elemPolygonMember.appendChild( polygon->asGml2( doc, precision, ns ) );
       elemMultiPolygon.appendChild( elemPolygonMember );
     }
   }
@@ -86,7 +86,7 @@ QDomElement QgsMultiSurface::asGML2( QDomDocument &doc, int precision, const QSt
   return elemMultiPolygon;
 }
 
-QDomElement QgsMultiSurface::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiSurface::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiSurface = doc.createElementNS( ns, QStringLiteral( "MultiSurface" ) );
 
@@ -98,7 +98,7 @@ QDomElement QgsMultiSurface::asGML3( QDomDocument &doc, int precision, const QSt
     if ( qgsgeometry_cast<const QgsSurface *>( geom ) )
     {
       QDomElement elemSurfaceMember = doc.createElementNS( ns, QStringLiteral( "surfaceMember" ) );
-      elemSurfaceMember.appendChild( geom->asGML3( doc, precision, ns ) );
+      elemSurfaceMember.appendChild( geom->asGml3( doc, precision, ns ) );
       elemMultiSurface.appendChild( elemSurfaceMember );
     }
   }
@@ -106,7 +106,7 @@ QDomElement QgsMultiSurface::asGML3( QDomDocument &doc, int precision, const QSt
   return elemMultiSurface;
 }
 
-QString QgsMultiSurface::asJSON( int precision ) const
+QString QgsMultiSurface::asJson( int precision ) const
 {
   // GeoJSON does not support curves
   QString json = QStringLiteral( "{\"type\": \"MultiPolygon\", \"coordinates\": [" );

@@ -55,7 +55,7 @@ bool QgsMultiLineString::fromWkt( const QString &wkt )
   return fromCollectionWkt( wkt, QVector<QgsAbstractGeometry *>() << new QgsLineString, QStringLiteral( "LineString" ) );
 }
 
-QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiLineString::asGml2( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiLineString = doc.createElementNS( ns, QStringLiteral( "MultiLineString" ) );
 
@@ -67,7 +67,7 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const 
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
       QDomElement elemLineStringMember = doc.createElementNS( ns, QStringLiteral( "lineStringMember" ) );
-      elemLineStringMember.appendChild( lineString->asGML2( doc, precision, ns ) );
+      elemLineStringMember.appendChild( lineString->asGml2( doc, precision, ns ) );
       elemMultiLineString.appendChild( elemLineStringMember );
     }
   }
@@ -75,7 +75,7 @@ QDomElement QgsMultiLineString::asGML2( QDomDocument &doc, int precision, const 
   return elemMultiLineString;
 }
 
-QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const QString &ns ) const
+QDomElement QgsMultiLineString::asGml3( QDomDocument &doc, int precision, const QString &ns ) const
 {
   QDomElement elemMultiCurve = doc.createElementNS( ns, QStringLiteral( "MultiCurve" ) );
 
@@ -87,7 +87,7 @@ QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const 
     if ( const QgsLineString *lineString = qgsgeometry_cast<const QgsLineString *>( geom ) )
     {
       QDomElement elemCurveMember = doc.createElementNS( ns, QStringLiteral( "curveMember" ) );
-      elemCurveMember.appendChild( lineString->asGML3( doc, precision, ns ) );
+      elemCurveMember.appendChild( lineString->asGml3( doc, precision, ns ) );
       elemMultiCurve.appendChild( elemCurveMember );
     }
   }
@@ -95,7 +95,7 @@ QDomElement QgsMultiLineString::asGML3( QDomDocument &doc, int precision, const 
   return elemMultiCurve;
 }
 
-QString QgsMultiLineString::asJSON( int precision ) const
+QString QgsMultiLineString::asJson( int precision ) const
 {
   QString json = QStringLiteral( "{\"type\": \"MultiLineString\", \"coordinates\": [" );
   for ( const QgsAbstractGeometry *geom : mGeometries )

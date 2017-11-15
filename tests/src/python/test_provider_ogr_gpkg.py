@@ -91,7 +91,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         got_geom = got.geometry()
         reference = QgsGeometry.fromWkt('MultiPolygon (((0 0, 0 1, 1 1, 0 0)))')
         # The geometries must be binarily identical
-        self.assertEqual(got_geom.exportToWkb(), reference.exportToWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
+        self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.asWkt(), got_geom.asWkt()))
 
     def testCurveGeometryType(self):
 
@@ -109,7 +109,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         got_geom = got.geometry()
         reference = QgsGeometry.fromWkt('CurvePolygon (((0 0, 0 1, 1 1, 0 0)))')
         # The geometries must be binarily identical
-        self.assertEqual(got_geom.exportToWkb(), reference.exportToWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
+        self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.asWkt(), got_geom.asWkt()))
 
     def internalTestBug15351(self, orderClosing):
 
@@ -522,13 +522,13 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         got_geom = got.geometry()
         self.assertEqual(got['attr'], 100)
         reference = QgsGeometry.fromWkt('Point (4 4)')
-        self.assertEqual(got_geom.exportToWkb(), reference.exportToWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
+        self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.asWkt(), got_geom.asWkt()))
 
         got = [feat for feat in vl2.getFeatures()][0]
         got_geom = got.geometry()
         self.assertEqual(got['attr'], 101)
         reference = QgsGeometry.fromWkt('Point (5 5)')
-        self.assertEqual(got_geom.exportToWkb(), reference.exportToWkb(), 'Expected {}, got {}'.format(reference.exportToWkt(), got_geom.exportToWkt()))
+        self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.asWkt(), got_geom.asWkt()))
 
     def testGeopackageManyLayers(self):
         ''' test opening more than 64 layers without running out of Spatialite connections '''

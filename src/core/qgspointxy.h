@@ -153,11 +153,10 @@ class CORE_EXPORT QgsPointXY
     QString toString( int precision = 12 ) const;
 
     /**
-     * Return the well known text representation for the point.
+     * Return the well known text representation for the point (e.g. "POINT(x y)").
      * The wkt is created without an SRID.
-     * \returns Well known text in the form POINT(x y)
      */
-    QString wellKnownText() const;
+    QString asWkt() const;
 
     /**
      * Returns the squared distance between this point a specified x, y coordinate.

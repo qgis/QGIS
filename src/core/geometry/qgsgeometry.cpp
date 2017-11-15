@@ -1197,7 +1197,7 @@ bool QgsGeometry::crosses( const QgsGeometry &geometry ) const
   return geos.crosses( geometry.d->geometry.get(), &mLastError );
 }
 
-QString QgsGeometry::exportToWkt( int precision ) const
+QString QgsGeometry::asWkt( int precision ) const
 {
   if ( !d->geometry )
   {
@@ -1206,13 +1206,13 @@ QString QgsGeometry::exportToWkt( int precision ) const
   return d->geometry->asWkt( precision );
 }
 
-QString QgsGeometry::exportToGeoJSON( int precision ) const
+QString QgsGeometry::asJson( int precision ) const
 {
   if ( !d->geometry )
   {
     return QStringLiteral( "null" );
   }
-  return d->geometry->asJSON( precision );
+  return d->geometry->asJson( precision );
 }
 
 QgsGeometry QgsGeometry::convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart ) const
@@ -2081,7 +2081,7 @@ QgsGeometry QgsGeometry::extrude( double x, double y )
   return engine.extrude( x, y );
 }
 
-QByteArray QgsGeometry::exportToWkb() const
+QByteArray QgsGeometry::asWkb() const
 {
   return d->geometry ? d->geometry->asWkb() : QByteArray();
 }
@@ -3112,7 +3112,7 @@ QgsGeometryEngine *QgsGeometry::createGeometryEngine( const QgsAbstractGeometry 
 
 QDataStream &operator<<( QDataStream &out, const QgsGeometry &geometry )
 {
-  out << geometry.exportToWkb();
+  out << geometry.asWkb();
   return out;
 }
 

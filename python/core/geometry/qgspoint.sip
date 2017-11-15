@@ -34,10 +34,10 @@ class QgsPoint: QgsAbstractGeometry
 
  \code{.py}
    pt = QgsPoint(43.4, 5.3)
-   pt.exportToWkt() # Point(43.4 5.3)
+   pt.asWkt() # Point(43.4 5.3)
 
    pt_z = QgsPoint(120, 343, 77)
-   pt.exportToWkt() # PointZ(120 343 77)
+   pt.asWkt() # PointZ(120 343 77)
 
    pt_m = QgsPoint(33, 88, m=5)
    pt_m.m() # 5
@@ -349,11 +349,11 @@ class QgsPoint: QgsAbstractGeometry
 
     virtual QString asWkt( int precision = 17 ) const;
 
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QString asJSON( int precision = 17 ) const;
+    virtual QString asJson( int precision = 17 ) const;
 
     virtual void draw( QPainter &p ) const;
 

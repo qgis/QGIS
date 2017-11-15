@@ -272,7 +272,7 @@ void TestQgsGeometryImport::delimiters()
   QFETCH( QString, expected );
 
   QgsGeometry gInput = QgsGeometry::fromWkt( input );
-  QCOMPARE( gInput.exportToWkt(), expected );
+  QCOMPARE( gInput.asWkt(), expected );
 }
 
 QGSTEST_MAIN( TestQgsGeometryImport )

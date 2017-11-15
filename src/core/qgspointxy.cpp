@@ -49,7 +49,7 @@ QString QgsPointXY::toString( int precision ) const
   return QStringLiteral( "%1,%2" ).arg( x, y );
 }
 
-QString QgsPointXY::wellKnownText() const
+QString QgsPointXY::asWkt() const
 {
   return QStringLiteral( "POINT(%1 %2)" ).arg( qgsDoubleToString( mX ), qgsDoubleToString( mY ) );
 }

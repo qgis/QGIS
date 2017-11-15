@@ -82,7 +82,7 @@ class FeatureSourceTestCase(object):
             # field
             attrs[4] = str(attrs[4])
             attributes[f['pk']] = attrs
-            geometries[f['pk']] = f.hasGeometry() and f.geometry().exportToWkt()
+            geometries[f['pk']] = f.hasGeometry() and f.geometry().asWkt()
 
         expected_attributes = {5: [5, -200, NULL, 'NuLl', '5'],
                                3: [3, 300, 'Pear', 'PEaR', '3'],
@@ -98,7 +98,7 @@ class FeatureSourceTestCase(object):
         for f in extra_features:
             expected_attributes[f[0]] = f.attributes()
             if f.hasGeometry():
-                expected_geometries[f[0]] = f.geometry().exportToWkt()
+                expected_geometries[f[0]] = f.geometry().asWkt()
             else:
                 expected_geometries[f[0]] = None
 
@@ -110,7 +110,7 @@ class FeatureSourceTestCase(object):
                 expected_attributes[i][attr_idx] = v
         for i, g, in changed_geometries.items():
             if g:
-                expected_geometries[i] = g.exportToWkt()
+                expected_geometries[i] = g.asWkt()
             else:
                 expected_geometries[i] = None
 

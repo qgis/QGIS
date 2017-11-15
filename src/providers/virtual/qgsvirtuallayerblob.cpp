@@ -67,7 +67,7 @@ void qgsGeometryToSpatialiteBlob( const QgsGeometry &geom, int32_t srid, char *&
 {
   const int header_len = SpatialiteBlobHeader::LENGTH;
 
-  QByteArray wkb( geom.exportToWkb() );
+  QByteArray wkb( geom.asWkb() );
 
   const int wkb_size = wkb.length();
   size = header_len + wkb_size;

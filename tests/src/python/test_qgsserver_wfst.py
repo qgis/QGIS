@@ -201,8 +201,8 @@ class TestWFST(unittest.TestCase):
         """
         for f in features:
             wf = self._getFeatureByAttribute(wfs_layer, 'id', f['id'])
-            self.assertEqual(wf.geometry().exportToWkt(),
-                             f.geometry().exportToWkt())
+            self.assertEqual(wf.geometry().asWkt(),
+                             f.geometry().asWkt())
             self.assertEqual(f['name'], wf['name'])
 
     def _checkDeleteFeatures(self, layer, features):

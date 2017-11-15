@@ -453,6 +453,9 @@ QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
 - asWkb() returns QByteArray instead of new raw pointer
 - wkbSize() has been removed, use asWkb() to get length of returned QByteArray
 - fromWkb() gets the WKB pointer passed by reference instead of value, so that caller may to find out where the parsing ended
+- asGML2() was renamed to asGml2()
+- asGML3() was renamed to asGml3()
+- asJSON() was renamed to asJson()
 
 
 QgsActionManager        {#qgis_api_break_3_0_QgsActionManager}
@@ -1313,7 +1316,7 @@ can force a detach and full clone of the geometry, so it is preferable to use th
 method if the geometry is not being modified.
 - isEmpty() was renamed to isNull() to differentiate a missing geometry from a geometry which is empty (eg an
 empty geometry collection)
-- wkbSize() and asWkb() has been replaced by exportToWkb(). WKB representation is no longer cached within QgsGeometry
+- wkbSize() was removed. WKB representation is no longer cached within QgsGeometry
 - asGeos() has been replaced by exportToGeos(). GEOS representation is no longer cached within QgsGeometry
 - int addPart( const QList<QgsPoint> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPointsXY
 - int addPart( const QList<QgsPointV2> &points, QgsWkbTypes::GeometryType geomType ) has been renamed to addPoints
@@ -1333,6 +1336,8 @@ maintains Z or M dimensions from the input points and is more efficient.
 - fromMultiPolyline() was renamed to fromMultiPolylineXY()
 - fromPolygon() was renamed to fromPolygonXY()
 - fromMultiPolygon() was renamed to fromMultiPolygonXY()
+- exportToWkt() was renamed to asWkt()
+- exportToGeoJSON() was renamed to asJson()
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}
@@ -1964,6 +1969,7 @@ QgsPoint   {#qgis_api_break_3_0_QgsPoint}
 
 - onSegment() has been removed. Use sqrDistToSegment() instead for a more precise test.
 - toDegreesMinutesSeconds() and toDegreesMinutes() have been removed. Use QgsCoordinateFormatter instead.
+- wellKnownText() was renamed to asWkt()
 
 
 QgsPointDisplacementRenderer        {#qgis_api_break_3_0_QgsPointDisplacementRenderer}

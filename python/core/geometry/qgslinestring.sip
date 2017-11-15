@@ -189,11 +189,11 @@ Closes the line string by appending the first point to the end of the line, if i
 
     virtual QString asWkt( int precision = 17 ) const;
 
-    virtual QDomElement asGML2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QDomElement asGML3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
+    virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const;
 
-    virtual QString asJSON( int precision = 17 ) const;
+    virtual QString asJson( int precision = 17 ) const;
 
 
     virtual double length() const;
