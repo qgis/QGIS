@@ -5700,6 +5700,12 @@ void QgisApp::dxfExport()
     dxfExport.setLayerTitleAsName( d.layerTitleAsName() );
     dxfExport.setDestinationCrs( d.crs() );
     dxfExport.setForce2d( d.force2d() );
+
+    QgsDxfExport::Flags flags = 0;
+    if ( !d.useMText() )
+      flags = flags | QgsDxfExport::FlagNoMText;
+    dxfExport.setFlags( flags );
+
     if ( mapCanvas() )
     {
       //extent

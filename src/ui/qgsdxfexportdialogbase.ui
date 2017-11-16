@@ -14,17 +14,10 @@
    <string>DXF Export</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
-   <item row="2" column="0">
-    <widget class="QLabel" name="mSymbologyScaleLabel">
+   <item row="1" column="0">
+    <widget class="QLabel" name="mSymbologyModeLabel">
      <property name="text">
-      <string>Symbology scale</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QToolButton" name="mFileSelectionButton">
-     <property name="text">
-      <string>…</string>
+      <string>Symbology mode</string>
      </property>
     </widget>
    </item>
@@ -32,6 +25,13 @@
     <widget class="QLabel" name="mSaveAsLabel">
      <property name="text">
       <string>Save as</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="2">
+    <widget class="QToolButton" name="mFileSelectionButton">
+     <property name="text">
+      <string>…</string>
      </property>
     </widget>
    </item>
@@ -54,12 +54,15 @@
      </item>
     </widget>
    </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="mSymbologyModeLabel">
+   <item row="2" column="0">
+    <widget class="QLabel" name="mSymbologyScaleLabel">
      <property name="text">
-      <string>Symbology mode</string>
+      <string>Symbology scale</string>
      </property>
     </widget>
+   </item>
+   <item row="3" column="1" colspan="2">
+    <widget class="QComboBox" name="mEncoding"/>
    </item>
    <item row="7" column="0" colspan="3">
     <widget class="QgsLayerTreeView" name="mTreeView">
@@ -81,8 +84,35 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="1" colspan="2">
-    <widget class="QComboBox" name="mEncoding"/>
+   <item row="5" column="1" colspan="2">
+    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+     <property name="focusPolicy">
+      <enum>Qt::StrongFocus</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="1" colspan="2">
+    <widget class="QComboBox" name="mVisibilityPresets"/>
+   </item>
+   <item row="15" column="0" colspan="3">
+    <widget class="QDialogButtonBox" name="buttonBox">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="standardButtons">
+      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QLineEdit" name="mFileLineEdit"/>
+   </item>
+   <item row="5" column="0">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>CRS</string>
+     </property>
+    </widget>
    </item>
    <item row="9" column="0" colspan="3">
     <layout class="QGridLayout" name="gridLayout_3">
@@ -115,28 +145,12 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="1">
-    <widget class="QLineEdit" name="mFileLineEdit"/>
-   </item>
-   <item row="11" column="0" colspan="3">
-    <widget class="QCheckBox" name="mMapExtentCheckBox">
+   <item row="3" column="0">
+    <widget class="QLabel" name="label">
      <property name="text">
-      <string>Export features intersecting the current map extent</string>
+      <string>Encoding</string>
      </property>
     </widget>
-   </item>
-   <item row="13" column="0" colspan="3">
-    <widget class="QDialogButtonBox" name="buttonBox">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
-     </property>
-     <property name="standardButtons">
-      <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
-     </property>
-    </widget>
-   </item>
-   <item row="4" column="1" colspan="2">
-    <widget class="QComboBox" name="mVisibilityPresets"/>
    </item>
    <item row="4" column="0">
     <widget class="QLabel" name="mSymbologyScaleLabel_2">
@@ -145,40 +159,53 @@
      </property>
     </widget>
    </item>
-   <item row="3" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Encoding</string>
-     </property>
-    </widget>
-   </item>
-   <item row="10" column="0" colspan="3">
-    <widget class="QCheckBox" name="mLayerTitleAsName">
-     <property name="text">
-      <string>Use layer title as name if set</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="0">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="5" column="1" colspan="2">
-    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
-   <item row="12" column="0" colspan="3">
-    <widget class="QCheckBox" name="mForce2d">
-     <property name="text">
-      <string>Force 2d output (eg. to support polyline width)</string>
-     </property>
-    </widget>
+   <item row="11" column="0" colspan="3">
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="1" column="0">
+      <widget class="QCheckBox" name="mMapExtentCheckBox">
+       <property name="text">
+        <string>Export features intersecting the current map extent</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="0">
+      <widget class="QCheckBox" name="mLayerTitleAsName">
+       <property name="text">
+        <string>Use layer title as name if set</string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="0">
+      <widget class="QCheckBox" name="mForce2d">
+       <property name="text">
+        <string>Force 2d output (eg. to support polyline width)</string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QCheckBox" name="mMTextCheckBox">
+       <property name="text">
+        <string>Export labels as MTEXT elements</string>
+       </property>
+       <property name="checked">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="2">
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
@@ -211,9 +238,6 @@
   <tabstop>mTreeView</tabstop>
   <tabstop>mSelectAllButton</tabstop>
   <tabstop>mDeselectAllButton</tabstop>
-  <tabstop>mLayerTitleAsName</tabstop>
-  <tabstop>mMapExtentCheckBox</tabstop>
-  <tabstop>mForce2d</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>
  <resources/>
