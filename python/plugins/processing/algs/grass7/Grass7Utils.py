@@ -133,8 +133,8 @@ class Grass7Utils(object):
         Find GRASS binary path on the operating system.
         Sets global variable Grass7Utils.command
         """
-        cmdList = ["grass73", "grass72", "grass71", "grass70", "grass",
-                   "grass73.sh", "grass72.sh", "grass71.sh", "grass70.sh", "grass.sh"]
+        cmdList = ["grass74", "grass72", "grass71", "grass70", "grass",
+                   "grass74.sh", "grass72.sh", "grass71.sh", "grass70.sh", "grass.sh"]
 
         def searchFolder(folder):
             """
