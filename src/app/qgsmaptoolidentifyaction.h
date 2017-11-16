@@ -83,6 +83,8 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
     virtual QGis::UnitType displayDistanceUnits() const override;
     virtual QgsUnitTypes::AreaUnit displayAreaUnits() const override;
     void setClickContextScope( const QgsPoint &point );
+
+    friend class TestQgsMapToolIdentifyAction;
 };
 
 #endif

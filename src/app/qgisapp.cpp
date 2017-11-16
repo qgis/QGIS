@@ -1190,6 +1190,8 @@ QgisApp::QgisApp()
   mLayerTreeView = new QgsLayerTreeView( this );
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mInfoBar = new QgsMessageBar( centralWidget() );
+  mPanelMenu = new QMenu( this );
+  mProgressBar = new QProgressBar( this );
   // More tests may need more members to be initialized
 }
 
