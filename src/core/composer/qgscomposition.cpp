@@ -927,8 +927,6 @@ bool QgsComposition::readXml( const QDomElement &compositionElem, const QDomDocu
     return false;
   }
 
-  setName( compositionElem.attribute( QStringLiteral( "name" ) ) );
-
   //create pages
   bool widthConversionOk, heightConversionOk;
   mPageWidth = compositionElem.attribute( QStringLiteral( "paperWidth" ) ).toDouble( &widthConversionOk );

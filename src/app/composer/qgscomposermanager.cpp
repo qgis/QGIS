@@ -192,6 +192,10 @@ void QgsComposerManager::mAddButton_clicked()
 {
   QFile templateFile;
   bool loadingTemplate = ( mTemplate->currentIndex() > 0 );
+  QDomDocument templateDoc;
+
+  QString currentTitle;
+
   if ( loadingTemplate )
   {
     if ( mTemplate->currentIndex() == 1 )
@@ -213,13 +217,20 @@ void QgsComposerManager::mAddButton_clicked()
       QMessageBox::warning( this, tr( "Template error" ), tr( "Error, could not read file" ) );
       return;
     }
+
+    if ( templateDoc.setContent( &templateFile, false ) )
+    {
+      QDomElement compositionElem = templateDoc.documentElement().firstChildElement( QStringLiteral( "Composition" ) );
+      if ( !compositionElem.isNull() )
+        currentTitle = compositionElem.attribute( "name" );
+    }
   }
 
   QgsComposer *newComposer = nullptr;
   bool loadedOK = false;
 
   QString title;
-  if ( !QgisApp::instance()->uniqueComposerTitle( this, title, true ) )
+  if ( !QgisApp::instance()->uniqueComposerTitle( this, title, true, currentTitle ) )
   {
     return;
   }
@@ -237,7 +248,6 @@ void QgsComposerManager::mAddButton_clicked()
 
   if ( loadingTemplate )
   {
-    QDomDocument templateDoc;
     if ( templateDoc.setContent( &templateFile, false ) )
     {
       loadedOK = newComposer->loadFromTemplate( templateDoc, true );
