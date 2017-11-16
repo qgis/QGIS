@@ -2,7 +2,7 @@
 """
 Tests for auth manager Basic Auth OGR connection credentials injection
 
-From build dir, run: ctest -R PyQgsAuthManagerOgrTest -V
+From build dir, run: ctest -R PyQgsAuthManagerOgr -V
 
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
