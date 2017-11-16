@@ -389,6 +389,16 @@ void QgsDxfExport::setMapSettings( const QgsMapSettings &settings )
   mMapSettings = settings;
 }
 
+void QgsDxfExport::setFlags( QgsDxfExport::Flags flags )
+{
+  mFlags = flags;
+}
+
+QgsDxfExport::Flags QgsDxfExport::flags() const
+{
+  return mFlags;
+}
+
 void QgsDxfExport::addLayers( const QList< QPair< QgsVectorLayer *, int > > &layers )
 {
   QList<QgsMapLayer *> layerList;
@@ -3633,6 +3643,7 @@ void QgsDxfExport::writeText( const QString &layer, const QString &text, const Q
   writeGroup( 1, text );
   writeGroup( 50, angle );
   writeGroup( 7, QStringLiteral( "STANDARD" ) ); // so far only support for standard font
+  writeGroup( 100, QStringLiteral( "AcDbText" ) );
 }
 
 void QgsDxfExport::writeMText( const QString &layer, const QString &text, const QgsPoint &pt, double width, double angle, const QColor &color )
@@ -4400,30 +4411,36 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
     }
   }
 
-  txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
-
-  if ( tmpLyr.format().font().underline() )
+  if ( mFlags & FlagNoMText )
   {
-    txt.prepend( "\\L" ).append( "\\l" );
+      writeText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
   }
-
-  if ( tmpLyr.format().font().overline() )
+  else
   {
-    txt.prepend( "\\O" ).append( "\\o" );
+    txt = txt.replace( wrapchr, QLatin1String( "\\P" ) );
+
+    if ( tmpLyr.format().font().underline() )
+    {
+      txt.prepend( "\\L" ).append( "\\l" );
+    }
+
+    if ( tmpLyr.format().font().overline() )
+    {
+      txt.prepend( "\\O" ).append( "\\o" );
+    }
+
+    if ( tmpLyr.format().font().strikeOut() )
+    {
+      txt.prepend( "\\K" ).append( "\\k" );
+    }
+
+    txt.prepend( QStringLiteral( "\\f%1|i%2|b%3;\\H%4;" )
+                 .arg( tmpLyr.format().font().family() )
+                 .arg( tmpLyr.format().font().italic() ? 1 : 0 )
+                 .arg( tmpLyr.format().font().bold() ? 1 : 0 )
+                 .arg( label->getHeight() / ( 1 + txt.count( QStringLiteral( "\\P" ) ) ) * 0.75 ) );
+    writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
   }
-
-  if ( tmpLyr.format().font().strikeOut() )
-  {
-    txt.prepend( "\\K" ).append( "\\k" );
-  }
-
-  txt.prepend( QStringLiteral( "\\f%1|i%2|b%3;\\H%4;" )
-               .arg( tmpLyr.format().font().family() )
-               .arg( tmpLyr.format().font().italic() ? 1 : 0 )
-               .arg( tmpLyr.format().font().bold() ? 1 : 0 )
-               .arg( label->getHeight() / ( 1 + txt.count( QStringLiteral( "\\P" ) ) ) * 0.75 ) );
-
-  writeMText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getWidth(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
 }
 
 
