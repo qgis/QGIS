@@ -949,9 +949,13 @@ void QgsSpatiaLiteProvider::loadFields()
       ;
     else
     {
+      int realFieldIndex = 0;
       for ( i = 1; i <= rows; i++ )
       {
         QString name = QString::fromUtf8( results[( i * columns ) + 1] );
+        if ( name.toLower() == mGeometryColumn )
+          continue;
+
         QString type = QString::fromUtf8( results[( i * columns ) + 2] ).toLower();
         QString pk = results[( i * columns ) + 5];
         if ( pk.toInt() != 0 )
@@ -962,17 +966,15 @@ void QgsSpatiaLiteProvider::loadFields()
             pkName = name;
           else
             pkName.clear();
-          mPrimaryKeyAttrs << i - 1;
+          mPrimaryKeyAttrs << realFieldIndex;
           QgsDebugMsg( "found primaryKey " + name );
         }
 
-        if ( name.toLower() != mGeometryColumn )
-        {
-          const TypeSubType fieldType = getVariantType( type );
-          mAttributeFields.append( QgsField( name, fieldType.first, type, 0, 0, QString(), fieldType.second ) );
-        }
+        const TypeSubType fieldType = getVariantType( type );
+        mAttributeFields.append( QgsField( name, fieldType.first, type, 0, 0, QString(), fieldType.second ) );
 
-        insertDefaultValue( i - 1, QString::fromUtf8( results[( i * columns ) + 4] ) );
+        insertDefaultValue( realFieldIndex, QString::fromUtf8( results[( i * columns ) + 4] ) );
+        realFieldIndex += 1;
       }
     }
     sqlite3_free_table( results );
