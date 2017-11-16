@@ -1014,9 +1014,10 @@ void QgsDxfExport::writeEntities()
         rblp = nullptr;
       }
     }
-    else
+    else if ( labeling )
     {
-      lp = new QgsDxfLabelProvider( vl, QString(), this, nullptr );
+      QgsPalLayerSettings settings = labeling->settings();
+      lp = new QgsDxfLabelProvider( vl, QString(), this, &settings );
       engine.addProvider( lp );
 
       if ( !lp->prepare( ctx, attributes ) )
