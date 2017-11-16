@@ -80,6 +80,52 @@ class QgsProcessingFeedback : QgsFeedback
 };
 
 
+class QgsProcessingMultiStepFeedback : QgsProcessingFeedback
+{
+%Docstring
+
+ Processing feedback object for multi-step operations.
+
+ A processing feedback object which proxies its calls to an underlying
+ feedback object, but scales overall progress reports to account
+ for a number of child steps which each report their own feedback.
+
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgsprocessingfeedback.h"
+%End
+  public:
+
+    QgsProcessingMultiStepFeedback( int steps, QgsProcessingFeedback *feedback );
+%Docstring
+ Constructor for QgsProcessingMultiStepFeedback, for a process with the specified
+ number of ``steps``. This feedback object will proxy calls
+ to the specified ``feedback`` object.
+%End
+
+    void setCurrentStep( int step );
+%Docstring
+ Sets the ``step`` which is being executed. This is used
+ to scale the current progress to account for progress through the overall process.
+%End
+
+    virtual void setProgressText( const QString &text );
+
+    virtual void reportError( const QString &error );
+
+    virtual void pushInfo( const QString &info );
+
+    virtual void pushCommandInfo( const QString &info );
+
+    virtual void pushDebugInfo( const QString &info );
+
+    virtual void pushConsoleInfo( const QString &info );
+
+
+};
+
 
 
 /************************************************************************
