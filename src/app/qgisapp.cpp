@@ -3891,19 +3891,32 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
       projectData.previewImagePath = mRecentProjects.at( idx ).previewImagePath;
   }
 
-  // If this file is already in the list, remove it
-  mRecentProjects.removeAll( projectData );
-
-  // Prepend this file to the list
-  mRecentProjects.prepend( projectData );
-
   // Count the number of pinned items, those shouldn't affect trimming
   int pinnedCount = 0;
+  int nonPinnedPos = 0;
+  bool pinnedTop = true;
   Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
   {
     if ( recentProject.pin )
+    {
       pinnedCount++;
+      if ( pinnedTop )
+      {
+        nonPinnedPos++;
+      }
+    }
+    else if ( pinnedTop )
+    {
+      pinnedTop = false;
+    }
   }
+
+  // If this file is already in the list, remove it
+  mRecentProjects.removeAll( projectData );
+
+  // Insert this file to the list
+  mRecentProjects.insert( projectData.pin ? 0 : nonPinnedPos, projectData );
+
   // Keep the list to 10 items by trimming excess off the bottom
   // And remove the associated image
   while ( mRecentProjects.count() > 10 + pinnedCount )
