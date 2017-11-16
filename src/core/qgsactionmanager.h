@@ -81,10 +81,10 @@ class CORE_EXPORT QgsActionManager
     /**
      * Does the given action.
      *
-     * @param actionId action id
-     * @param feature feature to run action for
-     * @param defaultValueIndex index of the field to be used if the action has a $currfield placeholder.
-     * @param scope expression context scope to add during expression evaluation
+     * @param index Index of the action
+     * @param feat Feature to run action for
+     * @param defaultValueIndex Index of the field to be used if the action has a $currfield placeholder.
+     * @param scope Expression context scope to add during expression evaluation
      *
      * @note available in python bindings as doActionFeature
      */
