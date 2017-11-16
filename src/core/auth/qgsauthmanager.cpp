@@ -319,6 +319,7 @@ bool QgsAuthManager::createConfigTables()
 
 bool QgsAuthManager::createCertTables()
 {
+  QMutexLocker locker( mMutex );
   // NOTE: these tables were added later, so IF NOT EXISTS is used
   QgsDebugMsg( "Creating cert tables in auth db" );
 
@@ -825,6 +826,7 @@ bool QgsAuthManager::hasConfigId( const QString &txt ) const
 
 QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QString &dataprovider )
 {
+  QMutexLocker locker( mMutex );
   QStringList providerAuthMethodsKeys;
   if ( !dataprovider.isEmpty() )
   {
@@ -869,6 +871,7 @@ QgsAuthMethodConfigsMap QgsAuthManager::availableAuthMethodConfigs( const QStrin
 
 void QgsAuthManager::updateConfigAuthMethods()
 {
+  QMutexLocker locker( mMutex );
   if ( isDisabled() )
     return;
 
@@ -978,6 +981,7 @@ QgsAuthMethod::Expansions QgsAuthManager::supportedAuthMethodExpansions( const Q
 
 bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
 {
+  QMutexLocker locker( mMutex );
   if ( !setMasterPassword( true ) )
     return false;
 
@@ -1054,6 +1058,7 @@ bool QgsAuthManager::storeAuthenticationConfig( QgsAuthMethodConfig &mconfig )
 
 bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &config )
 {
+  QMutexLocker locker( mMutex );
   if ( !setMasterPassword( true ) )
     return false;
 
@@ -1124,6 +1129,7 @@ bool QgsAuthManager::updateAuthenticationConfig( const QgsAuthMethodConfig &conf
 
 bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMethodConfig &mconfig, bool full )
 {
+  QMutexLocker locker( mMutex );
   if ( isDisabled() )
     return false;
 
@@ -1190,6 +1196,7 @@ bool QgsAuthManager::loadAuthenticationConfig( const QString &authcfg, QgsAuthMe
 
 bool QgsAuthManager::removeAuthenticationConfig( const QString& authcfg )
 {
+  QMutexLocker locker( mMutex );
   if ( isDisabled() )
     return false;
 
@@ -1222,6 +1229,7 @@ bool QgsAuthManager::removeAuthenticationConfig( const QString& authcfg )
 
 bool QgsAuthManager::removeAllAuthenticationConfigs()
 {
+  QMutexLocker locker( mMutex );
   if ( isDisabled() )
     return false;
 
@@ -1242,6 +1250,7 @@ bool QgsAuthManager::removeAllAuthenticationConfigs()
 
 bool QgsAuthManager::backupAuthenticationDatabase( QString *backuppath )
 {
+  QMutexLocker locker( mMutex );
   if ( !QFile::exists( authenticationDbPath() ) )
   {
     const char* err = QT_TR_NOOP( "No authentication database found" );
@@ -1277,6 +1286,7 @@ bool QgsAuthManager::backupAuthenticationDatabase( QString *backuppath )
 
 bool QgsAuthManager::eraseAuthenticationDatabase( bool backup, QString *backuppath )
 {
+  QMutexLocker locker( mMutex );
   if ( isDisabled() )
     return false;
 
@@ -1474,6 +1484,7 @@ bool QgsAuthManager::storeAuthSetting( const QString &key, const QVariant& value
 
 QVariant QgsAuthManager::getAuthSetting( const QString &key, const QVariant& defaultValue, bool decrypt )
 {
+  QMutexLocker locker( mMutex );
   if ( key.isEmpty() )
     return QVariant();
 
@@ -1516,6 +1527,7 @@ QVariant QgsAuthManager::getAuthSetting( const QString &key, const QVariant& def
 
 bool QgsAuthManager::existsAuthSetting( const QString& key )
 {
+  QMutexLocker locker( mMutex );
   if ( key.isEmpty() )
     return false;
 
@@ -1548,6 +1560,7 @@ bool QgsAuthManager::existsAuthSetting( const QString& key )
 
 bool QgsAuthManager::removeAuthSetting( const QString& key )
 {
+  QMutexLocker locker( mMutex );
   if ( key.isEmpty() )
     return false;
 
@@ -1578,6 +1591,7 @@ bool QgsAuthManager::removeAuthSetting( const QString& key )
 
 bool QgsAuthManager::initSslCaches()
 {
+  QMutexLocker locker( mMutex );
   bool res = true;
   res = res && rebuildCaCertsCache();
   res = res && rebuildCertTrustCache();
@@ -1590,6 +1604,7 @@ bool QgsAuthManager::initSslCaches()
 
 bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslKey &key )
 {
+  QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
     QgsDebugMsg( "Passed certificate is null" );
@@ -1633,6 +1648,7 @@ bool QgsAuthManager::storeCertIdentity( const QSslCertificate &cert, const QSslK
 
 const QSslCertificate QgsAuthManager::getCertIdentity( const QString &id )
 {
+  QMutexLocker locker( mMutex );
   QSslCertificate emptycert;
   QSslCertificate cert;
   if ( id.isEmpty() )
@@ -1666,6 +1682,7 @@ const QSslCertificate QgsAuthManager::getCertIdentity( const QString &id )
 
 const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( const QString &id )
 {
+  QMutexLocker locker( mMutex );
   QPair<QSslCertificate, QSslKey> bundle;
   if ( id.isEmpty() )
     return bundle;
@@ -1720,6 +1737,7 @@ const QPair<QSslCertificate, QSslKey> QgsAuthManager::getCertIdentityBundle( con
 
 const QStringList QgsAuthManager::getCertIdentityBundleToPem( const QString &id )
 {
+  QMutexLocker locker( mMutex );
   QPair<QSslCertificate, QSslKey> bundle( getCertIdentityBundle( id ) );
   if ( bundle.first.isValid() && !bundle.second.isNull() )
   {
@@ -1730,6 +1748,7 @@ const QStringList QgsAuthManager::getCertIdentityBundleToPem( const QString &id 
 
 const QList<QSslCertificate> QgsAuthManager::getCertIdentities()
 {
+  QMutexLocker locker( mMutex );
   QList<QSslCertificate> certs;
 
   QSqlQuery query( authDbConnection() );
@@ -1751,6 +1770,7 @@ const QList<QSslCertificate> QgsAuthManager::getCertIdentities()
 
 QStringList QgsAuthManager::getCertIdentityIds() const
 {
+  QMutexLocker locker( mMutex );
   QStringList identityids = QStringList();
 
   if ( isDisabled() )
@@ -1776,6 +1796,7 @@ QStringList QgsAuthManager::getCertIdentityIds() const
 
 bool QgsAuthManager::existsCertIdentity( const QString &id )
 {
+  QMutexLocker locker( mMutex );
   if ( id.isEmpty() )
     return false;
 
@@ -1808,6 +1829,7 @@ bool QgsAuthManager::existsCertIdentity( const QString &id )
 
 bool QgsAuthManager::removeCertIdentity( const QString &id )
 {
+  QMutexLocker locker( mMutex );
   if ( id.isEmpty() )
   {
     QgsDebugMsg( "Passed bundle ID is empty" );
@@ -1835,6 +1857,7 @@ bool QgsAuthManager::removeCertIdentity( const QString &id )
 
 bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &config )
 {
+  QMutexLocker locker( mMutex );
   if ( config.isNull() )
   {
     QgsDebugMsg( "Passed config is null" );
@@ -1876,6 +1899,7 @@ bool QgsAuthManager::storeSslCertCustomConfig( const QgsAuthConfigSslServer &con
 
 const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QString &id, const QString &hostport )
 {
+  QMutexLocker locker( mMutex );
   QgsAuthConfigSslServer config;
 
   if ( id.isEmpty() || hostport.isEmpty() )
@@ -1917,6 +1941,7 @@ const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfig( const QStri
 
 const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfigByHost( const QString &hostport )
 {
+  QMutexLocker locker( mMutex );
   QgsAuthConfigSslServer config;
 
   if ( hostport.isEmpty() )
@@ -1957,6 +1982,7 @@ const QgsAuthConfigSslServer QgsAuthManager::getSslCertCustomConfigByHost( const
 
 const QList<QgsAuthConfigSslServer> QgsAuthManager::getSslCertCustomConfigs()
 {
+  QMutexLocker locker( mMutex );
   QList<QgsAuthConfigSslServer> configs;
 
   QSqlQuery query( authDbConnection() );
@@ -1983,6 +2009,7 @@ const QList<QgsAuthConfigSslServer> QgsAuthManager::getSslCertCustomConfigs()
 
 bool QgsAuthManager::existsSslCertCustomConfig( const QString &id , const QString &hostport )
 {
+  QMutexLocker locker( mMutex );
   if ( id.isEmpty() || hostport.isEmpty() )
   {
     QgsDebugMsg( "Passed config ID or host:port is empty" );
@@ -2020,6 +2047,7 @@ bool QgsAuthManager::existsSslCertCustomConfig( const QString &id , const QStrin
 
 bool QgsAuthManager::removeSslCertCustomConfig( const QString &id, const QString &hostport )
 {
+  QMutexLocker locker( mMutex );
   if ( id.isEmpty() || hostport.isEmpty() )
   {
     QgsDebugMsg( "Passed config ID or host:port is empty" );
@@ -2055,6 +2083,7 @@ bool QgsAuthManager::removeSslCertCustomConfig( const QString &id, const QString
 
 void QgsAuthManager::dumpIgnoredSslErrorsCache_()
 {
+  QMutexLocker locker( mMutex );
   if ( !mIgnoredSslErrorsCache.isEmpty() )
   {
     QgsDebugMsg( "Ignored SSL errors cache items:" );
@@ -2078,6 +2107,7 @@ void QgsAuthManager::dumpIgnoredSslErrorsCache_()
 
 bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigSslServer &config )
 {
+  QMutexLocker locker( mMutex );
   if ( config.isNull() )
   {
     QgsDebugMsg( "Passed config is null" );
@@ -2106,6 +2136,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCacheFromConfig( const QgsAuthConfigS
 
 bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, const QList<QSslError> &errors )
 {
+  QMutexLocker locker( mMutex );
   QRegExp rx( "\\S+:\\S+:\\d+" );
   if ( !rx.exactMatch( shahostport ) )
   {
@@ -2149,6 +2180,7 @@ bool QgsAuthManager::updateIgnoredSslErrorsCache( const QString &shahostport, co
 
 bool QgsAuthManager::rebuildIgnoredSslErrorCache()
 {
+  QMutexLocker locker( mMutex );
   QHash<QString, QSet<QSslError::SslError> > prevcache( mIgnoredSslErrorsCache );
   QHash<QString, QSet<QSslError::SslError> > nextcache;
 
@@ -2210,6 +2242,7 @@ bool QgsAuthManager::rebuildIgnoredSslErrorCache()
 
 bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
 {
+  QMutexLocker locker( mMutex );
   if ( certs.size() < 1 )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
@@ -2226,6 +2259,7 @@ bool QgsAuthManager::storeCertAuthorities( const QList<QSslCertificate> &certs )
 
 bool QgsAuthManager::storeCertAuthority( const QSslCertificate& cert )
 {
+  QMutexLocker locker( mMutex );
   // don't refuse !cert.isValid() (actually just expired) CAs,
   // as user may want to ignore that SSL connection error
   if ( cert.isNull() )
@@ -2261,6 +2295,7 @@ bool QgsAuthManager::storeCertAuthority( const QSslCertificate& cert )
 
 const QSslCertificate QgsAuthManager::getCertAuthority( const QString &id )
 {
+  QMutexLocker locker( mMutex );
   QSslCertificate emptycert;
   QSslCertificate cert;
   if ( id.isEmpty() )
@@ -2294,6 +2329,7 @@ const QSslCertificate QgsAuthManager::getCertAuthority( const QString &id )
 
 bool QgsAuthManager::existsCertAuthority( const QSslCertificate& cert )
 {
+  QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
     QgsDebugMsg( "Passed certificate is null" );
@@ -2331,6 +2367,7 @@ bool QgsAuthManager::existsCertAuthority( const QSslCertificate& cert )
 
 bool QgsAuthManager::removeCertAuthority( const QSslCertificate& cert )
 {
+  QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
     QgsDebugMsg( "Passed certificate is null" );
@@ -2370,6 +2407,7 @@ const QList<QSslCertificate> QgsAuthManager::getSystemRootCAs()
 
 const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
 {
+  QMutexLocker locker( mMutex );
   QList<QSslCertificate> certs;
   QList<QSslCertificate> filecerts;
   QVariant cafileval = QgsAuthManager::instance()->getAuthSetting( QString( "cafile" ) );
@@ -2403,6 +2441,7 @@ const QList<QSslCertificate> QgsAuthManager::getExtraFileCAs()
 
 const QList<QSslCertificate> QgsAuthManager::getDatabaseCAs()
 {
+  QMutexLocker locker( mMutex );
   QList<QSslCertificate> certs;
 
   QSqlQuery query( authDbConnection() );
@@ -2424,11 +2463,13 @@ const QList<QSslCertificate> QgsAuthManager::getDatabaseCAs()
 
 const QMap<QString, QSslCertificate> QgsAuthManager::getMappedDatabaseCAs()
 {
+  QMutexLocker locker( mMutex );
   return QgsAuthCertUtils::mapDigestToCerts( getDatabaseCAs() );
 }
 
 bool QgsAuthManager::rebuildCaCertsCache()
 {
+  QMutexLocker locker( mMutex );
   mCaCertsCache.clear();
   // in reverse order of precedence, with regards to duplicates, so QMap inserts overwrite
   insertCaCertInCache( QgsAuthCertUtils::SystemRoot, getSystemRootCAs() );
@@ -2442,6 +2483,7 @@ bool QgsAuthManager::rebuildCaCertsCache()
 
 bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthCertUtils::CertTrustPolicy policy )
 {
+  QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
     QgsDebugMsg( "Passed certificate is null" );
@@ -2480,6 +2522,7 @@ bool QgsAuthManager::storeCertTrustPolicy( const QSslCertificate &cert, QgsAuthC
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSslCertificate &cert )
 {
+  QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
     QgsDebugMsg( "Passed certificate is null" );
@@ -2517,6 +2560,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertTrustPolicy( const QSsl
 
 bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &certs )
 {
+  QMutexLocker locker( mMutex );
   if ( certs.size() < 1 )
   {
     QgsDebugMsg( "Passed certificate list has no certs" );
@@ -2533,6 +2577,7 @@ bool QgsAuthManager::removeCertTrustPolicies( const QList<QSslCertificate> &cert
 
 bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
 {
+  QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
     QgsDebugMsg( "Passed certificate is null" );
@@ -2563,6 +2608,7 @@ bool QgsAuthManager::removeCertTrustPolicy( const QSslCertificate &cert )
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::getCertificateTrustPolicy( const QSslCertificate &cert )
 {
+  QMutexLocker locker( mMutex );
   if ( cert.isNull() )
   {
     return QgsAuthCertUtils::NoPolicy;
@@ -2596,6 +2642,7 @@ bool QgsAuthManager::setDefaultCertTrustPolicy( QgsAuthCertUtils::CertTrustPolic
 
 QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
 {
+  QMutexLocker locker( mMutex );
   QVariant policy( getAuthSetting( "certdefaulttrust" ) );
   if ( policy.isNull() )
   {
@@ -2606,6 +2653,7 @@ QgsAuthCertUtils::CertTrustPolicy QgsAuthManager::defaultCertTrustPolicy()
 
 bool QgsAuthManager::rebuildCertTrustCache()
 {
+  QMutexLocker locker( mMutex );
   mCertTrustCache.clear();
 
   QSqlQuery query( authDbConnection() );
@@ -2639,6 +2687,7 @@ bool QgsAuthManager::rebuildCertTrustCache()
 
 const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinvalid )
 {
+  QMutexLocker locker( mMutex );
   QgsAuthCertUtils::CertTrustPolicy defaultpolicy( defaultCertTrustPolicy() );
   QStringList trustedids = mCertTrustCache.value( QgsAuthCertUtils::Trusted );
   QStringList untrustedids = mCertTrustCache.value( QgsAuthCertUtils::Untrusted );
@@ -2672,6 +2721,7 @@ const QList<QSslCertificate> QgsAuthManager::getTrustedCaCerts( bool includeinva
 
 const QList<QSslCertificate> QgsAuthManager::getUntrustedCaCerts( QList<QSslCertificate> trustedCAs )
 {
+  QMutexLocker locker( mMutex );
   if ( trustedCAs.isEmpty() )
   {
     if ( mTrustedCaCertsCache.isEmpty() )
@@ -2697,6 +2747,7 @@ const QList<QSslCertificate> QgsAuthManager::getUntrustedCaCerts( QList<QSslCert
 
 bool QgsAuthManager::rebuildTrustedCaCertsCache()
 {
+  QMutexLocker locker( mMutex );
   mTrustedCaCertsCache = getTrustedCaCerts();
   QgsDebugMsg( "Rebuilt trusted cert authorities cache" );
   // TODO: add some error trapping for the operation
@@ -2705,6 +2756,7 @@ bool QgsAuthManager::rebuildTrustedCaCertsCache()
 
 const QByteArray QgsAuthManager::getTrustedCaCertsPemText()
 {
+  QMutexLocker locker( mMutex );
   QByteArray capem;
   QList<QSslCertificate> certs( getTrustedCaCertsCache() );
   if ( !certs.isEmpty() )
