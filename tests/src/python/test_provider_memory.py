@@ -263,6 +263,16 @@ class TestPyQgsMemoryProvider(unittest.TestCase, ProviderTestCase):
         myProvider = myMemoryLayer.dataProvider()
         assert myProvider is not None
 
+    def testLengthPrecisionFromUri(self):
+        """Test we can assign length and precision from a uri"""
+        myMemoryLayer = QgsVectorLayer(
+            ('Point?crs=epsg:4326&field=size:double(12,9)&index=yes'),
+            'test',
+            'memory')
+
+        self.assertEqual(myMemoryLayer.fields().field('size').length(), 12)
+        self.assertEqual(myMemoryLayer.fields().field('size').precision(), 9)
+
     def testSaveFields(self):
         # Create a new memory layer with no fields
         myMemoryLayer = QgsVectorLayer(
