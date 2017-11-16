@@ -373,6 +373,8 @@ class CORE_EXPORT QgsAuthCertUtils
 
   private:
     static void appendDirSegment_( QStringList &dirname, const QString &segment, QString value );
+
+    static QSsl::EncodingFormat sniffEncoding( const QByteArray &payload );
 };
 
 #endif // QGSAUTHCERTUTILS_H

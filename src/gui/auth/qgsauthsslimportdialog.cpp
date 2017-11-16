@@ -369,7 +369,7 @@ void QgsAuthSslImportDialog::radioFileImportToggled( bool checked )
 
 void QgsAuthSslImportDialog::btnCertPath_clicked()
 {
-  const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "PEM (*.pem);;DER (*.der)" ) );
+  const QString &fn = getOpenFileName( tr( "Open Server Certificate File" ),  tr( "All files (*.*);;PEM (*.pem);;DER (*.der)" ) );
   if ( !fn.isEmpty() )
   {
     leCertPath->setText( fn );
