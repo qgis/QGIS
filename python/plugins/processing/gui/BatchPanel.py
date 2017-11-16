@@ -316,6 +316,8 @@ class BatchPanel(BASE, WIDGET):
             return param.setValue(widget.getValue())
         elif isinstance(param, ParameterGeometryPredicate):
             return param.setValue(widget.value())
+        elif isinstance(param, ParameterPoint):
+            return param.setValue(widget.getValue())
         else:
             return param.setValue(widget.text())
 
