@@ -84,6 +84,7 @@ namespace QgsWms
                                     const QgsLayerTreeGroup *layerTreeGroup,
                                     bool projectSettings );
 
+    void addKeywordListElement( const QgsProject *project, QDomDocument &doc, QDomElement &parent );
   }
 
   void writeGetCapabilities( QgsServerInterface *serverIface, const QgsProject *project,
@@ -225,8 +226,6 @@ namespace QgsWms
   QDomElement getServiceElement( QDomDocument &doc, const QgsProject *project, const QString &version,
                                  const QgsServerRequest &request )
   {
-    bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
-
     //Service element
     QDomElement serviceElem = doc.createElement( QStringLiteral( "Service" ) );
 
@@ -254,34 +253,7 @@ namespace QgsWms
       serviceElem.appendChild( abstractElem );
     }
 
-    QDomElement keywordsElem = doc.createElement( QStringLiteral( "KeywordList" ) );
-    //add default keyword
-    QDomElement keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
-    keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "ISO" ) );
-    QDomText keywordText = doc.createTextNode( QStringLiteral( "infoMapAccessService" ) );
-    keywordElem.appendChild( keywordText );
-    keywordsElem.appendChild( keywordElem );
-    serviceElem.appendChild( keywordsElem );
-    QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
-    if ( !keywords.isEmpty() )
-    {
-      for ( int i = 0; i < keywords.size(); ++i )
-      {
-        QString keyword = keywords.at( i );
-        if ( !keyword.isEmpty() )
-        {
-          keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
-          keywordText = doc.createTextNode( keyword );
-          keywordElem.appendChild( keywordText );
-          if ( sia2045 )
-          {
-            keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
-          }
-          keywordsElem.appendChild( keywordElem );
-        }
-      }
-      serviceElem.appendChild( keywordsElem );
-    }
+    addKeywordListElement( project, doc, serviceElem );
 
     QString onlineResource = QgsServerProjectUtils::owsServiceOnlineResource( *project );
     if ( onlineResource.isEmpty() )
@@ -770,6 +742,18 @@ namespace QgsWms
 
     QDomElement layerParentElem = doc.createElement( QStringLiteral( "Layer" ) );
 
+    // Root Layer title
+    QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
+    QDomText layerParentTitleText = doc.createTextNode( project->title() );
+    layerParentTitleElem.appendChild( layerParentTitleText );
+    layerParentElem.appendChild( layerParentTitleElem );
+
+    // Root Layer abstract
+    QDomElement layerParentAbstElem = doc.createElement( QStringLiteral( "Abstract" ) );
+    QDomText layerParentAbstText = doc.createTextNode( project->title() );
+    layerParentAbstElem.appendChild( layerParentAbstText );
+    layerParentElem.appendChild( layerParentAbstElem );
+
     // Root Layer name
     QDomElement layerParentNameElem = doc.createElement( QStringLiteral( "Name" ) );
     QString rootName = QgsServerProjectUtils::wmsRootName( *project );
@@ -785,11 +769,12 @@ namespace QgsWms
     }
     layerParentElem.appendChild( layerParentNameElem );
 
-    // Root Layer title
-    QDomElement layerParentTitleElem = doc.createElement( QStringLiteral( "Title" ) );
-    QDomText layerParentTitleText = doc.createTextNode( project->title() );
-    layerParentTitleElem.appendChild( layerParentTitleText );
-    layerParentElem.appendChild( layerParentTitleElem );
+    // Keyword list
+    addKeywordListElement( project, doc, layerParentElem );
+
+    // Metadata (empty but needed for OGC tests RECOMMENDATIONS)
+    QDomElement metaUrlElem = doc.createElement( QStringLiteral( "MetadataURL" ) );
+    layerParentElem.appendChild( metaUrlElem );
 
     // Root Layer tree name
     if ( projectSettings )
@@ -1734,6 +1719,35 @@ namespace QgsWms
       }
     }
 
+    void addKeywordListElement( const QgsProject *project, QDomDocument &doc, QDomElement &parent )
+    {
+      bool sia2045 = QgsServerProjectUtils::wmsInfoFormatSia2045( *project );
+
+      QDomElement keywordsElem = doc.createElement( QStringLiteral( "KeywordList" ) );
+      //add default keyword
+      QDomElement keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
+      keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "ISO" ) );
+      QDomText keywordText = doc.createTextNode( QStringLiteral( "infoMapAccessService" ) );
+      keywordElem.appendChild( keywordText );
+      keywordsElem.appendChild( keywordElem );
+      parent.appendChild( keywordsElem );
+      QStringList keywords = QgsServerProjectUtils::owsServiceKeywords( *project );
+      for ( const QString &keyword : qgis::as_const( keywords ) )
+      {
+        if ( !keyword.isEmpty() )
+        {
+          keywordElem = doc.createElement( QStringLiteral( "Keyword" ) );
+          keywordText = doc.createTextNode( keyword );
+          keywordElem.appendChild( keywordText );
+          if ( sia2045 )
+          {
+            keywordElem.setAttribute( QStringLiteral( "vocabulary" ), QStringLiteral( "SIA_Geo405" ) );
+          }
+          keywordsElem.appendChild( keywordElem );
+        }
+      }
+      parent.appendChild( keywordsElem );
+    }
   }
 
 
