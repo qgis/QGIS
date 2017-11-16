@@ -59,8 +59,6 @@ class QgsAuthPkiPathsMethod : public QgsAuthMethod
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 
-    QMutex mConfigMutex;
-
 };
 
 #endif // QGSAUTHPKIPATHSMETHOD_H

@@ -46,7 +46,7 @@ QString QgsExtractNodesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a line or polygon layer and generates a point layer with points representing the nodes in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to." ) +
          QStringLiteral( "\n\n" )  +
-         QObject::tr( "Additional fields are added to the nodes indicating the node index (beginning at 0), distance along original geometry and bisector angle of node for original geometry." );
+         QObject::tr( "Additional fields are added to the nodes indicating the node index (beginning at 0), the node’s part and its index within the part (as well as its ring for polygons), distance along original geometry and bisector angle of node for original geometry." );
 }
 
 QgsExtractNodesAlgorithm *QgsExtractNodesAlgorithm::createInstance() const
@@ -79,6 +79,12 @@ QVariantMap QgsExtractNodesAlgorithm::processAlgorithm( const QVariantMap &param
 
   QgsFields outputFields = featureSource->fields();
   outputFields.append( QgsField( QStringLiteral( "node_index" ), QVariant::Int, QString(), 10, 0 ) );
+  outputFields.append( QgsField( QStringLiteral( "node_part" ), QVariant::Int, QString(), 10, 0 ) );
+  if ( QgsWkbTypes::geometryType( featureSource->wkbType() ) == QgsWkbTypes::PolygonGeometry )
+  {
+    outputFields.append( QgsField( QStringLiteral( "node_part_ring" ), QVariant::Int, QString(), 10, 0 ) );
+  }
+  outputFields.append( QgsField( QStringLiteral( "node_part_index" ), QVariant::Int, QString(), 10, 0 ) );
   outputFields.append( QgsField( QStringLiteral( "distance" ), QVariant::Double, QString(), 20, 14 ) );
   outputFields.append( QgsField( QStringLiteral( "angle" ), QVariant::Double, QString(), 20, 14 ) );
 
@@ -115,6 +121,12 @@ QVariantMap QgsExtractNodesAlgorithm::processAlgorithm( const QVariantMap &param
         double angle = inputGeom.constGet()->vertexAngle( vertexId ) * 180 / M_PI;
         QgsAttributes attrs = f.attributes();
         attrs << vertexPos
+              << vertexId.part;
+        if ( QgsWkbTypes::geometryType( featureSource->wkbType() ) == QgsWkbTypes::PolygonGeometry )
+        {
+          attrs << vertexId.ring;
+        }
+        attrs << vertexId.vertex
               << cumulativeDistance
               << angle;
         QgsFeature outputFeature = QgsFeature();

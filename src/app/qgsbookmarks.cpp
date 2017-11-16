@@ -140,7 +140,7 @@ void QgsBookmarks::addClicked()
 
   QSqlQuery query( mQgisModel->database() );
   query.prepare( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
-                 "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)" );
+                 "  VALUES (NULL,:name,:project_name,:xmin,:ymin,:xmax,:ymax,:projection_srid)" );
 
   QString projStr( QLatin1String( "" ) );
   if ( QgsProject::instance() )
@@ -284,8 +284,8 @@ void QgsBookmarks::importFromXml()
     QDomElement name = bookmark.firstChildElement( QStringLiteral( "name" ) );
     QDomElement prjname = bookmark.firstChildElement( QStringLiteral( "project" ) );
     QDomElement xmin = bookmark.firstChildElement( QStringLiteral( "xmin" ) );
-    QDomElement xmax = bookmark.firstChildElement( QStringLiteral( "xmax" ) );
     QDomElement ymin = bookmark.firstChildElement( QStringLiteral( "ymin" ) );
+    QDomElement xmax = bookmark.firstChildElement( QStringLiteral( "xmax" ) );
     QDomElement ymax = bookmark.firstChildElement( QStringLiteral( "ymax" ) );
     QDomElement srid = bookmark.firstChildElement( QStringLiteral( "sr_id" ) );
 
@@ -674,7 +674,7 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
   else
   {
     QSqlQuery query( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
-                     "  VALUES (NULL,:name,:project_name,:xmin,:xmax,:ymin,:ymax,:projection_srid)",
+                     "  VALUES (NULL,:name,:project_name,:xmin,:ymin,:xmax,:ymax,:projection_srid)",
                      qgisModel->database() );
 
     query.bindValue( QStringLiteral( ":name" ), modelFrom.data( modelFrom.index( row, 1 ) ).toString() );

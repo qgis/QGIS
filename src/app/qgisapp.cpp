@@ -724,7 +724,13 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   connect( mMapCanvas, &QgsMapCanvas::messageEmitted, this, &QgisApp::displayMessage );
   mMapCanvas->setWhatsThis( tr( "Map canvas. This is where raster and vector "
                                 "layers are displayed when added to the map" ) );
-  mMapCanvas->setPreviewJobsEnabled( true );
+
+  if ( settings.value( QStringLiteral( "qgis/main_canvas_preview_jobs" ) ).isNull() )
+  {
+    // So that it appears in advanced settings
+    settings.setValue( QStringLiteral( "qgis/main_canvas_preview_jobs" ), true );
+  }
+  mMapCanvas->setPreviewJobsEnabled( settings.value( QStringLiteral( "qgis/main_canvas_preview_jobs" ), true ).toBool() );
 
   // set canvas color right away
   int myRed = settings.value( QStringLiteral( "qgis/default_canvas_color_red" ), 255 ).toInt();

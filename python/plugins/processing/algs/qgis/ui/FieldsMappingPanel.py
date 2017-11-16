@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Arnaud Morvan'
 __date__ = 'October 2014'
@@ -76,7 +75,8 @@ class FieldsMappingModel(QAbstractTableModel):
         (QVariant.Double, "Double"),
         (QVariant.Int, "Integer"),
         (QVariant.LongLong, "Integer64"),
-        (QVariant.String, "String")])
+        (QVariant.String, "String"),
+        (QVariant.Bool, "Boolean")])
 
     def __init__(self, parent=None):
         super(FieldsMappingModel, self).__init__(parent)

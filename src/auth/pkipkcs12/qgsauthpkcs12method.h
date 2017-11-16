@@ -60,7 +60,6 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 
-    QMutex mConfigMutex;
 };
 
 #endif // QGSAUTHPKCS12METHOD_H
