@@ -1319,23 +1319,27 @@ namespace QgsWms
           }
           else
           {
+            QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
+            if ( !rasterLayer )
+            {
+              break;
+            }
+            if ( !infoPoint )
+            {
+              break;
+            }
+            QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
+            if ( !rasterLayer->extent().contains( layerInfoPoint ) )
+            {
+              break;
+            }
             if ( infoFormat == QgsWmsParameters::Format::GML )
             {
               layerElement = result.createElement( QStringLiteral( "gml:featureMember" )/*wfs:FeatureMember*/ );
               getFeatureInfoElement.appendChild( layerElement );
             }
 
-            QgsRasterLayer *rasterLayer = qobject_cast<QgsRasterLayer *>( layer );
-            if ( rasterLayer )
-            {
-              if ( !infoPoint )
-              {
-                break;
-              }
-              QgsPointXY layerInfoPoint = mapSettings.mapToLayerCoordinates( layer, *( infoPoint.get() ) );
-              ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version );
-              break;
-            }
+            ( void )featureInfoFromRasterLayer( rasterLayer, mapSettings, &layerInfoPoint, result, layerElement, version );
           }
           break;
         }
