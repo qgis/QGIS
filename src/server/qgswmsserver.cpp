@@ -1832,26 +1832,26 @@ int QgsWMSServer::getFeatureInfo( QDomDocument& result, const QString& version )
       }
       else //raster layer
       {
+        QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer*>( currentLayer );
+        if ( !rasterLayer )
+        {
+          continue;
+        }
+        if ( !infoPoint.data() )
+        {
+          continue;
+        }
+        QgsPoint layerInfoPoint = mMapRenderer->mapToLayerCoordinates( currentLayer, *( infoPoint.data() ) );
+        if ( !rasterLayer->extent().contains( layerInfoPoint ) )
+        {
+          continue;
+        }
         if ( infoFormat.startsWith( "application/vnd.ogc.gml" ) )
         {
           layerElement = result.createElement( "gml:featureMember"/*wfs:FeatureMember*/ );
           getFeatureInfoElement.appendChild( layerElement );
         }
-
-        QgsRasterLayer* rasterLayer = qobject_cast<QgsRasterLayer*>( currentLayer );
-        if ( rasterLayer )
-        {
-          if ( !infoPoint.data() )
-          {
-            continue;
-          }
-          QgsPoint layerInfoPoint = mMapRenderer->mapToLayerCoordinates( currentLayer, *( infoPoint.data() ) );
-          if ( featureInfoFromRasterLayer( rasterLayer, &layerInfoPoint, result, layerElement, version, infoFormat ) != 0 )
-          {
-            continue;
-          }
-        }
-        else
+        if ( featureInfoFromRasterLayer( rasterLayer, &layerInfoPoint, result, layerElement, version, infoFormat ) != 0 )
         {
           continue;
         }
@@ -2563,17 +2563,36 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   if ( !identifyResult.isValid() )
     return 1;
 
-  QMap<int, QVariant> attributes = identifyResult.results();
+  QMap<int, QVariant> values = identifyResult.results();
   if ( infoFormat == "application/vnd.ogc.gml" )
   {
     QgsFeature feature;
     QgsFields fields;
-    feature.initAttributes( attributes.count() );
+    feature.initAttributes( values.count() );
     int index = 0;
-    for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+    Q_FOREACH ( int bandNo, values.keys() )
     {
-      fields.append( QgsField( layer->bandName( it.key() ), QVariant::Double ) );
-      feature.setAttribute( index++, QString::number( it.value().toDouble() ) );
+      if ( values.value( bandNo ).isNull() )
+      {
+        fields.append( QgsField( layer->bandName( bandNo ), QVariant::String ) );
+        feature.setAttribute( index++, "no data" );
+      }
+      else
+      {
+        QVariant value( values.value( bandNo ) );
+        fields.append( QgsField( layer->bandName( bandNo ), QVariant::Double ) );
+        // The cast is legit. Quoting QT doc :
+        // "Although this function is declared as returning QVariant::Type,
+        // the return value should be interpreted as QMetaType::Type"
+        if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::Float )
+        {
+          feature.setAttribute( index++, QString::number( value.toFloat() ) );
+        }
+        else
+        {
+          feature.setAttribute( index++, QString::number( value.toDouble() ) );
+        }
+      }
     }
     feature.setFields( fields );
 
@@ -2590,11 +2609,31 @@ int QgsWMSServer::featureInfoFromRasterLayer( QgsRasterLayer* layer,
   }
   else
   {
-    for ( QMap<int, QVariant>::const_iterator it = attributes.constBegin(); it != attributes.constEnd(); ++it )
+    Q_FOREACH ( int bandNo, values.keys() )
     {
+      QString valueString;
+      if ( values.value( bandNo ).isNull() )
+      {
+        valueString = "no data";
+      }
+      else
+      {
+        QVariant value( values.value( bandNo ) );
+        // The cast is legit. Quoting QT doc :
+        // "Although this function is declared as returning QVariant::Type,
+        // the return value should be interpreted as QMetaType::Type"
+        if ( static_cast<QMetaType::Type>( value.type() ) == QMetaType::Float )
+        {
+          valueString = QgsRasterBlock::printValue( value.toFloat() );
+        }
+        else
+        {
+          valueString = QgsRasterBlock::printValue( value.toDouble() );
+        }
+      }
       QDomElement attributeElement = infoDocument.createElement( "Attribute" );
-      attributeElement.setAttribute( "name", layer->bandName( it.key() ) );
-      attributeElement.setAttribute( "value", QString::number( it.value().toDouble() ) );
+      attributeElement.setAttribute( "name", layer->bandName( bandNo ) );
+      attributeElement.setAttribute( "value", valueString );
       layerElement.appendChild( attributeElement );
     }
   }
