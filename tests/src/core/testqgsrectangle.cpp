@@ -38,6 +38,7 @@ class TestQgsRectangle: public QObject
     void include();
     void buffered();
     void isFinite();
+    void combine();
     void dataStream();
 };
 
@@ -311,6 +312,25 @@ void TestQgsRectangle::isFinite()
   QVERIFY( !QgsRectangle( 1, std::numeric_limits<double>::quiet_NaN(), 3, 4 ).isFinite() );
   QVERIFY( !QgsRectangle( 1, 2, std::numeric_limits<double>::quiet_NaN(), 4 ).isFinite() );
   QVERIFY( !QgsRectangle( 1, 2, 3, std::numeric_limits<double>::quiet_NaN() ).isFinite() );
+}
+
+void TestQgsRectangle::combine()
+{
+  QgsRectangle rect;
+  // combine extent of null rectangle with valid rectangle
+  rect.combineExtentWith( QgsRectangle( 1, 2, 3, 4 ) );
+  QCOMPARE( rect.xMinimum(), 1.0 );
+  QCOMPARE( rect.yMinimum(), 2.0 );
+  QCOMPARE( rect.xMaximum(), 3.0 );
+  QCOMPARE( rect.yMaximum(), 4.0 );
+
+  // combine extent of valid rectangle with null rectangle
+  rect = QgsRectangle( 1, 2, 3, 4 );
+  rect.combineExtentWith( QgsRectangle() );
+  QCOMPARE( rect.xMinimum(), 1.0 );
+  QCOMPARE( rect.yMinimum(), 2.0 );
+  QCOMPARE( rect.xMaximum(), 3.0 );
+  QCOMPARE( rect.yMaximum(), 4.0 );
 }
 
 void TestQgsRectangle::dataStream()
