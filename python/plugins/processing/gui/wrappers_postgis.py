@@ -30,13 +30,12 @@ from qgis.PyQt.QtWidgets import QComboBox
 
 from processing.gui.wrappers import (
     WidgetWrapper,
-    ExpressionWidgetWrapperMixin,
     DIALOG_MODELER,
 )
 from processing.tools.postgis import GeoDB
 
 
-class ConnectionWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
+class ConnectionWidgetWrapper(WidgetWrapper):
     """
     WidgetWrapper for ParameterString that create and manage a combobox widget
     with existing postgis connections.
@@ -69,7 +68,7 @@ class ConnectionWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         return self.comboValue(combobox=self._combo)
 
 
-class SchemaWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
+class SchemaWidgetWrapper(WidgetWrapper):
     """
     WidgetWrapper for ParameterString that create and manage a combobox widget
     with existing schemas from a parent connection parameter.
@@ -141,7 +140,7 @@ class SchemaWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
         return self._database
 
 
-class TableWidgetWrapper(WidgetWrapper, ExpressionWidgetWrapperMixin):
+class TableWidgetWrapper(WidgetWrapper):
     """
     WidgetWrapper for ParameterString that create and manage a combobox widget
     with existing tables from a parent schema parameter.
