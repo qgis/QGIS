@@ -512,6 +512,9 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
         continue;
 
       QgsRectangle layerExtent = vl->extent();
+      if ( layerExtent.isEmpty() )
+        continue;
+
       layerExtent = mMapSettings.layerToMapCoordinates( vl, layerExtent );
 
       if ( mExtent.isEmpty() )
