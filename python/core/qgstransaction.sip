@@ -92,8 +92,7 @@ class QgsTransaction : QObject /Abstract/
 
     virtual bool executeSql( const QString &sql, QString &error /Out/, bool isDirty = false ) = 0;
 %Docstring
- Execute the ``sql`` string. The result must not be a tuple, so running a
- ``SELECT`` query will return an error.
+ Execute the ``sql`` string.
 
  \param sql The sql query to execute
  \param error The error message
