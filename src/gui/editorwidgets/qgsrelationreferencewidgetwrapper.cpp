@@ -145,23 +145,30 @@ void QgsRelationReferenceWidgetWrapper::foreignKeyChanged( QVariant value )
   emit valueChanged( value );
 }
 
-void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult status )
+void QgsRelationReferenceWidgetWrapper::updateConstraintWidgetStatus()
 {
   if ( mWidget )
   {
-    switch ( status )
+    if ( !constraintResultVisible() )
     {
-      case ConstraintResultPass:
-        mWidget->setStyleSheet( QString() );
-        break;
+      widget()->setStyleSheet( QString() );
+    }
+    else
+    {
+      switch ( constraintResult() )
+      {
+        case ConstraintResultPass:
+          mWidget->setStyleSheet( QString() );
+          break;
 
-      case ConstraintResultFailHard:
-        mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #dd7777; }" ) );
-        break;
+        case ConstraintResultFailHard:
+          mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #dd7777; }" ) );
+          break;
 
-      case ConstraintResultFailSoft:
-        mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #ffd85d; }" ) );
-        break;
+        case ConstraintResultFailSoft:
+          mWidget->setStyleSheet( QStringLiteral( ".QComboBox { background-color: #ffd85d; }" ) );
+          break;
+      }
     }
   }
 }

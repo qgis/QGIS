@@ -66,7 +66,7 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 
   protected:
 
-    void updateConstraintWidgetStatus( ConstraintResult status ) override;
+    void updateConstraintWidgetStatus() override;
 
   private:
     QgsRelationReferenceWidget *mWidget = nullptr;

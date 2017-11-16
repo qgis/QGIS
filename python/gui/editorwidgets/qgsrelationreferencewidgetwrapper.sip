@@ -51,7 +51,7 @@ class QgsRelationReferenceWidgetWrapper : QgsEditorWidgetWrapper
 
   protected:
 
-    virtual void updateConstraintWidgetStatus( ConstraintResult status );
+    virtual void updateConstraintWidgetStatus();
 
 
 };

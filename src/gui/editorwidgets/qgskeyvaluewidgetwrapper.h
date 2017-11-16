@@ -56,7 +56,7 @@ class GUI_EXPORT QgsKeyValueWidgetWrapper : public QgsEditorWidgetWrapper
     void onValueChanged();
 
   private:
-    void updateConstraintWidgetStatus( ConstraintResult status ) override;
+    void updateConstraintWidgetStatus() override;
 
     QgsKeyValueWidget *mWidget = nullptr;
 };

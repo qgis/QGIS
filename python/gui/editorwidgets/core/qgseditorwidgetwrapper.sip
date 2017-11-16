@@ -174,6 +174,32 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 .. versionadded:: 3.0
 %End
 
+    ConstraintResult constraintResult() const;
+%Docstring
+ Getter of constraintResult
+ It's the current result of the constraint on the widget influencing it's visualization.
+.. versionadded:: 3.0
+ :rtype: ConstraintResult
+%End
+
+    bool constraintResultVisible() const;
+%Docstring
+ Getter of constraintResultVisible
+ Defines if the constraint result should be visualized on the widget (with color).
+ This will be disabled when the form is not editable.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setConstraintResultVisible( bool constraintResultVisible );
+%Docstring
+ Setter of constraintResultVisible
+ Defines if the constraint result should be visualized on the widget (with color).
+ This will be disabled when the form is not editable.
+ \param constraintResultVisible if constraintResult should be displayed (mostly editable status)
+.. versionadded:: 3.0
+%End
+
   signals:
 
     void valueChanged( const QVariant &value );
@@ -191,6 +217,11 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
  \param desc is the constraint description
  \param err the error represented as a string. Empty if none.
  \param status
+%End
+
+    void constraintResultVisibleChanged( bool visible );
+%Docstring
+ Emit this signal when the constraint result visibility changed.
 %End
 
   public slots:
@@ -266,22 +297,9 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
  Will call the value() method to determine the emitted value
 %End
 
-    virtual void resetConstraintWidgetStatus( bool editable );
-%Docstring
- It cleans background color (and any other style) in case the feature is not
- editable. In case it is, it resets it to the stored constraint status.
-
- This could be overwritten in subclasses in case individual widgets need other
- behavior.
-
- \param editable if editable or not
-
-.. versionadded:: 3.0
-%End
-
   protected:
 
-    virtual void updateConstraintWidgetStatus( ConstraintResult status );
+    virtual void updateConstraintWidgetStatus();
 %Docstring
  This should update the widget with a visual cue if a constraint status
  changed.
@@ -291,8 +309,6 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 
  This can be overwritten in subclasses to allow individual widgets to
  change the visual cue.
-
- \param status The current constraint status.
 
 .. versionadded:: 2.16
 %End
