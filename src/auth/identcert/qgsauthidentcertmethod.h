@@ -59,7 +59,6 @@ class QgsAuthIdentCertMethod : public QgsAuthMethod
 
     static QMap<QString, QgsPkiConfigBundle *> sPkiConfigBundleCache;
 
-    QMutex mConfigMutex;
 };
 
 #endif // QGSAUTHIDENTCERTMETHOD_H
