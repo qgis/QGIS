@@ -501,7 +501,7 @@ int QgsDxfExport::writeToFile( QIODevice *d, const QString &encoding )
     return 1;
   }
 
-  if ( !d->isOpen() && !d->open( QIODevice::WriteOnly ) )
+  if ( !d->isOpen() && !d->open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return 2;
   }
@@ -4413,7 +4413,7 @@ void QgsDxfExport::drawLabel( const QString &layerId, QgsRenderContext &context,
 
   if ( mFlags & FlagNoMText )
   {
-      writeText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
+    writeText( dxfLayer, txt, QgsPoint( label->getX(), label->getY() ), label->getHeight(), label->getAlpha() * 180.0 / M_PI, tmpLyr.format().color() );
   }
   else
   {
