@@ -201,6 +201,8 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
 {
   QFile templateFile;
   bool loadingTemplate = ( mTemplate->currentIndex() > 0 );
+  QDomDocument templateDoc;
+  QString storedTitle;
   if ( loadingTemplate )
   {
     if ( mTemplate->currentIndex() == 1 )
@@ -222,10 +224,18 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
       QMessageBox::warning( this, tr( "Create layout" ), tr( "Could not read template file “%1”." ).arg( templateFile.fileName() ) );
       return;
     }
+
+
+    if ( templateDoc.setContent( &templateFile, false ) )
+    {
+      QDomElement layoutElem = templateDoc.documentElement();
+      if ( !layoutElem.isNull() )
+        storedTitle = layoutElem.attribute( "name" );
+    }
   }
 
   QString title;
-  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true ) )
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true, storedTitle ) )
   {
     return;
   }
@@ -238,16 +248,12 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
   std::unique_ptr< QgsLayout > layout = qgis::make_unique< QgsLayout >( QgsProject::instance() );
   if ( loadingTemplate )
   {
-    QDomDocument templateDoc;
-    if ( templateDoc.setContent( &templateFile, false ) )
+    bool loadedOK = false;
+    ( void )layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
+    if ( !loadedOK )
     {
-      bool loadedOK = false;
-      ( void )layout->loadFromTemplate( templateDoc, QgsReadWriteContext(), true, &loadedOK );
-      if ( !loadedOK )
-      {
-        QMessageBox::warning( this, tr( "Create layout" ), tr( "Invalid template file “%1”." ).arg( templateFile.fileName() ) );
-        layout.reset();
-      }
+      QMessageBox::warning( this, tr( "Create layout" ), tr( "Invalid template file “%1”." ).arg( templateFile.fileName() ) );
+      layout.reset();
     }
   }
   else
