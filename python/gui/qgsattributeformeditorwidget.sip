@@ -101,7 +101,7 @@ class QgsAttributeFormEditorWidget : QWidget
  Set the constraint status for this widget.
 %End
 
-    void setConstraintResultVisibility( bool editable );
+    void setConstraintResultVisible( bool editable );
 %Docstring
  Set the constraint result lable visible or invisible according to the layer editable status
 %End

@@ -126,7 +126,7 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QWidget
     /**
      * Set the constraint result lable visible or invisible according to the layer editable status
      */
-    void setConstraintResultVisibility( bool editable );
+    void setConstraintResultVisible( bool editable );
 
   public slots:
 

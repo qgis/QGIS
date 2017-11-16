@@ -101,33 +101,51 @@ void QgsEditorWidgetWrapper::valueChanged()
   emit valueChanged( value() );
 }
 
-void QgsEditorWidgetWrapper::resetConstraintWidgetStatus( bool editable )
+void QgsEditorWidgetWrapper::updateConstraintWidgetStatus()
 {
-  if ( editable )
-    updateConstraintWidgetStatus( mConstraintResult );
-  else
+  if ( !mConstraintResultVisible )
+  {
     widget()->setStyleSheet( QString() );
+  }
+  else
+  {
+    switch ( mConstraintResult )
+    {
+      case ConstraintResultPass:
+        widget()->setStyleSheet( QString() );
+        break;
+
+      case ConstraintResultFailHard:
+        widget()->setStyleSheet( QStringLiteral( "background-color: #FFE0B2;" ) );
+        break;
+
+      case ConstraintResultFailSoft:
+        widget()->setStyleSheet( QStringLiteral( "background-color: #FFECB3;" ) );
+        break;
+    }
+  }
 }
 
-void QgsEditorWidgetWrapper::updateConstraintWidgetStatus( ConstraintResult constraintResult )
+QgsEditorWidgetWrapper::ConstraintResult QgsEditorWidgetWrapper::constraintResult() const
 {
-  //set the constraint result
-  mConstraintResult = constraintResult;
+  return mConstraintResult;
+}
 
-  switch ( constraintResult )
-  {
-    case ConstraintResultPass:
-      widget()->setStyleSheet( QString() );
-      break;
+bool QgsEditorWidgetWrapper::constraintResultVisible() const
+{
+  return mConstraintResultVisible;
+}
 
-    case ConstraintResultFailHard:
-      widget()->setStyleSheet( QStringLiteral( "background-color: #FFE0B2;" ) );
-      break;
+void QgsEditorWidgetWrapper::setConstraintResultVisible( bool constraintResultVisible )
+{
+  if ( mConstraintResultVisible == constraintResultVisible )
+    return;
 
-    case ConstraintResultFailSoft:
-      widget()->setStyleSheet( QStringLiteral( "background-color: #FFECB3;" ) );
-      break;
-  }
+  mConstraintResultVisible = constraintResultVisible;
+
+  updateConstraintWidgetStatus();
+
+  emit constraintResultVisibleChanged( mConstraintResultVisible );
 }
 
 void QgsEditorWidgetWrapper::updateConstraint( const QgsFeature &ft, QgsFieldConstraints::ConstraintOrigin constraintOrigin )
@@ -221,7 +239,9 @@ void QgsEditorWidgetWrapper::updateConstraint( const QgsVectorLayer *layer, int 
 
     ConstraintResult result = !hardConstraintsOk ? ConstraintResultFailHard
                               : ( !softConstraintsOk ? ConstraintResultFailSoft : ConstraintResultPass );
-    updateConstraintWidgetStatus( result );
+    //set the constraint result
+    mConstraintResult = result;
+    updateConstraintWidgetStatus();
     emit constraintStatusChanged( expressionDesc, description, errStr, result );
   }
 }

@@ -42,6 +42,10 @@ class QgsField;
 class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 {
     Q_OBJECT
+
+    Q_PROPERTY( bool constraintResultVisible READ constraintResultVisible WRITE setConstraintResultVisible NOTIFY constraintResultVisibleChanged )
+    Q_PROPERTY( ConstraintResult constraintResult READ constraintResult NOTIFY constraintStatusChanged )
+
   public:
 
     /**
@@ -185,6 +189,30 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     virtual void setHint( const QString &hintText );
 
+    /**
+     * Getter of constraintResult
+     * It's the current result of the constraint on the widget influencing it's visualization.
+     * \since QGIS 3.0
+     */
+    ConstraintResult constraintResult() const;
+
+    /**
+     * Getter of constraintResultVisible
+     * Defines if the constraint result should be visualized on the widget (with color).
+     * This will be disabled when the form is not editable.
+     * \since QGIS 3.0
+     */
+    bool constraintResultVisible() const;
+
+    /**
+     * Setter of constraintResultVisible
+     * Defines if the constraint result should be visualized on the widget (with color).
+     * This will be disabled when the form is not editable.
+     * \param constraintResultVisible if constraintResult should be displayed (mostly editable status)
+     * \since QGIS 3.0
+     */
+    void setConstraintResultVisible( bool constraintResultVisible );
+
   signals:
 
     /**
@@ -203,6 +231,11 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * \param status
      */
     void constraintStatusChanged( const QString &constraint, const QString &desc, const QString &err, ConstraintResult status );
+
+    /**
+     * Emit this signal when the constraint result visibility changed.
+     */
+    void constraintResultVisibleChanged( bool visible );
 
   public slots:
 
@@ -283,19 +316,6 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      */
     void valueChanged();
 
-    /**
-     * It cleans background color (and any other style) in case the feature is not
-     * editable. In case it is, it resets it to the stored constraint status.
-     *
-     * This could be overwritten in subclasses in case individual widgets need other
-     * behavior.
-     *
-     * \param editable if editable or not
-     *
-     * \since QGIS 3.0
-     */
-    virtual void resetConstraintWidgetStatus( bool editable );
-
   protected:
 
     /**
@@ -308,11 +328,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      * This can be overwritten in subclasses to allow individual widgets to
      * change the visual cue.
      *
-     * \param status The current constraint status.
-     *
      * \since QGIS 2.16
      */
-    virtual void updateConstraintWidgetStatus( ConstraintResult status );
+    virtual void updateConstraintWidgetStatus();
 
   private:
 
@@ -329,6 +347,9 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
 
     //! The current constraint result
     ConstraintResult mConstraintResult;
+
+    //! The current constraint result
+    bool mConstraintResultVisible;
 
     int mFieldIdx;
     QgsFeature mFeature;
