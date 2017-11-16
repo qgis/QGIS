@@ -736,16 +736,19 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mRecentProjects.removeAt( row );
     saveRecentProjects();
+    updateRecentProjectPaths();
   } );
   connect( mWelcomePage, &QgsWelcomePage::projectPinned, this, [ this ]( int row )
   {
     mRecentProjects.at( row ).pin = true;
     saveRecentProjects();
+    updateRecentProjectPaths();
   } );
   connect( mWelcomePage, &QgsWelcomePage::projectUnpinned, this, [ this ]( int row )
   {
     mRecentProjects.at( row ).pin = false;
     saveRecentProjects();
+    updateRecentProjectPaths();
   } );
   endProfile();
 
@@ -831,7 +834,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::createMapTips, this, QStringLiteral( "Create map tips" ) );
   functionProfile( &QgisApp::createDecorations, this, QStringLiteral( "Create decorations" ) );
   functionProfile( &QgisApp::readSettings, this, QStringLiteral( "Read settings" ) );
-  functionProfile( &QgisApp::updateRecentProjectPaths, this, QStringLiteral( "Update recent project paths" ) );
   functionProfile( &QgisApp::updateProjectFromTemplates, this, QStringLiteral( "Update project from templates" ) );
   functionProfile( &QgisApp::legendLayerSelectionChanged, this, QStringLiteral( "Legend layer selection changed" ) );
   functionProfile( &QgisApp::init3D, this, QStringLiteral( "Initialize 3D support" ) );
@@ -857,6 +859,12 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     projectsTemplateWatcher->addPath( templateDirName );
     connect( projectsTemplateWatcher, &QFileSystemWatcher::directoryChanged, this, [this] { updateProjectFromTemplates(); } );
   }
+
+  // Update welcome page list
+  startProfile( QStringLiteral( "Update recent project paths" ) );
+  updateRecentProjectPaths();
+  mWelcomePage->setRecentProjects( mRecentProjects );
+  endProfile();
 
   // initialize the plugin manager
   startProfile( QStringLiteral( "Plugin manager" ) );
@@ -3819,9 +3827,6 @@ void QgisApp::updateRecentProjectPaths()
     }
   }
 
-  if ( mWelcomePage )
-    mWelcomePage->setRecentProjects( mRecentProjects );
-
 #if defined(Q_OS_WIN)
   QWinJumpList jumplist;
   jumplist.recent()->clear();
@@ -3911,6 +3916,10 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
 
   // Update menu list of paths
   updateRecentProjectPaths();
+
+  // Update welcome page list
+  if ( mWelcomePage )
+    mWelcomePage->setRecentProjects( mRecentProjects );
 
 } // QgisApp::saveRecentProjectPath
 
