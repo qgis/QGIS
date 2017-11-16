@@ -1489,6 +1489,7 @@ void QgsMapCanvas::mouseReleaseEvent( QMouseEvent* e )
         }
         return;
       }
+
       QScopedPointer<QgsMapMouseEvent> me( new QgsMapMouseEvent( this, e ) );
       mMapTool->canvasReleaseEvent( me.data() );
     }

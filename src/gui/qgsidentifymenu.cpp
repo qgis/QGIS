@@ -408,6 +408,10 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     {
       Q_FOREACH ( QAction* action, featureActionMenu->actions() )
       {
+        // Store clicked x & y into action.
+        action->setProperty( "click_x", property( "click_x" ) );
+        action->setProperty( "click_y", property( "click_y" ) );
+
         connect( action, SIGNAL( hovered() ), this, SLOT( handleMenuHover() ) );
         featureMenu->addAction( action );
       }

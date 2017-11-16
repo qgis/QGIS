@@ -78,6 +78,14 @@ class CORE_EXPORT QgsActionManager
     //! Remove an action at given index
     void removeAction( int index );
 
+    /** Does the action like doAction() but allow to provide
+     *  action context scope.
+     */
+    void doActionWithContext( int index,
+                              const QgsFeature &feat,
+                              QgsExpressionContextScope *actionScope,
+                              int defaultValueIndex = 0 );
+
     /** Does the given values. defaultValueIndex is the index of the
      *  field to be used if the action has a $currfield placeholder.
      *  @note available in python bindings as doActionFeature
