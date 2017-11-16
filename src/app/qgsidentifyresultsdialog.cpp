@@ -1237,7 +1237,7 @@ void QgsIdentifyResultsDialog::doAction( QTreeWidgetItem *item, int action )
   }
 
   int featIdx = featItem->data( 0, Qt::UserRole + 1 ).toInt();
-  layer->actions()->doAction( action, mFeatures[ featIdx ], idx );
+  layer->actions()->doAction( action, mFeatures[ featIdx ], idx, mExpressionContextScope );
 }
 
 void QgsIdentifyResultsDialog::doMapLayerAction( QTreeWidgetItem *item, QgsMapLayerAction* action )
@@ -1949,6 +1949,16 @@ void QgsIdentifyResultsDialog::formatChanged( int index )
       subItem->child( j )->setExpanded( true );
     }
   }
+}
+
+void QgsIdentifyResultsDialog::setExpressionContextScope( const QgsExpressionContextScope &scope )
+{
+  mExpressionContextScope = scope;
+}
+
+QgsExpressionContextScope QgsIdentifyResultsDialog::expressionContextScope() const
+{
+  return mExpressionContextScope;
 }
 
 /*

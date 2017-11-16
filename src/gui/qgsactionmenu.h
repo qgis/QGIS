@@ -108,6 +108,20 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      */
     void setFeature( QgsFeature* feature );
 
+    /**
+     * Sets an expression context scope used to resolve underlying actions.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used to resolve underlying actions.
+     *
+     * @note Added in QGIS 2.18
+     */
+    QgsExpressionContextScope expressionContextScope() const;
+
   private slots:
     void triggerAction();
     void reloadActions();
@@ -124,6 +138,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
     const QgsFeature* mFeature;
     QgsFeatureId mFeatureId;
     bool mOwnsFeature;
+    QgsExpressionContextScope mExpressionContextScope;
 };
 
 Q_DECLARE_METATYPE( QgsActionMenu::ActionData )

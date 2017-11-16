@@ -118,6 +118,8 @@ void QgsMapToolIdentifyAction::canvasReleaseEvent( QgsMapMouseEvent* e )
   connect( this, SIGNAL( identifyProgress( int, int ) ), QgisApp::instance(), SLOT( showProgress( int, int ) ) );
   connect( this, SIGNAL( identifyMessage( QString ) ), QgisApp::instance(), SLOT( showStatusMessage( QString ) ) );
 
+  setClickContextScope( toMapCoordinates( e->pos() ) );
+
   identifyMenu()->setResultsIfExternalAction( false );
 
   // enable the right click for extended menu so it behaves as a contextual menu
@@ -200,4 +202,16 @@ void QgsMapToolIdentifyAction::handleCopyToClipboard( QgsFeatureStore & featureS
   emit copyToClipboard( featureStore );
 }
 
+void QgsMapToolIdentifyAction::setClickContextScope( const QgsPoint &point )
+{
+  QgsExpressionContextScope clickScope;
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_x" ), point.x(), true ) );
+  clickScope.addVariable( QgsExpressionContextScope::StaticVariable( QString( "click_y" ), point.y(), true ) );
 
+  resultsDialog()->setExpressionContextScope( clickScope );
+
+  if ( mIdentifyMenu )
+  {
+    mIdentifyMenu->setExpressionContextScope( clickScope );
+  }
+}
