@@ -221,15 +221,13 @@ void QgsRectangle::combineExtentWith( const QgsRectangle &rect )
 {
   if ( isNull() )
     *this = rect;
-  else
+  else if ( !rect.isNull() )
   {
-    mXmin = ( ( mXmin < rect.xMinimum() ) ? mXmin : rect.xMinimum() );
-    mXmax = ( ( mXmax > rect.xMaximum() ) ? mXmax : rect.xMaximum() );
-
-    mYmin = ( ( mYmin < rect.yMinimum() ) ? mYmin : rect.yMinimum() );
-    mYmax = ( ( mYmax > rect.yMaximum() ) ? mYmax : rect.yMaximum() );
+    mXmin = std::min( mXmin, rect.xMinimum() );
+    mXmax = std::max( mXmax, rect.xMaximum() );
+    mYmin = std::min( mYmin, rect.yMinimum() );
+    mYmax = std::max( mYmax, rect.yMaximum() );;
   }
-
 }
 
 void QgsRectangle::combineExtentWith( double x, double y )
