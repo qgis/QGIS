@@ -34,11 +34,6 @@ class QgsAuthMethod : QObject
     typedef QFlags<QgsAuthMethod::Expansion> Expansions;
 
 
-    ~QgsAuthMethod();
-%Docstring
-Destructor: delete the mutex
-%End
-
     virtual QString key() const = 0;
 %Docstring
 A non-translated short name representing the auth method

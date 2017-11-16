@@ -59,9 +59,6 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     };
     Q_DECLARE_FLAGS( Expansions, Expansion )
 
-    //! Destructor: delete the mutex
-    ~QgsAuthMethod() { delete mMutex; }
-
     //! A non-translated short name representing the auth method
     virtual QString key() const = 0;
 
@@ -178,7 +175,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     explicit QgsAuthMethod()
       : mExpansions( QgsAuthMethod::Expansions( nullptr ) )
       , mDataProviders( QStringList() )
-      , mMutex( new QMutex( QMutex::RecursionMode::Recursive ) )
+      , mMutex( QMutex::RecursionMode::Recursive )
     {}
 
 
@@ -196,7 +193,7 @@ class CORE_EXPORT QgsAuthMethod : public QObject
     QgsAuthMethod::Expansions mExpansions;
     QStringList mDataProviders;
     int mVersion = 0;
-    QMutex *mMutex;
+    QMutex mMutex;
 
 };
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsAuthMethod::Expansions )
