@@ -367,10 +367,7 @@ QgsFeature QgsVectorLayerUtils::duplicateFeature( QgsVectorLayer *layer, const Q
           childFeature.setAttribute( fieldPair.first, newFeature.attribute( fieldPair.second ) );
         }
         //call the function for the child
-        duplicateFeature( relation.referencingLayer(), childFeature, project, depth, duplicateFeatureContext );
-
-        //add the new feature id for feedback
-        childFeatureIds.insert( childFeature.id() );
+        childFeatureIds.insert( duplicateFeature( relation.referencingLayer(), childFeature, project, depth, duplicateFeatureContext ).id() );
       }
 
       //store for feedback
