@@ -170,6 +170,19 @@ class TestAuthManager(unittest.TestCase):
         wms_layer = QgsRasterLayer(uri, layer_name, 'wms')
         return wms_layer
 
+    @classmethod
+    def _getGeoJsonLayer(cls, type_name, layer_name=None, authcfg=None):
+        """
+        OGR layer factory
+        """
+        if layer_name is None:
+            layer_name = 'geojson_' + type_name
+        uri = '%s://%s:%s/?MAP=%s&SERVICE=WFS&REQUEST=GetFeature&TYPENAME=%s&VERSION=2.0.0&OUTPUTFORMAT=geojson' % (cls.protocol, cls.hostname, cls.port, cls.project_path, urllib.parse.quote(type_name))
+        if authcfg is not None:
+            uri += " authcfg='%s'" % authcfg
+        geojson_layer = QgsVectorLayer(uri, layer_name, 'ogr')
+        return geojson_layer
+
     def testValidAuthAccess(self):
         """
         Access the HTTP Basic protected layer with valid credentials
@@ -178,6 +191,8 @@ class TestAuthManager(unittest.TestCase):
         self.assertTrue(wfs_layer.isValid())
         wms_layer = self._getWMSLayer('testlayer_èé', authcfg=self.auth_config.id())
         self.assertTrue(wms_layer.isValid())
+        geojson_layer = self._getGeoJsonLayer('testlayer_èé', authcfg=self.auth_config.id())
+        self.assertTrue(geojson_layer.isValid())
 
     def testInvalidAuthAccess(self):
         """
@@ -187,6 +202,8 @@ class TestAuthManager(unittest.TestCase):
         self.assertFalse(wfs_layer.isValid())
         wms_layer = self._getWMSLayer('testlayer_èé')
         self.assertFalse(wms_layer.isValid())
+        geojson_layer = self._getGeoJsonLayer('testlayer_èé')
+        self.assertFalse(geojson_layer.isValid())
 
     def testInvalidAuthFileDownload(self):
         """

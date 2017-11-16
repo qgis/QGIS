@@ -123,6 +123,8 @@ QgsOgrSourceSelect::QgsOgrSourceSelect( QWidget *parent, Qt::WindowFlags fl, Qgs
     if ( radioSrcProtocol->isChecked() )
       emit enableButtons( !text.isEmpty() );
   } );
+  // Set filter for ogr compatible auth methods
+  mAuthSettingsProtocol->setDataprovider( QStringLiteral( "ogr" ) );
 }
 
 QgsOgrSourceSelect::~QgsOgrSourceSelect()
@@ -179,6 +181,7 @@ void QgsOgrSourceSelect::deleteConnection()
     settings.remove( key + "/password" );
     settings.remove( key + "/port" );
     settings.remove( key + "/save" );
+    settings.remove( key + "/autchcfg" );
     settings.remove( key );
     cmbConnections->removeItem( cmbConnections->currentIndex() );  // populateConnectionList();
     setConnectionListPosition();
@@ -285,9 +288,10 @@ void QgsOgrSourceSelect::addButtonClicked()
     QString port = settings.value( baseKey + "/port" ).toString();
     QString user = settings.value( baseKey + "/username" ).toString();
     QString pass = settings.value( baseKey + "/password" ).toString();
+    QString configid = settings.value( baseKey + "/configid" ).toString();
 
     bool makeConnection = false;
-    if ( pass.isEmpty() )
+    if ( pass.isEmpty() && configid.isEmpty( ) )
     {
       if ( cmbDatabaseTypes->currentText() == QLatin1String( "MSSQL" ) )
         makeConnection = true;
@@ -299,13 +303,14 @@ void QgsOgrSourceSelect::addButtonClicked()
                                       &makeConnection );
     }
 
-    if ( makeConnection || !pass.isEmpty() )
+    if ( makeConnection || !( pass.isEmpty() && configid.isEmpty( ) ) )
     {
       mDataSources << createDatabaseURI(
                      cmbDatabaseTypes->currentText(),
                      host,
                      database,
                      port,
+                     configid,
                      user,
                      pass
                    );
@@ -321,7 +326,11 @@ void QgsOgrSourceSelect::addButtonClicked()
       return;
     }
 
-    mDataSources << createProtocolURI( cmbProtocolTypes->currentText(), protocolURI->text() );
+    mDataSources << createProtocolURI( cmbProtocolTypes->currentText(),
+                                       protocolURI->text(),
+                                       mAuthSettingsProtocol->configId(),
+                                       mAuthSettingsProtocol->username(),
+                                       mAuthSettingsProtocol->password() );
   }
   else if ( radioSrcFile->isChecked() )
   {

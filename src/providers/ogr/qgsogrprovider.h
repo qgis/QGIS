@@ -64,6 +64,18 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
     virtual ~QgsOgrProvider();
 
+    /**
+     * Get the data source specification. This may be a path or database
+     * connection string
+     * \param expandAuthConfig Whether to expand any assigned authentication configuration
+     * \returns data source specification
+     * \note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
+     */
+    QString dataSourceUri( bool expandAuthConfig = false ) const override;
+
+
     virtual QgsAbstractFeatureSource *featureSource() const override;
 
     virtual QgsCoordinateReferenceSystem crs() const override;
@@ -325,6 +337,10 @@ class QgsOgrProviderUtils
     static bool canUseOpenedDatasets( const QString &dsName );
 
   public:
+
+    //! Inject credentials into the dsName (if any)
+    static QString expandAuthConfig( const QString &dsName );
+
     static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
     static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
     static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
