@@ -772,11 +772,13 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             conn_cmb = ows_provider.findChild(QWidget, 'mConnectionsComboBox')
             connect = 'mConnectButton_clicked'
         elif service_type == 'ESRI:ArcGIS:MapServer':
-            ows_provider.addAction(self.iface.actionAddAmsLayer())
+            ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
         elif service_type == 'ESRI:ArcGIS:FeatureServer':
-            ows_provider.addAction(self.iface.actionAddAfsLayer())
+            def addAfsLayer(path, name):
+                self.iface.mainWindow().addVectorLayer(path, name, 'afs')
+            ows_provider.addVectorLayer.connect(addAfsLayer)
             conn_cmb = ows_provider.findChild(QComboBox)
             connect = 'connectToServer'
         ows_provider.setModal(False)
