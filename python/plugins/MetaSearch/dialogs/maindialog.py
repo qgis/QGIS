@@ -696,7 +696,7 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         caller = self.sender().objectName()
 
-        # stype = human name,/Qgis/connections-%s,providername
+        # stype = human name,/qgis/connections-%s,providername
         if caller == 'mActionAddWms':
             stype = ['OGC:WMS/OGC:WMTS', 'wms', 'wms']
             data_url = item_data['wms']
@@ -718,9 +718,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         # store connection
         # check if there is a connection with same name
         if caller in ['mActionAddAms', 'mActionAddAfs']:
-            self.settings.beginGroup('/Qgis/connections-%s' % stype[2])
+            self.settings.beginGroup('/qgis/connections-%s' % stype[2])
         else:
-            self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
+            self.settings.beginGroup('/qgis/connections-%s' % stype[1])
         keys = self.settings.childGroups()
         self.settings.endGroup()
 
@@ -745,9 +745,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
 
         # no dups detected or overwrite is allowed
         if caller in ['mActionAddAms', 'mActionAddAfs']:
-            self.settings.beginGroup('/Qgis/connections-%s' % stype[2])
+            self.settings.beginGroup('/qgis/connections-%s' % stype[2])
         else:
-            self.settings.beginGroup('/Qgis/connections-%s' % stype[1])
+            self.settings.beginGroup('/qgis/connections-%s' % stype[1])
         self.settings.setValue('/%s/url' % sname, clean_ows_url(data_url))
         self.settings.endGroup()
 
@@ -760,15 +760,17 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
         if service_type == 'OGC:WMS/OGC:WMTS':
             ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
-            connect = 'on_btnConnect_clicked'
+            connect = 'btnConnect_clicked'
         elif service_type == 'OGC:WFS':
-            ows_provider.addWfsLayer.connect(self.iface.mainWindow().addWfsLayer)
+            def addVectorLayer(path, name):
+                self.iface.mainWindow().addVectorLayer(path, name, 'WFS')
+            ows_provider.addVectorLayer.connect(addVectorLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'connectToServer'
         elif service_type == 'OGC:WCS':
             ows_provider.addRasterLayer.connect(self.iface.addRasterLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'mConnectionsComboBox')
-            connect = 'on_mConnectButton_clicked'
+            connect = 'mConnectButton_clicked'
         elif service_type == 'ESRI:ArcGIS:MapServer':
             ows_provider.addAction(self.iface.actionAddAmsLayer())
             conn_cmb = ows_provider.findChild(QComboBox)
@@ -786,9 +788,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             conn_cmb.setCurrentIndex(index)
             # only for wfs
             if service_type == 'OGC:WFS':
-                ows_provider.on_cmbConnections_activated(index)
+                ows_provider.cmbConnections_activated(index)
             elif service_type in ['ESRI:ArcGIS:MapServer', 'ESRI:ArcGIS:FeatureServer']:
-                ows_provider.on_cmbConnections_activated(index)
+                ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
 
     def show_metadata(self):
