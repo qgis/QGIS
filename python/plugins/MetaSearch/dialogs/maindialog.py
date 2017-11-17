@@ -762,7 +762,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'btnConnect_clicked'
         elif service_type == 'OGC:WFS':
-            ows_provider.addWfsLayer.connect(self.iface.mainWindow().addWfsLayer)
+            def addVectorLayer(path, name):
+                self.iface.mainWindow().addVectorLayer(path, name, 'WFS')
+            ows_provider.addVectorLayer.connect(addVectorLayer)
             conn_cmb = ows_provider.findChild(QWidget, 'cmbConnections')
             connect = 'connectToServer'
         elif service_type == 'OGC:WCS':
@@ -786,9 +788,9 @@ class MetaSearchDialog(QDialog, BASE_CLASS):
             conn_cmb.setCurrentIndex(index)
             # only for wfs
             if service_type == 'OGC:WFS':
-                ows_provider.on_cmbConnections_activated(index)
+                ows_provider.cmbConnections_activated(index)
             elif service_type in ['ESRI:ArcGIS:MapServer', 'ESRI:ArcGIS:FeatureServer']:
-                ows_provider.on_cmbConnections_activated(index)
+                ows_provider.cmbConnections_activated(index)
         getattr(ows_provider, connect)()
 
     def show_metadata(self):
