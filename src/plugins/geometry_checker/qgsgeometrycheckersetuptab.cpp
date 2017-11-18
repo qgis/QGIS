@@ -210,16 +210,6 @@ void QgsGeometryCheckerSetupTab::validateInput()
 
 void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 {
-  QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) );
-  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
-  for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
-  {
-    QString driverName = filter.driverName;
-    if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
-    {
-      filterString += ";;" + filter.filterString;
-    }
-  }
   QString initialdir = ui.lineEditOutputDirectory->text();
   if ( initialdir.isEmpty() || !QDir( initialdir ).exists() )
   {
