@@ -184,6 +184,14 @@ class ProviderTestCase(FeatureSourceTestCase):
         """Individual providers may need to override this depending on their subset string formats"""
         return '"cnt" > 100 and "cnt" < 400'
 
+    def getSubsetString3(self):
+        """Individual providers may need to override this depending on their subset string formats"""
+        return '"name"=\'Apple\''
+
+    def getSubsetStringNoMatching(self):
+        """Individual providers may need to override this depending on their subset string formats"""
+        return '"name"=\'AppleBearOrangePear\''
+
     def testOrderBy(self):
         try:
             self.disableCompiler()
@@ -281,9 +289,30 @@ class ProviderTestCase(FeatureSourceTestCase):
     def testExtent(self):
         reference = QgsGeometry.fromRect(
             QgsRectangle(-71.123, 66.33, -65.32, 78.3))
-        provider_extent = QgsGeometry.fromRect(self.source.extent())
+        provider_extent = self.source.extent()
+        self.assertAlmostEqual(provider_extent.xMinimum(), -71.123, 3)
+        self.assertAlmostEqual(provider_extent.xMaximum(), -65.32, 3)
+        self.assertAlmostEqual(provider_extent.yMinimum(), 66.33, 3)
+        self.assertAlmostEqual(provider_extent.yMaximum(), 78.3, 3)
 
-        self.assertTrue(QgsGeometry.compare(provider_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001))
+        # with only one point
+        subset = self.getSubsetString3()
+        self.source.setSubsetString(subset)
+        self.assertEqual(self.source.featureCount(), 1)
+        provider_extent = self.source.extent()
+        self.source.setSubsetString(None)
+        self.assertAlmostEqual(provider_extent.xMinimum(), -68.2, 3)
+        self.assertAlmostEqual(provider_extent.xMaximum(), -68.2, 3)
+        self.assertAlmostEqual(provider_extent.yMinimum(), 70.8, 3)
+        self.assertAlmostEqual(provider_extent.yMaximum(), 70.8, 3)
+
+        # with no points
+        subset = self.getSubsetStringNoMatching()
+        self.source.setSubsetString(subset)
+        self.assertEqual(self.source.featureCount(), 0)
+        provider_extent = self.source.extent()
+        self.source.setSubsetString(None)
+        self.assertTrue(provider_extent.isNull())
 
     def testUnique(self):
         self.assertEqual(set(self.source.uniqueValues(1)), set([-200, 100, 200, 300, 400]))
