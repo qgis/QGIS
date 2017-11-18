@@ -161,8 +161,8 @@ def load(fileName, name=None, crs=None, style=None, isRaster=False):
         else:
             if prjSetting:
                 settings.setValue('/Projections/defaultBehavior', prjSetting)
-            raise RuntimeError('Could not load layer: ' + str(fileName) +
-                               '\nCheck the processing framework log to look for errors')
+            raise RuntimeError(QCoreApplication.translate('dataobject',
+                               'Could not load layer: {0}\nCheck the processing framework log to look for errors.').format(fileName))
     else:
         qgslayer = QgsVectorLayer(fileName, name, 'ogr')
         if qgslayer.isValid():
