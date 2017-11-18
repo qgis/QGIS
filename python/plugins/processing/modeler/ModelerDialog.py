@@ -287,8 +287,8 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.hasChanged:
             ret = QMessageBox.question(
-                self, self.tr('Save?'),
-                self.tr('There are unsaved changes in this model, do you want to keep those?'),
+                self, self.tr('Save Model?'),
+                self.tr('There are unsaved changes in this model. Do you want to keep those?'),
                 QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
 
             if ret == QMessageBox.Save:
