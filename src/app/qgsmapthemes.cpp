@@ -156,11 +156,17 @@ void QgsMapThemes::applyState( const QString &presetName )
 
 void QgsMapThemes::removeCurrentPreset()
 {
-  Q_FOREACH ( QAction *a, mMenuPresetActions )
+  for ( QAction *actionPreset : qgis::as_const( mMenuPresetActions ) )
   {
-    if ( a->isChecked() )
+    if ( actionPreset->isChecked() )
     {
-      QgsProject::instance()->mapThemeCollection()->removeMapTheme( a->text() );
+      int res = QMessageBox::question( mMenu, tr( "Remove Theme" ),
+                                       trUtf8( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
+                                       QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
+      if ( res != QMessageBox::Yes )
+        return;
+      //remove the selected preset
+      QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
       break;
     }
   }
