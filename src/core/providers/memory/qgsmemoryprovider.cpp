@@ -275,11 +275,29 @@ QgsRectangle QgsMemoryProvider::extent() const
   if ( mExtent.isEmpty() && !mFeatures.isEmpty() )
   {
     mExtent.setMinimal();
-    Q_FOREACH ( const QgsFeature &feat, mFeatures )
+    if ( mSubsetString.isEmpty() )
     {
-      if ( feat.hasGeometry() )
-        mExtent.combineExtentWith( feat.geometry().boundingBox() );
+      // fast way - iterate through all features
+      Q_FOREACH ( const QgsFeature &feat, mFeatures )
+      {
+        if ( feat.hasGeometry() )
+          mExtent.combineExtentWith( feat.geometry().boundingBox() );
+      }
     }
+    else
+    {
+      QgsFeature f;
+      QgsFeatureIterator fi = getFeatures( QgsFeatureRequest().setSubsetOfAttributes( QgsAttributeList() ) );
+      while ( fi.nextFeature( f ) )
+      {
+        if ( f.hasGeometry() )
+          mExtent.combineExtentWith( f.geometry().boundingBox() );
+      }
+    }
+  }
+  else if ( mFeatures.isEmpty() )
+  {
+    mExtent.setMinimal();
   }
 
   return mExtent;
@@ -511,6 +529,7 @@ bool QgsMemoryProvider::setSubsetString( const QString &theSQL, bool updateFeatu
 
   mSubsetString = theSQL;
   clearMinMaxCache();
+  mExtent.setMinimal();
 
   emit dataChanged();
   return true;
