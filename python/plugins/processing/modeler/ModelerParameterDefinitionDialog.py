@@ -114,7 +114,7 @@ class ModelerParameterDefinitionDialog(QDialog):
         super(ModelerParameterDefinitionDialog, self).closeEvent(event)
 
     def setupUi(self):
-        self.setWindowTitle(self.tr('Parameter definition'))
+        self.setWindowTitle(self.tr('Parameter Definition'))
         self.setMinimumWidth(300)
 
         self.verticalLayout = QVBoxLayout(self)
