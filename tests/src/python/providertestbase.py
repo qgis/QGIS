@@ -344,14 +344,15 @@ class ProviderTestCase(FeatureSourceTestCase):
         self.assertEqual(set(values), set(['Pear', 'Apple']))
 
     def testFeatureCount(self):
-        assert self.source.featureCount() == 5, 'Got {}'.format(self.source.featureCount())
+        self.assertEqual(self.source.featureCount(), 5)
 
         #Add a subset string and test feature count
         subset = self.getSubsetString()
         self.source.setSubsetString(subset)
         count = self.source.featureCount()
         self.source.setSubsetString(None)
-        assert count == 3, 'Got {}'.format(count)
+        self.assertEqual(count, 3)
+        self.assertEqual(self.source.featureCount(), 5)
 
     def testGetFeaturesNoGeometry(self):
         """ Test that no geometry is present when fetching features without geometry"""
