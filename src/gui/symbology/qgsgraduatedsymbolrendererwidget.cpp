@@ -591,8 +591,8 @@ void QgsGraduatedSymbolRendererWidget::disconnectUpdateHandlers()
 void QgsGraduatedSymbolRendererWidget::updateUiFromRenderer( bool updateCount )
 {
   disconnectUpdateHandlers();
-
   updateGraduatedSymbolIcon();
+  spinSymmetryPointForOtherMethods->setShowClearButton( false );
 
   // update UI from the graduated renderer (update combo boxes, view)
   if ( mRenderer->mode() < cboGraduatedMode->count() )
@@ -846,7 +846,6 @@ void QgsGraduatedSymbolRendererWidget::classifyGraduated()
   double maximum = mLayer->maximumValue( attrNum ).toDouble();
   spinSymmetryPointForOtherMethods->setMinimum( minimum );
   spinSymmetryPointForOtherMethods->setMaximum( maximum );
-  spinSymmetryPointForOtherMethods->setShowClearButton( false );
 
   if ( cboGraduatedMode->currentIndex() == 0 ) // EqualInterval
   {

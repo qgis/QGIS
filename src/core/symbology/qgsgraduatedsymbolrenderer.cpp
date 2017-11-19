@@ -287,7 +287,8 @@ QgsGraduatedSymbolRenderer::QgsGraduatedSymbolRenderer( const QString &attrName,
   {
     mRanges << range;
   }
-
+  mUseSymmetricMode = false;
+  mAstride = false;
 }
 
 QgsGraduatedSymbolRenderer::~QgsGraduatedSymbolRenderer()
@@ -525,7 +526,7 @@ QgsSymbolList QgsGraduatedSymbolRenderer::symbols( QgsRenderContext &context )
   return lst;
 }
 
-void _makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride )
+static void _makeBreaksSymmetric( QList<double> &breaks, double symmetryPoint, bool astride )
 {
   // remove the breaks that are above the existing opposite sign classes
   // to keep colors symmetrically balanced around symmetryPoint
@@ -829,6 +830,15 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   return breaks.toList();
 } //_calcJenksBreaks
 
+static QStringList _breaksAsStrings(QList<double> breaks) // get QStringList from QList<double> without maxi break (min is not in)
+{  
+  QStringList breaksAsTrings;
+  for ( int i = 0; i < breaks.count() - 1; i++ )
+  {
+    breaksAsTrings << QString::number( breaks.at( i ), 'f', 2 );
+  }
+  return breaksAsTrings;
+}
 
 QgsGraduatedSymbolRenderer *QgsGraduatedSymbolRenderer::createRenderer(
   QgsVectorLayer *vlayer,
@@ -903,6 +913,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   QgsDebugMsg( QString( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );
   QList<double> breaks;
   QList<double> labels;
+  
   if ( mode == EqualInterval )
   {
     breaks = _calcEqualIntervalBreaks( minimum, maximum, nclasses, mUseSymmetricMode, symmetryPoint, astride );
@@ -910,13 +921,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   else if ( mode == Pretty )
   {
     breaks = QgsSymbolLayerUtils::prettyBreaks( minimum, maximum, nclasses );
-    // get QStringList from QList<double> without maxi break (min is not in)
-    QStringList breaks2put;
-    for ( int i = 0; i < breaks.count() - 1; i++ )
-    {
-      breaks2put << QString::number( breaks.at( i ), 'f', 2 );
-    }
-    setListForCboPrettyBreaks( breaks2put );
+    setListForCboPrettyBreaks( _breaksAsStrings( breaks ) );
 
     if ( true == useSymmetricMode )
       _makeBreaksSymmetric( breaks, symmetryPoint, astride );
@@ -946,7 +951,6 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   deleteAllClasses();
 
   // "breaks" list contains all values at class breaks plus maximum as last break
-
   int i = 0;
   for ( QList<double>::iterator it = breaks.begin(); it != breaks.end(); ++it, ++i )
   {
@@ -1064,18 +1068,22 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     else if ( modeString == QLatin1String( "pretty" ) )
       r->setMode( Pretty );
   }
-
+  
+  // symmetric mode
   QDomElement symmetricModeElem = element.firstChildElement( QStringLiteral( "symmetricMode" ) );
   if ( !symmetricModeElem.isNull() )
   {
     QString symmetricEnabled = symmetricModeElem.attribute( QStringLiteral( "enabled" ) );
     symmetricEnabled == QLatin1String( "true" ) ? r->setUseSymmetricMode( true ) : r->setUseSymmetricMode( false );
+    
     QString symmetricPointString = symmetricModeElem.attribute( QStringLiteral( "symmetryPoint" ) );
-    r->setSymmetryPoint( symmetricPointString.toDouble() );
+    r->setSymmetryPoint( symmetricPointString.toDouble() ); 
+    QString breaksForPretty = symmetricModeElem.attribute( QStringLiteral( "valueForCboPrettyBreaks" ) );
+    r->setListForCboPrettyBreaks( breaksForPretty.split("/") );
+    
     QString astrideEnabled = symmetricModeElem.attribute( QStringLiteral( "astride" ) );
     astrideEnabled == QLatin1String( "true" ) ? r->setAstride( true ) : r->setAstride( false );
   }
-
   QDomElement rotationElem = element.firstChildElement( QStringLiteral( "rotation" ) );
   if ( !rotationElem.isNull() && !rotationElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
@@ -1088,7 +1096,6 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
       convertSymbolRotation( r->mSourceSymbol.get(), rotationElem.attribute( QStringLiteral( "field" ) ) );
     }
   }
-
   QDomElement sizeScaleElem = element.firstChildElement( QStringLiteral( "sizescale" ) );
   if ( !sizeScaleElem.isNull() && !sizeScaleElem.attribute( QStringLiteral( "field" ) ).isEmpty() )
   {
@@ -1119,7 +1126,6 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
   {
     r->mDataDefinedSizeLegend.reset( QgsDataDefinedSizeLegend::readXml( ddsLegendSizeElem, context ) );
   }
-
   // TODO: symbol levels
   return r;
 }
@@ -1194,11 +1200,24 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     modeElem.setAttribute( QStringLiteral( "name" ), modeString );
     rendererElem.appendChild( modeElem );
   }
-
+  
+  // symmetry
   QDomElement symmetricModeElem = doc.createElement( QStringLiteral( "symmetricMode" ) );
   symmetricModeElem.setAttribute( QStringLiteral( "enabled" ), mUseSymmetricMode ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   symmetricModeElem.setAttribute( QStringLiteral( "symmetryPoint" ), mSymmetryPoint );
   symmetricModeElem.setAttribute( QStringLiteral( "astride" ), mAstride ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
+  if ( Pretty == mMode ) 
+  {
+    QString breaks;
+    for(int i=0; i<mListForCboPrettyBreaks.size()-1; i++) // -1 to write 1/2/3 instead of 1/2/3/
+    {
+      breaks.append( mListForCboPrettyBreaks.at(i) );
+      breaks.append( QStringLiteral( "/" ) );
+    }
+    breaks.append( mListForCboPrettyBreaks.at( mListForCboPrettyBreaks.size()-1 ) );
+    symmetricModeElem.setAttribute( QStringLiteral( "valueForCboPrettyBreaks" ), breaks );
+  }
+  
   rendererElem.appendChild( symmetricModeElem );
 
   QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );
