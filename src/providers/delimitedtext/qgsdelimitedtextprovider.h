@@ -217,7 +217,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     mutable bool mValid = false;
 
     //! Text file
-    QgsDelimitedTextFile *mFile = nullptr;
+    std::unique_ptr< QgsDelimitedTextFile > mFile;
 
     // Fields
     GeomRepresentationType mGeomRep = GeomNone;
@@ -249,7 +249,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
 
     QString mSubsetString;
     mutable QString mCachedSubsetString;
-    QgsExpression *mSubsetExpression = nullptr;
+    std::unique_ptr< QgsExpression > mSubsetExpression;
     bool mBuildSubsetIndex = true;
     mutable QList<quintptr> mSubsetIndex;
     mutable bool mUseSubsetIndex = false;
@@ -275,7 +275,7 @@ class QgsDelimitedTextProvider : public QgsVectorDataProvider
     bool mBuildSpatialIndex = false;
     mutable bool mUseSpatialIndex;
     mutable bool mCachedUseSpatialIndex;
-    mutable QgsSpatialIndex *mSpatialIndex = nullptr;
+    mutable std::unique_ptr< QgsSpatialIndex > mSpatialIndex;
 
     friend class QgsDelimitedTextFeatureIterator;
     friend class QgsDelimitedTextFeatureSource;

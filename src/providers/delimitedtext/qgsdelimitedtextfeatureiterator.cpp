@@ -536,7 +536,6 @@ QgsDelimitedTextFeatureSource::QgsDelimitedTextFeatureSource( const QgsDelimited
 
 QgsDelimitedTextFeatureSource::~QgsDelimitedTextFeatureSource()
 {
-  delete mSubsetExpression;
 }
 
 QgsFeatureIterator QgsDelimitedTextFeatureSource::getFeatures( const QgsFeatureRequest &request )

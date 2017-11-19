@@ -32,7 +32,7 @@ class QgsDelimitedTextFeatureSource : public QgsAbstractFeatureSource
 
   private:
     QgsDelimitedTextProvider::GeomRepresentationType mGeomRep;
-    QgsExpression *mSubsetExpression = nullptr;
+    std::unique_ptr< QgsExpression > mSubsetExpression;
     QgsExpressionContext mExpressionContext;
     QgsRectangle mExtent;
     bool mUseSpatialIndex;
