@@ -298,9 +298,10 @@ class ProviderTestCase(FeatureSourceTestCase):
         # with only one point
         subset = self.getSubsetString3()
         self.source.setSubsetString(subset)
-        self.assertEqual(self.source.featureCount(), 1)
+        count = self.source.featureCount()
         provider_extent = self.source.extent()
         self.source.setSubsetString(None)
+        self.assertEqual(count, 1)
         self.assertAlmostEqual(provider_extent.xMinimum(), -68.2, 3)
         self.assertAlmostEqual(provider_extent.xMaximum(), -68.2, 3)
         self.assertAlmostEqual(provider_extent.yMinimum(), 70.8, 3)
@@ -309,9 +310,10 @@ class ProviderTestCase(FeatureSourceTestCase):
         # with no points
         subset = self.getSubsetStringNoMatching()
         self.source.setSubsetString(subset)
-        self.assertEqual(self.source.featureCount(), 0)
+        count = self.source.featureCount()
         provider_extent = self.source.extent()
         self.source.setSubsetString(None)
+        self.assertEqual(count, 0)
         self.assertTrue(provider_extent.isNull())
 
     def testUnique(self):
@@ -352,6 +354,22 @@ class ProviderTestCase(FeatureSourceTestCase):
         count = self.source.featureCount()
         self.source.setSubsetString(None)
         self.assertEqual(count, 3)
+        self.assertEqual(self.source.featureCount(), 5)
+
+        # one matching records
+        subset = self.getSubsetString3()
+        self.source.setSubsetString(subset)
+        count = self.source.featureCount()
+        self.source.setSubsetString(None)
+        self.assertEqual(count, 1)
+        self.assertEqual(self.source.featureCount(), 5)
+
+        # no matching records
+        subset = self.getSubsetStringNoMatching()
+        self.source.setSubsetString(subset)
+        count = self.source.featureCount()
+        self.source.setSubsetString(None)
+        self.assertEqual(count, 0)
         self.assertEqual(self.source.featureCount(), 5)
 
     def testGetFeaturesNoGeometry(self):

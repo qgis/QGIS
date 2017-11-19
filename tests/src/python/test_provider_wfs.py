@@ -338,6 +338,75 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
   </wfs:member>
 </wfs:FeatureCollection>""".encode('UTF-8'))
 
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+ <fes:PropertyIsEqualTo>
+  <fes:ValueReference>name</fes:ValueReference>
+  <fes:Literal>Apple</fes:Literal>
+ </fes:PropertyIsEqualTo>
+</fes:Filter>
+&RESULTTYPE=hits"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       numberMatched="1" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+ <fes:PropertyIsEqualTo>
+  <fes:ValueReference>name</fes:ValueReference>
+  <fes:Literal>Apple</fes:Literal>
+ </fes:PropertyIsEqualTo>
+</fes:Filter>
+"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my"
+                       numberMatched="1" numberReturned="1" timeStamp="2016-03-25T14:51:48.998Z">
+  <wfs:member>
+    <my:typename gml:id="typename.1">
+      <gml:boundedBy><gml:Envelope srsName="urn:ogc:def:crs:EPSG::4326"><gml:lowerCorner>70.8 -68.2</gml:lowerCorner><gml:upperCorner>70.8 -68.2</gml:upperCorner></gml:Envelope></gml:boundedBy>
+      <my:geometryProperty><gml:Point srsName="urn:ogc:def:crs:EPSG::4326" gml:id="typename.geom.1"><gml:pos>70.8 -68.2</gml:pos></gml:Point></my:geometryProperty>
+      <my:pk>2</my:pk>
+      <my:cnt>200</my:cnt>
+      <my:name>Apple</my:name>
+      <my:name2>Apple</my:name2>
+      <my:num_char>2</my:num_char>
+    </my:typename>
+  </wfs:member>
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+ <fes:PropertyIsEqualTo>
+  <fes:ValueReference>name</fes:ValueReference>
+  <fes:Literal>AppleBearOrangePear</fes:Literal>
+ </fes:PropertyIsEqualTo>
+</fes:Filter>
+&RESULTTYPE=hits"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       numberMatched="0" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
+        with open(sanitize(endpoint, """?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&TYPENAMES=my:typename&SRSNAME=urn:ogc:def:crs:EPSG::4326&FILTER=<fes:Filter xmlns:fes="http://www.opengis.net/fes/2.0">
+ <fes:PropertyIsEqualTo>
+  <fes:ValueReference>name</fes:ValueReference>
+  <fes:Literal>AppleBearOrangePear</fes:Literal>
+ </fes:PropertyIsEqualTo>
+</fes:Filter>
+"""), 'wb') as f:
+            f.write("""
+<wfs:FeatureCollection
+                       xmlns:wfs="http://www.opengis.net/wfs/2.0"
+                       xmlns:gml="http://www.opengis.net/gml/3.2"
+                       xmlns:my="http://my"
+                       numberMatched="0" numberReturned="0" timeStamp="2016-03-25T14:51:48.998Z">
+</wfs:FeatureCollection>""".encode('UTF-8'))
+
     @classmethod
     def tearDownClass(cls):
         """Run after all tests"""
@@ -2629,6 +2698,17 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
 
         values = [f['intfield'] for f in vl.getFeatures()]
         self.assertEqual(values, [1])
+
+    def testExtent(self):
+        # can't run the base provider test suite here - wfs extent handling is different
+        # to other providers
+        reference = QgsGeometry.fromRect(
+            QgsRectangle(-71.123, 66.33, -65.32, 78.3))
+        provider_extent = self.source.extent()
+        self.assertAlmostEqual(provider_extent.xMinimum(), -71.123, 3)
+        self.assertAlmostEqual(provider_extent.xMaximum(), -65.32, 3)
+        self.assertAlmostEqual(provider_extent.yMinimum(), 66.33, 3)
+        self.assertAlmostEqual(provider_extent.yMaximum(), 78.3, 3)
 
 
 if __name__ == '__main__':
