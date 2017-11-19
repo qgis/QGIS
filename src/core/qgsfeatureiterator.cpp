@@ -21,12 +21,6 @@
 
 QgsAbstractFeatureIterator::QgsAbstractFeatureIterator( const QgsFeatureRequest &request )
   : mRequest( request )
-  , mClosed( false )
-  , mZombie( false )
-  , refs( 0 )
-  , mFetchedCount( 0 )
-  , mCompileStatus( NoCompilation )
-  , mUseCachedFeatures( false )
 {
 }
 

@@ -75,7 +75,7 @@ class QgsMemoryFeatureIterator : public QgsAbstractFeatureIteratorFromSource<Qgs
     bool mUsingFeatureIdList = false;
     QList<QgsFeatureId> mFeatureIdList;
     QList<QgsFeatureId>::const_iterator mFeatureIdListIterator;
-    QgsExpression *mSubsetExpression = nullptr;
+    std::unique_ptr< QgsExpression > mSubsetExpression;
     QgsCoordinateTransform mTransform;
 
 };

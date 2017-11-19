@@ -45,7 +45,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
 
   if ( !mSource->mSubsetString.isEmpty() )
   {
-    mSubsetExpression = new QgsExpression( mSource->mSubsetString );
+    mSubsetExpression = qgis::make_unique< QgsExpression >( mSource->mSubsetString );
     mSubsetExpression->prepare( &mSource->mExpressionContext );
   }
 
@@ -82,10 +82,7 @@ QgsMemoryFeatureIterator::QgsMemoryFeatureIterator( QgsMemoryFeatureSource *sour
 QgsMemoryFeatureIterator::~QgsMemoryFeatureIterator()
 {
   close();
-
-  delete mSubsetExpression;
 }
-
 
 bool QgsMemoryFeatureIterator::fetchFeature( QgsFeature &feature )
 {
