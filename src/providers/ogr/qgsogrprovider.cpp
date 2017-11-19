@@ -535,6 +535,8 @@ bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   }
   else
   {
+    if ( mOgrLayer != mOgrOrigLayer )
+      QgsOgrProviderUtils::release( mOgrLayer );
     mOgrLayer = mOgrOrigLayer;
   }
   mSubsetString = theSQL;
