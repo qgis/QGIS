@@ -830,8 +830,8 @@ static QList<double> _calcJenksBreaks( QList<double> values, int classes,
   return breaks.toList();
 } //_calcJenksBreaks
 
-static QStringList _breaksAsStrings(QList<double> breaks) // get QStringList from QList<double> without maxi break (min is not in)
-{  
+static QStringList _breaksAsStrings( QList<double> breaks ) // get QStringList from QList<double> without maxi break (min is not in)
+{
   QStringList breaksAsTrings;
   for ( int i = 0; i < breaks.count() - 1; i++ )
   {
@@ -913,7 +913,7 @@ void QgsGraduatedSymbolRenderer::updateClasses( QgsVectorLayer *vlayer, Mode mod
   QgsDebugMsg( QString( "min %1 // max %2" ).arg( minimum ).arg( maximum ) );
   QList<double> breaks;
   QList<double> labels;
-  
+
   if ( mode == EqualInterval )
   {
     breaks = _calcEqualIntervalBreaks( minimum, maximum, nclasses, mUseSymmetricMode, symmetryPoint, astride );
@@ -1068,19 +1068,19 @@ QgsFeatureRenderer *QgsGraduatedSymbolRenderer::create( QDomElement &element, co
     else if ( modeString == QLatin1String( "pretty" ) )
       r->setMode( Pretty );
   }
-  
+
   // symmetric mode
   QDomElement symmetricModeElem = element.firstChildElement( QStringLiteral( "symmetricMode" ) );
   if ( !symmetricModeElem.isNull() )
   {
     QString symmetricEnabled = symmetricModeElem.attribute( QStringLiteral( "enabled" ) );
     symmetricEnabled == QLatin1String( "true" ) ? r->setUseSymmetricMode( true ) : r->setUseSymmetricMode( false );
-    
+
     QString symmetricPointString = symmetricModeElem.attribute( QStringLiteral( "symmetryPoint" ) );
-    r->setSymmetryPoint( symmetricPointString.toDouble() ); 
+    r->setSymmetryPoint( symmetricPointString.toDouble() );
     QString breaksForPretty = symmetricModeElem.attribute( QStringLiteral( "valueForCboPrettyBreaks" ) );
-    r->setListForCboPrettyBreaks( breaksForPretty.split("/") );
-    
+    r->setListForCboPrettyBreaks( breaksForPretty.split( "/" ) );
+
     QString astrideEnabled = symmetricModeElem.attribute( QStringLiteral( "astride" ) );
     astrideEnabled == QLatin1String( "true" ) ? r->setAstride( true ) : r->setAstride( false );
   }
@@ -1200,24 +1200,24 @@ QDomElement QgsGraduatedSymbolRenderer::save( QDomDocument &doc, const QgsReadWr
     modeElem.setAttribute( QStringLiteral( "name" ), modeString );
     rendererElem.appendChild( modeElem );
   }
-  
+
   // symmetry
   QDomElement symmetricModeElem = doc.createElement( QStringLiteral( "symmetricMode" ) );
   symmetricModeElem.setAttribute( QStringLiteral( "enabled" ), mUseSymmetricMode ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
   symmetricModeElem.setAttribute( QStringLiteral( "symmetryPoint" ), mSymmetryPoint );
   symmetricModeElem.setAttribute( QStringLiteral( "astride" ), mAstride ? QStringLiteral( "true" ) : QStringLiteral( "false" ) );
-  if ( Pretty == mMode ) 
+  if ( Pretty == mMode )
   {
     QString breaks;
-    for(int i=0; i<mListForCboPrettyBreaks.size()-1; i++) // -1 to write 1/2/3 instead of 1/2/3/
+    for ( int i = 0; i < mListForCboPrettyBreaks.size() - 1; i++ ) // -1 to write 1/2/3 instead of 1/2/3/
     {
-      breaks.append( mListForCboPrettyBreaks.at(i) );
+      breaks.append( mListForCboPrettyBreaks.at( i ) );
       breaks.append( QStringLiteral( "/" ) );
     }
-    breaks.append( mListForCboPrettyBreaks.at( mListForCboPrettyBreaks.size()-1 ) );
+    breaks.append( mListForCboPrettyBreaks.at( mListForCboPrettyBreaks.size() - 1 ) );
     symmetricModeElem.setAttribute( QStringLiteral( "valueForCboPrettyBreaks" ), breaks );
   }
-  
+
   rendererElem.appendChild( symmetricModeElem );
 
   QDomElement rotationElem = doc.createElement( QStringLiteral( "rotation" ) );
