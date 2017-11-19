@@ -2179,7 +2179,7 @@ class TestPyQgsWFSProvider(unittest.TestCase, ProviderTestCase):
         # Extent before downloading features
         reference = QgsGeometry.fromRect(QgsRectangle(243900.3520259926444851, 4427769.1559739429503679, 1525592.3040170343592763, 5607994.6020106188952923))
         vl_extent = QgsGeometry.fromRect(vl.extent())
-        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.00001), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
+        assert QgsGeometry.compare(vl_extent.asPolygon()[0], reference.asPolygon()[0], 0.05), 'Expected {}, got {}'.format(reference.asWkt(), vl_extent.asWkt())
 
         # Download all features
         features = [f for f in vl.getFeatures()]
