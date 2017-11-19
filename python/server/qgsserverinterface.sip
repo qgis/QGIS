@@ -35,7 +35,6 @@ class QgsServerInterface
     virtual ~QgsServerInterface();
 
 
-
     virtual QgsCapabilitiesCache *capabilitiesCache() = 0 /KeepReference/;
 %Docstring
  Get pointer to the capabiblities cache

@@ -27,7 +27,6 @@ QgsServerInterfaceImpl::QgsServerInterfaceImpl( QgsCapabilitiesCache *capCache, 
   , mServiceRegistry( srvRegistry )
   , mServerSettings( settings )
 {
-  mRequestHandler = nullptr;
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
   mAccessControls = new QgsAccessControl();
 #else
@@ -49,14 +48,16 @@ QgsServerInterfaceImpl::~QgsServerInterfaceImpl()
 }
 
 
-void QgsServerInterfaceImpl::clearRequestHandler()
+QgsRequestHandler *QgsServerInterfaceImpl::requestHandler()
 {
-  mRequestHandler = nullptr;
+  if ( mRequestHandler.hasLocalData() )
+    return  mRequestHandler.localData();
+  return nullptr;
 }
 
 void QgsServerInterfaceImpl::setRequestHandler( QgsRequestHandler *requestHandler )
 {
-  mRequestHandler = requestHandler;
+  mRequestHandler.setLocalData( requestHandler );
 }
 
 void QgsServerInterfaceImpl::setConfigFilePath( const QString &configFilePath )

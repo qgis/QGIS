@@ -25,6 +25,8 @@
 #include "qgsserverinterface.h"
 #include "qgscapabilitiescache.h"
 
+#include <QThreadStorage>
+
 /**
  * QgsServerInterface
  * Class defining interfaces exposed by QGIS Server and
@@ -46,10 +48,9 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     ~QgsServerInterfaceImpl();
 
     void setRequestHandler( QgsRequestHandler *requestHandler ) override;
-    void clearRequestHandler() override;
     QgsCapabilitiesCache *capabilitiesCache() override { return mCapabilitiesCache; }
     //! Return the QgsRequestHandler, to be used only in server plugins
-    QgsRequestHandler  *requestHandler() override { return mRequestHandler; }
+    QgsRequestHandler  *requestHandler() override;
     void registerFilter( QgsServerFilter *filter, int priority = 0 ) override;
     QgsServerFiltersMap filters() override { return mFilters; }
     //! Register an access control filter
@@ -78,7 +79,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
     QgsServerFiltersMap mFilters;
     QgsAccessControl *mAccessControls = nullptr;
     QgsCapabilitiesCache *mCapabilitiesCache = nullptr;
-    QgsRequestHandler *mRequestHandler = nullptr;
+    QThreadStorage<QgsRequestHandler *> mRequestHandler;
     QgsServiceRegistry *mServiceRegistry = nullptr;
     QgsServerSettings *mServerSettings = nullptr;
 };

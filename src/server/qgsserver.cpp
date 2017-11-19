@@ -318,28 +318,30 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   // Allow server request to call sendResponse plugin hook if enabled
   QgsFilterResponseDecorator responseDecorator( sServerInterface->filters(), response );
 
-  //Request handler
-  QgsRequestHandler requestHandler( request, response );
+  //Request handler (ownership is transferred to the QgsServerInterface threaded storage)
+  QgsRequestHandler *requestHandler = new QgsRequestHandler( request, response );
 
   try
   {
     // TODO: split parse input into plain parse and processing from specific services
-    requestHandler.parseInput();
+    requestHandler->parseInput();
   }
   catch ( QgsMapServiceException &e )
   {
     QgsMessageLog::logMessage( "Parse input exception: " + e.message(), QStringLiteral( "Server" ), QgsMessageLog::CRITICAL );
-    requestHandler.setServiceException( e );
+    requestHandler->setServiceException( e );
   }
 
   // Set the request handler into the interface for plugins to manipulate it
-  sServerInterface->setRequestHandler( &requestHandler );
+  // Note that the server interface takes ownership of the handler and will delete it
+  // when the thread terminates
+  sServerInterface->setRequestHandler( requestHandler );
 
   // Call  requestReady() method (if enabled)
   responseDecorator.start();
 
   // Plugins may have set exceptions
-  if ( !requestHandler.exceptionRaised() )
+  if ( !requestHandler->exceptionRaised() )
   {
     try
     {
@@ -384,7 +386,7 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
       QString outputFileName = parameterMap.value( QStringLiteral( "FILE_NAME" ) );
       if ( !outputFileName.isEmpty() )
       {
-        requestHandler.setResponseHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
+        requestHandler->setResponseHeader( QStringLiteral( "Content-Disposition" ), "attachment; filename=\"" + outputFileName + "\"" );
       }
 
       // Lookup for service
@@ -411,10 +413,6 @@ void QgsServer::handleRequest( QgsServerRequest &request, QgsServerResponse &res
   }
   // Terminate the response
   responseDecorator.finish();
-
-  // We are done using requestHandler in plugins, make sure we don't access
-  // to a deleted request handler from Python bindings
-  sServerInterface->clearRequestHandler();
 
   if ( logLevel == QgsMessageLog::INFO )
   {
