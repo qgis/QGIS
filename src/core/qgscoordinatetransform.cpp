@@ -426,6 +426,12 @@ QgsRectangle QgsCoordinateTransform::transformBoundingBox( const QgsRectangle &r
     }
   }
 
+  if ( bb_rect.isNull() )
+  {
+    // something bad happened when reprojecting the filter rect... no finite points were left!
+    throw QgsCsException( QObject::tr( "Could not transform bounding box to target CRS" ) );
+  }
+
   if ( handle180Crossover )
   {
     //subtract temporary addition of 360 degrees from longitudes

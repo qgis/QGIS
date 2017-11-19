@@ -19,6 +19,7 @@
 #include "qgsrectangle.h"
 #include <QObject>
 #include "qgstest.h"
+#include "qgsexception.h"
 
 class TestQgsCoordinateTransform: public QObject
 {
@@ -204,6 +205,20 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   QGSCOMPARENEAR( resultRect.yMinimum(), expectedRect.yMinimum(), 0.001 );
   QGSCOMPARENEAR( resultRect.xMaximum(), expectedRect.xMaximum(), 0.001 );
   QGSCOMPARENEAR( resultRect.yMaximum(), expectedRect.yMaximum(), 0.001 );
+
+  // test transforming a bounding box, resulting in an invalid transform - exception must be thrown
+  tr = QgsCoordinateTransform( QgsCoordinateReferenceSystem( 4326 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  QgsRectangle rect( -99999999999, 99999999999, -99999999998, 99999999998 );
+  bool errorObtained = false;
+  try
+  {
+    resultRect = tr.transformBoundingBox( rect );
+  }
+  catch ( QgsCsException & )
+  {
+    errorObtained = true;
+  }
+  QVERIFY( errorObtained );
 }
 
 QGSTEST_MAIN( TestQgsCoordinateTransform )
