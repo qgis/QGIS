@@ -347,6 +347,7 @@ Moves the category at index position from to index position to.
  \param mode classification mode
  \param useSymmetricMode A bool indicating if we want to have classes and hence colors ramp symmetric around a value
  \param symmetryPoint The value around which the classes will be symmetric if useSymmetricMode is checked
+ \param listForCboPrettyBreaks The list of potential pivot values for symmetric mode with prettybreaks mode
  \param astride A bool indicating if the symmetry is made astride the symmetryPoint or not ( [-1,1] vs. [-1,0][0,1] )
  \param symbol base symbol
  \param ramp color ramp for classes
