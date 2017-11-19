@@ -29,6 +29,7 @@ PyQgsSpatialiteProvider
 
 # Flaky, see https://travis-ci.org/qgis/QGIS/jobs/297708174
 PyQgsServerAccessControl
+PyQgsServerWMS
 
 # Need a local postgres installation
 PyQgsAuthManagerPKIPostgresTest
