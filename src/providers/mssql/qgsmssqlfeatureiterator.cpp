@@ -425,14 +425,8 @@ bool QgsMssqlFeatureIterator::close()
   if ( mClosed )
     return false;
 
-  if ( mQuery )
+  if ( mQuery && mQuery->isActive() )
   {
-    if ( !mQuery->isActive() )
-    {
-      QgsDebugMsg( "QgsMssqlFeatureIterator::close on inactive query" );
-      return false;
-    }
-
     mQuery->finish();
   }
 
