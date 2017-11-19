@@ -45,7 +45,7 @@ QgsMssqlFeatureIterator::QgsMssqlFeatureIterator( QgsMssqlFeatureSource *source,
   catch ( QgsCsException & )
   {
     // can't reproject mFilterRect
-    mClosed = true;
+    close();
     return;
   }
 
@@ -413,13 +413,7 @@ bool QgsMssqlFeatureIterator::rewind()
   if ( !result )
   {
     QgsDebugMsg( mQuery->lastError().text() );
-    mQuery.reset();
-    if ( mDatabase.isOpen() )
-      mDatabase.close();
-
-    iteratorClosed();
-
-    mClosed = true;
+    close();
     return false;
   }
 
