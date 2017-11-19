@@ -22,7 +22,7 @@ IF (@OSX_HAVE_LOADERPATH@)
         UPDATEQGISPATHS ("${QFW_CHG}" ${QL})
         # change id of the framework
         IF (NOT @QGIS_MACAPP_INSTALL_DEV@)
-            EXECUTE_PROCESS(COMMAND install_name_tool -id "${ATEXECUTABLE}/${QGIS_FW_SUBDIR}/${QL}.framework/${QL}" "${QFWDIR}/${QL}.framework/${QL}")
+            EXECUTE_PROCESS(COMMAND install_name_tool -id "${ATEXECUTABLE}/${QGIS_FW_SUBDIR}/${QL}.framework/Versions/Current/${QL}" "${QFWDIR}/${QL}.framework/Versions/Current/${QL}")
         ENDIF ()
     ENDFOREACH (QL)
     FOREACH (QLIB ${QGLIBLIST})
