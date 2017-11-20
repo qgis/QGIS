@@ -3907,6 +3907,7 @@ void QgsOgrProvider::open( OpenMode mode )
   if ( mValid && mode == OpenModeInitial && mWriteAccess &&
        ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) || mGDALDriverName == QLatin1String( "MapInfo File" ) ) )
   {
+    mOgrSqlLayer.reset();
     mOgrOrigLayer.reset();
     mOgrLayer = nullptr;
     mValid = false;
