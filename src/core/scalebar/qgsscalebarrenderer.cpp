@@ -31,11 +31,12 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
   painter->save();
 
-  painter->setFont( settings.font() );
+  QFont scaledFont = settings.font();
+  scaledFont.setPointSizeF( scaledFont.pointSizeF() * context.scaleFactor() );
   painter->setPen( QPen( settings.fontColor() ) );
 
   QString firstLabel = firstLabelString( settings );
-  double xOffset = QgsComposerUtils::textWidthMM( settings.font(), firstLabel ) / 2;
+  double xOffset = context.convertToPainterUnits( QgsComposerUtils::textWidthMM( settings.font(), firstLabel ) / 2, QgsUnitTypes::RenderMillimeters );
 
   double currentLabelNumber = 0.0;
 
@@ -64,8 +65,9 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
 
     if ( segmentCounter == 0 || segmentCounter >= nSegmentsLeft ) //don't draw label for intermediate left segments
     {
-      QgsComposerUtils::drawText( painter, QPointF( positions.at( i ) - QgsComposerUtils::textWidthMM( settings.font(), currentNumericLabel ) / 2 + xOffset, QgsComposerUtils::fontAscentMM( settings.font() ) + settings.boxContentSpace() ),
-                                  currentNumericLabel, settings.font(), settings.fontColor() );
+      QgsComposerUtils::drawText( painter, QPointF( context.convertToPainterUnits( positions.at( i ) - QgsComposerUtils::textWidthMM( settings.font(), currentNumericLabel ) / 2, QgsUnitTypes::RenderMillimeters ) + xOffset,
+                                  context.convertToPainterUnits( QgsComposerUtils::fontAscentMM( settings.font() ) + settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters ) ),
+                                  currentNumericLabel, scaledFont, settings.fontColor() );
     }
 
     if ( segmentCounter >= nSegmentsLeft )
@@ -79,8 +81,9 @@ void QgsScaleBarRenderer::drawDefaultLabels( QgsRenderContext &context, const Qg
   if ( !positions.isEmpty() )
   {
     currentNumericLabel = QString::number( currentLabelNumber / settings.mapUnitsPerScaleBarUnit() );
-    QgsComposerUtils::drawText( painter, QPointF( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth - QgsComposerUtils::textWidthMM( settings.font(), currentNumericLabel ) / 2 + xOffset, QgsComposerUtils::fontAscentMM( settings.font() ) + settings.boxContentSpace() ),
-                                currentNumericLabel + ' ' + settings.unitLabel(), settings.font(), settings.fontColor() );
+    QgsComposerUtils::drawText( painter, QPointF( context.convertToPainterUnits( positions.at( positions.size() - 1 ) + scaleContext.segmentWidth - QgsComposerUtils::textWidthMM( settings.font(), currentNumericLabel ) / 2, QgsUnitTypes::RenderMillimeters ) + xOffset,
+                                context.convertToPainterUnits( QgsComposerUtils::fontAscentMM( settings.font() ) + settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters ) ),
+                                currentNumericLabel + ' ' + settings.unitLabel(), scaledFont, settings.fontColor() );
   }
 
   painter->restore();
