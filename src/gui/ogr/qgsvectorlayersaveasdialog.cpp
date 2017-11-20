@@ -360,12 +360,12 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   const QString sFormat( format() );
   if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "DGN" ) )
   {
-    mAttributesSelection->setEnabled( false );
+    mAttributesSelection->setVisible( false );
     selectAllFields = false;
   }
   else
   {
-    mAttributesSelection->setEnabled( true );
+    mAttributesSelection->setVisible( true );
     fieldsAsDisplayedValues = ( sFormat == QLatin1String( "CSV" ) || sFormat == QLatin1String( "XLS" ) || sFormat == QLatin1String( "XLSX" ) || sFormat == QLatin1String( "ODS" ) );
   }
 
