@@ -158,7 +158,7 @@ void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *> &layers )
   {
     return;
   }
-  
+
   int offset = 0;
   if ( mAllowEmpty )
     offset++;
