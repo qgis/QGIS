@@ -948,6 +948,10 @@ void QgsOgrProvider::loadFields()
     mAttributeFields.append(
       fidField
     );
+    // Set default value for fid, this is needed because
+    // the attribute form will not accept a NULL value, passing
+    // -1 will delegate to the back-end.
+    mDefaultValues.insert( 0, QStringLiteral( "-1" ) );
   }
 
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
@@ -1199,6 +1203,18 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
 
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
+}
+
+QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
+{
+  QString defVal = mDefaultValues.value( fieldIndex, QString() );
+
+  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+  {
+    return defVal;
+  }
+
+  return QString();
 }
 
 void QgsOgrProvider::updateExtents()
