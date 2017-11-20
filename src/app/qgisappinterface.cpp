@@ -186,6 +186,16 @@ bool QgisAppInterface::setActiveLayer( QgsMapLayer *layer )
   return qgis->setActiveLayer( layer );
 }
 
+void QgisAppInterface::copySelectionToClipboard( QgsMapLayer *layer )
+{
+  return qgis->copySelectionToClipboard( layer );
+}
+
+void QgisAppInterface::pasteFromClipboard( QgsMapLayer *layer )
+{
+  return qgis->pasteFromClipboard( layer );
+}
+
 void QgisAppInterface::addPluginToMenu( const QString &name, QAction *action )
 {
   qgis->addPluginToMenu( name, action );

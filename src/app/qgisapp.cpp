@@ -1822,9 +1822,9 @@ void QgisApp::createActions()
 
   connect( mActionUndo, &QAction::triggered, mUndoWidget, &QgsUndoWidget::undo );
   connect( mActionRedo, &QAction::triggered, mUndoWidget, &QgsUndoWidget::redo );
-  connect( mActionCutFeatures, &QAction::triggered, this, [ = ] { editCut(); } );
-  connect( mActionCopyFeatures, &QAction::triggered, this, [ = ] { editCopy(); } );
-  connect( mActionPasteFeatures, &QAction::triggered, this, [ = ] { editPaste(); } );
+  connect( mActionCutFeatures, &QAction::triggered, this, [ = ] { cutSelectionToClipboard(); } );
+  connect( mActionCopyFeatures, &QAction::triggered, this, [ = ] { copySelectionToClipboard(); } );
+  connect( mActionPasteFeatures, &QAction::triggered, this, [ = ] { pasteFromClipboard(); } );
   connect( mActionPasteAsNewVector, &QAction::triggered, this, &QgisApp::pasteAsNewVector );
   connect( mActionPasteAsNewMemoryVector, &QAction::triggered, this, [ = ] { pasteAsNewMemoryVector(); } );
   connect( mActionCopyStyle, &QAction::triggered, this, [ = ] { copyStyle(); } );
@@ -8084,7 +8084,7 @@ void QgisApp::addPart()
 }
 
 
-void QgisApp::editCut( QgsMapLayer *layerContainingSelection )
+void QgisApp::cutSelectionToClipboard( QgsMapLayer *layerContainingSelection )
 {
   // Test for feature support in this layer
   QgsVectorLayer *selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
@@ -8098,7 +8098,7 @@ void QgisApp::editCut( QgsMapLayer *layerContainingSelection )
   selectionVectorLayer->endEditCommand();
 }
 
-void QgisApp::editCopy( QgsMapLayer *layerContainingSelection )
+void QgisApp::copySelectionToClipboard( QgsMapLayer *layerContainingSelection )
 {
   QgsVectorLayer *selectionVectorLayer = qobject_cast<QgsVectorLayer *>( layerContainingSelection ? layerContainingSelection : activeLayer() );
   if ( !selectionVectorLayer )
@@ -8113,7 +8113,7 @@ void QgisApp::clipboardChanged()
   activateDeactivateLayerRelatedActions( activeLayer() );
 }
 
-void QgisApp::editPaste( QgsMapLayer *destinationLayer )
+void QgisApp::pasteFromClipboard( QgsMapLayer *destinationLayer )
 {
   QgsVectorLayer *pasteVectorLayer = qobject_cast<QgsVectorLayer *>( destinationLayer ? destinationLayer : activeLayer() );
   if ( !pasteVectorLayer )

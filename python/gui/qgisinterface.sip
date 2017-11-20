@@ -767,6 +767,18 @@ Start a blank project
  :rtype: bool
 %End
 
+    virtual void copySelectionToClipboard( QgsMapLayer * ) = 0;
+%Docstring
+ Copy selected features from the layer to clipboard
+.. versionadded:: 3.0
+%End
+
+    virtual void pasteFromClipboard( QgsMapLayer * ) = 0;
+%Docstring
+ Paste features from clipboard to the layer
+.. versionadded:: 3.0
+%End
+
     virtual int addToolBarIcon( QAction *qAction ) = 0;
 %Docstring
 Add an icon to the plugins toolbar

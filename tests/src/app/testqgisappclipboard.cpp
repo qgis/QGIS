@@ -103,7 +103,7 @@ void TestQgisAppClipboard::copyPaste()
 
     // copy all features to clipboard
     inputLayer->selectAll();
-    mQgisApp->editCopy( inputLayer );
+    mQgisApp->copySelectionToClipboard( inputLayer );
 
     QgsFeatureList features = mQgisApp->clipboard()->copyOf();
     qDebug() << features.size() << " features copied to clipboard";
