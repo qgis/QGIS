@@ -935,12 +935,18 @@ void QgsOgrProvider::loadFields()
                      fdef.GetFieldIndex( fidColumn ) < 0;
   if ( mFirstFieldIsFid )
   {
+    QgsField fidField(
+      fidColumn,
+      QVariant::LongLong,
+      QStringLiteral( "Integer64" )
+    );
+    // Set constraints for feature id
+    QgsFieldConstraints constraints = fidField.constraints();
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+    fidField.setConstraints( constraints );
     mAttributeFields.append(
-      QgsField(
-        fidColumn,
-        QVariant::LongLong,
-        QStringLiteral( "Integer64" )
-      )
+      fidField
     );
   }
 
