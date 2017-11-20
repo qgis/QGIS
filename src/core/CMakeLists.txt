@@ -386,6 +386,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitempolygon.cpp
   layout/qgslayoutitempolyline.cpp
   layout/qgslayoutitemregistry.cpp
+  layout/qgslayoutitemscalebar.cpp
   layout/qgslayoutitemshape.cpp
   layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmeasurement.cpp
@@ -750,6 +751,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitempolygon.h
   layout/qgslayoutitempolyline.h
   layout/qgslayoutitemregistry.h
+  layout/qgslayoutitemscalebar.h
   layout/qgslayoutitemshape.h
   layout/qgslayoutmodel.h
   layout/qgslayoutmultiframe.h

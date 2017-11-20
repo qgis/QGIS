@@ -32,6 +32,7 @@
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutlabelwidget.h"
 #include "qgslayoutitemlegend.h"
+#include "qgslayoutitemscalebar.h"
 #include "qgslayoutlegendwidget.h"
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
@@ -140,6 +141,29 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 
   registry->addLayoutItemGuiMetadata( legendItemMetadata.release() );
 
+  // scalebar item
+
+  auto scalebarItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutScaleBar, QObject::tr( "Scale Bar" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddScalebar.svg" ) ),
+                              [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return nullptr;//new QgsLayoutLegendWidget( qobject_cast< QgsLayoutItemLegend * >( item ) );
+  }, createRubberBand );
+  scalebarItemMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
+  {
+    QgsLayoutItemScaleBar *scalebar = qobject_cast< QgsLayoutItemScaleBar * >( item );
+    Q_ASSERT( scalebar );
+
+    QList<QgsLayoutItemMap *> mapItems;
+    scalebar->layout()->layoutItems( mapItems );
+
+    if ( !mapItems.isEmpty() )
+    {
+      scalebar->setMap( mapItems.at( 0 ) );
+    }
+    scalebar->applyDefaultSize();
+  } );
+
+  registry->addLayoutItemGuiMetadata( scalebarItemMetadata.release() );
 
   // shape items
 

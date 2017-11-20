@@ -184,6 +184,12 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  :rtype: bool
 %End
 
+    QList<QgsLayoutFrame *> frames() const;
+%Docstring
+ Returns a list of all child frames for this multiframe.
+.. seealso:: frameCount()
+ :rtype: list of QgsLayoutFrame
+%End
 
     int frameCount() const;
 %Docstring
@@ -197,6 +203,14 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  Returns the child frame at a specified ``index`` from the multiframe.
 .. seealso:: frameIndex()
  :rtype: QgsLayoutFrame
+%End
+
+    int frameIndex( QgsLayoutFrame *frame ) const;
+%Docstring
+ Returns the index of a ``frame`` within the multiframe.
+ :return: index for frame if found, -1 if frame not found in multiframe
+.. seealso:: frame()
+ :rtype: int
 %End
 
     QgsLayoutFrame *createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size );
