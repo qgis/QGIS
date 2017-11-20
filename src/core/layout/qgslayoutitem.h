@@ -172,7 +172,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see id()
      * \see setId()
     */
-    QString uuid() const { return mUuid; }
+    virtual QString uuid() const { return mUuid; }
 
     /**
      * Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist

@@ -47,6 +47,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
 
     int type() const override;
     QString stringType() const override;
+    QString uuid() const override;
 
     //Overridden to allow multiframe to set display name
     QString displayName() const override;
@@ -126,6 +127,7 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
   private:
     QgsLayoutFrame() = delete;
     QgsLayoutMultiFrame *mMultiFrame = nullptr;
+    QString mMultiFrameUuid;
     QRectF mSection;
 
     //! If true, layout will not export page if this frame is empty

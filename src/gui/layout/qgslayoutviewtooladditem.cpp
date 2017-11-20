@@ -84,9 +84,23 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   QRectF rect = mRubberBand->finish( event->snappedPoint(), event->modifiers() );
 
+  QString undoText;
+  if ( QgsLayoutItemAbstractGuiMetadata *metadata = QgsGui::layoutItemGuiRegistry()->itemMetadata( mItemMetadataId ) )
+  {
+    undoText = tr( "Create %1" ).arg( metadata->visibleName() );
+  }
+  else
+  {
+    undoText = tr( "Create Item" );
+  }
+  layout()->undoStack()->beginMacro( undoText );
+
   QgsLayoutItem *item = QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() );
   if ( !item )
+  {
+    layout()->undoStack()->endMacro();
     return;
+  }
 
   // click? or click-and-drag?
   bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
@@ -104,6 +118,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
     else
     {
       delete item;
+      layout()->undoStack()->endMacro();
       return;
     }
   }
@@ -126,6 +141,8 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
   if ( item->layout() != layout() )
     layout()->addLayoutItem( item );
   layout()->setSelectedItem( item );
+
+  layout()->undoStack()->endMacro();
   emit createdItem();
 }
 
