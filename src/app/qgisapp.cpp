@@ -10341,7 +10341,7 @@ bool QgisApp::saveDirty()
     // old code: mProjectIsDirtyFlag = true;
 
     // prompt user to save
-    answer = QMessageBox::information( this, tr( "Save?" ),
+    answer = QMessageBox::information( this, tr( "Save Project?" ),
                                        tr( "Do you want to save the current project? %1" )
                                        .arg( whyDirty ),
                                        QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard,
@@ -10378,7 +10378,7 @@ bool QgisApp::checkTasksDependOnProject()
 
   if ( !activeTaskDescriptions.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Active tasks" ),
+    QMessageBox::warning( this, tr( "Active Tasks" ),
                           tr( "The following tasks are currently running which depend on layers in this project:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( activeTaskDescriptions.toList().join( QStringLiteral( "\n" ) ) ) );
     return true;
   }
