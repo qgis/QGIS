@@ -12,16 +12,17 @@ __copyright__ = 'Copyright 2016, Even Rouault'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import qgis  # NOQA
-
 import os
-import tempfile
 import shutil
 import sys
+import tempfile
 import time
-from osgeo import gdal, ogr
 
-from qgis.core import QgsVectorLayer, QgsVectorLayerExporter, QgsFeature, QgsGeometry, QgsRectangle, QgsSettings
+import qgis  # NOQA
+from osgeo import gdal, ogr
+from qgis.core import (QgsFeature, QgsFieldConstraints, QgsGeometry,
+                       QgsRectangle, QgsSettings, QgsVectorLayer,
+                       QgsVectorLayerExporter, QgsPointXY)
 from qgis.PyQt.QtCore import QCoreApplication
 from qgis.testing import start_app, unittest
 
@@ -631,6 +632,38 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.startEditing())
         self.assertTrue(vl.deleteFeature(1234567890123))
         self.assertTrue(vl.commitChanges())
+
+    def test_SplitFeature(self):
+        """Test gpkg feature can be splitted"""
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageSplitFeatures.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POLYGON ((0 0,0 1,1 1,1 0,0 0))'))
+        lyr.CreateFeature(f)
+        f = None
+        ds = None
+
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+
+        # Check that pk field has unique constraint
+        fields = layer.fields()
+        pkfield = fields.at(0)
+        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
+
+        self.assertTrue(layer.isValid())
+        self.assertTrue(layer.isSpatial())
+        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
+        layer.startEditing()
+        self.assertEqual(layer.splitFeatures([QgsPointXY(0.5, 0), QgsPointXY(0.5, 1)], 0), 0)
+        self.assertTrue(layer.commitChanges())
+        self.assertEqual(layer.featureCount(), 2)
+
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertEqual(layer.featureCount(), 2)
+        self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))')
+        self.assertEqual([f for f in layer.getFeatures()][1].geometry().asWkt(), 'Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))')
 
 
 if __name__ == '__main__':
