@@ -227,6 +227,7 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::UInt
         << QVariant::LongLong
         << QVariant::ULongLong
+        << QVariant::Double
         << QVariant::String
   }
       << AggregateInfo
@@ -240,6 +241,7 @@ QList<QgsAggregateCalculator::AggregateInfo> QgsAggregateCalculator::aggregates(
         << QVariant::UInt
         << QVariant::LongLong
         << QVariant::ULongLong
+        << QVariant::Double
         << QVariant::String
   }
       << AggregateInfo
