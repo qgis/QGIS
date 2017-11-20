@@ -20,13 +20,13 @@
 #include "qgis.h"
 #include "qgslayoutmultiframe.h"
 #include "qgsfeature.h"
+#include "qgsdistancearea.h"
 #include <QUrl>
 
 class QgsWebPage;
 class QImage;
 class QgsVectorLayer;
 class QgsNetworkContentFetcher;
-class QgsDistanceArea;
 
 #ifndef SIP_RUN
 
@@ -234,26 +234,26 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
   private:
-    ContentMode mContentMode;
+    ContentMode mContentMode = QgsLayoutItemHtml::Url;
     QUrl mUrl;
-    QgsWebPage *mWebPage = nullptr;
+    std::unique_ptr< QgsWebPage > mWebPage;
     QString mHtml;
     QString mFetchedHtml;
     QString mLastFetchedUrl;
     QString mActualFetchedUrl; //may be different if page was redirected
     QSizeF mSize; //total size in mm
-    double mHtmlUnitsToLayoutUnits;
-    QImage *mRenderedPage = nullptr;
-    bool mEvaluateExpressions;
-    bool mUseSmartBreaks;
-    double mMaxBreakDistance;
+    double mHtmlUnitsToLayoutUnits = 1.0;
+    QImage mRenderedPage;
+    bool mEvaluateExpressions = true;
+    bool mUseSmartBreaks = true;
+    double mMaxBreakDistance = 10.0;
 
     QgsFeature mExpressionFeature;
     QgsVectorLayer *mExpressionLayer = nullptr;
-    QgsDistanceArea *mDistanceArea = nullptr;
+    QgsDistanceArea mDistanceArea;
 
     QString mUserStylesheet;
-    bool mEnableUserStylesheet;
+    bool mEnableUserStylesheet = false;
 
     //! JSON string representation of current atlas feature
     QString mAtlasFeatureJSON;
