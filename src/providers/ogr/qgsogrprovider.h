@@ -35,6 +35,24 @@ class QgsOgrFeatureIterator;
 class QgsOgrLayer;
 
 /**
+ * Releases a QgsOgrLayer
+ */
+struct QgsOgrLayerReleaser
+{
+
+  /**
+   * Releases a QgsOgrLayer \a layer.
+   */
+  void operator()( QgsOgrLayer *layer );
+
+};
+
+/**
+ * Scoped QgsOgrLayer.
+ */
+using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
+
+/**
   \class QgsOgrProvider
   \brief Data provider for OGR datasources
   */
@@ -206,11 +224,17 @@ class QgsOgrProvider : public QgsVectorDataProvider
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
     mutable QgsRectangle mExtentRect;
 
-    //! Current working layer (might be a SQL result layer if mSubsetString is set)
+    /**
+     * Current working layer - will point to either mOgrSqlLayer or mOgrOrigLayer depending
+     * on whether a subset string is set
+     */
     QgsOgrLayer *mOgrLayer = nullptr;
 
+    //! SQL result layer, used if a subset string is set
+    QgsOgrLayerUniquePtr mOgrSqlLayer;
+
     //! Original layer (not a SQL result layer)
-    QgsOgrLayer *mOgrOrigLayer = nullptr;
+    QgsOgrLayerUniquePtr mOgrOrigLayer;
 
     //! path to filename
     QString mFilePath;
@@ -284,26 +308,6 @@ class QgsOgrProvider : public QgsVectorDataProvider
 #endif
 
 };
-
-class QgsOgrLayer;
-
-/**
- * Releases a QgsOgrLayer
- */
-struct QgsOgrLayerReleaser
-{
-
-  /**
-   * Releases a QgsOgrLayer \a layer.
-   */
-  void operator()( QgsOgrLayer *layer );
-
-};
-
-/**
- * Scoped QgsOgrLayer.
- */
-using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
 
 /**
   \class QgsOgrProviderUtils
