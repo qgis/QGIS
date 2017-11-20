@@ -173,6 +173,7 @@ class QgsLayoutItemRegistry : QObject
       LayoutShape,
       LayoutPolygon,
       LayoutPolyline,
+      LayoutScaleBar,
       LayoutFrame,
 
       // known

@@ -25,6 +25,7 @@
 #include "qgslayoutitempicture.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayoutitemscalebar.h"
 #include "qgslayoutframe.h"
 #include "qgsgloweffect.h"
 #include "qgseffectstack.h"
@@ -59,6 +60,7 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPicture, QStringLiteral( "Picture" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddImage.svg" ) ), QgsLayoutItemPicture::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutLabel, QStringLiteral( "Label" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionLabel.svg" ) ), QgsLayoutItemLabel::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutLegend, QStringLiteral( "Legend" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLegend.svg" ) ), QgsLayoutItemLegend::create ) );
+  addLayoutItemType( new QgsLayoutItemMetadata( LayoutScaleBar, QStringLiteral( "Scale Bar" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddScalebar.svg" ) ), QgsLayoutItemScaleBar::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutShape, QStringLiteral( "Shape" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddBasicRectangle.svg" ) ), []( QgsLayout * layout )
   {
     QgsLayoutItemShape *shape = new QgsLayoutItemShape( layout );

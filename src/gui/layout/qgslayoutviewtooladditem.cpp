@@ -138,7 +138,7 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   // it's possible (in certain circumstances, e.g. when adding frame items) that this item
   // has already been added to the layout
-  if ( item->layout() != layout() )
+  if ( item->scene() != layout() )
     layout()->addLayoutItem( item );
   layout()->setSelectedItem( item );
 

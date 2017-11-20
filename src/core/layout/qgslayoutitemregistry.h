@@ -315,6 +315,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutShape, //!< Shape item
       LayoutPolygon, //!< Polygon shape item
       LayoutPolyline, //!< Polyline shape item
+      LayoutScaleBar, //!< Scale bar item
       LayoutFrame, //!< Frame item, part of a QgsLayoutMultiFrame object
 
       // known multi-frame types
