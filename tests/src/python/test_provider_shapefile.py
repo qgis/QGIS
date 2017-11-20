@@ -568,6 +568,22 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         self.assertTrue(ds.GetLayer(0).GetFeatureCount(), original_feature_count - 1)
         ds = None
 
+    def testOpenWithFilter(self):
+        file_path = os.path.join(TEST_DATA_DIR, 'provider')
+        uri = '{}|layerid=0|subset="name" = \'Apple\''.format(file_path)
+        # ensure that no longer required ogr SQL layers are correctly cleaned up
+        # we need to run this twice for the incorrect cleanup asserts to trip,
+        # since they are triggered only when fetching an existing layer from the ogr
+        # connection pool
+        for i in range(2):
+            vl = QgsVectorLayer(uri)
+            self.assertTrue(vl.isValid())
+            self.assertEqual(vl.featureCount(), 1)
+            f = next(vl.getFeatures())
+            self.assertEqual(f['name'], 'Apple')
+            # force close of data provider
+            vl.setDataSource('', 'test', 'ogr')
+
 
 if __name__ == '__main__':
     unittest.main()
