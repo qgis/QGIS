@@ -31,6 +31,7 @@ const int QgsPostgresFeatureIterator::sFeatureQueueSize = 2000;
 
 QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource* source, bool ownSource, const QgsFeatureRequest& request )
     : QgsAbstractFeatureIteratorFromSource<QgsPostgresFeatureSource>( source, ownSource, request )
+    , mConn( nullptr )
     , mFeatureQueueSize( sFeatureQueueSize )
     , mFetched( 0 )
     , mFetchGeometry( false )
@@ -39,6 +40,13 @@ QgsPostgresFeatureIterator::QgsPostgresFeatureIterator( QgsPostgresFeatureSource
     , mLastFetch( false )
     , mFilterRequiresGeometry( false )
 {
+  if ( request.filterType() == QgsFeatureRequest::FilterFids && request.filterFids().isEmpty() )
+  {
+    mClosed = true;
+    iteratorClosed();
+    return;
+  }
+
   if ( !source->mTransactionConnection )
   {
     mConn = QgsPostgresConnPool::instance()->acquireConnection( mSource->mConnInfo );
