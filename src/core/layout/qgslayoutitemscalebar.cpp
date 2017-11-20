@@ -423,13 +423,13 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
 
 void QgsLayoutItemScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit units )
 {
+  mSettings.setUnits( units );
   if ( mMap )
   {
-    setUnits( units );
     double upperMagnitudeMultiplier = 1.0;
     double widthInSelectedUnits = mapWidth();
     double initialUnitsPerSegment = widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
-    setUnitsPerSegment( initialUnitsPerSegment );
+    mSettings.setUnitsPerSegment( initialUnitsPerSegment );
 
     switch ( units )
     {
@@ -483,11 +483,11 @@ void QgsLayoutItemScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit units )
     {
       unitsPerSegment = unitsPerSegment * multiplier;
     }
-    setUnitsPerSegment( unitsPerSegment );
-    setMapUnitsPerScaleBarUnit( upperMagnitudeMultiplier );
+    mSettings.setUnitsPerSegment( unitsPerSegment );
+    mSettings.setMapUnitsPerScaleBarUnit( upperMagnitudeMultiplier );
 
-    setNumberOfSegments( 4 );
-    setNumberOfSegmentsLeft( 2 );
+    mSettings.setNumberOfSegments( 4 );
+    mSettings.setNumberOfSegmentsLeft( 2 );
   }
 
   refreshSegmentMillimeters();
@@ -611,7 +611,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   //map id
   if ( mMap )
   {
-    composerScaleBarElem.setAttribute( QStringLiteral( "mapId" ), mMap->id() );
+    composerScaleBarElem.setAttribute( QStringLiteral( "mapUuid" ), mMap->uuid() );
   }
 
   //colors

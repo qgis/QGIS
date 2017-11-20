@@ -78,10 +78,13 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mAlignmentComboBox->insertItem( 2, tr( "Right" ) );
 
   //units combo box
-  mUnitsComboBox->insertItem( 0, tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
-  mUnitsComboBox->insertItem( 1, tr( "Meters" ), QgsUnitTypes::DistanceMeters );
-  mUnitsComboBox->insertItem( 2, tr( "Feet" ), QgsUnitTypes::DistanceFeet );
-  mUnitsComboBox->insertItem( 3, tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
+  mUnitsComboBox->addItem( tr( "Map units" ), QgsUnitTypes::DistanceUnknownUnit );
+  mUnitsComboBox->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
+  mUnitsComboBox->addItem( tr( "Kilometers" ), QgsUnitTypes::DistanceKilometers );
+  mUnitsComboBox->addItem( tr( "Feet" ), QgsUnitTypes::DistanceFeet );
+  mUnitsComboBox->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
+  mUnitsComboBox->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
+  mUnitsComboBox->addItem( tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
 
   mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
   mFillColorButton->setAllowOpacity( true );
@@ -193,7 +196,7 @@ void QgsLayoutScaleBarWidget::setGuiElements()
   mAlignmentComboBox->setCurrentIndex( ( int )( mScalebar->alignment() ) );
 
   //units
-  mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( ( int )mScalebar->units() ) );
+  mUnitsComboBox->setCurrentIndex( mUnitsComboBox->findData( static_cast< int >( mScalebar->units() ) ) );
 
   if ( mScalebar->segmentSizeMode() == QgsScaleBarSettings::SegmentSizeFixed )
   {
@@ -546,36 +549,8 @@ void QgsLayoutScaleBarWidget::mUnitsComboBox_currentIndexChanged( int index )
   }
 
   disconnectUpdateSignal();
-  mScalebar->setUnits( ( QgsUnitTypes::DistanceUnit )unitData.toInt() );
-  switch ( mUnitsComboBox->currentIndex() )
-  {
-    case 0:
-    {
-      mScalebar->beginCommand( tr( "Set Scalebar Units" ) );
-      mScalebar->applyDefaultSize( QgsUnitTypes::DistanceUnknownUnit );
-      break;
-    }
-    case 2:
-    {
-      mScalebar->beginCommand( tr( "Set Scalebar Units" ) );
-      mScalebar->applyDefaultSize( QgsUnitTypes::DistanceFeet );
-      break;
-    }
-    case 3:
-    {
-      mScalebar->beginCommand( tr( "Set Scalebar Units" ) );
-      mScalebar->applyDefaultSize( QgsUnitTypes::DistanceNauticalMiles );
-      break;
-    }
-    case 1:
-    default:
-    {
-      mScalebar->beginCommand( tr( "Set Scalebar Units" ) );
-      mScalebar->applyDefaultSize( QgsUnitTypes::DistanceMeters );
-      break;
-    }
-  }
-
+  mScalebar->beginCommand( tr( "Set Scalebar Units" ) );
+  mScalebar->applyDefaultSize( static_cast<  QgsUnitTypes::DistanceUnit >( unitData.toInt() ) );
   mScalebar->update();
 
   mUnitLabelLineEdit->setText( mScalebar->unitLabel() );
