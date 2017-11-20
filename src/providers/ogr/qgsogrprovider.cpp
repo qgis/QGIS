@@ -192,18 +192,17 @@ void QgsOgrProvider::repack()
     {
       QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
 
-      if ( mOgrLayer != mOgrOrigLayer )
-        QgsOgrProviderUtils::release( mOgrLayer );
-      QgsOgrProviderUtils::release( mOgrOrigLayer );
+      mOgrSqlLayer.reset();
+      mOgrOrigLayer.reset();
 
       QString errCause;
       if ( mLayerName.isNull() )
       {
-        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerIndex, errCause ).release();
+        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerIndex, errCause );
       }
       else
       {
-        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerName, errCause ).release();
+        mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, QStringList(), mLayerName, errCause );
       }
 
       if ( !mOgrOrigLayer )
@@ -212,7 +211,7 @@ void QgsOgrProvider::repack()
         mValid = false;
       }
 
-      mOgrLayer = mOgrOrigLayer;
+      mOgrLayer = mOgrOrigLayer.get();
     }
 
   }
@@ -526,17 +525,14 @@ bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
       pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
       return false;
     }
-    QgsOgrLayerUniquePtr newLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer, subsetLayerH, theSQL );
-    Q_ASSERT( newLayer );
-    if ( mOgrLayer != mOgrOrigLayer )
-      QgsOgrProviderUtils::release( mOgrLayer );
-    mOgrLayer = newLayer.release();
+    mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, theSQL );
+    Q_ASSERT( mOgrSqlLayer.get() );
+    mOgrLayer = mOgrSqlLayer.get();
   }
   else
   {
-    if ( mOgrLayer != mOgrOrigLayer )
-      QgsOgrProviderUtils::release( mOgrLayer );
-    mOgrLayer = mOgrOrigLayer;
+    mOgrSqlLayer.reset();
+    mOgrLayer = mOgrOrigLayer.get();
   }
   mSubsetString = theSQL;
 
@@ -1138,7 +1134,7 @@ QgsRectangle QgsOgrProvider::extent() const
     mExtent->MaxY = -std::numeric_limits<double>::max();
 
     // TODO: This can be expensive, do we really need it!
-    if ( mOgrLayer == mOgrOrigLayer )
+    if ( mOgrLayer == mOgrOrigLayer.get() )
     {
       mOgrLayer->GetExtent( mExtent.get(), true );
     }
@@ -1215,8 +1211,7 @@ size_t QgsOgrProvider::layerCount() const
   if ( !mValid )
     return 0;
   return mOgrLayer->GetLayerCount();
-} // QgsOgrProvider::layerCount()
-
+}
 
 /**
  * Return the feature type
@@ -3787,7 +3782,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
 void QgsOgrProvider::open( OpenMode mode )
 {
   bool openReadOnly = false;
-  Q_ASSERT( !mOgrLayer );
+  Q_ASSERT( !mOgrSqlLayer );
   Q_ASSERT( !mOgrOrigLayer );
 
   // Try to open using VSIFileHandler
@@ -3836,11 +3831,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // has precedence over the layerid if both are given.
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerName, errCause ).release();
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerName, errCause );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerIndex, errCause ).release();
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, true, options, mLayerIndex, errCause );
     }
   }
 
@@ -3861,11 +3856,11 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause ).release();
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause ).release();
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause );
     }
   }
 
@@ -3875,7 +3870,7 @@ void QgsOgrProvider::open( OpenMode mode )
 
     QgsDebugMsg( "OGR opened using Driver " + mGDALDriverName );
 
-    mOgrLayer = mOgrOrigLayer;
+    mOgrLayer = mOgrOrigLayer.get();
 
     // check that the initial encoding setting is fit for this layer
     setEncoding( encoding() );
@@ -3912,8 +3907,8 @@ void QgsOgrProvider::open( OpenMode mode )
   if ( mValid && mode == OpenModeInitial && mWriteAccess &&
        ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) || mGDALDriverName == QLatin1String( "MapInfo File" ) ) )
   {
-    QgsOgrProviderUtils::release( mOgrOrigLayer );
-    mOgrLayer = mOgrOrigLayer = nullptr;
+    mOgrOrigLayer.reset();
+    mOgrLayer = nullptr;
     mValid = false;
 
     // In the case where we deal with a shapefile, it is possible that it has
@@ -3929,15 +3924,15 @@ void QgsOgrProvider::open( OpenMode mode )
     // try to open read-only
     if ( !mLayerName.isNull() )
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause ).release();
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerName, errCause );
     }
     else
     {
-      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause ).release();
+      mOgrOrigLayer = QgsOgrProviderUtils::getLayer( mFilePath, false, QStringList(), mLayerIndex, errCause );
     }
 
     mWriteAccess = false;
-    mOgrLayer = mOgrOrigLayer;
+    mOgrLayer = mOgrOrigLayer.get();
     if ( mOgrLayer )
     {
       mValid = true;
@@ -3964,14 +3959,9 @@ void QgsOgrProvider::open( OpenMode mode )
 
 void QgsOgrProvider::close()
 {
-  if ( mOgrLayer != mOgrOrigLayer )
-  {
-    QgsOgrProviderUtils::release( mOgrLayer );
-  }
-
-  QgsOgrProviderUtils::release( mOgrOrigLayer );
+  mOgrSqlLayer.reset();
+  mOgrOrigLayer.reset();
   mOgrLayer = nullptr;
-  mOgrOrigLayer = nullptr;
   mValid = false;
   setProperty( "_debug_open_mode", "invalid" );
 
