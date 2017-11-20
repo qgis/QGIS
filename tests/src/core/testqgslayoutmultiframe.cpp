@@ -43,6 +43,7 @@ class TestQgsLayoutMultiFrame : public QObject
     void addRemovePage(); //test if page is added and removed for RepeatUntilFinished mode
     void undoRedo(); //test that combinations of frame/multiframe undo/redo don't crash
     void undoRedoRemovedFrame(); //test that undo doesn't crash with removed frames
+    void undoRedoRemovedFrame2();
     void registry();
 
   private:
@@ -455,11 +456,13 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
 
   auto dumpStack = [ = ]
   {
+#if 0 // for debugging
     // dump stack
     for ( int i = 0; i < mLayout->undoStack()->stack()->count(); ++i )
     {
       QgsDebugMsg( QString( "%1: %2 %3" ).arg( i ).arg( mLayout->undoStack()->stack()->command( i )->text(), i + 1 == mLayout->undoStack()->stack()->index() ? QString( "<---" ) : QString() ) );
     }
+#endif
   };
   dumpStack();
   //undo changes
@@ -498,6 +501,15 @@ void TestQgsLayoutMultiFrame::undoRedoRemovedFrame()
 
   mLayout->removeMultiFrame( htmlItem );
   delete htmlItem;
+}
+
+void TestQgsLayoutMultiFrame::undoRedoRemovedFrame2()
+{
+  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( mLayout );
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( mLayout, htmlItem );
+  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 200 ) );
+  htmlItem->addFrame( frame1 );
+
 }
 
 void TestQgsLayoutMultiFrame::registry()

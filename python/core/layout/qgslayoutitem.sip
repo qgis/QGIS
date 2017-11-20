@@ -135,7 +135,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: str
 %End
 
-    QString uuid() const;
+    virtual QString uuid() const;
 %Docstring
  Returns the item identification string. This is a unique random string set for the item
  upon creation.

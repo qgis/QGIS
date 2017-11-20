@@ -21,6 +21,7 @@
 QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame )
   : QgsLayoutItem( layout )
   , mMultiFrame( multiFrame )
+  , mMultiFrameUuid( multiFrame ? multiFrame->uuid() : QString() )
 {
 
   //default to no background
@@ -91,6 +92,14 @@ int QgsLayoutFrame::type() const
 QString QgsLayoutFrame::stringType() const
 {
   return QStringLiteral( "ItemFrame" );
+}
+
+QString QgsLayoutFrame::uuid() const
+{
+  if ( mMultiFrame )
+    return mMultiFrame->uuid() + ':' + mMultiFrame->frameIndex( const_cast< QgsLayoutFrame * >( this ) );
+  else
+    return QgsLayoutItem::uuid();
 }
 
 void QgsLayoutFrame::setHidePageIfEmpty( const bool hidePageIfEmpty )
