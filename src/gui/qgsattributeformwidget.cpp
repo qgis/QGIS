@@ -173,6 +173,16 @@ void QgsAttributeFormWidget::updateWidgets()
 
 }
 
+bool QgsAttributeFormWidget::searchWidgetToolButtonVisible() const
+{
+  return mSearchWidgetToolButton->isVisible();
+}
+
+void QgsAttributeFormWidget::setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible )
+{
+  return mSearchWidgetToolButton->setVisible( searchWidgetToolButtonVisible );
+}
+
 QWidget *QgsAttributeFormWidget::searchPage() const
 {
   return mSearchPage;
