@@ -199,15 +199,20 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
 void QgsVirtualLayerSourceSelect::onTestQuery()
 {
   QgsVirtualLayerDefinition def = getVirtualLayerDef();
-
-  std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ) ) );
-  if ( vl->isValid() )
+  // If the definition is empty just do nothing.
+  // TODO: a validation function that can enable/disable the test button
+  //       according to the validity of the active layer definition
+  if ( ! def.toString().isEmpty() )
   {
-    QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );
-  }
-  else
-  {
-    QMessageBox::critical( nullptr, tr( "Virtual layer test" ), vl->dataProvider()->error().summary() );
+    std::unique_ptr<QgsVectorLayer> vl( new QgsVectorLayer( def.toString(), QStringLiteral( "test" ), QStringLiteral( "virtual" ) ) );
+    if ( vl->isValid() )
+    {
+      QMessageBox::information( nullptr, tr( "Virtual layer test" ), tr( "No error" ) );
+    }
+    else
+    {
+      QMessageBox::critical( nullptr, tr( "Virtual layer test" ), vl->dataProvider()->error().summary() );
+    }
   }
 }
 
