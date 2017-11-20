@@ -233,9 +233,6 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     bool writePropertiesToElement( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
     bool readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context ) override;
 
-  private slots:
-    void frameLoaded( bool ok = true );
-
   private:
     ContentMode mContentMode;
     QUrl mUrl;
@@ -244,7 +241,6 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     QString mFetchedHtml;
     QString mLastFetchedUrl;
     QString mActualFetchedUrl; //may be different if page was redirected
-    bool mLoaded;
     QSizeF mSize; //total size in mm
     double mHtmlUnitsToLayoutUnits;
     QImage *mRenderedPage = nullptr;

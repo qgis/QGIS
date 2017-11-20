@@ -37,7 +37,6 @@
 QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   : QgsLayoutMultiFrame( layout )
   , mContentMode( QgsLayoutItemHtml::Url )
-  , mLoaded( false )
   , mHtmlUnitsToLayoutUnits( 1.0 )
   , mEvaluateExpressions( true )
   , mUseSmartBreaks( true )
@@ -57,7 +56,6 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   mWebPage->setPalette( palette );
 
   mWebPage->setNetworkAccessManager( QgsNetworkAccessManager::instance() );
-  connect( mWebPage, &QWebPage::loadFinished, this, &QgsLayoutItemHtml::frameLoaded );
 
 #if 0 //TODO
   if ( mLayout )
@@ -78,8 +76,6 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
 #endif
 
   mFetcher = new QgsNetworkContentFetcher();
-  connect( mFetcher, &QgsNetworkContentFetcher::finished, this, [ = ] { frameLoaded(); } );
-
 }
 
 QgsLayoutItemHtml::~QgsLayoutItemHtml()
@@ -186,7 +182,11 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
     loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, mDistanceArea );
   }
 
-  mLoaded = false;
+  bool loaded = false;
+
+  QEventLoop loop;
+  connect( mWebPage, &QWebPage::loadFinished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
 
   //reset page size. otherwise viewport size increases but never decreases again
   mWebPage->setViewportSize( QSize( maxFrameWidth() * mHtmlUnitsToLayoutUnits, 0 ) );
@@ -195,6 +195,7 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   const QUrl baseUrl = mContentMode == QgsLayoutItemHtml::Url ?
                        QUrl( mActualFetchedUrl ) :
                        QUrl::fromLocalFile( mLayout->project()->fileInfo().absoluteFilePath() );
+
   mWebPage->mainFrame()->setHtml( loadedHtml, baseUrl );
 
   //set user stylesheet
@@ -211,10 +212,8 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
     settings->setUserStyleSheetUrl( QUrl() );
   }
 
-  while ( !mLoaded )
-  {
-    qApp->processEvents();
-  }
+  if ( !loaded )
+    loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   //inject JSON feature
   if ( !mAtlasFeatureJSON.isEmpty() )
@@ -227,12 +226,6 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   recalculateFrameSizes();
   //trigger a repaint
   emit contentsChanged();
-}
-
-void QgsLayoutItemHtml::frameLoaded( bool ok )
-{
-  Q_UNUSED( ok );
-  mLoaded = true;
 }
 
 double QgsLayoutItemHtml::maxFrameWidth() const
@@ -290,13 +283,13 @@ void QgsLayoutItemHtml::renderCachedImage()
 QString QgsLayoutItemHtml::fetchHtml( const QUrl &url )
 {
   //pause until HTML fetch
-  mLoaded = false;
+  bool loaded = false;
+  QEventLoop loop;
+  connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
   mFetcher->fetchContent( url );
 
-  while ( !mLoaded )
-  {
-    qApp->processEvents();
-  }
+  if ( !loaded )
+    loop.exec( QEventLoop::ExcludeUserInputEvents );
 
   mFetchedHtml = mFetcher->contentAsString();
   mActualFetchedUrl = mFetcher->reply()->url().toString();
