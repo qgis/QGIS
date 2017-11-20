@@ -120,6 +120,9 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      */
     void resetSearch();
 
+    bool searchWidgetToolButtonVisible() const;
+    void setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible );
+
   protected:
 
     /**
@@ -153,7 +156,6 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
 
   private:
     virtual void updateWidgets();
-
     QgsAttributeFormWidget::Mode mMode = DefaultMode;
     QgsSearchWidgetToolButton *mSearchWidgetToolButton = nullptr;
     QWidget *mEditPage = nullptr;

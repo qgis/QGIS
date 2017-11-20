@@ -120,6 +120,12 @@ class QgsAttributeFormWidget : QWidget /Abstract/
  Resets the search/filter value of the widget.
 %End
 
+    bool searchWidgetToolButtonVisible() const;
+%Docstring
+ :rtype: bool
+%End
+    void setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible );
+
   protected:
 
 

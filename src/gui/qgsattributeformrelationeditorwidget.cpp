@@ -23,6 +23,7 @@ QgsAttributeFormRelationEditorWidget::QgsAttributeFormRelationEditorWidget( QgsR
   : QgsAttributeFormWidget( wrapper, form )
   , mWrapper( wrapper )
 {
+  setSearchWidgetToolButtonVisible( false );
 }
 
 void QgsAttributeFormRelationEditorWidget::createSearchWidgetWrappers( const QgsAttributeEditorContext &context )
