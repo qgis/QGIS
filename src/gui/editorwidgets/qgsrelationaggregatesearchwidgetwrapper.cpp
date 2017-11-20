@@ -18,8 +18,10 @@
 #include "qgsattributeform.h"
 #include "qgsrelationwidgetwrapper.h"
 #include "qgslogger.h"
+#include "qgscollapsiblegroupbox.h"
 
 #include <QLabel>
+#include <QGridLayout>
 
 QgsRelationAggregateSearchWidgetWrapper::QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *vl, QgsRelationWidgetWrapper *wrapper, QWidget *parent )
   : QgsSearchWidgetWrapper( vl, -1, parent )
@@ -51,6 +53,8 @@ QWidget *QgsRelationAggregateSearchWidgetWrapper::createWidget( QWidget *parent 
   QWidget *widget;
   QgsRelation relation = mWrapper->relation();
 
+  QgsCollapsibleGroupBox *groupBox = new QgsCollapsibleGroupBox( relation.name() );
+
   if ( !relation.isValid() )
   {
     widget = new QLabel( tr( "Relation not valid" ) );
@@ -63,7 +67,10 @@ QWidget *QgsRelationAggregateSearchWidgetWrapper::createWidget( QWidget *parent 
     widget = mAttributeForm;
   }
 
-  return widget;
+  groupBox->setLayout( new QGridLayout() );
+  groupBox->layout()->addWidget( widget );
+
+  return groupBox;
 }
 
 bool QgsRelationAggregateSearchWidgetWrapper::applyDirectly()
