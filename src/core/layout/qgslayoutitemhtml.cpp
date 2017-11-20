@@ -36,16 +36,9 @@
 
 QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
   : QgsLayoutMultiFrame( layout )
-  , mContentMode( QgsLayoutItemHtml::Url )
-  , mHtmlUnitsToLayoutUnits( 1.0 )
-  , mEvaluateExpressions( true )
-  , mUseSmartBreaks( true )
-  , mMaxBreakDistance( 10 )
-  , mEnableUserStylesheet( false )
 {
-  mDistanceArea = new QgsDistanceArea();
   mHtmlUnitsToLayoutUnits = htmlUnitsToLayoutUnits();
-  mWebPage = new QgsWebPage();
+  mWebPage = qgis::make_unique< QgsWebPage >();
   mWebPage->setIdentifier( tr( "Layout HTML item" ) );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Horizontal, Qt::ScrollBarAlwaysOff );
   mWebPage->mainFrame()->setScrollBarPolicy( Qt::Vertical, Qt::ScrollBarAlwaysOff );
@@ -80,9 +73,6 @@ QgsLayoutItemHtml::QgsLayoutItemHtml( QgsLayout *layout )
 
 QgsLayoutItemHtml::~QgsLayoutItemHtml()
 {
-  delete mDistanceArea;
-  delete mWebPage;
-  delete mRenderedPage;
   mFetcher->deleteLater();
 }
 
@@ -179,13 +169,13 @@ void QgsLayoutItemHtml::loadHtml( const bool useCache, const QgsExpressionContex
   //evaluate expressions
   if ( mEvaluateExpressions )
   {
-    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, mDistanceArea );
+    loadedHtml = QgsExpression::replaceExpressionText( loadedHtml, evalContext, &mDistanceArea );
   }
 
   bool loaded = false;
 
   QEventLoop loop;
-  connect( mWebPage, &QWebPage::loadFinished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
+  connect( mWebPage.get(), &QWebPage::loadFinished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
   connect( mFetcher, &QgsNetworkContentFetcher::finished, &loop, [&loaded, &loop ] { loaded = true; loop.quit(); } );
 
   //reset page size. otherwise viewport size increases but never decreases again
@@ -264,18 +254,14 @@ void QgsLayoutItemHtml::recalculateFrameSizes()
 void QgsLayoutItemHtml::renderCachedImage()
 {
   //render page to cache image
-  if ( mRenderedPage )
-  {
-    delete mRenderedPage;
-  }
-  mRenderedPage = new QImage( mWebPage->viewportSize(), QImage::Format_ARGB32 );
-  if ( mRenderedPage->isNull() )
+  mRenderedPage = QImage( mWebPage->viewportSize(), QImage::Format_ARGB32 );
+  if ( mRenderedPage.isNull() )
   {
     return;
   }
-  mRenderedPage->fill( Qt::transparent );
+  mRenderedPage.fill( Qt::transparent );
   QPainter painter;
-  painter.begin( mRenderedPage );
+  painter.begin( &mRenderedPage );
   mWebPage->mainFrame()->render( &painter );
   painter.end();
 }
@@ -340,7 +326,7 @@ bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )
 
 double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
 {
-  if ( !mWebPage || !mRenderedPage || !mUseSmartBreaks )
+  if ( !mWebPage || mRenderedPage.isNull() || !mUseSmartBreaks )
   {
     return yPos;
   }
@@ -349,7 +335,7 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
   int idealPos = yPos * htmlUnitsToLayoutUnits();
 
   //if ideal break pos is past end of page, there's nothing we need to do
-  if ( idealPos >= mRenderedPage->height() )
+  if ( idealPos >= mRenderedPage.height() )
   {
     return yPos;
   }
@@ -370,13 +356,13 @@ double QgsLayoutItemHtml::findNearbyPageBreak( double yPos )
     changes = 0;
     currentColor = qRgba( 0, 0, 0, 0 );
     //check all pixels in this line
-    for ( int col = 0; col < mRenderedPage->width(); ++col )
+    for ( int col = 0; col < mRenderedPage.width(); ++col )
     {
       //count how many times the pixels change color in this row
       //eventually, we select a row to break at with the minimum number of color changes
       //since this is likely a line break, or gap between table cells, etc
       //but very unlikely to be midway through a text line or picture
-      pixelColor = mRenderedPage->pixel( col, candidateRow );
+      pixelColor = mRenderedPage.pixel( col, candidateRow );
       currentPixelTransparent = qAlpha( pixelColor ) == 0;
       if ( pixelColor != currentColor && !( currentPixelTransparent && previousPixelTransparent ) )
       {
@@ -506,7 +492,7 @@ void QgsLayoutItemHtml::setExpressionContext( const QgsFeature &feature, QgsVect
   //setup distance area conversion
   if ( layer )
   {
-    mDistanceArea->setSourceCrs( layer->crs() );
+    mDistanceArea.setSourceCrs( layer->crs() );
   }
   else if ( mLayout )
   {
@@ -519,7 +505,7 @@ void QgsLayoutItemHtml::setExpressionContext( const QgsFeature &feature, QgsVect
   }
   if ( mLayout )
   {
-    mDistanceArea->setEllipsoid( mLayout->project()->ellipsoid() );
+    mDistanceArea.setEllipsoid( mLayout->project()->ellipsoid() );
   }
 
   // create JSON representation of feature
