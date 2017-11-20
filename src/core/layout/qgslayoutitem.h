@@ -138,6 +138,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLegendGroupFont, //!< Legend group font
       UndoLegendLayerFont, //!< Legend layer font
       UndoLegendItemFont, //!< Legend item font
+      UndoScaleBarLineWidth, //!< Scalebar line width
+      UndoScaleBarSegmentSize, //!< Scalebar segment size
+      UndoScaleBarSegmentsLeft, //!< Scalebar segments left
+      UndoScaleBarSegments, //!< Scalebar number of segments
+      UndoScaleBarHeight, //!< Scalebar height
+      UndoScaleBarFontColor, //!< Scalebar font color
+      UndoScaleBarFillColor, //!< Scalebar fill color
+      UndoScaleBarFillColor2, //!< Scalebar secondary fill color
+      UndoScaleBarStrokeColor, //!< Scalebar stroke color
+      UndoScaleBarUnitText, //!< Scalebar unit text
+      UndoScaleBarMapUnitsSegment, //!< Scalebar map units per segment
+      UndoScaleBarLabelBarSize, //!< Scalebar label bar size
+      UndoScaleBarBoxContentSpace, //!< Scalebar box context space
+
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
 

@@ -37,6 +37,7 @@
 #include "qgslayoutframe.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayouthtmlwidget.h"
+#include "qgslayoutscalebarwidget.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -143,10 +144,10 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 
   // scalebar item
 
-  auto scalebarItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutScaleBar, QObject::tr( "Scale Bar" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddScalebar.svg" ) ),
+  auto scalebarItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutScaleBar, QObject::tr( "Scale Bar" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ),
                               [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return nullptr;//new QgsLayoutLegendWidget( qobject_cast< QgsLayoutItemLegend * >( item ) );
+    return new QgsLayoutScaleBarWidget( qobject_cast< QgsLayoutItemScaleBar * >( item ) );
   }, createRubberBand );
   scalebarItemMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
   {

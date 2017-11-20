@@ -105,6 +105,20 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoLegendGroupFont,
       UndoLegendLayerFont,
       UndoLegendItemFont,
+      UndoScaleBarLineWidth,
+      UndoScaleBarSegmentSize,
+      UndoScaleBarSegmentsLeft,
+      UndoScaleBarSegments,
+      UndoScaleBarHeight,
+      UndoScaleBarFontColor,
+      UndoScaleBarFillColor,
+      UndoScaleBarFillColor2,
+      UndoScaleBarStrokeColor,
+      UndoScaleBarUnitText,
+      UndoScaleBarMapUnitsSegment,
+      UndoScaleBarLabelBarSize,
+      UndoScaleBarBoxContentSpace,
+
       UndoCustomCommand,
     };
 
