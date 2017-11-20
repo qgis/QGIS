@@ -43,12 +43,12 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
   setupUi( this );
   setupButtons( buttonBox );
 
-  connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onTestQuery );
-  connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onBrowseCRS );
-  connect( mAddLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onAddLayer );
-  connect( mRemoveLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onRemoveLayer );
-  connect( mImportLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::onImportLayer );
-  connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::onTableRowChanged );
+  connect( mTestButton, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::testQuery );
+  connect( mBrowseCRSBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::browseCRS );
+  connect( mAddLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::addLayer );
+  connect( mRemoveLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::removeLayer );
+  connect( mImportLayerBtn, &QAbstractButton::clicked, this, &QgsVirtualLayerSourceSelect::importLayer );
+  connect( mLayersTable->selectionModel(), &QItemSelectionModel::currentRowChanged, this, &QgsVirtualLayerSourceSelect::tableRowChanged );
 
   // prepare provider list
   Q_FOREACH ( const QString &pk, QgsProviderRegistry::instance()->providerList() )
@@ -72,8 +72,8 @@ QgsVirtualLayerSourceSelect::QgsVirtualLayerSourceSelect( QWidget *parent, Qt::W
     }
   }
   updateLayersList();
-  connect( mLayerNameCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVirtualLayerSourceSelect::onLayerComboChanged );
-  onLayerComboChanged( mLayerNameCombo->currentIndex() );
+  connect( mLayerNameCombo, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsVirtualLayerSourceSelect::layerComboChanged );
+  layerComboChanged( mLayerNameCombo->currentIndex() );
 
   // Prepare embedded layer selection dialog and
   // connect to model changes in the treeview
@@ -97,7 +97,7 @@ void QgsVirtualLayerSourceSelect::refresh()
   updateLayersList();
 }
 
-void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
+void QgsVirtualLayerSourceSelect::layerComboChanged( int idx )
 {
   if ( idx == -1 )
     return;
@@ -145,7 +145,7 @@ void QgsVirtualLayerSourceSelect::onLayerComboChanged( int idx )
   }
 }
 
-void QgsVirtualLayerSourceSelect::onBrowseCRS()
+void QgsVirtualLayerSourceSelect::browseCRS()
 {
   QgsProjectionSelectionDialog crsSelector( this );
   QgsCoordinateReferenceSystem crs( mSrid );
@@ -196,7 +196,7 @@ QgsVirtualLayerDefinition QgsVirtualLayerSourceSelect::getVirtualLayerDef()
   return def;
 }
 
-void QgsVirtualLayerSourceSelect::onTestQuery()
+void QgsVirtualLayerSourceSelect::testQuery()
 {
   QgsVirtualLayerDefinition def = getVirtualLayerDef();
   // If the definition is empty just do nothing.
@@ -216,7 +216,7 @@ void QgsVirtualLayerSourceSelect::onTestQuery()
   }
 }
 
-void QgsVirtualLayerSourceSelect::onAddLayer()
+void QgsVirtualLayerSourceSelect::addLayer()
 {
   mLayersTable->insertRow( mLayersTable->rowCount() );
 
@@ -234,14 +234,14 @@ void QgsVirtualLayerSourceSelect::onAddLayer()
   mLayersTable->setCellWidget( mLayersTable->rowCount() - 1, 2, encodingCombo );
 }
 
-void QgsVirtualLayerSourceSelect::onRemoveLayer()
+void QgsVirtualLayerSourceSelect::removeLayer()
 {
   int currentRow = mLayersTable->selectionModel()->currentIndex().row();
   if ( currentRow != -1 )
     mLayersTable->removeRow( currentRow );
 }
 
-void QgsVirtualLayerSourceSelect::onTableRowChanged( const QModelIndex &current, const QModelIndex &previous )
+void QgsVirtualLayerSourceSelect::tableRowChanged( const QModelIndex &current, const QModelIndex &previous )
 {
   Q_UNUSED( previous );
   mRemoveLayerBtn->setEnabled( current.row() != -1 );
@@ -321,7 +321,7 @@ void QgsVirtualLayerSourceSelect::updateLayersList()
 void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const QString &provider, const QString &encoding, const QString &source )
 {
   // insert a new row
-  onAddLayer();
+  addLayer();
   const int n = mLayersTable->rowCount() - 1;
   // local name
   mLayersTable->item( n, 0 )->setText( name );
@@ -335,7 +335,7 @@ void QgsVirtualLayerSourceSelect::addEmbeddedLayer( const QString &name, const Q
   encodingCombo->setCurrentIndex( encodingCombo->findText( encoding ) );
 }
 
-void QgsVirtualLayerSourceSelect::onImportLayer()
+void QgsVirtualLayerSourceSelect::importLayer()
 {
   if ( mEmbeddedSelectionDialog && mEmbeddedSelectionDialog->exec() == QDialog::Accepted )
   {
