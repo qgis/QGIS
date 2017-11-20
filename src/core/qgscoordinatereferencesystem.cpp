@@ -926,26 +926,27 @@ QgsCoordinateReferenceSystem::RecordMap QgsCoordinateReferenceSystem::getRecord(
     }
 
     //check the db is available
-    myResult = openDatabase( myDatabaseFileName, database );
+    sqlite3_database_unique_ptr userDatabase;
+    myResult = openDatabase( myDatabaseFileName, userDatabase );
     if ( myResult != SQLITE_OK )
     {
       return myMap;
     }
 
-    statement = database.prepare( sql, myResult );
+    sqlite3_statement_unique_ptr userStatement = userDatabase.prepare( sql, myResult );
     // XXX Need to free memory from the error msg if one is set
-    if ( myResult == SQLITE_OK && statement.step() == SQLITE_ROW )
+    if ( myResult == SQLITE_OK && userStatement.step() == SQLITE_ROW )
     {
-      int myColumnCount = statement.columnCount();
+      int myColumnCount = userStatement.columnCount();
       //loop through each column in the record adding its field name and value to the map
       for ( int myColNo = 0; myColNo < myColumnCount; myColNo++ )
       {
-        myFieldName = statement.columnName( myColNo );
-        myFieldValue = statement.columnAsText( myColNo );
+        myFieldName = userStatement.columnName( myColNo );
+        myFieldValue = userStatement.columnAsText( myColNo );
         myMap[myFieldName] = myFieldValue;
       }
 
-      if ( statement.step() != SQLITE_DONE )
+      if ( userStatement.step() != SQLITE_DONE )
       {
         QgsDebugMsgLevel( "Multiple records found in srs.db", 4 );
         myMap.clear();
@@ -1260,20 +1261,23 @@ long QgsCoordinateReferenceSystem::findMatchingProj()
 
   myDatabaseFileName = QgsApplication::qgisUserDatabaseFilePath();
   //check the db is available
-  myResult = openDatabase( myDatabaseFileName, database );
+
+  sqlite3_database_unique_ptr userDatabase;
+  sqlite3_statement_unique_ptr userStatement;
+  myResult = openDatabase( myDatabaseFileName, userDatabase );
   if ( myResult != SQLITE_OK )
   {
     return 0;
   }
 
-  statement = database.prepare( mySql, myResult );
+  userStatement = userDatabase.prepare( mySql, myResult );
 
   if ( myResult == SQLITE_OK )
   {
-    while ( statement.step() == SQLITE_ROW )
+    while ( userStatement.step() == SQLITE_ROW )
     {
-      QString mySrsId = statement.columnAsText( 0 );
-      QString myProj4String = statement.columnAsText( 1 );
+      QString mySrsId = userStatement.columnAsText( 0 );
+      QString myProj4String = userStatement.columnAsText( 1 );
       if ( toProj4() == myProj4String.trimmed() )
       {
         return mySrsId.toLong();
