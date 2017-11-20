@@ -49,7 +49,11 @@ class GUI_EXPORT QgsRuleBasedRendererModel : public QAbstractItemModel
     Q_OBJECT
 
   public:
-    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *r );
+
+    /**
+     * Constructor for QgsRuleBasedRendererModel, for the specified \a renderer.
+     */
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent );
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;

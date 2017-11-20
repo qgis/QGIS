@@ -71,7 +71,7 @@ QgsRuleBasedRendererWidget::QgsRuleBasedRendererWidget( QgsVectorLayer *layer, Q
   setupUi( this );
   this->layout()->setContentsMargins( 0, 0, 0, 0 );
 
-  mModel = new QgsRuleBasedRendererModel( mRenderer );
+  mModel = new QgsRuleBasedRendererModel( mRenderer, viewRules );
 #ifdef ENABLE_MODELTEST
   new ModelTest( mModel, this ); // for model validity checking
 #endif
@@ -799,8 +799,9 @@ void QgsRendererRulePropsWidget::setDockMode( bool dockMode )
 
 /////
 
-QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *r )
-  : mR( r )
+QgsRuleBasedRendererModel::QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent )
+  : QAbstractItemModel( parent )
+  , mR( renderer )
 {
 }
 
