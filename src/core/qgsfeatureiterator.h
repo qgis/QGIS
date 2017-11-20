@@ -159,7 +159,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     QgsFeatureRequest mRequest;
 
     //! Set to true, as soon as the iterator is closed.
-    bool mClosed;
+    bool mClosed = false;
 
     /**
      * A feature iterator may be closed already but still be serving features from the cache.
@@ -168,13 +168,13 @@ class CORE_EXPORT QgsAbstractFeatureIterator
      * In such a scenario, all resources have been released (mClosed is true) but the deads
      * are still alive.
      */
-    bool mZombie;
+    bool mZombie = false;
 
     /**
      * reference counting (to allow seamless copying of QgsFeatureIterator instances)
      * TODO QGIS3: make this private
      */
-    int refs;
+    int refs = 0;
     //! Add reference
     void ref();
     //! Remove reference, delete if refs == 0
@@ -182,10 +182,10 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     friend class QgsFeatureIterator;
 
     //! Number of features already fetched by iterator
-    long mFetchedCount;
+    long mFetchedCount = 0;
 
     //! Status of compilation of filter expression
-    CompileStatus mCompileStatus;
+    CompileStatus mCompileStatus = NoCompilation;
 
     //! Setup the simplification of geometries to fetch using the specified simplify method
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
@@ -201,7 +201,7 @@ class CORE_EXPORT QgsAbstractFeatureIterator
     bool mValid = true;
 
   private:
-    bool mUseCachedFeatures;
+    bool mUseCachedFeatures = false;
     QList<QgsIndexedFeature> mCachedFeatures;
     QList<QgsIndexedFeature>::ConstIterator mFeatureIterator;
 

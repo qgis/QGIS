@@ -192,9 +192,8 @@ void QgsOgrProvider::repack()
     {
       QgsMessageLog::logMessage( tr( "Possible corruption after REPACK detected. %1 still exists. This may point to a permission or locking problem of the original DBF." ).arg( packedDbf ), tr( "OGR" ), QgsMessageLog::CRITICAL );
 
-      if ( mOgrLayer != mOgrOrigLayer )
-        QgsOgrProviderUtils::release( mOgrLayer );
-      QgsOgrProviderUtils::release( mOgrOrigLayer );
+      mOgrSqlLayer.reset();
+      mOgrOrigLayer.reset();
 
       QString errCause;
       if ( mLayerName.isNull() )
@@ -212,7 +211,7 @@ void QgsOgrProvider::repack()
         mValid = false;
       }
 
-      mOgrLayer = mOgrOrigLayer;
+      mOgrLayer = mOgrOrigLayer.get();
     }
 
   }
@@ -299,11 +298,11 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     }
   }
 
-  QgsVectorFileWriter *writer = new QgsVectorFileWriter(
-    uri, encoding, fields, wkbType,
-    srs, driverName, dsOptions, layerOptions, nullptr,
-    QgsVectorFileWriter::NoSymbology, nullptr,
-    layerName, action );
+  std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >(
+        uri, encoding, fields, wkbType,
+        srs, driverName, dsOptions, layerOptions, nullptr,
+        QgsVectorFileWriter::NoSymbology, nullptr,
+        layerName, action );
 
   QgsVectorFileWriter::WriterError error = writer->hasError();
   if ( error )
@@ -311,12 +310,11 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     if ( errorMessage )
       *errorMessage += writer->errorMessage();
 
-    delete writer;
     return ( QgsVectorLayerExporter::ExportError ) error;
   }
 
   QMap<int, int> attrIdxMap = writer->attrIdxToOgrIdx();
-  delete writer;
+  writer.reset();
 
   if ( oldToNewAttrIdxMap )
   {
@@ -527,15 +525,14 @@ bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
       pushError( tr( "OGR[%1] error %2: %3" ).arg( CPLGetLastErrorType() ).arg( CPLGetLastErrorNo() ).arg( CPLGetLastErrorMsg() ) );
       return false;
     }
-    QgsOgrLayer *newLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer, subsetLayerH, theSQL );
-    Q_ASSERT( newLayer );
-    if ( mOgrLayer != mOgrOrigLayer )
-      QgsOgrProviderUtils::release( mOgrLayer );
-    mOgrLayer = newLayer;
+    mOgrSqlLayer = QgsOgrProviderUtils::getSqlLayer( mOgrOrigLayer.get(), subsetLayerH, theSQL );
+    Q_ASSERT( mOgrSqlLayer.get() );
+    mOgrLayer = mOgrSqlLayer.get();
   }
   else
   {
-    mOgrLayer = mOgrOrigLayer;
+    mOgrSqlLayer.reset();
+    mOgrLayer = mOgrOrigLayer.get();
   }
   mSubsetString = theSQL;
 
@@ -838,17 +835,15 @@ QStringList QgsOgrProvider::subLayers() const
     for ( unsigned int i = 0; i < layerCount() ; i++ )
     {
       QString errCause;
-      QgsOgrLayer *layer = QgsOgrProviderUtils::getLayer( mOgrOrigLayer->datasetName(),
-                           mOgrOrigLayer->updateMode(),
-                           mOgrOrigLayer->options(),
-                           i,
-                           errCause );
+      QgsOgrLayerUniquePtr layer = QgsOgrProviderUtils::getLayer( mOgrOrigLayer->datasetName(),
+                                   mOgrOrigLayer->updateMode(),
+                                   mOgrOrigLayer->options(),
+                                   i,
+                                   errCause );
       if ( !layer )
         continue;
 
-      addSubLayerDetailsToSubLayerList( i, layer );
-
-      QgsOgrProviderUtils::release( layer );
+      addSubLayerDetailsToSubLayerList( i, layer.get() );
     }
   }
   return mSubLayerList;
@@ -1118,7 +1113,7 @@ QgsRectangle QgsOgrProvider::extent() const
 {
   if ( !mExtent )
   {
-    mExtent = new OGREnvelope();
+    mExtent.reset( new OGREnvelope() );
 
     // get the extent_ (envelope) of the layer
     QgsDebugMsg( "Starting get extent" );
@@ -1139,9 +1134,9 @@ QgsRectangle QgsOgrProvider::extent() const
     mExtent->MaxY = -std::numeric_limits<double>::max();
 
     // TODO: This can be expensive, do we really need it!
-    if ( mOgrLayer == mOgrOrigLayer )
+    if ( mOgrLayer == mOgrOrigLayer.get() )
     {
-      mOgrLayer->GetExtent( mExtent, true );
+      mOgrLayer->GetExtent( mExtent.get(), true );
     }
     else
     {
@@ -1208,8 +1203,7 @@ void QgsOgrProvider::updateExtents()
 void QgsOgrProvider::invalidateCachedExtent( bool bForceRecomputeExtent )
 {
   mForceRecomputeExtent = bForceRecomputeExtent;
-  delete mExtent;
-  mExtent = nullptr;
+  mExtent.reset();
 }
 
 size_t QgsOgrProvider::layerCount() const
@@ -1217,8 +1211,7 @@ size_t QgsOgrProvider::layerCount() const
   if ( !mValid )
     return 0;
   return mOgrLayer->GetLayerCount();
-} // QgsOgrProvider::layerCount()
-
+}
 
 /**
  * Return the feature type
@@ -3156,7 +3149,7 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
   sql += " ORDER BY " + textEncoding()->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
-  QgsOgrLayer *l = mOgrLayer->ExecuteSQL( sql );
+  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
     QgsDebugMsg( "Failed to execute SQL" );
@@ -3172,7 +3165,6 @@ QSet<QVariant> QgsOgrProvider::uniqueValues( int index, int limit ) const
       break;
   }
 
-  QgsOgrProviderUtils::release( l );
   return uniqueValues;
 }
 
@@ -3202,7 +3194,7 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
   sql += " ORDER BY " + textEncoding()->fromUnicode( fld.name() ) + " ASC";  // quoting of fieldname produces a syntax error
 
   QgsDebugMsg( QString( "SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
-  QgsOgrLayer *l = mOgrLayer->ExecuteSQL( sql );
+  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
     QgsDebugMsg( "Failed to execute SQL" );
@@ -3219,7 +3211,6 @@ QStringList QgsOgrProvider::uniqueStringsMatching( int index, const QString &sub
       break;
   }
 
-  QgsOgrProviderUtils::release( l );
   return results;
 }
 
@@ -3240,7 +3231,7 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
     sql += " WHERE " + textEncoding()->fromUnicode( mSubsetString );
   }
 
-  QgsOgrLayer *l = mOgrLayer->ExecuteSQL( sql );
+  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
     QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
@@ -3250,14 +3241,10 @@ QVariant QgsOgrProvider::minimumValue( int index ) const
   gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
   if ( !f )
   {
-    QgsOgrProviderUtils::release( l );
     return QVariant();
   }
 
   QVariant value = OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() );
-
-  QgsOgrProviderUtils::release( l );
-
   return value;
 }
 
@@ -3278,7 +3265,7 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
     sql += " WHERE " + textEncoding()->fromUnicode( mSubsetString );
   }
 
-  QgsOgrLayer *l = mOgrLayer->ExecuteSQL( sql );
+  QgsOgrLayerUniquePtr l = mOgrLayer->ExecuteSQL( sql );
   if ( !l )
   {
     QgsDebugMsg( QString( "Failed to execute SQL: %1" ).arg( textEncoding()->toUnicode( sql ) ) );
@@ -3288,14 +3275,10 @@ QVariant QgsOgrProvider::maximumValue( int index ) const
   gdal::ogr_feature_unique_ptr f( l->GetNextFeature() );
   if ( !f )
   {
-    QgsOgrProviderUtils::release( l );
     return QVariant();
   }
 
   QVariant value = OGR_F_IsFieldSetAndNotNull( f.get(), 0 ) ? convertValue( fld.type(), textEncoding()->toUnicode( OGR_F_GetFieldAsString( f.get(), 0 ) ) ) : QVariant( fld.type() );
-
-  QgsOgrProviderUtils::release( l );
-
   return value;
 }
 
@@ -3799,7 +3782,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
 void QgsOgrProvider::open( OpenMode mode )
 {
   bool openReadOnly = false;
-  Q_ASSERT( !mOgrLayer );
+  Q_ASSERT( !mOgrSqlLayer );
   Q_ASSERT( !mOgrOrigLayer );
 
   // Try to open using VSIFileHandler
@@ -3887,7 +3870,7 @@ void QgsOgrProvider::open( OpenMode mode )
 
     QgsDebugMsg( "OGR opened using Driver " + mGDALDriverName );
 
-    mOgrLayer = mOgrOrigLayer;
+    mOgrLayer = mOgrOrigLayer.get();
 
     // check that the initial encoding setting is fit for this layer
     setEncoding( encoding() );
@@ -3924,8 +3907,8 @@ void QgsOgrProvider::open( OpenMode mode )
   if ( mValid && mode == OpenModeInitial && mWriteAccess &&
        ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) || mGDALDriverName == QLatin1String( "MapInfo File" ) ) )
   {
-    QgsOgrProviderUtils::release( mOgrOrigLayer );
-    mOgrLayer = mOgrOrigLayer = nullptr;
+    mOgrOrigLayer.reset();
+    mOgrLayer = nullptr;
     mValid = false;
 
     // In the case where we deal with a shapefile, it is possible that it has
@@ -3949,7 +3932,7 @@ void QgsOgrProvider::open( OpenMode mode )
     }
 
     mWriteAccess = false;
-    mOgrLayer = mOgrOrigLayer;
+    mOgrLayer = mOgrOrigLayer.get();
     if ( mOgrLayer )
     {
       mValid = true;
@@ -3976,14 +3959,9 @@ void QgsOgrProvider::open( OpenMode mode )
 
 void QgsOgrProvider::close()
 {
-  if ( mOgrLayer != mOgrOrigLayer )
-  {
-    QgsOgrProviderUtils::release( mOgrLayer );
-  }
-
-  QgsOgrProviderUtils::release( mOgrOrigLayer );
+  mOgrSqlLayer.reset();
+  mOgrOrigLayer.reset();
   mOgrLayer = nullptr;
-  mOgrOrigLayer = nullptr;
   mValid = false;
   setProperty( "_debug_open_mode", "invalid" );
 
@@ -4128,7 +4106,7 @@ void QgsOgrProviderUtils::invalidateCachedDatasets( const QString &dsName )
   }
 }
 
-QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
+QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     int layerIndex,
     QString &errCause )
 {
@@ -4167,7 +4145,7 @@ QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
   return getLayer( dsName, false, QStringList(), layerIndex, errCause );
 }
 
-QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
+QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     bool updateMode,
     const QStringList &options,
     int layerIndex,
@@ -4237,18 +4215,18 @@ QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
     new QgsOgrProviderUtils::DatasetWithLayers;
   ds->hDS = hDS;
 
-  QgsOgrLayer *QgsOgrLayer = QgsOgrLayer::CreateForLayer(
-                               ident, layerName, ds, hLayer );
-  ds->setLayers[layerName] = QgsOgrLayer;
+  QgsOgrLayerUniquePtr layer = QgsOgrLayer::CreateForLayer(
+                                 ident, layerName, ds, hLayer );
+  ds->setLayers[layerName] = layer.get();
 
   QList<DatasetWithLayers *> datasetList;
   datasetList.push_back( ds );
   mapSharedDS[ident] = datasetList;
 
-  return QgsOgrLayer;
+  return layer;
 }
 
-QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
+QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     const QString &layerName,
     QString &errCause )
 {
@@ -4281,10 +4259,10 @@ QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
             return nullptr;
           }
 
-          QgsOgrLayer *QgsOgrLayer = QgsOgrLayer::CreateForLayer(
-                                       iter.key(), layerName, ds, hLayer );
-          ds->setLayers[layerName] = QgsOgrLayer;
-          return QgsOgrLayer;
+          QgsOgrLayerUniquePtr layer = QgsOgrLayer::CreateForLayer(
+                                         iter.key(), layerName, ds, hLayer );
+          ds->setLayers[layerName] = layer.get();
+          return layer;
         }
       }
     }
@@ -4333,7 +4311,7 @@ bool QgsOgrProviderUtils::canUseOpenedDatasets( const QString &dsName )
 }
 
 
-QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
+QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     bool updateMode,
     const QStringList &options,
     const QString &layerName,
@@ -4388,10 +4366,10 @@ QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
           return nullptr;
         }
 
-        QgsOgrLayer *QgsOgrLayer = QgsOgrLayer::CreateForLayer(
-                                     ident, layerName, ds, hLayer );
-        ds->setLayers[layerName] = QgsOgrLayer;
-        return QgsOgrLayer;
+        QgsOgrLayerUniquePtr layer = QgsOgrLayer::CreateForLayer(
+                                       ident, layerName, ds, hLayer );
+        ds->setLayers[layerName] = layer.get();
+        return layer;
       }
     }
 
@@ -4421,10 +4399,10 @@ QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
 
     ds->hDS = hDS;
 
-    QgsOgrLayer *QgsOgrLayer = QgsOgrLayer::CreateForLayer(
-                                 ident, layerName, ds, hLayer );
-    ds->setLayers[layerName] = QgsOgrLayer;
-    return QgsOgrLayer;
+    QgsOgrLayerUniquePtr layer = QgsOgrLayer::CreateForLayer(
+                                   ident, layerName, ds, hLayer );
+    ds->setLayers[layerName] = layer.get();
+    return layer;
   }
 
   GDALDatasetH hDS = OpenHelper( dsName, updateMode, options );
@@ -4448,18 +4426,18 @@ QgsOgrLayer *QgsOgrProviderUtils::getLayer( const QString &dsName,
     new QgsOgrProviderUtils::DatasetWithLayers;
   ds->hDS = hDS;
 
-  QgsOgrLayer *QgsOgrLayer = QgsOgrLayer::CreateForLayer(
-                               ident, layerName, ds, hLayer );
-  ds->setLayers[layerName] = QgsOgrLayer;
+  QgsOgrLayerUniquePtr layer = QgsOgrLayer::CreateForLayer(
+                                 ident, layerName, ds, hLayer );
+  ds->setLayers[layerName] = layer.get();
 
   QList<DatasetWithLayers *> datasetList;
   datasetList.push_back( ds );
   mapSharedDS[ident] = datasetList;
 
-  return QgsOgrLayer;
+  return layer;
 }
 
-QgsOgrLayer *QgsOgrProviderUtils::getSqlLayer( QgsOgrLayer *baseLayer,
+QgsOgrLayerUniquePtr QgsOgrProviderUtils::getSqlLayer( QgsOgrLayer *baseLayer,
     OGRLayerH hSqlLayer,
     const QString &sql )
 {
@@ -4528,13 +4506,13 @@ QgsOgrLayer::QgsOgrLayer()
   oFDefn.layer = this;
 }
 
-QgsOgrLayer *QgsOgrLayer::CreateForLayer(
+QgsOgrLayerUniquePtr QgsOgrLayer::CreateForLayer(
   const QgsOgrProviderUtils::DatasetIdentification &ident,
   const QString &layerName,
   QgsOgrProviderUtils::DatasetWithLayers *ds,
   OGRLayerH hLayer )
 {
-  QgsOgrLayer *layer = new QgsOgrLayer;
+  QgsOgrLayerUniquePtr layer( new QgsOgrLayer() );
   layer->ident = ident;
   layer->isSqlLayer = false;
   layer->layerName = layerName;
@@ -4548,13 +4526,13 @@ QgsOgrLayer *QgsOgrLayer::CreateForLayer(
   return layer;
 }
 
-QgsOgrLayer *QgsOgrLayer::CreateForSql(
+QgsOgrLayerUniquePtr QgsOgrLayer::CreateForSql(
   const QgsOgrProviderUtils::DatasetIdentification &ident,
   const QString &sql,
   QgsOgrProviderUtils::DatasetWithLayers *ds,
   OGRLayerH hLayer )
 {
-  QgsOgrLayer *layer = new QgsOgrLayer;
+  QgsOgrLayerUniquePtr layer( new QgsOgrLayer() );
   layer->ident = ident;
   layer->isSqlLayer = true;
   layer->sql = sql;
@@ -4737,7 +4715,7 @@ void QgsOgrLayer::ExecuteSQLNoReturn( const QByteArray &sql )
   GDALDatasetReleaseResultSet( ds->hDS, hSqlLayer );
 }
 
-QgsOgrLayer *QgsOgrLayer::ExecuteSQL( const QByteArray &sql )
+QgsOgrLayerUniquePtr QgsOgrLayer::ExecuteSQL( const QByteArray &sql )
 {
   QMutexLocker locker( &ds->mutex );
   OGRLayerH hSqlLayer = GDALDatasetExecuteSQL( ds->hDS,
@@ -4814,8 +4792,8 @@ OGRFeatureH QgsOgrFeatureDefn::CreateFeature()
 // ---------------------------------------------------------------------------
 
 static
-QgsOgrLayer *LoadDataSourceAndLayer( const QString &uri,
-                                     QString &errCause )
+QgsOgrLayerUniquePtr LoadDataSourceAndLayer( const QString &uri,
+    QString &errCause )
 {
   bool isSubLayer;
   int layerIndex;
@@ -4844,14 +4822,14 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
                            const QString &styleName, const QString &styleDescription,
                            const QString &uiFileContent, bool useAsDefault, QString &errCause )
 {
-  QgsOgrLayer *userLayer = LoadDataSourceAndLayer( uri, errCause );
+  QgsOgrLayerUniquePtr userLayer = LoadDataSourceAndLayer( uri, errCause );
   if ( !userLayer )
     return false;
 
   QMutex *mutex = nullptr;
   OGRLayerH hUserLayer = userLayer->getHandleAndMutex( mutex );
   GDALDatasetH hDS = userLayer->getDatasetHandleAndMutex( mutex );
-  mutex->lock();
+  QMutexLocker locker( mutex );
 
   // check if layer_styles table already exist
   OGRLayerH hLayer = GDALDatasetGetLayerByName( hDS, "layer_styles" );
@@ -4871,7 +4849,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
       mutex->unlock();
-      QgsOgrProviderUtils::release( userLayer );
       return false;
     }
     bool ok = true;
@@ -4936,7 +4913,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     {
       errCause = QObject::tr( "Unable to save layer style. It's not possible to create the destination table on the database." );
       mutex->unlock();
-      QgsOgrProviderUtils::release( userLayer );
       return false;
     }
   }
@@ -4994,7 +4970,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     {
       errCause = QObject::tr( "Operation aborted" );
       mutex->unlock();
-      QgsOgrProviderUtils::release( userLayer );
       return false;
     }
     bNew = false;
@@ -5047,7 +5022,6 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
     bFeatureOK = OGR_L_SetFeature( hLayer, hFeature.get() ) == OGRERR_NONE;
 
   mutex->unlock();
-  QgsOgrProviderUtils::release( userLayer );
 
   if ( !bFeatureOK )
   {
@@ -5061,8 +5035,8 @@ QGISEXTERN bool saveStyle( const QString &uri, const QString &qmlStyle, const QS
 
 static
 bool LoadDataSourceLayerStylesAndLayer( const QString &uri,
-                                        QgsOgrLayer *&layerStyles,
-                                        QgsOgrLayer *&userLayer,
+                                        QgsOgrLayerUniquePtr &layerStyles,
+                                        QgsOgrLayerUniquePtr &userLayer,
                                         QString &errCause )
 {
   bool isSubLayer;
@@ -5096,7 +5070,7 @@ bool LoadDataSourceLayerStylesAndLayer( const QString &uri,
   }
   if ( !userLayer )
   {
-    QgsOgrProviderUtils::release( layerStyles );
+    layerStyles.reset();
     return false;
   }
   return true;
@@ -5105,8 +5079,8 @@ bool LoadDataSourceLayerStylesAndLayer( const QString &uri,
 
 QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
 {
-  QgsOgrLayer *layerStyles = nullptr;
-  QgsOgrLayer *userLayer = nullptr;
+  QgsOgrLayerUniquePtr layerStyles;
+  QgsOgrLayerUniquePtr userLayer;
   if ( !LoadDataSourceLayerStylesAndLayer( uri, layerStyles, userLayer, errCause ) )
   {
     return QLatin1String( "" );
@@ -5116,8 +5090,8 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
   OGRLayerH hLayer = layerStyles->getHandleAndMutex( mutex1 );
   QMutex *mutex2 = nullptr;
   OGRLayerH hUserLayer = userLayer->getHandleAndMutex( mutex2 );
-  mutex1->lock();
-  mutex2->lock();
+  QMutexLocker lock1( mutex1 );
+  QMutexLocker lock2( mutex2 );
 
   QString selectQmlQuery = QStringLiteral( "f_table_schema=''"
                            " AND f_table_name=%1"
@@ -5157,10 +5131,6 @@ QGISEXTERN QString loadStyle( const QString &uri, QString &errCause )
     }
   }
 
-  mutex1->unlock();
-  mutex2->unlock();
-  QgsOgrProviderUtils::release( layerStyles );
-  QgsOgrProviderUtils::release( userLayer );
   return styleQML;
 }
 
@@ -5179,7 +5149,7 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
                                  subsetString,
                                  ogrGeometryType );
 
-  QgsOgrLayer *userLayer;
+  QgsOgrLayerUniquePtr userLayer;
   if ( !layerName.isEmpty() )
   {
     userLayer = QgsOgrProviderUtils::getLayer( filePath, layerName, errCause );
@@ -5193,32 +5163,26 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     return -1;
   }
 
-  QgsOgrLayer *layerStyles =
+  QgsOgrLayerUniquePtr layerStyles =
     QgsOgrProviderUtils::getLayer( filePath, "layer_styles", errCause );
   if ( !layerStyles )
   {
     QgsMessageLog::logMessage( QObject::tr( "No styles available on DB" ) );
     errCause = QObject::tr( "No styles available on DB" );
-    QgsOgrProviderUtils::release( layerStyles );
-    QgsOgrProviderUtils::release( userLayer );
     return 0;
   }
 
   QMutex *mutex1 = nullptr;
   OGRLayerH hLayer = layerStyles->getHandleAndMutex( mutex1 );
-  mutex1->lock();
+  QMutexLocker lock1( mutex1 );
   QMutex *mutex2 = nullptr;
   OGRLayerH hUserLayer = userLayer->getHandleAndMutex( mutex2 );
-  mutex2->lock();
+  QMutexLocker lock2( mutex2 );
 
   if ( OGR_L_GetFeatureCount( hLayer, TRUE ) == 0 )
   {
     QgsMessageLog::logMessage( QObject::tr( "No styles available on DB" ) );
     errCause = QObject::tr( "No styles available on DB" );
-    mutex1->unlock();
-    mutex2->unlock();
-    QgsOgrProviderUtils::release( layerStyles );
-    QgsOgrProviderUtils::release( userLayer );
     return 0;
   }
 
@@ -5290,18 +5254,13 @@ QGISEXTERN int listStyles( const QString &uri, QStringList &ids, QStringList &na
     }
   }
 
-  mutex1->unlock();
-  mutex2->unlock();
-  QgsOgrProviderUtils::release( layerStyles );
-  QgsOgrProviderUtils::release( userLayer );
-
   return numberOfRelatedStyles;
 }
 
 QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &errCause )
 {
-  QgsOgrLayer *layerStyles = nullptr;
-  QgsOgrLayer *userLayer = nullptr;
+  QgsOgrLayerUniquePtr layerStyles;
+  QgsOgrLayerUniquePtr userLayer;
   if ( !LoadDataSourceLayerStylesAndLayer( uri, layerStyles, userLayer, errCause ) )
   {
     return QLatin1String( "" );
@@ -5309,16 +5268,13 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
 
   QMutex *mutex1 = nullptr;
   OGRLayerH hLayer = layerStyles->getHandleAndMutex( mutex1 );
-  mutex1->lock();
+  QMutexLocker lock1( mutex1 );
 
   bool ok;
   int id = styleId.toInt( &ok );
   if ( !ok )
   {
     errCause = QObject::tr( "Invalid style identifier" );
-    mutex1->unlock();
-    QgsOgrProviderUtils::release( layerStyles );
-    QgsOgrProviderUtils::release( userLayer );
     return QLatin1String( "" );
   }
 
@@ -5326,9 +5282,6 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   if ( !hFeature )
   {
     errCause = QObject::tr( "No style corresponding to style identifier" );
-    mutex1->unlock();
-    QgsOgrProviderUtils::release( layerStyles );
-    QgsOgrProviderUtils::release( userLayer );
     return QLatin1String( "" );
   }
 
@@ -5336,10 +5289,6 @@ QGISEXTERN QString getStyleById( const QString &uri, QString styleId, QString &e
   QString styleQML( QString::fromUtf8(
                       OGR_F_GetFieldAsString( hFeature.get(),
                           OGR_FD_GetFieldIndex( hLayerDefn, "styleQML" ) ) ) );
-
-  mutex1->unlock();
-  QgsOgrProviderUtils::release( layerStyles );
-  QgsOgrProviderUtils::release( userLayer );
 
   return styleQML;
 }
@@ -5508,3 +5457,8 @@ QGISEXTERN QList<QgsSourceSelectProvider *> *sourceSelectProviders()
 }
 
 #endif
+
+void QgsOgrLayerReleaser::operator()( QgsOgrLayer *layer )
+{
+  QgsOgrProviderUtils::release( layer );
+}
