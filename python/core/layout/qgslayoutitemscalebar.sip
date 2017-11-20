@@ -24,7 +24,6 @@ class QgsLayoutItemScaleBar: QgsLayoutItem
 %Docstring
  Constructor for QgsLayoutItemScaleBar, with the specified parent ``layout``.
 %End
-    ~QgsLayoutItemScaleBar();
 
     virtual int type() const;
 
@@ -38,6 +37,8 @@ class QgsLayoutItemScaleBar: QgsLayoutItem
  The caller takes responsibility for deleting the returned object.
  :rtype: QgsLayoutItemScaleBar
 %End
+    virtual QgsLayoutSize minimumSize() const;
+
 
     int numberOfSegments() const;
 %Docstring
@@ -413,15 +414,11 @@ class QgsLayoutItemScaleBar: QgsLayoutItem
  :rtype: str
 %End
 
-    void adjustBoxSize();
-%Docstring
- Sets the scale bar box size to a size suitable for the scalebar content.
-%End
-
     void update();
 %Docstring
  Adjusts the scale bar box size and updates the item.
 %End
+
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
 

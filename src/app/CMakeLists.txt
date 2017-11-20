@@ -193,6 +193,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutpolygonwidget.cpp
   layout/qgslayoutpolylinewidget.cpp
   layout/qgslayoutpropertieswidget.cpp
+  layout/qgslayoutscalebarwidget.cpp
   layout/qgslayoutshapewidget.cpp
 
   locator/qgsinbuiltlocatorfilters.cpp
@@ -402,6 +403,7 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutpolygonwidget.h
   layout/qgslayoutpolylinewidget.h
   layout/qgslayoutpropertieswidget.h
+  layout/qgslayoutscalebarwidget.h
   layout/qgslayoutshapewidget.h
 
   locator/qgsinbuiltlocatorfilters.h

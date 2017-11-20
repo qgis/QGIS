@@ -42,7 +42,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * Constructor for QgsLayoutItemScaleBar, with the specified parent \a layout.
      */
     QgsLayoutItemScaleBar( QgsLayout *layout );
-    ~QgsLayoutItemScaleBar();
 
     int type() const override;
     QString stringType() const override;
@@ -53,6 +52,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
      * The caller takes responsibility for deleting the returned object.
      */
     static QgsLayoutItemScaleBar *create( QgsLayout *layout ) SIP_FACTORY;
+    QgsLayoutSize minimumSize() const override;
 
     /**
      * Returns the number of segments included in the scalebar.
@@ -403,18 +403,10 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QString style() const;
 
     /**
-     * Sets the scale bar box size to a size suitable for the scalebar content.
-     */
-    void adjustBoxSize();
-
-    /**
      * Adjusts the scale bar box size and updates the item.
      */
     void update();
-#if 0 //TODO
-    //overridden to apply minimum size
-    void setSceneRect( const QRectF &rectangle ) override;
-#endif
+
     void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   protected:
@@ -436,13 +428,13 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QgsScaleBarSettings mSettings;
 
     //! Scalebar style
-    QgsScaleBarRenderer *mStyle = nullptr;
+    std::unique_ptr< QgsScaleBarRenderer > mStyle;
 
     //! Width of a segment (in mm)
-    double mSegmentMillimeters;
+    double mSegmentMillimeters = 0.0;
 
     //! Moves scalebar position to the left / right depending on alignment and change in item width
-    void correctXPositionAlignment( double width, double widthAfter );
+    void correctXPositionAlignment( double widthMM, double widthAfterMM );
 
     //! Calculates with of a segment in mm and stores it in mSegmentMillimeters
     void refreshSegmentMillimeters();

@@ -42,15 +42,9 @@
 
 QgsLayoutItemScaleBar::QgsLayoutItemScaleBar( QgsLayout *layout )
   : QgsLayoutItem( layout )
-  , mSegmentMillimeters( 0.0 )
 {
   applyDefaultSettings();
   applyDefaultSize();
-}
-
-QgsLayoutItemScaleBar::~QgsLayoutItemScaleBar()
-{
-  delete mStyle;
 }
 
 int QgsLayoutItemScaleBar::type() const
@@ -66,6 +60,11 @@ QString QgsLayoutItemScaleBar::stringType() const
 QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout )
 {
   return new QgsLayoutItemScaleBar( layout );
+}
+
+QgsLayoutSize QgsLayoutItemScaleBar::minimumSize() const
+{
+  return QgsLayoutSize( mStyle->calculateBoxSize( mSettings, createScaleContext() ), QgsUnitTypes::LayoutMillimeters );
 }
 
 void QgsLayoutItemScaleBar::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
@@ -87,6 +86,7 @@ void QgsLayoutItemScaleBar::setNumberOfSegments( int nSegments )
   mSettings.setNumberOfSegments( nSegments );
   double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
+  refreshItemSize();
   emit changed();
 }
 
@@ -102,6 +102,7 @@ void QgsLayoutItemScaleBar::setUnitsPerSegment( double units )
   refreshSegmentMillimeters();
   double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
+  refreshItemSize();
   emit changed();
 }
 
@@ -117,6 +118,7 @@ void QgsLayoutItemScaleBar::setSegmentSizeMode( QgsScaleBarSettings::SegmentSize
   refreshSegmentMillimeters();
   double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
+  refreshItemSize();
   emit changed();
 }
 
@@ -132,6 +134,7 @@ void QgsLayoutItemScaleBar::setMinimumBarWidth( double minWidth )
   refreshSegmentMillimeters();
   double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
+  refreshItemSize();
   emit changed();
 }
 
@@ -147,6 +150,7 @@ void QgsLayoutItemScaleBar::setMaximumBarWidth( double maxWidth )
   refreshSegmentMillimeters();
   double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
+  refreshItemSize();
   emit changed();
 }
 
@@ -161,6 +165,7 @@ void QgsLayoutItemScaleBar::setNumberOfSegmentsLeft( int nSegmentsLeft )
   mSettings.setNumberOfSegmentsLeft( nSegmentsLeft );
   double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
+  refreshItemSize();
   emit changed();
 }
 
@@ -175,6 +180,7 @@ void QgsLayoutItemScaleBar::setBoxContentSpace( double space )
   mSettings.setBoxContentSpace( space );
   double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   correctXPositionAlignment( width, widthAfter );
+  refreshItemSize();
   emit changed();
 }
 
@@ -247,6 +253,7 @@ void QgsLayoutItemScaleBar::refreshDataDefinedProperty( const QgsLayoutObject::D
   }
   if ( forceUpdate )
   {
+    refreshItemSize();
     update();
   }
 
@@ -353,7 +360,7 @@ QgsScaleBarRenderer::ScaleBarContext QgsLayoutItemScaleBar::createScaleContext()
 void QgsLayoutItemScaleBar::setAlignment( QgsScaleBarSettings::Alignment a )
 {
   mSettings.setAlignment( a );
-  update();
+  refreshItemSize();
   emit changed();
 }
 
@@ -361,6 +368,7 @@ void QgsLayoutItemScaleBar::setUnits( QgsUnitTypes::DistanceUnit u )
 {
   mSettings.setUnits( u );
   refreshSegmentMillimeters();
+  refreshItemSize();
   emit changed();
 }
 
@@ -391,8 +399,7 @@ void QgsLayoutItemScaleBar::setLineCapStyle( Qt::PenCapStyle style )
 void QgsLayoutItemScaleBar::applyDefaultSettings()
 {
   //style
-  delete mStyle;
-  mStyle = new QgsSingleBoxScaleBarRenderer();
+  mStyle = qgis::make_unique< QgsSingleBoxScaleBarRenderer >();
 
   //default to no background
   setBackgroundEnabled( false );
@@ -409,6 +416,7 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
   mSettings.setFont( f );
 
   mSettings.setUnits( QgsUnitTypes::DistanceUnknownUnit );
+  refreshItemSize();
 
   emit changed();
 }
@@ -483,76 +491,16 @@ void QgsLayoutItemScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit units )
   }
 
   refreshSegmentMillimeters();
-  adjustBoxSize();
+  refreshItemSize();
   emit changed();
 }
-
-void QgsLayoutItemScaleBar::adjustBoxSize()
-{
-  if ( !mStyle )
-  {
-    return;
-  }
-
-  QRectF box = QRectF( pos(), mStyle->calculateBoxSize( mSettings, createScaleContext() ) );
-  if ( rect().height() > box.height() )
-  {
-    //keep user specified item height if higher than minimum scale bar height
-    box.setHeight( rect().height() );
-  }
-
-#if 0 //TODO
-  //update rect for data defined size and position
-  QRectF newRect = evalItemRect( box, true );
-
-  //scale bars have a minimum size, respect that regardless of data defined settings
-  if ( newRect.width() < box.width() )
-  {
-    newRect.setWidth( box.width() );
-  }
-  if ( newRect.height() < box.height() )
-  {
-    newRect.setHeight( box.height() );
-  }
-
-  QgsLayoutItem::setSceneRect( newRect );
-#endif
-}
-
-#if 0 //TODO
-void QgsLayoutItemScaleBar::setSceneRect( const QRectF &rectangle )
-{
-  QRectF box = QRectF( pos(), mStyle->calculateBoxSize( mSettings, createScaleContext() ) );
-  if ( rectangle.height() > box.height() )
-  {
-    //keep user specified item height if higher than minimum scale bar height
-    box.setHeight( rectangle.height() );
-  }
-  box.moveTopLeft( rectangle.topLeft() );
-
-  //update rect for data defined size and position
-  QRectF newRect = evalItemRect( rectangle );
-
-  //scale bars have a minimum size, respect that regardless of data defined settings
-  if ( newRect.width() < box.width() )
-  {
-    newRect.setWidth( box.width() );
-  }
-  if ( newRect.height() < box.height() )
-  {
-    newRect.setHeight( box.height() );
-  }
-
-  QgsComposerItem::setSceneRect( newRect );
-}
-#endif
 
 void QgsLayoutItemScaleBar::update()
 {
   //Don't adjust box size for numeric scale bars:
   if ( mStyle && mStyle->name() != QLatin1String( "Numeric" ) )
   {
-    adjustBoxSize();
+    refreshItemSize();
   }
   QgsLayoutItem::update();
 }
@@ -563,31 +511,31 @@ void QgsLayoutItemScaleBar::updateSegmentSize()
   {
     return;
   }
-  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  double widthMM = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( width, widthAfter );
+  double widthAfterMM = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  correctXPositionAlignment( widthMM, widthAfterMM );
+  QgsLayoutSize currentSize = sizeWithUnits();
+  currentSize.setWidth( mLayout->context().measurementConverter().convert( QgsLayoutMeasurement( widthAfterMM, QgsUnitTypes::LayoutMillimeters ), currentSize.units() ).length() );
+  attemptResize( currentSize );
   update();
   emit changed();
 }
 
 void QgsLayoutItemScaleBar::setStyle( const QString &styleName )
 {
-  delete mStyle;
-  mStyle = nullptr;
-
   //switch depending on style name
   if ( styleName == QLatin1String( "Single Box" ) )
   {
-    mStyle = new QgsSingleBoxScaleBarRenderer();
+    mStyle = qgis::make_unique< QgsSingleBoxScaleBarRenderer >();
   }
   else if ( styleName == QLatin1String( "Double Box" ) )
   {
-    mStyle = new QgsDoubleBoxScaleBarRenderer();
+    mStyle = qgis::make_unique< QgsDoubleBoxScaleBarRenderer >();
   }
   else if ( styleName == QLatin1String( "Line Ticks Middle" )  || styleName == QLatin1String( "Line Ticks Down" ) || styleName == QLatin1String( "Line Ticks Up" ) )
   {
-    QgsTicksScaleBarRenderer *tickStyle = new QgsTicksScaleBarRenderer();
+    std::unique_ptr< QgsTicksScaleBarRenderer > tickStyle = qgis::make_unique< QgsTicksScaleBarRenderer >();
     if ( styleName == QLatin1String( "Line Ticks Middle" ) )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarRenderer::TicksMiddle );
@@ -600,12 +548,13 @@ void QgsLayoutItemScaleBar::setStyle( const QString &styleName )
     {
       tickStyle->setTickPosition( QgsTicksScaleBarRenderer::TicksUp );
     }
-    mStyle = tickStyle;
+    mStyle = std::move( tickStyle );
   }
   else if ( styleName == QLatin1String( "Numeric" ) )
   {
-    mStyle = new QgsNumericScaleBarRenderer();
+    mStyle = qgis::make_unique< QgsNumericScaleBarRenderer >();
   }
+  refreshItemSize();
   emit changed();
 }
 
@@ -629,7 +578,7 @@ QFont QgsLayoutItemScaleBar::font() const
 void QgsLayoutItemScaleBar::setFont( const QFont &font )
 {
   mSettings.setFont( font );
-  update();
+  refreshItemSize();
   emit changed();
 }
 
@@ -705,7 +654,7 @@ bool QgsLayoutItemScaleBar::writePropertiesToElement( QDomElement &composerScale
   return true;
 }
 
-bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext &context )
+bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext & )
 {
   mSettings.setHeight( itemElem.attribute( QStringLiteral( "height" ), QStringLiteral( "5.0" ) ).toDouble() );
   mSettings.setLabelBarSpace( itemElem.attribute( QStringLiteral( "labelBarSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
@@ -831,10 +780,8 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   }
 
   //style
-  delete mStyle;
-  mStyle = nullptr;
   QString styleString = itemElem.attribute( QStringLiteral( "style" ), QLatin1String( "" ) );
-  setStyle( tr( styleString.toLocal8Bit().data() ) );
+  setStyle( styleString.toLocal8Bit().data() );
 
   if ( itemElem.attribute( QStringLiteral( "unitType" ) ).isEmpty() )
   {
@@ -897,23 +844,28 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   return true;
 }
 
-void QgsLayoutItemScaleBar::correctXPositionAlignment( double width, double widthAfter )
+void QgsLayoutItemScaleBar::correctXPositionAlignment( double widthMM, double widthAfterMM )
 {
   //Don't adjust position for numeric scale bars:
   if ( mStyle->name() == QLatin1String( "Numeric" ) )
   {
     return;
   }
-#if 0 //TODO
 
+  QgsLayoutPoint currentPos = positionWithUnits();
+
+  double deltaMM = 0.0;
   if ( mSettings.alignment() == QgsScaleBarSettings::AlignMiddle )
   {
-    move( -( widthAfter - width ) / 2.0, 0 );
+    deltaMM = -( widthAfterMM - widthMM ) / 2.0;
   }
   else if ( mSettings.alignment() == QgsScaleBarSettings::AlignRight )
   {
-    move( -( widthAfter - width ), 0 );
+    deltaMM = -( widthAfterMM - widthMM );
   }
-#endif
+
+  double delta = mLayout->context().measurementConverter().convert( QgsLayoutMeasurement( deltaMM, QgsUnitTypes::LayoutMillimeters ), currentPos.units() ).length();
+  currentPos.setX( currentPos.x() + delta );
+  attemptMove( currentPos );
 }
 
