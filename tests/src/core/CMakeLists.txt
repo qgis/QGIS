@@ -147,6 +147,7 @@ SET(TESTS
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp
  testqgslayoutpicture.cpp
+ testqgslayoutscalebar.cpp
  testqgslayoutshapes.cpp
  testqgslayoutunits.cpp
  testqgslayoututils.cpp
