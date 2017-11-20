@@ -44,13 +44,13 @@ class QgsVirtualLayerSourceSelect : public QgsAbstractDataSourceWidget, private 
     void addButtonClicked() override;
 
   private slots:
-    void onTestQuery();
-    void onBrowseCRS();
-    void onLayerComboChanged( int );
-    void onAddLayer();
-    void onRemoveLayer();
-    void onImportLayer();
-    void onTableRowChanged( const QModelIndex &current, const QModelIndex &previous );
+    void testQuery();
+    void browseCRS();
+    void layerComboChanged( int );
+    void addLayer();
+    void removeLayer();
+    void importLayer();
+    void tableRowChanged( const QModelIndex &current, const QModelIndex &previous );
     void updateLayersList();
 
 
