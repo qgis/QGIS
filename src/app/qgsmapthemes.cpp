@@ -163,10 +163,8 @@ void QgsMapThemes::removeCurrentPreset()
       int res = QMessageBox::question( mMenu, tr( "Remove Theme" ),
                                        trUtf8( "Are you sure you want to remove the existing theme “%1”?" ).arg( actionPreset->text() ),
                                        QMessageBox::Yes | QMessageBox::No, QMessageBox::No );
-      if ( res != QMessageBox::Yes )
-        return;
-      //remove the selected preset
-      QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
+      if ( res == QMessageBox::Yes )
+        QgsProject::instance()->mapThemeCollection()->removeMapTheme( actionPreset->text() );
       break;
     }
   }
