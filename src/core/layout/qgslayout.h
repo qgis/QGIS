@@ -437,8 +437,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void removeLayoutItem( QgsLayoutItem *item );
 
-#ifndef SIP_RUN
-
     /**
      * Adds a \a multiFrame to the layout. The object is owned by the layout until removeMultiFrame() is called.
      * \see removeMultiFrame()
@@ -458,8 +456,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see addMultiFrame()
      * \see removeMultiFrame()
      */
-    QSet< QgsLayoutMultiFrame * > multiFrames() const;
-#endif
+    QList< QgsLayoutMultiFrame * > multiFrames() const;
 
     /**
      * Returns the layout's state encapsulated in a DOM element.
@@ -560,7 +557,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutExporter mExporter;
 
     //! List of multiframe objects
-    QSet<QgsLayoutMultiFrame *> mMultiFrames;
+    QList<QgsLayoutMultiFrame *> mMultiFrames;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;

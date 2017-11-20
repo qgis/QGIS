@@ -388,6 +388,27 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  The item will also be deleted.
 %End
 
+    void addMultiFrame( QgsLayoutMultiFrame *multiFrame /Transfer/ );
+%Docstring
+ Adds a ``multiFrame`` to the layout. The object is owned by the layout until removeMultiFrame() is called.
+.. seealso:: removeMultiFrame()
+.. seealso:: multiFrames()
+%End
+
+    void removeMultiFrame( QgsLayoutMultiFrame *multiFrame );
+%Docstring
+ Removes a ``multiFrame`` from the layout (but does not delete it).
+.. seealso:: addMultiFrame()
+.. seealso:: multiFrames()
+%End
+
+    QList< QgsLayoutMultiFrame * > multiFrames() const;
+%Docstring
+ Returns a list of multi frames contained in the layout.
+.. seealso:: addMultiFrame()
+.. seealso:: removeMultiFrame()
+ :rtype: list of QgsLayoutMultiFrame
+%End
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring

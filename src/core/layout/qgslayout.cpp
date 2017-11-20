@@ -435,15 +435,16 @@ void QgsLayout::addMultiFrame( QgsLayoutMultiFrame *multiFrame )
   if ( !multiFrame )
     return;
 
-  mMultiFrames.insert( multiFrame );
+  if ( !mMultiFrames.contains( multiFrame ) )
+    mMultiFrames << multiFrame;
 }
 
 void QgsLayout::removeMultiFrame( QgsLayoutMultiFrame *multiFrame )
 {
-  mMultiFrames.remove( multiFrame );
+  mMultiFrames.removeAll( multiFrame );
 }
 
-QSet<QgsLayoutMultiFrame *> QgsLayout::multiFrames() const
+QList<QgsLayoutMultiFrame *> QgsLayout::multiFrames() const
 {
   return mMultiFrames;
 }

@@ -184,6 +184,21 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  :rtype: bool
 %End
 
+
+    int frameCount() const;
+%Docstring
+ Returns the number of frames associated with this multiframe.
+.. seealso:: frames()
+ :rtype: int
+%End
+
+    QgsLayoutFrame *frame( int index ) const;
+%Docstring
+ Returns the child frame at a specified ``index`` from the multiframe.
+.. seealso:: frameIndex()
+ :rtype: QgsLayoutFrame
+%End
+
     QgsLayoutFrame *createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size );
 %Docstring
  Creates a new frame and adds it to the multi frame and layout.
