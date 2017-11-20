@@ -634,7 +634,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.commitChanges())
 
     def test_SplitFeature(self):
-        """Test gpkg feature can be splitted"""
+        """Test gpkg feature can be split"""
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageSplitFeatures.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
         lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
