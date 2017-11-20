@@ -198,7 +198,7 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QMap<int, QString> mDefaultValues;
 
     bool mFirstFieldIsFid = false;
-    mutable OGREnvelope *mExtent = nullptr;
+    mutable std::unique_ptr< OGREnvelope > mExtent;
     bool mForceRecomputeExtent = false;
 
     /**
@@ -285,6 +285,26 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
 };
 
+class QgsOgrLayer;
+
+/**
+ * Releases a QgsOgrLayer
+ */
+struct QgsOgrLayerReleaser
+{
+
+  /**
+   * Releases a QgsOgrLayer \a layer.
+   */
+  void operator()( QgsOgrLayer *layer );
+
+};
+
+/**
+ * Scoped QgsOgrLayer.
+ */
+using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
+
 /**
   \class QgsOgrProviderUtils
   \brief Utility class with static methods
@@ -357,32 +377,32 @@ class QgsOgrProviderUtils
     static void GDALCloseWrapper( GDALDatasetH mhDS );
 
     //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it doesn't already use that layer. release() should be called when done with the object
-    static QgsOgrLayer *getLayer( const QString &dsName,
-                                  const QString &layerName,
-                                  QString &errCause );
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
+                                          const QString &layerName,
+                                          QString &errCause );
 
 
     //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer. release() should be called when done with the object
-    static QgsOgrLayer *getLayer( const QString &dsName,
-                                  bool updateMode,
-                                  const QStringList &options,
-                                  const QString &layerName,
-                                  QString &errCause );
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
+                                          bool updateMode,
+                                          const QStringList &options,
+                                          const QString &layerName,
+                                          QString &errCause );
 
     //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it doesn't already use that layer. release() should be called when done with the object
-    static QgsOgrLayer *getLayer( const QString &dsName,
-                                  int layerIndex,
-                                  QString &errCause );
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
+                                          int layerIndex,
+                                          QString &errCause );
 
     //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer. release() should be called when done with the object
-    static QgsOgrLayer *getLayer( const QString &dsName,
-                                  bool updateMode,
-                                  const QStringList &options,
-                                  int layerIndex,
-                                  QString &errCause );
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
+                                          bool updateMode,
+                                          const QStringList &options,
+                                          int layerIndex,
+                                          QString &errCause );
 
     //! Return a QgsOgrLayer* with a SQL result layer
-    static QgsOgrLayer *getSqlLayer( QgsOgrLayer *baseLayer, OGRLayerH hSqlLayer, const QString &sql );
+    static QgsOgrLayerUniquePtr getSqlLayer( QgsOgrLayer *baseLayer, OGRLayerH hSqlLayer, const QString &sql );
 
     //! Release a QgsOgrLayer*
     static void release( QgsOgrLayer *&layer );
@@ -436,6 +456,7 @@ class QgsOgrFeatureDefn
     OGRFeatureH CreateFeature();
 };
 
+
 /**
   \class QgsOgrLayer
   \brief Wrap a OGRLayerH object in a thread-safe way
@@ -456,13 +477,13 @@ class QgsOgrLayer
     QgsOgrLayer();
     ~QgsOgrLayer() = default;
 
-    static QgsOgrLayer *CreateForLayer(
+    static QgsOgrLayerUniquePtr CreateForLayer(
       const QgsOgrProviderUtils::DatasetIdentification &ident,
       const QString &layerName,
       QgsOgrProviderUtils::DatasetWithLayers *ds,
       OGRLayerH hLayer );
 
-    static QgsOgrLayer *CreateForSql(
+    static QgsOgrLayerUniquePtr CreateForSql(
       const QgsOgrProviderUtils::DatasetIdentification &ident,
       const QString &sql,
       QgsOgrProviderUtils::DatasetWithLayers *ds,
@@ -566,8 +587,9 @@ class QgsOgrLayer
     void ExecuteSQLNoReturn( const QByteArray &sql );
 
     //! Wrapper of GDALDatasetExecuteSQL(). Returned layer must be released with QgsOgrProviderUtils::release()
-    QgsOgrLayer *ExecuteSQL( const QByteArray &sql );
+    QgsOgrLayerUniquePtr ExecuteSQL( const QByteArray &sql );
 };
+
 
 // clazy:excludeall=qstring-allocations
 
