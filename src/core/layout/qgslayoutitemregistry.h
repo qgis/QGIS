@@ -320,6 +320,8 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
       // known multi-frame types
       LayoutHtml, //!< Html multiframe item
+      LayoutAttributeTable, //!< Attribute table
+      LayoutTextTable, //!< Preset text table
 
       // item types provided by plugins
       PluginItem, //!< Starting point for plugin item types

@@ -178,6 +178,8 @@ class QgsLayoutItemRegistry : QObject
 
       // known
       LayoutHtml,
+      LayoutAttributeTable,
+      LayoutTextTable,
 
       // item
       PluginItem,

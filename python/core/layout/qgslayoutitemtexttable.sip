@@ -26,6 +26,19 @@ class QgsLayoutItemTextTable : QgsLayoutTable
  Constructor for QgsLayoutItemTextTable, for the specified ``layout``.
 %End
 
+    virtual int type() const;
+
+    virtual QString stringType() const;
+
+    virtual QString displayName() const;
+
+
+    static QgsLayoutItemTextTable *create( QgsLayout *layout ) /Factory/;
+%Docstring
+ Returns a new QgsLayoutItemTextTable for the specified parent ``layout``.
+ :rtype: QgsLayoutItemTextTable
+%End
+
     void addRow( const QStringList &row );
 %Docstring
  Adds a row to the table

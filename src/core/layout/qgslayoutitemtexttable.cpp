@@ -26,6 +26,26 @@ QgsLayoutItemTextTable::QgsLayoutItemTextTable( QgsLayout *layout )
 
 }
 
+int QgsLayoutItemTextTable::type() const
+{
+  return QgsLayoutItemRegistry::LayoutTextTable;
+}
+
+QString QgsLayoutItemTextTable::stringType() const
+{
+  return QStringLiteral( "LayoutTextTable" );
+}
+
+QString QgsLayoutItemTextTable::displayName() const
+{
+  return tr( "<text table>" );
+}
+
+QgsLayoutItemTextTable *QgsLayoutItemTextTable::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemTextTable( layout );
+}
+
 void QgsLayoutItemTextTable::addRow( const QStringList &row )
 {
   mRowText.append( row );

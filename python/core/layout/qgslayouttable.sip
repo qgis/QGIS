@@ -458,6 +458,9 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 
   public slots:
 
+    virtual void refresh();
+
+
     virtual void refreshAttributes();
 %Docstring
  Refreshes the contents shown in the table by querying for new data.

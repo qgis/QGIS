@@ -482,6 +482,8 @@ class CORE_EXPORT QgsLayoutTable: public QgsLayoutMultiFrame
 
   public slots:
 
+    void refresh() override;
+
     /**
      * Refreshes the contents shown in the table by querying for new data.
      * This also causes the column widths and size of the table to change to accommodate the
