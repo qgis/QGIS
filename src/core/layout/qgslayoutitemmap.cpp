@@ -100,10 +100,11 @@ void QgsLayoutItemMap::assignFreeId()
 
     maxId = std::max( maxId, map->mMapId );
   }
-  if ( !used )
-    return;
-  mMapId = maxId + 1;
-  mLayout->itemsModel()->updateItemDisplayName( this );
+  if ( used )
+  {
+    mMapId = maxId + 1;
+    mLayout->itemsModel()->updateItemDisplayName( this );
+  }
   updateToolTip();
 }
 
@@ -1253,7 +1254,7 @@ void QgsLayoutItemMap::connectUpdateSlot()
 
 void QgsLayoutItemMap::updateToolTip()
 {
-  setToolTip( tr( "Map %1" ).arg( displayName() ) );
+  setToolTip( displayName() );
 }
 
 QList<QgsMapLayer *> QgsLayoutItemMap::layersToRender( const QgsExpressionContext *context ) const
