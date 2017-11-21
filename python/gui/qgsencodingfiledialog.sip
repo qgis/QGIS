@@ -49,6 +49,46 @@ Returns true if the user clicked 'Cancel All'
 
 };
 
+class QgsEncodingSelectionDialog: QDialog
+{
+%Docstring
+ A dialog which presents the user with a choice of file encodings.
+.. versionadded:: 3.0
+*
+%End
+
+%TypeHeaderCode
+#include "qgsencodingfiledialog.h"
+%End
+  public:
+
+    QgsEncodingSelectionDialog( QWidget *parent /TransferThis/ = 0,
+                                const QString &caption = QString(), const QString &encoding = QString(),
+                                Qt::WindowFlags flags = Qt::WindowFlags() );
+%Docstring
+ Constructor for QgsEncodingSelectionDialog.
+
+ If ``caption`` is set, it will be used as the caption within the dialog.
+
+ The ``encoding`` argument can be used to specify the encoding initially selected in the dialog.
+%End
+
+    QString encoding() const;
+%Docstring
+ Returns the encoding selected within the dialog.
+.. seealso:: setEncoding()
+ :rtype: str
+%End
+
+    void setEncoding( const QString &encoding );
+%Docstring
+ Sets the ``encoding`` selected within the dialog.
+ see encoding()
+%End
+
+};
+
+
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
