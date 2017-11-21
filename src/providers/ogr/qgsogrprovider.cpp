@@ -948,10 +948,7 @@ void QgsOgrProvider::loadFields()
     mAttributeFields.append(
       fidField
     );
-    // Set default value for fid, this is needed because
-    // the attribute form will not accept a NULL value, passing
-    // -1 will delegate to the back-end.
-    mDefaultValues.insert( 0, QStringLiteral( "-1" ) );
+    mDefaultValues.insert( 0, tr( "Autogenerate" ) );
   }
 
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
@@ -1207,14 +1204,22 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
 
 QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
 {
-  QString defVal = mDefaultValues.value( fieldIndex, QString() );
+  return mDefaultValues.value( fieldIndex, QString() );
+}
 
-  if ( !providerProperty( EvaluateDefaultValues, false ).toBool() && !defVal.isEmpty() )
+bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
+{
+  Q_UNUSED( constraint );
+  // If the field is a fid, skip in case it's the default value
+  if ( fieldIndex == 0 && mFirstFieldIsFid )
   {
-    return defVal;
+    return ! mDefaultValues.value( fieldIndex ).isEmpty();
   }
-
-  return QString();
+  else
+  {
+    // stricter check
+    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
+  }
 }
 
 void QgsOgrProvider::updateExtents()

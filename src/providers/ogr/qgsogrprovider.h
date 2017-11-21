@@ -108,8 +108,9 @@ class QgsOgrProvider : public QgsVectorDataProvider
     virtual long featureCount() const override;
     virtual QgsFields fields() const override;
     virtual QgsRectangle extent() const override;
-    QVariant defaultValue( int fieldId ) const override;
-    QString defaultValueClause( int fieldIndex ) const override;
+    virtual QVariant defaultValue( int fieldId ) const override;
+    virtual QString defaultValueClause( int fieldIndex ) const override;
+    virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     virtual void updateExtents() override;
     virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
