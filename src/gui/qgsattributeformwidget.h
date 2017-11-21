@@ -120,7 +120,16 @@ class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
      */
     void resetSearch();
 
+    /**
+     * The visibility of the search widget tool button, that allows (de)activating
+     * this search widgte or defines the comparison operator to use.
+     */
     bool searchWidgetToolButtonVisible() const;
+
+    /**
+     * The visibility of the search widget tool button, that allows (de)activating
+     * this search widgte or defines the comparison operator to use.
+     */
     void setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible );
 
   protected:
