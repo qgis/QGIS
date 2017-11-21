@@ -398,6 +398,8 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutpagecollection.cpp
   layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsnapper.cpp
+  layout/qgslayouttable.cpp
+  layout/qgslayouttablecolumn.cpp
   layout/qgslayoutundocommand.cpp
   layout/qgslayoutundostack.cpp
   layout/qgslayoututils.cpp
@@ -757,6 +759,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutmultiframe.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
+  layout/qgslayouttable.h
   layout/qgslayoutundostack.h
 
   symbology/qgscptcityarchive.h
@@ -1021,6 +1024,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutserializableobject.h
   layout/qgslayoutsize.h
   layout/qgslayoutsnapper.h
+  layout/qgslayouttablecolumn.h
   layout/qgslayoutundocommand.h
   layout/qgslayoututils.h
 
