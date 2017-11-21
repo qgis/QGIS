@@ -33,7 +33,7 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
-from qgis.gui import QgsEncodingFileDialog, QgsEncodingSelectionDialog
+from qgis.gui import QgsEncodingSelectionDialog
 from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
                        QgsExpression,
@@ -123,11 +123,6 @@ class DestinationSelectionPanel(BASE, WIDGET):
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
 
-            actionSetEncoding = QAction(
-                self.tr('Change file encoding ({})...').format(self.encoding), self.btnSelect)
-            actionSetEncoding.triggered.connect(self.selectEncoding)
-            popupMenu.addAction(actionSetEncoding)
-
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
                 actionSaveToSpatialite = QAction(
@@ -143,6 +138,11 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 settings.endGroup()
                 actionSaveToPostGIS.setEnabled(bool(names))
                 popupMenu.addAction(actionSaveToPostGIS)
+
+            actionSetEncoding = QAction(
+                self.tr('Change file encoding ({})...').format(self.encoding), self.btnSelect)
+            actionSetEncoding.triggered.connect(self.selectEncoding)
+            popupMenu.addAction(actionSetEncoding)
 
             popupMenu.exec_(QCursor.pos())
 
@@ -178,7 +178,7 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.leText.setText("postgis:" + uri.uri())
 
     def saveToSpatialite(self):
-        fileFilter = self.tr('SpatiaLite files (*.sqlite)', 'OutputFile')
+        file_filter = self.tr('SpatiaLite files (*.sqlite)', 'OutputFile')
 
         settings = QgsSettings()
         if settings.contains('/Processing/LastOutputPath'):
@@ -186,29 +186,18 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
 
-        fileDialog = QgsEncodingFileDialog(
-            self, self.tr('Save SpatiaLite'), path, fileFilter, self.encoding)
-        fileDialog.setFileMode(QFileDialog.AnyFile)
-        fileDialog.setAcceptMode(QFileDialog.AcceptSave)
-        fileDialog.setOption(QFileDialog.DontConfirmOverwrite, True)
+        filename, filter = QFileDialog.getSaveFileName(self, self.tr("Save file"), path,
+                                                       file_filter, options=QFileDialog.DontConfirmOverwrite)
 
-        if fileDialog.exec_() == QDialog.Accepted:
+        if filename is not None:
             self.use_temporary = False
-            files = fileDialog.selectedFiles()
-            self.encoding = str(fileDialog.encoding())
-            fileName = str(files[0])
-            selectedFileFilter = str(fileDialog.selectedNameFilter())
-            if not fileName.lower().endswith(
-                    tuple(re.findall("\\*(\\.[a-z]{1,10})", fileFilter))):
-                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
-                if ext:
-                    fileName += ext.group(1)
+            if not filename.lower().endswith('.sqlite'):
+                filename += '.sqlite'
             settings.setValue('/Processing/LastOutputPath',
-                              os.path.dirname(fileName))
-            settings.setValue('/Processing/encoding', self.encoding)
+                              os.path.dirname(filename))
 
             uri = QgsDataSourceUri()
-            uri.setDatabase(fileName)
+            uri.setDatabase(filename)
             uri.setDataSource('', self.parameter.name().lower(),
                               'the_geom' if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
             self.leText.setText("spatialite:" + uri.uri())
