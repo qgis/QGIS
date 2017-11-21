@@ -96,12 +96,16 @@ QString QgsLayerMetadataFormatter::contactsSectionHtml() const
 QString QgsLayerMetadataFormatter::extentSectionHtml() const
 {
   QString myMetadata = QStringLiteral( "<table class=\"list-view\">\n" );
-  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "CRS" ) + QStringLiteral( "</td><td>" ) + mMetadata.crs().authid() + QStringLiteral( " - " );
-  myMetadata += mMetadata.crs().description() + QStringLiteral( " - " );
-  if ( mMetadata.crs().isGeographic() )
-    myMetadata += QObject::tr( "Geographic" );
-  else
-    myMetadata += QObject::tr( "Projected" );
+  myMetadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + QObject::tr( "CRS" ) + QStringLiteral( "</td><td>" );
+  if ( mMetadata.crs().isValid() )
+  {
+    myMetadata += mMetadata.crs().authid() + QStringLiteral( " - " );
+    myMetadata += mMetadata.crs().description() + QStringLiteral( " - " );
+    if ( mMetadata.crs().isGeographic() )
+      myMetadata += QObject::tr( "Geographic" );
+    else
+      myMetadata += QObject::tr( "Projected" );
+  }
   myMetadata += QLatin1String( "</td></tr>\n" );
 
   const QgsLayerMetadata::Extent extent = mMetadata.extent();
