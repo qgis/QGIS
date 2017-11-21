@@ -414,6 +414,10 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
   {
     selectionCrs->setCrs( mMetadata.crs() );
   }
+  else
+  {
+    selectionCrs->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  }
 
   // Links
   const QList<QgsLayerMetadata::Link> &links = mMetadata.links();
