@@ -633,6 +633,31 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.deleteFeature(1234567890123))
         self.assertTrue(vl.commitChanges())
 
+    def test_AddFeatureNullFid(self):
+        """Test gpkg feature with NULL fid can be added"""
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageSplitFeatures.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        ds = None
+
+        layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+
+        # Check that pk field has unique constraint
+        fields = layer.fields()
+        pkfield = fields.at(0)
+        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
+
+        # Test add feature with default Fid (NULL)
+        layer.startEditing()
+        f = QgsFeature()
+        feat = QgsFeature(layer.fields())
+        feat.setGeometry(QgsGeometry.fromWkt('Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))'))
+        feat.setAttribute(1, 'test_value')
+        layer.addFeature(feat)
+        self.assertTrue(layer.commitChanges())
+        self.assertEqual(layer.featureCount(), 1)
+
     def test_SplitFeature(self):
         """Test gpkg feature can be split"""
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageSplitFeatures.gpkg')
@@ -645,13 +670,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = None
         ds = None
 
+        # Split features
         layer = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
-
-        # Check that pk field has unique constraint
-        fields = layer.fields()
-        pkfield = fields.at(0)
-        self.assertTrue(pkfield.constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
-
         self.assertTrue(layer.isValid())
         self.assertTrue(layer.isSpatial())
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))')
