@@ -307,11 +307,6 @@ QString QgsRasterLayer::htmlMetadata() const
   QgsLayerMetadataFormatter htmlFormatter( metadata() );
   QString myMetadata = QStringLiteral( "<html>\n<body>\n" );
 
-  // Identification section
-  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
-  myMetadata += htmlFormatter.identificationSectionHtml();
-  myMetadata += QLatin1String( "<br><br>\n" );
-
   // Begin Provider section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Information from provider" ) + QStringLiteral( "</h1>\n<hr>\n" );
   myMetadata += QLatin1String( "<table class=\"list-view\">\n" );
@@ -404,6 +399,11 @@ QString QgsRasterLayer::htmlMetadata() const
 
   // End Provider section
   myMetadata += QLatin1String( "</table>\n<br><br>" );
+
+  // Identification section
+  myMetadata += QStringLiteral( "<h1>" ) + tr( "Identification" ) + QStringLiteral( "</h1>\n<hr>\n" );
+  myMetadata += htmlFormatter.identificationSectionHtml();
+  myMetadata += QLatin1String( "<br><br>\n" );
 
   // extent section
   myMetadata += QStringLiteral( "<h1>" ) + tr( "Extent" ) + QStringLiteral( "</h1>\n<hr>\n" );

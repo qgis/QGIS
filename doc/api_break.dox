@@ -2060,6 +2060,7 @@ QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 - useSrcNoDataValue() has been renamed to useSourceNoDataValue()
 - setUseSrcNoDataValue() has been renamed to setUseSourceNoDataValue()
 - srcNoDataValue() has been renamed to sourceNoDataValue()
+- metadata() was renamed to htmlMetadata()
 - draw() has been removed from the interface as it was not used anywhere.
 - The progress and progressUpdate signals were removed. Methods which previously emitted these
 signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
