@@ -148,7 +148,7 @@ QString QgsDefaultSearchWidgetWrapper::createExpression( QgsSearchWidgetWrapper:
   flags &= supportedFlags();
 
   QVariant::Type fldType = layer()->fields().at( mFieldIdx ).type();
-  QString fieldName = QgsExpression::quotedColumnRef( layer()->fields().at( mFieldIdx ).name() );
+  QString fieldName = createFieldIdentifier();
 
   if ( flags & IsNull )
     return fieldName + " IS NULL";

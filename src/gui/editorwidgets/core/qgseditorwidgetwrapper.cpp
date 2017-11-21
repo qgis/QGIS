@@ -38,8 +38,9 @@ int QgsEditorWidgetWrapper::fieldIdx() const
 
 QgsField QgsEditorWidgetWrapper::field() const
 {
-  if ( mFieldIdx < layer()->fields().count() )
-    return layer()->fields().at( mFieldIdx );
+  QgsVectorLayer *vl = layer();
+  if ( vl && mFieldIdx < vl->fields().count() )
+    return vl->fields().at( mFieldIdx );
   else
     return QgsField();
 }

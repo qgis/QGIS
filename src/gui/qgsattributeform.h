@@ -34,6 +34,7 @@ class QgsMessageBar;
 class QgsMessageBarItem;
 class QgsWidgetWrapper;
 class QgsTabWidget;
+class QgsAttributeFormWidget;
 
 /**
  * \ingroup gui
@@ -53,6 +54,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       will add a new feature when the form is accepted. */
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
+      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
     };
 
     //! Filter types
@@ -158,6 +160,15 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * \since QGIS 2.16
      */
     void setMessageBar( QgsMessageBar *messageBar );
+
+    /**
+     * The aggregate filter is only useful if the form is in AggregateFilter mode.
+     * In this case it will return a combined expression according to the chosen filters
+     * on all attribute widgets.
+     *
+     * \since QGIS 3.0
+     */
+    QString aggregateFilter() const;
 
   signals:
 
@@ -350,6 +361,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     QWidget *mSearchButtonBox = nullptr;
     QList<QgsAttributeFormInterface *> mInterfaces;
     QMap< int, QgsAttributeFormEditorWidget * > mFormEditorWidgets;
+    QList< QgsAttributeFormWidget *> mFormWidgets;
     QgsExpressionContext mExpressionContext;
     QMap<const QgsVectorLayerJoinInfo *, QgsFeature> mJoinedFeatures;
 

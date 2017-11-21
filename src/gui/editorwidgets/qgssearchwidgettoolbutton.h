@@ -21,6 +21,12 @@
 #include <QToolButton>
 #include "qgis_gui.h"
 
+#ifdef SIP_RUN
+% ModuleHeaderCode
+#include "qgssearchwidgettoolbutton.h"
+% End
+#endif
+
 /**
  * \ingroup gui
  * \class QgsSearchWidgetToolButton
@@ -31,6 +37,16 @@
  */
 class GUI_EXPORT QgsSearchWidgetToolButton : public QToolButton
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsSearchWidgetToolButton *>( sipCpp ) )
+      sipType = sipType_QgsSearchWidgetToolButton;
+    else
+      sipType = nullptr;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:

@@ -44,6 +44,18 @@ class CORE_EXPORT QgsAggregateCalculator
   public:
 
     /**
+     * Structured information about the available aggregates.
+     *
+     * \since QGIS 3.0
+     */
+    struct AggregateInfo
+    {
+      QString function; //!< The expression function
+      QString name; //!< A translated, human readable name
+      QSet<QVariant::Type> supportedTypes; //!< This aggregate function can only be used with these datatypes
+    };
+
+    /**
      * Available aggregates to calculate. Not all aggregates are available for all field
      * types.
      */
@@ -154,6 +166,13 @@ class CORE_EXPORT QgsAggregateCalculator
      * \returns aggregate type
      */
     static Aggregate stringToAggregate( const QString &string, bool *ok = nullptr );
+
+    /**
+     * Structured information for available aggregates.
+     *
+     * \since QGIS 3.2
+     */
+    static QList< QgsAggregateCalculator::AggregateInfo > aggregates();
 
   private:
 

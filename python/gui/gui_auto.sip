@@ -52,9 +52,12 @@
 %Include qgisinterface.sip
 %Include qgsactionmenu.sip
 %Include qgsadvanceddigitizingdockwidget.sip
+%Include qgsaggregatetoolbutton.sip
 %Include qgsattributedialog.sip
 %Include qgsattributeform.sip
 %Include qgsattributeformeditorwidget.sip
+%Include qgsattributeformrelationeditorwidget.sip
+%Include qgsattributeformwidget.sip
 %Include qgsattributetypeloaddialog.sip
 %Include qgsblendmodecombobox.sip
 %Include qgsbrowsertreeview.sip
@@ -278,6 +281,7 @@
 %Include editorwidgets/qgsrelationreferencewidget.sip
 %Include editorwidgets/qgsrelationreferencewidgetwrapper.sip
 %Include editorwidgets/qgsrelationwidgetwrapper.sip
+%Include editorwidgets/qgsrelationaggregatesearchwidgetwrapper.sip
 %Include editorwidgets/qgssearchwidgettoolbutton.sip
 %Include editorwidgets/qgsspinbox.sip
 %Include editorwidgets/qgsvaluemapsearchwidgetwrapper.sip
