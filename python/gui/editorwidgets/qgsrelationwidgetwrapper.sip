@@ -75,7 +75,7 @@ class QgsRelationWidgetWrapper : QgsWidgetWrapper
 %Docstring
  The relation for which this wrapper is created.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
  :rtype: QgsRelation
 %End
 

@@ -16,7 +16,7 @@ class QgsAggregateToolButton : QToolButton
  Offers a toolbutton to choose between different aggregate functions.
  Functions are filtered based on the type.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

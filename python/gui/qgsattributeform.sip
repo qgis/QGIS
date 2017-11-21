@@ -130,7 +130,7 @@ class QgsAttributeForm : QWidget
  In this case it will return a combined expression according to the chosen filters
  on all attribute widgets.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
  :rtype: str
 %End
 

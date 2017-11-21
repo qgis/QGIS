@@ -19,7 +19,7 @@ class QgsSearchWidgetToolButton;
  * Base class for all widgets shown on a QgsAttributeForm.
  * Consists of the widget which is visible in edit mode as well as the widget visible in search mode.
  *
- * \since QGIS 3.2
+ * \since QGIS 3.0
  */
 class GUI_EXPORT QgsAttributeFormWidget : public QWidget // SIP_ABSTRACT
 {

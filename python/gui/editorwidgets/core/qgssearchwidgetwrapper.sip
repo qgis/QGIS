@@ -169,7 +169,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
  If in SearchMode returns a quoted field identifier.
  If in AggregateSearchMode returns an appropriate aggregate expression.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
  :rtype: str
 %End
 
@@ -178,7 +178,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
  If in AggregateSearch mode, which aggregate should be used to construct
  the filter expression. Is a Null String if none.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
  :rtype: str
 %End
 
@@ -187,7 +187,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
  If in AggregateSearch mode, which aggregate should be used to construct
  the filter expression. Is a Null String if none.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
 %End
 
   public slots:
