@@ -386,6 +386,11 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void applyDefaultSize( QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters );
 
     /**
+     * Resizes the scale bar to its minimum width, without changing the height.
+     */
+    void resizeToMinimumWidth();
+
+    /**
      * Sets the scale bar style by \a name.
      *
      * The \a name parameter gives the (untranslated) style name.
@@ -416,9 +421,8 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) override;
 
   private slots:
-    void updateSegmentSize();
-    //! Sets mCompositionMap to 0 if the map is deleted
-    void invalidateCurrentMap();
+    void updateScale();
+    void disconnectCurrentMap();
 
   private:
 
@@ -432,9 +436,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     //! Width of a segment (in mm)
     double mSegmentMillimeters = 0.0;
-
-    //! Moves scalebar position to the left / right depending on alignment and change in item width
-    void correctXPositionAlignment( double widthMM, double widthAfterMM );
 
     //! Calculates with of a segment in mm and stores it in mSegmentMillimeters
     void refreshSegmentMillimeters();

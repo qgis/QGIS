@@ -396,6 +396,11 @@ class QgsLayoutItemScaleBar: QgsLayoutItem
 .. seealso:: applyDefaultSettings()
 %End
 
+    void resizeToMinimumWidth();
+%Docstring
+ Resizes the scale bar to its minimum width, without changing the height.
+%End
+
     void setStyle( const QString &name );
 %Docstring
  Sets the scale bar style by ``name``.
