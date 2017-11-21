@@ -425,6 +425,7 @@
 %Include layout/qgslayoutitemregistry.sip
 %Include layout/qgslayoutitemscalebar.sip
 %Include layout/qgslayoutitemshape.sip
+%Include layout/qgslayoutitemtexttable.sip
 %Include layout/qgslayoutmodel.sip
 %Include layout/qgslayoutmultiframe.sip
 %Include layout/qgslayoutpagecollection.sip

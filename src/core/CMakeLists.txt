@@ -388,6 +388,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitemregistry.cpp
   layout/qgslayoutitemscalebar.cpp
   layout/qgslayoutitemshape.cpp
+  layout/qgslayoutitemtexttable.cpp
   layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
@@ -755,6 +756,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitemregistry.h
   layout/qgslayoutitemscalebar.h
   layout/qgslayoutitemshape.h
+  layout/qgslayoutitemtexttable.h
   layout/qgslayoutmodel.h
   layout/qgslayoutmultiframe.h
   layout/qgslayoutpagecollection.h
