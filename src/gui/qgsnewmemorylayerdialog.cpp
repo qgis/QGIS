@@ -98,8 +98,13 @@ QgsWkbTypes::Type QgsNewMemoryLayerDialog::selectedType() const
     wkbType = QgsWkbTypes::MultiPolygon;
   }
 
-  if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry )
-    wkbType = QgsWkbTypes::zmType( wkbType, true, true );
+  if ( wkbType != QgsWkbTypes::Unknown && wkbType != QgsWkbTypes::NoGeometry )
+  {
+    if ( mGeometryWithZCheckBox->isChecked() )
+      wkbType = QgsWkbTypes::addZ( wkbType );
+    if ( mGeometryWithMCheckBox->isChecked() )
+      wkbType = QgsWkbTypes::addM( wkbType );
+  }
 
   return wkbType;
 }
