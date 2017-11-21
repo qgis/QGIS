@@ -173,7 +173,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     int yBlockSize() const override;
     int xSize() const override;
     int ySize() const override;
-    QString metadata() override;
+    QString htmlMetadata() override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;
