@@ -8934,19 +8934,13 @@ void QgisApp::layerSubsetString()
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
   qb->setSql( vlayer->subsetString() );
-  // Open the query builder
-  if ( qb->exec() )
+  // Open the query builder and refresh symbology if sql has changed
+  // Note: repaintRequested is emitted directly from QgsQueryBuilder
+  //       when the sql is set in the layer.
+  if ( qb->exec() && ( subsetBefore != qb->sql() ) && mLayerTreeView )
   {
-    if ( subsetBefore != qb->sql() )
-    {
-      vlayer->triggerRepaint();
-      if ( mLayerTreeView )
-      {
-        mLayerTreeView->refreshLayerSymbology( vlayer->id() );
-      }
-    }
+    mLayerTreeView->refreshLayerSymbology( vlayer->id() );
   }
-
 }
 
 void QgisApp::saveLastMousePosition( const QgsPointXY &p )
