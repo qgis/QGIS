@@ -8928,7 +8928,7 @@ void QgisApp::layerSubsetString()
   }
 
   // launch the query builder
-  QgsQueryBuilder *qb = new QgsQueryBuilder( vlayer, this );
+  std::unique_ptr<QgsQueryBuilder> qb( new QgsQueryBuilder( vlayer, this ) );
   QString subsetBefore = vlayer->subsetString();
 
   // Set the sql in the query builder to the same in the prop dialog
@@ -8947,8 +8947,6 @@ void QgisApp::layerSubsetString()
     }
   }
 
-  // delete the query builder object
-  delete qb;
 }
 
 void QgisApp::saveLastMousePosition( const QgsPointXY &p )
