@@ -400,48 +400,8 @@ void QgsLayoutItemScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit units )
     double initialUnitsPerSegment = widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
     mSettings.setUnitsPerSegment( initialUnitsPerSegment );
 
-    switch ( units )
-    {
-      case QgsUnitTypes::DistanceUnknownUnit:
-      {
-        upperMagnitudeMultiplier = 1.0;
-        setUnitLabel( tr( "units" ) );
-        break;
-      }
-      case QgsUnitTypes::DistanceMeters:
-      {
-        if ( initialUnitsPerSegment > 1000.0 )
-        {
-          upperMagnitudeMultiplier = 1000.0;
-          setUnitLabel( tr( "km" ) );
-        }
-        else
-        {
-          upperMagnitudeMultiplier = 1.0;
-          setUnitLabel( tr( "m" ) );
-        }
-        break;
-      }
-      case QgsUnitTypes::DistanceFeet:
-      {
-        if ( initialUnitsPerSegment > 5419.95 )
-        {
-          upperMagnitudeMultiplier = 5419.95;
-          setUnitLabel( tr( "miles" ) );
-        }
-        else
-        {
-          upperMagnitudeMultiplier = 1.0;
-          setUnitLabel( tr( "ft" ) );
-        }
-        break;
-      }
-
-      default:
-        setUnitLabel( QgsUnitTypes::toAbbreviatedString( units ) );
-        upperMagnitudeMultiplier = 1;
-        break;
-    }
+    setUnitLabel( QgsUnitTypes::toAbbreviatedString( units ) );
+    upperMagnitudeMultiplier = 1;
 
     double segmentWidth = initialUnitsPerSegment / upperMagnitudeMultiplier;
     int segmentMagnitude = std::floor( std::log10( segmentWidth ) );
