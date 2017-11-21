@@ -371,6 +371,7 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutguidecollection.cpp
   layout/qgslayoutframe.cpp
   layout/qgslayoutitem.cpp
+  layout/qgslayoutitemattributetable.cpp
   layout/qgslayoutitemgroup.cpp
   layout/qgslayoutitemgroupundocommand.cpp
   layout/qgslayoutitemhtml.cpp
@@ -739,6 +740,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutguidecollection.h
   layout/qgslayoutframe.h
   layout/qgslayoutitem.h
+  layout/qgslayoutitemattributetable.h
   layout/qgslayoutitemgroup.h
   layout/qgslayoutitemgroupundocommand.h
   layout/qgslayoutitemhtml.h

@@ -26,6 +26,8 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemhtml.h"
 #include "qgslayoutitemscalebar.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutitemtexttable.h"
 #include "qgslayoutframe.h"
 #include "qgsgloweffect.h"
 #include "qgseffectstack.h"
@@ -71,6 +73,8 @@ bool QgsLayoutItemRegistry::populate()
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPolyline, QStringLiteral( "Polyline" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddPolyline.svg" ) ), QgsLayoutItemPolyline::create ) );
 
   addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutHtml, QStringLiteral( "HTML" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHtml.svg" ) ), QgsLayoutItemHtml::create ) );
+  addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutAttributeTable, QStringLiteral( "Attribute Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ), QgsLayoutItemAttributeTable::create ) );
+  addLayoutMultiFrameType( new QgsLayoutMultiFrameMetadata( LayoutTextTable, QStringLiteral( "Text Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ), QgsLayoutItemTextTable::create ) );
 
   return true;
 }

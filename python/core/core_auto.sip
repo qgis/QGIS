@@ -409,6 +409,7 @@
 %Include layout/qgslayoutguidecollection.sip
 %Include layout/qgslayoutframe.sip
 %Include layout/qgslayoutitem.sip
+%Include layout/qgslayoutitemattributetable.sip
 %Include layout/qgslayoutitemgroup.sip
 %Include layout/qgslayoutitemhtml.sip
 %Include layout/qgslayoutitemlabel.sip

@@ -193,6 +193,11 @@ QSizeF QgsLayoutTable::totalSize() const
   return mTableSize;
 }
 
+void QgsLayoutTable::refresh()
+{
+  refreshAttributes();
+}
+
 int QgsLayoutTable::rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const
 {
   //calculate header height

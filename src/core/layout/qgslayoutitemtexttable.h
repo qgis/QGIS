@@ -39,6 +39,15 @@ class CORE_EXPORT QgsLayoutItemTextTable : public QgsLayoutTable
      */
     QgsLayoutItemTextTable( QgsLayout *layout );
 
+    int type() const override;
+    QString stringType() const override;
+    QString displayName() const override;
+
+    /**
+     * Returns a new QgsLayoutItemTextTable for the specified parent \a layout.
+     */
+    static QgsLayoutItemTextTable *create( QgsLayout *layout ) SIP_FACTORY;
+
     /**
      * Adds a row to the table
      * \param row list of strings to use for each cell's value in the newly added row
