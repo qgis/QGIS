@@ -79,11 +79,22 @@
        </layout>
       </item>
       <item>
-       <widget class="QCheckBox" name="mGeometryWithZCheckBox">
-        <property name="text">
-         <string>Geometries with Z/M coordinate</string>
-        </property>
-       </widget>
+       <layout class="QHBoxLayout" name="horizontalLayout_2">
+        <item>
+         <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+          <property name="text">
+           <string>Include Z dimension</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="mGeometryWithMCheckBox">
+          <property name="text">
+           <string>Include M values</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </item>
       <item>
        <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
