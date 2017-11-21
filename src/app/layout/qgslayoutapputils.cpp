@@ -157,11 +157,27 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     QList<QgsLayoutItemMap *> mapItems;
     scalebar->layout()->layoutItems( mapItems );
 
-    if ( !mapItems.isEmpty() )
+    // try to find a good map to link the scalebar with by default
+    // start by trying to find a selected map
+    QgsLayoutItemMap *targetMap = nullptr;
+    for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
     {
-      scalebar->setMap( mapItems.at( 0 ) );
+      if ( map->isSelected() )
+      {
+        targetMap = map;
+        break;
+      }
     }
-    scalebar->applyDefaultSize();
+    // otherwise just use first map
+    if ( !targetMap && !mapItems.isEmpty() )
+    {
+      targetMap = mapItems.at( 0 );
+    }
+    if ( targetMap )
+    {
+      scalebar->setMap( targetMap );
+      scalebar->applyDefaultSize();
+    }
   } );
 
   registry->addLayoutItemGuiMetadata( scalebarItemMetadata.release() );
