@@ -935,13 +935,20 @@ void QgsOgrProvider::loadFields()
                      fdef.GetFieldIndex( fidColumn ) < 0;
   if ( mFirstFieldIsFid )
   {
-    mAttributeFields.append(
-      QgsField(
-        fidColumn,
-        QVariant::LongLong,
-        QStringLiteral( "Integer64" )
-      )
+    QgsField fidField(
+      fidColumn,
+      QVariant::LongLong,
+      QStringLiteral( "Integer64" )
     );
+    // Set constraints for feature id
+    QgsFieldConstraints constraints = fidField.constraints();
+    constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
+    constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
+    fidField.setConstraints( constraints );
+    mAttributeFields.append(
+      fidField
+    );
+    mDefaultValues.insert( 0, tr( "Autogenerate" ) );
   }
 
   for ( int i = 0; i < fdef.GetFieldCount(); ++i )
@@ -1193,6 +1200,26 @@ QVariant QgsOgrProvider::defaultValue( int fieldId ) const
 
   ( void )mAttributeFields.at( fieldId ).convertCompatible( resultVar );
   return resultVar;
+}
+
+QString QgsOgrProvider::defaultValueClause( int fieldIndex ) const
+{
+  return mDefaultValues.value( fieldIndex, QString() );
+}
+
+bool QgsOgrProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
+{
+  Q_UNUSED( constraint );
+  // If the field is a fid, skip in case it's the default value
+  if ( fieldIndex == 0 && mFirstFieldIsFid )
+  {
+    return ! mDefaultValues.value( fieldIndex ).isEmpty();
+  }
+  else
+  {
+    // stricter check
+    return mDefaultValues.contains( fieldIndex ) && mDefaultValues.value( fieldIndex ) == value.toString() && !value.isNull();
+  }
 }
 
 void QgsOgrProvider::updateExtents()
