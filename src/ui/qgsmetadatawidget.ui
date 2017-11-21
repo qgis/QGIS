@@ -1250,7 +1250,7 @@
        <item>
         <widget class="QLabel" name="label_28">
          <property name="text">
-          <string>Validation is not inforced, but it's recommended to resolve any validation issues listed here.</string>
+          <string>Validation is not enforced, but it's recommended to resolve any validation issues listed here.</string>
          </property>
         </widget>
        </item>
