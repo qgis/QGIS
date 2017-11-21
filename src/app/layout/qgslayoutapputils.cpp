@@ -132,9 +132,25 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     QList<QgsLayoutItemMap *> mapItems;
     legend->layout()->layoutItems( mapItems );
 
-    if ( !mapItems.isEmpty() )
+    // try to find a good map to link the legend with by default
+    // start by trying to find a selected map
+    QgsLayoutItemMap *targetMap = nullptr;
+    for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
     {
-      legend->setMap( mapItems.at( 0 ) );
+      if ( map->isSelected() )
+      {
+        targetMap = map;
+        break;
+      }
+    }
+    // otherwise just use first map
+    if ( !targetMap && !mapItems.isEmpty() )
+    {
+      targetMap = mapItems.at( 0 );
+    }
+    if ( targetMap )
+    {
+      legend->setMap( targetMap );
     }
 
     legend->updateLegend();
