@@ -502,7 +502,7 @@ int QgsGrassRasterProvider::colorInterpretation( int bandNo ) const
   return QgsRaster::GrayIndex;
 }
 
-QString QgsGrassRasterProvider::metadata()
+QString QgsGrassRasterProvider::htmlMetadata()
 {
   QString myMetadata;
   QStringList myList;
