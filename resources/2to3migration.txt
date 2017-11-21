@@ -8,6 +8,10 @@ Qgis/connections-xyz/*;qgis/connections-xyz/*
 Qgis/connections-wms/*;qgis/connections-wms/*
 Qgis/connections-wfs/*;qgis/connections-wfs/*
 
+# Authentication configurations
+Qgis/WMS/*;qgis/WMS/*
+Qgis/WFS/*;qgis/WFS/*
+
 # random stuff
 browser/favourites;*
 svg/searchPathsForSVG;*
