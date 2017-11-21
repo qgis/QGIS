@@ -122,9 +122,16 @@ class QgsAttributeFormWidget : QWidget /Abstract/
 
     bool searchWidgetToolButtonVisible() const;
 %Docstring
+ The visibility of the search widget tool button, that allows (de)activating
+ this search widgte or defines the comparison operator to use.
  :rtype: bool
 %End
+
     void setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible );
+%Docstring
+ The visibility of the search widget tool button, that allows (de)activating
+ this search widgte or defines the comparison operator to use.
+%End
 
   protected:
 
