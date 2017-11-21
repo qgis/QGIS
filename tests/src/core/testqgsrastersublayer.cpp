@@ -96,8 +96,8 @@ void TestQgsRasterSubLayer::initTestCase()
     QFileInfo myRasterFileInfo( mFileName );
     mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                         myRasterFileInfo.completeBaseName() );
-    qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->metadata();
-    mReport += "raster metadata: " + mpRasterLayer->dataProvider()->metadata();
+    qDebug() << "raster metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
+    mReport += "raster metadata: " + mpRasterLayer->dataProvider()->htmlMetadata();
   }
   else
   {

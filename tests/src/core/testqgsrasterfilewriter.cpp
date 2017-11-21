@@ -115,7 +115,7 @@ bool TestQgsRasterFileWriter::writeTest( const QString &rasterName )
 
   std::unique_ptr<QgsRasterLayer> mpRasterLayer( new QgsRasterLayer( myRasterFileInfo.filePath(),
       myRasterFileInfo.completeBaseName() ) );
-  qDebug() << rasterName <<  " metadata: " << mpRasterLayer->dataProvider()->metadata();
+  qDebug() << rasterName <<  " metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
 
   if ( !mpRasterLayer->isValid() ) return false;
 

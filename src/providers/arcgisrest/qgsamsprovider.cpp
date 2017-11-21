@@ -237,7 +237,7 @@ static inline QString dumpVariantMap( const QVariantMap &variantMap, const QStri
   return result;
 }
 
-QString QgsAmsProvider::metadata()
+QString QgsAmsProvider::htmlMetadata()
 {
   return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
 }

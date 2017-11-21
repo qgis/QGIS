@@ -1230,7 +1230,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   return metadata;
 }
 
-QString QgsWcsProvider::metadata()
+QString QgsWcsProvider::htmlMetadata()
 {
   QString metadata;
 

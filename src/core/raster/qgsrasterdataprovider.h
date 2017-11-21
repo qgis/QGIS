@@ -300,7 +300,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    virtual QString metadata() = 0;
+    virtual QString htmlMetadata() = 0;
 
     /**
      * \brief Identify raster value(s) found on the point position. The context

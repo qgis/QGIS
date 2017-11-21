@@ -148,17 +148,17 @@ void TestQgsRasterLayer::initTestCase()
   QFileInfo myRasterFileInfo( myFileName );
   mpRasterLayer = new QgsRasterLayer( myRasterFileInfo.filePath(),
                                       myRasterFileInfo.completeBaseName() );
-  qDebug() << "tenbyteraster metadata: " << mpRasterLayer->dataProvider()->metadata();
+  qDebug() << "tenbyteraster metadata: " << mpRasterLayer->dataProvider()->htmlMetadata();
 
   QFileInfo myLandsatRasterFileInfo( myLandsatFileName );
   mpLandsatRasterLayer = new QgsRasterLayer( myLandsatRasterFileInfo.filePath(),
       myLandsatRasterFileInfo.completeBaseName() );
-  qDebug() << "landsat metadata: " << mpLandsatRasterLayer->dataProvider()->metadata();
+  qDebug() << "landsat metadata: " << mpLandsatRasterLayer->dataProvider()->htmlMetadata();
 
   QFileInfo myFloat32RasterFileInfo( myFloat32FileName );
   mpFloat32RasterLayer = new QgsRasterLayer( myFloat32RasterFileInfo.filePath(),
       myFloat32RasterFileInfo.completeBaseName() );
-  qDebug() << "float32raster metadata: " << mpFloat32RasterLayer->dataProvider()->metadata();
+  qDebug() << "float32raster metadata: " << mpFloat32RasterLayer->dataProvider()->htmlMetadata();
 
   QFileInfo pngRasterFileInfo( pngRasterFileName );
   mPngRasterLayer = new QgsRasterLayer( pngRasterFileInfo.filePath(),

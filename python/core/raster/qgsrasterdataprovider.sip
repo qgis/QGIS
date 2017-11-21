@@ -227,7 +227,7 @@ Get list of user no data value ranges
  :rtype: bool
 %End
 
-    virtual QString metadata() = 0;
+    virtual QString htmlMetadata() = 0;
 %Docstring
  Get metadata in a format suitable for feeding directly
  into a subset of the GUI raster properties "Metadata" tab.

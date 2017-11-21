@@ -258,7 +258,7 @@ QString QgsRasterDataProvider::makeTableCells( QStringList const &values )
   return s;
 } // makeTableCell_
 
-QString QgsRasterDataProvider::metadata()
+QString QgsRasterDataProvider::htmlMetadata()
 {
   QString s;
   return s;
