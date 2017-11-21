@@ -132,6 +132,7 @@ QgsEncodingSelectionDialog::QgsEncodingSelectionDialog( QWidget *parent, const Q
   layout->addWidget( buttonBox );
   setLayout( layout );
 
+  mEncodingComboBox->addItem( tr( "System" ) );
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
 
   // Use default encoding if none supplied

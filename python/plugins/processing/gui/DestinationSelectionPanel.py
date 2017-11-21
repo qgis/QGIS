@@ -33,12 +33,13 @@ from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QDir
 from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog
 from qgis.PyQt.QtGui import QCursor
-from qgis.gui import QgsEncodingFileDialog, QgsExpressionBuilderDialog
+from qgis.gui import QgsEncodingFileDialog, QgsEncodingSelectionDialog
 from qgis.core import (QgsDataSourceUri,
                        QgsCredentials,
                        QgsExpression,
                        QgsSettings,
                        QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterRasterDestination,
                        QgsProcessingOutputLayerDefinition,
                        QgsProcessingParameterDefinition,
                        QgsProcessingParameterFileDestination,
@@ -121,6 +122,11 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 self.tr('Save to file...'), self.btnSelect)
             actionSaveToFile.triggered.connect(self.selectFile)
             popupMenu.addAction(actionSaveToFile)
+
+            actionSetEncoding = QAction(
+                self.tr('Change file encoding ({})...').format(self.encoding), self.btnSelect)
+            actionSetEncoding.triggered.connect(self.selectEncoding)
+            popupMenu.addAction(actionSetEncoding)
 
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
@@ -208,35 +214,53 @@ class DestinationSelectionPanel(BASE, WIDGET):
             self.leText.setText("spatialite:" + uri.uri())
 
     def selectFile(self):
-        fileFilter = getFileFilter(self.parameter)
-
+        file_filter = getFileFilter(self.parameter)
         settings = QgsSettings()
+        if isinstance(self.parameter, QgsProcessingParameterFeatureSink):
+            last_ext_path = '/Processing/LastVectorOutputExt'
+            last_ext = settings.value(last_ext_path, '.gpkg')
+        elif isinstance(self.parameter, QgsProcessingParameterRasterDestination):
+            last_ext_path = '/Processing/LastRasterOutputExt'
+            last_ext = settings.value(last_ext_path, '.tif')
+        else:
+            last_ext_path = None
+            last_ext = None
+
+        # get default filter
+        filters = file_filter.split(';;')
+        try:
+            last_filter = [f for f in filters if '*{}'.format(last_ext) in f.lower()][0]
+        except:
+            last_filter = None
+
         if settings.contains('/Processing/LastOutputPath'):
             path = settings.value('/Processing/LastOutputPath')
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
 
-        fileDialog = QgsEncodingFileDialog(
-            self, self.tr('Save file'), path, fileFilter, self.encoding)
-        fileDialog.setFileMode(QFileDialog.AnyFile)
-        fileDialog.setAcceptMode(QFileDialog.AcceptSave)
-        fileDialog.setOption(QFileDialog.DontConfirmOverwrite, False)
-
-        if fileDialog.exec_() == QDialog.Accepted:
+        filename, filter = QFileDialog.getSaveFileName(self, self.tr("Save file"), path,
+                                                       file_filter, last_filter)
+        if filename:
             self.use_temporary = False
-            files = fileDialog.selectedFiles()
-            self.encoding = str(fileDialog.encoding())
-            fileName = str(files[0])
-            selectedFileFilter = str(fileDialog.selectedNameFilter())
-            if not fileName.lower().endswith(
-                    tuple(re.findall("\\*(\\.[a-z]{1,10})", fileFilter))):
-                ext = re.search("\\*(\\.[a-z]{1,10})", selectedFileFilter)
+            if not filename.lower().endswith(
+                    tuple(re.findall("\\*(\\.[a-z]{1,10})", file_filter))):
+                ext = re.search("\\*(\\.[a-z]{1,10})", filter)
                 if ext:
-                    fileName += ext.group(1)
-            self.leText.setText(fileName)
+                    filename += ext.group(1)
+            self.leText.setText(filename)
             settings.setValue('/Processing/LastOutputPath',
-                              os.path.dirname(fileName))
+                              os.path.dirname(filename))
+            if not last_ext_path is None:
+                settings.setValue(last_ext_path, os.path.splitext(filename)[1].lower())
+
+    def selectEncoding(self):
+        dialog = QgsEncodingSelectionDialog(
+            self, self.tr('File encoding'), self.encoding)
+        if dialog.exec_() == QDialog.Accepted:
+            self.encoding = dialog.encoding()
+            settings = QgsSettings()
             settings.setValue('/Processing/encoding', self.encoding)
+        dialog.deleteLater()
 
     def selectDirectory(self):
         lastDir = self.leText.text()
