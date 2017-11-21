@@ -69,7 +69,7 @@
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_6"/>
        </item>
-       <item row="4" column="0">
+       <item row="3" column="0">
         <widget class="QGroupBox" name="groupBox_3">
          <property name="title">
           <string>New field</string>
@@ -232,9 +232,27 @@
            </property>
           </widget>
          </item>
+         <item row="4" column="2">
+          <layout class="QHBoxLayout" name="horizontalZMLayout">
+           <item>
+            <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+             <property name="text">
+              <string>Include Z dimension</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="mGeometryWithMCheckBox">
+             <property name="text">
+              <string>Include M values</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
         </layout>
        </item>
-       <item row="5" column="0">
+       <item row="4" column="0">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Fields list</string>
@@ -313,32 +331,14 @@
          </layout>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item row="2" column="0">
         <widget class="QgsProjectionSelectionWidget" name="mCrsSelector">
          <property name="focusPolicy">
           <enum>Qt::StrongFocus</enum>
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <layout class="QHBoxLayout" name="horizontalZMLayout">
-         <item>
-          <widget class="QCheckBox" name="mGeometryWithZCheckBox">
-           <property name="text">
-            <string>Geometries with Z coordinate</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QCheckBox" name="mGeometryWithMCheckBox">
-           <property name="text">
-            <string>Geometries with M coordinate</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
-       </item>
-       <item row="6" column="0">
+       <item row="5" column="0">
         <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
           <string>Advanced options</string>
