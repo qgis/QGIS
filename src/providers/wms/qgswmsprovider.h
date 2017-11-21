@@ -200,7 +200,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     Qgis::DataType dataType( int bandNo ) const override;
     Qgis::DataType sourceDataType( int bandNo ) const override;
     int bandCount() const override;
-    QString metadata() override;
+    QString htmlMetadata() override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;
     QString lastError() override;

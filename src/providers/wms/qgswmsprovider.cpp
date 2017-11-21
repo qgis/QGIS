@@ -1848,7 +1848,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
   return metadata;
 }
 
-QString QgsWmsProvider::metadata()
+QString QgsWmsProvider::htmlMetadata()
 {
   QString metadata;
 

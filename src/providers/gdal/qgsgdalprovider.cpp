@@ -474,7 +474,7 @@ void QgsGdalProvider::closeDataset()
   mGdalDataset = nullptr;
 }
 
-QString QgsGdalProvider::metadata()
+QString QgsGdalProvider::htmlMetadata()
 {
   QMutexLocker locker( mpMutex );
   if ( !initIfNeeded() )
