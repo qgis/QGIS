@@ -82,12 +82,8 @@ void QgsLayoutItemScaleBar::setNumberOfSegments( int nSegments )
     mSettings.setNumberOfSegments( nSegments );
     return;
   }
-  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   mSettings.setNumberOfSegments( nSegments );
-  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( width, widthAfter );
-  refreshItemSize();
-  emit changed();
+  resizeToMinimumWidth();
 }
 
 void QgsLayoutItemScaleBar::setUnitsPerSegment( double units )
@@ -97,13 +93,9 @@ void QgsLayoutItemScaleBar::setUnitsPerSegment( double units )
     mSettings.setUnitsPerSegment( units );
     return;
   }
-  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   mSettings.setUnitsPerSegment( units );
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( width, widthAfter );
-  refreshItemSize();
-  emit changed();
+  resizeToMinimumWidth();
 }
 
 void QgsLayoutItemScaleBar::setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode )
@@ -113,13 +105,9 @@ void QgsLayoutItemScaleBar::setSegmentSizeMode( QgsScaleBarSettings::SegmentSize
     mSettings.setSegmentSizeMode( mode );
     return;
   }
-  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   mSettings.setSegmentSizeMode( mode );
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( width, widthAfter );
-  refreshItemSize();
-  emit changed();
+  resizeToMinimumWidth();
 }
 
 void QgsLayoutItemScaleBar::setMinimumBarWidth( double minWidth )
@@ -129,13 +117,9 @@ void QgsLayoutItemScaleBar::setMinimumBarWidth( double minWidth )
     mSettings.setMinimumBarWidth( minWidth );
     return;
   }
-  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   mSettings.setMinimumBarWidth( minWidth );
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( width, widthAfter );
-  refreshItemSize();
-  emit changed();
+  resizeToMinimumWidth();
 }
 
 void QgsLayoutItemScaleBar::setMaximumBarWidth( double maxWidth )
@@ -145,13 +129,9 @@ void QgsLayoutItemScaleBar::setMaximumBarWidth( double maxWidth )
     mSettings.setMaximumBarWidth( maxWidth );
     return;
   }
-  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   mSettings.setMaximumBarWidth( maxWidth );
   refreshSegmentMillimeters();
-  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( width, widthAfter );
-  refreshItemSize();
-  emit changed();
+  resizeToMinimumWidth();
 }
 
 void QgsLayoutItemScaleBar::setNumberOfSegmentsLeft( int nSegmentsLeft )
@@ -161,12 +141,8 @@ void QgsLayoutItemScaleBar::setNumberOfSegmentsLeft( int nSegmentsLeft )
     mSettings.setNumberOfSegmentsLeft( nSegmentsLeft );
     return;
   }
-  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   mSettings.setNumberOfSegmentsLeft( nSegmentsLeft );
-  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( width, widthAfter );
-  refreshItemSize();
-  emit changed();
+  resizeToMinimumWidth();
 }
 
 void QgsLayoutItemScaleBar::setBoxContentSpace( double space )
@@ -176,21 +152,14 @@ void QgsLayoutItemScaleBar::setBoxContentSpace( double space )
     mSettings.setBoxContentSpace( space );
     return;
   }
-  double width = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   mSettings.setBoxContentSpace( space );
-  double widthAfter = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( width, widthAfter );
   refreshItemSize();
-  emit changed();
 }
 
 void QgsLayoutItemScaleBar::setMap( QgsLayoutItemMap *map )
 {
-  if ( mMap )
-  {
-    disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateSegmentSize );
-    disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::invalidateCurrentMap );
-  }
+  disconnectCurrentMap();
+
   mMap = map;
 
   if ( !map )
@@ -198,22 +167,22 @@ void QgsLayoutItemScaleBar::setMap( QgsLayoutItemMap *map )
     return;
   }
 
-  connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateSegmentSize );
-  connect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::invalidateCurrentMap );
+  connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );
+  connect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::disconnectCurrentMap );
 
   refreshSegmentMillimeters();
   emit changed();
 }
 
-void QgsLayoutItemScaleBar::invalidateCurrentMap()
+void QgsLayoutItemScaleBar::disconnectCurrentMap()
 {
   if ( !mMap )
   {
     return;
   }
 
-  disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateSegmentSize );
-  disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::invalidateCurrentMap );
+  disconnect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );
+  disconnect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::disconnectCurrentMap );
   mMap = nullptr;
 }
 
@@ -491,7 +460,20 @@ void QgsLayoutItemScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit units )
   }
 
   refreshSegmentMillimeters();
-  refreshItemSize();
+  resizeToMinimumWidth();
+  emit changed();
+}
+
+void QgsLayoutItemScaleBar::resizeToMinimumWidth()
+{
+  if ( !mStyle )
+    return;
+
+  double widthMM = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
+  QgsLayoutSize currentSize = sizeWithUnits();
+  currentSize.setWidth( mLayout->context().measurementConverter().convert( QgsLayoutMeasurement( widthMM, QgsUnitTypes::LayoutMillimeters ), currentSize.units() ).length() );
+  attemptResize( currentSize );
+  update();
   emit changed();
 }
 
@@ -505,21 +487,11 @@ void QgsLayoutItemScaleBar::update()
   QgsLayoutItem::update();
 }
 
-void QgsLayoutItemScaleBar::updateSegmentSize()
+void QgsLayoutItemScaleBar::updateScale()
 {
-  if ( !mStyle )
-  {
-    return;
-  }
-  double widthMM = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
   refreshSegmentMillimeters();
-  double widthAfterMM = mStyle->calculateBoxSize( mSettings, createScaleContext() ).width();
-  correctXPositionAlignment( widthMM, widthAfterMM );
-  QgsLayoutSize currentSize = sizeWithUnits();
-  currentSize.setWidth( mLayout->context().measurementConverter().convert( QgsLayoutMeasurement( widthAfterMM, QgsUnitTypes::LayoutMillimeters ), currentSize.units() ).length() );
-  attemptResize( currentSize );
+  resizeToMinimumWidth();
   update();
-  emit changed();
 }
 
 void QgsLayoutItemScaleBar::setStyle( const QString &styleName )
@@ -831,41 +803,16 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   }
   else
   {
-    invalidateCurrentMap();
+    disconnectCurrentMap();
     mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mapId ) );
     if ( mMap )
     {
-      connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateSegmentSize );
-      connect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::invalidateCurrentMap );
+      connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );
+      connect( mMap, &QObject::destroyed, this, &QgsLayoutItemScaleBar::disconnectCurrentMap );
     }
   }
 
-  updateSegmentSize();
+  updateScale();
   return true;
-}
-
-void QgsLayoutItemScaleBar::correctXPositionAlignment( double widthMM, double widthAfterMM )
-{
-  //Don't adjust position for numeric scale bars:
-  if ( mStyle->name() == QLatin1String( "Numeric" ) )
-  {
-    return;
-  }
-
-  QgsLayoutPoint currentPos = positionWithUnits();
-
-  double deltaMM = 0.0;
-  if ( mSettings.alignment() == QgsScaleBarSettings::AlignMiddle )
-  {
-    deltaMM = -( widthAfterMM - widthMM ) / 2.0;
-  }
-  else if ( mSettings.alignment() == QgsScaleBarSettings::AlignRight )
-  {
-    deltaMM = -( widthAfterMM - widthMM );
-  }
-
-  double delta = mLayout->context().measurementConverter().convert( QgsLayoutMeasurement( deltaMM, QgsUnitTypes::LayoutMillimeters ), currentPos.units() ).length();
-  currentPos.setX( currentPos.x() + delta );
-  attemptMove( currentPos );
 }
 

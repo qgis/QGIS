@@ -85,6 +85,8 @@ QgsLayoutScaleBarWidget::QgsLayoutScaleBarWidget( QgsLayoutItemScaleBar *scaleBa
   mUnitsComboBox->addItem( tr( "Yards" ), QgsUnitTypes::DistanceYards );
   mUnitsComboBox->addItem( tr( "Miles" ), QgsUnitTypes::DistanceMiles );
   mUnitsComboBox->addItem( tr( "Nautical Miles" ), QgsUnitTypes::DistanceNauticalMiles );
+  mUnitsComboBox->addItem( tr( "Centimeters" ), QgsUnitTypes::DistanceCentimeters );
+  mUnitsComboBox->addItem( tr( "Millimeters" ), QgsUnitTypes::DistanceMillimeters );
 
   mFillColorButton->setColorDialogTitle( tr( "Select Fill Color" ) );
   mFillColorButton->setAllowOpacity( true );
@@ -466,6 +468,7 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
     mStrokeColorButton->setEnabled( false );
     mLineJoinStyleCombo->setEnabled( false );
     mLineCapStyleCombo->setEnabled( false );
+    mAlignmentComboBox->setEnabled( true );
   }
   else
   {
@@ -477,6 +480,7 @@ void QgsLayoutScaleBarWidget::toggleStyleSpecificControls( const QString &style 
     mFillColorButton->setEnabled( true );
     mFillColor2Button->setEnabled( true );
     mStrokeColorButton->setEnabled( true );
+    mAlignmentComboBox->setEnabled( false );
     if ( style == QLatin1String( "Single Box" ) || style == QLatin1String( "Double Box" ) )
     {
       mLineJoinStyleCombo->setEnabled( true );
@@ -531,6 +535,7 @@ void QgsLayoutScaleBarWidget::mAlignmentComboBox_currentIndexChanged( int index 
   mScalebar->beginCommand( tr( "Set Scalebar Alignment" ) );
   disconnectUpdateSignal();
   mScalebar->setAlignment( ( QgsScaleBarSettings::Alignment ) index );
+  mScalebar->update();
   connectUpdateSignal();
   mScalebar->endCommand();
 }
