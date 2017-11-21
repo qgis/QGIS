@@ -192,7 +192,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     if ( targetMap )
     {
       scalebar->setMap( targetMap );
-      scalebar->applyDefaultSize();
+      scalebar->applyDefaultSize( scalebar->guessUnits() );
     }
   } );
 

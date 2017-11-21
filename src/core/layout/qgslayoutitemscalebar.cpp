@@ -390,6 +390,48 @@ void QgsLayoutItemScaleBar::applyDefaultSettings()
   emit changed();
 }
 
+QgsUnitTypes::DistanceUnit QgsLayoutItemScaleBar::guessUnits() const
+{
+  if ( !mMap )
+    return QgsUnitTypes::DistanceMeters;
+
+  QgsCoordinateReferenceSystem crs = mMap->crs();
+  // start with crs units
+  QgsUnitTypes::DistanceUnit unit = crs.mapUnits();
+  if ( unit == QgsUnitTypes::DistanceDegrees || unit == QgsUnitTypes::DistanceUnknownUnit )
+  {
+    // geographic CRS, use metric units
+    unit = QgsUnitTypes::DistanceMeters;
+  }
+
+  // try to pick reasonable choice between metric / imperial units
+  double widthInSelectedUnits = mapWidth();
+  double initialUnitsPerSegment = widthInSelectedUnits / 10.0; //default scalebar width equals half the map width
+  switch ( unit )
+  {
+    case QgsUnitTypes::DistanceMeters:
+    {
+      if ( initialUnitsPerSegment > 1000.0 )
+      {
+        unit = QgsUnitTypes::DistanceKilometers;
+      }
+      break;
+    }
+    case QgsUnitTypes::DistanceFeet:
+    {
+      if ( initialUnitsPerSegment > 5419.95 )
+      {
+        unit = QgsUnitTypes::DistanceMiles;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+
+  return unit;
+}
+
 void QgsLayoutItemScaleBar::applyDefaultSize( QgsUnitTypes::DistanceUnit units )
 {
   mSettings.setUnits( units );

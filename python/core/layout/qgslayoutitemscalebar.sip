@@ -390,6 +390,16 @@ class QgsLayoutItemScaleBar: QgsLayoutItem
 .. seealso:: applyDefaultSize()
 %End
 
+    QgsUnitTypes::DistanceUnit guessUnits() const;
+%Docstring
+ Attempts to guess the most reasonable unit choice for the scalebar, given
+ the current linked map's scale.
+
+ This method also considers the linked map's CRS, in order to determine if
+ metric or imperial units are more appropriate.
+ :rtype: QgsUnitTypes.DistanceUnit
+%End
+
     void applyDefaultSize( QgsUnitTypes::DistanceUnit units = QgsUnitTypes::DistanceMeters );
 %Docstring
  Applies the default size to the scale bar (scale bar 1/5 of map item width)
