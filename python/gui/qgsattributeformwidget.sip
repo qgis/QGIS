@@ -16,7 +16,7 @@ class QgsAttributeFormWidget : QWidget /Abstract/
  Base class for all widgets shown on a QgsAttributeForm.
  Consists of the widget which is visible in edit mode as well as the widget visible in search mode.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

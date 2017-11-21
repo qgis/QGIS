@@ -18,7 +18,7 @@ class QgsRelationAggregateSearchWidgetWrapper : QgsSearchWidgetWrapper
  For each attribute of the child, an additional QgsAggregateToolButton will be shown
  to determine how the values should be aggregated for searching.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

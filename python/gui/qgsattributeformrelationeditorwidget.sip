@@ -16,7 +16,7 @@ class QgsAttributeFormRelationEditorWidget : QgsAttributeFormWidget
 
  Widget to show for child relations on an attribute form.
 
-.. versionadded:: 3.2
+.. versionadded:: 3.0
 %End
 
 %TypeHeaderCode

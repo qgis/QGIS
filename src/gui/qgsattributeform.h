@@ -54,7 +54,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
       will add a new feature when the form is accepted. */
       MultiEditMode, //!< Multi edit mode, for editing fields of multiple features at once
       SearchMode, //!< Form values are used for searching/filtering the layer
-      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.2
+      AggregateSearchMode, //!< Form is in aggregate search mode, show each widget in this mode \since QGIS 3.0
     };
 
     //! Filter types
@@ -166,7 +166,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
      * In this case it will return a combined expression according to the chosen filters
      * on all attribute widgets.
      *
-     * \since QGIS 3.2
+     * \since QGIS 3.0
      */
     QString aggregateFilter() const;
 
