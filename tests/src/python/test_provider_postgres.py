@@ -771,17 +771,36 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
 
     # See https://issues.qgis.org/issues/17518
     def testImportWithoutSchema(self):
-        self.execSQLCommand('DROP TABLE IF EXISTS b17518 CASCADE')
-        uri = 'point?field=f1:int'
-        uri += '&field=F2:double(6,4)'
-        uri += '&field=f3:string(20)'
-        lyr = QgsVectorLayer(uri, "x", "memory")
-        self.assertTrue(lyr.isValid())
 
-        uri = "%s sslmode=disable table=\"b17518\" (geom) sql" % self.dbconn
-        err = QgsVectorLayerExporter.exportLayer(lyr, uri, "postgres", lyr.crs())
-        olyr = QgsVectorLayer(uri, "y", "postgres")
-        self.assertTrue(olyr.isValid())
+        def _test(table, schema=None):
+            self.execSQLCommand('DROP TABLE IF EXISTS %s CASCADE' % table)
+            uri = 'point?field=f1:int'
+            uri += '&field=F2:double(6,4)'
+            uri += '&field=f3:string(20)'
+            lyr = QgsVectorLayer(uri, "x", "memory")
+            self.assertTrue(lyr.isValid())
+
+            table = ("%s" % table) if schema is None else ("\"%s\".\"%s\"" % (schema, table))
+            dest_uri = "%s sslmode=disable table=%s  (geom) sql" % (self.dbconn, table)
+            err = QgsVectorLayerExporter.exportLayer(lyr, dest_uri, "postgres", lyr.crs())
+            olyr = QgsVectorLayer(dest_uri, "y", "postgres")
+            self.assertTrue(olyr.isValid(), "Failed URI: %s" % dest_uri)
+
+        # Test bug 17518
+        _test('b17518')
+
+        # Test fully qualified table (with schema)
+        _test("b17518", "qgis_test")
+
+        # Test empty schema
+        _test("b17518", "")
+
+        # Test public schema
+        _test("b17518", "public")
+
+        # Test fully qualified table (with wrong schema)
+        with self.assertRaises(AssertionError):
+            _test("b17518", "qgis_test_wrong")
 
     def testStyle(self):
         self.execSQLCommand('DROP TABLE IF EXISTS layer_styles CASCADE')

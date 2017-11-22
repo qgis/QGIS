@@ -3696,7 +3696,8 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 {
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
-  QString schemaName = dsUri.schema().isEmpty() ? QStringLiteral( "public" ) : dsUri.schema();
+
+  QString schemaName = dsUri.schema();
   QString tableName = dsUri.table();
 
   QString geometryColumn = dsUri.geometryColumn();
@@ -3790,6 +3791,20 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
   try
   {
     conn->PQexecNR( QStringLiteral( "BEGIN" ) );
+
+    // We want a valid schema name ...
+    if ( schemaName.isEmpty() )
+    {
+      QString sql = QString( "SELECT current_schema" );
+      QgsPostgresResult result( conn->PQexec( sql ) );
+      if ( result.PQresultStatus() != PGRES_TUPLES_OK )
+        throw PGException( result );
+      schemaName = result.PQgetvalue( 0, 0 );
+      if ( schemaName.isEmpty() )
+      {
+        schemaName = QStringLiteral( "public" );
+      }
+    }
 
     QString sql = QString( "SELECT 1"
                            " FROM pg_class AS cls JOIN pg_namespace AS nsp"
