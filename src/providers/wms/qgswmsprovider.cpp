@@ -2454,6 +2454,7 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
   double xRes = myExtent.width() / width;
   double yRes = myExtent.height() / height;
 
+
   // Mapserver (6.0.3, for example) does not seem to work with 1x1 pixel box
   // (seems to be a different issue, not the slownes of GDAL with ECW mentioned above)
   // so we have to enlarge it a bit
@@ -2474,8 +2475,8 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
   QgsDebugMsg( QString( "xRes = %1 yRes = %2" ).arg( xRes ).arg( yRes ) );
 
   QgsPointXY finalPoint;
-  finalPoint.setX( std::floor( ( finalPoint.x() - myExtent.xMinimum() ) / xRes ) );
-  finalPoint.setY( std::floor( ( myExtent.yMaximum() - finalPoint.y() ) / yRes ) );
+  finalPoint.setX( std::floor( ( point.x() - myExtent.xMinimum() ) / xRes ) );
+  finalPoint.setY( std::floor( ( myExtent.yMaximum() - point.y() ) / yRes ) );
 
   QgsDebugMsg( QString( "point = %1 %2" ).arg( finalPoint.x() ).arg( finalPoint.y() ) );
 
