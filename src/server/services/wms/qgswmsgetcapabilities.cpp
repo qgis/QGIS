@@ -1154,7 +1154,7 @@ namespace QgsWms
             layerName = currentLayer->id();
           else if ( !currentLayer->shortName().isEmpty() )
             layerName = currentLayer->shortName();
-          QUrl mapUrl( hrefString );
+          QUrlQuery mapUrl( hrefString );
           mapUrl.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
           mapUrl.addQueryItem( QStringLiteral( "VERSION" ), version );
           mapUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetLegendGraphic" ) );
