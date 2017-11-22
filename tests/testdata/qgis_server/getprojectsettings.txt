@@ -110,6 +110,12 @@ Content-Type: text/xml; charset=utf-8
    <Format>XML</Format>
   </Exception>
   <sld:UserDefinedSymbolization SupportSLD="1" RemoteWCS="0" UserLayer="0" InlineFeature="0" RemoteWFS="0" UserStyle="1"/>
+  <ComposerTemplates>
+   <ComposerTemplate height="210" width="297" name="mytemplate">
+    <ComposerMap height="26" width="61" name="map1"/>
+    <ComposerMap height="103" width="87" name="map0"/>
+   </ComposerTemplate>
+  </ComposerTemplates>
   <WFSLayers>
    <WFSLayer name="testlayer èé"/>
   </WFSLayers>
