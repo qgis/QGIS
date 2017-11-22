@@ -516,9 +516,7 @@ QString QgsGrassRasterProvider::htmlMetadata()
   {
     myList.append( i.key() + " : " + i.value() );
   }
-  myMetadata += QgsRasterDataProvider::makeTableCells( myList );
-
-
+  myMetadata += QgsRasterDataProvider::makeHtmlBulletList( myList );
   return myMetadata;
 }
 

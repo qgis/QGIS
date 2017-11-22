@@ -510,8 +510,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     //! \note not available in Python bindings
     static QStringList cStringList2Q_( char **stringList ) SIP_SKIP;
 
-    static QString makeTableCell( const QString &value );
-    static QString makeTableCells( const QStringList &values );
+    static QString makeHtmlBulletList( const QStringList &values );
 
     /**
      * Dots per inch. Extended WMS (e.g. QGIS mapserver) support DPI dependent output and therefore

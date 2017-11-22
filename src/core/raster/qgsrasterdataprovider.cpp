@@ -236,27 +236,22 @@ QStringList QgsRasterDataProvider::cStringList2Q_( char **stringList )
 
 } // cStringList2Q_
 
-QString QgsRasterDataProvider::makeTableCell( QString const &value )
+// convenience function for building htmlMetadata() HTML bullet list
+QString QgsRasterDataProvider::makeHtmlBulletList( QStringList const &values )
 {
-  return "<p>\n" + value + "</p>\n";
-} // makeTableCell_
-
-// convenience function for building metadata() HTML table cells
-QString QgsRasterDataProvider::makeTableCells( QStringList const &values )
-{
-  QString s( QStringLiteral( "<tr>" ) );
+  QString s( QStringLiteral( "<ul>" ) );
 
   for ( QStringList::const_iterator i = values.begin();
         i != values.end();
         ++i )
   {
-    s += QgsRasterDataProvider::makeTableCell( *i );
+    s += QLatin1String( "<li>" ) + *i + QLatin1String( "</li>" );
   }
 
-  s += QLatin1String( "</tr>" );
+  s += QLatin1String( "</ul>" );
 
   return s;
-} // makeTableCell_
+}
 
 QString QgsRasterDataProvider::htmlMetadata()
 {
