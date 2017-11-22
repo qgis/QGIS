@@ -48,8 +48,10 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
 
     /**
      * Constructor for QgsLayoutItemHtml, with the specified parent \a layout.
+     *
+     * Ownership is transferred to the layout.
      */
-    QgsLayoutItemHtml( QgsLayout *layout );
+    QgsLayoutItemHtml( QgsLayout *layout SIP_TRANSFERTHIS );
 
     ~QgsLayoutItemHtml();
 

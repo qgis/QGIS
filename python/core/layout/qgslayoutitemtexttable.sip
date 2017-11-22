@@ -21,9 +21,11 @@ class QgsLayoutItemTextTable : QgsLayoutTable
 %End
   public:
 
-    QgsLayoutItemTextTable( QgsLayout *layout );
+    QgsLayoutItemTextTable( QgsLayout *layout /TransferThis/ );
 %Docstring
  Constructor for QgsLayoutItemTextTable, for the specified ``layout``.
+
+ Ownership is transferred to the layout.
 %End
 
     virtual int type() const;

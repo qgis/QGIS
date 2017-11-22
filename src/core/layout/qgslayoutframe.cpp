@@ -35,10 +35,8 @@ QgsLayoutFrame::QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFra
       update();
     } );
 
-#if 0 //TODO
     //force recalculation of rect, so that multiframe specified sizes can be applied
-    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), rect().height() ) );
-#endif
+    refreshItemSize();
   }
 }
 
@@ -51,6 +49,29 @@ QgsLayoutMultiFrame *QgsLayoutFrame::multiFrame() const
 {
   return mMultiFrame;
 }
+
+QgsLayoutSize QgsLayoutFrame::minimumSize() const
+{
+  if ( !mMultiFrame )
+    return QgsLayoutSize();
+
+  //calculate index of frame
+  int frameIndex = mMultiFrame->frameIndex( const_cast< QgsLayoutFrame * >( this ) );
+  //check minimum size
+  return QgsLayoutSize( mMultiFrame->minFrameSize( frameIndex ), QgsUnitTypes::LayoutMillimeters );
+}
+
+QgsLayoutSize QgsLayoutFrame::fixedSize() const
+{
+  if ( !mMultiFrame )
+    return QgsLayoutSize();
+
+  //calculate index of frame
+  int frameIndex = mMultiFrame->frameIndex( const_cast< QgsLayoutFrame * >( this ) );
+  //check fixed size
+  return QgsLayoutSize( mMultiFrame->fixedFrameSize( frameIndex ), QgsUnitTypes::LayoutMillimeters );
+}
+
 #if 0// TODO - save/restore multiframe uuid!
 bool QgsLayoutFrame::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
@@ -167,37 +188,6 @@ QString QgsLayoutFrame::displayName() const
 
   return tr( "<Frame>" );
 }
-
-#if 0 //TODO
-void QgsLayoutFrame::setSceneRect( const QRectF &rectangle )
-{
-  QRectF fixedRect = rectangle;
-
-  if ( mMultiFrame )
-  {
-    //calculate index of frame
-    int frameIndex = mMultiFrame->frameIndex( this );
-
-    QSizeF fixedSize = mMultiFrame->fixedFrameSize( frameIndex );
-    if ( fixedSize.width() > 0 )
-    {
-      fixedRect.setWidth( fixedSize.width() );
-    }
-    if ( fixedSize.height() > 0 )
-    {
-      fixedRect.setHeight( fixedSize.height() );
-    }
-
-    //check minimum size
-    QSizeF minSize = mMultiFrame->minFrameSize( frameIndex );
-    fixedRect.setWidth( std::max( minSize.width(), fixedRect.width() ) );
-    fixedRect.setHeight( std::max( minSize.height(), fixedRect.height() ) );
-  }
-
-  QgsComposerItem::setSceneRect( fixedRect );
-}
-#endif
-
 
 void QgsLayoutFrame::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle )
 {

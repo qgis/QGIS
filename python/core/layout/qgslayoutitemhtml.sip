@@ -27,9 +27,11 @@ class QgsLayoutItemHtml: QgsLayoutMultiFrame
       ManualHtml
     };
 
-    QgsLayoutItemHtml( QgsLayout *layout );
+    QgsLayoutItemHtml( QgsLayout *layout /TransferThis/ );
 %Docstring
  Constructor for QgsLayoutItemHtml, with the specified parent ``layout``.
+
+ Ownership is transferred to the layout.
 %End
 
     ~QgsLayoutItemHtml();

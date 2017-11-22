@@ -64,11 +64,10 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
      */
     QgsLayoutMultiFrame *multiFrame() const;
 
-#if 0 //TODO
-    //Overridden to handle fixed frame sizes set by multi frame
-    void setSceneRect( const QRectF &rectangle ) override;
+    QgsLayoutSize minimumSize() const override;
+    QgsLayoutSize fixedSize() const override;
 
-    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
+#if 0 //TODO
     void beginItemCommand( const QString &text ) override;
     void endItemCommand() override;
     bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;

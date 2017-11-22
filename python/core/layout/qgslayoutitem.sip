@@ -276,7 +276,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  :rtype: ReferencePoint
 %End
 
-    QgsLayoutSize fixedSize() const;
+    virtual QgsLayoutSize fixedSize() const;
 %Docstring
  Returns the fixed size of the item, if applicable, or an empty size if item can be freely
  resized.

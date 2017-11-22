@@ -1074,6 +1074,11 @@ void TestQgsLayoutItem::fixedSize()
   QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * DBL_EPSILON );
   QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * DBL_EPSILON );
 
+  item->attemptResize( QgsLayoutSize( 7.0, 8.0, QgsUnitTypes::LayoutInches ) );
+  //check size matches fixed item size converted to mm
+  QGSCOMPARENEAR( item->rect().width(), 2.0 * 25.4, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( item->rect().height(), 4.0 * 25.4, 4 * DBL_EPSILON );
+
   //check that setting a fixed size applies this size immediately
   item->updateFixedSize( QgsLayoutSize( 150, 250, QgsUnitTypes::LayoutMillimeters ) );
   QGSCOMPARENEAR( item->rect().width(), 150.0, 4 * DBL_EPSILON );
@@ -1119,8 +1124,8 @@ void TestQgsLayoutItem::minSize()
   //try to resize to less than minimum size
   fixedMinItem->attemptResize( QgsLayoutSize( 1.0, 0.5, QgsUnitTypes::LayoutPoints ) );
   //check size matches fixed item size, not minimum size (converted to mm)
-  QGSCOMPARENEAR( fixedMinItem->rect().width(), 50.0, 4 * DBL_EPSILON );
-  QGSCOMPARENEAR( fixedMinItem->rect().height(), 90.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( fixedMinItem->rect().width(), 20.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( fixedMinItem->rect().height(), 40.0, 4 * DBL_EPSILON );
 }
 
 void TestQgsLayoutItem::move()
