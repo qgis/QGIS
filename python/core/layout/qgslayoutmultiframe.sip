@@ -36,6 +36,14 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
       UndoHtmlBreakDistance,
       UndoHtmlSource,
       UndoHtmlStylesheet,
+      UndoTableCellStyle,
+      UndoTableMaximumFeatures,
+      UndoTableMargin,
+      UndoTableHeaderFontColor,
+      UndoTableContentFontColor,
+      UndoTableGridStrokeWidth,
+      UndoTableGridColor,
+      UndoTableBackgroundColor,
       UndoNone,
     };
 

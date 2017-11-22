@@ -10,7 +10,7 @@
 
 
 
-class QgsLayoutTableColumn
+class QgsLayoutTableColumn : QObject
 {
 %Docstring
  Stores properties of a column for a QgsLayoutTable. Some properties of aQgsLayoutTableColumn

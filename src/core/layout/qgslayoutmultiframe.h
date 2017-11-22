@@ -67,6 +67,14 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
       UndoHtmlBreakDistance, //!< HTML page break distance
       UndoHtmlSource, //!< HTML source
       UndoHtmlStylesheet, //!< HTML stylesheet
+      UndoTableCellStyle, //!< Table cell style
+      UndoTableMaximumFeatures, //!< Maximum features in table
+      UndoTableMargin, //!< Table margins
+      UndoTableHeaderFontColor, //!< Table header font color
+      UndoTableContentFontColor, //!< Table content font color
+      UndoTableGridStrokeWidth, //!< Table grid stroke width
+      UndoTableGridColor, //!< Table grid color
+      UndoTableBackgroundColor, //!< Table background color
       UndoNone = -1, //!< No command suppression
     };
 
