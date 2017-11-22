@@ -20,10 +20,19 @@ import time
 
 import qgis  # NOQA
 from osgeo import gdal, ogr
-from qgis.core import (QgsFeature, QgsFieldConstraints, QgsGeometry,
-                       QgsRectangle, QgsSettings, QgsVectorLayer,
-                       QgsVectorLayerExporter, QgsPointXY)
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.core import (QgsFeature,
+                       QgsCoordinateReferenceSystem,
+                       QgsFields,
+                       QgsField,
+                       QgsFieldConstraints,
+                       QgsGeometry,
+                       QgsRectangle,
+                       QgsSettings,
+                       QgsVectorLayer,
+                       QgsVectorLayerExporter,
+                       QgsPointXY,
+                       QgsWkbTypes)
+from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.testing import start_app, unittest
 
 
@@ -468,6 +477,32 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         f = next(features)
         self.assertEqual(f['f1'], 3)
         features = None
+
+    def testExportLayerToExistingDatabase(self):
+        fields = QgsFields()
+        fields.append(QgsField('f1', QVariant.Int))
+        tmpfile = os.path.join(self.basetestpath, 'testCreateNewGeopackage.gpkg')
+        options = {}
+        options['update'] = True
+        options['driverName'] = 'GPKG'
+        options['layerName'] = 'table1'
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Polygon, QgsCoordinateReferenceSystem(3111), False, options)
+        self.assertFalse(exporter.errorCode(),
+                         'unexpected export error {}: {}'.format(exporter.errorCode(), exporter.errorMessage()))
+        options['layerName'] = 'table2'
+        exporter = QgsVectorLayerExporter(tmpfile, "ogr", fields, QgsWkbTypes.Point, QgsCoordinateReferenceSystem(3113), False, options)
+        self.assertFalse(exporter.errorCode(),
+                         'unexpected export error {} : {}'.format(exporter.errorCode(), exporter.errorMessage()))
+        del exporter
+        # make sure layers exist
+        lyr = QgsVectorLayer('{}|layername=table1'.format(tmpfile), "lyr1", "ogr")
+        self.assertTrue(lyr.isValid())
+        self.assertEqual(lyr.crs().authid(), 'EPSG:3111')
+        self.assertEqual(lyr.wkbType(), QgsWkbTypes.Polygon)
+        lyr2 = QgsVectorLayer('{}|layername=table2'.format(tmpfile), "lyr2", "ogr")
+        self.assertTrue(lyr2.isValid())
+        self.assertEqual(lyr2.crs().authid(), 'EPSG:3113')
+        self.assertEqual(lyr2.wkbType(), QgsWkbTypes.Point)
 
     def testGeopackageTwoLayerEdition(self):
         ''' test https://issues.qgis.org/issues/17034 '''
