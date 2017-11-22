@@ -60,7 +60,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
       while ( mIterator.nextFeature( feat ) )
       {
         mExpressionContext.setFeature( feat );
-        mEntries.append( QgsFeatureFilterModel::Entry( feat.attribute( attribute ), mDisplayExpression.evaluate( &mExpressionContext ).toString() ) );
+        mEntries.append( QgsFeatureFilterModel::Entry( feat.attribute( attribute ), mDisplayExpression.evaluate( &mExpressionContext ).toString(), feat ) );
 
         if ( mWasCanceled )
           return;

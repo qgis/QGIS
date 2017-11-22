@@ -16,6 +16,8 @@
 #include "qgsfeaturefiltermodel.h"
 #include "qgsfeaturefiltermodel_p.h"
 
+#include "qgsconditionalstyle.h"
+
 QgsFeatureFilterModel::QgsFeatureFilterModel( QObject *parent )
   : QAbstractItemModel( parent )
 {
@@ -42,21 +44,22 @@ void QgsFeatureFilterModel::setSourceLayer( QgsVectorLayer *sourceLayer )
     return;
 
   mSourceLayer = sourceLayer;
+  mExpressionContext = sourceLayer->createExpressionContext();
   reload();
   emit sourceLayerChanged();
 }
 
 QString QgsFeatureFilterModel::displayExpression() const
 {
-  return mDisplayExpression;
+  return mDisplayExpression.expression();
 }
 
 void QgsFeatureFilterModel::setDisplayExpression( const QString &displayExpression )
 {
-  if ( mDisplayExpression == displayExpression )
+  if ( mDisplayExpression.expression() == displayExpression )
     return;
 
-  mDisplayExpression = displayExpression;
+  mDisplayExpression = QgsExpression( displayExpression );
   reload();
   emit displayExpressionChanged();
 }
@@ -136,24 +139,51 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
     case IdentifierValueRole:
       return mEntries.value( index.row() ).identifierValue;
 
-    case Qt::ForegroundRole:
-      if ( mEntries.value( index.row() ).identifierValue.isNull() )
-      {
-        return QBrush( QColor( Qt::gray ) );
-      }
-      break;
-
+    case Qt::BackgroundColorRole:
+      FALLTHROUGH;
+    case Qt::TextColorRole:
+      FALLTHROUGH;
     case Qt::FontRole:
-      QFont font = QFont();
-      if ( index.row() == mExtraIdentifierValueIndex )
-        font.setBold( true );
-
+    {
       if ( mEntries.value( index.row() ).identifierValue.isNull() )
       {
-        font.setItalic( true );
+        // Representation for NULL value
+        if ( role == Qt::TextColorRole )
+        {
+          return QBrush( QColor( Qt::gray ) );
+        }
+        else if ( role == Qt::FontRole )
+        {
+          QFont font = QFont();
+          if ( index.row() == mExtraIdentifierValueIndex )
+            font.setBold( true );
+
+          if ( mEntries.value( index.row() ).identifierValue.isNull() )
+          {
+            font.setItalic( true );
+          }
+          return font;
+        }
       }
-      return font;
+      else
+      {
+        // Respect conditional style
+        const QgsConditionalStyle style = featureStyle( mEntries.value( index.row() ).feature );
+
+        if ( style.isValid() )
+        {
+          if ( role == Qt::BackgroundColorRole && style.validBackgroundColor() )
+            return style.backgroundColor();
+          if ( role == Qt::TextColorRole && style.validTextColor() )
+            return style.textColor();
+          if ( role == Qt::DecorationRole )
+            return style.icon();
+          if ( role == Qt::FontRole )
+            return style.font();
+        }
+      }
       break;
+    }
   }
 
   return QVariant();
@@ -193,7 +223,7 @@ void QgsFeatureFilterModel::updateCompleter()
     std::sort( entries.begin(), entries.end(), []( const Entry & a, const Entry & b ) { return a.value.localeAwareCompare( b.value ) < 0; } );
 
     if ( mAllowNull )
-      entries.prepend( Entry( QVariant( QVariant::Int ), tr( "NULL" ) ) );
+      entries.prepend( Entry( QVariant( QVariant::Int ), tr( "NULL" ), QgsFeature() ) );
 
     const int newEntriesSize = entries.size();
 
@@ -340,6 +370,31 @@ void QgsFeatureFilterModel::scheduledReload()
     emit isLoadingChanged();
 }
 
+QSet<QString> QgsFeatureFilterModel::requestedAttributes() const
+{
+  QSet<QString> requestedAttrs;
+
+  const auto rowStyles = mSourceLayer->conditionalStyles()->rowStyles();
+
+  for ( const QgsConditionalStyle &style : rowStyles )
+  {
+    QgsExpression exp( style.rule() );
+    requestedAttrs += exp.referencedColumns();
+  }
+
+  if ( mDisplayExpression.isField() )
+  {
+    QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+    Q_FOREACH ( const QgsConditionalStyle &style, mSourceLayer->conditionalStyles()->fieldStyles( fieldName ) )
+    {
+      QgsExpression exp( style.rule() );
+      requestedAttrs += exp.referencedColumns();
+    }
+  }
+
+  return requestedAttrs;
+}
+
 void QgsFeatureFilterModel::setExtraIdentifierValueIndex( int index )
 {
   if ( mExtraIdentifierValueIndex == index )
@@ -376,14 +431,47 @@ void QgsFeatureFilterModel::setExtraIdentifierValueUnguarded( const QVariant &ex
   {
     beginInsertRows( QModelIndex(), 0, 0 );
     if ( extraIdentifierValue.isNull() )
-      mEntries.prepend( Entry( QVariant( QVariant::Int ), QStringLiteral( "%1" ).arg( tr( "NULL" ) ) ) );
+      mEntries.prepend( Entry( QVariant( QVariant::Int ), QStringLiteral( "%1" ).arg( tr( "NULL" ) ), QgsFeature() ) );
     else
-      mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ) ) );
+      mEntries.prepend( Entry( extraIdentifierValue, QStringLiteral( "(%1)" ).arg( extraIdentifierValue.toString() ), QgsFeature() ) );
     endInsertRows();
     setExtraIdentifierValueIndex( 0 );
 
     reloadCurrentFeature();
   }
+}
+
+QgsConditionalStyle QgsFeatureFilterModel::featureStyle( const QgsFeature &feature ) const
+{
+  if ( !mSourceLayer )
+    return QgsConditionalStyle();
+
+  QgsVectorLayer *layer = mSourceLayer;
+  QgsFeatureId fid = feature.id();
+  mExpressionContext.setFeature( feature );
+  QgsConditionalStyle style;
+
+  if ( mEntryStylesMap.contains( fid ) )
+  {
+    style = mEntryStylesMap.value( fid );
+  }
+
+  auto styles = QgsConditionalStyle::matchingConditionalStyles( layer->conditionalStyles()->rowStyles(), QVariant(),  mExpressionContext );
+
+  if ( mDisplayExpression.isField() )
+  {
+    // Style specific for this field
+    QString fieldName = *mDisplayExpression.referencedColumns().constBegin();
+    const auto allStyles = layer->conditionalStyles()->fieldStyles( fieldName );
+    const auto matchingFieldStyles = QgsConditionalStyle::matchingConditionalStyles( allStyles, feature.attribute( fieldName ),  mExpressionContext );
+
+    styles += matchingFieldStyles;
+
+    style = QgsConditionalStyle::compressStyles( styles );
+    mEntryStylesMap.insert( fid, style );
+  }
+
+  return style;
 }
 
 bool QgsFeatureFilterModel::allowNull() const
