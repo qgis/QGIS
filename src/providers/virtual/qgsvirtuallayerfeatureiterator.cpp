@@ -37,6 +37,7 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     QString tableName = mSource->provider()->mTableName;
 
     QStringList wheres;
+    QString offset;
     QString subset = mSource->provider()->mSubset;
     if ( !subset.isNull() )
     {
@@ -76,6 +77,17 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       values += ")";
       wheres << values;
     }
+    else if ( mDefinition.uid().isNull() && request.filterType() == QgsFeatureRequest::FilterFid )
+    {
+      if ( request.filterFid() >= 0 )
+      {
+        offset = QString( " LIMIT 1 OFFSET %1" ).arg( request.filterFid() );
+      }
+      else // never return a feature if the id is negative
+      {
+        offset = QString( " LIMIT 0" );
+      }
+    }
 
     mFields = mSource->provider()->fields();
     if ( request.flags() & QgsFeatureRequest::SubsetOfAttributes )
@@ -111,7 +123,15 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
       }
       else
       {
-        columns = "0";
+        columns = QString( "0" );
+        if ( request.filterType() == QgsFeatureRequest::FilterFid )
+        {
+          columns = QString::number( request.filterFid() );
+        }
+        else
+        {
+          columns = QString( "0" );
+        }
       }
       Q_FOREACH ( int i, mAttributes )
       {
@@ -132,6 +152,11 @@ QgsVirtualLayerFeatureIterator::QgsVirtualLayerFeatureIterator( QgsVirtualLayerF
     if ( !wheres.isEmpty() )
     {
       mSqlQuery += " WHERE " + wheres.join( " AND " );
+    }
+
+    if ( !offset.isEmpty() )
+    {
+      mSqlQuery += offset;
     }
 
     mQuery.reset( new Sqlite::Query( mSqlite, mSqlQuery ) );
@@ -191,7 +216,8 @@ bool QgsVirtualLayerFeatureIterator::fetchFeature( QgsFeature& feature )
 
   feature.setFields( mFields, /* init */ true );
 
-  if ( mDefinition.uid().isNull() )
+  if ( mDefinition.uid().isNull() &&
+       mRequest.filterType() != QgsFeatureRequest::FilterFid )
   {
     // no id column => autoincrement
     feature.setFeatureId( mFid++ );
