@@ -57,6 +57,9 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Move camera back to the initial position (looking down towards origin of world's coordinates)
     void resetView( float distance );
 
+    //! Moves the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
+    void translateWorld( const QVector3D &vWorld );
+
   private:
     void setCameraData( float x, float y, float dist, float pitch = 0, float yaw = 0 );
 

@@ -61,7 +61,17 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Resolves references to other objects (map layers) after the call to readXml()
     void resolveReferences( const QgsProject &project );
 
-    //! Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
+    /**
+     * Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
+     *
+     * We move the 3D world origin to the center of the extent of our terrain: this is done
+     * to minimize the impact of numerical errors when operating with 32-bit floats.
+     * Unfortunately this is not enough when working with a large area (still results in jitter
+     * with scenes spanning hundreds of kilometers and zooming in a lot).
+     *
+     * Need to look into more advanced techniques like "relative to center" or "relative to eye"
+     * to improve the precision.
+     */
     void setOrigin( double originX, double originY, double originZ );
     //! Returns X coordinate in map CRS at which 3D scene has origin (zero)
     double originX() const { return mOriginX; }

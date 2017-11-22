@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
+#include "qgscameracontroller.h"
 #include "qgsmapcanvas.h"
 
 #include "qgs3dmapsettings.h"
@@ -72,7 +73,8 @@ void Qgs3DMapCanvasDockWidget::resetView()
 void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( mCanvas->map(), mMainCanvas, &dlg );
+  Qgs3DMapSettings *map = mCanvas->map();
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
@@ -83,8 +85,17 @@ void Qgs3DMapCanvasDockWidget::configure()
   if ( !dlg.exec() )
     return;
 
+  double oldOriginX = map->originX(), oldOriginY = map->originY(), oldOriginZ = map->originZ();
+
   // update map
   w->apply();
+
+  double dx = map->originX() - oldOriginX, dy = map->originY() - oldOriginY, dz = map->originZ() - oldOriginZ;
+  if ( dx || dy || dz )
+  {
+    // apply() call has moved origin of the world so let's move camera so we look still at the same place
+    mCanvas->cameraController()->translateWorld( QVector3D( dx, dy, dz ) );
+  }
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()

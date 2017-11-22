@@ -73,6 +73,11 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   resetView();
 }
 
+QgsCameraController *Qgs3DMapCanvas::cameraController()
+{
+  return mScene ? mScene->cameraController() : nullptr;
+}
+
 void Qgs3DMapCanvas::resetView()
 {
   mScene->viewZoomFull();

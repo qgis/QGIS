@@ -290,6 +290,12 @@ void QgsCameraController::resetView( float distance )
   emit cameraChanged();
 }
 
+void QgsCameraController::translateWorld( const QVector3D &vWorld )
+{
+  setCameraData( mCameraData.x - vWorld.x(), mCameraData.y + vWorld.y(), mCameraData.dist, mCameraData.pitch, mCameraData.yaw );
+  emit cameraChanged();
+}
+
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )
 {
   mMousePos = QPoint( mouse->x(), mouse->y() );

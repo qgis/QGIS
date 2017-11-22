@@ -72,6 +72,8 @@ void Qgs3DMapConfigWidget::apply()
 {
   QgsRasterLayer *demLayer = qobject_cast<QgsRasterLayer *>( cboTerrainLayer->currentLayer() );
 
+  bool needsUpdateOrigin = false;
+
   if ( demLayer )
   {
     bool tGenNeedsUpdate = true;
@@ -92,6 +94,7 @@ void Qgs3DMapConfigWidget::apply()
       demTerrainGen->setResolution( spinTerrainResolution->value() );
       demTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
       mMap->setTerrainGenerator( demTerrainGen );
+      needsUpdateOrigin = true;
     }
   }
   else if ( !demLayer && mMap->terrainGenerator()->type() != QgsTerrainGenerator::Flat )
@@ -100,6 +103,13 @@ void Qgs3DMapConfigWidget::apply()
     flatTerrainGen->setCrs( mMap->crs() );
     flatTerrainGen->setExtent( mMainCanvas->fullExtent() );
     mMap->setTerrainGenerator( flatTerrainGen );
+    needsUpdateOrigin = true;
+  }
+
+  if ( needsUpdateOrigin )
+  {
+    QgsPointXY center = mMap->terrainGenerator()->extent().center();
+    mMap->setOrigin( center.x(), center.y(), 0 );
   }
 
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );
