@@ -86,6 +86,46 @@ class TestQgsVirtualLayerProvider(unittest.TestCase, ProviderTestCase):
         """Run after each test."""
         pass
 
+    def test_filterfid_crossjoin(self):
+        l0 = QgsVectorLayer(os.path.join(self.testDataDir, "france_parts.shp"), "france_parts", "ogr")
+        self.assertTrue(l0.isValid())
+        QgsMapLayerRegistry.instance().addMapLayer(l0)
+
+        l1 = QgsVectorLayer(os.path.join(self.testDataDir, "points.shp"), "points", "ogr")
+        self.assertTrue(l1.isValid())
+        QgsMapLayerRegistry.instance().addMapLayer(l1)
+
+        # cross join
+        query = QUrl.toPercentEncoding("SELECT * FROM france_parts,points")
+        vl = QgsVectorLayer("?query=%s" % query, "tt", "virtual")
+
+        self.assertEqual(vl.featureCount(), l0.featureCount() * l1.featureCount())
+
+        # test with FilterFid requests
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterFid(0)))
+        idx = f.fields().fieldNameIndex('Class')
+        self.assertEqual(f.id(), 0)
+        self.assertEqual(f.attributes()[idx], 'Jet')
+
+        f = next(vl.getFeatures(QgsFeatureRequest().setFilterFid(5)))
+        self.assertEqual(f.id(), 5)
+        self.assertEqual(f.attributes()[idx], 'Biplane')
+
+        # test with FilterFid requests
+        fit = vl.getFeatures(QgsFeatureRequest().setFilterFids([0, 3, 5]))
+
+        f = next(fit)
+        self.assertEqual(f.id(), 0)
+        self.assertEqual(f.attributes()[idx], 'Jet')
+
+        f = next(fit)
+        self.assertEqual(f.id(), 3)
+        self.assertEqual(f.attributes()[idx], 'Jet')
+
+        f = next(fit)
+        self.assertEqual(f.id(), 5)
+        self.assertEqual(f.attributes()[idx], 'Biplane')
+
     def test_CsvNoGeometry(self):
         l1 = QgsVectorLayer(QUrl.fromLocalFile(os.path.join(self.testDataDir, "delimitedtext/test.csv")).toString() + "?type=csv&geomType=none&subsetIndex=no&watchFile=no", "test", "delimitedtext", False)
         self.assertEqual(l1.isValid(), True)
