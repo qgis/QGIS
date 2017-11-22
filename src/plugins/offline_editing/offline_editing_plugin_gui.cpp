@@ -39,7 +39,6 @@ QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTree *rootNode, QObjec
 
 int QgsSelectLayerTreeModel::columnCount( const QModelIndex &parent ) const
 {
-  Q_UNUSED( parent );
   return QgsLayerTreeModel::columnCount( parent ) + 1;
 }
 
@@ -79,10 +78,10 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) con
           case Qt::ToolTipRole:
             return tr( "The source of this layer is a <b>WFS</b> server.<br>"
                        "Some WFS layers are not suitable for offline<br>"
-                       "editing due to unreliable/missing primary<br>"
-                       "keys, please check with your system<br>"
-                       "administrator if this WFS layer can<br>"
-                       "be used for offline editing." );
+                       "editing due to unstable primary keys<br>"
+                       "please check with your system administrator<br>"
+                       "if this WFS layer can be used for offline<br>"
+                       "editing." );
             break;
           case Qt::DecorationRole:
             return QgsApplication::getThemeIcon( "/mIconWarning.svg" );
