@@ -220,7 +220,6 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
 
 void QgsLayoutMultiFrame::recalculateFrameRects()
 {
-#if 0 //TODO
   if ( mFrameItems.empty() )
   {
     //no frames, nothing to do
@@ -230,10 +229,8 @@ void QgsLayoutMultiFrame::recalculateFrameRects()
   const QList< QgsLayoutFrame * > frames = mFrameItems;
   for ( QgsLayoutFrame *frame : frames )
   {
-    frame->setSceneRect( QRectF( frame->scenePos().x(), frame->scenePos().y(),
-                                 frame->rect().width(), frame->rect().height() ) );
+    frame->refreshItemSize();
   }
-#endif
 }
 
 QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size )

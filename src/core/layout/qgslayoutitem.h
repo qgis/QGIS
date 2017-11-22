@@ -299,7 +299,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFixedSize()
      * \see minimumSize()
     */
-    QgsLayoutSize fixedSize() const { return mFixedSize; }
+    virtual QgsLayoutSize fixedSize() const { return mFixedSize; }
 
     /**
      * Returns the minimum allowed size of the item, if applicable, or an empty size if item can be freely

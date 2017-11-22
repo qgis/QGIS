@@ -1200,8 +1200,15 @@ QSizeF QgsLayoutItem::applyFixedSize( const QSizeF &targetSize )
   {
     return targetSize;
   }
+
+  QSizeF size = targetSize;
   QSizeF fixedSizeLayoutUnits = mLayout->convertToLayoutUnits( fixedSize() );
-  return targetSize.expandedTo( fixedSizeLayoutUnits );
+  if ( fixedSizeLayoutUnits.width() > 0 )
+    size.setWidth( fixedSizeLayoutUnits.width() );
+  if ( fixedSizeLayoutUnits.height() > 0 )
+    size.setHeight( fixedSizeLayoutUnits.height() );
+
+  return size;
 }
 
 void QgsLayoutItem::refreshItemRotation( QPointF *origin )

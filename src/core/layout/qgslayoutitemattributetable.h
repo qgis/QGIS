@@ -50,8 +50,10 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
 
     /**
      * Constructor for QgsLayoutItemAttributeTable, attached to the specified \a layout.
+     *
+     * Ownership is transferred to the layout.
      */
-    QgsLayoutItemAttributeTable( QgsLayout *layout );
+    QgsLayoutItemAttributeTable( QgsLayout *layout SIP_TRANSFERTHIS );
 
     int type() const override;
     QString stringType() const override;

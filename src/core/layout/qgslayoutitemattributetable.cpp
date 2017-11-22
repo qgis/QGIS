@@ -679,8 +679,11 @@ void QgsLayoutItemAttributeTable::setWrapString( const QString &wrapString )
   emit changed();
 }
 
-bool QgsLayoutItemAttributeTable::writePropertiesToElement( QDomElement &tableElem, QDomDocument &, const QgsReadWriteContext & ) const
+bool QgsLayoutItemAttributeTable::writePropertiesToElement( QDomElement &tableElem, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
+  if ( !QgsLayoutTable::writePropertiesToElement( tableElem, doc, context ) )
+    return false;
+
   tableElem.setAttribute( QStringLiteral( "source" ), QString::number( static_cast< int >( mSource ) ) );
   tableElem.setAttribute( QStringLiteral( "relationId" ), mRelationId );
   tableElem.setAttribute( QStringLiteral( "showUniqueRowsOnly" ), mShowUniqueRowsOnly );
@@ -706,7 +709,7 @@ bool QgsLayoutItemAttributeTable::writePropertiesToElement( QDomElement &tableEl
   return true;
 }
 
-bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &, const QgsReadWriteContext & )
+bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
   QgsVectorLayer *prevLayer = sourceLayer();
   if ( prevLayer )
@@ -714,6 +717,9 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
     //disconnect from previous layer
     disconnect( prevLayer, &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
   }
+
+  if ( !QgsLayoutTable::readPropertiesFromElement( itemElem, doc, context ) )
+    return false;
 
   mSource = QgsLayoutItemAttributeTable::ContentSource( itemElem.attribute( QStringLiteral( "source" ), QStringLiteral( "0" ) ).toInt() );
   mRelationId = itemElem.attribute( QStringLiteral( "relationId" ), QLatin1String( "" ) );

@@ -56,6 +56,11 @@ class QgsLayoutFrame: QgsLayoutItem
  :rtype: QgsLayoutMultiFrame
 %End
 
+    virtual QgsLayoutSize minimumSize() const;
+
+    virtual QgsLayoutSize fixedSize() const;
+
+
 
     QRectF extent() const;
 %Docstring

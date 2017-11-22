@@ -29,9 +29,11 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
       RelationChildren
     };
 
-    QgsLayoutItemAttributeTable( QgsLayout *layout );
+    QgsLayoutItemAttributeTable( QgsLayout *layout /TransferThis/ );
 %Docstring
  Constructor for QgsLayoutItemAttributeTable, attached to the specified ``layout``.
+
+ Ownership is transferred to the layout.
 %End
 
     virtual int type() const;
