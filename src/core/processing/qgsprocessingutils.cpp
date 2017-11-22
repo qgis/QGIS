@@ -416,9 +416,12 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
         return nullptr;
 
       // use destination string as layer name (eg "postgis:..." )
+      if ( !layerName.isEmpty() )
+        uri += QStringLiteral( "|layername=%1" ).arg( layerName );
       std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( uri, destination, providerKey ) );
       // update destination to layer ID
       destination = layer->id();
+
       context.temporaryLayerStore()->addMapLayer( layer.release() );
       return exporter.release();
     }

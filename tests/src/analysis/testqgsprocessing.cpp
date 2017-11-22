@@ -1334,7 +1334,6 @@ void TestQgsProcessing::createFeatureSink()
   QVERIFY( sink->addFeature( f ) );
   QCOMPARE( layer->featureCount(), 1L );
   context.temporaryLayerStore()->removeAllMapLayers();
-  layer = nullptr;
 
   // non memory layer output
   destination = QDir::tempPath() + "/create_feature_sink.tab";
@@ -1354,8 +1353,6 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "my_field" ) );
   QCOMPARE( layer->fields().at( 0 ).type(), QVariant::String );
   QCOMPARE( layer->featureCount(), 1L );
-  delete layer;
-  layer = nullptr;
 
   // no extension, should default to shp
   destination = QDir::tempPath() + "/create_feature_sink2";
@@ -1364,7 +1361,6 @@ void TestQgsProcessing::createFeatureSink()
   QVERIFY( sink.get() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(1 2 3)" ) ) );
   QVERIFY( sink->addFeature( f ) );
-  QVERIFY( !layer );
   QCOMPARE( destination, prevDest );
   sink.reset( nullptr );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
@@ -1375,13 +1371,51 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "my_field" ) );
   QCOMPARE( layer->fields().at( 1 ).type(), QVariant::String );
   QCOMPARE( layer->featureCount(), 1L );
-  delete layer;
-  layer = nullptr;
 
   //windows style path
   destination = "d:\\temp\\create_feature_sink.tab";
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
   QVERIFY( sink.get() );
+
+  // save to geopackage
+  QString geopackagePath = QDir::tempPath() + "/packaged.gpkg";
+  if ( QFileInfo::exists( geopackagePath ) )
+    QFile::remove( geopackagePath );
+  destination = QStringLiteral( "ogr:dbname='%1' table=\"polygons\" (geom) sql=" ).arg( geopackagePath );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
+  QVERIFY( sink.get() );
+  f = QgsFeature( fields );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 0 1, 1 1, 1 0, 0 0 ))" ) ) );
+  f.setAttributes( QgsAttributes() << "val" );
+  QVERIFY( sink->addFeature( f ) );
+  sink.reset( nullptr );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Polygon );
+  QVERIFY( layer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val" ) );
+
+  // add another output to the same geopackage
+  QString destination2 = QStringLiteral( "ogr:dbname='%1' table=\"points\" (geom) sql=" ).arg( geopackagePath );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination2, context, fields, QgsWkbTypes::Point, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
+  QVERIFY( sink.get() );
+  f = QgsFeature( fields );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point(0 0)" ) ) );
+  f.setAttributes( QgsAttributes() << "val2" );
+  QVERIFY( sink->addFeature( f ) );
+  sink.reset( nullptr );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination2, context, true ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Point );
+  QVERIFY( layer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val2" ) );
+
+  // original polygon layer should remain
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Polygon );
+  QVERIFY( layer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val" ) );
 }
 
 void TestQgsProcessing::parameters()
