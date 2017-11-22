@@ -307,9 +307,9 @@ QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
   return s;
 }
 
-void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
+void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter )
 {
-  QRegularExpression splitRx( QStringLiteral( "^(.{3,}):(.*)$" ) );
+  QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
   QRegularExpressionMatch match = splitRx.match( destination );
   if ( match.hasMatch() )
   {
@@ -319,9 +319,25 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
       providerKey = QStringLiteral( "postgres" );
     }
     uri = match.captured( 2 );
+    if ( providerKey == QLatin1String( "ogr" ) )
+    {
+      QgsDataSourceUri dsUri( uri );
+      if ( !dsUri.database().isEmpty() )
+      {
+        if ( !dsUri.table().isEmpty() )
+        {
+          layerName = dsUri.table();
+          options.insert( "layerName", layerName );
+        }
+        uri = dsUri.database();
+      }
+      options.insert( QStringLiteral( "update" ), true );
+    }
+    useWriter = false;
   }
   else
   {
+    useWriter = true;
     providerKey = QStringLiteral( "ogr" );
     QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
@@ -377,10 +393,12 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
   {
     QString providerKey;
     QString uri;
+    QString layerName;
     QString format;
-    parseDestinationString( destination, providerKey, uri, format, options );
+    bool useWriter = false;
+    parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
 
-    if ( providerKey == QLatin1String( "ogr" ) )
+    if ( useWriter && providerKey == QLatin1String( "ogr" ) )
     {
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
