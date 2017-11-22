@@ -75,28 +75,6 @@ class CORE_EXPORT QgsLayoutAttributeTableCompare
 QgsLayoutItemAttributeTable::QgsLayoutItemAttributeTable( QgsLayout *layout )
   : QgsLayoutTable( layout )
 {
-#if 0 //TODO - move to app
-  //set first vector layer from layer registry as default one
-  QMap<QString, QgsMapLayer *> layerMap = mComposition->project()->mapLayers();
-  QMap<QString, QgsMapLayer *>::const_iterator mapIt = layerMap.constBegin();
-  for ( ; mapIt != layerMap.constEnd(); ++mapIt )
-  {
-    QgsVectorLayer *vl = dynamic_cast<QgsVectorLayer *>( mapIt.value() );
-    if ( vl )
-    {
-      mVectorLayer.setLayer( vl );
-      break;
-    }
-  }
-#endif
-
-  if ( mVectorLayer )
-  {
-    resetColumns();
-    //listen for modifications to layer and refresh table when they occur
-    connect( mVectorLayer.get(), &QgsVectorLayer::layerModified, this, &QgsLayoutTable::refreshAttributes );
-  }
-
   if ( mLayout )
   {
     connect( mLayout->project(), static_cast < void ( QgsProject::* )( const QString & ) >( &QgsProject::layerWillBeRemoved ), this, &QgsLayoutItemAttributeTable::removeLayer );
@@ -129,7 +107,7 @@ QgsLayoutItemAttributeTable *QgsLayoutItemAttributeTable::create( QgsLayout *lay
 
 QString QgsLayoutItemAttributeTable::displayName() const
 {
-  return tr( "<attribute table>" );
+  return tr( "<Attribute table frame>" );
 }
 
 void QgsLayoutItemAttributeTable::setVectorLayer( QgsVectorLayer *layer )

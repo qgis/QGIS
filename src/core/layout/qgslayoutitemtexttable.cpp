@@ -38,7 +38,7 @@ QString QgsLayoutItemTextTable::stringType() const
 
 QString QgsLayoutItemTextTable::displayName() const
 {
-  return tr( "<text table>" );
+  return tr( "<Text table frame>" );
 }
 
 QgsLayoutItemTextTable *QgsLayoutItemTextTable::create( QgsLayout *layout )

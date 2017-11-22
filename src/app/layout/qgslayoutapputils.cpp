@@ -38,6 +38,7 @@
 #include "qgslayoutitemhtml.h"
 #include "qgslayouthtmlwidget.h"
 #include "qgslayoutscalebarwidget.h"
+#include "qgslayoutitemattributetable.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -279,4 +280,34 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   } );
   registry->addLayoutItemGuiMetadata( htmlItemMetadata.release() );
 
+  // attribute table item
+
+  auto attributeTableItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ),
+                                    [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return nullptr; //new QgsLayoutHtmlWidget( qobject_cast< QgsLayoutFrame * >( item ) );
+  }, createRubberBand );
+  attributeTableItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
+  {
+    std::unique_ptr< QgsLayoutItemAttributeTable > tableMultiFrame = qgis::make_unique< QgsLayoutItemAttributeTable >( layout );
+    QgsLayoutItemAttributeTable *table = tableMultiFrame.get();
+
+    //set first vector layer from layer registry as table source
+    QMap<QString, QgsMapLayer *> layerMap = layout->project()->mapLayers();
+    for ( auto it = layerMap.constBegin() ; it != layerMap.constEnd(); ++it )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+      {
+        table->setVectorLayer( vl );
+        break;
+      }
+    }
+
+    layout->addMultiFrame( tableMultiFrame.release() );
+    std::unique_ptr< QgsLayoutFrame > frame = qgis::make_unique< QgsLayoutFrame >( layout, table );
+    QgsLayoutFrame *f = frame.get();
+    table->addFrame( frame.release() );
+    return f;
+  } );
+  registry->addLayoutItemGuiMetadata( attributeTableItemMetadata .release() );
 }
