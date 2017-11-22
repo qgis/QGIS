@@ -29,7 +29,6 @@
 
 QgsValueRelationWidgetWrapper::QgsValueRelationWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent )
   : QgsEditorWidgetWrapper( vl, fieldIdx, editor, parent )
-  , mUpdating( false )
 {
 }
 
@@ -198,12 +197,13 @@ void QgsValueRelationWidgetWrapper::showIndeterminateState()
 
 void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
 {
-  if ( mUpdating )
+  if ( mEnabled == enabled )
     return;
+
+  mEnabled = enabled;
 
   if ( mListWidget )
   {
-    mUpdating = true;
     for ( int i = 0; i < mListWidget->count(); ++i )
     {
       QListWidgetItem *item = mListWidget->item( i );
@@ -213,7 +213,6 @@ void QgsValueRelationWidgetWrapper::setEnabled( bool enabled )
       else
         item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
     }
-    mUpdating = false;
   }
   else
     QgsEditorWidgetWrapper::setEnabled( enabled );

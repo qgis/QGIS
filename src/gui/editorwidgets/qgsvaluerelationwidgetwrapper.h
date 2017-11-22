@@ -78,7 +78,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     QgsValueRelationFieldFormatter::ValueRelationCache mCache;
     QgsVectorLayer *mLayer = nullptr;
 
-    bool mUpdating;
+    bool mEnabled = false;
 
     friend class QgsValueRelationWidgetFactory;
     friend class TestQgsValueRelationWidgetWrapper;
