@@ -89,7 +89,7 @@ class GUI_EXPORT QgsAggregateToolButton : public QToolButton
   private:
     void updateAvailableAggregates();
     QMenu *mMenu = nullptr;
-    QVariant::Type mType;
+    QVariant::Type mType = QVariant::Invalid;
     bool mActive = false;
     QString mAggregate;
     QList<QgsAggregateCalculator::AggregateInfo> mAvailableAggregates;
