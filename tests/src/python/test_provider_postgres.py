@@ -1,10 +1,14 @@
 # -*- coding: utf-8 -*-
 """QGIS Unit tests for the postgres provider.
 
+Note: to prepare the DB, you need to run the sql files specified in
+tests/testdata/provider/testdata_pg.sh
+
 .. note:: This program is free software; you can redistribute it and/or modify
 it under the terms of the GNU General Public License as published by
 the Free Software Foundation; either version 2 of the License, or
 (at your option) any later version.
+
 """
 from builtins import next
 __author__ = 'Matthias Kuhn'
@@ -764,6 +768,20 @@ class TestPyQgsPostgresProvider(unittest.TestCase, ProviderTestCase):
         testKey(lyr, '"f1","F2"', ['f1', 'F2'])
         testKey(lyr, '"f1","F2","f3"', ['f1', 'F2', 'f3'])
         testKey(lyr, None, ['id'])
+
+    # See https://issues.qgis.org/issues/17518
+    def testImportWithoutSchema(self):
+        self.execSQLCommand('DROP TABLE IF EXISTS b17518 CASCADE')
+        uri = 'point?field=f1:int'
+        uri += '&field=F2:double(6,4)'
+        uri += '&field=f3:string(20)'
+        lyr = QgsVectorLayer(uri, "x", "memory")
+        self.assertTrue(lyr.isValid())
+
+        uri = "%s sslmode=disable table=\"b17518\" (geom) sql" % self.dbconn
+        err = QgsVectorLayerExporter.exportLayer(lyr, uri, "postgres", lyr.crs())
+        olyr = QgsVectorLayer(uri, "y", "postgres")
+        self.assertTrue(olyr.isValid())
 
     def testStyle(self):
         self.execSQLCommand('DROP TABLE IF EXISTS layer_styles CASCADE')

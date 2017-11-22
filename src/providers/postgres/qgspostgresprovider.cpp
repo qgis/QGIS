@@ -3696,7 +3696,7 @@ QgsVectorLayerExporter::ExportError QgsPostgresProvider::createEmptyLayer( const
 {
   // populate members from the uri structure
   QgsDataSourceUri dsUri( uri );
-  QString schemaName = dsUri.schema();
+  QString schemaName = dsUri.schema().isEmpty() ? QStringLiteral( "public" ) : dsUri.schema();
   QString tableName = dsUri.table();
 
   QString geometryColumn = dsUri.geometryColumn();
