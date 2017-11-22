@@ -31,7 +31,7 @@ import os
 
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, QDir
-from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog
+from qgis.PyQt.QtWidgets import QDialog, QMenu, QAction, QFileDialog, QInputDialog
 from qgis.PyQt.QtGui import QCursor
 from qgis.gui import QgsEncodingSelectionDialog
 from qgis.core import (QgsDataSourceUri,
@@ -125,10 +125,10 @@ class DestinationSelectionPanel(BASE, WIDGET):
 
             if isinstance(self.parameter, QgsProcessingParameterFeatureSink) \
                     and self.alg.provider().supportsNonFileBasedOutput():
-                actionSaveToSpatialite = QAction(
-                    self.tr('Save to SpatiaLite table...'), self.btnSelect)
-                actionSaveToSpatialite.triggered.connect(self.saveToSpatialite)
-                popupMenu.addAction(actionSaveToSpatialite)
+                actionSaveToGpkg = QAction(
+                    self.tr('Save to GeoPackage...'), self.btnSelect)
+                actionSaveToGpkg.triggered.connect(self.saveToGeopackage)
+                popupMenu.addAction(actionSaveToGpkg)
                 actionSaveToPostGIS = QAction(
                     self.tr('Save to PostGIS table...'), self.btnSelect)
                 actionSaveToPostGIS.triggered.connect(self.saveToPostGIS)
@@ -177,8 +177,8 @@ class DestinationSelectionPanel(BASE, WIDGET):
                 QgsCredentials.instance().put(connInfo, user, passwd)
             self.leText.setText("postgis:" + uri.uri())
 
-    def saveToSpatialite(self):
-        file_filter = self.tr('SpatiaLite files (*.sqlite)', 'OutputFile')
+    def saveToGeopackage(self):
+        file_filter = self.tr('GeoPackage files (*.gpkg);;All files (*.*)', 'OutputFile')
 
         settings = QgsSettings()
         if settings.contains('/Processing/LastOutputPath'):
@@ -186,21 +186,25 @@ class DestinationSelectionPanel(BASE, WIDGET):
         else:
             path = ProcessingConfig.getSetting(ProcessingConfig.OUTPUT_FOLDER)
 
-        filename, filter = QFileDialog.getSaveFileName(self, self.tr("Save file"), path,
+        filename, filter = QFileDialog.getSaveFileName(self, self.tr("Save to GeoPackage"), path,
                                                        file_filter, options=QFileDialog.DontConfirmOverwrite)
 
-        if filename is not None:
+        if filename is None:
+            return
+
+        layer_name, ok = QInputDialog.getText(self, self.tr('Save to GeoPackage'), self.tr('Layer name'), text=self.parameter.name().lower())
+        if ok:
             self.use_temporary = False
-            if not filename.lower().endswith('.sqlite'):
-                filename += '.sqlite'
+            if not filename.lower().endswith('.gpkg'):
+                filename += '.gpkg'
             settings.setValue('/Processing/LastOutputPath',
                               os.path.dirname(filename))
 
             uri = QgsDataSourceUri()
             uri.setDatabase(filename)
-            uri.setDataSource('', self.parameter.name().lower(),
-                              'the_geom' if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
-            self.leText.setText("spatialite:" + uri.uri())
+            uri.setDataSource('', layer_name,
+                              'geom' if isinstance(self.parameter, QgsProcessingParameterFeatureSink) and self.parameter.hasGeometry() else None)
+            self.leText.setText("ogr:" + uri.uri())
 
     def selectFile(self):
         file_filter = getFileFilter(self.parameter)
