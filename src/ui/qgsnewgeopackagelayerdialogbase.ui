@@ -65,7 +65,7 @@
         <height>663</height>
        </rect>
       </property>
-      <layout class="QGridLayout" name="gridLayout_5">
+      <layout class="QGridLayout" name="gridLayout_51">
        <item row="0" column="0">
         <layout class="QHBoxLayout" name="horizontalLayout_6"/>
        </item>
