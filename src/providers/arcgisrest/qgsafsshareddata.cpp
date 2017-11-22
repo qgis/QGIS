@@ -17,9 +17,15 @@
 #include "qgsarcgisrestutils.h"
 #include "qgslogger.h"
 
+void QgsAfsSharedData::clearCache()
+{
+  QMutexLocker locker( &mMutex );
+  mCache.clear();
+}
+
 bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> & /*fetchAttributes*/, const QgsRectangle &filterRect )
 {
-  QMutexLocker locker(&mMutex);
+  QMutexLocker locker( &mMutex );
 
   // If cached, return cached feature
   QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.constFind( id );
