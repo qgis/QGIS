@@ -573,11 +573,14 @@ bool QgsOgrProvider::setSubsetString( const QString &theSQL, bool updateFeatureC
   }
 
   // check the validity of the layer
-  QgsDebugMsg( "checking validity" );
+  QgsDebugMsgLevel( "checking validity", 4 );
   loadFields();
-  QgsDebugMsg( "Done checking validity" );
+  QgsDebugMsgLevel( "Done checking validity", 4 );
 
   invalidateCachedExtent( false );
+
+  // Changing the filter may change capabilities
+  computeCapabilities();
 
   emit dataChanged();
 
