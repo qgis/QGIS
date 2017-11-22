@@ -695,3 +695,8 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
 {
   return mSource->maximumValue( fieldIndex );
 }
+
+QgsFeatureSource *QgsProcessingFeatureSource::source() const
+{
+  return mSource;
+}

@@ -274,6 +274,12 @@ class QgsProcessingFeatureSource : QgsFeatureSource
     virtual QVariant maximumValue( int fieldIndex ) const;
 
 
+    QgsFeatureSource *source() const;
+%Docstring
+ Access the underlying original ``source``.
+ :rtype: QgsFeatureSource
+%End
+
 };
 
 

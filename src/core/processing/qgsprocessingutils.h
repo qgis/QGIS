@@ -317,6 +317,11 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QVariant minimumValue( int fieldIndex ) const override;
     QVariant maximumValue( int fieldIndex ) const override;
 
+    /**
+     * Access the underlying original \a source.
+     */
+    QgsFeatureSource *source() const;
+
   private:
 
     QgsFeatureSource *mSource = nullptr;
