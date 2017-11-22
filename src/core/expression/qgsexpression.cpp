@@ -218,6 +218,11 @@ QgsExpression &QgsExpression::operator=( const QgsExpression &other )
   return *this;
 }
 
+QgsExpression::operator QString() const
+{
+  return d->mExp;
+}
+
 QgsExpression::QgsExpression()
   : d( new QgsExpressionPrivate )
 {
