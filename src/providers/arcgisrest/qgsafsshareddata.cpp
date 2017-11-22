@@ -107,7 +107,14 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
     feature.setValid( true );
     mCache.insert( feature.id(), feature );
   }
-  f = mCache[id];
-  Q_ASSERT( f.isValid() );
-  return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
+  it = mCache.constFind( id );
+  if ( it != mCache.constEnd() )
+  {
+    f = it.value();
+    return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
+  }
+  else
+  {
+    return false;
+  }
 }
