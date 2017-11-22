@@ -689,7 +689,13 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! mark project dirty
     void markDirty();
 
-    void layersWereAdded( const QList<QgsMapLayer *> & );
+    /**
+     * \brief layersWereAdded is triggered when layers were added
+     * This method loops through the list of \a layers and connect all
+     * application signals that need to listen to layer events.
+     * \param layers list of map layers that have been added
+     */
+    void layersWereAdded( const QList<QgsMapLayer *> &layers );
 
     /* layer will be removed - changed from removingLayer to removingLayers
        in 1.8.
