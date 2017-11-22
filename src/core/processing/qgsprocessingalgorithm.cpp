@@ -183,7 +183,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
     }
     else if ( def->type() == QStringLiteral( "source" ) )
     {
-      QgsFeatureSource *source = QgsProcessingParameters::parameterAsSource( def, parameters, context );
+      std::unique_ptr< QgsFeatureSource  > source( QgsProcessingParameters::parameterAsSource( def, parameters, context ) );
       if ( source )
       {
         if ( foundCrs && source->sourceCrs().isValid() && crs != source->sourceCrs() )
