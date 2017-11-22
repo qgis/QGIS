@@ -10244,6 +10244,10 @@ void QgisApp::new3DMapCanvas()
     map->setTerrainGenerator( flatTerrain );
 
     dock->setMapSettings( map );
+
+    QgsRectangle extent = mMapCanvas->extent();
+    float dist = qMax( extent.width(), extent.height() );
+    dock->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, mMapCanvas->rotation() );
   }
 #endif
 }

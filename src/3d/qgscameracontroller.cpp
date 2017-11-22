@@ -282,7 +282,12 @@ void QgsCameraController::frameTriggered( float dt )
 
 void QgsCameraController::resetView( float distance )
 {
-  setCameraData( 0, 0, distance );
+  setViewFromTop( 0, 0, distance );
+}
+
+void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
+{
+  setCameraData( worldX, worldY, distance, 0, yaw );
   // a basic setup to make frustum depth range long enough that it does not cull everything
   mCamera->setNearPlane( distance / 2 );
   mCamera->setFarPlane( distance * 2 );
