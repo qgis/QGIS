@@ -282,14 +282,14 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
           }
         }
       }
-      action = QgsVectorFileWriter::CreateOrOverwriteLayer;
+      if ( QFileInfo::exists( uri ) )
+        action = QgsVectorFileWriter::CreateOrOverwriteLayer;
     }
   }
 
   if ( !overwrite && !update )
   {
-    QFileInfo fi( uri );
-    if ( fi.exists() )
+    if ( QFileInfo::exists( uri ) )
     {
       if ( errorMessage )
         *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
