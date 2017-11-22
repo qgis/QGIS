@@ -441,6 +441,10 @@ void TestQgsProcessing::initTestCase()
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
 
+  QgsSettings settings;
+  settings.remove( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QgsSettings::Core );
+  settings.remove( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QgsSettings::Core );
+
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
 
