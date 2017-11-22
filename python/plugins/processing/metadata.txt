@@ -9,7 +9,7 @@ qgisMinimumVersion=2.13
 author=Victor Olaya
 email=volayaf@gmail.com
 
-icon=images/alg.svg
+icon=:/images/themes/default/processingAlgorithm.svg
 
 homepage=http://qgis.org
 tracker=https://issues.qgis.org/projects/qgis/issues
