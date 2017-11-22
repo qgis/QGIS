@@ -764,6 +764,7 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
   layout/qgslayouttable.h
+  layout/qgslayouttablecolumn.h
   layout/qgslayoutundostack.h
 
   symbology/qgscptcityarchive.h
@@ -1028,7 +1029,6 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutserializableobject.h
   layout/qgslayoutsize.h
   layout/qgslayoutsnapper.h
-  layout/qgslayouttablecolumn.h
   layout/qgslayoutundocommand.h
   layout/qgslayoututils.h
 

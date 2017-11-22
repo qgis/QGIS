@@ -39,6 +39,7 @@
 #include "qgslayouthtmlwidget.h"
 #include "qgslayoutscalebarwidget.h"
 #include "qgslayoutitemattributetable.h"
+#include "qgslayoutattributetablewidget.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -285,7 +286,7 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
   auto attributeTableItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ),
                                     [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
   {
-    return nullptr; //new QgsLayoutHtmlWidget( qobject_cast< QgsLayoutFrame * >( item ) );
+    return new QgsLayoutAttributeTableWidget( qobject_cast< QgsLayoutFrame * >( item ) );
   }, createRubberBand );
   attributeTableItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
   {

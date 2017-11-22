@@ -33,8 +33,10 @@
  * have an effect for QgsLayoutItemAttributeTables, and have no effect for QgsLayoutItemTextTables.
  * \since QGIS 3.0
 */
-class CORE_EXPORT QgsLayoutTableColumn
+class CORE_EXPORT QgsLayoutTableColumn : public QObject
 {
+    Q_OBJECT
+
   public:
 
     /**
