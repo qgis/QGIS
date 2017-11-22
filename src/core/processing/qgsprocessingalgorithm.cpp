@@ -124,16 +124,30 @@ QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
 }
 
 QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVariantMap &parameters,
-    QgsProcessingContext &context ) const
+    QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
 {
   // start with context's expression context
   QgsExpressionContext c = context.expressionContext();
-  if ( c.scopeCount() == 0 )
+
+  // If there's a source capable of generating a context scope, use it
+  if ( source )
   {
-    //empty scope, populate with initial scopes
-    c << QgsExpressionContextUtils::globalScope()
-      << QgsExpressionContextUtils::projectScope( context.project() );
+    QgsExpressionContextGenerator *generator = dynamic_cast<QgsExpressionContextGenerator *>( source->source() );
+    if ( generator )
+    {
+      const auto &scopes = generator->createExpressionContext().takeScopes();
+      for ( QgsExpressionContextScope *scope : scopes )
+        c << scope;
+    }
   }
+  else
+
+    if ( c.scopeCount() == 0 )
+    {
+      //empty scope, populate with initial scopes
+      c << QgsExpressionContextUtils::globalScope()
+        << QgsExpressionContextUtils::projectScope( context.project() );
+    }
 
   c << QgsExpressionContextUtils::processingAlgorithmScope( this, parameters, context );
   return c;

@@ -326,10 +326,12 @@ class QgsProcessingAlgorithm
 %End
 
     QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
-        QgsProcessingContext &context ) const;
+        QgsProcessingContext &context, QgsProcessingFeatureSource *source = 0 ) const;
 %Docstring
  Creates an expression context relating to the algorithm. This can be called by algorithms
  to create a new expression context ready for evaluating expressions within the algorithm.
+ Optionally, a ``source`` can be specified which will be used to populate the context if it
+ implements the QgsExpressionContextGenerator interface.
  :rtype: QgsExpressionContext
 %End
 
