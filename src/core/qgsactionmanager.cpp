@@ -63,10 +63,10 @@ void QgsActionManager::removeAction( int index )
   }
 }
 
-void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultValueIndex )
+void QgsActionManager::doAction( int index, const QgsFeature& feat, int defaultValueIndex, const QgsExpressionContextScope &scope )
 {
   QgsExpressionContext context = createExpressionContext();
-  QgsExpressionContextScope* actionScope = new QgsExpressionContextScope();
+  QgsExpressionContextScope* actionScope = new QgsExpressionContextScope( scope );
   actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QString( "current_field" ), feat.attribute( defaultValueIndex ), true ) );
   context << actionScope;
   doAction( index, feat, context );

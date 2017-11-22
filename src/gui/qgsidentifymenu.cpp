@@ -349,6 +349,7 @@ void QgsIdentifyMenu::addVectorLayer( QgsVectorLayer* layer, const QList<QgsMapT
     if ( mShowFeatureActions )
     {
       featureActionMenu = new QgsActionMenu( layer, result.mFeature.id(), layerMenu );
+      featureActionMenu->setExpressionContextScope( mExpressionContextScope );
     }
 
     // feature title
@@ -642,4 +643,14 @@ void QgsIdentifyMenu::removeCustomActions()
 {
   mCustomActionRegistry.clear();
 
+}
+
+void QgsIdentifyMenu::setExpressionContextScope( const QgsExpressionContextScope &scope )
+{
+  mExpressionContextScope = scope;
+}
+
+QgsExpressionContextScope QgsIdentifyMenu::expressionContextScope() const
+{
+  return mExpressionContextScope;
 }

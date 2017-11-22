@@ -106,7 +106,7 @@ void QgsActionMenu::triggerAction()
   }
   else if ( data.actionType == AttributeAction )
   {
-    mActions->doAction( data.actionId.id, *feature() );
+    mActions->doAction( data.actionId.id, *feature(), 0, mExpressionContextScope );
   }
 }
 
@@ -159,3 +159,12 @@ void QgsActionMenu::reloadActions()
   emit reinit();
 }
 
+void QgsActionMenu::setExpressionContextScope( const QgsExpressionContextScope &scope )
+{
+  mExpressionContextScope = scope;
+}
+
+QgsExpressionContextScope QgsActionMenu::expressionContextScope() const
+{
+  return mExpressionContextScope;
+}

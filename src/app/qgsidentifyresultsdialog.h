@@ -152,6 +152,22 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     /** Map tool was activated */
     void activate();
 
+    /**
+     * Sets an expression context scope to consider for resolving underlying
+     * actions.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used for resolving underlying
+     * actions.
+     *
+     * @note Added in QGIS 2.18
+     */
+    QgsExpressionContextScope expressionContextScope() const;
+
   signals:
     void selectedFeatureChanged( QgsVectorLayer *, QgsFeatureId featureId );
 
@@ -263,6 +279,8 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     QgsDockWidget *mDock;
 
     QVector<QgsIdentifyPlotCurve *> mPlotCurves;
+
+    QgsExpressionContextScope mExpressionContextScope;
 };
 
 class QgsIdentifyResultsDialogMapLayerAction : public QAction

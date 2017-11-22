@@ -24,6 +24,9 @@
 #include "qgsmapcanvas.h"
 #include "qgsunittypes.h"
 #include "qgsmaptoolidentifyaction.h"
+#include "qgisapp.h"
+#include "qgsidentifymenu.h"
+#include "qgsidentifyresultsdialog.h"
 
 #include "cpl_conv.h"
 
@@ -46,9 +49,11 @@ class TestQgsMapToolIdentifyAction : public QObject
     void identifyRasterFloat32(); // test pixel identification and decimal precision
     void identifyRasterFloat64(); // test pixel identification and decimal precision
     void identifyInvalidPolygons(); // test selecting invalid polygons
+    void clickxy(); // test if click_x and click_y variables are propagated
 
   private:
     QgsMapCanvas* canvas;
+    QgisApp *mQgisApp;
 
     QString testIdentifyRaster( QgsRasterLayer* layer, double xGeoref, double yGeoref );
     QList<QgsMapToolIdentify::IdentifyResult> testIdentifyVector( QgsVectorLayer* layer, double xGeoref, double yGeoref );
@@ -91,6 +96,8 @@ void TestQgsMapToolIdentifyAction::initTestCase()
   // enforce C locale because the tests expect it
   // (decimal separators / thousand separators)
   QLocale::setDefault( QLocale::c() );
+
+  mQgisApp = new QgisApp();
 }
 
 void TestQgsMapToolIdentifyAction::cleanupTestCase()
@@ -106,6 +113,57 @@ void TestQgsMapToolIdentifyAction::init()
 void TestQgsMapToolIdentifyAction::cleanup()
 {
   delete canvas;
+}
+
+void TestQgsMapToolIdentifyAction::clickxy()
+{
+  int clickxOk = 2484588;
+  int clickyOk = 2425722;
+
+  // create temp layer
+  QScopedPointer<QgsVectorLayer> tempLayer( new QgsVectorLayer( QString( "Point?crs=epsg:3111" ), QString( "vl" ), QString( "memory" ) ) );
+  QVERIFY( tempLayer->isValid() );
+
+  // add feature
+  QgsFeature f1( tempLayer->dataProvider()->fields(), 1 );
+  QgsPoint wordPoint( clickxOk, clickyOk );
+  QgsGeometry *geom = QgsGeometry::fromPoint( wordPoint ) ;
+  f1.setGeometry( geom );
+  tempLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
+
+  // prepare canvas
+  QgsCoordinateReferenceSystem srs( 3111, QgsCoordinateReferenceSystem::EpsgCrsId );
+  canvas->setDestinationCrs( srs );
+  canvas->setCurrentLayer( tempLayer.data() );
+
+  // init map tool identify action
+  QScopedPointer<QgsMapToolIdentifyAction> identifyAction( new QgsMapToolIdentifyAction( canvas ) );
+
+  // simulate a click on the canvas
+  QgsPoint mapPoint = canvas->getCoordinateTransform()->transform( 2484588, 2425722 );
+  QPoint point = QPoint( mapPoint.x(), mapPoint.y() );
+  QMouseEvent releases( QEvent::MouseButtonRelease, point,
+                        Qt::RightButton, Qt::LeftButton, Qt::NoModifier );
+  QgsMapMouseEvent mapReleases( 0, &releases );
+
+  identifyAction->canvasReleaseEvent( &mapReleases );
+
+  // test QgsIdentifyMenu expression context scope
+  bool ok;
+  QgsIdentifyMenu *menu = identifyAction->identifyMenu();
+  int clickx = menu->expressionContextScope().variable( "click_x" ).toString().toInt( &ok, 10 );
+  QCOMPARE( clickx, clickxOk );
+
+  int clicky = menu->expressionContextScope().variable( "click_y" ).toString().toInt( &ok, 10 );
+  QCOMPARE( clicky, clickyOk );
+
+  // test QgsIdentifyResultsDialog expression context scope
+  QgsIdentifyResultsDialog *dlg = identifyAction->resultsDialog();
+  clickx = dlg->expressionContextScope().variable( "click_x" ).toString().toInt( &ok, 10 );
+  QCOMPARE( clickx, clickxOk );
+
+  clicky = dlg->expressionContextScope().variable( "click_y" ).toString().toInt( &ok, 10 );
+  QCOMPARE( clicky, clickyOk );
 }
 
 void TestQgsMapToolIdentifyAction::lengthCalculation()

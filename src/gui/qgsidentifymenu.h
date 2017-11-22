@@ -148,6 +148,20 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      */
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult>& idResults, QPoint pos );
 
+    /**
+     * Sets an expression context scope used to resolve underlying actions.
+     *
+     * @note Added in QGIS 2.18
+     */
+    void setExpressionContextScope( const QgsExpressionContextScope &scope );
+
+    /**
+     * Returns an expression context scope used to resolve underlying actions.
+     *
+     * @note Added in QGIS 2.18
+     */
+    QgsExpressionContextScope expressionContextScope() const;
+
   protected:
     virtual void closeEvent( QCloseEvent *e ) override;
 
@@ -177,6 +191,8 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     bool mResultsIfExternalAction;
     int mMaxLayerDisplay;
     int mMaxFeatureDisplay;
+
+    QgsExpressionContextScope mExpressionContextScope;
 
     // name of the action to be displayed for feature default action, if other actions are shown
     QString mDefaultActionName;
