@@ -380,6 +380,7 @@ class TestQgsProcessing: public QObject
     void features();
     void uniqueValues();
     void createIndex();
+    void parseDestinationString();
     void createFeatureSink();
     void parameters();
     void algorithmParameters();
@@ -1205,6 +1206,68 @@ void TestQgsProcessing::createIndex()
   index = QgsSpatialIndex( *source );
   ids = index.nearestNeighbor( QgsPointXY( 2.1, 2 ), 1 );
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
+}
+
+void TestQgsProcessing::parseDestinationString()
+{
+  QString providerKey;
+  QString uri;
+  QString layerName;
+  QString format;
+  QVariantMap options;
+  bool useWriter = false;
+
+  // simple shapefile output
+  QString destination = QStringLiteral( "d:/test.shp" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( destination, QStringLiteral( "d:/test.shp" ) );
+  QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "d:/test.shp" ) );
+  QCOMPARE( format, QStringLiteral( "ESRI Shapefile" ) );
+  QVERIFY( useWriter );
+
+  // postgis output
+  destination = QStringLiteral( "postgis:dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
+  QVERIFY( !useWriter );
+  // postgres key should also work
+  destination = QStringLiteral( "postgres:dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
+  QVERIFY( !useWriter );
+
+  // full uri shp output
+  options.clear();
+  destination = QStringLiteral( "ogr:d:/test.shp" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "d:/test.shp" ) );
+  QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
+  QVERIFY( !options.contains( QStringLiteral( "layerName" ) ) );
+  QVERIFY( !useWriter );
+
+// full uri geopackage output
+  options.clear();
+  destination = QStringLiteral( "ogr:d:/test.gpkg" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "d:/test.gpkg" ) );
+  QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
+  QVERIFY( !options.contains( QStringLiteral( "layerName" ) ) );
+  QVERIFY( !useWriter );
+
+// full uri geopackage table output with layer name
+  options.clear();
+  destination = QStringLiteral( "ogr:dbname='d:/package.gpkg' table=\"mylayer\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "d:/package.gpkg" ) );
+  QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
+  QCOMPARE( options.value( QStringLiteral( "layerName" ) ).toString(), QStringLiteral( "mylayer" ) );
+  QVERIFY( !useWriter );
 }
 
 void TestQgsProcessing::createFeatureSink()
