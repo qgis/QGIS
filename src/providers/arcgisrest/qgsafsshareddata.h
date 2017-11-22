@@ -34,6 +34,7 @@ class QgsAfsSharedData : public QObject
     const QgsFields &fields() const { return mFields; }
     QgsRectangle extent() const { return mExtent; }
     QgsCoordinateReferenceSystem crs() const { return mSourceCRS; }
+    void clearCache();
 
     bool getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeometry, const QList<int> &fetchAttributes, const QgsRectangle &filterRect = QgsRectangle() );
 
