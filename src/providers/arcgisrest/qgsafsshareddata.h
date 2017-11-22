@@ -17,6 +17,7 @@
 #define QGSAFSSHAREDDATA_H
 
 #include <QObject>
+#include <QMutex>
 #include "qgsfields.h"
 #include "qgsfeature.h"
 #include "qgsdatasourceuri.h"
@@ -38,6 +39,7 @@ class QgsAfsSharedData : public QObject
 
   private:
     friend class QgsAfsProvider;
+    QMutex mMutex;
     QgsDataSourceUri mDataSource;
     QgsRectangle mExtent;
     QgsWkbTypes::Type mGeometryType = QgsWkbTypes::Unknown;
