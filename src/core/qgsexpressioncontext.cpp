@@ -474,6 +474,13 @@ QgsExpressionContextScope *QgsExpressionContext::popScope()
   return nullptr;
 }
 
+QList<QgsExpressionContextScope *> QgsExpressionContext::takeScopes()
+{
+  QList<QgsExpressionContextScope *> stack = mStack;
+  mStack.clear();
+  return stack;
+}
+
 QgsExpressionContext &QgsExpressionContext::operator<<( QgsExpressionContextScope *scope )
 {
   mStack.append( scope );
