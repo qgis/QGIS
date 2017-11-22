@@ -372,12 +372,9 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
   {
     // memory provider cannot be used with QgsVectorLayerImport - so create layer manually
     std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs ) );
-    if ( !layer )
-      return nullptr;
-
-    if ( !layer->isValid() )
+    if ( !layer || !layer->isValid() )
     {
-      return nullptr;
+      throw QgsProcessingException( QObject::tr( "Could not create memory layer" ) );
     }
 
     // update destination to layer ID
@@ -403,17 +400,24 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
       QString finalFileName;
-      QgsVectorFileWriter *writer = new QgsVectorFileWriter( destination, options.value( QStringLiteral( "fileEncoding" ) ).toString(), fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
+      std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >( destination, options.value( QStringLiteral( "fileEncoding" ) ).toString(), fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
           QgsVectorFileWriter::defaultLayerOptions( format ), &finalFileName );
+
+      if ( writer->hasError() )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
+      }
       destination = finalFileName;
-      return writer;
+      return writer.release();
     }
     else
     {
       //create empty layer
-      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, false, options ) );
+      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, true, options ) );
       if ( exporter->errorCode() )
-        return nullptr;
+      {
+        throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
+      }
 
       // use destination string as layer name (eg "postgis:..." )
       if ( !layerName.isEmpty() )
