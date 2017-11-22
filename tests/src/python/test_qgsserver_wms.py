@@ -354,19 +354,20 @@ class TestQgsServerWMS(QgsServerTestBase):
                 item_found = True
         self.assertTrue(item_found)
 
-    #def test_wms_GetProjectSettings_wms_print_layers(self):
-    #    projectPath = self.testdata_path + "test_project_wms_printlayers.qgs"
-    #    qs = "?" + "&".join(["%s=%s" % i for i in list({
-    #        "MAP": projectPath,
-    #        "SERVICE": "WMS",
-    #        "VERSION": "1.3.0",
-    #        "REQUEST": "GetProjectSettings"
-    #    }.items())])
-    #    header, body = self._execute_request(qs)
-    #    xmlResult = body.decode('utf-8')
-    #    self.assertTrue(xmlResult.find("<WMSBackgroundLayer>1</WMSBackgroundLayer>") != -1)
-    #    self.assertTrue(xmlResult.find("<WMSDataSource>contextualWMSLegend=0&amp;crs=EPSG:21781&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=public_geo_gemeinden&amp;styles=&amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms/wms?</WMSDataSource>") != -1)
-    #    self.assertTrue(xmlResult.find("<WMSPrintLayer>contextualWMSLegend=0&amp;amp;crs=EPSG:21781&amp;amp;dpiMode=7&amp;amp;featureCount=10&amp;amp;format=image/png&amp;amp;layers=public_geo_gemeinden&amp;amp;styles=&amp;amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms_print/wms?</WMSPrintLayer>") != -1)
+    @unittest.skip('Timeout issues')
+    def test_wms_GetProjectSettings_wms_print_layers(self):
+        projectPath = self.testdata_path + "test_project_wms_printlayers.qgs"
+        qs = "?" + "&".join(["%s=%s" % i for i in list({
+            "MAP": projectPath,
+            "SERVICE": "WMS",
+            "VERSION": "1.3.0",
+            "REQUEST": "GetProjectSettings"
+        }.items())])
+        header, body = self._execute_request(qs)
+        xmlResult = body.decode('utf-8')
+        self.assertTrue(xmlResult.find("<WMSBackgroundLayer>1</WMSBackgroundLayer>") != -1)
+        self.assertTrue(xmlResult.find("<WMSDataSource>contextualWMSLegend=0&amp;crs=EPSG:21781&amp;dpiMode=7&amp;featureCount=10&amp;format=image/png&amp;layers=public_geo_gemeinden&amp;styles=&amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms/wms?</WMSDataSource>") != -1)
+        self.assertTrue(xmlResult.find("<WMSPrintLayer>contextualWMSLegend=0&amp;amp;crs=EPSG:21781&amp;amp;dpiMode=7&amp;amp;featureCount=10&amp;amp;format=image/png&amp;amp;layers=public_geo_gemeinden&amp;amp;styles=&amp;amp;url=https://qgiscloud.com/mhugent/qgis_unittest_wms_print/wms?</WMSPrintLayer>") != -1)
 
 
 if __name__ == '__main__':
