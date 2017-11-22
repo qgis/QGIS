@@ -787,15 +787,15 @@ void TestQgsProcessing::mapLayers()
 
   // Test layers from a string with parameters
   QString osmFilePath = testDataDir + "openstreetmap/testdata.xml";
-  QgsVectorLayer *osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath ) );
+  std::unique_ptr< QgsVectorLayer > osm( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PointGeometry );
 
-  osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3" ) );
+  osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3" ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PolygonGeometry );
 
-  osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null" ) );
+  osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null" ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PolygonGeometry );
   QCOMPARE( osm->subsetString(), QStringLiteral( "\"building\" is not null" ) );
@@ -966,6 +966,7 @@ void TestQgsProcessing::algorithm()
   QVERIFY( p2->algorithms().isEmpty() );
   p2->load();
   QCOMPARE( p2->algorithms().size(), 2 );
+  delete p2;
 
   // test that adding a provider to the registry automatically refreshes algorithms (via load)
   DummyProvider *p3 = new DummyProvider( "p3" );
@@ -4471,24 +4472,24 @@ void TestQgsProcessing::combineLayerExtent()
   QString raster1 = testDataDir + "tenbytenraster.asc";
   QString raster2 = testDataDir + "landsat.tif";
   QFileInfo fi1( raster1 );
-  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  std::unique_ptr< QgsRasterLayer > r1( new QgsRasterLayer( fi1.filePath(), "R1" ) );
   QFileInfo fi2( raster2 );
-  QgsRasterLayer *r2 = new QgsRasterLayer( fi2.filePath(), "R2" );
+  std::unique_ptr< QgsRasterLayer > r2( new QgsRasterLayer( fi2.filePath(), "R2" ) );
 
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1 );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() );
   QGSCOMPARENEAR( ext.xMinimum(), 1535375.000000, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 1535475, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 5083255, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1 << r2 );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get() );
   QGSCOMPARENEAR( ext.xMinimum(), 781662, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 1535475, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3339523, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 
   // with reprojection
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1 << r2, QgsCoordinateReferenceSystem::fromEpsgId( 3785 ) );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), QgsCoordinateReferenceSystem::fromEpsgId( 3785 ) );
   QGSCOMPARENEAR( ext.xMinimum(), 1995320, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 2008833, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3523084, 10 );
@@ -5697,7 +5698,7 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
 
   // make sure all features are copied
-  QgsVectorLayer *t = new QgsVectorLayer( out, "vl2" );
+  std::unique_ptr< QgsVectorLayer > t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
   QCOMPARE( layer->featureCount(), t->featureCount() );
   QCOMPARE( layer->crs(), t->crs() );
 
@@ -5715,8 +5716,7 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out != layer->source() );
   QVERIFY( out.endsWith( ".tab" ) );
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
-  delete t;
-  t = new QgsVectorLayer( out, "vl2" );
+  t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
   QCOMPARE( t->featureCount(), static_cast< long >( ids.count() ) );
 
   // using a selection but existing format - will still require translation
@@ -5724,8 +5724,7 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out != layer->source() );
   QVERIFY( out.endsWith( ".shp" ) );
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
-  delete t;
-  t = new QgsVectorLayer( out, "vl2" );
+  t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
   QCOMPARE( t->featureCount(), static_cast< long >( ids.count() ) );
 
 
