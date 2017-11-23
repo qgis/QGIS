@@ -18,6 +18,8 @@
 #ifndef QGSAFSPROVIDER_H
 #define QGSAFSPROVIDER_H
 
+#include <QMutex>
+
 #include "qgsvectordataprovider.h"
 #include "qgsdatasourceuri.h"
 #include "qgscoordinatereferencesystem.h"
@@ -69,6 +71,7 @@ class QgsAfsProvider : public QgsVectorDataProvider
     void reloadData() override { mCache.clear(); }
 
   private:
+    QMutex mMutex;
     bool mValid;
     QgsDataSourceURI mDataSource;
     QgsRectangle mExtent;

@@ -157,6 +157,8 @@ QgsFeatureIterator QgsAfsProvider::getFeatures( const QgsFeatureRequest& request
 
 bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fetchGeometry, const QList<int>& /*fetchAttributes*/, const QgsRectangle filterRect )
 {
+  QMutexLocker locker( &mMutex );
+
   // If cached, return cached feature
   QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );
   if ( it != mCache.end() )
@@ -214,9 +216,8 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   {
     QVariantMap featureData = featuresData[i].toMap();
     QgsFeature feature;
+    int featureId = startId + i;
 
-    // Set FID
-    feature.setFeatureId( startId + i );
 
     // Set attributes
     if ( !fetchAttribIdx.isEmpty() )
@@ -227,9 +228,16 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
       foreach ( int idx, fetchAttribIdx )
       {
         attributes[idx] = attributesData[mFields.at( idx ).name()];
+        if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
+        {
+          featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
+        }
       }
       feature.setAttributes( attributes );
     }
+
+    // Set FID
+    feature.setFeatureId( featureId );
 
     // Set geometry
     if ( fetchGeometry )
@@ -243,9 +251,16 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
     feature.setValid( true );
     mCache.insert( feature.id(), feature );
   }
-  f = mCache[id];
-  Q_ASSERT( f.isValid() );
-  return filterRect.isNull() || ( f.geometry() && f.geometry()->intersects( filterRect ) );
+
+  // If added to cached, return feature
+  QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );
+  if ( it != mCache.end() )
+  {
+    f = it.value();
+    return filterRect.isNull() || ( f.geometry() && f.geometry()->intersects( filterRect ) );
+  }
+
+  return false;
 }
 
 void QgsAfsProvider::setDataSourceUri( const QString &uri )
