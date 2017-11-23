@@ -53,7 +53,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
 
 from qgis.gui import (QgsMessageBar,
                       QgsScrollArea,
-                      QgsFilterLineEdit)
+                      QgsFilterLineEdit,
+                      QgsHelp)
 
 from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.wrappers import InvalidParameterValue
@@ -362,6 +363,10 @@ class ModelerParametersDialog(QDialog):
         self.reject()
 
     def openHelp(self):
-        algHelp = self._alg.help()
-        if algHelp is not None:
+        algHelp = self._alg.helpUrl()
+        if not algHelp:
+            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}".format(
+                self._alg.provider().id(), self._alg.id())).toString()
+
+        if algHelp not in [None, ""]:
             webbrowser.open(algHelp)
