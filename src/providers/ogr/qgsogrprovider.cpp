@@ -343,6 +343,8 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
     }
   }
 
+  QgsOgrProviderUtils::invalidateCachedLastModifiedDate( uri );
+
   return QgsVectorLayerExporter::NoError;
 }
 
@@ -4311,6 +4313,22 @@ static QDateTime getLastModified( const QString &dsName )
   }
   return QFileInfo( dsName ).lastModified();
 }
+
+// In case we do very fast structural changes within the same second,
+// the last modified date might not change enough, so artificially
+// decrement the cache modified date, so that the file appears newer to it
+void QgsOgrProviderUtils::invalidateCachedLastModifiedDate( const QString &dsName )
+{
+  QMutexLocker locker( &globalMutex );
+
+  auto iter = mapDSNameToLastModifiedDate.find( dsName );
+  if ( iter != mapDSNameToLastModifiedDate.end() )
+  {
+    QgsDebugMsg( QString( "invalidating last modified date for %1" ).arg( dsName ) );
+    iter.value() = iter.value().addSecs( -10 );
+  }
+}
+
 
 QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
 {

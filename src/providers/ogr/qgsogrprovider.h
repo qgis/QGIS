@@ -418,6 +418,9 @@ class QgsOgrProviderUtils
 
     //! Return the string to provide to QgsOgrConnPool::instance() methods
     static QString connectionPoolId( const QString &dataSourceURI );
+
+    //! Invalidate the cached last modified date of a dataset
+    static void invalidateCachedLastModifiedDate( const QString &dsName );
 };
 
 
