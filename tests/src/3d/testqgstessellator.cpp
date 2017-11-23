@@ -107,19 +107,17 @@ class TestQgsTessellator : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsTessellator();
+    TestQgsTessellator() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testBasic();
+    void testWalls();
 
   private:
 };
-
-TestQgsTessellator::TestQgsTessellator() = default;
-
 
 //runs before all tests
 void TestQgsTessellator::initTestCase()
@@ -167,6 +165,32 @@ void TestQgsTessellator::testBasic()
   QgsTessellator tNZ( 0, 0, true );
   tNZ.addPolygon( polygonZ, 0 );
   QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormals ) );
+}
+
+void TestQgsTessellator::testWalls()
+{
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 2, 3 2 3, 1 2 4, 1 1 1))" );
+
+  QList<TriangleCoords> tc;
+
+  // NOTE - these coordinates are wrong, and this test exposes a different bug in the tesselator
+  // 2.4 should be 2:
+  tc << TriangleCoords( QVector3D( 1, 2.4, 14 ), QVector3D( 2, 1.4, 12 ), QVector3D( 3, 2, 13 ) );
+  tc << TriangleCoords( QVector3D( 1, 2.4, 14 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1.4, 12 ) );
+
+  tc << TriangleCoords( QVector3D( 1, 1, 11 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 1 ) );
+  tc << TriangleCoords( QVector3D( 1, 1, 1 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 2, 4 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 3, 2, 13 ), QVector3D( 1, 2, 4 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 4 ), QVector3D( 3, 2, 13 ), QVector3D( 3, 2, 3 ) );
+  tc << TriangleCoords( QVector3D( 3, 2, 13 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 3 ) );
+  tc << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 12 ), QVector3D( 2, 1, 2 ) );
+  tc << TriangleCoords( QVector3D( 2, 1, 12 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 2 ) );
+  tc << TriangleCoords( QVector3D( 2, 1, 2 ), QVector3D( 1, 1, 11 ), QVector3D( 1, 1, 1 ) );
+
+  QgsTessellator tZ( 0, 0, false );
+  tZ.addPolygon( polygonZ, 10 );
+  QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
 }
 
 
