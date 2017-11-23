@@ -213,7 +213,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QTime totalTime;
   totalTime.start();
 
-  QgsProcessingModelFeedback modelFeedback( toExecute.count(), feedback );
+  QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
   QVariantMap childResults;
@@ -1145,66 +1145,6 @@ QgsProcessingAlgorithm *QgsProcessingModelAlgorithm::createInstance() const
   alg->setSourceFilePath( sourceFilePath() );
   return alg;
 }
-
-
-
-
-//
-// QgsProcessingModelFeedback
-//
-
-QgsProcessingModelFeedback::QgsProcessingModelFeedback( int childAlgorithmCount, QgsProcessingFeedback *feedback )
-  : mChildSteps( childAlgorithmCount )
-  , mFeedback( feedback )
-{
-  connect( mFeedback, &QgsFeedback::canceled, this, &QgsFeedback::cancel, Qt::DirectConnection );
-  connect( this, &QgsFeedback::progressChanged, this, &QgsProcessingModelFeedback::updateOverallProgress );
-}
-
-void QgsProcessingModelFeedback::setCurrentStep( int step )
-{
-  mCurrentStep = step;
-  mFeedback->setProgress( 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps );
-}
-
-void QgsProcessingModelFeedback::setProgressText( const QString &text )
-{
-  mFeedback->setProgressText( text );
-}
-
-void QgsProcessingModelFeedback::reportError( const QString &error )
-{
-  mFeedback->reportError( error );
-}
-
-void QgsProcessingModelFeedback::pushInfo( const QString &info )
-{
-  mFeedback->pushInfo( info );
-}
-
-void QgsProcessingModelFeedback::pushCommandInfo( const QString &info )
-{
-  mFeedback->pushCommandInfo( info );
-}
-
-void QgsProcessingModelFeedback::pushDebugInfo( const QString &info )
-{
-  mFeedback->pushDebugInfo( info );
-}
-
-void QgsProcessingModelFeedback::pushConsoleInfo( const QString &info )
-{
-  mFeedback->pushConsoleInfo( info );
-}
-
-void QgsProcessingModelFeedback::updateOverallProgress( double progress )
-{
-  double baseProgress = 100.0 * static_cast< double >( mCurrentStep ) / mChildSteps;
-  double currentAlgorithmProgress = progress / mChildSteps;
-  mFeedback->setProgress( baseProgress + currentAlgorithmProgress );
-}
-
-
 
 ///@endcond
 

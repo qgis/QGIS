@@ -71,6 +71,7 @@ SET(TESTS
  testqgsgeometrysnapper.cpp
  testqgsinterpolator.cpp
  testqgsprocessing.cpp
+ testqgsprocessingalgs.cpp
  testqgszonalstatistics.cpp
  testqgsrastercalculator.cpp
  testqgsalignraster.cpp

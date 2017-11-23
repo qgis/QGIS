@@ -93,6 +93,55 @@ class CORE_EXPORT QgsProcessingFeedback : public QgsFeedback
 };
 
 
+/**
+ * \class QgsProcessingMultiStepFeedback
+ * \ingroup core
+ *
+ * Processing feedback object for multi-step operations.
+ *
+ * A processing feedback object which proxies its calls to an underlying
+ * feedback object, but scales overall progress reports to account
+ * for a number of child steps which each report their own feedback.
+ *
+ * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingMultiStepFeedback : public QgsProcessingFeedback
+{
+    Q_OBJECT
+
+  public:
+
+    /**
+     * Constructor for QgsProcessingMultiStepFeedback, for a process with the specified
+     * number of \a steps. This feedback object will proxy calls
+     * to the specified \a feedback object.
+     */
+    QgsProcessingMultiStepFeedback( int steps, QgsProcessingFeedback *feedback );
+
+    /**
+     * Sets the \a step which is being executed. This is used
+     * to scale the current progress to account for progress through the overall process.
+     */
+    void setCurrentStep( int step );
+
+    void setProgressText( const QString &text ) override;
+    void reportError( const QString &error ) override;
+    void pushInfo( const QString &info ) override;
+    void pushCommandInfo( const QString &info ) override;
+    void pushDebugInfo( const QString &info ) override;
+    void pushConsoleInfo( const QString &info ) override;
+
+  private slots:
+
+    void updateOverallProgress( double progress );
+
+  private:
+
+    int mChildSteps = 0;
+    int mCurrentStep = 0;
+    QgsProcessingFeedback *mFeedback = nullptr;
+};
+
 #endif // QGSPROCESSINGFEEDBACK_H
 
 
