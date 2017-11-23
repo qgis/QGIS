@@ -2086,17 +2086,10 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsCoordinateReferenceSystem &so
     return;
   }
 
-  //get list of datum transforms
-  const QList< QList< int > > dt = QgsCoordinateTransform::datumTransformations( source, destination );
-  if ( dt.size() < 2 )
-  {
-    return;
-  }
-
   //if several possibilities:  present dialog
-  QgsDatumTransformDialog d( dt );
-  d.setCrs( source, destination );
-  d.exec();
+  QgsDatumTransformDialog d( source, destination );
+  if ( d.availableTransformationCount() > 1 )
+    d.exec();
 }
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )

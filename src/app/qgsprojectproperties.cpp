@@ -25,6 +25,7 @@
 #include "qgscomposer.h"
 #include "qgscoordinatetransform.h"
 #include "qgsdatumtransformtablemodel.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgslayoutmanager.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -156,15 +157,15 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   projectionSelector->setCrs( QgsProject::instance()->crs() );
 
   // Datum transforms
-  QgsDatumTransformTableModel* datumTransformTableModel = new QgsDatumTransformTableModel(this);
+  QgsDatumTransformTableModel *datumTransformTableModel = new QgsDatumTransformTableModel( this );
   QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-  datumTransformTableModel->setTransformContext(context);
-  mDatumTransformTableView->setModel(datumTransformTableModel);
+  datumTransformTableModel->setTransformContext( context );
+  mDatumTransformTableView->setModel( datumTransformTableModel );
   mDatumTransformTableView->resizeColumnToContents( 0 );
   mDatumTransformTableView->horizontalHeader()->show();
   mDatumTransformTableView->setSelectionMode( QAbstractItemView::SingleSelection );
   mDatumTransformTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
-  connect(mDatumTransformAddButton, &QToolButton::clicked, this, &QgsProjectProperties::addDatumTransform);
+  connect( mDatumTransformAddButton, &QToolButton::clicked, this, &QgsProjectProperties::addDatumTransform );
 
   QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
@@ -1224,12 +1225,16 @@ void QgsProjectProperties::apply()
 
 void QgsProjectProperties::showProjectionsTab()
 {
-    mOptionsListWidget->setCurrentRow( 1 );
+  mOptionsListWidget->setCurrentRow( 1 );
 }
 
-QgsProjectProperties::addDatumTransform()
+void QgsProjectProperties::addDatumTransform()
 {
+  QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog();
+  if ( dlg->exec() )
+  {
 
+  }
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )

@@ -37,14 +37,16 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     /**
      * Constructor for QgsDatumTransformDialog.
      */
-    QgsDatumTransformDialog( const QList< QList< int > > &dt, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsDatumTransformDialog( QgsCoordinateReferenceSystem sourceCrs = QgsCoordinateReferenceSystem(),
+                             QgsCoordinateReferenceSystem destinationCrs = QgsCoordinateReferenceSystem(),
+                             QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsDatumTransformDialog();
 
     /**
-     * Sets the \a source and \a destination coordinate reference systems.
-     * \since QGIS 3.0
+     * Returns the number of possible datum transformation for currently selected source and destination CRS
+     * \since 3.0
      */
-    void setCrs( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+    int availableTransformationCount();
 
     //! getter for selected datum transformations
     QList< int > selectedDatumTransform();
@@ -56,18 +58,19 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void mHideDeprecatedCheckBox_stateChanged( int state );
     void mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
     void accepted();
+    void setSourceCrs();
+    void setDestinationCrs();
 
   private:
-    QgsDatumTransformDialog();
     void updateTitle();
     bool gridShiftTransformation( const QString &itemText ) const;
     //! Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
     bool testGridShiftFileAvailability( QTreeWidgetItem *item, int col ) const;
     void load();
 
-    QList< QList< int > > mDt;
-    QgsCoordinateReferenceSystem mSrcCrs;
-    QgsCoordinateReferenceSystem mDestCrs;
+    QList< QList< int > > mDatumTransforms;
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsCoordinateReferenceSystem mDestinationCrs;
 };
 
 #endif // QGSDATUMTRANSFORMDIALOG_H

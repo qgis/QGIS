@@ -70,7 +70,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     void showProjectionsTab();
 
     //! add a new datum transform
-    addDatumTransform();
+    void addDatumTransform();
 
     /**
      * Let the user add a scale to the list of project scales

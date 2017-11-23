@@ -17,21 +17,32 @@
 
 #include "qgsdatumtransformdialog.h"
 #include "qgscoordinatetransform.h"
+#include "qgsprojectionselectiondialog.h"
 #include "qgslogger.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
 
 #include <QDir>
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( const QList< QList< int > > &dt, QWidget *parent, Qt::WindowFlags f )
+QgsDatumTransformDialog::QgsDatumTransformDialog( QgsCoordinateReferenceSystem sourceCrs,
+    QgsCoordinateReferenceSystem destinationCrs,
+    QWidget *parent, Qt::WindowFlags f )
   : QDialog( parent, f )
-  , mDt( dt )
 {
   setupUi( this );
+
   connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, &QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged );
   connect( mDatumTransformTreeWidget, &QTreeWidget::currentItemChanged, this, &QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged );
 
+  connect( mSourceCrsButton, &QPushButton::clicked, this, &QgsDatumTransformDialog::setSourceCrs );
+  connect( mDstCrsButton, &QPushButton::clicked, this, &QgsDatumTransformDialog::setDestinationCrs );
+
   connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDatumTransformDialog::accepted );
+
+  //get list of datum transforms
+  mSourceCrs = sourceCrs;
+  mDestinationCrs = destinationCrs;
+  mDatumTransforms = QgsCoordinateTransform::datumTransformations( sourceCrs, destinationCrs );
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
@@ -59,8 +70,8 @@ void QgsDatumTransformDialog::load()
 
   mDatumTransformTreeWidget->clear();
 
-  QList< QList< int > >::const_iterator it = mDt.constBegin();
-  for ( ; it != mDt.constEnd(); ++it )
+  QList< QList< int > >::const_iterator it = mDatumTransforms.constBegin();
+  for ( ; it != mDatumTransforms.constEnd(); ++it )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
     bool itemDisabled = false;
@@ -142,12 +153,11 @@ QgsDatumTransformDialog::~QgsDatumTransformDialog()
   QApplication::restoreOverrideCursor();
 }
 
-void QgsDatumTransformDialog::setCrs( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
+int QgsDatumTransformDialog::availableTransformationCount()
 {
-  mSrcCrs = source;
-  mDestCrs = destination;
-  updateTitle();
+  return mDatumTransforms.count();
 }
+
 
 QList< int > QgsDatumTransformDialog::selectedDatumTransform()
 {
@@ -244,7 +254,7 @@ void QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged( QTre
 
 void QgsDatumTransformDialog::accepted()
 {
-  if ( !mSrcCrs.isValid() || !mDestCrs.isValid() )
+  if ( !mSourceCrs.isValid() || !mDestinationCrs.isValid() )
     return;
 
   int srcTransform = -1;
@@ -260,12 +270,38 @@ void QgsDatumTransformDialog::accepted()
   }
 
   QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-  context.addSourceDestinationDatumTransform( mSrcCrs, mDestCrs, srcTransform, destTransform );
+  context.addSourceDestinationDatumTransform( mSourceCrs, mDestinationCrs, srcTransform, destTransform );
   QgsProject::instance()->setTransformContext( context );
+}
+
+void QgsDatumTransformDialog::setSourceCrs()
+{
+  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
+  if ( mySelector->exec() )
+  {
+    mSourceCrs = mySelector->crs();
+    updateTitle();
+    mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
+    load();
+  }
+  delete mySelector;
+}
+
+void QgsDatumTransformDialog::setDestinationCrs()
+{
+  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
+  if ( mySelector->exec() )
+  {
+    mDestinationCrs = mySelector->crs();
+    updateTitle();
+    mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
+    load();
+  }
+  delete mySelector;
 }
 
 void QgsDatumTransformDialog::updateTitle()
 {
-  mSourceCrsButton->setText( QStringLiteral( "%1 - %2" ).arg( mSrcCrs.authid(), mSrcCrs.isValid() ? mSrcCrs.description() : tr( "unknown" ) ) );
-  mDstCrsButton->setText( QStringLiteral( "%1 - %2" ).arg( mDestCrs.authid(), mDestCrs.isValid() ? mDestCrs.description() : tr( "unknown" ) ) );
+  mSourceCrsButton->setText( QStringLiteral( "%1 - %2" ).arg( mSourceCrs.authid(), mSourceCrs.isValid() ? mSourceCrs.description() : tr( "unknown" ) ) );
+  mDstCrsButton->setText( QStringLiteral( "%1 - %2" ).arg( mDestinationCrs.authid(), mDestinationCrs.isValid() ? mDestinationCrs.description() : tr( "unknown" ) ) );
 }
