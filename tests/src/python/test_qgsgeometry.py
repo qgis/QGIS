@@ -1437,7 +1437,7 @@ class TestQgsGeometry(unittest.TestCase):
         ]
 
         polyline = QgsGeometry.fromPolylineXY(points[0])
-        self.assertEqual(polyline.addPointsXY(points[1][0:1]), QgsGeometry.InvalidInput, "addPoints with one point line unexpectedly succeeded.")
+        self.assertEqual(polyline.addPointsXY(points[1][0:1]), QgsGeometry.InvalidInputGeometryType, "addPoints with one point line unexpectedly succeeded.")
         self.assertEqual(polyline.addPointsXY(points[1][0:2]), QgsGeometry.Success, "addPoints with two point line failed.")
         expwkt = "MultiLineString ((0 0, 1 0, 1 1, 2 1, 2 0), (3 0, 3 1))"
         wkt = polyline.asWkt()
@@ -1470,10 +1470,10 @@ class TestQgsGeometry(unittest.TestCase):
 
         polygon = QgsGeometry.fromPolygonXY(points[0])
 
-        self.assertEqual(polygon.addPointsXY(points[1][0][0:1]), QgsGeometry.InvalidInput, "addPoints with one point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPointsXY(points[1][0][0:2]), QgsGeometry.InvalidInput, "addPoints with two point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPointsXY(points[1][0][0:3]), QgsGeometry.InvalidInput, "addPoints with unclosed three point ring unexpectedly succeeded.")
-        self.assertEqual(polygon.addPointsXY([QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]), QgsGeometry.InvalidInput, "addPoints with 'closed' three point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPointsXY(points[1][0][0:1]), QgsGeometry.InvalidInputGeometryType, "addPoints with one point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPointsXY(points[1][0][0:2]), QgsGeometry.InvalidInputGeometryType, "addPoints with two point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPointsXY(points[1][0][0:3]), QgsGeometry.InvalidInputGeometryType, "addPoints with unclosed three point ring unexpectedly succeeded.")
+        self.assertEqual(polygon.addPointsXY([QgsPointXY(4, 0), QgsPointXY(5, 0), QgsPointXY(4, 0)]), QgsGeometry.InvalidInputGeometryType, "addPoints with 'closed' three point ring unexpectedly succeeded.")
 
         self.assertEqual(polygon.addPointsXY(points[1][0]), QgsGeometry.Success, "addPoints failed")
         expwkt = "MultiPolygon (((0 0, 1 0, 1 1, 2 1, 2 2, 0 2, 0 0)),((4 0, 5 0, 5 2, 3 2, 3 1, 4 1, 4 0)))"
