@@ -300,7 +300,7 @@ class GUI_EXPORT QgsPropertyOverrideButton: public QToolButton
   private slots:
     void aboutToShowMenu();
     void menuActionTriggered( QAction *action );
-
+    void showHelp();
     void updateSiblingWidgets( bool state );
 };
 

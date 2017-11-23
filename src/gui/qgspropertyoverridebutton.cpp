@@ -634,8 +634,10 @@ void QgsPropertyOverrideButton::showAssistant()
     dlg->setWindowTitle( widget->panelTitle() );
     dlg->setLayout( new QVBoxLayout() );
     dlg->layout()->addWidget( widget );
-    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok );
+    QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok );
     connect( buttonBox, &QDialogButtonBox::accepted, dlg, &QDialog::accept );
+    connect( buttonBox, &QDialogButtonBox::rejected, dlg, &QDialog::reject );
+    connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPropertyOverrideButton::showHelp );
     dlg->layout()->addWidget( buttonBox );
     dlg->exec();
     settings.setValue( key, dlg->saveGeometry() );
@@ -816,4 +818,9 @@ void QgsPropertyOverrideButton::setActive( bool active )
 void QgsPropertyOverrideButton::registerExpressionContextGenerator( QgsExpressionContextGenerator *generator )
 {
   mExpressionContextGenerator = generator;
+}
+
+void QgsPropertyOverrideButton::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#data-defined" ) );
 }
