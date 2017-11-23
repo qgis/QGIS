@@ -50,6 +50,7 @@ class TestQgsRasterFileWriter: public QObject
     void writeTest();
     void testCreateOneBandRaster();
     void testCreateMultiBandRaster();
+    void testVrtCreation();
   private:
     bool writeTest( const QString &rasterName );
     void log( const QString &msg );
@@ -269,6 +270,52 @@ void TestQgsRasterFileWriter::testCreateMultiBandRaster()
     QCOMPARE( rlayer->dataProvider()->dataType( i ), Qgis::Byte );
   }
   delete rlayer;
+}
+
+void TestQgsRasterFileWriter::testVrtCreation()
+{
+  //create a raster layer that will be used in all tests...
+  QString srcFileName = mTestDataDir + QStringLiteral( "ALLINGES_RGF93_CC46_1_1.tif" );
+  QFileInfo rasterFileInfo( srcFileName );
+  std::unique_ptr< QgsRasterLayer > srcRasterLayer = qgis::make_unique< QgsRasterLayer >( rasterFileInfo.absoluteFilePath(), rasterFileInfo.completeBaseName() );
+
+  QTemporaryDir dir;
+  std::unique_ptr< QgsRasterFileWriter > rasterFileWriter = qgis::make_unique< QgsRasterFileWriter >( dir.path() + '/' + rasterFileInfo.completeBaseName() );
+
+  //2. Definition of the pyramid levels
+  QList<int> levelList;
+  levelList << 2 << 4 << 8 << 16 << 32 << 64 << 128;
+  rasterFileWriter->setPyramidsList( levelList );
+  //3. Pyramid format
+  rasterFileWriter->setPyramidsFormat( QgsRaster::PyramidsGTiff );
+  //4. Resampling method
+  rasterFileWriter->setPyramidsResampling( QStringLiteral( "NEAREST" ) );
+  //5. Tiled mode => true for vrt creation
+  rasterFileWriter->setTiledMode( true );
+  //6. Tile size
+  rasterFileWriter->setMaxTileWidth( 500 );
+  rasterFileWriter->setMaxTileHeight( 500 );
+  //7. Coordinate Reference System
+  QgsCoordinateReferenceSystem crs;
+  crs.createFromString( "EPSG:3946" );
+  //8. Prepare raster pipe
+  QgsRasterPipe pipe;
+  pipe.set( srcRasterLayer->dataProvider()->clone() );
+  // Let's do it !
+  QgsRasterFileWriter::WriterError res = rasterFileWriter->writeRaster( &pipe, srcRasterLayer->width(), srcRasterLayer->height(), srcRasterLayer->extent(), crs );
+  QCOMPARE( res, QgsRasterFileWriter::NoError );
+
+  // Now let's compare the georef of the original raster with the georef of the generated vrt file
+  std::unique_ptr< QgsRasterLayer > vrtRasterLayer = qgis::make_unique< QgsRasterLayer >( dir.path() + '/' + rasterFileInfo.completeBaseName() + '/' + rasterFileInfo.completeBaseName() + QStringLiteral( ".vrt" ), rasterFileInfo.completeBaseName() );
+
+  double xminVrt = vrtRasterLayer->extent().xMinimum();
+  double yminVrt = vrtRasterLayer->extent().yMaximum();
+  double xminOriginal = srcRasterLayer->extent().xMinimum();
+  double yminOriginal = srcRasterLayer->extent().yMaximum();
+
+  // Let's check if the georef of the original raster with the georef of the generated vrt file
+  QGSCOMPARENEAR( xminVrt, xminOriginal, srcRasterLayer->rasterUnitsPerPixelX() / 4 );
+  QGSCOMPARENEAR( yminVrt, yminOriginal, srcRasterLayer->rasterUnitsPerPixelY() / 4 );
 }
 
 void TestQgsRasterFileWriter::log( const QString &msg )

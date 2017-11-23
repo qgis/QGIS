@@ -815,8 +815,8 @@ void QgsRasterFileWriter::createVRT( int xSize, int ySize, const QgsCoordinateRe
   if ( geoTransform )
   {
     QDomElement geoTransformElem = mVRTDocument.createElement( QStringLiteral( "GeoTransform" ) );
-    QString geoTransformString = QString::number( geoTransform[0] ) + ", " + QString::number( geoTransform[1] ) + ", " + QString::number( geoTransform[2] ) +
-                                 ", "  + QString::number( geoTransform[3] ) + ", " + QString::number( geoTransform[4] ) + ", " + QString::number( geoTransform[5] );
+    QString geoTransformString = QString::number( geoTransform[0], 'f', 6 ) + ", " + QString::number( geoTransform[1] ) + ", " + QString::number( geoTransform[2] ) +
+                                 ", "  + QString::number( geoTransform[3], 'f', 6 ) + ", " + QString::number( geoTransform[4] ) + ", " + QString::number( geoTransform[5] );
     QDomText geoTransformText = mVRTDocument.createTextNode( geoTransformString );
     geoTransformElem.appendChild( geoTransformText );
     VRTDatasetElem.appendChild( geoTransformElem );
