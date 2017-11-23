@@ -27,7 +27,7 @@
 #include <QVector3D>
 #include <algorithm>
 
-static void make_quad( float x0, float y0, float x1, float y1, float zLow, float zHigh, QVector<float> &data, bool addNormals )
+static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals )
 {
   float dx = x1 - x0;
   float dy = -( y1 - y0 );
@@ -37,24 +37,24 @@ static void make_quad( float x0, float y0, float x1, float y1, float zLow, float
   vn.normalize();
 
   // triangle 1
-  data << x0 << zHigh << -y0;
+  data << x0 << z0 + height << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
-  data << x1 << zHigh << -y1;
+  data << x1 << z1 + height << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
-  data << x0 << zLow  << -y0;
+  data << x0 << z0 << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
 
   // triangle 2
-  data << x0 << zLow  << -y0;
+  data << x0 << z0 << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
-  data << x1 << zHigh << -y1;
+  data << x1 << z1 + height << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
-  data << x1 << zLow  << -y1;
+  data << x1 << z1 << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
 }
@@ -104,9 +104,11 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
     ring.pointAt( is_counter_clockwise == ccw ? i : ring.numPoints() - i - 1, pt, vt );
     float x0 = ptPrev.x() - originX, y0 = ptPrev.y() - originY;
     float x1 = pt.x() - originX, y1 = pt.y() - originY;
-    float height = pt.z();
+    float z0 = ptPrev.z();
+    float z1 = pt.z();
+
     // make a quad
-    make_quad( x0, y0, x1, y1, height, height + extrusionHeight, data, addNormals );
+    make_quad( x0, y0, z0, x1, y1, z1, extrusionHeight, data, addNormals );
     ptPrev = pt;
   }
 }
