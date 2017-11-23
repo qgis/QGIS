@@ -32,7 +32,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
   if ( it != mCache.constEnd() )
   {
     f = it.value();
-    return filterRect.isNull() || f.geometry().intersects( filterRect );
+    return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
   }
 
   // Determine attributes to fetch
@@ -86,9 +86,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
   {
     QVariantMap featureData = featuresData[i].toMap();
     QgsFeature feature;
-
-    // Set FID
-    feature.setId( startId + i );
+    int objectId = startId + i;
 
     // Set attributes
     if ( !fetchAttribIdx.isEmpty() )
@@ -99,9 +97,16 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
       foreach ( int idx, fetchAttribIdx )
       {
         attributes[idx] = attributesData[mFields.at( idx ).name()];
+        if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
+        {
+          objectId = attributesData[mFields.at( idx ).name()].toInt();
+        }
       }
       feature.setAttributes( attributes );
     }
+
+    // Set FID
+    feature.setId( startId + objectIds.indexOf( objectId ) );
 
     // Set geometry
     if ( fetchGeometry )
@@ -115,7 +120,14 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
     feature.setValid( true );
     mCache.insert( feature.id(), feature );
   }
-  f = mCache[id];
-  Q_ASSERT( f.isValid() );
-  return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
+
+  // If added to cache, return feature
+  it = mCache.constFind( id );
+  if ( it != mCache.constEnd() )
+  {
+    f = it.value();
+    return filterRect.isNull() || ( f.hasGeometry() && f.geometry().intersects( filterRect ) );
+  }
+
+  return false;
 }
