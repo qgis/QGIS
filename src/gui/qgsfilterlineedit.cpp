@@ -32,13 +32,14 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue 
   setMouseTracking( true );
 
   QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
-  mClearIconSize = QSize( 16, 16 );
+  int iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().height();
+  mClearIconSize = QSize( iconSize, iconSize );
   mClearIconPixmap = clearIcon.pixmap( mClearIconSize );
   QIcon hoverIcon = QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" );
   mClearHoverPixmap = hoverIcon.pixmap( mClearIconSize );
 
   QIcon searchIcon = QgsApplication::getThemeIcon( "/search.svg" );
-  mSearchIconSize = QSize( 16, 16 );
+  mSearchIconSize = QSize( iconSize, iconSize );
   mSearchIconPixmap = searchIcon.pixmap( mSearchIconSize );
 
   connect( this, &QLineEdit::textChanged, this,
