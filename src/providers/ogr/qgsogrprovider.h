@@ -346,19 +346,19 @@ class QgsOgrProviderUtils
     };
 
     //! Global mutex for QgsOgrProviderUtils
-    static QMutex globalMutex;
+    static QMutex sGlobalMutex;
 
     //! Map dataset identification to a list of corresponding DatasetWithLayers*
-    static QMap< DatasetIdentification, QList<DatasetWithLayers *> > mapSharedDS;
+    static QMap< DatasetIdentification, QList<DatasetWithLayers *> > sMapSharedDS;
 
     //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
-    static QMap< QString, int > mapCountOpenedDS;
+    static QMap< QString, int > sMapCountOpenedDS;
 
     //! Map a dataset handle to its update open mode (if opened with GDALOpenWrapper, only for GPKG)
-    static QMap< GDALDatasetH, bool> mapDSHandleToUpdateMode;
+    static QMap< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
 
     //! Map a dataset name to its last modified data
-    static QMap< QString, QDateTime > mapDSNameToLastModifiedDate;
+    static QMap< QString, QDateTime > sMapDSNameToLastModifiedDate;
 
     static bool canUseOpenedDatasets( const QString &dsName );
 
