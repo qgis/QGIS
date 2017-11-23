@@ -86,7 +86,7 @@ class GUI_EXPORT QgsValueRelationWidgetWrapper : public QgsEditorWidgetWrapper
     ValueRelationCache mCache;
     QgsVectorLayer* mLayer;
 
-    bool mUpdating;
+    bool mEnabled;
 
     friend class QgsValueRelationWidgetFactory;
     friend class TestQgsValueRelationWidgetWrapper;
