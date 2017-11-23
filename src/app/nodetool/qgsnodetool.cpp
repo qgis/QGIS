@@ -965,6 +965,7 @@ void QgsNodeTool::showNodeEditor()
   mNodeEditor.reset( new QgsNodeEditor( m.layer(), mSelectedFeature.get(), mCanvas ) );
   QgisApp::instance()->addDockWidget( Qt::LeftDockWidgetArea, mNodeEditor.get() );
   connect( mNodeEditor.get(), &QgsNodeEditor::deleteSelectedRequested, this, &QgsNodeTool::deleteNodeEditorSelection );
+  connect( mSelectedFeature.get()->vlayer(), &QgsVectorLayer::featureDeleted, this, [ = ]( QgsFeatureId id ) { if ( mSelectedFeature.get()->featureId() == id ) cleanupNodeEditor(); } );
 }
 
 void QgsNodeTool::cleanupNodeEditor()
