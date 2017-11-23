@@ -609,12 +609,12 @@ bool QgsDxfExportDialog::layerTitleAsName() const
 
 bool QgsDxfExportDialog::force2d() const
 {
-    return mForce2d->isChecked();
+  return mForce2d->isChecked();
 }
 
 bool QgsDxfExportDialog::useMText() const
 {
- return mMTextCheckBox->isChecked();
+  return mMTextCheckBox->isChecked();
 }
 
 void QgsDxfExportDialog::saveSettings()
