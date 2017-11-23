@@ -301,7 +301,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
     }
     else
     {
-      return QgsGeometry::InvalidInput;
+      return QgsGeometry::InvalidInputGeometryType;
     }
 
     if ( bBox.isEmpty() )
@@ -410,7 +410,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
     }
     else
     {
-      return QgsGeometry::InvalidInput;
+      return QgsGeometry::InvalidInputGeometryType;
     }
 
     if ( bBox.isEmpty() )

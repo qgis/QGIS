@@ -625,7 +625,7 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
   std::unique_ptr< QgsCurve > r( ring );
   if ( !d->geometry )
   {
-    return InvalidInput;
+    return InvalidInputGeometryType;
   }
 
   detach();
@@ -816,7 +816,7 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointX
     case QgsGeometryEngine::InvalidBaseGeometry:
       return QgsGeometry::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return QgsGeometry::InvalidInput;
+      return QgsGeometry::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
       return QgsGeometry::SplitCannotSplitPoint;
     case QgsGeometryEngine::NothingHappened:
@@ -857,7 +857,7 @@ QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &
     case QgsGeometryEngine::InvalidBaseGeometry:
       return InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return InvalidInput;
+      return InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
       return GeometryEngineError;
     case QgsGeometryEngine::NothingHappened:
