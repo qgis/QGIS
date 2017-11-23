@@ -174,10 +174,8 @@ void TestQgsTessellator::testWalls()
 
   QList<TriangleCoords> tc;
 
-  // NOTE - these coordinates are wrong, and this test exposes a different bug in the tesselator
-  // 2.4 should be 2:
-  tc << TriangleCoords( QVector3D( 1, 2.4, 14 ), QVector3D( 2, 1.4, 12 ), QVector3D( 3, 2, 13 ) );
-  tc << TriangleCoords( QVector3D( 1, 2.4, 14 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1.4, 12 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 13 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 12 ) );
 
   tc << TriangleCoords( QVector3D( 1, 1, 11 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 1 ) );
   tc << TriangleCoords( QVector3D( 1, 1, 1 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 2, 4 ) );

@@ -24,6 +24,7 @@
 #include "poly2tri/poly2tri.h"
 
 #include <QtDebug>
+#include <QMatrix4x4>
 #include <QVector3D>
 #include <algorithm>
 
@@ -193,7 +194,7 @@ static void _normalVectorToXYVectors( const QVector3D &pNormal, QVector3D &pXVec
 }
 
 
-static void _ringToPoly2tri( const QgsCurve *ring, const QgsPoint &ptFirst, const QVector3D &pXVector, const QVector3D &pYVector, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> &zHash )
+static void _ringToPoly2tri( const QgsCurve *ring, const QgsPoint &ptFirst, const QMatrix4x4 &toNewBase, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> &zHash )
 {
   QgsVertexId::VertexType vt;
   QgsPoint pt;
@@ -206,10 +207,11 @@ static void _ringToPoly2tri( const QgsCurve *ring, const QgsPoint &ptFirst, cons
   for ( int i = 0; i < pCount - 1; ++i )
   {
     ring->pointAt( i, pt, vt );
-    const float z = std::isnan( pt.z() ) ? 0 : pt.z();
-    QVector3D tempPt( pt.x() - x0, pt.y() - y0, z - z0 );
-    const float x = QVector3D::dotProduct( tempPt, pXVector );
-    const float y = QVector3D::dotProduct( tempPt, pYVector );
+    QVector4D tempPt( pt.x() - x0, pt.y() - y0, std::isnan( pt.z() ) ? 0 : pt.z() - z0, 0 );
+    QVector4D newBasePt = toNewBase * tempPt;
+    const float x = newBasePt.x();
+    const float y = newBasePt.y();
+    const float z = newBasePt.z();
 
     const bool found = std::find_if( polyline.begin(), polyline.end(), [x, y]( p2t::Point *&p ) { return *p == p2t::Point( x, y ); } ) != polyline.end();
 
@@ -301,23 +303,35 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     QVector3D pXVector, pYVector;
     _normalVectorToXYVectors( pNormal, pXVector, pYVector );
 
+    // so now we have three orthogonal unit vectors defining new base
+    // let's build transform matrix. We actually need just a 3x3 matrix,
+    // but Qt does not have good support for it, so using 4x4 matrix instead.
+    QMatrix4x4 toNewBase(
+      pXVector.x(), pXVector.y(), pXVector.z(), 0,
+      pYVector.x(), pYVector.y(), pYVector.z(), 0,
+      pNormal.x(), pNormal.y(), pNormal.z(), 0,
+      0, 0, 0, 0 );
+
+    // our 3x3 matrix is orthogonal, so for inverse we only need to transpose it
+    QMatrix4x4 toOldBase = toNewBase.transposed();
+
     const QgsPoint ptFirst( exterior->startPoint() );
-    _ringToPoly2tri( exterior, ptFirst, pXVector, pYVector, polyline, z );
+    _ringToPoly2tri( exterior, ptFirst, toNewBase, polyline, z );
     polylinesToDelete << polyline;
 
     // TODO: robustness (no nearly duplicate points, invalid geometries ...)
 
-    double x0 = ptFirst.x(), y0 = ptFirst.y();
+    double x0 = ptFirst.x(), y0 = ptFirst.y(), z0 = ( std::isnan( ptFirst.z() ) ? 0 : ptFirst.z() );
     if ( polyline.size() == 3 && polygon.numInteriorRings() == 0 )
     {
       for ( std::vector<p2t::Point *>::iterator it = polyline.begin(); it != polyline.end(); it++ )
       {
         p2t::Point *p = *it;
-        const double zPt = z[p];
-        QVector3D nPoint = pXVector * p->x + pYVector * p->y;
+        QVector4D ptInNewBase( p->x, p->y, z[p], 0 );
+        QVector4D nPoint = toOldBase * ptInNewBase;
         const double fx = nPoint.x() - mOriginX + x0;
         const double fy = nPoint.y() - mOriginY + y0;
-        const double fz = extrusionHeight + ( std::isnan( zPt ) ? 0 : zPt );
+        const double fz = nPoint.z() + extrusionHeight + z0;
         mData << fx << fz << -fy;
         if ( mAddNormals )
           mData << pNormal.x() << pNormal.z() << - pNormal.y();
@@ -333,7 +347,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         std::vector<p2t::Point *> holePolyline;
         const QgsCurve *hole = polygon.interiorRing( i );
 
-        _ringToPoly2tri( hole, ptFirst, pXVector, pYVector, holePolyline, z );
+        _ringToPoly2tri( hole, ptFirst, toNewBase, holePolyline, z );
 
         cdt->AddHole( holePolyline );
         polylinesToDelete << holePolyline;
@@ -351,11 +365,11 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           for ( int j = 0; j < 3; ++j )
           {
             p2t::Point *p = t->GetPoint( j );
-            const double zPt = z[p];
-            QVector3D nPoint = pXVector * p->x + pYVector * p->y;
+            QVector4D ptInNewBase( p->x, p->y, z[p], 0 );
+            QVector4D nPoint = toOldBase * ptInNewBase;
             const double fx = nPoint.x() - mOriginX + x0;
             const double fy = nPoint.y() - mOriginY + y0;
-            const double fz = extrusionHeight + ( std::isnan( zPt ) ? 0 : zPt );
+            const double fz = nPoint.z() + extrusionHeight + z0;
             mData << fx << fz << -fy;
             if ( mAddNormals )
               mData << pNormal.x() << pNormal.z() << - pNormal.y();
