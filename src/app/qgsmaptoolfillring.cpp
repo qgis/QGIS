@@ -90,28 +90,30 @@ void QgsMapToolFillRing::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
     QVector< QgsPointXY > pointList = points();
 
-    int addRingReturnCode = vlayer->addRing( pointList, &fid );
-    if ( addRingReturnCode != 0 )
+    QgsGeometry::OperationResult addRingReturnCode = vlayer->addRing( pointList, &fid );
+
+    // AP: this is all dead code:
+    //todo: open message box to communicate errors
+    if ( addRingReturnCode != QgsGeometry::OperationResult::Success )
     {
       QString errorMessage;
-      //todo: open message box to communicate errors
-      if ( addRingReturnCode == 1 )
+      if ( addRingReturnCode == QgsGeometry::OperationResult::InvalidInputGeometryType )
       {
         errorMessage = tr( "a problem with geometry type occurred" );
       }
-      else if ( addRingReturnCode == 2 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingNotClosed )
       {
         errorMessage = tr( "the inserted Ring is not closed" );
       }
-      else if ( addRingReturnCode == 3 )
+      else if ( addRingReturnCode ==  QgsGeometry::OperationResult::AddRingNotValid )
       {
         errorMessage = tr( "the inserted Ring is not a valid geometry" );
       }
-      else if ( addRingReturnCode == 4 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingCrossesExistingRings )
       {
         errorMessage = tr( "the inserted Ring crosses existing rings" );
       }
-      else if ( addRingReturnCode == 5 )
+      else if ( addRingReturnCode == QgsGeometry::OperationResult::AddRingNotInExistingFeature )
       {
         errorMessage = tr( "the inserted Ring is not contained in a feature" );
       }
