@@ -812,16 +812,20 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
   html += QLatin1String( "<table cellspacing=\"4\" width=\"100%\"><tr><td>" );
 
   QString iconPath = metadata->value( QStringLiteral( "icon" ) );
-  if ( QFileInfo( iconPath ).isFile() )
+
+  if ( QFileInfo( iconPath ).isFile() || iconPath.startsWith( QLatin1String( "http" ) ) )
   {
-    if ( iconPath.contains( QLatin1String( ":/" ) ) )
+    if ( iconPath.startsWith( QLatin1String( ":/" ) ) )
     {
       iconPath = "qrc" + iconPath;
     }
-    else
+#if !defined(Q_OS_WIN)
+    // Only add the file:// prefix on non-windows systems
+    else if ( ! iconPath.startsWith( QLatin1String( "http" ) ) )
     {
       iconPath = "file://" + iconPath;
     }
+#endif
     html += QStringLiteral( "<img src=\"%1\" style=\"float:right;max-width:64px;max-height:64px;\">" ).arg( iconPath );
   }
 
