@@ -42,6 +42,11 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue 
   mSearchIconSize = QSize( iconSize, iconSize );
   mSearchIconPixmap = searchIcon.pixmap( mSearchIconSize );
 
+  // Make some space for the clear icon
+  QMargins margins( textMargins( ) );
+  margins.setRight( iconSize );
+  setTextMargins( margins );
+
   connect( this, &QLineEdit::textChanged, this,
            &QgsFilterLineEdit::onTextChanged );
 }
