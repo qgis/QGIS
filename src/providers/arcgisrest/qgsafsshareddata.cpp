@@ -86,7 +86,7 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
   {
     QVariantMap featureData = featuresData[i].toMap();
     QgsFeature feature;
-    int objectId = startId + i;
+    int featureId = startId + i;
 
     // Set attributes
     if ( !fetchAttribIdx.isEmpty() )
@@ -99,14 +99,14 @@ bool QgsAfsSharedData::getFeature( QgsFeatureId id, QgsFeature &f, bool fetchGeo
         attributes[idx] = attributesData[mFields.at( idx ).name()];
         if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
         {
-          objectId = attributesData[mFields.at( idx ).name()].toInt();
+          featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
         }
       }
       feature.setAttributes( attributes );
     }
 
     // Set FID
-    feature.setId( startId + objectIds.indexOf( objectId ) );
+    feature.setId( featureId );
 
     // Set geometry
     if ( fetchGeometry )
