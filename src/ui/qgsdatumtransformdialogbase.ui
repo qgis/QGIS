@@ -14,8 +14,68 @@
    <string>Select Datum Transformations</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Destination CRS</string>
+     </property>
+    </widget>
+   </item>
    <item row="3" column="0">
     <widget class="QLabel" name="mLabelSrcDescription">
+     <property name="text">
+      <string notr="true">Description</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
+     </property>
+     <property name="wordWrap">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Source CRS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="mSourceCrsButton">
+     <property name="text">
+      <string>source CRS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="mDstCrsButton">
+     <property name="text">
+      <string>destination CRS</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
+     <column>
+      <property name="text">
+       <string>src transform</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>dst transform</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QLabel" name="mLabelDstDescription">
      <property name="text">
       <string notr="true">Description</string>
      </property>
@@ -57,66 +117,6 @@
       </widget>
      </item>
     </layout>
-   </item>
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Destination CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QLabel" name="mLabelDstDescription">
-     <property name="text">
-      <string notr="true">Description</string>
-     </property>
-     <property name="alignment">
-      <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignTop</set>
-     </property>
-     <property name="wordWrap">
-      <bool>true</bool>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Source CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="mLabelSrcCrs">
-     <property name="text">
-      <string notr="true">Source CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QLabel" name="mLabelDstCrs">
-     <property name="text">
-      <string notr="true">Destination CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
-     <column>
-      <property name="text">
-       <string>src transform</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>dst transform</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string/>
-      </property>
-     </column>
-    </widget>
    </item>
    <item row="6" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">

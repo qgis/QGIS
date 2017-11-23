@@ -22,6 +22,7 @@ SET(QGIS_APP_SRCS
   qgsclipboard.cpp
   qgscustomization.cpp
   qgscustomprojectiondialog.cpp
+  qgsdatumtransformtablemodel.cpp
   qgsdecorationitem.cpp
   qgsdecorationcopyright.cpp
   qgsdecorationcopyrightdialog.cpp
@@ -246,6 +247,7 @@ SET (QGIS_APP_MOC_HDRS
   qgsclipboard.h
   qgscustomization.h
   qgscustomprojectiondialog.h
+  qgsdatumtransformtablemodel.h
   qgsdecorationitem.h
   qgsdecorationcopyright.h
   qgsdecorationcopyrightdialog.h

@@ -266,6 +266,6 @@ void QgsDatumTransformDialog::accepted()
 
 void QgsDatumTransformDialog::updateTitle()
 {
-  mLabelSrcCrs->setText( QStringLiteral( "%1 - %2" ).arg( mSrcCrs.authid(), mSrcCrs.isValid() ? mSrcCrs.description() : tr( "unknown" ) ) );
-  mLabelDstCrs->setText( QStringLiteral( "%1 - %2" ).arg( mDestCrs.authid(), mDestCrs.isValid() ? mDestCrs.description() : tr( "unknown" ) ) );
+  mSourceCrsButton->setText( QStringLiteral( "%1 - %2" ).arg( mSrcCrs.authid(), mSrcCrs.isValid() ? mSrcCrs.description() : tr( "unknown" ) ) );
+  mDstCrsButton->setText( QStringLiteral( "%1 - %2" ).arg( mDestCrs.authid(), mDestCrs.isValid() ? mDestCrs.description() : tr( "unknown" ) ) );
 }
