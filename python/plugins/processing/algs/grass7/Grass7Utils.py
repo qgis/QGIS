@@ -503,9 +503,10 @@ class Grass7Utils(object):
 
         if helpPath is None:
             if isWindows() or isMac():
-                localPath = os.path.join(Grass7Utils.path, 'docs/html')
-                if os.path.exists(localPath):
-                    helpPath = os.path.abspath(localPath)
+                if Grass7Utils.path is not None:
+                    localPath = os.path.join(Grass7Utils.path, 'docs/html')
+                    if os.path.exists(localPath):
+                        helpPath = os.path.abspath(localPath)
             else:
                 searchPaths = ['/usr/share/doc/grass-doc/html',
                                '/opt/grass/docs/html',
