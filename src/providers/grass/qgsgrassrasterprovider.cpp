@@ -25,6 +25,7 @@
 
 #include "qgsapplication.h"
 #include "qgscoordinatetransform.h"
+#include "qgshtmlutils.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgsrasterbandstats.h"
@@ -516,7 +517,7 @@ QString QgsGrassRasterProvider::htmlMetadata()
   {
     myList.append( i.key() + " : " + i.value() );
   }
-  myMetadata += QgsRasterDataProvider::makeHtmlBulletList( myList );
+  myMetadata += QgsHtmlUtils::buildBulletList( myList );
   return myMetadata;
 }
 

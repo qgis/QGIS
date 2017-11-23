@@ -317,6 +317,7 @@
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
+%Include qgshtmlutils.sip
 %Include qgsmaplayer.sip
 %Include qgsmaplayerlegend.sip
 %Include qgsmaplayermodel.sip

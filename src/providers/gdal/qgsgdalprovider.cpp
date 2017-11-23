@@ -25,6 +25,7 @@
 #include "qgscoordinatetransform.h"
 #include "qgsdataitem.h"
 #include "qgsdatasourceuri.h"
+#include "qgshtmlutils.h"
 #include "qgsmessagelog.h"
 #include "qgsrectangle.h"
 #include "qgscoordinatereferencesystem.h"
@@ -504,7 +505,7 @@ QString QgsGdalProvider::htmlMetadata()
     if ( GDALmetadata )
     {
       QStringList metadata = cStringList2Q_( GDALmetadata );
-      myMetadata += QgsRasterDataProvider::makeHtmlBulletList( metadata );
+      myMetadata += QgsHtmlUtils::buildBulletList( metadata );
     }
 
     char **GDALcategories = GDALGetRasterCategoryNames( gdalBand );
@@ -512,7 +513,7 @@ QString QgsGdalProvider::htmlMetadata()
     if ( GDALcategories )
     {
       QStringList categories = cStringList2Q_( GDALcategories );
-      myMetadata += QgsRasterDataProvider::makeHtmlBulletList( categories );
+      myMetadata += QgsHtmlUtils::buildBulletList( categories );
     }
     myMetadata += QStringLiteral( "</td></tr>" );
   }
@@ -529,7 +530,7 @@ QString QgsGdalProvider::htmlMetadata()
   if ( GDALmetadata )
   {
     QStringList metadata = cStringList2Q_( GDALmetadata );
-    myMetadata += QgsRasterDataProvider::makeHtmlBulletList( metadata );
+    myMetadata += QgsHtmlUtils::buildBulletList( metadata );
   }
 
   //just use the first band
@@ -546,7 +547,7 @@ QString QgsGdalProvider::htmlMetadata()
         QStringList metadata;
         metadata.append( QStringLiteral( "X : " ) + QString::number( GDALGetRasterBandXSize( myOverview ) ) );
         metadata.append( QStringLiteral( "Y : " ) + QString::number( GDALGetRasterBandYSize( myOverview ) ) );
-        myMetadata += QgsRasterDataProvider::makeHtmlBulletList( metadata );
+        myMetadata += QgsHtmlUtils::buildBulletList( metadata );
       }
     }
   }

@@ -450,11 +450,6 @@ Copy member variables from other raster data provider. Useful for implementation
 %End
 
 
-    static QString makeHtmlBulletList( const QStringList &values );
-%Docstring
- :rtype: str
-%End
-
 
 
 

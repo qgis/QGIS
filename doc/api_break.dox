@@ -2073,7 +2073,7 @@ QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
 - metadata() was renamed to htmlMetadata()
 - makeTableCell() has been removed
-- makeTableCells() has been replaced by makeHtmlBulletList()
+- makeTableCells() has been removed, look for the new class QgsHtmlUtils
 
 
 QgsRasterFileWriter        {#qgis_api_break_3_0_QgsRasterFileWriter}

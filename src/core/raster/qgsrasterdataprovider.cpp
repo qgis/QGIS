@@ -236,23 +236,6 @@ QStringList QgsRasterDataProvider::cStringList2Q_( char **stringList )
 
 } // cStringList2Q_
 
-// convenience function for building htmlMetadata() HTML bullet list
-QString QgsRasterDataProvider::makeHtmlBulletList( QStringList const &values )
-{
-  QString s( QStringLiteral( "<ul>" ) );
-
-  for ( QStringList::const_iterator i = values.begin();
-        i != values.end();
-        ++i )
-  {
-    s += QLatin1String( "<li>" ) + *i + QLatin1String( "</li>" );
-  }
-
-  s += QLatin1String( "</ul>" );
-
-  return s;
-}
-
 QString QgsRasterDataProvider::htmlMetadata()
 {
   QString s;
