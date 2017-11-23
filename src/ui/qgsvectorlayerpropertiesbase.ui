@@ -251,18 +251,6 @@
          </item>
          <item>
           <property name="text">
-           <string>Legend</string>
-          </property>
-          <property name="toolTip">
-           <string>Legend</string>
-          </property>
-          <property name="icon">
-           <iconset resource="../../images/images.qrc">
-            <normaloff>:/images/themes/default/legend.svg</normaloff>:/images/themes/default/legend.svg</iconset>
-          </property>
-         </item>
-         <item>
-          <property name="text">
            <string>Dependencies</string>
           </property>
           <property name="toolTip">
@@ -900,7 +888,7 @@ border-radius: 2px;</string>
                 </widget>
                </item>
                <item>
-                <widget class="QGroupBox" name="mSimplifyDrawingGroupBox">
+                <widget class="QgsCollapsibleGroupBox" name="mSimplifyDrawingGroupBox">
                  <property name="title">
                   <string>Simplify &amp;geometry</string>
                  </property>
@@ -1134,6 +1122,18 @@ border-radius: 2px;</string>
                 </layout>
                </item>
                <item>
+                <widget class="QgsCollapsibleGroupBox" name="mEmbeddedWidgetGroupBox">
+                 <property name="title">
+                  <string>Embedded widgets in legend</string>
+                 </property>
+                 <layout class="QVBoxLayout" name="verticalLayout_22">
+                  <item>
+                   <widget class="QgsLayerTreeEmbeddedConfigWidget" name="mLegendConfigEmbeddedWidget" native="true"/>
+                  </item>
+                 </layout>
+                </widget>
+               </item>
+               <item>
                 <spacer name="verticalSpacer_2">
                  <property name="orientation">
                   <enum>Qt::Vertical</enum>
@@ -1141,7 +1141,7 @@ border-radius: 2px;</string>
                  <property name="sizeHint" stdset="0">
                   <size>
                    <width>20</width>
-                   <height>40</height>
+                   <height>0</height>
                   </size>
                  </property>
                 </spacer>
@@ -1507,34 +1507,6 @@ border-radius: 2px;</string>
                  <string notr="true">projectProperties</string>
                 </property>
                </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-         <widget class="QWidget" name="mOptsPage_Legend">
-          <layout class="QVBoxLayout" name="verticalLayout_8">
-           <property name="leftMargin">
-            <number>0</number>
-           </property>
-           <property name="topMargin">
-            <number>0</number>
-           </property>
-           <property name="rightMargin">
-            <number>0</number>
-           </property>
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="QGroupBox" name="groupBox_3">
-             <property name="title">
-              <string>Embedded widgets in legend</string>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_22">
-              <item>
-               <widget class="QgsLayerTreeEmbeddedConfigWidget" name="mLegendConfigEmbeddedWidget" native="true"/>
               </item>
              </layout>
             </widget>
