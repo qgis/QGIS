@@ -265,8 +265,51 @@ static bool _check_intersecting_rings( const QgsPolygon &polygon )
 }
 
 
+double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
+{
+  double min_d = 1e20;
+  auto it = polygon.vertices_begin();
+
+  if ( it == polygon.vertices_end() )
+    return min_d;
+
+  QgsPoint p0 = *it;
+  ++it;
+  for ( ; it != polygon.vertices_end(); ++it )
+  {
+    QgsPoint p1 = *it;
+    double d = p0.distance( p1 );
+    if ( d < min_d )
+      min_d = d;
+    p0 = p1;
+  }
+  return min_d;
+}
+
+
 void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
 {
+  if ( _minimum_distance_between_coordinates( polygon ) < 0.001 )
+  {
+    // when the distances between coordinates of input points are very small,
+    // the triangulation likes to crash on numerical errors - when the distances are ~ 1e-5
+    // Assuming that the coordinates should be in a projected CRS, we should be able
+    // to simplify geometries that may cause problems and avoid possible crashes
+    QgsGeometry polygonSimplified = QgsGeometry( polygon.clone() ).simplify( 0.001 );
+    const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
+    if ( _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
+    {
+      // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
+      // geometry in unprojected lat/lon coordinates
+      qDebug() << "geometry's coordinates are too close to each other and simplification failed - skipping";
+    }
+    else
+    {
+      addPolygon( *polygonSimplifiedData, extrusionHeight );
+    }
+    return;
+  }
+
   if ( !_check_intersecting_rings( polygon ) )
   {
     // skip the polygon - it would cause a crash inside poly2tri library
