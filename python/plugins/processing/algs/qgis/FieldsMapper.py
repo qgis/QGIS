@@ -121,6 +121,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         da.setSourceCrs(source.sourceCrs())
         da.setEllipsoid(context.project().ellipsoid())
 
+        # create an expression context using thread safe processing context
+        self.expr_context = self.createExpressionContext(parameters, context, source)
+
         for field_def in mapping:
             self.fields.append(QgsField(name=field_def['name'],
                                         type=field_def['type'],
@@ -143,8 +146,6 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         return self.fields
 
     def processAlgorithm(self, parameters, context, feeback):
-        # create an expression context using thead safe processing context
-        self.expr_context = self.createExpressionContext(parameters, context)
         for expression in self.expressions:
             expression.prepare(self.expr_context)
         self._row_number = 0
