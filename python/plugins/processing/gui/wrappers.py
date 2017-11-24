@@ -999,7 +999,10 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
                 else:
                     return os.path.exists(v)
 
-            return self.comboValue(validator, combobox=self.combo)
+            if self.combo.currentText():
+                return self.comboValue(validator, combobox=self.combo)
+            else:
+                return None
 
 
 class StringWidgetWrapper(WidgetWrapper):
