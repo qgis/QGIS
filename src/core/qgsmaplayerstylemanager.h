@@ -165,6 +165,13 @@ class CORE_EXPORT QgsMapLayerStyleManager : public QObject
     //! Restore the original store after a call to setOverrideStyle()
     bool restoreOverrideStyle();
 
+    /**
+     * Returns true if this is the default style
+     *
+     * \since QGIS 3.0
+     */
+    bool isDefault( const QString &styleName ) const;
+
   signals:
     //! Emitted when a new style has been added
     void styleAdded( const QString &name );
