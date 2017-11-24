@@ -655,7 +655,7 @@ class ModelerDialog(BASE, WIDGET):
                 if show:
                     if alg.group() in groups:
                         groupItem = groups[alg.group()]
-                    elif provider.id() in ('qgis', 'native') and alg.group() in qgis_groups:
+                    elif provider.id() in ('qgis', 'native', '3d') and alg.group() in qgis_groups:
                         groupItem = qgis_groups[alg.group()]
                     else:
                         groupItem = QTreeWidgetItem()
@@ -663,7 +663,7 @@ class ModelerDialog(BASE, WIDGET):
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
                         groupItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-                        if provider.id() in ('qgis', 'native'):
+                        if provider.id() in ('qgis', 'native', '3d'):
                             groupItem.setIcon(0, provider.icon())
                             qgis_groups[alg.group()] = groupItem
                         else:

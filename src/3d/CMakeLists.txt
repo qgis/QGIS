@@ -19,6 +19,9 @@ SET(QGIS_3D_SRCS
   chunks/qgschunknode_p.cpp
   chunks/qgschunkqueuejob_p.cpp
 
+  processing/qgs3dalgorithms.cpp
+  processing/qgsalgorithmtesselate.cpp
+
   symbols/qgsabstract3dsymbol.cpp
   symbols/qgsline3dsymbol.cpp
   symbols/qgsline3dsymbol_p.cpp
@@ -55,6 +58,8 @@ SET(QGIS_3D_MOC_HDRS
   chunks/qgschunkedentity_p.h
   chunks/qgschunkloader_p.h
   chunks/qgschunkqueuejob_p.h
+
+  processing/qgs3dalgorithms.h
 
   terrain/qgsdemterraintileloader_p.h
   terrain/qgsterrainentity_p.h
