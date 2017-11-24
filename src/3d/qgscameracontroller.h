@@ -158,6 +158,9 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     Qt3DInput::QAction *mShiftAction = nullptr;
     Qt3DInput::QActionInput *mShiftInput = nullptr;
 
+    Qt3DInput::QAction *mCtrlAction = nullptr;
+    Qt3DInput::QActionInput *mCtrlInput = nullptr;
+
     Qt3DInput::QAxis *mWheelAxis = nullptr;
     Qt3DInput::QAnalogAxisInput *mMouseWheelInput = nullptr;
 
