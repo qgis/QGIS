@@ -1087,7 +1087,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:translategeometry
+  - algorithm: native:translategeometry
     name: Lines translated
     params:
       DELTA_X: 0.1

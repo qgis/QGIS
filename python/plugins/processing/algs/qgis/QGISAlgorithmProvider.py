@@ -143,7 +143,6 @@ from .SymmetricalDifference import SymmetricalDifference
 from .TextToFloat import TextToFloat
 from .TinInterpolation import TinInterpolation
 from .TopoColors import TopoColor
-from .Translate import Translate
 from .TruncateTable import TruncateTable
 from .Union import Union
 from .UniqueValues import UniqueValues
@@ -268,7 +267,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 TextToFloat(),
                 TinInterpolation(),
                 TopoColor(),
-                Translate(),
                 TruncateTable(),
                 Union(),
                 UniqueValues(),
