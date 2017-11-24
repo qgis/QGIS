@@ -63,7 +63,6 @@ email                : sherman at mrcc.com
 #include "qgsproject.h"
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
-#include "qgscursors.h"
 #include "qgsmapthemecollection.h"
 #include <cmath>
 
@@ -169,8 +168,7 @@ QgsMapCanvas::QgsMapCanvas( QWidget *parent )
   mPreviewEffect = new QgsPreviewEffect( this );
   viewport()->setGraphicsEffect( mPreviewEffect );
 
-  QPixmap zoomPixmap = QPixmap( ( const char ** )( zoom_in ) );
-  mZoomCursor = QCursor( zoomPixmap, 7, 7 );
+  mZoomCursor = QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn );
 
   connect( &mAutoRefreshTimer, &QTimer::timeout, this, &QgsMapCanvas::autoRefreshTriggered );
 

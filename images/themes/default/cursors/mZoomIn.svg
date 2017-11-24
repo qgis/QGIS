@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   id="svg4172"
+   sodipodi:docname="mZoomIn.svg"
+   viewBox="0 0 200 200"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   width="200"
+   height="200">
+  <defs
+     id="defs18" />
+  <sodipodi:namedview
+     id="base"
+     bordercolor="#666666"
+     inkscape:pageshadow="2"
+     inkscape:guide-bbox="true"
+     pagecolor="#ffffff"
+     inkscape:window-height="1168"
+     inkscape:window-maximized="0"
+     inkscape:zoom="2.0925"
+     inkscape:window-x="81"
+     showgrid="false"
+     borderopacity="1.0"
+     inkscape:current-layer="g5408"
+     inkscape:cx="200"
+     inkscape:cy="100"
+     showguides="true"
+     inkscape:window-y="20"
+     inkscape:window-width="1710"
+     inkscape:pageopacity="0.0"
+     inkscape:document-units="px">
+    <sodipodi:guide
+       id="guide5396"
+       position="399.66942,535.53719"
+       orientation="1,0" />
+    <sodipodi:guide
+       id="guide5398"
+       position="293.55372,398.67769"
+       orientation="0,1" />
+  </sodipodi:namedview>
+  <g
+     id="layer1"
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     transform="translate(0,-852.36)">
+    <g
+       id="g5408"
+       transform="translate(-2.6068,398.07)">
+      <g
+         id="g5363"
+         transform="matrix(1.1137858,0,0,1.0895025,-266.32939,16.528314)">
+        <rect
+           id="rect4825"
+           style="color:#000000;fill:#000000;stroke:#000000"
+           transform="matrix(0.70710678,0.70710678,-0.70710678,0.70710678,0,0)"
+           height="116.26"
+           width="33.848999"
+           y="107.46"
+           x="566.83002" />
+        <circle
+           id="path4823"
+           style="color:#000000;fill:#ffffff;stroke:#000000;stroke-width:35"
+           transform="matrix(0.47861,0.47861,-0.47861,0.47861,409.59,98.336)"
+           cx="329.65796"
+           cy="437.1969"
+           r="73.584366" />
+        <path
+           id="rect5335"
+           style="color:#000000;fill:#000000;stroke:#000000;stroke-width:0.40876999"
+           inkscape:connector-curvature="0"
+           d="m 351.22,441.59 0,16.844 -16.844,0 0,13.844 16.844,0 0,16.844 13.812,0 0,-16.844 16.844,0 0,-13.844 -16.844,0 0,-16.844 -13.812,0 z" />
+      </g>
+    </g>
+  </g>
+  <metadata
+     id="metadata16">
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <cc:license
+           rdf:resource="http://creativecommons.org/publicdomain/zero/1.0/" />
+        <dc:publisher>
+          <cc:Agent
+             rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title></dc:title>
+        <dc:date>2010-10-01T20:11:26</dc:date>
+        <dc:description>Simple icons for indication of zoom in and out functionality.</dc:description>
+        <dc:source>https://openclipart.org/detail/88045/simple-zoom-icons-by-snifty</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>snifty</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>magnifying glass</rdf:li>
+            <rdf:li>zoom</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License
+         rdf:about="http://creativecommons.org/publicdomain/zero/1.0/">
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Reproduction" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#Distribution" />
+        <cc:permits
+           rdf:resource="http://creativecommons.org/ns#DerivativeWorks" />
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

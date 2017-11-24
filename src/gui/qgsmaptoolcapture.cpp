@@ -15,7 +15,6 @@
 
 #include "qgsmaptoolcapture.h"
 
-#include "qgscursors.h"
 #include "qgsexception.h"
 #include "qgsfeatureiterator.h"
 #include "qgsgeometryvalidator.h"
@@ -51,8 +50,7 @@ QgsMapToolCapture::QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizin
 
   mSnapIndicator.reset( new QgsSnapIndicator( canvas ) );
 
-  QPixmap mySelectQPixmap = QPixmap( ( const char ** ) capture_point_cursor );
-  setCursor( QCursor( mySelectQPixmap, 8, 8 ) );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CapturePoint ) );
 
   connect( canvas, &QgsMapCanvas::currentLayerChanged,
            this, &QgsMapToolCapture::currentLayerChanged );
