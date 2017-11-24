@@ -114,9 +114,9 @@ void TestQgsFileWriter::initTestCase()
 	myVRTRasterLayer = new QgsRasterLayer(QDir::fromNativeSeparators(myRasterFileInfo.absolutePath() + "\\" + myRasterFileInfo.completeBaseName() + "\\" + myRasterFileInfo.completeBaseName() + ".vrt"), myRasterFileInfo.completeBaseName());
 
 	xmin_vrt = myVRTRasterLayer->extent().xMinimum();
-	ymin_vrt = myVRTRasterLayer->extent().yMinimum();
+	ymin_vrt = myVRTRasterLayer->extent().yMaximum();
 	xmin_original = myRasterLayer->extent().xMinimum();
-	ymin_original = myRasterLayer->extent().yMinimum();
+	ymin_original = myRasterLayer->extent().yMaximum();
 }
 
 void TestQgsFileWriter::cleanupTestCase()
