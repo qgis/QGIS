@@ -89,6 +89,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
+#include "processing/qgs3dalgorithms.h"
 #endif
 
 #include <QNetworkReply>
@@ -10190,6 +10191,9 @@ void QgisApp::init3D()
 void QgisApp::initNativeProcessing()
 {
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
+#ifdef HAVE_3D
+  QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
+#endif
 }
 
 void QgisApp::initLayouts()
