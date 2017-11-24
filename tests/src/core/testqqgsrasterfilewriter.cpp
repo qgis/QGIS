@@ -2,7 +2,7 @@
 testqqgsrasterfilewriter.cpp
 --------------------------------------
 Date : Friday, Nov 24, 2017
-Copyright: (C) 2015 by Pierre Assali and Guilhem Villemin
+Copyright: (C) 2017 by Pierre Assali and Guilhem Villemin
 Email: pierre.assali@altametris.com guilhem.villemin@altametris.com
 ***************************************************************************
 *
@@ -45,7 +45,7 @@ class TestQgsFileWriter : public QObject
 	// will be called before each testfunction is executed.
 	void init() {};
 	// will be called after every testfunction.
-	void cleanup();
+	void cleanup() {};
 
 	//
 	// Functional Testing
