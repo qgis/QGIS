@@ -20,6 +20,7 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgstessellator.h"
+#include "qgsmultipolygon.h"
 
 /**
  * Simple structure to record an expected triangle from tessellator.
@@ -115,6 +116,7 @@ class TestQgsTessellator : public QObject
 
     void testBasic();
     void testWalls();
+    void asMultiPolygon();
 
   private:
 };
@@ -189,6 +191,24 @@ void TestQgsTessellator::testWalls()
   QgsTessellator tZ( 0, 0, false );
   tZ.addPolygon( polygonZ, 10 );
   QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
+}
+
+void TestQgsTessellator::asMultiPolygon()
+{
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
+
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 2, 3 2 3, 1 2 4, 1 1 1))" );
+
+  QgsTessellator t( 0, 0, false );
+  t.addPolygon( polygon, 0 );
+  QCOMPARE( t.asMultiPolygon()->asWkt(), QStringLiteral( "MultiPolygonZ (((1 2 0, 2 1 0, 3 2 0, 1 2 0)),((1 2 0, 1 1 0, 2 1 0, 1 2 0)))" ) );
+
+  QgsTessellator t2( 0, 0, false );
+  t2.addPolygon( polygonZ, 0 );
+  QCOMPARE( t2.asMultiPolygon()->asWkt(), QStringLiteral( "MultiPolygonZ (((1 2 4, 2 1 2, 3 2 3, 1 2 4)),((1 2 4, 1 1 1, 2 1 2, 1 2 4)))" ) );
+
 }
 
 
