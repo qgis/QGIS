@@ -509,11 +509,11 @@ void QgsCompoundCurve::transform( const QgsCoordinateTransform &ct, QgsCoordinat
   clearCache();
 }
 
-void QgsCompoundCurve::transform( const QTransform &t )
+void QgsCompoundCurve::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   for ( QgsCurve *curve : qgis::as_const( mCurves ) )
   {
-    curve->transform( t );
+    curve->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
   clearCache();
 }

@@ -131,7 +131,7 @@ Adds an interior ring to the geometry (takes ownership)
 
      virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false );
-    virtual void transform( const QTransform &t );
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex );

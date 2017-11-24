@@ -494,13 +494,22 @@ bool QgsPoint::addMValue( double mValue )
   return true;
 }
 
-void QgsPoint::transform( const QTransform &t )
+void QgsPoint::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   clearCache();
   qreal x, y;
   t.map( mX, mY, &x, &y );
   mX = x;
   mY = y;
+
+  if ( is3D() )
+  {
+    mZ = mZ * zScale + zTranslate;
+  }
+  if ( isMeasure() )
+  {
+    mM = mM * mScale + mTranslate;
+  }
 }
 
 
