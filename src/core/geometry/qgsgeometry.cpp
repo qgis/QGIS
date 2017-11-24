@@ -625,7 +625,7 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
   std::unique_ptr< QgsCurve > r( ring );
   if ( !d->geometry )
   {
-    return InvalidInput;
+    return InvalidInputGeometryType;
   }
 
   detach();
@@ -674,7 +674,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qg
         break;
       default:
         reset( nullptr );
-        return QgsGeometry::AddPartNotMultiGeometry;
+        return QgsGeometry::OperationResult::AddPartNotMultiGeometry;
     }
   }
   else
@@ -785,7 +785,7 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointX
 {
   if ( !d->geometry )
   {
-    return InvalidBaseGeometry;
+    return QgsGeometry::OperationResult::InvalidBaseGeometry;
   }
 
   QVector<QgsGeometry > newGeoms;
@@ -808,19 +808,19 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointX
   switch ( result )
   {
     case QgsGeometryEngine::Success:
-      return QgsGeometry::Success;
+      return QgsGeometry::OperationResult::Success;
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
-      return QgsGeometry::GeometryEngineError;
+      return QgsGeometry::OperationResult::GeometryEngineError;
     case QgsGeometryEngine::InvalidBaseGeometry:
-      return QgsGeometry::InvalidBaseGeometry;
+      return QgsGeometry::OperationResult::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return QgsGeometry::InvalidInput;
+      return QgsGeometry::OperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
-      return QgsGeometry::SplitCannotSplitPoint;
+      return QgsGeometry::OperationResult::SplitCannotSplitPoint;
     case QgsGeometryEngine::NothingHappened:
-      return QgsGeometry::NothingHappened;
+      return QgsGeometry::OperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
   }
 
@@ -857,7 +857,7 @@ QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &
     case QgsGeometryEngine::InvalidBaseGeometry:
       return InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return InvalidInput;
+      return InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
       return GeometryEngineError;
     case QgsGeometryEngine::NothingHappened:

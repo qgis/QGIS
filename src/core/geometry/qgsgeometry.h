@@ -121,8 +121,11 @@ class CORE_EXPORT QgsGeometry
       Success = 0, //!< Operation succeeded
       NothingHappened = 1000, //!< Nothing happened, without any error
       InvalidBaseGeometry, //!< The base geometry on which the operation is done is invalid or empty
-      InvalidInput, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
+      InvalidInputGeometryType, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
+      SelectionIsEmpty, //!< No features were selected
+      SelectionIsGreaterThanOne, //!< More than one features were selected
       GeometryEngineError, //!< Geometry engine misses a method implemented or an error occurred in the geometry engine
+      LayerNotEditable, //!< Cannot edit layer
       /* Add part issues */
       AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
       AddPartNotMultiGeometry, //!< The source geometry is not multi
