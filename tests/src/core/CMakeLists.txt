@@ -11,6 +11,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_SOURCE_DIR}/src/annotations
   ${CMAKE_SOURCE_DIR}/src/core/auth
   ${CMAKE_SOURCE_DIR}/src/core/composer
+  ${CMAKE_SOURCE_DIR}/src/core/dxf
   ${CMAKE_SOURCE_DIR}/src/core/expression
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/layout
@@ -109,6 +110,7 @@ SET(TESTS
  testqgsdatasourceuri.cpp
  testqgsdiagram.cpp
  testqgsdistancearea.cpp
+ testqgsdxfexport.cpp
  testqgsellipsemarker.cpp
  testqgsexpressioncontext.cpp
  testqgsexpression.cpp

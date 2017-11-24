@@ -27,6 +27,13 @@ class QgsDxfExport
       SymbolLayerSymbology
     };
 
+    enum Flag
+    {
+      FlagNoMText,
+    };
+    typedef QFlags<QgsDxfExport::Flag> Flags;
+
+
     QgsDxfExport();
 %Docstring
  Constructor for QgsDxfExport.
@@ -36,6 +43,21 @@ class QgsDxfExport
 %Docstring
  Set map settings and assign layer name attributes
  \param settings map settings to apply
+%End
+
+    void setFlags( QgsDxfExport::Flags flags );
+%Docstring
+ Sets the export flags.
+.. versionadded:: 3.0
+.. seealso:: flags()
+%End
+
+    QgsDxfExport::Flags flags() const;
+%Docstring
+ Returns the export flags.
+.. versionadded:: 3.0
+.. seealso:: setFlags()
+ :rtype: QgsDxfExport.Flags
 %End
 
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
@@ -341,6 +363,9 @@ return list of available DXF encodings
 %End
 
 };
+
+QFlags<QgsDxfExport::Flag> operator|(QgsDxfExport::Flag f1, QFlags<QgsDxfExport::Flag> f2);
+
 
 /************************************************************************
  * This file has been generated automatically from                      *
