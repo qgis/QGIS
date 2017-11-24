@@ -76,10 +76,6 @@ void QgsLayoutGuide::update()
     return;
   }
 
-  if ( mLineItem->parentItem() != mPage )
-  {
-    mLineItem->setParentItem( mPage );
-  }
   double layoutPos = mLayout->convertToLayoutUnits( mPosition );
   bool showGuide = mLayout->guides().visible();
   switch ( mOrientation )
