@@ -221,9 +221,9 @@ class QgsLayoutItemHtml: QgsLayoutMultiFrame
 %Docstring
 Recalculates the frame sizes for the current viewport dimensions
 %End
-    void refreshExpressionContext();
 
-    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+
 
   protected:
 
