@@ -604,27 +604,21 @@ static void _createCategories( QgsCategoryList &cats, QList<QVariant> &values, Q
 
   int num = values.count();
 
-  bool hasNull = false;
-
   for ( int i = 0; i < num; i++ )
   {
     QVariant value = values[i];
-    if ( value.toString().isNull() )
+    QgsSymbol *newSymbol = symbol->clone();
+    if ( ! value.isNull() )
     {
-      hasNull = true;
+      cats.append( QgsRendererCategory( value, newSymbol, value.toString(), true ) );
     }
-    QgsSymbol *newSymbol = symbol->clone();
-
-    cats.append( QgsRendererCategory( value, newSymbol, value.toString(), true ) );
   }
 
-  // add null (default) value if not exists
-  if ( !hasNull )
-  {
-    QgsSymbol *newSymbol = symbol->clone();
-    cats.append( QgsRendererCategory( QVariant( "" ), newSymbol, QString(), true ) );
-  }
+  // add null (default) value
+  QgsSymbol *newSymbol = symbol->clone();
+  cats.append( QgsRendererCategory( QVariant( "" ), newSymbol, QString(), true ) );
 }
+
 
 void QgsCategorizedSymbolRendererWidget::addCategories()
 {
