@@ -455,7 +455,7 @@ class ProcessingToolbox(BASE, WIDGET):
             else:
                 parent.setText(0, text)
 
-        for groupItem in list(groups.values()):
+        for group, groupItem in sorted(groups.items(), key=operator.itemgetter(1)):
             parent.addChild(groupItem)
 
         if not provider.id() in ('qgis', 'native'):
