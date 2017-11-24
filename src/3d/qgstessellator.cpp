@@ -17,8 +17,10 @@
 
 #include "qgscurve.h"
 #include "qgsgeometry.h"
+#include "qgsmultipolygon.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
+#include "qgstriangle.h"
 #include "qgis_sip.h"
 
 #include "poly2tri/poly2tri.h"
@@ -396,4 +398,30 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
       _makeWalls( *polygon.interiorRing( i ), true, extrusionHeight, mData, mAddNormals, mOriginX, mOriginY );
   }
+}
+
+QgsPoint getPointFromData( QVector< float >::const_iterator &it )
+{
+  // tesselator geometry is x, z, -y
+  double x = *it;
+  ++it;
+  double z = *it;
+  ++it;
+  double y = -( *it );
+  ++it;
+  return QgsPoint( x, y, z );
+}
+
+std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
+{
+  std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
+  const QVector<float> data = mData;
+  for ( auto it = data.constBegin(); it != data.constEnd(); )
+  {
+    QgsPoint p1 = getPointFromData( it );
+    QgsPoint p2 = getPointFromData( it );
+    QgsPoint p3 = getPointFromData( it );
+    mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
+  }
+  return mp;
 }

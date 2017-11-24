@@ -74,33 +74,6 @@ QgsTesselateAlgorithm *QgsTesselateAlgorithm::createInstance() const
   return new QgsTesselateAlgorithm();
 }
 
-QgsPoint getPointFromData( QVector< float >::const_iterator &it )
-{
-  // tesselator geometry is x, z, -y
-  double x = *it;
-  ++it;
-  double z = *it;
-  ++it;
-  double y = -( *it );
-  ++it;
-  return QgsPoint( x, y, z );
-}
-
-void tesselatePolygon( const QgsPolygon *polygon, QgsMultiPolygon *destination )
-{
-  QgsTessellator t( 0, 0, false );
-  t.addPolygon( *polygon, 0 );
-
-  QVector<float> data = t.data();
-  for ( auto it = data.constBegin(); it != data.constEnd(); )
-  {
-    QgsPoint p1 = getPointFromData( it );
-    QgsPoint p2 = getPointFromData( it );
-    QgsPoint p3 = getPointFromData( it );
-    destination->addGeometry( new QgsTriangle( p1, p2, p3 ) );
-  }
-}
-
 QgsFeature QgsTesselateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
@@ -110,22 +83,26 @@ QgsFeature QgsTesselateAlgorithm::processFeature( const QgsFeature &feature, Qgs
       f.clearGeometry();
     else
     {
-      std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
+      QgsRectangle bounds = f.geometry().boundingBox();
+      QgsTessellator t( bounds.xMinimum(), bounds.yMinimum(), false );
+
       if ( f.geometry().isMultipart() )
       {
         const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( f.geometry().constGet() );
         for ( int i = 0; i < ms->numGeometries(); ++i )
         {
           std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( ms->geometryN( i )->segmentize() ) );
-          tesselatePolygon( p.get(), mp.get() );
+          t.addPolygon( *p, 0 );
         }
       }
       else
       {
         std::unique_ptr< QgsPolygon > p( qgsgeometry_cast< QgsPolygon * >( f.geometry().constGet()->segmentize() ) );
-        tesselatePolygon( p.get(), mp.get() );
+        t.addPolygon( *p, 0 );
       }
-      f.setGeometry( QgsGeometry( std::move( mp ) ) );
+      QgsGeometry g( t.asMultiPolygon() );
+      g.translate( bounds.xMinimum(), bounds.yMinimum() );
+      f.setGeometry( g );
     }
   }
   return f;
