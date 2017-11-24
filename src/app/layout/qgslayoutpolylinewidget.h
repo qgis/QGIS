@@ -38,13 +38,29 @@ class QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLa
     QgsLayoutItemPolyline *mPolyline = nullptr;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
+    void enableStartSvgInputElements( bool enable );
+    void enableEndSvgInputElements( bool enable );
+
   private slots:
 
     //! Sets the GUI elements to the currentValues of mComposerShape
     void setGuiElementValues();
 
-  private slots:
     void symbolChanged();
+    void arrowStrokeWidthChanged( double d );
+    void arrowHeadWidthChanged( double d );
+    void arrowHeadFillColorChanged( const QColor &newColor );
+    void arrowHeadStrokeColorChanged( const QColor &newColor );
+    void startArrowHeadToggled( bool toggled );
+    void endArrowHeadToggled( bool toggled );
+    void startNoMarkerToggled( bool toggled );
+    void endNoMarkerToggled( bool toggled );
+    void startSvgMarkerToggled( bool toggled );
+    void endSvgMarkerToggled( bool toggled );
+    void mStartMarkerLineEdit_textChanged( const QString &text );
+    void mEndMarkerLineEdit_textChanged( const QString &text );
+    void mStartMarkerToolButton_clicked();
+    void mEndMarkerToolButton_clicked();
 };
 
 #endif // QGSLAYOUTPOLYLINEWIDGET_H

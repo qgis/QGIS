@@ -151,6 +151,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoScaleBarMapUnitsSegment, //!< Scalebar map units per segment
       UndoScaleBarLabelBarSize, //!< Scalebar label bar size
       UndoScaleBarBoxContentSpace, //!< Scalebar box context space
+      UndoArrowStrokeWidth, //!< Arrow stroke width
+      UndoArrowHeadWidth, //!< Arrow head width
+      UndoArrowHeadFillColor, //!< Arrow head fill color
+      UndoArrowHeadStrokeColor, //!< Arrow head stroke color
 
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };

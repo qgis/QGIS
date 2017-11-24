@@ -180,6 +180,15 @@ Compute an euclidian distance between 2 nodes.
 Update the current scene rectangle for this item.
 %End
 
+
+  protected slots:
+
+    virtual void updateBoundingRect();
+%Docstring
+ Called when the bounding rect of the item should recalculated. Subclasses should update
+ currentRectangle in their implementations.
+%End
+
 };
 
 /************************************************************************

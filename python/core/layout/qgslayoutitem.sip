@@ -118,6 +118,10 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
       UndoScaleBarMapUnitsSegment,
       UndoScaleBarLabelBarSize,
       UndoScaleBarBoxContentSpace,
+      UndoArrowStrokeWidth,
+      UndoArrowHeadWidth,
+      UndoArrowHeadFillColor,
+      UndoArrowHeadStrokeColor,
 
       UndoCustomCommand,
     };
