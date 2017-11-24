@@ -227,6 +227,28 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     return shape.release();
   } ) );
 
+  // arrow
+  std::unique_ptr< QgsLayoutItemGuiMetadata > arrowMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
+        QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Arrow" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddArrow.svg" ) ),
+        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutPolylineWidget( qobject_cast< QgsLayoutItemPolyline * >( item ) );
+  }, createRubberBand, QString(), true );
+  arrowMetadata->setItemCreationFunction( []( QgsLayout * layout )->QgsLayoutItem *
+  {
+    std::unique_ptr< QgsLayoutItemPolyline > arrow = qgis::make_unique< QgsLayoutItemPolyline >( layout );
+    arrow->setEndMarker( QgsLayoutItemPolyline::ArrowHead );
+    return arrow.release();
+  } );
+  arrowMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * )->QGraphicsPathItem*
+  {
+    std::unique_ptr< QGraphicsPathItem > band = qgis::make_unique< QGraphicsPathItem >();
+    band->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+    band->setZValue( QgsLayout::ZViewTool );
+    return band.release();
+  } );
+  registry->addLayoutItemGuiMetadata( arrowMetadata.release() );
+
 
   // node items
 

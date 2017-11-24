@@ -21,6 +21,9 @@
 #include "qgslayout.h"
 #include "qgsmapsettings.h"
 #include "qgslayoututils.h"
+#include "qgsreadwritecontext.h"
+#include "qgssvgcache.h"
+#include <QSvgRenderer>
 #include <limits>
 
 QgsLayoutItemPolyline::QgsLayoutItemPolyline( QgsLayout *layout )
@@ -114,6 +117,141 @@ void QgsLayoutItemPolyline::refreshSymbol()
   emit frameChanged();
 }
 
+void QgsLayoutItemPolyline::drawStartMarker( QPainter *painter )
+{
+  if ( mPolygon.size() < 2 )
+    return;
+
+  switch ( mStartMarker )
+  {
+    case MarkerMode::NoMarker:
+      break;
+
+    case MarkerMode::ArrowHead:
+    {
+      // calculate angle at start of line
+      QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+      double angle = startLine.angle();
+      drawArrow( painter, mPolygon.at( 0 ), angle );
+      break;
+    }
+
+    case MarkerMode::SvgMarker:
+    {
+      // calculate angle at start of line
+      QLineF startLine( mPolygon.at( 0 ), mPolygon.at( 1 ) );
+      double angle = startLine.angle();
+      drawSvgMarker( painter, mPolygon.at( 0 ), angle, mStartMarkerFile, mStartArrowHeadHeight );
+      break;
+    }
+  }
+
+}
+
+void QgsLayoutItemPolyline::drawEndMarker( QPainter *painter )
+{
+  if ( mPolygon.size() < 2 )
+    return;
+
+  switch ( mEndMarker )
+  {
+    case MarkerMode::NoMarker:
+      break;
+
+    case MarkerMode::ArrowHead:
+    {
+      // calculate angle at end of line
+      QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
+      double angle = endLine.angle();
+      drawArrow( painter, endLine.p2(), angle );
+      break;
+    }
+    case MarkerMode::SvgMarker:
+    {
+      // calculate angle at end of line
+      QLineF endLine( mPolygon.at( mPolygon.count() - 2 ), mPolygon.at( mPolygon.count() - 1 ) );
+      double angle = endLine.angle();
+      drawSvgMarker( painter, endLine.p2(), angle, mEndMarkerFile, mEndArrowHeadHeight );
+      break;
+    }
+  }
+}
+
+void QgsLayoutItemPolyline::drawArrow( QPainter *painter, QPointF center, double angle )
+{
+  // translate angle from ccw from axis to cw from north
+  angle = 90 - angle;
+  QPen p;
+  p.setColor( mArrowHeadStrokeColor );
+  p.setWidthF( mArrowHeadStrokeWidth );
+  painter->setPen( p );
+  QBrush b;
+  b.setColor( mArrowHeadFillColor );
+  painter->setBrush( b );
+  drawArrowHead( painter, center.x(), center.y(), angle, mArrowHeadWidth );
+}
+
+void QgsLayoutItemPolyline::updateMarkerSvgSizes()
+{
+  setStartSvgMarkerPath( mStartMarkerFile );
+  setEndSvgMarkerPath( mEndMarkerFile );
+}
+
+void QgsLayoutItemPolyline::drawArrowHead( QPainter *p, const double x, const double y, const double angle, const double arrowHeadWidth )
+{
+  double angleRad = angle / 180.0 * M_PI;
+  QPointF middlePoint( x, y );
+  //rotate both arrow points
+  QPointF p1 = QPointF( -arrowHeadWidth / 2.0, arrowHeadWidth );
+  QPointF p2 = QPointF( arrowHeadWidth / 2.0, arrowHeadWidth );
+
+  QPointF p1Rotated, p2Rotated;
+  p1Rotated.setX( p1.x() * std::cos( angleRad ) + p1.y() * -std::sin( angleRad ) );
+  p1Rotated.setY( p1.x() * std::sin( angleRad ) + p1.y() * std::cos( angleRad ) );
+  p2Rotated.setX( p2.x() * std::cos( angleRad ) + p2.y() * -std::sin( angleRad ) );
+  p2Rotated.setY( p2.x() * std::sin( angleRad ) + p2.y() * std::cos( angleRad ) );
+
+  QPolygonF arrowHeadPoly;
+  arrowHeadPoly << middlePoint;
+  arrowHeadPoly << QPointF( middlePoint.x() + p1Rotated.x(), middlePoint.y() + p1Rotated.y() );
+  arrowHeadPoly << QPointF( middlePoint.x() + p2Rotated.x(), middlePoint.y() + p2Rotated.y() );
+  QPen arrowPen = p->pen();
+  arrowPen.setJoinStyle( Qt::RoundJoin );
+  QBrush arrowBrush = p->brush();
+  arrowBrush.setStyle( Qt::SolidPattern );
+  p->setPen( arrowPen );
+  p->setBrush( arrowBrush );
+  arrowBrush.setStyle( Qt::SolidPattern );
+  p->drawPolygon( arrowHeadPoly );
+}
+
+void QgsLayoutItemPolyline::drawSvgMarker( QPainter *p, QPointF point, double angle, const QString &markerPath, double height ) const
+{
+  // translate angle from ccw from axis to cw from north
+  angle = 90 - angle;
+
+  if ( mArrowHeadWidth <= 0 || height <= 0 )
+  {
+    //bad image size
+    return;
+  }
+
+  if ( markerPath.isEmpty() )
+    return;
+
+  QSvgRenderer r;
+  const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( markerPath, mArrowHeadWidth, mArrowHeadFillColor, mArrowHeadStrokeColor, mArrowHeadStrokeWidth,
+                                 1.0 );
+  r.load( svgContent );
+
+  p->save();
+  p->translate( point.x(), point.y() );
+  p->rotate( angle );
+  p->translate( -mArrowHeadWidth / 2.0, -height / 2.0 );
+  r.render( p, QRectF( 0, 0, mArrowHeadWidth, height ) );
+  p->restore();
+}
+
 QString QgsLayoutItemPolyline::displayName() const
 {
   if ( !id().isEmpty() )
@@ -124,6 +262,7 @@ QString QgsLayoutItemPolyline::displayName() const
 
 void QgsLayoutItemPolyline::_draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
+  context.painter()->save();
   //setup painter scaling to dots so that raster symbology is drawn to scale
   double scale = context.convertToPainterUnits( 1, QgsUnitTypes::RenderMillimeters );
   QTransform t = QTransform::fromScale( scale, scale );
@@ -131,6 +270,13 @@ void QgsLayoutItemPolyline::_draw( QgsRenderContext &context, const QStyleOption
   mPolylineStyleSymbol->startRender( context );
   mPolylineStyleSymbol->renderPolyline( t.map( mPolygon ), nullptr, context );
   mPolylineStyleSymbol->stopRender( context );
+
+  // painter is scaled to dots, so scale back to layout units
+  context.painter()->scale( context.scaleFactor(), context.scaleFactor() );
+
+  drawStartMarker( context.painter() );
+  drawEndMarker( context.painter() );
+  context.painter()->restore();
 }
 
 void QgsLayoutItemPolyline::_readXmlStyle( const QDomElement &elmt, const QgsReadWriteContext &context )
@@ -144,6 +290,78 @@ void QgsLayoutItemPolyline::setSymbol( QgsLineSymbol *symbol )
   refreshSymbol();
 }
 
+void QgsLayoutItemPolyline::setStartMarker( QgsLayoutItemPolyline::MarkerMode mode )
+{
+  mStartMarker = mode;
+  update();
+}
+
+void QgsLayoutItemPolyline::setEndMarker( QgsLayoutItemPolyline::MarkerMode mode )
+{
+  mEndMarker = mode;
+  update();
+}
+
+void QgsLayoutItemPolyline::setArrowHeadWidth( double width )
+{
+  mArrowHeadWidth = width;
+  updateMarkerSvgSizes();
+  update();
+}
+
+void QgsLayoutItemPolyline::setStartSvgMarkerPath( const QString &path )
+{
+  QSvgRenderer r;
+  mStartMarkerFile = path;
+  if ( path.isEmpty() || !r.load( path ) )
+  {
+    mStartArrowHeadHeight = 0;
+  }
+  else
+  {
+    //calculate mArrowHeadHeight from svg file and mArrowHeadWidth
+    QRect viewBox = r.viewBox();
+    mStartArrowHeadHeight = mArrowHeadWidth / viewBox.width() * viewBox.height();
+  }
+  updateBoundingRect();
+}
+
+void QgsLayoutItemPolyline::setEndSvgMarkerPath( const QString &path )
+{
+  QSvgRenderer r;
+  mEndMarkerFile = path;
+  if ( path.isEmpty() || !r.load( path ) )
+  {
+    mEndArrowHeadHeight = 0;
+  }
+  else
+  {
+    //calculate mArrowHeadHeight from svg file and mArrowHeadWidth
+    QRect viewBox = r.viewBox();
+    mEndArrowHeadHeight = mArrowHeadWidth / viewBox.width() * viewBox.height();
+  }
+  updateBoundingRect();
+}
+
+void QgsLayoutItemPolyline::setArrowHeadStrokeColor( const QColor &color )
+{
+  mArrowHeadStrokeColor = color;
+  update();
+}
+
+void QgsLayoutItemPolyline::setArrowHeadFillColor( const QColor &color )
+{
+  mArrowHeadFillColor = color;
+  update();
+}
+
+void QgsLayoutItemPolyline::setArrowHeadStrokeWidth( double width )
+{
+  mArrowHeadStrokeWidth = width;
+  updateBoundingRect();
+  update();
+}
+
 void QgsLayoutItemPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt, const QgsReadWriteContext &context ) const
 {
   const QDomElement pe = QgsSymbolLayerUtils::saveSymbol( QString(),
@@ -151,4 +369,82 @@ void QgsLayoutItemPolyline::_writeXmlStyle( QDomDocument &doc, QDomElement &elmt
                          doc,
                          context );
   elmt.appendChild( pe );
+}
+
+bool QgsLayoutItemPolyline::writePropertiesToElement( QDomElement &elmt, QDomDocument &doc, const QgsReadWriteContext &context ) const
+{
+  QgsLayoutNodesItem::writePropertiesToElement( elmt, doc, context );
+
+  // absolute paths to relative
+  QString startMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mStartMarkerFile, context.pathResolver() );
+  QString endMarkerPath = QgsSymbolLayerUtils::svgSymbolPathToName( mEndMarkerFile, context.pathResolver() );
+
+  elmt.setAttribute( QStringLiteral( "arrowHeadWidth" ), QString::number( mArrowHeadWidth ) );
+  elmt.setAttribute( QStringLiteral( "arrowHeadFillColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadFillColor ) );
+  elmt.setAttribute( QStringLiteral( "arrowHeadOutlineColor" ), QgsSymbolLayerUtils::encodeColor( mArrowHeadStrokeColor ) );
+  elmt.setAttribute( QStringLiteral( "outlineWidth" ), QString::number( mArrowHeadStrokeWidth ) );
+  elmt.setAttribute( QStringLiteral( "markerMode" ), mEndMarker );
+  elmt.setAttribute( QStringLiteral( "startMarkerMode" ), mStartMarker );
+  elmt.setAttribute( QStringLiteral( "startMarkerFile" ), startMarkerPath );
+  elmt.setAttribute( QStringLiteral( "endMarkerFile" ), endMarkerPath );
+
+  return true;
+}
+
+bool QgsLayoutItemPolyline::readPropertiesFromElement( const QDomElement &elmt, const QDomDocument &doc, const QgsReadWriteContext &context )
+{
+  mArrowHeadWidth = elmt.attribute( QStringLiteral( "arrowHeadWidth" ), QStringLiteral( "2.0" ) ).toDouble();
+  mArrowHeadFillColor = QgsSymbolLayerUtils::decodeColor( elmt.attribute( QStringLiteral( "arrowHeadFillColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mArrowHeadStrokeColor = QgsSymbolLayerUtils::decodeColor( elmt.attribute( QStringLiteral( "arrowHeadOutlineColor" ), QStringLiteral( "0,0,0,255" ) ) );
+  mArrowHeadStrokeWidth = elmt.attribute( QStringLiteral( "outlineWidth" ), QStringLiteral( "1.0" ) ).toDouble();
+  // relative paths to absolute
+  QString startMarkerPath = elmt.attribute( QStringLiteral( "startMarkerFile" ), QLatin1String( "" ) );
+  QString endMarkerPath = elmt.attribute( QStringLiteral( "endMarkerFile" ), QLatin1String( "" ) );
+  setStartSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( startMarkerPath, context.pathResolver() ) );
+  setEndSvgMarkerPath( QgsSymbolLayerUtils::svgSymbolNameToPath( endMarkerPath, context.pathResolver() ) );
+  mEndMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( QStringLiteral( "markerMode" ), QStringLiteral( "0" ) ).toInt() );
+  mStartMarker = static_cast< QgsLayoutItemPolyline::MarkerMode >( elmt.attribute( QStringLiteral( "startMarkerMode" ), QStringLiteral( "0" ) ).toInt() );
+
+  QgsLayoutNodesItem::readPropertiesFromElement( elmt, doc, context );
+
+  updateBoundingRect();
+  return true;
+}
+
+void QgsLayoutItemPolyline::updateBoundingRect()
+{
+  QRectF br = rect();
+
+  double margin = std::max( mMaxSymbolBleed, computeMarkerMargin() );
+  br.adjust( -margin, -margin, margin, margin );
+  currentRectangle = br;
+
+  // update
+  prepareGeometryChange();
+  update();
+}
+
+
+double QgsLayoutItemPolyline::computeMarkerMargin() const
+{
+  double margin = 0;
+
+  if ( mStartMarker == ArrowHead || mEndMarker == ArrowHead )
+  {
+    margin = mArrowHeadStrokeWidth / 2.0 + mArrowHeadWidth * M_SQRT2;
+  }
+
+  if ( mStartMarker == SvgMarker )
+  {
+    double startMarkerMargin = std::sqrt( 0.25 * ( mStartArrowHeadHeight * mStartArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
+    margin = std::max( startMarkerMargin, margin );
+  }
+
+  if ( mEndMarker == SvgMarker )
+  {
+    double endMarkerMargin = std::sqrt( 0.25 * ( mEndArrowHeadHeight * mEndArrowHeadHeight + mArrowHeadWidth * mArrowHeadWidth ) );
+    margin = std::max( endMarkerMargin, margin );
+  }
+
+  return margin;
 }
