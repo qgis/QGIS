@@ -199,7 +199,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * \see readXml()
      */
-    bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames = false ) const;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false ) const;
 
     /**
      * Sets the item state from a DOM element.
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \param ignoreFrames set to false to avoid read state information about child frames from DOM
      * \see writeXml()
      */
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames = false );
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false );
 
     /**
      * Returns a list of all child frames for this multiframe.

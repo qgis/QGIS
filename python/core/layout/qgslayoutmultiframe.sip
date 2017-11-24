@@ -170,7 +170,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  :rtype: ResizeMode
 %End
 
-    bool writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames = false ) const;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false ) const;
 %Docstring
  Stores the multiframe state in a DOM element.
  \param parentElement parent DOM element (e.g. 'Layout' element)
@@ -181,7 +181,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  :rtype: bool
 %End
 
-    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames = false );
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false );
 %Docstring
  Sets the item state from a DOM element.
  \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
