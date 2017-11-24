@@ -17,7 +17,7 @@ typedef QList<int> QgsAttributeList;
 typedef QSet<int> QgsAttributeIds;
 
 
-class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsFeatureSink, QgsFeatureSource
+class QgsVectorLayer : QgsMapLayer, QgsExpressionContextGenerator, QgsExpressionContextScopeGenerator, QgsFeatureSink, QgsFeatureSource
 {
 %Docstring
  Represents a vector layer which manages a vector based data sets.
@@ -1781,6 +1781,9 @@ Returns the current blending mode for features
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
+
+    virtual QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 
 
     QgsEditFormConfig editFormConfig() const;

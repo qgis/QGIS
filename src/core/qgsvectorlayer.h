@@ -40,6 +40,7 @@
 #include "qgsaggregatecalculator.h"
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
 class QPainter;
 class QImage;
@@ -350,7 +351,7 @@ typedef QSet<int> QgsAttributeIds;
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsFeatureSink, public QgsFeatureSource
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource
 {
     Q_OBJECT
 
@@ -1740,6 +1741,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setMapTipTemplate( const QString &mapTipTemplate );
 
     QgsExpressionContext createExpressionContext() const override;
+
+    QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
     /**
      * Get the configuration of the form used to represent this vector layer.
