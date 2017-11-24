@@ -320,9 +320,10 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
     QVariant maximumValue( int fieldIndex ) const override;
 
     /**
-     * Access the underlying original \a source.
+     * Returns an expression context scope suitable for this source or a default global/project
+     * context if nothing more specific can be created.
      */
-    QgsFeatureSource *source() const;
+    QgsExpressionContext createExpressionContext( const QgsProcessingContext &context ) const;
 
   private:
 

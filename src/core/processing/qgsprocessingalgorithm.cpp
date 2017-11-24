@@ -132,22 +132,16 @@ QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVar
   // If there's a source capable of generating a context scope, use it
   if ( source )
   {
-    QgsExpressionContextGenerator *generator = dynamic_cast<QgsExpressionContextGenerator *>( source->source() );
-    if ( generator )
-    {
-      const auto &scopes = generator->createExpressionContext().takeScopes();
-      for ( QgsExpressionContextScope *scope : scopes )
-        c << scope;
-    }
+    const auto &scopes = source->createExpressionContext( context ).takeScopes();
+    for ( QgsExpressionContextScope *scope : scopes )
+      c << scope;
   }
-  else
-
-    if ( c.scopeCount() == 0 )
-    {
-      //empty scope, populate with initial scopes
-      c << QgsExpressionContextUtils::globalScope()
-        << QgsExpressionContextUtils::projectScope( context.project() );
-    }
+  else if ( c.scopeCount() == 0 )
+  {
+    //empty scope, populate with initial scopes
+    c << QgsExpressionContextUtils::globalScope()
+      << QgsExpressionContextUtils::projectScope( context.project() );
+  }
 
   c << QgsExpressionContextUtils::processingAlgorithmScope( this, parameters, context );
   return c;
