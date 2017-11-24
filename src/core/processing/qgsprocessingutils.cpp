@@ -721,7 +721,19 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
   return mSource->maximumValue( fieldIndex );
 }
 
-QgsFeatureSource *QgsProcessingFeatureSource::source() const
+QgsExpressionContext QgsProcessingFeatureSource::createExpressionContext( const QgsProcessingContext &context ) const
 {
-  return mSource;
+  QgsExpressionContext expressionContext;
+  QgsExpressionContextGenerator *generator = dynamic_cast<QgsExpressionContextGenerator *>( mSource );
+  if ( generator )
+  {
+    expressionContext = generator->createExpressionContext();
+  }
+  else
+  {
+    expressionContext
+        << QgsExpressionContextUtils::globalScope()
+        << QgsExpressionContextUtils::projectScope( context.project() );
+  }
+  return expressionContext;
 }
