@@ -24,7 +24,6 @@
 #include "qgisapp.h"
 #include "qgscomposer.h"
 #include "qgscoordinatetransform.h"
-#include "qgsdatumtransformtablemodel.h"
 #include "qgsdatumtransformdialog.h"
 #include "qgslayoutmanager.h"
 #include "qgslogger.h"
@@ -157,10 +156,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   projectionSelector->setCrs( QgsProject::instance()->crs() );
 
   // Datum transforms
-  QgsDatumTransformTableModel *datumTransformTableModel = new QgsDatumTransformTableModel( this );
   QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-  datumTransformTableModel->setTransformContext( context );
-  mDatumTransformTableView->setModel( datumTransformTableModel );
+  mDatumTransformTableModel->setTransformContext( context );
+  mDatumTransformTableView->setModel( mDatumTransformTableModel );
   mDatumTransformTableView->resizeColumnToContents( 0 );
   mDatumTransformTableView->horizontalHeader()->show();
   mDatumTransformTableView->setSelectionMode( QAbstractItemView::SingleSelection );
@@ -1233,7 +1231,10 @@ void QgsProjectProperties::addDatumTransform()
   QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog();
   if ( dlg->exec() )
   {
-
+    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg->selectedDatumTransforms();
+    QgsCoordinateTransformContext context = mDatumTransformTableModel->transformContext();
+    context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
+    mDatumTransformTableModel->setTransformContext( context );
   }
 }
 

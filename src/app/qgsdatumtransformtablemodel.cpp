@@ -1,58 +1,96 @@
 #include "qgsdatumtransformtablemodel.h"
 
-QgsDatumTransformTableModel::QgsDatumTransformTableModel(QObject *parent)
-    : QAbstractTableModel(parent)
+QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
+  : QAbstractTableModel( parent )
 {
 }
 
-void QgsDatumTransformTableModel::setTransformContext(QgsCoordinateTransformContext &context)
+void QgsDatumTransformTableModel::setTransformContext( QgsCoordinateTransformContext &context )
 {
   mTransformContext = context;
   reset();
 }
 
-int QgsDatumTransformTableModel::rowCount(const QModelIndex &parent) const
+
+int QgsDatumTransformTableModel::rowCount( const QModelIndex &parent ) const
 {
-    return mTransformContext.sourceDestinationDatumTransforms().count()
-            + mTransformContext.sourceDatumTransforms().count()
-            + mTransformContext.destinationDatumTransforms().count();
+  return mTransformContext.sourceDestinationDatumTransforms().count()
+         + mTransformContext.sourceDatumTransforms().count()
+         + mTransformContext.destinationDatumTransforms().count();
 }
 
-int QgsDatumTransformTableModel::columnCount(const QModelIndex &parent) const
+int QgsDatumTransformTableModel::columnCount( const QModelIndex &parent ) const
 {
-    return 4;
+  return 4;
 }
 
-QVariant QgsDatumTransformTableModel::data(const QModelIndex &index, int role) const
+QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role ) const
 {
+  QString sourceCrs;
+  int sourceTransform = -1;
+  QString destinationCrs;
+  int destinationTransform = -1;
+
+  if ( index.row() < mTransformContext.sourceDestinationDatumTransforms().count() )
+  {
+    QPair< QString, QString> crses = mTransformContext.sourceDestinationDatumTransforms().keys().at( index.row() );
+    sourceCrs = crses.first;
+    destinationCrs = crses.second;
+    QPair< int, int> transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
+    sourceTransform = transforms.first;
+    destinationTransform = transforms.second;
+  }
 
 
-    return QVariant();
-}
-
-QVariant QgsDatumTransformTableModel::headerData(int section, Qt::Orientation orientation, int role) const
-{
-    if (orientation == Qt::Vertical)
-        return QVariant();
-
-    switch (role) {
+  switch ( role )
+  {
     case Qt::DisplayRole:
-        switch (section) {
-        case SourceCrsHeader:
-            return tr("Source CRS");
-        case SourceTransformHeader:
-            return tr("Source datum transform");
-        case DestinationCrsHeader:
-            return tr("Destination CRS");
-        case DestinationTransformHeader:
-            return tr("Destination datum transform");
+      switch ( index.column() )
+      {
+        case SourceCrsColumn:
+          return sourceCrs;
+        case SourceTransformColumn:
+          return sourceTransform;
+        case DestinationCrsColumn:
+          return destinationCrs;
+        case DestinationTransformColumn:
+          return destinationTransform;
         default:
-            break;
-        }
-        break;
+          break;
+      }
+      break;
     default:
-        break;
-    }
+      break;
+  }
 
+  return QVariant();
+}
+
+QVariant QgsDatumTransformTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
+{
+  if ( orientation == Qt::Vertical )
     return QVariant();
+
+  switch ( role )
+  {
+    case Qt::DisplayRole:
+      switch ( section )
+      {
+        case SourceCrsColumn :
+          return tr( "Source CRS" );
+        case SourceTransformColumn:
+          return tr( "Source datum transform" );
+        case DestinationCrsColumn:
+          return tr( "Destination CRS" );
+        case DestinationTransformColumn:
+          return tr( "Destination datum transform" );
+        default:
+          break;
+      }
+      break;
+    default:
+      break;
+  }
+
+  return QVariant();
 }

@@ -24,6 +24,7 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
+#include "qgsdatumtransformtablemodel.h"
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -176,6 +177,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsRelationManagerDialog *mRelationManagerDlg = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyle *mStyle = nullptr;
+    QgsDatumTransformTableModel *mDatumTransformTableModel = new QgsDatumTransformTableModel( this );
 
     void populateStyles();
     void editSymbol( QComboBox *cbo );

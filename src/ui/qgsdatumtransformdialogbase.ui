@@ -90,13 +90,6 @@
    <item row="5" column="0" colspan="2">
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
-      <widget class="QCheckBox" name="mRememberSelectionCheckBox">
-       <property name="text">
-        <string>Remember selection</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <spacer name="horizontalSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
@@ -132,7 +125,6 @@
  </widget>
  <tabstops>
   <tabstop>mDatumTransformTreeWidget</tabstop>
-  <tabstop>mRememberSelectionCheckBox</tabstop>
   <tabstop>mHideDeprecatedCheckBox</tabstop>
   <tabstop>buttonBox</tabstop>
  </tabstops>

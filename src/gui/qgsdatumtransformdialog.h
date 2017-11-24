@@ -48,16 +48,15 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
      */
     int availableTransformationCount();
 
-    //! getter for selected datum transformations
-    QList< int > selectedDatumTransform();
-
-    //! dialog shall remember the selection
-    bool rememberSelection() const;
+    /**
+     * Returns the source and destination transforms, each being a pair of QgsCoordinateReferenceSystems and datum transform code
+     * \since 3.0
+     */
+    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > selectedDatumTransforms();
 
   private slots:
     void mHideDeprecatedCheckBox_stateChanged( int state );
     void mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
-    void accepted();
     void setSourceCrs();
     void setDestinationCrs();
 
