@@ -1049,6 +1049,13 @@ Return the provider type for this layer
  \param ring ring to add
  \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
  :return: QgsGeometry.OperationResult
+ - Success
+ - LayerNotEditable
+ - AddRingNotInExistingFeature
+ - InvalidInputGeometryType
+ - AddRingNotClosed
+ - AddRingNotValid
+ - AddRingCrossesExistingRings
  :rtype: QgsGeometry.OperationResult
 %End
 
@@ -1058,6 +1065,13 @@ Return the provider type for this layer
  \param ring ring to add
  \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
  :return: QgsGeometry.OperationResult
+ - Success
+ - LayerNotEditable
+ - AddRingNotInExistingFeature
+ - InvalidInputGeometryType
+ - AddRingNotClosed
+ - AddRingNotValid
+ - AddRingCrossesExistingRings
 .. note::
 
    available in Python as addCurvedRing
@@ -1068,6 +1082,14 @@ Return the provider type for this layer
 %Docstring
  Adds a new part polygon to a multipart feature
  :return: QgsGeometry.OperationResult
+ - Success
+ - LayerNotEditable
+ - SelectionIsEmpty
+ - SelectionIsGreaterThanOne
+ - AddPartSelectedGeometryNotFound
+ - AddPartNotMultiGeometry
+ - InvalidBaseGeometry
+ - InvalidInputGeometryType
  :rtype: QgsGeometry.OperationResult
 %End
 
@@ -1075,6 +1097,14 @@ Return the provider type for this layer
 %Docstring
  Adds a new part polygon to a multipart feature
  :return: QgsGeometry.OperationResult
+ - Success
+ - LayerNotEditable
+ - SelectionIsEmpty
+ - SelectionIsGreaterThanOne
+ - AddPartSelectedGeometryNotFound
+ - AddPartNotMultiGeometry
+ - InvalidBaseGeometry
+ - InvalidInputGeometryType
 .. note::
 
    available in Python bindings as addPartV2
@@ -1105,6 +1135,13 @@ Return the provider type for this layer
   \param splitLine line that splits the layer features
   \param topologicalEditing true if topological editing is enabled
   :return: QgsGeometry.OperationResult
+ - Success
+ - NothingHappened
+ - LayerNotEditable
+ - InvalidInputGeometryType
+ - InvalidBaseGeometry
+ - GeometryEngineError
+ - SplitCannotSplitPoint
  :rtype: QgsGeometry.OperationResult
 %End
 
@@ -1114,6 +1151,13 @@ Return the provider type for this layer
   \param splitLine line that splits the layer features
   \param topologicalEditing true if topological editing is enabled
   :return: QgsGeometry.OperationResult
+ - Success
+ - NothingHappened
+ - LayerNotEditable
+ - InvalidInputGeometryType
+ - InvalidBaseGeometry
+ - GeometryEngineError
+ - SplitCannotSplitPoint
  :rtype: QgsGeometry.OperationResult
 %End
 
