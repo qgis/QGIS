@@ -370,14 +370,14 @@ class ProcessingToolbox(BASE, WIDGET):
 
         # first add qgis/native providers, since they create top level groups
         for provider in QgsApplication.processingRegistry().providers():
-            if provider.id() in ('qgis', 'native'):
+            if provider.id() in ('qgis', 'native', '3d'):
                 self.addAlgorithmsFromProvider(provider, self.algorithmTree.invisibleRootItem())
             else:
                 continue
         self.algorithmTree.sortItems(0, Qt.AscendingOrder)
 
         for provider in QgsApplication.processingRegistry().providers():
-            if provider.id() in ('qgis', 'native'):
+            if provider.id() in ('qgis', 'native', '3d'):
                 # already added
                 continue
             else:
@@ -422,7 +422,7 @@ class ProcessingToolbox(BASE, WIDGET):
                     groupItem = TreeGroupItem(alg.group())
                     if not active:
                         groupItem.setInactive()
-                    if provider.id() in ('qgis', 'native'):
+                    if provider.id() in ('qgis', 'native', '3d'):
                         groupItem.setIcon(0, provider.icon())
                     groups[alg.group()] = groupItem
             algItem = TreeAlgorithmItem(alg)
@@ -444,7 +444,7 @@ class ProcessingToolbox(BASE, WIDGET):
 
         text = provider.name()
 
-        if not provider.id() in ('qgis', 'native'):
+        if not provider.id() in ('qgis', 'native', '3d'):
             if not active:
                 def activateProvider():
                     self.activateProvider(provider.id())
@@ -459,7 +459,7 @@ class ProcessingToolbox(BASE, WIDGET):
         for group, groupItem in sorted(groups.items(), key=operator.itemgetter(1)):
             parent.addChild(groupItem)
 
-        if not provider.id() in ('qgis', 'native'):
+        if not provider.id() in ('qgis', 'native', '3d'):
             parent.setHidden(parent.childCount() == 0)
 
 
