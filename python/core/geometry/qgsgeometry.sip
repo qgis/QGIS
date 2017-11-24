@@ -566,9 +566,9 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: QgsGeometry
 %End
 
-    OperationResult translate( double dx, double dy );
+    OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 %Docstring
- Translates this geometry by dx, dy
+ Translates this geometry by dx, dy, dz and dm.
  :return: OperationResult a result code: success or reason of failure
  :rtype: OperationResult
 %End
@@ -580,9 +580,13 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult transform( const QTransform &ct );
+    OperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 %Docstring
- Transforms this geometry as described by QTransform ct
+ Transforms the x and y components of the geometry using a QTransform object ``t``.
+
+ Optionally, the geometry's z values can be scaled via ``zScale`` and translated via ``zTranslate``.
+ Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate``.
+
  :return: OperationResult a result code: success or reason of failure
  :rtype: OperationResult
 %End

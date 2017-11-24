@@ -403,7 +403,7 @@ class CORE_EXPORT QgsPoint: public QgsAbstractGeometry
     void draw( QPainter &p ) const override;
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
     QgsCoordinateSequence coordinateSequence() const override;
     int nCoordinates() const override;
     int vertexNumberFromVertexId( QgsVertexId id ) const override;

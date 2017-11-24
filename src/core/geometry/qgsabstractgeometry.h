@@ -262,10 +262,13 @@ class CORE_EXPORT QgsAbstractGeometry
                             bool transformZ = false ) = 0;
 
     /**
-     * Transforms the geometry using a QTransform object
-     * \param t QTransform transformation
+     * Transforms the x and y components of the geometry using a QTransform object \a t.
+     *
+     * Optionally, the geometry's z values can be scaled via \a zScale and translated via \a zTranslate.
+     * Similarly, m-values can be scaled via \a mScale and translated via \a mTranslate.
      */
-    virtual void transform( const QTransform &t ) = 0;
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0,
+                            double mTranslate = 0.0, double mScale = 1.0 ) = 0;
 
     /**
      * Draws the geometry using the specified QPainter.

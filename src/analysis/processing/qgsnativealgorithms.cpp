@@ -56,6 +56,7 @@
 #include "qgsalgorithmsubdivide.h"
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
+#include "qgsalgorithmtranslate.h"
 
 
 ///@cond PRIVATE
@@ -133,7 +134,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
-
+  addAlgorithm( new QgsTranslateAlgorithm() );
 }
 
 

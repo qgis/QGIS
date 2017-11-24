@@ -241,11 +241,11 @@ void QgsGeometryCollection::transform( const QgsCoordinateTransform &ct, QgsCoor
   clearCache(); //set bounding box invalid
 }
 
-void QgsGeometryCollection::transform( const QTransform &t )
+void QgsGeometryCollection::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   for ( QgsAbstractGeometry *g : qgis::as_const( mGeometries ) )
   {
-    g->transform( t );
+    g->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
   clearCache(); //set bounding box invalid
 }

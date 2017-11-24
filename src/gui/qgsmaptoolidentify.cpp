@@ -326,18 +326,6 @@ void QgsMapToolIdentify::closestVertexAttributes( const QgsAbstractGeometry &geo
   }
 }
 
-void QgsMapToolIdentify::closestPointAttributes( const QgsAbstractGeometry &geometry, QgsMapLayer *layer, const QgsPointXY &layerPoint, QMap< QString, QString > &derivedAttributes )
-{
-  Q_UNUSED( layer );
-  // measure
-  if ( QgsWkbTypes::hasM( geometry.wkbType() ) )
-  {
-    QgsPoint closestPoint = QgsGeometryUtils::closestPoint( geometry, QgsPoint( layerPoint.x(), layerPoint.y() ) );
-    QString str = QLocale::system().toString( closestPoint.m(), 'g', 10 );
-    derivedAttributes.insert( QStringLiteral( "Closest point M" ), str );
-  }
-}
-
 QString QgsMapToolIdentify::formatCoordinate( const QgsPointXY &canvasPoint ) const
 {
   return QgsCoordinateUtils::formatCoordinateForProject( canvasPoint, mCanvas->mapSettings().destinationCrs(),
@@ -396,27 +384,28 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     QString str = formatDistance( dist );
     derivedAttributes.insert( tr( "Length" ), str );
 
-    const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( feature->geometry().constGet() );
-    if ( curve )
+    const QgsAbstractGeometry *geom = feature->geometry().constGet();
+    if ( geom )
     {
-      str = QLocale::system().toString( curve->nCoordinates() );
+      str = QLocale::system().toString( geom->nCoordinates() );
       derivedAttributes.insert( tr( "Vertices" ), str );
-
       //add details of closest vertex to identify point
-      closestVertexAttributes( *curve, vId, layer, derivedAttributes );
-      closestPointAttributes( *curve, layer, layerPoint, derivedAttributes );
+      closestVertexAttributes( *geom, vId, layer, derivedAttributes );
 
-      // Add the start and end points in as derived attributes
-      QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->startPoint().x(), curve->startPoint().y() ) );
-      str = formatXCoordinate( pnt );
-      derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
-      str = formatYCoordinate( pnt );
-      derivedAttributes.insert( tr( "firstY" ), str );
-      pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->endPoint().x(), curve->endPoint().y() ) );
-      str = formatXCoordinate( pnt );
-      derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
-      str = formatYCoordinate( pnt );
-      derivedAttributes.insert( tr( "lastY" ), str );
+      if ( const QgsCurve *curve = qgsgeometry_cast< const QgsCurve * >( geom ) )
+      {
+        // Add the start and end points in as derived attributes
+        QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->startPoint().x(), curve->startPoint().y() ) );
+        str = formatXCoordinate( pnt );
+        derivedAttributes.insert( tr( "firstX", "attributes get sorted; translation for lastX should be lexically larger than this one" ), str );
+        str = formatYCoordinate( pnt );
+        derivedAttributes.insert( tr( "firstY" ), str );
+        pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, QgsPointXY( curve->endPoint().x(), curve->endPoint().y() ) );
+        str = formatXCoordinate( pnt );
+        derivedAttributes.insert( tr( "lastX", "attributes get sorted; translation for firstX should be lexically smaller than this one" ), str );
+        str = formatYCoordinate( pnt );
+        derivedAttributes.insert( tr( "lastY" ), str );
+      }
     }
   }
   else if ( geometryType == QgsWkbTypes::PolygonGeometry )
