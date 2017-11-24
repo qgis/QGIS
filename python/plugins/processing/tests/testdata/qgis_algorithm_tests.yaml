@@ -1100,6 +1100,21 @@ tests:
         name: expected/lines_translated.gml
         type: vector
 
+  - algorithm: native:translategeometry
+    name: Translate Z/M
+    params:
+      DELTA_M: 4.0
+      DELTA_X: 0.0
+      DELTA_Y: 0.0
+      DELTA_Z: 3.0
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/translate_z_m.shp
+        type: vector
+
   - algorithm: qgis:singlesidedbuffer
     name: Single sided buffer lines (left, round)
     params:
