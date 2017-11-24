@@ -19,9 +19,10 @@
 #include "qgis_3d.h"
 
 class QgsPolygon;
+class QgsMultiPolygon;
 
 #include <QVector>
-
+#include <memory>
 
 /**
  * \ingroup 3d
@@ -47,6 +48,11 @@ class _3D_EXPORT QgsTessellator
     QVector<float> data() const { return mData; }
     //! Returns size of one vertex entry in bytes
     int stride() const { return mStride; }
+
+    /**
+     * Returns the triangulation as a multipolygon geometry.
+     */
+    std::unique_ptr< QgsMultiPolygon > asMultiPolygon() const;
 
   private:
     double mOriginX, mOriginY;
