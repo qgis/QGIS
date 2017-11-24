@@ -218,7 +218,6 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
     QgsFeature feature;
     int featureId = startId + i;
 
-
     // Set attributes
     if ( !fetchAttribIdx.isEmpty() )
     {
@@ -228,7 +227,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
       foreach ( int idx, fetchAttribIdx )
       {
         attributes[idx] = attributesData[mFields.at( idx ).name()];
-        if ( mFields.at( idx ).name() == QStringLiteral( "OBJECTID" ) )
+        if ( mFields.at( idx ).name() == "OBJECTID" )
         {
           featureId = startId + objectIds.indexOf( attributesData[mFields.at( idx ).name()].toInt() );
         }
@@ -253,7 +252,7 @@ bool QgsAfsProvider::getFeature( const QgsFeatureId &id, QgsFeature &f, bool fet
   }
 
   // If added to cached, return feature
-  QMap<QgsFeatureId, QgsFeature>::const_iterator it = mCache.find( id );
+  it = mCache.find( id );
   if ( it != mCache.end() )
   {
     f = it.value();
