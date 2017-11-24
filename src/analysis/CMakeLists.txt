@@ -59,6 +59,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsubdivide.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
+  processing/qgsalgorithmtranslate.cpp
 
   processing/qgsnativealgorithms.cpp
 
