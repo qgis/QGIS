@@ -201,7 +201,7 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
 
         # add a page
         page = QgsLayoutItemPage(l)
-        page.setPageSize(QgsLayoutSize(10,10))
+        page.setPageSize(QgsLayoutSize(10, 10))
         collection.addPage(page)
         self.assertEqual(collection.pageCount(), 1)
 

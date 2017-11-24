@@ -279,6 +279,11 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
   public slots:
 
     /**
+     * Refreshes the multiframe, causing a recalculation of any property overrides.
+     */
+    void refresh() override;
+
+    /**
      * Forces a redraw of all child frames.
      */
     void update();
@@ -301,6 +306,14 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \see recalculateFrameSizes
      */
     void recalculateFrameRects();
+
+    /**
+     * Refreshes a data defined \a property for the multi frame by reevaluating the property's value
+     * and redrawing the item with this new value. If \a property is set to
+     * QgsLayoutObject::AllProperties then all data defined properties for the item will be
+     * refreshed.
+    */
+    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
   signals:
 

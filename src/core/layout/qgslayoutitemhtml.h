@@ -224,9 +224,8 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
 
     //! Recalculates the frame sizes for the current viewport dimensions
     void recalculateFrameSizes() override;
-    void refreshExpressionContext();
 
-    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+    void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
 
   protected:
 
@@ -273,6 +272,8 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
 
     //! Calculates the max width of frames in the html multiframe
     double maxFrameWidth() const;
+
+    void refreshExpressionContext();
 };
 
 #endif // QGSLAYOUTITEMHTML_H

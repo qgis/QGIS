@@ -233,6 +233,11 @@ void QgsLayoutMultiFrame::recalculateFrameRects()
   }
 }
 
+void QgsLayoutMultiFrame::refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty )
+{
+
+}
+
 QgsLayoutFrame *QgsLayoutMultiFrame::createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size )
 {
   if ( !currentFrame )
@@ -287,6 +292,12 @@ void QgsLayoutMultiFrame::cancelCommand()
 {
   if ( mLayout )
     mLayout->undoStack()->cancelCommand();
+}
+
+void QgsLayoutMultiFrame::refresh()
+{
+  QgsLayoutObject::refresh();
+  refreshDataDefinedProperty();
 }
 
 void QgsLayoutMultiFrame::handleFrameRemoval()

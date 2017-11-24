@@ -266,6 +266,12 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 
   public slots:
 
+    virtual void refresh();
+
+%Docstring
+ Refreshes the multiframe, causing a recalculation of any property overrides.
+%End
+
     void update();
 %Docstring
  Forces a redraw of all child frames.
@@ -288,6 +294,14 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 .. seealso:: minFrameSize()
 .. seealso:: fixedFrameSize()
 .. seealso:: recalculateFrameSizes
+%End
+
+    virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
+%Docstring
+ Refreshes a data defined ``property`` for the multi frame by reevaluating the property's value
+ and redrawing the item with this new value. If ``property`` is set to
+ QgsLayoutObject.AllProperties then all data defined properties for the item will be
+ refreshed.
 %End
 
   signals:
