@@ -457,7 +457,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //default datum transformations
   mSettings->beginGroup( QStringLiteral( "/Projections" ) );
 
-  chkShowDatumTransformDialog->setChecked( mSettings->value( QStringLiteral( "showDatumTransformDialog" ), false ).toBool() );
+  mShowDatumTransformDialogCheckBox->setChecked( mSettings->value( QStringLiteral( "showDatumTransformDialog" ), false ).toBool() );
 
   QStringList projectionKeys = mSettings->allKeys();
 
@@ -1385,7 +1385,7 @@ void QgsOptions::saveOptions()
   mSettings->setValue( QStringLiteral( "/Projections/layerDefaultCrs" ), mLayerDefaultCrs.authid() );
   mSettings->setValue( QStringLiteral( "/Projections/projectDefaultCrs" ), mDefaultCrs.authid() );
 
-  mSettings->setValue( QStringLiteral( "/Projections/showDatumTransformDialog" ), chkShowDatumTransformDialog->isChecked() );
+  mSettings->setValue( QStringLiteral( "/Projections/showDatumTransformDialog" ), mShowDatumTransformDialogCheckBox->isChecked() );
 
   //measurement settings
 

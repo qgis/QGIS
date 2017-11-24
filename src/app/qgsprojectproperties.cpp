@@ -165,6 +165,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mDatumTransformTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
   connect( mDatumTransformAddButton, &QToolButton::clicked, this, &QgsProjectProperties::addDatumTransform );
 
+  bool show = mSettings->value( QStringLiteral( "showDatumTransformDialog" ), false ).toBool();
+  mShowDatumTransformDialogCheckBox->setChecked( show );
+
   QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
   // close polygon

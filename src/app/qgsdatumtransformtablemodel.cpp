@@ -1,4 +1,5 @@
 #include "qgsdatumtransformtablemodel.h"
+#include "qgscoordinatetransform.h"
 
 QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
   : QAbstractTableModel( parent )
@@ -27,8 +28,8 @@ int QgsDatumTransformTableModel::columnCount( const QModelIndex &parent ) const
 QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role ) const
 {
   QString sourceCrs;
-  int sourceTransform = -1;
   QString destinationCrs;
+  int sourceTransform = -1;
   int destinationTransform = -1;
 
   if ( index.row() < mTransformContext.sourceDestinationDatumTransforms().count() )
@@ -41,7 +42,6 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
     destinationTransform = transforms.second;
   }
 
-
   switch ( role )
   {
     case Qt::DisplayRole:
@@ -50,11 +50,19 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case SourceCrsColumn:
           return sourceCrs;
         case SourceTransformColumn:
-          return sourceTransform;
+          if (sourceTransform != -1)
+          {
+              return QgsCoordinateTransform::datumTransformString( sourceTransform );
+          }
+          break;
         case DestinationCrsColumn:
           return destinationCrs;
         case DestinationTransformColumn:
-          return destinationTransform;
+          if (sourceTransform != -1)
+          {
+              return QgsCoordinateTransform::datumTransformString( destinationTransform );
+          }
+          break;
         default:
           break;
       }
