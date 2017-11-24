@@ -312,6 +312,27 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QIcon getThemeIcon( const QString &name );
 
     /**
+     * \brief The Cursor enum defines constants for QGIS custom
+     * cursors.
+     */
+    enum Cursor
+    {
+      ZoomIn, //!< Zoom in
+      ZoomOut, //!< Zoom out
+      Identify, //!< Identify: obtain information about the object
+      CrossHair, //!< Precisely identify a point on the canvas
+      CapturePoint, //!< Select and capture a point or a feature
+      Select, //!< Select a rectangle
+      Sampler, //!< Color/Value picker
+    };
+
+    /**
+     * Helper to get a theme cursor. It will fall back to the
+     * default theme if the active theme does not have the required icon.
+     */
+    static QCursor getThemeCursor( const Cursor &cursor );
+
+    /**
      * Helper to get a theme icon as a pixmap. It will fall back to the
      * default theme if the active theme does not have the required icon.
      */
@@ -747,6 +768,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     static QString sPlatformName;
 
     QMap<QString, QIcon> mIconCache;
+    QMap<Cursor, QCursor> mCursorCache;
 
     QgsDataItemProviderRegistry *mDataItemProviderRegistry = nullptr;
     QgsAuthManager *mAuthManager = nullptr;

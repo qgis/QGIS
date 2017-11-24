@@ -17,7 +17,6 @@
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerutils.h"
-#include "qgscursors.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
@@ -515,8 +514,7 @@ void QgsCompoundColorWidget::mAddCustomColorButton_clicked()
 void QgsCompoundColorWidget::mSampleButton_clicked()
 {
   //activate picker color
-  QPixmap samplerPixmap = QPixmap( ( const char ** ) sampler_cursor );
-  setCursor( QCursor( samplerPixmap, 0, 0 ) );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
   grabMouse();
   grabKeyboard();
   mPickingColor = true;

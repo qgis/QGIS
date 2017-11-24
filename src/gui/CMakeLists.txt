@@ -227,7 +227,6 @@ SET(QGIS_GUI_SRCS
   qgscompoundcolorwidget.cpp
   qgsconfigureshortcutsdialog.cpp
   qgscredentialdialog.cpp
-  qgscursors.cpp
   qgscustomdrophandler.cpp
   qgscurveeditorwidget.cpp
   qgsdatumtransformdialog.cpp
@@ -714,7 +713,6 @@ SET(QGIS_GUI_HDRS
   qgsattributeeditorcontext.h
   qgsattributeforminterface.h
   qgsattributeformlegacyinterface.h
-  qgscursors.h
   qgsdetaileditemdata.h
   qgsexpressionbuilderdialog.h
   qgsgeometryrubberband.h

@@ -18,7 +18,6 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
-#include "qgscursors.h"
 #include "qgscolorswatchgrid.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorwidgets.h"
@@ -673,8 +672,7 @@ void QgsColorButton::pasteColor()
 void QgsColorButton::activatePicker()
 {
   //pick color
-  QPixmap samplerPixmap = QPixmap( ( const char ** ) sampler_cursor );
-  setCursor( QCursor( samplerPixmap, 0, 0 ) );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
   grabMouse();
   grabKeyboard();
   mPickingColor = true;
