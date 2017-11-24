@@ -197,6 +197,7 @@ SET(TESTS
  testqgsvectorlayerjoinbuffer.cpp
  testqgsvectorlayer.cpp
  testziplayer.cpp
+ testqqgsrasterfilewriter.cpp
     )
 
 IF(WITH_QTWEBKIT)
