@@ -234,10 +234,13 @@ class QgsAbstractGeometry
  transform.
 %End
 
-    virtual void transform( const QTransform &t ) = 0;
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0,
+                            double mTranslate = 0.0, double mScale = 1.0 ) = 0;
 %Docstring
- Transforms the geometry using a QTransform object
- \param t QTransform transformation
+ Transforms the x and y components of the geometry using a QTransform object ``t``.
+
+ Optionally, the geometry's z values can be scaled via ``zScale`` and translated via ``zTranslate``.
+ Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate``.
 %End
 
     virtual void draw( QPainter &p ) const = 0;

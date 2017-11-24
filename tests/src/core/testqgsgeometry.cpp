@@ -738,6 +738,8 @@ void TestQgsGeometry::point()
   QgsPoint p17( QgsWkbTypes::PointZM, 10, 20, 30, 40 );
   p17.transform( qtr );
   QVERIFY( p17 == QgsPoint( QgsWkbTypes::PointZM, 20, 60, 30, 40 ) );
+  p17.transform( QTransform::fromScale( 1, 1 ), 11, 2, 3, 4 );
+  QVERIFY( p17 == QgsPoint( QgsWkbTypes::PointZM, 20, 60, 71, 163 ) );
 
   //coordinateSequence
   QgsPoint p18( QgsWkbTypes::PointZM, 1.0, 2.0, 3.0, 4.0 );
@@ -1643,6 +1645,12 @@ void TestQgsGeometry::circularString()
   QCOMPARE( l23.pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 2, 6, 3, 4 ) );
   QCOMPARE( l23.pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 22, 36, 13, 14 ) );
   QCOMPARE( l23.boundingBox(), QgsRectangle( 2, 6, 22, 36 ) );
+
+  l23.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
+  l23.transform( QTransform::fromScale( 1, 1 ), 3, 2, 4, 3 );
+  QCOMPARE( l23.pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 9, 16 ) );
+  QCOMPARE( l23.pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 29, 46 ) );
 
   //insert vertex
   //cannot insert vertex in empty line
@@ -3317,6 +3325,12 @@ void TestQgsGeometry::lineString()
   QCOMPARE( l23.pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 2, 6, 3, 4 ) );
   QCOMPARE( l23.pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 22, 36, 13, 14 ) );
   QCOMPARE( l23.boundingBox(), QgsRectangle( 2, 6, 22, 36 ) );
+
+  l23.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 1, 2, 3, 4 )
+                 << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) );
+  l23.transform( QTransform::fromScale( 1, 1 ), 3, 2, 4, 3 );
+  QCOMPARE( l23.pointN( 0 ), QgsPoint( QgsWkbTypes::PointZM, 1, 2, 9, 16 ) );
+  QCOMPARE( l23.pointN( 1 ), QgsPoint( QgsWkbTypes::PointZM, 11, 12, 29, 46 ) );
 
   //insert vertex
 
@@ -5175,25 +5189,25 @@ void TestQgsGeometry::polygon()
   QgsPolygon pTransform2;
   pTransform2.setExteriorRing( l23.clone() );
   pTransform2.addInteriorRing( l23.clone() );
-  pTransform2.transform( qtr );
+  pTransform2.transform( qtr, 2, 3, 4, 5 );
 
   extR = static_cast< const QgsLineString * >( pTransform2.exteriorRing() );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 2, 100 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), 6, 100 );
-  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 3.0, 0.001 );
-  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 11.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 24.0, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).x(), 22, 100 );
   QGSCOMPARENEAR( extR->pointN( 1 ).y(), 36, 100 );
-  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 13.0, 0.001 );
-  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 14.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 41.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 74.0, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 2 ).x(),  2, 100 );
   QGSCOMPARENEAR( extR->pointN( 2 ).y(), 36, 100 );
-  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 23.0, 0.001 );
-  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 24.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 71.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 124.0, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 3 ).x(), 2, 100 );
   QGSCOMPARENEAR( extR->pointN( 3 ).y(), 6, 100 );
-  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 3.0, 0.001 );
-  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 11.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 24.0, 0.001 );
   QGSCOMPARENEAR( pTransform2.exteriorRing()->boundingBox().xMinimum(), 2, 0.001 );
   QGSCOMPARENEAR( pTransform2.exteriorRing()->boundingBox().yMinimum(), 6, 0.001 );
   QGSCOMPARENEAR( pTransform2.exteriorRing()->boundingBox().xMaximum(), 22, 0.001 );
@@ -5201,20 +5215,20 @@ void TestQgsGeometry::polygon()
   intR = static_cast< const QgsLineString * >( pTransform2.interiorRing( 0 ) );
   QGSCOMPARENEAR( intR->pointN( 0 ).x(), 2, 100 );
   QGSCOMPARENEAR( intR->pointN( 0 ).y(), 6, 100 );
-  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 3.0, 0.001 );
-  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 11.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 24.0, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 1 ).x(), 22, 100 );
   QGSCOMPARENEAR( intR->pointN( 1 ).y(), 36, 100 );
-  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 13.0, 0.001 );
-  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 14.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 41.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 74.0, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 2 ).x(),  2, 100 );
   QGSCOMPARENEAR( intR->pointN( 2 ).y(), 36, 100 );
-  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 23.0, 0.001 );
-  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 24.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 71.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 124.0, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 3 ).x(), 2, 100 );
   QGSCOMPARENEAR( intR->pointN( 3 ).y(), 6, 100 );
-  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 3.0, 0.001 );
-  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 11.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 24.0, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().xMinimum(), 2, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().yMinimum(), 6, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 22, 0.001 );
@@ -9309,13 +9323,13 @@ void TestQgsGeometry::compoundCurve()
   QgsLineString ls23;
   ls23.setPoints( QgsPointSequence() << QgsPoint( QgsWkbTypes::PointZM, 11, 12, 13, 14 ) << QgsPoint( QgsWkbTypes::PointZM, 21, 13, 13, 14 ) );
   c23.addCurve( ls23.clone() );
-  c23.transform( qtr );
+  c23.transform( qtr, 5, 2, 4, 3 );
   c23.pointAt( 0, pt, v );
-  QCOMPARE( pt, QgsPoint( QgsWkbTypes::PointZM, 2, 6, 3, 4 ) );
+  QCOMPARE( pt, QgsPoint( QgsWkbTypes::PointZM, 2, 6, 11, 16 ) );
   c23.pointAt( 1, pt, v );
-  QCOMPARE( pt, QgsPoint( QgsWkbTypes::PointZM, 22, 36, 13, 14 ) );
+  QCOMPARE( pt, QgsPoint( QgsWkbTypes::PointZM, 22, 36, 31, 46 ) );
   c23.pointAt( 2, pt, v );
-  QCOMPARE( pt, QgsPoint( QgsWkbTypes::PointZM, 42, 39, 13, 14 ) );
+  QCOMPARE( pt, QgsPoint( QgsWkbTypes::PointZM, 42, 39, 31, 46 ) );
   QCOMPARE( c23.boundingBox(), QgsRectangle( 2, 6, 42, 39 ) );
 
   //insert vertex
@@ -14144,25 +14158,25 @@ void TestQgsGeometry::geometryCollection()
   QgsGeometryCollection pTransform2;
   pTransform2.addGeometry( l23.clone() );
   pTransform2.addGeometry( l23.clone() );
-  pTransform2.transform( qtr );
+  pTransform2.transform( qtr, 3, 2, 6, 3 );
 
   extR = static_cast< const QgsLineString * >( pTransform2.geometryN( 0 ) );
   QGSCOMPARENEAR( extR->pointN( 0 ).x(), 2, 100 );
   QGSCOMPARENEAR( extR->pointN( 0 ).y(), 6, 100 );
-  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 3.0, 0.001 );
-  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).z(), 9.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 0 ).m(), 18.0, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 1 ).x(), 22, 100 );
   QGSCOMPARENEAR( extR->pointN( 1 ).y(), 36, 100 );
-  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 13.0, 0.001 );
-  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 14.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).z(), 29.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 1 ).m(), 48.0, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 2 ).x(),  2, 100 );
   QGSCOMPARENEAR( extR->pointN( 2 ).y(), 36, 100 );
-  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 23.0, 0.001 );
-  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 24.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).z(), 49.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 2 ).m(), 78.0, 0.001 );
   QGSCOMPARENEAR( extR->pointN( 3 ).x(), 2, 100 );
   QGSCOMPARENEAR( extR->pointN( 3 ).y(), 6, 100 );
-  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 3.0, 0.001 );
-  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).z(), 9.0, 0.001 );
+  QGSCOMPARENEAR( extR->pointN( 3 ).m(), 18.0, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().xMinimum(), 2, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().yMinimum(), 6, 0.001 );
   QGSCOMPARENEAR( extR->boundingBox().xMaximum(), 22, 0.001 );
@@ -14170,20 +14184,20 @@ void TestQgsGeometry::geometryCollection()
   intR = static_cast< const QgsLineString * >( pTransform2.geometryN( 1 ) );
   QGSCOMPARENEAR( intR->pointN( 0 ).x(), 2, 100 );
   QGSCOMPARENEAR( intR->pointN( 0 ).y(), 6, 100 );
-  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 3.0, 0.001 );
-  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).z(), 9.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 0 ).m(), 18.0, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 1 ).x(), 22, 100 );
   QGSCOMPARENEAR( intR->pointN( 1 ).y(), 36, 100 );
-  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 13.0, 0.001 );
-  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 14.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).z(), 29.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 1 ).m(), 48.0, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 2 ).x(),  2, 100 );
   QGSCOMPARENEAR( intR->pointN( 2 ).y(), 36, 100 );
-  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 23.0, 0.001 );
-  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 24.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).z(), 49.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 2 ).m(), 78.0, 0.001 );
   QGSCOMPARENEAR( intR->pointN( 3 ).x(), 2, 100 );
   QGSCOMPARENEAR( intR->pointN( 3 ).y(), 6, 100 );
-  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 3.0, 0.001 );
-  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 4.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).z(), 9.0, 0.001 );
+  QGSCOMPARENEAR( intR->pointN( 3 ).m(), 18.0, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().xMinimum(), 2, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().yMinimum(), 6, 0.001 );
   QGSCOMPARENEAR( intR->boundingBox().xMaximum(), 22, 0.001 );

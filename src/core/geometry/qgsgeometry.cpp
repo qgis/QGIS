@@ -752,7 +752,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
   return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( geom ) );
 }
 
-QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
+QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy, double dz, double dm )
 {
   if ( !d->geometry )
   {
@@ -761,7 +761,7 @@ QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
 
   detach();
 
-  d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
+  d->geometry->transform( QTransform::fromTranslate( dx, dy ), dz, 1.0, dm );
   return QgsGeometry::Success;
 }
 
@@ -2308,7 +2308,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransfor
   return QgsGeometry::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   if ( !d->geometry )
   {
@@ -2316,7 +2316,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct )
   }
 
   detach();
-  d->geometry->transform( ct );
+  d->geometry->transform( ct, zTranslate, zScale, mTranslate, mScale );
   return QgsGeometry::Success;
 }
 
