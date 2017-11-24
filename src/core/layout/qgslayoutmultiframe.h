@@ -20,7 +20,6 @@
 #include "qgis.h"
 #include "qgslayoutobject.h"
 #include "qgslayoutundocommand.h"
-#include <QIcon>
 #include <QObject>
 #include <QSizeF>
 #include <QPointF>
@@ -45,44 +44,6 @@ class QgsRenderContext;
 
 class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutUndoObjectInterface
 {
-#ifdef SIP_RUN
-#include "qgslayoutitemhtml.h"
-#include "qgslayoutitemattributetable.h"
-#include "qgslayoutitemtexttable.h"
-#endif
-
-
-#ifdef SIP_RUN
-    SIP_CONVERT_TO_SUBCLASS_CODE
-    // the conversions have to be static, because they're using multiple inheritance
-    // (seen in PyQt4 .sip files for some QGraphicsItem classes)
-    if ( QgsLayoutMultiFrame *mf = qobject_cast< QgsLayoutMultiFrame *>( sipCpp ) )
-    {
-      switch ( mf->type() )
-      {
-        // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
-        case QGraphicsItem::UserType + 112:
-          sipType = sipType_QgsLayoutItemHtml;
-          *sipCppRet = static_cast<QgsLayoutItemHtml *>( sipCpp );
-          break;
-        case QGraphicsItem::UserType + 113:
-          sipType = sipType_QgsLayoutItemAttributeTable;
-          *sipCppRet = static_cast<QgsLayoutItemAttributeTable *>( sipCpp );
-          break;
-        case QGraphicsItem::UserType + 114:
-          sipType = sipType_QgsLayoutItemTextTable;
-          *sipCppRet = static_cast<QgsLayoutItemTextTable *>( sipCpp );
-          break;
-        default:
-          sipType = 0;
-      }
-    }
-    else
-    {
-      sipType = 0;
-    }
-    SIP_END
-#endif
 
     Q_OBJECT
 
@@ -100,7 +61,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
                               until the entire multiframe content is visible */
     };
 
-//! Multiframe item undo commands, used for collapsing undo commands
+    //! Multiframe item undo commands, used for collapsing undo commands
     enum UndoCommand
     {
       UndoHtmlBreakDistance, //!< HTML page break distance
@@ -122,7 +83,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      */
     QgsLayoutMultiFrame( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    ~QgsLayoutMultiFrame() override;
+    ~QgsLayoutMultiFrame();
 
     /**
      * Returns the multiframe identification string. This is a unique random string set for the multiframe
@@ -140,11 +101,6 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * Returns unique multiframe type id.
      */
     virtual int type() const = 0;
-
-    /**
-     * Returns the item's icon.
-     */
-    virtual QIcon icon() const { return QgsApplication::getThemeIcon( QStringLiteral( "/mLayoutItem.svg" ) ); }
 
     /**
      * Returns the fixed size for a frame, if desired. If the fixed frame size changes,
@@ -232,20 +188,20 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \param parentElement parent DOM element (e.g. 'Layout' element)
      * \param document DOM document
      * \param context read write context
-     * \param includeFrames set to true to write state information about child frames into DOM
+     * \param ignoreFrames set to false to avoid writing state information about child frames into DOM
      * \see readXml()
      */
-    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context, bool includeFrames = false ) const;
+    bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false ) const;
 
     /**
      * Sets the item state from a DOM element.
      * \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
      * \param document DOM document
      * \param context read write context
-     * \param includeFrames set to true to read state information about child frames from DOM
+     * \param ignoreFrames set to false to avoid read state information about child frames from DOM
      * \see writeXml()
      */
-    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context, bool includeFrames = false );
+    bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false );
 
     /**
      * Returns a list of all child frames for this multiframe.
@@ -364,6 +320,12 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
   signals:
 
     /**
+     * Emitted when the properties of a multi frame have changed, and the GUI item widget
+     * must be updated.
+     */
+    void changed();
+
+    /**
      * Emitted when the contents of the multi frame have changed and the frames
      * must be redrawn.
      */
@@ -402,7 +364,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
 
     ResizeMode mResizeMode = UseExistingFrames;
 
-  private slots:
+  protected slots:
 
     /**
      * Adapts to changed number of layout pages if resize type is RepeatOnEveryPage.
@@ -413,7 +375,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * Called when a frame is removed. Updates frame list and recalculates
      * content of remaining frames.
      */
-    void handleFrameRemoval( QgsLayoutFrame *frame );
+    void handleFrameRemoval();
 
 
   private:
@@ -424,14 +386,8 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
     bool mBlockUpdates = false;
     bool mBlockUndoCommands = false;
 
-    QList< QString > mFrameUuids;
-    QList< QString > mFrameTemplateUuids;
-
-//! Unique id
+    //! Unique id
     QString mUuid;
-    QString mTemplateUuid;
-    friend class QgsLayoutFrame;
-    friend class QgsLayout;
 };
 
 
