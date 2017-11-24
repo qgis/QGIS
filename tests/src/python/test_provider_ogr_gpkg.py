@@ -22,6 +22,7 @@ import qgis  # NOQA
 from osgeo import gdal, ogr
 from qgis.core import (QgsFeature,
                        QgsCoordinateReferenceSystem,
+                       QgsFeatureRequest,
                        QgsFields,
                        QgsField,
                        QgsFieldConstraints,
@@ -31,6 +32,7 @@ from qgis.core import (QgsFeature,
                        QgsVectorLayer,
                        QgsVectorLayerExporter,
                        QgsPointXY,
+                       QgsProject,
                        QgsWkbTypes)
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.testing import start_app, unittest
@@ -565,6 +567,39 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(got['attr'], 101)
         reference = QgsGeometry.fromWkt('Point (5 5)')
         self.assertEqual(got_geom.asWkb(), reference.asWkb(), 'Expected {}, got {}'.format(reference.asWkt(), got_geom.asWkt()))
+
+    def testReplaceLayerWhileOpen(self):
+        ''' Replace an existing geopackage layer whilst it's open in the project'''
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageReplaceOpenLayer.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('layer1', geom_type=ogr.wkbPoint)
+        lyr.CreateField(ogr.FieldDefn('attr', ogr.OFTInteger))
+        lyr.CreateField(ogr.FieldDefn('attr2', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+
+        vl1 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer1", u'layer1', u'ogr')
+        p = QgsProject()
+        p.addMapLayer(vl1)
+        request = QgsFeatureRequest().setSubsetOfAttributes([0])
+        features = [f for f in vl1.getFeatures(request)]
+        self.assertEqual(len(features), 1)
+
+        # now, overwrite the layer with a different geometry type and fields
+        ds.DeleteLayer('layer1')
+        lyr = ds.CreateLayer('layer1', geom_type=ogr.wkbLineString)
+        lyr.CreateField(ogr.FieldDefn('attr', ogr.OFTString))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('LineString(0 0, 1 1)'))
+        lyr.CreateFeature(f)
+        f = None
+        vl2 = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=layer1", u'layer2', u'ogr')
+        p.addMapLayer(vl2)
+
+        features = [f for f in vl1.getFeatures(request)]
+        self.assertEqual(len(features), 1)
 
     def testGeopackageManyLayers(self):
         ''' test opening more than 64 layers without running out of Spatialite connections '''
