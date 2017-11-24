@@ -184,13 +184,13 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QList<QgsPo
 QgsGeometry::OperationResult QgsVectorLayerEditUtils::addPart( const QgsPointSequence &points, QgsFeatureId featureId )
 {
   if ( !mLayer->isSpatial() )
-    return QgsGeometry::AddPartSelectedGeometryNotFound;
+    return QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound;
 
   QgsGeometry geometry;
   bool firstPart = false;
   QgsFeature f;
   if ( !mLayer->getFeatures( QgsFeatureRequest().setFilterFid( featureId ).setSubsetOfAttributes( QgsAttributeList() ) ).nextFeature( f ) )
-    return QgsGeometry::AddPartSelectedGeometryNotFound; //not found
+    return QgsGeometry::OperationResult::AddPartSelectedGeometryNotFound; //not found
 
   if ( !f.hasGeometry() )
   {
@@ -279,7 +279,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
 
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
-  QgsGeometry::OperationResult returnCode = QgsGeometry::Success;
+  QgsGeometry::OperationResult returnCode = QgsGeometry::OperationResult::Success;
   QgsGeometry::OperationResult splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplitFeatures = 0;
 
@@ -301,7 +301,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
     }
     else
     {
-      return QgsGeometry::InvalidInputGeometryType;
+      return QgsGeometry::OperationResult::InvalidInputGeometryType;
     }
 
     if ( bBox.isEmpty() )
@@ -344,7 +344,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
     QVector<QgsPointXY> topologyTestPoints;
     QgsGeometry featureGeom = feat.geometry();
     splitFunctionReturn = featureGeom.splitGeometry( splitLine, newGeometries, topologicalEditing, topologyTestPoints );
-    if ( splitFunctionReturn == QgsGeometry::Success )
+    if ( splitFunctionReturn == QgsGeometry::OperationResult::Success )
     {
       //change this geometry
       mLayer->editBuffer()->changeGeometry( feat.id(), featureGeom );
@@ -366,7 +366,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
       }
       ++numberOfSplitFeatures;
     }
-    else if ( splitFunctionReturn != QgsGeometry::Success && splitFunctionReturn != QgsGeometry::NothingHappened ) // i.e. no split but no error occurred
+    else if ( splitFunctionReturn != QgsGeometry::OperationResult::Success && splitFunctionReturn != QgsGeometry::NothingHappened ) // i.e. no split but no error occurred
     {
       returnCode = splitFunctionReturn;
     }
@@ -376,7 +376,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitFeatures( const QVect
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
-    returnCode = QgsGeometry::NothingHappened;
+    returnCode = QgsGeometry::OperationResult::NothingHappened;
   }
 
   return returnCode;
@@ -389,7 +389,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
 
   double xMin, yMin, xMax, yMax;
   QgsRectangle bBox; //bounding box of the split line
-  QgsGeometry::OperationResult returnCode = QgsGeometry::Success;
+  QgsGeometry::OperationResult returnCode = QgsGeometry::OperationResult::Success;
   QgsGeometry::OperationResult splitFunctionReturn; //return code of QgsGeometry::splitGeometry
   int numberOfSplitParts = 0;
 
@@ -410,7 +410,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
     }
     else
     {
-      return QgsGeometry::InvalidInputGeometryType;
+      return QgsGeometry::OperationResult::InvalidInputGeometryType;
     }
 
     if ( bBox.isEmpty() )
@@ -442,7 +442,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
     fit = mLayer->getFeatures( QgsFeatureRequest().setFilterRect( bBox ).setFlags( QgsFeatureRequest::ExactIntersect ) );
   }
 
-  QgsGeometry::OperationResult addPartRet = QgsGeometry::Success;
+  QgsGeometry::OperationResult addPartRet = QgsGeometry::OperationResult::Success;
 
   QgsFeature feat;
   while ( fit.nextFeature( feat ) )
@@ -482,7 +482,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
       }
       ++numberOfSplitParts;
     }
-    else if ( splitFunctionReturn != QgsGeometry::Success && splitFunctionReturn != QgsGeometry::NothingHappened )
+    else if ( splitFunctionReturn != QgsGeometry::OperationResult::Success && splitFunctionReturn != QgsGeometry::OperationResult::NothingHappened )
     {
       returnCode = splitFunctionReturn;
     }
@@ -492,7 +492,7 @@ QgsGeometry::OperationResult QgsVectorLayerEditUtils::splitParts( const QVector<
   {
     //There is a selection but no feature has been split.
     //Maybe user forgot that only the selected features are split
-    returnCode = QgsGeometry::NothingHappened;
+    returnCode = QgsGeometry::OperationResult::NothingHappened;
   }
 
   return returnCode;
