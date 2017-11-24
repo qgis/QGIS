@@ -132,8 +132,8 @@ QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVar
   // If there's a source capable of generating a context scope, use it
   if ( source )
   {
-    const auto &scopes = source->createExpressionContext( context ).takeScopes();
-    for ( QgsExpressionContextScope *scope : scopes )
+    QgsExpressionContextScope *scope = source->createExpressionContextScope();
+    if ( scope )
       c << scope;
   }
   else if ( c.scopeCount() == 0 )

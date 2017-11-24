@@ -274,11 +274,10 @@ class QgsProcessingFeatureSource : QgsFeatureSource
     virtual QVariant maximumValue( int fieldIndex ) const;
 
 
-    QgsExpressionContext createExpressionContext( const QgsProcessingContext &context ) const;
+    QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 %Docstring
- Returns an expression context scope suitable for this source or a default global/project
- context if nothing more specific can be created.
- :rtype: QgsExpressionContext
+ Returns an expression context scope suitable for this source.
+ :rtype: QgsExpressionContextScope
 %End
 
 };
