@@ -168,7 +168,6 @@
 %Include layout/qgslayoutserializableobject.sip
 %Include layout/qgslayoutsize.sip
 %Include layout/qgslayoutsnapper.sip
-%Include layout/qgslayouttablecolumn.sip
 %Include layout/qgslayoutundocommand.sip
 %Include layout/qgslayoututils.sip
 %Include metadata/qgslayermetadata.sip
@@ -432,6 +431,7 @@
 %Include layout/qgslayoutpagecollection.sip
 %Include layout/qgslayoutobject.sip
 %Include layout/qgslayouttable.sip
+%Include layout/qgslayouttablecolumn.sip
 %Include layout/qgslayoutundostack.sip
 %Include symbology/qgscptcityarchive.sip
 %Include symbology/qgssvgcache.sip
