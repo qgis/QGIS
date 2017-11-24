@@ -26,6 +26,7 @@
 #include "qgsprocessingparameters.h"
 #include "qgsprocessingalgorithm.h"
 #include "qgsvectorlayerfeatureiterator.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
 QList<QgsRasterLayer *> QgsProcessingUtils::compatibleRasterLayers( QgsProject *project, bool sort )
 {
@@ -721,19 +722,13 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
   return mSource->maximumValue( fieldIndex );
 }
 
-QgsExpressionContext QgsProcessingFeatureSource::createExpressionContext( const QgsProcessingContext &context ) const
+QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
 {
-  QgsExpressionContext expressionContext;
-  QgsExpressionContextGenerator *generator = dynamic_cast<QgsExpressionContextGenerator *>( mSource );
+  QgsExpressionContextScope *expressionContextScope = nullptr;
+  QgsExpressionContextScopeGenerator *generator = dynamic_cast<QgsExpressionContextScopeGenerator *>( mSource );
   if ( generator )
   {
-    expressionContext = generator->createExpressionContext();
+    expressionContextScope = generator->createExpressionContextScope();
   }
-  else
-  {
-    expressionContext
-        << QgsExpressionContextUtils::globalScope()
-        << QgsExpressionContextUtils::projectScope( context.project() );
-  }
-  return expressionContext;
+  return expressionContextScope;
 }
