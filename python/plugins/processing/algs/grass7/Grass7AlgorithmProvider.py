@@ -119,6 +119,9 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
 
     def name(self):
+        return 'GRASS'
+
+    def longName(self):
         version = Grass7Utils.installedVersion()
         return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 
