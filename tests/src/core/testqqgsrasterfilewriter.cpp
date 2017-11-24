@@ -86,7 +86,7 @@ void TestQgsFileWriter::initTestCase()
 	myFileName = myFileName + QDir::separator() + "ALLINGES_RGF93_CC46_1_1.tif";
 	QFileInfo myRasterFileInfo(myFileName);
 	myRasterLayer = new QgsRasterLayer(myRasterFileInfo.absoluteFilePath(), myRasterFileInfo.completeBaseName());
-	myRasterFileWriter = new QgsRasterFileWriter(myRasterFileInfo.absoluteFilePath(), myRasterFileInfo.completeBaseName());
+	myRasterFileWriter = new QgsRasterFileWriter(myRasterFileInfo.absoluteFilePath() + "\\" + myRasterFileInfo.completeBaseName());
 
 	//2. Definition of the pyramid levels
 	QList<int> myLevelList;
