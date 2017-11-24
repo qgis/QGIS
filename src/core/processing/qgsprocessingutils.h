@@ -267,6 +267,8 @@ class CORE_EXPORT QgsProcessingUtils
      */
     static QgsMapLayer *loadMapLayerFromString( const QString &string );
 
+    static void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter );
+
     friend class TestQgsProcessing;
 
 };

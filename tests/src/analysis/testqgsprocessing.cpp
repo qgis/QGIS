@@ -380,6 +380,7 @@ class TestQgsProcessing: public QObject
     void features();
     void uniqueValues();
     void createIndex();
+    void parseDestinationString();
     void createFeatureSink();
     void parameters();
     void algorithmParameters();
@@ -439,6 +440,10 @@ void TestQgsProcessing::initTestCase()
   QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
   QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
   QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
+
+  QgsSettings settings;
+  settings.remove( QStringLiteral( "Processing/DefaultOutputVectorLayerExt" ), QgsSettings::Core );
+  settings.remove( QStringLiteral( "Processing/DefaultOutputRasterLayerExt" ), QgsSettings::Core );
 
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
 }
@@ -782,15 +787,15 @@ void TestQgsProcessing::mapLayers()
 
   // Test layers from a string with parameters
   QString osmFilePath = testDataDir + "openstreetmap/testdata.xml";
-  QgsVectorLayer *osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath ) );
+  std::unique_ptr< QgsVectorLayer > osm( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PointGeometry );
 
-  osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3" ) );
+  osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3" ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PolygonGeometry );
 
-  osm = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null" ) );
+  osm.reset( qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::loadMapLayerFromString( osmFilePath + "|layerid=3|subset=\"building\" is not null" ) ) );
   QVERIFY( osm->isValid() );
   QCOMPARE( osm->geometryType(), QgsWkbTypes::PolygonGeometry );
   QCOMPARE( osm->subsetString(), QStringLiteral( "\"building\" is not null" ) );
@@ -961,6 +966,7 @@ void TestQgsProcessing::algorithm()
   QVERIFY( p2->algorithms().isEmpty() );
   p2->load();
   QCOMPARE( p2->algorithms().size(), 2 );
+  delete p2;
 
   // test that adding a provider to the registry automatically refreshes algorithms (via load)
   DummyProvider *p3 = new DummyProvider( "p3" );
@@ -1207,6 +1213,68 @@ void TestQgsProcessing::createIndex()
   QCOMPARE( ids, QList<QgsFeatureId>() << 2 );
 }
 
+void TestQgsProcessing::parseDestinationString()
+{
+  QString providerKey;
+  QString uri;
+  QString layerName;
+  QString format;
+  QVariantMap options;
+  bool useWriter = false;
+
+  // simple shapefile output
+  QString destination = QStringLiteral( "d:/test.shp" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( destination, QStringLiteral( "d:/test.shp" ) );
+  QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "d:/test.shp" ) );
+  QCOMPARE( format, QStringLiteral( "ESRI Shapefile" ) );
+  QVERIFY( useWriter );
+
+  // postgis output
+  destination = QStringLiteral( "postgis:dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
+  QVERIFY( !useWriter );
+  // postgres key should also work
+  destination = QStringLiteral( "postgres:dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "postgres" ) );
+  QCOMPARE( uri, QStringLiteral( "dbname='db' host=DBHOST port=5432 table=\"calcs\".\"output\" (geom) sql=" ) );
+  QVERIFY( !useWriter );
+
+  // full uri shp output
+  options.clear();
+  destination = QStringLiteral( "ogr:d:/test.shp" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "d:/test.shp" ) );
+  QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
+  QVERIFY( !options.contains( QStringLiteral( "layerName" ) ) );
+  QVERIFY( !useWriter );
+
+// full uri geopackage output
+  options.clear();
+  destination = QStringLiteral( "ogr:d:/test.gpkg" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "d:/test.gpkg" ) );
+  QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
+  QVERIFY( !options.contains( QStringLiteral( "layerName" ) ) );
+  QVERIFY( !useWriter );
+
+// full uri geopackage table output with layer name
+  options.clear();
+  destination = QStringLiteral( "ogr:dbname='d:/package.gpkg' table=\"mylayer\" (geom) sql=" );
+  QgsProcessingUtils::parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
+  QCOMPARE( providerKey, QStringLiteral( "ogr" ) );
+  QCOMPARE( uri, QStringLiteral( "d:/package.gpkg" ) );
+  QCOMPARE( options.value( QStringLiteral( "update" ) ).toBool(), true );
+  QCOMPARE( options.value( QStringLiteral( "layerName" ) ).toString(), QStringLiteral( "mylayer" ) );
+  QVERIFY( !useWriter );
+}
+
 void TestQgsProcessing::createFeatureSink()
 {
   QgsProcessingContext context;
@@ -1271,7 +1339,6 @@ void TestQgsProcessing::createFeatureSink()
   QVERIFY( sink->addFeature( f ) );
   QCOMPARE( layer->featureCount(), 1L );
   context.temporaryLayerStore()->removeAllMapLayers();
-  layer = nullptr;
 
   // non memory layer output
   destination = QDir::tempPath() + "/create_feature_sink.tab";
@@ -1291,8 +1358,6 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->fields().at( 0 ).name(), QStringLiteral( "my_field" ) );
   QCOMPARE( layer->fields().at( 0 ).type(), QVariant::String );
   QCOMPARE( layer->featureCount(), 1L );
-  delete layer;
-  layer = nullptr;
 
   // no extension, should default to shp
   destination = QDir::tempPath() + "/create_feature_sink2";
@@ -1301,7 +1366,6 @@ void TestQgsProcessing::createFeatureSink()
   QVERIFY( sink.get() );
   f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "PointZ(1 2 3)" ) ) );
   QVERIFY( sink->addFeature( f ) );
-  QVERIFY( !layer );
   QCOMPARE( destination, prevDest );
   sink.reset( nullptr );
   layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
@@ -1312,13 +1376,51 @@ void TestQgsProcessing::createFeatureSink()
   QCOMPARE( layer->fields().at( 1 ).name(), QStringLiteral( "my_field" ) );
   QCOMPARE( layer->fields().at( 1 ).type(), QVariant::String );
   QCOMPARE( layer->featureCount(), 1L );
-  delete layer;
-  layer = nullptr;
 
   //windows style path
   destination = "d:\\temp\\create_feature_sink.tab";
   sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
   QVERIFY( sink.get() );
+
+  // save to geopackage
+  QString geopackagePath = QDir::tempPath() + "/packaged.gpkg";
+  if ( QFileInfo::exists( geopackagePath ) )
+    QFile::remove( geopackagePath );
+  destination = QStringLiteral( "ogr:dbname='%1' table=\"polygons\" (geom) sql=" ).arg( geopackagePath );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, fields, QgsWkbTypes::Polygon, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
+  QVERIFY( sink.get() );
+  f = QgsFeature( fields );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Polygon((0 0, 0 1, 1 1, 1 0, 0 0 ))" ) ) );
+  f.setAttributes( QgsAttributes() << "val" );
+  QVERIFY( sink->addFeature( f ) );
+  sink.reset( nullptr );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Polygon );
+  QVERIFY( layer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val" ) );
+
+  // add another output to the same geopackage
+  QString destination2 = QStringLiteral( "ogr:dbname='%1' table=\"points\" (geom) sql=" ).arg( geopackagePath );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination2, context, fields, QgsWkbTypes::Point, QgsCoordinateReferenceSystem::fromEpsgId( 3111 ) ) );
+  QVERIFY( sink.get() );
+  f = QgsFeature( fields );
+  f.setGeometry( QgsGeometry::fromWkt( QStringLiteral( "Point(0 0)" ) ) );
+  f.setAttributes( QgsAttributes() << "val2" );
+  QVERIFY( sink->addFeature( f ) );
+  sink.reset( nullptr );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination2, context, true ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Point );
+  QVERIFY( layer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val2" ) );
+
+  // original polygon layer should remain
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, true ) );
+  QVERIFY( layer->isValid() );
+  QCOMPARE( layer->wkbType(), QgsWkbTypes::Polygon );
+  QVERIFY( layer->getFeatures().nextFeature( f ) );
+  QCOMPARE( f.attribute( "my_field" ).toString(), QStringLiteral( "val" ) );
 }
 
 void TestQgsProcessing::parameters()
@@ -4370,24 +4472,24 @@ void TestQgsProcessing::combineLayerExtent()
   QString raster1 = testDataDir + "tenbytenraster.asc";
   QString raster2 = testDataDir + "landsat.tif";
   QFileInfo fi1( raster1 );
-  QgsRasterLayer *r1 = new QgsRasterLayer( fi1.filePath(), "R1" );
+  std::unique_ptr< QgsRasterLayer > r1( new QgsRasterLayer( fi1.filePath(), "R1" ) );
   QFileInfo fi2( raster2 );
-  QgsRasterLayer *r2 = new QgsRasterLayer( fi2.filePath(), "R2" );
+  std::unique_ptr< QgsRasterLayer > r2( new QgsRasterLayer( fi2.filePath(), "R2" ) );
 
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1 );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() );
   QGSCOMPARENEAR( ext.xMinimum(), 1535375.000000, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 1535475, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 5083255, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1 << r2 );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get() );
   QGSCOMPARENEAR( ext.xMinimum(), 781662, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 1535475, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3339523, 10 );
   QGSCOMPARENEAR( ext.yMaximum(), 5083355, 10 );
 
   // with reprojection
-  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1 << r2, QgsCoordinateReferenceSystem::fromEpsgId( 3785 ) );
+  ext = QgsProcessingUtils::combineLayerExtents( QList< QgsMapLayer *>() << r1.get() << r2.get(), QgsCoordinateReferenceSystem::fromEpsgId( 3785 ) );
   QGSCOMPARENEAR( ext.xMinimum(), 1995320, 10 );
   QGSCOMPARENEAR( ext.xMaximum(), 2008833, 10 );
   QGSCOMPARENEAR( ext.yMinimum(), 3523084, 10 );
@@ -5596,7 +5698,7 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
 
   // make sure all features are copied
-  QgsVectorLayer *t = new QgsVectorLayer( out, "vl2" );
+  std::unique_ptr< QgsVectorLayer > t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
   QCOMPARE( layer->featureCount(), t->featureCount() );
   QCOMPARE( layer->crs(), t->crs() );
 
@@ -5614,8 +5716,7 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out != layer->source() );
   QVERIFY( out.endsWith( ".tab" ) );
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
-  delete t;
-  t = new QgsVectorLayer( out, "vl2" );
+  t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
   QCOMPARE( t->featureCount(), static_cast< long >( ids.count() ) );
 
   // using a selection but existing format - will still require translation
@@ -5623,8 +5724,7 @@ void TestQgsProcessing::convertCompatible()
   QVERIFY( out != layer->source() );
   QVERIFY( out.endsWith( ".shp" ) );
   QVERIFY( out.startsWith( QgsProcessingUtils::tempFolder() ) );
-  delete t;
-  t = new QgsVectorLayer( out, "vl2" );
+  t = qgis::make_unique< QgsVectorLayer >( out, "vl2" );
   QCOMPARE( t->featureCount(), static_cast< long >( ids.count() ) );
 
 

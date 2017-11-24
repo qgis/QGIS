@@ -307,9 +307,9 @@ QString QgsProcessingUtils::stringToPythonLiteral( const QString &string )
   return s;
 }
 
-void parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &format, QMap<QString, QVariant> &options )
+void QgsProcessingUtils::parseDestinationString( QString &destination, QString &providerKey, QString &uri, QString &layerName, QString &format, QMap<QString, QVariant> &options, bool &useWriter )
 {
-  QRegularExpression splitRx( QStringLiteral( "^(.{3,}):(.*)$" ) );
+  QRegularExpression splitRx( QStringLiteral( "^(.{3,}?):(.*)$" ) );
   QRegularExpressionMatch match = splitRx.match( destination );
   if ( match.hasMatch() )
   {
@@ -319,9 +319,25 @@ void parseDestinationString( QString &destination, QString &providerKey, QString
       providerKey = QStringLiteral( "postgres" );
     }
     uri = match.captured( 2 );
+    if ( providerKey == QLatin1String( "ogr" ) )
+    {
+      QgsDataSourceUri dsUri( uri );
+      if ( !dsUri.database().isEmpty() )
+      {
+        if ( !dsUri.table().isEmpty() )
+        {
+          layerName = dsUri.table();
+          options.insert( "layerName", layerName );
+        }
+        uri = dsUri.database();
+      }
+      options.insert( QStringLiteral( "update" ), true );
+    }
+    useWriter = false;
   }
   else
   {
+    useWriter = true;
     providerKey = QStringLiteral( "ogr" );
     QRegularExpression splitRx( QStringLiteral( "^(.*)\\.(.*?)$" ) );
     QRegularExpressionMatch match = splitRx.match( destination );
@@ -356,12 +372,9 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
   {
     // memory provider cannot be used with QgsVectorLayerImport - so create layer manually
     std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs ) );
-    if ( !layer )
-      return nullptr;
-
-    if ( !layer->isValid() )
+    if ( !layer || !layer->isValid() )
     {
-      return nullptr;
+      throw QgsProcessingException( QObject::tr( "Could not create memory layer" ) );
     }
 
     // update destination to layer ID
@@ -377,30 +390,42 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
   {
     QString providerKey;
     QString uri;
+    QString layerName;
     QString format;
-    parseDestinationString( destination, providerKey, uri, format, options );
+    bool useWriter = false;
+    parseDestinationString( destination, providerKey, uri, layerName, format, options, useWriter );
 
-    if ( providerKey == QLatin1String( "ogr" ) )
+    if ( useWriter && providerKey == QLatin1String( "ogr" ) )
     {
       // use QgsVectorFileWriter for OGR destinations instead of QgsVectorLayerImport, as that allows
       // us to use any OGR format which supports feature addition
       QString finalFileName;
-      QgsVectorFileWriter *writer = new QgsVectorFileWriter( destination, options.value( QStringLiteral( "fileEncoding" ) ).toString(), fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
+      std::unique_ptr< QgsVectorFileWriter > writer = qgis::make_unique< QgsVectorFileWriter >( destination, options.value( QStringLiteral( "fileEncoding" ) ).toString(), fields, geometryType, crs, format, QgsVectorFileWriter::defaultDatasetOptions( format ),
           QgsVectorFileWriter::defaultLayerOptions( format ), &finalFileName );
+
+      if ( writer->hasError() )
+      {
+        throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, writer->errorMessage() ) );
+      }
       destination = finalFileName;
-      return writer;
+      return writer.release();
     }
     else
     {
       //create empty layer
-      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, false, options ) );
+      std::unique_ptr< QgsVectorLayerExporter > exporter( new QgsVectorLayerExporter( uri, providerKey, fields, geometryType, crs, true, options ) );
       if ( exporter->errorCode() )
-        return nullptr;
+      {
+        throw QgsProcessingException( QObject::tr( "Could not create layer %1: %2" ).arg( destination, exporter->errorMessage() ) );
+      }
 
       // use destination string as layer name (eg "postgis:..." )
+      if ( !layerName.isEmpty() )
+        uri += QStringLiteral( "|layername=%1" ).arg( layerName );
       std::unique_ptr< QgsVectorLayer > layer( new QgsVectorLayer( uri, destination, providerKey ) );
       // update destination to layer ID
       destination = layer->id();
+
       context.temporaryLayerStore()->addMapLayer( layer.release() );
       return exporter.release();
     }

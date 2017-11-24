@@ -94,16 +94,16 @@ static bool IsLocalFile( const QString &path );
 
 static const QByteArray ORIG_OGC_FID = "orig_ogc_fid";
 
-QMutex QgsOgrProviderUtils::globalMutex( QMutex::Recursive );
+QMutex QgsOgrProviderUtils::sGlobalMutex( QMutex::Recursive );
 
 QMap< QgsOgrProviderUtils::DatasetIdentification,
-      QList<QgsOgrProviderUtils::DatasetWithLayers *> > QgsOgrProviderUtils::mapSharedDS;
+      QList<QgsOgrProviderUtils::DatasetWithLayers *> > QgsOgrProviderUtils::sMapSharedDS;
 
-QMap< QString, int > QgsOgrProviderUtils::mapCountOpenedDS;
+QMap< QString, int > QgsOgrProviderUtils::sMapCountOpenedDS;
 
-QMap< GDALDatasetH, bool> QgsOgrProviderUtils::mapDSHandleToUpdateMode;
+QMap< GDALDatasetH, bool> QgsOgrProviderUtils::sMapDSHandleToUpdateMode;
 
-QMap< QString, QDateTime > QgsOgrProviderUtils::mapDSNameToLastModifiedDate;
+QMap< QString, QDateTime > QgsOgrProviderUtils::sMapDSNameToLastModifiedDate;
 
 bool QgsOgrProvider::convertField( QgsField &field, const QTextCodec &encoding )
 {
@@ -282,14 +282,14 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
           }
         }
       }
-      action = QgsVectorFileWriter::CreateOrOverwriteLayer;
+      if ( QFileInfo::exists( uri ) )
+        action = QgsVectorFileWriter::CreateOrOverwriteLayer;
     }
   }
 
   if ( !overwrite && !update )
   {
-    QFileInfo fi( uri );
-    if ( fi.exists() )
+    if ( QFileInfo::exists( uri ) )
     {
       if ( errorMessage )
         *errorMessage += QObject::tr( "Unable to create the datasource. %1 exists and overwrite flag is false." )
@@ -342,6 +342,8 @@ QgsVectorLayerExporter::ExportError QgsOgrProvider::createEmptyLayer( const QStr
       oldToNewAttrIdxMap->insert( attrIt.key(), *attrIt + ( firstFieldIsFid ? 1 : 0 ) );
     }
   }
+
+  QgsOgrProviderUtils::invalidateCachedLastModifiedDate( uri );
 
   return QgsVectorLayerExporter::NoError;
 }
@@ -3396,9 +3398,9 @@ GDALDatasetH QgsOgrProviderUtils::GDALOpenWrapper( const char *pszPath, bool bUp
   GDALDriverH hDrv = GDALGetDatasetDriver( hDS );
   if ( bIsLocalGpkg && strcmp( GDALGetDriverShortName( hDrv ), "GPKG" ) == 0 )
   {
-    QMutexLocker locker( &globalMutex );
-    mapCountOpenedDS[ filePath ]++;
-    mapDSHandleToUpdateMode[ hDS ] = bUpdate;
+    QMutexLocker locker( &sGlobalMutex );
+    sMapCountOpenedDS[ filePath ]++;
+    sMapDSHandleToUpdateMode[ hDS ] = bUpdate;
   }
   if ( phDriver )
     *phDriver = hDrv;
@@ -3458,15 +3460,15 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
     bool openedAsUpdate = false;
     bool tryReturnToWall = false;
     {
-      QMutexLocker locker( &globalMutex );
-      mapCountOpenedDS[ datasetName ] --;
-      if ( mapCountOpenedDS[ datasetName ] == 0 )
+      QMutexLocker locker( &sGlobalMutex );
+      sMapCountOpenedDS[ datasetName ] --;
+      if ( sMapCountOpenedDS[ datasetName ] == 0 )
       {
-        mapCountOpenedDS.remove( datasetName );
-        openedAsUpdate = mapDSHandleToUpdateMode[hDS];
+        sMapCountOpenedDS.remove( datasetName );
+        openedAsUpdate = sMapDSHandleToUpdateMode[hDS];
         tryReturnToWall = true;
       }
-      mapDSHandleToUpdateMode.remove( hDS );
+      sMapDSHandleToUpdateMode.remove( hDS );
     }
     if ( tryReturnToWall )
     {
@@ -4119,15 +4121,15 @@ static GDALDatasetH OpenHelper( const QString &dsName,
 
 void QgsOgrProviderUtils::invalidateCachedDatasets( const QString &dsName )
 {
-  QMutexLocker locker( &globalMutex );
+  QMutexLocker locker( &sGlobalMutex );
   while ( true )
   {
     bool erased = false;
-    for ( auto iter = mapSharedDS.begin(); iter != mapSharedDS.end(); ++iter )
+    for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); ++iter )
     {
       if ( iter.key().dsName == dsName )
       {
-        mapSharedDS.erase( iter );
+        sMapSharedDS.erase( iter );
         erased = true;
         break;
       }
@@ -4141,8 +4143,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     int layerIndex,
     QString &errCause )
 {
-  QMutexLocker locker( &globalMutex );
-  for ( auto iter = mapSharedDS.begin(); iter != mapSharedDS.end(); ++iter )
+  QMutexLocker locker( &sGlobalMutex );
+  for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); ++iter )
   {
     if ( iter.key().dsName == dsName )
     {
@@ -4182,7 +4184,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     int layerIndex,
     QString &errCause )
 {
-  QMutexLocker locker( &globalMutex );
+  QMutexLocker locker( &sGlobalMutex );
 
   // The idea is that we want to minimize the number of GDALDatasetH
   // handles openeded. But we have constraints. We do not want that 2
@@ -4195,8 +4197,8 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   ident.options = options;
   // Find if there's a list of DatasetWithLayers* that match our
   // (dsName, updateMode, options) criteria
-  auto iter = mapSharedDS.find( ident );
-  if ( iter != mapSharedDS.end() )
+  auto iter = sMapSharedDS.find( ident );
+  if ( iter != sMapSharedDS.end() )
   {
     // Browse through this list, to look for a DatasetWithLayers*
     // instance that don't use yet our layer of interest
@@ -4252,7 +4254,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
   QList<DatasetWithLayers *> datasetList;
   datasetList.push_back( ds );
-  mapSharedDS[ident] = datasetList;
+  sMapSharedDS[ident] = datasetList;
 
   return layer;
 }
@@ -4261,9 +4263,9 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     const QString &layerName,
     QString &errCause )
 {
-  QMutexLocker locker( &globalMutex );
+  QMutexLocker locker( &sGlobalMutex );
 
-  for ( auto iter = mapSharedDS.begin(); iter != mapSharedDS.end(); ++iter )
+  for ( auto iter = sMapSharedDS.begin(); iter != sMapSharedDS.end(); ++iter )
   {
     if ( iter.key().dsName == dsName )
     {
@@ -4312,6 +4314,22 @@ static QDateTime getLastModified( const QString &dsName )
   return QFileInfo( dsName ).lastModified();
 }
 
+// In case we do very fast structural changes within the same second,
+// the last modified date might not change enough, so artificially
+// decrement the cache modified date, so that the file appears newer to it
+void QgsOgrProviderUtils::invalidateCachedLastModifiedDate( const QString &dsName )
+{
+  QMutexLocker locker( &sGlobalMutex );
+
+  auto iter = sMapDSNameToLastModifiedDate.find( dsName );
+  if ( iter != sMapDSNameToLastModifiedDate.end() )
+  {
+    QgsDebugMsg( QString( "invalidating last modified date for %1" ).arg( dsName ) );
+    iter.value() = iter.value().addSecs( -10 );
+  }
+}
+
+
 QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
 {
   QString uri( dsName );
@@ -4335,8 +4353,8 @@ QString QgsOgrProviderUtils::expandAuthConfig( const QString &dsName )
 // Must be called under the globalMutex
 bool QgsOgrProviderUtils::canUseOpenedDatasets( const QString &dsName )
 {
-  auto iter = mapDSNameToLastModifiedDate.find( dsName );
-  if ( iter == mapDSNameToLastModifiedDate.end() )
+  auto iter = sMapDSNameToLastModifiedDate.find( dsName );
+  if ( iter == sMapDSNameToLastModifiedDate.end() )
     return true;
   return getLastModified( dsName ) <= iter.value();
 }
@@ -4348,7 +4366,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     const QString &layerName,
     QString &errCause )
 {
-  QMutexLocker locker( &globalMutex );
+  QMutexLocker locker( &sGlobalMutex );
 
   // The idea is that we want to minimize the number of GDALDatasetH
   // handles openeded. But we have constraints. We do not want that 2
@@ -4361,18 +4379,18 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
   ident.options = options;
   // Find if there's a list of DatasetWithLayers* that match our
   // (dsName, updateMode, options) criteria
-  auto iter = mapSharedDS.find( ident );
-  if ( iter != mapSharedDS.end() )
+  auto iter = sMapSharedDS.find( ident );
+  if ( iter != sMapSharedDS.end() )
   {
     if ( !canUseOpenedDatasets( dsName ) )
     {
       QgsDebugMsg( QString( "Cannot reuse existing opened dataset(s) on %1 since it has been modified" ).arg( dsName ) );
       invalidateCachedDatasets( dsName );
-      iter = mapSharedDS.find( ident );
-      Q_ASSERT( iter == mapSharedDS.end() );
+      iter = sMapSharedDS.find( ident );
+      Q_ASSERT( iter == sMapSharedDS.end() );
     }
   }
-  if ( iter != mapSharedDS.end() )
+  if ( iter != sMapSharedDS.end() )
   {
     // Browse through this list, to look for a DatasetWithLayers*
     // instance that don't use yet our layer of interest
@@ -4412,7 +4430,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
       errCause = QObject::tr( "Cannot open %1." ).arg( dsName );
       return nullptr;
     }
-    mapDSNameToLastModifiedDate[dsName] = getLastModified( dsName );
+    sMapDSNameToLastModifiedDate[dsName] = getLastModified( dsName );
 
     OGRLayerH hLayer = GDALDatasetGetLayerByName(
                          hDS, layerName.toUtf8().constData() );
@@ -4442,7 +4460,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
     errCause = QObject::tr( "Cannot open %1." ).arg( dsName );
     return nullptr;
   }
-  mapDSNameToLastModifiedDate[dsName] = getLastModified( dsName );
+  sMapDSNameToLastModifiedDate[dsName] = getLastModified( dsName );
 
   OGRLayerH hLayer = GDALDatasetGetLayerByName(
                        hDS, layerName.toUtf8().constData() );
@@ -4463,7 +4481,7 @@ QgsOgrLayerUniquePtr QgsOgrProviderUtils::getLayer( const QString &dsName,
 
   QList<DatasetWithLayers *> datasetList;
   datasetList.push_back( ds );
-  mapSharedDS[ident] = datasetList;
+  sMapSharedDS[ident] = datasetList;
 
   return layer;
 }
@@ -4484,7 +4502,7 @@ void QgsOgrProviderUtils::release( QgsOgrLayer *&layer )
   if ( !layer )
     return;
 
-  QMutexLocker locker( &globalMutex );
+  QMutexLocker locker( &sGlobalMutex );
 
   if ( !layer->isSqlLayer )
   {
@@ -4503,8 +4521,8 @@ void QgsOgrProviderUtils::release( QgsOgrLayer *&layer )
 
     if ( !layer->isSqlLayer )
     {
-      auto iter = mapSharedDS.find( layer->ident );
-      if ( iter != mapSharedDS.end() )
+      auto iter = sMapSharedDS.find( layer->ident );
+      if ( iter != sMapSharedDS.end() )
       {
         auto &datasetList = iter.value();
         int i = 0;
@@ -4522,7 +4540,7 @@ void QgsOgrProviderUtils::release( QgsOgrLayer *&layer )
         }
 
         if ( datasetList.isEmpty() )
-          mapSharedDS.erase( iter );
+          sMapSharedDS.erase( iter );
       }
     }
     QgsOgrProviderUtils::GDALCloseWrapper( layer->ds->hDS );

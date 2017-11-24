@@ -79,7 +79,7 @@
        </layout>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout_2">
+       <layout class="QHBoxLayout" name="horizontalLayout_21">
         <item>
          <widget class="QCheckBox" name="mGeometryWithZCheckBox">
           <property name="text">
