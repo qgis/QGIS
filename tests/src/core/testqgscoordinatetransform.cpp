@@ -183,6 +183,7 @@ void TestQgsCoordinateTransform::isShortCircuited()
 
 void TestQgsCoordinateTransform::contextShared()
 {
+#ifdef singlesourcedest
   //test implicit sharing of QgsCoordinateTransformContext
   QgsCoordinateTransformContext original;
   original.addDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), 1 );
@@ -211,6 +212,7 @@ void TestQgsCoordinateTransform::contextShared()
   QCOMPARE( original.destinationDatumTransforms(), expected );
   expected.insert( "EPSG:3111", 3 );
   QCOMPARE( copy2.destinationDatumTransforms(), expected );
+#endif
 }
 
 

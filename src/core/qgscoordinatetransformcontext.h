@@ -78,6 +78,10 @@ class CORE_EXPORT QgsCoordinateTransformContext
      */
     void clear();
 
+
+#if 0
+//singlesourcedest
+
     /**
      * Returns the stored mapping for source CRS to associated datum transform to use.
      * The map keys will be QgsCoordinateReferenceSystems::authid()s.
@@ -159,6 +163,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * \see removeSourceDatumTransform()
      */
     void removeDestinationDatumTransform( const QgsCoordinateReferenceSystem &crs );
+
+#endif
 
     /**
      * Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.

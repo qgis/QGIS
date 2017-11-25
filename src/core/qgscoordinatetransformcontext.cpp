@@ -42,6 +42,7 @@ void QgsCoordinateTransformContext::clear()
   d->mLock.unlock();
 }
 
+#ifdef singlesourcedest
 QMap<QString, int> QgsCoordinateTransformContext::sourceDatumTransforms() const
 {
   d->mLock.lockForRead();
@@ -95,6 +96,8 @@ void QgsCoordinateTransformContext::removeDestinationDatumTransform( const QgsCo
   d->mDestDatumTransforms.remove( crs.authid() );
 }
 
+#endif
+
 QMap<QPair<QString, QString>, QPair<int, int> > QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
 {
   d->mLock.lockForRead();
@@ -129,17 +132,16 @@ QPair<int, int> QgsCoordinateTransformContext::calculateDatumTransforms( const Q
   d->mLock.lockForRead();
   // highest priority is exact match for source/dest pair
   QPair< int, int > res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), qMakePair( -1, -1 ) );
-  if ( res.first != -1 && res.second != -1 )
-  {
-    d->mLock.unlock();
-    return res;
-  }
+  d->mLock.unlock();
+  return res;
 
+#ifdef singlesourcedest
   // fallback to checking src and dest separately
   int srcTransform = d->mSourceDatumTransforms.value( srcKey, -1 );
   int destTransform = d->mDestDatumTransforms.value( destKey, -1 );
   d->mLock.unlock();
   return qMakePair( srcTransform, destTransform );
+#endif
 }
 
 void QgsCoordinateTransformContext::readXml( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext & )
