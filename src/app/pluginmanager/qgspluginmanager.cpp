@@ -819,13 +819,14 @@ void QgsPluginManager::showPluginDetails( QStandardItem *item )
     {
       iconPath = "qrc" + iconPath;
     }
-#if !defined(Q_OS_WIN)
-    // Only add the file:// prefix on non-windows systems
     else if ( ! iconPath.startsWith( QLatin1String( "http" ) ) )
     {
+#if defined(Q_OS_WIN)
+      iconPath = "file:///" + iconPath;
+#else
       iconPath = "file://" + iconPath;
-    }
 #endif
+    }
     html += QStringLiteral( "<img src=\"%1\" style=\"float:right;max-width:64px;max-height:64px;\">" ).arg( iconPath );
   }
 
