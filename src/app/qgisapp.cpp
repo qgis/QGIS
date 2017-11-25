@@ -12525,6 +12525,49 @@ void QgisApp::writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &ele
   elem.setAttribute( QStringLiteral( "area" ), dockWidgetArea( dockWidget ) );
 }
 
+bool QgisApp::askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs )
+{
+  bool ok = false;
+
+  QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+  QPair<int, int> dt = context.calculateDatumTransforms( sourceCrs, destinationCrs );
+  if ( dt != qMakePair( -1, -1 ) )
+  {
+    // already defined by user
+    ok = true;
+  }
+  else
+  {
+    //if several possibilities:  present dialog
+    QgsDatumTransformDialog dlg( sourceCrs, destinationCrs );
+    if ( dlg.availableTransformationCount() > 1 )
+    {
+      bool ask = QgsSettings().value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+      if ( !ask )
+      {
+        ok = false;
+      }
+      if ( dlg.exec() )
+      {
+        QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
+        QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+        context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
+        QgsProject::instance()->setTransformContext( context );
+        ok = true;
+      }
+      else
+      {
+        ok = false;
+      }
+    }
+    else
+    {
+      ok = true;
+    }
+  }
+  return ok;
+}
+
 void QgisApp::readDockWidgetSettings( QDockWidget *dockWidget, const QDomElement &elem )
 {
   int x = elem.attribute( QStringLiteral( "x" ), QStringLiteral( "0" ) ).toInt();

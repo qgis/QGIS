@@ -1734,7 +1734,8 @@ void QgsMapCanvas::layerCrsChange()
 {
   // called when a layer's CRS has been changed
   QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
-  getDatumTransformInfo( layer->crs(), mSettings.destinationCrs() );
+  // TODO datum we should trigger a message to say one could choose datum transform
+  //getDatumTransformInfo( layer->crs(), mSettings.destinationCrs() );
 }
 
 void QgsMapCanvas::freeze( bool frozen )
@@ -1826,8 +1827,9 @@ void QgsMapCanvas::updateDatumTransformEntries()
 #if 0 //old logic - TODO - what is the new logic for when we show this dialog?
     if ( !mSettings.datumTransformStore().hasEntryForLayer( layer ) )
 #endif
-      getDatumTransformInfo( layer->crs(), mSettings.destinationCrs() );
-  }
+      // TODO datum we should trigger a message to say one could choose datum transform
+      // getDatumTransformInfo( layer->crs(), mSettings.destinationCrs() );
+    }
 }
 
 void QgsMapCanvas::layerRepaintRequested( bool deferred )
@@ -2060,6 +2062,7 @@ void QgsMapCanvas::writeProject( QDomDocument &doc )
   // TODO: store only units, extent, projections, dest CRS
 }
 
+#if 0
 void QgsMapCanvas::getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
   if ( !source.isValid() || !destination.isValid() )
@@ -2091,6 +2094,7 @@ void QgsMapCanvas::getDatumTransformInfo( const QgsCoordinateReferenceSystem &so
   if ( d.availableTransformationCount() > 1 )
     d.exec();
 }
+#endif
 
 void QgsMapCanvas::zoomByFactor( double scaleFactor, const QgsPointXY *center )
 {
