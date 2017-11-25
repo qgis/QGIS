@@ -62,6 +62,8 @@ class GdalUtils(object):
 
     supportedRasters = None
     supportedOutputRasters = None
+    supportedVectors = None
+    supportedOutputVectors = None
 
     @staticmethod
     def runGdal(commands, feedback=None):
@@ -125,20 +127,21 @@ class GdalUtils(object):
         return GdalUtils.consoleOutput
 
     @staticmethod
-    def getSupportedRasters():
+    def getSupportedFormats():
         if not gdalAvailable:
             return {}
-
-        if GdalUtils.supportedRasters is not None:
-            return GdalUtils.supportedRasters
 
         if gdal.GetDriverCount() == 0:
             gdal.AllRegister()
 
         GdalUtils.supportedRasters = {}
         GdalUtils.supportedOutputRasters = {}
+        GdalUtils.supportedVectors = {}
+        GdalUtils.supportedOutputVectors = {}
         GdalUtils.supportedRasters['GTiff'] = ['tif']
         GdalUtils.supportedOutputRasters['GTiff'] = ['tif']
+        GdalUtils.supportedVectors['ESRI Shapefile'] = ['shp']
+        GdalUtils.supportedOutputVectors['ESRI Shapefile'] = ['shp']
 
         for i in range(gdal.GetDriverCount()):
             driver = gdal.GetDriver(i)
@@ -146,22 +149,49 @@ class GdalUtils(object):
                 continue
             shortName = driver.ShortName
             metadata = driver.GetMetadata()
+            vector = False
+            raster = False
+            # Is it an OGR driver?
+            if (gdal.DCAP_VECTOR in metadata
+                    and metadata[gdal.DCAP_VECTOR] == 'YES'):
+                vector = True
+
             if gdal.DCAP_RASTER not in metadata \
                     or metadata[gdal.DCAP_RASTER] != 'YES':
-                continue
+                raster = True
 
+            extensions = []
             if gdal.DMD_EXTENSION in metadata:
-                extensions = metadata[gdal.DMD_EXTENSION].split('/')
-                if extensions:
+                extensions.extend(re.split('/| ', metadata[gdal.DMD_EXTENSION]))
+            if gdal.DMD_EXTENSIONS in metadata:
+                extensions.extend(re.split('/| ', metadata[gdal.DMD_EXTENSIONS]))
+            if extensions:
+                extensions = list(set(extensions))
+                if raster:
                     GdalUtils.supportedRasters[shortName] = extensions
-                    # Only creatable rasters can be referenced in output rasters
-                    if ((gdal.DCAP_CREATE in metadata
-                         and metadata[gdal.DCAP_CREATE] == 'YES')
-                        or (gdal.DCAP_CREATECOPY in metadata
-                            and metadata[gdal.DCAP_CREATECOPY] == 'YES')):
+                if vector:
+                    GdalUtils.supportedVectors[shortName] = extensions
+                # Only creatable drivers can be referenced in outputs
+                if ((gdal.DCAP_CREATE in metadata
+                     and metadata[gdal.DCAP_CREATE] == 'YES')
+                    or (gdal.DCAP_CREATECOPY in metadata
+                        and metadata[gdal.DCAP_CREATECOPY] == 'YES')):
+                    if raster:
                         GdalUtils.supportedOutputRasters[shortName] = extensions
+                    if vector:
+                        GdalUtils.supportedOutputVectors[shortName] = extensions
 
-        return GdalUtils.supportedRasters
+    @staticmethod
+    def getSupportedRasters():
+        if not gdalAvailable:
+            return {}
+
+        if GdalUtils.supportedRasters is not None:
+            return GdalUtils.supportedRasters
+        else:
+            GdalUtils.getSupportedFormats()
+
+            return GdalUtils.supportedRasters
 
     @staticmethod
     def getSupportedOutputRasters():
@@ -171,7 +201,7 @@ class GdalUtils(object):
         if GdalUtils.supportedOutputRasters is not None:
             return GdalUtils.supportedOutputRasters
         else:
-            GdalUtils.getSupportedRasters()
+            GdalUtils.getSupportedFormats()
 
         return GdalUtils.supportedOutputRasters
 
@@ -188,6 +218,48 @@ class GdalUtils(object):
     def getSupportedOutputRasterExtensions():
         allexts = ['tif']
         for exts in list(GdalUtils.getSupportedOutputRasters().values()):
+            for ext in exts:
+                if ext not in allexts and ext != '':
+                    allexts.append(ext)
+        return allexts
+
+    @staticmethod
+    def getSupportedVectors():
+        if not gdalAvailable:
+            return {}
+
+        if GdalUtils.supportedVectors is not None:
+            return GdalUtils.supportedVectors
+        else:
+            GdalUtils.getSupportedFormats()
+
+        return GdalUtils.supportedVectors
+
+    @staticmethod
+    def getSupportedOutputVectors():
+        if not gdalAvailable:
+            return {}
+
+        if GdalUtils.supportedOutputVectors is not None:
+            return GdalUtils.supportedOutputVectors
+        else:
+            GdalUtils.getSupportedFormats()
+
+        return GdalUtils.supportedOutputVectors
+
+    @staticmethod
+    def getSupportedVectorExtensions():
+        allexts = ['shp']
+        for exts in list(GdalUtils.getSupportedVectors().values()):
+            for ext in exts:
+                if ext not in allexts and ext != '':
+                    allexts.append(ext)
+        return allexts
+
+    @staticmethod
+    def getSupportedOutputVectorExtensions():
+        allexts = ['shp']
+        for exts in list(GdalUtils.getSupportedOutputVectors().values()):
             for ext in exts:
                 if ext not in allexts and ext != '':
                     allexts.append(ext)

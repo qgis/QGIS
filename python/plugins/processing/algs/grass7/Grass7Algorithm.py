@@ -88,6 +88,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
     GRASS_REGION_ALIGN_TO_RESOLUTION = 'GRASS_REGION_ALIGN_TO_RESOLUTION'
     GRASS_RASTER_FORMAT_OPT = 'GRASS_RASTER_FORMAT_OPT'
     GRASS_RASTER_FORMAT_META = 'GRASS_RASTER_FORMAT_META'
+    GRASS_VECTOR_DSCO = 'GRASS_VECTOR_DSCO'
+    GRASS_VECTOR_LCO = 'GRASS_VECTOR_LCO'
 
     OUTPUT_TYPES = ['auto', 'point', 'line', 'area']
     QGIS_OUTPUT_TYPES = {QgsProcessing.TypeVectorAnyGeometry: 'auto',
@@ -280,9 +282,28 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             self.params.append(param)
 
         if vectorOutputs:
+            # Add an optional output type
             param = QgsProcessingParameterEnum(self.GRASS_OUTPUT_TYPE_PARAMETER,
                                                self.tr('v.out.ogr output type'),
                                                self.OUTPUT_TYPES)
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.params.append(param)
+
+            # Add a DSCO parameter for format export
+            param = QgsProcessingParameterString(
+                self.GRASS_VECTOR_DSCO,
+                self.tr('v.out.ogr output data source options (dsco)'),
+                multiLine=True, optional=True
+            )
+            param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
+            self.params.append(param)
+
+            # Add a LCO parameter for format export
+            param = QgsProcessingParameterString(
+                self.GRASS_VECTOR_LCO,
+                self.tr('v.out.ogr output layer options (lco)'),
+                multiLine=True, optional=True
+            )
             param.setFlags(param.flags() | QgsProcessingParameterDefinition.FlagAdvanced)
             self.params.append(param)
 
@@ -488,7 +509,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                              self.GRASS_OUTPUT_TYPE_PARAMETER,
                              self.GRASS_REGION_ALIGN_TO_RESOLUTION,
                              self.GRASS_RASTER_FORMAT_OPT,
-                             self.GRASS_RASTER_FORMAT_META]:
+                             self.GRASS_RASTER_FORMAT_META,
+                             self.GRASS_VECTOR_DSCO,
+                             self.GRASS_VECTOR_LCO]:
                 continue
 
             # Raster and vector layers
@@ -591,9 +614,6 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def processOutputs(self, parameters, context):
         """Prepare the GRASS v.out.ogr commands"""
-        # TODO: support multiple raster formats.
-        # TODO: support multiple vector formats.
-
         # Determine general vector output type
         self.vectorOutputType(parameters, context)
 
@@ -750,16 +770,21 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             destFilename)
         self.commands.append(command)
 
-    def exportVectorLayerFromParameter(self, name, parameters, context):
+    def exportVectorLayerFromParameter(self, name, parameters, context,
+                                       layer=None, nocats=False):
         """
-        Creates a dedicated command to export a raster from
-        temporary GRASS DB into a file via gdal.
-        :param grassName: name of the parameter
-        :param fileName: file path of raster layer
-        :param colorTable: preserve color Table.
+        Creates a dedicated command to export a vector from
+        a QgsProcessingParameter.
+        :param name: name of the parameter.
+        :param parameters: parameters list.
+        :param context: parameters context.
+        :param layer: for vector with multiples layers,exports only one layer.
+        :param nocats: do not export GRASS categories.
         """
         fileName = os.path.normpath(
             self.parameterAsOutputLayer(parameters, name, context))
+        grassName = '{}{}'.format(name, self.uniqueSuffix)
+
         # Find if there is a dataType
         dataType = self.outType
         if self.outType == 'auto':
@@ -769,25 +794,36 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
                 if layerType in self.QGIS_OUTPUT_TYPES:
                     dataType = self.QGIS_OUTPUT_TYPES[layerType]
 
-        grassName = '{}{}'.format(name, self.uniqueSuffix)
-        self.exportVectorLayer(grassName, fileName, dataType)
+        outFormat = Grass7Utils.getVectorFormatFromFilename(fileName)
+        dsco = self.parameterAsString(parameters, self.GRASS_VECTOR_DSCO, context)
+        lco = self.parameterAsString(parameters, self.GRASS_VECTOR_LCO, context)
+        self.exportVectorLayer(grassName, fileName, layer, nocats, dataType, outFormat, dsco, lco)
 
-    def exportVectorLayer(self, grassName, fileName, dataType='auto', layer=None, nocats=False):
+    def exportVectorLayer(self, grassName, fileName, layer=None,
+                          nocats=False, dataType='auto',
+                          outFormat='ESRI_Shapefile',
+                          dsco=None, lco=None):
         """
         Creates a dedicated command to export a vector from
-        temporary GRASS DB into a file via ogr.
-        :param grassName: name of the parameter
-        :param fileName: file path of raster layer
+        temporary GRASS DB into a file via OGR.
+        :param grassName: name of the raster to export.
+        :param fileName: file path of raster layer.
+        :param dataType: export only this type of data.
+        :param layer: for vector with multiples layers,exports only one layer.
+        :param nocats: do not export GRASS categories.
+        :param outFormat: file format for export.
+        :param dsco: datasource creation options for format.
+        :param lco: layer creation options for format.
         """
         for cmd in [self.commands, self.outputCommands]:
             cmd.append(
-                'v.out.ogr{0} type={1} {2} input="{3}" output="{4}" {5}'.format(
+                'v.out.ogr{0} type="{1}" input="{2}" output="{3}" format="{4}" {5}{6}{7} --overwrite'.format(
                     '' if nocats else ' -c',
-                    dataType,
+                    dataType, grassName, fileName,
+                    outFormat,
                     'layer={}'.format(layer) if layer else '',
-                    grassName,
-                    fileName,
-                    'format=ESRI_Shapefile --overwrite'
+                    ' dsco="{}"'.format(dsco) if dsco else '',
+                    ' lco="{}"'.format(lco) if lco else ''
                 )
             )
 
