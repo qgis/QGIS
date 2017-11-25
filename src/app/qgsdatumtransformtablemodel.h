@@ -7,6 +7,12 @@
 #include "qgis_app.h"
 #include "qgscoordinatetransformcontext.h"
 
+/**
+ * The QgsDatumTransformTableModel class is a table model to display and edit
+ * datum transformations.
+ *
+ * \since 3.0
+ */
 class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
 {
     Q_OBJECT
@@ -25,6 +31,11 @@ class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
     void setTransformContext( QgsCoordinateTransformContext &context );
 
     QgsCoordinateTransformContext transformContext() {return mTransformContext;}
+
+    /**
+     * remove the transformation at given indexes
+     */
+    void removeTransform( QModelIndexList indexes );
 
     int rowCount( const QModelIndex &parent ) const override;
     int columnCount( const QModelIndex &parent ) const override;

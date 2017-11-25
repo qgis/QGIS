@@ -45,6 +45,7 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( QgsCoordinateReferenceSystem s
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
   updateTitle();
+  setOKButtonEnabled();
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/DatumTransformDialog/geometry" ) ).toByteArray() );
@@ -133,6 +134,14 @@ void QgsDatumTransformDialog::load()
       delete item;
     }
   }
+
+  setOKButtonEnabled();
+}
+
+void QgsDatumTransformDialog::setOKButtonEnabled()
+{
+  QTreeWidgetItem *item = mDatumTransformTreeWidget->currentItem();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && item );
 }
 
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
@@ -245,6 +254,8 @@ void QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged( QTre
 
   mLabelSrcDescription->setText( current->toolTip( 0 ) );
   mLabelDstDescription->setText( current->toolTip( 1 ) );
+
+  setOKButtonEnabled();
 }
 
 void QgsDatumTransformDialog::setSourceCrs()
@@ -258,6 +269,7 @@ void QgsDatumTransformDialog::setSourceCrs()
     load();
   }
   delete mySelector;
+  setOKButtonEnabled();
 }
 
 void QgsDatumTransformDialog::setDestinationCrs()
@@ -271,6 +283,7 @@ void QgsDatumTransformDialog::setDestinationCrs()
     load();
   }
   delete mySelector;
+  setOKButtonEnabled();
 }
 
 void QgsDatumTransformDialog::updateTitle()

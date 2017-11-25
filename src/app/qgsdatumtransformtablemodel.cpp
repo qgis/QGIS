@@ -12,9 +12,33 @@ void QgsDatumTransformTableModel::setTransformContext( QgsCoordinateTransformCon
   reset();
 }
 
+void QgsDatumTransformTableModel::removeTransform( QModelIndexList indexes )
+{
+  QgsCoordinateReferenceSystem sourceCrs;
+  QgsCoordinateReferenceSystem destinationCrs;
+  for ( QModelIndexList::const_iterator it = indexes.constBegin(); it != indexes.constEnd(); it ++ )
+  {
+    if ( it->column() == SourceCrsColumn )
+    {
+      sourceCrs = QgsCoordinateReferenceSystem( data( *it, Qt::DisplayRole ).toString() );
+    }
+    if ( it->column() == DestinationCrsColumn )
+    {
+      destinationCrs = QgsCoordinateReferenceSystem( data( *it, Qt::DisplayRole ).toString() );
+    }
+    if ( sourceCrs.isValid() && destinationCrs.isValid() )
+    {
+      mTransformContext.removeSourceDestinationDatumTransform( sourceCrs, destinationCrs );
+      reset();
+      break;
+    }
+  }
+}
+
 
 int QgsDatumTransformTableModel::rowCount( const QModelIndex &parent ) const
 {
+  Q_UNUSED( parent );
   return mTransformContext.sourceDestinationDatumTransforms().count()
          + mTransformContext.sourceDatumTransforms().count()
          + mTransformContext.destinationDatumTransforms().count();
@@ -22,6 +46,7 @@ int QgsDatumTransformTableModel::rowCount( const QModelIndex &parent ) const
 
 int QgsDatumTransformTableModel::columnCount( const QModelIndex &parent ) const
 {
+  Q_UNUSED( parent );
   return 4;
 }
 
@@ -50,17 +75,17 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case SourceCrsColumn:
           return sourceCrs;
         case SourceTransformColumn:
-          if (sourceTransform != -1)
+          if ( sourceTransform != -1 )
           {
-              return QgsCoordinateTransform::datumTransformString( sourceTransform );
+            return QgsCoordinateTransform::datumTransformString( sourceTransform );
           }
           break;
         case DestinationCrsColumn:
           return destinationCrs;
         case DestinationTransformColumn:
-          if (sourceTransform != -1)
+          if ( sourceTransform != -1 )
           {
-              return QgsCoordinateTransform::datumTransformString( destinationTransform );
+            return QgsCoordinateTransform::datumTransformString( destinationTransform );
           }
           break;
         default:

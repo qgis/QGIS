@@ -164,8 +164,9 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mDatumTransformTableView->setSelectionMode( QAbstractItemView::SingleSelection );
   mDatumTransformTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
   connect( mDatumTransformAddButton, &QToolButton::clicked, this, &QgsProjectProperties::addDatumTransform );
+  connect( mDatumTransformRemoveButton, &QToolButton::clicked, this, &QgsProjectProperties::removeDatumTransform );
 
-  bool show = mSettings->value( QStringLiteral( "showDatumTransformDialog" ), false ).toBool();
+  bool show = settings.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
   mShowDatumTransformDialogCheckBox->setChecked( show );
 
   QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
@@ -820,6 +821,9 @@ void QgsProjectProperties::apply()
     projectionSelector->pushProjectionToFront();
   }
 
+  QgsCoordinateTransformContext transformContext = mDatumTransformTableModel->transformContext();
+  QgsProject::instance()->setTransformContext( transformContext );
+
   // Set the project title
   QgsProject::instance()->setTitle( title() );
   QgsProject::instance()->setAutoTransaction( mAutoTransaction->isChecked() );
@@ -1238,6 +1242,15 @@ void QgsProjectProperties::addDatumTransform()
     QgsCoordinateTransformContext context = mDatumTransformTableModel->transformContext();
     context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
     mDatumTransformTableModel->setTransformContext( context );
+  }
+}
+
+void QgsProjectProperties::removeDatumTransform()
+{
+  QModelIndexList selectedIndexes = mDatumTransformTableView->selectionModel()->selectedIndexes();
+  if ( selectedIndexes.count() > 0 )
+  {
+    mDatumTransformTableModel->removeTransform( selectedIndexes );
   }
 }
 

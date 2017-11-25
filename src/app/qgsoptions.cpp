@@ -457,7 +457,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   //default datum transformations
   mSettings->beginGroup( QStringLiteral( "/Projections" ) );
 
-  mShowDatumTransformDialogCheckBox->setChecked( mSettings->value( QStringLiteral( "showDatumTransformDialog" ), false ).toBool() );
+  mShowDatumTransformDialogCheckBox->setChecked( mSettings->value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool() );
 
   QStringList projectionKeys = mSettings->allKeys();
 
