@@ -24418,8 +24418,8 @@ Datenbank: %2</translation>
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
         <translation>
-            <numerusform>Sind Sie sicher, daß Sie das Lesezeichen löschen wollen?</numerusform>
-            <numerusform>Sind Sie sicher, daß Sie %n Lesezeichen löschen wollen?</numerusform>
+            <numerusform>Sind Sie sicher, dass Sie das Lesezeichen löschen wollen?</numerusform>
+            <numerusform>Sind Sie sicher, dass Sie %n Lesezeichen löschen wollen?</numerusform>
         </translation>
     </message>
     <message>
