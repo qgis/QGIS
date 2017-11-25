@@ -639,16 +639,18 @@ void QgsPropertyOverrideButton::showAssistant()
     connect( buttonBox, &QDialogButtonBox::rejected, dlg, &QDialog::reject );
     connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsPropertyOverrideButton::showHelp );
     dlg->layout()->addWidget( buttonBox );
-    dlg->exec();
+
+    if ( dlg->exec() == QDialog::Accepted )
+    {
+      widget->updateProperty( mProperty );
+      mExpressionString = mProperty.asExpression();
+      mFieldName = mProperty.field();
+      widget->acceptPanel();
+      updateGui();
+
+      emit changed();
+    }
     settings.setValue( key, dlg->saveGeometry() );
-
-    widget->updateProperty( mProperty );
-    mExpressionString = mProperty.asExpression();
-    mFieldName = mProperty.field();
-    widget->acceptPanel();
-    updateGui();
-
-    emit changed();
   }
 }
 
