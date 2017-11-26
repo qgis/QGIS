@@ -74,11 +74,6 @@ class ModellerNumberInputPanel(BASE, WIDGET):
         self.btnSelect.clicked.connect(self.showExpressionsBuilder)
         self.leText.textChanged.connect(lambda: self.hasChanged.emit())
 
-        # remove data defined button from modeler
-        self.layout().removeWidget(self.btnDataDefined)
-        sip.delete(self.btnDataDefined)
-        self.btnDataDefined = None
-
     def showExpressionsBuilder(self):
         context = createExpressionContext()
         processing_context = createContext()
