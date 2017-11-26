@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>ColorBrewer Ramp</string>
+   <string>Color Presets Ramp</string>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout" stretch="1,0,0">
    <item>
