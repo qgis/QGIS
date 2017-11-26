@@ -34,6 +34,7 @@ class TestQgsProcessingAlgs: public QObject
     void init() {} // will be called before each testfunction is executed.
     void cleanup() {} // will be called after every testfunction.
     void packageAlg();
+    void renameLayerAlg();
 
   private:
 
@@ -114,6 +115,58 @@ void TestQgsProcessingAlgs::packageAlg()
   QVERIFY( polygonLayer->isValid() );
   QCOMPARE( polygonLayer->wkbType(), mPolygonLayer->wkbType() );
   QCOMPARE( polygonLayer->featureCount(), mPolygonLayer->featureCount() );
+}
+
+void TestQgsProcessingAlgs::renameLayerAlg()
+{
+  const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:renamelayer" ) ) );
+  QVERIFY( package );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  context->setProject( QgsProject::instance() );
+
+  QgsVectorLayer *layer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:real" ), QStringLiteral( "layer" ), QStringLiteral( "memory" ) );
+  QVERIFY( layer->isValid() );
+  QgsProject::instance()->addMapLayer( layer );
+
+  QgsProcessingFeedback feedback;
+
+  QVariantMap parameters;
+
+  // bad layer
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "bad layer" ) );
+  parameters.insert( QStringLiteral( "NAME" ), QStringLiteral( "new name" ) );
+  bool ok = false;
+  ( void )package->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+  QCOMPARE( layer->name(), QStringLiteral( "layer" ) );
+
+  //invalid name
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "layer" ) );
+  parameters.insert( QStringLiteral( "NAME" ), QString() );
+  ok = false;
+  ( void )package->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+  QCOMPARE( layer->name(), QStringLiteral( "layer" ) );
+
+  //good params
+  parameters.insert( QStringLiteral( "INPUT" ), QVariant::fromValue( layer ) );
+  parameters.insert( QStringLiteral( "NAME" ), QStringLiteral( "new name" ) );
+  ok = false;
+  QVariantMap results = package->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( layer->name(), QStringLiteral( "new name" ) );
+  QCOMPARE( results.value( "OUTPUT" ), QVariant::fromValue( layer ) );
+
+  // with input layer name as parameter
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "new name" ) );
+  parameters.insert( QStringLiteral( "NAME" ), QStringLiteral( "new name2" ) );
+  ok = false;
+  results = package->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QCOMPARE( layer->name(), QStringLiteral( "new name2" ) );
+  // result should use new name as value
+  QCOMPARE( results.value( "OUTPUT" ).toString(), QStringLiteral( "new name2" ) );
 }
 
 
