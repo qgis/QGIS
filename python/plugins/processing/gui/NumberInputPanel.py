@@ -34,10 +34,13 @@ from qgis.PyQt.QtCore import pyqtSignal
 from qgis.PyQt.QtWidgets import QDialog
 
 from qgis.core import (QgsExpression,
+                       QgsProperty,
                        QgsProcessingParameterNumber,
                        QgsProcessingOutputNumber,
                        QgsProcessingParameterDefinition,
-                       QgsProcessingModelChildParameterSource)
+                       QgsProcessingModelChildParameterSource,
+                       QgsProcessingFeatureSourceDefinition,
+                       QgsProcessingUtils)
 from qgis.gui import QgsExpressionBuilderDialog
 from processing.tools.dataobjects import createExpressionContext, createContext
 
@@ -70,6 +73,11 @@ class ModellerNumberInputPanel(BASE, WIDGET):
             self.setValue(param.defaultValue())
         self.btnSelect.clicked.connect(self.showExpressionsBuilder)
         self.leText.textChanged.connect(lambda: self.hasChanged.emit())
+
+        # remove data defined button from modeler
+        self.layout().removeWidget(self.btnDataDefined)
+        sip.delete(self.btnDataDefined)
+        self.btnDataDefined = None
 
     def showExpressionsBuilder(self):
         context = createExpressionContext()
@@ -188,10 +196,31 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         sip.delete(self.btnSelect)
         self.btnSelect = None
 
+        if not self.param.isDynamic():
+            # only show data defined button for dynamic properties
+            self.layout().removeWidget(self.btnDataDefined)
+            sip.delete(self.btnDataDefined)
+            self.btnDataDefined = None
+        else:
+            self.btnDataDefined.init(0, QgsProperty(), self.param.dynamicPropertyDefinition())
+
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
+    def setDynamicLayer(self, layer):
+        context = createContext()
+        try:
+            if isinstance(layer, QgsProcessingFeatureSourceDefinition):
+                layer, ok = layer.source.valueAsString(context.expressionContext())
+            if isinstance(layer, str):
+                layer = QgsProcessingUtils.mapLayerFromString(layer, context)
+            self.btnDataDefined.setVectorLayer(layer)
+        except:
+            pass
+
     def getValue(self):
-        if self.allowing_null and self.spnValue.value() == self.spnValue.minimum():
+        if self.btnDataDefined is not None and self.btnDataDefined.isActive():
+            return self.btnDataDefined.toProperty()
+        elif self.allowing_null and self.spnValue.value() == self.spnValue.minimum():
             return None
         else:
             return self.spnValue.value()
