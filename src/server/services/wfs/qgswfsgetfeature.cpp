@@ -1298,7 +1298,7 @@ namespace QgsWfs
           continue;
         }
 
-        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QStringLiteral( " " ), QStringLiteral( "_" ) ) );
+        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
         QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );
@@ -1399,7 +1399,7 @@ namespace QgsWfs
           continue;
         }
 
-        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QStringLiteral( " " ), QStringLiteral( "_" ) ) );
+        QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
         QDomText fieldText = doc.createTextNode( featureAttributes[idx].toString() );
         fieldElem.appendChild( fieldText );
         typeNameElement.appendChild( fieldElem );

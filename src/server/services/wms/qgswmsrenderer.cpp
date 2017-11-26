@@ -2224,7 +2224,7 @@ namespace QgsWms
         continue;
       }
 
-      QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( QStringLiteral( " " ), QStringLiteral( "_" ) ) );
+      QDomElement fieldElem = doc.createElement( "qgs:" + attributeName.replace( ' ', '_' ) );
       QString fieldTextString = featureAttributes.at( i ).toString();
       if ( layer )
       {
