@@ -33,7 +33,8 @@ from qgis.core import (QgsFeature,
                        QgsVectorLayerExporter,
                        QgsPointXY,
                        QgsProject,
-                       QgsWkbTypes)
+                       QgsWkbTypes,
+                       QgsDataProvider)
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.testing import start_app, unittest
 
@@ -113,7 +114,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         ds = None
 
         vl = QgsVectorLayer('{}'.format(tmpfile), 'test', 'ogr')
-        self.assertEqual(vl.dataProvider().subLayers(), ['0:test:0:CurvePolygon:geom'])
+        self.assertEqual(vl.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '0', 'CurvePolygon', 'geom'])])
         f = QgsFeature()
         f.setGeometry(QgsGeometry.fromWkt('POLYGON ((0 0,0 1,1 1,0 0))'))
         vl.dataProvider().addFeatures([f])
@@ -601,6 +602,20 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         features = [f for f in vl1.getFeatures(request)]
         self.assertEqual(len(features), 1)
 
+    def testSublayerWithComplexLayerName(self):
+        ''' Test reading a gpkg with a sublayer name containing : '''
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageComplexLayerName.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('layer1:', geom_type=ogr.wkbPoint, options=['GEOMETRY_NAME=geom:'])
+        lyr.CreateField(ogr.FieldDefn('attr', ogr.OFTInteger))
+        f = ogr.Feature(lyr.GetLayerDefn())
+        f.SetGeometry(ogr.CreateGeometryFromWkt('POINT(0 0)'))
+        lyr.CreateFeature(f)
+        f = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile), u'layer', u'ogr')
+        self.assertEqual(vl.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'layer1:', '1', 'Point', 'geom:'])])
+
     def testGeopackageManyLayers(self):
         ''' test opening more than 64 layers without running out of Spatialite connections '''
 
@@ -669,7 +684,8 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
 
         vl2 = QgsVectorLayer(u'{}'.format(tmpfile), 'test', u'ogr')
         vl2.subLayers()
-        self.assertEqual(vl2.dataProvider().subLayers(), ['0:test:0:Point:geom', '1:test2:0:Point:geom'])
+        self.assertEqual(vl2.dataProvider().subLayers(), [QgsDataProvider.SUBLAYER_SEPARATOR.join(['0', 'test', '0', 'Point', 'geom']),
+                                                          QgsDataProvider.SUBLAYER_SEPARATOR.join(['1', 'test2', '0', 'Point', 'geom'])])
 
     def testGeopackageLargeFID(self):
 
