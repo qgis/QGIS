@@ -201,7 +201,7 @@ QgsError Qgs2To3Migration::migrateSettings()
       if ( line.isEmpty() )
         continue;
 
-      QStringList parts = line.split( ";" );
+      const QStringList parts = line.split( ';' );
 
       Q_ASSERT_X( parts.count() == 2, "QgsVersionMigration::migrateSettings()", "Can't split line in 2 parts." );
 
@@ -327,10 +327,10 @@ QPair<QString, QString> Qgs2To3Migration::transformKey( QString fullOldKey, QStr
 
   if ( newKeyPart.endsWith( "/*" ) )
   {
-    QStringList newKeyparts = newKeyPart.split( "/" );
+    QStringList newKeyparts = newKeyPart.split( '/' );
     // Throw away the *
     newKeyparts.removeLast();
-    QStringList oldKeyParts = fullOldKey.split( "/" );
+    QStringList oldKeyParts = fullOldKey.split( '/' );
     for ( int i = 0; i < newKeyparts.count(); ++i )
     {
       oldKeyParts.replace( i, newKeyparts.at( i ) );

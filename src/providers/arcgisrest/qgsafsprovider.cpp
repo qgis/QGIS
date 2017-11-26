@@ -59,7 +59,7 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
   mLayerDescription = layerData[QStringLiteral( "description" )].toString();
 
   // Set extent
-  QStringList coords = mSharedData->mDataSource.param( QStringLiteral( "bbox" ) ).split( QStringLiteral( "," ) );
+  QStringList coords = mSharedData->mDataSource.param( QStringLiteral( "bbox" ) ).split( ',' );
   if ( coords.size() == 4 )
   {
     bool xminOk = false, yminOk = false, xmaxOk = false, ymaxOk = false;

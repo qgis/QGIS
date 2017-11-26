@@ -512,7 +512,7 @@ QStringList QgsGrassMapcalc::checkRegion()
 
     struct Cell_head window;
 
-    QStringList mm = obj->value().split( QStringLiteral( "@" ) );
+    QStringList mm = obj->value().split( '@' );
     if ( mm.size() < 1 )
       continue;
 
@@ -571,7 +571,7 @@ bool QgsGrassMapcalc::inputRegion( struct Cell_head *window, QgsCoordinateRefere
 
     struct Cell_head mapWindow;
 
-    QStringList mm = obj->value().split( QStringLiteral( "@" ) );
+    QStringList mm = obj->value().split( '@' );
     if ( mm.size() < 1 )
       continue;
 
@@ -652,7 +652,7 @@ void QgsGrassMapcalc::setOption()
   {
     case QgsGrassMapcalcObject::Map :
     {
-      QStringList mapMapset = mObject->value().split( QStringLiteral( "@" ) );
+      QStringList mapMapset = mObject->value().split( '@' );
       if ( !mMapComboBox->setCurrent( mapMapset.value( 0 ), mapMapset.value( 1 ) ) )
       {
         mMapComboBox->setEditText( mObject->value() );

@@ -103,7 +103,7 @@ QVector<QgsDataItem *> QgsAmsConnectionItem::createChildren()
   QString format = QStringLiteral( "jpg" );
   bool found = false;
   QList<QByteArray> supportedFormats = QImageReader::supportedImageFormats();
-  foreach ( const QString &encoding, serviceData["supportedImageFormatTypes"].toString().split( "," ) )
+  foreach ( const QString &encoding, serviceData["supportedImageFormatTypes"].toString().split( ',' ) )
   {
     foreach ( const QByteArray &fmt, supportedFormats )
     {

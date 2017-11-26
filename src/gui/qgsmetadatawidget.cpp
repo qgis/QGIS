@@ -715,7 +715,7 @@ void QgsMetadataWidget::updatePanel() const
     if ( !categories.isEmpty() )
     {
       int row = categories.at( 0 )->row();
-      mCategoriesModel->setStringList( tabKeywords->item( row, 1 )->text().split( QStringLiteral( "," ) ) );
+      mCategoriesModel->setStringList( tabKeywords->item( row, 1 )->text().split( ',' ) );
     }
     else
     {

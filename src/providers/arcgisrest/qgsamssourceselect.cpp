@@ -44,7 +44,7 @@ bool QgsAmsSourceSelect::connectToService( const QgsOwsConnection &connection )
     return false;
   }
 
-  populateImageEncodings( serviceInfoMap[QStringLiteral( "supportedImageFormatTypes" )].toString().split( QStringLiteral( "," ) ) );
+  populateImageEncodings( serviceInfoMap[QStringLiteral( "supportedImageFormatTypes" )].toString().split( ',' ) );
 
   QStringList layerErrors;
   foreach ( const QVariant &layerInfo, serviceInfoMap["layers"].toList() )
