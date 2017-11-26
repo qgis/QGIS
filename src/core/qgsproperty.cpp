@@ -448,14 +448,13 @@ QVariant QgsProperty::propertyValue( const QgsExpressionContext &context, const 
           *ok = true;
         return f.attribute( d->cachedFieldIdx );
       }
-
-      int fieldIdx = f.fieldNameIndex( d->fieldName );
-      if ( fieldIdx < 0 )
+      prepare( context );
+      if ( d->cachedFieldIdx < 0 )
         return defaultValue;
 
       if ( ok )
         *ok = true;
-      return f.attribute( fieldIdx );
+      return f.attribute( d->cachedFieldIdx );
     }
 
     case ExpressionBasedProperty:
