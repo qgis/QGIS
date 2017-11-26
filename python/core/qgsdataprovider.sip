@@ -164,9 +164,17 @@ class QgsDataProvider : QObject
 
  Sub-layers are used when the provider's source can combine layers
  it knows about in some way before it hands them off to the provider.
+
+.. seealso:: SUBLAYER_SEPARATOR
  :rtype: list of str
 %End
 
+    static QString SUBLAYER_SEPARATOR;
+%Docstring
+ String sequence used for separating components of sublayers strings.
+.. seealso:: subLayers()
+.. versionadded:: 3.0
+%End
 
     virtual QStringList subLayerStyles() const;
 %Docstring

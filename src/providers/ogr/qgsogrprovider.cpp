@@ -749,7 +749,14 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
 
     QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
-    mSubLayerList << QStringLiteral( "%1:%2:%3:%4:%5" ).arg( i ).arg( layerName, layerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( layerFeatureCount ), geom, geometryColumnName );
+    QStringList parts = QStringList()
+                        << QString::number( i )
+                        << layerName
+                        << ( layerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( layerFeatureCount ) )
+                        << geom
+                        << geometryColumnName;
+
+    mSubLayerList << parts.join( QgsDataProvider::SUBLAYER_SEPARATOR );
   }
   else
   {
@@ -813,12 +820,18 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
     {
       QString geom = ogrWkbGeometryTypeName( ( bIs25D ) ? wkbSetZ( countIt.key() ) : countIt.key() );
 
-      QString sl = QStringLiteral( "%1:%2:%3:%4:%5" ).arg( i ).arg( layerName ).arg( fCount.value( countIt.key() ) ).arg( geom, geometryColumnName );
+      QStringList parts = QStringList()
+                          << QString::number( i )
+                          << layerName
+                          << QString::number( fCount.value( countIt.key() ) )
+                          << geom
+                          << geometryColumnName;
+
+      QString sl = parts.join( QgsDataProvider::SUBLAYER_SEPARATOR );
       QgsDebugMsg( "sub layer: " + sl );
       mSubLayerList << sl;
     }
   }
-
 }
 
 QStringList QgsOgrProvider::subLayers() const
