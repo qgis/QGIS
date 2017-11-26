@@ -64,7 +64,7 @@ class PointOnSurface(QgisFeatureBasedAlgorithm):
     def outputWkbType(self, input_wkb_type):
         return QgsWkbTypes.Point
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.pointOnSurface()

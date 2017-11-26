@@ -90,7 +90,7 @@ bool QgsAddIncrementalFieldAlgorithm::prepareAlgorithm( const QVariantMap &param
   return true;
 }
 
-QgsFeature QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsAddIncrementalFieldAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   if ( !mGroupedFieldNames.empty() && mGroupedFields.empty() )
   {

@@ -61,7 +61,7 @@ QgsCentroidAlgorithm *QgsCentroidAlgorithm::createInstance() const
   return new QgsCentroidAlgorithm();
 }
 
-QgsFeature QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcessingFeedback *feedback )
+QgsFeature QgsCentroidAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature feature = f;
   if ( feature.hasGeometry() )

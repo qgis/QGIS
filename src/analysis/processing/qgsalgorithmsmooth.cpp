@@ -96,7 +96,7 @@ bool QgsSmoothAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsPro
   return true;
 }
 
-QgsFeature QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+QgsFeature QgsSmoothAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )

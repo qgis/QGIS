@@ -54,7 +54,7 @@ class ReverseLineDirection(QgisFeatureBasedAlgorithm):
     def inputLayerTypes(self):
         return [QgsProcessing.TypeVectorLine]
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.geometry():
             inGeom = feature.geometry()
             reversedLine = inGeom.constGet().reversed()

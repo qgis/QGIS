@@ -71,7 +71,7 @@ QgsWkbTypes::Type QgsSubdivideAlgorithm::outputWkbType( QgsWkbTypes::Type inputW
   return QgsWkbTypes::multiType( inputWkbType );
 }
 
-QgsFeature QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProcessingFeedback *feedback )
+QgsFeature QgsSubdivideAlgorithm::processFeature( const QgsFeature &f, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature feature = f;
   if ( feature.hasGeometry() )

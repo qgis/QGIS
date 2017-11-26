@@ -52,7 +52,6 @@ class SetZValue(QgisFeatureBasedAlgorithm):
         self.z_value = 0
         self.dynamic_z = False
         self.z_property = None
-        self.expression_context = None
 
     def name(self):
         return 'setzvalue'
@@ -82,14 +81,9 @@ class SetZValue(QgisFeatureBasedAlgorithm):
         self.dynamic_z = QgsProcessingParameters.isDynamic(parameters, self.Z_VALUE)
         if self.dynamic_z:
             self.z_property = parameters[self.Z_VALUE]
-            source = self.parameterAsSource(parameters, 'INPUT', context)
-            if not isinstance(source, QgsProcessingFeatureSource):
-                source = None
-            self.expression_context = self.createExpressionContext(parameters, context, source)
-            self.z_property.prepare(self.expression_context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             new_geom = input_geometry.constGet().clone()
@@ -99,8 +93,7 @@ class SetZValue(QgisFeatureBasedAlgorithm):
 
             z = self.z_value
             if self.dynamic_z:
-                self.expression_context.setFeature(feature)
-                z, ok = self.z_property.valueAsDouble(self.expression_context, z)
+                z, ok = self.z_property.valueAsDouble(context.expressionContext(), z)
             new_geom.addZValue(z)
 
             feature.setGeometry(QgsGeometry(new_geom))

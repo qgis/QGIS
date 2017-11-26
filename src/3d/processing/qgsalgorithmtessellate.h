@@ -47,7 +47,7 @@ class QgsTessellateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QgsProcessing::SourceType outputLayerType() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type inputWkbType ) const override;
 
-    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

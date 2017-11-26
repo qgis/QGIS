@@ -91,13 +91,11 @@ QVariantMap QgsBufferAlgorithm::processAlgorithm( const QVariantMap &parameters,
   double miterLimit = parameterAsDouble( parameters, QStringLiteral( "MITER_LIMIT" ), context );
   double bufferDistance = parameterAsDouble( parameters, QStringLiteral( "DISTANCE" ), context );
   bool dynamicBuffer = QgsProcessingParameters::isDynamic( parameters, QStringLiteral( "DISTANCE" ) );
-  QgsExpressionContext expressionContext;
+  QgsExpressionContext expressionContext = createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( source.get() ) );
   QgsProperty bufferProperty;
   if ( dynamicBuffer )
   {
     bufferProperty = parameters.value( QStringLiteral( "DISTANCE" ) ).value< QgsProperty >();
-    expressionContext = createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( source.get() ) );
-    bufferProperty.prepare( expressionContext );
   }
 
   long count = source->featureCount();

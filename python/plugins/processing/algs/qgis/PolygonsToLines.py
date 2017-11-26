@@ -73,7 +73,7 @@ class PolygonsToLines(QgisFeatureBasedAlgorithm):
     def outputWkbType(self, input_wkb_type):
         return self.convertWkbToLines(input_wkb_type)
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
             feature.setGeometry(QgsGeometry(self.convertToLines(feature.geometry())))
         return feature

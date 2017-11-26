@@ -47,7 +47,7 @@ class QgsSmoothAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     QgsProcessing::SourceType outputLayerType() const override;
     bool prepareAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
-    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
   private:
     int mIterations = 1;
