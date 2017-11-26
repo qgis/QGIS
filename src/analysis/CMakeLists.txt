@@ -41,6 +41,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmlineintersection.cpp
+  processing/qgsalgorithmloadlayer.cpp
   processing/qgsalgorithmmeancoordinates.cpp
   processing/qgsalgorithmmergelines.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
