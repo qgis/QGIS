@@ -462,7 +462,7 @@ class FileWidgetWrapper(WidgetWrapper):
         else:
             self.combo = QComboBox()
             self.combo.setEditable(True)
-            files = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, (QgsProcessingOutputFile, QgsProcessingOutputString))
+            files = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, (QgsProcessingOutputRasterLayer, QgsProcessingOutputVectorLayer, QgsProcessingOutputMapLayer, QgsProcessingOutputFile, QgsProcessingOutputString))
             for f in files:
                 self.combo.addItem(self.dialog.resolveValueDescription(f), f)
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
