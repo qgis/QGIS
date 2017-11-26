@@ -412,6 +412,66 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     virtual QString toolTip() const;
 
+    /**
+     * Returns true if the parameter supports is dynamic, and can support data-defined values
+     * (i.e. QgsProperty based values).
+     * \see setIsDynamic()
+     * \see dynamicPropertyDefinition()
+     * \see dynamicLayerParameterName()
+     */
+    bool isDynamic() const { return mIsDynamic; }
+
+    /**
+     * Sets whether the parameter is \a dynamic, and can support data-defined values
+     * (i.e. QgsProperty based values).
+     * \see isDynamic()
+     * \see setDynamicPropertyDefinition()
+     * \see setDynamicLayerParameterName()
+     */
+    void setIsDynamic( bool dynamic ) { mIsDynamic = dynamic; }
+
+    /**
+     * Returns the property definition for dynamic properties.
+     * \see isDynamic()
+     * \see setDynamicPropertyDefinition()
+     * \see dynamicLayerParameterName()
+     */
+    QgsPropertyDefinition dynamicPropertyDefinition() const { return mPropertyDefinition; }
+
+    /**
+     * Sets the property \a definition for dynamic properties.
+     * \see isDynamic()
+     * \see dynamicPropertyDefinition()
+     * \see setDynamicLayerParameterName()
+     */
+    void setDynamicPropertyDefinition( const QgsPropertyDefinition &definition ) { mPropertyDefinition = definition; }
+
+    /**
+     * Returns the name of the parameter for a layer linked to a dynamic parameter, or an empty string if this is not set.
+     *
+     * Dynamic parameters (see isDynamic()) can have an optional vector layer parameter linked to them,
+     * which indicates which layer the fields and values will be available from when evaluating
+     * the dynamic parameter.
+     *
+     * \see setDynamicLayerParameterName()
+     * \see isDynamic()
+     * \see dynamicPropertyDefinition()
+     */
+    QString dynamicLayerParameterName() const { return mDynamicLayerParameterName; }
+
+    /**
+     * Sets the \a name for the parameter for a layer linked to a dynamic parameter, or an empty string if this is not set.
+     *
+     * Dynamic parameters (see isDynamic()) can have an optional vector layer parameter linked to them,
+     * which indicates which layer the fields and values will be available from when evaluating
+     * the dynamic parameter.
+     *
+     * \see dynamicLayerParameterName()
+     * \see isDynamic()
+     * \see setDynamicPropertyDefinition()
+     */
+    void setDynamicLayerParameterName( const QString &name ) { mDynamicLayerParameterName = name; }
+
   protected:
 
     //! Parameter name
@@ -431,6 +491,15 @@ class CORE_EXPORT QgsProcessingParameterDefinition
 
     //! Pointer to algorithm which owns this parameter
     QgsProcessingAlgorithm *mAlgorithm = nullptr;
+
+    //! True for dynamic parameters, which can have data-defined (QgsProperty) based values
+    bool mIsDynamic = false;
+
+    //! Data defined property definition
+    QgsPropertyDefinition mPropertyDefinition;
+
+    //! Linked vector layer parameter name for dynamic properties
+    QString mDynamicLayerParameterName;
 
     // To allow access to mAlgorithm. We don't want a public setter for this!
     friend class QgsProcessingAlgorithm;
