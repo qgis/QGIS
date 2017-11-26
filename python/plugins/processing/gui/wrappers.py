@@ -671,6 +671,17 @@ class NumberWidgetWrapper(WidgetWrapper):
     def value(self):
         return self.widget.getValue()
 
+    def postInitialize(self, wrappers):
+        if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH) and self.param.isDynamic():
+            for wrapper in wrappers:
+                if wrapper.param.name() == self.param.dynamicLayerParameterName():
+                    self.widget.setDynamicLayer(wrapper.value())
+                    wrapper.widgetValueHasChanged.connect(self.parentLayerChanged)
+                    break
+
+    def parentLayerChanged(self, wrapper):
+        self.widget.setDynamicLayer(wrapper.value())
+
 
 class RangeWidgetWrapper(WidgetWrapper):
 
