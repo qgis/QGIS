@@ -1445,6 +1445,7 @@ void TestQgsProcessing::parameters()
   // test parameter utilities
 
   std::unique_ptr< QgsProcessingParameterDefinition > def;
+
   QVariantMap params;
   params.insert( QStringLiteral( "prop" ), QgsProperty::fromField( "a_field" ) );
   params.insert( QStringLiteral( "string" ), QStringLiteral( "a string" ) );
@@ -1470,6 +1471,13 @@ void TestQgsProcessing::parameters()
   QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QStringLiteral( "true" ) );
   def->setName( QStringLiteral( "bad" ) );
   QCOMPARE( QgsProcessingParameters::parameterAsString( def.get(), params, context ), QString() );
+
+  def->setIsDynamic( true );
+  QVERIFY( def->isDynamic() );
+  def->setDynamicPropertyDefinition( QgsPropertyDefinition( QStringLiteral( "Distance" ), QObject::tr( "Buffer distance" ), QgsPropertyDefinition::Double ) );
+  QCOMPARE( def->dynamicPropertyDefinition().name(), QStringLiteral( "Distance" ) );
+  def->setDynamicLayerParameterName( "parent" );
+  QCOMPARE( def->dynamicLayerParameterName(), QStringLiteral( "parent" ) );
 
   // string with dynamic property (feature not set)
   def->setName( QStringLiteral( "prop" ) );
