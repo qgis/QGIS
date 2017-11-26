@@ -66,16 +66,16 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
   qDeleteAll( mPolygons );
   mPolygons = polygons;
 
-  QgsTessellator tesselator( origin.x(), origin.y(), mWithNormals );
+  QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals );
   for ( int i = 0; i < polygons.count(); ++i )
   {
     QgsPolygon *polygon = polygons.at( i );
     float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
-    tesselator.addPolygon( *polygon, extr );
+    tessellator.addPolygon( *polygon, extr );
   }
 
-  QByteArray data( ( const char * )tesselator.data().constData(), tesselator.data().count() * sizeof( float ) );
-  int nVerts = data.count() / tesselator.stride();
+  QByteArray data( ( const char * )tessellator.data().constData(), tessellator.data().count() * sizeof( float ) );
+  int nVerts = data.count() / tessellator.stride();
 
   mVertexBuffer->setData( data );
   mPositionAttribute->setCount( nVerts );

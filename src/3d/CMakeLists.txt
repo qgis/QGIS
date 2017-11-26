@@ -20,7 +20,7 @@ SET(QGIS_3D_SRCS
   chunks/qgschunkqueuejob_p.cpp
 
   processing/qgs3dalgorithms.cpp
-  processing/qgsalgorithmtesselate.cpp
+  processing/qgsalgorithmtessellate.cpp
 
   symbols/qgsabstract3dsymbol.cpp
   symbols/qgsline3dsymbol.cpp
