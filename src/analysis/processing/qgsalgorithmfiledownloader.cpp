@@ -58,7 +58,7 @@ void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL" ), QVariant(), false, false ) );
   addParameter( new QgsProcessingParameterFileDestination( QStringLiteral( "OUTPUT" ),
-                tr( "File destination" ), QObject::tr( "*.*" ), QVariant(), true ) );
+                tr( "File destination" ), QObject::tr( "All files (*.*)" ), QVariant(), true ) );
   addOutput( new QgsProcessingOutputFile( QStringLiteral( "OUTPUT" ), tr( "File destination" ) ) );
 }
 
