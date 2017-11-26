@@ -541,6 +541,12 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
                                                             QgsProcessingParameterVectorLayer,
                                                             QgsProcessingParameterMultipleLayers),
                                                            QgsProcessingOutputVectorLayer)
+        elif self.param.layerType() == QgsProcessing.TypeVector:
+            options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource,
+                                                            QgsProcessingParameterVectorLayer,
+                                                            QgsProcessingParameterMultipleLayers),
+                                                           QgsProcessingOutputVectorLayer,
+                                                           [QgsProcessing.TypeVector])
         elif self.param.layerType() == QgsProcessing.TypeVectorPoint:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource,
                                                             QgsProcessingParameterVectorLayer,
