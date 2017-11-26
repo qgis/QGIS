@@ -184,17 +184,24 @@ QgsSymbolLevelsDialog::QgsSymbolLevelsDialog( QgsFeatureRenderer *renderer, bool
   QVBoxLayout *vLayout = new QVBoxLayout();
   mWidget = new QgsSymbolLevelsWidget( renderer, usingSymbolLevels );
   vLayout->addWidget( mWidget );
-  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal );
+  QDialogButtonBox *bbox = new QDialogButtonBox( QDialogButtonBox::Cancel | QDialogButtonBox::Help | QDialogButtonBox::Ok, Qt::Horizontal );
   connect( bbox, &QDialogButtonBox::accepted, mWidget, &QgsSymbolLevelsWidget::apply );
   connect( bbox, &QDialogButtonBox::accepted, this, &QgsSymbolLevelsDialog::accept );
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsSymbolLevelsDialog::reject );
+  connect( bbox, &QDialogButtonBox::helpRequested, this, &QgsSymbolLevelsDialog::showHelp );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
+  setWindowTitle( tr( "Symbol Levels" ) );
 }
 
 void QgsSymbolLevelsDialog::setForceOrderingEnabled( bool enabled )
 {
   mWidget->setForceOrderingEnabled( enabled );
+}
+
+void QgsSymbolLevelsDialog::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_vector/vector_properties.html#symbols-levels" ) );
 }
 
 /// @cond PRIVATE
