@@ -402,7 +402,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 
 QgsPoint getPointFromData( QVector< float >::const_iterator &it )
 {
-  // tesselator geometry is x, z, -y
+  // tessellator geometry is x, z, -y
   double x = *it;
   ++it;
   double z = *it;
