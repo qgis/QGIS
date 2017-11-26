@@ -69,7 +69,7 @@ QgsFeatureRequest QgsDropGeometryAlgorithm::request() const
   return QgsFeatureRequest().setFlags( QgsFeatureRequest::NoGeometry );
 }
 
-QgsFeature QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsDropGeometryAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   f.clearGeometry();

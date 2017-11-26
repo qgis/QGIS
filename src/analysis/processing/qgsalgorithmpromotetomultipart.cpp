@@ -65,7 +65,7 @@ QgsWkbTypes::Type QgsPromoteToMultipartAlgorithm::outputWkbType( QgsWkbTypes::Ty
   return QgsWkbTypes::multiType( inputWkbType );
 }
 
-QgsFeature QgsPromoteToMultipartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsPromoteToMultipartAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() && !f.geometry().isMultipart() )

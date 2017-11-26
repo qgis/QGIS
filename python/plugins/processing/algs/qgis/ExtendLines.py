@@ -67,7 +67,7 @@ class ExtendLines(QgisFeatureBasedAlgorithm):
         self.end_distance = self.parameterAsDouble(parameters, self.END_DISTANCE, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.extendLine(self.start_distance, self.end_distance)

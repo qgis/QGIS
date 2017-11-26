@@ -72,7 +72,7 @@ QgsFields QgsOrientedMinimumBoundingBoxAlgorithm::outputFields( const QgsFields 
   return fields;
 }
 
-QgsFeature QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsOrientedMinimumBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )

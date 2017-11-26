@@ -71,7 +71,7 @@ class SetMValue(QgisFeatureBasedAlgorithm):
         self.m_value = self.parameterAsDouble(parameters, self.M_VALUE, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             new_geom = input_geometry.constGet().clone()

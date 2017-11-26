@@ -90,7 +90,7 @@ class AddTableField(QgisFeatureBasedAlgorithm):
         inputFields.append(self.field)
         return inputFields
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         attributes = feature.attributes()
         attributes.append(None)
         feature.setAttributes(attributes)

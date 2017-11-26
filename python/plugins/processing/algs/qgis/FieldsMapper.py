@@ -151,7 +151,7 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
         self._row_number = 0
         return super().processAlgorithm(parameters, context, feeback)
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         attributes = []
         for expression in self.expressions:
             self.expr_context.setFeature(feature)

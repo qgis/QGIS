@@ -66,7 +66,7 @@ class DeleteHoles(QgisFeatureBasedAlgorithm):
             self.min_area = -1.0
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
             feature.setGeometry(feature.geometry().removeInteriorRings(self.min_area))
         return feature

@@ -80,7 +80,7 @@ class LinesToPolygons(QgisFeatureBasedAlgorithm):
     def outputWkbType(self, input_wkb_type):
         return self.convertWkbToPolygons(input_wkb_type)
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
             feature.setGeometry(QgsGeometry(self.convertToPolygons(feature.geometry())))
             if feature.geometry().isEmpty():

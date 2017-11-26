@@ -67,7 +67,7 @@ QgsFixGeometriesAlgorithm *QgsFixGeometriesAlgorithm::createInstance() const
   return new QgsFixGeometriesAlgorithm();
 }
 
-QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   if ( !feature.hasGeometry() )
     return feature;

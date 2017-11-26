@@ -81,7 +81,7 @@ bool QgsMinimumEnclosingCircleAlgorithm::prepareAlgorithm( const QVariantMap &pa
   return true;
 }
 
-QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsMinimumEnclosingCircleAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )

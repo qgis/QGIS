@@ -88,7 +88,7 @@ bool QgsSimplifyAlgorithm::prepareAlgorithm( const QVariantMap &parameters, QgsP
   return true;
 }
 
-QgsFeature QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsSimplifyAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )

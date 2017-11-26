@@ -68,7 +68,7 @@ bool QgsAssignProjectionAlgorithm::prepareAlgorithm( const QVariantMap &paramete
   return true;
 }
 
-QgsFeature QgsAssignProjectionAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsAssignProjectionAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   return feature;
 }

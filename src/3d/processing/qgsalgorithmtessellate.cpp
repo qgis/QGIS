@@ -74,7 +74,7 @@ QgsTessellateAlgorithm *QgsTessellateAlgorithm::createInstance() const
   return new QgsTessellateAlgorithm();
 }
 
-QgsFeature QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )

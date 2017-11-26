@@ -79,7 +79,7 @@ class Orthogonalize(QgisFeatureBasedAlgorithm):
         self.angle_tolerance = self.parameterAsDouble(parameters, self.ANGLE_TOLERANCE, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.orthogonalize(1.0e-8, self.max_iterations, self.angle_tolerance)
