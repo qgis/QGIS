@@ -198,6 +198,7 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
             self.btnDataDefined = None
         else:
             self.btnDataDefined.init(0, QgsProperty(), self.param.dynamicPropertyDefinition())
+            self.btnDataDefined.registerEnabledWidget(self.spnValue, False)
 
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
