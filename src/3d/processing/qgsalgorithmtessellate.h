@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmtesselate.h
+                         qgsalgorithmtessellate.h
                          ---------------------
     begin                : November 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSALGORITHMTESSELATE_H
-#define QGSALGORITHMTESSELATE_H
+#ifndef QGSALGORITHMTESSELLATE_H
+#define QGSALGORITHMTESSELLATE_H
 
 #define SIP_NO_FILE
 
@@ -26,21 +26,21 @@
 ///@cond PRIVATE
 
 /**
- * Native tesselate algorithm.
+ * Native tessellate algorithm.
  */
-class QgsTesselateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
+class QgsTessellateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 {
 
   public:
 
-    QgsTesselateAlgorithm() = default;
+    QgsTessellateAlgorithm() = default;
     QString name() const override;
     QString displayName() const override;
     virtual QStringList tags() const override;
     QString group() const override;
     QString shortHelpString() const override;
     QList<int> inputLayerTypes() const override;
-    QgsTesselateAlgorithm *createInstance() const override SIP_FACTORY;
+    QgsTessellateAlgorithm *createInstance() const override SIP_FACTORY;
 
   protected:
     QString outputName() const override;
@@ -54,6 +54,6 @@ class QgsTesselateAlgorithm : public QgsProcessingFeatureBasedAlgorithm
 
 ///@endcond PRIVATE
 
-#endif // QGSALGORITHMTESSELATE_H
+#endif // QGSALGORITHMTESSELLATE_H
 
 

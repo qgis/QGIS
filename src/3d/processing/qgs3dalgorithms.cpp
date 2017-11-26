@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "qgs3dalgorithms.h"
-#include "qgsalgorithmtesselate.h"
+#include "qgsalgorithmtessellate.h"
 #include "qgsapplication.h"
 
 ///@cond PRIVATE
@@ -52,7 +52,7 @@ bool Qgs3DAlgorithms::supportsNonFileBasedOutput() const
 
 void Qgs3DAlgorithms::loadAlgorithms()
 {
-  addAlgorithm( new QgsTesselateAlgorithm() );
+  addAlgorithm( new QgsTessellateAlgorithm() );
 }
 
 

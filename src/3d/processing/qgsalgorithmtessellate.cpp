@@ -1,5 +1,5 @@
 /***************************************************************************
-                         qgsalgorithmtesselate.cpp
+                         qgsalgorithmtessellate.cpp
                          ---------------------
     begin                : November 2017
     copyright            : (C) 2017 by Nyall Dawson
@@ -15,66 +15,66 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "qgsalgorithmtesselate.h"
+#include "qgsalgorithmtessellate.h"
 #include "qgstessellator.h"
 #include "qgsmultipolygon.h"
 #include "qgstriangle.h"
 ///@cond PRIVATE
 
-QString QgsTesselateAlgorithm::name() const
+QString QgsTessellateAlgorithm::name() const
 {
-  return QStringLiteral( "tesselate" );
+  return QStringLiteral( "tessellate" );
 }
 
-QString QgsTesselateAlgorithm::displayName() const
+QString QgsTessellateAlgorithm::displayName() const
 {
-  return QObject::tr( "Tesselate geometry" );
+  return QObject::tr( "Tessellate geometry" );
 }
 
-QStringList QgsTesselateAlgorithm::tags() const
+QStringList QgsTessellateAlgorithm::tags() const
 {
   return QObject::tr( "3d,triangle" ).split( ',' );
 }
 
-QString QgsTesselateAlgorithm::group() const
+QString QgsTessellateAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
 }
 
-QString QgsTesselateAlgorithm::outputName() const
+QString QgsTessellateAlgorithm::outputName() const
 {
-  return QObject::tr( "Tesselated" );
+  return QObject::tr( "Tessellated" );
 }
 
-QgsProcessing::SourceType QgsTesselateAlgorithm::outputLayerType() const
+QgsProcessing::SourceType QgsTessellateAlgorithm::outputLayerType() const
 {
   return QgsProcessing::TypeVectorPolygon;
 }
 
-QgsWkbTypes::Type QgsTesselateAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
+QgsWkbTypes::Type QgsTessellateAlgorithm::outputWkbType( QgsWkbTypes::Type inputWkbType ) const
 {
   Q_UNUSED( inputWkbType );
   return QgsWkbTypes::MultiPolygonZ;
 }
 
-QString QgsTesselateAlgorithm::shortHelpString() const
+QString QgsTessellateAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm tesselates a polygon geometry layer, dividing the geometries into triangular components." )
+  return QObject::tr( "This algorithm tessellates a polygon geometry layer, dividing the geometries into triangular components." )
          + QStringLiteral( "\n\n" )
          + QObject::tr( "The output layer consists of multipolygon geometries for each input feature, with each multipolygon consisting of multiple triangle component polygons." );
 }
 
-QList<int> QgsTesselateAlgorithm::inputLayerTypes() const
+QList<int> QgsTessellateAlgorithm::inputLayerTypes() const
 {
   return QList<int>() << QgsProcessing::TypeVectorPolygon;
 }
 
-QgsTesselateAlgorithm *QgsTesselateAlgorithm::createInstance() const
+QgsTessellateAlgorithm *QgsTessellateAlgorithm::createInstance() const
 {
-  return new QgsTesselateAlgorithm();
+  return new QgsTessellateAlgorithm();
 }
 
-QgsFeature QgsTesselateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsTessellateAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
