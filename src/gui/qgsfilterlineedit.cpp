@@ -32,7 +32,10 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget *parent, const QString &nullValue 
   setMouseTracking( true );
 
   QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
-  int iconSize = Qgis::UI_SCALE_FACTOR * fontMetrics().height();
+
+  // icon size is about 2/3 height of text, but minimum size of 16
+  int iconSize = std::floor( std::max( Qgis::UI_SCALE_FACTOR * fontMetrics().height() * 0.75, 16.0 ) );
+
   mClearIconSize = QSize( iconSize, iconSize );
   mClearIconPixmap = clearIcon.pixmap( mClearIconSize );
   QIcon hoverIcon = QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" );
