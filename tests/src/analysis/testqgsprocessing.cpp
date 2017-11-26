@@ -1308,7 +1308,24 @@ void TestQgsProcessing::createFeatureSink()
   QVERIFY( layer );
   QCOMPARE( static_cast< QgsProxyFeatureSink *>( sink.get() )->destinationSink(), layer->dataProvider() );
   QCOMPARE( layer->dataProvider()->name(), QStringLiteral( "memory" ) );
-  QCOMPARE( layer->name(), QStringLiteral( "memory:mylayer" ) );
+  QCOMPARE( layer->name(), QStringLiteral( "mylayer" ) );
+  QCOMPARE( destination, layer->id() );
+  QCOMPARE( context.temporaryLayerStore()->mapLayer( layer->id() ), layer ); // layer should be in store
+  QCOMPARE( layer->featureCount(), 0L );
+  QVERIFY( sink->addFeature( f ) );
+  QCOMPARE( layer->featureCount(), 1L );
+  context.temporaryLayerStore()->removeAllMapLayers();
+  layer = nullptr;
+
+  // nameless memory layer
+  destination = QStringLiteral( "memory:" );
+  sink.reset( QgsProcessingUtils::createFeatureSink( destination, context, QgsFields(), QgsWkbTypes::Point, QgsCoordinateReferenceSystem() ) );
+  QVERIFY( sink.get() );
+  layer = qobject_cast< QgsVectorLayer *>( QgsProcessingUtils::mapLayerFromString( destination, context, false ) );
+  QVERIFY( layer );
+  QCOMPARE( static_cast< QgsProxyFeatureSink *>( sink.get() )->destinationSink(), layer->dataProvider() );
+  QCOMPARE( layer->dataProvider()->name(), QStringLiteral( "memory" ) );
+  QCOMPARE( layer->name(), QString( "output" ) ); // should fall back to "output" name
   QCOMPARE( destination, layer->id() );
   QCOMPARE( context.temporaryLayerStore()->mapLayer( layer->id() ), layer ); // layer should be in store
   QCOMPARE( layer->featureCount(), 0L );
@@ -1327,7 +1344,7 @@ void TestQgsProcessing::createFeatureSink()
   QVERIFY( layer );
   QCOMPARE( static_cast< QgsProxyFeatureSink *>( sink.get() )->destinationSink(), layer->dataProvider() );
   QCOMPARE( layer->dataProvider()->name(), QStringLiteral( "memory" ) );
-  QCOMPARE( layer->name(), QStringLiteral( "memory:mylayer" ) );
+  QCOMPARE( layer->name(), QStringLiteral( "mylayer" ) );
   QCOMPARE( layer->wkbType(), QgsWkbTypes::PointZM );
   QCOMPARE( layer->crs().authid(), QStringLiteral( "EPSG:3111" ) );
   QCOMPARE( layer->fields().size(), 1 );
@@ -5369,7 +5386,7 @@ void TestQgsProcessing::modelExecution()
   model2.addChildAlgorithm( alg2c2 );
   params = model2.parametersForChildAlgorithm( model2.childAlgorithm( "cx2" ), modelInputs, childResults, expContext );
   QCOMPARE( params.value( "INPUT" ).toString(), QStringLiteral( "dest.shp" ) );
-  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:" ) );
+  QCOMPARE( params.value( "OUTPUT" ).toString(), QStringLiteral( "memory:Centroids" ) );
   QCOMPARE( params.count(), 2 );
 
   variables = model2.variablesForChildAlgorithm( "cx2", context );
