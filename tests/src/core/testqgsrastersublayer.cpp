@@ -138,7 +138,7 @@ void TestQgsRasterSubLayer::subLayersList()
     Q_FOREACH ( const QString &s, mpRasterLayer->subLayers() )
     {
       qDebug() << "sublayer: " << s;
-      sublayers << s.split( ':' ).last();
+      sublayers << s.split( QgsDataProvider::SUBLAYER_SEPARATOR ).last();
     }
     qDebug() << "sublayers: " << sublayers.join( QStringLiteral( "," ) );
     mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QStringLiteral( "<br>" ) ) );
