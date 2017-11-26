@@ -120,7 +120,7 @@ class CORE_EXPORT QgsProcessingOutputDefinition
 typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefinitions;
 
 /**
- * \class QgsProcessingOutputVectorLayer
+ * \class QgsProcessingOutputMapLayer
  * \ingroup core
  * A map layer output for processing algorithms, where layers may be either vector or raster.
  *
