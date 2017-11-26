@@ -19,6 +19,7 @@
 #include <QDialog>
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
+#include "qgshelp.h"
 #include "ui_qgscolorbrewercolorrampwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis.h"
@@ -117,6 +118,10 @@ class GUI_EXPORT QgsColorBrewerColorRampDialog : public QDialog
   private:
 
     QgsColorBrewerColorRampWidget *mWidget = nullptr;
+
+  private slots:
+
+    void showHelp();
 
 };
 

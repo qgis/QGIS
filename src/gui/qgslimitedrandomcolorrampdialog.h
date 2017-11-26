@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
+#include "qgshelp.h"
 #include "ui_qgslimitedrandomcolorrampwidgetbase.h"
 #include "qgis_gui.h"
 
@@ -128,6 +129,10 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
   private:
 
     QgsLimitedRandomColorRampWidget *mWidget = nullptr;
+
+  private slots:
+
+    void showHelp();
 
 };
 

@@ -20,6 +20,7 @@
 #include "qgis.h"
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
+#include "qgshelp.h"
 #include "ui_qgspresetcolorrampwidgetbase.h"
 #include "qgis_gui.h"
 
@@ -116,6 +117,10 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
   private:
 
     QgsPresetColorRampWidget *mWidget = nullptr;
+
+  private slots:
+
+    void showHelp();
 
 };
 
