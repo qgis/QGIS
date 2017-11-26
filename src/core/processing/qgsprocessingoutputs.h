@@ -47,6 +47,8 @@ class CORE_EXPORT QgsProcessingOutputDefinition
       sipType = sipType_QgsProcessingOutputVectorLayer;
     else if ( sipCpp->type() == QgsProcessingOutputRasterLayer::typeName() )
       sipType = sipType_QgsProcessingOutputRasterLayer;
+    else if ( sipCpp->type() == QgsProcessingOutputMapLayer::typeName() )
+      sipType = sipType_QgsProcessingOutputMapLayer;
     else if ( sipCpp->type() == QgsProcessingOutputHtml::typeName() )
       sipType = sipType_QgsProcessingOutputHtml;
     else if ( sipCpp->type() == QgsProcessingOutputNumber::typeName() )
@@ -116,6 +118,34 @@ class CORE_EXPORT QgsProcessingOutputDefinition
 
 //! List of processing parameters
 typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefinitions;
+
+/**
+ * \class QgsProcessingOutputVectorLayer
+ * \ingroup core
+ * A map layer output for processing algorithms, where layers may be either vector or raster.
+ *
+ * If the actual layer output type is known (e.g. always vector or always raster), use
+ * QgsProcessingOutputVectorLayer or QgsProcessingOutputRasterLayer instead.
+ *
+  * \since QGIS 3.0
+ */
+class CORE_EXPORT QgsProcessingOutputMapLayer : public QgsProcessingOutputDefinition
+{
+  public:
+
+    /**
+     * Constructor for QgsProcessingOutputMapLayer.
+     */
+    QgsProcessingOutputMapLayer( const QString &name, const QString &description = QString() );
+
+    /**
+     * Returns the type name for the output class.
+     */
+    static QString typeName() { return QStringLiteral( "outputLayer" ); }
+
+    QString type() const override;
+
+};
 
 /**
  * \class QgsProcessingOutputVectorLayer

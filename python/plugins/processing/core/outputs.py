@@ -49,6 +49,7 @@ from qgis.core import (QgsExpressionContext,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputMapLayer,
                        QgsProcessingOutputHtml,
                        QgsProcessingOutputNumber,
                        QgsProcessingOutputString,
@@ -412,6 +413,8 @@ def getOutputFromString(s):
                 out = QgsProcessingOutputRasterLayer(name, description)
             elif token.lower().strip() == 'outputvector':
                 out = QgsProcessingOutputVectorLayer(name, description)
+            elif token.lower().strip() == 'outputlayer':
+                out = QgsProcessingOutputMapLayer(name, description)
 #            elif token.lower().strip() == 'vector point':
 #                out = OutputVector(datatype=[dataobjects.TYPE_VECTOR_POINT])
 #            elif token.lower().strip() == 'vector line':

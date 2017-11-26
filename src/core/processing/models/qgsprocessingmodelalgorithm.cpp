@@ -466,7 +466,8 @@ QMap<QString, QgsProcessingModelAlgorithm::VariableDefinition> QgsProcessingMode
                                       << QgsProcessingParameterVectorLayer::typeName()
                                       << QgsProcessingParameterRasterLayer::typeName(),
                                       QStringList() << QgsProcessingOutputVectorLayer::typeName()
-                                      << QgsProcessingOutputRasterLayer::typeName() );
+                                      << QgsProcessingOutputRasterLayer::typeName()
+                                      << QgsProcessingOutputMapLayer::typeName() );
 
   Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, sources )
   {
