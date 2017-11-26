@@ -371,6 +371,13 @@ QgsFeatureSink *QgsProcessingUtils::createFeatureSink( QString &destination, Qgs
 
   if ( destination.isEmpty() || destination.startsWith( QStringLiteral( "memory:" ) ) )
   {
+    // strip "memory:" from start of destination
+    if ( destination.startsWith( QStringLiteral( "memory:" ) ) )
+      destination = destination.mid( 7 );
+
+    if ( destination.isEmpty() )
+      destination = QStringLiteral( "output" );
+
     // memory provider cannot be used with QgsVectorLayerImport - so create layer manually
     std::unique_ptr< QgsVectorLayer > layer( QgsMemoryProviderUtils::createMemoryLayer( destination, fields, geometryType, crs ) );
     if ( !layer || !layer->isValid() )

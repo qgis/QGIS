@@ -3163,7 +3163,7 @@ bool QgsProcessingParameterFeatureSink::fromVariantMap( const QVariantMap &map )
 QString QgsProcessingParameterFeatureSink::generateTemporaryDestination() const
 {
   if ( supportsNonFileBasedOutputs() )
-    return QStringLiteral( "memory:" );
+    return QStringLiteral( "memory:%1" ).arg( description() );
   else
     return QgsProcessingDestinationParameter::generateTemporaryDestination();
 }
