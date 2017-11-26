@@ -138,12 +138,12 @@ void TestQgsRasterSubLayer::subLayersList()
     Q_FOREACH ( const QString &s, mpRasterLayer->subLayers() )
     {
       qDebug() << "sublayer: " << s;
-      sublayers << s.split( QgsDataProvider::SUBLAYER_SEPARATOR ).last();
+      sublayers << s.split( ':' ).last();
     }
     qDebug() << "sublayers: " << sublayers.join( QStringLiteral( "," ) );
     mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QStringLiteral( "<br>" ) ) );
     mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QStringLiteral( "<br>" ) ) );
-    QVERIFY( sublayers == expected );
+    QCOMPARE( sublayers, expected );
     mReport += QLatin1String( "<p>Passed</p>" );
   }
 }
