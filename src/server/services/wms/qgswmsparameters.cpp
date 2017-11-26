@@ -882,7 +882,7 @@ namespace QgsWms
 
     if ( !bbox.isEmpty() )
     {
-      QStringList corners = bbox.split( "," );
+      QStringList corners = bbox.split( ',' );
 
       if ( corners.size() == 4 )
       {
@@ -1670,7 +1670,7 @@ namespace QgsWms
     QMultiMap<QString, QString> layerFilters;
     Q_FOREACH ( QString f, filter )
     {
-      QStringList splits = f.split( ":" );
+      const QStringList splits = f.split( ':' );
       if ( splits.size() == 2 )
       {
         layerFilters.insert( splits[0], splits[1] );
@@ -1687,7 +1687,7 @@ namespace QgsWms
     QMultiMap<QString, QString> layerSelections;
     Q_FOREACH ( QString s, selection )
     {
-      QStringList splits = s.split( ":" );
+      const QStringList splits = s.split( ':' );
       if ( splits.size() == 2 )
       {
         layerSelections.insert( splits[0], splits[1] );
@@ -1728,7 +1728,7 @@ namespace QgsWms
         it = layerSelections.find( layer );
         while ( it != layerSelections.end() && it.key() == layer )
         {
-          param.mSelection << it.value().split( "," );
+          param.mSelection << it.value().split( ',' );
           ++it;
         }
       }

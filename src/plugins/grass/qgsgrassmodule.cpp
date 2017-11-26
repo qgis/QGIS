@@ -672,7 +672,7 @@ void QgsGrassModule::run()
         }
         else // option
         {
-          QStringList opt = arg.split( "=" );
+          QStringList opt = arg.split( '=' );
           //env = "GIS_OPT_" + opt.takeFirst().toUpper();
           //env += "=" + opt.join( "=" ); // rejoin rest
           environment.insert( "GIS_OPT_" + opt.takeFirst().toUpper(), opt.join( "=" ) );

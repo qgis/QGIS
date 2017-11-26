@@ -1515,7 +1515,7 @@ QStringList QgsGrass::grassObjects( const QgsGrassObject &mapsetObject, QgsGrass
           fullName = fullName.trimmed();
           if ( !fullName.isEmpty() )
           {
-            QStringList nameMapset = fullName.split( QStringLiteral( "@" ) );
+            QStringList nameMapset = fullName.split( '@' );
             if ( nameMapset.value( 1 ) == mapsetObject.mapset() || nameMapset.value( 1 ).isEmpty() )
             {
               list << nameMapset.value( 0 );
@@ -2133,7 +2133,7 @@ QgsRectangle QgsGrass::extent( const QString &gisdbase, const QString &location,
   try
   {
     QString str = getInfo( QStringLiteral( "window" ), gisdbase, location, mapset, map, type );
-    QStringList list = str.split( QStringLiteral( "," ) );
+    QStringList list = str.split( ',' );
     if ( list.size() != 4 )
     {
       throw QgsGrass::Exception( "Cannot parse GRASS map extent: " + str );
@@ -2157,7 +2157,7 @@ void QgsGrass::size( const QString &gisdbase, const QString &location, const QSt
   try
   {
     QString str = getInfo( QStringLiteral( "size" ), gisdbase, location, mapset, map, QgsGrassObject::Raster );
-    QStringList list = str.split( QStringLiteral( "," ) );
+    QStringList list = str.split( ',' );
     if ( list.size() != 2 )
     {
       throw QgsGrass::Exception( "Cannot parse GRASS map size: " + str );
@@ -2250,7 +2250,7 @@ QMap<QString, QString> QgsGrass::query( const QString &gisdbase, const QString &
   try
   {
     QString str = getInfo( QStringLiteral( "query" ), gisdbase, location, mapset, map, type, x, y );
-    QStringList list = str.trimmed().split( QStringLiteral( ":" ) );
+    QStringList list = str.trimmed().split( ':' );
     if ( list.size() == 2 )
     {
       result[list[0]] = list[1];
