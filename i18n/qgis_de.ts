@@ -24417,9 +24417,9 @@ Datenbank: %2</translation>
     <message numerus="yes">
         <source>Are you sure you want to delete %n bookmark(s)?</source>
         <comment>number of rows</comment>
-        <translation>
-            <numerusform>Sind Sie sicher, daß Sie das Lesezeichen löschen wollen?</numerusform>
-            <numerusform>Sind Sie sicher, daß Sie %n Lesezeichen löschen wollen?</numerusform>
+        <translation type="unfinished">
+            <numerusform>Soll das Lesezeichen wirklich gelöscht werden?</numerusform>
+            <numerusform>Sollen %n Lesezeichen wirklich gelöscht werden?</numerusform>
         </translation>
     </message>
     <message>
