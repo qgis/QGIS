@@ -54,6 +54,20 @@ class QgsPropertyOverrideButton: QToolButton
 %End
 
     void init( int propertyKey,
+               const QgsProperty &property,
+               const QgsPropertyDefinition &definition,
+               const QgsVectorLayer *layer = 0,
+               bool auxiliaryStorageEnabled = false );
+%Docstring
+ Initialize a newly constructed property button (useful if button was included in a UI layout).
+ \param propertyKey key for corresponding property
+ \param property initial value of associated property to show in widget
+ \param definition properties definition for button
+ \param layer associated vector layer
+ \param auxiliaryStorageEnabled If true, activate the button to store data defined in auxiliary storage
+%End
+
+    void init( int propertyKey,
                const QgsAbstractPropertyCollection &collection,
                const QgsPropertiesDefinition &definitions,
                const QgsVectorLayer *layer = 0,
