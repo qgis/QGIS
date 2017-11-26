@@ -35,9 +35,11 @@ class TestQgsProcessingAlgs: public QObject
     void cleanup() {} // will be called after every testfunction.
     void packageAlg();
     void renameLayerAlg();
+    void loadLayerAlg();
 
   private:
 
+    QString mPointLayerPath;
     QgsVectorLayer *mPointsLayer = nullptr;
     QgsVectorLayer *mPolygonLayer = nullptr;
 
@@ -59,7 +61,8 @@ void TestQgsProcessingAlgs::initTestCase()
 
   QString pointsFileName = dataDir + "/points.shp";
   QFileInfo pointFileInfo( pointsFileName );
-  mPointsLayer = new QgsVectorLayer( pointFileInfo.filePath(),
+  mPointLayerPath = pointFileInfo.filePath();
+  mPointsLayer = new QgsVectorLayer( mPointLayerPath,
                                      QStringLiteral( "points" ), QStringLiteral( "ogr" ) );
   QVERIFY( mPointsLayer->isValid() );
   // Register the layer with the registry
@@ -167,6 +170,51 @@ void TestQgsProcessingAlgs::renameLayerAlg()
   QCOMPARE( layer->name(), QStringLiteral( "new name2" ) );
   // result should use new name as value
   QCOMPARE( results.value( "OUTPUT" ).toString(), QStringLiteral( "new name2" ) );
+}
+
+void TestQgsProcessingAlgs::loadLayerAlg()
+{
+  const QgsProcessingAlgorithm *package( QgsApplication::processingRegistry()->algorithmById( QStringLiteral( "native:loadlayer" ) ) );
+  QVERIFY( package );
+
+  std::unique_ptr< QgsProcessingContext > context = qgis::make_unique< QgsProcessingContext >();
+  QgsProject p;
+  context->setProject( &p );
+
+  QgsProcessingFeedback feedback;
+
+  QVariantMap parameters;
+
+  // bad layer
+  parameters.insert( QStringLiteral( "INPUT" ), QStringLiteral( "bad layer" ) );
+  parameters.insert( QStringLiteral( "NAME" ), QStringLiteral( "new name" ) );
+  bool ok = false;
+  ( void )package->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+  QVERIFY( context->layersToLoadOnCompletion().empty() );
+
+  //invalid name
+  parameters.insert( QStringLiteral( "INPUT" ), mPointLayerPath );
+  parameters.insert( QStringLiteral( "NAME" ), QString() );
+  ok = false;
+  ( void )package->run( parameters, *context, &feedback, &ok );
+  QVERIFY( !ok );
+  QVERIFY( context->layersToLoadOnCompletion().empty() );
+
+  //good params
+  parameters.insert( QStringLiteral( "INPUT" ), mPointLayerPath );
+  parameters.insert( QStringLiteral( "NAME" ), QStringLiteral( "my layer" ) );
+  ok = false;
+  QVariantMap results = package->run( parameters, *context, &feedback, &ok );
+  QVERIFY( ok );
+  QVERIFY( !context->layersToLoadOnCompletion().empty() );
+  QString layerId = context->layersToLoadOnCompletion().keys().at( 0 );
+  QCOMPARE( results.value( QStringLiteral( "OUTPUT" ) ).toString(), layerId );
+  QVERIFY( !layerId.isEmpty() );
+  QVERIFY( context->temporaryLayerStore()->mapLayer( layerId ) );
+  QCOMPARE( context->layersToLoadOnCompletion().value( layerId, QgsProcessingContext::LayerDetails( QString(), nullptr, QString() ) ).name, QStringLiteral( "my layer" ) );
+  QCOMPARE( context->layersToLoadOnCompletion().value( layerId, QgsProcessingContext::LayerDetails( QString(), nullptr, QString() ) ).project, &p );
+  QCOMPARE( context->layersToLoadOnCompletion().value( layerId, QgsProcessingContext::LayerDetails( QString(), nullptr, QString() ) ).outputName, QStringLiteral( "my layer" ) );
 }
 
 
