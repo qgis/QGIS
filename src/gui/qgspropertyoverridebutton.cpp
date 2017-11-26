@@ -89,12 +89,17 @@ QgsPropertyOverrideButton::QgsPropertyOverrideButton( QWidget *parent,
 
 void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &property, const QgsPropertiesDefinition &definitions, const QgsVectorLayer *layer, bool auxiliaryStorageEnabled )
 {
+  init( propertyKey, property, definitions.value( propertyKey ), layer, auxiliaryStorageEnabled );
+}
+
+void QgsPropertyOverrideButton::init( int propertyKey, const QgsProperty &property, const QgsPropertyDefinition &definition, const QgsVectorLayer *layer, bool auxiliaryStorageEnabled )
+{
   mVectorLayer = layer;
   mAuxiliaryStorageEnabled = auxiliaryStorageEnabled;
   setToProperty( property );
   mPropertyKey = propertyKey;
 
-  mDefinition = definitions.value( propertyKey );
+  mDefinition = definition;
   mDataTypes = mDefinition.dataType();
 
   mInputDescription = mDefinition.helpText();
