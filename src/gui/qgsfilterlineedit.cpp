@@ -35,11 +35,15 @@ QgsFilterLineEdit::QgsFilterLineEdit( QWidget* parent, const QString& nullValue 
   setMouseTracking( true );
 
   QIcon clearIcon = QgsApplication::getThemeIcon( "/mIconClearText.svg" );
-  mClearIconSize = QSize( 16, 16 );
+  int size = fontMetrics().height();
+  mClearIconSize = QSize( size, size );
   mClearIconPixmap = clearIcon.pixmap( mClearIconSize );
   QIcon hoverIcon = QgsApplication::getThemeIcon( "/mIconClearTextHover.svg" );
   mClearHoverPixmap = hoverIcon.pixmap( mClearIconSize );
-
+  // Make some space for the clear icon
+  QMargins margins( textMargins( ) );
+  margins.setRight( size );
+  setTextMargins( margins );
   connect( this, SIGNAL( textChanged( const QString& ) ), this,
            SLOT( onTextChanged( const QString& ) ) );
 }
