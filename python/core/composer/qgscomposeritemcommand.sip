@@ -1,62 +1,115 @@
-/**\ingroup MapComposer
-Undo command to undo/redo all composer item related changes*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposeritemcommand.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
 class QgsComposerItemCommand: QUndoCommand
 {
+%Docstring
+ Undo command to undo/redo all composer item related changes
+%End
+
 %TypeHeaderCode
-  #include "qgscomposeritemcommand.h"
+#include "qgscomposeritemcommand.h"
 %End
   public:
-    QgsComposerItemCommand( QgsComposerItem* item, const QString& text, QUndoCommand* parent = 0 );
-    virtual ~QgsComposerItemCommand();
+    QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
 
-    /**Reverses the command*/
-    void undo();
-    /**Replays the command*/
-    void redo();
+    virtual void undo();
 
-    /**Saves current item state as previous state*/
+%Docstring
+Reverses the command
+%End
+    virtual void redo();
+
+%Docstring
+Replays the command
+%End
+
     void savePreviousState();
-    /**Saves current item state as after state*/
+%Docstring
+Saves current item state as previous state
+%End
     void saveAfterState();
+%Docstring
+Saves current item state as after state
+%End
 
     QDomDocument previousState() const;
+%Docstring
+ :rtype: QDomDocument
+%End
     QDomDocument afterState() const;
+%Docstring
+ :rtype: QDomDocument
+%End
 
-    /**Returns true if previous state and after state are valid and different*/
     bool containsChange() const;
+%Docstring
+Returns true if previous state and after state are valid and different
+ :rtype: bool
+%End
 
-    const QgsComposerItem* item() const;
+    QgsComposerItem *item() const;
+%Docstring
+ Returns the target item the command applies to.
+ :return: target composer item
+ :rtype: QgsComposerItem
+%End
 
   protected:
-    void saveState( QDomDocument& stateDoc ) const;
-    void restoreState( QDomDocument& stateDoc ) const;
+
+
+
+    void saveState( QDomDocument &stateDoc ) const;
+%Docstring
+Flag to prevent the first redo() if the command is pushed to the undo stack
+%End
+    void restoreState( QDomDocument &stateDoc ) const;
 };
 
-/**A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
-  newest after state. The purpose is to avoid too many micro changes in the history*/
-class QgsComposerMergeCommand : QgsComposerItemCommand
+class QgsComposerMergeCommand: QgsComposerItemCommand
 {
+%Docstring
+ A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
+newest after state. The purpose is to avoid too many micro changes in the history
+%End
+
 %TypeHeaderCode
-  #include "qgscomposeritemcommand.h"
+#include "qgscomposeritemcommand.h"
 %End
   public:
     enum Context
     {
-      Unknown = 0,
-      //composer label
+      Unknown,
+      //composer
       ComposerLabelSetText,
       ComposerLabelSetId,
-      ComposerLabelRotation,
-      //composer map
+      ComposerLabelFontColor,
+      //composer
       ComposerMapRotation,
       ComposerMapAnnotationDistance,
-      //composer legend
+      ComposerMapGridFramePenColor,
+      ComposerMapGridFrameFill1Color,
+      ComposerMapGridFrameFill2Color,
+      ComposerMapGridAnnotationFontColor,
+      //composer
       ComposerLegendText,
       LegendColumnCount,
       LegendSplitLayer,
       LegendEqualColumnWidth,
       LegendSymbolWidth,
       LegendSymbolHeight,
+      LegendWmsLegendWidth,
+      LegendWmsLegendHeight,
       LegendTitleSpaceBottom,
       LegendGroupSpace,
       LegendLayerSpace,
@@ -64,9 +117,16 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       LegendIconSymbolSpace,
       LegendBoxSpace,
       LegendColumnSpace,
-      //composer picture
+      LegendLineSpacing,
+      LegendRasterStrokeWidth,
+      LegendFontColor,
+      LegendRasterStrokeColor,
+      //composer
       ComposerPictureRotation,
-      // composer scalebar
+      ComposerPictureFillColor,
+      ComposerPictureStrokeColor,
+      ComposerPictureNorthOffset,
+      // composer
       ScaleBarLineWidth,
       ScaleBarHeight,
       ScaleBarSegmentSize,
@@ -76,24 +136,44 @@ class QgsComposerMergeCommand : QgsComposerItemCommand
       ScaleBarMapUnitsSegment,
       ScaleBarLabelBarSize,
       ScaleBarBoxContentSpace,
-      // composer table
+      ScaleBarFontColor,
+      ScaleBarFillColor,
+      ScaleBarFill2Color,
+      ScaleBarStrokeColor,
+      // composer
       TableMaximumFeatures,
       TableMargin,
       TableGridStrokeWidth,
-      //composer shape
-      ShapeRotation,
-      ShapeOutlineWidth,
-      //composer arrow
-      ArrowOutlineWidth,
+      //composer
+      ShapeCornerRadius,
+      ShapeStrokeWidth,
+      //composer
+      ArrowStrokeWidth,
+      ArrowHeadFillColor,
+      ArrowHeadStrokeColor,
       ArrowHeadWidth,
       //item
-      ItemOutlineWidth,
-      ItemMove
+      ItemStrokeWidth,
+      ItemStrokeColor,
+      ItemBackgroundColor,
+      ItemMove,
+      ItemRotation,
+      ItemOpacity,
+      ItemZoomContent
     };
 
-    QgsComposerMergeCommand( Context c, QgsComposerItem* item, const QString& text );
-    ~QgsComposerMergeCommand();
+    QgsComposerMergeCommand( Context c, QgsComposerItem *item, const QString &text );
 
-    bool mergeWith( const QUndoCommand * command );
-    int id() const;
+    virtual bool mergeWith( const QUndoCommand *command );
+
+    virtual int id() const;
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposeritemcommand.h                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

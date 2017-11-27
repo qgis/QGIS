@@ -1,0 +1,36 @@
+<svg height="16" width="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<radialGradient id="a" cx=".00001833" cy="1037.3622" gradientTransform="matrix(-.00000217 2 -2 -.00000217 2074.7244 1037.3644)" gradientUnits="userSpaceOnUse" r="8">
+<stop offset="0" stop-color="#fafafa"/>
+<stop offset="1" stop-color="#bababa"/>
+</radialGradient>
+<g transform="translate(0 -1036.3622)">
+<path d="m0 1036.3622h16v16h-16z" fill="url(#a)" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m2 1038.3623h3v3h-3z" fill="#ff0303" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m6 1038.3622h4v3h-4z" fill="#ff8c00" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m11 1038.3622h3v3h-3z" fill="#feb500" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m2 1047.3622h3v3h-3z" fill="#6400f5" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m6 1047.3622h4v4h-4z" fill="#904cff" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m11 1047.3622h4v4h-4z" fill="#a57ff8" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m2 1042.3622h3v4h-3z" fill="#aa003d" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m6.0000005 1042.3622h4v4h-4z" fill="#e53c99" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m11 1042.3622h3v4h-3z" fill="#ff80bb" stroke-linecap="square" stroke-linejoin="round" stroke-width="1.14199996"/>
+<path d="m6 1v1 3h1v-3h3v-1h-3z" fill="#fff" opacity=".12757202" transform="translate(0 1036.3622)"/>
+<path d="m11 1037.3622v1 3h1v-3h3v-1h-3z" fill="#fff" opacity=".19753086"/>
+<path d="m6 1042.3621v1 3h1v-3h3v-1h-3z" fill="#fff" opacity=".14403292"/>
+<path d="m11 1042.3621v1 3h1v-3h3v-1h-3z" fill="#fff" opacity=".08230453"/>
+<path d="m9 2v2h-2v1h3v-1-2z" opacity=".09053498" transform="translate(0 1036.3622)"/>
+<path d="m14 1038.3622v2h-2v1h3v-1-2z" opacity=".07407407"/>
+<path d="m4 1038.3622v2h-2v1h3v-1-2z" opacity=".1563786"/>
+<path d="m9 1048.3622v2h-2v1h3v-1-2z" opacity=".1399177"/>
+<path d="m14 1048.3622v2h-2v1h3v-1-2z" opacity=".11522634"/>
+<path d="m4 1048.3622v2h-2v1h3v-1-2z" fill="#045" opacity=".11934156"/>
+<path d="m9.0000004 1043.3621v2h-2.0000004v1h3v-1-2z" opacity=".08230453"/>
+<path d="m14 1043.3621v2h-2v1h3v-1-2z" opacity=".10288066"/>
+<path d="m4 1043.3621v2h-2v1h3v-1-2z" opacity=".25514407"/>
+<path d="m .4997687 1037.8619h14.000463v13.000463h-14.000463z" fill="none" stroke="#f9f9f9" stroke-linecap="round" stroke-width=".99953741"/>
+<path d="m .50011432 1036.8622h14.999771v14.999771h-14.999771z" fill="none" stroke="#999" stroke-linecap="round" stroke-width="1.00022864"/>
+<path d="m11 1047.3622v1 3h1v-3h3v-1h-3z" fill="#fff" opacity=".03703703"/>
+<path d="m13 1047.3622v2h-2v1h3v-1-2z" opacity=".08230453"/>
+<path d="m13 1038.3622v2h-2v1h3v-1-2z" opacity=".03703703"/>
+</g>
+</svg>

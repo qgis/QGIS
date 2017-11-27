@@ -6,6 +6,7 @@
 	<field key="column" layer="input" type="integer,double"/>
 	<option key="raster"/>
 	<option key="output"/>
-	<flag key="b" answer="off" hidden="no" />
-	<flag key="c" answer="off" hidden="no" />
+
+
+		<option key="method" answer="nearest" advanced="yes"/>
 </qgisgrassmodule>

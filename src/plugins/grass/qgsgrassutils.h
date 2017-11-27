@@ -23,7 +23,8 @@ class QLabel;
 class QPushButton;
 class QgisInterface;
 
-/*! \class QgsGrassUtils
+/**
+ * \class QgsGrassUtils
  *  \brief Various utilities.
  */
 class QgsGrassUtils
@@ -31,10 +32,7 @@ class QgsGrassUtils
 
   public:
     //! Constructor
-    QgsGrassUtils();
-
-    //! Destructor
-    ~QgsGrassUtils();
+    QgsGrassUtils() = default;
 
   public:
     // Create vector name from map name, layer name and number of layers
@@ -47,9 +45,12 @@ class QgsGrassUtils
     // Check if element exists in current mapset
     static bool itemExists( QString element, QString item );
 
+    //! Get path to custom HTML browser starter executable
+    static QString htmlBrowserPath();
 };
 
-/*! \class QgsGrassElementDialog
+/**
+ * \class QgsGrassElementDialog
  *  \brief Get name for new element
  */
 class QgsGrassElementDialog: public QObject
@@ -58,10 +59,7 @@ class QgsGrassElementDialog: public QObject
 
   public:
     //! Constructor
-    QgsGrassElementDialog( QWidget *parent );
-
-    //! Destructor
-    ~QgsGrassElementDialog();
+    explicit QgsGrassElementDialog( QWidget *parent );
 
   public:
     //! Get a name for new GRASS element (map)
@@ -69,7 +67,7 @@ class QgsGrassElementDialog: public QObject
     QString getItem( QString element,
                      QString title, QString label,
                      QString text, QString source = 0,
-                     bool * ok = 0 );
+                     bool *ok = 0 );
 
   public slots:
     void textChanged();
@@ -77,13 +75,13 @@ class QgsGrassElementDialog: public QObject
   private:
     QString mElement;
     QString mSource;
-    QDialog *mDialog;
-    QLineEdit *mLineEdit;
-    QLabel *mLabel;
-    QLabel *mErrorLabel;
-    QPushButton *mOkButton;
-    QPushButton *mCancelButton;
-    QWidget *mParent;
+    QDialog *mDialog = nullptr;
+    QLineEdit *mLineEdit = nullptr;
+    QLabel *mLabel = nullptr;
+    QLabel *mErrorLabel = nullptr;
+    QPushButton *mOkButton = nullptr;
+    QPushButton *mCancelButton = nullptr;
+    QWidget *mParent = nullptr;
 };
 
 #endif // QGSGRASSUTILS_H

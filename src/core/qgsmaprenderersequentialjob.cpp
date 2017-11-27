@@ -1,0 +1,149 @@
+/***************************************************************************
+  qgsmaprenderersequentialjob.cpp
+  --------------------------------------
+  Date                 : December 2013
+  Copyright            : (C) 2013 by Martin Dobias
+  Email                : wonder dot sk at gmail dot com
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "qgsmaprenderersequentialjob.h"
+
+#include "qgslogger.h"
+#include "qgsmaprenderercustompainterjob.h"
+#include "qgspallabeling.h"
+
+QgsMapRendererSequentialJob::QgsMapRendererSequentialJob( const QgsMapSettings &settings )
+  : QgsMapRendererQImageJob( settings )
+
+{
+  QgsDebugMsgLevel( "SEQUENTIAL construct", 5 );
+
+  mImage = QImage( mSettings.outputSize(), mSettings.outputImageFormat() );
+  mImage.setDotsPerMeterX( 1000 * settings.outputDpi() / 25.4 );
+  mImage.setDotsPerMeterY( 1000 * settings.outputDpi() / 25.4 );
+  mImage.fill( Qt::transparent );
+}
+
+QgsMapRendererSequentialJob::~QgsMapRendererSequentialJob()
+{
+  QgsDebugMsgLevel( "SEQUENTIAL destruct", 5 );
+  if ( isActive() )
+  {
+    // still running!
+    QgsDebugMsgLevel( "SEQUENTIAL destruct -- still running! (canceling)", 5 );
+    cancel();
+  }
+
+  Q_ASSERT( !mInternalJob && !mPainter );
+}
+
+
+void QgsMapRendererSequentialJob::start()
+{
+  if ( isActive() )
+    return; // do nothing if we are already running
+
+  mLabelingResults.reset();
+
+  mRenderingStart.start();
+
+  mErrors.clear();
+
+  QgsDebugMsgLevel( "SEQUENTIAL START", 5 );
+
+  Q_ASSERT( !mInternalJob && !mPainter );
+
+  mPainter = new QPainter( &mImage );
+
+  mInternalJob = new QgsMapRendererCustomPainterJob( mSettings, mPainter );
+  mInternalJob->setCache( mCache );
+
+  connect( mInternalJob, &QgsMapRendererJob::finished, this, &QgsMapRendererSequentialJob::internalFinished );
+
+  mInternalJob->start();
+}
+
+
+void QgsMapRendererSequentialJob::cancel()
+{
+  if ( !isActive() )
+    return;
+
+  QgsDebugMsgLevel( "sequential - cancel internal", 5 );
+  mInternalJob->cancel();
+
+  Q_ASSERT( !mInternalJob && !mPainter );
+}
+
+void QgsMapRendererSequentialJob::cancelWithoutBlocking()
+{
+  if ( !isActive() )
+    return;
+
+  QgsDebugMsgLevel( "sequential - cancel internal", 5 );
+  mInternalJob->cancelWithoutBlocking();
+}
+
+void QgsMapRendererSequentialJob::waitForFinished()
+{
+  if ( !isActive() )
+    return;
+
+  mInternalJob->waitForFinished();
+}
+
+bool QgsMapRendererSequentialJob::isActive() const
+{
+  return nullptr != mInternalJob;
+}
+
+bool QgsMapRendererSequentialJob::usedCachedLabels() const
+{
+  return mUsedCachedLabels;
+}
+
+QgsLabelingResults *QgsMapRendererSequentialJob::takeLabelingResults()
+{
+  return mLabelingResults.release();
+}
+
+
+QImage QgsMapRendererSequentialJob::renderedImage()
+{
+  if ( isActive() && mCache )
+    // this will allow immediate display of cached layers and at the same time updates of the layer being rendered
+    return composeImage( mSettings, mInternalJob->jobs(), LabelRenderJob() );
+  else
+    return mImage;
+}
+
+
+void QgsMapRendererSequentialJob::internalFinished()
+{
+  QgsDebugMsgLevel( "SEQUENTIAL finished", 5 );
+
+  mPainter->end();
+  delete mPainter;
+  mPainter = nullptr;
+
+  mLabelingResults.reset( mInternalJob->takeLabelingResults() );
+  mUsedCachedLabels = mInternalJob->usedCachedLabels();
+
+  mErrors = mInternalJob->errors();
+
+  // now we are in a slot called from mInternalJob - do not delete it immediately
+  // so the class is still valid when the execution returns to the class
+  mInternalJob->deleteLater();
+  mInternalJob = nullptr;
+
+  mRenderingTime = mRenderingStart.elapsed();
+
+  emit finished();
+}

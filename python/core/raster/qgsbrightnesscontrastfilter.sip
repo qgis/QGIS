@@ -1,30 +1,69 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsbrightnesscontrastfilter.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsBrightnessContrastFilter : QgsRasterInterface
 {
+%Docstring
+ Brightness/contrast filter pipe for rasters.
+%End
+
 %TypeHeaderCode
-#include <qgsbrightnesscontrastfilter.h>
+#include "qgsbrightnesscontrastfilter.h"
 %End
   public:
     QgsBrightnessContrastFilter( QgsRasterInterface *input = 0 );
-    ~QgsBrightnessContrastFilter();
 
-    QgsRasterInterface * clone() const /Factory/;
+    virtual QgsBrightnessContrastFilter *clone() const /Factory/;
 
-    int bandCount() const;
 
-    QGis::DataType dataType( int bandNo ) const;
+    virtual int bandCount() const;
 
-    bool setInput( QgsRasterInterface* input );
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    virtual Qgis::DataType dataType( int bandNo ) const;
+
+
+    virtual bool setInput( QgsRasterInterface *input );
+
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
 
     void setBrightness( int brightness );
     int brightness() const;
+%Docstring
+ :rtype: int
+%End
 
     void setContrast( int contrast );
     int contrast() const;
+%Docstring
+ :rtype: int
+%End
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem );
+
+    virtual void readXml( const QDomElement &filterElem );
+
+%Docstring
+Sets base class members from xml. Usually called from create() methods of subclasses
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsbrightnesscontrastfilter.h                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

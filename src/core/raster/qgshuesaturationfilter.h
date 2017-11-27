@@ -18,12 +18,14 @@
 #ifndef QGSHUESATURATIONFILTER_H
 #define QGSHUESATURATIONFILTER_H
 
-#include "qgsrasterdataprovider.h"
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Color and saturation filter pipe for rasters.
   */
 class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
@@ -39,18 +41,17 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
       GrayscaleAverage
     };
 
-    QgsHueSaturationFilter( QgsRasterInterface *input = 0 );
-    ~QgsHueSaturationFilter();
+    QgsHueSaturationFilter( QgsRasterInterface *input = nullptr );
 
-    QgsRasterInterface * clone() const;
+    QgsHueSaturationFilter *clone() const override SIP_FACTORY;
 
-    int bandCount() const;
+    int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const;
+    Qgis::DataType dataType( int bandNo ) const override;
 
-    bool setInput( QgsRasterInterface* input );
+    bool setInput( QgsRasterInterface *input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void setSaturation( int saturation );
     int saturation() const { return mSaturation; }
@@ -60,34 +61,34 @@ class CORE_EXPORT QgsHueSaturationFilter : public QgsRasterInterface
 
     void setColorizeOn( bool colorizeOn ) { mColorizeOn = colorizeOn; }
     bool colorizeOn() const { return mColorizeOn; }
-    void setColorizeColor( QColor colorizeColor );
+    void setColorizeColor( const QColor &colorizeColor );
     QColor colorizeColor() const { return mColorizeColor; }
     void setColorizeStrength( int colorizeStrength ) { mColorizeStrength = colorizeStrength; }
     int colorizeStrength() const { return mColorizeStrength; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem );
+    //! Sets base class members from xml. Usually called from create() methods of subclasses
+    void readXml( const QDomElement &filterElem ) override;
 
   private:
-    /** Process a change in saturation and update resultant HSL & RGB values*/
+    //! Process a change in saturation and update resultant HSL & RGB values
     void processSaturation( int &r, int &g, int &b, int &h, int &s, int &l );
-    /** Process a colorization and update resultant HSL & RGB values*/
-    void processColorization( int &r, int &g, int &b, int &h, int &s, int &l ) ;
+    //! Process a colorization and update resultant HSL & RGB values
+    void processColorization( int &r, int &g, int &b, int &h, int &s, int &l );
 
-    /**Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)*/
-    int mSaturation;
-    double mSaturationScale;
+    //! Current saturation value. Range: -100 (desaturated) ... 0 (no change) ... 100 (increased)
+    int mSaturation = 0;
+    double mSaturationScale = 1;
 
-    /**Current grayscale mode*/
-    QgsHueSaturationFilter::GrayscaleMode mGrayscaleMode;
+    //! Current grayscale mode
+    QgsHueSaturationFilter::GrayscaleMode mGrayscaleMode = QgsHueSaturationFilter::GrayscaleOff;
 
-    /**Colorize settings*/
-    bool mColorizeOn;
+    //! Colorize settings
+    bool mColorizeOn = false;
     QColor mColorizeColor;
-    int mColorizeH, mColorizeS;
-    int mColorizeStrength;
+    int mColorizeH = 0, mColorizeS = 50;
+    int mColorizeStrength = 100;
 
 };
 

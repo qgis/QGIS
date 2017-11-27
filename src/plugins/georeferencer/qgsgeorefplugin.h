@@ -29,7 +29,7 @@
  *
  *   Additional useful conventions:
  *
- *   theVariableName - a method parameter (prefix with 'the')
+ *   variableName - a method parameter (prefix with 'the')
  *   myVariableName - a locally declared variable within a method ('my' prefix)
  *
  *   DO: Use mixed case variable names - myVariableName
@@ -43,7 +43,7 @@
 //
 //QGIS Includes
 //
-#include <qgisplugin.h>
+#include "qgisplugin.h"
 class QgisInterface;
 class QgsGeorefPluginGui;
 
@@ -71,23 +71,21 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     /**
     * Constructor for a plugin. The QgisApp and QgisIface pointers are passed by
     * QGIS when it attempts to instantiate the plugin.
-    * @param Pointer to the QgisApp object
-    * @param Pointer to the QgisIface object.
+    * \param Pointer to the QgisApp object
+    * \param Pointer to the QgisIface object.
      */
-    QgsGeorefPlugin( QgisInterface * );
-    //! Destructor
-    virtual ~ QgsGeorefPlugin();
+    explicit QgsGeorefPlugin( QgisInterface * );
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() override;
     //! Show the dialog box
     void run();
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! update the plugins theme when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
-    QIcon getThemeIcon( const QString &theThemeName );
+    void setCurrentTheme( const QString &themeName );
+    QIcon getThemeIcon( const QString &themeName );
 
     //////////////////////////////////////////////////////////////////////
     //
@@ -103,17 +101,16 @@ class QgsGeorefPlugin: public QObject, public QgisPlugin
     //
     ////////////////////////////////////////////////////////////////////
 
-    int mPluginType;
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mActionRunGeoref;
+    QAction *mActionRunGeoref = nullptr;
     ////////////////////////////////////////////////////////////////////
     //
     // ADD YOUR OWN MEMBER DECLARATIONS AFTER THIS POINT.....
     //
     ////////////////////////////////////////////////////////////////////
-    QgsGeorefPluginGui *mPluginGui;
+    QgsGeorefPluginGui *mPluginGui = nullptr;
 };
 
 #endif

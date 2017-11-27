@@ -1,0 +1,46 @@
+# -*- coding: utf-8 -*-
+
+"""
+***************************************************************************
+    v_voronoi.py
+    ------------
+    Date                 : February 2016
+    Copyright            : (C) 2016 by Médéric Ribreux
+    Email                : medspx at medspx dot fr
+***************************************************************************
+*                                                                         *
+*   This program is free software; you can redistribute it and/or modify  *
+*   it under the terms of the GNU General Public License as published by  *
+*   the Free Software Foundation; either version 2 of the License, or     *
+*   (at your option) any later version.                                   *
+*                                                                         *
+***************************************************************************
+"""
+
+__author__ = 'Médéric Ribreux'
+__date__ = 'February 2016'
+__copyright__ = '(C) 2016, Médéric Ribreux'
+
+# This will get replaced with a git SHA1 when you do a git archive
+
+__revision__ = '$Format:%H$'
+
+
+def processInputs(alg, parameters, context):
+    if 'input' in alg.exportedLayers:
+        return
+
+    # We need to use v.in.ogr instead of v.external
+    alg.loadVectorLayerFromParameter('input', parameters, context, False)
+    alg.processInputs(parameters, context)
+
+
+def processOutputs(alg, parameters, context):
+    fileName = alg.parameterAsOutputLayer(parameters, 'output', context)
+    grassName = '{}{}'.format('output', alg.uniqueSuffix)
+    dataType = 'auto'
+    # if we export a graph, output type will be a line
+    if alg.parameterAsBool(parameters, '-l', context):
+        dataType = 'line'
+
+    alg.exportVectorLayer(grassName, fileName, dataType)

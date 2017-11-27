@@ -1,76 +1,131 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscontrastenhancement.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsContrastEnhancement
 {
-%TypeHeaderCode
-#include <qgscontrastenhancement.h>
+%Docstring
+ Manipulates raster pixel values so that they enhanceContrast or clip into a
+ specified numerical range according to the specified
+ ContrastEnhancementAlgorithm.
 %End
 
+%TypeHeaderCode
+#include "qgscontrastenhancement.h"
+%End
   public:
 
-    /** \brief This enumerator describes the types of contrast enhancement algorithms that can be used.  */
     enum ContrastEnhancementAlgorithm
     {
-      NoEnhancement,                  //this should be the default color scaling algorithm
-      StretchToMinimumMaximum,        //linear histogram enhanceContrast
+      NoEnhancement,
+      StretchToMinimumMaximum,
       StretchAndClipToMinimumMaximum,
       ClipToMinimumMaximum,
       UserDefinedEnhancement
     };
 
-    QgsContrastEnhancement( QGis::DataType theDatatype = QGis::Byte );
+    QgsContrastEnhancement( Qgis::DataType datatype = Qgis::Byte );
+    QgsContrastEnhancement( const QgsContrastEnhancement &ce );
     ~QgsContrastEnhancement();
 
-    /*
-     *
-     * Static methods
-     *
-     */
-    /** \brief Helper function that returns the maximum possible value for a GDAL data type */
-    static double maximumValuePossible( QGis::DataType );
 
-    /** \brief Helper function that returns the minimum possible value for a GDAL data type */
-    static double minimumValuePossible( QGis::DataType );
+    static double maximumValuePossible( Qgis::DataType );
+%Docstring
+ Helper function that returns the maximum possible value for a GDAL data type
+ :rtype: float
+%End
 
-    /*
-     *
-     * Non-Static Inline methods
-     *
-     */
-    /** \brief Return the maximum value for the contrast enhancement range. */
+    static double minimumValuePossible( Qgis::DataType );
+%Docstring
+ Helper function that returns the minimum possible value for a GDAL data type
+ :rtype: float
+%End
+
+    static QString contrastEnhancementAlgorithmString( ContrastEnhancementAlgorithm algorithm );
+%Docstring
+ Return a string to serialize ContrastEnhancementAlgorithm
+ :rtype: str
+%End
+
+    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString &contrastEnhancementString );
+%Docstring
+ Deserialize ContrastEnhancementAlgorithm
+ :rtype: ContrastEnhancementAlgorithm
+%End
+
     double maximumValue() const;
+%Docstring
+ Return the maximum value for the contrast enhancement range.
+ :rtype: float
+%End
 
-    /** \brief Return the minimum value for the contrast enhancement range. */
     double minimumValue() const;
+%Docstring
+ Return the minimum value for the contrast enhancement range.
+ :rtype: float
+%End
 
     ContrastEnhancementAlgorithm contrastEnhancementAlgorithm() const;
+%Docstring
+ :rtype: ContrastEnhancementAlgorithm
+%End
 
-    static ContrastEnhancementAlgorithm contrastEnhancementAlgorithmFromString( const QString& contrastEnhancementString );
-
-    /*
-     *
-     * Non-Static methods
-     *
-     */
-    /** \brief Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed */
     int enhanceContrast( double );
+%Docstring
+ Apply the contrast enhancement to a value. Return values are 0 - 254, -1 means the pixel was clipped and should not be displayed
+ :rtype: int
+%End
 
-    /** \brief Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped) */
     bool isValueInDisplayableRange( double );
+%Docstring
+ Return true if pixel is in stretable range, false if pixel is outside of range (i.e., clipped)
+ :rtype: bool
+%End
 
-    /** \brief Set the contrast enhancement algorithm */
     void setContrastEnhancementAlgorithm( ContrastEnhancementAlgorithm, bool generateTable = true );
+%Docstring
+ Set the contrast enhancement algorithm
+%End
 
-    /** \brief A public method that allows the user to set their own custom contrast enhancment function */
-    void setContrastEnhancementFunction( QgsContrastEnhancementFunction* );
+    void setContrastEnhancementFunction( QgsContrastEnhancementFunction * );
+%Docstring
+ A public method that allows the user to set their own custom contrast enhancement function
+%End
 
-    /** \brief Set the maximum value for the contrast enhancement range. */
     void setMaximumValue( double, bool generateTable = true );
+%Docstring
+ Set the maximum value for the contrast enhancement range.
+%End
 
-    /** \brief Return the minimum value for the contrast enhancement range. */
     void setMinimumValue( double, bool generateTable = true );
+%Docstring
+ Return the minimum value for the contrast enhancement range.
+%End
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
+
+  private:
+    const QgsContrastEnhancement &operator=( const QgsContrastEnhancement & );
+%Docstring
+ :rtype: QgsContrastEnhancement
+%End
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgscontrastenhancement.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

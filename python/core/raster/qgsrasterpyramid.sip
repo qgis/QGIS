@@ -1,20 +1,51 @@
-/** \brief This struct is used to store pyramid info for the raster layer. */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterpyramid.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsRasterPyramid
 {
+%Docstring
+ This struct is used to store pyramid info for the raster layer.
+%End
+
 %TypeHeaderCode
-#include <qgsrasterpyramid.h>
+#include "qgsrasterpyramid.h"
 %End
   public:
-    /** \brief The pyramid level as implemented in gdal (level 2 is half orignal raster size etc) */
     int level;
-    /** \brief XDimension for this pyramid layer */
+%Docstring
+ The pyramid level as implemented in gdal (level 2 is half original raster size etc)
+%End
     int xDim;
-    /** \brief YDimension for this pyramid layer */
+%Docstring
+ XDimension for this pyramid layer
+%End
     int yDim;
-    /** \brief Whether the pyramid layer has been built yet */
+%Docstring
+ YDimension for this pyramid layer
+%End
     bool exists;
-    /** \brief Whether the pyramid should be built */
+%Docstring
+ Whether the pyramid layer has been built yet
+%End
     bool build;
+%Docstring
+ Whether the pyramid should be built
+%End
 
     QgsRasterPyramid();
+
 };
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterpyramid.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

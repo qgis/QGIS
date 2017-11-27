@@ -23,9 +23,9 @@
 #include "qgsleastsquares.h"
 
 
-void QgsLeastSquares::linear( std::vector<QgsPoint> mapCoords,
-                              std::vector<QgsPoint> pixelCoords,
-                              QgsPoint& origin, double& pixelXSize, double& pixelYSize )
+void QgsLeastSquares::linear( const QVector<QgsPointXY> &mapCoords,
+                              const QVector<QgsPointXY> &pixelCoords,
+                              QgsPointXY &origin, double &pixelXSize, double &pixelYSize )
 {
   int n = mapCoords.size();
   if ( n < 2 )
@@ -33,18 +33,17 @@ void QgsLeastSquares::linear( std::vector<QgsPoint> mapCoords,
     throw std::domain_error( QObject::tr( "Fit to a linear transform requires at least 2 points." ).toLocal8Bit().constData() );
   }
 
-  double sumPx( 0 ), sumPy( 0 ), sumPx2( 0 ), sumPy2( 0 ), sumPxMx( 0 ), sumPyMy( 0 ),
-  sumMx( 0 ), sumMy( 0 );
+  double sumPx( 0 ), sumPy( 0 ), sumPx2( 0 ), sumPy2( 0 ), sumPxMx( 0 ), sumPyMy( 0 ), sumMx( 0 ), sumMy( 0 );
   for ( int i = 0; i < n; ++i )
   {
-    sumPx += pixelCoords[i].x();
-    sumPy += pixelCoords[i].y();
-    sumPx2 += std::pow( pixelCoords[i].x(), 2 );
-    sumPy2 += std::pow( pixelCoords[i].y(), 2 );
-    sumPxMx += pixelCoords[i].x() * mapCoords[i].x();
-    sumPyMy += pixelCoords[i].y() * mapCoords[i].y();
-    sumMx += mapCoords[i].x();
-    sumMy += mapCoords[i].y();
+    sumPx += pixelCoords.at( i ).x();
+    sumPy += pixelCoords.at( i ).y();
+    sumPx2 += std::pow( pixelCoords.at( i ).x(), 2 );
+    sumPy2 += std::pow( pixelCoords.at( i ).y(), 2 );
+    sumPxMx += pixelCoords.at( i ).x() * mapCoords.at( i ).x();
+    sumPyMy += pixelCoords.at( i ).y() * mapCoords.at( i ).y();
+    sumMx += mapCoords.at( i ).x();
+    sumMy += mapCoords.at( i ).y();
   }
 
   double deltaX = n * sumPx2 - std::pow( sumPx, 2 );
@@ -58,15 +57,15 @@ void QgsLeastSquares::linear( std::vector<QgsPoint> mapCoords,
   origin.setX( aX );
   origin.setY( aY );
 
-  pixelXSize = qAbs( bX );
-  pixelYSize = qAbs( bY );
+  pixelXSize = std::fabs( bX );
+  pixelYSize = std::fabs( bY );
 }
 
 
-void QgsLeastSquares::helmert( std::vector<QgsPoint> mapCoords,
-                               std::vector<QgsPoint> pixelCoords,
-                               QgsPoint& origin, double& pixelSize,
-                               double& rotation )
+void QgsLeastSquares::helmert( const QVector<QgsPointXY> &mapCoords,
+                               const QVector<QgsPointXY> &pixelCoords,
+                               QgsPointXY &origin, double &pixelSize,
+                               double &rotation )
 {
   int n = mapCoords.size();
   if ( n < 2 )
@@ -77,16 +76,16 @@ void QgsLeastSquares::helmert( std::vector<QgsPoint> mapCoords,
   double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0, G = 0, H = 0, I = 0, J = 0;
   for ( int i = 0; i < n; ++i )
   {
-    A += pixelCoords[i].x();
-    B += pixelCoords[i].y();
-    C += mapCoords[i].x();
-    D += mapCoords[i].y();
-    E += mapCoords[i].x() * pixelCoords[i].x();
-    F += mapCoords[i].y() * pixelCoords[i].y();
-    G += std::pow( pixelCoords[i].x(), 2 );
-    H += std::pow( pixelCoords[i].y(), 2 );
-    I += mapCoords[i].x() * pixelCoords[i].y();
-    J += pixelCoords[i].x() * mapCoords[i].y();
+    A += pixelCoords.at( i ).x();
+    B += pixelCoords.at( i ).y();
+    C += mapCoords.at( i ).x();
+    D += mapCoords.at( i ).y();
+    E += mapCoords.at( i ).x() * pixelCoords.at( i ).x();
+    F += mapCoords.at( i ).y() * pixelCoords.at( i ).y();
+    G += std::pow( pixelCoords.at( i ).x(), 2 );
+    H += std::pow( pixelCoords.at( i ).y(), 2 );
+    I += mapCoords.at( i ).x() * pixelCoords.at( i ).y();
+    J += pixelCoords.at( i ).x() * mapCoords.at( i ).y();
   }
 
   /* The least squares fit for the parameters { a, b, x0, y0 } is the solution
@@ -105,8 +104,8 @@ void QgsLeastSquares::helmert( std::vector<QgsPoint> mapCoords,
   // we want to solve the equation M*x = b, where x = [a b x0 y0]
   gsl_matrix_view M = gsl_matrix_view_array( MData, 4, 4 );
   gsl_vector_view b = gsl_vector_view_array( bData, 4 );
-  gsl_vector* x = gsl_vector_alloc( 4 );
-  gsl_permutation* p = gsl_permutation_alloc( 4 );
+  gsl_vector *x = gsl_vector_alloc( 4 );
+  gsl_permutation *p = gsl_permutation_alloc( 4 );
   int s;
   gsl_linalg_LU_decomp( &M.matrix, p, &s );
   gsl_linalg_LU_solve( &M.matrix, p, &b.vector, x );
@@ -120,8 +119,8 @@ void QgsLeastSquares::helmert( std::vector<QgsPoint> mapCoords,
 }
 
 
-void QgsLeastSquares::affine( std::vector<QgsPoint> mapCoords,
-                              std::vector<QgsPoint> pixelCoords )
+void QgsLeastSquares::affine( QVector<QgsPointXY> mapCoords,
+                              QVector<QgsPointXY> pixelCoords )
 {
   int n = mapCoords.size();
   if ( n < 4 )
@@ -130,7 +129,7 @@ void QgsLeastSquares::affine( std::vector<QgsPoint> mapCoords,
   }
 
   double A = 0, B = 0, C = 0, D = 0, E = 0, F = 0,
-                                         G = 0, H = 0, I = 0, J = 0, K = 0;
+         G = 0, H = 0, I = 0, J = 0, K = 0;
   for ( int i = 0; i < n; ++i )
   {
     A += pixelCoords[i].x();
@@ -164,8 +163,8 @@ void QgsLeastSquares::affine( std::vector<QgsPoint> mapCoords,
   // we want to solve the equation M*x = b, where x = [a b c d x0 y0]
   gsl_matrix_view M = gsl_matrix_view_array( MData, 6, 6 );
   gsl_vector_view b = gsl_vector_view_array( bData, 6 );
-  gsl_vector* x = gsl_vector_alloc( 6 );
-  gsl_permutation* p = gsl_permutation_alloc( 6 );
+  gsl_vector *x = gsl_vector_alloc( 6 );
+  gsl_permutation *p = gsl_permutation_alloc( 6 );
   int s;
   gsl_linalg_LU_decomp( &M.matrix, p, &s );
   gsl_linalg_LU_solve( &M.matrix, p, &b.vector, x );
@@ -179,12 +178,12 @@ void QgsLeastSquares::affine( std::vector<QgsPoint> mapCoords,
  *
  * Also returns 3x3 homogenous matrices which can be used to normalize and de-normalize coordinates.
  */
-void normalizeCoordinates( const std::vector<QgsPoint> coords, std::vector<QgsPoint> &normalizedCoords,
+void normalizeCoordinates( const QVector<QgsPointXY> &coords, QVector<QgsPointXY> &normalizedCoords,
                            double normalizeMatrix[9], double denormalizeMatrix[9] )
 {
   // Calculate center of gravity
   double cogX = 0.0, cogY = 0.0;
-  for ( uint i = 0; i < coords.size(); i++ )
+  for ( int i = 0; i < coords.size(); i++ )
   {
     cogX += coords[i].x();
     cogY += coords[i].y();
@@ -194,35 +193,47 @@ void normalizeCoordinates( const std::vector<QgsPoint> coords, std::vector<QgsPo
 
   // Calculate mean distance to origin
   double meanDist = 0.0;
-  for ( uint i = 0; i < coords.size(); i++ )
+  for ( int i = 0; i < coords.size(); i++ )
   {
     double X = ( coords[i].x() - cogX );
     double Y = ( coords[i].y() - cogY );
-    meanDist += sqrt( X * X + Y * Y );
+    meanDist += std::sqrt( X * X + Y * Y );
   }
   meanDist *= 1.0 / coords.size();
 
-  double OOD = meanDist / sqrt( 2.0 );
+  double OOD = meanDist * M_SQRT1_2;
   double D   = 1.0 / OOD;
   normalizedCoords.resize( coords.size() );
-  for ( uint i = 0; i < coords.size(); i++ )
+  for ( int i = 0; i < coords.size(); i++ )
   {
-    normalizedCoords[i] = QgsPoint(( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
+    normalizedCoords[i] = QgsPointXY( ( coords[i].x() - cogX ) * D, ( coords[i].y() - cogY ) * D );
   }
 
-  normalizeMatrix[0] =   D; normalizeMatrix[1] = 0.0; normalizeMatrix[2] = -cogX * D;
-  normalizeMatrix[3] = 0.0; normalizeMatrix[4] =   D; normalizeMatrix[5] = -cogY * D;
-  normalizeMatrix[6] = 0.0; normalizeMatrix[7] = 0.0; normalizeMatrix[8] =   1.0;
+  normalizeMatrix[0] = D;
+  normalizeMatrix[1] = 0.0;
+  normalizeMatrix[2] = -cogX * D;
+  normalizeMatrix[3] = 0.0;
+  normalizeMatrix[4] = D;
+  normalizeMatrix[5] = -cogY * D;
+  normalizeMatrix[6] = 0.0;
+  normalizeMatrix[7] = 0.0;
+  normalizeMatrix[8] = 1.0;
 
-  denormalizeMatrix[0] = OOD; denormalizeMatrix[1] = 0.0; denormalizeMatrix[2] = cogX;
-  denormalizeMatrix[3] = 0.0; denormalizeMatrix[4] = OOD; denormalizeMatrix[5] = cogY;
-  denormalizeMatrix[6] = 0.0; denormalizeMatrix[7] = 0.0; denormalizeMatrix[8] =  1.0;
+  denormalizeMatrix[0] = OOD;
+  denormalizeMatrix[1] = 0.0;
+  denormalizeMatrix[2] = cogX;
+  denormalizeMatrix[3] = 0.0;
+  denormalizeMatrix[4] = OOD;
+  denormalizeMatrix[5] = cogY;
+  denormalizeMatrix[6] = 0.0;
+  denormalizeMatrix[7] = 0.0;
+  denormalizeMatrix[8] = 1.0;
 }
 
 // Fits a homography to the given corresponding points, and
 // return it in H (row-major format).
-void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
-                                  std::vector<QgsPoint> pixelCoords,
+void QgsLeastSquares::projective( QVector<QgsPointXY> mapCoords,
+                                  QVector<QgsPointXY> pixelCoords,
                                   double H[9] )
 {
   Q_ASSERT( mapCoords.size() == pixelCoords.size() );
@@ -232,8 +243,8 @@ void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
     throw std::domain_error( QObject::tr( "Fitting a projective transform requires at least 4 corresponding points." ).toLocal8Bit().constData() );
   }
 
-  std::vector<QgsPoint> mapCoordsNormalized;
-  std::vector<QgsPoint> pixelCoordsNormalized;
+  QVector<QgsPointXY> mapCoordsNormalized;
+  QVector<QgsPointXY> pixelCoordsNormalized;
 
   double normMap[9], denormMap[9];
   double normPixel[9], denormPixel[9];
@@ -244,35 +255,35 @@ void QgsLeastSquares::projective( std::vector<QgsPoint> mapCoords,
 
   // GSL does not support a full SVD, so we artificially add a linear dependent row
   // to the matrix in case the system is underconstrained.
-  uint m = qMax( 9u, ( uint )mapCoords.size() * 2u );
+  uint m = std::max( 9u, ( uint )mapCoords.size() * 2u );
   uint n = 9;
   gsl_matrix *S = gsl_matrix_alloc( m, n );
 
-  for ( uint i = 0; i < mapCoords.size(); i++ )
+  for ( int i = 0; i < mapCoords.size(); i++ )
   {
-    gsl_matrix_set( S, i*2, 0, pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2, 1, pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2, 2, 1.0 );
+    gsl_matrix_set( S, i * 2, 0, pixelCoords[i].x() );
+    gsl_matrix_set( S, i * 2, 1, pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2, 2, 1.0 );
 
-    gsl_matrix_set( S, i*2, 3, 0.0 );
-    gsl_matrix_set( S, i*2, 4, 0.0 );
-    gsl_matrix_set( S, i*2, 5, 0.0 );
+    gsl_matrix_set( S, i * 2, 3, 0.0 );
+    gsl_matrix_set( S, i * 2, 4, 0.0 );
+    gsl_matrix_set( S, i * 2, 5, 0.0 );
 
-    gsl_matrix_set( S, i*2, 6, -mapCoords[i].x()*pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2, 7, -mapCoords[i].x()*pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2, 8, -mapCoords[i].x()*1.0 );
+    gsl_matrix_set( S, i * 2, 6, -mapCoords[i].x()*pixelCoords[i].x() );
+    gsl_matrix_set( S, i * 2, 7, -mapCoords[i].x()*pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2, 8, -mapCoords[i].x() * 1.0 );
 
-    gsl_matrix_set( S, i*2 + 1, 0, 0.0 );
-    gsl_matrix_set( S, i*2 + 1, 1, 0.0 );
-    gsl_matrix_set( S, i*2 + 1, 2, 0.0 );
+    gsl_matrix_set( S, i * 2 + 1, 0, 0.0 );
+    gsl_matrix_set( S, i * 2 + 1, 1, 0.0 );
+    gsl_matrix_set( S, i * 2 + 1, 2, 0.0 );
 
-    gsl_matrix_set( S, i*2 + 1, 3, pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2 + 1, 4, pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2 + 1, 5, 1.0 );
+    gsl_matrix_set( S, i * 2 + 1, 3, pixelCoords[i].x() );
+    gsl_matrix_set( S, i * 2 + 1, 4, pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2 + 1, 5, 1.0 );
 
-    gsl_matrix_set( S, i*2 + 1, 6, -mapCoords[i].y()*pixelCoords[i].x() );
-    gsl_matrix_set( S, i*2 + 1, 7, -mapCoords[i].y()*pixelCoords[i].y() );
-    gsl_matrix_set( S, i*2 + 1, 8, -mapCoords[i].y()*1.0 );
+    gsl_matrix_set( S, i * 2 + 1, 6, -mapCoords[i].y()*pixelCoords[i].x() );
+    gsl_matrix_set( S, i * 2 + 1, 7, -mapCoords[i].y()*pixelCoords[i].y() );
+    gsl_matrix_set( S, i * 2 + 1, 8, -mapCoords[i].y() * 1.0 );
   }
 
   if ( mapCoords.size() == 4 )

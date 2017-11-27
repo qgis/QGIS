@@ -1,24 +1,33 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrunprocess.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup core
- * A class that executes an external program/script.
- * It can optionally capture the standard output and error from the
- * process and displays them in a dialog box.
- */
-class QgsRunProcess : QObject /NoDefaultCtors/
+
+
+
+
+
+class QgsRunProcess: QObject /NoDefaultCtors/
 {
-%TypeHeaderCode
-#include <qgsrunprocess.h>
+%Docstring
+ A class that executes an external program/script.
+ It can optionally capture the standard output and error from the
+ process and displays them in a dialog box.
 %End
 
+%TypeHeaderCode
+#include "qgsrunprocess.h"
+%End
   public:
-    // This class deletes itself, so to ensure that it is only created
-    // using new, the Named Consturctor Idiom is used, and one needs to
-    // use the create() static function to get an instance of this class.
 
-    // The action argument contains string with the command.
-    // If capture is true, the standard output and error from the process
-    // will be sent to QgsMessageOuptut - usually a dialog box.
-    static QgsRunProcess* create( const QString& action, bool capture ) /Factory/;
+    static QgsRunProcess *create( const QString &action, bool capture ) /Factory/;
+%Docstring
+ :rtype: QgsRunProcess
+%End
 
   public slots:
     void stdoutAvailable();
@@ -28,6 +37,14 @@ class QgsRunProcess : QObject /NoDefaultCtors/
     void dialogGone();
 
   private:
-    QgsRunProcess( const QString& action, bool capture );
-    ~QgsRunProcess();
+    QgsRunProcess( const QString &action, bool capture ) ;
+    ~QgsRunProcess() ;
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsrunprocess.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

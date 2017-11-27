@@ -19,39 +19,46 @@
 #define QGSCOMPOSERARROWWIDGET_H
 
 #include "ui_qgscomposerarrowwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerArrow;
 
-class QgsComposerArrowWidget: public QWidget, private Ui::QgsComposerArrowWidgetBase
+class QgsComposerArrowWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerArrowWidgetBase
 {
     Q_OBJECT
   public:
-    QgsComposerArrowWidget( QgsComposerArrow* arrow );
-    ~QgsComposerArrowWidget();
+    explicit QgsComposerArrowWidget( QgsComposerArrow *arrow );
 
   private:
-    QgsComposerArrow* mArrow;
+    QgsComposerArrow *mArrow = nullptr;
 
     void blockAllSignals( bool block );
 
-    QButtonGroup* mRadioButtonGroup;
+    QButtonGroup *mRadioButtonGroup = nullptr;
 
-    /**Enables / disables the SVG line inputs*/
+    //! Enables / disables the SVG line inputs
     void enableSvgInputElements( bool enable );
 
+    void updateLineSymbolMarker();
+
   private slots:
-    void on_mOutlineWidthSpinBox_valueChanged( double d );
-    void on_mArrowHeadWidthSpinBox_valueChanged( double d );
-    void on_mArrowColorButton_colorChanged( const QColor& newColor );
-    void on_mDefaultMarkerRadioButton_toggled( bool toggled );
-    void on_mNoMarkerRadioButton_toggled( bool toggled );
-    void on_mSvgMarkerRadioButton_toggled( bool toggled );
-    void on_mStartMarkerLineEdit_textChanged( const QString & text );
-    void on_mEndMarkerLineEdit_textChanged( const QString & text );
-    void on_mStartMarkerToolButton_clicked();
-    void on_mEndMarkerToolButton_clicked();
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void mArrowHeadWidthSpinBox_valueChanged( double d );
+    void mArrowHeadFillColorButton_colorChanged( const QColor &newColor );
+    void mArrowHeadStrokeColorButton_colorChanged( const QColor &newColor );
+    void mDefaultMarkerRadioButton_toggled( bool toggled );
+    void mNoMarkerRadioButton_toggled( bool toggled );
+    void mSvgMarkerRadioButton_toggled( bool toggled );
+    void mStartMarkerLineEdit_textChanged( const QString &text );
+    void mEndMarkerLineEdit_textChanged( const QString &text );
+    void mStartMarkerToolButton_clicked();
+    void mEndMarkerToolButton_clicked();
+    void mLineStyleButton_clicked();
 
     void setGuiElementValues();
+
+    void updateLineStyleFromWidget();
+    void cleanUpLineStyleSelector( QgsPanelWidget *container );
 };
 
 #endif // QGSCOMPOSERARROWWIDGET_H

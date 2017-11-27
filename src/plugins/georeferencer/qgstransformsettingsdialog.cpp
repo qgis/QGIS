@@ -16,24 +16,31 @@
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QMessageBox>
-#include <QSettings>
 
-#include "qgsprojectionselector.h"
-
+#include "qgssettings.h"
+#include "qgsprojectionselectiontreewidget.h"
 #include "qgsapplication.h"
 #include "qgsrasterlayer.h"
-
 #include "qgstransformsettingsdialog.h"
+#include "qgscoordinatereferencesystem.h"
 
 QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, const QString &output,
     int countGCPpoints, QWidget *parent )
-    : QDialog( parent )
-    , mModifiedRaster( raster )
-    , mCountGCPpoints( countGCPpoints )
+  : QDialog( parent )
+  , mSourceRasterFile( raster )
+  , mCountGCPpoints( countGCPpoints )
 {
   setupUi( this );
+  connect( tbnOutputRaster, &QToolButton::clicked, this, &QgsTransformSettingsDialog::tbnOutputRaster_clicked );
+  connect( tbnMapFile, &QToolButton::clicked, this, &QgsTransformSettingsDialog::tbnMapFile_clicked );
+  connect( tbnReportFile, &QToolButton::clicked, this, &QgsTransformSettingsDialog::tbnReportFile_clicked );
+  connect( cmbTransformType, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged );
+  connect( mWorldFileCheckBox, &QCheckBox::stateChanged, this, &QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged );
 
-  cmbTransformType->addItem( tr( "Linear" ) , ( int )QgsGeorefTransform::Linear ) ;
+  QgsSettings s;
+  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/TransformSettingsWindow/geometry" ) ).toByteArray() );
+
+  cmbTransformType->addItem( tr( "Linear" ), ( int )QgsGeorefTransform::Linear );
   cmbTransformType->addItem( tr( "Helmert" ), ( int )QgsGeorefTransform::Helmert );
   cmbTransformType->addItem( tr( "Polynomial 1" ), ( int )QgsGeorefTransform::PolynomialOrder1 );
   cmbTransformType->addItem( tr( "Polynomial 2" ), ( int )QgsGeorefTransform::PolynomialOrder2 );
@@ -43,76 +50,69 @@ QgsTransformSettingsDialog::QgsTransformSettingsDialog( const QString &raster, c
 
   leOutputRaster->setText( output );
 
-  mRegExpValidator = new QRegExpValidator( QRegExp( "(^epsg:{1}\\s*\\d+)|(^\\+proj.*)", Qt::CaseInsensitive ), leTargetSRS );
-  leTargetSRS->setValidator( mRegExpValidator );
-
   // Populate CompressionComboBox
-  mListCompression.append( "NONE" );
-  mListCompression.append( "LZW" );
-  mListCompression.append( "PACKBITS" );
-  mListCompression.append( "DEFLATE" );
+  mListCompression.append( QStringLiteral( "None" ) );
+  mListCompression.append( QStringLiteral( "LZW" ) );
+  mListCompression.append( QStringLiteral( "PACKBITS" ) );
+  mListCompression.append( QStringLiteral( "DEFLATE" ) );
   QStringList listCompressionTr;
-  foreach ( QString item, mListCompression )
+  Q_FOREACH ( const QString &item, mListCompression )
   {
-    listCompressionTr.append( tr( item.toAscii().data() ) );
+    listCompressionTr.append( tr( item.toLatin1().data() ) );
   }
   cmbCompressionComboBox->addItems( listCompressionTr );
 
+  cmbTransformType->setCurrentIndex( s.value( QStringLiteral( "/Plugin-GeoReferencer/lasttransformation" ), -1 ).toInt() );
+  cmbResampling->setCurrentIndex( s.value( QStringLiteral( "/Plugin-GeoReferencer/lastresampling" ), 0 ).toInt() );
+  cmbCompressionComboBox->setCurrentIndex( s.value( QStringLiteral( "/Plugin-GeoReferencer/lastcompression" ), 0 ).toInt() );
 
-  QSettings s;
-  cmbTransformType->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lasttransformation", -1 ).toInt() );
-  cmbResampling->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastresampling", 0 ).toInt() );
-  cmbCompressionComboBox->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lastcompression", 0 ).toInt() );
-  leTargetSRS->setText( s.value( "/Plugin-GeoReferencer/targetsrs" ).toString() );
-  mWorldFileCheckBox->setChecked( s.value( "/Plugin-Georeferencer/word_file_checkbox", false ).toBool() );
+  QString targetCRSString = s.value( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ) ).toString();
+  QgsCoordinateReferenceSystem targetCRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( targetCRSString );
+  mCrsSelector->setCrs( targetCRS );
 
-  cbxUserResolution->setChecked( s.value( "/Plugin-Georeferencer/user_specified_resolution", false ).toBool() );
+  mWorldFileCheckBox->setChecked( s.value( QStringLiteral( "/Plugin-Georeferencer/word_file_checkbox" ), false ).toBool() );
+
+  cbxUserResolution->setChecked( s.value( QStringLiteral( "/Plugin-Georeferencer/user_specified_resolution" ), false ).toBool() );
   bool ok;
-  dsbHorizRes->setValue( s.value( "/Plugin-GeoReferencer/user_specified_resx",     1.0 ).toDouble( &ok ) );
+  dsbHorizRes->setValue( s.value( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resx" ),     1.0 ).toDouble( &ok ) );
   if ( !ok )
     dsbHorizRes->setValue( 1.0 );
-  dsbVerticalRes->setValue( s.value( "/Plugin-GeoReferencer/user_specified_resy", -1.0 ).toDouble( &ok ) );
+  dsbVerticalRes->setValue( s.value( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resy" ), -1.0 ).toDouble( &ok ) );
   if ( !ok )
     dsbHorizRes->setValue( -1.0 );
 
-  // Activate spin boxes for vertical/horizontal resolution, if the option is checked
-  dsbHorizRes->setEnabled( cbxUserResolution->isChecked() );
-  dsbVerticalRes->setEnabled( cbxUserResolution->isChecked() );
-  // Update activation of spinboxes, if the user specified resolution is checked/unchecked
-  connect( cbxUserResolution, SIGNAL( toggled( bool ) ), dsbHorizRes, SLOT( setEnabled( bool ) ) );
-  connect( cbxUserResolution, SIGNAL( toggled( bool ) ), dsbVerticalRes, SLOT( setEnabled( bool ) ) );
+  cbxZeroAsTrans->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/zeroastrans" ), false ).toBool() );
+  cbxLoadInQgisWhenDone->setChecked( s.value( QStringLiteral( "/Plugin-GeoReferencer/loadinqgis" ), false ).toBool() );
+}
 
-  cbxZeroAsTrans->setChecked( s.value( "/Plugin-GeoReferencer/zeroastrans", false ).toBool() );
-  cbxLoadInQgisWhenDone->setChecked( s.value( "/Plugin-GeoReferencer/loadinqgis", false ).toBool() );
-
-  tbnOutputRaster->setIcon( getThemeIcon( "/mPushButtonFileOpen.png" ) );
-  tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSDisabled.png" ) );
-  tbnReportFile->setIcon( getThemeIcon( "/mActionSaveAsPDF.png" ) );
-  tbnMapFile->setIcon( getThemeIcon( "/mActionSaveAsPDF.png" ) );
+QgsTransformSettingsDialog::~QgsTransformSettingsDialog()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Plugin-GeoReferencer/TransformSettingsWindow/geometry" ), saveGeometry() );
 }
 
 void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::TransformParametrisation &tp,
     QgsImageWarper::ResamplingMethod &rm,
     QString &comprMethod, QString &raster,
-    QString &proj, QString& pdfMapFile, QString& pdfReportFile, bool &zt, bool &loadInQgis,
-    double& resX, double& resY )
+    QgsCoordinateReferenceSystem &proj, QString &pdfMapFile, QString &pdfReportFile, bool &zt, bool &loadInQgis,
+    double &resX, double &resY )
 {
   if ( cmbTransformType->currentIndex() == -1 )
     tp = QgsGeorefTransform::InvalidTransform;
   else
-    tp = ( QgsGeorefTransform::TransformParametrisation )cmbTransformType->itemData( cmbTransformType->currentIndex() ).toInt();
+    tp = ( QgsGeorefTransform::TransformParametrisation )cmbTransformType->currentData().toInt();
 
   rm = ( QgsImageWarper::ResamplingMethod )cmbResampling->currentIndex();
-  comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() );
+  comprMethod = mListCompression.at( cmbCompressionComboBox->currentIndex() ).toUpper();
   if ( mWorldFileCheckBox->isChecked() )
   {
-    raster = "";
+    raster.clear();
   }
   else
   {
     raster = leOutputRaster->text();
   }
-  proj = leTargetSRS->text();
+  proj = mCrsSelector->crs();
   pdfMapFile = mMapFileLineEdit->text();
   pdfReportFile = mReportFileLineEdit->text();
   zt = cbxZeroAsTrans->isChecked();
@@ -128,18 +128,18 @@ void QgsTransformSettingsDialog::getTransformSettings( QgsGeorefTransform::Trans
 
 void QgsTransformSettingsDialog::resetSettings()
 {
-  QSettings s;
-  s.setValue( "/Plugin-GeoReferencer/lasttransformation", -1 );
-  s.setValue( "/Plugin-GeoReferencer/lastresampling", 0 );
-  s.setValue( "/Plugin-GeoReferencer/lastcompression", 0 );
-  s.setValue( "/Plugin-GeoReferencer/targetsrs", QString() );
-  s.setValue( "/Plugin-GeoReferencer/zeroastrans", false );
-  s.setValue( "/Plugin-GeoReferencer/loadinqgis", false );
-  s.setValue( "/Plugin-GeoReferencer/user_specified_resolution", false );
-  s.setValue( "/Plugin-GeoReferencer/user_specified_resx",  1.0 );
-  s.setValue( "/Plugin-GeoReferencer/user_specified_resy", -1.0 );
-  s.setValue( "/Plugin-GeoReferencer/word_file_checkbox", false );
-  s.setValue( "/Plugin-GeoReferencer/lastPDFReportDir", "" );
+  QgsSettings s;
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lasttransformation" ), -1 );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastresampling" ), 0 );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastcompression" ), 0 );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ), QString() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/zeroastrans" ), false );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/loadinqgis" ), false );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resolution" ), false );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resx" ),  1.0 );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resy" ), -1.0 );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/word_file_checkbox" ), false );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() );
 }
 
 void QgsTransformSettingsDialog::changeEvent( QEvent *e )
@@ -157,62 +157,59 @@ void QgsTransformSettingsDialog::changeEvent( QEvent *e )
 
 void QgsTransformSettingsDialog::accept()
 {
-  int minGCPpoints;
-  if ( checkGCPpoints( cmbTransformType->itemData( cmbTransformType->currentIndex() ).toInt(), minGCPpoints ) )
+  if ( !leOutputRaster->text().isEmpty() )
   {
-    if ( leOutputRaster->text().isEmpty() && !mWorldFileCheckBox->isChecked() )
+    //if the file path is relative, make it relative to the raster file directory
+    QString outputRasterName = leOutputRaster->text();
+    QFileInfo rasterFileInfo( mSourceRasterFile );
+    QFileInfo outputFileInfo( rasterFileInfo.absoluteDir(), outputRasterName );
+
+    if ( outputFileInfo.fileName().isEmpty() || !outputFileInfo.dir().exists() )
     {
-      QMessageBox::information( this, tr( "Info" ), tr( "Please set output name" ) );
+      QMessageBox::warning( this, tr( "Destination Raster" ), tr( "Invalid output file name." ) );
+      leOutputRaster->setFocus();
       return;
     }
-  }
-  else
-  {
-    QMessageBox::information( this, tr( "Info" ), tr( "%1 requires at least %2 GCPs. Please define more" )
-                              .arg( cmbTransformType->currentText() ).arg( minGCPpoints ) );
-    QSettings s;
-    cmbTransformType->setCurrentIndex( s.value( "/Plugin-GeoReferencer/lasttransformation", -1 ).toInt() );
-    return;
+    if ( outputFileInfo.filePath() == mSourceRasterFile )
+    {
+      //can't overwrite input file
+      QMessageBox::warning( this, tr( "Destination Raster" ), tr( "Input raster can not be overwritten." ) );
+      leOutputRaster->setFocus();
+      return;
+    }
+    leOutputRaster->setText( outputFileInfo.absoluteFilePath() );
   }
 
-  //if the file path is relative, make it relative to the raster file directory
-  QString outputRasterName = leOutputRaster->text();
-  QFileInfo rasterFileInfo( mModifiedRaster );
-  QFileInfo outputFileInfo( rasterFileInfo.absoluteDir(), outputRasterName );
-
-  if ( outputFileInfo.fileName().isEmpty() || !outputFileInfo.dir().exists() )
-  {
-    QMessageBox::information( this, tr( "Info" ), tr( "Invalid output file name" ) );
-    return;
-  }
-  leOutputRaster->setText( outputFileInfo.absoluteFilePath() );
-
-  QSettings s;
-  s.setValue( "/Plugin-GeoReferencer/lasttransformation", cmbTransformType->currentIndex() );
-  s.setValue( "/Plugin-GeoReferencer/lastresampling", cmbResampling->currentIndex() );
-  s.setValue( "/Plugin-GeoReferencer/lastcompression", cmbCompressionComboBox->currentIndex() );
-  s.setValue( "/Plugin-GeoReferencer/targetsrs", leTargetSRS->text() );
-  s.setValue( "/Plugin-GeoReferencer/zeroastrans", cbxZeroAsTrans->isChecked() );
-  s.setValue( "/Plugin-GeoReferencer/loadinqgis", cbxLoadInQgisWhenDone->isChecked() );
-  s.setValue( "/Plugin-GeoReferencer/user_specified_resolution", cbxUserResolution->isChecked() );
-  s.setValue( "/Plugin-GeoReferencer/user_specified_resx", dsbHorizRes->value() );
-  s.setValue( "/Plugin-GeoReferencer/user_specified_resy", dsbVerticalRes->value() );
-  s.setValue( "/Plugin-GeoReferencer/word_file_checkbox", mWorldFileCheckBox->isChecked() );
+  QgsSettings s;
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lasttransformation" ), cmbTransformType->currentIndex() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastresampling" ), cmbResampling->currentIndex() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastcompression" ), cmbCompressionComboBox->currentIndex() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/targetsrs" ), mCrsSelector->crs().authid() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/zeroastrans" ), cbxZeroAsTrans->isChecked() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/loadinqgis" ), cbxLoadInQgisWhenDone->isChecked() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resolution" ), cbxUserResolution->isChecked() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resx" ), dsbHorizRes->value() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/user_specified_resy" ), dsbVerticalRes->value() );
+  s.setValue( QStringLiteral( "/Plugin-GeoReferencer/word_file_checkbox" ), mWorldFileCheckBox->isChecked() );
   QString pdfReportFileName = mReportFileLineEdit->text();
   if ( !pdfReportFileName.isEmpty() )
   {
     QFileInfo fi( pdfReportFileName );
-    s.setValue( "/Plugin-GeoReferencer/lastPDFReportDir", fi.absolutePath() );
+    s.setValue( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), fi.absolutePath() );
   }
   QDialog::accept();
 }
 
-void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
+void QgsTransformSettingsDialog::tbnOutputRaster_clicked()
 {
-  QString selectedFile = generateModifiedRasterFileName( mModifiedRaster );
-  QString rasterFileName = QFileDialog::getSaveFileName( this, tr( "Save raster" ),
-                           selectedFile, "GeoTIFF (*.tif *.tiff *.TIF *.TIFF)" );
+  QString selectedFile = leOutputRaster->text();
+  if ( selectedFile.isEmpty() )
+  {
+    selectedFile = generateModifiedRasterFileName( mSourceRasterFile );
+  }
 
+  QString rasterFileName = QFileDialog::getSaveFileName( this, tr( "Destination Raster" ),
+                           selectedFile, QStringLiteral( "GeoTIFF (*.tif *.tiff *.TIF *.TIFF)" ) );
   if ( rasterFileName.isEmpty() )
     return;
 
@@ -220,44 +217,15 @@ void QgsTransformSettingsDialog::on_tbnOutputRaster_clicked()
   leOutputRaster->setToolTip( rasterFileName );
 }
 
-void QgsTransformSettingsDialog::on_tbnTargetSRS_clicked()
+void QgsTransformSettingsDialog::tbnMapFile_clicked()
 {
-  QDialog srsSelector;
-  QVBoxLayout *layout = new QVBoxLayout;
-  QDialogButtonBox *buttonBox = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Close );
-
-  QgsProjectionSelector *projSelector = new QgsProjectionSelector( 0 );
-  layout->addWidget( projSelector );
-  layout->addWidget( buttonBox );
-  srsSelector.setLayout( layout );
-
-  connect( buttonBox, SIGNAL( accepted() ), &srsSelector, SLOT( accept() ) );
-  connect( buttonBox, SIGNAL( rejected() ), &srsSelector, SLOT( reject() ) );
-
-  if ( srsSelector.exec() )
-  {
-    QString srs;
-    // If the selected target SRS has an EPSG ID, use this as identification
-    if ( projSelector->selectedAuthId().isEmpty() )
-    {
-      srs = projSelector->selectedProj4String();
-    }
-    else
-    {
-      srs = projSelector->selectedAuthId();
-    }
-    leTargetSRS->setText( srs );
-  }
-}
-
-void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
-{
-  QSettings s;
-  QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", "" ).toString();
-  QString outputFileName = QFileDialog::getSaveFileName( 0, tr( "Select save PDF file" ), myLastUsedDir, tr( "PDF Format" ) + " (*.pdf *PDF)" );
+  QgsSettings s;
+  QString myLastUsedDir = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString();
+  QString initialFile = !mMapFileLineEdit->text().isEmpty() ? mMapFileLineEdit->text() : myLastUsedDir;
+  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Map File as" ), initialFile, tr( "PDF Format" ) + " (*.pdf *PDF)" );
   if ( !outputFileName.isNull() )
   {
-    if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
+    if ( !outputFileName.endsWith( QLatin1String( ".pdf" ), Qt::CaseInsensitive ) )
     {
       outputFileName.append( ".pdf" );
     }
@@ -265,14 +233,15 @@ void QgsTransformSettingsDialog::on_tbnMapFile_clicked()
   }
 }
 
-void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
+void QgsTransformSettingsDialog::tbnReportFile_clicked()
 {
-  QSettings s;
-  QString myLastUsedDir = s.value( "/Plugin-GeoReferencer/lastPDFReportDir", "" ).toString();
-  QString outputFileName = QFileDialog::getSaveFileName( 0, tr( "Select save PDF file" ), myLastUsedDir, tr( "PDF Format" ) + " (*.pdf *PDF)" );
+  QgsSettings s;
+  QString myLastUsedDir = s.value( QStringLiteral( "/Plugin-GeoReferencer/lastPDFReportDir" ), QDir::homePath() ).toString();
+  QString initialFile = !mReportFileLineEdit->text().isEmpty() ? mReportFileLineEdit->text() : myLastUsedDir;
+  QString outputFileName = QFileDialog::getSaveFileName( this, tr( "Save Report File as" ), initialFile, tr( "PDF Format" ) + " (*.pdf *PDF)" );
   if ( !outputFileName.isNull() )
   {
-    if ( !outputFileName.endsWith( ".pdf", Qt::CaseInsensitive ) )
+    if ( !outputFileName.endsWith( QLatin1String( ".pdf" ), Qt::CaseInsensitive ) )
     {
       outputFileName.append( ".pdf" );
     }
@@ -280,21 +249,7 @@ void QgsTransformSettingsDialog::on_tbnReportFile_clicked()
   }
 }
 
-void QgsTransformSettingsDialog::on_leTargetSRS_textChanged( const QString &text )
-{
-  QString t = text;
-  int s = t.size();
-  if ( text.isEmpty() )
-  {
-    tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSDisabled.png" ) );
-  }
-  else if ( mRegExpValidator->validate( t, s ) == QValidator::Acceptable )
-  {
-    tbnTargetSRS->setIcon( getThemeIcon( "/mPushButtonTargetSRSEnabled.png" ) );
-  }
-}
-
-void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const QString& text )
+void QgsTransformSettingsDialog::cmbTransformType_currentIndexChanged( const QString &text )
 {
   if ( text == tr( "Linear" ) )
   {
@@ -303,10 +258,12 @@ void QgsTransformSettingsDialog::on_cmbTransformType_currentIndexChanged( const 
   else
   {
     mWorldFileCheckBox->setEnabled( false );
+    // reset world file checkbox when transformation differ from Linear
+    mWorldFileCheckBox->setChecked( false );
   }
 }
 
-void QgsTransformSettingsDialog::on_mWorldFileCheckBox_stateChanged( int state )
+void QgsTransformSettingsDialog::mWorldFileCheckBox_stateChanged( int state )
 {
   bool enableOutputRaster = true;
   if ( state == Qt::Checked )
@@ -321,7 +278,7 @@ void QgsTransformSettingsDialog::on_mWorldFileCheckBox_stateChanged( int state )
 bool QgsTransformSettingsDialog::checkGCPpoints( int count, int &minGCPpoints )
 {
   QgsGeorefTransform georefTransform;
-  georefTransform.selectTransformParametrisation(( QgsGeorefTransform::TransformParametrisation )count );
+  georefTransform.selectTransformParametrisation( ( QgsGeorefTransform::TransformParametrisation )count );
   minGCPpoints = georefTransform.getMinimumGCPCount();
   return ( mCountGCPpoints >= minGCPpoints );
 }
@@ -337,34 +294,34 @@ QString QgsTransformSettingsDialog::generateModifiedRasterFileName( const QStrin
   modifiedFileName.insert( pos, tr( "_modified", "Georeferencer:QgsOpenRasterDialog.cpp - used to modify a user given file name" ) );
 
   pos = modifiedFileName.size() - modifiedFileInfo.suffix().size();
-  modifiedFileName.replace( pos, modifiedFileName.size(), "tif" );
+  modifiedFileName.replace( pos, modifiedFileName.size(), QStringLiteral( "tif" ) );
 
   return modifiedFileName;
 }
 
 // Note this code is duplicated from qgisapp.cpp because
-// I didnt want to make plugins on qgsapplication [TS]
-QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &theName )
+// I didn't want to make plugins on qgsapplication [TS]
+QIcon QgsTransformSettingsDialog::getThemeIcon( const QString &name )
 {
-  if ( QFile::exists( QgsApplication::activeThemePath() + theName ) )
+  if ( QFile::exists( QgsApplication::activeThemePath() + name ) )
   {
-    return QIcon( QgsApplication::activeThemePath() + theName );
+    return QIcon( QgsApplication::activeThemePath() + name );
   }
-  else if ( QFile::exists( QgsApplication::defaultThemePath() + theName ) )
+  else if ( QFile::exists( QgsApplication::defaultThemePath() + name ) )
   {
-    return QIcon( QgsApplication::defaultThemePath() + theName );
+    return QIcon( QgsApplication::defaultThemePath() + name );
   }
   else
   {
-    QSettings settings;
-    QString themePath = ":/icons/" + settings.value( "/Themes" ).toString() + theName;
+    QgsSettings settings;
+    QString themePath = ":/icons/" + settings.value( QStringLiteral( "Themes" ) ).toString() + name;
     if ( QFile::exists( themePath ) )
     {
       return QIcon( themePath );
     }
     else
     {
-      return QIcon( ":/icons/default" + theName );
+      return QIcon( ":/icons/default" + name );
     }
   }
 }

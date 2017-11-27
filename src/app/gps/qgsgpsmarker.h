@@ -18,34 +18,34 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include <QSvgRenderer>
 
 class QPainter;
 
-/** \ingroup app
+/**
+ * \ingroup app
  * A class for marking the position of a gps pointer.
  */
 class QgsGpsMarker : public QgsMapCanvasItem
 {
   public:
+    explicit QgsGpsMarker( QgsMapCanvas *mapCanvas );
 
-    QgsGpsMarker( QgsMapCanvas* mapCanvas );
+    void setCenter( const QgsPointXY &point );
 
-    void setCenter( const QgsPoint& point );
+    void paint( QPainter *p ) override;
 
-    void paint( QPainter* p );
+    QRectF boundingRect() const override;
 
-    QRectF boundingRect() const;
+    virtual void updatePosition() override;
 
-    virtual void updatePosition();
-
-    void setSize( int theSize );
+    void setSize( int size );
 
   protected:
 
     //! coordinates of the point in the center
-    QgsPoint mCenter;
+    QgsPointXY mCenter;
     //! Size of the marker - e.g. 8 will draw it as 8x8
     int mSize;
 

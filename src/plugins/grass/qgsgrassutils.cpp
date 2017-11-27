@@ -17,13 +17,10 @@
 #include "qgsgrass.h"
 
 #include "qgisinterface.h"
+#include "qgsapplication.h"
 #include "qgslogger.h"
 
 #include <QFileInfo>
-
-
-QgsGrassUtils::QgsGrassUtils() {}
-QgsGrassUtils::~QgsGrassUtils() {}
 
 QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
                                         int nLayers )
@@ -37,7 +34,16 @@ QString QgsGrassUtils::vectorLayerName( QString map, QString layer,
 void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
                                      QString gisbase, QString location, QString mapset, QString map )
 {
-  QStringList layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
+  QStringList layers;
+  try
+  {
+    layers = QgsGrass::vectorLayers( gisbase, location, mapset, map );
+  }
+  catch ( QgsGrass::Exception &e )
+  {
+    QgsDebugMsg( e.what() );
+    return;
+  }
 
   for ( int i = 0; i < layers.count(); i++ )
   {
@@ -50,7 +56,7 @@ void QgsGrassUtils::addVectorLayers( QgisInterface *iface,
     QgsDebugMsg( QString( "uri = %1" ).arg( uri.toLocal8Bit().constData() ) );
     QgsDebugMsg( QString( "name = %1" ).arg( name.toLocal8Bit().constData() ) );
 
-    iface->addVectorLayer( uri, name, "grass" );
+    iface->addVectorLayer( uri, name, QStringLiteral( "grass" ) );
   }
 }
 
@@ -65,17 +71,21 @@ bool QgsGrassUtils::itemExists( QString element, QString item )
   return fi.exists();
 }
 
-QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent ) : QObject(), mParent( parent )
+
+QString QgsGrassUtils::htmlBrowserPath()
+{
+  return QgsApplication::libexecPath() + "grass/bin/qgis.g.browser"  + QString::number( QgsGrass::versionMajor() );
+}
+
+QgsGrassElementDialog::QgsGrassElementDialog( QWidget *parent )
+  : mParent( parent )
 {
 }
 
-QgsGrassElementDialog::~QgsGrassElementDialog() {}
-
 QString QgsGrassElementDialog::getItem( QString element,
                                         QString title, QString label,
-                                        QString text, QString source, bool * ok )
+                                        QString text, QString source, bool *ok )
 {
-  QgsDebugMsg( "entered." );
   if ( ok )
     *ok = false;
   mElement = element;
@@ -83,42 +93,42 @@ QString QgsGrassElementDialog::getItem( QString element,
   mDialog = new QDialog( mParent );
   mDialog->setWindowTitle( title );
   QVBoxLayout *layout = new QVBoxLayout( mDialog );
-  QHBoxLayout *buttonLayout = new QHBoxLayout( );
+  QHBoxLayout *buttonLayout = new QHBoxLayout();
 
   mLabel = new QLabel( label );
   layout->addWidget( mLabel );
 
   mLineEdit = new QLineEdit( text );
   QRegExp rx;
-  if ( element == "vector" )
+  if ( element == QLatin1String( "vector" ) )
   {
-    rx.setPattern( "[A-Za-z_][A-Za-z0-9_]+" );
+    rx.setPattern( QStringLiteral( "[A-Za-z_][A-Za-z0-9_]+" ) );
   }
   else
   {
-    rx.setPattern( "[A-Za-z0-9_.]+" );
+    rx.setPattern( QStringLiteral( "[A-Za-z0-9_.]+" ) );
   }
   QRegExpValidator *val = new QRegExpValidator( rx, this );
   mLineEdit->setValidator( val );
 
   layout->addWidget( mLineEdit );
 
-  mErrorLabel = new QLabel( "X" );
+  mErrorLabel = new QLabel( QStringLiteral( "X" ) );
   layout->addWidget( mErrorLabel );
   // Intention: keep fixed size - but it does not help
   mErrorLabel->adjustSize();
   mErrorLabel->setMinimumHeight( mErrorLabel->height() + 5 );
 
-  mOkButton = new QPushButton( );
+  mOkButton = new QPushButton();
   mCancelButton = new QPushButton( tr( "Cancel" ) );
 
   layout->insertLayout( -1, buttonLayout );
   buttonLayout->addWidget( mOkButton );
   buttonLayout->addWidget( mCancelButton );
 
-  connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( textChanged() ) );
-  connect( mOkButton, SIGNAL( clicked() ), mDialog, SLOT( accept() ) );
-  connect( mCancelButton, SIGNAL( clicked() ), mDialog, SLOT( reject() ) );
+  connect( mLineEdit, &QLineEdit::textChanged, this, &QgsGrassElementDialog::textChanged );
+  connect( mOkButton, &QAbstractButton::clicked, mDialog, &QDialog::accept );
+  connect( mCancelButton, &QAbstractButton::clicked, mDialog, &QDialog::reject );
 
   textChanged();
   if ( ok && mDialog->exec() == QDialog::Accepted )
@@ -134,12 +144,11 @@ QString QgsGrassElementDialog::getItem( QString element,
 
 void QgsGrassElementDialog::textChanged()
 {
-  QgsDebugMsg( "entered." );
 
   QString text = mLineEdit->text().trimmed();
 
-  mErrorLabel->setText( "   " );
-  mOkButton->setText( tr( "Ok" ) );
+  mErrorLabel->setText( QStringLiteral( "   " ) );
+  mOkButton->setText( tr( "OK" ) );
   mOkButton->setEnabled( true );
 
   if ( text.length() == 0 )
@@ -149,7 +158,7 @@ void QgsGrassElementDialog::textChanged()
     return;
   }
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
   if ( !mSource.isNull() && text.toLower() == mSource.toLower() )
 #else
   if ( !mSource.isNull() && text == mSource )

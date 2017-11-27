@@ -1,0 +1,10 @@
+{
+  "name": "degrees",
+  "type": "function",
+  "description": "Converts from radians to degrees.",
+  "arguments": [ {"arg":"radians","description":"numeric value"}],
+  "examples": [
+	{ "expression":"degrees(3.14159)", "returns":"180"},
+	{ "expression":"degrees(1)", "returns":"57.2958"}
+  ]
+}

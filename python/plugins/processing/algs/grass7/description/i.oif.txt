@@ -1,0 +1,7 @@
+i.oif
+Calculates Optimum-Index-Factor table for spectral bands
+Imagery (i.*)
+QgsProcessingParameterMultipleLayers|input|Name of input raster map(s)|3|None|False
+*QgsProcessingParameterBoolean|-g|Print in shell script style|False
+*QgsProcessingParameterBoolean|-s|Process bands serially (default: run in parallel)|False
+QgsProcessingParameterFileDestination|output|OIF File|Txt files (*.txt)|None|False

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Performs spatio-temporal r3.mapcalc expressions on temporally sampled maps of space time 3D raster datasets" module="t.rast3d.mapcalc">
+	<option key="inputs"/>
+	<option key="output"/>
+	<option key="basename"/>
+	<option key="expression"/>
+	<flag key="n" hidden="no" advanced="yes"/>
+	<flag key="s" hidden="no" advanced="yes"/>
+	<option key="method" advanced="yes"/>
+	<option key="nprocs" advanced="yes"/>
+</qgisgrassmodule>

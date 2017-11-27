@@ -17,14 +17,16 @@ email                : jef at norbit dot de
 
 #include "qgsoraclecolumntypethread.h"
 #include "qgslogger.h"
+#include "qgsoracleconnpool.h"
 
 #include <QMetaType>
 
 QgsOracleColumnTypeThread::QgsOracleColumnTypeThread( QString name, bool useEstimatedMetadata, bool allowGeometrylessTables )
-    : QThread()
-    , mName( name )
-    , mUseEstimatedMetadata( useEstimatedMetadata )
-    , mAllowGeometrylessTables( allowGeometrylessTables )
+  : QThread()
+  , mName( name )
+  , mUseEstimatedMetadata( useEstimatedMetadata )
+  , mAllowGeometrylessTables( allowGeometrylessTables )
+  , mStopped( false )
 {
   qRegisterMetaType<QgsOracleLayerProperty>( "QgsOracleLayerProperty" );
 }
@@ -36,15 +38,16 @@ void QgsOracleColumnTypeThread::stop()
 
 void QgsOracleColumnTypeThread::run()
 {
-  QgsDataSourceURI uri = QgsOracleConn::connUri( mName );
-  QgsOracleConn *conn = QgsOracleConn::connectDb( uri.connectionInfo() );
+  mStopped = false;
+
+  QString conninfo = QgsOracleConn::toPoolName( QgsOracleConn::connUri( mName ) );
+  QgsOracleConn *conn = QgsOracleConnPool::instance()->acquireConnection( conninfo );
   if ( !conn )
   {
-    QgsDebugMsg( "Connection failed - " + uri.connectionInfo() );
+    QgsDebugMsg( "Connection failed - " + conninfo );
+    mStopped = true;
     return;
   }
-
-  mStopped = false;
 
   emit progressMessage( tr( "Retrieving tables of %1..." ).arg( mName ) );
   QVector<QgsOracleLayerProperty> layerProperties;
@@ -83,8 +86,12 @@ void QgsOracleColumnTypeThread::run()
     emit setLayerType( layerProperty );
   }
 
+  // store the list for later use (cache)
+  if ( !mStopped )
+    mLayerProperties = layerProperties;
+
   emit progress( 0, 0 );
   emit progressMessage( tr( "Table retrieval finished." ) );
 
-  conn->disconnect();
+  QgsOracleConnPool::instance()->releaseConnection( conn );
 }

@@ -26,18 +26,19 @@ class QgsGCPList;
 class QgsGCPListModel;
 class QgsGeorefTransform;
 class QgsGeorefDataPoint;
-class QgsPoint;
+class QgsPointXY;
 
 class QgsGCPListWidget : public QTableView
 {
     Q_OBJECT
   public:
-    QgsGCPListWidget( QWidget *parent = 0 );
+    explicit QgsGCPListWidget( QWidget *parent = nullptr );
 
     void setGCPList( QgsGCPList *theGCPList );
-    void setGeorefTransform( QgsGeorefTransform *theGeorefTransform );
+    void setGeorefTransform( QgsGeorefTransform *georefTransform );
     QgsGCPList *gcpList() { return mGCPList; }
     void updateGCPList();
+    void closeEditors();
 
   public slots:
     // This slot is called by the list view if an item is double-clicked
@@ -46,7 +47,6 @@ class QgsGCPListWidget : public QTableView
 
   signals:
     void jumpToGCP( uint theGCPIndex );
-//  void replaceDataPoint(QgsGeorefDataPoint *pnt, int row);
     void pointEnabled( QgsGeorefDataPoint *pnt, int i );
     void deleteDataPoint( int index );
 
@@ -62,17 +62,15 @@ class QgsGCPListWidget : public QTableView
     void createItemContextMenu();
     void adjustTableContent();
 
-    QMenu *mItemContextMenu;
+    QgsGCPList               *mGCPList = nullptr;
+    QgsGCPListModel          *mGCPListModel = nullptr;
 
-    QgsGCPList               *mGCPList;
-    QgsGCPListModel          *mGCPListModel;
+    QgsNonEditableDelegate   *mNonEditableDelegate = nullptr;
+    QgsDmsAndDdDelegate      *mDmsAndDdDelegate = nullptr;
+    QgsCoordDelegate         *mCoordDelegate = nullptr;
 
-    QgsNonEditableDelegate   *mNonEditableDelegate;
-    QgsDmsAndDdDelegate      *mDmsAndDdDelegate;
-    QgsCoordDelegate         *mCoordDelegate;
-
-    int mPrevRow;
-    int mPrevColumn;
+    int mPrevRow = 0;
+    int mPrevColumn = 0;
 };
 
 #endif

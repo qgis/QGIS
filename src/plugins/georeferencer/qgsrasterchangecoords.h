@@ -16,28 +16,28 @@
 #ifndef QGSRASTERCHANGECOORDS_H
 #define QGSRASTERCHANGECOORDS_H
 
-#include <vector>
+#include <QVector>
 
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsrectangle.h"
 
 class QgsRasterChangeCoords
 {
   public:
-    QgsRasterChangeCoords( );
+    QgsRasterChangeCoords() = default;
     void setRaster( const QString &fileRaster );
     bool hasCrs() const { return mHasCrs; }
-    std::vector<QgsPoint> getPixelCoords( const std::vector<QgsPoint> &mapCoords );
+    QVector<QgsPointXY> getPixelCoords( const QVector<QgsPointXY> &mapCoords );
     QgsRectangle getBoundingBox( const QgsRectangle &rect, bool toPixel );
-    QgsPoint toColumnLine( const QgsPoint &pntMap );
-    QgsPoint toXY( const QgsPoint &pntPixel );
+    QgsPointXY toColumnLine( const QgsPointXY &pntMap );
+    QgsPointXY toXY( const QgsPointXY &pntPixel );
 
   private:
-    bool mHasCrs;
-    double mUL_X;
-    double mUL_Y;
-    double mResX;
-    double mResY;
+    bool mHasCrs = false;
+    double mUL_X = 0.;
+    double mUL_Y = 0.;
+    double mResX = 1.;
+    double mResY = 1.;
 };
 
 #endif // QGSRASTERCHANGECOORDS_H

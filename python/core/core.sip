@@ -1,210 +1,110 @@
-%Module(name=qgis.core,
-        version=0,
-        keyword_arguments="Optional")
+%Module(name=qgis._core,
+        keyword_arguments="All")
 
-%Import QtCore/QtCoremod.sip
-%Import QtGui/QtGuimod.sip
+%ModuleCode
+
+#include "qgsexception.h"
+
+QString getTraceback()
+{
+#define TRACEBACK_FETCH_ERROR(what) {errMsg = what; goto done;}
+
+  // acquire global interpreter lock to ensure we are in a consistent state
+  PyGILState_STATE gstate;
+  gstate = PyGILState_Ensure();
+
+  QString errMsg;
+  QString result;
+
+  PyObject *modStringIO = nullptr;
+  PyObject *modTB = nullptr;
+  PyObject *obStringIO = nullptr;
+  PyObject *obResult = nullptr;
+
+  PyObject *type, *value, *traceback;
+
+  PyErr_Fetch( &type, &value, &traceback );
+  PyErr_NormalizeException( &type, &value, &traceback );
+
+  const char *iomod = "io";
+
+  modStringIO = PyImport_ImportModule( iomod );
+  if ( !modStringIO )
+    TRACEBACK_FETCH_ERROR( QString( "can't import %1" ).arg( iomod ) );
+
+  obStringIO = PyObject_CallMethod( modStringIO, ( char * ) "StringIO", nullptr );
+
+  /* Construct a cStringIO object */
+  if ( !obStringIO )
+    TRACEBACK_FETCH_ERROR( "cStringIO.StringIO() failed" );
+
+  modTB = PyImport_ImportModule( "traceback" );
+  if ( !modTB )
+    TRACEBACK_FETCH_ERROR( "can't import traceback" );
+
+  obResult = PyObject_CallMethod( modTB, ( char * ) "print_exception",
+                                  ( char * ) "OOOOO",
+                                  type, value ? value : Py_None,
+                                  traceback ? traceback : Py_None,
+                                  Py_None,
+                                  obStringIO );
+
+  if ( !obResult )
+    TRACEBACK_FETCH_ERROR( "traceback.print_exception() failed" );
+
+  Py_DECREF( obResult );
+
+  obResult = PyObject_CallMethod( obStringIO, ( char * ) "getvalue", nullptr );
+  if ( !obResult )
+    TRACEBACK_FETCH_ERROR( "getvalue() failed." );
+
+  /* And it should be a string all ready to go - duplicate it. */
+  if ( !PyUnicode_Check( obResult ) )
+    TRACEBACK_FETCH_ERROR( "getvalue() did not return a string" );
+
+  result = QString::fromUtf8( PyUnicode_AsUTF8( obResult ) );
+
+done:
+
+  // All finished - first see if we encountered an error
+  if ( result.isEmpty() && !errMsg.isEmpty() )
+  {
+    result = errMsg;
+  }
+
+  Py_XDECREF( modStringIO );
+  Py_XDECREF( modTB );
+  Py_XDECREF( obStringIO );
+  Py_XDECREF( obResult );
+  Py_XDECREF( value );
+  Py_XDECREF( traceback );
+  Py_XDECREF( type );
+
+  // we are done calling python API, release global interpreter lock
+  PyGILState_Release( gstate );
+
+  return result;
+}
+
+%End
+
 %Import QtXml/QtXmlmod.sip
 %Import QtNetwork/QtNetworkmod.sip
+%Import QtSql/QtSqlmod.sip
+
+%Import QtPrintSupport/QtPrintSupportmod.sip
+%Import QtWidgets/QtWidgetsmod.sip
+
+%Feature ANDROID
 
 %Include conversions.sip
 %Include qgsexception.sip
+%Include typedefs.sip
 
-%Include qgis.sip
+%Include core_auto.sip
 
-%Include qgsapplication.sip
-%Include qgsattributeaction.sip
-%Include qgsbrowsermodel.sip
-%Include qgsclipper.sip
-%Include qgscontexthelp.sip
-%Include qgscoordinatereferencesystem.sip
-%Include qgscoordinatetransform.sip
-%Include qgscredentials.sip
-%Include qgscrscache.sip
-%Include qgsdatadefined.sip
-%Include qgsdataitem.sip
-%Include qgsdataprovider.sip
-%Include qgsdatasourceuri.sip
-%Include qgsdbfilterproxymodel.sip
-%Include qgsdistancearea.sip
-%Include qgsdxfexport.sip
-%Include qgseditorwidgetconfig.sip
-%Include qgserror.sip
-%Include qgsexpression.sip
-%Include qgsfeature.sip
-%Include qgsfeatureiterator.sip
-%Include qgsfeaturerequest.sip
-%Include qgsfield.sip
-%Include qgsgeometry.sip
-%Include qgsgeometryvalidator.sip
-%Include qgsgml.sip
-%Include qgsgmlschema.sip
-%Include qgshttptransaction.sip
-%Include qgslabel.sip
-%Include qgslabelattributes.sip
-%Include qgslabelsearchtree.sip
-%Include qgslogger.sip
-%Include qgsmaplayer.sip
-%Include qgsmaplayerregistry.sip
-%Include qgsmaprenderer.sip
-%Include qgsmaptopixel.sip
-%Include qgsmessagelog.sip
-%Include qgsmessageoutput.sip
-%Include qgsmimedatautils.sip
-%Include qgsnetworkaccessmanager.sip
-%Include qgsofflineediting.sip
-%Include qgsogcutils.sip
-%Include qgsowsconnection.sip
-%Include qgspaintenginehack.sip
-%Include qgspallabeling.sip
-%Include qgspluginlayer.sip
-%Include qgspluginlayerregistry.sip
-%Include qgspoint.sip
-%Include qgsproject.sip
-%Include qgsprojectproperty.sip
-%Include qgsprojectversion.sip
-%Include qgsprovidercountcalcevent.sip
-%Include qgsproviderextentcalcevent.sip
-%Include qgsprovidermetadata.sip
-%Include qgsproviderregistry.sip
-%Include qgspythonrunner.sip
-%Include qgsrectangle.sip
-%Include qgsrelation.sip
-%Include qgsrenderchecker.sip
-%Include qgsrendercontext.sip
-%Include qgsrunprocess.sip
-%Include qgsscalecalculator.sip
-%Include qgsscaleutils.sip
-%Include qgssnapper.sip
-%Include qgsspatialindex.sip
-%Include qgstolerance.sip
-%Include qgsvectordataprovider.sip
-%Include qgsvectorfilewriter.sip
-%Include qgsvectorlayer.sip
-%Include qgsvectorlayercache.sip
-%Include qgsvectorlayereditbuffer.sip
-%Include qgsvectorlayerimport.sip
-%Include qgsvectorlayerjoinbuffer.sip
-%Include qgsvectorlayerundocommand.sip
-%Include qgsfontutils.sip
-
-%Include qgscachedfeatureiterator.sip
-%Include qgscacheindex.sip
-%Include qgscacheindexfeatureid.sip
-%Include qgsfeaturestore.sip
-%Include qgsgeometrycache.sip
-%Include qgsprojectfiletransform.sip
-%Include qgsvectorlayereditutils.sip
-%Include qgsvectorlayerfeatureiterator.sip
-
-%Include composer/qgsaddremoveitemcommand.sip
-%Include composer/qgsaddremovemultiframecommand.sip
-%Include composer/qgscomposerarrow.sip
-%Include composer/qgscomposerattributetable.sip
-%Include composer/qgscomposerframe.sip
-%Include composer/qgscomposerhtml.sip
-%Include composer/qgscomposeritem.sip
-%Include composer/qgscomposeritemcommand.sip
-%Include composer/qgscomposeritemgroup.sip
-%Include composer/qgscomposerlabel.sip
-%Include composer/qgscomposerlegend.sip
-%Include composer/qgscomposerlegenditem.sip
-%Include composer/qgscomposermap.sip
-%Include composer/qgscomposermultiframe.sip
-%Include composer/qgscomposermultiframecommand.sip
-%Include composer/qgscomposerpicture.sip
-%Include composer/qgscomposerscalebar.sip
-%Include composer/qgscomposershape.sip
-%Include composer/qgscomposertable.sip
-%Include composer/qgscomposition.sip
-%Include composer/qgsatlascomposition.sip
-%Include composer/qgsdoubleboxscalebarstyle.sip
-%Include composer/qgslegendmodel.sip
-%Include composer/qgsnumericscalebarstyle.sip
-%Include composer/qgspaperitem.sip
-%Include composer/qgsscalebarstyle.sip
-%Include composer/qgssingleboxscalebarstyle.sip
-%Include composer/qgsticksscalebarstyle.sip
-%Include composer/qgscomposertexttable.sip
-%Include composer/qgscomposereffect.sip
-%Include composer/qgscomposerlegendstyle.sip
-
-%Include qgsdiagramrendererv2.sip
-%Include diagram/qgsdiagram.sip
-%Include diagram/qgshistogramdiagram.sip
-%Include diagram/qgspiediagram.sip
-%Include diagram/qgstextdiagram.sip
-
-%Include gps/qgsgpsconnection.sip
-%Include gps/qgsgpsconnectionregistry.sip
-%Include gps/qgsgpsdconnection.sip
-%Include gps/qgsgpsdetector.sip
-%Include gps/qgsnmeaconnection.sip
-%Include gps/qgsqtlocationconnection.sip
-
-%Include raster/qgsraster.sip
-%Include raster/qgscliptominmaxenhancement.sip
-%Include raster/qgscolorrampshader.sip
-%Include raster/qgscontrastenhancement.sip
-%Include raster/qgscontrastenhancementfunction.sip
-%Include raster/qgslinearminmaxenhancement.sip
-%Include raster/qgslinearminmaxenhancementwithclip.sip
-%Include raster/qgspseudocolorshader.sip
-%Include raster/qgsrasterbandstats.sip
-%Include raster/qgsrasterblock.sip
-%Include raster/qgsrasterchecker.sip
-%Include raster/qgsrasterdataprovider.sip
-%Include raster/qgsrasterfilewriter.sip
-%Include raster/qgsrasterhistogram.sip
-%Include raster/qgsrasteridentifyresult.sip
-%Include raster/qgsrasterinterface.sip
-%Include raster/qgsrasteriterator.sip
-%Include raster/qgsrasterlayer.sip
-%Include raster/qgsrasternuller.sip
-%Include raster/qgsrasterpipe.sip
-%Include raster/qgsrasterprojector.sip
-%Include raster/qgsrasterpyramid.sip
-%Include raster/qgsrasterrange.sip
-%Include raster/qgsrasterrenderer.sip
-%Include raster/qgsrasterresamplefilter.sip
-%Include raster/qgsrasterresampler.sip
-%Include raster/qgsrastershader.sip
-%Include raster/qgsrastershaderfunction.sip
-%Include raster/qgsrastertransparency.sip
-%Include raster/qgsrasterviewport.sip
-%Include raster/qgsbilinearrasterresampler.sip
-%Include raster/qgssinglebandcolordatarenderer.sip
-%Include raster/qgssinglebandpseudocolorrenderer.sip
-%Include raster/qgssinglebandgrayrenderer.sip
-%Include raster/qgspalettedrasterrenderer.sip
-%Include raster/qgscubicrasterresampler.sip
-%Include raster/qgsmultibandcolorrenderer.sip
-%Include raster/qgsbrightnesscontrastfilter.sip
-%Include raster/qgshuesaturationfilter.sip
-%Include raster/qgsrasterdrawer.sip
-
-%Include symbology-ng/qgsstylev2.sip
-%Include symbology-ng/qgssvgcache.sip
-%Include symbology-ng/qgssymbolv2.sip
-%Include symbology-ng/qgscolorbrewerpalette.sip
-%Include symbology-ng/qgscptcityarchive.sip
-%Include symbology-ng/qgsvectorcolorrampv2.sip
-
-%Include symbology-ng/qgscategorizedsymbolrendererv2.sip
-%Include symbology-ng/qgsgraduatedsymbolrendererv2.sip
-%Include symbology-ng/qgssinglesymbolrendererv2.sip
-%Include symbology-ng/qgspointdisplacementrenderer.sip
-%Include symbology-ng/qgsrulebasedrendererv2.sip
-%Include symbology-ng/qgsrendererv2.sip
-%Include symbology-ng/qgsrendererv2registry.sip
-
-%Include symbology-ng/qgssymbollayerv2.sip
-%Include symbology-ng/qgssymbollayerv2utils.sip
-%Include symbology-ng/qgsvectorfieldsymbollayer.sip
-%Include symbology-ng/qgsellipsesymbollayerv2.sip
-%Include symbology-ng/qgsfillsymbollayerv2.sip
-%Include symbology-ng/qgslinesymbollayerv2.sip
-%Include symbology-ng/qgsmarkersymbollayerv2.sip
-%Include symbology-ng/qgssymbollayerv2registry.sip
-
-%Include symbology-ng/qgssymbologyv2conversion.sip
+%VirtualErrorHandler processing_exception_handler
+    QString trace = getTraceback();
+    SIP_RELEASE_GIL( sipGILState );
+    throw QgsProcessingException( trace );
+%End

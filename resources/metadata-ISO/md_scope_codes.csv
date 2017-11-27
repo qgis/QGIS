@@ -1,0 +1,16 @@
+attribute;information applies to the attribute class
+attributeType;information applies to the characteristic of a feature
+collectionHardware;information applies to the collection hardware class
+collectionSession;information applies to the collection session
+dataset;information applies to the dataset
+series;information applies to the series
+nonGeographicDataset;information applies to non-geographic data
+dimensionGroup;information applies to a dimension group
+feature;information applies to a feature
+featureType;information applies to a feature type
+propertyType;information applies to a property type
+fieldSession;information applies to a field session
+software;information applies to a computer program or routine
+service;information applies to a capability which a service provider entity makes available to a service user entity through a set of interfaces that define a behavior, such as a use case
+model;information applies to a copy or imitation of an existing or hypothetical object
+tile;information applies to a tile, a spatial subset of geographic data

@@ -1,0 +1,6 @@
+r.out.ppm
+Converts a raster layer to a PPM image file at the pixel resolution of the currently defined region.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Input raster layer|None|False
+QgsProcessingParameterBoolean|-g|Output greyscale instead of color|True
+QgsProcessingParameterFileDestination|output|PPM|PPM files (*.ppm)|None|False

@@ -20,53 +20,60 @@
 
 #include <QDialog>
 
-#include <qgsvectorlayer.h>
+#include "qgsvectorlayer.h"
 
 #include "ui_rulesDialog.h"
 #include "topolTest.h"
 
 class QgisInterface;
-class QgsMapLayerRegistry;
+class QgsProject;
 
-class rulesDialog : public QDialog, public Ui::rulesDialog
+class rulesDialog : public QDialog, private Ui::rulesDialog
 {
     Q_OBJECT
 
   public:
     /*
      * Constructor
-     * @param layerList List of layer IDs
-     * @param testMap maps test names to test routines
-     * @param theQgisIface pointer to a QgisInterface instance
-     * @param parent parent widget
+     * \param layerList List of layer IDs
+     * \param testMap maps test names to test routines
+     * \param qgisIface pointer to a QgisInterface instance
+     * \param parent parent widget
      */
-    rulesDialog( QMap<QString, TopologyRule> testMap, QgisInterface* theQgisIface, QWidget *parent );
-    ~rulesDialog();
+    rulesDialog( const QMap<QString, TopologyRule> &testMap, QgisInterface *qgisIface, QWidget *parent );
+
     /*
      * Returns pointer to the test table
      */
-    QTableWidget* rulesTable() { return mRulesTable; }
+    QTableWidget *rulesTable() { return mRulesTable; }
     /*
      * Returns pointer to the test combobox
      */
-    QComboBox* rulesBox() { return mRuleBox; }
+    QComboBox *rulesBox() { return mRuleBox; }
 
     /*
      * Initialize Rules UI with layers and rules
      */
     void initGui();
 
+  public slots:
+
+    /*
+     * Deletes all rules from rules dialog
+     */
+    void clearRules();
+
   private:
     QMap<QString, TopologyRule> mTestConfMap;
     QList<QString> mLayerIds;
-    QgisInterface* mQgisIface;
+    QgisInterface *mQgisIface = nullptr;
 
     /*
      * Reads a test from the project
-     * @param index test index
-     * @param layerRegistry pointer to a QgsMapLayerRegistry instance
+     * \param index test index
+     * \param project pointer to QgsProject
      */
-    void readTest( int index, QgsMapLayerRegistry* layerRegistry );
+    void readTest( int index, QgsProject *project );
     /*
      * Sets the horizontal header for tet table
      */
@@ -77,9 +84,9 @@ class rulesDialog : public QDialog, public Ui::rulesDialog
   private slots:
     /*
      * Shows or hides controls according to test settings
-     * @param testName name of the test
+     * \param testName name of the test
      */
-    void showControls( const QString& testName );
+    void showControls( const QString &testName );
     /*
      * Adds test to the table
      */
@@ -94,14 +101,10 @@ class rulesDialog : public QDialog, public Ui::rulesDialog
     void projectRead();
     /*
      * Updates Rule combobox to mach first layer
-     * @param layerId layer ID
+     * \param layerId layer ID
      */
-    void updateRuleItems( const QString& layerName );
+    void updateRuleItems( const QString &layerName );
 
-    /*
-     * Deletes all rules from rules dialog
-     */
-    void clearRules();
 
 
 

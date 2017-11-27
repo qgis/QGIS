@@ -1,7 +1,0 @@
-Vectorising Grid Classes
-shapes_grid
-ParameterRaster|GRID|Grid|False
-ParameterSelection|CLASS_ALL|Class Selection|[0] one single class specified by class identifier;[1] all classes
-ParameterNumber|CLASS_ID|Class Identifier|None|None|0
-ParameterSelection|SPLIT|Vectorised class as...|[0] one single (multi-)polygon object;[1] each island as separated polygon
-OutputVector|POLYGONS|Polygons

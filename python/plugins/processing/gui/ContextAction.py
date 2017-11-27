@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -26,8 +27,16 @@ __copyright__ = '(C) 2012, Victor Olaya'
 __revision__ = '$Format:%H$'
 
 
-class ContextAction:
+from qgis.PyQt.QtCore import QCoreApplication
 
-    def setData(self, alg, toolbox):
-        self.alg = alg
+
+class ContextAction(object):
+
+    def setData(self, itemData, toolbox):
+        self.itemData = itemData
         self.toolbox = toolbox
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = 'ContextAction'
+        return QCoreApplication.translate(context, string)

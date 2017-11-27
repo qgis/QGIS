@@ -1,0 +1,8 @@
+{
+  "name": "m",
+  "type": "function",
+  "description": "Returns the m value of a point geometry.",
+  "arguments": [ {"arg":"geom","description":"a point geometry"}],
+  "examples": [ { "expression":"m( geom_from_wkt( 'POINTM(2 5 4)' ) )", "returns":"4"}
+  ]
+}

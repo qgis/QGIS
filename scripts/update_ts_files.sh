@@ -4,7 +4,7 @@
 #    ---------------------
 #    Date                 : July 2007
 #    Copyright            : (C) 2007 by Tim Sutton
-#    Email                : tim dot linfiniti at com
+#    Email                : tim at linfiniti dot com
 ###########################################################################
 #                                                                         #
 #   This program is free software; you can redistribute it and/or modify  #
@@ -21,6 +21,8 @@
 # Note the .pro file must NOT be named qgis.pro as this
 # name is reserved for the Windows qmake project file
 
+echo "deprecated - use push_ts.sh and pull_ts.sh" >&2
+
 set -e
 
 cleanup() {
@@ -30,7 +32,7 @@ cleanup() {
 	fi
 
 	echo Removing temporary files
-	perl -i.bak -ne 'print unless /^\s+<location.*python-i18n\.cpp.*$/;' i18n/qgis_*.ts
+	perl -i.bak -ne 'print unless /^\s+<location.*(python-i18n|_texts)\.cpp.*$/;' i18n/qgis_*.ts
 	for i in \
 		python/python-i18n.{ts,cpp} \
 		python/plugins/*/python-i18n.{ts,cpp} \
@@ -54,25 +56,25 @@ cleanup() {
 
 PATH=$QTDIR/bin:$PATH
 
-if type qmake-qt4 >/dev/null 2>&1; then
-	QMAKE=qmake-qt4
+if type qmake-qt5 >/dev/null 2>&1; then
+	QMAKE=qmake-qt5
 else
 	QMAKE=qmake
 fi
 
-if ! type pylupdate4 >/dev/null 2>&1; then
-      echo "pylupdate4 not found"
+if ! type pylupdate5 >/dev/null 2>&1; then
+      echo "pylupdate5 not found"
       exit 1
 fi
 
-if type lupdate-qt4 >/dev/null 2>&1; then
-	LUPDATE=lupdate-qt4
+if type lupdate-qt5 >/dev/null 2>&1; then
+	LUPDATE=lupdate-qt5
 else
 	LUPDATE=lupdate
 fi
 
-exclude=
-opts=
+exclude="--exclude i18n/qgis_en.ts"
+opts="-locations none"
 fast=
 while (( $# > 0 )); do
   arg=$1
@@ -98,20 +100,31 @@ done
 
 trap cleanup EXIT
 
-if [ -n "$exclude" -o -n "$add" ]; then
+if [ "$exclude" != "--exclude i18n/qgis_en.ts" -o -n "$add" ]; then
   echo Saving excluded translations
-  tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts$exclude
+  tar $fast -cf i18n/qgis_ts.tar i18n/qgis_*.ts $exclude
+fi
+
+builddir=$1
+if [ -d "$builddir" ]; then
+	echo Build directory not found
+	exit 1
+fi
+
+if [ ! -f "$builddir/src/core/qgsexpression_texts.cpp" ]; then
+	echo Generated help files not found
+	exit 1
 fi
 
 echo Updating python translations
 cd python
-pylupdate4 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
+pylupdate5 utils.py {console,pyplugin_installer}/*.{py,ui} -ts python-i18n.ts
 perl ../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 rm python-i18n.ts
 cd ..
 for i in python/plugins/*/CMakeLists.txt; do
 	cd ${i%/*}
-	pylupdate4 $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
+	pylupdate5 $(find . -name "*.py" -o -name "*.ui") -ts python-i18n.ts
 	perl ../../../scripts/ts2cpp.pl python-i18n.ts python-i18n.cpp
 	rm python-i18n.ts
 	cd ../../..
@@ -126,7 +139,7 @@ for i in \
 do
 	[ -f "$i" ] && mv "$i" "$i.save"
 done
-$QMAKE -project -o qgis_ts.pro -nopwd src python i18n
+$QMAKE -project -o qgis_ts.pro -nopwd src python i18n "$builddir/src/core/qgsexpression_texts.cpp"
 if [ -n "$add" ]; then
 	for i in $add; do
 		echo "Adding translation for $i"
@@ -134,7 +147,7 @@ if [ -n "$add" ]; then
 	done
 fi
 echo Updating translations
-$LUPDATE$opts -verbose qgis_ts.pro
+$LUPDATE $opts -verbose qgis_ts.pro
 
 if [ -z "$fast" ]; then
 	echo Updating TRANSLATORS File

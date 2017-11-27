@@ -26,7 +26,7 @@
  *
  *   Additional useful conventions:
  *
- *   theVariableName - a method parameter (prefix with 'the')
+ *   variableName - a method parameter (prefix with 'the')
  *   myVariableName - a locally declared variable within a method ('my' prefix)
  *
  *   DO: Use mixed case variable names - myVariableName
@@ -56,7 +56,7 @@ class checkDock;
 */
 class Topol: public QObject, public QgisPlugin
 {
-    Q_OBJECT;
+    Q_OBJECT
   public:
 
     //////////////////////////////////////////////////////////////////////
@@ -68,21 +68,19 @@ class Topol: public QObject, public QgisPlugin
     /**
     * Constructor for a plugin. The QgisInterface pointer is passed by
     * QGIS when it attempts to instantiate the plugin.
-    * @param theInterface Pointer to the QgisInterface object.
+    * \param interface Pointer to the QgisInterface object.
      */
-    Topol( QgisInterface * theInterface );
-    //! Destructor
-    virtual ~Topol();
+    explicit Topol( QgisInterface *interface );
 
   public slots:
     //! init the gui
-    virtual void initGui();
+    virtual void initGui() override;
     //! Create and show the dialog box
     void run();
     //! Show/hide the dialog box
     void showOrHide();
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! show the help document
     void help();
 
@@ -94,12 +92,11 @@ class Topol: public QObject, public QgisPlugin
     //
     ////////////////////////////////////////////////////////////////////
 
-    int mPluginType;
     //! Pointer to the QGIS interface object
-    QgisInterface *mQGisIface;
+    QgisInterface *mQGisIface = nullptr;
     //!pointer to the qaction for this plugin
-    QAction * mQActionPointer;
-    checkDock* mDock;
+    QAction *mQActionPointer = nullptr;
+    checkDock *mDock = nullptr;
 
     ////////////////////////////////////////////////////////////////////
     //

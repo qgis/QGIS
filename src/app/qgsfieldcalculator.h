@@ -17,50 +17,66 @@
 #define QGSFIELDCALCULATOR_H
 
 #include "ui_qgsfieldcalculatorbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgsfields.h"
+#include "qgis_app.h"
 
 class QgsVectorLayer;
 
-/**A dialog class that provides calculation of new fields using existing fields, values and a set of operators*/
+//! A dialog class that provides calculation of new fields using existing fields, values and a set of operators
 class APP_EXPORT QgsFieldCalculator: public QDialog, private Ui::QgsFieldCalculatorBase
 {
     Q_OBJECT
   public:
-    QgsFieldCalculator( QgsVectorLayer* vl );
+    QgsFieldCalculator( QgsVectorLayer *vl, QWidget *parent = nullptr );
     ~QgsFieldCalculator();
 
     int changedAttributeId() const { return mAttributeId; }
 
   public slots:
-    void accept();
+    void accept() override;
 
-    void on_mNewFieldGroupBox_toggled( bool on );
-    void on_mUpdateExistingGroupBox_toggled( bool on );
-    void on_mOutputFieldNameLineEdit_textChanged( const QString& text );
-    void on_mOutputFieldTypeComboBox_activated( int index );
-
-    void on_mButtonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void mNewFieldGroupBox_toggled( bool on );
+    void mUpdateExistingGroupBox_toggled( bool on );
+    void mCreateVirtualFieldCheckbox_stateChanged( int state );
+    void mOutputFieldNameLineEdit_textChanged( const QString &text );
+    void mOutputFieldTypeComboBox_activated( int index );
 
   private slots:
-    /**Sets the ok button enabled / disabled*/
+    //! Sets the OK button enabled / disabled
     void setOkButtonState();
+    void setPrecisionMinMax();
+    void showHelp();
 
   private:
-    //default constructor forbidden
+    //! default constructor forbidden
     QgsFieldCalculator();
-    /**Inserts existing fields into the combo box*/
+    //! Inserts existing fields into the combo box
     void populateFields();
-    /**Inserts the types supported by the provider into the combo box*/
+    //! Inserts the types supported by the provider into the combo box
     void populateOutputFieldTypes();
 
-    QgsVectorLayer* mVectorLayer;
-    /**Key: field name, Value: field index*/
+    QgsVectorLayer *mVectorLayer = nullptr;
+    //! Key: field name, Value: field index
     QMap<QString, int> mFieldMap;
 
-    /**idx of changed attribute*/
+    //! Create a field based on the definitions
+    inline QgsField fieldDefinition()
+    {
+      return QgsField( mOutputFieldNameLineEdit->text(),
+                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole ).toInt() ),
+                       mOutputFieldTypeComboBox->currentData( Qt::UserRole + 1 ).toString(),
+                       mOutputFieldWidthSpinBox->value(),
+                       mOutputFieldPrecisionSpinBox->value(),
+                       QString(),
+                       static_cast< QVariant::Type >( mOutputFieldTypeComboBox->currentData( Qt::UserRole + 6 ).toInt() )
+                     );
+    }
+
+    //! Idx of changed attribute
     int mAttributeId;
 
-    bool mExpressionValid;
+    friend class TestQgsFieldCalculator;
 };
 
 #endif // QGSFIELDCALCULATOR_H

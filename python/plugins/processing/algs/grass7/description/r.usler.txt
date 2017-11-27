@@ -1,0 +1,6 @@
+r.usler
+Computes USLE R factor, Rainfall erosivity index.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Name of annual precipitation raster map [mm/year]|None|False
+QgsProcessingParameterEnum|method|Name of USLE R equation|roose;morgan;foster;elswaify|False|0|False
+QgsProcessingParameterRasterDestination|output|USLE R Raster

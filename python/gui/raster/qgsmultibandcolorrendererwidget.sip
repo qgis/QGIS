@@ -1,24 +1,61 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsmultibandcolorrendererwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
 {
+
 %TypeHeaderCode
-#include <qgsmultibandcolorrendererwidget.h>
+#include "qgsmultibandcolorrendererwidget.h"
+%End
+  public:
+    QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent );
+%Docstring
+ :rtype: QgsRasterRendererWidget
 %End
 
-  public:
-    QgsMultiBandColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent );
-    ~QgsMultiBandColorRendererWidget();
+    virtual QgsRasterRenderer *renderer();
 
-    QgsRasterRenderer* renderer();
+    virtual void setMapCanvas( QgsMapCanvas *canvas );
 
-    void setFromRenderer( const QgsRasterRenderer* r );
 
-    QString min( int index = 0 );
-    QString max( int index = 0 );
-    void setMin( QString value, int index = 0 );
-    void setMax( QString value, int index = 0 );
-    int selectedBand( int index = 0 );
+    void setFromRenderer( const QgsRasterRenderer *r );
+
+    virtual QString min( int index = 0 );
+
+    virtual QString max( int index = 0 );
+
+    virtual void setMin( const QString &value, int index = 0 );
+
+    virtual void setMax( const QString &value, int index = 0 );
+
+    virtual int selectedBand( int index = 0 );
+
+    virtual void doComputations();
+
+    virtual QgsRasterMinMaxWidget *minMaxWidget();
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+    void loadMinMax( int bandNo, double min, double max );
+%Docstring
+called when new min/max values are loaded
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/raster/qgsmultibandcolorrendererwidget.h                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

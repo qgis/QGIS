@@ -1,0 +1,13 @@
+v.lidar.edgedetection
+Detects the object's edges from a LIDAR data set.
+Vector (v.*)
+QgsProcessingParameterVectorLayer|input|Input vector layer|0|None|False
+QgsProcessingParameterString|see|Interpolation spline step value in east direction|4
+QgsProcessingParameterString|sen|Interpolation spline step value in north direction|4
+QgsProcessingParameterString|lambda_g|Regularization weight in gradient evaluation|0.01
+QgsProcessingParameterString|tgh|High gradient threshold for edge classification|6
+QgsProcessingParameterString|tgl|Low gradient threshold for edge classification|3
+QgsProcessingParameterString|theta_g|Angle range for same direction detection|0.26
+QgsProcessingParameterString|lambda_r|Regularization weight in residual evaluation|2
+QgsProcessingParameterBoolean|-e|Estimate point density and distance|False
+QgsProcessingParameterVectorDestination|output|Edges

@@ -1,185 +1,331 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfield.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**
-  \class QgsField
-  \brief Class to encapsulate a field in an attribute table or data source.
 
-  QgsField stores metadata about an attribute field, including name, type
-  length, and if applicable, precision.
- */
+
+
+
+
 
 class QgsField
 {
+%Docstring
+ Encapsulate a field in an attribute table or data source.
+ QgsField stores metadata about an attribute field, including name, type
+ length, and if applicable, precision.
+.. note::
 
-%TypeHeaderCode
-#include <qgsfield.h>
+   QgsField objects are implicitly shared.
 %End
 
-public:
-    /** Constructor. Constructs a new QgsField object.
-     * @param name Field name
-     * @param type Field variant type, currently supported: String / Int / Double
-     * @param typeName Field type (eg. char, varchar, text, int, serial, double).
-     Field types are usually unique to the source and are stored exactly
-     as returned from the data store.
-     * @param len Field length
-     * @param prec Field precision. Usually decimal places but may also be
-     * used in conjunction with other fields types (eg. variable character fields)
-     * @param comment Comment for the field
-     */
+%TypeHeaderCode
+#include "qgsfield.h"
+%End
+  public:
 
-    QgsField( QString name = QString(),
+    QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
-              QString typeName = QString(),
+              const QString &typeName = QString(),
               int len = 0,
               int prec = 0,
-              QString comment = QString() );
+              const QString &comment = QString(),
+              QVariant::Type subType = QVariant::Invalid );
+%Docstring
+ Constructor. Constructs a new QgsField object.
+ \param name Field name
+ \param type Field variant type, currently supported: String / Int / Double
+ \param typeName Field type (e.g., char, varchar, text, int, serial, double).
+ Field types are usually unique to the source and are stored exactly
+ as returned from the data store.
+ \param len Field length
+ \param prec Field precision. Usually decimal places but may also be
+ used in conjunction with other fields types (e.g., variable character fields)
+ \param comment Comment for the field
+ \param subType If the field is a collection, its element's type. When
+                all the elements don't need to have the same type, leave
+                this to QVariant.Invalid.
+%End
 
-    //! Destructor
-    ~QgsField();
+    QgsField( const QgsField &other );
+%Docstring
+ Copy constructor
+%End
 
-    bool operator==( const QgsField& other ) const;
-    bool operator!=( const QgsField& other ) const;
 
-    //! Gets the name of the field
-    const QString & name() const;
+    virtual ~QgsField();
 
-    //! Gets variant type of the field as it will be retrieved from data source
+    bool operator==( const QgsField &other ) const;
+    bool operator!=( const QgsField &other ) const;
+%Docstring
+ :rtype: bool
+%End
+
+    QString name() const;
+%Docstring
+ Returns the name of the field.
+.. seealso:: setName()
+.. seealso:: displayName()
+ :rtype: str
+%End
+
+    QString displayName() const;
+%Docstring
+ Returns the name to use when displaying this field. This will be the
+ field alias if set, otherwise the field name.
+.. seealso:: name()
+.. seealso:: alias()
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
     QVariant::Type type() const;
+%Docstring
+Gets variant type of the field as it will be retrieved from data source
+ :rtype: QVariant.Type
+%End
 
-    /**
-      Gets the field type. Field types vary depending on the data source. Examples
-      are char, int, double, blob, geometry, etc. The type is stored exactly as
-      the data store reports it, with no attenpt to standardize the value.
-      @return QString containing the field type
-     */
-    const QString & typeName() const;
+    QVariant::Type subType() const;
+%Docstring
+ If the field is a collection, gets its element's type.
+ When all the elements don't need to have the same type, this returns
+ QVariant.Invalid.
+.. versionadded:: 3.0
+ :rtype: QVariant.Type
+%End
 
+    QString typeName() const;
+%Docstring
+ Gets the field type. Field types vary depending on the data source. Examples
+ are char, int, double, blob, geometry, etc. The type is stored exactly as
+ the data store reports it, with no attempt to standardize the value.
+ :return: QString containing the field type
+ :rtype: str
+%End
 
-    /**
-      Gets the length of the field.
-      @return int containing the length of the field
-     */
     int length() const;
+%Docstring
+ Gets the length of the field.
+ :return: int containing the length of the field
+ :rtype: int
+%End
 
-
-    /**
-      Gets the precision of the field. Not all field types have a related precision.
-      @return int containing the precision or zero if not applicable to the field type.
-     */
     int precision() const;
+%Docstring
+ Gets the precision of the field. Not all field types have a related precision.
+ :return: int containing the precision or zero if not applicable to the field type.
+ :rtype: int
+%End
 
-    /**
-    Returns the field comment
-    */
-    const QString & comment() const;
+    QString comment() const;
+%Docstring
+ Returns the field comment
+ :rtype: str
+%End
 
-    /**
-      Set the field name.
-      @param nam Name of the field
-     */
-    void setName( const QString & nam );
+    bool isNumeric() const;
+%Docstring
+ Returns if this field is numeric. Any integer or floating point type
+ will return true for this.
 
-    /**
-      Set variant type.
-     */
+.. versionadded:: 2.18
+ :rtype: bool
+%End
+
+    void setName( const QString &name );
+%Docstring
+ Set the field name.
+ \param name Name of the field
+%End
+
     void setType( QVariant::Type type );
+%Docstring
+ Set variant type.
+%End
 
-    /**
-      Set the field type.
-      @param typ Field type
-     */
-    void setTypeName( const QString & typ );
+    void setSubType( QVariant::Type subType );
+%Docstring
+ If the field is a collection, set its element's type.
+ When all the elements don't need to have the same type, set this to
+ QVariant.Invalid.
+.. versionadded:: 3.0
+%End
 
-    /**
-      Set the field length.
-      @param len Length of the field
-     */
+    void setTypeName( const QString &typeName );
+%Docstring
+ Set the field type.
+ \param typeName Field type
+%End
+
     void setLength( int len );
+%Docstring
+ Set the field length.
+ \param len Length of the field
+%End
 
-    /**
-      Set the field precision.
-      @param prec Precision of the field
-     */
-    void setPrecision( int prec );
+    void setPrecision( int precision );
+%Docstring
+ Set the field precision.
+ \param precision Precision of the field
+%End
 
+    void setComment( const QString &comment );
+%Docstring
+ Set the field comment
+%End
 
-    /**
-      Set the field comment
-      */
-    void setComment( const QString & comment );
+    QgsDefaultValue defaultValueDefinition() const;
+%Docstring
+ Returns the expression used when calculating the default value for the field.
+ :return: expression evaluated when calculating default values for field, or an
+ empty string if no default is set
+.. versionadded:: 3.0
+.. seealso:: setDefaultValueDefinition()
+ :rtype: QgsDefaultValue
+%End
 
-    /**Formats string for display*/
-    QString displayString( const QVariant& v ) const;
+    void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
+%Docstring
+ Sets an expression to use when calculating the default value for the field.
+ \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
+ a default constructed QgsDefaultValue() to reset.
+.. versionadded:: 3.0
+.. seealso:: defaultValueDefinition()
+%End
+
+    const QgsFieldConstraints &constraints() const;
+%Docstring
+ Returns constraints which are present for the field.
+.. versionadded:: 3.0
+.. seealso:: setConstraints()
+ :rtype: QgsFieldConstraints
+%End
+
+    void setConstraints( const QgsFieldConstraints &constraints );
+%Docstring
+ Sets constraints which are present for the field.
+.. versionadded:: 3.0
+.. seealso:: constraints()
+%End
+
+    QString alias() const;
+%Docstring
+ Returns the alias for the field (the friendly displayed name of the field ),
+ or an empty string if there is no alias.
+.. seealso:: setAlias()
+.. versionadded:: 3.0
+ :rtype: str
+%End
+
+    void setAlias( const QString &alias );
+%Docstring
+ Sets the alias for the field (the friendly displayed name of the field ).
+ \param alias field alias, or empty string to remove an existing alias
+.. seealso:: alias()
+.. versionadded:: 3.0
+%End
+
+    QString displayString( const QVariant &v ) const;
+%Docstring
+Formats string for display
+ :rtype: str
+%End
+
+    bool convertCompatible( QVariant &v ) const;
+%Docstring
+ Converts the provided variant to a compatible format
+
+ \param v  The value to convert
+
+ :return:   True if the conversion was successful
+ :rtype: bool
+%End
+%MethodCode
+    PyObject *sipParseErr = NULL;
+
+    {
+      QVariant *a0;
+      int a0State = 0;
+      const QgsField *sipCpp;
+
+      if ( sipParseArgs( &sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QgsField, &sipCpp, sipType_QVariant, &a0, &a0State ) )
+      {
+        bool sipRes;
+
+        Py_BEGIN_ALLOW_THREADS
+        try
+        {
+          QgsDebugMsg( a0->toString() );
+          sipRes = sipCpp->convertCompatible( *a0 );
+          QgsDebugMsg( a0->toString() );
+        }
+        catch ( ... )
+        {
+          Py_BLOCK_THREADS
+
+          sipReleaseType( a0, sipType_QVariant, a0State );
+          sipRaiseUnknownException();
+          return NULL;
+        }
+
+        Py_END_ALLOW_THREADS
+
+        PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
+        sipReleaseType( a0, sipType_QVariant, a0State );
+
+        if ( !sipRes )
+        {
+          PyErr_SetString( PyExc_ValueError,
+                           QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString(), a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
+          sipError = sipErrorFail;
+        }
+
+        return res;
+      }
+    }
+
+    // Raise an exception if the arguments couldn't be parsed.
+    sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
+
+    return nullptr;
+%End
+
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants from fields.
+%End
+
+    void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
+%Docstring
+ Set the editor widget setup for the field.
+
+ \param v  The value to set
+%End
+
+    QgsEditorWidgetSetup editorWidgetSetup() const;
+%Docstring
+ Get the editor widget setup for the field.
+
+ Defaults may be set by the provider and can be overridden
+ by manual field configuration.
+
+ :return: the value
+ :rtype: QgsEditorWidgetSetup
+%End
+
 }; // class QgsField
 
 
 
-class QgsFields
-{
-%TypeHeaderCode
-#include <qgsfield.h>
-%End
-  public:
 
-    enum FieldOrigin { OriginUnknown, OriginProvider, OriginJoin, OriginEdit };
-
-    void clear();
-    void append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
-    void remove( int fieldIdx );
-
-    bool isEmpty() const;
-    // __len__ annotation since sip 4.10.3
-    //int count() const /__len__/;
-    int count() const;
-    int __len__() const;
-%MethodCode
-  sipRes = sipCpp->count();
-%End
-    int size() const;
-    //const QgsField& operator[](int i) const;
-    //QgsField& operator[](int i);
-    const QgsField& at(int i) const;
-    QList<QgsField> toList() const;
-
-    const QgsField& field( int fieldIdx ) const;
-    const QgsField& field( const QString& name ) const;
-    FieldOrigin fieldOrigin( int fieldIdx ) const;
-    int fieldOriginIndex( int fieldIdx ) const;
-
-    int indexFromName( const QString& name ) const;
-    void extend( const QgsFields& other );
-
-
-    QgsField& operator[](int i) /Factory/;
-%MethodCode
-  SIP_SSIZE_T idx = sipConvertFromSequenceIndex(a0, sipCpp->count());
-  if (idx < 0)
-    sipIsErr = 1;
-  else
-    sipRes = new QgsField(sipCpp->operator[](idx));
-
-%End
-
-/*  SIP_PYOBJECT __getitem__(int key);
-%MethodCode
-  if (a0 = sipConvertFromSequenceIndex(a0, sipCpp->count()) < 0)
-    sipIsErr = 1;
-  else
-  {
-    qDebug("__getitem__ %d", a0);
-    QgsField* fld = new QgsField(sipCpp->at(a0));
-    sipRes = sipConvertFromType(fld, sipType_QgsField, Py_None);
-  }
-%End*/
-
-void __setitem__(int key, const QgsField& field);
-%MethodCode
-  int idx = (int)sipConvertFromSequenceIndex(a0, sipCpp->count());
-  if (idx < 0)
-    sipIsErr = 1;
-  else
-    (*sipCpp)[idx] = *a1;
-%End
-
-};
-
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfield.h                                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

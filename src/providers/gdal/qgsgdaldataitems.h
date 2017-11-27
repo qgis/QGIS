@@ -19,22 +19,22 @@
 
 class QgsGdalLayerItem : public QgsLayerItem
 {
+    Q_OBJECT
+
   private:
 
-    QStringList sublayers;
+    QStringList mSublayers;
 
   public:
-    QgsGdalLayerItem( QgsDataItem* parent,
-                      QString name, QString path, QString uri,
-                      QStringList *theSublayers = NULL );
-    ~QgsGdalLayerItem();
+    QgsGdalLayerItem( QgsDataItem *parent,
+                      const QString &name, const QString &path, const QString &uri,
+                      QStringList *mSublayers = nullptr );
 
-    bool setCrs( QgsCoordinateReferenceSystem crs );
-    Capability capabilities();
+    bool setCrs( const QgsCoordinateReferenceSystem &crs ) override;
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem *> createChildren() override;
 
-    QString layerName() const;
+    QString layerName() const override;
 };
 
 #endif // QGSGDALDATAITEMS_H

@@ -17,8 +17,9 @@
 
 #define DIAGRAM_NAME_PIE "Pie"
 
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgsdiagram.h"
-#include "qgsfeature.h"
 #include <QPen>
 #include <QBrush>
 
@@ -26,25 +27,31 @@ class QPainter;
 class QPointF;
 class QgsDiagramSettings;
 class QgsDiagramInterpolationSettings;
-
+class QgsFeature;
 class QgsRenderContext;
 
+/**
+ * \ingroup core
+ * \class QgsPieDiagram
+ */
 class CORE_EXPORT QgsPieDiagram: public QgsDiagram
 {
   public:
     QgsPieDiagram();
-    ~QgsPieDiagram();
 
-    void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
-    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
-    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
-    QString diagramName() const { return DIAGRAM_NAME_PIE; }
+    virtual QgsPieDiagram *clone() const override SIP_FACTORY;
+
+    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
+
+    QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) override;
+    QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
+    double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
+    QString diagramName() const override;
 
   private:
     QBrush mCategoryBrush;
     QPen mPen;
 
-    static int sCount;
 };
 
 #endif // QGSPIEDIAGRAM_H

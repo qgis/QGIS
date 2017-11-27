@@ -1,42 +1,118 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsspatialindex.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+
+
 
 class QgsSpatialIndex
 {
+
 %TypeHeaderCode
 #include "qgsspatialindex.h"
 %End
-
   public:
 
-    /* creation of spatial index */
 
-    /** constructor - creates R-tree */
     QgsSpatialIndex();
+%Docstring
+Constructor - creates R-tree
+%End
 
-    /** destructor finalizes work with spatial index */
+    explicit QgsSpatialIndex( const QgsFeatureIterator &fi, QgsFeedback *feedback = 0 );
+%Docstring
+ Constructor - creates R-tree and bulk loads it with features from the iterator.
+ This is much faster approach than creating an empty index and then inserting features one by one.
+
+ The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+ of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
+ that of the spatial index construction.
+
+.. versionadded:: 2.8
+%End
+
+    explicit QgsSpatialIndex( const QgsFeatureSource &source, QgsFeedback *feedback = 0 );
+%Docstring
+ Constructor - creates R-tree and bulk loads it with features from the source.
+ This is much faster approach than creating an empty index and then inserting features one by one.
+
+ The optional ``feedback`` object can be used to allow cancelation of bulk feature loading. Ownership
+ of ``feedback`` is not transferred, and callers must take care that the lifetime of feedback exceeds
+ that of the spatial index construction.
+
+
+.. versionadded:: 3.0
+%End
+
+    QgsSpatialIndex( const QgsSpatialIndex &other );
+%Docstring
+Copy constructor
+%End
+
     ~QgsSpatialIndex();
+%Docstring
+Destructor finalizes work with spatial index
+%End
 
 
-    /* operations */
 
-    /** add feature to index */
-    bool insertFeature( QgsFeature& f );
+    bool insertFeature( const QgsFeature &f );
+%Docstring
+Add feature to index
+ :rtype: bool
+%End
 
-    /** remove feature from index */
-    bool deleteFeature( QgsFeature& f );
+    bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
+%Docstring
+ Add a feature ``id`` to the index with a specified bounding box.
+ :return: true if feature was successfully added to index.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool deleteFeature( const QgsFeature &f );
+%Docstring
+Remove feature from index
+ :rtype: bool
+%End
 
 
-    /* queries */
 
-    /** returns features that intersect the specified rectangle */
-    QList<qint64> intersects( QgsRectangle rect );
+    QList<QgsFeatureId> intersects( const QgsRectangle &rect ) const;
+%Docstring
+Returns features that intersect the specified rectangle
+ :rtype: list of QgsFeatureId
+%End
 
-    /** returns nearest neighbors (their count is specified by second parameter) */
-    QList<qint64> nearestNeighbor( QgsPoint point, int neighbors );
+    QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
+%Docstring
+Returns nearest neighbors (their count is specified by second parameter)
+ :rtype: list of QgsFeatureId
+%End
 
 
-  protected:
-    // SpatialIndex::Region rectToRegion( QgsRectangle rect );
-    // bool featureInfo( QgsFeature& f, SpatialIndex::Region& r, QgsFeatureId &id );
-
+    int  refs() const;
+%Docstring
+get reference count - just for debugging!
+ :rtype: QAtomicInt
+%End
 
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsspatialindex.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

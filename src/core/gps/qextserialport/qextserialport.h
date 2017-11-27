@@ -1,6 +1,8 @@
 
-#ifndef _QEXTSERIALPORT_H_
-#define _QEXTSERIALPORT_H_
+#ifndef QEXTSERIALPORT_H
+#define QEXTSERIALPORT_H
+
+#define SIP_NO_FILE
 
 
 /*if all warning messages are turned off, flag portability warnings to be turned off as well*/
@@ -150,7 +152,7 @@ to use, since you never have to worry about checking for new data.
 \b Example
 \code
 QextSerialPort* port = new QextSerialPort("COM1", QextSerialPort::EventDriven);
-connect(port, SIGNAL(readyRead()), myClass, SLOT(onDataAvailable()));
+connect(port, &QextSerialPort::readyRead, myClass, &MyObject::onDataAvailable);
 port->open();
 
 void MyClass::onDataAvailable() {
@@ -189,7 +191,7 @@ class QextSerialPort: public QIODevice
             EventDriven
         };
 
-        QextSerialPort(QueryMode mode = EventDriven);
+        explicit QextSerialPort(QueryMode mode = EventDriven);
         QextSerialPort(const QString & name, QueryMode mode = EventDriven);
         QextSerialPort(PortSettings const& s, QueryMode mode = EventDriven);
         QextSerialPort(const QString & name, PortSettings const& s, QueryMode mode = EventDriven);
@@ -200,7 +202,7 @@ class QextSerialPort: public QIODevice
 
         /**!
          * Get query mode.
-         * \return query mode.
+         * \returns query mode.
          */
         inline QueryMode queryMode() const { return _queryMode; }
 
@@ -245,13 +247,13 @@ class QextSerialPort: public QIODevice
 
         void setTimeout(long);
 
-        bool open(OpenMode mode);
-        bool isSequential() const;
-        void close();
+        bool open(OpenMode mode) override;
+        bool isSequential() const override;
+        void close() override;
         void flush();
 
-        qint64 size() const;
-        qint64 bytesAvailable() const;
+        qint64 size() const override;
+        qint64 bytesAvailable() const override;
         QByteArray readAll();
 
         void ungetChar(char c);
@@ -300,8 +302,8 @@ class QextSerialPort: public QIODevice
         void construct(); // common construction
         void platformSpecificDestruct();
         void platformSpecificInit();
-        qint64 readData(char * data, qint64 maxSize);
-        qint64 writeData(const char * data, qint64 maxSize);
+        qint64 readData(char * data, qint64 maxSize) override;
+        qint64 writeData(const char * data, qint64 maxSize) override;
 
     private slots:
         void onWinEvent(HANDLE h);

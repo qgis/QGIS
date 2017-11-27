@@ -479,7 +479,7 @@ qgis.core.QgsCoordinateTransform.setSourceCrs?4(QgsCoordinateReferenceSystem)
 qgis.core.QgsCoordinateTransform.setDestCRS?4(QgsCoordinateReferenceSystem)
 qgis.core.QgsCoordinateTransform.sourceCrs?4() -> QgsCoordinateReferenceSystem
 qgis.core.QgsCoordinateTransform.destCRS?4() -> QgsCoordinateReferenceSystem
-qgis.core.QgsCoordinateTransform.transform?4(QgsPoint, QgsCoordinateTransform.TransformDirection direction=QgsCoordinateTransform.ForwardTransform) -> QgsPoint
+qgis.core.QgsCoordinateTransform.transform?4(QgsPointXY, QgsCoordinateTransform.TransformDirection direction=QgsCoordinateTransform.ForwardTransform) -> QgsPoint
 qgis.core.QgsCoordinateTransform.transform?4(float, float, QgsCoordinateTransform.TransformDirection direction=QgsCoordinateTransform.ForwardTransform) -> QgsPoint
 qgis.core.QgsCoordinateTransform.transformBoundingBox?4(QgsRectangle, QgsCoordinateTransform.TransformDirection direction=QgsCoordinateTransform.ForwardTransform) -> QgsRectangle
 qgis.core.QgsCoordinateTransform.transformInPlace?4(QgsCoordinateTransform.TransformDirection direction=QgsCoordinateTransform.ForwardTransform) -> (float, float, float)
@@ -745,9 +745,9 @@ qgis.core.QgsDistanceArea.ellipsoidInverseFlattening?4() -> float
 qgis.core.QgsDistanceArea.measure?4(QgsGeometry) -> float
 qgis.core.QgsDistanceArea.measurePerimeter?4(QgsGeometry) -> float
 qgis.core.QgsDistanceArea.measureLine?4(list-of-QgsPoint) -> float
-qgis.core.QgsDistanceArea.measureLine?4(QgsPoint, QgsPoint) -> float
+qgis.core.QgsDistanceArea.measureLine?4(QgsPointXY, QgsPoint) -> float
 qgis.core.QgsDistanceArea.measurePolygon?4(list-of-QgsPoint) -> float
-qgis.core.QgsDistanceArea.bearing?4(QgsPoint, QgsPoint) -> float
+qgis.core.QgsDistanceArea.bearing?4(QgsPointXY, QgsPoint) -> float
 qgis.core.QgsDistanceArea.textUnit?4(float, int, QGis.UnitType, bool, bool keepBaseUnit=False) -> QString
 qgis.core.QgsDistanceArea.convertMeasurement?4(float, QGis.UnitType, QGis.UnitType, bool) -> (float, QGis.UnitType)
 qgis.core.QgsErrorMessage.Format?10
@@ -1135,20 +1135,20 @@ qgis.core.QgsGeometry.isGeosEmpty?4() -> bool
 qgis.core.QgsGeometry.area?4() -> float
 qgis.core.QgsGeometry.length?4() -> float
 qgis.core.QgsGeometry.distance?4(QgsGeometry) -> float
-qgis.core.QgsGeometry.closestVertex?4(QgsPoint) -> (QgsPoint, int, int, int, float)
+qgis.core.QgsGeometry.closestVertex?4(QgsPoint) -> (QgsPointXY, int, int, int, float)
 qgis.core.QgsGeometry.adjacentVertices?4(int) -> (int, int)
 qgis.core.QgsGeometry.insertVertex?4(float, float, int) -> bool
 qgis.core.QgsGeometry.moveVertex?4(float, float, int) -> bool
 qgis.core.QgsGeometry.deleteVertex?4(int) -> bool
 qgis.core.QgsGeometry.vertexAt?4(int) -> QgsPoint
-qgis.core.QgsGeometry.sqrDistToVertexAt?4(QgsPoint, int) -> float
+qgis.core.QgsGeometry.sqrDistToVertexAt?4(QgsPointXY, int) -> float
 qgis.core.QgsGeometry.closestVertexWithContext?4(QgsPoint) -> (float, int)
-qgis.core.QgsGeometry.closestSegmentWithContext?4(QgsPoint) -> (float, QgsPoint, int)
+qgis.core.QgsGeometry.closestSegmentWithContext?4(QgsPoint) -> (float, QgsPointXY, int)
 qgis.core.QgsGeometry.addRing?4(list-of-QgsPoint) -> int
 qgis.core.QgsGeometry.addPart?4(list-of-QgsPoint) -> int
 qgis.core.QgsGeometry.translate?4(float, float) -> int
 qgis.core.QgsGeometry.transform?4(QgsCoordinateTransform) -> int
-qgis.core.QgsGeometry.splitGeometry?4(list-of-QgsPoint, bool) -> (int, list-of-QgsGeometry, list-of-QgsPoint)
+qgis.core.QgsGeometry.splitGeometry?4(list-of-QgsPointXY, bool) -> (int, list-of-QgsGeometry, list-of-QgsPoint)
 qgis.core.QgsGeometry.reshapeGeometry?4(list-of-QgsPoint) -> int
 qgis.core.QgsGeometry.makeDifference?4(QgsGeometry) -> int
 qgis.core.QgsGeometry.boundingBox?4() -> QgsRectangle
@@ -1517,8 +1517,8 @@ qgis.core.QgsLabelPosition.layerID?7
 qgis.core.QgsLabelPosition.rotation?7
 qgis.core.QgsLabelPosition.upsideDown?7
 qgis.core.QgsLabelPosition.width?7
-qgis.core.QgsLabelPosition?1(int, float, list-of-QgsPoint, QgsRectangle, float, float, QString, QString, QFont, bool, bool diagram=False, bool pinned=False)
-qgis.core.QgsLabelPosition.__init__?1(self, int, float, list-of-QgsPoint, QgsRectangle, float, float, QString, QString, QFont, bool, bool diagram=False, bool pinned=False)
+qgis.core.QgsLabelPosition?1(int, float, list-of-QgsPointXY, QgsRectangle, float, float, QString, QString, QFont, bool, bool diagram=False, bool pinned=False)
+qgis.core.QgsLabelPosition.__init__?1(self, int, float, list-of-QgsPointXY, QgsRectangle, float, float, QString, QString, QFont, bool, bool diagram=False, bool pinned=False)
 qgis.core.QgsLabelPosition?1()
 qgis.core.QgsLabelPosition.__init__?1(self)
 qgis.core.QgsLabelPosition?1(QgsLabelPosition)
@@ -2106,7 +2106,7 @@ qgis.core.QgsPoint.sqrDist?4(QgsPoint) -> float
 qgis.core.QgsPoint.sqrDistToSegment?4(float, float, float, float, float epsilon=DEFAULT_SEGMENT_EPSILON) -> (float, QgsPoint)
 qgis.core.QgsPoint.azimuth?4(QgsPoint) -> float
 qgis.core.QgsPoint.multiply?4(float)
-qgis.core.QgsPoint.onSegment?4(QgsPoint, QgsPoint) -> int
+qgis.core.QgsPoint.onSegment?4(QgsPointXY, QgsPoint) -> int
 qgis.core.QgsProject.instance?4() -> QgsProject
 qgis.core.QgsProject.title?4(QString)
 qgis.core.QgsProject.title?4() -> QString
@@ -2274,13 +2274,13 @@ qgis.core.QgsPythonRunner.runCommand?4(QString, QString messageOnError=QString()
 qgis.core.QgsPythonRunner.evalCommand?4(QString, QString) -> bool
 qgis.core.QgsRectangle?1(float xmin=0, float ymin=0, float xmax=0, float ymax=0)
 qgis.core.QgsRectangle.__init__?1(self, float xmin=0, float ymin=0, float xmax=0, float ymax=0)
-qgis.core.QgsRectangle?1(QgsPoint, QgsPoint)
-qgis.core.QgsRectangle.__init__?1(self, QgsPoint, QgsPoint)
+qgis.core.QgsRectangle?1(QgsPointXY, QgsPoint)
+qgis.core.QgsRectangle.__init__?1(self, QgsPointXY, QgsPoint)
 qgis.core.QgsRectangle?1(QRectF)
 qgis.core.QgsRectangle.__init__?1(self, QRectF)
 qgis.core.QgsRectangle?1(QgsRectangle)
 qgis.core.QgsRectangle.__init__?1(self, QgsRectangle)
-qgis.core.QgsRectangle.set?4(QgsPoint, QgsPoint)
+qgis.core.QgsRectangle.set?4(QgsPointXY, QgsPoint)
 qgis.core.QgsRectangle.set?4(float, float, float, float)
 qgis.core.QgsRectangle.setXMinimum?4(float)
 qgis.core.QgsRectangle.setXMaximum?4(float)
@@ -2295,7 +2295,7 @@ qgis.core.QgsRectangle.normalize?4()
 qgis.core.QgsRectangle.width?4() -> float
 qgis.core.QgsRectangle.height?4() -> float
 qgis.core.QgsRectangle.center?4() -> QgsPoint
-qgis.core.QgsRectangle.scale?4(float, QgsPoint c=None)
+qgis.core.QgsRectangle.scale?4(float, QgsPointXY c=None)
 qgis.core.QgsRectangle.intersect?4(QgsRectangle) -> QgsRectangle
 qgis.core.QgsRectangle.intersects?4(QgsRectangle) -> bool
 qgis.core.QgsRectangle.contains?4(QgsRectangle) -> bool
@@ -2404,7 +2404,7 @@ qgis.core.QgsSnapper?1(QgsMapRenderer)
 qgis.core.QgsSnapper.__init__?1(self, QgsMapRenderer)
 qgis.core.QgsSnapper?1(QgsSnapper)
 qgis.core.QgsSnapper.__init__?1(self, QgsSnapper)
-qgis.core.QgsSnapper.snapPoint?4(QPoint, list-of-QgsPoint excludePoints=QList&lt;QgsPoint&gt;()) -> (int, list-of-QgsSnappingResult)
+qgis.core.QgsSnapper.snapPoint?4(QPoint, list-of-QgsPointXY excludePoints=QList&lt;QgsPoint&gt;()) -> (int, list-of-QgsSnappingResult)
 qgis.core.QgsSnapper.setSnapLayers?4(list-of-QgsSnapper.SnapLayer)
 qgis.core.QgsSnapper.setSnapMode?4(QgsSnapper.SnappingMode)
 qgis.core.QgsSnapper.SnapLayer.mLayer?7
@@ -2422,7 +2422,7 @@ qgis.core.QgsSpatialIndex.__init__?1(self, QgsSpatialIndex)
 qgis.core.QgsSpatialIndex.insertFeature?4(QgsFeature) -> bool
 qgis.core.QgsSpatialIndex.deleteFeature?4(QgsFeature) -> bool
 qgis.core.QgsSpatialIndex.intersects?4(QgsRectangle) -> unknown-type
-qgis.core.QgsSpatialIndex.nearestNeighbor?4(QgsPoint, int) -> unknown-type
+qgis.core.QgsSpatialIndex.nearestNeighbor?4(QgsPointXY, int) -> unknown-type
 qgis.core.QgsTolerance.UnitType?10
 qgis.core.QgsTolerance.MapUnits?10
 qgis.core.QgsTolerance.Pixels?10
@@ -2648,7 +2648,7 @@ qgis.core.QgsVectorLayer.deleteSelectedFeatures?4() -> bool
 qgis.core.QgsVectorLayer.addRing?4(list-of-QgsPoint) -> int
 qgis.core.QgsVectorLayer.addPart?4(list-of-QgsPoint) -> int
 qgis.core.QgsVectorLayer.translateFeature?4(int, float, float) -> int
-qgis.core.QgsVectorLayer.splitFeatures?4(list-of-QgsPoint, bool topologicalEditing=False) -> int
+qgis.core.QgsVectorLayer.splitFeatures?4(list-of-QgsPointXY, bool topologicalEditing=False) -> int
 qgis.core.QgsVectorLayer.removePolygonIntersections?4(QgsGeometry, unknown-type ignoreFeatures=QgsFeatureIds()) -> int
 qgis.core.QgsVectorLayer.addTopologicalPoints?4(QgsGeometry) -> int
 qgis.core.QgsVectorLayer.addTopologicalPoints?4(QgsPoint) -> int
@@ -2658,8 +2658,8 @@ qgis.core.QgsVectorLayer.hasLabelsEnabled?4() -> bool
 qgis.core.QgsVectorLayer.isEditable?4() -> bool
 qgis.core.QgsVectorLayer.isReadOnly?4() -> bool
 qgis.core.QgsVectorLayer.isModified?4() -> bool
-qgis.core.QgsVectorLayer.snapPoint?4(QgsPoint, float) -> bool
-qgis.core.QgsVectorLayer.snapWithContext?4(QgsPoint, float, QgsSnapper.SnappingType) -> (int, unknown-type)
+qgis.core.QgsVectorLayer.snapPoint?4(QgsPointXY, float) -> bool
+qgis.core.QgsVectorLayer.snapWithContext?4(QgsPointXY, float, QgsSnapper.SnappingType) -> (int, unknown-type)
 qgis.core.QgsVectorLayer.reload?4()
 qgis.core.QgsVectorLayer.draw?4(QgsRenderContext) -> bool
 qgis.core.QgsVectorLayer.drawLabels?4(QgsRenderContext)
@@ -2948,9 +2948,9 @@ qgis.core.QgsVectorLayerEditUtils.insertVertex?4(float, float, int, int) -> bool
 qgis.core.QgsVectorLayerEditUtils.moveVertex?4(float, float, int, int) -> bool
 qgis.core.QgsVectorLayerEditUtils.deleteVertex?4(int, int) -> bool
 qgis.core.QgsVectorLayerEditUtils.addRing?4(list-of-QgsPoint) -> int
-qgis.core.QgsVectorLayerEditUtils.addPart?4(list-of-QgsPoint, int) -> int
+qgis.core.QgsVectorLayerEditUtils.addPart?4(list-of-QgsPointXY, int) -> int
 qgis.core.QgsVectorLayerEditUtils.translateFeature?4(int, float, float) -> int
-qgis.core.QgsVectorLayerEditUtils.splitFeatures?4(list-of-QgsPoint, bool topologicalEditing=False) -> int
+qgis.core.QgsVectorLayerEditUtils.splitFeatures?4(list-of-QgsPointXY, bool topologicalEditing=False) -> int
 qgis.core.QgsVectorLayerEditUtils.addTopologicalPoints?4(QgsGeometry) -> int
 qgis.core.QgsVectorLayerEditUtils.addTopologicalPoints?4(QgsPoint) -> int
 qgis.core.QgsVectorLayerEditUtils.insertSegmentVerticesForSnap?4(list-of-QgsSnappingResult) -> int
@@ -4470,7 +4470,7 @@ qgis.core.QgsRasterDataProvider.buildPyramids?4(list-of-QgsRasterPyramid, QStrin
 qgis.core.QgsRasterDataProvider.buildPyramidList?4(list-of-int overviewList=QList&lt;int&gt;()) -> list-of-QgsRasterPyramid
 qgis.core.QgsRasterDataProvider.hasPyramids?4() -> bool
 qgis.core.QgsRasterDataProvider.metadata?4() -> QString
-qgis.core.QgsRasterDataProvider.identify?4(QgsPoint, QgsRaster.IdentifyFormat, QgsRectangle theExtent=QgsRectangle(), int theWidth=0, int theHeight=0) -> QgsRasterIdentifyResult
+qgis.core.QgsRasterDataProvider.identify?4(QgsPointXY, QgsRaster.IdentifyFormat, QgsRectangle theExtent=QgsRectangle(), int theWidth=0, int theHeight=0) -> QgsRasterIdentifyResult
 qgis.core.QgsRasterDataProvider.lastErrorTitle?4() -> QString
 qgis.core.QgsRasterDataProvider.lastError?4() -> QString
 qgis.core.QgsRasterDataProvider.lastErrorFormat?4() -> QString
@@ -7015,8 +7015,8 @@ qgis.gui.QgsMapCanvasSnapper?1()
 qgis.gui.QgsMapCanvasSnapper.__init__?1(self)
 qgis.gui.QgsMapCanvasSnapper?1(QgsMapCanvasSnapper)
 qgis.gui.QgsMapCanvasSnapper.__init__?1(self, QgsMapCanvasSnapper)
-qgis.gui.QgsMapCanvasSnapper.snapToCurrentLayer?4(QPoint, QgsSnapper.SnappingType, float snappingTol=-1, list-of-QgsPoint excludePoints=QList&lt;QgsPoint&gt;()) -> (int, list-of-QgsSnappingResult)
-qgis.gui.QgsMapCanvasSnapper.snapToBackgroundLayers?4(QPoint, list-of-QgsPoint excludePoints=QList&lt;QgsPoint&gt;()) -> (int, list-of-QgsSnappingResult)
+qgis.gui.QgsMapCanvasSnapper.snapToCurrentLayer?4(QPoint, QgsSnapper.SnappingType, float snappingTol=-1, list-of-QgsPointXY excludePoints=QList&lt;QgsPoint&gt;()) -> (int, list-of-QgsSnappingResult)
+qgis.gui.QgsMapCanvasSnapper.snapToBackgroundLayers?4(QPoint, list-of-QgsPointXY excludePoints=QList&lt;QgsPoint&gt;()) -> (int, list-of-QgsSnappingResult)
 qgis.gui.QgsMapCanvasSnapper.setMapCanvas?4(QgsMapCanvas)
 qgis.gui.QgsMapOverviewCanvas?1(QWidget parent=None, QgsMapCanvas mapCanvas=None)
 qgis.gui.QgsMapOverviewCanvas.__init__?1(self, QWidget parent=None, QgsMapCanvas mapCanvas=None)
@@ -7039,7 +7039,7 @@ qgis.gui.QgsMapTip?1()
 qgis.gui.QgsMapTip.__init__?1(self)
 qgis.gui.QgsMapTip?1(QgsMapTip)
 qgis.gui.QgsMapTip.__init__?1(self, QgsMapTip)
-qgis.gui.QgsMapTip.showMapTip?4(QgsMapLayer, QgsPoint, QPoint, QgsMapCanvas)
+qgis.gui.QgsMapTip.showMapTip?4(QgsMapLayer, QgsPointXY, QPoint, QgsMapCanvas)
 qgis.gui.QgsMapTip.clear?4(QgsMapCanvas)
 qgis.gui.QgsMapTool?1(QgsMapCanvas)
 qgis.gui.QgsMapTool.__init__?1(self, QgsMapCanvas)
@@ -7072,7 +7072,7 @@ qgis.gui.QgsMapToolEmitPoint.__init__?1(self, QgsMapCanvas)
 qgis.gui.QgsMapToolEmitPoint.canvasMoveEvent?4(QMouseEvent)
 qgis.gui.QgsMapToolEmitPoint.canvasPressEvent?4(QMouseEvent)
 qgis.gui.QgsMapToolEmitPoint.canvasReleaseEvent?4(QMouseEvent)
-qgis.gui.QgsMapToolEmitPoint.canvasClicked?4(QgsPoint, Qt.MouseButton)
+qgis.gui.QgsMapToolEmitPoint.canvasClicked?4(QgsPointXY, Qt.MouseButton)
 qgis.gui.QgsMapToolIdentify.LayerType?10
 qgis.gui.QgsMapToolIdentify.AllLayers?10
 qgis.gui.QgsMapToolIdentify.VectorLayer?10
@@ -7394,11 +7394,11 @@ qgis.gui.QgsRubberBand.setLineStyle?4(Qt.PenStyle)
 qgis.gui.QgsRubberBand.setBrushStyle?4(Qt.BrushStyle)
 qgis.gui.QgsRubberBand.reset?4(QGis.GeometryType geometryType=QGis.Line)
 qgis.gui.QgsRubberBand.reset?4(bool)
-qgis.gui.QgsRubberBand.addPoint?4(QgsPoint, bool update=True, int geometryIndex=0)
+qgis.gui.QgsRubberBand.addPoint?4(QgsPointXY, bool update=True, int geometryIndex=0)
 qgis.gui.QgsRubberBand.removePoint?4(int index=0, bool doUpdate=True, int geometryIndex=0)
 qgis.gui.QgsRubberBand.removeLastPoint?4(int geometryIndex=0)
-qgis.gui.QgsRubberBand.movePoint?4(QgsPoint, int geometryIndex=0)
-qgis.gui.QgsRubberBand.movePoint?4(int, QgsPoint, int geometryIndex=0)
+qgis.gui.QgsRubberBand.movePoint?4(QgsPointXY, int geometryIndex=0)
+qgis.gui.QgsRubberBand.movePoint?4(int, QgsPointXY, int geometryIndex=0)
 qgis.gui.QgsRubberBand.setToGeometry?4(QgsGeometry, QgsVectorLayer)
 qgis.gui.QgsRubberBand.setToCanvasRectangle?4(QRect)
 qgis.gui.QgsRubberBand.addGeometry?4(QgsGeometry, QgsVectorLayer)
@@ -8668,13 +8668,13 @@ qgis.networkanalysis.QgsGraphBuilderInterface.coordinateTransformationEnabled?4(
 qgis.networkanalysis.QgsGraphBuilderInterface.topologyTolerance?4() -> float
 qgis.networkanalysis.QgsGraphBuilderInterface.distanceArea?4() -> QgsDistanceArea
 qgis.networkanalysis.QgsGraphBuilderInterface.addVertex?4(int, QgsPoint)
-qgis.networkanalysis.QgsGraphBuilderInterface.addArc?4(int, QgsPoint, int, QgsPoint, list-of-QVariant)
+qgis.networkanalysis.QgsGraphBuilderInterface.addArc?4(int, QgsPointXY, int, QgsPointXY, list-of-QVariant)
 qgis.networkanalysis.QgsGraphBuilder?1(QgsCoordinateReferenceSystem, bool otfEnabled=True, float topologyTolerance=0, QString ellipsoidID="WGS84")
 qgis.networkanalysis.QgsGraphBuilder.__init__?1(self, QgsCoordinateReferenceSystem, bool otfEnabled=True, float topologyTolerance=0, QString ellipsoidID="WGS84")
 qgis.networkanalysis.QgsGraphBuilder?1(QgsGraphBuilder)
 qgis.networkanalysis.QgsGraphBuilder.__init__?1(self, QgsGraphBuilder)
 qgis.networkanalysis.QgsGraphBuilder.addVertex?4(int, QgsPoint)
-qgis.networkanalysis.QgsGraphBuilder.addArc?4(int, QgsPoint, int, QgsPoint, list-of-QVariant)
+qgis.networkanalysis.QgsGraphBuilder.addArc?4(int, QgsPointXY, int, QgsPointXY, list-of-QVariant)
 qgis.networkanalysis.QgsGraphBuilder.graph?4() -> QgsGraph
 qgis.networkanalysis.QgsGraphDirector?1()
 qgis.networkanalysis.QgsGraphDirector.__init__?1(self)

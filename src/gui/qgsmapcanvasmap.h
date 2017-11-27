@@ -16,65 +16,48 @@
 #ifndef QGSMAPCANVASMAP_H
 #define QGSMAPCANVASMAP_H
 
-#include <QGraphicsRectItem>
-#include <QPixmap>
+#include "qgsmapcanvasitem.h"
 
-#include <qgis.h>
-
-class QgsMapRenderer;
+class QgsMapSettings;
 class QgsMapCanvas;
 
-/** \ingroup gui
+#define SIP_NO_FILE
+
+/// @cond PRIVATE
+
+/**
+ * \ingroup gui
  * A rectangular graphics item representing the map on the canvas.
+ *
+ * \note This class is not a part of public API
  */
-class GUI_EXPORT QgsMapCanvasMap : public QGraphicsRectItem
+class QgsMapCanvasMap : public QgsMapCanvasItem
 {
   public:
 
     //! constructor
-    QgsMapCanvasMap( QgsMapCanvas* canvas );
+    QgsMapCanvasMap( QgsMapCanvas *canvas );
 
-    //! resize canvas item and pixmap
-    void resize( QSize size );
+    //! \since QGIS 2.4
+    void setContent( const QImage &image, const QgsRectangle &rect );
 
-    void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
+    //! \since QGIS 2.4
+    QImage contentImage() const { return mImage; }
 
-    void useImageToRender( bool flag ) { mUseQImageToRender = flag; }
+    virtual void paint( QPainter *painter ) override;
 
-    //! renders map using QgsMapRenderer to mPixmap
-    void render();
+    void addPreviewImage( const QImage &image, const QgsRectangle &rect );
 
-    void setBackgroundColor( const QColor& color ) { mBgColor = color; }
-
-    void setPanningOffset( const QPoint& point );
-
-    QPaintDevice& paintDevice();
-
-    void paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* );
-
-    QRectF boundingRect() const;
-
-    //! Update contents - can be called while drawing to show the status.
-    //! Added in version 1.2
-    void updateContents();
+    QRectF boundingRect() const override;
 
   private:
 
-    //! indicates whether antialiasing will be used for rendering
-    bool mAntiAliasing;
-
-    //! Whether to use a QPixmap or a QImage for the rendering
-    bool mUseQImageToRender;
-
-    QPixmap mPixmap;
     QImage mImage;
 
-    //QgsMapRenderer* mRender;
-    QgsMapCanvas* mCanvas;
-
-    QColor mBgColor;
-
-    QPoint mOffset;
+    //! Preview images for panning. Usually cover area around the rendered image
+    QList< QPair< QImage, QgsRectangle > > mPreviewImages;
 };
+
+/// @endcond
 
 #endif

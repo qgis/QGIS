@@ -1,88 +1,209 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbrowsermodel.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsBrowserModel : QAbstractItemModel
 {
-%TypeHeaderCode
-#include <qgsbrowsermodel.h>
-%End
 
+%TypeHeaderCode
+#include "qgsbrowsermodel.h"
+%End
   public:
     explicit QgsBrowserModel( QObject *parent = 0 );
     ~QgsBrowserModel();
 
-    // implemented methods from QAbstractItemModel for read-only access
+    enum ItemDataRole
+    {
+      PathRole,
+      CommentRole,
+    };
 
-    /** Used by other components to obtain information about each item provided by the model.
-      In many models, the combination of flags should include Qt::ItemIsEnabled and Qt::ItemIsSelectable. */
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+%Docstring
+ Used by other components to obtain information about each item provided by the model.
+In many models, the combination of flags should include Qt.ItemIsEnabled and Qt.ItemIsSelectable. *
+ :rtype: Qt.ItemFlags
+%End
 
-    /** Used to supply item data to views and delegates. Generally, models only need to supply data
-      for Qt::DisplayRole and any application-specific user roles, but it is also good practice
-      to provide data for Qt::ToolTipRole, Qt::AccessibleTextRole, and Qt::AccessibleDescriptionRole.
-      See the Qt::ItemDataRole enum documentation for information about the types associated with each role. */
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+%Docstring
+ Used to supply item data to views and delegates. Generally, models only need to supply data
+for Qt.DisplayRole and any application-specific user roles, but it is also good practice
+to provide data for Qt.ToolTipRole, Qt.AccessibleTextRole, and Qt.AccessibleDescriptionRole.
+See the Qt.ItemDataRole enum documentation for information about the types associated with each role. *
+ :rtype: QVariant
+%End
 
-    /** Provides views with information to show in their headers. The information is only retrieved
-      by views that can display header information. */
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+%Docstring
+ Provides views with information to show in their headers. The information is only retrieved
+by views that can display header information. *
+ :rtype: QVariant
+%End
 
-    /** Provides the number of rows of data exposed by the model. */
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+%Docstring
+Provides the number of rows of data exposed by the model.
+ :rtype: int
+%End
 
-    /** Provides the number of columns of data exposed by the model. List models do not provide this function
-      because it is already implemented in QAbstractListModel. */
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+%Docstring
+ Provides the number of columns of data exposed by the model. List models do not provide this function
+because it is already implemented in QAbstractListModel. *
+ :rtype: int
+%End
 
-    /** Returns the index of the item in the model specified by the given row, column and parent index. */
-    virtual QModelIndex index( int row, int column, const QModelIndex & parent = QModelIndex() ) const;
+    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+%Docstring
+Returns the index of the item in the model specified by the given row, column and parent index.
+ :rtype: QModelIndex
+%End
 
     QModelIndex findItem( QgsDataItem *item, QgsDataItem *parent = 0 ) const;
+%Docstring
+ :rtype: QModelIndex
+%End
 
-    /** Returns the parent of the model item with the given index.
-     * If the item has no parent, an invalid QModelIndex is returned.
-     */
     virtual QModelIndex parent( const QModelIndex &index ) const;
+%Docstring
+ Returns the parent of the model item with the given index.
+ If the item has no parent, an invalid QModelIndex is returned.
+ :rtype: QModelIndex
+%End
 
-    /** Returns a list of mime that can describe model indexes */
     virtual QStringList mimeTypes() const;
+%Docstring
+Returns a list of mime that can describe model indexes
+ :rtype: list of str
+%End
 
-    /** Returns an object that contains serialized items of data corresponding to the list of indexes specified */
-    virtual QMimeData * mimeData( const QModelIndexList &indexes ) const;
+    virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+%Docstring
+Returns an object that contains serialized items of data corresponding to the list of indexes specified
+ :rtype: QMimeData
+%End
 
-    /** Handles the data supplied by a drag and drop operation that ended with the given action */
-    virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
+    virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
+%Docstring
+Handles the data supplied by a drag and drop operation that ended with the given action
+ :rtype: bool
+%End
 
     QgsDataItem *dataItem( const QModelIndex &idx ) const;
+%Docstring
+ :rtype: QgsDataItem
+%End
 
-    bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
+    virtual bool hasChildren( const QModelIndex &parent = QModelIndex() ) const;
 
-    // Refresh item specified by path
-    void refresh( QString path );
 
-    // Refresh item childs
+    void refresh( const QString &path );
+%Docstring
+Refresh item specified by path
+%End
+
     void refresh( const QModelIndex &index = QModelIndex() );
+%Docstring
+Refresh item children
+%End
 
-    //! return index of a path
-    QModelIndex findPath( QString path );
+    QModelIndex findPath( const QString &path, Qt::MatchFlag matchFlag = Qt::MatchExactly );
+%Docstring
+ Return index of item with given path. It only searches in currently fetched
+ items, i.e. it does not fetch children.
+ \param path item path
+ \param matchFlag supported is Qt.MatchExactly and Qt.MatchStartsWith which has reverse meaning, i.e. find
+        item with the longest match from start with path (to get as close/deep as possible to deleted item).
+ :return: model index, invalid if item not found *
+ :rtype: QModelIndex
+%End
+
 
     void connectItem( QgsDataItem *item );
 
-    bool canFetchMore( const QModelIndex & parent ) const;
-    void fetchMore( const QModelIndex & parent );
+    virtual bool canFetchMore( const QModelIndex &parent ) const;
+
+    virtual void fetchMore( const QModelIndex &parent );
+
+
+    bool initialized( ) const;
+%Docstring
+Returns true if the model has been initialized
+ :rtype: bool
+%End
+
+  signals:
+    void stateChanged( const QModelIndex &index, QgsDataItem::State oldState );
+%Docstring
+Emitted when item children fetch was finished
+%End
+
+    void connectionsChanged();
+%Docstring
+ Connections changed in the browser, forwarded to the widget and used to
+ notify the provider dialogs of a changed connection
+%End
 
   public slots:
-    // Reload the whole model
     void reload();
+%Docstring
+Reload the whole model
+%End
     void beginInsertItems( QgsDataItem *parent, int first, int last );
     void endInsertItems();
     void beginRemoveItems( QgsDataItem *parent, int first, int last );
     void endRemoveItems();
+    void itemDataChanged( QgsDataItem *item );
+    void itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState );
 
-    void addFavouriteDirectory( QString favDir );
-    void removeFavourite( const QModelIndex &index );
+    void addFavoriteDirectory( const QString &directory );
+%Docstring
+ Adds a directory to the favorites group.
+.. versionadded:: 3.0
+.. seealso:: removeFavorite()
+%End
+
+    void removeFavorite( const QModelIndex &index );
+%Docstring
+ Removes a favorite directory from its corresponding model index.
+.. versionadded:: 3.0
+.. seealso:: addFavoriteDirectory()
+%End
 
     void updateProjectHome();
 
+    void hidePath( QgsDataItem *item );
+%Docstring
+Hide the given path in the browser model
+%End
+
+    void initialize();
+%Docstring
+Delayed initialization, needed because the provider registry must be already populated
+%End
+
   protected:
-    // populates the model
     void addRootItems();
+%Docstring
+Populates the model
+%End
     void removeRootItems();
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsbrowsermodel.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

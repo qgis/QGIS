@@ -17,53 +17,46 @@
 
 #include "qgscrscache.h"
 #include "qgscoordinatetransform.h"
+#include <QVector>
 
-
-QgsCoordinateTransformCache* QgsCoordinateTransformCache::instance()
+QgsCoordinateTransformCache *QgsCoordinateTransformCache::instance()
 {
-  static QgsCoordinateTransformCache mInstance;
-  return &mInstance;
+  static QgsCoordinateTransformCache sInstance;
+  return &sInstance;
 }
 
-QgsCoordinateTransformCache::~QgsCoordinateTransformCache()
+QgsCoordinateTransform QgsCoordinateTransformCache::transform( const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform, int destDatumTransform )
 {
-  QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator tIt = mTransforms.constBegin();
-  for ( ; tIt != mTransforms.constEnd(); ++tIt )
-  {
-    delete tIt.value();
-  }
-}
-
-const QgsCoordinateTransform* QgsCoordinateTransformCache::transform( const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform, int destDatumTransform )
-{
-  QList< QgsCoordinateTransform* > values =
+  QList< QgsCoordinateTransform > values =
     mTransforms.values( qMakePair( srcAuthId, destAuthId ) );
 
-  QList< QgsCoordinateTransform* >::const_iterator valIt = values.constBegin();
+  QList< QgsCoordinateTransform >::const_iterator valIt = values.constBegin();
   for ( ; valIt != values.constEnd(); ++valIt )
   {
-    if ( *valIt && ( *valIt )->sourceDatumTransform() == srcDatumTransform && ( *valIt )->destinationDatumTransform() == destDatumTransform )
+    if ( ( *valIt ).isValid() &&
+         ( *valIt ).sourceDatumTransform() == srcDatumTransform &&
+         ( *valIt ).destinationDatumTransform() == destDatumTransform )
     {
       return *valIt;
     }
   }
 
   //not found, insert new value
-  const QgsCoordinateReferenceSystem& srcCrs = QgsCRSCache::instance()->crsByAuthId( srcAuthId );
-  const QgsCoordinateReferenceSystem& destCrs = QgsCRSCache::instance()->crsByAuthId( destAuthId );
-  QgsCoordinateTransform* ct = new QgsCoordinateTransform( srcCrs, destCrs );
-  ct->setSourceDatumTransform( srcDatumTransform );
-  ct->setDestinationDatumTransform( destDatumTransform );
-  ct->initialise();
+  QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( srcAuthId );
+  QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( destAuthId );
+  QgsCoordinateTransform ct = QgsCoordinateTransform( srcCrs, destCrs );
+  ct.setSourceDatumTransform( srcDatumTransform );
+  ct.setDestinationDatumTransform( destDatumTransform );
+  ct.initialize();
   mTransforms.insertMulti( qMakePair( srcAuthId, destAuthId ), ct );
   return ct;
 }
 
-void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
+void QgsCoordinateTransformCache::invalidateCrs( const QString &crsAuthId )
 {
   //get keys to remove first
-  QHash< QPair< QString, QString >, QgsCoordinateTransform* >::const_iterator it = mTransforms.constBegin();
-  QList< QPair< QString, QString > > updateList;
+  QHash< QPair< QString, QString >, QgsCoordinateTransform >::const_iterator it = mTransforms.constBegin();
+  QVector< QPair< QString, QString > > updateList;
 
   for ( ; it != mTransforms.constEnd(); ++it )
   {
@@ -74,62 +67,9 @@ void QgsCoordinateTransformCache::invalidateCrs( const QString& crsAuthId )
   }
 
   //and remove after
-  QList< QPair< QString, QString > >::const_iterator updateIt = updateList.constBegin();
+  QVector< QPair< QString, QString > >::const_iterator updateIt = updateList.constBegin();
   for ( ; updateIt != updateList.constEnd(); ++updateIt )
   {
     mTransforms.remove( *updateIt );
   }
-}
-
-
-QgsCRSCache* QgsCRSCache::instance()
-{
-  static QgsCRSCache mInstance;
-  return &mInstance;
-}
-
-QgsCRSCache::QgsCRSCache()
-{
-}
-
-QgsCRSCache::~QgsCRSCache()
-{
-}
-
-void QgsCRSCache::updateCRSCache( const QString& authid )
-{
-  QgsCoordinateReferenceSystem s;
-  if ( s.createFromOgcWmsCrs( authid ) )
-  {
-    mCRS.insert( authid, s );
-  }
-  else
-  {
-    mCRS.remove( authid );
-  }
-
-  QgsCoordinateTransformCache::instance()->invalidateCrs( authid );
-}
-
-const QgsCoordinateReferenceSystem& QgsCRSCache::crsByAuthId( const QString& authid )
-{
-  QHash< QString, QgsCoordinateReferenceSystem >::const_iterator crsIt = mCRS.find( authid );
-  if ( crsIt == mCRS.constEnd() )
-  {
-    QgsCoordinateReferenceSystem s;
-    if ( ! s.createFromOgcWmsCrs( authid ) )
-    {
-      return mInvalidCRS;
-    }
-    return mCRS.insert( authid, s ).value();
-  }
-  else
-  {
-    return crsIt.value();
-  }
-}
-
-const QgsCoordinateReferenceSystem& QgsCRSCache::crsByEpsgId( long epsg )
-{
-  return crsByAuthId( "EPSG:" + QString::number( epsg ) );
 }

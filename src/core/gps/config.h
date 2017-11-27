@@ -24,8 +24,8 @@
  *
  */
 
-#ifndef __NMEA_CONFIG_H__
-#define __NMEA_CONFIG_H__
+#ifndef NMEA_CONFIG_H
+#define NMEA_CONFIG_H
 
 #define NMEA_VERSION        ("0.5.3")
 #define NMEA_VERSION_MAJOR  (0)
@@ -45,10 +45,6 @@
 #   define  NMEA_UNI
 #endif
 
-#if defined(NMEA_WIN) && (_MSC_VER >= 1400)
-# pragma warning(disable: 4996) /* declared deprecated */
-#endif
-
 #if defined(_MSC_VER)
 # define NMEA_POSIX(x)  _##x
 # define NMEA_INLINE    __inline
@@ -64,4 +60,4 @@
 #   define NMEA_ASSERT(x)
 #endif
 
-#endif /* __NMEA_CONFIG_H__ */
+#endif /* NMEA_CONFIG_H */

@@ -19,9 +19,10 @@
 #include "qgscomposeritem.h"
 #include "qgscomposition.h"
 #include "qgsproject.h"
+#include "qgscomposermodel.h"
 
-QgsAddRemoveItemCommand::QgsAddRemoveItemCommand( State s, QgsComposerItem* item, QgsComposition* c, const QString& text, QUndoCommand* parent ):
-    QUndoCommand( text, parent ), mItem( item ), mComposition( c ), mState( s ), mFirstRun( true )
+QgsAddRemoveItemCommand::QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent ):
+  QUndoCommand( text, parent ), mItem( item ), mComposition( c ), mState( s ), mFirstRun( true )
 {
 }
 
@@ -35,6 +36,7 @@ QgsAddRemoveItemCommand::~QgsAddRemoveItemCommand()
 
 void QgsAddRemoveItemCommand::redo()
 {
+  QUndoCommand::redo(); // call redo() on all children
   if ( mFirstRun )
   {
     mFirstRun = false;
@@ -45,6 +47,7 @@ void QgsAddRemoveItemCommand::redo()
 
 void QgsAddRemoveItemCommand::undo()
 {
+  QUndoCommand::undo(); // call undo() on all children, in reverse order
   if ( mFirstRun )
   {
     mFirstRun = false;
@@ -57,8 +60,10 @@ void QgsAddRemoveItemCommand::switchState()
 {
   if ( mState == Added )
   {
+    // Remove
     if ( mComposition )
     {
+      mComposition->itemsModel()->setItemRemoved( mItem );
       mComposition->removeItem( mItem );
     }
     emit itemRemoved( mItem );
@@ -66,12 +71,14 @@ void QgsAddRemoveItemCommand::switchState()
   }
   else //Removed
   {
+    // Add
     if ( mComposition )
     {
+      mComposition->itemsModel()->setItemRestored( mItem );
       mComposition->addItem( mItem );
     }
     emit itemAdded( mItem );
     mState = Added;
   }
-  QgsProject::instance()->dirty( true );
+  mComposition->project()->setDirty( true );
 }

@@ -4,8 +4,11 @@
  * \see QextSerialEnumerator
  */
 
-#ifndef _QEXTSERIALENUMERATOR_H_
-#define _QEXTSERIALENUMERATOR_H_
+#ifndef QEXTSERIALENUMERATOR_H
+#define QEXTSERIALENUMERATOR_H
+
+#define SIP_NO_FILE
+
 
 #include <QString>
 #include <QList>
@@ -76,7 +79,7 @@ class QextSerialRegistrationWidget : public QWidget
   \b Example
   \code
   QList<QextPortInfo> ports = QextSerialEnumerator::getPorts();
-  foreach( QextPortInfo port, ports ) {
+  Q_FOREACH( QextPortInfo port, ports ) {
       // inspect port...
   }
   \endcode
@@ -88,10 +91,10 @@ class QextSerialRegistrationWidget : public QWidget
   \b Example
   \code
   QextSerialEnumerator* enumerator = new QextSerialEnumerator();
-  connect(enumerator, SIGNAL(deviceDiscovered(const QextPortInfo &)),
-             myClass, SLOT(onDeviceDiscovered(const QextPortInfo &)));
-  connect(enumerator, SIGNAL(deviceRemoved(const QextPortInfo &)),
-             myClass, SLOT(onDeviceRemoved(const QextPortInfo &)));
+  connect(enumerator, &QextSerialEnumerator::deviceDiscovered,
+             myClass, &MyObject::onDeviceDiscovered);
+  connect(enumerator, &QextSerialEnumerator::deviceRemoved,
+             myClass, &MyObject::onDeviceRemoved);
   \endcode
 
   \section Credits
@@ -117,7 +120,7 @@ Q_OBJECT
              * Get value of specified property from the registry.
              * 	\param key handle to an open key.
              * 	\param property property name.
-             * 	\return property value.
+             * 	\returns property value.
              */
             static QString getRegKeyValue(HKEY key, LPCTSTR property);
 
@@ -128,7 +131,7 @@ Q_OBJECT
              * \param devData pointer to an SP_DEVINFO_DATA structure that defines the device instance.
              *    this is returned by SetupDiGetDeviceInterfaceDetail() function.
              * \param property registry property. One of defined SPDRP_* constants.
-             * \return property string.
+             * \returns property string.
              */
             static QString getDeviceProperty(HDEVINFO devInfo, PSP_DEVINFO_DATA devData, DWORD property);
 
@@ -178,7 +181,7 @@ Q_OBJECT
     public:
         /*!
           Get list of ports.
-          \return list of ports currently available in the system.
+          \returns list of ports currently available in the system.
         */
         static QList<QextPortInfo> getPorts();
         /*!
@@ -205,4 +208,4 @@ Q_OBJECT
         void deviceRemoved( const QextPortInfo & info );
 };
 
-#endif /*_QEXTSERIALENUMERATOR_H_*/
+#endif /*QEXTSERIALENUMERATOR_H*/

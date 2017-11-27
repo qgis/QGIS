@@ -15,33 +15,46 @@ email                : sherman at mrcc.com
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSOGRPROVIDER_H
+#define QGSOGRPROVIDER_H
+
 #include "QTextCodec"
 
 #include "qgsrectangle.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorfilewriter.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
 
 class QgsField;
-class QgsVectorLayerImport;
+class QgsVectorLayerExporter;
 
 class QgsOgrFeatureIterator;
 
-#include <ogr_api.h>
+#include <gdal.h>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8(x)   (x).toUtf8().constData()
-#define TO8F(x)  (x).toUtf8().constData()
-#define FROM8(x) QString::fromUtf8(x)
-#else
-#define TO8(x)   (x).toLocal8Bit().constData()
-#define TO8F(x)  QFile::encodeName( x ).constData()
-#define FROM8(x) QString::fromLocal8Bit(x)
-#endif
+class QgsOgrLayer;
+
+/**
+ * Releases a QgsOgrLayer
+ */
+struct QgsOgrLayerReleaser
+{
+
+  /**
+   * Releases a QgsOgrLayer \a layer.
+   */
+  void operator()( QgsOgrLayer *layer );
+
+};
+
+/**
+ * Scoped QgsOgrLayer.
+ */
+using QgsOgrLayerUniquePtr = std::unique_ptr< QgsOgrLayer, QgsOgrLayerReleaser>;
 
 /**
   \class QgsOgrProvider
-  \brief Data provider for ESRI shapefiles
+  \brief Data provider for OGR datasources
   */
 class QgsOgrProvider : public QgsVectorDataProvider
 {
@@ -49,248 +62,181 @@ class QgsOgrProvider : public QgsVectorDataProvider
 
   public:
 
-    /** convert a vector layer to a vector file */
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
+    //! Convert a vector layer to a vector file
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
       const QgsFields &fields,
-      QGis::WkbType wkbType,
-      const QgsCoordinateReferenceSystem *srs,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
     /**
      * Constructor of the vector provider
-     * @param uri  uniform resource locator (URI) for a dataset
+     * \param uri  uniform resource locator (URI) for a dataset
      */
-    QgsOgrProvider( QString const & uri = "" );
+    explicit QgsOgrProvider( QString const &uri = QString() );
 
-    /**
-     * Destructor
-     */
     virtual ~QgsOgrProvider();
 
-    virtual QgsCoordinateReferenceSystem crs();
-
     /**
-     * Sub-layers handled by this provider, in order from bottom to top
-     *
-     * Sub-layers are used when the provider's source can combine layers
-     * it knows about in some way before it hands them off to the provider.
+     * Get the data source specification. This may be a path or database
+     * connection string
+     * \param expandAuthConfig Whether to expand any assigned authentication configuration
+     * \returns data source specification
+     * \note The default authentication configuration expansion is FALSE. This keeps credentials
+     * out of layer data source URIs and project files. Expansion should be specifically done
+     * only when needed within a provider
      */
-    virtual QStringList subLayers() const;
+    QString dataSourceUri( bool expandAuthConfig = false ) const override;
 
-    /**
-     *   Returns the permanent storage type for this layer as a friendly name.
-     */
-    virtual QString storageType() const;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    virtual QgsAbstractFeatureSource *featureSource() const override;
 
-    /** Accessor for sql where clause used to limit dataset */
-    virtual QString subsetString();
-
-    virtual bool supportsSubsetString() { return true; }
-
-    /** mutator for sql where clause used to limit dataset size */
-    virtual bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
-
-    /**
-     * Get feature type.
-     * @return int representing the feature type
-     */
-    virtual QGis::WkbType geometryType() const;
-
-    /** return the number of layers for the current data source
-
-    @note
-
-    Should this be subLayerCount() instead?
-    */
+    virtual QgsCoordinateReferenceSystem crs() const override;
+    virtual QStringList subLayers() const override;
+    virtual QString storageType() const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    virtual QString subsetString() const override;
+    virtual bool supportsSubsetString() const override { return true; }
+    virtual bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
+    virtual QgsWkbTypes::Type wkbType() const override;
     virtual size_t layerCount() const;
-
-    /**
-     * Get the number of features in the layer
-     */
-    virtual long featureCount() const;
-
-    /**
-     * Get the field information for the layer
-     */
-    virtual const QgsFields & fields() const;
-
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent();
-
-    /** Update the extents
-     */
-    virtual void updateExtents();
-
-    /**Writes a list of features to the file*/
-    virtual bool addFeatures( QgsFeatureList & flist );
-
-    /**Deletes a feature*/
-    virtual bool deleteFeatures( const QgsFeatureIds & id );
-
-    /**
-     * Adds new attributes
-     * @param attributes list of new attributes
-     * @return true in case of success and false in case of failure
-     * @note added in 1.2
-     */
-    virtual bool addAttributes( const QList<QgsField> &attributes );
-
-    /**
-     * Deletes existing attributes
-     * @param attributes a set containing names of attributes
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool deleteAttributes( const QgsAttributeIds &attributes );
-
-    /**Changes attribute values of existing features */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
-
-    /**Changes existing geometries*/
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
-
-    /**Tries to create a .qix index file for faster access if only a subset of the features is required
-     @return true in case of success*/
-    virtual bool createSpatialIndex();
-
-    /**Create an attribute index on the datasource*/
-    virtual bool createAttributeIndex( int field );
-
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on whether
-        a spatial filter is active on this provider, so it may
-        be prudent to check this value per intended operation.
-        See the OGRLayer::TestCapability API for details.
-      */
-    virtual int capabilities() const;
-
-    virtual void setEncoding( const QString& e );
-
-
-    /** return vector file filter string
-
-      Returns a string suitable for a QFileDialog of vector file formats
-      supported by the data provider.  Naturally this will be an empty string
-      for those data providers that do not deal with plain files, such as
-      databases and servers.
-
-      @note
-
-      It'd be nice to eventually be raster/vector neutral.
-    */
-    /* virtual */
-    QString fileVectorFilters() const;
-    /** return a string containing the available database drivers */
+    virtual long featureCount() const override;
+    virtual QgsFields fields() const override;
+    virtual QgsRectangle extent() const override;
+    virtual QVariant defaultValue( int fieldId ) const override;
+    virtual QString defaultValueClause( int fieldIndex ) const override;
+    virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
+    virtual void updateExtents() override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
+    virtual bool addAttributes( const QList<QgsField> &attributes ) override;
+    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
+    virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    virtual bool createSpatialIndex() override;
+    virtual bool createAttributeIndex( int field ) override;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
+    virtual void setEncoding( const QString &e ) override;
+    virtual bool enterUpdateMode() override { return _enterUpdateMode(); }
+    virtual bool leaveUpdateMode() override;
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override;
+    QString fileVectorFilters() const override;
+    //! Return a string containing the available database drivers
     QString databaseDrivers() const;
-    /** return a string containing the available directory drivers */
+    //! Return a string containing the available directory drivers
     QString protocolDrivers() const;
-    /** return a string containing the available protocol drivers */
+    //! Return a string containing the available protocol drivers
     QString directoryDrivers() const;
 
-    /**Returns true if this is a valid shapefile
-    */
-    bool isValid();
+    bool isValid() const override;
+    QVariant minimumValue( int index ) const override;
+    QVariant maximumValue( int index ) const override;
+    virtual QSet< QVariant > uniqueValues( int index, int limit = -1 ) const override;
+    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
+        QgsFeedback *feedback = nullptr ) const override;
 
-    /** Returns the minimum value of an attribute
-     *  @param index the index of the attribute */
-    QVariant minimumValue( int index );
+    QString name() const override;
+    QString description() const override;
+    virtual bool doesStrictFeatureTypeCheck() const override;
 
-    /** Returns the maximum value of an attribute
-     *  @param index the index of the attribute */
-    QVariant maximumValue( int index );
+    //! Return OGR geometry type
+    static OGRwkbGeometryType getOgrGeomType( OGRLayerH ogrLayer );
 
-    /** Return the unique values of an attribute
-     *  @param index the index of the attribute
-     *  @param values reference to the list of unique values */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
-
-    /** return a provider name
-
-    Essentially just returns the provider key.  Should be used to build file
-    dialogs so that providers can be shown with their supported types. Thus
-    if more than one provider supports a given format, the user is able to
-    select a specific provider to open that file.
-
-    @note
-
-    Instead of being pure virtual, might be better to generalize this
-    behavior and presume that none of the sub-classes are going to do
-    anything strange with regards to their name or description?
-
-    */
-    QString name() const;
-
-
-    /** return description
-
-      Return a terse string describing what the provider is.
-
-      @note
-
-      Instead of being pure virtual, might be better to generalize this
-      behavior and presume that none of the sub-classes are going to do
-      anything strange with regards to their name or description?
-
-     */
-    QString description() const;
-
-    /** Returns true if the provider is strict about the type of inserted features
-          (e.g. no multipolygon in a polygon layer)
-          @note: added in version 1.4*/
-    virtual bool doesStrictFeatureTypeCheck() const { return false;}
-
-    /** return OGR geometry type */
-    static int getOgrGeomType( OGRLayerH ogrLayer );
-
-    /** Get single flatten geometry type */
+    //! Get single flatten geometry type
     static OGRwkbGeometryType ogrWkbSingleFlatten( OGRwkbGeometryType type );
 
-    QString layerName() { return mLayerName; }
+    QString layerName() const { return mLayerName; }
 
-    QString filePath() { return mFilePath; }
+    QString filePath() const { return mFilePath; }
 
-    int layerIndex() { return mLayerIndex; }
+    int layerIndex() const { return mLayerIndex; }
 
-    QTextCodec* textEncoding() { return mEncoding; }
+    QByteArray quotedIdentifier( const QByteArray &field ) const;
 
-    QByteArray quotedIdentifier( QByteArray field );
+    /**
+     * A forced reload invalidates the underlying connection.
+     * E.g. in case a shapefile is replaced, the old file will be closed
+     * and the new file will be opened.
+     */
+    void forceReload() override;
+    void reloadData() override;
 
   protected:
-    /** loads fields from input file to member attributeFields */
+    //! Loads fields from input file to member attributeFields
     void loadFields();
 
-    /** find out the number of features of the whole layer */
+    //! Find out the number of features of the whole layer
     void recalculateFeatureCount();
 
-    /** tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore) */
-    void setRelevantFields( OGRLayerH ogrLayer, bool fetchGeometry, const QgsAttributeList& fetchAttributes );
+    //! Tell OGR, which fields to fetch in nextFeature/featureAtId (ie. which not to ignore)
+    void setRelevantFields( bool fetchGeometry, const QgsAttributeList &fetchAttributes );
 
-    /** convert a QgsField to work with OGR */
+    //! Convert a QgsField to work with OGR
     static bool convertField( QgsField &field, const QTextCodec &encoding );
 
-    /** Clean shapefile from features which are marked as deleted */
+    //! Clean shapefile from features which are marked as deleted
     void repack();
+
+    //! Invalidate extent and optionally force its low level recomputation
+    void invalidateCachedExtent( bool bForceRecomputeExtent );
+
+    enum OpenMode
+    {
+      OpenModeInitial,
+      OpenModeSameAsCurrent,
+      OpenModeForceReadOnly,
+      OpenModeForceUpdate,
+      OpenModeForceUpdateRepackOff
+    };
+
+    void open( OpenMode mode );
+    void close();
+
+    bool _enterUpdateMode( bool implicit = false );
 
   private:
     unsigned char *getGeometryPointer( OGRFeatureH fet );
     QString ogrWkbGeometryTypeName( OGRwkbGeometryType type ) const;
-    OGRwkbGeometryType ogrWkbGeometryTypeFromName( QString typeName ) const;
-    QgsFields mAttributeFields;
-    OGRDataSourceH ogrDataSource;
-    void *extent_;
 
-    /**This member variable receives the same value as extent_
+    //! Starts a transaction if possible and return true in that case
+    bool startTransaction();
+
+    //! Commits a transaction
+    bool commitTransaction();
+
+    void addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer ) const;
+
+    QgsFields mAttributeFields;
+
+    //! Map of field index to default value
+    QMap<int, QString> mDefaultValues;
+
+    bool mFirstFieldIsFid = false;
+    mutable std::unique_ptr< OGREnvelope > mExtent;
+    bool mForceRecomputeExtent = false;
+
+    /**
+     * This member variable receives the same value as extent_
      in the method QgsOgrProvider::extent(). The purpose is to prevent a memory leak*/
-    QgsRectangle mExtentRect;
-    OGRLayerH ogrLayer;
-    OGRLayerH ogrOrigLayer;
+    mutable QgsRectangle mExtentRect;
+
+    /**
+     * Current working layer - will point to either mOgrSqlLayer or mOgrOrigLayer depending
+     * on whether a subset string is set
+     */
+    QgsOgrLayer *mOgrLayer = nullptr;
+
+    //! SQL result layer, used if a subset string is set
+    QgsOgrLayerUniquePtr mOgrSqlLayer;
+
+    //! Original layer (not a SQL result layer)
+    QgsOgrLayerUniquePtr mOgrOrigLayer;
 
     //! path to filename
     QString mFilePath;
@@ -299,12 +245,16 @@ class QgsOgrProvider : public QgsVectorDataProvider
     QString mLayerName;
 
     //! layer index
-    int mLayerIndex;
+    int mLayerIndex = 0;
 
-    /** Optional geometry type for layers with multiple geometries,
+    //! was a sub layer requested?
+    bool mIsSubLayer = false;
+
+    /**
+     * Optional geometry type for layers with multiple geometries,
      *  otherwise wkbUnknown. This type is always flatten (2D) and single, it means
      *  that 2D, 25D, single and multi types are mixed in one sublayer */
-    OGRwkbGeometryType mOgrGeometryTypeFilter;
+    OGRwkbGeometryType mOgrGeometryTypeFilter = wkbUnknown;
 
     //! current spatial filter
     QgsRectangle mFetchRect;
@@ -312,40 +262,344 @@ class QgsOgrProvider : public QgsVectorDataProvider
     //! String used to define a subset of the layer
     QString mSubsetString;
 
-    // OGR Driver that was actually used to open the layer
-    OGRSFDriverH ogrDriver;
+    // Friendly name of the GDAL Driver that was actually used to open the layer
+    QString mGDALDriverName;
 
-    // Friendly name of the OGR Driver that was actually used to open the layer
-    QString ogrDriverName;
+    bool mValid = false;
 
-    bool valid;
-    //! Flag to indicate that spatial intersect should be used in selecting features
-    bool mUseIntersect;
-    int geomType;
-    long featuresCounted;
-
-    //! There are deleted feature - REPACK before creating a spatialindex
-    bool mDeletedFeatures;
+    OGRwkbGeometryType mOGRGeomType = wkbUnknown;
+    long mFeaturesCounted = QgsVectorDataProvider::Uncounted;
 
     mutable QStringList mSubLayerList;
 
-    /** Flag whether OGR will return fields required by nextFeature() calls.
-        The relevant fields are first set in select(), however the setting may be
-        interferred by some other calls. This flag ensures they are set again
-        to correct values.
-     */
-    bool mRelevantFieldsForNextFeature;
-
-    /**Adds one feature*/
-    bool addFeature( QgsFeature& f );
-    /**Deletes one feature*/
+    bool addFeaturePrivate( QgsFeature &f, QgsFeatureSink::Flags flags );
+    //! Deletes one feature
     bool deleteFeature( QgsFeatureId id );
 
-    /**Calls OGR_L_SyncToDisk and recreates the spatial index if present*/
+    //! Calls OGR_L_SyncToDisk and recreates the spatial index if present
     bool syncToDisc();
 
-    OGRLayerH setSubsetString( OGRLayerH layer, OGRDataSourceH ds );
+    friend class QgsOgrFeatureSource;
 
-    friend class QgsOgrFeatureIterator;
-    QSet< QgsOgrFeatureIterator* > mActiveIterators;
+    //! Whether the file is opened in write mode
+    bool mWriteAccess = false;
+
+    //! Whether the file can potentially be opened in write mode (but not necessarily currently)
+    bool mWriteAccessPossible = false;
+
+    //! Whether the open mode of the datasource changes w.r.t calls to enterUpdateMode() / leaveUpdateMode()
+    bool mDynamicWriteAccess = false;
+
+    bool mShapefileMayBeCorrupted = false;
+
+    //! Converts the geometry to the layer type if necessary. Takes ownership of the passed geometry
+    OGRGeometryH ConvertGeometryIfNecessary( OGRGeometryH );
+
+    int mUpdateModeStackDepth = 0;
+
+    bool mDeferRepack = false;
+
+    void computeCapabilities();
+
+    QgsVectorDataProvider::Capabilities mCapabilities;
+
+    bool doInitialActionsForEdition();
+
+#ifndef QT_NO_NETWORKPROXY
+    void setupProxy();
+#endif
+
 };
+
+/**
+  \class QgsOgrProviderUtils
+  \brief Utility class with static methods
+  */
+class QgsOgrProviderUtils
+{
+    friend class QgsOgrLayer;
+
+    //! Identifies a dataset by name, updateMode and options
+    class DatasetIdentification
+    {
+        QString toString() const;
+
+      public:
+        QString dsName;
+        bool    updateMode = false;
+        QStringList options;
+        DatasetIdentification() = default;
+
+        bool operator< ( const DatasetIdentification &other ) const;
+    };
+
+    //! GDAL dataset objects and layers in use in it
+    class DatasetWithLayers
+    {
+      public:
+        QMutex         mutex;
+        GDALDatasetH   hDS = nullptr;
+        QMap<QString, QgsOgrLayer *>  setLayers;
+        int            refCount = 0;
+
+        DatasetWithLayers(): mutex( QMutex::Recursive ) {}
+    };
+
+    //! Global mutex for QgsOgrProviderUtils
+    static QMutex sGlobalMutex;
+
+    //! Map dataset identification to a list of corresponding DatasetWithLayers*
+    static QMap< DatasetIdentification, QList<DatasetWithLayers *> > sMapSharedDS;
+
+    //! Map a dataset name to the number of opened GDAL dataset objects on it (if opened with GDALOpenWrapper, only for GPKG)
+    static QMap< QString, int > sMapCountOpenedDS;
+
+    //! Map a dataset handle to its update open mode (if opened with GDALOpenWrapper, only for GPKG)
+    static QMap< GDALDatasetH, bool> sMapDSHandleToUpdateMode;
+
+    //! Map a dataset name to its last modified data
+    static QMap< QString, QDateTime > sMapDSNameToLastModifiedDate;
+
+    static bool canUseOpenedDatasets( const QString &dsName );
+
+  public:
+
+    //! Inject credentials into the dsName (if any)
+    static QString expandAuthConfig( const QString &dsName );
+
+    static void setRelevantFields( OGRLayerH ogrLayer, int fieldCount, bool fetchGeometry, const QgsAttributeList &fetchAttributes, bool firstAttrIsFid );
+    static OGRLayerH setSubsetString( OGRLayerH layer, GDALDatasetH ds, QTextCodec *encoding, const QString &subsetString, bool &origFidAdded );
+    static QByteArray quotedIdentifier( QByteArray field, const QString &driverName );
+
+    /**
+     * Quote a value for placement in a SQL string.
+     */
+    static QString quotedValue( const QVariant &value );
+
+    //! Wrapper for GDALOpenEx() that does a few lower level actions. Should be strictly paired with GDALCloseWrapper()
+    static GDALDatasetH GDALOpenWrapper( const char *pszPath, bool bUpdate, char **papszOpenOptionsIn, GDALDriverH *phDriver );
+
+    //! Wrapper for GDALClose()
+    static void GDALCloseWrapper( GDALDatasetH mhDS );
+
+    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it doesn't already use that layer. release() should be called when done with the object
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
+                                          const QString &layerName,
+                                          QString &errCause );
+
+
+    //! Open a layer given by name, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer. release() should be called when done with the object
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
+                                          bool updateMode,
+                                          const QStringList &options,
+                                          const QString &layerName,
+                                          QString &errCause );
+
+    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it doesn't already use that layer. release() should be called when done with the object
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
+                                          int layerIndex,
+                                          QString &errCause );
+
+    //! Open a layer given by index, potentially reusing an existing GDALDatasetH if it has been opened with the same (updateMode, options) tuple and doesn't already use that layer. release() should be called when done with the object
+    static QgsOgrLayerUniquePtr getLayer( const QString &dsName,
+                                          bool updateMode,
+                                          const QStringList &options,
+                                          int layerIndex,
+                                          QString &errCause );
+
+    //! Return a QgsOgrLayer* with a SQL result layer
+    static QgsOgrLayerUniquePtr getSqlLayer( QgsOgrLayer *baseLayer, OGRLayerH hSqlLayer, const QString &sql );
+
+    //! Release a QgsOgrLayer*
+    static void release( QgsOgrLayer *&layer );
+
+    //! Make sure that the existing pool of opened datasets on dsName is not accessible for new getLayer() attempts
+    static void invalidateCachedDatasets( const QString &dsName );
+
+    //! Return the string to provide to QgsOgrConnPool::instance() methods
+    static QString connectionPoolId( const QString &dataSourceURI );
+
+    //! Invalidate the cached last modified date of a dataset
+    static void invalidateCachedLastModifiedDate( const QString &dsName );
+};
+
+
+/**
+  \class QgsOgrFeatureDefn
+  \brief Wrap a OGRFieldDefnH object in a thread-safe way
+  */
+class QgsOgrFeatureDefn
+{
+    friend class QgsOgrLayer;
+
+    OGRFeatureDefnH hDefn = nullptr;
+    QgsOgrLayer *layer = nullptr;
+
+    QgsOgrFeatureDefn() = default;
+    ~QgsOgrFeatureDefn() = default;
+
+    OGRFeatureDefnH get();
+    QMutex &mutex();
+
+  public:
+
+    //! Wrapper of OGR_FD_GetFieldCount
+    int GetFieldCount();
+
+    //! Wrapper of OGR_FD_GetFieldDefn
+    OGRFieldDefnH GetFieldDefn( int );
+
+    //! Wrapper of OGR_FD_GetFieldIndex
+    int GetFieldIndex( const QByteArray & );
+
+    //! Wrapper of OGR_FD_GetGeomFieldCount
+    int GetGeomFieldCount();
+
+    //! Wrapper of OGR_FD_GetGeomFieldDefn
+    OGRGeomFieldDefnH GetGeomFieldDefn( int idx );
+
+    //! Wrapper of OGR_FD_GetGeomType
+    OGRwkbGeometryType GetGeomType();
+
+    //! Wrapper of OGR_F_Create
+    OGRFeatureH CreateFeature();
+};
+
+
+/**
+  \class QgsOgrLayer
+  \brief Wrap a OGRLayerH object in a thread-safe way
+  */
+class QgsOgrLayer
+{
+    friend class QgsOgrFeatureDefn;
+    friend class QgsOgrProviderUtils;
+
+    QgsOgrProviderUtils::DatasetIdentification ident;
+    bool isSqlLayer = false;
+    QString layerName;
+    QString sql;
+    QgsOgrProviderUtils::DatasetWithLayers *ds = nullptr;
+    OGRLayerH hLayer = nullptr;
+    QgsOgrFeatureDefn oFDefn;
+
+    QgsOgrLayer();
+    ~QgsOgrLayer() = default;
+
+    static QgsOgrLayerUniquePtr CreateForLayer(
+      const QgsOgrProviderUtils::DatasetIdentification &ident,
+      const QString &layerName,
+      QgsOgrProviderUtils::DatasetWithLayers *ds,
+      OGRLayerH hLayer );
+
+    static QgsOgrLayerUniquePtr CreateForSql(
+      const QgsOgrProviderUtils::DatasetIdentification &ident,
+      const QString &sql,
+      QgsOgrProviderUtils::DatasetWithLayers *ds,
+      OGRLayerH hLayer );
+
+    QMutex &mutex() { return ds->mutex; }
+
+  public:
+
+    //! Return GDALDriverH object for current dataset
+    GDALDriverH driver();
+
+    //! Return driver name for current dataset
+    QString driverName();
+
+    //! Return current dataset name
+    const QString &datasetName() const { return ident.dsName; }
+
+    //! Return dataset open mode
+    bool updateMode() const { return ident.updateMode; }
+
+    //! Return dataset open options
+    const QStringList &options() const { return ident.options; }
+
+    //! Return layer name
+    QByteArray name();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    int GetLayerCount();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    QByteArray GetFIDColumn();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRSpatialReferenceH GetSpatialRef();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    void ResetReading();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRFeatureH GetNextFeature();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRFeatureH GetFeature( GIntBig fid );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    QgsOgrFeatureDefn &GetLayerDefn();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    GIntBig GetFeatureCount( bool force = false );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr GetExtent( OGREnvelope *psExtent, bool bForce );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr CreateFeature( OGRFeatureH hFeature );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr SetFeature( OGRFeatureH hFeature );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr DeleteFeature( GIntBig fid );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr CreateField( OGRFieldDefnH hFieldDefn, bool bStrict );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr DeleteField( int iField );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr AlterFieldDefn( int iField, OGRFieldDefnH hNewFieldDefn, int flags );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    int TestCapability( const char * );
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr StartTransaction();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr CommitTransaction();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr RollbackTransaction();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRErr SyncToDisk();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    OGRGeometryH GetSpatialFilter();
+
+    //! Wrapper of OGR_L_GetLayerCount
+    void SetSpatialFilter( OGRGeometryH );
+
+    //! Return native GDALDatasetH object with the mutex to lock when using it
+    GDALDatasetH getDatasetHandleAndMutex( QMutex *&mutex );
+
+    //! Return native OGRLayerH object with the mutex to lock when using it
+    OGRLayerH getHandleAndMutex( QMutex *&mutex );
+
+    //! Wrapper of GDALDatasetReleaseResultSet( GDALDatasetExecuteSQL( ... ) )
+    void ExecuteSQLNoReturn( const QByteArray &sql );
+
+    //! Wrapper of GDALDatasetExecuteSQL(). Returned layer must be released with QgsOgrProviderUtils::release()
+    QgsOgrLayerUniquePtr ExecuteSQL( const QByteArray &sql );
+};
+
+
+// clazy:excludeall=qstring-allocations
+
+#endif // QGSOGRPROVIDER_H

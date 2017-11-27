@@ -22,8 +22,9 @@ The content of this file is based on
  ***************************************************************************/
 """
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QApplication
+from qgis.utils import OverrideCursor
 
 from .db_plugins.plugin import DbError
 from .dlg_db_error import DlgDbError
@@ -31,46 +32,44 @@ from .db_plugins.plugin import TableConstraint
 
 from .ui.ui_DlgCreateConstraint import Ui_DbManagerDlgCreateConstraint as Ui_Dialog
 
+
 class DlgCreateConstraint(QDialog, Ui_Dialog):
-	def __init__(self, parent=None, table=None, db=None):
-		QDialog.__init__(self, parent)
-		self.table = table
-		self.db = self.table.database() if self.table and self.table.database() else db
-		self.setupUi(self)
 
-		self.connect(self.buttonBox, SIGNAL("accepted()"), self.createConstraint)
-		self.populateColumns()
+    def __init__(self, parent=None, table=None, db=None):
+        QDialog.__init__(self, parent)
+        self.table = table
+        self.db = self.table.database() if self.table and self.table.database() else db
+        self.setupUi(self)
 
-	def populateColumns(self):
-		self.cboColumn.clear()
-		for fld in self.table.fields():
-			self.cboColumn.addItem(fld.name)
+        self.buttonBox.accepted.connect(self.createConstraint)
+        self.populateColumns()
 
+    def populateColumns(self):
+        self.cboColumn.clear()
+        for fld in self.table.fields():
+            self.cboColumn.addItem(fld.name)
 
-	def createConstraint(self):
-		constr = self.getConstraint()
+    def createConstraint(self):
+        constr = self.getConstraint()
 
-		# now create the constraint
-		QApplication.setOverrideCursor(Qt.WaitCursor)
-		try:
-			self.table.addConstraint(constr)
-		except DbError, e:
-			DlgDbError.showError(e, self)
-			return
-		finally:
-			QApplication.restoreOverrideCursor()
+        # now create the constraint
+        with OverrideCursor(Qt.WaitCursor):
+            try:
+                self.table.addConstraint(constr)
+            except DbError as e:
+                DlgDbError.showError(e, self)
+                return
 
-		self.accept()
+        self.accept()
 
-	def getConstraint(self):
-		constr = TableConstraint(self.table)
-		constr.name = u""
-		constr.type = TableConstraint.TypePrimaryKey if self.radPrimaryKey.isChecked() else TableConstraint.TypeUnique
-		constr.columns = []
-		column = self.cboColumn.currentText()
-		for fld in self.table.fields():
-			if fld.name == column:
-				constr.columns.append( fld.num )
-				break
-		return constr
-
+    def getConstraint(self):
+        constr = TableConstraint(self.table)
+        constr.name = u""
+        constr.type = TableConstraint.TypePrimaryKey if self.radPrimaryKey.isChecked() else TableConstraint.TypeUnique
+        constr.columns = []
+        column = self.cboColumn.currentText()
+        for fld in self.table.fields():
+            if fld.name == column:
+                constr.columns.append(fld.num)
+                break
+        return constr

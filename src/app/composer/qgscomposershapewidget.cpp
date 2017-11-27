@@ -18,14 +18,26 @@
 #include "qgscomposershapewidget.h"
 #include "qgscomposershape.h"
 #include "qgscomposeritemwidget.h"
+#include "qgscomposition.h"
+#include "qgsstyle.h"
+#include "qgssymbolselectordialog.h"
+#include "qgssymbollayerutils.h"
 #include <QColorDialog>
 
-QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape ): QWidget( 0 ), mComposerShape( composerShape )
+QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape *composerShape ): QgsComposerItemBaseWidget( nullptr, composerShape ), mComposerShape( composerShape )
 {
   setupUi( this );
+  connect( mShapeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsComposerShapeWidget::mShapeComboBox_currentIndexChanged );
+  connect( mCornerRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsComposerShapeWidget::mCornerRadiusSpinBox_valueChanged );
+  setPanelTitle( tr( "Shape properties" ) );
 
   //add widget for general composer item properties
-  QgsComposerItemWidget* itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
+  QgsComposerItemWidget *itemPropertiesWidget = new QgsComposerItemWidget( this, composerShape );
+
+  //shapes don't use background or frame, since the symbol style is set through a QgsSymbolSelectorWidget
+  itemPropertiesWidget->showBackgroundGroup( false );
+  itemPropertiesWidget->showFrameGroup( false );
+
   mainLayout->addWidget( itemPropertiesWidget );
 
   blockAllSignals( true );
@@ -35,26 +47,26 @@ QgsComposerShapeWidget::QgsComposerShapeWidget( QgsComposerShape* composerShape 
   mShapeComboBox->addItem( tr( "Rectangle" ) );
   mShapeComboBox->addItem( tr( "Triangle" ) );
 
+  mShapeStyleButton->setSymbolType( QgsSymbol::Fill );
+
   setGuiElementValues();
 
   blockAllSignals( false );
 
   if ( mComposerShape )
   {
-    connect( mComposerShape, SIGNAL( itemChanged() ), this, SLOT( setGuiElementValues() ) );
+    connect( mComposerShape, &QgsComposerObject::itemChanged, this, &QgsComposerShapeWidget::setGuiElementValues );
+    mShapeStyleButton->registerExpressionContextGenerator( mComposerShape );
   }
-}
-
-QgsComposerShapeWidget::~QgsComposerShapeWidget()
-{
-
+  connect( mShapeStyleButton, &QgsSymbolButton::changed, this, &QgsComposerShapeWidget::symbolChanged );
+  mShapeStyleButton->setLayer( atlasCoverageLayer() );
 }
 
 void QgsComposerShapeWidget::blockAllSignals( bool block )
 {
   mShapeComboBox->blockSignals( block );
-  mRotationSpinBox->blockSignals( block );
   mCornerRadiusSpinBox->blockSignals( block );
+  mShapeStyleButton->blockSignals( block );
 }
 
 void QgsComposerShapeWidget::setGuiElementValues()
@@ -66,7 +78,8 @@ void QgsComposerShapeWidget::setGuiElementValues()
 
   blockAllSignals( true );
 
-  mRotationSpinBox->setValue( mComposerShape->rotation() );
+  mShapeStyleButton->setSymbol( mComposerShape->shapeStyleSymbol()->clone() );
+
   mCornerRadiusSpinBox->setValue( mComposerShape->cornerRadius() );
   if ( mComposerShape->shapeType() == QgsComposerShape::Ellipse )
   {
@@ -87,29 +100,30 @@ void QgsComposerShapeWidget::setGuiElementValues()
   blockAllSignals( false );
 }
 
-void QgsComposerShapeWidget::on_mRotationSpinBox_valueChanged( int val )
+void QgsComposerShapeWidget::symbolChanged()
 {
-  if ( mComposerShape )
+  if ( !mComposerShape )
   {
-    mComposerShape->beginCommand( tr( "Shape rotation changed" ), QgsComposerMergeCommand::ShapeRotation );
-    mComposerShape->setRotation( val );
-    mComposerShape->update();
-    mComposerShape->endCommand();
+    return;
   }
+
+  mComposerShape->beginCommand( tr( "Shape style changed" ) );
+  mComposerShape->setShapeStyleSymbol( mShapeStyleButton->clonedSymbol<QgsFillSymbol>() );
+  mComposerShape->endCommand();
 }
 
-void QgsComposerShapeWidget::on_mCornerRadiusSpinBox_valueChanged( double val )
+void QgsComposerShapeWidget::mCornerRadiusSpinBox_valueChanged( double val )
 {
   if ( mComposerShape )
   {
-    mComposerShape->beginCommand( tr( "Shape radius changed" ), QgsComposerMergeCommand::ShapeRotation );
+    mComposerShape->beginCommand( tr( "Shape radius changed" ), QgsComposerMergeCommand::ShapeCornerRadius );
     mComposerShape->setCornerRadius( val );
     mComposerShape->update();
     mComposerShape->endCommand();
   }
 }
 
-void QgsComposerShapeWidget::on_mShapeComboBox_currentIndexChanged( const QString& text )
+void QgsComposerShapeWidget::mShapeComboBox_currentIndexChanged( const QString &text )
 {
   if ( !mComposerShape )
   {
@@ -134,7 +148,7 @@ void QgsComposerShapeWidget::on_mShapeComboBox_currentIndexChanged( const QStrin
   mComposerShape->endCommand();
 }
 
-void QgsComposerShapeWidget::toggleRadiusSpin( const QString& shapeText )
+void QgsComposerShapeWidget::toggleRadiusSpin( const QString &shapeText )
 {
   if ( shapeText == tr( "Rectangle" ) )
   {
@@ -145,6 +159,3 @@ void QgsComposerShapeWidget::toggleRadiusSpin( const QString& shapeText )
     mCornerRadiusSpinBox->setEnabled( false );
   }
 }
-
-
-

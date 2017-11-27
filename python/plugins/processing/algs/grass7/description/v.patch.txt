@@ -1,0 +1,7 @@
+v.patch
+Create a new vector map layer by combining other vector map layers.
+Vector (v.*)
+QgsProcessingParameterMultipleLayers|input|Input layers|-1|None|False
+QgsProcessingParameterBoolean|-e|Copy also attribute table|True
+QgsProcessingParameterVectorDestination|output|Combined
+QgsProcessingParameterVectorDestination|bbox|Bounding boxes

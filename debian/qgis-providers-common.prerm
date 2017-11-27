@@ -1,0 +1,8 @@
+#!/bin/sh
+set -e
+
+if [ "$1" = "remove" ] && [ -e /usr/share/qgis/resources/srs.db ]; then
+	rm -f /usr/share/qgis/resources/srs.db || true
+fi
+
+#DEBHELPER#

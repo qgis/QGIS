@@ -15,23 +15,57 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgsapplication.h"
 #include "qgsdelattrdialog.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
+#include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
+#include "qgssettings.h"
 
-QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer* vl ): QDialog()
+QgsDelAttrDialog::QgsDelAttrDialog( const QgsVectorLayer *vl )
 {
   setupUi( this );
   if ( vl )
   {
+    bool canDeleteAttributes = vl->dataProvider()->capabilities() & QgsVectorDataProvider::DeleteAttributes;
     listBox2->clear();
-    const QgsFields& layerAttributes = vl->pendingFields();
+    const QgsFields &layerAttributes = vl->fields();
     for ( int idx = 0; idx < layerAttributes.count(); ++idx )
     {
-      QListWidgetItem* item = new QListWidgetItem( layerAttributes[idx].name(), listBox2 );
+      QListWidgetItem *item = new QListWidgetItem( layerAttributes.at( idx ).name(), listBox2 );
+      switch ( vl->fields().fieldOrigin( idx ) )
+      {
+        case QgsFields::OriginExpression:
+          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconExpression.svg" ) ) );
+          break;
+
+        case QgsFields::OriginJoin:
+          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/join.png" ) ) );
+          item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          break;
+
+        default:
+          item->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/propertyicons/attributes.png" ) ) );
+          if ( !vl->isEditable() || !canDeleteAttributes )
+            item->setFlags( item->flags() & ~Qt::ItemIsEnabled );
+          break;
+      }
+
       item->setData( Qt::UserRole, idx );
     }
+
+    mEditModeInfo->setVisible( !vl->isEditable() );
+    mCanDeleteAttributesInfo->setVisible( !canDeleteAttributes );
   }
+
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/QgsDelAttrDialog/geometry" ) ).toByteArray() );
+}
+
+QgsDelAttrDialog::~QgsDelAttrDialog()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/QgsDelAttrDialog/geometry" ), saveGeometry() );
 }
 
 QList<int> QgsDelAttrDialog::selectedAttributes()
@@ -41,7 +75,7 @@ QList<int> QgsDelAttrDialog::selectedAttributes()
   QList<QListWidgetItem *>::const_iterator itemIter = selection.constBegin();
   for ( ; itemIter != selection.constEnd(); ++itemIter )
   {
-    selectionList.push_back(( *itemIter )->data( Qt::UserRole ).toInt() );
+    selectionList.push_back( ( *itemIter )->data( Qt::UserRole ).toInt() );
   }
   return selectionList;
 }

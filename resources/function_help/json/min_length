@@ -1,0 +1,13 @@
+{
+  "name": "min_length",
+  "type": "function",
+  "description": "Returns the minimum length of strings from a field or expression.",
+  "arguments": [
+	{"arg":"expression", "description":"sub expression of field to aggregate"},
+	{"arg":"group_by", "optional":true, "description":"optional expression to use to group aggregate calculations"},
+	{"arg":"filter", "optional":true, "description":"optional expression to use to filter features used to calculate aggregate"}
+  ],
+  "examples": [
+	{ "expression":"min_length(\"town_name\",group_by:=\"state\")", "returns":"minimum length of town_name, grouped by state field"}
+  ]
+}

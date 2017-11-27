@@ -16,6 +16,8 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import range
+from builtins import basestring
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,20 +27,40 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
 
-from processing.ui.ui_DlgMultipleSelection import Ui_DlgMultipleSelection
+from qgis.core import (QgsSettings,
+                       QgsProcessing,
+                       QgsVectorFileWriter,
+                       QgsProviderRegistry,
+                       QgsProcessingModelChildParameterSource)
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt, QByteArray, QCoreApplication
+from qgis.PyQt.QtWidgets import QDialog, QAbstractItemView, QPushButton, QDialogButtonBox, QFileDialog
+from qgis.PyQt.QtGui import QStandardItemModel, QStandardItem
+from processing.tools import dataobjects
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgMultipleSelection.ui'))
 
 
-class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
+class MultipleInputDialog(BASE, WIDGET):
 
-    def __init__(self, options, selectedoptions=None):
-        QDialog.__init__(self)
+    def __init__(self, options, selectedoptions=None, datatype=None):
+        super(MultipleInputDialog, self).__init__(None)
         self.setupUi(self)
+        self.datatype = datatype
+        self.model = None
 
-        self.options = options
-        self.selectedoptions = selectedoptions
+        self.options = []
+        for i, option in enumerate(options):
+            if option is None or isinstance(option, basestring):
+                self.options.append((i, option))
+            else:
+                self.options.append((option[0], option[1]))
+
+        self.selectedoptions = selectedoptions or []
 
         # Additional buttons
         self.btnSelectAll = QPushButton(self.tr('Select all'))
@@ -50,49 +72,113 @@ class MultipleInputDialog(QDialog, Ui_DlgMultipleSelection):
         self.btnToggleSelection = QPushButton(self.tr('Toggle selection'))
         self.buttonBox.addButton(self.btnToggleSelection,
                                  QDialogButtonBox.ActionRole)
+        if self.datatype is not None:
+            btnAddFile = QPushButton(QCoreApplication.translate("MultipleInputDialog", 'Add file(s)…'))
+            btnAddFile.clicked.connect(self.addFiles)
+            self.buttonBox.addButton(btnAddFile,
+                                     QDialogButtonBox.ActionRole)
 
-        self.btnSelectAll.clicked.connect(self.selectAll)
-        self.btnClearSelection.clicked.connect(self.lstLayers.clearSelection)
+        self.btnSelectAll.clicked.connect(lambda: self.selectAll(True))
+        self.btnClearSelection.clicked.connect(lambda: self.selectAll(False))
         self.btnToggleSelection.clicked.connect(self.toggleSelection)
 
+        self.settings = QgsSettings()
+        self.restoreGeometry(self.settings.value("/Processing/multipleInputDialogGeometry", QByteArray()))
+
+        self.lstLayers.setSelectionMode(QAbstractItemView.ExtendedSelection)
+        self.lstLayers.setDragDropMode(QAbstractItemView.InternalMove)
+
         self.populateList()
+        self.finished.connect(self.saveWindowGeometry)
+
+    def saveWindowGeometry(self):
+        self.settings.setValue("/Processing/multipleInputDialogGeometry", self.saveGeometry())
 
     def populateList(self):
-        self.lstLayers.clear()
-        self.lstLayers.addItems(self.options)
-        selModel = self.lstLayers.selectionModel()
-        self.lstLayers.blockSignals(True)
-        for i in xrange(self.lstLayers.count()):
-            item = self.lstLayers.item(i)
-            if self.lstLayers.indexFromItem(item).row() in self.selectedoptions:
-                selModel.select(self.lstLayers.indexFromItem(item),
-                                QItemSelectionModel.Select)
-        self.lstLayers.blockSignals(False)
+        self.model = QStandardItemModel()
+        for value, text in self.options:
+            item = QStandardItem(text)
+            item.setData(value, Qt.UserRole)
+            item.setCheckState(Qt.Checked if value in self.selectedoptions else Qt.Unchecked)
+            item.setCheckable(True)
+            self.model.appendRow(item)
+
+        # add extra options (e.g. manually added layers)
+        for t in [o for o in self.selectedoptions if not isinstance(o, int)]:
+            if isinstance(t, QgsProcessingModelChildParameterSource):
+                item = QStandardItem(t.staticValue())
+            else:
+                item = QStandardItem(t)
+            item.setData(item.text(), Qt.UserRole)
+            item.setCheckState(Qt.Checked)
+            item.setCheckable(True)
+            self.model.appendRow(item)
+
+        self.lstLayers.setModel(self.model)
 
     def accept(self):
         self.selectedoptions = []
-        for i in self.lstLayers.selectedItems():
-            self.selectedoptions.append(self.lstLayers.indexFromItem(i).row())
+        model = self.lstLayers.model()
+        for i in range(model.rowCount()):
+            item = model.item(i)
+            if item.checkState() == Qt.Checked:
+                self.selectedoptions.append(item.data(Qt.UserRole))
         QDialog.accept(self)
 
     def reject(self):
         self.selectedoptions = None
         QDialog.reject(self)
 
-    def selectAll(self):
-        selModel = self.lstLayers.selectionModel()
-        self.lstLayers.blockSignals(True)
-        for i in xrange(self.lstLayers.count()):
-            item = self.lstLayers.item(i)
-            selModel.select(self.lstLayers.indexFromItem(item),
-                            QItemSelectionModel.Select)
-        self.lstLayers.blockSignals(False)
+    def getItemsToModify(self):
+        items = []
+        if len(self.lstLayers.selectedIndexes()) > 1:
+            for i in self.lstLayers.selectedIndexes():
+                items.append(self.model.itemFromIndex(i))
+        else:
+            for i in range(self.model.rowCount()):
+                items.append(self.model.item(i))
+        return items
+
+    def selectAll(self, value):
+        for item in self.getItemsToModify():
+            item.setCheckState(Qt.Checked if value else Qt.Unchecked)
 
     def toggleSelection(self):
-        selModel = self.lstLayers.selectionModel()
-        self.lstLayers.blockSignals(True)
-        for i in xrange(self.lstLayers.count()):
-            item = self.lstLayers.item(i)
-            selModel.select(self.lstLayers.indexFromItem(item),
-                            QItemSelectionModel.Toggle)
-        self.lstLayers.blockSignals(False)
+        for item in self.getItemsToModify():
+            checked = item.checkState() == Qt.Checked
+            item.setCheckState(Qt.Unchecked if checked else Qt.Checked)
+
+    def getFileFilter(self, datatype):
+        """
+        Returns a suitable file filter pattern for the specified parameter definition
+        :param param:
+        :return:
+        """
+        if datatype == QgsProcessing.TypeRaster:
+            return QgsProviderRegistry.instance().fileRasterFilters()
+        elif datatype == QgsProcessing.TypeFile:
+            return self.tr('All files (*.*)')
+        else:
+            exts = QgsVectorFileWriter.supportedFormatExtensions()
+            for i in range(len(exts)):
+                exts[i] = self.tr('{0} files (*.{1})').format(exts[i].upper(), exts[i].lower())
+            return self.tr('All files (*.*)') + ';;' + ';;'.join(exts)
+
+    def addFiles(self):
+        filter = self.getFileFilter(self.datatype)
+
+        settings = QgsSettings()
+        path = str(settings.value('/Processing/LastInputPath'))
+
+        ret, selected_filter = QFileDialog.getOpenFileNames(self, self.tr('Select file(s)'),
+                                                            path, filter)
+        if ret:
+            files = list(ret)
+            settings.setValue('/Processing/LastInputPath',
+                              os.path.dirname(str(files[0])))
+            for filename in files:
+                item = QStandardItem(filename)
+                item.setData(filename, Qt.UserRole)
+                item.setCheckState(Qt.Checked)
+                item.setCheckable(True)
+                self.model.appendRow(item)

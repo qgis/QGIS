@@ -1,0 +1,13 @@
+{
+  "name": "^",
+  "type": "operator",
+  "description": "Power of two values.",
+  "arguments": [
+        { "arg": "a", "description": "value" },
+        { "arg": "b", "description": "value" }
+  ],
+  "examples": [
+	{ "expression":"5 ^ 4", "returns":"625"},
+	{ "expression":"5 ^ NULL", "returns":"NULL"}
+  ]
+}

@@ -1,0 +1,10 @@
+r.texture
+Generate images with textural features from a raster map.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Name of input raster map|None|False
+QgsProcessingParameterEnum|method|Textural measurement method(s)|asm;contrast;corr;var;idm;sa;se;sv;entr;dv;de;moc1;moc2|True|0|True
+QgsProcessingParameterNumber|size|The size of moving window (odd and >= 3)|QgsProcessingParameterNumber.Double|3.0|True|3.0|None
+QgsProcessingParameterNumber|distance|The distance between two samples (>= 1)|QgsProcessingParameterNumber.Double|1.0|True|1.0|None
+*QgsProcessingParameterBoolean|-s|Separate output for each angle (0, 45, 90, 135)|False
+*QgsProcessingParameterBoolean|-a|Calculate all textural measurements|False
+QgsProcessingParameterFolderDestination|output|Texture files directory

@@ -17,23 +17,21 @@
 
 #include <QDialog>
 
-#include "ui_qgsengineconfigdialog.h"
+#include "ui_qgslabelengineconfigdialog.h"
+#include "qgis_app.h"
 
-class QgsPalLabeling;
 
-class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsEngineConfigDialog
+class APP_EXPORT QgsLabelEngineConfigDialog : public QDialog, private Ui::QgsLabelEngineConfigDialog
 {
     Q_OBJECT
   public:
-    QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWidget* parent = NULL );
+    QgsLabelEngineConfigDialog( QWidget *parent = nullptr );
 
   public slots:
     void onOK();
-    /** @note Added in QGIS 1.9 */
     void setDefaults();
 
   protected:
-    QgsPalLabeling* mLBL;
 };
 
 #endif // QGSLABELENGINECONFIGDIALOG_H

@@ -1,0 +1,7 @@
+{
+  "name": "$atlasfeature",
+  "type": "function",
+  "description": "In atlas generation, returns the current feature that is iterated over on the coverage layer. This can be used with the 'attribute' function to return attribute values from the current atlas feature.",
+  "examples": [ { "expression":"attribute( $atlasfeature, 'name' )", "returns":"value stored in 'name' attribute for the current atlas feature"}]
+}
+

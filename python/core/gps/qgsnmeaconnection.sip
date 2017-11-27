@@ -1,23 +1,49 @@
-/**Evaluates NMEA sentences coming from a GPS device*/
-class QgsNMEAConnection: QgsGPSConnection {
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsnmeaconnection.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsNMEAConnection: QgsGPSConnection
+{
+%Docstring
+ Evaluates NMEA sentences coming from a GPS device
+%End
+
 %TypeHeaderCode
 #include "qgsnmeaconnection.h"
 %End
   public:
     QgsNMEAConnection( QIODevice *dev );
-    ~QgsNMEAConnection();
 
   protected slots:
-    /**Parse available data source content*/
-    void parseData();
+    virtual void parseData();
+
+%Docstring
+Parse available data source content
+%End
 
   protected:
-    /**Splits mStringBuffer into sentences and calls libnmea*/
     void processStringBuffer();
-    //handle the different sentence type
-    void processGGASentence( const char* data, int len );
-    void processRMCSentence( const char* data, int len );
-    void processGSVSentence( const char* data, int len );
-    void processVTGSentence( const char* data, int len );
-    void processGSASentence( const char* data, int len );
+%Docstring
+Splits mStringBuffer into sentences and calls libnmea
+%End
+    void processGGASentence( const char *data, int len );
+    void processRMCSentence( const char *data, int len );
+    void processGSVSentence( const char *data, int len );
+    void processVTGSentence( const char *data, int len );
+    void processGSASentence( const char *data, int len );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsnmeaconnection.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -4,7 +4,7 @@
   -------------------
          begin                : August 2012
          copyright            : (C) Matthias Kuhn
-         email                : matthias dot kuhn at gmx dot ch
+         email                : matthias at opengis dot ch
 
  ***************************************************************************
  *                                                                         *
@@ -19,38 +19,104 @@
 #define QGSDIAGRAMPROPERTIES_H
 
 #include <QDialog>
-#include <ui_qgsdiagrampropertiesbase.h>
+#include "qgsdiagramrenderer.h"
+#include "ui_qgsdiagrampropertiesbase.h"
+#include <QStyledItemDelegate>
+#include "qgis_app.h"
 
 class QgsVectorLayer;
+class QgsMapCanvas;
 
-class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase
+class APP_EXPORT QgsDiagramProperties : public QWidget, private Ui::QgsDiagramPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-    QgsDiagramProperties( QgsVectorLayer* layer, QWidget* parent );
-    /**Adds an attribute from the list of available attributes to the assigned attributes with a random color.*/
-    void addAttribute( QTreeWidgetItem * item );
+    QgsDiagramProperties( QgsVectorLayer *layer, QWidget *parent, QgsMapCanvas *canvas );
+
+    ~QgsDiagramProperties();
+
+    //! Adds an attribute from the list of available attributes to the assigned attributes with a random color.
+    void addAttribute( QTreeWidgetItem *item );
+
+  signals:
+
+    void auxiliaryFieldCreated();
 
   public slots:
     void apply();
-    void on_mDiagramTypeComboBox_currentIndexChanged( int index );
-    void on_mTransparencySlider_valueChanged( int value );
-    void on_mAddCategoryPushButton_clicked();
-    void on_mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
-    void on_mFindMaximumValueButton_clicked();
-    void on_mDisplayDiagramsGroupBox_toggled( bool checked );
-    void on_mRemoveCategoryPushButton_clicked();
-    void on_mDiagramFontButton_clicked();
-    void on_mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem * item, int column );
-    void on_mEngineSettingsButton_clicked();
-
-  protected:
-    QFont mDiagramFont;
-
-    QgsVectorLayer* mLayer;
+    void mDiagramTypeComboBox_currentIndexChanged( int index );
+    void mAddCategoryPushButton_clicked();
+    void mAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mFindMaximumValueButton_clicked();
+    void mRemoveCategoryPushButton_clicked();
+    void mDiagramAttributesTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mEngineSettingsButton_clicked();
+    void showAddAttributeExpressionDialog();
+    void mDiagramStackedWidget_currentChanged( int index );
+    void updatePlacementWidgets();
+    void scalingTypeChanged();
+    void showSizeLegendDialog();
 
   private:
+
+    QgsVectorLayer *mLayer = nullptr;
+    //! Point placement button group
+    QButtonGroup *mPlacePointBtnGrp = nullptr;
+    //! Line placement button group
+    QButtonGroup *mPlaceLineBtnGrp = nullptr;
+    //! Polygon placement button group
+    QButtonGroup *mPlacePolygonBtnGrp = nullptr;
+
+    enum Columns
+    {
+      ColumnAttributeExpression = 0,
+      ColumnColor,
+      ColumnLegendText,
+    };
+
+    enum Roles
+    {
+      RoleAttributeExpression = Qt::UserRole,
+    };
+
+    QString showExpressionBuilder( const QString &initialExpression );
+
+    QgsPropertyCollection mDataDefinedProperties;
+
+    // Keeps track of the diagram type to properly save / restore settings when the diagram type combo box is set to no diagram.
+    QString mDiagramType;
+    std::unique_ptr< QgsDataDefinedSizeLegend > mSizeLegend;
+
+    QString guessLegendText( const QString &expression );
+    QgsMapCanvas *mMapCanvas = nullptr;
+
+    QgsExpressionContext createExpressionContext() const override;
+
+    void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsDiagramLayerSettings::Property key );
+
+  private slots:
+
+    void updateProperty();
+    void showHelp();
+
+    void createAuxiliaryField();
 };
+
+class EditBlockerDelegate: public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+    EditBlockerDelegate( QObject *parent = nullptr )
+      : QStyledItemDelegate( parent )
+    {}
+
+    virtual QWidget *createEditor( QWidget *, const QStyleOptionViewItem &, const QModelIndex & ) const override
+    {
+      return nullptr;
+    }
+};
+
 
 #endif // QGSDIAGRAMPROPERTIES_H

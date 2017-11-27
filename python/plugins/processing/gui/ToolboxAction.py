@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,20 +26,25 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os
-from PyQt4 import QtGui
+from qgis.PyQt.QtCore import QCoreApplication
+
+from qgis.core import QgsApplication
 
 
 class ToolboxAction(object):
-
-    def __init__(self):
-        # This should be true if the action should be shown even if
-        # there are no algorithms in the provider (for instance,
-        # when it is deactivated
-        self.showAlways = False
 
     def setData(self, toolbox):
         self.toolbox = toolbox
 
     def getIcon(self):
-        return QtGui.QIcon(os.path.dirname(__file__) + '/../images/alg.png')
+        return QgsApplication.getThemeIcon("/processingAlgorithm.svg")
+
+    def tr(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return QCoreApplication.translate(context, string)
+
+    def trAction(self, string, context=''):
+        if context == '':
+            context = self.__class__.__name__
+        return string, QCoreApplication.translate(context, string)

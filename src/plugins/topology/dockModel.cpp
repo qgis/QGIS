@@ -18,7 +18,7 @@
 #include "dockModel.h"
 #include "topolError.h"
 
-DockModel::DockModel( ErrorList& theErrorList, QObject *parent = 0 ) : mErrorlist( theErrorList )
+DockModel::DockModel( ErrorList &errorList, QObject *parent = nullptr ) : mErrorlist( errorList )
 {
   Q_UNUSED( parent );
   mHeader << QObject::tr( "Error" ) << QObject::tr( "Layer" ) << QObject::tr( "Feature ID" );
@@ -81,7 +81,7 @@ QVariant DockModel::data( const QModelIndex &index, int role ) const
       break;
     case 1:
       if ( !mErrorlist[row]->featurePairs().first().layer )
-        val = QString( "Unknown" );
+        val = QStringLiteral( "Unknown" );
       else
         val = mErrorlist[row]->featurePairs().first().layer->name();
       break;
@@ -121,7 +121,8 @@ Qt::ItemFlags DockModel::flags( const QModelIndex &index ) const
 
 void DockModel::resetModel()
 {
-  reset();
+  beginResetModel();
+  endResetModel();
 }
 
 void DockModel::reload( const QModelIndex &index1, const QModelIndex &index2 )

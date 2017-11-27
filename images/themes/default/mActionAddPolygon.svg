@@ -1,0 +1,18 @@
+<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(0 -8)">
+<g transform="matrix(.69230769 0 0 .69230769 1.8461539 9.8461539)">
+<rect fill="#5a8c5a" height="13" rx="2.6149371" ry="2.6149368" width="13" x="19" y="19"/>
+<path d="m21.6 25.499999l7.8 0" style="fill:#fff;fill-rule:evenodd;stroke:#fff;stroke-width:2.5999999;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
+<path d="m25.5 29.399999l0-7.799999" style="fill:#fff;fill-rule:evenodd;stroke:#fff;stroke-width:2.5999999;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
+<path d="m20.3 25.499999h10.4c0 0 0 0 0-2.6 0-2.599999-.65-2.599999-5.2-2.599999-4.55 0-5.2 0-5.2 2.599999 0 2.6 0 2.6 0 2.6z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
+</g>
+<circle cx="12" cy="20" r="8.5" style="fill:#2a7fff;stroke:#333;stroke-width:1.00173461;stroke-linejoin:round;stroke-miterlimit:.40000001;stroke-opacity:.97254902" transform="matrix(.29411765 0 0 .29411762 .4705882 5.6176474)"/>
+<circle cx="12" cy="20" r="8.5" style="fill:#2a7fff;stroke:#333;stroke-width:1.00173461;stroke-linejoin:round;stroke-miterlimit:.40000001;stroke-opacity:.97254902" transform="matrix(.29411765 0 0 .29411762 15.970588 5.1176476)"/>
+<circle cx="12" cy="20" r="8.5" style="fill:#2a7fff;stroke:#333;stroke-width:1.00173461;stroke-linejoin:round;stroke-miterlimit:.40000001;stroke-opacity:.97254902" transform="matrix(.29411765 0 0 .29411762 -.02941178 18.117648)"/>
+<circle cx="12" cy="20" r="8.5" style="fill:#2a7fff;stroke:#333;stroke-width:1.00173461;stroke-linejoin:round;stroke-miterlimit:.40000001;stroke-opacity:.97254902" transform="matrix(.29411765 0 0 .29411762 7.4705882 22.617648)"/>
+<path d="m3.5999216 13.501961l.3001568-7.5039218" fill="none" stroke="#000" transform="translate(0 8)"/>
+<path d="m6.4987252 3.4193958l10.5025498-.3387918" fill="none" stroke="#000" transform="translate(0 8)"/>
+<path d="m18.407492 5.2492817l-6.314984 13.0014373" fill="none" stroke="#000" transform="translate(0 8)"/>
+<path d="m8.8559448 19.213567l-3.2118895-1.927134" fill="none" stroke="#000" transform="translate(0 8)"/>
+</g>
+</svg>

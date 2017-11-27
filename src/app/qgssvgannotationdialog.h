@@ -19,27 +19,28 @@
 #define QGSSVGANNOTATIONDIALOG_H
 
 #include "ui_qgsformannotationdialogbase.h"
+#include "qgis_app.h"
 
-class QgsSvgAnnotationItem;
+class QgsMapCanvasAnnotationItem;
 class QgsAnnotationWidget;
 
 class APP_EXPORT QgsSvgAnnotationDialog: public QDialog, private Ui::QgsFormAnnotationDialogBase
 {
     Q_OBJECT
   public:
-    QgsSvgAnnotationDialog( QgsSvgAnnotationItem* item, QWidget * parent = 0, Qt::WindowFlags f = 0 );
-    ~QgsSvgAnnotationDialog();
+    QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
   private slots:
-    void on_mBrowseToolButton_clicked();
+    void mBrowseToolButton_clicked();
     void applySettingsToItem();
     void deleteItem();
+    void mButtonBox_clicked( QAbstractButton *button );
 
   private:
-    QgsSvgAnnotationDialog(); //forbidden
+    QgsSvgAnnotationDialog() = delete; //forbidden
 
-    QgsSvgAnnotationItem* mItem;
-    QgsAnnotationWidget* mEmbeddedWidget;
+    QgsMapCanvasAnnotationItem *mItem = nullptr;
+    QgsAnnotationWidget *mEmbeddedWidget = nullptr;
 };
 
 #endif // QGSSVGANNOTATIONDIALOG_H

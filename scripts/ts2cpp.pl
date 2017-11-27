@@ -14,19 +14,25 @@
 #                                                                         #
 ###########################################################################
 
+use strict;
+use warnings;
+use Carp qw/croak/;
 use XML::Simple;
+
+$SIG{__WARN__} = sub { croak @_; };
 
 die "usage: $0 source.ts dest.cpp\n" unless @ARGV==2 && -f $ARGV[0];
 
 my $xml = XMLin($ARGV[0], ForceArray=>1);
 
 open F, ">$ARGV[1]";
+binmode(F, ":utf8");
 
 print F <<EOF;
 /*
  This is NOT a proper c++ source code. This file is only designed to be caught
  by qmake and included in lupdate. It contains all translateable strings collected
- by pylupdate4.
+ by pylupdate5.
 */
 
 EOF
@@ -46,7 +52,12 @@ foreach my $context ( @{ $xml->{context} } ) {
 			$message->{comment}->[0] =~ s/"/\\"/g;
 			$message->{comment}->[0] =~ s/\n/\\n/g;
 
-			print F ",\"$context->{comment}->[0]\"";
+			print F ",\"$message->{comment}->[0]\"";
+		}
+
+		if( exists $message->{numerus} && $message->{numerus} eq "yes" ) {
+			print '"",' unless exists $message->{comment} && $message->{comment}->[0] ne "";
+			print F ",1"
 		}
 
 		print F ");\n";

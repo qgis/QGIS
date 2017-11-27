@@ -1,0 +1,7 @@
+{
+  "name": "$feature",
+  "type": "function",
+  "description": "In atlas generation, returns the current feature number that is iterated over on the coverage layer.",
+  "examples": [ { "expression":"$feature", "returns":"2"}
+  ]
+}

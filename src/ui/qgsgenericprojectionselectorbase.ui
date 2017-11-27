@@ -22,6 +22,9 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
+   <property name="margin">
+    <number>3</number>
+   </property>
    <item row="0" column="0">
     <widget class="QTextEdit" name="textEdit">
      <property name="sizePolicy">
@@ -51,10 +54,10 @@
     </widget>
    </item>
    <item row="1" column="0">
-    <widget class="QgsProjectionSelector" name="projectionSelector" native="true"/>
+    <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true"/>
    </item>
    <item row="2" column="0">
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="standardButtons">
       <set>QDialogButtonBox::Cancel|QDialogButtonBox::Help|QDialogButtonBox::Ok</set>
      </property>
@@ -68,16 +71,16 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>QgsProjectionSelector</class>
+   <class>QgsProjectionSelectionTreeWidget</class>
    <extends>QWidget</extends>
-   <header>qgsprojectionselector.h</header>
+   <header>qgsprojectionselectiontreewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>QgsGenericProjectionSelectorBase</receiver>
    <slot>accept()</slot>
@@ -93,7 +96,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsGenericProjectionSelectorBase</receiver>
    <slot>reject()</slot>

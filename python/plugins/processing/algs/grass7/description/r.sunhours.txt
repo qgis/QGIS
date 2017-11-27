@@ -1,0 +1,14 @@
+r.sunhours
+Calculates solar elevation, solar azimuth, and sun hours.
+Raster (r.*)
+QgsProcessingParameterNumber|year|Year|QgsProcessingParameterNumber.Integer|2017|False|1950|2050
+QgsProcessingParameterNumber|month|Month|QgsProcessingParameterNumber.Integer|1|True|1|12
+QgsProcessingParameterNumber|day|Day|QgsProcessingParameterNumber.Integer|1|False|1|366
+QgsProcessingParameterNumber|hour|Hour|QgsProcessingParameterNumber.Integer|12|True|0|24
+QgsProcessingParameterNumber|minute|Minutes|QgsProcessingParameterNumber.Integer|0|True|0|60
+QgsProcessingParameterNumber|second|Seconds|QgsProcessingParameterNumber.Integer|0|True|0|60
+*QgsProcessingParameterBoolean|-t|Time is local sidereal time, not Greenwich standard time|False
+*QgsProcessingParameterBoolean|-s|Do not use SOLPOS algorithm of NREL|False
+QgsProcessingParameterRasterDestination|elevation|Solar Elevation Angle
+QgsProcessingParameterRasterDestination|azimuth|Solar Azimuth Angle
+QgsProcessingParameterRasterDestination|sunhour|Sunshine Hours

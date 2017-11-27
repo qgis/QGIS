@@ -1,8 +1,0 @@
-Convert
-otbcli_Convert
-Image Conversion
-Image Manipulation
-ParameterRaster|-in|Input image|False
-ParameterSelection|-type|Rescale type|none;linear;log2|0
-OutputRaster|-out|Output Image
-ParameterNumber|-ram|Available RAM (Mb)|None|None|128

@@ -1,0 +1,10 @@
+r.random.surface
+Generates random surface(s) with spatial dependence.
+Raster (r.*)
+QgsProcessingParameterNumber|distance|Maximum distance of spatial correlation|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
+QgsProcessingParameterNumber|exponent|Distance decay exponent|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+QgsProcessingParameterNumber|flat|Distance filter remains flat before beginning exponent|QgsProcessingParameterNumber.Double|0.0|True|0.0|None
+QgsProcessingParameterNumber|seed|Random seed (SEED_MIN >= value >= SEED_MAX)|QgsProcessingParameterNumber.Integer|None|True|None|None
+QgsProcessingParameterNumber|high|Maximum cell value of distribution|QgsProcessingParameterNumber.Integer|255|True|0|None
+QgsProcessingParameterBoolean|-u|Uniformly distributed cell values|False|True
+QgsProcessingParameterRasterDestination|output|Random_Surface

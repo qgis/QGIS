@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,157 +26,151 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
-from PyQt4 import QtGui, QtCore
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from processing import interface
+import os
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QMenu, QAction, QInputDialog
+from qgis.PyQt.QtGui import QCursor
+
+from qgis.gui import QgsMessageBar
+from qgis.utils import iface
+from qgis.core import (QgsProcessingUtils,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingParameters,
+                       QgsProject,
+                       QgsCoordinateReferenceSystem,
+                       QgsRectangle,
+                       QgsReferencedRectangle)
 from processing.gui.RectangleMapTool import RectangleMapTool
-from processing.parameters.ParameterRaster import ParameterRaster
-from processing.parameters.ParameterVector import ParameterVector
-from processing.parameters.ParameterMultipleInput import ParameterMultipleInput
-from processing.tools import dataobjects
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.tools.dataobjects import createContext
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetBaseSelector.ui'))
 
 
-class ExtentSelectionPanel(QtGui.QWidget):
+class ExtentSelectionPanel(BASE, WIDGET):
 
-    def __init__(self, dialog, alg, default):
+    def __init__(self, dialog, param):
         super(ExtentSelectionPanel, self).__init__(None)
+        self.setupUi(self)
+
         self.dialog = dialog
-        self.params = alg.parameters
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.text = QtGui.QLineEdit()
-        self.text.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                QtGui.QSizePolicy.Expanding)
-        if self.canUseAutoExtent():
-            if hasattr(self.text, 'setPlaceholderText'):
-                self.text.setPlaceholderText(
-                        '[Leave blank to use min covering extent]')
-        self.horizontalLayout.addWidget(self.text)
-        self.pushButton = QtGui.QPushButton()
-        self.pushButton.setText('...')
-        self.pushButton.clicked.connect(self.buttonPushed)
-        self.horizontalLayout.addWidget(self.pushButton)
-        self.setLayout(self.horizontalLayout)
-        canvas = interface.iface.mapCanvas()
-        self.prevMapTool = canvas.mapTool()
-        self.tool = RectangleMapTool(canvas)
-        self.connect(self.tool, SIGNAL('rectangleCreated()'), self.fillCoords)
+        self.param = param
+        self.crs = QgsProject.instance().crs()
 
-    def canUseAutoExtent(self):
-        for param in self.params:
-            if isinstance(param, (ParameterRaster, ParameterVector)):
-                return True
-            if isinstance(param, ParameterMultipleInput):
-                return True
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            if hasattr(self.leText, 'setPlaceholderText'):
+                self.leText.setPlaceholderText(
+                    self.tr('[Leave blank to use min covering extent]'))
 
-        return False
+        self.btnSelect.clicked.connect(self.selectExtent)
 
-    def buttonPushed(self):
+        if iface is not None:
+            canvas = iface.mapCanvas()
+            self.prevMapTool = canvas.mapTool()
+            self.tool = RectangleMapTool(canvas)
+            self.tool.rectangleCreated.connect(self.updateExtent)
+        else:
+            self.prevMapTool = None
+            self.tool = None
+
+        if param.defaultValue() is not None:
+            context = createContext()
+            rect = QgsProcessingParameters.parameterAsExtent(param, {param.name(): param.defaultValue()}, context)
+            crs = QgsProcessingParameters.parameterAsExtentCrs(param, {param.name(): param.defaultValue()}, context)
+            if not rect.isNull():
+                try:
+                    s = '{},{},{},{}'.format(
+                        rect.xMinimum(), rect.xMaximum(), rect.yMinimum(), rect.yMaximum())
+                    if crs.isValid():
+                        s += ' [' + crs.authid() + ']'
+                        self.crs = crs
+                    self.leText.setText(s)
+                except:
+                    pass
+
+    def selectExtent(self):
         popupmenu = QMenu()
-        useLayerExtentAction = QtGui.QAction('Use layer/canvas extent',
-                self.pushButton)
-        useLayerExtentAction.triggered.connect(self.useLayerExtent)
+        useLayerExtentAction = QAction(
+            self.tr('Use layer/canvas extent'), self.btnSelect)
+        selectOnCanvasAction = QAction(
+            self.tr('Select extent on canvas'), self.btnSelect)
+
         popupmenu.addAction(useLayerExtentAction)
-        selectOnCanvasAction = QtGui.QAction('Select extent on canvas',
-                self.pushButton)
-        selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
         popupmenu.addAction(selectOnCanvasAction)
-        if self.canUseAutoExtent():
-            useMincoveringExtentAction = \
-                QtGui.QAction('Use min convering extent from input layers',
-                              self.pushButton)
+
+        selectOnCanvasAction.triggered.connect(self.selectOnCanvas)
+        useLayerExtentAction.triggered.connect(self.useLayerExtent)
+
+        if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            useMincoveringExtentAction = QAction(
+                self.tr('Use min covering extent from input layers'),
+                self.btnSelect)
             useMincoveringExtentAction.triggered.connect(
-                    self.useMinCoveringExtent)
+                self.useMinCoveringExtent)
             popupmenu.addAction(useMincoveringExtentAction)
 
-        popupmenu.exec_(QtGui.QCursor.pos())
+        popupmenu.exec_(QCursor.pos())
 
     def useMinCoveringExtent(self):
-        self.text.setText('')
-
-    def getMinCoveringExtent(self):
-        first = True
-        found = False
-        for param in self.params:
-            if param.value:
-                if isinstance(param, (ParameterRaster, ParameterVector)):
-                    if isinstance(param.value, (QgsRasterLayer,
-                                  QgsVectorLayer)):
-                        layer = param.value
-                    else:
-                        layer = dataobjects.getObjectFromUri(param.value)
-                    if layer:
-                        found = True
-                        self.addToRegion(layer, first)
-                        first = False
-                elif isinstance(param, ParameterMultipleInput):
-                    layers = param.value.split(';')
-                    for layername in layers:
-                        layer = dataobjects.getObjectFromUri(layername, first)
-                        if layer:
-                            found = True
-                            self.addToRegion(layer, first)
-                            first = False
-        if found:
-            return str(self.xmin) + ',' + str(self.xmax) + ',' \
-                + str(self.ymin) + ',' + str(self.ymax)
-        else:
-            return None
-
-    def useNewAlg(self, alg):
-        self.params = alg.parameters
-
-    def addToRegion(self, layer, first):
-        if first:
-            self.xmin = layer.extent().xMinimum()
-            self.xmax = layer.extent().xMaximum()
-            self.ymin = layer.extent().yMinimum()
-            self.ymax = layer.extent().yMaximum()
-        else:
-            self.xmin = min(self.xmin, layer.extent().xMinimum())
-            self.xmax = max(self.xmax, layer.extent().xMaximum())
-            self.ymin = min(self.ymin, layer.extent().yMinimum())
-            self.ymax = max(self.ymax, layer.extent().yMaximum())
+        self.leText.setText('')
 
     def useLayerExtent(self):
         CANVAS_KEY = 'Use canvas extent'
         extentsDict = {}
-        extentsDict[CANVAS_KEY] = interface.iface.mapCanvas().extent()
+        extentsDict[CANVAS_KEY] = {"extent": iface.mapCanvas().extent(),
+                                   "authid": iface.mapCanvas().mapSettings().destinationCrs().authid()}
         extents = [CANVAS_KEY]
-        layers = dataobjects.getAllLayers()
+        layers = QgsProcessingUtils.compatibleLayers(QgsProject.instance())
         for layer in layers:
-            extents.append(layer.name())
-            extentsDict[layer.name()] = layer.extent()
-        (item, ok) = QtGui.QInputDialog.getItem(self, 'Select extent',
-                'Use extent from', extents, False)
+            authid = layer.crs().authid()
+            if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF) \
+                    and authid is not None:
+                layerName = u'{} [{}]'.format(layer.name(), authid)
+            else:
+                layerName = layer.name()
+            extents.append(layerName)
+            extentsDict[layerName] = {"extent": layer.extent(), "authid": authid}
+        (item, ok) = QInputDialog.getItem(self, self.tr('Select extent'),
+                                          self.tr('Use extent from'), extents, False)
         if ok:
-            self.setValueFromRect(extentsDict[item])
+            self.setValueFromRect(QgsReferencedRectangle(extentsDict[item]["extent"], QgsCoordinateReferenceSystem(extentsDict[item]["authid"])))
 
     def selectOnCanvas(self):
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         canvas.setMapTool(self.tool)
         self.dialog.showMinimized()
 
-    def fillCoords(self):
+    def updateExtent(self):
         r = self.tool.rectangle()
         self.setValueFromRect(r)
 
     def setValueFromRect(self, r):
-        s = str(r.xMinimum()) + ',' + str(r.xMaximum()) + ',' \
-            + str(r.yMinimum()) + ',' + str(r.yMaximum())
-        self.text.setText(s)
+        s = '{},{},{},{}'.format(
+            r.xMinimum(), r.xMaximum(), r.yMinimum(), r.yMaximum())
+
+        try:
+            self.crs = r.crs()
+        except:
+            self.crs = QgsProject.instance().crs()
+        if self.crs.isValid():
+            s += ' [' + self.crs.authid() + ']'
+
+        self.leText.setText(s)
         self.tool.reset()
-        canvas = interface.iface.mapCanvas()
+        canvas = iface.mapCanvas()
         canvas.setMapTool(self.prevMapTool)
         self.dialog.showNormal()
         self.dialog.raise_()
         self.dialog.activateWindow()
 
     def getValue(self):
-        if str(self.text.text()).strip() != '':
-            return str(self.text.text())
+        if str(self.leText.text()).strip() != '':
+            return str(self.leText.text())
         else:
-            return self.getMinCoveringExtent()
+            return None
+
+    def setExtentFromString(self, s):
+        self.leText.setText(s)

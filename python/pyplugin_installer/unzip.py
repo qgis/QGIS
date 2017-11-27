@@ -23,6 +23,7 @@
 import zipfile
 import os
 
+
 def unzip(file, targetDir):
     """ Creates directory structure and extracts the zip contents to it.
         file - the zip file to extract
@@ -37,12 +38,12 @@ def unzip(file, targetDir):
     for name in zf.namelist():
         # create directory if doesn't exist
         localDir = os.path.split(name)[0]
-        fullDir = os.path.normpath( os.path.join(targetDir, localDir) )
+        fullDir = os.path.normpath(os.path.join(targetDir, localDir))
         if not os.path.exists(fullDir):
             os.makedirs(fullDir)
         # extract file
         if not name.endswith('/'):
-            fullPath = os.path.normpath( os.path.join(targetDir, name) )
+            fullPath = os.path.normpath(os.path.join(targetDir, name))
             outfile = open(fullPath, 'wb')
             outfile.write(zf.read(name))
             outfile.flush()

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -16,16 +16,22 @@
 #ifndef QGSEDITORWIDGETFACTORY_H
 #define QGSEDITORWIDGETFACTORY_H
 
-#include "qgseditorwidgetwrapper.h"
-#include "qgsapplication.h"
-
 #include <QDomNode>
+#include "qgis_sip.h"
+#include "qgis.h"
 #include <QMap>
 #include <QString>
+#include <QVariant>
+#include "qgis_gui.h"
 
 class QgsEditorConfigWidget;
+class QgsEditorWidgetWrapper;
+class QgsVectorLayer;
+class QWidget;
+class QgsSearchWidgetWrapper;
 
 /**
+ * \ingroup gui
  * Every attribute editor widget needs a factory, which inherits this class
  *
  * It provides metadata for the widgets such as the name (human readable), it serializes
@@ -37,127 +43,94 @@ class QgsEditorConfigWidget;
 class GUI_EXPORT QgsEditorWidgetFactory
 {
   public:
+
     /**
      * Constructor
      *
-     * @param name A human readable name for this widget type
+     * \param name A human readable name for this widget type
      */
-    QgsEditorWidgetFactory( const QString& name );
+    QgsEditorWidgetFactory( const QString &name );
 
-    virtual ~QgsEditorWidgetFactory();
+    virtual ~QgsEditorWidgetFactory() = default;
 
     /**
      * Override this in your implementation.
-     * Create a new editor widget wrapper. Call {@link QgsEditorWidgetRegistry::create()}
+     * Create a new editor widget wrapper. Call QgsEditorWidgetRegistry::create()
      * instead of calling this method directly.
      *
-     * @param vl       The vector layer on which this widget will act
-     * @param fieldIdx The field index on which this widget will act
-     * @param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
-     * @param parent   The parent for the wrapper class and any created widget.
+     * \param vl       The vector layer on which this widget will act
+     * \param fieldIdx The field index on which this widget will act
+     * \param editor   An editor widget if already existent. If NULL is provided, a new widget will be created.
+     * \param parent   The parent for the wrapper class and any created widget.
      *
-     * @return         A new widget wrapper
+     * \returns         A new widget wrapper
      */
-    virtual QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const = 0;
+    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const = 0 SIP_FACTORY;
+
+    virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const SIP_FACTORY;
 
     /**
-     * Return The human readable name of this widget type
+     * Return The human readable identifier name of this widget type
      *
-     * By default returns the name specified when constructing and does not need to be overwritten
-     *
-     * @return a name
+     * \returns a name
      */
-    virtual QString name();
+    QString name();
 
     /**
      * Override this in your implementation.
      * Create a new configuration widget for this widget type.
      *
-     * @param vl       The layer for which the widget will be created
-     * @param fieldIdx The field index for which the widget will be created
-     * @param parent   The parent widget of the created config widget
+     * \param vl       The layer for which the widget will be created
+     * \param fieldIdx The field index for which the widget will be created
+     * \param parent   The parent widget of the created config widget
      *
-     * @return         A configuration widget
+     * \returns         A configuration widget
      */
-    virtual QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent ) const = 0;
+    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0 SIP_FACTORY;
 
     /**
-     * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
+     * Check if this editor widget type supports a certain field.
      *
-     * @param configElement The configuration element from the project file
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
+     * \param vl        The layer
+     * \param fieldIdx  The field index
+     * \returns          True if the type is supported for this field
      *
-     * @return A configuration object. This will be passed to your widget wrapper later on
+     * \see fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
      */
-    virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
+    inline bool supportsField( const QgsVectorLayer *vl, int fieldIdx ) { return fieldScore( vl, fieldIdx ) > 0; }
 
     /**
-     * Serialize your configuration and save it in a xml doc.
+     * Returns a list of widget types which this editor widget supports.
+     * Each widget type can have a priority value attached, the factory with the highest one
+     * will be used.
      *
-     * @param config        The configuration to serialize
-     * @param configElement The element, where you can write your configuration into
-     * @param doc           The document. You can use this to create new nodes
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
+     * \returns A map of widget type names and weight values
+     * \note not available in Python bindings
      */
-    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
+    virtual QHash<const char *, int> supportedWidgetTypes() { return QHash<const char *, int>(); } SIP_SKIP
+
+    /**
+     * This method allows disabling this editor widget type for a certain field.
+     * By default, it returns 5 for every fields.
+     * Reimplement this if you only support certain fields.
+     *
+     * Typical return values are:
+     *   * 0: not supported
+     *   * 5: maybe support (for example, Datetime support strings depending on their content)
+     *   * 10: basic support (this is what returns TextEdit for example, since it supports everything in a crude way)
+     *   * 20: specialized support
+     *
+     * \param vl
+     * \param fieldIdx
+     * \returns 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
+     *      taken by default). The default implementation returns 5..
+     *
+     * \see supportsField( QgsVectorLayer* vl, fieldIdx )
+     */
+    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const;
 
   private:
     QString mName;
-};
-
-/**
- * This is a templated wrapper class, which inherits QgsEditWidgetFactory and does the boring work for you.
- * C++ only
- */
-template<typename F, typename G>
-class GUI_EXPORT QgsEditWidgetFactoryHelper : public QgsEditorWidgetFactory
-{
-  public:
-    QgsEditWidgetFactoryHelper( QString name )
-        : QgsEditorWidgetFactory( name ) {}
-
-    QgsEditorWidgetWrapper* create( QgsVectorLayer* vl, int fieldIdx, QWidget* editor, QWidget* parent ) const
-    {
-      return new F( vl, fieldIdx, editor, parent );
-    }
-
-    QgsEditorConfigWidget* configWidget( QgsVectorLayer* vl, int fieldIdx, QWidget* parent )
-    {
-      return new G( vl, fieldIdx, parent );
-    }
-
-    /**
-     * Read the config from an XML file and map it to a proper {@link QgsEditorWidgetConfig}.
-     *
-     * Implement this method yourself somewhere with the class template parameters
-     * specified. To keep things clean, every implementation of this class should be placed
-     * next to the associated widget factory implementation.
-     *
-     * @param configElement The configuration element from the project file
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     *
-     * @return A configuration object. This will be passed to your widget wrapper later on
-     */
-
-    virtual QgsEditorWidgetConfig readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx );
-
-    /**
-     * Serialize your configuration and save it in a xml doc.
-     *
-     * Implement this method yourself somewhere with the class template parameters
-     * specified. To keep things clean, every implementation of this class should be placed
-     * next to the associated widget factory implementation.
-     *
-     * @param config        The configuration to serialize
-     * @param configElement The element, where you can write your configuration into
-     * @param doc           The document. You can use this to create new nodes
-     * @param layer         The layer for which this configuration applies
-     * @param fieldIdx      The field on the layer for which this configuration applies
-     */
-    virtual void writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx );
 };
 
 #endif // QGSEDITORWIDGETFACTORY_H

@@ -1,17 +1,38 @@
-/** \ingroup core
- * A linear enhanceContrast enhancement that first clips to min max and then enhanceContrastes
- * linearly between min and max.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgslinearminmaxenhancementwithclip.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsLinearMinMaxEnhancementWithClip : QgsContrastEnhancementFunction
 {
-%TypeHeaderCode
-#include <qgslinearminmaxenhancementwithclip.h>
+%Docstring
+ A linear enhanceContrast enhancement that first clips to min max and then enhanceContrastes
+ linearly between min and max.
 %End
 
+%TypeHeaderCode
+#include "qgslinearminmaxenhancementwithclip.h"
+%End
   public:
-    QgsLinearMinMaxEnhancementWithClip( QGis::DataType, double, double );
+    QgsLinearMinMaxEnhancementWithClip( Qgis::DataType, double, double );
 
-    int enhance( double );
+    virtual int enhance( double );
 
-    bool isValueInDisplayableRange( double );
+
+    virtual bool isValueInDisplayableRange( double );
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgslinearminmaxenhancementwithclip.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

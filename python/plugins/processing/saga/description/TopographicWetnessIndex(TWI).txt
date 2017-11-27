@@ -1,8 +1,0 @@
-Topographic Wetness Index (TWI)
-ta_hydrology
-ParameterRaster|SLOPE|Slope|False
-ParameterRaster|AREA|Catchment Area|False
-ParameterRaster|TRANS|Transmissivity|True
-ParameterSelection|CONV|Area Conversion|[0] no conversion (areas already given as specific catchment area);[1] 1 / cell size (pseudo specific catchment area)
-ParameterSelection|METHOD|Method (TWI)|[0] Standard;[1] TOPMODEL
-OutputRaster|TWI|Topographic Wetness Index

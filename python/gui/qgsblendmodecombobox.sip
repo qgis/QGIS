@@ -1,20 +1,50 @@
-/** \ingroup gui
- * A combobox which lets the user select blend modes from a predefined list
- **/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsblendmodecombobox.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsBlendModeComboBox : QComboBox
 {
+%Docstring
+ A combobox which lets the user select blend modes from a predefined list
+*
+%End
+
 %TypeHeaderCode
-#include <qgsblendmodecombobox.h>
+#include "qgsblendmodecombobox.h"
 %End
   public:
-    QgsBlendModeComboBox( QWidget* parent = 0 );
-    virtual ~QgsBlendModeComboBox();
+    QgsBlendModeComboBox( QWidget *parent /TransferThis/ = 0 );
 
-    //! Function to read the selected blend mode as QPainter::CompositionMode
     QPainter::CompositionMode blendMode();
-    //! Function to set the selected blend mode from QPainter::CompositionMode
+%Docstring
+Function to read the selected blend mode as QPainter.CompositionMode
+ :rtype: QPainter.CompositionMode
+%End
     void setBlendMode( QPainter::CompositionMode blendMode );
-
+%Docstring
+Function to set the selected blend mode from QPainter.CompositionMode
+%End
   public slots:
+
     void updateModes();
+%Docstring
+ Populates the blend mode combo box, and sets up mapping for
+ blend modes to combo box indexes
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsblendmodecombobox.h                                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

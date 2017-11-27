@@ -20,7 +20,8 @@
 
 #include "qgsvectordataprovider.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsvectorlayerimport.h"
+#include "qgsvectorlayerexporter.h"
+#include "qgsfields.h"
 
 #include <QStringList>
 #include <QFile>
@@ -37,60 +38,7 @@ class QgsMssqlFeatureIterator;
 
 #include "qgsdatasourceuri.h"
 #include "qgsgeometry.h"
-
-
-/**
-\class QgsMssqlGeometryParser
-\brief Geometry parser for SqlGeometry/SqlGeography.
-*
-*/
-
-class QgsMssqlGeometryParser
-{
-
-  protected:
-    unsigned char* pszData;
-    unsigned char* pszWkb;
-    int nWkbLen;
-    int nWkbMaxLen;
-    /* byte order */
-    char chByteOrder;
-    /* serialization properties */
-    char chProps;
-    /* point array */
-    int nPointSize;
-    int nPointPos;
-    int nNumPoints;
-    /* figure array */
-    int nFigurePos;
-    int nNumFigures;
-    /* shape array */
-    int nShapePos;
-    int nNumShapes;
-    int nSRSId;
-
-  protected:
-    void CopyBytes( void* src, int len );
-    void CopyCoordinates( int iPoint );
-    void CopyPoint( int iPoint );
-    void ReadPoint( int iShape );
-    void ReadMultiPoint( int iShape );
-    void ReadLineString( int iShape );
-    void ReadMultiLineString( int iShape );
-    void ReadPolygon( int iShape );
-    void ReadMultiPolygon( int iShape );
-    void ReadGeometryCollection( int iShape );
-
-  public:
-    QgsMssqlGeometryParser();
-    unsigned char* ParseSqlGeometry( unsigned char* pszInput, int nLen );
-    int GetSRSId() { return nSRSId; };
-    int GetWkbLen() { return nWkbLen; };
-    void DumpMemoryToLog( const char* pszMsg, unsigned char* pszInput, int nLen );
-    /* sql geo type */
-    bool IsGeography;
-};
-
+#include "qgsmssqlgeometryparser.h"
 
 /**
 \class QgsMssqlProvider
@@ -102,199 +50,98 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-
-    QgsMssqlProvider( QString uri = QString() );
+    explicit QgsMssqlProvider( const QString &uri = QString() );
 
     virtual ~QgsMssqlProvider();
 
-    static QSqlDatabase GetDatabase( QString driver, QString host, QString database, QString username, QString password );
+    static QSqlDatabase GetDatabase( const QString &service, const QString &host, const QString &database, const QString &username, const QString &password );
+
+    virtual QgsAbstractFeatureSource *featureSource() const override;
+
     static bool OpenDatabase( QSqlDatabase db );
 
     /* Implementation of functions from QgsVectorDataProvider */
 
-    /**
-     * Returns the permanent storage type for this layer as a friendly name.
-     */
-    virtual QString storageType() const;
+    virtual QString storageType() const override;
+    virtual QStringList subLayers() const override;
+    virtual QVariant minimumValue( int index ) const override;
+    virtual QVariant maximumValue( int index ) const override;
+    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
 
-    /**
-     * Sub-layers handled by this provider, in order from bottom to top
-     *
-     * Sub-layers are used when the provider's source can combine layers
-     * it knows about in some way before it hands them off to the provider.
-     */
-    virtual QStringList subLayers() const;
+    virtual QgsWkbTypes::Type wkbType() const override;
 
-    /**
-     * Returns the minimum value of an attribute
-     * @param index the index of the attribute
-     *
-     * Default implementation walks all numeric attributes and caches minimal
-     * and maximal values. If provider has facilities to retrieve minimal
-     * value directly, override this function.
-     */
-    virtual QVariant minimumValue( int index );
+    virtual long featureCount() const override;
 
-    /**
-     * Returns the maximum value of an attribute
-     * @param index the index of the attribute
-     *
-     * Default implementation walks all numeric attributes and caches minimal
-     * and maximal values. If provider has facilities to retrieve maximal
-     * value directly, override this function.
-     */
-    virtual QVariant maximumValue( int index );
+    //! Update the extent, feature count, wkb type and srid for this layer
+    void UpdateStatistics( bool estimate ) const;
 
-    /**
-     * Return unique values of an attribute
-     * @param index the index of the attribute
-     * @param uniqueValues values reference to the list to fill
-     * @param limit maxmum number of the values to return (added in 1.4)
-     *
-     * Default implementation simply iterates the features
-     */
-    virtual void uniqueValues( int index, QList<QVariant> &uniqueValues, int limit = -1 );
+    virtual QgsFields fields() const override;
 
-    /**
-     * Get feature iterator.
-     * @return QgsFeatureIterator to iterate features
-     */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
+    QString subsetString() const override;
 
-    /**
-     * Get feature type.
-     * @return int representing the feature type
-     */
-    virtual QGis::WkbType geometryType() const;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
-    /**
-     * Number of features in the layer
-     * @return long containing number of features
-     */
-    virtual long featureCount() const;
+    virtual bool supportsSubsetString() const override { return true; }
 
-    /** update the extent, feature count, wkb type and srid for this layer */
-    void UpdateStatistics( bool estimate );
-
-    /**
-     * Return a map of indexes with field names for this layer
-     * @return map of fields
-     */
-    virtual const QgsFields & fields() const;
-
-    /** Accessor for sql where clause used to limit dataset */
-    QString subsetString();
-
-    /** mutator for sql where clause used to limit dataset size */
-    bool setSubsetString( QString theSQL, bool updateFeatureCount = true );
-
-    virtual bool supportsSubsetString() { return true; }
-
-    /** Returns a bitmask containing the supported capabilities
-        Note, some capabilities may change depending on whether
-        a spatial filter is active on this provider, so it may
-        be prudent to check this value per intended operation.
-     */
-    virtual int capabilities() const;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
 
 
     /* Implementation of functions from QgsDataProvider */
 
-    /** return a provider name
+    QString name() const override;
 
-        Essentially just returns the provider key.  Should be used to build file
-        dialogs so that providers can be shown with their supported types. Thus
-        if more than one provider supports a given format, the user is able to
-        select a specific provider to open that file.
+    QString description() const override;
 
-        @note
+    QgsAttributeList pkAttributeIndexes() const override;
 
-        Instead of being pure virtual, might be better to generalize this
-        behavior and presume that none of the sub-classes are going to do
-        anything strange with regards to their name or description?
-     */
-    QString name() const;
+    virtual QgsRectangle extent() const override;
 
-    /** return description
+    bool isValid() const override;
 
-        Return a terse string describing what the provider is.
+    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
 
-        @note
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
 
-        Instead of being pure virtual, might be better to generalize this
-        behavior and presume that none of the sub-classes are going to do
-        anything strange with regards to their name or description?
-     */
-    QString description() const;
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
 
-    /**
-     * Return the extent for this data layer
-     */
-    virtual QgsRectangle extent();
+    virtual bool addAttributes( const QList<QgsField> &attributes ) override;
 
-    /**
-     * Returns true if this is a valid data source
-     */
-    bool isValid();
+    virtual bool deleteAttributes( const QgsAttributeIds &attributes ) override;
 
-    /**Writes a list of features to the database*/
-    virtual bool addFeatures( QgsFeatureList & flist );
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
 
-    /**Deletes a feature*/
-    virtual bool deleteFeatures( const QgsFeatureIds & id );
+    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
 
-    /**
-     * Adds new attributes
-     * @param attributes list of new attributes
-     * @return true in case of success and false in case of failure
-     * @note added in 1.2
-     */
-    virtual bool addAttributes( const QList<QgsField> &attributes );
+    virtual bool createSpatialIndex() override;
 
-    /**
-     * Deletes existing attributes
-     * @param attributes a set containing names of attributes
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool deleteAttributes( const QgsAttributeIds &attributes );
+    virtual bool createAttributeIndex( int field ) override;
 
-    /**Changes attribute values of existing features */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
-
-    /**Changes existing geometries*/
-    virtual bool changeGeometryValues( QgsGeometryMap & geometry_map );
-
-    /**
-     * Create a spatial index for the current layer
-     */
-    virtual bool createSpatialIndex();
-
-    /**Create an attribute index on the datasource*/
-    virtual bool createAttributeIndex( int field );
-
-    /** convert a QgsField to work with MSSQL */
+    //! Convert a QgsField to work with MSSQL
     static bool convertField( QgsField &field );
 
-    /**Returns the default value for field specified by @c fieldId */
-    QVariant defaultValue( int fieldId );
+    //! Convert values to quoted values for database work *
+    static QString quotedValue( const QVariant &value );
 
-    /** Import a vector layer into the database */
-    static QgsVectorLayerImport::ImportError createEmptyLayer(
-      const QString& uri,
-      const QgsFieldMap &fields,
-      QGis::WkbType wkbType,
-      const QgsCoordinateReferenceSystem *srs,
+    QString defaultValueClause( int fieldId ) const override;
+
+    //! Import a vector layer into the database
+    static QgsVectorLayerExporter::ExportError createEmptyLayer(
+      const QString &uri,
+      const QgsFields &fields,
+      QgsWkbTypes::Type wkbType,
+      const QgsCoordinateReferenceSystem &srs,
       bool overwrite,
       QMap<int, int> *oldToNewAttrIdxMap,
-      QString *errorMessage = 0,
-      const QMap<QString, QVariant> *options = 0
+      QString *errorMessage = nullptr,
+      const QMap<QString, QVariant> *options = nullptr
     );
 
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
   protected:
-    /** loads fields from input file to member attributeFields */
-    QVariant::Type DecodeSqlType( QString sqlTypeName );
+    //! Loads fields from input file to member attributeFields
+    QVariant::Type DecodeSqlType( const QString &sqlTypeName );
     void loadFields();
     void loadMetadata();
 
@@ -302,12 +149,13 @@ class QgsMssqlProvider : public QgsVectorDataProvider
 
     //! Fields
     QgsFields mAttributeFields;
-    QMap<int, QVariant> mDefaultValues;
+    QMap<int, QString> mDefaultValues;
+    QList<QString> mComputedColumns;
 
-    QgsMssqlGeometryParser parser;
+    mutable QgsMssqlGeometryParser mParser;
 
     //! Layer extent
-    QgsRectangle mExtent;
+    mutable QgsRectangle mExtent;
 
     bool mValid;
 
@@ -315,21 +163,20 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     bool mUseEstimatedMetadata;
     bool mSkipFailures;
 
-    int mGeomType;
-
-    long mNumberFeatures;
+    long mNumberFeatures = 0;
     QString mFidColName;
-    long mSRId;
+    int mFidColIdx = -1;
+    mutable long mSRId;
     QString mGeometryColName;
     QString mGeometryColType;
 
     // QString containing the last reported error message
     QString mLastError;
 
-    // Coordinate reference sytem
-    QgsCoordinateReferenceSystem mCrs;
+    // Coordinate reference system
+    mutable QgsCoordinateReferenceSystem mCrs;
 
-    QGis::WkbType mWkbType;
+    mutable QgsWkbTypes::Type mWkbType = QgsWkbTypes::Unknown;
 
     // The database object
     QSqlDatabase mDatabase;
@@ -343,6 +190,16 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     // current layer name
     QString mSchemaName;
     QString mTableName;
+
+    // login
+    QString mUserName;
+    QString mPassword;
+
+    // server access
+    QString mService;
+    QString mDatabaseName;
+    QString mHost;
+
     // available tables
     QStringList mTables;
 
@@ -350,15 +207,14 @@ class QgsMssqlProvider : public QgsVectorDataProvider
     QString mSqlWhereClause;
 
     // Sets the error messages
-    void setLastError( QString error )
-    {
-      mLastError = error;
-    }
+    void setLastError( const QString &error );
 
-    static void mssqlWkbTypeAndDimension( QGis::WkbType wkbType, QString &geometryType, int &dim );
-    static QGis::WkbType getWkbType( QString geometryType, int dim );
+    static void mssqlWkbTypeAndDimension( QgsWkbTypes::Type wkbType, QString &geometryType, int &dim );
+    static QgsWkbTypes::Type getWkbType( const QString &wkbType );
 
-    friend class QgsMssqlFeatureIterator;
+    friend class QgsMssqlFeatureSource;
+
+    static int sConnectionId;
 };
 
 #endif // QGSMSSQLPROVIDER_H

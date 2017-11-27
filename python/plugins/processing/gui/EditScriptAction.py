@@ -27,28 +27,21 @@ __revision__ = '$Format:%H$'
 
 from processing.gui.ContextAction import ContextAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-from processing.r.RAlgorithm import RAlgorithm
 from processing.script.ScriptAlgorithm import ScriptAlgorithm
 
 
 class EditScriptAction(ContextAction):
 
     SCRIPT_PYTHON = 0
-    SCRIPT_R = 1
 
     def __init__(self, scriptType):
-        self.name = 'Edit script'
+        self.name = self.tr('Edit script', 'EditScriptAction')
         self.scriptType = scriptType
 
     def isEnabled(self):
         if self.scriptType == ScriptEditorDialog.SCRIPT_PYTHON:
-            return isinstance(self.alg, ScriptAlgorithm)
-        elif self.scriptType == ScriptEditorDialog.SCRIPT_R:
-            return isinstance(self.alg, RAlgorithm)
+            return isinstance(self.itemData, ScriptAlgorithm) and self.itemData.allowEdit
 
     def execute(self):
-        dlg = ScriptEditorDialog(self.scriptType, self.alg)
+        dlg = ScriptEditorDialog(self.scriptType, self.itemData)
         dlg.show()
-        dlg.exec_()
-        if dlg.update:
-            self.toolbox.updateTree()

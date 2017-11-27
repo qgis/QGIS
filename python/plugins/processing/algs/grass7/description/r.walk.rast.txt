@@ -1,0 +1,16 @@
+r.walk
+r.walk.rast - Creates a raster map showing the anisotropic cumulative cost of moving between different geographic locations on an input raster map whose cell category values represent cost from a raster.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|elevation|Name of input elevation raster map|None|False
+QgsProcessingParameterRasterLayer|friction|Name of input raster map containing friction costs|None|False
+QgsProcessingParameterRasterLayer|start_raster|Name of starting raster points map (all non-NULL cells are starting points)|None|False
+QgsProcessingParameterString|walk_coeff|Coefficients for walking energy formula parameters a,b,c,d|0.72,6.0,1.9998,-1.9998|False|True
+QgsProcessingParameterNumber|lambda|Lambda coefficients for combining walking energy and friction cost|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
+QgsProcessingParameterNumber|slope_factor|Slope factor determines travel energy cost per height step|QgsProcessingParameterNumber.Double|-0.2125|True|None|None
+QgsProcessingParameterNumber|max_cost|Maximum cumulative cost|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|null_cost|Cost assigned to null cells. By default, null cells are excluded|QgsProcessingParameterNumber.Double|None|True|None|None
+*QgsProcessingParameterNumber|memory|Maximum memory to be used in MB|QgsProcessingParameterNumber.Integer|300|True|1|None
+*QgsProcessingParameterBoolean|-k|Use the 'Knight's move'; slower, but more accurate|False
+*QgsProcessingParameterBoolean|-n|Keep null values in output raster layer|False
+QgsProcessingParameterRasterDestination|output|Cumulative cost
+QgsProcessingParameterRasterDestination|outdir|Movement Directions

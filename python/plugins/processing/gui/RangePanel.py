@@ -25,33 +25,67 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4 import QtGui
+import os
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import pyqtSignal
+from qgis.PyQt.QtWidgets import QDialog
+
+from qgis.core import QgsProcessingParameterNumber
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'widgetRangeSelector.ui'))
 
 
-class RangePanel(QtGui.QWidget):
+class RangePanel(BASE, WIDGET):
+
+    hasChanged = pyqtSignal()
 
     def __init__(self, param):
         super(RangePanel, self).__init__(None)
-        self.horizontalLayout = QtGui.QHBoxLayout(self)
-        self.horizontalLayout.setSpacing(2)
-        self.horizontalLayout.setMargin(0)
-        self.labelmin = QtGui.QLabel()
-        self.labelmin.setText('Min')
-        self.textmin = QtGui.QLineEdit()
-        self.textmin.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
-        self.labelmax = QtGui.QLabel()
-        self.labelmax.setText('Max')
-        self.textmax = QtGui.QLineEdit()
-        self.textmin.setText(param.default.split(',')[0])
-        self.textmax.setText(param.default.split(',')[1])
-        self.textmax.setSizePolicy(QtGui.QSizePolicy.Expanding,
-                                   QtGui.QSizePolicy.Expanding)
-        self.horizontalLayout.addWidget(self.labelmin)
-        self.horizontalLayout.addWidget(self.textmin)
-        self.horizontalLayout.addWidget(self.labelmax)
-        self.horizontalLayout.addWidget(self.textmax)
-        self.setLayout(self.horizontalLayout)
+        self.setupUi(self)
+
+        self.param = param
+        # Integer or Double range
+        if self.param.dataType() == QgsProcessingParameterNumber.Integer:
+            self.spnMin.setDecimals(0)
+            self.spnMax.setDecimals(0)
+
+        if param.defaultValue() is not None:
+            self.setValue(param.defaultValue())
+            values = self.getValues()
+
+        # Spin range logic
+        self.spnMin.valueChanged.connect(lambda: self.setMinMax())
+        self.spnMax.valueChanged.connect(lambda: self.setMaxMin())
+
+    def setMinMax(self):
+        values = self.getValues()
+        if values[0] >= values[1]:
+            self.spnMax.setValue(values[0])
+            self.hasChanged.emit()
+
+    def setMaxMin(self):
+        values = self.getValues()
+        if values[0] >= values[1]:
+            self.spnMin.setValue(values[1])
+            self.hasChanged.emit()
 
     def getValue(self):
-        return self.textmin.text() + ',' + self.textmax.text()
+        return '{},{}'.format(self.spnMin.value(), self.spnMax.value())
+
+    def getValues(self):
+        value = self.getValue()
+        if value:
+            return [float(a) for a in value.split(',')]
+
+    def setValue(self, value):
+        try:
+            values = value.split(',')
+            minVal = float(values[0])
+            maxVal = float(values[1])
+            self.spnMin.setValue(float(minVal))
+            self.spnMax.setValue(float(maxVal))
+        except:
+            return

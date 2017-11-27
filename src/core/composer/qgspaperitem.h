@@ -18,58 +18,71 @@
 #ifndef QGSPAPERITEM_H
 #define QGSPAPERITEM_H
 
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
 #include <QGraphicsRectItem>
 
-/**Item representing a grid. This is drawn seperately to the underlying paper item since the grid needs to be
- * drawn above all other composer items, while the paper item is drawn below all others.*/
+/**
+ * \ingroup core
+ * Item representing a grid. This is drawn separately to the underlying paper item since the grid needs to be
+ * drawn above all other composer items, while the paper item is drawn below all others.
+ */
 class CORE_EXPORT QgsPaperGrid: public QGraphicsRectItem
 {
   public:
-    QgsPaperGrid( double x, double y, double width, double height, QgsComposition* composition );
-    ~QgsPaperGrid();
+    QgsPaperGrid( double x, double y, double width, double height, QgsComposition *composition );
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    //! \brief Reimplementation of QCanvasItem::paint
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
   private:
-    QgsComposition* mComposition;
+    QgsComposition *mComposition = nullptr;
 };
 
-/**Item representing the paper.*/
-class CORE_EXPORT QgsPaperItem: public QgsComposerItem
+/**
+ * \ingroup core
+ * Item representing the paper.*/
+class CORE_EXPORT QgsPaperItem : public QgsComposerItem
 {
+    Q_OBJECT
+
   public:
-    QgsPaperItem( QgsComposition* c );
-    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition );
+    QgsPaperItem( QgsComposition *c SIP_TRANSFERTHIS );
+    QgsPaperItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition SIP_TRANSFERTHIS );
     ~QgsPaperItem();
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const { return ComposerPaper; }
+    //! Return correct graphics item type.
+    virtual int type() const override { return ComposerPaper; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    //! \brief Reimplementation of QCanvasItem::paint
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
-    /** stores state in Dom element
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc Dom document
+    /**
+     * Stores state in Dom element
+       * \param elem is Dom element corresponding to 'Composer' tag
+       * \param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** sets state from Dom document
-     * @param itemElem is Dom node corresponding to item tag
-     * @param doc is the Dom document
+    /**
+     * Sets state from Dom document
+     * \param itemElem is Dom node corresponding to item tag
+     * \param doc is the Dom document
      */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
-    virtual void setSceneRect( const QRectF& rectangle );
+    virtual void setSceneRect( const QRectF &rectangle ) override;
 
   private:
     QgsPaperItem();
-    /**Set flags and z-value*/
+    //! Set flags and z-value
     void initialize();
 
-    QgsPaperGrid* mPageGrid;
+    void calculatePageMargin();
+
+    QgsPaperGrid *mPageGrid = nullptr;
+    double mPageMargin = 0;
 };
 
 #endif

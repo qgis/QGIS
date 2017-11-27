@@ -1,72 +1,116 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterbandstats.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \brief The RasterBandStats struct is a container for statistics about a single
- * raster band.
- */
+
+
+
+
+
 class QgsRasterBandStats
 {
-%TypeHeaderCode
-#include <qgsrasterbandstats.h>
+%Docstring
+ The RasterBandStats struct is a container for statistics about a single
+ raster band.
 %End
 
+%TypeHeaderCode
+#include "qgsrasterbandstats.h"
+%End
   public:
     enum Stats
     {
-      None         = 0,
-      Min          = 1,
-      Max          = 2,
-      Range        = 4,
-      Sum          = 8,
-      Mean         = 16,
-      StdDev       = 32,
-      SumOfSquares = 64,
-      All          = 127
+      None,
+      Min,
+      Max,
+      Range,
+      Sum,
+      Mean,
+      StdDev,
+      SumOfSquares,
+      All
     };
 
     QgsRasterBandStats();
 
-    /*! Compares region, size etc. not collected statistics */
     bool contains( const QgsRasterBandStats &s ) const;
+%Docstring
+Compares region, size etc. not collected statistics
+ :rtype: bool
+%End
 
-    /** \brief The gdal band number (starts at 1)*/
     int bandNumber;
+%Docstring
+ The gdal band number (starts at 1)
+%End
 
-    /** \brief The number of not no data cells in the band. */
-    // TODO: check if no data are excluded in stats calculation
     qgssize elementCount;
 
-    /** \brief The maximum cell value in the raster band. NO_DATA values
-     * are ignored. This does not use the gdal GetMaximmum function. */
     double maximumValue;
+%Docstring
+ The maximum cell value in the raster band. NO_DATA values
+ are ignored. This does not use the gdal GetMaximmum function. *
+%End
 
-    /** \brief The minimum cell value in the raster band. NO_DATA values
-     * are ignored. This does not use the gdal GetMinimum function. */
     double minimumValue;
+%Docstring
+ The minimum cell value in the raster band. NO_DATA values
+ are ignored. This does not use the gdal GetMinimum function. *
+%End
 
-    /** \brief The mean cell value for the band. NO_DATA values are excluded. */
     double mean;
+%Docstring
+ The mean cell value for the band. NO_DATA values are excluded.
+%End
 
-    /** \brief The range is the distance between min & max. */
     double range;
+%Docstring
+ The range is the distance between min & max.
+%End
 
-    /** \brief The standard deviation of the cell values. */
     double stdDev;
+%Docstring
+ The standard deviation of the cell values.
+%End
 
-    /** \brief Collected statistics */
     int statsGathered;
+%Docstring
+ Collected statistics
+%End
 
-    /** \brief The sum of all cells in the band. NO_DATA values are excluded. */
     double sum;
+%Docstring
+ The sum of all cells in the band. NO_DATA values are excluded.
+%End
 
-    /** \brief The sum of the squares. Used to calculate standard deviation. */
     double sumOfSquares;
+%Docstring
+ The sum of the squares. Used to calculate standard deviation.
+%End
 
-    /** \brief Number of columns used to calc statistics */
     int width;
+%Docstring
+ Number of columns used to calc statistics
+%End
 
-    /** \brief Number of rows used to calc statistics */
     int height;
+%Docstring
+ Number of rows used to calc statistics
+%End
 
-    /** \brief Extent used to calc statistics */
     QgsRectangle extent;
+%Docstring
+ Extent used to calc statistics
+%End
 };
-
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterbandstats.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

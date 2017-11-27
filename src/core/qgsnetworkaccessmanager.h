@@ -19,14 +19,15 @@
 #define QGSNETWORKACCESSMANAGER_H
 
 #include <QList>
+#include "qgis.h"
 #include <QStringList>
 #include <QNetworkAccessManager>
 #include <QNetworkProxy>
 #include <QNetworkRequest>
 
-class QTimer;
+#include "qgis_core.h"
 
-/*
+/**
  * \class QgsNetworkAccessManager
  * \brief network access manager for QGIS
  * \ingroup core
@@ -52,14 +53,13 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     // and creates that instance on the first call.
     static QgsNetworkAccessManager *instance();
 
-    //! destructor
-    ~QgsNetworkAccessManager();
+    QgsNetworkAccessManager( QObject *parent = nullptr );
 
     //! insert a factory into the proxy factories list
-    void insertProxyFactory( QNetworkProxyFactory *factory );
+    void insertProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFER );
 
     //! remove a factory from the proxy factories list
-    void removeProxyFactory( QNetworkProxyFactory *factory );
+    void removeProxyFactory( QNetworkProxyFactory *factory SIP_TRANSFERBACK );
 
     //! retrieve proxy factory list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
@@ -68,36 +68,42 @@ class CORE_EXPORT QgsNetworkAccessManager : public QNetworkAccessManager
     const QNetworkProxy &fallbackProxy() const;
 
     //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    QStringList excludeList() const;
 
     //! set fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
 
     //! Get name for QNetworkRequest::CacheLoadControl
-    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl theControl );
+    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 
     //! Get QNetworkRequest::CacheLoadControl from name
-    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &theName );
+    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
+
+    //! Setup the NAM according to the user's settings
+    void setupDefaultProxyAndCache();
+
+    //! return whether the system proxy should be used
+    bool useSystemProxy() const { return mUseSystemProxy; }
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
+    void requestTimedOut( QNetworkReply * );
 
   private slots:
-    void connectionProgress();
-    void connectionDestroyed( QObject* );
     void abortRequest();
 
   protected:
-    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
+    virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = nullptr ) override;
 
   private:
-    QgsNetworkAccessManager( QObject *parent = 0 );
-    QList<QNetworkProxyFactory*> mProxyFactories;
+    QList<QNetworkProxyFactory *> mProxyFactories;
     QNetworkProxy mFallbackProxy;
     QStringList mExcludedURLs;
-
-    QMap<QNetworkReply*, QTimer*> mActiveRequests;
+    bool mUseSystemProxy = false;
+    bool mInitialized = false;
+    static QgsNetworkAccessManager *sMainNAM;
 };
 
 #endif // QGSNETWORKACCESSMANAGER_H
+

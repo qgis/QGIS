@@ -16,27 +16,106 @@
  ***************************************************************************/
 
 #include "qgscomposershape.h"
+#include "qgscomposition.h"
+#include "qgspathresolver.h"
+#include "qgsreadwritecontext.h"
+#include "qgssymbol.h"
+#include "qgssymbollayerutils.h"
+#include "qgscomposermodel.h"
+#include "qgsmapsettings.h"
+#include "qgscomposerutils.h"
 #include <QPainter>
 
-QgsComposerShape::QgsComposerShape( QgsComposition* composition ): QgsComposerItem( composition ), mShape( Ellipse ), mCornerRadius( 0 )
+QgsComposerShape::QgsComposerShape( QgsComposition *composition )
+  : QgsComposerItem( composition )
+  , mShape( Ellipse )
+  , mCornerRadius( 0 )
+  , mUseSymbol( false ) //default to not using symbol for shapes, to preserve 2.0 api
+  , mMaxSymbolBleed( 0 )
 {
   setFrameEnabled( true );
+  createDefaultShapeStyleSymbol();
+
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
+  }
 }
 
-QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition* composition ): QgsComposerItem( x, y, width, height, composition ),
-    mShape( Ellipse ),
-    mCornerRadius( 0 )
+QgsComposerShape::QgsComposerShape( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition )
+  : QgsComposerItem( x, y, width, height, composition )
+  , mShape( Ellipse )
+  , mCornerRadius( 0 )
+  , mUseSymbol( false ) //default to not using Symbol for shapes, to preserve 2.0 api
+  , mMaxSymbolBleed( 0 )
 {
   setSceneRect( QRectF( x, y, width, height ) );
   setFrameEnabled( true );
+  createDefaultShapeStyleSymbol();
+
+  if ( mComposition )
+  {
+    //connect to atlas feature changes
+    //to update symbol style (in case of data-defined symbology)
+    connect( &mComposition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerItem::repaint );
+  }
 }
 
 QgsComposerShape::~QgsComposerShape()
 {
-
+  delete mShapeStyleSymbol;
 }
 
-void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerShape::setUseSymbol( bool useSymbol )
+{
+  mUseSymbol = useSymbol;
+  setFrameEnabled( !useSymbol );
+}
+
+void QgsComposerShape::setShapeStyleSymbol( QgsFillSymbol *symbol )
+{
+  delete mShapeStyleSymbol;
+  mShapeStyleSymbol = static_cast<QgsFillSymbol *>( symbol->clone() );
+  refreshSymbol();
+}
+
+void QgsComposerShape::refreshSymbol()
+{
+  QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+  mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+
+  updateBoundingRect();
+
+  update();
+  emit frameChanged();
+}
+
+void QgsComposerShape::createDefaultShapeStyleSymbol()
+{
+  delete mShapeStyleSymbol;
+  QgsStringMap properties;
+  properties.insert( QStringLiteral( "color" ), QStringLiteral( "white" ) );
+  properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+  properties.insert( QStringLiteral( "color_border" ), QStringLiteral( "black" ) );
+  properties.insert( QStringLiteral( "width_border" ), QStringLiteral( "0.3" ) );
+  properties.insert( QStringLiteral( "joinstyle" ), QStringLiteral( "miter" ) );
+  mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
+
+  if ( mComposition )
+  {
+    QgsRenderContext rc = QgsComposerUtils::createRenderContextForMap( mComposition->referenceMap(), nullptr, mComposition->printResolution() );
+    mMaxSymbolBleed = ( 25.4 / mComposition->printResolution() ) * QgsSymbolLayerUtils::estimateMaxSymbolBleed( mShapeStyleSymbol, rc );
+  }
+
+  updateBoundingRect();
+
+  emit frameChanged();
+}
+
+void QgsComposerShape::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
@@ -44,6 +123,11 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
   {
     return;
   }
+  if ( !shouldDrawItem() )
+  {
+    return;
+  }
+
   drawBackground( painter );
   drawFrame( painter );
 
@@ -54,48 +138,119 @@ void QgsComposerShape::paint( QPainter* painter, const QStyleOptionGraphicsItem*
 }
 
 
-void QgsComposerShape::drawShape( QPainter* p )
+void QgsComposerShape::drawShape( QPainter *p )
 {
+  if ( mUseSymbol )
+  {
+    drawShapeUsingSymbol( p );
+    return;
+  }
 
+  //draw using QPainter brush and pen to keep 2.0 api compatibility
   p->save();
   p->setRenderHint( QPainter::Antialiasing );
-
-  p->translate( rect().width() / 2.0, rect().height() / 2.0 );
-  p->rotate( mRotation );
-  p->translate( -rect().width() / 2.0, -rect().height() / 2.0 );
 
   switch ( mShape )
   {
     case Ellipse:
-      p->drawEllipse( QRectF( 0, 0 , rect().width(), rect().height() ) );
+      p->drawEllipse( QRectF( 0, 0, rect().width(), rect().height() ) );
       break;
     case Rectangle:
       //if corner radius set, then draw a rounded rectangle
       if ( mCornerRadius > 0 )
       {
-        p->drawRoundedRect( QRectF( 0, 0 , rect().width(), rect().height() ), mCornerRadius, mCornerRadius );
+        p->drawRoundedRect( QRectF( 0, 0, rect().width(), rect().height() ), mCornerRadius, mCornerRadius );
       }
       else
       {
-        p->drawRect( QRectF( 0, 0 , rect().width(), rect().height() ) );
+        p->drawRect( QRectF( 0, 0, rect().width(), rect().height() ) );
       }
       break;
     case Triangle:
       QPolygonF triangle;
       triangle << QPointF( 0, rect().height() );
-      triangle << QPointF( rect().width() , rect().height() );
+      triangle << QPointF( rect().width(), rect().height() );
       triangle << QPointF( rect().width() / 2.0, 0 );
       p->drawPolygon( triangle );
       break;
   }
   p->restore();
+}
 
+void QgsComposerShape::drawShapeUsingSymbol( QPainter *p )
+{
+  p->save();
+  p->setRenderHint( QPainter::Antialiasing );
+
+  //setup painter scaling to dots so that raster symbology is drawn to scale
+  double dotsPerMM = p->device()->logicalDpiX() / 25.4;
+
+  //setup render context
+  QgsRenderContext context = QgsComposerUtils::createRenderContextForComposition( mComposition, p );
+  context.setForceVectorOutput( true );
+  QgsExpressionContext expressionContext = createExpressionContext();
+  context.setExpressionContext( expressionContext );
+
+  p->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+
+  //generate polygon to draw
+  QList<QPolygonF> rings; //empty list
+  QPolygonF shapePolygon;
+
+  //shapes with curves must be enlarged before conversion to QPolygonF, or
+  //the curves are approximated too much and appear jaggy
+  QTransform t = QTransform::fromScale( 100, 100 );
+  //inverse transform used to scale created polygons back to expected size
+  QTransform ti = t.inverted();
+
+  switch ( mShape )
+  {
+    case Ellipse:
+    {
+      //create an ellipse
+      QPainterPath ellipsePath;
+      ellipsePath.addEllipse( QRectF( 0, 0, rect().width() * dotsPerMM, rect().height() * dotsPerMM ) );
+      QPolygonF ellipsePoly = ellipsePath.toFillPolygon( t );
+      shapePolygon = ti.map( ellipsePoly );
+      break;
+    }
+    case Rectangle:
+    {
+      //if corner radius set, then draw a rounded rectangle
+      if ( mCornerRadius > 0 )
+      {
+        QPainterPath roundedRectPath;
+        roundedRectPath.addRoundedRect( QRectF( 0, 0, rect().width() * dotsPerMM, rect().height() * dotsPerMM ), mCornerRadius * dotsPerMM, mCornerRadius * dotsPerMM );
+        QPolygonF roundedPoly = roundedRectPath.toFillPolygon( t );
+        shapePolygon = ti.map( roundedPoly );
+      }
+      else
+      {
+        shapePolygon = QPolygonF( QRectF( 0, 0, rect().width() * dotsPerMM, rect().height() * dotsPerMM ) );
+      }
+      break;
+    }
+    case Triangle:
+    {
+      shapePolygon << QPointF( 0, rect().height() * dotsPerMM );
+      shapePolygon << QPointF( rect().width() * dotsPerMM, rect().height() * dotsPerMM );
+      shapePolygon << QPointF( rect().width() / 2.0 * dotsPerMM, 0 );
+      shapePolygon << QPointF( 0, rect().height() * dotsPerMM );
+      break;
+    }
+  }
+
+  mShapeStyleSymbol->startRender( context );
+  mShapeStyleSymbol->renderPolygon( shapePolygon, &rings, nullptr, context );
+  mShapeStyleSymbol->stopRender( context );
+
+  p->restore();
 }
 
 
-void QgsComposerShape::drawFrame( QPainter* p )
+void QgsComposerShape::drawFrame( QPainter *p )
 {
-  if ( mFrame && p )
+  if ( mFrame && p && !mUseSymbol )
   {
     p->setPen( pen() );
     p->setBrush( Qt::NoBrush );
@@ -104,9 +259,9 @@ void QgsComposerShape::drawFrame( QPainter* p )
   }
 }
 
-void QgsComposerShape::drawBackground( QPainter* p )
+void QgsComposerShape::drawBackground( QPainter *p )
 {
-  if ( mBackground && p )
+  if ( p && ( mBackground || mUseSymbol ) )
   {
     p->setBrush( brush() );//this causes a problem in atlas generation
     p->setPen( Qt::NoPen );
@@ -115,46 +270,151 @@ void QgsComposerShape::drawBackground( QPainter* p )
   }
 }
 
-
-bool QgsComposerShape::writeXML( QDomElement& elem, QDomDocument & doc ) const
+double QgsComposerShape::estimatedFrameBleed() const
 {
-  QDomElement composerShapeElem = doc.createElement( "ComposerShape" );
-  composerShapeElem.setAttribute( "shapeType", mShape );
-  composerShapeElem.setAttribute( "cornerRadius", mCornerRadius );
-  elem.appendChild( composerShapeElem );
-  return _writeXML( composerShapeElem, doc );
+  return mMaxSymbolBleed;
 }
 
-bool QgsComposerShape::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerShape::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
-  mShape = QgsComposerShape::Shape( itemElem.attribute( "shapeType", "0" ).toInt() );
-  mCornerRadius = itemElem.attribute( "cornerRadius", "0" ).toDouble();
+  QDomElement composerShapeElem = doc.createElement( QStringLiteral( "ComposerShape" ) );
+  composerShapeElem.setAttribute( QStringLiteral( "shapeType" ), mShape );
+  composerShapeElem.setAttribute( QStringLiteral( "cornerRadius" ), mCornerRadius );
+
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
+  QDomElement shapeStyleElem = QgsSymbolLayerUtils::saveSymbol( QString(), mShapeStyleSymbol, doc, context );
+  composerShapeElem.appendChild( shapeStyleElem );
+
+  elem.appendChild( composerShapeElem );
+  return _writeXml( composerShapeElem, doc );
+}
+
+bool QgsComposerShape::readXml( const QDomElement &itemElem, const QDomDocument &doc )
+{
+  mShape = QgsComposerShape::Shape( itemElem.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() );
+  mCornerRadius = itemElem.attribute( QStringLiteral( "cornerRadius" ), QStringLiteral( "0" ) ).toDouble();
 
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+
+    //rotation
+    if ( !qgsDoubleNear( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
+    {
+      //check for old (pre 2.1) rotation attribute
+      setItemRotation( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
+    }
+
+    _readXml( composerItemElem, doc );
+  }
+
+  QgsReadWriteContext context;
+  context.setPathResolver( mComposition->project()->pathResolver() );
+
+  QDomElement shapeStyleSymbolElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
+  if ( !shapeStyleSymbolElem.isNull() )
+  {
+    delete mShapeStyleSymbol;
+    mShapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context );
+  }
+  else
+  {
+    //upgrade project file from 2.0 to use symbol styling
+    delete mShapeStyleSymbol;
+    QgsStringMap properties;
+    properties.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( brush().color() ) );
+    if ( hasBackground() )
+    {
+      properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+    }
+    else
+    {
+      properties.insert( QStringLiteral( "style" ), QStringLiteral( "no" ) );
+    }
+    if ( hasFrame() )
+    {
+      properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "solid" ) );
+    }
+    else
+    {
+      properties.insert( QStringLiteral( "style_border" ), QStringLiteral( "no" ) );
+    }
+    properties.insert( QStringLiteral( "color_border" ), QgsSymbolLayerUtils::encodeColor( pen().color() ) );
+    properties.insert( QStringLiteral( "width_border" ), QString::number( pen().widthF() ) );
+
+    //for pre 2.0 projects, shape color and outline were specified in a different element...
+    QDomNodeList outlineColorList = itemElem.elementsByTagName( QStringLiteral( "OutlineColor" ) );
+    if ( !outlineColorList.isEmpty() )
+    {
+      QDomElement frameColorElem = outlineColorList.at( 0 ).toElement();
+      bool redOk, greenOk, blueOk, alphaOk, widthOk;
+      int penRed, penGreen, penBlue, penAlpha;
+      double penWidth;
+
+      penWidth = itemElem.attribute( QStringLiteral( "outlineWidth" ) ).toDouble( &widthOk );
+      penRed = frameColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+      penGreen = frameColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+      penBlue = frameColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+      penAlpha = frameColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+      if ( redOk && greenOk && blueOk && alphaOk && widthOk )
+      {
+        properties.insert( QStringLiteral( "color_border" ), QgsSymbolLayerUtils::encodeColor( QColor( penRed, penGreen, penBlue, penAlpha ) ) );
+        properties.insert( QStringLiteral( "width_border" ), QString::number( penWidth ) );
+      }
+    }
+    QDomNodeList fillColorList = itemElem.elementsByTagName( QStringLiteral( "FillColor" ) );
+    if ( !fillColorList.isEmpty() )
+    {
+      QDomElement fillColorElem = fillColorList.at( 0 ).toElement();
+      bool redOk, greenOk, blueOk, alphaOk;
+      int fillRed, fillGreen, fillBlue, fillAlpha;
+
+      fillRed = fillColorElem.attribute( QStringLiteral( "red" ) ).toDouble( &redOk );
+      fillGreen = fillColorElem.attribute( QStringLiteral( "green" ) ).toDouble( &greenOk );
+      fillBlue = fillColorElem.attribute( QStringLiteral( "blue" ) ).toDouble( &blueOk );
+      fillAlpha = fillColorElem.attribute( QStringLiteral( "alpha" ) ).toDouble( &alphaOk );
+
+      if ( redOk && greenOk && blueOk && alphaOk )
+      {
+        properties.insert( QStringLiteral( "color" ), QgsSymbolLayerUtils::encodeColor( QColor( fillRed, fillGreen, fillBlue, fillAlpha ) ) );
+        properties.insert( QStringLiteral( "style" ), QStringLiteral( "solid" ) );
+      }
+    }
+    if ( itemElem.hasAttribute( QStringLiteral( "transparentFill" ) ) )
+    {
+      //old style (pre 2.0) of specifying that shapes had no fill
+      bool hasOldTransparentFill = itemElem.attribute( QStringLiteral( "transparentFill" ), QStringLiteral( "0" ) ).toInt();
+      if ( hasOldTransparentFill )
+      {
+        properties.insert( QStringLiteral( "style" ), QStringLiteral( "no" ) );
+      }
+    }
+
+    mShapeStyleSymbol = QgsFillSymbol::createSimple( properties );
   }
   emit itemChanged();
   return true;
 }
 
-
-void QgsComposerShape::setRotation( double r )
+void QgsComposerShape::setShapeType( QgsComposerShape::Shape s )
 {
-  //adapt rectangle size
-  double width = rect().width();
-  double height = rect().height();
-  sizeChangedByRotation( width, height );
+  if ( s == mShape )
+  {
+    return;
+  }
 
-  //adapt scene rect to have the same center and the new width / height
-  double x = pos().x() + rect().width() / 2.0 - width / 2.0;
-  double y = pos().y() + rect().height() / 2.0 - height / 2.0;
-  QgsComposerItem::setSceneRect( QRectF( x, y, width, height ) );
+  mShape = s;
 
-  QgsComposerItem::setRotation( r );
+  if ( mComposition && id().isEmpty() )
+  {
+    //notify the model that the display name has changed
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
 }
 
 void QgsComposerShape::setCornerRadius( double radius )
@@ -162,15 +422,50 @@ void QgsComposerShape::setCornerRadius( double radius )
   mCornerRadius = radius;
 }
 
-void QgsComposerShape::setSceneRect( const QRectF& rectangle )
+QRectF QgsComposerShape::boundingRect() const
 {
-  //consider to change size of the shape if the rectangle changes width and/or height
-  if ( rectangle.width() != rect().width() || rectangle.height() != rect().height() )
+  return mCurrentRectangle;
+}
+
+void QgsComposerShape::updateBoundingRect()
+{
+  QRectF rectangle = rect();
+  rectangle.adjust( -mMaxSymbolBleed, -mMaxSymbolBleed, mMaxSymbolBleed, mMaxSymbolBleed );
+  if ( rectangle != mCurrentRectangle )
   {
-    double newShapeWidth = rectangle.width();
-    double newShapeHeight = rectangle.height();
-    imageSizeConsideringRotation( newShapeWidth, newShapeHeight );
+    prepareGeometryChange();
+    mCurrentRectangle = rectangle;
+  }
+}
+
+void QgsComposerShape::setSceneRect( const QRectF &rectangle )
+{
+  // Reimplemented from QgsComposerItem as we need to call updateBoundingRect after the shape's size changes
+
+  //update rect for data defined size and position
+  QRectF evaluatedRect = evalItemRect( rectangle );
+  QgsComposerItem::setSceneRect( evaluatedRect );
+
+  updateBoundingRect();
+  update();
+}
+
+QString QgsComposerShape::displayName() const
+{
+  if ( !id().isEmpty() )
+  {
+    return id();
   }
 
-  QgsComposerItem::setSceneRect( rectangle );
+  switch ( mShape )
+  {
+    case Ellipse:
+      return tr( "<ellipse>" );
+    case Rectangle:
+      return tr( "<rectangle>" );
+    case Triangle:
+      return tr( "<triangle>" );
+  }
+
+  return tr( "<shape>" );
 }

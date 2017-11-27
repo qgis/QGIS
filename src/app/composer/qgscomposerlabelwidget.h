@@ -19,38 +19,41 @@
 #define QGSCOMPOSERLABELWIDGET
 
 #include "ui_qgscomposerlabelwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerLabel;
 
-/** \ingroup MapComposer
+/**
+ * \ingroup app
   * A widget to enter text, font size, box yes/no for composer labels
   */
-class QgsComposerLabelWidget: public QWidget, private Ui::QgsComposerLabelWidgetBase
+class QgsComposerLabelWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerLabelWidgetBase
 {
     Q_OBJECT
   public:
-    QgsComposerLabelWidget( QgsComposerLabel* label );
+    explicit QgsComposerLabelWidget( QgsComposerLabel *label );
 
   public slots:
-    void on_mHtmlCheckBox_stateChanged( int i );
-    void on_mTextEdit_textChanged();
-    void on_mFontButton_clicked();
-    void on_mInsertExpressionButton_clicked();
-    void on_mMarginDoubleSpinBox_valueChanged( double d );
-    void on_mFontColorButton_clicked();
-    void on_mCenterRadioButton_clicked();
-    void on_mLeftRadioButton_clicked();
-    void on_mRightRadioButton_clicked();
-    void on_mTopRadioButton_clicked();
-    void on_mBottomRadioButton_clicked();
-    void on_mMiddleRadioButton_clicked();
-    void on_mRotationSpinBox_valueChanged( double v );
+    void mHtmlCheckBox_stateChanged( int i );
+    void mTextEdit_textChanged();
+    void mInsertExpressionButton_clicked();
+    void mMarginXDoubleSpinBox_valueChanged( double d );
+    void mMarginYDoubleSpinBox_valueChanged( double d );
+    void mFontColorButton_colorChanged( const QColor &newLabelColor );
+    void mCenterRadioButton_clicked();
+    void mLeftRadioButton_clicked();
+    void mRightRadioButton_clicked();
+    void mTopRadioButton_clicked();
+    void mBottomRadioButton_clicked();
+    void mMiddleRadioButton_clicked();
 
   private slots:
     void setGuiElementValues();
+    void fontChanged();
+    void justifyClicked();
 
   private:
-    QgsComposerLabel* mComposerLabel;
+    QgsComposerLabel *mComposerLabel = nullptr;
 
     void blockAllSignals( bool block );
 };

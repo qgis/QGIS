@@ -35,8 +35,6 @@ RequestExecutionLevel admin
 
 ;Set the installer variables, depending on the selected version to build
 
-!define COMPLETE_NAME "${QGIS_BASE} ${VERSION_NUMBER} ${VERSION_NAME}"
-
 !addplugindir osgeo4w/untgz
 !addplugindir osgeo4w/nsis
 
@@ -45,8 +43,8 @@ RequestExecutionLevel admin
 ;Publisher variables
 
 !define PUBLISHER "QGIS Development Team"
-!define WEB_SITE "http://www.qgis.org"
-!define WIKI_PAGE "http://wiki.qgis.org/qgiswiki"
+!define WEB_SITE "http://qgis.org"
+!define WIKI_PAGE "http://qgis.org/en/docs/"
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
@@ -58,12 +56,9 @@ Name "${DISPLAYED_NAME}"
 ;Name of the output file (installer executable)
 OutFile "${INSTALLER_NAME}"
 
-;Define installation folder
-InstallDir "$PROGRAMFILES\${QGIS_BASE}"
-
 ;Tell the installer to show Install and Uninstall details as default
-ShowInstDetails show
-ShowUnInstDetails show
+ShowInstDetails hide
+ShowUnInstDetails hide
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
@@ -90,14 +85,24 @@ ShowUnInstDetails show
 ;    if the uninstall procedure succeeded, call the current installer asking for the install PATH
 
 Function .onInit
+!ifdef INNER
+	WriteUninstaller "${UNINSTALLERDEST}\uninstall.exe"
+	Quit
+!endif
 	${If} ${ARCH} == "x86_64"
 		${If} ${RunningX64}
 			DetailPrint "Installer running on 64-bit host"
 			; disable registry redirection (enable access to 64-bit portion of registry)
 			SetRegView 64
 			; change install dir
-			StrCpy $INSTDIR "$PROGRAMFILES64\${QGIS_BASE}"
+			${If} $INSTDIR == ""
+			  StrCpy $INSTDIR "$PROGRAMFILES64\${QGIS_BASE}"
+			${EndIf}
 		${EndIf}
+	${EndIf}
+
+	${If} $INSTDIR == ""
+		StrCpy $INSTDIR "$PROGRAMFILES\${QGIS_BASE}"
 	${EndIf}
 
 	Var /GLOBAL ASK_FOR_PATH
@@ -148,18 +153,18 @@ Function .onInit
 	StrCpy $MESSAGE_1_ "$MESSAGE_1_$\r$\n"
 	StrCpy $MESSAGE_1_ "$MESSAGE_1_Press OK to uninstall QGIS $DISPLAYED_INSTALLED_VERSION"
 	StrCpy $MESSAGE_1_ "$MESSAGE_1_ and install ${DISPLAYED_NAME} or Cancel to quit."
-	
+
 	StrCpy $MESSAGE_2_ "$MESSAGE_0_$\r$\n"
 	StrCpy $MESSAGE_2_ "$MESSAGE_2_You are going to install an older release of ${QGIS_BASE}$\r$\n"
 	StrCpy $MESSAGE_2_ "$MESSAGE_2_$\r$\n"
 	StrCpy $MESSAGE_2_ "$MESSAGE_2_Press OK to uninstall QGIS $DISPLAYED_INSTALLED_VERSION"
 	StrCpy $MESSAGE_2_ "$MESSAGE_2_ and install ${DISPLAYED_NAME} or Cancel to quit."
-	
+
 	StrCpy $MESSAGE_3_ "$MESSAGE_0_$\r$\n"
 	StrCpy $MESSAGE_3_ "$MESSAGE_3_This is the latest release available.$\r$\n"
 	StrCpy $MESSAGE_3_ "$MESSAGE_3_$\r$\n"
 	StrCpy $MESSAGE_3_ "$MESSAGE_3_Press OK to reinstall ${DISPLAYED_NAME} or Cancel to quit."
-	
+
 	${If} $INSTALLED_VERSION_INT = 0
 	${Else}
 		${If} $INSTALLED_VERSION_INT < ${VERSION_INT}
@@ -188,14 +193,13 @@ Function .onInit
 			quit_reinstall:
 				Abort
 			continue_reinstall:
-		${EndIf}	
+		${EndIf}
 
 		${If} $0 = 0
 		${Else}
 			Abort
 		${EndIf}
 	${EndIf}
-
 FunctionEnd
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -205,10 +209,10 @@ FunctionEnd
 
 Function CheckUpdate
 
-	${If} $ASK_FOR_PATH == "NO"	
+	${If} $ASK_FOR_PATH == "NO"
 		Abort
 	${EndIf}
-	
+
 FunctionEnd
 
 ;----------------------------------------------------------------------------------------------------------------------------
@@ -263,7 +267,7 @@ FunctionEnd
 !insertmacro MUI_LANGUAGE "Dutch"
 
 ;----------------------------------------------------------------------------------------------------------------------------
-	
+
 ;Installer Sections
 
 ;Declares the variables for optional Sample Data Sections
@@ -276,32 +280,32 @@ Var /GLOBAL ARCHIVE_SIZE_KB
 Var /GLOBAL ARCHIVE_SIZE_MB
 Var /GLOBAL DOWNLOAD_MESSAGE_
 
+!ifndef INNER
 Section "QGIS" SecQGIS
-
 	SectionIn RO
 
         ;Added by Tim to set the reg key so we get default plugin loading
         !include plugins.nsh
         ;Added by Tim to set the reg key so we get default python & py plugins
         !include python_plugins.nsh
-	
+
 	;Set the INSTALL_DIR variable
 	Var /GLOBAL INSTALL_DIR
-	
-	${If} $ASK_FOR_PATH == "NO"	
+
+	${If} $ASK_FOR_PATH == "NO"
 		StrCpy $INSTALL_DIR "$INSTALL_PATH"
 	${Else}
 		StrCpy $INSTALL_DIR "$INSTDIR"
 	${EndIf}
-	
+
 	;Set to try to overwrite existing files
 	SetOverwrite try
-	
+
 	;Set the GIS_DATABASE directory
 	SetShellVarContext current
-	Var /GLOBAL GIS_DATABASE	
+	Var /GLOBAL GIS_DATABASE
 	StrCpy $GIS_DATABASE "$DOCUMENTS\GIS DataBase"
-	
+
 	;Create the GIS_DATABASE directory
 	CreateDirectory "$GIS_DATABASE"
 
@@ -312,18 +316,20 @@ Section "QGIS" SecQGIS
 	SetOutPath "$INSTALL_DIR"
 	File .\Installer-Files\postinstall.bat
 	File .\Installer-Files\preremove.bat
-	
+
 	;add QGIS files
 	SetOutPath "$INSTALL_DIR"
 	File /r ${PACKAGE_FOLDER}\*.*
-	
-	;Create the Uninstaller
-	WriteUninstaller "$INSTALL_DIR\Uninstall-QGIS.exe"
-	
+
+!ifndef INNER
+	SetOutPath $INSTDIR
+	File uninstall.exe
+!endif
+
 	;Registry Key Entries
-	
+
 	;HKEY_LOCAL_MACHINE Install entries
-	;Set the Name, Version and Revision of QGIS+ PublisherInfo + InstallPath	
+	;Set the Name, Version and Revision of QGIS+ PublisherInfo + InstallPath
 	WriteRegStr HKLM "Software\${QGIS_BASE}" "Name" "${QGIS_BASE}"
 	WriteRegStr HKLM "Software\${QGIS_BASE}" "VersionNumber" "${VERSION_NUMBER}"
 	WriteRegStr HKLM "Software\${QGIS_BASE}" "VersionName" "${VERSION_NAME}"
@@ -332,27 +338,28 @@ Section "QGIS" SecQGIS
 	WriteRegStr HKLM "Software\${QGIS_BASE}" "Publisher" "${PUBLISHER}"
 	WriteRegStr HKLM "Software\${QGIS_BASE}" "WebSite" "${WEB_SITE}"
 	WriteRegStr HKLM "Software\${QGIS_BASE}" "InstallPath" "$INSTALL_DIR"
-	
+
 	;HKEY_LOCAL_MACHINE Uninstall entries
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "DisplayName" "${COMPLETE_NAME}"
-	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "UninstallString" "$INSTALL_DIR\Uninstall-QGIS.exe"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "DisplayName" "${DISPLAYED_NAME}"
+	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "UninstallString" "$INSTALL_DIR\uninstall.exe"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "DisplayIcon" "$INSTALL_DIR\icons\QGIS.ico"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "EstimatedSize" 1
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "HelpLink" "${WIKI_PAGE}"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "URLInfoAbout" "${WEB_SITE}"
 	WriteRegStr HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}" "Publisher" "${PUBLISHER}"
-	
+
 	;Create the Desktop Shortcut
 	SetShellVarContext current
 
 	;Create the Windows Start Menu Shortcuts
 	SetShellVarContext all
-	
+
 	CreateDirectory "$SMPROGRAMS\${QGIS_BASE}"
-	
+
 	GetFullPathName /SHORT $0 $INSTALL_DIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP", "$DESKTOP\${QGIS_BASE}").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_MENU_LINKS", "1").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP_LINKS", "1").r0'
 
@@ -367,11 +374,12 @@ RebootNecessary:
 NoRebootNecessary:
 
 SectionEnd
+!endif
 
 Function DownloadDataSet
 
 	IntOp $ARCHIVE_SIZE_MB $ARCHIVE_SIZE_KB / 1024
-	
+
 	StrCpy $DOWNLOAD_MESSAGE_ "The installer will download the $EXTENDED_ARCHIVE_NAME sample data set.$\r$\n"
 	StrCpy $DOWNLOAD_MESSAGE_ "$DOWNLOAD_MESSAGE_$\r$\n"
 	StrCpy $DOWNLOAD_MESSAGE_ "$DOWNLOAD_MESSAGE_The archive is about $ARCHIVE_SIZE_MB MB and may take"
@@ -382,39 +390,39 @@ Function DownloadDataSet
 	StrCpy $DOWNLOAD_MESSAGE_ "$DOWNLOAD_MESSAGE_$\r$\n"
 	StrCpy $DOWNLOAD_MESSAGE_ "$DOWNLOAD_MESSAGE_Press OK to continue or Cancel to skip the download and complete the ${QGIS_BASE}"
 	StrCpy $DOWNLOAD_MESSAGE_ "$DOWNLOAD_MESSAGE_ installation without the $EXTENDED_ARCHIVE_NAME data set.$\r$\n"
-	
+
 	MessageBox MB_OKCANCEL "$DOWNLOAD_MESSAGE_" IDOK download IDCANCEL cancel_download
-	
-	download:	
-	SetShellVarContext current	
+
+	download:
+	SetShellVarContext current
 	InitPluginsDir
 	NSISdl::download "$HTTP_PATH/$ARCHIVE_NAME" "$TEMP\$ARCHIVE_NAME"
 	Pop $0
 	StrCmp $0 "success" download_ok download_failed
-		
-	download_ok:	
+
+	download_ok:
 	InitPluginsDir
 	untgz::extract "-d" "$GIS_DATABASE" "$TEMP\$ARCHIVE_NAME"
 	Pop $0
 	StrCmp $0 "success" untar_ok untar_failed
-	
+
 	untar_ok:
 	Rename "$GIS_DATABASE\$ORIGINAL_UNTAR_FOLDER" "$GIS_DATABASE\$CUSTOM_UNTAR_FOLDER"
 	Delete "$TEMP\$ARCHIVE_NAME"
 	Goto end
-	
+
 	download_failed:
 	DetailPrint "$0" ;print error message to log
 	MessageBox MB_OK "Download Failed.$\r$\n${QGIS_BASE} will be installed without the $EXTENDED_ARCHIVE_NAME sample data set."
 	Goto end
-	
+
 	cancel_download:
-	MessageBox MB_OK "Download Cancelled.$\r$\n${QGIS_BASE} will be installed without the $EXTENDED_ARCHIVE_NAME sample data set."
+	MessageBox MB_OK "Download Canceled.$\r$\n${QGIS_BASE} will be installed without the $EXTENDED_ARCHIVE_NAME sample data set."
 	Goto end
-	
+
 	untar_failed:
 	DetailPrint "$0" ;print error message to log
-	
+
 	end:
 
 FunctionEnd
@@ -423,7 +431,7 @@ Section /O "North Carolina Data Set" SecNorthCarolinaSDB
 
 	;Set the size (in KB)  of the archive file
 	StrCpy $ARCHIVE_SIZE_KB 138629
-	
+
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 293314
 
@@ -432,25 +440,25 @@ Section /O "North Carolina Data Set" SecNorthCarolinaSDB
 	StrCpy $EXTENDED_ARCHIVE_NAME "North Carolina"
 	StrCpy $ORIGINAL_UNTAR_FOLDER "nc_spm_08"
 	StrCpy $CUSTOM_UNTAR_FOLDER "North-Carolina"
-	
-	Call DownloadDataSet	
-	
+
+	Call DownloadDataSet
+
 SectionEnd
 
 Section /O "South Dakota (Spearfish) Data Set" SecSpearfishSDB
 
 	;Set the size (in KB)  of the archive file
 	StrCpy $ARCHIVE_SIZE_KB 20803
-	
+
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 42171
-	
+
 	StrCpy $HTTP_PATH "http://grass.osgeo.org/sampledata"
 	StrCpy $ARCHIVE_NAME "spearfish_grass60data-0.3.tar.gz"
 	StrCpy $EXTENDED_ARCHIVE_NAME "South Dakota (Spearfish)"
 	StrCpy $ORIGINAL_UNTAR_FOLDER "spearfish60"
 	StrCpy $CUSTOM_UNTAR_FOLDER "Spearfish60"
-	
+
 	Call DownloadDataSet
 
 SectionEnd
@@ -459,16 +467,16 @@ Section /O "Alaska Data Set" SecAlaskaSDB
 
 	;Set the size (in KB)  of the archive file
 	StrCpy $ARCHIVE_SIZE_KB 10253
-	
+
 	;Set the size (in KB) of the unpacked archive file
 	AddSize 33914
-	
-	StrCpy $HTTP_PATH "http://download.osgeo.org/qgis/data"
+
+	StrCpy $HTTP_PATH "http://qgis.org/downloads/data"
 	StrCpy $ARCHIVE_NAME "qgis_sample_data.tar.gz"
 	StrCpy $EXTENDED_ARCHIVE_NAME "Alaska"
 	StrCpy $ORIGINAL_UNTAR_FOLDER "qgis_sample_data"
 	StrCpy $CUSTOM_UNTAR_FOLDER "Alaska"
-	
+
 	Call DownloadDataSet
 
 SectionEnd
@@ -477,23 +485,33 @@ SectionEnd
 
 ;Uninstaller Section
 
+!ifdef INNER
 Section "Uninstall"
+	${If} ${ARCH} == "x86_64"
+		${If} ${RunningX64}
+			DetailPrint "Installer running on 64-bit host"
+			; disable registry redirection (enable access to 64-bit portion of registry)
+			SetRegView 64
+		${EndIf}
+	${EndIf}
 
 	GetFullPathName /SHORT $0 $INSTDIR
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_ROOT", "$0").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_STARTMENU", "$SMPROGRAMS\${QGIS_BASE}").r0'
+	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP", "$DESKTOP\${QGIS_BASE}").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_MENU_LINKS", "1").r0'
 	System::Call 'Kernel32::SetEnvironmentVariableA(t, t) i("OSGEO4W_DESKTOP_LINKS", "1").r0'
 
 	ReadEnvStr $0 COMSPEC
-	nsExec::ExecToLog '"$0" /c "$INSTALL_DIR\preremove.bat"'
+	nsExec::ExecToLog '"$0" /c "$INSTDIR\preremove.bat"'
 
-	Delete "$INSTDIR\Uninstall-QGIS.exe"
+	Delete "$INSTDIR\uninstall.exe"
 	Delete "$INSTDIR\*.bat.done"
 	Delete "$INSTDIR\*.log"
 	Delete "$INSTDIR\*.txt"
 	Delete "$INSTDIR\*.ico"
 	Delete "$INSTDIR\*.bat"
+	Delete "$INSTDIR\*.dll"
 
 	RMDir /r "$INSTDIR\bin"
 	RMDir /r "$INSTDIR\apps"
@@ -503,16 +521,19 @@ Section "Uninstall"
 	RMDir /r "$INSTDIR\share"
 	RMDir /r "$INSTDIR\icons"
 	RMDir /r "$INSTDIR\src"
+	RMDir /r "$INSTDIR\contrib"
+	RMDir /r "$INSTDIR\manifest"
+	RMDir /r "$INSTDIR\man"
 
 	;if empty, remove the install folder
 	RMDir "$INSTDIR"
-	
+
 	;remove the Desktop ShortCut
 	SetShellVarContext all
 	Delete "$DESKTOP\QGIS Desktop (${VERSION_NUMBER}).lnk"
 	Delete "$DESKTOP\QGIS Browser (${VERSION_NUMBER}).lnk"
 	Delete "$DESKTOP\OSGeo4W.lnk"
-	
+
 	;remove the Programs Start ShortCut
 	SetShellVarContext all
 	RMDir /r "$SMPROGRAMS\${QGIS_BASE}"
@@ -521,9 +542,11 @@ Section "Uninstall"
 	DeleteRegKey HKLM "Software\${QGIS_BASE}"
 	DeleteRegKey HKLM "Software\Microsoft\Windows\CurrentVersion\Uninstall\${QGIS_BASE}"
 SectionEnd
+!endif
 
 ;----------------------------------------------------------------------------------------------------------------------------
 
+!ifndef INNER
 ;Installer Section Descriptions
 !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
 	!insertmacro MUI_DESCRIPTION_TEXT ${SecQGIS} "Install ${QGIS_BASE}"
@@ -531,5 +554,6 @@ SectionEnd
 	!insertmacro MUI_DESCRIPTION_TEXT ${SecSpearfishSDB} "Download and install the South Dakota (Spearfish) sample data set"
 	!insertmacro MUI_DESCRIPTION_TEXT ${SecAlaskaSDB} "Download and install the Alaska sample database (shapefiles and TIFF data)"
 !insertmacro MUI_FUNCTION_DESCRIPTION_END
+!endif
 
 ;----------------------------------------------------------------------------------------------------------------------------

@@ -14,74 +14,69 @@
  ***************************************************************************/
 #include "qgslabelengineconfigdialog.h"
 
-#include "qgspallabeling.h"
-#include <pal/pal.h>
+#include "qgslabelingenginesettings.h"
+#include "qgsproject.h"
+#include "pal/pal.h"
 
 #include <QPushButton>
 
-QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QgsPalLabeling* lbl, QWidget* parent )
-    : QDialog( parent ), mLBL( lbl )
+QgsLabelEngineConfigDialog::QgsLabelEngineConfigDialog( QWidget *parent )
+  : QDialog( parent )
 {
   setupUi( this );
 
-  connect( buttonBox, SIGNAL( accepted() ), this, SLOT( onOK() ) );
-  connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), SIGNAL( clicked() ),
-           this, SLOT( setDefaults() ) );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsLabelEngineConfigDialog::onOK );
+  connect( buttonBox->button( QDialogButtonBox::RestoreDefaults ), &QAbstractButton::clicked,
+           this, &QgsLabelEngineConfigDialog::setDefaults );
+
+  QgsLabelingEngineSettings engineSettings = QgsProject::instance()->labelingEngineSettings();
 
   // search method
-  cboSearchMethod->setCurrentIndex( mLBL->searchMethod() );
+  cboSearchMethod->setCurrentIndex( engineSettings.searchMethod() );
 
   // candidate numbers
   int candPoint, candLine, candPolygon;
-  mLBL->numCandidatePositions( candPoint, candLine, candPolygon );
+  engineSettings.numCandidatePositions( candPoint, candLine, candPolygon );
   spinCandPoint->setValue( candPoint );
   spinCandLine->setValue( candLine );
   spinCandPolygon->setValue( candPolygon );
 
-  chkShowCandidates->setChecked( mLBL->isShowingCandidates() );
-  chkShowAllLabels->setChecked( mLBL->isShowingAllLabels() );
-  mShadowDebugRectChkBox->setChecked( mLBL->isShowingShadowRectangles() );
+  chkShowCandidates->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::DrawCandidates ) );
+  chkShowAllLabels->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::UseAllLabels ) );
 
-  mSaveWithProjectChkBox->setChecked( mLBL->isStoredWithProject() );
-
-  chkShowPartialsLabels->setChecked( mLBL-> isShowingPartialsLabels() );
+  chkShowPartialsLabels->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::UsePartialCandidates ) );
+  mDrawOutlinesChkBox->setChecked( engineSettings.testFlag( QgsLabelingEngineSettings::RenderOutlineLabels ) );
 }
 
 
 void QgsLabelEngineConfigDialog::onOK()
 {
+  QgsLabelingEngineSettings engineSettings;
+
   // save
-  mLBL->setSearchMethod(( QgsPalLabeling::Search ) cboSearchMethod->currentIndex() );
+  engineSettings.setSearchMethod( ( QgsLabelingEngineSettings::Search ) cboSearchMethod->currentIndex() );
 
-  mLBL->setNumCandidatePositions( spinCandPoint->value(),
-                                  spinCandLine->value(),
-                                  spinCandPolygon->value() );
+  engineSettings.setNumCandidatePositions( spinCandPoint->value(), spinCandLine->value(), spinCandPolygon->value() );
 
-  mLBL->setShowingCandidates( chkShowCandidates->isChecked() );
-  mLBL->setShowingShadowRectangles( mShadowDebugRectChkBox->isChecked() );
-  mLBL->setShowingAllLabels( chkShowAllLabels->isChecked() );
-  mLBL->setShowingPartialsLabels( chkShowPartialsLabels->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::DrawCandidates, chkShowCandidates->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::UseAllLabels, chkShowAllLabels->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::UsePartialCandidates, chkShowPartialsLabels->isChecked() );
+  engineSettings.setFlag( QgsLabelingEngineSettings::RenderOutlineLabels, mDrawOutlinesChkBox->isChecked() );
 
-  if ( mSaveWithProjectChkBox->isChecked() )
-  {
-    mLBL->saveEngineSettings();
-  }
-  else if ( mLBL->isStoredWithProject() )
-  {
-    mLBL->clearEngineSettings();
-  }
+  QgsProject::instance()->setLabelingEngineSettings( engineSettings );
+
   accept();
 }
 
 void QgsLabelEngineConfigDialog::setDefaults()
 {
   pal::Pal p;
-  cboSearchMethod->setCurrentIndex(( int )p.getSearch() );
+  cboSearchMethod->setCurrentIndex( ( int )p.getSearch() );
   spinCandPoint->setValue( p.getPointP() );
   spinCandLine->setValue( p.getLineP() );
   spinCandPolygon->setValue( p.getPolyP() );
   chkShowCandidates->setChecked( false );
   chkShowAllLabels->setChecked( false );
-  mShadowDebugRectChkBox->setChecked( false );
   chkShowPartialsLabels->setChecked( p.getShowPartial() );
+  mDrawOutlinesChkBox->setChecked( true );
 }

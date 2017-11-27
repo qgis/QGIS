@@ -1,44 +1,94 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterhistogram.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsRasterHistogram
 {
+%Docstring
+ The QgsRasterHistogram is a container for histogram of a single raster band.
+ It is used to cache computed histograms in raster providers.
+%End
+
 %TypeHeaderCode
-#include <qgsrasterhistogram.h>
+#include "qgsrasterhistogram.h"
 %End
   public:
+    typedef QVector<int> HistogramVector;
+
     QgsRasterHistogram();
 
-    /*! Compares region, size etc. not histogram itself */
     bool operator==( const QgsRasterHistogram &h ) const;
 
-    /** \brief The gdal band number (starts at 1)*/
     int bandNumber;
+%Docstring
+ The gdal band number (starts at 1)
+%End
 
-    /** \brief Number of bins (intervals,buckets) in histogram. */
     int binCount;
+%Docstring
+ Number of bins (intervals,buckets) in histogram.
+%End
 
-    /** \brief The number of non NULL cells used to calculate histogram. */
     int nonNullCount;
+%Docstring
+ The number of non NULL cells used to calculate histogram.
+%End
 
-    /** \brief Whether histogram includes out of range values (in first and last bin) */
     bool includeOutOfRange;
+%Docstring
+ Whether histogram includes out of range values (in first and last bin)
+%End
 
-    /** \brief Store the histogram for a given layer */
-    // TODO: QVector<int> histogramVector;
+    QgsRasterHistogram::HistogramVector histogramVector;
+%Docstring
+ Store the histogram for a given layer
+.. note::
 
-    /** \brief The maximum histogram value. */
+   not available via Python binding
+%End
+
     double maximum;
+%Docstring
+ The maximum histogram value.
+%End
 
-    /** \brief The minimum histogram value. */
     double minimum;
+%Docstring
+ The minimum histogram value.
+%End
 
-    /** \brief Number of columns used to calc histogram */
     int width;
+%Docstring
+ Number of columns used to calc histogram
+%End
 
-    /** \brief Number of rows used to calc histogram */
     int height;
+%Docstring
+ Number of rows used to calc histogram
+%End
 
-    /** \brief Extent used to calc histogram */
     QgsRectangle extent;
+%Docstring
+ Extent used to calc histogram
+%End
 
-    /** \brief Histogram is valid */
     bool valid;
+%Docstring
+ Histogram is valid
+%End
 };
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterhistogram.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

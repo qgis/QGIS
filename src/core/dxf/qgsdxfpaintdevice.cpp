@@ -16,8 +16,9 @@
  ***************************************************************************/
 
 #include "qgsdxfpaintdevice.h"
+#include "qgsdxfpaintengine.h"
 
-QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport* dxf ): QPaintDevice(), mPaintEngine( 0 )
+QgsDxfPaintDevice::QgsDxfPaintDevice( QgsDxfExport *dxf )
 {
   mPaintEngine = new QgsDxfPaintEngine( this, dxf );
 }
@@ -27,7 +28,7 @@ QgsDxfPaintDevice::~QgsDxfPaintDevice()
   delete mPaintEngine;
 }
 
-QPaintEngine* QgsDxfPaintDevice::paintEngine() const
+QPaintEngine *QgsDxfPaintDevice::paintEngine() const
 {
   return mPaintEngine;
 }
@@ -53,6 +54,12 @@ int QgsDxfPaintDevice::metric( PaintDeviceMetric metric ) const
     case QPaintDevice::PdmPhysicalDpiX:
     case QPaintDevice::PdmPhysicalDpiY:
       return 96;
+    case QPaintDevice::PdmDevicePixelRatio:
+      return 1;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 6, 0))
+    case QPaintDevice::PdmDevicePixelRatioScaled:
+      return 1;
+#endif
   }
   return 0;
 }
@@ -69,7 +76,7 @@ double QgsDxfPaintDevice::widthScaleFactor() const
   return ( widthFactor + heightFactor ) / 2.0;
 }
 
-QPointF QgsDxfPaintDevice::dxfCoordinates( const QPointF& pt ) const
+QPointF QgsDxfPaintDevice::dxfCoordinates( QPointF pt ) const
 {
   if ( !mDrawingSize.isValid() || mRectangle.isEmpty() )
   {
@@ -81,7 +88,7 @@ QPointF QgsDxfPaintDevice::dxfCoordinates( const QPointF& pt ) const
   return QPointF( x, y );
 }
 
-void QgsDxfPaintDevice::setLayer( const QString& layer )
+void QgsDxfPaintDevice::setLayer( const QString &layer )
 {
   if ( mPaintEngine )
   {
@@ -89,7 +96,7 @@ void QgsDxfPaintDevice::setLayer( const QString& layer )
   }
 }
 
-void QgsDxfPaintDevice::setShift( const QPointF& shift )
+void QgsDxfPaintDevice::setShift( QPointF shift )
 {
   if ( mPaintEngine )
   {

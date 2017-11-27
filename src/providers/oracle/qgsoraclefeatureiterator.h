@@ -22,33 +22,68 @@
 
 #include <QSqlQuery>
 
+#include "qgsoracleprovider.h"
 
+class QgsOracleConn;
 class QgsOracleProvider;
 
-class QgsOracleFeatureIterator : public QgsAbstractFeatureIterator
+
+class QgsOracleFeatureSource : public QgsAbstractFeatureSource
 {
   public:
-    QgsOracleFeatureIterator( QgsOracleProvider *p, const QgsFeatureRequest &request );
+    explicit QgsOracleFeatureSource( const QgsOracleProvider *p );
+
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request );
+
+  protected:
+    QgsDataSourceUri mUri;
+    QgsFields mFields;
+
+    QString mGeometryColumn;          //! name of the geometry column
+    int mSrid;                        //! srid of column
+    bool mHasSpatialIndex;            //! has spatial index of geometry column
+    QgsWkbTypes::Type mDetectedGeomType;  //! geometry type detected in the database
+    QgsWkbTypes::Type mRequestedGeomType; //! geometry type requested in the uri
+    QString mSqlWhereClause;
+    QgsOraclePrimaryKeyType mPrimaryKeyType;
+    QList<int> mPrimaryKeyAttrs;
+    QString mQuery;
+    QgsCoordinateReferenceSystem mCrs;
+
+    std::shared_ptr<QgsOracleSharedData> mShared;
+
+    friend class QgsOracleFeatureIterator;
+    friend class QgsOracleExpressionCompiler;
+};
+
+
+class QgsOracleFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsOracleFeatureSource>
+{
+  public:
+    QgsOracleFeatureIterator( QgsOracleFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
     ~QgsOracleFeatureIterator();
 
-    //! reset the iterator to the starting position
-    virtual bool rewind();
-
-    //! end of iterating: free the resources / lock
-    virtual bool close();
+    virtual bool rewind() override;
+    virtual bool close() override;
 
   protected:
-    //! fetch next feature, return true on success
-    virtual bool fetchFeature( QgsFeature& feature );
+    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool nextFeatureFilterExpression( QgsFeature &f ) override;
 
-    QgsOracleProvider *P;
+    bool openQuery( QString whereClause, QVariantList args, bool showLog = true );
 
-    bool openQuery( QString whereClause );
-
+    QgsOracleConn *mConnection = nullptr;
     QSqlQuery mQry;
     bool mRewind;
+    bool mExpressionCompiled;
+    bool mFetchGeometry;
     QgsAttributeList mAttributeList;
+    QString mSql;
+    QVariantList mArgs;
+
+    QgsCoordinateTransform mTransform;
+    QgsRectangle mFilterRect;
 };
 
 #endif // QGSORACLEFEATUREITERATOR_H

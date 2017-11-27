@@ -18,54 +18,57 @@
 #define BEZIER3D_H
 
 #include "ParametricLine.h"
-#include "Vector3D.h"
-#include "MathUtils.h"
 #include "qgslogger.h"
+#include "qgis_analysis.h"
 
-/**Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to t.*/
+#define SIP_NO_FILE
+
+/**
+ * \ingroup analysis
+ * Class Bezier3D represents a bezier curve, represented by control points. Parameter t is running from 0 to 1. The class is capable to calculate the curve point and the first two derivatives belonging to it.
+ * \note Not available in Python bindings
+*/
 class ANALYSIS_EXPORT Bezier3D: public ParametricLine
 {
   protected:
 
   public:
-    /**Default constructor*/
+    //! Default constructor
     Bezier3D();
-    /**Constructor, par is a pointer to the parent, controlpoly a controlpolygon*/
-    //! @note not available in python binding
-    Bezier3D( ParametricLine* par, QVector<Point3D*>* controlpoly );
-    /**Destructor*/
-    virtual ~Bezier3D();
-    /**Do not use this method, since a Bezier curve does not consist of other curves*/
-    virtual void add( ParametricLine *pl );
-    /**Calculates the first derivative and assigns it to v*/
-    virtual void calcFirstDer( float t, Vector3D* v );
-    /**Calculates the second derivative and assigns it to v*/
-    virtual void calcSecDer( float t, Vector3D* v );
-    //virtual Point3D calcPoint(float t);
-    /**Calculates the point on the curve and assigns it to p*/
-    virtual void calcPoint( float t, Point3D* p );
-    /**changes the order of control points*/
-    virtual void changeDirection();
+    //! Constructor, par is a pointer to the parent, controlpoly a controlpolygon
+    Bezier3D( ParametricLine *par, QVector<QgsPoint *> *controlpoly );
+
+    //! Do not use this method, since a Bezier curve does not consist of other curves
+    virtual void add( ParametricLine *pl SIP_TRANSFER ) override;
+    //! Calculates the first derivative and assigns it to v
+    virtual void calcFirstDer( float t, Vector3D *v SIP_OUT ) override;
+    //! Calculates the second derivative and assigns it to v
+    virtual void calcSecDer( float t, Vector3D *v SIP_OUT ) override;
+    //virtual QgsPoint calcPoint(float t);
+    //! Calculates the point on the curve and assigns it to p
+    virtual void calcPoint( float t, QgsPoint *p SIP_OUT ) override;
+    //! Changes the order of control points
+    virtual void changeDirection() override;
     //virtual void draw(QPainter* p);
     //virtual bool intersects(ParametricLine* pal);
-    /**Do not use this method, since a Bezier curve does not consist of other curves*/
-    virtual void remove( int i );
-    /**Returns a control point*/
-    virtual const Point3D* getControlPoint( int number ) const;
-    /**Returns a pointer to the control polygon*/
-    //! @note not available in python binding
-    virtual const QVector<Point3D*>* getControlPoly() const;
-    /**Returns the degree of the curve*/
-    virtual int getDegree() const;
-    /**Returns the parent*/
-    virtual ParametricLine* getParent() const;
-    /** Sets the parent*/
-    virtual void setParent( ParametricLine* par );
-    /**Sets the control polygon*/
-    //! @note not available in python binding
-    virtual void setControlPoly( QVector<Point3D*>* cp );
+    //! Do not use this method, since a Bezier curve does not consist of other curves
+    virtual void remove( int i ) override;
+    //! Returns a control point
+    virtual const QgsPoint *getControlPoint( int number ) const override;
+    //! Returns a pointer to the control polygon
+    virtual const QVector<QgsPoint *> *getControlPoly() const override;
+    //! Returns the degree of the curve
+    virtual int getDegree() const override;
+    //! Returns the parent
+    virtual ParametricLine *getParent() const override;
+    //! Sets the parent
+    virtual void setParent( ParametricLine *par ) override;
+    //! Sets the control polygon
+    virtual void setControlPoly( QVector<QgsPoint *> *cp ) override;
 
 };
+
+#ifndef SIP_RUN
 
 //-----------------------------------------------constructors, destructor and assignment operator------------------------------
 
@@ -74,14 +77,9 @@ inline Bezier3D::Bezier3D() : ParametricLine()//default constructor
 
 }
 
-inline Bezier3D::Bezier3D( ParametricLine* parent, QVector<Point3D*>* controlpoly ) : ParametricLine( parent, controlpoly )
+inline Bezier3D::Bezier3D( ParametricLine *parent, QVector<QgsPoint *> *controlpoly ) : ParametricLine( parent, controlpoly )
 {
   mDegree = mControlPoly->count() - 1;
-}
-
-inline Bezier3D::~Bezier3D()
-{
-
 }
 
 //----------------------------------------------invalid methods add and remove (because of inheritance from ParametricLine)
@@ -100,12 +98,12 @@ inline void Bezier3D::remove( int i )
 
 //-----------------------------------------------setters and getters---------------------------------------------------------------
 
-inline const Point3D* Bezier3D::getControlPoint( int number ) const
+inline const QgsPoint *Bezier3D::getControlPoint( int number ) const
 {
-  return ( *mControlPoly )[number-1];
+  return ( *mControlPoly )[number - 1];
 }
 
-inline const QVector<Point3D*>* Bezier3D::getControlPoly() const
+inline const QVector<QgsPoint *> *Bezier3D::getControlPoly() const
 {
   return mControlPoly;
 }
@@ -115,21 +113,23 @@ inline int Bezier3D::getDegree() const
   return mDegree;
 }
 
-inline ParametricLine* Bezier3D::getParent() const
+inline ParametricLine *Bezier3D::getParent() const
 {
   return mParent;
 }
 
-inline void Bezier3D::setParent( ParametricLine* par )
+inline void Bezier3D::setParent( ParametricLine *par )
 {
   mParent = par;
 }
 
-inline void Bezier3D::setControlPoly( QVector<Point3D*>* cp )
+inline void Bezier3D::setControlPoly( QVector<QgsPoint *> *cp )
 {
   mControlPoly = cp;
   mDegree = mControlPoly->count() - 1;
 }
+
+#endif
 
 #endif
 

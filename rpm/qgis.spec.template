@@ -1,0 +1,376 @@
+# vi:syntax=spec
+# TODO: Run test suite (see debian/rules)
+
+# Template variables
+# - _version
+# - _relver
+# - _timestamp (optional)
+
+%if %{_timestamp} > 0
+%define builddate %(date -d @%{_timestamp} '+%a %b %d %Y')
+%else
+%define builddate %(date '+%a %b %d %Y')
+%endif
+
+Name:           qgis
+Version:        %{_version}
+Release:        %{_relver}%{?dist}
+Summary:        A user friendly Open Source Geographic Information System
+Group:          Applications/Engineering
+
+License:        GPLv3+ with exceptions
+URL:            http://www.qgis.org
+
+# Epoch is used when building packages from master, otherwise is set to 0
+Epoch: %{_timestamp}
+
+Source0:        http://qgis.org/downloads/%{name}-%{version}.tar.bz2
+
+# Sample configuration files for QGIS server
+Source2:        %{name}-server-httpd.conf
+Source4:        %{name}-server-README.fedora
+
+# MIME definitions
+# Based on debian/qgis.xml but excluding already defined or proprietary types
+Source5:        %{name}-mime.xml
+
+# Fix builds on 64-bit machines
+# https://issues.qgis.org/issues/15602
+# https://github.com/qgis/QGIS/commit/718581ffb12b723f9a3c0ae01b7ec2d8aed9d4bb.patch
+Patch0:         %{name}-lib64.patch
+
+# Compiling stuff
+BuildRequires: bison
+BuildRequires: clang
+BuildRequires: cmake
+BuildRequires: expat-devel
+BuildRequires: flex
+BuildRequires: desktop-file-utils
+
+# Geo stuff
+BuildRequires: gdal-devel
+BuildRequires: gdal-python3
+BuildRequires: geos-devel
+BuildRequires: gsl-devel
+BuildRequires: libspatialite-devel
+BuildRequires: proj-devel
+BuildRequires: spatialindex-devel
+BuildRequires: grass-devel
+
+# Other stuff
+BuildRequires: gsl-devel
+BuildRequires: libzip-devel
+BuildRequires: postgresql-devel
+BuildRequires: sqlite-devel
+BuildRequires: fcgi-devel
+
+# Python stuff
+BuildRequires: python3-future
+BuildRequires: python3-jinja2
+BuildRequires: python3-OWSLib
+BuildRequires: python3-psycopg2
+BuildRequires: python3-pygments
+BuildRequires: python3-PyYAML
+BuildRequires: python3-qscintilla-devel
+BuildRequires: python3-qscintilla-qt5
+BuildRequires: python3-qscintilla-qt5-devel
+BuildRequires: python3-qt5-devel
+BuildRequires: sip-devel
+
+# Qca stuff
+BuildRequires: qca-qt5-devel
+BuildRequires: qca-qt5-ossl
+BuildRequires: qscintilla-qt5-devel
+
+# Qt5 stuff
+BuildRequires: qt5-qtlocation-devel
+BuildRequires: qt5-qtscript-devel
+BuildRequires: qt5-qtsvg-devel
+BuildRequires: qt5-qttools-static
+BuildRequires: qt5-qtwebkit-devel
+BuildRequires: qt5-qtxmlpatterns-devel
+BuildRequires: qtkeychain-qt5-devel
+BuildRequires: qextserialport-devel
+BuildRequires: qt5-qt3d-devel
+
+# Qwt stuff
+BuildRequires: qwt-devel
+BuildRequires: qwt-qt5-devel
+BuildRequires: qwt-qt5-devel
+
+# Installation of QCA plugins must be explicit
+Requires:       qca-qt5-ossl
+Requires:       gpsbabel
+
+# We don't want to provide private Python extension libs
+%global __provides_exclude_from ^(%{python3_sitearch}|%{_libdir}/%{name}/plugins)/.*\.so(\.%{version})?$
+
+%description
+Geographic Information System (GIS) manages, analyzes, and displays
+databases of geographic information. QGIS supports shape file
+viewing and editing, spatial data storage with PostgreSQL/PostGIS, projection
+on-the-fly, map composition, and a number of other features via a plugin
+interface. QGIS also supports display of various geo-referenced raster and
+Digital Elevation Model (DEM) formats including GeoTIFF, Arc/Info ASCII Grid,
+and USGS ASCII DEM.
+
+%package devel
+Summary:        Development Libraries for the QGIS
+Group:          Development/Libraries
+Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
+
+%description devel
+Development packages for QGIS including the C header files.
+
+%package grass
+Summary:        GRASS Support Libraries for QGIS
+Group:          Applications/Engineering
+Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
+
+# The plug-in requires more than just the grass-libs.
+# This questions the sense of the libs package.
+# WARNING: Rebuild QGIS whenever a new version of GRASS is shipped! Even though
+# the soname might stay the same, it won't work anymore.
+# http://issues.qgis.org/issues/5274
+Requires:       grass%{?_isa} = %{grass_version}
+
+%description grass
+GRASS plugin for QGIS required to interface with the GRASS system.
+
+%package -n python3-qgis
+%{?python_provide:%python_provide python3-qgis}
+# Remove before F30
+Provides: %{name}-python = %{version}-%{release}
+Provides: %{name}-python%{?_isa} = %{version}-%{release}
+Obsoletes: %{name}-python < %{version}-%{release}
+Summary:        Python integration and plug-ins for QGIS
+Group:          Applications/Engineering
+Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
+Requires: gdal-python3
+Requires: python3-future
+Requires: python3-jinja2
+Requires: python3-OWSLib
+Requires: python3-psycopg2
+Requires: python3-pygments
+Requires: python3-PyYAML
+Requires: python3-qscintilla
+Requires: python3-qscintilla-qt5
+Requires: python3-qt5
+%{?_sip_api:Requires: sip-api(%{_sip_api_major}) >= %{_sip_api}}
+
+%description -n python3-qgis
+Python integration and plug-ins for QGIS.
+
+%package server
+Summary:        FCGI-based OGC web map server
+Group:          Applications/Engineering
+Requires:       %{name}%{?_isa} = %{epoch}:%{version}-%{release}
+Requires:       mod_fcgid
+Provides: mapserver = %{version}-%{release}
+Obsoletes: mapserver < 2.8.1-1
+
+%description server
+This FastCGI OGC web map server implements OGC WMS 1.3.0 and 1.1.1.
+The services are prepared as regular projects in QGIS. They're rendered using
+the QGIS libraries. The server also supports SLD (Styled Layer Descriptor)
+for styling. Sample configurations for Httpd and Lighttpd are included.
+
+Please refer to %{name}-server-README.fedora for details!
+
+%prep
+%setup -q
+%patch0 -p0 -b .lib64
+
+# Remove executable permissions from source code files
+find . \( -name "*.cpp" -o -name "*.h" \) -type f -perm /111 -execdir chmod -x {} \+
+
+# Readme file for QGIS server configuration and Lighttpd example
+install -pm0644 %{SOURCE4} .
+
+# Delete bundled libs
+# Using external QEXTSERIALPORT causes segfaults
+# rm -rf src/core/gps/qextserialport/
+
+gzip ChangeLog
+
+
+%build
+
+%cmake \
+      %{_cmake_skip_rpath} \
+      -D QGIS_LIB_SUBDIR=%{_lib} \
+      -D QGIS_MANUAL_SUBDIR=/share/man \
+      -D QGIS_CGIBIN_SUBDIR=%{_libexecdir}/%{name} \
+      -D WITH_BINDINGS:BOOL=TRUE \
+      -D WITH_GRASS7:BOOL=TRUE \
+      -D GRASS_PREFIX7=%{_libdir}/grass72 \
+      -D WITH_CUSTOM_WIDGETS:BOOL=TRUE \
+      -D BINDINGS_GLOBAL_INSTALL:BOOL=TRUE \
+      -D ENABLE_TESTS:BOOL=FALSE \
+      -D WITH_QSPATIALITE:BOOL=TRUE \
+      -D WITH_SERVER:BOOL=TRUE \
+      -D WITH_3D:BOOL=TRUE \
+      .
+
+      # Using external QEXTSERIALPORT causes segfaults
+      # -D WITH_INTERNAL_QEXTSERIALPORT:BOOL=FALSE \
+      # -D QEXTSERIALPORT_INCLUDE_DIR:STRING=%{_includedir}/QtExtSerialPort \
+
+make %{?_smp_mflags}
+
+
+%install
+# Necessary for the test suite
+#export LD_LIBRARY_PATH=%{_builddir}%{name}-%{version}/output/%{_lib}
+make install DESTDIR=%{buildroot}
+
+# Install desktop file without connecting proprietary file types
+desktop-file-install \
+    --vendor="fedora" \
+    --remove-mime-type="application/x-raster-ecw" \
+    --remove-mime-type="application/x-raster-mrsid" \
+    --dir=%{buildroot}%{_datadir}/applications \
+    debian/qgis.desktop
+
+# Install MIME type definitions
+install -d %{buildroot}%{_datadir}/mime/packages
+install -pm0644 %{SOURCE5} \
+    %{buildroot}%{_datadir}/mime/packages/%{name}.xml
+
+# Install application and MIME icons
+for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do
+    install -pd %{buildroot}%{_datadir}/icons/hicolor/$size/apps
+    install -pm0644 debian/icons/%{name}-icon${size}.png %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/%{name}.png
+done
+
+for ext in qgs qlr qml qpt; do
+    for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do
+        install -pd %{buildroot}%{_datadir}/icons/hicolor/$size/apps
+        install -pm0644 debian/icons/%{name}-${ext}${size}.png %{buildroot}%{_datadir}/icons/hicolor/${size}/apps/%{name}-${ext}.png
+    done
+done
+
+for size in 8x8 16x16 22x22 24x24 32x32 36x36 42x42 48x48 64x64 72x72 80x80 96x96 128x128 192x192 256x256 512x512; do
+    install -pd %{buildroot}%{_datadir}/icons/hicolor/$size/mimetypes
+    install -pm0644 debian/icons/qgis-mime-icon${size}.png %{buildroot}%{_datadir}/icons/hicolor/${size}/mimetypes/qgis-mime.png
+done
+
+install -pd %{buildroot}%{_datadir}/pixmaps
+install -pd %{buildroot}%{_datadir}/icons/hicolor/scalable/apps
+
+install -pm0644 images/icons/%{name}-icon-512x512.png %{buildroot}%{_datadir}/pixmaps/%{name}.png
+install -pm0644 images/icons/%{name}_icon.svg %{buildroot}%{_datadir}/pixmaps/%{name}.svg
+install -pm0644 images/icons/%{name}_icon.svg %{buildroot}%{_datadir}/icons/hicolor/scalable/apps/%{name}.svg
+install -pm0644 images/icons/%{name}-mime-icon.png %{buildroot}%{_datadir}/pixmaps/%{name}-mime.png
+install -pm0644 images/icons/%{name}_mime_icon.svg %{buildroot}%{_datadir}/pixmaps/%{name}-mime.png
+
+# Install basic QGIS Mapserver configuration for Apache
+install -pd %{buildroot}%{_sysconfdir}/httpd/conf.d
+install -pm0644 %{SOURCE2} \
+    %{buildroot}%{_sysconfdir}/httpd/conf.d/qgis-server.conf
+
+# See qgis-server-README.fedora
+rm -f %{buildroot}%{_libexecdir}/%{name}/wms_metadata.xml
+rm -f %{buildroot}%{_libexecdir}/%{name}/admin.sld
+
+# Remove install instructions
+rm -f %{buildroot}%{_datadir}/%{name}/doc/INSTALL*
+
+%find_lang %{name} --with-qt
+
+
+%post
+/sbin/ldconfig
+touch --no-create %{_datadir}/icons/hicolor &>/dev/null || :
+touch --no-create %{_datadir}/mime/packages &> /dev/null || :
+
+%postun
+/sbin/ldconfig
+if [ $1 -eq 0 ] ; then
+    touch --no-create %{_datadir}/icons/hicolor &>/dev/null
+    gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+    touch --no-create %{_datadir}/mime/packages &> /dev/null || :
+    update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
+fi
+
+%posttrans
+gtk-update-icon-cache %{_datadir}/icons/hicolor &>/dev/null || :
+update-mime-database %{?fedora:-n} %{_datadir}/mime &> /dev/null || :
+
+%post grass -p /sbin/ldconfig
+
+%postun grass -p /sbin/ldconfig
+
+%post -n python3-qgis -p /sbin/ldconfig
+
+%postun -n python3-qgis -p /sbin/ldconfig
+
+%files -f %{name}.lang
+%doc BUGS NEWS Exception_to_GPL_for_Qt.txt ChangeLog.gz
+# QGIS shows the following files in the GUI, including the license text
+%doc %{_datadir}/%{name}/doc/
+%dir %{_datadir}/%{name}/i18n/
+%lang(zh-Hans) %{_datadir}/%{name}/i18n/%{name}_zh-Hans.qm
+%lang(zh-Hant) %{_datadir}/%{name}/i18n/%{name}_zh-Hant.qm
+%{_libdir}/lib%{name}_native.so.*
+%{_libdir}/lib%{name}_app.so.*
+%{_libdir}/lib%{name}_analysis.so.*
+%{_libdir}/lib%{name}_core.so.*
+%{_libdir}/lib%{name}_gui.so.*
+%{_libdir}/lib%{name}_3d.so.*
+%{_libdir}/%{name}/
+%{_qt5_prefix}/plugins/sqldrivers/libqsqlspatialite.so
+%{_bindir}/%{name}
+%{_mandir}/man1/%{name}.1*
+%dir %{_datadir}/%{name}/
+%{_datadir}/mime/packages/qgis.xml
+%{_datadir}/pixmaps/
+%{_datadir}/icons/hicolor/*/apps/*
+%{_datadir}/icons/hicolor/*/mimetypes/*
+%{_datadir}/applications/*%{name}.desktop
+%{_datadir}/%{name}/qgis_global_settings.ini
+%{_datadir}/%{name}/images/
+%{_datadir}/%{name}/resources/
+%{_datadir}/%{name}/svg/
+%exclude %{_libdir}/libqgisgrass*.so.*
+%exclude %{_libdir}/%{name}/plugins/libgrassprovider*.so
+%exclude %{_libdir}/%{name}/plugins/libgrassrasterprovider*.so
+%exclude %{_libdir}/%{name}/plugins/libgrassplugin*.so
+%exclude %{_libdir}/%{name}/server/
+%exclude %{_libdir}/%{name}/grass/
+
+%files devel
+%{_datadir}/%{name}/FindQGIS.cmake
+%{_includedir}/%{name}/
+%{_libdir}/lib%{name}*.so
+%{?_qt5_plugindir}/designer/libqgis_customwidgets.so*
+
+%files grass
+%{_libdir}/lib%{name}grass*.so.*
+%{_libdir}/%{name}/plugins/libgrassprovider*.so
+%{_libdir}/%{name}/plugins/libgrassrasterprovider*.so
+%{_libdir}/%{name}/plugins/libgrassplugin*.so
+%{_libdir}/%{name}/grass/
+%{_datadir}/%{name}/grass/
+
+%files -n python3-qgis
+%{_libdir}/libqgispython.so.*
+%{_datadir}/%{name}/python/
+%{python3_sitearch}/%{name}/
+%{python3_sitearch}/PyQt5/uic/widget-plugins/
+%exclude %{python3_sitearch}/%{name}/server/
+%exclude %{python3_sitearch}/%{name}/_server.so
+
+%files server
+%doc src/server/admin.sld src/server/wms_metadata.xml %{name}-server-README.fedora
+%config(noreplace) %{_sysconfdir}/httpd/conf.d/%{name}-server.conf
+%{_libdir}/%{name}/server/
+%{_libdir}/lib%{name}_server.so.*
+%{_libexecdir}/%{name}/
+%{python3_sitearch}/%{name}/server/
+%{python3_sitearch}/%{name}/_server.so
+
+
+%changelog
+* %{builddate} Daniele Viganò <daniele@vigano.me> %{_version}-%{_relver}
+- Automatic build

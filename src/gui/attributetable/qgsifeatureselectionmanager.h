@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 6.6.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,13 +17,16 @@
 #define QGSIFEATURESELECTIONMANAGER_H
 
 #include <QObject>
+#include "qgis_sip.h"
 
 #include "qgsfeature.h"
+#include "qgis_gui.h"
 
 /**
+ * \ingroup gui
  * Is an interface class to abstract feature selection handling.
  *
- * e.g. { @link QgsVectorLayer } implements this interface to manage its selections.
+ * e.g. QgsVectorLayer implements this interface to manage its selections.
  */
 
 class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
@@ -31,56 +34,57 @@ class GUI_EXPORT QgsIFeatureSelectionManager : public QObject
     Q_OBJECT
 
   public:
-    QgsIFeatureSelectionManager( QObject* parent )
-        : QObject( parent ) {}
+    QgsIFeatureSelectionManager( QObject *parent SIP_TRANSFERTHIS )
+      : QObject( parent ) {}
 
     /**
      * The number of features that are selected in this layer
      *
-     * @return See description
+     * \returns See description
      */
     virtual int selectedFeatureCount() = 0;
 
     /**
      * Select features
      *
-     * @param ids            Feature ids to select
+     * \param ids            Feature ids to select
      */
-    virtual void select( const QgsFeatureIds& ids ) = 0;
+    virtual void select( const QgsFeatureIds &ids ) = 0;
 
     /**
      * Deselect features
      *
-     * @param ids            Feature ids to deselect
+     * \param ids            Feature ids to deselect
      */
-    virtual void deselect( const QgsFeatureIds& ids ) = 0;
+    virtual void deselect( const QgsFeatureIds &ids ) = 0;
 
     /**
      * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the { @link selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) } signal with the
+     * Will emit the selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) signal with the
      * clearAndSelect flag set.
      *
-     * @param ids   The ids which will be the new selection
+     * \param ids   The ids which will be the new selection
      */
-    virtual void setSelectedFeatures( const QgsFeatureIds& ids ) = 0;
+    virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
 
     /**
      * Return reference to identifiers of selected features
      *
-     * @return A list of { @link QgsFeatureId } 's
-     * @see selectedFeatures()
+     * \returns A list of QgsFeatureId's
+     * \see selectedFeatures()
      */
-    virtual const QgsFeatureIds &selectedFeaturesIds() const = 0;
+    virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
 
   signals:
+
     /**
      * This signal is emitted when selection was changed
      *
-     * @param selected        Newly selected feature ids
-     * @param deselected      Ids of all features which have previously been selected but are not any more
-     * @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+     * \param selected        Newly selected feature ids
+     * \param deselected      Ids of all features which have previously been selected but are not any more
+     * \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
      */
-    void selectionChanged( const QgsFeatureIds selected, const QgsFeatureIds deselected, const bool clearAndSelect );
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
 };
 
 #endif // QGSIFEATURESELECTIONMANAGER_H

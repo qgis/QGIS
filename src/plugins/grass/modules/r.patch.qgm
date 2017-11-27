@@ -3,7 +3,6 @@
 
 <qgisgrassmodule label="Create new raster by combining other rasters" module="r.patch">
 	<option key="input"/>
-	<flag key="z" answer="off" hidden="no" />
-	<file key="input" type="multiple" />
+	<flag key="z" answer="off" hidden="no" advanced="yes"/>
 	<option key="output" />
 </qgisgrassmodule>

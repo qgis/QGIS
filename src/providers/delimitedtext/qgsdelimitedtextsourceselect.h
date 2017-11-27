@@ -16,8 +16,10 @@
 #include "ui_qgsdelimitedtextsourceselectbase.h"
 
 #include <QTextStream>
-#include "qgscontexthelp.h"
-#include "qgisgui.h"
+#include "qgshelp.h"
+#include "qgsguiutils.h"
+#include "qgsproviderregistry.h"
+#include "qgsabstractdatasourcewidget.h"
 
 class QButtonGroup;
 class QgisInterface;
@@ -26,12 +28,12 @@ class QgsDelimitedTextFile;
 /**
  * \class QgsDelimitedTextSourceSelect
  */
-class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTextSourceSelectBase
+class QgsDelimitedTextSourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDelimitedTextSourceSelectBase
 {
     Q_OBJECT
 
   public:
-    QgsDelimitedTextSourceSelect( QWidget * parent, Qt::WFlags fl = QgisGui::ModalDialogFlags, bool embedded = false );
+    QgsDelimitedTextSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
     ~QgsDelimitedTextSourceSelect();
 
     QStringList splitLine( QString line );
@@ -41,39 +43,32 @@ class QgsDelimitedTextSourceSelect : public QDialog, private Ui::QgsDelimitedTex
     void updateFieldLists();
     void getOpenFileName();
     QString selectedChars();
-    void setSelectedChars( QString delimiters );
-    void loadSettings( QString subkey = QString(), bool loadGeomSettings = true );
-    void saveSettings( QString subkey = QString(), bool saveGeomSettings = true );
-    void loadSettingsForFile( QString filename );
-    void saveSettingsForFile( QString filename );
-    bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, QString xname, QString yname );
+    void setSelectedChars( const QString &delimiters );
+    void loadSettings( const QString &subkey = QString(), bool loadGeomSettings = true );
+    void saveSettings( const QString &subkey = QString(), bool saveGeomSettings = true );
+    void loadSettingsForFile( const QString &filename );
+    void saveSettingsForFile( const QString &filename );
+    bool trySetXYField( QStringList &fields, QList<bool> &isValidNumber, const QString &xname, const QString &yname );
 
   private:
-    QgsDelimitedTextFile *mFile;
-    int mExampleRowCount;
-    int mBadRowCount;
+    QgsDelimitedTextFile *mFile = nullptr;
+    int mExampleRowCount = 20;
+    int mBadRowCount = 0;
     QString mPluginKey;
     QString mLastFileType;
-    QButtonGroup *bgFileFormat;
-    QButtonGroup *bgGeomType;
+    QButtonGroup *bgFileFormat = nullptr;
+    QButtonGroup *bgGeomType = nullptr;
+    void showHelp();
 
   private slots:
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
-    void on_buttonBox_helpRequested()
-    {
-      QgsContextHelp::run( metaObject()->className() );
-    }
-    void on_btnBrowseForFile_clicked();
+    void btnBrowseForFile_clicked();
 
   public slots:
+    void addButtonClicked() override;
     void updateFileName();
     void updateFieldsAndEnable();
     void enableAccept();
     bool validate();
-
-  signals:
-    void addVectorLayer( QString, QString, QString );
 };
 
 #endif // QGSDELIMITEDTEXTSOURCESELECT_H

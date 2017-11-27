@@ -21,42 +21,77 @@
 
 
 #include <QString>
+#include "qgis.h"
+#include "qgis_core.h"
+#include <functional>
 
-/** \ingroup core
- * Holds data provider key, description, and associated shared library file information.
+class QgsDataProvider;
 
-   The metadata class is used in a lazy load implementation in
-   QgsProviderRegistry.  To save memory, data providers are only actually
-   loaded via QLibrary calls if they're to be used.  (Though they're all
-   iteratively loaded once to get their metadata information, and then
-   unloaded when the QgsProviderRegistry is created.)  QgsProviderMetadata
-   supplies enough information to be able to later load the associated shared
-   library object.
-
+/**
+ * \ingroup core
+ * Holds data provider key, description, and associated shared library file or function pointer information.
+ *
+ * Provider metadata refers either to providers which are loaded via libraries or
+ * which are native providers that are included in the core QGIS installation
+ * and accessed through function pointers.
+ *
+ * For library based providers, the metadata class is used in a lazy load
+ * implementation in QgsProviderRegistry.  To save memory, data providers
+ * are only actually loaded via QLibrary calls if they're to be used.  (Though they're all
+ * iteratively loaded once to get their metadata information, and then
+ * unloaded when the QgsProviderRegistry is created.)  QgsProviderMetadata
+ * supplies enough information to be able to later load the associated shared
+ * library object.
+ *
  */
 class CORE_EXPORT QgsProviderMetadata
 {
   public:
 
-    QgsProviderMetadata( const QString & _key, const QString & _description, const QString & _library );
+    /**
+     * Typedef for data provider creation function.
+     * \since QGIS 3.0
+     */
+    SIP_SKIP typedef std::function < QgsDataProvider*( const QString & ) > CreateDataProviderFunction;
 
-    /** this returns the unique key associated with the provider
+    QgsProviderMetadata( const QString &_key, const QString &_description, const QString &_library );
+
+    /**
+     * Metadata for provider with direct provider creation function pointer, where
+     * no library is involved.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     */
+    SIP_SKIP QgsProviderMetadata( const QString &key, const QString &description, const QgsProviderMetadata::CreateDataProviderFunction &createFunc );
+
+    /**
+     * This returns the unique key associated with the provider
 
         This key string is used for the associative container in QgsProviderRegistry
-    */
-    const QString & key() const;
+     */
+    QString key() const;
 
-    /** this returns descriptive text for the provider
+    /**
+     * This returns descriptive text for the provider
 
         This is used to provide a descriptive list of available data providers.
-    */
-    const QString & description() const;
+     */
+    QString description() const;
 
-    /** this returns the library file name
+    /**
+     * This returns the library file name
 
         This is used to QLibrary calls to load the data provider.
-    */
-    const QString & library() const;
+     */
+    QString library() const;
+
+    /**
+     * Returns a pointer to the direct provider creation function, if supported
+     * by the provider.
+     * \since QGIS 3.0
+     * \note not available in Python bindings
+     */
+    SIP_SKIP CreateDataProviderFunction createFunction() const;
 
   private:
 
@@ -69,7 +104,9 @@ class CORE_EXPORT QgsProviderMetadata
     /// file path
     QString library_;
 
-}; // class QgsProviderMetadata
+    CreateDataProviderFunction mCreateFunc = nullptr;
+
+};
 
 #endif //QGSPROVIDERMETADATA_H
 

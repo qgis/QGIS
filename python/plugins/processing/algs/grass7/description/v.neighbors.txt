@@ -1,0 +1,6 @@
+v.neighbors
+Makes each cell value a function of attribute values and stores in an output raster map.
+Vector (v.*)
+QgsProcessingParameterVectorLayer|input|Input vector layer|-1|None|False
+QgsProcessingParameterNumber|size|Neighborhood diameter in map units|QgsProcessingParameterNumber.Double|0.1|False|None|None
+QgsProcessingParameterRasterDestination|output|Neighborhood

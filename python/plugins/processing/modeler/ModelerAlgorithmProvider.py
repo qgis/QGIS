@@ -25,70 +25,98 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from processing.core.AlgorithmProvider import AlgorithmProvider
+import os
+
+from qgis.PyQt.QtXml import QDomDocument
+
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider,
+                       QgsMessageLog,
+                       QgsProcessingModelAlgorithm,
+                       QgsProcessingUtils,
+                       QgsXmlUtils)
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.ProcessingLog import ProcessingLog
-from processing.modeler.SaveAsPythonScriptAction import \
-        SaveAsPythonScriptAction
 from processing.modeler.ModelerUtils import ModelerUtils
-from processing.modeler.ModelerAlgorithm import ModelerAlgorithm
 from processing.modeler.WrongModelException import WrongModelException
 from processing.modeler.EditModelAction import EditModelAction
 from processing.modeler.CreateNewModelAction import CreateNewModelAction
 from processing.modeler.DeleteModelAction import DeleteModelAction
+from processing.modeler.AddModelFromFileAction import AddModelFromFileAction
+from processing.gui.GetScriptsAndModels import GetModelsAction
+from processing.gui.ProviderActions import (ProviderActions,
+                                            ProviderContextMenuActions)
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class ModelerAlgorithmProvider(AlgorithmProvider):
+class ModelerAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
-        # self.actions = [CreateNewModelAction()]
-        self.contextMenuActions = [EditModelAction(), DeleteModelAction(),
-                                   SaveAsPythonScriptAction()]
+        super().__init__()
+        self.actions = [CreateNewModelAction(), AddModelFromFileAction(), GetModelsAction()]
+        self.contextMenuActions = [EditModelAction(), DeleteModelAction()]
+        self.algs = []
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    ModelerUtils.MODELS_FOLDER, 'Models folder'
-                                    , ModelerUtils.modelsFolder()))
+        # must reload models if providers list is changed - previously unavailable algorithms
+        # which models depend on may now be available
+        QgsApplication.processingRegistry().providerAdded.connect(self.refreshAlgorithms)
 
-    def setAlgsList(self, algs):
-        ModelerUtils.allAlgs = algs
+    def load(self):
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(),
+                                            ModelerUtils.MODELS_FOLDER, self.tr('Models folder', 'ModelerAlgorithmProvider'),
+                                            ModelerUtils.defaultModelsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
+        ProviderActions.registerProviderActions(self, self.actions)
+        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
+        return True
+
+    def unload(self):
+        ProviderActions.deregisterProviderActions(self)
+        ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
 
     def modelsFolder(self):
-        return ModelerUtils.modelsFolder()
+        return ModelerUtils.modelsFolders()[0]
 
-    def getDescription(self):
-        return 'Models'
+    def name(self):
+        return self.tr('Models', 'ModelerAlgorithmProvider')
 
-    def getName(self):
+    def id(self):
         return 'model'
 
-    def getIcon(self):
-        return QIcon(os.path.dirname(__file__) + '/../images/model.png')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/processingModel.svg")
 
-    def _loadAlgorithms(self):
-        folder = ModelerUtils.modelsFolder()
-        self.loadFromFolder(folder)
-        folder = os.path.join(os.path.dirname(__file__), 'models')
-        self.loadFromFolder(folder)
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingModel.svg")
+
+    def loadAlgorithms(self):
+        self.algs = []
+        folders = ModelerUtils.modelsFolders()
+        for f in folders:
+            self.loadFromFolder(f)
+        for a in self.algs:
+            self.addAlgorithm(a)
 
     def loadFromFolder(self, folder):
         if not os.path.exists(folder):
             return
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith('model'):
-                try:
-                    alg = ModelerAlgorithm()
-                    fullpath = os.path.join(folder, descriptionFile)
-                    alg.openModel(fullpath)
-                    if alg.name.strip() != '':
-                        alg.provider = self
-                        self.algs.append(alg)
-                except WrongModelException, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not load model ' + descriptionFile + '\n'
-                            + e.msg)
+        for path, subdirs, files in os.walk(folder):
+            for descriptionFile in files:
+                if descriptionFile.endswith('model3'):
+                    try:
+                        fullpath = os.path.join(path, descriptionFile)
+
+                        alg = QgsProcessingModelAlgorithm()
+                        if alg.fromFile(fullpath):
+                            if alg.name():
+                                alg.setSourceFilePath(fullpath)
+                                self.algs.append(alg)
+                        else:
+                            QgsMessageLog.logMessage(self.tr('Could not load model {0}', 'ModelerAlgorithmProvider').format(descriptionFile),
+                                                     self.tr('Processing'), QgsMessageLog.CRITICAL)
+                    except WrongModelException as e:
+                        QgsMessageLog.logMessage(self.tr('Could not load model {0}\n{1}', 'ModelerAlgorithmProvider').format(descriptionFile, e.msg),
+                                                 self.tr('Processing'), QgsMessageLog.CRITICAL)

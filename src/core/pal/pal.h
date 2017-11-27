@@ -27,114 +27,208 @@
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#ifndef PAL_H
+#define PAL_H
 
-#ifndef _PAL_H
-#define _PAL_H
+#define SIP_NO_FILE
 
 
+#include "qgis_core.h"
+#include "qgsgeometry.h"
+#include "qgspallabeling.h"
 #include <QList>
 #include <iostream>
 #include <ctime>
+#include <QMutex>
+#include <QStringList>
 
 // TODO ${MAJOR} ${MINOR} etc instead of 0.2
 
-/**
- * \mainpage Pal Libray
- *
- * \section intro_sec Introduction
- *
- * Pal is a labelling library released under the GPLv3 license
- *
- */
+class QgsAbstractLabelProvider;
 
 namespace pal
 {
-
-  template <class Type> class LinkedList;
+  //! Get GEOS context handle to be used in all GEOS library calls with reentrant API
+  GEOSContextHandle_t geosContext();
 
   class Layer;
   class LabelPosition;
   class PalStat;
   class Problem;
   class PointSet;
-  class SimpleMutex;
 
-  /** Units for label sizes and distlabel */
-  enum _Units
+  //! Search method to use
+  enum SearchMethod
   {
-    PIXEL = 0, /**< pixel [px]*/
-    METER, /**< meter [m]*/
-    FOOT, /**< foot [ft]*/
-    DEGREE /**< degree [°] */
+    CHAIN = 0, //!< Is the worst but fastest method
+    POPMUSIC_TABU_CHAIN = 1, //!< Is the best but slowest
+    POPMUSIC_TABU = 2, //!< Is a little bit better than CHAIN but slower
+    POPMUSIC_CHAIN = 3, //!< Is slower and best than TABU, worse and faster than TABU_CHAIN
+    FALP = 4 //! only initial solution
   };
 
-  /** Typedef for _Units enumeration */
-  typedef enum _Units Units;
-
-  /** Search method to use */
-  enum _searchMethod
-  {
-    CHAIN = 0, /**< is the worst but fastest method */
-    POPMUSIC_TABU_CHAIN = 1, /**< is the best but slowest */
-    POPMUSIC_TABU = 2, /**< is a little bit better than CHAIN but slower*/
-    POPMUSIC_CHAIN = 3, /**< is slower and best than TABU, worse and faster than TABU_CHAIN */
-    FALP = 4 /** only initial solution */
-  };
-
-  /** Typedef for _Units enumeration */
-  typedef enum _searchMethod SearchMethod;
-
-  /** The way to arrange labels against spatial entities
-   *
-   * \image html arrangement.png "Arrangement modes" width=7cm
-   * */
-  enum _arrangement
-  {
-    P_POINT = 0, /**< arranges candidates around a point (centroid for polygon)*/
-    P_POINT_OVER, /** arranges candidates over a point (centroid for polygon)*/
-    P_LINE, /**< Only for lines and polygons, arranges candidates over the line or the polygon perimeter */
-    P_CURVED, /** Only for lines, labels along the line */
-    P_HORIZ, /**< Only for polygon, arranges candidates horizontaly */
-    P_FREE /**< Only for polygon, arranges candidates with respect of polygon orientation */
-  };
-
-  /** typedef for _arrangement enumeration */
-  typedef enum _arrangement Arrangement;
-
-  /** enumeration line arrangement flags. Flags can be combined. */
-  enum LineArrangementFlags
+  //! Enumeration line arrangement flags. Flags can be combined.
+  enum LineArrangementFlag
   {
     FLAG_ON_LINE     = 1,
     FLAG_ABOVE_LINE  = 2,
     FLAG_BELOW_LINE  = 4,
     FLAG_MAP_ORIENTATION = 8
   };
+  Q_DECLARE_FLAGS( LineArrangementFlags, LineArrangementFlag )
 
   /**
-   *  \brief Pal main class.
+   * \ingroup core
+   *  \brief Main Pal labeling class
    *
-   *  A pal object will contains layers and global informations such as which search method
-   *  will be used, the map resolution (dpi) ....
-   *
-   *  \author Maxence Laurent <maxence _dot_ laurent _at_ heig-vd _dot_ ch>
+   *  A pal object will contains layers and global information such as which search method
+   *  will be used.
+   *  \class pal::Pal
+   *  \note not available in Python bindings
    */
   class CORE_EXPORT Pal
   {
       friend class Problem;
       friend class FeaturePart;
       friend class Layer;
+
+    public:
+
+      /**
+       * \brief Create an new pal instance
+       */
+      Pal();
+
+      ~Pal();
+
+      //! Pal cannot be copied.
+      Pal( const Pal &other ) = delete;
+      //! Pal cannot be copied.
+      Pal &operator=( const Pal &other ) = delete;
+
+      /**
+       * \brief add a new layer
+       *
+       * \param provider Provider associated with the layer
+       * \param layerName layer's name
+       * \param arrangement Howto place candidates
+       * \param defaultPriority layer's prioriry (0 is the best, 1 the worst)
+       * \param active is the layer is active (currently displayed)
+       * \param toLabel the layer will be labeled only if toLablel is true
+       * \param displayAll if true, all features will be labelled even though overlaps occur
+       *
+       * \throws PalException::LayerExists
+       *
+       * @todo add symbolUnit
+       */
+      Layer *addLayer( QgsAbstractLabelProvider *provider, const QString &layerName, QgsPalLayerSettings::Placement arrangement, double defaultPriority, bool active, bool toLabel, bool displayAll = false );
+
+      /**
+       * \brief remove a layer
+       *
+       * \param layer layer to remove
+       */
+      void removeLayer( Layer *layer );
+
+      /**
+       * \brief the labeling machine
+       * Will extract all active layers
+       *
+       * \param bbox map extent
+       * \param stats A PalStat object (can be NULL)
+       * \param displayAll if true, all feature will be labelled even though overlaps occur
+       *
+       * \returns A list of label to display on map
+       */
+      QList<LabelPosition *> *labeller( double bbox[4], PalStat **stats, bool displayAll );
+
+      typedef bool ( *FnIsCanceled )( void *ctx );
+
+      //! Register a function that returns whether this job has been canceled - PAL calls it during the computation
+      void registerCancelationCallback( FnIsCanceled fnCanceled, void *context );
+
+      //! Check whether the job has been canceled
+      inline bool isCanceled() { return fnIsCanceled ? fnIsCanceled( fnIsCanceledContext ) : false; }
+
+      Problem *extractProblem( double bbox[4] );
+
+      QList<LabelPosition *> *solveProblem( Problem *prob, bool displayAll );
+
+      /**
+       *\brief Set flag show partial label
+       *
+       * \param show flag value
+       */
+      void setShowPartial( bool show );
+
+      /**
+       * \brief Get flag show partial label
+       *
+       * \returns value of flag
+       */
+      bool getShowPartial();
+
+      /**
+       * \brief set # candidates to generate for points features
+       * Higher the value is, longer Pal::labeller will spend time
+       *
+       * \param point_p # candidates for a point
+       */
+      void setPointP( int point_p );
+
+      /**
+       * \brief set maximum # candidates to generate for lines features
+       * Higher the value is, longer Pal::labeller will spend time
+       *
+       * \param line_p maximum # candidates for a line
+       */
+      void setLineP( int line_p );
+
+      /**
+       * \brief set maximum # candidates to generate for polygon features
+       * Higher the value is, longer Pal::labeller will spend time
+       *
+       * \param poly_p maximum # candidate for a polygon
+       */
+      void setPolyP( int poly_p );
+
+      /**
+       *  \brief get # candidates to generate for point features
+       */
+      int getPointP();
+
+      /**
+       *  \brief get maximum  # candidates to generate for line features
+       */
+      int getLineP();
+
+      /**
+       *  \brief get maximum # candidates to generate for polygon features
+       */
+      int getPolyP();
+
+      /**
+       * \brief Select the search method to use.
+       *
+       * For interactive mapping using CHAIN is a good
+       * idea because it is the fastest. Other methods, ordered by speedness, are POPMUSIC_TABU,
+       * POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN, defined in pal::_searchMethod enumeration
+       * \param method the method to use
+       */
+      void setSearch( SearchMethod method );
+
+      /**
+       * \brief get the search method in use
+       *
+       * \returns the search method
+       */
+      SearchMethod getSearch();
+
     private:
-      QList<Layer*> *layers;
 
-      SimpleMutex *lyrsMutex;
+      QHash< QgsAbstractLabelProvider *, Layer * > mLayers;
 
-      // TODO remove after tests !!!
-      clock_t tmpTime;
-
-      Units map_unit;
+      QMutex mMutex;
 
       /**
        * \brief maximum # candidates for a point
@@ -161,8 +255,6 @@ namespace pal
       int tabuMaxIt;
       int tabuMinIt;
 
-      int dpi;
-
       int ejChainDeg;
       int tenure;
       double candListSize;
@@ -172,271 +264,77 @@ namespace pal
        */
       bool showPartial;
 
+      //! Callback that may be called from PAL to check whether the job has not been canceled in meanwhile
+      FnIsCanceled fnIsCanceled;
+      //! Application-specific context for the cancelation check function
+      void *fnIsCanceledContext = nullptr;
+
       /**
        * \brief Problem factory
        * Extract features to label and generates candidates for them,
-       * respects to a bounding box and a map scale
-       *
-       * @param nbLayers  number of layers to extract
-       * @param layersName layers name to be extracted
-       * @param layersFactor layer's factor (priority between layers, 0 is the best, 1 the worst)
-       * @param lambda_min xMin bounding-box
-       * @param phi_min yMin bounding-box
-       * @param lambda_max xMax bounding-box
-       * @param phi_max yMax bounding-box
-       * @param scale the scale (1:scale)
-       * @param svgmap stream to wrtie the svg map (need _EXPORT_MAP_ #defined to work)
+       * respects to a bounding box
+       * \param lambda_min xMin bounding-box
+       * \param phi_min yMin bounding-box
+       * \param lambda_max xMax bounding-box
+       * \param phi_max yMax bounding-box
        */
-      Problem* extract( int nbLayers, char **layersName, double *layersFactor,
-                        double lambda_min, double phi_min,
-                        double lambda_max, double phi_max,
-                        double scale, std::ofstream *svgmap );
+      Problem *extract( double lambda_min, double phi_min,
+                        double lambda_max, double phi_max );
 
 
       /**
        * \brief Choose the size of popmusic subpart's
-       * @param r subpart size
+       * \param r subpart size
        */
       void setPopmusicR( int r );
 
-
-
       /**
        * \brief minimum # of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @param min_it Sub part optimization min # of iteration
+       * \param min_it Sub part optimization min # of iteration
        */
       void setMinIt( int min_it );
 
       /**
        * \brief maximum \# of iteration for search method POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @param max_it Sub part optimization max # of iteration
+       * \param max_it Sub part optimization max # of iteration
        */
       void setMaxIt( int max_it );
 
       /**
        * \brief For tabu search : how many iteration a feature will be tabu
-       * @param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
+       * \param tenure consiser a feature as tabu for tenure iteration after updating feature in solution
        */
       void setTenure( int tenure );
 
       /**
        * \brief For *CHAIN, select the max size of a transformation chain
-       * @param degree maximum soze of a transformation chain
+       * \param degree maximum soze of a transformation chain
        */
       void setEjChainDeg( int degree );
 
       /**
        * \brief How many candidates will be tested by a tabu iteration
-       * @param fact the ration (0..1) of candidates to test
+       * \param fact the ration (0..1) of candidates to test
        */
       void setCandListSize( double fact );
 
 
       /**
        * \brief Get the minimum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @return minimum # of iteration
+       * \returns minimum # of iteration
        */
       int getMinIt();
+
       /**
        * \brief Get the maximum # of iteration doing in POPMUSIC_TABU, POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN
-       * @return maximum # of iteration
+       * \returns maximum # of iteration
        */
       int getMaxIt();
 
-
-    public:
-
-      /**
-       * \brief Create an new pal instance
-       */
-      Pal();
-
-      /**
-       * \brief delete an instance
-       */
-      ~Pal();
-
-      /**
-       * \brief add a new layer
-       *
-       * @param lyrName layer's name
-       * @param min_scale bellow this scale: no labelling (-1 to disable)
-       * @param max_scale above this scale: no labelling (-1 to disable)
-       * @param arrangement Howto place candidates
-       * @param label_unit Unit for labels sizes
-       * @param defaultPriority layer's prioriry (0 is the best, 1 the worst)
-       * @param obstacle 'true' will discourage other label to be placed above features of this layer
-       * @param active is the layer is active (currently displayed)
-       * @param toLabel the layer will be labeled only if toLablel is true
-       * @param displayAll if true, all features will be labelled even though overlaps occur
-       *
-       * @throws PalException::LayerExists
-       *
-       * @todo add symbolUnit
-       */
-      Layer * addLayer( const char *lyrName, double min_scale, double max_scale, Arrangement arrangement, Units label_unit, double defaultPriority, bool obstacle, bool active, bool toLabel, bool displayAll = false );
-
-      /**
-       * \brief Look for a layer
-       *
-       * @param lyrName name of layer to search
-       *
-       * @throws PalException::UnkownLayer
-       *
-       * @return a pointer on layer or NULL if layer not exist
-       */
-      Layer *getLayer( const char *lyrName );
-
-      /**
-       * \brief get all layers
-       *
-       * @return a list of all layers
-       */
-      QList<Layer*> *getLayers();
-
-      /**
-       * \brief remove a layer
-       *
-       * @param layer layer to remove
-       */
-      void removeLayer( Layer *layer );
-
-      /**
-       * \brief the labeling machine
-       * Will extract all active layers
-       *
-       * @param scale map scale is 1:scale
-       * @param bbox map extent
-       * @param stats A PalStat object (can be NULL)
-       * @param displayAll if true, all feature will be labelled even though overlaps occur
-       *
-       * @return A list of label to display on map
-       */
-      std::list<LabelPosition*> *labeller( double scale, double bbox[4], PalStat **stats, bool displayAll );
-
-
-      /**
-       * \brief the labeling machine
-       * Active layers are specifiend through layersName array
-       * @todo add obstacles and tolabel arrays
-       *
-       * @param nbLayers # layers
-       * @param layersName names of layers to label
-       * @param layersFactor layers priorities array
-       * @param scale map scale is  '1:scale'
-       * @param bbox map extent
-       * @param stat will be filled with labelling process statistics, can be NULL
-       * @param displayAll if true, all feature will be labelled even though overlaps occur
-       *
-       * @todo UnknownLayer will be ignored ? should throw exception or not ???
-       *
-       * @return A list of label to display on map
-       */
-      std::list<LabelPosition*> *labeller( int nbLayers,
-                                           char **layersName,
-                                           double *layersFactor,
-                                           double scale, double bbox[4],
-                                           PalStat **stat,
-                                           bool displayAll );
-
-
-      Problem* extractProblem( double scale, double bbox[4] );
-
-      std::list<LabelPosition*>* solveProblem( Problem* prob, bool displayAll );
-
-      /**
-       * \brief Set map resolution
-       *
-       * @param dpi map resolution (dot per inch)
-       */
-      void setDpi( int dpi );
-
-      /**
-       * \brief get map resolution
-       *
-       * @return map resolution (dot per inch)
-       */
-      int getDpi();
-
-      /**
-       *\brief Set flag show partial label
-       *
-       * @param show flag value
-       */
-      void setShowPartial( bool show );
-
-      /**
-       * \brief Get flag show partial label
-       *
-       * @return value of flag
-       */
-      bool getShowPartial();
-
-      /**
-       * \brief set # candidates to generate for points features
-       * Higher the value is, longer Pal::labeller will spend time
-       *
-       * @param point_p # candidates for a point
-       */
-      void setPointP( int point_p );
-
-      /**
-       * \brief set maximum # candidates to generate for lines features
-       * Higher the value is, longer Pal::labeller will spend time
-       *
-       * @param line_p maximum # candidates for a line
-       */
-      void setLineP( int line_p );
-
-      /**
-       * \brief set maximum # candidates to generate for polygon features
-       * Higher the value is, longer Pal::labeller will spend time
-       *
-       * @param poly_p maximum # candidate for a polygon
-       */
-      void setPolyP( int poly_p );
-
-      /**
-       *  \brief get # candidates to generate for point features
-       */
-      int getPointP();
-
-      /**
-       *  \brief get maximum  # candidates to generate for line features
-       */
-      int getLineP();
-
-      /**
-       *  \brief get maximum # candidates to generate for polygon features
-       */
-      int getPolyP();
-
-      /**
-       * \brief get current map unit
-       */
-      Units getMapUnit();
-
-      /**
-       * \brief set map unit
-       */
-      void setMapUnit( Units map_unit );
-
-      /**
-       * \brief Select the search method to use.
-       *
-       * For interactive mapping using CHAIN is a good
-       * idea because it is the fastest. Other methods, ordered by speedness, are POPMUSIC_TABU,
-       * POPMUSIC_CHAIN and POPMUSIC_TABU_CHAIN, defined in pal::_searchMethod enumeration
-       * @param method the method to use
-       */
-      void setSearch( SearchMethod method );
-
-      /**
-       * \brief get the search method in use
-       *
-       * @return the search method
-       */
-      SearchMethod getSearch();
   };
+
 } // end namespace pal
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( pal::LineArrangementFlags )
+
 #endif

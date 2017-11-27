@@ -1,21 +1,51 @@
-/** \ingroup gui
- * A generic message for displaying QGIS log messages.
- * \note added in 1.8
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmessagelogviewer.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsMessageLogViewer: QDialog
 {
-%TypeHeaderCode
-#include <qgsmessagelogviewer.h>
+%Docstring
+ A generic dialog widget for displaying QGIS log messages.
 %End
 
+%TypeHeaderCode
+#include "qgsmessagelogviewer.h"
+%End
   public:
-    QgsMessageLogViewer( QStatusBar *statusBar = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsMessageLogViewer();
+
+    QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+%Docstring
+ Create a new message log viewer. The viewer will automatically connect to the system's
+ QgsApplication.messageLog() instance.
+%End
 
   public slots:
-    void logMessage( QString message, QString tag, QgsMessageLog::MessageLevel level );
 
-  private:
-    void showEvent( QShowEvent * );
-    void hideEvent( QHideEvent * );
+    void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
+%Docstring
+ Logs a ``message`` to the viewer.
+%End
+
+  protected:
+    virtual void closeEvent( QCloseEvent *e );
+
+    virtual void reject();
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmessagelogviewer.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -16,23 +16,27 @@
 #define QGSCOMPOSERLEGENDLAYERSDIALOG_H
 
 #include "ui_qgscomposerlegendlayersdialogbase.h"
-#include "qgsmaplayer.h"
 
-/** \ingroup MapComposer
+class QgsMapLayer;
+
+/**
+ * \ingroup app
  * A dialog to add new layers to the legend.
  * */
-class QgsComposerLegendLayersDialog: private Ui::QgsComposerLegendLayersDialogBase, public QDialog
+class QgsComposerLegendLayersDialog: public QDialog, private Ui::QgsComposerLegendLayersDialogBase
 {
+    Q_OBJECT
+
   public:
-    QgsComposerLegendLayersDialog( QList<QgsMapLayer*> layers, QWidget* parent = 0 );
-    ~QgsComposerLegendLayersDialog();
-    QgsMapLayer* selectedLayer();
+    QgsComposerLegendLayersDialog( QList<QgsMapLayer *> layers, QWidget *parent = nullptr );
+
+    QgsMapLayer *selectedLayer();
 
   private:
     QgsComposerLegendLayersDialog(); //forbidden
 
-    /**Stores the relation between items and map layer pointers. */
-    QMap<QListWidgetItem*, QgsMapLayer*> mItemLayerMap;
+    //! Stores the relation between items and map layer pointers.
+    QMap<QListWidgetItem *, QgsMapLayer *> mItemLayerMap;
 };
 
-#endif //QGSCOMPOSERLEGENDITEMDIALOG_H
+#endif //QGSCOMPOSERLEGENDLAYERSDIALOG_H

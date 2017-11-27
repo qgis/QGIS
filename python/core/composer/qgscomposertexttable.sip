@@ -1,22 +1,59 @@
-class QgsComposerTextTable: QgsComposerTable
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposertexttable.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+class QgsComposerTextTableV2 : QgsComposerTableV2
 {
+%Docstring
+ A text table item that reads text from string lists
+.. versionadded:: 2.10
+%End
+
 %TypeHeaderCode
-#include <qgscomposertexttable.h>
+#include "qgscomposertexttable.h"
 %End
   public:
-    QgsComposerTextTable( QgsComposition* c );
-    ~QgsComposerTextTable();
+    QgsComposerTextTableV2( QgsComposition *c /TransferThis/, bool createUndoCommands );
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const;
+    void addRow( const QStringList &row );
+%Docstring
+ Adds a row to the table
+ \param row list of strings to use for each cell's value in the newly added row
+.. note::
 
-    void setHeaderLabels( const QStringList& l );
-    void addRow( const QStringList& row );
+   If row is shorter than the number of columns in the table than blank cells
+ will be inserted at the end of the row. If row contains more strings then the number
+ of columns in the table then these extra strings will be ignored.
+.. note::
 
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+   if adding many rows, setContents() is much faster
+%End
 
-  protected:
-    // bool getFeatureAttributes( QList< QMap<int, QVariant> >& attributes );
-    QMap<int, QString> getHeaderLabels() const;
+    void setContents( const QList< QStringList > &contents );
+%Docstring
+ Sets the contents of the text table.
+ \param contents list of table rows
+.. seealso:: addRow
+%End
+
+    virtual bool getTableContents( QgsComposerTableContents &contents );
+
+
+    virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true );
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/composer/qgscomposertexttable.h                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

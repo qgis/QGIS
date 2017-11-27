@@ -17,6 +17,8 @@
  ***************************************************************************/
 #include "qgscursors.h"
 
+#define SIP_NO_FILE
+
 // cursors
 const char *zoom_in[] =
 {
@@ -65,22 +67,6 @@ const char *zoom_out[] =
   "...##aaaaa###aa#",
   ".....#####...###",
   "..............#."
-};
-
-
-
-const unsigned char pan_bits[] =
-{
-  0xf0, 0x00, 0xf8, 0x01, 0x28, 0x07, 0x28, 0x05, 0x28, 0x1d, 0x28, 0x15,
-  0x2f, 0x15, 0x0d, 0x14, 0x09, 0x10, 0x03, 0x18, 0x06, 0x08, 0x04, 0x08,
-  0x0c, 0x0c, 0x18, 0x04, 0x30, 0x04, 0xe0, 0x07
-};
-
-const unsigned char pan_mask_bits[] =
-{
-  0xf0, 0x00, 0xf8, 0x01, 0xf8, 0x07, 0xf8, 0x07, 0xf8, 0x1f, 0xf8, 0x1f,
-  0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xff, 0x1f, 0xfe, 0x0f, 0xfc, 0x0f,
-  0xfc, 0x0f, 0xf8, 0x07, 0xf0, 0x07, 0xe0, 0x07
 };
 
 
@@ -180,3 +166,26 @@ const char *cross_hair_cursor[] =
   "       +.+      "
 };
 
+const char *sampler_cursor[] =
+{
+  "16 16 3 1",
+  " »     c None",
+  ".»     c #000000",
+  "+»     c #FFFFFF",
+  "..              ",
+  ".+.             ",
+  " .+..           ",
+  "  .++.          ",
+  "  .+++.         ",
+  "   .+++.        ",
+  "    .+++.       ",
+  "     .+++...    ",
+  "      .++...    ",
+  "       ......   ",
+  "       .......  ",
+  "       ........ ",
+  "         .......",
+  "          ......",
+  "           .....",
+  "            ... "
+};

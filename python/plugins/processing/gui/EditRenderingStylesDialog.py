@@ -16,6 +16,7 @@
 *                                                                         *
 ***************************************************************************
 """
+from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -25,27 +26,33 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
+
+from qgis.PyQt import uic
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtWidgets import QDialog, QHeaderView, QTableWidgetItem
+
+from qgis.core import (QgsProcessingOutputRasterLayer,
+                       QgsProcessingOutputVectorLayer)
 
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.RenderingStyleFilePanel import RenderingStyleFilePanel
-from processing.outputs.OutputRaster import OutputRaster
-from processing.outputs.OutputVector import OutputVector
 
-from processing.ui.ui_DlgRenderingStyles import Ui_DlgRenderingStyles
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgRenderingStyles.ui'))
 
 
-class EditRenderingStylesDialog(QDialog, Ui_DlgRenderingStyles):
+class EditRenderingStylesDialog(BASE, WIDGET):
 
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(EditRenderingStylesDialog, self).__init__(None)
         self.setupUi(self)
 
         self.alg = alg
 
-        self.tblStyles.horizontalHeader().setResizeMode(QHeaderView.Stretch)
-        self.setWindowTitle(self.alg.name)
+        self.tblStyles.horizontalHeader().setSectionResizeMode(QHeaderView.Stretch)
+        self.setWindowTitle(self.alg.displayName())
 
         self.valueItems = {}
         self.dependentItems = {}
@@ -53,36 +60,34 @@ class EditRenderingStylesDialog(QDialog, Ui_DlgRenderingStyles):
 
     def setTableContent(self):
         numOutputs = 0
-        for output in self.alg.outputs:
-            if isinstance(output, (OutputVector, OutputRaster)):
-                if not output.hidden:
-                    numOutputs += 1
+        for output in self.alg.outputDefinitions():
+            if isinstance(output, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer)):
+                numOutputs += 1
         self.tblStyles.setRowCount(numOutputs)
 
         i = 0
-        for output in self.alg.outputs:
-            if isinstance(output, (OutputVector, OutputRaster)):
-                if not output.hidden:
-                    item = QTableWidgetItem(output.description + '<'
-                            + output.__module__.split('.')[-1] + '>')
-                    item.setFlags(Qt.ItemIsEnabled)
-                    self.tblStyles.setItem(i, 0, item)
-                    item = RenderingStyleFilePanel()
-                    style = \
-                        RenderingStyles.getStyle(self.alg.commandLineName(),
-                            output.name)
-                    if style:
-                        item.setText(str(style))
-                    self.valueItems[output.name] = item
-                    self.tblStyles.setCellWidget(i, 1, item)
-                    self.tblStyles.setRowHeight(i, 22)
+        for output in self.alg.outputDefinitions():
+            if isinstance(output, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer)):
+                item = QTableWidgetItem(output.description() + '<' +
+                                        output.__class__.__name__ + '>')
+                item.setFlags(Qt.ItemIsEnabled)
+                self.tblStyles.setItem(i, 0, item)
+                item = RenderingStyleFilePanel()
+                style = \
+                    RenderingStyles.getStyle(self.alg.id(),
+                                             output.name())
+                if style:
+                    item.setText(str(style))
+                self.valueItems[output.name()] = item
+                self.tblStyles.setCellWidget(i, 1, item)
+                self.tblStyles.setRowHeight(i, 22)
             i += 1
 
     def accept(self):
         styles = {}
-        for key in self.valueItems.keys():
+        for key in list(self.valueItems.keys()):
             styles[key] = str(self.valueItems[key].getValue())
-        RenderingStyles.addAlgStylesAndSave(self.alg.commandLineName(), styles)
+        RenderingStyles.addAlgStylesAndSave(self.alg.id(), styles)
 
         QDialog.accept(self)
 

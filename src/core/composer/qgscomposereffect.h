@@ -18,26 +18,35 @@
 #ifndef QGSCOMPOSEREFFECT_H
 #define QGSCOMPOSEREFFECT_H
 
-#include <QtGui>
 #include <QGraphicsEffect>
+#include <QPainter>
 
+#include "qgis_core.h"
+
+/**
+ * \ingroup core
+ * \class QgsComposerEffect
+ */
 class CORE_EXPORT QgsComposerEffect : public QGraphicsEffect
 {
     Q_OBJECT
 
   public:
-    QgsComposerEffect();
-    ~QgsComposerEffect();
 
-    void setCompositionMode( const QPainter::CompositionMode compositionMode );
+    /**
+     * Constructor for QgsComposerEffect.
+     */
+    QgsComposerEffect() = default;
+
+    void setCompositionMode( QPainter::CompositionMode compositionMode );
 
   protected:
-    /** Called whenever source needs to be drawn */
-    virtual void draw( QPainter *painter );
+    //! Called whenever source needs to be drawn
+    virtual void draw( QPainter *painter ) override;
 
   private:
 
-    QPainter::CompositionMode mCompositionMode;
+    QPainter::CompositionMode mCompositionMode = QPainter::CompositionMode_SourceOver;
 };
 
 #endif // QGSCOMPOSEREFFECT_H

@@ -12,16 +12,17 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-/*!  QGIS - Plugin API
+
+/**
+ * QGIS - Plugin API
  *
  *  \section about  About QGis Plugins
  * Plugins provide additional functionality to QGis. Plugins must
  * implement several required methods in order to be registered with
  * QGis. These methods include:
- * <ul>name
- * <li>version
- * <li>description
- * </ul>
+ * name:
+ * - version
+ * - description
  *
  * All QGis plugins must inherit from the abstract base class QgisPlugin.
  * This list will grow as the API is expanded.
@@ -34,6 +35,8 @@
 #ifndef QGISPLUGIN_H
 #define QGISPLUGIN_H
 
+#define SIP_NO_FILE
+
 
 #include <QString>
 
@@ -41,9 +44,11 @@ class QgisInterface;
 
 //#include "qgisplugingui.h"
 
-/*! \class QgisPlugin
+/**
+ * \ingroup plugins
+ * \class QgisPlugin
  * \brief Abstract base class from which all plugins must inherit
- *
+ * \note not available in Python bindings
  */
 class QgisPlugin
 {
@@ -52,94 +57,99 @@ class QgisPlugin
     //! Interface to gui element collection object
     //virtual QgisPluginGui *gui()=0;
     //! Element types that can be added to the interface
-    /* enum ELEMENTS {
-       MENU,
-       MENU_ITEM,
-       TOOLBAR,
-       TOOLBAR_BUTTON,
-       };
-
-       @todo XXX this may be a hint that there should be subclasses
-       */
-    enum PLUGINTYPE
+#if 0
+    enum Elements
     {
-      UI = 1,                     /* user interface plug-in */
-      MAPLAYER,                    /* map layer plug-in */
-      RENDERER,                     /*a plugin for a new renderer class*/
+      MENU,
+      MENU_ITEM,
+      TOOLBAR,
+      TOOLBAR_BUTTON,
+    };
+
+    @todo XXX this may be a hint that there should be subclasses
+#endif
+
+    enum PluginType
+    {
+      UI = 1,   //!< User interface plug-in
+      MapLayer, //!< Map layer plug-in
+      Renderer, //!< A plugin for a new renderer class
     };
 
 
-    QgisPlugin( QString const & name = "",
-                QString const & description = "",
-                QString const & category = "",
-                QString const & version = "",
-                PLUGINTYPE const & type = MAPLAYER )
-        : mName( name ),
-        mDescription( description ),
-        mCategory( category ),
-        mVersion( version ),
-        mType( type )
+    /**
+     * Constructor for QgisPlugin
+     */
+    QgisPlugin( QString const &name = "",
+                QString const &description = "",
+                QString const &category = "",
+                QString const &version = "",
+                PluginType type = MapLayer )
+      : mName( name )
+      , mDescription( description )
+      , mCategory( category )
+      , mVersion( version )
+      , mType( type )
     {}
 
-    virtual ~QgisPlugin()
-    {}
+    virtual ~QgisPlugin() = default;
 
     //! Get the name of the plugin
-    QString const & name() const
+    QString const &name() const
     {
       return mName;
     }
 
-    QString       & name()
+    QString        &name()
     {
       return mName;
     }
 
     //! Version of the plugin
-    QString const & version() const
+    QString const &version() const
     {
       return mVersion;
     }
 
     //! Version of the plugin
-    QString & version()
+    QString &version()
     {
       return mVersion;
     }
 
     //! A brief description of the plugin
-    QString const & description() const
+    QString const &description() const
     {
       return mDescription;
     }
 
     //! A brief description of the plugin
-    QString       & description()
+    QString        &description()
     {
       return mDescription;
     }
 
     //! Plugin category
-    QString const & category() const
+    QString const &category() const
     {
       return mCategory;
     }
 
     //! Plugin category
-    QString       & category()
+    QString        &category()
     {
       return mCategory;
     }
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PLUGINTYPE const & type() const
+    QgisPlugin::PluginType const &type() const
     {
       return mType;
     }
 
 
     //! Plugin type, either UI or map layer
-    QgisPlugin::PLUGINTYPE       & type()
+    QgisPlugin::PluginType        &type()
     {
       return mType;
     }
@@ -165,11 +175,12 @@ class QgisPlugin
     QString mVersion;
 
     /// UI or MAPLAYER plug-in
+
     /**
       @todo Really, might be indicative that this needs to split into
       maplayer vs. ui plug-in vs. other kind of plug-in
       */
-    PLUGINTYPE mType;
+    PluginType mType;
 
 }; // class QgisPlugin
 
@@ -203,4 +214,4 @@ typedef QString icon_t();
 //! Typedef for getting the experimental status without instantiating the plugin
 typedef QString experimental_t();
 
-#endif //qgisplugin_h
+#endif // QGISPLUGIN_H

@@ -18,51 +18,138 @@
 #ifndef QGSZONALSTATISTICS_H
 #define QGSZONALSTATISTICS_H
 
-#include "qgsrectangle.h"
 #include <QString>
+#include <QMap>
+
+#include <limits>
+#include <cfloat>
+
+#include "qgis_analysis.h"
+#include "qgsfeedback.h"
 
 class QgsGeometry;
 class QgsVectorLayer;
-class QProgressDialog;
+class QgsRasterLayer;
+class QgsRasterDataProvider;
+class QgsRectangle;
+class QgsField;
 
-/**A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
+/**
+ * \ingroup analysis
+ *  A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*/
 class ANALYSIS_EXPORT QgsZonalStatistics
 {
   public:
-    QgsZonalStatistics( QgsVectorLayer* polygonLayer, const QString& rasterFile, const QString& attributePrefix = "", int rasterBand = 1 );
-    ~QgsZonalStatistics();
 
-    /**Starts the calculation
-      @return 0 in case of success*/
-    int calculateStatistics( QProgressDialog* p );
+    //! Enumeration of flags that specify statistics to be calculated
+    enum Statistic
+    {
+      Count       = 1,  //!< Pixel count
+      Sum    = 2,  //!< Sum of pixel values
+      Mean = 4,  //!< Mean of pixel values
+      Median = 8, //!< Median of pixel values
+      StDev = 16, //!< Standard deviation of pixel values
+      Min = 32,  //!< Min of pixel values
+      Max = 64,  //!< Max of pixel values
+      Range = 128, //!< Range of pixel values (max - min)
+      Minority = 256, //!< Minority of pixel values
+      Majority = 512, //!< Majority of pixel values
+      Variety = 1024, //!< Variety (count of distinct) pixel values
+      Variance = 2048, //!< Variance of pixel values
+      All = Count | Sum | Mean | Median | StDev | Max | Min | Range | Minority | Majority | Variety | Variance
+    };
+    Q_DECLARE_FLAGS( Statistics, Statistic )
+
+    /**
+     * Constructor for QgsZonalStatistics.
+     */
+    QgsZonalStatistics( QgsVectorLayer *polygonLayer,
+                        QgsRasterLayer *rasterLayer,
+                        const QString &attributePrefix = QString(),
+                        int rasterBand = 1,
+                        QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
+
+    /**
+     * Starts the calculation
+      \returns 0 in case of success*/
+    int calculateStatistics( QgsFeedback *feedback );
 
   private:
-    QgsZonalStatistics();
-    /**Analysis what cells need to be considered to cover the bounding box of a feature
-      @return 0 in case of success*/
-    int cellInfoForBBox( const QgsRectangle& rasterBBox, const QgsRectangle& featureBBox, double cellSizeX, double cellSizeY,
-                         int& offsetX, int& offsetY, int& nCellsX, int& nCellsY ) const;
+    QgsZonalStatistics() = default;
 
-    /**Returns statistics by considering the pixels where the center point is within the polygon (fast)*/
-    void statisticsFromMiddlePointTest( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
-                                        double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
+    class FeatureStats
+    {
+      public:
+        FeatureStats( bool storeValues = false, bool storeValueCounts = false )
+          : mStoreValues( storeValues )
+          , mStoreValueCounts( storeValueCounts )
+        {
+          reset();
+        }
+        void reset() { sum = 0; count = 0; max = -FLT_MAX; min = FLT_MAX; valueCount.clear(); values.clear(); }
+        void addValue( float value, double weight = 1.0 )
+        {
+          if ( weight < 1.0 )
+          {
+            sum += value * weight;
+            count += weight;
+          }
+          else
+          {
+            sum += value;
+            ++count;
+          }
+          min = std::min( min, value );
+          max = std::max( max, value );
+          if ( mStoreValueCounts )
+            valueCount.insert( value, valueCount.value( value, 0 ) + 1 );
+          if ( mStoreValues )
+            values.append( value );
+        }
+        double sum;
+        double count;
+        float max;
+        float min;
+        QMap< float, int > valueCount;
+        QList< float > values;
 
-    void statisticsFromMiddlePointTest_improved( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
-        double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
+      private:
+        bool mStoreValues;
+        bool mStoreValueCounts;
+    };
 
-    /**Returns statistics with precise pixel - polygon intersection test (slow) */
-    void statisticsFromPreciseIntersection( void* band, QgsGeometry* poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
-                                            double cellSizeX, double cellSizeY, const QgsRectangle& rasterBBox, double& sum, double& count );
+    /**
+     * Analysis what cells need to be considered to cover the bounding box of a feature
+      \returns 0 in case of success*/
+    int cellInfoForBBox( const QgsRectangle &rasterBBox, const QgsRectangle &featureBBox, double cellSizeX, double cellSizeY,
+                         int &offsetX, int &offsetY, int &nCellsX, int &nCellsY ) const;
 
-    QString getUniqueFieldName( QString fieldName );
+    //! Returns statistics by considering the pixels where the center point is within the polygon (fast)
+    void statisticsFromMiddlePointTest( const QgsGeometry &poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
+                                        double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats );
 
-    QString mRasterFilePath;
-    /**Raster band to calculate statistics from (defaults to 1)*/
-    int mRasterBand;
-    QgsVectorLayer* mPolygonLayer;
+    //! Returns statistics with precise pixel - polygon intersection test (slow)
+    void statisticsFromPreciseIntersection( const QgsGeometry &poly, int pixelOffsetX, int pixelOffsetY, int nCellsX, int nCellsY,
+                                            double cellSizeX, double cellSizeY, const QgsRectangle &rasterBBox, FeatureStats &stats );
+
+    //! Tests whether a pixel's value should be included in the result
+    bool validPixel( float value ) const;
+
+    QString getUniqueFieldName( const QString &fieldName, const QList<QgsField> &newFields );
+
+    QgsRasterLayer *mRasterLayer = nullptr;
+    QgsRasterDataProvider *mRasterProvider = nullptr;
+    //! Raster band to calculate statistics
+    int mRasterBand = 0;
+    QgsVectorLayer *mPolygonLayer = nullptr;
     QString mAttributePrefix;
-    /**The nodata value of the input layer*/
-    float mInputNodataValue;
+    //! The nodata value of the input layer
+    float mInputNodataValue = -1;
+    Statistics mStatistics = QgsZonalStatistics::All;
 };
+
+Q_DECLARE_OPERATORS_FOR_FLAGS( QgsZonalStatistics::Statistics )
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSZONALSTATISTICS_H

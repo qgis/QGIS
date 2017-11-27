@@ -1,0 +1,12 @@
+<svg height="16" viewBox="0 0 4.2333333 4.2333335" width="16" xmlns="http://www.w3.org/2000/svg">
+<path d="m1.4552084.66145835h2.1166667v2.11666665h-2.1166667z" fill="#eeeeec" stroke="#888a85" stroke-linecap="round" stroke-linejoin="round" stroke-width=".26458335"/>
+<path d="m .9260417 1.190625h2.1166667v2.1166666h-2.1166667z" fill="#eeeeec" stroke="#888a85" stroke-linecap="round" stroke-linejoin="round" stroke-width=".26458335"/>
+<path d="m1.9843547 1.5875l.0000406 1.0583261c.00603.1622428.524478.1760075.5291464.0000146v-2.2303419c0-.30092221-.5291667-.28575163-.5291667-.00001449v.11368236" fill="none" stroke="#415a75" stroke-width=".26458335"/>
+<path d="m .3968752 2.5026501v1.3338083h1.5983331" fill="none" stroke="#888a85" stroke-width=".26458335"/>
+<g transform="matrix(.12211529 0 0 .12211529 .06106014 .32564351)">
+<rect fill="#5a8c5a" height="13" rx="2.6149371" ry="2.6149368" width="13" x="19" y="19"/>
+<path d="m21.6 25.499999l7.8 0" style="overflow:visible;fill:#fff;fill-rule:evenodd;stroke:#fff;stroke-width:2.5999999;stroke-linecap:round;stroke-linejoin:round"/>
+<path d="m25.5 29.399999l0-7.799999" style="overflow:visible;fill:#fff;fill-rule:evenodd;stroke:#fff;stroke-width:2.5999999;stroke-linecap:round;stroke-linejoin:round"/>
+<path d="m20.3 25.499999h10.4c0 0 0 0 0-2.6 0-2.599999-.65-2.599999-5.2-2.599999-4.55 0-5.2 0-5.2 2.599999 0 2.6 0 2.6 0 2.6z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
+</g>
+</svg>

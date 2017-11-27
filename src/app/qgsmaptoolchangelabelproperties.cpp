@@ -21,65 +21,119 @@
 #include "qgsrubberband.h"
 #include "qgsvectorlayer.h"
 
-QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas* canvas ): QgsMapToolLabel( canvas )
+QgsMapToolChangeLabelProperties::QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas ): QgsMapToolLabel( canvas )
 {
+  mPalProperties << QgsPalLayerSettings::PositionX;
+  mPalProperties << QgsPalLayerSettings::PositionY;
+  mPalProperties << QgsPalLayerSettings::Show;
+  mPalProperties << QgsPalLayerSettings::LabelRotation;
+  mPalProperties << QgsPalLayerSettings::Family;
+  mPalProperties << QgsPalLayerSettings::FontStyle;
+  mPalProperties << QgsPalLayerSettings::Size;
+  mPalProperties << QgsPalLayerSettings::Bold;
+  mPalProperties << QgsPalLayerSettings::Italic;
+  mPalProperties << QgsPalLayerSettings::Underline;
+  mPalProperties << QgsPalLayerSettings::Color;
+  mPalProperties << QgsPalLayerSettings::Strikeout;
+  mPalProperties << QgsPalLayerSettings::BufferSize;
+  mPalProperties << QgsPalLayerSettings::BufferColor;
+  mPalProperties << QgsPalLayerSettings::LabelDistance;
+  mPalProperties << QgsPalLayerSettings::Hali;
+  mPalProperties << QgsPalLayerSettings::Vali;
+  mPalProperties << QgsPalLayerSettings::ScaleVisibility;
+  mPalProperties << QgsPalLayerSettings::MinScale;
+  mPalProperties << QgsPalLayerSettings::MaxScale;
+  mPalProperties << QgsPalLayerSettings::AlwaysShow;
 }
 
-QgsMapToolChangeLabelProperties::~QgsMapToolChangeLabelProperties()
-{
-}
-
-void QgsMapToolChangeLabelProperties::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolChangeLabelProperties::canvasPressEvent( QgsMapMouseEvent *e )
 {
   deleteRubberBands();
 
-  if ( !labelAtPosition( e, mCurrentLabelPos ) )
+  QgsLabelPosition labelPos;
+  if ( !labelAtPosition( e, labelPos ) || labelPos.isDiagram )
   {
+    mCurrentLabel = LabelDetails();
     return;
   }
 
-  QgsVectorLayer* vlayer = currentLayer();
-  if ( !vlayer || !vlayer->isEditable() )
+  mCurrentLabel = LabelDetails( labelPos );
+  if ( !mCurrentLabel.valid || !mCurrentLabel.layer )
   {
     return;
   }
 
   createRubberBands();
+
+  if ( !mCurrentLabel.layer->isEditable() )
+  {
+    QgsPalIndexes indexes;
+    bool newAuxiliaryLayer = createAuxiliaryFields( indexes );
+
+    // in case of a new auxiliary layer, a dialog window is displayed and the
+    // canvas release event is lost.
+    if ( newAuxiliaryLayer )
+    {
+      canvasReleaseEvent( e );
+    }
+  }
 }
 
-void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolChangeLabelProperties::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
-  QgsVectorLayer* vlayer = currentLayer();
-  if ( mLabelRubberBand && mCanvas && vlayer )
+  if ( mLabelRubberBand && mCurrentLabel.valid )
   {
     QString labeltext = QString(); // NULL QString signifies no expression
-    bool settingsOk;
-    QgsPalLayerSettings& labelSettings = currentLabelSettings( &settingsOk );
-    if ( settingsOk && labelSettings.isExpression )
+    if ( mCurrentLabel.settings.isExpression )
     {
-      labeltext = mCurrentLabelPos.labelText;
+      labeltext = mCurrentLabel.pos.labelText;
     }
 
-    QgsLabelPropertyDialog d( mCurrentLabelPos.layerID, mCurrentLabelPos.featureId, mCurrentLabelPos.labelFont, labeltext, mCanvas->mapRenderer() );
+    QgsLabelPropertyDialog d( mCurrentLabel.pos.layerID,
+                              mCurrentLabel.pos.providerID,
+                              mCurrentLabel.pos.featureId,
+                              mCurrentLabel.pos.labelFont,
+                              labeltext, nullptr );
+    d.setMapCanvas( canvas() );
+
+    connect( &d, &QgsLabelPropertyDialog::applied, this, &QgsMapToolChangeLabelProperties::dialogPropertiesApplied );
     if ( d.exec() == QDialog::Accepted )
     {
-      const QgsAttributeMap& changes = d.changedProperties();
-      if ( changes.size() > 0 )
-      {
-        vlayer->beginEditCommand( tr( "Changed properties for label" ) + QString( " '%1'" ).arg( currentLabelText( 24 ) ) );
-
-        QgsAttributeMap::const_iterator changeIt = changes.constBegin();
-        for ( ; changeIt != changes.constEnd(); ++changeIt )
-        {
-          vlayer->changeAttributeValue( mCurrentLabelPos.featureId, changeIt.key(), changeIt.value(), true );
-        }
-
-        vlayer->endEditCommand();
-        mCanvas->refresh();
-      }
+      applyChanges( d.changedProperties() );
     }
+
     deleteRubberBands();
   }
+}
+
+void QgsMapToolChangeLabelProperties::applyChanges( const QgsAttributeMap &changes )
+{
+  QgsVectorLayer *vlayer = mCurrentLabel.layer;
+  if ( !vlayer )
+    return;
+
+  if ( !changes.isEmpty() )
+  {
+    vlayer->beginEditCommand( tr( "Changed properties for label" ) + QStringLiteral( " '%1'" ).arg( currentLabelText( 24 ) ) );
+
+    QgsAttributeMap::const_iterator changeIt = changes.constBegin();
+    for ( ; changeIt != changes.constEnd(); ++changeIt )
+    {
+      vlayer->changeAttributeValue( mCurrentLabel.pos.featureId, changeIt.key(), changeIt.value() );
+    }
+
+    vlayer->endEditCommand();
+    vlayer->triggerRepaint();
+  }
+}
+
+void QgsMapToolChangeLabelProperties::dialogPropertiesApplied()
+{
+  QgsLabelPropertyDialog *dlg = qobject_cast<QgsLabelPropertyDialog *>( sender() );
+  if ( !dlg )
+    return;
+
+  applyChanges( dlg->changedProperties() );
 }
 

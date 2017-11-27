@@ -1,31 +1,79 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspythonrunner.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsPythonRunner
 {
+%Docstring
+Utility class for running Python commands from various parts of QGIS.
+There is no direct Python support in the core library, so it is expected
+that application with Python support creates a subclass that implements
+pure virtual function(s) during the initialization. The static methods
+will then work as expected.
+
+Added in QGIS v?
+%End
+
 %TypeHeaderCode
-#include <qgspythonrunner.h>
+#include "qgspythonrunner.h"
 %End
   public:
 
-    /** returns true if the runner has an instance
-        (and thus is able to run commands) */
     static bool isValid();
+%Docstring
+ Returns true if the runner has an instance
+(and thus is able to run commands) *
+ :rtype: bool
+%End
 
-    /** execute a python statement */
-    static bool run( QString command, QString messageOnError = QString() );
+    static bool run( const QString &command, const QString &messageOnError = QString() );
+%Docstring
+Execute a Python statement
+ :rtype: bool
+%End
 
-    /** Eval a python statement */
-    static bool eval( QString command, QString& result);
+    static bool eval( const QString &command, QString &result /Out/ );
+%Docstring
+Eval a Python statement
+ :rtype: bool
+%End
 
-    /** assign an instance of python runner so that run() can be used.
-      This method should be called during app initialization.
-      Takes ownership of the object, deletes previous instance. */
-    static void setInstance( QgsPythonRunner* runner /Transfer/ );
+    static void setInstance( QgsPythonRunner *runner /Transfer/ );
+%Docstring
+ Assign an instance of Python runner so that run() can be used.
+This method should be called during app initialization.
+Takes ownership of the object, deletes previous instance. *
+%End
 
   protected:
-    /** protected constructor: can be instantiated only from children */
     QgsPythonRunner();
+%Docstring
+Protected constructor: can be instantiated only from children
+%End
     virtual ~QgsPythonRunner();
 
     virtual bool runCommand( QString command, QString messageOnError = QString() ) = 0;
+%Docstring
+ :rtype: bool
+%End
 
-    virtual bool evalCommand( QString command, QString& result ) = 0;
+    virtual bool evalCommand( QString command, QString &result ) = 0;
+%Docstring
+ :rtype: bool
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgspythonrunner.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

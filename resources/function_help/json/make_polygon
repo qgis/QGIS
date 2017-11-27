@@ -1,0 +1,14 @@
+{
+  "name": "make_polygon",
+  "type": "function",
+  "description": "Creates a polygon geometry from an outer ring and optional series of inner ring geometries.",
+  "variableLenArguments": true,
+  "arguments": [
+	{"arg":"outerRing", "description": "closed line geometry for polygon's outer ring"},
+	{"arg":"innerRing1", "syntaxOnly": true},
+	{"arg":"innerRing2", "syntaxOnly": true},	
+	{"arg":"innerRing", "descOnly": true, "description":"optional closed line geometry for inner ring"}],
+  "examples": [ { "expression":"geom_to_wkt(make_polygon(geom_from_wkt('LINESTRING( 0 0, 0 1, 1 1, 1 0, 0 0 )')))", "returns":"'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0))'"},
+    { "expression":"geom_to_wkt(make_polygon(geom_from_wkt('LINESTRING( 0 0, 0 1, 1 1, 1 0, 0 0 )'),geom_from_wkt('LINESTRING( 0.1 0.1, 0.1 0.2, 0.2 0.2, 0.2 0.1, 0.1 0.1 )'),geom_from_wkt('LINESTRING( 0.8 0.8, 0.8 0.9, 0.9 0.9, 0.9 0.8, 0.8 0.8 )')))", "returns":"'Polygon ((0 0, 0 1, 1 1, 1 0, 0 0),(0.1 0.1, 0.1 0.2, 0.2 0.2, 0.2 0.1, 0.1 0.1),(0.8 0.8, 0.8 0.9, 0.9 0.9, 0.9 0.8, 0.8 0.8))'"}
+    ]
+}

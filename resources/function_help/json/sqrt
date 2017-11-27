@@ -1,0 +1,8 @@
+{
+  "name": "sqrt",
+  "type": "function",
+  "description": "Returns square root of a value.",
+  "arguments": [ {"arg":"value","description":"a number"}],
+  "examples": [ { "expression":"sqrt(9)", "returns":"3"}
+  ]
+}

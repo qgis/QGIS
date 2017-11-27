@@ -1,54 +1,101 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsclipper.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+%Feature ARM // Some parts are not available in sip bindings on ARM because of qreal double vs. float issues
+
+
 class QgsClipper
 {
-%TypeHeaderCode
-#include <qgsclipper.h>
+%Docstring
+ A class to trim lines and polygons to within a rectangular region.
+ The functions in this class are likely to be called from within a
+ render loop and hence need to as CPU efficient as possible.
+ The main purpose of the functions in this class are to trim lines
+  and polygons to lie within a rectangular region. This is necessary
+  for drawing items to an X11 display which have a limit on the
+   magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
 %End
 
+%TypeHeaderCode
+#include "qgsclipper.h"
+%End
   public:
 
-    // Coordinates of the rectangular box that we trim to.
-    //
-    // These are the limits for X11 screen coordinates. The actual
-    // values are +/-32767, but we allow a little bit of space for
-    // rounding errors.
 
-    // You may wonder why the clipping is done to these coordindates
-    // rather than the boundaries of the qgis canvas. Reasons include:
-    // - making the boundaries static const allows the compiler to
-    //   optimise the code that uses these values more than if they changed
-    //   for every call to the trim code.
-    // - clipping takes quite a bit of CPU effort, and the less that this is
-    //   done the better. More stuff would have to be clipped if the
-    //   boundaries were the qgis canvas (but this may be offset by
-    //   having less to draw).
-    //
-    // The limit is set to 30,000 instead of 32768 because that things
-    // still go wrong.
 
     static const double MAX_X;
-    static const double MIN_X;
-    static const double MAX_Y;
-    static const double MIN_Y;
-
-
-    // A handy way to refer to the four boundaries
-    enum Boundary {XMax, XMin, YMax, YMin};
-
-    // Trims the given feature to a rectangular box. Returns the trimmed
-    // feature in x and y. The shapeOpen parameter determines whether
-    // the function treats the points as a closed shape (polygon), or as
-    // an open shape (linestring).
-
-%If (!ANDROID)
-    static void trimFeature( QVector<double>& x,
-                             QVector<double>& y,
-                             bool shapeOpen );
+%Docstring
+Maximum X-coordinate of the rectangular box used for clipping.
 %End
-    static void trimPolygon( QPolygonF& pts, const QgsRectangle& clipRect );
+    static const double MIN_X;
+%Docstring
+Minimum X-coordinate of the rectangular box used for clipping.
+%End
+    static const double MAX_Y;
+%Docstring
+Maximum Y-coordinate of the rectangular box used for clipping.
+%End
+    static const double MIN_Y;
+%Docstring
+Minimum Y-coordinate of the rectangular box used for clipping.
+%End
 
-    /**Reads a polyline from WKB and clips it to clipExtent
-      @param wkb pointer to the start of the line wkb
-      @param clipExtent clipping bounds
-      @param line out: clipped line coordinates*/
-    static const unsigned char* clippedLineWKB( const unsigned char* wkb, const QgsRectangle& clipExtent, QPolygonF& line );
+
+    enum Boundary
+    {
+      XMax,
+      XMin,
+      YMax,
+      YMin
+    };
+
+%If (!ARM) // Not available on ARM sip bindings because of qreal issues
+
+    static void trimFeature( QVector<double> &x,
+                             QVector<double> &y,
+                             bool shapeOpen );
+%Docstring
+ Trims the given feature to a rectangular box. Returns the trimmed
+ feature in x and y. The shapeOpen parameter determines whether
+ the function treats the points as a closed shape (polygon), or as
+ an open shape (linestring).
+
+.. note::
+
+   not available in Python bindings on android
+%End
+
+%End
+
+    static void trimPolygon( QPolygonF &pts, const QgsRectangle &clipRect );
+
+    static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
+%Docstring
+ Takes a linestring and clips it to clipExtent
+ \param curve the linestring
+ \param clipExtent clipping bounds
+ :return: clipped line coordinates
+ :rtype: QPolygonF
+%End
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsclipper.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

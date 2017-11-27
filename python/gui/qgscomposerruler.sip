@@ -1,7 +1,20 @@
-class QgsComposerRuler : QWidget
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscomposerruler.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+class QgsComposerRuler: QWidget
 {
+%Docstring
+ A class to show paper scale and the current cursor position
+%End
+
 %TypeHeaderCode
-#include <qgscomposerruler.h>
+#include "qgscomposerruler.h"
 %End
   public:
     enum Direction
@@ -10,20 +23,48 @@ class QgsComposerRuler : QWidget
       Vertical
     };
 
-    QgsComposerRuler( Direction d );
+    QgsComposerRuler( QgsComposerRuler::Direction d );
     ~QgsComposerRuler();
 
-    QSize minimumSizeHint() const;
+    virtual QSize minimumSizeHint() const;
 
-    void setSceneTransform( const QTransform& transform );
-    void updateMarker( const QPointF& pos );
 
-    void setComposition( QgsComposition* c );
-    QgsComposition* composition();
+    void setSceneTransform( const QTransform &transform );
+    void updateMarker( QPointF pos );
+
+    void setComposition( QgsComposition *c );
+    QgsComposition *composition();
+%Docstring
+ :rtype: QgsComposition
+%End
+
+    int rulerSize();
+%Docstring
+ :rtype: int
+%End
 
   protected:
-    void paintEvent( QPaintEvent* event );
-    void mouseMoveEvent( QMouseEvent* event );
-    void mouseReleaseEvent( QMouseEvent* event );
-    void mousePressEvent( QMouseEvent* event );
+    virtual void paintEvent( QPaintEvent *event );
+
+    virtual void mouseMoveEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
+    virtual void mousePressEvent( QMouseEvent *event );
+
+
+  signals:
+    void cursorPosChanged( QPointF );
+%Docstring
+Is emitted when mouse cursor coordinates change
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscomposerruler.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

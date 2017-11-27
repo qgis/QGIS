@@ -2,7 +2,7 @@
 
 """
 ***************************************************************************
-    ParametersTest.py
+    ParametersTest
     ---------------------
     Date                 : March 2013
     Copyright            : (C) 2013 by Victor Olaya
@@ -25,69 +25,100 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import unittest
-from processing.parameters.ParameterNumber import ParameterNumber
-from processing.parameters.ParameterCrs import ParameterCrs
-from processing.parameters.ParameterExtent import ParameterExtent
+import sys
+from inspect import isclass
+from qgis.testing import start_app, unittest
+
+from processing.core.parameters import (Parameter,
+                                        ParameterBoolean,
+                                        ParameterCrs,
+                                        ParameterExtent,
+                                        ParameterFile,
+                                        ParameterFixedTable,
+                                        ParameterMultipleInput,
+                                        ParameterNumber,
+                                        ParameterPoint,
+                                        ParameterString,
+                                        ParameterVector,
+                                        ParameterTable,
+                                        ParameterTableField,
+                                        ParameterSelection,
+                                        ParameterExpression,
+                                        getParameterFromString)
+from processing.tools import dataobjects
+from processing.tests.TestData import points
+
+from qgis.core import (QgsRasterLayer,
+                       QgsVectorLayer)
+
+start_app()
 
 
-class ParametersTest(unittest.TestCase):
+class ParameterSelectionTest(unittest.TestCase):
 
-    def testParameterNumber(self):
-        param = ParameterNumber('name', 'desc', 0, 10)
-        assert not param.setValue('wrongvalue')
-        assert param.value is None
-        assert not param.setValue(25)
-        assert param.value is None
-        assert param.setValue(5)
-        assert param.value == 5
-        assert param.setValue(None)
-        assert param.value == param.default
-        s = param.serialize()
-        param2 = ParameterNumber()
-        param2.deserialize(s)
-        assert param.default == param2.default
-        assert param.max == param2.max
-        assert param.min == param2.min
-        assert param.description == param2.description
-        assert param.name == param2.name
+    def testTupleOptions(self):
+        options = (
+            ('o1', 'option1'),
+            ('o2', 'option2'),
+            ('o3', 'option3'))
 
-    def testParameterCRS(self):
-        param = ParameterCrs('name', 'desc')
-        assert param.setValue('EPSG:12003')
-        assert param.value == 'EPSG:12003'
-        assert param.setValue(None)
-        assert param.value == param.default
-        s = param.serialize()
-        param2 = ParameterCrs()
-        param2.deserialize(s)
-        assert param.default == param2.default
-        assert param.description == param2.description
-        assert param.name == param2.name
+        optionalParameter = ParameterSelection('myName', 'myDesc', options, default='o1')
+        self.assertEqual(optionalParameter.value, 'o1')
+        optionalParameter.setValue('o2')
+        self.assertEqual(optionalParameter.value, 'o2')
 
-    def testParameterExtent(self):
-        param = ParameterExtent('name', 'desc')
-        assert not param.setValue('0,2,0')
-        assert not param.setValue('0,2,0,a')
-        assert not param.setValue('0,2,2,4')
-        assert param.value == '0,2,2,4'
-        assert param.setValue(None)
-        assert param.value == param.default
-        s = param.serialize()
-        param2 = ParameterExtent()
-        param2.deserialize(s)
-        assert param.default == param2.default
-        assert param.description == param2.description
-        assert param.name == param2.name
+        optionalParameter = ParameterSelection('myName', 'myDesc', options, default=['o1', 'o2'], multiple=True)
+        self.assertEqual(optionalParameter.value, ['o1', 'o2'])
+        optionalParameter.setValue(['o2'])
+        self.assertEqual(optionalParameter.value, ['o2'])
 
 
-def suite():
-    suite = unittest.makeSuite(ParametersTest, 'test')
-    return suite
+class TestParameterFixedTable(unittest.TestCase):
+
+    def testTableToString(self):
+        table = [
+            ['a0', 'a1', 'a2'],
+            ['b0', 'b1', 'b2']
+        ]
+        self.assertEqual(ParameterFixedTable.tableToString(table), 'a0,a1,a2,b0,b1,b2')
+
+        table = [['a0']]
+        self.assertEqual(ParameterFixedTable.tableToString(table), 'a0')
+
+        table = [[]]
+        self.assertEqual(ParameterFixedTable.tableToString(table), '')
 
 
-def runtests():
-    result = unittest.TestResult()
-    testsuite = suite()
-    testsuite.run(result)
-    return result
+class ParameterMultipleInputTest(unittest.TestCase):
+
+    def testGetAsStringWhenRaster(self):
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=dataobjects.TYPE_RASTER)
+
+        # With Path
+        self.assertEqual(parameter.getAsString('/some/path'), '/some/path')
+
+        # With Layer
+        layer = QgsRasterLayer('/path/to/myRaster.tif', 'myRaster')
+        self.assertEqual(parameter.getAsString(layer), '/path/to/myRaster.tif')
+
+        # TODO With Layer Name, instead of Layer object
+
+    def testGetAsStringWhenFile(self):
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=dataobjects.TYPE_FILE)
+        self.assertEqual(parameter.getAsString('/some/path'), '/some/path')
+
+    def testGetAsStringWhenVector(self):
+        parameter = ParameterMultipleInput('myName', 'myDesc', datatype=dataobjects.TYPE_VECTOR_ANY)
+
+        # With Path
+        self.assertEqual(parameter.getAsString('/some/path'), '/some/path')
+
+        # With Layer
+        layer = QgsVectorLayer('/path/to/myVector.shp', 'myVector', 'memory')
+        self.assertEqual(parameter.getAsString(layer), '/path/to/myVector.shp')
+
+        # TODO With Layer Name, instead of Layer object
+
+
+if __name__ == '__main__':
+    unittest.main()

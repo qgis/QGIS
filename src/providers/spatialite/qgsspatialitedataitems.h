@@ -21,32 +21,39 @@ class QgsSLLayerItem : public QgsLayerItem
 {
     Q_OBJECT
   public:
-    QgsSLLayerItem( QgsDataItem* parent, QString name, QString path, QString uri, LayerType layerType );
+    QgsSLLayerItem( QgsDataItem *parent, const QString &name, const QString &path, const QString &uri, LayerType layerType );
 
-    QList<QAction*> actions();
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
   public slots:
+#ifdef HAVE_GUI
     void deleteLayer();
+#endif
 };
 
 class QgsSLConnectionItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsSLConnectionItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsSLConnectionItem();
+    QgsSLConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    QVector<QgsDataItem*> createChildren();
-    virtual bool equal( const QgsDataItem *other );
+    QVector<QgsDataItem *> createChildren() override;
+    virtual bool equal( const QgsDataItem *other ) override;
 
-    virtual QList<QAction*> actions();
+#ifdef HAVE_GUI
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
-    virtual bool acceptDrop() { return true; }
-    virtual bool handleDrop( const QMimeData * data, Qt::DropAction action );
+    virtual bool acceptDrop() override { return true; }
+    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
   public slots:
+#ifdef HAVE_GUI
     void editConnection();
     void deleteConnection();
+#endif
 
   protected:
     QString mDbPath;
@@ -56,18 +63,20 @@ class QgsSLRootItem : public QgsDataCollectionItem
 {
     Q_OBJECT
   public:
-    QgsSLRootItem( QgsDataItem* parent, QString name, QString path );
-    ~QgsSLRootItem();
+    QgsSLRootItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    QVector<QgsDataItem*> createChildren();
+    QVector<QgsDataItem *> createChildren() override;
 
-    virtual QWidget * paramWidget();
-
-    virtual QList<QAction*> actions();
+#ifdef HAVE_GUI
+    virtual QWidget *paramWidget() override;
+    QList<QAction *> actions( QWidget *parent ) override;
+#endif
 
   public slots:
-    void connectionsChanged();
+#ifdef HAVE_GUI
+    void onConnectionsChanged();
     void newConnection();
+#endif
     void createDatabase();
 };
 

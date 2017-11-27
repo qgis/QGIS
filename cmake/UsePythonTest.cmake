@@ -2,14 +2,15 @@
 # SET(ENV{PYTHONPATH} ${LIBRARY_OUTPUT_PATH})
 # SET(my_test "from test_mymodule import *\;test_mymodule()")
 # ADD_TEST(PYTHON-TEST-MYMODULE  python -c ${my_test})
-# Since cmake is only transmitting the ADD_TEST line to ctest thus you are loosing
+# Since cmake is only transmitting the ADD_TEST line to ctest thus you are losing
 # the env var. The only way to store the env var is to physically write in the cmake script
 # whatever PYTHONPATH you want and then add the test as 'cmake -P python_test.cmake'
 #
 # Usage:
-# SET_SOURCE_FILES_PROPERTIES(test.py PROPERTIES PYTHONPATH
-#   "${LIBRARY_OUTPUT_PATH}:${VTK_DIR}")
 # ADD_PYTHON_TEST(PYTHON-TEST test.py)
+#
+# Optionally pass environment variables to your test
+# ADD_PYTHON_TEST(PYTHON-TEST test.py FOO="bar" BAZ="quux")
 #
 #  Copyright (c) 2006-2010 Mathieu Malaterre <mathieu.malaterre@gmail.com>
 #
@@ -19,7 +20,7 @@
 #
 
 # Need python interpreter:
-FIND_PACKAGE(PythonInterp REQUIRED)
+FIND_PACKAGE(PythonInterp 3 REQUIRED)
 MARK_AS_ADVANCED(PYTHON_EXECUTABLE)
 
 MACRO(ADD_PYTHON_TEST TESTNAME FILENAME)
@@ -28,39 +29,50 @@ MACRO(ADD_PYTHON_TEST TESTNAME FILENAME)
 
   IF(WIN32)
     STRING(REGEX REPLACE ":" " " wo_semicolon "${ARGN}")
+    IF(USING_NINJA OR USING_NMAKE)
+      FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
+SET(ENV{QGIS_PREFIX_PATH} \"${QGIS_OUTPUT_DIRECTORY}/bin\")
+SET(ENV{PATH} \"${QGIS_OUTPUT_DIRECTORY}/bin;\$ENV{PATH}\")
+SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/;${QGIS_OUTPUT_DIRECTORY}/python/plugins;${CMAKE_SOURCE_DIR}/tests/src/python;\$ENV{PYTHONPATH}\")
+MESSAGE(\"PATH:\$ENV{PATH}\")
+")
+    ELSE(USING_NINJA OR USING_NMAKE)
+      FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
+SET(ENV{QGIS_PREFIX_PATH} \"${QGIS_OUTPUT_DIRECTORY}/bin/\${CMAKE_BUILD_TYPE}\")
+SET(ENV{PATH} \"${QGIS_OUTPUT_DIRECTORY}/bin/\${CMAKE_BUILD_TYPE};\$ENV{PATH}\")
+SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/;${QGIS_OUTPUT_DIRECTORY}/python/plugins;${CMAKE_SOURCE_DIR}/tests/src/python;\$ENV{PYTHONPATH}\")
+MESSAGE(\"PATH:\$ENV{PATH}\")
+")
+    ENDIF(USING_NINJA OR USING_NMAKE)
   ELSE(WIN32)
     STRING(REGEX REPLACE ";" " " wo_semicolon "${ARGN}")
+    FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
+SET(ENV{QGIS_PREFIX_PATH} \"${QGIS_OUTPUT_DIRECTORY}\")
+SET(ENV{LD_LIBRARY_PATH} \"${pyenv}:${QGIS_OUTPUT_DIRECTORY}/lib:\$ENV{LD_LIBRARY_PATH}\")
+SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/:${QGIS_OUTPUT_DIRECTORY}/python/plugins:${CMAKE_SOURCE_DIR}/tests/src/python:\$ENV{PYTHONPATH}\")
+MESSAGE(\"export LD_LIBRARY_PATH=\$ENV{LD_LIBRARY_PATH}\")
+")
   ENDIF(WIN32)
 
-  FILE(WRITE ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake
-"
-IF(WIN32)
-  SET(ENV{QGIS_PREFIX_PATH} \"${QGIS_OUTPUT_DIRECTORY}/bin/\${CMAKE_BUILD_TYPE}\")
-  SET(ENV{PATH} \"${QGIS_OUTPUT_DIRECTORY}/bin/\${CMAKE_BUILD_TYPE};\$ENV{PATH}\")
-  SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/;\$ENV{PYTHONPATH}\")
-  MESSAGE(\"PATH:\$ENV{PATH}\")
-ELSE(WIN32)
-  SET(ENV{QGIS_PREFIX_PATH} \"${QGIS_OUTPUT_DIRECTORY}\")
-  SET(ENV{LD_LIBRARY_PATH} \"${pyenv}:${QGIS_OUTPUT_DIRECTORY}/lib:\$ENV{LD_LIBRARY_PATH}\")
-  SET(ENV{PYTHONPATH} \"${QGIS_OUTPUT_DIRECTORY}/python/:\$ENV{PYTHONPATH}\")
-  MESSAGE(\"LD_LIBRARY_PATH:\$ENV{LD_LIBRARY_PATH}\")
-ENDIF(WIN32)
+  FOREACH(_in ${ARGN})
+    STRING(REGEX MATCH "^([^=]+)=(.*)$" _out ${_in})
+    MESSAGE(STATUS "ENV: SET(ENV{${CMAKE_MATCH_1}} \"${CMAKE_MATCH_2}\")")
+    FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
+  SET(ENV{${CMAKE_MATCH_1}} \"${CMAKE_MATCH_2}\")
+")
+  ENDFOREACH(_in)
 
-MESSAGE(\"PYTHONPATH:\$ENV{PYTHONPATH}\")
-MESSAGE(STATUS \"Running ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
+  SET (PYTHON_TEST_WRAPPER "" CACHE STRING "Wrapper command for python tests (e.g. `timeout -sSIGSEGV 55s` to segfault after 55 seconds)")
+  FILE(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${TESTNAME}.cmake "
+MESSAGE(\"export PYTHONPATH=\$ENV{PYTHONPATH}\")
+MESSAGE(STATUS \"Running ${PYTHON_TEST_WRAPPER} ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}\")
 EXECUTE_PROCESS(
-  COMMAND ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolumn}
-  #WORKING_DIRECTORY @LIBRARY_OUTPUT_PATH@
+  COMMAND ${PYTHON_TEST_WRAPPER} ${PYTHON_EXECUTABLE} ${loc} ${wo_semicolon}
   RESULT_VARIABLE import_res
-  OUTPUT_VARIABLE import_output
-  ERROR_VARIABLE  import_output
 )
 # Pass the output back to ctest
-IF(import_output)
-  MESSAGE(" \${import_output} ")
-ENDIF(import_output)
 IF(import_res)
-  MESSAGE(SEND_ERROR " \${import_res} ")
+  MESSAGE(FATAL_ERROR \"Test failed: \${import_res}\")
 ENDIF(import_res)
 "
 )

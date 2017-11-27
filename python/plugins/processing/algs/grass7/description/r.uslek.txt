@@ -1,0 +1,8 @@
+r.uslek
+Computes USLE Soil Erodibility Factor (K).
+Raster (r.*)
+QgsProcessingParameterRasterLayer|psand|Name of soil sand fraction raster map [0.0-1.0]|None|False
+QgsProcessingParameterRasterLayer|pclay|Name of soil clay fraction raster map [0.0-1.0]|None|False
+QgsProcessingParameterRasterLayer|psilt|Name of soil silt fraction raster map [0.0-1.0]|None|False
+QgsProcessingParameterRasterLayer|pomat|Name of soil organic matter raster map [0.0-1.0]|None|False
+QgsProcessingParameterRasterDestination|output|USLE R Raster

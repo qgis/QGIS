@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>499</width>
+    <width>315</width>
     <height>490</height>
    </rect>
   </property>
@@ -14,7 +14,16 @@
    <string>Form</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <property name="margin">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
     <number>0</number>
    </property>
    <item row="1" column="1">
@@ -107,17 +116,7 @@
         </size>
        </property>
        <property name="text">
-        <string>...</string>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QCheckBox" name="mRelativePathChkBx">
-       <property name="toolTip">
-        <string>Generated path will be relative to current SVG search directories or to Project file</string>
-       </property>
-       <property name="text">
-        <string>Relative path</string>
+        <string>…</string>
        </property>
       </widget>
      </item>
@@ -126,7 +125,10 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>mGroupsTreeView</tabstop>
   <tabstop>mImagesListView</tabstop>
+  <tabstop>mFileLineEdit</tabstop>
+  <tabstop>mFilePushButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

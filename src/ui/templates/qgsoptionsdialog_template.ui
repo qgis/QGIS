@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>827</width>
-    <height>759</height>
+    <width>723</width>
+    <height>444</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -118,17 +118,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="QLabel" name="label">
-             <property name="styleSheet">
-              <string notr="true">font-weight:bold;</string>
-             </property>
-             <property name="text">
-              <string>Section</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QScrollArea" name="scrollArea">
+            <widget class="QgsScrollArea" name="scrollArea">
              <property name="frameShape">
               <enum>QFrame::NoFrame</enum>
              </property>
@@ -140,8 +130,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>646</width>
-                <height>669</height>
+                <width>549</width>
+                <height>393</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_13">
@@ -219,6 +209,14 @@
  <resources>
   <include location="../../../images/images.qrc"/>
  </resources>
+ <customwidgets>
+  <customwidget>
+   <class>QgsScrollArea</class>
+   <extends>QScrollArea</extends>
+   <header>qgis.gui</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <connections>
   <connection>
    <sender>mOptionsListWidget</sender>

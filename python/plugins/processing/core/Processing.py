@@ -25,332 +25,175 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import sys
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from qgis.core import *
+import os
+import traceback
+
+from qgis.PyQt.QtCore import Qt, QCoreApplication
+from qgis.PyQt.QtWidgets import QApplication
+from qgis.PyQt.QtGui import QCursor
+
+from qgis.utils import iface
+from qgis.core import (QgsMessageLog,
+                       QgsApplication,
+                       QgsMapLayer,
+                       QgsProcessingProvider,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingException,
+                       QgsProcessingParameterDefinition,
+                       QgsProcessingOutputVectorLayer,
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingOutputMapLayer)
+
 import processing
-from processing import interface
+from processing.script.ScriptUtils import ScriptUtils
 from processing.core.ProcessingConfig import ProcessingConfig
 from processing.core.GeoAlgorithm import GeoAlgorithm
-from processing.core.ProcessingLog import ProcessingLog
-from processing.gui.AlgorithmClassification import AlgorithmDecorator
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
-from processing.gui.Postprocessing import Postprocessing
-from processing.gui.UnthreadedAlgorithmExecutor import \
-        UnthreadedAlgorithmExecutor
-from processing.modeler.Providers import Providers
-from processing.modeler.ModelerAlgorithmProvider import \
-        ModelerAlgorithmProvider
-from processing.modeler.ModelerOnlyAlgorithmProvider import \
-        ModelerOnlyAlgorithmProvider
-from processing.algs.QGISAlgorithmProvider import QGISAlgorithmProvider
-from processing.grass.GrassAlgorithmProvider import GrassAlgorithmProvider
-from processing.lidar.LidarToolsAlgorithmProvider import \
-        LidarToolsAlgorithmProvider
-from processing.gdal.GdalOgrAlgorithmProvider import GdalOgrAlgorithmProvider
-from processing.otb.OTBAlgorithmProvider import OTBAlgorithmProvider
-from processing.r.RAlgorithmProvider import RAlgorithmProvider
-from processing.saga.SagaAlgorithmProvider import SagaAlgorithmProvider
-from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider
-from processing.taudem.TauDEMAlgorithmProvider import TauDEMAlgorithmProvider
-from processing.admintools.AdminToolsAlgorithmProvider import \
-        AdminToolsAlgorithmProvider
+from processing.gui.Postprocessing import handleAlgorithmResults
+from processing.gui.AlgorithmExecutor import execute
 from processing.tools import dataobjects
 
+from processing.algs.qgis.QGISAlgorithmProvider import QGISAlgorithmProvider  # NOQA
+from processing.algs.grass7.Grass7AlgorithmProvider import Grass7AlgorithmProvider
+from processing.algs.gdal.GdalAlgorithmProvider import GdalAlgorithmProvider  # NOQA
+from processing.algs.saga.SagaAlgorithmProvider import SagaAlgorithmProvider  # NOQA
+from processing.script.ScriptAlgorithmProvider import ScriptAlgorithmProvider  # NOQA
+#from processing.preconfigured.PreconfiguredAlgorithmProvider import PreconfiguredAlgorithmProvider  # NOQA
 
-class Processing:
+# should be loaded last - ensures that all dependent algorithms are available when loading models
+from processing.modeler.ModelerAlgorithmProvider import ModelerAlgorithmProvider  # NOQA
 
-    listeners = []
-    providers = []
 
-    # A dictionary of algorithms. Keys are names of providers
-    # and values are list with all algorithms from that provider
-    algs = {}
-
-    # Same structure as algs
-    actions = {}
-
-    # All the registered context menu actions for the toolbox
-    contextMenuActions = []
-
-    modeler = ModelerAlgorithmProvider()
+class Processing(object):
+    BASIC_PROVIDERS = []
 
     @staticmethod
-    def addProvider(provider, updateList=False):
-        """Use this method to add algorithms from external providers.
-        """
-
-        # Note: this might slow down the initialization process if
-        # there are many new providers added. Should think of a
-        # different solution
+    def activateProvider(providerOrName, activate=True):
+        provider_id = providerOrName.id() if isinstance(providerOrName, QgsProcessingProvider) else providerOrName
+        provider = QgsApplication.processingRegistry().providerById(provider_id)
         try:
-            provider.initializeSettings()
-            Processing.providers.append(provider)
-            ProcessingConfig.loadSettings()
-            if updateList:
-                Processing.updateAlgsList()
+            provider.setActive(True)
+            provider.refreshAlgorithms()
         except:
-            ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                                   'Could not load provider:'
-                                   + provider.getDescription() + '\n'
-                                   + unicode(sys.exc_info()[1]))
-            Processing.removeProvider(provider)
-
-    @staticmethod
-    def removeProvider(provider):
-        """Use this method to remove a provider.
-
-        This method should be called when unloading a plugin that
-        contributes a provider.
-        """
-        try:
-            provider.unload()
-            Processing.providers.remove(provider)
-            ProcessingConfig.loadSettings()
-            Processing.updateAlgsList()
-        except:
-            # This try catch block is here to avoid problems if the
-            # plugin with a provider is unloaded after the Processing
-            # framework itself has been unloaded. It is a quick fix
-            # before I found out how to properly avoid that.
-            pass
-
-    @staticmethod
-    def getProviderFromName(name):
-        """Returns the provider with the given name.
-        """
-        for provider in Processing.providers:
-            if provider.getName() == name:
-                return provider
-        return Processing.modeler
-
-    @staticmethod
-    def getInterface():
-        return interface.iface
-
-    @staticmethod
-    def setInterface(iface):
-        pass
+            # provider could not be activated
+            QgsMessageLog.logMessage(Processing.tr('Error: Provider {0} could not be activated\n').format(provider_id),
+                                     Processing.tr("Processing"))
 
     @staticmethod
     def initialize():
+        if "model" in [p.id() for p in QgsApplication.processingRegistry().providers()]:
+            return
         # Add the basic providers
-        Processing.addProvider(QGISAlgorithmProvider())
-        Processing.addProvider(ModelerOnlyAlgorithmProvider())
-        Processing.addProvider(GdalOgrAlgorithmProvider())
-        Processing.addProvider(LidarToolsAlgorithmProvider())
-        Processing.addProvider(OTBAlgorithmProvider())
-        Processing.addProvider(RAlgorithmProvider())
-        Processing.addProvider(SagaAlgorithmProvider())
-        Processing.addProvider(GrassAlgorithmProvider())
-        Processing.addProvider(ScriptAlgorithmProvider())
-        Processing.addProvider(TauDEMAlgorithmProvider())
-        Processing.addProvider(AdminToolsAlgorithmProvider())
-        Processing.modeler.initializeSettings()
-
+        for c in QgsProcessingProvider.__subclasses__():
+            p = c()
+            Processing.BASIC_PROVIDERS.append(p)
+            QgsApplication.processingRegistry().addProvider(p)
         # And initialize
-        AlgorithmDecorator.loadClassification()
-        ProcessingLog.startLogging()
         ProcessingConfig.initialize()
-        ProcessingConfig.loadSettings()
+        ProcessingConfig.readSettings()
         RenderingStyles.loadStyles()
-        Processing.loadFromProviders()
 
     @staticmethod
-    def updateAlgsList():
-        """Call this method when there has been any change that
-        requires the list of algorithms to be created again from
-        algorithm providers.
-        """
-        Processing.loadFromProviders()
-        Processing.fireAlgsListHasChanged()
+    def deinitialize():
+        for p in Processing.BASIC_PROVIDERS:
+            QgsApplication.processingRegistry().removeProvider(p)
+
+        Processing.BASIC_PROVIDERS = []
 
     @staticmethod
-    def loadFromProviders():
-        Processing.loadAlgorithms()
-        Processing.loadActions()
-        Processing.loadContextMenuActions()
+    def addScripts(folder):
+        Processing.initialize()
+        provider = QgsApplication.processingRegistry().providerById("qgis")
+        scripts = ScriptUtils.loadFromFolder(folder)
+        # fix_print_with_import
+        print(scripts)
+        for script in scripts:
+            script.allowEdit = False
+            script._icon = provider._icon
+        provider.externalAlgs.extend(scripts)
+        provider.refreshAlgorithms()
 
     @staticmethod
-    def updateProviders():
-        for provider in Processing.providers:
-            provider.loadAlgorithms()
+    def removeScripts(folder):
+        provider = QgsApplication.processingRegistry().providerById("qgis")
+        for alg in provider.externalAlgs[::-1]:
+            path = os.path.dirname(alg.descriptionFile)
+            if path == folder:
+                provider.externalAlgs.remove(alg)
+        provider.refreshAlgorithms()
 
     @staticmethod
-    def addAlgListListener(listener):
-        """Listener should implement a algsListHasChanged() method.
-
-        Whenever the list of algorithms changes, that method will be
-        called for all registered listeners.
-        """
-        Processing.listeners.append(listener)
-
-    @staticmethod
-    def fireAlgsListHasChanged():
-        for listener in Processing.listeners:
-            listener.algsListHasChanged()
-
-    @staticmethod
-    def loadAlgorithms():
-        Processing.algs = {}
-        Processing.updateProviders()
-        for provider in Processing.providers:
-            providerAlgs = provider.algs
-            algs = {}
-            for alg in providerAlgs:
-                algs[alg.commandLineName()] = alg
-            Processing.algs[provider.getName()] = algs
-
-        # This is a special provider, since it depends on others.
-        # TODO: Fix circular imports, so this provider can be
-        # incorporated as a normal one.
-        provider = Processing.modeler
-        provider.setAlgsList(Processing.algs)
-        provider.loadAlgorithms()
-        providerAlgs = provider.algs
-        algs = {}
-        for alg in providerAlgs:
-            algs[alg.commandLineName()] = alg
-        Processing.algs[provider.getName()] = algs
-
-        # And we do it again, in case there are models containing
-        # models.
-        # TODO: Improve this
-        provider.setAlgsList(Processing.algs)
-        provider.loadAlgorithms()
-        providerAlgs = provider.algs
-        algs = {}
-        for alg in providerAlgs:
-            algs[alg.commandLineName()] = alg
-        Processing.algs[provider.getName()] = algs
-        provs = {}
-        for provider in Processing.providers:
-            provs[provider.getName()] = provider
-        provs[Processing.modeler.getName()] = Processing.modeler
-        Providers.providers = provs
-
-    @staticmethod
-    def loadActions():
-        for provider in Processing.providers:
-            providerActions = provider.actions
-            actions = list()
-            for action in providerActions:
-                actions.append(action)
-            Processing.actions[provider.getName()] = actions
-
-        provider = Processing.modeler
-        actions = list()
-        for action in provider.actions:
-            actions.append(action)
-        Processing.actions[provider.getName()] = actions
-
-    @staticmethod
-    def loadContextMenuActions():
-        Processing.contextMenuActions = []
-        for provider in Processing.providers:
-            providerActions = provider.contextMenuActions
-            for action in providerActions:
-                Processing.contextMenuActions.append(action)
-
-        provider = Processing.modeler
-        providerActions = provider.contextMenuActions
-        for action in providerActions:
-            Processing.contextMenuActions.append(action)
-
-    @staticmethod
-    def getAlgorithm(name):
-        for provider in Processing.algs.values():
-            if name in provider:
-                return provider[name]
-        return None
-
-    @staticmethod
-    def getAlgorithmFromFullName(name):
-        for provider in Processing.algs.values():
-            for alg in provider.values():
-                if alg.name == name:
-                    return alg
-        return None
-
-    @staticmethod
-    def getObject(uri):
-        """Returns the QGIS object identified by the given URI.
-        """
-        return dataobjects.getObjectFromUri(uri)
-
-    @staticmethod
-    def runandload(name, *args):
-        Processing.runAlgorithm(name, Postprocessing.handleAlgorithmResults,
-                                *args)
-
-    @staticmethod
-    def runAlgorithm(algOrName, onFinish, *args):
-        if isinstance(algOrName, GeoAlgorithm):
+    def runAlgorithm(algOrName, parameters, onFinish=None, feedback=None, context=None):
+        if isinstance(algOrName, QgsProcessingAlgorithm):
             alg = algOrName
         else:
-            alg = Processing.getAlgorithm(algOrName)
+            alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
+
+        if feedback is None:
+            feedback = MessageBarProgress(alg.displayName() if alg else Processing.tr('Processing'))
+
         if alg is None:
-            print 'Error: Algorithm not found\n'
-            return
-        if len(args) != alg.getVisibleParametersCount() \
-                    + alg.getVisibleOutputsCount():
-            print 'Error: Wrong number of parameters'
-            processing.alghelp(algOrName)
-            return
+            # fix_print_with_import
+            print('Error: Algorithm not found\n')
+            msg = Processing.tr('Error: Algorithm {0} not found\n').format(algOrName)
+            feedback.reportError(msg)
+            raise QgsProcessingException(msg)
 
-        alg = alg.getCopy()
-        if isinstance(args, dict):
-            # Set params by name
-            for (name, value) in args.items():
-                if alg.getParameterFromName(name).setValue(value):
-                    continue
-                if alg.getOutputFromName(name).setValue(value):
-                    continue
-                print 'Error: Wrong parameter value %s for parameter %s.' \
-                    % (value, name)
-                return
+        # check for any mandatory parameters which were not specified
+        for param in alg.parameterDefinitions():
+            if param.name() not in parameters:
+                if not param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                    # fix_print_with_import
+                    msg = Processing.tr('Error: Missing parameter value for parameter {0}.').format(param.name())
+                    print('Error: Missing parameter value for parameter %s.' % param.name())
+                    feedback.reportError(msg)
+                    raise QgsProcessingException(msg)
+
+        if context is None:
+            context = dataobjects.createContext(feedback)
+
+        ok, msg = alg.checkParameterValues(parameters, context)
+        if not ok:
+            # fix_print_with_import
+            print('Unable to execute algorithm\n' + str(msg))
+            msg = Processing.tr('Unable to execute algorithm\n{0}').format(msg)
+            feedback.reportError(msg)
+            raise QgsProcessingException(msg)
+
+        if not alg.validateInputCrs(parameters, context):
+            print('Warning: Not all input layers use the same CRS.\n' +
+                  'This can cause unexpected results.')
+            feedback.pushInfo(
+                Processing.tr('Warning: Not all input layers use the same CRS.\nThis can cause unexpected results.'))
+
+        ret, results = execute(alg, parameters, context, feedback)
+        if ret:
+            feedback.pushInfo(
+                Processing.tr('Results: {}').format(results))
+
+            if onFinish is not None:
+                onFinish(alg, context, feedback)
+            else:
+                # auto convert layer references in results to map layers
+                for out in alg.outputDefinitions():
+                    if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer, QgsProcessingOutputMapLayer)):
+                        result = results[out.name()]
+                        if not isinstance(result, QgsMapLayer):
+                            layer = context.takeResultLayer(result) # transfer layer ownership out of context
+                            if layer:
+                                results[out.name()] = layer # replace layer string ref with actual layer (+ownership)
         else:
-            i = 0
-            for param in alg.parameters:
-                if not param.hidden:
-                    if not param.setValue(args[i]):
-                        print 'Error: Wrong parameter value: ' \
-                            + unicode(args[i])
-                        return
-                    i = i + 1
+            msg = Processing.tr("There were errors executing the algorithm.")
+            feedback.reportError(msg)
+            raise QgsProcessingException(msg)
 
-            for output in alg.outputs:
-                if not output.hidden:
-                    if not output.setValue(args[i]):
-                        print 'Error: Wrong output value: ' + unicode(args[i])
-                        return
-                    i = i + 1
+        if isinstance(feedback, MessageBarProgress):
+            feedback.close()
+        return results
 
-        msg = alg.checkParameterValuesBeforeExecuting()
-        if msg:
-            print 'Unable to execute algorithm\n' + msg
-            return
-
-        if not alg.checkInputCRS():
-            print 'Warning: Not all input layers use the same CRS.\n' \
-                + 'This can cause unexpected results.'
-
-        ProcessingLog.addToLog(ProcessingLog.LOG_ALGORITHM, alg.getAsCommand())
-
-        # Don't set the wait cursor twice, because then when you
-        # restore it, it will still be a wait cursor.
-        cursor = QApplication.overrideCursor()
-        if cursor is None or cursor == 0:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-        elif cursor.shape() != Qt.WaitCursor:
-            QApplication.setOverrideCursor(QCursor(Qt.WaitCursor))
-
-        progress = MessageBarProgress()
-        ret = UnthreadedAlgorithmExecutor.runalg(alg, progress)
-        if onFinish is not None and ret:
-            onFinish(alg, progress)
-        QApplication.restoreOverrideCursor()
-        progress.close()
-        return alg
+    @staticmethod
+    def tr(string, context=''):
+        if context == '':
+            context = 'Processing'
+        return QCoreApplication.translate(context, string)

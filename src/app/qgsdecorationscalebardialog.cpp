@@ -11,28 +11,36 @@
  ***************************************************************************/
 
 #include "qgsdecorationscalebardialog.h"
-
 #include "qgsdecorationscalebar.h"
-
 #include "qgslogger.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
+#include "qgssettings.h"
 
 #include <QColorDialog>
-#include <QSettings>
+#include <QDialogButtonBox>
+#include <QPushButton>
 
-QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar& deco, int units, QWidget* parent )
-    : QDialog( parent ), mDeco( deco )
+QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar &deco, int units, QWidget *parent )
+  : QDialog( parent )
+  , mDeco( deco )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsDecorationScaleBarDialog::buttonBox_accepted );
+  connect( buttonBox, &QDialogButtonBox::rejected, this, &QgsDecorationScaleBarDialog::buttonBox_rejected );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsDecorationScaleBarDialog::showHelp );
 
-  QSettings settings;
-  restoreGeometry( settings.value( "/Windows/DecorationScaleBar/geometry" ).toByteArray() );
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/DecorationScaleBar/geometry" ) ).toByteArray() );
+
+  QPushButton *applyButton = buttonBox->button( QDialogButtonBox::Apply );
+  connect( applyButton, &QAbstractButton::clicked, this, &QgsDecorationScaleBarDialog::apply );
 
   // set the map units in the spin box
+  spnSize->setShowClearButton( false );
   switch ( units )
   {
     case 0:
-      spnSize->setSuffix( tr( " metres/km" ) );
+      spnSize->setSuffix( tr( " meters/km" ) );
       break;
     case 1:
       spnSize->setSuffix( tr( " feet/miles" ) );
@@ -47,44 +55,69 @@ QgsDecorationScaleBarDialog::QgsDecorationScaleBarDialog( QgsDecorationScaleBar&
 
   chkSnapping->setChecked( mDeco.mSnapping );
 
-  cboPlacement->clear();
-  cboPlacement->addItems( mDeco.mPlacementLabels );
-  cboPlacement->setCurrentIndex( mDeco.mPlacementIndex );
+  // placement
+  cboPlacement->addItem( tr( "Top left" ), QgsDecorationItem::TopLeft );
+  cboPlacement->addItem( tr( "Top right" ), QgsDecorationItem::TopRight );
+  cboPlacement->addItem( tr( "Bottom left" ), QgsDecorationItem::BottomLeft );
+  cboPlacement->addItem( tr( "Bottom right" ), QgsDecorationItem::BottomRight );
+  cboPlacement->setCurrentIndex( cboPlacement->findData( mDeco.placement() ) );
+  spnHorizontal->setValue( mDeco.mMarginHorizontal );
+  spnVertical->setValue( mDeco.mMarginVertical );
+  wgtUnitSelection->setUnits( QgsUnitTypes::RenderUnitList() << QgsUnitTypes::RenderMillimeters << QgsUnitTypes::RenderPercentage << QgsUnitTypes::RenderPixels );
+  wgtUnitSelection->setUnit( mDeco.mMarginUnit );
 
-  chkEnable->setChecked( mDeco.enabled() );
+  grpEnable->setChecked( mDeco.enabled() );
 
+  // style
   cboStyle->clear();
   cboStyle->addItems( mDeco.mStyleLabels );
 
   cboStyle->setCurrentIndex( mDeco.mStyleIndex );
 
+  pbnChangeColor->setAllowOpacity( true );
   pbnChangeColor->setColor( mDeco.mColor );
+  pbnChangeColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeColor->setColorDialogTitle( tr( "Select Scale Bar Fill Color" ) );
+
+  pbnChangeOutlineColor->setAllowOpacity( true );
+  pbnChangeOutlineColor->setColor( mDeco.mOutlineColor );
+  pbnChangeOutlineColor->setContext( QStringLiteral( "gui" ) );
+  pbnChangeOutlineColor->setColorDialogTitle( tr( "Select Scale Bar Outline Color" ) );
 }
 
 QgsDecorationScaleBarDialog::~QgsDecorationScaleBarDialog()
 {
-  QSettings settings;
-  settings.setValue( "/Windows/DecorationScaleBar/geometry", saveGeometry() );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/DecorationScaleBar/geometry" ), saveGeometry() );
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_helpRequested()
+void QgsDecorationScaleBarDialog::showHelp()
 {
-  QgsContextHelp::run( metaObject()->className() );
+  QgsHelp::openHelp( QStringLiteral( "introduction/general_tools.html#scale-bar" ) );
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_accepted()
+void QgsDecorationScaleBarDialog::apply()
 {
-  mDeco.mPlacementIndex = cboPlacement->currentIndex();
+  mDeco.setPlacement( static_cast< QgsDecorationItem::Placement>( cboPlacement->currentData().toInt() ) );
+  mDeco.mMarginUnit = wgtUnitSelection->unit();
+  mDeco.mMarginHorizontal = spnHorizontal->value();
+  mDeco.mMarginVertical = spnVertical->value();
   mDeco.mPreferredSize = spnSize->value();
   mDeco.mSnapping = chkSnapping->isChecked();
-  mDeco.setEnabled( chkEnable->isChecked() );
+  mDeco.setEnabled( grpEnable->isChecked() );
   mDeco.mStyleIndex = cboStyle->currentIndex();
   mDeco.mColor = pbnChangeColor->color();
+  mDeco.mOutlineColor = pbnChangeOutlineColor->color();
+  mDeco.update();
+}
 
+void QgsDecorationScaleBarDialog::buttonBox_accepted()
+{
+  apply();
   accept();
 }
 
-void QgsDecorationScaleBarDialog::on_buttonBox_rejected()
+void QgsDecorationScaleBarDialog::buttonBox_rejected()
 {
   reject();
 }

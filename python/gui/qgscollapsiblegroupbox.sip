@@ -1,37 +1,103 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscollapsiblegroupbox.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/** \ingroup gui
- * \class QgsCollapsibleGroupBoxBasic
- * A groupbox that collapses/expands when toggled.
- * Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
- * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
- * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
- * @note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
- * bool collapsed, QString syncGroup
- */
+
+
+
+
+
+class QgsGroupBoxCollapseButton : QToolButton
+{
+
+%TypeHeaderCode
+#include "qgscollapsiblegroupbox.h"
+%End
+  public:
+    QgsGroupBoxCollapseButton( QWidget *parent /TransferThis/ = 0 );
+
+    bool altDown() const;
+%Docstring
+ :rtype: bool
+%End
+    void setAltDown( bool updown );
+
+    bool shiftDown() const;
+%Docstring
+ :rtype: bool
+%End
+    void setShiftDown( bool shiftdown );
+
+  protected:
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
+};
+
 
 class QgsCollapsibleGroupBoxBasic : QGroupBox
 {
+%Docstring
+ A groupbox that collapses/expands when toggled.
+ Basic class QgsCollapsibleGroupBoxBasic does not auto-save collapsed or checked state
+ Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
+ Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
+.. note::
+
+   To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
+ bool collapsed, QString syncGroup, bool scrollOnExpand
+%End
+
 %TypeHeaderCode
-#include <qgscollapsiblegroupbox.h>
+#include "qgscollapsiblegroupbox.h"
 %End
   public:
-    QgsCollapsibleGroupBoxBasic( QWidget *parent = 0 );
-    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent = 0 );
-    ~QgsCollapsibleGroupBoxBasic();
+    QgsCollapsibleGroupBoxBasic( QWidget *parent /TransferThis/ = 0 );
+    QgsCollapsibleGroupBoxBasic( const QString &title, QWidget *parent /TransferThis/ = 0 );
 
     bool isCollapsed() const;
+%Docstring
+ Returns the current collapsed state of this group box
+ :rtype: bool
+%End
+
     void setCollapsed( bool collapse );
+%Docstring
+ Collapse or uncollapse this groupbox
 
-    /** Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key */
+ \param collapse Will collapse on true and uncollapse on false
+%End
+
     QString syncGroup() const;
-    void setSyncGroup( QString grp );
+%Docstring
+ Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+ :rtype: str
+%End
 
-    //! set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+    void setSyncGroup( const QString &grp );
+%Docstring
+ Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
+%End
+
     void setScrollOnExpand( bool scroll );
+%Docstring
+Set this to false to not automatically scroll parent QScrollArea to this widget's contents when expanded
+%End
+
+    bool scrollOnExpand();
+%Docstring
+If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
+ :rtype: bool
+%End
 
   signals:
-    /** Signal emitted when groupbox collapsed/expanded state is changed, and when first shown */
     void collapsedStateChanged( bool collapsed );
+%Docstring
+Signal emitted when groupbox collapsed/expanded state is changed, and when first shown
+%End
 
   public slots:
     void checkToggled( bool ckd );
@@ -40,57 +106,124 @@ class QgsCollapsibleGroupBoxBasic : QGroupBox
 
   protected:
     void init();
-    void showEvent( QShowEvent *event );
-    void mouseReleaseEvent( QMouseEvent *event );
-    void changeEvent( QEvent *event );
+
+    void collapseExpandFixes();
+%Docstring
+Visual fixes for when group box is collapsed/expanded
+%End
+
+    virtual void showEvent( QShowEvent *event );
+
+    virtual void mousePressEvent( QMouseEvent *event );
+
+    virtual void mouseReleaseEvent( QMouseEvent *event );
+
+    virtual void changeEvent( QEvent *event );
+
 
     void updateStyle();
     QRect titleRect() const;
+%Docstring
+ :rtype: QRect
+%End
+    void clearModifiers();
+
+
 };
 
-/** \ingroup gui
- * \class QgsCollapsibleGroupBox
- * A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
- * By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
- * Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
- * Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
- * @see basic class QgsCollapsibleGroupBoxBasic which does not auto-save states
- * @note To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
- * bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
- */
 
 class QgsCollapsibleGroupBox : QgsCollapsibleGroupBoxBasic
 {
+%Docstring
+ A groupbox that collapses/expands when toggled and can save its collapsed and checked states.
+ By default, it auto-saves only its collapsed state to the global settings based on the widget and it's parent names.
+ Holding Alt modifier key when toggling collapsed state will synchronize the toggling across other collapsible group boxes with the same syncGroup QString value
+ Holding Shift modifier key when attempting to toggle collapsed state will expand current group box, then collapse any others with the same syncGroup QString value
+.. seealso:: basic class QgsCollapsibleGroupBoxBasic which does not auto-save states
+.. note::
+
+   To add Collapsible properties in promoted QtDesigner widgets, you can add the following "Dynamic properties" by clicking on the green + in the propreties palette:
+ bool collapsed, bool saveCollapsedState, bool saveCheckedState, QString syncGroup
+%End
+
 %TypeHeaderCode
-#include <qgscollapsiblegroupbox.h>
+#include "qgscollapsiblegroupbox.h"
 %End
   public:
-    QgsCollapsibleGroupBox( QWidget *parent = 0, QSettings* settings = 0 );
-    QgsCollapsibleGroupBox( const QString &title, QWidget *parent = 0, QSettings* settings = 0 );
+    QgsCollapsibleGroupBox( QWidget *parent /TransferThis/ = 0, QgsSettings *settings = 0 );
+    QgsCollapsibleGroupBox( const QString &title, QWidget *parent /TransferThis/ = 0, QgsSettings *settings = 0 );
     ~QgsCollapsibleGroupBox();
 
-    // set custom QSettings pointer if group box was already created from QtDesigner promotion
-    void setSettings( QSettings* settings );
+    void setSettings( QgsSettings *settings );
 
-    //! set this to false to not save/restore collapsed state
     void setSaveCollapsedState( bool save );
-    /** set this to true to save/restore checked state
-     * @note only turn on mSaveCheckedState for groupboxes NOT used
-     * in multiple places or used as options for different parent objects */
-    void setSaveCheckedState( bool save );
-    bool saveCollapsedState();
-    bool saveCheckedState();
+%Docstring
+set this to false to not save/restore collapsed state
+%End
 
-    //! set this to a defined string to share save/restore states across different parent dialogs
+    void setSaveCheckedState( bool save );
+%Docstring
+ Set this to true to save/restore checked state
+.. note::
+
+   only turn on mSaveCheckedState for groupboxes NOT used
+ in multiple places or used as options for different parent objects *
+%End
+    bool saveCollapsedState();
+%Docstring
+ :rtype: bool
+%End
+    bool saveCheckedState();
+%Docstring
+ :rtype: bool
+%End
+
     void setSettingGroup( const QString &group );
+%Docstring
+Set this to a defined string to share save/restore states across different parent dialogs
+%End
     QString settingGroup() const;
+%Docstring
+Returns the name of the setting group in which the collapsed state will be saved
+ :rtype: str
+%End
 
   protected slots:
+
     void loadState();
-    void saveState();
+%Docstring
+ Will load the collapsed and checked state
+
+ The configuration path from which it is loaded is defined by
+  * The object name
+  * The settingGroup
+%End
+
+    void saveState() const;
+%Docstring
+ Will save the collapsed and checked state
+
+ The configuration path to which it is saved is defined by
+  * The object name
+  * The settingGroup
+%End
 
   protected:
     void init();
-    void showEvent( QShowEvent *event );
+    virtual void showEvent( QShowEvent *event );
+
     QString saveKey() const;
+%Docstring
+ :rtype: str
+%End
+
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgscollapsiblegroupbox.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

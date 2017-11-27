@@ -17,18 +17,18 @@
 
 #include "qgsdialog.h"
 
-QgsDialog::QgsDialog( QWidget *parent, Qt::WFlags fl,
+QgsDialog::QgsDialog( QWidget *parent, Qt::WindowFlags fl,
                       QDialogButtonBox::StandardButtons buttons,
                       Qt::Orientation orientation )
-    : QDialog( parent, fl )
+  : QDialog( parent, fl )
 {
   // create buttonbox
   mButtonBox = new QDialogButtonBox( buttons, orientation, this );
-  connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( accept() ) );
-  connect( mButtonBox, SIGNAL( rejected() ), this, SLOT( reject() ) );
+  connect( mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept );
+  connect( mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject );
 
   // layout
-  QLayout *layout = 0;
+  QLayout *layout = nullptr;
   if ( orientation == Qt::Horizontal )
     layout = new QVBoxLayout();
   else
@@ -37,9 +37,5 @@ QgsDialog::QgsDialog( QWidget *parent, Qt::WFlags fl,
   layout->addItem( mLayout );
   layout->addWidget( mButtonBox );
   setLayout( layout );
-}
-
-QgsDialog::~QgsDialog()
-{
 }
 

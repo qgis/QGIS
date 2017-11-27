@@ -12,10 +12,9 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include "qgstest.h"
 #include <QObject>
 #include <QString>
-#include <QObject>
 #include <QCoreApplication>
 #include <QWidget>
 #include <QMouseEvent>
@@ -25,9 +24,12 @@
 #include <qgsmapcanvas.h>
 #include <qgslogger.h>
 
-class TestQgsMapToolZoom: public QObject
+class TestQgsMapToolZoom : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+  public:
+    TestQgsMapToolZoom() = default;
+
   private slots:
     void initTestCase(); // will be called before the first testfunction is executed.
     void cleanupTestCase(); // will be called after the last testfunction was executed.
@@ -35,7 +37,7 @@ class TestQgsMapToolZoom: public QObject
     void cleanup(); // will be called after every testfunction.
     void zeroDragArea();
   private:
-    QgsMapCanvas* canvas;
+    QgsMapCanvas *canvas = nullptr;
 };
 
 void TestQgsMapToolZoom::initTestCase()
@@ -45,7 +47,10 @@ void TestQgsMapToolZoom::initTestCase()
   QgsApplication::showSettings();
 }
 
-void TestQgsMapToolZoom::cleanupTestCase() {};
+void TestQgsMapToolZoom::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
 
 void TestQgsMapToolZoom::init()
 {
@@ -57,36 +62,42 @@ void TestQgsMapToolZoom::cleanup()
   delete canvas;
 }
 
-/** Zero drag areas can happen on pen based computer when a mouse down,
+/**
+ * Zero drag areas can happen on pen based computer when a mouse down,
   * move, and up, all happened at the same spot due to the pen. In this case
   * QGIS thinks it is in dragging mode but it's not really and fails to zoom in.
   **/
 void TestQgsMapToolZoom::zeroDragArea()
 {
   QPoint point = QPoint( 15, 15 );
-  QMouseEvent *press = new QMouseEvent( QEvent::MouseButtonPress, point ,
-                                        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QMouseEvent *move = new QMouseEvent( QEvent::MouseMove, point,
-                                       Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
-  QMouseEvent *releases = new QMouseEvent( QEvent::MouseButtonRelease, point,
-      Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent press( QEvent::MouseButtonPress, point,
+                     Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent move( QEvent::MouseMove, point,
+                    Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
+  QMouseEvent releases( QEvent::MouseButtonRelease, point,
+                        Qt::LeftButton, Qt::LeftButton, Qt::NoModifier );
 
-  QgsMapToolZoom* tool = new QgsMapToolZoom( canvas, false );
+  QgsMapMouseEvent mapPress( 0, &press );
+  QgsMapMouseEvent mapMove( 0, &move );
+  QgsMapMouseEvent mapReleases( 0, &releases );
+
+  QgsMapToolZoom *tool = new QgsMapToolZoom( canvas, false );
   // Just set some made up extent so that we can zoom.
   canvas->setExtent( QgsRectangle( 0, 0, 20, 20 ) );
 
   QgsRectangle before = canvas->extent();
-  tool->canvasPressEvent( press );
-  tool->canvasMoveEvent( move );
-  tool->canvasReleaseEvent( releases );
+  tool->canvasPressEvent( &mapPress );
+  tool->canvasMoveEvent( &mapMove );
+  tool->canvasReleaseEvent( &mapReleases );
+
   QgsRectangle after = canvas->extent();
   // We don't really care if we zoom in or out here just that the extent did
   // change we
   QVERIFY2( before != after, "Extents didn't change" );
 }
 
-QTEST_MAIN( TestQgsMapToolZoom )
-#include "moc_testqgsmaptoolzoom.cxx"
+QGSTEST_MAIN( TestQgsMapToolZoom )
+#include "testqgsmaptoolzoom.moc"
 
 
 

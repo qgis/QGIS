@@ -2,10 +2,10 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Red Green Blue (RGB) to Hue Intensity Saturation (HIS) raster color transformation function" module="i.rgb.his">
-	<option key="red_input" />
-	<option key="green_input" />
-	<option key="blue_input" />
-	<option key="hue_output" />
-	<option key="intensity_output" />
-	<option key="saturation_output" />
+	<option key="red"/>
+	<option key="green"/>
+	<option key="blue"/>
+	<option key="hue"/>
+	<option key="intensity"/>
+	<option key="saturation"/>
 </qgisgrassmodule>

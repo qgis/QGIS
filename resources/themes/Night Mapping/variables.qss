@@ -1,0 +1,7 @@
+@background: #323232
+@itembackground: #535353
+@text: #aaa;
+@toggleoff: #535353
+@toggleon: #0f6e00
+@hover: #0d7200
+@selection: #0f6e00

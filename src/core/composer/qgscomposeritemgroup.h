@@ -14,58 +14,75 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSCOMPOSERITEMGROUP_H
+#define QGSCOMPOSERITEMGROUP_H
 
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
+#include "qgsreadwritecontext.h"
+
 #include <QSet>
 
-/** \ingroup MapComposer
+/**
+ * \ingroup core
  * A container for grouping several QgsComposerItems
  */
 class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
 {
     Q_OBJECT
   public:
-    QgsComposerItemGroup( QgsComposition* c );
+    QgsComposerItemGroup( QgsComposition *c SIP_TRANSFERTHIS );
     ~QgsComposerItemGroup();
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const { return ComposerItemGroup; }
+    //! Return correct graphics item type.
+    virtual int type() const override { return ComposerItemGroup; }
 
-    /**Adds an item to the group. All the group members are deleted
+    /**
+     * Adds an item to the group. All the group members are deleted
      if the group is deleted*/
-    void addItem( QgsComposerItem* item );
-    /**Removes the items but does not delete them*/
-    void removeItems();
-    /**Draw outline and ev. selection handles*/
-    void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-    /**Sets this items bound in scene coordinates such that 1 item size units
+    void addItem( QgsComposerItem *item ) override;
+    //! Removes the items but does not delete them
+    void removeItems() override;
+    //! Draw stroke and ev. selection handles
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = nullptr ) override;
+
+    /**
+     * Sets this items bound in scene coordinates such that 1 item size units
        corresponds to 1 scene size unit*/
-    void setSceneRect( const QRectF& rectangle );
+    void setSceneRect( const QRectF &rectangle ) override;
 
-    /** stores state in Dom node
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc is the Dom document
+    //overridden to also hide grouped items
+    virtual void setVisibility( const bool visible ) override;
+
+    /**
+     * Stores state in Dom node
+       * \param elem is Dom element corresponding to 'Composer' tag
+       * \param doc is the Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** sets state from Dom document
-       * @param itemElem is Dom node corresponding to item tag
-       * @param doc is the Dom document
+    /**
+     * Sets state from Dom document
+       * \param itemElem is Dom node corresponding to item tag
+       * \param doc is the Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
-    QSet<QgsComposerItem*> items() { return mItems; }
+    QSet<QgsComposerItem *> items() { return mItems; }
 
   signals:
-    void childItemDeleted( QgsComposerItem* item );
+    void childItemDeleted( QgsComposerItem *item );
 
   public slots:
     void itemDestroyed();
 
   protected:
-    void drawFrame( QPainter* p );
+    void drawFrame( QPainter *p ) override;
 
   private:
-    QSet<QgsComposerItem*> mItems;
-    QRectF mSceneBoundingRectangle;
+    QSet<QgsComposerItem *> mItems;
+    QRectF mBoundingRectangle;
 };
+
+#endif

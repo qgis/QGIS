@@ -1,81 +1,158 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterpipe.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**  Raster pipe */
+
+
+
+
 
 class QgsRasterPipe
 {
-%TypeHeaderCode
-#include <qgsrasterpipe.h>
-#include <qgsrasterresamplefilter.h>
-#include <qgsrasterprojector.h>
+%Docstring
+ Base class for processing modules.
 %End
 
+%TypeHeaderCode
+#include "qgsrasterpipe.h"
+%End
   public:
-    // Role of known interfaces
     enum Role
     {
-      UnknownRole   = 0,
-      ProviderRole  = 1,
-      RendererRole  = 2,
-      BrightnessRole = 3,
-      ResamplerRole = 4,
-      ProjectorRole = 5,
-      NullerRole = 6,
-      HueSaturationRole = 7
+      UnknownRole,
+      ProviderRole,
+      RendererRole,
+      BrightnessRole,
+      ResamplerRole,
+      ProjectorRole,
+      NullerRole,
+      HueSaturationRole
     };
 
     QgsRasterPipe();
-    QgsRasterPipe( const QgsRasterPipe& thePipe );
+%Docstring
+ Constructor for QgsRasterPipe.
+%End
+
 
     ~QgsRasterPipe();
 
-    /** Try to insert interface at specified index and connect
-     * if connection would fail, the interface is not inserted and false is returned */
-    bool insert( int idx, QgsRasterInterface* theInterface /Transfer/ );
+
+    bool insert( int idx, QgsRasterInterface *interface /Transfer/ );
+%Docstring
+ Try to insert interface at specified index and connect
+ if connection would fail, the interface is not inserted and false is returned *
+ :rtype: bool
+%End
 %MethodCode
-      sipRes = sipCpp->insert( a0, a1 );
-      if( !sipRes )
-      {
-	// if insertion failed transfer ownership back to python
-	PyObject *o = sipGetPyObject( a1, sipType_QgsRasterInterface );
-	if( o )
-	  sipTransferBreak( o );
-      }
+    sipRes = sipCpp->insert( a0, a1 );
+    if ( !sipRes )
+    {
+      // if insertion failed transfer ownership back to python
+      PyObject *o = sipGetPyObject( a1, sipType_QgsRasterInterface );
+      if ( o )
+        sipTransferBreak( o );
+    }
 %End
 
-    /** Try to replace interface at specified index and connect
-     * if connection would fail, the interface is not inserted and false is returned */
-    bool replace( int idx, QgsRasterInterface* theInterface /Transfer/ );
+    bool replace( int idx, QgsRasterInterface *interface /Transfer/ );
+%Docstring
+ Try to replace interface at specified index and connect
+ if connection would fail, the interface is not inserted and false is returned *
+ :rtype: bool
+%End
 
-    /** Insert a new known interface in default place or replace interface of the same
-     * role if it already exists. Known interfaces are: QgsRasterDataProvider,
-     * QgsRasterRenderer, QgsRasterResampleFilter, QgsRasterProjector and their
-     * subclasses. For unknown interfaces it mus be explicitly specified position
-     * where it should be inserted using insert() method.
-     */
-    bool set( QgsRasterInterface * theInterface /Transfer/ );
+    bool set( QgsRasterInterface *interface /Transfer/ );
+%Docstring
+ Insert a new known interface in default place or replace interface of the same
+ role if it already exists. Known interfaces are: QgsRasterDataProvider,
+ QgsRasterRenderer, QgsRasterResampleFilter, QgsRasterProjector and their
+ subclasses. For unknown interfaces it mus be explicitly specified position
+ where it should be inserted using insert() method.
+ :rtype: bool
+%End
 
-    /** Remove and delete interface at given index if possible */
     bool remove( int idx );
+%Docstring
+Remove and delete interface at given index if possible
+ :rtype: bool
+%End
 
-    /** Remove and delete interface from pipe if possible */
-    bool remove( QgsRasterInterface * theInterface );
+    bool remove( QgsRasterInterface *interface );
+%Docstring
+Remove and delete interface from pipe if possible
+ :rtype: bool
+%End
 
     int size() const;
-    QgsRasterInterface * at( int idx ) const;
-    QgsRasterInterface * last() const;
+%Docstring
+ :rtype: int
+%End
+    QgsRasterInterface *at( int idx ) const;
+%Docstring
+ :rtype: QgsRasterInterface
+%End
+    QgsRasterInterface *last() const;
+%Docstring
+ :rtype: QgsRasterInterface
+%End
 
-    /** Set interface at index on/off
-     *  Returns true on success */
     bool setOn( int idx, bool on );
+%Docstring
+ Set interface at index on/off
+  Returns true on success *
+ :rtype: bool
+%End
 
-    /** Test if interface at index may be swithed on/off */
     bool canSetOn( int idx, bool on );
+%Docstring
+Test if interface at index may be swithed on/off
+ :rtype: bool
+%End
 
-    // Getters for special types of interfaces
-    QgsRasterDataProvider * provider() const;
-    QgsRasterRenderer * renderer() const;
-    QgsRasterResampleFilter * resampleFilter() const;
-    QgsRasterProjector * projector() const;
-    QgsRasterNuller * nuller() const;
+    QgsRasterDataProvider *provider() const;
+%Docstring
+ :rtype: QgsRasterDataProvider
+%End
+    QgsRasterRenderer *renderer() const;
+%Docstring
+ :rtype: QgsRasterRenderer
+%End
+    QgsRasterResampleFilter *resampleFilter() const;
+%Docstring
+ :rtype: QgsRasterResampleFilter
+%End
+    QgsBrightnessContrastFilter *brightnessFilter() const;
+%Docstring
+ :rtype: QgsBrightnessContrastFilter
+%End
+    QgsHueSaturationFilter *hueSaturationFilter() const;
+%Docstring
+ :rtype: QgsHueSaturationFilter
+%End
+    QgsRasterProjector *projector() const;
+%Docstring
+ :rtype: QgsRasterProjector
+%End
+    QgsRasterNuller *nuller() const;
+%Docstring
+ :rtype: QgsRasterNuller
+%End
 
+  private:
+    QgsRasterPipe( const QgsRasterPipe &pipe );
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterpipe.h                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

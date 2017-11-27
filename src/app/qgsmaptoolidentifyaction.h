@@ -18,19 +18,16 @@
 
 #include "qgis.h"
 #include "qgsmaptoolidentify.h"
-#include "qgspoint.h"
-#include "qgsfeature.h"
-#include "qgsfeaturestore.h"
-#include "qgsfield.h"
-#include "qgsdistancearea.h"
 
 #include <QObject>
 #include <QPointer>
+#include "qgis_app.h"
 
 class QgsIdentifyResultsDialog;
 class QgsMapLayer;
 class QgsRasterLayer;
 class QgsVectorLayer;
+class QgsFeatureStore;
 
 /**
   \brief Map tool for identifying features layers and showing results
@@ -38,38 +35,40 @@ class QgsVectorLayer;
   after selecting a point shows dialog with identification results
   - for raster layers shows value of underlying pixel
   - for vector layers shows feature attributes within search radius
-    (allows to edit values when vector layer is in editing mode)
+    (allows editing values when vector layer is in editing mode)
 */
 class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 {
     Q_OBJECT
 
   public:
-    QgsMapToolIdentifyAction( QgsMapCanvas * canvas );
+    QgsMapToolIdentifyAction( QgsMapCanvas *canvas );
 
     ~QgsMapToolIdentifyAction();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void activate();
+    virtual void activate() override;
 
-    virtual void deactivate();
+    virtual void deactivate() override;
 
   public slots:
     void handleCopyToClipboard( QgsFeatureStore & );
-    void handleChangedRasterResults( QList<IdentifyResult>& results );
+    void handleChangedRasterResults( QList<IdentifyResult> &results );
 
   signals:
-    void identifyProgress( int, int );
-    void identifyMessage( QString );
+
     void copyToClipboard( QgsFeatureStore & );
+
+  private slots:
+    void showAttributeTable( QgsMapLayer *layer, const QList<QgsFeature> &featureList );
 
   private:
     //! Pointer to the identify results dialog for name/value pairs
@@ -77,7 +76,11 @@ class APP_EXPORT QgsMapToolIdentifyAction : public QgsMapToolIdentify
 
     QgsIdentifyResultsDialog *resultsDialog();
 
-    virtual QGis::UnitType displayUnits();
+    virtual QgsUnitTypes::DistanceUnit displayDistanceUnits() const override;
+    virtual QgsUnitTypes::AreaUnit displayAreaUnits() const override;
+    void setClickContextScope( const QgsPointXY &point );
+
+    friend class TestQgsMapToolIdentifyAction;
 };
 
 #endif

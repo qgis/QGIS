@@ -3,7 +3,7 @@
     ---------------------
     begin                : August 2012
     copyright            : (C) 2012 by Matthias Kuhn
-    email                : matthias dot kuhn at gmx dot ch
+    email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,11 +18,13 @@
 
 #define DIAGRAM_NAME_HISTOGRAM "Histogram"
 
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgsdiagram.h"
-#include "qgsfeature.h"
 #include <QPen>
 #include <QBrush>
 
+class QgsFeature;
 class QPainter;
 class QPointF;
 class QgsDiagramSettings;
@@ -30,17 +32,23 @@ class QgsDiagramInterpolationSettings;
 
 class QgsRenderContext;
 
-
+/**
+ * \ingroup core
+ * \class QgsHistogramDiagram
+ */
 class CORE_EXPORT QgsHistogramDiagram: public QgsDiagram
 {
   public:
     QgsHistogramDiagram();
-    ~QgsHistogramDiagram();
 
-    void renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position );
-    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s );
-    QSizeF diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is );
-    QString diagramName() const { return DIAGRAM_NAME_HISTOGRAM; }
+    virtual QgsHistogramDiagram *clone() const override SIP_FACTORY;
+
+    void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position ) override;
+
+    QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) override;
+    QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) override;
+    double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const override;
+    QString diagramName() const override;
 
   private:
     QBrush mCategoryBrush;

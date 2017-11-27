@@ -13,12 +13,13 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgstextdiagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
+#include "qgsexpression.h"
 
 #include <QPainter>
 
-QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
+QgsTextDiagram::QgsTextDiagram()
 {
   mPen.setWidthF( 2.0 );
   mPen.setColor( QColor( 0, 0, 0 ) );
@@ -26,57 +27,51 @@ QgsTextDiagram::QgsTextDiagram(): mOrientation( Vertical ), mShape( Circle )
   mBrush.setStyle( Qt::SolidPattern );
 }
 
-QgsTextDiagram::~QgsTextDiagram()
+QgsTextDiagram *QgsTextDiagram::clone() const
 {
+  return new QgsTextDiagram( *this );
 }
 
-QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsTextDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
-  Q_UNUSED( c );
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
 
-  QVariant attrVal = attributes[is.classificationAttribute];
+  QVariant attrVal;
+  if ( is.classificationAttributeIsExpression )
+  {
+    QgsExpression *expression = getExpression( is.classificationAttributeExpression, expressionContext );
+    attrVal = expression->evaluate( &expressionContext );
+  }
+  else
+  {
+    attrVal = feature.attribute( is.classificationField );
+  }
 
-  if ( !attrVal.isValid() )
+  bool ok = false;
+  double val = attrVal.toDouble( &ok );
+  if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
   }
 
-  double scaledValue = attrVal.toDouble();
-  double scaledLowerValue = is.lowerValue;
-  double scaledUpperValue = is.upperValue;
-  double scaledLowerSizeWidth = is.lowerSize.width();
-  double scaledLowerSizeHeight = is.lowerSize.height();
-  double scaledUpperSizeWidth = is.upperSize.width();
-  double scaledUpperSizeHeight = is.upperSize.height();
-
-  // interpolate the squared value if scale by area
-  if ( s.scaleByArea )
-  {
-    scaledValue = sqrt( scaledValue );
-    scaledLowerValue = sqrt( scaledLowerValue );
-    scaledUpperValue = sqrt( scaledUpperValue );
-    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
-    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
-    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
-    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
-  }
-
-  //interpolate size
-  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
-
-  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
-                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
-
-  // Scale, if extension is smaller than the specified minimum
-  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
-  {
-    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
-  }
-
-  return size;
+  return sizeForValue( val, s, is );
 }
 
-QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+double QgsTextDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  QSizeF size = sizeForValue( value, s, is );
+  return std::max( size.width(), size.height() );
+}
+
+QString QgsTextDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_TEXT;
+}
+
+QSizeF QgsTextDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   Q_UNUSED( c );
   Q_UNUSED( attributes );
@@ -84,17 +79,10 @@ QSizeF QgsTextDiagram::diagramSize( const QgsAttributes& attributes, const QgsRe
   return s.size;
 }
 
-void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsTextDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position )
 {
-  QPainter* p = c.painter();
+  QPainter *p = c.painter();
   if ( !p )
-  {
-    return;
-  }
-
-  double scaleDenominator = c.rendererScale();
-  if (( s.minScaleDenominator != -1 && scaleDenominator < s.minScaleDenominator )
-      || ( s.maxScaleDenominator != -1 && scaleDenominator > s.maxScaleDenominator ) )
   {
     return;
   }
@@ -107,13 +95,13 @@ void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& 
   double baseX = position.x();
   double baseY = position.y() - h;
 
-  QList<QPointF> textPositions; //midpoints for text placement
-  int nCategories = s.categoryIndices.size();
+  QVector<QPointF> textPositions; //midpoints for text placement
+  int nCategories = s.categoryAttributes.size();
   for ( int i = 0; i < nCategories; ++i )
   {
     if ( mOrientation == Horizontal )
     {
-      textPositions.push_back( QPointF( baseX + ( w / nCategories ) * i + w / nCategories / 2.0 , baseY + h / 2.0 ) );
+      textPositions.push_back( QPointF( baseX + ( w / nCategories ) * i + w / nCategories / 2.0, baseY + h / 2.0 ) );
     }
     else //vertical
     {
@@ -135,7 +123,8 @@ void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& 
     //draw separator lines
     QList<QPointF> intersect; //intersections between shape and separation lines
     QPointF center( baseX + w / 2.0, baseY + h / 2.0 );
-    double r1 = w / 2.0; double r2 = h / 2.0;
+    double r1 = w / 2.0;
+    double r2 = h / 2.0;
 
     for ( int i = 1; i < nCategories; ++i )
     {
@@ -160,11 +149,11 @@ void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& 
     {
       if ( mOrientation == Horizontal )
       {
-        p->drawLine( QPointF( baseX + w / nCategories * i , baseY ), QPointF( baseX + w / nCategories * i, baseY + h ) );
+        p->drawLine( QPointF( baseX + w / nCategories * i, baseY ), QPointF( baseX + w / nCategories * i, baseY + h ) );
       }
       else
       {
-        p->drawLine( QPointF( baseX, baseY + h / nCategories * i ) , QPointF( baseX + w,  baseY + h / nCategories * i ) );
+        p->drawLine( QPointF( baseX, baseY + h / nCategories * i ), QPointF( baseX + w, baseY + h / nCategories * i ) );
       }
     }
   }
@@ -208,9 +197,16 @@ void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& 
   QFontMetricsF fontMetrics( sFont );
   p->setFont( sFont );
 
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
+
   for ( int i = 0; i < textPositions.size(); ++i )
   {
-    QString val = att[ s.categoryIndices.at( i )].toString();
+    QgsExpression *expression = getExpression( s.categoryAttributes.at( i ), expressionContext );
+    QString val = expression->evaluate( &expressionContext ).toString();
+
     //find out dimesions
     double textWidth = fontMetrics.width( val );
     double textHeight = fontMetrics.height();
@@ -236,7 +232,7 @@ void QgsTextDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& 
   }
 }
 
-void QgsTextDiagram::lineEllipseIntersection( const QPointF& lineStart, const QPointF& lineEnd, const QPointF& ellipseMid, double r1, double r2, QList<QPointF>& result ) const
+void QgsTextDiagram::lineEllipseIntersection( QPointF lineStart, QPointF lineEnd, QPointF ellipseMid, double r1, double r2, QList<QPointF> &result ) const
 {
   result.clear();
 
@@ -252,7 +248,7 @@ void QgsTextDiagram::lineEllipseIntersection( const QPointF& lineStart, const QP
   double d = b * b - a * ( c - 1 );
   if ( d > 0 )
   {
-    double e = sqrt( d );
+    double e = std::sqrt( d );
     double u1 = ( -b - e ) / a;
     double u2 = ( -b + e ) / a;
     //work with a tolerance of 0.00001 because of limited numerical precision

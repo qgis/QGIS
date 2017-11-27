@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 21.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -14,14 +14,27 @@
  ***************************************************************************/
 
 #include "qgseditorwidgetfactory.h"
+#include "qgsdefaultsearchwidgetwrapper.h"
+#include "qgssearchwidgetwrapper.h"
+#include "qgsfields.h"
+#include "qgsvectordataprovider.h"
 
-QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString& name )
-    : mName( name )
+#include <QSettings>
+
+class QgsDefaultSearchWidgetWrapper;
+
+QgsEditorWidgetFactory::QgsEditorWidgetFactory( const QString &name )
+  : mName( name )
 {
 }
 
-QgsEditorWidgetFactory::~QgsEditorWidgetFactory()
+/**
+ * By default a simple QgsFilterLineEdit is returned as search widget.
+ * Override in own factory to get something different than the default.
+ */
+QgsSearchWidgetWrapper *QgsEditorWidgetFactory::createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const
 {
+  return new QgsDefaultSearchWidgetWrapper( vl, fieldIdx, parent );
 }
 
 QString QgsEditorWidgetFactory::name()
@@ -29,21 +42,9 @@ QString QgsEditorWidgetFactory::name()
   return mName;
 }
 
-QgsEditorWidgetConfig QgsEditorWidgetFactory::readConfig( const QDomElement& configElement, QgsVectorLayer* layer, int fieldIdx )
+unsigned int QgsEditorWidgetFactory::fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const
 {
-  Q_UNUSED( configElement );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-
-  return QgsEditorWidgetConfig();
+  Q_UNUSED( vl )
+  Q_UNUSED( fieldIdx )
+  return 5;
 }
-
-void QgsEditorWidgetFactory::writeConfig( const QgsEditorWidgetConfig& config, QDomElement& configElement, const QDomDocument& doc, const QgsVectorLayer* layer, int fieldIdx )
-{
-  Q_UNUSED( config );
-  Q_UNUSED( configElement );
-  Q_UNUSED( doc );
-  Q_UNUSED( layer );
-  Q_UNUSED( fieldIdx );
-}
-

@@ -16,710 +16,536 @@
  ***************************************************************************/
 #include <limits>
 
-#include "qgscomposerlegendstyle.h"
 #include "qgscomposerlegend.h"
-#include "qgscomposerlegenditem.h"
 #include "qgscomposermap.h"
 #include "qgscomposition.h"
+#include "qgscomposermodel.h"
+#include "qgslayertree.h"
+#include "qgslayertreemodel.h"
+#include "qgslegendrenderer.h"
+#include "qgslegendstyle.h"
 #include "qgslogger.h"
-#include "qgsmaplayer.h"
-#include "qgsmaplayerregistry.h"
-#include "qgsmaprenderer.h"
-#include "qgssymbolv2.h"
+#include "qgsmapsettings.h"
+#include "qgsproject.h"
+#include "qgssymbollayerutils.h"
+#include "qgslayertreeutils.h"
 #include <QDomDocument>
 #include <QDomElement>
 #include <QPainter>
+#include "qgslayoutitemlegend.h"
 
-QgsComposerLegend::QgsComposerLegend( QgsComposition* composition )
-    : QgsComposerItem( composition )
-    , mTitle( tr( "Legend" ) )
-    , mFontColor( QColor( 0, 0, 0 ) )
-    , mBoxSpace( 2 )
-    , mColumnSpace( 2 )
-    , mColumnCount( 1 )
-    , mComposerMap( 0 )
-    , mSplitLayer( false )
-    , mEqualColumnWidth( false )
+QgsComposerLegend::QgsComposerLegend( QgsComposition *composition )
+  : QgsComposerItem( composition )
+  , mLegendModel( new QgsLegendModel( mComposition->project()->layerTreeRoot() ) )
 {
-  setStyleMargin( QgsComposerLegendStyle::Title, QgsComposerLegendStyle::Bottom, 2 );
-  setStyleMargin( QgsComposerLegendStyle::Group, QgsComposerLegendStyle::Top, 2 );
-  setStyleMargin( QgsComposerLegendStyle::Subgroup, QgsComposerLegendStyle::Top, 2 );
-  setStyleMargin( QgsComposerLegendStyle::Symbol, QgsComposerLegendStyle::Top, 2 );
-  setStyleMargin( QgsComposerLegendStyle::SymbolLabel, QgsComposerLegendStyle::Top, 2 );
-  setStyleMargin( QgsComposerLegendStyle::SymbolLabel, QgsComposerLegendStyle::Left, 2 );
-  rstyle( QgsComposerLegendStyle::Title ).rfont().setPointSizeF( 16.0 );
-  rstyle( QgsComposerLegendStyle::Group ).rfont().setPointSizeF( 14.0 );
-  rstyle( QgsComposerLegendStyle::Subgroup ).rfont().setPointSizeF( 12.0 );
-  rstyle( QgsComposerLegendStyle::SymbolLabel ).rfont().setPointSizeF( 12.0 );
+  connect( &composition->atlasComposition(), &QgsAtlasComposition::renderEnded, this, &QgsComposerLegend::onAtlasEnded );
+  connect( &composition->atlasComposition(), &QgsAtlasComposition::featureChanged, this, &QgsComposerLegend::onAtlasFeature );
 
-  mSymbolWidth = 7;
-  mSymbolHeight = 4;
-  mWmsLegendWidth = 50;
-  mWmsLegendHeight = 25;
-  mWrapChar = "";
-  mlineSpacing = 1.5;
-  adjustBoxSize();
-
-  connect( &mLegendModel, SIGNAL( layersChanged() ), this, SLOT( synchronizeWithModel() ) );
-}
-
-QgsComposerLegend::QgsComposerLegend(): QgsComposerItem( 0 ), mComposerMap( 0 )
-{
-
+  // Connect to the main layertreeroot.
+  // It serves in "auto update mode" as a medium between the main app legend and this one
+  connect( mComposition->project()->layerTreeRoot(), &QgsLayerTreeNode::customPropertyChanged, this, &QgsComposerLegend::nodeCustomPropertyChanged );
 }
 
 QgsComposerLegend::~QgsComposerLegend()
 {
+  delete mLegendModel;
+}
+
+QgsComposerLegend::QgsComposerLegend()
+  : QgsComposerItem( nullptr )
+{
 
 }
 
-void QgsComposerLegend::paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget )
+void QgsComposerLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   Q_UNUSED( itemStyle );
   Q_UNUSED( pWidget );
-  paintAndDetermineSize( painter );
-}
 
-QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter* painter )
-{
-  QSizeF size( 0, 0 );
-  QStandardItem* rootItem = mLegendModel.invisibleRootItem();
-  if ( !rootItem ) return size;
+  if ( !painter )
+    return;
 
-  if ( painter )
-  {
-    painter->save();
-    drawBackground( painter );
-    painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
-  }
-
-  QList<Atom> atomList = createAtomList( rootItem, mSplitLayer );
-
-  setColumns( atomList );
-
-  qreal maxColumnWidth = 0;
-  if ( mEqualColumnWidth )
-  {
-    foreach ( Atom atom, atomList )
-    {
-      maxColumnWidth = qMax( atom.size.width(), maxColumnWidth );
-    }
-  }
-
-  QSizeF titleSize = drawTitle();
-  double columnTop = mBoxSpace + titleSize.height() + style( QgsComposerLegendStyle::Title ).margin( QgsComposerLegendStyle::Bottom );
-
-  QPointF point( mBoxSpace, columnTop );
-  bool firstInColumn = true;
-  double columnMaxHeight = 0;
-  qreal columnWidth = 0;
-  int column = 0;
-  foreach ( Atom atom, atomList )
-  {
-    if ( atom.column > column )
-    {
-      // Switch to next column
-      if ( mEqualColumnWidth )
-      {
-        point.rx() += mColumnSpace + maxColumnWidth;
-      }
-      else
-      {
-        point.rx() += mColumnSpace + columnWidth;
-      }
-      point.ry() = columnTop;
-      columnWidth = 0;
-      column++;
-      firstInColumn = true;
-    }
-    if ( !firstInColumn )
-    {
-      point.ry() += spaceAboveAtom( atom );
-    }
-
-    QSizeF atomSize = drawAtom( atom, painter, point );
-    columnWidth = qMax( atomSize.width(), columnWidth );
-
-    point.ry() += atom.size.height();
-    columnMaxHeight = qMax( point.y() - columnTop, columnMaxHeight );
-
-    firstInColumn = false;
-  }
-  point.rx() += columnWidth + mBoxSpace;
-
-  size.rheight() = columnTop + columnMaxHeight + mBoxSpace;
-  size.rwidth() = point.x();
-
-  // Now we know total width and can draw the title centered
-  if ( !mTitle.isEmpty() )
-  {
-    // For multicolumn center if we stay in totalWidth, otherwise allign to left
-    // and expand total width. With single column keep alligned to left be cause
-    // it looks better alligned with items bellow instead of centered
-    Qt::AlignmentFlag halignment;
-    if ( mColumnCount > 1 && titleSize.width() + 2 * mBoxSpace < size.width() )
-    {
-      halignment = Qt::AlignHCenter;
-      point.rx() = mBoxSpace + size.rwidth() / 2;
-    }
-    else
-    {
-      halignment = Qt::AlignLeft;
-      point.rx() = mBoxSpace;
-      size.rwidth() = qMax( titleSize.width() + 2 * mBoxSpace, size.width() );
-    }
-    point.ry() = mBoxSpace;
-    drawTitle( painter, point, halignment );
-  }
-
-  //adjust box if width or height is to small
-  if ( painter && size.height() > rect().height() )
-  {
-    setSceneRect( QRectF( pos().x(), pos().y(), rect().width(), size.height() ) );
-  }
-  if ( painter && size.width() > rect().width() )
-  {
-    setSceneRect( QRectF( pos().x(), pos().y(), size.width(), rect().height() ) );
-  }
-
-  if ( painter )
-  {
-    painter->restore();
-
-    //draw frame and selection boxes if necessary
-    drawFrame( painter );
-    if ( isSelected() )
-    {
-      drawSelectionBoxes( painter );
-    }
-  }
-
-  return size;
-}
-
-QSizeF QgsComposerLegend::drawTitle( QPainter* painter, QPointF point, Qt::AlignmentFlag halignment )
-{
-  QSizeF size( 0, 0 );
-  if ( mTitle.isEmpty() ) return size;
-
-  QStringList lines = splitStringForWrapping( mTitle );
-
-  double y = point.y();
-
-  if ( painter ) painter->setPen( mFontColor );
-
-  for ( QStringList::Iterator titlePart = lines.begin(); titlePart != lines.end(); ++titlePart )
-  {
-    // it does not draw the last world if rectangle width is exactly text width
-    qreal width = textWidthMillimeters( styleFont( QgsComposerLegendStyle::Title ), *titlePart ) + 1;
-    qreal height = fontAscentMillimeters( styleFont( QgsComposerLegendStyle::Title ) ) + fontDescentMillimeters( styleFont( QgsComposerLegendStyle::Title ) );
-
-    double left = halignment == Qt::AlignLeft ?  point.x() : point.x() - width / 2;
-
-    QRectF rect( left, y, width, height );
-
-    if ( painter ) drawText( painter, rect, *titlePart, styleFont( QgsComposerLegendStyle::Title ), halignment, Qt::AlignVCenter );
-
-    size.rwidth() = qMax( width, size.width() );
-
-    y += height;
-    if ( titlePart != lines.end() )
-    {
-      y += mlineSpacing;
-    }
-  }
-  size.rheight() = y - point.y();
-
-  return size;
-}
-
-
-QSizeF QgsComposerLegend::drawGroupItemTitle( QgsComposerGroupItem* groupItem, QPainter* painter, QPointF point )
-{
-  QSizeF size( 0, 0 );
-  if ( !groupItem ) return size;
-
-  double y = point.y();
-
-  if ( painter ) painter->setPen( mFontColor );
-
-  QStringList lines = splitStringForWrapping( groupItem->text() );
-  for ( QStringList::Iterator groupPart = lines.begin(); groupPart != lines.end(); ++groupPart )
-  {
-    y += fontAscentMillimeters( styleFont( groupItem->style() ) );
-    if ( painter ) drawText( painter, point.x(), y, *groupPart, styleFont( groupItem->style() ) );
-    qreal width = textWidthMillimeters( styleFont( groupItem->style() ), *groupPart );
-    size.rwidth() = qMax( width, size.width() );
-    if ( groupPart != lines.end() )
-    {
-      y += mlineSpacing;
-    }
-  }
-  size.rheight() = y - point.y();
-  return size;
-}
-
-QSizeF QgsComposerLegend::drawLayerItemTitle( QgsComposerLayerItem* layerItem, QPainter* painter, QPointF point )
-{
-  QSizeF size( 0, 0 );
-  if ( !layerItem ) return size;
-
-  //Let the user omit the layer title item by having an empty layer title string
-  if ( layerItem->text().isEmpty() ) return size;
-
-  double y = point.y();
-
-  if ( painter ) painter->setPen( mFontColor );
-
-  QStringList lines = splitStringForWrapping( layerItem->text() );
-  for ( QStringList::Iterator layerItemPart = lines.begin(); layerItemPart != lines.end(); ++layerItemPart )
-  {
-    y += fontAscentMillimeters( styleFont( layerItem->style() ) );
-    if ( painter ) drawText( painter, point.x(), y, *layerItemPart , styleFont( layerItem->style() ) );
-    qreal width = textWidthMillimeters( styleFont( layerItem->style() ), *layerItemPart );
-    size.rwidth() = qMax( width, size.width() );
-    if ( layerItemPart != lines.end() )
-    {
-      y += mlineSpacing;
-    }
-  }
-  size.rheight() = y - point.y();
-
-  return size;
-}
-
-void QgsComposerLegend::adjustBoxSize()
-{
-  QSizeF size = paintAndDetermineSize( 0 );
-  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
-  if ( size.isValid() )
-  {
-    setSceneRect( QRectF( pos().x(), pos().y(), size.width(), size.height() ) );
-  }
-}
-
-QgsComposerLegend::Nucleon QgsComposerLegend::drawSymbolItem( QgsComposerLegendItem* symbolItem, QPainter* painter, QPointF point, double labelXOffset )
-{
-  QSizeF symbolSize( 0, 0 );
-  QSizeF labelSize( 0, 0 );
-  if ( !symbolItem ) return Nucleon();
-
-  double textHeight = fontHeightCharacterMM( styleFont( QgsComposerLegendStyle::SymbolLabel ), QChar( '0' ) );
-  // itemHeight here is not realy item height, it is only for symbol
-  // vertical alignment purpose, i.e. ok take single line height
-  // if there are more lines, thos run under the symbol
-  double itemHeight = qMax( mSymbolHeight, textHeight );
-
-  //real symbol height. Can be different from standard height in case of point symbols
-  double realSymbolHeight;
-
-#if 0
-  QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( symbolItem->parent() );
-
-  int opacity = 255;
-  if ( layerItem )
-  {
-    QgsMapLayer* currentLayer = QgsMapLayerRegistry::instance()->mapLayer( layerItem->layerID() );
-    if ( currentLayer )
-    {
-      opacity = currentLayer->getTransparency();
-    }
-  }
-#endif
-
-  QString text = symbolItem->text();
-
-  QStringList lines = splitStringForWrapping( text );
-
-  QgsSymbolV2* symbolNg = 0;
-  QgsComposerSymbolV2Item* symbolV2Item = dynamic_cast<QgsComposerSymbolV2Item*>( symbolItem );
-  if ( symbolV2Item )
-  {
-    symbolNg = symbolV2Item->symbolV2();
-  }
-  QgsComposerRasterSymbolItem* rasterItem = dynamic_cast<QgsComposerRasterSymbolItem*>( symbolItem );
-
-  double x = point.x();
-  if ( symbolNg ) //item with symbol NG?
-  {
-    // must be called also with painter=0 to get real size
-    drawSymbolV2( painter, symbolNg, point.y() + ( itemHeight - mSymbolHeight ) / 2, x, realSymbolHeight );
-    symbolSize.rwidth() = qMax( x - point.x(), mSymbolWidth );
-    symbolSize.rheight() = qMax( realSymbolHeight, mSymbolHeight );
-  }
-  else if ( rasterItem )
-  {
-    // manage WMS lengendGraphic
-    // actual code recognise if it's a legend because it has an icon and it's text is empty => this is not good MV pattern implementation :(
-    QIcon symbolIcon = symbolItem->icon();
-    if ( !symbolIcon.isNull() && symbolItem->text().isEmpty() )
-    {
-      // find max size
-      QList<QSize> sizes = symbolIcon.availableSizes();
-      double maxWidth = 0;
-      double maxHeight = 0;
-      foreach ( QSize size, sizes )
-      {
-        if ( maxWidth < size.width() ) maxWidth = size.width();
-        if ( maxHeight < size.height() ) maxHeight = size.height();
-      }
-      QSize maxSize( maxWidth, maxHeight );
-
-      // get and print legend
-      QImage legend = symbolIcon.pixmap( maxWidth, maxHeight ).toImage();
-      if ( painter )
-      {
-        painter->drawImage( QRectF( point.x(), point.y(), mWmsLegendWidth, mWmsLegendHeight ), legend, QRectF( 0, 0, maxWidth, maxHeight ) );
-      }
-      symbolSize.rwidth() = mWmsLegendWidth;
-      symbolSize.rheight() = mWmsLegendHeight;
-    }
-    else
-    {
-      if ( painter )
-      {
-        painter->setBrush( rasterItem->color() );
-        painter->drawRect( QRectF( point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight ) );
-      }
-      symbolSize.rwidth() = mSymbolWidth;
-      symbolSize.rheight() = mSymbolHeight;
-    }
-  }
-  else //item with icon?
-  {
-    QIcon symbolIcon = symbolItem->icon();
-    if ( !symbolIcon.isNull() )
-    {
-      if ( painter ) symbolIcon.paint( painter, point.x(), point.y() + ( itemHeight - mSymbolHeight ) / 2, mSymbolWidth, mSymbolHeight );
-      symbolSize.rwidth() = mSymbolWidth;
-      symbolSize.rheight() = mSymbolHeight;
-    }
-  }
-
-  if ( painter ) painter->setPen( mFontColor );
-
-  //double labelX = point.x() + labelXOffset; // + mIconLabelSpace;
-  double labelX = point.x() + qMax(( double ) symbolSize.width(), labelXOffset );
-
-  // Vertical alignment of label with symbol:
-  // a) label height < symbol height: label centerd with symbol
-  // b) label height > symbol height: label starts at top and runs under symbol
-
-  labelSize.rheight() = lines.count() * textHeight + ( lines.count() - 1 ) * mlineSpacing;
-
-  double labelY;
-  if ( labelSize.height() < symbolSize.height() )
-  {
-    labelY = point.y() +  symbolSize.height() / 2 + textHeight / 2;
-  }
-  else
-  {
-    labelY = point.y() + textHeight;
-  }
-
-  for ( QStringList::Iterator itemPart = lines.begin(); itemPart != lines.end(); ++itemPart )
-  {
-    if ( painter ) drawText( painter, labelX, labelY, *itemPart , styleFont( QgsComposerLegendStyle::SymbolLabel ) );
-    labelSize.rwidth() = qMax( textWidthMillimeters( styleFont( QgsComposerLegendStyle::SymbolLabel ),  *itemPart ), double( labelSize.width() ) );
-    if ( itemPart != lines.end() )
-    {
-      labelY += mlineSpacing + textHeight;
-    }
-  }
-
-  Nucleon nucleon;
-  nucleon.item = symbolItem;
-  nucleon.symbolSize = symbolSize;
-  nucleon.labelSize = labelSize;
-  //QgsDebugMsg( QString( "symbol height = %1 label height = %2").arg( symbolSize.height()).arg( labelSize.height() ));
-  double width = qMax(( double ) symbolSize.width(), labelXOffset ) + labelSize.width();
-  double height = qMax( symbolSize.height(), labelSize.height() );
-  nucleon.size = QSizeF( width, height );
-  return nucleon;
-}
-
-
-void QgsComposerLegend::drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const
-{
-  if ( !s )
+  if ( !shouldDrawItem() )
   {
     return;
   }
 
-  double rasterScaleFactor = 1.0;
-  if ( p )
+  if ( mFilterAskedForUpdate )
   {
-    QPaintDevice* paintDevice = p->device();
-    if ( !paintDevice )
-    {
-      return;
-    }
-    rasterScaleFactor = ( paintDevice->logicalDpiX() + paintDevice->logicalDpiY() ) / 2.0 / 25.4;
+    mFilterAskedForUpdate = false;
+    doUpdateFilterByMap();
   }
 
-  //consider relation to composer map for symbol sizes in mm
-  bool sizeInMapUnits = s->outputUnit() == QgsSymbolV2::MapUnit;
-  double mmPerMapUnit = 1;
-  if ( mComposerMap )
-  {
-    mmPerMapUnit = mComposerMap->mapUnitsToMM();
-  }
-  QgsMarkerSymbolV2* markerSymbol = dynamic_cast<QgsMarkerSymbolV2*>( s );
+  int dpi = painter->device()->logicalDpiX();
+  double dotsPerMM = dpi / 25.4;
 
-  //Consider symbol size for point markers
-  double height = mSymbolHeight;
-  double width = mSymbolWidth;
-  double size = 0;
-  //Center small marker symbols
-  double widthOffset = 0;
-  double heightOffset = 0;
-
-  if ( markerSymbol )
-  {
-    size = markerSymbol->size();
-    height = size;
-    width = size;
-    if ( mComposerMap && sizeInMapUnits )
-    {
-      height *= mmPerMapUnit;
-      width *= mmPerMapUnit;
-      markerSymbol->setSize( width );
-    }
-    if ( width < mSymbolWidth )
-    {
-      widthOffset = ( mSymbolWidth - width ) / 2.0;
-    }
-    if ( height < mSymbolHeight )
-    {
-      heightOffset = ( mSymbolHeight - height ) / 2.0;
-    }
-  }
-
-  if ( p )
-  {
-    p->save();
-    p->translate( currentXPosition + widthOffset, currentYCoord + heightOffset );
-    p->scale( 1.0 / rasterScaleFactor, 1.0 / rasterScaleFactor );
-
-    if ( markerSymbol && sizeInMapUnits )
-    {
-      s->setOutputUnit( QgsSymbolV2::MM );
-    }
-
-    s->drawPreviewIcon( p, QSize( width * rasterScaleFactor, height * rasterScaleFactor ) );
-
-    if ( markerSymbol && sizeInMapUnits )
-    {
-      s->setOutputUnit( QgsSymbolV2::MapUnit );
-      markerSymbol->setSize( size );
-    }
-    p->restore();
-  }
-  currentXPosition += width;
-  currentXPosition += 2 * widthOffset;
-  symbolHeight = height + 2 * heightOffset;
-}
-
-
-QStringList QgsComposerLegend::layerIdList() const
-{
-  //take layer list from map renderer (to have legend order)
   if ( mComposition )
   {
-    QgsMapRenderer* r = mComposition->mapRenderer();
-    if ( r )
+    mSettings.setUseAdvancedEffects( mComposition->useAdvancedEffects() );
+    mSettings.setDpi( dpi );
+  }
+  if ( mComposerMap )
+  {
+    mSettings.setMmPerMapUnit( mComposerMap->mapUnitsToMM() );
+
+    // use a temporary QgsMapSettings to find out real map scale
+    QSizeF mapSizePixels = QSizeF( mComposerMap->rect().width() * dotsPerMM, mComposerMap->rect().height() * dotsPerMM );
+    QgsRectangle mapExtent = *mComposerMap->currentMapExtent();
+
+    QgsMapSettings ms = mComposerMap->mapSettings( mapExtent, mapSizePixels, dpi );
+    mSettings.setMapScale( ms.scale() );
+  }
+  mInitialMapScaleCalculated = true;
+
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
+  legendRenderer.setLegendSize( mForceResize && mSizeToContents ? QSize() : rect().size() );
+
+  //adjust box if width or height is too small
+  if ( mSizeToContents )
+  {
+    QSizeF size = legendRenderer.minimumSize();
+    if ( mForceResize )
     {
-      return r->layerSet();
+      mForceResize = false;
+      //set new rect, respecting position mode and data defined size/position
+      QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
+      setSceneRect( evalItemRect( targetRect, true ) );
+    }
+    else if ( size.height() > rect().height() || size.width() > rect().width() )
+    {
+      //need to resize box
+      QRectF targetRect = QRectF( pos().x(), pos().y(), rect().width(), rect().height() );
+      if ( size.height() > targetRect.height() )
+        targetRect.setHeight( size.height() );
+      if ( size.width() > rect().width() )
+        targetRect.setWidth( size.width() );
+
+      //set new rect, respecting position mode and data defined size/position
+      setSceneRect( evalItemRect( targetRect, true ) );
     }
   }
-  return QStringList();
+
+  drawBackground( painter );
+  painter->save();
+  //antialiasing on
+  painter->setRenderHint( QPainter::Antialiasing, true );
+  painter->setPen( QPen( QColor( 0, 0, 0 ) ) );
+
+  if ( !mSizeToContents )
+  {
+    // set a clip region to crop out parts of legend which don't fit
+    QRectF thisPaintRect = QRectF( 0, 0, rect().width(), rect().height() );
+    painter->setClipRect( thisPaintRect );
+  }
+
+  legendRenderer.drawLegend( painter );
+
+  painter->restore();
+
+  //draw frame and selection boxes if necessary
+  drawFrame( painter );
+  if ( isSelected() )
+  {
+    drawSelectionBoxes( painter );
+  }
 }
+
+QSizeF QgsComposerLegend::paintAndDetermineSize( QPainter *painter )
+{
+  if ( mFilterAskedForUpdate )
+  {
+    mFilterAskedForUpdate = false;
+    doUpdateFilterByMap();
+  }
+
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
+  QSizeF size = legendRenderer.minimumSize();
+  if ( painter )
+    legendRenderer.drawLegend( painter );
+  return size;
+}
+
+
+void QgsComposerLegend::adjustBoxSize()
+{
+  if ( !mSizeToContents )
+    return;
+
+  if ( !mInitialMapScaleCalculated )
+  {
+    // this is messy - but until we have painted the item we have no knowledge of the current DPI
+    // and so cannot correctly calculate the map scale. This results in incorrect size calculations
+    // for marker symbols with size in map units, causing the legends to initially expand to huge
+    // sizes if we attempt to calculate the box size first.
+    return;
+  }
+
+  QgsLegendRenderer legendRenderer( mLegendModel, mSettings );
+  QSizeF size = legendRenderer.minimumSize();
+  QgsDebugMsg( QString( "width = %1 height = %2" ).arg( size.width() ).arg( size.height() ) );
+  if ( size.isValid() )
+  {
+    QRectF targetRect = QRectF( pos().x(), pos().y(), size.width(), size.height() );
+    //set new rect, respecting position mode and data defined size/position
+    setSceneRect( evalItemRect( targetRect, true ) );
+  }
+}
+
+void QgsComposerLegend::setResizeToContents( bool enabled )
+{
+  mSizeToContents = enabled;
+}
+
+bool QgsComposerLegend::resizeToContents() const
+{
+  return mSizeToContents;
+}
+
+QgsLegendModel *QgsComposerLegend::model()
+{
+  return mLegendModel;
+}
+
+void QgsComposerLegend::setCustomLayerTree( QgsLayerTree *rootGroup )
+{
+  mLegendModel->setRootGroup( rootGroup ? rootGroup : ( mComposition ? mComposition->project()->layerTreeRoot() : nullptr ) );
+
+  mCustomLayerTree.reset( rootGroup );
+}
+
+
+void QgsComposerLegend::setAutoUpdateModel( bool autoUpdate )
+{
+  if ( autoUpdate == autoUpdateModel() )
+    return;
+
+  setCustomLayerTree( autoUpdate ? nullptr : mComposition->project()->layerTreeRoot()->clone() );
+  adjustBoxSize();
+  updateItem();
+}
+
+void QgsComposerLegend::nodeCustomPropertyChanged( QgsLayerTreeNode *, const QString & )
+{
+  if ( autoUpdateModel() )
+  {
+    // in "auto update" mode, some parameters on the main app legend may have been changed (expression filtering)
+    // we must then call updateItem to reflect the changes
+    updateItem();
+  }
+}
+
+bool QgsComposerLegend::autoUpdateModel() const
+{
+  return !mCustomLayerTree;
+}
+
+void QgsComposerLegend::setLegendFilterByMapEnabled( bool enabled )
+{
+  mLegendFilterByMap = enabled;
+  updateItem();
+}
+
+void QgsComposerLegend::setTitle( const QString &t )
+{
+  mTitle = t;
+  mSettings.setTitle( t );
+
+  if ( mComposition && id().isEmpty() )
+  {
+    //notify the model that the display name has changed
+    mComposition->itemsModel()->updateItemDisplayName( this );
+  }
+}
+QString QgsComposerLegend::title() const { return mTitle; }
+
+Qt::AlignmentFlag QgsComposerLegend::titleAlignment() const { return mSettings.titleAlignment(); }
+void QgsComposerLegend::setTitleAlignment( Qt::AlignmentFlag alignment ) { mSettings.setTitleAlignment( alignment ); }
+
+QgsLegendStyle &QgsComposerLegend::rstyle( QgsLegendStyle::Style s ) { return mSettings.rstyle( s ); }
+QgsLegendStyle QgsComposerLegend::style( QgsLegendStyle::Style s ) const { return mSettings.style( s ); }
+void QgsComposerLegend::setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style ) { mSettings.setStyle( s, style ); }
+
+QFont QgsComposerLegend::styleFont( QgsLegendStyle::Style s ) const { return mSettings.style( s ).font(); }
+void QgsComposerLegend::setStyleFont( QgsLegendStyle::Style s, const QFont &f ) { rstyle( s ).setFont( f ); }
+
+void QgsComposerLegend::setStyleMargin( QgsLegendStyle::Style s, double margin ) { rstyle( s ).setMargin( margin ); }
+void QgsComposerLegend::setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin ) { rstyle( s ).setMargin( side, margin ); }
+
+double QgsComposerLegend::lineSpacing() const { return mSettings.lineSpacing(); }
+void QgsComposerLegend::setLineSpacing( double spacing ) { mSettings.setLineSpacing( spacing ); }
+
+double QgsComposerLegend::boxSpace() const { return mSettings.boxSpace(); }
+void QgsComposerLegend::setBoxSpace( double s ) { mSettings.setBoxSpace( s ); }
+
+double QgsComposerLegend::columnSpace() const { return mSettings.columnSpace(); }
+void QgsComposerLegend::setColumnSpace( double s ) { mSettings.setColumnSpace( s ); }
+
+QColor QgsComposerLegend::fontColor() const { return mSettings.fontColor(); }
+void QgsComposerLegend::setFontColor( const QColor &c ) { mSettings.setFontColor( c ); }
+
+double QgsComposerLegend::symbolWidth() const { return mSettings.symbolSize().width(); }
+void QgsComposerLegend::setSymbolWidth( double w ) { mSettings.setSymbolSize( QSizeF( w, mSettings.symbolSize().height() ) ); }
+
+double QgsComposerLegend::symbolHeight() const { return mSettings.symbolSize().height(); }
+void QgsComposerLegend::setSymbolHeight( double h ) { mSettings.setSymbolSize( QSizeF( mSettings.symbolSize().width(), h ) ); }
+
+double QgsComposerLegend::wmsLegendWidth() const { return mSettings.wmsLegendSize().width(); }
+void QgsComposerLegend::setWmsLegendWidth( double w ) { mSettings.setWmsLegendSize( QSizeF( w, mSettings.wmsLegendSize().height() ) ); }
+
+double QgsComposerLegend::wmsLegendHeight() const {return mSettings.wmsLegendSize().height(); }
+void QgsComposerLegend::setWmsLegendHeight( double h ) { mSettings.setWmsLegendSize( QSizeF( mSettings.wmsLegendSize().width(), h ) ); }
+
+void QgsComposerLegend::setWrapChar( const QString &t ) { mSettings.setWrapChar( t ); }
+QString QgsComposerLegend::wrapChar() const {return mSettings.wrapChar(); }
+
+int QgsComposerLegend::columnCount() const { return mColumnCount; }
+void QgsComposerLegend::setColumnCount( int c ) { mColumnCount = c; mSettings.setColumnCount( c ); }
+
+bool QgsComposerLegend::splitLayer() const { return mSettings.splitLayer(); }
+void QgsComposerLegend::setSplitLayer( bool s ) { mSettings.setSplitLayer( s ); }
+
+bool QgsComposerLegend::equalColumnWidth() const { return mSettings.equalColumnWidth(); }
+void QgsComposerLegend::setEqualColumnWidth( bool s ) { mSettings.setEqualColumnWidth( s ); }
+
+bool QgsComposerLegend::drawRasterStroke() const { return mSettings.drawRasterStroke(); }
+void QgsComposerLegend::setDrawRasterStroke( bool enabled ) { mSettings.setDrawRasterStroke( enabled ); }
+
+QColor QgsComposerLegend::rasterStrokeColor() const { return mSettings.rasterStrokeColor(); }
+void QgsComposerLegend::setRasterStrokeColor( const QColor &color ) { mSettings.setRasterStrokeColor( color ); }
+
+double QgsComposerLegend::rasterStrokeWidth() const { return mSettings.rasterStrokeWidth(); }
+void QgsComposerLegend::setRasterStrokeWidth( double width ) { mSettings.setRasterStrokeWidth( width ); }
 
 void QgsComposerLegend::synchronizeWithModel()
 {
-  QgsDebugMsg( "Entered" );
   adjustBoxSize();
-  update();
-}
-
-void QgsComposerLegend::setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f )
-{
-  rstyle( s ).setFont( f );
-}
-
-void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, double margin )
-{
-  rstyle( s ).setMargin( margin );
-}
-
-void QgsComposerLegend::setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin )
-{
-  rstyle( s ).setMargin( side, margin );
+  updateItem();
 }
 
 void QgsComposerLegend::updateLegend()
 {
-  mLegendModel.setLayerSet( layerIdList() );
   adjustBoxSize();
-  update();
+  updateItem();
 }
 
-bool QgsComposerLegend::writeXML( QDomElement& elem, QDomDocument & doc ) const
+void QgsComposerLegend::updateItem()
+{
+  if ( !updatesEnabled() )
+    return;
+
+  updateFilterByMap( false );
+  QgsComposerItem::updateItem();
+}
+
+bool QgsComposerLegend::writeXml( QDomElement &elem, QDomDocument &doc ) const
 {
   if ( elem.isNull() )
   {
     return false;
   }
 
-  QDomElement composerLegendElem = doc.createElement( "ComposerLegend" );
+  QgsPathResolver  pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
+
+  QDomElement composerLegendElem = doc.createElement( QStringLiteral( "ComposerLegend" ) );
   elem.appendChild( composerLegendElem );
 
   //write general properties
-  composerLegendElem.setAttribute( "title", mTitle );
-  composerLegendElem.setAttribute( "columnCount", QString::number( mColumnCount ) );
-  composerLegendElem.setAttribute( "splitLayer", QString::number( mSplitLayer ) );
-  composerLegendElem.setAttribute( "equalColumnWidth", QString::number( mEqualColumnWidth ) );
+  composerLegendElem.setAttribute( QStringLiteral( "title" ), mTitle );
+  composerLegendElem.setAttribute( QStringLiteral( "titleAlignment" ), QString::number( static_cast< int >( mSettings.titleAlignment() ) ) );
+  composerLegendElem.setAttribute( QStringLiteral( "columnCount" ), QString::number( mColumnCount ) );
+  composerLegendElem.setAttribute( QStringLiteral( "splitLayer" ), QString::number( mSettings.splitLayer() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "equalColumnWidth" ), QString::number( mSettings.equalColumnWidth() ) );
 
-  composerLegendElem.setAttribute( "boxSpace", QString::number( mBoxSpace ) );
-  composerLegendElem.setAttribute( "columnSpace", QString::number( mColumnSpace ) );
+  composerLegendElem.setAttribute( QStringLiteral( "boxSpace" ), QString::number( mSettings.boxSpace() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "columnSpace" ), QString::number( mSettings.columnSpace() ) );
 
-  composerLegendElem.setAttribute( "symbolWidth", QString::number( mSymbolWidth ) );
-  composerLegendElem.setAttribute( "symbolHeight", QString::number( mSymbolHeight ) );
-  composerLegendElem.setAttribute( "wmsLegendWidth", QString::number( mWmsLegendWidth ) );
-  composerLegendElem.setAttribute( "wmsLegendHeight", QString::number( mWmsLegendHeight ) );
-  composerLegendElem.setAttribute( "wrapChar", mWrapChar );
-  composerLegendElem.setAttribute( "fontColor", mFontColor.name() );
+  composerLegendElem.setAttribute( QStringLiteral( "symbolWidth" ), QString::number( mSettings.symbolSize().width() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "symbolHeight" ), QString::number( mSettings.symbolSize().height() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "lineSpacing" ), QString::number( mSettings.lineSpacing() ) );
+
+  composerLegendElem.setAttribute( QStringLiteral( "rasterBorder" ), mSettings.drawRasterStroke() );
+  composerLegendElem.setAttribute( QStringLiteral( "rasterBorderColor" ), QgsSymbolLayerUtils::encodeColor( mSettings.rasterStrokeColor() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "rasterBorderWidth" ), QString::number( mSettings.rasterStrokeWidth() ) );
+
+  composerLegendElem.setAttribute( QStringLiteral( "wmsLegendWidth" ), QString::number( mSettings.wmsLegendSize().width() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "wmsLegendHeight" ), QString::number( mSettings.wmsLegendSize().height() ) );
+  composerLegendElem.setAttribute( QStringLiteral( "wrapChar" ), mSettings.wrapChar() );
+  composerLegendElem.setAttribute( QStringLiteral( "fontColor" ), mSettings.fontColor().name() );
+
+  composerLegendElem.setAttribute( QStringLiteral( "resizeToContents" ), mSizeToContents );
 
   if ( mComposerMap )
   {
-    composerLegendElem.setAttribute( "map", mComposerMap->id() );
+    composerLegendElem.setAttribute( QStringLiteral( "map" ), mComposerMap->id() );
   }
 
-  QDomElement composerLegendStyles = doc.createElement( "styles" );
+  QDomElement composerLegendStyles = doc.createElement( QStringLiteral( "styles" ) );
   composerLegendElem.appendChild( composerLegendStyles );
 
-  style( QgsComposerLegendStyle::Title ).writeXML( "title", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Group ).writeXML( "group", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Subgroup ).writeXML( "subgroup", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::Symbol ).writeXML( "symbol", composerLegendStyles, doc );
-  style( QgsComposerLegendStyle::SymbolLabel ).writeXML( "symbolLabel", composerLegendStyles, doc );
+  style( QgsLegendStyle::Title ).writeXml( QStringLiteral( "title" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::Group ).writeXml( QStringLiteral( "group" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::Subgroup ).writeXml( QStringLiteral( "subgroup" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::Symbol ).writeXml( QStringLiteral( "symbol" ), composerLegendStyles, doc );
+  style( QgsLegendStyle::SymbolLabel ).writeXml( QStringLiteral( "symbolLabel" ), composerLegendStyles, doc );
 
-  //write model properties
-  mLegendModel.writeXML( composerLegendElem, doc );
+  if ( mCustomLayerTree )
+  {
+    // if not using auto-update - store the custom layer tree
+    mCustomLayerTree->writeXml( composerLegendElem, context );
+  }
 
-  return _writeXML( composerLegendElem, doc );
+  if ( mLegendFilterByMap )
+  {
+    composerLegendElem.setAttribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "1" ) );
+  }
+  composerLegendElem.setAttribute( QStringLiteral( "legendFilterByAtlas" ), mFilterOutAtlas ? QStringLiteral( "1" ) : QStringLiteral( "0" ) );
+
+  return _writeXml( composerLegendElem, doc );
 }
 
-bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerLegend::readXml( const QDomElement &itemElem, const QDomDocument &doc )
 {
   if ( itemElem.isNull() )
   {
     return false;
   }
 
-  //read general properties
-  mTitle = itemElem.attribute( "title" );
-  mColumnCount = itemElem.attribute( "columnCount", "1" ).toInt();
-  if ( mColumnCount < 1 ) mColumnCount = 1;
-  mSplitLayer = itemElem.attribute( "splitLayer", "0" ).toInt() == 1;
-  mEqualColumnWidth = itemElem.attribute( "equalColumnWidth", "0" ).toInt() == 1;
+  QgsPathResolver  pathResolver;
+  if ( mComposition )
+    pathResolver = mComposition->project()->pathResolver();
+  QgsReadWriteContext context;
+  context.setPathResolver( pathResolver );
 
-  QDomNodeList stylesNodeList = itemElem.elementsByTagName( "styles" );
-  if ( stylesNodeList.size() > 0 )
+  //read general properties
+  mTitle = itemElem.attribute( QStringLiteral( "title" ) );
+  mSettings.setTitle( mTitle );
+  if ( !itemElem.attribute( QStringLiteral( "titleAlignment" ) ).isEmpty() )
+  {
+    mSettings.setTitleAlignment( static_cast< Qt::AlignmentFlag >( itemElem.attribute( QStringLiteral( "titleAlignment" ) ).toInt() ) );
+  }
+  int colCount = itemElem.attribute( QStringLiteral( "columnCount" ), QStringLiteral( "1" ) ).toInt();
+  if ( colCount < 1 ) colCount = 1;
+  mColumnCount = colCount;
+  mSettings.setColumnCount( mColumnCount );
+  mSettings.setSplitLayer( itemElem.attribute( QStringLiteral( "splitLayer" ), QStringLiteral( "0" ) ).toInt() == 1 );
+  mSettings.setEqualColumnWidth( itemElem.attribute( QStringLiteral( "equalColumnWidth" ), QStringLiteral( "0" ) ).toInt() == 1 );
+
+  QDomNodeList stylesNodeList = itemElem.elementsByTagName( QStringLiteral( "styles" ) );
+  if ( !stylesNodeList.isEmpty() )
   {
     QDomNode stylesNode = stylesNodeList.at( 0 );
     for ( int i = 0; i < stylesNode.childNodes().size(); i++ )
     {
       QDomElement styleElem = stylesNode.childNodes().at( i ).toElement();
-      QgsComposerLegendStyle style;
-      style.readXML( styleElem, doc );
-      QString name = styleElem.attribute( "name" );
-      QgsComposerLegendStyle::Style s;
-      if ( name == "title" ) s = QgsComposerLegendStyle::Title;
-      else if ( name == "group" ) s = QgsComposerLegendStyle::Group;
-      else if ( name == "subgroup" ) s = QgsComposerLegendStyle::Subgroup;
-      else if ( name == "symbol" ) s = QgsComposerLegendStyle::Symbol;
-      else if ( name == "symbolLabel" ) s = QgsComposerLegendStyle::SymbolLabel;
+      QgsLegendStyle style;
+      style.readXml( styleElem, doc );
+      QString name = styleElem.attribute( QStringLiteral( "name" ) );
+      QgsLegendStyle::Style s;
+      if ( name == QLatin1String( "title" ) ) s = QgsLegendStyle::Title;
+      else if ( name == QLatin1String( "group" ) ) s = QgsLegendStyle::Group;
+      else if ( name == QLatin1String( "subgroup" ) ) s = QgsLegendStyle::Subgroup;
+      else if ( name == QLatin1String( "symbol" ) ) s = QgsLegendStyle::Symbol;
+      else if ( name == QLatin1String( "symbolLabel" ) ) s = QgsLegendStyle::SymbolLabel;
       else continue;
       setStyle( s, style );
     }
   }
 
   //font color
-  mFontColor.setNamedColor( itemElem.attribute( "fontColor", "#000000" ) );
+  QColor fontClr;
+  fontClr.setNamedColor( itemElem.attribute( QStringLiteral( "fontColor" ), QStringLiteral( "#000000" ) ) );
+  mSettings.setFontColor( fontClr );
 
   //spaces
-  mBoxSpace = itemElem.attribute( "boxSpace", "2.0" ).toDouble();
-  mColumnSpace = itemElem.attribute( "columnSpace", "2.0" ).toDouble();
+  mSettings.setBoxSpace( itemElem.attribute( QStringLiteral( "boxSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
+  mSettings.setColumnSpace( itemElem.attribute( QStringLiteral( "columnSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
 
-  mSymbolWidth = itemElem.attribute( "symbolWidth", "7.0" ).toDouble();
-  mSymbolHeight = itemElem.attribute( "symbolHeight", "14.0" ).toDouble();
-  mWmsLegendWidth = itemElem.attribute( "wmsLegendWidth", "50" ).toDouble();
-  mWmsLegendHeight = itemElem.attribute( "wmsLegendHeight", "25" ).toDouble();
+  mSettings.setSymbolSize( QSizeF( itemElem.attribute( QStringLiteral( "symbolWidth" ), QStringLiteral( "7.0" ) ).toDouble(), itemElem.attribute( QStringLiteral( "symbolHeight" ), QStringLiteral( "14.0" ) ).toDouble() ) );
+  mSettings.setWmsLegendSize( QSizeF( itemElem.attribute( QStringLiteral( "wmsLegendWidth" ), QStringLiteral( "50" ) ).toDouble(), itemElem.attribute( QStringLiteral( "wmsLegendHeight" ), QStringLiteral( "25" ) ).toDouble() ) );
+  mSettings.setLineSpacing( itemElem.attribute( QStringLiteral( "lineSpacing" ), QStringLiteral( "1.0" ) ).toDouble() );
 
-  mWrapChar = itemElem.attribute( "wrapChar" );
+  mSettings.setDrawRasterStroke( itemElem.attribute( QStringLiteral( "rasterBorder" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+  mSettings.setRasterStrokeColor( QgsSymbolLayerUtils::decodeColor( itemElem.attribute( QStringLiteral( "rasterBorderColor" ), QStringLiteral( "0,0,0" ) ) ) );
+  mSettings.setRasterStrokeWidth( itemElem.attribute( QStringLiteral( "rasterBorderWidth" ), QStringLiteral( "0" ) ).toDouble() );
+
+  mSettings.setWrapChar( itemElem.attribute( QStringLiteral( "wrapChar" ) ) );
+
+  mSizeToContents = itemElem.attribute( QStringLiteral( "resizeToContents" ), QStringLiteral( "1" ) ) != QLatin1String( "0" );
 
   //composer map
-  if ( !itemElem.attribute( "map" ).isEmpty() )
+  mLegendFilterByMap = itemElem.attribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "0" ) ).toInt();
+  if ( !itemElem.attribute( QStringLiteral( "map" ) ).isEmpty() )
   {
-    mComposerMap = mComposition->getComposerMapById( itemElem.attribute( "map" ).toInt() );
+    setComposerMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
   }
+  mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
 
-  //read model properties
-  QDomNodeList modelNodeList = itemElem.elementsByTagName( "Model" );
-  if ( modelNodeList.size() > 0 )
+  // QGIS >= 2.6
+  QDomElement layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree" ) );
+  if ( layerTreeElem.isNull() )
+    layerTreeElem = itemElem.firstChildElement( QStringLiteral( "layer-tree-group" ) );
+
+  if ( !layerTreeElem.isNull() )
   {
-    QDomElement modelElem = modelNodeList.at( 0 ).toElement();
-    mLegendModel.readXML( modelElem, doc );
+    std::unique_ptr< QgsLayerTree > tree( QgsLayerTree::readXml( layerTreeElem, context ) );
+    if ( mComposition )
+      tree->resolveReferences( mComposition->project(), true );
+    setCustomLayerTree( tree.release() );
   }
+  else
+    setCustomLayerTree( nullptr );
 
   //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( "ComposerItem" );
-  if ( composerItemList.size() > 0 )
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
+  if ( !composerItemList.isEmpty() )
   {
     QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-    _readXML( composerItemElem, doc );
+    _readXml( composerItemElem, doc );
   }
 
   // < 2.0 projects backward compatibility >>>>>
   //title font
-  QString titleFontString = itemElem.attribute( "titleFont" );
+  QString titleFontString = itemElem.attribute( QStringLiteral( "titleFont" ) );
   if ( !titleFontString.isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Title ).rfont().fromString( titleFontString );
+    rstyle( QgsLegendStyle::Title ).rfont().fromString( titleFontString );
   }
   //group font
-  QString groupFontString = itemElem.attribute( "groupFont" );
+  QString groupFontString = itemElem.attribute( QStringLiteral( "groupFont" ) );
   if ( !groupFontString.isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Group ).rfont().fromString( groupFontString );
+    rstyle( QgsLegendStyle::Group ).rfont().fromString( groupFontString );
   }
 
   //layer font
-  QString layerFontString = itemElem.attribute( "layerFont" );
+  QString layerFontString = itemElem.attribute( QStringLiteral( "layerFont" ) );
   if ( !layerFontString.isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Subgroup ).rfont().fromString( layerFontString );
+    rstyle( QgsLegendStyle::Subgroup ).rfont().fromString( layerFontString );
   }
   //item font
-  QString itemFontString = itemElem.attribute( "itemFont" );
+  QString itemFontString = itemElem.attribute( QStringLiteral( "itemFont" ) );
   if ( !itemFontString.isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::SymbolLabel ).rfont().fromString( itemFontString );
+    rstyle( QgsLegendStyle::SymbolLabel ).rfont().fromString( itemFontString );
   }
 
-  if ( !itemElem.attribute( "groupSpace" ).isEmpty() )
+  if ( !itemElem.attribute( QStringLiteral( "groupSpace" ) ).isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Group ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( "groupSpace", "3.0" ).toDouble() );
+    rstyle( QgsLegendStyle::Group ).setMargin( QgsLegendStyle::Top, itemElem.attribute( QStringLiteral( "groupSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
   }
-  if ( !itemElem.attribute( "layerSpace" ).isEmpty() )
+  if ( !itemElem.attribute( QStringLiteral( "layerSpace" ) ).isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Subgroup ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( "layerSpace", "3.0" ).toDouble() );
+    rstyle( QgsLegendStyle::Subgroup ).setMargin( QgsLegendStyle::Top, itemElem.attribute( QStringLiteral( "layerSpace" ), QStringLiteral( "3.0" ) ).toDouble() );
   }
-  if ( !itemElem.attribute( "symbolSpace" ).isEmpty() )
+  if ( !itemElem.attribute( QStringLiteral( "symbolSpace" ) ).isEmpty() )
   {
-    rstyle( QgsComposerLegendStyle::Symbol ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( "symbolSpace", "2.0" ).toDouble() );
-    rstyle( QgsComposerLegendStyle::SymbolLabel ).setMargin( QgsComposerLegendStyle::Top, itemElem.attribute( "symbolSpace", "2.0" ).toDouble() );
+    rstyle( QgsLegendStyle::Symbol ).setMargin( QgsLegendStyle::Top, itemElem.attribute( QStringLiteral( "symbolSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
+    rstyle( QgsLegendStyle::SymbolLabel ).setMargin( QgsLegendStyle::Top, itemElem.attribute( QStringLiteral( "symbolSpace" ), QStringLiteral( "2.0" ) ).toDouble() );
   }
   // <<<<<<< < 2.0 projects backward compatibility
 
@@ -727,320 +553,190 @@ bool QgsComposerLegend::readXML( const QDomElement& itemElem, const QDomDocument
   return true;
 }
 
-void QgsComposerLegend::setComposerMap( const QgsComposerMap* map )
+QString QgsComposerLegend::displayName() const
 {
+  if ( !id().isEmpty() )
+  {
+    return id();
+  }
+
+  //if no id, default to portion of title text
+  QString text = mSettings.title();
+  if ( text.isEmpty() )
+  {
+    return tr( "<legend>" );
+  }
+  if ( text.length() > 25 )
+  {
+    return QString( tr( "%1..." ) ).arg( text.left( 25 ) );
+  }
+  else
+  {
+    return text;
+  }
+}
+
+void QgsComposerLegend::setComposerMap( const QgsComposerMap *map )
+{
+  if ( mComposerMap )
+  {
+    disconnect( mComposerMap, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
+    disconnect( mComposerMap, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    disconnect( mComposerMap, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    disconnect( mComposerMap, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
+  }
+
   mComposerMap = map;
+
   if ( map )
   {
-    QObject::connect( map, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
+    connect( map, &QObject::destroyed, this, &QgsComposerLegend::invalidateCurrentMap );
+    connect( map, &QgsComposerObject::itemChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsComposerMap::extentChanged, this, &QgsComposerLegend::updateFilterByMapAndRedraw );
+    connect( map, &QgsComposerMap::layerStyleOverridesChanged, this, &QgsComposerLegend::mapLayerStyleOverridesChanged );
   }
+
+  updateItem();
 }
 
 void QgsComposerLegend::invalidateCurrentMap()
 {
-  if ( mComposerMap )
-  {
-    disconnect( mComposerMap, SIGNAL( destroyed( QObject* ) ), this, SLOT( invalidateCurrentMap() ) );
-  }
-  mComposerMap = 0;
+  setComposerMap( nullptr );
 }
 
-QStringList QgsComposerLegend::splitStringForWrapping( QString stringToSplt )
+void QgsComposerLegend::refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QgsExpressionContext *context )
 {
-  QStringList list;
-  // If the string contains nothing then just return the string without spliting.
-  if ( mWrapChar.count() == 0 )
-    list << stringToSplt;
+  QgsExpressionContext scopedContext = createExpressionContext();
+  const QgsExpressionContext *evalContext = context ? context : &scopedContext;
+
+  bool forceUpdate = false;
+  //updates data defined properties and redraws item to match
+  if ( property == QgsComposerObject::LegendTitle || property == QgsComposerObject::AllProperties )
+  {
+    bool ok = false;
+    QString t = mDataDefinedProperties.valueAsString( QgsComposerObject::LegendTitle, *evalContext, mTitle, &ok );
+    if ( ok )
+    {
+      mSettings.setTitle( t );
+      forceUpdate = true;
+    }
+  }
+  if ( property == QgsComposerObject::LegendColumnCount || property == QgsComposerObject::AllProperties )
+  {
+    bool ok = false;
+    int cols = mDataDefinedProperties.valueAsInt( QgsComposerObject::LegendColumnCount, *evalContext, mColumnCount, &ok );
+    if ( ok && cols >= 0 )
+    {
+      mSettings.setColumnCount( cols );
+      forceUpdate = true;
+    }
+  }
+  if ( forceUpdate )
+  {
+    adjustBoxSize();
+    update();
+  }
+
+  QgsComposerObject::refreshDataDefinedProperty( property, context );
+}
+
+void QgsComposerLegend::updateFilterByMapAndRedraw()
+{
+  updateFilterByMap( true );
+}
+
+void QgsComposerLegend::mapLayerStyleOverridesChanged()
+{
+  if ( !mComposerMap )
+    return;
+
+  // map's style has been changed, so make sure to update the legend here
+  if ( mLegendFilterByMap )
+  {
+    // legend is being filtered by map, so we need to re run the hit test too
+    // as the style overrides may also have affected the visible symbols
+    updateFilterByMap( false );
+  }
   else
-    list = stringToSplt.split( mWrapChar );
-  return list;
+  {
+    mLegendModel->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+
+    Q_FOREACH ( QgsLayerTreeLayer *nodeLayer, mLegendModel->rootGroup()->findLayers() )
+      mLegendModel->refreshLayerLegend( nodeLayer );
+  }
+
+  adjustBoxSize();
+  updateItem();
 }
 
-QList<QgsComposerLegend::Atom> QgsComposerLegend::createAtomList( QStandardItem* rootItem, bool splitLayer )
+void QgsComposerLegend::updateFilterByMap( bool redraw )
 {
-  QList<Atom> atoms;
+  if ( isRemoved() )
+    return;
+  // ask for update
+  // the actual update will take place before the redraw.
+  // This is to avoid multiple calls to the filter
+  mFilterAskedForUpdate = true;
 
-  if ( !rootItem ) return atoms;
-
-  Atom atom;
-
-  for ( int i = 0; i < rootItem->rowCount(); i++ )
-  {
-    QStandardItem* currentLayerItem = rootItem->child( i );
-    QgsComposerLegendItem* currentLegendItem = dynamic_cast<QgsComposerLegendItem*>( currentLayerItem );
-    if ( !currentLegendItem ) continue;
-
-    QgsComposerLegendItem::ItemType type = currentLegendItem->itemType();
-    if ( type == QgsComposerLegendItem::GroupItem )
-    {
-      // Group subitems
-      QList<Atom> groupAtoms = createAtomList( currentLayerItem, splitLayer );
-
-      Nucleon nucleon;
-      nucleon.item = currentLegendItem;
-      nucleon.size = drawGroupItemTitle( dynamic_cast<QgsComposerGroupItem*>( currentLegendItem ) );
-
-      if ( groupAtoms.size() > 0 )
-      {
-        // Add internal space between this group title and the next nucleon
-        groupAtoms[0].size.rheight() += spaceAboveAtom( groupAtoms[0] );
-        // Prepend this group title to the first atom
-        groupAtoms[0].nucleons.prepend( nucleon );
-        groupAtoms[0].size.rheight() += nucleon.size.height();
-        groupAtoms[0].size.rwidth() = qMax( nucleon.size.width(), groupAtoms[0].size.width() );
-      }
-      else
-      {
-        // no subitems, append new atom
-        Atom atom;
-        atom.nucleons.append( nucleon );
-        atom.size.rwidth() += nucleon.size.width();
-        atom.size.rheight() += nucleon.size.height();
-        atom.size.rwidth() = qMax( nucleon.size.width(), atom.size.width() );
-        groupAtoms.append( atom );
-      }
-      atoms.append( groupAtoms );
-    }
-    else if ( type == QgsComposerLegendItem::LayerItem )
-    {
-      Atom atom;
-
-      if ( currentLegendItem->style() != QgsComposerLegendStyle::Hidden )
-      {
-        Nucleon nucleon;
-        nucleon.item = currentLegendItem;
-        nucleon.size = drawLayerItemTitle( dynamic_cast<QgsComposerLayerItem*>( currentLegendItem ) );
-        atom.nucleons.append( nucleon );
-        atom.size.rwidth() = nucleon.size.width();
-        atom.size.rheight() = nucleon.size.height();
-      }
-
-      QList<Atom> layerAtoms;
-
-      for ( int j = 0; j < currentLegendItem->rowCount(); j++ )
-      {
-        QgsComposerLegendItem * symbolItem = dynamic_cast<QgsComposerLegendItem*>( currentLegendItem->child( j, 0 ) );
-        if ( !symbolItem ) continue;
-
-        Nucleon symbolNucleon = drawSymbolItem( symbolItem );
-
-        if ( !mSplitLayer || j == 0 )
-        {
-          // append to layer atom
-          // the width is not correct at this moment, we must align all symbol labels
-          atom.size.rwidth() = qMax( symbolNucleon.size.width(), atom.size.width() );
-          //if ( currentLegendItem->rowCount() > 1 )
-          //if ( currentLegendItem->style() != QgsComposerLegendStyle::Hidden )
-          //{
-          //atom.size.rheight() += mSymbolSpace;
-          // TODO: for now we keep Symbol and SymbolLabel Top margin in sync
-          atom.size.rheight() += style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
-          //}
-          atom.size.rheight() += symbolNucleon.size.height();
-          atom.nucleons.append( symbolNucleon );
-        }
-        else
-        {
-          Atom symbolAtom;
-          symbolAtom.nucleons.append( symbolNucleon );
-          symbolAtom.size.rwidth() = symbolNucleon.size.width();
-          symbolAtom.size.rheight() = symbolNucleon.size.height();
-          layerAtoms.append( symbolAtom );
-        }
-      }
-      layerAtoms.prepend( atom );
-      atoms.append( layerAtoms );
-    }
-  }
-
-  return atoms;
+  if ( redraw )
+    QgsComposerItem::updateItem();
 }
 
-// Draw atom and expand its size (using actual nucleons labelXOffset)
-QSizeF QgsComposerLegend::drawAtom( Atom atom, QPainter* painter, QPointF point )
+void QgsComposerLegend::doUpdateFilterByMap()
 {
-  bool first = true;
-  QSizeF size = QSizeF( atom.size );
-  foreach ( Nucleon nucleon, atom.nucleons )
+  if ( mComposerMap )
+    mLegendModel->setLayerStyleOverrides( mComposerMap->layerStyleOverrides() );
+  else
+    mLegendModel->setLayerStyleOverrides( QMap<QString, QString>() );
+
+
+  bool filterByExpression = QgsLayerTreeUtils::hasLegendFilterExpression( *( mCustomLayerTree ? mCustomLayerTree.get() : mComposition->project()->layerTreeRoot() ) );
+
+  if ( mComposerMap && ( mLegendFilterByMap || filterByExpression || mInAtlas ) )
   {
-    QgsComposerLegendItem* item = nucleon.item;
-    //QgsDebugMsg( "text: " + item->text() );
-    if ( !item ) continue;
-    QgsComposerLegendItem::ItemType type = item->itemType();
-    if ( type == QgsComposerLegendItem::GroupItem )
+    int dpi = mComposition->printResolution();
+
+    QgsRectangle requestRectangle;
+    mComposerMap->requestedExtent( requestRectangle );
+
+    QSizeF size( requestRectangle.width(), requestRectangle.height() );
+    size *= mComposerMap->mapUnitsToMM() * dpi / 25.4;
+
+    QgsMapSettings ms = mComposerMap->mapSettings( requestRectangle, size, dpi );
+
+    QgsGeometry filterPolygon;
+    if ( mInAtlas )
     {
-      QgsComposerGroupItem* groupItem = dynamic_cast<QgsComposerGroupItem*>( item );
-      if ( !groupItem ) continue;
-      if ( groupItem->style() != QgsComposerLegendStyle::Hidden )
-      {
-        if ( !first )
-        {
-          point.ry() += style( groupItem->style() ).margin( QgsComposerLegendStyle::Top );
-        }
-        drawGroupItemTitle( groupItem, painter, point );
-      }
+      filterPolygon = composition()->atlasComposition().currentGeometry( mComposerMap->crs() );
     }
-    else if ( type == QgsComposerLegendItem::LayerItem )
-    {
-      QgsComposerLayerItem* layerItem = dynamic_cast<QgsComposerLayerItem*>( item );
-      if ( !layerItem ) continue;
-      if ( layerItem->style() != QgsComposerLegendStyle::Hidden )
-      {
-        if ( !first )
-        {
-          point.ry() += style( layerItem->style() ).margin( QgsComposerLegendStyle::Top );
-        }
-        drawLayerItemTitle( layerItem, painter, point );
-      }
-    }
-    else if ( type == QgsComposerLegendItem::SymbologyV2Item ||
-              type == QgsComposerLegendItem::RasterSymbolItem )
-    {
-      if ( !first )
-      {
-        point.ry() += style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
-      }
-      double labelXOffset = nucleon.labelXOffset;
-      Nucleon symbolNucleon = drawSymbolItem( item, painter, point, labelXOffset );
-      // expand width, it may be wider because of labelXOffset
-      size.rwidth() = qMax( symbolNucleon.size.width(), size.width() );
-    }
-    point.ry() += nucleon.size.height();
-    first = false;
+    mLegendModel->setLegendFilter( &ms, /* useExtent */ mInAtlas || mLegendFilterByMap, filterPolygon, /* useExpressions */ true );
   }
-  return size;
+  else
+    mLegendModel->setLegendFilterByMap( nullptr );
+
+  mForceResize = true;
 }
 
-double QgsComposerLegend::spaceAboveAtom( Atom atom )
+void QgsComposerLegend::setLegendFilterOutAtlas( bool doFilter )
 {
-  if ( atom.nucleons.size() == 0 ) return 0;
-
-  Nucleon nucleon = atom.nucleons.first();
-
-  QgsComposerLegendItem* item = nucleon.item;
-  if ( !item ) return 0;
-
-  QgsComposerLegendItem::ItemType type = item->itemType();
-  switch ( type )
-  {
-    case QgsComposerLegendItem::GroupItem:
-      return style( item->style() ).margin( QgsComposerLegendStyle::Top );
-      break;
-    case QgsComposerLegendItem::LayerItem:
-      return style( item->style() ).margin( QgsComposerLegendStyle::Top );
-      break;
-    case QgsComposerLegendItem::SymbologyV2Item:
-    case QgsComposerLegendItem::RasterSymbolItem:
-      // TODO: use Symbol or SymbolLabel Top margin
-      return style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Top );
-      break;
-    default:
-      break;
-  }
-  return 0;
+  mFilterOutAtlas = doFilter;
 }
 
-void QgsComposerLegend::setColumns( QList<Atom>& atomList )
+bool QgsComposerLegend::legendFilterOutAtlas() const
 {
-  if ( mColumnCount == 0 ) return;
-
-  // Divide atoms to columns
-  double totalHeight = 0;
-  // bool first = true;
-  qreal maxAtomHeight = 0;
-  foreach ( Atom atom, atomList )
-  {
-    //if ( !first )
-    //{
-    totalHeight += spaceAboveAtom( atom );
-    //}
-    totalHeight += atom.size.height();
-    maxAtomHeight = qMax( atom.size.height(), maxAtomHeight );
-    // first  = false;
-  }
-
-  // We know height of each atom and we have to split them into columns
-  // minimizing max column height. It is sort of bin packing problem, NP-hard.
-  // We are using simple heuristic, brute fore appeared to be to slow,
-  // the number of combinations is N = n!/(k!*(n-k)!) where n = atomsCount-1
-  // and k = columnsCount-1
-
-  double avgColumnHeight = totalHeight / mColumnCount;
-  int currentColumn = 0;
-  int currentColumnAtomCount = 0; // number of atoms in current column
-  double currentColumnHeight = 0;
-  double maxColumnHeight = 0;
-  double closedColumnsHeight = 0;
-  // first = true; // first in column
-  for ( int i = 0; i < atomList.size(); i++ )
-  {
-    Atom atom = atomList[i];
-    double currentHeight = currentColumnHeight;
-    //if ( !first )
-    //{
-    currentHeight += spaceAboveAtom( atom );
-    //}
-    currentHeight += atom.size.height();
-
-    // Recalc average height for remaining columns including current
-    avgColumnHeight = ( totalHeight - closedColumnsHeight ) / ( mColumnCount - currentColumn );
-    if (( currentHeight - avgColumnHeight ) > atom.size.height() / 2 // center of current atom is over average height
-        && currentColumnAtomCount > 0 // do not leave empty column
-        && currentHeight > maxAtomHeight  // no sense to make smaller columns than max atom height
-        && currentHeight > maxColumnHeight  // no sense to make smaller columns than max column already created
-        && currentColumn < mColumnCount - 1 ) // must not exceed max number of columns
-    {
-      // New column
-      currentColumn++;
-      currentColumnAtomCount = 0;
-      closedColumnsHeight += currentColumnHeight;
-      currentColumnHeight = atom.size.height();
-    }
-    else
-    {
-      currentColumnHeight = currentHeight;
-    }
-    atomList[i].column = currentColumn;
-    currentColumnAtomCount++;
-    maxColumnHeight = qMax( currentColumnHeight, maxColumnHeight );
-
-    // first  = false;
-  }
-
-  // Alling labels of symbols for each layr/column to the same labelXOffset
-  QMap<QString, qreal> maxSymbolWidth;
-  for ( int i = 0; i < atomList.size(); i++ )
-  {
-    for ( int j = 0; j < atomList[i].nucleons.size(); j++ )
-    {
-      QgsComposerLegendItem* item = atomList[i].nucleons[j].item;
-      if ( !item ) continue;
-      QgsComposerLegendItem::ItemType type = item->itemType();
-      if ( type == QgsComposerLegendItem::SymbologyV2Item ||
-           type == QgsComposerLegendItem::RasterSymbolItem )
-      {
-        QString key = QString( "%1-%2" ).arg(( qulonglong )item->parent() ).arg( atomList[i].column );
-        maxSymbolWidth[key] = qMax( atomList[i].nucleons[j].symbolSize.width(), maxSymbolWidth[key] );
-      }
-    }
-  }
-  for ( int i = 0; i < atomList.size(); i++ )
-  {
-    for ( int j = 0; j < atomList[i].nucleons.size(); j++ )
-    {
-      QgsComposerLegendItem* item = atomList[i].nucleons[j].item;
-      if ( !item ) continue;
-      QgsComposerLegendItem::ItemType type = item->itemType();
-      if ( type == QgsComposerLegendItem::SymbologyV2Item ||
-           type == QgsComposerLegendItem::RasterSymbolItem )
-      {
-        QString key = QString( "%1-%2" ).arg(( qulonglong )item->parent() ).arg( atomList[i].column );
-        double space = style( QgsComposerLegendStyle::Symbol ).margin( QgsComposerLegendStyle::Right ) +
-                       style( QgsComposerLegendStyle::SymbolLabel ).margin( QgsComposerLegendStyle::Left );
-        atomList[i].nucleons[j].labelXOffset =  maxSymbolWidth[key] + space;
-        atomList[i].nucleons[j].size.rwidth() =  maxSymbolWidth[key] + space + atomList[i].nucleons[j].labelSize.width();
-      }
-    }
-  }
+  return mFilterOutAtlas;
 }
 
+void QgsComposerLegend::onAtlasFeature( QgsFeature *feat )
+{
+  if ( !feat )
+    return;
+  mInAtlas = mFilterOutAtlas;
+  updateFilterByMap();
+}
+
+void QgsComposerLegend::onAtlasEnded()
+{
+  mInAtlas = false;
+  updateFilterByMap();
+}

@@ -27,32 +27,28 @@ email                : sbr00pwb@users.sourceforge.net
 class QPainter;
 
 #include <QColor>
+#include "qgis_app.h"
 
 class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
 {
     Q_OBJECT
   public:
     //! Constructor
-    QgsDecorationScaleBar( QObject* parent = NULL );
-    //! Destructor
-    virtual ~ QgsDecorationScaleBar();
+    QgsDecorationScaleBar( QObject *parent = nullptr );
 
   public slots:
     //! set values on the gui when a project is read or the gui first loaded
-    void projectRead();
+    void projectRead() override;
     //! save values to the project
-    void saveToProject();
+    void saveToProject() override;
 
     //! this does the meaty bit of the work
-    void render( QPainter * );
+    void render( const QgsMapSettings &mapSettings, QgsRenderContext &context ) override;
     //! Show the dialog box
-    void run();
+    void run() override;
 
   private:
 
-    //! Placement of the scale bar. An index and the translated text
-    int mPlacementIndex;
-    QStringList mPlacementLabels;
     //! The size preferred size of the scale bar
     int mPreferredSize;
     //! Should we snap to integer times power of 10?
@@ -60,8 +56,15 @@ class APP_EXPORT QgsDecorationScaleBar: public QgsDecorationItem
     //! Style of scale bar. An index and the translated text
     int mStyleIndex;
     QStringList mStyleLabels;
+
     //! The scale bar color
     QColor mColor;
+    //! The scale bar otuline color
+    QColor mOutlineColor;
+
+    //! Margin percentage values
+    int mMarginHorizontal = 0;
+    int mMarginVertical = 0;
 
     friend class QgsDecorationScaleBarDialog;
 };

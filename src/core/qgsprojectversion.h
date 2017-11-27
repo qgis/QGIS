@@ -20,8 +20,10 @@
 
 #include <QString>
 #include <QStringList>
+#include "qgis_core.h"
 
-/** \ingroup core
+/**
+ * \ingroup core
  * A class to describe the version of a project.
  * Used in places where you need to check if the current version
  * of QGIS is greater than the one used to create a project file.
@@ -32,32 +34,50 @@ class CORE_EXPORT QgsProjectVersion
 
   public:
 
-    QgsProjectVersion() {};
-    ~QgsProjectVersion() {};
-    QgsProjectVersion( int major, int minor, int sub, QString name = "" );
-    QgsProjectVersion( QString string );
-    int majorVersion() { return mMajor;};
-    int minorVersion() { return mMinor;};
-    int subVersion()   { return mSub;};
+    /**
+     * Creates a new NULL version
+     */
+    QgsProjectVersion() = default;
+
+    QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
+    QgsProjectVersion( const QString &string );
+    int majorVersion() { return mMajor;}
+    int minorVersion() { return mMinor;}
+    int subVersion()   { return mSub;}
     QString text();
 
-    /*! Boolean equal operator
-    */
-    bool operator==( const QgsProjectVersion &other );
+    /**
+     * Returns true if this is a NULL project version.
+     */
+    bool isNull() const;
 
-    /*! Boolean >= operator
-    */
-    bool operator>=( const QgsProjectVersion &other );
+    /**
+     * Boolean equal operator
+     */
+    bool operator==( const QgsProjectVersion &other ) const;
 
-    /*! Boolean > operator
-    */
-    bool operator>( const QgsProjectVersion &other );
+    /**
+     * Boolean not equal operator
+     */
+    bool operator!=( const QgsProjectVersion &other ) const;
+
+    /**
+     * Boolean >= operator
+     */
+    bool operator>=( const QgsProjectVersion &other ) const;
+
+    /**
+     * Boolean > operator
+     */
+    bool operator>( const QgsProjectVersion &other ) const;
 
   private:
-    int mMajor;
-    int mMinor;
-    int mSub;
+    int mMajor = 0;
+    int mMinor = 0;
+    int mSub = 0;
     QString mName;
 };
+
+// clazy:excludeall=qstring-allocations
 
 #endif // QGSPROJECTVERSION_H

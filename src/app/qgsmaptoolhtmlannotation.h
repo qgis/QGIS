@@ -19,15 +19,17 @@
 #define QGSMAPTOOLHTMLANNOTATION_H
 
 #include "qgsmaptoolannotation.h"
+#include "qgis_app.h"
 
 class APP_EXPORT QgsMapToolHtmlAnnotation: public QgsMapToolAnnotation
 {
+    Q_OBJECT
+
   public:
-    QgsMapToolHtmlAnnotation( QgsMapCanvas* canvas );
-    ~QgsMapToolHtmlAnnotation();
+    QgsMapToolHtmlAnnotation( QgsMapCanvas *canvas );
 
   protected:
-    QgsAnnotationItem* createItem( QMouseEvent* e );
+    QgsAnnotation *createItem() const override;
 };
 
 #endif // QgsMapToolHtmlAnnotation_H

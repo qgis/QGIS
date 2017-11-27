@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 29.4.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -20,140 +20,243 @@
 #include <QDomNode>
 #include <QPair>
 
-#include "qgsfield.h"
-#include "qgsfeatureiterator.h"
+#include "qgis_core.h"
+#include "qgsfields.h"
+
+#include "qgis.h"
 
 class QgsVectorLayer;
+class QgsFeatureIterator;
+class QgsFeature;
+class QgsFeatureRequest;
+class QgsAttributes;
 
+/**
+ * \ingroup core
+ * \class QgsRelation
+ */
 class CORE_EXPORT QgsRelation
 {
+    Q_GADGET
+
+    Q_PROPERTY( QString id READ id WRITE setId )
+    Q_PROPERTY( QgsVectorLayer *referencingLayer READ referencingLayer )
+    Q_PROPERTY( QgsVectorLayer *referencedLayer READ referencedLayer )
+    Q_PROPERTY( QString name READ name WRITE setName )
+    Q_PROPERTY( bool isValid READ isValid )
+
+
   public:
+
     /**
-     * Defines a relation between matchin fields of the two involved tables of a relation.
+     * enum for the relation strength
+     * Association, Composition
+     */
+    enum RelationStrength
+    {
+      Association, //!< Loose relation, related elements are not part of the parent and a parent copy will not copy any children.
+      Composition  //!< Fix relation, related elements are part of the parent and a parent copy will copy any children or delete of parent will delete children
+
+    };
+
+#ifndef SIP_RUN
+
+    /**
+     * \ingroup core
+     * Defines a relation between matching fields of the two involved tables of a relation.
      * Often, a relation is only defined by just one FieldPair with the name of the foreign key
-     * column of the referencing table as first element and the name of the primkary key column
-     * of the referenced table as the second element.
-     *
+     * column of the referencing (child) table as first element and the name of the primary key column
+     * of the referenced (parent) table as the second element.
+     * \note not available in Python bindings
      */
     class FieldPair : public QPair< QString, QString >
     {
       public:
         //! Default constructor: NULL strings
-        FieldPair()
-            : QPair< QString, QString >() {}
+        FieldPair() = default;
 
         //! Constructor which takes two fields
-        FieldPair( QString referencingField, QString referencedField )
-            : QPair< QString, QString >( referencingField, referencedField ) {}
+        FieldPair( const QString &referencingField, const QString &referencedField )
+          : QPair< QString, QString >( referencingField, referencedField ) {}
 
-        //! Get the name of the referencing field
-        const QString& referencingField() const { return first; }
-        //! Get the name of the referenced field
-        const QString& referencedField() const { return second; }
+        //! Get the name of the referencing (child) field
+        QString referencingField() const { return first; }
+        //! Get the name of the referenced (parent) field
+        QString referencedField() const { return second; }
+
+        bool operator==( const FieldPair &other ) const { return first == other.first && second == other.second; }
     };
+#endif
 
     /**
      * Default constructor. Creates an invalid relation.
      */
-    QgsRelation();
+    QgsRelation() = default;
 
     /**
      * Creates a relation from an XML structure. Used for reading .qgs projects.
      *
-     * @param node The dom node containing the relation information
+     * \param node The dom node containing the relation information
      *
-     * @return A relation
+     * \returns A relation
      */
-    static QgsRelation createFromXML( const QDomNode& node );
+    static QgsRelation createFromXml( const QDomNode &node );
 
     /**
      * Writes a relation to an XML structure. Used for saving .qgs projects
      *
-     * @param node The parent node in which the relation will be created
-     * @param doc  The document in which the relation will be saved
+     * \param node The parent node in which the relation will be created
+     * \param doc  The document in which the relation will be saved
      */
-    void writeXML( QDomNode& node, QDomDocument& doc ) const;
+    void writeXml( QDomNode &node, QDomDocument &doc ) const;
+
+    /**
+     * Set an id for this relation
+     */
+    void setId( const QString &id );
 
     /**
      * Set a name for this relation
-     *
-     * @param id
      */
-    void setRelationId( QString id );
+    void setName( const QString &name );
 
     /**
-     * Set a name for this relation
-     *
-     * @param name
+     * Set a strength for this relation
+     * \since QGIS 3.0
      */
-    void setRelationName( QString name );
+    void setStrength( const RelationStrength &strength );
 
     /**
-     * Set the referencing layer id. This layer will be searched in the registry.
-     *
-     * @param id
+     * Set the referencing (child) layer id. This layer will be searched in the registry.
      */
-    void setReferencingLayer( QString id );
+    void setReferencingLayer( const QString &id );
 
     /**
-     * Set the referenced layer id. This layer will be searched in the registry.
-     *
-     * @param id
+     * Set the referenced (parent) layer id. This layer will be searched in the registry.
      */
-    void setReferencedLayer( QString id );
+    void setReferencedLayer( const QString &id );
 
     /**
      * Add a field pairs which is part of this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * @param referencingField  The field name on the referencing layer (FK)
-     * @param referencedField   The field name on the referenced layer  (PK)
+     * \param referencingField  The field name on the referencing (child) layer (FK)
+     * \param referencedField   The field name on the referenced (parent) layer  (PK)
      */
-    void addFieldPair( QString referencingField, QString referencedField );
+    void addFieldPair( const QString &referencingField, const QString &referencedField );
 
     /**
      * Add a field pairs which is part of this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * @param fieldPair A pair of two strings
+     * \param fieldPair A pair of two strings
+     * \note not available in Python bindings
      */
-    void addFieldPair( FieldPair fieldPair );
+    void addFieldPair( const FieldPair &fieldPair ) SIP_SKIP;
 
     /**
      * Creates an iterator which returns all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
      *
-     * @param feature A feature from the referenced (parent) layer
+     * \param feature A feature from the referenced (parent) layer
      *
-     * @return An iterator with all the referenced features
+     * \returns An iterator with all the referenced features
+     * \see getRelatedFeaturesRequest()
+     * \see getRelatedFeaturesFilter()
      */
-    QgsFeatureIterator getRelatedFeatures( const QgsFeature& feature ) const;
+    QgsFeatureIterator getRelatedFeatures( const QgsFeature &feature ) const;
 
     /**
      * Creates a request to return all the features on the referencing (child) layer
      * which have a foreign key pointing to the provided feature.
      *
-     * @param feature A feature from the referenced (parent) layer
+     * \param feature A feature from the referenced (parent) layer
      *
-     * @return An request for all the referenced features
+     * \returns A request for all the referencing features
+     * \see getRelatedFeatures()
+     * \see getRelatedFeaturesFilter()
      */
-    QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature& feature ) const;
-
-    const QString name() const;
+    QgsFeatureRequest getRelatedFeaturesRequest( const QgsFeature &feature ) const;
 
     /**
-     * The id
-     * @return
+     * Returns a filter expression which returns all the features on the referencing (child) layer
+     * which have a foreign key pointing to the provided feature.
+     * \param feature A feature from the referenced (parent) layer
+     * \returns expression filter string for all the referencing features
+     * \since QGIS 2.16
+     * \see getRelatedFeatures()
+     * \see getRelatedFeaturesRequest()
      */
-    const QString& id() const;
+    QString getRelatedFeaturesFilter( const QgsFeature &feature ) const;
+
+    /**
+     * Creates a request to return the feature on the referenced (parent) layer
+     * which is referenced by the provided feature.
+     *
+     * \param attributes An attribute vector containing the foreign key
+     *
+     * \returns A request the referenced feature
+     * \note not available in Python bindings
+     */
+    QgsFeatureRequest getReferencedFeatureRequest( const QgsAttributes &attributes ) const;
+
+    /**
+     * Creates a request to return the feature on the referenced (parent) layer
+     * which is referenced by the provided feature.
+     *
+     * \param feature A feature from the referencing (child) layer
+     *
+     * \returns A request the referenced feature
+     */
+    QgsFeatureRequest getReferencedFeatureRequest( const QgsFeature &feature ) const;
+
+    /**
+     * Creates a request to return the feature on the referenced (parent) layer
+     * which is referenced by the provided feature.
+     *
+     * \param feature A feature from the referencing (child) layer
+     *
+     * \returns A request the referenced feature
+     */
+    QgsFeature getReferencedFeature( const QgsFeature &feature ) const;
+
+    /**
+     * Returns a human readable name for this relation. Mostly used as title for the children.
+     *
+     * \see id()
+     *
+     * \returns A name
+     */
+    QString name() const;
+
+    /**
+     * Returns the relation strength as a string
+     *
+     * \returns strength
+     * \since QGIS 3.0
+     */
+    RelationStrength strength() const;
+
+    /**
+     * A (project-wide) unique id for this relation
+     *
+     * \returns The id
+     */
+    QString id() const;
+
+    /**
+     * Generate a (project-wide) unique id for this relation
+     * \since QGIS 3.0
+     */
+    void generateId();
 
     /**
      * Access the referencing (child) layer's id
      * This is the layer which has the field(s) which point to another layer
      *
-     * @return The id of the referencing layer
+     * \returns The id of the referencing layer
      */
     QString referencingLayerId() const;
 
@@ -161,67 +264,126 @@ class CORE_EXPORT QgsRelation
      * Access the referencing (child) layer
      * This is the layer which has the field(s) which point to another layer
      *
-     * @return The referencing layer
+     * \returns The referencing layer
      */
-    QgsVectorLayer* referencingLayer() const;
+    QgsVectorLayer *referencingLayer() const;
 
     /**
      * Access the referenced (parent) layer's id
      *
-     * @return The id of the referenced layer
+     * \returns The id of the referenced layer
      */
     QString referencedLayerId() const;
 
     /**
      * Access the referenced (parent) layer
      *
-     * @return referenced layer
+     * \returns referenced layer
      */
-    QgsVectorLayer* referencedLayer() const;
+    QgsVectorLayer *referencedLayer() const;
 
     /**
      * Returns the field pairs which form this relation
-     * The first element of each pair are the field names fo the foreign key.
+     * The first element of each pair are the field names of the foreign key.
      * The second element of each pair are the field names of the matching primary key.
      *
-     * @return The fields forming the relation
+     * \returns The fields forming the relation
      */
-    QList< FieldPair > fieldPairs() const;
+#ifndef SIP_RUN
+    QList< QgsRelation::FieldPair > fieldPairs() const;
+#else
+    QMap< QString, QString > fieldPairs() const;
+    % MethodCode
+    const QList< QgsRelation::FieldPair > &pairs = sipCpp->fieldPairs();
+    sipRes = new QMap< QString, QString >();
+    Q_FOREACH ( const QgsRelation::FieldPair &pair, pairs )
+    {
+      sipRes->insert( pair.first, pair.second );
+    }
+    % End
+#endif
+
+    /**
+     * Returns a list of attributes used to form the referenced fields
+     * (most likely primary key) on the referenced (parent) layer.
+     *
+     * \returns A list of attributes
+     */
+    QgsAttributeList referencedFields() const;
+
+    /**
+     * Returns a list of attributes used to form the referencing fields
+     * (foreign key) on the referencing (child) layer.
+     *
+     * \returns A list of attributes
+     */
+    QgsAttributeList referencingFields() const;
 
     /**
      * Returns the validity of this relation. Don't use the information if it's not valid.
      *
-     * @return true if the relation is valid
+     * \returns true if the relation is valid
      */
     bool isValid() const;
 
-  protected:
-    void updateRelationStatus();
-    void runChecks();
+    /**
+     * Compares the two QgsRelation, ignoring the name and the ID.
+     *
+     * \param other The other relation
+     * \returns true if they are similar
+     * \since QGIS 3.0
+     */
+    bool hasEqualDefinition( const QgsRelation &other ) const;
+
+    /**
+     * Get the referenced field counterpart given a referencing field.
+     *
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE QString resolveReferencedField( const QString &referencingField ) const;
+
+    /**
+     * Get the referencing field counterpart given a referenced field.
+     *
+     * \since QGIS 3.0
+     */
+    Q_INVOKABLE QString resolveReferencingField( const QString &referencedField ) const;
 
   private:
-    /** Unique Id */
+
+    /**
+     * Updates the validity status of this relation.
+     * Will be called internally whenever a member is changed.
+     */
+    void updateRelationStatus();
+
+    //! Unique Id
     QString mRelationId;
-    /** Human redable name*/
+    //! Human redable name
     QString mRelationName;
-    /** The child layer */
+    //! The child layer
     QString mReferencingLayerId;
-    /** The child layer */
-    QgsVectorLayer* mReferencingLayer;
-    /** The parent layer id */
+    //! The child layer
+    QgsVectorLayer *mReferencingLayer = nullptr;
+    //! The parent layer id
     QString mReferencedLayerId;
-    /** The parent layer */
-    QgsVectorLayer* mReferencedLayer;
-    /** A list of fields which define the relation.
+    //! The parent layer
+    QgsVectorLayer *mReferencedLayer = nullptr;
+
+    RelationStrength mRelationStrength = Association;
+
+    /**
+     * A list of fields which define the relation.
      *  In most cases there will be only one value, but multiple values
      *  are supported for composited foreign keys.
      *  The first field is on the referencing layer, the second on the referenced */
     QList< FieldPair > mFieldPairs;
 
-    bool mValid;
+    bool mValid = false;
 };
 
 // Register QgsRelation for usage with QVariant
 Q_DECLARE_METATYPE( QgsRelation )
+Q_DECLARE_METATYPE( QgsRelation::RelationStrength )
 
 #endif // QGSRELATION_H

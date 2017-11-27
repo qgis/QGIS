@@ -1,0 +1,8 @@
+{
+  "name": "to_interval",
+  "type": "function",
+  "description": "Converts a string to a interval type.  Can be used to take days, hours, month, etc of a date.",
+  "arguments": [ {"arg":"string","description":"a string representing an interval. Allowable formats include {n} days {n} hours {n} months."}],
+  "examples": [ { "expression":"to_datetime('2012-05-05 12:00:00') - to_interval('1 day 2 hours')", "returns":"2012-05-04T10:00:00"}
+  ]
+}

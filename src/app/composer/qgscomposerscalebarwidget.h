@@ -18,54 +18,59 @@
 #define QGSCOMPOSERSCALEBARWIDGET_H
 
 #include "ui_qgscomposerscalebarwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerScaleBar;
 
-/** \ingroup MapComposer
+/**
+ * \ingroup app
  * A widget to define the properties of a QgsComposerScaleBarItem.
  */
-class QgsComposerScaleBarWidget: public QWidget, private Ui::QgsComposerScaleBarWidgetBase
+class QgsComposerScaleBarWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerScaleBarWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsComposerScaleBarWidget( QgsComposerScaleBar* scaleBar );
-    ~QgsComposerScaleBarWidget();
+    explicit QgsComposerScaleBarWidget( QgsComposerScaleBar *scaleBar );
 
   public slots:
-    void on_mMapComboBox_activated( const QString& text );
-    void on_mHeightSpinBox_valueChanged( int i );
-    void on_mLineWidthSpinBox_valueChanged( double d );
-    void on_mSegmentSizeSpinBox_valueChanged( double d );
-    void on_mSegmentsLeftSpinBox_valueChanged( int i );
-    void on_mNumberOfSegmentsSpinBox_valueChanged( int i );
-    void on_mUnitLabelLineEdit_textChanged( const QString& text );
-    void on_mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
-    void on_mColorPushButton_clicked();
-    void on_mStrokeColorPushButton_clicked();
-    void on_mFontButton_clicked();
-    void on_mFontColorPushButton_clicked();
-    void on_mStyleComboBox_currentIndexChanged( const QString& text );
-    void on_mLabelBarSpaceSpinBox_valueChanged( double d );
-    void on_mBoxSizeSpinBox_valueChanged( double d );
-    void on_mAlignmentComboBox_currentIndexChanged( int index );
-    void on_mUnitsComboBox_currentIndexChanged( int index );
+
+    void mHeightSpinBox_valueChanged( double d );
+    void mLineWidthSpinBox_valueChanged( double d );
+    void mSegmentSizeSpinBox_valueChanged( double d );
+    void mSegmentsLeftSpinBox_valueChanged( int i );
+    void mNumberOfSegmentsSpinBox_valueChanged( int i );
+    void mUnitLabelLineEdit_textChanged( const QString &text );
+    void mMapUnitsPerBarUnitSpinBox_valueChanged( double d );
+    void mFontColorButton_colorChanged( const QColor &newColor );
+    void mFillColorButton_colorChanged( const QColor &newColor );
+    void mFillColor2Button_colorChanged( const QColor &newColor );
+    void mStrokeColorButton_colorChanged( const QColor &newColor );
+    void mStyleComboBox_currentIndexChanged( const QString &text );
+    void mLabelBarSpaceSpinBox_valueChanged( double d );
+    void mBoxSizeSpinBox_valueChanged( double d );
+    void mAlignmentComboBox_currentIndexChanged( int index );
+    void mUnitsComboBox_currentIndexChanged( int index );
+    void mLineJoinStyleCombo_currentIndexChanged( int index );
+    void mLineCapStyleCombo_currentIndexChanged( int index );
+    void mMinWidthSpinBox_valueChanged( double d );
+    void mMaxWidthSpinBox_valueChanged( double d );
 
   private slots:
     void setGuiElements();
-
-  protected:
-    void showEvent( QShowEvent * event );
+    void segmentSizeRadioChanged( QAbstractButton *radio );
+    void composerMapChanged( QgsComposerItem *item );
+    void fontChanged();
 
   private:
-    QgsComposerScaleBar* mComposerScaleBar;
+    QgsComposerScaleBar *mComposerScaleBar = nullptr;
+    QButtonGroup mSegmentSizeRadioGroup;
 
-    void refreshMapComboBox();
-    /**Enables/disables the signals of the input gui elements*/
+    //! Enables/disables the signals of the input gui elements
     void blockMemberSignals( bool enable );
 
-    /**Enables/disables controls based on scale bar style*/
-    void toggleStyleSpecificControls( const QString& style );
+    //! Enables/disables controls based on scale bar style
+    void toggleStyleSpecificControls( const QString &style );
 
     void connectUpdateSignal();
     void disconnectUpdateSignal();

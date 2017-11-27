@@ -1,0 +1,15 @@
+r.viewshed
+Computes the viewshed of a point on an elevation raster map.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Elevation|None|False
+QgsProcessingParameterPoint|coordinates|Coordinate identifying the viewing position|0.0,0.0|False
+QgsProcessingParameterNumber|observer_elevation|Viewing elevation above the ground|QgsProcessingParameterNumber.Double|1.75|True|None|None
+QgsProcessingParameterNumber|target_elevation|Offset for target elevation above the ground|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|max_distance|Maximum visibility radius. By default infinity (-1)|QgsProcessingParameterNumber.Double|-1.0|True|-1.0|None
+QgsProcessingParameterNumber|refraction_coeff|Refraction coefficient|QgsProcessingParameterNumber.Double|0.14286|True|0.0|1.0
+QgsProcessingParameterNumber|memory|Amount of memory to use in MB|QgsProcessingParameterNumber.Integer|500|True|1|None
+*QgsProcessingParameterBoolean|-c|Consider earth curvature (current ellipsoid)|False
+*QgsProcessingParameterBoolean|-r|Consider the effect of atmospheric refraction|False
+*QgsProcessingParameterBoolean|-b|Output format is invisible = 0, visible = 1|False
+*QgsProcessingParameterBoolean|-e|Output format is invisible = NULL, else current elev - viewpoint_elev|False
+QgsProcessingParameterRasterDestination|output|Intervisibility

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="14.224" height="15.686" viewBox="0, 0, 59.266, 65.359">
+  <g id="Background">
+    <rect x="0" y="0" width="59.266" height="65.359" fill="#000000" fill-opacity="0"/>
+  </g>
+  <defs>
+    <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="45.722" y1="57.164" x2="44.919" y2="4.33" gradientTransform="matrix(1, 0, 0, 1, 0, 0)">
+      <stop offset="0" stop-color="#589632"/>
+      <stop offset="1" stop-color="#93B023"/>
+    </linearGradient>
+    <linearGradient id="Gradient_2" gradientUnits="userSpaceOnUse" x1="30.064" y1="58.911" x2="29.267" y2="6.518" gradientTransform="matrix(1, 0, 0, 1, 0, 0)">
+      <stop offset="0" stop-color="#589632"/>
+      <stop offset="1" stop-color="#93B023"/>
+    </linearGradient>
+  </defs>
+  <g id="Layer_1">
+    <path d="M31.683,32.253 L39.335,32.253 L32.859,25.85 L24.925,25.85 L24.925,33.474 L31.683,40.21 z" fill="#EE7913" id="polygon3"/>
+    <path d="M56.226,48.951 L42.573,35.454 L34.884,35.454 L34.884,43.4 L47.967,56.44 L56.226,56.44 z" fill="url(#Gradient_1)" id="polygon10"/>
+    <path d="M34.884,35.454 L42.573,35.454 L39.335,32.253 L31.683,32.253 L31.683,40.21 L34.884,43.4 z" fill="#F0E64A" id="polygon12"/>
+    <path d="M33.372,47.042 C32.213,47.309 31.007,47.453 29.764,47.453 C20.869,47.453 13.305,40.139 13.305,30.657 C13.305,21.174 20.786,14.021 29.764,14.021 C38.741,14.021 45.889,21.173 45.889,30.657 C45.889,32.199 45.697,33.683 45.342,35.089 L53.574,43.319 C55.697,39.601 56.884,35.277 56.884,30.593 C56.884,15.978 45.22,5.034 29.597,5.034 C14.045,5.034 2.382,15.906 2.382,30.593 C2.382,45.353 14.046,56.44 29.597,56.44 C33.612,56.44 37.364,55.702 40.725,54.358 L33.372,47.042 z" fill="url(#Gradient_2)" id="path19"/>
+    <path d="M24.925,25.85 L56.226,56.44 L56.226,48.951 L42.573,35.454 L39.335,32.253 L32.859,25.85 z" fill="#FFFFFF" fill-opacity="0.172" id="polygon4153"/>
+  </g>
+</svg>

@@ -15,26 +15,31 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "qgslogger.h"
 #include "qgsrelief.h"
 #include "qgsaspectfilter.h"
 #include "qgshillshadefilter.h"
 #include "qgsslopefilter.h"
+#include "qgsfeedback.h"
 #include "qgis.h"
 #include "cpl_string.h"
-#include <QProgressDialog>
+#include "qgsogrutils.h"
 #include <cfloat>
 
+#include <QVector>
+#include <QColor>
 #include <QFile>
 #include <QTextStream>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
-
-QgsRelief::QgsRelief( const QString& inputFile, const QString& outputFile, const QString& outputFormat ): \
-    mInputFile( inputFile ), mOutputFile( outputFile ), mOutputFormat( outputFormat ), mZFactor( 1.0 )
+QgsRelief::QgsRelief( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
+  : mInputFile( inputFile )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
+  , mCellSizeX( 0.0 )
+  , mCellSizeY( 0.0 )
+  , mInputNodataValue( -1 )
+  , mOutputNodataValue( -1 )
+  , mZFactor( 1.0 )
 {
   mSlopeFilter = new QgsSlopeFilter( inputFile, outputFile, outputFormat );
   mAspectFilter = new QgsAspectFilter( inputFile, outputFile, outputFormat );
@@ -60,7 +65,7 @@ void QgsRelief::clearReliefColors()
   mReliefColors.clear();
 }
 
-void QgsRelief::addReliefColorClass( const ReliefColor& color )
+void QgsRelief::addReliefColorClass( const ReliefColor &color )
 {
   mReliefColors.push_back( color );
 }
@@ -76,25 +81,25 @@ void QgsRelief::setDefaultReliefColors()
   addReliefColorClass( ReliefColor( QColor( 255, 255, 255 ), 4000, 9000 ) );
 }
 
-int QgsRelief::processRaster( QProgressDialog* p )
+int QgsRelief::processRaster( QgsFeedback *feedback )
 {
   //open input file
   int xSize, ySize;
-  GDALDatasetH  inputDataset = openInputFile( xSize, ySize );
-  if ( inputDataset == NULL )
+  gdal::dataset_unique_ptr inputDataset = openInputFile( xSize, ySize );
+  if ( !inputDataset )
   {
     return 1; //opening of input file failed
   }
 
   //output driver
   GDALDriverH outputDriver = openOutputDriver();
-  if ( outputDriver == 0 )
+  if ( !outputDriver )
   {
     return 2;
   }
 
-  GDALDatasetH outputDataset = openOutputFile( inputDataset, outputDriver );
-  if ( outputDataset == NULL )
+  gdal::dataset_unique_ptr outputDataset = openOutputFile( inputDataset.get(), outputDriver );
+  if ( !outputDataset )
   {
     return 3; //create operation on output file failed
   }
@@ -117,35 +122,31 @@ int QgsRelief::processRaster( QProgressDialog* p )
   mAspectFilter->setZFactor( mZFactor );
 
   //open first raster band for reading (operation is only for single band raster)
-  GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, 1 );
-  if ( rasterBand == NULL )
+  GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset.get(), 1 );
+  if ( !rasterBand )
   {
-    GDALClose( inputDataset );
-    GDALClose( outputDataset );
     return 4;
   }
-  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, NULL );
+  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
   mSlopeFilter->setInputNodataValue( mInputNodataValue );
   mAspectFilter->setInputNodataValue( mInputNodataValue );
   mHillshadeFilter285->setInputNodataValue( mInputNodataValue );
   mHillshadeFilter300->setInputNodataValue( mInputNodataValue );
   mHillshadeFilter315->setInputNodataValue( mInputNodataValue );
 
-  GDALRasterBandH outputRedBand = GDALGetRasterBand( outputDataset, 1 );
-  GDALRasterBandH outputGreenBand = GDALGetRasterBand( outputDataset, 2 );
-  GDALRasterBandH outputBlueBand = GDALGetRasterBand( outputDataset, 3 );
+  GDALRasterBandH outputRedBand = GDALGetRasterBand( outputDataset.get(), 1 );
+  GDALRasterBandH outputGreenBand = GDALGetRasterBand( outputDataset.get(), 2 );
+  GDALRasterBandH outputBlueBand = GDALGetRasterBand( outputDataset.get(), 3 );
 
-  if ( outputRedBand == NULL || outputGreenBand == NULL || outputBlueBand == NULL )
+  if ( !outputRedBand || !outputGreenBand || !outputBlueBand )
   {
-    GDALClose( inputDataset );
-    GDALClose( outputDataset );
     return 5;
   }
   //try to set -9999 as nodata value
   GDALSetRasterNoDataValue( outputRedBand, -9999 );
   GDALSetRasterNoDataValue( outputGreenBand, -9999 );
   GDALSetRasterNoDataValue( outputBlueBand, -9999 );
-  mOutputNodataValue = GDALGetRasterNoDataValue( outputRedBand, NULL );
+  mOutputNodataValue = GDALGetRasterNoDataValue( outputRedBand, nullptr );
   mSlopeFilter->setOutputNodataValue( mOutputNodataValue );
   mAspectFilter->setOutputNodataValue( mOutputNodataValue );
   mHillshadeFilter285->setOutputNodataValue( mOutputNodataValue );
@@ -154,36 +155,29 @@ int QgsRelief::processRaster( QProgressDialog* p )
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
-    GDALClose( inputDataset );
-    GDALClose( outputDataset );
     return 6;
   }
 
   //keep only three scanlines in memory at a time
-  float* scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
-  unsigned char* resultRedLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
-  unsigned char* resultGreenLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
-  unsigned char* resultBlueLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
-
-  if ( p )
-  {
-    p->setMaximum( ySize );
-  }
+  unsigned char *resultRedLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char *resultGreenLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
+  unsigned char *resultBlueLine = ( unsigned char * ) CPLMalloc( sizeof( unsigned char ) * xSize );
 
   bool resultOk;
 
   //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
   {
-    if ( p )
+    if ( feedback )
     {
-      p->setValue( i );
+      feedback->setProgress( 100.0 * i / static_cast< double >( ySize ) );
     }
 
-    if ( p && p->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
     }
@@ -195,7 +189,10 @@ int QgsRelief::processRaster( QProgressDialog* p )
       {
         scanLine1[a] = mInputNodataValue;
       }
-      GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 )  != CE_None )
+      {
+        QgsDebugMsg( "Raster IO Error" );
+      }
     }
     else
     {
@@ -215,27 +212,30 @@ int QgsRelief::processRaster( QProgressDialog* p )
     }
     else
     {
-      GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+      {
+        QgsDebugMsg( "Raster IO Error" );
+      }
     }
 
     for ( int j = 0; j < xSize; ++j )
     {
       if ( j == 0 )
       {
-        resultOk = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j+1], &mInputNodataValue, &scanLine2[j], \
-                                          &scanLine2[j+1], &mInputNodataValue, &scanLine3[j], &scanLine3[j+1], \
+        resultOk = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j + 1], &mInputNodataValue, &scanLine2[j], \
+                                          &scanLine2[j + 1], &mInputNodataValue, &scanLine3[j], &scanLine3[j + 1], \
                                           &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
       }
       else if ( j == xSize - 1 )
       {
-        resultOk = processNineCellWindow( &scanLine1[j-1], &scanLine1[j], &mInputNodataValue, &scanLine2[j-1], &scanLine2[j], \
-                                          &mInputNodataValue, &scanLine3[j-1], &scanLine3[j], &mInputNodataValue, \
+        resultOk = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &mInputNodataValue, &scanLine2[j - 1], &scanLine2[j], \
+                                          &mInputNodataValue, &scanLine3[j - 1], &scanLine3[j], &mInputNodataValue, \
                                           &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
       }
       else
       {
-        resultOk = processNineCellWindow( &scanLine1[j-1], &scanLine1[j], &scanLine1[j+1], &scanLine2[j-1], &scanLine2[j], \
-                                          &scanLine2[j+1], &scanLine3[j-1], &scanLine3[j], &scanLine3[j+1], \
+        resultOk = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &scanLine1[j + 1], &scanLine2[j - 1], &scanLine2[j], \
+                                          &scanLine2[j + 1], &scanLine3[j - 1], &scanLine3[j], &scanLine3[j + 1], \
                                           &resultRedLine[j], &resultGreenLine[j], &resultBlueLine[j] );
       }
 
@@ -247,14 +247,23 @@ int QgsRelief::processRaster( QProgressDialog* p )
       }
     }
 
-    GDALRasterIO( outputRedBand, GF_Write, 0, i, xSize, 1, resultRedLine, xSize, 1, GDT_Byte, 0, 0 );
-    GDALRasterIO( outputGreenBand, GF_Write, 0, i, xSize, 1, resultGreenLine, xSize, 1, GDT_Byte, 0, 0 );
-    GDALRasterIO( outputBlueBand, GF_Write, 0, i, xSize, 1, resultBlueLine, xSize, 1, GDT_Byte, 0, 0 );
+    if ( GDALRasterIO( outputRedBand, GF_Write, 0, i, xSize, 1, resultRedLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
+    if ( GDALRasterIO( outputGreenBand, GF_Write, 0, i, xSize, 1, resultGreenLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
+    if ( GDALRasterIO( outputBlueBand, GF_Write, 0, i, xSize, 1, resultBlueLine, xSize, 1, GDT_Byte, 0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
   }
 
-  if ( p )
+  if ( feedback )
   {
-    p->setValue( ySize );
+    feedback->setProgress( 100 );
   }
 
   CPLFree( resultRedLine );
@@ -264,21 +273,18 @@ int QgsRelief::processRaster( QProgressDialog* p )
   CPLFree( scanLine2 );
   CPLFree( scanLine3 );
 
-  GDALClose( inputDataset );
-
-  if ( p && p->wasCanceled() )
+  if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
+    gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
     return 7;
   }
-  GDALClose( outputDataset );
 
   return 0;
 }
 
-bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x4, float* x5, float* x6, float* x7, float* x8, float* x9,
-                                       unsigned char* red, unsigned char* green, unsigned char* blue )
+bool QgsRelief::processNineCellWindow( float *x1, float *x2, float *x3, float *x4, float *x5, float *x6, float *x7, float *x8, float *x9,
+                                       unsigned char *red, unsigned char *green, unsigned char *blue )
 {
   //1. component: color and hillshade from 300 degrees
   int r = 0;
@@ -323,7 +329,9 @@ bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x
     }
     else
     {
-      r2 = hillShadeValue315; g2 = hillShadeValue315; b2 = hillShadeValue315;
+      r2 = hillShadeValue315;
+      g2 = hillShadeValue315;
+      b2 = hillShadeValue315;
     }
 
     //combine with r,g,b with 70 percentage coverage
@@ -337,7 +345,7 @@ bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x
   float aspect = mAspectFilter->processNineCellWindow( x1, x2, x3, x4, x5, x6, x7, x8, x9 );
   if ( hillShadeValue285 != mOutputNodataValue && aspect != mOutputNodataValue )
   {
-    double angle_diff = qAbs( 285 - aspect );
+    double angle_diff = std::fabs( 285 - aspect );
     if ( angle_diff > 180 )
     {
       angle_diff -= 180;
@@ -346,7 +354,7 @@ bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x
     int r3, g3, b3;
     if ( angle_diff < 90 )
     {
-      int aspectVal = ( 1 - cos( angle_diff * M_PI / 180 ) ) * 255;
+      int aspectVal = ( 1 - std::cos( angle_diff * M_PI / 180 ) ) * 255;
       r3 = 0.5 * 255 + hillShadeValue315 * 0.5;
       g3 = 0.5 * 255 + hillShadeValue315 * 0.5;
       b3 = 0.5 * aspectVal + hillShadeValue315 * 0.5;
@@ -369,14 +377,14 @@ bool QgsRelief::processNineCellWindow( float* x1, float* x2, float* x3, float* x
   return true;
 }
 
-bool QgsRelief::setElevationColor( double elevation, int* red, int* green, int* blue )
+bool QgsRelief::setElevationColor( double elevation, int *red, int *green, int *blue )
 {
-  QList< ReliefColor >::const_iterator reliefColorIt =  mReliefColors.constBegin();
+  QList< ReliefColor >::const_iterator reliefColorIt = mReliefColors.constBegin();
   for ( ; reliefColorIt != mReliefColors.constEnd(); ++reliefColorIt )
   {
     if ( elevation >= reliefColorIt->minElevation && elevation <= reliefColorIt->maxElevation )
     {
-      const QColor& c = reliefColorIt->color;
+      const QColor &c = reliefColorIt->color;
       *red = c.red();
       *green = c.green();
       *blue = c.blue();
@@ -388,19 +396,18 @@ bool QgsRelief::setElevationColor( double elevation, int* red, int* green, int* 
 }
 
 //duplicated from QgsNineCellFilter. Todo: make common base class
-GDALDatasetH QgsRelief::openInputFile( int& nCellsX, int& nCellsY )
+gdal::dataset_unique_ptr QgsRelief::openInputFile( int &nCellsX, int &nCellsY )
 {
-  GDALDatasetH inputDataset = GDALOpen( TO8F( mInputFile ), GA_ReadOnly );
-  if ( inputDataset != NULL )
+  gdal::dataset_unique_ptr inputDataset( GDALOpen( mInputFile.toUtf8().constData(), GA_ReadOnly ) );
+  if ( inputDataset )
   {
-    nCellsX = GDALGetRasterXSize( inputDataset );
-    nCellsY = GDALGetRasterYSize( inputDataset );
+    nCellsX = GDALGetRasterXSize( inputDataset.get() );
+    nCellsY = GDALGetRasterYSize( inputDataset.get() );
 
     //we need at least one band
-    if ( GDALGetRasterCount( inputDataset ) < 1 )
+    if ( GDALGetRasterCount( inputDataset.get() ) < 1 )
     {
-      GDALClose( inputDataset );
-      return NULL;
+      return nullptr;
     }
   }
   return inputDataset;
@@ -408,56 +415,55 @@ GDALDatasetH QgsRelief::openInputFile( int& nCellsX, int& nCellsY )
 
 GDALDriverH QgsRelief::openOutputDriver()
 {
-  char **driverMetadata;
+  char **driverMetadata = nullptr;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
-  if ( outputDriver == NULL )
+  if ( !outputDriver )
   {
-    return outputDriver; //return NULL, driver does not exist
+    return outputDriver; //return nullptr, driver does not exist
   }
 
-  driverMetadata = GDALGetMetadata( outputDriver, NULL );
+  driverMetadata = GDALGetMetadata( outputDriver, nullptr );
   if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
   {
-    return NULL; //driver exist, but it does not support the create operation
+    return nullptr; //driver exist, but it does not support the create operation
   }
 
   return outputDriver;
 }
 
-GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver )
+gdal::dataset_unique_ptr QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver )
 {
-  if ( inputDataset == NULL )
+  if ( !inputDataset )
   {
-    return NULL;
+    return nullptr;
   }
 
   int xSize = GDALGetRasterXSize( inputDataset );
-  int ySize = GDALGetRasterYSize( inputDataset );;
+  int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
-  char **papszOptions = NULL;
+  char **papszOptions = nullptr;
 
   //use PACKBITS compression for tiffs by default
   papszOptions = CSLSetNameValue( papszOptions, "COMPRESS", "PACKBITS" );
 
   //create three band raster (reg, green, blue)
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), xSize, ySize, 3, GDT_Byte, papszOptions );
-  if ( outputDataset == NULL )
+  gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), xSize, ySize, 3, GDT_Byte, papszOptions ) );
+  if ( !outputDataset )
   {
-    return outputDataset;
+    return nullptr;
   }
 
   //get geotransform from inputDataset
   double geotransform[6];
   if ( GDALGetGeoTransform( inputDataset, geotransform ) != CE_None )
   {
-    GDALClose( outputDataset );
-    return NULL;
+    return nullptr;
   }
-  GDALSetGeoTransform( outputDataset, geotransform );
+  GDALSetGeoTransform( outputDataset.get(), geotransform );
 
   //make sure mCellSizeX and mCellSizeY are always > 0
   mCellSizeX = geotransform[1];
@@ -471,27 +477,26 @@ GDALDatasetH QgsRelief::openOutputFile( GDALDatasetH inputDataset, GDALDriverH o
     mCellSizeY = -mCellSizeY;
   }
 
-  const char* projection = GDALGetProjectionRef( inputDataset );
-  GDALSetProjection( outputDataset, projection );
+  const char *projection = GDALGetProjectionRef( inputDataset );
+  GDALSetProjection( outputDataset.get(), projection );
 
   return outputDataset;
 }
 
 //this function is mainly there for debugging
-bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
+bool QgsRelief::exportFrequencyDistributionToCsv( const QString &file )
 {
   int nCellsX, nCellsY;
-  GDALDatasetH inputDataset = openInputFile( nCellsX, nCellsY );
-  if ( inputDataset == NULL )
+  gdal::dataset_unique_ptr inputDataset = openInputFile( nCellsX, nCellsY );
+  if ( !inputDataset )
   {
     return false;
   }
 
   //open first raster band for reading (elevation raster is always single band)
-  GDALRasterBandH elevationBand = GDALGetRasterBand( inputDataset, 1 );
-  if ( elevationBand == NULL )
+  GDALRasterBandH elevationBand = GDALGetRasterBand( inputDataset.get(), 1 );
+  if ( !elevationBand )
   {
-    GDALClose( inputDataset );
     return false;
   }
 
@@ -503,7 +508,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
 
   if ( !minOk || !maxOk )
   {
-    GDALComputeRasterMinMax( elevationBand, TRUE, minMax );
+    GDALComputeRasterMinMax( elevationBand, true, minMax );
   }
 
   //2. go through raster cells and get frequency of classes
@@ -517,14 +522,18 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
     frequency[i] = 0;
   }
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
+  float *scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
 
   for ( int i = 0; i < nCellsY; ++i )
   {
-    GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1,
-                  scanLine, nCellsX, 1, GDT_Float32,
-                  0, 0 );
+    if ( GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1,
+                       scanLine, nCellsX, 1, GDT_Float32,
+                       0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
+
     for ( int j = 0; j < nCellsX; ++j )
     {
       elevationClass = frequencyClassForElevation( scanLine[j], minMax[0], frequencyClassRange );
@@ -540,12 +549,12 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
   //log10 transformation for all frequency values
   for ( int i = 0; i < 252; ++i )
   {
-    frequency[i] = log10( frequency[i] );
+    frequency[i] = std::log10( frequency[i] );
   }
 
   //write out frequency values to csv file for debugging
   QFile outFile( file );
-  if ( !outFile.open( QIODevice::WriteOnly ) )
+  if ( !outFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
   {
     return false;
   }
@@ -553,7 +562,7 @@ bool QgsRelief::exportFrequencyDistributionToCsv( const QString& file )
   QTextStream outstream( &outFile );
   for ( int i = 0; i < 252; ++i )
   {
-    outstream << QString::number( i ) + "," + QString::number( frequency[i] ) << endl;
+    outstream << QString::number( i ) + ',' + QString::number( frequency[i] ) << endl;
   }
   outFile.close();
   return true;
@@ -564,17 +573,16 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   QList< QgsRelief::ReliefColor > resultList;
 
   int nCellsX, nCellsY;
-  GDALDatasetH inputDataset = openInputFile( nCellsX, nCellsY );
-  if ( inputDataset == NULL )
+  gdal::dataset_unique_ptr inputDataset = openInputFile( nCellsX, nCellsY );
+  if ( !inputDataset )
   {
     return resultList;
   }
 
   //open first raster band for reading (elevation raster is always single band)
-  GDALRasterBandH elevationBand = GDALGetRasterBand( inputDataset, 1 );
-  if ( elevationBand == NULL )
+  GDALRasterBandH elevationBand = GDALGetRasterBand( inputDataset.get(), 1 );
+  if ( !elevationBand )
   {
-    GDALClose( inputDataset );
     return resultList;
   }
 
@@ -586,7 +594,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
 
   if ( !minOk || !maxOk )
   {
-    GDALComputeRasterMinMax( elevationBand, TRUE, minMax );
+    GDALComputeRasterMinMax( elevationBand, true, minMax );
   }
 
   //2. go through raster cells and get frequency of classes
@@ -600,14 +608,17 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
     frequency[i] = 0;
   }
 
-  float* scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
+  float *scanLine = ( float * ) CPLMalloc( sizeof( float ) *  nCellsX );
   int elevationClass = -1;
 
   for ( int i = 0; i < nCellsY; ++i )
   {
-    GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1,
-                  scanLine, nCellsX, 1, GDT_Float32,
-                  0, 0 );
+    if ( GDALRasterIO( elevationBand, GF_Read, 0, i, nCellsX, 1,
+                       scanLine, nCellsX, 1, GDT_Float32,
+                       0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
     for ( int j = 0; j < nCellsX; ++j )
     {
       elevationClass = frequencyClassForElevation( scanLine[j], minMax[0], frequencyClassRange );
@@ -628,7 +639,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   //log10 transformation for all frequency values
   for ( int i = 0; i < 252; ++i )
   {
-    frequency[i] = log10( frequency[i] );
+    frequency[i] = std::log10( frequency[i] );
   }
 
   //start with 9 uniformly distributed classes
@@ -656,7 +667,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   }
 
   //set colors according to optimised class breaks
-  QList<QColor> colorList;
+  QVector<QColor> colorList;
   colorList.push_back( QColor( 7, 165, 144 ) );
   colorList.push_back( QColor( 12, 221, 162 ) );
   colorList.push_back( QColor( 33, 252, 183 ) );
@@ -667,6 +678,7 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   colorList.push_back( QColor( 255, 133, 92 ) );
   colorList.push_back( QColor( 204, 204, 204 ) );
 
+  resultList.reserve( classBreaks.size() );
   for ( int i = 1; i < classBreaks.size(); ++i )
   {
     double minElevation = minMax[0] + classBreaks[i - 1] * frequencyClassRange;
@@ -677,11 +689,11 @@ QList< QgsRelief::ReliefColor > QgsRelief::calculateOptimizedReliefClasses()
   return resultList;
 }
 
-void QgsRelief::optimiseClassBreaks( QList<int>& breaks, double* frequencies )
+void QgsRelief::optimiseClassBreaks( QList<int> &breaks, double *frequencies )
 {
   int nClasses = breaks.size() - 1;
-  double* a = new double[nClasses]; //slopes
-  double* b = new double[nClasses]; //y-offsets
+  double *a = new double[nClasses]; //slopes
+  double *b = new double[nClasses]; //y-offsets
 
   for ( int i = 0; i < nClasses; ++i )
   {
@@ -693,7 +705,7 @@ void QgsRelief::optimiseClassBreaks( QList<int>& breaks, double* frequencies )
     }
 
     double aParam, bParam;
-    if ( regressionInput.size() > 0 && calculateRegression( regressionInput, aParam, bParam ) )
+    if ( !regressionInput.isEmpty() && calculateRegression( regressionInput, aParam, bParam ) )
     {
       a[i] = aParam;
       b[i] = bParam;
@@ -752,7 +764,7 @@ int QgsRelief::frequencyClassForElevation( double elevation, double minElevation
   return ( elevation - minElevation ) / elevationClassRange;
 }
 
-bool QgsRelief::calculateRegression( const QList< QPair < int, double > >& input, double& a, double& b )
+bool QgsRelief::calculateRegression( const QList< QPair < int, double > > &input, double &a, double &b )
 {
   double xMean, yMean;
   double xSum = 0;
@@ -771,8 +783,8 @@ bool QgsRelief::calculateRegression( const QList< QPair < int, double > >& input
   inputIt = input.constBegin();
   for ( ; inputIt != input.constEnd(); ++inputIt )
   {
-    sumCounter += (( inputIt->first - xMean ) * ( inputIt->second - yMean ) );
-    sumDenominator += (( inputIt->first - xMean ) * ( inputIt->first - xMean ) );
+    sumCounter += ( ( inputIt->first - xMean ) * ( inputIt->second - yMean ) );
+    sumDenominator += ( ( inputIt->first - xMean ) * ( inputIt->first - xMean ) );
   }
 
   a = sumCounter / sumDenominator;

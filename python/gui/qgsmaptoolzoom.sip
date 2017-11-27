@@ -1,28 +1,47 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolzoom.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 
 class QgsMapToolZoom : QgsMapTool
 {
-%TypeHeaderCode
-#include <qgsmaptoolzoom.h>
+%Docstring
+ A map tool for zooming into the map.
+.. seealso:: QgsMapTool
 %End
 
+%TypeHeaderCode
+#include "qgsmaptoolzoom.h"
+%End
   public:
-    //! constructor
-    QgsMapToolZoom( QgsMapCanvas* canvas, bool zoomOut );
-
+    QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut );
+%Docstring
+constructor
+%End
     ~QgsMapToolZoom();
 
-    //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
-
-    //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
-
-    //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
-
-    virtual bool isTransient();
-
+    virtual Flags flags() const;
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
     virtual void deactivate();
+
+  protected:
+
+
 
 };
 
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmaptoolzoom.h                                             *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

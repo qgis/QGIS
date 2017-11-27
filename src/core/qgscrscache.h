@@ -18,48 +18,49 @@
 #ifndef QGSCRSCACHE_H
 #define QGSCRSCACHE_H
 
+#include "qgis_core.h"
 #include "qgscoordinatereferencesystem.h"
 #include <QHash>
+#include <QReadWriteLock>
 
 class QgsCoordinateTransform;
 
-/**Cache coordinate transform by authid of source/dest transformation to avoid the
-overhead of initialisation for each redraw*/
+/**
+ * \ingroup core
+ * Cache coordinate transform by authid of source/dest transformation to avoid the
+overhead of initialization for each redraw*/
 class CORE_EXPORT QgsCoordinateTransformCache
 {
   public:
-    static QgsCoordinateTransformCache* instance();
-    ~QgsCoordinateTransformCache();
-    /**Returns coordinate transformation. Cache keeps ownership
-        @param srcAuthId auth id string of source crs
-        @param destAuthId auth id string of dest crs*/
-    const QgsCoordinateTransform* transform( const QString& srcAuthId, const QString& destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
-    /**Removes transformations where a changed crs is involved from the cache*/
-    void invalidateCrs( const QString& crsAuthId );
+    static QgsCoordinateTransformCache *instance();
+
+    //! QgsCoordinateTransformCache cannot be copied
+    QgsCoordinateTransformCache( const QgsCoordinateTransformCache &rh ) = delete;
+    //! QgsCoordinateTransformCache cannot be copied
+    QgsCoordinateTransformCache &operator=( const QgsCoordinateTransformCache &rh ) = delete;
+
+    /**
+     * Returns coordinate transformation. Cache keeps ownership
+        \param srcAuthId auth id string of source crs
+        \param destAuthId auth id string of dest crs
+        \param srcDatumTransform id of source's datum transform
+        \param destDatumTransform id of destinations's datum transform
+        \returns matching transform, or an invalid transform if none could be created
+     */
+    QgsCoordinateTransform transform( const QString &srcAuthId, const QString &destAuthId, int srcDatumTransform = -1, int destDatumTransform = -1 );
+
+    //! Removes transformations where a changed crs is involved from the cache
+    void invalidateCrs( const QString &crsAuthId );
 
   private:
-    static QgsCoordinateTransformCache* mInstance;
-    QMultiHash< QPair< QString, QString >, QgsCoordinateTransform* > mTransforms; //same auth_id pairs might have different datum transformations
-};
+    QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > mTransforms; //same auth_id pairs might have different datum transformations
 
-class CORE_EXPORT QgsCRSCache
-{
-  public:
-    static QgsCRSCache* instance();
-    ~QgsCRSCache();
-    /**Returns the CRS for authid, e.g. 'EPSG:4326' (or an invalid CRS in case of error)*/
-    const QgsCoordinateReferenceSystem& crsByAuthId( const QString& authid );
-    const QgsCoordinateReferenceSystem& crsByEpsgId( long epsg );
+    QgsCoordinateTransformCache() = default;
 
-    void updateCRSCache( const QString &authid );
+#ifdef SIP_RUN
+    QgsCoordinateTransformCache( const QgsCoordinateTransformCache &rh );
+#endif
 
-  protected:
-    QgsCRSCache();
-
-  private:
-    QHash< QString, QgsCoordinateReferenceSystem > mCRS;
-    /**CRS that is not initialised (returned in case of error)*/
-    QgsCoordinateReferenceSystem mInvalidCRS;
 };
 
 #endif // QGSCRSCACHE_H

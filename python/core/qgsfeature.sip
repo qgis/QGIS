@@ -1,400 +1,488 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeature.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-typedef qint64 QgsFeatureId;
 
-// key = field index, value = field value
-typedef QMap<int, QVariant> QgsAttributeMap;
 
-typedef QVector<QVariant> QgsAttributes;
-// QgsAttributes is implemented as a Python list of Python objects.
-%MappedType QgsAttributes /DocType="list-of-attributes"/
-{
-%TypeHeaderCode
-#include <qvector.h>
-%End
 
-%ConvertFromTypeCode
-    // Create the list.
-    PyObject *l;
 
-    if ( ( l = PyList_New(sipCpp->size() ) ) == NULL )
-        return NULL;
 
-    // Set the list elements.
-    for ( int i = 0; i < sipCpp->size(); ++i )
-    {
-      QVariant* v = new QVariant( sipCpp->at( i ) );
-      PyObject *tobj;
 
-      if ( ( tobj = sipConvertFromNewType( v, sipType_QVariant,Py_None ) ) == NULL )
-      {
-        Py_DECREF( l );
-        delete v;
 
-        return NULL;
-      }
 
-      PyList_SET_ITEM( l, i, tobj );
-    }
 
-    return l;
-%End
-
-%ConvertToTypeCode
-    // Check the type if that is all that is required.
-    if (sipIsErr == NULL)
-    {
-      if (!PyList_Check(sipPy))
-        return 0;
-
-      for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-        if (!sipCanConvertToType(PyList_GET_ITEM(sipPy, i), sipType_QVariant, SIP_NOT_NONE))
-          return 0;
-
-      return 1;
-    }
-
-    QVector<QVariant> *qv = new QVector<QVariant>;
-
-    for (SIP_SSIZE_T i = 0; i < PyList_GET_SIZE(sipPy); ++i)
-    {
-      int state;
-      PyObject* obj = PyList_GET_ITEM(sipPy, i);
-      QVariant *t;
-      if ( obj == Py_None )
-      {
-        t = new QVariant( QVariant::Int );
-      }
-      else
-      {
-        t = reinterpret_cast<QVariant *>(sipConvertToType(obj, sipType_QVariant, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
-
-        if (*sipIsErr)
-        {
-          sipReleaseType(t, sipType_QVariant, state);
-
-          delete qv;
-          return 0;
-        }
-      }
-
-      qv->append(*t);
-
-      sipReleaseType(t, sipType_QVariant, state);
-    }
-
-    *sipCppPtr = qv;
-
-    return sipGetState(sipTransferObj);
-%End
-};
-
-// key = feature id, value = changed attributes
-typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
-
-// key = feature id, value = changed geometry
-typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
-
-// key = field index, value = field name
-typedef QMap<int, QString> QgsFieldNameMap;
-
-typedef QList<QgsFeature> QgsFeatureList;
-
-typedef QMap<int, QgsField> QgsFieldMap;
 
 class QgsFeature
 {
-%TypeHeaderCode
-#include <qgsfeature.h>
-#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
-#define sipClass_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
-#endif
+%Docstring
+ The feature class encapsulates a single feature including its id,
+ geometry and a list of field/values attributes.
+.. note::
+
+   QgsFeature objects are implicitly shared.
 %End
 
+%TypeHeaderCode
+#include "qgsfeature.h"
+#if (SIP_VERSION >= 0x040900 && SIP_VERSION < 0x040c01)
+#define sipType_QVariant ((sipWrapperType *) sipTypeAsPyTypeObject (sipType_QVariant))
+#endif
+%End
   public:
 
     SIP_PYOBJECT __iter__();
 %MethodCode
-    PyObject *attrs = sipConvertFromType( &sipCpp->attributes(), sipType_QgsAttributes, Py_None );
-    sipRes = PyObject_GetIter(attrs);
+    QgsAttributes attributes = sipCpp->attributes();
+    PyObject *attrs = sipConvertFromType( &attributes, sipType_QgsAttributes, Py_None );
+    sipRes = PyObject_GetIter( attrs );
 %End
 
-    SIP_PYOBJECT __getitem__(int key);
+    SIP_PYOBJECT __getitem__( int key );
 %MethodCode
-  const QgsAttributes& attrs = sipCpp->attributes();
-  if (a0 < 0 || a0 >= attrs.count())
-  {
-    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
-    sipIsErr = 1;
-  }
-  else
-  {
-    QVariant* v = new QVariant( attrs.at(a0) );
-    sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
-  }
-%End
-
-    SIP_PYOBJECT __getitem__(const QString& name);
-%MethodCode
-  int fieldIdx = sipCpp->fieldNameIndex(*a0);
-  if (fieldIdx == -1)
-  {
-    PyErr_SetString(PyExc_KeyError, a0->toAscii());
-    sipIsErr = 1;
-  }
-  else
-  {
-    QVariant* v = new QVariant( sipCpp->attribute(fieldIdx) );
-    sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
-  }
-%End
-
-    void __setitem__(int key, QVariant value /GetWrapper/);
-%MethodCode
-  bool rv;
-
-  if ( a1Wrapper == Py_None )
-  {
-    rv = sipCpp->setAttribute(a0, QVariant( QVariant::Int ) );
-  }
-  else
-  {
-    rv = sipCpp->setAttribute(a0, *a1);
-  }
-
-  if ( !rv )
-  {
-    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
-    sipIsErr = 1;
-  }
-%End
-
-    void __setitem__(const QString& key, QVariant value /GetWrapper/);
-%MethodCode
-  int fieldIdx = sipCpp->fieldNameIndex(*a0);
-  if (fieldIdx == -1)
-  {
-    PyErr_SetString(PyExc_KeyError, a0->toAscii());
-    sipIsErr = 1;
-  }
-  else
-  {
-    if ( a1Wrapper == Py_None )
+    QgsAttributes attrs = sipCpp->attributes();
+    if ( a0 < 0 || a0 >= attrs.count() )
     {
-      sipCpp->setAttribute(*a0, QVariant( QVariant::Int ) );
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
     }
     else
     {
-      sipCpp->setAttribute(fieldIdx, *a1);
+      QVariant *v = new QVariant( attrs.at( a0 ) );
+      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
     }
-  }
 %End
 
-    void __delitem__(int key);
+    SIP_PYOBJECT __getitem__( const QString &name );
 %MethodCode
-  if (a0 >= 0 && a0 < sipCpp->attributes().count())
-    sipCpp->deleteAttribute(a0);
-  else
-  {
-    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
-    sipIsErr = 1;
-  }
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QVariant *v = new QVariant( sipCpp->attribute( fieldIdx ) );
+      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+    }
 %End
 
-    void __delitem__(const QString& name);
+    void __setitem__( int key, QVariant value /GetWrapper/ );
 %MethodCode
-  int fieldIdx = sipCpp->fieldNameIndex(*a0);
-  if (fieldIdx == -1)
-  {
-    PyErr_SetString(PyExc_KeyError, a0->toAscii());
-    sipIsErr = 1;
-  }
-  else
-    sipCpp->deleteAttribute(fieldIdx);
+    bool rv;
+
+    if ( a1Wrapper == Py_None )
+    {
+      rv = sipCpp->setAttribute( a0, QVariant( QVariant::Int ) );
+    }
+    else
+    {
+      rv = sipCpp->setAttribute( a0, *a1 );
+    }
+
+    if ( !rv )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
 %End
 
-    //! Constructor
+    void __setitem__( const QString &key, QVariant value /GetWrapper/ );
+%MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      if ( a1Wrapper == Py_None )
+      {
+        sipCpp->setAttribute( *a0, QVariant( QVariant::Int ) );
+      }
+      else
+      {
+        sipCpp->setAttribute( fieldIdx, *a1 );
+      }
+    }
+%End
+
+    void __delitem__( int key );
+%MethodCode
+    if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
+      sipCpp->deleteAttribute( a0 );
+    else
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+%End
+
+    void __delitem__( const QString &name );
+%MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+      sipCpp->deleteAttribute( fieldIdx );
+%End
+
     QgsFeature( qint64 id = 0 );
+%Docstring
+ Constructor for QgsFeature
+ \param id feature id
+%End
 
-    QgsFeature( const QgsFields& fields, qint64 id = 0 );
+    QgsFeature( const QgsFields &fields, qint64 id = 0 );
+%Docstring
+ Constructor for QgsFeature
+ \param fields feature's fields
+ \param id feature id
+%End
 
-    /** copy ctor needed due to internal pointer */
-    QgsFeature( const QgsFeature & rhs );
+    QgsFeature( const QgsFeature &rhs );
+%Docstring
+ Copy constructor
+%End
 
-    //! Destructor
-    ~QgsFeature();
 
-    /**
-     * Get the feature id for this feature
-     * @return Feature id
-     */
-    qint64 id() const;
 
-    /**
-     * Set the feature id for this feature
-     * @param id Feature id
-     */
-    void setFeatureId( qint64 id );
 
-    const QgsAttributes& attributes() const;
-    //QgsAttributes& attributes();
-    void setAttributes(const QgsAttributes& attrs);
-    bool setAttribute( int field, const QVariant& attr /GetWrapper/);
+    virtual ~QgsFeature();
+
+    QgsFeatureId id() const;
+%Docstring
+ Get the feature ID for this feature.
+ :return: feature ID
+.. seealso:: setId()
+ :rtype: QgsFeatureId
+%End
+
+    void setId( QgsFeatureId id );
+%Docstring
+ Sets the feature ID for this feature.
+ \param id feature id
+.. seealso:: id
+%End
+
+    QgsAttributes attributes() const;
+%Docstring
+ Returns the feature's attributes.
+ :return: list of feature's attributes
+.. seealso:: setAttributes
+.. versionadded:: 2.9
+.. note::
+
+   Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
+ :rtype: QgsAttributes
+%End
+
+    void setAttributes( const QgsAttributes &attrs );
+%Docstring
+ Sets the feature's attributes.
+ The feature will be valid after.
+ \param attrs attribute list
+.. seealso:: setAttribute
+.. seealso:: attributes
+%End
+
+    bool setAttribute( int field, const QVariant &attr /GetWrapper/ );
+%Docstring
+ Set an attribute's value by field index.
+ The feature will be valid if it was successful.
+ \param field the index of the field to set
+ \param attr the value of the attribute
+ :return: false, if the field index does not exist
+.. note::
+
+   For Python: raises a KeyError exception instead of returning false
+.. note::
+
+   Alternatively in Python: @code feature[field] = attr @endcode
+.. seealso:: setAttributes
+ :rtype: bool
+%End
 %MethodCode
-  bool rv;
+    bool rv;
 
-  if ( a1Wrapper == Py_None )
-  {
-    rv = sipCpp->setAttribute(a0, QVariant( QVariant::Int ) );
-  }
-  else
-  {
-    rv = sipCpp->setAttribute(a0, *a1);
-  }
+    if ( a1Wrapper == Py_None )
+    {
+      rv = sipCpp->setAttribute( a0, QVariant( QVariant::Int ) );
+    }
+    else
+    {
+      rv = sipCpp->setAttribute( a0, *a1 );
+    }
 
-  if ( !rv )
-  {
-    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
-    sipIsErr = 1;
-  }
+    if ( !rv )
+    {
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+
+    sipRes = rv;
 %End
 
     void initAttributes( int fieldCount );
-
-    /**Deletes an attribute and its value*/
-    void deleteAttribute( int field );
-%MethodCode
-  if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
-    sipCpp->deleteAttribute(a0);
-  else
-  {
-    PyErr_SetString(PyExc_KeyError, QByteArray::number(a0));
-    sipIsErr = 1;
-  }
+%Docstring
+ Initialize this feature with the given number of fields. Discard any previously set attribute data.
+ \param fieldCount Number of fields to initialize
 %End
-    /**
-     * Return the validity of this feature. This is normally set by
-     * the provider to indicate some problem that makes the feature
-     * invalid or to indicate a null feature.
-     */
-    bool isValid() const;
 
-    /**
-     * Set the validity of the feature.
-     */
-    void setValid( bool validity );
+    void deleteAttribute( int field );
+%Docstring
+ Deletes an attribute and its value.
+ \param field the index of the field
+.. seealso:: setAttribute
+.. note::
 
-    /**
-     * Get the geometry object associated with this feature
-     */
-    QgsGeometry *geometry();
+   For Python: raises a KeyError exception if the field is not found
+.. note::
 
-    /**
-     * Get the geometry object associated with this feature
-     * The caller assumes responsibility for the QgsGeometry*'s destruction.
-     */
-    QgsGeometry *geometryAndOwnership() /Factory/;
-
-    /** Set this feature's geometry from another QgsGeometry object (deep copy)
-     */
-    void setGeometry( const QgsGeometry& geom );
-
-    /** Set this feature's geometry (takes geometry ownership)
-     * @note not available in python bindings
-     */
-    // void setGeometry( QgsGeometry* geom /Transfer/ );
-
-    /**
-     * Set this feature's geometry from WKB
-     *
-     * This feature assumes responsibility for destroying geom.
-     */
-    void setGeometryAndOwnership( unsigned char * geom /Transfer/, size_t length );
-
-    /** Assign a field map with the feature to allow attribute access by
-     * attribute name
-     *
-     *  @param fields         The attribute fields which this feature holds
-     *  @param initAttributes If true, attributes are initialized. Clears any
-     *  data previously assigned.
-     *                        C++: Defaults to false
-     *                        Python: Defaults to true
-     *  @note added in 2.0
-     */
-    void setFields( const QgsFields* fields, bool initAttributes = true );
-
-    /** Get associated field map. may be NULL
-     *  @note added in 2.0
-     */
-    const QgsFields* fields() const;
-
-    /** Insert a value into attribute.
-     *  Raises a KeyError exception if the attribute name is not found
-     *  Field map must be associated to make this work.
-     *  @note added in 2.0
-     */
-    void setAttribute( const QString& name, QVariant value /GetWrapper/ );
+   Alternatively in Python: @code del feature[field] @endcode
+%End
 %MethodCode
-  int fieldIdx = sipCpp->fieldNameIndex(*a0);
-  if (fieldIdx == -1)
-  {
-    PyErr_SetString(PyExc_KeyError, a0->toAscii());
-    sipIsErr = 1;
-  }
-  else
-  {
-    if ( a1Wrapper == Py_None )
+    if ( a0 >= 0 && a0 < sipCpp->attributes().count() )
+      sipCpp->deleteAttribute( a0 );
+    else
     {
-      sipCpp->setAttribute(*a0, QVariant( QVariant::Int ) );
+      PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+      sipIsErr = 1;
+    }
+%End
+
+    bool isValid() const;
+%Docstring
+ Returns the validity of this feature. This is normally set by
+ the provider to indicate some problem that makes the feature
+ invalid or to indicate a null feature.
+.. seealso:: setValid
+ :rtype: bool
+%End
+
+    void setValid( bool validity );
+%Docstring
+ Sets the validity of the feature.
+ \param validity set to true if feature is valid
+.. seealso:: isValid
+%End
+
+    bool hasGeometry() const;
+%Docstring
+ Returns true if the feature has an associated geometry.
+.. seealso:: geometry()
+.. versionadded:: 3.0.
+ :rtype: bool
+%End
+
+    QgsGeometry geometry() const;
+%Docstring
+ Returns the geometry associated with this feature. If the feature has no geometry,
+ an empty QgsGeometry object will be returned.
+.. seealso:: hasGeometry()
+.. seealso:: setGeometry()
+ :rtype: QgsGeometry
+%End
+
+    void setGeometry( const QgsGeometry &geometry );
+%Docstring
+ Set the feature's geometry. The feature will be valid after.
+ \param geometry new feature geometry
+.. seealso:: geometry()
+.. seealso:: clearGeometry()
+%End
+
+    void clearGeometry();
+%Docstring
+ Removes any geometry associated with the feature.
+.. seealso:: setGeometry()
+.. seealso:: hasGeometry()
+.. versionadded:: 3.0
+%End
+
+    void setFields( const QgsFields &fields, bool initAttributes = true  );
+%Docstring
+ Assign a field map with the feature to allow attribute access by attribute name.
+  \param fields The attribute fields which this feature holds
+  \param initAttributes If true, attributes are initialized. Clears any data previously assigned.
+                        C++: Defaults to false
+                        Python: Defaults to true
+.. versionadded:: 2.9
+.. seealso:: fields
+%End
+
+    QgsFields fields() const;
+%Docstring
+ Returns the field map associated with the feature.
+.. seealso:: setFields
+ :rtype: QgsFields
+%End
+
+    void setAttribute( const QString &name, const QVariant &value /GetWrapper/ );
+%Docstring
+ Insert a value into attribute. Returns false if attribute name could not be converted to index.
+  Field map must be associated using setFields() before this method can be used.
+  The feature will be valid if it was successful
+  \param name The name of the field to set
+  \param value The value to set
+  :return: false if attribute name could not be converted to index (C++ only)
+.. note::
+
+   For Python: raises a KeyError exception instead of returning false
+.. note::
+
+   Alternatively in Python: @code feature[name] = attr @endcode
+.. seealso:: setFields
+%End
+%MethodCode
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
     }
     else
     {
-      sipCpp->setAttribute(fieldIdx, *a1);
+      if ( a1Wrapper == Py_None )
+      {
+        sipCpp->setAttribute( *a0, QVariant( QVariant::Int ) );
+      }
+      else
+      {
+        sipCpp->setAttribute( fieldIdx, *a1 );
+      }
     }
-  }
 %End
-    /** Remove an attribute value.
-     *  Raises a KeyError exception if the attribute name is not found
-     *  Field map must be associated to make this work.
-     *  @note added in 2.0
-     */
-    void deleteAttribute( const QString& name );
+
+    bool deleteAttribute( const QString &name );
+%Docstring
+ Removes an attribute value by field name. Field map must be associated using setFields()
+  before this method can be used.
+  \param name The name of the field to delete
+  :return: false if attribute name could not be converted to index (C++ only)
+.. note::
+
+   For Python: raises a KeyError exception instead of returning false
+.. note::
+
+   Alternatively in Python: @code del feature[name] @endcode
+.. seealso:: setFields
+ :rtype: bool
+%End
 %MethodCode
-  int fieldIdx = sipCpp->fieldNameIndex(*a0);
-  if (fieldIdx == -1)
-  {
-    PyErr_SetString(PyExc_KeyError, a0->toAscii());
-    sipIsErr = 1;
-  }
-  else
-  {
-    sipCpp->deleteAttribute( fieldIdx );
-  }
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+      sipRes = false;
+    }
+    else
+    {
+      sipCpp->deleteAttribute( fieldIdx );
+      sipRes = true;
+    }
 %End
-    /** Lookup attribute value from attribute name.
-     *  Raises a KeyError exception if the attribute is not found
-     *  Field map must be associated to make this work.
-     *  @note added in 2.0
-     */
-    SIP_PYOBJECT attribute( const QString& name ) const;
+
+    SIP_PYOBJECT attribute( const QString &name ) const;
+%Docstring
+ Lookup attribute value from attribute name. Field map must be associated using setFields()
+  before this method can be used.
+  \param name The name of the attribute to get
+  :return: The value of the attribute (C++: Invalid variant if no such name exists )
+.. note::
+
+   For Python: raises a KeyError exception if the field is not found
+.. note::
+
+   Alternatively in Python: @code feature[name] @endcode
+.. seealso:: setFields
+%End
 %MethodCode
-  int fieldIdx = sipCpp->fieldNameIndex(*a0);
-  if (fieldIdx == -1)
-  {
-    PyErr_SetString(PyExc_KeyError, a0->toAscii());
-    sipIsErr = 1;
-  }
-  else
-  {
-    QVariant* v = new QVariant( sipCpp->attribute(fieldIdx) );
-    sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
-  }
+    int fieldIdx = sipCpp->fieldNameIndex( *a0 );
+    if ( fieldIdx == -1 )
+    {
+      PyErr_SetString( PyExc_KeyError, a0->toAscii() );
+      sipIsErr = 1;
+    }
+    else
+    {
+      QVariant *v = new QVariant( sipCpp->attribute( fieldIdx ) );
+      sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+    }
 %End
-    /** Utility method to get attribute index from name. Returns -1 if field does not exist or field map is not associated.
-     *  Field map must be associated to make this work.
-     *  @note added in 2.0
-     */
-    int fieldNameIndex( const QString& fieldName ) const;
+
+    SIP_PYOBJECT attribute( int fieldIdx ) const;
+%Docstring
+ Lookup attribute value from its index. Field map must be associated using setFields()
+  before this method can be used.
+  \param fieldIdx The index of the attribute to get
+  :return: The value of the attribute (C++: Invalid variant if no such index exists )
+.. note::
+
+   For Python: raises a KeyError exception if the field is not found
+.. note::
+
+   Alternatively in Python: @code feature[fieldIdx] @endcode
+.. seealso:: setFields
+%End
+%MethodCode
+    {
+      if ( a0 < 0 || a0 >= sipCpp->attributes().count() )
+      {
+        PyErr_SetString( PyExc_KeyError, QByteArray::number( a0 ) );
+        sipIsErr = 1;
+      }
+      else
+      {
+        QVariant *v = new QVariant( sipCpp->attribute( a0 ) );
+        sipRes = sipConvertFromNewType( v, sipType_QVariant, Py_None );
+      }
+    }
+%End
+
+    int fieldNameIndex( const QString &fieldName ) const;
+%Docstring
+ Utility method to get attribute index from name. Field map must be associated using setFields()
+  before this method can be used.
+  \param fieldName name of field to get attribute index of
+  :return: -1 if field does not exist or field map is not associated.
+.. seealso:: setFields
+ :rtype: int
+%End
+
+    operator QVariant() const;
+%Docstring
+Allows direct construction of QVariants from features.
+%End
 
 }; // class QgsFeature
 
-typedef QSet<QgsFeatureId> QgsFeatureIds;
+
+typedef QMap<qint64, QMap<int, QVariant> > QgsChangedAttributesMap;
+
+
+typedef QMap<qint64, QgsGeometry> QgsGeometryMap;
+
+
+typedef QSet<qint64> QgsFeatureIds;
+
+typedef QList<QgsFeature> QgsFeatureList;
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsfeature.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

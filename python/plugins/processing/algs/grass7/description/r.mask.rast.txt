@@ -1,0 +1,8 @@
+r.mask
+r.mask.rast - Creates a MASK for limiting raster operation.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|raster|Name of raster map to use as mask|None|False
+QgsProcessingParameterRasterLayer|input|Name of raster map to which apply the mask|None|False
+QgsProcessingParameterString|maskcats|Raster values to use for mask. Format: 1 2 3 thru 7 *|*|False|True
+*QgsProcessingParameterBoolean|-i|Create inverse mask|False|True
+QgsProcessingParameterRasterDestination|output|Masked

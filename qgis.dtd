@@ -105,7 +105,7 @@ outlinecolor,outlinestyle,outlinewidth,fillcolor,fillpattern) >
 <!ELEMENT  greenBandNameQString (#CDATA)>
 <!--Raster : the band to be associated with the color blue - usually blue -->
 <!ELEMENT  blueBandNameQString (#CDATA)>
-<!--Raster :  the band to be associated with the grayscale only ouput - usually gray  -->
+<!--Raster :  the band to be associated with the grayscale only output - usually gray  -->
 <!ELEMENT grayBandNameQString (#CDATA)>
 <!--  Attribute Lists -->
 <!ATTLIST showDebugOverlayFlag boolean (1|0|true|false) "false">	

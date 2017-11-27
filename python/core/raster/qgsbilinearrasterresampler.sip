@@ -1,13 +1,42 @@
-class QgsBilinearRasterResampler : QgsRasterResampler
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsbilinearrasterresampler.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+class QgsBilinearRasterResampler: QgsRasterResampler
 {
+%Docstring
+Bilinear Raster Resampler
+%End
+
 %TypeHeaderCode
 #include "qgsbilinearrasterresampler.h"
 %End
   public:
-    QgsBilinearRasterResampler();
-    ~QgsBilinearRasterResampler();
 
-    void resample( const QImage& srcImage, QImage& dstImage );
-    QString type() const;
-    QgsRasterResampler * clone() const /Factory/;
+    QgsBilinearRasterResampler();
+%Docstring
+ Constructor for QgsBilinearRasterResampler.
+%End
+
+    virtual void resample( const QImage &srcImage, QImage &dstImage );
+
+    virtual QString type() const;
+    virtual QgsBilinearRasterResampler *clone() const /Factory/;
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsbilinearrasterresampler.h                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

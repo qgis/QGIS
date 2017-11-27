@@ -1,0 +1,15 @@
+<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<linearGradient id="a" gradientUnits="userSpaceOnUse" x1="3.5" x2="11.5" y1="19.5" y2="19.5">
+<stop offset="0" stop-color="#b7b7b7"/>
+<stop offset="1" stop-color="#e6e6e6"/>
+</linearGradient>
+<g transform="translate(0 -8)">
+<path d="m21.5 29.5h-17c-1 0-1.977816-1.420625-2-2.5v-16.5h19z" fill="url(#a)" fill-rule="evenodd" stroke="#9a9a9a"/>
+<path d="m16.499981 29.5v-3h-3v3z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75" stroke-linejoin="round"/>
+<path d="m3.9999793 23l4.5000002 4.5v-3h3.0000015v-3h-3.0000015v-3z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75" stroke-linejoin="round"/>
+<path d="m14.999981 12l4.5 4.5h-3v3h-3v-3h-3z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75" stroke-linejoin="round"/>
+<path d="m21.499981 24.5h-3v-3h3z" fill="#6d97c4" fill-rule="evenodd" stroke="#415a75" stroke-linejoin="round"/>
+<path d="m21.5 29.5h-17c-1 0-1.977816-1.420625-2-2.5v-16.5h19z" fill="none" stroke="#9a9a9a"/>
+<path d="m6.5 9.9999996c-1-.9999995-3-.9999995-4 0v16.0000004c1-1 3-1 4 0z" fill="#e6e6e6" fill-rule="evenodd" stroke="#9a9a9a"/>
+</g>
+</svg>

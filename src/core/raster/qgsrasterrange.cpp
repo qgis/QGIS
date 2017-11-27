@@ -20,28 +20,24 @@
 #include "qgsrasterrange.h"
 
 QgsRasterRange::QgsRasterRange()
-    : mMin( std::numeric_limits<double>::quiet_NaN() )
-    , mMax( std::numeric_limits<double>::quiet_NaN() )
+  : mMin( std::numeric_limits<double>::quiet_NaN() )
+  , mMax( std::numeric_limits<double>::quiet_NaN() )
 {
 }
 
-QgsRasterRange::QgsRasterRange( double theMin, double theMax )
-    : mMin( theMin )
-    , mMax( theMax )
-{
-}
-
-QgsRasterRange::~QgsRasterRange()
+QgsRasterRange::QgsRasterRange( double min, double max )
+  : mMin( min )
+  , mMax( max )
 {
 }
 
 bool QgsRasterRange::contains( double value, const QgsRasterRangeList &rangeList )
 {
-  foreach ( QgsRasterRange range, rangeList )
+  Q_FOREACH ( QgsRasterRange range, rangeList )
   {
-    if (( value >= range.mMin && value <= range.mMax ) ||
-        qgsDoubleNear( value, range.mMin ) ||
-        qgsDoubleNear( value, range.mMax ) )
+    if ( ( value >= range.mMin && value <= range.mMax ) ||
+         qgsDoubleNear( value, range.mMin ) ||
+         qgsDoubleNear( value, range.mMax ) )
     {
       return true;
     }

@@ -15,55 +15,49 @@
  ***************************************************************************/
 
 #include "ui_qgsatlascompositionwidgetbase.h"
-#include "qgsvectorlayer.h"
 
 class QgsComposition;
 class QgsMapLayer;
 class QgsComposerMap;
 class QgsComposerItem;
 
-/** \ingroup MapComposer
+/**
+ * \ingroup app
   * Input widget for QgsAtlasComposition
   */
 class QgsAtlasCompositionWidget:
-      public QWidget,
-      private Ui::QgsAtlasCompositionWidgetBase
+  public QWidget,
+  private Ui::QgsAtlasCompositionWidgetBase
 {
     Q_OBJECT
   public:
-    QgsAtlasCompositionWidget( QWidget* parent, QgsComposition* c );
-    ~QgsAtlasCompositionWidget();
+    QgsAtlasCompositionWidget( QWidget *parent, QgsComposition *c );
 
   public slots:
-    void on_mUseAtlasCheckBox_stateChanged( int state );
-    void on_mComposerMapComboBox_currentIndexChanged( int index );
-    void on_mAtlasCoverageLayerComboBox_currentIndexChanged( int index );
-    void on_mAtlasFilenamePatternEdit_textChanged( const QString& text );
-    void on_mAtlasFilenameExpressionButton_clicked();
-    void on_mAtlasHideCoverageCheckBox_stateChanged( int state );
-    void on_mAtlasFixedScaleRadio_toggled( bool checked );
-    void on_mAtlasSingleFileCheckBox_stateChanged( int state );
+    void mUseAtlasCheckBox_stateChanged( int state );
+    void changeCoverageLayer( QgsMapLayer *layer );
+    void mAtlasFilenamePatternEdit_editingFinished();
+    void mAtlasFilenameExpressionButton_clicked();
+    void mAtlasHideCoverageCheckBox_stateChanged( int state );
+    void mAtlasSingleFileCheckBox_stateChanged( int state );
 
-    void on_mAtlasSortFeatureCheckBox_stateChanged( int state );
-    void on_mAtlasSortFeatureKeyComboBox_currentIndexChanged( int index );
-    void on_mAtlasSortFeatureDirectionButton_clicked();
-    void on_mAtlasFeatureFilterEdit_textChanged( const QString& text );
-    void on_mAtlasFeatureFilterButton_clicked();
-    void on_mAtlasFeatureFilterCheckBox_stateChanged( int state );
-    void on_mAtlasMarginSpinBox_valueChanged( int value );
+    void mAtlasSortFeatureCheckBox_stateChanged( int state );
+    void changesSortFeatureField( const QString &fieldName );
+    void mAtlasSortFeatureDirectionButton_clicked();
+    void mAtlasFeatureFilterEdit_editingFinished();
+    void mAtlasFeatureFilterButton_clicked();
+    void mAtlasFeatureFilterCheckBox_stateChanged( int state );
+    void pageNameExpressionChanged( const QString &expression, bool valid );
 
-    // extract fields from the current coverage layer and populate the corresponding combo box
-    void fillSortColumns();
+    void changeFileFormat();
+
   private slots:
-    void onLayerRemoved( QString );
-    void onLayerAdded( QgsMapLayer* );
-    void onComposerMapAdded( QgsComposerMap* );
-    void onItemRemoved( QgsComposerItem* );
-
     void updateGuiElements();
 
+    void updateAtlasFeatures();
+
   private:
-    QgsComposition* mComposition;
+    QgsComposition *mComposition = nullptr;
 
     void blockAllSignals( bool b );
     void checkLayerType( QgsVectorLayer *layer );

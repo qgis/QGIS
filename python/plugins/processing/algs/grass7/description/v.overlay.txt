@@ -1,0 +1,9 @@
+v.overlay
+Overlays two vector maps.
+Vector (v.*)
+QgsProcessingParameterVectorLayer|ainput|Input layer (A)|-1|None|False
+QgsProcessingParameterEnum|atype|Input layer (A) Type|area;line
+QgsProcessingParameterVectorLayer|binput|Input layer (B)|2|None|False
+QgsProcessingParameterEnum|operator|Operator to use|and;or;not;xor
+QgsProcessingParameterBoolean|-t|Do not create attribute table|False
+QgsProcessingParameterVectorDestination|output|Overlay

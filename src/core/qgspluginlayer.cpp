@@ -14,9 +14,20 @@
  ***************************************************************************/
 #include "qgspluginlayer.h"
 
-QgsPluginLayer::QgsPluginLayer( QString layerType, QString layerName )
-    : QgsMapLayer( PluginLayer, layerName ), mPluginLayerType( layerType )
+#include "qgsmaplayerlegend.h"
+#include "qgsmaplayerrenderer.h"
+
+QgsPluginLayer::QgsPluginLayer( const QString &layerType, const QString &layerName )
+  : QgsMapLayer( PluginLayer, layerName )
+  , mPluginLayerType( layerType )
 {
+}
+
+QgsPluginLayer::~QgsPluginLayer()
+{
+  // TODO: shall we move the responsibility of emitting the signal to plugin
+  // layer implementations before they start doing their part of cleanup...?
+  emit willBeDeleted();
 }
 
 QString QgsPluginLayer::pluginLayerType()
@@ -29,8 +40,7 @@ void QgsPluginLayer::setExtent( const QgsRectangle &extent )
   mExtent = extent;
 }
 
-QgsLegendSymbologyList QgsPluginLayer::legendSymbologyItems( const QSize& iconSize )
+void QgsPluginLayer::setSource( const QString &source )
 {
-  Q_UNUSED( iconSize );
-  return QgsLegendSymbologyList();
+  mDataSource = source;
 }

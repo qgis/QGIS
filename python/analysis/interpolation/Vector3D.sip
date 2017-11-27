@@ -1,35 +1,88 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/Vector3D.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class Vector3D
 {
-%TypeHeaderCode
-#include <Vector3D.h>
+%Docstring
+ Class Vector3D represents a 3D-Vector, capable to store x-,y- and
+ z-coordinates in double values. In fact, the class is the same as QgsPoint.
+ The name 'vector' makes it easier to understand the programs.
 %End
 
+%TypeHeaderCode
+#include "Vector3D.h"
+%End
+  protected:
+
   public:
-    /**Constructor taking the three components as arguments*/
     Vector3D( double x, double y, double z );
-    /**Default constructor*/
+%Docstring
+Constructor taking the three components as arguments
+%End
     Vector3D();
-    /**Copy constructor*/
-    Vector3D( const Vector3D& v );
-    /**Destructor*/
-    ~Vector3D();
-    //Vector3D& operator=( const Vector3D& v );
-    bool operator==( const Vector3D& v );
-    bool operator!=( const Vector3D& v );
-    /**Returns the x-component of the vector*/
+%Docstring
+Default constructor
+%End
+
+    bool operator==( const Vector3D &v ) const;
+    bool operator!=( const Vector3D &v ) const;
+%Docstring
+ :rtype: bool
+%End
     double getX() const;
-    /**Returns the y-component of the vector*/
+%Docstring
+Returns the x-component of the vector
+ :rtype: float
+%End
     double getY() const;
-    /**Returns the z-component of the vector*/
+%Docstring
+Returns the y-component of the vector
+ :rtype: float
+%End
     double getZ() const;
-    /**Returns the length of the vector*/
+%Docstring
+Returns the z-component of the vector
+ :rtype: float
+%End
     double getLength() const;
-    /**Sets the x-component of the vector*/
+%Docstring
+Returns the length of the vector
+ :rtype: float
+%End
     void setX( double x );
-    /**Sets the y-component of the vector*/
+%Docstring
+Sets the x-component of the vector
+%End
     void setY( double y );
-    /**Sets the z-component of the vector*/
+%Docstring
+Sets the y-component of the vector
+%End
     void setZ( double z );
-    /**Standardises the vector*/
+%Docstring
+Sets the z-component of the vector
+%End
     void standardise();
+%Docstring
+Standardises the vector
+%End
+
+  private:
+    Vector3D( const Vector3D &v );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/Vector3D.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

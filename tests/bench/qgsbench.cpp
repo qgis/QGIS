@@ -39,9 +39,11 @@
 #endif
 #include "qgsbench.h"
 #include "qgslogger.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsmaprendererparalleljob.h"
+#include "qgsmaprenderersequentialjob.h"
 #include "qgsproject.h"
-#include "qgspallabeling.h"
+
+const char *pre[] = { "user", "sys", "total", "wall" };
 
 #ifdef Q_OS_WIN
 // slightly adapted from http://anoncvs.postgresql.org/cvsweb.cgi/pgsql/src/port/getrusage.c?rev=1.18;content-type=text%2Fplain
@@ -73,7 +75,7 @@ struct rusage
  */
 
 
-int getrusage( int who, struct rusage * rusage )
+int getrusage( int who, struct rusage *rusage )
 {
   FILETIME starttime;
   FILETIME exittime;
@@ -88,7 +90,7 @@ int getrusage( int who, struct rusage * rusage )
     return -1;
   }
 
-  if ( rusage == ( struct rusage * ) NULL )
+  if ( !rusage )
   {
     errno = EFAULT;
     return -1;
@@ -116,44 +118,39 @@ int getrusage( int who, struct rusage * rusage )
 }
 #endif
 
-QgsBench::QgsBench( int theWidth, int theHeight, int theIterations )
-    : QObject(), mWidth( theWidth ), mHeight( theHeight ), mIterations( theIterations ), mSetExtent( false )
+QgsBench::QgsBench( int width, int height, int iterations )
+  : mWidth( width )
+  , mHeight( height )
+  , mIterations( iterations )
+  , mSetExtent( false )
+  , mUserStart( 0.0 )
+  , mSysStart( 0.0 )
+  , mParallel( false )
 {
-  QgsDebugMsg( "entered" );
 
   QgsDebugMsg( QString( "mIterations = %1" ).arg( mIterations ) );
 
-  mMapRenderer = new QgsMapRenderer;
-
-  connect( QgsProject::instance(), SIGNAL( readProject( const QDomDocument & ) ),
-           this, SLOT( readProject( const QDomDocument & ) ) );
+  connect( QgsProject::instance(), &QgsProject::readProject,
+           this, &QgsBench::readProject );
 }
 
-QgsBench::~QgsBench()
+bool QgsBench::openProject( const QString &fileName )
 {
-}
-
-bool QgsBench::openProject( const QString & theFileName )
-{
-  QgsDebugMsg( "entered" );
-  // QgsProject loads layers to QgsMapLayerRegistry singleton
-  QFileInfo file( theFileName );
-  if ( ! QgsProject::instance()->read( file ) )
+  if ( ! QgsProject::instance()->read( fileName ) )
   {
     return false;
   }
-  mLogMap.insert( "project", theFileName );
+  mLogMap.insert( QStringLiteral( "project" ), fileName );
   return true;
 }
 
 void QgsBench::readProject( const QDomDocument &doc )
 {
-  QgsDebugMsg( "entered" );
-  QDomNodeList nodes = doc.elementsByTagName( "mapcanvas" );
+  QDomNodeList nodes = doc.elementsByTagName( QStringLiteral( "mapcanvas" ) );
   if ( nodes.count() )
   {
     QDomNode node = nodes.item( 0 );
-    mMapRenderer->readXML( node );
+    mMapSettings.readXml( node );
   }
   else
   {
@@ -161,7 +158,7 @@ void QgsBench::readProject( const QDomDocument &doc )
   }
 }
 
-void QgsBench::setExtent( const QgsRectangle & extent )
+void QgsBench::setExtent( const QgsRectangle &extent )
 {
   mExtent = extent;
   mSetExtent = true;
@@ -169,53 +166,55 @@ void QgsBench::setExtent( const QgsRectangle & extent )
 
 void QgsBench::render()
 {
-  QgsDebugMsg( "entered" );
 
-  QgsDebugMsg( "extent: " +  mMapRenderer->extent().toString() );
+  QgsDebugMsg( "extent: " +  mMapSettings.extent().toString() );
 
-  QMap<QString, QgsMapLayer*> layersMap = QgsMapLayerRegistry::instance()->mapLayers();
+  QMap<QString, QgsMapLayer *> layersMap = QgsProject::instance()->mapLayers();
 
-  QStringList layers( layersMap.keys() );
-
-  mMapRenderer->setLayerSet( layers );
+  mMapSettings.setLayers( layersMap.values() );
 
   if ( mSetExtent )
   {
-    mMapRenderer->setExtent( mExtent );
+    mMapSettings.setExtent( mExtent );
   }
 
   // Maybe in future
-  //outputCRS = QgsCRSCache::instance()->crsByAuthId( crsId );
+  //outputCRS = QgsCrsCache::instance()->crsByAuthId( crsId );
   //mMapRenderer->setMapUnits( outputCRS.mapUnits() );
   //mMapRenderer->setDestinationCrs( outputCRS );
 
-  // TODO: this should be probably set according to project
-  mMapRenderer->setProjectionsEnabled( true );
-
   // Enable labeling
-  mMapRenderer->setLabelingEngine( new QgsPalLabeling() );
+  mMapSettings.setFlag( QgsMapSettings::DrawLabeling );
 
-  mImage = new QImage( mWidth, mHeight, QImage::Format_ARGB32_Premultiplied );
-  mImage->fill( 0 );
+  mMapSettings.setOutputSize( QSize( mWidth, mHeight ) );
 
-  mMapRenderer->setOutputSize( QSize( mWidth, mHeight ), mImage->logicalDpiX() );
-
-  QPainter painter( mImage );
-
-  painter.setRenderHints( mRendererHints );
+  // TODO: do we need the other QPainter flags?
+  mMapSettings.setFlag( QgsMapSettings::Antialiasing, mRendererHints.testFlag( QPainter::Antialiasing ) );
 
   for ( int i = 0; i < mIterations; i++ )
   {
+    QgsMapRendererQImageJob *job = nullptr;
+    if ( mParallel )
+      job = new QgsMapRendererParallelJob( mMapSettings );
+    else
+      job = new QgsMapRendererSequentialJob( mMapSettings );
+
     start();
-    mMapRenderer->render( &painter );
+    job->start();
+    job->waitForFinished();
     elapsed();
+
+    mImage = job->renderedImage();
+    delete job;
   }
 
-  mLogMap.insert( "iterations", mTimes.size() );
-  mLogMap.insert( "revision", QGSVERSION );
+
+  mLogMap.insert( QStringLiteral( "iterations" ), mTimes.size() );
+  mLogMap.insert( QStringLiteral( "revision" ), QGSVERSION );
 
   // Calc stats: user, sys, total
-  double min[4], max[4];
+  double min[4] = {DBL_MAX};
+  double max[4] = { -DBL_MAX};
   double stdev[4] = {0.};
   double maxdev[4] = {0.};
   double avg[4] = {0.};
@@ -224,10 +223,10 @@ void QgsBench::render()
   {
     for ( int i = 0; i < mTimes.size(); i++ )
     {
-      avg[t] += mTimes[i][t];
+      avg[t] += mTimes.at( i )[t];
 
-      if ( i == 0 || mTimes[i][t] < min[t] ) min[t] = mTimes[i][t];
-      if ( i == 0 || mTimes[i][t] > max[t] ) max[t] = mTimes[i][t];
+      if ( i == 0 || mTimes.at( i )[t] < min[t] ) min[t] = mTimes.at( i )[t];
+      if ( i == 0 || mTimes.at( i )[t] > max[t] ) max[t] = mTimes.at( i )[t];
     }
     avg[t] /= mTimes.size();
   }
@@ -239,85 +238,96 @@ void QgsBench::render()
     {
       for ( int i = 0; i < mTimes.size(); i++ )
       {
-        double d = fabs( avg[t] - mTimes[i][t] );
-        stdev[t] += pow( d, 2 );
+        double d = std::fabs( avg[t] - mTimes.at( i )[t] );
+        stdev[t] += std::pow( d, 2 );
         if ( i == 0 || d > maxdev[t] ) maxdev[t] = d;
       }
 
-      stdev[t] = sqrt( stdev[t] / mTimes.size() );
+      stdev[t] = std::sqrt( stdev[t] / mTimes.size() );
     }
-
-    const char *pre[] = { "user", "sys", "total", "wall" };
 
     QMap<QString, QVariant> map;
 
-    map.insert( "min", min[t] );
-    map.insert( "max", max[t] );
-    map.insert( "avg", avg[t] );
-    map.insert( "stdev", stdev[t] );
-    map.insert( "maxdev", maxdev[t] );
+    map.insert( QStringLiteral( "min" ), min[t] );
+    map.insert( QStringLiteral( "max" ), max[t] );
+    map.insert( QStringLiteral( "avg" ), avg[t] );
+    map.insert( QStringLiteral( "stdev" ), stdev[t] );
+    map.insert( QStringLiteral( "maxdev" ), maxdev[t] );
 
     timesMap.insert( pre[t], map );
   }
-  mLogMap.insert( "times", timesMap );
+  mLogMap.insert( QStringLiteral( "times" ), timesMap );
 }
 
-void QgsBench::saveSnapsot( const QString & fileName )
+void QgsBench::saveSnapsot( const QString &fileName )
 {
   // If format is 0, QImage will attempt to guess the format by looking at fileName's suffix.
-  mImage->save( fileName );
+  mImage.save( fileName );
 }
 
-void QgsBench::printLog()
+void QgsBench::printLog( const QString &printTime )
 {
-  std::cout << "iterations: " << mLogMap["iterations"].toString().toAscii().constData() << std::endl;
+  std::cout << "iterations: " << mLogMap[QStringLiteral( "iterations" )].toString().toAscii().constData() << std::endl;
 
-  QMap<QString, QVariant> timesMap = mLogMap["times"].toMap();
-  QMap<QString, QVariant> totalMap = timesMap["total"].toMap();
+  bool validPrintTime = false;
+  for ( int x = 0; x < 4; ++x )
+    if ( printTime == pre[x] )
+      validPrintTime = true;
+
+  if ( !validPrintTime )
+  {
+    std::cout << "invalid --print option: " << printTime.toAscii().data() << std::endl;
+    return;
+  }
+
+  QMap<QString, QVariant> timesMap = mLogMap[QStringLiteral( "times" )].toMap();
+  QMap<QString, QVariant> totalMap = timesMap[printTime].toMap();
   QMap<QString, QVariant>::iterator i = totalMap.begin();
   while ( i != totalMap.end() )
   {
-    QString s = "total_" + i.key() + ": " + i.value().toString();
+    QString s = printTime + '_' + i.key() + ": " + i.value().toString();
     std::cout << s.toAscii().constData() << std::endl;
     ++i;
   }
 }
 
-QString QgsBench::serialize( QMap<QString, QVariant> theMap, int level )
+QString QgsBench::serialize( const QMap<QString, QVariant> &map, int level )
 {
   QStringList list;
-  QString space = QString( " " ).repeated( level * 2 );
-  QString space2 = QString( " " ).repeated( level * 2 + 2 );
-  QMap<QString, QVariant>::const_iterator i = theMap.constBegin();
-  while ( i != theMap.constEnd() )
+  QString space = QStringLiteral( " " ).repeated( level * 2 );
+  QString space2 = QStringLiteral( " " ).repeated( level * 2 + 2 );
+  QMap<QString, QVariant>::const_iterator i = map.constBegin();
+  while ( i != map.constEnd() )
   {
-    switch ( i.value().type() )
+    switch ( static_cast< QMetaType::Type >( i.value().type() ) )
     {
       case QMetaType::Int:
-        list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toInt() ) );
+        list.append( space2 + '\"' + i.key() + "\": " + QStringLiteral( "%1" ).arg( i.value().toInt() ) );
         break;
       case QMetaType::Double:
-        list.append( space2 + "\"" + i.key() + "\": " + QString( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
+        list.append( space2 + '\"' + i.key() + "\": " + QStringLiteral( "%1" ).arg( i.value().toDouble(), 0, 'f', 3 ) );
         break;
       case QMetaType::QString:
-        list.append( space2 + "\"" + i.key() + "\": \"" + i.value().toString().replace( "\\", "\\\\" ).replace( "\"", "\\\"" ) + "\"" );
+        list.append( space2 + '\"' + i.key() + "\": \"" + i.value().toString().replace( '\\', QLatin1String( "\\\\" ) ).replace( '\"', QLatin1String( "\\\"" ) ) + '\"' );
         break;
-        //case QMetaType::QMap: QMap is not in QMetaType
+      //case QMetaType::QMap: QMap is not in QMetaType
       default:
-        list.append( space2 + "\"" + i.key() + "\": " + serialize( i.value().toMap(), level + 1 ) );
+        list.append( space2 + '\"' + i.key() + "\": " + serialize( i.value().toMap(), level + 1 ) );
         break;
     }
     ++i;
   }
-  return space + "{\n" +  list.join( ",\n" ) + "\n" + space + "}";
+  return space + "{\n" +  list.join( QStringLiteral( ",\n" ) ) + '\n' + space + '}';
 }
 
-void QgsBench::saveLog( const QString & fileName )
+void QgsBench::saveLog( const QString &fileName )
 {
   QFile file( fileName );
-  file.open( QIODevice::WriteOnly | QIODevice::Text );
+  if ( !file.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+    return;
+
   QTextStream out( &file );
-  out << serialize( mLogMap ).toAscii().constData() << "\n";
+  out << serialize( mLogMap ).toAscii().constData() << '\n';
   file.close();
 }
 

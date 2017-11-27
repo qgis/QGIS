@@ -17,10 +17,12 @@
  *                                                                         *
  ***************************************************************************/
 
+#ifndef QGSGPXPROVIDER_H
+#define QGSGPXPROVIDER_H
 
 #include "qgsvectordataprovider.h"
 #include "gpsdata.h"
-
+#include "qgsfields.h"
 
 class QgsFeature;
 class QgsField;
@@ -41,93 +43,40 @@ class QgsGPXProvider : public QgsVectorDataProvider
     Q_OBJECT
 
   public:
-
-    QgsGPXProvider( QString uri = QString() );
+    explicit QgsGPXProvider( const QString &uri = QString() );
     virtual ~QgsGPXProvider();
 
     /* Functions inherited from QgsVectorDataProvider */
 
-    /**
-     *   Returns the permanent storage type for this layer as a friendly name.
-     */
-    virtual QString storageType() const;
-
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest& request );
-
-    /**
-     * Get feature type.
-     * @return int representing the feature type
-     */
-    virtual QGis::WkbType geometryType() const;
-
-    /**
-     * Number of features in the layer
-     * @return long containing number of features
-     */
-    virtual long featureCount() const;
-
-    /**
-     * Get the field information for the layer
-     */
-    virtual const QgsFields& fields() const;
-
-    /**
-     * Adds a list of features
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool addFeatures( QgsFeatureList & flist );
-
-    /**
-     * Deletes a feature
-     * @param id list containing feature ids to delete
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool deleteFeatures( const QgsFeatureIds & id );
-
-    /**
-     * Changes attribute values of existing features.
-     * @param attr_map a map containing changed attributes
-     * @return true in case of success and false in case of failure
-     */
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap & attr_map );
-
-    virtual int capabilities() const;
-
-    /**
-     * Returns the default value for field specified by @c fieldId
-     */
-    virtual QVariant defaultValue( int fieldId );
+    virtual QgsAbstractFeatureSource *featureSource() const override;
+    virtual QString storageType() const override;
+    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    virtual QgsWkbTypes::Type wkbType() const override;
+    virtual long featureCount() const override;
+    virtual QgsFields fields() const override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
+    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
+    virtual QVariant defaultValue( int fieldId ) const override;
 
 
     /* Functions inherited from QgsDataProvider */
 
-    /** Return the extent for this data layer
-     */
-    virtual QgsRectangle extent();
-
-    /**Returns true if this is a valid delimited file
-     */
-    virtual bool isValid();
-
-    /** return a provider name */
-    virtual QString name() const;
-
-    /** return description */
-    virtual QString description() const;
-
-    virtual QgsCoordinateReferenceSystem crs();
+    virtual QgsRectangle extent() const override;
+    virtual bool isValid() const override;
+    virtual QString name() const override;
+    virtual QString description() const override;
+    virtual QgsCoordinateReferenceSystem crs() const override;
 
 
     /* new functions */
 
-    void changeAttributeValues( QgsGPSObject& obj,
-                                const QgsAttributeMap& attrs );
+    void changeAttributeValues( QgsGPSObject &obj,
+                                const QgsAttributeMap &attrs );
 
-    /** Adds one feature (used by addFeatures()) */
-    bool addFeature( QgsFeature& f );
+    bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = 0 ) override;
 
-
-  private:
 
     enum DataType
     {
@@ -142,9 +91,11 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     enum Attribute { NameAttr = 0, EleAttr, SymAttr, NumAttr,
                      CmtAttr, DscAttr, SrcAttr, URLAttr, URLNameAttr
-                 };
+                   };
 
-    QgsGPSData* data;
+  private:
+
+    QgsGPSData *data = nullptr;
 
     //! Fields
     QgsFields attributeFields;
@@ -153,25 +104,16 @@ class QgsGPXProvider : public QgsVectorDataProvider
 
     QString mFileName;
 
-    DataType mFeatureType;
+    DataType mFeatureType = WaypointType;
 
-    static const char* attr[];
+    static const char *ATTR[];
     static QVariant::Type attrType[];
     static DataType attrUsed[];
-    static const int attrCount;
+    static const int ATTR_COUNT;
 
-    bool mValid;
-    long mNumberFeatures;
+    bool mValid = false;
 
-    struct wkbPoint
-    {
-      char byteOrder;
-      unsigned wkbType;
-      double x;
-      double y;
-    };
-    wkbPoint mWKBpt;
-
-    friend class QgsGPXFeatureIterator;
-    QSet< QgsGPXFeatureIterator * > mActiveIterators;
+    friend class QgsGPXFeatureSource;
 };
+
+#endif

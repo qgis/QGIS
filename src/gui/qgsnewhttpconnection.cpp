@@ -15,23 +15,28 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgsnewhttpconnection.h"
-#include "qgscontexthelp.h"
-#include <QSettings>
+#include "qgsauthsettingswidget.h"
+#include "qgssettings.h"
+#include "qgshelp.h"
+
 #include <QMessageBox>
 #include <QUrl>
 #include <QPushButton>
+#include <QRegExp>
 #include <QRegExpValidator>
 
-QgsNewHttpConnection::QgsNewHttpConnection(
-  QWidget *parent, const QString& baseKey, const QString& connName, Qt::WFlags fl ):
-    QDialog( parent, fl ),
-    mBaseKey( baseKey ),
-    mOriginalConnName( connName )
+QgsNewHttpConnection::QgsNewHttpConnection( QWidget *parent, ConnectionTypes types, const QString &baseKey, const QString &connectionName, QgsNewHttpConnection::Flags flags, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
+  , mTypes( types )
+  , mBaseKey( baseKey )
+  , mOriginalConnName( connectionName )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewHttpConnection::showHelp );
 
-  QString service = baseKey.mid( 18, 3 ).toUpper();
-  setWindowTitle( tr( "Create a new %1 connection" ).arg( service ) );
+  QRegExp rx( "/connections-([^/]+)/" );
+  if ( rx.indexIn( baseKey ) != -1 )
+    setWindowTitle( tr( "Create a New %1 Connection" ).arg( rx.cap( 1 ).toUpper() ) );
 
   // It would be obviously much better to use mBaseKey also for credentials,
   // but for some strange reason a different hardcoded key was used instead.
@@ -40,140 +45,237 @@ QgsNewHttpConnection::QgsNewHttpConnection(
   // using connection-wms and connection-wfs -> parse credential key fro it.
   mCredentialsBaseKey = mBaseKey.split( '-' ).last().toUpper();
 
-  txtName->setValidator( new QRegExpValidator( QRegExp( "[^/]+" ), txtName ) );
+  txtName->setValidator( new QRegExpValidator( QRegExp( "[^\\/]+" ), txtName ) );
 
-  if ( !connName.isEmpty() )
+  cmbDpiMode->clear();
+  cmbDpiMode->addItem( tr( "all" ) );
+  cmbDpiMode->addItem( tr( "off" ) );
+  cmbDpiMode->addItem( tr( "QGIS" ) );
+  cmbDpiMode->addItem( tr( "UMN" ) );
+  cmbDpiMode->addItem( tr( "GeoServer" ) );
+
+  cmbVersion->clear();
+  cmbVersion->addItem( tr( "Auto-detect" ) );
+  cmbVersion->addItem( tr( "1.0" ) );
+  cmbVersion->addItem( tr( "1.1" ) );
+  cmbVersion->addItem( tr( "2.0" ) );
+
+  if ( !connectionName.isEmpty() )
   {
     // populate the dialog with the information stored for the connection
     // populate the fields with the stored setting parameters
 
-    QSettings settings;
+    QgsSettings settings;
 
-    QString key = mBaseKey + connName;
-    QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + "/" + connName;
-    txtName->setText( connName );
+    QString key = mBaseKey + connectionName;
+    QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + connectionName;
+    txtName->setText( connectionName );
     txtUrl->setText( settings.value( key + "/url" ).toString() );
 
-    cbxIgnoreGetMapURI->setChecked( settings.value( key + "/ignoreGetMapURI", false ).toBool() );
-    cbxIgnoreAxisOrientation->setChecked( settings.value( key + "/ignoreAxisOrientation", false ).toBool() );
-    cbxInvertAxisOrientation->setChecked( settings.value( key + "/invertAxisOrientation", false ).toBool() );
-    cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( key + "/ignoreGetFeatureInfoURI", false ).toBool() );
-    cbxSmoothPixmapTransform->setChecked( settings.value( key + "/smoothPixmapTransform", false ).toBool() );
+    updateServiceSpecificSettings();
 
-    cmbDpiMode->clear();
-    cmbDpiMode->addItem( tr( "all" ) );
-    cmbDpiMode->addItem( tr( "off" ) );
-    cmbDpiMode->addItem( tr( "QGIS" ) );
-    cmbDpiMode->addItem( tr( "UMN" ) );
-    cmbDpiMode->addItem( tr( "GeoServer" ) );
-    int dpiIdx;
-    switch ( settings.value( key + "/dpiMode", 7 ).toInt() )
-    {
-      case 0: // off
-        dpiIdx = 1;
-        break;
-      case 1: // QGIS
-        dpiIdx = 2;
-        break;
-      case 2: // UMN
-        dpiIdx = 3;
-        break;
-      case 4: // GeoServer
-        dpiIdx = 4;
-        break;
-      default: // other => all
-        dpiIdx = 0;
-        break;
-    }
-    cmbDpiMode->setCurrentIndex( dpiIdx );
-
-    txtReferer->setText( settings.value( key + "/referer" ).toString() );
-
-    txtUserName->setText( settings.value( credentialsKey + "/username" ).toString() );
-    txtPassword->setText( settings.value( credentialsKey + "/password" ).toString() );
+    // Authentication
+    mAuthSettings->setUsername( settings.value( credentialsKey + "/username" ).toString() );
+    mAuthSettings->setPassword( settings.value( credentialsKey + "/password" ).toString() );
+    mAuthSettings->setConfigId( settings.value( credentialsKey + "/authcfg" ).toString() );
   }
 
-  if ( mBaseKey != "/Qgis/connections-wms/" )
+  if ( !( mTypes & ConnectionWms ) && !( mTypes & ConnectionWcs ) )
   {
-    if ( mBaseKey == "/Qgis/connections-wcs/" )
-    {
-      cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
-      cbxIgnoreAxisOrientation->setText( tr( "Ignore axis orientation" ) );
-    }
-    else
-    {
-      cbxIgnoreGetMapURI->setVisible( false );
-      cbxIgnoreAxisOrientation->setVisible( false );
-      cbxInvertAxisOrientation->setVisible( false );
-      cbxSmoothPixmapTransform->setVisible( false );
-      mGroupBox->layout()->removeWidget( cbxIgnoreGetMapURI );
-      mGroupBox->layout()->removeWidget( cbxIgnoreAxisOrientation );
-      mGroupBox->layout()->removeWidget( cbxInvertAxisOrientation );
-      mGroupBox->layout()->removeWidget( cbxSmoothPixmapTransform );
-    }
-
-    cbxIgnoreGetFeatureInfoURI->setVisible( false );
-    mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
-
-    cmbDpiMode->setVisible( false );
-    mGroupBox->layout()->removeWidget( cmbDpiMode );
-    lblDpiMode->setVisible( false );
-    mGroupBox->layout()->removeWidget( lblDpiMode );
-
-    txtReferer->setVisible( false );
-    mGroupBox->layout()->removeWidget( txtReferer );
-    lblReferer->setVisible( false );
-    mGroupBox->layout()->removeWidget( lblReferer );
-
-    // Adjust height
-    int w = width();
-    adjustSize();
-    resize( w, height() );
+    mWmsOptionsGroupBox->setVisible( false );
+    mGroupBox->layout()->removeWidget( mWmsOptionsGroupBox );
+  }
+  if ( !( mTypes & ConnectionWfs ) )
+  {
+    mWfsOptionsGroupBox->setVisible( false );
+    mGroupBox->layout()->removeWidget( mWfsOptionsGroupBox );
   }
 
-  on_txtName_textChanged( connName );
+  if ( mTypes & ConnectionWcs )
+  {
+    cbxIgnoreGetMapURI->setText( tr( "Ignore GetCoverage URI reported in capabilities" ) );
+    cbxWmsIgnoreAxisOrientation->setText( tr( "Ignore axis orientation" ) );
+    if ( !( mTypes & ConnectionWms ) )
+    {
+      mWmsOptionsGroupBox->setTitle( tr( "WCS Options" ) );
+
+      cbxIgnoreGetFeatureInfoURI->setVisible( false );
+      mGroupBox->layout()->removeWidget( cbxIgnoreGetFeatureInfoURI );
+
+      cmbDpiMode->setVisible( false );
+      mGroupBox->layout()->removeWidget( cmbDpiMode );
+      lblDpiMode->setVisible( false );
+      mGroupBox->layout()->removeWidget( lblDpiMode );
+
+      txtReferer->setVisible( false );
+      mGroupBox->layout()->removeWidget( txtReferer );
+      lblReferer->setVisible( false );
+      mGroupBox->layout()->removeWidget( lblReferer );
+    }
+  }
+
+
+  if ( !( flags & FlagShowTestConnection ) )
+  {
+    mTestConnectionButton->hide();
+    mGroupBox->layout()->removeWidget( mTestConnectionButton );
+  }
+
+  if ( flags & FlagHideAuthenticationGroup )
+  {
+    mAuthGroupBox->hide();
+    mGroupBox->layout()->removeWidget( mAuthGroupBox );
+  }
+  // Adjust height
+  int w = width();
+  adjustSize();
+  resize( w, height() );
+
+  connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::nameChanged );
+  connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::urlChanged );
+
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( true );
+  connect( txtName, &QLineEdit::textChanged, this, &QgsNewHttpConnection::updateOkButtonState );
+  connect( txtUrl, &QLineEdit::textChanged, this, &QgsNewHttpConnection::updateOkButtonState );
+
+  nameChanged( connectionName );
 }
 
-QgsNewHttpConnection::~QgsNewHttpConnection()
+QString QgsNewHttpConnection::name() const
 {
+  return txtName->text();
 }
 
-void QgsNewHttpConnection::on_txtName_textChanged( const QString &text )
+QString QgsNewHttpConnection::url() const
 {
-  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( text.isEmpty() );
+  return txtUrl->text();
+}
+
+void QgsNewHttpConnection::nameChanged( const QString &text )
+{
+  Q_UNUSED( text );
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
+}
+
+void QgsNewHttpConnection::urlChanged( const QString &text )
+{
+  Q_UNUSED( text );
+  buttonBox->button( QDialogButtonBox::Ok )->setDisabled( txtName->text().isEmpty() || txtUrl->text().isEmpty() );
+}
+
+void QgsNewHttpConnection::updateOkButtonState()
+{
+  bool enabled = !txtName->text().isEmpty() && !txtUrl->text().isEmpty();
+  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( enabled );
+}
+
+bool QgsNewHttpConnection::validate()
+{
+  QgsSettings settings;
+  QString key = mBaseKey + txtName->text();
+
+  // warn if entry was renamed to an existing connection
+  if ( ( mOriginalConnName.isNull() || mOriginalConnName.compare( txtName->text(), Qt::CaseInsensitive ) != 0 ) &&
+       settings.contains( key + "/url" ) &&
+       QMessageBox::question( this,
+                              tr( "Save Connection" ),
+                              tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return false;
+  }
+
+  if ( ! mAuthSettings->password().isEmpty() &&
+       QMessageBox::question( this,
+                              tr( "Saving Passwords" ),
+                              trUtf8( "WARNING: You have entered a password. It will be stored in unsecured plain text in your project files and your home directory (Unix-like OS) or user profile (Windows). If you want to avoid this, press Cancel and either:\n\na) Don't provide a password in the connection settings — it will be requested interactively when needed;\nb) Use the Configuration tab to add your credentials in an HTTP Basic Authentication method and store them in an encrypted database." ),
+                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
+  {
+    return false;
+  }
+
+  return true;
+}
+
+QPushButton *QgsNewHttpConnection::testConnectButton()
+{
+  return mTestConnectionButton;
+}
+
+QString QgsNewHttpConnection::wfsSettingsKey( const QString &base, const QString &connectionName ) const
+{
+  return base + connectionName;
+}
+
+QString QgsNewHttpConnection::wmsSettingsKey( const QString &base, const QString &connectionName ) const
+{
+  return base + connectionName;
+}
+
+void QgsNewHttpConnection::updateServiceSpecificSettings()
+{
+  QgsSettings settings;
+  QString wfsKey = wfsSettingsKey( mBaseKey, mOriginalConnName );
+  QString wmsKey = wmsSettingsKey( mBaseKey, mOriginalConnName );
+
+  cbxIgnoreGetMapURI->setChecked( settings.value( wmsKey + "/ignoreGetMapURI", false ).toBool() );
+  cbxWfsIgnoreAxisOrientation->setChecked( settings.value( wfsKey + "/ignoreAxisOrientation", false ).toBool() );
+  cbxWfsInvertAxisOrientation->setChecked( settings.value( wfsKey + "/invertAxisOrientation", false ).toBool() );
+  cbxWmsIgnoreAxisOrientation->setChecked( settings.value( wmsKey + "/ignoreAxisOrientation", false ).toBool() );
+  cbxWmsInvertAxisOrientation->setChecked( settings.value( wmsKey + "/invertAxisOrientation", false ).toBool() );
+  cbxIgnoreGetFeatureInfoURI->setChecked( settings.value( wmsKey + "/ignoreGetFeatureInfoURI", false ).toBool() );
+  cbxSmoothPixmapTransform->setChecked( settings.value( wmsKey + "/smoothPixmapTransform", false ).toBool() );
+
+  int dpiIdx;
+  switch ( settings.value( wmsKey + "/dpiMode", 7 ).toInt() )
+  {
+    case 0: // off
+      dpiIdx = 1;
+      break;
+    case 1: // QGIS
+      dpiIdx = 2;
+      break;
+    case 2: // UMN
+      dpiIdx = 3;
+      break;
+    case 4: // GeoServer
+      dpiIdx = 4;
+      break;
+    default: // other => all
+      dpiIdx = 0;
+      break;
+  }
+  cmbDpiMode->setCurrentIndex( dpiIdx );
+
+  QString version = settings.value( wfsKey + "/version" ).toString();
+  int versionIdx = 0; // AUTO
+  if ( version == QLatin1String( "1.0.0" ) )
+    versionIdx = 1;
+  else if ( version == QLatin1String( "1.1.0" ) )
+    versionIdx = 2;
+  else if ( version == QLatin1String( "2.0.0" ) )
+    versionIdx = 3;
+  cmbVersion->setCurrentIndex( versionIdx );
+
+  txtReferer->setText( settings.value( wmsKey + "/referer" ).toString() );
+  txtMaxNumFeatures->setText( settings.value( wfsKey + "/maxnumfeatures" ).toString() );
 }
 
 void QgsNewHttpConnection::accept()
 {
-  QSettings settings;
+  QgsSettings settings;
   QString key = mBaseKey + txtName->text();
-  QString credentialsKey = "/Qgis/" + mCredentialsBaseKey + "/" + txtName->text();
+  QString credentialsKey = "qgis/" + mCredentialsBaseKey + '/' + txtName->text();
 
-  // warn if entry was renamed to an existing connection
-  if (( mOriginalConnName.isNull() || mOriginalConnName != txtName->text() ) &&
-      settings.contains( key + "/url" ) &&
-      QMessageBox::question( this,
-                             tr( "Save connection" ),
-                             tr( "Should the existing connection %1 be overwritten?" ).arg( txtName->text() ),
-                             QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
-  {
+  if ( !validate() )
     return;
-  }
-
-  if ( !txtPassword->text().isEmpty() &&
-       QMessageBox::question( this,
-                              tr( "Saving passwords" ),
-                              tr( "WARNING: You have entered a password. It will be stored in plain text in your project files and in your home directory on Unix-like systems, or in your user profile on Windows. If you do not want this to happen, please press the Cancel button.\nNote: giving the password is optional. It will be requested interactivly, when needed." ),
-                              QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Cancel )
-  {
-    return;
-  }
 
   // on rename delete original entry first
   if ( !mOriginalConnName.isNull() && mOriginalConnName != key )
   {
     settings.remove( mBaseKey + mOriginalConnName );
-    settings.remove( "/Qgis/" + mCredentialsBaseKey + "/" + mOriginalConnName );
+    settings.remove( "qgis/" + mCredentialsBaseKey + '/' + mOriginalConnName );
+    settings.sync();
   }
 
   QUrl url( txtUrl->text().trimmed() );
@@ -184,13 +286,13 @@ void QgsNewHttpConnection::accept()
     params.insert( QString( it->first ).toUpper(), *it );
   }
 
-  if ( params["SERVICE"].second.toUpper() == "WMS" ||
-       params["SERVICE"].second.toUpper() == "WFS" ||
-       params["SERVICE"].second.toUpper() == "WCS" )
+  if ( params[QStringLiteral( "SERVICE" )].second.toUpper() == "WMS" ||
+       params[QStringLiteral( "SERVICE" )].second.toUpper() == "WFS" ||
+       params[QStringLiteral( "SERVICE" )].second.toUpper() == "WCS" )
   {
-    url.removeEncodedQueryItem( params["SERVICE"].first );
-    url.removeEncodedQueryItem( params["REQUEST"].first );
-    url.removeEncodedQueryItem( params["FORMAT"].first );
+    url.removeEncodedQueryItem( params[QStringLiteral( "SERVICE" )].first );
+    url.removeEncodedQueryItem( params[QStringLiteral( "REQUEST" )].first );
+    url.removeEncodedQueryItem( params[QStringLiteral( "FORMAT" )].first );
   }
 
   if ( url.encodedPath().isEmpty() )
@@ -199,14 +301,24 @@ void QgsNewHttpConnection::accept()
   }
 
   settings.setValue( key + "/url", url.toString() );
-  if ( mBaseKey == "/Qgis/connections-wms/" || mBaseKey == "/Qgis/connections-wcs/" )
-  {
-    settings.setValue( key + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
-    settings.setValue( key + "/ignoreAxisOrientation", cbxIgnoreAxisOrientation->isChecked() );
-    settings.setValue( key + "/invertAxisOrientation", cbxInvertAxisOrientation->isChecked() );
-    settings.setValue( key + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
 
-    int dpiMode;
+  QString wfsKey = wfsSettingsKey( mBaseKey, txtName->text() );
+  QString wmsKey = wmsSettingsKey( mBaseKey, txtName->text() );
+
+  if ( mTypes & ConnectionWfs )
+  {
+    settings.setValue( wfsKey + "/ignoreAxisOrientation", cbxWfsIgnoreAxisOrientation->isChecked() );
+    settings.setValue( wfsKey + "/invertAxisOrientation", cbxWfsInvertAxisOrientation->isChecked() );
+  }
+  if ( mTypes & ConnectionWms || mTypes & ConnectionWcs )
+  {
+    settings.setValue( wmsKey + "/ignoreAxisOrientation", cbxWmsIgnoreAxisOrientation->isChecked() );
+    settings.setValue( wmsKey + "/invertAxisOrientation", cbxWmsInvertAxisOrientation->isChecked() );
+
+    settings.setValue( wmsKey + "/ignoreGetMapURI", cbxIgnoreGetMapURI->isChecked() );
+    settings.setValue( wmsKey + "/smoothPixmapTransform", cbxSmoothPixmapTransform->isChecked() );
+
+    int dpiMode = 0;
     switch ( cmbDpiMode->currentIndex() )
     {
       case 0: // all => QGIS|UMN|GeoServer
@@ -226,19 +338,48 @@ void QgsNewHttpConnection::accept()
         break;
     }
 
-    settings.setValue( key + "/dpiMode", dpiMode );
+    settings.setValue( wmsKey + "/dpiMode", dpiMode );
+
+    settings.setValue( wmsKey + "/referer", txtReferer->text() );
   }
-  if ( mBaseKey == "/Qgis/connections-wms/" )
+  if ( mTypes & ConnectionWms )
   {
-    settings.setValue( key + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+    settings.setValue( wmsKey + "/ignoreGetFeatureInfoURI", cbxIgnoreGetFeatureInfoURI->isChecked() );
+  }
+  if ( mTypes & ConnectionWfs )
+  {
+    QString version = QStringLiteral( "auto" );
+    switch ( cmbVersion->currentIndex() )
+    {
+      case 0:
+        version = QStringLiteral( "auto" );
+        break;
+      case 1:
+        version = QStringLiteral( "1.0.0" );
+        break;
+      case 2:
+        version = QStringLiteral( "1.1.0" );
+        break;
+      case 3:
+        version = QStringLiteral( "2.0.0" );
+        break;
+    }
+    settings.setValue( wfsKey + "/version", version );
+
+    settings.setValue( wfsKey + "/maxnumfeatures", txtMaxNumFeatures->text() );
   }
 
-  settings.setValue( key + "/referer", txtReferer->text() );
+  settings.setValue( credentialsKey + "/username", mAuthSettings->username() );
+  settings.setValue( credentialsKey + "/password", mAuthSettings->password() );
 
-  settings.setValue( credentialsKey + "/username", txtUserName->text() );
-  settings.setValue( credentialsKey + "/password", txtPassword->text() );
+  settings.setValue( credentialsKey + "/authcfg", mAuthSettings->configId() );
 
   settings.setValue( mBaseKey + "/selected", txtName->text() );
 
   QDialog::accept();
+}
+
+void QgsNewHttpConnection::showHelp()
+{
+  QgsHelp::openHelp( QStringLiteral( "working_with_ogc/index.html" ) );
 }

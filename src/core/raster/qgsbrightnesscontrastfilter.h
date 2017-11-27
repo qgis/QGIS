@@ -18,29 +18,30 @@
 #ifndef QGSBRIGHTNESSCONTRASTFILTER_H
 #define QGSBRIGHTNESSCONTRASTFILTER_H
 
-#include "qgsrasterdataprovider.h"
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgsrasterinterface.h"
 
 class QDomElement;
 
-/** \ingroup core
+/**
+ * \ingroup core
   * Brightness/contrast filter pipe for rasters.
   */
 class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
 {
   public:
-    QgsBrightnessContrastFilter( QgsRasterInterface *input = 0 );
-    ~QgsBrightnessContrastFilter();
+    QgsBrightnessContrastFilter( QgsRasterInterface *input = nullptr );
 
-    QgsRasterInterface * clone() const;
+    QgsBrightnessContrastFilter *clone() const override SIP_FACTORY;
 
-    int bandCount() const;
+    int bandCount() const override;
 
-    QGis::DataType dataType( int bandNo ) const;
+    Qgis::DataType dataType( int bandNo ) const override;
 
-    bool setInput( QgsRasterInterface* input );
+    bool setInput( QgsRasterInterface *input ) override;
 
-    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height );
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override SIP_FACTORY;
 
     void setBrightness( int brightness ) { mBrightness = qBound( -255, brightness, 255 ); }
     int brightness() const { return mBrightness; }
@@ -48,20 +49,20 @@ class CORE_EXPORT QgsBrightnessContrastFilter : public QgsRasterInterface
     void setContrast( int contrast ) { mContrast = qBound( -100, contrast, 100 ); }
     int contrast() const { return mContrast; }
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const override;
 
-    /**Sets base class members from xml. Usually called from create() methods of subclasses*/
-    void readXML( const QDomElement& filterElem );
+    //! Sets base class members from xml. Usually called from create() methods of subclasses
+    void readXml( const QDomElement &filterElem ) override;
 
   private:
-    /**Adjusts a color component by the specified brightness and contrast factor*/
+    //! Adjusts a color component by the specified brightness and contrast factor
     int  adjustColorComponent( int colorComponent, int alpha, int brightness, double contrastFactor ) const;
 
-    /** Current brightness coefficient value. Default: 0. Range: -255...255 */
-    int mBrightness;
+    //! Current brightness coefficient value. Default: 0. Range: -255...255
+    int mBrightness = 0;
 
-    /** Current contrast coefficient value. Default: 0. Range: -100...100 */
-    double mContrast;
+    //! Current contrast coefficient value. Default: 0. Range: -100...100
+    double mContrast = 0;
 };
 
 #endif // QGSBRIGHTNESSCONTRASTFILTER_H

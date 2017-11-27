@@ -1,37 +1,107 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsmultibandcolorrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsMultiBandColorRenderer: QgsRasterRenderer
 {
+%Docstring
+ Renderer for multiband images with the color components
+%End
+
 %TypeHeaderCode
-    #include "qgsmultibandcolorrenderer.h"
+#include "qgsmultibandcolorrenderer.h"
 %End
   public:
-    QgsMultiBandColorRenderer( QgsRasterDataProvider* provider, int redBand, int greenBand, int blueBand,
-                               QgsContrastEnhancement* redEnhancement = 0, QgsContrastEnhancement* greenEnhancement = 0,
-                               QgsContrastEnhancement* blueEnhancement = 0 );
+    QgsMultiBandColorRenderer( QgsRasterInterface *input, int redBand, int greenBand, int blueBand,
+                               QgsContrastEnhancement *redEnhancement = 0, QgsContrastEnhancement *greenEnhancement = 0,
+                               QgsContrastEnhancement *blueEnhancement = 0 );
     ~QgsMultiBandColorRenderer();
-    QgsRasterInterface * clone() /Factory/;
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
 
-    QgsRasterBlock * block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
+    virtual QgsMultiBandColorRenderer *clone() const /Factory/;
+
+%Docstring
+QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
+ :rtype: QgsMultiBandColorRenderer
+%End
+
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+%Docstring
+ :rtype: QgsRasterRenderer
+%End
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
 
     int redBand() const;
+%Docstring
+ :rtype: int
+%End
     void setRedBand( int band );
     int greenBand() const;
+%Docstring
+ :rtype: int
+%End
     void setGreenBand( int band );
     int blueBand() const;
+%Docstring
+ :rtype: int
+%End
     void setBlueBand( int band );
 
-    const QgsContrastEnhancement* redContrastEnhancement() const;
-    /**Takes ownership*/
-    void setRedContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
+    const QgsContrastEnhancement *redContrastEnhancement() const;
+%Docstring
+ :rtype: QgsContrastEnhancement
+%End
+    void setRedContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
+%Docstring
+Takes ownership
+%End
 
-    const QgsContrastEnhancement* greenContrastEnhancement() const;
-    /**Takes ownership*/
-    void setGreenContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
+    const QgsContrastEnhancement *greenContrastEnhancement() const;
+%Docstring
+ :rtype: QgsContrastEnhancement
+%End
+    void setGreenContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
+%Docstring
+Takes ownership
+%End
 
-    const QgsContrastEnhancement* blueContrastEnhancement() const;
-    /**Takes ownership*/
-    void setBlueContrastEnhancement( QgsContrastEnhancement* ce /Transfer/ );
+    const QgsContrastEnhancement *blueContrastEnhancement() const;
+%Docstring
+ :rtype: QgsContrastEnhancement
+%End
+    void setBlueContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
+%Docstring
+Takes ownership
+%End
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual QList<int> usesBands() const;
+
+
+  private:
+    QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & );
+    const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & );
+%Docstring
+ :rtype: QgsMultiBandColorRenderer
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsmultibandcolorrenderer.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

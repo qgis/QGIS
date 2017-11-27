@@ -2,18 +2,29 @@
 <!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
 
 <qgisgrassmodule label="Download and import data from WMS server" module="r.in.wms">
-	<option key="mapserver" />
+
+	<option key="url"/>
 	<option key="layers" />
 	<option key="srs" />
 	<option key="format" />
-	<option key="wmsquery" />
-	<flag key="d" answer="off" />
+	<option key="wms_version"/>
+
+
 	<flag key="c" answer="off" />
-	<option key="folder" />
-	<option key="wgetoptions" />
-	<option key="curloptions" />
-	<flag key="k" answer="off" />
-	<flag key="p" answer="off" />
+
+
+
+
+	<flag key="o" answer="off"/>
+
 	<option key="method" />
 	<option key="output" />
+	<option key="maxcols" advanced="yes"/>
+	<option key="maxrows" advanced="yes"/>
+	<option key="username" advanced="yes"/>
+	<option key="password" advanced="yes"/>
+	<option key="method" advanced="yes"/>
+	<option key="region" advanced="yes"/>
+	<option key="bgcolor" advanced="yes"/>
+	<option key="urlparams" advanced="yes"/>
 </qgisgrassmodule>

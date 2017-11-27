@@ -1,0 +1,16 @@
+<svg height="24" width="24" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(0 -8)">
+<g transform="matrix(.69230769 0 0 .69230769 1.8461539 9.8461539)">
+<rect fill="#5a8c5a" height="13" rx="2.6149371" ry="2.6149368" width="13" x="19" y="19"/>
+<path d="m21.6 25.499999l7.8 0" style="fill:#fff;fill-rule:evenodd;stroke:#fff;stroke-width:2.5999999;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
+<path d="m25.5 29.399999l0-7.799999" style="fill:#fff;fill-rule:evenodd;stroke:#fff;stroke-width:2.5999999;stroke-linecap:round;stroke-linejoin:round;overflow:visible"/>
+<path d="m20.3 25.499999h10.4c0 0 0 0 0-2.6 0-2.599999-.65-2.599999-5.2-2.599999-4.55 0-5.2 0-5.2 2.599999 0 2.6 0 2.6 0 2.6z" fill="#fcffff" fill-rule="evenodd" opacity=".3"/>
+</g>
+<path d="m3.5 11.5h4v4h-4z" fill="#fd0" stroke="#ffa600"/>
+<path d="m3.3745098 17.5h4v4h-4z" fill="#ff4900" stroke="#bd2c00"/>
+<path d="m3.3745098 23.5h4v4h-4z" fill="#00ba58" stroke="#005338"/>
+<path d="m9 27h4" fill="none" stroke="#9a9a9a" stroke-width="2"/>
+<path d="m8.9999999 21h9.0000001" fill="none" stroke="#9a9a9a" stroke-width="2"/>
+<path d="m9 15h6" fill="none" stroke="#9a9a9a" stroke-width="2"/>
+</g>
+</svg>

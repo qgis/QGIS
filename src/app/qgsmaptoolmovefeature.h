@@ -16,35 +16,44 @@
 #ifndef QGSMAPTOOLMOVEFEATURE_H
 #define QGSMAPTOOLMOVEFEATURE_H
 
-#include "qgsmaptooledit.h"
-#include "qgsvectorlayer.h"
+#include "qgsmaptooladvanceddigitizing.h"
+#include "qgis_app.h"
 
-/**Map tool for translating feature position by mouse drag*/
-class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolEdit
+//! Map tool for translating feature position by mouse drag
+class APP_EXPORT QgsMapToolMoveFeature: public QgsMapToolAdvancedDigitizing
 {
     Q_OBJECT
   public:
-    QgsMapToolMoveFeature( QgsMapCanvas* canvas );
+    //! Mode for moving features
+    enum MoveMode
+    {
+      Move, //!< Move feature
+      CopyMove  //!< Copy and move feature
+    };
+
+    QgsMapToolMoveFeature( QgsMapCanvas *canvas, MoveMode mode = Move );
     virtual ~QgsMapToolMoveFeature();
 
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    virtual void canvasReleaseEvent( QMouseEvent * e );
-
-    //! called when map tool is being deactivated
-    void deactivate();
+    void deactivate() override;
 
   private:
-    /**Start point of the move in map coordinates*/
-    QgsPoint mStartPointMapCoords;
+    //! Start point of the move in map coordinates
+    QgsPointXY mStartPointMapCoords;
 
-    /**Rubberband that shows the feature being moved*/
-    QgsRubberBand* mRubberBand;
+    //! Rubberband that shows the feature being moved
+    QgsRubberBand *mRubberBand = nullptr;
 
-    /**Id of moved feature*/
+    //! Id of moved feature
     QgsFeatureIds mMovedFeatures;
+
+    QPoint mPressPos;
+
+    MoveMode mMode;
+
 };
 
 #endif

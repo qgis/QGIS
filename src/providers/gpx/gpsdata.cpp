@@ -26,23 +26,23 @@
 #include <QSet>
 
 #include "gpsdata.h"
-#include <qgslogger.h>
+#include "qgslogger.h"
 
 #define OUTPUT_PRECISION 12
 
-QString QgsGPSObject::xmlify( const QString& str )
+QString QgsGPSObject::xmlify( const QString &str )
 {
   QString tmp = str;
-  tmp.replace( "&", "&amp;" );
-  tmp.replace( "<", "&lt;" );
-  tmp.replace( ">", "&gt;" );
-  tmp.replace( "\"", "&quot;" );
-  tmp.replace( "\'", "&apos;" );
+  tmp.replace( '&', QLatin1String( "&amp;" ) );
+  tmp.replace( '<', QLatin1String( "&lt;" ) );
+  tmp.replace( '>', QLatin1String( "&gt;" ) );
+  tmp.replace( '\"', QLatin1String( "&quot;" ) );
+  tmp.replace( '\'', QLatin1String( "&apos;" ) );
   return tmp;
 }
 
 
-void QgsGPSObject::writeXML( QTextStream& stream )
+void QgsGPSObject::writeXml( QTextStream &stream )
 {
   if ( !name.isEmpty() )
     stream << "<name>" << xmlify( name ) << "</name>\n";
@@ -65,9 +65,9 @@ QgsGPSPoint::QgsGPSPoint()
 }
 
 
-void QgsGPSPoint::writeXML( QTextStream& stream )
+void QgsGPSPoint::writeXml( QTextStream &stream )
 {
-  QgsGPSObject::writeXML( stream );
+  QgsGPSObject::writeXml( stream );
   if ( ele != -std::numeric_limits<double>::max() )
     stream << "<ele>" << ele << "</ele>\n";
   if ( !sym.isEmpty() )
@@ -76,62 +76,62 @@ void QgsGPSPoint::writeXML( QTextStream& stream )
 
 
 QgsGPSExtended::QgsGPSExtended()
-    : xMin( std::numeric_limits<double>::max() ),
-    xMax( -std::numeric_limits<double>::max() ),
-    yMin( std::numeric_limits<double>::max() ),
-    yMax( -std::numeric_limits<double>::max() ),
-    number( std::numeric_limits<int>::max() )
+  : xMin( std::numeric_limits<double>::max() )
+  , xMax( -std::numeric_limits<double>::max() )
+  , yMin( std::numeric_limits<double>::max() )
+  , yMax( -std::numeric_limits<double>::max() )
+  , number( std::numeric_limits<int>::max() )
 {
 
 }
 
 
-void QgsGPSExtended::writeXML( QTextStream& stream )
+void QgsGPSExtended::writeXml( QTextStream &stream )
 {
-  QgsGPSObject::writeXML( stream );
+  QgsGPSObject::writeXml( stream );
   if ( number != std::numeric_limits<int>::max() )
     stream << "<number>" << number << "</number>\n";
 }
 
 
-void QgsWaypoint::writeXML( QTextStream& stream )
+void QgsWaypoint::writeXml( QTextStream &stream )
 {
   stream << "<wpt lat=\"" << QString::number( lat, 'f', OUTPUT_PRECISION ) <<
-  "\" lon=\"" << QString::number( lon, 'f', OUTPUT_PRECISION ) << "\">\n";
-  QgsGPSPoint::writeXML( stream );
+         "\" lon=\"" << QString::number( lon, 'f', OUTPUT_PRECISION ) << "\">\n";
+  QgsGPSPoint::writeXml( stream );
   stream << "</wpt>\n";
 }
 
 
-void QgsRoute::writeXML( QTextStream& stream )
+void QgsRoute::writeXml( QTextStream &stream )
 {
   stream << "<rte>\n";
-  QgsGPSExtended::writeXML( stream );
+  QgsGPSExtended::writeXml( stream );
   for ( int i = 0; i < points.size(); ++i )
   {
     stream << "<rtept lat=\"" << QString::number( points[i].lat, 'f', OUTPUT_PRECISION )
-    << "\" lon=\"" << QString::number( points[i].lon, 'f', OUTPUT_PRECISION ) << "\">\n";
-    points[i].writeXML( stream );
+           << "\" lon=\"" << QString::number( points[i].lon, 'f', OUTPUT_PRECISION ) << "\">\n";
+    points[i].writeXml( stream );
     stream << "</rtept>\n";
   }
   stream << "</rte>\n";
 }
 
 
-void QgsTrack::writeXML( QTextStream& stream )
+void QgsTrack::writeXml( QTextStream &stream )
 {
   stream << "<trk>\n";
-  QgsGPSExtended::writeXML( stream );
+  QgsGPSExtended::writeXml( stream );
   for ( int i = 0; i < segments.size(); ++i )
   {
     stream << "<trkseg>\n";
-    for ( int j = 0; j < segments[i].points.size(); ++j )
+    for ( int j = 0; j < segments.at( i ).points.size(); ++j )
     {
       stream << "<trkpt lat=\"" <<
-      QString::number( segments[i].points[j].lat, 'f', OUTPUT_PRECISION ) <<
-      "\" lon=\"" << QString::number( segments[i].points[j].lon, 'f', OUTPUT_PRECISION ) <<
-      "\">\n";
-      segments[i].points[j].writeXML( stream );
+             QString::number( segments.at( i ).points.at( j ).lat, 'f', OUTPUT_PRECISION ) <<
+             "\" lon=\"" << QString::number( segments.at( i ).points.at( j ).lon, 'f', OUTPUT_PRECISION ) <<
+             "\">\n";
+      segments[i].points[j].writeXml( stream );
       stream << "</trkpt>\n";
     }
     stream << "</trkseg>\n";
@@ -162,9 +162,9 @@ void QgsGPSData::setNoDataExtent()
   if ( getNumberOfWaypoints() + getNumberOfRoutes() + getNumberOfTracks() == 0 )
   {
     xMin = -1.0;
-    xMax =  1.0;
+    xMax = 1.0;
     yMin = -1.0;
-    yMax =  1.0;
+    yMax = 1.0;
   }
 }
 
@@ -223,7 +223,7 @@ QgsGPSData::TrackIterator QgsGPSData::tracksEnd()
 
 
 QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( double lat, double lon,
-    QString name, double ele )
+    const QString &name, double ele )
 {
   QgsWaypoint wpt;
   wpt.lat = lat;
@@ -234,7 +234,7 @@ QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( double lat, double lon,
 }
 
 
-QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( const QgsWaypoint& wpt )
+QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( const QgsWaypoint &wpt )
 {
   xMax = xMax > wpt.lon ? xMax : wpt.lon;
   xMin = xMin < wpt.lon ? xMin : wpt.lon;
@@ -246,7 +246,7 @@ QgsGPSData::WaypointIterator QgsGPSData::addWaypoint( const QgsWaypoint& wpt )
 }
 
 
-QgsGPSData::RouteIterator QgsGPSData::addRoute( QString name )
+QgsGPSData::RouteIterator QgsGPSData::addRoute( const QString &name )
 {
   QgsRoute rte;
   rte.name = name;
@@ -254,7 +254,7 @@ QgsGPSData::RouteIterator QgsGPSData::addRoute( QString name )
 }
 
 
-QgsGPSData::RouteIterator QgsGPSData::addRoute( const QgsRoute& rte )
+QgsGPSData::RouteIterator QgsGPSData::addRoute( const QgsRoute &rte )
 {
   xMax = xMax > rte.xMax ? xMax : rte.xMax;
   xMin = xMin < rte.xMin ? xMin : rte.xMin;
@@ -266,7 +266,7 @@ QgsGPSData::RouteIterator QgsGPSData::addRoute( const QgsRoute& rte )
 }
 
 
-QgsGPSData::TrackIterator QgsGPSData::addTrack( QString name )
+QgsGPSData::TrackIterator QgsGPSData::addTrack( const QString &name )
 {
   QgsTrack trk;
   trk.name = name;
@@ -289,11 +289,11 @@ QgsGPSData::TrackIterator QgsGPSData::addTrack( const QgsTrack &trk )
 void QgsGPSData::removeWaypoints( const QgsFeatureIds &ids )
 {
   QList<QgsFeatureId> ids2 = ids.toList();
-  qSort( ids2 );
-  QList<QgsFeatureId>::const_iterator iter = ids2.begin();
+  std::sort( ids2.begin(), ids2.end() );
+  QList<QgsFeatureId>::const_iterator iter = ids2.constBegin();
   WaypointIterator wIter;
   for ( wIter = waypoints.begin();
-        wIter != waypoints.end() && iter != ids2.end(); )
+        wIter != waypoints.end() && iter != ids2.constEnd(); )
   {
     WaypointIterator tmpIter = wIter;
     ++tmpIter;
@@ -310,10 +310,10 @@ void QgsGPSData::removeWaypoints( const QgsFeatureIds &ids )
 void QgsGPSData::removeRoutes( const QgsFeatureIds &ids )
 {
   QList<QgsFeatureId> ids2 = ids.toList();
-  qSort( ids2 );
-  QList<QgsFeatureId>::const_iterator iter = ids2.begin();
+  std::sort( ids2.begin(), ids2.end() );
+  QList<QgsFeatureId>::const_iterator iter = ids2.constBegin();
   RouteIterator rIter;
-  for ( rIter = routes.begin(); rIter != routes.end() && iter != ids2.end(); )
+  for ( rIter = routes.begin(); rIter != routes.end() && iter != ids2.constEnd(); )
   {
     RouteIterator tmpIter = rIter;
     ++tmpIter;
@@ -330,10 +330,10 @@ void QgsGPSData::removeRoutes( const QgsFeatureIds &ids )
 void QgsGPSData::removeTracks( const QgsFeatureIds &ids )
 {
   QList<QgsFeatureId> ids2 = ids.toList();
-  qSort( ids2 );
-  QList<QgsFeatureId>::const_iterator iter = ids2.begin();
+  std::sort( ids2.begin(), ids2.end() );
+  QList<QgsFeatureId>::const_iterator iter = ids2.constBegin();
   TrackIterator tIter;
-  for ( tIter = tracks.begin(); tIter != tracks.end() && iter != ids2.end(); )
+  for ( tIter = tracks.begin(); tIter != tracks.end() && iter != ids2.constEnd(); )
   {
     TrackIterator tmpIter = tIter;
     ++tmpIter;
@@ -347,24 +347,24 @@ void QgsGPSData::removeTracks( const QgsFeatureIds &ids )
 }
 
 
-void QgsGPSData::writeXML( QTextStream& stream )
+void QgsGPSData::writeXml( QTextStream &stream )
 {
   stream.setCodec( QTextCodec::codecForName( "UTF8" ) );
   stream << "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-  << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
+         << "<gpx version=\"1.0\" creator=\"QGIS\">\n";
   for ( WaypointIterator wIter = waypoints.begin();
         wIter != waypoints.end(); ++wIter )
-    wIter->writeXML( stream );
+    wIter->writeXml( stream );
   for ( RouteIterator rIter = routes.begin(); rIter != routes.end(); ++rIter )
-    rIter->writeXML( stream );
+    rIter->writeXml( stream );
   for ( TrackIterator tIter = tracks.begin(); tIter != tracks.end(); ++tIter )
-    tIter->writeXML( stream );
+    tIter->writeXml( stream );
   stream << "</gpx>\n";
   stream << flush;
 }
 
 
-QgsGPSData* QgsGPSData::getData( const QString& fileName )
+QgsGPSData *QgsGPSData::getData( const QString &fileName )
 {
   // if the data isn't there already, try to load it
   if ( dataObjects.find( fileName ) == dataObjects.end() )
@@ -373,20 +373,20 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     if ( !file.open( QIODevice::ReadOnly ) )
     {
       QgsLogger::warning( QObject::tr( "Couldn't open the data source: %1" ).arg( fileName ) );
-      return 0;
+      return nullptr;
     }
-    QgsGPSData* data = new QgsGPSData;
+    QgsGPSData *data = new QgsGPSData;
     QgsDebugMsg( "Loading file " + fileName );
     QgsGPXHandler handler( *data );
     bool failed = false;
 
     // SAX parsing
-    XML_Parser p = XML_ParserCreate( NULL );
+    XML_Parser p = XML_ParserCreate( nullptr );
     XML_SetUserData( p, &handler );
     XML_SetElementHandler( p, QgsGPXHandler::start, QgsGPXHandler::end );
     XML_SetCharacterDataHandler( p, QgsGPXHandler::chars );
     long int bufsize = 10 * 1024 * 1024;
-    char* buffer = new char[bufsize];
+    char *buffer = new char[bufsize];
     int atEnd = 0;
     while ( !file.atEnd() )
     {
@@ -405,11 +405,11 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
     delete [] buffer;
     XML_ParserFree( p );
     if ( failed )
-      return 0;
+      return nullptr;
 
     data->setNoDataExtent();
 
-    dataObjects[fileName] = qMakePair<QgsGPSData*, unsigned>( data, 0 );
+    dataObjects[fileName] = qMakePair<QgsGPSData *, unsigned>( data, 0 );
   }
   else
   {
@@ -419,11 +419,11 @@ QgsGPSData* QgsGPSData::getData( const QString& fileName )
   // return a pointer and increase the reference count for that file name
   DataMap::iterator iter = dataObjects.find( fileName );
   ++( iter.value().second );
-  return ( QgsGPSData* )( iter.value().first );
+  return ( QgsGPSData * )( iter.value().first );
 }
 
 
-void QgsGPSData::releaseData( const QString& fileName )
+void QgsGPSData::releaseData( const QString &fileName )
 {
 
   /* decrease the reference count for the file name (if it is used), and erase
@@ -448,7 +448,7 @@ QgsGPSData::DataMap QgsGPSData::dataObjects;
 
 
 
-bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
+bool QgsGPXHandler::startElement( const XML_Char *qName, const XML_Char **attr )
 {
 
   if ( !std::strcmp( qName, "gpx" ) )
@@ -462,12 +462,12 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
   {
     parseModes.push( ParsingWaypoint );
     mWpt = QgsWaypoint();
-    for ( int i = 0; attr[2*i] != NULL; ++i )
+    for ( int i = 0; attr[2 * i]; ++i )
     {
-      if ( !std::strcmp( attr[2*i], "lat" ) )
-        mWpt.lat = QString( attr[2*i+1] ).toDouble();
-      else if ( !std::strcmp( attr[2*i], "lon" ) )
-        mWpt.lon = QString( attr[2*i+1] ).toDouble();
+      if ( !std::strcmp( attr[2 * i], "lat" ) )
+        mWpt.lat = QString( attr[2 * i + 1] ).toDouble();
+      else if ( !std::strcmp( attr[2 * i], "lon" ) )
+        mWpt.lon = QString( attr[2 * i + 1] ).toDouble();
     }
     mObj = &mWpt;
   }
@@ -492,7 +492,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->name;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingString );
     }
     else
@@ -505,7 +505,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->cmt;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingString );
     }
     else
@@ -518,7 +518,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->desc;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingString );
     }
     else
@@ -531,7 +531,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->src;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingString );
     }
     else
@@ -544,7 +544,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->url;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingString );
     }
     else
@@ -557,7 +557,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
          parseModes.top() == ParsingTrack )
     {
       mString = &mObj->urlname;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingString );
     }
     else
@@ -570,7 +570,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingWaypoint )
     {
       mDouble = &mWpt.ele;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingDouble );
     }
     else
@@ -581,7 +581,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingWaypoint )
     {
       mString = &mWpt.sym;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingString );
     }
     else
@@ -594,7 +594,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingRoute )
     {
       mInt = &mRte.number;
-      mCharBuffer = "";
+      mCharBuffer.clear();
       parseModes.push( ParsingInt );
     }
     else if ( parseModes.top() == ParsingTrack )
@@ -612,12 +612,12 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingRoute )
     {
       mRtept = QgsRoutepoint();
-      for ( int i = 0; attr[2*i] != NULL; ++i )
+      for ( int i = 0; attr[2 * i]; ++i )
       {
-        if ( !std::strcmp( attr[2*i], "lat" ) )
-          mRtept.lat = QString( attr[2*i+1] ).toDouble();
-        else if ( !std::strcmp( attr[2*i], "lon" ) )
-          mRtept.lon = QString( attr[2*i+1] ).toDouble();
+        if ( !std::strcmp( attr[2 * i], "lat" ) )
+          mRtept.lat = QString( attr[2 * i + 1] ).toDouble();
+        else if ( !std::strcmp( attr[2 * i], "lon" ) )
+          mRtept.lon = QString( attr[2 * i + 1] ).toDouble();
       }
       parseModes.push( ParsingRoutepoint );
     }
@@ -641,12 +641,12 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
     if ( parseModes.top() == ParsingTrackSegment )
     {
       mTrkpt = QgsTrackpoint();
-      for ( int i = 0; attr[2*i] != NULL; ++i )
+      for ( int i = 0; attr[2 * i]; ++i )
       {
-        if ( !std::strcmp( attr[2*i], "lat" ) )
-          mTrkpt.lat = QString( attr[2*i+1] ).toDouble();
-        else if ( !std::strcmp( attr[2*i], "lon" ) )
-          mTrkpt.lon = QString( attr[2*i+1] ).toDouble();
+        if ( !std::strcmp( attr[2 * i], "lat" ) )
+          mTrkpt.lat = QString( attr[2 * i + 1] ).toDouble();
+        else if ( !std::strcmp( attr[2 * i], "lon" ) )
+          mTrkpt.lon = QString( attr[2 * i + 1] ).toDouble();
       }
       parseModes.push( ParsingTrackpoint );
     }
@@ -662,7 +662,7 @@ bool QgsGPXHandler::startElement( const XML_Char* qName, const XML_Char** attr )
 }
 
 
-void QgsGPXHandler::characters( const XML_Char* chars, int len )
+void QgsGPXHandler::characters( const XML_Char *chars, int len )
 {
   // This is horrible.
 #ifdef XML_UNICODE
@@ -674,7 +674,7 @@ void QgsGPXHandler::characters( const XML_Char* chars, int len )
 }
 
 
-bool QgsGPXHandler::endElement( const std::string& qName )
+bool QgsGPXHandler::endElement( const std::string &qName )
 {
   Q_UNUSED( qName );
 
@@ -713,17 +713,17 @@ bool QgsGPXHandler::endElement( const std::string& qName )
   else if ( parseModes.top() == ParsingDouble )
   {
     *mDouble = QString( mCharBuffer ).toDouble();
-    mCharBuffer = "";
+    mCharBuffer.clear();
   }
   else if ( parseModes.top() == ParsingInt )
   {
     *mInt = QString( mCharBuffer ).toInt();
-    mCharBuffer = "";
+    mCharBuffer.clear();
   }
   else if ( parseModes.top() == ParsingString )
   {
     *mString = mCharBuffer;
-    mCharBuffer = "";
+    mCharBuffer.clear();
   }
   parseModes.pop();
 

@@ -1,0 +1,7 @@
+v.net.spanningtree
+Computes minimum spanning tree for the network.
+Vector (v.*)
+QgsProcessingParameterVectorLayer|input|Input vector line layer (arcs)|1|None|False
+*QgsProcessingParameterField|arc_column|Arc forward/both direction(s) cost column (number)|None|input|0|False|True
+*QgsProcessingParameterBoolean|-g|Use geodesic calculation for longitude-latitude locations|False|True
+QgsProcessingParameterVectorDestination|output|SpanningTree

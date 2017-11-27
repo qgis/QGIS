@@ -1,64 +1,114 @@
-/*
- * \class QgsNetworkAccessManager
- * \brief network access manager for QGIS
- * \ingroup core
- * \since 1.5
- *
- * This class implements the QGIS network access manager.  It's a singleton
- * that can be used across QGIS.
- *
- * Plugins can insert proxy factories and thereby redirect requests to
- * individual proxies.
- *
- * If no proxy factories are there or none returns a proxy for an URL a
- * fallback proxy can be set.  There's also a exclude list that defines URLs
- * that the fallback proxy should not be used for, then no proxy will be used.
- *
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkaccessmanager.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-%Feature PROXY_FACTORY
+
+
+
 
 class QgsNetworkAccessManager : QNetworkAccessManager
 {
+%Docstring
+ network access manager for QGIS
+.. versionadded:: 1.5
+
+ This class implements the QGIS network access manager.  It's a singleton
+ that can be used across QGIS.
+
+ Plugins can insert proxy factories and thereby redirect requests to
+ individual proxies.
+
+ If no proxy factories are there or none returns a proxy for an URL a
+ fallback proxy can be set.  There's also a exclude list that defines URLs
+ that the fallback proxy should not be used for, then no proxy will be used.
+%End
+
 %TypeHeaderCode
-#include <qgsnetworkaccessmanager.h>
+#include "qgsnetworkaccessmanager.h"
 %End
-
   public:
-    //! returns a pointer to the single instance
-    // and creates that instance on the first call.
     static QgsNetworkAccessManager *instance();
-
-    //! destructor
-    ~QgsNetworkAccessManager();
-
-%If (PROXY_FACTORY)
-    //! insert a factory into the proxy factories list
-    void insertProxyFactory( QNetworkProxyFactory *factory /Transfer/ );
-
-    //! remove a factory from the proxy factories list
-    void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
-
-    //! retrieve proxy factory list
-    const QList<QNetworkProxyFactory *> proxyFactories() const;
+%Docstring
+ :rtype: QgsNetworkAccessManager
 %End
 
-    //! retrieve fall back proxy (for urls that no factory returned proxies for)
+    QgsNetworkAccessManager( QObject *parent = 0 );
+
+    void insertProxyFactory( QNetworkProxyFactory *factory /Transfer/ );
+%Docstring
+insert a factory into the proxy factories list
+%End
+
+    void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
+%Docstring
+remove a factory from the proxy factories list
+%End
+
+    const QList<QNetworkProxyFactory *> proxyFactories() const;
+%Docstring
+retrieve proxy factory list
+ :rtype: list of QNetworkProxyFactory
+%End
+
     const QNetworkProxy &fallbackProxy() const;
+%Docstring
+retrieve fall back proxy (for urls that no factory returned proxies for)
+ :rtype: QNetworkProxy
+%End
 
-    //! retrieve exclude list (urls shouldn't use the fallback proxy)
-    const QStringList &excludeList() const;
+    QStringList excludeList() const;
+%Docstring
+retrieve exclude list (urls shouldn't use the fallback proxy)
+ :rtype: list of str
+%End
 
-    //! set fallback proxy and URL that shouldn't use it.
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
+%Docstring
+set fallback proxy and URL that shouldn't use it.
+%End
+
+    static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
+%Docstring
+Get name for QNetworkRequest.CacheLoadControl
+ :rtype: str
+%End
+
+    static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
+%Docstring
+Get QNetworkRequest.CacheLoadControl from name
+ :rtype: QNetworkRequest.CacheLoadControl
+%End
+
+    void setupDefaultProxyAndCache();
+%Docstring
+Setup the NAM according to the user's settings
+%End
+
+    bool useSystemProxy() const;
+%Docstring
+return whether the system proxy should be used
+ :rtype: bool
+%End
 
   signals:
     void requestAboutToBeCreated( QNetworkAccessManager::Operation, const QNetworkRequest &, QIODevice * );
     void requestCreated( QNetworkReply * );
+    void requestTimedOut( QNetworkReply * );
 
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
 
-  private:
-    QgsNetworkAccessManager( QObject *parent = 0 );
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsnetworkaccessmanager.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

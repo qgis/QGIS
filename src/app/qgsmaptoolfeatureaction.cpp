@@ -16,58 +16,50 @@
 #include "qgsmaptoolfeatureaction.h"
 
 #include "qgsfeature.h"
-#include "qgsfield.h"
+#include "qgsfeatureiterator.h"
+#include "qgsfields.h"
 #include "qgsgeometry.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmaptopixel.h"
 #include "qgsmessageviewer.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgsexception.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
-#include "qgsmaplayerregistry.h"
+#include "qgsmaplayeractionregistry.h"
 #include "qgisapp.h"
+#include "qgsgui.h"
+#include "qgsstatusbar.h"
 
 #include <QSettings>
-#include <QMessageBox>
 #include <QMouseEvent>
 #include <QStatusBar>
 
-QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolFeatureAction::QgsMapToolFeatureAction( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
 }
 
-QgsMapToolFeatureAction::~QgsMapToolFeatureAction()
-{
-}
-
-void QgsMapToolFeatureAction::canvasMoveEvent( QMouseEvent *e )
+void QgsMapToolFeatureAction::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolFeatureAction::canvasPressEvent( QMouseEvent *e )
+void QgsMapToolFeatureAction::canvasPressEvent( QgsMapMouseEvent *e )
 {
   Q_UNUSED( e );
 }
 
-void QgsMapToolFeatureAction::canvasReleaseEvent( QMouseEvent *e )
+void QgsMapToolFeatureAction::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  if ( !mCanvas || mCanvas->isDrawing() )
-  {
-    return;
-  }
-
   QgsMapLayer *layer = mCanvas->currentLayer();
 
   if ( !layer || layer->type() != QgsMapLayer::VectorLayer )
   {
-    QMessageBox::warning( mCanvas,
-                          tr( "No active vector layer" ),
-                          tr( "To run an action, you must choose a vector layer by clicking on its name in the legend" ) );
+    emit messageEmitted( tr( "To run an action, you must choose an active vector layer." ), QgsMessageBar::INFO );
     return;
   }
 
@@ -78,16 +70,14 @@ void QgsMapToolFeatureAction::canvasReleaseEvent( QMouseEvent *e )
   }
 
   QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer );
-  if ( vlayer->actions()->size() == 0 )
+  if ( vlayer->actions()->actions( QStringLiteral( "Canvas" ) ).isEmpty() && QgsGui::mapLayerActionRegistry()->mapLayerActions( vlayer ).isEmpty() )
   {
-    QMessageBox::warning( mCanvas,
-                          tr( "No actions available" ),
-                          tr( "The active vector layer has no defined actions" ) );
+    emit messageEmitted( tr( "The active vector layer has no defined actions" ), QgsMessageBar::INFO );
     return;
   }
 
   if ( !doAction( vlayer, e->x(), e->y() ) )
-    QgisApp::instance()->statusBar()->showMessage( tr( "No features at this position found." ) );
+    QgisApp::instance()->statusBarIface()->showMessage( tr( "No features at this position found." ) );
 }
 
 void QgsMapToolFeatureAction::activate()
@@ -105,60 +95,61 @@ bool QgsMapToolFeatureAction::doAction( QgsVectorLayer *layer, int x, int y )
   if ( !layer )
     return false;
 
-  QgsPoint point = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
+  QgsPointXY point = mCanvas->getCoordinateTransform()->toMapCoordinates( x, y );
 
-  // load identify radius from settings
-  QSettings settings;
-  double identifyValue = settings.value( "/Map/identifyRadius", QGis::DEFAULT_IDENTIFY_RADIUS ).toDouble();
+  QgsRectangle r;
 
-  if ( identifyValue <= 0.0 )
-    identifyValue = QGis::DEFAULT_IDENTIFY_RADIUS;
+  // create the search rectangle
+  double searchRadius = searchRadiusMU( mCanvas );
 
-  QgsFeatureList featList;
+  r.setXMinimum( point.x() - searchRadius );
+  r.setXMaximum( point.x() + searchRadius );
+  r.setYMinimum( point.y() - searchRadius );
+  r.setYMaximum( point.y() + searchRadius );
 
   // toLayerCoordinates will throw an exception for an 'invalid' point.
   // For example, if you project a world map onto a globe using EPSG 2163
   // and then click somewhere off the globe, an exception will be thrown.
   try
   {
-    // create the search rectangle
-    double searchRadius = mCanvas->extent().width() * ( identifyValue / 100.0 );
-
-    QgsRectangle r;
-    r.setXMinimum( point.x() - searchRadius );
-    r.setXMaximum( point.x() + searchRadius );
-    r.setYMinimum( point.y() - searchRadius );
-    r.setYMaximum( point.y() + searchRadius );
-
     r = toLayerCoordinates( layer, r );
-
-    QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
-    QgsFeature f;
-    while ( fit.nextFeature( f ) )
-      featList << QgsFeature( f );
   }
-  catch ( QgsCsException & cse )
+  catch ( QgsCsException &cse )
   {
     Q_UNUSED( cse );
     // catch exception for 'invalid' point and proceed with no features found
     QgsDebugMsg( QString( "Caught CRS exception %1" ).arg( cse.what() ) );
   }
 
-  if ( featList.size() == 0 )
-    return false;
+  QgsAction defaultAction = layer->actions()->defaultAction( QStringLiteral( "Canvas" ) );
 
-  foreach ( QgsFeature feat, featList )
+  QgsFeatureIterator fit = layer->getFeatures( QgsFeatureRequest().setFilterRect( r ).setFlags( QgsFeatureRequest::ExactIntersect ) );
+  QgsFeature feat;
+  while ( fit.nextFeature( feat ) )
   {
-    int actionIdx = layer->actions()->defaultAction();
+    if ( defaultAction.isValid() )
+    {
+      // define custom substitutions: layer id and clicked coords
+      QgsExpressionContext context;
+      context << QgsExpressionContextUtils::globalScope()
+              << QgsExpressionContextUtils::projectScope( QgsProject::instance() )
+              << QgsExpressionContextUtils::mapSettingsScope( mCanvas->mapSettings() );
+      QgsExpressionContextScope *actionScope = new QgsExpressionContextScope();
+      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_x" ), point.x(), true ) );
+      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "click_y" ), point.y(), true ) );
+      actionScope->addVariable( QgsExpressionContextScope::StaticVariable( QStringLiteral( "action_scope" ), QStringLiteral( "Canvas" ), true ) );
+      context << actionScope;
 
-    // define custom substitutions: layer id and clicked coords
-    QMap<QString, QVariant> substitutionMap;
-    substitutionMap.insert( "$layerid", layer->id() );
-    point = toLayerCoordinates( layer, point );
-    substitutionMap.insert( "$clickx", point.x() );
-    substitutionMap.insert( "$clicky", point.y() );
-
-    layer->actions()->doAction( actionIdx, feat, &substitutionMap );
+      defaultAction.run( layer, feat, context );
+    }
+    else
+    {
+      QgsMapLayerAction *mapLayerAction = QgsGui::mapLayerActionRegistry()->defaultActionForLayer( layer );
+      if ( mapLayerAction )
+      {
+        mapLayerAction->triggerForFeature( layer, &feat );
+      }
+    }
   }
 
   return true;

@@ -10,7 +10,8 @@
 	<option key="map_date" />
 	<option key="scale" />
 	<option key="zone" />
-	<option key="thresh" />
+
+	<option key="threshold"/>
 	<option key="comment" />
 	<option key="cmdhist" />
 </qgisgrassmodule>

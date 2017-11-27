@@ -17,15 +17,15 @@
 #define QGSMAPTOOLSPLITFEATURES_H
 
 #include "qgsmaptoolcapture.h"
+#include "qgis_app.h"
 
-/**A map tool that draws a line and splits the features cut by the line*/
+//! A map tool that draws a line and splits the features cut by the line
 class APP_EXPORT QgsMapToolSplitFeatures: public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    QgsMapToolSplitFeatures( QgsMapCanvas* canvas );
-    virtual ~QgsMapToolSplitFeatures();
-    void canvasReleaseEvent( QMouseEvent * e );
+    QgsMapToolSplitFeatures( QgsMapCanvas *canvas );
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 };
 
 #endif

@@ -1,0 +1,2 @@
+libqgis-core{QGIS_ABI}: shlib-calls-exit usr/lib/libqgis_core.so.{QGIS_ABI}
+libqgis-core{QGIS_ABI}: no-symbols-control-file usr/lib/libqgis_core.so.{QGIS_ABI}

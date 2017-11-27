@@ -1,18 +1,30 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/raster/qgsrastercalcnode.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsRasterCalcNode
 {
+
 %TypeHeaderCode
-#include <qgsrastercalcnode.h>
+#include "qgsrastercalcnode.h"
 %End
   public:
-    //! defines possible types of node
     enum Type
     {
-      tOperator = 1,
+      tOperator,
       tNumber,
-      tRasterRef
+      tRasterRef,
+      tMatrix
     };
 
-    //! possible operators
     enum Operator
     {
       opPLUS,
@@ -27,31 +39,56 @@ class QgsRasterCalcNode
       opASIN,
       opACOS,
       opATAN,
-      opEQ,         // =
-      opNE,         //!=
-      opGT,         // >
-      opLT,         // <
-      opGE,         // >=
-      opLE,         // <=
+      opEQ,
+      opNE,
+      opGT,
+      opLT,
+      opGE,
+      opLE,
       opAND,
       opOR,
-      opSIGN    //change sign
+      opSIGN,
+      opLOG,
+      opLOG10,
+      opNONE,
     };
 
     QgsRasterCalcNode();
+%Docstring
+ Constructor for QgsRasterCalcNode.
+%End
+
     QgsRasterCalcNode( double number );
-    QgsRasterCalcNode( Operator op, QgsRasterCalcNode* left, QgsRasterCalcNode* right );
-    QgsRasterCalcNode( const QString& rasterName );
+    QgsRasterCalcNode( QgsRasterMatrix *matrix );
+    QgsRasterCalcNode( Operator op, QgsRasterCalcNode *left, QgsRasterCalcNode *right );
+    QgsRasterCalcNode( const QString &rasterName );
     ~QgsRasterCalcNode();
 
+
     Type type() const;
+%Docstring
+QgsRasterCalcNode cannot be copied
+ :rtype: Type
+%End
 
-    //set left node
-    void setLeft( QgsRasterCalcNode* left );
-    void setRight( QgsRasterCalcNode* right );
+    void setLeft( QgsRasterCalcNode *left );
+    void setRight( QgsRasterCalcNode *right );
 
-    /**Calculates result (might be real matrix or single number)*/
-    bool calculate( QMap<QString, QgsRasterMatrix*>& rasterData, QgsRasterMatrix& result ) const;
 
-    static QgsRasterCalcNode* parseRasterCalcString( const QString& str, QString& parserErrorMsg ) /Factory/;
+    static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
+%Docstring
+ :rtype: QgsRasterCalcNode
+%End
+
+  private:
+    QgsRasterCalcNode( const QgsRasterCalcNode &rh );
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/raster/qgsrastercalcnode.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -25,70 +25,77 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-import os.path
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
+
+from qgis.core import (QgsApplication,
+                       QgsProcessingProvider)
+
 from processing.core.ProcessingConfig import ProcessingConfig, Setting
-from processing.core.ProcessingLog import ProcessingLog
-from processing.core.AlgorithmProvider import AlgorithmProvider
 from processing.gui.EditScriptAction import EditScriptAction
 from processing.gui.DeleteScriptAction import DeleteScriptAction
 from processing.gui.CreateNewScriptAction import CreateNewScriptAction
-from processing.script.ScriptAlgorithm import ScriptAlgorithm
 from processing.script.ScriptUtils import ScriptUtils
-from processing.script.WrongScriptException import WrongScriptException
-import processing.resources_rc
+from processing.script.AddScriptFromFileAction import AddScriptFromFileAction
+from processing.gui.GetScriptsAndModels import GetScriptsAction
+from processing.gui.ProviderActions import (ProviderActions,
+                                            ProviderContextMenuActions)
+from processing.script.CreateScriptCollectionPluginAction import CreateScriptCollectionPluginAction
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
-class ScriptAlgorithmProvider(AlgorithmProvider):
+class ScriptAlgorithmProvider(QgsProcessingProvider):
 
     def __init__(self):
-        AlgorithmProvider.__init__(self)
-        self.actions.append(CreateNewScriptAction('Create new script',
-                            CreateNewScriptAction.SCRIPT_PYTHON))
+        super().__init__()
+        self.algs = []
+        self.folder_algorithms = []
+        self.actions = [CreateNewScriptAction('Create new script',
+                                              CreateNewScriptAction.SCRIPT_PYTHON),
+                        AddScriptFromFileAction(),
+                        GetScriptsAction(),
+                        CreateScriptCollectionPluginAction()]
         self.contextMenuActions = \
             [EditScriptAction(EditScriptAction.SCRIPT_PYTHON),
              DeleteScriptAction(DeleteScriptAction.SCRIPT_PYTHON)]
 
-    def initializeSettings(self):
-        AlgorithmProvider.initializeSettings(self)
-        ProcessingConfig.addSetting(Setting(self.getDescription(),
-                                    ScriptUtils.SCRIPTS_FOLDER,
-                                    'Scripts folder',
-                                    ScriptUtils.scriptsFolder()))
+    def load(self):
+        ProcessingConfig.settingIcons[self.name()] = self.icon()
+        ProcessingConfig.addSetting(Setting(self.name(),
+                                            ScriptUtils.SCRIPTS_FOLDER,
+                                            self.tr('Scripts folder', 'ScriptAlgorithmProvider'),
+                                            ScriptUtils.defaultScriptsFolder(), valuetype=Setting.MULTIPLE_FOLDERS))
+        ProviderActions.registerProviderActions(self, self.actions)
+        ProviderContextMenuActions.registerProviderContextMenuActions(self.contextMenuActions)
+        ProcessingConfig.readSettings()
+        self.refreshAlgorithms()
+        return True
 
     def unload(self):
-        AlgorithmProvider.unload(self)
-        ProcessingConfig.addSetting(ScriptUtils.SCRIPTS_FOLDER)
+        ProcessingConfig.removeSetting(ScriptUtils.SCRIPTS_FOLDER)
+        ProviderActions.deregisterProviderActions(self)
+        ProviderContextMenuActions.deregisterProviderContextMenuActions(self.contextMenuActions)
 
-    def getIcon(self):
-        return QIcon(':/processing/images/script.png')
+    def icon(self):
+        return QgsApplication.getThemeIcon("/processingScript.svg")
 
-    def getName(self):
+    def svgIconPath(self):
+        return QgsApplication.iconPath("processingScript.svg")
+
+    def id(self):
         return 'script'
 
-    def getDescription(self):
-        return 'Scripts'
+    def name(self):
+        return self.tr('Scripts', 'ScriptAlgorithmProvider')
 
-    def _loadAlgorithms(self):
-        folder = ScriptUtils.scriptsFolder()
-        self.loadFromFolder(folder)
-        folder = os.path.join(os.path.dirname(__file__), 'scripts')
-        self.loadFromFolder(folder)
+    def loadAlgorithms(self):
+        self.algs = []
+        folders = ScriptUtils.scriptsFolders()
+        for f in folders:
+            self.algs.extend(ScriptUtils.loadFromFolder(f))
+        self.algs.extend(self.folder_algorithms)
+        for a in self.algs:
+            self.addAlgorithm(a)
 
-    def loadFromFolder(self, folder):
-        if not os.path.exists(folder):
-            return
-        for descriptionFile in os.listdir(folder):
-            if descriptionFile.endswith('py'):
-                try:
-                    fullpath = os.path.join(folder, descriptionFile)
-                    alg = ScriptAlgorithm(fullpath)
-                    if alg.name.strip() != '':
-                        self.algs.append(alg)
-                except WrongScriptException, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR, e.msg)
-                except Exception, e:
-                    ProcessingLog.addToLog(ProcessingLog.LOG_ERROR,
-                            'Could not load script:' + descriptionFile + '\n'
-                            + unicode(e))
+    def addAlgorithmsFromFolder(self, folder):
+        self.folder_algorithms.extend(ScriptUtils.loadFromFolder(folder))

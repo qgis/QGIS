@@ -18,12 +18,11 @@
 #include "qgsgeoreftoolmovepoint.h"
 
 QgsGeorefToolMovePoint::QgsGeorefToolMovePoint( QgsMapCanvas *canvas )
-    : QgsMapTool( canvas )
-    , mRubberBand( 0 )
+  : QgsMapTool( canvas )
 {
 }
 
-void QgsGeorefToolMovePoint::canvasPressEvent( QMouseEvent *e )
+void QgsGeorefToolMovePoint::canvasPressEvent( QgsMapMouseEvent *e )
 {
   if ( e->button() & Qt::LeftButton )
   {
@@ -37,12 +36,12 @@ bool QgsGeorefToolMovePoint::isCanvas( QgsMapCanvas *canvas )
   return ( mCanvas == canvas );
 }
 
-void QgsGeorefToolMovePoint::canvasMoveEvent( QMouseEvent *e )
+void QgsGeorefToolMovePoint::canvasMoveEvent( QgsMapMouseEvent *e )
 {
   emit pointMoved( e->pos() );
 }
 
-void QgsGeorefToolMovePoint::canvasReleaseEvent( QMouseEvent *e )
+void QgsGeorefToolMovePoint::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
   emit pointReleased( e->pos() );
 }

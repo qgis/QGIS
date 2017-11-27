@@ -24,26 +24,40 @@ IF(EXISTS QSCINTILLA_VERSION_STR)
   SET(QSCINTILLA_FOUND TRUE)
 ELSE(EXISTS QSCINTILLA_VERSION_STR)
 
-  FIND_PATH(QSCINTILLA_INCLUDE_DIR
-    NAMES qsciglobal.h
-    PATHS
-      "${QT_INCLUDE_DIR}/Qsci"
-      /usr/local/include/Qsci
-      /usr/include/Qsci
-      /usr/include
-    )
+  set(QSCINTILLA_LIBRARY_NAMES
+    qscintilla2-qt5
+    qscintilla2_qt5
+    libqt5scintilla2
+    libqscintilla2-qt5
+    qt5scintilla2
+    libqscintilla2-qt5.dylib
+    qscintilla2
+  )
 
-  FIND_LIBRARY(QSCINTILLA_LIBRARY
-    NAMES qscintilla2 libqscintilla2 libqscintilla2.dylib
+  find_library(QSCINTILLA_LIBRARY
+    NAMES ${QSCINTILLA_LIBRARY_NAMES}
     PATHS
       "${QT_LIBRARY_DIR}"
       /usr/local/lib
       /usr/lib
+  )
+
+  set(_qsci_fw)
+  if(QSCINTILLA_LIBRARY MATCHES "/qscintilla.*\\.framework")
+    string(REGEX REPLACE "^(.*/qscintilla.*\\.framework).*$" "\\1" _qsci_fw "${QSCINTILLA_LIBRARY}")
+  endif()
+
+  FIND_PATH(QSCINTILLA_INCLUDE_DIR
+    NAMES Qsci/qsciglobal.h
+    PATHS
+      "${_qsci_fw}/Headers"
+      ${Qt5Core_INCLUDE_DIRS}
+      "${QT_INCLUDE_DIR}"
+      /usr/local/include
+      /usr/include
     )
 
-  IF(QSCINTILLA_LIBRARY)
-    # QSCINTILLA_INCLUDE_DIR is not required at this time (Oct 2012) since only
-    # Qsci PyQt4 module is used, though lib is needed for Mac bundling
+  IF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
     SET(QSCINTILLA_FOUND TRUE)
 
     IF(CYGWIN)
@@ -53,12 +67,12 @@ ELSE(EXISTS QSCINTILLA_VERSION_STR)
         SET (QSCINTILLA_DEFINITIONS -DQSCINTILLA_STATIC)
       ENDIF(BUILD_SHARED_LIBS)
     ENDIF(CYGWIN)
-  ENDIF(QSCINTILLA_LIBRARY)
+  ENDIF(QSCINTILLA_LIBRARY AND QSCINTILLA_INCLUDE_DIR)
 
   IF(QSCINTILLA_INCLUDE_DIR AND NOT EXISTS QSCINTILLA_VERSION_STR)
-    # get QScintilla2 version from header, is optinally retrieved via bindings
+    # get QScintilla2 version from header, is optionally retrieved via bindings
     # with Qsci PyQt4 module
-    FILE(READ ${QSCINTILLA_INCLUDE_DIR}/qsciglobal.h qsci_header)
+    FILE(READ ${QSCINTILLA_INCLUDE_DIR}/Qsci/qsciglobal.h qsci_header)
     STRING(REGEX REPLACE "^.*QSCINTILLA_VERSION_STR +\"([^\"]+)\".*$" "\\1" QSCINTILLA_VERSION_STR "${qsci_header}")
   ENDIF(QSCINTILLA_INCLUDE_DIR AND NOT EXISTS QSCINTILLA_VERSION_STR)
 

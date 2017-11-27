@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 30.7.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,12 +19,14 @@
 #include <QMap>
 #include <QWidget>
 
-#include <qgsdistancearea.h>
-#include <qgsvectorlayer.h>
-#include <qgsvectorlayertools.h>
+#include "qgsdistancearea.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayertools.h"
+#include "qgis_gui.h"
 
 
 /**
+ * \ingroup gui
  * This class contains context information for attribute editor widgets.
  * It will be passed to embedded widgets whenever this occurs (e.g. when
  * showing an embedded form due to relations)
@@ -33,34 +35,106 @@
 class GUI_EXPORT QgsAttributeEditorContext
 {
   public:
-    QgsAttributeEditorContext();
-
-    QWidget* proxyWidget( QgsVectorLayer* vl, int fieldIdx );
-    void addProxyWidgets( QgsVectorLayer* vl, QMap<int, QWidget*> proxyWidgets );
-    void addProxyWidget( QgsVectorLayer* vl, int idx, QWidget* widget );
-
-    void setDistanceArea( const QgsDistanceArea& distanceArea ) { mDistanceArea = distanceArea; }
-    inline const QgsDistanceArea& distanceArea() { return mDistanceArea; }
-
-    void setVectorLayerTools( QgsVectorLayerTools* vlTools ) { mVectorLayerTools = vlTools; }
-    QgsVectorLayerTools* vectorLayerTools() { return mVectorLayerTools; }
 
     /**
-     * When copying the context for another layer,  call this.
-     * Will adjast the distance area for this layer
-     *
-     * @param layer The layer to adjust for.
+     * Determines in which direction a relation was resolved.
      */
-    void adjustForLayer( QgsVectorLayer* layer );
+    enum RelationMode
+    {
+      Undefined,  //!< This context is not defined by a relation
+      Multiple,   //!< When showing a list of features (e.g. houses as an embedded form in a district form)
+      Single      //!< When showing a single feature (e.g. district information when looking at the form of a house)
+    };
 
+    enum FormMode
+    {
+      Embed,            //!< A form was embedded as a widget on another form
+      StandaloneDialog, //!< A form was opened as a new dialog
+      Popup             //!< A widget was opened as a popup (e.g. attribute table editor widget)
+    };
+
+    //! Constructor for QgsAttributeEditorContext
+    QgsAttributeEditorContext() = default;
+
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, FormMode formMode )
+      : mParentContext( &parentContext )
+      , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mDistanceArea( parentContext.mDistanceArea )
+      , mFormMode( formMode )
+    {
+      Q_ASSERT( parentContext.vectorLayerTools() );
+    }
+
+    QgsAttributeEditorContext( const QgsAttributeEditorContext &parentContext, const QgsRelation &relation, RelationMode relationMode, FormMode widgetMode )
+      : mParentContext( &parentContext )
+      , mVectorLayerTools( parentContext.mVectorLayerTools )
+      , mDistanceArea( parentContext.mDistanceArea )
+      , mRelation( relation )
+      , mRelationMode( relationMode )
+      , mFormMode( widgetMode )
+    {
+      Q_ASSERT( parentContext.vectorLayerTools() );
+    }
+
+    inline void setDistanceArea( const QgsDistanceArea &distanceArea )
+    {
+      if ( mLayer )
+      {
+        mDistanceArea = distanceArea;
+        mDistanceArea.setSourceCrs( mLayer->crs() );
+      }
+    }
+
+    inline const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
+
+    inline void setVectorLayerTools( QgsVectorLayerTools *vlTools ) { mVectorLayerTools = vlTools; }
+    inline const QgsVectorLayerTools *vectorLayerTools() const { return mVectorLayerTools; }
+
+    inline void setRelation( const QgsRelation &relation, RelationMode mode ) { mRelation = relation; mRelationMode = mode; }
+    inline const QgsRelation &relation() const { return mRelation; }
+    inline RelationMode relationMode() const { return mRelationMode; }
+
+    /**
+     * Returns the form mode.
+     * \see setFormMode()
+     */
+    inline FormMode formMode() const { return mFormMode; }
+
+    /**
+     * Sets the form mode.
+     * \param mode form mode
+     * \see formMode()
+     * \since QGIS 2.16
+     */
+    inline void setFormMode( FormMode mode ) { mFormMode = mode; }
+
+    /**
+     * Returns true if the attribute editor should permit use of custom UI forms.
+     * \see setAllowCustomUi()
+     * \since QGIS 2.16
+     */
+    bool allowCustomUi() const { return mAllowCustomUi; }
+
+    /**
+     * Sets whether the attribute editor should permit use of custom UI forms.
+     * \param allow set to true to allow custom UI forms, or false to disable them and use default generated
+     * QGIS forms
+     * \see allowCustomUi()
+     * \since QGIS 2.16
+     */
+    void setAllowCustomUi( bool allow ) { mAllowCustomUi = allow; }
+
+    inline const QgsAttributeEditorContext *parentContext() const { return mParentContext; }
 
   private:
-    QgsVectorLayerTools* mVectorLayerTools;
-
-    //! vectorlayer => ( fieldIdx, proxyWidget )
-    QMap<QgsVectorLayer*, QMap<int, QWidget*> > mProxyWidgets;
-
+    const QgsAttributeEditorContext *mParentContext = nullptr;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsVectorLayerTools *mVectorLayerTools = nullptr;
     QgsDistanceArea mDistanceArea;
+    QgsRelation mRelation;
+    RelationMode mRelationMode = Undefined;
+    FormMode mFormMode = Embed;
+    bool mAllowCustomUi = true;
 };
 
 #endif // QGSATTRIBUTEEDITORCONTEXT_H

@@ -12,8 +12,7 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import unittest
-import qgis
+import qgis  # NOQA
 
 from qgis.core import (QgsSpatialIndex,
                        QgsFeature,
@@ -21,19 +20,21 @@ from qgis.core import (QgsSpatialIndex,
                        QgsRectangle,
                        QgsPoint)
 
-from utilities import getQgisTestApp
+from qgis.testing import start_app, unittest
 
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+start_app()
+
 
 class TestQgsSpatialIndex(unittest.TestCase):
+
     def testIndex(self):
         idx = QgsSpatialIndex()
         fid = 0
         for y in range(5, 15, 5):
             for x in range(5, 25, 5):
                 ft = QgsFeature()
-                ft.setFeatureId(fid)
-                ft.setGeometry(QgsGeometry.fromPoint(QgsPoint(x, y)))
+                ft.setId(fid)
+                ft.setGeometry(QgsGeometry.fromPointXY(QgsPointXY(x, y)))
                 idx.insertFeature(ft)
                 fid += 1
 
@@ -50,7 +51,7 @@ class TestQgsSpatialIndex(unittest.TestCase):
         assert fids == [1, 2, 5, 6], myMessage
 
         # nearest neighbor test
-        fids = idx.nearestNeighbor(QgsPoint(8.75, 6.25), 3)
+        fids = idx.nearestNeighbor(QgsPointXY(8.75, 6.25), 3)
         myExpectedValue = 0
         myValue = len(fids)
         myMessage = 'Expected: %s Got: %s' % (myExpectedValue, myValue)

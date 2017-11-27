@@ -1,0 +1,7 @@
+<RCC>
+    <qresource prefix="/">
+        <file>shaders/instanced.frag</file>
+        <file>shaders/instanced.vert</file>
+        <file>shaders/light.inc.frag</file>
+    </qresource>
+</RCC>

@@ -1,0 +1,10 @@
+
+ARG DOCKER_TAG=latest
+
+FROM      qgis/qgis3-build-deps:$DOCKER_TAG
+MAINTAINER Denis Rouzaud <denis.rouzaud@gmail.com>
+
+RUN ls /root/.ccache
+
+RUN echo "DDDD"
+RUN /root/QGIS/.ci/travis/linux/docker-build-test.sh

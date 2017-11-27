@@ -1,3 +1,17 @@
+/***************************************************************************
+    qgsfeaturelistviewdelegate.cpp
+    ---------------------
+    begin                : February 2013
+    copyright            : (C) 2013 by Matthias Kuhn
+    email                : matthias at opengis dot ch
+ ***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
 #include "qgsfeaturelistviewdelegate.h"
 #include "qgsvectorlayer.h"
 #include "qgsattributetablemodel.h"
@@ -14,15 +28,15 @@
 #include <QObject>
 
 QgsFeatureListViewDelegate::QgsFeatureListViewDelegate( QgsFeatureListModel *listModel, QObject *parent )
-    : QItemDelegate( parent )
-    , mFeatureSelectionModel( NULL )
-    , mListModel( listModel )
+  : QItemDelegate( parent )
+  , mListModel( listModel )
+  , mCurrentFeatureEdited( false )
 {
 }
 
-QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( const QPoint &pos )
+QgsFeatureListViewDelegate::Element QgsFeatureListViewDelegate::positionToElement( QPoint pos )
 {
-  if ( pos.x() > sIconSize )
+  if ( pos.x() > ICON_SIZE )
   {
     return EditElement;
   }
@@ -37,38 +51,48 @@ void QgsFeatureListViewDelegate::setFeatureSelectionModel( QgsFeatureSelectionMo
   mFeatureSelectionModel = featureSelectionModel;
 }
 
-void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel* editSelectionModel )
+void QgsFeatureListViewDelegate::setCurrentFeatureEdited( bool state )
+{
+  mCurrentFeatureEdited = state;
+}
+
+void QgsFeatureListViewDelegate::setEditSelectionModel( QItemSelectionModel *editSelectionModel )
 {
   mEditSelectionModel = editSelectionModel;
 }
 
-QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+QSize QgsFeatureListViewDelegate::sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( index )
-  return QSize( option.rect.width(), sIconSize );
+  int height = ICON_SIZE;
+  return QSize( option.rect.width(), std::max( height, option.fontMetrics.height() ) );
 }
 
 void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
+  static QPixmap sSelectedIcon;
+  if ( sSelectedIcon.isNull() )
+    sSelectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconSelected.svg" ) );
+  static QPixmap sDeselectedIcon;
+  if ( sDeselectedIcon.isNull() )
+    sDeselectedIcon = QgsApplication::getThemePixmap( QStringLiteral( "/mIconDeselected.svg" ) );
+
   QString text = index.model()->data( index, Qt::EditRole ).toString();
   QgsFeatureListModel::FeatureInfo featInfo = index.model()->data( index, Qt::UserRole ).value<QgsFeatureListModel::FeatureInfo>();
-  bool isEdited = mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
+
+  bool isEditSelection = mEditSelectionModel && mEditSelectionModel->isSelected( mListModel->mapToMaster( index ) );
 
   // Icon layout options
   QStyleOptionViewItem iconOption;
 
   QRect iconLayoutBounds( option.rect.x(), option.rect.y(), option.rect.height(), option.rect.height() );
 
-  QPixmap icon;
+  QPixmap icon = mFeatureSelectionModel->isSelected( index ) ? sSelectedIcon : sDeselectedIcon;
 
-  if ( mFeatureSelectionModel->isSelected( index ) )
+  // Scale up the icon if needed
+  if ( option.rect.height() > ICON_SIZE )
   {
-    // Item is selected
-    icon = QgsApplication::getThemePixmap( "/mIconSelected.svg" );
-  }
-  else
-  {
-    icon = QgsApplication::getThemePixmap( "/mIconDeselected.svg" );
+    icon = icon.scaledToHeight( option.rect.height(), Qt::SmoothTransformation );
   }
 
   // Text layout options
@@ -76,7 +100,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
 
   QStyleOptionViewItem textOption;
   textOption.state |= QStyle::State_Enabled;
-  if ( isEdited )
+  if ( isEditSelection )
   {
     textOption.state |= QStyle::State_Selected;
   }
@@ -87,7 +111,7 @@ void QgsFeatureListViewDelegate::paint( QPainter *painter, const QStyleOptionVie
     textOption.palette.setColor( QPalette::Text, Qt::darkGreen );
     textOption.palette.setColor( QPalette::HighlightedText, Qt::darkGreen );
   }
-  else if ( featInfo.isEdited || isEdited )
+  else if ( featInfo.isEdited || ( mCurrentFeatureEdited && isEditSelection ) )
   {
     textOption.font.setStyle( QFont::StyleItalic );
     textOption.palette.setColor( QPalette::Text, Qt::red );

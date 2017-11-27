@@ -1,6 +1,0 @@
-ConcatenateVectorData
-otbcli_ConcatenateVectorData
-Concatenate
-Vector Data Manipulation
-ParameterMultipleInput|-vd|Input VectorDatas to concatenate|-1|False
-OutputVector|-out|Concatenated VectorData

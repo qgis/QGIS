@@ -3,7 +3,7 @@
 
 Example: url=http://127.0.0.1/wcs&identifier=coverage1
 
-WCS URI is composed of key=value pairs separated by '&'. It is the same format like query string in URL, encoded the same way. QgsDataSourceURI should be used to construct the URI to ensure that special characters are encoded properly.
+WCS URI is composed of key=value pairs separated by '&'. It is the same format like query string in URL, encoded the same way. QgsDataSourceUri should be used to construct the URI to ensure that special characters are encoded properly.
 
 Parameters:
 
@@ -27,21 +27,21 @@ Parameters:
 
 * IgnoreAxisOrientation (optional,hack) : If specified (set to 1), do not invert axis orientation according to WCS standard for geographic CRS.
 
-* cache (optional) : cache load control, as described in QNetworkRequest::CacheLoadControl, but request is resend as PreferCache if faild with AlwaysCache. Allowed values: AlwaysCache, PreferCache, PreferNetwork, AlwaysNetwork. Default is AlwaysCache.
+* cache (optional) : cache load control, as described in QNetworkRequest::CacheLoadControl, but request is resend as PreferCache if failed with AlwaysCache. Allowed values: AlwaysCache, PreferCache, PreferNetwork, AlwaysNetwork. Default is AlwaysCache.
 
 
 Python console example, adds new layer to map canvas:
 
   from PyQt4.QtCore import QString
 
-  uri = QgsDataSourceURI()
+  uri = QgsDataSourceUri()
   uri.setParam ("url", "http://wcs.qgis.org/1.9.0/wcs" )
   uri.setParam ( "identifier", "band1_int16_noct_epsg4326" )
 
   layer = QgsRasterLayer( QString(uri.encodedUri()), "WCS test", "wcs" )
   layer.isValid()
 
-  QgsMapLayerRegistry.instance().addMapLayer(layer)
+  QgsProject.instance().addMapLayer(layer)
 
 
 another standalone script, downloads WCS layer to local file:
@@ -58,7 +58,7 @@ another standalone script, downloads WCS layer to local file:
 
   app = QgsApplication(sys.argv,False) # important for QgsNetworkAccessManager
     
-  srcUri = QgsDataSourceURI()
+  srcUri = QgsDataSourceUri()
   srcUri.setParam ("url", "http://wcs.qgis.org/1.9.0/wcs" )
   srcUri.setParam ( "identifier", "band1_int16_noct_epsg4326" )
 

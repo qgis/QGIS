@@ -1,7 +1,7 @@
 
 
 #include <fcntl.h>
-#include <stdio.h>
+#include <cstdio>
 #include "qextserialport.h"
 #include <QMutexLocker>
 #include <QDebug>
@@ -14,7 +14,7 @@
 void QextSerialPort::platformSpecificInit()
 {
     fd = 0;
-    readNotifier = 0;
+    readNotifier = nullptr;
 }
 
 /*!
@@ -663,11 +663,11 @@ void QextSerialPort::setTimeout(long millisec)
     Posix_Copy_Timeout.tv_usec = millisec % 1000;
     if (isOpen()) {
         if (millisec == -1)
-            fcntl(fd, F_SETFL, O_NDELAY);
+            (void)fcntl(fd, F_SETFL, O_NDELAY);
         else
             //O_SYNC should enable blocking ::write()
             //however this seems not working on Linux 2.6.21 (works on OpenBSD 4.2)
-            fcntl(fd, F_SETFL, O_SYNC);
+            (void)fcntl(fd, F_SETFL, O_SYNC);
         tcgetattr(fd, & Posix_CommConfig);
         Posix_CommConfig.c_cc[VTIME] = millisec/100;
         tcsetattr(fd, TCSAFLUSH, & Posix_CommConfig);
@@ -685,9 +685,9 @@ bool QextSerialPort::open(OpenMode mode)
     if (mode == QIODevice::NotOpen)
         return isOpen();
     if (!isOpen()) {
-        qDebug() << "trying to open file" << port.toAscii();
+        qDebug() << "trying to open file" << port.toLatin1();
         //note: linux 2.6.21 seems to ignore O_NDELAY flag
-        if ((fd = ::open(port.toAscii() ,O_RDWR | O_NOCTTY | O_NDELAY)) != -1) {
+        if ((fd = ::open(port.toLatin1() ,O_RDWR | O_NOCTTY | O_NDELAY)) != -1) {
             qDebug("file opened successfully");
 
             setOpenMode(mode);              // Flag the port as opened
@@ -721,7 +721,7 @@ bool QextSerialPort::open(OpenMode mode)
 
             if (queryMode() == QextSerialPort::EventDriven) {
                 readNotifier = new QSocketNotifier(fd, QSocketNotifier::Read, this);
-                connect(readNotifier, SIGNAL(activated(int)), this, SIGNAL(readyRead()));
+                connect(readNotifier, &QSocketNotifier::activated, this, [=] { emit readyRead(); } );
             }
         } else {
             qDebug() << "could not open file:" << strerror(errno);
@@ -750,7 +750,7 @@ void QextSerialPort::close()
         ::close(fd);
         if(readNotifier) {
             delete readNotifier;
-            readNotifier = 0;
+            readNotifier = nullptr;
         }
     }
 }

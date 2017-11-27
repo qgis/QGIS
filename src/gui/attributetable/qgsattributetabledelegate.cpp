@@ -17,64 +17,78 @@
 #include <QLineEdit>
 #include <QComboBox>
 #include <QPainter>
+#include <QToolButton>
 
-#include "qgsfeatureselectionmodel.h"
-#include "qgsattributetableview.h"
-#include "qgsattributetablemodel.h"
-#include "qgsattributetablefiltermodel.h"
 #include "qgsattributetabledelegate.h"
-#include "qgsvectordataprovider.h"
-#include "qgsattributeeditor.h"
+#include "qgsattributetablefiltermodel.h"
+#include "qgsattributetablemodel.h"
+#include "qgsattributetableview.h"
+#include "qgseditorwidgetregistry.h"
+#include "qgseditorwidgetwrapper.h"
+#include "qgsfeatureselectionmodel.h"
 #include "qgslogger.h"
+#include "qgsvectordataprovider.h"
+#include "qgsactionmanager.h"
+#include "qgsgui.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "qgsvectorlayerjoinbuffer.h"
 
-
-
-// TODO: Remove this casting orgy
-
-QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model ) const
+QgsVectorLayer *QgsAttributeTableDelegate::layer( const QAbstractItemModel *model )
 {
   const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
   if ( tm )
     return tm->layer();
 
-  const QgsAttributeTableFilterModel *fm = dynamic_cast<const QgsAttributeTableFilterModel *>( model );
+  const QgsAttributeTableFilterModel *fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
   if ( fm )
     return fm->layer();
 
-  return NULL;
+  return nullptr;
 }
 
-QWidget *QgsAttributeTableDelegate::createEditor(
-  QWidget *parent,
-  const QStyleOptionViewItem &option,
-  const QModelIndex &index ) const
+const QgsAttributeTableModel *QgsAttributeTableDelegate::masterModel( const QAbstractItemModel *model )
+{
+  const QgsAttributeTableModel *tm = qobject_cast<const QgsAttributeTableModel *>( model );
+  if ( tm )
+    return tm;
+
+  const QgsAttributeTableFilterModel *fm = qobject_cast<const QgsAttributeTableFilterModel *>( model );
+  if ( fm )
+    return fm->masterModel();
+
+  return nullptr;
+}
+
+QWidget *QgsAttributeTableDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   Q_UNUSED( option );
   QgsVectorLayer *vl = layer( index.model() );
   if ( !vl )
-    return NULL;
+    return nullptr;
 
   int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
 
-  QWidget *w = QgsAttributeEditor::createAttributeEditor( parent, 0, vl, fieldIdx, index.model()->data( index, Qt::EditRole ) );
+  QgsAttributeEditorContext context( masterModel( index.model() )->editorContext(), QgsAttributeEditorContext::Popup );
+  QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( vl, fieldIdx, nullptr, parent, context );
+  QWidget *w = eww->widget();
 
   w->setAutoFillBackground( true );
+  w->setFocusPolicy( Qt::StrongFocus ); // to make sure QMouseEvents are propagated to the editor widget
 
-  if ( parent )
+  const int fieldOrigin = vl->fields().fieldOrigin( fieldIdx );
+  bool readOnly = true;
+  if ( fieldOrigin == QgsFields::OriginJoin )
   {
-    QgsAttributeTableView *tv = dynamic_cast<QgsAttributeTableView *>( parent->parentWidget() );
-    w->setMinimumWidth( tv->columnWidth( index.column() ) );
+    int srcFieldIndex;
+    const QgsVectorLayerJoinInfo *info = vl->joinBuffer()->joinForFieldIndex( fieldIdx, vl->fields(), srcFieldIndex );
 
-    if ( vl->editType( fieldIdx ) == QgsVectorLayer::FileName ||
-         vl->editType( fieldIdx ) == QgsVectorLayer::Calendar )
-    {
-      QLineEdit *le = w->findChild<QLineEdit*>();
-      le->adjustSize();
-      w->setMinimumHeight( le->height()*2 ); // FIXME: there must be a better way to do this
-    }
+    if ( info && info->isEditable() )
+      readOnly = info->joinLayer()->editFormConfig().readOnly( srcFieldIndex );
   }
+  else
+    readOnly = vl->editFormConfig().readOnly( fieldIdx );
 
-  w->setEnabled( vl->fieldEditable( fieldIdx ) );
+  eww->setEnabled( !readOnly );
 
   return w;
 }
@@ -82,29 +96,44 @@ QWidget *QgsAttributeTableDelegate::createEditor(
 void QgsAttributeTableDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
 {
   QgsVectorLayer *vl = layer( model );
-  if ( vl == NULL )
+  if ( !vl )
     return;
 
   int fieldIdx = model->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
   QgsFeatureId fid = model->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+  QVariant oldValue = model->data( index, Qt::EditRole );
 
-  QVariant value;
-  if ( !QgsAttributeEditor::retrieveValue( editor, vl, fieldIdx, value ) )
+  QVariant newValue;
+  QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
+  if ( !eww )
     return;
 
-  vl->beginEditCommand( tr( "Attribute changed" ) );
-  vl->changeAttributeValue( fid, fieldIdx, value, true );
-  vl->endEditCommand();
+  newValue = eww->value();
+
+  if ( ( oldValue != newValue && newValue.isValid() ) || oldValue.isNull() != newValue.isNull() )
+  {
+    // This fixes https://issues.qgis.org/issues/16492
+    QgsFeatureRequest request( fid );
+    request.setFlags( QgsFeatureRequest::NoGeometry );
+    request.setSubsetOfAttributes( QgsAttributeList() );
+    QgsFeature feature;
+    vl->getFeatures( request ).nextFeature( feature );
+    if ( feature.isValid() )
+    {
+      vl->beginEditCommand( tr( "Attribute changed" ) );
+      vl->changeAttributeValue( fid, fieldIdx, newValue, oldValue );
+      vl->endEditCommand();
+    }
+  }
 }
 
 void QgsAttributeTableDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
 {
-  QgsVectorLayer *vl = layer( index.model() );
-  if ( vl == NULL )
+  QgsEditorWidgetWrapper *eww = QgsEditorWidgetWrapper::fromWidget( editor );
+  if ( !eww )
     return;
 
-  int fieldIdx = index.model()->data( index, QgsAttributeTableModel::FieldIndexRole ).toInt();
-  QgsAttributeEditor::setValue( editor, vl, fieldIdx, index.model()->data( index, Qt::EditRole ) );
+  eww->setValue( index.model()->data( index, Qt::EditRole ) );
 }
 
 void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel )
@@ -112,26 +141,39 @@ void QgsAttributeTableDelegate::setFeatureSelectionModel( QgsFeatureSelectionMod
   mFeatureSelectionModel = featureSelectionModel;
 }
 
-void QgsAttributeTableDelegate::paint( QPainter * painter,
-                                       const QStyleOptionViewItem & option,
-                                       const QModelIndex & index ) const
+void QgsAttributeTableDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
-  QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+  QgsAttributeTableFilterModel::ColumnType columnType = static_cast<QgsAttributeTableFilterModel::ColumnType>( index.model()->data( index, QgsAttributeTableFilterModel::TypeRole ).toInt() );
 
-  QStyleOptionViewItem myOpt = option;
-
-  if ( mFeatureSelectionModel->isSelected( fid ) )
-    myOpt.state |= QStyle::State_Selected;
-
-  QItemDelegate::paint( painter, myOpt, index );
-
-  if ( option.state & QStyle::State_HasFocus )
+  if ( columnType == QgsAttributeTableFilterModel::ColumnTypeActionButton )
   {
-    QRect r = option.rect.adjusted( 1, 1, -1, -1 );
-    QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
-    painter->save();
-    painter->setPen( p );
-    painter->drawRect( r );
-    painter->restore();
+    emit actionColumnItemPainted( index );
+  }
+  else
+  {
+    QgsFeatureId fid = index.model()->data( index, QgsAttributeTableModel::FeatureIdRole ).toLongLong();
+
+    QStyleOptionViewItem myOpt = option;
+
+    if ( index.model()->data( index, Qt::EditRole ).isNull() )
+    {
+      myOpt.font.setItalic( true );
+      myOpt.palette.setColor( QPalette::Text, QColor( "gray" ) );
+    }
+
+    if ( mFeatureSelectionModel && mFeatureSelectionModel->isSelected( fid ) )
+      myOpt.state |= QStyle::State_Selected;
+
+    QItemDelegate::paint( painter, myOpt, index );
+
+    if ( option.state & QStyle::State_HasFocus )
+    {
+      QRect r = option.rect.adjusted( 1, 1, -1, -1 );
+      QPen p( QBrush( QColor( 0, 255, 127 ) ), 2 );
+      painter->save();
+      painter->setPen( p );
+      painter->drawRect( r );
+      painter->restore();
+    }
   }
 }

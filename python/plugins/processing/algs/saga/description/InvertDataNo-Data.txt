@@ -1,0 +1,4 @@
+Invert Data/No-Data
+grid_tools
+QgsProcessingParameterRasterLayer|INPUT|Grid|None|False
+QgsProcessingParameterRasterDestination|OUTPUT|Result

@@ -3,11 +3,14 @@
 
 <qgisgrassmodule label="Import ASCII raster" module="r.in.ascii">
 	<file key="input" type="old" />
-	<option key="mult" />
-	<option key="nv" />
-	<flag key="i" />
-	<flag key="f" />
-	<flag key="d" />
+
+	<option key="multiplier" />
+
+	<option key="null_value" />
+	<option key="type" />
+
+
+
 	<flag key="s" />
 	<option key="output" />
 </qgisgrassmodule>

@@ -2,7 +2,7 @@
                       qgsfeatureaction.h  -  description
                                ------------------
         begin                : 2010-09-20
-        copyright            : (C) 2010 by Jürgen E. Fischer
+        copyright            : (C) 2010 by JÃ¼rgen E. Fischer
         email                : jef at norbit dot de
  ***************************************************************************/
 
@@ -18,49 +18,56 @@
 #define QGSFEATUREACTION_H
 
 #include "qgsfeature.h"
-#include "qgsvectorlayertools.h"
 
 #include <QList>
 #include <QPair>
 #include <QAction>
+#include <QUuid>
+#include "qgis_app.h"
 
 class QgsIdentifyResultsDialog;
 class QgsVectorLayer;
 class QgsHighlight;
 class QgsAttributeDialog;
+class QgsExpressionContextScope;
 
 class APP_EXPORT QgsFeatureAction : public QAction
 {
     Q_OBJECT
 
   public:
-    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, int action = -1, int defaultAttr = -1, QObject *parent = NULL );
+    QgsFeatureAction( const QString &name, QgsFeature &f, QgsVectorLayer *vl, const QUuid &actionId = QString(), int defaultAttr = -1, QObject *parent = nullptr );
 
   public slots:
     void execute();
-    bool viewFeatureForm( QgsHighlight *h = 0 );
-    bool editFeature();
+    bool viewFeatureForm( QgsHighlight *h = nullptr );
+    bool editFeature( bool showModal = true );
 
     /**
      * Add a new feature to the layer.
      * Will set the default values to recently used or provider defaults based on settings
      * and override with values in defaultAttributes if provided.
      *
-     * @param defaultAttributes  Provide some default attributes here if desired.
+     * \param defaultAttributes  Provide some default attributes here if desired.
      *
-     * @return true if feature was added
+     * \returns true if feature was added if showModal is true. If showModal is false, returns true in every case
      */
-    bool addFeature( const QgsAttributeMap& defaultAttributes = QgsAttributeMap() );
+    bool addFeature( const QgsAttributeMap &defaultAttributes = QgsAttributeMap(), bool showModal = true, QgsExpressionContextScope *scope = nullptr );
+
+  private slots:
+    void onFeatureSaved( const QgsFeature &feature );
 
   private:
     QgsAttributeDialog *newDialog( bool cloneFeature );
 
-    QgsVectorLayer *mLayer;
-    QgsFeature &mFeature;
-    int mAction;
+    QgsVectorLayer *mLayer = nullptr;
+    QgsFeature *mFeature = nullptr;
+    QUuid mActionId;
     int mIdx;
 
-    static QMap<QgsVectorLayer *, QgsAttributeMap> mLastUsedValues;
+    bool mFeatureSaved;
+
+    static QHash<QgsVectorLayer *, QgsAttributeMap> sLastUsedValues;
 };
 
 #endif

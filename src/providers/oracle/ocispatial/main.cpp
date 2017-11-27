@@ -41,45 +41,21 @@
 **
 ****************************************************************************/
 
+#include "main.h"
 #include <qsqldriverplugin.h>
-#include <qstringlist.h>
 #include "qsql_ocispatial.h"
 
-QT_BEGIN_NAMESPACE
-
-class QOCISpatialDriverPlugin : public QSqlDriverPlugin
-{
-  public:
-    QOCISpatialDriverPlugin();
-
-    QSqlDriver* create( const QString & );
-    QStringList keys() const;
-};
-
 QOCISpatialDriverPlugin::QOCISpatialDriverPlugin()
-    : QSqlDriverPlugin()
+  : QSqlDriverPlugin()
 {
 }
 
-QSqlDriver* QOCISpatialDriverPlugin::create( const QString &name )
+QSqlDriver *QOCISpatialDriverPlugin::create( const QString &name )
 {
   if ( name == QLatin1String( "QOCISPATIAL" ) || name == QLatin1String( "QOCISPATIAL8" ) )
   {
-    QOCISpatialDriver* driver = new QOCISpatialDriver();
+    QOCISpatialDriver *driver = new QOCISpatialDriver();
     return driver;
   }
   return 0;
 }
-
-QStringList QOCISpatialDriverPlugin::keys() const
-{
-  QStringList l;
-  l.append( QLatin1String( "QOCISPATIAL8" ) );
-  l.append( QLatin1String( "QOCISPATIAL" ) );
-  return l;
-}
-
-Q_EXPORT_STATIC_PLUGIN( QOCISpatialDriverPlugin )
-Q_EXPORT_PLUGIN2( qsqloci, QOCISpatialDriverPlugin )
-
-QT_END_NAMESPACE

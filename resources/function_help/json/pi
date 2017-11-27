@@ -1,0 +1,6 @@
+{
+  "name": "pi",
+  "type": "function",
+  "description": "Returns value of pi for calculations.",
+  "examples": [ { "expression":"pi()", "returns":"3.14159265358979"}]
+}

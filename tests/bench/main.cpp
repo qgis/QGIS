@@ -21,13 +21,13 @@
 #include <QSettings>
 #include <QString>
 #include <QStringList>
-#include <QTest>
+#include <QtTest/QTest>
 
 #include <cstdio>
 #include <stdio.h>
 #include <stdlib.h>
 
-#ifdef WIN32
+#ifdef Q_OS_WIN
 // Open files in binary mode
 #include <fcntl.h> /*  _O_BINARY */
 #ifdef MSVC
@@ -61,9 +61,10 @@ typedef SInt32 SRefCon;
 #include "qgslogger.h"
 
 
-/** print usage text
+/**
+ * Print usage text
  */
-void usage( std::string const & appName )
+void usage( std::string const &appName )
 {
   std::cerr << "QGIS Benchmark - " << VERSION << " '" << RELEASE_NAME << "' ("
             << QGSVERSION << ")\n"
@@ -81,6 +82,8 @@ void usage( std::string const & appName )
             << "\t[--configpath path]\tuse the given path for all user configuration\n"
             << "\t[--prefix path]\tpath to a different build of qgis, may be used to test old versions\n"
             << "\t[--quality]\trenderer hint(s), comma separated, possible values: Antialiasing,TextAntialiasing,SmoothPixmapTransform,NonCosmeticDefaultPen\n"
+            << "\t[--parallel]\trender layers in parallel instead of sequentially\n"
+            << "\t[--print type]\twhat kind of time to print, possible values: wall,total,user,sys. Default is total.\n"
             << "\t[--help]\t\tthis text\n\n"
             << "  FILES:\n"
             << "    Files specified on the command line can include rasters,\n"
@@ -96,59 +99,61 @@ void usage( std::string const & appName )
 
 
 /////////////////////////////////////////////////////////////////
-// Command line options 'behaviour' flag setup
+// Command line options 'behavior' flag setup
 ////////////////////////////////////////////////////////////////
 
 // These two are global so that they can be set by the OpenDocuments
 // AppleEvent handler as well as by the main routine argv processing
 
-// This behaviour will cause QGIS to autoload a project
-static QString myProjectFileName = "";
+// This behavior will cause QGIS to autoload a project
+static QString myProjectFileName;
 
 // This is the 'leftover' arguments collection
-static QStringList myFileList;
+static QStringList sFileList;
 
 int main( int argc, char *argv[] )
 {
-#ifdef WIN32  // Windows
+#ifdef Q_OS_WIN  // Windows
 #ifdef _MSC_VER
   _set_fmode( _O_BINARY );
 #else //MinGW
   _fmode = _O_BINARY;
 #endif  // _MSC_VER
-#endif  // WIN32
+#endif  // Q_OS_WIN
 
   /////////////////////////////////////////////////////////////////
-  // Command line options 'behaviour' flag setup
+  // Command line options 'behavior' flag setup
   ////////////////////////////////////////////////////////////////
 
   //
   // Parse the command line arguments, looking to see if the user has asked for any
-  // special behaviours. Any remaining non command arguments will be kept aside to
+  // special behaviors. Any remaining non command arguments will be kept aside to
   // be passed as a list of layers and / or a project that should be loaded.
   //
 
   int myIterations = 1;
-  QString mySnapshotFileName = "";
-  QString myLogFileName = "";
-  QString myPrefixPath = "";
+  QString mySnapshotFileName;
+  QString myLogFileName;
+  QString myPrefixPath;
   int mySnapshotWidth = 800;
   int mySnapshotHeight = 600;
-  QString myQuality = "";
+  QString myQuality;
+  bool myParallel = false;
+  QString myPrintTime = QStringLiteral( "total" );
 
-  // This behaviour will set initial extent of map canvas, but only if
+  // This behavior will set initial extent of map canvas, but only if
   // there are no command line arguments. This gives a usable map
   // extent when qgis starts with no layers loaded. When layers are
   // loaded, we let the layers define the initial extent.
-  QString myInitialExtent = "";
+  QString myInitialExtent;
   if ( argc == 1 )
-    myInitialExtent = "-1,-1,1,1";
+    myInitialExtent = QStringLiteral( "-1,-1,1,1" );
 
   // The user can specify a path which will override the default path of custom
   // user settings (~/.qgis) and it will be used for QSettings INI file
   QString configpath;
 
-#ifndef WIN32
+#ifndef Q_OS_WIN
   ////////////////////////////////////////////////////////////////
   // USe the GNU Getopts utility to parse cli arguments
   // Invokes ctor `GetOpt (int argc, char **argv,  char *optstring);'
@@ -173,6 +178,8 @@ int main( int argc, char *argv[] )
       {"configpath", required_argument, 0, 'c'},
       {"prefix", required_argument, 0, 'r'},
       {"quality", required_argument, 0, 'q'},
+      {"parallel", no_argument, 0, 'P'},
+      {"print", required_argument, 0, 'R'},
       {0, 0, 0, 0}
     };
 
@@ -203,11 +210,11 @@ int main( int argc, char *argv[] )
         break;
 
       case 's':
-        mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+        mySnapshotFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
         break;
 
       case 'l':
-        myLogFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+        myLogFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
         break;
 
       case 'w':
@@ -219,7 +226,7 @@ int main( int argc, char *argv[] )
         break;
 
       case 'p':
-        myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
+        myProjectFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( optarg ) ).absoluteFilePath() );
         break;
 
       case 'e':
@@ -242,10 +249,17 @@ int main( int argc, char *argv[] )
         myQuality = optarg;
         break;
 
+      case 'P':
+        myParallel = true;
+        break;
+
+      case 'R':
+        myPrintTime = optarg;
+        break;
+
       case '?':
         usage( argv[0] );
         return 2;   // XXX need standard exit codes
-        break;
 
       default:
         QgsDebugMsg( QString( "%1: getopt returned character code %2" ).arg( argv[0] ).arg( optionChar ) );
@@ -264,7 +278,7 @@ int main( int argc, char *argv[] )
       int idx = optind;
       QgsDebugMsg( QString( "%1: %2" ).arg( idx ).arg( argv[idx] ) );
 #endif
-      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
+      sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[optind++] ) ).absoluteFilePath() ) );
     }
   }
 #else
@@ -283,11 +297,11 @@ int main( int argc, char *argv[] )
     }
     else if ( i + 1 < argc && ( arg == "--snapshot" || arg == "-s" ) )
     {
-      mySnapshotFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+      mySnapshotFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
     }
     else if ( i + 1 < argc && ( arg == "--log" || arg == "-l" ) )
     {
-      myLogFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+      myLogFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
     }
     else if ( i + 1 < argc && ( arg == "--width" || arg == "-w" ) )
     {
@@ -299,7 +313,7 @@ int main( int argc, char *argv[] )
     }
     else if ( i + 1 < argc && ( arg == "--project" || arg == "-p" ) )
     {
-      myProjectFileName = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
+      myProjectFileName = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[++i] ) ).absoluteFilePath() );
     }
     else if ( i + 1 < argc && ( arg == "--extent" || arg == "-e" ) )
     {
@@ -322,19 +336,27 @@ int main( int argc, char *argv[] )
     {
       myQuality = argv[++i];
     }
+    else if ( arg == "--parallel" || arg == "-P" )
+    {
+      myParallel = true;
+    }
+    else if ( i + 1 < argc && ( arg == "--print" || arg == "-R" ) )
+    {
+      myPrintTime = argv[++i];
+    }
     else
     {
-      myFileList.append( QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
+      sFileList.append( QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() ) );
     }
   }
-#endif //WIN32
+#endif // Q_OS_WIN
 
   /////////////////////////////////////////////////////////////////////
-  // Now we have the handlers for the different behaviours...
+  // Now we have the handlers for the different behaviors...
   ////////////////////////////////////////////////////////////////////
 
   /////////////////////////////////////////////////////////////////////
-  // Initialise the application and the translation stuff
+  // Initialize the application and the translation stuff
   /////////////////////////////////////////////////////////////////////
 
   if ( !configpath.isEmpty() )
@@ -354,7 +376,7 @@ int main( int argc, char *argv[] )
   // so that this program may be run with old libraries
   //QgsApplication myApp( argc, argv, false, configpath );
 
-  QCoreApplication *myApp;
+  QCoreApplication *myApp = nullptr;
 
 #if VERSION_INT >= 10900
   myApp = new QgsApplication( argc, argv, false );
@@ -371,9 +393,9 @@ int main( int argc, char *argv[] )
   QgsApplication::setPrefixPath( myPrefixPath, true );
 
   // Set up the QSettings environment must be done after qapp is created
-  QgsApplication::setOrganizationName( "QGIS" );
-  QgsApplication::setOrganizationDomain( "qgis.org" );
-  QgsApplication::setApplicationName( "QGIS2" );
+  QgsApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QgsApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QgsApplication::setApplicationName( QStringLiteral( "QGIS3" ) );
 
   QgsProviderRegistry::instance( QgsApplication::pluginPath() );
 
@@ -385,6 +407,24 @@ int main( int argc, char *argv[] )
   {
     setenv( "GDAL_DRIVER_PATH", gdalPlugins.toUtf8(), 1 );
   }
+
+  // Point GDAL_DATA at any GDAL share directory embedded in the app bundle
+  if ( !getenv( "GDAL_DATA" ) )
+  {
+    QStringList gdalShares;
+    QString appResources( QDir::cleanPath( QgsApplication::pkgDataPath() ) );
+    gdalShares << QCoreApplication::applicationDirPath().append( "/share/gdal" )
+               << appResources.append( "/share/gdal" )
+               << appResources.append( "/gdal" );
+    Q_FOREACH ( const QString &gdalShare, gdalShares )
+    {
+      if ( QFile::exists( gdalShare ) )
+      {
+        setenv( "GDAL_DATA", gdalShare.toUtf8().constData(), 1 );
+        break;
+      }
+    }
+  }
 #endif
 
   QSettings mySettings;
@@ -393,7 +433,7 @@ int main( int argc, char *argv[] )
   // we need to be sure we can find the qt image
   // plugins. In mac be sure to look in the
   // application bundle...
-#ifdef Q_WS_WIN
+#ifdef Q_OS_WIN
   QCoreApplication::addLibraryPath( QApplication::applicationDirPath()
                                     + QDir::separator() + "qtplugins" );
 #endif
@@ -435,8 +475,8 @@ int main( int argc, char *argv[] )
     // check for a .qgs
     for ( int i = 0; i < argc; i++ )
     {
-      QString arg = QDir::convertSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
-      if ( arg.contains( ".qgs" ) )
+      QString arg = QDir::toNativeSeparators( QFileInfo( QFile::decodeName( argv[i] ) ).absoluteFilePath() );
+      if ( arg.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
       {
         myProjectFileName = arg;
         break;
@@ -460,12 +500,12 @@ int main( int argc, char *argv[] )
   {
     QPainter::RenderHints hints;
     QStringList list = myQuality.split( ',' );
-    foreach ( QString q, list )
+    Q_FOREACH ( const QString &q, list )
     {
-      if ( q == "Antialiasing" ) hints |= QPainter::Antialiasing;
-      else if ( q == "TextAntialiasing" ) hints |= QPainter::TextAntialiasing;
-      else if ( q == "SmoothPixmapTransform" ) hints |= QPainter::SmoothPixmapTransform;
-      else if ( q == "NonCosmeticDefaultPen" ) hints |= QPainter::NonCosmeticDefaultPen;
+      if ( q == QLatin1String( "Antialiasing" ) ) hints |= QPainter::Antialiasing;
+      else if ( q == QLatin1String( "TextAntialiasing" ) ) hints |= QPainter::TextAntialiasing;
+      else if ( q == QLatin1String( "SmoothPixmapTransform" ) ) hints |= QPainter::SmoothPixmapTransform;
+      else if ( q == QLatin1String( "NonCosmeticDefaultPen" ) ) hints |= QPainter::NonCosmeticDefaultPen;
       else
       {
         fprintf( stderr, "Unknown quality option\n" );
@@ -476,16 +516,18 @@ int main( int argc, char *argv[] )
     qbench->setRenderHints( hints );
   }
 
+  qbench->setParallel( myParallel );
+
   /////////////////////////////////////////////////////////////////////
   // autoload any file names that were passed in on the command line
   /////////////////////////////////////////////////////////////////////
-  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( myFileList.count() ) );
-  for ( QStringList::Iterator myIterator = myFileList.begin(); myIterator != myFileList.end(); ++myIterator )
+  QgsDebugMsg( QString( "Number of files in myFileList: %1" ).arg( sFileList.count() ) );
+  for ( QStringList::Iterator myIterator = sFileList.begin(); myIterator != sFileList.end(); ++myIterator )
   {
-    QgsDebugMsg( QString( "Trying to load file : %1" ).arg(( *myIterator ) ) );
+    QgsDebugMsg( QString( "Trying to load file : %1" ).arg( ( *myIterator ) ) );
     QString myLayerName = *myIterator;
     // don't load anything with a .qgs extension - these are project files
-    if ( !myLayerName.contains( ".qgs" ) )
+    if ( !myLayerName.endsWith( QLatin1String( ".qgs" ), Qt::CaseInsensitive ) )
     {
       fprintf( stderr, "Data files not yet supported\n" );
       return 1;
@@ -516,7 +558,7 @@ int main( int argc, char *argv[] )
         break;
       }
 
-      coords[i] = QString( myInitialExtent.mid( posOld, pos - posOld ) ).toDouble( &ok );
+      coords[i] = myInitialExtent.midRef( posOld, pos - posOld ).toDouble( &ok );
       if ( !ok )
         break;
 
@@ -525,7 +567,7 @@ int main( int argc, char *argv[] )
 
     // parse last coordinate
     if ( ok )
-      coords[3] = QString( myInitialExtent.mid( posOld ) ).toDouble( &ok );
+      coords[3] = myInitialExtent.midRef( posOld ).toDouble( &ok );
 
     if ( !ok )
     {
@@ -541,17 +583,17 @@ int main( int argc, char *argv[] )
 
   qbench->render();
 
-  if ( mySnapshotFileName != "" )
+  if ( !mySnapshotFileName.isEmpty() )
   {
     qbench->saveSnapsot( mySnapshotFileName );
   }
 
-  if ( myLogFileName != "" )
+  if ( !myLogFileName.isEmpty() )
   {
     qbench->saveLog( myLogFileName );
   }
 
-  qbench->printLog();
+  qbench->printLog( myPrintTime );
 
   delete qbench;
   delete myApp;

@@ -1,0 +1,7 @@
+{
+  "name": "exterior_ring",
+  "type": "function",
+  "description": "Returns a line string representing the exterior ring of a polygon geometry. If the geometry is not a polygon then the result will be null.",
+  "arguments": [ {"arg":"geom","description":"a polygon geometry"}],
+  "examples": [ { "expression":"geom_to_wkt(exterior_ring(geom_from_wkt('POLYGON((-1 -1, 4 0, 4 2, 0 2, -1 -1),( 0.1 0.1, 0.1 0.2, 0.2 0.2, 0.2, 0.1, 0.1 0.1))')))", "returns":"'LineString (-1 -1, 4 0, 4 2, 0 2, -1 -1)'"}]
+}

@@ -1,37 +1,128 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssinglebandpseudocolorrenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 {
+%Docstring
+ Raster renderer pipe for single band pseudocolor.
+%End
+
 %TypeHeaderCode
-    #include "qgssinglebandpseudocolorrenderer.h"
+#include "qgssinglebandpseudocolorrenderer.h"
 %End
   public:
-    /**Note: takes ownership of QgsRasterShader*/
-    QgsSingleBandPseudoColorRenderer( QgsRasterDataProvider* provider, int band, QgsRasterShader* shader /Transfer/ );
-    ~QgsSingleBandPseudoColorRenderer();
-    QgsRasterInterface * clone() const /Factory/;
 
-    static QgsRasterRenderer* create( const QDomElement& elem, QgsRasterDataProvider* provider ) /Factory/;
-
-    QgsRasterBlock * block( int bandNo, const QgsRectangle & extent, int width, int height ) / Factory /;
-
-    /**Takes ownership of the shader*/
-    void setShader( QgsRasterShader* shader /Transfer/ );
-    QgsRasterShader* shader();
-    const QgsRasterShader* constShader() const;
-%MethodCode
-      sipRes = sipCpp->shader();
+    QgsSingleBandPseudoColorRenderer( QgsRasterInterface *input, int band = -1, QgsRasterShader *shader /Transfer/ = 0 );
+%Docstring
+Note: takes ownership of QgsRasterShader
 %End
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
 
-    void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const;
+    virtual QgsSingleBandPseudoColorRenderer *clone() const /Factory/;
 
-    QList<int> usesBands() const;
+%Docstring
+QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
+ :rtype: QgsSingleBandPseudoColorRenderer
+%End
+
+    static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
+%Docstring
+ :rtype: QgsRasterRenderer
+%End
+
+    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
+
+
+    void setShader( QgsRasterShader *shader /Transfer/ );
+%Docstring
+Takes ownership of the shader
+%End
+
+    QgsRasterShader *shader();
+%Docstring
+Returns the raster shader
+ :rtype: QgsRasterShader
+%End
+
+    const QgsRasterShader *shader() const /PyName=constShader/;
+%Docstring
+.. note::
+
+   available in Python as constShader
+ :rtype: QgsRasterShader
+%End
+
+    void createShader( QgsColorRamp *colorRamp = 0,
+                       QgsColorRampShader::Type colorRampType  = QgsColorRampShader::Interpolated,
+                       QgsColorRampShader::ClassificationMode classificationMode = QgsColorRampShader::Continuous,
+                       int classes = 0,
+                       bool clip = false,
+                       const QgsRectangle &extent = QgsRectangle() );
+%Docstring
+ Creates a color ramp shader
+ \param colorRamp vector color ramp
+ \param colorRampType type of color ramp shader
+ \param classificationMode classification mode
+ \param classes number of classes
+ \param clip clip out of range values
+ \param extent extent used in classification (only used in quantile mode)
+%End
+
+    virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+
+
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
+
+
+    virtual QList<int> usesBands() const;
+
+
+    int band() const;
+%Docstring
+ Returns the band used by the renderer
+.. versionadded:: 2.7
+ :rtype: int
+%End
+
+    void setBand( int bandNo );
+%Docstring
+ Sets the band used by the renderer.
+.. seealso:: band
+.. versionadded:: 2.10
+%End
 
     double classificationMin() const;
+%Docstring
+ :rtype: float
+%End
     double classificationMax() const;
+%Docstring
+ :rtype: float
+%End
     void setClassificationMin( double min );
     void setClassificationMax( double max );
-    int classificationMinMaxOrigin() const;
-    void setClassificationMinMaxOrigin( int origin );
 
+  private:
+    QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & );
+    const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & );
+%Docstring
+ :rtype: QgsSingleBandPseudoColorRenderer
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgssinglebandpseudocolorrenderer.h                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

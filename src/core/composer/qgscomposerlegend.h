@@ -18,232 +18,338 @@
 #ifndef QGSCOMPOSERLEGEND_H
 #define QGSCOMPOSERLEGEND_H
 
-#include "qgscomposerlegendstyle.h"
+#include "qgis_core.h"
+#include "qgis.h"
 #include "qgscomposeritem.h"
-#include "qgscomposerlegenditem.h"
-#include "qgslegendmodel.h"
+#include "qgslayertreemodel.h"
+#include "qgslegendsettings.h"
+#include "qgslayertreegroup.h"
 
-class QgsSymbolV2;
-class QgsComposerGroupItem;
-class QgsComposerLayerItem;
+
+class QgsLayerTreeModel;
+class QgsSymbol;
 class QgsComposerMap;
+class QgsLegendRenderer;
+class QgsLegendModel;
 
-/** \ingroup MapComposer
+
+/**
+ * \ingroup core
  * A legend that can be placed onto a map composition
  */
 class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 {
-    Q_OBJECT;
+    Q_OBJECT
 
   public:
-    QgsComposerLegend( QgsComposition* composition );
+    QgsComposerLegend( QgsComposition *composition SIP_TRANSFERTHIS );
     ~QgsComposerLegend();
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const { return ComposerLegend; }
+    //! Return correct graphics item type.
+    virtual int type() const override { return ComposerLegend; }
 
-    /** \brief Reimplementation of QCanvasItem::paint*/
-    void paint( QPainter* painter, const QStyleOptionGraphicsItem* itemStyle, QWidget* pWidget );
+    //! \brief Reimplementation of QCanvasItem::paint
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
-    /**Paints the legend and calculates its size. If painter is 0, only size is calculated*/
-    QSizeF paintAndDetermineSize( QPainter* painter );
+    //! Paints the legend and calculates its size. If painter is 0, only size is calculated
+    QSizeF paintAndDetermineSize( QPainter *painter );
 
-    /**Sets item box to the whole content*/
+    //! Sets item box to the whole content
     void adjustBoxSize();
 
-    /**Returns pointer to the legend model*/
-    QgsLegendModel* model() {return &mLegendModel;}
+    /**
+     * Sets whether the legend should automatically resize to fit its contents.
+     * \param enabled set to false to disable automatic resizing. The legend frame will not
+     * be expanded to fit legend items, and items may be cropped from display.
+     * \see resizeToContents()
+     * \since QGIS 3.0
+     */
+    void setResizeToContents( bool enabled );
+
+    /**
+     * Returns whether the legend should automatically resize to fit its contents.
+     * \see setResizeToContents()
+     * \since QGIS 3.0
+     */
+    bool resizeToContents() const;
+
+
+    /**
+     * Returns the legend model
+     */
+    QgsLegendModel *model();
+
+    //! \since QGIS 2.6
+    void setAutoUpdateModel( bool autoUpdate );
+    //! \since QGIS 2.6
+    bool autoUpdateModel() const;
+
+    /**
+     * Set whether legend items should be filtered to show just the ones visible in the associated map
+     * \since QGIS 2.6
+     */
+    void setLegendFilterByMapEnabled( bool enabled );
+
+    /**
+     * Find out whether legend items are filtered to show just the ones visible in the associated map
+     * \since QGIS 2.6
+     */
+    bool legendFilterByMapEnabled() const { return mLegendFilterByMap; }
+
+    /**
+     * Update() overloading. Use it rather than update()
+     * \since QGIS 2.12
+     */
+    virtual void updateItem() override;
+
+    /**
+     * When set to true, during an atlas rendering, it will filter out legend elements
+     * where features are outside the current atlas feature.
+     * \since QGIS 2.14
+     */
+    void setLegendFilterOutAtlas( bool doFilter );
+
+    /**
+     * Whether to filter out legend elements outside of the current atlas feature
+     * \see setLegendFilterOutAtlas()
+     * \since QGIS 2.14
+     */
+    bool legendFilterOutAtlas() const;
 
     //setters and getters
-    void setTitle( const QString& t ) {mTitle = t;}
-    QString title() const {return mTitle;}
+    void setTitle( const QString &t );
+    QString title() const;
 
-    /** Returns reference to modifiable style */
-    QgsComposerLegendStyle & rstyle( QgsComposerLegendStyle::Style s ) { return mStyleMap[s]; }
-    /** Returns style */
-    QgsComposerLegendStyle style( QgsComposerLegendStyle::Style s ) const { return mStyleMap.value( s ); }
-    void setStyle( QgsComposerLegendStyle::Style s, const QgsComposerLegendStyle style ) { mStyleMap[s] = style; }
+    /**
+     * Returns the alignment of the legend title
+     * \returns Qt::AlignmentFlag for the legend title
+     * \since QGIS 2.3
+     * \see setTitleAlignment
+     */
+    Qt::AlignmentFlag titleAlignment() const;
 
-    QFont styleFont( QgsComposerLegendStyle::Style s ) const { return style( s ).font(); }
-    /** Set style font */
-    void setStyleFont( QgsComposerLegendStyle::Style s, const QFont& f );
+    /**
+     * Sets the alignment of the legend title
+     * \param alignment Text alignment for drawing the legend title
+     * \since QGIS 2.3
+     * \see titleAlignment
+     */
+    void setTitleAlignment( Qt::AlignmentFlag alignment );
 
-    /** Set style margin*/
-    void setStyleMargin( QgsComposerLegendStyle::Style s, double margin );
-    void setStyleMargin( QgsComposerLegendStyle::Style s, QgsComposerLegendStyle::Side side, double margin );
+    //! Returns reference to modifiable style
+    QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
+    //! Returns style
+    QgsLegendStyle style( QgsLegendStyle::Style s ) const;
+    void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
 
-    double boxSpace() const {return mBoxSpace;}
-    void setBoxSpace( double s ) {mBoxSpace = s;}
+    QFont styleFont( QgsLegendStyle::Style s ) const;
+    //! Set style font
+    void setStyleFont( QgsLegendStyle::Style s, const QFont &f );
 
-    double columnSpace() const {return mColumnSpace;}
-    void setColumnSpace( double s ) { mColumnSpace = s;}
+    //! Set style margin
+    void setStyleMargin( QgsLegendStyle::Style s, double margin );
+    void setStyleMargin( QgsLegendStyle::Style s, QgsLegendStyle::Side side, double margin );
 
-    QColor fontColor() const {return mFontColor;}
-    void setFontColor( const QColor& c ) {mFontColor = c;}
+    /**
+     * Returns the spacing in-between lines in mm
+     * \since QGIS 3.0
+     * \see setLineSpacing
+     */
+    double lineSpacing() const;
 
-    double symbolWidth() const {return mSymbolWidth;}
-    void setSymbolWidth( double w ) {mSymbolWidth = w;}
+    /**
+     * Sets the spacing in-between multiple lines
+     * \param spacing Double value to use as spacing in between multiple lines
+     * \since QGIS 3.0
+     * \see lineSpacing
+     */
+    void setLineSpacing( double spacing );
 
-    double symbolHeight() const {return mSymbolHeight;}
-    void setSymbolHeight( double h ) {mSymbolHeight = h;}
+    double boxSpace() const;
+    void setBoxSpace( double s );
 
-    double wmsLegendWidth() const {return mWmsLegendWidth;}
-    void setWmsLegendWidth( double w ) {mWmsLegendWidth = w;}
+    double columnSpace() const;
+    void setColumnSpace( double s );
 
-    double wmsLegendHeight() const {return mWmsLegendHeight;}
-    void setWmsLegendHeight( double h ) {mWmsLegendHeight = h;}
+    QColor fontColor() const;
+    void setFontColor( const QColor &c );
 
-    void setWrapChar( const QString& t ) {mWrapChar = t;}
-    QString wrapChar() const {return mWrapChar;}
+    double symbolWidth() const;
+    void setSymbolWidth( double w );
 
-    int columnCount() const { return mColumnCount; }
-    void setColumnCount( int c ) { mColumnCount = c;}
+    double symbolHeight() const;
+    void setSymbolHeight( double h );
 
-    int splitLayer() const { return mSplitLayer; }
-    void setSplitLayer( bool s ) { mSplitLayer = s;}
+    double wmsLegendWidth() const;
+    void setWmsLegendWidth( double w );
 
-    int equalColumnWidth() const { return mEqualColumnWidth; }
-    void setEqualColumnWidth( bool s ) { mEqualColumnWidth = s;}
+    double wmsLegendHeight() const;
+    void setWmsLegendHeight( double h );
 
-    void setComposerMap( const QgsComposerMap* map );
-    const QgsComposerMap* composerMap() const { return mComposerMap;}
+    void setWrapChar( const QString &t );
+    QString wrapChar() const;
 
-    /**Updates the model and all legend entries*/
+    int columnCount() const;
+    void setColumnCount( int c );
+
+    bool splitLayer() const;
+    void setSplitLayer( bool s );
+
+    bool equalColumnWidth() const;
+    void setEqualColumnWidth( bool s );
+
+    /**
+     * Returns whether a stroke will be drawn around raster symbol items.
+     * \see setDrawRasterStroke()
+     * \see rasterStrokeColor()
+     * \see rasterStrokeWidth()
+     * \since QGIS 2.12
+     */
+    bool drawRasterStroke() const;
+
+    /**
+     * Sets whether a stroke will be drawn around raster symbol items.
+     * \param enabled set to true to draw borders
+     * \see drawRasterStroke()
+     * \see setRasterStrokeColor()
+     * \see setRasterStrokeWidth()
+     * \since QGIS 2.12
+     */
+    void setDrawRasterStroke( bool enabled );
+
+    /**
+     * Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * \see setRasterStrokeColor()
+     * \see drawRasterStroke()
+     * \see rasterStrokeWidth()
+     * \since QGIS 2.12
+     */
+    QColor rasterStrokeColor() const;
+
+    /**
+     * Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * \param color stroke color
+     * \see rasterStrokeColor()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeWidth()
+     * \since QGIS 2.12
+     */
+    void setRasterStrokeColor( const QColor &color );
+
+    /**
+     * Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * \see setRasterStrokeWidth()
+     * \see drawRasterStroke()
+     * \see rasterStrokeColor()
+     * \since QGIS 2.12
+     */
+    double rasterStrokeWidth() const;
+
+    /**
+     * Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+     * only drawn if drawRasterStroke() is true.
+     * \param width stroke width in millimeters
+     * \see rasterStrokeWidth()
+     * \see setDrawRasterStroke()
+     * \see setRasterStrokeColor()
+     * \since QGIS 2.12
+     */
+    void setRasterStrokeWidth( double width );
+
+    void setComposerMap( const QgsComposerMap *map );
+    const QgsComposerMap *composerMap() const { return mComposerMap;}
+
+    //! Updates the model and all legend entries
     void updateLegend();
 
-    /** stores state in Dom node
-       * @param elem is Dom element corresponding to 'Composer' tag
-       * @param doc Dom document
+    /**
+     * Stores state in Dom node
+       * \param elem is Dom element corresponding to 'Composer' tag
+       * \param doc Dom document
        */
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
+    bool writeXml( QDomElement &elem, QDomDocument &doc ) const override;
 
-    /** sets state from Dom document
-       * @param itemElem is Dom node corresponding to item tag
-       * @param doc is Dom document
+    /**
+     * Sets state from Dom document
+       * \param itemElem is Dom node corresponding to item tag
+       * \param doc is Dom document
        */
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
+
+    //Overridden to show legend title
+    virtual QString displayName() const override;
+
+    /**
+     * Returns the legend's renderer settings object.
+     * \since QGIS 3.0
+     */
+    const QgsLegendSettings &legendSettings() const { return mSettings; }
 
   public slots:
-    /**Data changed*/
+    //! Data changed
     void synchronizeWithModel();
-    /**Sets mCompositionMap to 0 if the map is deleted*/
+    //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
 
-  protected:
-    QString mTitle;
-    QString mWrapChar;
+    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
-    QColor mFontColor;
 
-    /**Space between item box and contents*/
-    qreal mBoxSpace;
-    /**Space between columns*/
-    double mColumnSpace;
+  private slots:
 
-    /**Width of symbol icon*/
-    double mSymbolWidth;
-    /**Height of symbol icon*/
-    double mSymbolHeight;
+    void updateFilterByMapAndRedraw();
 
-    /**Width of WMS legendGraphic pixmap*/
-    double mWmsLegendWidth;
-    /**Height of WMS legendGraphic pixmap*/
-    double mWmsLegendHeight;
+    void updateFilterByMap( bool redraw = true );
 
-    /** Spacing between lines when wrapped */
-    double mlineSpacing;
+    //! update legend in case style of associated map has changed
+    void mapLayerStyleOverridesChanged();
 
-    /** Number of legend columns */
-    int mColumnCount;
+    //! react to atlas
+    void onAtlasEnded();
+    void onAtlasFeature( QgsFeature * );
 
-    QgsLegendModel mLegendModel;
-
-    /**Reference to map (because symbols are sometimes in map units)*/
-    const QgsComposerMap* mComposerMap;
-
-    /** Allow splitting layers into multiple columns */
-    bool mSplitLayer;
-
-    /** Use the same width (maximum) for all columns */
-    bool mEqualColumnWidth;
+    void nodeCustomPropertyChanged( QgsLayerTreeNode *node, const QString &key );
 
   private:
-    /** Nucleon is either group title, layer title or layer child item.
-     *  Nucleon is similar to QgsComposerLegendItem but it does not have
-     *  the same hierarchy. E.g. layer title nucleon is just title, it does not
-     *  include all layer subitems, the same with groups.
-     */
-    class Nucleon
-    {
-      public:
-        QgsComposerLegendItem* item;
-        // Symbol size size without any space around for symbol item
-        QSizeF symbolSize;
-        // Label size without any space around for symbol item
-        QSizeF labelSize;
-        QSizeF size;
-        // Offset of symbol label, this offset is the same for all symbol labels
-        // of the same layer in the same column
-        double labelXOffset;
-    };
-
-    /** Atom is indivisible set (indivisible into more columns). It may consists
-     *  of one or more Nucleon, depending on layer splitting mode:
-     *  1) no layer split: [group_title ...] layer_title layer_item [layer_item ...]
-     *  2) layer split:    [group_title ...] layer_title layer_item
-     *              or:    layer_item
-     *  It means that group titles must not be split from layer title and layer title
-     *  must not be split from first item, because it would look bad and it would not
-     *  be readable to leave group or layer title at the bottom of column.
-     */
-    class Atom
-    {
-      public:
-        Atom(): size( QSizeF( 0, 0 ) ), column( 0 ) {}
-        QList<Nucleon> nucleons;
-        // Atom size including nucleons interspaces but without any space around atom.
-        QSizeF size;
-        int column;
-    };
-
-    /** Create list of atoms according to current layer splitting mode */
-    QList<Atom> createAtomList( QStandardItem* rootItem, bool splitLayer );
-
-    /** Divide atoms to columns and set columns on atoms */
-    void setColumns( QList<Atom>& atomList );
-
     QgsComposerLegend(); //forbidden
 
-    QSizeF drawTitle( QPainter* painter = 0, QPointF point = QPointF(), Qt::AlignmentFlag halignment = Qt::AlignLeft );
+    //! use new custom layer tree and update model. if new root is null pointer, will use project's tree
+    void setCustomLayerTree( QgsLayerTree *rootGroup );
 
-    /**Draws a group item and all subitems
-     * Returns list of sizes of layers and groups including this group.
-     */
-    QSizeF drawGroupItemTitle( QgsComposerGroupItem* groupItem, QPainter* painter = 0, QPointF point = QPointF() );
-    /**Draws a layer item and all subitems*/
-    QSizeF drawLayerItemTitle( QgsComposerLayerItem* layerItem, QPainter* painter = 0, QPointF point = QPointF() );
+    QgsLegendModel *mLegendModel = nullptr;
+    std::unique_ptr< QgsLayerTreeGroup > mCustomLayerTree;
 
-    Nucleon drawSymbolItem( QgsComposerLegendItem* symbolItem, QPainter* painter = 0, QPointF point = QPointF(), double labelXOffset = 0. );
+    QgsLegendSettings mSettings;
 
-    /**Draws a symbol at the current y position and returns the new x position. Returns real symbol height, because for points,
-     it is possible that it differs from mSymbolHeight*/
-    void drawSymbolV2( QPainter* p, QgsSymbolV2* s, double currentYCoord, double& currentXPosition, double& symbolHeight ) const;
+    QString mTitle;
+    int mColumnCount = 1;
 
-    /** Draw atom and return its actual size, the atom is drawn with the space above it
-     *  so that first atoms in column are all aligned to the same line regardles their
-     * style top space */
-    QSizeF drawAtom( Atom atom, QPainter* painter = 0, QPointF point = QPointF() );
+    const QgsComposerMap *mComposerMap = nullptr;
 
-    double spaceAboveAtom( Atom atom );
+    bool mLegendFilterByMap = false;
+    bool mLegendFilterByExpression = false;
 
-    /**Helper function that lists ids of layers contained in map canvas*/
-    QStringList layerIdList() const;
+    //! whether to filter out legend elements outside of the atlas feature
+    bool mFilterOutAtlas = false;
 
-    /** Splits a string using the wrap char taking into account handling empty
-      wrap char which means no wrapping */
-    QStringList splitStringForWrapping( QString stringToSplt );
+    //! tag for update request
+    bool mFilterAskedForUpdate = false;
+    //! actual filter update
+    void doUpdateFilterByMap();
 
-    QMap<QgsComposerLegendStyle::Style, QgsComposerLegendStyle> mStyleMap;
+    bool mInAtlas = false;
+
+    //! Will be false until the associated map scale and DPI have been calculated
+    bool mInitialMapScaleCalculated = false;
+
+    //! Will be true if the legend size should be totally reset at next paint
+    bool mForceResize = false;
+
+    //! Will be true if the legend should be resized automatically to fit contents
+    bool mSizeToContents = true;
 };
 
 #endif
+

@@ -1,32 +1,81 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/HalfEdge.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class HalfEdge
 {
+
 %TypeHeaderCode
-#include <HalfEdge.h>
+#include "HalfEdge.h"
 %End
+  protected:
 
   public:
-    /**Default constructor. Values for mDual, mNext, mPoint are set to -10 which means that they are undefined*/
     HalfEdge();
+%Docstring
+Default constructor. Values for mDual, mNext, mPoint are set to -10 which means that they are undefined
+%End
     HalfEdge( int dual, int next, int point, bool mbreak, bool forced );
-    ~HalfEdge();
-    /**Returns the number of the dual HalfEdge*/
+
     int getDual() const;
-    /**Returns the number of the next HalfEdge*/
+%Docstring
+Returns the number of the dual HalfEdge
+ :rtype: int
+%End
     int getNext() const;
-    /**Returns the number of the point at which this HalfEdge points*/
+%Docstring
+Returns the number of the next HalfEdge
+ :rtype: int
+%End
     int getPoint() const;
-    /**Returns, whether the HalfEdge belongs to a break line or not*/
+%Docstring
+Returns the number of the point at which this HalfEdge points
+ :rtype: int
+%End
     bool getBreak() const;
-    /**Returns, whether the HalfEdge belongs to a constrained edge or not*/
+%Docstring
+Returns, whether the HalfEdge belongs to a break line or not
+ :rtype: bool
+%End
     bool getForced() const;
-    /**Sets the number of the dual HalfEdge*/
+%Docstring
+Returns, whether the HalfEdge belongs to a constrained edge or not
+ :rtype: bool
+%End
     void setDual( int d );
-    /**Sets the number of the next HalfEdge*/
+%Docstring
+Sets the number of the dual HalfEdge
+%End
     void setNext( int n );
-    /**Sets the number of point at which this HalfEdge points*/
+%Docstring
+Sets the number of the next HalfEdge
+%End
     void setPoint( int p );
-    /**Sets the break flag*/
+%Docstring
+Sets the number of point at which this HalfEdge points
+%End
     void setBreak( bool b );
-    /**Sets the forced flag*/
+%Docstring
+Sets the break flag
+%End
     void setForced( bool f );
+%Docstring
+Sets the forced flag
+%End
 };
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/HalfEdge.h                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

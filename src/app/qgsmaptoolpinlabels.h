@@ -19,14 +19,12 @@
 #define QGSMAPTOOLPINLABELS_H
 
 #include "qgsmaptoollabel.h"
-#include "qgsrectangle.h"
-#include "qgslegend.h"
-#include "qgscoordinatetransform.h"
+#include "qgis_app.h"
 
-class QgsHighlight;
+class QgsRubberBand;
 class QgsLabelPosition;
 
-/**A map tool for pinning (writing to attribute table) and unpinning labelpositions and rotation*/
+//! A map tool for pinning (writing to attribute table) and unpinning labelpositions and rotation
 class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
 {
     Q_OBJECT
@@ -36,13 +34,13 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     ~QgsMapToolPinLabels();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QMouseEvent * e );
+    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
     bool isShowingPinned() const { return mShowPinned; }
     void setShowingPinned( bool showing ) { mShowPinned = showing; }
@@ -64,7 +62,7 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
   protected:
 
     //! Mapping of feature ids of layers that have been highlighted
-    QMap<QString, QgsHighlight*> mHighlights;
+    QMap<QString, QgsRubberBand *> mHighlights;
 
     //! Flag to indicate a map canvas drag operation is taking place
     bool mDragging;
@@ -75,26 +73,26 @@ class APP_EXPORT QgsMapToolPinLabels: public QgsMapToolLabel
     QRect mSelectRect;
 
     //! Stores selection marquee
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
 
   private:
 
-    //! Pointer to map renderer
-    QgsMapRenderer* mRender;
-
     //! Highlights a given label relative to whether its pinned and editable
-    void highlightLabel( QgsVectorLayer* vlayer,
-                         const QgsLabelPosition& labelpos,
-                         const QString& id,
-                         const QColor& color );
+    void highlightLabel( const QgsLabelPosition &labelpos,
+                         const QString &id,
+                         const QColor &color );
 
     //! Select valid labels to pin or unpin
-    void pinUnpinLabels( const QgsRectangle& ext, QMouseEvent * e );
+    void pinUnpinLabels( const QgsRectangle &ext, QMouseEvent *e );
 
-    //! Pin or unpin label relative to whether its editable
-    bool pinUnpinLabel( QgsVectorLayer* vlayer,
-                        const QgsLabelPosition& labelpos,
-                        bool pin );
+    //! Pin or unpin current label relative to whether its editable
+    bool pinUnpinCurrentLabel( bool pin );
+
+    //! Pin or unpin diagram relative to whether its editable
+    bool pinUnpinCurrentDiagram( bool pin );
+
+    //! Pin or unpin current feature (diagram or label)
+    bool pinUnpinCurrentFeature( bool pin );
 };
 
 #endif // QGSMAPTOOLPINLABELS_H

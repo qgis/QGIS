@@ -1,0 +1,13 @@
+{
+  "name": "azimuth",
+  "type": "function",
+  "description": "Returns the north-based azimuth as the angle in radians measured clockwise from the vertical on point_a to point_b.",
+  "arguments": [
+    {"arg":"point_a","description":"point geometry"},
+    {"arg":"point_b","description":"point geometry"}
+  ],
+  "examples": [
+	{ "expression":"degrees( azimuth( make_point(25, 45), make_point(75, 100) ) )", "returns":"42.273689"},
+	{ "expression":"degrees( azimuth( make_point(75, 100), make_point(25,45) ) )", "returns":"222.273689"}
+  ]
+}

@@ -1,16 +1,25 @@
-/** \class QgsOfflineEditing
- *  \brief Class for accessing functionality of Offline Editing Plugin.
- * This class can be used to access offline editing functionality from plugins.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsofflineediting.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsOfflineEditing : QObject
 {
-%TypeHeaderCode
-#include <qgsofflineediting.h>
-%End
 
+%TypeHeaderCode
+#include "qgsofflineediting.h"
+%End
   public:
-    enum ProgressMode {
-      CopyFeatures = 0,
+    enum ProgressMode
+    {
+      CopyFeatures,
       ProcessFeatures,
       AddFields,
       AddFeatures,
@@ -20,42 +29,75 @@ class QgsOfflineEditing : QObject
     };
 
     QgsOfflineEditing();
-    ~QgsOfflineEditing();
 
-    /** convert current project for offline editing
-     * @param offlineDataPath path to offline db file
-     * @param offlineDbFile offline db file name
-     * @param layerIds list of layer names to convert
-     */
-    bool convertToOfflineProject( const QString& offlineDataPath, const QString& offlineDbFile, const QStringList& layerIds );
+    bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false );
+%Docstring
+ Convert current project for offline editing
+ \param offlineDataPath Path to offline db file
+ \param offlineDbFile Offline db file name
+ \param layerIds List of layer names to convert
+ \param onlySelected Only copy selected features from layers where a selection is present
+ :rtype: bool
+%End
 
-    /** return true if current project is offline */
-    bool isOfflineProject();
+    bool isOfflineProject() const;
+%Docstring
+Return true if current project is offline
+ :rtype: bool
+%End
 
-    /** synchronize to remote layers */
     void synchronize();
+%Docstring
+Synchronize to remote layers
+%End
 
   signals:
-    /** emit a signal that processing has started */
+
     void progressStarted();
+%Docstring
+ The signal is emitted when the process has started.
+%End
 
-    /** emit a signal that the next layer of numLayers has started processing
-     * @param layer current layer index
-     * @param numLayers total number of layers
-     */
     void layerProgressUpdated( int layer, int numLayers );
+%Docstring
+ Is emitted whenever a new layer is being processed.
+ It is possible to estimate the progress of the complete operation by
+ comparing the index of the current ``layer`` to the total amount
+ ``numLayers``.
+%End
 
-    /** emit a signal that sets the mode for the progress of the current operation
-     * @param mode progress mode
-     * @param maximum total number of entities to process in the current operation
-     */
     void progressModeSet( QgsOfflineEditing::ProgressMode mode, int maximum );
+%Docstring
+ Is emitted when the mode for the progress of the current operation is
+ set.
+ \param mode progress mode
+ \param maximum total number of entities to process in the current operation
+%End
 
-    /** emit a signal with the progress of the current mode
-     * @param progress current index of processed entities
-     */
     void progressUpdated( int progress );
+%Docstring
+ Emitted with the progress of the current mode
+ \param progress current index of processed entities
+%End
 
-    /** emit a signal that processing of all layers has finished */
     void progressStopped();
+%Docstring
+Emitted when the processing of all layers has finished
+%End
+
+    void warning( const QString &title, const QString &message );
+%Docstring
+ Emitted when a warning needs to be displayed.
+ \param title title string for message
+ \param message A descriptive message for the warning
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgsofflineediting.h                                         *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -1,8 +1,0 @@
-Nearest Neighbour
-grid_gridding
-ParameterVector|SHAPES|Points|0|False
-ParameterTableField|FIELD|Attribute|SHAPES|-1|False
-ParameterSelection|TARGET|Target Grid|[0] user defined
-Extent USER_XMIN USER_XMAX USER_YMIN USER_YMAX
-ParameterNumber|USER_SIZE|Cellsize|None|None|100.0
-OutputRaster|USER_GRID|Grid

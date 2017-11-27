@@ -1,8 +1,0 @@
-SarRadiometricCalibration
-otbcli_SarRadiometricCalibration
-SAR Radiometric calibration
-Calibration
-ParameterRaster|-in|Input Complex Image|False
-OutputRaster|-out|Output Image
-ParameterNumber|-ram|Available RAM (Mb)|None|None|128
-ParameterBoolean|-noise|Disable Noise|

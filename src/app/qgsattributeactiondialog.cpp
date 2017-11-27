@@ -21,84 +21,140 @@ back to QgsVectorLayer.
  ***************************************************************************/
 
 #include "qgsattributeactiondialog.h"
-#include "qgsattributeaction.h"
+#include "qgsactionmanager.h"
 #include "qgsexpressionbuilderdialog.h"
+#include "qgsattributeactionpropertiesdialog.h"
 #include "qgisapp.h"
 #include "qgsproject.h"
 #include "qgsmapcanvas.h"
+#include "qgsvectorlayer.h"
 
 #include <QFileDialog>
 #include <QHeaderView>
 #include <QMessageBox>
 #include <QSettings>
+#include <QImageWriter>
+#include <QTableWidget>
 
-QgsAttributeActionDialog::QgsAttributeActionDialog( QgsAttributeAction* actions,
-    const QgsFields& fields,
-    QWidget* parent ):
-    QWidget( parent ), mActions( actions )
+QgsAttributeActionDialog::QgsAttributeActionDialog( const QgsActionManager &actions, QWidget *parent )
+  : QWidget( parent )
+  , mLayer( actions.layer() )
 {
   setupUi( this );
-  QHeaderView *header = attributeActionTable->horizontalHeader();
+  QHeaderView *header = mAttributeActionTable->horizontalHeader();
   header->setHighlightSections( false );
   header->setStretchLastSection( true );
-  attributeActionTable->setColumnWidth( 0, 100 );
-  attributeActionTable->setColumnWidth( 1, 230 );
-  attributeActionTable->setCornerButtonEnabled( false );
+  mAttributeActionTable->setColumnWidth( 0, 100 );
+  mAttributeActionTable->setColumnWidth( 1, 230 );
+  mAttributeActionTable->setCornerButtonEnabled( false );
+  mAttributeActionTable->setEditTriggers( QAbstractItemView::AnyKeyPressed | QAbstractItemView::SelectedClicked );
 
-  connect( attributeActionTable, SIGNAL( itemSelectionChanged() ),
-           this, SLOT( itemSelectionChanged() ) );
-  connect( actionName, SIGNAL( textChanged( QString ) ), this, SLOT( updateButtons() ) );
-  connect( actionAction, SIGNAL( textChanged() ), this, SLOT( updateButtons() ) );
+  connect( mAttributeActionTable, &QTableWidget::itemDoubleClicked, this, &QgsAttributeActionDialog::itemDoubleClicked );
+  connect( mAttributeActionTable, &QTableWidget::itemSelectionChanged, this, &QgsAttributeActionDialog::updateButtons );
+  connect( mMoveUpButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::moveUp );
+  connect( mMoveDownButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::moveDown );
+  connect( mRemoveButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::remove );
+  connect( mAddButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::insert );
+  connect( mAddDefaultActionsButton, &QAbstractButton::clicked, this, &QgsAttributeActionDialog::addDefaultActions );
 
-  connect( moveUpButton, SIGNAL( clicked() ), this, SLOT( moveUp() ) );
-  connect( moveDownButton, SIGNAL( clicked() ), this, SLOT( moveDown() ) );
-  connect( removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
-  connect( addDefaultActionsButton, SIGNAL( clicked() ), this, SLOT( addDefaultActions() ) );
-
-  connect( browseButton, SIGNAL( clicked() ), this, SLOT( browse() ) );
-  connect( insertButton, SIGNAL( clicked() ), this, SLOT( insert() ) );
-  connect( updateButton, SIGNAL( clicked() ), this, SLOT( update() ) );
-  connect( insertFieldButton, SIGNAL( clicked() ), this, SLOT( insertField() ) );
-  connect( insertExpressionButton, SIGNAL( clicked() ), this, SLOT( insertExpression() ) );
-
-  init();
-  // Populate the combo box with the field names. Will the field names
-  // change? If so, they need to be passed into the init() call, or
-  // some access to them retained in this class.
-  for ( int idx = 0; idx < fields.count(); ++idx )
-    fieldComboBox->addItem( fields[idx].name() );
+  init( actions, mLayer->attributeTableConfig() );
 }
 
-void QgsAttributeActionDialog::init()
+void QgsAttributeActionDialog::init( const QgsActionManager &actions, const QgsAttributeTableConfig &attributeTableConfig )
 {
   // Start from a fresh slate.
-  attributeActionTable->setRowCount( 0 );
+  mAttributeActionTable->setRowCount( 0 );
 
+  int i = 0;
   // Populate with our actions.
-  for ( int i = 0; i < mActions->size(); i++ )
+  Q_FOREACH ( const QgsAction &action, actions.actions() )
   {
-    const QgsAction action = ( *mActions )[i];
-    insertRow( i, action.type(), action.name(), action.action(), action.capture() );
+    insertRow( i++, action );
   }
 
   updateButtons();
+
+  QgsAttributeTableConfig::ColumnConfig visibleActionWidgetConfig = QgsAttributeTableConfig::ColumnConfig();
+  visibleActionWidgetConfig.type = QgsAttributeTableConfig::Action;
+  visibleActionWidgetConfig.hidden = false;
+
+  mShowInAttributeTable->setChecked( attributeTableConfig.actionWidgetVisible() );
+  mAttributeTableWidgetType->setCurrentIndex( attributeTableConfig.actionWidgetStyle() );
 }
 
-void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &action, bool capture )
+QList<QgsAction> QgsAttributeActionDialog::actions() const
 {
-  QTableWidgetItem* item;
-  attributeActionTable->insertRow( row );
-  item = new QTableWidgetItem( actionType->itemText( type ) );
+  QList<QgsAction> actions;
+
+  for ( int i = 0; i < mAttributeActionTable->rowCount(); ++i )
+  {
+    actions.append( rowToAction( i ) );
+  }
+
+  return actions;
+}
+
+bool QgsAttributeActionDialog::showWidgetInAttributeTable() const
+{
+  return mShowInAttributeTable->isChecked();
+}
+
+QgsAttributeTableConfig::ActionWidgetStyle QgsAttributeActionDialog::attributeTableWidgetStyle() const
+{
+  return static_cast<QgsAttributeTableConfig::ActionWidgetStyle>( mAttributeTableWidgetType->currentIndex() );
+}
+
+void QgsAttributeActionDialog::insertRow( int row, const QgsAction &action )
+{
+  QTableWidgetItem *item = nullptr;
+  mAttributeActionTable->insertRow( row );
+
+  // Type
+  item = new QTableWidgetItem( textForType( action.type() ) );
+  item->setData( Qt::UserRole, action.type() );
   item->setFlags( item->flags() & ~Qt::ItemIsEditable );
-  attributeActionTable->setItem( row, 0, item );
-  attributeActionTable->setItem( row, 1, new QTableWidgetItem( name ) );
-  attributeActionTable->setItem( row, 2, new QTableWidgetItem( action ) );
+  mAttributeActionTable->setItem( row, Type, item );
+
+  // Description
+  mAttributeActionTable->setItem( row, Description, new QTableWidgetItem( action.name() ) );
+
+  // Short Title
+  mAttributeActionTable->setItem( row, ShortTitle, new QTableWidgetItem( action.shortTitle() ) );
+
+  // Action text
+  mAttributeActionTable->setItem( row, ActionText, new QTableWidgetItem( action.command() ) );
+
+  // Capture output
   item = new QTableWidgetItem();
-  item->setFlags( item->flags() & ~( Qt::ItemIsEditable | Qt::ItemIsUserCheckable ) );
-  item->setCheckState( capture ? Qt::Checked : Qt::Unchecked );
-  attributeActionTable->setItem( row, 3, item );
+  item->setFlags( item->flags() & ~( Qt::ItemIsEditable ) );
+  item->setCheckState( action.capture() ? Qt::Checked : Qt::Unchecked );
+  mAttributeActionTable->setItem( row, Capture, item );
+
+  // Scopes
+  item = new QTableWidgetItem();
+  item->setFlags( item->flags() & ~( Qt::ItemIsEditable ) );
+  QStringList actionScopes = action.actionScopes().toList();
+  std::sort( actionScopes.begin(), actionScopes.end() );
+  item->setText( actionScopes.join( QStringLiteral( ", " ) ) );
+  item->setData( Qt::UserRole, QVariant::fromValue<QSet<QString>>( action.actionScopes() ) );
+  mAttributeActionTable->setItem( row, ActionScopes, item );
+
+  // Icon
+  QIcon icon = action.icon();
+  QTableWidgetItem *headerItem = new QTableWidgetItem( icon, QLatin1String( "" ) );
+  headerItem->setData( Qt::UserRole, action.iconPath() );
+  mAttributeActionTable->setVerticalHeaderItem( row, headerItem );
+
+  // Notification message
+  mAttributeActionTable->setItem( row, NotificationMessage, new QTableWidgetItem( action.notificationMessage() ) );
 
   updateButtons();
+}
+
+void QgsAttributeActionDialog::insertRow( int row, QgsAction::ActionType type, const QString &name, const QString &actionText, const QString &iconPath, bool capture, const QString &shortTitle, const QSet<QString> &actionScopes, const QString &notificationMessage )
+{
+  if ( uniqueName( name ) == name )
+    insertRow( row, QgsAction( type, name, actionText, iconPath, capture, shortTitle, actionScopes, notificationMessage ) );
 }
 
 void QgsAttributeActionDialog::moveUp()
@@ -106,7 +162,7 @@ void QgsAttributeActionDialog::moveUp()
   // Swap the selected row with the one above
 
   int row1 = -1, row2 = -1;
-  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
     row1 = selection.first()->row();
@@ -119,7 +175,7 @@ void QgsAttributeActionDialog::moveUp()
   {
     swapRows( row1, row2 );
     // Move the selection to follow
-    attributeActionTable->selectRow( row2 );
+    mAttributeActionTable->selectRow( row2 );
   }
 }
 
@@ -127,86 +183,84 @@ void QgsAttributeActionDialog::moveDown()
 {
   // Swap the selected row with the one below
   int row1 = -1, row2 = -1;
-  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
     row1 = selection.first()->row();
   }
 
-  if ( row1 < attributeActionTable->rowCount() - 1 )
+  if ( row1 < mAttributeActionTable->rowCount() - 1 )
     row2 = row1 + 1;
 
   if ( row1 != -1 && row2 != -1 )
   {
     swapRows( row1, row2 );
     // Move the selection to follow
-    attributeActionTable->selectRow( row2 );
+    mAttributeActionTable->selectRow( row2 );
   }
 }
 
 void QgsAttributeActionDialog::swapRows( int row1, int row2 )
 {
-  int colCount = attributeActionTable->columnCount();
+  int colCount = mAttributeActionTable->columnCount();
   for ( int col = 0; col < colCount; col++ )
   {
-    QTableWidgetItem *item = attributeActionTable->takeItem( row1, col );
-    attributeActionTable->setItem( row1, col, attributeActionTable->takeItem( row2, col ) );
-    attributeActionTable->setItem( row2, col, item );
+    QTableWidgetItem *item = mAttributeActionTable->takeItem( row1, col );
+    mAttributeActionTable->setItem( row1, col, mAttributeActionTable->takeItem( row2, col ) );
+    mAttributeActionTable->setItem( row2, col, item );
   }
+  QTableWidgetItem *header = mAttributeActionTable->takeVerticalHeaderItem( row1 );
+  mAttributeActionTable->setVerticalHeaderItem( row1, mAttributeActionTable->takeVerticalHeaderItem( row2 ) );
+  mAttributeActionTable->setVerticalHeaderItem( row2, header );
 }
 
-void QgsAttributeActionDialog::browse()
+QgsAction QgsAttributeActionDialog::rowToAction( int row ) const
 {
-  // Popup a file browser and place the results into the action widget
-  QString action = QFileDialog::getOpenFileName(
-                     this, tr( "Select an action", "File dialog window title" ) );
-
-  if ( !action.isNull() )
-    actionAction->insertPlainText( action );
+  QgsAction action( static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+                    mAttributeActionTable->item( row, Description )->text(),
+                    mAttributeActionTable->item( row, ActionText )->text(),
+                    mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
+                    mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
+                    mAttributeActionTable->item( row, ShortTitle )->text(),
+                    mAttributeActionTable->item( row, ActionScopes )->data( Qt::UserRole ).value<QSet<QString>>(),
+                    mAttributeActionTable->item( row, NotificationMessage )->text()
+                  );
+  return action;
 }
 
-void QgsAttributeActionDialog::insertExpression()
+QString QgsAttributeActionDialog::textForType( QgsAction::ActionType type )
 {
-  QString selText = actionAction->textCursor().selectedText();
-
-  // edit the selected expression if there's one
-  if ( selText.startsWith( "[%" ) && selText.endsWith( "%]" ) )
-    selText = selText.mid( 2, selText.size() - 4 );
-
-  // display the expression builder
-  QgsExpressionBuilderDialog dlg( mActions->layer(), selText, this );
-  dlg.setWindowTitle( tr( "Insert expression" ) );
-
-  QgsDistanceArea myDa;
-  myDa.setSourceCrs( mActions->layer()->crs().srsid() );
-  myDa.setEllipsoidalMode( QgisApp::instance()->mapCanvas()->mapRenderer()->hasCrsTransformEnabled() );
-  myDa.setEllipsoid( QgsProject::instance()->readEntry( "Measure", "/Ellipsoid", GEO_NONE ) );
-  dlg.setGeomCalculator( myDa );
-
-  if ( dlg.exec() == QDialog::Accepted )
+  switch ( type )
   {
-    QString expression =  dlg.expressionBuilder()->expressionText();
-    //Only add the expression if the user has entered some text.
-    if ( !expression.isEmpty() )
-    {
-      actionAction->insertPlainText( "[%" + expression + "%]" );
-    }
+    case QgsAction::Generic:
+      return tr( "Generic" );
+    case QgsAction::GenericPython:
+      return tr( "Python" );
+    case QgsAction::Mac:
+      return tr( "Mac" );
+    case QgsAction::Windows:
+      return tr( "Windows" );
+    case QgsAction::Unix:
+      return tr( "Unix" );
+    case QgsAction::OpenUrl:
+      return tr( "Open URL" );
   }
+  return QString();
 }
 
 void QgsAttributeActionDialog::remove()
 {
-  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
   if ( !selection.isEmpty() )
   {
     // Remove the selected row.
     int row = selection.first()->row();
-    attributeActionTable->removeRow( row );
+    mAttributeActionTable->removeRow( row );
 
     // And select the row below the one that was selected or the last one.
-    if ( row >= attributeActionTable->rowCount() )
-      row = attributeActionTable->rowCount() - 1;
-    attributeActionTable->selectRow( row );
+    if ( row >= mAttributeActionTable->rowCount() )
+      row = mAttributeActionTable->rowCount() - 1;
+    mAttributeActionTable->selectRow( row );
 
     updateButtons();
   }
@@ -215,161 +269,90 @@ void QgsAttributeActionDialog::remove()
 void QgsAttributeActionDialog::insert()
 {
   // Add the action details as a new row in the table.
-  int pos = attributeActionTable->rowCount();
-  insert( pos );
-}
+  int pos = mAttributeActionTable->rowCount();
 
-void QgsAttributeActionDialog::insert( int pos )
-{
-  // Check to see if the action name and the action have been specified
-  // before proceeding
+  QgsAttributeActionPropertiesDialog dlg( mLayer, this );
+  dlg.setWindowTitle( tr( "Add New Action" ) );
 
-  if ( actionName->text().isEmpty() || actionAction->toPlainText().isEmpty() )
+  if ( dlg.exec() )
   {
-    QMessageBox::warning( this, tr( "Missing Information" ),
-                          tr( "To create an attribute action, you must provide both a name and the action to perform." ) );
+    QString name = uniqueName( dlg.description() );
 
-  }
-  else
-  {
-
-    // Get the action details and insert into the table at the given
-    // position. Name needs to be unique, so make it so if required.
-
-    // If the new action name is the same as the action name in the
-    // given pos, don't make the new name unique (because we're
-    // replacing it).
-
-    int numRows = attributeActionTable->rowCount();
-    QString name;
-    if ( pos < numRows && actionName->text() == attributeActionTable->item( pos, 0 )->text() )
-      name = actionName->text();
-    else
-      name = uniqueName( actionName->text() );
-
-    if ( pos >= numRows )
-    {
-      // Expand the table to have a row with index pos
-      insertRow( pos, ( QgsAction::ActionType ) actionType->currentIndex(), name, actionAction->toPlainText(), captureCB->isChecked() );
-    }
-    else
-    {
-      // Update existing row
-      attributeActionTable->item( pos, 0 )->setText( actionType->currentText() );
-      attributeActionTable->item( pos, 1 )->setText( name );
-      attributeActionTable->item( pos, 2 )->setText( actionAction->toPlainText() );
-      attributeActionTable->item( pos, 3 )->setCheckState( captureCB->isChecked() ? Qt::Checked : Qt::Unchecked );
-    }
-  }
-}
-
-void QgsAttributeActionDialog::update()
-{
-  // Updates the action that is selected with the
-  // action details.
-  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
-  if ( !selection.isEmpty() )
-  {
-    insert( selection.first()->row() );
+    insertRow( pos, dlg.type(), name, dlg.actionText(), dlg.iconPath(), dlg.capture(), dlg.shortTitle(), dlg.actionScopes(), dlg.notificationMessage() );
   }
 }
 
 void QgsAttributeActionDialog::updateButtons()
 {
-  bool validNewAction = !actionName->text().isEmpty() && !actionAction->toPlainText().isEmpty();
-
-  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
+  QList<QTableWidgetItem *> selection = mAttributeActionTable->selectedItems();
   bool hasSelection = !selection.isEmpty();
 
   if ( hasSelection )
   {
     int row = selection.first()->row();
-    moveUpButton->setEnabled( row >= 1 );
-    moveDownButton->setEnabled( row >= 0 && row < attributeActionTable->rowCount() - 1 );
+    mMoveUpButton->setEnabled( row >= 1 );
+    mMoveDownButton->setEnabled( row >= 0 && row < mAttributeActionTable->rowCount() - 1 );
   }
   else
   {
-    moveUpButton->setEnabled( false );
-    moveDownButton->setEnabled( false );
+    mMoveUpButton->setEnabled( false );
+    mMoveDownButton->setEnabled( false );
   }
 
-  removeButton->setEnabled( hasSelection );
-
-  insertButton->setEnabled( validNewAction );
-  updateButton->setEnabled( hasSelection && validNewAction );
-}
-
-void QgsAttributeActionDialog::insertField()
-{
-  // Convert the selected field to an expression and
-  // insert it into the action at the cursor position
-
-  if ( !fieldComboBox->currentText().isNull() )
-  {
-    QString field = "[% \"";
-    field += fieldComboBox->currentText();
-    field += "\" %]";
-    actionAction->insertPlainText( field );
-  }
-}
-
-void QgsAttributeActionDialog::apply()
-{
-  // Update the contents of mActions from the UI.
-
-  mActions->clearActions();
-  for ( int i = 0; i < attributeActionTable->rowCount(); ++i )
-  {
-    const QgsAction::ActionType type = ( QgsAction::ActionType ) actionType->findText( attributeActionTable->item( i, 0 )->text() );
-    const QString &name = attributeActionTable->item( i, 1 )->text();
-    const QString &action = attributeActionTable->item( i, 2 )->text();
-    if ( !name.isEmpty() && !action.isEmpty() )
-    {
-      QTableWidgetItem *item = attributeActionTable->item( i, 3 );
-      mActions->addAction( type, name, action, item->checkState() == Qt::Checked );
-    }
-  }
+  mRemoveButton->setEnabled( hasSelection );
 }
 
 void QgsAttributeActionDialog::addDefaultActions()
 {
   int pos = 0;
-  insertRow( pos++, QgsAction::Generic, tr( "Echo attribute's value" ), "echo \"[% \"MY_FIELD\" %]\"", true );
-  insertRow( pos++, QgsAction::Generic, tr( "Run an application" ), "ogr2ogr -f \"ESRI Shapefile\" \"[% \"OUTPUT_PATH\" %]\" \"[% \"INPUT_FILE\" %]\"", true );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Get feature id" ), "QtGui.QMessageBox.information(None, \"Feature id\", \"feature id is [% $id %]\")", false );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), "QtGui.QMessageBox.information(None, \"Current field's value\", \"[% $currentfield %]\")", false );
-  insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), "QtGui.QMessageBox.information(None, \"Clicked coords\", \"layer: [% $layerid %]\\ncoords: ([% $clickx %],[% $clicky %])\")", false );
-  insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), "[% \"PATH\" %]", false );
-  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]", false );
+  insertRow( pos++, QgsAction::Generic, tr( "Echo attribute's value" ), QStringLiteral( "echo \"[% \"MY_FIELD\" %]\"" ), QLatin1String( "" ), true, tr( "Attribute Value" ), QSet<QString>() << QStringLiteral( "Field" ), QString() );
+  insertRow( pos++, QgsAction::Generic, tr( "Run an application" ), QStringLiteral( "ogr2ogr -f \"GPKG\" \"[% \"OUTPUT_PATH\" %]\" \"[% \"INPUT_FILE\" %]\"" ), QLatin1String( "" ), true, tr( "Run application" ), QSet<QString>() << QStringLiteral( "Feature" ) << QStringLiteral( "Canvas" ), QString() );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Get feature id" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Feature id\", \"feature id is [% $id %]\")" ), QLatin1String( "" ), false, tr( "Feature ID" ), QSet<QString>() << QStringLiteral( "Feature" ) << QStringLiteral( "Canvas" ), QString() );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Selected field's value (Identify features tool)" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Current field's value\", \"[% @current_field %]\")" ), QLatin1String( "" ), false, tr( "Field Value" ), QSet<QString>() << QStringLiteral( "Field" ), QString() );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Clicked coordinates (Run feature actions tool)" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nQtWidgets.QMessageBox.information(None, \"Clicked coords\", \"layer: [% @layer_id %]\\ncoords: ([% @click_x %],[% @click_y %])\")" ), QLatin1String( "" ), false, tr( "Clicked Coordinate" ), QSet<QString>() << QStringLiteral( "Canvas" ), QString() );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Open file" ), QStringLiteral( "[% \"PATH\" %]" ), QLatin1String( "" ), false, tr( "Open file" ), QSet<QString>() << QStringLiteral( "Feature" ) << QStringLiteral( "Canvas" ), QString() );
+  insertRow( pos++, QgsAction::OpenUrl, tr( "Search on web based on attribute's value" ), QStringLiteral( "http://www.google.com/search?q=[% \"ATTRIBUTE\" %]" ), QLatin1String( "" ), false, tr( "Search Web" ), QSet<QString>() << QStringLiteral( "Field" ), QString() );
+  insertRow( pos++, QgsAction::GenericPython, tr( "List feature ids" ), QStringLiteral( "from qgis.PyQt import QtWidgets\n\nlayer = QgsProject.instance().mapLayer('[% @layer_id %]')\nif layer.selectedFeatureCount():\n    ids = layer.selectedFeatureIds()\nelse:\n    ids = [f.id() for f in layer.getFeatures()]\n\nQtWidgets.QMessageBox.information(None, \"Feature ids\", ', '.join([str(id) for id in ids]))" ), QLatin1String( "" ), false, tr( "List feature ids" ), QSet<QString>() << QStringLiteral( "Layer" ), QString() );
+  insertRow( pos++, QgsAction::GenericPython, tr( "Duplicate features" ), QStringLiteral( "project = QgsProject.instance()\nlayer = QgsProject.instance().mapLayer('[% @layer_id %]')\nlayer.startEditing()\nfeatures=[]\nif len('[% $id %]')>0:\n    features.append( layer.getFeature( [% $id %] ) )\nelse:\n    for x in layer.selectedFeatures():\n        features.append( x )\nfeature_count=0\nchildren_info=''\nfeatureids=[]\nfor f in features:\n    result=QgsVectorLayerUtils.duplicateFeature(layer, f, project, 0 )\n    featureids.append( result[0].id() )\n    feature_count+=1\n    for ch_layer in result[1].layers():\n        children_info+='{number_of_children} children on layer {children_layer}\\n'.format( number_of_children=str( len( result[1].duplicatedFeatures(ch_layer) ) ), children_layer=ch_layer.name() )\n        ch_layer.selectByIds( result[1].duplicatedFeatures(ch_layer) )\nlayer.selectByIds( featureids )\nqgis.utils.iface.messageBar().pushMessage( '{number_of_features} features on layer {layer} duplicated with\\n{children_info}'.format( number_of_features=str( feature_count ), layer=layer.name(), children_info=children_info ) )" ), QLatin1String( "" ), false, tr( "Duplicate" ), QSet<QString>() << QStringLiteral( "Canvas" ) << QStringLiteral( "Feature" ) << QStringLiteral( "Layer" ), QString() );
+
 }
 
-void QgsAttributeActionDialog::itemSelectionChanged()
+void QgsAttributeActionDialog::itemDoubleClicked( QTableWidgetItem *item )
 {
-  QList<QTableWidgetItem *> selection = attributeActionTable->selectedItems();
-  bool hasSelection = !selection.isEmpty();
-  if ( hasSelection )
+  int row = item->row();
+
+  QgsAttributeActionPropertiesDialog actionProperties(
+    static_cast<QgsAction::ActionType>( mAttributeActionTable->item( row, Type )->data( Qt::UserRole ).toInt() ),
+    mAttributeActionTable->item( row, Description )->text(),
+    mAttributeActionTable->item( row, ShortTitle )->text(),
+    mAttributeActionTable->verticalHeaderItem( row )->data( Qt::UserRole ).toString(),
+    mAttributeActionTable->item( row, ActionText )->text(),
+    mAttributeActionTable->item( row, Capture )->checkState() == Qt::Checked,
+    mAttributeActionTable->item( row, ActionScopes )->data( Qt::UserRole ).value<QSet<QString>>(),
+    mAttributeActionTable->item( row, NotificationMessage )->text(),
+    mLayer
+  );
+
+  actionProperties.setWindowTitle( tr( "Edit Action" ) );
+
+  if ( actionProperties.exec() )
   {
-    int row = selection.first()->row();
-    rowSelected( row );
-  }
+    mAttributeActionTable->item( row, Type )->setData( Qt::UserRole, actionProperties.type() );
+    mAttributeActionTable->item( row, Type )->setText( textForType( actionProperties.type() ) );
+    mAttributeActionTable->item( row, Description )->setText( actionProperties.description() );
+    mAttributeActionTable->item( row, ShortTitle )->setText( actionProperties.shortTitle() );
+    mAttributeActionTable->item( row, ActionText )->setText( actionProperties.actionText() );
+    mAttributeActionTable->item( row, Capture )->setCheckState( actionProperties.capture() ? Qt::Checked : Qt::Unchecked );
+    mAttributeActionTable->item( row, NotificationMessage )->setText( actionProperties.notificationMessage() );
 
-  updateButtons();
-}
+    QTableWidgetItem *item = mAttributeActionTable->item( row, ActionScopes );
+    QStringList actionScopes = actionProperties.actionScopes().toList();
+    std::sort( actionScopes.begin(), actionScopes.end() );
+    item->setText( actionScopes.join( QStringLiteral( ", " ) ) );
+    item->setData( Qt::UserRole, QVariant::fromValue<QSet<QString>>( actionProperties.actionScopes() ) );
 
-void QgsAttributeActionDialog::rowSelected( int row )
-{
-  // The user has selected a row. We take the contents of that row and
-  // populate the edit section of the dialog so that they can change
-  // the row if desired.
-
-  QTableWidgetItem *item = attributeActionTable->item( row, 2 );
-  if ( item )
-  {
-    // Only if a populated row was selected
-    actionType->setCurrentIndex( actionType->findText( attributeActionTable->item( row, 0 )->text() ) );
-    actionName->setText( attributeActionTable->item( row, 1 )->text() );
-    actionAction->setPlainText( attributeActionTable->item( row, 2 )->text() );
-    captureCB->setChecked( attributeActionTable->item( row, 3 )->checkState() == Qt::Checked );
+    mAttributeActionTable->verticalHeaderItem( row )->setData( Qt::UserRole, actionProperties.iconPath() );
+    mAttributeActionTable->verticalHeaderItem( row )->setIcon( QIcon( actionProperties.iconPath() ) );
   }
 }
 
@@ -378,12 +361,12 @@ QString QgsAttributeActionDialog::uniqueName( QString name )
   // Make sure that the given name is unique, adding a numerical
   // suffix if necessary.
 
-  int pos = attributeActionTable->rowCount();
+  int pos = mAttributeActionTable->rowCount();
   bool unique = true;
 
   for ( int i = 0; i < pos; ++i )
   {
-    if ( attributeActionTable->item( i, 0 )->text() == name )
+    if ( mAttributeActionTable->item( i, Description )->text() == name )
       unique = false;
   }
 
@@ -394,10 +377,10 @@ QString QgsAttributeActionDialog::uniqueName( QString name )
     while ( !unique )
     {
       QString suffix = QString::number( suffix_num );
-      new_name = name + "_" + suffix;
+      new_name = name + '_' + suffix;
       unique = true;
       for ( int i = 0; i < pos; ++i )
-        if ( attributeActionTable->item( i, 0 )->text() == new_name )
+        if ( mAttributeActionTable->item( i, 0 )->text() == new_name )
           unique = false;
       ++suffix_num;
     }

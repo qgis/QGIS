@@ -17,49 +17,27 @@
 
 #ifndef QGSWMSCONNECTION_H
 #define QGSWMSCONNECTION_H
-#include "qgsdatasourceuri.h"
-#include "qgisgui.h"
-//#include "qgscontexthelp.h"
 
+#include "qgsowsconnection.h"
 #include <QStringList>
-#include <QPushButton>
-
-class QgisApp;
-class QgsWmsProvider;
-/*class QButtonGroup;*/
-/*class QgsNumericSortTreeWidgetItem;*/
-class QDomDocument;
-class QDomElement;
 
 /*!
  * \brief   Connections management
  */
-class QgsWMSConnection : public QObject
+class QgsWMSConnection : public QgsOwsConnection
 {
-    Q_OBJECT
 
   public:
     //! Constructor
-    QgsWMSConnection( QString theConnName );
-    //! Destructor
-    ~QgsWMSConnection();
+    explicit QgsWMSConnection( const QString &connName );
 
     static QStringList connectionList();
 
-    static void deleteConnection( QString name );
+    static void deleteConnection( const QString &name );
 
     static QString selectedConnection();
-    static void setSelectedConnection( QString name );
+    static void setSelectedConnection( const QString &name );
 
-
-  public:
-    QgsWmsProvider *provider();
-    QString connectionInfo();
-    QString mConnName;
-    QString mConnectionInfo;
-    QgsDataSourceURI uri();
-    QgsDataSourceURI mUri;
 };
-
 
 #endif // QGSWMSCONNECTION_H

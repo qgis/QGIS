@@ -25,34 +25,32 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtGui import *
+import os
+
+from qgis.core import QgsApplication
+
 from processing.gui.ToolboxAction import ToolboxAction
 from processing.gui.ScriptEditorDialog import ScriptEditorDialog
-import processing.resources_rc
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
 
 
 class CreateNewScriptAction(ToolboxAction):
 
     SCRIPT_PYTHON = 0
-    SCRIPT_R = 1
 
     def __init__(self, actionName, scriptType):
-        self.name = actionName
-        self.group = 'Tools'
+        self.name, self.i18n_name = self.trAction(actionName)
+        self.group, self.i18n_group = self.trAction('Tools')
+
         self.scriptType = scriptType
 
     def getIcon(self):
         if self.scriptType == self.SCRIPT_PYTHON:
-            return QIcon(':/processing/images/script.png')
-        elif self.scriptType == self.SCRIPT_R:
-            return QIcon(':/processing/images/r.png')
+            return QgsApplication.getThemeIcon("/processingScript.svg")
 
     def execute(self):
         dlg = None
         if self.scriptType == self.SCRIPT_PYTHON:
             dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_PYTHON, None)
-        if self.scriptType == self.SCRIPT_R:
-            dlg = ScriptEditorDialog(ScriptEditorDialog.SCRIPT_R, None)
-        dlg.exec_()
-        if dlg.update:
-            self.toolbox.updateTree()
+        dlg.show()

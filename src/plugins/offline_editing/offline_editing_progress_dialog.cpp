@@ -18,17 +18,13 @@
 
 #include "offline_editing_progress_dialog.h"
 
-QgsOfflineEditingProgressDialog::QgsOfflineEditingProgressDialog( QWidget* parent /*= 0*/, Qt::WFlags fl /*= 0*/ )
-    : QDialog( parent, fl )
+QgsOfflineEditingProgressDialog::QgsOfflineEditingProgressDialog( QWidget *parent, Qt::WindowFlags fl )
+  : QDialog( parent, fl )
 {
   setupUi( this );
 }
 
-QgsOfflineEditingProgressDialog::~QgsOfflineEditingProgressDialog()
-{
-}
-
-void QgsOfflineEditingProgressDialog::setTitle( const QString& title )
+void QgsOfflineEditingProgressDialog::setTitle( const QString &title )
 {
   setWindowTitle( title );
 }
@@ -39,7 +35,7 @@ void QgsOfflineEditingProgressDialog::setCurrentLayer( int layer, int numLayers 
   progressBar->reset();
 }
 
-void QgsOfflineEditingProgressDialog::setupProgressBar( const QString& format, int maximum )
+void QgsOfflineEditingProgressDialog::setupProgressBar( const QString &format, int maximum )
 {
   progressBar->setFormat( format );
   progressBar->setRange( 0, maximum );

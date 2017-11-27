@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 13.2.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -18,9 +18,8 @@
 #include "qgscachedfeatureiterator.h"
 #include "qgsvectorlayercache.h"
 
-QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache* cachedVectorLayer )
-    : QgsAbstractCacheIndex()
-    , C( cachedVectorLayer )
+QgsCacheIndexFeatureId::QgsCacheIndexFeatureId( QgsVectorLayerCache *cachedVectorLayer )
+  : C( cachedVectorLayer )
 {
 
 }
@@ -34,7 +33,7 @@ void QgsCacheIndexFeatureId::flush()
 {
 }
 
-void QgsCacheIndexFeatureId::requestCompleted( QgsFeatureRequest featureRequest, QgsFeatureIds fids )
+void QgsCacheIndexFeatureId::requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids )
 {
   Q_UNUSED( featureRequest )
   Q_UNUSED( fids )
@@ -42,12 +41,35 @@ void QgsCacheIndexFeatureId::requestCompleted( QgsFeatureRequest featureRequest,
 
 bool QgsCacheIndexFeatureId::getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest )
 {
-  if ( featureRequest.filterType() == QgsFeatureRequest::FilterFid )
+  switch ( featureRequest.filterType() )
   {
-    if ( C->isFidCached( featureRequest.filterFid() ) )
+    case QgsFeatureRequest::FilterFid:
     {
-      featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
-      return true;
+      if ( C->isFidCached( featureRequest.filterFid() ) )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+    case QgsFeatureRequest::FilterFids:
+    {
+      if ( C->cachedFeatureIds().contains( featureRequest.filterFids() ) )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
+    }
+    case QgsFeatureRequest::FilterNone:
+    case QgsFeatureRequest::FilterExpression:
+    {
+      if ( C->hasFullCache() )
+      {
+        featureIterator = QgsFeatureIterator( new QgsCachedFeatureIterator( C, featureRequest ) );
+        return true;
+      }
+      break;
     }
   }
 

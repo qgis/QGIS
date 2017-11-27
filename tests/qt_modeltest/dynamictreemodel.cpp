@@ -52,8 +52,8 @@
 
 
 DynamicTreeModel::DynamicTreeModel( QObject *parent )
-    : QAbstractItemModel( parent ),
-    nextId( 1 )
+  : QAbstractItemModel( parent )
+  , nextId( 1 )
 {
 }
 
@@ -182,7 +182,7 @@ void DynamicTreeModel::clear()
 
 
 ModelChangeCommand::ModelChangeCommand( DynamicTreeModel *model, QObject *parent )
-    : QObject( parent ), m_model( model ), m_numCols( 1 ), m_startRow( -1 ), m_endRow( -1 )
+  : QObject( parent ), m_model( model ), m_numCols( 1 ), m_startRow( -1 ), m_endRow( -1 )
 {
 
 }
@@ -201,7 +201,7 @@ QModelIndex ModelChangeCommand::findIndex( QList<int> rows )
 }
 
 ModelInsertCommand::ModelInsertCommand( DynamicTreeModel *model, QObject *parent )
-    : ModelChangeCommand( model, parent )
+  : ModelChangeCommand( model, parent )
 {
 
 }
@@ -233,7 +233,8 @@ void ModelInsertCommand::doCommand()
 
 
 ModelMoveCommand::ModelMoveCommand( DynamicTreeModel *model, QObject *parent )
-    : ModelChangeCommand( model, parent )
+  : ModelChangeCommand( model, parent )
+  , m_destRow( 0 )
 {
 
 }
@@ -271,7 +272,7 @@ void ModelMoveCommand::doCommand()
         d = m_destRow - ( m_endRow - m_startRow ) + 1;
     }
 
-    foreach ( const qint64 id, l )
+    Q_FOREACH ( const qint64 id, l )
     {
       m_model->m_childItems[destParent.internalId()][column].insert( d++, id );
     }
@@ -285,8 +286,8 @@ void ModelMoveCommand::emitPostSignal()
   m_model->endMoveRows();
 }
 
-ModelResetCommand::ModelResetCommand( DynamicTreeModel* model, QObject* parent )
-    : ModelMoveCommand( model, parent )
+ModelResetCommand::ModelResetCommand( DynamicTreeModel *model, QObject *parent )
+  : ModelMoveCommand( model, parent )
 {
 
 }
@@ -312,8 +313,8 @@ void ModelResetCommand::emitPostSignal()
   m_model->reset();
 }
 
-ModelResetCommandFixed::ModelResetCommandFixed( DynamicTreeModel* model, QObject* parent )
-    : ModelMoveCommand( model, parent )
+ModelResetCommandFixed::ModelResetCommandFixed( DynamicTreeModel *model, QObject *parent )
+  : ModelMoveCommand( model, parent )
 {
 
 }

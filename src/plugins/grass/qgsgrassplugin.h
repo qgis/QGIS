@@ -18,16 +18,16 @@
 #include "../qgisplugin.h"
 #include "qgscoordinatereferencesystem.h"
 #include "qgscoordinatetransform.h"
+#include "qgsvectorlayer.h"
 #include <QObject>
-#include <QPen>
-
 
 class QgsGrassTools;
 class QgsGrassNewMapset;
 class QgsGrassRegion;
-class QgsGrassEdit;
 
 class QgsMapCanvas;
+class QgsMapLayer;
+class QgsMapTool;
 class QgsRubberBand;
 
 class QAction;
@@ -45,64 +45,58 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     Q_OBJECT
 
   public:
+
     /**
      * Constructor for a plugin. The QgisInterface pointer is passed by
      * QGIS when it attempts to instantiate the plugin.
-     * @param qI Pointer to the QgisInterface object.
+     * \param qI Pointer to the QgisInterface object.
      */
-    QgsGrassPlugin( QgisInterface * qI );
+    explicit QgsGrassPlugin( QgisInterface *qI );
+
     /**
      * Virtual function to return the name of the plugin. The name will be used when presenting a list
      * of installable plugins to the user
      */
     virtual QString name();
+
     /**
      * Virtual function to return the version of the plugin.
      */
     virtual QString version();
+
     /**
      * Virtual function to return a description of the plugins functions
      */
     virtual QString description();
+
     /**
      * Virtual function to return a category of the plugin
      */
     virtual QString category();
+
     /**
      * Return the plugin type
      */
     virtual int type();
-    //! Destructor
+
     virtual ~QgsGrassPlugin();
 
-    //! Get Region Pen
-    QPen & regionPen( void );
-    //! Set Region Pen
-    void setRegionPen( QPen & );
     //! Get an icon from the active theme if possible
-    static QIcon getThemeIcon( const QString theName );
+    static QIcon getThemeIcon( const QString &name );
 
   public slots:
     //! init the gui
-    virtual void initGui();
-    //! Show the dialog box for new vector
-    void addVector();
-    //! Show the dialog box for new raster
-    void addRaster();
-    //! Start vector editing
-    void edit();
+    virtual void initGui() override;
     //! unload the plugin
-    void unload();
+    void unload() override;
     //! show the help document
     void help();
+    //! Gisbase changed by user
+    void onGisbaseChanged();
     //! Display current region
     void displayRegion();
     //! Switch region on/off
     void switchRegion( bool on );
-    //! Change region
-    void changeRegion( void );
-    //! Region dialog closed
-    void regionClosed();
     //! Redraw region
     void redrawRegion( void );
     //! Post render
@@ -111,9 +105,9 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void openTools( void );
     //! Create new mapset
     void newMapset();
-    //! Open existing mapset
+    //! Open existing mapset and save it to project
     void openMapset();
-    //! Close mapset
+    //! Close mapset and save it to project
     void closeMapset();
     //! Current mapset changed (opened/closed)
     void mapsetChanged();
@@ -123,63 +117,74 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
     void projectRead();
     //! New project
     void newProject();
-    //! Save mapset to project
-    void saveMapset();
-    //! Set edit action
-    void setEditAction();
-    //! Close the edit if layer is removed
-    void closeEdit( QString layerId );
-    //! Cleanup the Grass Edit
-    void cleanUp();
     //! update plugin icons when the app tells us its theme is changed
-    void setCurrentTheme( QString theThemeName );
+    void setCurrentTheme( QString themeName );
     void setTransform();
-    void editClosed();
+    //! Called when a new layer was added to map registry
+    void onLayerWasAdded( QgsMapLayer *mapLayer );
+    //! Called when editing of a layer started
+    void onEditingStarted();
+    void onEditingStopped();
+    void onCurrentLayerChanged( QgsMapLayer *layer );
+
+    void onFieldsChanged();
+
+    // Start editing tools
+    void addFeature();
+
+    void onSplitFeaturesTriggered( bool checked );
+
+    // Called when new layer was created in browser
+    void onNewLayer( QString uri, QString name );
+
   private:
-    //! Name of the plugin
-    QString pluginNameQString;
-    //! Version
-    QString pluginVersionQString;
-    //! Descrption of the plugin
-    QString pluginDescriptionQString;
-    //! Category of the plugin
-    QString pluginCategoryQString;
-    //! Plugin type as defined in QgisPlugin::PLUGINTYPE
-    int pluginType;
+    void resetEditActions();
+
     //! Pointer to our toolbar
-    QToolBar *toolBarPointer;
+    QToolBar *mToolBarPointer = nullptr;
     //! Pointer to the QGIS interface object
-    QgisInterface *qGisInterface;
+    QgisInterface *qGisInterface = nullptr;
     //! Pointer to canvas
-    QgsMapCanvas *mCanvas;
+    QgsMapCanvas *mCanvas = nullptr;
 
     //! Pointer to Display region acction
-    QAction *mRegionAction;
-    //! Region width
-    QPen mRegionPen;
-    //! Region dialog
-    QgsGrassRegion *mRegion;
+    QAction *mRegionAction = nullptr;
+
     // Region rubber band
-    QgsRubberBand *mRegionBand;
+    QgsRubberBand *mRegionBand = nullptr;
     //! GRASS tools
-    QgsGrassTools *mTools;
+    QgsGrassTools *mTools = nullptr;
     //! Pointer to QgsGrassNewMapset
-    QgsGrassNewMapset *mNewMapset;
-    QgsGrassEdit *mEdit;
+    QgsGrassNewMapset *mNewMapset = nullptr;
 
     QgsCoordinateReferenceSystem mCrs;
     QgsCoordinateTransform mCoordinateTransform;
 
     // Actions
-    QAction *mOpenMapsetAction;
-    QAction *mNewMapsetAction;
-    QAction *mCloseMapsetAction;
-    QAction *mAddVectorAction;
-    QAction *mAddRasterAction;
-    QAction *mOpenToolsAction;
-    QAction *mEditRegionAction;
-    QAction *mEditAction;
-    QAction *mNewVectorAction;
+    QAction *mOpenMapsetAction = nullptr;
+    QAction *mNewMapsetAction = nullptr;
+    QAction *mCloseMapsetAction = nullptr;
+    QAction *mOpenToolsAction = nullptr;
+    QAction *mOptionsAction = nullptr;
+
+    // Editing    static bool mNonInitializable;
+    QAction *mAddFeatureAction = nullptr;
+    QAction *mAddPointAction = nullptr;
+    QAction *mAddLineAction = nullptr;
+    QAction *mAddBoundaryAction = nullptr;
+    QAction *mAddCentroidAction = nullptr;
+    QAction *mAddAreaAction = nullptr;
+
+    QgsMapTool *mAddPoint = nullptr;
+    QgsMapTool *mAddLine = nullptr;
+    QgsMapTool *mAddBoundary = nullptr;
+    QgsMapTool *mAddCentroid = nullptr;
+    QgsMapTool *mAddArea = nullptr;
+
+    // Names of layer styles before editing started
+    QMap<QgsVectorLayer *, QString> mOldStyles;
+    // Original layer form suppress
+    QMap<QgsVectorLayer *, QgsEditFormConfig::FeatureFormSuppress> mFormSuppress;
 };
 
 #endif // QGSGRASSPLUGIN_H

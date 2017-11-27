@@ -41,7 +41,7 @@ FIND_PATH(PROJ_INCLUDE_DIR proj_api.h
   "$ENV{LIB_DIR}/include"
   )
 
-FIND_LIBRARY(PROJ_LIBRARY NAMES proj proj_i PATHS
+FIND_LIBRARY(PROJ_LIBRARY NAMES proj_i proj PATHS
   "$ENV{LIB}"
   "$ENV{LIB_DIR}/lib"
   )

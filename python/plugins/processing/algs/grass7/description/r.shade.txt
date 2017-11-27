@@ -1,0 +1,9 @@
+r.shade
+Drapes a color raster over an shaded relief or aspect map. 
+Raster (r.*)
+QgsProcessingParameterRasterLayer|shade|Name of shaded relief or aspect raster map|None|False
+QgsProcessingParameterRasterLayer|color|Name of raster to drape over relief raster map|None|False
+QgsProcessingParameterNumber|brighten|Percent to brighten|QgsProcessingParameterNumber.Integer|0|True|-99|99
+QgsProcessingParameterString|bgcolor|Color to use instead of NULL values. Either a standard color name, R:G:B triplet, or "none"|None|False|True
+*QgsProcessingParameterBoolean|-c|Use colors from color tables for NULL values|False
+QgsProcessingParameterRasterDestination|output|Shaded

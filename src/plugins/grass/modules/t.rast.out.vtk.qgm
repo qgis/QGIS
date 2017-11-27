@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Exports space time raster dataset as VTK time series" module="t.rast.out.vtk">
+	<option key="input"/>
+	<option key="directory"/>
+	<option key="elevation"/>
+	<option key="where"/>
+	<option key="null" advanced="yes"/>
+	<flag key="c" hidden="no" advanced="yes"/>
+	<flag key="p" hidden="no" advanced="yes"/>
+	<flag key="g" hidden="no" advanced="yes"/>
+</qgisgrassmodule>

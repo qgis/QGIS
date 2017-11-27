@@ -1,0 +1,8 @@
+{
+  "name": "day_of_week",
+  "type": "function",
+  "description": "Returns the day of the week for a specified date or datetime. The returned value ranges from 0 to 6, where 0 corresponds to a Sunday and 6 to a Saturday.",
+  "arguments": [ {"arg":"date","description":"date or datetime value"} ],
+  "examples": [ { "expression":"day_of_week(todate('2015-09-21'))", "returns":"1"}
+  ]
+}

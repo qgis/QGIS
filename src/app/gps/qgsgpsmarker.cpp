@@ -18,38 +18,38 @@
 #include "qgsgpsmarker.h"
 #include "qgscoordinatetransform.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
+#include "qgsexception.h"
 
-
-QgsGpsMarker::QgsGpsMarker( QgsMapCanvas* mapCanvas )
-    : QgsMapCanvasItem( mapCanvas )
+QgsGpsMarker::QgsGpsMarker( QgsMapCanvas *mapCanvas )
+  : QgsMapCanvasItem( mapCanvas )
 {
   mSize = 16;
-  mWgs84CRS.createFromOgcWmsCrs( "EPSG:4326" );
-  mSvg.load( QString( ":/images/north_arrows/gpsarrow2.svg" ) );
+  mWgs84CRS = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
+  mSvg.load( QStringLiteral( ":/images/north_arrows/gpsarrow2.svg" ) );
   if ( ! mSvg.isValid() )
   {
     qDebug( "GPS marker not found!" );
   }
 }
 
-void QgsGpsMarker::setSize( int theSize )
+void QgsGpsMarker::setSize( int size )
 {
-  mSize = theSize;
+  mSize = size;
 }
 
-void QgsGpsMarker::setCenter( const QgsPoint& point )
+void QgsGpsMarker::setCenter( const QgsPointXY &point )
 {
   //transform to map crs
-  if ( mMapCanvas && mMapCanvas->mapRenderer() )
+  if ( mMapCanvas )
   {
-    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapRenderer()->destinationCrs() );
+    QgsCoordinateTransform t( mWgs84CRS, mMapCanvas->mapSettings().destinationCrs() );
     try
     {
       mCenter = t.transform( point );
     }
-    catch ( QgsCsException e ) //silently ignore transformation exceptions
+    catch ( QgsCsException &e ) //silently ignore transformation exceptions
     {
+      Q_UNUSED( e );
       return;
     }
   }
@@ -62,7 +62,7 @@ void QgsGpsMarker::setCenter( const QgsPoint& point )
   setPos( pt );
 }
 
-void QgsGpsMarker::paint( QPainter* p )
+void QgsGpsMarker::paint( QPainter *p )
 {
   if ( ! mSvg.isValid() )
   {
@@ -75,7 +75,7 @@ void QgsGpsMarker::paint( QPainter* p )
   setPos( pt );
 
   float myHalfSize = mSize / 2.0;
-  mSvg.render( p, QRectF( 0 - myHalfSize , 0 - myHalfSize, mSize, mSize ) );
+  mSvg.render( p, QRectF( 0 - myHalfSize, 0 - myHalfSize, mSize, mSize ) );
 }
 
 

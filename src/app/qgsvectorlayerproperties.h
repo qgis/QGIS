@@ -21,27 +21,32 @@
 
 #include "qgsoptionsdialogbase.h"
 #include "ui_qgsvectorlayerpropertiesbase.h"
-#include "qgisgui.h"
-#include "qgsaddattrdialog.h"
-#include "qgsdelattrdialog.h"
-#include "qgsattributetypedialog.h"
-#include "qgsfield.h"
-#include "qgslegenditem.h"
-#include "qgsmapcanvas.h"
-#include "qgscontexthelp.h"
-#include "qgsexpressionbuilderdialog.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
+#include "qgsmaplayerstylemanager.h"
+#include "qgsvectorlayer.h"
+#include "qgsvectorlayerjoininfo.h"
+#include "layertree/qgslayertree.h"
+#include "layertree/qgslayertreemodel.h"
+#include "layertree/qgslayertreegroup.h"
+#include "qgis_app.h"
 
 class QgsMapLayer;
 
 class QgsAttributeActionDialog;
 class QgsApplyDialog;
-class QgsLabelDialog;
 class QgsVectorLayer;
-class QgsLabelingGui;
+class QgsLabelingWidget;
 class QgsDiagramProperties;
-class QgsFieldsProperties;
+class QgsSourceFieldsProperties;
+class QgsAttributesFormProperties;
+class QgsRendererPropertiesDialog;
+class QgsMapLayerConfigWidgetFactory;
+class QgsMapLayerConfigWidget;
+class QgsMetadataWidget;
+class QgsPanelWidget;
 
-class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase
+class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
     Q_OBJECT
 
@@ -53,131 +58,188 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
       DB,
     };
 
-    QgsVectorLayerProperties( QgsVectorLayer *lyr = 0, QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsVectorLayerProperties();
-    /**Returns the display name entered in the dialog*/
-    QString displayName();
-    void setRendererDirty( bool ) {}
+    QgsVectorLayerProperties( QgsVectorLayer *lyr = nullptr, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    /**Sets the attribute that is used in the Identify Results dialog box*/
-    void setDisplayField( QString name );
+    //! Returns the display name entered in the dialog
+    QString displayName()
+    {
+      return txtDisplayName->text();
+    }
 
-    /**Adds an attribute to the table (but does not commit it yet)
-    @param field the field to add
-    @return false in case of a name conflict, true in case of success */
+    /**
+     * Adds an attribute to the layer.
+     * The layer will need to be in edit mode. It will only be added to the provider when the edit buffer
+     * is committed.
+     * \param field the field to add
+     * \returns false in case of a name conflict, true in case of success
+     */
     bool addAttribute( const QgsField &field );
 
-    /**Deletes an attribute (but does not commit it)
-      @param name attribute name
-      @return false in case of a non-existing attribute.*/
+    /**
+     * Deletes an attribute.
+     * The layer will need to be in edit mode. It will only be added to the provider when the edit buffer
+     * is committed.
+     * \param name attribute name
+     * \returns false in case of a non-existing attribute.
+     */
     bool deleteAttribute( int attr );
+
+    //! Adds a properties page factory to the vector layer properties dialog.
+    void addPropertiesPageFactory( QgsMapLayerConfigWidgetFactory *factory );
 
   public slots:
 
-    /** Insert a field in the expression text for the map tip **/
-    void insertField();
+    void insertFieldOrExpression();
 
-    void insertExpression();
-
-    /** Reset to original (vector layer) values */
+    //! Reset to original (vector layer) values
     void syncToLayer();
 
-    /** Get metadata about the layer in nice formatted html */
-    QString metadata();
+    //! Get metadata about the layer in nice formatted html
+    QString htmlMetadata();
 
-    /** Slot to update layer display name as original is edited
-     * @note added in QGIS 1.9
-     */
-    void on_mLayerOrigNameLineEdit_textEdited( const QString& text );
+    //! Slot to update layer display name as original is edited
+    void mLayerOrigNameLineEdit_textEdited( const QString &text );
 
-    /** Toggles on the label check box */
-    void setLabelCheckBox();
-
-    /** Called when apply button is pressed or dialog is accepted */
+    //! Called when apply button is pressed or dialog is accepted
     void apply();
+
+    //! Called when cancel button is pressed
+    void onCancel();
 
     //
     //methods reimplemented from qt designer base class
     //
 
-    void on_pbnQueryBuilder_clicked();
-    void on_pbnIndex_clicked();
-    void on_pbnChangeSpatialRefSys_clicked();
-    void on_pbnLoadDefaultStyle_clicked();
-    void on_pbnSaveDefaultStyle_clicked();
-    void on_pbnLoadStyle_clicked();
-    void on_pbnSaveStyleAs_clicked();
-    void mOptionsStackedWidget_CurrentChanged( int indx );
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_pbnUpdateExtents_clicked();
+    void pbnQueryBuilder_clicked();
+    void pbnIndex_clicked();
+    void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
+    void loadDefaultStyle_clicked();
+    void saveDefaultStyle_clicked();
+    void loadStyle_clicked();
+    void saveStyleAs_clicked();
+    void optionsStackedWidget_CurrentChanged( int index ) override;
+    void pbnUpdateExtents_clicked();
 
-    void enableLabelOptions( bool theFlag );
+    void mButtonAddJoin_clicked();
+    void mButtonEditJoin_clicked();
+    void mJoinTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mButtonRemoveJoin_clicked();
 
-    void on_mButtonAddJoin_clicked();
-    void on_mButtonRemoveJoin_clicked();
-
-    void on_mMinimumScaleSetCurrentPushButton_clicked();
-    void on_mMaximumScaleSetCurrentPushButton_clicked();
+    void mSimplifyDrawingGroupBox_toggled( bool checked );
 
   signals:
 
-    /** emitted when changes to layer were saved to update legend */
-    void refreshLegend( QString layerID, bool expandItem );
-    void refreshLegend( QString layerID, QgsLegendItem::Expansion expandItem );
+    //! Emitted when changes to layer were saved to update legend
+    void refreshLegend( const QString &layerID, bool expandItem );
+    void refreshLegend( const QString &layerID );
 
     void toggleEditing( QgsMapLayer * );
 
   private slots:
-    /** toggle editing of layer */
+    //! Toggle editing of layer
     void toggleEditing();
 
-    /** save the style based on selected format from the menu */
+    //! Save the style based on selected format from the menu
     void saveStyleAsMenuTriggered( QAction * );
 
-    /** called when is possible to choice if load the style from filesystem or from db */
+    //! Called when is possible to choice if load the style from filesystem or from db
     void loadStyleMenuTriggered( QAction * );
 
+    void aboutToShowStyleMenu();
 
-  protected:
+    /**
+     * Updates the variable editor to reflect layer changes
+     */
+    void updateVariableEditor();
+
+    void onAuxiliaryLayerNew();
+
+    void onAuxiliaryLayerClear();
+
+    void onAuxiliaryLayerDelete();
+
+    void onAuxiliaryLayerDeleteField();
+
+    void onAuxiliaryLayerAddField();
+
+    void onAuxiliaryLayerExport();
+
+  private:
 
     void saveStyleAs( StyleType styleType );
 
-    /** when provider supports, it will list all the styles relative the layer in a dialog */
+    //! When provider supports, it will list all the styles relative the layer in a dialog
     void showListOfStylesFromDatabase();
 
     void updateSymbologyPage();
 
-    QgsVectorLayer *layer;
+    void setPbnQueryBuilderEnabled();
 
-    bool mMetadataFilled;
+    QgsVectorLayer *mLayer = nullptr;
 
-    QMenu *mSaveAsMenu;
-    QMenu *mLoadStyleMenu;
+    bool mMetadataFilled = false;
 
-    /**Renderer dialog which is shown*/
-    QDialog* mRendererDialog;
-    /**Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel */
-    QgsLabelingGui* labelingDialog;
-    /**Label dialog. If apply is pressed, options are applied to vector's QgsLabel */
-    QgsLabelDialog* labelDialog;
-    /**Actions dialog. If apply is pressed, the actions are stored for later use */
-    QgsAttributeActionDialog* actionDialog;
-    /**Diagram dialog. If apply is pressed, options are applied to vector's diagrams*/
-    QgsDiagramProperties* diagramPropertiesDialog;
-    /**Fields dialog. If apply is pressed, options are applied to vector's diagrams*/
-    QgsFieldsProperties* mFieldsPropertiesDialog;
+    QString mOriginalSubsetSQL;
+
+    QMenu *mSaveAsMenu = nullptr;
+    QMenu *mLoadStyleMenu = nullptr;
+
+    QAction *mActionLoadStyle = nullptr;
+    QAction *mActionSaveStyleAs = nullptr;
+
+    //! Renderer dialog which is shown
+    QgsRendererPropertiesDialog *mRendererDialog = nullptr;
+    //! Labeling dialog. If apply is pressed, options are applied to vector's QgsLabel
+    QgsLabelingWidget *labelingDialog = nullptr;
+    //! Actions dialog. If apply is pressed, the actions are stored for later use
+    QgsAttributeActionDialog *mActionDialog = nullptr;
+    //! Diagram dialog. If apply is pressed, options are applied to vector's diagrams
+    QgsDiagramProperties *diagramPropertiesDialog = nullptr;
+    //! SourceFields dialog. If apply is pressed, options are applied to vector's diagrams
+    QgsSourceFieldsProperties *mSourceFieldsPropertiesDialog = nullptr;
+    //! AttributesForm dialog. If apply is pressed, options are applied to vector's diagrams
+    QgsAttributesFormProperties *mAttributesFormPropertiesDialog = nullptr;
+
+    //! List of joins of a layer at the time of creation of the dialog. Used to return joins to previous state if dialog is canceled
+    QList< QgsVectorLayerJoinInfo > mOldJoins;
+
+    //! A list of additional pages provided by plugins
+    QList<QgsMapLayerConfigWidget *> mLayerPropertiesPages;
+
+    /**
+     * Previous layer style. Used to reset style to previous state if new style
+     * was loaded but dialog is canceled */
+    QgsMapLayerStyle mOldStyle;
 
     void initDiagramTab();
 
-    /**Buffer pixmap which takes the picture of renderers before they are assigned to the vector layer*/
-    //QPixmap bufferPixmap;
+    //! Adds a new join to mJoinTreeWidget
+    void addJoinToTreeWidget( const QgsVectorLayerJoinInfo &join, const int insertIndex = -1 );
 
-    /**Adds a new join to mJoinTreeWidget*/
-    void addJoinToTreeWidget( const QgsVectorJoinInfo& join );
+    void updateAuxiliaryStoragePage( bool reset = false );
+    void deleteAuxiliaryField( int index );
+
+    QgsExpressionContext mContext;
+
+    QgsExpressionContext createExpressionContext() const override;
+
+    std::unique_ptr<QgsLayerTree> mLayersDependenciesTreeGroup;
+    std::unique_ptr<QgsLayerTreeModel> mLayersDependenciesTreeModel;
+
+    void showHelp();
+
+    QgsMetadataWidget *mMetadataWidget = nullptr;
+
+    QAction *mAuxiliaryLayerActionNew = nullptr;
+    QAction *mAuxiliaryLayerActionClear = nullptr;
+    QAction *mAuxiliaryLayerActionDelete = nullptr;
+    QAction *mAuxiliaryLayerActionExport = nullptr;
+    QAction *mAuxiliaryLayerActionDeleteField = nullptr;
+    QAction *mAuxiliaryLayerActionAddField = nullptr;
+
+  private slots:
+    void openPanel( QgsPanelWidget *panel );
 };
 
-inline QString QgsVectorLayerProperties::displayName()
-{
-  return txtDisplayName->text();
-}
+
 #endif

@@ -1,14 +1,38 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsludialog.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsLUDialog: QDialog
 {
-%TypeHeaderCode
-#include <qgsludialog.h>
-%End
 
+%TypeHeaderCode
+#include "qgsludialog.h"
+%End
   public:
-    QgsLUDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
-    ~QgsLUDialog();
+    QgsLUDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
     QString lowerValue() const;
-    void setLowerValue( QString val );
+%Docstring
+ :rtype: str
+%End
+    void setLowerValue( const QString &val );
     QString upperValue() const;
-    void setUpperValue( QString val );
+%Docstring
+ :rtype: str
+%End
+    void setUpperValue( const QString &val );
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsludialog.h                                                *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -19,48 +19,76 @@ email                : ersts@amnh.org
 
 #ifndef QGSRASTERSHADERFUNCTION_H
 #define QGSRASTERSHADERFUNCTION_H
-/** \ingroup core
+
+/**
+ * \ingroup core
  * The raster shade function applies a shader to a pixel at render time -
  * typically used to render grayscale images as false color.
  */
 
+#include "qgis_core.h"
+#include "qgis_sip.h"
 #include <QColor>
 #include <QPair>
 
 class CORE_EXPORT QgsRasterShaderFunction
 {
+#ifdef SIP_RUN
+#include <qgscolorrampshader.h>
+#endif
+
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( dynamic_cast<QgsColorRampShader *>( sipCpp ) != NULL )
+      sipType = sipType_QgsColorRampShader;
+    else
+      sipType = 0;
+    SIP_END
+#endif
 
   public:
-    QgsRasterShaderFunction( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
-    virtual ~QgsRasterShaderFunction() {}
+    QgsRasterShaderFunction( double minimumValue = 0.0, double maximumValue = 255.0 );
+    virtual ~QgsRasterShaderFunction() = default;
 
-    /** \brief Set the maximum value */
+    //! \brief Set the maximum value
     virtual void setMaximumValue( double );
 
-    /** \brief Return the minimum value */
+    //! \brief Return the minimum value
     virtual void setMinimumValue( double );
 
-    /** \brief generates and new RGBA value based on one input value */
-    virtual bool shade( double, int*, int*, int*, int* );
+    //! \brief generates and new RGBA value based on one input value
+    virtual bool shade( double value,
+                        int *returnRedValue SIP_OUT,
+                        int *returnGreenValue SIP_OUT,
+                        int *returnBlueValue SIP_OUT,
+                        int *returnAlpha SIP_OUT );
 
-    /** \brief generates and new RGBA value based on original RGBA value */
-    virtual bool shade( double, double, double, double, int*, int*, int*, int* );
+    //! \brief generates and new RGBA value based on original RGBA value
+    virtual bool shade( double redValue,
+                        double greenValue,
+                        double blueValue,
+                        double alphaValue,
+                        int *returnRedValue SIP_OUT,
+                        int *returnGreenValue SIP_OUT,
+                        int *returnBlueValue SIP_OUT,
+                        int *returnAlpha SIP_OUT );
 
     double minimumMaximumRange() const { return mMinimumMaximumRange; }
 
     double minimumValue() const { return mMinimumValue; }
     double maximumValue() const { return mMaximumValue; }
 
-    virtual void legendSymbologyItems( QList< QPair< QString, QColor > >& symbolItems ) const { Q_UNUSED( symbolItems ); }
+    virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems SIP_OUT ) const { Q_UNUSED( symbolItems ); }
 
   protected:
-    /** \brief User defineable maximum value for the shading function */
+    //! \brief User defineable maximum value for the shading function
     double mMaximumValue;
 
-    /** \brief User defineable minimum value for the shading function */
+    //! \brief User defineable minimum value for the shading function
     double mMinimumValue;
 
-    /** \brief Minimum maximum range for the shading function */
+    //! \brief Minimum maximum range for the shading function
     double mMinimumMaximumRange;
 };
 #endif

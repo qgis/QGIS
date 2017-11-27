@@ -16,109 +16,85 @@
  ***************************************************************************/
 
 #include "qgsninecellfilter.h"
+#include "qgslogger.h"
 #include "cpl_string.h"
-#include <QProgressDialog>
+#include "qgsfeedback.h"
+#include "qgsogrutils.h"
 #include <QFile>
 
-#if defined(GDAL_VERSION_NUM) && GDAL_VERSION_NUM >= 1800
-#define TO8F(x) (x).toUtf8().constData()
-#else
-#define TO8F(x) QFile::encodeName( x ).constData()
-#endif
-
-QgsNineCellFilter::QgsNineCellFilter( const QString& inputFile, const QString& outputFile, const QString& outputFormat )
-    : mInputFile( inputFile ), mOutputFile( outputFile ), mOutputFormat( outputFormat ), mCellSizeX( -1 ), mCellSizeY( -1 ),
-    mInputNodataValue( -1 ), mOutputNodataValue( -1 ), mZFactor( 1.0 )
+QgsNineCellFilter::QgsNineCellFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat )
+  : mInputFile( inputFile )
+  , mOutputFile( outputFile )
+  , mOutputFormat( outputFormat )
 {
 
 }
 
-QgsNineCellFilter::QgsNineCellFilter()
-{
-
-}
-
-QgsNineCellFilter::~QgsNineCellFilter()
-{
-
-}
-
-int QgsNineCellFilter::processRaster( QProgressDialog* p )
+int QgsNineCellFilter::processRaster( QgsFeedback *feedback )
 {
   GDALAllRegister();
 
   //open input file
   int xSize, ySize;
-  GDALDatasetH  inputDataset = openInputFile( xSize, ySize );
-  if ( inputDataset == NULL )
+  gdal::dataset_unique_ptr inputDataset( openInputFile( xSize, ySize ) );
+  if ( !inputDataset )
   {
     return 1; //opening of input file failed
   }
 
   //output driver
   GDALDriverH outputDriver = openOutputDriver();
-  if ( outputDriver == 0 )
+  if ( !outputDriver )
   {
     return 2;
   }
 
-  GDALDatasetH outputDataset = openOutputFile( inputDataset, outputDriver );
-  if ( outputDataset == NULL )
+  gdal::dataset_unique_ptr outputDataset( openOutputFile( inputDataset.get(), outputDriver ) );
+  if ( !outputDataset )
   {
     return 3; //create operation on output file failed
   }
 
   //open first raster band for reading (operation is only for single band raster)
-  GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset, 1 );
-  if ( rasterBand == NULL )
+  GDALRasterBandH rasterBand = GDALGetRasterBand( inputDataset.get(), 1 );
+  if ( !rasterBand )
   {
-    GDALClose( inputDataset );
-    GDALClose( outputDataset );
     return 4;
   }
-  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, NULL );
+  mInputNodataValue = GDALGetRasterNoDataValue( rasterBand, nullptr );
 
-  GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset, 1 );
-  if ( outputRasterBand == NULL )
+  GDALRasterBandH outputRasterBand = GDALGetRasterBand( outputDataset.get(), 1 );
+  if ( !outputRasterBand )
   {
-    GDALClose( inputDataset );
-    GDALClose( outputDataset );
     return 5;
   }
   //try to set -9999 as nodata value
   GDALSetRasterNoDataValue( outputRasterBand, -9999 );
-  mOutputNodataValue = GDALGetRasterNoDataValue( outputRasterBand, NULL );
+  mOutputNodataValue = GDALGetRasterNoDataValue( outputRasterBand, nullptr );
 
   if ( ySize < 3 ) //we require at least three rows (should be true for most datasets)
   {
-    GDALClose( inputDataset );
-    GDALClose( outputDataset );
     return 6;
   }
 
   //keep only three scanlines in memory at a time
-  float* scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-  float* scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine1 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine2 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
+  float *scanLine3 = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
-  float* resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
-
-  if ( p )
-  {
-    p->setMaximum( ySize );
-  }
+  float *resultLine = ( float * ) CPLMalloc( sizeof( float ) * xSize );
 
   //values outside the layer extent (if the 3x3 window is on the border) are sent to the processing method as (input) nodata values
   for ( int i = 0; i < ySize; ++i )
   {
-    if ( p )
-    {
-      p->setValue( i );
-    }
-
-    if ( p && p->wasCanceled() )
+    if ( feedback && feedback->isCanceled() )
     {
       break;
+    }
+
+    if ( feedback )
+    {
+      feedback->setProgress( 100.0 * static_cast< double >( i ) / ySize );
     }
 
     if ( i == 0 )
@@ -128,7 +104,10 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
       {
         scanLine1[a] = mInputNodataValue;
       }
-      GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, 0, xSize, 1, scanLine2, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+      {
+        QgsDebugMsg( "Raster IO Error" );
+      }
     }
     else
     {
@@ -148,34 +127,35 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
     }
     else
     {
-      GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 );
+      if ( GDALRasterIO( rasterBand, GF_Read, 0, i + 1, xSize, 1, scanLine3, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+      {
+        QgsDebugMsg( "Raster IO Error" );
+      }
     }
 
     for ( int j = 0; j < xSize; ++j )
     {
       if ( j == 0 )
       {
-        resultLine[j] = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j+1], &mInputNodataValue, &scanLine2[j],
-                                               &scanLine2[j+1], &mInputNodataValue, &scanLine3[j], &scanLine3[j+1] );
+        resultLine[j] = processNineCellWindow( &mInputNodataValue, &scanLine1[j], &scanLine1[j + 1], &mInputNodataValue, &scanLine2[j],
+                                               &scanLine2[j + 1], &mInputNodataValue, &scanLine3[j], &scanLine3[j + 1] );
       }
       else if ( j == xSize - 1 )
       {
-        resultLine[j] = processNineCellWindow( &scanLine1[j-1], &scanLine1[j], &mInputNodataValue, &scanLine2[j-1], &scanLine2[j],
-                                               &mInputNodataValue, &scanLine3[j-1], &scanLine3[j], &mInputNodataValue );
+        resultLine[j] = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &mInputNodataValue, &scanLine2[j - 1], &scanLine2[j],
+                                               &mInputNodataValue, &scanLine3[j - 1], &scanLine3[j], &mInputNodataValue );
       }
       else
       {
-        resultLine[j] = processNineCellWindow( &scanLine1[j-1], &scanLine1[j], &scanLine1[j+1], &scanLine2[j-1], &scanLine2[j],
-                                               &scanLine2[j+1], &scanLine3[j-1], &scanLine3[j], &scanLine3[j+1] );
+        resultLine[j] = processNineCellWindow( &scanLine1[j - 1], &scanLine1[j], &scanLine1[j + 1], &scanLine2[j - 1], &scanLine2[j],
+                                               &scanLine2[j + 1], &scanLine3[j - 1], &scanLine3[j], &scanLine3[j + 1] );
       }
     }
 
-    GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 );
-  }
-
-  if ( p )
-  {
-    p->setValue( ySize );
+    if ( GDALRasterIO( outputRasterBand, GF_Write, 0, i, xSize, 1, resultLine, xSize, 1, GDT_Float32, 0, 0 ) != CE_None )
+    {
+      QgsDebugMsg( "Raster IO Error" );
+    }
   }
 
   CPLFree( resultLine );
@@ -183,32 +163,27 @@ int QgsNineCellFilter::processRaster( QProgressDialog* p )
   CPLFree( scanLine2 );
   CPLFree( scanLine3 );
 
-  GDALClose( inputDataset );
-
-  if ( p && p->wasCanceled() )
+  if ( feedback && feedback->isCanceled() )
   {
     //delete the dataset without closing (because it is faster)
-    GDALDeleteDataset( outputDriver, TO8F( mOutputFile ) );
+    gdal::fast_delete_and_close( outputDataset, outputDriver, mOutputFile );
     return 7;
   }
-  GDALClose( outputDataset );
-
   return 0;
 }
 
-GDALDatasetH QgsNineCellFilter::openInputFile( int& nCellsX, int& nCellsY )
+gdal::dataset_unique_ptr QgsNineCellFilter::openInputFile( int &nCellsX, int &nCellsY )
 {
-  GDALDatasetH inputDataset = GDALOpen( TO8F( mInputFile ), GA_ReadOnly );
-  if ( inputDataset != NULL )
+  gdal::dataset_unique_ptr inputDataset( GDALOpen( mInputFile.toUtf8().constData(), GA_ReadOnly ) );
+  if ( inputDataset )
   {
-    nCellsX = GDALGetRasterXSize( inputDataset );
-    nCellsY = GDALGetRasterYSize( inputDataset );
+    nCellsX = GDALGetRasterXSize( inputDataset.get() );
+    nCellsY = GDALGetRasterYSize( inputDataset.get() );
 
     //we need at least one band
-    if ( GDALGetRasterCount( inputDataset ) < 1 )
+    if ( GDALGetRasterCount( inputDataset.get() ) < 1 )
     {
-      GDALClose( inputDataset );
-      return NULL;
+      return nullptr;
     }
   }
   return inputDataset;
@@ -216,39 +191,39 @@ GDALDatasetH QgsNineCellFilter::openInputFile( int& nCellsX, int& nCellsY )
 
 GDALDriverH QgsNineCellFilter::openOutputDriver()
 {
-  char **driverMetadata;
+  char **driverMetadata = nullptr;
 
   //open driver
   GDALDriverH outputDriver = GDALGetDriverByName( mOutputFormat.toLocal8Bit().data() );
 
-  if ( outputDriver == NULL )
+  if ( !outputDriver )
   {
-    return outputDriver; //return NULL, driver does not exist
+    return outputDriver; //return nullptr, driver does not exist
   }
 
-  driverMetadata = GDALGetMetadata( outputDriver, NULL );
+  driverMetadata = GDALGetMetadata( outputDriver, nullptr );
   if ( !CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) )
   {
-    return NULL; //driver exist, but it does not support the create operation
+    return nullptr; //driver exist, but it does not support the create operation
   }
 
   return outputDriver;
 }
 
-GDALDatasetH QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver )
+gdal::dataset_unique_ptr QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALDriverH outputDriver )
 {
-  if ( inputDataset == NULL )
+  if ( !inputDataset )
   {
-    return NULL;
+    return nullptr;
   }
 
   int xSize = GDALGetRasterXSize( inputDataset );
-  int ySize = GDALGetRasterYSize( inputDataset );;
+  int ySize = GDALGetRasterYSize( inputDataset );
 
   //open output file
-  char **papszOptions = NULL;
-  GDALDatasetH outputDataset = GDALCreate( outputDriver, TO8F( mOutputFile ), xSize, ySize, 1, GDT_Float32, papszOptions );
-  if ( outputDataset == NULL )
+  char **papszOptions = nullptr;
+  gdal::dataset_unique_ptr outputDataset( GDALCreate( outputDriver, mOutputFile.toUtf8().constData(), xSize, ySize, 1, GDT_Float32, papszOptions ) );
+  if ( !outputDataset )
   {
     return outputDataset;
   }
@@ -257,10 +232,9 @@ GDALDatasetH QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALD
   double geotransform[6];
   if ( GDALGetGeoTransform( inputDataset, geotransform ) != CE_None )
   {
-    GDALClose( outputDataset );
-    return NULL;
+    return nullptr;
   }
-  GDALSetGeoTransform( outputDataset, geotransform );
+  GDALSetGeoTransform( outputDataset.get(), geotransform );
 
   //make sure mCellSizeX and mCellSizeY are always > 0
   mCellSizeX = geotransform[1];
@@ -274,8 +248,8 @@ GDALDatasetH QgsNineCellFilter::openOutputFile( GDALDatasetH inputDataset, GDALD
     mCellSizeY = -mCellSizeY;
   }
 
-  const char* projection = GDALGetProjectionRef( inputDataset );
-  GDALSetProjection( outputDataset, projection );
+  const char *projection = GDALGetProjectionRef( inputDataset );
+  GDALSetProjection( outputDataset.get(), projection );
 
   return outputDataset;
 }

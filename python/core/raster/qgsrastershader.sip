@@ -1,50 +1,104 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastershader.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 
 class QgsRasterShader
 {
-%TypeHeaderCode
-#include <qgsrastershader.h>
-#include <qgsrastershaderfunction.h>
+%Docstring
+ Interface for all raster shaders.
 %End
 
+%TypeHeaderCode
+#include "qgsrastershader.h"
+%End
   public:
-    QgsRasterShader( double theMinimumValue = 0.0, double theMaximumValue = 255.0 );
-    ~QgsRasterShader();
+    QgsRasterShader( double minimumValue = 0.0, double maximumValue = 255.0 );
 
-    /*
-     *
-     * Non-Static Inline methods
-     *
-     */
-    /** \brief Return the maximum value for the raster shader */
+
     double maximumValue();
+%Docstring
+ Return the maximum value for the raster shader
+ :rtype: float
+%End
 
-    /** \brief Return the minimum value for the raster shader */
     double minimumValue();
+%Docstring
+ Return the minimum value for the raster shader
+ :rtype: float
+%End
 
-    QgsRasterShaderFunction* rasterShaderFunction();
+    QgsRasterShaderFunction *rasterShaderFunction();
+%Docstring
+ :rtype: QgsRasterShaderFunction
+%End
 
-    /*
-     *
-     * Non-Static methods
-     *
-     */
-    /** \brief generates and new RGB value based on one input value */
-    bool shade(double, int* /Out/, int* /Out/, int* /Out/, int* /Out/);
+    bool shade( double value,
+                int *returnRedValue /Out/,
+                int *returnGreenValue /Out/,
+                int *returnBlueValue /Out/,
+                int *returnAlpha /Out/ );
+%Docstring
+ generates and new RGBA value based on one input value
+ :rtype: bool
+%End
 
-    /** \brief generates and new RGB value based on original RGB value */
-    bool shade(double, double, double, double, int* /Out/, int* /Out/, int* /Out/, int* /Out/);
+    bool shade( double redValue,
+                double greenValue,
+                double blueValue,
+                double alphaValue,
+                int *returnRedValue /Out/,
+                int *returnGreenValue /Out/,
+                int *returnBlueValue /Out/,
+                int *returnAlpha /Out/ );
+%Docstring
+ generates and new RGBA value based on original RGBA value
+ :rtype: bool
+%End
 
-    /** \brief A public method that allows the user to set their own shader function
-      \note Raster shader takes ownership of the shader function instance */
-    void setRasterShaderFunction( QgsRasterShaderFunction* /Transfer/ );
+    void setRasterShaderFunction( QgsRasterShaderFunction *function /Transfer/ );
+%Docstring
+ A public method that allows the user to set their own shader function
+.. note::
 
-    /** \brief Set the maximum value */
+   Raster shader takes ownership of the shader function instance *
+%End
+
     void setMaximumValue( double );
+%Docstring
+ Set the maximum value
+%End
 
-    /** \brief Return the minimum value */
     void setMinimumValue( double );
+%Docstring
+ Return the minimum value
+%End
 
-    void writeXML( QDomDocument& doc, QDomElement& parent ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parent ) const;
+%Docstring
+ Writes shader state to an XML element.
+%End
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
+%Docstring
+ Reads shader state from an XML element.
+%End
+
+  private:
+    QgsRasterShader( const QgsRasterShader &rh );
 };
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastershader.h                                    *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

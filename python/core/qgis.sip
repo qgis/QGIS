@@ -1,189 +1,256 @@
-/*!  \mainpage QGIS
-*
-*  \section about  About QGIS
-* QGIS is a user friendly Open Source Geographic Information
-* System (GIS) that runs on Linux, Unix, Mac OSX, and Windows. QGIS supports
-* vector, raster, and database formats. QGIS is licensed under the GNU Public
-* License.
-*
-* This API documentation provides information about all classes that make up QGIS.
-*/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgis.h                                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 
 %ModuleHeaderCode
 #include <qgis.h>
 %End
 
 %ModuleCode
-  int QgisEvent = QEvent::User + 1;
+int QgisEvent = QEvent::User + 1;
 %End
 
 
-class QGis
+class Qgis
 {
-%TypeHeaderCode
-#include <qgis.h>
+%Docstring
+ The Qgis class provides global constants for use throughout the application.
 %End
 
+%TypeHeaderCode
+#include "qgis.h"
+%End
   public:
-    // Version constants
-    //
-    // Version string
-    static const char* QGIS_VERSION;
-    // Version number used for comparing versions using the "Check QGIS Version" function
+    static const QString QGIS_VERSION;
+%Docstring
+Version string
+%End
     static const int QGIS_VERSION_INT;
-    // Release name
-    static const char* QGIS_RELEASE_NAME;
-    // The development version
-    static const char* QGIS_DEV_VERSION;
+%Docstring
+Version number used for comparing versions using the "Check QGIS Version" function
+%End
+    static const QString QGIS_RELEASE_NAME;
+%Docstring
+Release name
+%End
+    static const char *QGIS_DEV_VERSION;
+%Docstring
+The development version
+%End
 
-    // Enumerations
-    //
 
-    //! Used for symbology operations
-    // Feature types
-    enum WkbType
-    {
-      WKBUnknown = 0,
-      WKBPoint = 1,
-      WKBLineString,
-      WKBPolygon,
-      WKBMultiPoint,
-      WKBMultiLineString,
-      WKBMultiPolygon,
-      WKBNoGeometry = 100, //attributes only
-      WKBPoint25D = 0x80000001,
-      WKBLineString25D,
-      WKBPolygon25D,
-      WKBMultiPoint25D,
-      WKBMultiLineString25D,
-      WKBMultiPolygon25D,
-    };
-
-    enum GeometryType
-    {
-      Point,
-      Line,
-      Polygon,
-      UnknownGeometry,
-      NoGeometry
-    };
-
-    // TODO: String representation of geometry types (set in qgis.cpp)
-    // static const char *qgisVectorGeometryType[];
-
-    //! description strings for feature types
-    // static const char *qgisFeatureTypes[];
-
-    /** Raster data types.
-     *  This is modified and extended copy of GDALDataType.
-     */
     enum DataType
     {
-      /*! Unknown or unspecified type */                UnknownDataType = 0,
-      /*! Eight bit unsigned integer (quint8) */        Byte = 1,
-      /*! Sixteen bit unsigned integer (quint16) */     UInt16 = 2,
-      /*! Sixteen bit signed integer (qint16) */        Int16 = 3,
-      /*! Thirty two bit unsigned integer (quint32) */  UInt32 = 4,
-      /*! Thirty two bit signed integer (qint32) */     Int32 = 5,
-      /*! Thirty two bit floating point (float) */      Float32 = 6,
-      /*! Sixty four bit floating point (double) */     Float64 = 7,
-      /*! Complex Int16 */                              CInt16 = 8,
-      /*! Complex Int32 */                              CInt32 = 9,
-      /*! Complex Float32 */                            CFloat32 = 10,
-      /*! Complex Float64 */                            CFloat64 = 11,
-      /*! Color, alpha, red, green, blue, 4 bytes the same as
-          QImage::Format_ARGB32 */                      ARGB32 = 12,
-      /*! Color, alpha, red, green, blue, 4 bytes  the same as
-          QImage::Format_ARGB32_Premultiplied */        ARGB32_Premultiplied = 13
+      UnknownDataType,
+      Byte,
+      UInt16,
+      Int16,
+      UInt32,
+      Int32,
+      Float32,
+      Float64,
+      CInt16,
+      CInt32,
+      CFloat32,
+      CFloat64,
+      ARGB32,
+      ARGB32_Premultiplied
     };
 
-    /** Map units that qgis supports
-     * @note that QGIS < 1.4 api had only Meters, Feet, Degrees and UnknownUnit
-     * @note and QGIS >1.8 returns to that
-     */
-    enum UnitType
-    {
-      Meters = 0,
-      Feet = 1,
-      Degrees = 2, //for 1.0 api backwards compatibility
-      UnknownUnit = 3,
+    static const double DEFAULT_SEARCH_RADIUS_MM;
+%Docstring
+ Identify search radius in mm
+.. versionadded:: 2.3
+%End
 
-      // for [1.4;1.8] api compatibility
-      DecimalDegrees = 2,         // was 2
-      DegreesMinutesSeconds = 2,  // was 4
-      DegreesDecimalMinutes = 2,  // was 5
-    };
+    static const float DEFAULT_MAPTOPIXEL_THRESHOLD;
+%Docstring
+Default threshold between map coordinates and device coordinates for map2pixel simplification
+%End
 
-    //! Provides the canonical name of the type value
-    // Added in version 2.0
-    static QString toLiteral( QGis::UnitType unit );
-    //! Converts from the canonical name to the type value
-    // Added in version 2.0
-    static UnitType fromLiteral( QString  literal, QGis::UnitType defaultType = UnknownUnit );
-    //! Provides translated version of the type value
-    // Added in version 2.0
-    static QString tr( QGis::UnitType unit );
+    static const QColor DEFAULT_HIGHLIGHT_COLOR;
+%Docstring
+ Default highlight color.  The transparency is expected to only be applied to polygon
+  fill. Lines and outlines are rendered opaque.
+.. versionadded:: 2.3
+%End
 
-    //! User defined event types
-    enum UserEvent
-    {
-      // These first two are useful for threads to alert their parent data providers
+    static const double DEFAULT_HIGHLIGHT_BUFFER_MM;
+%Docstring
+ Default highlight buffer in mm.
+.. versionadded:: 2.3
+%End
 
-      //! The extents have been calculated by a provider of a layer
-      ProviderExtentCalcEvent = QgisEvent,
+    static const double DEFAULT_HIGHLIGHT_MIN_WIDTH_MM;
+%Docstring
+ Default highlight line/stroke minimum width in mm.
+.. versionadded:: 2.3
+%End
 
-      //! The row count has been calculated by a provider of a layer
-      ProviderCountCalcEvent
-    };
+    static const double SCALE_PRECISION;
+%Docstring
+ Fudge factor used to compare two scales. The code is often going from scale to scale
+  denominator. So it looses precision and, when a limit is inclusive, can lead to errors.
+  To avoid that, use this factor instead of using <= or >=.
+.. versionadded:: 2.15
+%End
 
-    static const double DEFAULT_IDENTIFY_RADIUS;
+    static const double DEFAULT_Z_COORDINATE;
+%Docstring
+ Default Z coordinate value for 2.5d geometry
+  This value have to be assigned to the Z coordinate for the new 2.5d geometry vertex.
+.. versionadded:: 3.0
+%End
+
+    static const double UI_SCALE_FACTOR;
+%Docstring
+ UI scaling factor. This should be applied to all widget sizes obtained from font metrics,
+ to account for differences in the default font sizes across different platforms.
+.. versionadded:: 3.0
+%End
+
 };
 
 
-/** Wkt string that represents a geographic coord sys
- * @note added in 1.8 to replace GEOWkt
- */
-const QString GEOWKT;
 
+
+
+uint qHash( const QVariant &variant );
+%Docstring
+Hash for QVariant
+ :rtype: uint
+%End
+
+QString qgsDoubleToString( double a, int precision = 17 );
+%Docstring
+ Returns a string representation of a double
+ \param a double value
+ \param precision number of decimal places to retain
+ :rtype: str
+%End
+
+bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
+%Docstring
+ Compare two doubles (but allow some difference)
+ \param a first double
+ \param b second double
+ \param epsilon maximum difference allowable between doubles
+ :rtype: bool
+%End
+
+bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON );
+%Docstring
+ Compare two floats (but allow some difference)
+ \param a first float
+ \param b second float
+ \param epsilon maximum difference allowable between floats
+ :rtype: bool
+%End
+
+bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 );
+%Docstring
+Compare two doubles using specified number of significant digits
+ :rtype: bool
+%End
+
+double qgsRound( double number, double places );
+%Docstring
+ Returns a double ``number``, rounded (as close as possible) to the specified number of ``places``.
+
+.. versionadded:: 3.0
+ :rtype: float
+%End
+
+
+
+double qgsPermissiveToDouble( QString string, bool &ok );
+%Docstring
+ Converts a string to a double in a permissive way, e.g., allowing for incorrect
+ numbers of digits between thousand separators
+ \param string string to convert
+ \param ok will be set to true if conversion was successful
+ :return: string converted to double if possible
+.. versionadded:: 2.9
+.. seealso:: permissiveToInt
+ :rtype: float
+%End
+
+int qgsPermissiveToInt( QString string, bool &ok );
+%Docstring
+ Converts a string to an integer in a permissive way, e.g., allowing for incorrect
+ numbers of digits between thousand separators
+ \param string string to convert
+ \param ok will be set to true if conversion was successful
+ :return: string converted to int if possible
+.. versionadded:: 2.9
+.. seealso:: permissiveToDouble
+ :rtype: int
+%End
+
+bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
+%Docstring
+ Compares two QVariant values and returns whether the first is less than the second.
+ Useful for sorting lists of variants, correctly handling sorting of the various
+ QVariant data types (such as strings, numeric values, dates and times)
+.. seealso:: qgsVariantGreaterThan()
+ :rtype: bool
+%End
+
+bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
+%Docstring
+ Compares two QVariant values and returns whether the first is greater than the second.
+ Useful for sorting lists of variants, correctly handling sorting of the various
+ QVariant data types (such as strings, numeric values, dates and times)
+.. seealso:: qgsVariantLessThan()
+ :rtype: bool
+%End
+
+QString qgsVsiPrefix( const QString &path );
+%Docstring
+ :rtype: str
+%End
+
+
+
+
+const QString GEOWKT;
 const QString PROJECT_SCALES;
 
-/** PROJ4 string that represents a geographic coord sys */
 const QString GEOPROJ4;
-/** Magic number for a geographic coord sys in POSTGIS SRID */
 const long GEOSRID;
-/** Magic number for a geographic coord sys in QGIS srs.db tbl_srs.srs_id */
 const long GEOCRS_ID;
-/** Magic number for a geographic coord sys in EpsgCrsId ID format */
 const long GEO_EPSG_CRS_ID;
-/** Geographic coord sys from EPSG authority */
 const QString GEO_EPSG_CRS_AUTHID;
-/** The length of the string "+proj=" */
-const int PROJ_PREFIX_LEN;
-/** The length of the string "+ellps=" */
-const int ELLPS_PREFIX_LEN;
-/** The length of the string "+lat_1=" */
-const int LAT_PREFIX_LEN;
-/** Magick number that determines whether a projection crsid is a system (srs.db)
- *  or user (~/.qgis.qgis.db) defined projection. */
+
 const int USER_CRS_START_ID;
 
-//! Constant that holds the string representation for "No ellips/No CRS"
-// Added in version 2.0
 const QString GEO_NONE;
 
-//
-// Constants for point symbols
-//
 
-/** Magic number that determines the minimum allowable point size for point symbols */
-const double MINIMUM_POINT_SIZE;
-/** Magic number that determines the default point size for point symbols */
 const double DEFAULT_POINT_SIZE;
 const double DEFAULT_LINE_WIDTH;
 
-/** default snapping tolerance for segments (@note added in 1.8) */
 const double DEFAULT_SEGMENT_EPSILON;
 
-/** KEEP IN SYNC WITH qgssize defined in qgis.h! */
+
 typedef unsigned long long qgssize;
 
+
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/qgis.h                                                      *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

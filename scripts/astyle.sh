@@ -14,57 +14,124 @@
 #                                                                         #
 ###########################################################################
 
+# sort by version option
+SV=V
+if [[ "$OSTYPE" =~ darwin* ]]; then
+	SV=n
+fi
 
-for ASTYLE in $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle
+min_version="3"
+astyle_version_check() {
+	[ `printf "$($1 --version | cut -d ' ' -f4)\n$min_version" | sort -${SV} | head -n1` = "$min_version" ]
+}
+
+for ASTYLE in ${QGISSTYLE} $(dirname $0)/qgisstyle $(dirname $0)/RelWithDebInfo/qgisstyle astyle
 do
 	if type -p $ASTYLE >/dev/null; then
-		break
+		if astyle_version_check $ASTYLE; then
+			break
+		fi
 	fi
 	ASTYLE=
 done
 
 if [ -z "$ASTYLE" ]; then
-	echo "qgisstyle not found - please enable WITH_ASTYLE in cmake and build it" >&2
-	exit 1	
+	echo "qgisstyle / astyle not found - please install astyle >= $min_version or enable WITH_ASTYLE in cmake and build" >&2
+	exit 1
+fi
+
+if type -p tput >/dev/null; then
+	elcr="$ASTYLEPROGRESS$(tput el)$(tput cr)"
+else
+	elcr="$ASTYLEPROGRESS                   \r"
 fi
 
 if ! type -p flip >/dev/null; then
-	flip() {
+	if type -p dos2unix >/dev/null; then
+		flip() {
+			dos2unix -k $2
+		}
+	else
+		echo "flip not found" >&2
+		flip() {
+			:
+		}
+	fi
+fi
+
+if ! type -p autopep8 >/dev/null; then
+	echo "autopep8 not found" >&2
+	autopep8() {
 		:
 	}
 fi
 
+ASTYLEOPTS=$(dirname $0)/astyle.options
+if type -p cygpath >/dev/null; then
+	ASTYLEOPTS="$(cygpath -w $ASTYLEOPTS)"
+fi
+
 set -e
 
-export ARTISTIC_STYLE_OPTIONS="\
---preserve-date \
---indent-preprocessor \
---brackets=break \
---convert-tabs \
---indent=spaces=2 \
---indent-classes \
---indent-labels \
---indent-namespaces \
---indent-switches \
---one-line=keep-blocks \
---one-line=keep-statements \
---max-instatement-indent=40 \
---min-conditional-indent=-1 \
---suffix=none"
-
-export ARTISTIC_STYLE_OPTIONS="\
-$ARTISTIC_STYLE_OPTIONS \
---pad=oper \
---pad=paren-in \
---unpad=paren"
+astyleit() {
+	$ASTYLE --options="$ASTYLEOPTS" "$1"
+	modified=$1.unify_includes_modified
+	cp "$1" "$modified"
+	scripts/unify_includes.pl "$modified"
+	scripts/doxygen_space.pl "$modified"
+	diff "$1" "$modified" >/dev/null || mv "$modified" "$1"
+	rm -f "$modified"
+}
 
 for f in "$@"; do
+	case "$f" in
+		src/app/gps/qwtpolar-*|src/core/gps/qextserialport/*|src/plugins/grass/qtermwidget/*|external/astyle/*|python/ext-libs/*|src/providers/spatialite/qspatialite/*|src/plugins/globe/osgEarthQt/*|src/plugins/globe/osgEarthUtil/*|python/ext-libs/*|*/ui_*.py|*.astyle|tests/testdata/*|editors/*)
+			echo -ne "$f skipped $elcr"
+			continue
+			;;
+
+		*.cpp|*.h|*.c|*.h|*.cxx|*.hxx|*.c++|*.h++|*.cc|*.hh|*.C|*.H|*.hpp)
+			if [ -x "$f" ]; then
+				chmod a-x "$f"
+			fi
+			cmd=astyleit
+			;;
+
+		*.ui|*.qgm|*.txt|*.t2t|resources/context_help/*)
+			cmd=:
+			;;
+
+		*.py)
+			#cmd="autopep8 --in-place --ignore=E111,E128,E201,E202,E203,E211,E221,E222,E225,E226,E227,E231,E241,E261,E265,E272,E302,E303,E501,E701"
+			echo -ne "Formatting $f $elcr"
+			cmd="autopep8 --in-place --ignore=E261,E265,E402,E501"
+			;;
+
+		*.sip)
+			cmd="perl -i.prepare -pe 's/[\r\t ]+$//; s#^(\s*)/\*[*!]\s*([^\s*].*)\s*\$#\$1/** \u\$2\n#;'"
+			;;
+
+		*)
+			echo -ne "$f skipped $elcr"
+			continue
+			;;
+	esac
+
 	if ! [ -f "$f" ]; then
 		echo "$f not found" >&2
 		continue
-        fi
+	fi
 
-	flip -ub "$f" 
-	#qgsloggermig.pl "$f"
-	$ASTYLE $ARTISTIC_STYLE_OPTIONS "$f"
+	if [[ -f $f && `head -c 3 $f` == $'\xef\xbb\xbf' ]]; then
+		mv $f $f.bom
+		tail -c +4 $f.bom > $f
+		echo "removed BOM from $f"
+	fi
+
+	modified=$f.flip_modified
+	cp "$f" "$modified"
+	flip -ub "$modified"
+	diff "$f" "$modified" >/dev/null || mv "$modified" "$f"
+	rm -f "$modified"
+	eval "$cmd '$f'"
 done

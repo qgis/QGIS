@@ -18,8 +18,9 @@
 #define QGSNEWSPATIALITELAYERDIALOG_H
 
 #include "ui_qgsnewspatialitelayerdialogbase.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgsguiutils.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgshelp.h"
 
 #include "qgis.h"
 
@@ -27,6 +28,7 @@ extern "C"
 {
 #include <sqlite3.h>
 #include <spatialite.h>
+#include "qgis_app.h"
 }
 
 class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNewSpatialiteLayerDialogBase
@@ -34,36 +36,37 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
     Q_OBJECT
 
   public:
-    QgsNewSpatialiteLayerDialog( QWidget *parent = 0, Qt::WFlags fl = QgisGui::ModalDialogFlags );
+    QgsNewSpatialiteLayerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
     ~QgsNewSpatialiteLayerDialog();
 
   protected slots:
-    void on_mAddAttributeButton_clicked();
-    void on_mRemoveAttributeButton_clicked();
-    void on_mTypeBox_currentIndexChanged( int index );
-    void on_pbnFindSRID_clicked();
-    void on_leLayerName_textChanged( QString text );
-    void on_toolButtonNewDatabase_clicked();
-    void nameChanged( QString );
+    void mAddAttributeButton_clicked();
+    void mRemoveAttributeButton_clicked();
+    void mTypeBox_currentIndexChanged( int index );
+    void pbnFindSRID_clicked();
+    void toolButtonNewDatabase_clicked();
+    void nameChanged( const QString & );
     void selectionChanged();
+    void checkOk();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_buttonBox_accepted();
-    void on_buttonBox_rejected();
+    void buttonBox_accepted();
+    void buttonBox_rejected();
 
   private:
-    /**Returns the selected geometry type*/
+    //! Returns the selected geometry type
     QString selectedType() const;
 
-    /** Create a new database */
+    //! Create a new database
     bool createDb();
 
     bool apply();
 
+    void showHelp();
+
     static QString quotedIdentifier( QString id );
     static QString quotedValue( QString value );
 
-    QPushButton *mOkButton;
+    QPushButton *mOkButton = nullptr;
     QString mCrsId;
 };
 

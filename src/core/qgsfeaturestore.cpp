@@ -15,25 +15,37 @@
 
 #include "qgsfeaturestore.h"
 
-QgsFeatureStore::QgsFeatureStore( )
+
+QgsFeatureStore::QgsFeatureStore( const QgsFields &fields, const QgsCoordinateReferenceSystem &crs )
+  : mFields( fields )
+  , mCrs( crs )
 {
 }
 
-QgsFeatureStore::QgsFeatureStore( const QgsFeatureStore &rhs )
-    : mFields( rhs.mFields )
-    , mCrs( rhs.mCrs )
-    , mFeatures( rhs.mFeatures )
-    , mParams( rhs.mParams )
+void QgsFeatureStore::setFields( const QgsFields &fields )
 {
+  mFields = fields;
+  QgsFeatureList::iterator it = mFeatures.begin();
+  for ( ; it != mFeatures.end(); ++it )
+  {
+    ( *it ).setFields( mFields );
+  }
 }
 
-QgsFeatureStore::QgsFeatureStore( const QgsFields& fields, const QgsCoordinateReferenceSystem& crs )
-    : mFields( fields )
-    , mCrs( crs )
+bool QgsFeatureStore::addFeature( QgsFeature &feature, Flags )
 {
+  QgsFeature f( feature );
+  f.setFields( mFields );
+  mFeatures.append( f );
+  return true;
 }
 
-QgsFeatureStore::~QgsFeatureStore( )
+bool QgsFeatureStore::addFeatures( QgsFeatureList &features, Flags flags )
 {
+  QgsFeatureList::iterator fIt = features.begin();
+  for ( ; fIt != features.end(); ++fIt )
+  {
+    addFeature( *fIt, flags );
+  }
+  return true;
 }
-

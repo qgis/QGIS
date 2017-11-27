@@ -1,22 +1,49 @@
-// Class to detect the GPS port
-class QgsGPSDetector: QObject
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpsdetector.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsGPSDetector : QObject
 {
+%Docstring
+ Class to detect the GPS port
+%End
+
 %TypeHeaderCode
 #include "qgsgpsdetector.h"
 %End
-
   public:
-    QgsGPSDetector( QString portName );
+    QgsGPSDetector( const QString &portName );
     ~QgsGPSDetector();
 
     static QList< QPair<QString, QString> > availablePorts();
+%Docstring
+ :rtype: list of QPair<str, QString>
+%End
 
   public slots:
     void advance();
-    void detected( const QgsGPSInformation& );
+    void detected( const QgsGPSInformation & );
     void connDestroyed( QObject * );
 
   signals:
     void detected( QgsGPSConnection * );
     void detectionFailed();
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/gps/qgsgpsdetector.h                                        *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

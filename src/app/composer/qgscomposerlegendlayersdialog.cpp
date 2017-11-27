@@ -15,39 +15,35 @@
 #include "qgscomposerlegendlayersdialog.h"
 
 #include <QStandardItem>
+#include "qgsmaplayer.h"
 
-QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog( QList<QgsMapLayer*> layers, QWidget* parent ): QDialog( parent )
+QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog( QList<QgsMapLayer *> layers, QWidget *parent ): QDialog( parent )
 {
   setupUi( this );
 
-  QList<QgsMapLayer*>::iterator layerIt = layers.begin();
+  QList<QgsMapLayer *>::iterator layerIt = layers.begin();
   for ( ; layerIt != layers.end(); ++layerIt )
   {
-    QListWidgetItem* item = new QListWidgetItem(( *layerIt )->name(), listMapLayers );
+    QListWidgetItem *item = new QListWidgetItem( ( *layerIt )->name(), listMapLayers );
     mItemLayerMap.insert( item, *layerIt );
   }
 }
 
-QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog(): QDialog( 0 )
+QgsComposerLegendLayersDialog::QgsComposerLegendLayersDialog()
+  : QDialog( nullptr )
 {
-
 }
 
-QgsComposerLegendLayersDialog::~QgsComposerLegendLayersDialog()
+QgsMapLayer *QgsComposerLegendLayersDialog::selectedLayer()
 {
-
-}
-
-QgsMapLayer* QgsComposerLegendLayersDialog::selectedLayer()
-{
-  QListWidgetItem* item = listMapLayers->currentItem();
+  QListWidgetItem *item = listMapLayers->currentItem();
   if ( !item )
   {
-    return 0;
+    return nullptr;
   }
 
-  QMap<QListWidgetItem*, QgsMapLayer*>::iterator it = mItemLayerMap.find( item );
-  QgsMapLayer* c = 0;
+  QMap<QListWidgetItem *, QgsMapLayer *>::const_iterator it = mItemLayerMap.constFind( item );
+  QgsMapLayer *c = nullptr;
   c = it.value();
   return c;
 }

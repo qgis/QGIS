@@ -21,11 +21,13 @@
 #include "qgisapp.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
+#include "qgsmapdecoration.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptopixel.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgsproject.h"
-#include "qgssymbollayerv2utils.h" //for pointOnLineWithDistance
+#include "qgssymbollayerutils.h" //for pointOnLineWithDistance
+#include "qgsunittypes.h"
 
 #include <QPainter>
 #include <QAction>
@@ -42,15 +44,9 @@
 //non qt includes
 #include <cmath>
 
-QgsDecorationItem::QgsDecorationItem( QObject* parent )
-    : QObject( parent )
+QgsDecorationItem::QgsDecorationItem( QObject *parent )
+  : QObject( parent )
 {
-  mEnabled = false;
-}
-
-QgsDecorationItem::~QgsDecorationItem()
-{
-
 }
 
 void QgsDecorationItem::update()
@@ -61,20 +57,23 @@ void QgsDecorationItem::update()
 
 void QgsDecorationItem::projectRead()
 {
-  QgsDebugMsg( "Entered" );
-  mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, "/Enabled", false );
+  mEnabled = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Enabled" ), false );
+  mPlacement = static_cast< Placement >( QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Placement" ), static_cast< int >( mPlacement ) ) );
+  mMarginUnit = QgsUnitTypes::decodeRenderUnit( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) ) );
 }
 
 void QgsDecorationItem::saveToProject()
 {
-  QgsDebugMsg( "Entered" );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Enabled", mEnabled );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Enabled" ), mEnabled );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Placement" ), static_cast< int >( mPlacement ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginUnit" ), QgsUnitTypes::encodeUnit( mMarginUnit ) );
 }
+
 void QgsDecorationItem::setName( const char *name )
 {
   mName = name;
   mNameConfig = name;
-  mNameConfig.remove( " " );
+  mNameConfig.remove( ' ' );
   mNameTranslated = tr( name );
-  QgsDebugMsg( QString( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName ).arg( mNameConfig ).arg( mNameTranslated ) );
+  QgsDebugMsg( QString( "name=%1 nameconfig=%2 nametrans=%3" ).arg( mName, mNameConfig, mNameTranslated ) );
 }

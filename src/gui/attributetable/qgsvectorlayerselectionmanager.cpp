@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 6.6.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -17,11 +17,11 @@
 
 #include "qgsvectorlayer.h"
 
-QgsVectorLayerSelectionManager::QgsVectorLayerSelectionManager( QgsVectorLayer* layer, QObject* parent )
-    : QgsIFeatureSelectionManager( parent )
-    , mLayer( layer )
+QgsVectorLayerSelectionManager::QgsVectorLayerSelectionManager( QgsVectorLayer *layer, QObject *parent )
+  : QgsIFeatureSelectionManager( parent )
+  , mLayer( layer )
 {
-  connect( mLayer, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ), this, SIGNAL( selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) ) );
+  connect( mLayer, &QgsVectorLayer::selectionChanged, this, &QgsVectorLayerSelectionManager::selectionChanged );
 }
 
 int QgsVectorLayerSelectionManager::selectedFeatureCount()
@@ -29,22 +29,22 @@ int QgsVectorLayerSelectionManager::selectedFeatureCount()
   return mLayer->selectedFeatureCount();
 }
 
-void QgsVectorLayerSelectionManager::select( const QgsFeatureIds& ids )
+void QgsVectorLayerSelectionManager::select( const QgsFeatureIds &ids )
 {
   mLayer->select( ids );
 }
 
-void QgsVectorLayerSelectionManager::deselect( const QgsFeatureIds& ids )
+void QgsVectorLayerSelectionManager::deselect( const QgsFeatureIds &ids )
 {
   mLayer->deselect( ids );
 }
 
-void QgsVectorLayerSelectionManager::setSelectedFeatures( const QgsFeatureIds& ids )
+void QgsVectorLayerSelectionManager::setSelectedFeatures( const QgsFeatureIds &ids )
 {
-  mLayer->setSelectedFeatures( ids );
+  mLayer->selectByIds( ids );
 }
 
-const QgsFeatureIds& QgsVectorLayerSelectionManager::selectedFeaturesIds() const
+const QgsFeatureIds &QgsVectorLayerSelectionManager::selectedFeatureIds() const
 {
-  return mLayer->selectedFeaturesIds();
+  return mLayer->selectedFeatureIds();
 }

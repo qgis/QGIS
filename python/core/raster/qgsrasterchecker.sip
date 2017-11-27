@@ -1,20 +1,50 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterchecker.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**  Raster checker for tests in python */
+
 
 class QgsRasterChecker
 {
+%Docstring
+ This is a helper class for unit tests that need to
+ write an image and compare it to an expected result
+ or render time.
+%End
+
 %TypeHeaderCode
-#include <qgsrasterchecker.h>
+#include "qgsrasterchecker.h"
 %End
   public:
 
     QgsRasterChecker();
 
-    ~QgsRasterChecker();
-
     QString report();
+%Docstring
+ :rtype: str
+%End
 
-    bool runTest( QString theVerifiedKey, QString theVerifiedUri,
-                  QString theExpectedKey, QString theExpectedUri );
-};
+    bool runTest( const QString &verifiedKey, QString verifiedUri,
+                  const QString &expectedKey, QString expectedUri );
+%Docstring
+ Test using renderer to generate the image to be compared.
+ \param verifiedKey verified provider key
+ \param verifiedUri URI of the raster to be verified
+ \param expectedKey expected provider key
+ \param expectedUri URI of the expected (control) raster
+ :rtype: bool
+%End
+}; // class QgsRasterChecker
 
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterchecker.h                                   *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

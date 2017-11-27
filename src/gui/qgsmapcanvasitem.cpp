@@ -16,7 +16,6 @@
 
 #include "qgsmapcanvasitem.h"
 #include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
 #include "qgsmaptopixel.h"
 #include "qgsrendercontext.h"
 #include <QGraphicsScene>
@@ -26,10 +25,13 @@
 #include <QPainter>
 #include "qgslogger.h"
 
-QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas* mapCanvas )
-    : QGraphicsItem( 0, mapCanvas->scene() ), mMapCanvas( mapCanvas ),
-    mPanningOffset( 0, 0 ), mItemSize( 0, 0 )
+QgsMapCanvasItem::QgsMapCanvasItem( QgsMapCanvas *mapCanvas )
+  : mMapCanvas( mapCanvas )
+  , mRectRotation( 0.0 )
+  , mItemSize( 0, 0 )
 {
+  Q_ASSERT( mapCanvas && mapCanvas->scene() );
+  mapCanvas->scene()->addItem( this );
 }
 
 QgsMapCanvasItem::~QgsMapCanvasItem()
@@ -37,9 +39,9 @@ QgsMapCanvasItem::~QgsMapCanvasItem()
   update(); // schedule redraw of canvas
 }
 
-void QgsMapCanvasItem::paint( QPainter * painter,
-                              const QStyleOptionGraphicsItem * option,
-                              QWidget * widget )
+void QgsMapCanvasItem::paint( QPainter *painter,
+                              const QStyleOptionGraphicsItem *option,
+                              QWidget *widget )
 {
   Q_UNUSED( option );
   Q_UNUSED( widget );
@@ -50,19 +52,18 @@ void QgsMapCanvasItem::paint( QPainter * painter,
   paint( painter ); // call the derived item's drawing routines
 }
 
-QgsPoint QgsMapCanvasItem::toMapCoordinates( const QPoint& point )
+QgsPointXY QgsMapCanvasItem::toMapCoordinates( QPoint point ) const
 {
-  return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point - mPanningOffset );
+  return mMapCanvas->getCoordinateTransform()->toMapCoordinates( point );
 }
 
 
-QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPoint& point )
+QPointF QgsMapCanvasItem::toCanvasCoordinates( const QgsPointXY &point ) const
 {
-  double x = point.x(), y = point.y();
+  qreal x = point.x(), y = point.y();
   mMapCanvas->getCoordinateTransform()->transformInPlace( x, y );
-  return QPointF( x, y ) + mPanningOffset;
+  return QPointF( x, y );
 }
-
 
 QgsRectangle QgsMapCanvasItem::rect() const
 {
@@ -70,7 +71,7 @@ QgsRectangle QgsMapCanvasItem::rect() const
 }
 
 
-void QgsMapCanvasItem::setRect( const QgsRectangle& rect )
+void QgsMapCanvasItem::setRect( const QgsRectangle &rect, bool resetRotation )
 {
   mRect = rect;
   //updatePosition();
@@ -78,15 +79,24 @@ void QgsMapCanvasItem::setRect( const QgsRectangle& rect )
   QRectF r; // empty rect by default
   if ( !mRect.isEmpty() )
   {
-    r.setTopLeft( toCanvasCoordinates( QgsPoint( mRect.xMinimum(), mRect.yMinimum() ) ) );
-    r.setBottomRight( toCanvasCoordinates( QgsPoint( mRect.xMaximum(), mRect.yMaximum() ) ) );
-    r = r.normalized();
+    // rect encodes origin of the item (xMin,yMax from map to canvas units)
+    // and size (rect size / map units per pixel)
+    r.setTopLeft( toCanvasCoordinates( QPointF( mRect.xMinimum(), mRect.yMaximum() ) ) );
+    const QgsMapToPixel *m2p = mMapCanvas->getCoordinateTransform();
+    double res = m2p->mapUnitsPerPixel();
+    r.setSize( QSizeF( mRect.width() / res, mRect.height() / res ) );
   }
 
   // set position in canvas where the item will have coordinate (0,0)
   prepareGeometryChange();
   setPos( r.topLeft() );
   mItemSize = QSizeF( r.width() + 2, r.height() + 2 );
+
+  if ( resetRotation )
+  {
+    mRectRotation = mMapCanvas->rotation();
+    setRotation( 0 );
+  }
 
   // QgsDebugMsg(QString("[%1,%2]-[%3x%4]").arg((int) r.left()).arg((int) r.top()).arg((int) r.width()).arg((int) r.height()));
 
@@ -106,52 +116,25 @@ void QgsMapCanvasItem::updateCanvas()
   //mMapCanvas->scene()->update(); //Contents();
 }
 
-bool QgsMapCanvasItem::setRenderContextVariables( QPainter* p, QgsRenderContext& context ) const
+bool QgsMapCanvasItem::setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const
 {
   if ( !mMapCanvas || !p )
   {
     return false;
   }
-  QgsMapRenderer* mapRenderer = mMapCanvas->mapRenderer();
-  if ( !mapRenderer )
-  {
-    return false;
-  }
+  const QgsMapSettings &ms = mMapCanvas->mapSettings();
 
   context.setPainter( p );
   context.setRendererScale( mMapCanvas->scale() );
+  context.setScaleFactor( ms.outputDpi() / 25.4 );
 
-  int dpi = mapRenderer->outputDpi();
-  int painterDpi = p->device()->logicalDpiX();
-  double scaleFactor = 1.0;
-  double rasterScaleFactor = 1.0;
-
-  //little trick to find out if painting origines from composer or main map canvas
-  if ( data( 1 ).toString() == "composer" )
-  {
-    rasterScaleFactor = painterDpi / 25.4;
-    scaleFactor = dpi / 25.4;
-  }
-  else
-  {
-    if ( mapRenderer->outputUnits() == QgsMapRenderer::Millimeters )
-    {
-      scaleFactor = dpi / 25.4;
-    }
-  }
-  context.setScaleFactor( scaleFactor );
-  context.setRasterScaleFactor( rasterScaleFactor );
+  context.setForceVectorOutput( true );
   return true;
 }
 
 void QgsMapCanvasItem::updatePosition()
 {
   // default implementation: recalculate position of the item
-  setRect( mRect );
-}
-
-
-void QgsMapCanvasItem::setPanningOffset( const QPoint& point )
-{
-  mPanningOffset = point;
+  setRect( mRect, false );
+  setRotation( mMapCanvas->rotation() - mRectRotation );
 }

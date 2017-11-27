@@ -47,6 +47,7 @@ IF (OSG_PLUGINS_PATH)
 	ENDFOREACH (OP)
 ENDIF ()
 
+
 # update lib paths
 
 MESSAGE (STATUS "Updating OSG library paths...")
@@ -78,9 +79,38 @@ FOREACH (OFW ${OSGLIST})
     # globe plugin
     INSTALLNAMETOOL_CHANGE ("${OFW_CHG}" "${OFW_CHG_TO}" "${QPLUGDIR}/libglobeplugin.so")
 ENDFOREACH (OFW)
+
 IF (@HAVE_OSGEARTHQT@)
-    
     SET (OSGLIST ${OSGLIST} osgQt osgEarthQt)
 ENDIF (@HAVE_OSGEARTHQT@)
+
+# osgEarth exernal libs (2.4+, e.g. tinyxml)
+GET_INSTALL_NAME ("${QFWDIR}/osgEarth.framework/osgEarth" "libtinyxml" TINY)
+# MESSAGE (STATUS "libtinyxml path: ${TINY}")
+IF (EXISTS "${TINY}")
+    SET (TINY_CHG "${TINY}")
+    SET (TINY_CHG_TO "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/libtinyxml.dylib")
+    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${TINY_CHG}" "${QLIBDIR}/libtinyxml.dylib")
+
+    # osg frameworks
+    FOREACH (OF ${OSGLIST})
+        INSTALLNAMETOOL_CHANGE ("${TINY_CHG}" "${TINY_CHG_TO}" "${QFWDIR}/${OF}.framework/${OF}")
+    ENDFOREACH (OF)
+    # osg plugins
+    FOREACH (OP ${OSGPLUGLIST})
+        INSTALLNAMETOOL_CHANGE ("${TINY_CHG}" "${TINY_CHG_TO}" "${QPLUGDIR}/../osgPlugins/${OP}")
+    ENDFOREACH (OP)
+    # globe plugin
+    INSTALLNAMETOOL_CHANGE ("${TINY_CHG}" "${TINY_CHG_TO}" "${QPLUGDIR}/libglobeplugin.so")
+ENDIF ()
+
+GET_INSTALL_NAME ("${OSG_PLUGINS_PATH}/osgdb_kml.so" "libminizip" MINI)
+# MESSAGE (STATUS "libminizip path: ${MINI}")
+IF (EXISTS "${MINI}")
+    SET (MINI_CHG "${MINI}")
+    SET (MINI_CHG_TO "${ATEXECUTABLE}/@QGIS_LIB_SUBDIR@/libminizip.dylib")
+    EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${MINI_CHG}" "${QLIBDIR}/libminizip.dylib")
+    INSTALLNAMETOOL_CHANGE ("${MINI_CHG}" "${MINI_CHG_TO}" "${QPLUGDIR}/../osgPlugins/osgdb_kml.so")
+ENDIF ()
 
 ENDIF (@OSGEARTH_FOUND@)

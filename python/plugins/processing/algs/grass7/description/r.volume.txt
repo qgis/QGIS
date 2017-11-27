@@ -1,0 +1,7 @@
+r.volume
+Calculates the volume of data "clumps".
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Name of input raster map representing data that will be summed within clumps|None|False
+QgsProcessingParameterRasterLayer|clump|Clumps layer (preferably the output of r.clump)|None|False
+*QgsProcessingParameterBoolean|-f|Generate unformatted report|False
+QgsProcessingParameterVectorDestination|centroids|Centroids

@@ -28,73 +28,197 @@ QGIS utilities module
 
 """
 
-from PyQt4.QtCore import QCoreApplication, QLocale
-from qgis.core import QGis, QgsExpression, QgsMessageLog
-from string import Template
+from qgis.PyQt.QtCore import QCoreApplication, QLocale, QThread
+from qgis.PyQt.QtWidgets import QPushButton, QApplication
+from qgis.core import Qgis, QgsExpression, QgsMessageLog, qgsfunction, QgsMessageOutput, QgsWkbTypes
+from qgis.gui import QgsMessageBar
+
+import os
 import sys
 import traceback
 import glob
 import os.path
-import re
-import ConfigParser
+try:
+    import configparser
+except ImportError:
+    import ConfigParser as configparser
 import warnings
 import codecs
+import time
+import functools
 
-#######################
+import builtins
+builtins.__dict__['unicode'] = str
+builtins.__dict__['basestring'] = str
+builtins.__dict__['long'] = int
+builtins.__dict__['Set'] = set
+
+# ######################
 # ERROR HANDLING
 
 warnings.simplefilter('default')
 warnings.filterwarnings("ignore", "the sets module is deprecated")
 
+
 def showWarning(message, category, filename, lineno, file=None, line=None):
-  stk = ""
-  for s in traceback.format_stack()[:-2]:
-    stk += s.decode('utf-8', 'replace')
-  QgsMessageLog.logMessage(
-    "warning:%s\ntraceback:%s" % ( warnings.formatwarning(message, category, filename, lineno), stk),
-    QCoreApplication.translate( "Python", "Python" )
-  )
-warnings.showwarning = showWarning
+    stk = ""
+    for s in traceback.format_stack()[:-2]:
+        if hasattr(s, 'decode'):
+            stk += s.decode(sys.getfilesystemencoding())
+        else:
+            stk += s
+    if hasattr(filename, 'decode'):
+        decoded_filename = filename.decode(sys.getfilesystemencoding())
+    else:
+        decoded_filename = filename
+    QgsMessageLog.logMessage(
+        u"warning:{}\ntraceback:{}".format(warnings.formatwarning(message, category, decoded_filename, lineno), stk),
+        QCoreApplication.translate("Python", "Python warning")
+    )
 
-def showException(type, value, tb, msg):
-  lst = traceback.format_exception(type, value, tb)
-  if msg == None:
-    msg = QCoreApplication.translate('Python', 'An error has occured while executing Python code:')
-  txt = '<font color="red">%s</font><br><br>' % msg
-  for s in lst:
-    txt += s.decode('utf-8', 'replace')
-  txt += '<br>%s<br>%s<br><br>' % (QCoreApplication.translate('Python','Python version:'), sys.version)
-  txt += '<br>%s<br>%s %s, %s<br><br>' % (QCoreApplication.translate('Python','QGIS version:'), QGis.QGIS_VERSION, QGis.QGIS_RELEASE_NAME, QGis.QGIS_DEV_VERSION)
-  txt += '%s %s' % (QCoreApplication.translate('Python','Python path:'), str(sys.path))
-  txt = txt.replace('\n', '<br>')
-  txt = txt.replace('  ', '&nbsp; ') # preserve whitespaces for nicer output
 
-  from qgis.core import QgsMessageOutput
-  msg = QgsMessageOutput.createMessageOutput()
-  msg.setTitle(QCoreApplication.translate('Python', 'Python error'))
-  msg.setMessage(txt, QgsMessageOutput.MessageHtml)
-  msg.showMessage()
+if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
+    warnings.showwarning = showWarning
+
+
+def showException(type, value, tb, msg, messagebar=False):
+    if msg is None:
+        msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
+
+    logmessage = ''
+    for s in traceback.format_exception(type, value, tb):
+        logmessage += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
+
+    title = QCoreApplication.translate('Python', 'Python error')
+    QgsMessageLog.logMessage(logmessage, title)
+
+    try:
+        blockingdialog = QApplication.instance().activeModalWidget()
+        window = QApplication.instance().activeWindow()
+    except:
+        blockingdialog = QApplication.activeModalWidget()
+        window = QApplication.activeWindow()
+
+    # Still show the normal blocking dialog in this case for now.
+    if blockingdialog or not window or not messagebar or not iface:
+        open_stack_dialog(type, value, tb, msg)
+        return
+
+    bar = iface.messageBar() if iface else None
+
+    # If it's not the main window see if we can find a message bar to report the error in
+    if not window.objectName() == "QgisApp":
+        widgets = window.findChildren(QgsMessageBar)
+        if widgets:
+            # Grab the first message bar for now
+            bar = widgets[0]
+
+    item = bar.currentItem()
+    if item and item.property("Error") == msg:
+        # Return of we already have a message with the same error message
+        return
+
+    widget = bar.createMessage(title, msg + " " + QCoreApplication.translate("Python", "See message log (Python Error) for more details."))
+    widget.setProperty("Error", msg)
+    stackbutton = QPushButton(QCoreApplication.translate("Python", "Stack trace"), pressed=functools.partial(open_stack_dialog, type, value, tb, msg))
+    button = QPushButton(QCoreApplication.translate("Python", "View message log"), pressed=show_message_log)
+    widget.layout().addWidget(stackbutton)
+    widget.layout().addWidget(button)
+    bar.pushWidget(widget, QgsMessageBar.WARNING)
+
+
+def show_message_log(pop_error=True):
+    if pop_error:
+        iface.messageBar().popWidget()
+
+    iface.openMessageLog()
+
+
+def open_stack_dialog(type, value, tb, msg, pop_error=True):
+    if pop_error and iface is not None:
+        iface.messageBar().popWidget()
+
+    if msg is None:
+        msg = QCoreApplication.translate('Python', 'An error has occurred while executing Python code:')
+
+    # TODO Move this to a template HTML file
+    txt = u'''<font color="red"><b>{msg}</b></font>
+<br>
+<h3>{main_error}</h3>
+<pre>
+{error}
+</pre>
+<br>
+<b>{version_label}</b> {num}
+<br>
+<b>{qgis_label}</b> {qversion} {qgisrelease}, {devversion}
+<br>
+<h4>{pypath_label}</h4>
+<ul>
+{pypath}
+</ul>'''
+
+    error = ''
+    lst = traceback.format_exception(type, value, tb)
+    for s in lst:
+        error += s.decode('utf-8', 'replace') if hasattr(s, 'decode') else s
+    error = error.replace('\n', '<br>')
+
+    main_error = lst[-1].decode('utf-8', 'replace') if hasattr(lst[-1], 'decode') else lst[-1]
+
+    version_label = QCoreApplication.translate('Python', 'Python version:')
+    qgis_label = QCoreApplication.translate('Python', 'QGIS version:')
+    pypath_label = QCoreApplication.translate('Python', 'Python Path:')
+    txt = txt.format(msg=msg,
+                     main_error=main_error,
+                     error=error,
+                     version_label=version_label,
+                     num=sys.version,
+                     qgis_label=qgis_label,
+                     qversion=Qgis.QGIS_VERSION,
+                     qgisrelease=Qgis.QGIS_RELEASE_NAME,
+                     devversion=Qgis.QGIS_DEV_VERSION,
+                     pypath_label=pypath_label,
+                     pypath=u"".join(u"<li>{}</li>".format(path) for path in sys.path))
+
+    txt = txt.replace('  ', '&nbsp; ')  # preserve whitespaces for nicer output
+
+    dlg = QgsMessageOutput.createMessageOutput()
+    dlg.setTitle(msg)
+    dlg.setMessage(txt, QgsMessageOutput.MessageHtml)
+    dlg.showMessage()
+
 
 def qgis_excepthook(type, value, tb):
-  showException(type, value, tb, None)
+    # detect if running in the main thread
+    in_main_thread = QCoreApplication.instance() is None or QThread.currentThread() == QCoreApplication.instance().thread()
+
+    # only use messagebar if running in main thread - otherwise it will crash!
+    showException(type, value, tb, None, messagebar=in_main_thread)
+
 
 def installErrorHook():
-  sys.excepthook = qgis_excepthook
+    sys.excepthook = qgis_excepthook
+
 
 def uninstallErrorHook():
-  sys.excepthook = sys.__excepthook__
+    sys.excepthook = sys.__excepthook__
+
 
 # install error hook() on module load
-installErrorHook()
+if not os.environ.get('QGIS_DISABLE_MESSAGE_HOOKS'):
+    installErrorHook()
 
 # initialize 'iface' object
 iface = None
 
+
 def initInterface(pointer):
-  from qgis.gui import QgisInterface
-  from sip import wrapinstance
-  global iface
-  iface = wrapinstance(pointer, QgisInterface)
+    from qgis.gui import QgisInterface
+    from sip import wrapinstance
+
+    global iface
+    iface = wrapinstance(pointer, QgisInterface)
 
 
 #######################
@@ -106,6 +230,8 @@ plugin_paths = []
 # dictionary of plugins
 plugins = {}
 
+plugin_times = {}
+
 # list of active (started) plugins
 active_plugins = []
 
@@ -116,357 +242,447 @@ available_plugins = []
 # key = plugin package name, value = config parser instance
 plugins_metadata_parser = {}
 
+
 def findPlugins(path):
-  """ for internal use: return list of plugins in given path """
-  for plugin in glob.glob(path + "/*"):
-    if not os.path.isdir(plugin):
-      continue
-    if not os.path.exists(os.path.join(plugin, '__init__.py')):
-      continue
+    """ for internal use: return list of plugins in given path """
+    for plugin in glob.glob(path + "/*"):
+        if not os.path.isdir(plugin):
+            continue
+        if not os.path.exists(os.path.join(plugin, '__init__.py')):
+            continue
 
-    metadataFile = os.path.join(plugin, 'metadata.txt')
-    if not os.path.exists(metadataFile):
-      continue
+        metadataFile = os.path.join(plugin, 'metadata.txt')
+        if not os.path.exists(metadataFile):
+            continue
 
-    cp = ConfigParser.ConfigParser()
+        cp = configparser.ConfigParser()
 
-    try:
-      cp.readfp(codecs.open(metadataFile, "r", "utf8"))
-    except:
-      cp = None
+        try:
+            with codecs.open(metadataFile, "r", "utf8") as f:
+                cp.read_file(f)
+        except:
+            cp = None
 
-    pluginName = os.path.basename(plugin)
-    yield (pluginName, cp)
+        pluginName = os.path.basename(plugin)
+        yield (pluginName, cp)
 
 
 def updateAvailablePlugins():
-  """ Go through the plugin_paths list and find out what plugins are available. """
-  # merge the lists
-  plugins = []
-  metadata_parser = {}
-  for pluginpath in plugin_paths:
-    for pluginName, parser in findPlugins(pluginpath):
-      if parser is None: continue
-      if pluginName not in plugins:
-        plugins.append(pluginName)
-        metadata_parser[pluginName] = parser
+    """ Go through the plugin_paths list and find out what plugins are available. """
+    # merge the lists
+    plugins = []
+    metadata_parser = {}
+    for pluginpath in plugin_paths:
+        for pluginName, parser in findPlugins(pluginpath):
+            if parser is None:
+                continue
+            if pluginName not in plugins:
+                plugins.append(pluginName)
+                metadata_parser[pluginName] = parser
 
-  global available_plugins
-  available_plugins = plugins
-  global plugins_metadata_parser
-  plugins_metadata_parser = metadata_parser
+    global available_plugins
+    available_plugins = plugins
+    global plugins_metadata_parser
+    plugins_metadata_parser = metadata_parser
 
 
 def pluginMetadata(packageName, fct):
-  """ fetch metadata from a plugin - use values from metadata.txt """
-  try:
-    return plugins_metadata_parser[packageName].get('general', fct)
-  except Exception:
-    return "__error__"
+    """ fetch metadata from a plugin - use values from metadata.txt """
+    try:
+        return plugins_metadata_parser[packageName].get('general', fct)
+    except Exception:
+        return "__error__"
 
 
 def loadPlugin(packageName):
-  """ load plugin's package """
+    """ load plugin's package """
 
-  try:
-    __import__(packageName)
-    return True
-  except:
-    pass # continue...
+    try:
+        __import__(packageName)
+        return True
+    except:
+        pass  # continue...
 
-  # snake in the grass, we know it's there
-  sys.path_importer_cache.clear()
+    # snake in the grass, we know it's there
+    sys.path_importer_cache.clear()
 
-  # retry
-  try:
-    __import__(packageName)
-    return True
-  except:
-    msgTemplate = QCoreApplication.translate("Python", "Couldn't load plugin '%s' from ['%s']")
-    msg = msgTemplate % (packageName, "', '".join(sys.path))
-    showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
-    return False
+    # retry
+    try:
+        __import__(packageName)
+        return True
+    except:
+        msg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
 
 
 def startPlugin(packageName):
-  """ initialize the plugin """
-  global plugins, active_plugins, iface
+    """ initialize the plugin """
+    global plugins, active_plugins, iface, plugin_times
 
-  if packageName in active_plugins: return False
-  if packageName not in sys.modules: return False
+    if packageName in active_plugins:
+        return False
 
-  package = sys.modules[packageName]
+    if packageName not in sys.modules:
+        return False
 
-  errMsg = QCoreApplication.translate("Python", "Couldn't load plugin %s" ) % packageName
+    package = sys.modules[packageName]
 
-  # create an instance of the plugin
-  try:
-    plugins[packageName] = package.classFactory(iface)
-  except:
-    _unloadPluginModules(packageName)
-    msg = QCoreApplication.translate("Python", "%s due an error when calling its classFactory() method") % errMsg
-    showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
-    return False
+    errMsg = QCoreApplication.translate("Python", "Couldn't load plugin '{0}'").format(packageName)
 
-  # initGui
-  try:
-    plugins[packageName].initGui()
-  except:
-    del plugins[packageName]
-    _unloadPluginModules(packageName)
-    msg = QCoreApplication.translate("Python", "%s due an error when calling its initGui() method" ) % errMsg
-    showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
-    return False
+    start = time.clock()
+    # create an instance of the plugin
+    try:
+        plugins[packageName] = package.classFactory(iface)
+    except:
+        _unloadPluginModules(packageName)
+        msg = QCoreApplication.translate("Python", "{0} due to an error when calling its classFactory() method").format(errMsg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
 
-  # add to active plugins
-  active_plugins.append(packageName)
+    # initGui
+    try:
+        plugins[packageName].initGui()
+    except:
+        del plugins[packageName]
+        _unloadPluginModules(packageName)
+        msg = QCoreApplication.translate("Python", "{0} due to an error when calling its initGui() method").format(errMsg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
 
-  return True
+    # add to active plugins
+    active_plugins.append(packageName)
+    end = time.clock()
+    plugin_times[packageName] = "{0:02f}s".format(end - start)
+
+    return True
 
 
 def canUninstallPlugin(packageName):
-  """ confirm that the plugin can be uninstalled """
-  global plugins, active_plugins
+    """ confirm that the plugin can be uninstalled """
+    global plugins, active_plugins
 
-  if not plugins.has_key(packageName): return False
-  if packageName not in active_plugins: return False
+    if packageName not in plugins:
+        return False
+    if packageName not in active_plugins:
+        return False
 
-  try:
-    metadata = plugins[packageName]
-    if "canBeUninstalled" not in dir(metadata):
-      return True
-    return bool(metadata.canBeUninstalled())
-  except:
-    msg = "Error calling "+packageName+".canBeUninstalled"
-    showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
-    return True
+    try:
+        metadata = plugins[packageName]
+        if "canBeUninstalled" not in dir(metadata):
+            return True
+        return bool(metadata.canBeUninstalled())
+    except:
+        msg = "Error calling " + packageName + ".canBeUninstalled"
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return True
 
 
 def unloadPlugin(packageName):
-  """ unload and delete plugin! """
-  global plugins, active_plugins
+    """ unload and delete plugin! """
+    global plugins, active_plugins
 
-  if not plugins.has_key(packageName): return False
-  if packageName not in active_plugins: return False
+    if packageName not in plugins:
+        return False
+    if packageName not in active_plugins:
+        return False
 
-  try:
-    plugins[packageName].unload()
-    del plugins[packageName]
-    active_plugins.remove(packageName)
-    _unloadPluginModules(packageName)
-    return True
-  except Exception, e:
-    msg = QCoreApplication.translate("Python", "Error while unloading plugin %s") % packageName
-    showException(sys.exc_type, sys.exc_value, sys.exc_traceback, msg)
-    return False
+    try:
+        plugins[packageName].unload()
+        del plugins[packageName]
+        active_plugins.remove(packageName)
+        _unloadPluginModules(packageName)
+        return True
+    except Exception as e:
+        msg = QCoreApplication.translate("Python", "Error while unloading plugin {0}").format(packageName)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg, messagebar=True)
+        return False
 
 
 def _unloadPluginModules(packageName):
-  """ unload plugin package with all its modules (files) """
-  global _plugin_modules
-  mods = _plugin_modules[packageName]
+    """ unload plugin package with all its modules (files) """
+    global _plugin_modules
+    mods = _plugin_modules[packageName]
 
-  for mod in mods:
-    # if it looks like a Qt resource file, try to do a cleanup
-    # otherwise we might experience a segfault next time the plugin is loaded
-    # because Qt will try to access invalid plugin resource data
-    try:
-      if hasattr(sys.modules[mod], 'qCleanupResources'):
-        sys.modules[mod].qCleanupResources()
-    except:
-      pass
-    # try to remove the module from python
-    try:
-      del sys.modules[mod]
-    except:
-      pass
-  # remove the plugin entry
-  del _plugin_modules[packageName]
+    for mod in mods:
+        # if it looks like a Qt resource file, try to do a cleanup
+        # otherwise we might experience a segfault next time the plugin is loaded
+        # because Qt will try to access invalid plugin resource data
+        try:
+            if hasattr(sys.modules[mod], 'qCleanupResources'):
+                sys.modules[mod].qCleanupResources()
+        except:
+            pass
+        # try to remove the module from python
+        try:
+            del sys.modules[mod]
+        except:
+            pass
+    # remove the plugin entry
+    del _plugin_modules[packageName]
 
 
 def isPluginLoaded(packageName):
-  """ find out whether a plugin is active (i.e. has been started) """
-  global plugins, active_plugins
+    """ find out whether a plugin is active (i.e. has been started) """
+    global plugins, active_plugins
 
-  if not plugins.has_key(packageName): return False
-  return (packageName in active_plugins)
+    if packageName not in plugins:
+        return False
+    return (packageName in active_plugins)
 
 
 def reloadPlugin(packageName):
-  """ unload and start again a plugin """
-  global active_plugins
-  if packageName not in active_plugins:
-    return # it's not active
+    """ unload and start again a plugin """
+    global active_plugins
+    if packageName not in active_plugins:
+        return  # it's not active
 
-  unloadPlugin(packageName)
-  loadPlugin(packageName)
-  startPlugin(packageName)
+    unloadPlugin(packageName)
+    loadPlugin(packageName)
+    startPlugin(packageName)
 
 
-def showPluginHelp(packageName=None,filename="index",section=""):
-  """ show a help in the user's html browser. The help file should be named index-ll_CC.html or index-ll.html"""
-  try:
-    source = ""
-    if packageName is None:
-       import inspect
-       source = inspect.currentframe().f_back.f_code.co_filename
-    else:
-       source = sys.modules[packageName].__file__
-  except:
-    return
-  path = os.path.dirname(source)
-  locale = str(QLocale().name())
-  helpfile = os.path.join(path,filename+"-"+locale+".html")
-  if not os.path.exists(helpfile):
-    helpfile = os.path.join(path,filename+"-"+locale.split("_")[0]+".html")
-  if not os.path.exists(helpfile):
-    helpfile = os.path.join(path,filename+"-en.html")
-  if not os.path.exists(helpfile):
-    helpfile = os.path.join(path,filename+"-en_US.html")
-  if not os.path.exists(helpfile):
-    helpfile = os.path.join(path,filename+".html")
-  if os.path.exists(helpfile):
-    url = "file://"+helpfile
-    if section != "":
-        url = url + "#" + section
-    iface.openURL(url,False)
+def showPluginHelp(packageName=None, filename="index", section=""):
+    """ show a help in the user's html browser. The help file should be named index-ll_CC.html or index-ll.html"""
+    try:
+        source = ""
+        if packageName is None:
+            import inspect
+
+            source = inspect.currentframe().f_back.f_code.co_filename
+        else:
+            source = sys.modules[packageName].__file__
+    except:
+        return
+    path = os.path.dirname(source)
+    locale = str(QLocale().name())
+    helpfile = os.path.join(path, filename + "-" + locale + ".html")
+    if not os.path.exists(helpfile):
+        helpfile = os.path.join(path, filename + "-" + locale.split("_")[0] + ".html")
+    if not os.path.exists(helpfile):
+        helpfile = os.path.join(path, filename + "-en.html")
+    if not os.path.exists(helpfile):
+        helpfile = os.path.join(path, filename + "-en_US.html")
+    if not os.path.exists(helpfile):
+        helpfile = os.path.join(path, filename + ".html")
+    if os.path.exists(helpfile):
+        url = "file://" + helpfile
+        if section != "":
+            url = url + "#" + section
+        iface.openURL(url, False)
 
 
 def pluginDirectory(packageName):
-  """ return directory where the plugin resides. Plugin must be loaded already """
-  return os.path.dirname(sys.modules[packageName].__file__)
+    """ return directory where the plugin resides. Plugin must be loaded already """
+    return os.path.dirname(sys.modules[packageName].__file__)
+
 
 def reloadProjectMacros():
-  # unload old macros
-  unloadProjectMacros()
+    # unload old macros
+    unloadProjectMacros()
 
-  from qgis.core import QgsProject
-  code, ok = QgsProject.instance().readEntry("Macros", "/pythonCode")
-  if not ok or not code or code == '':
-    return
+    from qgis.core import QgsProject
 
-  # create a new empty python module
-  import imp
-  mod = imp.new_module("proj_macros_mod")
+    code, ok = QgsProject.instance().readEntry("Macros", "/pythonCode")
+    if not ok or not code or code == '':
+        return
 
-  # set the module code and store it sys.modules
-  exec unicode(code) in mod.__dict__
-  sys.modules["proj_macros_mod"] = mod
+    # create a new empty python module
+    import imp
 
-  # load new macros
-  openProjectMacro()
+    mod = imp.new_module("proj_macros_mod")
+
+    # set the module code and store it sys.modules
+    exec(str(code), mod.__dict__)
+    sys.modules["proj_macros_mod"] = mod
+
+    # load new macros
+    openProjectMacro()
+
 
 def unloadProjectMacros():
-  if "proj_macros_mod" not in sys.modules:
-    return
-  # unload old macros
-  closeProjectMacro()
-  # destroy the reference to the module
-  del sys.modules["proj_macros_mod"]
+    if "proj_macros_mod" not in sys.modules:
+        return
+    # unload old macros
+    closeProjectMacro()
+    # destroy the reference to the module
+    del sys.modules["proj_macros_mod"]
 
 
 def openProjectMacro():
-  if "proj_macros_mod" not in sys.modules:
-    return
-  mod = sys.modules["proj_macros_mod"]
-  if hasattr(mod, 'openProject'):
-    mod.openProject()
+    if "proj_macros_mod" not in sys.modules:
+        return
+    mod = sys.modules["proj_macros_mod"]
+    if hasattr(mod, 'openProject'):
+        mod.openProject()
+
 
 def saveProjectMacro():
-  if "proj_macros_mod" not in sys.modules:
-    return
-  mod = sys.modules["proj_macros_mod"]
-  if hasattr(mod, 'saveProject'):
-    mod.saveProject()
+    if "proj_macros_mod" not in sys.modules:
+        return
+    mod = sys.modules["proj_macros_mod"]
+    if hasattr(mod, 'saveProject'):
+        mod.saveProject()
+
 
 def closeProjectMacro():
-  if "proj_macros_mod" not in sys.modules:
-    return
-  mod = sys.modules["proj_macros_mod"]
-  if hasattr(mod, 'closeProject'):
-    mod.closeProject()
+    if "proj_macros_mod" not in sys.modules:
+        return
+    mod = sys.modules["proj_macros_mod"]
+    if hasattr(mod, 'closeProject'):
+        mod.closeProject()
 
 
-def qgsfunction(args, group, **kwargs):
-  """
-  Decorator function used to define a user expression function.
+#######################
+# SERVER PLUGINS
+#
+# TODO: move into server_utils.py ?
 
-  Custom functions should take (values, feature, parent) as args,
-  they can also shortcut naming feature and parent args by using *args
-  if they are not needed in the function.
+# list of plugin paths. it gets filled in by the QGIS python library
+server_plugin_paths = []
 
-  Functions should return a value compatible with QVariant
+# dictionary of plugins
+server_plugins = {}
 
-  Eval errors can be raised using parent.setEvalErrorString()
+# list of active (started) plugins
+server_active_plugins = []
 
-  Functions must be unregistered when no longer needed using
-  QgsExpression.unregisterFunction
 
-  Example:
-    @qgsfunction(2, 'test'):
-    def add(values, feature, parent):
-      pass
+# initialize 'serverIface' object
+serverIface = None
 
-    Will create and register a function in QgsExpression called 'add' in the
-    'test' group that takes two arguments.
 
-    or not using feature and parent:
+def initServerInterface(pointer):
+    from qgis.server import QgsServerInterface
+    from sip import wrapinstance
+    sys.excepthook = sys.__excepthook__
+    global serverIface
+    serverIface = wrapinstance(pointer, QgsServerInterface)
 
-    @qgsfunction(2, 'test'):
-    def add(values, *args):
-      pass
-  """
-  helptemplate = Template("""<h3>$name function</h3><br>$doc""")
-  class QgsExpressionFunction(QgsExpression.Function):
-    def __init__(self, name, args, group, helptext=''):
-      QgsExpression.Function.__init__(self, name, args, group, helptext)
 
-    def func(self, values, feature, parent):
-      pass
+def startServerPlugin(packageName):
+    """ initialize the plugin """
+    global server_plugins, server_active_plugins, serverIface
 
-  def wrapper(func):
-    name = kwargs.get('name', func.__name__)
-    help = func.__doc__ or ''
-    help = help.strip()
-    if args == 0 and not name[0] == '$':
-      name = '${0}'.format(name)
-    func.__name__ = name
-    help = helptemplate.safe_substitute(name=name, doc=help)
-    f = QgsExpressionFunction(name, args, group, help)
-    f.func = func
-    register = kwargs.get('register', True)
-    if register:
-      QgsExpression.registerFunction(f)
-    return f
-  return wrapper
+    if packageName in server_active_plugins:
+        return False
+    if packageName not in sys.modules:
+        return False
+
+    package = sys.modules[packageName]
+
+    errMsg = QCoreApplication.translate("Python", "Couldn't load server plugin {0}").format(packageName)
+
+    # create an instance of the plugin
+    try:
+        server_plugins[packageName] = package.serverClassFactory(serverIface)
+    except:
+        _unloadPluginModules(packageName)
+        msg = QCoreApplication.translate("Python",
+                                         "{0} due to an error when calling its serverClassFactory() method").format(errMsg)
+        showException(sys.exc_info()[0], sys.exc_info()[1], sys.exc_info()[2], msg)
+        return False
+
+    # add to active plugins
+    server_active_plugins.append(packageName)
+    return True
+
+
+def spatialite_connect(*args, **kwargs):
+    """returns a dbapi2.Connection to a SpatiaLite db
+using the "mod_spatialite" extension (python3)"""
+    import sqlite3
+    con = sqlite3.dbapi2.connect(*args, **kwargs)
+    con.enable_load_extension(True)
+    cur = con.cursor()
+    libs = [
+        # SpatiaLite >= 4.2 and Sqlite >= 3.7.17, should work on all platforms
+        ("mod_spatialite", "sqlite3_modspatialite_init"),
+        # SpatiaLite >= 4.2 and Sqlite < 3.7.17 (Travis)
+        ("mod_spatialite.so", "sqlite3_modspatialite_init"),
+        # SpatiaLite < 4.2 (linux)
+        ("libspatialite.so", "sqlite3_extension_init")
+    ]
+    found = False
+    for lib, entry_point in libs:
+        try:
+            cur.execute("select load_extension('{}', '{}')".format(lib, entry_point))
+        except sqlite3.OperationalError:
+            continue
+        else:
+            found = True
+            break
+    if not found:
+        raise RuntimeError("Cannot find any suitable spatialite module")
+    cur.close()
+    con.enable_load_extension(False)
+    return con
+
+
+class OverrideCursor():
+    """
+    Executes a code block with a different cursor set and makes sure the cursor
+    is restored even if exceptions are raised or an intermediate ``return``
+    statement is hit.
+
+    Example:
+    ```
+    with OverrideCursor(Qt.WaitCursor):
+        do_a_slow(operation)
+    ```
+    """
+
+    def __init__(self, cursor):
+        self.cursor = cursor
+
+    def __enter__(self):
+        QApplication.setOverrideCursor(self.cursor)
+
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        QApplication.restoreOverrideCursor()
 
 #######################
 # IMPORT wrapper
 
-import __builtin__
 
-_builtin_import = __builtin__.__import__
-_plugin_modules = { }
+_uses_builtins = True
+try:
+    import builtins
+    _builtin_import = builtins.__import__
+except AttributeError:
+    _uses_builtins = False
+    import __builtin__
+    _builtin_import = __builtin__.__import__
 
-def _import(name, globals={}, locals={}, fromlist=[], level=-1):
-  """ wrapper around builtin import that keeps track of loaded plugin modules """
-  mod = _builtin_import(name, globals, locals, fromlist, level)
+_plugin_modules = {}
 
-  if mod and '__file__' in mod.__dict__:
-    module_name = mod.__name__
-    package_name = module_name.split('.')[0]
-    # check whether the module belongs to one of our plugins
-    if package_name in available_plugins:
-      if package_name not in _plugin_modules:
-        _plugin_modules[package_name] = set()
-      _plugin_modules[package_name].add(module_name)
-      # check the fromlist for additional modules (from X import Y,Z)
-      if fromlist:
-        for fromitem in fromlist:
-          frmod = module_name + "." + fromitem
-          if frmod in sys.modules:
-            _plugin_modules[package_name].add(frmod)
 
-  return mod
+def _import(name, globals={}, locals={}, fromlist=[], level=None):
+    """ wrapper around builtin import that keeps track of loaded plugin modules """
+    if level is None:
+        level = 0
+    mod = _builtin_import(name, globals, locals, fromlist, level)
 
-__builtin__.__import__ = _import
+    if mod and '__file__' in mod.__dict__:
+        module_name = mod.__name__
+        package_name = module_name.split('.')[0]
+        # check whether the module belongs to one of our plugins
+        if package_name in available_plugins:
+            if package_name not in _plugin_modules:
+                _plugin_modules[package_name] = set()
+            _plugin_modules[package_name].add(module_name)
+            # check the fromlist for additional modules (from X import Y,Z)
+            if fromlist:
+                for fromitem in fromlist:
+                    frmod = module_name + "." + fromitem
+                    if frmod in sys.modules:
+                        _plugin_modules[package_name].add(frmod)
+
+    return mod
+
+
+if not os.environ.get('QGIS_NO_OVERRIDE_IMPORT'):
+    if _uses_builtins:
+        builtins.__import__ = _import
+    else:
+        __builtin__.__import__ = _import

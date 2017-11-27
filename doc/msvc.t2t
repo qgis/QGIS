@@ -8,39 +8,33 @@ MinGW).
 This section describes the setup required to allow Visual Studio to be used to
 build QGIS. 
 
-===Visual C++ Express Edition===
+===Visual C++ Community Edition===
 
-The free (as in free beer) Express Edition installer is available under:
-	
-	http://download.microsoft.com/download/d/c/3/dc3439e7-5533-4f4c-9ba0-8577685b6e7e/vcsetup.exe
+The free (as in free beer) Community installer is available under:
 
-The optional products are not necessary.  In the process the Windows SDKs for
-Visual Studio 2008 will also be downloaded and installed.
-
-You also need the Microsoft Windows Server(R) 2003 R2 Platform SDK (for setupapi):
-
-	http://download.microsoft.com/download/f/a/d/fad9efde-8627-4e7a-8812-c351ba099151/PSDK-x86.exe
-
-You only need Microsoft Windows Core SDK / Build Environment (x86 32-Bit).
+	http://download.microsoft.com/download/D/2/3/D23F4D0F-BA2D-4600-8725-6CCECEA05196/vs_community_ENU.exe
 
 ===Other tools and dependencies===
 
 Download and install following packages:
 
 || Tool | Website |
-| CMake | http://www.cmake.org/files/v2.8/cmake-2.8.4-win32-x86.exe |
-| Flex | http://gnuwin32.sourceforge.net/downlinks/flex.php |
-| Bison | http://gnuwin32.sourceforge.net/downlinks/bison.php |
-| SVN | http://sourceforge.net/projects/win32svn/files/1.6.13/Setup-Subversion-1.6.13.msi/download |
-| or GIT | http://msysgit.googlecode.com/files/Git-1.7.4-preview20110204.exe | 
-| OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup.exe |
+| CMake | https://cmake.org/files/v3.7/cmake-3.7.2-win64-x64.msi |
+| GNU flex, GNU bison and GIT | http://cygwin.com/setup-x86.exe (32bit) or http://cygwin.com/setup-x86_64.exe (64bit) |
+| OSGeo4W | http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86.exe (32bit) or http://download.osgeo.org/osgeo4w/osgeo4w-setup-x86_64.exe (64bit) |
+| ninja | https://github.com/ninja-build/ninja/releases/download/v1.7.2/ninja-win.zip |
 
 OSGeo4W does not only provide ready packages for the current QGIS release and
-nightly builds of the trunk, but also offers most of the dependencies needs to
+nightly builds of master, but also offers most of the dependencies needs to
 build it.
 
-For the QGIS build you need to install following packages from OSGeo4W (select
-//Advanced Installation//):
+For the QGIS build you need to install following packages from cygwin:
+- bison
+- flex
+- git
+-
+
+and from OSGeo4W (select //Advanced Installation//):
 
 - expat
 - fcgi
@@ -48,27 +42,51 @@ For the QGIS build you need to install following packages from OSGeo4W (select
 - grass
 - gsl-devel
 - iconv
-- pyqt4
-- qt4-devel
-- qwt5-devel-qt4
-- sip
-- spatialite
+- libzip-devel
 - libspatialindex-devel
-- python-qscintilla
+- pyqt5
+- python3-devel
+- python3-qscintilla
+- python3-nose2
+- python3-future
+- python3-pyyaml
+- python3-mock
+- python3-six
+- qca-qt5-devel
+- qca-qt5-libs
+- qscintilla-qt5
+- qt5-devel
+- qt5-libs-debug
+- qtwebkit-qt5-devel
+- qtwebkit-qt5-libs-debug
+- qwt-devel-qt5
+- sip-qt5
+- spatialite
+- oci
+- qtkeychain
+- libzip
+-
+
 
 
 This will also select packages the above packages depend on.
 
-Additionally QGIS also needs the include file ``unistd.h``, which normally
-doesn't exist on Windows.  It's shipped with Flex/Bison in ``GnuWin32\include``
-and needs to be copied into the ``VC\include`` directory of your Visual C++
-installation.
+If you install other packages, this might cause issues. Particularly, make sure
+**not** to install the msinttypes package. It installs a stdint.h file in
+OSGeo4W[64]\include, that conflicts with Visual Studio own stdint.h, which for
+example breaks the build of the virtuallayer provider.
 
 Earlier versions of this document also covered how to build all above
 dependencies.  If you're interested in that, check the history of this page in the Wiki
 or the SVN repository.
 
+
 === Setting up the Visual Studio project with CMake ===
+
+/!\ Consider this section as example.  It tends to outdate, when OSGeo4W and
+SDKs move on.  ``ms-windows/osgeo4w/package-nightly.cmd`` is used for the
+nightly builds and constantly updated and hence might contain necessary
+updates that are not yet reflected here.
 
 To start a command prompt with an environment that both has the VC++ and the OSGeo4W
 variables create the following batch file (assuming the above packages were
@@ -76,21 +94,25 @@ installed in the default locations):
 
 ```
 @echo off
-path %SYSTEMROOT%\system32;%SYSTEMROOT%;%SYSTEMROOT%\System32\Wbem;%PROGRAMFILES%\CMake 2.8\bin;%PROGRAMFILES%\subversion\bin;%PROGRAMFILES%\GnuWin32\bin
-set PYTHONPATH=
-
-set VS90COMNTOOLS=%PROGRAMFILES%\Microsoft Visual Studio 9.0\Common7\Tools\
-call "%PROGRAMFILES%\Microsoft Visual Studio 9.0\VC\vcvarsall.bat" x86
-
-set INCLUDE=%INCLUDE%;%PROGRAMFILES%\Microsoft Platform SDK for Windows Server 2003 R2\include
-set LIB=%LIB%;%PROGRAMFILES%\Microsoft Platform SDK for Windows Server 2003 R2\lib
-
 set OSGEO4W_ROOT=C:\OSGeo4W
 call "%OSGEO4W_ROOT%\bin\o4w_env.bat"
+call "%OSGEO4W_ROOT%\bin\py3_env.bat"
+call "%OSGEO4W_ROOT%\bin\qt5_env.bat"
 
-@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-6.4.0
+set O4W_ROOT=%OSGEO4W_ROOT:\=/%
+set LIB_DIR=%O4W_ROOT%
+
+call "C:\Program Files\Microsoft Visual Studio 14.0\VC\vcvarsall.bat" amd64
+path %path%;C:\Program Files\Microsoft Visual Studio 14.0\VC\bin
+
+path %PATH%;C:\Program Files\CMake\bin;c:\cygwin\bin
+
+@set GRASS_PREFIX=c:/OSGeo4W/apps/grass/grass-7.2.1
 @set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\include
 @set LIB=%LIB%;%OSGEO4W_ROOT%\lib;%OSGEO4W_ROOT%\lib
+
+set LIB=%LIB%;%OSGEO4W_ROOT%\apps\Qt5\lib;%OSGEO4W_ROOT%\lib
+set INCLUDE=%INCLUDE%;%OSGEO4W_ROOT%\apps\Qt5\include;%OSGEO4W_ROOT%\include
 
 @cmd
 ```

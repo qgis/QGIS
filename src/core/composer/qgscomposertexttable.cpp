@@ -16,62 +16,69 @@
  ***************************************************************************/
 
 #include "qgscomposertexttable.h"
+#include "qgscomposertablecolumn.h"
+#include "qgscomposerframe.h"
+#include "qgscomposition.h"
 
-QgsComposerTextTable::QgsComposerTextTable( QgsComposition* c ): QgsComposerTable( c )
+QgsComposerTextTableV2::QgsComposerTextTableV2( QgsComposition *c, bool createUndoCommands )
+  : QgsComposerTableV2( c, createUndoCommands )
 {
 
 }
 
-QgsComposerTextTable::~QgsComposerTextTable()
+void QgsComposerTextTableV2::addRow( const QStringList &row )
 {
-
+  mRowText.append( row );
+  refreshAttributes();
 }
 
-bool QgsComposerTextTable::writeXML( QDomElement& elem, QDomDocument & doc ) const
+void QgsComposerTextTableV2::setContents( const QList<QStringList> &contents )
 {
-  QDomElement composerTableElem = doc.createElement( "ComposerTextTable" );
-  //todo: write headers and text entries
-  bool ok = _writeXML( composerTableElem , doc );
-  elem.appendChild( composerTableElem );
-  return ok;
+  mRowText = contents;
+  refreshAttributes();
 }
 
-bool QgsComposerTextTable::readXML( const QDomElement& itemElem, const QDomDocument& doc )
+bool QgsComposerTextTableV2::getTableContents( QgsComposerTableContents &contents )
 {
-  //todo: read headers and text entries
-  return tableReadXML( itemElem, doc );
-}
-
-bool QgsComposerTextTable::getFeatureAttributes( QList<QgsAttributes>& attributes )
-{
-  attributes.clear();
+  contents.clear();
 
   QList< QStringList >::const_iterator rowIt = mRowText.constBegin();
-  QStringList currentStringList;
   for ( ; rowIt != mRowText.constEnd(); ++rowIt )
   {
-    currentStringList = *rowIt;
-    QVector<QVariant> vec;
-    for ( int i = 0; i < currentStringList.size(); ++i )
+    QgsComposerTableRow currentRow;
+
+    for ( int i = 0; i < mColumns.count(); ++i )
     {
-      vec.append( QVariant( currentStringList.at( i ) ) );
+      if ( i < ( *rowIt ).count() )
+      {
+        currentRow << ( *rowIt ).at( i );
+      }
+      else
+      {
+        currentRow << QString();
+      }
     }
-    attributes.append( vec );
+    contents << currentRow;
   }
+
+  recalculateTableSize();
   return true;
 }
 
-QMap<int, QString> QgsComposerTextTable::getHeaderLabels() const
+void QgsComposerTextTableV2::addFrame( QgsComposerFrame *frame, bool recalcFrameSizes )
 {
-  QMap<int, QString> header;
-  QStringList::const_iterator it = mHeaderLabels.constBegin();
-  int index = 0;
-  for ( ; it != mHeaderLabels.constEnd(); ++it )
+  mFrameItems.push_back( frame );
+  connect( frame, &QgsComposerItem::sizeChanged, this, &QgsComposerTableV2::recalculateFrameSizes );
+
+  if ( mComposition )
   {
-    header.insert( index, *it );
-    ++index;
+    //TODO - if QgsComposerTextTableV2 gains a UI, this will need a dedicated add method
+    //added to QgsComposition
+    mComposition->addItem( frame );
   }
-  return header;
+
+  if ( recalcFrameSizes )
+  {
+    recalculateFrameSizes();
+  }
 }
-
-

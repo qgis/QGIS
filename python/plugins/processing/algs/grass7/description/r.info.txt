@@ -1,0 +1,9 @@
+r.info
+Output basic information about a raster layer.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|map|Raster layer|None|False
+QgsProcessingParameterBoolean|-r|Print range only|False
+QgsProcessingParameterBoolean|-g|Print raster array information in shell script style|False
+QgsProcessingParameterBoolean|-h|Print raster history instead of info|False
+QgsProcessingParameterBoolean|-e|Print extended metadata information in shell script style|False
+QgsProcessingParameterFileDestination|html|Basic information|Html files (*.html)|report.html|False

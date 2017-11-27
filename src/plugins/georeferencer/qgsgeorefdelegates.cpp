@@ -19,16 +19,17 @@
 
 #include "qgsgeorefvalidators.h"
 #include "qgsgeorefdelegates.h"
+#include <cmath>
 
 // ------------------------ QgsNonEditableDelegate ------------------------- //
 QgsNonEditableDelegate::QgsNonEditableDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
 // ------------------------- QgsDmsAndDdDelegate --------------------------- //
 QgsDmsAndDdDelegate::QgsDmsAndDdDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
@@ -54,11 +55,16 @@ void QgsDmsAndDdDelegate::setModelData( QWidget *editor, QAbstractItemModel *mod
                                         const QModelIndex &index ) const
 {
   QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
-  QString value = lineEdit->text();
-  if ( value.contains( ' ' ) )
-    value = dmsToDD( value );
+  QString stringValue = lineEdit->text();
+  double value = 0;
+  if ( stringValue.contains( ' ' ) )
+    value = dmsToDD( stringValue );
+  else
+    value = stringValue.toDouble();
 
   model->setData( index, value, Qt::EditRole );
+  model->setData( index, value, Qt::DisplayRole );
+  model->setData( index, value, Qt::ToolTipRole );
 }
 
 void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option,
@@ -67,11 +73,11 @@ void QgsDmsAndDdDelegate::updateEditorGeometry( QWidget *editor, const QStyleOpt
   editor->setGeometry( option.rect );
 }
 
-QString QgsDmsAndDdDelegate::dmsToDD( QString dms ) const
+double QgsDmsAndDdDelegate::dmsToDD( const QString &dms ) const
 {
   QStringList list = dms.split( ' ' );
   QString tmpStr = list.at( 0 );
-  double res = qAbs( tmpStr.toDouble() );
+  double res = std::fabs( tmpStr.toDouble() );
 
   tmpStr = list.value( 1 );
   if ( !tmpStr.isEmpty() )
@@ -81,15 +87,12 @@ QString QgsDmsAndDdDelegate::dmsToDD( QString dms ) const
   if ( !tmpStr.isEmpty() )
     res += tmpStr.toDouble() / 3600;
 
-  if ( dms.startsWith( '-' ) )
-    return QString::number( -res, 'f', 7 );
-  else
-    return QString::number( res, 'f', 7 );
+  return dms.startsWith( '-' ) ? -res : res;
 }
 
 // ---------------------------- QgsCoordDelegate --------------------------- //
 QgsCoordDelegate::QgsCoordDelegate( QWidget *parent )
-    : QStyledItemDelegate( parent )
+  : QStyledItemDelegate( parent )
 {
 }
 
@@ -102,4 +105,28 @@ QWidget *QgsCoordDelegate::createEditor( QWidget *parent, const QStyleOptionView
   editor->setValidator( validator );
 
   return editor;
+}
+
+void QgsCoordDelegate::setEditorData( QWidget *editor, const QModelIndex &index ) const
+{
+  QString value = index.model()->data( index, Qt::EditRole ).toString();
+
+  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
+  lineEdit->setText( value );
+}
+
+void QgsCoordDelegate::setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const
+{
+  QLineEdit *lineEdit = static_cast<QLineEdit *>( editor );
+  QString stringValue = lineEdit->text();
+  double value = stringValue.toDouble();
+  model->setData( index, value, Qt::EditRole );
+  model->setData( index, value, Qt::DisplayRole );
+  model->setData( index, value, Qt::ToolTipRole );
+}
+
+void QgsCoordDelegate::updateEditorGeometry( QWidget *editor, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  Q_UNUSED( index );
+  editor->setGeometry( option.rect );
 }

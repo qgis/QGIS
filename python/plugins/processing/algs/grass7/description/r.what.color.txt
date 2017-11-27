@@ -1,0 +1,7 @@
+r.what.color
+Queries colors for a raster map layer. 
+Raster (r.*)
+QgsProcessingParameterRasterLayer|input|Raster map to query colors|None|False
+QgsProcessingParameterString|value|Values to query colors for (comma separated list)|None|False|True
+QgsProcessingParameterString|format|Output format (printf-style)|%d:%d:%d|False|True
+QgsProcessingParameterFileDestination|output|Colors file|Txt files (*.txt)|None|False

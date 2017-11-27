@@ -12,54 +12,50 @@ __copyright__ = 'Copyright 2012, The QGIS Project'
 # This will get replaced with a git SHA1 when you do a git archive
 __revision__ = '$Format:%H$'
 
-import unittest
+import qgis  # NOQA
+
 import os
-import qgis
-from PyQt4.QtCore import QUrl, qDebug
-from PyQt4.QtXml import QDomDocument
+
+from qgis.PyQt.QtCore import QUrl, qDebug
 from qgis.core import (QgsComposition,
                        QgsComposerHtml,
                        QgsComposerFrame,
-                       QgsComposerMultiFrame)
+                       QgsComposerMultiFrame,
+                       QgsMapSettings,
+                       QgsProject
+                       )
 
 from qgscompositionchecker import QgsCompositionChecker
 
-from utilities import (unitTestDataPath,
-                       getQgisTestApp,
-                       TestCase,
-                       expectedFailure)
-QGISAPP, CANVAS, IFACE, PARENT = getQgisTestApp()
+from qgis.testing import start_app, unittest
+from qgis.testing.mocked import get_iface
+from utilities import unitTestDataPath
+
+start_app()
+
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerHtml(TestCase):
+class TestQgsComposerHtml(unittest.TestCase):
 
     def setUp(self):
         """Run before each test."""
-        self.mComposition = QgsComposition(None)
-        self.mComposition.setPaperSize(297, 210) #A4 landscape
+        self.iface = get_iface()
+        self.mapSettings = QgsMapSettings()
+        self.mComposition = QgsComposition(QgsProject.instance())
+        self.mComposition.setPaperSize(297, 210)  # A4 landscape
 
     def tearDown(self):
         """Run after each test."""
-        print "Tear down"
-
-    def controlImagePath(self, theImageName):
-        """Helper to get the path to a control image."""
-        myPath = os.path.join(TEST_DATA_DIR,
-                     "control_images",
-                     "expected_composerhtml",
-                     theImageName)
-        assert os.path.exists(myPath)
-        return myPath
+        print("Tear down")
 
     def htmlUrl(self):
         """Helper to get the url of the html doc."""
-        myPath = os.path.join(TEST_DATA_DIR, "html_table.html")
-        myUrl = QUrl("file:///%1").arg(myPath)
+        myPath = os.path.join(TEST_DATA_DIR, "test_html.html")
+        myUrl = QUrl("file:///" + myPath)
         return myUrl
 
-    @expectedFailure
-    def XtestTable(self):
+    def testTable(self):
         """Test we can render a html table in a single frame."""
         composerHtml = QgsComposerHtml(self.mComposition, False)
         htmlFrame = QgsComposerFrame(self.mComposition,
@@ -67,16 +63,18 @@ class TestQgsComposerHtml(TestCase):
         htmlFrame.setFrameEnabled(True)
         composerHtml.addFrame(htmlFrame)
         composerHtml.setUrl(self.htmlUrl())
-        checker = QgsCompositionChecker()
-        myResult, myMessage = checker.testComposition(
-            "Composer html table",
-            self.mComposition,
-            self.controlImagePath("composerhtml_table.png"))
-        qDebug(myMessage)
-        assert myResult, myMessage
 
-    @expectedFailure
-    def XtestTableMultiFrame(self):
+        checker = QgsCompositionChecker('composerhtml_table', self.mComposition)
+        checker.setControlPathPrefix("composer_html")
+        myTestResult, myMessage = checker.testComposition()
+
+        qDebug(myMessage)
+        self.mComposition.removeMultiFrame(composerHtml)
+        composerHtml = None
+
+        assert myTestResult, myMessage
+
+    def testTableMultiFrame(self):
         """Test we can render to multiframes."""
         composerHtml = QgsComposerHtml(self.mComposition, False)
         htmlFrame = QgsComposerFrame(self.mComposition, composerHtml,
@@ -84,58 +82,60 @@ class TestQgsComposerHtml(TestCase):
         composerHtml.addFrame(htmlFrame)
         composerHtml.setResizeMode(
             QgsComposerMultiFrame.RepeatUntilFinished)
+        composerHtml.setUseSmartBreaks(False)
         composerHtml.setUrl(self.htmlUrl())
         composerHtml.frame(0).setFrameEnabled(True)
 
+        print("Checking page 1")
         myPage = 0
-        checker1 = QgsCompositionChecker()
-        myControlImage = self.controlImagePath(
-            "composerhtml_table_multiframe1.png")
-        print "Checking page 1"
-        myResult, myMessage = checker1.testComposition("Composer html table",
-                                        self.mComposition,
-                                        myControlImage,
-                                        myPage)
-        assert myResult, myMessage
+        checker1 = QgsCompositionChecker('composerhtml_multiframe1', self.mComposition)
+        checker1.setControlPathPrefix("composer_html")
+        myTestResult, myMessage = checker1.testComposition(myPage)
+        assert myTestResult, myMessage
 
+        print("Checking page 2")
         myPage = 1
-        checker2 = QgsCompositionChecker()
-        myControlImage = self.controlImagePath(
-            "composerhtml_table_multiframe2.png")
-        print "Checking page 2"
-        myResult, myMessage = checker2.testComposition("Composer html table",
-                                        self.mComposition,
-                                        myControlImage,
-                                        myPage)
-        assert myResult, myMessage
+        checker2 = QgsCompositionChecker('composerhtml_multiframe2', self.mComposition)
+        checker2.setControlPathPrefix("composer_html")
+        myTestResult, myMessage = checker2.testComposition(myPage)
+        assert myTestResult, myMessage
 
-        myPage = 2
-        checker3 = QgsCompositionChecker()
-        myControlImage = self.controlImagePath(
-            "composerhtml_table_multiframe3.png")
-        myResult, myMessage = checker3.testComposition("Composer html table",
-                                        self.mComposition,
-                                        myControlImage,
-                                        myPage)
-        print "Checking page 3"
-        assert myResult, myMessage
+        self.mComposition.removeMultiFrame(composerHtml)
+        composerHtml = None
 
-    def testComposerHtmlAccessor(self):
-        """Test that we can retrieve the ComposerHtml instance given an item.
-        """
-        myComposition = QgsComposition(CANVAS.mapRenderer())
-        mySubstitutionMap = {'replace-me': 'Foo bar'}
-        myFile = os.path.join(TEST_DATA_DIR, 'template.qpt')
-        myTemplateFile = file(myFile, 'rt')
-        myTemplateContent = myTemplateFile.read()
-        myTemplateFile.close()
-        myDocument = QDomDocument()
-        myDocument.setContent(myTemplateContent)
-        myComposition.loadFromTemplate(myDocument, mySubstitutionMap)
-        myItem = myComposition.getComposerItemById('html-test')
-        myComposerHtml = myComposition.getComposerHtmlByItem(myItem)
-        myMessage = 'Could not retrieve the composer html given an item'
-        assert myComposerHtml is not None, myMessage
+        assert myTestResult, myMessage
+
+    def testHtmlSmartBreaks(self):
+        """Test rendering to multiframes with smart breaks."""
+        composerHtml = QgsComposerHtml(self.mComposition, False)
+        htmlFrame = QgsComposerFrame(self.mComposition, composerHtml,
+                                     10, 10, 100, 52)
+        composerHtml.addFrame(htmlFrame)
+        composerHtml.setResizeMode(
+            QgsComposerMultiFrame.RepeatUntilFinished)
+        composerHtml.setUseSmartBreaks(True)
+        composerHtml.setUrl(self.htmlUrl())
+        composerHtml.frame(0).setFrameEnabled(True)
+
+        print("Checking page 1")
+        myPage = 0
+        checker1 = QgsCompositionChecker('composerhtml_smartbreaks1', self.mComposition)
+        checker1.setControlPathPrefix("composer_html")
+        myTestResult, myMessage = checker1.testComposition(myPage, 200)
+        assert myTestResult, myMessage
+
+        print("Checking page 2")
+        myPage = 1
+        checker2 = QgsCompositionChecker('composerhtml_smartbreaks2', self.mComposition)
+        checker2.setControlPathPrefix("composer_html")
+        myTestResult, myMessage = checker2.testComposition(myPage, 200)
+        assert myTestResult, myMessage
+
+        self.mComposition.removeMultiFrame(composerHtml)
+        composerHtml = None
+
+        assert myTestResult, myMessage
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -1,25 +1,70 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrange.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 typedef QList<QgsRasterRange> QgsRasterRangeList;
 
 class QgsRasterRange
 {
-%TypeHeaderCode
-#include <qgsrasterrange.h>
+%Docstring
+ Raster values range container. Represents range of values between min and max
+ including min and max value.
 %End
 
+%TypeHeaderCode
+#include "qgsrasterrange.h"
+%End
   public:
+
     QgsRasterRange();
+%Docstring
+ Constructor.
+%End
 
-    QgsRasterRange( double theMin, double theMax  );
-
-    ~QgsRasterRange();
+    QgsRasterRange( double min, double max );
+%Docstring
+ Constructor
+  \param min minimum value
+  \param max max value
+%End
 
     double min() const;
+%Docstring
+ :rtype: float
+%End
     double max() const;
+%Docstring
+ :rtype: float
+%End
 
-    double setMin( double theMin );
-    double setMax( double theMax );
+    double setMin( double min );
+%Docstring
+ :rtype: float
+%End
+    double setMax( double max );
+%Docstring
+ :rtype: float
+%End
 
-    bool operator==( const QgsRasterRange &o ) const;
+    bool operator==( QgsRasterRange o ) const;
 
-    bool contains( double value, const QgsRasterRangeList &rangeList );
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrasterrange.h                                     *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

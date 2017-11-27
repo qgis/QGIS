@@ -1,16 +1,48 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/qgsgridfilewriter.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsGridFileWriter
 {
+
 %TypeHeaderCode
-#include <qgsgridfilewriter.h>
+#include "qgsgridfilewriter.h"
+%End
+  public:
+
+    QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
+%Docstring
+ Constructor for QgsGridFileWriter, for the specified ``interpolator``.
+
+ The ``outputPath`` argument is used to set the output file path.
+
+ The ``extent`` and ``nCols``, ``nRows`` arguments dictate the extent and size of the output raster.
 %End
 
-  public:
-    QgsGridFileWriter( QgsInterpolator* i, QString outputPath, QgsRectangle extent, int nCols, int nRows, double cellSizeX, double cellSizeY );
-    ~QgsGridFileWriter();
+    int writeFile( QgsFeedback *feedback = 0 );
+%Docstring
+ Writes the grid file.
 
-    /**Writes the grid file.
-     @param showProgressDialog shows a dialog with the possibility to cancel
-    @return 0 in case of success*/
+ An optional ``feedback`` object can be set for progress reports and cancelation support
 
-    int writeFile( bool showProgressDialog = false );
+ :return: 0 in case of success
+ :rtype: int
+%End
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/analysis/interpolation/qgsgridfilewriter.h                       *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

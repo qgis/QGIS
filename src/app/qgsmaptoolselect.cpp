@@ -20,33 +20,36 @@
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 #include "qgis.h"
 
 #include <QMouseEvent>
 #include <QRect>
+#include <QColor>
 
 
-QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas* canvas )
-    : QgsMapTool( canvas )
+QgsMapToolSelect::QgsMapToolSelect( QgsMapCanvas *canvas )
+  : QgsMapTool( canvas )
 {
+  mToolName = tr( "Select" );
   mCursor = Qt::ArrowCursor;
+  mFillColor = QColor( 254, 178, 76, 63 );
+  mStrokeColor = QColor( 254, 58, 29, 100 );
 }
 
-void QgsMapToolSelect::canvasReleaseEvent( QMouseEvent * e )
+void QgsMapToolSelect::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsVectorLayer* vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
-  if ( vlayer == NULL )
-  {
+  QgsVectorLayer *vlayer = QgsMapToolSelectUtils::getCurrentVectorLayer( mCanvas );
+  if ( !vlayer )
     return;
-  }
-  QgsRubberBand rubberBand( mCanvas, QGis::Polygon );
+
+  QgsRubberBand rubberBand( mCanvas, QgsWkbTypes::PolygonGeometry );
+  rubberBand.setFillColor( mFillColor );
+  rubberBand.setStrokeColor( mStrokeColor );
   QRect selectRect( 0, 0, 0, 0 );
   QgsMapToolSelectUtils::expandSelectRectangle( selectRect, vlayer, e->pos() );
   QgsMapToolSelectUtils::setRubberBand( mCanvas, selectRect, &rubberBand );
-  QgsGeometry* selectGeom = rubberBand.asGeometry();
-  bool doDifference = e->modifiers() & Qt::ControlModifier ? true : false;
-  QgsMapToolSelectUtils::setSelectFeatures( mCanvas, selectGeom, false, doDifference, true );
-  delete selectGeom;
-  rubberBand.reset( QGis::Polygon );
+  QgsGeometry selectGeom( rubberBand.asGeometry() );
+  QgsMapToolSelectUtils::selectSingleFeature( mCanvas, selectGeom, e );
+  rubberBand.reset( QgsWkbTypes::PolygonGeometry );
 }

@@ -19,62 +19,78 @@
 #define QGSCOMPOSERPICTUREWIDGET_H
 
 #include "ui_qgscomposerpicturewidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerPicture;
 
-/** \ingroup MapComposer
+/**
+ * \ingroup app
  * A widget for adding an image to a map composition.
  */
-class QgsComposerPictureWidget: public QWidget, private Ui::QgsComposerPictureWidgetBase
+class QgsComposerPictureWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerPictureWidgetBase
 {
     Q_OBJECT
 
   public:
-    QgsComposerPictureWidget( QgsComposerPicture* picture );
-    ~QgsComposerPictureWidget();
+    explicit QgsComposerPictureWidget( QgsComposerPicture *picture );
 
-    /**Add the icons of the standard directories to the preview*/
+    //! Add the icons of the standard directories to the preview
     void addStandardDirectoriesToPreview();
 
   public slots:
-    void on_mPictureBrowseButton_clicked();
-    void on_mPictureLineEdit_editingFinished();
-    void on_mRotationSpinBox_valueChanged( double d );
-    void on_mPreviewListWidget_currentItemChanged( QListWidgetItem* current, QListWidgetItem* previous );
-    void on_mAddDirectoryButton_clicked();
-    void on_mRemoveDirectoryButton_clicked();
-    void on_mRotationFromComposerMapCheckBox_stateChanged( int state );
-    void on_mComposerMapComboBox_activated( const QString & text );
+    void mPictureBrowseButton_clicked();
+    void mPictureLineEdit_editingFinished();
+    void mPictureRotationSpinBox_valueChanged( double d );
+    void mPreviewListWidget_currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
+    void mAddDirectoryButton_clicked();
+    void mRemoveDirectoryButton_clicked();
+    void mRotationFromComposerMapCheckBox_stateChanged( int state );
+    void composerMapChanged( QgsComposerItem *item );
+    void mResizeModeComboBox_currentIndexChanged( int index );
+    void mAnchorPointComboBox_currentIndexChanged( int index );
 
   protected:
-    void showEvent( QShowEvent * event );
-    void resizeEvent( QResizeEvent * event );
+    void resizeEvent( QResizeEvent *event ) override;
+
+  protected slots:
+    //! Initializes data defined buttons to current atlas coverage layer
+    void populateDataDefinedButtons();
 
   private slots:
-    /**Sets the GUI elements to the values of mPicture*/
+    //! Sets the GUI elements to the values of mPicture
     void setGuiElementValues();
-    /** Load SVG and pixel-based image previews
-     * @param collapsed Whether the parent group box is collapsed
-     * @note added in 1.9
-     */
+
+    //! Sets the picture rotation GUI control value
+    void setPicRotationSpinValue( double r );
+
+    /**
+     * Load SVG and pixel-based image previews
+     * \param collapsed Whether the parent group box is collapsed */
     void loadPicturePreviews( bool collapsed );
 
+    void mFillColorButton_colorChanged( const QColor &color );
+    void mStrokeColorButton_colorChanged( const QColor &color );
+    void mStrokeWidthSpinBox_valueChanged( double d );
+    void mPictureRotationOffsetSpinBox_valueChanged( double d );
+    void mNorthTypeComboBox_currentIndexChanged( int index );
+
   private:
-    QgsComposerPicture* mPicture;
-    /** Whether the picture selection previews have been loaded
-     * @note added in 1.9
-     */
+    QgsComposerPicture *mPicture = nullptr;
+    //! Whether the picture selection previews have been loaded
     bool mPreviewsLoaded;
 
-    /**Add the icons of a directory to the preview. Returns 0 in case of success*/
-    int addDirectoryToPreview( const QString& path );
+    //! Add the icons of a directory to the preview. Returns 0 in case of success
+    int addDirectoryToPreview( const QString &path );
 
-    /**Tests if a file is valid svg*/
-    bool testSvgFile( const QString& filename ) const;
-    /**Tests if a file is a valid pixel format*/
-    bool testImageFile( const QString& filename ) const;
-    /**Updates the map combo box with the current composer map ids*/
-    void refreshMapComboBox();
+    //! Tests if a file is valid svg
+    bool testSvgFile( const QString &filename ) const;
+    //! Tests if a file is a valid pixel format
+    bool testImageFile( const QString &filename ) const;
+
+    //! Renders an svg file to a QIcon, correctly handling any SVG parameters present in the file
+    QIcon svgToIcon( const QString &filePath ) const;
+
+    void updateSvgParamGui( bool resetValues = true );
 };
 
 #endif

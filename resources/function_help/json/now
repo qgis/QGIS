@@ -1,0 +1,6 @@
+{
+  "name": "now",
+  "type": "function",
+  "description": "Returns the current date and time.",
+  "examples": [ { "expression":"now()", "returns":"2012-07-22T13:24:57"}]
+}

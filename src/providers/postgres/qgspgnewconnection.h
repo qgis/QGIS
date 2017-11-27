@@ -17,10 +17,11 @@
 #ifndef QGSPGNEWCONNECTION_H
 #define QGSPGNEWCONNECTION_H
 #include "ui_qgspgnewconnectionbase.h"
-#include "qgisgui.h"
-#include "qgscontexthelp.h"
+#include "qgsguiutils.h"
+#include "qgshelp.h"
 
-/*! \class QgsPgNewConnection
+/**
+ * \class QgsPgNewConnection
  * \brief Dialog to allow the user to configure and save connection
  * information for a PostgreSQL database
  */
@@ -29,18 +30,18 @@ class QgsPgNewConnection : public QDialog, private Ui::QgsPgNewConnectionBase
     Q_OBJECT
   public:
     //! Constructor
-    QgsPgNewConnection( QWidget *parent = 0, const QString& connName = QString::null, Qt::WFlags fl = QgisGui::ModalDialogFlags );
-    //! Destructor
-    ~QgsPgNewConnection();
+    QgsPgNewConnection( QWidget *parent = nullptr, const QString &connName = QString(), Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+
     //! Tests the connection using the parameters supplied
     void testConnection();
   public slots:
-    void accept();
-    void on_btnConnect_clicked();
-    void on_cb_geometryColumnsOnly_clicked();
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
+    void accept() override;
+    void btnConnect_clicked();
+    void cb_geometryColumnsOnly_clicked();
   private:
     QString mOriginalConnName; //store initial name to delete entry in case of rename
+    void showHelp();
+
 };
 
 #endif //  QGSPGNEWCONNECTIONBASE_H

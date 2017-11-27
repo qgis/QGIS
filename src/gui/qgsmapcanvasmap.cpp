@@ -16,106 +16,94 @@
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
 #include "qgsmapcanvasmap.h"
-#include "qgsmaprenderer.h"
+#include "qgsmaprendererjob.h"
+#include "qgsmapsettings.h"
+#include "qgsmaplayer.h"
 
 #include <QPainter>
 
-QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas* canvas )
-    : mCanvas( canvas )
+/// @cond PRIVATE
+
+QgsMapCanvasMap::QgsMapCanvasMap( QgsMapCanvas *canvas )
+  : QgsMapCanvasItem( canvas )
 {
   setZValue( -10 );
-  setPos( 0, 0 );
-  resize( QSize( 1, 1 ) );
-  mUseQImageToRender = true;
 }
 
-void QgsMapCanvasMap::paint( QPainter* p, const QStyleOptionGraphicsItem*, QWidget* )
+void QgsMapCanvasMap::setContent( const QImage &image, const QgsRectangle &rect )
 {
-  //refreshes the canvas map with the current offscreen image
-  p->drawPixmap( 0, 0, mPixmap );
+  mPreviewImages.clear();
+
+  mImage = image;
+
+  // For true retro fans: this is approximately how the graphics looked like in 1990
+  if ( mMapCanvas->property( "retro" ).toBool() )
+    mImage = mImage.scaled( mImage.width() / 3, mImage.height() / 3 )
+             .convertToFormat( QImage::Format_Indexed8, Qt::OrderedDither | Qt::OrderedAlphaDither );
+
+  setRect( rect );
+}
+
+void QgsMapCanvasMap::addPreviewImage( const QImage &image, const QgsRectangle &rect )
+{
+  mPreviewImages.append( qMakePair( image, rect ) );
+  update();
 }
 
 QRectF QgsMapCanvasMap::boundingRect() const
 {
-  return QRectF( 0, 0, mPixmap.width(), mPixmap.height() );
+  double width = mItemSize.width();
+  double height = mItemSize.height();
+
+  return QRectF( -width, -height, 3 * width, 3 * height );
 }
 
-
-void QgsMapCanvasMap::resize( QSize size )
+void QgsMapCanvasMap::paint( QPainter *painter )
 {
-  QgsDebugMsg( QString( "resizing to %1x%2" ).arg( size.width() ).arg( size.height() ) );
-  prepareGeometryChange(); // to keep QGraphicsScene indexes up to date on size change
-
-  mPixmap = QPixmap( size );
-  mPixmap.fill( mBgColor.rgb() );
-  mImage = QImage( size, QImage::Format_RGB32 ); // temporary image - build it here so it is available when switching from QPixmap to QImage rendering
-  mCanvas->mapRenderer()->setOutputSize( size, mPixmap.logicalDpiX() );
-}
-
-void QgsMapCanvasMap::setPanningOffset( const QPoint& point )
-{
-  mOffset = point;
-  setPos( mOffset );
-}
-
-void QgsMapCanvasMap::render()
-{
-  QgsDebugMsg( QString( "mUseQImageToRender = %1" ).arg( mUseQImageToRender ) );
-  if ( mUseQImageToRender )
+  int w = std::round( mItemSize.width() ) - 2, h = std::round( mItemSize.height() ) - 2; // setRect() makes the size +2 :-(
+  if ( mImage.size() != QSize( w, h ) )
   {
-    // use temporary image for rendering
-    mImage.fill( mBgColor.rgb() );
-
-    // clear the pixmap so that old map won't be displayed while rendering
-    // TODO: do the canvas updates wisely -> this wouldn't be needed
-    mPixmap = QPixmap( mImage.size() );
-    mPixmap.fill( mBgColor.rgb() );
-
-    QPainter paint;
-    paint.begin( &mImage );
-    // Clip drawing to the QImage
-    paint.setClipRect( mImage.rect() );
-
-    // antialiasing
-    if ( mAntiAliasing )
-      paint.setRenderHint( QPainter::Antialiasing );
-
-    mCanvas->mapRenderer()->render( &paint );
-
-    paint.end();
-
-    // convert QImage to QPixmap to achieve faster drawing on screen
-    mPixmap = QPixmap::fromImage( mImage );
+    QgsDebugMsg( QString( "map paint DIFFERENT SIZE: img %1,%2  item %3,%4" ).arg( mImage.width() ).arg( mImage.height() ).arg( w ).arg( h ) );
+    // This happens on zoom events when ::paint is called before
+    // the renderer has completed
   }
-  else
+
+  /*Offset between 0/0 and mRect.xMinimum/mRect.yMinimum.
+  We need to consider the offset, because mRect is not updated yet and there might be an offset*/
+  QgsPointXY pt = toMapCoordinates( QPoint( 0, 0 ) );
+  double offsetX = pt.x() - mRect.xMinimum();
+  double offsetY = pt.y() - mRect.yMaximum();
+
+  //draw preview images first
+  QList< QPair< QImage, QgsRectangle > >::const_iterator imIt = mPreviewImages.constBegin();
+  for ( ; imIt != mPreviewImages.constEnd(); ++imIt )
   {
-    mPixmap.fill( mBgColor.rgb() );
-    QPainter paint;
-    paint.begin( &mPixmap );
-    // Clip our drawing to the QPixmap
-    paint.setClipRect( mPixmap.rect() );
-
-    // antialiasing
-    if ( mAntiAliasing )
-      paint.setRenderHint( QPainter::Antialiasing );
-
-    mCanvas->mapRenderer()->render( &paint );
-    paint.end();
+    QPointF ul = toCanvasCoordinates( QgsPoint( imIt->second.xMinimum() + offsetX, imIt->second.yMaximum() + offsetY ) );
+    QPointF lr = toCanvasCoordinates( QgsPoint( imIt->second.xMaximum() + offsetX, imIt->second.yMinimum() + offsetY ) );
+    painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
   }
-  update();
+
+  painter->drawImage( QRect( 0, 0, w, h ), mImage );
+
+  // For debugging:
+#if 0
+  QRectF br = boundingRect();
+  QPointF c = br.center();
+  double rad = std::max( br.width(), br.height() ) / 10;
+  painter->drawRoundedRect( br, rad, rad );
+  painter->drawLine( QLineF( 0, 0, br.width(), br.height() ) );
+  painter->drawLine( QLineF( br.width(), 0, 0, br.height() ) );
+
+  double nw = br.width() * 0.5;
+  double nh = br.height() * 0.5;
+  br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
+  painter->drawRoundedRect( br, rad, rad );
+
+  nw = br.width() * 0.5;
+  nh = br.height() * 0.5;
+  br = QRectF( c - QPointF( nw / 2, nh / 2 ), QSize( nw, nh ) );
+  painter->drawRoundedRect( br, rad, rad );
+#endif
 }
 
-QPaintDevice& QgsMapCanvasMap::paintDevice()
-{
-  return mPixmap;
-}
-
-void QgsMapCanvasMap::updateContents()
-{
-  // make sure we're using current contents
-  if ( mUseQImageToRender )
-    mPixmap = QPixmap::fromImage( mImage );
-
-  // trigger update of this item
-  update();
-}
+/// @endcond

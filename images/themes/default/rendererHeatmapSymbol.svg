@@ -1,0 +1,7 @@
+<svg height="16" viewBox="0 0 16 16" width="16" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<radialGradient id="a" cx="19.893852" cy="1042.245" gradientTransform="matrix(-.71428282 .71429365 -.71428326 -.71427232 766.66802 1774.5989)" gradientUnits="userSpaceOnUse" r="7">
+<stop offset="0" stop-color="#ff4900"/>
+<stop offset="1" stop-color="#ff4900" stop-opacity="0"/>
+</radialGradient>
+<path d="m1 1037.3622h14v14h-14z" fill="url(#a)" transform="translate(0 -1036.3622)"/>
+</svg>

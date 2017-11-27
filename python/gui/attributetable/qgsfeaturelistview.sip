@@ -1,99 +1,162 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsfeaturelistview.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
 class QgsFeatureListView : QListView
 {
+%Docstring
+ Shows a list of features and renders a edit button next to each feature.
+
+ Accepts a display expression to define the way, features are rendered.
+ Uses a QgsFeatureListModel as source model.
+%End
+
 %TypeHeaderCode
-#include <qgsfeaturelistview.h>
+#include "qgsfeaturelistview.h"
 %End
   public:
-    /**
-     * Creates a feature list view
-     *
-     * @param parent   owner
-     */
-    explicit QgsFeatureListView( QWidget* parent = 0 );
 
-    /**
-     * Destructor
-     */
-    virtual ~QgsFeatureListView();
+    explicit QgsFeatureListView( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Creates a feature list view
 
-    /**
-     * Returns the layer cache
-     * @return the layer cache used as backend
-     */
-    QgsVectorLayerCache* layerCache();
+ \param parent   owner
+%End
 
-    /**
-     * Set the {@link QgsFeatureListModel} which is used to retrieve information
-     *
-     * @param featureListModel  The model to use
-     */
-    virtual void setModel( QgsFeatureListModel* featureListModel );
-    /**
-     * Get the featureListModel used by this view
-     *
-     * @return The model in use
-     */
-    QgsFeatureListModel* featureListModel();
+    QgsVectorLayerCache *layerCache();
+%Docstring
+ Returns the layer cache
+ :return: the layer cache used as backend
+ :rtype: QgsVectorLayerCache
+%End
 
-    /**
-     * The display expression is an expression used to render the fields into a single string
-     * which is displaied.
-     *
-     * @param displayExpression  The expression used to render the feature
-     *
-     * @see QgsExpression
-     */
-    bool setDisplayExpression( const QString displayExpression );
+    virtual void setModel( QgsFeatureListModel *featureListModel );
+%Docstring
+ Set the QgsFeatureListModel which is used to retrieve information
 
-    /**
-     * Returns the expression which is currently used to render the features.
-     *
-     * @return A string containing the currend display expression
-     *
-     * @see QgsExpression
-     */
-    const QString& displayExpression() const;
+ \param featureListModel  The model to use
+%End
 
-    /**
-     * Returns a detailed message about errors while parsing a QgsExpression.
-     *
-     * @return A message containg information about the parser error.
-     */
+    QgsFeatureListModel *featureListModel();
+%Docstring
+ Get the featureListModel used by this view
+
+ :return: The model in use
+ :rtype: QgsFeatureListModel
+%End
+
+    bool setDisplayExpression( const QString &displayExpression );
+%Docstring
+ The display expression is an expression used to render the fields into a single string
+ which is displaied.
+
+ \param displayExpression  The expression used to render the feature
+
+.. seealso:: QgsExpression
+ :rtype: bool
+%End
+
+    const QString displayExpression() const;
+%Docstring
+ Returns the expression which is currently used to render the features.
+
+ :return: A string containing the currend display expression
+
+.. seealso:: QgsExpression
+ :rtype: str
+%End
+
     QString parserErrorString();
+%Docstring
+ Returns a detailed message about errors while parsing a QgsExpression.
+
+ :return: A message containing information about the parser error.
+ :rtype: str
+%End
+
+    QgsFeatureIds currentEditSelection();
+%Docstring
+ Get the currentEditSelection
+
+ :return: A list of edited feature ids
+ :rtype: QgsFeatureIds
+%End
+
+    void setCurrentFeatureEdited( bool state );
+%Docstring
+ Sets if the currently shown form has received any edit events so far.
+
+ \param state The state
+%End
+
+    void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
+%Docstring
+ setFeatureSelectionManager
+ \param featureSelectionManager We will take ownership
+%End
 
   protected:
     virtual void mouseMoveEvent( QMouseEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
     virtual void keyPressEvent( QKeyEvent *event );
+    virtual void contextMenuEvent( QContextMenuEvent *event );
 
   signals:
-    /**
-     * Is emitted, whenever the current edit selection has been changed.
-     *
-     * @param feat the feature, which will be edited.
-     */
-    void currentEditSelectionChanged( QgsFeature &feat );
 
-    /**
-     * Is emitted, whenever the display expression is successfully changed
-     * @param expression The expression that was applied
-     */
-    void displayExpressionChanged( const QString expression );
+    void currentEditSelectionChanged( QgsFeature &feat );
+%Docstring
+ Is emitted, whenever the current edit selection has been changed.
+
+ \param feat the feature, which will be edited.
+%End
+
+    void displayExpressionChanged( const QString &expression );
+%Docstring
+ Is emitted, whenever the display expression is successfully changed
+ \param expression The expression that was applied
+%End
+
 
   public slots:
-    /**
-     * Set the feature(s) to be edited
-     *
-     * @param fids  A list of features to be edited
-     */
+
     void setEditSelection( const QgsFeatureIds &fids );
+%Docstring
+ Set the feature(s) to be edited
 
-    /**
-     * Select all currently visible features
-     */
+ \param fids  A list of features to be edited
+%End
+
+    void setEditSelection( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );
+%Docstring
+ Set the feature(s) to be edited
+
+ \param index The selection to set
+ \param command selection update mode
+%End
+
     virtual void selectAll();
+%Docstring
+ Select all currently visible features
+%End
 
-    void repaintRequested( QModelIndexList indexes );
+    void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
+
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsfeaturelistview.h                          *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

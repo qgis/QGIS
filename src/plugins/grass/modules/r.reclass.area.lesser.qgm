@@ -3,6 +3,8 @@
 
 <qgisgrassmodule label="Reclass raster with patches smaller than user-defined area size (in hectares)" module="r.reclass.area">
 	<option key="input" />
-	<option key="lesser" />
+
+	<option key="mode" answer="lesser" hidden="yes"/>
+	<option key="value"/>
 	<option key="output" />
 </qgisgrassmodule>

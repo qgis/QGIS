@@ -21,16 +21,19 @@ email                : brush.tyler@gmail.com
 """
 
 import os
+from importlib import import_module
+
 current_dir = os.path.dirname(__file__)
 
-def load(dbplugin, mainwindow):
-	for name in os.listdir(current_dir):
-		if not os.path.isdir( os.path.join( current_dir, name ) ):
-			continue
-		try:
-			exec( u"from .%s import load" % name  )
-		except ImportError, e:
-			continue
 
-		load(dbplugin, mainwindow)
-
+def load(db, mainwindow):
+    for name in os.listdir(current_dir):
+        if not os.path.isdir(os.path.join(current_dir, name)):
+            continue
+        if name in ('__pycache__'):
+            continue
+        try:
+            plugin_module = import_module('.'.join((__package__, name)))
+        except ImportError:
+            continue
+        plugin_module.load(db, mainwindow)

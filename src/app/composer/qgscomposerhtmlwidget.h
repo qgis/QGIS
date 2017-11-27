@@ -16,31 +16,54 @@
 #define QGSCOMPOSERHTMLWIDGET_H
 
 #include "ui_qgscomposerhtmlwidgetbase.h"
+#include "qgscomposeritemwidget.h"
 
 class QgsComposerHtml;
 class QgsComposerFrame;
+class QgsCodeEditorHTML;
+class QgsCodeEditorCSS;
 
-class QgsComposerHtmlWidget: public QWidget, private Ui::QgsComposerHtmlWidgetBase
+class QgsComposerHtmlWidget: public QgsComposerItemBaseWidget, private Ui::QgsComposerHtmlWidgetBase
 {
     Q_OBJECT
   public:
-    QgsComposerHtmlWidget( QgsComposerHtml* html, QgsComposerFrame* frame );
-    ~QgsComposerHtmlWidget();
+    QgsComposerHtmlWidget( QgsComposerHtml *html, QgsComposerFrame *frame );
 
   private slots:
-    void on_mUrlLineEdit_editingFinished();
-    void on_mFileToolButton_clicked();
-    void on_mResizeModeComboBox_currentIndexChanged( int index );
+    void mUrlLineEdit_editingFinished();
+    void mFileToolButton_clicked();
+    void mResizeModeComboBox_currentIndexChanged( int index );
+    void mEvaluateExpressionsCheckbox_toggled( bool checked );
+    void mUseSmartBreaksCheckBox_toggled( bool checked );
+    void mMaxDistanceSpinBox_valueChanged( double val );
+    void htmlEditorChanged();
+    void stylesheetEditorChanged();
+    void mUserStylesheetCheckBox_toggled( bool checked );
+    void mRadioManualSource_clicked( bool checked );
+    void mRadioUrlSource_clicked( bool checked );
+    void mInsertExpressionButton_clicked();
 
-    /**Sets the GUI elements to the values of mHtmlItem*/
+    void mReloadPushButton_clicked();
+    void mReloadPushButton2_clicked();
+    void mAddFramePushButton_clicked();
+    void mEmptyFrameCheckBox_toggled( bool checked );
+    void mHideEmptyBgCheckBox_toggled( bool checked );
+
+    //! Sets the GUI elements to the values of mHtmlItem
     void setGuiElementValues();
+
+  protected slots:
+    //! Initializes data defined buttons to current atlas coverage layer
+    void populateDataDefinedButtons();
 
   private:
     QgsComposerHtmlWidget();
     void blockSignals( bool block );
 
-    QgsComposerHtml* mHtml;
-    QgsComposerFrame* mFrame;
+    QgsComposerHtml *mHtml = nullptr;
+    QgsComposerFrame *mFrame = nullptr;
+    QgsCodeEditorHTML *mHtmlEditor = nullptr;
+    QgsCodeEditorCSS *mStylesheetEditor = nullptr;
 };
 
 #endif // QGSCOMPOSERHTMLWIDGET_H

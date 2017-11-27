@@ -18,33 +18,46 @@
 #ifndef QGSCOMPOSERTEXTTABLE_H
 #define QGSCOMPOSERTEXTTABLE_H
 
-#include "qgscomposertable.h"
+#include "qgis_core.h"
+#include "qgis.h"
+#include "qgscomposertablev2.h"
 
-/**A text table item that reads text from string lists*/
-class CORE_EXPORT QgsComposerTextTable: public QgsComposerTable
+/**
+ * \ingroup core
+ * A text table item that reads text from string lists
+ * \since QGIS 2.10
+*/
+class CORE_EXPORT QgsComposerTextTableV2 : public QgsComposerTableV2
 {
+
+    Q_OBJECT
+
   public:
-    QgsComposerTextTable( QgsComposition* c );
-    ~QgsComposerTextTable();
+    QgsComposerTextTableV2( QgsComposition *c SIP_TRANSFERTHIS, bool createUndoCommands );
 
-    /** return correct graphics item type. Added in v1.7 */
-    virtual int type() const { return ComposerTextTable; }
+    /**
+     * Adds a row to the table
+     * \param row list of strings to use for each cell's value in the newly added row
+     * \note If row is shorter than the number of columns in the table than blank cells
+     * will be inserted at the end of the row. If row contains more strings then the number
+     * of columns in the table then these extra strings will be ignored.
+     * \note if adding many rows, setContents() is much faster
+     */
+    void addRow( const QStringList &row );
 
-    void setHeaderLabels( const QStringList& l ) { mHeaderLabels = l; }
-    void addRow( const QStringList& row ) { mRowText.append( row ); }
+    /**
+     * Sets the contents of the text table.
+     * \param contents list of table rows
+     * \see addRow
+     */
+    void setContents( const QList< QStringList > &contents );
 
-    bool writeXML( QDomElement& elem, QDomDocument & doc ) const;
-    bool readXML( const QDomElement& itemElem, const QDomDocument& doc );
+    bool getTableContents( QgsComposerTableContents &contents ) override;
 
-  protected:
-    //! @note not available in python bindings
-    bool getFeatureAttributes( QList<QgsAttributes>& attributes );
-    QMap<int, QString> getHeaderLabels() const;
+    virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true ) override;
 
   private:
-    /**Column titles*/
-    QStringList mHeaderLabels;
-    /**One stringlist per row*/
+    //! One stringlist per row
     QList< QStringList > mRowText;
 };
 

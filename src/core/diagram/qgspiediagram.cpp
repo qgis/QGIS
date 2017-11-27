@@ -13,8 +13,9 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgspiediagram.h"
-#include "qgsdiagramrendererv2.h"
+#include "qgsdiagramrenderer.h"
 #include "qgsrendercontext.h"
+#include "qgsexpression.h"
 
 #include <QPainter>
 
@@ -25,74 +26,62 @@ QgsPieDiagram::QgsPieDiagram()
   mPen.setStyle( Qt::SolidLine );
 }
 
-QgsPieDiagram::~QgsPieDiagram()
+QgsPieDiagram *QgsPieDiagram::clone() const
 {
+  return new QgsPieDiagram( *this );
 }
 
-QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s, const QgsDiagramInterpolationSettings& is )
+QSizeF QgsPieDiagram::diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is )
 {
   Q_UNUSED( c );
-  QVariant attrVal = attributes[is.classificationAttribute];
-  if ( !attrVal.isValid() )
+
+  QVariant attrVal;
+  if ( is.classificationAttributeIsExpression )
+  {
+    QgsExpressionContext expressionContext = c.expressionContext();
+    if ( !feature.fields().isEmpty() )
+      expressionContext.setFields( feature.fields() );
+    expressionContext.setFeature( feature );
+
+    QgsExpression *expression = getExpression( is.classificationAttributeExpression, expressionContext );
+    attrVal = expression->evaluate( &expressionContext );
+  }
+  else
+  {
+    attrVal = feature.attribute( is.classificationField );
+  }
+
+  bool ok = false;
+  double value = attrVal.toDouble( &ok );
+  if ( !ok )
   {
     return QSizeF(); //zero size if attribute is missing
   }
 
-  double scaledValue = attrVal.toDouble();
-  double scaledLowerValue = is.lowerValue;
-  double scaledUpperValue = is.upperValue;
-  double scaledLowerSizeWidth = is.lowerSize.width();
-  double scaledLowerSizeHeight = is.lowerSize.height();
-  double scaledUpperSizeWidth = is.upperSize.width();
-  double scaledUpperSizeHeight = is.upperSize.height();
-
-  // interpolate the squared value if scale by area
-  if ( s.scaleByArea )
-  {
-    scaledValue = sqrt( scaledValue );
-    scaledLowerValue = sqrt( scaledLowerValue );
-    scaledUpperValue = sqrt( scaledUpperValue );
-    scaledLowerSizeWidth = sqrt( scaledLowerSizeWidth );
-    scaledLowerSizeHeight = sqrt( scaledLowerSizeHeight );
-    scaledUpperSizeWidth = sqrt( scaledUpperSizeWidth );
-    scaledUpperSizeHeight = sqrt( scaledUpperSizeHeight );
-  }
-
-  //interpolate size
-  double scaledRatio = ( scaledValue - scaledLowerValue ) / ( scaledUpperValue - scaledLowerValue );
-
-  QSizeF size = QSizeF( is.upperSize.width() * scaledRatio + is.lowerSize.width() * ( 1 - scaledRatio ),
-                        is.upperSize.height() * scaledRatio + is.lowerSize.height() * ( 1 - scaledRatio ) );
-
-  // Scale, if extension is smaller than the specified minimum
-  if ( size.width() <= s.minimumSize && size.height() <= s.minimumSize )
-  {
-    bool p = false; // preserve height == width
-    if ( size.width() == size.height() )
-      p = true;
-
-    size.scale( s.minimumSize, s.minimumSize, Qt::KeepAspectRatio );
-
-    // If height == width, recover here (overwrite floating point errors)
-    if ( p )
-      size.setWidth( size.height() );
-  }
-
-  return size;
+  return sizeForValue( value, s, is );
 }
 
-QSizeF QgsPieDiagram::diagramSize( const QgsAttributes& attributes, const QgsRenderContext& c, const QgsDiagramSettings& s )
+double QgsPieDiagram::legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const
+{
+  QSizeF size = sizeForValue( value, s, is );
+  return std::max( size.width(), size.height() );
+}
+
+QString QgsPieDiagram::diagramName() const
+{
+  return DIAGRAM_NAME_PIE;
+}
+
+QSizeF QgsPieDiagram::diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s )
 {
   Q_UNUSED( c );
   Q_UNUSED( attributes );
   return s.size;
 }
 
-int  QgsPieDiagram::sCount = 0;
-
-void QgsPieDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c, const QgsDiagramSettings& s, const QPointF& position )
+void QgsPieDiagram::renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position )
 {
-  QPainter* p = c.painter();
+  QPainter *p = c.painter();
   if ( !p )
   {
     return;
@@ -104,10 +93,16 @@ void QgsPieDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c
   double valSum = 0;
   int valCount = 0;
 
-  QList<int>::const_iterator catIt = s.categoryIndices.constBegin();
-  for ( ; catIt != s.categoryIndices.constEnd(); ++catIt )
+  QgsExpressionContext expressionContext = c.expressionContext();
+  expressionContext.setFeature( feature );
+  if ( !feature.fields().isEmpty() )
+    expressionContext.setFields( feature.fields() );
+
+  QList<QString>::const_iterator catIt = s.categoryAttributes.constBegin();
+  for ( ; catIt != s.categoryAttributes.constEnd(); ++catIt )
   {
-    currentVal = att[*catIt].toDouble();
+    QgsExpression *expression = getExpression( *catIt, expressionContext );
+    currentVal = expression->evaluate( &expressionContext ).toDouble();
     values.push_back( currentVal );
     valSum += currentVal;
     if ( currentVal ) valCount++;
@@ -148,7 +143,7 @@ void QgsPieDiagram::renderDiagram( const QgsAttributes& att, QgsRenderContext& c
         }
         else
         {
-          p->drawPie( baseX, baseY, w, h, totalAngle + s.angleOffset, currentAngle );
+          p->drawPie( baseX, baseY, w, h, totalAngle - s.rotationOffset * 16.0, currentAngle );
         }
         totalAngle += currentAngle;
       }

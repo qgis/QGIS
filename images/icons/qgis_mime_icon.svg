@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0" y="0" width="256" height="256" viewBox="0, 0, 256, 256">
+  <g id="Background">
+    <rect x="0" y="0" width="256" height="256" fill="#FFFFFF"/>
+  </g>
+  <defs>
+    <linearGradient id="Gradient_1" gradientUnits="userSpaceOnUse" x1="26.2" y1="134.663" x2="121.409" y2="134.663" gradientTransform="matrix(1, 0, 0, 1, 0, -8)">
+      <stop offset="0" stop-color="#B7B7B7"/>
+      <stop offset="1" stop-color="#E6E6E6"/>
+    </linearGradient>
+    <linearGradient id="Gradient_2" gradientUnits="userSpaceOnUse" x1="189.008" y1="222.708" x2="187.111" y2="98.016">
+      <stop offset="0" stop-color="#589632"/>
+      <stop offset="1" stop-color="#93B023"/>
+    </linearGradient>
+    <linearGradient id="Gradient_3" gradientUnits="userSpaceOnUse" x1="151.854" y1="224.654" x2="149.973" y2="101.003">
+      <stop offset="0" stop-color="#589632"/>
+      <stop offset="1" stop-color="#93B023"/>
+    </linearGradient>
+  </defs>
+  <g id="Background"/>
+  <g id="Layer_1">
+    <g id="path7">
+      <path d="M240.421,245.675 L38.101,245.675 C26.2,245.675 14.562,228.768 14.298,215.922 L14.298,19.552 L240.421,19.552 z" fill="url(#Gradient_1)"/>
+      <path d="M240.421,245.675 L38.101,245.675 C26.2,245.675 14.562,228.768 14.298,215.922 L14.298,19.552 L240.421,19.552 z" fill-opacity="0" stroke="#9A9A9A" stroke-width="9"/>
+    </g>
+    <g id="path9">
+      <path d="M61.903,13.601 C50.002,1.7 26.2,1.7 14.298,13.601 L14.298,204.021 C26.2,192.119 50.002,192.119 61.903,204.021 z" fill="#E6E6E6"/>
+      <path d="M61.903,13.601 C50.002,1.7 26.2,1.7 14.298,13.601 L14.298,204.021 C26.2,192.119 50.002,192.119 61.903,204.021 z" fill-opacity="0" stroke="#9A9A9A" stroke-width="10"/>
+    </g>
+  </g>
+  <g id="Layer_3">
+    <path d="M155.875,163.917 L173.934,163.917 L158.65,148.806 L139.924,148.806 L139.924,166.798 L155.875,182.696 z" fill="#EE7913" id="polygon3"/>
+    <path d="M213.799,203.327 L181.578,171.473 L163.429,171.473 L163.429,190.226 L194.306,221 L213.799,221 z" fill="url(#Gradient_2)" id="polygon10"/>
+    <path d="M163.429,171.473 L181.578,171.473 L173.934,163.917 L155.875,163.917 L155.875,182.696 L163.429,190.226 z" fill="#F0E64A" id="polygon12"/>
+    <path d="M159.661,196.641 C156.923,197.272 154.079,197.613 151.145,197.613 C130.155,197.613 112.301,180.353 112.301,157.973 C112.301,135.592 129.956,118.711 151.145,118.711 C172.332,118.711 189.202,135.59 189.202,157.973 C189.202,161.611 188.75,165.115 187.912,168.432 L207.34,187.858 C212.349,179.081 215.151,168.876 215.151,157.823 C215.151,123.328 187.623,97.501 150.753,97.501 C114.049,97.501 86.523,123.159 86.523,157.823 C86.523,192.655 114.049,218.823 150.753,218.823 C160.227,218.823 169.082,217.08 177.014,213.908 L159.661,196.641 z" fill="url(#Gradient_3)" id="path19"/>
+    <path d="M139.924,148.806 L213.799,221 L213.799,203.327 L181.578,171.473 L173.934,163.917 L158.65,148.806 z" fill="#FFFFFF" fill-opacity="0.172" id="polygon4153"/>
+  </g>
+</svg>

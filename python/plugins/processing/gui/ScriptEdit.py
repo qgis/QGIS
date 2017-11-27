@@ -27,13 +27,12 @@ __revision__ = '$Format:%H$'
 
 import os
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
-from PyQt4.Qsci import *
+from qgis.PyQt.QtCore import Qt
+from qgis.PyQt.QtGui import QFont, QColor, QKeySequence
+from qgis.PyQt.QtWidgets import QShortcut
+from qgis.core import QgsApplication, QgsSettings
 
-from qgis.core import *
-
-from processing.gui.LexerR import LexerR
+from qgis.PyQt.Qsci import QsciScintilla, QsciLexerPython, QsciAPIs
 
 
 class ScriptEdit(QsciScintilla):
@@ -59,7 +58,7 @@ class ScriptEdit(QsciScintilla):
         font = QFont()
         font.setFamily('Courier')
         font.setFixedPitch(True)
-        font.setPointSize(10)
+        font.setPointSize(20)
         self.setFont(font)
         self.setMarginsFont(font)
 
@@ -105,10 +104,14 @@ class ScriptEdit(QsciScintilla):
         self.setAutoCompletionThreshold(2)
         self.setAutoCompletionSource(QsciScintilla.AcsAPIs)
 
+        self.setFonts(10)
+
+    def setFonts(self, size):
+
         # Load font from Python console settings
-        settings = QSettings()
+        settings = QgsSettings()
         fontName = settings.value('pythonConsole/fontfamilytext', 'Monospace')
-        fontSize = int(settings.value('pythonConsole/fontsize', 10))
+        fontSize = int(settings.value('pythonConsole/fontsize', size))
 
         self.defaultFont = QFont(fontName)
         self.defaultFont.setFixedPitch(True)
@@ -133,16 +136,16 @@ class ScriptEdit(QsciScintilla):
         # Disable some shortcuts
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('D') + ctrl)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl)
-        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl
-                           + shift)
+        self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('L') + ctrl +
+                           shift)
         self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord('T') + ctrl)
 
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
-        #self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Z") + ctrl)
+        # self.SendScintilla(QsciScintilla.SCI_CLEARCMDKEY, ord("Y") + ctrl)
 
         # Use Ctrl+Space for autocompletion
-        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL
-                + Qt.Key_Space), self)
+        self.shortcutAutocomplete = QShortcut(QKeySequence(Qt.CTRL +
+                                                           Qt.Key_Space), self)
         self.shortcutAutocomplete.setContext(Qt.WidgetShortcut)
         self.shortcutAutocomplete.activated.connect(self.autoComplete)
 
@@ -186,14 +189,14 @@ class ScriptEdit(QsciScintilla):
 
             self.api = QsciAPIs(self.lexer)
 
-            settings = QSettings()
+            settings = QgsSettings()
             useDefaultAPI = bool(settings.value('pythonConsole/preloadAPI',
-                                 True))
+                                                True))
             if useDefaultAPI:
                 # Load QGIS API shipped with Python console
                 self.api.loadPrepared(
-                        os.path.join(QgsApplication.pkgDataPath(),
-                        'python', 'qsci_apis', 'pyqgis.pap'))
+                    os.path.join(QgsApplication.pkgDataPath(),
+                                 'python', 'qsci_apis', 'pyqgis.pap'))
             else:
                 # Load user-defined API files
                 apiPaths = settings.value('pythonConsole/userAPI', [])
@@ -201,8 +204,5 @@ class ScriptEdit(QsciScintilla):
                     self.api.load(path)
                 self.api.prepare()
                 self.lexer.setAPIs(self.api)
-        elif self.lexerType == self.LEXER_R:
-            # R lexer
-            self.lexer = LexerR()
 
         self.setLexer(self.lexer)

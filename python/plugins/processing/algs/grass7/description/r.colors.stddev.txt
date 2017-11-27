@@ -1,0 +1,7 @@
+r.colors.stddev
+Sets color rules based on stddev from a raster map's mean value.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|map|Name of raster map|None|False
+*QgsProcessingParameterBoolean|-b|Color using standard deviation bands|False
+*QgsProcessingParameterBoolean|-z|Force center at zero|False
+QgsProcessingParameterRasterDestination|output|Stddev Colors

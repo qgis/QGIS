@@ -1,9 +1,20 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmanageconnectionsdialog.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
 class QgsManageConnectionsDialog : QDialog
 {
-%TypeHeaderCode
-#include <qgsmanageconnectionsdialog.h>
-%End
 
+%TypeHeaderCode
+#include "qgsmanageconnectionsdialog.h"
+%End
   public:
     enum Mode
     {
@@ -17,17 +28,31 @@ class QgsManageConnectionsDialog : QDialog
       PostGIS,
       WFS,
       MSSQL,
+      DB2,
       WCS,
       Oracle,
+      GeoNode
     };
 
-    // constructor
-    // mode argument must be 0 for export and 1 for import
-    // type argument must be 0 for WMS and 1 for PostGIS
-    QgsManageConnectionsDialog( QWidget *parent = NULL, Mode mode = Export, Type type = WMS, QString fileName = "" );
+    QgsManageConnectionsDialog( QWidget *parent /TransferThis/ = 0, Mode mode = Export, Type type = WMS, const QString &fileName = QString() );
+%Docstring
+ Constructor for QgsManageConnectionsDialog.
+%End
 
   public slots:
     void doExportImport();
     void selectAll();
     void clearSelection();
+    void selectionChanged();
+
 };
+
+
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgsmanageconnectionsdialog.h                                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

@@ -17,6 +17,7 @@ email                : jpalmer at linz dot govt dot nz
 #define QGSMAPTOOLSELECTPOLYGON_H
 
 #include "qgsmaptool.h"
+#include "qgis_app.h"
 
 class QgsMapCanvas;
 class QgsRubberBand;
@@ -26,20 +27,24 @@ class APP_EXPORT QgsMapToolSelectPolygon : public QgsMapTool
 {
     Q_OBJECT
   public:
-    QgsMapToolSelectPolygon( QgsMapCanvas* canvas );
+    QgsMapToolSelectPolygon( QgsMapCanvas *canvas );
 
     virtual ~QgsMapToolSelectPolygon();
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QMouseEvent * e );
+    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QMouseEvent * e );
+    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
   private:
 
     //! used for storing all of the maps point for the polygon
-    QgsRubberBand* mRubberBand;
+    QgsRubberBand *mRubberBand = nullptr;
+
+    QColor mFillColor;
+
+    QColor mStrokeColor;
 };
 
 #endif

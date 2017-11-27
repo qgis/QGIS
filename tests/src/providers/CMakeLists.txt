@@ -6,41 +6,25 @@
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR} 
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
   ${CMAKE_SOURCE_DIR}/src/core/raster
+  ${CMAKE_SOURCE_DIR}/src/providers/wms
+  ${CMAKE_SOURCE_DIR}/src/providers/postgres
+  ${CMAKE_SOURCE_DIR}/src/test
+  ${CMAKE_BINARY_DIR}/src/core
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  )
-
-#############################################################
-# Compiler defines
-
-# This define is used for tests that need to locate the test
-# data under tests/testdata in the qgis source tree.
-# the TEST_DATA_DIR variable is set in the top level CMakeLists.txt
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
-
-ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
-
-SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
-ADD_DEFINITIONS(-DTEST_SERVER_URL="\\"${TEST_SERVER_URL}\\"")
-
-#############################################################
-# libraries
-
-# because of htonl
-IF (WIN32)
-  SET(PLATFORM_LIBRARIES wsock32)
-ENDIF (WIN32)
-
-# Since the tests are not actually installed, but rather
-# run directly from the build/src/tests dir we need to
-# ensure the qgis libs can be found.
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
-ENDIF (APPLE)
+  ${QCA_INCLUDE_DIR}
+  ${QTKEYCHAIN_INCLUDE_DIR}
+  ${POSTGRES_INCLUDE_DIR}
+)
 
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
@@ -53,11 +37,9 @@ ENDIF (APPLE)
 
 MACRO (ADD_QGIS_TEST testname testsrc)
   SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
   ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
   ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
+  SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES AUTOMOC TRUE)
   TARGET_LINK_LIBRARIES(qgis_${testname}
     ${QT_QTXML_LIBRARY}
     ${QT_QTCORE_LIBRARY}
@@ -67,13 +49,38 @@ MACRO (ADD_QGIS_TEST testname testsrc)
     ${GEOS_LIBRARY}
     ${GDAL_LIBRARY}
     qgis_core)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname} -maxwarnings 10000)
 ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
 
 ADD_QGIS_TEST(wcsprovidertest testqgswcsprovider.cpp)
+# Temporarily set to old version until server is reconfigured
+#SET(TEST_SERVER_URL "http://wcs.qgis.org/${COMPLETE_VERSION}")
+SET(TEST_SERVER_URL "http://wcs.qgis.org/1.9.0")
+#ADD_DEFINITIONS(-DTEST_SERVER_URL="${TEST_SERVER_URL}")
+SET_TARGET_PROPERTIES(qgis_wcsprovidertest PROPERTIES
+  COMPILE_FLAGS "-DTEST_SERVER_URL=\\\"${TEST_SERVER_URL}\\\""
+)
+
+ADD_QGIS_TEST(gdalprovidertest testqgsgdalprovider.cpp)
+
+ADD_QGIS_TEST(ogrprovidertest testqgsogrprovider.cpp)
+
+ADD_QGIS_TEST(wmscapabilititestest
+              testqgswmscapabilities.cpp)
+TARGET_LINK_LIBRARIES(qgis_wmscapabilititestest wmsprovider_a)
+
+ADD_QGIS_TEST(wmsprovidertest
+              testqgswmsprovider.cpp)
+TARGET_LINK_LIBRARIES(qgis_wmsprovidertest wmsprovider_a)
+
+ADD_QGIS_TEST(postgresprovidertest testqgspostgresprovider.cpp)
+TARGET_LINK_LIBRARIES(qgis_postgresprovidertest postgresprovider_a)
+
+ADD_QGIS_TEST(postgresconntest testqgspostgresconn.cpp)
+TARGET_LINK_LIBRARIES(qgis_postgresconntest postgresprovider_a)
 
 #############################################################
 # WCS public servers test:
@@ -88,7 +95,7 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
         testqgswcspublicservers.h
   )
 
-  QT4_WRAP_CPP ( WCSTEST_MOC_SRCS  ${WCSTEST_MOC_HDRS})
+  QT5_WRAP_CPP ( WCSTEST_MOC_SRCS  ${WCSTEST_MOC_HDRS})
 
   ADD_EXECUTABLE ( qgis_wcstest ${WCSTEST_SRCS} ${WCSTEST_MOC_SRCS} )
 
@@ -96,6 +103,8 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/core/raster
     ${CMAKE_CURRENT_SOURCE_DIR}/../../../src/providers/wcs
+  )
+  INCLUDE_DIRECTORIES(SYSTEM
     ${QT_QTSCRIPT_INCLUDE_DIR}
   )
 
@@ -104,8 +113,7 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
     ${QT_QTNETWORK_LIBRARY}
     ${QT_QTSVG_LIBRARY}
     ${QT_QTXML_LIBRARY}
-    ${QT_QTWEBKIT_LIBRARY}
-    ${QT_QTMAIN_LIBRARY}
+    ${OPTIONAL_QTWEBKIT}
     ${QT_QTSCRIPT_LIBRARY}
     qgis_core
   )
@@ -117,3 +125,5 @@ IF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
   INSTALL(FILES wcs-servers.json DESTINATION ${QGIS_DATA_DIR}/resources)
 
 ENDIF(UNIX AND NOT ANDROID AND CMAKE_BUILD_TYPE MATCHES Debug)
+
+ADD_SUBDIRECTORY(grass)

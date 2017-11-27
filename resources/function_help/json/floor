@@ -1,0 +1,8 @@
+{
+  "name": "floor",
+  "type": "function",
+  "description": "Rounds a number downwards.",
+  "arguments": [ {"arg":"value","description":"a number"}],
+  "examples": [ { "expression":"floor(4.9)", "returns":"4"},
+                { "expression":"floor(-4.9)", "returns":"-5"}]
+}

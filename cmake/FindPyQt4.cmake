@@ -12,7 +12,7 @@
 # This file defines the following variables:
 #
 # PYQT4_VERSION - The version of PyQt4 found expressed as a 6 digit hex number
-#     suitable for comparision as a string
+#     suitable for comparison as a string
 #
 # PYQT4_VERSION_STR - The version of PyQt4 as a human readable string.
 #
@@ -27,9 +27,9 @@ IF(EXISTS PYQT4_VERSION)
   SET(PYQT4_FOUND TRUE)
 ELSE(EXISTS PYQT4_VERSION)
 
-  FIND_FILE(_find_pyqt_py FindPyQt.py PATHS ${CMAKE_MODULE_PATH})
+  FIND_FILE(_find_pyqt4_py FindPyQt4.py PATHS ${CMAKE_MODULE_PATH})
 
-  EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${_find_pyqt_py} OUTPUT_VARIABLE pyqt_config)
+  EXECUTE_PROCESS(COMMAND ${PYTHON_EXECUTABLE} ${_find_pyqt4_py} OUTPUT_VARIABLE pyqt_config)
   IF(pyqt_config)
     STRING(REGEX REPLACE "^pyqt_version:([^\n]+).*$" "\\1" PYQT4_VERSION ${pyqt_config})
     STRING(REGEX REPLACE ".*\npyqt_version_str:([^\n]+).*$" "\\1" PYQT4_VERSION_STR ${pyqt_config})
@@ -54,5 +54,3 @@ ELSE(EXISTS PYQT4_VERSION)
   ENDIF(PYQT4_FOUND)
 
 ENDIF(EXISTS PYQT4_VERSION)
-
-

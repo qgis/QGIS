@@ -27,14 +27,13 @@
 #include <QVariant>
 #include <QVector>
 
-#include "qgsmaprenderer.h"
+#include "qgsmapsettings.h"
 
 class QgsBench :  public QObject
 {
     Q_OBJECT
   public:
-    QgsBench( int theWidth, int theHeight, int theCycles );
-    ~QgsBench();
+    QgsBench( int width, int height, int cycles );
 
     // start time counter
     void start();
@@ -44,19 +43,21 @@ class QgsBench :  public QObject
 
     void render();
 
-    void printLog();
+    void printLog( const QString &printTime );
 
-    bool openProject( const QString & fileName );
+    bool openProject( const QString &fileName );
 
-    void setExtent( const QgsRectangle & extent );
+    void setExtent( const QgsRectangle &extent );
 
-    void saveSnapsot( const QString & fileName );
+    void saveSnapsot( const QString &fileName );
 
-    void saveLog( const QString & fileName );
+    void saveLog( const QString &fileName );
 
-    QString serialize( QMap<QString, QVariant> theMap, int level = 0 );
+    QString serialize( const QMap<QString, QVariant> &map, int level = 0 );
 
-    void  setRenderHints( QPainter::RenderHints hints ) { mRendererHints = hints; }
+    void setRenderHints( const QPainter::RenderHints &hints ) { mRendererHints = hints; }
+
+    void setParallel( bool enabled ) { mParallel = enabled; }
 
   public slots:
     void readProject( const QDomDocument &doc );
@@ -85,11 +86,13 @@ class QgsBench :  public QObject
     QTime mWallTime; // 'wall clock' time
 
     // user, sys, total times
-    QVector<double*> mTimes;
+    QVector<double *> mTimes;
 
-    QImage* mImage;
+    QImage mImage;
 
-    QgsMapRenderer *mMapRenderer;
+    QgsMapSettings mMapSettings;
+
+    bool mParallel;
 };
 
 #endif // QGSBENCH_H

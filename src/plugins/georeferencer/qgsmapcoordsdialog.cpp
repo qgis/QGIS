@@ -16,22 +16,26 @@
 #include <QPushButton>
 
 #include "qgsmapcanvas.h"
-#include "qgsmapcanvassnapper.h"
-
 #include "qgsgeorefvalidators.h"
 #include "qgsmapcoordsdialog.h"
+#include "qgssettings.h"
 
-QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, QgsPoint pixelCoords, QWidget* parent )
-    : QDialog( parent, Qt::Dialog ), mQgisCanvas( qgisCanvas ), mPixelCoords( pixelCoords )
+QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent )
+  : QDialog( parent, Qt::Dialog )
+  , mQgisCanvas( qgisCanvas )
+  , mPixelCoords( pixelCoords )
 {
   setupUi( this );
+  connect( buttonBox, &QDialogButtonBox::accepted, this, &QgsMapCoordsDialog::buttonBox_accepted );
+
+  QgsSettings s;
+  restoreGeometry( s.value( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ) ).toByteArray() );
 
   setAttribute( Qt::WA_DeleteOnClose );
 
   mPointFromCanvasPushButton = new QPushButton( QIcon( ":/icons/default/mPushButtonPencil.png" ), tr( "From map canvas" ) );
   mPointFromCanvasPushButton->setCheckable( true );
   buttonBox->addButton( mPointFromCanvasPushButton, QDialogButtonBox::ActionRole );
-  adjustSize();
 
   // User can input either DD or DMS coords (from QGis mapcanav we take DD coords)
   QgsDMSAndDDValidator *validator = new QgsDMSAndDDValidator( this );
@@ -41,23 +45,23 @@ QgsMapCoordsDialog::QgsMapCoordsDialog( QgsMapCanvas* qgisCanvas, QgsPoint pixel
   mToolEmitPoint = new QgsGeorefMapToolEmitPoint( qgisCanvas );
   mToolEmitPoint->setButton( mPointFromCanvasPushButton );
 
-  QSettings s;
-  mSnapToBackgroundLayerBox->setChecked( s.value( "/Plugin-GeoReferencer/snapToBackgroundLayers", QVariant( false ) ).toBool() );
+  connect( mPointFromCanvasPushButton, &QAbstractButton::clicked, this, &QgsMapCoordsDialog::setToolEmitPoint );
 
-  connect( mPointFromCanvasPushButton, SIGNAL( clicked( bool ) ), this, SLOT( setToolEmitPoint( bool ) ) );
+  connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::canvasClicked,
+           this, &QgsMapCoordsDialog::maybeSetXY );
+  connect( mToolEmitPoint, &QgsGeorefMapToolEmitPoint::mouseReleased, this, &QgsMapCoordsDialog::setPrevTool );
 
-  connect( mToolEmitPoint, SIGNAL( canvasClicked( const QgsPoint&, Qt::MouseButton ) ),
-           this, SLOT( maybeSetXY( const QgsPoint&, Qt::MouseButton ) ) );
-  connect( mToolEmitPoint, SIGNAL( mouseReleased() ), this, SLOT( setPrevTool() ) );
-
-  connect( leXCoord, SIGNAL( textChanged( const QString& ) ), this, SLOT( updateOK() ) );
-  connect( leYCoord, SIGNAL( textChanged( const QString& ) ), this, SLOT( updateOK() ) );
+  connect( leXCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
+  connect( leYCoord, &QLineEdit::textChanged, this, &QgsMapCoordsDialog::updateOK );
   updateOK();
 }
 
 QgsMapCoordsDialog::~QgsMapCoordsDialog()
 {
   delete mToolEmitPoint;
+
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/Plugin-GeoReferencer/MapCoordsWindow/geometry" ), saveGeometry() );
 }
 
 void QgsMapCoordsDialog::updateOK()
@@ -72,7 +76,7 @@ void QgsMapCoordsDialog::setPrevTool()
   mQgisCanvas->setMapTool( mPrevMapTool );
 }
 
-void QgsMapCoordsDialog::on_buttonBox_accepted()
+void QgsMapCoordsDialog::buttonBox_accepted()
 {
   bool ok;
   double x = leXCoord->text().toDouble( &ok );
@@ -83,36 +87,16 @@ void QgsMapCoordsDialog::on_buttonBox_accepted()
   if ( !ok )
     y = dmsToDD( leYCoord->text() );
 
-  emit pointAdded( mPixelCoords, QgsPoint( x, y ) );
-  QSettings s;
-  s.setValue( "/Plugin-GeoReferencer/snapToBackgroundLayers", mSnapToBackgroundLayerBox->isChecked() );
+  emit pointAdded( mPixelCoords, QgsPointXY( x, y ) );
   close();
 }
 
-void QgsMapCoordsDialog::maybeSetXY( const QgsPoint & xy, Qt::MouseButton button )
+void QgsMapCoordsDialog::maybeSetXY( const QgsPointXY &xy, Qt::MouseButton button )
 {
   // Only LeftButton should set point
   if ( Qt::LeftButton == button )
   {
-    QgsPoint mapCoordPoint = xy;
-    if ( mQgisCanvas && mSnapToBackgroundLayerBox->isChecked() )
-    {
-      const QgsMapToPixel* mtp = mQgisCanvas->getCoordinateTransform();
-      if ( mtp )
-      {
-        QgsPoint canvasPos = mtp->transform( xy.x(), xy.y() );
-        QPoint snapStartPoint( canvasPos.x(), canvasPos.y() );
-        QgsMapCanvasSnapper snapper( mQgisCanvas );
-        QList<QgsSnappingResult> snapResults;
-        if ( snapper.snapToBackgroundLayers( snapStartPoint, snapResults ) == 0 )
-        {
-          if ( snapResults.size() > 0 )
-          {
-            mapCoordPoint = snapResults.at( 0 ).snappedVertex;
-          }
-        }
-      }
-    }
+    QgsPointXY mapCoordPoint = xy;
 
     leXCoord->clear();
     leYCoord->clear();
@@ -136,7 +120,7 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
   {
     parentWidget()->showMinimized();
 
-    assert( parentWidget()->parentWidget() != 0 );
+    Q_ASSERT( parentWidget()->parentWidget() );
     parentWidget()->parentWidget()->activateWindow();
     parentWidget()->parentWidget()->raise();
 
@@ -149,11 +133,11 @@ void QgsMapCoordsDialog::setToolEmitPoint( bool isEnable )
   }
 }
 
-double QgsMapCoordsDialog::dmsToDD( QString dms )
+double QgsMapCoordsDialog::dmsToDD( const QString &dms )
 {
   QStringList list = dms.split( ' ' );
   QString tmpStr = list.at( 0 );
-  double res = qAbs( tmpStr.toDouble() );
+  double res = std::fabs( tmpStr.toDouble() );
 
   tmpStr = list.value( 1 );
   if ( !tmpStr.isEmpty() )

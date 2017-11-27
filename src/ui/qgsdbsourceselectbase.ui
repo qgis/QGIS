@@ -6,17 +6,16 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>586</width>
+    <width>773</width>
     <height>476</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Add PostGIS layers</string>
+   <string>Add PostGIS Layers</string>
   </property>
   <property name="windowIcon">
    <iconset>
-    <normaloff/>
-   </iconset>
+    <normaloff>.</normaloff>.</iconset>
   </property>
   <property name="sizeGripEnabled">
    <bool>true</bool>
@@ -24,8 +23,8 @@
   <property name="modal">
    <bool>true</bool>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout">
-   <item>
+  <layout class="QGridLayout" name="gridLayout_2">
+   <item row="0" column="0">
     <widget class="QGroupBox" name="connectionsGroupBox">
      <property name="title">
       <string>Connections</string>
@@ -38,6 +37,9 @@
        <layout class="QHBoxLayout" name="horizontalLayout">
         <item>
          <widget class="QPushButton" name="btnConnect">
+          <property name="toolTip">
+           <string>Connect to selected database</string>
+          </property>
           <property name="text">
            <string>Connect</string>
           </property>
@@ -45,6 +47,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnNew">
+          <property name="toolTip">
+           <string>Create a new database connection</string>
+          </property>
           <property name="text">
            <string>New</string>
           </property>
@@ -52,6 +57,9 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnEdit">
+          <property name="toolTip">
+           <string>Edit selected database connection</string>
+          </property>
           <property name="text">
            <string>Edit</string>
           </property>
@@ -59,8 +67,11 @@
         </item>
         <item>
          <widget class="QPushButton" name="btnDelete">
+          <property name="toolTip">
+           <string>Remove connection to selected database</string>
+          </property>
           <property name="text">
-           <string>Delete</string>
+           <string>Remove</string>
           </property>
          </widget>
         </item>
@@ -99,21 +110,51 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="1" column="0">
     <widget class="QTreeView" name="mTablesTreeView">
+     <property name="editTriggers">
+      <set>QAbstractItemView::NoEditTriggers</set>
+     </property>
+     <property name="alternatingRowColors">
+      <bool>true</bool>
+     </property>
      <property name="selectionMode">
       <enum>QAbstractItemView::ExtendedSelection</enum>
      </property>
     </widget>
    </item>
-   <item>
-    <widget class="QCheckBox" name="cbxAllowGeometrylessTables">
-     <property name="text">
-      <string>Also list tables with no geometry</string>
-     </property>
-    </widget>
+   <item row="2" column="0">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="cbxAllowGeometrylessTables">
+       <property name="text">
+        <string>Also list tables with no geometry</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QCheckBox" name="mHoldDialogOpen">
+       <property name="text">
+        <string>Keep dialog open</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
-   <item>
+   <item row="3" column="0">
     <widget class="QGroupBox" name="mSearchGroupBox">
      <property name="title">
       <string>Search options</string>
@@ -128,7 +169,16 @@
       <bool>false</bool>
      </property>
      <layout class="QGridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>9</number>
+      </property>
+      <property name="topMargin">
+       <number>9</number>
+      </property>
+      <property name="rightMargin">
+       <number>9</number>
+      </property>
+      <property name="bottomMargin">
        <number>9</number>
       </property>
       <property name="spacing">
@@ -197,10 +247,10 @@
      </layout>
     </widget>
    </item>
-   <item>
+   <item row="4" column="0">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="standardButtons">
-      <set>QDialogButtonBox::Close|QDialogButtonBox::Help</set>
+      <set>QDialogButtonBox::Help</set>
      </property>
     </widget>
    </item>
@@ -213,7 +263,11 @@
   <tabstop>btnNew</tabstop>
   <tabstop>btnEdit</tabstop>
   <tabstop>btnDelete</tabstop>
+  <tabstop>btnLoad</tabstop>
+  <tabstop>btnSave</tabstop>
   <tabstop>mTablesTreeView</tabstop>
+  <tabstop>cbxAllowGeometrylessTables</tabstop>
+  <tabstop>mHoldDialogOpen</tabstop>
   <tabstop>mSearchGroupBox</tabstop>
   <tabstop>mSearchTableEdit</tabstop>
   <tabstop>mSearchColumnComboBox</tabstop>

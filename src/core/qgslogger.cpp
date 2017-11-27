@@ -18,223 +18,137 @@
 
 #include "qgslogger.h"
 
+#include <QApplication>
 #include <QtDebug>
 #include <QFile>
+#include <QThread>
 
 #include "qgsconfig.h"
 
 #ifndef CMAKE_SOURCE_DIR
-#error CMAKE_SOURCE_DIR undefinied
+#error CMAKE_SOURCE_DIR undefined
 #endif // CMAKE_SOURCE_DIR
 
 int QgsLogger::sDebugLevel = -999; // undefined value
 int QgsLogger::sPrefixLength = -1;
+QString QgsLogger::sFileFilter;
+QString QgsLogger::sLogFile;
+QTime QgsLogger::sTime;
 
-void QgsLogger::debug( const QString& msg, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::init()
 {
-  const char* dfile = debugFile();
-  if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
-  {
-    if ( !file || strncmp( dfile, file, strlen( dfile ) ) != 0 )
-    {
-      return;
-    }
-  }
+  if ( sDebugLevel != -999 )
+    return;
 
-  int dlevel = debugLevel();
-  if ( dlevel >= debuglevel && debuglevel > 0 )
-  {
-    QString m;
+  sTime.start();
 
-    if ( !file )
+  sLogFile = getenv( "QGIS_LOG_FILE" ) ? getenv( "QGIS_LOG_FILE" ) : "";
+  sFileFilter = getenv( "QGIS_DEBUG_FILE" ) ? getenv( "QGIS_DEBUG_FILE" ) : "";
+  sDebugLevel = getenv( "QGIS_DEBUG" ) ? atoi( getenv( "QGIS_DEBUG" ) ) :
+#ifdef QGISDEBUG
+                1
+#else
+                0
+#endif
+                ;
+
+  sPrefixLength = sizeof( CMAKE_SOURCE_DIR );
+  if ( CMAKE_SOURCE_DIR[sPrefixLength - 1] == '/' )
+    sPrefixLength++;
+}
+
+void QgsLogger::debug( const QString &msg, int debuglevel, const char *file, const char *function, int line )
+{
+  init();
+
+  if ( !file && !sFileFilter.isEmpty() && !sFileFilter.endsWith( file ) )
+    return;
+
+  if ( sDebugLevel == 0 || debuglevel > sDebugLevel )
+    return;
+
+
+  QString m = msg;
+
+  if ( file )
+  {
+    if ( qApp && qApp->thread() != QThread::currentThread() )
     {
-      m =  msg;
+      m.prepend( QStringLiteral( "[thread:0x%1] " ).arg( reinterpret_cast< qint64 >( QThread::currentThread() ), 0, 16 ) );
     }
-    else if ( !function )
+
+    m.prepend( QStringLiteral( "[%1ms] " ).arg( sTime.elapsed() ) );
+    sTime.restart();
+
+    if ( function )
     {
-      m = QString( "%1: %2" ).arg( file + sPrefixLength ).arg( msg );
+      m.prepend( QStringLiteral( " (%1) " ).arg( function ) );
     }
-    else if ( line == -1 )
-    {
-      m = QString( "%1: (%2) %3" ).arg( file + sPrefixLength ).arg( function ).arg( msg );
-    }
-    else
+
+    if ( line != -1 )
     {
 #ifndef _MSC_VER
-      m = QString( "%1: %2: (%3) %4" ).arg( file + sPrefixLength ).arg( line ).arg( function ).arg( msg );
+      m.prepend( QStringLiteral( ": %1:" ).arg( line ) );
 #else
-      m = QString( "%1(%2) : (%3) %4" ).arg( file ).arg( line ).arg( function ).arg( msg );
+      m.prepend( QString( "(%1) :" ).arg( line ) );
 #endif
     }
-    if ( logFile().isEmpty() )
-    {
-      qDebug( "%s", m.toLocal8Bit().constData() );
-    }
-    else
-    {
-      logMessageToFile( m );
-    }
+
+#ifndef _MSC_VER
+    m.prepend( file + ( file[0] == '/' ? sPrefixLength : 0 ) );
+#else
+    m.prepend( file );
+#endif
+  }
+
+  if ( sLogFile.isEmpty() )
+  {
+    qDebug( "%s", m.toUtf8().constData() );
+  }
+  else
+  {
+    logMessageToFile( m );
   }
 }
 
-void QgsLogger::debug( const QString& var, int val, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::debug( const QString &var, int val, int debuglevel, const char *file, const char *function, int line )
 {
-  const char* dfile = debugFile();
-  if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
-  {
-    if ( !file || strncmp( dfile, file, strlen( dfile ) ) != 0 )
-    {
-      return;
-    }
-  }
-
-  int dlevel = debugLevel();
-  if ( dlevel >= debuglevel && debuglevel > 0 )
-  {
-    if ( !file )
-    {
-      qDebug( "%s: %d", var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: %d" ).arg( var.toLocal8Bit().constData() ).arg( val ) );
-    }
-    else if ( !function )
-    {
-      qDebug( "%s: %s: %d", file + sPrefixLength, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: %s: %d" ).arg( file + sPrefixLength ).arg( var.toLocal8Bit().constData() ).arg( val ) );
-    }
-    else if ( line == -1 )
-    {
-      qDebug( "%s: (%s): %s: %d", file + sPrefixLength, function, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: (%s): %s: %d" ).arg( file + sPrefixLength ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
-    }
-    else
-    {
-#ifdef _MSC_VER
-      qDebug( "%s(%d): (%s), %s: %d", file + sPrefixLength, line, function, var.toLocal8Bit().constData(), val );
-#else
-      qDebug( "%s: %d: (%s), %s: %d", file + sPrefixLength, line, function, var.toLocal8Bit().constData(), val );
-#endif
-      logMessageToFile( QString( "%s: %d: (%s), %s: %d" ).arg( file + sPrefixLength ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
-    }
-  }
+  debug( QStringLiteral( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
 }
 
-void QgsLogger::debug( const QString& var, double val, int debuglevel, const char* file, const char* function, int line )
+void QgsLogger::debug( const QString &var, double val, int debuglevel, const char *file, const char *function, int line )
 {
-  const char* dfile = debugFile();
-  if ( dfile ) //exit if QGIS_DEBUG_FILE is set and the message comes from the wrong file
-  {
-    if ( !file || strncmp( dfile, file, strlen( dfile ) ) != 0 )
-    {
-      return;
-    }
-  }
-
-  int dlevel = debugLevel();
-  if ( dlevel >= debuglevel && debuglevel > 0 )
-  {
-    if ( !file )
-    {
-      qDebug( "%s: %f", var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: %f" ).arg( var.toLocal8Bit().constData() ).arg( val ) );
-    }
-    else if ( !function )
-    {
-      qDebug( "%s: %s: %f", file + sPrefixLength, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: %s: %f" ).arg( file + sPrefixLength ).arg( var.toLocal8Bit().constData() ).arg( val ) );
-    }
-    else if ( line == -1 )
-    {
-      qDebug( "%s: (%s): %s: %f", file + sPrefixLength, function, var.toLocal8Bit().constData(), val );
-      logMessageToFile( QString( "%s: (%s): %s: %f" ).arg( file + sPrefixLength ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
-    }
-    else
-    {
-#ifdef _MSC_VER
-      qDebug( "%s(%d): (%s), %s: %f", file + sPrefixLength, line, function, var.toLocal8Bit().constData(), val );
-#else
-      qDebug( "%s: %d: (%s), %s: %f", file + sPrefixLength, line, function, var.toLocal8Bit().constData(), val );
-#endif
-      logMessageToFile( QString( "%s: %d: (%s), %s: %f" ).arg( file  + sPrefixLength ).arg( line ).arg( function ).arg( var.toLocal8Bit().constData() ).arg( val ) );
-    }
-  }
+  debug( QStringLiteral( "%1: %2" ).arg( var ).arg( val ), debuglevel, file, function, line );
 }
 
-void QgsLogger::warning( const QString& msg )
+void QgsLogger::warning( const QString &msg )
 {
   logMessageToFile( msg );
   qWarning( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::critical( const QString& msg )
+void QgsLogger::critical( const QString &msg )
 {
   logMessageToFile( msg );
   qCritical( "%s", msg.toLocal8Bit().constData() );
 }
 
-void QgsLogger::fatal( const QString& msg )
+void QgsLogger::fatal( const QString &msg )
 {
   logMessageToFile( msg );
   qFatal( "%s", msg.toLocal8Bit().constData() );
 }
 
-int QgsLogger::debugLevel()
+void QgsLogger::logMessageToFile( const QString &message )
 {
-  if ( sPrefixLength == -1 )
-  {
-    sPrefixLength = sizeof( CMAKE_SOURCE_DIR ) + 1;
-  }
+  if ( sLogFile.isEmpty() )
+    return;
 
-  if ( sDebugLevel == -999 )
-  {
-    // read the environment variable QGIS_DEBUG just once,
-    // then reuse the value
-
-    const char* dlevel = getenv( "QGIS_DEBUG" );
-    if ( dlevel == NULL ) //environment variable not set
-    {
-#ifdef QGISDEBUG
-      sDebugLevel = 1; //1 is default value in debug mode
-#else
-      sDebugLevel = 0;
-#endif
-    }
-    else
-    {
-      sDebugLevel = atoi( dlevel );
-#ifdef QGISDEBUG
-      if ( sDebugLevel == 0 )
-      {
-        sDebugLevel = 1;
-      }
-#endif
-    }
-  }
-
-  return sDebugLevel;
-}
-
-const QString QgsLogger::logFile()
-{
-  const QString logFile = getenv( "QGIS_LOG_FILE" );
-  return logFile;
-}
-
-void QgsLogger::logMessageToFile( QString theMessage )
-{
-  if ( ! logFile().isEmpty() )
-  {
-    //Maybe more efficient to keep the file open for the life of qgis...
-    QFile file( logFile() );
-    file.open( QIODevice::Append );
-    file.write( theMessage.toStdString().c_str() );
-    file.write( "\n" );
-    file.close();
-  }
-  return;
-}
-
-const char* QgsLogger::debugFile()
-{
-  const char* dfile = getenv( "QGIS_DEBUG_FILE" );
-  return dfile;
+  //Maybe more efficient to keep the file open for the life of qgis...
+  QFile file( sLogFile );
+  if ( !file.open( QIODevice::Append ) )
+    return;
+  file.write( message.toLocal8Bit().constData() );
+  file.write( "\n" );
+  file.close();
 }

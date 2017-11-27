@@ -19,225 +19,199 @@
 
 #include "ui_qgsattributetypeedit.h"
 
-#include "qgsvectorlayer.h"
 #include "qgseditorconfigwidget.h"
+#include "qgsfeature.h"
+#include "qgsvectordataprovider.h"
+#include "qgshelp.h"
+#include "qgis_app.h"
 
-class QDialog;
-class QLayout;
-class QgsField;
+class QWidget;
+class QStandardItem;
 
-class APP_EXPORT QgsAttributeTypeDialog: public QDialog, private Ui::QgsAttributeTypeDialog
+class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttributeTypeDialog, QgsExpressionContextGenerator
 {
     Q_OBJECT
 
   public:
-    QgsAttributeTypeDialog( QgsVectorLayer *vl );
+    QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
     ~QgsAttributeTypeDialog();
 
     /**
-     * Overloaded accept method which will write the feature field
-     * values, then delegate to QDialog::accept()
-     */
-    void accept();
-
-    /**
-     * Setting index, which page should be selected
-     * @param index of page to be selected
-     * @param editTypeInt type of edit type which was selected before save
-     */
-    void setIndex( int index, QgsVectorLayer::EditType editType );
-
-    /**
      * Setting page which is to be selected
-     * @param index index of page which was selected
+     * \param index index of page which was selected
      */
     void setPage( int index );
 
-    /**
-     * Getter to get selected edit type
-     * @return selected edit type
-     */
-    QgsVectorLayer::EditType editType();
+    const QString editorWidgetType();
 
-    const QString editorWidgetV2Type();
+    const QString editorWidgetText();
 
-    const QString editorWidgetV2Text();
+    void setEditorWidgetType( const QString &type );
 
-    const QMap<QString, QVariant> editorWidgetV2Config();
+    const QVariantMap editorWidgetConfig();
 
-    void setWidgetV2Config( const QMap<QString, QVariant>& config );
-
-    /**
-     * Setter to value map variable to display actual value
-     * @param valueMap map which is to be dispayed in this dialog
-     */
-    void setValueMap( QMap<QString, QVariant> valueMap );
-
-    /**
-     * Setter to range to be displayed and edited in this dialog
-     * @param rangeData range data which is to be displayed
-     */
-    void setRange( QgsVectorLayer::RangeData rangeData );
-
-    /**
-     * Setter to checked state to be displayed and edited in this dialog
-     * @param checked string that represents the checked state
-     */
-    void setCheckedState( QString checked, QString unchecked );
-
-    /**
-     * Setter to value relation to be displayed and edited in this dialog
-     * @param valueRelation value relation data which is to be displayed
-     */
-    void setValueRelation( QgsVectorLayer::ValueRelationData valueRelationData );
-
-    /**
-     * Setter to date format
-     * @param dateFormat date format
-     */
-    void setDateFormat( QString dateFormat );
-
-    /**
-     * Setter to widget size
-     * @param widgetSize size of widget
-     */
-    void setWidgetSize( QSize widgetSize );
-
-    /**
-     * Setter for checkbox for editable state of field
-     * @param bool editable
-     */
-    void setFieldEditable( bool editable );
-
-    /**
-     * Sets the enabled state of the "editable" checkbox
-     *
-     * @param enabled sets the enabled state of the checkbox
-     */
-    void setFieldEditableEnabled( bool enabled );
+    void setEditorWidgetConfig( const QVariantMap &config );
 
     /**
      * Setter for checkbox to label on top
-     * @param bool onTop
+     * \param bool onTop
      */
     void setLabelOnTop( bool onTop );
 
     /**
-     * Getter for checked state after editing
-     * @return string representing the checked
+     * Getter for checkbox for label on top of field
      */
-    QPair<QString, QString> checkedState();
+    bool labelOnTop() const;
 
     /**
-     * Getter for value map after editing
-     * @return map which is to be returned
+     * Setter for lable alias
      */
-    QMap<QString, QVariant> &valueMap();
+    void setAlias( const QString &alias );
 
     /**
-     * Getter for range data
-     * @return range data after editing
+     * Getter for lable alias
      */
-    QgsVectorLayer::RangeData rangeData();
+    QString alias() const;
 
     /**
-     * Getter for value relation data
+     * Setter for lable comment
      */
-    QgsVectorLayer::ValueRelationData valueRelationData();
+    void setComment( const QString &comment );
 
     /**
-     * Getter for date format
+     * Setter for checkbox for editable state of field
      */
-    QString dateFormat();
-
-    /**
-     * Getter for widget size
-     */
-    QSize widgetSize();
+    void setFieldEditable( bool editable );
 
     /**
      * Getter for checkbox for editable state of field
      */
-    bool fieldEditable();
+    bool fieldEditable() const;
 
     /**
-     * Getter for checkbox for label on top of field
+     * Sets any provider side constraints which may affect this field's behavior.
      */
-    bool labelOnTop();
+    void setProviderConstraints( QgsFieldConstraints::Constraints constraints );
+
+    /**
+     * Setter for checkbox for not null
+     */
+    void setNotNull( bool notNull );
+
+    /**
+     * Getter for checkbox for not null
+     */
+    bool notNull() const;
+
+    /**
+     * Sets whether the not null constraint is enforced.
+     */
+    void setNotNullEnforced( bool enforced );
+
+    /**
+     * Returns whether the not null constraint should be enforced.
+     */
+    bool notNullEnforced() const;
+
+    /**
+     * Setter for unique constraint checkbox
+     */
+    void setUnique( bool unique );
+
+    /**
+     * Getter for unique constraint checkbox state
+     */
+    bool unique() const;
+
+    /**
+     * Sets whether the not null constraint is enforced.
+     */
+    void setUniqueEnforced( bool enforced );
+
+    /**
+     * Returns whether the not null constraint should be enforced.
+     */
+    bool uniqueEnforced() const;
+
+    /**
+     * Setter for constraint expression description
+     * \param desc the expression description
+     * \since QGIS 2.16
+     **/
+    void setConstraintExpressionDescription( const QString &desc );
+
+    /**
+     * Getter for constraint expression description
+     * \returns the expression description
+     * \since QGIS 2.16
+     **/
+    QString constraintExpressionDescription();
+
+    /**
+     * Getter for the constraint expression
+     * \since QGIS 2.16
+     */
+    QString constraintExpression() const;
+
+    /**
+     * Setter for the constraint expression
+     * \since QGIS 2.16
+     */
+    void setConstraintExpression( const QString &str );
+
+    /**
+     * Sets whether the expression constraint is enforced.
+     */
+    void setConstraintExpressionEnforced( bool enforced );
+
+    /**
+     * Returns whether the expression constraint should be enforced.
+     */
+    bool constraintExpressionEnforced() const;
+
+    /**
+     * Returns the expression used for the field's default value, or
+     * an empty string if no default value expression is set.
+     */
+    QString defaultValueExpression() const;
+
+    /**
+     * Sets the expression used for the field's default value
+     */
+    void setDefaultValueExpression( const QString &expression );
+
+    /**
+     * Returns the field id
+     */
+    int fieldIdx() const;
+
+    QgsExpressionContext createExpressionContext() const override;
+
+    bool applyDefaultValueOnUpdate() const;
+    void setApplyDefaultValueOnUpdate( bool applyDefaultValueOnUpdate );
 
   private slots:
+
     /**
      * Slot to handle change of index in combobox to select correct page
-     * @param index index of value in combobox
+     * \param index index of value in combobox
      */
-    void setStackPage( int index );
+    void onCurrentWidgetChanged( int index );
 
-    /**
-     * Slot to handle button push to delete selected rows
-     */
-    void removeSelectedButtonPushed( );
-
-    /**
-     * Slot to handle load from layer button pushed to display dialog to load data
-     */
-    void loadFromLayerButtonPushed( );
-
-    /**
-     * Slot to handle load from CSV button pushed to display dialog to load data
-     */
-    void loadFromCSVButtonPushed( );
-
-    /**
-     * Slot to handle change of cell to have always empty row at end
-     * @param row index of row which was changed
-     * @param column index of column which was changed
-     */
-    void vCellChanged( int row, int column );
-
-    /**
-     * update columns list
-     */
-    void updateLayerColumns( int idx );
-
-    /**
-     * edit the filter expression
-     */
-    void editValueRelationExpression();
+    void defaultExpressionChanged();
 
   private:
+    QgsVectorLayer *mLayer = nullptr;
+    int mFieldIdx;
 
-    QString defaultWindowTitle();
+    QVariantMap mWidgetConfig;
 
-    /**
-     * Function to set page according to edit type
-     * @param editType edit type to set page
-     */
-    void setPageForEditType( QgsVectorLayer::EditType editType );
+    //! Cached configuration dialog (lazy loaded)
+    QMap< QString, QgsEditorConfigWidget * > mEditorConfigWidgets;
 
-    /**
-     * Function to update the value map
-     * @param map new map
-     * @param insertNull Add a Null value on top
-     */
-    void updateMap( const QMap<QString, QVariant> &map, bool insertNull = false );
+    QStandardItem *currentItem() const;
 
-    bool mFieldEditable;
-    bool mLabelOnTop;
-
-    QMap<QString, QVariant> mValueMap;
-
-    QgsVectorLayer *mLayer;
-    int mIndex;
-
-    QgsVectorLayer::RangeData mRangeData;
-    QgsVectorLayer::ValueRelationData mValueRelationData;
-    QgsVectorLayer::EditType mEditType;
-    QString mDateFormat;
-    QSize mWidgetSize;
-
-    QMap<QString, QVariant> mWidgetV2Config;
-
-    QMap< QString, QgsEditorConfigWidget* > mEditorConfigWidgets;
+    QgsFeature mPreviewFeature;
 };
 
 #endif

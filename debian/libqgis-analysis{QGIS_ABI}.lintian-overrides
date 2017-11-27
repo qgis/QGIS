@@ -1,0 +1,2 @@
+libqgis-analysis{QGIS_ABI}: no-symbols-control-file
+libqgis-analysis{QGIS_ABI}: shlib-calls-exit

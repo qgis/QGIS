@@ -1,0 +1,7 @@
+{
+  "name": "reverse",
+  "type": "function",
+  "description": "Reverses the direction of a line string by reversing the order of its vertices.",
+  "arguments": [ {"arg":"geom","description":"a geometry"}],
+  "examples": [ { "expression":"geom_to_wkt(reverse(geom_from_wkt('LINESTRING(0 0, 1 1, 2 2)')))", "returns":"'LINESTRING(2 2, 1 1, 0 0)'"}]
+}

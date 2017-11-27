@@ -1,0 +1,10 @@
+{
+  "name": "log10",
+  "type": "function",
+  "description": "Returns the value of the base 10 logarithm of the passed expression.",
+  "arguments": [ {"arg":"value","description":"any positive number"}],
+  "examples": [
+	{ "expression":"log10(1)", "returns":"0"},
+	{ "expression":"log10(100)", "returns":"2"}
+  ]
+}

@@ -1,0 +1,26 @@
+<svg height="18" width="18" xmlns="http://www.w3.org/2000/svg">
+<g transform="translate(0 -14)">
+<path d="m .5 19.5h17v12h-17z" fill="#e6e6e6" stroke="#6e97c4"/>
+<path d="m .5 14.5h17v5h-17z" fill="#bad9ec" stroke="#6e97c4"/>
+<path d="m2 17h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b" stroke-width="2"/>
+<path d="m2 22.5h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b"/>
+<path d="m2 24.5h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b"/>
+<path d="m2 26.5h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b"/>
+<path d="m2 28.5h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b"/>
+<path d="m14 17h2" fill="none" stroke="#6e97c4" stroke-width="2"/>
+<path d="m14 22.5h2" fill="none" stroke="#6e97c4"/>
+<path d="m14 24.5h2" fill="none" stroke="#6e97c4"/>
+<path d="m14 26.5h2" fill="none" stroke="#6e97c4"/>
+<path d="m14 28.5h2" fill="none" stroke="#6e97c4"/>
+<path d="m6 17h3.0000002" fill="none" overflow="visible" stroke="#6e97c4" stroke-width="2"/>
+<path d="m6 22.5h3.0000002" fill="none" overflow="visible" stroke="#6e97c4"/>
+<path d="m6 24.5h3.0000002" fill="none" overflow="visible" stroke="#6e97c4"/>
+<path d="m6 26.5h3.0000002" fill="none" overflow="visible" stroke="#6e97c4"/>
+<path d="m6 28.5h3.0000002" fill="none" overflow="visible" stroke="#6e97c4"/>
+<path d="m10 17h3" fill="none" overflow="visible" stroke="#f8ff1b" stroke-width="2"/>
+<path d="m10 22.5h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b"/>
+<path d="m10 24.5h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b"/>
+<path d="m10 26.5h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b"/>
+<path d="m10 28.5h3" fill="#efef99" fill-rule="evenodd" overflow="visible" stroke="#f8ff1b"/>
+</g>
+</svg>

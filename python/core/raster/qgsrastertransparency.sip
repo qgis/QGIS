@@ -1,16 +1,30 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastertransparency.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
 
 class QgsRasterTransparency
 {
-%TypeHeaderCode
-#include <qgsrastertransparency.h>
+%Docstring
+ Defines the list of pixel values to be considered as transparent or semi
+ transparent when rendering rasters.
 %End
 
+%TypeHeaderCode
+#include "qgsrastertransparency.h"
+%End
   public:
-    QgsRasterTransparency();
 
-    //
-    // Structs to hold transparent pixel vlaues
-    //
+    QgsRasterTransparency();
+%Docstring
+ Constructor for QgsRasterTransparency.
+%End
+
     struct TransparentThreeValuePixel
     {
       double red;
@@ -26,36 +40,71 @@ class QgsRasterTransparency
       double percentTransparent;
     };
 
-    //
-    // Initializer, Accessor and mutator for transparency tables.
-    //
-    /** \brief Mutator for transparentSingleValuePixelList */
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
+%Docstring
+ Accessor for transparentSingleValuePixelList
+ :rtype: list of QgsRasterTransparency.TransparentSingleValuePixel
+%End
 
-    /** \brief Mutator for transparentThreeValuePixelList */
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
+%Docstring
+ Accessor for transparentThreeValuePixelList
+ :rtype: list of QgsRasterTransparency.TransparentThreeValuePixel
+%End
 
-    /** \brief Reset to the transparency list to a single value */
     void initializeTransparentPixelList( double );
+%Docstring
+ Reset to the transparency list to a single value
+%End
 
-    /** \brief Reset to the transparency list to a single value */
     void initializeTransparentPixelList( double, double, double );
+%Docstring
+ Reset to the transparency list to a single value
+%End
 
-    /** \brief Accessor for transparentSingleValuePixelList */
-    void setTransparentSingleValuePixelList( QList<QgsRasterTransparency::TransparentSingleValuePixel>  /Transfer/);
+    void setTransparentSingleValuePixelList( const QList<QgsRasterTransparency::TransparentSingleValuePixel> &newList /Transfer/ );
+%Docstring
+ Mutator for transparentSingleValuePixelList
+%End
 
-    /** \brief Accessor for transparentThreeValuePixelList */
-    void setTransparentThreeValuePixelList( QList<QgsRasterTransparency::TransparentThreeValuePixel> /Transfer/);
+    void setTransparentThreeValuePixelList( const QList<QgsRasterTransparency::TransparentThreeValuePixel> &newList /Transfer/ );
+%Docstring
+ Mutator for transparentThreeValuePixelList
+%End
 
-    /** \brief Returns the transparency value for a single value Pixel */
-    int alphaValue( double, int theGlobalTransparency = 255 ) const;
+    int alphaValue( double, int globalTransparency = 255 ) const;
+%Docstring
+ Returns the transparency value for a single value Pixel
+ :rtype: int
+%End
 
-    /** \brief Return the transparency value for a RGB Pixel */
-    int alphaValue( double, double, double, int theGlobalTransparency = 255 ) const;
+    int alphaValue( double, double, double, int globalTransparency = 255 ) const;
+%Docstring
+ Return the transparency value for a RGB Pixel
+ :rtype: int
+%End
 
-    bool isEmpty( ) const;
+    bool isEmpty() const;
+%Docstring
+True if there are no entries in the pixel lists except the nodata value
+ :rtype: bool
+%End
 
-    void writeXML( QDomDocument& doc, QDomElement& parentElem ) const;
+    void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
+%Docstring
+ Writes the transparency information to an XML document.
+%End
 
-    void readXML( const QDomElement& elem );
+    void readXml( const QDomElement &elem );
+%Docstring
+ Reads the transparency information from an XML document.
+%End
+
 };
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/core/raster/qgsrastertransparency.h                              *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

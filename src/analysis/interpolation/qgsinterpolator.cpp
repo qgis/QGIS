@@ -16,341 +16,143 @@
  ***************************************************************************/
 
 #include "qgsinterpolator.h"
+#include "qgsfeatureiterator.h"
 #include "qgsvectordataprovider.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometry.h"
+#include "qgsfeedback.h"
 
-QgsInterpolator::QgsInterpolator( const QList<LayerData>& layerData ): mDataIsCached( false ), mLayerData( layerData )
+QgsInterpolator::QgsInterpolator( const QList<LayerData> &layerData )
+  : mLayerData( layerData )
 {
 
 }
 
-QgsInterpolator::QgsInterpolator()
+QgsInterpolator::Result QgsInterpolator::cacheBaseData( QgsFeedback *feedback )
 {
-
-}
-
-QgsInterpolator::~QgsInterpolator()
-{
-
-}
-
-int QgsInterpolator::cacheBaseData()
-{
-  if ( mLayerData.size() < 1 )
+  if ( mLayerData.empty() )
   {
-    return 0;
+    return Success;
   }
 
   //reserve initial memory for 100000 vertices
   mCachedBaseData.clear();
   mCachedBaseData.reserve( 100000 );
 
-  QList<LayerData>::iterator v_it = mLayerData.begin();
-
-  for ( ; v_it != mLayerData.end(); ++v_it )
+  double layerStep = !mLayerData.empty() ? 100.0 / mLayerData.count() : 1;
+  int layerCount = 0;
+  for ( const LayerData &layer : qgis::as_const( mLayerData ) )
   {
-    if ( v_it->vectorLayer == 0 )
-    {
-      continue;
-    }
+    if ( feedback && feedback->isCanceled() )
+      return Canceled;
 
-    QgsVectorLayer* vlayer = v_it->vectorLayer;
-    if ( !vlayer )
+    QgsFeatureSource *source = layer.source;
+    if ( !source )
     {
-      return 2;
+      return InvalidSource;
     }
 
     QgsAttributeList attList;
-    if ( !v_it->zCoordInterpolation )
+    switch ( layer.valueSource )
     {
-      attList.push_back( v_it->interpolationAttribute );
-    }
+      case ValueAttribute:
+        attList.push_back( layer.interpolationAttribute );
+        break;
 
+      case ValueZ:
+      case ValueM:
+        break;
+    }
 
     double attributeValue = 0.0;
     bool attributeConversionOk = false;
+    double progress = layerCount * layerStep;
 
-    QgsFeatureIterator fit = vlayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+    QgsFeatureIterator fit = source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+    double featureStep = source->featureCount() > 0 ? layerStep / source->featureCount() : layerStep;
 
-    QgsFeature theFeature;
-    while ( fit.nextFeature( theFeature ) )
+    QgsFeature feature;
+    while ( fit.nextFeature( feature ) )
     {
-      if ( !v_it->zCoordInterpolation )
+      if ( feedback && feedback->isCanceled() )
+        return Canceled;
+
+      progress += featureStep;
+      if ( feedback )
+        feedback->setProgress( progress );
+
+      switch ( layer.valueSource )
       {
-        QVariant attributeVariant = theFeature.attribute( v_it->interpolationAttribute );
-        if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+        case ValueAttribute:
         {
-          continue;
+          QVariant attributeVariant = feature.attribute( layer.interpolationAttribute );
+          if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+          {
+            continue;
+          }
+          attributeValue = attributeVariant.toDouble( &attributeConversionOk );
+          if ( !attributeConversionOk || std::isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
+          {
+            continue;
+          }
+          break;
         }
-        attributeValue = attributeVariant.toDouble( &attributeConversionOk );
-        if ( !attributeConversionOk || qIsNaN( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
-        {
-          continue;
-        }
+
+        case ValueZ:
+        case ValueM:
+          break;
       }
 
-      if ( addVerticesToCache( theFeature.geometry(), v_it->zCoordInterpolation, attributeValue ) != 0 )
-      {
-        return 3;
-      }
+      if ( !addVerticesToCache( feature.geometry(), layer.valueSource, attributeValue ) )
+        return FeatureGeometryError;
     }
+    layerCount++;
   }
 
-  return 0;
+  return Success;
 }
 
-int QgsInterpolator::addVerticesToCache( QgsGeometry* geom, bool zCoord, double attributeValue )
+bool QgsInterpolator::addVerticesToCache( const QgsGeometry &geom, ValueSource source, double attributeValue )
 {
-  if ( !geom )
+  if ( !geom || geom.isEmpty() )
+    return true; // nothing to do
+
+  //validate source
+  switch ( source )
   {
-    return 1;
+    case ValueAttribute:
+      break;
+
+    case ValueM:
+      if ( !geom.constGet()->isMeasure() )
+        return false;
+      else
+        break;
+
+    case ValueZ:
+      if ( !geom.constGet()->is3D() )
+        return false;
+      else
+        break;
   }
 
-  bool hasZValue = false;
-  const unsigned char* currentWkbPtr = geom->asWkb();
-  vertexData theVertex; //the current vertex
-
-  QGis::WkbType wkbType = geom->wkbType();
-  switch ( wkbType )
+  for ( auto point = geom.vertices_begin(); point != geom.vertices_end(); ++point )
   {
-    case QGis::WKBPoint25D:
-      hasZValue = true;
-    case QGis::WKBPoint:
+    switch ( source )
     {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      theVertex.x = *(( double * )( currentWkbPtr ) );
-      currentWkbPtr += sizeof( double );
-      theVertex.y = *(( double * )( currentWkbPtr ) );
-      if ( zCoord && hasZValue )
-      {
-        currentWkbPtr += sizeof( double );
-        theVertex.z = *(( double * )( currentWkbPtr ) );
-      }
-      else
-      {
-        theVertex.z = attributeValue;
-      }
-      mCachedBaseData.push_back( theVertex );
-      break;
-    }
-    case QGis::WKBLineString25D:
-      hasZValue = true;
-    case QGis::WKBLineString:
-    {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* npoints = ( int* )currentWkbPtr;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *npoints; ++index )
-      {
-        theVertex.x = *(( double * )( currentWkbPtr ) );
-        currentWkbPtr += sizeof( double );
-        theVertex.y = *(( double * )( currentWkbPtr ) );
-        currentWkbPtr += sizeof( double );
-        if ( zCoord && hasZValue ) //skip z-coordinate for 25D geometries
-        {
-          theVertex.z = *(( double * )( currentWkbPtr ) );
-          currentWkbPtr += sizeof( double );
-        }
-        else
-        {
-          theVertex.z = attributeValue;
-        }
-        mCachedBaseData.push_back( theVertex );
-      }
-      break;
-    }
-#if 0
-    case QGis::WKBPolygon25D:
-      hasZValue = true;
-    case QGis::WKBPolygon:
-    {
-      int* nrings = ( int* )( mGeometry + 5 );
-      int* npoints;
-      unsigned char* ptr = mGeometry + 9;
-      for ( int index = 0; index < *nrings; ++index )
-      {
-        npoints = ( int* )ptr;
-        ptr += sizeof( int );
-        for ( int index2 = 0; index2 < *npoints; ++index2 )
-        {
-          tempx = ( double* )ptr;
-          ptr += sizeof( double );
-          tempy = ( double* )ptr;
-          if ( point.sqrDist( *tempx, *tempy ) < actdist )
-          {
-            x = *tempx;
-            y = *tempy;
-            actdist = point.sqrDist( *tempx, *tempy );
-            vertexnr = vertexcounter;
-            //assign the rubber band indices
-            if ( index2 == 0 )
-            {
-              beforeVertex = vertexcounter + ( *npoints - 2 );
-              afterVertex = vertexcounter + 1;
-            }
-            else if ( index2 == ( *npoints - 1 ) )
-            {
-              beforeVertex = vertexcounter - 1;
-              afterVertex = vertexcounter - ( *npoints - 2 );
-            }
-            else
-            {
-              beforeVertex = vertexcounter - 1;
-              afterVertex = vertexcounter + 1;
-            }
-          }
-          ptr += sizeof( double );
-          if ( hasZValue ) //skip z-coordinate for 25D geometries
-          {
-            ptr += sizeof( double );
-          }
-          ++vertexcounter;
-        }
-      }
-      break;
-    }
-    case QGis::WKBMultiPoint25D:
-      hasZValue = true;
-    case QGis::WKBMultiPoint:
-    {
-      unsigned char* ptr = mGeometry + 5;
-      int* npoints = ( int* )ptr;
-      ptr += sizeof( int );
-      for ( int index = 0; index < *npoints; ++index )
-      {
-        ptr += ( 1 + sizeof( int ) ); //skip endian and point type
-        tempx = ( double* )ptr;
-        tempy = ( double* )( ptr + sizeof( double ) );
-        if ( point.sqrDist( *tempx, *tempy ) < actdist )
-        {
-          x = *tempx;
-          y = *tempy;
-          actdist = point.sqrDist( *tempx, *tempy );
-          vertexnr = index;
-        }
-        ptr += ( 2 * sizeof( double ) );
-        if ( hasZValue ) //skip z-coordinate for 25D geometries
-        {
-          ptr += sizeof( double );
-        }
-      }
-      break;
-    }
-    case QGis::WKBMultiLineString25D:
-      hasZValue = true;
-    case QGis::WKBMultiLineString:
-    {
-      unsigned char* ptr = mGeometry + 5;
-      int* nlines = ( int* )ptr;
-      int* npoints = 0;
-      ptr += sizeof( int );
-      for ( int index = 0; index < *nlines; ++index )
-      {
-        ptr += ( sizeof( int ) + 1 );
-        npoints = ( int* )ptr;
-        ptr += sizeof( int );
-        for ( int index2 = 0; index2 < *npoints; ++index2 )
-        {
-          tempx = ( double* )ptr;
-          ptr += sizeof( double );
-          tempy = ( double* )ptr;
-          ptr += sizeof( double );
-          if ( point.sqrDist( *tempx, *tempy ) < actdist )
-          {
-            x = *tempx;
-            y = *tempy;
-            actdist = point.sqrDist( *tempx, *tempy );
-            vertexnr = vertexcounter;
+      case ValueM:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).m() ) );
+        break;
 
-            if ( index2 == 0 )//assign the rubber band indices
-            {
-              beforeVertex = -1;
-            }
-            else
-            {
-              beforeVertex = vertexnr - 1;
-            }
-            if ( index2 == ( *npoints ) - 1 )
-            {
-              afterVertex = -1;
-            }
-            else
-            {
-              afterVertex = vertexnr + 1;
-            }
-          }
-          if ( hasZValue ) //skip z-coordinate for 25D geometries
-          {
-            ptr += sizeof( double );
-          }
-          ++vertexcounter;
-        }
-      }
-      break;
-    }
-    case QGis::WKBMultiPolygon25D:
-      hasZValue = true;
-    case QGis::WKBMultiPolygon:
-    {
-      unsigned char* ptr = mGeometry + 5;
-      int* npolys = ( int* )ptr;
-      int* nrings;
-      int* npoints;
-      ptr += sizeof( int );
-      for ( int index = 0; index < *npolys; ++index )
-      {
-        ptr += ( 1 + sizeof( int ) ); //skip endian and polygon type
-        nrings = ( int* )ptr;
-        ptr += sizeof( int );
-        for ( int index2 = 0; index2 < *nrings; ++index2 )
-        {
-          npoints = ( int* )ptr;
-          ptr += sizeof( int );
-          for ( int index3 = 0; index3 < *npoints; ++index3 )
-          {
-            tempx = ( double* )ptr;
-            ptr += sizeof( double );
-            tempy = ( double* )ptr;
-            if ( point.sqrDist( *tempx, *tempy ) < actdist )
-            {
-              x = *tempx;
-              y = *tempy;
-              actdist = point.sqrDist( *tempx, *tempy );
-              vertexnr = vertexcounter;
+      case ValueZ:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), ( *point ).z() ) );
+        break;
 
-              //assign the rubber band indices
-              if ( index3 == 0 )
-              {
-                beforeVertex = vertexcounter + ( *npoints - 2 );
-                afterVertex = vertexcounter + 1;
-              }
-              else if ( index3 == ( *npoints - 1 ) )
-              {
-                beforeVertex = vertexcounter - 1;
-                afterVertex = vertexcounter - ( *npoints - 2 );
-              }
-              else
-              {
-                beforeVertex = vertexcounter - 1;
-                afterVertex = vertexcounter + 1;
-              }
-            }
-            ptr += sizeof( double );
-            if ( hasZValue ) //skip z-coordinate for 25D geometries
-            {
-              ptr += sizeof( double );
-            }
-            ++vertexcounter;
-          }
-        }
-      }
-      break;
+      case ValueAttribute:
+        mCachedBaseData.push_back( QgsInterpolatorVertexData( ( *point ).x(), ( *point ).y(), attributeValue ) );
+        break;
     }
-#endif //0
-    default:
-      break;
   }
   mDataIsCached = true;
-  return 0;
+  return true;
 }

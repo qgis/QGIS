@@ -14,56 +14,55 @@
  ***************************************************************************/
 
 #include "nodetool/qgsvertexentry.h"
-#include "qgsmaprenderer.h"
 
-QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, QgsPoint p, QString tooltip, QgsVertexMarker::IconType type, int penWidth )
-    : mSelected( false )
-    , mEquals( -1 )
-    , mInRubberBand( false )
-    , mRubberBandNr( 0 )
-    , mPenWidth( penWidth )
-    , mToolTip( tooltip )
-    , mType( type )
-    , mMarker( 0 )
-    , mCanvas( canvas )
-    , mLayer( layer )
+QgsVertexEntry::QgsVertexEntry( QgsMapCanvas *canvas, QgsMapLayer *layer, const QgsPoint &p, QgsVertexId vertexId, const QString &tooltip, QgsVertexMarker::IconType type, int penWidth )
+  : mSelected( false )
+  , mPoint( p )
+  , mVertexId( vertexId )
+  , mPenWidth( penWidth )
+  , mToolTip( tooltip )
+  , mType( type )
+  , mCanvas( canvas )
+  , mLayer( layer )
 {
-  setCenter( p );
+  placeMarker();
 }
 
 QgsVertexEntry::~QgsVertexEntry()
 {
-  if ( mMarker )
-  {
-    delete mMarker;
-    mMarker = 0;
-  }
+  delete mMarker;
 }
 
-void QgsVertexEntry::setCenter( QgsPoint p )
+void QgsVertexEntry::placeMarker()
 {
-  mPoint = p;
-  p = mCanvas->mapRenderer()->layerToMapCoordinates( mLayer, p );
+  QgsPointXY pm = mCanvas->mapSettings().layerToMapCoordinates( mLayer, pointV1() );
 
-  if ( mCanvas->extent().contains( p ) )
+  if ( mCanvas->extent().contains( pm ) )
   {
     if ( !mMarker )
     {
       mMarker = new QgsVertexMarker( mCanvas );
-      mMarker->setIconType( mType );
-      mMarker->setColor( mSelected ? Qt::blue : Qt::red );
+      QColor c = mSelected ? QColor( Qt::blue ) : QColor( Qt::red );
+      if ( mVertexId.type == QgsVertexId::CurveVertex )
+      {
+        mMarker->setIconType( QgsVertexMarker::ICON_CIRCLE );
+      }
+      else
+      {
+        mMarker->setIconType( mType );
+      }
+      mMarker->setColor( c );
       mMarker->setPenWidth( mPenWidth );
-
-      if ( !mToolTip.isEmpty() )
-        mMarker->setToolTip( mToolTip );
+      mMarker->setToolTip( mToolTip );
     }
 
-    mMarker->setCenter( p );
+    mMarker->setCenter( pm );
+    mMarker->update();
   }
   else if ( mMarker )
   {
     delete mMarker;
-    mMarker = 0;
+    mMarker = nullptr;
   }
 }
 
@@ -72,19 +71,8 @@ void QgsVertexEntry::setSelected( bool selected )
   mSelected = selected;
   if ( mMarker )
   {
-    mMarker->setColor( mSelected ? Qt::blue : Qt::red );
-  }
-}
-
-void QgsVertexEntry::setRubberBandValues( bool inRubberBand, int rubberBandNr, int indexInRubberBand )
-{
-  mRubberBandIndex = indexInRubberBand;
-  mInRubberBand    = inRubberBand;
-  mRubberBandNr    = rubberBandNr;
-}
-
-void QgsVertexEntry::update()
-{
-  if ( mMarker )
+    QColor c = mSelected ? QColor( Qt::blue ) : QColor( Qt::red );
+    mMarker->setColor( c );
     mMarker->update();
+  }
 }

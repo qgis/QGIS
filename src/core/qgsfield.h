@@ -19,219 +19,334 @@
 #include <QString>
 #include <QVariant>
 #include <QVector>
+#include <QSharedDataPointer>
+#include "qgsfield_p.h"
+#include "qgis_core.h"
+#include "qgis.h"
 
-/** \ingroup core
+typedef QList<int> QgsAttributeList SIP_SKIP;
+
+/***************************************************************************
+ * This class is considered CRITICAL and any change MUST be accompanied with
+ * full unit tests in testqgsfield.cpp.
+ * See details in QEP #17
+ ****************************************************************************/
+
+#include "qgseditorwidgetsetup.h"
+#include "qgsfieldconstraints.h"
+#include "qgsdefaultvalue.h"
+
+/**
+ * \class QgsField
+  * \ingroup core
   * Encapsulate a field in an attribute table or data source.
   * QgsField stores metadata about an attribute field, including name, type
   * length, and if applicable, precision.
+  * \note QgsField objects are implicitly shared.
  */
 
 class CORE_EXPORT QgsField
 {
-  public:
-    /** Constructor. Constructs a new QgsField object.
-     * @param name Field name
-     * @param type Field variant type, currently supported: String / Int / Double
-     * @param typeName Field type (eg. char, varchar, text, int, serial, double).
-     Field types are usually unique to the source and are stored exactly
-     as returned from the data store.
-     * @param len Field length
-     * @param prec Field precision. Usually decimal places but may also be
-     * used in conjunction with other fields types (eg. variable character fields)
-     * @param comment Comment for the field
-     */
+    Q_GADGET
 
-    QgsField( QString name = QString(),
+    Q_PROPERTY( bool isNumeric READ isNumeric )
+    Q_PROPERTY( int length READ length WRITE setLength )
+    Q_PROPERTY( int precision READ precision WRITE setPrecision )
+    Q_PROPERTY( QString comment READ comment WRITE setComment )
+    Q_PROPERTY( QString name READ name WRITE setName )
+    Q_PROPERTY( QString alias READ alias WRITE setAlias )
+    Q_PROPERTY( QgsDefaultValue defaultValueDefinition READ defaultValueDefinition WRITE setDefaultValueDefinition )
+    Q_PROPERTY( QgsFieldConstraints constraints READ constraints WRITE setConstraints )
+
+  public:
+
+    /**
+     * Constructor. Constructs a new QgsField object.
+     * \param name Field name
+     * \param type Field variant type, currently supported: String / Int / Double
+     * \param typeName Field type (e.g., char, varchar, text, int, serial, double).
+     * Field types are usually unique to the source and are stored exactly
+     * as returned from the data store.
+     * \param len Field length
+     * \param prec Field precision. Usually decimal places but may also be
+     * used in conjunction with other fields types (e.g., variable character fields)
+     * \param comment Comment for the field
+     * \param subType If the field is a collection, its element's type. When
+     *                all the elements don't need to have the same type, leave
+     *                this to QVariant::Invalid.
+     */
+    QgsField( const QString &name = QString(),
               QVariant::Type type = QVariant::Invalid,
-              QString typeName = QString(),
+              const QString &typeName = QString(),
               int len = 0,
               int prec = 0,
-              QString comment = QString() );
+              const QString &comment = QString(),
+              QVariant::Type subType = QVariant::Invalid );
 
-    //! Destructor
-    ~QgsField();
+    /**
+     * Copy constructor
+     */
+    QgsField( const QgsField &other );
 
-    bool operator==( const QgsField& other ) const;
-    bool operator!=( const QgsField& other ) const;
+    /**
+     * Assignment operator
+     */
+    QgsField &operator =( const QgsField &other ) SIP_SKIP;
 
-    //! Gets the name of the field
-    const QString & name() const;
+    virtual ~QgsField() = default;
+
+    bool operator==( const QgsField &other ) const;
+    bool operator!=( const QgsField &other ) const;
+
+    /**
+     * Returns the name of the field.
+     * \see setName()
+     * \see displayName()
+     */
+    QString name() const;
+
+    /**
+     * Returns the name to use when displaying this field. This will be the
+     * field alias if set, otherwise the field name.
+     * \see name()
+     * \see alias()
+     * \since QGIS 3.0
+     */
+    QString displayName() const;
 
     //! Gets variant type of the field as it will be retrieved from data source
     QVariant::Type type() const;
 
     /**
-      Gets the field type. Field types vary depending on the data source. Examples
-      are char, int, double, blob, geometry, etc. The type is stored exactly as
-      the data store reports it, with no attenpt to standardize the value.
-      @return QString containing the field type
+     * If the field is a collection, gets its element's type.
+     * When all the elements don't need to have the same type, this returns
+     * QVariant::Invalid.
+     * \since QGIS 3.0
      */
-    const QString & typeName() const;
-
+    QVariant::Type subType() const;
 
     /**
-      Gets the length of the field.
-      @return int containing the length of the field
+     * Gets the field type. Field types vary depending on the data source. Examples
+     * are char, int, double, blob, geometry, etc. The type is stored exactly as
+     * the data store reports it, with no attempt to standardize the value.
+     * \returns QString containing the field type
+     */
+    QString typeName() const;
+
+    /**
+     * Gets the length of the field.
+     * \returns int containing the length of the field
      */
     int length() const;
 
-
     /**
-      Gets the precision of the field. Not all field types have a related precision.
-      @return int containing the precision or zero if not applicable to the field type.
+     * Gets the precision of the field. Not all field types have a related precision.
+     * \returns int containing the precision or zero if not applicable to the field type.
      */
     int precision() const;
 
     /**
-    Returns the field comment
-    */
-    const QString & comment() const;
-
-    /**
-      Set the field name.
-      @param nam Name of the field
+     * Returns the field comment
      */
-    void setName( const QString & nam );
+    QString comment() const;
 
     /**
-      Set variant type.
+     * Returns if this field is numeric. Any integer or floating point type
+     * will return true for this.
+     *
+     * \since QGIS 2.18
+     */
+    bool isNumeric() const;
+
+    /**
+     * Set the field name.
+     * \param name Name of the field
+     */
+    void setName( const QString &name );
+
+    /**
+     * Set variant type.
      */
     void setType( QVariant::Type type );
 
     /**
-      Set the field type.
-      @param typ Field type
+     * If the field is a collection, set its element's type.
+     * When all the elements don't need to have the same type, set this to
+     * QVariant::Invalid.
+     * \since QGIS 3.0
      */
-    void setTypeName( const QString & typ );
+    void setSubType( QVariant::Type subType );
 
     /**
-      Set the field length.
-      @param len Length of the field
+     * Set the field type.
+     * \param typeName Field type
+     */
+    void setTypeName( const QString &typeName );
+
+    /**
+     * Set the field length.
+     * \param len Length of the field
      */
     void setLength( int len );
 
     /**
-      Set the field precision.
-      @param prec Precision of the field
+     * Set the field precision.
+     * \param precision Precision of the field
      */
-    void setPrecision( int prec );
-
+    void setPrecision( int precision );
 
     /**
-      Set the field comment
-      */
-    void setComment( const QString & comment );
+     * Set the field comment
+     */
+    void setComment( const QString &comment );
 
-    /**Formats string for display*/
-    QString displayString( const QVariant& v ) const;
+    /**
+     * Returns the expression used when calculating the default value for the field.
+     * \returns expression evaluated when calculating default values for field, or an
+     * empty string if no default is set
+     * \since QGIS 3.0
+     * \see setDefaultValueDefinition()
+     */
+    QgsDefaultValue defaultValueDefinition() const;
+
+    /**
+     * Sets an expression to use when calculating the default value for the field.
+     * \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
+     * a default constructed QgsDefaultValue() to reset.
+     * \since QGIS 3.0
+     * \see defaultValueDefinition()
+     */
+    void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
+
+    /**
+     * Returns constraints which are present for the field.
+     * \since QGIS 3.0
+     * \see setConstraints()
+     */
+    const QgsFieldConstraints &constraints() const;
+
+    /**
+     * Sets constraints which are present for the field.
+     * \since QGIS 3.0
+     * \see constraints()
+     */
+    void setConstraints( const QgsFieldConstraints &constraints );
+
+    /**
+     * Returns the alias for the field (the friendly displayed name of the field ),
+     * or an empty string if there is no alias.
+     * \see setAlias()
+     * \since QGIS 3.0
+     */
+    QString alias() const;
+
+    /**
+     * Sets the alias for the field (the friendly displayed name of the field ).
+     * \param alias field alias, or empty string to remove an existing alias
+     * \see alias()
+     * \since QGIS 3.0
+     */
+    void setAlias( const QString &alias );
+
+    //! Formats string for display
+    QString displayString( const QVariant &v ) const;
+
+    /**
+     * Converts the provided variant to a compatible format
+     *
+     * \param v  The value to convert
+     *
+     * \returns   True if the conversion was successful
+     */
+    bool convertCompatible( QVariant &v ) const;
+#ifdef SIP_RUN
+    % MethodCode
+    PyObject *sipParseErr = NULL;
+
+    {
+      QVariant *a0;
+      int a0State = 0;
+      const QgsField *sipCpp;
+
+      if ( sipParseArgs( &sipParseErr, sipArgs, "BJ1", &sipSelf, sipType_QgsField, &sipCpp, sipType_QVariant, &a0, &a0State ) )
+      {
+        bool sipRes;
+
+        Py_BEGIN_ALLOW_THREADS
+        try
+        {
+          QgsDebugMsg( a0->toString() );
+          sipRes = sipCpp->convertCompatible( *a0 );
+          QgsDebugMsg( a0->toString() );
+        }
+        catch ( ... )
+        {
+          Py_BLOCK_THREADS
+
+          sipReleaseType( a0, sipType_QVariant, a0State );
+          sipRaiseUnknownException();
+          return NULL;
+        }
+
+        Py_END_ALLOW_THREADS
+
+        PyObject *res = sipConvertFromType( a0, sipType_QVariant, NULL );
+        sipReleaseType( a0, sipType_QVariant, a0State );
+
+        if ( !sipRes )
+        {
+          PyErr_SetString( PyExc_ValueError,
+                           QString( "Value %1 (%2) could not be converted to field type %3." ).arg( a0->toString(), a0->typeName() ).arg( sipCpp->type() ).toUtf8().constData() );
+          sipError = sipErrorFail;
+        }
+
+        return res;
+      }
+    }
+
+    // Raise an exception if the arguments couldn't be parsed.
+    sipNoMethod( sipParseErr, sipName_QgsField, sipName_convertCompatible, doc_QgsField_convertCompatible );
+
+    return nullptr;
+    % End
+#endif
+
+    //! Allows direct construction of QVariants from fields.
+    operator QVariant() const
+    {
+      return QVariant::fromValue( *this );
+    }
+
+    /**
+     * Set the editor widget setup for the field.
+     *
+     * \param v  The value to set
+     */
+    void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
+
+    /**
+     * Get the editor widget setup for the field.
+     *
+     * Defaults may be set by the provider and can be overridden
+     * by manual field configuration.
+     *
+     * \returns the value
+     */
+    QgsEditorWidgetSetup editorWidgetSetup() const;
 
   private:
 
-    //! Name
-    QString mName;
+    QSharedDataPointer<QgsFieldPrivate> d;
 
-    //! Variant type
-    QVariant::Type mType;
-
-    //! Type name from provider
-    QString mTypeName;
-
-    //! Length
-    int mLength;
-
-    //! Precision
-    int mPrecision;
-
-    //! Comment
-    QString mComment;
 
 }; // class QgsField
 
-// key = field index, value=field data
-typedef QMap<int, QgsField> QgsFieldMap;
+Q_DECLARE_METATYPE( QgsField )
 
-
-/**
- \ingroup core
- Container of fields for a vector layer.
-
- In addition to storing a list of QgsField instances, it also:
- - allows quick lookups of field names to index in the list
- - keeps track of where the field definition comes from (vector data provider, joined layer or newly added from an editing operation)
- */
-class CORE_EXPORT QgsFields
-{
-  public:
-
-    enum FieldOrigin
-    {
-      OriginUnknown,   //!< it has not been specified where the field comes from
-      OriginProvider,  //!< field comes from the underlying data provider of the vector layer  (originIndex = index in provider's fields)
-      OriginJoin,      //!< field comes from a joined layer   (originIndex / 1000 = index of the join, originIndex % 1000 = index within the join)
-      OriginEdit       //!< field has been temporarily added in editing mode (originIndex = index in the list of added attributes)
-    };
-
-    typedef struct Field
-    {
-      Field(): origin( OriginUnknown ), originIndex( -1 ) {}
-      Field( const QgsField& f, FieldOrigin o, int oi ): field( f ), origin( o ), originIndex( oi ) {}
-
-      QgsField field;      //!< field
-      FieldOrigin origin;  //!< origin of the field
-      int originIndex;     //!< index specific to the origin
-    } Field;
-
-    //! Remove all fields
-    void clear();
-    //! Append a field. The field must have unique name, otherwise it is rejected (returns false)
-    bool append( const QgsField& field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
-    //! Remove a field with the given index
-    void remove( int fieldIdx );
-    //! Extend with fields from an other QgsFields container
-    void extend( const QgsFields& other );
-
-    //! Check whether the container is empty
-    inline bool isEmpty() const { return mFields.isEmpty(); }
-    //! Return number of items
-    inline int count() const { return mFields.count(); }
-    //! Return number of items
-    inline int size() const { return mFields.count(); }
-    //! Return if a field index is valid
-    //! @param i  Index of the field which needs to be checked
-    //! @return   True if the field exists
-    inline bool exists( int i ) const { return i >= 0 && i < mFields.count(); }
-
-    //! Get field at particular index (must be in range 0..N-1)
-    inline const QgsField& operator[]( int i ) const { return mFields[i].field; }
-    //! Get field at particular index (must be in range 0..N-1)
-    inline QgsField& operator[]( int i ) { return mFields[i].field; }
-    //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& at( int i ) const { return mFields[i].field; }
-    //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& field( int fieldIdx ) const { return mFields[fieldIdx].field; }
-    //! Get field at particular index (must be in range 0..N-1)
-    const QgsField& field( const QString& name ) const { return mFields[ indexFromName( name )].field; }
-
-    //! Get field's origin (value from an enumeration)
-    FieldOrigin fieldOrigin( int fieldIdx ) const { return mFields[fieldIdx].origin; }
-    //! Get field's origin index (its meaning is specific to each type of origin)
-    int fieldOriginIndex( int fieldIdx ) const { return mFields[fieldIdx].originIndex; }
-
-    //! Look up field's index from name. Returns -1 on error
-    int indexFromName( const QString& name ) const { return mNameToIndex.value( name, -1 ); }
-
-    //! Utility function to return a list of QgsField instances
-    QList<QgsField> toList() const;
-
-  protected:
-    //! internal storage of the container
-    QVector<Field> mFields;
-
-    //! map for quick resolution of name to index
-    QHash<QString, int> mNameToIndex;
-};
-
-
+//! Writes the field to stream out. QGIS version compatibility is not guaranteed.
+CORE_EXPORT QDataStream &operator<<( QDataStream &out, const QgsField &field );
+//! Reads a field from stream in into field. QGIS version compatibility is not guaranteed.
+CORE_EXPORT QDataStream &operator>>( QDataStream &in, QgsField &field );
 
 
 #endif

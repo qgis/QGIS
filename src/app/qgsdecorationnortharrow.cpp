@@ -25,25 +25,26 @@ email                : tim@linfiniti.com
 #include "qgsdecorationnortharrowdialog.h"
 
 #include "qgisapp.h"
+#include "qgsbearingutils.h"
 #include "qgscoordinatetransform.h"
+#include "qgsexception.h"
+#include "qgslogger.h"
 #include "qgsmaplayer.h"
 #include "qgsproject.h"
-#include "qgslogger.h"
-#include "qgsmapcanvas.h"
-#include "qgsmaprenderer.h"
+#include "qgssymbollayerutils.h"
+#include "qgssvgcache.h"
 
 // qt includes
 #include <QPainter>
 #include <QMenu>
 #include <QDir>
 #include <QFile>
+#include <QSvgRenderer>
 
 //non qt includes
 #include <cmath>
 #include <cassert>
 
-
-const double QgsDecorationNorthArrow::PI = 3.14159265358979323846;
 //  const double QgsNorthArrowPlugin::DEG2RAD = 0.0174532925199433;
 const double QgsDecorationNorthArrow::TOL = 1e-8;
 
@@ -54,76 +55,64 @@ const double QgsDecorationNorthArrow::TOL = 1e-8;
  * @param qgis Pointer to the QGIS main window
  * @param _qI Pointer to the QGIS interface object
  */
-QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject* parent )
-    : QgsDecorationItem( parent )
+QgsDecorationNorthArrow::QgsDecorationNorthArrow( QObject *parent )
+  : QgsDecorationItem( parent )
 {
-  mRotationInt = 0;
-  mAutomatic = true;
-  mPlacementLabels << tr( "Bottom Left" ) << tr( "Top Left" )
-  << tr( "Top Right" ) << tr( "Bottom Right" );
+  mPlacement = BottomLeft;
+  mMarginUnit = QgsUnitTypes::RenderMillimeters;
 
   setName( "North Arrow" );
   projectRead();
 }
 
-QgsDecorationNorthArrow::~QgsDecorationNorthArrow()
-{
-}
-
 void QgsDecorationNorthArrow::projectRead()
 {
   QgsDecorationItem::projectRead();
-  mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, "/Rotation", 0 );
-  mPlacementIndex = QgsProject::instance()->readNumEntry( mNameConfig, "/Placement", 0 );
-  mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, "/Automatic", true );
+  mColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/Color" ), QStringLiteral( "#000000" ) ) );
+  mOutlineColor = QgsSymbolLayerUtils::decodeColor( QgsProject::instance()->readEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QStringLiteral( "#FFFFFF" ) ) );
+  mRotationInt = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/Rotation" ), 0 );
+  mAutomatic = QgsProject::instance()->readBoolEntry( mNameConfig, QStringLiteral( "/Automatic" ), true );
+  mMarginHorizontal = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginH" ), 0 );
+  mMarginVertical = QgsProject::instance()->readNumEntry( mNameConfig, QStringLiteral( "/MarginV" ), 0 );
 }
 
 void QgsDecorationNorthArrow::saveToProject()
 {
   QgsDecorationItem::saveToProject();
-  QgsProject::instance()->writeEntry( mNameConfig, "/Rotation", mRotationInt );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Placement", mPlacementIndex );
-  QgsProject::instance()->writeEntry( mNameConfig, "/Automatic", mAutomatic );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Color" ), QgsSymbolLayerUtils::encodeColor( mColor ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/OutlineColor" ), QgsSymbolLayerUtils::encodeColor( mOutlineColor ) );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Rotation" ), mRotationInt );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/Automatic" ), mAutomatic );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginH" ), mMarginHorizontal );
+  QgsProject::instance()->writeEntry( mNameConfig, QStringLiteral( "/MarginV" ), mMarginVertical );
 }
 
 // Slot called when the buffer menu item is activated
 void QgsDecorationNorthArrow::run()
 {
   QgsDecorationNorthArrowDialog dlg( *this, QgisApp::instance() );
-
-  if ( dlg.exec() )
-  {
-    update();
-  }
+  dlg.exec();
 }
 
-void QgsDecorationNorthArrow::render( QPainter * theQPainter )
+void QgsDecorationNorthArrow::render( const QgsMapSettings &mapSettings, QgsRenderContext &context )
 {
 
-  //Large IF statement controlled by enable check box
+  //Large IF statement controlled by enable checkbox
   if ( enabled() )
   {
-    if ( theQPainter->isActive() )
+    QSize size( 64, 64 );
+    QSvgRenderer svg;
+
+    const QByteArray &svgContent = QgsApplication::svgCache()->svgContent( QStringLiteral( ":/images/north_arrows/default.svg" ), size.width(), mColor, mOutlineColor, 1.0, 1.0 );
+    svg.load( svgContent );
+
+    if ( svg.isValid() )
     {
-      //QgsDebugMsg("Rendering north arrow on active painter");
-    }
-    else
-    {
-      //QgsDebugMsg("Rendering north arrow on INactive painter!!!");
-    }
+      double centerXDouble = size.width() / 2.0;
+      double centerYDouble = size.width() / 2.0;
 
-    QPixmap myQPixmap; //to store the north arrow image in
-
-    QString myFileNameQString = ":/images/north_arrows/default.png";
-
-    //QgsDebugMsg("Trying to load " + myFileNameQString);
-    if ( myQPixmap.load( myFileNameQString ) )
-    {
-
-      double centerXDouble = myQPixmap.width() / 2;
-      double centerYDouble = myQPixmap.height() / 2;
       //save the current canvas rotation
-      theQPainter->save();
+      context.painter()->save();
       //
       //work out how to shift the image so that it rotates
       //           properly about its center
@@ -133,175 +122,100 @@ void QgsDecorationNorthArrow::render( QPainter * theQPainter )
       // could move this call to somewhere else so that it is only
       // called when the projection or map extent changes
       if ( mAutomatic )
-        calculateNorthDirection();
+      {
+        try
+        {
+          mRotationInt = QgsBearingUtils:: bearingTrueNorth( mapSettings.destinationCrs(), context.extent().center() );
+        }
+        catch ( QgsException & )
+        {
+          mRotationInt = 0.0;
+          //QgsDebugMsg( "Can not get direction to true north. Probably project CRS is not defined." );
+        }
+        mRotationInt += mapSettings.rotation();
+      }
 
-      double myRadiansDouble = mRotationInt * PI / 180.0;
-      int xShift = static_cast<int>((
-                                      ( centerXDouble * cos( myRadiansDouble ) ) +
-                                      ( centerYDouble * sin( myRadiansDouble ) )
-                                    ) - centerXDouble );
-      int yShift = static_cast<int>((
-                                      ( -centerXDouble * sin( myRadiansDouble ) ) +
-                                      ( centerYDouble * cos( myRadiansDouble ) )
-                                    ) - centerYDouble );
+      double myRadiansDouble = mRotationInt * M_PI / 180.0;
+      int xShift = static_cast<int>( (
+                                       ( centerXDouble * std::cos( myRadiansDouble ) ) +
+                                       ( centerYDouble * std::sin( myRadiansDouble ) )
+                                     ) - centerXDouble );
+      int yShift = static_cast<int>( (
+                                       ( -centerXDouble * std::sin( myRadiansDouble ) ) +
+                                       ( centerYDouble * std::cos( myRadiansDouble ) )
+                                     ) - centerYDouble );
 
       // need width/height of paint device
-      int myHeight = theQPainter->device()->height();
-      int myWidth = theQPainter->device()->width();
+      int myHeight = context.painter()->device()->height();
+      int myWidth = context.painter()->device()->width();
 
       //QgsDebugMsg("Rendering north arrow at " + mPlacementLabels.at(mPlacementIndex));
 
-      //Determine placement of label from form combo box
-      switch ( mPlacementIndex )
+      // Set  margin according to selected units
+      int myXOffset = 0;
+      int myYOffset = 0;
+      switch ( mMarginUnit )
       {
-        case 0: // Bottom Left
-          theQPainter->translate( 0, myHeight - myQPixmap.height() );
+        case QgsUnitTypes::RenderMillimeters:
+        {
+          int myPixelsInchX = context.painter()->device()->logicalDpiX();
+          int myPixelsInchY = context.painter()->device()->logicalDpiY();
+          myXOffset = myPixelsInchX * INCHES_TO_MM * mMarginHorizontal;
+          myYOffset = myPixelsInchY * INCHES_TO_MM * mMarginVertical;
           break;
-        case 1: // Top Left
-          //no need to translate for TL corner because we're already at the origin
-          theQPainter->translate( 0, 0 );
+        }
+
+        case QgsUnitTypes::RenderPixels:
+          myXOffset = mMarginHorizontal - 5; // Minus 5 to shift tight into corner
+          myYOffset = mMarginVertical - 5;
           break;
-        case 2: // Top Right
-          theQPainter->translate( myWidth - myQPixmap.width(), 0 );
+
+        case QgsUnitTypes::RenderPercentage:
+          myXOffset = ( ( myWidth - size.width() ) / 100. ) * mMarginHorizontal;
+          myYOffset = ( ( myHeight - size.width() ) / 100. ) * mMarginVertical;
           break;
-        case 3: // Bottom Right
-          theQPainter->translate( myWidth - myQPixmap.width(),
-                                  myHeight - myQPixmap.height() );
+
+        default:  // Use default of top left
+          break;
+      }
+      //Determine placement of label from form combo box
+      switch ( mPlacement )
+      {
+        case BottomLeft:
+          context.painter()->translate( myXOffset, myHeight - myYOffset - size.width() );
+          break;
+        case TopLeft:
+          context.painter()->translate( myXOffset, myYOffset );
+          break;
+        case TopRight:
+          context.painter()->translate( myWidth - myXOffset - size.width(), myYOffset );
+          break;
+        case BottomRight:
+          context.painter()->translate( myWidth - myXOffset - size.width(),
+                                        myHeight - myYOffset - size.width() );
           break;
         default:
         {
           //QgsDebugMsg("Unable to determine where to put north arrow so defaulting to top left");
         }
       }
+
       //rotate the canvas by the north arrow rotation amount
-      theQPainter->rotate( mRotationInt );
+      context.painter()->rotate( mRotationInt );
       //Now we can actually do the drawing, and draw a smooth north arrow even when rotated
-      theQPainter->setRenderHint( QPainter::SmoothPixmapTransform );
-      theQPainter->drawPixmap( xShift, yShift, myQPixmap );
+
+      context.painter()->translate( xShift, yShift );
+      svg.render( context.painter(), QRectF( 0, 0, size.width(), size.height() ) );
 
       //unrotate the canvas again
-      theQPainter->restore();
+      context.painter()->restore();
     }
     else
     {
-      QFont myQFont( "time", 12, QFont::Bold );
-      theQPainter->setFont( myQFont );
-      theQPainter->setPen( Qt::black );
-      theQPainter->drawText( 10, 20, tr( "North arrow pixmap not found" ) );
+      QFont myQFont( QStringLiteral( "time" ), 12, QFont::Bold );
+      context.painter()->setFont( myQFont );
+      context.painter()->setPen( Qt::black );
+      context.painter()->drawText( 10, 20, tr( "North arrow pixmap not found" ) );
     }
   }
-
-}
-
-bool QgsDecorationNorthArrow::calculateNorthDirection()
-{
-  QgsMapCanvas* mapCanvas = QgisApp::instance()->mapCanvas();
-
-  bool goodDirn = false;
-
-  // Get the shown extent...
-  QgsRectangle canvasExtent = mapCanvas->extent();
-  // ... and all layers extent, ...
-  QgsRectangle fullExtent = mapCanvas->fullExtent();
-  // ... and combine
-  QgsRectangle extent = canvasExtent.intersect( & fullExtent );
-
-  // If no layers are added or shown, we can't get any direction
-  if ( mapCanvas->layerCount() > 0 && ! extent.isEmpty() )
-  {
-    QgsCoordinateReferenceSystem outputCRS = mapCanvas->mapRenderer()->destinationCrs();
-
-    if ( outputCRS.isValid() && !outputCRS.geographicFlag() )
-    {
-      // Use a geographic CRS to get lat/long to work out direction
-      QgsCoordinateReferenceSystem ourCRS;
-      ourCRS.createFromOgcWmsCrs( GEO_EPSG_CRS_AUTHID );
-      assert( ourCRS.isValid() );
-
-      QgsCoordinateTransform transform( outputCRS, ourCRS );
-
-      QgsPoint p1( extent.center() );
-      // A point a bit above p1. XXX assumes that y increases up!!
-      // May need to involve the maptopixel transform if this proves
-      // to be a problem.
-      QgsPoint p2( p1.x(), p1.y() + extent.height() * 0.25 );
-
-      // project p1 and p2 to geographic coords
-      try
-      {
-        p1 = transform.transform( p1 );
-        p2 = transform.transform( p2 );
-      }
-      catch ( QgsCsException &e )
-      {
-        Q_UNUSED( e );
-        // just give up
-        QgsDebugMsg( "North Arrow: Transformation error, quitting" );
-        return false;
-      }
-
-      // Work out the value of the initial heading one takes to go
-      // from point p1 to point p2. The north direction is then that
-      // many degrees anti-clockwise or vertical.
-
-      // Take some care to not divide by zero, etc, and ensure that we
-      // get sensible results for all possible values for p1 and p2.
-
-      goodDirn = true;
-      double angle = 0.0;
-
-      // convert to radians for the equations below
-      p1.multiply( PI / 180.0 );
-      p2.multiply( PI / 180.0 );
-
-      double y = sin( p2.x() - p1.x() ) * cos( p2.y() );
-      double x = cos( p1.y() ) * sin( p2.y() ) -
-                 sin( p1.y() ) * cos( p2.y() ) * cos( p2.x() - p1.x() );
-
-      // Use TOL to decide if the quotient is big enough.
-      // Both x and y can be very small, if heavily zoomed
-      // For small y/x, we set directly angle 0. Not sure
-      // if this is needed.
-      if ( y > 0.0 )
-      {
-        if ( x > 0.0 && ( y / x ) > TOL )
-          angle = atan( y / x );
-        else if ( x < 0.0 && ( y / x ) < -TOL )
-          angle = PI - atan( -y / x );
-        else
-          angle = 0.5 * PI;
-      }
-      else if ( y < 0.0 )
-      {
-        if ( x > 0.0 && ( y / x ) < -TOL )
-          angle = -atan( -y / x );
-        else if ( x < 0.0 && ( y / x ) > TOL )
-          angle = atan( y / x ) - PI;
-        else
-          angle = 1.5 * PI;
-      }
-      else
-      {
-        if ( x > TOL )
-          angle = 0.0;
-        else if ( x < -TOL )
-          angle = PI;
-        else
-        {
-          angle = 0.0; // p1 = p2
-          goodDirn = false;
-        }
-      }
-      // And set the angle of the north arrow. Perhaps do something
-      // different if goodDirn = false.
-      mRotationInt = qRound( fmod( 360.0 - angle * 180.0 / PI, 360.0 ) );
-    }
-    else
-    {
-      // For geographic CRS and for when there are no layers, set the
-      // direction back to the default
-      mRotationInt = 0;
-    }
-  }
-  return goodDirn;
 }

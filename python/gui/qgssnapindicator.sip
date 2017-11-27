@@ -1,0 +1,65 @@
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssnapindicator.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
+
+
+
+class QgsSnapIndicator
+{
+%Docstring
+ Class that shows snapping marker on map canvas for the current snapping match.
+.. versionadded:: 3.0
+%End
+
+%TypeHeaderCode
+#include "qgssnapindicator.h"
+%End
+  public:
+    QgsSnapIndicator( QgsMapCanvas *canvas );
+%Docstring
+Constructs an indicator for the given map canvas
+%End
+    ~QgsSnapIndicator();
+
+    void setMatch( const QgsPointLocator::Match &match );
+%Docstring
+Sets snapping match that should be displayed in map canvas. Invalid match hides the indicator
+%End
+    QgsPointLocator::Match match() const;
+%Docstring
+Returns currently displayed snapping match
+ :rtype: QgsPointLocator.Match
+%End
+
+    void setVisible( bool visible = true );
+%Docstring
+Sets whether the snapping indicator is visible
+%End
+    bool isVisible() const;
+%Docstring
+Returns whether the snapping indicator is visible
+ :rtype: bool
+%End
+
+  private:
+    QgsSnapIndicator( const QgsSnapIndicator &rh );
+    QgsSnapIndicator &operator=( const QgsSnapIndicator & );
+%Docstring
+ :rtype: QgsSnapIndicator
+%End
+};
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgssnapindicator.h                                           *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

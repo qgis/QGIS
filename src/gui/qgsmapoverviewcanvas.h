@@ -27,11 +27,15 @@
 #include <QPixmap>
 
 class QgsMapCanvas;
-class QgsMapRenderer;
 class QgsPanningWidget; // defined in .cpp
 class QgsRectangle;
 
-/** \ingroup gui
+class QgsMapRendererQImageJob;
+#include "qgsmapsettings.h"
+#include "qgis_gui.h"
+
+/**
+ * \ingroup gui
  * A widget that displays an overview map.
  */
 class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
@@ -39,77 +43,105 @@ class GUI_EXPORT QgsMapOverviewCanvas : public QWidget
     Q_OBJECT
 
   public:
-    QgsMapOverviewCanvas( QWidget * parent = 0, QgsMapCanvas* mapCanvas = NULL );
-
-    ~QgsMapOverviewCanvas();
-
-    //! used for overview canvas to reflect changed extent in main map canvas
-    void drawExtentRect();
+    QgsMapOverviewCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsMapCanvas *mapCanvas = nullptr );
 
     //! renders overview and updates panning widget
     void refresh();
 
     //! changes background color
-    void setBackgroundColor( const QColor& color );
+    void setBackgroundColor( const QColor &color );
 
     //! updates layer set for overview
-    void setLayerSet( const QStringList& layerSet );
+    void setLayers( const QList<QgsMapLayer *> &layers );
 
-    QStringList& layerSet();
+    //! Returns list of layers visible in the overview
+    QList<QgsMapLayer *> layers() const;
 
-    void enableAntiAliasing( bool flag ) { mAntiAliasing = flag; }
+    void enableAntiAliasing( bool flag ) { mSettings.setFlag( QgsMapSettings::Antialiasing, flag ); }
 
     void updateFullExtent();
 
   public slots:
 
-    void hasCrsTransformEnabled( bool flag );
+    // ### QGIS 3: make protected
+    //! used for overview canvas to reflect changed extent in main map canvas
+    void drawExtentRect();
 
-    void destinationSrsChanged();
+    // ### QGIS 3: make protected
+    //! Should be called when the canvas destination CRS is changed
+    void destinationCrsChanged();
+
+  protected slots:
+    void mapRenderingFinished();
+
+    /**
+     * Triggered when a layer in the overview requests a repaint.
+     */
+    void layerRepaintRequested( bool deferred = false );
 
   protected:
 
     //! Overridden paint event
-    void paintEvent( QPaintEvent * pe );
+    void paintEvent( QPaintEvent *pe ) override;
+
+    //! Overridden show event
+    void showEvent( QShowEvent *e ) override;
 
     //! Overridden resize event
-    void resizeEvent( QResizeEvent * e );
+    void resizeEvent( QResizeEvent *e ) override;
 
     //! Overridden mouse move event
-    void mouseMoveEvent( QMouseEvent * e );
+    void mouseMoveEvent( QMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    void mousePressEvent( QMouseEvent * e );
+    void mousePressEvent( QMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    void mouseReleaseEvent( QMouseEvent * e );
+    void mouseReleaseEvent( QMouseEvent *e ) override;
 
     //! called when panning to reflect mouse movement
-    void updatePanningWidget( const QPoint& pos );
+    void updatePanningWidget( QPoint pos );
 
     //! widget for panning map in overview
-    QgsPanningWidget* mPanningWidget;
+    QgsPanningWidget *mPanningWidget = nullptr;
 
     //! position of cursor inside panning widget
     QPoint mPanningCursorOffset;
 
     //! main map canvas - used to get/set extent
-    QgsMapCanvas* mMapCanvas;
-
-    //! for rendering overview
-    QgsMapRenderer* mMapRenderer;
+    QgsMapCanvas *mMapCanvas = nullptr;
 
     //! pixmap where the map is stored
     QPixmap mPixmap;
 
-    //! background color
-    QColor mBgColor;
+    //! map settings used for rendering of the overview map
+    QgsMapSettings mSettings;
 
-    //! indicates whether antialiasing will be used for rendering
-    bool mAntiAliasing;
-
-    //! resized canvas size
-    QSize mNewSize;
+    //! for rendering overview
+    QgsMapRendererQImageJob *mJob = nullptr;
 };
+
+
+#ifndef SIP_RUN
+
+/// @cond PRIVATE
+// Widget that serves as rectangle showing current extent in overview
+class QgsPanningWidget : public QWidget
+{
+    Q_OBJECT
+
+    QPolygon mPoly;
+
+  public:
+    explicit QgsPanningWidget( QWidget *parent );
+
+    void setPolygon( const QPolygon &p );
+
+    void paintEvent( QPaintEvent *pe ) override;
+
+};
+///@endcond
+
+#endif
 
 #endif

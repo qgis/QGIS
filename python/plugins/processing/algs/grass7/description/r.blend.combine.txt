@@ -1,0 +1,9 @@
+r.blend
+r.blend.combine - Blends color components of two raster maps by a given ratio and export into a unique raster.
+Raster (r.*)
+QgsProcessingParameterRasterLayer|first|Name of first raster map for blending|None|False
+QgsProcessingParameterRasterLayer|second|Name of second raster map for blending|None|False
+QgsProcessingParameterNumber|percent|Percentage weight of first map for color blending|QgsProcessingParameterNumber.Double|50.0|True|0.0|100.0
+Hardcoded|-c
+QgsProcessingParameterRasterDestination|output|Blended
+

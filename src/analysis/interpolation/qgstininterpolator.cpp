@@ -16,34 +16,37 @@
  ***************************************************************************/
 
 #include "qgstininterpolator.h"
+#include "qgsfeatureiterator.h"
 #include "CloughTocherInterpolator.h"
 #include "DualEdgeTriangulation.h"
 #include "NormVecDecorator.h"
 #include "LinTriangleInterpolator.h"
-#include "Point3D.h"
+#include "qgspoint.h"
 #include "qgsfeature.h"
 #include "qgsgeometry.h"
 #include "qgsvectorlayer.h"
-#include <QProgressDialog>
+#include "qgswkbptr.h"
+#include "qgsfeedback.h"
+#include "qgscurve.h"
+#include "qgsmulticurve.h"
+#include "qgscurvepolygon.h"
+#include "qgsmultisurface.h"
 
-QgsTINInterpolator::QgsTINInterpolator( const QList<LayerData>& inputData, TIN_INTERPOLATION interpolation, bool showProgressDialog )
-    : QgsInterpolator( inputData )
-    , mTriangulation( 0 )
-    , mTriangleInterpolator( 0 )
-    , mIsInitialized( false )
-    , mShowProgressDialog( showProgressDialog )
-    , mExportTriangulationToFile( false )
-    , mInterpolation( interpolation )
+QgsTinInterpolator::QgsTinInterpolator( const QList<LayerData> &inputData, TinInterpolation interpolation, QgsFeedback *feedback )
+  : QgsInterpolator( inputData )
+  , mIsInitialized( false )
+  , mFeedback( feedback )
+  , mInterpolation( interpolation )
 {
 }
 
-QgsTINInterpolator::~QgsTINInterpolator()
+QgsTinInterpolator::~QgsTinInterpolator()
 {
   delete mTriangulation;
   delete mTriangleInterpolator;
 }
 
-int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
+int QgsTinInterpolator::interpolatePoint( double x, double y, double &result, QgsFeedback * )
 {
   if ( !mIsInitialized )
   {
@@ -55,98 +58,96 @@ int QgsTINInterpolator::interpolatePoint( double x, double y, double& result )
     return 1;
   }
 
-  Point3D r;
-  if ( !mTriangleInterpolator->calcPoint( x, y, &r ) )
+  QgsPoint r( 0, 0, 0 );
+  if ( !mTriangleInterpolator->calcPoint( x, y, r ) )
   {
     return 2;
   }
-  result = r.getZ();
+  result = r.z();
   return 0;
 }
 
-void QgsTINInterpolator::initialize()
+QgsFields QgsTinInterpolator::triangulationFields()
 {
-  DualEdgeTriangulation* theDualEdgeTriangulation = new DualEdgeTriangulation( 100000, 0 );
+  return Triangulation::triangulationFields();
+}
+
+void QgsTinInterpolator::setTriangulationSink( QgsFeatureSink *sink )
+{
+  mTriangulationSink = sink;
+}
+
+void QgsTinInterpolator::initialize()
+{
+  DualEdgeTriangulation *dualEdgeTriangulation = new DualEdgeTriangulation( 100000, nullptr );
   if ( mInterpolation == CloughTocher )
   {
-    NormVecDecorator* dec = new NormVecDecorator();
-    dec->addTriangulation( theDualEdgeTriangulation );
+    NormVecDecorator *dec = new NormVecDecorator();
+    dec->addTriangulation( dualEdgeTriangulation );
     mTriangulation = dec;
   }
   else
   {
-    mTriangulation = theDualEdgeTriangulation;
+    mTriangulation = dualEdgeTriangulation;
   }
 
   //get number of features if we use a progress bar
   int nFeatures = 0;
   int nProcessedFeatures = 0;
-  if ( mShowProgressDialog )
+  if ( mFeedback )
   {
-    QList<LayerData>::iterator layerDataIt = mLayerData.begin();
-    for ( ; layerDataIt != mLayerData.end(); ++layerDataIt )
+    for ( const LayerData &layer :  qgis::as_const( mLayerData ) )
     {
-      if ( layerDataIt->vectorLayer )
+      if ( layer.source )
       {
-        nFeatures += layerDataIt->vectorLayer->featureCount();
+        nFeatures += layer.source->featureCount();
       }
     }
   }
 
-  QProgressDialog* theProgressDialog = 0;
-  if ( mShowProgressDialog )
-  {
-    theProgressDialog = new QProgressDialog( QObject::tr( "Building triangulation..." ), QObject::tr( "Abort" ), 0, nFeatures, 0 );
-    theProgressDialog->setWindowModality( Qt::WindowModal );
-  }
-
-
   QgsFeature f;
-  QList<LayerData>::iterator layerDataIt = mLayerData.begin();
-  for ( ; layerDataIt != mLayerData.end(); ++layerDataIt )
+  for ( const LayerData &layer : qgis::as_const( mLayerData ) )
   {
-    if ( layerDataIt->vectorLayer )
+    if ( layer.source )
     {
       QgsAttributeList attList;
-      if ( !layerDataIt->zCoordInterpolation )
+      switch ( layer.valueSource )
       {
-        attList.push_back( layerDataIt->interpolationAttribute );
+        case QgsInterpolator::ValueAttribute:
+          attList.push_back( layer.interpolationAttribute );
+          break;
+
+        case QgsInterpolator::ValueM:
+        case QgsInterpolator::ValueZ:
+          break;
       }
 
-      QgsFeatureIterator fit = layerDataIt->vectorLayer->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
+      QgsFeatureIterator fit = layer.source->getFeatures( QgsFeatureRequest().setSubsetOfAttributes( attList ) );
 
       while ( fit.nextFeature( f ) )
       {
-        if ( mShowProgressDialog )
+        if ( mFeedback )
         {
-          if ( theProgressDialog->wasCanceled() )
+          if ( mFeedback->isCanceled() )
           {
             break;
           }
-          theProgressDialog->setValue( nProcessedFeatures );
+          if ( nFeatures > 0 )
+            mFeedback->setProgress( 100.0 * static_cast< double >( nProcessedFeatures ) / nFeatures );
         }
-        insertData( &f, layerDataIt->zCoordInterpolation, layerDataIt->interpolationAttribute, layerDataIt->mInputType );
+        insertData( f, layer.valueSource, layer.interpolationAttribute, layer.sourceType );
         ++nProcessedFeatures;
       }
     }
   }
 
-  delete theProgressDialog;
-
   if ( mInterpolation == CloughTocher )
   {
-    CloughTocherInterpolator* ctInterpolator = new CloughTocherInterpolator();
-    NormVecDecorator* dec = dynamic_cast<NormVecDecorator*>( mTriangulation );
+    CloughTocherInterpolator *ctInterpolator = new CloughTocherInterpolator();
+    NormVecDecorator *dec = dynamic_cast<NormVecDecorator *>( mTriangulation );
     if ( dec )
     {
-      QProgressDialog* progressDialog = 0;
-      if ( mShowProgressDialog ) //show a progress dialog because it can take a long time...
-      {
-        progressDialog = new QProgressDialog();
-        progressDialog->setLabelText( QObject::tr( "Estimating normal derivatives..." ) );
-      }
-      dec->estimateFirstDerivatives( progressDialog );
-      delete progressDialog;
+      dec->estimateFirstDerivatives( mFeedback );
       ctInterpolator->setTriangulation( dec );
       dec->setTriangleInterpolator( ctInterpolator );
       mTriangleInterpolator = ctInterpolator;
@@ -154,318 +155,199 @@ void QgsTINInterpolator::initialize()
   }
   else //linear
   {
-    mTriangleInterpolator = new LinTriangleInterpolator( theDualEdgeTriangulation );
+    mTriangleInterpolator = new LinTriangleInterpolator( dualEdgeTriangulation );
   }
   mIsInitialized = true;
 
   //debug
-  if ( mExportTriangulationToFile )
+  if ( mTriangulationSink )
   {
-    theDualEdgeTriangulation->saveAsShapefile( mTriangulationFilePath );
+    dualEdgeTriangulation->saveTriangulation( mTriangulationSink, mFeedback );
   }
 }
 
-int QgsTINInterpolator::insertData( QgsFeature* f, bool zCoord, int attr, InputType type )
+int QgsTinInterpolator::insertData( const QgsFeature &f, QgsInterpolator::ValueSource source, int attr, SourceType type )
 {
-  if ( !f )
+  QgsGeometry g = f.geometry();
+  if ( g.isNull() || g.isEmpty() )
   {
-    return 1;
-  }
-
-  QgsGeometry* g = f->geometry();
-  {
-    if ( !g )
-    {
-      return 2;
-    }
+    return 2;
   }
 
   //check attribute value
   double attributeValue = 0;
   bool attributeConversionOk = false;
-  if ( !zCoord )
+  switch ( source )
   {
-    QVariant attributeVariant = f->attribute( attr );
-    if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+    case ValueAttribute:
     {
-      return 3;
+      QVariant attributeVariant = f.attribute( attr );
+      if ( !attributeVariant.isValid() ) //attribute not found, something must be wrong (e.g. NULL value)
+      {
+        return 3;
+      }
+      attributeValue = attributeVariant.toDouble( &attributeConversionOk );
+      if ( !attributeConversionOk || std::isnan( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
+      {
+        return 4;
+      }
+      break;
     }
-    attributeValue = attributeVariant.toDouble( &attributeConversionOk );
-    if ( !attributeConversionOk || qIsNaN( attributeValue ) ) //don't consider vertices with attributes like 'nan' for the interpolation
-    {
-      return 4;
-    }
+
+    case ValueM:
+      if ( !g.constGet()->isMeasure() )
+        return 3;
+      else
+        break;
+
+    case ValueZ:
+      if ( !g.constGet()->is3D() )
+        return 3;
+      else
+        break;
   }
 
-  //parse WKB. It is ugly, but we cannot use the methods with QgsPoint because they don't contain z-values for 25D types
-  bool hasZValue = false;
-  double x, y, z;
-  const unsigned char* currentWkbPtr = g->asWkb();
-  //maybe a structure or break line
-  Line3D* line = 0;
 
-  QGis::WkbType wkbType = g->wkbType();
-  switch ( wkbType )
+  switch ( type )
   {
-    case QGis::WKBPoint25D:
-      hasZValue = true;
-    case QGis::WKBPoint:
+    case SourcePoints:
     {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      x = *(( double * )( currentWkbPtr ) );
-      currentWkbPtr += sizeof( double );
-      y = *(( double * )( currentWkbPtr ) );
-      if ( zCoord && hasZValue )
-      {
-        currentWkbPtr += sizeof( double );
-        z = *(( double * )( currentWkbPtr ) );
-      }
-      else
-      {
-        z = attributeValue;
-      }
-      Point3D* thePoint = new Point3D( x, y, z );
-      if ( mTriangulation->addPoint( thePoint ) == -100 )
-      {
+      if ( addPointsFromGeometry( g, source, attributeValue ) != 0 )
         return -1;
-      }
-      break;
-    }
-    case QGis::WKBMultiPoint25D:
-      hasZValue = true;
-    case QGis::WKBMultiPoint:
-    {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* npoints = ( int* )currentWkbPtr;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *npoints; ++index )
-      {
-        currentWkbPtr += ( 1 + sizeof( int ) ); //skip endian and point type
-        x = *(( double* )currentWkbPtr );
-        currentWkbPtr += sizeof( double );
-        y = *(( double* )currentWkbPtr );
-        currentWkbPtr += sizeof( double );
-        if ( hasZValue ) //skip z-coordinate for 25D geometries
-        {
-          z = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
-        }
-        else
-        {
-          z = attributeValue;
-        }
-      }
-      break;
-    }
-    case QGis::WKBLineString25D:
-      hasZValue = true;
-    case QGis::WKBLineString:
-    {
-      if ( type != POINTS )
-      {
-        line = new Line3D();
-      }
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* npoints = ( int* )currentWkbPtr;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *npoints; ++index )
-      {
-        x = *(( double * )( currentWkbPtr ) );
-        currentWkbPtr += sizeof( double );
-        y = *(( double * )( currentWkbPtr ) );
-        currentWkbPtr += sizeof( double );
-        if ( zCoord && hasZValue ) //skip z-coordinate for 25D geometries
-        {
-          z = *(( double * )( currentWkbPtr ) );
-        }
-        else
-        {
-          z = attributeValue;
-        }
-        if ( hasZValue )
-        {
-          currentWkbPtr += sizeof( double );
-        }
-
-        if ( type == POINTS )
-        {
-          //todo: handle error code -100
-          mTriangulation->addPoint( new Point3D( x, y, z ) );
-        }
-        else
-        {
-          line->insertPoint( new Point3D( x, y, z ) );
-        }
-      }
-
-      if ( type != POINTS )
-      {
-        mTriangulation->addLine( line, type == BREAK_LINES );
-      }
-      break;
-    }
-    case QGis::WKBMultiLineString25D:
-      hasZValue = true;
-    case QGis::WKBMultiLineString:
-    {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* nlines = ( int* )currentWkbPtr;
-      int* npoints = 0;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *nlines; ++index )
-      {
-        if ( type != POINTS )
-        {
-          line = new Line3D();
-        }
-        currentWkbPtr += ( sizeof( int ) + 1 );
-        npoints = ( int* )currentWkbPtr;
-        currentWkbPtr += sizeof( int );
-        for ( int index2 = 0; index2 < *npoints; ++index2 )
-        {
-          x = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
-          y = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
-
-          if ( hasZValue ) //skip z-coordinate for 25D geometries
-          {
-            z = *(( double* ) currentWkbPtr );
-            currentWkbPtr += sizeof( double );
-          }
-          else
-          {
-            z = attributeValue;
-          }
-
-          if ( type == POINTS )
-          {
-            //todo: handle error code -100
-            mTriangulation->addPoint( new Point3D( x, y, z ) );
-          }
-          else
-          {
-            line->insertPoint( new Point3D( x, y, z ) );
-          }
-        }
-        if ( type != POINTS )
-        {
-          mTriangulation->addLine( line, type == BREAK_LINES );
-        }
-      }
-      break;
-    }
-    case QGis::WKBPolygon25D:
-      hasZValue = true;
-    case QGis::WKBPolygon:
-    {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* nrings = ( int* )currentWkbPtr;
-      currentWkbPtr += sizeof( int );
-      int* npoints;
-      for ( int index = 0; index < *nrings; ++index )
-      {
-        if ( type != POINTS )
-        {
-          line = new Line3D();
-        }
-
-        npoints = ( int* )currentWkbPtr;
-        currentWkbPtr += sizeof( int );
-        for ( int index2 = 0; index2 < *npoints; ++index2 )
-        {
-          x = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
-          y = *(( double* )currentWkbPtr );
-          currentWkbPtr += sizeof( double );
-          if ( hasZValue ) //skip z-coordinate for 25D geometries
-          {
-            z = *(( double* )currentWkbPtr );;
-            currentWkbPtr += sizeof( double );
-          }
-          else
-          {
-            z = attributeValue;
-          }
-          if ( type == POINTS )
-          {
-            //todo: handle error code -100
-            mTriangulation->addPoint( new Point3D( x, y, z ) );
-          }
-          else
-          {
-            line->insertPoint( new Point3D( x, y, z ) );
-          }
-        }
-
-        if ( type != POINTS )
-        {
-          mTriangulation->addLine( line, type == BREAK_LINES );
-        }
-      }
       break;
     }
 
-    case QGis::WKBMultiPolygon25D:
-      hasZValue = true;
-    case QGis::WKBMultiPolygon:
+    case SourceBreakLines:
+    case SourceStructureLines:
     {
-      currentWkbPtr += ( 1 + sizeof( int ) );
-      int* npolys = ( int* )currentWkbPtr;
-      int* nrings;
-      int* npoints;
-      currentWkbPtr += sizeof( int );
-      for ( int index = 0; index < *npolys; ++index )
+      switch ( QgsWkbTypes::geometryType( g.wkbType() ) )
       {
-        currentWkbPtr += ( 1 + sizeof( int ) ); //skip endian and polygon type
-        nrings = ( int* )currentWkbPtr;
-        currentWkbPtr += sizeof( int );
-        for ( int index2 = 0; index2 < *nrings; ++index2 )
+        case QgsWkbTypes::PointGeometry:
         {
-          if ( type != POINTS )
+          if ( addPointsFromGeometry( g, source, attributeValue ) != 0 )
+            return -1;
+          break;
+        }
+
+        case QgsWkbTypes::LineGeometry:
+        case QgsWkbTypes::PolygonGeometry:
+        {
+          // need to extract all rings from input geometry
+          std::vector<const QgsCurve *> curves;
+          if ( QgsWkbTypes::geometryType( g.wkbType() ) == QgsWkbTypes::PolygonGeometry )
           {
-            line = new Line3D();
-          }
-          npoints = ( int* )currentWkbPtr;
-          currentWkbPtr += sizeof( int );
-          for ( int index3 = 0; index3 < *npoints; ++index3 )
-          {
-            x = *(( double* )currentWkbPtr );
-            currentWkbPtr += sizeof( double );
-            y = *(( double* )currentWkbPtr );
-            currentWkbPtr += sizeof( double );
-            if ( hasZValue ) //skip z-coordinate for 25D geometries
+            std::vector< const QgsCurvePolygon * > polygons;
+            if ( g.isMultipart() )
             {
-              z = *(( double* )currentWkbPtr );
-              currentWkbPtr += sizeof( double );
+              const QgsMultiSurface *ms = qgsgeometry_cast< const QgsMultiSurface * >( g.constGet() );
+              for ( int i = 0; i < ms->numGeometries(); ++i )
+              {
+                polygons.emplace_back( qgsgeometry_cast< const QgsCurvePolygon * >( ms->geometryN( i ) ) );
+              }
             }
             else
             {
-              z = attributeValue;
+              polygons.emplace_back( qgsgeometry_cast< const QgsCurvePolygon * >( g.constGet() ) );
             }
-            if ( type == POINTS )
+
+            for ( const QgsCurvePolygon *polygon : polygons )
             {
-              //todo: handle error code -100
-              mTriangulation->addPoint( new Point3D( x, y, z ) );
+              if ( !polygon )
+                continue;
+
+              if ( polygon->exteriorRing() )
+                curves.emplace_back( polygon->exteriorRing() );
+
+              for ( int i = 0; i < polygon->numInteriorRings(); ++i )
+              {
+                curves.emplace_back( polygon->interiorRing( i ) );
+              }
+            }
+          }
+          else
+          {
+            if ( g.isMultipart() )
+            {
+              const QgsMultiCurve *mc = qgsgeometry_cast< const QgsMultiCurve * >( g.constGet() );
+              for ( int i = 0; i < mc->numGeometries(); ++i )
+              {
+                curves.emplace_back( qgsgeometry_cast< const QgsCurve * >( mc->geometryN( i ) ) );
+              }
             }
             else
             {
-              line->insertPoint( new Point3D( x, y, z ) );
+              curves.emplace_back( qgsgeometry_cast< const QgsCurve * >( g.constGet() ) );
             }
           }
-          if ( type != POINTS )
+
+          for ( const QgsCurve *curve : curves )
           {
-            mTriangulation->addLine( line, type == BREAK_LINES );
+            if ( !curve )
+              continue;
+
+            QVector< QgsPoint > linePoints;
+            for ( auto point = g.vertices_begin(); point != g.vertices_end(); ++point )
+            {
+              QgsPoint p = *point;
+              double z = 0;
+              switch ( source )
+              {
+                case ValueAttribute:
+                  z = attributeValue;
+                  break;
+
+                case ValueZ:
+                  z = p.z();
+                  break;
+
+                case ValueM:
+                  z = p.m();
+                  break;
+              }
+
+              linePoints.append( QgsPoint( p.x(), p.y(), z ) );
+            }
+            mTriangulation->addLine( linePoints, type );
           }
+          break;
         }
+        case QgsWkbTypes::UnknownGeometry:
+        case QgsWkbTypes::NullGeometry:
+          break;
       }
       break;
     }
-    default:
-      //should not happen...
-      break;
   }
 
   return 0;
 }
 
+
+int QgsTinInterpolator::addPointsFromGeometry( const QgsGeometry &g, ValueSource source, double attributeValue )
+{
+  // loop through all vertices and add to triangulation
+  for ( auto point = g.vertices_begin(); point != g.vertices_end(); ++point )
+  {
+    QgsPoint p = *point;
+    double z = 0;
+    switch ( source )
+    {
+      case ValueAttribute:
+        z = attributeValue;
+        break;
+
+      case ValueZ:
+        z = p.z();
+        break;
+
+      case ValueM:
+        z = p.m();
+        break;
+    }
+    if ( mTriangulation->addPoint( QgsPoint( p.x(), p.y(), z ) ) == -100 )
+    {
+      return -1;
+    }
+  }
+  return 0;
+}

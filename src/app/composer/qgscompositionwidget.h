@@ -15,80 +15,105 @@
  ***************************************************************************/
 
 #include "ui_qgscompositionwidgetbase.h"
+#include "qgspanelwidget.h"
 
 class QgsComposition;
 class QgsComposerMap;
-class QgsComposerItem;
 
-/** \ingroup MapComposer
+/**
+ * \ingroup app
  * Struct to hold map composer paper properties.
  */
 struct QgsCompositionPaper
 {
-  QgsCompositionPaper( QString name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
+  QgsCompositionPaper( const QString &name, double width, double height ) {mName = name; mWidth = width; mHeight = height;}
   QString mName;
   double mWidth;
   double mHeight;
 };
 
-/** \ingroup MapComposer
+/**
+ * \ingroup app
   * Input widget for QgsComposition
   */
-class QgsCompositionWidget: public QWidget, private Ui::QgsCompositionWidgetBase
+class QgsCompositionWidget: public QgsPanelWidget, private Ui::QgsCompositionWidgetBase
 {
     Q_OBJECT
   public:
-    QgsCompositionWidget( QWidget* parent, QgsComposition* c );
-    ~QgsCompositionWidget();
+    QgsCompositionWidget( QWidget *parent, QgsComposition *c );
 
   public slots:
-    void on_mPaperSizeComboBox_currentIndexChanged( const QString& text );
-    void on_mPaperUnitsComboBox_currentIndexChanged( const QString& text );
-    void on_mPaperOrientationComboBox_currentIndexChanged( const QString& text );
-    void on_mPaperWidthDoubleSpinBox_editingFinished();
-    void on_mPaperHeightDoubleSpinBox_editingFinished();
-    void on_mNumPagesSpinBox_valueChanged( int value );
-    void on_mResolutionSpinBox_valueChanged( const int value );
-    void on_mPrintAsRasterCheckBox_toggled( bool state );
-    void on_mGenerateWorldFileCheckBox_toggled( bool state );
-    void on_mWorldFileMapComboBox_currentIndexChanged( int index );
+    void mPaperSizeComboBox_currentIndexChanged( const QString &text );
+    void mPaperUnitsComboBox_currentIndexChanged( const QString &text );
+    void mPaperOrientationComboBox_currentIndexChanged( const QString &text );
+    void mPaperWidthDoubleSpinBox_editingFinished();
+    void mPaperHeightDoubleSpinBox_editingFinished();
+    void mNumPagesSpinBox_valueChanged( int value );
+    void mPageStyleButton_clicked();
+    void mResizePageButton_clicked();
+    void mResolutionSpinBox_valueChanged( int value );
+    void mPrintAsRasterCheckBox_toggled( bool state );
+    void mGenerateWorldFileCheckBox_toggled( bool state );
+    void referenceMapChanged( QgsComposerItem * );
 
-    void on_mGridResolutionSpinBox_valueChanged( double d );
-    void on_mOffsetXSpinBox_valueChanged( double d );
-    void on_mOffsetYSpinBox_valueChanged( double d );
-    void on_mGridToleranceSpinBox_valueChanged( double d );
-    void on_mAlignmentToleranceSpinBox_valueChanged( double d );
+    void mGridResolutionSpinBox_valueChanged( double d );
+    void mOffsetXSpinBox_valueChanged( double d );
+    void mOffsetYSpinBox_valueChanged( double d );
+    void mSnapToleranceSpinBox_valueChanged( int tolerance );
 
-    /**Sets GUI elements to width/height from composition*/
+    //! Sets GUI elements to width/height from composition
     void displayCompositionWidthHeight();
-    /**Sets Print as raster checkbox value*/
+    //! Sets Print as raster checkbox value
     void setPrintAsRasterCheckBox( bool state );
+    //! Sets number of pages spin box value
+    void setNumberPages();
+
+  signals:
+    //! Is emitted when page orientation changes
+    void pageOrientationChanged( const QString &orientation );
 
   private slots:
-    /* when a new map is added */
-    void onComposerMapAdded( QgsComposerMap* );
-    /* when a map is deleted */
-    void onItemRemoved( QgsComposerItem* );
+
+    //! Must be called when a data defined button changes
+    void updateDataDefinedProperty();
+
+    //! Initializes data defined buttons to current atlas coverage layer
+    void populateDataDefinedButtons();
+
+    void variablesChanged();
+
+    void resizeMarginsChanged();
+
+    void updateVariables();
+
+    void updateStyleFromWidget();
+    void cleanUpStyleSelector( QgsPanelWidget *container );
 
   private:
-    QgsComposition* mComposition;
+    QgsComposition *mComposition = nullptr;
     QMap<QString, QgsCompositionPaper> mPaperMap;
 
     QgsCompositionWidget(); //default constructor is forbidden
-    /**Sets width/height to chosen paper format and updates paper item*/
+    //! Sets width/height to chosen paper format and updates paper item
     void applyCurrentPaperSettings();
-    /**Applies the current width and height values*/
+    //! Applies the current width and height values
     void applyWidthHeight();
-    /**Makes sure width/height values for custom paper matches the current orientation*/
+    //! Makes sure width/height values for custom paper matches the current orientation
     void adjustOrientation();
-    /**Sets GUI elements to snaping distances of composition*/
-    void displaySnapingSettings();
+    //! Sets GUI elements to snapping distances of composition
+    void displaySnappingSettings();
+
+    void updatePageStyle();
 
     void createPaperEntries();
     void insertPaperEntries();
 
     double size( QDoubleSpinBox *spin );
     void setSize( QDoubleSpinBox *spin, double v );
-    /**Blocks / unblocks the signals of all items*/
+    //! Blocks / unblocks the signals of all items
     void blockSignals( bool block );
+
+    //! Sets a data defined property for the item from its current data defined button settings
+    void setDataDefinedProperty( const QgsPropertyOverrideButton *ddBtn, QgsComposerObject::DataDefinedProperty property );
+
 };

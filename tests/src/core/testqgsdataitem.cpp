@@ -12,39 +12,46 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
+#include "qgstest.h"
+
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <QSettings>
 
 //qgis includes...
-#include <qgsdataitem.h>
-#include <qgsvectorlayer.h>
-#include <qgsapplication.h>
-#include <qgslogger.h>
+#include "qgsdataitem.h"
+#include "qgsvectorlayer.h"
+#include "qgsapplication.h"
+#include "qgslogger.h"
+#include "qgssettings.h"
 
-/** \ingroup UnitTests
+/**
+ * \ingroup UnitTests
  * This is a unit test for the QgsDataItem class.
  */
-class TestQgsDataItem: public QObject
+class TestQgsDataItem : public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
+
+  public:
+    TestQgsDataItem();
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
-    void cleanupTestCase();;// will be called after the last testfunction was executed.
-    void init() {};// will be called before each testfunction is executed.
-    void cleanup() {};// will be called after every testfunction.
+    void cleanupTestCase();// will be called after the last testfunction was executed.
+    void init() {} // will be called before each testfunction is executed.
+    void cleanup() {} // will be called after every testfunction.
 
     void testValid();
     void testDirItemChildren();
 
   private:
-    QgsDirectoryItem* mDirItem;
+    QgsDirectoryItem *mDirItem = nullptr;
     QString mScanItemsSetting;
     bool isValidDirItem( QgsDirectoryItem *item );
 };
+
+TestQgsDataItem::TestQgsDataItem() = default;
 
 void TestQgsDataItem::initTestCase()
 {
@@ -56,25 +63,27 @@ void TestQgsDataItem::initTestCase()
   QgsApplication::initQgis();
   QgsApplication::showSettings();
 
-  // Set up the QSettings environment
-  QCoreApplication::setOrganizationName( "QGIS" );
-  QCoreApplication::setOrganizationDomain( "qgis.org" );
-  QCoreApplication::setApplicationName( "QGIS-TEST" );
+  // Set up the QgsSettings environment
+  QCoreApplication::setOrganizationName( QStringLiteral( "QGIS" ) );
+  QCoreApplication::setOrganizationDomain( QStringLiteral( "qgis.org" ) );
+  QCoreApplication::setApplicationName( QStringLiteral( "QGIS-TEST" ) );
   // save current scanItemsSetting value
-  QSettings settings;
-  mScanItemsSetting = settings.value( "/qgis/scanItemsInBrowser2", QVariant( "" ) ).toString();
+  QgsSettings settings;
+  mScanItemsSetting = settings.value( QStringLiteral( "/qgis/scanItemsInBrowser2" ), QVariant( "" ) ).toString();
 
   //create a directory item that will be used in all tests...
-  mDirItem = new QgsDirectoryItem( 0, "Test", TEST_DATA_DIR );
+  mDirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
 }
 
 void TestQgsDataItem::cleanupTestCase()
 {
   // restore scanItemsSetting
-  QSettings settings;
-  settings.setValue( "/qgis/scanItemsInBrowser2", mScanItemsSetting );
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), mScanItemsSetting );
   if ( mDirItem )
     delete mDirItem;
+
+  QgsApplication::exitQgis();
 }
 
 bool TestQgsDataItem::isValidDirItem( QgsDirectoryItem *item )
@@ -93,20 +102,20 @@ void TestQgsDataItem::testValid()
 
 void TestQgsDataItem::testDirItemChildren()
 {
-  QSettings settings;
+  QgsSettings settings;
   QStringList tmpSettings;
-  tmpSettings << "" << "contents" << "extension";
-  foreach ( QString tmpSetting, tmpSettings )
+  tmpSettings << QLatin1String( "" ) << QStringLiteral( "contents" ) << QStringLiteral( "extension" );
+  Q_FOREACH ( const QString &tmpSetting, tmpSettings )
   {
-    settings.setValue( "/qgis/scanItemsInBrowser2", tmpSetting );
-    QgsDirectoryItem* dirItem = new QgsDirectoryItem( 0, "Test", TEST_DATA_DIR );
+    settings.setValue( QStringLiteral( "/qgis/scanItemsInBrowser2" ), tmpSetting );
+    QgsDirectoryItem *dirItem = new QgsDirectoryItem( 0, QStringLiteral( "Test" ), TEST_DATA_DIR );
     QVERIFY( isValidDirItem( dirItem ) );
 
-    QVector<QgsDataItem*> children = dirItem->createChildren();
+    QVector<QgsDataItem *> children = dirItem->createChildren();
     for ( int i = 0; i < children.size(); i++ )
     {
-      QgsDataItem* dataItem = children[i];
-      QgsLayerItem* layerItem = dynamic_cast<QgsLayerItem*>( dataItem );
+      QgsDataItem *dataItem = children[i];
+      QgsLayerItem *layerItem = dynamic_cast<QgsLayerItem *>( dataItem );
       if ( ! layerItem )
         continue;
 
@@ -114,57 +123,58 @@ void TestQgsDataItem::testDirItemChildren()
       QFileInfo info( layerItem->path() );
       QString lFile = info.fileName();
       QString lProvider = layerItem->providerKey();
-      QString errStr = QString( "layer #%1 - %2 provider = %3 tmpSetting = %4" ).arg( i ).arg( lFile ).arg( lProvider ).arg( tmpSetting );
+      QString errStr = QStringLiteral( "layer #%1 - %2 provider = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lProvider, tmpSetting );
 
-      QgsDebugMsg( QString( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name() ).arg( lProvider ).arg( lFile ).arg( tmpSetting ) );
+      QgsDebugMsg( QString( "testing child name=%1 provider=%2 path=%3 tmpSetting = %4" ).arg( layerItem->name(), lProvider, lFile, tmpSetting ) );
 
-      if ( lFile == "landsat.tif" )
+      if ( lFile == QLatin1String( "landsat.tif" ) )
       {
         QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "points.vrt" )
+      else if ( lFile == QLatin1String( "points.vrt" ) )
       {
         QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "landsat.vrt" )
+      else if ( lFile == QLatin1String( "landsat.vrt" ) )
       {
         QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "landsat_b1.tif.gz" )
+      else if ( lFile == QLatin1String( "landsat_b1.tif.gz" ) )
       {
         QVERIFY2( lProvider == "gdal", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "points3.geojson.gz" )
+      else if ( lFile == QLatin1String( "points3.geojson.gz" ) )
       {
         QVERIFY2( lProvider == "ogr", errStr.toLocal8Bit().constData() );
       }
 
       // test layerName() does not include extension for gdal and ogr items (bug #5621)
       QString lName = layerItem->layerName();
-      errStr = QString( "layer #%1 - %2 lName = %3 tmpSetting = %4" ).arg( i ).arg( lFile ).arg( lName ).arg( tmpSetting );
+      errStr = QStringLiteral( "layer #%1 - %2 lName = %3 tmpSetting = %4" ).arg( i ).arg( lFile, lName, tmpSetting );
 
-      if ( lFile == "landsat.tif" )
+      if ( lFile == QLatin1String( "landsat.tif" ) )
       {
         QVERIFY2( lName == "landsat", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "points.shp" )
+      else if ( lFile == QLatin1String( "points.shp" ) )
       {
         QVERIFY2( lName == "points", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "landsat_b1.tif.gz" )
+      else if ( lFile == QLatin1String( "landsat_b1.tif.gz" ) )
       {
         QVERIFY2( lName == "landsat_b1", errStr.toLocal8Bit().constData() );
       }
-      else if ( lFile == "points3.geojson.gz" )
+      else if ( lFile == QLatin1String( "points3.geojson.gz" ) )
       {
         QVERIFY2( lName == "points3", errStr.toLocal8Bit().constData() );
       }
 
     }
-    if ( dirItem )
-      delete dirItem;
+    qDeleteAll( children );
+
+    delete dirItem;
   }
 }
 
-QTEST_MAIN( TestQgsDataItem )
-#include "moc_testqgsdataitem.cxx"
+QGSTEST_MAIN( TestQgsDataItem )
+#include "testqgsdataitem.moc"

@@ -18,36 +18,124 @@
 #define QGSCOLORDIALOG_H
 
 #include <QColorDialog>
-#include "qgisgui.h"
+#include "ui_qgscolordialog.h"
+#include "qgis_gui.h"
+#include "qgis.h"
+#include "qgshelp.h"
 
 class QColor;
 
-/** \ingroup gui
+/**
+ * \ingroup gui
  * \class QgsColorDialog
- * A dialog for selecting a color
+ * A custom QGIS dialog for selecting a color. Has many improvements over the standard Qt color picker dialog, including
+ * hue wheel supports, color swatches, and a color sampler.
+ * \since QGIS 2.5
  */
 
-class GUI_EXPORT QgsColorDialog : public QObject
+class GUI_EXPORT QgsColorDialog : public QDialog, private Ui::QgsColorDialogBase
 {
+
     Q_OBJECT
 
   public:
-    QgsColorDialog();
-    ~QgsColorDialog();
 
-    /** Return a color selection from a QColorDialog, with live updating of interim selections.
-     * @param initialColor The initial color of the selection dialog.
-     * @param updateObject The receiver object of the live updating.
-     * @param updateSlot The receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
-     * @param parent Parent widget. Usually 0 is best for native system color dialogs.
-     * @param title The title of the QColorDialog.
-     * @param options ColorDialogOptions passed to QColorDialog.
-     * @return Selected color on accepted() or initialColor on rejected().
+    /**
+     * Create a new color picker dialog
+     * \param parent parent widget
+     * \param fl window flags
+     * \param color initial color for dialog
      */
-    static QColor getLiveColor( const QColor& initialColor, QObject* updateObject, const char* updateSlot,
-                                QWidget* parent = 0,
-                                const QString& title = "",
-                                QColorDialog::ColorDialogOptions options = 0 );
+    QgsColorDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
+                    const QColor &color = QColor() );
+
+    /**
+     * Returns the current color for the dialog
+     * \returns dialog color
+     */
+    QColor color() const;
+
+    /**
+     * Sets the title for the color dialog
+     * \param title title for dialog box
+     */
+    void setTitle( const QString &title );
+
+    /**
+     * Sets whether opacity modification (transparency) is permitted
+     * for the color dialog. Defaults to true.
+     * \param allowOpacity set to false to disable opacity modification
+     * \since QGIS 3.0
+     */
+    void setAllowOpacity( const bool allowOpacity );
+
+    /**
+     * Return a color selection from a color dialog, with live updating of interim selections.
+     * \param initialColor the initial color of the selection dialog.
+     * \param updateObject the receiver object of the live updating.
+     * \param updateSlot the receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
+     * \param parent parent widget
+     * \param title the title of the dialog.
+     * \param allowOpacity set to true to allow modification of color opacity value (transparency)
+     * \returns Selected color on accepted() or initialColor on rejected().
+     * \see getColor
+     */
+    static QColor getLiveColor( const QColor &initialColor, QObject *updateObject, const char *updateSlot,
+                                QWidget *parent = nullptr,
+                                const QString &title = QString(),
+                                const bool allowOpacity = true );
+
+    /**
+     * Return a color selection from a color dialog.
+     * \param initialColor the initial color of the selection dialog.
+     * \param parent parent widget
+     * \param title the title of the dialog.
+     * \param allowOpacity set to true to allow modification of color opacity value (transparency)
+     * \returns Selected color on accepted() or initialColor on rejected().
+     * \see getLiveColor
+     */
+    static QColor getColor( const QColor &initialColor, QWidget *parent, const QString &title = QString(),
+                            const bool allowOpacity = false );
+
+  signals:
+
+    /**
+     * Emitted when the dialog's color changes
+     * \param color current color
+     */
+    void currentColorChanged( const QColor &color );
+
+  public slots:
+
+    /**
+     * Sets the current color for the dialog
+     * \param color desired color
+     */
+    void setColor( const QColor &color );
+
+  protected:
+
+    void closeEvent( QCloseEvent *e ) override;
+
+  private slots:
+
+    void mButtonBox_accepted();
+    void mButtonBox_rejected();
+    void mButtonBox_clicked( QAbstractButton *button );
+    void discardColor();
+    void showHelp();
+
+  private:
+
+    QColor mPreviousColor;
+
+    bool mAllowOpacity = true;
+
+    /**
+     * Saves all dialog and widget settings
+     */
+    void saveSettings();
+
 };
 
 #endif // #ifndef QGSCOLORDIALOG_H

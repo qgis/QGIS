@@ -25,26 +25,33 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+import os
 
-from processing.ui.ui_DlgAutofill import Ui_DlgAutofill
+from qgis.PyQt import uic
+from qgis.PyQt.QtWidgets import QDialog
+
+pluginPath = os.path.split(os.path.dirname(__file__))[0]
+WIDGET, BASE = uic.loadUiType(
+    os.path.join(pluginPath, 'ui', 'DlgAutofill.ui'))
 
 
-class AutofillDialog(QDialog, Ui_DlgAutofill):
+class AutofillDialog(BASE, WIDGET):
 
     DO_NOT_AUTOFILL = 0
     FILL_WITH_NUMBERS = 1
     FILL_WITH_PARAMETER = 2
 
     def __init__(self, alg):
-        QDialog.__init__(self)
+        super(AutofillDialog, self).__init__(None)
         self.setupUi(self)
+        self.mode = None
+        self.param_index = None
+        self.alg = alg
 
         self.cmbFillType.currentIndexChanged.connect(self.toggleParameters)
 
-        for param in alg.parameters:
-            self.cmbParameters.addItem(param.description)
+        for param in self.alg.parameterDefinitions():
+            self.cmbParameters.addItem(param.description())
 
     def toggleParameters(self, index):
         if index == self.FILL_WITH_PARAMETER:
@@ -56,10 +63,10 @@ class AutofillDialog(QDialog, Ui_DlgAutofill):
 
     def accept(self):
         self.mode = self.cmbFillType.currentIndex()
-        self.param = self.cmbParameters.currentIndex()
+        self.param_index = self.cmbParameters.currentIndex()
         QDialog.accept(self)
 
     def reject(self):
         self.mode = None
-        self.param = None
+        self.param_index = None
         QDialog.reject(self)

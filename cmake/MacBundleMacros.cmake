@@ -21,6 +21,9 @@
 
 # message only if verbose makefiles
 
+CMAKE_POLICY (SET CMP0053 OLD)
+
+
 FUNCTION (MYMESSAGE MSG)
     IF (@CMAKE_VERBOSE_MAKEFILE@)
         MESSAGE (STATUS "${MSG}")
@@ -50,7 +53,14 @@ ENDFUNCTION (GET_INSTALL_NAME)
 
 FUNCTION (INSTALLNAMETOOL_CHANGE CHANGE CHANGETO CHANGEBIN)
     IF (EXISTS "${CHANGEBIN}" AND CHANGE AND CHANGETO)
+        # ensure CHANGEBIN is writable by user, e.g. Homebrew binaries are installed non-writable
+        EXECUTE_PROCESS (COMMAND chmod u+w "${CHANGEBIN}")
         EXECUTE_PROCESS (COMMAND install_name_tool -change ${CHANGE} ${CHANGETO} "${CHANGEBIN}")
+        # if that didn't work, try a symlink-resolved id
+        # (some package systems, like Homebrew, heavily use symlinks; and, inter-package builds, like plugins,
+        #  may point to the resolved location instead of the 'public' symlink installed to prefixes like /usr/local)
+        get_filename_component(_chgreal ${CHANGE} REALPATH)
+        EXECUTE_PROCESS (COMMAND install_name_tool -change ${_chgreal} ${CHANGETO} "${CHANGEBIN}")
     ENDIF ()
 ENDFUNCTION (INSTALLNAMETOOL_CHANGE)
 
@@ -62,20 +72,22 @@ FUNCTION (COPY_FRAMEWORK FWPREFIX FWNAME FWDEST)
     # find current version
     # use python because pwd not working with WORKING_DIRECTORY param
     EXECUTE_PROCESS (
-        COMMAND python -c "import os.path\nprint os.path.realpath(\"${FWPREFIX}/${FWNAME}.framework/Versions/Current\")"
+        COMMAND python -c "import os.path\nprint(os.path.realpath(\"${FWPREFIX}/${FWNAME}.framework/Versions/Current\"))"
         OUTPUT_VARIABLE FWDIRPHYS
     )
     STRING (STRIP "${FWDIRPHYS}" FWDIRPHYS)
     IF (IS_DIRECTORY "${FWDIRPHYS}")
         STRING (REGEX MATCH "[^/\n]+$" FWVER "${FWDIRPHYS}")
         EXECUTE_PROCESS (COMMAND mkdir -p "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}")
-        EXECUTE_PROCESS (COMMAND ln -sfh ${FWVER} "${FWDEST}/${FWNAME}.framework/Versions/Current")
+        EXECUTE_PROCESS (COMMAND ln -sfn ${FWVER} "${FWDEST}/${FWNAME}.framework/Versions/Current")
         EXECUTE_PROCESS (COMMAND ditto ${QARCHS} "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/${FWNAME}" "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}/${FWNAME}")
         EXECUTE_PROCESS (COMMAND ln -sf Versions/Current/${FWNAME} "${FWDEST}/${FWNAME}.framework/${FWNAME}")
         IF (IS_DIRECTORY "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources")
             EXECUTE_PROCESS (COMMAND cp -Rfp "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources" "${FWDEST}/${FWNAME}.framework/Versions/${FWVER}")
-            EXECUTE_PROCESS (COMMAND ln -sfh Versions/Current/Resources "${FWDEST}/${FWNAME}.framework/Resources")
+            EXECUTE_PROCESS (COMMAND ln -sfn Versions/Current/Resources "${FWDEST}/${FWNAME}.framework/Resources")
         ENDIF (IS_DIRECTORY "${FWPREFIX}/${FWNAME}.framework/Versions/${FWVER}/Resources")
+        # ensure writable by user, e.g. Homebrew frameworks are installed non-writable
+        EXECUTE_PROCESS (COMMAND chmod -R u+w "${FWDEST}/${FWNAME}.framework")
         EXECUTE_PROCESS (COMMAND install_name_tool -id "${ATEXECUTABLE}/${QGIS_FW_SUBDIR}/${FWNAME}" "${FWDEST}/${FWNAME}.framework/${FWNAME}")
         # debug variants
         SET (FWD "${FWNAME}_debug")
@@ -95,7 +107,7 @@ ENDFUNCTION (COPY_FRAMEWORK)
 
 FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
     IF (LIBFROM)
-        STRING (REGEX MATCH "\\.dylib$" ISLIB "${LIBTO}")
+        STRING (REGEX MATCH "\\.(dylib|so)$" ISLIB "${LIBTO}")
         IF (ISLIB)
             SET (LIBPOST "${LIBTO}")
             SET (LIBMID "${QGIS_LIB_SUBDIR}")
@@ -111,7 +123,7 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QBINDIR}/${QA}.app/Contents/MacOS/${QA}")
         ENDFOREACH (QA)
         # qgis-mapserver
-        IF (${WITH_MAPSERVER})
+        IF (${WITH_SERVER})
             IF (${OSX_HAVE_LOADERPATH})
                 SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_CGIBIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
             ENDIF ()
@@ -129,23 +141,27 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         FOREACH (QL ${QGFWLIST})
             INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QFWDIR}/${QL}.framework/${QL}")
         ENDFOREACH (QL)
-        # libqgispython is not a framework
+        # non-framework qgis libs
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATLOADER}/${QGIS_LIB_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         ENDIF ()
-        INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/libqgispython.dylib")
+        FOREACH (QL ${QGLIBLIST})
+            INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBDIR}/${QL}")
+        ENDFOREACH (QL)
         # crssync
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATEXECUTABLE}/${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
         ENDIF ()
         INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/crssync")
         # GRASS libexec stuff
-        IF (EXISTS "${QLIBXDIR}/grass/bin/qgis.g.browser")
-           IF (${OSX_HAVE_LOADERPATH})
-               SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
+        FOREACH (QG ${QGRASSEXECLIST})
+           IF (EXISTS "${QLIBXDIR}/grass/${QG}")
+              IF (${OSX_HAVE_LOADERPATH})
+                  SET (LIB_CHG_TO "${ATLOADER}/../../${QGIS_LIBEXEC_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
+              ENDIF ()
+              INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/grass/${QG}")
            ENDIF ()
-           INSTALLNAMETOOL_CHANGE ("${LIBFROM}" "${LIB_CHG_TO}" "${QLIBXDIR}/grass/bin/qgis.g.browser")
-        ENDIF ()
+        ENDFOREACH (QG)
         # plugins
         IF (${OSX_HAVE_LOADERPATH})
             SET (LIB_CHG_TO "${ATLOADER}/${QGIS_PLUGIN_SUBDIR_REV}/${LIBMID}/${LIBPOST}")
@@ -169,6 +185,20 @@ FUNCTION (UPDATEQGISPATHS LIBFROM LIBTO)
         #ENDFOREACH (PB)
     ENDIF (LIBFROM)
 ENDFUNCTION (UPDATEQGISPATHS)
+
+
+# Find directory path for a known Python module (or package) directory or file name
+# see: PYTHON_MODULE_PATHS in 0vars.cmake.in
+FUNCTION (PYTHONMODULEDIR MOD_NAME OUTVAR)
+    FOREACH (MOD_PATH ${PYTHON_MODULE_PATHS})
+        IF (EXISTS "${MOD_PATH}/${MOD_NAME}")
+            SET (${OUTVAR} "${MOD_PATH}" PARENT_SCOPE)
+            RETURN()
+        ENDIF()
+    ENDFOREACH (MOD_PATH)
+    SET (${OUTVAR} "" PARENT_SCOPE)
+ENDFUNCTION (PYTHONMODULEDIR)
+
 
 SET (ATEXECUTABLE "@executable_path")
 SET (ATLOADER "@loader_path")
@@ -196,7 +226,13 @@ ENDFOREACH (QARCH)
 FILE (GLOB QGFWLIST RELATIVE "${QFWDIR}" "${QFWDIR}/qgis*.framework")
 # for some reason, REPLACE is stripping list seps
 STRING(REPLACE ".framework" ";" QGFWLIST ${QGFWLIST})
+# don't collect any library symlinks, limit to versioned libs
+SET (Q_LIBVER ${CPACK_PACKAGE_VERSION_MAJOR}.${CPACK_PACKAGE_VERSION_MINOR})
+FILE (GLOB QGLIBLIST  RELATIVE "${QLIBDIR}" "${QLIBDIR}/libqgis*.dylib" "${QLIBDIR}/qgis/server/lib*.so")
 FILE (GLOB QGPLUGLIST "${QPLUGDIR}/*.so")
 FILE (GLOB QGPYLIST "${QGISPYDIR}/qgis/*.so")
 FILE (GLOB QGAPPLIST RELATIVE "${QBINDIR}" "${QBINDIR}/q*.app")
-STRING(REPLACE ".app" ";" QGAPPLIST ${QGAPPLIST})
+FILE (GLOB QGRASSEXECLIST RELATIVE "${QLIBXDIR}/grass" "${QLIBXDIR}/grass/*/*")
+IF (QGAPPLIST)
+  STRING(REPLACE ".app" ";" QGAPPLIST ${QGAPPLIST})
+ENDIF (QGAPPLIST)

@@ -3,7 +3,7 @@
      --------------------------------------
     Date                 : 11.6.2013
     Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
+    Email                : matthias at opengis dot ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -19,19 +19,54 @@
 class QgsGenericFeatureSelectionManager;
 
 #include "ui_qgsfeatureselectiondlg.h"
+#include "qgis.h"
+#include "qgis_gui.h"
 
-class QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
+#ifdef SIP_RUN
+// This is required for the ConvertToSubClassCode to work properly
+// so RTTI for casting is available in the whole module.
+% ModuleCode
+#include "qgsfeatureselectiondlg.h"
+% End
+#endif
+
+/**
+ * \ingroup gui
+ * \class QgsFeatureSelectionDlg
+ */
+class GUI_EXPORT QgsFeatureSelectionDlg : public QDialog, private Ui::QgsFeatureSelectionDlg
 {
+
+#ifdef SIP_RUN
+    SIP_CONVERT_TO_SUBCLASS_CODE
+    if ( qobject_cast<QgsFeatureSelectionDlg *>( sipCpp ) )
+      sipType = sipType_QgsFeatureSelectionDlg;
+    else
+      sipType = 0;
+    SIP_END
+#endif
+
     Q_OBJECT
 
   public:
-    explicit QgsFeatureSelectionDlg( QgsVectorLayer* vl, QWidget *parent = 0 );
+    explicit QgsFeatureSelectionDlg( QgsVectorLayer *vl, QgsAttributeEditorContext &context, QWidget *parent SIP_TRANSFERTHIS = 0 );
 
-    const QgsFeatureIds& selectedFeatures();
+    /**
+     * Get the selected features
+     *
+     * \returns The selected feature ids
+     */
+    const QgsFeatureIds &selectedFeatures();
+
+    /**
+     * Set the selected features
+     * \param ids The feature ids to select
+     */
+    void setSelectedFeatures( const QgsFeatureIds &ids );
 
   private:
-    QgsGenericFeatureSelectionManager* mFeatureSelection;
-    QgsVectorLayer* mVectorLayer;
+    QgsGenericFeatureSelectionManager *mFeatureSelection = nullptr;
+    QgsVectorLayer *mVectorLayer = nullptr;
 };
 
 #endif // QGSFEATURESELECTIONDLG_H

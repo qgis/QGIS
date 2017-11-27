@@ -1,77 +1,84 @@
-/***************************************************************************
-    qgsifeatureselectionmanager.sip
-     --------------------------------------
-    Date                 : 6.6.2013
-    Copyright            : (C) 2013 Matthias Kuhn
-    Email                : matthias dot kuhn at gmx dot ch
- ***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsifeatureselectionmanager.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
 
-/**
- * Is an interface class to abstract feature selection handling.
- *
- * e.g. @link{QgsVectorLayer} implements this interface to manage its selections.
- */
+
+
+
 
 class QgsIFeatureSelectionManager : QObject
 {
+%Docstring
+ Is an interface class to abstract feature selection handling.
+
+ e.g. QgsVectorLayer implements this interface to manage its selections.
+%End
+
 %TypeHeaderCode
-#include <qgsifeatureselectionmanager.h>
+#include "qgsifeatureselectionmanager.h"
 %End
   public:
-    QgsIFeatureSelectionManager( QObject* parent );
-
-    /**
-     * The number of features that are selected in this layer
-     *
-     * @return See description
-     */
+    QgsIFeatureSelectionManager( QObject *parent /TransferThis/ );
     virtual int selectedFeatureCount() = 0;
+%Docstring
+ The number of features that are selected in this layer
 
-    /**
-     * Select features
-     *
-     * @param ids            Feature ids to select
-     */
-    virtual void select( const QgsFeatureIds& ids ) = 0;
+ :return: See description
+ :rtype: int
+%End
 
-    /**
-     * Deselect features
-     *
-     * @param ids            Feature ids to deselect
-     */
-    virtual void deselect( const QgsFeatureIds& ids ) = 0;
+    virtual void select( const QgsFeatureIds &ids ) = 0;
+%Docstring
+ Select features
 
-    /**
-     * Change selection to the new set of features. Dismisses the current selection.
-     * Will emit the { @link selectionChanged( QgsFeatureIds, QgsFeatureIds, bool ) } signal with the
-     * clearAndSelect flag set.
-     *
-     * @param ids   The ids which will be the new selection
-     */
-    virtual void setSelectedFeatures( const QgsFeatureIds& ids ) = 0;
+ \param ids            Feature ids to select
+%End
 
-    /**
-     * Return reference to identifiers of selected features
-     *
-     * @return A list of { @link QgsFeatureId } 's
-     * @see selectedFeatures()
-     */
-    virtual const QgsFeatureIds &selectedFeaturesIds() const = 0;
+    virtual void deselect( const QgsFeatureIds &ids ) = 0;
+%Docstring
+ Deselect features
+
+ \param ids            Feature ids to deselect
+%End
+
+    virtual void setSelectedFeatures( const QgsFeatureIds &ids ) = 0;
+%Docstring
+ Change selection to the new set of features. Dismisses the current selection.
+ Will emit the selectionChanged( const QgsFeatureIds&, const QgsFeatureIds&, bool ) signal with the
+ clearAndSelect flag set.
+
+ \param ids   The ids which will be the new selection
+%End
+
+    virtual const QgsFeatureIds &selectedFeatureIds() const = 0;
+%Docstring
+ Return reference to identifiers of selected features
+
+ :return: A list of QgsFeatureId's
+.. seealso:: selectedFeatures()
+ :rtype: QgsFeatureIds
+%End
 
   signals:
-    /**
-     * This signal is emitted when selection was changed
-     *
-     * @param selected        Newly selected feature ids
-     * @param deselected      Ids of all features which have previously been selected but are not any more
-     * @param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
-     */
-    void selectionChanged( const QgsFeatureIds selected, const QgsFeatureIds deselected, const bool clearAndSelect );
+
+    void selectionChanged( const QgsFeatureIds &selected, const QgsFeatureIds &deselected, const bool clearAndSelect );
+%Docstring
+ This signal is emitted when selection was changed
+
+ \param selected        Newly selected feature ids
+ \param deselected      Ids of all features which have previously been selected but are not any more
+ \param clearAndSelect  In case this is set to true, the old selection was dismissed and the new selection corresponds to selected
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/attributetable/qgsifeatureselectionmanager.h                 *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

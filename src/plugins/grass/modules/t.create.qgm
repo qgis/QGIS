@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE qgisgrassmodule SYSTEM "http://mrcc.com/qgisgrassmodule.dtd">
+
+<qgisgrassmodule label="Creates a space time dataset" module="t.create">
+	<option key="output"/>
+	<option key="type"/>
+	<option key="temporaltype"/>
+	<option key="semantictype"/>
+	<option key="title"/>
+	<option key="description"/>
+</qgisgrassmodule>

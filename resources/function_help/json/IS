@@ -1,0 +1,17 @@
+{
+  "name": "IS",
+  "type": "operator",
+  "description": "Returns 1 if a is the same as b.",
+  "arguments": [
+	{"arg":"a","description":"any value"},
+	{"arg":"b","description":"any value"}
+  ],
+  "examples": [
+	{ "expression":"'A' IS 'A'", "returns":"1"},
+	{ "expression":"'A' IS 'a'", "returns":"0"},
+	{ "expression":"4 IS 4", "returns":"1"},
+	{ "expression":"4 IS 2+2", "returns":"1"},
+	{ "expression":"4 IS 2", "returns":"0"},
+	{ "expression":"$geometry IS NULL", "returns":"0, if your geometry is not NULL"}
+  ]
+}

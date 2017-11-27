@@ -12,12 +12,10 @@ Email                : sherman at mrcc dot com
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include <QtTest>
-#include <iostream>
-
+#include "qgstest.h"
 #include <QPixmap>
 
-#define CPL_SUPRESS_CPLUSPLUS
+#define CPL_SUPRESS_CPLUSPLUS  //#spellok
 #include <gdal.h>
 
 //header for class being tested
@@ -25,11 +23,17 @@ Email                : sherman at mrcc dot com
 
 class TestQgsApplication: public QObject
 {
-    Q_OBJECT;
+    Q_OBJECT
   private slots:
     void checkPaths();
     void checkGdalSkip();
     void initTestCase();
+    void cleanupTestCase();
+
+    void accountName();
+    void osName();
+    void platformName();
+
   private:
     QString getQgisPath();
 };
@@ -44,7 +48,40 @@ void TestQgsApplication::initTestCase()
   QgsApplication::init();
   QgsApplication::initQgis();
   qDebug( "%s", QgsApplication::showSettings().toUtf8().constData() );
-};
+}
+
+void TestQgsApplication::cleanupTestCase()
+{
+  QgsApplication::exitQgis();
+}
+
+void TestQgsApplication::accountName()
+{
+  QString loginName = QgsApplication::userLoginName();
+  qDebug() << QStringLiteral( "Got login name: '%1'" ).arg( loginName );
+  QVERIFY( !loginName.isEmpty() );
+  //test cached return works correctly
+  QCOMPARE( loginName, QgsApplication::userLoginName() );
+
+  //can't test contents, as it can be validly empty (e.g., on Travis). Just testing that we don't crash
+  QString fullName = QgsApplication::userFullName();
+  qDebug() << QStringLiteral( "Got full name: '%1'" ).arg( fullName );
+  //test cached return works correctly
+  QCOMPARE( fullName, QgsApplication::userFullName() );
+}
+
+void TestQgsApplication::osName()
+{
+  // can't test expected result, so just check for non-empty result
+  qDebug() << QStringLiteral( "Got OS name: '%1'" ).arg( QgsApplication::osName() );
+  QVERIFY( !QgsApplication::osName().isEmpty() );
+}
+
+void TestQgsApplication::platformName()
+{
+  // test will always be run under desktop platform
+  QCOMPARE( QgsApplication::platform(), QString( "desktop" ) );
+}
 
 void TestQgsApplication::checkPaths()
 {
@@ -52,17 +89,16 @@ void TestQgsApplication::checkPaths()
   qDebug( "Checking authors file exists:" );
   qDebug( "%s", myPath.toLocal8Bit().constData() );
   QVERIFY( !myPath.isEmpty() );
-};
+}
 
 void TestQgsApplication::checkGdalSkip()
 {
   GDALAllRegister();
-  QgsApplication::skipGdalDriver( "GTiff" );
-  QVERIFY( QgsApplication::skippedGdalDrivers( ).contains( "GTiff" ) );
-  QgsApplication::restoreGdalDriver( "GTiff" );
-  QVERIFY( !QgsApplication::skippedGdalDrivers( ).contains( "GTiff" ) );
+  QgsApplication::skipGdalDriver( QStringLiteral( "GTiff" ) );
+  QVERIFY( QgsApplication::skippedGdalDrivers().contains( "GTiff" ) );
+  QgsApplication::restoreGdalDriver( QStringLiteral( "GTiff" ) );
+  QVERIFY( !QgsApplication::skippedGdalDrivers().contains( "GTiff" ) );
 }
 
-QTEST_MAIN( TestQgsApplication )
-#include "moc_testqgsapplication.cxx"
-
+QGSTEST_MAIN( TestQgsApplication )
+#include "testqgsapplication.moc"

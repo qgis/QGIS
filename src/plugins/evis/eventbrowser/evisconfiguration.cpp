@@ -25,154 +25,155 @@
 **
 **/
 #include <QSettings>
+#include <QDir>
 
 #include "evisconfiguration.h"
 
-eVisConfiguration::eVisConfiguration( )
+eVisConfiguration::eVisConfiguration()
 {
   QSettings myQSettings;
 
-  setApplyPathRulesToDocs( myQSettings.value( "/eVis/applypathrulestodocs", false ).toBool( ) );
+  setApplyPathRulesToDocs( myQSettings.value( QStringLiteral( "eVis/applypathrulestodocs" ), false ).toBool() );
 
-  setEventImagePathField( myQSettings.value( "/eVis/eventimagepathfield", "" ).toString( ) );
-  setEventImagePathRelative( myQSettings.value( "/eVis/eventimagepathrelative", false ).toBool( ) );
+  setEventImagePathField( myQSettings.value( QStringLiteral( "eVis/eventimagepathfield" ), "" ).toString() );
+  setEventImagePathRelative( myQSettings.value( QStringLiteral( "eVis/eventimagepathrelative" ), false ).toBool() );
 
-  setDisplayCompassBearing( myQSettings.value( "/eVis/displaycompassbearing", false ).toBool( ) );
-  setCompassBearingField( myQSettings.value( "/eVis/compassbearingfield", "" ).toString( ) );
+  setDisplayCompassBearing( myQSettings.value( QStringLiteral( "eVis/displaycompassbearing" ), false ).toBool() );
+  setCompassBearingField( myQSettings.value( QStringLiteral( "eVis/compassbearingfield" ), "" ).toString() );
 
-  setManualCompassOffset( myQSettings.value( "/eVis/manualcompassoffset", false ).toBool( ) );
-  setCompassOffset( myQSettings.value( "/eVis/compassoffset", "0.0" ).toDouble( ) );
-  setAttributeCompassOffset( myQSettings.value( "/eVis/attributecompassoffset", false ).toBool( ) );
-  setCompassOffsetField( myQSettings.value( "/eVis/compassoffsetfield", "" ).toString( ) );
+  setManualCompassOffset( myQSettings.value( QStringLiteral( "eVis/manualcompassoffset" ), false ).toBool() );
+  setCompassOffset( myQSettings.value( QStringLiteral( "eVis/compassoffset" ), "0.0" ).toDouble() );
+  setAttributeCompassOffset( myQSettings.value( QStringLiteral( "eVis/attributecompassoffset" ), false ).toBool() );
+  setCompassOffsetField( myQSettings.value( QStringLiteral( "eVis/compassoffsetfield" ), "" ).toString() );
 
-  setBasePath( myQSettings.value( "/eVis/basepath", "" ).toString( ) );
-  mUseOnlyFilename = myQSettings.value( "/eVis/useonlyfilename", false ).toBool( );
+  setBasePath( myQSettings.value( QStringLiteral( "eVis/basepath" ), QDir::homePath() ).toString() );
+  mUseOnlyFilename = myQSettings.value( QStringLiteral( "eVis/useonlyfilename" ), false ).toBool();
 }
 
-QString eVisConfiguration::basePath( )
+QString eVisConfiguration::basePath()
 {
   return mBasePath;
 }
 
-QString eVisConfiguration::compassBearingField( )
+QString eVisConfiguration::compassBearingField()
 {
   return mCompassBearingField;
 }
 
-double eVisConfiguration::compassOffset( )
+double eVisConfiguration::compassOffset()
 {
   return mCompassOffset;
 }
 
-QString eVisConfiguration::compassOffsetField( )
+QString eVisConfiguration::compassOffsetField()
 {
   return mCompassOffsetField;
 }
 
-QString eVisConfiguration::eventImagePathField( )
+QString eVisConfiguration::eventImagePathField()
 {
   return mEventImagePathField;
 }
 
-bool eVisConfiguration::isApplyPathRulesToDocsSet( )
+bool eVisConfiguration::isApplyPathRulesToDocsSet()
 {
   return mApplyPathRulesToDocs;
 }
 
-bool eVisConfiguration::isAttributeCompassOffsetSet( )
+bool eVisConfiguration::isAttributeCompassOffsetSet()
 {
   return mAttributeCompassOffset;
 }
 
-bool eVisConfiguration::isDisplayCompassBearingSet( )
+bool eVisConfiguration::isDisplayCompassBearingSet()
 {
   return mDisplayCompassBearing;
 }
 
-bool eVisConfiguration::isEventImagePathRelative( )
+bool eVisConfiguration::isEventImagePathRelative()
 {
   return mEventImagePathRelative;
 }
 
-bool eVisConfiguration::isManualCompassOffsetSet( )
+bool eVisConfiguration::isManualCompassOffsetSet()
 {
   return mManualCompassOffset;
 }
 
-bool eVisConfiguration::isUseOnlyFilenameSet( )
+bool eVisConfiguration::isUseOnlyFilenameSet()
 {
   return mUseOnlyFilename;
 }
 
-void eVisConfiguration::setApplyPathRulesToDocs( bool theBool )
+void eVisConfiguration::setApplyPathRulesToDocs( bool pathRules )
 {
-  mApplyPathRulesToDocs = theBool;
+  mApplyPathRulesToDocs = pathRules;
 }
 
-void eVisConfiguration::setAttributeCompassOffset( bool theBool )
+void eVisConfiguration::setAttributeCompassOffset( bool compassOffset )
 {
-  mAttributeCompassOffset = theBool;
+  mAttributeCompassOffset = compassOffset;
 }
 
-void eVisConfiguration::setBasePath( QString thePath )
+void eVisConfiguration::setBasePath( const QString &path )
 {
   QSettings myQSettings;
-  mBasePath = thePath;
+  mBasePath = path;
   if ( "" != mBasePath )
   {
     if ( mBasePath.contains( '/' ) )
     {
-      if ( mBasePath[mBasePath.length( )-1] != '/' )
+      if ( mBasePath[mBasePath.length() - 1] != '/' )
       {
-        mBasePath = mBasePath + "/";
+        mBasePath = mBasePath + '/';
       }
     }
     else
     {
-      if ( mBasePath[mBasePath.length( )-1] != '\\' )
+      if ( mBasePath[mBasePath.length() - 1] != '\\' )
       {
-        mBasePath = mBasePath + "\\";
+        mBasePath = mBasePath + '\\';
       }
     }
   }
 }
 
-void eVisConfiguration::setCompassBearingField( QString theField )
+void eVisConfiguration::setCompassBearingField( const QString &field )
 {
-  mCompassBearingField = theField;
+  mCompassBearingField = field;
 }
 
-void eVisConfiguration::setCompassOffset( double theOffset )
+void eVisConfiguration::setCompassOffset( double offset )
 {
-  mCompassOffset = theOffset;
+  mCompassOffset = offset;
 }
 
-void eVisConfiguration::setCompassOffsetField( QString theField )
+void eVisConfiguration::setCompassOffsetField( const QString &field )
 {
-  mCompassOffsetField = theField;
+  mCompassOffsetField = field;
 }
 
-void eVisConfiguration::setDisplayCompassBearing( bool theBool )
+void eVisConfiguration::setDisplayCompassBearing( bool compassBearing )
 {
-  mDisplayCompassBearing = theBool;
+  mDisplayCompassBearing = compassBearing;
 }
 
-void eVisConfiguration::setEventImagePathField( QString theField )
+void eVisConfiguration::setEventImagePathField( const QString &field )
 {
-  mEventImagePathField = theField;
+  mEventImagePathField = field;
 }
 
-void eVisConfiguration::setEventImagePathRelative( bool theBool )
+void eVisConfiguration::setEventImagePathRelative( bool pathRelative )
 {
-  mEventImagePathRelative = theBool;
+  mEventImagePathRelative = pathRelative;
 }
 
-void eVisConfiguration::setManualCompassOffset( bool theBool )
+void eVisConfiguration::setManualCompassOffset( bool manualOffset )
 {
-  mManualCompassOffset = theBool;
+  mManualCompassOffset = manualOffset;
 }
 
-void eVisConfiguration::setUseOnlyFilename( bool theBool )
+void eVisConfiguration::setUseOnlyFilename( bool useOnlyFileName )
 {
-  mUseOnlyFilename = theBool;
+  mUseOnlyFilename = useOnlyFileName;
 }

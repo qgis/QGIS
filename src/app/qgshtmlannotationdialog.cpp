@@ -13,36 +13,40 @@
  *                                                                         *
  ***************************************************************************/
 #include "qgshtmlannotationdialog.h"
+#include "qgshtmlannotation.h"
 #include "qgsannotationwidget.h"
+#include "qgsmapcanvasannotationitem.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
+#include "qgsannotationmanager.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
+#include <QPushButton>
 
-QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsHtmlAnnotationItem* item, QWidget * parent, Qt::WindowFlags f )
-    : QDialog( parent, f ), mItem( item ), mEmbeddedWidget( 0 )
+QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent, Qt::WindowFlags f )
+  : QDialog( parent, f )
+  , mItem( item )
+
 {
   setupUi( this );
-  setWindowTitle( tr( "HTML annotation" ) );
+  connect( mBrowseToolButton, &QToolButton::clicked, this, &QgsHtmlAnnotationDialog::mBrowseToolButton_clicked );
+  connect( mButtonBox, &QDialogButtonBox::clicked, this, &QgsHtmlAnnotationDialog::mButtonBox_clicked );
+  setWindowTitle( tr( "HTML Annotation" ) );
   mEmbeddedWidget = new QgsAnnotationWidget( mItem );
-  mEmbeddedWidget->show();
   mStackedWidget->addWidget( mEmbeddedWidget );
   mStackedWidget->setCurrentWidget( mEmbeddedWidget );
 
-  if ( item )
+  if ( item && item->annotation() )
   {
-    mFileLineEdit->setText( item->htmlPage() );
+    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( item->annotation() );
+    mFileLineEdit->setText( annotation->sourceFile() );
   }
 
-  QObject::connect( mButtonBox, SIGNAL( accepted() ), this, SLOT( applySettingsToItem() ) );
-  QPushButton* deleteButton = new QPushButton( tr( "Delete" ) );
-  QObject::connect( deleteButton, SIGNAL( clicked() ), this, SLOT( deleteItem() ) );
+  QObject::connect( mButtonBox, &QDialogButtonBox::accepted, this, &QgsHtmlAnnotationDialog::applySettingsToItem );
+  QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
+  QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsHtmlAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
-}
-
-QgsHtmlAnnotationDialog::~QgsHtmlAnnotationDialog()
-{
-
 }
 
 void QgsHtmlAnnotationDialog::applySettingsToItem()
@@ -53,20 +57,15 @@ void QgsHtmlAnnotationDialog::applySettingsToItem()
     mEmbeddedWidget->apply();
   }
 
-  if ( mItem )
+  if ( mItem && mItem->annotation() )
   {
-    mItem->setHTMLPage( mFileLineEdit->text() );
-    QgsVectorLayer* layer = mItem->vectorLayer();
-    if ( layer )
-    {
-      //set last used annotation form as default for the layer
-      //layer->setAnnotationForm( mFileLineEdit->text() );
-    }
+    QgsHtmlAnnotation *annotation = static_cast< QgsHtmlAnnotation * >( mItem->annotation() );
+    annotation->setSourceFile( mFileLineEdit->text() );
     mItem->update();
   }
 }
 
-void QgsHtmlAnnotationDialog::on_mBrowseToolButton_clicked()
+void QgsHtmlAnnotationDialog::mBrowseToolButton_clicked()
 {
   QString directory;
   QFileInfo fi( mFileLineEdit->text() );
@@ -74,18 +73,26 @@ void QgsHtmlAnnotationDialog::on_mBrowseToolButton_clicked()
   {
     directory = fi.absolutePath();
   }
-  QString filename = QFileDialog::getOpenFileName( 0, tr( "html" ), directory, "*.html" );
+  else
+  {
+    directory = QDir::homePath();
+  }
+  QString filename = QFileDialog::getOpenFileName( nullptr, tr( "html" ), directory, QStringLiteral( "HTML (*.html *.htm);;All files (*.*)" ) );
   mFileLineEdit->setText( filename );
 }
 
 void QgsHtmlAnnotationDialog::deleteItem()
 {
-  QGraphicsScene* scene = mItem->scene();
-  if ( scene )
+  if ( mItem && mItem->annotation() )
+    QgsProject::instance()->annotationManager()->removeAnnotation( mItem->annotation() );
+  mItem = nullptr;
+}
+
+void QgsHtmlAnnotationDialog::mButtonBox_clicked( QAbstractButton *button )
+{
+  if ( mButtonBox->buttonRole( button ) == QDialogButtonBox::ApplyRole )
   {
-    scene->removeItem( mItem );
+    applySettingsToItem();
   }
-  delete mItem;
-  mItem = 0;
 }
 

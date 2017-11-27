@@ -1,39 +1,72 @@
-/**
- * \class QgsPluginManagerInterface
- * \brief Abstract base class to make QgsPluginManager available to pyplugin_installer.
- */
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspluginmanagerinterface.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/
+
+
+
 class QgsPluginManagerInterface : QObject
 {
-%TypeHeaderCode
-#include <qgspluginmanagerinterface.h>
-%End
 
+%TypeHeaderCode
+#include "qgspluginmanagerinterface.h"
+%End
   public:
 
-    //! Constructor
     QgsPluginManagerInterface();
+%Docstring
+Constructor
+%End
 
-    //! Virtual destructor
-    ~QgsPluginManagerInterface();
-
-    //! remove python plugins from the metadata registry (c++ plugins stay)
     virtual void clearPythonPluginMetadata() = 0;
+%Docstring
+remove Python plugins from the metadata registry (c++ plugins stay)
+%End
 
-    //! add a single plugin to the metadata registry
-    virtual void addPluginMetadata( QMap<QString, QString> metadata ) = 0;
+    virtual void addPluginMetadata( const QMap<QString, QString> &metadata ) = 0;
+%Docstring
+add a single plugin to the metadata registry
+%End
 
-    //! refresh plugin list model (and metadata browser content if necessary)
     virtual void reloadModel() = 0;
+%Docstring
+refresh plugin list model (and metadata browser content if necessary)
+%End
 
-    //! return given plugin metadata
-    virtual const QMap<QString, QString> * pluginMetadata( QString key ) const = 0;
+    virtual const QMap<QString, QString> *pluginMetadata( const QString &key ) const = 0;
+%Docstring
+return given plugin metadata
+ :rtype: QMap<str, QString>
+%End
 
-    //! clear the repository listWidget
     virtual void clearRepositoryList() = 0;
+%Docstring
+clear the repository listWidget
+%End
 
-    //! add repository to the repository listWidget
-    virtual void addToRepositoryList( QMap<QString, QString> repository ) = 0;
+    virtual void addToRepositoryList( const QMap<QString, QString> &repository ) = 0;
+%Docstring
+add repository to the repository listWidget
+%End
 
-    //! show the Plugin Manager window and optionally open tab tabIndex
     virtual void showPluginManager( int tabIndex = -1 ) = 0;
+%Docstring
+show the Plugin Manager window and optionally open tab tabIndex
+%End
+
+    virtual void pushMessage( const QString &text, QgsMessageBar::MessageLevel level = QgsMessageBar::INFO, int duration = -1 ) = 0;
+%Docstring
+show the given message in the Plugin Manager internal message bar
+%End
 };
+
+/************************************************************************
+ * This file has been generated automatically from                      *
+ *                                                                      *
+ * src/gui/qgspluginmanagerinterface.h                                  *
+ *                                                                      *
+ * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
+ ************************************************************************/

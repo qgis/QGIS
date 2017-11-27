@@ -16,38 +16,19 @@
  ***************************************************************************/
 
 #include "qgsmaptoolhtmlannotation.h"
-#include "qgshtmlannotationitem.h"
+#include "qgshtmlannotation.h"
 #include "qgsmapcanvas.h"
 #include "qgsvectorlayer.h"
+#include "qgsproject.h"
 #include <QMouseEvent>
 
-QgsMapToolHtmlAnnotation::QgsMapToolHtmlAnnotation( QgsMapCanvas* canvas ): QgsMapToolAnnotation( canvas )
+QgsMapToolHtmlAnnotation::QgsMapToolHtmlAnnotation( QgsMapCanvas *canvas ): QgsMapToolAnnotation( canvas )
 {
 
 }
 
-QgsMapToolHtmlAnnotation::~QgsMapToolHtmlAnnotation()
+QgsAnnotation *QgsMapToolHtmlAnnotation::createItem() const
 {
-
-}
-
-QgsAnnotationItem* QgsMapToolHtmlAnnotation::createItem( QMouseEvent* e )
-{
-  //try to associate the current vector layer and a feature to the form item
-  QgsVectorLayer* currentVectorLayer = 0;
-  if ( mCanvas )
-  {
-    QgsMapLayer* mLayer = mCanvas->currentLayer();
-    if ( mLayer )
-    {
-      currentVectorLayer = dynamic_cast<QgsVectorLayer*>( mLayer );
-    }
-  }
-
-  QgsHtmlAnnotationItem* formItem = new QgsHtmlAnnotationItem( mCanvas, currentVectorLayer );
-  formItem->setMapPosition( toMapCoordinates( e->pos() ) );
-  formItem->setSelected( true );
-  formItem->setFrameSize( QSizeF( 200, 100 ) );
-  return formItem;
+  return new QgsHtmlAnnotation();
 }
 

@@ -7,3 +7,6 @@ application/x-raster-mrsid; qgis '%s'; description="MrSID raster data"; test=tes
 application/x-raster-mif; qgis '%s'; description="MapInfo file"; test=test -n "$DISPLAY"; nametemplate=%s.mif; priority=2
 application/x-esri-shape; qgis '%s'; description="ESRI shape file"; test=test -n "$DISPLAY"; nametemplate=%s.shp; priority=2
 application/x-qgis-project; qgis '%s'; description="QGIS Project"; test=test -n "$DISPLAY"; nametemplate=%s.qgs
+application/x-qgis-layer-settings; qgis '%s'; description="QGIS Layer Settings"; test=test -n "$DISPLAY"; nametemplate=%s.qml
+application/x-qgis-layer-definition; qgis '%s'; description="QGIS Layer Definition"; test=test -n "$DISPLAY"; nametemplate=%s.qlr
+application/x-qgis-composer-template; qgis '%s'; description="QGIS Composer Template"; test=test -n "$DISPLAY"; nametemplate=%s.qpt

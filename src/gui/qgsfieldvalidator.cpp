@@ -23,16 +23,18 @@
 #include <QRegExpValidator>
 #include <QDate>
 #include <QVariant>
-#include <QSettings>
 
+#include "qgssettings.h"
 #include "qgslogger.h"
 #include "qgslonglongvalidator.h"
-#include "qgsfield.h"
+#include "qgsfields.h"
+#include "qgsapplication.h"
 
-QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QString dateFormat )
-    : QValidator( parent )
-    , mField( field )
-    , mDateFormat( dateFormat )
+QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, const QString &defaultValue, const QString &dateFormat )
+  : QValidator( parent )
+  , mField( field )
+  , mDefaultValue( defaultValue )
+  , mDateFormat( dateFormat )
 {
   switch ( mField.type() )
   {
@@ -40,7 +42,7 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QS
     {
       if ( mField.length() > 0 )
       {
-        QString re = QString( "-?\\d{0,%1}" ).arg( mField.length() );
+        QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else
@@ -54,17 +56,17 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QS
     {
       if ( mField.length() > 0 && mField.precision() > 0 )
       {
-        QString re = QString( "-?\\d{0,%1}(\\.\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
+        QString re = QStringLiteral( "-?\\d{0,%1}(\\.\\d{0,%2})?" ).arg( mField.length() - mField.precision() ).arg( mField.precision() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else if ( mField.length() > 0 && mField.precision() == 0 )
       {
-        QString re = QString( "-?\\d{0,%1}" ).arg( mField.length() );
+        QString re = QStringLiteral( "-?\\d{0,%1}" ).arg( mField.length() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else if ( mField.precision() > 0 )
       {
-        QString re = QString( "-?\\d*(\\.\\d{0,%1})?" ).arg( mField.precision() );
+        QString re = QStringLiteral( "-?\\d*(\\.\\d{0,%1})?" ).arg( mField.precision() );
         mValidator = new QRegExpValidator( QRegExp( re ), parent );
       }
       else
@@ -79,11 +81,11 @@ QgsFieldValidator::QgsFieldValidator( QObject *parent, const QgsField &field, QS
       break;
 
     default:
-      mValidator = 0;
+      mValidator = nullptr;
   }
 
-  QSettings settings;
-  mNullValue = settings.value( "qgis/nullValue", "NULL" ).toString();
+  QgsSettings settings;
+  mNullValue = QgsApplication::nullRepresentation();
 }
 
 QgsFieldValidator::~QgsFieldValidator()
@@ -105,6 +107,9 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
     return Acceptable;
   }
 
+  if ( s == mDefaultValue )
+    return Acceptable;
+
   // delegate to the child validator if any
   if ( mValidator )
   {
@@ -113,12 +118,12 @@ QValidator::State QgsFieldValidator::validate( QString &s, int &i ) const
   }
   else if ( mField.type() == QVariant::String )
   {
-    // allow to enter the NULL representation, which might be
+    // allow entering the NULL representation, which might be
     // longer than the actual field
-    if ( mNullValue.size() > 0 &&
-         s.size() > 0 &&
-         s.size() < mNullValue.size() &&
-         s == mNullValue.left( s.size() ) )
+    if ( !mNullValue.isEmpty() && !s.isEmpty() && s.size() < mNullValue.size() && s == mNullValue.left( s.size() ) )
+      return Intermediate;
+
+    if ( !mDefaultValue.isEmpty() && !s.isEmpty() && s.size() < mDefaultValue.size() && s == mDefaultValue.left( s.size() ) )
       return Intermediate;
 
     if ( s == mNullValue )
@@ -146,7 +151,7 @@ void QgsFieldValidator::fixup( QString &s ) const
   {
     mValidator->fixup( s );
   }
-  else if ( mField.type() == QVariant::String && mField.length() > 0 && s.size() > mField.length() )
+  else if ( mField.type() == QVariant::String && mField.length() > 0 && s.size() > mField.length() && s != mDefaultValue )
   {
     // if the value is longer, this must be a partial NULL representation
     s = mNullValue;
@@ -154,6 +159,6 @@ void QgsFieldValidator::fixup( QString &s ) const
   else if ( mField.type() == QVariant::Date )
   {
     // invalid dates will also translate to NULL
-    s = "";
+    s = QLatin1String( "" );
   }
 }

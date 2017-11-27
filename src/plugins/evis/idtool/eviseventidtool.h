@@ -33,7 +33,7 @@
 #include "qgsmaplayer.h"
 #include "qgsmaptool.h"
 #include "qgsmapcanvas.h"
-#include "qgspoint.h"
+#include "qgspointxy.h"
 
 #include "evisgenericeventbrowsergui.h"
 
@@ -45,20 +45,21 @@
 */
 class eVisEventIdTool : public QgsMapTool
 {
+    Q_OBJECT
 
   public:
-    /** \brief Constructor */
-    eVisEventIdTool( QgsMapCanvas* );
+    //! \brief Constructor
+    explicit eVisEventIdTool( QgsMapCanvas * );
 
-    /** \brief Method to handle mouse release, i.e., select, event */
-    void canvasReleaseEvent( QMouseEvent* );
+    //! \brief Method to handle mouse release, i.e., select, event
+    void canvasReleaseEvent( QgsMapMouseEvent * ) override;
 
   private:
 
-    /** \brief Pointer to a generic event browser */
-    eVisGenericEventBrowserGui* mBrowser;
+    //! \brief Pointer to a generic event browser
+    eVisGenericEventBrowserGui *mBrowser = nullptr;
 
-    /** \brief Selection routine called by the mouse release event */
-    void select( QgsPoint );
+    //! \brief Selection routine called by the mouse release event
+    void select( const QgsPointXY & );
 };
 #endif

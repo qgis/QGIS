@@ -18,6 +18,7 @@
 #include "qgsmessagebar.h"
 #include "qgsmessagebaritem.h"
 #include "qgsapplication.h"
+#include "qgsmessagelog.h"
 
 #include <QWidget>
 #include <QPalette>
@@ -31,7 +32,8 @@
 #include <QLabel>
 
 QgsMessageBar::QgsMessageBar( QWidget *parent )
-    : QFrame( parent ), mCurrentItem( NULL )
+  : QFrame( parent )
+
 {
   QPalette pal = palette();
   pal.setBrush( backgroundRole(), pal.window() );
@@ -50,8 +52,8 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
                               " image: url(:/images/themes/default/%1) }"
                               "QProgressBar::chunk { background-color: rgba(0, 0, 0, 30%); width: 5px; }" );
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
-  mCountProgress->setObjectName( "mCountdown" );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.png" ) ) );
+  mCountProgress->setObjectName( QStringLiteral( "mCountdown" ) );
   mCountProgress->setFixedSize( 25, 14 );
   mCountProgress->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
   mCountProgress->setTextVisible( false );
@@ -60,61 +62,57 @@ QgsMessageBar::QgsMessageBar( QWidget *parent )
   mLayout->addWidget( mCountProgress, 0, 0, 1, 1 );
 
   mItemCount = new QLabel( this );
-  mItemCount->setObjectName( "mItemCount" );
+  mItemCount->setObjectName( QStringLiteral( "mItemCount" ) );
   mItemCount->setToolTip( tr( "Remaining messages" ) );
   mItemCount->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
   mLayout->addWidget( mItemCount, 0, 2, 1, 1 );
 
   mCloseMenu = new QMenu( this );
-  mCloseMenu->setObjectName( "mCloseMenu" );
+  mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
   mActionCloseAll = new QAction( tr( "Close all" ), this );
   mCloseMenu->addAction( mActionCloseAll );
-  connect( mActionCloseAll, SIGNAL( triggered() ), this, SLOT( clearWidgets() ) );
+  connect( mActionCloseAll, &QAction::triggered, this, &QgsMessageBar::clearWidgets );
 
   mCloseBtn = new QToolButton( this );
-  mCloseMenu->setObjectName( "mCloseMenu" );
+  mCloseMenu->setObjectName( QStringLiteral( "mCloseMenu" ) );
   mCloseBtn->setToolTip( tr( "Close" ) );
   mCloseBtn->setMinimumWidth( 40 );
   mCloseBtn->setStyleSheet(
     "QToolButton { background-color: rgba(0, 0, 0, 0); }"
     "QToolButton::menu-button { background-color: rgba(0, 0, 0, 0); }" );
   mCloseBtn->setCursor( Qt::PointingHandCursor );
-  mCloseBtn->setIcon( QgsApplication::getThemeIcon( "/mIconClose.png" ) );
+  mCloseBtn->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mIconClose.svg" ) ) );
   mCloseBtn->setIconSize( QSize( 18, 18 ) );
   mCloseBtn->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Maximum );
   mCloseBtn->setMenu( mCloseMenu );
   mCloseBtn->setPopupMode( QToolButton::MenuButtonPopup );
-  connect( mCloseBtn, SIGNAL( clicked() ), this, SLOT( popWidget() ) );
+  connect( mCloseBtn, &QAbstractButton::clicked, this, static_cast < bool ( QgsMessageBar::* )() > ( &QgsMessageBar::popWidget ) );
   mLayout->addWidget( mCloseBtn, 0, 3, 1, 1 );
 
   mCountdownTimer = new QTimer( this );
   mCountdownTimer->setInterval( 1000 );
-  connect( mCountdownTimer, SIGNAL( timeout() ), this, SLOT( updateCountdown() ) );
+  connect( mCountdownTimer, &QTimer::timeout, this, &QgsMessageBar::updateCountdown );
 
-  connect( this, SIGNAL( widgetAdded( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
-  connect( this, SIGNAL( widgetRemoved( QgsMessageBarItem* ) ), this, SLOT( updateItemCount() ) );
+  connect( this, &QgsMessageBar::widgetAdded, this, &QgsMessageBar::updateItemCount );
+  connect( this, &QgsMessageBar::widgetRemoved, this, &QgsMessageBar::updateItemCount );
 
   // start hidden
   setVisible( false );
 }
 
-QgsMessageBar::~QgsMessageBar()
-{
-}
-
-void QgsMessageBar::mousePressEvent( QMouseEvent * e )
+void QgsMessageBar::mousePressEvent( QMouseEvent *e )
 {
   if ( mCountProgress == childAt( e->pos() ) && e->button() == Qt::LeftButton )
   {
     if ( mCountdownTimer->isActive() )
     {
       mCountdownTimer->stop();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerContinue.png" ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerContinue.png" ) ) );
     }
     else
     {
       mCountdownTimer->start();
-      mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
+      mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.png" ) ) );
     }
   }
 }
@@ -130,17 +128,17 @@ void QgsMessageBar::popItem( QgsMessageBarItem *item )
   {
     if ( mCurrentItem )
     {
-      QWidget *widget = dynamic_cast<QWidget*>( mCurrentItem );
+      QWidget *widget = mCurrentItem;
       mLayout->removeWidget( widget );
       mCurrentItem->hide();
-      disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
-      delete mCurrentItem;
-      mCurrentItem = 0;
+      disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
+      mCurrentItem->deleteLater();
+      mCurrentItem = nullptr;
     }
 
     if ( !mItems.isEmpty() )
     {
-      showItem( mItems.first() );
+      showItem( mItems.at( 0 ) );
     }
     else
     {
@@ -166,12 +164,12 @@ bool QgsMessageBar::popWidget( QgsMessageBarItem *item )
     return true;
   }
 
-  foreach ( QgsMessageBarItem *existingItem, mItems )
+  Q_FOREACH ( QgsMessageBarItem *existingItem, mItems )
   {
     if ( existingItem == item )
     {
       mItems.removeOne( existingItem );
-      delete existingItem;
+      existingItem->deleteLater();
       return true;
     }
   }
@@ -197,7 +195,7 @@ bool QgsMessageBar::clearWidgets()
   if ( !mCurrentItem && mItems.empty() )
     return true;
 
-  while ( mItems.count() > 0 )
+  while ( !mItems.isEmpty() )
   {
     popWidget();
   }
@@ -206,12 +204,32 @@ bool QgsMessageBar::clearWidgets()
   return !mCurrentItem && mItems.empty();
 }
 
+void QgsMessageBar::pushSuccess( const QString &title, const QString &message )
+{
+  pushMessage( title, message, SUCCESS );
+}
+
+void QgsMessageBar::pushInfo( const QString &title, const QString &message )
+{
+  pushMessage( title, message, INFO );
+}
+
+void QgsMessageBar::pushWarning( const QString &title, const QString &message )
+{
+  pushMessage( title, message, WARNING );
+}
+
+void QgsMessageBar::pushCritical( const QString &title, const QString &message )
+{
+  pushMessage( title, message, CRITICAL );
+}
+
 void QgsMessageBar::showItem( QgsMessageBarItem *item )
 {
   Q_ASSERT( item );
 
-  if ( mCurrentItem != 0 )
-    disconnect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+  if ( mCurrentItem )
+    disconnect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
 
   if ( item == mCurrentItem )
     return;
@@ -238,7 +256,7 @@ void QgsMessageBar::showItem( QgsMessageBarItem *item )
     mCountdownTimer->start();
   }
 
-  connect( mCurrentItem, SIGNAL( styleChanged( QString ) ), this, SLOT( setStyleSheet( QString ) ) );
+  connect( mCurrentItem, &QgsMessageBarItem::styleChanged, this, &QWidget::setStyleSheet );
   setStyleSheet( item->getStyleSheet() );
   show();
 
@@ -251,12 +269,33 @@ void QgsMessageBar::pushItem( QgsMessageBarItem *item )
   // avoid duplicated widget
   popWidget( item );
   showItem( item );
+
+  // Log all messages that are sent to the message bar into the message log so the
+  // user can get them back easier.
+  QString formattedTitle = QStringLiteral( "%1 : %2" ).arg( item->title(), item->text() );
+  QgsMessageLog::MessageLevel level;
+  switch ( item->level() )
+  {
+    case QgsMessageBar::INFO:
+      level = QgsMessageLog::INFO;
+      break;
+    case QgsMessageBar::WARNING:
+      level = QgsMessageLog::WARNING;
+      break;
+    case QgsMessageBar::CRITICAL:
+      level = QgsMessageLog::CRITICAL;
+      break;
+    default:
+      level = QgsMessageLog::NONE;
+      break;
+  }
+  QgsMessageLog::logMessage( formattedTitle, tr( "Messages" ), level );
 }
 
-QgsMessageBarItem* QgsMessageBar::pushWidget( QWidget *widget , QgsMessageBar::MessageLevel level, int duration )
+QgsMessageBarItem *QgsMessageBar::pushWidget( QWidget *widget, QgsMessageBar::MessageLevel level, int duration )
 {
-  QgsMessageBarItem *item;
-  item = dynamic_cast<QgsMessageBarItem*>( widget );
+  QgsMessageBarItem *item = nullptr;
+  item = dynamic_cast<QgsMessageBarItem *>( widget );
   if ( item )
   {
     item->setLevel( level )->setDuration( duration );
@@ -275,18 +314,18 @@ void QgsMessageBar::pushMessage( const QString &title, const QString &text, QgsM
   pushItem( item );
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( const QString &text, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( const QString &text, QWidget *parent )
 {
-  QgsMessageBarItem* item = new QgsMessageBarItem( text, INFO, 0, parent );
+  QgsMessageBarItem *item = new QgsMessageBarItem( text, INFO, 0, parent );
   return item;
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( const QString &title, const QString &text, QWidget *parent )
 {
   return new QgsMessageBarItem( title, text, QgsMessageBar::INFO, 0, parent );
 }
 
-QgsMessageBarItem* QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
+QgsMessageBarItem *QgsMessageBar::createMessage( QWidget *widget, QWidget *parent )
 {
   return new QgsMessageBarItem( widget, INFO, 0, parent );
 }
@@ -313,15 +352,15 @@ void QgsMessageBar::resetCountdown()
   if ( mCountdownTimer->isActive() )
     mCountdownTimer->stop();
 
-  mCountProgress->setStyleSheet( mCountStyleSheet.arg( "mIconTimerPause.png" ) );
+  mCountProgress->setStyleSheet( mCountStyleSheet.arg( QStringLiteral( "mIconTimerPause.png" ) ) );
   mCountProgress->setVisible( false );
 }
 
 void QgsMessageBar::updateItemCount()
 {
-  mItemCount->setText( mItems.count() > 0 ? tr( "%n more", "unread messages", mItems.count() ) : QString( "" ) );
+  mItemCount->setText( !mItems.isEmpty() ? tr( "%n more", "unread messages", mItems.count() ) : QString() );
 
   // do not show the down arrow for opening menu with "close all" if there is just one message
-  mCloseBtn->setMenu( mItems.count() > 0 ? mCloseMenu : 0 );
-  mCloseBtn->setPopupMode( mItems.count() > 0 ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
+  mCloseBtn->setMenu( !mItems.isEmpty() ? mCloseMenu : nullptr );
+  mCloseBtn->setPopupMode( !mItems.isEmpty() ? QToolButton::MenuButtonPopup : QToolButton::DelayedPopup );
 }

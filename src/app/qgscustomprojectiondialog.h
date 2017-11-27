@@ -19,56 +19,58 @@
 #define QGSCUSTOMCRSDIALOG_H
 
 #include "ui_qgscustomprojectiondialogbase.h"
-#include "qgscontexthelp.h"
+#include "qgshelp.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgis_app.h"
 
 class QDir;
 
 /**
 The custom projection widget is used to define the projection family, ellipsoid and paremters needed by proj4 to assemble a customised projection definition. The resulting projection will be store in an sqlite backend.
-
-@author Tim Sutton
 */
 class APP_EXPORT QgsCustomProjectionDialog : public QDialog, private Ui::QgsCustomProjectionDialogBase
 {
     Q_OBJECT
   public:
-    QgsCustomProjectionDialog( QWidget *parent = 0, Qt::WFlags fl = 0 );
+    QgsCustomProjectionDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
     ~QgsCustomProjectionDialog();
 
   public slots:
-    void on_pbnCalculate_clicked();
-    void on_pbnAdd_clicked();
-    void on_pbnRemove_clicked();
-    void on_pbnCopyCRS_clicked();
-    void on_leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void pbnCalculate_clicked();
+    void pbnAdd_clicked();
+    void pbnRemove_clicked();
+    void pbnCopyCRS_clicked();
+    void leNameList_currentItemChanged( QTreeWidgetItem *current, QTreeWidgetItem *prev );
+    void buttonBox_accepted();
 
-    void on_buttonBox_helpRequested() { QgsContextHelp::run( metaObject()->className() ); }
-    void on_buttonBox_accepted();
+  private slots:
+
+    void updateListFromCurrentItem();
 
   private:
 
     //helper functions
     void populateList();
     QString quotedValue( QString value );
-    bool deleteCRS( QString id );
-    bool saveCRS( QgsCoordinateReferenceSystem myParameters, QString myName, QString myId, bool newEntry );
-    void insertProjection( QString myProjectionAcronym );
+    bool deleteCrs( const QString &id );
+    bool saveCrs( QgsCoordinateReferenceSystem parameters, const QString &name, const QString &id, bool newEntry );
+    void insertProjection( const QString &projectionAcronym );
+    void showHelp();
 
     //These two QMap store the values as they are on the database when loading
-    QMap <QString, QString> existingCRSparameters;
-    QMap <QString, QString> existingCRSnames;
+    QMap <QString, QString> mExistingCRSparameters;
+    QMap <QString, QString> mExistingCRSnames;
 
-    //These three vectors store the value updated with the current modifications
-    std::vector<QString> customCRSnames;
-    std::vector<QString> customCRSids;
-    std::vector<QString> customCRSparameters;
+    //These three list store the value updated with the current modifications
+    QStringList mCustomCRSnames;
+    QStringList mCustomCRSids;
+    QStringList mCustomCRSparameters;
 
     //vector saving the CRS to be deleted
-    std::vector<QString> deletedCRSs;
+    QStringList mDeletedCRSs;
 
     //Columns in the tree widget
-    enum columns { QGIS_CRS_NAME_COLUMN, QGIS_CRS_ID_COLUMN, QGIS_CRS_PARAMETERS_COLUMN };
+    enum Columns { QgisCrsNameColumn, QgisCrsIdColumn, QgisCrsParametersColumn };
 };
 
 

@@ -40,32 +40,32 @@ class eVisConfiguration
 {
 
   public:
-    eVisConfiguration( );
+    eVisConfiguration();
 
-    QString basePath( );
-    QString compassBearingField( );
-    double compassOffset( );
-    QString compassOffsetField( );
-    QString eventImagePathField( );
+    QString basePath();
+    QString compassBearingField();
+    double compassOffset();
+    QString compassOffsetField();
+    QString eventImagePathField();
 
-    bool isApplyPathRulesToDocsSet( );
-    bool isAttributeCompassOffsetSet( );
-    bool isDisplayCompassBearingSet( );
-    bool isEventImagePathRelative( );
-    bool isManualCompassOffsetSet( );
-    bool isUseOnlyFilenameSet( );
+    bool isApplyPathRulesToDocsSet();
+    bool isAttributeCompassOffsetSet();
+    bool isDisplayCompassBearingSet();
+    bool isEventImagePathRelative();
+    bool isManualCompassOffsetSet();
+    bool isUseOnlyFilenameSet();
 
-    void setApplyPathRulesToDocs( bool );
-    void setAttributeCompassOffset( bool );
-    void setBasePath( QString );
-    void setCompassBearingField( QString );
+    void setApplyPathRulesToDocs( bool pathRules );
+    void setAttributeCompassOffset( bool compassOffset );
+    void setBasePath( const QString & );
+    void setCompassBearingField( const QString & );
     void setCompassOffset( double );
-    void setCompassOffsetField( QString );
-    void setDisplayCompassBearing( bool );
-    void setEventImagePathField( QString );
-    void setEventImagePathRelative( bool );
-    void setManualCompassOffset( bool );
-    void setUseOnlyFilename( bool );
+    void setCompassOffsetField( const QString & );
+    void setDisplayCompassBearing( bool compassBearing );
+    void setEventImagePathField( const QString & );
+    void setEventImagePathRelative( bool pathRelative );
+    void setManualCompassOffset( bool manualOffset );
+    void setUseOnlyFilename( bool useOnlyFileName );
 
 
   private:

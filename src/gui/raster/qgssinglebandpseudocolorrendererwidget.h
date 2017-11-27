@@ -18,60 +18,100 @@
 #ifndef QGSSINGLEBANDCOLORRENDERERWIDGET_H
 #define QGSSINGLEBANDCOLORRENDERERWIDGET_H
 
-#include "qgsrasterminmaxwidget.h"
 #include "qgsrasterrendererwidget.h"
+#include "qgis_sip.h"
 #include "qgscolorrampshader.h"
+#include "qgsrasterrenderer.h"
 #include "ui_qgssinglebandpseudocolorrendererwidgetbase.h"
+#include "qgis_gui.h"
 
-class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget,
-      private Ui::QgsSingleBandPseudoColorRendererWidgetBase
+class QgsRasterMinMaxWidget;
+
+/**
+ * \ingroup gui
+ * \class QgsSingleBandPseudoColorRendererWidget
+ */
+class GUI_EXPORT QgsSingleBandPseudoColorRendererWidget: public QgsRasterRendererWidget, private Ui::QgsSingleBandPseudoColorRendererWidgetBase
 {
+
     Q_OBJECT
+
   public:
-    enum Mode
-    {
-      Continuous = 1, // Using breaks from color palette
-      EqualInterval = 2
-    };
 
-    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer* layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsSingleBandPseudoColorRendererWidget();
+    QgsSingleBandPseudoColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 
-    static QgsRasterRendererWidget* create( QgsRasterLayer* layer, const QgsRectangle &theExtent ) { return new QgsSingleBandPseudoColorRendererWidget( layer, theExtent ); }
-    QgsRasterRenderer* renderer();
+    static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsSingleBandPseudoColorRendererWidget( layer, extent ); }
+    QgsRasterRenderer *renderer() override;
+    void setMapCanvas( QgsMapCanvas *canvas ) override;
+    void doComputations() override;
+    QgsRasterMinMaxWidget *minMaxWidget() override { return mMinMaxWidget; }
 
-    void setFromRenderer( const QgsRasterRenderer* r );
+    void setFromRenderer( const QgsRasterRenderer *r );
 
   public slots:
-    void loadMinMax( int theBandNo, double theMin, double theMax, int theOrigin );
+
+    /**
+     * Executes the single band pseudo raster classficiation
+     */
+    void classify();
+    //! called when new min/max values are loaded
+    void loadMinMax( int bandNo, double min, double max );
 
   private:
-    void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem>& colorRampItems );
+
+    enum Column
+    {
+      ValueColumn = 0,
+      ColorColumn = 1,
+      LabelColumn = 2,
+    };
+
+    void populateColormapTreeWidget( const QList<QgsColorRampShader::ColorRampItem> &colorRampItems );
+
+    /**
+     * Generate labels from the values in the color map.
+     *  Skip labels which were manually edited (black text).
+     *  Text of generated labels is made gray
+     */
+    void autoLabel();
+
+    //! Extract the unit out of the current labels and set the unit field.
+    void setUnitFromLabels();
+
+    QMenu *contextMenu = nullptr;
 
   private slots:
-    void on_mAddEntryButton_clicked();
-    void on_mDeleteEntryButton_clicked();
-    void on_mSortButton_clicked();
-    void on_mClassifyButton_clicked();
-    void on_mLoadFromBandButton_clicked();
-    void on_mLoadFromFileButton_clicked();
-    void on_mExportToFileButton_clicked();
-    void on_mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem* item, int column );
-    void on_mBandComboBox_currentIndexChanged( int index );
-    void on_mMinLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
-    void on_mMaxLineEdit_textChanged( const QString & text ) { Q_UNUSED( text ); resetClassifyButton(); }
-    void on_mMinLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
-    void on_mMaxLineEdit_textEdited( const QString & text ) { Q_UNUSED( text ); mMinMaxOrigin = QgsRasterRenderer::MinMaxUser; showMinMaxOrigin(); }
-    void on_mClassificationModeComboBox_currentIndexChanged( int index );
-    void on_mColorRampComboBox_currentIndexChanged( int index );
+
+    void applyColorRamp();
+    void mAddEntryButton_clicked();
+    void mDeleteEntryButton_clicked();
+    void mLoadFromBandButton_clicked();
+    void mLoadFromFileButton_clicked();
+    void mExportToFileButton_clicked();
+    void mUnitLineEdit_textEdited( const QString &text ) { Q_UNUSED( text ); autoLabel(); }
+    void mColormapTreeWidget_itemDoubleClicked( QTreeWidgetItem *item, int column );
+    void mColormapTreeWidget_itemEdited( QTreeWidgetItem *item, int column );
+    void bandChanged();
+    void mColorInterpolationComboBox_currentIndexChanged( int index );
+    void mMinLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
+    void mMaxLineEdit_textChanged( const QString & ) { resetClassifyButton(); }
+    void mMinLineEdit_textEdited( const QString &text );
+    void mMaxLineEdit_textEdited( const QString &text );
+    void mClassificationModeComboBox_currentIndexChanged( int index );
+    void changeColor();
+    void changeOpacity();
 
   private:
-    void setLineEditValue( QLineEdit *theLineEdit, double theValue );
-    double lineEditValue( const QLineEdit *theLineEdit ) const;
+
+    void setLineEditValue( QLineEdit *lineEdit, double value );
+    double lineEditValue( const QLineEdit *lineEdit ) const;
     void resetClassifyButton();
-    void showMinMaxOrigin();
-    QgsRasterMinMaxWidget * mMinMaxWidget;
+    QgsRasterMinMaxWidget *mMinMaxWidget = nullptr;
+    bool mDisableMinMaxWidgetRefresh;
     int mMinMaxOrigin;
+
+    void minMaxModified();
 };
+
 
 #endif // QGSSINGLEBANDCOLORRENDERERWIDGET_H

@@ -88,13 +88,6 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_4">
        <item>
-        <widget class="QPushButton" name="mDeleteTestButton">
-         <property name="text">
-          <string>Delete Rule</string>
-         </property>
-        </widget>
-       </item>
-       <item>
         <widget class="QPushButton" name="mAddTestButton">
          <property name="text">
           <string>Add Rule</string>
@@ -102,6 +95,13 @@
         </widget>
        </item>
       </layout>
+     </item>
+     <item>
+      <widget class="QPushButton" name="mDeleteTestButton">
+       <property name="text">
+        <string>Delete Rule</string>
+       </property>
+      </widget>
      </item>
     </layout>
    </item>
@@ -151,6 +151,15 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>mLayer1Box</tabstop>
+  <tabstop>mRuleBox</tabstop>
+  <tabstop>mLayer2Box</tabstop>
+  <tabstop>mToleranceBox</tabstop>
+  <tabstop>mAddTestButton</tabstop>
+  <tabstop>mDeleteTestButton</tabstop>
+  <tabstop>mRulesTable</tabstop>
+ </tabstops>
  <resources/>
  <connections>
   <connection>

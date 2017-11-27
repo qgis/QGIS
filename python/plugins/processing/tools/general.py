@@ -25,55 +25,87 @@ __copyright__ = '(C) 2013, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from qgis.core import *
+import os
+try:
+    import configparser
+except ImportError:
+    import configparser as configparser
+
+from qgis.core import (QgsApplication,
+                       QgsProcessingAlgorithm,
+                       QgsProcessingParameterEnum,
+                       QgsProcessingParameterFeatureSink,
+                       QgsProcessingParameterVectorDestination,
+                       QgsProcessingParameterRasterDestination,
+                       QgsProcessingOutputLayerDefinition,
+                       QgsProject)
 from processing.core.Processing import Processing
-from processing.gui.Postprocessing import Postprocessing
-from processing.parameters.ParameterSelection import ParameterSelection
+from processing.core.parameters import ParameterSelection
+from processing.gui.Postprocessing import handleAlgorithmResults
 
 
-def alglist(text=None):
-    s = ''
-    for provider in Processing.algs.values():
-        sortedlist = sorted(provider.values(), key=lambda alg: alg.name)
-        for alg in sortedlist:
-            if text is None or text.lower() in alg.name.lower():
-                s += alg.name.ljust(50, '-') + '--->' + alg.commandLineName() \
-                    + '\n'
-    print s
-
-
-def algoptions(name):
-    alg = Processing.getAlgorithm(name)
+def algorithmHelp(id):
+    """Prints algorithm parameters with their types. Also
+    provides information about options if any.
+    """
+    alg = QgsApplication.processingRegistry().algorithmById(id)
     if alg is not None:
-        s = ''
-        for param in alg.parameters:
-            if isinstance(param, ParameterSelection):
-                s += param.name + '(' + param.description + ')\n'
-                i = 0
-                for option in param.options:
-                    s += '\t' + str(i) + ' - ' + str(option) + '\n'
-                    i += 1
-        print s
+        print('{} ({})\n'.format(alg.displayName(), alg.id()))
+        print(alg.shortHelpString())
+        print('\n----------------')
+        print('Input parameters')
+        print('----------------')
+        for p in alg.parameterDefinitions():
+            print('\n{}:  <{}>'.format(p.name(), p.__class__.__name__))
+            if p.description():
+                print('\t' + p.description())
+
+            if isinstance(p, QgsProcessingParameterEnum):
+                opts = []
+                for i, o in enumerate(p.options()):
+                    opts.append('\t\t{} - {}'.format(i, o))
+                print('\n'.join(opts))
+
+        print('\n----------------')
+        print('Outputs')
+        print('----------------')
+
+        for o in alg.outputDefinitions():
+            print('\n{}:  <{}>'.format(o.name(), o.__class__.__name__))
+            if o.description():
+                print('\t' + o.description())
+
     else:
-        print 'Algorithm not found'
+        print('Algorithm "{}" not found.'.format(id))
 
 
-def alghelp(name):
-    alg = Processing.getAlgorithm(name)
-    if alg is not None:
-        print str(alg)
-        algoptions(name)
+def run(algOrName, parameters, onFinish=None, feedback=None, context=None):
+    """Executes given algorithm and returns its outputs as dictionary
+    object.
+    """
+    return Processing.runAlgorithm(algOrName, parameters, onFinish, feedback, context)
+
+
+def runAndLoadResults(algOrName, parameters, feedback=None, context=None):
+    """Executes given algorithm and load its results into QGIS project
+    when possible.
+    """
+    if isinstance(algOrName, QgsProcessingAlgorithm):
+        alg = algOrName
     else:
-        print 'Algorithm not found'
+        alg = QgsApplication.processingRegistry().createAlgorithmById(algOrName)
 
+    # output destination parameters to point to current project
+    for param in alg.parameterDefinitions():
+        if not param.name() in parameters:
+            continue
 
-def runalg(algOrName, *args):
-    alg = Processing.runAlgorithm(algOrName, None, *args)
-    if alg is not None:
-        return alg.getOutputValuesAsDictionary()
+        if isinstance(param, (QgsProcessingParameterFeatureSink, QgsProcessingParameterVectorDestination, QgsProcessingParameterRasterDestination)):
+            p = parameters[param.name()]
+            if not isinstance(p, QgsProcessingOutputLayerDefinition):
+                parameters[param.name()] = QgsProcessingOutputLayerDefinition(p, QgsProject.instance())
+            else:
+                p.destinationProject = QgsProject.instance()
+                parameters[param.name()] = p
 
-
-def runandload(name, *args):
-    return Processing.runAlgorithm(name,
-                                   Postprocessing.handleAlgorithmResults,
-                                   *args)
+    return Processing.runAlgorithm(alg, parameters=parameters, onFinish=handleAlgorithmResults, feedback=feedback, context=context)

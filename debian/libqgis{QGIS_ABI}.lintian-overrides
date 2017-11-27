@@ -1,3 +1,0 @@
-libqgis{QGIS_ABI}: package-name-doesnt-match-sonames
-libqgis{QGIS_ABI}: no-symbols-control-file
-libqgis{QGIS_ABI}: shlib-calls-exit

@@ -16,51 +16,45 @@
 #ifndef QGSVERTEXENTRY_H
 #define QGSVERTEXENTRY_H
 
-#include <qgspoint.h>
-#include <qgsvertexmarker.h>
-#include <qgsmapcanvas.h>
-#include <qgsmaplayer.h>
+#include "qgspoint.h"
+#include "qgsvertexmarker.h"
+#include "qgsmapcanvas.h"
+#include "qgsmaplayer.h"
 
 class QgsVertexEntry
 {
     bool mSelected;
     QgsPoint mPoint;
-    int mEquals;
-    bool mInRubberBand;
-    int mRubberBandNr;
-    int mRubberBandIndex;
+    QgsVertexId mVertexId;
     int mPenWidth;
     QString mToolTip;
     QgsVertexMarker::IconType mType;
-    QgsVertexMarker *mMarker;
-    QgsMapCanvas *mCanvas;
-    QgsMapLayer *mLayer;
+    QgsVertexMarker *mMarker = nullptr;
+    QgsMapCanvas *mCanvas = nullptr;
+    QgsMapLayer *mLayer = nullptr;
 
   public:
     QgsVertexEntry( QgsMapCanvas *canvas,
                     QgsMapLayer *layer,
-                    QgsPoint p,
-                    QString tooltip = QString::null,
+                    const QgsPoint &p,
+                    QgsVertexId vertexId,
+                    const QString &tooltip = QString(),
                     QgsVertexMarker::IconType type = QgsVertexMarker::ICON_BOX,
                     int penWidth = 2 );
     ~QgsVertexEntry();
 
-    QgsPoint point() const { return mPoint; }
-    int equals() const { return mEquals; }
+    QgsVertexEntry( const QgsVertexEntry &rh ) = delete;
+    QgsVertexEntry &operator=( const QgsVertexEntry &rh ) = delete;
+
+    const QgsPoint &point() const { return mPoint; }
+    QgsPointXY pointV1() const { return QgsPointXY( mPoint.x(), mPoint.y() ); }
+    QgsVertexId vertexId() const { return mVertexId; }
     bool isSelected() const { return mSelected; }
-    bool isInRubberBand() const { return mInRubberBand; }
 
-    void setCenter( QgsPoint p );
+    void placeMarker();
 
-    void setEqual( int index ) { mEquals = index; }
     void setSelected( bool selected = true );
-    void setInRubberBand( bool inRubberBand = true ) { mInRubberBand = inRubberBand; }
 
-    int rubberBandNr() const { return mRubberBandNr; }
-    int rubberBandIndex() { return mRubberBandIndex; }
-
-    void setRubberBandValues( bool inRubberBand, int rubberBandNr, int indexInRubberBand );
-    void update();
 };
 
 #endif

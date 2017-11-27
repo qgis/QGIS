@@ -8,40 +8,32 @@ SET (util_SRCS)
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}
   ${CMAKE_CURRENT_BINARY_DIR}
   ${CMAKE_SOURCE_DIR}/src/core
+  ${CMAKE_SOURCE_DIR}/src/core/auth
+  ${CMAKE_SOURCE_DIR}/src/core/expression
+  ${CMAKE_SOURCE_DIR}/src/core/geometry
+  ${CMAKE_SOURCE_DIR}/src/core/metadata
+  ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/raster
-  ${CMAKE_SOURCE_DIR}/src/core/symbology-ng
+  ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/analysis
+  ${CMAKE_SOURCE_DIR}/src/analysis/interpolation
+  ${CMAKE_SOURCE_DIR}/src/analysis/network
+  ${CMAKE_SOURCE_DIR}/src/analysis/processing
   ${CMAKE_SOURCE_DIR}/src/analysis/vector
+  ${CMAKE_SOURCE_DIR}/src/analysis/raster
+  ${CMAKE_SOURCE_DIR}/src/test
+
+  ${CMAKE_BINARY_DIR}/src/core
+  ${CMAKE_BINARY_DIR}/src/analysis
+)
+INCLUDE_DIRECTORIES(SYSTEM
   ${QT_INCLUDE_DIR}
   ${GDAL_INCLUDE_DIR}
   ${PROJ_INCLUDE_DIR}
   ${GEOS_INCLUDE_DIR}
-  )
-
-#############################################################
-# Compiler defines
-
-# This define is used for tests that need to locate the test
-# data under tests/testdata in the qgis source tree.
-# the TEST_DATA_DIR variable is set in the top level CMakeLists.txt
-ADD_DEFINITIONS(-DTEST_DATA_DIR="\\"${TEST_DATA_DIR}\\"")
-
-ADD_DEFINITIONS(-DINSTALL_PREFIX="\\"${CMAKE_INSTALL_PREFIX}\\"")
-#############################################################
-# libraries
-
-# because of htonl
-IF (WIN32)
-  SET(PLATFORM_LIBRARIES wsock32)
-ENDIF (WIN32)
-
-# Since the tests are not actually installed, but rather
-# run directly from the build/src/tests dir we need to
-# ensure the qgis libs can be found.
-IF (APPLE)
-  # For Mac OS X, the executable must be at the root of the bundle's executable folder
-#  SET (CMAKE_INSTALL_NAME_DIR @executable_path/../../../src/core)
-ENDIF (APPLE)
+  ${SQLITE3_INCLUDE_DIR}
+)
 
 #note for tests we should not include the moc of our
 #qtests in the executable file list as the moc is
@@ -52,15 +44,22 @@ ENDIF (APPLE)
 #No relinking and full RPATH for the install tree
 #See: http://www.cmake.org/Wiki/CMake_RPATH_handling#No_relinking_and_full_RPATH_for_the_install_tree
 
-MACRO (ADD_QGIS_TEST testname testsrc)
-  SET(qgis_${testname}_SRCS ${testsrc} ${util_SRCS})
-  SET(qgis_${testname}_MOC_CPPS ${testsrc})
-  QT4_WRAP_CPP(qgis_${testname}_MOC_SRCS ${qgis_${testname}_MOC_CPPS})
-  ADD_CUSTOM_TARGET(qgis_${testname}moc ALL DEPENDS ${qgis_${testname}_MOC_SRCS})
-  ADD_EXECUTABLE(qgis_${testname} ${qgis_${testname}_SRCS})
-  ADD_DEPENDENCIES(qgis_${testname} qgis_${testname}moc)
-  TARGET_LINK_LIBRARIES(qgis_${testname} ${QT_LIBRARIES} qgis_analysis)
-  ADD_TEST(qgis_${testname} ${CMAKE_CURRENT_BINARY_DIR}/../../../output/bin/qgis_${testname})
+MACRO (ADD_QGIS_TEST TESTSRC)
+  SET (TESTNAME  ${TESTSRC})
+  STRING(REPLACE "test" "" TESTNAME ${TESTNAME})
+  STRING(REPLACE "qgs" "" TESTNAME ${TESTNAME})
+  STRING(REPLACE ".cpp" "" TESTNAME ${TESTNAME})
+  SET (TESTNAME  "qgis_${TESTNAME}test")
+
+  SET(${TESTNAME}_SRCS ${TESTSRC} ${util_SRCS})
+  SET(${TESTNAME}_MOC_CPPS ${TESTSRC})
+  ADD_EXECUTABLE(${TESTNAME} ${${TESTNAME}_SRCS})
+  SET_TARGET_PROPERTIES(${TESTNAME} PROPERTIES AUTOMOC TRUE)
+  TARGET_LINK_LIBRARIES(${TESTNAME}
+    ${QT_QTCORE_LIBRARY}
+    ${QT_QTTEST_LIBRARY}
+    qgis_analysis)
+  ADD_TEST(${TESTNAME} ${CMAKE_BINARY_DIR}/output/bin/${TESTNAME} -maxwarnings 10000)
   #SET_TARGET_PROPERTIES(qgis_${testname} PROPERTIES
   #  INSTALL_RPATH ${CMAKE_INSTALL_PREFIX}/${QGIS_LIB_DIR}
   #  INSTALL_RPATH_USE_LINK_PATH true )
@@ -68,7 +67,17 @@ ENDMACRO (ADD_QGIS_TEST)
 
 #############################################################
 # Tests:
+SET(TESTS
+ testqgsgeometrysnapper.cpp
+ testqgsinterpolator.cpp
+ testqgsprocessing.cpp
+ testqgsprocessingalgs.cpp
+ testqgszonalstatistics.cpp
+ testqgsrastercalculator.cpp
+ testqgsalignraster.cpp
+ testqgsnetworkanalysis.cpp
+    )
 
-ADD_QGIS_TEST(analyzertest testqgsvectoranalyzer.cpp)
-ADD_QGIS_TEST(openstreetmaptest testopenstreetmap.cpp)
-ADD_QGIS_TEST(zonalstatisticstest testqgszonalstatistics.cpp)
+FOREACH(TESTSRC ${TESTS})
+    ADD_QGIS_TEST(${TESTSRC})
+ENDFOREACH(TESTSRC)
