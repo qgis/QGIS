@@ -329,6 +329,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * Helper to get a theme cursor. It will fall back to the
      * default theme if the active theme does not have the required icon.
+     * Cursors are automatically scaled to look like a 16px cursor on 96dpi
+     * screens.
      */
     static QCursor getThemeCursor( const Cursor &cursor );
 

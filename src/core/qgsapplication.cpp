@@ -487,10 +487,7 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   if ( app && app->mCursorCache.contains( cursor ) )
     return app->mCursorCache.value( cursor );
 
-  // Cursor are supposed to be 32x32 as it seems to be the
-  // most cross-platform size
-  // If we want to make this size user-configurable or make
-  // a better guess: we might use fontMetrics
+  // All calculations are done on 32x32 icons
   // Defaults to center, individual cursors may override
   int activeX = 16;
   int activeY = 16;
@@ -520,7 +517,7 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
       break;
     case Sampler:
       activeX = 0;
-      activeY = 0;
+      activeY = 32;
       name = QStringLiteral( "mSampler.svg" );
       break;
       // No default
@@ -533,7 +530,9 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   // Check if an icon exists for this cursor (the O.S. default cursor will be used if it does not)
   if ( ! icon.isNull( ) )
   {
-    _cursor = QCursor( icon.pixmap( 32, 32 ), activeX, activeY );
+    // Apply scaling
+    float scale( ( float ) app->fontMetrics().height() / 32 );
+    _cursor = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
     app->mCursorCache.insert( cursor, _cursor );
