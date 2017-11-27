@@ -64,9 +64,12 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
   mWidget->setAllowAddFeatures( config( QStringLiteral( "AllowAddFeatures" ), false ).toBool() );
 
   const QVariant relationName = config( QStringLiteral( "Relation" ) );
-  QgsRelation relation = relationName.isValid() ?
-                         QgsProject::instance()->relationManager()->relation( relationName.toString() ) :
-                         layer()->referencingRelations( fieldIdx() )[0];
+
+  QgsRelation relation; // invalid relation by default
+  if ( relationName.isValid() )
+    relation = QgsProject::instance()->relationManager()->relation( relationName.toString() );
+  else if ( ! layer()->referencingRelations( fieldIdx() ).isEmpty() )
+    relation = layer()->referencingRelations( fieldIdx() )[0];
 
   // If this widget is already embedded by the same relation, reduce functionality
   const QgsAttributeEditorContext *ctx = &context();
