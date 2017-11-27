@@ -85,16 +85,16 @@ void Qgs3DMapCanvasDockWidget::configure()
   if ( !dlg.exec() )
     return;
 
-  double oldOriginX = map->originX(), oldOriginY = map->originY(), oldOriginZ = map->originZ();
+  QgsVector3D oldOrigin = map->origin();
 
   // update map
   w->apply();
 
-  double dx = map->originX() - oldOriginX, dy = map->originY() - oldOriginY, dz = map->originZ() - oldOriginZ;
-  if ( dx || dy || dz )
+  QgsVector3D d = map->origin() - oldOrigin;
+  if ( !d.isNull() )
   {
     // apply() call has moved origin of the world so let's move camera so we look still at the same place
-    mCanvas->cameraController()->translateWorld( QVector3D( dx, dy, dz ) );
+    mCanvas->cameraController()->translateWorld( d );
   }
 }
 

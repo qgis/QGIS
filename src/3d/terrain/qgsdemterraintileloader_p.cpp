@@ -82,8 +82,8 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
 
   const Qgs3DMapSettings &map = terrain()->map3D();
   QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( mNode->tileX(), mNode->tileY(), mNode->tileZ() ); //node->extent;
-  double x0 = extent.xMinimum() - map.originX();
-  double y0 = extent.yMinimum() - map.originY();
+  double x0 = extent.xMinimum() - map.origin().x();
+  double y0 = extent.yMinimum() - map.origin().y();
   double side = extent.width();
   double half = side / 2;
 

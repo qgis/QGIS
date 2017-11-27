@@ -109,7 +109,7 @@ void Qgs3DMapConfigWidget::apply()
   if ( needsUpdateOrigin )
   {
     QgsPointXY center = mMap->terrainGenerator()->extent().center();
-    mMap->setOrigin( center.x(), center.y(), 0 );
+    mMap->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
   }
 
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );

@@ -27,8 +27,8 @@ QgsAABB QgsTerrainGenerator::rootChunkBbox( const Qgs3DMapSettings &map ) const
 
   float hMin, hMax;
   rootChunkHeightRange( hMin, hMax );
-  return QgsAABB( te.xMinimum() - map.originX(), hMin * map.terrainVerticalScale(), -te.yMaximum() + map.originY(),
-                  te.xMaximum() - map.originX(), hMax * map.terrainVerticalScale(), -te.yMinimum() + map.originY() );
+  return QgsAABB( te.xMinimum() - map.origin().x(), hMin * map.terrainVerticalScale(), -te.yMaximum() + map.origin().y(),
+                  te.xMaximum() - map.origin().x(), hMax * map.terrainVerticalScale(), -te.yMinimum() + map.origin().y() );
 }
 
 float QgsTerrainGenerator::rootChunkError( const Qgs3DMapSettings &map ) const

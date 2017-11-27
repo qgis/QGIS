@@ -28,9 +28,7 @@
 
 Qgs3DMapSettings::Qgs3DMapSettings( const Qgs3DMapSettings &other )
   : QObject()
-  , mOriginX( other.mOriginX )
-  , mOriginY( other.mOriginY )
-  , mOriginZ( other.mOriginZ )
+  , mOrigin( other.mOrigin )
   , mCrs( other.mCrs )
   , mBackgroundColor( other.mBackgroundColor )
   , mTerrainVerticalScale( other.mTerrainVerticalScale )
@@ -59,9 +57,10 @@ Qgs3DMapSettings::~Qgs3DMapSettings()
 void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteContext &context )
 {
   QDomElement elemOrigin = elem.firstChildElement( "origin" );
-  mOriginX = elemOrigin.attribute( "x" ).toDouble();
-  mOriginY = elemOrigin.attribute( "y" ).toDouble();
-  mOriginZ = elemOrigin.attribute( "z" ).toDouble();
+  mOrigin = QgsVector3D(
+              elemOrigin.attribute( "x" ).toDouble(),
+              elemOrigin.attribute( "y" ).toDouble(),
+              elemOrigin.attribute( "z" ).toDouble() );
 
   QDomElement elemCrs = elem.firstChildElement( "crs" );
   mCrs.readXml( elemCrs );
@@ -139,9 +138,9 @@ QDomElement Qgs3DMapSettings::writeXml( QDomDocument &doc, const QgsReadWriteCon
   QDomElement elem = doc.createElement( "qgis3d" );
 
   QDomElement elemOrigin = doc.createElement( "origin" );
-  elemOrigin.setAttribute( "x", QString::number( mOriginX ) );
-  elemOrigin.setAttribute( "y", QString::number( mOriginY ) );
-  elemOrigin.setAttribute( "z", QString::number( mOriginZ ) );
+  elemOrigin.setAttribute( "x", QString::number( mOrigin.x() ) );
+  elemOrigin.setAttribute( "y", QString::number( mOrigin.y() ) );
+  elemOrigin.setAttribute( "z", QString::number( mOrigin.z() ) );
   elem.appendChild( elemOrigin );
 
   QDomElement elemCrs = doc.createElement( "crs" );
@@ -210,11 +209,18 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
   }
 }
 
-void Qgs3DMapSettings::setOrigin( double originX, double originY, double originZ )
+QgsVector3D Qgs3DMapSettings::mapToWorldCoordinates( const QgsVector3D &mapCoords ) const
 {
-  mOriginX = originX;
-  mOriginY = originY;
-  mOriginZ = originZ;
+  return QgsVector3D( mapCoords.x() - mOrigin.x(),
+                      -( mapCoords.z() - mOrigin.z() ),
+                      mapCoords.y() - mOrigin.y() );
+}
+
+QgsVector3D Qgs3DMapSettings::worldToMapCoordinates( const QgsVector3D &worldCoords ) const
+{
+  return QgsVector3D( worldCoords.x() + mOrigin.x(),
+                      -( worldCoords.z() + mOrigin.z() ),
+                      worldCoords.y() + mOrigin.y() );
 }
 
 void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
