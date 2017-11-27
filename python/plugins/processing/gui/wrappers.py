@@ -347,7 +347,7 @@ class ExtentWidgetWrapper(WidgetWrapper):
         else:
             widget = QComboBox()
             widget.setEditable(True)
-            extents = self.dialog.getAvailableValuesOfType(QgsProcessingParameterExtent, (OutputExtent, QgsProcessingOutputString))
+            extents = self.dialog.getAvailableValuesOfType(QgsProcessingParameterExtent, (QgsProcessingOutputString))
             if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
                 widget.addItem(self.USE_MIN_COVERING_EXTENT, None)
             layers = self.dialog.getAvailableValuesOfType([QgsProcessingParameterFeatureSource,
@@ -569,9 +569,9 @@ class MultipleLayerWidgetWrapper(WidgetWrapper):
         elif self.param.layerType() == QgsProcessing.TypeVector:
             options = self.dialog.getAvailableValuesOfType((QgsProcessingParameterFeatureSource,
                                                             QgsProcessingParameterVectorLayer,
-                                                            QgsProcessingParameterMultipleLayers), OutputTable)
+                                                            QgsProcessingParameterMultipleLayers), QgsProcessingOutputVectorLayer)
         else:
-            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, OutputFile)
+            options = self.dialog.getAvailableValuesOfType(QgsProcessingParameterFile, QgsProcessingOutputFile)
         options = sorted(options, key=lambda opt: self.dialog.resolveValueDescription(opt))
         return options
 
