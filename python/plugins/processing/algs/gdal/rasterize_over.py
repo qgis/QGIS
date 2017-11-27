@@ -31,10 +31,6 @@ from qgis.core import QgsProcessingUtils
 
 from qgis.PyQt.QtGui import QIcon
 
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterTableField
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

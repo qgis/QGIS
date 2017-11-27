@@ -35,20 +35,10 @@ from qgis.core import (QgsApplication,
                        QgsSettings,
                        QgsProcessingParameterDefinition)
 from qgis.gui import QgsMessageBar
-from processing.gui.wrappers import WidgetWrapperFactory
 
+from processing.gui.wrappers import WidgetWrapperFactory
 from processing.gui.BatchOutputSelectionPanel import BatchOutputSelectionPanel
 
-from processing.core.parameters import ParameterFile  # NOQA
-from processing.core.parameters import ParameterRaster  # NOQA
-from processing.core.parameters import ParameterTable  # NOQA
-from processing.core.parameters import ParameterVector  # NOQA
-from processing.core.parameters import ParameterExtent  # NOQA
-from processing.core.parameters import ParameterCrs  # NOQA
-from processing.core.parameters import ParameterPoint  # NOQA
-from processing.core.parameters import ParameterSelection  # NOQA
-from processing.core.parameters import ParameterFixedTable  # NOQA
-from processing.core.parameters import ParameterMultipleInput  # NOQA
 from processing.tools import dataobjects
 
 pluginPath = os.path.split(os.path.dirname(__file__))[0]

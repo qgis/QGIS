@@ -26,14 +26,9 @@ __copyright__ = '(C) 2015, Giovanni Manghi'
 __revision__ = '$Format:%H$'
 
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterRaster
-from processing.core.parameters import ParameterSelection
-from processing.core.outputs import OutputRaster
+from processing.algs.gdal.GdalUtils import GdalUtils
 
 from processing.tools.system import isWindows
-
-from processing.algs.gdal.GdalUtils import GdalUtils
 
 
 class gdalcalc(GdalAlgorithm):
