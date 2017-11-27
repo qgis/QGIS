@@ -980,7 +980,10 @@ void QgsAttributeForm::synchronizeEnabledState()
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
-      mFormEditorWidgets.value( eww->fieldIdx() )->setConstraintResultVisible( isEditable );
+      QgsAttributeFormEditorWidget *formWidget = mFormEditorWidgets.value( eww->fieldIdx() );
+
+      if ( formWidget )
+        formWidget->setConstraintResultVisible( isEditable );
 
       eww->setConstraintResultVisible( isEditable );
 
