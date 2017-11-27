@@ -152,14 +152,17 @@ void QgsSingleBandGrayRendererWidget::setFromRenderer( const QgsRasterRenderer* 
   {
     //band
     mGrayBandComboBox->setCurrentIndex( mGrayBandComboBox->findData( gr->grayBand() ) );
-    const QgsContrastEnhancement* ce = gr->contrastEnhancement();
-
     mGradientComboBox->setCurrentIndex( mGradientComboBox->findData( gr->gradient() ) );
-    //minmax
-    mMinLineEdit->setText( QString::number( ce->minimumValue() ) );
-    mMaxLineEdit->setText( QString::number( ce->maximumValue() ) );
-    //contrast enhancement algorithm
-    mContrastEnhancementComboBox->setCurrentIndex(
-      mContrastEnhancementComboBox->findData(( int )( ce->contrastEnhancementAlgorithm() ) ) );
+
+    const QgsContrastEnhancement* ce = gr->contrastEnhancement();
+    if ( ce )
+    {
+      //minmax
+      mMinLineEdit->setText( QString::number( ce->minimumValue() ) );
+      mMaxLineEdit->setText( QString::number( ce->maximumValue() ) );
+      //contrast enhancement algorithm
+      mContrastEnhancementComboBox->setCurrentIndex(
+        mContrastEnhancementComboBox->findData(( int )( ce->contrastEnhancementAlgorithm() ) ) );
+    }
   }
 }
