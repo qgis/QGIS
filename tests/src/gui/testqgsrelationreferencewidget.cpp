@@ -20,6 +20,7 @@
 #include <qgsapplication.h>
 #include "qgseditorwidgetwrapper.h"
 #include <editorwidgets/qgsrelationreferencewidget.h>
+#include <editorwidgets/qgsrelationreferencewidgetwrapper.h>
 #include <qgsproject.h>
 #include <qgsattributeform.h>
 #include <qgsrelationmanager.h>
@@ -27,6 +28,7 @@
 #include "qgsfeaturelistcombobox.h"
 #include "qgsfeaturefiltermodel.h"
 #include "qgsgui.h"
+#include "qgsmapcanvas.h"
 
 class TestQgsRelationReferenceWidget : public QObject
 {
@@ -43,6 +45,7 @@ class TestQgsRelationReferenceWidget : public QObject
     void testChainFilter();
     void testChainFilterRefreshed();
     void testChainFilterDeleteForeignKey();
+    void testInvalidRelation();
 
   private:
     std::unique_ptr<QgsVectorLayer> mLayer1;
@@ -271,6 +274,17 @@ void TestQgsRelationReferenceWidget::testChainFilterDeleteForeignKey()
 
   QCOMPARE( cbs[2]->currentText(), QString( "raccord" ) );
   QCOMPARE( cbs[2]->isEnabled(), false );
+}
+
+void TestQgsRelationReferenceWidget::testInvalidRelation()
+{
+  QgsVectorLayer vl( QStringLiteral( "LineString?crs=epsg:3111&field=pk:int&field=fk:int" ), QStringLiteral( "vl1" ), QStringLiteral( "memory" ) );
+  QgsMapCanvas canvas;
+  QgsRelationReferenceWidget editor( new QWidget() );
+
+  // initWidget with an invalid relation
+  QgsRelationReferenceWidgetWrapper ww( &vl, 10, &editor, &canvas, nullptr, nullptr );
+  ww.initWidget( nullptr );
 }
 
 QGSTEST_MAIN( TestQgsRelationReferenceWidget )
