@@ -22,6 +22,7 @@
 #include <Qt3DInput>
 #include <Qt3DRender>
 
+class QgsVector3D;
 
 /**
  * \ingroup 3d
@@ -61,7 +62,7 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     void setViewFromTop( float worldX, float worldY, float distance, float yaw = 0 );
 
     //! Moves the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
-    void translateWorld( const QVector3D &vWorld );
+    void translateWorld( const QgsVector3D &vWorld );
 
   private:
     void setCameraData( float x, float y, float dist, float pitch = 0, float yaw = 0 );

@@ -194,7 +194,7 @@ QList<QVector3D> Qgs3DUtils::positions( const Qgs3DMapSettings &map, QgsVectorLa
           h = terrainZ + geomZ;
           break;
       }
-      positions.append( QVector3D( pt.x() - map.originX(), h, -( pt.y() - map.originY() ) ) );
+      positions.append( QVector3D( pt.x() - map.origin().x(), h, -( pt.y() - map.origin().y() ) ) );
       //qDebug() << positions.last();
     }
   }

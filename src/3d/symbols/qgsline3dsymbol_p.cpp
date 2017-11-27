@@ -93,7 +93,7 @@ QgsLine3DSymbolEntityNode::QgsLine3DSymbolEntityNode( const Qgs3DMapSettings &ma
 
 Qt3DRender::QGeometryRenderer *QgsLine3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsLine3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  QgsPointXY origin( map.originX(), map.originY() );
+  QgsPointXY origin( map.origin().x(), map.origin().y() );
 
   // TODO: configurable
   int nSegments = 4;
