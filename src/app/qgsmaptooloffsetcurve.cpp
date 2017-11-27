@@ -248,13 +248,13 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
   if ( mDistanceWidget )
   {
     // this will also set the rubber band
-    mDistanceWidget->setValue( leftOf < 0 ? offset : -offset );
+    mDistanceWidget->setValue( leftOf < 0 ? -offset : offset );
     mDistanceWidget->setFocus( Qt::TabFocusReason );
   }
   else
   {
     //create offset geometry using geos
-    setOffsetForRubberBand( leftOf < 0 ? offset : -offset );
+    setOffsetForRubberBand( leftOf < 0 ? -offset : offset );
   }
 }
 
