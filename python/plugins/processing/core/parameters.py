@@ -16,10 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
-from builtins import object
-from builtins import basestring
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -89,7 +85,7 @@ def _splitParameterOptions(line):
     return isOptional, tokens[0], definition
 
 
-class Parameter(object):
+class Parameter:
 
     """
     Base class for all parameters that a geoalgorithm might
@@ -413,7 +409,7 @@ class ParameterSelection(Parameter):
         # compute options as (value, text)
         options = []
         for i, option in enumerate(self.options):
-            if option is None or isinstance(option, basestring):
+            if option is None or isinstance(option, str):
                 options.append((i, option))
             else:
                 options.append((option[0], option[1]))
