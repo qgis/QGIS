@@ -2012,6 +2012,13 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - writePath() does not accept second argument (relativeBasePath) anymore. Use QgsPathResolver instead.
 
 
+QgsProjectionSelectionWidget	{#qgis_api_break_3_0_QgsProjectionSelectionWidget}
+-----------------------
+
+- dialog() has been removed
+- setMessage() has been added to set message on inner dialog.
+
+
 QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}
 -----------------------
 
