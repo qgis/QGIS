@@ -1058,9 +1058,9 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
     return QgsRectangle();
   }
 
-  QString sql = QStringLiteral( "select west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat from tbl_srs "
-                                "where srs_id=%1" )
-                .arg( d->mSrsId );
+  QString sql = QStringLiteral( "select west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat from tbl_bounds "
+                                "where srid=%1" )
+                .arg( d->mSRID );
   statement = database.prepare( sql, result );
 
   QgsRectangle rect;

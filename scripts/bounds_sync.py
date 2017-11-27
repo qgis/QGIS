@@ -30,11 +30,14 @@ def gen():
     """
 
     rows = db.execute(query)
-    with open("resources/epsg_areas.csv", "w") as f:
-        f.write("coord_sys_code, west_bound_lon, north_bound_lat, east_bound_lon, south_bound_lat\n")
-        for row in rows:
-            csv = ",".join(str(data) for data in row)
-            f.write('{0}\n'.format(csv))
+    srsdb = sqlite.connect("./resources/srs.db")
+    srsdb.execute("DELETE FROM tbl_bounds")
+    data = list(rows)
+    srsdb.executemany("""insert into tbl_bounds(srid, west_bound_lon, 
+    north_bound_lat, 
+    east_bound_lon, 
+    south_bound_lat) values (?,?,?,?,?)""", data)
+    srsdb.commit()
 
 
 def usage():
