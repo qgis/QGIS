@@ -1205,7 +1205,16 @@ static QVariant fcnRegexpSubstr( const QVariantList &values, const QgsExpression
   if ( match.hasMatch() )
   {
     // return first capture
-    return QVariant( match.captured( 0 ) );
+    if ( match.lastCapturedIndex() > 0 )
+    {
+      // a capture group was present, so use that
+      return QVariant( match.captured( 1 ) );
+    }
+    else
+    {
+      // no capture group, so using all match
+      return QVariant( match.captured( 0 ) );
+    }
   }
   else
   {
