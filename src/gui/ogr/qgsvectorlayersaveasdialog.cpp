@@ -120,8 +120,8 @@ void QgsVectorLayerSaveAsDialog::setup()
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromSrsId( mCRS );
   mCrsSelector->setCrs( srs );
   mCrsSelector->setLayerCrs( srs );
-  mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the vector file. "
-                                          "The data points will be transformed from the layer coordinate reference system." ) );
+  mCrsSelector->setMessage( tr( "Select the coordinate reference system for the vector file. "
+                                "The data points will be transformed from the layer coordinate reference system." ) );
 
   mEncodingComboBox->setCurrentIndex( idx );
   mFormatComboBox_currentIndexChanged( mFormatComboBox->currentIndex() );

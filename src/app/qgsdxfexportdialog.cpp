@@ -474,8 +474,8 @@ QgsDxfExportDialog::QgsDxfExportDialog( QWidget *parent, Qt::WindowFlags f )
   mCRS = QgsCoordinateReferenceSystem::fromSrsId( crsid );
   mCrsSelector->setCrs( mCRS );
   mCrsSelector->setLayerCrs( mCRS );
-  mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the dxf file. "
-                                          "The data points will be transformed from the layer coordinate reference system." ) );
+  mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
+                                "The data points will be transformed from the layer coordinate reference system." ) );
 
   mEncoding->addItems( QgsDxfExport::encodings() );
   mEncoding->setCurrentIndex( mEncoding->findText( QgsProject::instance()->readEntry( QStringLiteral( "dxf" ), QStringLiteral( "/lastDxfEncoding" ), s.value( QStringLiteral( "qgis/lastDxfEncoding" ), "CP1252" ).toString() ) ) );
