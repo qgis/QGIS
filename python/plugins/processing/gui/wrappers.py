@@ -97,34 +97,21 @@ from qgis.gui import (
 from qgis.PyQt.QtCore import pyqtSignal, QObject, QVariant, Qt
 from qgis.utils import iface
 
+from processing.core.ProcessingConfig import ProcessingConfig
+from processing.modeler.MultilineTextPanel import MultilineTextPanel
+
 from processing.gui.NumberInputPanel import NumberInputPanel, ModellerNumberInputPanel
 from processing.gui.RangePanel import RangePanel
-from processing.modeler.MultilineTextPanel import MultilineTextPanel
 from processing.gui.PointSelectionPanel import PointSelectionPanel
-from processing.core.parameters import (ParameterBoolean,
-                                        ParameterPoint,
-                                        ParameterFile,
-                                        ParameterRaster,
-                                        ParameterVector,
-                                        ParameterNumber,
-                                        ParameterString,
-                                        ParameterExpression,
-                                        ParameterTable,
-                                        ParameterTableField,
-                                        ParameterExtent,
-                                        ParameterFixedTable,
-                                        ParameterCrs)
-from processing.core.ProcessingConfig import ProcessingConfig
 from processing.gui.FileSelectionPanel import FileSelectionPanel
-from processing.core.outputs import (OutputFile, OutputRaster, OutputVector,
-                                     OutputString, OutputTable, OutputExtent)
-from processing.tools import dataobjects
 from processing.gui.CheckboxesPanel import CheckboxesPanel
 from processing.gui.MultipleInputPanel import MultipleInputPanel
 from processing.gui.BatchInputSelectionPanel import BatchInputSelectionPanel
 from processing.gui.FixedTablePanel import FixedTablePanel
 from processing.gui.ExtentSelectionPanel import ExtentSelectionPanel
 from processing.gui.ParameterGuiUtils import getFileFilter
+
+from processing.tools import dataobjects
 
 DIALOG_STANDARD = 'standard'
 DIALOG_BATCH = 'batch'

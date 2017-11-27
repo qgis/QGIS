@@ -43,7 +43,6 @@ from qgis.core import (QgsRectangle,
 
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.tools import raster
-from processing.tools.dataobjects import exportRasterLayer
 
 
 class HypsometricCurves(QgisAlgorithm):
@@ -82,7 +81,7 @@ class HypsometricCurves(QgisAlgorithm):
     def processAlgorithm(self, parameters, context, feedback):
         raster_layer = self.parameterAsRasterLayer(parameters, self.INPUT_DEM, context)
         target_crs = raster_layer.crs()
-        rasterPath = exportRasterLayer(raster_layer)
+        rasterPath = raster_layer.source()
 
         source = self.parameterAsSource(parameters, self.BOUNDARY_LAYER, context)
         step = self.parameterAsDouble(parameters, self.STEP, context)

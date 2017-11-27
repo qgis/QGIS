@@ -107,38 +107,3 @@ def checkMinDistance(point, index, distance, points):
             return False
 
     return True
-
-
-NOGEOMETRY_EXTENSIONS = [
-    u'csv',
-    u'dbf',
-    u'ods',
-    u'xlsx',
-]
-
-
-class TableWriter(object):
-
-    def __init__(self, fileName, encoding, fields):
-        self.fileName = fileName
-        if not self.fileName.lower().endswith('csv'):
-            self.fileName += '.csv'
-
-        self.encoding = encoding
-        if self.encoding is None or encoding == 'System':
-            self.encoding = 'utf-8'
-
-        with open(self.fileName, 'w', newline='', encoding=self.encoding) as f:
-            self.writer = csv.writer(f)
-            if len(fields) != 0:
-                self.writer.writerow(fields)
-
-    def addRecord(self, values):
-        with open(self.fileName, 'a', newline='', encoding=self.encoding) as f:
-            self.writer = csv.writer(f)
-            self.writer.writerow(values)
-
-    def addRecords(self, records):
-        with open(self.fileName, 'a', newline='', encoding=self.encoding) as f:
-            self.writer = csv.writer(f)
-            self.writer.writerows(records)
