@@ -32,7 +32,7 @@ class QgsSelectLayerTreeModel : public QgsLayerTreeModel
     QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject *parent = nullptr );
     ~QgsSelectLayerTreeModel();
 
-    int columnCount( const QModelIndex &parent ) const;
+    int columnCount( const QModelIndex &parent ) const override;
 
     QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
     // bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
