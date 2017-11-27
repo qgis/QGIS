@@ -580,6 +580,9 @@ bool QgsOgrProvider::setSubsetString( const QString& theSQL, bool updateFeatureC
 
   invalidateCachedExtent( false );
 
+  // Changing the filter may change capabilities
+  computeCapabilities();
+
   emit dataChanged();
 
   return true;

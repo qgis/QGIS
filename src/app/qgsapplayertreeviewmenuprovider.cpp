@@ -216,6 +216,7 @@ QMenu* QgsAppLayerTreeViewMenuProvider::createContextMenu()
           {
             menu->addAction( toggleEditingAction );
             toggleEditingAction->setChecked( vlayer->isEditable() );
+            toggleEditingAction->setEnabled( true );
           }
           if ( saveLayerEditsAction && vlayer->isModified() )
           {
