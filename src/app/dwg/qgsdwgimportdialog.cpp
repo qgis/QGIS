@@ -90,8 +90,8 @@ QgsDwgImportDialog::QgsDwgImportDialog( QWidget *parent, Qt::WindowFlags f )
   QgsCoordinateReferenceSystem crs( crsid, QgsCoordinateReferenceSystem::InternalCrsId );
   mCrsSelector->setCrs( crs );
   mCrsSelector->setLayerCrs( crs );
-  mCrsSelector->dialog()->setMessage( tr( "Select the coordinate reference system for the dxf file. "
-                                          "The data points will be transformed from the layer coordinate reference system." ) );
+  mCrsSelector->setMessage( tr( "Select the coordinate reference system for the dxf file. "
+                                "The data points will be transformed from the layer coordinate reference system." ) );
 
   pbLoadDatabase_clicked();
   updateUI();
