@@ -1853,13 +1853,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
     return -1;
   }
 
-  QString boundsColumns( "ALTER TABLE tbl_srs ADD west_bound_lon REAL;"
-                         "ALTER TABLE tbl_srs ADD north_bound_lat REAL;"
-                         "ALTER TABLE tbl_srs ADD east_bound_lon REAL;"
-                         "ALTER TABLE tbl_srs ADD south_bound_lat REAL;" );
-
-  sqlite3_exec( database.get(), boundsColumns.toUtf8(), nullptr, nullptr, nullptr );
-
   // fix up database, if not done already //
   if ( sqlite3_exec( database.get(), "alter table tbl_srs add noupdate boolean", nullptr, nullptr, nullptr ) == SQLITE_OK )
     ( void )sqlite3_exec( database.get(), "update tbl_srs set noupdate=(auth_name='EPSG' and auth_id in (5513,5514,5221,2065,102067,4156,4818))", nullptr, nullptr, nullptr );
@@ -2102,58 +2095,6 @@ int QgsCoordinateReferenceSystem::syncDatabase()
                    sqlite3_errmsg( database.get() ) ) );
   }
 #endif
-
-  QFile csv( QgsApplication::pkgDataPath() + "/resources/epsg_areas.csv" );
-  if ( !csv.open( QIODevice::ReadOnly ) )
-  {
-    return false;
-  }
-
-  QTextStream lines( &csv );
-  ( void )lines.readLine(); // header line
-
-  for ( ;; )
-  {
-    QString line = lines.readLine();
-    if ( line.isNull() )
-      break;
-
-    if ( line.startsWith( '#' ) )
-    {
-      continue;
-    }
-    const QStringList data = line.split( ',' );
-    if ( data[0] == QStringLiteral( "None" ) )
-      continue;
-
-    double west_bound_lon = data[1].toDouble();
-    double north_bound_lat = data[2].toDouble();
-    double east_bound_lon = data[3].toDouble();
-    double south_bound_lat = data[4].toDouble();
-    sql = QStringLiteral( "UPDATE tbl_srs "
-                          "SET west_bound_lon=%1, "
-                          "north_bound_lat=%2, "
-                          "east_bound_lon=%3, "
-                          "south_bound_lat=%4 "
-                          "WHERE auth_name='EPSG' AND auth_id=%5" )
-          .arg( west_bound_lon )
-          .arg( north_bound_lat )
-          .arg( east_bound_lon )
-          .arg( south_bound_lat )
-          .arg( data[0] );
-
-    if ( sqlite3_exec( database.get(), sql.toUtf8(), nullptr, nullptr, &errMsg ) != SQLITE_OK )
-    {
-      QgsDebugMsg( QStringLiteral( "Could not execute: %s [%s/%s]\n" ).arg(
-                     sql,
-                     sqlite3_errmsg( database.get() ),
-                     errMsg ? errMsg : "(unknown error)" ) );
-      if ( errMsg )
-        sqlite3_free( errMsg );
-      errors++;
-
-    }
-  }
 
   pj_ctx_free( pContext );
 
