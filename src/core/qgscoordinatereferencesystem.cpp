@@ -1072,7 +1072,11 @@ QgsRectangle QgsCoordinateReferenceSystem::bounds() const
       double north = statement.columnAsDouble( 1 );
       double east = statement.columnAsDouble( 2 );
       double south = statement.columnAsDouble( 3 );
-      rect = QgsRectangle( west, north, east, south );
+
+      rect.setXMinimum( west );
+      rect.setYMinimum( south );
+      rect.setXMaximum( east );
+      rect.setYMaximum( north );
     }
   }
 
