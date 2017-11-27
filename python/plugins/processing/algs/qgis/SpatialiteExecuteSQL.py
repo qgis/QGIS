@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Mathieu Pellerin'
 __date__ = 'October 2016'

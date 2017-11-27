@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -43,7 +42,7 @@ class ProcessingResults(QObject):
         return self.results
 
 
-class Result(object):
+class Result:
 
     def __init__(self, icon, name, filename):
         self.icon = icon

@@ -25,9 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-from builtins import str
-from builtins import object
-
 import os.path
 import traceback
 import subprocess

@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -67,7 +64,7 @@ def _expressionContext(alg):
     return context
 
 
-class Output(object):
+class Output:
 
     def __init__(self, name='', description='', hidden=False):
         self.name = name

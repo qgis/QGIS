@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import range
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -57,7 +54,7 @@ except:
     gdalAvailable = False
 
 
-class GdalUtils(object):
+class GdalUtils:
     GDAL_HELP_PATH = 'GDAL_HELP_PATH'
 
     supportedRasters = None

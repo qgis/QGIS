@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -35,7 +33,7 @@ from processing.core.ProcessingConfig import ProcessingConfig
 from qgis.PyQt.QtCore import QCoreApplication
 
 
-class ProcessingLog(object):
+class ProcessingLog:
 
     DATE_FORMAT = "%Y-%m-%d %H:%M:%S"
     recentAlgs = []
@@ -119,7 +117,7 @@ class ProcessingLog(object):
         return QCoreApplication.translate(context, string)
 
 
-class LogEntry(object):
+class LogEntry:
 
     def __init__(self, date, text):
         self.date = date

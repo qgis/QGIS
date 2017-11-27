@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -48,6 +47,7 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class AlgorithmDialogFeedback(QgsProcessingFeedback):
+
     """
     Directs algorithm feedback to an algorithm dialog
     """

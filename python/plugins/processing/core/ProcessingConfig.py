@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -45,7 +43,7 @@ class SettingsWatcher(QObject):
 settingsWatcher = SettingsWatcher()
 
 
-class ProcessingConfig(object):
+class ProcessingConfig:
 
     OUTPUT_FOLDER = 'OUTPUTS_FOLDER'
     RASTER_STYLE = 'RASTER_STYLE'
@@ -254,7 +252,7 @@ class ProcessingConfig(object):
         return QCoreApplication.translate(context, string)
 
 
-class Setting(object):
+class Setting:
 
     """A simple config parameter that will appear on the config dialog.
     """
