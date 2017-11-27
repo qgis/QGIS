@@ -17,6 +17,7 @@
 
 #include "qgscurve.h"
 #include "qgsgeometry.h"
+#include "qgsmessagelog.h"
 #include "qgsmultipolygon.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
@@ -301,7 +302,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     {
       // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
       // geometry in unprojected lat/lon coordinates
-      qDebug() << "geometry's coordinates are too close to each other and simplification failed - skipping";
+      QgsMessageLog::logMessage( "geometry's coordinates are too close to each other and simplification failed - skipping", "3D" );
     }
     else
     {
@@ -313,7 +314,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
   if ( !_check_intersecting_rings( polygon ) )
   {
     // skip the polygon - it would cause a crash inside poly2tri library
-    qDebug() << "polygon rings intersect each other - skipping";
+    QgsMessageLog::logMessage( "polygon rings intersect each other - skipping", "3D" );
     return;
   }
 
@@ -423,7 +424,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       }
       catch ( ... )
       {
-        qDebug() << "Triangulation failed. Skipping polygon...";
+        QgsMessageLog::logMessage( "Triangulation failed. Skipping polygon...", "3D" );
       }
 
       delete cdt;
