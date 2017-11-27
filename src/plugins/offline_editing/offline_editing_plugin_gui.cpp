@@ -30,6 +30,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QSettings>
+#include <QDebug>
 
 
 QgsSelectLayerTreeModel::QgsSelectLayerTreeModel( QgsLayerTreeGroup* rootNode, QObject* parent )
@@ -43,6 +44,12 @@ QgsSelectLayerTreeModel::~QgsSelectLayerTreeModel()
 {
 }
 
+int QgsSelectLayerTreeModel::columnCount( const QModelIndex &parent ) const
+{
+  return QgsLayerTreeModel::columnCount( parent ) + 1;
+}
+
+/*
 QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) const
 {
   if ( role == Qt::CheckStateRole )
@@ -65,7 +72,59 @@ QVariant QgsSelectLayerTreeModel::data( const QModelIndex& index, int role ) con
   }
   return QgsLayerTreeModel::data( index, role );
 }
+*/
 
+QVariant QgsSelectLayerTreeModel::data( const QModelIndex &index, int role ) const
+{
+  QgsLayerTreeNode *node = index2node( index );
+  if ( index.column() == 0 )
+  {
+    if ( role == Qt::CheckStateRole )
+    {
+      if ( QgsLayerTree::isLayer( node ) )
+      {
+        QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+        return nodeLayer->isVisible();
+      }
+      else if ( QgsLayerTree::isGroup( node ) )
+      {
+        QgsLayerTreeGroup *nodeGroup = QgsLayerTree::toGroup( node );
+        return nodeGroup->isVisible();
+      }
+      else
+      {
+        return QVariant();
+      }
+    }
+  }
+  else
+  {
+    if ( QgsLayerTree::isLayer( node ) && index.column() > 0 )
+    {
+      QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
+      QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( nodeLayer->layer() );
+      if ( vlayer && vlayer->dataProvider()->name() == QLatin1String( "WFS" ) )
+      {
+        switch ( role )
+        {
+          case Qt::ToolTipRole:
+            return tr( "The source of this layer is a <b>WFS</b> server.<br>"
+                       "Some WFS layers are not suitable for offline<br>"
+                       "editing due to unstable primary keys<br>"
+                       "please check with your system administrator<br>"
+                       "if this WFS layer can be used for offline<br>"
+                       "editing." );
+            break;
+          case Qt::DecorationRole:
+            return QgsApplication::getThemeIcon( "/mIconWarning.svg" );
+            break;
+        }
+      }
+    }
+    return QVariant();
+  }
+  return QgsLayerTreeModel::data( index, role );
+}
 
 QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::WindowFlags fl )
     : QDialog( parent, fl )
@@ -80,6 +139,7 @@ QgsOfflineEditingPluginGui::QgsOfflineEditingPluginGui( QWidget* parent, Qt::Win
   QgsLayerTreeGroup* rootNode = QgsLayerTree::toGroup( QgsProject::instance()->layerTreeRoot()->clone() );
   QgsLayerTreeModel* treeModel = new QgsSelectLayerTreeModel( rootNode, this );
   mLayerTree->setModel( treeModel );
+  mLayerTree->header()->setResizeMode( QHeaderView::ResizeToContents );
 
   connect( mSelectAllButton, SIGNAL( clicked() ), this, SLOT( selectAll() ) );
   connect( mUnselectAllButton, SIGNAL( clicked() ), this, SLOT( unSelectAll() ) );
