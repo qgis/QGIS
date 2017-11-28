@@ -493,7 +493,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/ ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/, double *leftOf /Out/ = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 %Docstring
  Searches for the closest segment of geometry to the given point
  \param point Specifies the point for search
