@@ -143,7 +143,7 @@ void TestQgsRasterSubLayer::subLayersList()
     qDebug() << "sublayers: " << sublayers.join( QStringLiteral( "," ) );
     mReport += QStringLiteral( "sublayers:<br>%1<br>\n" ).arg( sublayers.join( QStringLiteral( "<br>" ) ) );
     mReport += QStringLiteral( "expected:<br>%1<br>\n" ).arg( expected.join( QStringLiteral( "<br>" ) ) );
-    QVERIFY( sublayers == expected );
+    QCOMPARE( sublayers, expected );
     mReport += QLatin1String( "<p>Passed</p>" );
   }
 }

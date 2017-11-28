@@ -845,7 +845,7 @@ bool QgsGrassModuleStandardOptions::getCurrentMapRegion( QgsGrassModuleInput *in
     return false;
   }
 
-  QStringList mm = input->currentMap().split( QStringLiteral( "@" ) );
+  QStringList mm = input->currentMap().split( '@' );
   QString map = mm.value( 0 );
   QString mapset = QgsGrass::getDefaultMapset();
   if ( mm.size() > 1 )

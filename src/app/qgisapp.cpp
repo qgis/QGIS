@@ -4230,7 +4230,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       else if ( !sublayers.isEmpty() ) // there is 1 layer of data available
       {
         //set friendly name for datasources with only one layer
-        QStringList elements = sublayers.at( 0 ).split( ':' );
+        QStringList elements = sublayers.at( 0 ).split( QgsDataProvider::SUBLAYER_SEPARATOR );
         QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
 
         if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
@@ -4443,7 +4443,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     else
     {
       // remove driver name and file name
-      name.remove( name.split( ':' )[0] );
+      name.remove( name.split( QgsDataProvider::SUBLAYER_SEPARATOR )[0] );
       name.remove( path );
     }
     // remove any : or " left over
@@ -4591,7 +4591,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     // OGR provider returns items in this format:
     // <layer_index>:<name>:<feature_count>:<geom_type>
 
-    QStringList elements = sublayer.split( QStringLiteral( ":" ) );
+    QStringList elements = sublayer.split( QgsDataProvider::SUBLAYER_SEPARATOR );
     // merge back parts of the name that may have been split
     while ( elements.size() > 5 )
     {
@@ -10025,7 +10025,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
       QStringList sublayers = layer->dataProvider()->subLayers();
       if ( !sublayers.isEmpty() )
       {
-        QStringList elements = sublayers.at( 0 ).split( ':' );
+        QStringList elements = sublayers.at( 0 ).split( QgsDataProvider::SUBLAYER_SEPARATOR );
         QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
 
         if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0

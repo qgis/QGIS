@@ -218,12 +218,20 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * Sub-layers are used when the provider's source can combine layers
      * it knows about in some way before it hands them off to the provider.
+     *
+     * \see SUBLAYER_SEPARATOR
      */
     virtual QStringList subLayers() const
     {
       return QStringList();  // Empty
     }
 
+    /**
+     * String sequence used for separating components of sublayers strings.
+     * \see subLayers()
+     * \since QGIS 3.0
+     */
+    static QString SUBLAYER_SEPARATOR;
 
     /**
      * Sub-layer styles for each sub-layer handled by this provider,

@@ -81,7 +81,7 @@ QMap<QString, QString> QgsServerRequest::parameters() const
     {
       // prepare the value
       QString value = pair.second;
-      value.replace( "+", " " );
+      value.replace( '+', ' ' );
 
       mParams.insert( pair.first.toUpper(), value );
     }

@@ -32,6 +32,7 @@ import re
 
 from qgis.core import (QgsVectorFileWriter,
                        QgsMapLayer,
+                       QgsDataProvider,
                        QgsRasterLayer,
                        QgsWkbTypes,
                        QgsVectorLayer,
@@ -309,7 +310,7 @@ def getRasterSublayer(path, param):
                     subLayer = subLayer[1:]
                 else:
                     # remove driver name and file name
-                    subLayer.replace(subLayer.split(":")[0], "")
+                    subLayer.replace(subLayer.split(QgsDataProvider.SUBLAYER_SEPARATOR)[0], "")
                     subLayer.replace(path, "")
                 # remove any : or " left over
                 if subLayer.startswith(":"):

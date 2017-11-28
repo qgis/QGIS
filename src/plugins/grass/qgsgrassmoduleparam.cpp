@@ -436,7 +436,7 @@ QgsGrassModuleOption::QgsGrassModuleOption( QgsGrassModule *module, QString key,
         {
           QDomElement e = n.toElement();
           QString val = e.text().trimmed();
-          minMax = val.split( QStringLiteral( "-" ) );
+          minMax = val.split( '-' );
           if ( minMax.size() == 2 )
           {
             mHaveLimits = true;
@@ -902,7 +902,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
       }
       else if ( vector->providerType() == QLatin1String( "ogr" ) )
       {
-        QStringList items = provider->dataSourceUri().split( QStringLiteral( "|" ) );
+        QStringList items = provider->dataSourceUri().split( '|' );
 
         if ( items.size() > 1 )
         {
@@ -913,7 +913,7 @@ void QgsGrassModuleGdalInput::updateQgisLayers()
 
           for ( int i = 1; i < items.size(); i++ )
           {
-            QStringList args = items[i].split( QStringLiteral( "=" ) );
+            QStringList args = items[i].split( '=' );
 
             if ( args.size() != 2 )
               continue;
@@ -1219,7 +1219,7 @@ void QgsGrassModuleSelection::onLayerChanged()
     {
       QString uri = vectorLayer->dataProvider()->dataSourceUri();
       QgsDebugMsg( "uri = " + uri );
-      QString layerCode = uri.split( QStringLiteral( "/" ) ).last();
+      QString layerCode = uri.split( '/' ).last();
       if ( mLayerInput->currentLayerCodes().contains( layerCode ) )
       {
         // Qt::UserRole+1 may be also uri (AddLayer) but hardly matching layer id
@@ -1464,7 +1464,7 @@ void QgsGrassModuleFile::browse()
 
   if ( mType == Multiple )
   {
-    QString path = mLineEdit->text().split( QStringLiteral( "," ) ).first();
+    QString path = mLineEdit->text().split( ',' ).first();
     if ( path.isEmpty() )
       path = lastDir;
     else
