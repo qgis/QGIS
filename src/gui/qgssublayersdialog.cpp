@@ -136,7 +136,7 @@ void QgsSublayersDialog::populateLayerTable( const QgsSublayersDialog::LayerDefi
     QStringList elements;
     elements << QString::number( item.layerId ) << item.layerName;
     if ( mShowCount )
-      elements << QString::number( item.count );
+      elements << ( item.count == -1 ? tr( "Unknown" ) : QString::number( item.count ) );
     if ( mShowType )
       elements << item.type;
     layersTable->addTopLevelItem( new SubLayerItem( elements ) );
