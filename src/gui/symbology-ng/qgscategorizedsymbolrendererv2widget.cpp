@@ -630,27 +630,18 @@ static void _createCategories( QgsCategoryList& cats, QList<QVariant>& values, Q
   QgsSymbolLayerV2Utils::sortVariantList( values, Qt::AscendingOrder );
 
   int num = values.count();
-
-  bool hasNull = false;
-
   for ( int i = 0; i < num; i++ )
   {
     QVariant value = values[i];
-    if ( value.toString().isNull() )
+    if ( ! value.isNull() )
     {
-      hasNull = true;
+      QgsSymbolV2* newSymbol = symbol->clone();
+      cats.append( QgsRendererCategoryV2( value, newSymbol, value.toString(), true ) );
     }
-    QgsSymbolV2* newSymbol = symbol->clone();
-
-    cats.append( QgsRendererCategoryV2( value, newSymbol, value.toString(), true ) );
   }
-
-  // add null (default) value if not exists
-  if ( !hasNull )
-  {
-    QgsSymbolV2* newSymbol = symbol->clone();
-    cats.append( QgsRendererCategoryV2( QVariant( "" ), newSymbol, QString(), true ) );
-  }
+  // add null (default) value
+  QgsSymbolV2* newSymbol = symbol->clone();
+  cats.append( QgsRendererCategoryV2( QVariant( "" ), newSymbol, QString(), true ) );
 }
 
 QgsVectorColorRampV2* QgsCategorizedSymbolRendererV2Widget::getColorRamp()
