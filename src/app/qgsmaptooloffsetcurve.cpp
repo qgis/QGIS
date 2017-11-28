@@ -42,6 +42,19 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
   delete mSnapVertexMarker;
 }
 
+void QgsMapToolOffsetCurve::keyPressEvent( QKeyEvent *e )
+{
+  if ( e && e->key() == Qt::Key_Escape && !e->isAutoRepeat() )
+  {
+    deleteRubberBandAndGeometry();
+    deleteDistanceWidget();
+  }
+  else
+  {
+    QgsMapToolEdit::keyPressEvent( e );
+  }
+}
+
 
 void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
 {
