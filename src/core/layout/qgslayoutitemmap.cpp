@@ -1498,7 +1498,7 @@ QPointF QgsLayoutItemMap::layoutMapPosForItem( const QgsAnnotation *annotation )
   {
     //need to reproject
     // todo datum nyall set context
-    QgsCoordinateTransform t( annotationCrs, crs() );
+    QgsCoordinateTransform t( annotationCrs, crs(), mLayout->project() );
     double z = 0.0;
     try
     {
