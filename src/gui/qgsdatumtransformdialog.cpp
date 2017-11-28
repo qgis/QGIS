@@ -23,6 +23,7 @@
 #include "qgsproject.h"
 
 #include <QDir>
+#include <QPushButton>
 
 QgsDatumTransformDialog::QgsDatumTransformDialog( QgsCoordinateReferenceSystem sourceCrs,
     QgsCoordinateReferenceSystem destinationCrs,
@@ -34,8 +35,8 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( QgsCoordinateReferenceSystem s
   connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, &QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged );
   connect( mDatumTransformTreeWidget, &QTreeWidget::currentItemChanged, this, &QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged );
 
-  connect( mSourceCrsButton, &QPushButton::clicked, this, &QgsDatumTransformDialog::setSourceCrs );
-  connect( mDstCrsButton, &QPushButton::clicked, this, &QgsDatumTransformDialog::setDestinationCrs );
+  connect( mSourceProjectionSelectionWidget, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDatumTransformDialog::setSourceCrs );
+  connect( mDestinationProjectionSelectionWidget, &QgsProjectionSelectionWidget::crsChanged, this, &QgsDatumTransformDialog::setDestinationCrs );
 
   //get list of datum transforms
   mSourceCrs = sourceCrs;
@@ -44,7 +45,6 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( QgsCoordinateReferenceSystem s
 
   QApplication::setOverrideCursor( Qt::ArrowCursor );
 
-  updateTitle();
   setOKButtonEnabled();
 
   QgsSettings settings;
@@ -141,7 +141,7 @@ void QgsDatumTransformDialog::load()
 void QgsDatumTransformDialog::setOKButtonEnabled()
 {
   QTreeWidgetItem *item = mDatumTransformTreeWidget->currentItem();
-  buttonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && item );
+  mButtonBox->button( QDialogButtonBox::Ok )->setEnabled( mSourceCrs.isValid() && mDestinationCrs.isValid() && item );
 }
 
 QgsDatumTransformDialog::~QgsDatumTransformDialog()
@@ -258,36 +258,18 @@ void QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged( QTre
   setOKButtonEnabled();
 }
 
-void QgsDatumTransformDialog::setSourceCrs()
+void QgsDatumTransformDialog::setSourceCrs( QgsCoordinateReferenceSystem sourceCrs )
 {
-  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  if ( mySelector->exec() )
-  {
-    mSourceCrs = mySelector->crs();
-    updateTitle();
-    mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
-    load();
-  }
-  delete mySelector;
+  mSourceCrs = sourceCrs;
+  mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
+  load();
   setOKButtonEnabled();
 }
 
-void QgsDatumTransformDialog::setDestinationCrs()
+void QgsDatumTransformDialog::setDestinationCrs( QgsCoordinateReferenceSystem destinationCrs )
 {
-  QgsProjectionSelectionDialog *mySelector = new QgsProjectionSelectionDialog( this );
-  if ( mySelector->exec() )
-  {
-    mDestinationCrs = mySelector->crs();
-    updateTitle();
-    mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
-    load();
-  }
-  delete mySelector;
+  mDestinationCrs = destinationCrs;
+  mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
+  load();
   setOKButtonEnabled();
-}
-
-void QgsDatumTransformDialog::updateTitle()
-{
-  mSourceCrsButton->setText( QStringLiteral( "%1 - %2" ).arg( mSourceCrs.authid(), mSourceCrs.isValid() ? mSourceCrs.description() : tr( "unknown" ) ) );
-  mDstCrsButton->setText( QStringLiteral( "%1 - %2" ).arg( mDestinationCrs.authid(), mDestinationCrs.isValid() ? mDestinationCrs.description() : tr( "unknown" ) ) );
 }

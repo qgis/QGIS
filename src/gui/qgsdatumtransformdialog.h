@@ -57,11 +57,10 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
   private slots:
     void mHideDeprecatedCheckBox_stateChanged( int state );
     void mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
-    void setSourceCrs();
-    void setDestinationCrs();
+    void setSourceCrs( QgsCoordinateReferenceSystem sourceCrs );
+    void setDestinationCrs( QgsCoordinateReferenceSystem destinationCrs );
 
   private:
-    void updateTitle();
     bool gridShiftTransformation( const QString &itemText ) const;
     //! Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
     bool testGridShiftFileAvailability( QTreeWidgetItem *item, int col ) const;

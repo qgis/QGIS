@@ -14,14 +14,7 @@
    <string>Select Datum Transformations</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string>Destination CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="0">
+   <item row="4" column="0">
     <widget class="QLabel" name="mLabelSrcDescription">
      <property name="text">
       <string notr="true">Description</string>
@@ -34,47 +27,7 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Source CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="1">
-    <widget class="QPushButton" name="mSourceCrsButton">
-     <property name="text">
-      <string>source CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="mDstCrsButton">
-     <property name="text">
-      <string>destination CRS</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="0" colspan="2">
-    <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
-     <column>
-      <property name="text">
-       <string>src transform</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string>dst transform</string>
-      </property>
-     </column>
-     <column>
-      <property name="text">
-       <string/>
-      </property>
-     </column>
-    </widget>
-   </item>
-   <item row="3" column="1">
+   <item row="4" column="1">
     <widget class="QLabel" name="mLabelDstDescription">
      <property name="text">
       <string notr="true">Description</string>
@@ -112,7 +65,7 @@
     </layout>
    </item>
    <item row="6" column="0" colspan="2">
-    <widget class="QDialogButtonBox" name="buttonBox">
+    <widget class="QDialogButtonBox" name="mButtonBox">
      <property name="orientation">
       <enum>Qt::Horizontal</enum>
      </property>
@@ -121,17 +74,71 @@
      </property>
     </widget>
    </item>
+   <item row="3" column="0" colspan="2">
+    <widget class="QTreeWidget" name="mDatumTransformTreeWidget">
+     <column>
+      <property name="text">
+       <string>src transform</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string>dst transform</string>
+      </property>
+     </column>
+     <column>
+      <property name="text">
+       <string/>
+      </property>
+     </column>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QLabel" name="label">
+       <property name="text">
+        <string>Source CRS</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsProjectionSelectionWidget" name="mSourceProjectionSelectionWidget"/>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_3">
+     <item>
+      <widget class="QLabel" name="label_2">
+       <property name="text">
+        <string>Destination CRS</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsProjectionSelectionWidget" name="mDestinationProjectionSelectionWidget"/>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
+ <customwidgets>
+  <customwidget>
+   <class>QgsProjectionSelectionWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsprojectionselectionwidget.h</header>
+  </customwidget>
+ </customwidgets>
  <tabstops>
   <tabstop>mDatumTransformTreeWidget</tabstop>
   <tabstop>mHideDeprecatedCheckBox</tabstop>
-  <tabstop>buttonBox</tabstop>
+  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>accepted()</signal>
    <receiver>QgsDatumTransformDialogBase</receiver>
    <slot>accept()</slot>
@@ -147,7 +154,7 @@
    </hints>
   </connection>
   <connection>
-   <sender>buttonBox</sender>
+   <sender>mButtonBox</sender>
    <signal>rejected()</signal>
    <receiver>QgsDatumTransformDialogBase</receiver>
    <slot>reject()</slot>
