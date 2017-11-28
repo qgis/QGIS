@@ -212,6 +212,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
     /**
      * Returns true if the context has a valid datum transform to use
      * when transforming from the specified \a source CRS to \a destination CRS.
+     * \note source and destination are reversible.
      */
     bool hasTransform( const QgsCoordinateReferenceSystem &source,
                        const QgsCoordinateReferenceSystem &destination ) const;
@@ -222,6 +223,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * Returns -1 if a datum transform should not be used for the source or
      * destination.
+     *
+     * \note source and destination are reversible.
      */
     QPair< int, int > calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination ) const;

@@ -115,6 +115,9 @@ class QgsCoordinateTransformContext
 %Docstring
  Returns true if the context has a valid datum transform to use
  when transforming from the specified ``source`` CRS to ``destination`` CRS.
+.. note::
+
+   source and destination are reversible.
  :rtype: bool
 %End
 
@@ -126,6 +129,10 @@ class QgsCoordinateTransformContext
 
  Returns -1 if a datum transform should not be used for the source or
  destination.
+
+.. note::
+
+   source and destination are reversible.
  :rtype: QPair< int, int >
 %End
 

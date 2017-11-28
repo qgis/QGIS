@@ -127,6 +127,7 @@ void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const
 bool QgsCoordinateTransformContext::hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
   QPair<int, int> t = calculateDatumTransforms( source, destination );
+  // calculateDatumTransforms already takes care of switching source and destination
   return t.first != -1 || t.second != -1;
 }
 
@@ -138,6 +139,12 @@ QPair<int, int> QgsCoordinateTransformContext::calculateDatumTransforms( const Q
   d->mLock.lockForRead();
   // highest priority is exact match for source/dest pair
   QPair< int, int > res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), qMakePair( -1, -1 ) );
+  if ( res == qMakePair( -1, -1 ) )
+  {
+    // try to reverse
+    QPair< int, int > res2 = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), qMakePair( -1, -1 ) );
+    res = qMakePair( res2.second, res2.first );
+  }
   d->mLock.unlock();
   return res;
 
