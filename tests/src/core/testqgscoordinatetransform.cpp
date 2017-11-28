@@ -183,36 +183,34 @@ void TestQgsCoordinateTransform::isShortCircuited()
 
 void TestQgsCoordinateTransform::contextShared()
 {
-#ifdef singlesourcedest
   //test implicit sharing of QgsCoordinateTransformContext
   QgsCoordinateTransformContext original;
-  original.addDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), 1 );
+  original.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 1, 2 );
 
   QgsCoordinateTransformContext copy( original );
-  QMap< QString, int > expected;
-  expected.insert( "EPSG:3111", 1 );
-  QCOMPARE( original.destinationDatumTransforms(), expected );
-  QCOMPARE( copy.destinationDatumTransforms(), expected );
+  QMap< QPair< QString, QString >, QPair< int, int > > expected;
+  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), qMakePair( 1, 2 ) );
+  QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
+  QCOMPARE( copy.sourceDestinationDatumTransforms(), expected );
 
   // trigger detach
-  copy.addDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), 2 );
-  QCOMPARE( original.destinationDatumTransforms(), expected );
+  copy.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 3, 4 );
+  QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
 
-  expected.insert( "EPSG:3111", 2 );
-  QCOMPARE( copy.destinationDatumTransforms(), expected );
+  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), qMakePair( 3, 4 ) );
+  QCOMPARE( copy.sourceDestinationDatumTransforms(), expected );
 
   // copy via assignment
   QgsCoordinateTransformContext copy2;
   copy2 = original;
-  expected.insert( "EPSG:3111", 1 );
-  QCOMPARE( original.destinationDatumTransforms(), expected );
-  QCOMPARE( copy2.destinationDatumTransforms(), expected );
+  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), qMakePair( 1, 2 ) );
+  QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
+  QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
 
-  copy2.addDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), 3 );
-  QCOMPARE( original.destinationDatumTransforms(), expected );
-  expected.insert( "EPSG:3111", 3 );
-  QCOMPARE( copy2.destinationDatumTransforms(), expected );
-#endif
+  copy2.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 3, 4 );
+  QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
+  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), qMakePair( 3, 4 ) );
+  QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
 }
 
 
