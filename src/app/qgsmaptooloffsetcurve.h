@@ -49,18 +49,18 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Geometry after manipulation
     QgsGeometry mModifiedGeometry;
     //! ID of manipulated feature
-    QgsFeatureId mModifiedFeature;
+    QgsFeatureId mModifiedFeature = -1;
     //! Layer ID of source layer
     QString mSourceLayerId;
     //! Internal flag to distinguish move from click
-    bool mGeometryModified;
+    bool mGeometryModified = false;
     //! Shows current distance value and allows numerical editing
     QgsDoubleSpinBox *mDistanceWidget = nullptr;
     //! Marker to show the cursor was snapped to another location
     QgsVertexMarker *mSnapVertexMarker = nullptr;
     //! Forces geometry copy (no modification of geometry in current layer)
-    bool mForceCopy;
-    bool mMultiPartGeometry;
+    bool mForceCopy = false;
+    bool mMultiPartGeometry = false;
 
 
     void deleteRubberBandAndGeometry();
