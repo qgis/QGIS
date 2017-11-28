@@ -497,13 +497,17 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   {
     case ZoomIn:
       name = QStringLiteral( "mZoomIn.svg" );
+      activeX = 13;
+      activeY = 13;
       break;
     case ZoomOut:
       name = QStringLiteral( "mZoomOut.svg" );
+      activeX = 13;
+      activeY = 13;
       break;
     case Identify:
-      activeX = 0;
-      activeY = 0;
+      activeX = 3;
+      activeY = 6;
       name = QStringLiteral( "mIdentify.svg" );
       break;
     case CrossHair:
@@ -514,10 +518,12 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
       break;
     case Select:
       name = QStringLiteral( "mSelect.svg" );
+      activeX = 6;
+      activeY = 6;
       break;
     case Sampler:
-      activeX = 0;
-      activeY = 0;
+      activeX = 5;
+      activeY = 5;
       name = QStringLiteral( "mSampler.svg" );
       break;
       // No default
@@ -531,7 +537,7 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
   if ( ! icon.isNull( ) )
   {
     // Apply scaling
-    float scale( ( float ) app->fontMetrics().height() / 32 );
+    float scale( ( float ) app->fontMetrics().height() / 32 * 1.5 ) ; // Make them bigger to match 24x24
     _cursor = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
   }
   if ( app )
