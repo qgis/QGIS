@@ -798,7 +798,6 @@
                  <layout class="QVBoxLayout" name="verticalLayout_21">
                   <item>
                    <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true">
-                    <zorder>mDatumTransformGroupBox</zorder>
                    </widget>
                   </item>
                  </layout>
@@ -875,7 +874,6 @@
                  <zorder>mDatumTransformAddButton</zorder>
                  <zorder>mDatumTransformRemoveButton</zorder>
                  <zorder>mDatumTransformEditButton</zorder>
-                 <zorder>horizontalSpacer_5</zorder>
                  <zorder>mShowDatumTransformDialogCheckBox</zorder>
                 </widget>
                </item>
