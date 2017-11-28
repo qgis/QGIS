@@ -128,7 +128,11 @@ QAction *QgsLayerTreeViewDefaultActions::actionCheckAndAllChildren( QObject *par
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityCheckedRecursive() )
     return nullptr;
+#ifdef Q_OS_MACX
+  QAction *a = new QAction( tr( "Check and all its children (⌘-click)" ), parent );
+#else
   QAction *a = new QAction( tr( "Check and all its children (Ctrl-click)" ), parent );
+#endif
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::checkAndAllChildren );
   return a;
 }
@@ -138,7 +142,11 @@ QAction *QgsLayerTreeViewDefaultActions::actionUncheckAndAllChildren( QObject *p
   QgsLayerTreeNode *node = mView->currentNode();
   if ( !node || !QgsLayerTree::isGroup( node ) || node->isItemVisibilityUncheckedRecursive() )
     return nullptr;
+#ifdef Q_OS_MACX
+  QAction *a = new QAction( tr( "Uncheck and all its children (⌘-click)" ), parent );
+#else
   QAction *a = new QAction( tr( "Uncheck and all its children (Ctrl-click)" ), parent );
+#endif
   connect( a, &QAction::triggered, this, &QgsLayerTreeViewDefaultActions::uncheckAndAllChildren );
   return a;
 }
