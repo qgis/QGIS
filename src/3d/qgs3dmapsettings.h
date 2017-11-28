@@ -88,6 +88,24 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Returns coordinate reference system used in the 3D scene
     QgsCoordinateReferenceSystem crs() const { return mCrs; }
 
+    /**
+     * Returns the coordinate transform context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \see setTransformContext()
+     */
+    QgsCoordinateTransformContext transformContext() const;
+
+    /**
+     * Sets the coordinate transform \a context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \see transformContext()
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+
     //! Sets background color of the 3D map view
     void setBackgroundColor( const QColor &color );
     //! Returns background color of the 3D map view
@@ -239,6 +257,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     bool mSkyboxEnabled = false;  //!< Whether to render skybox
     QString mSkyboxFileBase; //!< Base part of the files with skybox textures
     QString mSkyboxFileExtension; //!< Extension part of the files with skybox textures
+    //! Coordinate transform context
+    QgsCoordinateTransformContext mTransformContext;
 };
 
 

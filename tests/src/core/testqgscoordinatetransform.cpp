@@ -244,7 +244,7 @@ void TestQgsCoordinateTransform::transformBoundingBox()
   QGSCOMPARENEAR( resultRect.yMaximum(), expectedRect.yMaximum(), 0.001 );
 
   // test transforming a bounding box, resulting in an invalid transform - exception must be thrown
-  tr = QgsCoordinateTransform( QgsCoordinateReferenceSystem( 4326 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ) );
+  tr = QgsCoordinateTransform( QgsCoordinateReferenceSystem( 4326 ), QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:28356" ) ), QgsProject::instance() );
   QgsRectangle rect( -99999999999, 99999999999, -99999999998, 99999999998 );
   bool errorObtained = false;
   try

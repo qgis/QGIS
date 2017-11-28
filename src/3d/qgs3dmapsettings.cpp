@@ -226,6 +226,16 @@ void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )
   mCrs = crs;
 }
 
+QgsCoordinateTransformContext Qgs3DMapSettings::transformContext() const
+{
+  return mTransformContext;
+}
+
+void Qgs3DMapSettings::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+}
+
 void Qgs3DMapSettings::setBackgroundColor( const QColor &color )
 {
   if ( color == mBackgroundColor )
