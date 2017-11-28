@@ -33,10 +33,6 @@
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mModifiedFeature( -1 )
-  , mGeometryModified( false )
-  , mForceCopy( false )
-  , mMultiPartGeometry( false )
 {
 }
 
@@ -75,11 +71,6 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     deleteRubberBandAndGeometry();
     mGeometryModified = false;
     mForceCopy = false;
-
-    if ( e->button() == Qt::RightButton )
-    {
-      return;
-    }
 
     QgsSnappingUtils *snapping = mCanvas->snappingUtils();
 
@@ -122,10 +113,11 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
     }
-    return;
   }
-
-  applyOffset();
+  else
+  {
+    applyOffset();
+  }
 }
 
 void QgsMapToolOffsetCurve::applyOffset()
