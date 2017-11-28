@@ -25,7 +25,6 @@
 #include "qgssnappingconfig.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
-#include "qgsgeos.h"
 
 #include <QGraphicsProxyWidget>
 #include <QMouseEvent>
@@ -33,10 +32,6 @@
 
 QgsMapToolOffsetCurve::QgsMapToolOffsetCurve( QgsMapCanvas *canvas )
   : QgsMapToolEdit( canvas )
-  , mModifiedFeature( -1 )
-  , mGeometryModified( false )
-  , mForceCopy( false )
-  , mMultiPartGeometry( false )
 {
 }
 
@@ -45,6 +40,19 @@ QgsMapToolOffsetCurve::~QgsMapToolOffsetCurve()
   deleteRubberBandAndGeometry();
   deleteDistanceWidget();
   delete mSnapVertexMarker;
+}
+
+void QgsMapToolOffsetCurve::keyPressEvent( QKeyEvent *e )
+{
+  if ( e && e->key() == Qt::Key_Escape && !e->isAutoRepeat() )
+  {
+    deleteRubberBandAndGeometry();
+    deleteDistanceWidget();
+  }
+  else
+  {
+    QgsMapToolEdit::keyPressEvent( e );
+  }
 }
 
 
@@ -72,14 +80,10 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
 
   if ( mOriginalGeometry.isNull() )
   {
+    // first click, get feature to modify
     deleteRubberBandAndGeometry();
     mGeometryModified = false;
-    mForceCopy = false;
-
-    if ( e->button() == Qt::RightButton )
-    {
-      return;
-    }
+    mCtrlWasHeldOnFeatureSelection = false;
 
     QgsSnappingUtils *snapping = mCanvas->snappingUtils();
 
@@ -106,7 +110,7 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
       QgsFeature fet;
       if ( match.layer()->getFeatures( QgsFeatureRequest( match.featureId() ) ).nextFeature( fet ) )
       {
-        mForceCopy = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
+        mCtrlWasHeldOnFeatureSelection = ( e->modifiers() & Qt::ControlModifier ); //no geometry modification if ctrl is pressed
         mOriginalGeometry = createOriginGeometry( match.layer(), match, fet );
         mRubberBand = createRubberBand();
         if ( mRubberBand )
@@ -122,13 +126,15 @@ void QgsMapToolOffsetCurve::canvasReleaseEvent( QgsMapMouseEvent *e )
     {
       emit messageEmitted( tr( "Could not find a nearby feature in any vector layer." ) );
     }
-    return;
   }
-
-  applyOffset();
+  else
+  {
+    // second click - apply changes
+    applyOffset( e->modifiers() & Qt::ControlModifier );
+  }
 }
 
-void QgsMapToolOffsetCurve::applyOffset()
+void QgsMapToolOffsetCurve::applyOffset( bool forceCopy )
 {
   QgsVectorLayer *layer = currentVectorLayer();
   if ( !layer )
@@ -155,7 +161,7 @@ void QgsMapToolOffsetCurve::applyOffset()
   layer->beginEditCommand( tr( "Offset curve" ) );
 
   bool editOk;
-  if ( mSourceLayerId == layer->id() && !mForceCopy )
+  if ( mSourceLayerId == layer->id() && !mCtrlWasHeldOnFeatureSelection && !forceCopy )
   {
     editOk = layer->changeGeometry( mModifiedFeature, mModifiedGeometry );
   }
@@ -188,7 +194,7 @@ void QgsMapToolOffsetCurve::applyOffset()
   deleteDistanceWidget();
   delete mSnapVertexMarker;
   mSnapVertexMarker = nullptr;
-  mForceCopy = false;
+  mCtrlWasHeldOnFeatureSelection = false;
   layer->triggerRepaint();
 }
 
@@ -248,13 +254,13 @@ void QgsMapToolOffsetCurve::canvasMoveEvent( QgsMapMouseEvent *e )
   if ( mDistanceWidget )
   {
     // this will also set the rubber band
-    mDistanceWidget->setValue( leftOf < 0 ? offset : -offset );
+    mDistanceWidget->setValue( leftOf < 0 ? -offset : offset );
     mDistanceWidget->setFocus( Qt::TabFocusReason );
   }
   else
   {
     //create offset geometry using geos
-    setOffsetForRubberBand( leftOf < 0 ? offset : -offset );
+    setOffsetForRubberBand( leftOf < 0 ? -offset : offset );
   }
 }
 
@@ -269,7 +275,7 @@ QgsGeometry QgsMapToolOffsetCurve::createOriginGeometry( QgsVectorLayer *vl, con
   //assign feature part by vertex number (snap to vertex) or by before vertex number (snap to segment)
   int partVertexNr = match.vertexIndex();
 
-  if ( vl == currentVectorLayer() && !mForceCopy )
+  if ( vl == currentVectorLayer() && !mCtrlWasHeldOnFeatureSelection )
   {
     //don't consider selected geometries, only the snap result
     return convertToSingleLine( snappedFeature.geometry(), partVertexNr, mMultiPartGeometry );
@@ -333,7 +339,7 @@ void QgsMapToolOffsetCurve::createDistanceWidget()
   mDistanceWidget->setFocus( Qt::TabFocusReason );
 
   connect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
-  connect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
+  connect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, [ = ] { applyOffset(); } );
 }
 
 void QgsMapToolOffsetCurve::deleteDistanceWidget()
@@ -341,7 +347,6 @@ void QgsMapToolOffsetCurve::deleteDistanceWidget()
   if ( mDistanceWidget )
   {
     disconnect( mDistanceWidget, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsMapToolOffsetCurve::placeOffsetCurveToValue );
-    disconnect( mDistanceWidget, &QAbstractSpinBox::editingFinished, this, &QgsMapToolOffsetCurve::applyOffset );
     mDistanceWidget->releaseKeyboard();
     mDistanceWidget->deleteLater();
   }
@@ -368,34 +373,27 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     return;
   }
 
-  QgsGeometry geomCopy( mOriginalGeometry );
-  geos::unique_ptr geosGeom( geomCopy.exportToGeos() );
-  if ( geosGeom )
+  QgsSettings s;
+  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle >( s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt() );
+  int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
+  double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
+
+  QgsGeometry offsetGeom = mOriginalGeometry.offsetCurve( offset, quadSegments, joinStyle, miterLimit );
+  if ( !offsetGeom )
   {
-    QgsSettings s;
-    int joinStyle = s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt();
-    int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
-    double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
-
-    geos::unique_ptr offsetGeom( GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom.get(), offset, quadSegments, joinStyle, miterLimit ) );
-    if ( !offsetGeom )
-    {
-      deleteRubberBandAndGeometry();
-      deleteDistanceWidget();
-      delete mSnapVertexMarker;
-      mSnapVertexMarker = nullptr;
-      mForceCopy = false;
-      mGeometryModified = false;
-      deleteDistanceWidget();
-      emit messageEmitted( tr( "Creating offset geometry failed" ), QgsMessageBar::CRITICAL );
-      return;
-    }
-
-    if ( offsetGeom )
-    {
-      mModifiedGeometry.fromGeos( offsetGeom.release() );
-      mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
-    }
+    deleteRubberBandAndGeometry();
+    deleteDistanceWidget();
+    delete mSnapVertexMarker;
+    mSnapVertexMarker = nullptr;
+    mCtrlWasHeldOnFeatureSelection = false;
+    mGeometryModified = false;
+    deleteDistanceWidget();
+    emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), QgsMessageBar::CRITICAL );
+  }
+  else
+  {
+    mModifiedGeometry = offsetGeom;
+    mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
   }
 }
 

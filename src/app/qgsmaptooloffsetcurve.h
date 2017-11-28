@@ -31,6 +31,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     QgsMapToolOffsetCurve( QgsMapCanvas *canvas );
     ~QgsMapToolOffsetCurve();
 
+    void keyPressEvent( QKeyEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
@@ -39,7 +40,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void placeOffsetCurveToValue();
 
     //! Apply the offset either from the spin box or from the mouse event
-    void applyOffset();
+    void applyOffset( bool forceCopy = false );
 
   private:
     //! Rubberband that shows the position of the offset curve
@@ -49,18 +50,18 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Geometry after manipulation
     QgsGeometry mModifiedGeometry;
     //! ID of manipulated feature
-    QgsFeatureId mModifiedFeature;
+    QgsFeatureId mModifiedFeature = -1;
     //! Layer ID of source layer
     QString mSourceLayerId;
     //! Internal flag to distinguish move from click
-    bool mGeometryModified;
+    bool mGeometryModified = false;
     //! Shows current distance value and allows numerical editing
     QgsDoubleSpinBox *mDistanceWidget = nullptr;
     //! Marker to show the cursor was snapped to another location
     QgsVertexMarker *mSnapVertexMarker = nullptr;
     //! Forces geometry copy (no modification of geometry in current layer)
-    bool mForceCopy;
-    bool mMultiPartGeometry;
+    bool mCtrlWasHeldOnFeatureSelection = false;
+    bool mMultiPartGeometry = false;
 
 
     void deleteRubberBandAndGeometry();
