@@ -903,8 +903,15 @@ void QgsLineString::addVertex( const QgsPoint &pt )
 double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
 {
   double sqrDist = std::numeric_limits<double>::max();
+  double leftOfDist = std::numeric_limits<double>::max();
+  bool prevLeftOf = false;
+  double prevLeftOfX;
+  double prevLeftOfY;
   double testDist = 0;
   double segmentPtX, segmentPtY;
+
+  if ( leftOf )
+    *leftOf = false;
 
   int size = mX.size();
   if ( size == 0 || size == 1 )
@@ -924,13 +931,35 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
       sqrDist = testDist;
       segmentPt.setX( segmentPtX );
       segmentPt.setY( segmentPtY );
-      if ( leftOf )
-      {
-        *leftOf = ( QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY ) < 0 );
-      }
       vertexAfter.part = 0;
       vertexAfter.ring = 0;
       vertexAfter.vertex = i;
+    }
+    if ( leftOf && qgsDoubleNear( testDist, sqrDist ) )
+    {
+      double left = QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY );
+      // if left equals 0, the test could not be performed (e.g. point in line with segment or on segment)
+      // so don't set leftOf in this case, and hope that there's another segment that's the same distance
+      // where we can perform the check
+      if ( !qgsDoubleNear( left, 0 ) )
+      {
+        if ( qgsDoubleNear( testDist, leftOfDist ) && ( left < 0 ) != prevLeftOf )
+        {
+          // we have two possible segments each with equal distance to point, but they disagree
+          // on whether or not the point is to the left of them.
+          // so we test the segments themselves and flip the result.
+          // see https://stackoverflow.com/questions/10583212/elegant-left-of-test-for-polyline
+          *leftOf = QgsGeometryUtils::leftOfLine( currentX, currentY, prevLeftOfX, prevLeftOfY, prevX, prevY ) > 0;
+        }
+        else
+        {
+          *leftOf = left < 0;
+        }
+        prevLeftOf = *leftOf;
+        leftOfDist = testDist;
+        prevLeftOfX = prevX;
+        prevLeftOfY = prevY;
+      }
     }
   }
   return sqrDist;
