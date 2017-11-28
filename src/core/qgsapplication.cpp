@@ -517,7 +517,7 @@ QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
       break;
     case Sampler:
       activeX = 0;
-      activeY = 32;
+      activeY = 0;
       name = QStringLiteral( "mSampler.svg" );
       break;
       // No default
