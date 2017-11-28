@@ -39,7 +39,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     void placeOffsetCurveToValue();
 
     //! Apply the offset either from the spin box or from the mouse event
-    void applyOffset();
+    void applyOffset( bool forceCopy = false );
 
   private:
     //! Rubberband that shows the position of the offset curve
@@ -59,7 +59,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     //! Marker to show the cursor was snapped to another location
     QgsVertexMarker *mSnapVertexMarker = nullptr;
     //! Forces geometry copy (no modification of geometry in current layer)
-    bool mForceCopy = false;
+    bool mCtrlWasHeldOnFeatureSelection = false;
     bool mMultiPartGeometry = false;
 
 
