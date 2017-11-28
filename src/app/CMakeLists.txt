@@ -613,6 +613,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/layertree
   ${CMAKE_SOURCE_DIR}/src/core/locator
   ${CMAKE_SOURCE_DIR}/src/core/providers/memory
+  ${CMAKE_SOURCE_DIR}/src/core/providers/spatialite
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/scalebar
   ${CMAKE_SOURCE_DIR}/src/core/symbology
@@ -673,6 +674,7 @@ INCLUDE_DIRECTORIES(
   ../core/layertree
   ../core/processing
   ../core/providers/memory
+  ../core/providers/spatialite
   ../core/raster
   ../core/scalebar
   ../core/symbology

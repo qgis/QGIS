@@ -94,6 +94,7 @@ IF(WITH_CORE)
   SET (WITH_INTERNAL_QEXTSERIALPORT TRUE CACHE BOOL "Use internal build of Qextserialport")
 
   SET (WITH_QSPATIALITE FALSE CACHE BOOL "Determines whether QSPATIALITE sql driver should be built")
+  SET (WITH_RASTERLITE2 FALSE CACHE BOOL "Determines whether RasterLite2 support should be built")
 
   SET (WITH_ORACLE FALSE CACHE BOOL "Determines whether Oracle support should be built")
   IF(WITH_ORACLE)
@@ -249,6 +250,10 @@ IF(WITH_CORE)
   ENDIF (WITH_POSTGRESQL)
 
   FIND_PACKAGE(SpatiaLite REQUIRED)
+
+  IF(SPATIALITE_VERSION_GE_4_5_0)
+      set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -DSPATIALITE_VERSION_GE_4_5_0")
+  ENDIF(SPATIALITE_VERSION_GE_4_5_0)
 
   IF (NOT PROJ_FOUND OR NOT GEOS_FOUND OR NOT GDAL_FOUND)
     MESSAGE (SEND_ERROR "Some dependencies were not found! Proj: ${PROJ_FOUND}, Geos: ${GEOS_FOUND}, GDAL: ${GDAL_FOUND}")

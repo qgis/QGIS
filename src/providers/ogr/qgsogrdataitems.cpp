@@ -20,6 +20,7 @@
 #include "qgsmessagelog.h"
 #include "qgssettings.h"
 #include "qgsproject.h"
+#include "qgssqlitehandle.h"
 #include "qgsvectorlayer.h"
 #include "qgsrasterlayer.h"
 #include "qgsgeopackagedataitems.h"
@@ -469,10 +470,160 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 {
   if ( path.isEmpty() )
     return nullptr;
+  // Check if supported by QgsSpatiaLiteProvider or QgsRasterLite2Provider and some Mime-Types
+  SpatialiteDbInfo *spatialiteDbInfo = QgsSpatiaLiteUtils::CreateSpatialiteDbInfo( path, false, false );
+  bool bIsGeoPackage = false;
+  bool bIsOgr = false;
+  if ( spatialiteDbInfo )
+  {
+    // The file/directory exists and Magic-Header of file has been read and certain File-Types are known
+    bool bUnSupportedFormat = false;
+    bool bIsSpatialite = false;
+    bool bIsGdal = false;
+    QString sMimeType = spatialiteDbInfo->getFileMimeTypeString();
+    QString sSpatialMetadata = spatialiteDbInfo->dbSpatialMetadataString();
+    if ( spatialiteDbInfo->isDbSqlite3() )
+    {
+      // This is a Sqlite3-Container
+      if ( !spatialiteDbInfo->isDbValid() )
+      {
+        // This is a Sqlite3-Container containing a non-supported format
+        bUnSupportedFormat = true;
+      }
+      else
+      {
+        // This is a valid Sqlite3-Container containing a supported Provider
+        if ( spatialiteDbInfo->isDbGdalOgr() )
+        {
+          // This is a Sqlite3-Container supported by QgsGdalProvider or QgsOgrProvider
+#if 1
+          // QgsSpatiaLiteSourceSelect/QgsSpatialiteLayerItem can display Gdal/Ogr sqlite3 based Sources (GeoPackage, MbTiles, FDO etc.)
+          //  and when selected call the needed QgsOgrProvider or QgsGdalProvider
+          // - if not desired (possible User-Setting), then this can be prevented here
+          bIsSpatialite = true;
+          QgsDebugMsgLevel( QString( "Sending a Gdal/Ogr supported SQLite file to QgsSpatialiteLayerItem. SpatialMetadata[%1]" ).arg( sSpatialMetadata ), 7 );
+#else
+          switch ( spatialiteDbInfo->dbSpatialMetadata() )
+          {
+            case SpatialiteDbInfo::SpatialiteFdoOgr:
+              // contains Fdo Layers for QgsOgrProvider
+              bIsOgr = true;
+              break;
+            case SpatialiteDbInfo::SpatialiteGpkg:
+              // contains GeoPackage Layers for QgsGdalProvider and/or QgsOgrProvider
+              bIsGeoPackage = true;
+              break;
+            case SpatialiteDbInfo::SpatialiteMBTiles:
+              // contains a MBTiles Layer for QgsGdalProvider
+              bIsGdal = true;
+              break;
+            case SpatialiteDbInfo::SpatialiteLegacy:
+              if ( spatialiteDbInfo->dbRasterLite1LayersCount() > 0 )
+              {
+                // contains RasterLite1 Layers for QgsGdalProvider
+                bIsGdal = true;
+              }
+              break;
+            default:
+              break;
+          }
+#endif
+        }
+        if ( spatialiteDbInfo->isDbSpatialite() )
+        {
+          // This is a Sqlite3-Container supported by QgsSpatiaLiteProvider and/or QgsRasterLite2Provider
+          // - SpatialiteLegacy Geometries are supported by QgsSpatiaLiteProvider, but not RasterLite1
+          bIsSpatialite = true;
+        }
+      }
+    }
+    else
+    {
+      // This is not a Sqlite3-Container
+      switch ( spatialiteDbInfo->getFileMimeType() )
+      {
+        // Known File-formats that are not supported by Gdal/Ogr
+        case SpatialiteDbInfo::MimeNotExists:
+        case SpatialiteDbInfo::MimeExeUnix:
+        case SpatialiteDbInfo::MimeRtf:
+        case SpatialiteDbInfo::MimePid:
+        case SpatialiteDbInfo::MimeBz2:
+        case SpatialiteDbInfo::MimeTar:
+        case SpatialiteDbInfo::MimeRar:
+        case SpatialiteDbInfo::MimeXar:
+        case SpatialiteDbInfo::Mime7z:
+        case SpatialiteDbInfo::MimeSqlite2:
+        // Known File-formats that are not supported by Ogr
+        case SpatialiteDbInfo::MimeGif87a:
+        case SpatialiteDbInfo::MimeGif89a:
+        case SpatialiteDbInfo::MimeTiff:
+        case SpatialiteDbInfo::MimeJpeg:
+        case SpatialiteDbInfo::MimeJp2:
+        case SpatialiteDbInfo::MimePng:
+        case SpatialiteDbInfo::MimeIco:
+        case SpatialiteDbInfo::MimeAvi:
+        case SpatialiteDbInfo::MimeWav:
+        case SpatialiteDbInfo::MimeWebp:
+          bUnSupportedFormat = true;
+          break;
+        case SpatialiteDbInfo::MimeKmz:
+        case SpatialiteDbInfo::MimeKml:
+          // This could be supported by Ogr
+          //  bIsOgr = true;
+          break;
+        // Everthing else, leave to Gdal/Ogr to check
+        case SpatialiteDbInfo::MimeZip:
+        default:
+          break;
+      }
+    }
+    if ( !spatialiteDbInfo->checkConnectionNeeded() )
+    {
+      // Delete only if not being used elsewhere, Connection will be closed
+      delete spatialiteDbInfo;
+    }
+    spatialiteDbInfo = nullptr;
+    if ( bUnSupportedFormat )
+    {
+      QgsDebugMsgLevel( QString( "Skipping file with known Magic-Header [%1] that is not supported." ).arg( sMimeType ), 4 );
+      return nullptr;
+    }
+    if ( bIsSpatialite )
+    {
+      // Do not load Spatialite formats  [Geometries, RasterLite2]
+      QgsDebugMsgLevel( QString( "Skipping SQLite file because QgsSpatialiteLayerItem will deal with it. SpatialMetadata[%1]" ).arg( sSpatialMetadata ), 4 );
+      return nullptr;
+    }
+    if ( bIsGdal )
+    {
+      QgsDebugMsgLevel( QString( "Skipping SQLite file because QgsGdalLayerItem will deal with it. SpatialMetadata[%1]" ).arg( sSpatialMetadata ), 4 );
+      return nullptr;
+    }
+    // Avoids Ogr from reading files that out of the question
+  }
+  if ( ( bIsOgr ) || ( bIsGeoPackage ) )
+  {
+    QgsDataItem *item = nullptr;
+    QFileInfo info( path );
+    QString name = info.fileName();
+    if ( bIsOgr )
+    {
+      item = new QgsOgrDataCollectionItem( parentItem, name, path );
+    }
+    if ( bIsGeoPackage )
+    {
+      item = new QgsGeoPackageCollectionItem( parentItem, name, path );
+    }
+    if ( item )
+    {
+      QgsDebugMsgLevel( QString( "OGR starting[%1]" ).arg( name ), 4 );
+      return item;
+    }
+  }
 
   QgsDebugMsgLevel( "thePath: " + path, 2 );
 
-  // zip settings + info
+// zip settings + info
   QgsSettings settings;
   QString scanZipSetting = settings.value( QStringLiteral( "qgis/scanZipInBrowser2" ), "basic" ).toString();
   QString vsiPrefix = QgsZipItem::vsiPrefix( path );
@@ -480,10 +631,10 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   bool is_vsigzip = ( vsiPrefix == QLatin1String( "/vsigzip/" ) );
   bool is_vsitar = ( vsiPrefix == QLatin1String( "/vsitar/" ) );
 
-  // should we check ext. only?
-  // check if scanItemsInBrowser2 == extension or parent dir in scanItemsFastScanUris
-  // TODO - do this in dir item, but this requires a way to inform which extensions are supported by provider
-  // maybe a callback function or in the provider registry?
+// should we check ext. only?
+// check if scanItemsInBrowser2 == extension or parent dir in scanItemsFastScanUris
+// TODO - do this in dir item, but this requires a way to inform which extensions are supported by provider
+// maybe a callback function or in the provider registry?
   bool scanExtSetting = false;
   if ( ( settings.value( QStringLiteral( "qgis/scanItemsInBrowser2" ),
                          "extension" ).toString() == QLatin1String( "extension" ) ) ||
@@ -496,18 +647,18 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     scanExtSetting = true;
   }
 
-  // get suffix, removing .gz if present
+// get suffix, removing .gz if present
   QString tmpPath = path; //path used for testing, not for layer creation
   if ( is_vsigzip )
     tmpPath.chop( 3 );
   QFileInfo info( tmpPath );
   QString suffix = info.suffix().toLower();
-  // extract basename with extension
+// extract basename with extension
   info.setFile( path );
   QString name = info.fileName();
 
-  // If a .tab exists, then the corresponding .map/.dat is very likely a
-  // side-car file of the .tab
+// If a .tab exists, then the corresponding .map/.dat is very likely a
+// side-car file of the .tab
   if ( suffix == QLatin1String( "map" ) || suffix == QLatin1String( "dat" ) )
   {
     if ( QFileInfo( QDir( info.path() ), info.baseName() + ".tab" ).exists() )
@@ -520,14 +671,14 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QStringList myExtensions = fileExtensions();
   QStringList dirExtensions = directoryExtensions();
 
-  // allow only normal files, supported directories, or VSIFILE items to continue
+// allow only normal files, supported directories, or VSIFILE items to continue
   bool isOgrSupportedDirectory = info.isDir() && dirExtensions.contains( suffix );
   if ( !isOgrSupportedDirectory && !info.isFile() && vsiPrefix.isEmpty() )
     return nullptr;
 
-  // skip *.aux.xml files (GDAL auxiliary metadata files),
-  // *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
-  // unless that extension is in the list (*.xml might be though)
+// skip *.aux.xml files (GDAL auxiliary metadata files),
+// *.shp.xml files (ESRI metadata) and *.tif.xml files (TIFF metadata)
+// unless that extension is in the list (*.xml might be though)
   if ( path.endsWith( QLatin1String( ".aux.xml" ), Qt::CaseInsensitive ) &&
        !myExtensions.contains( QStringLiteral( "aux.xml" ) ) )
     return nullptr;
@@ -538,8 +689,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
        !myExtensions.contains( QStringLiteral( "tif.xml" ) ) )
     return nullptr;
 
-  // We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
-  // because OGR drive can open also .dbf, .shx.
+// We have to filter by extensions, otherwise e.g. all Shapefile files are displayed
+// because OGR drive can open also .dbf, .shx.
   if ( myExtensions.indexOf( suffix ) < 0 && !dirExtensions.contains( suffix ) )
   {
     bool matches = false;
@@ -556,7 +707,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
       return nullptr;
   }
 
-  // .dbf should probably appear if .shp is not present
+// .dbf should probably appear if .shp is not present
   if ( suffix == QLatin1String( "dbf" ) )
   {
     QString pathShp = path.left( path.count() - 4 ) + ".shp";
@@ -564,7 +715,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
       return nullptr;
   }
 
-  // fix vsifile path and name
+// fix vsifile path and name
   if ( !vsiPrefix.isEmpty() )
   {
     // add vsiPrefix to path if needed
@@ -581,22 +732,22 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
 #endif
   }
 
-  // Filters out the OGR/GDAL supported formats that can contain multiple layers
-  // and should be treated like a DB: GeoPackage and SQLite
-  // NOTE: this formats are scanned for rasters too and they must
-  //       be skipped by "gdal" provider or the rasters will be listed
-  //       twice. ogrSupportedDbLayersExtensions must be kept in sync
-  //       with the companion variable (same name) in the gdal provider
-  //       class
-  // TODO: add more OGR supported multiple layers formats here!
+// Filters out the OGR/GDAL supported formats that can contain multiple layers
+// and should be treated like a DB: GeoPackage and SQLite
+// NOTE: this formats are scanned for rasters too and they must
+//       be skipped by "gdal" provider or the rasters will be listed
+//       twice. ogrSupportedDbLayersExtensions must be kept in sync
+//       with the companion variable (same name) in the gdal provider
+//       class
+// TODO: add more OGR supported multiple layers formats here!
   QStringList ogrSupportedDbLayersExtensions;
   ogrSupportedDbLayersExtensions << QStringLiteral( "gpkg" ) << QStringLiteral( "sqlite" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
   QStringList ogrSupportedDbDriverNames;
   ogrSupportedDbDriverNames << QStringLiteral( "GPKG" ) << QStringLiteral( "db" ) << QStringLiteral( "gdb" );
 
-  // Fast track: return item without testing if:
-  // scanExtSetting or zipfile and scan zip == "Basic scan"
-  // netCDF files can be both raster or vector, so fallback to opening
+// Fast track: return item without testing if:
+// scanExtSetting or zipfile and scan zip == "Basic scan"
+// netCDF files can be both raster or vector, so fallback to opening
   if ( ( scanExtSetting ||
          ( ( is_vsizip || is_vsitar ) && scanZipSetting == QLatin1String( "basic" ) ) ) &&
        suffix != QLatin1String( "nc" ) )
@@ -634,15 +785,15 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
       return item;
   }
 
-  // Slow track: scan file contents
+// Slow track: scan file contents
   QgsDataItem *item = nullptr;
 
-  // test that file is valid with OGR
+// test that file is valid with OGR
   if ( OGRGetDriverCount() == 0 )
   {
     OGRRegisterAll();
   }
-  // do not print errors, but write to debug
+// do not print errors, but write to debug
   CPLPushErrorHandler( CPLQuietErrorHandler );
   CPLErrorReset();
   gdal::dataset_unique_ptr hDS( GDALOpenEx( path.toUtf8().constData(), GDAL_OF_VECTOR, nullptr, nullptr, nullptr ) );
@@ -659,8 +810,8 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
   QgsDebugMsgLevel( QString( "GDAL Driver : %1" ).arg( driverName ), 2 );
   int numLayers = GDALDatasetGetLayerCount( hDS.get() );
 
-  // GeoPackage needs a specialized data item, mainly because of raster deletion not
-  // yet implemented in GDAL (2.2.1)
+// GeoPackage needs a specialized data item, mainly because of raster deletion not
+// yet implemented in GDAL (2.2.1)
   if ( driverName == QLatin1String( "GPKG" ) )
   {
     item = new QgsGeoPackageCollectionItem( parentItem, name, path );

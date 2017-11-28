@@ -48,7 +48,7 @@ inline bool qgsConnectionPool_ConnectionIsValid( QgsSqliteHandle *c )
 }
 
 
-class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsSqliteHandle *>
+class CORE_EXPORT QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup<QgsSqliteHandle *>
 {
     Q_OBJECT
 
@@ -66,21 +66,11 @@ class QgsSpatiaLiteConnPoolGroup : public QObject, public QgsConnectionPoolGroup
 };
 
 //! SpatiaLite connection pool - singleton
-class QgsSpatiaLiteConnPool : public QgsConnectionPool<QgsSqliteHandle *, QgsSpatiaLiteConnPoolGroup>
+class CORE_EXPORT QgsSpatiaLiteConnPool : public QgsConnectionPool<QgsSqliteHandle *, QgsSpatiaLiteConnPoolGroup>
 {
-    static QgsSpatiaLiteConnPool *sInstance;
+    static QgsSpatiaLiteConnPool sInstance;
   public:
     static QgsSpatiaLiteConnPool *instance();
-
-    // Singleton cleanup
-    //
-    // Make sure nobody is using the instance before calling
-    // this function.
-    //
-    // WARNING: concurrent call from multiple threads may result
-    //          in double-free of the instance.
-    //
-    static void cleanupInstance();
 };
 
 

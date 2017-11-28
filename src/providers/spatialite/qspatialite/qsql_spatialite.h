@@ -91,8 +91,8 @@ class Q_EXPORT_SQLDRIVER_SQLITE QSpatiaLiteDriver : public QSqlDriver
     Q_OBJECT
     friend class QSpatiaLiteResult;
 public:
+<<<<<<< HEAD
     explicit QSpatiaLiteDriver(QObject *parent = nullptr);
-
     ~QSpatiaLiteDriver();
     bool hasFeature(DriverFeature f) const;
     bool open(const QString & db,
