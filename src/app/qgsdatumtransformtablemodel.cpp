@@ -90,7 +90,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case DestinationCrsColumn:
           return destinationCrs;
         case DestinationTransformColumn:
-          if ( sourceTransform != -1 )
+          if ( destinationTransform != -1 )
           {
             return QgsCoordinateTransform::datumTransformString( destinationTransform );
           }
