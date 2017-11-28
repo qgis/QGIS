@@ -71,7 +71,6 @@ IF (SPATIALITE_FOUND)
    ENDIF(APPLE)
 
    check_library_exists("${SPATIALITE_LIBRARY}" gaiaStatisticsInvalidate "" SPATIALITE_VERSION_GE_4_2_0)
-   check_library_exists("${SPATIALITE_LIBRARY}" spatialite_finalize_topologies "" SPATIALITE_VERSION_GE_4_5_0)
    IF (NOT SPATIALITE_VERSION_GE_4_2_0)
      MESSAGE(FATAL_ERROR "Found SpatiaLite, but version is too old. Requires at least version 4.2.0")
    ENDIF (NOT SPATIALITE_VERSION_GE_4_2_0)
