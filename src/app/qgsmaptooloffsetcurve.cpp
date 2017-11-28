@@ -25,7 +25,6 @@
 #include "qgssnappingconfig.h"
 #include "qgssettings.h"
 #include "qgisapp.h"
-#include "qgsgeos.h"
 
 #include <QGraphicsProxyWidget>
 #include <QMouseEvent>
@@ -360,34 +359,27 @@ void QgsMapToolOffsetCurve::setOffsetForRubberBand( double offset )
     return;
   }
 
-  QgsGeometry geomCopy( mOriginalGeometry );
-  geos::unique_ptr geosGeom( geomCopy.exportToGeos() );
-  if ( geosGeom )
+  QgsSettings s;
+  QgsGeometry::JoinStyle joinStyle = static_cast< QgsGeometry::JoinStyle >( s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt() );
+  int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
+  double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
+
+  QgsGeometry offsetGeom = mOriginalGeometry.offsetCurve( offset, quadSegments, joinStyle, miterLimit );
+  if ( !offsetGeom )
   {
-    QgsSettings s;
-    int joinStyle = s.value( QStringLiteral( "/qgis/digitizing/offset_join_style" ), 0 ).toInt();
-    int quadSegments = s.value( QStringLiteral( "/qgis/digitizing/offset_quad_seg" ), 8 ).toInt();
-    double miterLimit = s.value( QStringLiteral( "/qgis/digitizing/offset_miter_limit" ), 5.0 ).toDouble();
-
-    geos::unique_ptr offsetGeom( GEOSOffsetCurve_r( QgsGeometry::getGEOSHandler(), geosGeom.get(), offset, quadSegments, joinStyle, miterLimit ) );
-    if ( !offsetGeom )
-    {
-      deleteRubberBandAndGeometry();
-      deleteDistanceWidget();
-      delete mSnapVertexMarker;
-      mSnapVertexMarker = nullptr;
-      mForceCopy = false;
-      mGeometryModified = false;
-      deleteDistanceWidget();
-      emit messageEmitted( tr( "Creating offset geometry failed" ), QgsMessageBar::CRITICAL );
-      return;
-    }
-
-    if ( offsetGeom )
-    {
-      mModifiedGeometry.fromGeos( offsetGeom.release() );
-      mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
-    }
+    deleteRubberBandAndGeometry();
+    deleteDistanceWidget();
+    delete mSnapVertexMarker;
+    mSnapVertexMarker = nullptr;
+    mForceCopy = false;
+    mGeometryModified = false;
+    deleteDistanceWidget();
+    emit messageEmitted( tr( "Creating offset geometry failed: %1" ).arg( offsetGeom.lastError() ), QgsMessageBar::CRITICAL );
+  }
+  else
+  {
+    mModifiedGeometry = offsetGeom;
+    mRubberBand->setToGeometry( mModifiedGeometry, sourceLayer );
   }
 }
 
