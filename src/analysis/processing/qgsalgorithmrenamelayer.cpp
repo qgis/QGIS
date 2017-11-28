@@ -36,12 +36,12 @@ QString QgsRenameLayerAlgorithm::displayName() const
 
 QStringList QgsRenameLayerAlgorithm::tags() const
 {
-  return QObject::tr( "change,layer,name" ).split( ',' );
+  return QObject::tr( "change,layer,name,title" ).split( ',' );
 }
 
 QString QgsRenameLayerAlgorithm::group() const
 {
-  return QObject::tr( "Modeler tool" );
+  return QObject::tr( "Modeler tools" );
 }
 
 QString QgsRenameLayerAlgorithm::shortHelpString() const
