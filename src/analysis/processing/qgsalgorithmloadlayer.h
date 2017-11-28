@@ -26,7 +26,7 @@
 ///@cond PRIVATE
 
 /**
- * Native rename layer algorithm.
+ * Native load layer algorithm.
  */
 class QgsLoadLayerAlgorithm : public QgsProcessingAlgorithm
 {

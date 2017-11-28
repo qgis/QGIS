@@ -41,7 +41,7 @@ QStringList QgsLoadLayerAlgorithm::tags() const
 
 QString QgsLoadLayerAlgorithm::group() const
 {
-  return QObject::tr( "Modeler tool" );
+  return QObject::tr( "Modeler tools" );
 }
 
 QString QgsLoadLayerAlgorithm::shortHelpString() const
