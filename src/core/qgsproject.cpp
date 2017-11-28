@@ -922,6 +922,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   mCrs = projectCrs;
 
   mTransformContext.readXml( doc->documentElement(), *doc, context );
+  emit transformContextChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
