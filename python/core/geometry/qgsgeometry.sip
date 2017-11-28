@@ -500,7 +500,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  \param minDistPoint Receives the nearest point on the segment
  \param afterVertex Receives index of the vertex after the closest segment. The vertex
  before the closest segment is always afterVertex - 1
- \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
+ \param leftOf Out: Returns if the point lies on the left of right side of the segment ( > 0 means left, < 0 means right )
  \param epsilon epsilon for segment snapping
  :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
