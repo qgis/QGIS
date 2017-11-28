@@ -94,8 +94,15 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
     def testSourceDestinationDatumTransforms(self):
         context = QgsCoordinateTransformContext()
         self.assertEqual(context.sourceDestinationDatumTransforms(), {})
+        self.assertFalse(context.hasTransform(QgsCoordinateReferenceSystem('EPSG:3111'), QgsCoordinateReferenceSystem('EPSG:4283')))
         self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'),
                                                                    QgsCoordinateReferenceSystem('EPSG:4283'), 1, 2))
+        self.assertTrue(
+            context.hasTransform(QgsCoordinateReferenceSystem('EPSG:3111'), QgsCoordinateReferenceSystem('EPSG:4283')))
+        self.assertFalse(
+            context.hasTransform(QgsCoordinateReferenceSystem('EPSG:3111'), QgsCoordinateReferenceSystem('EPSG:4326')))
+        self.assertFalse(
+            context.hasTransform(QgsCoordinateReferenceSystem('EPSG:3113'), QgsCoordinateReferenceSystem('EPSG:4283')))
         self.assertEqual(context.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): (1, 2)})
         self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
                                                                    QgsCoordinateReferenceSystem(4283), 3, 4))

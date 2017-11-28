@@ -210,6 +210,13 @@ class CORE_EXPORT QgsCoordinateTransformContext
         const QgsCoordinateReferenceSystem &destinationCrs );
 
     /**
+     * Returns true if the context has a valid datum transform to use
+     * when transforming from the specified \a source CRS to \a destination CRS.
+     */
+    bool hasTransform( const QgsCoordinateReferenceSystem &source,
+                       const QgsCoordinateReferenceSystem &destination ) const;
+
+    /**
      * Returns the pair of source and destination datum transforms to use
      * for a transform from the specified \a source CRS to \a destination CRS.
      *

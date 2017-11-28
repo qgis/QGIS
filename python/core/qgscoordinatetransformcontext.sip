@@ -110,6 +110,14 @@ class QgsCoordinateTransformContext
 .. seealso:: addSourceDestinationDatumTransform()
 %End
 
+    bool hasTransform( const QgsCoordinateReferenceSystem &source,
+                       const QgsCoordinateReferenceSystem &destination ) const;
+%Docstring
+ Returns true if the context has a valid datum transform to use
+ when transforming from the specified ``source`` CRS to ``destination`` CRS.
+ :rtype: bool
+%End
+
     QPair< int, int > calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring

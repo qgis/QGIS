@@ -12535,10 +12535,8 @@ bool QgisApp::askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsC
   bool ok = false;
 
   QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
-  QPair<int, int> dt = context.calculateDatumTransforms( sourceCrs, destinationCrs );
-  if ( dt != qMakePair( -1, -1 ) )
+  if ( context.hasTransform( sourceCrs, destinationCrs ) )
   {
-    // already defined by user
     ok = true;
   }
   else

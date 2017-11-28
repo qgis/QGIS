@@ -124,6 +124,12 @@ void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const
   d->mSourceDestDatumTransforms.remove( qMakePair( sourceCrs.authid(), destinationCrs.authid() ) );
 }
 
+bool QgsCoordinateTransformContext::hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
+{
+  QPair<int, int> t = calculateDatumTransforms( source, destination );
+  return t.first != -1 || t.second != -1;
+}
+
 QPair<int, int> QgsCoordinateTransformContext::calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
   QString srcKey = source.authid();
