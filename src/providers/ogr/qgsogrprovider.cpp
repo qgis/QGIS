@@ -749,10 +749,11 @@ void QgsOgrProvider::addSubLayerDetailsToSubLayerList( int i, QgsOgrLayer *layer
 
     QString geom = ogrWkbGeometryTypeName( layerGeomType );
 
+    // For feature count, -1 indicates an unknown count state
     QStringList parts = QStringList()
                         << QString::number( i )
                         << layerName
-                        << ( layerFeatureCount == -1 ? tr( "Unknown" ) : QString::number( layerFeatureCount ) )
+                        << QString::number( layerFeatureCount )
                         << geom
                         << geometryColumnName;
 
