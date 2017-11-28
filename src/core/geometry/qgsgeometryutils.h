@@ -147,7 +147,13 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QVector<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
-    //! Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2
+    /**
+     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).
+     * A positive return value indicates the point is to the right of the line.
+     *
+     * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+     * on the line, or exactly in line with the segment) and the result is undefined.
+     */
     static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 
     /**

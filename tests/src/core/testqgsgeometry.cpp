@@ -3880,6 +3880,60 @@ void TestQgsGeometry::lineString()
   QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
   QCOMPARE( leftOf, false );
 
+  l35.setPoints( QgsPointSequence() << QgsPoint( 5, 5 )
+                 << QgsPoint( 6, 4 )
+                 << QgsPoint( 4, 4 )
+                 << QgsPoint( 5, 5 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 2.35, 4 ), p, v, &leftOf ), 2.7225, 4 * DBL_EPSILON );
+  QCOMPARE( p, QgsPoint( 4, 4 ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( leftOf, true );
+
+  l35.setPoints( QgsPointSequence() << QgsPoint( 5, 5 )
+                 << QgsPoint( 4, 4 )
+                 << QgsPoint( 6, 4 )
+                 << QgsPoint( 5, 5 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 2.35, 4 ), p, v, &leftOf ), 2.7225, 4 * DBL_EPSILON );
+  QCOMPARE( p, QgsPoint( 4, 4 ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( leftOf, false );
+
+  l35.setPoints( QgsPointSequence() << QgsPoint( 5, 5 )
+                 << QgsPoint( 6, 4 )
+                 << QgsPoint( 4, 4 )
+                 << QgsPoint( 5, 5 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 3.5, 2 ), p, v, &leftOf ), 4.250000, 4 * DBL_EPSILON );
+  QCOMPARE( p, QgsPoint( 4, 4 ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 2 ) );
+  QCOMPARE( leftOf, true );
+
+  l35.setPoints( QgsPointSequence() << QgsPoint( 5, 5 )
+                 << QgsPoint( 4, 4 )
+                 << QgsPoint( 6, 4 )
+                 << QgsPoint( 5, 5 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 3.5, 2 ), p, v, &leftOf ), 4.250000, 4 * DBL_EPSILON );
+  QCOMPARE( p, QgsPoint( 4, 4 ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( leftOf, false );
+
+  l35.setPoints( QgsPointSequence() << QgsPoint( 1, 1 )
+                 << QgsPoint( 1, 4 )
+                 << QgsPoint( 2, 2 )
+                 << QgsPoint( 1, 1 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 1, 0 ), p, v, &leftOf ), 1, 4 * DBL_EPSILON );
+  QCOMPARE( p, QgsPoint( 1, 1 ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( leftOf, true );
+
+  l35.setPoints( QgsPointSequence() << QgsPoint( 1, 1 )
+                 << QgsPoint( 2, 2 )
+                 << QgsPoint( 1, 4 )
+                 << QgsPoint( 1, 1 ) );
+  QGSCOMPARENEAR( l35.closestSegment( QgsPoint( 1, 0 ), p, v, &leftOf ), 1, 4 * DBL_EPSILON );
+  QCOMPARE( p, QgsPoint( 1, 1 ) );
+  QCOMPARE( v, QgsVertexId( 0, 0, 1 ) );
+  QCOMPARE( leftOf, false );
+
   //sumUpArea
   QgsLineString l36;
   double area = 1.0; //sumUpArea adds to area, so start with non-zero value
