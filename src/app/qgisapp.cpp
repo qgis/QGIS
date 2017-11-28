@@ -2634,13 +2634,13 @@ void QgisApp::createToolBars()
   }
 
   //circular string digitize tool button
-  QToolButton *tbAddCircularString = new QToolButton( mDigitizeToolBar );
+  QToolButton *tbAddCircularString = new QToolButton( mRegularShapeDigitizeToolBar );
   tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddCircularString->addAction( mActionCircularStringCurvePoint );
   tbAddCircularString->addAction( mActionCircularStringRadius );
   tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
   connect( tbAddCircularString, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mDigitizeToolBar->insertWidget( mActionNodeTool, tbAddCircularString );
+  mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddCircularString );
 
   //circle digitize tool button
   QToolButton *tbAddCircle = new QToolButton( mRegularShapeDigitizeToolBar );
