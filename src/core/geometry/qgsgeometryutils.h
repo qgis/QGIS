@@ -154,7 +154,7 @@ class CORE_EXPORT QgsGeometryUtils
      * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
      * on the line, or exactly in line with the segment) and the result is undefined.
      */
-    static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 
     /**
      * Returns a point a specified distance toward a second point.
@@ -380,12 +380,12 @@ class CORE_EXPORT QgsGeometryUtils
     };
 
     //! \note not available in Python bindings
-    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) SIP_SKIP
+    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) SIP_SKIP
     {
       double minDist = std::numeric_limits<double>::max();
       double minDistSegmentX = 0.0, minDistSegmentY = 0.0;
       QgsVertexId minDistVertexAfter;
-      bool minDistLeftOf = false;
+      int minDistLeftOf = 0;
       double sqrDist = 0.0;
       int vertexOffset = 0;
       int ringOffset = 0;

@@ -392,12 +392,13 @@ bool QgsPoint::deleteVertex( QgsVertexId position )
   return false;
 }
 
-double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   Q_UNUSED( pt );
   Q_UNUSED( segmentPt );
   Q_UNUSED( vertexAfter );
-  Q_UNUSED( leftOf );
+  if ( leftOf )
+    *leftOf = 0;
   Q_UNUSED( epsilon );
   return -1;  // no segments - return error
 }
