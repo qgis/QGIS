@@ -100,7 +100,16 @@ QgsFeature QgsFixGeometriesAlgorithm::processFeature( const QgsFeature &feature,
   }
 
   outputGeometry.convertToMultiType();
-  outputFeature.setGeometry( outputGeometry );
+  if ( QgsWkbTypes::geometryType( outputGeometry.wkbType() ) != QgsWkbTypes::geometryType( feature.geometry().wkbType() ) )
+  {
+    // don't keep geometries which have different types - e.g. lines converted to points
+    feedback->pushInfo( QObject::tr( "Fixing geometry for feature %1 resulted in %2, geometry has been dropped." ).arg( feature.id() ).arg( QgsWkbTypes::displayString( outputGeometry.wkbType() ) ) );
+    outputFeature.clearGeometry();
+  }
+  else
+  {
+    outputFeature.setGeometry( outputGeometry );
+  }
   return outputFeature;
 }
 
