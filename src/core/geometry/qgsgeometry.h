@@ -555,11 +555,12 @@ class CORE_EXPORT QgsGeometry
      * \param minDistPoint Receives the nearest point on the segment
      * \param afterVertex Receives index of the vertex after the closest segment. The vertex
      * before the closest segment is always afterVertex - 1
-     * \param leftOf Out: Returns if the point lies on the left of right side of the segment ( > 0 means left, < 0 means right )
+     * \param leftOf Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
+     * that the test was unsuccesful, e.g. for a point exactly on the line)
      * \param epsilon epsilon for segment snapping
      * \returns The squared Cartesian distance is also returned in sqrDist, negative number on error
      */
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &afterVertex SIP_OUT, double *leftOf SIP_OUT = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &afterVertex SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.

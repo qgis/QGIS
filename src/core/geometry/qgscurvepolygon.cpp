@@ -798,7 +798,7 @@ bool QgsCurvePolygon::isEmpty() const
   return mExteriorRing->isEmpty();
 }
 
-double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )
   {

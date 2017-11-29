@@ -243,7 +243,7 @@ Closes the line string by appending the first point to the end of the line, if i
     virtual QgsLineString *reversed() const /Factory/;
 
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
     virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
 
