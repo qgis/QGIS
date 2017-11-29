@@ -146,6 +146,12 @@ class QgsProcessingAlgorithmDialogBase : QDialog
  :rtype: QDialogButtonBox
 %End
 
+    QTabWidget *tabWidget();
+%Docstring
+ Returns the dialog's tab widget.
+ :rtype: QTabWidget
+%End
+
     void clearProgress();
 %Docstring
  Clears any current progress from the dialog.
@@ -170,6 +176,11 @@ class QgsProcessingAlgorithmDialogBase : QDialog
 %Docstring
  Returns the dialog's message bar.
  :rtype: QgsMessageBar
+%End
+
+    void hideShortHelp();
+%Docstring
+ Hides the short help panel.
 %End
 
   protected slots:

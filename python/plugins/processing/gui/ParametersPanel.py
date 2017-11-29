@@ -39,7 +39,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputRasterLayer,
                        QgsProcessingParameterRasterDestination,
                        QgsProcessingParameterFeatureSink,
-                       QgsProcessingParameterVectorDestination)
+                       QgsProcessingParameterVectorDestination,
+                       QgsProject)
 from qgis.PyQt import uic
 from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import (QWidget, QHBoxLayout, QToolButton,
@@ -78,6 +79,9 @@ class ParametersPanel(BASE, WIDGET):
         self.iterateButtons = {}
 
         self.initWidgets()
+
+        QgsProject.instance().layerWasAdded.connect(self.layerRegistryChanged)
+        QgsProject.instance().layersWillBeRemoved.connect(self.layerRegistryChanged)
 
     def layerRegistryChanged(self, layers):
         for wrapper in list(self.wrappers.values()):
