@@ -493,6 +493,10 @@ void QgsProject::clear()
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
 
+  QgsCoordinateTransformContext context;
+  context.readSettings();
+  setTransformContext( context );
+
   mEmbeddedLayers.clear();
   mRelationManager->clear();
   mAnnotationManager->clear();
