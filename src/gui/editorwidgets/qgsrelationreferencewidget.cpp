@@ -583,8 +583,14 @@ void QgsRelationReferenceWidget::init()
       }
     }
 
-    QVariant featId = mFeature.isValid() ? mFeature.id() : QVariant( QVariant::Int );
-    mComboBox->setCurrentIndex( mComboBox->findData( featId, QgsAttributeTableModel::FeatureIdRole ) );
+    if ( mFeature.isValid() )
+    {
+      mComboBox->setCurrentIndex( mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole ) );
+    }
+    else
+    {
+      mComboBox->setCurrentIndex( -1 );
+    }
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboReferenceChanged( int ) ) );
