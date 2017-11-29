@@ -32,7 +32,7 @@ QgsRenderContext::QgsRenderContext()
   : mFlags( DrawEditingInfo | UseAdvancedEffects | DrawSelection | UseRenderingOptimization )
 {
   mVectorSimplifyMethod.setSimplifyHints( QgsVectorSimplifyMethod::NoSimplification );
-  // For RenderMetersInMapUnits support, when rendering in Degrees, the Ellipsoid must be set
+  // For RenderMeters support, when rendering in Degrees, the Ellipsoid must be set
   // - for Previews/Icons the default Extent can be used
   mDistanceArea.setEllipsoid( mDistanceArea.sourceCrs().ellipsoidAcronym() );
 }
@@ -238,7 +238,7 @@ double QgsRenderContext::convertToPainterUnits( double size, QgsUnitTypes::Rende
       conversionFactor = mScaleFactor * INCH_TO_MM;
       break;
 
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case QgsUnitTypes::RenderMeters:
     {
       size = convertMetersToMapUnits( size );
       unit = QgsUnitTypes::RenderMapUnits;
@@ -289,7 +289,7 @@ double QgsRenderContext::convertToMapUnits( double size, QgsUnitTypes::RenderUni
 
   switch ( unit )
   {
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case QgsUnitTypes::RenderMeters:
     {
       size = convertMetersToMapUnits( size );
       // Fall through to RenderMapUnits with values of meters converted to MapUnits
@@ -353,7 +353,7 @@ double QgsRenderContext::convertFromMapUnits( double sizeInMapUnits, QgsUnitType
 
   switch ( outputUnit )
   {
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case QgsUnitTypes::RenderMeters:
     {
       return sizeInMapUnits / convertMetersToMapUnits( 1.0 );
     }

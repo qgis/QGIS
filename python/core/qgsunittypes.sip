@@ -79,7 +79,7 @@ class QgsUnitTypes
       RenderPoints,
       RenderInches,
       RenderUnknownUnit,
-      RenderMetersInMapUnits,
+      RenderMeters,
     };
 
     enum LayoutUnit

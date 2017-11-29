@@ -247,7 +247,7 @@ QPointF QgsMapToolOffsetPointSymbol::calculateOffset( const QgsPointXY &startPoi
       factor = 1.0;
       break;
 
-    case QgsUnitTypes::RenderMetersInMapUnits:
+    case QgsUnitTypes::RenderMeters:
     {
       QgsDistanceArea distanceArea;
       distanceArea.setSourceCrs( mCanvas->mapSettings().destinationCrs() );

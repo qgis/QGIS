@@ -169,9 +169,9 @@ void QgsUnitSelectionWidget::setUnits( const QgsUnitTypes::RenderUnitList &units
   {
     mUnitCombo->addItem( tr( "Pixels" ), QgsUnitTypes::RenderPixels );
   }
-  if ( units.contains( QgsUnitTypes::RenderMetersInMapUnits ) )
+  if ( units.contains( QgsUnitTypes::RenderMeters ) )
   {
-    mUnitCombo->addItem( tr( "Meters (at Map Scale)" ), QgsUnitTypes::RenderMetersInMapUnits );
+    mUnitCombo->addItem( tr( "Meters" ), QgsUnitTypes::RenderMeters );
   }
   if ( units.contains( QgsUnitTypes::RenderMapUnits ) )
   {

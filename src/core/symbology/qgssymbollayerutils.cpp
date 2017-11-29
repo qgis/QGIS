@@ -4052,7 +4052,7 @@ double QgsSymbolLayerUtils::rescaleUom( double size, QgsUnitTypes::RenderUnit un
           scale = 1;
           break;
         case QgsUnitTypes::RenderMapUnits:
-        case QgsUnitTypes::RenderMetersInMapUnits:
+        case QgsUnitTypes::RenderMeters:
           // already handed via uom
           scale = 1;
           break;
