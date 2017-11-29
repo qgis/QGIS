@@ -25,12 +25,17 @@
 #include <QDir>
 #include <QPushButton>
 
-QgsDatumTransformDialog::QgsDatumTransformDialog( QgsCoordinateReferenceSystem sourceCrs,
-    QgsCoordinateReferenceSystem destinationCrs,
-    QWidget *parent, Qt::WindowFlags f )
+QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs,
+    const QgsCoordinateReferenceSystem &destinationCrs,
+    QPair<int, int> selectedDatumTransforms,
+    QWidget *parent,
+    Qt::WindowFlags f )
   : QDialog( parent, f )
 {
   setupUi( this );
+
+  mSourceProjectionSelectionWidget->setCrs( sourceCrs );
+  mDestinationProjectionSelectionWidget->setCrs( destinationCrs );
 
   connect( mHideDeprecatedCheckBox, &QCheckBox::stateChanged, this, &QgsDatumTransformDialog::mHideDeprecatedCheckBox_stateChanged );
   connect( mDatumTransformTreeWidget, &QTreeWidget::currentItemChanged, this, &QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged );
@@ -59,10 +64,10 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( QgsCoordinateReferenceSystem s
     mDatumTransformTreeWidget->setColumnWidth( i, settings.value( QStringLiteral( "Windows/DatumTransformDialog/columnWidths/%1" ).arg( i ), mDatumTransformTreeWidget->columnWidth( i ) ).toInt() );
   }
 
-  load();
+  load( selectedDatumTransforms );
 }
 
-void QgsDatumTransformDialog::load()
+void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransforms )
 {
   QgsDebugMsg( "Entered." );
 
@@ -128,6 +133,11 @@ void QgsDatumTransformDialog::load()
     {
       item->setDisabled( itemDisabled );
       mDatumTransformTreeWidget->addTopLevelItem( item );
+      if ( it->at( 0 ) == selectedDatumTransforms.first &&
+           it->at( 1 ) == selectedDatumTransforms.second )
+      {
+        mDatumTransformTreeWidget->setCurrentItem( item );
+      }
     }
     else
     {

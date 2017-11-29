@@ -99,6 +99,16 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
           break;
       }
       break;
+    case Qt::UserRole:
+      switch ( index.column() )
+      {
+        case SourceTransformColumn:
+          return sourceTransform;
+        case DestinationTransformColumn:
+          return destinationTransform;
+        default:
+          break;
+      }
     default:
       break;
   }

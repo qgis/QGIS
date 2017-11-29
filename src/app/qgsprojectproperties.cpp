@@ -165,6 +165,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   mDatumTransformTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
   connect( mDatumTransformAddButton, &QToolButton::clicked, this, &QgsProjectProperties::addDatumTransform );
   connect( mDatumTransformRemoveButton, &QToolButton::clicked, this, &QgsProjectProperties::removeDatumTransform );
+  connect( mDatumTransformEditButton, &QToolButton::clicked, this, &QgsProjectProperties::editDatumTransform );
 
   bool show = settings.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
   mShowDatumTransformDialogCheckBox->setChecked( show );
@@ -1252,6 +1253,51 @@ void QgsProjectProperties::removeDatumTransform()
   {
     mDatumTransformTableModel->removeTransform( selectedIndexes );
   }
+}
+
+void QgsProjectProperties::editDatumTransform()
+{
+  QModelIndexList selectedIndexes = mDatumTransformTableView->selectionModel()->selectedIndexes();
+  if ( selectedIndexes.count() > 0 )
+  {
+    QgsCoordinateReferenceSystem sourceCrs;
+    QgsCoordinateReferenceSystem destinationCrs;
+    int sourceTransform = -1;
+    int destinationTransform = -1;
+    for ( QModelIndexList::const_iterator it = selectedIndexes.constBegin(); it != selectedIndexes.constEnd(); it ++ )
+    {
+      if ( it->column() == QgsDatumTransformTableModel::SourceCrsColumn )
+      {
+        sourceCrs = QgsCoordinateReferenceSystem( mDatumTransformTableModel->data( *it, Qt::DisplayRole ).toString() );
+      }
+      if ( it->column() == QgsDatumTransformTableModel::DestinationCrsColumn )
+      {
+        destinationCrs = QgsCoordinateReferenceSystem( mDatumTransformTableModel->data( *it, Qt::DisplayRole ).toString() );
+      }
+      if ( it->column() == QgsDatumTransformTableModel::SourceTransformColumn )
+      {
+        sourceTransform = mDatumTransformTableModel->data( *it, Qt::UserRole ).toInt();
+      }
+      if ( it->column() == QgsDatumTransformTableModel::DestinationTransformColumn )
+      {
+        destinationTransform = mDatumTransformTableModel->data( *it, Qt::UserRole ).toInt();
+      }
+    }
+    if ( sourceCrs.isValid() && destinationCrs.isValid() &&
+         ( sourceTransform != -1 || destinationTransform != -1 ) )
+    {
+      QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog( sourceCrs, destinationCrs, qMakePair( sourceTransform, destinationTransform ) );
+      if ( dlg->exec() )
+      {
+        QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg->selectedDatumTransforms();
+        QgsCoordinateTransformContext context = mDatumTransformTableModel->transformContext();
+        // QMap::insert takes care of replacing existing value
+        context.addSourceDestinationDatumTransform( sourceCrs, destinationCrs, dt.first.second, dt.second.second );
+        mDatumTransformTableModel->setTransformContext( context );
+      }
+    }
+  }
+
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )

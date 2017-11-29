@@ -76,6 +76,9 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     //! remove currently selected datum transform
     void removeDatumTransform();
 
+    //! edit currently selected datum transform
+    void editDatumTransform();
+
     /**
      * Let the user add a scale to the list of project scales
      * used in scale combobox instead of global ones */

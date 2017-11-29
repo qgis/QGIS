@@ -37,9 +37,11 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     /**
      * Constructor for QgsDatumTransformDialog.
      */
-    QgsDatumTransformDialog( QgsCoordinateReferenceSystem sourceCrs = QgsCoordinateReferenceSystem(),
-                             QgsCoordinateReferenceSystem destinationCrs = QgsCoordinateReferenceSystem(),
-                             QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
+                             const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                             QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
+                             QWidget *parent = nullptr,
+                             Qt::WindowFlags f = nullptr );
     ~QgsDatumTransformDialog();
 
     /**
@@ -64,7 +66,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     bool gridShiftTransformation( const QString &itemText ) const;
     //! Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
     bool testGridShiftFileAvailability( QTreeWidgetItem *item, int col ) const;
-    void load();
+    void load( const QPair<int, int> &selectedDatumTransforms = qMakePair( -1, -1 ) );
     void setOKButtonEnabled();
 
 
