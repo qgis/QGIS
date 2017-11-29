@@ -5032,6 +5032,7 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrs );
   // write the projections _proj string_ to project settings
   prj->setCrs( srs );
+  prj->setEllipsoid( srs.ellipsoidAcronym() );
   prj->setDirty( false );
 
   /* New Empty Project Created
