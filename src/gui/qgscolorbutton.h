@@ -415,6 +415,7 @@ class GUI_EXPORT QgsColorButton : public QToolButton
 
   private:
 
+    static QScreen *findScreenAt( const QPoint &pos );
     Behavior mBehavior = QgsColorButton::ShowDialog;
     QString mColorDialogTitle;
     QColor mColor;
