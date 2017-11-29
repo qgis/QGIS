@@ -66,6 +66,7 @@ class GUI_EXPORT QgsFileDownloaderDialog : public QProgressDialog
 
   private:
 
+    QString mOutputFileName;
     QgsFileDownloader *mDownloader = nullptr;
 
 };

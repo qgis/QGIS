@@ -186,6 +186,7 @@ SET(QGIS_CORE_SRCS
   qgsfieldproxymodel.cpp
   qgsfields.cpp
   qgsfiledownloader.cpp
+  qgsfileutils.cpp
   qgsfontutils.cpp
   qgsgeometrysimplifier.cpp
   qgsgeometryvalidator.cpp
@@ -610,6 +611,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfieldmodel.h
   qgsfieldproxymodel.h
   qgsfiledownloader.h
+  qgsfileutils.h
   qgsfeaturefiltermodel.h
   qgsfeaturefiltermodel_p.h
   qgsgeometryvalidator.h
