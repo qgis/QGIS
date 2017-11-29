@@ -80,7 +80,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
         dlg.show()
         dlg.exec_()
 
-    def getParamValues(self):
+    def getParameterValues(self):
         parameters = {}
 
         if self.mainWidget() is None:
@@ -152,7 +152,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
         checkCRS = ProcessingConfig.getSetting(ProcessingConfig.WARN_UNMATCHING_CRS)
         try:
-            parameters = self.getParamValues()
+            parameters = self.getParameterValues()
 
             if checkCRS and not self.algorithm().validateInputCrs(parameters, context):
                 reply = QMessageBox.question(self, self.tr("Unmatching CRS's"),

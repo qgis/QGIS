@@ -139,15 +139,11 @@ void QgsProcessingAlgorithmDialogBase::setMainWidget( QWidget *widget )
 {
   if ( mMainWidget )
   {
-    //QgsProject.instance().layerWasAdded.disconnect( self.mainWidget.layerRegistryChanged )
-    //QgsProject.instance().layersWillBeRemoved.disconnect( self.mainWidget.layerRegistryChanged )
     mMainWidget->deleteLater();
   }
 
   mMainWidget = widget;
-  tabWidget->widget( 0 )->layout()->addWidget( mMainWidget );
-  //QgsProject.instance().layerWasAdded.connect( self.mainWidget.layerRegistryChanged )
-  //QgsProject.instance().layersWillBeRemoved.connect( self.mainWidget.layerRegistryChanged )
+  mTabWidget->widget( 0 )->layout()->addWidget( mMainWidget );
 }
 
 QWidget *QgsProcessingAlgorithmDialogBase::mainWidget()
@@ -173,9 +169,14 @@ QDialogButtonBox *QgsProcessingAlgorithmDialogBase::buttonBox()
   return mButtonBox;
 }
 
+QTabWidget *QgsProcessingAlgorithmDialogBase::tabWidget()
+{
+  return mTabWidget;
+}
+
 void QgsProcessingAlgorithmDialogBase::showLog()
 {
-  tabWidget->setCurrentIndex( 1 );
+  mTabWidget->setCurrentIndex( 1 );
 }
 
 void QgsProcessingAlgorithmDialogBase::closeEvent( QCloseEvent *e )
@@ -270,7 +271,7 @@ void QgsProcessingAlgorithmDialogBase::reportError( const QString &error )
 {
   setInfo( error, true );
   resetGui();
-  tabWidget->setCurrentIndex( 1 );
+  mTabWidget->setCurrentIndex( 1 );
 }
 
 void QgsProcessingAlgorithmDialogBase::pushInfo( const QString &info )
@@ -341,6 +342,11 @@ void QgsProcessingAlgorithmDialogBase::resetGui()
 QgsMessageBar *QgsProcessingAlgorithmDialogBase::messageBar()
 {
   return mMessageBar;
+}
+
+void QgsProcessingAlgorithmDialogBase::hideShortHelp()
+{
+  textShortHelp->setVisible( false );
 }
 
 void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isError, bool escapeHtml )
