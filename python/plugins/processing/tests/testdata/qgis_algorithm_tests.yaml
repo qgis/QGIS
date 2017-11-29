@@ -4548,3 +4548,4 @@ tests:
       OUTPUT:
         name: expected/difference.gml
         type: vector
+        
