@@ -456,6 +456,9 @@ QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
 - asGML2() was renamed to asGml2()
 - asGML3() was renamed to asGml3()
 - asJSON() was renamed to asJson()
+- closestSegment() now returns an integer value for the leftOf test (-1 if point is to the left
+of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
+be determined, e.g. point exactly on a line)
 
 
 QgsActionManager        {#qgis_api_break_3_0_QgsActionManager}
@@ -1338,6 +1341,7 @@ maintains Z or M dimensions from the input points and is more efficient.
 - fromMultiPolygon() was renamed to fromMultiPolygonXY()
 - exportToWkt() was renamed to asWkt()
 - exportToGeoJSON() was renamed to asJson()
+- closestSegmentWithContext() now returns an extra value, indicating whether the point is to the left of the geometry
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}
