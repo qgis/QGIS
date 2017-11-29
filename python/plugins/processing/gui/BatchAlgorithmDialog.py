@@ -41,7 +41,8 @@ from qgis.core import (QgsProcessingParameterDefinition,
                        QgsProcessingOutputString,
                        QgsProject)
 
-from qgis.gui import QgsMessageBar
+from qgis.gui import (QgsMessageBar,
+                      QgsProcessingAlgorithmDialogBase)
 from qgis.utils import OverrideCursor
 
 from processing.gui.BatchPanel import BatchPanel
@@ -57,7 +58,7 @@ from processing.tools import dataobjects
 import codecs
 
 
-class BatchAlgorithmDialog(AlgorithmDialogBase):
+class BatchAlgorithmDialog(QgsProcessingAlgorithmDialogBase):
 
     def __init__(self, alg):
         AlgorithmDialogBase.__init__(self, alg)
@@ -65,14 +66,8 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
         self.alg = alg
 
         self.setWindowTitle(self.tr('Batch Processing - {0}').format(self.alg.displayName()))
-
         self.setMainWidget(BatchPanel(self, self.alg))
-
         self.textShortHelp.setVisible(False)
-
-        self.bar = QgsMessageBar()
-        self.bar.setSizePolicy(QSizePolicy.Minimum, QSizePolicy.Fixed)
-        self.layout().insertWidget(0, self.bar)
 
     def accept(self):
         alg_parameters = []
@@ -92,9 +87,9 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                 wrapper = self.mainWidget.wrappers[row][col]
                 parameters[param.name()] = wrapper.value()
                 if not param.checkValueIsAcceptable(wrapper.value()):
-                    self.bar.pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
-                                         param.description(), row + 1),
-                                         level=QgsMessageBar.WARNING, duration=5)
+                    self.messageBar().pushMessage("", self.tr('Wrong or missing parameter value: {0} (row {1})').format(
+                        param.description(), row + 1),
+                        level=QgsMessageBar.WARNING, duration=5)
                     return
                 col += 1
             count_visible_outputs = 0
@@ -114,9 +109,9 @@ class BatchAlgorithmDialog(AlgorithmDialogBase):
                         parameters[out.name()] = text
                     col += 1
                 else:
-                    self.bar.pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
-                                         out.description(), row + 1),
-                                         level=QgsMessageBar.WARNING, duration=5)
+                    self.messageBar().pushMessage("", self.tr('Wrong or missing output value: {0} (row {1})').format(
+                        out.description(), row + 1),
+                        level=QgsMessageBar.WARNING, duration=5)
                     return
 
             alg_parameters.append(parameters)
