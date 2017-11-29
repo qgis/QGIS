@@ -38,6 +38,7 @@
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgsdialog.h"
 #include "qgscomposer.h"
 #include "qgscolorschemeregistry.h"
@@ -454,56 +455,21 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   leProjectGlobalCrs->setCrs( mDefaultCrs );
   leProjectGlobalCrs->setOptionVisible( QgsProjectionSelectionWidget::DefaultCrs, false );
 
-  //default datum transformations
-  mSettings->beginGroup( QStringLiteral( "/Projections" ) );
-
   mShowDatumTransformDialogCheckBox->setChecked( mSettings->value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool() );
 
-  QStringList projectionKeys = mSettings->allKeys();
+  // Datum transforms
+  QgsCoordinateTransformContext context;
+  context.readSettings();
+  mDefaultDatumTransformTableModel->setTransformContext( context );
+  mDefaultDatumTransformTableView->setModel( mDefaultDatumTransformTableModel );
+  mDefaultDatumTransformTableView->resizeColumnToContents( 0 );
+  mDefaultDatumTransformTableView->horizontalHeader()->show();
+  mDefaultDatumTransformTableView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mDefaultDatumTransformTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  connect( mAddDefaultTransformButton, &QToolButton::clicked, this, &QgsOptions::addDefaultDatumTransform );
+  connect( mRemoveDefaultTransformButton, &QToolButton::clicked, this, &QgsOptions::removeDefaultDatumTransform );
+  connect( mEditDefaultTransformButton, &QToolButton::clicked, this, &QgsOptions::editDefaultDatumTransform );
 
-  //collect src and dest entries that belong together
-  QMap< QPair< QString, QString >, QPair< int, int > > transforms;
-  QStringList::const_iterator pkeyIt = projectionKeys.constBegin();
-  for ( ; pkeyIt != projectionKeys.constEnd(); ++pkeyIt )
-  {
-    if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) || pkeyIt->contains( QLatin1String( "destTransform" ) ) )
-    {
-      QStringList split = pkeyIt->split( '/' );
-      QString srcAuthId, destAuthId;
-      if ( ! split.isEmpty() )
-      {
-        srcAuthId = split.at( 0 );
-      }
-      if ( split.size() > 1 )
-      {
-        destAuthId = split.at( 1 ).split( '_' ).at( 0 );
-      }
-
-      if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) )
-      {
-        transforms[ qMakePair( srcAuthId, destAuthId )].first = mSettings->value( *pkeyIt ).toInt();
-      }
-      else if ( pkeyIt->contains( QLatin1String( "destTransform" ) ) )
-      {
-        transforms[ qMakePair( srcAuthId, destAuthId )].second = mSettings->value( *pkeyIt ).toInt();
-      }
-    }
-  }
-  mSettings->endGroup();
-
-  QMap< QPair< QString, QString >, QPair< int, int > >::const_iterator transformIt = transforms.constBegin();
-  for ( ; transformIt != transforms.constEnd(); ++transformIt )
-  {
-    const QPair< int, int > &v = transformIt.value();
-    QTreeWidgetItem *item = new QTreeWidgetItem();
-    item->setText( 0, transformIt.key().first );
-    item->setText( 1, transformIt.key().second );
-    item->setText( 2, QString::number( v.first ) );
-    item->setText( 3, QString::number( v.second ) );
-    mDefaultDatumTransformTreeWidget->addTopLevelItem( item );
-  }
-  connect( mAddDefaultTransformButton, &QAbstractButton::clicked, this, &QgsOptions::addDefaultTransformation );
-  connect( mRemoveDefaultTransformButton, &QAbstractButton::clicked, this, &QgsOptions::removeDefaultTransformation );
 
   // Set the units for measuring
   mDistanceUnitsComboBox->addItem( tr( "Meters" ), QgsUnitTypes::DistanceMeters );
@@ -1560,7 +1526,7 @@ void QgsOptions::saveOptions()
     mStyleSheetBuilder->saveToSettings( mStyleSheetNewOpts );
   }
 
-  saveDefaultDatumTransformations();
+  mDefaultDatumTransformTableModel->transformContext().writeSettings();
 
   mLocatorOptionsWidget->commitChanges();
 
@@ -2255,71 +2221,70 @@ void QgsOptions::saveMinMaxLimits( QComboBox *cbox, const QString &name )
   mSettings->setValue( "/Raster/defaultContrastEnhancementLimits/" + name, value );
 }
 
-void QgsOptions::removeDefaultTransformation()
+void QgsOptions::addDefaultDatumTransform()
 {
-  QList<QTreeWidgetItem *> items = mDefaultDatumTransformTreeWidget->selectedItems();
-  for ( int i = 0; i < items.size(); ++i )
+  QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog();
+  if ( dlg->exec() )
   {
-    int idx = mDefaultDatumTransformTreeWidget->indexOfTopLevelItem( items.at( i ) );
-    if ( idx >= 0 )
-    {
-      delete mDefaultDatumTransformTreeWidget->takeTopLevelItem( idx );
-    }
+    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg->selectedDatumTransforms();
+    QgsCoordinateTransformContext context = mDefaultDatumTransformTableModel->transformContext();
+    context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
+    mDefaultDatumTransformTableModel->setTransformContext( context );
   }
 }
 
-void QgsOptions::addDefaultTransformation()
+void QgsOptions::removeDefaultDatumTransform()
 {
-  QTreeWidgetItem *item = new QTreeWidgetItem();
-  item->setText( 0, QLatin1String( "" ) );
-  item->setText( 1, QLatin1String( "" ) );
-  item->setText( 2, QLatin1String( "" ) );
-  item->setText( 3, QLatin1String( "" ) );
-  item->setFlags( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable );
-  mDefaultDatumTransformTreeWidget->addTopLevelItem( item );
+  QModelIndexList selectedIndexes = mDefaultDatumTransformTableView->selectionModel()->selectedIndexes();
+  if ( selectedIndexes.count() > 0 )
+  {
+    mDefaultDatumTransformTableModel->removeTransform( selectedIndexes );
+  }
 }
 
-void QgsOptions::saveDefaultDatumTransformations()
+void QgsOptions::editDefaultDatumTransform()
 {
-  QgsSettings s;
-  s.beginGroup( QStringLiteral( "/Projections" ) );
-  QStringList groupKeys = s.allKeys();
-  QStringList::const_iterator groupKeyIt = groupKeys.constBegin();
-  for ( ; groupKeyIt != groupKeys.constEnd(); ++groupKeyIt )
+  QModelIndexList selectedIndexes = mDefaultDatumTransformTableView->selectionModel()->selectedIndexes();
+  if ( selectedIndexes.count() > 0 )
   {
-    if ( groupKeyIt->contains( QLatin1String( "srcTransform" ) ) || groupKeyIt->contains( QLatin1String( "destTransform" ) ) )
+    QgsCoordinateReferenceSystem sourceCrs;
+    QgsCoordinateReferenceSystem destinationCrs;
+    int sourceTransform = -1;
+    int destinationTransform = -1;
+    for ( QModelIndexList::const_iterator it = selectedIndexes.constBegin(); it != selectedIndexes.constEnd(); it ++ )
     {
-      s.remove( *groupKeyIt );
+      if ( it->column() == QgsDatumTransformTableModel::SourceCrsColumn )
+      {
+        sourceCrs = QgsCoordinateReferenceSystem( mDefaultDatumTransformTableModel->data( *it, Qt::DisplayRole ).toString() );
+      }
+      if ( it->column() == QgsDatumTransformTableModel::DestinationCrsColumn )
+      {
+        destinationCrs = QgsCoordinateReferenceSystem( mDefaultDatumTransformTableModel->data( *it, Qt::DisplayRole ).toString() );
+      }
+      if ( it->column() == QgsDatumTransformTableModel::SourceTransformColumn )
+      {
+        sourceTransform = mDefaultDatumTransformTableModel->data( *it, Qt::UserRole ).toInt();
+      }
+      if ( it->column() == QgsDatumTransformTableModel::DestinationTransformColumn )
+      {
+        destinationTransform = mDefaultDatumTransformTableModel->data( *it, Qt::UserRole ).toInt();
+      }
+    }
+    if ( sourceCrs.isValid() && destinationCrs.isValid() &&
+         ( sourceTransform != -1 || destinationTransform != -1 ) )
+    {
+      QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog( sourceCrs, destinationCrs, qMakePair( sourceTransform, destinationTransform ) );
+      if ( dlg->exec() )
+      {
+        QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg->selectedDatumTransforms();
+        QgsCoordinateTransformContext context = mDefaultDatumTransformTableModel->transformContext();
+        // QMap::insert takes care of replacing existing value
+        context.addSourceDestinationDatumTransform( sourceCrs, destinationCrs, dt.first.second, dt.second.second );
+        mDefaultDatumTransformTableModel->setTransformContext( context );
+      }
     }
   }
-
-  int nDefaultTransforms = mDefaultDatumTransformTreeWidget->topLevelItemCount();
-  for ( int i = 0; i < nDefaultTransforms; ++i )
-  {
-    QTreeWidgetItem *item = mDefaultDatumTransformTreeWidget->topLevelItem( i );
-    QString srcAuthId = item->text( 0 );
-    QString destAuthId = item->text( 1 );
-    if ( srcAuthId.isEmpty() || destAuthId.isEmpty() )
-    {
-      continue;
-    }
-
-    bool conversionOk;
-    int srcDatumTransform = item->text( 2 ).toInt( &conversionOk );
-    if ( conversionOk )
-    {
-      s.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", srcDatumTransform );
-    }
-    int destDatumTransform = item->text( 3 ).toInt( &conversionOk );
-    if ( conversionOk )
-    {
-      s.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destDatumTransform );
-    }
-  }
-
-  s.endGroup();
 }
-
 
 void QgsOptions::addColor()
 {

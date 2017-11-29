@@ -24,6 +24,7 @@
 
 class QgsReadWriteContext;
 
+
 /***************************************************************************
  * This class is considered CRITICAL and any change MUST be accompanied with
  * full unit tests in testqgsfeature.cpp.
@@ -240,6 +241,19 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * \see readXml()
      */
     void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+
+    /**
+     * Reads the context's state from application settings.
+     * \see readSettings()
+     */
+    void readSettings();
+
+    /**
+     * Write the context's state to application settings.
+     * \see writeSettings()
+     */
+    void writeSettings();
 
 
   private:

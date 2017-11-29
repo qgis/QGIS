@@ -1297,7 +1297,6 @@ void QgsProjectProperties::editDatumTransform()
       }
     }
   }
-
 }
 
 void QgsProjectProperties::cbxWFSPubliedStateChanged( int aIdx )

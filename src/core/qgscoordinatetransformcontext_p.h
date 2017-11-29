@@ -50,8 +50,10 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
     {
       other.mLock.lockForRead();
       mSourceDestDatumTransforms = other.mSourceDestDatumTransforms;
+#if 0
       mSourceDatumTransforms = other.mSourceDatumTransforms;
       mDestDatumTransforms = other.mDestDatumTransforms;
+#endif
       other.mLock.unlock();
     }
 
@@ -61,11 +63,13 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
      */
     QMap< QPair< QString, QString >, QPair< int, int > > mSourceDestDatumTransforms;
 
+#if 0
     //! Mapping for datum transforms to use for source CRS
     QMap< QString, int > mSourceDatumTransforms;
 
     //! Mapping for datum transforms to use for destination CRS
     QMap< QString, int > mDestDatumTransforms;
+#endif
 
     //! Mutex for making QgsCoordinateTransformContextPrivate thread safe
     mutable QReadWriteLock mLock;

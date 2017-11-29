@@ -337,8 +337,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>812</height>
+                <width>577</width>
+                <height>766</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_28">
@@ -1032,7 +1032,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
+                <width>545</width>
                 <height>1114</height>
                </rect>
               </property>
@@ -1568,8 +1568,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>812</height>
+                <width>540</width>
+                <height>705</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_27">
@@ -1936,7 +1936,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
+                <width>717</width>
                 <height>1020</height>
                </rect>
               </property>
@@ -2687,8 +2687,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>812</height>
+                <width>140</width>
+                <height>276</height>
                </rect>
               </property>
               <layout class="QHBoxLayout" name="horizontalLayout_46">
@@ -2838,8 +2838,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>812</height>
+                <width>532</width>
+                <height>236</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_25">
@@ -4679,36 +4679,15 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </item>
                    </layout>
                   </item>
-                  <item row="4" column="0">
-                   <widget class="QTreeWidget" name="mDefaultDatumTransformTreeWidget">
-                    <column>
-                     <property name="text">
-                      <string>Source CRS</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Destination CRS</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Source datum transform</string>
-                     </property>
-                    </column>
-                    <column>
-                     <property name="text">
-                      <string>Destination datum transform</string>
-                     </property>
-                    </column>
-                   </widget>
-                  </item>
                   <item row="1" column="0">
                    <widget class="Line" name="line_2">
                     <property name="orientation">
                      <enum>Qt::Horizontal</enum>
                     </property>
                    </widget>
+                  </item>
+                  <item row="4" column="0">
+                   <widget class="QTableView" name="mDefaultDatumTransformTableView"/>
                   </item>
                  </layout>
                 </widget>
@@ -4796,8 +4775,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>848</width>
-                <height>812</height>
+                <width>641</width>
+                <height>764</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_33">

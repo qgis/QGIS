@@ -259,8 +259,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>565</width>
+                <height>697</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_8">
@@ -797,8 +797,7 @@
                  </property>
                  <layout class="QVBoxLayout" name="verticalLayout_21">
                   <item>
-                   <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true">
-                   </widget>
+                   <widget class="QgsProjectionSelectionTreeWidget" name="projectionSelector" native="true"/>
                   </item>
                  </layout>
                 </widget>
@@ -830,9 +829,6 @@
                       <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
                     </property>
                    </widget>
-                  </item>
-                  <item row="2" column="0" colspan="4">
-                   <widget class="QTableView" name="mDatumTransformTableView"/>
                   </item>
                   <item row="1" column="0">
                    <widget class="QToolButton" name="mDatumTransformAddButton">
@@ -868,8 +864,10 @@
                     </property>
                    </widget>
                   </item>
+                  <item row="2" column="0" colspan="4">
+                   <widget class="QTableView" name="mDatumTransformTableView"/>
+                  </item>
                  </layout>
-                 <zorder>cbxProjectionEnabled</zorder>
                  <zorder>mDatumTransformTableView</zorder>
                  <zorder>mDatumTransformAddButton</zorder>
                  <zorder>mDatumTransformRemoveButton</zorder>
@@ -910,8 +908,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>133</width>
+                <height>100</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_10">
@@ -996,8 +994,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>269</width>
+                <height>597</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_12">
@@ -1434,7 +1432,7 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
+                <width>598</width>
                 <height>2363</height>
                </rect>
               </property>
@@ -2535,8 +2533,8 @@
                <rect>
                 <x>0</x>
                 <y>0</y>
-                <width>676</width>
-                <height>764</height>
+                <width>156</width>
+                <height>59</height>
                </rect>
               </property>
               <layout class="QVBoxLayout" name="verticalLayout_17">
@@ -2690,20 +2688,15 @@
  </widget>
  <customwidgets>
   <customwidget>
-   <class>QgsCollapsibleGroupBox</class>
-   <extends>QGroupBox</extends>
-   <header>qgscollapsiblegroupbox.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
-   <class>QgsFilterLineEdit</class>
-   <extends>QLineEdit</extends>
-   <header>qgsfilterlineedit.h</header>
-  </customwidget>
-  <customwidget>
    <class>QgsScrollArea</class>
    <extends>QScrollArea</extends>
    <header>qgsscrollarea.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsCollapsibleGroupBox</class>
+   <extends>QGroupBox</extends>
+   <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2713,21 +2706,26 @@
    <container>1</container>
   </customwidget>
   <customwidget>
-   <class>QgsOpacityWidget</class>
-   <extends>QWidget</extends>
-   <header>qgsopacitywidget.h</header>
-   <container>1</container>
-  </customwidget>
-  <customwidget>
    <class>QgsVariableEditorWidget</class>
    <extends>QWidget</extends>
    <header location="global">qgsvariableeditorwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
+   <class>QgsFilterLineEdit</class>
+   <extends>QLineEdit</extends>
+   <header>qgsfilterlineedit.h</header>
+  </customwidget>
+  <customwidget>
    <class>QgsColorSchemeList</class>
    <extends>QWidget</extends>
    <header location="global">qgscolorschemelist.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsOpacityWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsopacitywidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
@@ -2856,6 +2854,7 @@
   <tabstop>mSearchLineEdit</tabstop>
  </tabstops>
  <resources>
+  <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>
   <include location="../../images/images.qrc"/>

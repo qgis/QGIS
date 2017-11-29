@@ -17,6 +17,8 @@
 
 #include "qgscoordinatetransformcontext.h"
 #include "qgscoordinatetransformcontext_p.h"
+#include "qgssettings.h"
+
 QgsCoordinateTransformContext::QgsCoordinateTransformContext()
   : d( new QgsCoordinateTransformContextPrivate() )
 {}
@@ -37,8 +39,10 @@ void QgsCoordinateTransformContext::clear()
   // play it safe
   d->mLock.lockForWrite();
   d->mSourceDestDatumTransforms.clear();
+#if 0
   d->mSourceDatumTransforms.clear();
   d->mDestDatumTransforms.clear();
+#endif
   d->mLock.unlock();
 }
 
@@ -163,8 +167,10 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
   d->mLock.lockForWrite();
 
   d->mSourceDestDatumTransforms.clear();
+#if 0
   d->mSourceDatumTransforms.clear();
   d->mDestDatumTransforms.clear();
+#endif
 
   const QDomNodeList contextNodes = element.elementsByTagName( QStringLiteral( "transformContext" ) );
   if ( contextNodes.count() < 1 )
@@ -192,6 +198,7 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
     }
   }
 
+#if 0
   // src transforms
   const QDomNodeList srcNodes = contextElem.elementsByTagName( QStringLiteral( "source" ) );
   for ( int i = 0; i < srcNodes .size(); ++i )
@@ -219,6 +226,7 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
       d->mDestDatumTransforms.insert( key, value );
     }
   }
+#endif
 
   d->mLock.unlock();
 }
@@ -240,6 +248,7 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, QDomDocument
     contextElem.appendChild( transformElem );
   }
 
+#if 0
   // src transforms
   for ( auto it = d->mSourceDatumTransforms.constBegin(); it != d->mSourceDatumTransforms.constEnd(); ++ it )
   {
@@ -257,7 +266,92 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, QDomDocument
     transformElem.setAttribute( QStringLiteral( "transform" ), it.value() );
     contextElem.appendChild( transformElem );
   }
+#endif
 
   element.appendChild( contextElem );
   d->mLock.unlock();
+}
+
+void QgsCoordinateTransformContext::readSettings()
+{
+  d.detach();
+  d->mLock.lockForWrite();
+
+  d->mSourceDestDatumTransforms.clear();
+#if 0
+  d->mSourceDatumTransforms.clear();
+  d->mDestDatumTransforms.clear();
+#endif
+
+  QgsSettings *settings = new QgsSettings();
+  settings->beginGroup( QStringLiteral( "/Projections" ) );
+  QStringList projectionKeys = settings->allKeys();
+
+  //collect src and dest entries that belong together
+  QMap< QPair< QString, QString >, QPair< int, int > > transforms;
+  QStringList::const_iterator pkeyIt = projectionKeys.constBegin();
+  for ( ; pkeyIt != projectionKeys.constEnd(); ++pkeyIt )
+  {
+    if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) || pkeyIt->contains( QLatin1String( "destTransform" ) ) )
+    {
+      QStringList split = pkeyIt->split( '/' );
+      QString srcAuthId, destAuthId;
+      if ( ! split.isEmpty() )
+      {
+        srcAuthId = split.at( 0 );
+      }
+      if ( split.size() > 1 )
+      {
+        destAuthId = split.at( 1 ).split( '_' ).at( 0 );
+      }
+
+      if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) )
+      {
+        transforms[ qMakePair( srcAuthId, destAuthId )].first = settings->value( *pkeyIt ).toInt();
+      }
+      else if ( pkeyIt->contains( QLatin1String( "destTransform" ) ) )
+      {
+        transforms[ qMakePair( srcAuthId, destAuthId )].second = settings->value( *pkeyIt ).toInt();
+      }
+    }
+  }
+
+  // add transforms to context
+  QMap< QPair< QString, QString >, QPair< int, int > >::const_iterator transformIt = transforms.constBegin();
+  for ( ; transformIt != transforms.constEnd(); ++transformIt )
+  {
+    d->mSourceDestDatumTransforms.insert( transformIt.key(), transformIt.value() );
+  }
+
+  d->mLock.unlock();
+  settings->endGroup();
+}
+
+void QgsCoordinateTransformContext::writeSettings()
+{
+  QgsSettings s;
+  s.beginGroup( QStringLiteral( "/Projections" ) );
+  QStringList groupKeys = s.allKeys();
+  QStringList::const_iterator groupKeyIt = groupKeys.constBegin();
+  for ( ; groupKeyIt != groupKeys.constEnd(); ++groupKeyIt )
+  {
+    if ( groupKeyIt->contains( QLatin1String( "srcTransform" ) ) || groupKeyIt->contains( QLatin1String( "destTransform" ) ) )
+    {
+      s.remove( *groupKeyIt );
+    }
+  }
+
+  QMap< QPair< QString, QString >, QPair< int, int > >::const_iterator transformIt = d->mSourceDestDatumTransforms.constBegin();
+  for ( ; transformIt != d->mSourceDestDatumTransforms.constEnd(); ++transformIt )
+  {
+    QString srcAuthId = transformIt.key().first;
+    QString destAuthId = transformIt.key().second;
+    int sourceDatumTransform = transformIt.value().first;
+    int destinationDatumTransform = transformIt.value().second;
+
+    s.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumTransform );
+    s.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumTransform );
+  }
+
+  s.endGroup();
 }

@@ -12,6 +12,7 @@
 
 
 
+
 class QgsCoordinateTransformContext
 {
 %Docstring
@@ -146,6 +147,19 @@ class QgsCoordinateTransformContext
 %Docstring
  Writes the context's state to a DOM ``element``.
 .. seealso:: readXml()
+%End
+
+
+    void readSettings();
+%Docstring
+ Reads the context's state from application settings.
+.. seealso:: readSettings()
+%End
+
+    void writeSettings();
+%Docstring
+ Write the context's state to application settings.
+.. seealso:: writeSettings()
 %End
 
 
