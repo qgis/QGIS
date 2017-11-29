@@ -4623,62 +4623,6 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="3" column="0">
-                   <layout class="QHBoxLayout" name="horizontalLayout_41">
-                    <item>
-                     <widget class="QToolButton" name="mAddDefaultTransformButton">
-                      <property name="toolTip">
-                       <string>Add datum transformation</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="mRemoveDefaultTransformButton">
-                      <property name="toolTip">
-                       <string>Remove datum transformation</string>
-                      </property>
-                      <property name="text">
-                       <string/>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <widget class="QToolButton" name="mEditDefaultTransformButton">
-                      <property name="text">
-                       <string>...</string>
-                      </property>
-                      <property name="icon">
-                       <iconset resource="../../images/images.qrc">
-                        <normaloff>:/images/themes/default/mActionToggleEditing.svg</normaloff>:/images/themes/default/mActionToggleEditing.svg</iconset>
-                      </property>
-                     </widget>
-                    </item>
-                    <item>
-                     <spacer name="horizontalSpacer_43">
-                      <property name="orientation">
-                       <enum>Qt::Horizontal</enum>
-                      </property>
-                      <property name="sizeHint" stdset="0">
-                       <size>
-                        <width>568</width>
-                        <height>20</height>
-                       </size>
-                      </property>
-                     </spacer>
-                    </item>
-                   </layout>
-                  </item>
                   <item row="1" column="0">
                    <widget class="Line" name="line_2">
                     <property name="orientation">
@@ -4686,8 +4630,8 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </property>
                    </widget>
                   </item>
-                  <item row="4" column="0">
-                   <widget class="QTableView" name="mDefaultDatumTransformTableView"/>
+                  <item row="3" column="0">
+                   <widget class="QgsDatumTransformTableWidget" name="mDefaultDatumTransformTableWidget" native="true"/>
                   </item>
                  </layout>
                 </widget>
@@ -4718,7 +4662,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                   </widget>
                  </item>
                  <item>
-                  <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs" native="true">
+                  <widget class="QgsProjectionSelectionWidget" name="leProjectGlobalCrs">
                    <property name="minimumSize">
                     <size>
                      <width>0</width>
@@ -5370,6 +5314,12 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
    <class>QgsAuthSettingsWidget</class>
    <extends>QWidget</extends>
    <header>auth/qgsauthsettingswidget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>QgsDatumTransformTableWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsdatumtransformtablewidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

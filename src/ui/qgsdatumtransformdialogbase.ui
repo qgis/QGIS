@@ -128,6 +128,7 @@
    <class>QgsProjectionSelectionWidget</class>
    <extends>QWidget</extends>
    <header>qgsprojectionselectionwidget.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <tabstops>

@@ -25,7 +25,6 @@
 #include "qgshelp.h"
 
 #include "qgscoordinatereferencesystem.h"
-#include "qgsdatumtransformtablemodel.h"
 
 #include <QList>
 #include "qgis_app.h"
@@ -230,15 +229,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     void addColor();
 
-    //! add a new datum transform
-    void addDefaultDatumTransform();
-
-    //! remove currently selected datum transform
-    void removeDefaultDatumTransform();
-
-    //! edit currently selected datum transform
-    void editDefaultDatumTransform();
-
   private:
     QgsSettings *mSettings = nullptr;
     QStringList i18nList();
@@ -272,7 +262,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
-    QgsDatumTransformTableModel *mDefaultDatumTransformTableModel = new QgsDatumTransformTableModel( this );
 };
 
 #endif // #ifndef QGSOPTIONS_H

@@ -24,7 +24,6 @@
 #include "qgsguiutils.h"
 #include "qgshelp.h"
 #include "qgis_app.h"
-#include "qgsdatumtransformtablemodel.h"
 
 class QgsMapCanvas;
 class QgsRelationManagerDialog;
@@ -69,15 +68,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
      * Slot to show the projections tab when the dialog is opened
      */
     void showProjectionsTab();
-
-    //! add a new datum transform
-    void addDatumTransform();
-
-    //! remove currently selected datum transform
-    void removeDatumTransform();
-
-    //! edit currently selected datum transform
-    void editDatumTransform();
 
     /**
      * Let the user add a scale to the list of project scales
@@ -183,7 +173,6 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsRelationManagerDialog *mRelationManagerDlg = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
     QgsStyle *mStyle = nullptr;
-    QgsDatumTransformTableModel *mDatumTransformTableModel = new QgsDatumTransformTableModel( this );
 
     void populateStyles();
     void editSymbol( QComboBox *cbo );

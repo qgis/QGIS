@@ -38,7 +38,7 @@
 #include "qgsattributetablefiltermodel.h"
 #include "qgsrasterformatsaveoptionswidget.h"
 #include "qgsrasterpyramidsoptionswidget.h"
-#include "qgsdatumtransformdialog.h"
+#include "qgsdatumtransformtablewidget.h"
 #include "qgsdialog.h"
 #include "qgscomposer.h"
 #include "qgscolorschemeregistry.h"
@@ -460,15 +460,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   // Datum transforms
   QgsCoordinateTransformContext context;
   context.readSettings();
-  mDefaultDatumTransformTableModel->setTransformContext( context );
-  mDefaultDatumTransformTableView->setModel( mDefaultDatumTransformTableModel );
-  mDefaultDatumTransformTableView->resizeColumnToContents( 0 );
-  mDefaultDatumTransformTableView->horizontalHeader()->show();
-  mDefaultDatumTransformTableView->setSelectionMode( QAbstractItemView::SingleSelection );
-  mDefaultDatumTransformTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
-  connect( mAddDefaultTransformButton, &QToolButton::clicked, this, &QgsOptions::addDefaultDatumTransform );
-  connect( mRemoveDefaultTransformButton, &QToolButton::clicked, this, &QgsOptions::removeDefaultDatumTransform );
-  connect( mEditDefaultTransformButton, &QToolButton::clicked, this, &QgsOptions::editDefaultDatumTransform );
+  mDefaultDatumTransformTableWidget->setTransformContext( context );
 
 
   // Set the units for measuring
@@ -1526,7 +1518,7 @@ void QgsOptions::saveOptions()
     mStyleSheetBuilder->saveToSettings( mStyleSheetNewOpts );
   }
 
-  mDefaultDatumTransformTableModel->transformContext().writeSettings();
+  mDefaultDatumTransformTableWidget->transformContext().writeSettings();
 
   mLocatorOptionsWidget->commitChanges();
 
@@ -2219,71 +2211,6 @@ void QgsOptions::saveMinMaxLimits( QComboBox *cbox, const QString &name )
   QgsSettings settings;
   QString value = cbox->currentData().toString();
   mSettings->setValue( "/Raster/defaultContrastEnhancementLimits/" + name, value );
-}
-
-void QgsOptions::addDefaultDatumTransform()
-{
-  QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog();
-  if ( dlg->exec() )
-  {
-    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg->selectedDatumTransforms();
-    QgsCoordinateTransformContext context = mDefaultDatumTransformTableModel->transformContext();
-    context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
-    mDefaultDatumTransformTableModel->setTransformContext( context );
-  }
-}
-
-void QgsOptions::removeDefaultDatumTransform()
-{
-  QModelIndexList selectedIndexes = mDefaultDatumTransformTableView->selectionModel()->selectedIndexes();
-  if ( selectedIndexes.count() > 0 )
-  {
-    mDefaultDatumTransformTableModel->removeTransform( selectedIndexes );
-  }
-}
-
-void QgsOptions::editDefaultDatumTransform()
-{
-  QModelIndexList selectedIndexes = mDefaultDatumTransformTableView->selectionModel()->selectedIndexes();
-  if ( selectedIndexes.count() > 0 )
-  {
-    QgsCoordinateReferenceSystem sourceCrs;
-    QgsCoordinateReferenceSystem destinationCrs;
-    int sourceTransform = -1;
-    int destinationTransform = -1;
-    for ( QModelIndexList::const_iterator it = selectedIndexes.constBegin(); it != selectedIndexes.constEnd(); it ++ )
-    {
-      if ( it->column() == QgsDatumTransformTableModel::SourceCrsColumn )
-      {
-        sourceCrs = QgsCoordinateReferenceSystem( mDefaultDatumTransformTableModel->data( *it, Qt::DisplayRole ).toString() );
-      }
-      if ( it->column() == QgsDatumTransformTableModel::DestinationCrsColumn )
-      {
-        destinationCrs = QgsCoordinateReferenceSystem( mDefaultDatumTransformTableModel->data( *it, Qt::DisplayRole ).toString() );
-      }
-      if ( it->column() == QgsDatumTransformTableModel::SourceTransformColumn )
-      {
-        sourceTransform = mDefaultDatumTransformTableModel->data( *it, Qt::UserRole ).toInt();
-      }
-      if ( it->column() == QgsDatumTransformTableModel::DestinationTransformColumn )
-      {
-        destinationTransform = mDefaultDatumTransformTableModel->data( *it, Qt::UserRole ).toInt();
-      }
-    }
-    if ( sourceCrs.isValid() && destinationCrs.isValid() &&
-         ( sourceTransform != -1 || destinationTransform != -1 ) )
-    {
-      QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog( sourceCrs, destinationCrs, qMakePair( sourceTransform, destinationTransform ) );
-      if ( dlg->exec() )
-      {
-        QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg->selectedDatumTransforms();
-        QgsCoordinateTransformContext context = mDefaultDatumTransformTableModel->transformContext();
-        // QMap::insert takes care of replacing existing value
-        context.addSourceDestinationDatumTransform( sourceCrs, destinationCrs, dt.first.second, dt.second.second );
-        mDefaultDatumTransformTableModel->setTransformContext( context );
-      }
-    }
-  }
 }
 
 void QgsOptions::addColor()
