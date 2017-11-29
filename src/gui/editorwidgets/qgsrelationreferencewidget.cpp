@@ -479,7 +479,7 @@ void QgsRelationReferenceWidget::init()
 
     QSet<QString> requestedAttrs;
 
-    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, 100000, this );
+    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, 200000, this );
 
     if ( !mFilterFields.isEmpty() )
     {
