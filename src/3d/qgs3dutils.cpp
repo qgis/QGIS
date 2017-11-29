@@ -255,3 +255,39 @@ bool Qgs3DUtils::isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjecti
   return out;
 }
 
+QgsVector3D Qgs3DUtils::mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin )
+{
+  return QgsVector3D( mapCoords.x() - origin.x(),
+                      mapCoords.z() - origin.z(),
+                      -( mapCoords.y() - origin.y() ) );
+
+}
+
+QgsVector3D Qgs3DUtils::worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin )
+{
+  return QgsVector3D( worldCoords.x() + origin.x(),
+                      -worldCoords.z() + origin.y(),
+                      worldCoords.y() + origin.z() );
+}
+
+QgsVector3D Qgs3DUtils::transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2 )
+{
+  QgsVector3D mapPoint1 = worldToMapCoordinates( worldPoint1, origin1 );
+  QgsVector3D mapPoint2 = mapPoint1;
+  if ( crs1 != crs2 )
+  {
+    // reproject if necessary
+    QgsCoordinateTransform ct( crs1, crs2 );
+    try
+    {
+      QgsPointXY pt = ct.transform( QgsPointXY( mapPoint1.x(), mapPoint1.y() ) );
+      mapPoint2.set( pt.x(), pt.y(), mapPoint1.z() );
+    }
+    catch ( const QgsCsException & )
+    {
+      // bad luck, can't reproject for some reason
+    }
+  }
+  return mapToWorldCoordinates( mapPoint2, origin2 );
+}
+

@@ -61,8 +61,10 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Sets camera to look down towards given point in world coordinate, in given distance from plane with zero elevation
     void setViewFromTop( float worldX, float worldY, float distance, float yaw = 0 );
 
-    //! Moves the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
-    void translateWorld( const QgsVector3D &vWorld );
+    //! Returns the point in the world coordinates towards which the camera is looking
+    QgsVector3D lookingAtPoint() const;
+    //! Sets the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
+    void setLookingAtPoint( const QgsVector3D &point );
 
   private:
     void setCameraData( float x, float y, float dist, float pitch = 0, float yaw = 0 );

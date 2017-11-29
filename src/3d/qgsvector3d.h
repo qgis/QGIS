@@ -52,6 +52,15 @@ class _3D_EXPORT QgsVector3D
       mZ = z;
     }
 
+    bool operator==( const QgsVector3D &other ) const
+    {
+      return mX == other.mX && mY == other.mY && mZ == other.mZ;
+    }
+    bool operator!=( const QgsVector3D &other ) const
+    {
+      return !operator==( other );
+    }
+
     //! Returns sum of two vectors
     QgsVector3D operator+( const QgsVector3D &other )
     {

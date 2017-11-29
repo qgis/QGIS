@@ -211,16 +211,12 @@ void Qgs3DMapSettings::resolveReferences( const QgsProject &project )
 
 QgsVector3D Qgs3DMapSettings::mapToWorldCoordinates( const QgsVector3D &mapCoords ) const
 {
-  return QgsVector3D( mapCoords.x() - mOrigin.x(),
-                      -( mapCoords.z() - mOrigin.z() ),
-                      mapCoords.y() - mOrigin.y() );
+  return Qgs3DUtils::mapToWorldCoordinates( mapCoords, mOrigin );
 }
 
 QgsVector3D Qgs3DMapSettings::worldToMapCoordinates( const QgsVector3D &worldCoords ) const
 {
-  return QgsVector3D( worldCoords.x() + mOrigin.x(),
-                      -( worldCoords.z() + mOrigin.z() ),
-                      worldCoords.y() + mOrigin.y() );
+  return Qgs3DUtils::worldToMapCoordinates( worldCoords, mOrigin );
 }
 
 void Qgs3DMapSettings::setCrs( const QgsCoordinateReferenceSystem &crs )

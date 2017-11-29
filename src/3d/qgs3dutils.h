@@ -84,6 +84,14 @@ class _3D_EXPORT Qgs3DUtils
         This is used to perform object culling checks.
     */
     static bool isCullable( const QgsAABB &bbox, const QMatrix4x4 &viewProjectionMatrix );
+
+    //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    static QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords, const QgsVector3D &origin );
+    //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    static QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords, const QgsVector3D &origin );
+
+    //! Transforms a world point from (origin1, crs1) to (origin2, crs2)
+    static QgsVector3D transformWorldCoordinates( const QgsVector3D &worldPoint1, const QgsVector3D &origin1, const QgsCoordinateReferenceSystem &crs1, const QgsVector3D &origin2, const QgsCoordinateReferenceSystem &crs2 );
 };
 
 #endif // QGS3DUTILS_H
