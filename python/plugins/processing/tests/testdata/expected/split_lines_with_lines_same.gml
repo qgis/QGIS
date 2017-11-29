@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <ogr:FeatureCollection
      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation=""
+     xsi:schemaLocation="http://ogr.maptools.org/ split_lines_with_lines_same.xsd"
      xmlns:ogr="http://ogr.maptools.org/"
      xmlns:gml="http://www.opengis.net/gml">
   <gml:boundedBy>
@@ -10,7 +10,7 @@
       <gml:coord><gml:X>8.572346368715085</gml:X><gml:Y>2.179050279329609</gml:Y></gml:coord>
     </gml:Box>
   </gml:boundedBy>
-                                                                                                                                                             
+                                                                                               
   <gml:featureMember>
     <ogr:split_lines_with_lines_same fid="lines2.0">
       <ogr:geometryProperty><gml:MultiLineString srsName="EPSG:4326"><gml:lineStringMember><gml:LineString><gml:coordinates>5.44573945756429,-1.47253129614036 5.70391061452514,-1.99162011173184 8.57234636871508,-2.22039106145251 8.55474860335196,-4.24413407821229</gml:coordinates></gml:LineString></gml:lineStringMember></gml:MultiLineString></ogr:geometryProperty>

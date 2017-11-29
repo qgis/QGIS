@@ -1986,7 +1986,7 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/split_polys_with_lines.gml
+        name: expected/split_polys_with_lines.shp
         type: vector
         compare:
           geometry:
@@ -2005,7 +2005,7 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/split_lines_with_lines_same.gml
+        name: expected/split_lines_with_same2.shp
         type: vector
         compare:
           geometry:
@@ -2026,7 +2026,7 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/lines_split_with_lines.gml
+        name: expected/split_lines_with_lines.shp
         type: vector
         compare:
           geometry:
@@ -2046,7 +2046,7 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/lines_split_with_same_lines.gml
+        name: expected/split_lines_with_lines_same.shp
         type: vector
         compare:
           geometry:

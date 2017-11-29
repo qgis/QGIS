@@ -42,20 +42,20 @@
     </ogr:split_polys_with_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:split_polys_with_lines fid="polys.4">
+    <ogr:split_polys_with_lines fid="polys.3">
       <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>7,-2 6,-3 6,1 10,1 9,0 7,0 7,-2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:name>ASDF</ogr:name>
       <ogr:intval>0</ogr:intval>
     </ogr:split_polys_with_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:split_polys_with_lines fid="polys.5">
+    <ogr:split_polys_with_lines fid="polys.4">
       <ogr:intval>120</ogr:intval>
       <ogr:floatval>-100291.43213</ogr:floatval>
     </ogr:split_polys_with_lines>
   </gml:featureMember>
   <gml:featureMember>
-    <ogr:split_polys_with_lines fid="polys.6">
+    <ogr:split_polys_with_lines fid="polys.5">
       <ogr:geometryProperty><gml:MultiPolygon srsName="EPSG:4326"><gml:polygonMember><gml:Polygon><gml:outerBoundaryIs><gml:LinearRing><gml:coordinates>3,2 6,1 6,-3 2,-1 2,2 3,2</gml:coordinates></gml:LinearRing></gml:outerBoundaryIs></gml:Polygon></gml:polygonMember></gml:MultiPolygon></ogr:geometryProperty>
       <ogr:name>elim</ogr:name>
       <ogr:intval>2</ogr:intval>
