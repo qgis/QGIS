@@ -28,6 +28,7 @@
 #include <QMessageBox>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QModelIndex>
 #include <QAbstractTableModel>
 #include <QToolButton>
@@ -138,10 +139,6 @@ void QgsBookmarks::addClicked()
   QgsMapCanvas *canvas = QgisApp::instance()->mapCanvas();
   Q_ASSERT( canvas );
 
-  QSqlQuery query( mQgisModel->database() );
-  query.prepare( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
-                 "  VALUES (NULL,:name,:project_name,:xmin,:ymin,:xmax,:ymax,:projection_srid)" );
-
   QString projStr( QLatin1String( "" ) );
   if ( QgsProject::instance() )
   {
@@ -156,14 +153,16 @@ void QgsBookmarks::addClicked()
     }
   }
 
-  query.bindValue( QStringLiteral( ":name" ), tr( "New bookmark" ) );
-  query.bindValue( QStringLiteral( ":project_name" ), projStr );
-  query.bindValue( QStringLiteral( ":xmin" ), canvas->extent().xMinimum() );
-  query.bindValue( QStringLiteral( ":ymin" ), canvas->extent().yMinimum() );
-  query.bindValue( QStringLiteral( ":xmax" ), canvas->extent().xMaximum() );
-  query.bindValue( QStringLiteral( ":ymax" ), canvas->extent().yMaximum() );
-  query.bindValue( QStringLiteral( ":projection_srid" ), QVariant::fromValue( canvas->mapSettings().destinationCrs().srsid() ) );
-  if ( query.exec() )
+  QSqlRecord record = mQgisModel->record();
+  record.setValue( 1, QVariant( tr( "New bookmark" ) ) );
+  record.setValue( 2, QVariant( projStr ) );
+  record.setValue( 3, QVariant( canvas->extent().xMinimum() ) );
+  record.setValue( 4, QVariant( canvas->extent().yMinimum() ) );
+  record.setValue( 5, QVariant( canvas->extent().xMaximum() ) );
+  record.setValue( 6, QVariant( canvas->extent().yMaximum() ) );
+  record.setValue( 7, QVariant::fromValue( canvas->mapSettings().destinationCrs().srsid() ) );
+
+  if ( mQgisModel->insertRecord( -1, record ) )
   {
     mQgisModel->setSort( 0, Qt::AscendingOrder );
     mQgisModel->select();
@@ -174,8 +173,8 @@ void QgsBookmarks::addClicked()
   else
   {
     QMessageBox::warning( this, tr( "Error" ), tr( "Unable to create the bookmark.\nDriver: %1\nDatabase: %2" )
-                          .arg( query.lastError().driverText(),
-                                query.lastError().databaseText() ) );
+                          .arg( mQgisModel->database().lastError().driverText(),
+                                mQgisModel->database().lastError().databaseText() ) );
   }
 }
 
@@ -408,13 +407,16 @@ int QgsProjectBookmarksTableModel::rowCount( const QModelIndex &parent ) const
 int QgsProjectBookmarksTableModel::columnCount( const QModelIndex &parent ) const
 {
   Q_UNUSED( parent );
-  return 7;
+  return 8;
 }
 
 QVariant QgsProjectBookmarksTableModel::data( const QModelIndex &index, int role ) const
 {
-  Q_UNUSED( role );
-  Q_ASSERT( role == Qt::DisplayRole );
+
+  if ( role != Qt::DisplayRole && role != Qt::EditRole )
+  {
+    return QVariant();
+  }
 
   switch ( index.column() )
   {
@@ -431,7 +433,7 @@ QVariant QgsProjectBookmarksTableModel::data( const QModelIndex &index, int role
     case 6:
       return QgsProject::instance()->readDoubleEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/MaxY" ).arg( index.row() ) );
     case 7:
-      return QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( index.row() ) );
+      return  QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/Row-%1/SRID" ).arg( index.row() ) );
     default:
       return QVariant();
   }
@@ -474,14 +476,17 @@ bool QgsProjectBookmarksTableModel::insertRows( int row, int count, const QModel
 {
   Q_UNUSED( row );
   Q_UNUSED( parent );
+  beginInsertRows( parent, row, row + count );
 
-  return QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) ) + count );
+  bool result = QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) ) + count );
+  endInsertRows();
+  return result;
 }
 
 bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
   Q_UNUSED( parent );
-
+  beginRemoveRows( parent, row, row + count );
   for ( int newRow = row ; newRow < rowCount() - count ; newRow++ )
   {
     for ( int column = 0; column < columnCount() ; column++ )
@@ -495,9 +500,10 @@ bool QgsProjectBookmarksTableModel::removeRows( int row, int count, const QModel
   }
 
   QgsProject::instance()->writeEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ), QgsProject::instance()->readNumEntry( QStringLiteral( "Bookmarks" ), QStringLiteral( "/count" ) ) - count );
-
+  endRemoveRows();
   return true;
 }
+
 
 QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel &qgisTableModel, QAbstractTableModel &projectTableModel, QTreeView *treeView )
   : mQgisTableModel( qgisTableModel )
@@ -512,12 +518,11 @@ QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel 
   connect(
     &mQgisTableModel, &QAbstractTableModel::layoutChanged,
     this, &QgsMergedBookmarksTableModel::allLayoutChanged );
-  connect(
-    &mQgisTableModel, &QAbstractTableModel::dataChanged,
-    this, &QgsMergedBookmarksTableModel::qgisDataChanged );
+
   connect(
     &mQgisTableModel, &QAbstractTableModel::rowsInserted,
     this, &QgsMergedBookmarksTableModel::allLayoutChanged );
+
   connect(
     &mQgisTableModel, &QAbstractTableModel::rowsRemoved,
     this, &QgsMergedBookmarksTableModel::allLayoutChanged );
@@ -525,6 +530,8 @@ QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel 
   connect(
     &projectTableModel, &QAbstractTableModel::layoutChanged,
     this, &QgsMergedBookmarksTableModel::allLayoutChanged );
+
+
 }
 
 int QgsMergedBookmarksTableModel::rowCount( const QModelIndex &parent ) const
@@ -539,33 +546,37 @@ int QgsMergedBookmarksTableModel::columnCount( const QModelIndex &parent ) const
 
 QVariant QgsMergedBookmarksTableModel::data( const QModelIndex &index, int role ) const
 {
-  // is project or application
-  if ( index.column() == mQgisTableModel.columnCount() )
+  QVariant value;
+  // Is it checkbox column?
+  if ( index.column() == mQgisTableModel.columnCount() && role == Qt::CheckStateRole )
   {
-    if ( role == Qt::CheckStateRole )
-    {
-      return index.row() < mQgisTableModel.rowCount() ? Qt::Unchecked : Qt::Checked;
-    }
-    else
-    {
-      return QVariant();
-    }
-  }
-  if ( index.row() < mQgisTableModel.rowCount() )
-  {
-    return mQgisTableModel.data( index, role );
+    value = index.row() < mQgisTableModel.rowCount() ? Qt::Unchecked : Qt::Checked;
   }
   else
   {
-    if ( role == Qt::DisplayRole || role == Qt::EditRole )
+    // Is it a SQLite stored entry ?
+    if ( index.row() < mQgisTableModel.rowCount() )
     {
-      return mProjectTableModel.data( this->index( index.row() - mQgisTableModel.rowCount(), index.column() ), role );
+      value = mQgisTableModel.data( index, role );
     }
-    else
+    else // ... it is a project stored bookmark
     {
-      return mQgisTableModel.data( this->index( 0, index.column() ), role );
+      if ( role == Qt::DisplayRole || role == Qt::EditRole )
+      {
+        value = mProjectTableModel.data( this->index( index.row() - mQgisTableModel.rowCount(), index.column() ), role );
+      }
+      else // Default roles from base model
+      {
+        value = mQgisTableModel.data( this->index( 0, index.column() ), role );
+      }
+    }
+    // Is it the projection column ?
+    if ( ( role == Qt::DisplayRole || role == Qt::EditRole ) && index.column( ) == mQgisTableModel.columnCount() - 1 )
+    {
+      value = QgsCoordinateReferenceSystem::fromSrsId( value.toInt( ) ).authid( );
     }
   }
+  return value;
 }
 
 bool QgsMergedBookmarksTableModel::setData( const QModelIndex &index, const QVariant &value, int role )
@@ -575,6 +586,7 @@ bool QgsMergedBookmarksTableModel::setData( const QModelIndex &index, const QVar
   {
     if ( index.row() < mQgisTableModel.rowCount() )
     {
+      // Move from SQLite storage to project
       moveBookmark( mQgisTableModel, mProjectTableModel, index.row() );
       mTreeView->scrollTo( this->index( rowCount() - 1, 1 ) );
       mTreeView->setCurrentIndex( this->index( rowCount() - 1, 1 ) );
@@ -582,6 +594,7 @@ bool QgsMergedBookmarksTableModel::setData( const QModelIndex &index, const QVar
     }
     else
     {
+      //Move from project to SQLite storage
       moveBookmark( mProjectTableModel, mQgisTableModel, index.row() - mQgisTableModel.rowCount() );
       mTreeView->scrollTo( this->index( mQgisTableModel.rowCount() - 1, 1 ) );
       mTreeView->setCurrentIndex( this->index( mQgisTableModel.rowCount() - 1, 1 ) );
@@ -615,7 +628,9 @@ Qt::ItemFlags QgsMergedBookmarksTableModel::flags( const QModelIndex &index ) co
   }
   else
   {
-    flags |= Qt::ItemIsEditable;
+    // Skip projection: not editable!
+    if ( index.column() != mQgisTableModel.columnCount() - 1 )
+      flags |= Qt::ItemIsEditable;
   }
   return flags;
 }
@@ -623,15 +638,21 @@ Qt::ItemFlags QgsMergedBookmarksTableModel::flags( const QModelIndex &index ) co
 bool QgsMergedBookmarksTableModel::removeRows( int row, int count, const QModelIndex &parent )
 {
   Q_ASSERT( count == 1 );
-
+  bool result;
+  beginRemoveRows( parent, row, row + count );
   if ( row < mQgisTableModel.rowCount() )
   {
-    return mQgisTableModel.removeRows( row, count, parent );
+    QSqlTableModel *qgisModel = static_cast<QSqlTableModel *>( &mQgisTableModel );
+    Q_ASSERT( qgisModel );
+    result = qgisModel->removeRows( row, count, parent );
+    qgisModel->select();
   }
   else
   {
-    return mProjectTableModel.removeRows( row - mQgisTableModel.rowCount(), count, parent );
+    result = mProjectTableModel.removeRows( row - mQgisTableModel.rowCount(), count, parent );
   }
+  endRemoveRows();
+  return result;
 }
 
 QVariant QgsMergedBookmarksTableModel::headerData( int section, Qt::Orientation orientation, int role ) const
@@ -666,34 +687,35 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
     modelTo.insertRow( -1 );
     for ( int column = 1 ; column < modelFrom.columnCount() ; column++ )
     {
+      Q_ASSERT( modelTo.index( modelTo.rowCount() - 1, column ).isValid( ) );
       modelTo.setData(
         modelTo.index( modelTo.rowCount() - 1, column ),
         modelFrom.data( modelFrom.index( row, column ) ) );
     }
+    qgisModel = dynamic_cast<QSqlTableModel *>( &modelFrom );
+    Q_ASSERT( qgisModel );
+    qgisModel->removeRows( row, 1 );
+    qgisModel->select();
   }
   else
   {
-    QSqlQuery query( "INSERT INTO tbl_bookmarks(bookmark_id,name,project_name,xmin,ymin,xmax,ymax,projection_srid)"
-                     "  VALUES (NULL,:name,:project_name,:xmin,:ymin,:xmax,:ymax,:projection_srid)",
-                     qgisModel->database() );
+    QSqlRecord record = qgisModel->record();
+    record.setValue( 1, modelFrom.data( modelFrom.index( row, 1 ) ).toString() );
+    record.setValue( 2, modelFrom.data( modelFrom.index( row, 2 ) ).toString() );
+    record.setValue( 3, modelFrom.data( modelFrom.index( row, 3 ) ).toDouble() );
+    record.setValue( 4, modelFrom.data( modelFrom.index( row, 4 ) ).toDouble() );
+    record.setValue( 5, modelFrom.data( modelFrom.index( row, 5 ) ).toDouble() );
+    record.setValue( 6, modelFrom.data( modelFrom.index( row, 6 ) ).toDouble() );
+    record.setValue( 7, modelFrom.data( modelFrom.index( row, 7 ) ).toInt() );
 
-    query.bindValue( QStringLiteral( ":name" ), modelFrom.data( modelFrom.index( row, 1 ) ).toString() );
-    query.bindValue( QStringLiteral( ":project_name" ), modelFrom.data( modelFrom.index( row, 2 ) ).toString() );
-    query.bindValue( QStringLiteral( ":xmin" ), modelFrom.data( modelFrom.index( row, 3 ) ).toDouble() );
-    query.bindValue( QStringLiteral( ":ymin" ), modelFrom.data( modelFrom.index( row, 4 ) ).toDouble() );
-    query.bindValue( QStringLiteral( ":xmax" ), modelFrom.data( modelFrom.index( row, 5 ) ).toDouble() );
-    query.bindValue( QStringLiteral( ":ymax" ), modelFrom.data( modelFrom.index( row, 6 ) ).toDouble() );
-    query.bindValue( QStringLiteral( ":projection_srid" ), modelFrom.data( modelFrom.index( row, 7 ) ).toInt() );
-
-    if ( !query.exec() )
+    if ( ! qgisModel->insertRecord( -1, record ) )
     {
       QgsDebugMsg( QString( "Could not move bookmark: %1" )
-                   .arg( query.lastError().text() ) );
+                   .arg( qgisModel->database().lastError().text() ) );
       return;
     }
     qgisModel->setSort( 0, Qt::AscendingOrder );
     qgisModel->select();
+    modelFrom.removeRows( row, 1 );
   }
-
-  modelFrom.removeRow( row );
 }
