@@ -71,11 +71,6 @@ int QgsLayoutItemPicture::type() const
   return QgsLayoutItemRegistry::LayoutPicture;
 }
 
-QString QgsLayoutItemPicture::stringType() const
-{
-  return QStringLiteral( "ItemPicture" );
-}
-
 QgsLayoutItemPicture *QgsLayoutItemPicture::create( QgsLayout *layout )
 {
   return new QgsLayoutItemPicture( layout );
@@ -775,29 +770,12 @@ bool QgsLayoutItemPicture::readPropertiesFromElement( const QDomElement &itemEle
   mNorthMode = static_cast< NorthMode >( itemElem.attribute( QStringLiteral( "northMode" ), QStringLiteral( "0" ) ).toInt() );
   mNorthOffset = itemElem.attribute( QStringLiteral( "northOffset" ), QStringLiteral( "0" ) ).toDouble();
 
-#if 0 //TODO
-  int rotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
-#endif
+  mRotationMap = nullptr;
+  mRotationMapId = -1;
+  mRotationMapUuid.clear();
 
-  QString rotationMapId = itemElem.attribute( QStringLiteral( "mapUuid" ) );
-
-  if ( !mLayout || rotationMapId.isEmpty() )
-  {
-    mRotationMap = nullptr;
-  }
-  else
-  {
-    if ( mRotationMap )
-    {
-      disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-      disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    }
-    mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( rotationMapId ) );
-    connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-    connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
-  }
-
-  refreshPicture();
+  mRotationMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
+  mRotationMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
   return true;
 }
 
@@ -844,5 +822,32 @@ void QgsLayoutItemPicture::setSvgStrokeColor( const QColor &color )
 void QgsLayoutItemPicture::setSvgStrokeWidth( double width )
 {
   mSvgStrokeWidth = width;
+  refreshPicture();
+}
+
+void QgsLayoutItemPicture::finalizeRestoreFromXml()
+{
+#if 0 //TODO
+  mRotationMapId restore
+#endif
+  if ( !mLayout || mRotationMapUuid.isEmpty() )
+  {
+    mRotationMap = nullptr;
+  }
+  else
+  {
+    if ( mRotationMap )
+    {
+      disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    }
+    mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid ) );
+    if ( mRotationMap )
+    {
+      connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+      connect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
+    }
+  }
+
   refreshPicture();
 }

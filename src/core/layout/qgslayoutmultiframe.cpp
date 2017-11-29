@@ -294,6 +294,10 @@ void QgsLayoutMultiFrame::cancelCommand()
     mLayout->undoStack()->cancelCommand();
 }
 
+void QgsLayoutMultiFrame::finalizeRestoreFromXml()
+{
+}
+
 void QgsLayoutMultiFrame::refresh()
 {
   QgsLayoutObject::refresh();
@@ -442,7 +446,7 @@ bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &do
   QDomElement element = doc.createElement( QStringLiteral( "LayoutMultiFrame" ) );
   element.setAttribute( QStringLiteral( "resizeMode" ), mResizeMode );
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
-  element.setAttribute( QStringLiteral( "type" ), stringType() );
+  element.setAttribute( QStringLiteral( "type" ), type() );
 
 #if 0 //TODO
 
@@ -464,7 +468,7 @@ bool QgsLayoutMultiFrame::writeXml( QDomElement &parentElement, QDomDocument &do
 
 bool QgsLayoutMultiFrame::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context, bool ignoreFrames )
 {
-  if ( element.nodeName() != QStringLiteral( "LayoutMultiFrame" ) || element.attribute( QStringLiteral( "type" ) ) != stringType() )
+  if ( element.nodeName() != QStringLiteral( "LayoutMultiFrame" ) )
   {
     return false;
   }

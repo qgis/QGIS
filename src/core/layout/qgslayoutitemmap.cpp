@@ -75,11 +75,6 @@ int QgsLayoutItemMap::type() const
   return QgsLayoutItemRegistry::LayoutMap;
 }
 
-QString QgsLayoutItemMap::stringType() const
-{
-  return QStringLiteral( "ItemMap" );
-}
-
 void QgsLayoutItemMap::assignFreeId()
 {
   if ( !mLayout )
@@ -1005,6 +1000,17 @@ QgsMapSettings QgsLayoutItemMap::mapSettings( const QgsRectangle &extent, QSizeF
   jobMapSettings.setLabelingEngineSettings( mLayout->project()->labelingEngineSettings() );
 
   return jobMapSettings;
+}
+
+void QgsLayoutItemMap::finalizeRestoreFromXml()
+{
+  assignFreeId();
+
+  const QList<QgsLayoutItemMapOverview * > allOverviews = overviews()->asList();
+  for ( QgsLayoutItemMapOverview *overview : allOverviews )
+  {
+    overview->connectSignals();
+  }
 }
 
 void QgsLayoutItemMap::setMoveContentPreviewOffset( double xOffset, double yOffset )

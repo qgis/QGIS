@@ -70,7 +70,6 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     ~QgsLayoutItemMap();
 
     int type() const override;
-    QString stringType() const override;
 
     /**
      * Sets the map id() to a number not yet used in the layout. The existing id() is kept if it is not in use.
@@ -411,6 +410,8 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * Return map settings that will be used for drawing of the map.
      */
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
+
+    void finalizeRestoreFromXml() override;
 
   protected:
 

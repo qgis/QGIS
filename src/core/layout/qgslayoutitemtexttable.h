@@ -42,7 +42,6 @@ class CORE_EXPORT QgsLayoutItemTextTable : public QgsLayoutTable
     QgsLayoutItemTextTable( QgsLayout *layout SIP_TRANSFERTHIS );
 
     int type() const override;
-    QString stringType() const override;
     QString displayName() const override;
 
     /**

@@ -59,7 +59,6 @@ class CORE_EXPORT QgsLayoutItemPolyline: public QgsLayoutNodesItem
     static QgsLayoutItemPolyline *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
-    QString stringType() const override;
     QString displayName() const override;
 
     /**

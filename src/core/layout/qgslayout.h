@@ -471,6 +471,22 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
     /**
+     * Add items from an XML representation to the layout. Used for project file reading and pasting items from clipboard.
+     *
+     * The \a position argument is optional, and if it is not specified the items will be restored to their
+     * original position from the XML serialization. If specified, the items will be positioned such that the top-left
+     * bounds of all added items is located at this \a position.
+     *
+     * The \a pasteInPlace argument determines whether the serialized position should be respected, but remapped to the
+     * origin of the page corresponding to the page at \a position.
+     *
+     * A list of the newly added items is returned.
+     */
+    QVector< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
+        const QgsReadWriteContext &context,
+        QPointF *position = nullptr, bool pasteInPlace = false );
+
+    /**
      * Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
      * and it's associated objects.
      */
@@ -575,6 +591,9 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void removeLayoutItemPrivate( QgsLayoutItem *item );
 
     void deleteAndRemoveMultiFrames();
+
+    //! Calculates the item minimum position from an XML element
+    QPointF minPointFromXml( const QDomElement &elem ) const;
 
     friend class QgsLayoutItemAddItemCommand;
     friend class QgsLayoutItemDeleteUndoCommand;

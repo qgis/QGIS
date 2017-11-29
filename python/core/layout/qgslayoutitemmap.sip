@@ -38,8 +38,6 @@ class QgsLayoutItemMap : QgsLayoutItem
 
     virtual int type() const;
 
-    virtual QString stringType() const;
-
 
     void assignFreeId();
 %Docstring
@@ -422,6 +420,9 @@ Returns true if the map contains layers with blend modes or flattened layers for
  Return map settings that will be used for drawing of the map.
  :rtype: QgsMapSettings
 %End
+
+    virtual void finalizeRestoreFromXml();
+
 
   protected:
 

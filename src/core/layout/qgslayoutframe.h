@@ -46,7 +46,6 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
     static QgsLayoutFrame *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
-    QString stringType() const override;
     QString uuid() const override;
 
     //Overridden to allow multiframe to set display name

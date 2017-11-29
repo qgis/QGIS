@@ -71,7 +71,6 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     QgsLayoutItemPicture( QgsLayout *layout );
 
     int type() const override;
-    QString stringType() const override;
 
     /**
      * Returns a new picture item for the specified \a layout.
@@ -235,6 +234,8 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
      */
     Format mode() const { return mMode; }
 
+    void finalizeRestoreFromXml() override;
+
   public slots:
 
     /**
@@ -298,6 +299,9 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
 
     //! Image rotation
     double mPictureRotation = 0;
+
+    QString mRotationMapUuid;
+    int mRotationMapId = -1;
     //! Map that sets the rotation (or nullptr if this picture uses map independent rotation)
     QPointer< QgsLayoutItemMap > mRotationMap;
 

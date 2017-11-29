@@ -42,11 +42,6 @@ QgsLayoutItemPolygon *QgsLayoutItemPolygon::create( QgsLayout *layout )
   return new QgsLayoutItemPolygon( layout );
 }
 
-QString QgsLayoutItemPolygon::stringType() const
-{
-  return QStringLiteral( "ItemPolygon" );
-}
-
 int QgsLayoutItemPolygon::type() const
 {
   return QgsLayoutItemRegistry::LayoutPolygon;

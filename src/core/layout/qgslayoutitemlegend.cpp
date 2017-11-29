@@ -58,12 +58,6 @@ int QgsLayoutItemLegend::type() const
   return QgsLayoutItemRegistry::LayoutLegend;
 }
 
-QString QgsLayoutItemLegend::stringType() const
-{
-  return QStringLiteral( "ItemLegend" );
-}
-
-
 void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget )
 {
   if ( !painter )
@@ -124,6 +118,20 @@ void QgsLayoutItemLegend::paint( QPainter *painter, const QStyleOptionGraphicsIt
     }
   }
   QgsLayoutItem::paint( painter, itemStyle, pWidget );
+}
+
+void QgsLayoutItemLegend::finalizeRestoreFromXml()
+{
+#if 0 //TODO
+  if ( mMapId != -1 && mMapUuid.isEmpty() )
+  {
+    setMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
+  }
+#endif
+  if ( !mMapUuid.isEmpty() )
+  {
+    setMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid ) ) );
+  }
 }
 
 void QgsLayoutItemLegend::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
@@ -566,17 +574,16 @@ bool QgsLayoutItemLegend::readPropertiesFromElement( const QDomElement &itemElem
   //composer map
   mLegendFilterByMap = itemElem.attribute( QStringLiteral( "legendFilterByMap" ), QStringLiteral( "0" ) ).toInt();
 
-#if 0 //TODO
+  mMapId = -1;
+  mMapUuid.clear();
   if ( !itemElem.attribute( QStringLiteral( "map" ) ).isEmpty() )
   {
-    setMap( mComposition->getComposerMapById( itemElem.attribute( QStringLiteral( "map" ) ).toInt() ) );
+    mMapId = itemElem.attribute( QStringLiteral( "map" ) ).toInt();
   }
-#endif
   if ( !itemElem.attribute( QStringLiteral( "map_uuid" ) ).isEmpty() )
   {
-    setMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( itemElem.attribute( QStringLiteral( "map_uuid" ) ) ) ) );
+    mMapUuid = itemElem.attribute( QStringLiteral( "map_uuid" ) );
   }
-
 
   mFilterOutAtlas = itemElem.attribute( QStringLiteral( "legendFilterByAtlas" ), QStringLiteral( "0" ) ).toInt();
 

@@ -48,6 +48,11 @@ QgsLayoutItemPage *QgsLayoutItemPage::create( QgsLayout *layout )
   return new QgsLayoutItemPage( layout );
 }
 
+int QgsLayoutItemPage::type() const
+{
+  return QgsLayoutItemRegistry::LayoutPage;
+}
+
 void QgsLayoutItemPage::setPageSize( const QgsLayoutSize &size )
 {
   attemptResize( size );
