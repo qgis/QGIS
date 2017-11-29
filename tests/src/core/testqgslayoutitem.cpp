@@ -48,7 +48,6 @@ class TestItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
-    QString stringType() const override { return QStringLiteral( "TestItemType" ); }
 
     bool forceResize = false;
 
@@ -1513,7 +1512,7 @@ void TestQgsLayoutItem::writeXml()
   QDomElement element = rootNode.firstChildElement();
 
   QCOMPARE( element.nodeName(), QString( "LayoutItem" ) );
-  QCOMPARE( element.attribute( "type", "" ), item->stringType() );
+  QCOMPARE( element.attribute( "type", "" ).toInt(), item->type() );
 
   //check that element has an object node
   QDomNodeList objectNodeList = element.elementsByTagName( QStringLiteral( "LayoutObject" ) );
@@ -1539,11 +1538,6 @@ void TestQgsLayoutItem::readXml()
   QDomElement noNode;
   QVERIFY( !item->readXml( badElement, doc, QgsReadWriteContext() ) );
   QVERIFY( !item->readXml( noNode, doc, QgsReadWriteContext() ) );
-
-  //element with wrong type
-  QDomElement wrongType = doc.createElement( QStringLiteral( "LayoutItem" ) );
-  wrongType.setAttribute( QStringLiteral( "type" ), QStringLiteral( "bad" ) );
-  QVERIFY( !item->readXml( wrongType, doc, QgsReadWriteContext() ) );
 
   //try good element
   QDomElement goodElement = doc.createElement( QStringLiteral( "LayoutItem" ) );

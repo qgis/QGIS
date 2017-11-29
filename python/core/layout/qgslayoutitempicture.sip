@@ -50,8 +50,6 @@ class QgsLayoutItemPicture: QgsLayoutItem
 
     virtual int type() const;
 
-    virtual QString stringType() const;
-
 
     static QgsLayoutItemPicture *create( QgsLayout *layout ) /Factory/;
 %Docstring
@@ -233,6 +231,9 @@ class QgsLayoutItemPicture: QgsLayoutItem
  Returns the current picture mode (image format).
  :rtype: Format
 %End
+
+    virtual void finalizeRestoreFromXml();
+
 
   public slots:
 

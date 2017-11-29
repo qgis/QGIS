@@ -27,8 +27,6 @@ class QgsLayoutItemScaleBar: QgsLayoutItem
 
     virtual int type() const;
 
-    virtual QString stringType() const;
-
 
     static QgsLayoutItemScaleBar *create( QgsLayout *layout ) /Factory/;
 %Docstring
@@ -436,6 +434,7 @@ class QgsLayoutItemScaleBar: QgsLayoutItem
 
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
+    virtual void finalizeRestoreFromXml();
 
   protected:
 

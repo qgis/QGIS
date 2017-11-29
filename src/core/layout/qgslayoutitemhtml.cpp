@@ -81,11 +81,6 @@ int QgsLayoutItemHtml::type() const
   return QgsLayoutItemRegistry::LayoutHtml;
 }
 
-QString QgsLayoutItemHtml::stringType() const
-{
-  return QStringLiteral( "LayoutHtml" );
-}
-
 QgsLayoutItemHtml *QgsLayoutItemHtml::create( QgsLayout *layout )
 {
   return new QgsLayoutItemHtml( layout );

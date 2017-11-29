@@ -170,18 +170,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     ~QgsLayoutItem();
 
     /**
-     * Return correct graphics item type
-     * \see stringType()
+     * Return unique graphics item type identifier.
+     *
+     * Plugin based subclasses should return an identifier greater than QgsLayoutItemRegistry::PluginItem.
      */
     int type() const override;
-
-    /**
-     * Return the item type as a string.
-     *
-     * This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
-     * \see type()
-     */
-    virtual QString stringType() const = 0;
 
     /**
      * Returns the item identification string. This is a unique random string set for the item
@@ -435,9 +428,27 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
      * \param document DOM document
      * \param context read write context
+     *
+     * Note that item subclasses should not rely on all other items being present in the
+     * layout at the time this method is called. Instead, any connections and links to
+     * other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+     * a scalebar, the connection to the linked map's signals should be implemented
+     * in finalizeRestoreFromXml(), not readXml().
+     *
      * \see writeXml()
+     * \see finalizeRestoreFromXml()
      */
     bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
+
+    /**
+     * Called after all pending items have been restored from XML. Items can use
+     * this method to run steps which must take place after all items have been restored to the layout,
+     * such as connecting to signals emitted by other items, which may not have existed in the layout
+     * at the time readXml() was called. E.g. a scalebar can use this to connect to its linked
+     * map item after restoration from XML.
+     * \see readXml()
+     */
+    virtual void finalizeRestoreFromXml();
 
     QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = nullptr ) override SIP_FACTORY;
 
@@ -861,6 +872,13 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \param element is the DOM element for the item
      * \param document DOM document
      * \param context read write context
+     *
+     * Note that item subclasses should not rely on all other items being present in the
+     * layout at the time this method is called. Instead, any connections and links to
+     * other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+     * a scalebar, the connection to the linked map's signals should be implemented
+     * in finalizeRestoreFromXml(), not readPropertiesFromElement().
+     *
      * \see writePropertiesToElement()
      * \see readXml()
      */

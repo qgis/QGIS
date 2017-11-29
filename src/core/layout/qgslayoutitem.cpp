@@ -504,7 +504,7 @@ double QgsLayoutItem::itemRotation() const
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement element = doc.createElement( QStringLiteral( "LayoutItem" ) );
-  element.setAttribute( QStringLiteral( "type" ), stringType() );
+  element.setAttribute( QStringLiteral( "type" ), QString::number( type() ) );
 
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
   element.setAttribute( QStringLiteral( "id" ), mId );
@@ -582,7 +582,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
 
 bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( element.nodeName() != QStringLiteral( "LayoutItem" ) || element.attribute( QStringLiteral( "type" ) ) != stringType() )
+  if ( element.nodeName() != QStringLiteral( "LayoutItem" ) )
   {
     return false;
   }
@@ -720,6 +720,10 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   emit changed();
   update();
   return result;
+}
+
+void QgsLayoutItem::finalizeRestoreFromXml()
+{
 }
 
 QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )

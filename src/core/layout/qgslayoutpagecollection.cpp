@@ -252,6 +252,7 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
     QDomElement pageElement = pageList.at( i ).toElement();
     std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
     page->readXml( pageElement, document, context );
+    page->finalizeRestoreFromXml();
     mPages.append( page.get() );
     mLayout->addItem( page.release() );
   }

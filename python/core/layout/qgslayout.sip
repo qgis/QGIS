@@ -424,6 +424,23 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  :rtype: bool
 %End
 
+    QVector< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
+        const QgsReadWriteContext &context,
+        QPointF *position = 0, bool pasteInPlace = false );
+%Docstring
+ Add items from an XML representation to the layout. Used for project file reading and pasting items from clipboard.
+
+ The ``position`` argument is optional, and if it is not specified the items will be restored to their
+ original position from the XML serialization. If specified, the items will be positioned such that the top-left
+ bounds of all added items is located at this ``position``.
+
+ The ``pasteInPlace`` argument determines whether the serialized position should be respected, but remapped to the
+ origin of the page corresponding to the page at ``position``.
+
+ A list of the newly added items is returned.
+ :rtype: list of QgsLayoutItem
+%End
+
     QgsLayoutUndoStack *undoStack();
 %Docstring
  Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout

@@ -56,7 +56,6 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
     ~QgsLayoutItemHtml();
 
     int type() const override;
-    QString stringType() const override;
 
     /**
      * Returns a new QgsLayoutItemHtml for the specified parent \a layout.

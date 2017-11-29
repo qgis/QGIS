@@ -77,7 +77,6 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     static QgsLayoutItemLegend *create( QgsLayout *layout ) SIP_FACTORY;
 
     int type() const override;
-    QString stringType() const override;
     //Overridden to show legend title
     QString displayName() const override;
 
@@ -441,6 +440,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
 
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
 
+    void finalizeRestoreFromXml() override;
+
 
   public slots:
 
@@ -485,6 +486,8 @@ class CORE_EXPORT QgsLayoutItemLegend : public QgsLayoutItem
     QString mTitle;
     int mColumnCount = 1;
 
+    QString mMapUuid;
+    int mMapId = -1;
     QgsLayoutItemMap *mMap = nullptr;
 
     bool mLegendFilterByMap = false;

@@ -35,8 +35,6 @@ class QgsLayoutFrame: QgsLayoutItem
 
     virtual int type() const;
 
-    virtual QString stringType() const;
-
     virtual QString uuid() const;
 
 

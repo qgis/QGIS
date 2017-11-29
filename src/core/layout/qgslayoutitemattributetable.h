@@ -56,7 +56,6 @@ class CORE_EXPORT QgsLayoutItemAttributeTable: public QgsLayoutTable
     QgsLayoutItemAttributeTable( QgsLayout *layout SIP_TRANSFERTHIS );
 
     int type() const override;
-    QString stringType() const override;
     QString displayName() const override;
 
     /**

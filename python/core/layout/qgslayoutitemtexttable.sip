@@ -30,8 +30,6 @@ class QgsLayoutItemTextTable : QgsLayoutTable
 
     virtual int type() const;
 
-    virtual QString stringType() const;
-
     virtual QString displayName() const;
 
 

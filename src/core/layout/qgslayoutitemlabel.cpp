@@ -102,11 +102,6 @@ int QgsLayoutItemLabel::type() const
   return QgsLayoutItemRegistry::LayoutLabel;
 }
 
-QString QgsLayoutItemLabel::stringType() const
-{
-  return QStringLiteral( "ItemLabel" );
-}
-
 void QgsLayoutItemLabel::draw( QgsRenderContext &context, const QStyleOptionGraphicsItem * )
 {
   QPainter *painter = context.painter();

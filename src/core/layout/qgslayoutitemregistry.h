@@ -324,7 +324,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
       LayoutTextTable, //!< Preset text table
 
       // item types provided by plugins
-      PluginItem, //!< Starting point for plugin item types
+      PluginItem = LayoutTextTable + 1000, //!< Starting point for plugin item types
     };
 
     /**
@@ -444,7 +444,6 @@ class TestLayoutItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 1002; }
-    virtual QString stringType() const override { return QStringLiteral( "ItemTest" ); }
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
   private:
