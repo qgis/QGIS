@@ -194,7 +194,7 @@ Sets coordinate transformation.
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 %Docstring
  A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
- Will be used to convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
+ Will be used to convert meter distances to active MapUnit values for QgsUnitTypes.RenderMeters
 .. versionadded:: 3.0
 %End
 
@@ -345,7 +345,7 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 
     double convertMetersToMapUnits( double meters ) const;
 %Docstring
- Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
+ Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMeters
  \note
  When the sourceCrs() is geographic, the center of the Extent will be used
 .. versionadded:: 3.0

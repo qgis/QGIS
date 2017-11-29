@@ -196,7 +196,7 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMeters
      * \since QGIS 3.0
      */
     void setDistanceArea( const QgsDistanceArea &distanceArea ) {mDistanceArea = distanceArea ;}
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsRenderContext
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 
     /**
-     * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * Convert meter distances to active MapUnit values for QgsUnitTypes::RenderMeters
      * \note
       * When the sourceCrs() is geographic, the center of the Extent will be used
      * \since QGIS 3.0
@@ -358,7 +358,7 @@ class CORE_EXPORT QgsRenderContext
 
     /**
      * A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMetersInMapUnits
+     * Will be used to convert meter distances to active MapUnit values for QgsUnitTypes::RenderMeters
      * \since QGIS 3.0
      */
     QgsDistanceArea mDistanceArea;
