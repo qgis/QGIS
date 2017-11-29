@@ -84,7 +84,9 @@ void Qgs3DMapSettings::readXml( const QDomElement &elem, const QgsReadWriteConte
   QString terrainGenType = elemTerrainGenerator.attribute( "type" );
   if ( terrainGenType == "dem" )
   {
-    mTerrainGenerator.reset( new QgsDemTerrainGenerator );
+    QgsDemTerrainGenerator *demTerrainGenerator = new QgsDemTerrainGenerator;
+    demTerrainGenerator->setCrs( mCrs );
+    mTerrainGenerator.reset( demTerrainGenerator );
   }
   else if ( terrainGenType == "quantized-mesh" )
   {

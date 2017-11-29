@@ -90,6 +90,7 @@ void Qgs3DMapConfigWidget::apply()
     if ( tGenNeedsUpdate )
     {
       QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
+      demTerrainGen->setCrs( mMap->crs() );
       demTerrainGen->setLayer( demLayer );
       demTerrainGen->setResolution( spinTerrainResolution->value() );
       demTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
@@ -139,6 +140,7 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   if ( demLayer )
   {
     QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
+    demTerrainGen->setCrs( mMap->crs() );
     demTerrainGen->setLayer( demLayer );
     demTerrainGen->setResolution( spinTerrainResolution->value() );
     tGen.reset( demTerrainGen );
