@@ -164,20 +164,20 @@ QVariant QgsDatumTransformTableModel::headerData( int section, Qt::Orientation o
 }
 
 
-QgsDatumTransformTableWidget::QgsDatumTransformTableWidget(QWidget *parent)
-    : QWidget(parent)
+QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
+  : QWidget( parent )
 {
-    setupUi(this);
+  setupUi( this );
 
-    mTableView->setModel( mModel );
-    mTableView->resizeColumnToContents( 0 );
-    mTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
-    mTableView->horizontalHeader()->show();
-    mTableView->setSelectionMode( QAbstractItemView::SingleSelection );
-    mTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
-    connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
-    connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
-    connect( mEditButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::editDatumTransform );
+  mTableView->setModel( mModel );
+  mTableView->resizeColumnToContents( 0 );
+  mTableView->horizontalHeader()->setSectionResizeMode( QHeaderView::ResizeToContents );
+  mTableView->horizontalHeader()->show();
+  mTableView->setSelectionMode( QAbstractItemView::SingleSelection );
+  mTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
+  connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
+  connect( mEditButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::editDatumTransform );
 
 }
 
