@@ -615,16 +615,13 @@ static void _drawDebugRect( QPainter& p, const QRectF& rect, const QColor& color
 
 QImage *QgsWmsProvider::draw( QgsRectangle const & viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback* feedback )
 {
+  QgsDebugMsg( "Entering." );
+
+  // compose the URL query string for the WMS server.
+
   QImage* image = new QImage( pixelWidth, pixelHeight, QImage::Format_ARGB32 );
   image->fill( 0 );
 
-  if ( QgsApplication::instance()->thread() == QThread::currentThread() )
-  {
-    QgsDebugMsg( "Trying to draw a WMS image on the main thread. Stop it!" );
-    return image;
-  }
-
-  // compose the URL query string for the WMS server.
   if ( !mSettings.mTiled && mSettings.mMaxWidth == 0 && mSettings.mMaxHeight == 0 )
   {
     QUrl url = createRequestUrlWMS( viewExtent, pixelWidth, pixelHeight );
