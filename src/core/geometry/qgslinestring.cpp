@@ -943,7 +943,7 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
       // where we can perform the check
       if ( left != 0 )
       {
-        if ( qgsDoubleNear( testDist, leftOfDist ) && ( left < 0 ) != prevLeftOf )
+        if ( qgsDoubleNear( testDist, leftOfDist ) && left != prevLeftOf && prevLeftOf != 0 )
         {
           // we have two possible segments each with equal distance to point, but they disagree
           // on whether or not the point is to the left of them.
@@ -964,6 +964,7 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
       {
         *leftOf = left;
         leftOfDist = testDist;
+        prevLeftOf = 0;
       }
     }
   }
