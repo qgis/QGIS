@@ -1991,6 +1991,8 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
 
   - algorithm: native:splitwithlines
     name: Split lines with same lines
@@ -2008,7 +2010,8 @@ tests:
         compare:
           geometry:
             precision: 7
-
+          fields:
+            fid: skip
 
   # Split lines with lines considers two cases
   # case 1: two different layers
@@ -2028,6 +2031,8 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
 
   # case 2 split line layer with iself
   - algorithm: native:splitwithlines
@@ -2046,6 +2051,8 @@ tests:
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
 
   - algorithm: native:dropgeometries
     name: Drop geometries

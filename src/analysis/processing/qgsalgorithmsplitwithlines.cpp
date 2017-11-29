@@ -52,8 +52,7 @@ void QgsSplitWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 QString QgsSplitWithLinesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm splits the lines or polygons in one layer using the lines in another layer to define the breaking points. "
-                      "Intersection between geometries in both layers are considered as split points.\n\n"
-                      "Output will contain multi geometries for split features." );
+                      "Intersection between geometries in both layers are considered as split points." );
 }
 
 QgsSplitWithLinesAlgorithm *QgsSplitWithLinesAlgorithm::createInstance() const
@@ -252,9 +251,9 @@ QVariantMap QgsSplitWithLinesAlgorithm::processAlgorithm( const QVariantMap &par
         parts.append( aGeom );
     }
 
-    if ( !parts.empty() )
+    for ( const QgsGeometry &g : parts )
     {
-      outFeat.setGeometry( QgsGeometry::collectGeometry( parts ) );
+      outFeat.setGeometry( g );
       sink->addFeature( outFeat, QgsFeatureSink::FastInsert );
     }
 
