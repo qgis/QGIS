@@ -347,6 +347,9 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
       for ( const QgsPointXY &point : line )
       {
         pt2 = ct.transform( point );
+        int pPt2idx = findPointWithinTolerance( pt2 );
+        Q_ASSERT_X( pPt2idx >= 0, "QgsVectorLayerDirectory::makeGraph", "encountered a vertex which was not present in graph" );
+        pt2 = graphVertices.at( pPt2idx );
 
         if ( !isFirstPoint )
         {
@@ -364,21 +367,22 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
             }
           }
 
-          QgsPointXY pt1;
-          QgsPointXY pt2;
+          QgsPointXY arcPt1;
+          QgsPointXY arcPt2;
           int pt1idx = -1;
           int pt2idx = -1;
           bool isFirstPoint = true;
           for ( auto arcPointIt = pointsOnArc.constBegin(); arcPointIt != pointsOnArc.constEnd(); ++arcPointIt )
           {
-            pt2 = arcPointIt.value();
+            arcPt2 = arcPointIt.value();
 
-            pt2idx = findPointWithinTolerance( pt2 );
+            pt2idx = findPointWithinTolerance( arcPt2 );
             Q_ASSERT_X( pt2idx >= 0, "QgsVectorLayerDirectory::makeGraph", "encountered a vertex which was not present in graph" );
+            arcPt2 = graphVertices.at( pt2idx );
 
-            if ( !isFirstPoint && pt1 != pt2 )
+            if ( !isFirstPoint && arcPt1 != arcPt2 )
             {
-              double distance = builder->distanceArea()->measureLine( pt1, pt2 );
+              double distance = builder->distanceArea()->measureLine( arcPt1, arcPt2 );
               QVector< QVariant > prop;
               for ( QgsNetworkStrategy *strategy : mStrategies )
               {
@@ -388,16 +392,16 @@ void QgsVectorLayerDirector::makeGraph( QgsGraphBuilderInterface *builder, const
               if ( direction == Direction::DirectionForward ||
                    direction == Direction::DirectionBoth )
               {
-                builder->addEdge( pt1idx, pt1, pt2idx, pt2, prop );
+                builder->addEdge( pt1idx, arcPt1, pt2idx, arcPt2, prop );
               }
               if ( direction == Direction::DirectionBackward ||
                    direction == Direction::DirectionBoth )
               {
-                builder->addEdge( pt2idx, pt2, pt1idx, pt1, prop );
+                builder->addEdge( pt2idx, arcPt2, pt1idx, arcPt1, prop );
               }
             }
             pt1idx = pt2idx;
-            pt1 = pt2;
+            arcPt1 = arcPt2;
             isFirstPoint = false;
           }
         }
