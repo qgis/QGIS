@@ -19,10 +19,11 @@
 #include "qgis_3d.h"
 
 /**
+ * \ingroup 3d
  * Class for storage of 3D vectors similar to QVector3D, with the difference that it uses double precision
  * instead of single precision floating point numbers.
  *
- * \note Added in QGIS 3.0
+ * \since QGIS 3.0
  */
 class _3D_EXPORT QgsVector3D
 {
