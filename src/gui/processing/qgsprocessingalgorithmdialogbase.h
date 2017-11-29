@@ -186,6 +186,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     QDialogButtonBox *buttonBox();
 
     /**
+     * Returns the dialog's tab widget.
+     */
+    QTabWidget *tabWidget();
+
+    /**
      * Clears any current progress from the dialog.
      */
     void clearProgress();
@@ -209,6 +214,11 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
      * Returns the dialog's message bar.
      */
     QgsMessageBar *messageBar();
+
+    /**
+     * Hides the short help panel.
+     */
+    void hideShortHelp();
 
   protected slots:
 
