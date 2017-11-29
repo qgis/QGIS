@@ -732,12 +732,12 @@ void QgsCircularString::deleteVertex( int i )
   clearCache();
 }
 
-double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   double minDist = std::numeric_limits<double>::max();
   QgsPoint minDistSegmentPoint;
   QgsVertexId minDistVertexAfter;
-  bool minDistLeftOf = false;
+  int minDistLeftOf = 0;
 
   double currentDist = 0.0;
 
@@ -766,7 +766,7 @@ double QgsCircularString::closestSegment( const QgsPoint &pt, QgsPoint &segmentP
   vertexAfter.ring = 0;
   if ( leftOf )
   {
-    *leftOf = minDistLeftOf;
+    *leftOf = qgsDoubleNear( minDist, 0.0 ) ? 0 : minDistLeftOf;
   }
   return minDist;
 }
@@ -849,7 +849,7 @@ bool QgsCircularString::hasCurvedSegments() const
 }
 
 double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, double y2, double x3, double y3,
-    const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon )
+    const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon )
 {
   double radius, centerX, centerY;
   QgsPoint pt1( x1, y1 );
@@ -892,7 +892,8 @@ double QgsCircularString::closestPointOnArc( double x1, double y1, double x2, do
   if ( leftOf )
   {
     double sqrDistancePointToCenter = ( pt.x() - centerX ) * ( pt.x() - centerX ) + ( pt.y() - centerY ) * ( pt.y() - centerY );
-    *leftOf = clockwise ? sqrDistancePointToCenter > radius * radius : sqrDistancePointToCenter < radius * radius;
+    *leftOf = clockwise ? ( sqrDistancePointToCenter > radius * radius ? -1 : 1 )
+              : ( sqrDistancePointToCenter < radius * radius ? -1 : 1 );
   }
 
   return sqrDistance;

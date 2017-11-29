@@ -499,10 +499,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(afterVertex, 5)
         self.assertEqual(dist, 1)
 
-        (dist, minDistPoint, afterVertex) = polyline.closestSegmentWithContext(QgsPointXY(6, 2))
+        (dist, minDistPoint, afterVertex, leftOf) = polyline.closestSegmentWithContext(QgsPointXY(6, 2))
         self.assertEqual(dist, 1)
         self.assertEqual(minDistPoint, QgsPointXY(5, 2))
         self.assertEqual(afterVertex, 4)
+        self.assertEqual(leftOf, -1)
 
         (point, atVertex, beforeVertex, afterVertex, dist) = polyline.closestVertex(QgsPointXY(6, 0))
         self.assertEqual(point, QgsPointXY(5, 0))
@@ -511,10 +512,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(afterVertex, 1)
         self.assertEqual(dist, 1)
 
-        (dist, minDistPoint, afterVertex) = polyline.closestSegmentWithContext(QgsPointXY(6, 0))
+        (dist, minDistPoint, afterVertex, leftOf) = polyline.closestSegmentWithContext(QgsPointXY(6, 0))
         self.assertEqual(dist, 1)
         self.assertEqual(minDistPoint, QgsPointXY(5, 0))
         self.assertEqual(afterVertex, 1)
+        self.assertEqual(leftOf, 0)
 
         (point, atVertex, beforeVertex, afterVertex, dist) = polyline.closestVertex(QgsPointXY(0, -1))
         self.assertEqual(point, QgsPointXY(0, 0))
@@ -523,10 +525,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(afterVertex, 2)
         self.assertEqual(dist, 1)
 
-        (dist, minDistPoint, afterVertex) = polyline.closestSegmentWithContext(QgsPointXY(0, 1))
+        (dist, minDistPoint, afterVertex, leftOf) = polyline.closestSegmentWithContext(QgsPointXY(0, 1))
         self.assertEqual(dist, 0)
         self.assertEqual(minDistPoint, QgsPointXY(0, 1))
         self.assertEqual(afterVertex, 2)
+        self.assertEqual(leftOf, 0)
 
         #   2-3 6-+-7 !
         #   | | |   |
@@ -544,10 +547,11 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(afterVertex, 8)
         self.assertEqual(dist, 1)
 
-        (dist, minDistPoint, afterVertex) = polyline.closestSegmentWithContext(QgsPointXY(7, 0))
+        (dist, minDistPoint, afterVertex, leftOf) = polyline.closestSegmentWithContext(QgsPointXY(7, 0))
         self.assertEqual(dist, 1)
         self.assertEqual(minDistPoint, QgsPointXY(6, 0))
         self.assertEqual(afterVertex, 9)
+        self.assertEqual(leftOf, 0)
 
         # 5---4
         # |!  |
@@ -566,11 +570,12 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(afterVertex, 3)
         assert abs(dist - 0.1) < 0.00001, "Expected: %f; Got:%f" % (dist, 0.1)
 
-        (dist, minDistPoint, afterVertex) = polygon.closestSegmentWithContext(QgsPointXY(0.7, 1.1))
+        (dist, minDistPoint, afterVertex, leftOf) = polygon.closestSegmentWithContext(QgsPointXY(0.7, 1.1))
         self.assertEqual(afterVertex, 2)
         self.assertEqual(minDistPoint, QgsPointXY(1, 1))
         exp = 0.3 ** 2 + 0.1 ** 2
         assert abs(dist - exp) < 0.00001, "Expected: %f; Got:%f" % (exp, dist)
+        self.assertEqual(leftOf, -1)
 
         # 3-+-+-2
         # |     |
@@ -592,11 +597,12 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(afterVertex, 9)
         assert abs(dist - 0.02) < 0.00001, "Expected: %f; Got:%f" % (dist, 0.02)
 
-        (dist, minDistPoint, afterVertex) = polygon.closestSegmentWithContext(QgsPointXY(1.2, 1.9))
+        (dist, minDistPoint, afterVertex, leftOf) = polygon.closestSegmentWithContext(QgsPointXY(1.2, 1.9))
         self.assertEqual(afterVertex, 8)
         self.assertEqual(minDistPoint, QgsPointXY(1.2, 2))
         exp = 0.01
         assert abs(dist - exp) < 0.00001, "Expected: %f; Got:%f" % (exp, dist)
+        self.assertEqual(leftOf, -1)
 
         # 5-+-4 0-+-9
         # |   | |   |
@@ -616,11 +622,12 @@ class TestQgsGeometry(unittest.TestCase):
         self.assertEqual(afterVertex, 13)
         assert abs(dist - 0.02) < 0.00001, "Expected: %f; Got:%f" % (dist, 0.02)
 
-        (dist, minDistPoint, afterVertex) = polygon.closestSegmentWithContext(QgsPointXY(4.1, 1.1))
+        (dist, minDistPoint, afterVertex, leftOf) = polygon.closestSegmentWithContext(QgsPointXY(4.1, 1.1))
         self.assertEqual(afterVertex, 12)
         self.assertEqual(minDistPoint, QgsPointXY(4, 1))
         exp = 0.02
         assert abs(dist - exp) < 0.00001, "Expected: %f; Got:%f" % (exp, dist)
+        self.assertEqual(leftOf, -1)
 
     def testAdjacentVertex(self):
         # 2-+-+-+-+-3

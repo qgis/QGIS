@@ -324,14 +324,16 @@ class CORE_EXPORT QgsAbstractGeometry
      * \param pt specifies the point to find closest segment to
      * \param segmentPt storage for the closest point within the geometry
      * \param vertexAfter storage for the ID of the vertex at the end of the closest segment
-     * \param leftOf returns whether the point lies on the left side of the nearest segment (true if point is to left of segment,
+     * \param leftOf indicates whether the point lies on the left side of the geometry (-1 if point is to the left
+     * of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
+     * be determined, e.g. point exactly on a line)
      * false if point is to right of segment)
      * \param epsilon epsilon for segment snapping
      * \returns squared distance to closest segment or negative value on error
      */
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT,
                                    QgsVertexId &vertexAfter SIP_OUT,
-                                   bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const = 0;
+                                   int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const = 0;
 
     //low-level editing
 
