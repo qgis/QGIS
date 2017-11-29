@@ -293,7 +293,7 @@ class ProcessingToolbox(BASE, WIDGET):
                     except:
                         pass
                     canvas.setMapTool(prevMapTool)
-                if dlg.executed:
+                if dlg.wasExecuted():
                     showRecent = ProcessingConfig.getSetting(
                         ProcessingConfig.SHOW_RECENT_ALGORITHMS)
                     if showRecent:

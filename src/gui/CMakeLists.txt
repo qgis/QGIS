@@ -188,6 +188,8 @@ SET(QGIS_GUI_SRCS
   ogr/qgsnewogrconnection.cpp
   ogr/qgsvectorlayersaveasdialog.cpp
 
+  processing/qgsprocessingalgorithmdialogbase.cpp
+
   qgisinterface.cpp
   qgsactionmenu.cpp
   qgsadvanceddigitizingcanvasitem.cpp
@@ -696,6 +698,8 @@ SET(QGIS_GUI_MOC_HDRS
   layout/qgslayoutviewtoolzoom.h
 
   locator/qgslocatorwidget.h
+
+  processing/qgsprocessingalgorithmdialogbase.h
 )
 SET_PROPERTY(GLOBAL PROPERTY QGIS_GUI_MOC_HDRS ${QGIS_GUI_MOC_HDRS})
 
