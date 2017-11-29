@@ -45,6 +45,9 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     //! Returns raster layer with elevation model to be used for terrain generation
     QgsRasterLayer *layer() const;
 
+    //! Sets CRS of the terrain
+    void setCrs( const QgsCoordinateReferenceSystem &crs );
+
     //! Sets resolution of the generator (how many elevation samples on one side of a terrain tile)
     void setResolution( int resolution ) { mResolution = resolution; updateGenerator(); }
     //! Returns resolution of the generator (how many elevation samples on one side of a terrain tile)
@@ -73,6 +76,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
 
     QgsDemHeightMapGenerator *mHeightMapGenerator = nullptr;
 
+    QgsCoordinateReferenceSystem mCrs;
     //! source layer for heights
     QgsMapLayerRef mLayer;
     //! how many vertices to place on one side of the tile
