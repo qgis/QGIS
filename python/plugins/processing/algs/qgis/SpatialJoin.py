@@ -16,9 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import zip
-from builtins import range
 
 __author__ = 'Joshua Arnott'
 __date__ = 'October 2013'

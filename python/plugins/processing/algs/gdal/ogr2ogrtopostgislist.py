@@ -25,15 +25,6 @@ __copyright__ = '(C) 2012, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
-
-from processing.core.parameters import ParameterVector
-from processing.core.parameters import ParameterString
-from processing.core.parameters import ParameterCrs
-from processing.core.parameters import ParameterSelection
-from processing.core.parameters import ParameterBoolean
-from processing.core.parameters import ParameterExtent
-from processing.core.parameters import ParameterTableField
-
 from processing.algs.gdal.GdalAlgorithm import GdalAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
 

@@ -35,8 +35,6 @@ from qgis.core import (QgsRasterFileWriter,
                        QgsProcessingParameterNumber,
                        QgsProcessingParameterRasterDestination)
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
-from processing.tools.dataobjects import exportRasterLayer
-
 
 pluginPath = os.path.split(os.path.split(os.path.dirname(__file__))[0])[0]
 
@@ -71,7 +69,7 @@ class Slope(QgisAlgorithm):
         return self.tr('Slope')
 
     def processAlgorithm(self, parameters, context, feedback):
-        inputFile = exportRasterLayer(self.parameterAsRasterLayer(parameters, self.INPUT, context))
+        inputFile = self.parameterAsRasterLayer(parameters, self.INPUT, context).source()
         zFactor = self.parameterAsDouble(parameters, self.Z_FACTOR, context)
 
         outputFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)

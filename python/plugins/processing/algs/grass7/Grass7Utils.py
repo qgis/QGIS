@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2015'
@@ -43,7 +41,7 @@ from processing.tests.TestData import points
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class Grass7Utils(object):
+class Grass7Utils:
 
     GRASS_REGION_XMIN = 'GRASS7_REGION_XMIN'
     GRASS_REGION_YMIN = 'GRASS7_REGION_YMIN'

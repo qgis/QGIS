@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import object
 
 __author__ = 'René-Luc Dhont'
 __date__ = 'November 2015'
@@ -43,7 +41,7 @@ class DbError(Exception):
         return 'MESSAGE: %s\nQUERY: %s' % (self.message, self.query)
 
 
-class GeoDB(object):
+class GeoDB:
 
     def __init__(self, uri=None):
         self.uri = uri

@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -160,7 +159,7 @@ class ProcessingDataItemProvider(QgsDataItemProvider):
         return None
 
 
-class ProcessingPlugin(object):
+class ProcessingPlugin:
 
     def __init__(self, iface):
         self.iface = iface

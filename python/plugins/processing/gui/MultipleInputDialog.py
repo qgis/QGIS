@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
-from builtins import basestring
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -55,7 +53,7 @@ class MultipleInputDialog(BASE, WIDGET):
 
         self.options = []
         for i, option in enumerate(options):
-            if option is None or isinstance(option, basestring):
+            if option is None or isinstance(option, str):
                 self.options.append((i, option))
             else:
                 self.options.append((option[0], option[1]))
