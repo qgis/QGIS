@@ -150,6 +150,8 @@ void QgsValueRelationWidgetWrapper::initWidget( QWidget* editor )
     QCompleter* completer = new QCompleter( m, mLineEdit );
     completer->setCaseSensitivity( Qt::CaseInsensitive );
     mLineEdit->setCompleter( completer );
+
+    connect( mLineEdit, SIGNAL( textChanged( QString ) ), this, SLOT( onValueChanged() ) );
   }
 }
 
