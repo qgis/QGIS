@@ -186,7 +186,14 @@ void QgsMapToolOffsetCurve::applyOffset( bool forceCopy )
       {
         if ( partIndex == mModifiedPart )
         {
-          newMultiPoly += mModifiedGeometry.asMultiPolygon();
+          if ( mModifiedGeometry.isMultipart() )
+          {
+            newMultiPoly += mModifiedGeometry.asMultiPolygon();
+          }
+          else
+          {
+            newMultiPoly.append( mModifiedGeometry.asPolygon() );
+          }
         }
         else
         {
@@ -335,22 +342,15 @@ void QgsMapToolOffsetCurve::prepareGeometry( QgsVectorLayer *vl, const QgsPointL
     }
     else
     {
-      //search vertex
       mMultiPartGeometry = true;
+
       int vertex = match.vertexIndex();
-      int currentVertex = 0;
+      QgsVertexId vertexId;
+      geom.vertexIdFromVertexNr( vertex, vertexId );
+      mModifiedPart = vertexId.part;
+
       QgsMultiPolylineXY multiLine = geom.asMultiPolyline();
-      QgsMultiPolylineXY::const_iterator it = multiLine.constBegin();
-      for ( ; it != multiLine.constEnd(); ++it )
-      {
-        currentVertex += it->size();
-        if ( vertex < currentVertex )
-        {
-          mManipulatedGeometry = QgsGeometry::fromPolylineXY( *it );
-          break;
-        }
-        mModifiedPart++;
-      }
+      mManipulatedGeometry = QgsGeometry::fromPolylineXY( multiLine.at( mModifiedPart ) );
     }
   }
   else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry )
@@ -361,26 +361,15 @@ void QgsMapToolOffsetCurve::prepareGeometry( QgsVectorLayer *vl, const QgsPointL
     }
     else
     {
-      //search vertex
       mMultiPartGeometry = true;
+
       int vertex = match.vertexIndex();
-      int currentVertex = 0;
+      QgsVertexId vertexId;
+      geom.vertexIdFromVertexNr( vertex, vertexId );
+      mModifiedPart = vertexId.part;
+
       QgsMultiPolygonXY multiPoly = geom.asMultiPolygon();
-      QgsMultiPolygonXY::const_iterator multiPolyIt = multiPoly.constBegin();
-      for ( ; multiPolyIt != multiPoly.constEnd(); ++multiPolyIt )
-      {
-        QgsPolygonXY::const_iterator polyIt = multiPolyIt->constBegin();
-        for ( ; polyIt != multiPolyIt->constEnd(); ++polyIt )
-        {
-          currentVertex += polyIt->size();
-        }
-        if ( vertex < currentVertex )
-        {
-          mManipulatedGeometry = QgsGeometry::fromPolygonXY( *multiPolyIt );
-          break;
-        }
-        mModifiedPart++;
-      }
+      mManipulatedGeometry = QgsGeometry::fromPolygonXY( multiPoly.at( mModifiedPart ) );
     }
   }
 }
