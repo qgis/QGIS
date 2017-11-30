@@ -26,7 +26,7 @@ QString QgsSmoothAlgorithm::name() const
 
 QString QgsSmoothAlgorithm::displayName() const
 {
-  return QObject::tr( "Smooth geometries" );
+  return QObject::tr( "Smooth" );
 }
 
 QStringList QgsSmoothAlgorithm::tags() const

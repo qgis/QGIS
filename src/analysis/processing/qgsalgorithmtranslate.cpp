@@ -26,7 +26,7 @@ QString QgsTranslateAlgorithm::name() const
 
 QString QgsTranslateAlgorithm::displayName() const
 {
-  return QObject::tr( "Translate geometry" );
+  return QObject::tr( "Translate" );
 }
 
 QStringList QgsTranslateAlgorithm::tags() const

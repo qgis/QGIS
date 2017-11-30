@@ -56,7 +56,7 @@ class DensifyGeometries(QgisFeatureBasedAlgorithm):
         return 'densifygeometries'
 
     def displayName(self):
-        return self.tr('Densify geometries')
+        return self.tr('Densify by count')
 
     def outputName(self):
         return self.tr('Densified')
