@@ -157,12 +157,13 @@ class GUI_EXPORT QgsRelationReferenceWidget : public QWidget
     void mapToolDeactivated();
     void filterChanged();
     void addEntry();
-    void updateAddEntryButton();
+    void editTextUpdated( const QString &text );
 
   private:
     void highlightFeature( QgsFeature f = QgsFeature(), CanvasExtent canvasExtent = Fixed );
     void updateAttributeEditorFrame( const QgsFeature& feature );
     void disableChainedComboBoxes( const QComboBox *scb );
+    void updateAddEntryButton();
 
     // initialized
     QgsAttributeEditorContext mEditorContext;
