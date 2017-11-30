@@ -30,8 +30,17 @@ class QgsComposerItem: QgsComposerObject, QGraphicsRectItem
 #include <qgscomposerpolygon.h>
 #include <qgscomposerpolyline.h>
 #include <qgscomposertexttable.h>
-#include <qgslayoutitemshape.h>
-#include <qgslayoutitempage.h>
+#include "qgslayoutitemgroup.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutitempicture.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitemlegend.h"
+#include "qgslayoutitempolygon.h"
+#include "qgslayoutitempolyline.h"
+#include "qgslayoutitemscalebar.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemshape.h"
+#include "qgslayoutitempage.h"
 %End
 %ConvertToSubClassCode
     // the conversions have to be static, because they're using multiple inheritance
@@ -102,8 +111,48 @@ class QgsComposerItem: QgsComposerObject, QGraphicsRectItem
       {
         // really, these *should* use the constants from QgsLayoutItemRegistry, but sip doesn't like that!
         case QGraphicsItem::UserType + 101:
+          sipType = sipType_QgsLayoutItemGroup;
+          *sipCppRet = static_cast<QgsLayoutItemGroup *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 102:
           sipType = sipType_QgsLayoutItemPage;
           *sipCppRet = static_cast<QgsLayoutItemPage *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 103:
+          sipType = sipType_QgsLayoutItemMap;
+          *sipCppRet = static_cast<QgsLayoutItemMap *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 104:
+          sipType = sipType_QgsLayoutItemPicture;
+          *sipCppRet = static_cast<QgsLayoutItemPicture *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 105:
+          sipType = sipType_QgsLayoutItemLabel;
+          *sipCppRet = static_cast<QgsLayoutItemLabel *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 106:
+          sipType = sipType_QgsLayoutItemLegend;
+          *sipCppRet = static_cast<QgsLayoutItemLegend *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 107:
+          sipType = sipType_QgsLayoutItemShape;
+          *sipCppRet = static_cast<QgsLayoutItemShape *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 108:
+          sipType = sipType_QgsLayoutItemPolygon;
+          *sipCppRet = static_cast<QgsLayoutItemPolygon *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 109:
+          sipType = sipType_QgsLayoutItemPolyline;
+          *sipCppRet = static_cast<QgsLayoutItemPolyline *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 110:
+          sipType = sipType_QgsLayoutItemScaleBar;
+          *sipCppRet = static_cast<QgsLayoutItemScaleBar *>( sipCpp );
+          break;
+        case QGraphicsItem::UserType + 111:
+          sipType = sipType_QgsLayoutFrame;
+          *sipCppRet = static_cast<QgsLayoutFrame *>( sipCpp );
           break;
         default:
           sipType = 0;
