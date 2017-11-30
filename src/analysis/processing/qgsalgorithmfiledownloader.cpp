@@ -31,7 +31,7 @@ QString QgsFileDownloaderAlgorithm::name() const
 
 QString QgsFileDownloaderAlgorithm::displayName() const
 {
-  return tr( "File downloader" );
+  return tr( "Download file" );
 }
 
 QStringList QgsFileDownloaderAlgorithm::tags() const

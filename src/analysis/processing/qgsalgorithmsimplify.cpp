@@ -26,7 +26,7 @@ QString QgsSimplifyAlgorithm::name() const
 
 QString QgsSimplifyAlgorithm::displayName() const
 {
-  return QObject::tr( "Simplify geometries" );
+  return QObject::tr( "Simplify" );
 }
 
 QStringList QgsSimplifyAlgorithm::tags() const
