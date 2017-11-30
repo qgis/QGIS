@@ -28,7 +28,7 @@ QString QgsTessellateAlgorithm::name() const
 
 QString QgsTessellateAlgorithm::displayName() const
 {
-  return QObject::tr( "Tessellate geometry" );
+  return QObject::tr( "Tessellate" );
 }
 
 QStringList QgsTessellateAlgorithm::tags() const

@@ -52,7 +52,7 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
         return 'densifygeometriesgivenaninterval'
 
     def displayName(self):
-        return self.tr('Densify geometries given an interval')
+        return self.tr('Densify by interval')
 
     def outputName(self):
         return self.tr('Densified')
