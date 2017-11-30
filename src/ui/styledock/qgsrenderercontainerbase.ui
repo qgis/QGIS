@@ -27,6 +27,9 @@
          <verstretch>0</verstretch>
         </sizepolicy>
        </property>
+       <property name="toolTip">
+        <string>Go back</string>
+       </property>
        <property name="text">
         <string/>
        </property>

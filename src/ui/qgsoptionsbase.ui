@@ -1179,6 +1179,9 @@
                  <layout class="QGridLayout" name="_4">
                   <item row="0" column="5">
                    <widget class="QToolButton" name="mBtnMoveHelpDown">
+                    <property name="toolTip">
+                     <string>Lower selected path priority</string>
+                    </property>
                     <property name="text">
                      <string>…</string>
                     </property>
@@ -1256,6 +1259,9 @@
                   </item>
                   <item row="0" column="4">
                    <widget class="QToolButton" name="mBtnMoveHelpUp">
+                    <property name="toolTip">
+                     <string>Raise selected path priority</string>
+                    </property>
                     <property name="text">
                      <string>…</string>
                     </property>
@@ -3416,7 +3422,7 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     <item>
                      <widget class="QToolButton" name="pbnRemoveScale">
                       <property name="toolTip">
-                       <string>Remove selected</string>
+                       <string>Remove selected scale</string>
                       </property>
                       <property name="text">
                        <string>…</string>
@@ -4551,6 +4557,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                    <layout class="QHBoxLayout" name="horizontalLayout_38">
                     <item>
                      <widget class="QToolButton" name="mAddDefaultTransformButton">
+                      <property name="toolTip">
+                       <string>Add datum transformation</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -4562,6 +4571,9 @@ The bigger the number, the faster zooming with the mouse wheel will be.</string>
                     </item>
                     <item>
                      <widget class="QToolButton" name="mRemoveDefaultTransformButton">
+                      <property name="toolTip">
+                       <string>Remove datum transformation</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
