@@ -134,6 +134,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="mAddColorToSchemeButton">
+             <property name="toolTip">
+              <string>Add current color</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -145,6 +148,9 @@
            </item>
            <item>
             <widget class="QPushButton" name="mRemoveColorsFromSchemeButton">
+             <property name="toolTip">
+              <string>Remove selected color</string>
+             </property>
              <property name="text">
               <string/>
              </property>
@@ -492,6 +498,9 @@
             <width>28</width>
             <height>16777215</height>
            </size>
+          </property>
+          <property name="toolTip">
+           <string>Add color to swatch</string>
           </property>
           <property name="text">
            <string/>
