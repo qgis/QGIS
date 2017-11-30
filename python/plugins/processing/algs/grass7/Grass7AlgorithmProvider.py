@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'April 2014'
@@ -37,7 +36,6 @@ from processing.core.ProcessingConfig import (ProcessingConfig, Setting)
 from .Grass7Utils import Grass7Utils
 from .Grass7Algorithm import Grass7Algorithm
 from processing.tools.system import isWindows, isMac
-#from .nviz7 import nviz7
 
 pluginPath = os.path.normpath(os.path.join(
     os.path.split(os.path.dirname(__file__))[0], os.pardir))
@@ -110,7 +108,6 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
                 except Exception as e:
                     QgsMessageLog.logMessage(
                         self.tr('Could not open GRASS GIS 7 algorithm: {0}\n{1}').format(descriptionFile, str(e)), self.tr('Processing'), QgsMessageLog.CRITICAL)
-        #algs.append(nviz7())
         return algs
 
     def loadAlgorithms(self):
@@ -119,6 +116,9 @@ class Grass7AlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
 
     def name(self):
+        return 'GRASS'
+
+    def longName(self):
         version = Grass7Utils.installedVersion()
         return 'GRASS GIS ({})'.format(version) if version is not None else "GRASS GIS"
 

@@ -20,6 +20,7 @@
 #include "qgspoint.h"
 #include "qgspolygon.h"
 #include "qgstessellator.h"
+#include "qgsmultipolygon.h"
 
 /**
  * Simple structure to record an expected triangle from tessellator.
@@ -77,7 +78,10 @@ bool checkTriangleOutput( const QVector<float> &data, bool withNormals, const QL
 {
   int valuesPerTriangle = withNormals ? 18 : 9;
   if ( data.count() != expected.count() * valuesPerTriangle )
+  {
+    qDebug() << "expected" << expected.count() << "triangles, got" << data.count() / valuesPerTriangle;
     return false;
+  }
 
   // TODO: allow arbitrary order of triangles in output
   const float *dataRaw = data.constData();
@@ -107,19 +111,19 @@ class TestQgsTessellator : public QObject
 {
     Q_OBJECT
   public:
-    TestQgsTessellator();
+    TestQgsTessellator() = default;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.
     void cleanupTestCase();// will be called after the last testfunction was executed.
 
     void testBasic();
+    void testWalls();
+    void asMultiPolygon();
+    void testBadCoordinates();
 
   private:
 };
-
-TestQgsTessellator::TestQgsTessellator() = default;
-
 
 //runs before all tests
 void TestQgsTessellator::initTestCase()
@@ -167,6 +171,63 @@ void TestQgsTessellator::testBasic()
   QgsTessellator tNZ( 0, 0, true );
   tNZ.addPolygon( polygonZ, 0 );
   QVERIFY( checkTriangleOutput( tNZ.data(), true, tcNormals ) );
+}
+
+void TestQgsTessellator::testWalls()
+{
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 2, 3 2 3, 1 2 4, 1 1 1))" );
+
+  QList<TriangleCoords> tc;
+
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 13 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 12 ) );
+
+  tc << TriangleCoords( QVector3D( 1, 1, 11 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 1, 1 ) );
+  tc << TriangleCoords( QVector3D( 1, 1, 1 ), QVector3D( 1, 2, 14 ), QVector3D( 1, 2, 4 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 14 ), QVector3D( 3, 2, 13 ), QVector3D( 1, 2, 4 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 4 ), QVector3D( 3, 2, 13 ), QVector3D( 3, 2, 3 ) );
+  tc << TriangleCoords( QVector3D( 3, 2, 13 ), QVector3D( 2, 1, 12 ), QVector3D( 3, 2, 3 ) );
+  tc << TriangleCoords( QVector3D( 3, 2, 3 ), QVector3D( 2, 1, 12 ), QVector3D( 2, 1, 2 ) );
+  tc << TriangleCoords( QVector3D( 2, 1, 12 ), QVector3D( 1, 1, 11 ), QVector3D( 2, 1, 2 ) );
+  tc << TriangleCoords( QVector3D( 2, 1, 2 ), QVector3D( 1, 1, 11 ), QVector3D( 1, 1, 1 ) );
+
+  QgsTessellator tZ( 0, 0, false );
+  tZ.addPolygon( polygonZ, 10 );
+  QVERIFY( checkTriangleOutput( tZ.data(), false, tc ) );
+}
+
+void TestQgsTessellator::asMultiPolygon()
+{
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 2 1, 3 2, 1 2, 1 1))" );
+
+  QgsPolygon polygonZ;
+  polygonZ.fromWkt( "POLYGONZ((1 1 1, 2 1 2, 3 2 3, 1 2 4, 1 1 1))" );
+
+  QgsTessellator t( 0, 0, false );
+  t.addPolygon( polygon, 0 );
+  QCOMPARE( t.asMultiPolygon()->asWkt(), QStringLiteral( "MultiPolygonZ (((1 2 0, 2 1 0, 3 2 0, 1 2 0)),((1 2 0, 1 1 0, 2 1 0, 1 2 0)))" ) );
+
+  QgsTessellator t2( 0, 0, false );
+  t2.addPolygon( polygonZ, 0 );
+  QCOMPARE( t2.asMultiPolygon()->asWkt(), QStringLiteral( "MultiPolygonZ (((1 2 4, 2 1 2, 3 2 3, 1 2 4)),((1 2 4, 1 1 1, 2 1 2, 1 2 4)))" ) );
+}
+
+void TestQgsTessellator::testBadCoordinates()
+{
+  // triangulation would crash for me with this polygon if there is no simplification
+  // to remove the coordinates that are very close to each other
+  QgsPolygon polygon;
+  polygon.fromWkt( "POLYGON((1 1, 2 1, 2.0000001 1.0000001, 2.0000002 1.0000001, 2.0000001 1.0000002, 2.0000002 1.0000002, 3 2, 1 2, 1 1))" );
+
+  QList<TriangleCoords> tc;
+  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 2, 1, 0 ), QVector3D( 3, 2, 0 ) );
+  tc << TriangleCoords( QVector3D( 1, 2, 0 ), QVector3D( 1, 1, 0 ), QVector3D( 2, 1, 0 ) );
+
+  QgsTessellator t( 0, 0, false );
+  t.addPolygon( polygon, 0 );
+  QVERIFY( checkTriangleOutput( t.data(), false, tc ) );
 }
 
 

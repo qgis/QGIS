@@ -18,9 +18,11 @@
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
+#include "qgscameracontroller.h"
 #include "qgsmapcanvas.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 
 #include <QBoxLayout>
 #include <QDialog>
@@ -72,7 +74,8 @@ void Qgs3DMapCanvasDockWidget::resetView()
 void Qgs3DMapCanvasDockWidget::configure()
 {
   QDialog dlg;
-  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( mCanvas->map(), mMainCanvas, &dlg );
+  Qgs3DMapSettings *map = mCanvas->map();
+  Qgs3DMapConfigWidget *w = new Qgs3DMapConfigWidget( map, mMainCanvas, &dlg );
   QDialogButtonBox *buttons = new QDialogButtonBox( QDialogButtonBox::Ok | QDialogButtonBox::Cancel, &dlg );
   connect( buttons, &QDialogButtonBox::accepted, &dlg, &QDialog::accept );
   connect( buttons, &QDialogButtonBox::rejected, &dlg, &QDialog::reject );
@@ -83,8 +86,23 @@ void Qgs3DMapCanvasDockWidget::configure()
   if ( !dlg.exec() )
     return;
 
+  QgsVector3D oldOrigin = map->origin();
+  QgsCoordinateReferenceSystem oldCrs = map->crs();
+  QgsVector3D oldLookingAt = mCanvas->cameraController()->lookingAtPoint();
+
   // update map
   w->apply();
+
+  QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
+                    oldLookingAt,
+                    oldOrigin, oldCrs,
+                    map->origin(), map->crs() );
+
+  if ( p != oldLookingAt )
+  {
+    // apply() call has moved origin of the world so let's move camera so we look still at the same place
+    mCanvas->cameraController()->setLookingAtPoint( p );
+  }
 }
 
 void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()

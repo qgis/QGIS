@@ -98,6 +98,7 @@ Implicit sharing was added in 2.14
 %End
 
 
+
     QgsExpression();
 %Docstring
  Create an empty expression.

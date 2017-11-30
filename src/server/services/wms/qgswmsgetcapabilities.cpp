@@ -653,7 +653,7 @@ namespace QgsWms
         const QgsComposerMap *composerMap = *cmIt;
 
         QDomElement composerMapElem = doc.createElement( QStringLiteral( "ComposerMap" ) );
-        composerMapElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "map%s" ).arg( composerMap->id() ) );
+        composerMapElem.setAttribute( QStringLiteral( "name" ), QStringLiteral( "map%1" ).arg( composerMap->id() ) );
         composerMapElem.setAttribute( QStringLiteral( "width" ), composerMap->rect().width() );
         composerMapElem.setAttribute( QStringLiteral( "height" ), composerMap->rect().height() );
         composerTemplateElem.appendChild( composerMapElem );
@@ -1154,7 +1154,7 @@ namespace QgsWms
             layerName = currentLayer->id();
           else if ( !currentLayer->shortName().isEmpty() )
             layerName = currentLayer->shortName();
-          QUrl mapUrl( hrefString );
+          QUrlQuery mapUrl( hrefString );
           mapUrl.addQueryItem( QStringLiteral( "SERVICE" ), QStringLiteral( "WMS" ) );
           mapUrl.addQueryItem( QStringLiteral( "VERSION" ), version );
           mapUrl.addQueryItem( QStringLiteral( "REQUEST" ), QStringLiteral( "GetLegendGraphic" ) );

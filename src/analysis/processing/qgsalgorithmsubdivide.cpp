@@ -38,7 +38,7 @@ QString QgsSubdivideAlgorithm::displayName() const
 
 QStringList QgsSubdivideAlgorithm::tags() const
 {
-  return QObject::tr( "subdivide,segmentize,split,tesselate" ).split( ',' );
+  return QObject::tr( "subdivide,segmentize,split,tessellate" ).split( ',' );
 }
 
 QString QgsSubdivideAlgorithm::group() const

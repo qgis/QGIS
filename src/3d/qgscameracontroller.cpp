@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscameracontroller.h"
+#include "qgsvector3d.h"
 
 #include "qgis.h"
 
@@ -282,11 +283,27 @@ void QgsCameraController::frameTriggered( float dt )
 
 void QgsCameraController::resetView( float distance )
 {
-  setCameraData( 0, 0, distance );
+  setViewFromTop( 0, 0, distance );
+}
+
+void QgsCameraController::setViewFromTop( float worldX, float worldY, float distance, float yaw )
+{
+  setCameraData( worldX, worldY, distance, 0, yaw );
   // a basic setup to make frustum depth range long enough that it does not cull everything
   mCamera->setNearPlane( distance / 2 );
   mCamera->setFarPlane( distance * 2 );
 
+  emit cameraChanged();
+}
+
+QgsVector3D QgsCameraController::lookingAtPoint() const
+{
+  return QgsVector3D( mCameraData.x, 0, mCameraData.y );
+}
+
+void QgsCameraController::setLookingAtPoint( const QgsVector3D &point )
+{
+  setCameraData( point.x(), point.z(), mCameraData.dist, mCameraData.pitch, mCameraData.yaw );
   emit cameraChanged();
 }
 

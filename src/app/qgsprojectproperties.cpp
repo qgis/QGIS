@@ -1992,11 +1992,11 @@ void QgsProjectProperties::addScaleToScaleList( QListWidgetItem *newItem )
   QListWidgetItem *duplicateItem = lstScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
   delete duplicateItem;
 
-  int newDenominator = newItem->text().split( QStringLiteral( ":" ) ).value( 1 ).toInt();
+  int newDenominator = newItem->text().split( ':' ).value( 1 ).toInt();
   int i;
   for ( i = 0; i < lstScales->count(); i++ )
   {
-    int denominator = lstScales->item( i )->text().split( QStringLiteral( ":" ) ).value( 1 ).toInt();
+    int denominator = lstScales->item( i )->text().split( ':' ).value( 1 ).toInt();
     if ( newDenominator > denominator )
       break;
   }

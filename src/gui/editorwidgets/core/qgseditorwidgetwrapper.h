@@ -346,10 +346,10 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
     QString mConstraintFailureReason;
 
     //! The current constraint result
-    ConstraintResult mConstraintResult;
+    ConstraintResult mConstraintResult = ConstraintResultPass;
 
     //! The current constraint result
-    bool mConstraintResultVisible;
+    bool mConstraintResultVisible = false;
 
     int mFieldIdx;
     QgsFeature mFeature;

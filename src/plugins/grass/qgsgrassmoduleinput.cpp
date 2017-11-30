@@ -858,7 +858,7 @@ QgsGrassModuleInput::QgsGrassModuleInput( QgsGrassModule *module,
     {
       int mask = 0;
 
-      Q_FOREACH ( const QString &typeName, opt.split( "," ) )
+      Q_FOREACH ( const QString &typeName, opt.split( ',' ) )
       {
         mask |= QgsGrass::vectorType( typeName );
       }

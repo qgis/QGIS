@@ -125,8 +125,8 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     bool exists( const QgsPropertyDefinition &definition ) const;
 
     /**
-     * Add an an auxiliary field for the given property. Setup for widget
-     * editors are updated in the target layer as weel as the attribute
+     * Adds an auxiliary field for the given property. Setup for widget
+     * editors are updated in the target layer as well as the attribute
      * table config to hide auxiliary fields by default.
      *
      * \param definition The definition of the property to add
@@ -141,14 +141,14 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     QgsFields auxiliaryFields() const;
 
     /**
-     * Commit changes and starts editing then.
+     * Commits changes and starts editing then.
      *
      * \returns true if commit step passed, false otherwise
      */
     bool save();
 
     /**
-     * Remove attribute from the layer and commit changes. The layer remains
+     * Removes attribute from the layer and commits changes. The layer remains
      * editable.
      *
      * \param attr The index of the attribute to remove
@@ -158,7 +158,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     virtual bool deleteAttribute( int attr ) override;
 
     /**
-     * Returns true if the underlying field have to be hidden from editing
+     * Returns true if the underlying field has to be hidden from editing
      * tools like attribute table, false otherwise.
      *
      * \param index The index of the field for which visibility is checked
@@ -186,7 +186,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     int propertyFromIndex( int index ) const;
 
     /**
-     * Returns the property definition fir the underlying field index.
+     * Returns the property definition for the underlying field index.
      *
      * \param index The index of the field
      */
@@ -194,7 +194,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 
     /**
      * Creates if necessary a new auxiliary field for a PAL property and
-     * activate this property in settings.
+     * activates this property in settings.
      *
      * \param property The property to create
      * \param vlayer The vector layer
@@ -205,7 +205,7 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
 
     /**
      * Creates if necessary a new auxiliary field for a diagram's property and
-     * activate this this property in settings.
+     * activates this property in settings.
      *
      * \param property The property to create
      * \param vlayer The vector layer
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsAuxiliaryStorage
     virtual ~QgsAuxiliaryStorage();
 
     /**
-     * Returns the status of the auxiliary storage currently definied.
+     * Returns the status of the auxiliary storage currently defined.
      *
      * \returns true if the auxiliary storage is valid, false otherwise
      */
@@ -318,8 +318,8 @@ class CORE_EXPORT QgsAuxiliaryStorage
     QString fileName() const;
 
     /**
-     * Returns the path of current database used. It may be different from the
-     * target filename if the auxiliary storage is opened in copy mode.
+     * Returns the path of the current database used. It may be different from
+     * the target filename if the auxiliary storage is opened in copy mode.
      */
     QString currentFileName() const;
 

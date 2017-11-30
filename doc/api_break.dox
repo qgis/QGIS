@@ -456,6 +456,9 @@ QgsAbstractGeometry        {#qgis_api_break_3_0_QgsAbstractGeometry}
 - asGML2() was renamed to asGml2()
 - asGML3() was renamed to asGml3()
 - asJSON() was renamed to asJson()
+- closestSegment() now returns an integer value for the leftOf test (-1 if point is to the left
+of the geometry, +1 if the point is to the right of the geometry, or 0 for cases where left/right could not
+be determined, e.g. point exactly on a line)
 
 
 QgsActionManager        {#qgis_api_break_3_0_QgsActionManager}
@@ -560,8 +563,8 @@ QgsAuthManager        {#qgis_api_break_3_0_QgsAuthManager}
 - getCertIdentity() was renamed to certIdentity()
 - getCertIdentityBundle() was renamed to certIdentityBundle()
 - getCertIdentityBundleToPem() was renamed to certIdentityBundleToPem()
-- getCertIdentities() was renamed to certIdentities() 
-- getCertIdentityIds() was renamed to certIdentityIds() 
+- getCertIdentities() was renamed to certIdentities()
+- getCertIdentityIds() was renamed to certIdentityIds()
 - getSslCertCustomConfig() was renamed to sslCertCustomConfig()
 - getSslCertCustomConfigByHost() was renamed to sslCertCustomConfigByHost()
 - getSslCertCustomConfigs() was renamed to sslCertCustomConfigs()
@@ -573,8 +576,8 @@ QgsAuthManager        {#qgis_api_break_3_0_QgsAuthManager}
 - getMappedDatabaseCAs() was renamed to mappedDatabaseCAs()
 - getCaCertsCache() was renamed to caCertsCache()
 - getCertTrustPolicy() was renamed to certTrustPolicy()
-- getCertificateTrustPolicy() was renamed to certificateTrustPolicy() 
-- getCertTrustCache() was renamed to certTrustCache() 
+- getCertificateTrustPolicy() was renamed to certificateTrustPolicy()
+- getCertTrustCache() was renamed to certTrustCache()
 - getTrustedCaCerts() was renamed to trustedCaCerts()
 - getUntrustedCaCerts() was renamed to untrustedCaCerts()
 - getTrustedCaCertsCache() was renamed to trustedCaCertsCache()
@@ -1338,6 +1341,7 @@ maintains Z or M dimensions from the input points and is more efficient.
 - fromMultiPolygon() was renamed to fromMultiPolygonXY()
 - exportToWkt() was renamed to asWkt()
 - exportToGeoJSON() was renamed to asJson()
+- closestSegmentWithContext() now returns an extra value, indicating whether the point is to the left of the geometry
 
 
 QgsGeometryAnalyzer        {#qgis_api_break_3_0_QgsGeometryAnalyzer}
@@ -1406,7 +1410,7 @@ QgsGraphEdge        {#qgis_api_break_3_0_QgsGraphEdge}
 ------------
 
 - outVertex() was renamed as toVertex() (yes, the original name was the opposite of the returned value!)
-- inVertex() was renamed as fromVertex() (yes, the original name was the opposite of the returned value!) 
+- inVertex() was renamed as fromVertex() (yes, the original name was the opposite of the returned value!)
 
 
 QgsGraphVertex        {#qgis_api_break_3_0_QgsGraphVertex}
@@ -1669,7 +1673,7 @@ screenUpdateRequested() were removed. These members have had no effect for a num
 - readStyle() and writeStyle() expect QgsReadWriteContext reference as the last argument
 - readXml() and writeXml() expect QgsReadWriteContext reference as the last argument
 - the invalidTransformInput() slot was removed - calling this slot had no effect
-- metadata() was renamed to htmlMetadata()
+- metadata() was renamed to htmlMetadata() in both QgsMapLayer and QgsRasterDataProvider
 - setMaximumScale() and setMinimumScale(), maximumScale() and minimumScale() had the opposite meaning to other min/max scales in the API, and their definitions have now been swapped. setMaximumScale
 now sets the maximum (i.e. largest scale, or most zoomed in) at which the layer will appear, and setMinimumScale now sets the minimum (i.e. smallest scale,
 or most zoomed out) at which the layer will appear. The same is true for the maximumScale and minimumScale getters.
@@ -2012,6 +2016,13 @@ QgsProject        {#qgis_api_break_3_0_QgsProject}
 - writePath() does not accept second argument (relativeBasePath) anymore. Use QgsPathResolver instead.
 
 
+QgsProjectionSelectionWidget	{#qgis_api_break_3_0_QgsProjectionSelectionWidget}
+-----------------------
+
+- dialog() has been removed
+- setMessage() has been added to set message on inner dialog.
+
+
 QgsProjectPropertyValue        {#qgis_api_break_3_0_QgsProjectPropertyValue}
 -----------------------
 
@@ -2060,6 +2071,7 @@ QgsRasterDataProvider        {#qgis_api_break_3_0_QgsRasterDataProvider}
 - useSrcNoDataValue() has been renamed to useSourceNoDataValue()
 - setUseSrcNoDataValue() has been renamed to setUseSourceNoDataValue()
 - srcNoDataValue() has been renamed to sourceNoDataValue()
+- metadata() was renamed to htmlMetadata()
 - draw() has been removed from the interface as it was not used anywhere.
 - The progress and progressUpdate signals were removed. Methods which previously emitted these
 signals now accept a QgsRasterBlockFeedback argument for reporting progress updates.
@@ -2614,6 +2626,10 @@ displayExpression instead. For the map tip use mapTipTemplate() instead.
 - setLayerTransparency, layerTransparency, and layerTransparencyChanged were removed. Use opacity, setOpacity and opacityChanged instead.
 - The c++ signature for uniqueValues() has changed (the PyQGIS method remains unchanged)
 - hasGeometryType() has been removed, replaced by QgsMapLayer::isSpatial()
+- addRing() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
+- addPart() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
+- splitParts() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
+- splitFeatured() now returns QgsGeometry::OperationResult enum, integer representation of returned values may have changed
 
 
 QgsVectorLayerEditBuffer        {#qgis_api_break_3_0_QgsVectorLayerEditBuffer}

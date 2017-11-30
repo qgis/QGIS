@@ -26,6 +26,13 @@ class QgsAggregateCalculator
 %End
   public:
 
+    struct AggregateInfo
+    {
+      QString function; //!< The expression function
+      QString name; //!< A translated, human readable name
+      QSet<QVariant::Type> supportedTypes; //!< This aggregate function can only be used with these datatypes
+    };
+
     enum Aggregate
     {
       Count,
@@ -136,6 +143,14 @@ class QgsAggregateCalculator
  \param ok if specified, will be set to true if conversion was successful
  :return: aggregate type
  :rtype: Aggregate
+%End
+
+    static QList< QgsAggregateCalculator::AggregateInfo > aggregates();
+%Docstring
+ Structured information for available aggregates.
+
+.. versionadded:: 3.2
+ :rtype: list of QgsAggregateCalculator.AggregateInfo
 %End
 
 };

@@ -25,6 +25,7 @@
 #include "qgscoordinatereferencesystem.h"
 #include "qgsmaplayerref.h"
 #include "qgsterraingenerator.h"
+#include "qgsvector3d.h"
 
 class QgsMapLayer;
 class QgsRasterLayer;
@@ -36,6 +37,7 @@ class QgsReadWriteContext;
 class QgsProject;
 
 class QDomElement;
+
 
 /**
  * \ingroup 3d
@@ -61,14 +63,25 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     //! Resolves references to other objects (map layers) after the call to readXml()
     void resolveReferences( const QgsProject &project );
 
-    //! Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
-    void setOrigin( double originX, double originY, double originZ );
-    //! Returns X coordinate in map CRS at which 3D scene has origin (zero)
-    double originX() const { return mOriginX; }
-    //! Returns Y coordinate in map CRS at which 3D scene has origin (zero)
-    double originY() const { return mOriginY; }
-    //! Returns Z coordinate in map CRS at which 3D scene has origin (zero)
-    double originZ() const { return mOriginZ; }
+    /**
+     * Sets coordinates in map CRS at which our 3D world has origin (0,0,0)
+     *
+     * We move the 3D world origin to the center of the extent of our terrain: this is done
+     * to minimize the impact of numerical errors when operating with 32-bit floats.
+     * Unfortunately this is not enough when working with a large area (still results in jitter
+     * with scenes spanning hundreds of kilometers and zooming in a lot).
+     *
+     * Need to look into more advanced techniques like "relative to center" or "relative to eye"
+     * to improve the precision.
+     */
+    void setOrigin( const QgsVector3D &origin ) { mOrigin = origin; }
+    //! Returns coordinates in map CRS at which 3D scene has origin (0,0,0)
+    QgsVector3D origin() const { return mOrigin; }
+
+    //! Converts map coordinates to 3D world coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    QgsVector3D mapToWorldCoordinates( const QgsVector3D &mapCoords ) const;
+    //! Converts 3D world coordinates to map coordinates (applies offset and turns (x,y,z) into (x,-z,y))
+    QgsVector3D worldToMapCoordinates( const QgsVector3D &worldCoords ) const;
 
     //! Sets coordinate reference system used in the 3D scene
     void setCrs( const QgsCoordinateReferenceSystem &crs );
@@ -208,12 +221,8 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     void showLabelsChanged();
 
   private:
-    //! X coordinate in map CRS at which our 3D world has origin (0,0,0)
-    double mOriginX = 0;
-    //! Y coordinate in map CRS at which our 3D world has origin (0,0,0)
-    double mOriginY = 0;
-    //! Z coordinate in map CRS at which our 3D world has origin (0,0,0)
-    double mOriginZ = 0;
+    //! Offset in map CRS coordinates at which our 3D world has origin (0,0,0)
+    QgsVector3D mOrigin;
     QgsCoordinateReferenceSystem mCrs;   //!< Destination coordinate system of the world
     QColor mBackgroundColor = Qt::black;   //!< Background color of the scene
     QColor mSelectionColor; //!< Color to be used for selected map features

@@ -71,6 +71,14 @@ class QgsRelationWidgetWrapper : QgsWidgetWrapper
 .. versionadded:: 2.18
 %End
 
+    QgsRelation relation() const;
+%Docstring
+ The relation for which this wrapper is created.
+
+.. versionadded:: 3.0
+ :rtype: QgsRelation
+%End
+
   protected:
     virtual QWidget *createWidget( QWidget *parent );
 

@@ -41,6 +41,7 @@
 %Include qgserror.sip
 %Include qgsexpressioncontext.sip
 %Include qgsexpressioncontextgenerator.sip
+%Include qgsexpressioncontextscopegenerator.sip
 %Include qgsexpressionfieldbuffer.sip
 %Include qgsfeaturefilterprovider.sip
 %Include qgsfeatureiterator.sip
@@ -179,6 +180,7 @@
 %Include processing/qgsprocessingoutputs.sip
 %Include processing/qgsprocessingparameters.sip
 %Include processing/qgsprocessingutils.sip
+%Include processing/models/qgsprocessingmodelalgorithm.sip
 %Include processing/models/qgsprocessingmodelchildalgorithm.sip
 %Include processing/models/qgsprocessingmodelchildparametersource.sip
 %Include processing/models/qgsprocessingmodelcomponent.sip
@@ -391,7 +393,6 @@
 %Include processing/qgsprocessingfeedback.sip
 %Include processing/qgsprocessingprovider.sip
 %Include processing/qgsprocessingregistry.sip
-%Include processing/models/qgsprocessingmodelalgorithm.sip
 %Include raster/qgsrasterfilewritertask.sip
 %Include raster/qgsrasterlayer.sip
 %Include raster/qgsrasterdataprovider.sip

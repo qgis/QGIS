@@ -21,7 +21,7 @@
 
 void QgsSqlite3Closer::operator()( sqlite3 *database )
 {
-  sqlite3_close( database );
+  sqlite3_close_v2( database );
 }
 
 void QgsSqlite3StatementFinalizer::operator()( sqlite3_stmt *statement )

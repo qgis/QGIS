@@ -1,4 +1,3 @@
-from builtins import range
 ##Vector geometry=group
 
 #inputs

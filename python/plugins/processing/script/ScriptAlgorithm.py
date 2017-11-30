@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -40,7 +39,6 @@ from qgis.core import (QgsExpressionContextUtils,
 
 from qgis.PyQt.QtCore import (QCoreApplication)
 
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.Help2Html import getHtmlFromHelpFile
 from processing.core.parameters import getParameterFromString
 from processing.core.outputs import getOutputFromString

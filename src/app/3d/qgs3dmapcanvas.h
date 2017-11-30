@@ -25,6 +25,8 @@ namespace Qt3DExtras
 
 class Qgs3DMapSettings;
 class Qgs3DMapScene;
+class QgsCameraController;
+class QgsPointXY;
 
 
 class Qgs3DMapCanvas : public QWidget
@@ -39,8 +41,14 @@ class Qgs3DMapCanvas : public QWidget
 
     Qgs3DMapSettings *map() { return mMap; }
 
+    //! Returns access to the view's camera controller. Returns null pointer if the scene has not been initialized yet with setMap()
+    QgsCameraController *cameraController();
+
     //! Resets camera position to the default: looking down at the origin of world coordinates
     void resetView();
+
+    //! Sets camera position to look down at the given point (in map coordinates) in given distance from plane with zero elevation
+    void setViewFromTop( const QgsPointXY &center, float distance, float rotation = 0 );
 
   protected:
     void resizeEvent( QResizeEvent *ev ) override;

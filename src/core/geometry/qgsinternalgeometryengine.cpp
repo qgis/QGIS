@@ -517,7 +517,7 @@ QgsGeometry QgsInternalGeometryEngine::orthogonalize( double tolerance, int maxI
 }
 
 // if extraNodesPerSegment < 0, then use distance based mode
-QgsLineString *doDensify( QgsLineString *ring, int extraNodesPerSegment = -1, double distance = 1 )
+QgsLineString *doDensify( const QgsLineString *ring, int extraNodesPerSegment = -1, double distance = 1 )
 {
   QVector< double > outX;
   QVector< double > outY;
@@ -627,11 +627,11 @@ QgsAbstractGeometry *densifyGeometry( const QgsAbstractGeometry *geom, int extra
     const QgsPolygon *polygon = static_cast< const QgsPolygon * >( geom );
     QgsPolygon *result = new QgsPolygon();
 
-    result->setExteriorRing( doDensify( static_cast< QgsLineString * >( polygon->exteriorRing()->clone() ),
+    result->setExteriorRing( doDensify( static_cast< const QgsLineString * >( polygon->exteriorRing() ),
                                         extraNodesPerSegment, distance ) );
     for ( int i = 0; i < polygon->numInteriorRings(); ++i )
     {
-      result->addInteriorRing( doDensify( static_cast< QgsLineString * >( polygon->interiorRing( i )->clone() ),
+      result->addInteriorRing( doDensify( static_cast< const QgsLineString * >( polygon->interiorRing( i ) ),
                                           extraNodesPerSegment, distance ) );
     }
 

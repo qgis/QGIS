@@ -124,11 +124,19 @@ QWidget *QgsProcessingAlgorithm::createCustomParametersWidget( QWidget * ) const
 }
 
 QgsExpressionContext QgsProcessingAlgorithm::createExpressionContext( const QVariantMap &parameters,
-    QgsProcessingContext &context ) const
+    QgsProcessingContext &context, QgsProcessingFeatureSource *source ) const
 {
   // start with context's expression context
   QgsExpressionContext c = context.expressionContext();
-  if ( c.scopeCount() == 0 )
+
+  // If there's a source capable of generating a context scope, use it
+  if ( source )
+  {
+    QgsExpressionContextScope *scope = source->createExpressionContextScope();
+    if ( scope )
+      c << scope;
+  }
+  else if ( c.scopeCount() == 0 )
   {
     //empty scope, populate with initial scopes
     c << QgsExpressionContextUtils::globalScope()
@@ -169,7 +177,7 @@ bool QgsProcessingAlgorithm::validateInputCrs( const QVariantMap &parameters, Qg
     }
     else if ( def->type() == QStringLiteral( "source" ) )
     {
-      QgsFeatureSource *source = QgsProcessingParameters::parameterAsSource( def, parameters, context );
+      std::unique_ptr< QgsFeatureSource  > source( QgsProcessingParameters::parameterAsSource( def, parameters, context ) );
       if ( source )
       {
         if ( foundCrs && source->sourceCrs().isValid() && crs != source->sourceCrs() )

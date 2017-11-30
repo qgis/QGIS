@@ -31,7 +31,7 @@ QgsWCSConnectionItem::QgsWCSConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
 {
-  mIconName = QStringLiteral( "mIconWcs.svg" );
+  mIconName = QStringLiteral( "mIconConnect.png" );
   mCapabilities |= Collapse;
 }
 

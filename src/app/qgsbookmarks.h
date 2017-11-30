@@ -79,23 +79,15 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
     QAbstractTableModel &mQgisTableModel;
     QAbstractTableModel &mProjectTableModel;
     QTreeView *mTreeView = nullptr;
-    bool mProjectOpen;
-
+    bool projectAvailable() const;
     void moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row );
 
   private slots:
-    void projectRead() { mProjectOpen = true; }
-    void allLayoutChanged() { emit layoutChanged(); }
-    void qgisDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
+    void projectFileNameChanged();
+    void allLayoutChanged()
     {
-      emit dataChanged( topLeft, bottomRight );
-    };
-    void projectDataChanged( const QModelIndex &topLeft, const QModelIndex &bottomRight )
-    {
-      emit dataChanged(
-        index( topLeft.row() + mQgisTableModel.rowCount(), topLeft.column() ),
-        index( bottomRight.row() + mQgisTableModel.rowCount(), bottomRight.column() ) );
-    };
+      emit layoutChanged();
+    }
 };
 
 

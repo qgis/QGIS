@@ -584,12 +584,11 @@ double QgsGeometry::closestVertexWithContext( const QgsPointXY &point, int &atVe
   return QgsGeometryUtils::sqrDistance2D( closestPoint, pt );
 }
 
-double QgsGeometry::closestSegmentWithContext(
-  const QgsPointXY &point,
-  QgsPointXY &minDistPoint,
-  int &afterVertex,
-  double *leftOf,
-  double epsilon ) const
+double QgsGeometry::closestSegmentWithContext( const QgsPointXY &point,
+    QgsPointXY &minDistPoint,
+    int &afterVertex,
+    int *leftOf,
+    double epsilon ) const
 {
   if ( !d->geometry )
   {
@@ -598,19 +597,14 @@ double QgsGeometry::closestSegmentWithContext(
 
   QgsPoint segmentPt;
   QgsVertexId vertexAfter;
-  bool leftOfBool;
 
-  double sqrDist = d->geometry->closestSegment( QgsPoint( point.x(), point.y() ), segmentPt,  vertexAfter, &leftOfBool, epsilon );
+  double sqrDist = d->geometry->closestSegment( QgsPoint( point.x(), point.y() ), segmentPt,  vertexAfter, leftOf, epsilon );
   if ( sqrDist < 0 )
     return -1;
 
   minDistPoint.setX( segmentPt.x() );
   minDistPoint.setY( segmentPt.y() );
   afterVertex = vertexNrFromVertexId( vertexAfter );
-  if ( leftOf )
-  {
-    *leftOf = leftOfBool ? 1.0 : -1.0;
-  }
   return sqrDist;
 }
 
@@ -625,7 +619,7 @@ QgsGeometry::OperationResult QgsGeometry::addRing( QgsCurve *ring )
   std::unique_ptr< QgsCurve > r( ring );
   if ( !d->geometry )
   {
-    return InvalidInput;
+    return InvalidInputGeometryType;
   }
 
   detach();
@@ -674,7 +668,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( QgsAbstractGeometry *part, Qg
         break;
       default:
         reset( nullptr );
-        return QgsGeometry::AddPartNotMultiGeometry;
+        return QgsGeometry::OperationResult::AddPartNotMultiGeometry;
     }
   }
   else
@@ -752,7 +746,7 @@ QgsGeometry::OperationResult QgsGeometry::addPart( GEOSGeometry *newPart )
   return QgsGeometryEditUtils::addPart( d->geometry.get(), std::move( geom ) );
 }
 
-QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
+QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy, double dz, double dm )
 {
   if ( !d->geometry )
   {
@@ -761,7 +755,7 @@ QgsGeometry::OperationResult QgsGeometry::translate( double dx, double dy )
 
   detach();
 
-  d->geometry->transform( QTransform::fromTranslate( dx, dy ) );
+  d->geometry->transform( QTransform::fromTranslate( dx, dy ), dz, 1.0, dm );
   return QgsGeometry::Success;
 }
 
@@ -785,7 +779,7 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointX
 {
   if ( !d->geometry )
   {
-    return InvalidBaseGeometry;
+    return QgsGeometry::OperationResult::InvalidBaseGeometry;
   }
 
   QVector<QgsGeometry > newGeoms;
@@ -808,19 +802,19 @@ QgsGeometry::OperationResult QgsGeometry::splitGeometry( const QVector<QgsPointX
   switch ( result )
   {
     case QgsGeometryEngine::Success:
-      return QgsGeometry::Success;
+      return QgsGeometry::OperationResult::Success;
     case QgsGeometryEngine::MethodNotImplemented:
     case QgsGeometryEngine::EngineError:
     case QgsGeometryEngine::NodedGeometryError:
-      return QgsGeometry::GeometryEngineError;
+      return QgsGeometry::OperationResult::GeometryEngineError;
     case QgsGeometryEngine::InvalidBaseGeometry:
-      return QgsGeometry::InvalidBaseGeometry;
+      return QgsGeometry::OperationResult::InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return QgsGeometry::InvalidInput;
+      return QgsGeometry::OperationResult::InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint:
-      return QgsGeometry::SplitCannotSplitPoint;
+      return QgsGeometry::OperationResult::SplitCannotSplitPoint;
     case QgsGeometryEngine::NothingHappened:
-      return QgsGeometry::NothingHappened;
+      return QgsGeometry::OperationResult::NothingHappened;
       //default: do not implement default to handle properly all cases
   }
 
@@ -857,7 +851,7 @@ QgsGeometry::OperationResult QgsGeometry::reshapeGeometry( const QgsLineString &
     case QgsGeometryEngine::InvalidBaseGeometry:
       return InvalidBaseGeometry;
     case QgsGeometryEngine::InvalidInput:
-      return InvalidInput;
+      return InvalidInputGeometryType;
     case QgsGeometryEngine::SplitCannotSplitPoint: // should not happen
       return GeometryEngineError;
     case QgsGeometryEngine::NothingHappened:
@@ -2308,7 +2302,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QgsCoordinateTransfor
   return QgsGeometry::Success;
 }
 
-QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct )
+QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   if ( !d->geometry )
   {
@@ -2316,7 +2310,7 @@ QgsGeometry::OperationResult QgsGeometry::transform( const QTransform &ct )
   }
 
   detach();
-  d->geometry->transform( ct );
+  d->geometry->transform( ct, zTranslate, zScale, mTranslate, mScale );
   return QgsGeometry::Success;
 }
 

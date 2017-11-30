@@ -107,8 +107,8 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
     bool addAuxiliaryField( const QgsPropertyDefinition &definition );
 %Docstring
- Add an an auxiliary field for the given property. Setup for widget
- editors are updated in the target layer as weel as the attribute
+ Adds an auxiliary field for the given property. Setup for widget
+ editors are updated in the target layer as well as the attribute
  table config to hide auxiliary fields by default.
 
  \param definition The definition of the property to add
@@ -125,7 +125,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
     bool save();
 %Docstring
- Commit changes and starts editing then.
+ Commits changes and starts editing then.
 
  :return: true if commit step passed, false otherwise
  :rtype: bool
@@ -133,7 +133,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
     virtual bool deleteAttribute( int attr );
 %Docstring
- Remove attribute from the layer and commit changes. The layer remains
+ Removes attribute from the layer and commits changes. The layer remains
  editable.
 
  \param attr The index of the attribute to remove
@@ -144,7 +144,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
     bool isHiddenProperty( int index ) const;
 %Docstring
- Returns true if the underlying field have to be hidden from editing
+ Returns true if the underlying field has to be hidden from editing
  tools like attribute table, false otherwise.
 
  \param index The index of the field for which visibility is checked
@@ -175,7 +175,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
 
     QgsPropertyDefinition propertyDefinitionFromIndex( int index ) const;
 %Docstring
- Returns the property definition fir the underlying field index.
+ Returns the property definition for the underlying field index.
 
  \param index The index of the field
  :rtype: QgsPropertyDefinition
@@ -184,7 +184,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
     static int createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *vlayer );
 %Docstring
  Creates if necessary a new auxiliary field for a PAL property and
- activate this property in settings.
+ activates this property in settings.
 
  \param property The property to create
  \param vlayer The vector layer
@@ -196,7 +196,7 @@ class QgsAuxiliaryLayer : QgsVectorLayer
     static int createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *vlayer );
 %Docstring
  Creates if necessary a new auxiliary field for a diagram's property and
- activate this this property in settings.
+ activates this property in settings.
 
  \param property The property to create
  \param vlayer The vector layer
@@ -299,7 +299,7 @@ class QgsAuxiliaryStorage
 
     bool isValid() const;
 %Docstring
- Returns the status of the auxiliary storage currently definied.
+ Returns the status of the auxiliary storage currently defined.
 
  :return: true if the auxiliary storage is valid, false otherwise
  :rtype: bool
@@ -313,8 +313,8 @@ class QgsAuxiliaryStorage
 
     QString currentFileName() const;
 %Docstring
- Returns the path of current database used. It may be different from the
- target filename if the auxiliary storage is opened in copy mode.
+ Returns the path of the current database used. It may be different from
+ the target filename if the auxiliary storage is opened in copy mode.
  :rtype: str
 %End
 

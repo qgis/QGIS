@@ -123,10 +123,14 @@ class QgsGeometryUtils
 
 
 
-    static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 %Docstring
-Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2
- :rtype: float
+ Returns a value < 0 if the point (``x``, ``y``) is left of the line from (``x1``, ``y1``) -> ( ``x2``, ``y2``).
+ A positive return value indicates the point is to the right of the line.
+
+ If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+ on the line, or exactly in line with the segment) and the result is undefined.
+ :rtype: int
 %End
 
     static QgsPoint pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance );

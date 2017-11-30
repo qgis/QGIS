@@ -825,7 +825,14 @@ QString QgsApplication::locale()
   bool overrideLocale = settings.value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
   if ( overrideLocale )
   {
-    return settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
+    QString locale = settings.value( QStringLiteral( "locale/userLocale" ), QString() ).toString();
+    // don't differentiate en_US and en_GB
+    if ( locale.startsWith( QStringLiteral( "en" ), Qt::CaseInsensitive ) )
+    {
+      return locale.left( 2 );
+    }
+
+    return locale;
   }
   else
   {

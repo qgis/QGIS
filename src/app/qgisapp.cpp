@@ -89,6 +89,7 @@
 #include "qgs3dmapsettings.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
+#include "processing/qgs3dalgorithms.h"
 #endif
 
 #include <QNetworkReply>
@@ -1207,6 +1208,24 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   toggleSnapping->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mIconSnapping.svg" ) ) );
   connect( toggleSnapping, &QShortcut::activated, mSnappingUtils, &QgsSnappingUtils::toggleEnabled );
 
+  QShortcut *attributeTableSelected = new QShortcut( QKeySequence( tr( "Shift+F6" ) ), this );
+  attributeTableSelected->setObjectName( QStringLiteral( "attributeTableSelectedFeatures" ) );
+  attributeTableSelected->setWhatsThis( tr( "Open Attribute Table (Selected Features)" ) );
+  attributeTableSelected->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
+  connect( attributeTableSelected, &QShortcut::activated, this, [ = ]
+  {
+    attributeTable( QgsAttributeTableFilterModel::ShowSelected );
+  } );
+
+  QShortcut *attributeTableVisible = new QShortcut( QKeySequence( tr( "Ctrl+F6" ) ), this );
+  attributeTableVisible->setObjectName( QStringLiteral( "attributeTableVisibleFeatures" ) );
+  attributeTableVisible->setWhatsThis( tr( "Open Attribute Table (Visible Features)" ) );
+  attributeTableVisible->setProperty( "Icon", QgsApplication::getThemeIcon( QStringLiteral( "/mActionOpenTable.svg" ) ) );
+  connect( attributeTableVisible, &QShortcut::activated, this, [ = ]
+  {
+    attributeTable( QgsAttributeTableFilterModel::ShowVisible );
+  } );
+
   if ( ! QTouchDevice::devices().isEmpty() )
   {
     //add reacting to long click in touch
@@ -1933,7 +1952,12 @@ void QgisApp::createActions()
   connect( mActionAddAmsLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "arcgismapserver" ) ); } );
   connect( mActionAddDelimitedText, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "delimitedtext" ) ); } );
   connect( mActionAddVirtualLayer, &QAction::triggered, this, [ = ] { dataSourceManager( QStringLiteral( "virtual" ) ); } );
-  connect( mActionOpenTable, &QAction::triggered, this, &QgisApp::attributeTable );
+  connect( mActionOpenTable, &QAction::triggered, this, [ = ]
+  {
+    QgsSettings settings;
+    QgsAttributeTableFilterModel::FilterMode initialMode = static_cast< QgsAttributeTableFilterModel::FilterMode>( settings.value( QStringLiteral( "qgis/attributeTableBehavior" ), QgsAttributeTableFilterModel::ShowAll ).toInt() );
+    attributeTable( initialMode );
+  } );
   connect( mActionOpenFieldCalc, &QAction::triggered, this, &QgisApp::fieldCalculator );
   connect( mActionToggleEditing, &QAction::triggered, this, [ = ] { toggleEditing(); } );
   connect( mActionSaveLayerEdits, &QAction::triggered, this, &QgisApp::saveActiveLayerEdits );
@@ -2633,13 +2657,13 @@ void QgisApp::createToolBars()
   }
 
   //circular string digitize tool button
-  QToolButton *tbAddCircularString = new QToolButton( mDigitizeToolBar );
+  QToolButton *tbAddCircularString = new QToolButton( mRegularShapeDigitizeToolBar );
   tbAddCircularString->setPopupMode( QToolButton::MenuButtonPopup );
   tbAddCircularString->addAction( mActionCircularStringCurvePoint );
   tbAddCircularString->addAction( mActionCircularStringRadius );
   tbAddCircularString->setDefaultAction( mActionCircularStringCurvePoint );
   connect( tbAddCircularString, &QToolButton::triggered, this, &QgisApp::toolButtonActionTriggered );
-  mDigitizeToolBar->insertWidget( mActionNodeTool, tbAddCircularString );
+  mRegularShapeDigitizeToolBar->insertWidget( mActionNodeTool, tbAddCircularString );
 
   //circle digitize tool button
   QToolButton *tbAddCircle = new QToolButton( mRegularShapeDigitizeToolBar );
@@ -4229,7 +4253,7 @@ bool QgisApp::addVectorLayers( const QStringList &layerQStringList, const QStrin
       else if ( !sublayers.isEmpty() ) // there is 1 layer of data available
       {
         //set friendly name for datasources with only one layer
-        QStringList elements = sublayers.at( 0 ).split( ':' );
+        QStringList elements = sublayers.at( 0 ).split( QgsDataProvider::SUBLAYER_SEPARATOR );
         QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
 
         if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
@@ -4442,7 +4466,7 @@ void QgisApp::askUserForGDALSublayers( QgsRasterLayer *layer )
     else
     {
       // remove driver name and file name
-      name.remove( name.split( ':' )[0] );
+      name.remove( name.split( QgsDataProvider::SUBLAYER_SEPARATOR )[0] );
       name.remove( path );
     }
     // remove any : or " left over
@@ -4590,7 +4614,7 @@ void QgisApp::askUserForOGRSublayers( QgsVectorLayer *layer )
     // OGR provider returns items in this format:
     // <layer_index>:<name>:<feature_count>:<geom_type>
 
-    QStringList elements = sublayer.split( QStringLiteral( ":" ) );
+    QStringList elements = sublayer.split( QgsDataProvider::SUBLAYER_SEPARATOR );
     // merge back parts of the name that may have been split
     while ( elements.size() > 5 )
     {
@@ -5031,6 +5055,7 @@ void QgisApp::fileNew( bool promptToSaveFlag, bool forceBlank )
   QgsCoordinateReferenceSystem srs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( defCrs );
   // write the projections _proj string_ to project settings
   prj->setCrs( srs );
+  prj->setEllipsoid( srs.ellipsoidAcronym() );
   prj->setDirty( false );
 
   /* New Empty Project Created
@@ -5700,6 +5725,12 @@ void QgisApp::dxfExport()
     dxfExport.setLayerTitleAsName( d.layerTitleAsName() );
     dxfExport.setDestinationCrs( d.crs() );
     dxfExport.setForce2d( d.force2d() );
+
+    QgsDxfExport::Flags flags = 0;
+    if ( !d.useMText() )
+      flags = flags | QgsDxfExport::FlagNoMText;
+    dxfExport.setFlags( flags );
+
     if ( mapCanvas() )
     {
       //extent
@@ -6680,7 +6711,7 @@ void QgisApp::fieldCalculator()
   }
 }
 
-void QgisApp::attributeTable()
+void QgisApp::attributeTable( QgsAttributeTableFilterModel::FilterMode filter )
 {
   QgsVectorLayer *myLayer = qobject_cast<QgsVectorLayer *>( activeLayer() );
   if ( !myLayer )
@@ -6688,7 +6719,7 @@ void QgisApp::attributeTable()
     return;
   }
 
-  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer );
+  QgsAttributeTableDialog *mDialog = new QgsAttributeTableDialog( myLayer, filter );
   mDialog->show();
   // the dialog will be deleted by itself on close
 }
@@ -8928,27 +8959,20 @@ void QgisApp::layerSubsetString()
   }
 
   // launch the query builder
-  QgsQueryBuilder *qb = new QgsQueryBuilder( vlayer, this );
+  std::unique_ptr<QgsQueryBuilder> qb( new QgsQueryBuilder( vlayer, this ) );
   QString subsetBefore = vlayer->subsetString();
 
   // Set the sql in the query builder to the same in the prop dialog
   // (in case the user has already changed it)
   qb->setSql( vlayer->subsetString() );
-  // Open the query builder
-  if ( qb->exec() )
+  // Open the query builder and refresh symbology if sql has changed
+  // Note: repaintRequested is emitted directly from QgsQueryBuilder
+  //       when the sql is set in the layer.
+  if ( qb->exec() && ( subsetBefore != qb->sql() ) && mLayerTreeView )
   {
-    if ( subsetBefore != qb->sql() )
-    {
-      vlayer->triggerRepaint();
-      if ( mLayerTreeView )
-      {
-        mLayerTreeView->refreshLayerSymbology( vlayer->id() );
-      }
-    }
+    mLayerTreeView->refreshLayerSymbology( vlayer->id() );
+    activateDeactivateLayerRelatedActions( vlayer );
   }
-
-  // delete the query builder object
-  delete qb;
 }
 
 void QgisApp::saveLastMousePosition( const QgsPointXY &p )
@@ -10025,7 +10049,7 @@ QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const Q
       QStringList sublayers = layer->dataProvider()->subLayers();
       if ( !sublayers.isEmpty() )
       {
-        QStringList elements = sublayers.at( 0 ).split( ':' );
+        QStringList elements = sublayers.at( 0 ).split( QgsDataProvider::SUBLAYER_SEPARATOR );
         QString subLayerNameFormatted = elements.size() >= 2 ? QgsMapLayer::formatLayerName( elements.at( 1 ) ) : QString();
 
         if ( elements.size() >= 4 && layer->name().compare( elements.at( 1 ), Qt::CaseInsensitive ) != 0
@@ -10191,6 +10215,9 @@ void QgisApp::init3D()
 void QgisApp::initNativeProcessing()
 {
   QgsApplication::processingRegistry()->addProvider( new QgsNativeAlgorithms( QgsApplication::processingRegistry() ) );
+#ifdef HAVE_3D
+  QgsApplication::processingRegistry()->addProvider( new Qgs3DAlgorithms( QgsApplication::processingRegistry() ) );
+#endif
 }
 
 void QgisApp::initLayouts()
@@ -10240,7 +10267,7 @@ void QgisApp::new3DMapCanvas()
 
     Qgs3DMapSettings *map = new Qgs3DMapSettings;
     map->setCrs( prj->crs() );
-    map->setOrigin( fullExtent.center().x(), fullExtent.center().y(), 0 );
+    map->setOrigin( QgsVector3D( fullExtent.center().x(), fullExtent.center().y(), 0 ) );
     map->setSelectionColor( mMapCanvas->selectionColor() );
     map->setBackgroundColor( mMapCanvas->canvasColor() );
     map->setLayers( mMapCanvas->layers() );
@@ -10251,6 +10278,10 @@ void QgisApp::new3DMapCanvas()
     map->setTerrainGenerator( flatTerrain );
 
     dock->setMapSettings( map );
+
+    QgsRectangle extent = mMapCanvas->extent();
+    float dist = qMax( extent.width(), extent.height() );
+    dock->mapCanvas3D()->setViewFromTop( mMapCanvas->extent().center(), dist, mMapCanvas->rotation() );
   }
 #endif
 }
@@ -10341,7 +10372,7 @@ bool QgisApp::saveDirty()
     // old code: mProjectIsDirtyFlag = true;
 
     // prompt user to save
-    answer = QMessageBox::information( this, tr( "Save?" ),
+    answer = QMessageBox::information( this, tr( "Save Project?" ),
                                        tr( "Do you want to save the current project? %1" )
                                        .arg( whyDirty ),
                                        QMessageBox::Save | QMessageBox::Cancel | QMessageBox::Discard,
@@ -10378,7 +10409,7 @@ bool QgisApp::checkTasksDependOnProject()
 
   if ( !activeTaskDescriptions.isEmpty() )
   {
-    QMessageBox::warning( this, tr( "Active tasks" ),
+    QMessageBox::warning( this, tr( "Active Tasks" ),
                           tr( "The following tasks are currently running which depend on layers in this project:\n\n%1\n\nPlease cancel these tasks and retry." ).arg( activeTaskDescriptions.toList().join( QStringLiteral( "\n" ) ) ) );
     return true;
   }
@@ -11097,14 +11128,13 @@ void QgisApp::layersWereAdded( const QList<QgsMapLayer *> &layers )
       connect( vlayer, &QgsVectorLayer::labelingFontNotFound, this, &QgisApp::labelingFontNotFound );
 
       QgsVectorDataProvider *vProvider = vlayer->dataProvider();
-      if ( vProvider && vProvider->capabilities() & QgsVectorDataProvider::EditingCapabilities )
-      {
-        connect( vlayer, &QgsVectorLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
-        connect( vlayer, &QgsVectorLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
-        connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
-        connect( vlayer, &QgsVectorLayer::readOnlyChanged, this, &QgisApp::layerEditStateChanged );
-      }
-
+      // Do not check for layer editing capabilities because they may change
+      // (for example when subsetString is added/removed) and signals need to
+      // be in place in order to update the GUI
+      connect( vlayer, &QgsVectorLayer::layerModified, this, &QgisApp::updateLayerModifiedActions );
+      connect( vlayer, &QgsVectorLayer::editingStarted, this, &QgisApp::layerEditStateChanged );
+      connect( vlayer, &QgsVectorLayer::editingStopped, this, &QgisApp::layerEditStateChanged );
+      connect( vlayer, &QgsVectorLayer::readOnlyChanged, this, &QgisApp::layerEditStateChanged );
       connect( vlayer, &QgsVectorLayer::raiseError, this, &QgisApp::onLayerError );
 
       provider = vProvider;
@@ -11397,7 +11427,6 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
     mActionDeleteRing->setEnabled( false );
     mActionDeletePart->setEnabled( false );
     mActionReshapeFeatures->setEnabled( false );
-    mActionOffsetCurve->setEnabled( false );
     mActionSplitFeatures->setEnabled( false );
     mActionSplitParts->setEnabled( false );
     mActionMergeFeatures->setEnabled( false );
@@ -11620,7 +11649,7 @@ void QgisApp::activateDeactivateLayerRelatedActions( QgsMapLayer *layer )
         mActionSplitParts->setEnabled( isEditable && canChangeGeometry && isMultiPart );
         mActionSimplifyFeature->setEnabled( isEditable && canChangeGeometry );
         mActionDeleteRing->setEnabled( isEditable && canChangeGeometry );
-        mActionOffsetCurve->setEnabled( false );
+        mActionOffsetCurve->setEnabled( isEditable && canAddFeatures && canChangeAttributes );
       }
       else if ( vlayer->geometryType() == QgsWkbTypes::NullGeometry )
       {

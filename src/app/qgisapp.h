@@ -149,7 +149,7 @@ class QgsGeoCmsProviderRegistry;
 #include "qgsrasterminmaxorigin.h"
 #include "qgsmaplayeractionregistry.h"
 #include "qgsoptionswidgetfactory.h"
-
+#include "qgsattributetablefiltermodel.h"
 #include "ui_qgisapp.h"
 #include "qgis_app.h"
 
@@ -682,14 +682,20 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void layerProperties();
 
     //! show the attribute table for the currently selected layer
-    void attributeTable();
+    void attributeTable( QgsAttributeTableFilterModel::FilterMode filter = QgsAttributeTableFilterModel::ShowAll );
 
     void fieldCalculator();
 
     //! mark project dirty
     void markDirty();
 
-    void layersWereAdded( const QList<QgsMapLayer *> & );
+    /**
+     * \brief layersWereAdded is triggered when layers were added
+     * This method loops through the list of \a layers and connect all
+     * application signals that need to listen to layer events.
+     * \param layers list of map layers that have been added
+     */
+    void layersWereAdded( const QList<QgsMapLayer *> &layers );
 
     /* layer will be removed - changed from removingLayer to removingLayers
        in 1.8.

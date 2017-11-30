@@ -52,8 +52,11 @@ class QgsGeometry
       Success,
       NothingHappened,
       InvalidBaseGeometry,
-      InvalidInput,
+      InvalidInputGeometryType,
+      SelectionIsEmpty,
+      SelectionIsGreaterThanOne,
       GeometryEngineError,
+      LayerNotEditable,
       AddPartSelectedGeometryNotFound,
       AddPartNotMultiGeometry,
       AddRingNotClosed,
@@ -490,14 +493,15 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: float
 %End
 
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/ ) const;
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/, int *leftOf /Out/ = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 %Docstring
  Searches for the closest segment of geometry to the given point
  \param point Specifies the point for search
  \param minDistPoint Receives the nearest point on the segment
  \param afterVertex Receives index of the vertex after the closest segment. The vertex
  before the closest segment is always afterVertex - 1
- \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
+ \param leftOf Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
+ that the test was unsuccesful, e.g. for a point exactly on the line)
  \param epsilon epsilon for segment snapping
  :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
@@ -566,9 +570,9 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: QgsGeometry
 %End
 
-    OperationResult translate( double dx, double dy );
+    OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 %Docstring
- Translates this geometry by dx, dy
+ Translates this geometry by dx, dy, dz and dm.
  :return: OperationResult a result code: success or reason of failure
  :rtype: OperationResult
 %End
@@ -580,9 +584,13 @@ Returns true if WKB of the geometry is of WKBMulti* type
  :rtype: OperationResult
 %End
 
-    OperationResult transform( const QTransform &ct );
+    OperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 %Docstring
- Transforms this geometry as described by QTransform ct
+ Transforms the x and y components of the geometry using a QTransform object ``t``.
+
+ Optionally, the geometry's z values can be scaled via ``zScale`` and translated via ``zTranslate``.
+ Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate``.
+
  :return: OperationResult a result code: success or reason of failure
  :rtype: OperationResult
 %End

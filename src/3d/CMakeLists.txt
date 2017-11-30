@@ -11,6 +11,7 @@ SET(QGIS_3D_SRCS
   qgstessellatedpolygongeometry.cpp
   qgstessellator.cpp
   qgstilingscheme.cpp
+  qgsvector3d.cpp
   qgsvectorlayer3drenderer.cpp
 
   chunks/qgschunkboundsentity_p.cpp
@@ -18,6 +19,9 @@ SET(QGIS_3D_SRCS
   chunks/qgschunklist_p.cpp
   chunks/qgschunknode_p.cpp
   chunks/qgschunkqueuejob_p.cpp
+
+  processing/qgs3dalgorithms.cpp
+  processing/qgsalgorithmtessellate.cpp
 
   symbols/qgsabstract3dsymbol.cpp
   symbols/qgsline3dsymbol.cpp
@@ -56,6 +60,8 @@ SET(QGIS_3D_MOC_HDRS
   chunks/qgschunkloader_p.h
   chunks/qgschunkqueuejob_p.h
 
+  processing/qgs3dalgorithms.h
+
   terrain/qgsdemterraintileloader_p.h
   terrain/qgsterrainentity_p.h
   terrain/qgsterraintexturegenerator_p.h
@@ -79,6 +85,7 @@ SET(QGIS_3D_HDRS
   qgstessellatedpolygongeometry.h
   qgstessellator.h
   qgstilingscheme.h
+  qgsvector3d.h
   qgsvectorlayer3drenderer.h
 
   chunks/qgschunkboundsentity_p.h

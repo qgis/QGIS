@@ -22,6 +22,7 @@
 #include <Qt3DInput>
 #include <Qt3DRender>
 
+class QgsVector3D;
 
 /**
  * \ingroup 3d
@@ -57,6 +58,14 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     //! Move camera back to the initial position (looking down towards origin of world's coordinates)
     void resetView( float distance );
 
+    //! Sets camera to look down towards given point in world coordinate, in given distance from plane with zero elevation
+    void setViewFromTop( float worldX, float worldY, float distance, float yaw = 0 );
+
+    //! Returns the point in the world coordinates towards which the camera is looking
+    QgsVector3D lookingAtPoint() const;
+    //! Sets the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
+    void setLookingAtPoint( const QgsVector3D &point );
+
   private:
     void setCameraData( float x, float y, float dist, float pitch = 0, float yaw = 0 );
 
@@ -82,8 +91,8 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     {
       float x = 0, y = 0;  // ground point towards which the camera is looking
       float dist = 40;  // distance of camera from the point it is looking at
-      float pitch = 0; // aircraft nose up/down (0 = looking straight down to the plane)
-      float yaw = 0;   // aircraft nose left/right
+      float pitch = 0; // aircraft nose up/down (0 = looking straight down to the plane). angle in degrees
+      float yaw = 0;   // aircraft nose left/right. angle in degrees
 
       bool operator==( const CameraData &other ) const
       {

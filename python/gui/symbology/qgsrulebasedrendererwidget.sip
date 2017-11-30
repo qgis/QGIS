@@ -26,7 +26,11 @@ Tree model for the rules:
 #include "qgsrulebasedrendererwidget.h"
 %End
   public:
-    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *r );
+
+    QgsRuleBasedRendererModel( QgsRuleBasedRenderer *renderer, QObject *parent );
+%Docstring
+ Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
+%End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;

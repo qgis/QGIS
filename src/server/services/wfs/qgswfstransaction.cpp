@@ -933,7 +933,7 @@ namespace QgsWfs
       }
 
       // get bbox corners
-      QStringList corners = bbox.split( "," );
+      QStringList corners = bbox.split( ',' );
       if ( corners.size() != 4 )
       {
         throw QgsRequestNotWellFormedException( QStringLiteral( "BBOX has to be composed of 4 elements: '%1'" ).arg( bbox ) );

@@ -112,7 +112,7 @@ class QgsCompoundCurve: QgsCurve
 
      virtual void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false );
-    virtual void transform( const QTransform &t );
+    virtual void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
     virtual void addToPainterPath( QPainterPath &path ) const;
 
@@ -124,7 +124,7 @@ class QgsCompoundCurve: QgsCurve
 
     virtual bool deleteVertex( QgsVertexId position );
 
-    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, bool *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
+    virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/, QgsVertexId &vertexAfter /Out/, int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const;
 
     virtual bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const;
 

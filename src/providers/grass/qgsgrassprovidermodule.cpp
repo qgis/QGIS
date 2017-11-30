@@ -559,8 +559,8 @@ QVector<QgsDataItem *> QgsGrassMapsetItem::createChildren()
       // somewhere not properly escaped (there was bug in QgsMimeDataUtils for example)
       QString uri = mDirPath + "/" + name + "/" + layerName;
       QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
-      QString typeName = layerName.split( QStringLiteral( "_" ) ).value( 1 );
-      QString baseLayerName = layerName.split( QStringLiteral( "_" ) ).value( 0 );
+      QString typeName = layerName.split( '_' ).value( 1 );
+      QString baseLayerName = layerName.split( '_' ).value( 0 );
 
       if ( typeName == QLatin1String( "point" ) || typeName == QLatin1String( "node" ) )
         layerType = QgsLayerItem::Point;

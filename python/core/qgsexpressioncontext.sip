@@ -562,6 +562,7 @@ Constructor for QgsExpressionContext
 %End
 
 
+
     void setFeature( const QgsFeature &feature );
 %Docstring
  Convenience function for setting a feature for the context. The feature

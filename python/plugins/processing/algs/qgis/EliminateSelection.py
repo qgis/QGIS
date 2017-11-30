@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import range
 
 __author__ = 'Bernhard Ströbl'
 __date__ = 'January 2017'

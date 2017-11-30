@@ -121,8 +121,11 @@ class CORE_EXPORT QgsGeometry
       Success = 0, //!< Operation succeeded
       NothingHappened = 1000, //!< Nothing happened, without any error
       InvalidBaseGeometry, //!< The base geometry on which the operation is done is invalid or empty
-      InvalidInput, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
+      InvalidInputGeometryType, //!< The input geometry (ring, part, split line, etc.) has not the correct geometry type
+      SelectionIsEmpty, //!< No features were selected
+      SelectionIsGreaterThanOne, //!< More than one features were selected
       GeometryEngineError, //!< Geometry engine misses a method implemented or an error occurred in the geometry engine
+      LayerNotEditable, //!< Cannot edit layer
       /* Add part issues */
       AddPartSelectedGeometryNotFound, //!< The selected geometry cannot be found
       AddPartNotMultiGeometry, //!< The source geometry is not multi
@@ -552,15 +555,12 @@ class CORE_EXPORT QgsGeometry
      * \param minDistPoint Receives the nearest point on the segment
      * \param afterVertex Receives index of the vertex after the closest segment. The vertex
      * before the closest segment is always afterVertex - 1
-     * \param leftOf Out: Returns if the point lies on the left of right side of the segment ( < 0 means left, > 0 means right )
+     * \param leftOf Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
+     * that the test was unsuccesful, e.g. for a point exactly on the line)
      * \param epsilon epsilon for segment snapping
      * \returns The squared Cartesian distance is also returned in sqrDist, negative number on error
      */
-#ifndef SIP_RUN
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint, int &afterVertex, double *leftOf = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
-#else
-    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &afterVertex SIP_OUT ) const;
-#endif
+    double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint SIP_OUT, int &afterVertex SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 
     /**
      * Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
@@ -624,10 +624,10 @@ class CORE_EXPORT QgsGeometry
     QgsGeometry removeInteriorRings( double minimumAllowedArea = -1 ) const;
 
     /**
-     * Translates this geometry by dx, dy
+     * Translates this geometry by dx, dy, dz and dm.
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult translate( double dx, double dy );
+    OperationResult translate( double dx, double dy, double dz = 0.0, double dm = 0.0 );
 
     /**
      * Transforms this geometry as described by CoordinateTransform ct
@@ -636,10 +636,14 @@ class CORE_EXPORT QgsGeometry
     OperationResult transform( const QgsCoordinateTransform &ct );
 
     /**
-     * Transforms this geometry as described by QTransform ct
+     * Transforms the x and y components of the geometry using a QTransform object \a t.
+     *
+     * Optionally, the geometry's z values can be scaled via \a zScale and translated via \a zTranslate.
+     * Similarly, m-values can be scaled via \a mScale and translated via \a mTranslate.
+     *
      * \returns OperationResult a result code: success or reason of failure
      */
-    OperationResult transform( const QTransform &ct );
+    OperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
 
     /**
      * Rotate this geometry around the Z axis

@@ -83,6 +83,8 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mGeometryTypeBox->addItem( tr( "Multi curve" ), wkbMultiCurve );
   mGeometryTypeBox->addItem( tr( "Multi surface" ), wkbMultiSurface );
 
+  mGeometryWithZCheckBox->setEnabled( false );
+  mGeometryWithMCheckBox->setEnabled( false );
   mGeometryColumnEdit->setEnabled( false );
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
@@ -141,6 +143,8 @@ void QgsNewGeoPackageLayerDialog::mGeometryTypeBox_currentIndexChanged( int )
   OGRwkbGeometryType geomType = static_cast<OGRwkbGeometryType>
                                 ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
   bool isSpatial = geomType != wkbNone;
+  mGeometryWithZCheckBox->setEnabled( isSpatial );
+  mGeometryWithMCheckBox->setEnabled( isSpatial );
   mGeometryColumnEdit->setEnabled( isSpatial );
   mCheckBoxCreateSpatialIndex->setEnabled( isSpatial );
   mCrsSelector->setEnabled( isSpatial );

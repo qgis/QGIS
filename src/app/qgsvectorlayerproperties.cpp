@@ -421,9 +421,9 @@ void QgsVectorLayerProperties::insertFieldOrExpression()
 {
   // Convert the selected field to an expression and
   // insert it into the action at the cursor position
-  QString expression = QStringLiteral( "[% \"" );
+  QString expression = QStringLiteral( "[% " );
   expression += mMapTipExpressionFieldWidget->asExpression();
-  expression += QLatin1String( "\" %]" );
+  expression += QLatin1String( " %]" );
 
   mMapTipWidget->insertText( expression );
 }

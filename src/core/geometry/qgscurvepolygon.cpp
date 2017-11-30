@@ -704,16 +704,16 @@ void QgsCurvePolygon::transform( const QgsCoordinateTransform &ct, QgsCoordinate
   clearCache();
 }
 
-void QgsCurvePolygon::transform( const QTransform &t )
+void QgsCurvePolygon::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   if ( mExteriorRing )
   {
-    mExteriorRing->transform( t );
+    mExteriorRing->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
 
   for ( QgsCurve *curve : qgis::as_const( mInteriorRings ) )
   {
-    curve->transform( t );
+    curve->transform( t, zTranslate, zScale, mTranslate, mScale );
   }
   clearCache();
 }
@@ -798,7 +798,7 @@ bool QgsCurvePolygon::isEmpty() const
   return mExteriorRing->isEmpty();
 }
 
-double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsCurvePolygon::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt, QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   if ( !mExteriorRing )
   {

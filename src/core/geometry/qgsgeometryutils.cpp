@@ -98,8 +98,7 @@ QgsPoint QgsGeometryUtils::closestPoint( const QgsAbstractGeometry &geometry, co
 {
   QgsPoint closestPoint;
   QgsVertexId vertexAfter;
-  bool leftOf;
-  geometry.closestSegment( point, closestPoint, vertexAfter, &leftOf, DEFAULT_SEGMENT_EPSILON );
+  geometry.closestSegment( point, closestPoint, vertexAfter, nullptr, DEFAULT_SEGMENT_EPSILON );
   if ( vertexAfter.isValid() )
   {
     QgsPoint pointAfter = geometry.vertexAt( vertexAfter );
@@ -316,13 +315,15 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersectio
   return intersections;
 }
 
-double QgsGeometryUtils::leftOfLine( double x, double y, double x1, double y1, double x2, double y2 )
+int QgsGeometryUtils::leftOfLine( double x, double y, double x1, double y1, double x2, double y2 )
 {
   double f1 = x - x1;
   double f2 = y2 - y1;
   double f3 = y - y1;
   double f4 = x2 - x1;
-  return f1 * f2 - f3 * f4;
+  double test = ( f1 * f2 - f3 * f4 );
+  // return -1, 0, or 1
+  return qgsDoubleNear( test, 0.0 ) ? 0 : ( test < 0 ? -1 : 1 );
 }
 
 QgsPoint QgsGeometryUtils::pointOnLineWithDistance( const QgsPoint &startPoint, const QgsPoint &directionPoint, double distance )

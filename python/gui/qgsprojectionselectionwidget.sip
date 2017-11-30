@@ -35,14 +35,6 @@ class QgsProjectionSelectionWidget : QWidget
 
     explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0 );
 
-    QgsProjectionSelectionDialog *dialog();
-%Docstring
- Returns a pointer to the projection selector dialog used by the widget.
- Can be used to modify how the projection selector dialog behaves.
- :return: projection selector dialog
- :rtype: QgsProjectionSelectionDialog
-%End
-
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
  Returns the currently selected CRS for the widget
@@ -70,6 +62,14 @@ class QgsProjectionSelectionWidget : QWidget
 %Docstring
  Sets the text to show for the not set option. Note that this option is not shown
  by default and must be set visible by calling setOptionVisible().
+.. versionadded:: 3.0
+%End
+
+    void setMessage( const QString &text );
+%Docstring
+ Sets a ``message`` to show in the dialog. If an empty string is
+ passed, the message will be a generic
+ 'define the CRS for this layer'.
 .. versionadded:: 3.0
 %End
 

@@ -339,9 +339,11 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Creates an expression context relating to the algorithm. This can be called by algorithms
      * to create a new expression context ready for evaluating expressions within the algorithm.
+     * Optionally, a \a source can be specified which will be used to populate the context if it
+     * implements the QgsExpressionContextGenerator interface.
      */
     QgsExpressionContext createExpressionContext( const QVariantMap &parameters,
-        QgsProcessingContext &context ) const;
+        QgsProcessingContext &context, QgsProcessingFeatureSource *source = nullptr ) const;
 
     /**
      * Checks whether the coordinate reference systems for the specified set of \a parameters

@@ -94,11 +94,7 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
             return False
 
         self.expression_context = self.createExpressionContext(parameters, context)
-
-        if not self.expression.prepare(self.expression_context):
-            feedback.reportErro(
-                self.tr('Evaluation error: {0}').format(self.expression.evalErrorString()))
-            return False
+        self.expression.prepare(self.expression_context)
 
         return True
 

@@ -73,7 +73,19 @@ void Qgs3DMapCanvas::setMap( Qgs3DMapSettings *map )
   resetView();
 }
 
+QgsCameraController *Qgs3DMapCanvas::cameraController()
+{
+  return mScene ? mScene->cameraController() : nullptr;
+}
+
 void Qgs3DMapCanvas::resetView()
 {
   mScene->viewZoomFull();
+}
+
+void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, float rotation )
+{
+  float worldX = center.x() - mMap->origin().x();
+  float worldY = center.y() - mMap->origin().y();
+  mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
 }

@@ -121,7 +121,7 @@ QgsPolygon3DSymbolEntityNode::QgsPolygon3DSymbolEntityNode( const Qgs3DMapSettin
 
 Qt3DRender::QGeometryRenderer *QgsPolygon3DSymbolEntityNode::renderer( const Qgs3DMapSettings &map, const QgsPolygon3DSymbol &symbol, const QgsVectorLayer *layer, const QgsFeatureRequest &request )
 {
-  QgsPointXY origin( map.originX(), map.originY() );
+  QgsPointXY origin( map.origin().x(), map.origin().y() );
   QList<QgsPolygon *> polygons;
   QList<float> extrusionHeightPerPolygon;  // will stay empty if not needed per polygon
 

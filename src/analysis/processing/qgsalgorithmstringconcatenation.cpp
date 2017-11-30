@@ -41,7 +41,7 @@ QStringList QgsStringConcatenationAlgorithm::tags() const
 
 QString QgsStringConcatenationAlgorithm::group() const
 {
-  return QObject::tr( "Modeler tool" );
+  return QObject::tr( "Modeler tools" );
 }
 
 QString QgsStringConcatenationAlgorithm::shortHelpString() const

@@ -1087,7 +1087,7 @@ tests:
           geometry:
             precision: 7
 
-  - algorithm: qgis:translategeometry
+  - algorithm: native:translategeometry
     name: Lines translated
     params:
       DELTA_X: 0.1
@@ -1098,6 +1098,21 @@ tests:
     results:
       OUTPUT:
         name: expected/lines_translated.gml
+        type: vector
+
+  - algorithm: native:translategeometry
+    name: Translate Z/M
+    params:
+      DELTA_M: 4.0
+      DELTA_X: 0.0
+      DELTA_Y: 0.0
+      DELTA_Z: 3.0
+      INPUT:
+        name: custom/pointszm.shp
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/translate_z_m.shp
         type: vector
 
   - algorithm: qgis:singlesidedbuffer
@@ -1971,11 +1986,13 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/split_polys_with_lines.gml
+        name: expected/split_polys_with_lines.shp
         type: vector
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
 
   - algorithm: native:splitwithlines
     name: Split lines with same lines
@@ -1988,12 +2005,13 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/split_lines_with_lines_same.gml
+        name: expected/split_lines_with_same2.shp
         type: vector
         compare:
           geometry:
             precision: 7
-
+          fields:
+            fid: skip
 
   # Split lines with lines considers two cases
   # case 1: two different layers
@@ -2008,11 +2026,13 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/lines_split_with_lines.gml
+        name: expected/split_lines_with_lines.shp
         type: vector
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
 
   # case 2 split line layer with iself
   - algorithm: native:splitwithlines
@@ -2026,11 +2046,13 @@ tests:
         type: vector
     results:
       OUTPUT:
-        name: expected/lines_split_with_same_lines.gml
+        name: expected/split_lines_with_lines_same.shp
         type: vector
         compare:
           geometry:
             precision: 7
+          fields:
+            fid: skip
 
   - algorithm: native:dropgeometries
     name: Drop geometries
@@ -4512,3 +4534,18 @@ tests:
       OUTPUT:
         name: expected/union.gml
         type: vector
+
+  - algorithm: qgis:difference
+    name: Difference test
+    params:
+      INPUT:
+        name: custom/for_union.gml
+        type: vector
+      OVERLAY:
+        name: custom/polygon_mask.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/difference.gml
+        type: vector
+        

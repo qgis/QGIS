@@ -210,7 +210,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     void transform( const QgsCoordinateTransform &ct, QgsCoordinateTransform::TransformDirection d = QgsCoordinateTransform::ForwardTransform,
                     bool transformZ = false ) override;
-    void transform( const QTransform &t ) override;
+    void transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 ) override;
 
     void addToPainterPath( QPainterPath &path ) const override;
     void drawAsPolygon( QPainter &p ) const override;
@@ -221,7 +221,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
 
     QgsLineString *reversed() const override SIP_FACTORY;
 
-    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, bool *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
+    double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt SIP_OUT, QgsVertexId &vertexAfter SIP_OUT, int *leftOf SIP_OUT = nullptr, double epsilon = 4 * DBL_EPSILON ) const override;
     bool pointAt( int node, QgsPoint &point, QgsVertexId::VertexType &type ) const override;
 
     QgsPoint centroid() const override;

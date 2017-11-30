@@ -40,6 +40,7 @@
 #include "qgsaggregatecalculator.h"
 #include "qgsfeatureiterator.h"
 #include "qgsexpressioncontextgenerator.h"
+#include "qgsexpressioncontextscopegenerator.h"
 
 class QPainter;
 class QImage;
@@ -350,7 +351,7 @@ typedef QSet<int> QgsAttributeIds;
  * TODO QGIS3: Remove virtual from non-inherited methods (like isModified)
  * \see QgsVectorLayerUtils()
  */
-class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsFeatureSink, public QgsFeatureSource
+class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionContextGenerator, public QgsExpressionContextScopeGenerator, public QgsFeatureSink, public QgsFeatureSource
 {
     Q_OBJECT
 
@@ -1049,65 +1050,64 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Adds a ring to polygon/multipolygon features
      * \param ring ring to add
      * \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
-     * \returns
-     *  0 in case of success,
-     *  1 problem with feature type,
-     *  2 ring not closed,
-     *  3 ring not valid,
-     *  4 ring crosses existing rings,
-     *  5 no feature found where ring can be inserted
-     *  6 layer not editable
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - AddRingNotInExistingFeature
+     * - InvalidInputGeometryType
+     * - AddRingNotClosed
+     * - AddRingNotValid
+     * - AddRingCrossesExistingRings
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr );
+    QgsGeometry::OperationResult addRing( const QVector<QgsPointXY> &ring, QgsFeatureId *featureId = nullptr );
 
     /**
      * Adds a ring to polygon/multipolygon features (takes ownership)
      * \param ring ring to add
      * \param featureId if specified, feature ID for feature ring was added to will be stored in this parameter
-     * \returns
-     *  0 in case of success
-     *  1 problem with feature type
-     *  2 ring not closed
-     *  6 layer not editable
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - AddRingNotInExistingFeature
+     * - InvalidInputGeometryType
+     * - AddRingNotClosed
+     * - AddRingNotValid
+     * - AddRingCrossesExistingRings
      * \note available in Python as addCurvedRing
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
+    QgsGeometry::OperationResult addRing( QgsCurve *ring SIP_TRANSFER, QgsFeatureId *featureId = nullptr ) SIP_PYNAME( addCurvedRing );
 
     /**
      * Adds a new part polygon to a multipart feature
-     * \returns
-     *   0 in case of success,
-     *   1 if selected feature is not multipart,
-     *   2 if ring is not a valid geometry,
-     *   3 if new polygon ring not disjoint with existing rings,
-     *   4 if no feature was selected,
-     *   5 if several features are selected,
-     *   6 if selected geometry not found
-     *   7 layer not editable
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - SelectionIsEmpty
+     * - SelectionIsGreaterThanOne
+     * - AddPartSelectedGeometryNotFound
+     * - AddPartNotMultiGeometry
+     * - InvalidBaseGeometry
+     * - InvalidInputGeometryType
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QList<QgsPointXY> &ring );
+    QgsGeometry::OperationResult addPart( const QList<QgsPointXY> &ring );
 
     /**
      * Adds a new part polygon to a multipart feature
-     * \returns
-     *   0 in case of success,
-     *   1 if selected feature is not multipart,
-     *   2 if ring is not a valid geometry,
-     *   3 if new polygon ring not disjoint with existing rings,
-     *   4 if no feature was selected,
-     *   5 if several features are selected,
-     *   6 if selected geometry not found
-     *   7 layer not editable
+     * \returns QgsGeometry::OperationResult
+     * - Success
+     * - LayerNotEditable
+     * - SelectionIsEmpty
+     * - SelectionIsGreaterThanOne
+     * - AddPartSelectedGeometryNotFound
+     * - AddPartNotMultiGeometry
+     * - InvalidBaseGeometry
+     * - InvalidInputGeometryType
      * \note available in Python bindings as addPartV2
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
+    QgsGeometry::OperationResult addPart( const QgsPointSequence &ring ) SIP_PYNAME( addPartV2 );
 
     //! \note available in Python as addCurvedPart
-    int addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
+    QgsGeometry::OperationResult addPart( QgsCurve *ring SIP_TRANSFER ) SIP_PYNAME( addCurvedPart );
 
     /**
      * Translates feature by dx, dy
@@ -1122,23 +1122,31 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Splits parts cut by the given line
      *  \param splitLine line that splits the layer features
      *  \param topologicalEditing true if topological editing is enabled
-     *  \returns
-     *   0 in case of success,
-     *   4 if there is a selection but no feature split
+     *  \returns QgsGeometry::OperationResult
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitParts( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Splits features cut by the given line
      *  \param splitLine line that splits the layer features
      *  \param topologicalEditing true if topological editing is enabled
-     *  \returns
-     *   0 in case of success,
-     *   4 if there is a selection but no feature split
+     *  \returns QgsGeometry::OperationResult
+     * - Success
+     * - NothingHappened
+     * - LayerNotEditable
+     * - InvalidInputGeometryType
+     * - InvalidBaseGeometry
+     * - GeometryEngineError
+     * - SplitCannotSplitPoint
      */
-    // TODO QGIS 3.0 returns an enum instead of a magic constant
-    int splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
+    QgsGeometry::OperationResult splitFeatures( const QVector<QgsPointXY> &splitLine, bool topologicalEditing = false );
 
     /**
      * Adds topological points for every vertex of the geometry.
@@ -1740,6 +1748,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setMapTipTemplate( const QString &mapTipTemplate );
 
     QgsExpressionContext createExpressionContext() const override;
+
+    QgsExpressionContextScope *createExpressionContextScope() const override SIP_FACTORY;
 
     /**
      * Get the configuration of the form used to represent this vector layer.

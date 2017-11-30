@@ -41,14 +41,17 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmjoinbyattribute.cpp
   processing/qgsalgorithmjoinwithlines.cpp
   processing/qgsalgorithmlineintersection.cpp
+  processing/qgsalgorithmloadlayer.cpp
   processing/qgsalgorithmmeancoordinates.cpp
   processing/qgsalgorithmmergelines.cpp
   processing/qgsalgorithmminimumenclosingcircle.cpp
   processing/qgsalgorithmmultiparttosinglepart.cpp
   processing/qgsalgorithmorientedminimumboundingbox.cpp
+  processing/qgsalgorithmpackage.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
   processing/qgsalgorithmremovenullgeometry.cpp
+  processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp
   processing/qgsalgorithmsimplify.cpp
   processing/qgsalgorithmsmooth.cpp
@@ -58,6 +61,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmsubdivide.cpp
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
+  processing/qgsalgorithmtranslate.cpp
 
   processing/qgsnativealgorithms.cpp
 

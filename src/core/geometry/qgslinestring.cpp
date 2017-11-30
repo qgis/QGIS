@@ -772,15 +772,25 @@ void QgsLineString::transform( const QgsCoordinateTransform &ct, QgsCoordinateTr
   clearCache();
 }
 
-void QgsLineString::transform( const QTransform &t )
+void QgsLineString::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   int nPoints = numPoints();
+  bool hasZ = is3D();
+  bool hasM = isMeasure();
   for ( int i = 0; i < nPoints; ++i )
   {
     qreal x, y;
     t.map( mX.at( i ), mY.at( i ), &x, &y );
     mX[i] = x;
     mY[i] = y;
+    if ( hasZ )
+    {
+      mZ[i] = mZ.at( i ) * zScale + zTranslate;
+    }
+    if ( hasM )
+    {
+      mM[i] = mM.at( i ) * mScale + mTranslate;
+    }
   }
   clearCache();
 }
@@ -890,11 +900,18 @@ void QgsLineString::addVertex( const QgsPoint &pt )
   clearCache(); //set bounding box invalid
 }
 
-double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   double sqrDist = std::numeric_limits<double>::max();
+  double leftOfDist = std::numeric_limits<double>::max();
+  int prevLeftOf = 0;
+  double prevLeftOfX;
+  double prevLeftOfY;
   double testDist = 0;
   double segmentPtX, segmentPtY;
+
+  if ( leftOf )
+    *leftOf = 0;
 
   int size = mX.size();
   if ( size == 0 || size == 1 )
@@ -914,13 +931,41 @@ double QgsLineString::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  
       sqrDist = testDist;
       segmentPt.setX( segmentPtX );
       segmentPt.setY( segmentPtY );
-      if ( leftOf )
-      {
-        *leftOf = ( QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY ) < 0 );
-      }
       vertexAfter.part = 0;
       vertexAfter.ring = 0;
       vertexAfter.vertex = i;
+    }
+    if ( leftOf && qgsDoubleNear( testDist, sqrDist ) )
+    {
+      int left = QgsGeometryUtils::leftOfLine( pt.x(), pt.y(), prevX, prevY, currentX, currentY );
+      // if left equals 0, the test could not be performed (e.g. point in line with segment or on segment)
+      // so don't set leftOf in this case, and hope that there's another segment that's the same distance
+      // where we can perform the check
+      if ( left != 0 )
+      {
+        if ( qgsDoubleNear( testDist, leftOfDist ) && left != prevLeftOf && prevLeftOf != 0 )
+        {
+          // we have two possible segments each with equal distance to point, but they disagree
+          // on whether or not the point is to the left of them.
+          // so we test the segments themselves and flip the result.
+          // see https://stackoverflow.com/questions/10583212/elegant-left-of-test-for-polyline
+          *leftOf = -QgsGeometryUtils::leftOfLine( currentX, currentY, prevLeftOfX, prevLeftOfY, prevX, prevY );
+        }
+        else
+        {
+          *leftOf = left;
+        }
+        prevLeftOf = *leftOf;
+        leftOfDist = testDist;
+        prevLeftOfX = prevX;
+        prevLeftOfY = prevY;
+      }
+      else if ( testDist < leftOfDist )
+      {
+        *leftOf = left;
+        leftOfDist = testDist;
+        prevLeftOf = 0;
+      }
     }
   }
   return sqrDist;

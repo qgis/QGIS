@@ -41,12 +41,12 @@ from qgis.core import (QgsMessageLog,
                        QgsProcessingException,
                        QgsProcessingParameterDefinition,
                        QgsProcessingOutputVectorLayer,
-                       QgsProcessingOutputRasterLayer)
+                       QgsProcessingOutputRasterLayer,
+                       QgsProcessingOutputMapLayer)
 
 import processing
 from processing.script.ScriptUtils import ScriptUtils
 from processing.core.ProcessingConfig import ProcessingConfig
-from processing.core.GeoAlgorithm import GeoAlgorithm
 from processing.gui.MessageBarProgress import MessageBarProgress
 from processing.gui.RenderingStyles import RenderingStyles
 from processing.gui.Postprocessing import handleAlgorithmResults
@@ -176,7 +176,7 @@ class Processing(object):
             else:
                 # auto convert layer references in results to map layers
                 for out in alg.outputDefinitions():
-                    if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer)):
+                    if isinstance(out, (QgsProcessingOutputVectorLayer, QgsProcessingOutputRasterLayer, QgsProcessingOutputMapLayer)):
                         result = results[out.name()]
                         if not isinstance(result, QgsMapLayer):
                             layer = context.takeResultLayer(result) # transfer layer ownership out of context

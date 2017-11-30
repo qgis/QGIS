@@ -17,17 +17,21 @@
 
 #include "qgscurve.h"
 #include "qgsgeometry.h"
+#include "qgsmessagelog.h"
+#include "qgsmultipolygon.h"
 #include "qgspoint.h"
 #include "qgspolygon.h"
+#include "qgstriangle.h"
 #include "qgis_sip.h"
 
 #include "poly2tri/poly2tri.h"
 
 #include <QtDebug>
+#include <QMatrix4x4>
 #include <QVector3D>
 #include <algorithm>
 
-static void make_quad( float x0, float y0, float x1, float y1, float zLow, float zHigh, QVector<float> &data, bool addNormals )
+static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals )
 {
   float dx = x1 - x0;
   float dy = -( y1 - y0 );
@@ -37,24 +41,24 @@ static void make_quad( float x0, float y0, float x1, float y1, float zLow, float
   vn.normalize();
 
   // triangle 1
-  data << x0 << zHigh << -y0;
+  data << x0 << z0 + height << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
-  data << x1 << zHigh << -y1;
+  data << x1 << z1 + height << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
-  data << x0 << zLow  << -y0;
+  data << x0 << z0 << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
 
   // triangle 2
-  data << x0 << zLow  << -y0;
+  data << x0 << z0 << -y0;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
-  data << x1 << zHigh << -y1;
+  data << x1 << z1 + height << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
-  data << x1 << zLow  << -y1;
+  data << x1 << z1 << -y1;
   if ( addNormals )
     data << vn.x() << vn.y() << vn.z();
 }
@@ -104,9 +108,11 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
     ring.pointAt( is_counter_clockwise == ccw ? i : ring.numPoints() - i - 1, pt, vt );
     float x0 = ptPrev.x() - originX, y0 = ptPrev.y() - originY;
     float x1 = pt.x() - originX, y1 = pt.y() - originY;
-    float height = pt.z();
+    float z0 = ptPrev.z();
+    float z1 = pt.z();
+
     // make a quad
-    make_quad( x0, y0, x1, y1, height, height + extrusionHeight, data, addNormals );
+    make_quad( x0, y0, z0, x1, y1, z1, extrusionHeight, data, addNormals );
     ptPrev = pt;
   }
 }
@@ -191,7 +197,7 @@ static void _normalVectorToXYVectors( const QVector3D &pNormal, QVector3D &pXVec
 }
 
 
-static void _ringToPoly2tri( const QgsCurve *ring, const QgsPoint &ptFirst, const QVector3D &pXVector, const QVector3D &pYVector, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> &zHash )
+static void _ringToPoly2tri( const QgsCurve *ring, const QgsPoint &ptFirst, const QMatrix4x4 &toNewBase, std::vector<p2t::Point *> &polyline, QHash<p2t::Point *, float> &zHash )
 {
   QgsVertexId::VertexType vt;
   QgsPoint pt;
@@ -204,10 +210,11 @@ static void _ringToPoly2tri( const QgsCurve *ring, const QgsPoint &ptFirst, cons
   for ( int i = 0; i < pCount - 1; ++i )
   {
     ring->pointAt( i, pt, vt );
-    const float z = std::isnan( pt.z() ) ? 0 : pt.z();
-    QVector3D tempPt( pt.x() - x0, pt.y() - y0, z - z0 );
-    const float x = QVector3D::dotProduct( tempPt, pXVector );
-    const float y = QVector3D::dotProduct( tempPt, pYVector );
+    QVector4D tempPt( pt.x() - x0, pt.y() - y0, std::isnan( pt.z() ) ? 0 : pt.z() - z0, 0 );
+    QVector4D newBasePt = toNewBase * tempPt;
+    const float x = newBasePt.x();
+    const float y = newBasePt.y();
+    const float z = newBasePt.z();
 
     const bool found = std::find_if( polyline.begin(), polyline.end(), [x, y]( p2t::Point *&p ) { return *p == p2t::Point( x, y ); } ) != polyline.end();
 
@@ -259,12 +266,55 @@ static bool _check_intersecting_rings( const QgsPolygon &polygon )
 }
 
 
+double _minimum_distance_between_coordinates( const QgsPolygon &polygon )
+{
+  double min_d = 1e20;
+  auto it = polygon.vertices_begin();
+
+  if ( it == polygon.vertices_end() )
+    return min_d;
+
+  QgsPoint p0 = *it;
+  ++it;
+  for ( ; it != polygon.vertices_end(); ++it )
+  {
+    QgsPoint p1 = *it;
+    double d = p0.distance( p1 );
+    if ( d < min_d )
+      min_d = d;
+    p0 = p1;
+  }
+  return min_d;
+}
+
+
 void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeight )
 {
+  if ( _minimum_distance_between_coordinates( polygon ) < 0.001 )
+  {
+    // when the distances between coordinates of input points are very small,
+    // the triangulation likes to crash on numerical errors - when the distances are ~ 1e-5
+    // Assuming that the coordinates should be in a projected CRS, we should be able
+    // to simplify geometries that may cause problems and avoid possible crashes
+    QgsGeometry polygonSimplified = QgsGeometry( polygon.clone() ).simplify( 0.001 );
+    const QgsPolygon *polygonSimplifiedData = qgsgeometry_cast<const QgsPolygon *>( polygonSimplified.constGet() );
+    if ( _minimum_distance_between_coordinates( *polygonSimplifiedData ) < 0.001 )
+    {
+      // Failed to fix that. It could be a really tiny geometry... or maybe they gave us
+      // geometry in unprojected lat/lon coordinates
+      QgsMessageLog::logMessage( "geometry's coordinates are too close to each other and simplification failed - skipping", "3D" );
+    }
+    else
+    {
+      addPolygon( *polygonSimplifiedData, extrusionHeight );
+    }
+    return;
+  }
+
   if ( !_check_intersecting_rings( polygon ) )
   {
     // skip the polygon - it would cause a crash inside poly2tri library
-    qDebug() << "polygon rings intersect each other - skipping";
+    QgsMessageLog::logMessage( "polygon rings intersect each other - skipping", "3D" );
     return;
   }
 
@@ -299,23 +349,35 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     QVector3D pXVector, pYVector;
     _normalVectorToXYVectors( pNormal, pXVector, pYVector );
 
+    // so now we have three orthogonal unit vectors defining new base
+    // let's build transform matrix. We actually need just a 3x3 matrix,
+    // but Qt does not have good support for it, so using 4x4 matrix instead.
+    QMatrix4x4 toNewBase(
+      pXVector.x(), pXVector.y(), pXVector.z(), 0,
+      pYVector.x(), pYVector.y(), pYVector.z(), 0,
+      pNormal.x(), pNormal.y(), pNormal.z(), 0,
+      0, 0, 0, 0 );
+
+    // our 3x3 matrix is orthogonal, so for inverse we only need to transpose it
+    QMatrix4x4 toOldBase = toNewBase.transposed();
+
     const QgsPoint ptFirst( exterior->startPoint() );
-    _ringToPoly2tri( exterior, ptFirst, pXVector, pYVector, polyline, z );
+    _ringToPoly2tri( exterior, ptFirst, toNewBase, polyline, z );
     polylinesToDelete << polyline;
 
     // TODO: robustness (no nearly duplicate points, invalid geometries ...)
 
-    double x0 = ptFirst.x(), y0 = ptFirst.y();
+    double x0 = ptFirst.x(), y0 = ptFirst.y(), z0 = ( std::isnan( ptFirst.z() ) ? 0 : ptFirst.z() );
     if ( polyline.size() == 3 && polygon.numInteriorRings() == 0 )
     {
       for ( std::vector<p2t::Point *>::iterator it = polyline.begin(); it != polyline.end(); it++ )
       {
         p2t::Point *p = *it;
-        const double zPt = z[p];
-        QVector3D nPoint = pXVector * p->x + pYVector * p->y;
+        QVector4D ptInNewBase( p->x, p->y, z[p], 0 );
+        QVector4D nPoint = toOldBase * ptInNewBase;
         const double fx = nPoint.x() - mOriginX + x0;
         const double fy = nPoint.y() - mOriginY + y0;
-        const double fz = extrusionHeight + ( std::isnan( zPt ) ? 0 : zPt );
+        const double fz = nPoint.z() + extrusionHeight + z0;
         mData << fx << fz << -fy;
         if ( mAddNormals )
           mData << pNormal.x() << pNormal.z() << - pNormal.y();
@@ -331,7 +393,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
         std::vector<p2t::Point *> holePolyline;
         const QgsCurve *hole = polygon.interiorRing( i );
 
-        _ringToPoly2tri( hole, ptFirst, pXVector, pYVector, holePolyline, z );
+        _ringToPoly2tri( hole, ptFirst, toNewBase, holePolyline, z );
 
         cdt->AddHole( holePolyline );
         polylinesToDelete << holePolyline;
@@ -349,11 +411,11 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
           for ( int j = 0; j < 3; ++j )
           {
             p2t::Point *p = t->GetPoint( j );
-            const double zPt = z[p];
-            QVector3D nPoint = pXVector * p->x + pYVector * p->y;
+            QVector4D ptInNewBase( p->x, p->y, z[p], 0 );
+            QVector4D nPoint = toOldBase * ptInNewBase;
             const double fx = nPoint.x() - mOriginX + x0;
             const double fy = nPoint.y() - mOriginY + y0;
-            const double fz = extrusionHeight + ( std::isnan( zPt ) ? 0 : zPt );
+            const double fz = nPoint.z() + extrusionHeight + z0;
             mData << fx << fz << -fy;
             if ( mAddNormals )
               mData << pNormal.x() << pNormal.z() << - pNormal.y();
@@ -362,7 +424,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       }
       catch ( ... )
       {
-        qDebug() << "Triangulation failed. Skipping polygon...";
+        QgsMessageLog::logMessage( "Triangulation failed. Skipping polygon...", "3D" );
       }
 
       delete cdt;
@@ -380,4 +442,30 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
     for ( int i = 0; i < polygon.numInteriorRings(); ++i )
       _makeWalls( *polygon.interiorRing( i ), true, extrusionHeight, mData, mAddNormals, mOriginX, mOriginY );
   }
+}
+
+QgsPoint getPointFromData( QVector< float >::const_iterator &it )
+{
+  // tessellator geometry is x, z, -y
+  double x = *it;
+  ++it;
+  double z = *it;
+  ++it;
+  double y = -( *it );
+  ++it;
+  return QgsPoint( x, y, z );
+}
+
+std::unique_ptr<QgsMultiPolygon> QgsTessellator::asMultiPolygon() const
+{
+  std::unique_ptr< QgsMultiPolygon > mp = qgis::make_unique< QgsMultiPolygon >();
+  const QVector<float> data = mData;
+  for ( auto it = data.constBegin(); it != data.constEnd(); )
+  {
+    QgsPoint p1 = getPointFromData( it );
+    QgsPoint p2 = getPointFromData( it );
+    QgsPoint p3 = getPointFromData( it );
+    mp->addGeometry( new QgsTriangle( p1, p2, p3 ) );
+  }
+  return mp;
 }

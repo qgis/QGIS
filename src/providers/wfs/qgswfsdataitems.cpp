@@ -48,7 +48,7 @@ QgsWfsLayerItem::QgsWfsLayerItem( QgsDataItem *parent, QString name, const QgsDa
   bool useCurrentViewExtent = settings.value( QStringLiteral( "Windows/WFSSourceSelect/FeatureCurrentViewExtent" ), true ).toBool();
   mUri = QgsWFSDataSourceURI::build( uri.uri( false ), featureType, crsString, QString(), useCurrentViewExtent );
   setState( Populated );
-  mIconName = QStringLiteral( "mIconConnect.png" );
+  mIconName = QStringLiteral( "mIconWfs.svg" );
   mBaseUri = uri.param( QStringLiteral( "url" ) );
 }
 
@@ -137,7 +137,7 @@ QgsWfsConnectionItem::QgsWfsConnectionItem( QgsDataItem *parent, QString name, Q
   : QgsDataCollectionItem( parent, name, path )
   , mUri( uri )
 {
-  mIconName = QStringLiteral( "mIconWfs.svg" );
+  mIconName = QStringLiteral( "mIconConnect.png" );
   mCapabilities |= Collapse;
 }
 

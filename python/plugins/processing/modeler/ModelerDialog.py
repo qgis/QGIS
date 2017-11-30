@@ -16,7 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
 
 __author__ = 'Victor Olaya'
 __date__ = 'August 2012'
@@ -287,8 +286,8 @@ class ModelerDialog(BASE, WIDGET):
 
         if self.hasChanged:
             ret = QMessageBox.question(
-                self, self.tr('Save?'),
-                self.tr('There are unsaved changes in this model, do you want to keep those?'),
+                self, self.tr('Save Model?'),
+                self.tr('There are unsaved changes in this model. Do you want to keep those?'),
                 QMessageBox.Save | QMessageBox.Cancel | QMessageBox.Discard, QMessageBox.Cancel)
 
             if ret == QMessageBox.Save:
@@ -655,7 +654,7 @@ class ModelerDialog(BASE, WIDGET):
                 if show:
                     if alg.group() in groups:
                         groupItem = groups[alg.group()]
-                    elif provider.id() in ('qgis', 'native') and alg.group() in qgis_groups:
+                    elif provider.id() in ('qgis', 'native', '3d') and alg.group() in qgis_groups:
                         groupItem = qgis_groups[alg.group()]
                     else:
                         groupItem = QTreeWidgetItem()
@@ -663,7 +662,7 @@ class ModelerDialog(BASE, WIDGET):
                         groupItem.setText(0, name)
                         groupItem.setToolTip(0, name)
                         groupItem.setFlags(Qt.ItemIsEnabled | Qt.ItemIsSelectable)
-                        if provider.id() in ('qgis', 'native'):
+                        if provider.id() in ('qgis', 'native', '3d'):
                             groupItem.setIcon(0, provider.icon())
                             qgis_groups[alg.group()] = groupItem
                         else:

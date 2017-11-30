@@ -163,7 +163,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     int prevIdx = -1;
     for ( const QString &descriptor : subLayersList )
     {
-      QStringList pieces = descriptor.split( ':' );
+      QStringList pieces = descriptor.split( QgsDataProvider::SUBLAYER_SEPARATOR );
       int idx = pieces[0].toInt();
       subLayersMap.insert( idx, pieces );
       if ( pieces.count() >= 4 && idx != prevIdx )
@@ -238,7 +238,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     const QStringList layers( rlayer.dataProvider()->subLayers( ) );
     for ( const QString &uri : layers )
     {
-      QStringList pieces = uri.split( ':' );
+      QStringList pieces = uri.split( QgsDataProvider::SUBLAYER_SEPARATOR );
       QString name = pieces.value( pieces.length() - 1 );
       QgsDebugMsgLevel( QStringLiteral( "Adding GeoPackage Raster item %1 %2 %3" ).arg( name, uri ), 3 );
       children.append( new QgsOgrDbLayerInfo( path, uri, name, QStringLiteral( "" ), QStringLiteral( "Raster" ), QgsLayerItem::LayerType::Raster ) );

@@ -879,7 +879,7 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl, const QList<QgsOpti
   {
     // QTBUG-57802: eo locale is improperly handled
     QString displayName = l.startsWith( QLatin1String( "eo" ) ) ? QLocale::languageToString( QLocale::Esperanto ) : QLocale( l ).nativeLanguageName();
-    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.png" ).arg( l ) ), displayName, l );
+    cboLocale->addItem( QIcon( QString( ":/images/flags/%1.svg" ).arg( l ) ), displayName, l );
   }
   cboLocale->setCurrentIndex( cboLocale->findData( myUserLocale ) );
   bool myLocaleOverrideFlag = mSettings->value( QStringLiteral( "locale/overrideFlag" ), false ).toBool();
@@ -2346,11 +2346,11 @@ void QgsOptions::addScaleToScaleList( QListWidgetItem *newItem )
   QListWidgetItem *duplicateItem = mListGlobalScales->findItems( newItem->text(), Qt::MatchExactly ).value( 0 );
   delete duplicateItem;
 
-  int newDenominator = newItem->text().split( QStringLiteral( ":" ) ).value( 1 ).toInt();
+  int newDenominator = newItem->text().split( ':' ).value( 1 ).toInt();
   int i;
   for ( i = 0; i < mListGlobalScales->count(); i++ )
   {
-    int denominator = mListGlobalScales->item( i )->text().split( QStringLiteral( ":" ) ).value( 1 ).toInt();
+    int denominator = mListGlobalScales->item( i )->text().split( ':' ).value( 1 ).toInt();
     if ( newDenominator > denominator )
       break;
   }

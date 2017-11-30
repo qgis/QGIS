@@ -147,8 +147,14 @@ class CORE_EXPORT QgsGeometryUtils
      */
     static QVector<SelfIntersection> getSelfIntersections( const QgsAbstractGeometry *geom, int part, int ring, double tolerance ) SIP_SKIP;
 
-    //! Returns < 0 if point(x/y) is left of the line x1,y1 -> x2,y2
-    static double leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
+    /**
+     * Returns a value < 0 if the point (\a x, \a y) is left of the line from (\a x1, \a y1) -> ( \a x2, \a y2).
+     * A positive return value indicates the point is to the right of the line.
+     *
+     * If the return value is 0, then the test was unsuccessful (e.g. due to testing a point exactly
+     * on the line, or exactly in line with the segment) and the result is undefined.
+     */
+    static int leftOfLine( double x, double y, double x1, double y1, double x2, double y2 );
 
     /**
      * Returns a point a specified distance toward a second point.
@@ -374,12 +380,12 @@ class CORE_EXPORT QgsGeometryUtils
     };
 
     //! \note not available in Python bindings
-    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) SIP_SKIP
+    template<class T> static double closestSegmentFromComponents( T &container, ComponentType ctype, const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) SIP_SKIP
     {
       double minDist = std::numeric_limits<double>::max();
       double minDistSegmentX = 0.0, minDistSegmentY = 0.0;
       QgsVertexId minDistVertexAfter;
-      bool minDistLeftOf = false;
+      int minDistLeftOf = 0;
       double sqrDist = 0.0;
       int vertexOffset = 0;
       int ringOffset = 0;

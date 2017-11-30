@@ -294,7 +294,7 @@ void TestQgsMapRendererJob::testFourAdjacentTiles()
     QgsMapSettings mapSettings;
 
     //extent
-    QStringList rectCoords = bboxList.at( i ).split( QStringLiteral( "," ) );
+    QStringList rectCoords = bboxList.at( i ).split( ',' );
     if ( rectCoords.size() != 4 )
     {
       QFAIL( "bbox string invalid" );

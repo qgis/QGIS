@@ -205,7 +205,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      * Get metadata in a format suitable for feeding directly
      * into a subset of the GUI raster properties "Metadata" tab.
      */
-    QString metadata() override;
+    QString htmlMetadata() override;
 
     virtual QDateTime dataTimestamp() const override;
 

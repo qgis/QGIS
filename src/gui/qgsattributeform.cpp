@@ -17,6 +17,7 @@
 
 #include "qgsattributeforminterface.h"
 #include "qgsattributeformlegacyinterface.h"
+#include "qgsattributeformrelationeditorwidget.h"
 #include "qgseditorwidgetregistry.h"
 #include "qgsfeatureiterator.h"
 #include "qgsproject.h"
@@ -151,30 +152,34 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
   }
 
   //update all form editor widget modes to match
-  Q_FOREACH ( QgsAttributeFormEditorWidget *w, findChildren<  QgsAttributeFormEditorWidget * >() )
+  for ( QgsAttributeFormWidget *w : qgis::as_const( mFormWidgets ) )
   {
     switch ( mode )
     {
       case QgsAttributeForm::SingleEditMode:
-        w->setMode( QgsAttributeFormEditorWidget::DefaultMode );
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
 
       case QgsAttributeForm::AddFeatureMode:
-        w->setMode( QgsAttributeFormEditorWidget::DefaultMode );
+        w->setMode( QgsAttributeFormWidget::DefaultMode );
         break;
 
       case QgsAttributeForm::MultiEditMode:
-        w->setMode( QgsAttributeFormEditorWidget::MultiEditMode );
+        w->setMode( QgsAttributeFormWidget::MultiEditMode );
         break;
 
       case QgsAttributeForm::SearchMode:
-        w->setMode( QgsAttributeFormEditorWidget::SearchMode );
+        w->setMode( QgsAttributeFormWidget::SearchMode );
+        break;
+
+      case QgsAttributeForm::AggregateSearchMode:
+        w->setMode( QgsAttributeFormWidget::AggregateSearchMode );
         break;
     }
   }
 
-  bool relationWidgetsVisible = ( mMode == QgsAttributeForm::SingleEditMode || mMode == QgsAttributeForm::AddFeatureMode );
-  Q_FOREACH ( QgsRelationWidgetWrapper *w, findChildren<  QgsRelationWidgetWrapper * >() )
+  bool relationWidgetsVisible = ( mMode != QgsAttributeForm::MultiEditMode && mMode != QgsAttributeForm::AggregateSearchMode );
+  for ( QgsAttributeFormRelationEditorWidget *w : findChildren<  QgsAttributeFormRelationEditorWidget * >() )
   {
     w->setVisible( relationWidgetsVisible );
   }
@@ -199,6 +204,11 @@ void QgsAttributeForm::setMode( QgsAttributeForm::Mode mode )
 
     case QgsAttributeForm::SearchMode:
       mSearchButtonBox->setVisible( true );
+      hideButtonBox();
+      break;
+
+    case QgsAttributeForm::AggregateSearchMode:
+      mSearchButtonBox->setVisible( false );
       hideButtonBox();
       break;
   }
@@ -240,6 +250,7 @@ void QgsAttributeForm::setFeature( const QgsFeature &feature )
     }
     case MultiEditMode:
     case SearchMode:
+    case AggregateSearchMode:
     {
       //ignore setFeature
       break;
@@ -572,6 +583,7 @@ bool QgsAttributeForm::save()
     case SingleEditMode:
     case AddFeatureMode:
     case SearchMode:
+    case AggregateSearchMode:
       success = saveEdits();
       break;
 
@@ -621,7 +633,7 @@ void QgsAttributeForm::clearMultiEditMessages()
 QString QgsAttributeForm::createFilterExpression() const
 {
   QStringList filters;
-  Q_FOREACH ( QgsAttributeFormEditorWidget *w, findChildren<  QgsAttributeFormEditorWidget * >() )
+  for ( QgsAttributeFormWidget *w : qgis::as_const( mFormWidgets ) )
   {
     QString filter = w->currentFilterExpression();
     if ( !filter.isEmpty() )
@@ -676,6 +688,7 @@ void QgsAttributeForm::onAttributeChanged( const QVariant &value )
       break;
     }
     case SearchMode:
+    case AggregateSearchMode:
       //nothing to do
       break;
   }
@@ -967,7 +980,10 @@ void QgsAttributeForm::synchronizeEnabledState()
     QgsEditorWidgetWrapper *eww = qobject_cast<QgsEditorWidgetWrapper *>( ww );
     if ( eww )
     {
-      mFormEditorWidgets.value( eww->fieldIdx() )->setConstraintResultVisible( isEditable );
+      QgsAttributeFormEditorWidget *formWidget = mFormEditorWidgets.value( eww->fieldIdx() );
+
+      if ( formWidget )
+        formWidget->setConstraintResultVisible( isEditable );
 
       eww->setConstraintResultVisible( isEditable );
 
@@ -1221,10 +1237,11 @@ void QgsAttributeForm::init()
       QWidget *w = nullptr;
       if ( eww )
       {
-        QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, this );
+        QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, widgetSetup.type(), this );
         w = formWidget;
         mFormEditorWidgets.insert( idx, formWidget );
-        formWidget->createSearchWidgetWrappers( widgetSetup.type(), idx, widgetSetup.config(), mContext );
+        mFormWidgets.append( formWidget );
+        formWidget->createSearchWidgetWrappers( mContext );
 
         l->setBuddy( eww->widget() );
       }
@@ -1264,7 +1281,12 @@ void QgsAttributeForm::init()
       rww->setConfig( setup.config() );
       rww->setContext( mContext );
       gridLayout->addWidget( rww->widget(), row++, 0, 1, 2 );
+
+      QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
+      formWidget->createSearchWidgetWrappers( mContext );
+
       mWidgets.append( rww );
+      mFormWidgets.append( formWidget );
     }
 
     if ( QgsProject::instance()->relationManager()->referencedRelations( mLayer ).isEmpty() )
@@ -1523,12 +1545,13 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
         const QgsEditorWidgetSetup widgetSetup = QgsGui::editorWidgetRegistry()->findBest( mLayer, fieldDef->name() );
 
         QgsEditorWidgetWrapper *eww = QgsGui::editorWidgetRegistry()->create( widgetSetup.type(), mLayer, fldIdx, widgetSetup.config(), nullptr, this, mContext );
-        QgsAttributeFormEditorWidget *w = new QgsAttributeFormEditorWidget( eww, this );
-        mFormEditorWidgets.insert( fldIdx, w );
+        QgsAttributeFormEditorWidget *formWidget = new QgsAttributeFormEditorWidget( eww, widgetSetup.type(), this );
+        mFormEditorWidgets.insert( fldIdx, formWidget );
+        mFormWidgets.append( formWidget );
 
-        w->createSearchWidgetWrappers( widgetSetup.type(), fldIdx, widgetSetup.config(), mContext );
+        formWidget->createSearchWidgetWrappers( mContext );
 
-        newWidgetInfo.widget = w;
+        newWidgetInfo.widget = formWidget;
         addWidgetWrapper( eww );
 
         newWidgetInfo.widget->setObjectName( fields.at( fldIdx ).name() );
@@ -1549,11 +1572,17 @@ QgsAttributeForm::WidgetInfo QgsAttributeForm::createWidgetFromDef( const QgsAtt
       QgsRelationWidgetWrapper *rww = new QgsRelationWidgetWrapper( mLayer, relDef->relation(), nullptr, this );
       rww->setConfig( mLayer->editFormConfig().widgetConfig( relDef->relation().id() ) );
       rww->setContext( context );
-      newWidgetInfo.widget = rww->widget();
       rww->setShowLabel( relDef->showLabel() );
       rww->setShowLinkButton( relDef->showLinkButton() );
       rww->setShowUnlinkButton( relDef->showUnlinkButton() );
+
+      QgsAttributeFormRelationEditorWidget *formWidget = new QgsAttributeFormRelationEditorWidget( rww, this );
+      formWidget->createSearchWidgetWrappers( mContext );
+
       mWidgets.append( rww );
+      mFormWidgets.append( formWidget );
+
+      newWidgetInfo.widget = formWidget;
       newWidgetInfo.labelText = QString();
       newWidgetInfo.labelOnTop = true;
       break;
@@ -1818,6 +1847,7 @@ void QgsAttributeForm::layerSelectionChanged()
     case SingleEditMode:
     case AddFeatureMode:
     case SearchMode:
+    case AggregateSearchMode:
       break;
 
     case MultiEditMode:
@@ -1879,6 +1909,24 @@ void QgsAttributeForm::setMessageBar( QgsMessageBar *messageBar )
     delete mMessageBar;
   mOwnsMessageBar = false;
   mMessageBar = messageBar;
+}
+
+QString QgsAttributeForm::aggregateFilter() const
+{
+  if ( mMode != AggregateSearchMode )
+  {
+    Q_ASSERT( false );
+  }
+
+  QStringList filters;
+  for ( QgsAttributeFormWidget *widget : mFormWidgets )
+  {
+    QString filter = widget->currentFilterExpression();
+    if ( !filter.isNull() )
+      filters << '(' + filter + ')';
+  }
+
+  return filters.join( QStringLiteral( " AND " ) );
 }
 
 int QgsAttributeForm::messageTimeout()

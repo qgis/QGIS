@@ -38,14 +38,17 @@
 #include "qgsalgorithmjoinbyattribute.h"
 #include "qgsalgorithmjoinwithlines.h"
 #include "qgsalgorithmlineintersection.h"
+#include "qgsalgorithmloadlayer.h"
 #include "qgsalgorithmmeancoordinates.h"
 #include "qgsalgorithmmergelines.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmorientedminimumboundingbox.h"
+#include "qgsalgorithmpackage.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
 #include "qgsalgorithmremovenullgeometry.h"
+#include "qgsalgorithmrenamelayer.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
 #include "qgsalgorithmsimplify.h"
 #include "qgsalgorithmsmooth.h"
@@ -55,6 +58,7 @@
 #include "qgsalgorithmsubdivide.h"
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
+#include "qgsalgorithmtranslate.h"
 
 
 ///@cond PRIVATE
@@ -113,14 +117,17 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsJoinByAttributeAlgorithm() );
   addAlgorithm( new QgsJoinWithLinesAlgorithm() );
   addAlgorithm( new QgsLineIntersectionAlgorithm() );
+  addAlgorithm( new QgsLoadLayerAlgorithm() );
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
   addAlgorithm( new QgsMergeLinesAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsOrientedMinimumBoundingBoxAlgorithm() );
+  addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
+  addAlgorithm( new QgsRenameLayerAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );
   addAlgorithm( new QgsSelectByLocationAlgorithm() );
   addAlgorithm( new QgsSimplifyAlgorithm() );
@@ -131,7 +138,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsSubdivideAlgorithm() );
   addAlgorithm( new QgsTransectAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
-
+  addAlgorithm( new QgsTranslateAlgorithm() );
 }
 
 

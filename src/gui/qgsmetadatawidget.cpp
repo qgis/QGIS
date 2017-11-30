@@ -414,6 +414,10 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
   {
     selectionCrs->setCrs( mMetadata.crs() );
   }
+  else
+  {
+    selectionCrs->setOptionVisible( QgsProjectionSelectionWidget::CrsNotSet, true );
+  }
 
   // Links
   const QList<QgsLayerMetadata::Link> &links = mMetadata.links();
@@ -711,7 +715,7 @@ void QgsMetadataWidget::updatePanel() const
     if ( !categories.isEmpty() )
     {
       int row = categories.at( 0 )->row();
-      mCategoriesModel->setStringList( tabKeywords->item( row, 1 )->text().split( QStringLiteral( "," ) ) );
+      mCategoriesModel->setStringList( tabKeywords->item( row, 1 )->text().split( ',' ) );
     }
     else
     {

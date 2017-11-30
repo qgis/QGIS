@@ -383,7 +383,7 @@ namespace QgsWfs
 
     if ( !bbox.isEmpty() )
     {
-      QStringList corners = bbox.split( "," );
+      QStringList corners = bbox.split( ',' );
 
       if ( corners.size() == 4 )
       {

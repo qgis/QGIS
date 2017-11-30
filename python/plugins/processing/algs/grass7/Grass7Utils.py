@@ -16,8 +16,6 @@
 *                                                                         *
 ***************************************************************************
 """
-from builtins import str
-from builtins import object
 
 __author__ = 'Victor Olaya'
 __date__ = 'February 2015'
@@ -43,7 +41,7 @@ from processing.tests.TestData import points
 from processing.algs.gdal.GdalUtils import GdalUtils
 
 
-class Grass7Utils(object):
+class Grass7Utils:
 
     GRASS_REGION_XMIN = 'GRASS7_REGION_XMIN'
     GRASS_REGION_YMIN = 'GRASS7_REGION_YMIN'
@@ -107,7 +105,7 @@ class Grass7Utils(object):
             si.wShowWindow = subprocess.SW_HIDE
         with subprocess.Popen(
                 [Grass7Utils.command, '-v'],
-                shell=False,
+                shell=True if isMac() else False,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
@@ -216,7 +214,7 @@ class Grass7Utils(object):
             elif isMac():
                 # For MacOSX, we scan some well-known directories
                 # Start with QGIS bundle
-                for version in ['', '7', '70', '71', '72', '73']:
+                for version in ['', '7', '70', '71', '72', '74']:
                     testfolder = os.path.join(str(QgsApplication.prefixPath()),
                                               'grass{}'.format(version))
                     if os.path.isdir(testfolder):
@@ -224,7 +222,7 @@ class Grass7Utils(object):
                         break
                     # If nothing found, try standalone GRASS installation
                     if folder is None:
-                        for version in ['0', '1', '2', '3']:
+                        for version in ['0', '1', '2', '4']:
                             testfolder = '/Applications/GRASS-7.{}.app/Contents/MacOS'.format(version)
                             if os.path.isdir(testfolder):
                                 folder = testfolder
@@ -361,7 +359,7 @@ class Grass7Utils(object):
 
         with subprocess.Popen(
                 command,
-                shell=False,
+                shell=True if isMac() else False,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
@@ -390,7 +388,7 @@ class Grass7Utils(object):
             command, grassenv = Grass7Utils.prepareGrassExecution(outputCommands)
             with subprocess.Popen(
                     command,
-                    shell=False,
+                    shell=True if isMac() else False,
                     stdout=subprocess.PIPE,
                     stdin=subprocess.DEVNULL,
                     stderr=subprocess.STDOUT,
@@ -503,9 +501,10 @@ class Grass7Utils(object):
 
         if helpPath is None:
             if isWindows() or isMac():
-                localPath = os.path.join(Grass7Utils.path, 'docs/html')
-                if os.path.exists(localPath):
-                    helpPath = os.path.abspath(localPath)
+                if Grass7Utils.path is not None:
+                    localPath = os.path.join(Grass7Utils.path, 'docs/html')
+                    if os.path.exists(localPath):
+                        helpPath = os.path.abspath(localPath)
             else:
                 searchPaths = ['/usr/share/doc/grass-doc/html',
                                '/opt/grass/docs/html',

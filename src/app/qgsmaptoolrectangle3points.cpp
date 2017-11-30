@@ -76,9 +76,9 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
 
         setDistance2( mPoints.at( 1 ).distance( mapPoint ) );
-        double side = QgsGeometryUtils::leftOfLine( mapPoint.x(), mapPoint.y(),
-                      mPoints.at( 0 ).x(), mPoints.at( 0 ).y(),
-                      mPoints.at( 1 ).x(), mPoints.at( 1 ).y() );
+        int side = QgsGeometryUtils::leftOfLine( mapPoint.x(), mapPoint.y(),
+                   mPoints.at( 0 ).x(), mPoints.at( 0 ).y(),
+                   mPoints.at( 1 ).x(), mPoints.at( 1 ).y() );
 
         setSide( side < 0 ? -1 : 1 );
 

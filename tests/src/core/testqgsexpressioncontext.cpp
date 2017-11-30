@@ -43,6 +43,7 @@ class TestQgsExpressionContext : public QObject
     void evaluate();
     void setFeature();
     void setFields();
+    void takeScopes();
 
     void globalScope();
     void projectScope();
@@ -509,6 +510,36 @@ void TestQgsExpressionContext::setFields()
   QVERIFY( contextWithScope.hasVariable( QgsExpressionContext::EXPR_FIELDS ) );
   QCOMPARE( ( qvariant_cast<QgsFields>( contextWithScope.variable( QgsExpressionContext::EXPR_FIELDS ) ) ).at( 0 ).name(), QString( "testfield" ) );
   QCOMPARE( contextWithScope.fields().at( 0 ).name(), QString( "testfield" ) );
+}
+
+void TestQgsExpressionContext::takeScopes()
+{
+  QgsExpressionContextUtils::setGlobalVariable( QStringLiteral( "test_global" ), "testval" );
+
+  QgsProject *project = QgsProject::instance();
+  QgsExpressionContextUtils::setProjectVariable( project, QStringLiteral( "test_project" ), "testval" );
+
+  QgsExpressionContext context;
+
+  QgsExpressionContextScope *projectScope = QgsExpressionContextUtils::projectScope( project );
+
+  QgsExpressionContextScope *globalScope = QgsExpressionContextUtils::globalScope();
+  context << globalScope
+          << projectScope;
+
+  QCOMPARE( context.variable( "test_global" ).toString(), QString( "testval" ) );
+  QCOMPARE( context.variable( "test_project" ).toString(), QString( "testval" ) );
+
+  auto scopes = context.takeScopes();
+
+  QCOMPARE( scopes.length(), 2 );
+  Q_ASSERT( scopes.at( 0 )->hasVariable( "test_global" ) );
+  Q_ASSERT( scopes.at( 1 )->hasVariable( "test_project" ) );
+
+  qDeleteAll( scopes );
+
+  Q_ASSERT( !context.variable( "test_global" ).isValid() );
+  Q_ASSERT( !context.variable( "test_project" ).isValid() );
 }
 
 void TestQgsExpressionContext::globalScope()

@@ -109,6 +109,9 @@ class SagaAlgorithmProvider(QgsProcessingProvider):
             self.addAlgorithm(a)
 
     def name(self):
+        return 'SAGA'
+
+    def longName(self):
         version = SagaUtils.getInstalledVersion()
         return 'SAGA ({})'.format(version) if version is not None else 'SAGA'
 

@@ -392,12 +392,13 @@ bool QgsPoint::deleteVertex( QgsVertexId position )
   return false;
 }
 
-double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, bool *leftOf, double epsilon ) const
+double QgsPoint::closestSegment( const QgsPoint &pt, QgsPoint &segmentPt,  QgsVertexId &vertexAfter, int *leftOf, double epsilon ) const
 {
   Q_UNUSED( pt );
   Q_UNUSED( segmentPt );
   Q_UNUSED( vertexAfter );
-  Q_UNUSED( leftOf );
+  if ( leftOf )
+    *leftOf = 0;
   Q_UNUSED( epsilon );
   return -1;  // no segments - return error
 }
@@ -494,13 +495,22 @@ bool QgsPoint::addMValue( double mValue )
   return true;
 }
 
-void QgsPoint::transform( const QTransform &t )
+void QgsPoint::transform( const QTransform &t, double zTranslate, double zScale, double mTranslate, double mScale )
 {
   clearCache();
   qreal x, y;
   t.map( mX, mY, &x, &y );
   mX = x;
   mY = y;
+
+  if ( is3D() )
+  {
+    mZ = mZ * zScale + zTranslate;
+  }
+  if ( isMeasure() )
+  {
+    mM = mM * mScale + mTranslate;
+  }
 }
 
 

@@ -21,7 +21,7 @@ Portions of this file contain code from Eric4 APIsManager module.
 
 import os
 
-from qgis.PyQt.Qsci import QsciAPIs
+from qgis.PyQt.Qsci import QsciAPIs, QsciLexerPython
 from qgis.PyQt.QtWidgets import QDialog, QDialogButtonBox
 from qgis.PyQt.QtCore import QCoreApplication
 

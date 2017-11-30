@@ -6,7 +6,7 @@
 ##INPUT_LAYER=source
 ##OUTPUT_LAYER=sink point
 
-from qgis.core import QgsWkbTypes, QgsProcessingUtils
+from qgis.core import QgsWkbTypes, QgsProcessingUtils, QgsProcessingException
 
 fields = INPUT_LAYER.fields()
 
@@ -16,7 +16,7 @@ fields = INPUT_LAYER.fields()
 features = INPUT_LAYER.getFeatures()
 count = INPUT_LAYER.featureCount()
 if count == 0:
-    raise GeoAlgorithmExecutionException('Input layer contains no features.')
+    raise QgsProcessingException('Input layer contains no features.')
 
 total = 100.0 / count
 

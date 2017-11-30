@@ -19,6 +19,7 @@
 #include <QAbstractItemModel>
 
 #include "qgsvectorlayer.h"
+#include "qgsconditionalstyle.h"
 
 class QgsFieldExpressionValuesGatherer;
 
@@ -259,6 +260,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     void scheduledReload();
 
   private:
+    QSet<QString> requestedAttributes() const;
     void setExtraIdentifierValueIndex( int index );
     void setExtraValueDoesNotExist( bool extraValueDoesNotExist );
     void reload();
@@ -268,22 +270,28 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
     {
       Entry() = default;
 
-      Entry( QVariant _identifierValue, const QString &_value )
+      Entry( QVariant _identifierValue, const QString &_value, const QgsFeature &_feature )
         : identifierValue( _identifierValue )
         , value( _value )
+        , feature( _feature )
       {}
 
       QVariant identifierValue;
       QString value;
+      QgsFeature feature;
 
       bool operator()( const Entry &lhs, const Entry &rhs ) const;
     };
 
+    QgsConditionalStyle featureStyle( const QgsFeature &feature ) const;
+
     QgsVectorLayer *mSourceLayer = nullptr;
-    QString mDisplayExpression;
+    QgsExpression mDisplayExpression;
     QString mFilterValue;
     QString mFilterExpression;
 
+    mutable QgsExpressionContext mExpressionContext;
+    mutable QMap< QgsFeatureId, QgsConditionalStyle > mEntryStylesMap;
     QVector<Entry> mEntries;
     QgsFieldExpressionValuesGatherer *mGatherer = nullptr;
     QTimer mReloadTimer;
