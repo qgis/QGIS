@@ -56,7 +56,6 @@ WIDGET, BASE = uic.loadUiType(
 
 
 class ProcessingToolbox(BASE, WIDGET):
-
     ALG_ITEM = 'ALG_ITEM'
     PROVIDER_ITEM = 'PROVIDER_ITEM'
     GROUP_ITEM = 'GROUP_ITEM'
@@ -86,6 +85,7 @@ class ProcessingToolbox(BASE, WIDGET):
             else:
                 iface.showOptionsDialog(iface.mainWindow(), 'processingOptions')
                 self.txtTip.setVisible(self.disabledProviders())
+
         self.txtTip.linkActivated.connect(openSettings)
         if hasattr(self.searchBox, 'setPlaceholderText'):
             self.searchBox.setPlaceholderText(self.tr('Search...'))
@@ -480,7 +480,7 @@ class TreeAlgorithmItem(QTreeWidgetItem):
     def formatAlgorithmTooltip(self, alg):
         return '<p><b>{}</b></p><p>{}</p>'.format(
             alg.displayName(),
-            QCoreApplication.translate('Toolbox','Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
+            QCoreApplication.translate('Toolbox', 'Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
         )
 
 
