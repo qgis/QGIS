@@ -267,7 +267,8 @@ void QgsRelationReferenceWidget::setForeignKey( const QVariant &value )
 
       mReferencedLayer->getFeatures( request ).nextFeature( mFeature );
 
-      for ( int i = 0; i < mFilterFields.size(); i++ )
+      const int count = std::min( mFilterComboBoxes.size(), mFilterFields.size() );
+      for ( int i = 0; i < count; i++ )
       {
         QVariant v = mFeature.attribute( mFilterFields[i] );
         QString f = v.isNull() ? nullValue.toString() : v.toString();
