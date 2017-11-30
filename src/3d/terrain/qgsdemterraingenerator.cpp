@@ -35,9 +35,16 @@ QgsRasterLayer *QgsDemTerrainGenerator::layer() const
   return qobject_cast<QgsRasterLayer *>( mLayer.layer.data() );
 }
 
+void QgsDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs )
+{
+  mCrs = crs;
+  updateGenerator();
+}
+
 QgsTerrainGenerator *QgsDemTerrainGenerator::clone() const
 {
   QgsDemTerrainGenerator *cloned = new QgsDemTerrainGenerator;
+  cloned->mCrs = mCrs;
   cloned->mLayer = mLayer;
   cloned->mResolution = mResolution;
   cloned->mSkirtHeight = mSkirtHeight;
@@ -66,6 +73,8 @@ void QgsDemTerrainGenerator::writeXml( QDomElement &elem ) const
   elem.setAttribute( "layer", mLayer.layerId );
   elem.setAttribute( "resolution", mResolution );
   elem.setAttribute( "skirt-height", mSkirtHeight );
+
+  // crs is not read/written - it should be the same as destination crs of the map
 }
 
 void QgsDemTerrainGenerator::readXml( const QDomElement &elem )
@@ -73,6 +82,8 @@ void QgsDemTerrainGenerator::readXml( const QDomElement &elem )
   mLayer = QgsMapLayerRef( elem.attribute( "layer" ) );
   mResolution = elem.attribute( "resolution" ).toInt();
   mSkirtHeight = elem.attribute( "skirt-height" ).toFloat();
+
+  // crs is not read/written - it should be the same as destination crs of the map
 }
 
 void QgsDemTerrainGenerator::resolveReferences( const QgsProject &project )
@@ -91,7 +102,11 @@ void QgsDemTerrainGenerator::updateGenerator()
   QgsRasterLayer *dem = layer();
   if ( dem )
   {
-    mTerrainTilingScheme = QgsTilingScheme( dem->extent(), dem->crs() );
+    QgsRectangle te = dem->extent();
+    QgsCoordinateTransform terrainToMapTransform( dem->crs(), mCrs );
+    te = terrainToMapTransform.transformBoundingBox( te );
+
+    mTerrainTilingScheme = QgsTilingScheme( te, mCrs );
     delete mHeightMapGenerator;
     mHeightMapGenerator = new QgsDemHeightMapGenerator( dem, mTerrainTilingScheme, mResolution );
   }

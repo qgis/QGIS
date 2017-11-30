@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgscameracontroller.h"
+#include "qgsvector3d.h"
 
 #include "qgis.h"
 
@@ -295,9 +296,14 @@ void QgsCameraController::setViewFromTop( float worldX, float worldY, float dist
   emit cameraChanged();
 }
 
-void QgsCameraController::translateWorld( const QVector3D &vWorld )
+QgsVector3D QgsCameraController::lookingAtPoint() const
 {
-  setCameraData( mCameraData.x - vWorld.x(), mCameraData.y + vWorld.y(), mCameraData.dist, mCameraData.pitch, mCameraData.yaw );
+  return QgsVector3D( mCameraData.x, 0, mCameraData.y );
+}
+
+void QgsCameraController::setLookingAtPoint( const QgsVector3D &point )
+{
+  setCameraData( point.x(), point.z(), mCameraData.dist, mCameraData.pitch, mCameraData.yaw );
   emit cameraChanged();
 }
 

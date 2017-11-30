@@ -85,7 +85,7 @@ void Qgs3DMapCanvas::resetView()
 
 void Qgs3DMapCanvas::setViewFromTop( const QgsPointXY &center, float distance, float rotation )
 {
-  float worldX = center.x() - mMap->originX();
-  float worldY = center.y() - mMap->originY();
+  float worldX = center.x() - mMap->origin().x();
+  float worldY = center.y() - mMap->origin().y();
   mScene->cameraController()->setViewFromTop( worldX, -worldY, distance, rotation );
 }

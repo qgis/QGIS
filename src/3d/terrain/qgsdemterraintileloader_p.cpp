@@ -82,8 +82,8 @@ Qt3DCore::QEntity *QgsDemTerrainTileLoader::createEntity( Qt3DCore::QEntity *par
 
   const Qgs3DMapSettings &map = terrain()->map3D();
   QgsRectangle extent = map.terrainGenerator()->tilingScheme().tileToExtent( mNode->tileX(), mNode->tileY(), mNode->tileZ() ); //node->extent;
-  double x0 = extent.xMinimum() - map.originX();
-  double y0 = extent.yMinimum() - map.originY();
+  double x0 = extent.xMinimum() - map.origin().x();
+  double y0 = extent.yMinimum() - map.origin().y();
   double side = extent.width();
   double half = side / 2;
 
@@ -113,6 +113,7 @@ void QgsDemTerrainTileLoader::onHeightMapReady( int jobId, const QByteArray &hei
 // ---------------------
 
 #include <qgsrasterlayer.h>
+#include <qgsrasterprojector.h>
 #include <QtConcurrent/QtConcurrentRun>
 #include <QFutureWatcher>
 
@@ -132,13 +133,22 @@ QgsDemHeightMapGenerator::~QgsDemHeightMapGenerator()
 
 #include <QElapsedTimer>
 
-static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectangle &extent, int res )
+static QByteArray _readDtmData( QgsRasterDataProvider *provider, const QgsRectangle &extent, int res, const QgsCoordinateReferenceSystem &destCrs )
 {
   QElapsedTimer t;
   t.start();
 
   // TODO: use feedback object? (but GDAL currently does not support cancelation anyway)
-  QgsRasterBlock *block = provider->block( 1, extent, res, res );
+  QgsRasterInterface *input = provider;
+  std::unique_ptr<QgsRasterProjector> projector;
+  if ( provider->crs() != destCrs )
+  {
+    projector.reset( new QgsRasterProjector );
+    projector->setCrs( provider->crs(), destCrs );
+    projector->setInput( provider );
+    input = projector.get();
+  }
+  QgsRasterBlock *block = input->block( 1, extent, res, res );
 
   QByteArray data;
   if ( block )
@@ -168,7 +178,7 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
   jd.extent = extent;
   jd.timer.start();
   // make a clone of the data provider so it is safe to use in worker thread
-  jd.future = QtConcurrent::run( _readDtmData, mClonedProvider, extent, mResolution );
+  jd.future = QtConcurrent::run( _readDtmData, mClonedProvider, extent, mResolution, mTilingScheme.crs() );
 
   QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>;
   fw->setFuture( jd.future );

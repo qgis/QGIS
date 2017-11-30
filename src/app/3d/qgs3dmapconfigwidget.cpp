@@ -90,6 +90,7 @@ void Qgs3DMapConfigWidget::apply()
     if ( tGenNeedsUpdate )
     {
       QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
+      demTerrainGen->setCrs( mMap->crs() );
       demTerrainGen->setLayer( demLayer );
       demTerrainGen->setResolution( spinTerrainResolution->value() );
       demTerrainGen->setSkirtHeight( spinTerrainSkirtHeight->value() );
@@ -108,8 +109,13 @@ void Qgs3DMapConfigWidget::apply()
 
   if ( needsUpdateOrigin )
   {
-    QgsPointXY center = mMap->terrainGenerator()->extent().center();
-    mMap->setOrigin( center.x(), center.y(), 0 );
+    // reproject terrain's extent to map CRS
+    QgsRectangle te = mMap->terrainGenerator()->extent();
+    QgsCoordinateTransform terrainToMapTransform( mMap->terrainGenerator()->crs(), mMap->crs() );
+    te = terrainToMapTransform.transformBoundingBox( te );
+
+    QgsPointXY center = te.center();
+    mMap->setOrigin( QgsVector3D( center.x(), center.y(), 0 ) );
   }
 
   mMap->setTerrainVerticalScale( spinTerrainScale->value() );
@@ -134,6 +140,7 @@ void Qgs3DMapConfigWidget::updateMaxZoomLevel()
   if ( demLayer )
   {
     QgsDemTerrainGenerator *demTerrainGen = new QgsDemTerrainGenerator;
+    demTerrainGen->setCrs( mMap->crs() );
     demTerrainGen->setLayer( demLayer );
     demTerrainGen->setResolution( spinTerrainResolution->value() );
     tGen.reset( demTerrainGen );

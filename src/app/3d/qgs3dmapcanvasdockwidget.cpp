@@ -22,6 +22,7 @@
 #include "qgsmapcanvas.h"
 
 #include "qgs3dmapsettings.h"
+#include "qgs3dutils.h"
 
 #include <QBoxLayout>
 #include <QDialog>
@@ -85,16 +86,22 @@ void Qgs3DMapCanvasDockWidget::configure()
   if ( !dlg.exec() )
     return;
 
-  double oldOriginX = map->originX(), oldOriginY = map->originY(), oldOriginZ = map->originZ();
+  QgsVector3D oldOrigin = map->origin();
+  QgsCoordinateReferenceSystem oldCrs = map->crs();
+  QgsVector3D oldLookingAt = mCanvas->cameraController()->lookingAtPoint();
 
   // update map
   w->apply();
 
-  double dx = map->originX() - oldOriginX, dy = map->originY() - oldOriginY, dz = map->originZ() - oldOriginZ;
-  if ( dx || dy || dz )
+  QgsVector3D p = Qgs3DUtils::transformWorldCoordinates(
+                    oldLookingAt,
+                    oldOrigin, oldCrs,
+                    map->origin(), map->crs() );
+
+  if ( p != oldLookingAt )
   {
     // apply() call has moved origin of the world so let's move camera so we look still at the same place
-    mCanvas->cameraController()->translateWorld( QVector3D( dx, dy, dz ) );
+    mCanvas->cameraController()->setLookingAtPoint( p );
   }
 }
 
