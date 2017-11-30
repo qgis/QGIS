@@ -259,7 +259,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
     void onConstraintStatusChanged( const QString& constraint,
                                     const QString& description, const QString& err, bool ok );
     void preventFeatureRefresh();
-    void synchronizeEnabledState();
+    void synchronizeEnabledState( bool synchronizeWidgetWrapper = true );
     void layerSelectionChanged();
 
     //! Save multi edit changes
