@@ -7021,13 +7021,12 @@ void QgisApp::saveAsVectorFileGeneral( QgsVectorLayer *vlayer, bool symbologyOpt
     {
       //ask user about datum transformation
       QgsSettings settings;
-      QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog( vlayer->crs(), destCRS );
-      if ( dlg->availableTransformationCount() > 1 &&
+      QgsDatumTransformDialog dlg( vlayer->crs(), destCRS );
+      if ( dlg.availableTransformationCount() > 1 &&
            settings.value( QStringLiteral( "Projections/showDatumTransformDialog" ), false ).toBool() )
       {
-        dlg->exec();
+        dlg.exec();
       }
-      delete dlg;
       ct = QgsCoordinateTransform( vlayer->crs(), destCRS, QgsProject::instance() );
     }
 

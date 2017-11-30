@@ -24,13 +24,13 @@ QgsDatumTransformTableModel::QgsDatumTransformTableModel( QObject *parent )
 {
 }
 
-void QgsDatumTransformTableModel::setTransformContext( QgsCoordinateTransformContext &context )
+void QgsDatumTransformTableModel::setTransformContext( const QgsCoordinateTransformContext &context )
 {
   mTransformContext = context;
   reset();
 }
 
-void QgsDatumTransformTableModel::removeTransform( QModelIndexList indexes )
+void QgsDatumTransformTableModel::removeTransform( const QModelIndexList &indexes )
 {
   QgsCoordinateReferenceSystem sourceCrs;
   QgsCoordinateReferenceSystem destinationCrs;
@@ -188,10 +188,10 @@ QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
 
 void QgsDatumTransformTableWidget::addDatumTransform()
 {
-  QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog();
-  if ( dlg->exec() )
+  QgsDatumTransformDialog dlg;
+  if ( dlg.exec() )
   {
-    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg->selectedDatumTransforms();
+    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
     QgsCoordinateTransformContext context = mModel->transformContext();
     context.addSourceDestinationDatumTransform( dt.first.first, dt.second.first, dt.first.second, dt.second.second );
     mModel->setTransformContext( context );
@@ -218,30 +218,31 @@ void QgsDatumTransformTableWidget::editDatumTransform()
     int destinationTransform = -1;
     for ( QModelIndexList::const_iterator it = selectedIndexes.constBegin(); it != selectedIndexes.constEnd(); it ++ )
     {
-      if ( it->column() == QgsDatumTransformTableModel::SourceCrsColumn )
+      switch ( it->column() )
       {
-        sourceCrs = QgsCoordinateReferenceSystem( mModel->data( *it, Qt::DisplayRole ).toString() );
-      }
-      if ( it->column() == QgsDatumTransformTableModel::DestinationCrsColumn )
-      {
-        destinationCrs = QgsCoordinateReferenceSystem( mModel->data( *it, Qt::DisplayRole ).toString() );
-      }
-      if ( it->column() == QgsDatumTransformTableModel::SourceTransformColumn )
-      {
-        sourceTransform = mModel->data( *it, Qt::UserRole ).toInt();
-      }
-      if ( it->column() == QgsDatumTransformTableModel::DestinationTransformColumn )
-      {
-        destinationTransform = mModel->data( *it, Qt::UserRole ).toInt();
+        case QgsDatumTransformTableModel::SourceCrsColumn:
+          sourceCrs = QgsCoordinateReferenceSystem( mModel->data( *it, Qt::DisplayRole ).toString() );
+          break;
+        case QgsDatumTransformTableModel::DestinationCrsColumn:
+          destinationCrs = QgsCoordinateReferenceSystem( mModel->data( *it, Qt::DisplayRole ).toString() );
+          break;
+        case QgsDatumTransformTableModel::SourceTransformColumn:
+          sourceTransform = mModel->data( *it, Qt::UserRole ).toInt();
+          break;
+        case QgsDatumTransformTableModel::DestinationTransformColumn:
+          destinationTransform = mModel->data( *it, Qt::UserRole ).toInt();
+          break;
+        default:
+          break;
       }
     }
     if ( sourceCrs.isValid() && destinationCrs.isValid() &&
          ( sourceTransform != -1 || destinationTransform != -1 ) )
     {
-      QgsDatumTransformDialog *dlg = new QgsDatumTransformDialog( sourceCrs, destinationCrs, qMakePair( sourceTransform, destinationTransform ) );
-      if ( dlg->exec() )
+      QgsDatumTransformDialog dlg( sourceCrs, destinationCrs, qMakePair( sourceTransform, destinationTransform ) );
+      if ( dlg.exec() )
       {
-        QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg->selectedDatumTransforms();
+        QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > dt = dlg.selectedDatumTransforms();
         QgsCoordinateTransformContext context = mModel->transformContext();
         // QMap::insert takes care of replacing existing value
         context.addSourceDestinationDatumTransform( sourceCrs, destinationCrs, dt.first.second, dt.second.second );

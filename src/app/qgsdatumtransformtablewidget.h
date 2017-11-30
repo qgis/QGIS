@@ -45,7 +45,7 @@ class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
 
     QgsDatumTransformTableModel( QObject *parent = nullptr );
 
-    void setTransformContext( QgsCoordinateTransformContext &context );
+    void setTransformContext( const QgsCoordinateTransformContext &context );
 
     QgsCoordinateTransformContext transformContext() const
     {
@@ -55,7 +55,7 @@ class APP_EXPORT QgsDatumTransformTableModel : public QAbstractTableModel
     /**
      * remove the transformation at given indexes
      */
-    void removeTransform( QModelIndexList indexes );
+    void removeTransform( const QModelIndexList &indexes );
 
     int rowCount( const QModelIndex &parent ) const override;
     int columnCount( const QModelIndex &parent ) const override;
@@ -76,7 +76,7 @@ class APP_EXPORT QgsDatumTransformTableWidget : public QWidget, private Ui::QgsD
     explicit QgsDatumTransformTableWidget( QWidget *parent = 0 );
     ~QgsDatumTransformTableWidget();
 
-    void setTransformContext( QgsCoordinateTransformContext &context )
+    void setTransformContext( const QgsCoordinateTransformContext &context )
     {
       mModel->setTransformContext( context );
     }
