@@ -93,7 +93,7 @@ void QgsMapToolIdentifyAction::showAttributeTable( QgsMapLayer *layer, const QLi
   }
   filter = filter.replace( QRegExp( ",$" ), QStringLiteral( ")" ) );
 
-  QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl );
+  QgsAttributeTableDialog *tableDialog = new QgsAttributeTableDialog( vl, QgsAttributeTableFilterModel::ShowFilteredList );
   tableDialog->setFilterExpression( filter );
   tableDialog->show();
 }
