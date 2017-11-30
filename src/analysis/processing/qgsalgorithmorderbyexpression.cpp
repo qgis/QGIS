@@ -54,7 +54,7 @@ void QgsOrderByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 
 QString QgsOrderByExpressionAlgorithm::shortHelpString() const
 {
-  return QObject::tr( "This algorithm sorts a vector layer according to an expression." );
+  return QObject::tr( "This algorithm sorts a vector layer according to an expression. Be careful, it might not work as expected with some providers, the order might not be kept every time." );
 }
 
 QgsOrderByExpressionAlgorithm *QgsOrderByExpressionAlgorithm::createInstance() const
