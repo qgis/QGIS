@@ -740,8 +740,8 @@ void QgsAttributeForm::updateConstraints( QgsEditorWidgetWrapper *eww )
     Q_FOREACH ( QgsEditorWidgetWrapper* depsEww, deps )
       depsEww->updateConstraint( ft );
 
-    // sync ok button status
-    synchronizeEnabledState();
+    // sync ok button status only
+    synchronizeEnabledState( false );
 
     mExpressionContext.setFeature( ft );
 
@@ -986,23 +986,27 @@ void QgsAttributeForm::refreshFeature()
   setFeature( mFeature );
 }
 
-void QgsAttributeForm::synchronizeEnabledState()
+void QgsAttributeForm::synchronizeEnabledState( bool synchronizeWidgetWrapper )
 {
   bool isEditable = ( mFeature.isValid()
                       || mMode == AddFeatureMode
                       || mMode == MultiEditMode ) && mLayer->isEditable();
 
-  Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
+  if ( synchronizeWidgetWrapper )
   {
-    bool fieldEditable = true;
-    QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
-    if ( eww )
+    Q_FOREACH ( QgsWidgetWrapper* ww, mWidgets )
     {
-      fieldEditable = !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) &&
-                      (( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
-                       FID_IS_NEW( mFeature.id() ) );
+      bool fieldEditable = true;
+      QgsEditorWidgetWrapper* eww = qobject_cast<QgsEditorWidgetWrapper*>( ww );
+      if ( eww )
+      {
+        fieldEditable = !mLayer->editFormConfig()->readOnly( eww->fieldIdx() ) &&
+                        (( mLayer->dataProvider() && layer()->dataProvider()->capabilities() & QgsVectorDataProvider::ChangeAttributeValues ) ||
+                         FID_IS_NEW( mFeature.id() ) );
+      }
+
+      ww->setEnabled( isEditable && fieldEditable );
     }
-    ww->setEnabled( isEditable && fieldEditable );
   }
 
   // push a message and disable the OK button if constraints are invalid
