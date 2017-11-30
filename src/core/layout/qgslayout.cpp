@@ -716,11 +716,11 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
   return true;
 }
 
-QVector< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context, QPointF *position, bool pasteInPlace )
+QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context, QPointF *position, bool pasteInPlace )
 {
   std::unique_ptr< QPointF > pasteInPlacePt;
-  QVector< QgsLayoutItem * > newItems;
-  QVector< QgsLayoutMultiFrame * > newMultiFrames;
+  QList< QgsLayoutItem * > newItems;
+  QList< QgsLayoutMultiFrame * > newMultiFrames;
 
   //if we are adding items to a layout which already contains items, we need to make sure
   //these items are placed at the top of the layout and that zValues are not duplicated

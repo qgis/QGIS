@@ -424,7 +424,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  :rtype: bool
 %End
 
-    QVector< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
+    QList< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
         const QgsReadWriteContext &context,
         QPointF *position = 0, bool pasteInPlace = false );
 %Docstring

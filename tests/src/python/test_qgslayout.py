@@ -21,6 +21,7 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutGuide,
                        QgsLayoutObject,
                        QgsProject,
+                       QgsLayoutItemGroup,
                        QgsProperty,
                        QgsLayoutPageCollection,
                        QgsLayoutMeasurement,
@@ -62,6 +63,14 @@ class TestQgsLayout(unittest.TestCase):
         snapper = l.snapper()
         snapper.setSnapTolerance(7)
 
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        item1.setId('xxyyxx')
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        item2.setId('zzyyzz')
+        l.addItem(item2)
+
         doc = QDomDocument("testdoc")
         elem = l.writeXml(doc, QgsReadWriteContext())
 
@@ -80,6 +89,64 @@ class TestQgsLayout(unittest.TestCase):
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().length(), 5.0)
         self.assertEqual(l2.guides().guidesOnPage(0)[0].position().units(), QgsUnitTypes.LayoutCentimeters)
         self.assertEqual(l2.snapper().snapTolerance(), 7)
+
+        # check restored items
+        new_item1 = l2.itemByUuid(item1.uuid())
+        self.assertTrue(new_item1)
+        self.assertEqual(new_item1.id(), 'xxyyxx')
+        new_item2 = l2.itemByUuid(item2.uuid())
+        self.assertTrue(new_item2)
+        self.assertEqual(new_item2.id(), 'zzyyzz')
+
+    def testAddItemsFromXml(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemMap(l)
+        item1.setId('xxyyxx')
+        l.addItem(item1)
+        item2 = QgsLayoutItemMap(l)
+        item2.setId('zzyyzz')
+        l.addItem(item2)
+
+        doc = QDomDocument("testdoc")
+        # store in xml
+        elem = l.writeXml(doc, QgsReadWriteContext())
+
+        l2 = QgsLayout(p)
+        new_items = l2.addItemsFromXml(elem, doc, QgsReadWriteContext())
+        self.assertEqual(len(new_items), 2)
+        items = l2.items()
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items[0] in l2.items())
+        self.assertTrue(new_items[1] in l2.items())
+
+        # test with a group
+        group = QgsLayoutItemGroup(l)
+        group.addItem(item1)
+        group.addItem(item2)
+        l.addLayoutItem(group)
+        elem = l.writeXml(doc, QgsReadWriteContext())
+
+        l3 = QgsLayout(p)
+        new_items = l3.addItemsFromXml(elem, doc, QgsReadWriteContext())
+        self.assertEqual(len(new_items), 3)
+        items = l3.items()
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items[0] in l3.items())
+        self.assertTrue(new_items[1] in l3.items())
+        self.assertTrue(new_items[2] in l3.items())
+
+        # f*** you sip, I'll just manually cast
+        new_group = sip.cast(l3.itemByUuid(group.uuid()), QgsLayoutItemGroup)
+        self.assertIsNotNone(new_group)
+        other_items = [i for i in new_items if i.type() != new_group.type()]
+        self.assertCountEqual(new_group.items(), other_items)
+
+        #TODO - test restoring multiframe, test item positions
 
     def testSelectedItems(self):
         p = QgsProject()

@@ -482,7 +482,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      * A list of the newly added items is returned.
      */
-    QVector< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
+    QList< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
         const QgsReadWriteContext &context,
         QPointF *position = nullptr, bool pasteInPlace = false );
 
