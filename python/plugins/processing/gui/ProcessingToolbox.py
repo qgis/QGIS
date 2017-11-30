@@ -471,11 +471,17 @@ class TreeAlgorithmItem(QTreeWidgetItem):
         name = alg.displayName()
         name = name if name != '' else nameEn
         self.setIcon(0, icon)
-        self.setToolTip(0, name)
+        self.setToolTip(0, self.formatAlgorithmTooltip(alg))
         self.setText(0, name)
         self.setData(0, ProcessingToolbox.NAME_ROLE, nameEn)
         self.setData(0, ProcessingToolbox.TAG_ROLE, alg.tags())
         self.setData(0, ProcessingToolbox.TYPE_ROLE, ProcessingToolbox.ALG_ITEM)
+
+    def formatAlgorithmTooltip(self, alg):
+        return '<p><b>{}</b></p><p>{}</p>'.format(
+            alg.displayName(),
+            QCoreApplication.translate('Toolbox','Algorithm ID: ‘{}’').format('<i>{}</i>'.format(alg.id()))
+        )
 
 
 class TreeGroupItem(QTreeWidgetItem):
