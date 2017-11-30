@@ -509,11 +509,10 @@ QgsMergedBookmarksTableModel::QgsMergedBookmarksTableModel( QAbstractTableModel 
   : mQgisTableModel( qgisTableModel )
   , mProjectTableModel( projectTableModel )
   , mTreeView( treeView )
-  , mProjectOpen( false )
 {
   connect(
-    QgisApp::instance(), &QgisApp::projectRead,
-    this, &QgsMergedBookmarksTableModel::projectRead );
+    QgsProject::instance(), &QgsProject::fileNameChanged,
+    this, &QgsMergedBookmarksTableModel::projectFileNameChanged );
 
   connect(
     &mQgisTableModel, &QAbstractTableModel::layoutChanged,
@@ -620,7 +619,7 @@ Qt::ItemFlags QgsMergedBookmarksTableModel::flags( const QModelIndex &index ) co
   Qt::ItemFlags flags = Qt::ItemIsSelectable | Qt::ItemIsEnabled;
   if ( index.column() == mQgisTableModel.columnCount() )
   {
-    if ( !mProjectOpen )
+    if ( !projectAvailable() )
     {
       return Qt::ItemIsSelectable;
     }
@@ -679,6 +678,11 @@ QAbstractTableModel *QgsMergedBookmarksTableModel::qgisModel()
   return &mQgisTableModel;
 }
 
+bool QgsMergedBookmarksTableModel::projectAvailable() const
+{
+  return ! QgsProject::instance()->fileName().isEmpty();
+}
+
 void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row )
 {
   QSqlTableModel *qgisModel = dynamic_cast<QSqlTableModel *>( &modelTo );
@@ -718,4 +722,9 @@ void QgsMergedBookmarksTableModel::moveBookmark( QAbstractTableModel &modelFrom,
     qgisModel->select();
     modelFrom.removeRows( row, 1 );
   }
+}
+
+void QgsMergedBookmarksTableModel::projectFileNameChanged()
+{
+  emit layoutChanged();
 }
