@@ -18,6 +18,7 @@
 #define QGSBOOKMARKS_H
 
 #include <QSqlTableModel>
+#include <QSortFilterProxyModel>
 #include <memory>
 
 #include "ui_qgsbookmarksbase.h"
@@ -33,7 +34,7 @@ class QgsProjectBookmarksTableModel: public QAbstractTableModel
 
   public:
 
-    QgsProjectBookmarksTableModel();
+    QgsProjectBookmarksTableModel( QObject *parent = 0 );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
@@ -48,7 +49,27 @@ class QgsProjectBookmarksTableModel: public QAbstractTableModel
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
 
   private slots:
-    void projectRead() { emit layoutChanged(); };
+    void projectRead();
+};
+
+
+class QgsBookmarksProxyModel: public QSortFilterProxyModel
+{
+    Q_OBJECT
+
+  public:
+
+    QgsBookmarksProxyModel( QObject *parent = 0 );
+
+    //! This override is required because the merge model only defines headers for the SQL model
+    QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
+
+  public slots:
+
+    void _resetModel()
+    {
+      reset();
+    }
 };
 
 /*
@@ -60,7 +81,7 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
 
   public:
 
-    QgsMergedBookmarksTableModel( QAbstractTableModel &qgisTableModel, QAbstractTableModel &projectTableModel, QTreeView *treeView );
+    QgsMergedBookmarksTableModel( QAbstractTableModel &qgisTableModel, QAbstractTableModel &projectTableModel, QTreeView *treeView, QObject *parent = 0 );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
@@ -83,7 +104,6 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
     void moveBookmark( QAbstractTableModel &modelFrom, QAbstractTableModel &modelTo, int row );
 
   private slots:
-    void projectFileNameChanged();
     void allLayoutChanged()
     {
       emit layoutChanged();
@@ -113,7 +133,8 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
   private:
     QSqlTableModel *mQgisModel = nullptr;
     QgsProjectBookmarksTableModel *mProjectModel = nullptr;
-    std::unique_ptr<QgsMergedBookmarksTableModel> mModel;
+    QgsMergedBookmarksTableModel *mModel = nullptr;
+    QgsBookmarksProxyModel *mProxyModel = nullptr;
 
     void saveWindowLocation();
     void restorePosition();
