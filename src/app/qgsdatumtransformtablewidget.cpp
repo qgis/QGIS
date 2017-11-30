@@ -94,11 +94,19 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
 
   switch ( role )
   {
+    case Qt::FontRole:
+    {
+      QFont font;
+      font.setPointSize( font.pointSize() - 1 );
+      return font;
+      break;
+    }
     case Qt::DisplayRole:
       switch ( index.column() )
       {
         case SourceCrsColumn:
           return sourceCrs;
+          break;
         case SourceTransformColumn:
           if ( sourceTransform != -1 )
           {
@@ -107,6 +115,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
           break;
         case DestinationCrsColumn:
           return destinationCrs;
+          break;
         case DestinationTransformColumn:
           if ( destinationTransform != -1 )
           {
@@ -122,11 +131,14 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
       {
         case SourceTransformColumn:
           return sourceTransform;
+          break;
         case DestinationTransformColumn:
           return destinationTransform;
+          break;
         default:
           break;
       }
+      break;
     default:
       break;
   }
@@ -175,10 +187,10 @@ QgsDatumTransformTableWidget::QgsDatumTransformTableWidget( QWidget *parent )
   mTableView->horizontalHeader()->show();
   mTableView->setSelectionMode( QAbstractItemView::SingleSelection );
   mTableView->setSelectionBehavior( QAbstractItemView::SelectRows );
+  mTableView->setAlternatingRowColors( true );
   connect( mAddButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::addDatumTransform );
   connect( mRemoveButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::removeDatumTransform );
   connect( mEditButton, &QToolButton::clicked, this, &QgsDatumTransformTableWidget::editDatumTransform );
-
 }
 
 QgsDatumTransformTableWidget::~QgsDatumTransformTableWidget()
