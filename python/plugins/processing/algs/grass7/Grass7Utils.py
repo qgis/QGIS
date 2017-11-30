@@ -105,7 +105,7 @@ class Grass7Utils:
             si.wShowWindow = subprocess.SW_HIDE
         with subprocess.Popen(
                 [Grass7Utils.command, '-v'],
-                shell=False,
+                shell=True if isMac() else False,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
@@ -359,7 +359,7 @@ class Grass7Utils:
 
         with subprocess.Popen(
                 command,
-                shell=False,
+                shell=True if isMac() else False,
                 stdout=subprocess.PIPE,
                 stdin=subprocess.DEVNULL,
                 stderr=subprocess.STDOUT,
@@ -388,7 +388,7 @@ class Grass7Utils:
             command, grassenv = Grass7Utils.prepareGrassExecution(outputCommands)
             with subprocess.Popen(
                     command,
-                    shell=False,
+                    shell=True if isMac() else False,
                     stdout=subprocess.PIPE,
                     stdin=subprocess.DEVNULL,
                     stderr=subprocess.STDOUT,
