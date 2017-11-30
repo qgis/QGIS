@@ -59,8 +59,8 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
   private slots:
     void mHideDeprecatedCheckBox_stateChanged( int state );
     void mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
-    void setSourceCrs( QgsCoordinateReferenceSystem sourceCrs );
-    void setDestinationCrs( QgsCoordinateReferenceSystem destinationCrs );
+    void setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
     bool gridShiftTransformation( const QString &itemText ) const;

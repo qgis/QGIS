@@ -268,7 +268,7 @@ void QgsDatumTransformDialog::mDatumTransformTreeWidget_currentItemChanged( QTre
   setOKButtonEnabled();
 }
 
-void QgsDatumTransformDialog::setSourceCrs( QgsCoordinateReferenceSystem sourceCrs )
+void QgsDatumTransformDialog::setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs )
 {
   mSourceCrs = sourceCrs;
   mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
@@ -276,7 +276,7 @@ void QgsDatumTransformDialog::setSourceCrs( QgsCoordinateReferenceSystem sourceC
   setOKButtonEnabled();
 }
 
-void QgsDatumTransformDialog::setDestinationCrs( QgsCoordinateReferenceSystem destinationCrs )
+void QgsDatumTransformDialog::setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs )
 {
   mDestinationCrs = destinationCrs;
   mDatumTransforms = QgsCoordinateTransform::datumTransformations( mSourceCrs, mDestinationCrs );
