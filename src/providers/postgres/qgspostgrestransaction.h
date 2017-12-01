@@ -36,7 +36,7 @@ class QgsPostgresTransaction : public QgsTransaction
      * \param sql The SQL query to execute
      * \param error The error or an empty string if none
      * \param isDirty True to add an undo/redo command in the edition buffer, false otherwise
-     * \param name Name of the transaction ( only used if `isDirty` is true)
+     * \param name Name of the operation ( only used if `isDirty` is true)
      */
     bool executeSql( const QString &sql, QString &error, bool isDirty = false, const QString &name = QString() ) override;
 
