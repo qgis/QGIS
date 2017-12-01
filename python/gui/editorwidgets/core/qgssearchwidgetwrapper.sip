@@ -86,6 +86,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
       IsNotNull,
       StartsWith,
       EndsWith,
+      Aggregates,
     };
     typedef QFlags<QgsSearchWidgetWrapper::FilterFlag> FilterFlags;
 

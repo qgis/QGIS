@@ -53,7 +53,7 @@ QVariant QgsRelationReferenceSearchWidgetWrapper::value() const
 
 QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::supportedFlags() const
 {
-  return EqualTo | NotEqualTo | IsNull | IsNotNull;
+  return EqualTo | NotEqualTo | IsNull | IsNotNull | Aggregates;
 }
 
 QgsSearchWidgetWrapper::FilterFlags QgsRelationReferenceSearchWidgetWrapper::defaultFlags() const
