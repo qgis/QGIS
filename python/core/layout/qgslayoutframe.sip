@@ -114,8 +114,10 @@ class QgsLayoutFrame: QgsLayoutItem
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 );
 
-    void drawFrame( QgsRenderContext &context );
-    void drawBackground( QgsRenderContext &context );
+    virtual void drawFrame( QgsRenderContext &context );
+
+    virtual void drawBackground( QgsRenderContext &context );
+
 
 };
 

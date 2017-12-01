@@ -120,8 +120,8 @@ class CORE_EXPORT QgsLayoutFrame: public QgsLayoutItem
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
-    void drawFrame( QgsRenderContext &context );
-    void drawBackground( QgsRenderContext &context );
+    void drawFrame( QgsRenderContext &context ) override;
+    void drawBackground( QgsRenderContext &context ) override;
 
   private:
     QgsLayoutFrame() = delete;
