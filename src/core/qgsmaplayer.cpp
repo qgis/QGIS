@@ -547,19 +547,6 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
   QDomElement metadataElem = layerElement.firstChildElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.readMetadataXml( metadataElem );
 
-  QgsAbstract3DRenderer *r3D = nullptr;
-  QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
-  if ( !renderer3DElem.isNull() )
-  {
-    QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
-    Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
-    if ( meta3D )
-    {
-      r3D = meta3D->createRenderer( renderer3DElem, context );
-    }
-  }
-  setRenderer3D( r3D );
-
   return true;
 } // bool QgsMapLayer::readLayerXML
 
@@ -831,14 +818,6 @@ bool QgsMapLayer::writeLayerXml( QDomElement &layerElement, QDomDocument &docume
   QDomElement myMetadataElem = document.createElement( QStringLiteral( "resourceMetadata" ) );
   mMetadata.writeMetadataXml( myMetadataElem, document );
   layerElement.appendChild( myMetadataElem );
-
-  if ( m3DRenderer )
-  {
-    QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
-    renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
-    m3DRenderer->writeXml( renderer3DElem, context );
-    layerElement.appendChild( renderer3DElem );
-  }
 
   // now append layer node to map layer node
 
@@ -1594,6 +1573,35 @@ bool QgsMapLayer::writeStyle( QDomNode &node, QDomDocument &doc, QString &errorM
   Q_UNUSED( errorMessage );
   Q_UNUSED( context );
   return false;
+}
+
+
+void QgsMapLayer::writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const
+{
+  if ( m3DRenderer )
+  {
+    QDomElement renderer3DElem = document.createElement( QStringLiteral( "renderer-3d" ) );
+    renderer3DElem.setAttribute( QStringLiteral( "type" ), m3DRenderer->type() );
+    m3DRenderer->writeXml( renderer3DElem, context );
+    layerElement.appendChild( renderer3DElem );
+  }
+}
+
+
+void QgsMapLayer::readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context )
+{
+  QgsAbstract3DRenderer *r3D = nullptr;
+  QDomElement renderer3DElem = layerElement.firstChildElement( QStringLiteral( "renderer-3d" ) );
+  if ( !renderer3DElem.isNull() )
+  {
+    QString type3D = renderer3DElem.attribute( QStringLiteral( "type" ) );
+    Qgs3DRendererAbstractMetadata *meta3D = QgsApplication::renderer3DRegistry()->rendererMetadata( type3D );
+    if ( meta3D )
+    {
+      r3D = meta3D->createRenderer( renderer3DElem, context );
+    }
+  }
+  setRenderer3D( r3D );
 }
 
 
