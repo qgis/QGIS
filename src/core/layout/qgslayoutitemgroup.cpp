@@ -153,12 +153,7 @@ void QgsLayoutItemGroup::attemptMove( const QgsLayoutPoint &point, bool useRefer
       command->saveBeforeState();
     }
 
-    // need to convert delta from layout units -> item units
-    QgsLayoutPoint itemPos = item->positionWithUnits();
-    QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
-    itemPos.setX( itemPos.x() + deltaPos.x() );
-    itemPos.setY( itemPos.y() + deltaPos.y() );
-    item->attemptMove( itemPos, true, includesFrame );
+    item->attemptMoveBy( deltaX, deltaY );
 
     if ( command )
     {

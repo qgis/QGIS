@@ -926,20 +926,12 @@ void QgsLayoutView::keyPressEvent( QKeyEvent *event )
     const QList<QgsLayoutItem *> layoutItemList = l->selectedLayoutItems();
 
     QPointF delta = deltaForKeyEvent( event );
-    auto moveItem = [ l, delta ]( QgsLayoutItem * item )
-    {
-      QgsLayoutPoint itemPos = item->positionWithUnits();
-      QgsLayoutPoint deltaPos = l->convertFromLayoutUnits( delta, itemPos.units() );
-      itemPos.setX( itemPos.x() + deltaPos.x() );
-      itemPos.setY( itemPos.y() + deltaPos.y() );
-      item->attemptMove( itemPos );
-    };
 
     l->undoStack()->beginMacro( tr( "Move Item" ) );
     for ( QgsLayoutItem *item : layoutItemList )
     {
       l->undoStack()->beginCommand( item, tr( "Move Item" ), QgsLayoutItem::UndoIncrementalMove );
-      moveItem( item );
+      item->attemptMoveBy( delta.x(), delta.y() );
       l->undoStack()->endCommand();
     }
     l->undoStack()->endMacro();
