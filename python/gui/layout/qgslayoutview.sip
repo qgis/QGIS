@@ -195,6 +195,14 @@ class QgsLayoutView: QGraphicsView
     void copySelectedItems( ClipboardOperation operation );
 %Docstring
  Cuts or copies the selected items, respecting the specified ``operation``.
+.. seealso:: copyItems()
+.. seealso:: pasteItems()
+%End
+
+    void copyItems( const QList< QgsLayoutItem * > &items, ClipboardOperation operation );
+%Docstring
+ Cuts or copies the a list of ``items``, respecting the specified ``operation``.
+.. seealso:: copySelectedItems()
 .. seealso:: pasteItems()
 %End
 
@@ -356,6 +364,13 @@ class QgsLayoutView: QGraphicsView
     void deleteSelectedItems();
 %Docstring
  Deletes all selected items.
+.. seealso:: deleteItems()
+%End
+
+    void deleteItems( const QList< QgsLayoutItem * > &items );
+%Docstring
+ Delete the specified ``items``.
+.. seealso:: deleteSelectedItems()
 %End
 
     void groupSelectedItems();

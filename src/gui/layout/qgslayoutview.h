@@ -225,9 +225,17 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     /**
      * Cuts or copies the selected items, respecting the specified \a operation.
+     * \see copyItems()
      * \see pasteItems()
      */
     void copySelectedItems( ClipboardOperation operation );
+
+    /**
+     * Cuts or copies the a list of \a items, respecting the specified \a operation.
+     * \see copySelectedItems()
+     * \see pasteItems()
+     */
+    void copyItems( const QList< QgsLayoutItem * > &items, ClipboardOperation operation );
 
     /**
      * Pastes items from clipboard, using the specified \a mode.
@@ -396,8 +404,15 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
     /**
      * Deletes all selected items.
+     * \see deleteItems()
      */
     void deleteSelectedItems();
+
+    /**
+     * Delete the specified \a items.
+     * \see deleteSelectedItems()
+     */
+    void deleteItems( const QList< QgsLayoutItem * > &items );
 
     /**
      * Groups all selected items.

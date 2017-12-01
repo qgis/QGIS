@@ -636,6 +636,36 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(19, 19, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.8, QgsUnitTypes.LayoutCentimeters))
 
+    def testDeleteItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemLabel(l)
+        item1.setText('label 1')
+        l.addLayoutItem(item1)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setText('label 2')
+        l.addLayoutItem(item2)
+        item3 = QgsLayoutItemLabel(l)
+        item3.setText('label 2')
+        l.addLayoutItem(item3)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+        count_before = len(l.items())
+        view.deleteSelectedItems()
+        self.assertEqual(len(l.items()), count_before)
+
+        item2.setSelected(True)
+        view.deleteSelectedItems()
+        self.assertEqual(len(l.items()), count_before - 1)
+        self.assertIn(item1, l.items())
+        self.assertIn(item3, l.items())
+        view.deleteItems([item3])
+        self.assertEqual(len(l.items()), count_before - 2)
+        self.assertIn(item1, l.items())
+
     def testCopyPaste(self):
         p = QgsProject()
         l = QgsLayout(p)
@@ -669,6 +699,16 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertIn(pasted[1], l.items())
         self.assertIn(sip.cast(pasted[0], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
         self.assertIn(sip.cast(pasted[1], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+
+        # copy specific item
+        view.copyItems([item2], QgsLayoutView.ClipboardCopy)
+        l2 = QgsLayout(p)
+        view2 = QgsLayoutView()
+        view2.setCurrentLayout(l2)
+        pasted = view2.pasteItems(QgsLayoutView.PasteModeCursor)
+        self.assertEqual(len(pasted), 1)
+        self.assertIn(pasted[0], l2.items())
+        self.assertEqual(sip.cast(pasted[0], QgsLayoutItemLabel).text(), 'label 2')
 
     def testCutPaste(self):
         p = QgsProject()
