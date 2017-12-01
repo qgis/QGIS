@@ -13,11 +13,12 @@ __copyright__ = 'Copyright 2017, The QGIS Project'
 __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
-
+import sip
 from qgis.core import (QgsProject,
                        QgsLayout,
                        QgsUnitTypes,
                        QgsLayoutItemPicture,
+                       QgsLayoutItemLabel,
                        QgsLayoutPoint,
                        QgsLayoutSize,
                        QgsLayoutAligner)
@@ -633,6 +634,60 @@ class TestQgsLayoutView(unittest.TestCase):
         self.assertEqual(item1.sizeWithUnits(), QgsLayoutSize(18, 18, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(item2.sizeWithUnits(), QgsLayoutSize(19, 19, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(item3.sizeWithUnits(), QgsLayoutSize(1.8, 1.8, QgsUnitTypes.LayoutCentimeters))
+
+    def testCopyPaste(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add an item
+        item1 = QgsLayoutItemLabel(l)
+        item1.setText('label 1')
+        l.addLayoutItem(item1)
+        item1.setSelected(True)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setText('label 2')
+        l.addLayoutItem(item2)
+        item2.setSelected(True)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+
+        view.copySelectedItems(QgsLayoutView.ClipboardCopy)
+        pasted = view.pasteItems(QgsLayoutView.PasteModeCursor)
+        self.assertEqual(len(pasted), 2)
+        self.assertIn(pasted[0], l.items())
+        self.assertIn(pasted[1], l.items())
+        self.assertIn(sip.cast(pasted[0], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+        self.assertIn(sip.cast(pasted[1], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+
+    def testCutPaste(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add an item
+        item1 = QgsLayoutItemLabel(l)
+        item1.setText('label 1')
+        l.addLayoutItem(item1)
+        item1.setSelected(True)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setText('label 2')
+        l.addLayoutItem(item2)
+        item2.setSelected(True)
+
+        view = QgsLayoutView()
+        view.setCurrentLayout(l)
+
+        len_before = len(l.items())
+        view.copySelectedItems(QgsLayoutView.ClipboardCut)
+        self.assertEqual(len(l.items()), len_before - 2)
+
+        pasted = view.pasteItems(QgsLayoutView.PasteModeCursor)
+        self.assertEqual(len(pasted), 2)
+        self.assertEqual(len(l.items()), len_before)
+        self.assertIn(pasted[0], l.items())
+        self.assertIn(pasted[1], l.items())
+        self.assertIn(sip.cast(pasted[0], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
+        self.assertIn(sip.cast(pasted[1], QgsLayoutItemLabel).text(), ('label 1', 'label 2'))
 
 
 if __name__ == '__main__':

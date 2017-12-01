@@ -160,6 +160,8 @@
     <addaction name="separator"/>
     <addaction name="mActionDeleteSelection"/>
     <addaction name="separator"/>
+    <addaction name="mActionPasteInPlace"/>
+    <addaction name="separator"/>
     <addaction name="mActionSelectAll"/>
     <addaction name="mActionDeselectAll"/>
     <addaction name="mActionInvertSelection"/>
@@ -1044,8 +1046,20 @@
     <string>C</string>
    </property>
   </action>
+  <action name="mActionPasteInPlace">
+   <property name="text">
+    <string>Paste in P&amp;lace</string>
+   </property>
+   <property name="toolTip">
+    <string>Paste in place</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+Shift+V</string>
+   </property>
+  </action>
  </widget>
  <resources>
+  <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>
   <include location="../../../images/images.qrc"/>

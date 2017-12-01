@@ -737,11 +737,6 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     //next, calculate how much each item needs to be shifted from its original position
     //so that it's placed at the correct relative position
     pasteShiftPos = *position - minItemPos;
-
-#if 0 // TODO - move to gui
-    //since we are pasting items, clear the existing selection
-    setAllDeselected();
-#endif
     if ( pasteInPlace )
     {
       int pageNumber = mPageCollection->pageNumberForPoint( *position );
@@ -776,10 +771,6 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
       }
 #endif
     }
-
-#if 0 //TODO - move to gui
-    newLabel->setSelected( true );
-#endif
 
     QgsLayoutItem *layoutItem = item.get();
     addLayoutItem( item.release() );

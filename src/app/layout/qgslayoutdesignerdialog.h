@@ -247,6 +247,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void dockVisibilityChanged( bool visible );
     void undoRedoOccurredForItems( const QSet< QString > itemUuids );
 
+    void paste();
+    void pasteInPlace();
+
   private:
 
     static bool sInitializedRegistry;
@@ -301,6 +304,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QAction *mUndoAction = nullptr;
     QAction *mRedoAction = nullptr;
+    //! Copy/cut/paste actions
+    QAction *mActionCut = nullptr;
+    QAction *mActionCopy = nullptr;
+    QAction *mActionPaste = nullptr;
 
     struct PanelStatus
     {
@@ -327,6 +334,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void createLayoutPropertiesWidget();
 
     void initializeRegistry();
+
+    void selectItems( const QList< QgsLayoutItem * > items );
 
 };
 
