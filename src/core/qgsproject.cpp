@@ -925,7 +925,7 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
   mCrs = projectCrs;
 
-  mTransformContext.readXml( doc->documentElement(), *doc, context );
+  mTransformContext.readXml( doc->documentElement(), context );
   emit transformContextChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
@@ -1464,7 +1464,7 @@ bool QgsProject::writeProjectFile( const QString &filename )
 
   mLabelingEngineSettings->writeSettingsToProject( this );
 
-  mTransformContext.writeXml( qgisNode, *doc, context );
+  mTransformContext.writeXml( qgisNode, context );
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
   qgisNode.appendChild( annotationsElem );

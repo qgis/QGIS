@@ -137,13 +137,13 @@ class QgsCoordinateTransformContext
  :rtype: QgsCoordinateTransform.TransformPair
 %End
 
-    void readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
  Reads the context's state from a DOM ``element``.
 .. seealso:: writeXml()
 %End
 
-    void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
  Writes the context's state to a DOM ``element``.
 .. seealso:: readXml()

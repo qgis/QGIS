@@ -3184,7 +3184,7 @@ void QgisApp::setupConnections()
            this, &QgisApp::mapCanvas_keyPressed );
 
   // project crs connections
-  connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::onProjectCrsChanged );
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::projectCrsChanged );
 
   connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged,
            this, [ = ]
@@ -9119,7 +9119,7 @@ void QgisApp::onFocusChanged( QWidget *oldWidget, QWidget *newWidget )
   }
 }
 
-void QgisApp::onProjectCrsChanged()
+void QgisApp::projectCrsChanged()
 {
   updateCrsStatusBar();
   QgsDebugMsgLevel( QString( "QgisApp::setupConnections -1- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
@@ -9140,8 +9140,8 @@ void QgisApp::onProjectCrsChanged()
   }
   if ( transformsToAskFor.count() == 1 )
   {
-    askForDatumTransform( transformsToAskFor.at( 0 ),
-                          QgsProject::instance()->crs() );
+    askUserForDatumTransform( transformsToAskFor.at( 0 ),
+                              QgsProject::instance()->crs() );
   }
   else if ( transformsToAskFor.count() > 1 )
   {
@@ -9457,7 +9457,7 @@ void QgisApp::setLayerCrs()
       {
         if ( child->layer() )
         {
-          askForDatumTransform( crs, QgsProject::instance()->crs() );
+          askUserForDatumTransform( crs, QgsProject::instance()->crs() );
           child->layer()->setCrs( crs );
           child->layer()->triggerRepaint();
         }
@@ -9468,7 +9468,7 @@ void QgisApp::setLayerCrs()
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->layer() )
       {
-        askForDatumTransform( crs, QgsProject::instance()->crs() );
+        askUserForDatumTransform( crs, QgsProject::instance()->crs() );
         nodeLayer->layer()->setCrs( crs );
         nodeLayer->layer()->triggerRepaint();
       }
@@ -12563,8 +12563,10 @@ void QgisApp::writeDockWidgetSettings( QDockWidget *dockWidget, QDomElement &ele
   elem.setAttribute( QStringLiteral( "area" ), dockWidgetArea( dockWidget ) );
 }
 
-bool QgisApp::askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs )
+bool QgisApp::askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs )
 {
+  Q_ASSERT( qApp->thread() == QThread::currentThread() );
+
   bool ok = false;
 
   QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();

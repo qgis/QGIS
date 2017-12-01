@@ -161,7 +161,7 @@ QgsCoordinateTransform::TransformPair QgsCoordinateTransformContext::calculateDa
 #endif
 }
 
-void QgsCoordinateTransformContext::readXml( const QDomElement &element, const QDomDocument &, const QgsReadWriteContext & )
+void QgsCoordinateTransformContext::readXml( const QDomElement &element, const QgsReadWriteContext & )
 {
   d.detach();
   d->mLock.lockForWrite();
@@ -231,16 +231,16 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
   d->mLock.unlock();
 }
 
-void QgsCoordinateTransformContext::writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext & ) const
+void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
 {
   d->mLock.lockForRead();
 
-  QDomElement contextElem = document.createElement( QStringLiteral( "transformContext" ) );
+  QDomElement contextElem = element.ownerDocument().createElement( QStringLiteral( "transformContext" ) );
 
   //src/dest transforms
   for ( auto it = d->mSourceDestDatumTransforms.constBegin(); it != d->mSourceDestDatumTransforms.constEnd(); ++ it )
   {
-    QDomElement transformElem = document.createElement( QStringLiteral( "srcDest" ) );
+    QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "srcDest" ) );
     transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
     transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
     transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().sourceTransformId );
@@ -252,7 +252,7 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, QDomDocument
   // src transforms
   for ( auto it = d->mSourceDatumTransforms.constBegin(); it != d->mSourceDatumTransforms.constEnd(); ++ it )
   {
-    QDomElement transformElem = document.createElement( QStringLiteral( "source" ) );
+    QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "source" ) );
     transformElem.setAttribute( QStringLiteral( "crs" ), it.key() );
     transformElem.setAttribute( QStringLiteral( "transform" ), it.value() );
     contextElem.appendChild( transformElem );
@@ -261,7 +261,7 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, QDomDocument
   // dest transforms
   for ( auto it = d->mDestDatumTransforms.constBegin(); it != d->mDestDatumTransforms.constEnd(); ++ it )
   {
-    QDomElement transformElem = document.createElement( QStringLiteral( "dest" ) );
+    QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "dest" ) );
     transformElem.setAttribute( QStringLiteral( "crs" ), it.key() );
     transformElem.setAttribute( QStringLiteral( "transform" ), it.value() );
     contextElem.appendChild( transformElem );

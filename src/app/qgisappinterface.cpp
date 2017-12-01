@@ -827,5 +827,5 @@ void QgisAppInterface::deregisterLocatorFilter( QgsLocatorFilter *filter )
 
 bool QgisAppInterface::askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs )
 {
-  return qgis->askForDatumTransform( sourceCrs, destinationCrs );
+  return qgis->askUserForDatumTransform( sourceCrs, destinationCrs );
 }

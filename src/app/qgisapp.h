@@ -697,7 +697,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
       * \returns true if a datum transform has been specifically chosen by user or only one is available.
       * \since 3.0
       */
-    bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs );
+    bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
 
   public slots:
     //! save current vector layer
@@ -1616,7 +1616,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void onFocusChanged( QWidget *oldWidget, QWidget *newWidget );
 
     //! handle project crs changes
-    void onProjectCrsChanged();
+    void projectCrsChanged();
 
   signals:
 

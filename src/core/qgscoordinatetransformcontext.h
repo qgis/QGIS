@@ -235,13 +235,13 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * Reads the context's state from a DOM \a element.
      * \see writeXml()
      */
-    void readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
+    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
 
     /**
      * Writes the context's state to a DOM \a element.
      * \see readXml()
      */
-    void writeXml( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
+    void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 
 
     /**
