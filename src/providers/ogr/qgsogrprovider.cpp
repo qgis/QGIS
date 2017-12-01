@@ -1982,8 +1982,6 @@ bool QgsOgrProvider::createSpatialIndex()
   {
     QMutex *mutex = nullptr;
     OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
-    QMutexLocker locker( mutex );
-
     QByteArray sql = QByteArray( "SELECT CreateSpatialIndex(" + quotedIdentifier( layerName ) + ","
                                  + quotedIdentifier( OGR_L_GetGeometryColumn( layer ) ) + ") " ); // quote the layer name so spaces are handled
     mOgrOrigLayer->ExecuteSQLNoReturn( sql );
@@ -2012,6 +2010,12 @@ bool QgsOgrProvider::createAttributeIndex( int field )
   if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
        mGDALDriverName == QLatin1String( "SQLite" ) )
   {
+    if ( field == 0 && mFirstFieldIsFid )
+    {
+      // already an index on this field, no need to re-created
+      return false;
+    }
+
     QString indexName = createIndexName( mOgrOrigLayer->name(), fields().at( field ).name() );
     QByteArray createSql = "CREATE INDEX IF NOT EXISTS " + textEncoding()->fromUnicode( indexName ) + " ON " + quotedLayerName + " (" + textEncoding()->fromUnicode( fields().at( field ).name() ) + ")";
     mOgrOrigLayer->ExecuteSQLNoReturn( createSql );

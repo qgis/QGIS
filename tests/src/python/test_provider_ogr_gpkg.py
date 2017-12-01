@@ -787,6 +787,10 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
         self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
         self.assertFalse(vl.dataProvider().createAttributeIndex(100))
+
+        # should not be allowed - there's already a index on the primary key
+        self.assertFalse(vl.dataProvider().createAttributeIndex(0))
+
         self.assertTrue(vl.dataProvider().createAttributeIndex(1))
 
         con = spatialite_connect(tmpfile, isolation_level=None)
@@ -819,7 +823,7 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
     def testCreateSpatialIndex(self):
         tmpfile = os.path.join(self.basetestpath, 'testGeopackageSpatialIndex.gpkg')
         ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
-        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon, options=['SPATIAL_INDEX=NO'])
         lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
         lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
         f = None
