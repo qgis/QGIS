@@ -715,50 +715,16 @@ void QgsLayoutView::deleteSelectedItems()
     return;
   }
 
-#if 0 //TODO
-  if ( mCurrentTool == QgsComposerView::EditNodesItem )
-  {
-    if ( mNodesItemIndex != -1 )
-    {
-      composition()->beginCommand( mNodesItem, tr( "Remove item node" ) );
-      if ( mNodesItem->removeNode( mNodesItemIndex ) )
-      {
-        composition()->endCommand();
-        if ( mNodesItem->nodesSize() > 0 )
-        {
-          mNodesItemIndex = mNodesItem->selectedNode();
-          // setSelectedNode( mNodesItem, mNodesItemIndex );
-        }
-        else
-        {
-          mNodesItemIndex = -1;
-          mNodesItem = nullptr;
-        }
-        scene()->update();
-      }
-      else
-      {
-        composition()->cancelCommand();
-      }
-    }
-  }
-  else
-  {
-#endif
-    const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
 
-    currentLayout()->undoStack()->beginMacro( tr( "Delete Items" ) );
-    //delete selected items
-    for ( QgsLayoutItem *item : selectedItems )
-    {
-      currentLayout()->removeLayoutItem( item );
-    }
-    currentLayout()->undoStack()->endMacro();
-    currentLayout()->project()->setDirty( true );
-
-#if 0
+  currentLayout()->undoStack()->beginMacro( tr( "Delete Items" ) );
+  //delete selected items
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    currentLayout()->removeLayoutItem( item );
   }
-#endif
+  currentLayout()->undoStack()->endMacro();
+  currentLayout()->project()->setDirty( true );
 }
 
 void QgsLayoutView::groupSelectedItems()
