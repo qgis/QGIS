@@ -32,6 +32,7 @@
 #include <QStringList>
 #include <QUrl>
 #include <QUrlQuery>
+#include <QDebug>
 
 QgsRequestHandler::QgsRequestHandler( QgsServerRequest &request, QgsServerResponse &response )
   : mExceptionRaised( false )
