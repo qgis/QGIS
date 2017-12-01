@@ -235,8 +235,15 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * A list of pasted items is returned.
      *
      * \see copySelectedItems()
+     * \see hasItemsInClipboard()
      */
     QList< QgsLayoutItem * > pasteItems( PasteMode mode );
+
+    /**
+     * Returns true if the current clipboard contains layout items.
+     * \see pasteItems()
+     */
+    bool hasItemsInClipboard() const;
 
     /**
      * Returns the delta (in layout coordinates) by which to move items

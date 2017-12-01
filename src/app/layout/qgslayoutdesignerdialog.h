@@ -216,6 +216,18 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void refreshLayout();
 
+    /**
+     * Pastes items from the clipboard to the current layout.
+     * \see pasteInPlace()
+     */
+    void paste();
+
+    /**
+     * Pastes item (in place) from the clipboard to the current layout.
+     * \see paste()
+     */
+    void pasteInPlace();
+
   signals:
 
     /**
@@ -246,9 +258,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void statusMessageReceived( const QString &message );
     void dockVisibilityChanged( bool visible );
     void undoRedoOccurredForItems( const QSet< QString > itemUuids );
-
-    void paste();
-    void pasteInPlace();
 
   private:
 

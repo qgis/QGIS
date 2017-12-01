@@ -365,6 +365,19 @@ QList< QgsLayoutItem * > QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mod
   return pastedItems;
 }
 
+bool QgsLayoutView::hasItemsInClipboard() const
+{
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+      return true;
+  }
+  return false;
+}
+
 QPointF QgsLayoutView::deltaForKeyEvent( QKeyEvent *event )
 {
   // increment used for cursor key item movement
