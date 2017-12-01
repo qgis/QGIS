@@ -1199,6 +1199,21 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->scenePos().x(), 10.0 );
   QCOMPARE( item->scenePos().y(), 12.0 );
 
+  //moveBy
+  item.reset( new TestItem( &l ) );
+  item->attemptMove( QgsLayoutPoint( 5, 9, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 4, 6 ) );
+  QCOMPARE( item->positionWithUnits().x(), 5.0 );
+  QCOMPARE( item->positionWithUnits().y(), 9.0 );
+  QCOMPARE( item->scenePos().x(), 50.0 );
+  QCOMPARE( item->scenePos().y(), 90.0 );
+  item->attemptMoveBy( 5, -6 );
+  QCOMPARE( item->positionWithUnits().x(), 5.5 );
+  QCOMPARE( item->positionWithUnits().y(), 8.4 );
+  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->scenePos().x(), 55.0 );
+  QCOMPARE( item->scenePos().y(), 84.0 );
+
   //item with frame
   item.reset( new TestItem( &l ) );
   item->attemptResize( QgsLayoutSize( 2, 4 ) );

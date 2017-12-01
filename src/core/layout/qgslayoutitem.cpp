@@ -435,6 +435,21 @@ void QgsLayoutItem::attemptSetSceneRect( const QRectF &rect, bool includesFrame 
   emit sizePositionChanged();
 }
 
+void QgsLayoutItem::attemptMoveBy( double deltaX, double deltaY )
+{
+  if ( !mLayout )
+  {
+    moveBy( deltaX, deltaY );
+    return;
+  }
+
+  QgsLayoutPoint itemPos = positionWithUnits();
+  QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
+  itemPos.setX( itemPos.x() + deltaPos.x() );
+  itemPos.setY( itemPos.y() + deltaPos.y() );
+  attemptMove( itemPos );
+}
+
 int QgsLayoutItem::page() const
 {
   if ( !mLayout )

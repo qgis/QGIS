@@ -391,6 +391,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * Note that the final position of the item may not match the specified target position,
      * as data defined item position may override the specified value.
      *
+     * \see attemptMoveBy()
      * \see attemptResize()
      * \see referencePoint()
      * \see positionWithUnits()
@@ -413,6 +414,20 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see positionWithUnits()
      */
     void attemptSetSceneRect( const QRectF &rect, bool includesFrame = false );
+
+    /**
+     * Attempts to shift the item's position by a specified \a deltaX and \a deltaY, in layout
+     * units.
+     *
+     * Note that the final position of the item may not match the specified offsets,
+     * as data defined item position and size may override the specified value.
+     *
+     * \see attemptResize()
+     * \see attemptMove()
+     * \see referencePoint()
+     * \see positionWithUnits()
+     */
+    void attemptMoveBy( double deltaX, double deltaY );
 
     /**
      * Returns the item's current position, including units. The position returned
