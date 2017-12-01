@@ -278,6 +278,7 @@ QgsMapUnitScaleDialog::QgsMapUnitScaleDialog( QWidget *parent )
   connect( bbox, &QDialogButtonBox::rejected, this, &QgsMapUnitScaleDialog::reject );
   vLayout->addWidget( bbox );
   setLayout( vLayout );
+  setWindowTitle( tr( "Adjust Scaling Range" ) );
 }
 
 QgsMapUnitScale QgsMapUnitScaleDialog::getMapUnitScale() const
