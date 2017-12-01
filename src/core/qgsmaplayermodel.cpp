@@ -154,17 +154,20 @@ void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
 
 void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *> &layers )
 {
-  int offset = 0;
-  if ( mAllowEmpty )
-    offset++;
-
-  beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
-  Q_FOREACH ( QgsMapLayer *layer, layers )
+  if ( layers.count( ) )
   {
-    mLayers.append( layer );
-    mLayersChecked.insert( layer->id(), Qt::Unchecked );
+    int offset = 0;
+    if ( mAllowEmpty )
+      offset++;
+
+    beginInsertRows( QModelIndex(), mLayers.count() + offset, mLayers.count() + layers.count() - 1  + offset );
+    Q_FOREACH ( QgsMapLayer *layer, layers )
+    {
+      mLayers.append( layer );
+      mLayersChecked.insert( layer->id(), Qt::Unchecked );
+    }
+    endInsertRows();
   }
-  endInsertRows();
 }
 
 QModelIndex QgsMapLayerModel::index( int row, int column, const QModelIndex &parent ) const
