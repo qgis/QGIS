@@ -120,6 +120,10 @@ class CORE_EXPORT QgsAttributes : public QVector<QVariant>
 
     inline bool operator!=( const QgsAttributes &v ) const { return !( *this == v ); }
 };
+
+//! Hash for QgsAttributes
+CORE_EXPORT uint qHash( const QgsAttributes &attributes );
+
 #else
 typedef QVector<QVariant> QgsAttributes;
 
