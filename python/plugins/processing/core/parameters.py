@@ -146,7 +146,7 @@ def getParameterFromString(s):
                 if len(params) > 2:
                     params[2] = QgsProcessingParameterNumber.Integer if params[2].lower().endswith('int') else QgsProcessingParameterNumber.Double
                 if len(params) > 3:
-                    params[3] = float(params[3].strip()) if params[3] is not None else 0
+                    params[3] = float(params[3].strip()) if params[3] is not None else None
                 if len(params) > 4:
                     params[4] = True if params[4].lower() == 'true' else False
                 if len(params) > 5:
