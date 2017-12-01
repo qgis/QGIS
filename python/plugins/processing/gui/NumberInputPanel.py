@@ -36,6 +36,7 @@ from qgis.PyQt.QtWidgets import QDialog
 from qgis.core import (QgsExpression,
                        QgsProcessingParameterNumber,
                        QgsProcessingOutputNumber,
+                       QgsProcessingParameterDefinition,
                        QgsProcessingModelChildParameterSource)
 from qgis.gui import QgsExpressionBuilderDialog
 from processing.tools.dataobjects import createExpressionContext, createContext
@@ -154,20 +155,31 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         else:
             self.spnValue.setMinimum(-999999999)
 
+        self.allowing_null = False
         # set default value
+        if param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+            self.spnValue.setShowClearButton(True)
+            min = self.spnValue.minimum() - 1
+            self.spnValue.setMinimum(min)
+            self.spnValue.setValue(min)
+            self.spnValue.setSpecialValueText(self.tr('Not set'))
+            self.allowing_null = True
+
         if param.defaultValue() is not None:
             self.setValue(param.defaultValue())
-            try:
-                self.spnValue.setClearValue(float(param.defaultValue()))
-            except:
-                pass
+            if not self.allowing_null:
+                try:
+                    self.spnValue.setClearValue(float(param.defaultValue()))
+                except:
+                    pass
         elif self.param.minimum() is not None:
             try:
                 self.setValue(float(self.param.minimum()))
-                self.spnValue.setClearValue(float(self.param.minimum()))
+                if not self.allowing_null:
+                    self.spnValue.setClearValue(float(self.param.minimum()))
             except:
                 pass
-        else:
+        elif not self.allowing_null:
             self.setValue(0)
             self.spnValue.setClearValue(0)
 
@@ -179,7 +191,10 @@ class NumberInputPanel(NUMBER_BASE, NUMBER_WIDGET):
         self.spnValue.valueChanged.connect(lambda: self.hasChanged.emit())
 
     def getValue(self):
-        return self.spnValue.value()
+        if self.allowing_null and self.spnValue.value() == self.spnValue.minimum():
+            return None
+        else:
+            return self.spnValue.value()
 
     def setValue(self, value):
         try:
