@@ -2003,7 +2003,7 @@ QString QgsProcessingParameterNumber::toolTip() const
 {
   QString text = QgsProcessingParameterDefinition::toolTip();
   QStringList parts;
-  if ( mMin > -DBL_MAX )
+  if ( mMin > -DBL_MAX + 1 )
     parts << QObject::tr( "Minimum value: %1" ).arg( mMin );
   if ( mMax < DBL_MAX )
     parts << QObject::tr( "Maximum value: %1" ).arg( mMax );

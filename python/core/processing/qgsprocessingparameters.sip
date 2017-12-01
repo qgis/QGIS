@@ -1129,7 +1129,7 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
                                            Type type = Integer,
                                            const QVariant &defaultValue = QVariant(),
                                            bool optional = false,
-                                           double minValue = -DBL_MAX,
+                                           double minValue = -DBL_MAX + 1,
                                            double maxValue = DBL_MAX
                                          );
 %Docstring
