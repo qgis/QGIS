@@ -9128,7 +9128,7 @@ void QgisApp::onProjectCrsChanged()
   // handle datum transforms
   QList<QgsCoordinateReferenceSystem> transformsToAskFor = QList<QgsCoordinateReferenceSystem>();
   QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
-  for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
+  for ( QMap<QString, QgsMapLayer *>::const_iterator it = layers.constBegin(); it != layers.constEnd(); ++it )
   {
     if ( !transformsToAskFor.contains( it.value()->crs() ) &&
          it.value()->crs() != QgsProject::instance()->crs() &&

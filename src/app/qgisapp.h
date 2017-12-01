@@ -1615,7 +1615,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     void onFocusChanged( QWidget *oldWidget, QWidget *newWidget );
 
-    //! handles project crs changes
+    //! handle project crs changes
     void onProjectCrsChanged();
 
   signals:
