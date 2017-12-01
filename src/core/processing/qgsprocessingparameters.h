@@ -1099,7 +1099,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
                                            Type type = Integer,
                                            const QVariant &defaultValue = QVariant(),
                                            bool optional = false,
-                                           double minValue = -DBL_MAX,
+                                           double minValue = -DBL_MAX + 1,
                                            double maxValue = DBL_MAX
                                          );
 
@@ -1159,7 +1159,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
 
   private:
 
-    double mMin = -DBL_MAX;
+    double mMin = -DBL_MAX + 1;
     double mMax = DBL_MAX;
     Type mDataType = Integer;
 };
