@@ -34,6 +34,7 @@
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>
+#include <QClipboard>
 
 #define MIN_VIEW_SCALE 0.05
 #define MAX_VIEW_SCALE 1000.0
@@ -277,6 +278,91 @@ void QgsLayoutView::resizeSelectedItems( QgsLayoutAligner::Resize resize )
 {
   const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
   QgsLayoutAligner::resizeItems( currentLayout(), selectedItems, resize );
+}
+
+void QgsLayoutView::copySelectedItems( QgsLayoutView::ClipboardOperation operation )
+{
+  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  QgsReadWriteContext context;
+  QDomDocument doc;
+  QDomElement documentElement = doc.createElement( QStringLiteral( "LayoutItemClipboard" ) );
+  if ( operation == ClipboardCut )
+    currentLayout()->undoStack()->beginMacro( tr( "Cut Items" ) );
+  for ( QgsLayoutItem *item : selectedItems )
+  {
+    // copy every child from a group
+    if ( QgsLayoutItemGroup *itemGroup = qobject_cast<QgsLayoutItemGroup *>( item ) )
+    {
+      const QList<QgsLayoutItem *> groupedItems = itemGroup->items();
+      for ( const QgsLayoutItem *groupedItem : groupedItems )
+      {
+        groupedItem->writeXml( documentElement, doc, context );
+      }
+    }
+    item->writeXml( documentElement, doc, context );
+    if ( operation == ClipboardCut )
+      currentLayout()->removeLayoutItem( item );
+  }
+  doc.appendChild( documentElement );
+  if ( operation == ClipboardCut )
+  {
+    currentLayout()->undoStack()->endMacro();
+    currentLayout()->update();
+  }
+
+  //remove the UUIDs since we don't want any duplicate UUID
+  QDomNodeList itemsNodes = doc.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  for ( int i = 0; i < itemsNodes.count(); ++i )
+  {
+    QDomNode itemNode = itemsNodes.at( i );
+    if ( itemNode.isElement() )
+    {
+      itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+    }
+  }
+
+  QMimeData *mimeData = new QMimeData;
+  mimeData->setData( QStringLiteral( "text/xml" ), doc.toByteArray() );
+  QClipboard *clipboard = QApplication::clipboard();
+  clipboard->setMimeData( mimeData );
+}
+
+QList< QgsLayoutItem * > QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mode )
+{
+  QList< QgsLayoutItem * > pastedItems;
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+    {
+      QPointF pt;
+      switch ( mode )
+      {
+        case PasteModeCursor:
+        case PasteModeInPlace:
+        {
+          // place items at cursor position
+          pt = mapToScene( mapFromGlobal( QCursor::pos() ) );
+          break;
+        }
+        case PasteModeCenter:
+        {
+          // place items in center of viewport
+          pt = mapToScene( viewport()->rect().center() );
+          break;
+        }
+      }
+      bool pasteInPlace = ( mode == PasteModeInPlace );
+      currentLayout()->undoStack()->beginMacro( tr( "Paste Items" ) );
+      currentLayout()->undoStack()->beginCommand( currentLayout(), tr( "Paste Items" ) );
+      pastedItems = currentLayout()->addItemsFromXml( docElem, doc, QgsReadWriteContext(), &pt, pasteInPlace );
+      currentLayout()->undoStack()->endCommand();
+      currentLayout()->undoStack()->endMacro();
+    }
+  }
+  return pastedItems;
 }
 
 QPointF QgsLayoutView::deltaForKeyEvent( QKeyEvent *event )

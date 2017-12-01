@@ -24,6 +24,19 @@ class QgsLayoutView: QGraphicsView
 %End
   public:
 
+    enum ClipboardOperation
+    {
+      ClipboardCut,
+      ClipboardCopy,
+    };
+
+    enum PasteMode
+    {
+      PasteModeCursor,
+      PasteModeCenter,
+      PasteModeInPlace,
+    };
+
     QgsLayoutView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsLayoutView.
@@ -177,6 +190,22 @@ class QgsLayoutView: QGraphicsView
  Resizes all selected items using the specified ``resize`` mode.
 .. seealso:: :py:func:`alignSelectedItems()`
 .. seealso:: :py:func:`distributeSelectedItems()`
+%End
+
+    void copySelectedItems( ClipboardOperation operation );
+%Docstring
+ Cuts or copies the selected items, respecting the specified ``operation``.
+.. seealso:: pasteItems()
+%End
+
+    QList< QgsLayoutItem * > pasteItems( PasteMode mode );
+%Docstring
+ Pastes items from clipboard, using the specified ``mode``.
+
+ A list of pasted items is returned.
+
+.. seealso:: copySelectedItems()
+ :rtype: list of QgsLayoutItem
 %End
 
     QPointF deltaForKeyEvent( QKeyEvent *event );

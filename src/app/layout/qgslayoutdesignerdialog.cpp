@@ -157,6 +157,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionShowBoxes, &QAction::triggered, this, &QgsLayoutDesignerDialog::showBoxes );
   connect( mActionShowPage, &QAction::triggered, this, &QgsLayoutDesignerDialog::showPages );
 
+  connect( mActionPasteInPlace, &QAction::triggered, this, &QgsLayoutDesignerDialog::pasteInPlace );
+
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
   mView->setContentsMargins( 0, 0, 0, 0 );
@@ -404,6 +406,36 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->ungroupSelectedItems();
   } );
+
+  //cut/copy/paste actions. Note these are not included in the ui file
+  //as ui files have no support for QKeySequence shortcuts
+  mActionCut = new QAction( tr( "Cu&t" ), this );
+  mActionCut->setShortcuts( QKeySequence::Cut );
+  mActionCut->setStatusTip( tr( "Cut" ) );
+  mActionCut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCut.svg" ) ) );
+  connect( mActionCut, &QAction::triggered, this, [ = ]
+  {
+    mView->copySelectedItems( QgsLayoutView::ClipboardCut );
+  } );
+
+  mActionCopy = new QAction( tr( "&Copy" ), this );
+  mActionCopy->setShortcuts( QKeySequence::Copy );
+  mActionCopy->setStatusTip( tr( "Copy" ) );
+  mActionCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
+  connect( mActionCopy, &QAction::triggered, this, [ = ]
+  {
+    mView->copySelectedItems( QgsLayoutView::ClipboardCopy );
+  } );
+
+  mActionPaste = new QAction( tr( "&Paste" ), this );
+  mActionPaste->setShortcuts( QKeySequence::Paste );
+  mActionPaste->setStatusTip( tr( "Paste" ) );
+  mActionPaste->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ) );
+  connect( mActionPaste, &QAction::triggered, this, &QgsLayoutDesignerDialog::paste );
+
+  menuEdit->insertAction( mActionPasteInPlace, mActionCut );
+  menuEdit->insertAction( mActionPasteInPlace, mActionCopy );
+  menuEdit->insertAction( mActionPasteInPlace, mActionPaste );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
@@ -1098,6 +1130,41 @@ void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> item
     showItemOptions( focusItem );
 }
 
+void QgsLayoutDesignerDialog::paste()
+{
+  QPointF pt = mView->mapToScene( mView->mapFromGlobal( QCursor::pos() ) );
+  //TODO - use a better way of determining whether paste was triggered by keystroke
+  //or menu item
+  QList< QgsLayoutItem * > items;
+  if ( ( pt.x() < 0 ) || ( pt.y() < 0 ) )
+  {
+    //action likely triggered by menu, paste items in center of screen
+    items = mView->pasteItems( QgsLayoutView::PasteModeCenter );
+  }
+  else
+  {
+    //action likely triggered by keystroke, paste items at cursor position
+    items = mView->pasteItems( QgsLayoutView::PasteModeCursor );
+  }
+
+  whileBlocking( currentLayout() )->deselectAll();
+  selectItems( items );
+
+  //switch back to select tool so that pasted items can be moved/resized (#8958)
+  mView->setTool( mSelectTool );
+}
+
+void QgsLayoutDesignerDialog::pasteInPlace()
+{
+  QList< QgsLayoutItem * > items = mView->pasteItems( QgsLayoutView::PasteModeInPlace );
+
+  whileBlocking( currentLayout() )->deselectAll();
+  selectItems( items );
+
+  //switch back to select tool so that pasted items can be moved/resized (#8958)
+  mView->setTool( mSelectTool );
+}
+
 QgsLayoutView *QgsLayoutDesignerDialog::view()
 {
   return mView;
@@ -1176,6 +1243,28 @@ void QgsLayoutDesignerDialog::initializeRegistry()
 
   QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), false, QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
 
+}
+
+void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
+{
+  for ( QGraphicsItem *item : items )
+  {
+    if ( item )
+    {
+      item->setSelected( true );
+    }
+  }
+
+  //update item panel
+  const QList<QgsLayoutItem *> selectedItemList = currentLayout()->selectedLayoutItems();
+  if ( !selectedItemList.isEmpty() )
+  {
+    showItemOptions( selectedItemList.at( 0 ) );
+  }
+  else
+  {
+    showItemOptions( nullptr );
+  }
 }
 
 

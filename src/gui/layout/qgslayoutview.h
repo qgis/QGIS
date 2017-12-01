@@ -55,6 +55,21 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
 
   public:
 
+    //! Clipboard operations
+    enum ClipboardOperation
+    {
+      ClipboardCut, //!< Cut items
+      ClipboardCopy, //!< Copy items
+    };
+
+    //! Paste modes
+    enum PasteMode
+    {
+      PasteModeCursor, //!< Paste items at cursor position
+      PasteModeCenter, //!< Paste items in center of view
+      PasteModeInPlace, //!< Paste items in place
+    };
+
     /**
      * Constructor for QgsLayoutView.
      */
@@ -207,6 +222,21 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
      * \see distributeSelectedItems()
      */
     void resizeSelectedItems( QgsLayoutAligner::Resize resize );
+
+    /**
+     * Cuts or copies the selected items, respecting the specified \a operation.
+     * \see pasteItems()
+     */
+    void copySelectedItems( ClipboardOperation operation );
+
+    /**
+     * Pastes items from clipboard, using the specified \a mode.
+     *
+     * A list of pasted items is returned.
+     *
+     * \see copySelectedItems()
+     */
+    QList< QgsLayoutItem * > pasteItems( PasteMode mode );
 
     /**
      * Returns the delta (in layout coordinates) by which to move items
