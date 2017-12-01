@@ -1966,36 +1966,70 @@ bool QgsOgrProvider::createSpatialIndex()
   if ( !doInitialActionsForEdition() )
     return false;
 
-  if ( mGDALDriverName != QLatin1String( "ESRI Shapefile" ) )
-    return false;
-
   QByteArray layerName = mOgrOrigLayer->name();
+  if ( mGDALDriverName == QLatin1String( "ESRI Shapefile" ) )
+  {
+    QByteArray sql = QByteArray( "CREATE SPATIAL INDEX ON " ) + quotedIdentifier( layerName );  // quote the layer name so spaces are handled
+    QgsDebugMsg( QString( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
+    mOgrOrigLayer->ExecuteSQLNoReturn( sql );
 
-  QByteArray sql = QByteArray( "CREATE SPATIAL INDEX ON " ) + quotedIdentifier( layerName );  // quote the layer name so spaces are handled
-  QgsDebugMsg( QString( "SQL: %1" ).arg( QString::fromUtf8( sql ) ) );
-  mOgrOrigLayer->ExecuteSQLNoReturn( sql );
+    QFileInfo fi( mFilePath );     // to get the base name
+    //find out, if the .qix file is there
+    return QFileInfo::exists( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".qix" ) );
+  }
+  else if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+            mGDALDriverName == QLatin1String( "SQLite" ) )
+  {
+    QMutex *mutex = nullptr;
+    OGRLayerH layer = mOgrOrigLayer->getHandleAndMutex( mutex );
+    QMutexLocker locker( mutex );
 
-  QFileInfo fi( mFilePath );     // to get the base name
-  //find out, if the .qix file is there
-  QFile indexfile( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".qix" ) );
-  return indexfile.exists();
+    QByteArray sql = QByteArray( "SELECT CreateSpatialIndex(" + quotedIdentifier( layerName ) + ","
+                                 + quotedIdentifier( OGR_L_GetGeometryColumn( layer ) ) + ") " ); // quote the layer name so spaces are handled
+    mOgrOrigLayer->ExecuteSQLNoReturn( sql );
+    return true;
+  }
+  return false;
+}
+
+QString createIndexName( QString tableName, QString field )
+{
+  QRegularExpression safeExp( QStringLiteral( "[^a-zA-Z0-9]" ) );
+  tableName.replace( safeExp, QStringLiteral( "_" ) );
+  field.replace( safeExp, QStringLiteral( "_" ) );
+  return tableName + "_" + field + "_idx";
 }
 
 bool QgsOgrProvider::createAttributeIndex( int field )
 {
+  if ( field < 0 || field >= mAttributeFields.count() )
+    return false;
+
   if ( !doInitialActionsForEdition() )
     return false;
 
   QByteArray quotedLayerName = quotedIdentifier( mOgrOrigLayer->name() );
-  QByteArray dropSql = "DROP INDEX ON " + quotedLayerName;
-  mOgrOrigLayer->ExecuteSQLNoReturn( dropSql );
-  QByteArray createSql = "CREATE INDEX ON " + quotedLayerName + " USING " + textEncoding()->fromUnicode( fields().at( field ).name() );
-  mOgrOrigLayer->ExecuteSQLNoReturn( createSql );
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+       mGDALDriverName == QLatin1String( "SQLite" ) )
+  {
+    QString indexName = createIndexName( mOgrOrigLayer->name(), fields().at( field ).name() );
+    QByteArray createSql = "CREATE INDEX IF NOT EXISTS " + textEncoding()->fromUnicode( indexName ) + " ON " + quotedLayerName + " (" + textEncoding()->fromUnicode( fields().at( field ).name() ) + ")";
+    mOgrOrigLayer->ExecuteSQLNoReturn( createSql );
+    return true;
+  }
+  else
+  {
+    QByteArray dropSql = "DROP INDEX ON " + quotedLayerName;
+    mOgrOrigLayer->ExecuteSQLNoReturn( dropSql );
+    QByteArray createSql = "CREATE INDEX ON " + quotedLayerName + " USING " + textEncoding()->fromUnicode( fields().at( field ).name() );
+    mOgrOrigLayer->ExecuteSQLNoReturn( createSql );
 
-  QFileInfo fi( mFilePath );     // to get the base name
-  //find out, if the .idm file is there
-  QFile indexfile( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".idm" ) );
-  return indexfile.exists();
+    QFileInfo fi( mFilePath );     // to get the base name
+    //find out, if the .idm/.ind file is there
+    QString idmFile( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".idm" ) );
+    QString indFile( fi.path().append( '/' ).append( fi.completeBaseName() ).append( ".ind" ) );
+    return QFile::exists( idmFile ) || QFile::exists( indFile );
+  }
 }
 
 bool QgsOgrProvider::deleteFeatures( const QgsFeatureIds &id )
@@ -2240,6 +2274,12 @@ void QgsOgrProvider::computeCapabilities()
         // on readonly shapes OGR reports that it can delete features although it can't RandomWrite
         ability &= ~( AddAttributes | DeleteFeatures );
       }
+    }
+    else if ( mGDALDriverName == QLatin1String( "GPKG" ) ||
+              mGDALDriverName == QLatin1String( "SQLite" ) )
+    {
+      ability |= CreateSpatialIndex;
+      ability |= CreateAttributeIndex;
     }
 
     /* Curve geometries are available in some drivers starting with GDAL 2.0 */
