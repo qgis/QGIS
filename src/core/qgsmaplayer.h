@@ -1095,6 +1095,18 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Write style manager's configuration (if exists). To be called by subclasses.
     void writeStyleManager( QDomNode &layerNode, QDomDocument &doc ) const;
 
+    /**
+     * Write style data common to all layer types
+     * \since QGIS 3.0
+     */
+    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Read style data common to all layer types
+     * \since QGIS 3.0
+     */
+    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context );
+
 #ifndef SIP_RUN
 #if 0
     //! Debugging member - invoked when a connect() is made to this object
