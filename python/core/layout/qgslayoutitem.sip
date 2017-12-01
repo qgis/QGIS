@@ -185,6 +185,12 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 
     ~QgsLayoutItem();
 
+    virtual void cleanup();
+%Docstring
+ Called just before a batch of items are deleted, allowing them to run cleanup
+ tasks.
+%End
+
     virtual int type() const;
 
 %Docstring

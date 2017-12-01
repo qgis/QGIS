@@ -247,8 +247,8 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
 #if 0 // TODO
   map->setNewExtent( extent );
   map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
-  composition->addComposerMap( map );
 #endif
+  l.addLayoutItem( map );
   l.setReferenceMap( map );
 
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, &p );

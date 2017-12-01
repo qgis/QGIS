@@ -35,7 +35,8 @@ class CORE_EXPORT QgsLayoutItemGroup: public QgsLayoutItem
      * Constructor for QgsLayoutItemGroup, belonging to the specified \a layout.
      */
     explicit QgsLayoutItemGroup( QgsLayout *layout );
-    ~QgsLayoutItemGroup();
+
+    void cleanup() override;
 
     int type() const override;
     QString displayName() const override;

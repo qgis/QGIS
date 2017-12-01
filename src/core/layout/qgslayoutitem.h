@@ -219,6 +219,12 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     ~QgsLayoutItem();
 
     /**
+     * Called just before a batch of items are deleted, allowing them to run cleanup
+     * tasks.
+     */
+    virtual void cleanup();
+
+    /**
      * Return unique graphics item type identifier.
      *
      * Plugin based subclasses should return an identifier greater than QgsLayoutItemRegistry::PluginItem.

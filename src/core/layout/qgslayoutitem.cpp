@@ -79,6 +79,11 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
 
 QgsLayoutItem::~QgsLayoutItem()
 {
+  cleanup();
+}
+
+void QgsLayoutItem::cleanup()
+{
   if ( mLayout && mLayoutManagesZValue )
   {
     mLayout->itemsModel()->removeItem( this );

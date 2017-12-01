@@ -35,7 +35,7 @@ class QgsLayoutPolygonWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private:
-    QgsLayoutItemPolygon *mPolygon = nullptr;
+    QPointer< QgsLayoutItemPolygon > mPolygon;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Sets the GUI elements to the currentValues of mComposerShape

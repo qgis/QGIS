@@ -106,8 +106,8 @@ class QgsLayoutMapGridWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLay
     void markerSymbolChanged();
 
   private:
-    QgsLayoutItemMap *mMap = nullptr;
-    QgsLayoutItemMapGrid *mMapGrid = nullptr;
+    QPointer< QgsLayoutItemMap > mMap;
+    QPointer< QgsLayoutItemMapGrid > mMapGrid;
 
     //! Blocks / unblocks the signals of all GUI elements
     void blockAllSignals( bool b );

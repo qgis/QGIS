@@ -41,6 +41,7 @@ QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
 QgsLayoutItemRegistry::~QgsLayoutItemRegistry()
 {
   qDeleteAll( mMetadata );
+  qDeleteAll( mMultiFrameMetadata );
 }
 
 bool QgsLayoutItemRegistry::populate()
