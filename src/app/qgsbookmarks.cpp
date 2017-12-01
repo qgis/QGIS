@@ -30,8 +30,12 @@
 #include <QSqlQuery>
 #include <QSqlRecord>
 #include <QModelIndex>
+#include <QDoubleSpinBox>
 #include <QAbstractTableModel>
 #include <QToolButton>
+
+
+const int QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES = 6;
 
 QgsBookmarks::QgsBookmarks( QWidget *parent )
   : QgsDockWidget( parent )
@@ -105,6 +109,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   mProxyModel->setSourceModel( mModel );
 
   lstBookmarks->setModel( mProxyModel );
+  lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate );
 
   connect( mModel, &QgsMergedBookmarksTableModel::layoutChanged, mProxyModel, &QgsBookmarksProxyModel::_resetModel );
 
@@ -755,3 +760,23 @@ QVariant QgsBookmarksProxyModel::headerData( int section, Qt::Orientation orient
   return sourceModel()->headerData( section, orientation, role );
 }
 
+QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, const QLocale &locale ) const
+{
+  if ( value.userType() == QVariant::Double )
+  {
+    return locale.toString( value.toDouble(), 'f', QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES );
+  }
+  else
+  {
+    return QStyledItemDelegate::displayText( value, locale );
+  }
+}
+
+QWidget *QgsDoubleSpinBoxBookmarksDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
+{
+  QWidget *widget = QStyledItemDelegate::createEditor( parent, option, index );
+  QDoubleSpinBox *spinbox = qobject_cast<QDoubleSpinBox *>( widget );
+  if ( spinbox )
+    spinbox->setDecimals( QgsDoubleSpinBoxBookmarksDelegate::DECIMAL_PLACES );
+  return widget;
+}
