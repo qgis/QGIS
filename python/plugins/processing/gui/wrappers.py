@@ -708,8 +708,6 @@ class MapLayerWidgetWrapper(WidgetWrapper):
             layout.addWidget(btn)
 
             widget.setLayout(layout)
-            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                self.combo.setAllowEmptyLayer(True)
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
                 self.combo.setShowCrs(True)
 
@@ -719,6 +717,10 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 self.combo.setLayer(iface.activeLayer())
             except:
                 pass
+
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                self.combo.setAllowEmptyLayer(True)
+                self.combo.setLayer(None)
 
             self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
@@ -907,14 +909,16 @@ class FeatureSourceWidgetWrapper(WidgetWrapper):
             except:
                 pass
 
-            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                self.combo.setAllowEmptyLayer(True)
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
                 self.combo.setShowCrs(True)
 
             if filters:
                 self.combo.setFilters(filters)
             self.combo.setExcludedProviders(['grass'])
+
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                self.combo.setAllowEmptyLayer(True)
+                self.combo.setLayer(None)
 
             self.combo.layerChanged.connect(self.layerChanged)
             return widget
@@ -1179,8 +1183,6 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
 
             if ProcessingConfig.getSetting(ProcessingConfig.SHOW_CRS_DEF):
                 self.combo.setShowCrs(True)
-            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
-                self.combo.setAllowEmptyLayer(True)
 
             filters = QgsMapLayerProxyModel.Filters()
             if QgsProcessing.TypeVectorAnyGeometry in self.param.dataTypes() or len(self.param.dataTypes()) == 0:
@@ -1200,6 +1202,10 @@ class VectorLayerWidgetWrapper(WidgetWrapper):
                     self.combo.setLayer(iface.activeLayer())
             except:
                 pass
+
+            if self.param.flags() & QgsProcessingParameterDefinition.FlagOptional:
+                self.combo.setAllowEmptyLayer(True)
+                self.combo.setLayer(None)
 
             self.combo.currentIndexChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
             self.combo.currentTextChanged.connect(lambda: self.widgetValueHasChanged.emit(self))
