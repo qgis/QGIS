@@ -451,6 +451,21 @@ tests:
         name: expected/autoincrement_field_field_name.gml
         type: vector
 
+  - algorithm: native:addautoincrementalfield
+    name: Add incremental field (grouped)
+    params:
+      FIELD_NAME: AUTO
+      GROUP_FIELDS:
+      - intval
+      - name
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+      START: 6
+    results:
+      OUTPUT:
+        name: expected/autoincrement_grouped.gml
+        type: vector
 
   - algorithm: native:dissolve
     name: Dissolve using field
