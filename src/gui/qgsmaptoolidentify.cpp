@@ -14,7 +14,6 @@
  ***************************************************************************/
 
 #include "qgsapplication.h"
-#include "qgscursors.h"
 #include "qgsdistancearea.h"
 #include "qgsfeature.h"
 #include "qgsfeatureiterator.h"
@@ -56,9 +55,7 @@ QgsMapToolIdentify::QgsMapToolIdentify( QgsMapCanvas *canvas )
   , mLastMapUnitsPerPixel( -1.0 )
   , mCoordinatePrecision( 6 )
 {
-  // set cursor
-  QPixmap myIdentifyQPixmap = QPixmap( ( const char ** ) identify_cursor );
-  mCursor = QCursor( myIdentifyQPixmap, 1, 1 );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Identify ) );
 }
 
 QgsMapToolIdentify::~QgsMapToolIdentify()

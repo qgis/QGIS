@@ -481,6 +481,70 @@ QIcon QgsApplication::getThemeIcon( const QString &name )
   return icon;
 }
 
+QCursor QgsApplication::getThemeCursor( const Cursor &cursor )
+{
+  QgsApplication *app = instance();
+  if ( app && app->mCursorCache.contains( cursor ) )
+    return app->mCursorCache.value( cursor );
+
+  // All calculations are done on 32x32 icons
+  // Defaults to center, individual cursors may override
+  int activeX = 16;
+  int activeY = 16;
+
+  QString name;
+  switch ( cursor )
+  {
+    case ZoomIn:
+      name = QStringLiteral( "mZoomIn.svg" );
+      activeX = 13;
+      activeY = 13;
+      break;
+    case ZoomOut:
+      name = QStringLiteral( "mZoomOut.svg" );
+      activeX = 13;
+      activeY = 13;
+      break;
+    case Identify:
+      activeX = 3;
+      activeY = 6;
+      name = QStringLiteral( "mIdentify.svg" );
+      break;
+    case CrossHair:
+      name = QStringLiteral( "mCrossHair.svg" );
+      break;
+    case CapturePoint:
+      name = QStringLiteral( "mCapturePoint.svg" );
+      break;
+    case Select:
+      name = QStringLiteral( "mSelect.svg" );
+      activeX = 6;
+      activeY = 6;
+      break;
+    case Sampler:
+      activeX = 5;
+      activeY = 5;
+      name = QStringLiteral( "mSampler.svg" );
+      break;
+      // No default
+  }
+  // It should never get here!
+  Q_ASSERT( ! name.isEmpty( ) );
+
+  QIcon icon = getThemeIcon( QStringLiteral( "cursors" ) + QDir::separator() + name );
+  QCursor _cursor;
+  // Check if an icon exists for this cursor (the O.S. default cursor will be used if it does not)
+  if ( ! icon.isNull( ) )
+  {
+    // Apply scaling
+    float scale( ( float ) app->fontMetrics().height() / 32 * 1.5 ) ; // Make them bigger to match 24x24
+    _cursor = QCursor( icon.pixmap( std::ceil( scale * 32 ), std::ceil( scale * 32 ) ), std::ceil( scale * activeX ), std::ceil( scale * activeY ) );
+  }
+  if ( app )
+    app->mCursorCache.insert( cursor, _cursor );
+  return _cursor;
+}
+
 // TODO: add some caching mechanism ?
 QPixmap QgsApplication::getThemePixmap( const QString &name )
 {

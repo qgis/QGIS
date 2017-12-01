@@ -45,7 +45,6 @@
 #include "qgsaddremovemultiframecommand.h"
 #include "qgspaperitem.h"
 #include "qgsmapcanvas.h"
-#include "qgscursors.h"
 #include "qgscomposerutils.h"
 #include "qgssettings.h"
 
@@ -480,11 +479,9 @@ QCursor QgsComposerView::defaultCursorForTool( Tool currentTool )
     case Select:
       return Qt::ArrowCursor;
 
+    // Use custom QGIS cursor for ZoomIn
     case Zoom:
-    {
-      QPixmap myZoomQPixmap = QPixmap( ( const char ** )( zoom_in ) );
-      return  QCursor( myZoomQPixmap, 7, 7 );
-    }
+      return QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn );
 
     case Pan:
       return Qt::OpenHandCursor;
@@ -492,16 +489,15 @@ QCursor QgsComposerView::defaultCursorForTool( Tool currentTool )
     case MoveItemContent:
       return Qt::ArrowCursor;
 
+    // Use QGIS custom cursor for the following
     case EditNodesItem:
-      return Qt::CrossCursor;
-
+    case AddPolyline:
     case AddArrow:
     case AddMap:
     case AddRectangle:
     case AddTriangle:
     case AddEllipse:
     case AddPolygon:
-    case AddPolyline:
     case AddHtml:
     case AddLabel:
     case AddScalebar:
@@ -509,10 +505,7 @@ QCursor QgsComposerView::defaultCursorForTool( Tool currentTool )
     case AddPicture:
     case AddTable:
     case AddAttributeTable:
-    {
-      QPixmap myCrosshairQPixmap = QPixmap( ( const char ** )( cross_hair_cursor ) );
-      return QCursor( myCrosshairQPixmap, 8, 8 );
-    }
+      return QgsApplication::getThemeCursor( QgsApplication::Cursor::CrossHair );
   }
   return Qt::ArrowCursor;
 }
@@ -1688,10 +1681,9 @@ void QgsComposerView::keyPressEvent( QKeyEvent *e )
     else
     {
       //both control and space pressed
-      //set cursor to zoom in/out depending on shift key status
-      QPixmap myZoomQPixmap = QPixmap( ( const char ** )( ( e->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
-      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
-      viewport()->setCursor( zoomCursor );
+      viewport()->setCursor( ( e->modifiers() & Qt::AltModifier ) ?
+                             QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                             QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
     }
     return;
   }
@@ -1724,9 +1716,9 @@ void QgsComposerView::keyPressEvent( QKeyEvent *e )
       mPreviousTool = mCurrentTool;
       setCurrentTool( Zoom );
       //set cursor to zoom in/out depending on alt key status
-      QPixmap myZoomQPixmap = QPixmap( ( const char ** )( ( e->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
-      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
-      viewport()->setCursor( zoomCursor );
+      viewport()->setCursor( ( e->modifiers() & Qt::AltModifier ) ?
+                             QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                             QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
       return;
     }
   }
@@ -1736,9 +1728,9 @@ void QgsComposerView::keyPressEvent( QKeyEvent *e )
     //using the zoom tool, respond to changes in alt key status and update mouse cursor accordingly
     if ( ! e->isAutoRepeat() )
     {
-      QPixmap myZoomQPixmap = QPixmap( ( const char ** )( ( e->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
-      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
-      viewport()->setCursor( zoomCursor );
+      viewport()->setCursor( ( e->modifiers() & Qt::AltModifier ) ?
+                             QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                             QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
     }
     return;
   }
@@ -1925,9 +1917,9 @@ void QgsComposerView::keyReleaseEvent( QKeyEvent *e )
     //if zoom tool is active, respond to changes in the alt key status and update cursor accordingly
     if ( ! e->isAutoRepeat() )
     {
-      QPixmap myZoomQPixmap = QPixmap( ( const char ** )( ( e->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
-      QCursor zoomCursor = QCursor( myZoomQPixmap, 7, 7 );
-      viewport()->setCursor( zoomCursor );
+      viewport()->setCursor( ( e->modifiers() & Qt::AltModifier ) ?
+                             QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                             QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
     }
     return;
   }

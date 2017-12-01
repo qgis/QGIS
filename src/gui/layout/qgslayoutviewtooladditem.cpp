@@ -15,7 +15,6 @@
 
 #include "qgslayoutviewtooladditem.h"
 #include "qgsapplication.h"
-#include "qgscursors.h"
 #include "qgslayoutview.h"
 #include "qgslayout.h"
 #include "qgslayoutitemregistry.h"
@@ -35,8 +34,7 @@ QgsLayoutViewToolAddItem::QgsLayoutViewToolAddItem( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Add item" ) )
 {
   setFlags( QgsLayoutViewTool::FlagSnaps );
-  QPixmap crosshairQPixmap = QPixmap( ( const char ** )( cross_hair_cursor ) );
-  setCursor( QCursor( crosshairQPixmap, 8, 8 ) );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::CrossHair ) );
 }
 
 void QgsLayoutViewToolAddItem::setItemMetadataId( int metadataId )

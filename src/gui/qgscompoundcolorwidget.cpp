@@ -17,7 +17,6 @@
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerutils.h"
-#include "qgscursors.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 
@@ -28,6 +27,7 @@
 #include <QMessageBox>
 #include <QDesktopWidget>
 #include <QMouseEvent>
+#include <QScreen>
 #include <QInputDialog>
 #include <QVBoxLayout>
 
@@ -515,8 +515,7 @@ void QgsCompoundColorWidget::mAddCustomColorButton_clicked()
 void QgsCompoundColorWidget::mSampleButton_clicked()
 {
   //activate picker color
-  QPixmap samplerPixmap = QPixmap( ( const char ** ) sampler_cursor );
-  setCursor( QCursor( samplerPixmap, 0, 0 ) );
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
   grabMouse();
   grabKeyboard();
   mPickingColor = true;
@@ -542,6 +541,18 @@ void QgsCompoundColorWidget::mActionShowInButtons_toggled( bool state )
   {
     scheme->setShowSchemeInMenu( state );
   }
+}
+
+QScreen *QgsCompoundColorWidget::findScreenAt( const QPoint &pos )
+{
+  for ( QScreen *screen : QGuiApplication::screens() )
+  {
+    if ( screen->geometry().contains( pos ) )
+    {
+      return screen;
+    }
+  }
+  return nullptr;
 }
 
 void QgsCompoundColorWidget::saveSettings()
@@ -696,8 +707,16 @@ QColor QgsCompoundColorWidget::averageColor( const QImage &image ) const
 QColor QgsCompoundColorWidget::sampleColor( QPoint point ) const
 {
   int sampleRadius = mSpinBoxRadius->value() - 1;
-  QPixmap snappedPixmap = QPixmap::grabWindow( QApplication::desktop()->winId(), point.x() - sampleRadius, point.y() - sampleRadius,
-                          1 + sampleRadius * 2, 1 + sampleRadius * 2 );
+  QScreen *screen = findScreenAt( point );
+  if ( ! screen )
+  {
+    return QColor();
+  }
+  QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(),
+                          point.x() - sampleRadius,
+                          point.y() - sampleRadius,
+                          1 + sampleRadius * 2,
+                          1 + sampleRadius * 2 );
   QImage snappedImage = snappedPixmap.toImage();
   //scan all pixels and take average color
   return averageColor( snappedImage );

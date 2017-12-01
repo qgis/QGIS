@@ -345,6 +345,26 @@ Returns the path to the default theme directory.
  :rtype: QIcon
 %End
 
+    enum Cursor
+    {
+      ZoomIn,
+      ZoomOut,
+      Identify,
+      CrossHair,
+      CapturePoint,
+      Select,
+      Sampler,
+    };
+
+    static QCursor getThemeCursor( const Cursor &cursor );
+%Docstring
+ Helper to get a theme cursor. It will fall back to the
+ default theme if the active theme does not have the required icon.
+ Cursors are automatically scaled to look like a 16px cursor on 96dpi
+ screens.
+ :rtype: QCursor
+%End
+
     static QPixmap getThemePixmap( const QString &name );
 %Docstring
  Helper to get a theme icon as a pixmap. It will fall back to the

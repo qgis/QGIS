@@ -18,15 +18,12 @@
 #include "qgslayoutview.h"
 #include "qgslayoutviewrubberband.h"
 #include "qgsrectangle.h"
-#include "qgscursors.h"
 #include <QScrollBar>
 
 QgsLayoutViewToolZoom::QgsLayoutViewToolZoom( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Pan" ) )
 {
-  QPixmap zoomQPixmap = QPixmap( ( const char ** )( zoom_in ) );
-  setCursor( QCursor( zoomQPixmap, 7, 7 ) );
-
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   mRubberBand.reset( new QgsLayoutViewRectangularRubberBand( view ) );
   mRubberBand->setBrush( QBrush( QColor( 70, 50, 255, 25 ) ) );
   mRubberBand->setPen( QPen( QBrush( QColor( 70, 50, 255, 100 ) ), 0 ) );
@@ -110,9 +107,10 @@ void QgsLayoutViewToolZoom::keyPressEvent( QKeyEvent *event )
   //respond to changes in the alt key status and update cursor accordingly
   if ( !event->isAutoRepeat() )
   {
-    QPixmap zoomQPixmap = QPixmap( ( const char ** )( ( event->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
-    QCursor zoomCursor = QCursor( zoomQPixmap, 7, 7 );
-    view()->viewport()->setCursor( zoomCursor );
+
+    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ?
+                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   }
   event->ignore();
 }
@@ -122,9 +120,10 @@ void QgsLayoutViewToolZoom::keyReleaseEvent( QKeyEvent *event )
   //respond to changes in the alt key status and update cursor accordingly
   if ( !event->isAutoRepeat() )
   {
-    QPixmap zoomQPixmap = QPixmap( ( const char ** )( ( event->modifiers() & Qt::AltModifier ) ? zoom_out : zoom_in ) );
-    QCursor zoomCursor = QCursor( zoomQPixmap, 7, 7 );
-    view()->viewport()->setCursor( zoomCursor );
+
+    view()->viewport()->setCursor( ( event->modifiers() & Qt::AltModifier ) ?
+                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                                   QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
   }
   event->ignore();
 }

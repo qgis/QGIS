@@ -18,7 +18,6 @@
 #include "qgscolorscheme.h"
 #include "qgscolorschemeregistry.h"
 #include "qgssymbollayerutils.h"
-#include "qgscursors.h"
 #include "qgsapplication.h"
 #include "qgssettings.h"
 

@@ -16,7 +16,6 @@
 #include "qgslayoutviewtooltemporarykeyzoom.h"
 #include "qgslayoutviewmouseevent.h"
 #include "qgslayoutview.h"
-#include "qgscursors.h"
 #include <QScrollBar>
 #include <QApplication>
 
@@ -107,7 +106,7 @@ void QgsLayoutViewToolTemporaryKeyZoom::activate()
 
 void QgsLayoutViewToolTemporaryKeyZoom::updateCursor( Qt::KeyboardModifiers modifiers )
 {
-  QPixmap zoomQPixmap = QPixmap( ( const char ** )( ( modifiers & Qt::AltModifier ) ? zoom_out : zoom_in ) );
-  QCursor zoomCursor = QCursor( zoomQPixmap, 7, 7 );
-  view()->viewport()->setCursor( zoomCursor );
+  view()->viewport()->setCursor( ( modifiers & Qt::AltModifier ) ?
+                                 QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomOut ) :
+                                 QgsApplication::getThemeCursor( QgsApplication::Cursor::ZoomIn ) );
 }

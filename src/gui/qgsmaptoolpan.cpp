@@ -15,7 +15,6 @@
 
 #include "qgsmaptoolpan.h"
 #include "qgsmapcanvas.h"
-#include "qgscursors.h"
 #include "qgsmaptopixel.h"
 #include <QBitmap>
 #include <QCursor>

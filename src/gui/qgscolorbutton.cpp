@@ -18,7 +18,6 @@
 #include "qgsapplication.h"
 #include "qgslogger.h"
 #include "qgssymbollayerutils.h"
-#include "qgscursors.h"
 #include "qgscolorswatchgrid.h"
 #include "qgscolorschemeregistry.h"
 #include "qgscolorwidgets.h"
@@ -34,6 +33,7 @@
 #include <QStyle>
 #include <QStyleOptionToolButton>
 #include <QWidgetAction>
+#include <QScreen>
 #include <QLabel>
 #include <QGridLayout>
 #include <QPushButton>
@@ -246,10 +246,14 @@ void QgsColorButton::mouseMoveEvent( QMouseEvent *e )
     {
       //if left button depressed, sample color under cursor and temporarily update button color
       //to give feedback to user
-      QPixmap snappedPixmap = QPixmap::grabWindow( QApplication::desktop()->winId(), e->globalPos().x(), e->globalPos().y(), 1, 1 );
-      QImage snappedImage = snappedPixmap.toImage();
-      QColor hoverColor = snappedImage.pixel( 0, 0 );
-      setButtonBackground( hoverColor );
+      QScreen *screen = findScreenAt( e->globalPos() );
+      if ( screen )
+      {
+        QPixmap snappedPixmap = screen->grabWindow( QApplication::desktop()->winId(), e->globalPos().x(), e->globalPos().y(), 1, 1 );
+        QImage snappedImage = snappedPixmap.toImage();
+        QColor hoverColor = snappedImage.pixel( 0, 0 );
+        setButtonBackground( hoverColor );
+      }
     }
     e->accept();
     return;
@@ -298,6 +302,7 @@ void QgsColorButton::stopPicking( QPointF eventPos, bool sampleColor )
   releaseMouse();
   releaseKeyboard();
   unsetCursor();
+  setMouseTracking( false );
   mPickingColor = false;
 
   if ( !sampleColor )
@@ -307,7 +312,7 @@ void QgsColorButton::stopPicking( QPointF eventPos, bool sampleColor )
   }
 
   //grab snapshot of pixel under mouse cursor
-  QPixmap snappedPixmap = QPixmap::grabWindow( QApplication::desktop()->winId(), eventPos.x(), eventPos.y(), 1, 1 );
+  QPixmap snappedPixmap = QApplication::desktop()->screen()->grab( QRect( eventPos.x(), eventPos.y(), 1, 1 ) );
   QImage snappedImage = snappedPixmap.toImage();
   //extract color from pixel and set color
   setColor( snappedImage.pixel( 0, 0 ) );
@@ -359,6 +364,18 @@ void QgsColorButton::dropEvent( QDropEvent *e )
     setColor( mimeColor );
     addRecentColor( mimeColor );
   }
+}
+
+QScreen *QgsColorButton::findScreenAt( const QPoint &pos )
+{
+  for ( QScreen *screen : QGuiApplication::screens() )
+  {
+    if ( screen->geometry().contains( pos ) )
+    {
+      return screen;
+    }
+  }
+  return nullptr;
 }
 
 void QgsColorButton::setValidColor( const QColor &newColor )
@@ -672,12 +689,12 @@ void QgsColorButton::pasteColor()
 
 void QgsColorButton::activatePicker()
 {
-  //pick color
-  QPixmap samplerPixmap = QPixmap( ( const char ** ) sampler_cursor );
-  setCursor( QCursor( samplerPixmap, 0, 0 ) );
+  //activate picker color
+  setCursor( QgsApplication::getThemeCursor( QgsApplication::Cursor::Sampler ) );
   grabMouse();
   grabKeyboard();
   mPickingColor = true;
+  setMouseTracking( true );
 }
 
 QColor QgsColorButton::color() const

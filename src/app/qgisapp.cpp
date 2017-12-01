@@ -161,7 +161,6 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgscoordinatetransform.h"
 #include "qgscoordinateutils.h"
 #include "qgscredentialdialog.h"
-#include "qgscursors.h"
 #include "qgscustomdrophandler.h"
 #include "qgscustomization.h"
 #include "qgscustomlayerorderwidget.h"
