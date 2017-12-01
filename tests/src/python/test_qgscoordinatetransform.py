@@ -72,7 +72,8 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertAlmostEquals(myTransformedExtentReverse.yMaximum(), myExtent.yMaximum())
         self.assertAlmostEquals(myTransformedExtentReverse.yMinimum(), myExtent.yMinimum())
 
-    def testContext(self):
+    @unittest.skip('ifdefed out in c++ until required')
+    def testContextSingle(self):
         """
         Various tests to ensure that datum transforms are correctly set respecting context
         """
@@ -85,53 +86,112 @@ class TestQgsCoordinateTransform(unittest.TestCase):
 
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
         # should be no datum transforms
-        self.assertEqual(transform.sourceDatumTransform(), -1)
-        self.assertEqual(transform.destinationDatumTransform(), -1)
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
         # matching source
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
-        self.assertEqual(transform.sourceDatumTransform(), 1)
-        self.assertEqual(transform.destinationDatumTransform(), -1)
+        self.assertEqual(transform.sourceDatumTransformId(), 1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
         # matching dest
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'),
                                            QgsCoordinateReferenceSystem('EPSG:4283'), context)
-        self.assertEqual(transform.sourceDatumTransform(), -1)
-        self.assertEqual(transform.destinationDatumTransform(), 2)
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), 2)
         # matching src/dest pair
         transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
                                            QgsCoordinateReferenceSystem('EPSG:4283'), context)
-        self.assertEqual(transform.sourceDatumTransform(), 3)
-        self.assertEqual(transform.destinationDatumTransform(), 4)
+        self.assertEqual(transform.sourceDatumTransformId(), 3)
+        self.assertEqual(transform.destinationDatumTransformId(), 4)
 
         # test manual overwriting
         transform.setSourceDatumTransform(11)
         transform.setDestinationDatumTransform(13)
-        self.assertEqual(transform.sourceDatumTransform(), 11)
-        self.assertEqual(transform.destinationDatumTransform(), 13)
+        self.assertEqual(transform.sourceDatumTransformId(), 11)
+        self.assertEqual(transform.destinationDatumTransformId(), 13)
 
         # test that auto datum setting occurs when updating src/dest crs
         transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
-        self.assertEqual(transform.sourceDatumTransform(), 3)
-        self.assertEqual(transform.destinationDatumTransform(), 4)
+        self.assertEqual(transform.sourceDatumTransformId(), 3)
+        self.assertEqual(transform.destinationDatumTransformId(), 4)
         transform.setSourceDatumTransform(11)
         transform.setDestinationDatumTransform(13)
 
         transform.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4283'))
-        self.assertEqual(transform.sourceDatumTransform(), 3)
-        self.assertEqual(transform.destinationDatumTransform(), 4)
+        self.assertEqual(transform.sourceDatumTransformId(), 3)
+        self.assertEqual(transform.destinationDatumTransformId(), 4)
         transform.setSourceDatumTransform(11)
         transform.setDestinationDatumTransform(13)
 
         # delayed context set
         transform = QgsCoordinateTransform()
-        self.assertEqual(transform.sourceDatumTransform(), -1)
-        self.assertEqual(transform.destinationDatumTransform(), -1)
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
         transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
         transform.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4283'))
-        self.assertEqual(transform.sourceDatumTransform(), -1)
-        self.assertEqual(transform.destinationDatumTransform(), -1)
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
         transform.setContext(context)
-        self.assertEqual(transform.sourceDatumTransform(), 3)
-        self.assertEqual(transform.destinationDatumTransform(), 4)
+        self.assertEqual(transform.sourceDatumTransformId(), 3)
+        self.assertEqual(transform.destinationDatumTransformId(), 4)
+
+    def testContext(self):
+        """
+        Various tests to ensure that datum transforms are correctly set respecting context
+        """
+        context = QgsCoordinateTransformContext()
+        context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                   QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                   3, 4)
+
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
+        # should be no datum transforms
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
+        # matching source
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:28353'), context)
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
+        # matching dest
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28354'),
+                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
+        # matching src/dest pair
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                           QgsCoordinateReferenceSystem('EPSG:4283'), context)
+        self.assertEqual(transform.sourceDatumTransformId(), 3)
+        self.assertEqual(transform.destinationDatumTransformId(), 4)
+
+        # test manual overwriting
+        transform.setSourceDatumTransformId(11)
+        transform.setDestinationDatumTransformId(13)
+        self.assertEqual(transform.sourceDatumTransformId(), 11)
+        self.assertEqual(transform.destinationDatumTransformId(), 13)
+
+        # test that auto datum setting occurs when updating src/dest crs
+        transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
+        self.assertEqual(transform.sourceDatumTransformId(), 3)
+        self.assertEqual(transform.destinationDatumTransformId(), 4)
+        transform.setSourceDatumTransformId(11)
+        transform.setDestinationDatumTransformId(13)
+
+        transform.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4283'))
+        self.assertEqual(transform.sourceDatumTransformId(), 3)
+        self.assertEqual(transform.destinationDatumTransformId(), 4)
+        transform.setSourceDatumTransformId(11)
+        transform.setDestinationDatumTransformId(13)
+
+        # delayed context set
+        transform = QgsCoordinateTransform()
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
+        transform.setSourceCrs(QgsCoordinateReferenceSystem('EPSG:28356'))
+        transform.setDestinationCrs(QgsCoordinateReferenceSystem('EPSG:4283'))
+        self.assertEqual(transform.sourceDatumTransformId(), -1)
+        self.assertEqual(transform.destinationDatumTransformId(), -1)
+        transform.setContext(context)
+        self.assertEqual(transform.sourceDatumTransformId(), 3)
+        self.assertEqual(transform.destinationDatumTransformId(), 4)
 
     def testProjectContext(self):
         """
@@ -139,12 +199,13 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         """
         p = QgsProject()
         context = p.transformContext()
-        context.addSourceDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'), 1)
+        context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                   QgsCoordinateReferenceSystem('EPSG:3111'), 1, 2)
         p.setTransformContext(context)
 
-        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:28353'), p)
-        self.assertEqual(transform.sourceDatumTransform(), 1)
-        self.assertEqual(transform.destinationDatumTransform(), -1)
+        transform = QgsCoordinateTransform(QgsCoordinateReferenceSystem('EPSG:28356'), QgsCoordinateReferenceSystem('EPSG:3111'), p)
+        self.assertEqual(transform.sourceDatumTransformId(), 1)
+        self.assertEqual(transform.destinationDatumTransformId(), 2)
 
 
 if __name__ == '__main__':

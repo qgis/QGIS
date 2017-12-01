@@ -188,8 +188,8 @@ void TestQgsCoordinateTransform::contextShared()
   original.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 1, 2 );
 
   QgsCoordinateTransformContext copy( original );
-  QMap< QPair< QString, QString >, QPair< int, int > > expected;
-  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), qMakePair( 1, 2 ) );
+  QMap< QPair< QString, QString >, QgsCoordinateTransform::TransformPair > expected;
+  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QgsCoordinateTransform::TransformPair( 1, 2 ) );
   QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
   QCOMPARE( copy.sourceDestinationDatumTransforms(), expected );
 
@@ -197,19 +197,19 @@ void TestQgsCoordinateTransform::contextShared()
   copy.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 3, 4 );
   QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
 
-  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), qMakePair( 3, 4 ) );
+  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QgsCoordinateTransform::TransformPair( 3, 4 ) );
   QCOMPARE( copy.sourceDestinationDatumTransforms(), expected );
 
   // copy via assignment
   QgsCoordinateTransformContext copy2;
   copy2 = original;
-  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), qMakePair( 1, 2 ) );
+  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QgsCoordinateTransform::TransformPair( 1, 2 ) );
   QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
   QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
 
   copy2.addSourceDestinationDatumTransform( QgsCoordinateReferenceSystem( 3111 ), QgsCoordinateReferenceSystem( 3113 ), 3, 4 );
   QCOMPARE( original.sourceDestinationDatumTransforms(), expected );
-  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), qMakePair( 3, 4 ) );
+  expected.insert( qMakePair( QStringLiteral( "EPSG:3111" ), QStringLiteral( "EPSG:3113" ) ), QgsCoordinateTransform::TransformPair( 3, 4 ) );
   QCOMPARE( copy2.sourceDestinationDatumTransforms(), expected );
 }
 

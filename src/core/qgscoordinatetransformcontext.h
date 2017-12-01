@@ -21,6 +21,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscoordinatetransformcontext_p.h"
+#include "qgscoordinatetransform.h"
 
 class QgsReadWriteContext;
 
@@ -171,7 +172,7 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
      * The map keys will be QgsCoordinateReferenceSystems::authid()s.
      *
-     * If either the source transform or destination transform is -1, then no datum transform is
+     * If either the source transform ID or destination transform ID is -1, then no datum transform is
      * required for transformations for that source or destination.
      *
      * \warning This method should not be used to calculate the corresponding datum transforms
@@ -180,13 +181,13 @@ class CORE_EXPORT QgsCoordinateTransformContext
      *
      * \see addSourceDestinationDatumTransform()
      */
-    QMap< QPair< QString, QString>, QPair< int, int > > sourceDestinationDatumTransforms() const;
+    QMap< QPair< QString, QString>, QgsCoordinateTransform::TransformPair > sourceDestinationDatumTransforms() const;
 
     /**
      * Adds a new \a sourceTransform and \a destinationTransform to use when projecting coordinates
      * from the the specified \a sourceCrs to the specified \a destinationCrs.
      *
-     * If either \a sourceTransform or \a destinationTransform is -1, then no datum transform is
+     * If either \a sourceTransformId or \a destinationTransformId is -1, then no datum transform is
      * required for transformations for that source or destination.
      *
      * Returns true if the new transform pair was added successfully.
@@ -199,8 +200,8 @@ class CORE_EXPORT QgsCoordinateTransformContext
      */
     bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
-        int sourceTransform,
-        int destinationTransform );
+        int sourceTransformId,
+        int destinationTransformId );
 
     /**
      * Removes the source to destination datum transform pair for the specified \a sourceCrs and
@@ -222,12 +223,12 @@ class CORE_EXPORT QgsCoordinateTransformContext
      * Returns the pair of source and destination datum transforms to use
      * for a transform from the specified \a source CRS to \a destination CRS.
      *
-     * Returns -1 if a datum transform should not be used for the source or
+     * Returns an ID of -1 if a datum transform should not be used for the source or
      * destination.
      *
      * \note source and destination are reversible.
      */
-    QPair< int, int > calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
+    QgsCoordinateTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination ) const;
 
     /**

@@ -20,6 +20,7 @@
 
 #include "ui_qgsdatumtransformdialogbase.h"
 #include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgis_gui.h"
 
 #define SIP_NO_FILE
@@ -70,7 +71,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     void setOKButtonEnabled();
 
 
-    QList< QList< int > > mDatumTransforms;
+    QList< QgsCoordinateTransform::TransformPair > mDatumTransforms;
     QgsCoordinateReferenceSystem mSourceCrs;
     QgsCoordinateReferenceSystem mDestinationCrs;
 };

@@ -102,7 +102,7 @@ void QgsCoordinateTransformContext::removeDestinationDatumTransform( const QgsCo
 
 #endif
 
-QMap<QPair<QString, QString>, QPair<int, int> > QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
+QMap<QPair<QString, QString>, QgsCoordinateTransform::TransformPair> QgsCoordinateTransformContext::sourceDestinationDatumTransforms() const
 {
   d->mLock.lockForRead();
   auto res = d->mSourceDestDatumTransforms;
@@ -118,7 +118,7 @@ bool QgsCoordinateTransformContext::addSourceDestinationDatumTransform( const Qg
 
   d.detach();
   d->mLock.lockForWrite();
-  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), qMakePair( sourceTransform, destinationTransform ) );
+  d->mSourceDestDatumTransforms.insert( qMakePair( sourceCrs.authid(), destinationCrs.authid() ), QgsCoordinateTransform::TransformPair( sourceTransform, destinationTransform ) );
   d->mLock.unlock();
   return true;
 }
@@ -130,24 +130,24 @@ void QgsCoordinateTransformContext::removeSourceDestinationDatumTransform( const
 
 bool QgsCoordinateTransformContext::hasTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
-  QPair<int, int> t = calculateDatumTransforms( source, destination );
+  QgsCoordinateTransform::TransformPair t = calculateDatumTransforms( source, destination );
   // calculateDatumTransforms already takes care of switching source and destination
-  return t.first != -1 || t.second != -1;
+  return t.sourceTransformId != -1 || t.destinationTransformId != -1;
 }
 
-QPair<int, int> QgsCoordinateTransformContext::calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
+QgsCoordinateTransform::TransformPair QgsCoordinateTransformContext::calculateDatumTransforms( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination ) const
 {
   QString srcKey = source.authid();
   QString destKey = destination.authid();
 
   d->mLock.lockForRead();
   // highest priority is exact match for source/dest pair
-  QPair< int, int > res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), qMakePair( -1, -1 ) );
-  if ( res == qMakePair( -1, -1 ) )
+  QgsCoordinateTransform::TransformPair res = d->mSourceDestDatumTransforms.value( qMakePair( srcKey, destKey ), QgsCoordinateTransform::TransformPair( -1, -1 ) );
+  if ( res.sourceTransformId == -1 && res.destinationTransformId == -1 )
   {
     // try to reverse
-    QPair< int, int > res2 = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), qMakePair( -1, -1 ) );
-    res = qMakePair( res2.second, res2.first );
+    QgsCoordinateTransform::TransformPair res2 = d->mSourceDestDatumTransforms.value( qMakePair( destKey, srcKey ), QgsCoordinateTransform::TransformPair( -1, -1 ) );
+    res = QgsCoordinateTransform::TransformPair( res2.destinationTransformId, res2.sourceTransformId );
   }
   d->mLock.unlock();
   return res;
@@ -194,7 +194,7 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
     int value2 = transformElem.attribute( QStringLiteral( "destTransform" ) ).toInt( &ok2 );
     if ( ok && ok2 )
     {
-      d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), qMakePair( value1, value2 ) );
+      d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsCoordinateTransform::TransformPair( value1, value2 ) );
     }
   }
 
@@ -243,8 +243,8 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, QDomDocument
     QDomElement transformElem = document.createElement( QStringLiteral( "srcDest" ) );
     transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
     transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
-    transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().first );
-    transformElem.setAttribute( QStringLiteral( "destTransform" ), it.value().second );
+    transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().sourceTransformId );
+    transformElem.setAttribute( QStringLiteral( "destTransform" ), it.value().destinationTransformId );
     contextElem.appendChild( transformElem );
   }
 
@@ -320,7 +320,7 @@ void QgsCoordinateTransformContext::readSettings()
   QMap< QPair< QString, QString >, QPair< int, int > >::const_iterator transformIt = transforms.constBegin();
   for ( ; transformIt != transforms.constEnd(); ++transformIt )
   {
-    d->mSourceDestDatumTransforms.insert( transformIt.key(), transformIt.value() );
+    d->mSourceDestDatumTransforms.insert( transformIt.key(), QgsCoordinateTransform::TransformPair( transformIt.value().first, transformIt.value().second ) );
   }
 
   d->mLock.unlock();
@@ -341,13 +341,12 @@ void QgsCoordinateTransformContext::writeSettings()
     }
   }
 
-  QMap< QPair< QString, QString >, QPair< int, int > >::const_iterator transformIt = d->mSourceDestDatumTransforms.constBegin();
-  for ( ; transformIt != d->mSourceDestDatumTransforms.constEnd(); ++transformIt )
+  for ( auto transformIt = d->mSourceDestDatumTransforms.constBegin(); transformIt != d->mSourceDestDatumTransforms.constEnd(); ++transformIt )
   {
     QString srcAuthId = transformIt.key().first;
     QString destAuthId = transformIt.key().second;
-    int sourceDatumTransform = transformIt.value().first;
-    int destinationDatumTransform = transformIt.value().second;
+    int sourceDatumTransform = transformIt.value().sourceTransformId;
+    int destinationDatumTransform = transformIt.value().destinationTransformId;
 
     settings->setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumTransform );
     settings->setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumTransform );

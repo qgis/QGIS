@@ -64,12 +64,12 @@ class QgsCoordinateTransformContext
 
 
 
-    QMap< QPair< QString, QString>, QPair< int, int > > sourceDestinationDatumTransforms() const;
+    QMap< QPair< QString, QString>, QgsCoordinateTransform::TransformPair > sourceDestinationDatumTransforms() const;
 %Docstring
  Returns the stored mapping for source to destination CRS pairs to associated datum transforms to use.
  The map keys will be QgsCoordinateReferenceSystems.authid()s.
 
- If either the source transform or destination transform is -1, then no datum transform is
+ If either the source transform ID or destination transform ID is -1, then no datum transform is
  required for transformations for that source or destination.
 
  \warning This method should not be used to calculate the corresponding datum transforms
@@ -77,18 +77,18 @@ class QgsCoordinateTransformContext
  to determine this.
 
 .. seealso:: addSourceDestinationDatumTransform()
- :rtype: QMap< QPair< str, QString>, QPair< int, int > >
+ :rtype: QMap< QPair< str, QString>, QgsCoordinateTransform.TransformPair >
 %End
 
     bool addSourceDestinationDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs,
         const QgsCoordinateReferenceSystem &destinationCrs,
-        int sourceTransform,
-        int destinationTransform );
+        int sourceTransformId,
+        int destinationTransformId );
 %Docstring
  Adds a new ``sourceTransform`` and ``destinationTransform`` to use when projecting coordinates
  from the the specified ``sourceCrs`` to the specified ``destinationCrs``.
 
- If either ``sourceTransform`` or ``destinationTransform`` is -1, then no datum transform is
+ If either ``sourceTransformId`` or ``destinationTransformId`` is -1, then no datum transform is
  required for transformations for that source or destination.
 
  Returns true if the new transform pair was added successfully.
@@ -122,19 +122,19 @@ class QgsCoordinateTransformContext
  :rtype: bool
 %End
 
-    QPair< int, int > calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
+    QgsCoordinateTransform::TransformPair calculateDatumTransforms( const QgsCoordinateReferenceSystem &source,
         const QgsCoordinateReferenceSystem &destination ) const;
 %Docstring
  Returns the pair of source and destination datum transforms to use
  for a transform from the specified ``source`` CRS to ``destination`` CRS.
 
- Returns -1 if a datum transform should not be used for the source or
+ Returns an ID of -1 if a datum transform should not be used for the source or
  destination.
 
 .. note::
 
    source and destination are reversible.
- :rtype: QPair< int, int >
+ :rtype: QgsCoordinateTransform.TransformPair
 %End
 
     void readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );

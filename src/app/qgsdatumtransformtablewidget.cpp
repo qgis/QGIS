@@ -85,9 +85,9 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
     QPair< QString, QString> crses = mTransformContext.sourceDestinationDatumTransforms().keys().at( index.row() );
     sourceCrs = crses.first;
     destinationCrs = crses.second;
-    QPair< int, int> transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
-    sourceTransform = transforms.first;
-    destinationTransform = transforms.second;
+    const QgsCoordinateTransform::TransformPair transforms = mTransformContext.sourceDestinationDatumTransforms().value( crses );
+    sourceTransform = transforms.sourceTransformId;
+    destinationTransform = transforms.destinationTransformId;
 #ifdef singlesourcedest
   }
 #endif
@@ -110,7 +110,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case SourceTransformColumn:
           if ( sourceTransform != -1 )
           {
-            return QgsCoordinateTransform::datumTransformString( sourceTransform );
+            return QgsCoordinateTransform::datumTransformToProj( sourceTransform );
           }
           break;
         case DestinationCrsColumn:
@@ -119,7 +119,7 @@ QVariant QgsDatumTransformTableModel::data( const QModelIndex &index, int role )
         case DestinationTransformColumn:
           if ( destinationTransform != -1 )
           {
-            return QgsCoordinateTransform::datumTransformString( destinationTransform );
+            return QgsCoordinateTransform::datumTransformToProj( destinationTransform );
           }
           break;
         default:

@@ -220,9 +220,9 @@ bool QgsCoordinateTransformPrivate::initialize()
 void QgsCoordinateTransformPrivate::calculateTransforms()
 {
   // recalculate datum transforms from context
-  QPair< int, int > transforms = mContext.calculateDatumTransforms( mSourceCRS, mDestCRS );
-  mSourceDatumTransform = transforms.first;
-  mDestinationDatumTransform = transforms.second;
+  QgsCoordinateTransform::TransformPair transforms = mContext.calculateDatumTransforms( mSourceCRS, mDestCRS );
+  mSourceDatumTransform = transforms.sourceTransformId;
+  mDestinationDatumTransform = transforms.destinationTransformId;
 }
 
 QPair<projPJ, projPJ> QgsCoordinateTransformPrivate::threadLocalProjData()

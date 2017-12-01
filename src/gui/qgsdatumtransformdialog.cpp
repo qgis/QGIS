@@ -69,34 +69,29 @@ QgsDatumTransformDialog::QgsDatumTransformDialog( const QgsCoordinateReferenceSy
 
 void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransforms )
 {
-  QgsDebugMsg( "Entered." );
-
   mDatumTransformTreeWidget->clear();
 
-  QList< QList< int > >::const_iterator it = mDatumTransforms.constBegin();
-  for ( ; it != mDatumTransforms.constEnd(); ++it )
+  for ( const QgsCoordinateTransform::TransformPair &transform : qgis::as_const( mDatumTransforms ) )
   {
     QTreeWidgetItem *item = new QTreeWidgetItem();
     bool itemDisabled = false;
     bool itemHidden = false;
 
-    for ( int i = 0; i < 2 && i < it->size(); ++i )
+    for ( int i = 0; i < 2; ++i )
     {
-      int nr = it->at( i );
+      int nr = i == 0 ? transform.sourceTransformId : transform.destinationTransformId;
       item->setData( i, Qt::UserRole, nr );
       if ( nr == -1 )
         continue;
 
-      item->setText( i, QgsCoordinateTransform::datumTransformString( nr ) );
+      item->setText( i, QgsCoordinateTransform::datumTransformToProj( nr ) );
 
       //Describe datums in a tooltip
-      QString srcGeoProj, destGeoProj, remarks, scope;
-      int epsgNr;
-      bool preferred, deprecated;
-      if ( !QgsCoordinateTransform::datumTransformCrsInfo( nr, epsgNr, srcGeoProj, destGeoProj, remarks, scope, preferred, deprecated ) )
+      QgsCoordinateTransform::TransformInfo info = QgsCoordinateTransform::datumTransformInfo( nr );
+      if ( info.datumTransformId == -1 )
         continue;
 
-      if ( mHideDeprecatedCheckBox->isChecked() && deprecated )
+      if ( mHideDeprecatedCheckBox->isChecked() && info.deprecated )
       {
         itemHidden = true;
       }
@@ -107,18 +102,18 @@ void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransfor
         toolTipString.append( QStringLiteral( "<p><b>NTv2</b></p>" ) );
       }
 
-      if ( epsgNr > 0 )
-        toolTipString.append( QStringLiteral( "<p><b>EPSG Transformations Code:</b> %1</p>" ).arg( epsgNr ) );
+      if ( info.epsgCode > 0 )
+        toolTipString.append( QStringLiteral( "<p><b>EPSG Transformations Code:</b> %1</p>" ).arg( info.epsgCode ) );
 
-      toolTipString.append( QStringLiteral( "<p><b>Source CRS:</b> %1</p><p><b>Destination CRS:</b> %2</p>" ).arg( srcGeoProj, destGeoProj ) );
+      toolTipString.append( QStringLiteral( "<p><b>Source CRS:</b> %1</p><p><b>Destination CRS:</b> %2</p>" ).arg( info.sourceCrsDescription, info.destinationCrsDescription ) );
 
-      if ( !remarks.isEmpty() )
-        toolTipString.append( QStringLiteral( "<p><b>Remarks:</b> %1</p>" ).arg( remarks ) );
-      if ( !scope.isEmpty() )
-        toolTipString.append( QStringLiteral( "<p><b>Scope:</b> %1</p>" ).arg( scope ) );
-      if ( preferred )
+      if ( !info.remarks.isEmpty() )
+        toolTipString.append( QStringLiteral( "<p><b>Remarks:</b> %1</p>" ).arg( info.remarks ) );
+      if ( !info.scope.isEmpty() )
+        toolTipString.append( QStringLiteral( "<p><b>Scope:</b> %1</p>" ).arg( info.scope ) );
+      if ( info.preferred )
         toolTipString.append( "<p><b>Preferred transformation</b></p>" );
-      if ( deprecated )
+      if ( info.deprecated )
         toolTipString.append( "<p><b>Deprecated transformation</b></p>" );
 
       item->setToolTip( i, toolTipString );
@@ -133,8 +128,8 @@ void QgsDatumTransformDialog::load( const QPair<int, int> &selectedDatumTransfor
     {
       item->setDisabled( itemDisabled );
       mDatumTransformTreeWidget->addTopLevelItem( item );
-      if ( it->at( 0 ) == selectedDatumTransforms.first &&
-           it->at( 1 ) == selectedDatumTransforms.second )
+      if ( transform.sourceTransformId == selectedDatumTransforms.first &&
+           transform.destinationTransformId == selectedDatumTransforms.second )
       {
         mDatumTransformTreeWidget->setCurrentItem( item );
       }

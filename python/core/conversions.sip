@@ -1848,6 +1848,130 @@ template<int, TYPE2*>
 %End
 };
 
+template <TYPE>
+%MappedType QMap< QPair< QString, QString>, TYPE >
+{
+%TypeHeaderCode
+#include <QPair>
+#include <QMap>
+%End
+
+%ConvertFromTypeCode
+//convert map to a python dictionary
+  PyObject *d;
+
+  if ( ( d = PyDict_New() ) == NULL )
+    return NULL;
+
+  for ( auto it = sipCpp->constBegin(); it != sipCpp->constEnd(); ++ it )
+  {
+    PyObject *keyobj;
+    if ( ( keyobj = PyTuple_New( 2 ) ) == NULL )
+    {
+      Py_DECREF( d );
+      return NULL;
+    }
+
+    TYPE *t = new TYPE(it.value());
+    PyObject *tobj = sipConvertFromNewType(t, sipType_TYPE, sipTransferObj);
+    if ( tobj == NULL )
+    {
+        Py_DECREF(d);
+        delete t;
+        return NULL;
+    }
+
+    // build key
+    PyObject *k1obj = sipConvertFromNewType( new QString( it.key().first ), sipType_QString, sipTransferObj );
+    PyTuple_SetItem( keyobj, 0, k1obj );
+    PyObject *k2obj = sipConvertFromNewType( new QString( it.key().second ), sipType_QString, sipTransferObj );
+    PyTuple_SetItem( keyobj, 1, k2obj );
+
+    if(keyobj == NULL || tobj == NULL || PyDict_SetItem(d, keyobj, tobj) < 0)
+    {
+        Py_DECREF(d);
+
+        if (keyobj)
+        {
+            Py_DECREF(keyobj);
+        }
+
+        if (tobj)
+        {
+            Py_DECREF(tobj);
+        }
+        return NULL;
+      }
+
+    Py_DECREF(keyobj);
+    Py_DECREF(tobj);
+  }
+
+  return d;
+%End
+
+%ConvertToTypeCode
+  Py_ssize_t i = 0;
+  PyObject *kobj, *tobj;
+
+  // Check the type if that is all that is required.
+  if (sipIsErr == NULL)
+  {
+      if (!PyDict_Check(sipPy))
+          return 0;
+
+      while (PyDict_Next(sipPy, &i, &kobj, &tobj))
+          if (!sipCanConvertToType(tobj, sipType_TYPE, SIP_NOT_NONE))
+              return 0;
+
+      return 1;
+  }
+
+  PyObject *t1obj, *t2obj;
+  QMap< QPair< QString, QString>, TYPE > *qm = new QMap< QPair< QString, QString>, TYPE >;
+
+  int state;
+  while (PyDict_Next(sipPy, &i, &t1obj, &t2obj))
+  {
+      PyObject *sipKeyFirst  = PyTuple_GetItem( t1obj, 0 );
+      PyObject *sipKeySecond = PyTuple_GetItem( t1obj, 1 );
+      QString *k1 = reinterpret_cast<QString *>(sipConvertToType(sipKeyFirst, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      if (*sipIsErr)
+      {
+          sipReleaseType(k1, sipType_QString, state);
+          delete qm;
+          return 0;
+      }
+
+      QString *k2 = reinterpret_cast<QString *>(sipConvertToType(sipKeySecond, sipType_QString, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      if (*sipIsErr)
+      {
+          sipReleaseType(k1, sipType_QString, state);
+          sipReleaseType(k2, sipType_QString, state);
+          delete qm;
+          return 0;
+      }
+
+      TYPE *t = reinterpret_cast<TYPE *>(sipConvertToType(t2obj, sipType_TYPE, sipTransferObj, SIP_NOT_NONE, &state, sipIsErr));
+      if (*sipIsErr)
+      {
+          sipReleaseType(t, sipType_TYPE, state);
+
+          delete qm;
+          return 0;
+      }
+
+      qm->insert( qMakePair( *k1,*k2 ), *t );
+      sipReleaseType(k1, sipType_QString, state);
+      sipReleaseType(k2, sipType_QString, state);
+      sipReleaseType(t, sipType_TYPE, state);
+  }
+
+  *sipCppPtr = qm;
+
+  return sipGetState( sipTransferObj );
+%End
+};
 
 template <TYPE>
 %MappedType QVector< TYPE* >

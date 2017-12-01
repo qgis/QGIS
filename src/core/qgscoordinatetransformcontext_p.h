@@ -36,7 +36,7 @@
  ****************************************************************************/
 
 #include "qgscoordinatereferencesystem.h"
-
+#include "qgscoordinatetransform.h"
 
 class QgsCoordinateTransformContextPrivate : public QSharedData
 {
@@ -61,7 +61,7 @@ class QgsCoordinateTransformContextPrivate : public QSharedData
      * Mapping for datum transforms to use for source/destination CRS pairs.
      * Matching records from this map will take precedence over other transform maps.
      */
-    QMap< QPair< QString, QString >, QPair< int, int > > mSourceDestDatumTransforms;
+    QMap< QPair< QString, QString >, QgsCoordinateTransform::TransformPair > mSourceDestDatumTransforms;
 
 #if 0
     //! Mapping for datum transforms to use for source CRS
