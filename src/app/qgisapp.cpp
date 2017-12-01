@@ -3184,14 +3184,7 @@ void QgisApp::setupConnections()
            this, &QgisApp::mapCanvas_keyPressed );
 
   // project crs connections
-  connect( QgsProject::instance(), &QgsProject::crsChanged,
-           this, &QgisApp::updateCrsStatusBar );
-  connect( QgsProject::instance(), &QgsProject::crsChanged,
-           this, [ = ]
-  {
-    QgsDebugMsgLevel( QString( "QgisApp::setupConnections -1- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
-    mMapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
-  } );
+  connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::onProjectCrsChanged );
 
   connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged,
            this, [ = ]
@@ -9126,6 +9119,45 @@ void QgisApp::onFocusChanged( QWidget *oldWidget, QWidget *newWidget )
   }
 }
 
+void QgisApp::onProjectCrsChanged()
+{
+  updateCrsStatusBar();
+  QgsDebugMsgLevel( QString( "QgisApp::setupConnections -1- : QgsProject::instance()->crs().description[%1]ellipsoid[%2]" ).arg( QgsProject::instance()->crs().description() ).arg( QgsProject::instance()->crs().ellipsoidAcronym() ), 3 );
+  mMapCanvas->setDestinationCrs( QgsProject::instance()->crs() );
+
+  // handle datum transforms
+  QList<QgsCoordinateReferenceSystem> transformsToAskFor = QList<QgsCoordinateReferenceSystem>();
+  QMap<QString, QgsMapLayer *> layers = QgsProject::instance()->mapLayers();
+  for ( QMap<QString, QgsMapLayer *>::iterator it = layers.begin(); it != layers.end(); ++it )
+  {
+    if ( !transformsToAskFor.contains( it.value()->crs() ) &&
+         it.value()->crs() != QgsProject::instance()->crs() &&
+         !QgsProject::instance()->transformContext().hasTransform( it.value()->crs(), QgsProject::instance()->crs() ) &&
+         QgsCoordinateTransform::datumTransformations( it.value()->crs(), QgsProject::instance()->crs() ).count() > 1 )
+    {
+      transformsToAskFor.append( it.value()->crs() );
+    }
+  }
+  if ( transformsToAskFor.count() == 1 )
+  {
+    askForDatumTransform( transformsToAskFor.at( 0 ),
+                          QgsProject::instance()->crs() );
+  }
+  else if ( transformsToAskFor.count() > 1 )
+  {
+    bool ask = QgsSettings().value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+    if ( ask )
+    {
+      messageBar()->pushMessage( tr( "Datum transforms" ),
+                                 tr( "Project CRS changed and datum transforms might need to be adapted." ),
+                                 QgsMessageBar::WARNING,
+                                 5 );
+    }
+  }
+
+
+}
+
 // toggle overview status
 void QgisApp::isInOverview()
 {
@@ -9425,6 +9457,7 @@ void QgisApp::setLayerCrs()
       {
         if ( child->layer() )
         {
+          askForDatumTransform( crs, QgsProject::instance()->crs() );
           child->layer()->setCrs( crs );
           child->layer()->triggerRepaint();
         }
@@ -9435,6 +9468,7 @@ void QgisApp::setLayerCrs()
       QgsLayerTreeLayer *nodeLayer = QgsLayerTree::toLayer( node );
       if ( nodeLayer->layer() )
       {
+        askForDatumTransform( crs, QgsProject::instance()->crs() );
         nodeLayer->layer()->setCrs( crs );
         nodeLayer->layer()->triggerRepaint();
       }

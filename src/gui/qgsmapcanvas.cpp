@@ -317,7 +317,6 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
   Q_FOREACH ( QgsMapLayer *layer, oldLayers )
   {
     disconnect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
-    disconnect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
     disconnect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
@@ -332,14 +331,12 @@ void QgsMapCanvas::setLayersPrivate( const QList<QgsMapLayer *> &layers )
     if ( !layer )
       continue;
     connect( layer, &QgsMapLayer::repaintRequested, this, &QgsMapCanvas::layerRepaintRequested );
-    connect( layer, &QgsMapLayer::crsChanged, this, &QgsMapCanvas::layerCrsChange );
     connect( layer, &QgsMapLayer::autoRefreshIntervalChanged, this, &QgsMapCanvas::updateAutoRefreshTimer );
     if ( QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( layer ) )
     {
       connect( vlayer, &QgsVectorLayer::selectionChanged, this, &QgsMapCanvas::selectionChangedSlot );
     }
   }
-  updateDatumTransformEntries();
 
   QgsDebugMsg( "Layers have changed, refreshing" );
   emit layersChanged();
@@ -385,8 +382,6 @@ void QgsMapCanvas::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 
   QgsDebugMsg( "refreshing after destination CRS changed" );
   refresh();
-
-  updateDatumTransformEntries();
 
   emit destinationCrsChanged();
 }
@@ -1732,14 +1727,6 @@ void QgsMapCanvas::layerStateChange()
   refresh();
 }
 
-void QgsMapCanvas::layerCrsChange()
-{
-  // called when a layer's CRS has been changed
-  QgsMapLayer *layer = qobject_cast<QgsMapLayer *>( sender() );
-  // TODO datum we should trigger a message to say one could choose datum transform
-  //getDatumTransformInfo( layer->crs(), mSettings.destinationCrs() );
-}
-
 void QgsMapCanvas::freeze( bool frozen )
 {
   mFrozen = frozen;
@@ -1815,24 +1802,6 @@ void QgsMapCanvas::connectNotify( const char *signal )
   QgsDebugMsg( "QgsMapCanvas connected to " + QString( signal ) );
 } //connectNotify
 #endif
-
-void QgsMapCanvas::updateDatumTransformEntries()
-{
-  const QList< QgsMapLayer * > layers = mSettings.layers();
-  for ( QgsMapLayer *layer : layers )
-  {
-    if ( !layer->isSpatial() )
-      continue;
-
-    // if there are more options, ask the user which datum transform to use
-
-#if 0 //old logic - TODO - what is the new logic for when we show this dialog?
-    if ( !mSettings.datumTransformStore().hasEntryForLayer( layer ) )
-#endif
-      // TODO datum we should trigger a message to say one could choose datum transform
-      // getDatumTransformInfo( layer->crs(), mSettings.destinationCrs() );
-    }
-}
 
 void QgsMapCanvas::layerRepaintRequested( bool deferred )
 {

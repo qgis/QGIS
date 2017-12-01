@@ -697,11 +697,6 @@ Save the convtents of the map canvas to disk as an image
 This slot is connected to the visibility change of one or more layers
 %End
 
-    void layerCrsChange();
-%Docstring
-This slot is connected to the layer's CRS change
-%End
-
     void setRenderFlag( bool flag );
 %Docstring
  Sets whether a user has disabled canvas renders via the GUI.
@@ -951,11 +946,6 @@ called when panning is in action, reset indicates end of panning
 
 
 
-
-    void updateDatumTransformEntries();
-%Docstring
-Make sure the datum transform store is properly populated
-%End
 
   protected slots:
     void updateCanvasItemPositions();

@@ -1647,6 +1647,7 @@ QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 - setCrsTransformEnabled(), hasCrsTransformEnabled(), hasCrsTransformEnabledChanged() were removed. CRS transformation is now always enabled.
 - setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
 - The mapUnitsChanged() signal was removed. Listen for the destinationCrsChanged() signal instead, as the destination CRS dictates the map units.
+- layerCrsChange() slot was removed. Datum transforms are now handled in QgisApp.
 
 QgsMapCanvasItem        {#qgis_api_break_3_0_QgsMapCanvasItem}
 ----------------
