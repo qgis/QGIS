@@ -19,7 +19,7 @@
 
 #include <QSqlTableModel>
 #include <QSortFilterProxyModel>
-#include <memory>
+#include <QStyledItemDelegate>
 
 #include "ui_qgsbookmarksbase.h"
 #include "qgsdockwidget.h"
@@ -70,6 +70,27 @@ class QgsBookmarksProxyModel: public QSortFilterProxyModel
     {
       reset();
     }
+};
+
+
+/**
+ * \brief QgsDoubleSpinBoxBookmarksDelegate class shows 6 digits when value is a double
+ */
+class QgsDoubleSpinBoxBookmarksDelegate : public QStyledItemDelegate
+{
+    Q_OBJECT
+
+  public:
+
+    QString displayText( const QVariant &value, const QLocale &locale ) const override;
+
+    QWidget *createEditor( QWidget *parent,
+                           const QStyleOptionViewItem &option,
+                           const QModelIndex &index ) const override;
+  private:
+
+    static const int  DECIMAL_PLACES;
+
 };
 
 /*
