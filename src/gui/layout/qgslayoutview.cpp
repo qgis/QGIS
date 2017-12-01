@@ -282,13 +282,17 @@ void QgsLayoutView::resizeSelectedItems( QgsLayoutAligner::Resize resize )
 
 void QgsLayoutView::copySelectedItems( QgsLayoutView::ClipboardOperation operation )
 {
-  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
+  copyItems( currentLayout()->selectedLayoutItems(), operation );
+}
+
+void QgsLayoutView::copyItems( const QList<QgsLayoutItem *> &items, QgsLayoutView::ClipboardOperation operation )
+{
   QgsReadWriteContext context;
   QDomDocument doc;
   QDomElement documentElement = doc.createElement( QStringLiteral( "LayoutItemClipboard" ) );
   if ( operation == ClipboardCut )
     currentLayout()->undoStack()->beginMacro( tr( "Cut Items" ) );
-  for ( QgsLayoutItem *item : selectedItems )
+  for ( QgsLayoutItem *item : items )
   {
     // copy every child from a group
     if ( QgsLayoutItemGroup *itemGroup = qobject_cast<QgsLayoutItemGroup *>( item ) )
@@ -710,16 +714,14 @@ void QgsLayoutView::unlockAllItems()
 
 void QgsLayoutView::deleteSelectedItems()
 {
-  if ( !currentLayout() )
-  {
-    return;
-  }
+  deleteItems( currentLayout()->selectedLayoutItems() );
+}
 
-  const QList<QgsLayoutItem *> selectedItems = currentLayout()->selectedLayoutItems();
-
+void QgsLayoutView::deleteItems( const QList<QgsLayoutItem *> &items )
+{
   currentLayout()->undoStack()->beginMacro( tr( "Delete Items" ) );
   //delete selected items
-  for ( QgsLayoutItem *item : selectedItems )
+  for ( QgsLayoutItem *item : items )
   {
     currentLayout()->removeLayoutItem( item );
   }
