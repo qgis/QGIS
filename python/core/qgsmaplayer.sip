@@ -1155,6 +1155,18 @@ Read style manager's configuration (if any). To be called by subclasses.
 Write style manager's configuration (if exists). To be called by subclasses.
 %End
 
+    void writeCommonStyle( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
+%Docstring
+ Write style data common to all layer types
+.. versionadded:: 3.0
+%End
+
+    void readCommonStyle( const QDomElement &layerElement, const QgsReadWriteContext &context );
+%Docstring
+ Read style data common to all layer types
+.. versionadded:: 3.0
+%End
+
 
     void appendError( const QgsErrorMessage &error );
 %Docstring

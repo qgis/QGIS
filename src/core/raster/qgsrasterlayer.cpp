@@ -1294,8 +1294,10 @@ QImage QgsRasterLayer::previewAsImage( QSize size, const QColor &bgColor, QImage
 bool QgsRasterLayer::readSymbology( const QDomNode &layer_node, QString &errorMessage, const QgsReadWriteContext &context )
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
   QDomElement rasterRendererElem;
+
+  QDomElement layerElement = layer_node.toElement();
+  readCommonStyle( layerElement, context );
 
   // pipe element was introduced in the end of 1.9 development when there were
   // already many project files in use so we support 1.9 backward compatibility
@@ -1536,7 +1538,9 @@ bool QgsRasterLayer::readXml( const QDomNode &layer_node, const QgsReadWriteCont
 bool QgsRasterLayer::writeSymbology( QDomNode &layer_node, QDomDocument &document, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
   Q_UNUSED( errorMessage );
-  Q_UNUSED( context );
+
+  QDomElement layerElement = layer_node.toElement();
+  writeCommonStyle( layerElement, document, context );
 
   // Store pipe members (except provider) into pipe element, in future, it will be
   // possible to add custom filters into the pipe

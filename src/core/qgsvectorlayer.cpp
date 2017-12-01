@@ -1712,6 +1712,9 @@ bool QgsVectorLayer::readSymbology( const QDomNode &layerNode, QString &errorMes
 
   updateFields();
 
+  QDomElement layerElement = layerNode.toElement();
+  readCommonStyle( layerElement, context );
+
   readStyle( layerNode, errorMessage, context );
 
   mDisplayExpression = layerNode.namedItem( QStringLiteral( "previewExpression" ) ).toElement().text();
@@ -2052,8 +2055,12 @@ bool QgsVectorLayer::readStyle( const QDomNode &node, QString &errorMessage, con
   return result;
 }
 
+
 bool QgsVectorLayer::writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const
 {
+  QDomElement layerElement = node.toElement();
+  writeCommonStyle( layerElement, doc, context );
+
   ( void )writeStyle( node, doc, errorMessage, context );
 
   QDomElement fieldConfigurationElement = doc.createElement( QStringLiteral( "fieldConfiguration" ) );
