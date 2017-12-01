@@ -1249,6 +1249,13 @@ QgsProcessingProvider *QgsProcessingParameterDefinition::provider() const
   return mAlgorithm ? mAlgorithm->provider() : nullptr;
 }
 
+QString QgsProcessingParameterDefinition::toolTip() const
+{
+  return QStringLiteral( "<p><b>%1</b></p><p>%2</p>" ).arg(
+           description(),
+           QObject::tr( "Python identifier: ‘%1’" ).arg( QStringLiteral( "<i>%1</i>" ).arg( name() ) ) );
+}
+
 QgsProcessingParameterBoolean::QgsProcessingParameterBoolean( const QString &name, const QString &description, const QVariant &defaultValue, bool optional )
   : QgsProcessingParameterDefinition( name, description, defaultValue, optional )
 {}
@@ -1990,6 +1997,22 @@ QString QgsProcessingParameterNumber::valueAsPythonString( const QVariant &value
     return QStringLiteral( "QgsProperty.fromExpression('%1')" ).arg( value.value< QgsProperty >().asExpression() );
 
   return value.toString();
+}
+
+QString QgsProcessingParameterNumber::toolTip() const
+{
+  QString text = QgsProcessingParameterDefinition::toolTip();
+  QStringList parts;
+  if ( mMin > -DBL_MAX )
+    parts << QObject::tr( "Minimum value: %1" ).arg( mMin );
+  if ( mMax < DBL_MAX )
+    parts << QObject::tr( "Maximum value: %1" ).arg( mMax );
+  if ( mDefault.isValid() )
+    parts << QObject::tr( "Default value: %1" ).arg( mDataType == Integer ? mDefault.toInt() : mDefault.toDouble() );
+  QString extra = parts.join( QStringLiteral( "<br />" ) );
+  if ( !extra.isEmpty() )
+    text += QStringLiteral( "<p>%1</p>" ).arg( extra );
+  return text;
 }
 
 double QgsProcessingParameterNumber::minimum() const
