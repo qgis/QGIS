@@ -283,9 +283,9 @@ void QgsCoordinateTransformContext::readSettings()
   d->mDestDatumTransforms.clear();
 #endif
 
-  QgsSettings *settings = new QgsSettings();
-  settings->beginGroup( QStringLiteral( "/Projections" ) );
-  QStringList projectionKeys = settings->allKeys();
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/Projections" ) );
+  QStringList projectionKeys = settings.allKeys();
 
   //collect src and dest entries that belong together
   QMap< QPair< QString, QString >, QPair< int, int > > transforms;
@@ -307,11 +307,11 @@ void QgsCoordinateTransformContext::readSettings()
 
       if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) )
       {
-        transforms[ qMakePair( srcAuthId, destAuthId )].first = settings->value( *pkeyIt ).toInt();
+        transforms[ qMakePair( srcAuthId, destAuthId )].first = settings.value( *pkeyIt ).toInt();
       }
       else if ( pkeyIt->contains( QLatin1String( "destTransform" ) ) )
       {
-        transforms[ qMakePair( srcAuthId, destAuthId )].second = settings->value( *pkeyIt ).toInt();
+        transforms[ qMakePair( srcAuthId, destAuthId )].second = settings.value( *pkeyIt ).toInt();
       }
     }
   }
@@ -324,20 +324,20 @@ void QgsCoordinateTransformContext::readSettings()
   }
 
   d->mLock.unlock();
-  settings->endGroup();
+  settings.endGroup();
 }
 
 void QgsCoordinateTransformContext::writeSettings()
 {
-  QgsSettings *settings = new QgsSettings();
-  settings->beginGroup( QStringLiteral( "/Projections" ) );
-  QStringList groupKeys = settings->allKeys();
+  QgsSettings settings;
+  settings.beginGroup( QStringLiteral( "/Projections" ) );
+  QStringList groupKeys = settings.allKeys();
   QStringList::const_iterator groupKeyIt = groupKeys.constBegin();
   for ( ; groupKeyIt != groupKeys.constEnd(); ++groupKeyIt )
   {
     if ( groupKeyIt->contains( QLatin1String( "srcTransform" ) ) || groupKeyIt->contains( QLatin1String( "destTransform" ) ) )
     {
-      settings->remove( *groupKeyIt );
+      settings.remove( *groupKeyIt );
     }
   }
 
@@ -348,9 +348,9 @@ void QgsCoordinateTransformContext::writeSettings()
     int sourceDatumTransform = transformIt.value().sourceTransformId;
     int destinationDatumTransform = transformIt.value().destinationTransformId;
 
-    settings->setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumTransform );
-    settings->setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumTransform );
+    settings.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumTransform );
+    settings.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumTransform );
   }
 
-  settings->endGroup();
+  settings.endGroup();
 }
