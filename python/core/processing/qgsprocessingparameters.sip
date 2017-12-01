@@ -369,6 +369,13 @@ class QgsProcessingParameterDefinition
  :rtype: QgsProcessingProvider
 %End
 
+    virtual QString toolTip() const;
+%Docstring
+ Returns a formatted tooltip for use with the parameter, which gives helpful information
+ like parameter description, ID, and extra content like default values (depending on parameter type).
+ :rtype: str
+%End
+
   protected:
 
 
@@ -1140,6 +1147,8 @@ class QgsProcessingParameterNumber : QgsProcessingParameterDefinition
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
+
+    virtual QString toolTip() const;
 
 
     double minimum() const;

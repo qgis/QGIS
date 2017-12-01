@@ -406,6 +406,12 @@ class CORE_EXPORT QgsProcessingParameterDefinition
      */
     QgsProcessingProvider *provider() const;
 
+    /**
+     * Returns a formatted tooltip for use with the parameter, which gives helpful information
+     * like parameter description, ID, and extra content like default values (depending on parameter type).
+     */
+    virtual QString toolTip() const;
+
   protected:
 
     //! Parameter name
@@ -1105,6 +1111,7 @@ class CORE_EXPORT QgsProcessingParameterNumber : public QgsProcessingParameterDe
     QString type() const override { return typeName(); }
     bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = nullptr ) const override;
     QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const override;
+    QString toolTip() const override;
 
     /**
      * Returns the minimum value acceptable by the parameter.
