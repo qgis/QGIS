@@ -23,8 +23,9 @@ from qgis.core import (QgsProject,
                        QgsLayoutSize,
                        QgsLayoutAligner)
 from qgis.gui import QgsLayoutView
-from qgis.PyQt.QtCore import QRectF
+from qgis.PyQt.QtCore import QRectF, QMimeData, QByteArray
 from qgis.PyQt.QtGui import QTransform
+from qgis.PyQt.QtWidgets import QApplication
 from qgis.PyQt.QtTest import QSignalSpy
 
 from qgis.testing import start_app, unittest
@@ -639,6 +640,12 @@ class TestQgsLayoutView(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
 
+        # clear clipboard
+        mime_data = QMimeData()
+        mime_data.setData("text/xml", QByteArray())
+        clipboard = QApplication.clipboard()
+        clipboard.setMimeData(mime_data)
+
         # add an item
         item1 = QgsLayoutItemLabel(l)
         item1.setText('label 1')
@@ -651,8 +658,11 @@ class TestQgsLayoutView(unittest.TestCase):
 
         view = QgsLayoutView()
         view.setCurrentLayout(l)
+        self.assertFalse(view.hasItemsInClipboard())
 
         view.copySelectedItems(QgsLayoutView.ClipboardCopy)
+        self.assertTrue(view.hasItemsInClipboard())
+
         pasted = view.pasteItems(QgsLayoutView.PasteModeCursor)
         self.assertEqual(len(pasted), 2)
         self.assertIn(pasted[0], l.items())
@@ -664,6 +674,12 @@ class TestQgsLayoutView(unittest.TestCase):
         p = QgsProject()
         l = QgsLayout(p)
 
+        # clear clipboard
+        mime_data = QMimeData()
+        mime_data.setData("text/xml", QByteArray())
+        clipboard = QApplication.clipboard()
+        clipboard.setMimeData(mime_data)
+
         # add an item
         item1 = QgsLayoutItemLabel(l)
         item1.setText('label 1')
@@ -676,9 +692,11 @@ class TestQgsLayoutView(unittest.TestCase):
 
         view = QgsLayoutView()
         view.setCurrentLayout(l)
+        self.assertFalse(view.hasItemsInClipboard())
 
         len_before = len(l.items())
         view.copySelectedItems(QgsLayoutView.ClipboardCut)
+        self.assertTrue(view.hasItemsInClipboard())
         self.assertEqual(len(l.items()), len_before - 2)
 
         pasted = view.pasteItems(QgsLayoutView.PasteModeCursor)

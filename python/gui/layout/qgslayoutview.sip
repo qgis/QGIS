@@ -205,7 +205,15 @@ class QgsLayoutView: QGraphicsView
  A list of pasted items is returned.
 
 .. seealso:: copySelectedItems()
+.. seealso:: hasItemsInClipboard()
  :rtype: list of QgsLayoutItem
+%End
+
+    bool hasItemsInClipboard() const;
+%Docstring
+ Returns true if the current clipboard contains layout items.
+.. seealso:: pasteItems()
+ :rtype: bool
 %End
 
     QPointF deltaForKeyEvent( QKeyEvent *event );
