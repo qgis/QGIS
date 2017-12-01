@@ -10241,6 +10241,12 @@ void QgisApp::new3DMapCanvas()
     return;
   }
 
+  if ( mMapCanvas->mapSettings().destinationCrs().isGeographic() )
+  {
+    QMessageBox::warning( this, tr( "Error" ), tr( "3D view currently does not support unprojected coordinate reference systems (CRS).\nPlease switch project's CRS to a projected CRS." ) );
+    return;
+  }
+
   int i = 1;
 
   bool existing = true;
