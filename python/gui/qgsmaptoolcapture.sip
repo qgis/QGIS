@@ -151,7 +151,7 @@ Removes the last vertex from mRubberBand and mCaptureList
  :rtype: int
 %End
 
-    QVector<QgsPointXY> points();
+    QVector<QgsPointXY> points() const;
 %Docstring
  List of digitized points
  :return: List of points
