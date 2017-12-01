@@ -80,6 +80,7 @@ void TestQgsLayoutItemGroup::initTestCase()
 
 void TestQgsLayoutItemGroup::cleanupTestCase()
 {
+  QgsApplication::exitQgis();
 }
 
 void TestQgsLayoutItemGroup::init()
@@ -185,6 +186,9 @@ void TestQgsLayoutItemGroup::createGroup()
   QVERIFY( item->isGroupMember() );
   QCOMPARE( item->parentGroup(), group );
   QCOMPARE( item2->parentGroup(), group );
+
+  delete item;
+  delete item2;
 }
 
 void TestQgsLayoutItemGroup::ungroup()

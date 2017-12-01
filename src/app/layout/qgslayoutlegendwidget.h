@@ -20,11 +20,9 @@
 
 #include "ui_qgslayoutlegendwidgetbase.h"
 #include "qgslayoutitemwidget.h"
+#include "qgslayoutitemlegend.h"
 #include <QWidget>
 #include <QItemDelegate>
-
-class QgsLayoutItemLegend;
-
 
 /**
  * \ingroup app
@@ -111,7 +109,7 @@ class QgsLayoutLegendWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayo
     QgsLayoutLegendWidget() = delete;
     void blockAllSignals( bool b );
 
-    QgsLayoutItemLegend *mLegend = nullptr;
+    QPointer< QgsLayoutItemLegend > mLegend;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 };

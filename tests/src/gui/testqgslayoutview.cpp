@@ -267,8 +267,8 @@ void TestQgsLayoutView::guiRegistry()
   QVERIFY( registry.itemMetadataIds().isEmpty() );
   QVERIFY( !registry.createItemWidget( nullptr ) );
   QVERIFY( !registry.createItemWidget( nullptr ) );
-  TestItem *testItem = new TestItem( nullptr );
-  QVERIFY( !registry.createItemWidget( testItem ) ); // not in registry
+  std::unique_ptr< TestItem > testItem = qgis::make_unique< TestItem >( nullptr );
+  QVERIFY( !registry.createItemWidget( testItem.get() ) ); // not in registry
 
   QSignalSpy spyTypeAdded( &registry, &QgsLayoutItemGuiRegistry::typeAdded );
 
@@ -300,7 +300,7 @@ void TestQgsLayoutView::guiRegistry()
   QVERIFY( registry.itemMetadata( uuid ) );
   QCOMPARE( registry.itemMetadata( uuid )->visibleName(), QStringLiteral( "mytype" ) );
 
-  QWidget *widget = registry.createItemWidget( testItem );
+  QWidget *widget = registry.createItemWidget( testItem.get() );
   QVERIFY( widget );
   delete widget;
 

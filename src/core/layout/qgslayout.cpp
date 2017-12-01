@@ -634,7 +634,8 @@ void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
 #if 0 //TODO
   emit itemRemoved( item );
 #endif
-  delete item;
+  item->cleanup();
+  item->deleteLater();
 }
 
 void QgsLayout::deleteAndRemoveMultiFrames()
@@ -759,17 +760,17 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     item->readXml( currentItemElem, document, context );
     if ( position )
     {
-#if 0 //TODO
       if ( pasteInPlacePt )
       {
+#if 0 //TODO
         item->setItemPosition( newLabel->pos().x(), std::fmod( newLabel->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
         item->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
+#endif
       }
       else
       {
-        item->move( pasteShiftPos.x(), pasteShiftPos.y() );
+        item->attemptMoveBy( pasteShiftPos.x(), pasteShiftPos.y() );
       }
-#endif
     }
 
     QgsLayoutItem *layoutItem = item.get();
@@ -807,6 +808,8 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     {
       QgsLayoutItemFrame * frame = mf->frame( frameIdx );
       frame->setZValue( frame->zValue() + zOrderOffset );
+
+      // also need to shift frames according to position/pasteInPlacePt
     }*/
     newMultiFrames << m;
   }

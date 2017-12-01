@@ -35,8 +35,8 @@ class QgsLayoutAttributeTableWidget: public QgsLayoutItemBaseWidget, private Ui:
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private:
-    QgsLayoutItemAttributeTable *mTable = nullptr;
-    QgsLayoutFrame *mFrame = nullptr;
+    QPointer< QgsLayoutItemAttributeTable > mTable;
+    QPointer< QgsLayoutFrame > mFrame;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Blocks / unblocks the signals of all GUI elements

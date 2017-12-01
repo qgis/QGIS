@@ -20,8 +20,7 @@
 
 #include "ui_qgslayoutlabelwidgetbase.h"
 #include "qgslayoutitemwidget.h"
-
-class QgsLayoutItemLabel;
+#include "qgslayoutitemlabel.h"
 
 /**
  * \ingroup app
@@ -55,7 +54,7 @@ class QgsLayoutLabelWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayou
     void justifyClicked();
 
   private:
-    QgsLayoutItemLabel *mLabel = nullptr;
+    QPointer< QgsLayoutItemLabel > mLabel = nullptr;
 
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 

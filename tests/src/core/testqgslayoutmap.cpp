@@ -351,9 +351,9 @@ void TestQgsLayoutMap::dataDefinedLayers()
   QCOMPARE( result.count(), 1 );
   QCOMPARE( result.at( 0 ), mPointsLayer );
   mComposition->atlasComposition().setEnabled( false );
-  delete atlasLayer;
-
 #endif
+
+  delete atlasLayer;
 
   //render test
   map->dataDefinedProperties().setProperty( QgsLayoutObject::MapLayers, QgsProperty::fromExpression(

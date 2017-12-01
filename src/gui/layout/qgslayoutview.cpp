@@ -55,7 +55,6 @@ QgsLayoutView::QgsLayoutView( QWidget *parent )
   mSpacePanTool = new QgsLayoutViewToolTemporaryKeyPan( this );
   mMidMouseButtonPanTool = new QgsLayoutViewToolTemporaryMousePan( this );
   mSpaceZoomTool = new QgsLayoutViewToolTemporaryKeyZoom( this );
-  mSnapMarker = new QgsLayoutViewSnapMarker();
 
   mPreviewEffect = new QgsPreviewEffect( this );
   viewport()->setGraphicsEffect( mPreviewEffect );
@@ -131,7 +130,8 @@ void QgsLayoutView::setTool( QgsLayoutViewTool *tool )
     disconnect( mTool, &QgsLayoutViewTool::itemFocused, this, &QgsLayoutView::itemFocused );
   }
 
-  mSnapMarker->hide();
+  if ( mSnapMarker )
+    mSnapMarker->hide();
   if ( mHorizontalSnapLine )
     mHorizontalSnapLine->hide();
   if ( mVerticalSnapLine )
@@ -785,7 +785,8 @@ void QgsLayoutView::ungroupSelectedItems()
 
 void QgsLayoutView::mousePressEvent( QMouseEvent *event )
 {
-  mSnapMarker->setVisible( false );
+  if ( mSnapMarker )
+    mSnapMarker->setVisible( false );
 
   if ( mTool )
   {
@@ -849,11 +850,16 @@ void QgsLayoutView::mouseMoveEvent( QMouseEvent *event )
       if ( me->isSnapped() )
       {
         cursorPos = me->snappedPoint();
-        mSnapMarker->setPos( me->snappedPoint() );
-        mSnapMarker->setVisible( true );
+        if ( mSnapMarker )
+        {
+          mSnapMarker->setPos( me->snappedPoint() );
+          mSnapMarker->setVisible( true );
+        }
       }
-      else
+      else if ( mSnapMarker )
+      {
         mSnapMarker->setVisible( false );
+      }
     }
     mTool->layoutMoveEvent( me.get() );
     event->setAccepted( me->isAccepted() );

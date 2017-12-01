@@ -24,7 +24,9 @@ class QgsLayoutItemGroup: QgsLayoutItem
 %Docstring
  Constructor for QgsLayoutItemGroup, belonging to the specified ``layout``.
 %End
-    ~QgsLayoutItemGroup();
+
+    virtual void cleanup();
+
 
     virtual int type() const;
 

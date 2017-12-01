@@ -68,8 +68,8 @@ class QgsLayoutHtmlWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayout
 
     void blockSignals( bool block );
 
-    QgsLayoutItemHtml *mHtml = nullptr;
-    QgsLayoutFrame *mFrame = nullptr;
+    QPointer< QgsLayoutItemHtml > mHtml;
+    QPointer< QgsLayoutFrame > mFrame;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     QgsCodeEditorHTML *mHtmlEditor = nullptr;

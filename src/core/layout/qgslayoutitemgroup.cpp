@@ -23,7 +23,7 @@ QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {}
 
-QgsLayoutItemGroup::~QgsLayoutItemGroup()
+void QgsLayoutItemGroup::cleanup()
 {
   //loop through group members and remove them from the scene
   for ( QgsLayoutItem *item : qgis::as_const( mItems ) )
@@ -35,8 +35,13 @@ QgsLayoutItemGroup::~QgsLayoutItemGroup()
     if ( mLayout )
       mLayout->removeLayoutItem( item );
     else
-      delete item;
+    {
+      item->cleanup();
+      item->deleteLater();
+    }
   }
+  mItems.clear();
+  QgsLayoutItem::cleanup();
 }
 
 int QgsLayoutItemGroup::type() const

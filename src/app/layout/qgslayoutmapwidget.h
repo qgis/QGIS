@@ -115,7 +115,7 @@ class QgsLayoutMapWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayoutM
     void mapCrsChanged( const QgsCoordinateReferenceSystem &crs );
     void overviewSymbolChanged();
   private:
-    QgsLayoutItemMap *mMapItem = nullptr;
+    QPointer< QgsLayoutItemMap > mMapItem;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Sets extent of composer map from line edits
