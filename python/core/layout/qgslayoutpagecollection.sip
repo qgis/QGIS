@@ -80,6 +80,19 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  :rtype: list of int
 %End
 
+    bool pageIsEmpty( int page ) const;
+%Docstring
+ Returns whether a given ``page`` index is empty, ie, it contains no items except for the background
+ paper item.
+ :rtype: bool
+%End
+
+    QList< QgsLayoutItem *> itemsOnPage( int page ) const;
+%Docstring
+ Returns a list of layout items on the specified ``page`` index.
+ :rtype: list of QgsLayoutItem
+%End
+
     void addPage( QgsLayoutItemPage *page /Transfer/ );
 %Docstring
  Adds a ``page`` to the collection. Ownership of the ``page`` is transferred
@@ -89,7 +102,20 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
  Calling addPage() automatically triggers a reflow() of pages.
 
+.. seealso:: extendByNewPage()
 .. seealso:: insertPage()
+%End
+
+    QgsLayoutItemPage *extendByNewPage();
+%Docstring
+ Adds a new page to the end of the collection. This page will inherit the
+ same size as the current final page in the collection.
+
+ The newly created page will be returned.
+
+.. seealso:: addPage()
+.. seealso:: insertPage()
+ :rtype: QgsLayoutItemPage
 %End
 
     void insertPage( QgsLayoutItemPage *page /Transfer/, int beforePage );
@@ -175,6 +201,25 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  it does not consider x coordinates and vertical coordinates before the first page or
  after the last page will still return the nearest page.
 
+.. seealso:: predicatePageNumberForPoint()
+.. seealso:: pageAtPoint()
+.. seealso:: positionOnPage()
+ :rtype: int
+%End
+
+    int predictPageNumberForPoint( QPointF point ) const;
+%Docstring
+ Returns the theoretical page number corresponding to a ``point`` in the layout (in layout units),
+ assuming that enough pages exist in the layout to cover that point.
+
+ If there are insufficient pages currently in the layout, this method will assume that extra
+ "imaginary" pages have been added at the end of the layout until that point is reached. These
+ imaginary pages will inherit the size of the existing final page in the layout.
+
+ Page numbers in collections begin at 0 - so a page number of 0 indicates the
+ first page.
+
+.. seealso:: pageNumberForPoint()
 .. seealso:: pageAtPoint()
 .. seealso:: positionOnPage()
  :rtype: int
@@ -193,6 +238,20 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
 .. seealso:: pageNumberForPoint()
  :rtype: QgsLayoutItemPage
+%End
+
+    QPointF pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const;
+%Docstring
+ Converts a ``position`` on a ``page`` to an absolute position in layout coordinates.\
+.. seealso:: pagePositionToAbsolute()
+ :rtype: QPointF
+%End
+
+    QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
+%Docstring
+ Converts a ``position`` on a ``page`` to an absolute position in (maintaining the units from the input ``position``).
+.. seealso:: pagePositionToLayoutPosition()
+ :rtype: QgsLayoutPoint
 %End
 
     QPointF positionOnPage( QPointF point ) const;

@@ -43,6 +43,12 @@ class QgsLayoutItemPropertiesDialog : QDialog
  :rtype: QgsLayoutPoint
 %End
 
+    int page() const;
+%Docstring
+ Returns the page number for the new item.
+ :rtype: int
+%End
+
     void setItemSize( QgsLayoutSize size );
 %Docstring
  Sets the item ``size`` to show in the dialog.

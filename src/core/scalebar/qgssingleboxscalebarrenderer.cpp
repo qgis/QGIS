@@ -28,15 +28,18 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
   }
   QPainter *painter = context.painter();
 
-  double barTopPosition = QgsComposerUtils::fontAscentMM( settings.font() ) + settings.labelBarSpace() + settings.boxContentSpace();
+  double barTopPosition = context.convertToPainterUnits( QgsComposerUtils::fontAscentMM( settings.font() ) + settings.labelBarSpace() + settings.boxContentSpace(), QgsUnitTypes::RenderMillimeters );
 
   painter->save();
   if ( context.flags() & QgsRenderContext::Antialiasing )
     painter->setRenderHint( QPainter::Antialiasing, true );
-  painter->setPen( settings.pen() );
+
+  QPen pen = settings.pen();
+  pen.setWidthF( context.convertToPainterUnits( pen.widthF(), QgsUnitTypes::RenderMillimeters ) );
+  painter->setPen( pen );
 
   bool useColor = true; //alternate brush color/white
-  double xOffset = firstLabelXOffset( settings );
+  double xOffset = context.convertToPainterUnits( firstLabelXOffset( settings ), QgsUnitTypes::RenderMillimeters );
 
   QList<double> positions = segmentPositions( scaleContext, settings );
   QList<double> widths = segmentWidths( scaleContext, settings );
@@ -52,7 +55,9 @@ void QgsSingleBoxScaleBarRenderer::draw( QgsRenderContext &context, const QgsSca
       painter->setBrush( settings.brush2() );
     }
 
-    QRectF segmentRect( positions.at( i ) + xOffset, barTopPosition, widths.at( i ), settings.height() );
+    QRectF segmentRect( context.convertToPainterUnits( positions.at( i ), QgsUnitTypes::RenderMillimeters ) + xOffset,
+                        barTopPosition, context.convertToPainterUnits( widths.at( i ), QgsUnitTypes::RenderMillimeters ),
+                        context.convertToPainterUnits( settings.height(), QgsUnitTypes::RenderMillimeters ) );
     painter->drawRect( segmentRect );
     useColor = !useColor;
   }

@@ -32,7 +32,14 @@
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutlabelwidget.h"
 #include "qgslayoutitemlegend.h"
+#include "qgslayoutitemscalebar.h"
 #include "qgslayoutlegendwidget.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayouthtmlwidget.h"
+#include "qgslayoutscalebarwidget.h"
+#include "qgslayoutitemattributetable.h"
+#include "qgslayoutattributetablewidget.h"
 #include "qgisapp.h"
 #include "qgsmapcanvas.h"
 
@@ -127,9 +134,25 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     QList<QgsLayoutItemMap *> mapItems;
     legend->layout()->layoutItems( mapItems );
 
-    if ( !mapItems.isEmpty() )
+    // try to find a good map to link the legend with by default
+    // start by trying to find a selected map
+    QgsLayoutItemMap *targetMap = nullptr;
+    for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
     {
-      legend->setMap( mapItems.at( 0 ) );
+      if ( map->isSelected() )
+      {
+        targetMap = map;
+        break;
+      }
+    }
+    // otherwise just use first map
+    if ( !targetMap && !mapItems.isEmpty() )
+    {
+      targetMap = mapItems.at( 0 );
+    }
+    if ( targetMap )
+    {
+      legend->setMap( targetMap );
     }
 
     legend->updateLegend();
@@ -137,6 +160,45 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
 
   registry->addLayoutItemGuiMetadata( legendItemMetadata.release() );
 
+  // scalebar item
+
+  auto scalebarItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutScaleBar, QObject::tr( "Scale Bar" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionScaleBar.svg" ) ),
+                              [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutScaleBarWidget( qobject_cast< QgsLayoutItemScaleBar * >( item ) );
+  }, createRubberBand );
+  scalebarItemMetadata->setItemAddedToLayoutFunction( [ = ]( QgsLayoutItem * item )
+  {
+    QgsLayoutItemScaleBar *scalebar = qobject_cast< QgsLayoutItemScaleBar * >( item );
+    Q_ASSERT( scalebar );
+
+    QList<QgsLayoutItemMap *> mapItems;
+    scalebar->layout()->layoutItems( mapItems );
+
+    // try to find a good map to link the scalebar with by default
+    // start by trying to find a selected map
+    QgsLayoutItemMap *targetMap = nullptr;
+    for ( QgsLayoutItemMap *map : qgis::as_const( mapItems ) )
+    {
+      if ( map->isSelected() )
+      {
+        targetMap = map;
+        break;
+      }
+    }
+    // otherwise just use first map
+    if ( !targetMap && !mapItems.isEmpty() )
+    {
+      targetMap = mapItems.at( 0 );
+    }
+    if ( targetMap )
+    {
+      scalebar->setMap( targetMap );
+      scalebar->applyDefaultSize( scalebar->guessUnits() );
+    }
+  } );
+
+  registry->addLayoutItemGuiMetadata( scalebarItemMetadata.release() );
 
   // shape items
 
@@ -164,6 +226,28 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     shape->setShapeType( QgsLayoutItemShape::Triangle );
     return shape.release();
   } ) );
+
+  // arrow
+  std::unique_ptr< QgsLayoutItemGuiMetadata > arrowMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata>(
+        QgsLayoutItemRegistry::LayoutPolyline, QObject::tr( "Arrow" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddArrow.svg" ) ),
+        [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutPolylineWidget( qobject_cast< QgsLayoutItemPolyline * >( item ) );
+  }, createRubberBand, QString(), true );
+  arrowMetadata->setItemCreationFunction( []( QgsLayout * layout )->QgsLayoutItem *
+  {
+    std::unique_ptr< QgsLayoutItemPolyline > arrow = qgis::make_unique< QgsLayoutItemPolyline >( layout );
+    arrow->setEndMarker( QgsLayoutItemPolyline::ArrowHead );
+    return arrow.release();
+  } );
+  arrowMetadata->setNodeRubberBandCreationFunction( []( QgsLayoutView * )->QGraphicsPathItem*
+  {
+    std::unique_ptr< QGraphicsPathItem > band = qgis::make_unique< QGraphicsPathItem >();
+    band->setPen( QPen( QBrush( QColor( 227, 22, 22, 200 ) ), 0 ) );
+    band->setZValue( QgsLayout::ZViewTool );
+    return band.release();
+  } );
+  registry->addLayoutItemGuiMetadata( arrowMetadata.release() );
 
 
   // node items
@@ -198,4 +282,55 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     return band.release();
   } );
   registry->addLayoutItemGuiMetadata( polylineMetadata.release() );
+
+
+  // html item
+
+  auto htmlItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutHtml, QObject::tr( "HTML" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddHtml.svg" ) ),
+                          [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutHtmlWidget( qobject_cast< QgsLayoutFrame * >( item ) );
+  }, createRubberBand );
+  htmlItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
+  {
+    std::unique_ptr< QgsLayoutItemHtml > htmlMultiFrame = qgis::make_unique< QgsLayoutItemHtml >( layout );
+    QgsLayoutItemHtml *html = htmlMultiFrame.get();
+    layout->addMultiFrame( htmlMultiFrame.release() );
+    std::unique_ptr< QgsLayoutFrame > frame = qgis::make_unique< QgsLayoutFrame >( layout, html );
+    QgsLayoutFrame *f = frame.get();
+    html->addFrame( frame.release() );
+    return f;
+  } );
+  registry->addLayoutItemGuiMetadata( htmlItemMetadata.release() );
+
+  // attribute table item
+
+  auto attributeTableItemMetadata = qgis::make_unique< QgsLayoutItemGuiMetadata >( QgsLayoutItemRegistry::LayoutAttributeTable, QObject::tr( "Attribute Table" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddTable.svg" ) ),
+                                    [ = ]( QgsLayoutItem * item )->QgsLayoutItemBaseWidget *
+  {
+    return new QgsLayoutAttributeTableWidget( qobject_cast< QgsLayoutFrame * >( item ) );
+  }, createRubberBand );
+  attributeTableItemMetadata->setItemCreationFunction( [ = ]( QgsLayout * layout )->QgsLayoutItem*
+  {
+    std::unique_ptr< QgsLayoutItemAttributeTable > tableMultiFrame = qgis::make_unique< QgsLayoutItemAttributeTable >( layout );
+    QgsLayoutItemAttributeTable *table = tableMultiFrame.get();
+
+    //set first vector layer from layer registry as table source
+    QMap<QString, QgsMapLayer *> layerMap = layout->project()->mapLayers();
+    for ( auto it = layerMap.constBegin() ; it != layerMap.constEnd(); ++it )
+    {
+      if ( QgsVectorLayer *vl = qobject_cast<QgsVectorLayer *>( it.value() ) )
+      {
+        table->setVectorLayer( vl );
+        break;
+      }
+    }
+
+    layout->addMultiFrame( tableMultiFrame.release() );
+    std::unique_ptr< QgsLayoutFrame > frame = qgis::make_unique< QgsLayoutFrame >( layout, table );
+    QgsLayoutFrame *f = frame.get();
+    table->addFrame( frame.release() );
+    return f;
+  } );
+  registry->addLayoutItemGuiMetadata( attributeTableItemMetadata .release() );
 }

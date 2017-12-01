@@ -135,6 +135,7 @@ SET(TESTS
  testqgslayertree.cpp
  testqgslayout.cpp
  testqgslayoutcontext.cpp
+ testqgslayouthtml.cpp
  testqgslayoutitem.cpp
  testqgslayoutitemgroup.cpp
  testqgslayoutlabel.cpp
@@ -142,10 +143,13 @@ SET(TESTS
  testqgslayoutmapgrid.cpp
  testqgslayoutmapoverview.cpp
  testqgslayoutmodel.cpp
+ testqgslayoutmultiframe.cpp
  testqgslayoutobject.cpp
  testqgslayoutpage.cpp
  testqgslayoutpicture.cpp
+ testqgslayoutscalebar.cpp
  testqgslayoutshapes.cpp
+ testqgslayouttable.cpp
  testqgslayoutunits.cpp
  testqgslayoututils.cpp
  testqgslegendrenderer.cpp

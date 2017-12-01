@@ -407,8 +407,11 @@
 %Include layout/qgslayoutcontext.sip
 %Include layout/qgslayouteffect.sip
 %Include layout/qgslayoutguidecollection.sip
+%Include layout/qgslayoutframe.sip
 %Include layout/qgslayoutitem.sip
+%Include layout/qgslayoutitemattributetable.sip
 %Include layout/qgslayoutitemgroup.sip
+%Include layout/qgslayoutitemhtml.sip
 %Include layout/qgslayoutitemlabel.sip
 %Include layout/qgslayoutitemlegend.sip
 %Include layout/qgslayoutitemmap.sip
@@ -421,10 +424,15 @@
 %Include layout/qgslayoutitempolygon.sip
 %Include layout/qgslayoutitempolyline.sip
 %Include layout/qgslayoutitemregistry.sip
+%Include layout/qgslayoutitemscalebar.sip
 %Include layout/qgslayoutitemshape.sip
+%Include layout/qgslayoutitemtexttable.sip
 %Include layout/qgslayoutmodel.sip
+%Include layout/qgslayoutmultiframe.sip
 %Include layout/qgslayoutpagecollection.sip
 %Include layout/qgslayoutobject.sip
+%Include layout/qgslayouttable.sip
+%Include layout/qgslayouttablecolumn.sip
 %Include layout/qgslayoutundostack.sip
 %Include symbology/qgscptcityarchive.sip
 %Include symbology/qgssvgcache.sip

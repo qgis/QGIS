@@ -336,18 +336,6 @@ void QgsComposerHtml::addFrame( QgsComposerFrame *frame, bool recalcFrameSizes )
   }
 }
 
-bool candidateSort( QPair<int, int> c1, QPair<int, int> c2 )
-{
-  if ( c1.second < c2.second )
-    return true;
-  else if ( c1.second > c2.second )
-    return false;
-  else if ( c1.first > c2.first )
-    return true;
-  else
-    return false;
-}
-
 double QgsComposerHtml::findNearbyPageBreak( double yPos )
 {
   if ( !mWebPage || !mRenderedPage || !mUseSmartBreaks )
@@ -400,7 +388,18 @@ double QgsComposerHtml::findNearbyPageBreak( double yPos )
   }
 
   //sort candidate rows by number of changes ascending, row number descending
-  std::sort( candidates.begin(), candidates.end(), candidateSort );
+  std::sort( candidates.begin(), candidates.end(),
+             []( QPair<int, int> c1, QPair<int, int> c2 )->bool
+  {
+    if ( c1.second < c2.second )
+      return true;
+    else if ( c1.second > c2.second )
+      return false;
+    else if ( c1.first > c2.first )
+      return true;
+    else
+      return false;
+  } );
   //first candidate is now the largest row with smallest number of changes
 
   //OK, now take the mid point of the best candidate position

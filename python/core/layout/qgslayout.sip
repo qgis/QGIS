@@ -175,7 +175,16 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None
  if a matching item could not be found.
+.. seealso:: multiFrameByUuid()
  :rtype: QgsLayoutItem
+%End
+
+    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
+%Docstring
+ Returns the layout multiframe with matching ``uuid`` unique identifier, or a None
+ if a matching multiframe could not be found.
+.. seealso:: itemByUuid()
+ :rtype: QgsLayoutMultiFrame
 %End
 
     QgsLayoutItem *layoutItemAt( QPointF position, const bool ignoreLocked = false ) const;
@@ -377,6 +386,28 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  Removes an ``item`` from the layout. This should be called instead of the base class removeItem()
  method.
  The item will also be deleted.
+%End
+
+    void addMultiFrame( QgsLayoutMultiFrame *multiFrame /Transfer/ );
+%Docstring
+ Adds a ``multiFrame`` to the layout. The object is owned by the layout until removeMultiFrame() is called.
+.. seealso:: removeMultiFrame()
+.. seealso:: multiFrames()
+%End
+
+    void removeMultiFrame( QgsLayoutMultiFrame *multiFrame );
+%Docstring
+ Removes a ``multiFrame`` from the layout (but does not delete it).
+.. seealso:: addMultiFrame()
+.. seealso:: multiFrames()
+%End
+
+    QList< QgsLayoutMultiFrame * > multiFrames() const;
+%Docstring
+ Returns a list of multi frames contained in the layout.
+.. seealso:: addMultiFrame()
+.. seealso:: removeMultiFrame()
+ :rtype: list of QgsLayoutMultiFrame
 %End
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;

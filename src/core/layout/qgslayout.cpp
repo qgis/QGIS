@@ -24,6 +24,7 @@
 #include "qgslayoutitemundocommand.h"
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemgroupundocommand.h"
+#include "qgslayoutmultiframe.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )
@@ -41,7 +42,9 @@ QgsLayout::QgsLayout( QgsProject *project )
 QgsLayout::~QgsLayout()
 {
   // no need for undo commands when we're destroying the layout
-  mBlockUndoCommands = true;
+  mUndoStack->blockCommands( true );
+
+  deleteAndRemoveMultiFrames();
 
   // make sure that all layout items are removed before
   // this class is deconstructed - to avoid segfaults
@@ -198,6 +201,19 @@ QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
     if ( item->uuid() == uuid )
     {
       return item;
+    }
+  }
+
+  return nullptr;
+}
+
+QgsLayoutMultiFrame *QgsLayout::multiFrameByUuid( const QString &uuid ) const
+{
+  for ( QgsLayoutMultiFrame *mf : mMultiFrames )
+  {
+    if ( mf->uuid() == uuid )
+    {
+      return mf;
     }
   }
 
@@ -394,13 +410,14 @@ void QgsLayout::addLayoutItem( QgsLayoutItem *item )
   {
     undoText = tr( "Create Item" );
   }
-  mUndoStack->stack()->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
+  if ( !mUndoStack->isBlocked() )
+    mUndoStack->push( new QgsLayoutItemAddItemCommand( item, undoText ) );
 }
 
 void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
 {
   std::unique_ptr< QgsLayoutItemDeleteUndoCommand > deleteCommand;
-  if ( !mBlockUndoCommands )
+  if ( !mUndoStack->isBlocked() )
   {
     mUndoStack->beginMacro( tr( "Delete Items" ) );
     deleteCommand.reset( new QgsLayoutItemDeleteUndoCommand( item, tr( "Delete Item" ) ) );
@@ -408,9 +425,28 @@ void QgsLayout::removeLayoutItem( QgsLayoutItem *item )
   removeLayoutItemPrivate( item );
   if ( deleteCommand )
   {
-    mUndoStack->stack()->push( deleteCommand.release() );
+    mUndoStack->push( deleteCommand.release() );
     mUndoStack->endMacro();
   }
+}
+
+void QgsLayout::addMultiFrame( QgsLayoutMultiFrame *multiFrame )
+{
+  if ( !multiFrame )
+    return;
+
+  if ( !mMultiFrames.contains( multiFrame ) )
+    mMultiFrames << multiFrame;
+}
+
+void QgsLayout::removeMultiFrame( QgsLayoutMultiFrame *multiFrame )
+{
+  mMultiFrames.removeAll( multiFrame );
+}
+
+QList<QgsLayoutMultiFrame *> QgsLayout::multiFrames() const
+{
+  return mMultiFrames;
 }
 
 QgsLayoutUndoStack *QgsLayout::undoStack()
@@ -483,7 +519,7 @@ QgsLayoutItemGroup *QgsLayout::groupItems( const QList<QgsLayoutItem *> &items )
   addLayoutItem( itemGroup.release() );
 
   std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Grouped, returnGroup, this, tr( "Group Items" ) ) );
-  mUndoStack->stack()->push( c.release() );
+  mUndoStack->push( c.release() );
   mProject->setDirty( true );
 
 #if 0
@@ -507,7 +543,7 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
   // Call this before removing group items so it can keep note
   // of contents
   std::unique_ptr< QgsLayoutItemGroupUndoCommand > c( new QgsLayoutItemGroupUndoCommand( QgsLayoutItemGroupUndoCommand::Ungrouped, group, this, tr( "Ungroup Items" ) ) );
-  mUndoStack->stack()->push( c.release() );
+  mUndoStack->push( c.release() );
 
   mProject->setDirty( true );
 
@@ -579,6 +615,12 @@ void QgsLayout::removeLayoutItemPrivate( QgsLayoutItem *item )
   emit itemRemoved( item );
 #endif
   delete item;
+}
+
+void QgsLayout::deleteAndRemoveMultiFrames()
+{
+  qDeleteAll( mMultiFrames );
+  mMultiFrames.clear();
 }
 
 void QgsLayout::updateZValues( const bool addUndoCommands )

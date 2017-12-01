@@ -29,6 +29,7 @@
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
+class QgsLayoutMultiFrame;
 
 /**
  * \ingroup core
@@ -207,8 +208,16 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
+     * \see multiFrameByUuid()
      */
     QgsLayoutItem *itemByUuid( const QString &uuid );
+
+    /**
+     * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
+     * if a matching multiframe could not be found.
+     * \see itemByUuid()
+     */
+    QgsLayoutMultiFrame *multiFrameByUuid( const QString &uuid ) const;
 
     /**
      * Returns the topmost layout item at a specified \a position. Ignores paper items.
@@ -429,6 +438,27 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void removeLayoutItem( QgsLayoutItem *item );
 
     /**
+     * Adds a \a multiFrame to the layout. The object is owned by the layout until removeMultiFrame() is called.
+     * \see removeMultiFrame()
+     * \see multiFrames()
+     */
+    void addMultiFrame( QgsLayoutMultiFrame *multiFrame SIP_TRANSFER );
+
+    /**
+     * Removes a \a multiFrame from the layout (but does not delete it).
+     * \see addMultiFrame()
+     * \see multiFrames()
+     */
+    void removeMultiFrame( QgsLayoutMultiFrame *multiFrame );
+
+    /**
+     * Returns a list of multi frames contained in the layout.
+     * \see addMultiFrame()
+     * \see removeMultiFrame()
+     */
+    QList< QgsLayoutMultiFrame * > multiFrames() const;
+
+    /**
      * Returns the layout's state encapsulated in a DOM element.
      * \see readXml()
      */
@@ -526,7 +556,8 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
     QgsLayoutExporter mExporter;
 
-    bool mBlockUndoCommands = false;
+    //! List of multiframe objects
+    QList<QgsLayoutMultiFrame *> mMultiFrames;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
@@ -543,12 +574,15 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     void removeLayoutItemPrivate( QgsLayoutItem *item );
 
+    void deleteAndRemoveMultiFrames();
+
     friend class QgsLayoutItemAddItemCommand;
     friend class QgsLayoutItemDeleteUndoCommand;
     friend class QgsLayoutItemUndoCommand;
     friend class QgsLayoutUndoCommand;
     friend class QgsLayoutItemGroupUndoCommand;
     friend class QgsLayoutModel;
+    friend class QgsLayoutMultiFrame;
 };
 
 #endif //QGSLAYOUT_H

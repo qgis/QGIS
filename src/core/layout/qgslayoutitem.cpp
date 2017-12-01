@@ -130,9 +130,7 @@ void QgsLayoutItem::setId( const QString &id )
     mLayout->itemsModel()->updateItemDisplayName( this );
   }
 
-#if 0 //TODO
-  emit itemChanged();
-#endif
+  emit changed();
 }
 
 void QgsLayoutItem::setSelected( bool selected )
@@ -165,7 +163,7 @@ void QgsLayoutItem::setVisibility( const bool visible )
   if ( command )
   {
     command->saveAfterState();
-    mLayout->undoStack()->stack()->push( command.release() );
+    mLayout->undoStack()->push( command.release() );
   }
 
   //inform model that visibility has changed
@@ -377,7 +375,7 @@ void QgsLayoutItem::attemptResize( const QgsLayoutSize &s, bool includesFrame )
   emit sizePositionChanged();
 }
 
-void QgsLayoutItem::attemptMove( const QgsLayoutPoint &p, bool useReferencePoint, bool includesFrame )
+void QgsLayoutItem::attemptMove( const QgsLayoutPoint &p, bool useReferencePoint, bool includesFrame, int page )
 {
   if ( !mLayout )
   {
@@ -387,6 +385,10 @@ void QgsLayoutItem::attemptMove( const QgsLayoutPoint &p, bool useReferencePoint
   }
 
   QgsLayoutPoint point = p;
+  if ( page >= 0 )
+  {
+    point = mLayout->pageCollection()->pagePositionToAbsolute( page, p );
+  }
 
   if ( includesFrame )
   {
@@ -431,6 +433,39 @@ void QgsLayoutItem::attemptSetSceneRect( const QRectF &rect, bool includesFrame 
   attemptMove( itemPos, false, includesFrame );
   blockSignals( false );
   emit sizePositionChanged();
+}
+
+int QgsLayoutItem::page() const
+{
+  if ( !mLayout )
+    return -1;
+
+  return mLayout->pageCollection()->pageNumberForPoint( pos() );
+}
+
+QPointF QgsLayoutItem::pagePos() const
+{
+  QPointF p = pos();
+
+  if ( !mLayout )
+    return p;
+
+  // try to get page
+  QgsLayoutItemPage *pageItem = mLayout->pageCollection()->page( page() );
+  if ( !pageItem )
+    return p;
+
+  p.ry() -= pageItem->pos().y();
+  return p;
+}
+
+QgsLayoutPoint QgsLayoutItem::pagePositionWithUnits() const
+{
+  QPointF p = pagePos();
+  if ( !mLayout )
+    return QgsLayoutPoint( p );
+
+  return mLayout->convertFromLayoutUnits( p, mItemPosition.units() );
 }
 
 void QgsLayoutItem::setScenePos( const QPointF &destinationPos )
@@ -1165,8 +1200,15 @@ QSizeF QgsLayoutItem::applyFixedSize( const QSizeF &targetSize )
   {
     return targetSize;
   }
+
+  QSizeF size = targetSize;
   QSizeF fixedSizeLayoutUnits = mLayout->convertToLayoutUnits( fixedSize() );
-  return targetSize.expandedTo( fixedSizeLayoutUnits );
+  if ( fixedSizeLayoutUnits.width() > 0 )
+    size.setWidth( fixedSizeLayoutUnits.width() );
+  if ( fixedSizeLayoutUnits.height() > 0 )
+    size.setHeight( fixedSizeLayoutUnits.height() );
+
+  return size;
 }
 
 void QgsLayoutItem::refreshItemRotation( QPointF *origin )

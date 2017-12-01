@@ -369,9 +369,12 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutexporter.cpp
   layout/qgslayoutgridsettings.cpp
   layout/qgslayoutguidecollection.cpp
+  layout/qgslayoutframe.cpp
   layout/qgslayoutitem.cpp
+  layout/qgslayoutitemattributetable.cpp
   layout/qgslayoutitemgroup.cpp
   layout/qgslayoutitemgroupundocommand.cpp
+  layout/qgslayoutitemhtml.cpp
   layout/qgslayoutitemlabel.cpp
   layout/qgslayoutitemlegend.cpp
   layout/qgslayoutitemmap.cpp
@@ -384,15 +387,21 @@ SET(QGIS_CORE_SRCS
   layout/qgslayoutitempolygon.cpp
   layout/qgslayoutitempolyline.cpp
   layout/qgslayoutitemregistry.cpp
+  layout/qgslayoutitemscalebar.cpp
   layout/qgslayoutitemshape.cpp
+  layout/qgslayoutitemtexttable.cpp
   layout/qgslayoutitemundocommand.cpp
   layout/qgslayoutmeasurement.cpp
   layout/qgslayoutmeasurementconverter.cpp
   layout/qgslayoutmodel.cpp
+  layout/qgslayoutmultiframe.cpp
+  layout/qgslayoutmultiframeundocommand.cpp
   layout/qgslayoutobject.cpp
   layout/qgslayoutpagecollection.cpp
   layout/qgslayoutserializableobject.cpp
   layout/qgslayoutsnapper.cpp
+  layout/qgslayouttable.cpp
+  layout/qgslayouttablecolumn.cpp
   layout/qgslayoutundocommand.cpp
   layout/qgslayoutundostack.cpp
   layout/qgslayoututils.cpp
@@ -729,9 +738,12 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutcontext.h
   layout/qgslayouteffect.h
   layout/qgslayoutguidecollection.h
+  layout/qgslayoutframe.h
   layout/qgslayoutitem.h
+  layout/qgslayoutitemattributetable.h
   layout/qgslayoutitemgroup.h
   layout/qgslayoutitemgroupundocommand.h
+  layout/qgslayoutitemhtml.h
   layout/qgslayoutitemlabel.h
   layout/qgslayoutitemlegend.h
   layout/qgslayoutitemmap.h
@@ -744,10 +756,15 @@ SET(QGIS_CORE_MOC_HDRS
   layout/qgslayoutitempolygon.h
   layout/qgslayoutitempolyline.h
   layout/qgslayoutitemregistry.h
+  layout/qgslayoutitemscalebar.h
   layout/qgslayoutitemshape.h
+  layout/qgslayoutitemtexttable.h
   layout/qgslayoutmodel.h
+  layout/qgslayoutmultiframe.h
   layout/qgslayoutpagecollection.h
   layout/qgslayoutobject.h
+  layout/qgslayouttable.h
+  layout/qgslayouttablecolumn.h
   layout/qgslayoutundostack.h
 
   symbology/qgscptcityarchive.h
@@ -1007,6 +1024,7 @@ SET(QGIS_CORE_HDRS
   layout/qgslayoutitemundocommand.h
   layout/qgslayoutmeasurement.h
   layout/qgslayoutmeasurementconverter.h
+  layout/qgslayoutmultiframeundocommand.h
   layout/qgspagesizeregistry.h
   layout/qgslayoutpoint.h
   layout/qgslayoutserializableobject.h

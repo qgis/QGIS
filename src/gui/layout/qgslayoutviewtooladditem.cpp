@@ -84,9 +84,23 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   QRectF rect = mRubberBand->finish( event->snappedPoint(), event->modifiers() );
 
+  QString undoText;
+  if ( QgsLayoutItemAbstractGuiMetadata *metadata = QgsGui::layoutItemGuiRegistry()->itemMetadata( mItemMetadataId ) )
+  {
+    undoText = tr( "Create %1" ).arg( metadata->visibleName() );
+  }
+  else
+  {
+    undoText = tr( "Create Item" );
+  }
+  layout()->undoStack()->beginMacro( undoText );
+
   QgsLayoutItem *item = QgsGui::layoutItemGuiRegistry()->createItem( mItemMetadataId, layout() );
   if ( !item )
+  {
+    layout()->undoStack()->endMacro();
     return;
+  }
 
   // click? or click-and-drag?
   bool clickOnly = !isClickAndDrag( mMousePressStartPos, event->pos() );
@@ -99,11 +113,12 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
     {
       item->setReferencePoint( dlg.referencePoint() );
       item->attemptResize( dlg.itemSize() );
-      item->attemptMove( dlg.itemPosition() );
+      item->attemptMove( dlg.itemPosition(), true, false, dlg.page() );
     }
     else
     {
       delete item;
+      layout()->undoStack()->endMacro();
       return;
     }
   }
@@ -121,8 +136,13 @@ void QgsLayoutViewToolAddItem::layoutReleaseEvent( QgsLayoutViewMouseEvent *even
 
   QgsGui::layoutItemGuiRegistry()->newItemAddedToLayout( mItemMetadataId, item );
 
-  layout()->addLayoutItem( item );
+  // it's possible (in certain circumstances, e.g. when adding frame items) that this item
+  // has already been added to the layout
+  if ( item->scene() != layout() )
+    layout()->addLayoutItem( item );
   layout()->setSelectedItem( item );
+
+  layout()->undoStack()->endMacro();
   emit createdItem();
 }
 

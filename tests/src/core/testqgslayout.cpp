@@ -42,6 +42,8 @@ class TestQgsLayout: public QObject
     void layoutItems();
     void layoutItemByUuid();
     void undoRedoOccurred();
+    void itemsOnPage(); //test fetching matching items on a set page
+    void pageIsEmpty();
 
   private:
     QString mReport;
@@ -467,6 +469,144 @@ void TestQgsLayout::undoRedoOccurred()
   items = qvariant_cast< QSet< QString > >( spyOccurred.at( 3 ).at( 0 ) );
   QCOMPARE( items, QSet< QString >() << item->uuid() << item2->uuid() );
 
+  // blocking undo
+  int before = l.undoStack()->stack()->count();
+  item->setId( "xxx" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 );
+  l.undoStack()->blockCommands( true );
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "yyy" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( true ); // second stacked command
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "ZZZ" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( false ); // one stacked command left
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "sss" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 1 ); // no new command
+  l.undoStack()->blockCommands( false ); // unblocked
+  QVERIFY( !l.undoStack()->isBlocked() );
+  item->setId( "ttt" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 2 ); // new command
+  l.undoStack()->blockCommands( false ); // don't allow negative stack size
+  QVERIFY( !l.undoStack()->isBlocked() );
+  item->setId( "uuu" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // new command
+  l.undoStack()->blockCommands( true ); // should be blocked again
+  QVERIFY( l.undoStack()->isBlocked() );
+  item->setId( "vvv" );
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // no new command
+  // blocked macro
+  l.undoStack()->beginMacro( "macro" );
+  item->setId( "lll" );
+  l.undoStack()->endMacro();
+  QCOMPARE( l.undoStack()->stack()->count(), before + 3 ); // no new command
+}
+
+void TestQgsLayout::itemsOnPage()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label1 );
+  label1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label2 );
+  label2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label3 );
+  label3->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 1 );
+  QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( shape1 );
+  shape1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( shape2 );
+  shape2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 1 );
+  QgsLayoutItemShape *arrow1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( arrow1 );
+  arrow1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
+  QgsLayoutItemShape *arrow2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( arrow2 );
+  arrow2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
+
+  //fetch items - remember that these numbers include the paper item!
+  QList<QgsLayoutItem *> items = l.pageCollection()->itemsOnPage( 0 );
+  //should be 4 items on page 1
+  QCOMPARE( items.length(), 4 );
+  items = l.pageCollection()->itemsOnPage( 1 );
+  //should be 3 items on page 2
+  QCOMPARE( items.length(), 3 );
+  items = l.pageCollection()->itemsOnPage( 2 );
+  //should be 3 items on page 3
+  QCOMPARE( items.length(), 3 );
+
+  l.removeLayoutItem( label1 );
+  l.removeLayoutItem( label2 );
+  l.removeLayoutItem( label3 );
+  l.removeLayoutItem( shape1 );
+  l.removeLayoutItem( shape2 );
+  l.removeLayoutItem( arrow1 );
+  l.removeLayoutItem( arrow2 );
+
+  //check again with removed items
+  items = l.pageCollection()->itemsOnPage( 0 );
+  QCOMPARE( items.length(), 1 );
+  items = l.pageCollection()->itemsOnPage( 1 );
+  QCOMPARE( items.length(), 1 );
+  items = l.pageCollection()->itemsOnPage( 2 );
+  QCOMPARE( items.length(), 1 );
+}
+
+void TestQgsLayout::pageIsEmpty()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  //add some items to the composition
+  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label1 );
+  label1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label2 );
+  label2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
+  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label3 );
+  label3->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
+
+  //only page 2 should be empty
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 0 ), false );
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 1 ), true );
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 2 ), false );
+
+  //remove the items
+  l.removeLayoutItem( label1 );
+  l.removeLayoutItem( label2 );
+  l.removeLayoutItem( label3 );
+
+  //expect everything to be empty now
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 0 ), true );
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 1 ), true );
+  QCOMPARE( l.pageCollection()->pageIsEmpty( 2 ), true );
 }
 
 

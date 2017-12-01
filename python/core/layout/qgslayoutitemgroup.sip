@@ -62,7 +62,7 @@ class QgsLayoutItemGroup: QgsLayoutItem
     virtual void setVisibility( const bool visible );
 
 
-    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 );
 
     virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );
 

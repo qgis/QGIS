@@ -31,7 +31,7 @@ void QgsLayoutNodesItem::setNodes( const QPolygonF &nodes )
 
 QRectF QgsLayoutNodesItem::boundingRect() const
 {
-  return mCurrentRectangle;
+  return currentRectangle;
 }
 
 double QgsLayoutNodesItem::estimatedFrameBleed() const
@@ -336,7 +336,7 @@ void QgsLayoutNodesItem::updateBoundingRect()
 {
   QRectF br = rect();
   br.adjust( -mMaxSymbolBleed, -mMaxSymbolBleed, mMaxSymbolBleed, mMaxSymbolBleed );
-  mCurrentRectangle = br;
+  currentRectangle = br;
 
   // update
   prepareGeometryChange();

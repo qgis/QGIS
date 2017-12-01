@@ -138,6 +138,24 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
       UndoLegendGroupFont, //!< Legend group font
       UndoLegendLayerFont, //!< Legend layer font
       UndoLegendItemFont, //!< Legend item font
+      UndoScaleBarLineWidth, //!< Scalebar line width
+      UndoScaleBarSegmentSize, //!< Scalebar segment size
+      UndoScaleBarSegmentsLeft, //!< Scalebar segments left
+      UndoScaleBarSegments, //!< Scalebar number of segments
+      UndoScaleBarHeight, //!< Scalebar height
+      UndoScaleBarFontColor, //!< Scalebar font color
+      UndoScaleBarFillColor, //!< Scalebar fill color
+      UndoScaleBarFillColor2, //!< Scalebar secondary fill color
+      UndoScaleBarStrokeColor, //!< Scalebar stroke color
+      UndoScaleBarUnitText, //!< Scalebar unit text
+      UndoScaleBarMapUnitsSegment, //!< Scalebar map units per segment
+      UndoScaleBarLabelBarSize, //!< Scalebar label bar size
+      UndoScaleBarBoxContentSpace, //!< Scalebar box context space
+      UndoArrowStrokeWidth, //!< Arrow stroke width
+      UndoArrowHeadWidth, //!< Arrow head width
+      UndoArrowHeadFillColor, //!< Arrow head fill color
+      UndoArrowHeadStrokeColor, //!< Arrow head stroke color
+
       UndoCustomCommand, //!< Base id for plugin based item undo commands
     };
 
@@ -172,7 +190,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see id()
      * \see setId()
     */
-    QString uuid() const { return mUuid; }
+    virtual QString uuid() const { return mUuid; }
 
     /**
      * Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
@@ -285,7 +303,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see setFixedSize()
      * \see minimumSize()
     */
-    QgsLayoutSize fixedSize() const { return mFixedSize; }
+    virtual QgsLayoutSize fixedSize() const { return mFixedSize; }
 
     /**
      * Returns the minimum allowed size of the item, if applicable, or an empty size if item can be freely
@@ -324,6 +342,10 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * If \a includesFrame is true, then the position specified by \a point represents the
      * point at which to place the outside of the item's frame.
      *
+     * If \a page is not left at the default -1 value, then the position specified by \a point
+     * refers to the relative position on the corresponding layout \a page (where a \a page
+     * of 0 represents the first page).
+     *
      * Note that the final position of the item may not match the specified target position,
      * as data defined item position may override the specified value.
      *
@@ -331,8 +353,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see referencePoint()
      * \see positionWithUnits()
     */
-    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false );
-
+    virtual void attemptMove( const QgsLayoutPoint &point, bool useReferencePoint = true, bool includesFrame = false, int page = -1 );
 
     /**
      * Attempts to update the item's position and size to match the passed \a rect in layout
@@ -360,6 +381,26 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see sizeWithUnits()
     */
     QgsLayoutPoint positionWithUnits() const { return mItemPosition; }
+
+    /**
+     * Returns the page the item is currently on, with the first page returning 0.
+     * \see pagePos()
+     */
+    int page() const;
+
+    /**
+     * Returns the item's position (in layout units) relative to the top left corner of its current page.
+     * \see page()
+     * \see pagePositionWithUnits()
+     */
+    QPointF pagePos() const;
+
+    /**
+     * Returns the item's position (in item units) relative to the top left corner of its current page.
+     * \see page()
+     * \see pagePos()
+     */
+    QgsLayoutPoint pagePositionWithUnits() const;
 
     /**
      * Returns the item's current size, including units.

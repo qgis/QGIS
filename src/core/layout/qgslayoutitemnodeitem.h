@@ -164,9 +164,16 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
     //! Update the current scene rectangle for this item.
     void updateSceneRect();
 
-  private slots:
+    //! Current bounding rectangle of shape
+    QRectF currentRectangle;
 
-    void updateBoundingRect();
+  protected slots:
+
+    /**
+     * Called when the bounding rect of the item should recalculated. Subclasses should update
+     * currentRectangle in their implementations.
+     */
+    virtual void updateBoundingRect();
 
   private:
 
@@ -180,12 +187,10 @@ class CORE_EXPORT QgsLayoutNodesItem: public QgsLayoutItem
      * the painting. */
     bool mDrawNodes = false;
 
-    //! Current bounding rectangle of shape
-    QRectF mCurrentRectangle;
-
     //! Draw nodes
     void drawNodes( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) const;
     void drawSelectedNode( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) const;
+
 };
 
 #endif // QGSLAYOUTITEMNODEITEM_H

@@ -92,6 +92,31 @@ class QgsLayoutUndoStack : QObject
  Notifies the stack that an undo or redo action occurred for a specified ``item``.
 %End
 
+    void blockCommands( bool blocked );
+%Docstring
+ Sets whether undo commands for the layout should be temporarily blocked.
+
+ If ``blocked`` is true, subsequent undo commands will be blocked until a follow-up
+ call to blockCommands( false ) is made.
+
+ Note that calls to blockCommands are stacked, so two calls blocking the commands
+ will take two calls unblocking commands in order to release the block.
+
+.. seealso:: isBlocked()
+%End
+
+    bool isBlocked() const;
+%Docstring
+ Returns true if undo commands are currently blocked.
+.. seealso:: blockCommands()
+ :rtype: bool
+%End
+
+    void push( QUndoCommand *command /Transfer/ );
+%Docstring
+ Manually pushes a ``command`` to the stack, and takes ownership of the command.
+%End
+
   signals:
 
     void undoRedoOccurredForItems( const QSet< QString > itemUuids );
