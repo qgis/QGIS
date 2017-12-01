@@ -18,15 +18,25 @@ from qgis.core import (QgsCoordinateReferenceSystem,
                        QgsCoordinateTransformContext,
                        QgsCoordinateTransform,
                        QgsReadWriteContext,
-                       QgsProject)
+                       QgsProject,
+                       QgsSettings)
 from qgis.testing import start_app, unittest
 from qgis.PyQt.QtXml import QDomDocument
 from qgis.PyQt.QtTest import QSignalSpy
+from qgis.PyQt.QtCore import QCoreApplication
 
 app = start_app()
 
 
 class TestQgsCoordinateTransformContext(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        QCoreApplication.setOrganizationName("QGIS_Test")
+        QCoreApplication.setOrganizationDomain("TestPyQgsWFSProvider.com")
+        QCoreApplication.setApplicationName("TestPyQgsWFSProvider")
+        QgsSettings().clear()
 
     @unittest.skip('ifdefed out in c++ until required')
     def testSourceDatumTransforms(self):
@@ -249,6 +259,10 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:28356'),
                                                           QgsCoordinateReferenceSystem('EPSG:3111')),
                          QgsCoordinateTransform.TransformPair(-1, -1))
+        # check that reverse transforms are automatically supported
+        self.assertEqual(context.calculateDatumTransforms(QgsCoordinateReferenceSystem('EPSG:4283'),
+                                                          QgsCoordinateReferenceSystem('EPSG:28356')),
+                         QgsCoordinateTransform.TransformPair(4, 3))
 
     @unittest.skip('ifdefed out in c++ until required')
     def testWriteReadXmlSingleVariant(self):
@@ -319,6 +333,34 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         project.setTransformContext(context)
         self.assertEqual(len(context_changed_spy), 1)
         self.assertEqual(project.transformContext().sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): QgsCoordinateTransform.TransformPair(1, 2)})
+
+    def testReadWriteSettings(self):
+        context = QgsCoordinateTransformContext()
+        context.readSettings()
+        # should be empty
+        self.assertEqual(context.sourceDestinationDatumTransforms(), {})
+
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:3111'),
+                                                                   QgsCoordinateReferenceSystem('EPSG:4283'), 1, 2))
+        self.assertTrue(context.addSourceDestinationDatumTransform(QgsCoordinateReferenceSystem('EPSG:28356'),
+                                                                   QgsCoordinateReferenceSystem(4283), 3, 4))
+
+        self.assertEqual(context.sourceDestinationDatumTransforms(),
+                         {('EPSG:3111', 'EPSG:4283'): QgsCoordinateTransform.TransformPair(1, 2),
+                          ('EPSG:28356', 'EPSG:4283'): QgsCoordinateTransform.TransformPair(3, 4)})
+
+        # save to settings
+        context.writeSettings()
+
+        # restore from settings
+        context2 = QgsCoordinateTransformContext()
+        self.assertEqual(context2.sourceDestinationDatumTransforms(), {})
+        context2.readSettings()
+
+        # check result
+        self.assertEqual(context2.sourceDestinationDatumTransforms(),
+                         {('EPSG:3111', 'EPSG:4283'): QgsCoordinateTransform.TransformPair(1, 2),
+                          ('EPSG:28356', 'EPSG:4283'): QgsCoordinateTransform.TransformPair(3, 4)})
 
 
 if __name__ == '__main__':

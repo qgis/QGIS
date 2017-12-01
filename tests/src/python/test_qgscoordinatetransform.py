@@ -207,6 +207,17 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertEqual(transform.sourceDatumTransformId(), 1)
         self.assertEqual(transform.destinationDatumTransformId(), 2)
 
+    def testTransformInfo(self):
+        # hopefully this transform is available on all platforms!
+        transforms = QgsCoordinateTransform.datumTransformations(QgsCoordinateReferenceSystem(4613), QgsCoordinateReferenceSystem(4326))
+        self.assertTrue(len(transforms) > 0)
+        self.assertIn('+towgs84=-403,684,41', [QgsCoordinateTransform.datumTransformToProj(t.sourceTransformId) for t in transforms])
+        self.assertIn('+towgs84=-403,684,41', [QgsCoordinateTransform.datumTransformToProj(t.destinationTransformId) for t in transforms])
+        self.assertIn('EPSG:4613', [QgsCoordinateTransform.datumTransformInfo(t.destinationTransformId).sourceCrsAuthId for t in
+                                    transforms])
+        self.assertIn('EPSG:4326', [QgsCoordinateTransform.datumTransformInfo(t.destinationTransformId).destinationCrsAuthId for t in
+                                    transforms])
+
 
 if __name__ == '__main__':
     unittest.main()
