@@ -17,6 +17,7 @@
 
 #include "qgsalgorithmfiledownloader.h"
 #include "qgsfiledownloader.h"
+#include "qgsfileutils.h"
 #include <QEventLoop>
 #include <QFileInfo>
 #include <QTimer>
@@ -110,30 +111,14 @@ void QgsFileDownloaderAlgorithm::sendProgressFeedback()
 
 void QgsFileDownloaderAlgorithm::receiveProgressFromDownloader( qint64 bytesReceived, qint64 bytesTotal )
 {
-  mReceived = humanSize( bytesReceived );
+  mReceived = QgsFileUtils::representFileSize( bytesReceived );
   if ( bytesTotal > 0 )
   {
     if ( mTotal.isEmpty() )
-      mTotal = humanSize( bytesTotal );
+      mTotal = QgsFileUtils::representFileSize( bytesTotal );
 
     mFeedback->setProgress( ( bytesReceived * 100 ) / bytesTotal );
   }
-}
-
-QString QgsFileDownloaderAlgorithm::humanSize( qint64 bytes )
-{
-  QStringList list;
-  list << "KB" << "MB" << "GB" << "TB";
-
-  QStringListIterator i( list );
-  QString unit( "bytes" );
-
-  while ( bytes >= 1024.0 && i.hasNext() )
-  {
-    unit = i.next();
-    bytes /= 1024.0;
-  }
-  return QString( "%1 %2" ).arg( QString::number( bytes ) ).arg( unit );
 }
 
 ///@endcond
