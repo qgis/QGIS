@@ -461,6 +461,23 @@ class CORE_EXPORT QgsDataProvider : public QObject
      */
     virtual void setListening( bool isListening );
 
+#ifndef SIP_RUN
+
+    /**
+     * Stores settings related to the context in which a preview job runs.
+     * \note Not available in Python bindings
+     * \since QGIS 3.0
+     */
+    struct PreviewContext
+    {
+      //! Previous rendering time for the layer, in ms
+      double lastRenderingTimeMs = -1;
+
+      //! Default maximum allowable render time, in ms
+      double maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
+    };
+#endif
+
     /**
      * Returns whether the layer must be rendered in preview jobs.
      *
@@ -474,7 +491,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \note not available in Python bindings
      */
-    virtual bool renderInPreview( double lastRenderingTimeMS, double maxRenderingTimeMS ); // SIP_SKIP
+    virtual bool renderInPreview( QgsDataProvider::PreviewContext context ); // SIP_SKIP
 
   signals:
 

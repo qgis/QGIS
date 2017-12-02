@@ -380,6 +380,7 @@ Current time stamp of data source
 .. versionadded:: 3.0
 %End
 
+
   signals:
 
     void fullExtentCalculated();
