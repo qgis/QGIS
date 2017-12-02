@@ -261,97 +261,75 @@ void QgsRubberBand::addGeometry( const QgsGeometry &geometry, const QgsCoordinat
     geom.transform( ct );
   }
 
-  switch ( QgsWkbTypes::flatType( geom.wkbType() ) )
+  QgsWkbTypes::Type geomType = geom.wkbType();
+  if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && !QgsWkbTypes::isMultiType( geomType ) )
   {
-
-    case QgsWkbTypes::Point:
-    case QgsWkbTypes::Point25D:
+    QgsPointXY pt = geom.asPoint();
+    addPoint( pt, false, idx );
+    removeLastPoint( idx, false );
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PointGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsMultiPointXY mpt = geom.asMultiPoint();
+    for ( QgsPointXY pt : mpt )
     {
-      QgsPointXY pt = geom.asPoint();
       addPoint( pt, false, idx );
       removeLastPoint( idx, false );
+      idx++;
     }
-    break;
-
-    case QgsWkbTypes::MultiPoint:
-    case QgsWkbTypes::MultiPoint25D:
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry && !QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsPolylineXY line = geom.asPolyline();
+    for ( QgsPointXY pt : line )
     {
-      const QgsMultiPointXY mpt = geom.asMultiPoint();
-      for ( QgsPointXY pt : mpt )
+      addPoint( pt, false, idx );
+    }
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::LineGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsMultiPolylineXY mline = geom.asMultiPolyline();
+    for ( const QgsPolylineXY &line : mline )
+    {
+      if ( line.isEmpty() )
       {
-        addPoint( pt, false, idx );
-        removeLastPoint( idx, false );
-        idx++;
+        continue;
       }
-    }
-    break;
-
-    case QgsWkbTypes::LineString:
-    case QgsWkbTypes::LineString25D:
-    {
-      const QgsPolylineXY line = geom.asPolyline();
       for ( QgsPointXY pt : line )
       {
         addPoint( pt, false, idx );
       }
+      idx++;
     }
-    break;
-
-    case QgsWkbTypes::MultiLineString:
-    case QgsWkbTypes::MultiLineString25D:
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry && !QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsPolygonXY poly = geom.asPolygon();
+    const QgsPolylineXY line = poly.at( 0 );
+    for ( QgsPointXY pt : line )
     {
-
-      const QgsMultiPolylineXY mline = geom.asMultiPolyline();
-      for ( const QgsPolylineXY &line : mline )
-      {
-        if ( line.isEmpty() )
-        {
-          continue;
-        }
-
-        for ( QgsPointXY pt : line )
-        {
-          addPoint( pt, false, idx );
-        }
-        idx++;
-      }
+      addPoint( pt, false, idx );
     }
-    break;
-
-    case QgsWkbTypes::Polygon:
-    case QgsWkbTypes::Polygon25D:
+  }
+  else if ( QgsWkbTypes::geometryType( geomType ) == QgsWkbTypes::PolygonGeometry && QgsWkbTypes::isMultiType( geomType ) )
+  {
+    const QgsMultiPolygonXY multipoly = geom.asMultiPolygon();
+    for ( const QgsPolygonXY &poly : multipoly )
     {
-      const QgsPolygonXY poly = geom.asPolygon();
+      if ( poly.empty() )
+        continue;
+
       const QgsPolylineXY line = poly.at( 0 );
       for ( QgsPointXY pt : line )
       {
         addPoint( pt, false, idx );
       }
+      idx++;
     }
-    break;
-
-    case QgsWkbTypes::MultiPolygon:
-    case QgsWkbTypes::MultiPolygon25D:
-    {
-      const QgsMultiPolygonXY multipoly = geom.asMultiPolygon();
-      for ( const QgsPolygonXY &poly : multipoly )
-      {
-        if ( poly.empty() )
-          continue;
-
-        const QgsPolylineXY line = poly.at( 0 );
-        for ( QgsPointXY pt : line )
-        {
-          addPoint( pt, false, idx );
-        }
-        idx++;
-      }
-    }
-    break;
-
-    case QgsWkbTypes::Unknown:
-    default:
-      return;
+  }
+  else
+  {
+    return;
   }
 
   setVisible( true );
