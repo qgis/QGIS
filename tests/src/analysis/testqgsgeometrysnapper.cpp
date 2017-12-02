@@ -502,7 +502,7 @@ void TestQgsGeometrySnapper::internalSnapper()
 
 void TestQgsGeometrySnapper::insertExtra()
 {
-  // test extra node insertion behaviour
+  // test extra node insertion behavior
   QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 0.1 0, 0.2 0, 9.8 0, 9.9 0, 10 0, 10.1 0, 10.2 0, 20 0)" ) );
   QgsFeature f1( 1 );
   f1.setGeometry( refGeom );
