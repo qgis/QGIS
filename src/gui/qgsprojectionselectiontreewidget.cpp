@@ -64,7 +64,7 @@ QgsProjectionSelectionTreeWidget::QgsProjectionSelectionTreeWidget( QWidget *par
   mLayers << new QgsVectorLayer( layerPath );
   mAreaCanvas->setLayers( mLayers );
   mAreaCanvas->setMapTool( new QgsMapToolPan( mAreaCanvas ) );
-
+  mAreaCanvas->setPreviewJobsEnabled( true );
   mAreaCanvas->setVisible( mShowMap );
 
   if ( QDialog *dlg = qobject_cast<QDialog *>( parent ) )
