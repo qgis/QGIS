@@ -28,6 +28,8 @@ class QgsGeometrySnapper : QObject
     {
       PreferNodes,
       PreferClosest,
+      PreferNodesNoExtraVertices,
+      PreferClosestNoExtraVertices,
       EndPointPreferNodes,
       EndPointPreferClosest,
       EndPointToEndPoint,

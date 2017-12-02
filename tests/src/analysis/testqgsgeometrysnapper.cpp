@@ -48,6 +48,7 @@ class TestQgsGeometrySnapper : public QObject
     void endPointSnap();
     void endPointToEndPoint();
     void internalSnapper();
+    void insertExtra();
 };
 
 void  TestQgsGeometrySnapper::initTestCase()
@@ -497,6 +498,90 @@ void TestQgsGeometrySnapper::internalSnapper()
   QCOMPARE( res.value( 2 ).asWkt(), QStringLiteral( "LineString (5 5, 10 10, 15 15)" ) );
   QCOMPARE( res.value( 3 ).asWkt(), f3.geometry().asWkt() );
   QCOMPARE( res.value( 4 ).asWkt(), QStringLiteral( "LineString (0 0, 5 5, 10 10, 15 15)" ) );
+}
+
+void TestQgsGeometrySnapper::insertExtra()
+{
+  // test extra node insertion behaviour
+  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 0.1 0, 0.2 0, 9.8 0, 9.9 0, 10 0, 10.1 0, 10.2 0, 20 0)" ) );
+  QgsFeature f1( 1 );
+  f1.setGeometry( refGeom );
+
+  // inserting extra nodes
+  QgsInternalGeometrySnapper snapper( 2, QgsGeometrySnapper::PreferNodes );
+  QgsGeometry result = snapper.snapFeature( f1 );
+  QCOMPARE( result.asWkt(), f1.geometry().asWkt() );
+
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(8 -5, 9 0, 10 5)" ) );
+  QgsFeature f2( 2 );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (8 -5, 9.8 0, 9.9 0, 10 0, 10.1 0, 10 5)" ) );
+
+  // reset snapper
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::PreferNodes );
+  result = snapper.snapFeature( f1 );
+
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(7 -2, 10 0)" ) );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  // should 'follow' line for a bit
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (7 -2, 9.8 0, 9.9 0, 10 0)" ) );
+
+  // using PreferNodesNoExtraVertices mode, no extra vertices should be inserted
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::PreferNodesNoExtraVertices );
+  result = snapper.snapFeature( f1 );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(8 -5, 9 0.1, 10 5)" ) );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (8 -5, 9.8 0, 10 5)" ) );
+
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::PreferNodesNoExtraVertices );
+  result = snapper.snapFeature( f1 );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(7 -2, 10.1 0.1)" ) );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (7 -2, 10.1 0)" ) );
+
+  // using PreferClosestNoExtraVertices mode, no extra vertices should be inserted
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::PreferClosestNoExtraVertices );
+  result = snapper.snapFeature( f1 );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(8 -5, 9 0.1, 10 5)" ) );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (8 -5, 9 0, 10 5)" ) );
+
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::PreferClosestNoExtraVertices );
+  result = snapper.snapFeature( f1 );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(7 -2, 10.1 0.1)" ) );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (7 -2, 10.1 0)" ) );
+
+  // using EndPointPreferNodes mode, no extra vertices should be inserted
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::EndPointPreferNodes );
+  result = snapper.snapFeature( f1 );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(7 -2, 10.02 0)" ) );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (7 -2, 10 0)" ) );
+
+  // using EndPointPreferClosest mode, no extra vertices should be inserted
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::EndPointPreferClosest );
+  result = snapper.snapFeature( f1 );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(7 -2, 10.02 0)" ) );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (7 -2, 10 0)" ) );
+
+  // using EndPointToEndPoint mode, no extra vertices should be inserted
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::EndPointToEndPoint );
+  result = snapper.snapFeature( f1 );
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(-7 -2, 0.12 0)" ) );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (-7 -2, 0 0)" ) );
+
 }
 
 

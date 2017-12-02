@@ -550,6 +550,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
           switch ( mode )
           {
             case PreferNodes:
+            case PreferNodesNoExtraVertices:
             case EndPointPreferNodes:
             case EndPointToEndPoint:
             {
@@ -568,6 +569,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
             }
 
             case PreferClosest:
+            case PreferClosestNoExtraVertices:
             case EndPointPreferClosest:
             {
               QgsPoint nodeSnap, segmentSnap;
@@ -605,7 +607,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   if ( qgsgeometry_cast< const QgsPoint * >( subjGeom ) )
     return QgsGeometry( subjGeom );
   //or for end point snapping
-  if ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
+  if ( mode == PreferClosestNoExtraVertices || mode == PreferNodesNoExtraVertices || mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
     return QgsGeometry( subjGeom );
 
   // SnapIndex for subject feature
