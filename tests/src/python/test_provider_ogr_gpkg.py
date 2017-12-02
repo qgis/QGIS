@@ -34,9 +34,11 @@ from qgis.core import (QgsFeature,
                        QgsPointXY,
                        QgsProject,
                        QgsWkbTypes,
-                       QgsDataProvider)
+                       QgsDataProvider,
+                       QgsVectorDataProvider)
 from qgis.PyQt.QtCore import QCoreApplication, QVariant
 from qgis.testing import start_app, unittest
+from qgis.utils import spatialite_connect
 
 
 def GDAL_COMPUTE_VERSION(maj, min, rev):
@@ -770,6 +772,67 @@ class TestPyQgsOGRProviderGpkg(unittest.TestCase):
         self.assertEqual(layer.featureCount(), 2)
         self.assertEqual([f for f in layer.getFeatures()][0].geometry().asWkt(), 'Polygon ((0.5 0, 0.5 1, 1 1, 1 0, 0.5 0))')
         self.assertEqual([f for f in layer.getFeatures()][1].geometry().asWkt(), 'Polygon ((0.5 1, 0.5 0, 0 0, 0 1, 0.5 1))')
+
+    def testCreateAttributeIndex(self):
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageAttributeIndex.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon)
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateAttributeIndex)
+        self.assertFalse(vl.dataProvider().createAttributeIndex(-1))
+        self.assertFalse(vl.dataProvider().createAttributeIndex(100))
+
+        # should not be allowed - there's already a index on the primary key
+        self.assertFalse(vl.dataProvider().createAttributeIndex(0))
+
+        self.assertTrue(vl.dataProvider().createAttributeIndex(1))
+
+        con = spatialite_connect(tmpfile, isolation_level=None)
+        cur = con.cursor()
+        rs = cur.execute("SELECT * FROM sqlite_master WHERE type='index' AND tbl_name='test'")
+        res = [row for row in rs]
+        self.assertEqual(len(res), 1)
+        index_name = res[0][1]
+        rs = cur.execute("PRAGMA index_info({})".format(index_name))
+        res = [row for row in rs]
+        self.assertEqual(len(res), 1)
+        self.assertEqual(res[0][2], 'str_field')
+
+        # second index
+        self.assertTrue(vl.dataProvider().createAttributeIndex(2))
+        rs = cur.execute("SELECT * FROM sqlite_master WHERE type='index' AND tbl_name='test'")
+        res = [row for row in rs]
+        self.assertEqual(len(res), 2)
+        indexed_columns = []
+        for row in res:
+            index_name = row[1]
+            rs = cur.execute("PRAGMA index_info({})".format(index_name))
+            res = [row for row in rs]
+            self.assertEqual(len(res), 1)
+            indexed_columns.append(res[0][2])
+
+        self.assertCountEqual(indexed_columns, ['str_field', 'str_field2'])
+        con.close()
+
+    def testCreateSpatialIndex(self):
+        tmpfile = os.path.join(self.basetestpath, 'testGeopackageSpatialIndex.gpkg')
+        ds = ogr.GetDriverByName('GPKG').CreateDataSource(tmpfile)
+        lyr = ds.CreateLayer('test', geom_type=ogr.wkbPolygon, options=['SPATIAL_INDEX=NO'])
+        lyr.CreateField(ogr.FieldDefn('str_field', ogr.OFTString))
+        lyr.CreateField(ogr.FieldDefn('str_field2', ogr.OFTString))
+        f = None
+        ds = None
+
+        vl = QgsVectorLayer(u'{}'.format(tmpfile) + "|layername=" + "test", 'test', u'ogr')
+        self.assertTrue(vl.isValid())
+        self.assertTrue(vl.dataProvider().capabilities() & QgsVectorDataProvider.CreateSpatialIndex)
+        self.assertTrue(vl.dataProvider().createSpatialIndex())
 
 
 if __name__ == '__main__':
