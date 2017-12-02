@@ -611,6 +611,8 @@ void QgsMapCanvas::rendererJobFinished()
     p.end();
 
     mMap->setContent( img, imageRect( img, mSettings ) );
+
+    mLastLayerRenderTime = mJob->layerRenderingTime();
     if ( mUsePreviewJobs )
       startPreviewJobs();
   }
@@ -2267,6 +2269,21 @@ void QgsMapCanvas::startPreviewJob( int number )
   jobSettings.setExtent( jobExtent );
   jobSettings.setFlag( QgsMapSettings::DrawLabeling, false );
   jobSettings.setFlag( QgsMapSettings::RenderPreviewJob, true );
+
+  // truncate preview layers to fast layers
+  const QList<QgsMapLayer *> layers = jobSettings.layers();
+  QList< QgsMapLayer * > previewLayers;
+  for ( QgsMapLayer *layer : layers )
+  {
+    if ( !layer->dataProvider()->renderInPreview( mLastLayerRenderTime.value( layer->id() ), MAXIMUM_LAYER_PREVIEW_TIME_MS ) )
+    {
+      QgsDebugMsgLevel( QString( "Layer %1 not rendered because it does not match the renderInPreview criterion %2" ).arg( layer->id() ).arg( mLastLayerRenderTime.value( layer->id() ) ), 3 );
+      continue;
+    }
+
+    previewLayers << layer;
+  }
+  jobSettings.setLayers( previewLayers );
 
   QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
   mPreviewJobs.append( job );
