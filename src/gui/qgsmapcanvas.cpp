@@ -2273,9 +2273,12 @@ void QgsMapCanvas::startPreviewJob( int number )
   // truncate preview layers to fast layers
   const QList<QgsMapLayer *> layers = jobSettings.layers();
   QList< QgsMapLayer * > previewLayers;
+  QgsDataProvider::PreviewContext context;
+  context.maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
   for ( QgsMapLayer *layer : layers )
   {
-    if ( !layer->dataProvider()->renderInPreview( mLastLayerRenderTime.value( layer->id() ), MAXIMUM_LAYER_PREVIEW_TIME_MS ) )
+    context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id() );
+    if ( !layer->dataProvider()->renderInPreview( context ) )
     {
       QgsDebugMsgLevel( QString( "Layer %1 not rendered because it does not match the renderInPreview criterion %2" ).arg( layer->id() ).arg( mLastLayerRenderTime.value( layer->id() ) ), 3 );
       continue;
