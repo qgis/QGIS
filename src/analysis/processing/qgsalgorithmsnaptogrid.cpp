@@ -85,7 +85,7 @@ bool QgsSnapToGridAlgorithm::prepareAlgorithm( const QVariantMap &parameters, Qg
   return true;
 }
 
-QgsFeature QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+QgsFeature QgsSnapToGridAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )

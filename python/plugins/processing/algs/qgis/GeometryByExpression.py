@@ -101,7 +101,7 @@ class GeometryByExpression(QgisFeatureBasedAlgorithm):
     def outputWkbType(self, input_wkb_type):
         return self.wkb_type
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         self.expression_context.setFeature(feature)
         value = self.expression.evaluate(self.expression_context)
         if self.expression.hasEvalError():

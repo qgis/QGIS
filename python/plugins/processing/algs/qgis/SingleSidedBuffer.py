@@ -108,7 +108,7 @@ class SingleSidedBuffer(QgisFeatureBasedAlgorithm):
         self.miter_limit = self.parameterAsDouble(parameters, self.MITER_LIMIT, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         input_geometry = feature.geometry()
         if input_geometry:
             output_geometry = input_geometry.singleSidedBuffer(self.distance, self.segments,

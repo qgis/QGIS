@@ -64,7 +64,7 @@ QgsFields QgsConvexHullAlgorithm::outputFields( const QgsFields &inputFields ) c
   return fields;
 }
 
-QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+QgsFeature QgsConvexHullAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )

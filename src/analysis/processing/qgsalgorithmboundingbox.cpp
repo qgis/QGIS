@@ -66,7 +66,7 @@ QgsFields QgsBoundingBoxAlgorithm::outputFields( const QgsFields &inputFields ) 
   return fields;
 }
 
-QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsBoundingBoxAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )

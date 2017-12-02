@@ -423,25 +423,37 @@ QMap< QString, QString > QgsMapToolIdentify::featureDerivedAttributes( QgsFeatur
     //add details of closest vertex to identify point
     closestVertexAttributes( *feature->geometry().constGet(), vId, layer, derivedAttributes );
   }
-  else if ( geometryType == QgsWkbTypes::PointGeometry &&
-            QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point )
+  else if ( geometryType == QgsWkbTypes::PointGeometry )
   {
-    // Include the x and y coordinates of the point as a derived attribute
-    QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry().asPoint() );
-    QString str = formatXCoordinate( pnt );
-    derivedAttributes.insert( QStringLiteral( "X" ), str );
-    str = formatYCoordinate( pnt );
-    derivedAttributes.insert( QStringLiteral( "Y" ), str );
+    if ( QgsWkbTypes::flatType( wkbType ) == QgsWkbTypes::Point )
+    {
+      // Include the x and y coordinates of the point as a derived attribute
+      QgsPointXY pnt = mCanvas->mapSettings().layerToMapCoordinates( layer, feature->geometry().asPoint() );
+      QString str = formatXCoordinate( pnt );
+      derivedAttributes.insert( QStringLiteral( "X" ), str );
+      str = formatYCoordinate( pnt );
+      derivedAttributes.insert( QStringLiteral( "Y" ), str );
 
-    if ( QgsWkbTypes::hasZ( wkbType ) )
-    {
-      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().constGet() )->z(), 'g', 10 );
-      derivedAttributes.insert( QStringLiteral( "Z" ), str );
+      if ( QgsWkbTypes::hasZ( wkbType ) )
+      {
+        str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().constGet() )->z(), 'g', 10 );
+        derivedAttributes.insert( QStringLiteral( "Z" ), str );
+      }
+      if ( QgsWkbTypes::hasM( wkbType ) )
+      {
+        str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().constGet() )->m(), 'g', 10 );
+        derivedAttributes.insert( QStringLiteral( "M" ), str );
+      }
     }
-    if ( QgsWkbTypes::hasM( wkbType ) )
+    else
     {
-      str = QLocale::system().toString( static_cast<const QgsPoint *>( feature->geometry().constGet() )->m(), 'g', 10 );
-      derivedAttributes.insert( QStringLiteral( "M" ), str );
+      //multipart
+
+      //add details of closest vertex to identify point
+      const QgsAbstractGeometry *geom = feature->geometry().constGet();
+      {
+        closestVertexAttributes( *geom, vId, layer, derivedAttributes );
+      }
     }
   }
 

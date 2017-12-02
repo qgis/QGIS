@@ -73,7 +73,7 @@ class TextToFloat(QgisFeatureBasedAlgorithm):
         self.field_name = self.parameterAsString(parameters, self.FIELD, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         value = feature[self.field_idx]
         try:
             if '%' in value:

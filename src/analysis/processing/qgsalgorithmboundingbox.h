@@ -45,7 +45,7 @@ class QgsBoundingBoxAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString outputName() const override;
     QgsWkbTypes::Type outputWkbType( QgsWkbTypes::Type ) const override { return QgsWkbTypes::Polygon; }
     QgsFields outputFields( const QgsFields &inputFields ) const override;
-    QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) override;
+    QgsFeature processFeature( const QgsFeature &feature,  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 
 };
 

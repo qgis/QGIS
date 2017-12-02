@@ -64,7 +64,7 @@ class DensifyGeometriesInterval(QgisFeatureBasedAlgorithm):
         interval = self.parameterAsDouble(parameters, self.INTERVAL, context)
         return True
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         if feature.hasGeometry():
             new_geometry = feature.geometry().densifyByDistance(float(interval))
             feature.setGeometry(new_geometry)

@@ -80,7 +80,7 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
             input_fields.remove(index)
         return input_fields
 
-    def processFeature(self, feature, feedback):
+    def processFeature(self, feature, context, feedback):
         attributes = feature.attributes()
         for index in self.field_indices:
             del attributes[index]

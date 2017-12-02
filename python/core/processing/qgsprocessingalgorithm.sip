@@ -872,7 +872,7 @@ class QgsProcessingFeatureBasedAlgorithm : QgsProcessingAlgorithm
  :rtype: QgsCoordinateReferenceSystem
 %End
 
-    virtual QgsFeature processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback ) = 0;
+    virtual QgsFeature processFeature( const QgsFeature &feature, QgsProcessingContext &context, QgsProcessingFeedback *feedback ) = 0;
 %Docstring
  Processes an individual input ``feature`` from the source. Algorithms should implement their
  logic in this method for performing the algorithm's operation (e.g. replacing the feature's

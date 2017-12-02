@@ -71,7 +71,7 @@ QgsMergeLinesAlgorithm *QgsMergeLinesAlgorithm::createInstance() const
   return new QgsMergeLinesAlgorithm();
 }
 
-QgsFeature QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback *feedback )
+QgsFeature QgsMergeLinesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback *feedback )
 {
   if ( !feature.hasGeometry() )
     return feature;

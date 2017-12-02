@@ -699,6 +699,13 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   if ( !sink )
     return QVariantMap();
 
+  // prepare expression context for feature iteration
+  QgsExpressionContext prevContext = context.expressionContext();
+  QgsExpressionContext algContext = prevContext;
+
+  algContext.appendScopes( createExpressionContext( parameters, context, dynamic_cast< QgsProcessingFeatureSource * >( mSource.get() ) ).takeScopes() );
+  context.setExpressionContext( algContext );
+
   long count = mSource->featureCount();
 
   QgsFeature f;
@@ -713,7 +720,8 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
       break;
     }
 
-    QgsFeature transformed = processFeature( f, feedback );
+    context.expressionContext().setFeature( f );
+    QgsFeature transformed = processFeature( f, context, feedback );
     if ( transformed.isValid() )
       sink->addFeature( transformed, QgsFeatureSink::FastInsert );
 
@@ -722,6 +730,9 @@ QVariantMap QgsProcessingFeatureBasedAlgorithm::processAlgorithm( const QVariant
   }
 
   mSource.reset();
+
+  // probably not necessary - context's aren't usually recycled, but can't hurt
+  context.setExpressionContext( prevContext );
 
   QVariantMap outputs;
   outputs.insert( QStringLiteral( "OUTPUT" ), dest );

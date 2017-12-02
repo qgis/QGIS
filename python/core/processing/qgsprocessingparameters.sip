@@ -376,7 +376,73 @@ class QgsProcessingParameterDefinition
  :rtype: str
 %End
 
+    bool isDynamic() const;
+%Docstring
+ Returns true if the parameter supports is dynamic, and can support data-defined values
+ (i.e. QgsProperty based values).
+.. seealso:: setIsDynamic()
+.. seealso:: dynamicPropertyDefinition()
+.. seealso:: dynamicLayerParameterName()
+ :rtype: bool
+%End
+
+    void setIsDynamic( bool dynamic );
+%Docstring
+ Sets whether the parameter is ``dynamic``, and can support data-defined values
+ (i.e. QgsProperty based values).
+.. seealso:: isDynamic()
+.. seealso:: setDynamicPropertyDefinition()
+.. seealso:: setDynamicLayerParameterName()
+%End
+
+    QgsPropertyDefinition dynamicPropertyDefinition() const;
+%Docstring
+ Returns the property definition for dynamic properties.
+.. seealso:: isDynamic()
+.. seealso:: setDynamicPropertyDefinition()
+.. seealso:: dynamicLayerParameterName()
+ :rtype: QgsPropertyDefinition
+%End
+
+    void setDynamicPropertyDefinition( const QgsPropertyDefinition &definition );
+%Docstring
+ Sets the property ``definition`` for dynamic properties.
+.. seealso:: isDynamic()
+.. seealso:: dynamicPropertyDefinition()
+.. seealso:: setDynamicLayerParameterName()
+%End
+
+    QString dynamicLayerParameterName() const;
+%Docstring
+ Returns the name of the parameter for a layer linked to a dynamic parameter, or an empty string if this is not set.
+
+ Dynamic parameters (see isDynamic()) can have an optional vector layer parameter linked to them,
+ which indicates which layer the fields and values will be available from when evaluating
+ the dynamic parameter.
+
+.. seealso:: setDynamicLayerParameterName()
+.. seealso:: isDynamic()
+.. seealso:: dynamicPropertyDefinition()
+ :rtype: str
+%End
+
+    void setDynamicLayerParameterName( const QString &name );
+%Docstring
+ Sets the ``name`` for the parameter for a layer linked to a dynamic parameter, or an empty string if this is not set.
+
+ Dynamic parameters (see isDynamic()) can have an optional vector layer parameter linked to them,
+ which indicates which layer the fields and values will be available from when evaluating
+ the dynamic parameter.
+
+.. seealso:: dynamicLayerParameterName()
+.. seealso:: isDynamic()
+.. seealso:: setDynamicPropertyDefinition()
+%End
+
   protected:
+
+
+
 
 
 

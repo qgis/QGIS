@@ -77,7 +77,7 @@ bool QgsDropMZValuesAlgorithm::prepareAlgorithm( const QVariantMap &parameters, 
   return true;
 }
 
-QgsFeature QgsDropMZValuesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingFeedback * )
+QgsFeature QgsDropMZValuesAlgorithm::processFeature( const QgsFeature &feature, QgsProcessingContext &, QgsProcessingFeedback * )
 {
   QgsFeature f = feature;
   if ( f.hasGeometry() )
