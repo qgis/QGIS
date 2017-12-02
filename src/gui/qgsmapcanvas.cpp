@@ -634,6 +634,13 @@ void QgsMapCanvas::previewJobFinished()
   {
     mMap->addPreviewImage( job->renderedImage(), job->mapSettings().extent() );
     mPreviewJobs.removeAll( job );
+
+    int number = job->property( "number" ).toInt();
+    if ( number < 8 )
+    {
+      startPreviewJob( number + 1 );
+    }
+
     delete job;
   }
 }
@@ -2289,14 +2296,10 @@ void QgsMapCanvas::startPreviewJob( int number )
   jobSettings.setLayers( previewLayers );
 
   QgsMapRendererQImageJob *job = new QgsMapRendererSequentialJob( jobSettings );
+  job->setProperty( "number", number );
   mPreviewJobs.append( job );
   connect( job, &QgsMapRendererJob::finished, this, &QgsMapCanvas::previewJobFinished );
   job->start();
-
-  if ( number < 8 )
-  {
-    schedulePreviewJob( number + 1 );
-  }
 }
 
 void QgsMapCanvas::stopPreviewJobs()
