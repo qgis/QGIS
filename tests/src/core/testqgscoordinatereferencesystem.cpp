@@ -812,6 +812,13 @@ void TestQgsCoordinateReferenceSystem::bounds()
   QGSCOMPARENEAR( bounds.xMaximum(), 180.000000, 0.0001 );
   QGSCOMPARENEAR( bounds.yMinimum(), -90.00000, 0.0001 );
   QGSCOMPARENEAR( bounds.yMaximum(), 90.00000, 0.0001 );
+
+  QgsCoordinateReferenceSystem crs2163( "EPSG:2163" );
+  bounds = crs2163.bounds();
+  QGSCOMPARENEAR( bounds.xMinimum(), 167.65000, 0.0001 );
+  QGSCOMPARENEAR( bounds.xMaximum(), -65.69000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMinimum(), 15.56000, 0.0001 );
+  QGSCOMPARENEAR( bounds.yMaximum(), 74.71000, 0.0001 );
 }
 
 void TestQgsCoordinateReferenceSystem::saveAsUserCrs()
