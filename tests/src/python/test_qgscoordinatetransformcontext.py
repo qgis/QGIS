@@ -285,11 +285,11 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         # save to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
-        context.writeXml(elem, doc, QgsReadWriteContext())
+        context.writeXml(elem, QgsReadWriteContext())
 
         # restore from xml
         context2 = QgsCoordinateTransformContext()
-        context2.readXml(elem, doc, QgsReadWriteContext())
+        context2.readXml(elem, QgsReadWriteContext())
 
         # check result
         self.assertEqual(context2.sourceDatumTransforms(), {'EPSG:3111': 1, 'EPSG:28356': 2})
@@ -311,11 +311,11 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         # save to xml
         doc = QDomDocument("testdoc")
         elem = doc.createElement("test")
-        context.writeXml(elem, doc, QgsReadWriteContext())
+        context.writeXml(elem, QgsReadWriteContext())
 
         # restore from xml
         context2 = QgsCoordinateTransformContext()
-        context2.readXml(elem, doc, QgsReadWriteContext())
+        context2.readXml(elem, QgsReadWriteContext())
 
         # check result
         self.assertEqual(context2.sourceDestinationDatumTransforms(), {('EPSG:3111', 'EPSG:4283'): QgsCoordinateTransform.TransformPair(1, 2),
