@@ -199,8 +199,17 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      */
     void setCache( QgsMapRendererCache *cache );
 
-    //! Find out how long it took to finish the job (in milliseconds)
+    /**
+     * Returns the total time it took to finish the job (in milliseconds).
+     * \see layerRenderingTime()
+     */
     int renderingTime() const { return mRenderingTime; }
+
+    /**
+     * Returns the render time (in ms) per layer, by layer ID.
+     * \since QGIS 3.0
+     */
+    QMap< QString, int > layerRenderingTime() const { return mLayerRenderingTime; }
 
     /**
      * Return map settings with which this job was started.
@@ -238,6 +247,9 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     QgsMapRendererCache *mCache = nullptr;
 
     int mRenderingTime = 0;
+
+    //! Render time (in ms) per layer, by layer ID
+    QMap< QString, int > mLayerRenderingTime;
 
     /**
      * Prepares the cache for storing the result of labeling. Returns false if

@@ -882,25 +882,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     bool isRefreshOnNotifyEnabled() const { return mIsRefreshOnNofifyEnabled; }
 
-///@cond PRIVATE
-#ifndef SIP_RUN
-
-    /**
-     * Set last rendering time.
-     *
-     * \note not available in Python bindings
-     */
-    void setLastRenderingTime( double time ) { mLastRenderingTime = time; }
-
-    /**
-     * Get last rendering time.
-     *
-     * \note not available in Python bindings
-     */
-    double lastRenderingTime() const { return mLastRenderingTime; }
-#endif
-///@endcond
-
   public slots:
 
     /**
@@ -1240,7 +1221,6 @@ class CORE_EXPORT QgsMapLayer : public QObject
     //! Renderer for 3D views
     QgsAbstract3DRenderer *m3DRenderer = nullptr;
 
-    double mLastRenderingTime = 0.0;
 };
 
 Q_DECLARE_METATYPE( QgsMapLayer * )
