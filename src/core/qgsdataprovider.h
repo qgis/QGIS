@@ -481,11 +481,10 @@ class CORE_EXPORT QgsDataProvider : public QObject
     /**
      * Returns whether the layer must be rendered in preview jobs.
      *
-     * The base implementation returns lastRenderingTimeMS <= maxRenderingTimeMS
+     * The \a context argument gives useful information which can be used
+     * to determine whether the layer should be rendered or not.
      *
-     * \param lastRenderingTimeMS last rendering time in milliseconds.
-     * \param maxRenderingTimeMS maximum allowed rendering time in milliseconds.
-     * \returns true if the layer must be rendered.
+     * The base implementation returns true if lastRenderingTimeMs <= maxRenderingTimeMs.
      *
      * \since QGIS 3.0
      *
