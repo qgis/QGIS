@@ -142,6 +142,16 @@ class CORE_EXPORT QgsRasterFileWriter
      */
     static QString driverForExtension( const QString &extension );
 
+    /**
+     * Returns a list of known file extensions for the given GDAL driver \a format.
+     * E.g. returns "tif", "tiff" for the format "GTiff".
+     *
+     * If no matching format driver is found an empty list will be returned.
+     *
+     * \since QGIS 3.0
+     */
+    static QStringList extensionsForFormat( const QString &format );
+
   private:
     QgsRasterFileWriter(); //forbidden
     WriterError writeDataRaster( const QgsRasterPipe *pipe, QgsRasterIterator *iter, int nCols, int nRows, const QgsRectangle &outputExtent,

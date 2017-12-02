@@ -6750,6 +6750,10 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
     fileWriter.setMaxTileWidth( d.maximumTileSizeX() );
     fileWriter.setMaxTileHeight( d.maximumTileSizeY() );
   }
+  else
+  {
+    fileWriter.setOutputFormat( d.outputFormat() );
+  }
 
   // TODO: show error dialogs
   // TODO: this code should go somewhere else, but probably not into QgsRasterFileWriter

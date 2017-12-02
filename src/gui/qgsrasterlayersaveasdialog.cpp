@@ -23,7 +23,8 @@
 #include "qgsrastertransparency.h"
 #include "qgsprojectionselectiondialog.h"
 #include "qgssettings.h"
-
+#include "qgsrasterfilewriter.h"
+#include "cpl_string.h"
 #include <gdal.h>
 
 #include <QFileDialog>
@@ -74,13 +75,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
 
   toggleResolutionSize();
 
-  //only one hardcoded format at the moment
-  QStringList myFormats;
-  myFormats << QStringLiteral( "GTiff" );
-  Q_FOREACH ( const QString &myFormat, myFormats )
-  {
-    mFormatComboBox->addItem( myFormat );
-  }
+  insertAvailableOutputFormats();
 
   //fill reasonable default values depending on the provider
   if ( mDataProvider )
@@ -104,7 +99,7 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
     mCreateOptionsWidget->setProvider( mDataProvider->name() );
     if ( mDataProvider->name() == QLatin1String( "gdal" ) )
     {
-      mCreateOptionsWidget->setFormat( myFormats[0] );
+      mCreateOptionsWidget->setFormat( mFormatComboBox->currentData().toString() );
     }
     mCreateOptionsWidget->setRasterLayer( mRasterLayer );
     mCreateOptionsWidget->update();
@@ -163,6 +158,77 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
   connect( mExtentGroupBox, &QgsExtentGroupBox::extentChanged, this, &QgsRasterLayerSaveAsDialog::extentChanged );
 
   recalcResolutionSize();
+
+  QgsSettings settings;
+  restoreGeometry( settings.value( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ) ).toByteArray() );
+}
+
+QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
+{
+  QgsSettings settings;
+  settings.setValue( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ), saveGeometry() );
+}
+
+void QgsRasterLayerSaveAsDialog::insertAvailableOutputFormats()
+{
+  GDALAllRegister();
+
+  int nDrivers = GDALGetDriverCount();
+  QMap< int, QPair< QString, QString > > topPriorityDrivers;
+  QMap< QString, QString > lowPriorityDrivers;
+
+  for ( int i = 0; i < nDrivers; ++i )
+  {
+    GDALDriverH driver = GDALGetDriver( i );
+    if ( driver )
+    {
+      char **driverMetadata = GDALGetMetadata( driver, nullptr );
+
+      if ( CSLFetchBoolean( driverMetadata, GDAL_DCAP_CREATE, false ) && CSLFetchBoolean( driverMetadata, GDAL_DCAP_RASTER, false ) )
+      {
+        QString driverShortName = GDALGetDriverShortName( driver );
+        QString driverLongName = GDALGetDriverLongName( driver );
+        if ( driverShortName == QLatin1String( "MEM" ) )
+        {
+          // in memory rasters are not (yet) supported because the GDAL dataset handle
+          // would need to be passed directly to QgsRasterLayer (it is not possible to
+          // close it in raster calculator and reopen the dataset again in raster layer)
+          continue;
+        }
+        else if ( driverShortName == QLatin1String( "VRT" ) )
+        {
+          // skip GDAL vrt driver, since we handle that format manually
+          continue;
+        }
+        else if ( driverShortName == QStringLiteral( "GTiff" ) )
+        {
+          // always list geotiff first
+          topPriorityDrivers.insert( 1, qMakePair( driverLongName, driverShortName ) );
+        }
+        else if ( driverShortName == QStringLiteral( "GPKG" ) )
+        {
+          // and gpkg second
+          topPriorityDrivers.insert( 2, qMakePair( driverLongName, driverShortName ) );
+        }
+        else
+        {
+          lowPriorityDrivers.insert( driverLongName, driverShortName );
+        }
+      }
+    }
+  }
+
+  // will be sorted by priority, so that geotiff and geopackage are listed first
+  for ( auto priorityDriversIt = topPriorityDrivers.constBegin(); priorityDriversIt != topPriorityDrivers.constEnd(); ++priorityDriversIt )
+  {
+    mFormatComboBox->addItem( priorityDriversIt.value().first, priorityDriversIt.value().second );
+  }
+  // will be sorted by driver name
+  for ( auto lowPriorityDriversIt = lowPriorityDrivers.constBegin(); lowPriorityDriversIt != lowPriorityDrivers.constEnd(); ++lowPriorityDriversIt )
+  {
+    mFormatComboBox->addItem( lowPriorityDriversIt.key(), lowPriorityDriversIt.value() );
+  }
+
 }
 
 void QgsRasterLayerSaveAsDialog::setValidators()
@@ -212,12 +278,26 @@ void QgsRasterLayerSaveAsDialog::mBrowseButton_clicked()
   }
   else
   {
-    fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, tr( "GeoTIFF" ) + " (*.tif *.tiff *.TIF *.TIFF)" );
+    QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
+    QString filter;
+    QString defaultExt;
+    if ( extensions.empty() )
+      filter = tr( "All files (*.*)" );
+    else
+    {
+      filter = QStringLiteral( "%1 (*.%2);;%3" ).arg( mFormatComboBox->currentText(),
+               extensions.join( QStringLiteral( " *." ) ),
+               tr( "All files (*.*)" ) );
+      defaultExt = extensions.at( 0 );
+    }
+
+    fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, filter );
 
     // ensure the user never omits the extension from the file name
-    if ( !fileName.isEmpty() && !fileName.endsWith( QLatin1String( ".tif" ), Qt::CaseInsensitive ) && !fileName.endsWith( QLatin1String( ".tiff" ), Qt::CaseInsensitive ) )
+    QFileInfo fi( fileName );
+    if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
     {
-      fileName += QLatin1String( ".tif" );
+      fileName += '.' + defaultExt;
     }
   }
 
@@ -239,12 +319,12 @@ void QgsRasterLayerSaveAsDialog::mSaveAsLineEdit_textChanged( const QString &tex
 }
 
 
-void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QString &text )
+void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QString & )
 {
   //gdal-specific
   if ( mDataProvider && mDataProvider->name() == QLatin1String( "gdal" ) )
   {
-    mCreateOptionsWidget->setFormat( text );
+    mCreateOptionsWidget->setFormat( outputFormat() );
     mCreateOptionsWidget->update();
   }
 }
@@ -296,7 +376,7 @@ QString QgsRasterLayerSaveAsDialog::outputFileName() const
 
 QString QgsRasterLayerSaveAsDialog::outputFormat() const
 {
-  return mFormatComboBox->currentText();
+  return mFormatComboBox->currentData().toString();
 }
 
 QStringList QgsRasterLayerSaveAsDialog::createOptions() const
