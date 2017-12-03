@@ -414,7 +414,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
     }
 
     if ( job.layer )
-      mLayerRenderingTime.insert( job.layer->id(), job.renderingTime );
+      mPerLayerRenderingTime.insert( job.layer->id(), job.renderingTime );
   }
 
   jobs.clear();
