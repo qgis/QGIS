@@ -2,7 +2,7 @@ v.out.ascii
 Exports a vector map to a GRASS ASCII vector representation.
 Vector (v.*)
 QgsProcessingParameterVectorLayer|input|Name of input vector map|-1|None|False
-QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area;face;kernel|False|0,1,2,3,4,5,6|True
+QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid;area;face;kernel|True|0,1,2,3,4,5,6|True
 QgsProcessingParameterField|columns|Name of attribute column(s) to be exported|None|input|-1|True|True
 QgsProcessingParameterString|where|WHERE conditions of SQL statement without 'where' keyword|None|True|True
 QgsProcessingParameterEnum|format|Output format|point;standard;wkt|False|0|False
