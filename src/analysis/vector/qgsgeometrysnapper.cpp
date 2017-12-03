@@ -608,7 +608,11 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
     return QgsGeometry( subjGeom );
   //or for end point snapping
   if ( mode == PreferClosestNoExtraVertices || mode == PreferNodesNoExtraVertices || mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
-    return QgsGeometry( subjGeom );
+  {
+    QgsGeometry result( subjGeom );
+    result.removeDuplicateNodes();
+    return result;
+  }
 
   // SnapIndex for subject feature
   std::unique_ptr< QgsSnapIndex > subjSnapIndex( new QgsSnapIndex( center, 10 * snapTolerance ) );
@@ -705,7 +709,9 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
     }
   }
 
-  return QgsGeometry( subjGeom );
+  QgsGeometry result( subjGeom );
+  result.removeDuplicateNodes();
+  return result;
 }
 
 int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing )

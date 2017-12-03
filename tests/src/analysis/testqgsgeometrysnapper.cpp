@@ -49,6 +49,7 @@ class TestQgsGeometrySnapper : public QObject
     void endPointToEndPoint();
     void internalSnapper();
     void insertExtra();
+    void duplicateNodes();
 };
 
 void  TestQgsGeometrySnapper::initTestCase()
@@ -581,6 +582,33 @@ void TestQgsGeometrySnapper::insertExtra()
   f2.setGeometry( refGeom );
   result = snapper.snapFeature( f2 );
   QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (-7 -2, 0 0)" ) );
+
+}
+
+void TestQgsGeometrySnapper::duplicateNodes()
+{
+  // test that snapper does not result in duplicate nodes
+
+  QgsGeometry refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(0 0, 20 0)" ) );
+  QgsFeature f1( 1 );
+  f1.setGeometry( refGeom );
+
+  QgsInternalGeometrySnapper snapper( 2, QgsGeometrySnapper::PreferNodes );
+  QgsGeometry result = snapper.snapFeature( f1 );
+  QCOMPARE( result.asWkt(), f1.geometry().asWkt() );
+
+  refGeom = QgsGeometry::fromWkt( QStringLiteral( "LineString(10 10, 19 0, 19.5 1, 20 0.1)" ) );
+  QgsFeature f2( 2 );
+  f2.setGeometry( refGeom );
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (10 10, 20 0)" ) );
+
+  snapper = QgsInternalGeometrySnapper( 2, QgsGeometrySnapper::PreferNodesNoExtraVertices );
+  result = snapper.snapFeature( f1 );
+  QCOMPARE( result.asWkt(), f1.geometry().asWkt() );
+
+  result = snapper.snapFeature( f2 );
+  QCOMPARE( result.asWkt( 1 ), QStringLiteral( "LineString (10 10, 20 0)" ) );
 
 }
 
