@@ -10,6 +10,6 @@ QgsProcessingParameterField|start_off|Column containing offset from milepost for
 QgsProcessingParameterField|end_mp|Column containing milepost position for the end of previous segment|None|points|0|False|False
 QgsProcessingParameterField|end_off|Column containing offset from milepost for the end of previous segment|None|points|0|False|False
 QgsProcessingParameterNumber|threshold|Maximum distance of point to line allowed|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
-QgsProcessingParameterVectorDestination|out_lines|LRS lines
-QgsProcessingParameterVectorDestination|err|LRS Errors
-OutputTable|rstable|RS Table
+QgsProcessingParameterVectorDestination|out_lines|LRS lines|-1|None|False
+QgsProcessingParameterVectorDestination|err|LRS Errors|-1|None|False
+QgsProcessingParameterVectorDestination|rstable|RS Table|4|None|False
