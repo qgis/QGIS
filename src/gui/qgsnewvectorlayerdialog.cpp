@@ -37,6 +37,8 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   setupUi( this );
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked );
+  connect( mFileNameEdit, &QLineEdit::textChanged, this, &QgsNewVectorLayerDialog::checkOk );
+  connect( mBrowseFileName, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::selectFileName );
   connect( mFileFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged );
   connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewVectorLayerDialog::showHelp );
@@ -54,7 +56,13 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
-  mPointRadioButton->setChecked( true );
+  mGeometryTypeBox->addItem( tr( "Point" ), QgsWkbTypes::Point );
+  mGeometryTypeBox->addItem( tr( "Line" ), QgsWkbTypes::LineString );
+  mGeometryTypeBox->addItem( tr( "Polygon" ), QgsWkbTypes::Polygon );
+
+  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
+  mOkButton->setEnabled( false );
+
   mFileFormatComboBox->addItem( tr( "ESRI Shapefile" ), "ESRI Shapefile" );
 #if 0
   // Disabled until provider properly supports editing the created file formats
@@ -76,7 +84,7 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   // Use default encoding if none supplied
   QString enc = QgsSettings().value( QStringLiteral( "/UI/encoding" ), "System" ).toString();
 
-  // The specified decoding is added if not existing alread, and then set current.
+  // The specified decoding is added if not existing already, and then set current.
   // This should select it.
   int encindex = mFileEncoding->findText( enc );
   if ( encindex < 0 )
@@ -85,8 +93,6 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
     encindex = 0;
   }
   mFileEncoding->setCurrentIndex( encindex );
-
-  mOkButton = buttonBox->button( QDialogButtonBox::Ok );
 
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << QStringLiteral( "id" ) << QStringLiteral( "Integer" ) << QStringLiteral( "10" ) << QLatin1String( "" ) ) );
   connect( mNameEdit, &QLineEdit::textChanged, this, &QgsNewVectorLayerDialog::nameChanged );
@@ -146,18 +152,8 @@ void QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged( int index )
 QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
 {
   QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown;
-  if ( mPointRadioButton->isChecked() )
-  {
-    wkbType = QgsWkbTypes::Point;
-  }
-  else if ( mLineRadioButton->isChecked() )
-  {
-    wkbType = QgsWkbTypes::LineString;
-  }
-  else if ( mPolygonRadioButton->isChecked() )
-  {
-    wkbType = QgsWkbTypes::Polygon;
-  }
+  wkbType = static_cast<QgsWkbTypes::Type>
+            ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
   if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown )
     wkbType = QgsWkbTypes::to25D( wkbType );
@@ -183,20 +179,14 @@ void QgsNewVectorLayerDialog::mAddAttributeButton_clicked()
   //use userrole to avoid translated type string
   QString myType = mTypeBox->currentData( Qt::UserRole ).toString();
   mAttributeView->addTopLevelItem( new QTreeWidgetItem( QStringList() << myName << myType << myWidth << myPrecision ) );
-  if ( mAttributeView->topLevelItemCount() > 0 )
-  {
-    mOkButton->setEnabled( true );
-  }
+  checkOk();
   mNameEdit->clear();
 }
 
 void QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked()
 {
   delete mAttributeView->currentItem();
-  if ( mAttributeView->topLevelItemCount() == 0 )
-  {
-    mOkButton->setEnabled( false );
-  }
+  checkOk();
 }
 
 void QgsNewVectorLayerDialog::attributes( QList< QPair<QString, QString> > &at ) const
@@ -234,6 +224,31 @@ void QgsNewVectorLayerDialog::selectionChanged()
   mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
+void QgsNewVectorLayerDialog::selectFileName()
+{
+  QString fileformat = mFileFormatComboBox->currentData( Qt::UserRole ).toString();
+  QgsSettings settings;
+  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString();
+  QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
+  QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save Layer as..." ), lastUsedDir, filterString );
+  if ( fileName.isEmpty() )
+    return;
+
+  if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
+    fileName += QLatin1String( ".shp" );
+  mFileNameEdit->setText( fileName );
+}
+
+QString QgsNewVectorLayerDialog::filename() const
+{
+  return mFileNameEdit->text();
+}
+
+void QgsNewVectorLayerDialog::checkOk()
+{
+  bool ok = ( !mFileNameEdit->text().isEmpty() && mAttributeView->topLevelItemCount() > 0 );
+  mOkButton->setEnabled( ok );
+}
 
 // this is static
 QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pEnc, const QgsCoordinateReferenceSystem &crs )
@@ -254,16 +269,8 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   geomDialog.attributes( attributes );
 
   QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString();
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
-  QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save layer as..." ), lastUsedDir, filterString );
-  if ( fileName.isNull() )
-  {
-    return QLatin1String( "" );
-  }
-
-  if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".shp" );
+  QString fileName = geomDialog.filename();
 
   settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), QFileInfo( fileName ).absolutePath() );
   settings.setValue( QStringLiteral( "UI/encoding" ), enc );
