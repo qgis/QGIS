@@ -612,7 +612,7 @@ void QgsMapCanvas::rendererJobFinished()
 
     mMap->setContent( img, imageRect( img, mSettings ) );
 
-    mLastLayerRenderTime = mJob->layerRenderingTime();
+    mLastLayerRenderTime = mJob->perLayerRenderingTime();
     if ( mUsePreviewJobs )
       startPreviewJobs();
   }

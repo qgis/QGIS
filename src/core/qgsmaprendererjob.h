@@ -201,7 +201,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
 
     /**
      * Returns the total time it took to finish the job (in milliseconds).
-     * \see layerRenderingTime()
+     * \see perLayerRenderingTime()
      */
     int renderingTime() const { return mRenderingTime; }
 
@@ -209,7 +209,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
      * Returns the render time (in ms) per layer, by layer ID.
      * \since QGIS 3.0
      */
-    QMap< QString, int > layerRenderingTime() const { return mLayerRenderingTime; }
+    QMap< QString, int > perLayerRenderingTime() const { return mPerLayerRenderingTime; }
 
     /**
      * Return map settings with which this job was started.
@@ -249,7 +249,7 @@ class CORE_EXPORT QgsMapRendererJob : public QObject
     int mRenderingTime = 0;
 
     //! Render time (in ms) per layer, by layer ID
-    QMap< QString, int > mLayerRenderingTime;
+    QMap< QString, int > mPerLayerRenderingTime;
 
     /**
      * Prepares the cache for storing the result of labeling. Returns false if

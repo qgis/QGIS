@@ -138,11 +138,11 @@ List of errors that happened during the rendering job - available when the rende
     int renderingTime() const;
 %Docstring
  Returns the total time it took to finish the job (in milliseconds).
-.. seealso:: layerRenderingTime()
+.. seealso:: perLayerRenderingTime()
  :rtype: int
 %End
 
-    QMap< QString, int > layerRenderingTime() const;
+    QMap< QString, int > perLayerRenderingTime() const;
 %Docstring
  Returns the render time (in ms) per layer, by layer ID.
 .. versionadded:: 3.0
