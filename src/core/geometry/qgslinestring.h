@@ -180,6 +180,7 @@ class CORE_EXPORT QgsLineString: public QgsCurve
     void clear() override;
     bool isEmpty() const override;
     QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
 
     bool fromWkb( QgsConstWkbPtr &wkb ) override;
     bool fromWkt( const QString &wkt ) override;

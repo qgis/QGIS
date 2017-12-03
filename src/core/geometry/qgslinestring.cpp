@@ -202,6 +202,46 @@ QgsLineString *QgsLineString::snappedToGrid( double hSpacing, double vSpacing, d
     return nullptr;
 }
 
+bool QgsLineString::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  if ( mX.count() <= 2 )
+    return false; // don't create degenerate lines
+  bool result = false;
+  double prevX = mX.at( 0 );
+  double prevY = mY.at( 0 );
+  bool hasZ = is3D();
+  bool useZ = hasZ && useZValues;
+  double prevZ = useZ ? mZ.at( 0 ) : 0;
+  int i = 1;
+  int remaining = mX.count();
+  while ( i < remaining )
+  {
+    double currentX = mX.at( i );
+    double currentY = mY.at( i );
+    double currentZ = useZ ? mZ.at( i ) : 0;
+    if ( qgsDoubleNear( currentX, prevX, epsilon ) &&
+         qgsDoubleNear( currentY, prevY, epsilon ) &&
+         ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
+    {
+      result = true;
+      // remove point
+      mX.removeAt( i );
+      mY.removeAt( i );
+      if ( hasZ )
+        mZ.removeAt( i );
+      remaining--;
+    }
+    else
+    {
+      prevX = currentX;
+      prevY = currentY;
+      prevZ = currentZ;
+      i++;
+    }
+  }
+  return result;
+}
+
 bool QgsLineString::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   if ( !wkbPtr )

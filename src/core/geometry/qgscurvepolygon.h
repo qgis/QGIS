@@ -63,6 +63,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     QgsPolygon *surfaceToPolygon() const override SIP_FACTORY;
     QgsAbstractGeometry *boundary() const override SIP_FACTORY;
     QgsCurvePolygon *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const override SIP_FACTORY;
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false ) override;
 
     //curve polygon interface
     int numInteriorRings() const;

@@ -51,6 +51,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmpackage.cpp
   processing/qgsalgorithmpromotetomultipart.cpp
   processing/qgsalgorithmrasterlayeruniquevalues.cpp
+  processing/qgsalgorithmremoveduplicatenodes
   processing/qgsalgorithmremovenullgeometry.cpp
   processing/qgsalgorithmrenamelayer.cpp
   processing/qgsalgorithmsaveselectedfeatures.cpp

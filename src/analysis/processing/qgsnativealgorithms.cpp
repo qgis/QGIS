@@ -48,6 +48,7 @@
 #include "qgsalgorithmpackage.h"
 #include "qgsalgorithmpromotetomultipart.h"
 #include "qgsalgorithmrasterlayeruniquevalues.h"
+#include "qgsalgorithmremoveduplicatenodes.h"
 #include "qgsalgorithmremovenullgeometry.h"
 #include "qgsalgorithmrenamelayer.h"
 #include "qgsalgorithmsaveselectedfeatures.h"
@@ -128,6 +129,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsPackageAlgorithm() );
   addAlgorithm( new QgsPromoteToMultipartAlgorithm() );
   addAlgorithm( new QgsRasterLayerUniqueValuesReportAlgorithm() );
+  addAlgorithm( new QgsAlgorithmRemoveDuplicateNodes() );
   addAlgorithm( new QgsRemoveNullGeometryAlgorithm() );
   addAlgorithm( new QgsRenameLayerAlgorithm() );
   addAlgorithm( new QgsSaveSelectedFeatures() );

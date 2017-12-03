@@ -403,6 +403,57 @@ QgsCircularString *QgsCircularString::snappedToGrid( double hSpacing, double vSp
     return nullptr;
 }
 
+bool QgsCircularString::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  if ( mX.count() <= 3 )
+    return false; // don't create degenerate lines
+  bool result = false;
+  double prevX = mX.at( 0 );
+  double prevY = mY.at( 0 );
+  bool hasZ = is3D();
+  bool useZ = hasZ && useZValues;
+  double prevZ = useZ ? mZ.at( 0 ) : 0;
+  int i = 1;
+  int remaining = mX.count();
+  // we have to consider points in pairs, since a segment can validly have the same start and
+  // end if it has a different curve point
+  while ( i + 1 < remaining )
+  {
+    double currentCurveX = mX.at( i );
+    double currentCurveY = mY.at( i );
+    double currentX = mX.at( i + 1 );
+    double currentY = mY.at( i + 1 );
+    double currentZ = useZ ? mZ.at( i + 1 ) : 0;
+    if ( qgsDoubleNear( currentCurveX, prevX, epsilon ) &&
+         qgsDoubleNear( currentCurveY, prevY, epsilon ) &&
+         qgsDoubleNear( currentX, prevX, epsilon ) &&
+         qgsDoubleNear( currentY, prevY, epsilon ) &&
+         ( !useZ || qgsDoubleNear( currentZ, prevZ, epsilon ) ) )
+    {
+      result = true;
+      // remove point
+      mX.removeAt( i );
+      mX.removeAt( i );
+      mY.removeAt( i );
+      mY.removeAt( i );
+      if ( hasZ )
+      {
+        mZ.removeAt( i );
+        mZ.removeAt( i );
+      }
+      remaining -= 2;
+    }
+    else
+    {
+      prevX = currentX;
+      prevY = currentY;
+      prevZ = currentZ;
+      i += 2;
+    }
+  }
+  return result;
+}
+
 int QgsCircularString::numPoints() const
 {
   return std::min( mX.size(), mY.size() );

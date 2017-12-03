@@ -52,6 +52,9 @@ class QgsGeometryCollection: QgsAbstractGeometry
     virtual void clear();
 
     virtual QgsGeometryCollection *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
+
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
     virtual QgsAbstractGeometry *boundary() const /Factory/;
 
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const;
