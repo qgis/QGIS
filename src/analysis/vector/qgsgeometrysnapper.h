@@ -159,6 +159,7 @@ class ANALYSIS_EXPORT QgsInternalGeometrySnapper
     QgsGeometrySnapper::SnapMode mMode = QgsGeometrySnapper::PreferNodes;
     QgsSpatialIndex mProcessedIndex;
     QgsGeometryMap mProcessedGeometries;
+
 };
 
 #ifndef SIP_RUN

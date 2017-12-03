@@ -137,6 +137,11 @@ QgsPoint *QgsPoint::snappedToGrid( double hSpacing, double vSpacing, double dSpa
   return new QgsPoint( mWkbType, x, y, z, m );
 }
 
+bool QgsPoint::removeDuplicateNodes( double, bool )
+{
+  return false;
+}
+
 bool QgsPoint::fromWkb( QgsConstWkbPtr &wkbPtr )
 {
   QgsWkbTypes::Type type = wkbPtr.readHeader();

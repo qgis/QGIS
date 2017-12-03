@@ -534,6 +534,37 @@ QgsCurvePolygon *QgsCurvePolygon::snappedToGrid( double hSpacing, double vSpacin
 
 }
 
+bool QgsCurvePolygon::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  bool result = false;
+  auto cleanRing = [this, &result, epsilon, useZValues ]( QgsCurve * ring )->bool
+  {
+    if ( ring->numPoints() <= 4 )
+      return false;
+
+    if ( ring->removeDuplicateNodes( epsilon, useZValues ) )
+    {
+      QgsPoint startPoint;
+      QgsVertexId::VertexType type;
+      ring->pointAt( 0, startPoint, type );
+      // ensure ring is properly closed - if we removed the final node, it may no longer be properly closed
+      ring->moveVertex( QgsVertexId( -1, -1, ring->numPoints() - 1 ), startPoint );
+      return true;
+    }
+
+    return false;
+  };
+  if ( mExteriorRing )
+  {
+    result = cleanRing( mExteriorRing.get() );
+  }
+  for ( QgsCurve *ring : qgis::as_const( mInteriorRings ) )
+  {
+    result = result || cleanRing( ring );
+  }
+  return result;
+}
+
 QgsPolygon *QgsCurvePolygon::toPolygon( double tolerance, SegmentationToleranceType toleranceType ) const
 {
   std::unique_ptr< QgsPolygon > poly( new QgsPolygon() );

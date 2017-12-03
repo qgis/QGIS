@@ -1076,6 +1076,15 @@ QgsGeometry QgsGeometry::snappedToGrid( double hSpacing, double vSpacing, double
   return QgsGeometry( d->geometry->snappedToGrid( hSpacing, vSpacing, dSpacing, mSpacing ) );
 }
 
+bool QgsGeometry::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  if ( !d->geometry )
+    return false;
+
+  detach();
+  return d->geometry->removeDuplicateNodes( epsilon, useZValues );
+}
+
 bool QgsGeometry::intersects( const QgsRectangle &r ) const
 {
   QgsGeometry g = fromRect( r );
