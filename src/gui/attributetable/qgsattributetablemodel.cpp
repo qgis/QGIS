@@ -596,6 +596,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   if ( !index.isValid() ||
        ( role != Qt::TextAlignmentRole
          && role != Qt::DisplayRole
+         && role != Qt::ToolTipRole
          && role != Qt::EditRole
          && role != SortRole
          && role != FeatureIdRole
@@ -647,6 +648,7 @@ QVariant QgsAttributeTableModel::data( const QModelIndex &index, int role ) cons
   switch ( role )
   {
     case Qt::DisplayRole:
+    case Qt::ToolTipRole:
       return mFieldFormatters.at( index.column() )->representValue( layer(), fieldId, mWidgetConfigs.at( index.column() ),
              mAttributeWidgetCaches.at( index.column() ), val );
 
