@@ -82,7 +82,7 @@ class CheckValidity(QgisAlgorithm):
         self.addParameter(QgsProcessingParameterFeatureSource(self.INPUT_LAYER,
                                                               self.tr('Input layer')))
         self.addParameter(QgsProcessingParameterEnum(self.METHOD,
-                                                     self.tr('Method'), self.methods))
+                                                     self.tr('Method'), self.methods, defaultValue=2))
         self.parameterDefinition(self.METHOD).setMetadata({
             'widget_wrapper': {
                 'class': 'processing.gui.wrappers.EnumWidgetWrapper',
