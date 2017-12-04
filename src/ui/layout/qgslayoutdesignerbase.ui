@@ -62,6 +62,7 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionDuplicateLayout"/>
    <addaction name="mActionLoadFromTemplate"/>
    <addaction name="mActionSaveAsTemplate"/>
   </widget>
@@ -94,6 +95,8 @@
     <property name="title">
      <string>&amp;Layout</string>
     </property>
+    <addaction name="mActionDuplicateLayout"/>
+    <addaction name="separator"/>
     <addaction name="mActionLayoutProperties"/>
     <addaction name="mActionAddPages"/>
     <addaction name="separator"/>
@@ -1068,7 +1071,7 @@
      <normaloff>:/images/themes/default/mActionFileSaveAs.svg</normaloff>:/images/themes/default/mActionFileSaveAs.svg</iconset>
    </property>
    <property name="text">
-    <string>Save as &amp;Template...</string>
+    <string>Save as &amp;Template…</string>
    </property>
    <property name="toolTip">
     <string>Save as template</string>
@@ -1080,10 +1083,22 @@
      <normaloff>:/images/themes/default/mActionFileOpen.svg</normaloff>:/images/themes/default/mActionFileOpen.svg</iconset>
    </property>
    <property name="text">
-    <string>&amp;Add Items from Template...</string>
+    <string>&amp;Add Items from Template…</string>
    </property>
    <property name="toolTip">
     <string>Add items from template</string>
+   </property>
+  </action>
+  <action name="mActionDuplicateLayout">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDuplicateComposer.svg</normaloff>:/images/themes/default/mActionDuplicateComposer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Duplicate Layout…</string>
+   </property>
+   <property name="toolTip">
+    <string>Duplicate layout</string>
    </property>
   </action>
  </widget>

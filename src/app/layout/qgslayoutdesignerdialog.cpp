@@ -46,6 +46,7 @@
 #include "qgslayoutmodel.h"
 #include "qgslayoutitemslistview.h"
 #include "qgsproject.h"
+#include "qgsbusyindicatordialog.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -311,6 +312,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveAsTemplate );
   connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::addItemsFromTemplate );
+  connect( mActionDuplicateLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::duplicate );
 
   connect( mActionZoomIn, &QAction::triggered, mView, &QgsLayoutView::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );
@@ -1316,6 +1318,32 @@ void QgsLayoutDesignerDialog::addItemsFromTemplate()
       whileBlocking( currentLayout() )->deselectAll();
       selectItems( items );
     }
+  }
+}
+
+void QgsLayoutDesignerDialog::duplicate()
+{
+  QString newTitle;
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, tr( "%1 copy" ).arg( currentLayout()->name() ) ) )
+  {
+    return;
+  }
+
+  // provide feedback, since loading of template into duplicate layout will be hidden
+  QDialog *dlg = new QgsBusyIndicatorDialog( tr( "Duplicating layout…" ) );
+  dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
+  dlg->show();
+
+  QgsLayoutDesignerDialog *newDialog = QgisApp::instance()->duplicateLayout( currentLayout(), newTitle );
+
+  dlg->close();
+  delete dlg;
+  dlg = nullptr;
+
+  if ( !newDialog )
+  {
+    QMessageBox::warning( this, tr( "Duplicate layout" ),
+                          tr( "Layout duplication failed." ) );
   }
 }
 

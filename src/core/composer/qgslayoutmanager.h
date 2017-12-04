@@ -116,6 +116,13 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     QgsComposition *duplicateComposition( const QString &name, const QString &newName );
 
     /**
+     * Duplicates an existing \a layout from the manager. The new
+     * layout will automatically be stored in the manager.
+     * Returns new the layout if duplication was successful.
+     */
+    QgsLayout *duplicateLayout( const QgsLayout *layout, const QString &newName );
+
+    /**
      * Generates a unique title for a new composition, which does not
      * clash with any already contained by the manager.
      */
