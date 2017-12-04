@@ -4582,3 +4582,15 @@ tests:
         name: expected/difference.gml
         type: vector
         
+  - algorithm: native:removeduplicatenodes
+    name: Remove duplicate nodes lines
+    params:
+      INPUT:
+        name: custom/line_duplicate_nodes.gml
+        type: vector
+      TOLERANCE: 1.0e-06
+      USE_Z_VALUE: false
+    results:
+      OUTPUT:
+        name: expected/removed_duplicated_nodes_line.gml
+        type: vector

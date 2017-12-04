@@ -45,8 +45,10 @@ class ANALYSIS_EXPORT QgsGeometrySnapper : public QObject
     //! Snapping modes
     enum SnapMode
     {
-      PreferNodes = 0, //!< Prefer to snap to nodes, even when a segment may be closer than a node
-      PreferClosest, //!< Snap to closest point, regardless of it is a node or a segment
+      PreferNodes = 0, //!< Prefer to snap to nodes, even when a segment may be closer than a node. New nodes will be inserted to make geometries follow each other exactly when inside allowable tolerance.
+      PreferClosest, //!< Snap to closest point, regardless of it is a node or a segment. New nodes will be inserted to make geometries follow each other exactly when inside allowable tolerance.
+      PreferNodesNoExtraVertices, //!< Prefer to snap to nodes, even when a segment may be closer than a node. No new nodes will be inserted.
+      PreferClosestNoExtraVertices, //!< Snap to closest point, regardless of it is a node or a segment. No new nodes will be inserted.
       EndPointPreferNodes, //!< Only snap start/end points of lines (point features will also be snapped, polygon features will not be modified), prefer to snap to nodes
       EndPointPreferClosest, //!< Only snap start/end points of lines (point features will also be snapped, polygon features will not be modified), snap to closest point
       EndPointToEndPoint, //!< Only snap the start/end points of lines to other start/end points of lines
@@ -157,6 +159,7 @@ class ANALYSIS_EXPORT QgsInternalGeometrySnapper
     QgsGeometrySnapper::SnapMode mMode = QgsGeometrySnapper::PreferNodes;
     QgsSpatialIndex mProcessedIndex;
     QgsGeometryMap mProcessedGeometries;
+
 };
 
 #ifndef SIP_RUN

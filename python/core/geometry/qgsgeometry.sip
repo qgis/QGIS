@@ -501,7 +501,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  \param afterVertex Receives index of the vertex after the closest segment. The vertex
  before the closest segment is always afterVertex - 1
  \param leftOf Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
- that the test was unsuccesful, e.g. for a point exactly on the line)
+ that the test was unsuccessful, e.g. for a point exactly on the line)
  \param epsilon epsilon for segment snapping
  :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
  :rtype: float
@@ -686,6 +686,29 @@ Returns true if WKB of the geometry is of WKBMulti* type
  \param mSpacing Custom dimension spacing of the grid (m axis). 0 (default) to disable.
 .. versionadded:: 3.0
  :rtype: QgsGeometry
+%End
+
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+%Docstring
+ Removes duplicate nodes from the geometry, wherever removing the nodes does not result in a
+ degenerate geometry.
+
+ The ``epsilon`` parameter specifies the tolerance for coordinates when determining that
+ vertices are identical.
+
+ By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
+ with the same x and y coordinate but different z values will still be considered
+ duplicate and one will be removed. If ``useZValues`` is true, then the z values are
+ also tested and nodes with the same x and y but different z will be maintained.
+
+ Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
+ a multipoint geometry with overlapping points will not be changed by this method.
+
+ The function will return true if nodes were removed, or false if no duplicate nodes
+ were found.
+
+.. versionadded:: 3.0
+ :rtype: bool
 %End
 
     bool intersects( const QgsRectangle &r ) const;

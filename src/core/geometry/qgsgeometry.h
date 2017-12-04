@@ -556,7 +556,7 @@ class CORE_EXPORT QgsGeometry
      * \param afterVertex Receives index of the vertex after the closest segment. The vertex
      * before the closest segment is always afterVertex - 1
      * \param leftOf Out: Returns if the point lies on the left of left side of the geometry ( < 0 means left, > 0 means right, 0 indicates
-     * that the test was unsuccesful, e.g. for a point exactly on the line)
+     * that the test was unsuccessful, e.g. for a point exactly on the line)
      * \param epsilon epsilon for segment snapping
      * \returns The squared Cartesian distance is also returned in sqrDist, negative number on error
      */
@@ -746,6 +746,28 @@ class CORE_EXPORT QgsGeometry
      * \since 3.0
      */
     QgsGeometry snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const;
+
+    /**
+     * Removes duplicate nodes from the geometry, wherever removing the nodes does not result in a
+     * degenerate geometry.
+     *
+     * The \a epsilon parameter specifies the tolerance for coordinates when determining that
+     * vertices are identical.
+     *
+     * By default, z values are not considered when detecting duplicate nodes. E.g. two nodes
+     * with the same x and y coordinate but different z values will still be considered
+     * duplicate and one will be removed. If \a useZValues is true, then the z values are
+     * also tested and nodes with the same x and y but different z will be maintained.
+     *
+     * Note that duplicate nodes are not tested between different parts of a multipart geometry. E.g.
+     * a multipoint geometry with overlapping points will not be changed by this method.
+     *
+     * The function will return true if nodes were removed, or false if no duplicate nodes
+     * were found.
+     *
+     * \since QGIS 3.0
+     */
+    bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
 
     //! Tests for intersection with a rectangle (uses GEOS)
     bool intersects( const QgsRectangle &r ) const;

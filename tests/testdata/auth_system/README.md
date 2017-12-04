@@ -11,7 +11,7 @@ The Java keystore files are generated/edited using **KeyStore Explorer**:
 
 The default password for the encrypted XCA project and Java keystore files is
 **password**. The certificate signing structure can be reviewed in
-`cert_heirarchy_8bit.png`.
+`cert_hierarchy_8bit.png`.
 
 **WARNING**: These components are just for testing and should _NOT_ be used
 in a production environment.
@@ -22,7 +22,7 @@ filter file open dialogs to specific extensions, e.g. pgAdmin3 always filters
 
 ## Certificate Signing Hierarchy
 
-![Certs tree](cert_heirarchy_8bit.png)
+![Certs tree](cert_hierarchy_8bit.png)
 
 ## Client Certificates/Keys
 

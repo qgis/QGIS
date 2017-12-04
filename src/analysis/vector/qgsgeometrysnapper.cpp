@@ -550,6 +550,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
           switch ( mode )
           {
             case PreferNodes:
+            case PreferNodesNoExtraVertices:
             case EndPointPreferNodes:
             case EndPointToEndPoint:
             {
@@ -568,6 +569,7 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
             }
 
             case PreferClosest:
+            case PreferClosestNoExtraVertices:
             case EndPointPreferClosest:
             {
               QgsPoint nodeSnap, segmentSnap;
@@ -605,8 +607,12 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
   if ( qgsgeometry_cast< const QgsPoint * >( subjGeom ) )
     return QgsGeometry( subjGeom );
   //or for end point snapping
-  if ( mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
-    return QgsGeometry( subjGeom );
+  if ( mode == PreferClosestNoExtraVertices || mode == PreferNodesNoExtraVertices || mode == EndPointPreferClosest || mode == EndPointPreferNodes || mode == EndPointToEndPoint )
+  {
+    QgsGeometry result( subjGeom );
+    result.removeDuplicateNodes();
+    return result;
+  }
 
   // SnapIndex for subject feature
   std::unique_ptr< QgsSnapIndex > subjSnapIndex( new QgsSnapIndex( center, 10 * snapTolerance ) );
@@ -703,7 +709,9 @@ QgsGeometry QgsGeometrySnapper::snapGeometry( const QgsGeometry &geometry, doubl
     }
   }
 
-  return QgsGeometry( subjGeom );
+  QgsGeometry result( subjGeom );
+  result.removeDuplicateNodes();
+  return result;
 }
 
 int QgsGeometrySnapper::polyLineSize( const QgsAbstractGeometry *geom, int iPart, int iRing )

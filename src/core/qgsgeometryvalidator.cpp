@@ -261,8 +261,6 @@ void QgsGeometryValidator::run()
 
     case QgsGeometry::ValidatorQgisInternal:
     {
-      QgsDebugMsg( "validation thread started." );
-
       QgsWkbTypes::Type flatType = QgsWkbTypes::flatType( mGeometry.wkbType() );
       //if ( flatType == QgsWkbTypes::Point || flatType == QgsWkbTypes::MultiPoint )
       //    break;
@@ -326,8 +324,6 @@ void QgsGeometryValidator::run()
         emit errorFound( QgsGeometry::Error( QObject::tr( "Unknown geometry type %1" ).arg( mGeometry.wkbType() ) ) );
         mErrorCount++;
       }
-
-      QgsDebugMsg( "validation finished." );
 
       if ( mStop )
       {

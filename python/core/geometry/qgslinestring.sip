@@ -179,6 +179,8 @@ Closes the line string by appending the first point to the end of the line, if i
 
     virtual QgsLineString *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
 
+    virtual bool removeDuplicateNodes( double epsilon = 4 * DBL_EPSILON, bool useZValues = false );
+
 
     virtual bool fromWkb( QgsConstWkbPtr &wkb );
 

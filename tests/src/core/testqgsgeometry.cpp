@@ -1053,6 +1053,12 @@ void TestQgsGeometry::point()
   QCOMPARE( QgsPoint( 1, 2 ).segmentLength( QgsVertexId( -1, 0, 1 ) ), 0.0 );
   QCOMPARE( QgsPoint( 1, 2 ).segmentLength( QgsVertexId( -1, 0, -1 ) ), 0.0 );
   QCOMPARE( QgsPoint( 1, 2 ).segmentLength( QgsVertexId( 0, 0, 0 ) ), 0.0 );
+
+  // remove duplicate points
+  QgsPoint p = QgsPoint( 1, 2 );
+  QVERIFY( !p.removeDuplicateNodes() );
+  QCOMPARE( p.x(), 1.0 );
+  QCOMPARE( p.y(), 2.0 );
 }
 
 void TestQgsGeometry::circularString()
@@ -2364,6 +2370,48 @@ void TestQgsGeometry::circularString()
   QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, 1 ) ), 0.0 );
   QGSCOMPARENEAR( curveLine2.segmentLength( QgsVertexId( 0, 0, 2 ) ), 31.4159, 0.001 );
   QCOMPARE( curveLine2.segmentLength( QgsVertexId( 0, 0, 3 ) ), 0.0 );
+
+  //removeDuplicateNodes
+  QgsCircularString nodeLine;
+  QVERIFY( !nodeLine.removeDuplicateNodes() );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes() );
+  QCOMPARE( nodeLine.asWkt(), QStringLiteral( "CircularString (11 2, 11 12, 111 12)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 11, 2 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes() );
+  QCOMPARE( nodeLine.asWkt(), QStringLiteral( "CircularString (11 2, 11 12, 11 2)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 10, 3 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 9, 3 )
+                      << QgsPoint( 11, 2 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 10 3, 11.01 1.99, 9 3, 11 2)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
+                      << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes() );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11.01 1.99, 11.02 2.01, 11 12, 111 12, 111.01 11.99)" ) );
+  QVERIFY( nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11 12, 111 12, 111.01 11.99)" ) );
+
+  // don't create degenerate lines
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularString (11 2)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11.01 1.99)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11, 2 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularString (11 2, 11.01 1.99, 11 2)" ) );
+
+  // with z
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 ) << QgsPoint( 11.02, 2.01, 3 )
+                      << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) );
+  QVERIFY( nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularStringZ (11 2 1, 11 12 4, 111 12 5)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 ) << QgsPoint( 11.02, 2.01, 3 )
+                      << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02, true ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "CircularStringZ (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5)" ) );
+
 }
 
 
@@ -4162,6 +4210,38 @@ void TestQgsGeometry::lineString()
   QCOMPARE( vertexLine3.segmentLength( QgsVertexId( -1, 0, 0 ) ), 10.0 );
   QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 1, 0, 1 ) ), 100.0 );
   QCOMPARE( vertexLine3.segmentLength( QgsVertexId( 1, 1, 1 ) ), 100.0 );
+
+  //removeDuplicateNodes
+  QgsLineString nodeLine;
+  QVERIFY( !nodeLine.removeDuplicateNodes() );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes() );
+  QCOMPARE( nodeLine.asWkt(), QStringLiteral( "LineString (11 2, 11 12, 111 12)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
+                      << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
+  QVERIFY( nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt(), QStringLiteral( "LineString (11 2, 11 12, 111 12)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
+                      << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes() );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "LineString (11 2, 11.01 1.99, 11.02 2.01, 11 12, 111 12, 111.01 11.99)" ) );
+  // don't create degenerate lines
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "LineString (11 2)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "LineString (11 2, 11.01 1.99)" ) );
+  // with z
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 ) << QgsPoint( 11.02, 2.01, 3 )
+                      << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) << QgsPoint( 111.01, 11.99, 6 ) );
+  QVERIFY( nodeLine.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeLine.asWkt(), QStringLiteral( "LineStringZ (11 2 1, 11 12 4, 111 12 5)" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2, 1 ) << QgsPoint( 11.01, 1.99, 2 ) << QgsPoint( 11.02, 2.01, 3 )
+                      << QgsPoint( 11, 12, 4 ) << QgsPoint( 111, 12, 5 ) << QgsPoint( 111.01, 11.99, 6 ) );
+  QVERIFY( !nodeLine.removeDuplicateNodes( 0.02, true ) );
+  QCOMPARE( nodeLine.asWkt( 2 ), QStringLiteral( "LineStringZ (11 2 1, 11.01 1.99 2, 11.02 2.01 3, 11 12 4, 111 12 5, 111.01 11.99 6)" ) );
+
 }
 
 void TestQgsGeometry::polygon()
@@ -5881,6 +5961,30 @@ void TestQgsGeometry::polygon()
   QCOMPARE( p30.segmentLength( QgsVertexId( 0, 1, 4 ) ), 0.0 );
   QCOMPARE( p30.segmentLength( QgsVertexId( 1, 0, 1 ) ), 100.0 );
   QCOMPARE( p30.segmentLength( QgsVertexId( 1, 1, 1 ) ), 2.0 );
+
+  //removeDuplicateNodes
+  QgsPolygon nodePolygon;
+  QgsLineString nodeLine;
+  QVERIFY( !nodePolygon.removeDuplicateNodes() );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 11, 22 ) << QgsPoint( 11, 2 ) );
+  nodePolygon.setExteriorRing( nodeLine.clone() );
+  QVERIFY( !nodePolygon.removeDuplicateNodes() );
+  QCOMPARE( nodePolygon.asWkt(), QStringLiteral( "Polygon ((11 2, 11 12, 11 22, 11 2))" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
+                      << QgsPoint( 11, 12 ) << QgsPoint( 11, 22 ) << QgsPoint( 11.01, 21.99 ) << QgsPoint( 10.99, 1.99 ) << QgsPoint( 11, 2 ) );
+  nodePolygon.setExteriorRing( nodeLine.clone() );
+  QVERIFY( nodePolygon.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodePolygon.asWkt( 2 ), QStringLiteral( "Polygon ((11 2, 11 12, 11 22, 11 2))" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
+                      << QgsPoint( 11, 12 ) << QgsPoint( 11, 22 ) << QgsPoint( 11.01, 21.99 ) << QgsPoint( 10.99, 1.99 ) << QgsPoint( 11, 2 ) );
+  nodePolygon.setExteriorRing( nodeLine.clone() );
+  QVERIFY( !nodePolygon.removeDuplicateNodes() );
+  QCOMPARE( nodePolygon.asWkt( 2 ), QStringLiteral( "Polygon ((11 2, 11.01 1.99, 11.02 2.01, 11 12, 11 22, 11.01 21.99, 10.99 1.99, 11 2))" ) );
+  // don't create degenerate rings
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 2.01 ) << QgsPoint( 11, 2.01 ) << QgsPoint( 11, 2 ) );
+  nodePolygon.addInteriorRing( nodeLine.clone() );
+  QVERIFY( nodePolygon.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodePolygon.asWkt( 2 ), QStringLiteral( "Polygon ((11 2, 11 12, 11 22, 11 2),(11 2, 11.01 2.01, 11 2.01, 11 2))" ) );
 }
 
 void TestQgsGeometry::triangle()
@@ -10523,6 +10627,52 @@ void TestQgsGeometry::compoundCurve()
   QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 3 ) ), 0.0 );
   QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 4 ) ), 9.0 );
   QCOMPARE( slc1.segmentLength( QgsVertexId( 0, 0, 5 ) ), 0.0 );
+
+  //removeDuplicateNodes
+  QgsCompoundCurve nodeCurve;
+  QgsCircularString nodeLine;
+  QVERIFY( !nodeCurve.removeDuplicateNodes() );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
+  nodeCurve.addCurve( nodeLine.clone() );
+  QVERIFY( !nodeCurve.removeDuplicateNodes() );
+  QCOMPARE( nodeCurve.asWkt(), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12))" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 11, 2 ) );
+  nodeCurve.clear();
+  nodeCurve.addCurve( nodeLine.clone() );
+  QVERIFY( !nodeCurve.removeDuplicateNodes() );
+  QCOMPARE( nodeCurve.asWkt(), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 11 2))" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 10, 3 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 9, 3 )
+                      << QgsPoint( 11, 2 ) );
+  nodeCurve.clear();
+  nodeCurve.addCurve( nodeLine.clone() );
+  QVERIFY( !nodeCurve.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 10 3, 11.01 1.99, 9 3, 11 2))" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
+                      << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
+  nodeCurve.clear();
+  nodeCurve.addCurve( nodeLine.clone() );
+  QVERIFY( !nodeCurve.removeDuplicateNodes() );
+  QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11.01 1.99, 11.02 2.01, 11 12, 111 12, 111.01 11.99))" ) );
+  QVERIFY( nodeCurve.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99))" ) );
+
+  // with tiny segment
+  QgsLineString linePart;
+  linePart.setPoints( QgsPointSequence() << QgsPoint( 111.01, 11.99 ) << QgsPoint( 111, 12 ) );
+  nodeCurve.addCurve( linePart.clone() );
+  QVERIFY( !nodeCurve.removeDuplicateNodes() );
+  QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99),(111.01 11.99, 111 12))" ) );
+  QVERIFY( nodeCurve.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve (CircularString (11 2, 11 12, 111 12, 111.01 11.99))" ) );
+
+  // ensure continuity
+  nodeCurve.clear();
+  linePart.setPoints( QgsPointSequence() << QgsPoint( 1, 1 ) << QgsPoint( 111.01, 11.99 ) << QgsPoint( 111, 12 ) );
+  nodeCurve.addCurve( linePart.clone() );
+  linePart.setPoints( QgsPointSequence() << QgsPoint( 111, 12 ) << QgsPoint( 31, 33 ) );
+  nodeCurve.addCurve( linePart.clone() );
+  QVERIFY( nodeCurve.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( nodeCurve.asWkt( 2 ), QStringLiteral( "CompoundCurve ((1 1, 111.01 11.99),(111.01 11.99, 31 33))" ) );
 }
 
 void TestQgsGeometry::multiPoint()
@@ -10994,6 +11144,14 @@ void TestQgsGeometry::multiPoint()
   QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 1, 0, 0 ) ), 1 );
   QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( 1, 0, 1 ) ), -1 );
   QCOMPARE( c22.vertexNumberFromVertexId( QgsVertexId( -1, 0, 0 ) ), -1 );
+
+  QgsMultiPoint mp;
+  // multipoints should not be affected by removeDuplicatePoints
+  QVERIFY( !mp.removeDuplicateNodes() );
+  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 1, 4, 8 ) );
+  mp.addGeometry( new QgsPoint( QgsWkbTypes::PointZM, 10, 1, 4, 8 ) );
+  QVERIFY( !mp.removeDuplicateNodes() );
+  QCOMPARE( mp.numGeometries(), 2 );
 }
 
 void TestQgsGeometry::multiLineString()
@@ -14855,6 +15013,21 @@ void TestQgsGeometry::geometryCollection()
   QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 1, 3 ) ), 17 );
   QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 1, 4 ) ), -1 );
   QCOMPARE( c32.vertexNumberFromVertexId( QgsVertexId( 3, 2, 0 ) ), -1 );
+
+
+  //removeDuplicateNodes
+  QgsGeometryCollection gcNodes;
+  QgsLineString nodeLine;
+  QVERIFY( !gcNodes.removeDuplicateNodes() );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) );
+  gcNodes.addGeometry( nodeLine.clone() );
+  QVERIFY( !gcNodes.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( gcNodes.asWkt(), QStringLiteral( "GeometryCollection (LineString (11 2, 11 12, 111 12))" ) );
+  nodeLine.setPoints( QgsPointSequence() << QgsPoint( 11, 2 ) << QgsPoint( 11.01, 1.99 ) << QgsPoint( 11.02, 2.01 )
+                      << QgsPoint( 11, 12 ) << QgsPoint( 111, 12 ) << QgsPoint( 111.01, 11.99 ) );
+  gcNodes.addGeometry( nodeLine.clone() );
+  QVERIFY( gcNodes.removeDuplicateNodes( 0.02 ) );
+  QCOMPARE( gcNodes.asWkt( 2 ), QStringLiteral( "GeometryCollection (LineString (11 2, 11 12, 111 12),LineString (11 2, 11 12, 111 12))" ) );
 }
 
 void TestQgsGeometry::fromQgsPointXY()

@@ -102,6 +102,16 @@ QgsGeometryCollection *QgsGeometryCollection::snappedToGrid( double hSpacing, do
   return result.release();
 }
 
+bool QgsGeometryCollection::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  bool result = false;
+  for ( QgsAbstractGeometry *geom : qgis::as_const( mGeometries ) )
+  {
+    result = result || geom->removeDuplicateNodes( epsilon, useZValues );
+  }
+  return result;
+}
+
 QgsAbstractGeometry *QgsGeometryCollection::boundary() const
 {
   return nullptr;

@@ -408,6 +408,35 @@ QgsCompoundCurve *QgsCompoundCurve::snappedToGrid( double hSpacing, double vSpac
     return result.release();
 }
 
+bool QgsCompoundCurve::removeDuplicateNodes( double epsilon, bool useZValues )
+{
+  bool result = false;
+  const QVector< QgsCurve * > curves = mCurves;
+  int i = 0;
+  QgsPoint lastEnd;
+  for ( QgsCurve *curve : curves )
+  {
+    result = result || curve->removeDuplicateNodes( epsilon, useZValues );
+    if ( curve->numPoints() == 0 || qgsDoubleNear( curve->length(), 0.0, epsilon ) )
+    {
+      // empty curve, remove it
+      delete mCurves.takeAt( i );
+      result = true;
+    }
+    else
+    {
+      // ensure this line starts exactly where previous line ended
+      if ( i > 0 )
+      {
+        curve->moveVertex( QgsVertexId( -1, -1, 0 ), lastEnd );
+      }
+      lastEnd = curve->vertexAt( QgsVertexId( -1, -1, curve->numPoints() - 1 ) );
+    }
+    i++;
+  }
+  return result;
+}
+
 const QgsCurve *QgsCompoundCurve::curveAt( int i ) const
 {
   if ( i < 0 || i >= mCurves.size() )
