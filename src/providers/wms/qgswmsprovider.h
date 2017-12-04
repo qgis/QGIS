@@ -208,6 +208,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
     QString name() const override;
     QString description() const override;
     virtual void reloadData() override;
+    bool renderInPreview( const QgsDataProvider::PreviewContext &context ) override;
 
     static QVector<QgsWmsSupportedFormat> supportedFormats();
 
