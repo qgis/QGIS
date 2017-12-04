@@ -49,6 +49,13 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  a new layout.
 %End
 
+    void clear();
+%Docstring
+ Clears the layout.
+
+ Calling this method removes all items and pages from the layout.
+%End
+
     QgsProject *project() const;
 %Docstring
  The project associated with the layout. Used to get access to layers, map themes,
