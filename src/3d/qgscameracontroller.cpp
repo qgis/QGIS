@@ -18,6 +18,7 @@
 
 #include "qgis.h"
 
+#include <QDomDocument>
 #include <Qt3DRender/QObjectPicker>
 #include <Qt3DRender/QPickEvent>
 
@@ -305,6 +306,27 @@ void QgsCameraController::setLookingAtPoint( const QgsVector3D &point )
 {
   setCameraData( point.x(), point.z(), mCameraData.dist, mCameraData.pitch, mCameraData.yaw );
   emit cameraChanged();
+}
+
+QDomElement QgsCameraController::writeXml( QDomDocument &doc ) const
+{
+  QDomElement elemCamera = doc.createElement( "camera" );
+  elemCamera.setAttribute( QStringLiteral( "x" ), mCameraData.x );
+  elemCamera.setAttribute( QStringLiteral( "y" ), mCameraData.y );
+  elemCamera.setAttribute( QStringLiteral( "dist" ), mCameraData.dist );
+  elemCamera.setAttribute( QStringLiteral( "pitch" ), mCameraData.pitch );
+  elemCamera.setAttribute( QStringLiteral( "yaw" ), mCameraData.yaw );
+  return elemCamera;
+}
+
+void QgsCameraController::readXml( const QDomElement &elem )
+{
+  float x = elem.attribute( QStringLiteral( "x" ) ).toFloat();
+  float y = elem.attribute( QStringLiteral( "y" ) ).toFloat();
+  float dist = elem.attribute( QStringLiteral( "dist" ) ).toFloat();
+  float pitch = elem.attribute( QStringLiteral( "pitch" ) ).toFloat();
+  float yaw = elem.attribute( QStringLiteral( "yaw" ) ).toFloat();
+  setCameraData( x, y, dist, pitch, yaw );
 }
 
 void QgsCameraController::onPositionChanged( Qt3DInput::QMouseEvent *mouse )

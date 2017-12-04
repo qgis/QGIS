@@ -87,6 +87,7 @@
 #include "qgs3drendererregistry.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapsettings.h"
+#include "qgscameracontroller.h"
 #include "qgsflatterraingenerator.h"
 #include "qgsvectorlayer3drenderer.h"
 #include "processing/qgs3dalgorithms.h"
@@ -12392,6 +12393,8 @@ void QgisApp::writeProject( QDomDocument &doc )
     elem3DMap.setAttribute( QStringLiteral( "name" ), w->mapCanvas3D()->objectName() );
     QDomElement elem3DMapSettings = w->mapCanvas3D()->map()->writeXml( doc, readWriteContext );
     elem3DMap.appendChild( elem3DMapSettings );
+    QDomElement elemCamera = w->mapCanvas3D()->cameraController()->writeXml( doc );
+    elem3DMap.appendChild( elemCamera );
     writeDockWidgetSettings( w, elem3DMap );
     elem3DMaps.appendChild( elem3DMap );
   }
@@ -12497,6 +12500,12 @@ void QgisApp::readProject( const QDomDocument &doc )
       }
 
       mapCanvasDock3D->setMapSettings( map );
+
+      QDomElement elemCamera = elem3DMap.firstChildElement( QStringLiteral( "camera" ) );
+      if ( !elemCamera.isNull() )
+      {
+        mapCanvasDock3D->mapCanvas3D()->cameraController()->readXml( elemCamera );
+      }
 
       elem3DMap = elem3DMap.nextSiblingElement( QStringLiteral( "view" ) );
     }
