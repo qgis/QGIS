@@ -44,6 +44,7 @@ class TestQgsLayout: public QObject
     void undoRedoOccurred();
     void itemsOnPage(); //test fetching matching items on a set page
     void pageIsEmpty();
+    void clear();
 
   private:
     QString mReport;
@@ -607,6 +608,43 @@ void TestQgsLayout::pageIsEmpty()
   QCOMPARE( l.pageCollection()->pageIsEmpty( 0 ), true );
   QCOMPARE( l.pageCollection()->pageIsEmpty( 1 ), true );
   QCOMPARE( l.pageCollection()->pageIsEmpty( 2 ), true );
+}
+
+void TestQgsLayout::clear()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+  QgsLayoutItemPage *page3 = new QgsLayoutItemPage( &l );
+  page3->setPageSize( "A4" );
+  l.pageCollection()->addPage( page3 );
+
+  //add some items to the composition
+  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label1 );
+  QPointer< QgsLayoutItem > item1P = label1;
+  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label2 );
+  QPointer< QgsLayoutItem > item2P = label2;
+  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  l.addLayoutItem( label3 );
+  QPointer< QgsLayoutItem > item3P = label3;
+
+  l.clear();
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+  QCOMPARE( l.pageCollection()->pageCount(), 0 );
+  QVERIFY( !item1P );
+  QVERIFY( !item2P );
+  QVERIFY( !item3P );
+  QList< QgsLayoutItem * > items;
+  l.layoutItems( items );
+  QVERIFY( items.empty() );
+  QCOMPARE( l.undoStack()->stack()->count(), 0 );
 }
 
 

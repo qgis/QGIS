@@ -74,6 +74,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     void initializeDefaults();
 
     /**
+     * Clears the layout.
+     *
+     * Calling this method removes all items and pages from the layout.
+     */
+    void clear();
+
+    /**
      * The project associated with the layout. Used to get access to layers, map themes,
      * relations and various other bits. It is never null.
      *

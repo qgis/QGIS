@@ -81,6 +81,27 @@ void QgsLayout::initializeDefaults()
   mUndoStack->stack()->clear();
 }
 
+void QgsLayout::clear()
+{
+  deleteAndRemoveMultiFrames();
+
+  //delete all non paper items
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    QgsLayoutItem *cItem = dynamic_cast<QgsLayoutItem *>( item );
+    QgsLayoutItemPage *pItem = dynamic_cast<QgsLayoutItemPage *>( item );
+    if ( cItem && !pItem )
+    {
+      removeLayoutItemPrivate( cItem );
+    }
+  }
+  mItemsModel->clear();
+
+  mPageCollection->clear();
+  mUndoStack->stack()->clear();
+}
+
 QgsProject *QgsLayout::project() const
 {
   return mProject;
