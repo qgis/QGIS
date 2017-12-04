@@ -74,7 +74,7 @@ class TestMultiFrame : public QgsLayoutMultiFrame
       return QStringLiteral( "TestMultiFrame" );
     }
 
-    void render( QgsRenderContext &, const QRectF &, const int,
+    void render( QgsRenderContext &, const QRectF &, int,
                  const QStyleOptionGraphicsItem * ) override
     {
 

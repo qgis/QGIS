@@ -204,7 +204,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
 
     QString displayName() const override;
     QSizeF totalSize() const override;
-    void render( QgsRenderContext &context, const QRectF &renderExtent, const int frameIndex,
+    void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
                  const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
 
     //overridden to break frames without dividing lines of text

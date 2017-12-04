@@ -198,7 +198,7 @@ class QgsLayoutItemHtml: QgsLayoutMultiFrame
 
     virtual QSizeF totalSize() const;
 
-     virtual void render( QgsRenderContext &context, const QRectF &renderExtent, const int frameIndex,
+     virtual void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
                  const QStyleOptionGraphicsItem *itemStyle = 0 );
 
     virtual double findNearbyPageBreak( double yPos );

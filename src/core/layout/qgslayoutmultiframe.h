@@ -141,7 +141,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      * \param frameIndex frame number for content
      * \param itemStyle item style options for graphics item rendering
      */
-    virtual void render( QgsRenderContext &context, const QRectF &renderExtent, const int frameIndex,
+    virtual void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
                          const QStyleOptionGraphicsItem *itemStyle = nullptr ) = 0;
 
     /**

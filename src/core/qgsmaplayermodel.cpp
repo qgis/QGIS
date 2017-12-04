@@ -154,7 +154,7 @@ void QgsMapLayerModel::removeLayers( const QStringList &layerIds )
 
 void QgsMapLayerModel::addLayers( const QList<QgsMapLayer *> &layers )
 {
-  if ( layers.count( ) )
+  if ( !layers.empty( ) )
   {
     int offset = 0;
     if ( mAllowEmpty )
