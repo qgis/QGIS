@@ -144,6 +144,8 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  the first page in the collection.
 
  Calling deletePage() automatically triggers a reflow() of pages.
+
+.. seealso:: clear()
 %End
 
     void deletePage( QgsLayoutItemPage *page );
@@ -152,6 +154,14 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  from the collection's layout().
 
  Calling deletePage() automatically triggers a reflow() of pages.
+
+.. seealso:: clear()
+%End
+
+    void clear();
+%Docstring
+ Removes all pages from the collection.
+.. seealso:: deletePage()
 %End
 
     QgsLayoutItemPage *takePage( QgsLayoutItemPage *page ) /TransferBack/;
