@@ -83,6 +83,11 @@ QgsLayoutView *QgsAppLayoutDesignerInterface::view()
   return mDesigner->view();
 }
 
+void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> items )
+{
+  mDesigner->selectItems( items );
+}
+
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
@@ -105,6 +110,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   setupUi( this );
   setWindowTitle( tr( "QGIS Layout Designer" ) );
+  setAcceptDrops( true );
 
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
@@ -977,7 +983,7 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
       const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
       for ( QgsLayoutCustomDropHandler *handler : handlers )
       {
-        if ( handler && handler->handleFileDrop( file ) )
+        if ( handler && handler->handleFileDrop( iface(), file ) )
         {
           break;
         }
@@ -989,6 +995,14 @@ void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
 
   event->acceptProposedAction();
   timer->start();
+}
+
+void QgsLayoutDesignerDialog::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( event->mimeData()->hasUrls() )
+  {
+    event->acceptProposedAction();
+  }
 }
 
 void QgsLayoutDesignerDialog::itemTypeAdded( int id )

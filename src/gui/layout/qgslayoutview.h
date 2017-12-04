@@ -500,6 +500,7 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     void keyReleaseEvent( QKeyEvent *event ) override;
     void resizeEvent( QResizeEvent *event ) override;
     void scrollContentsBy( int dx, int dy ) override;
+    void dragEnterEvent( QDragEnterEvent *e ) override;
 
   private slots:
 

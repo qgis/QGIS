@@ -8,6 +8,7 @@
 
 
 
+
 class QgsLayoutCustomDropHandler : QObject
 {
 %Docstring
@@ -20,9 +21,15 @@ class QgsLayoutCustomDropHandler : QObject
 #include "qgslayoutcustomdrophandler.h"
 %End
   public:
+
+    QgsLayoutCustomDropHandler( QObject *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsLayoutCustomDropHandler.
+%End
+
     virtual ~QgsLayoutCustomDropHandler();
 
-    virtual bool handleFileDrop( const QString &file );
+    virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file );
 %Docstring
  Called when the specified ``file`` has been dropped onto a QGIS layout. If true
  is returned, then the handler has accepted this file and it should not

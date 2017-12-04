@@ -129,6 +129,7 @@ class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
+class QgsLayoutQptDropHandler;
 
 
 #include <QMainWindow>
@@ -2130,6 +2131,8 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
     QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;
+
+    QgsLayoutQptDropHandler *mLayoutQptDropHandler = nullptr;
 
     QDateTime mProjectLastModified;
 

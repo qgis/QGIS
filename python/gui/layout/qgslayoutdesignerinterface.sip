@@ -48,6 +48,11 @@ class QgsLayoutDesignerInterface: QObject
  :rtype: QgsLayoutView
 %End
 
+    virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;
+%Docstring
+ Selects the specified ``items``.
+%End
+
   public slots:
 
     virtual void close() = 0;

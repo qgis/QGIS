@@ -15,8 +15,13 @@
 
 #include "qgslayoutcustomdrophandler.h"
 
-bool QgsLayoutCustomDropHandler::handleFileDrop( const QString &file )
+QgsLayoutCustomDropHandler::QgsLayoutCustomDropHandler( QObject *parent )
+  : QObject( parent )
 {
-  Q_UNUSED( file );
+
+}
+
+bool QgsLayoutCustomDropHandler::handleFileDrop( QgsLayoutDesignerInterface *, const QString & )
+{
   return false;
 }

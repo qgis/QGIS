@@ -50,6 +50,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
     QgsLayout *layout() override;
     QgsLayoutView *view() override;
+    void selectItems( const QList< QgsLayoutItem * > items ) override;
 
   public slots:
 
@@ -106,6 +107,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * shown and raised to the top of the interface.
      */
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true );
+
+    /**
+     * Selects the specified \a items.
+     */
+    void selectItems( const QList< QgsLayoutItem * > items );
 
   public slots:
 
@@ -237,8 +243,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
   protected:
 
-    virtual void closeEvent( QCloseEvent * ) override;
-    virtual void dropEvent( QDropEvent *event ) override;
+    void closeEvent( QCloseEvent * ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
 
   private slots:
 
@@ -346,8 +353,6 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void createLayoutPropertiesWidget();
 
     void initializeRegistry();
-
-    void selectItems( const QList< QgsLayoutItem * > items );
 
 };
 

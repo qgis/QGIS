@@ -22,6 +22,7 @@
 
 class QgsLayout;
 class QgsLayoutView;
+class QgsLayoutItem;
 
 /**
  * \ingroup gui
@@ -61,6 +62,11 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      * \see layout()
      */
     virtual QgsLayoutView *view() = 0;
+
+    /**
+     * Selects the specified \a items.
+     */
+    virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;
 
   public slots:
 

@@ -17,7 +17,10 @@
 #define QGSLAYOUTCUSTOMDROPHANDLER_H
 
 #include "qgis_gui.h"
+#include "qgis_sip.h"
 #include <QObject>
+
+class QgsLayoutDesignerInterface;
 
 /**
  * \ingroup gui
@@ -30,6 +33,12 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
     Q_OBJECT
 
   public:
+
+    /**
+     * Constructor for QgsLayoutCustomDropHandler.
+     */
+    QgsLayoutCustomDropHandler( QObject *parent SIP_TRANSFERTHIS = nullptr );
+
     virtual ~QgsLayoutCustomDropHandler() = default;
 
     /**
@@ -39,7 +48,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
      *
      * The base class implementation does nothing.
      */
-    virtual bool handleFileDrop( const QString &file );
+    virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file );
 };
 
 #endif // QGSLAYOUTCUSTOMDROPHANDLER_H
