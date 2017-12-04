@@ -205,6 +205,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgslayout.h"
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
@@ -7333,6 +7334,71 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
   return true;
 }
 
+bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, const QString &currentTitle )
+{
+  if ( !parent )
+  {
+    parent = this;
+  }
+  bool ok = false;
+  bool titleValid = false;
+  QString newTitle = QString( currentTitle );
+  QString chooseMsg = tr( "Create unique print layout title" );
+  if ( acceptEmpty )
+  {
+    chooseMsg += '\n' + tr( "(title generated if left empty)" );
+  }
+  QString titleMsg = chooseMsg;
+
+  QStringList cNames;
+  cNames << newTitle;
+#if 0 //TODO
+  Q_FOREACH ( QgsComposition *c, QgsProject::instance()->layoutManager()->compositions() )
+  {
+    cNames << c->name();
+  }
+#endif
+  while ( !titleValid )
+  {
+    newTitle = QInputDialog::getText( parent,
+                                      tr( "Layout title" ),
+                                      titleMsg,
+                                      QLineEdit::Normal,
+                                      newTitle,
+                                      &ok );
+    if ( !ok )
+    {
+      return false;
+    }
+
+    if ( newTitle.isEmpty() )
+    {
+      if ( !acceptEmpty )
+      {
+        titleMsg = chooseMsg + "\n\n" + tr( "Title can not be empty!" );
+      }
+      else
+      {
+        titleValid = true;
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+      }
+    }
+    else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
+    {
+      cNames[0] = QString(); // clear non-unique name
+      titleMsg = chooseMsg + "\n\n" + tr( "Title already exists!" );
+    }
+    else
+    {
+      titleValid = true;
+    }
+  }
+
+  title = newTitle;
+
+  return true;
+}
+
 QgsComposer *QgisApp::createNewComposer( QString title )
 {
   if ( title.isEmpty() )
@@ -7439,6 +7505,21 @@ QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString t
   }
   newComposer->activate();
   return newComposer;
+}
+
+QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsLayout *layout, const QString &t )
+{
+  QString title = t;
+  if ( title.isEmpty() )
+  {
+    // TODO: inject a bit of randomness in auto-titles?
+    title = tr( "%1 copy" ).arg( layout->name() );
+  }
+
+  QgsLayout *newLayout = QgsProject::instance()->layoutManager()->duplicateLayout( layout, title );
+  QgsLayoutDesignerDialog *dlg = openLayoutDesignerDialog( newLayout );
+  dlg->activate();
+  return dlg;
 }
 
 void QgisApp::deletePrintComposers()

@@ -361,6 +361,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \returns QString() if user cancels input dialog
      */
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
+
+    /**
+     * Gets a unique title from user for new and duplicate layouts.
+     *
+     * The \a title argument will be filled with the new layout title.
+     *
+     * If \a acceptEmpty is true then empty titles will be acceptable (one will be generated).
+     *
+     * The \a currentTitle argument specifies a base name for initial title choice.
+     *
+     * \returns true if user did not cancel the dialog.
+     */
+    bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, const QString &currentTitle = QString() );
+
+
     //! Creates a new composer and returns a pointer to it
     QgsComposer *createNewComposer( QString title = QString() );
 
@@ -382,6 +397,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Duplicates a composer and adds it to Set
      */
     QgsComposer *duplicateComposer( QgsComposer *currentComposer, QString title = QString() );
+
+    /**
+     * Duplicates a \a layout and adds it to the current project.
+     *
+     * If \a title is set, it will be used as the title for the new layout. If it is not set,
+     * and auto-generated title will be used instead.
+     */
+    QgsLayoutDesignerDialog *duplicateLayout( QgsLayout *layout, const QString &title = QString() );
 
     //! Overloaded function used to sort menu entries alphabetically
     QMenu *createPopupMenu() override;

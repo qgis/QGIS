@@ -268,6 +268,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void undoRedoOccurredForItems( const QSet< QString > itemUuids );
     void saveAsTemplate();
     void addItemsFromTemplate();
+    void duplicate();
 
   private:
 

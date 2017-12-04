@@ -14,6 +14,7 @@
  ***************************************************************************/
 
 #include "qgslayoutmanager.h"
+#include "qgslayout.h"
 #include "qgsproject.h"
 #include "qgslogger.h"
 
@@ -184,6 +185,38 @@ QgsComposition *QgsLayoutManager::duplicateComposition( const QString &name, con
   {
     return newComposition;
   }
+}
+
+QgsLayout *QgsLayoutManager::duplicateLayout( const QgsLayout *layout, const QString &newName )
+{
+  QDomDocument currentDoc;
+
+  QgsReadWriteContext context;
+  QDomElement elem = layout->writeXml( currentDoc, context );
+  currentDoc.appendChild( elem );
+
+  std::unique_ptr< QgsLayout > newLayout = qgis::make_unique< QgsLayout >( mProject );
+  bool ok = false;
+  newLayout->loadFromTemplate( currentDoc, context, true, &ok );
+  if ( !ok )
+  {
+    return nullptr;
+  }
+
+  newLayout->setName( newName );
+#if 0 //TODO
+  if ( !addComposition( newComposition ) )
+  {
+    delete newComposition;
+    return nullptr;
+  }
+  else
+  {
+    return newComposition;
+  }
+#endif
+
+  return newLayout.release();
 }
 
 QString QgsLayoutManager::generateUniqueTitle() const

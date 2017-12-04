@@ -109,6 +109,14 @@ class QgsLayoutManager : QObject
  :rtype: QgsComposition
 %End
 
+    QgsLayout *duplicateLayout( const QgsLayout *layout, const QString &newName );
+%Docstring
+ Duplicates an existing ``layout`` from the manager. The new
+ layout will automatically be stored in the manager.
+ Returns new the layout if duplication was successful.
+ :rtype: QgsLayout
+%End
+
     QString generateUniqueTitle() const;
 %Docstring
  Generates a unique title for a new composition, which does not
