@@ -62,7 +62,11 @@
    <attribute name="toolBarBreak">
     <bool>false</bool>
    </attribute>
+   <addaction name="mActionSaveProject"/>
+   <addaction name="separator"/>
+   <addaction name="mActionNewLayout"/>
    <addaction name="mActionDuplicateLayout"/>
+   <addaction name="mActionLayoutManager"/>
    <addaction name="mActionLoadFromTemplate"/>
    <addaction name="mActionSaveAsTemplate"/>
   </widget>
@@ -95,7 +99,11 @@
     <property name="title">
      <string>&amp;Layout</string>
     </property>
+    <addaction name="mActionSaveProject"/>
+    <addaction name="separator"/>
+    <addaction name="mActionNewLayout"/>
     <addaction name="mActionDuplicateLayout"/>
+    <addaction name="mActionLayoutManager"/>
     <addaction name="separator"/>
     <addaction name="mActionLayoutProperties"/>
     <addaction name="mActionAddPages"/>
@@ -1099,6 +1107,48 @@
    </property>
    <property name="toolTip">
     <string>Duplicate layout</string>
+   </property>
+  </action>
+  <action name="mActionSaveProject">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionFileSave.svg</normaloff>:/images/themes/default/mActionFileSave.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;Save Project</string>
+   </property>
+   <property name="toolTip">
+    <string>Save project</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="mActionNewLayout">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionNewComposer.svg</normaloff>:/images/themes/default/mActionNewComposer.svg</iconset>
+   </property>
+   <property name="text">
+    <string>&amp;New Layout…</string>
+   </property>
+   <property name="toolTip">
+    <string>New layout</string>
+   </property>
+   <property name="shortcut">
+    <string>Ctrl+N</string>
+   </property>
+  </action>
+  <action name="mActionLayoutManager">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionComposerManager.svg</normaloff>:/images/themes/default/mActionComposerManager.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Layout &amp;Manager...</string>
+   </property>
+   <property name="toolTip">
+    <string>Layout manager</string>
    </property>
   </action>
  </widget>

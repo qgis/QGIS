@@ -157,6 +157,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mVerticalRuler->setContextMenu( rulerMenu );
 
   connect( mActionRefreshView, &QAction::triggered, this, &QgsLayoutDesignerDialog::refreshLayout );
+  connect( mActionSaveProject, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveProject );
+  connect( mActionNewLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::newLayout );
+  connect( mActionLayoutManager, &QAction::triggered, this, &QgsLayoutDesignerDialog::showManager );
 
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
@@ -1346,6 +1349,29 @@ void QgsLayoutDesignerDialog::duplicate()
     QMessageBox::warning( this, tr( "Duplicate layout" ),
                           tr( "Layout duplication failed." ) );
   }
+}
+
+void QgsLayoutDesignerDialog::saveProject()
+{
+  QgisApp::instance()->actionSaveProject()->trigger();
+}
+
+void QgsLayoutDesignerDialog::newLayout()
+{
+  QString title;
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true ) )
+  {
+    return;
+  }
+  QgisApp::instance()->createNewLayout( title );
+}
+
+void QgsLayoutDesignerDialog::showManager()
+{
+  // NOTE: Avoid crash where composer that spawned modal manager from toolbar ends up
+  // being deleted by user, but event loop tries to return to layout on manager close
+  // (does not seem to be an issue for menu action)
+  QTimer::singleShot( 0,  QgisApp::instance()->actionShowComposerManager(), SLOT( trigger() ) );
 }
 
 void QgsLayoutDesignerDialog::paste()

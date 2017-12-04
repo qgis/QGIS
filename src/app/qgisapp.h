@@ -384,6 +384,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QgsComposer *openComposer( QgsComposition *composition );
 
+    //! Creates a new layout and returns a pointer to it
+    QgsLayoutDesignerDialog *createNewLayout( QString title = QString() );
+
     /**
      * Opens a layout designer dialog for an existing \a layout.
      * If a designer already exists for this layout then it will be activated.
