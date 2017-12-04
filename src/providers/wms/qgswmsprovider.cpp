@@ -3199,18 +3199,25 @@ QString QgsWmsProvider::lastErrorFormat()
 QString  QgsWmsProvider::name() const
 {
   return WMS_KEY;
-} //  QgsWmsProvider::name()
+}
 
 
 QString  QgsWmsProvider::description() const
 {
   return WMS_DESCRIPTION;
-} //  QgsWmsProvider::description()
+}
 
 void QgsWmsProvider::reloadData()
 {
 }
 
+bool QgsWmsProvider::renderInPreview( const QgsDataProvider::PreviewContext &context )
+{
+  if ( mSettings.mTiled || mSettings.mXyz )
+    return true;
+
+  return QgsRasterDataProvider::renderInPreview( context );
+}
 
 QVector<QgsWmsSupportedFormat> QgsWmsProvider::supportedFormats()
 {

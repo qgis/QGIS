@@ -490,7 +490,7 @@ class CORE_EXPORT QgsDataProvider : public QObject
      *
      * \note not available in Python bindings
      */
-    virtual bool renderInPreview( QgsDataProvider::PreviewContext context ); // SIP_SKIP
+    virtual bool renderInPreview( const QgsDataProvider::PreviewContext &context ); // SIP_SKIP
 
   signals:
 
