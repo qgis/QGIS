@@ -205,6 +205,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
 #include "qgslayoutapputils.h"
@@ -1400,6 +1401,7 @@ QgisApp::~QgisApp()
   delete mTray;
   delete mDataSourceManagerDialog;
   qDeleteAll( mCustomDropHandlers );
+  qDeleteAll( mCustomLayoutDropHandlers );
 
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
@@ -1558,6 +1560,22 @@ void QgisApp::registerCustomDropHandler( QgsCustomDropHandler *handler )
 void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
 {
   mCustomDropHandlers.removeOne( handler );
+}
+
+void QgisApp::registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  if ( !mCustomLayoutDropHandlers.contains( handler ) )
+    mCustomLayoutDropHandlers << handler;
+}
+
+void QgisApp::unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  mCustomLayoutDropHandlers.removeOne( handler );
+}
+
+QVector<QPointer<QgsLayoutCustomDropHandler> > QgisApp::customLayoutDropHandlers() const
+{
+  return mCustomLayoutDropHandlers;
 }
 
 void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )

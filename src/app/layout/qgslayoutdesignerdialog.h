@@ -238,6 +238,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
   protected:
 
     virtual void closeEvent( QCloseEvent * ) override;
+    virtual void dropEvent( QDropEvent *event ) override;
 
   private slots:
 

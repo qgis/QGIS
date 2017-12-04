@@ -584,6 +584,16 @@ void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler 
   qgis->registerCustomDropHandler( handler );
 }
 
+void QgisAppInterface::registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  qgis->registerCustomLayoutDropHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  qgis->unregisterCustomLayoutDropHandler( handler );
+}
+
 void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->unregisterCustomDropHandler( handler );
