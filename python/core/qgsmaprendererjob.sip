@@ -142,12 +142,6 @@ List of errors that happened during the rendering job - available when the rende
  :rtype: int
 %End
 
-    QMap< QString, int > perLayerRenderingTime() const;
-%Docstring
- Returns the render time (in ms) per layer, by layer ID.
-.. versionadded:: 3.0
- :rtype: QMap< str, int >
-%End
 
     const QgsMapSettings &mapSettings() const;
 %Docstring

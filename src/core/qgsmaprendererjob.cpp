@@ -64,6 +64,17 @@ void QgsMapRendererJob::setCache( QgsMapRendererCache *cache )
   mCache = cache;
 }
 
+QHash<QgsMapLayer *, int> QgsMapRendererJob::perLayerRenderingTime() const
+{
+  QHash<QgsMapLayer *, int> result;
+  for ( auto it = mPerLayerRenderingTime.constBegin(); it != mPerLayerRenderingTime.constEnd(); ++it )
+  {
+    if ( it.key() )
+      result.insert( it.key(), it.value() );
+  }
+  return result;
+}
+
 const QgsMapSettings &QgsMapRendererJob::mapSettings() const
 {
   return mSettings;
@@ -414,7 +425,7 @@ void QgsMapRendererJob::cleanupJobs( LayerRenderJobs &jobs )
     }
 
     if ( job.layer )
-      mPerLayerRenderingTime.insert( job.layer->id(), job.renderingTime );
+      mPerLayerRenderingTime.insert( job.layer, job.renderingTime );
   }
 
   jobs.clear();
