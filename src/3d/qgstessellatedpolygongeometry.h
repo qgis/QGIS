@@ -45,7 +45,6 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
     void setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon = QList<float>() );
 
   private:
-    QList<QgsPolygon *> mPolygons;
 
     Qt3DRender::QAttribute *mPositionAttribute = nullptr;
     Qt3DRender::QAttribute *mNormalAttribute = nullptr;

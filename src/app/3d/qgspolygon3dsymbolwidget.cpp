@@ -31,10 +31,37 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( spinExtrusion, static_cast<void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
+  connect( cboCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnHeightDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnExtrusionDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
 }
+
+
+static int _cullingModeToIndex( Qt3DRender::QCullFace::CullingMode mode )
+{
+  switch ( mode )
+  {
+    case Qt3DRender::QCullFace::NoCulling: return 0;
+    case Qt3DRender::QCullFace::Front: return 1;
+    case Qt3DRender::QCullFace::Back: return 2;
+    case Qt3DRender::QCullFace::FrontAndBack: return 3;
+  }
+  return 0;
+}
+
+static Qt3DRender::QCullFace::CullingMode _cullingModeFromIndex( int index )
+{
+  switch ( index )
+  {
+    case 0: return Qt3DRender::QCullFace::NoCulling;
+    case 1: return Qt3DRender::QCullFace::Front;
+    case 2: return Qt3DRender::QCullFace::Back;
+    case 3: return Qt3DRender::QCullFace::FrontAndBack;
+  }
+  return Qt3DRender::QCullFace::NoCulling;
+}
+
 
 void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol, QgsVectorLayer *layer )
 {
@@ -42,6 +69,7 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol, QgsV
   spinExtrusion->setValue( symbol.extrusionHeight() );
   cboAltClamping->setCurrentIndex( ( int ) symbol.altitudeClamping() );
   cboAltBinding->setCurrentIndex( ( int ) symbol.altitudeBinding() );
+  cboCullingMode->setCurrentIndex( _cullingModeToIndex( symbol.cullingMode() ) );
   widgetMaterial->setMaterial( symbol.material() );
 
   btnHeightDD->init( QgsAbstract3DSymbol::PropertyHeight, symbol.dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
@@ -55,6 +83,7 @@ QgsPolygon3DSymbol QgsPolygon3DSymbolWidget::symbol() const
   sym.setExtrusionHeight( spinExtrusion->value() );
   sym.setAltitudeClamping( ( AltitudeClamping ) cboAltClamping->currentIndex() );
   sym.setAltitudeBinding( ( AltitudeBinding ) cboAltBinding->currentIndex() );
+  sym.setCullingMode( _cullingModeFromIndex( cboCullingMode->currentIndex() ) );
   sym.setMaterial( widgetMaterial->material() );
 
   QgsPropertyCollection ddp;

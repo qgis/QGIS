@@ -31,6 +31,7 @@ void QgsPolygon3DSymbol::writeXml( QDomElement &elem, const QgsReadWriteContext 
   elemDataProperties.setAttribute( QStringLiteral( "alt-binding" ), Qgs3DUtils::altBindingToString( mAltBinding ) );
   elemDataProperties.setAttribute( QStringLiteral( "height" ), mHeight );
   elemDataProperties.setAttribute( QStringLiteral( "extrusion-height" ), mExtrusionHeight );
+  elemDataProperties.setAttribute( QStringLiteral( "culling-mode" ), Qgs3DUtils::cullingModeToString( mCullingMode ) );
   elem.appendChild( elemDataProperties );
 
   QDomElement elemMaterial = doc.createElement( QStringLiteral( "material" ) );
@@ -51,6 +52,7 @@ void QgsPolygon3DSymbol::readXml( const QDomElement &elem, const QgsReadWriteCon
   mAltBinding = Qgs3DUtils::altBindingFromString( elemDataProperties.attribute( QStringLiteral( "alt-binding" ) ) );
   mHeight = elemDataProperties.attribute( QStringLiteral( "height" ) ).toFloat();
   mExtrusionHeight = elemDataProperties.attribute( QStringLiteral( "extrusion-height" ) ).toFloat();
+  mCullingMode = Qgs3DUtils::cullingModeFromString( elemDataProperties.attribute( QStringLiteral( "culling-mode" ) ) );
 
   QDomElement elemMaterial = elem.firstChildElement( QStringLiteral( "material" ) );
   mMaterial.readXml( elemMaterial );
