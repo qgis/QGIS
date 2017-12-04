@@ -424,6 +424,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
 
 };
 
+#if 0
 #ifndef SIP_RUN
 ///@cond TEMPORARY
 //simple item for testing
@@ -451,6 +452,7 @@ class TestLayoutItem : public QgsLayoutItem
     QgsFillSymbol *mShapeStyleSymbol = nullptr;
 };
 ///@endcond
+#endif
 #endif
 
 #endif //QGSLAYOUTITEMREGISTRY_H
