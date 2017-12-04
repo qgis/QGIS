@@ -62,6 +62,7 @@ class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
+class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
 class QgsLayoutDesignerInterface;
 class QgsMapCanvas;
@@ -643,6 +644,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     //! Unregister a previously registered custom drop handler.
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler );
+
+    //! Register a new custom layout drop handler.
+    void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler );
+
+    //! Unregister a previously registered custom layout drop handler.
+    void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler );
+
+    //! Returns a list of registered custom layout drop handlers.
+    QVector<QPointer<QgsLayoutCustomDropHandler >> customLayoutDropHandlers() const;
 
     //! Returns the active map layer.
     QgsMapLayer *activeLayer();
@@ -2119,6 +2129,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
+    QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;
 
     QDateTime mProjectLastModified;
 

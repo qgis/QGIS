@@ -1116,6 +1116,24 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 .. seealso:: :py:func:`registerCustomDropHandler()`
 %End
 
+    virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+%Docstring
+ Register a new custom drop ``handler`` for layout windows.
+.. versionadded:: 3.0
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+       be unregistered when plugin is unloaded.
+.. seealso:: unregisterCustomLayoutDropHandler() *
+%End
+
+    virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+%Docstring
+ Unregister a previously registered custom drop ``handler`` for layout windows.
+.. versionadded:: 3.0
+.. seealso:: registerCustomLayoutDropHandler() *
+%End
+
 
     virtual void openURL( const QString &url, bool useQgisDocDirectory = true ) = 0 /Deprecated/;
 %Docstring

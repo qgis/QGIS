@@ -290,6 +290,7 @@
 %Include layertree/qgslayertreemapcanvasbridge.sip
 %Include layertree/qgslayertreeview.sip
 %Include layertree/qgslayertreeviewdefaultactions.sip
+%Include layout/qgslayoutcustomdrophandler.sip
 %Include layout/qgslayoutdesignerinterface.sip
 %Include layout/qgslayoutitemcombobox.sip
 %Include layout/qgslayoutitemguiregistry.sip

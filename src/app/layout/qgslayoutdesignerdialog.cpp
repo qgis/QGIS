@@ -22,6 +22,7 @@
 #include "qgslogger.h"
 #include "qgslayout.h"
 #include "qgslayoutappmenuprovider.h"
+#include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
 #include "qgslayoutviewtooladdnodeitem.h"
@@ -898,6 +899,96 @@ void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
 {
   emit aboutToClose();
   saveWindowState();
+}
+
+void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
+{
+  // dragging app is locked for the duration of dropEvent. This causes explorer windows to hang
+  // while large projects/layers are loaded. So instead we return from dropEvent as quickly as possible
+  // and do the actual handling of the drop after a very short timeout
+  QTimer *timer = new QTimer( this );
+  timer->setSingleShot( true );
+  timer->setInterval( 50 );
+
+  // get the file list
+  QList<QUrl>::iterator i;
+  QList<QUrl>urls = event->mimeData()->urls();
+  QStringList files;
+  for ( i = urls.begin(); i != urls.end(); ++i )
+  {
+    QString fileName = i->toLocalFile();
+#ifdef Q_OS_MAC
+    // Mac OS X 10.10, under Qt4.8 ,changes dropped URL format
+    // https://bugreports.qt.io/browse/QTBUG-40449
+    // [pzion 20150805] Work around
+    if ( fileName.startsWith( "/.file/id=" ) )
+    {
+      QgsDebugMsg( "Mac dropped URL with /.file/id= (converting)" );
+      CFStringRef relCFStringRef =
+        CFStringCreateWithCString(
+          kCFAllocatorDefault,
+          fileName.toUtf8().constData(),
+          kCFStringEncodingUTF8
+        );
+      CFURLRef relCFURL =
+        CFURLCreateWithFileSystemPath(
+          kCFAllocatorDefault,
+          relCFStringRef,
+          kCFURLPOSIXPathStyle,
+          false // isDirectory
+        );
+      CFErrorRef error = 0;
+      CFURLRef absCFURL =
+        CFURLCreateFilePathURL(
+          kCFAllocatorDefault,
+          relCFURL,
+          &error
+        );
+      if ( !error )
+      {
+        static const CFIndex maxAbsPathCStrBufLen = 4096;
+        char absPathCStr[maxAbsPathCStrBufLen];
+        if ( CFURLGetFileSystemRepresentation(
+               absCFURL,
+               true, // resolveAgainstBase
+               reinterpret_cast<UInt8 *>( &absPathCStr[0] ),
+               maxAbsPathCStrBufLen ) )
+        {
+          fileName = QString( absPathCStr );
+        }
+      }
+      CFRelease( absCFURL );
+      CFRelease( relCFURL );
+      CFRelease( relCFStringRef );
+    }
+#endif
+    // seems that some drag and drop operations include an empty url
+    // so we test for length to make sure we have something
+    if ( !fileName.isEmpty() )
+    {
+      files << fileName;
+    }
+  }
+
+  connect( timer, &QTimer::timeout, this, [this, timer, files]
+  {
+    for ( const QString &file : qgis::as_const( files ) )
+    {
+      const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
+      for ( QgsLayoutCustomDropHandler *handler : handlers )
+      {
+        if ( handler && handler->handleFileDrop( file ) )
+        {
+          break;
+        }
+      }
+    }
+
+    timer->deleteLater();
+  } );
+
+  event->acceptProposedAction();
+  timer->start();
 }
 
 void QgsLayoutDesignerDialog::itemTypeAdded( int id )
