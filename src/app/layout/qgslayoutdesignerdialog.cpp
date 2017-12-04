@@ -44,6 +44,7 @@
 #include "qgslayoutmousehandles.h"
 #include "qgslayoutmodel.h"
 #include "qgslayoutitemslistview.h"
+#include "qgsproject.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -52,6 +53,8 @@
 #include <QLabel>
 #include <QUndoView>
 #include <QTreeView>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -298,6 +301,9 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionPreviewModeMono->setActionGroup( previewGroup );
   mActionPreviewProtanope->setActionGroup( previewGroup );
   mActionPreviewDeuteranope->setActionGroup( previewGroup );
+
+  connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveAsTemplate );
+  connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::addItemsFromTemplate );
 
   connect( mActionZoomIn, &QAction::triggered, mView, &QgsLayoutView::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );
@@ -1128,6 +1134,84 @@ void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> item
 
   if ( focusItem )
     showItemOptions( focusItem );
+}
+
+void QgsLayoutDesignerDialog::saveAsTemplate()
+{
+  //show file dialog
+  QgsSettings settings;
+  QString lastSaveDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
+#ifdef Q_OS_MAC
+  mQgis->activateWindow();
+  this->raise();
+#endif
+  QString saveFileName = QFileDialog::getSaveFileName(
+                           this,
+                           tr( "Save template" ),
+                           lastSaveDir,
+                           tr( "Layout templates" ) + " (*.qpt *.QPT)" );
+  if ( saveFileName.isEmpty() )
+    return;
+
+  QFileInfo saveFileInfo( saveFileName );
+  //check if suffix has been added
+  if ( saveFileInfo.suffix().isEmpty() )
+  {
+    QString saveFileNameWithSuffix = saveFileName.append( ".qpt" );
+    saveFileInfo = QFileInfo( saveFileNameWithSuffix );
+  }
+  settings.setValue( QStringLiteral( "UI/lastComposerTemplateDir" ), saveFileInfo.absolutePath() );
+
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  if ( !currentLayout()->saveAsTemplate( saveFileName, context ) )
+  {
+    QMessageBox::warning( nullptr, tr( "Save template" ), tr( "Error creating template file." ) );
+  }
+}
+
+void QgsLayoutDesignerDialog::addItemsFromTemplate()
+{
+  if ( !currentLayout() )
+    return;
+
+  QgsSettings settings;
+  QString openFileDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
+  QString openFileString = QFileDialog::getOpenFileName( nullptr, tr( "Load template" ), openFileDir, tr( "Layout templates" ) + " (*.qpt *.QPT)" );
+
+  if ( openFileString.isEmpty() )
+  {
+    return; //canceled by the user
+  }
+
+  QFileInfo openFileInfo( openFileString );
+  settings.setValue( QStringLiteral( "UI/LastComposerTemplateDir" ), openFileInfo.absolutePath() );
+
+  QFile templateFile( openFileString );
+  if ( !templateFile.open( QIODevice::ReadOnly ) )
+  {
+    QMessageBox::warning( this, tr( "Load from template" ), tr( "Could not read template file." ) );
+    return;
+  }
+
+  QDomDocument templateDoc;
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  if ( templateDoc.setContent( &templateFile ) )
+  {
+    bool ok = false;
+    QList< QgsLayoutItem * > items = currentLayout()->loadFromTemplate( templateDoc, context, false, &ok );
+    if ( !ok )
+    {
+      QMessageBox::warning( this, tr( "Load from template" ), tr( "Could not read template file." ) );
+      return;
+    }
+    else
+    {
+      whileBlocking( currentLayout() )->deselectAll();
+      selectItems( items );
+    }
+  }
 }
 
 void QgsLayoutDesignerDialog::paste()

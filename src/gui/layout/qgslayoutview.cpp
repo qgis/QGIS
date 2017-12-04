@@ -719,6 +719,9 @@ void QgsLayoutView::deleteSelectedItems()
 
 void QgsLayoutView::deleteItems( const QList<QgsLayoutItem *> &items )
 {
+  if ( items.empty() )
+    return;
+
   currentLayout()->undoStack()->beginMacro( tr( "Delete Items" ) );
   //delete selected items
   for ( QgsLayoutItem *item : items )

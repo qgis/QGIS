@@ -258,6 +258,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void statusMessageReceived( const QString &message );
     void dockVisibilityChanged( bool visible );
     void undoRedoOccurredForItems( const QSet< QString > itemUuids );
+    void saveAsTemplate();
+    void addItemsFromTemplate();
 
   private:
 

@@ -466,6 +466,26 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QList< QgsLayoutMultiFrame * > multiFrames() const;
 
     /**
+     * Saves the layout as a template at the given file \a path.
+     * Returns true if save was successful.
+     * \see loadFromTemplate()
+     */
+    bool saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const;
+
+    /**
+     * Load a layout template \a document.
+     *
+     * By default this method will clear all items from the existing layout and real all layout
+     * settings from the template. Setting \a clearExisting to false will only add new items
+     * from the template, without overwriting the existing items or layout settings.
+     *
+     * If \a ok is specified, it will be set to true if the load was successful.
+     *
+     * Returns a list of loaded items.
+     */
+    QList< QgsLayoutItem * > loadFromTemplate( const QDomDocument &document, const QgsReadWriteContext &context, bool clearExisting = true, bool *ok SIP_OUT = nullptr );
+
+    /**
      * Returns the layout's state encapsulated in a DOM element.
      * \see readXml()
      */

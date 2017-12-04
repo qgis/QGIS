@@ -417,6 +417,28 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  :rtype: list of QgsLayoutMultiFrame
 %End
 
+    bool saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const;
+%Docstring
+ Saves the layout as a template at the given file ``path``.
+ Returns true if save was successful.
+.. seealso:: loadFromTemplate()
+ :rtype: bool
+%End
+
+    QList< QgsLayoutItem * > loadFromTemplate( const QDomDocument &document, const QgsReadWriteContext &context, bool clearExisting = true, bool *ok /Out/ = 0 );
+%Docstring
+ Load a layout template ``document``.
+
+ By default this method will clear all items from the existing layout and real all layout
+ settings from the template. Setting ``clearExisting`` to false will only add new items
+ from the template, without overwriting the existing items or layout settings.
+
+ If ``ok`` is specified, it will be set to true if the load was successful.
+
+ Returns a list of loaded items.
+ :rtype: list of QgsLayoutItem
+%End
+
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Returns the layout's state encapsulated in a DOM element.
