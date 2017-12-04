@@ -53,6 +53,29 @@ bool QgsLayoutManager::addComposition( QgsComposition *composition )
   return true;
 }
 
+bool QgsLayoutManager::addLayout( QgsLayout *layout )
+{
+  if ( !layout )
+    return false;
+
+  // check for duplicate name
+  for ( QgsLayout *l : qgis::as_const( mLayouts ) )
+  {
+    if ( l->name() == layout->name() )
+      return false;
+  }
+
+  connect( layout, &QgsLayout::nameChanged, this, [this, layout]( const QString & newName )
+  {
+    emit layoutRenamed( layout, newName );
+  } );
+  emit layoutAboutToBeAdded( layout->name() );
+  mLayouts << layout;
+  emit layoutAdded( layout->name() );
+  mProject->setDirty( true );
+  return true;
+}
+
 bool QgsLayoutManager::removeComposition( QgsComposition *composition )
 {
   if ( !composition )
@@ -70,11 +93,33 @@ bool QgsLayoutManager::removeComposition( QgsComposition *composition )
   return true;
 }
 
+bool QgsLayoutManager::removeLayout( QgsLayout *layout )
+{
+  if ( !layout )
+    return false;
+
+  if ( !mLayouts.contains( layout ) )
+    return false;
+
+  QString name = layout->name();
+  emit layoutAboutToBeRemoved( name );
+  mLayouts.removeAll( layout );
+  delete layout;
+  emit layoutRemoved( name );
+  mProject->setDirty( true );
+  return true;
+}
+
 void QgsLayoutManager::clear()
 {
   Q_FOREACH ( QgsComposition *c, mCompositions )
   {
     removeComposition( c );
+  }
+  const QList< QgsLayout * > layouts = mLayouts;
+  for ( QgsLayout *l : layouts )
+  {
+    removeLayout( l );
   }
 }
 
@@ -83,12 +128,27 @@ QList<QgsComposition *> QgsLayoutManager::compositions() const
   return mCompositions;
 }
 
+QList<QgsLayout *> QgsLayoutManager::layouts() const
+{
+  return mLayouts;
+}
+
 QgsComposition *QgsLayoutManager::compositionByName( const QString &name ) const
 {
   Q_FOREACH ( QgsComposition *c, mCompositions )
   {
     if ( c->name() == name )
       return c;
+  }
+  return nullptr;
+}
+
+QgsLayout *QgsLayoutManager::layoutByName( const QString &name ) const
+{
+  for ( QgsLayout *l : mLayouts )
+  {
+    if ( l->name() == name )
+      return l;
   }
   return nullptr;
 }
@@ -204,22 +264,19 @@ QgsLayout *QgsLayoutManager::duplicateLayout( const QgsLayout *layout, const QSt
   }
 
   newLayout->setName( newName );
-#if 0 //TODO
-  if ( !addComposition( newComposition ) )
+  QgsLayout *l = newLayout.get();
+  if ( !addLayout( l ) )
   {
-    delete newComposition;
     return nullptr;
   }
   else
   {
-    return newComposition;
+    ( void )newLayout.release(); //ownership was transferred successfully
+    return l;
   }
-#endif
-
-  return newLayout.release();
 }
 
-QString QgsLayoutManager::generateUniqueTitle() const
+QString QgsLayoutManager::generateUniqueComposerTitle() const
 {
   QStringList names;
   Q_FOREACH ( QgsComposition *c, mCompositions )
@@ -231,6 +288,23 @@ QString QgsLayoutManager::generateUniqueTitle() const
   while ( name.isEmpty() || names.contains( name ) )
   {
     name = tr( "Composer %1" ).arg( id );
+    id++;
+  }
+  return name;
+}
+
+QString QgsLayoutManager::generateUniqueTitle() const
+{
+  QStringList names;
+  for ( QgsLayout *l : mLayouts )
+  {
+    names << l->name();
+  }
+  QString name;
+  int id = 1;
+  while ( name.isEmpty() || names.contains( name ) )
+  {
+    name = tr( "Layout %1" ).arg( id );
     id++;
   }
   return name;

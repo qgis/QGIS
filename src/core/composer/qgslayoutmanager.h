@@ -19,6 +19,7 @@
 #include "qgis_core.h"
 #include "qgis.h"
 #include "qgscomposition.h"
+#include "qgslayout.h"
 #include <QObject>
 
 class QgsProject;
@@ -28,13 +29,13 @@ class QgsProject;
  * \class QgsLayoutManager
  * \since QGIS 3.0
  *
- * \brief Manages storage of a set of compositions.
+ * \brief Manages storage of a set of layouts.
  *
  * QgsLayoutManager handles the storage, serializing and deserializing
- * of QgsCompositions. Usually this class is not constructed directly, but
+ * of QgsLayouts. Usually this class is not constructed directly, but
  * rather accessed through a QgsProject via QgsProject::layoutManager().
  *
- * QgsLayoutManager retains ownership of all the compositions contained
+ * QgsLayoutManager retains ownership of all the layouts contained
  * in the manager.
  */
 
@@ -62,6 +63,15 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     bool addComposition( QgsComposition *composition SIP_TRANSFER );
 
     /**
+     * Adds a \a layout to the manager. Ownership of the layout is transferred to the manager.
+     * Returns true if the addition was successful, or false if the layout could not be added (eg
+     * as a result of a duplicate layout name).
+     * \see removeLayout()
+     * \see layoutAdded()
+     */
+    bool addLayout( QgsLayout *layout SIP_TRANSFER );
+
+    /**
      * Removes a composition from the manager. The composition is deleted.
      * Returns true if the removal was successful, or false if the removal failed (eg as a result
      * of removing a composition which is not contained in the manager).
@@ -73,8 +83,19 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     bool removeComposition( QgsComposition *composition );
 
     /**
-     * Removes and deletes all compositions from the manager.
-     * \see removeComposition()
+     * Removes a \a layout from the manager. The layout is deleted.
+     * Returns true if the removal was successful, or false if the removal failed (eg as a result
+     * of removing a layout which is not contained in the manager).
+     * \see addLayout()
+     * \see layoutRemoved()
+     * \see layoutAboutToBeRemoved()
+     * \see clear()
+     */
+    bool removeLayout( QgsLayout *layout );
+
+    /**
+     * Removes and deletes all layouts from the manager.
+     * \see removeLayout()
      */
     void clear();
 
@@ -84,13 +105,24 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     QList< QgsComposition * > compositions() const;
 
     /**
+     * Returns a list of all layouts contained in the manager.
+     */
+    QList< QgsLayout * > layouts() const;
+
+    /**
      * Returns the composition with a matching name, or nullptr if no matching compositions
      * were found.
      */
     QgsComposition *compositionByName( const QString &name ) const;
 
     /**
-     * Reads the manager's state from a DOM element, restoring all compositions
+     * Returns the layout with a matching name, or nullptr if no matching layouts
+     * were found.
+     */
+    QgsLayout *layoutByName( const QString &name ) const;
+
+    /**
+     * Reads the manager's state from a DOM element, restoring all layouts
      * present in the XML document.
      * \see writeXml()
      */
@@ -126,6 +158,12 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * Generates a unique title for a new composition, which does not
      * clash with any already contained by the manager.
      */
+    QString generateUniqueComposerTitle() const;
+
+    /**
+     * Generates a unique title for a new layout, which does not
+     * clash with any already contained by the manager.
+     */
     QString generateUniqueTitle() const;
 
   signals:
@@ -133,23 +171,39 @@ class CORE_EXPORT QgsLayoutManager : public QObject
     //! Emitted when a composition is about to be added to the manager
     void compositionAboutToBeAdded( const QString &name );
 
+    //! Emitted when a layout is about to be added to the manager
+    void layoutAboutToBeAdded( const QString &name );
+
     //! Emitted when a composition has been added to the manager
     void compositionAdded( const QString &name );
+
+    //! Emitted when a layout has been added to the manager
+    void layoutAdded( const QString &name );
 
     //! Emitted when a composition was removed from the manager
     void compositionRemoved( const QString &name );
 
+    //! Emitted when a layout was removed from the manager
+    void layoutRemoved( const QString &name );
+
     //! Emitted when a composition is about to be removed from the manager
     void compositionAboutToBeRemoved( const QString &name );
 
+    //! Emitted when a layout is about to be removed from the manager
+    void layoutAboutToBeRemoved( const QString &name );
+
     //! Emitted when a composition is renamed
     void compositionRenamed( QgsComposition *composition, const QString &newName );
+
+    //! Emitted when a layout is renamed
+    void layoutRenamed( QgsLayout *layout, const QString &newName );
 
   private:
 
     QgsProject *mProject = nullptr;
 
     QList< QgsComposition * > mCompositions;
+    QList< QgsLayout * > mLayouts;
 
     QgsComposition *createCompositionFromXml( const QDomElement &element, const QDomDocument &doc ) const;
 

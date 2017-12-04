@@ -117,6 +117,12 @@ QgsLayoutExporter &QgsLayout::exporter()
   return mExporter;
 }
 
+void QgsLayout::setName( const QString &name )
+{
+  mName = name;
+  emit nameChanged( name );
+}
+
 QList<QgsLayoutItem *> QgsLayout::selectedLayoutItems( const bool includeLockedItems )
 {
   QList<QgsLayoutItem *> layoutItemList;

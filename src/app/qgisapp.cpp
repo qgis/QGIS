@@ -7315,7 +7315,7 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
       else
       {
         titleValid = true;
-        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueComposerTitle();
       }
     }
     else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
@@ -7380,7 +7380,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
       else
       {
         titleValid = true;
-        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueComposerTitle();
       }
     }
     else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
@@ -7403,7 +7403,7 @@ QgsComposer *QgisApp::createNewComposer( QString title )
 {
   if ( title.isEmpty() )
   {
-    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+    title = QgsProject::instance()->layoutManager()->generateUniqueComposerTitle();
   }
   //create new composition object
   QgsComposition *composition = new QgsComposition( QgsProject::instance() );
