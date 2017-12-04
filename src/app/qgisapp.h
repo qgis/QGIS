@@ -2208,6 +2208,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
 
     QgsBrowserModel *mBrowserModel = nullptr;
 
+    void setupDuplicateFeaturesAction();
+    QgsFeature duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature );
+
     friend class TestQgisAppPython;
 };
 

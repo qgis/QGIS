@@ -1258,6 +1258,8 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 
   setupLayoutManagerConnections();
 
+  setupDuplicateFeaturesAction();
+
   // update windows
   qApp->processEvents();
 
@@ -7607,6 +7609,20 @@ void QgisApp::setupLayoutManagerConnections()
   } );
 }
 
+void QgisApp::setupDuplicateFeaturesAction()
+{
+  QgsMapLayerAction *action = new QgsMapLayerAction( QString( tr( "Duplicate feature" ) ),
+      this, QgsMapLayerAction::AllActions,
+      QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
+
+  QgsGui::mapLayerActionRegistry()->addMapLayerAction( action );
+  connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
+  {
+    duplicateFeatures( layer, feat );
+  }
+         );
+}
+
 void QgisApp::setupAtlasMapLayerAction( QgsComposition *composition, bool enableAction )
 {
   QgsMapLayerAction *action = mAtlasFeatureActions.value( composition );
@@ -13300,4 +13316,37 @@ void QgisApp::tapAndHoldTriggered( QTapAndHoldGesture *gesture )
 void QgisApp::transactionGroupCommitError( const QString &error )
 {
   displayMessage( tr( "Transaction" ), error, QgsMessageBar::CRITICAL );
+}
+
+QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature )
+{
+  if ( mlayer->type() != QgsMapLayer::VectorLayer )
+    return QgsFeature();
+  /*
+    QgsVectorLayer *layer=qobject_cast<QgsVectorLayer *>(mlayer);
+
+    layer->startEditing();
+
+    QgsFeatureList featureList;
+
+    if( feature )
+    {
+      featureList.append( feature );
+    }
+    else
+    {
+      for ( const QgsFeature &f : layer->selectedFeatures() )
+      {
+        featureList.append( f );
+      }
+    }
+
+    int featureCount=0;
+
+    for ( const QgsFeature &f : featureList )
+    {
+      //QgsVectorLayerUtils::duplicateFeature( layer, feature, QgsProject::instance(), 0 );
+    }
+  */
+  return QgsFeature();
 }
