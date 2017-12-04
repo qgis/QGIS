@@ -612,7 +612,12 @@ void QgsMapCanvas::rendererJobFinished()
 
     mMap->setContent( img, imageRect( img, mSettings ) );
 
-    mLastLayerRenderTime = mJob->perLayerRenderingTime();
+    mLastLayerRenderTime.clear();
+    const auto times = mJob->perLayerRenderingTime();
+    for ( auto it = times.constBegin(); it != times.constEnd(); ++it )
+    {
+      mLastLayerRenderTime.insert( it.key()->id(), it.value() );
+    }
     if ( mUsePreviewJobs )
       startPreviewJobs();
   }
@@ -2284,7 +2289,7 @@ void QgsMapCanvas::startPreviewJob( int number )
   context.maxRenderingTimeMs = MAXIMUM_LAYER_PREVIEW_TIME_MS;
   for ( QgsMapLayer *layer : layers )
   {
-    context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id() );
+    context.lastRenderingTimeMs = mLastLayerRenderTime.value( layer->id(), 0 );
     if ( !layer->dataProvider()->renderInPreview( context ) )
     {
       QgsDebugMsgLevel( QString( "Layer %1 not rendered because it does not match the renderInPreview criterion %2" ).arg( layer->id() ).arg( mLastLayerRenderTime.value( layer->id() ) ), 3 );

@@ -1000,7 +1000,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
 
     bool mUsePreviewJobs = false;
 
-    QMap< QString, int > mLastLayerRenderTime;
+    QHash< QString, int > mLastLayerRenderTime;
 
     /**
      * Force a resize of the map canvas item
