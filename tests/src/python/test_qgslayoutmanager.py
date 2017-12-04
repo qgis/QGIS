@@ -14,7 +14,6 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 
-
 from qgis.PyQt.QtXml import QDomDocument
 
 from qgis.core import (QgsComposition,
@@ -408,12 +407,13 @@ class TestQgsLayoutManager(unittest.TestCase):
         layout_renamed_spy = QSignalSpy(manager.layoutRenamed)
         layout.setName('d1')
         self.assertEqual(len(layout_renamed_spy), 1)
-        #self.assertEqual(layout_renamed_spy[0][0], layout)
+        # self.assertEqual(layout_renamed_spy[0][0], layout)
         self.assertEqual(layout_renamed_spy[0][1], 'd1')
         layout2.setName('d2')
         self.assertEqual(len(layout_renamed_spy), 2)
-        #self.assertEqual(layout_renamed_spy[1][0], layout2)
+        # self.assertEqual(layout_renamed_spy[1][0], layout2)
         self.assertEqual(layout_renamed_spy[1][1], 'd2')
+
 
 if __name__ == '__main__':
     unittest.main()
