@@ -364,6 +364,7 @@ SET(QGIS_GUI_SRCS
   qgsvscrollarea.cpp
   qgsdatasourcemanagerdialog.cpp
   qgsabstractdatasourcewidget.cpp
+  qgswidgetstatehelper_p.cpp
   qgssourceselectprovider.cpp
   qgssourceselectproviderregistry.cpp
 )
@@ -528,6 +529,7 @@ SET(QGIS_GUI_MOC_HDRS
   qgsfiledownloaderdialog.h
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
+  qgswidgetstatehelper_p.h
 
   ogr/qgsnewogrconnection.h
   ogr/qgsvectorlayersaveasdialog.h
@@ -741,6 +743,7 @@ SET(QGIS_GUI_HDRS
   qgsvertexmarker.h
   qgsdatasourcemanagerdialog.h
   qgsabstractdatasourcewidget.h
+  qgswidgetstatehelper_p.h
   qgssourceselectprovider.h
   qgssourceselectproviderregistry.h
   qgsvscrollarea.h

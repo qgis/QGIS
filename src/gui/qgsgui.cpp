@@ -29,6 +29,7 @@
 #include "qgsnative.h"
 #endif
 #include "qgsshortcutsmanager.h"
+#include "qgswidgetstatehelper_p.h"
 
 QgsGui *QgsGui::instance()
 {
@@ -71,6 +72,11 @@ QgsLayoutItemGuiRegistry *QgsGui::layoutItemGuiRegistry()
   return instance()->mLayoutItemGuiRegistry;
 }
 
+void QgsGui::enableAutoGeometryRestore( QWidget *widget, const QString &key )
+{
+  instance()->mWidgetStateHelper->registerWidget( widget, key );
+}
+
 QgsGui::~QgsGui()
 {
   delete mLayoutItemGuiRegistry;
@@ -80,6 +86,7 @@ QgsGui::~QgsGui()
   delete mSourceSelectProviderRegistry;
   delete mShortcutsManager;
   delete mNative;
+  delete mWidgetStateHelper;
 }
 
 QgsGui::QgsGui()
@@ -96,4 +103,5 @@ QgsGui::QgsGui()
   mMapLayerActionRegistry = new QgsMapLayerActionRegistry();
   mSourceSelectProviderRegistry = new QgsSourceSelectProviderRegistry();
   mLayoutItemGuiRegistry = new QgsLayoutItemGuiRegistry();
+  mWidgetStateHelper = new QgsWidgetStateHelper();
 }
