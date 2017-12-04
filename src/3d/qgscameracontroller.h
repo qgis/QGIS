@@ -22,6 +22,9 @@
 #include <Qt3DInput>
 #include <Qt3DRender>
 
+class QDomDocument;
+class QDomElement;
+
 class QgsVector3D;
 
 /**
@@ -65,6 +68,11 @@ class _3D_EXPORT QgsCameraController : public Qt3DCore::QEntity
     QgsVector3D lookingAtPoint() const;
     //! Sets the point toward which the camera is looking - this is used when world origin changes (e.g. after terrain generator changes)
     void setLookingAtPoint( const QgsVector3D &point );
+
+    //! Writes camera configuration to the given DOM element
+    QDomElement writeXml( QDomDocument &doc ) const;
+    //! Reads camera configuration from the given DOM element
+    void readXml( const QDomElement &elem );
 
   private:
     void setCameraData( float x, float y, float dist, float pitch = 0, float yaw = 0 );
