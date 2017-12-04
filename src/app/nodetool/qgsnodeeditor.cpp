@@ -297,11 +297,11 @@ QgsNodeEditor::QgsNodeEditor(
 
   mTableView->setSelectionMode( QTableWidget::ExtendedSelection );
   mTableView->setSelectionBehavior( QTableWidget::SelectRows );
-  mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate() );
-  mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate() );
-  mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate() );
-  mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate() );
-  mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate() );
+  mTableView->setItemDelegateForColumn( 0, new CoordinateItemDelegate( this ) );
+  mTableView->setItemDelegateForColumn( 1, new CoordinateItemDelegate( this ) );
+  mTableView->setItemDelegateForColumn( 2, new CoordinateItemDelegate( this ) );
+  mTableView->setItemDelegateForColumn( 3, new CoordinateItemDelegate( this ) );
+  mTableView->setItemDelegateForColumn( 4, new CoordinateItemDelegate( this ) );
 
   setWidget( mTableView );
 
@@ -395,6 +395,12 @@ void QgsNodeEditor::keyPressEvent( QKeyEvent *e )
 //
 // CoordinateItemDelegate
 //
+
+CoordinateItemDelegate::CoordinateItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
+}
 
 QString CoordinateItemDelegate::displayText( const QVariant &value, const QLocale &locale ) const
 {
