@@ -108,6 +108,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
       IsNotNull = 1 << 13, //!< Supports searching for non-null values
       StartsWith = 1 << 14, //!< Supports searching for strings that start with
       EndsWith = 1 << 15, //!< Supports searching for strings that end with
+      Aggregates = 1 << 16, //!< Supports searching by aggregate values
     };
     Q_DECLARE_FLAGS( FilterFlags, FilterFlag )
 

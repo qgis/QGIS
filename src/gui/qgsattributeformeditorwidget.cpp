@@ -44,6 +44,7 @@ QgsAttributeFormEditorWidget::QgsAttributeFormEditorWidget( QgsEditorWidgetWrapp
 
   mMultiEditButton->setField( mWidget->field() );
   mAggregateButton = new QgsAggregateToolButton();
+  mAggregateButton->hide();
   mAggregateButton->setType( editorWidget->field().type() );
   connect( mAggregateButton, &QgsAggregateToolButton::aggregateChanged, this, &QgsAttributeFormEditorWidget::onAggregateChanged );
 
@@ -66,6 +67,7 @@ QgsAttributeFormEditorWidget::~QgsAttributeFormEditorWidget()
 {
   //there's a chance these widgets are not currently added to the layout, so have no parent set
   delete mMultiEditButton;
+  delete mAggregateButton;
 }
 
 void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttributeEditorContext &context )
@@ -77,7 +79,11 @@ void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttribut
   QgsSearchWidgetWrapper *sww = QgsGui::editorWidgetRegistry()->createSearchWidget( mWidgetType, layer(), fieldIdx, config,
                                 searchWidgetFrame(), context );
   setSearchWidgetWrapper( sww );
-  searchWidgetFrame()->layout()->addWidget( mAggregateButton );
+  if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Aggregates )
+  {
+    mAggregateButton->show();
+    searchWidgetFrame()->layout()->addWidget( mAggregateButton );
+  }
   if ( sww->supportedFlags() & QgsSearchWidgetWrapper::Between ||
        sww->supportedFlags() & QgsSearchWidgetWrapper::IsNotBetween )
   {
@@ -86,6 +92,8 @@ void QgsAttributeFormEditorWidget::createSearchWidgetWrappers( const QgsAttribut
                                    searchWidgetFrame(), context );
     addAdditionalSearchWidgetWrapper( sww2 );
   }
+
+
 }
 
 void QgsAttributeFormEditorWidget::setConstraintStatus( const QString &constraint, const QString &description, const QString &err, QgsEditorWidgetWrapper::ConstraintResult result )
@@ -253,7 +261,6 @@ void QgsAttributeFormEditorWidget::updateWidgets()
 
     case SearchMode:
     {
-      mAggregateButton->setVisible( true );
       stack()->setCurrentWidget( searchPage() );
       break;
     }

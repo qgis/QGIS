@@ -79,6 +79,8 @@ QString QgsSearchWidgetWrapper::toString( QgsSearchWidgetWrapper::FilterFlag fla
       return QObject::tr( "Starts with" );
     case EndsWith:
       return QObject::tr( "Ends with" );
+    case Aggregates:
+      return QObject::tr( "Aggregates" );
   }
   return QString();
 }
