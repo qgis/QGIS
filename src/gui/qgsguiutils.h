@@ -156,7 +156,7 @@ namespace QgsGuiUtils
 
   /**
    * Creates a key for the given widget that can be used to store related data in settings.
-   * Will use objectName() or class name if objectName() is not set. Can be overridden using \param keyName.
+   * Will use objectName() or class name if objectName() is not set. Can be overridden using \a keyName.
    * \param widget The widget to make the key from.
    * \param keyName Override for objectName() if needed. If not set will use objectName()
    * \return A key name that can be used for the widget in settings.
