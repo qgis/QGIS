@@ -454,6 +454,26 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   }
 }
 
+void QgsLayoutPageCollection::clear()
+{
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->beginMacro( tr( "Remove Pages" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Remove Pages" ) );
+  }
+  for ( int i = mPages.count() - 1;  i >= 0; --i )
+  {
+    emit pageAboutToBeRemoved( i );
+    mPages.takeAt( i )->deleteLater();
+  }
+  reflow();
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->endCommand();
+    mLayout->undoStack()->endMacro();
+  }
+}
+
 QgsLayoutItemPage *QgsLayoutPageCollection::takePage( QgsLayoutItemPage *page )
 {
   mPages.removeAll( page );

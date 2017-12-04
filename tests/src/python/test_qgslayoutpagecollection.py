@@ -187,6 +187,36 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(len(page_about_to_be_removed_spy), 2)
         self.assertEqual(page_about_to_be_removed_spy[-1][0], 0)
 
+    def testClear(self):
+        """
+        Test clearing the collection
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        collection.clear()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        page_about_to_be_removed_spy = QSignalSpy(collection.pageAboutToBeRemoved)
+
+        # clear
+        collection.clear()
+        self.assertEqual(collection.pageCount(), 0)
+        self.assertEqual(len(page_about_to_be_removed_spy), 2)
+
+        QCoreApplication.sendPostedEvents(None, QEvent.DeferredDelete)
+        self.assertTrue(sip.isdeleted(page))
+        self.assertTrue(sip.isdeleted(page2))
+
     def testExtendByNewPage(self):
         """
         Test extend by adding new page
