@@ -20,6 +20,7 @@
 
 #include "qgis_gui.h"
 #include "qgis_sip.h"
+#include <QWidget>
 
 class QgsEditorWidgetRegistry;
 class QgsShortcutsManager;
@@ -28,6 +29,7 @@ class QgsMapLayerActionRegistry;
 class QgsSourceSelectProviderRegistry;
 class QgsNative;
 class QgsLayoutItemGuiRegistry;
+class QgsWidgetStateHelper;
 
 /**
  * \ingroup gui
@@ -87,12 +89,19 @@ class GUI_EXPORT QgsGui
      */
     static QgsLayoutItemGuiRegistry *layoutItemGuiRegistry();
 
+    /**
+     * Register the widget to allow its position to be automatically saved and restored when open and closed.
+     * Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
+     */
+    static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
+
     ~QgsGui();
 
   private:
 
     QgsGui();
 
+    QgsWidgetStateHelper *mWidgetStateHelper = nullptr;
     QgsNative *mNative = nullptr;
     QgsEditorWidgetRegistry *mEditorWidgetRegistry = nullptr;
     QgsSourceSelectProviderRegistry *mSourceSelectProviderRegistry = nullptr;

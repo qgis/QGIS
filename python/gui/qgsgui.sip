@@ -68,6 +68,12 @@ class QgsGui
  :rtype: QgsLayoutItemGuiRegistry
 %End
 
+    static void enableAutoGeometryRestore( QWidget *widget, const QString &key = QString() );
+%Docstring
+ Register the widget to allow its position to be automatically saved and restored when open and closed.
+ Use this to avoid needing to call saveGeometry() and restoreGeometry() on your widget.
+%End
+
     ~QgsGui();
 
   private:
