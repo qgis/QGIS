@@ -637,6 +637,7 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
     mLayout->guides().clear();
   } );
   connect( mLayout, &QgsLayout::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
+  setWindowTitle( mLayout->name() );
 
   mActionShowGrid->setChecked( mLayout->context().gridVisible() );
   mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
