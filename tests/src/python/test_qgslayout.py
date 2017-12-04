@@ -28,6 +28,7 @@ from qgis.core import (QgsUnitTypes,
                        QgsFillSymbol,
                        QgsReadWriteContext,
                        QgsLayoutItemMap,
+                       QgsLayoutItemLabel,
                        QgsLayoutSize,
                        QgsLayoutPoint)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
@@ -103,11 +104,15 @@ class TestQgsLayout(unittest.TestCase):
         l = QgsLayout(p)
 
         # add some items
-        item1 = QgsLayoutItemMap(l)
+        item1 = QgsLayoutItemLabel(l)
         item1.setId('xxyyxx')
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         l.addItem(item1)
-        item2 = QgsLayoutItemMap(l)
+        item2 = QgsLayoutItemLabel(l)
         item2.setId('zzyyzz')
+        item2.attemptMove(QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        item2.attemptResize(QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item2)
 
         doc = QDomDocument("testdoc")
@@ -122,6 +127,12 @@ class TestQgsLayout(unittest.TestCase):
         self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
         self.assertTrue(new_items[0] in l2.items())
         self.assertTrue(new_items[1] in l2.items())
+        new_item1 = [i for i in items if i.id() == 'xxyyxx'][0]
+        new_item2 = [i for i in items if i.id() == 'zzyyzz'][0]
+        self.assertEqual(new_item1.positionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.sizeWithUnits(),QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item2.positionWithUnits(), QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.sizeWithUnits(),QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
 
         # test with a group
         group = QgsLayoutItemGroup(l)
@@ -146,7 +157,19 @@ class TestQgsLayout(unittest.TestCase):
         other_items = [i for i in new_items if i.type() != new_group.type()]
         self.assertCountEqual(new_group.items(), other_items)
 
-        #TODO - test restoring multiframe, test item positions
+        # test restoring at set position
+        l3 = QgsLayout(p)
+        new_items = l3.addItemsFromXml(elem, doc, QgsReadWriteContext(), QPointF(10, 30))
+        self.assertEqual(len(new_items), 3)
+        items = l3.items()
+        new_item1 = [i for i in items if i.id() == 'xxyyxx'][0]
+        new_item2 = [i for i in items if i.id() == 'zzyyzz'][0]
+        self.assertEqual(new_item1.positionWithUnits(), QgsLayoutPoint(10, 30, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.sizeWithUnits(),QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item2.positionWithUnits(), QgsLayoutPoint(2.0, 4.0, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.sizeWithUnits(),QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+
+        #TODO - test restoring multiframe
 
     def testSelectedItems(self):
         p = QgsProject()
