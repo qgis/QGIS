@@ -63,7 +63,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   constraintheaders << tr( "Type" ) << tr( "Constraint" );
   mConstraintsModel->setHorizontalHeaderLabels( constraintheaders );
   tabConstraints->setModel( mConstraintsModel );
-  tabConstraints->setItemDelegate( new ConstraintItemDelegate() );
+  tabConstraints->setItemDelegate( new ConstraintItemDelegate( this ) );
 
   // Setup the link view
   mLinksModel = new QStandardItemModel( tabLinks );
@@ -72,7 +72,7 @@ QgsMetadataWidget::QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer )
   headers << tr( "Name" ) << tr( "Type" ) << tr( "URL" ) << tr( "Description" ) << tr( "Format" ) << tr( "MIME" ) << tr( "Size" );
   mLinksModel->setHorizontalHeaderLabels( headers );
   tabLinks->setModel( mLinksModel );
-  tabLinks->setItemDelegate( new LinkItemDelegate() );
+  tabLinks->setItemDelegate( new LinkItemDelegate( this ) );
 
   // History
   mHistoryModel = new QStringListModel( listHistory );
@@ -794,6 +794,12 @@ void QgsMetadataWidget::removeSelectedCategory() const
   }
 }
 
+LinkItemDelegate::LinkItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
+}
+
 QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const
 {
   if ( index.column() == 1 )
@@ -818,6 +824,12 @@ QWidget *LinkItemDelegate::createEditor( QWidget *parent, const QStyleOptionView
   }
 
   return QStyledItemDelegate::createEditor( parent, option, index );
+}
+
+ConstraintItemDelegate::ConstraintItemDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
 }
 
 QWidget *ConstraintItemDelegate::createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const

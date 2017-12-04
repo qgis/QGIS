@@ -140,6 +140,8 @@ class LinkItemDelegate : public QStyledItemDelegate
 
   public:
 
+    explicit LinkItemDelegate( QObject *parent = nullptr );
+
     /**
      * Create a special editor with a QCombobox in the link view.
      */
@@ -159,6 +161,8 @@ class ConstraintItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
+    explicit ConstraintItemDelegate( QObject *parent = nullptr );
 
     /**
      * Create a special editor with a QCombobox in the constraint view.
