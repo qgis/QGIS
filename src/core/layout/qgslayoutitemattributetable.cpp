@@ -428,7 +428,7 @@ bool QgsLayoutItemAttributeTable::getTableContents( QgsLayoutTableContents &cont
     if ( layer )
     {
       //transform back to layer CRS
-      QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs() );
+      QgsCoordinateTransform coordTransform( layer->crs(), mMap->crs(), mLayout->project() );
       try
       {
         selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );
