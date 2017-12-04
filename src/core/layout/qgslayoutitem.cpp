@@ -530,6 +530,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
   element.setAttribute( QStringLiteral( "id" ), mId );
   element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
   element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
+  element.setAttribute( QStringLiteral( "positionOnPage" ), pagePositionWithUnits().encodePoint() );
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
   element.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
   element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
