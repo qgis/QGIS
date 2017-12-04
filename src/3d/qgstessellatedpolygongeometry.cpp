@@ -58,14 +58,10 @@ QgsTessellatedPolygonGeometry::QgsTessellatedPolygonGeometry( QNode *parent )
 
 QgsTessellatedPolygonGeometry::~QgsTessellatedPolygonGeometry()
 {
-  qDeleteAll( mPolygons );
 }
 
 void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
 {
-  qDeleteAll( mPolygons );
-  mPolygons = polygons;
-
   QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals );
   for ( int i = 0; i < polygons.count(); ++i )
   {
@@ -73,6 +69,8 @@ void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &poly
     float extr = extrusionHeightPerPolygon.isEmpty() ? extrusionHeight : extrusionHeightPerPolygon.at( i );
     tessellator.addPolygon( *polygon, extr );
   }
+
+  qDeleteAll( polygons );
 
   QByteArray data( ( const char * )tessellator.data().constData(), tessellator.data().count() * sizeof( float ) );
   int nVerts = data.count() / tessellator.stride();
