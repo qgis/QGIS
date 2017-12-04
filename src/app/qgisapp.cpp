@@ -396,6 +396,13 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 
 // Editor widgets
 #include "qgseditorwidgetregistry.h"
+
+//Resamplers
+#include "qgsrasterresamplefilter.h"
+#include "qgsrasterresampler.h"
+#include "qgsbilinearrasterresampler.h"
+#include "qgscubicrasterresampler.h"
+
 //
 // Conditional Includes
 //
@@ -742,19 +749,16 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   {
     mRecentProjects.removeAt( row );
     saveRecentProjects();
-    updateRecentProjectPaths();
   } );
   connect( mWelcomePage, &QgsWelcomePage::projectPinned, this, [ this ]( int row )
   {
     mRecentProjects.at( row ).pin = true;
     saveRecentProjects();
-    updateRecentProjectPaths();
   } );
   connect( mWelcomePage, &QgsWelcomePage::projectUnpinned, this, [ this ]( int row )
   {
     mRecentProjects.at( row ).pin = false;
     saveRecentProjects();
-    updateRecentProjectPaths();
   } );
   endProfile();
 
@@ -840,6 +844,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
   functionProfile( &QgisApp::createMapTips, this, QStringLiteral( "Create map tips" ) );
   functionProfile( &QgisApp::createDecorations, this, QStringLiteral( "Create decorations" ) );
   functionProfile( &QgisApp::readSettings, this, QStringLiteral( "Read settings" ) );
+  functionProfile( &QgisApp::updateRecentProjectPaths, this, QStringLiteral( "Update recent project paths" ) );
   functionProfile( &QgisApp::updateProjectFromTemplates, this, QStringLiteral( "Update project from templates" ) );
   functionProfile( &QgisApp::legendLayerSelectionChanged, this, QStringLiteral( "Legend layer selection changed" ) );
   functionProfile( &QgisApp::init3D, this, QStringLiteral( "Initialize 3D support" ) );
@@ -865,12 +870,6 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
     projectsTemplateWatcher->addPath( templateDirName );
     connect( projectsTemplateWatcher, &QFileSystemWatcher::directoryChanged, this, [this] { updateProjectFromTemplates(); } );
   }
-
-  // Update welcome page list
-  startProfile( QStringLiteral( "Update recent project paths" ) );
-  updateRecentProjectPaths();
-  mWelcomePage->setRecentProjects( mRecentProjects );
-  endProfile();
 
   // initialize the plugin manager
   startProfile( QStringLiteral( "Plugin manager" ) );
@@ -1305,9 +1304,6 @@ QgisApp::QgisApp()
   mUndoWidget = new QgsUndoWidget( nullptr, mMapCanvas );
   mInfoBar = new QgsMessageBar( centralWidget() );
   mAdvancedDigitizingDockWidget = new QgsAdvancedDigitizingDockWidget( mMapCanvas, this );
-  mPanelMenu = new QMenu( this );
-  mProgressBar = new QProgressBar( this );
-  mStatusBar = new QgsStatusBar( this );
   // More tests may need more members to be initialized
 }
 
@@ -3846,7 +3842,7 @@ void QgisApp::updateRecentProjectPaths()
 
   Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
   {
-    QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).completeBaseName(),
+    QAction *action = mRecentProjectsMenu->addAction( QStringLiteral( "%1 (%2)" ).arg( recentProject.title != recentProject.path ? recentProject.title : QFileInfo( recentProject.path ).baseName(),
                       QDir::toNativeSeparators( recentProject.path ) ) );
     //action->setEnabled( QFile::exists( ( recentProject.path ) ) );
     action->setData( recentProject.path );
@@ -3855,6 +3851,9 @@ void QgisApp::updateRecentProjectPaths()
       action->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/pin.svg" ) ) );
     }
   }
+
+  if ( mWelcomePage )
+    mWelcomePage->setRecentProjects( mRecentProjects );
 
 #if defined(Q_OS_WIN)
   QWinJumpList jumplist;
@@ -3920,32 +3919,19 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
       projectData.previewImagePath = mRecentProjects.at( idx ).previewImagePath;
   }
 
-  // Count the number of pinned items, those shouldn't affect trimming
-  int pinnedCount = 0;
-  int nonPinnedPos = 0;
-  bool pinnedTop = true;
-  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
-  {
-    if ( recentProject.pin )
-    {
-      pinnedCount++;
-      if ( pinnedTop )
-      {
-        nonPinnedPos++;
-      }
-    }
-    else if ( pinnedTop )
-    {
-      pinnedTop = false;
-    }
-  }
-
   // If this file is already in the list, remove it
   mRecentProjects.removeAll( projectData );
 
-  // Insert this file to the list
-  mRecentProjects.insert( projectData.pin ? 0 : nonPinnedPos, projectData );
+  // Prepend this file to the list
+  mRecentProjects.prepend( projectData );
 
+  // Count the number of pinned items, those shouldn't affect trimming
+  int pinnedCount = 0;
+  Q_FOREACH ( const QgsWelcomePageItemsModel::RecentProjectData &recentProject, mRecentProjects )
+  {
+    if ( recentProject.pin )
+      pinnedCount++;
+  }
   // Keep the list to 10 items by trimming excess off the bottom
   // And remove the associated image
   while ( mRecentProjects.count() > 10 + pinnedCount )
@@ -3958,10 +3944,6 @@ void QgisApp::saveRecentProjectPath( const QString &projectPath, bool savePrevie
 
   // Update menu list of paths
   updateRecentProjectPaths();
-
-  // Update welcome page list
-  if ( mWelcomePage )
-    mWelcomePage->setRecentProjects( mRecentProjects );
 
 } // QgisApp::saveRecentProjectPath
 
@@ -6790,6 +6772,31 @@ void QgisApp::saveAsRasterFile( QgsRasterLayer *rasterLayer )
       if ( !pipe->insert( 2, projector ) )
       {
         QgsDebugMsg( "Cannot set pipe projector" );
+        return;
+      }
+    }
+
+
+    if ( d.resample() != QgsRasterLayerSaveAsDialog::NearestNeighbour )
+    {
+      QgsRasterResampleFilter *resampler = new QgsRasterResampleFilter;
+      QgsRasterResampler *r = nullptr;
+      QgsRasterResampler *avg = new QgsBilinearRasterResampler();
+      switch ( d.resample() )
+      {
+        case QgsRasterLayerSaveAsDialog::Bilinear:
+          r = new QgsBilinearRasterResampler();
+          break;
+        case QgsRasterLayerSaveAsDialog::Cubic:
+          r = new QgsCubicRasterResampler();
+
+      }
+      resampler->setZoomedInResampler( r );
+      resampler->setZoomedOutResampler( avg );
+
+      if ( !pipe->insert( 3, resampler ) )
+      {
+        QgsDebugMsg( "Cannot set pipe resampler" );
         return;
       }
     }

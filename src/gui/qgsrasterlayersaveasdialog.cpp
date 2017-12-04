@@ -569,6 +569,14 @@ QgsRasterLayerSaveAsDialog::Mode QgsRasterLayerSaveAsDialog::mode() const
   return RawDataMode;
 }
 
+QgsRasterLayerSaveAsDialog::ResampleAlgo QgsRasterLayerSaveAsDialog::resample() const
+{
+  if ( mBilinearRadioButton->isChecked() ) return Bilinear;
+  if ( mCubicRadioButton->isChecked() ) return Cubic;
+  return NearestNeighbour;
+}
+
+
 void QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled( bool checked )
 {
   mNoDataGroupBox->setEnabled( checked && mDataProvider->bandCount() == 1 );

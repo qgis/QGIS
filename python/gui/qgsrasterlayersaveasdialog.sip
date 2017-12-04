@@ -31,6 +31,12 @@ class QgsRasterLayerSaveAsDialog: QDialog
       OriginalResolution,
       UserResolution
     };
+    enum ResampleAlgo
+    {
+      NearestNeighbour,
+      Bilinear,
+      Cubic
+    };
 
     QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
                                 QgsRasterDataProvider *sourceProvider,
@@ -44,6 +50,10 @@ class QgsRasterLayerSaveAsDialog: QDialog
     Mode mode() const;
 %Docstring
  :rtype: Mode
+%End
+    ResampleAlgo resample() const;
+%Docstring
+ :rtype: ResampleAlgo
 %End
     int nColumns() const;
 %Docstring
