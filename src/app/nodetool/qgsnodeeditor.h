@@ -107,6 +107,9 @@ class CoordinateItemDelegate : public QStyledItemDelegate
     Q_OBJECT
 
   public:
+
+    explicit CoordinateItemDelegate( QObject *parent = nullptr );
+
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
   protected:
