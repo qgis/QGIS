@@ -82,6 +82,8 @@ class QgsDoubleSpinBoxBookmarksDelegate : public QStyledItemDelegate
 
   public:
 
+    explicit QgsDoubleSpinBoxBookmarksDelegate( QObject *parent = nullptr );
+
     QString displayText( const QVariant &value, const QLocale &locale ) const override;
 
     QWidget *createEditor( QWidget *parent,

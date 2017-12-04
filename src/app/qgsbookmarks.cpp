@@ -109,7 +109,7 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   mProxyModel->setSourceModel( mModel );
 
   lstBookmarks->setModel( mProxyModel );
-  lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate );
+  lstBookmarks->setItemDelegate( new QgsDoubleSpinBoxBookmarksDelegate( this ) );
 
   connect( mModel, &QgsMergedBookmarksTableModel::layoutChanged, mProxyModel, &QgsBookmarksProxyModel::_resetModel );
 
@@ -758,6 +758,12 @@ QgsBookmarksProxyModel::QgsBookmarksProxyModel( QObject *parent ):
 QVariant QgsBookmarksProxyModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
   return sourceModel()->headerData( section, orientation, role );
+}
+
+QgsDoubleSpinBoxBookmarksDelegate::QgsDoubleSpinBoxBookmarksDelegate( QObject *parent )
+  : QStyledItemDelegate( parent )
+{
+
 }
 
 QString QgsDoubleSpinBoxBookmarksDelegate::displayText( const QVariant &value, const QLocale &locale ) const
