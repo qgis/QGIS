@@ -75,6 +75,7 @@ void QgsMapCanvasMap::paint( QPainter *painter )
   double offsetY = pt.y() - mRect.yMaximum();
 
   //draw preview images first
+  painter->setOpacity( 0.5 );
   QList< QPair< QImage, QgsRectangle > >::const_iterator imIt = mPreviewImages.constBegin();
   for ( ; imIt != mPreviewImages.constEnd(); ++imIt )
   {
@@ -83,6 +84,7 @@ void QgsMapCanvasMap::paint( QPainter *painter )
     painter->drawImage( QRectF( ul.x(), ul.y(), lr.x() - ul.x(), lr.y() - ul.y() ), imIt->first, QRect( 0, 0, imIt->first.width(), imIt->first.height() ) );
   }
 
+  painter->setOpacity( 1 );
   painter->drawImage( QRect( 0, 0, w, h ), mImage );
 
   // For debugging:
