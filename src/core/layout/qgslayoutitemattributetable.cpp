@@ -721,7 +721,7 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   }
   else
   {
-    mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mapUuid ) );
+    mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mapUuid, true ) );
   }
 
   if ( mMap )

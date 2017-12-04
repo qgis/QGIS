@@ -841,7 +841,7 @@ void QgsLayoutItemPicture::finalizeRestoreFromXml()
       disconnect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );
       disconnect( mRotationMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemPicture::updateMapRotation );
     }
-    mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid ) );
+    mRotationMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mRotationMapUuid, true ) );
     if ( mRotationMap )
     {
       connect( mRotationMap, &QgsLayoutItemMap::mapRotationChanged, this, &QgsLayoutItemPicture::updateMapRotation );

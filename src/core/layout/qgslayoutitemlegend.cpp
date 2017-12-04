@@ -130,7 +130,7 @@ void QgsLayoutItemLegend::finalizeRestoreFromXml()
 #endif
   if ( !mMapUuid.isEmpty() )
   {
-    setMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid ) ) );
+    setMap( qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) ) );
   }
 }
 

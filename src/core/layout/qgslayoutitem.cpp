@@ -527,6 +527,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
   element.setAttribute( QStringLiteral( "type" ), QString::number( type() ) );
 
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  element.setAttribute( QStringLiteral( "templateUuid" ), mUuid );
   element.setAttribute( QStringLiteral( "id" ), mId );
   element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
   element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
@@ -626,12 +627,7 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
       group->addItem( this );
     }
   }
-
-  //TODO
-  /*
-  // temporary for groups imported from templates
-  mTemplateUuid = itemElem.attribute( "templateUuid" );
-  */
+  mTemplateUuid = element.attribute( "templateUuid" );
 
   //position lock for mouse moves/resizes
   QString positionLock = element.attribute( "positionLock" );
