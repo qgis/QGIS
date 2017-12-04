@@ -835,10 +835,13 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     }
   }
 
-  const QDomNodeList layoutItemList = parentElement.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  const QDomNodeList layoutItemList = parentElement.childNodes();
   for ( int i = 0; i < layoutItemList.size(); ++i )
   {
     const QDomElement currentItemElem = layoutItemList.at( i ).toElement();
+    if ( currentItemElem.nodeName() != QStringLiteral( "LayoutItem" ) )
+      continue;
+
     const int itemType = currentItemElem.attribute( QStringLiteral( "type" ) ).toInt();
     std::unique_ptr< QgsLayoutItem > item( QgsApplication::layoutItemRegistry()->createItem( itemType, this ) );
     if ( !item )

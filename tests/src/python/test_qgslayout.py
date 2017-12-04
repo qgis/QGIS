@@ -222,6 +222,7 @@ class TestQgsLayout(unittest.TestCase):
 
         p = QgsProject()
         l = QgsLayout(p)
+        l.initializeDefaults()
 
         # add some items
         item1 = QgsLayoutItemLabel(l)
@@ -285,11 +286,10 @@ class TestQgsLayout(unittest.TestCase):
         # clearing existing items
         new_items3, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), True)
         self.assertTrue(ok)
-        self.assertEqual(len(new_items3), 2)
+        self.assertEqual(len(new_items3), 3) # includes page
         items = l2.items()
-        self.assertEqual(len(items), 2)
-        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
-        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if isinstance(i, QgsLayoutItem) and i.id() == 'zzyyzz'])
         self.assertTrue(new_items3[0] in l2.items())
         self.assertTrue(new_items3[1] in l2.items())
         self.assertIn(new_items3[0].templateUuid(), original_uuids)
