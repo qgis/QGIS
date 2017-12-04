@@ -810,7 +810,7 @@ void QgsLayoutItemScaleBar::finalizeRestoreFromXml()
   else
   {
     disconnectCurrentMap();
-    mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid ) );
+    mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) );
     if ( mMap )
     {
       connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );

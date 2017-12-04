@@ -213,16 +213,16 @@ bool QgsLayout::moveItemToBottom( QgsLayoutItem *item, bool deferUpdate )
   return result;
 }
 
-QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid )
+QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateUuids )
 {
   QList<QgsLayoutItem *> itemList;
   layoutItems( itemList );
-  Q_FOREACH ( QgsLayoutItem *item, itemList )
+  for ( QgsLayoutItem *item : qgis::as_const( itemList ) )
   {
     if ( item->uuid() == uuid )
-    {
       return item;
-    }
+    else if ( includeTemplateUuids && item->templateUuid() == uuid )
+      return item;
   }
 
   return nullptr;
@@ -503,14 +503,13 @@ QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &docume
   QDomDocument doc = document;
 
   // remove all uuid attributes since we don't want duplicates UUIDS
-  QDomNodeList composerItemsNodes = doc.elementsByTagName( QStringLiteral( "ComposerItem" ) );
-  for ( int i = 0; i < composerItemsNodes.count(); ++i )
+  QDomNodeList itemsNodes = doc.elementsByTagName( QStringLiteral( "LayoutItem" ) );
+  for ( int i = 0; i < itemsNodes.count(); ++i )
   {
-    QDomNode composerItemNode = composerItemsNodes.at( i );
-    if ( composerItemNode.isElement() )
+    QDomNode itemNode = itemsNodes.at( i );
+    if ( itemNode.isElement() )
     {
-      composerItemNode.toElement().setAttribute( QStringLiteral( "templateUuid" ), composerItemNode.toElement().attribute( QStringLiteral( "uuid" ) ) );
-      composerItemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+      itemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
     }
   }
 

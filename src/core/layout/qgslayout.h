@@ -215,9 +215,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     /**
      * Returns the layout item with matching \a uuid unique identifier, or a nullptr
      * if a matching item could not be found.
+     *
+     * If \a includeTemplateUuids is true, then item's QgsLayoutItem::templateUuid()
+     * will also be tested when trying to match the uuid.
+     *
      * \see multiFrameByUuid()
      */
-    QgsLayoutItem *itemByUuid( const QString &uuid );
+    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false );
 
     /**
      * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr

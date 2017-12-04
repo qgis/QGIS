@@ -235,6 +235,9 @@ class TestQgsLayout(unittest.TestCase):
         item2.attemptResize(QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
         l.addItem(item2)
 
+        uuids = {item1.uuid(), item2.uuid()}
+        original_uuids = {item1.uuid(), item2.uuid()}
+
         self.assertTrue(l.saveAsTemplate(tmpfile, QgsReadWriteContext()))
 
         l2 = QgsLayout(p)
@@ -252,6 +255,13 @@ class TestQgsLayout(unittest.TestCase):
         self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
         self.assertTrue(new_items[0] in l2.items())
         self.assertTrue(new_items[1] in l2.items())
+        # double check that new items have a unique uid
+        self.assertNotIn(new_items[0].uuid(), uuids)
+        self.assertIn(new_items[0].templateUuid(), original_uuids)
+        uuids.add(new_items[0].uuid())
+        self.assertNotIn(new_items[1].uuid(), uuids)
+        self.assertIn(new_items[1].templateUuid(), original_uuids)
+        uuids.add(new_items[1].uuid())
 
         # adding to existing items
         new_items2, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), False)
@@ -265,6 +275,12 @@ class TestQgsLayout(unittest.TestCase):
         self.assertTrue(new_items[1] in l2.items())
         self.assertTrue(new_items2[0] in l2.items())
         self.assertTrue(new_items2[1] in l2.items())
+        self.assertNotIn(new_items2[0].uuid(), uuids)
+        self.assertIn(new_items2[0].templateUuid(), original_uuids)
+        uuids.add(new_items[0].uuid())
+        self.assertNotIn(new_items2[1].uuid(), uuids)
+        self.assertIn(new_items2[1].templateUuid(), original_uuids)
+        uuids.add(new_items[1].uuid())
 
         # clearing existing items
         new_items3, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), True)
@@ -276,6 +292,10 @@ class TestQgsLayout(unittest.TestCase):
         self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
         self.assertTrue(new_items3[0] in l2.items())
         self.assertTrue(new_items3[1] in l2.items())
+        self.assertIn(new_items3[0].templateUuid(), original_uuids)
+        self.assertIn(new_items3[1].templateUuid(), original_uuids)
+        self.assertEqual(l2.itemByUuid(new_items3[0].templateUuid(), True), new_items3[0])
+        self.assertEqual(l2.itemByUuid(new_items3[1].templateUuid(), True), new_items3[1])
 
     def testSelectedItems(self):
         p = QgsProject()

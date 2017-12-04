@@ -237,8 +237,18 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \note There is no corresponding setter for the uuid - it's created automatically.
      * \see id()
      * \see setId()
+     * \see templateUuid()
     */
     virtual QString uuid() const { return mUuid; }
+
+    /**
+     * Returns the item's original identification string. This may differ from the item's uuid()
+     * for items which have been added to an existing layout from a template. In this case
+     * templateUuid() returns the original item UUID at the time the template was created,
+     * while uuid() returns the current instance of the item's unique identifier.
+     * \see uuid()
+    */
+    QString templateUuid() const { return mTemplateUuid; }
 
     /**
      * Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
@@ -974,6 +984,9 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     //! Unique id
     QString mUuid;
+
+    //! Original uuid from template
+    QString mTemplateUuid;
 
     //! Parent group unique id
     QString mParentGroupUuid;
