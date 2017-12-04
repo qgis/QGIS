@@ -253,7 +253,7 @@ void QgsAttributeFormEditorWidget::updateWidgets()
 
     case SearchMode:
     {
-      mAggregateButton->setVisible( true );
+      mAggregateButton->setVisible( false );
       stack()->setCurrentWidget( searchPage() );
       break;
     }
