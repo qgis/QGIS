@@ -1132,7 +1132,7 @@ void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> item
 
 void QgsLayoutDesignerDialog::paste()
 {
-  QPointF pt = mView->mapToScene( mView->mapFromGlobal( QCursor::pos() ) );
+  QPointF pt = mView->mapFromGlobal( QCursor::pos() );
   //TODO - use a better way of determining whether paste was triggered by keystroke
   //or menu item
   QList< QgsLayoutItem * > items;
