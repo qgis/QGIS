@@ -14,6 +14,9 @@ __revision__ = '$Format:%H$'
 
 import qgis  # NOQA
 import sip
+import tempfile
+import shutil
+import os
 
 from qgis.core import (QgsUnitTypes,
                        QgsLayout,
@@ -42,6 +45,16 @@ start_app()
 
 
 class TestQgsLayout(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        """Run before all tests"""
+        cls.basetestpath = tempfile.mkdtemp()
+
+    @classmethod
+    def tearDownClass(cls):
+        """Run after all tests"""
+        shutil.rmtree(cls.basetestpath, True)
 
     def testReadWriteXml(self):
         p = QgsProject()
@@ -203,6 +216,66 @@ class TestQgsLayout(unittest.TestCase):
         self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
 
         #TODO - test restoring multiframe
+
+    def testSaveLoadTemplate(self):
+        tmpfile = os.path.join(self.basetestpath, 'testTemplate.qpt')
+
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        # add some items
+        item1 = QgsLayoutItemLabel(l)
+        item1.setId('xxyyxx')
+        item1.attemptMove(QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        item1.attemptResize(QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        l.addItem(item1)
+        item2 = QgsLayoutItemLabel(l)
+        item2.setId('zzyyzz')
+        item2.attemptMove(QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        item2.attemptResize(QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+        l.addItem(item2)
+
+        self.assertTrue(l.saveAsTemplate(tmpfile, QgsReadWriteContext()))
+
+        l2 = QgsLayout(p)
+        with open(tmpfile) as f:
+            template_content = f.read()
+        doc = QDomDocument()
+        doc.setContent(template_content)
+
+        # adding to existing items
+        new_items, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), False)
+        self.assertTrue(ok)
+        self.assertEqual(len(new_items), 2)
+        items = l2.items()
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items[0] in l2.items())
+        self.assertTrue(new_items[1] in l2.items())
+
+        # adding to existing items
+        new_items2, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), False)
+        self.assertTrue(ok)
+        self.assertEqual(len(new_items2), 2)
+        items = l2.items()
+        self.assertEqual(len(items), 4)
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items[0] in l2.items())
+        self.assertTrue(new_items[1] in l2.items())
+        self.assertTrue(new_items2[0] in l2.items())
+        self.assertTrue(new_items2[1] in l2.items())
+
+        # clearing existing items
+        new_items3, ok = l2.loadFromTemplate(doc, QgsReadWriteContext(), True)
+        self.assertTrue(ok)
+        self.assertEqual(len(new_items3), 2)
+        items = l2.items()
+        self.assertEqual(len(items), 2)
+        self.assertTrue([i for i in items if i.id() == 'xxyyxx'])
+        self.assertTrue([i for i in items if i.id() == 'zzyyzz'])
+        self.assertTrue(new_items3[0] in l2.items())
+        self.assertTrue(new_items3[1] in l2.items())
 
     def testSelectedItems(self):
         p = QgsProject()

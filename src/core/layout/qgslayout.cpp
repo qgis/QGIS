@@ -470,6 +470,77 @@ QList<QgsLayoutMultiFrame *> QgsLayout::multiFrames() const
   return mMultiFrames;
 }
 
+bool QgsLayout::saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const
+{
+  QFile templateFile( path );
+  if ( !templateFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
+  {
+    return false;
+  }
+
+  QDomDocument saveDocument;
+  QDomElement elem = writeXml( saveDocument, context );
+  saveDocument.appendChild( elem );
+
+  if ( templateFile.write( saveDocument.toByteArray() ) == -1 )
+    return false;
+
+  return true;
+}
+
+QList< QgsLayoutItem * > QgsLayout::loadFromTemplate( const QDomDocument &document, const QgsReadWriteContext &context, bool clearExisting, bool *ok )
+{
+  if ( ok )
+    *ok = false;
+
+  QList< QgsLayoutItem * > result;
+
+  if ( clearExisting )
+  {
+    clear();
+  }
+
+  QDomDocument doc = document;
+
+  // remove all uuid attributes since we don't want duplicates UUIDS
+  QDomNodeList composerItemsNodes = doc.elementsByTagName( QStringLiteral( "ComposerItem" ) );
+  for ( int i = 0; i < composerItemsNodes.count(); ++i )
+  {
+    QDomNode composerItemNode = composerItemsNodes.at( i );
+    if ( composerItemNode.isElement() )
+    {
+      composerItemNode.toElement().setAttribute( QStringLiteral( "templateUuid" ), composerItemNode.toElement().attribute( QStringLiteral( "uuid" ) ) );
+      composerItemNode.toElement().removeAttribute( QStringLiteral( "uuid" ) );
+    }
+  }
+
+  //read general settings
+  if ( clearExisting )
+  {
+    QDomElement layoutElem = doc.documentElement();
+    if ( layoutElem.isNull() )
+    {
+      return result;
+    }
+
+    bool loadOk = readXml( layoutElem, doc, context );
+    if ( !loadOk )
+    {
+      return result;
+    }
+    layoutItems( result );
+  }
+  else
+  {
+    result = addItemsFromXml( doc.documentElement(), doc, context );
+  }
+
+  if ( ok )
+    *ok = true;
+
+  return result;
+}
+
 QgsLayoutUndoStack *QgsLayout::undoStack()
 {
   return mUndoStack.get();
