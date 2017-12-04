@@ -195,6 +195,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutpolygonwidget.cpp
   layout/qgslayoutpolylinewidget.cpp
   layout/qgslayoutpropertieswidget.cpp
+  layout/qgslayoutqptdrophandler.cpp
   layout/qgslayoutscalebarwidget.cpp
   layout/qgslayoutshapewidget.cpp
   layout/qgslayouttablebackgroundcolorsdialog.cpp
@@ -408,6 +409,7 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutpolygonwidget.h
   layout/qgslayoutpolylinewidget.h
   layout/qgslayoutpropertieswidget.h
+  layout/qgslayoutqptdrophandler.h
   layout/qgslayoutscalebarwidget.h
   layout/qgslayoutshapewidget.h
   layout/qgslayouttablebackgroundcolorsdialog.h

@@ -468,6 +468,8 @@ class QgsLayoutView: QGraphicsView
 
     virtual void scrollContentsBy( int dx, int dy );
 
+    virtual void dragEnterEvent( QDragEnterEvent *e );
+
 
 };
 
