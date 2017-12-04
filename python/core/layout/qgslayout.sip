@@ -537,6 +537,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  and updated.
 %End
 
+    void nameChanged( const QString &name );
+%Docstring
+ Emitted when the layout's name is changed.
+.. seealso:: setName()
+%End
+
 };
 
 

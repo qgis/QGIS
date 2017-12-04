@@ -40,6 +40,7 @@ class QgsLayoutMultiFrame;
 class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
 {
     Q_OBJECT
+    Q_PROPERTY( QString name READ name WRITE setName NOTIFY nameChanged )
 
   public:
 
@@ -108,7 +109,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Sets the layout's name.
      * \see name()
      */
-    void setName( const QString &name ) { mName = name; }
+    void setName( const QString &name );
 
     /**
      * Returns a list of layout items of a specific type.
@@ -584,6 +585,12 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * and updated.
      */
     void refreshed();
+
+    /**
+     * Emitted when the layout's name is changed.
+     * \see setName()
+     */
+    void nameChanged( const QString &name );
 
   private:
 
