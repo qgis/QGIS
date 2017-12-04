@@ -611,7 +611,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsfieldmodel.h
   qgsfieldproxymodel.h
   qgsfiledownloader.h
-  qgsfileutils.h
   qgsfeaturefiltermodel.h
   qgsfeaturefiltermodel_p.h
   qgsgeometryvalidator.h
@@ -885,6 +884,7 @@ SET(QGIS_CORE_HDRS
   qgsfieldformatter.h
   qgsfield_p.h
   qgsfields.h
+  qgsfileutils.h
   qgsfontutils.h
   qgsgeometrysimplifier.h
   qgshistogram.h
