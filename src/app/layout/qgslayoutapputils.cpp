@@ -63,8 +63,9 @@ void QgsLayoutAppUtils::registerGuiForKnownItemTypes()
     return new QgsLayoutViewTriangleRubberBand( view );
   } );
 
+#if 0
   registry->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "test" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), nullptr, createRubberBand ) );
-
+#endif
 
   // map item
 
