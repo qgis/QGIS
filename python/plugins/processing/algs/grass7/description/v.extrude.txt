@@ -10,6 +10,6 @@ QgsProcessingParameterField|height_column|Name of attribute column with object h
 QgsProcessingParameterRasterLayer|elevation|Elevation raster for height extraction|None|True
 QgsProcessingParameterEnum|method|Sampling interpolation method|nearest;bilinear;bicubic|False|0|True
 QgsProcessingParameterNumber|scale|Scale factor sampled raster values|QgsProcessingParameterNumber.Double|1.0|True|0.0|None
-QgsProcessingParameterNumber|null_value|Height for sampled raster NULL values|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|null_value|Height for sampled raster NULL values|QgsProcessingParameterNumber.Double|None|True|None|None
 *QgsProcessingParameterBoolean|-t|Trace elevation|False
 QgsProcessingParameterVectorDestination|output|3D Vector

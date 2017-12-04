@@ -7,5 +7,5 @@ QgsProcessingParameterEnum|type|Input feature type|point;line;boundary;centroid|
 QgsProcessingParameterRasterLayer|elevation|Elevation raster map for height extraction|None|False
 QgsProcessingParameterEnum|method|Sampling method|nearest;bilinear;bicubic|False|0|True
 QgsProcessingParameterNumber|scale|Scale factor sampled raster values|QgsProcessingParameterNumber.Double|1.0|True|None|None
-QgsProcessingParameterNumber|null_value|Height for sampled raster NULL values|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|null_value|Height for sampled raster NULL values|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterVectorDestination|output|3D vector

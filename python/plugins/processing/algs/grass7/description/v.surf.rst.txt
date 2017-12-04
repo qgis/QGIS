@@ -10,11 +10,11 @@ QgsProcessingParameterNumber|smooth|Smoothing parameter|QgsProcessingParameterNu
 QgsProcessingParameterField|smooth_column|Name of the attribute column with smoothing parameters|None|input|-1|False|True
 QgsProcessingParameterNumber|segmax|Maximum number of points in a segment|QgsProcessingParameterNumber.Integer|40|True|0|None
 QgsProcessingParameterNumber|npmin|Minimum number of points for approximation in a segment (>segmax)|QgsProcessingParameterNumber.Integer|300|True|0|None
-QgsProcessingParameterNumber|dmin|Minimum distance between points (to remove almost identical points)|QgsProcessingParameterNumber.Double|0.001|True|0.0|None
-QgsProcessingParameterNumber|dmax|Maximum distance between points on isoline (to insert additional points)|QgsProcessingParameterNumber.Double|2.5|True|None|None
+QgsProcessingParameterNumber|dmin|Minimum distance between points (to remove almost identical points)|QgsProcessingParameterNumber.Double|None|True|0.0|None
+QgsProcessingParameterNumber|dmax|Maximum distance between points on isoline (to insert additional points)|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterNumber|zscale|Conversion factor for values used for approximation|QgsProcessingParameterNumber.Double|1.0|True|None|None
-QgsProcessingParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|QgsProcessingParameterNumber.Double|0.0|True|0.0|360.0
-QgsProcessingParameterNumber|scalex|Anisotropy scaling factor|QgsProcessingParameterNumber.Double|0.0|True|None|None
+QgsProcessingParameterNumber|theta|Anisotropy angle (in degrees counterclockwise from East)|QgsProcessingParameterNumber.Double|None|True|0.0|360.0
+QgsProcessingParameterNumber|scalex|Anisotropy scaling factor|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterBoolean|-c|Perform cross-validation procedure without raster approximation|False
 QgsProcessingParameterBoolean|-t|Use scale dependent tension|False
 QgsProcessingParameterBoolean|-d|Output partial derivatives instead of topographic parameters|False

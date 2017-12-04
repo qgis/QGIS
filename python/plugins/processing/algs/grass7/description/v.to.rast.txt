@@ -8,6 +8,6 @@ QgsProcessingParameterEnum|use|Source of raster values|attr;cat;va;z;dir|False|0
 QgsProcessingParameterField|attribute_column|Name of column for 'attr' parameter (data type must be numeric)|None|input|0|False|True
 QgsProcessingParameterField|rgb_column|Name of color definition column (with RRR:GGG:BBB entries)|None|input|0|False|True
 QgsProcessingParameterField|label_column|Name of column used as raster category labels|None|input|0|False|True
-QgsProcessingParameterNumber|value|Raster value (for use=val)|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|value|Raster value (for use=val)|QgsProcessingParameterNumber.Double|1|True|None|None
 QgsProcessingParameterNumber|memory|Maximum memory to be used (in MB)|QgsProcessingParameterNumber.Integer|300|True|1|None
 QgsProcessingParameterRasterDestination|output|Rasterized
