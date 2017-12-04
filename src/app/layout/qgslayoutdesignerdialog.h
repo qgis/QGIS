@@ -269,6 +269,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void saveAsTemplate();
     void addItemsFromTemplate();
     void duplicate();
+    void saveProject();
+    void newLayout();
+    void showManager();
 
   private:
 

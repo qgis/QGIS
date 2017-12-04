@@ -7445,6 +7445,19 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
   return newComposerObject;
 }
 
+QgsLayoutDesignerDialog *QgisApp::createNewLayout( QString title )
+{
+  if ( title.isEmpty() )
+  {
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+  }
+  //create new layout object
+  QgsLayout *layout = new QgsLayout( QgsProject::instance() );
+  layout->setName( title );
+  QgsProject::instance()->layoutManager()->addLayout( layout );
+  return openLayoutDesignerDialog( layout );
+}
+
 QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
 {
   // maybe a designer already open for this layout
@@ -7474,7 +7487,9 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
 
   newDesigner->open();
   emit layoutDesignerOpened( newDesigner->iface() );
-  //connect( newDesigner, &QgsLayoutDesignerDialog::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
+#if 0 //TODO
+  connect( newDesigner, &QgsLayoutDesignerDialog::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
+#endif
 
   return newDesigner;
 }
