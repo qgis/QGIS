@@ -111,7 +111,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  :rtype: QSizeF
 %End
 
-    virtual void render( QgsRenderContext &context, const QRectF &renderExtent, const int frameIndex,
+    virtual void render( QgsRenderContext &context, const QRectF &renderExtent, int frameIndex,
                          const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;
 %Docstring
  Renders a portion of the multiframe's content into a render ``context``.
