@@ -387,6 +387,8 @@ bool QgsFeatureRequest::OrderByClause::prepare( QgsExpressionContext *context )
   return mExpression.prepare( context );
 }
 
+QgsFeatureRequest::OrderBy::OrderBy() = default;
+
 QgsFeatureRequest::OrderBy::OrderBy( const QList<QgsFeatureRequest::OrderByClause> &other )
 {
   Q_FOREACH ( const QgsFeatureRequest::OrderByClause &clause, other )

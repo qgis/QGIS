@@ -477,7 +477,7 @@ int main( int argc, char *argv[] )
   signal( SIGXFSZ, qgisCrash );
 #endif
 
-#ifdef Q_OS_WIN
+#ifdef _MSC_VER
   SetUnhandledExceptionFilter( QgsCrashHandler::handle );
 #endif
 
