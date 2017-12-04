@@ -719,7 +719,6 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
 
 QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document, const QgsReadWriteContext &context, QPointF *position, bool pasteInPlace )
 {
-  std::unique_ptr< QPointF > pasteInPlacePt;
   QList< QgsLayoutItem * > newItems;
   QList< QgsLayoutMultiFrame * > newMultiFrames;
 
@@ -729,6 +728,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
   int zOrderOffset = mItemsModel->zOrderListSize();
 
   QPointF pasteShiftPos;
+  int pageNumber = -1;
   if ( position )
   {
     //If we are placing items relative to a certain point, then calculate how much we need
@@ -740,8 +740,7 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     pasteShiftPos = *position - minItemPos;
     if ( pasteInPlace )
     {
-      int pageNumber = mPageCollection->pageNumberForPoint( *position );
-      pasteInPlacePt = qgis::make_unique< QPointF >( 0, mPageCollection->page( pageNumber )->pos().y() );
+      pageNumber = mPageCollection->pageNumberForPoint( *position );
     }
   }
 
@@ -760,12 +759,10 @@ QList< QgsLayoutItem * > QgsLayout::addItemsFromXml( const QDomElement &parentEl
     item->readXml( currentItemElem, document, context );
     if ( position )
     {
-      if ( pasteInPlacePt )
+      if ( pasteInPlace )
       {
-#if 0 //TODO
-        item->setItemPosition( newLabel->pos().x(), std::fmod( newLabel->pos().y(), ( paperHeight() + spaceBetweenPages() ) ) );
-        item->move( pasteInPlacePt->x(), pasteInPlacePt->y() );
-#endif
+        QgsLayoutPoint posOnPage = QgsLayoutPoint::decodePoint( currentItemElem.attribute( QStringLiteral( "positionOnPage" ) ) );
+        item->attemptMove( posOnPage, true, false, pageNumber );
       }
       else
       {

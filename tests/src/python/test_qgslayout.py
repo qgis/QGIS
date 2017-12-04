@@ -22,6 +22,7 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutObject,
                        QgsProject,
                        QgsLayoutItemGroup,
+                       QgsLayoutItem,
                        QgsProperty,
                        QgsLayoutPageCollection,
                        QgsLayoutMeasurement,
@@ -130,9 +131,9 @@ class TestQgsLayout(unittest.TestCase):
         new_item1 = [i for i in items if i.id() == 'xxyyxx'][0]
         new_item2 = [i for i in items if i.id() == 'zzyyzz'][0]
         self.assertEqual(new_item1.positionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
-        self.assertEqual(new_item1.sizeWithUnits(),QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(new_item2.positionWithUnits(), QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
-        self.assertEqual(new_item2.sizeWithUnits(),QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
 
         # test with a group
         group = QgsLayoutItemGroup(l)
@@ -165,9 +166,41 @@ class TestQgsLayout(unittest.TestCase):
         new_item1 = [i for i in items if i.id() == 'xxyyxx'][0]
         new_item2 = [i for i in items if i.id() == 'zzyyzz'][0]
         self.assertEqual(new_item1.positionWithUnits(), QgsLayoutPoint(10, 30, QgsUnitTypes.LayoutMillimeters))
-        self.assertEqual(new_item1.sizeWithUnits(),QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
         self.assertEqual(new_item2.positionWithUnits(), QgsLayoutPoint(2.0, 4.0, QgsUnitTypes.LayoutCentimeters))
-        self.assertEqual(new_item2.sizeWithUnits(),QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+
+        # paste in place
+        l4 = QgsLayout(p)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A3')
+        l4.pageCollection().addPage(page)
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A6')
+        l4.pageCollection().addPage(page)
+
+        new_items = l4.addItemsFromXml(elem, doc, QgsReadWriteContext(), QPointF(10, 30), True)
+        self.assertEqual(len(new_items), 3)
+        new_item1 = [i for i in new_items if i.id() == 'xxyyxx'][0]
+        new_item2 = [i for i in new_items if i.id() == 'zzyyzz'][0]
+        self.assertEqual(new_item1.pagePositionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.page(), 0)
+        self.assertEqual(new_item2.pagePositionWithUnits(), QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.page(), 0)
+
+        # paste in place, page 2
+        new_items = l4.addItemsFromXml(elem, doc, QgsReadWriteContext(), QPointF(10, 550), True)
+        self.assertEqual(len(new_items), 3)
+        new_item1 = [i for i in new_items if i.id() == 'xxyyxx'][0]
+        new_item2 = [i for i in new_items if i.id() == 'zzyyzz'][0]
+        self.assertEqual(new_item1.pagePositionWithUnits(), QgsLayoutPoint(4, 8, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item1.page(), 1)
+        self.assertEqual(new_item1.sizeWithUnits(), QgsLayoutSize(18, 12, QgsUnitTypes.LayoutMillimeters))
+        self.assertEqual(new_item2.pagePositionWithUnits(), QgsLayoutPoint(1.4, 1.8, QgsUnitTypes.LayoutCentimeters))
+        self.assertEqual(new_item2.page(), 1)
+        self.assertEqual(new_item2.sizeWithUnits(), QgsLayoutSize(2.8, 2.2, QgsUnitTypes.LayoutCentimeters))
 
         #TODO - test restoring multiframe
 
