@@ -1333,7 +1333,7 @@ void QgsPluginManager::mZipFileWidget_fileChanged( const QString &filePath )
 
 void QgsPluginManager::buttonInstallFromZip_clicked()
 {
-  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile('%1')" ).arg( mZipFileWidget->filePath() ) );
+  QgsPythonRunner::run( QStringLiteral( "pyplugin_installer.instance().installFromZipFile(r'%1')" ).arg( mZipFileWidget->filePath() ) );
   mZipFileWidget->setFilePath( "" );
 }
 
