@@ -37,7 +37,7 @@ class QgsGeoPackageAbstractLayerItem : public QgsLayerItem
      */
     virtual bool executeDeleteLayer( QString &errCause );
 #ifdef HAVE_GUI
-    QList<QAction *> actions();
+    QList<QAction *> actions( QWidget *parent ) override;
   public slots:
     virtual void deleteLayer();
 #endif
