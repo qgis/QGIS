@@ -277,45 +277,34 @@ void TestQgsLayout::bounds()
   QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   shape1->attemptResize( QgsLayoutSize( 90, 50 ) );
   shape1->attemptMove( QgsLayoutPoint( 90, 50 ) );
-  shape1->setItemRotation( 45 );
+  shape1->setItemRotation( 45, false );
   l.addLayoutItem( shape1 );
   QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 110, 50 ) );
   shape2->attemptMove( QgsLayoutPoint( 100, 150 ), true, false, 0 );
   l.addLayoutItem( shape2 );
   QgsLayoutItemShape *shape3 = new QgsLayoutItemShape( &l );
-// l.addLayoutItem( shape3 );
+  l.addLayoutItem( shape3 );
   shape3->attemptResize( QgsLayoutSize( 50, 100 ) );
   shape3->attemptMove( QgsLayoutPoint( 210, 30 ), true, false, 1 );
   QgsLayoutItemShape *shape4 = new QgsLayoutItemShape( &l );
-// l.addLayoutItem( shape4 );
+  l.addLayoutItem( shape4 );
   shape4->attemptResize( QgsLayoutSize( 50, 30 ) );
   shape4->attemptMove( QgsLayoutPoint( 10, 120 ), true, false, 1 );
   shape4->setVisibility( false );
 
   //check bounds
   QRectF layoutBounds = l.layoutBounds( false );
-// QGSCOMPARENEAR( layoutBounds.height(), 430, 0.01 );
-// QGSCOMPARENEAR( layoutBounds.width(), 297.00, 0.01 );
-// QGSCOMPARENEAR( layoutBounds.left(), 0.0, 0.01 );
-// QGSCOMPARENEAR( layoutBounds.top(), 0.0, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.height(), 430, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.width(), 297.00, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.left(), 0.0, 0.01 );
+  QGSCOMPARENEAR( layoutBounds.top(), 0.0, 0.01 );
 
   QRectF layoutBoundsNoPage = l.layoutBounds( true );
   QGSCOMPARENEAR( layoutBoundsNoPage.height(), 320.36, 0.01 );
   QGSCOMPARENEAR( layoutBoundsNoPage.width(), 250.30, 0.01 );
   QGSCOMPARENEAR( layoutBoundsNoPage.left(), 9.85, 0.01 );
   QGSCOMPARENEAR( layoutBoundsNoPage.top(), 49.79, 0.01 );
-
-  QGSCOMPARENEAR( layoutBounds.height(), 210.000000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.width(), 297.000000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.left(), 0.00000, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
-
-  layoutBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( layoutBoundsNoPage.height(), 174.859607, 0.01 );
-  QGSCOMPARENEAR( layoutBoundsNoPage.width(), 124.859607, 0.01 );
-  QGSCOMPARENEAR( layoutBoundsNoPage.left(), 85.290393, 0.01 );
-  QGSCOMPARENEAR( layoutBoundsNoPage.top(), 25.290393, 0.01 );
 
 #if 0
   QRectF page1Bounds = composition->pageItemBounds( 0, true );
