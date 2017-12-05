@@ -210,7 +210,7 @@ void QgsFileWidget::setRelativeStorage( QgsFileWidget::RelativeStorage relativeS
   mRelativeStorage = relativeStorage;
 }
 
-QLineEdit *QgsFileWidget::lineEdit()
+QgsFilterLineEdit *QgsFileWidget::lineEdit()
 {
   return mLineEdit;
 }

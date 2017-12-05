@@ -107,8 +107,6 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     void mAddButton_clicked();
     //! Slot to track combobox to use specific template path
     void mTemplate_currentIndexChanged( int indx );
-    //! Slot to choose path to template
-    void mTemplatePathBtn_pressed();
     //! Slot to open default templates dir with user's system
     void mTemplatesDefaultDirBtn_pressed();
     //! Slot to open user templates dir with user's system
