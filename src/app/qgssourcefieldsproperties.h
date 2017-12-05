@@ -105,6 +105,7 @@ class APP_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
     void attributeDeleted( int idx );
 
     void attributesListCellChanged( int row, int column );
+    void attributesListCellPressed( int row, int column );
 
 };
 
