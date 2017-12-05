@@ -140,6 +140,10 @@ class LinkItemDelegate : public QStyledItemDelegate
 
   public:
 
+    /**
+     * \brief LinkItemDelegate constructor
+     * \param parent
+     */
     explicit LinkItemDelegate( QObject *parent = nullptr );
 
     /**
@@ -162,6 +166,10 @@ class ConstraintItemDelegate : public QStyledItemDelegate
 
   public:
 
+    /**
+     * \brief ConstraintItemDelegate constructor
+     * \param parent
+     */
     explicit ConstraintItemDelegate( QObject *parent = nullptr );
 
     /**
