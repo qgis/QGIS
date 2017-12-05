@@ -273,6 +273,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void newLayout();
     void showManager();
     void renameLayout();
+    void deleteLayout();
 
   private:
 

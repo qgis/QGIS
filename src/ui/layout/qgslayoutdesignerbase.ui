@@ -103,6 +103,7 @@
     <addaction name="separator"/>
     <addaction name="mActionNewLayout"/>
     <addaction name="mActionDuplicateLayout"/>
+    <addaction name="mActionRemoveLayout"/>
     <addaction name="mActionLayoutManager"/>
     <addaction name="separator"/>
     <addaction name="mActionLayoutProperties"/>
@@ -1158,6 +1159,18 @@
    </property>
    <property name="toolTip">
     <string>Rename layout</string>
+   </property>
+  </action>
+  <action name="mActionRemoveLayout">
+   <property name="icon">
+    <iconset resource="../../../images/images.qrc">
+     <normaloff>:/images/themes/default/mActionDeleteSelected.svg</normaloff>:/images/themes/default/mActionDeleteSelected.svg</iconset>
+   </property>
+   <property name="text">
+    <string>Delete Layout…</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete layout</string>
    </property>
   </action>
  </widget>

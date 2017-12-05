@@ -23,6 +23,7 @@
 #include "qgslayout.h"
 #include "qgslayoutappmenuprovider.h"
 #include "qgslayoutcustomdrophandler.h"
+#include "qgslayoutmanager.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
 #include "qgslayoutviewtooladdnodeitem.h"
@@ -160,6 +161,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionSaveProject, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveProject );
   connect( mActionNewLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::newLayout );
   connect( mActionLayoutManager, &QAction::triggered, this, &QgsLayoutDesignerDialog::showManager );
+  connect( mActionRemoveLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::deleteLayout );
 
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
@@ -1390,6 +1392,16 @@ void QgsLayoutDesignerDialog::renameLayout()
     return;
   }
   currentLayout()->setName( newTitle );
+}
+
+void QgsLayoutDesignerDialog::deleteLayout()
+{
+  if ( QMessageBox::question( this, tr( "Delete Layout" ), tr( "Are you sure you want to delete the layout “%1”?" ).arg( currentLayout()->name() ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
+  currentLayout()->project()->layoutManager()->removeLayout( currentLayout() );
+  close();
 }
 
 void QgsLayoutDesignerDialog::paste()
