@@ -614,7 +614,7 @@ static void _drawDebugRect( QPainter &p, const QRectF &rect, const QColor &color
 
 QImage *QgsWmsProvider::draw( QgsRectangle const &viewExtent, int pixelWidth, int pixelHeight, QgsRasterBlockFeedback *feedback )
 {
-  if ( QgsApplication::instance()->thread() != QThread::currentThread() )
+  if ( qApp && qApp->thread() != QThread::currentThread() )
   {
     QgsDebugMsg( "Trying to draw a WMS image on the main thread. Stop it!" );
   }
