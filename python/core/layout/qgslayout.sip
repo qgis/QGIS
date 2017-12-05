@@ -178,10 +178,14 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  which deferred z-order updates.
 %End
 
-    QgsLayoutItem *itemByUuid( const QString &uuid );
+    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false );
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None
  if a matching item could not be found.
+
+ If ``includeTemplateUuids`` is true, then item's QgsLayoutItem.templateUuid()
+ will also be tested when trying to match the uuid.
+
 .. seealso:: :py:func:`multiFrameByUuid()`
  :rtype: QgsLayoutItem
 %End
@@ -421,7 +425,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Saves the layout as a template at the given file ``path``.
  Returns true if save was successful.
-.. seealso:: loadFromTemplate()
+.. seealso:: :py:func:`loadFromTemplate()`
  :rtype: bool
 %End
 
@@ -540,7 +544,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
     void nameChanged( const QString &name );
 %Docstring
  Emitted when the layout's name is changed.
-.. seealso:: setName()
+.. seealso:: :py:func:`setName()`
 %End
 
 };

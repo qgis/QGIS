@@ -76,15 +76,6 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  :rtype: int
 %End
 
-    virtual QString stringType() const = 0;
-%Docstring
- Return the multiframe type as a string.
-
- This string must be a unique, single word, character only representation of the item type, eg "LayoutHtml"
-.. seealso:: :py:func:`type()`
- :rtype: str
-%End
-
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 %Docstring
  Returns the fixed size for a frame, if desired. If the fixed frame size changes,
@@ -264,6 +255,16 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 .. seealso:: :py:func:`endCommand()`
 %End
 
+    virtual void finalizeRestoreFromXml();
+%Docstring
+ Called after all pending items have been restored from XML. Multiframes can use
+ this method to run steps which must take place after all items have been restored to the layout,
+ such as connecting to signals emitted by other items, which may not have existed in the layout
+ at the time readXml() was called. E.g. a scalebar can use this to connect to its linked
+ map item after restoration from XML.
+.. seealso:: :py:func:`readXml()`
+%End
+
   public slots:
 
     virtual void refresh();
@@ -338,6 +339,13 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  \param document DOM document
  \param context read write context
 .. seealso:: :py:func:`writePropertiesToElement()`
+
+ Note that item subclasses should not rely on all other items being present in the
+ layout at the time this method is called. Instead, any connections and links to
+ other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+ a scalebar, the connection to the linked map's signals should be implemented
+ in finalizeRestoreFromXml(), not readPropertiesFromElement().
+
 .. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
