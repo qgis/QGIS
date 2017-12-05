@@ -113,7 +113,7 @@ Qt3DExtras::QPhongMaterial *QgsPolygon3DSymbolEntity::material( const QgsPolygon
 
   // front/back side culling
   auto techniques = material->effect()->techniques();
-  for ( auto tit = techniques.begin(); tit != techniques.end(); ++tit )
+  for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
   {
     auto renderPasses = ( *tit )->renderPasses();
     for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
