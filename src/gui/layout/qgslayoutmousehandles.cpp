@@ -311,6 +311,9 @@ bool QgsLayoutMouseHandles::selectionRotation( double &rotation ) const
 
 double QgsLayoutMouseHandles::rectHandlerBorderTolerance()
 {
+  if ( !mView )
+    return 0;
+
   //calculate size for resize handles
   //get view scale factor
   double viewScaleFactor = mView->transform().m11();

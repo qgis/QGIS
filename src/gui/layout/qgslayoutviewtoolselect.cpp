@@ -30,6 +30,12 @@ QgsLayoutViewToolSelect::QgsLayoutViewToolSelect( QgsLayoutView *view )
   mRubberBand->setPen( QPen( QBrush( QColor( 254, 58, 29, 100 ) ), 0, Qt::DotLine ) );
 }
 
+QgsLayoutViewToolSelect::~QgsLayoutViewToolSelect()
+{
+  if ( mMouseHandles )
+    mMouseHandles->deleteLater();
+}
+
 void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
 {
   if ( mMouseHandles->shouldBlockEvent( event ) )
@@ -276,6 +282,7 @@ QgsLayoutMouseHandles *QgsLayoutViewToolSelect::mouseHandles()
 void QgsLayoutViewToolSelect::setLayout( QgsLayout *layout )
 {
   // existing handles are owned by previous layout
+  mMouseHandles->deleteLater();
 
   //add mouse selection handles to layout, and initially hide
   mMouseHandles = new QgsLayoutMouseHandles( layout, view() );

@@ -25,6 +25,7 @@ class QgsLayoutViewToolSelect : QgsLayoutViewTool
 %Docstring
  Constructor for QgsLayoutViewToolSelect.
 %End
+    ~QgsLayoutViewToolSelect();
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
 
