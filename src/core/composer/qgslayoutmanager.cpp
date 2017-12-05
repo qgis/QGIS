@@ -184,6 +184,29 @@ bool QgsLayoutManager::readXml( const QDomElement &element, const QDomDocument &
       c->setName( legacyTitle );
     result = result && addComposition( c );
   }
+
+  QgsReadWriteContext context;
+  context.setPathResolver( mProject->pathResolver() );
+
+  // restore layouts
+  const QDomNodeList layoutNodes = element.elementsByTagName( QStringLiteral( "Layout" ) );
+  for ( int i = 0; i < layoutNodes.size(); ++i )
+  {
+    std::unique_ptr< QgsLayout > l = qgis::make_unique< QgsLayout >( mProject );
+    if ( !l->readXml( layoutNodes.at( i ).toElement(), doc, context ) )
+    {
+      result = false;
+      continue;
+    }
+    if ( addLayout( l.get() ) )
+    {
+      ( void )l.release(); // ownership was transferred successfully
+    }
+    else
+    {
+      result = false;
+    }
+  }
   return result;
 }
 
@@ -198,6 +221,13 @@ QDomElement QgsLayoutManager::writeXml( QDomDocument &doc ) const
 
     c->writeXml( composerElem, doc );
     c->atlasComposition().writeXml( composerElem, doc );
+  }
+  QgsReadWriteContext context;
+  context.setPathResolver( mProject->pathResolver() );
+  for ( QgsLayout *l : mLayouts )
+  {
+    QDomElement layoutElem = l->writeXml( doc, context );
+    layoutsElem.appendChild( layoutElem );
   }
   return layoutsElem;
 }
