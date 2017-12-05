@@ -526,7 +526,7 @@ void QgsGeoPackageCollectionItem::addConnection()
 #endif
 
 #ifdef HAVE_GUI
-QList<QAction *> QgsGeoPackageAbstractLayerItem::actions()
+QList<QAction *> QgsGeoPackageAbstractLayerItem::actions( QWidget * )
 {
   QList<QAction *> lst;
   QAction *actionDeleteLayer = new QAction( tr( "Delete Layer '%1'..." ).arg( mName ), this );
