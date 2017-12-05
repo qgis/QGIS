@@ -22,9 +22,13 @@ from qgis.core import (QgsUnitTypes,
                        QgsLayoutPoint,
                        QgsLayoutObject,
                        QgsProject,
+                       QgsMargins,
                        QgsProperty,
+                       QgsLayoutGuide,
+                       QgsLayoutMeasurement,
                        QgsLayoutPageCollection,
                        QgsSimpleFillSymbolLayer,
+                       QgsLayoutItemShape,
                        QgsFillSymbol,
                        QgsReadWriteContext)
 from qgis.PyQt.QtCore import Qt, QCoreApplication, QEvent, QPointF, QRectF
@@ -740,6 +744,68 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         l.undoStack().stack().redo()
         self.assertEqual(collection.pageCount(), 1)
         self.assertEqual(collection.page(0).pageSize().width(), 148)
+
+    def testResizeToContents(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+
+        shape1 = QgsLayoutItemShape(l)
+        shape1.attemptResize(QgsLayoutSize(90, 50))
+        shape1.attemptMove(QgsLayoutPoint(90, 50))
+        shape1.setItemRotation(45, False)
+        l.addLayoutItem(shape1)
+        shape2 = QgsLayoutItemShape(l)
+        shape2.attemptResize(QgsLayoutSize(110, 50))
+        shape2.attemptMove(QgsLayoutPoint(100, 150), True, False, 0)
+        l.addLayoutItem(shape2)
+        shape3 = QgsLayoutItemShape(l)
+        l.addLayoutItem(shape3)
+        shape3.attemptResize(QgsLayoutSize(50, 100))
+        shape3.attemptMove(QgsLayoutPoint(210, 250), True, False, 0)
+        shape4 = QgsLayoutItemShape(l)
+        l.addLayoutItem(shape4)
+        shape4.attemptResize(QgsLayoutSize(50, 30))
+        shape4.attemptMove(QgsLayoutPoint(10, 340), True, False, 0)
+        shape4.setVisibility(False)
+
+        # resize with no existing pages
+        l.pageCollection().resizeToContents(QgsMargins(1, 2, 3, 4), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(l.pageCollection().pageCount(), 1)
+
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().width(), 290.3, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().height(), 380.36, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+
+        self.assertAlmostEqual(shape1.positionWithUnits().x(), 90.15, 2)
+        self.assertAlmostEqual(shape1.positionWithUnits().y(), 20.21, 2)
+        self.assertAlmostEqual(shape2.positionWithUnits().x(), 100.15, 2)
+        self.assertAlmostEqual(shape2.positionWithUnits().y(), 120.21, 2)
+        self.assertAlmostEqual(shape3.positionWithUnits().x(), 210.15, 2)
+        self.assertAlmostEqual(shape3.positionWithUnits().y(), 220.21, 2)
+        self.assertAlmostEqual(shape4.positionWithUnits().x(), 10.15, 2)
+        self.assertAlmostEqual(shape4.positionWithUnits().y(), 310.21, 2)
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize("A4", QgsLayoutItemPage.Landscape)
+        l.pageCollection().addPage(page2)
+
+        # add some guides
+        g1 = QgsLayoutGuide(Qt.Horizontal, QgsLayoutMeasurement(2.5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
+        l.guides().addGuide(g1)
+        g2 = QgsLayoutGuide(Qt.Vertical, QgsLayoutMeasurement(4.5, QgsUnitTypes.LayoutCentimeters), l.pageCollection().page(0))
+        l.guides().addGuide(g2)
+
+        # second page should be removed
+        l.pageCollection().resizeToContents(QgsMargins(0, 0, 0, 0), QgsUnitTypes.LayoutCentimeters)
+        self.assertEqual(l.pageCollection().pageCount(), 1)
+
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().width(), 250.3, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().height(), 320.36, 2)
+        self.assertAlmostEqual(l.pageCollection().page(0).sizeWithUnits().units(), QgsUnitTypes.LayoutMillimeters)
+
+        self.assertAlmostEqual(g1.position().length(), 0.5, 2)
+        self.assertAlmostEqual(g2.position().length(), 3.5, 2)
 
 
 if __name__ == '__main__':
