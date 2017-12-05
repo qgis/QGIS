@@ -35,6 +35,8 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
   : QgsLayoutItemBaseWidget( nullptr, item )
   , mMapItem( item )
 {
+  Q_ASSERT( mMapItem );
+
   setupUi( this );
   connect( mScaleLineEdit, &QLineEdit::editingFinished, this, &QgsLayoutMapWidget::mScaleLineEdit_editingFinished );
   connect( mSetToMapCanvasExtentButton, &QPushButton::clicked, this, &QgsLayoutMapWidget::mSetToMapCanvasExtentButton_clicked );
@@ -108,24 +110,21 @@ QgsLayoutMapWidget::QgsLayoutMapWidget( QgsLayoutItemMap *item )
 
   mOverviewFrameMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
 
-  if ( item )
-  {
-    connect( item, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
+  connect( item, &QgsLayoutObject::changed, this, &QgsLayoutMapWidget::updateGuiElements );
 
 #if 0 //TODO
-    QgsAtlasComposition *atlas = atlasComposition();
-    if ( atlas )
-    {
-      connect( atlas, &QgsAtlasComposition::coverageLayerChanged,
-               this, &QgsLayoutMapWidget::atlasLayerChanged );
-      connect( atlas, &QgsAtlasComposition::toggled, this, &QgsLayoutMapWidget::compositionAtlasToggled );
+  QgsAtlasComposition *atlas = atlasComposition();
+  if ( atlas )
+  {
+    connect( atlas, &QgsAtlasComposition::coverageLayerChanged,
+             this, &QgsLayoutMapWidget::atlasLayerChanged );
+    connect( atlas, &QgsAtlasComposition::toggled, this, &QgsLayoutMapWidget::compositionAtlasToggled );
 
-      compositionAtlasToggled( atlas->enabled() );
-    }
-#endif
-    mOverviewFrameMapComboBox->setCurrentLayout( item->layout() );
-    mOverviewFrameStyleButton->registerExpressionContextGenerator( item );
+    compositionAtlasToggled( atlas->enabled() );
   }
+#endif
+  mOverviewFrameMapComboBox->setCurrentLayout( item->layout() );
+  mOverviewFrameStyleButton->registerExpressionContextGenerator( item );
 
   connect( mOverviewFrameMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutMapWidget::overviewMapChanged );
   connect( mCrsSelector, &QgsProjectionSelectionWidget::crsChanged, this, &QgsLayoutMapWidget::mapCrsChanged );

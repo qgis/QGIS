@@ -29,6 +29,8 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   : QgsLayoutItemBaseWidget( nullptr, label )
   , mLabel( label )
 {
+  Q_ASSERT( mLabel );
+
   setupUi( this );
   connect( mHtmlCheckBox, &QCheckBox::stateChanged, this, &QgsLayoutLabelWidget::mHtmlCheckBox_stateChanged );
   connect( mTextEdit, &QPlainTextEdit::textChanged, this, &QgsLayoutLabelWidget::mTextEdit_textChanged );
@@ -56,11 +58,8 @@ QgsLayoutLabelWidget::QgsLayoutLabelWidget( QgsLayoutItemLabel *label )
   mMarginXDoubleSpinBox->setClearValue( 0.0 );
   mMarginYDoubleSpinBox->setClearValue( 0.0 );
 
-  if ( mLabel )
-  {
-    setGuiElementValues();
-    connect( mLabel, &QgsLayoutObject::changed, this, &QgsLayoutLabelWidget::setGuiElementValues );
-  }
+  setGuiElementValues();
+  connect( mLabel, &QgsLayoutObject::changed, this, &QgsLayoutLabelWidget::setGuiElementValues );
 
   connect( mFontButton, &QgsFontButton::changed, this, &QgsLayoutLabelWidget::fontChanged );
   connect( mJustifyRadioButton, &QRadioButton::clicked, this, &QgsLayoutLabelWidget::justifyClicked );

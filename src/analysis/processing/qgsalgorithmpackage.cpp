@@ -101,7 +101,7 @@ QVariantMap QgsPackageAlgorithm::processAlgorithm( const QVariantMap &parameters
     multiStepFeedback.setCurrentStep( i );
     i++;
 
-    feedback->pushInfo( QObject::tr( "Packaging layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer->name() ) );
+    feedback->pushInfo( QObject::tr( "Packaging layer %1/%2: %3" ).arg( i ).arg( layers.count() ).arg( layer ? layer->name() : QString() ) );
 
     if ( !layer )
     {

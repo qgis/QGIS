@@ -61,6 +61,8 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   : QgsLayoutItemBaseWidget( nullptr, legend )
   , mLegend( legend )
 {
+  Q_ASSERT( mLegend );
+
   setupUi( this );
   connect( mWrapCharLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mWrapCharLineEdit_textChanged );
   connect( mTitleLineEdit, &QLineEdit::textChanged, this, &QgsLayoutLegendWidget::mTitleLineEdit_textChanged );
@@ -120,8 +122,7 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
   mRasterStrokeColorButton->setAllowOpacity( true );
   mRasterStrokeColorButton->setContext( QStringLiteral( "composer " ) );
 
-  if ( legend )
-    mMapComboBox->setCurrentLayout( legend->layout() );
+  mMapComboBox->setCurrentLayout( legend->layout() );
   mMapComboBox->setItemType( QgsLayoutItemRegistry::LayoutMap );
   connect( mMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutLegendWidget::composerMapChanged );
 
@@ -131,18 +132,15 @@ QgsLayoutLegendWidget::QgsLayoutLegendWidget( QgsLayoutItemLegend *legend )
 
   mItemTreeView->setHeaderHidden( true );
 
-  if ( legend )
-  {
-    mItemTreeView->setModel( legend->model() );
-    mItemTreeView->setMenuProvider( new QgsLayoutLegendMenuProvider( mItemTreeView, this ) );
-    connect( legend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
+  mItemTreeView->setModel( legend->model() );
+  mItemTreeView->setMenuProvider( new QgsLayoutLegendMenuProvider( mItemTreeView, this ) );
+  connect( legend, &QgsLayoutObject::changed, this, &QgsLayoutLegendWidget::setGuiElements );
 
 #if 0 //TODO
-    // connect atlas state to the filter legend by atlas checkbox
-    connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
-    connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
+  // connect atlas state to the filter legend by atlas checkbox
+  connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::toggled, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
+  connect( &legend->composition()->atlasComposition(), &QgsAtlasComposition::coverageLayerChanged, this, &QgsLayoutLegendWidget::updateFilterLegendByAtlasButton );
 #endif
-  }
 
   registerDataDefinedButton( mLegendTitleDDBtn, QgsLayoutObject::LegendTitle );
   registerDataDefinedButton( mColumnsDDBtn, QgsLayoutObject::LegendColumnCount );
