@@ -53,7 +53,7 @@ from processing.core.ProcessingResults import resultsList
 from processing.gui.ParametersPanel import ParametersPanel
 from processing.gui.BatchAlgorithmDialog import BatchAlgorithmDialog
 from processing.gui.AlgorithmDialogBase import AlgorithmDialogBase
-from processing.gui.AlgorithmExecutor import executeIterating
+from processing.gui.AlgorithmExecutor import executeIterating, execute
 from processing.gui.Postprocessing import handleAlgorithmResults
 
 from processing.tools import dataobjects
@@ -243,9 +243,14 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     self.cancelButton().setEnabled(False)
                     self.finish(ok, results, context, feedback)
 
-                task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, context, feedback)
-                task.executed.connect(on_complete)
-                QgsApplication.taskManager().addTask(task)
+                if self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanRunInBackground:
+                    task = QgsProcessingAlgRunnerTask(self.algorithm(), parameters, context, feedback)
+                    task.executed.connect(on_complete)
+                    QgsApplication.taskManager().addTask(task)
+                else:
+                    self.setWindowModality(Qt.ApplicationModal)
+                    ok, results = execute(self.algorithm(), parameters, context, feedback)
+                    on_complete(ok, results)
 
         except AlgorithmDialogBase.InvalidParameterValue as e:
             try:
