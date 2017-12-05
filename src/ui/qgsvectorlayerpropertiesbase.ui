@@ -155,6 +155,18 @@
          </item>
          <item>
           <property name="text">
+           <string>3D View</string>
+          </property>
+          <property name="toolTip">
+           <string>3D View</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../../images/images.qrc">
+            <normaloff>:/images/themes/default/3d.svg</normaloff>:/images/themes/default/3d.svg</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
            <string>Source Fields</string>
           </property>
           <property name="toolTip">
@@ -784,6 +796,7 @@ border-radius: 2px;</string>
            </item>
           </layout>
          </widget>
+         <widget class="QWidget" name="mOptsPage_3DView"/>
          <widget class="QWidget" name="mOptsPage_SourceFields">
           <layout class="QVBoxLayout" name="verticalLayout_29">
            <property name="leftMargin">
