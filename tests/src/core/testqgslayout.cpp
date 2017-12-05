@@ -22,6 +22,8 @@
 #include "qgslayoutitemshape.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutitemlabel.h"
+#include "qgslayoutitempolyline.h"
 
 class TestQgsLayout: public QObject
 {
@@ -521,13 +523,13 @@ void TestQgsLayout::itemsOnPage()
   page3->setPageSize( "A4" );
   l.pageCollection()->addPage( page3 );
 
-  QgsLayoutItemShape *label1 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemLabel *label1 = new QgsLayoutItemLabel( &l );
   l.addLayoutItem( label1 );
   label1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
-  QgsLayoutItemShape *label2 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemLabel *label2 = new QgsLayoutItemLabel( &l );
   l.addLayoutItem( label2 );
   label2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 0 );
-  QgsLayoutItemShape *label3 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemLabel *label3 = new QgsLayoutItemLabel( &l );
   l.addLayoutItem( label3 );
   label3->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 1 );
   QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
@@ -536,10 +538,10 @@ void TestQgsLayout::itemsOnPage()
   QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   l.addLayoutItem( shape2 );
   shape2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 1 );
-  QgsLayoutItemShape *arrow1 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemPolyline *arrow1 = new QgsLayoutItemPolyline( &l );
   l.addLayoutItem( arrow1 );
   arrow1->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
-  QgsLayoutItemShape *arrow2 = new QgsLayoutItemShape( &l );
+  QgsLayoutItemPolyline *arrow2 = new QgsLayoutItemPolyline( &l );
   l.addLayoutItem( arrow2 );
   arrow2->attemptMove( QgsLayoutPoint( 10, 10 ), true, false, 2 );
 
@@ -553,6 +555,40 @@ void TestQgsLayout::itemsOnPage()
   items = l.pageCollection()->itemsOnPage( 2 );
   //should be 3 items on page 3
   QCOMPARE( items.length(), 3 );
+
+  //check fetching specific item types
+  QList<QgsLayoutItemLabel *> labels;
+  l.pageCollection()->itemsOnPage( labels, 0 );
+  //should be 2 labels on page 1
+  QCOMPARE( labels.length(), 2 );
+  l.pageCollection()->itemsOnPage( labels, 1 );
+  //should be 1 label on page 2
+  QCOMPARE( labels.length(), 1 );
+  l.pageCollection()->itemsOnPage( labels, 2 );
+  //should be no label on page 3
+  QCOMPARE( labels.length(), 0 );
+
+  QList<QgsLayoutItemShape *> shapes;
+  l.pageCollection()->itemsOnPage( shapes, 0 );
+  //should be 1 shapes on page 1
+  QCOMPARE( shapes.length(), 1 );
+  l.pageCollection()->itemsOnPage( shapes, 1 );
+  //should be 1 shapes on page 2
+  QCOMPARE( shapes.length(), 1 );
+  l.pageCollection()->itemsOnPage( shapes, 2 );
+  //should be no shapes on page 3
+  QCOMPARE( shapes.length(), 0 );
+
+  QList<QgsLayoutItemPolyline *> arrows;
+  l.pageCollection()->itemsOnPage( arrows, 0 );
+  //should be no arrows on page 1
+  QCOMPARE( arrows.length(), 0 );
+  l.pageCollection()->itemsOnPage( arrows, 1 );
+  //should be no arrows on page 2
+  QCOMPARE( arrows.length(), 0 );
+  l.pageCollection()->itemsOnPage( arrows, 2 );
+  //should be 2 arrows on page 3
+  QCOMPARE( arrows.length(), 2 );
 
   l.removeLayoutItem( label1 );
   l.removeLayoutItem( label2 );
@@ -569,6 +605,13 @@ void TestQgsLayout::itemsOnPage()
   QCOMPARE( items.length(), 1 );
   items = l.pageCollection()->itemsOnPage( 2 );
   QCOMPARE( items.length(), 1 );
+
+  l.pageCollection()->itemsOnPage( labels, 0 );
+  QCOMPARE( labels.length(), 0 );
+  l.pageCollection()->itemsOnPage( labels, 1 );
+  QCOMPARE( labels.length(), 0 );
+  l.pageCollection()->itemsOnPage( labels, 2 );
+  QCOMPARE( labels.length(), 0 );
 }
 
 void TestQgsLayout::pageIsEmpty()

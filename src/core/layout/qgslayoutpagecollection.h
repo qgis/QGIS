@@ -107,6 +107,30 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QList< QgsLayoutItem *> itemsOnPage( int page ) const;
 
     /**
+     * Returns layout items of a specific type on a specified \a page.
+     * \note not available in Python bindings.
+     */
+    template<class T> void itemsOnPage( QList<T *> &itemList, int page ) const SIP_SKIP
+    {
+      itemList.clear();
+      const QList<QGraphicsItem *> graphicsItemList = mLayout->items();
+      for ( QGraphicsItem *graphicsItem : graphicsItemList )
+      {
+        T *item = dynamic_cast<T *>( graphicsItem );
+        if ( item && item->page() == page )
+        {
+          itemList.push_back( item );
+        }
+      }
+    }
+
+    /**
+     * Returns whether the specified \a page number should be included in exports of the layouts.
+     * \see pageIsEmpty()
+     */
+    bool shouldExportPage( int page ) const;
+
+    /**
      * Adds a \a page to the collection. Ownership of the \a page is transferred
      * to the collection, and the page will automatically be added to the collection's
      * layout() (there is no need to manually add the page item to the layout).
