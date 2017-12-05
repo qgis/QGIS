@@ -271,6 +271,8 @@ class GUI_EXPORT QgsProcessingAlgorithmDialogBase : public QDialog, private Ui::
     bool mHelpCollapsed = false;
 
     QString formatHelp( QgsProcessingAlgorithm *algorithm );
+    void processEvents();
+    void scrollToBottomOfLog();
 
 };
 

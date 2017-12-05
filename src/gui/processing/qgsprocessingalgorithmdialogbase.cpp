@@ -22,6 +22,7 @@
 #include "processing/qgsprocessingprovider.h"
 #include <QToolButton>
 #include <QDesktopServices>
+#include <QScrollBar>
 
 ///@cond NOT_STABLE
 
@@ -271,27 +272,35 @@ void QgsProcessingAlgorithmDialogBase::reportError( const QString &error )
 {
   setInfo( error, true );
   resetGui();
-  mTabWidget->setCurrentIndex( 1 );
+  showLog();
+  processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushInfo( const QString &info )
 {
   setInfo( info );
+  processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushCommandInfo( const QString &command )
 {
   txtLog->append( QStringLiteral( "<code>%1<code>" ).arg( command.toHtmlEscaped() ) );
+  scrollToBottomOfLog();
+  processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushDebugInfo( const QString &message )
 {
   txtLog->append( QStringLiteral( "<span style=\"color:blue\">%1</span>" ).arg( message.toHtmlEscaped() ) );
+  scrollToBottomOfLog();
+  processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::pushConsoleInfo( const QString &info )
 {
   txtLog->append( QStringLiteral( "<code><span style=\"color:blue\">%1</darkgray></code>" ).arg( info.toHtmlEscaped() ) );
+  scrollToBottomOfLog();
+  processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
@@ -300,12 +309,15 @@ void QgsProcessingAlgorithmDialogBase::setPercentage( double percent )
   if ( progressBar->maximum() == 0 )
     progressBar->setMaximum( 100 );
   progressBar->setValue( percent );
+  processEvents();
 }
 
 void QgsProcessingAlgorithmDialogBase::setProgressText( const QString &text )
 {
   lblProgress->setText( text );
   setInfo( text, false );
+  scrollToBottomOfLog();
+  processEvents();
 }
 
 QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *algorithm )
@@ -323,6 +335,28 @@ QString QgsProcessingAlgorithmDialogBase::formatHelp( QgsProcessingAlgorithm *al
   }
   else
     return QString();
+}
+
+void QgsProcessingAlgorithmDialogBase::processEvents()
+{
+  // So that we get a chance of hitting the Abort button
+#ifdef Q_OS_LINUX
+  // For some reason on Windows hasPendingEvents() always return true,
+  // but one iteration is actually enough on Windows to get good interactivity
+  // whereas on Linux we must allow for far more iterations.
+  // For safety limit the number of iterations
+  int nIters = 0;
+  while ( QCoreApplication::hasPendingEvents() && ++nIters < 100 )
+#endif
+  {
+    QCoreApplication::processEvents();
+  }
+}
+
+void QgsProcessingAlgorithmDialogBase::scrollToBottomOfLog()
+{
+  QScrollBar *sb = txtLog->verticalScrollBar();
+  sb->setValue( sb->maximum() );
 }
 
 void QgsProcessingAlgorithmDialogBase::resetGui()
@@ -352,6 +386,8 @@ void QgsProcessingAlgorithmDialogBase::setInfo( const QString &message, bool isE
     txtLog->append( message.toHtmlEscaped() );
   else
     txtLog->append( message );
+  scrollToBottomOfLog();
+  processEvents();
 }
 
 ///@endcond
