@@ -1,4 +1,4 @@
-##Table=group
+##Vector table tools=group
 ##Input=vector
 ##Fields=Field Input
 ##Frequency=output table
