@@ -187,7 +187,7 @@ QgsGdalProvider::QgsGdalProvider( const QString &uri, bool update, GDALDatasetH 
   }
   else
   {
-    initIfNeeded();
+    ( void )initIfNeeded();
   }
 }
 

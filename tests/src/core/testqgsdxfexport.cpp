@@ -301,7 +301,7 @@ bool TestQgsDxfExport::fileContainsText( const QString &path, const QString &tex
 {
   QStringList searchLines = text.split( '\n' );
   QFile file( path );
-  file.open( QIODevice::ReadOnly );
+  QVERIFY( file.open( QIODevice::ReadOnly ) );
   QTextStream in( &file );
   QString line;
   do

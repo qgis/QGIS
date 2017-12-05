@@ -289,9 +289,11 @@ void QgsAttributeTableModel::attributeValueChanged( QgsFeatureId fid, int idx, c
   {
     if ( mSortFieldIndex == -1 )
     {
-      loadFeatureAtId( fid );
-      mExpressionContext.setFeature( mFeat );
-      mSortCache[fid] = mSortCacheExpression.evaluate( &mExpressionContext );
+      if ( loadFeatureAtId( fid ) )
+      {
+        mExpressionContext.setFeature( mFeat );
+        mSortCache[fid] = mSortCacheExpression.evaluate( &mExpressionContext );
+      }
     }
     else
     {
