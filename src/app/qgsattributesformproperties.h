@@ -203,7 +203,7 @@ class APP_EXPORT QgsAttributesFormProperties : public QWidget, private Ui_QgsAtt
     void loadAttributeRelationEdit();
     void storeAttributeRelationEdit( );
 
-    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource;
+    QgsEditFormConfig::PythonInitCodeSource mInitCodeSource = QgsEditFormConfig::CodeSourceNone;
     QString mInitFunction;
     QString mInitFilePath;
     QString mInitCode;
@@ -268,7 +268,7 @@ class DnDTree : public QTreeWidget
 
   private:
     QgsVectorLayer *mLayer = nullptr;
-    Type mType;
+    Type mType = DnDTree::Type::Drag;
 };
 
 

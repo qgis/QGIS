@@ -85,7 +85,7 @@ class APP_EXPORT QgsSourceFieldsProperties : public QWidget, private Ui_QgsSourc
     };
 
   private:
-    Ui::QgsSourceFieldsProperties *ui;
+    Ui::QgsSourceFieldsProperties *ui = nullptr;
     void updateFieldRenamingStatus();
 
   signals:
