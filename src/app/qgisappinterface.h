@@ -236,6 +236,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsComposerInterface *openComposer( QgsComposition *composition ) override;
     void closeComposer( QgsComposition *composition ) override;
 
+    void showLayoutManager() override;
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
     QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) override;
 

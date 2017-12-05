@@ -446,6 +446,11 @@ void QgisAppInterface::closeComposer( QgsComposition *composition )
   }
 }
 
+void QgisAppInterface::showLayoutManager()
+{
+  qgis->showLayoutManager();
+}
+
 QList<QgsLayoutDesignerInterface *> QgisAppInterface::openLayoutDesigners()
 {
   QList<QgsLayoutDesignerInterface *> designerInterfaceList;

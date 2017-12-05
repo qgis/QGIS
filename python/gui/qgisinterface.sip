@@ -929,6 +929,12 @@ Adds a widget to the user input tool bar.
 .. seealso:: :py:func:`openComposer()`
 %End
 
+    virtual void showLayoutManager() = 0;
+%Docstring
+ Opens the layout manager dialog.
+.. versionadded:: 3.0
+%End
+
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
 %Docstring
  Opens a new layout designer dialog for the specified ``layout``, or

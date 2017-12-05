@@ -615,6 +615,8 @@ QgsLayout *QgsLayoutDesignerDialog::currentLayout()
 void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
   mLayout = layout;
+  connect( mLayout, &QgsLayout::destroyed, this, &QgsLayoutDesignerDialog::close );
+
   mView->setCurrentLayout( layout );
 
   // add undo/redo actions which apply to the correct layout undo stack
@@ -1372,7 +1374,10 @@ void QgsLayoutDesignerDialog::showManager()
   // NOTE: Avoid crash where composer that spawned modal manager from toolbar ends up
   // being deleted by user, but event loop tries to return to layout on manager close
   // (does not seem to be an issue for menu action)
-  QTimer::singleShot( 0,  QgisApp::instance()->actionShowComposerManager(), SLOT( trigger() ) );
+  QTimer::singleShot( 0, this, [ = ]
+  {
+    QgisApp::instance()->showLayoutManager();
+  } );
 }
 
 void QgsLayoutDesignerDialog::paste()

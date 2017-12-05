@@ -209,6 +209,7 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
+#include "qgslayoutmanagerdialog.h"
 #include "qgslayoutqptdrophandler.h"
 #include "qgslayoutapputils.h"
 #include "qgslocatorwidget.h"
@@ -7380,7 +7381,7 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
       else
       {
         titleValid = true;
-        newTitle = QgsProject::instance()->layoutManager()->generateUniqueComposerTitle();
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
       }
     }
     else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
@@ -7454,6 +7455,7 @@ QgsLayoutDesignerDialog *QgisApp::createNewLayout( QString title )
   //create new layout object
   QgsLayout *layout = new QgsLayout( QgsProject::instance() );
   layout->setName( title );
+  layout->initializeDefaults();
   QgsProject::instance()->layoutManager()->addLayout( layout );
   return openLayoutDesignerDialog( layout );
 }
@@ -10109,6 +10111,16 @@ void QgisApp::reloadConnections()
   emit connectionsChanged( );
 }
 
+void QgisApp::showLayoutManager()
+{
+  if ( !mLayoutManagerDialog )
+  {
+    mLayoutManagerDialog = new QgsLayoutManagerDialog( this, Qt::Window );
+    mLayoutManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
+  }
+  mLayoutManagerDialog->show();
+  mLayoutManagerDialog->activate();
+}
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
