@@ -106,6 +106,7 @@
     <addaction name="mActionLayoutManager"/>
     <addaction name="separator"/>
     <addaction name="mActionLayoutProperties"/>
+    <addaction name="mActionRenameLayout"/>
     <addaction name="mActionAddPages"/>
     <addaction name="separator"/>
     <addaction name="mActionLoadFromTemplate"/>
@@ -1149,6 +1150,14 @@
    </property>
    <property name="toolTip">
     <string>Layout manager</string>
+   </property>
+  </action>
+  <action name="mActionRenameLayout">
+   <property name="text">
+    <string>Rename Layout…</string>
+   </property>
+   <property name="toolTip">
+    <string>Rename layout</string>
    </property>
   </action>
  </widget>
