@@ -174,10 +174,17 @@ void QgsFileDownloader::onFinished()
       QUrl newUrl = mUrl.resolved( redirectionTarget.toUrl() );
       mUrl = newUrl;
       mReply->deleteLater();
-      mFile.open( QIODevice::WriteOnly );
-      mFile.resize( 0 );
-      mFile.close();
-      startDownload();
+      if ( !mFile.open( QIODevice::WriteOnly ) )
+      {
+        mFile.remove();
+        error( tr( "Cannot open output file: %1" ).arg( mFile.fileName() ) );
+      }
+      else
+      {
+        mFile.resize( 0 );
+        mFile.close();
+        startDownload();
+      }
       return;
     }
     else
