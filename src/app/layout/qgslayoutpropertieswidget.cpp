@@ -18,11 +18,14 @@
 #include "qgslayout.h"
 #include "qgslayoutsnapper.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout )
   : QgsPanelWidget( parent )
   , mLayout( layout )
 {
+  Q_ASSERT( mLayout );
+
   setupUi( this );
   setPanelTitle( tr( "Layout properties" ) );
   blockSignals( true );
@@ -42,6 +45,30 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mGridResolutionSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridResolutionChanged );
   connect( mOffsetXSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetXChanged );
   connect( mOffsetYSpinBox, static_cast < void ( QgsDoubleSpinBox::* )( double ) > ( &QgsDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::gridOffsetYChanged );
+
+  double leftMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsLeftMargin" ) ).toDouble();
+  double topMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsTopMargin" ) ).toDouble();
+  double bottomMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsBottomMargin" ) ).toDouble();
+  double rightMargin = mLayout->customProperty( QStringLiteral( "resizeToContentsRightMargin" ) ).toDouble();
+  QgsUnitTypes::LayoutUnit marginUnit = static_cast< QgsUnitTypes::LayoutUnit >(
+                                          mLayout->customProperty( QStringLiteral( "imageCropMarginUnit" ), QgsUnitTypes::LayoutMillimeters ).toInt() );
+
+  mTopMarginSpinBox->setValue( topMargin );
+  mMarginUnitsComboBox->linkToWidget( mTopMarginSpinBox );
+  mRightMarginSpinBox->setValue( rightMargin );
+  mMarginUnitsComboBox->linkToWidget( mRightMarginSpinBox );
+  mBottomMarginSpinBox->setValue( bottomMargin );
+  mMarginUnitsComboBox->linkToWidget( mBottomMarginSpinBox );
+  mLeftMarginSpinBox->setValue( leftMargin );
+  mMarginUnitsComboBox->linkToWidget( mLeftMarginSpinBox );
+  mMarginUnitsComboBox->setUnit( marginUnit );
+  mMarginUnitsComboBox->setConverter( &mLayout->context().measurementConverter() );
+
+  connect( mTopMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mRightMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mBottomMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mLeftMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
+  connect( mResizePageButton, &QPushButton::clicked, this, &QgsLayoutPropertiesWidget::resizeToContents );
 }
 
 void QgsLayoutPropertiesWidget::updateSnappingElements()
@@ -99,6 +126,28 @@ void QgsLayoutPropertiesWidget::gridOffsetUnitsChanged( QgsUnitTypes::LayoutUnit
 void QgsLayoutPropertiesWidget::snapToleranceChanged( int tolerance )
 {
   mLayout->snapper().setSnapTolerance( tolerance );
+}
+
+void QgsLayoutPropertiesWidget::resizeMarginsChanged()
+{
+  mLayout->setCustomProperty( QStringLiteral( "resizeToContentsLeftMargin" ), mLeftMarginSpinBox->value() );
+  mLayout->setCustomProperty( QStringLiteral( "resizeToContentsTopMargin" ), mTopMarginSpinBox->value() );
+  mLayout->setCustomProperty( QStringLiteral( "resizeToContentsBottomMargin" ), mBottomMarginSpinBox->value() );
+  mLayout->setCustomProperty( QStringLiteral( "resizeToContentsRightMargin" ), mRightMarginSpinBox->value() );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginUnit" ), mMarginUnitsComboBox->unit() );
+}
+
+void QgsLayoutPropertiesWidget::resizeToContents()
+{
+  mLayout->undoStack()->beginMacro( tr( "Resize to Contents" ) );
+
+  mLayout->pageCollection()->resizeToContents( QgsMargins( mLeftMarginSpinBox->value(),
+      mTopMarginSpinBox->value(),
+      mRightMarginSpinBox->value(),
+      mBottomMarginSpinBox->value() ),
+      mMarginUnitsComboBox->unit() );
+
+  mLayout->undoStack()->endMacro();
 }
 
 void QgsLayoutPropertiesWidget::blockSignals( bool block )

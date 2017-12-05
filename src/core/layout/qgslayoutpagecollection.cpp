@@ -199,6 +199,77 @@ double QgsLayoutPageCollection::pageShadowWidth() const
   return spaceBetweenPages() / 2;
 }
 
+void QgsLayoutPageCollection::resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits )
+{
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->beginCommand( this, tr( "Resize to Contents" ) );
+
+  //calculate current bounds
+  QRectF bounds = mLayout->layoutBounds( true, 0.0 );
+
+  for ( int page = mPages.count() - 1; page > 0; page-- )
+  {
+    deletePage( page );
+  }
+
+  if ( mPages.empty() )
+  {
+    std::unique_ptr< QgsLayoutItemPage > page = qgis::make_unique< QgsLayoutItemPage >( mLayout );
+    addPage( page.release() );
+  }
+
+  QgsLayoutItemPage *page = mPages.at( 0 );
+
+  double marginLeft = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( margins.left(), marginUnits ) );
+  double marginTop = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( margins.top(), marginUnits ) );
+  double marginBottom = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( margins.bottom(), marginUnits ) );
+  double marginRight = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( margins.right(), marginUnits ) );
+
+  bounds.setWidth( bounds.width() + marginLeft + marginRight );
+  bounds.setHeight( bounds.height() + marginTop + marginBottom );
+
+  QgsLayoutSize newPageSize = mLayout->convertFromLayoutUnits( bounds.size(), mLayout->units() );
+  page->setPageSize( newPageSize );
+
+  reflow();
+
+  //also move all items so that top-left of bounds is at marginLeft, marginTop
+  double diffX = marginLeft - bounds.left();
+  double diffY = marginTop - bounds.top();
+
+  const QList<QGraphicsItem *> itemList = mLayout->items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    if ( QgsLayoutItem *layoutItem = dynamic_cast<QgsLayoutItem *>( item ) )
+    {
+      QgsLayoutItemPage *pageItem = dynamic_cast<QgsLayoutItemPage *>( layoutItem );
+      if ( !pageItem )
+      {
+        layoutItem->beginCommand( tr( "Move Item" ) );
+        layoutItem->attemptMoveBy( diffX, diffY );
+        layoutItem->endCommand();
+      }
+    }
+  }
+
+  //also move guides
+  mLayout->undoStack()->beginCommand( &mLayout->guides(), tr( "Move Guides" ) );
+  const QList< QgsLayoutGuide * > verticalGuides = mLayout->guides().guides( Qt::Vertical );
+  for ( QgsLayoutGuide *guide : verticalGuides )
+  {
+    guide->setLayoutPosition( guide->layoutPosition() + diffX );
+  }
+  const QList< QgsLayoutGuide * > horizontalGuides = mLayout->guides().guides( Qt::Horizontal );
+  for ( QgsLayoutGuide *guide : horizontalGuides )
+  {
+    guide->setLayoutPosition( guide->layoutPosition() + diffY );
+  }
+  mLayout->undoStack()->endCommand();
+
+  if ( !mBlockUndoCommands )
+    mLayout->undoStack()->endCommand();
+}
+
 bool QgsLayoutPageCollection::writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const
 {
   QDomElement element = document.createElement( QStringLiteral( "PageCollection" ) );

@@ -267,7 +267,12 @@ void TestQgsLayout::bounds()
   //add some items to a layout
   QgsProject p;
   QgsLayout l( &p );
-  l.initializeDefaults();
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page2 );
 
   QgsLayoutItemShape *shape1 = new QgsLayoutItemShape( &l );
   shape1->attemptResize( QgsLayoutSize( 90, 50 ) );
@@ -276,44 +281,41 @@ void TestQgsLayout::bounds()
   l.addLayoutItem( shape1 );
   QgsLayoutItemShape *shape2 = new QgsLayoutItemShape( &l );
   shape2->attemptResize( QgsLayoutSize( 110, 50 ) );
-  shape2->attemptMove( QgsLayoutPoint( 100, 150 ) );
+  shape2->attemptMove( QgsLayoutPoint( 100, 150 ), true, false, 0 );
   l.addLayoutItem( shape2 );
-
-#if 0
-  QgsLayoutItemRectangularShape *shape3 = new QgsLayoutItemRectangularShape( &l );
-  l.addLayoutItem( shape3 );
-  shape3->setItemPosition( 210, 30, 50, 100, QgsComposerItem::UpperLeft, false, 2 );
-  QgsLayoutItemRectangularShape *shape4 = new QgsLayoutItemRectangularShape( &l );
-  l.addLayoutItem( shape4 );
-  shape4->setItemPosition( 10, 120, 50, 30, QgsComposerItem::UpperLeft, false, 2 );
+  QgsLayoutItemShape *shape3 = new QgsLayoutItemShape( &l );
+// l.addLayoutItem( shape3 );
+  shape3->attemptResize( QgsLayoutSize( 50, 100 ) );
+  shape3->attemptMove( QgsLayoutPoint( 210, 30 ), true, false, 1 );
+  QgsLayoutItemShape *shape4 = new QgsLayoutItemShape( &l );
+// l.addLayoutItem( shape4 );
+  shape4->attemptResize( QgsLayoutSize( 50, 30 ) );
+  shape4->attemptMove( QgsLayoutPoint( 10, 120 ), true, false, 1 );
   shape4->setVisibility( false );
-#endif
 
   //check bounds
   QRectF layoutBounds = l.layoutBounds( false );
-#if 0 // correct values when 2nd page items are added back in
-  QGSCOMPARENEAR( layoutBounds.height(), 372.15, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.width(), 301.00, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.left(), -2, 0.01 );
-  QGSCOMPARENEAR( layoutBounds.top(), -2, 0.01 );
+// QGSCOMPARENEAR( layoutBounds.height(), 430, 0.01 );
+// QGSCOMPARENEAR( layoutBounds.width(), 297.00, 0.01 );
+// QGSCOMPARENEAR( layoutBounds.left(), 0.0, 0.01 );
+// QGSCOMPARENEAR( layoutBounds.top(), 0.0, 0.01 );
 
-  QRectF compositionBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 320.36, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 250.30, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 9.85, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 49.79, 0.01 );
-#endif
+  QRectF layoutBoundsNoPage = l.layoutBounds( true );
+  QGSCOMPARENEAR( layoutBoundsNoPage.height(), 320.36, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.width(), 250.30, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.left(), 9.85, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.top(), 49.79, 0.01 );
 
   QGSCOMPARENEAR( layoutBounds.height(), 210.000000, 0.01 );
   QGSCOMPARENEAR( layoutBounds.width(), 297.000000, 0.01 );
   QGSCOMPARENEAR( layoutBounds.left(), 0.00000, 0.01 );
   QGSCOMPARENEAR( layoutBounds.top(), 0.00000, 0.01 );
 
-  QRectF compositionBoundsNoPage = l.layoutBounds( true );
-  QGSCOMPARENEAR( compositionBoundsNoPage.height(), 174.859607, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.width(), 124.859607, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.left(), 85.290393, 0.01 );
-  QGSCOMPARENEAR( compositionBoundsNoPage.top(), 25.290393, 0.01 );
+  layoutBoundsNoPage = l.layoutBounds( true );
+  QGSCOMPARENEAR( layoutBoundsNoPage.height(), 174.859607, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.width(), 124.859607, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.left(), 85.290393, 0.01 );
+  QGSCOMPARENEAR( layoutBoundsNoPage.top(), 25.290393, 0.01 );
 
 #if 0
   QRectF page1Bounds = composition->pageItemBounds( 0, true );

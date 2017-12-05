@@ -282,6 +282,16 @@ Returns the space between pages, in layout units.
 Returns the size of the page shadow, in layout units.
 %End
 
+    void resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits );
+%Docstring
+ Resizes the layout to a single page which fits the current contents of the layout.
+
+ Calling this method resets the number of pages to 1, with the size set to the
+ minimum size required to fit all existing layout items. Items will also be
+ repositioned so that the new top-left bounds of the layout is at the point
+ (marginLeft, marginTop). An optional margin can be specified.
+%End
+
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 %Docstring

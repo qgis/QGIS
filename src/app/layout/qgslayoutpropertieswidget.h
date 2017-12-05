@@ -36,6 +36,8 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
     void gridOffsetYChanged( double d );
     void gridOffsetUnitsChanged( QgsUnitTypes::LayoutUnit unit );
     void snapToleranceChanged( int tolerance );
+    void resizeMarginsChanged();
+    void resizeToContents();
 
   private:
 

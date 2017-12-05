@@ -307,6 +307,16 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     double pageShadowWidth() const;
 
     /**
+     * Resizes the layout to a single page which fits the current contents of the layout.
+     *
+     * Calling this method resets the number of pages to 1, with the size set to the
+     * minimum size required to fit all existing layout items. Items will also be
+     * repositioned so that the new top-left bounds of the layout is at the point
+     * (marginLeft, marginTop). An optional margin can be specified.
+     */
+    void resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits );
+
+    /**
      * Stores the collection's state in a DOM element. The \a parentElement should refer to the parent layout's DOM element.
      * \see readXml()
      */
