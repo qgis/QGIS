@@ -140,9 +140,8 @@ QVariant QgsFeatureFilterModel::data( const QModelIndex &index, int role ) const
       return mEntries.value( index.row() ).identifierValue;
 
     case Qt::BackgroundColorRole:
-      FALLTHROUGH;
     case Qt::TextColorRole:
-      FALLTHROUGH;
+    case Qt::DecorationRole:
     case Qt::FontRole:
     {
       if ( mEntries.value( index.row() ).identifierValue.isNull() )
