@@ -25,6 +25,8 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
   : QgsLayoutItemBaseWidget( nullptr, shape )
   , mShape( shape )
 {
+  Q_ASSERT( mShape );
+
   setupUi( this );
   connect( mShapeComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutShapeWidget::mShapeComboBox_currentIndexChanged );
   connect( mCornerRadiusSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutShapeWidget::mCornerRadiusSpinBox_valueChanged );
@@ -52,11 +54,9 @@ QgsLayoutShapeWidget::QgsLayoutShapeWidget( QgsLayoutItemShape *shape )
 
   blockAllSignals( false );
 
-  if ( mShape )
-  {
-    connect( mShape, &QgsLayoutObject::changed, this, &QgsLayoutShapeWidget::setGuiElementValues );
-    mShapeStyleButton->registerExpressionContextGenerator( mShape );
-  }
+  connect( mShape, &QgsLayoutObject::changed, this, &QgsLayoutShapeWidget::setGuiElementValues );
+  mShapeStyleButton->registerExpressionContextGenerator( mShape );
+
   connect( mShapeStyleButton, &QgsSymbolButton::changed, this, &QgsLayoutShapeWidget::symbolChanged );
   connect( mRadiusUnitsComboBox, &QgsLayoutUnitsComboBox::changed, this, &QgsLayoutShapeWidget::radiusUnitsChanged );
 

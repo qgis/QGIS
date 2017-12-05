@@ -143,7 +143,7 @@ void QgsLayoutMultiFrame::recalculateFrameSizes()
   }
 
   //at end of frames but there is  still content left. Add other pages if ResizeMode ==
-  if ( mResizeMode != UseExistingFrames )
+  if ( currentItem && mResizeMode != UseExistingFrames )
   {
     while ( ( mResizeMode == RepeatOnEveryPage ) || currentY < totalHeight )
     {
