@@ -145,7 +145,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
  Calling deletePage() automatically triggers a reflow() of pages.
 
-.. seealso:: clear()
+.. seealso:: :py:func:`clear()`
 %End
 
     void deletePage( QgsLayoutItemPage *page );
@@ -155,13 +155,13 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
  Calling deletePage() automatically triggers a reflow() of pages.
 
-.. seealso:: clear()
+.. seealso:: :py:func:`clear()`
 %End
 
     void clear();
 %Docstring
  Removes all pages from the collection.
-.. seealso:: deletePage()
+.. seealso:: :py:func:`deletePage()`
 %End
 
     QgsLayoutItemPage *takePage( QgsLayoutItemPage *page ) /TransferBack/;

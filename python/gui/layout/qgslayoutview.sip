@@ -195,15 +195,15 @@ class QgsLayoutView: QGraphicsView
     void copySelectedItems( ClipboardOperation operation );
 %Docstring
  Cuts or copies the selected items, respecting the specified ``operation``.
-.. seealso:: copyItems()
-.. seealso:: pasteItems()
+.. seealso:: :py:func:`copyItems()`
+.. seealso:: :py:func:`pasteItems()`
 %End
 
     void copyItems( const QList< QgsLayoutItem * > &items, ClipboardOperation operation );
 %Docstring
  Cuts or copies the a list of ``items``, respecting the specified ``operation``.
-.. seealso:: copySelectedItems()
-.. seealso:: pasteItems()
+.. seealso:: :py:func:`copySelectedItems()`
+.. seealso:: :py:func:`pasteItems()`
 %End
 
     QList< QgsLayoutItem * > pasteItems( PasteMode mode );
@@ -212,8 +212,8 @@ class QgsLayoutView: QGraphicsView
 
  A list of pasted items is returned.
 
-.. seealso:: copySelectedItems()
-.. seealso:: hasItemsInClipboard()
+.. seealso:: :py:func:`copySelectedItems()`
+.. seealso:: :py:func:`hasItemsInClipboard()`
  :rtype: list of QgsLayoutItem
 %End
 
@@ -224,15 +224,15 @@ class QgsLayoutView: QGraphicsView
 
  A list of pasted items is returned.
 
-.. seealso:: copySelectedItems()
-.. seealso:: hasItemsInClipboard()
+.. seealso:: :py:func:`copySelectedItems()`
+.. seealso:: :py:func:`hasItemsInClipboard()`
  :rtype: list of QgsLayoutItem
 %End
 
     bool hasItemsInClipboard() const;
 %Docstring
  Returns true if the current clipboard contains layout items.
-.. seealso:: pasteItems()
+.. seealso:: :py:func:`pasteItems()`
  :rtype: bool
 %End
 
@@ -376,13 +376,13 @@ class QgsLayoutView: QGraphicsView
     void deleteSelectedItems();
 %Docstring
  Deletes all selected items.
-.. seealso:: deleteItems()
+.. seealso:: :py:func:`deleteItems()`
 %End
 
     void deleteItems( const QList< QgsLayoutItem * > &items );
 %Docstring
  Delete the specified ``items``.
-.. seealso:: deleteSelectedItems()
+.. seealso:: :py:func:`deleteSelectedItems()`
 %End
 
     void groupSelectedItems();

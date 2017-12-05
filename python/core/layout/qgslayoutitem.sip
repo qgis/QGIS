@@ -261,18 +261,10 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
     virtual int type() const;
 
 %Docstring
- Return correct graphics item type
-.. seealso:: :py:func:`stringType()`
+ Return unique graphics item type identifier.
+
+ Plugin based subclasses should return an identifier greater than QgsLayoutItemRegistry.PluginItem.
  :rtype: int
-%End
-
-    virtual QString stringType() const = 0;
-%Docstring
- Return the item type as a string.
-
- This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
-.. seealso:: :py:func:`type()`
- :rtype: str
 %End
 
     virtual QString uuid() const;
@@ -284,6 +276,17 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
    There is no corresponding setter for the uuid - it's created automatically.
 .. seealso:: :py:func:`id()`
 .. seealso:: :py:func:`setId()`
+.. seealso:: :py:func:`templateUuid()`
+ :rtype: str
+%End
+
+    QString templateUuid() const;
+%Docstring
+ Returns the item's original identification string. This may differ from the item's uuid()
+ for items which have been added to an existing layout from a template. In this case
+ templateUuid() returns the original item UUID at the time the template was created,
+ while uuid() returns the current instance of the item's unique identifier.
+.. seealso:: :py:func:`uuid()`
  :rtype: str
 %End
 
@@ -457,6 +460,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  Note that the final position of the item may not match the specified target position,
  as data defined item position may override the specified value.
 
+.. seealso:: :py:func:`attemptMoveBy()`
 .. seealso:: :py:func:`attemptResize()`
 .. seealso:: :py:func:`referencePoint()`
 .. seealso:: :py:func:`positionWithUnits()`
@@ -471,6 +475,20 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  position and size at for the outside of the item's frame.
 
  Note that the final position and size of the item may not match the specified target rect,
+ as data defined item position and size may override the specified value.
+
+.. seealso:: :py:func:`attemptResize()`
+.. seealso:: :py:func:`attemptMove()`
+.. seealso:: :py:func:`referencePoint()`
+.. seealso:: :py:func:`positionWithUnits()`
+%End
+
+    void attemptMoveBy( double deltaX, double deltaY );
+%Docstring
+ Attempts to shift the item's position by a specified ``deltaX`` and ``deltaY``, in layout
+ units.
+
+ Note that the final position of the item may not match the specified offsets,
  as data defined item position and size may override the specified value.
 
 .. seealso:: :py:func:`attemptResize()`
@@ -550,8 +568,26 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  \param itemElement is the DOM node corresponding to item (e.g. 'LayoutItem' element)
  \param document DOM document
  \param context read write context
+
+ Note that item subclasses should not rely on all other items being present in the
+ layout at the time this method is called. Instead, any connections and links to
+ other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+ a scalebar, the connection to the linked map's signals should be implemented
+ in finalizeRestoreFromXml(), not readXml().
+
 .. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`finalizeRestoreFromXml()`
  :rtype: bool
+%End
+
+    virtual void finalizeRestoreFromXml();
+%Docstring
+ Called after all pending items have been restored from XML. Items can use
+ this method to run steps which must take place after all items have been restored to the layout,
+ such as connecting to signals emitted by other items, which may not have existed in the layout
+ at the time readXml() was called. E.g. a scalebar can use this to connect to its linked
+ map item after restoration from XML.
+.. seealso:: :py:func:`readXml()`
 %End
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
@@ -995,6 +1031,13 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
  \param element is the DOM element for the item
  \param document DOM document
  \param context read write context
+
+ Note that item subclasses should not rely on all other items being present in the
+ layout at the time this method is called. Instead, any connections and links to
+ other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
+ a scalebar, the connection to the linked map's signals should be implemented
+ in finalizeRestoreFromXml(), not readPropertiesFromElement().
+
 .. seealso:: :py:func:`writePropertiesToElement()`
 .. seealso:: :py:func:`readXml()`
  :rtype: bool

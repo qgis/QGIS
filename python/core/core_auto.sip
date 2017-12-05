@@ -51,6 +51,7 @@
 %Include qgsfeaturestore.sip
 %Include qgsfieldformatter.sip
 %Include qgsfields.sip
+%Include qgsfileutils.sip
 %Include qgsfontutils.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgshistogram.sip
@@ -313,7 +314,6 @@
 %Include qgsfieldmodel.sip
 %Include qgsfieldproxymodel.sip
 %Include qgsfiledownloader.sip
-%Include qgsfileutils.sip
 %Include qgsfeaturefiltermodel.sip
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
