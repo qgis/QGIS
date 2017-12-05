@@ -217,6 +217,18 @@ class QgsLayoutView: QGraphicsView
  :rtype: list of QgsLayoutItem
 %End
 
+    QList< QgsLayoutItem * > pasteItems( QPointF layoutPoint );
+%Docstring
+ Pastes items from clipboard, at the specified ``layoutPoint``,
+ in layout units.
+
+ A list of pasted items is returned.
+
+.. seealso:: copySelectedItems()
+.. seealso:: hasItemsInClipboard()
+ :rtype: list of QgsLayoutItem
+%End
+
     bool hasItemsInClipboard() const;
 %Docstring
  Returns true if the current clipboard contains layout items.

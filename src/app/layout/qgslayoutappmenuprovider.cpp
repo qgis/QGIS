@@ -94,9 +94,10 @@ QMenu *QgsLayoutAppMenuProvider::createContextMenu( QWidget *parent, QgsLayout *
   else if ( mDesigner->view()->hasItemsInClipboard() )
   {
     QAction *pasteAction = new QAction( tr( "Paste" ), menu );
-    connect( pasteAction, &QAction::triggered, this, [this]()
+    connect( pasteAction, &QAction::triggered, this, [this, menu]()
     {
-      mDesigner->paste();
+      QPointF pt = mDesigner->view()->mapToScene( mDesigner->view()->mapFromGlobal( menu->pos() ) );
+      mDesigner->view()->pasteItems( pt );
     } );
     menu->addAction( pasteAction );
     menu->addSeparator();
