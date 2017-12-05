@@ -369,6 +369,26 @@ QList< QgsLayoutItem * > QgsLayoutView::pasteItems( QgsLayoutView::PasteMode mod
   return pastedItems;
 }
 
+QList<QgsLayoutItem *> QgsLayoutView::pasteItems( QPointF layoutPoint )
+{
+  QList< QgsLayoutItem * > pastedItems;
+  QDomDocument doc;
+  QClipboard *clipboard = QApplication::clipboard();
+  if ( doc.setContent( clipboard->mimeData()->data( QStringLiteral( "text/xml" ) ) ) )
+  {
+    QDomElement docElem = doc.documentElement();
+    if ( docElem.tagName() == QLatin1String( "LayoutItemClipboard" ) )
+    {
+      currentLayout()->undoStack()->beginMacro( tr( "Paste Items" ) );
+      currentLayout()->undoStack()->beginCommand( currentLayout(), tr( "Paste Items" ) );
+      pastedItems = currentLayout()->addItemsFromXml( docElem, doc, QgsReadWriteContext(), &layoutPoint, false );
+      currentLayout()->undoStack()->endCommand();
+      currentLayout()->undoStack()->endMacro();
+    }
+  }
+  return pastedItems;
+}
+
 bool QgsLayoutView::hasItemsInClipboard() const
 {
   QDomDocument doc;

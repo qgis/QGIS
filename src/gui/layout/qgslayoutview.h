@@ -248,6 +248,17 @@ class GUI_EXPORT QgsLayoutView: public QGraphicsView
     QList< QgsLayoutItem * > pasteItems( PasteMode mode );
 
     /**
+     * Pastes items from clipboard, at the specified \a layoutPoint,
+     * in layout units.
+     *
+     * A list of pasted items is returned.
+     *
+     * \see copySelectedItems()
+     * \see hasItemsInClipboard()
+     */
+    QList< QgsLayoutItem * > pasteItems( QPointF layoutPoint );
+
+    /**
      * Returns true if the current clipboard contains layout items.
      * \see pasteItems()
      */
