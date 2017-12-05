@@ -1039,6 +1039,8 @@ bool QgsProject::readProjectFile( const QString &filename )
     QgsMessageLog::logMessage( tr( "Project Variables Invalid" ), tr( "The project contains invalid variable settings." ) );
   }
   emit customVariablesChanged();
+  emit crsChanged();
+  emit ellipsoidChanged( ellipsoid() );
 
   // read the project: used by map canvas and legend
   emit readProject( *doc );
@@ -1048,8 +1050,6 @@ bool QgsProject::readProjectFile( const QString &filename )
     setDirty( false );
 
   emit nonIdentifiableLayersChanged( nonIdentifiableLayers() );
-  emit crsChanged();
-  emit ellipsoidChanged( ellipsoid() );
 
   return true;
 }
