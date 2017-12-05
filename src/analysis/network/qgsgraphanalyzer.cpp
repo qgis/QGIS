@@ -24,6 +24,12 @@
 
 void QgsGraphAnalyzer::dijkstra( const QgsGraph *source, int startPointIdx, int criterionNum, QVector<int> *resultTree, QVector<double> *resultCost )
 {
+  if ( startPointIdx < 0 || startPointIdx >= source->vertexCount() )
+  {
+    // invalid start point
+    return;
+  }
+
   QVector< double > *result = nullptr;
   if ( resultCost )
   {
