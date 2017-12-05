@@ -90,8 +90,8 @@ QString Qgs3DUtils::cullingModeToString( Qt3DRender::QCullFace::CullingMode mode
     case Qt3DRender::QCullFace::Front: return QStringLiteral( "front" );
     case Qt3DRender::QCullFace::Back: return QStringLiteral( "back" );
     case Qt3DRender::QCullFace::FrontAndBack: return QStringLiteral( "front-and-back" );
-    default: return QString();
   }
+  return QString();
 }
 
 Qt3DRender::QCullFace::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )

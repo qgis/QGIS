@@ -420,7 +420,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
       polylinesToDelete << holePolyline;
     }
 
-    // run triangulation and write vertices to the ouput data array
+    // run triangulation and write vertices to the output data array
     try
     {
       cdt->Triangulate();
