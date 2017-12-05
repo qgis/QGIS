@@ -164,7 +164,7 @@ QgsRelationReferenceWidget::QgsRelationReferenceWidget( QWidget* parent )
   connect( mMapIdentificationButton, SIGNAL( clicked() ), this, SLOT( mapIdentification() ) );
   connect( mRemoveFKButton, SIGNAL( clicked() ), this, SLOT( deleteForeignKey() ) );
   connect( mAddEntryButton, SIGNAL( clicked( bool ) ), this, SLOT( addEntry() ) );
-  connect( mComboBox, SIGNAL( editTextChanged( QString ) ), this, SLOT( updateAddEntryButton() ) );
+  connect( mComboBox, SIGNAL( editTextChanged( QString ) ), this, SLOT( editTextUpdated( const QString & ) ) );
 }
 
 QgsRelationReferenceWidget::~QgsRelationReferenceWidget()
@@ -989,4 +989,14 @@ void QgsRelationReferenceWidget::disableChainedComboBoxes( const QComboBox *scb 
 
     ccb = cb;
   }
+}
+
+void QgsRelationReferenceWidget::editTextUpdated( const QString &text )
+{
+  updateAddEntryButton();
+
+  // allow to raise an invalid constraint on NULL values if necessary
+  // and when the combobox is updated manually from the keyboard
+  if ( text.isEmpty() && mAllowNull )
+    mComboBox->setCurrentIndex( 0 );
 }
