@@ -1397,6 +1397,9 @@ border-radius: 2px;</string>
                 <layout class="QHBoxLayout" name="horizontalLayout">
                  <item>
                   <widget class="QPushButton" name="mButtonAddJoin">
+                   <property name="toolTip">
+                    <string>Add new join</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -1408,6 +1411,9 @@ border-radius: 2px;</string>
                  </item>
                  <item>
                   <widget class="QPushButton" name="mButtonRemoveJoin">
+                   <property name="toolTip">
+                    <string>Remove selected join</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -1419,6 +1425,9 @@ border-radius: 2px;</string>
                  </item>
                  <item>
                   <widget class="QPushButton" name="mButtonEditJoin">
+                   <property name="toolTip">
+                    <string>Edit selected join</string>
+                   </property>
                    <property name="text">
                     <string/>
                    </property>
@@ -2182,6 +2191,9 @@ border-radius: 2px;</string>
                    </item>
                    <item>
                     <widget class="QPushButton" name="mAuxiliaryStorageFieldsAddBtn">
+                     <property name="toolTip">
+                      <string>Add new field</string>
+                     </property>
                      <property name="text">
                       <string/>
                      </property>
@@ -2193,6 +2205,9 @@ border-radius: 2px;</string>
                    </item>
                    <item>
                     <widget class="QPushButton" name="mAuxiliaryStorageFieldsDeleteBtn">
+                     <property name="toolTip">
+                      <string>Remove selected field</string>
+                     </property>
                      <property name="text">
                       <string/>
                      </property>

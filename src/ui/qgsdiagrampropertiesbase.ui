@@ -395,6 +395,9 @@
                         <verstretch>0</verstretch>
                        </sizepolicy>
                       </property>
+                      <property name="toolTip">
+                       <string>Add selected attributes</string>
+                      </property>
                       <property name="text">
                        <string/>
                       </property>
@@ -411,6 +414,9 @@
                         <horstretch>0</horstretch>
                         <verstretch>0</verstretch>
                        </sizepolicy>
+                      </property>
+                      <property name="toolTip">
+                       <string>Remove selected attributes</string>
                       </property>
                       <property name="text">
                        <string/>

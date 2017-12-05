@@ -645,7 +645,7 @@
                   </sizepolicy>
                  </property>
                  <property name="title">
-                  <string>Project scales</string>
+                  <string>Project predefined scales</string>
                  </property>
                  <property name="checkable">
                   <bool>true</bool>
@@ -664,6 +664,9 @@
                    <layout class="QVBoxLayout" name="verticalLayout_4">
                     <item>
                      <widget class="QToolButton" name="pbnAddScale">
+                      <property name="toolTip">
+                       <string>Add predefined scale</string>
+                      </property>
                       <property name="text">
                        <string>…</string>
                       </property>
@@ -675,6 +678,9 @@
                     </item>
                     <item>
                      <widget class="QToolButton" name="pbnRemoveScale">
+                      <property name="toolTip">
+                       <string>Remove selected scale</string>
+                      </property>
                       <property name="text">
                        <string>…</string>
                       </property>
@@ -686,6 +692,9 @@
                     </item>
                     <item>
                      <widget class="QToolButton" name="pbnImportScales">
+                      <property name="toolTip">
+                       <string>Import from file</string>
+                      </property>
                       <property name="text">
                        <string>…</string>
                       </property>
@@ -697,6 +706,9 @@
                     </item>
                     <item>
                      <widget class="QToolButton" name="pbnExportScales">
+                      <property name="toolTip">
+                       <string>Save to file</string>
+                      </property>
                       <property name="text">
                        <string>…</string>
                       </property>
@@ -934,6 +946,9 @@
                   </property>
                   <item row="0" column="5">
                    <widget class="QToolButton" name="pbtnStyleMarker">
+                    <property name="toolTip">
+                     <string>Edit symbol</string>
+                    </property>
                     <property name="text">
                      <string>…</string>
                     </property>
@@ -987,6 +1002,9 @@
                   </item>
                   <item row="1" column="5">
                    <widget class="QToolButton" name="pbtnStyleLine">
+                    <property name="toolTip">
+                     <string>Edit symbol</string>
+                    </property>
                     <property name="text">
                      <string>…</string>
                     </property>
@@ -1076,6 +1094,9 @@
                   </item>
                   <item row="2" column="5">
                    <widget class="QToolButton" name="pbtnStyleFill">
+                    <property name="toolTip">
+                     <string>Edit symbol</string>
+                    </property>
                     <property name="text">
                      <string>…</string>
                     </property>
@@ -1123,6 +1144,9 @@
                   </item>
                   <item row="3" column="5">
                    <widget class="QToolButton" name="pbtnStyleColorRamp">
+                    <property name="toolTip">
+                     <string>Edit symbol</string>
+                    </property>
                     <property name="text">
                      <string>…</string>
                     </property>
@@ -1276,8 +1300,11 @@
                   </item>
                   <item row="4" column="1">
                    <widget class="QToolButton" name="mButtonImportColors">
-                    <property name="statusTip">
+                    <property name="toolTip">
                      <string>Import colors</string>
+                    </property>
+                    <property name="statusTip">
+                     <string/>
                     </property>
                     <property name="text">
                      <string/>
@@ -1739,6 +1766,9 @@
                      </item>
                      <item row="1" column="0">
                       <widget class="QToolButton" name="mAddWMSComposerButton">
+                       <property name="toolTip">
+                        <string>Add composer to exclude</string>
+                       </property>
                        <property name="text">
                         <string/>
                        </property>
@@ -1750,6 +1780,9 @@
                      </item>
                      <item row="1" column="1">
                       <widget class="QToolButton" name="mRemoveWMSComposerButton">
+                       <property name="toolTip">
+                        <string>Remove selected composer</string>
+                       </property>
                        <property name="text">
                         <string/>
                        </property>
@@ -1798,6 +1831,9 @@
                      </item>
                      <item row="1" column="0">
                       <widget class="QToolButton" name="mAddLayerRestrictionButton">
+                       <property name="toolTip">
+                        <string>Add layer to exclude</string>
+                       </property>
                        <property name="text">
                         <string/>
                        </property>
@@ -1809,6 +1845,9 @@
                      </item>
                      <item row="1" column="1">
                       <widget class="QToolButton" name="mRemoveLayerRestrictionButton">
+                       <property name="toolTip">
+                        <string>Remove selected layer</string>
+                       </property>
                        <property name="text">
                         <string/>
                        </property>
@@ -1854,6 +1893,9 @@
                     <layout class="QGridLayout" name="gridLayout_5">
                      <item row="1" column="0">
                       <widget class="QToolButton" name="pbnWMSAddSRS">
+                       <property name="toolTip">
+                        <string>Add new CRS</string>
+                       </property>
                        <property name="icon">
                         <iconset resource="../../images/images.qrc">
                          <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
@@ -1865,6 +1907,9 @@
                      </item>
                      <item row="1" column="2">
                       <widget class="QPushButton" name="pbnWMSSetUsedSRS">
+                       <property name="toolTip">
+                        <string>Fetch all CRS's from layers</string>
+                       </property>
                        <property name="text">
                         <string>Used</string>
                        </property>
@@ -1872,6 +1917,9 @@
                      </item>
                      <item row="1" column="1">
                       <widget class="QToolButton" name="pbnWMSRemoveSRS">
+                       <property name="toolTip">
+                        <string>Remove selected CRS</string>
+                       </property>
                        <property name="icon">
                         <iconset resource="../../images/images.qrc">
                          <normaloff>:/images/themes/default/symbologyRemove.svg</normaloff>:/images/themes/default/symbologyRemove.svg</iconset>
