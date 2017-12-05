@@ -22,6 +22,7 @@
 #include "qgsphongmaterialsettings.h"
 #include "qgs3dutils.h"
 
+#include <Qt3DRender/QCullFace>
 
 /**
  * \ingroup 3d
@@ -65,6 +66,11 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     //! Sets material used for shading of the symbol
     void setMaterial( const QgsPhongMaterialSettings &material ) { mMaterial = material; }
 
+    //! Returns front/back culling mode
+    Qt3DRender::QCullFace::CullingMode cullingMode() const { return mCullingMode; }
+    //! Sets front/back culling mode
+    void setCullingMode( Qt3DRender::QCullFace::CullingMode mode ) { mCullingMode = mode; }
+
   private:
     //! how to handle altitude of vector features
     AltitudeClamping mAltClamping = AltClampRelative;
@@ -74,6 +80,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     float mHeight = 0.0f;           //!< Base height of polygons
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
+    Qt3DRender::QCullFace::CullingMode mCullingMode = Qt3DRender::QCullFace::NoCulling;  //!< Front/back culling mode
 };
 
 

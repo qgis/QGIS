@@ -21,6 +21,9 @@
 #include "qgs3dutils.h"
 
 #include <Qt3DCore/QTransform>
+#include <Qt3DRender/QEffect>
+#include <Qt3DRender/QTechnique>
+#include <Qt3DRender/QCullFace>
 
 #include "qgsvectorlayer.h"
 #include "qgsmultipolygon.h"
@@ -103,9 +106,24 @@ void QgsPolygon3DSymbolEntity::addEntityForNotSelectedPolygons( const Qgs3DMapSe
   entity->setParent( this );
 }
 
+
 Qt3DExtras::QPhongMaterial *QgsPolygon3DSymbolEntity::material( const QgsPolygon3DSymbol &symbol ) const
 {
   Qt3DExtras::QPhongMaterial *material = new Qt3DExtras::QPhongMaterial;
+
+  // front/back side culling
+  auto techniques = material->effect()->techniques();
+  for ( auto tit = techniques.constBegin(); tit != techniques.constEnd(); ++tit )
+  {
+    auto renderPasses = ( *tit )->renderPasses();
+    for ( auto rpit = renderPasses.begin(); rpit != renderPasses.end(); ++rpit )
+    {
+      Qt3DRender::QCullFace *cullFace = new Qt3DRender::QCullFace;
+      cullFace->setMode( symbol.cullingMode() );
+      ( *rpit )->addRenderState( cullFace );
+    }
+  }
+
   material->setAmbient( symbol.material().ambient() );
   material->setDiffuse( symbol.material().diffuse() );
   material->setSpecular( symbol.material().specular() );

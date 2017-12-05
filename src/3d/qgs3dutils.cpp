@@ -82,6 +82,30 @@ AltitudeBinding Qgs3DUtils::altBindingFromString( const QString &str )
     return AltBindCentroid;
 }
 
+QString Qgs3DUtils::cullingModeToString( Qt3DRender::QCullFace::CullingMode mode )
+{
+  switch ( mode )
+  {
+    case Qt3DRender::QCullFace::NoCulling: return QStringLiteral( "no-culling" );
+    case Qt3DRender::QCullFace::Front: return QStringLiteral( "front" );
+    case Qt3DRender::QCullFace::Back: return QStringLiteral( "back" );
+    case Qt3DRender::QCullFace::FrontAndBack: return QStringLiteral( "front-and-back" );
+  }
+  return QString();
+}
+
+Qt3DRender::QCullFace::CullingMode Qgs3DUtils::cullingModeFromString( const QString &str )
+{
+  if ( str == QStringLiteral( "front" ) )
+    return Qt3DRender::QCullFace::Front;
+  else if ( str == QStringLiteral( "back" ) )
+    return Qt3DRender::QCullFace::Back;
+  else if ( str == QStringLiteral( "front-and-back" ) )
+    return Qt3DRender::QCullFace::FrontAndBack;
+  else
+    return Qt3DRender::QCullFace::NoCulling;
+}
+
 
 void Qgs3DUtils::clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map )
 {

@@ -22,6 +22,8 @@ class QgsPolygon;
 #include "qgs3dmapsettings.h"
 #include "qgsaabb.h"
 
+#include <Qt3DRender/QCullFace>
+
 //! how to handle altitude of vector features
 enum AltitudeClamping
 {
@@ -63,6 +65,11 @@ class _3D_EXPORT Qgs3DUtils
     static QString altBindingToString( AltitudeBinding altBind );
     //! Converts a string to a value from AltitudeBinding enum
     static AltitudeBinding altBindingFromString( const QString &str );
+
+    //! Converts a value from CullingMode enum to a string
+    static QString cullingModeToString( Qt3DRender::QCullFace::CullingMode mode );
+    //! Converts a string to a value from CullingMode enum
+    static Qt3DRender::QCullFace::CullingMode cullingModeFromString( const QString &str );
 
     //! Clamps altitude of vertices of a linestring according to the settings
     static void clampAltitudes( QgsLineString *lineString, AltitudeClamping altClamp, AltitudeBinding altBind, const QgsPoint &centroid, float height, const Qgs3DMapSettings &map );
