@@ -65,6 +65,7 @@ class QgsLayout;
 class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
 class QgsLayoutDesignerInterface;
+class QgsLayoutManagerDialog;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
 class QgsMapLayer;
@@ -939,6 +940,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \since QGIS 3.0
      */
     void reloadConnections();
+
+    /**
+     * Shows the layout manager dialog.
+     * \since QGIS 3.0
+     */
+    void showLayoutManager();
 
   protected:
 
@@ -2112,6 +2119,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
 
     QgsComposerManager *mComposerManager = nullptr;
+    QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;

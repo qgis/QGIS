@@ -548,6 +548,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void closeComposer( QgsComposition *composition ) = 0;
 
     /**
+     * Opens the layout manager dialog.
+     * \since QGIS 3.0
+     */
+    virtual void showLayoutManager() = 0;
+
+    /**
      * Opens a new layout designer dialog for the specified \a layout, or
      * brings an already open designer window to the foreground if one
      * is already created for the layout.

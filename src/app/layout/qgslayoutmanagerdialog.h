@@ -1,9 +1,9 @@
 /***************************************************************************
-                              qgscomposermanager.h
-                             ------------------------
-    begin                : September 11 2009
-    copyright            : (C) 2009 by Marco Hugentobler
-    email                : marco at hugis dot net
+                         qgslayoutmanagerdialog.h
+                         -----------------------
+    begin                : December 2017
+    copyright            : (C) 2017 by Nyall Dawson
+    email                : nyall dot dawson at gmail dot com
  ***************************************************************************/
 /***************************************************************************
  *                                                                         *
@@ -14,19 +14,19 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSCOMPOSERMANAGER_H
-#define QGSCOMPOSERMANAGER_H
+#ifndef QGSLAYOUTMANAGERDIALOG_H
+#define QGSLAYOUTMANAGERDIALOG_H
 
 #include <QItemDelegate>
 
-#include "ui_qgscomposermanagerbase.h"
+#include "ui_qgslayoutmanagerbase.h"
 
 class QListWidgetItem;
-class QgsComposer;
-class QgsComposition;
+class QgsLayoutDesignerDialog;
+class QgsLayout;
 class QgsLayoutManager;
 
-class QgsComposerManagerModel : public QAbstractListModel
+class QgsLayoutManagerModel : public QAbstractListModel
 {
     Q_OBJECT
 
@@ -34,36 +34,35 @@ class QgsComposerManagerModel : public QAbstractListModel
 
     enum Role
     {
-      CompositionRole = Qt::UserRole + 1,
+      LayoutRole = Qt::UserRole + 1,
     };
 
-    explicit QgsComposerManagerModel( QgsLayoutManager *manager, QObject *parent = nullptr );
+    explicit QgsLayoutManagerModel( QgsLayoutManager *manager, QObject *parent = nullptr );
 
     int rowCount( const QModelIndex &parent ) const override;
     QVariant data( const QModelIndex &index, int role ) const override;
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
-    QgsComposition *compositionFromIndex( const QModelIndex &index ) const;
+    QgsLayout *layoutFromIndex( const QModelIndex &index ) const;
 
   private slots:
-    void compositionAboutToBeAdded( const QString &name );
-    void compositionAboutToBeRemoved( const QString &name );
-    void compositionAdded( const QString &name );
-    void compositionRemoved( const QString &name );
-    void compositionRenamed( QgsComposition *composition, const QString &newName );
+    void layoutAboutToBeAdded( const QString &name );
+    void layoutAboutToBeRemoved( const QString &name );
+    void layoutAdded( const QString &name );
+    void layoutRemoved( const QString &name );
+    void layoutRenamed( QgsLayout *layout, const QString &newName );
   private:
     QgsLayoutManager *mLayoutManager = nullptr;
 };
 
 /**
- * A dialog that shows the existing composer instances. Lets the user add new
-instances and change title of existing ones*/
-class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
+ * A dialog that allows management of layouts within a project.
+*/
+class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
 {
     Q_OBJECT
   public:
-    QgsComposerManager( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
-    ~QgsComposerManager();
+    QgsLayoutManagerDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
 
     void addTemplates( const QMap<QString, QString> &templates );
 
@@ -93,7 +92,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     QPushButton *mRemoveButton = nullptr;
     QPushButton *mRenameButton = nullptr;
     QPushButton *mDuplicateButton = nullptr;
-    QgsComposerManagerModel *mModel = nullptr;
+    QgsLayoutManagerModel *mModel = nullptr;
 
 #ifdef Q_OS_MAC
     void showEvent( QShowEvent *event );
@@ -103,7 +102,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 #endif
 
   private slots:
-    //! Slot to update buttons state when selecting compositions
+    //! Slot to update buttons state when selecting layouts
     void toggleButtons();
     void mAddButton_clicked();
     //! Slot to track combobox to use specific template path
@@ -117,9 +116,9 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
 
     void removeClicked();
     void showClicked();
-    //! Duplicate composer
+    //! Duplicate layout
     void duplicateClicked();
     void renameClicked();
 };
 
-#endif // QGSCOMPOSERMANAGER_H
+#endif // QGSLAYOUTMANAGERDIALOG_H
