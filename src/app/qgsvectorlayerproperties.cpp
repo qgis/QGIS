@@ -79,6 +79,11 @@
 #include "qgsrendererpropertiesdialog.h"
 #include "qgsstyle.h"
 
+#ifdef HAVE_3D
+#include "qgsvectorlayer3drendererwidget.h"
+#endif
+
+
 QgsVectorLayerProperties::QgsVectorLayerProperties(
   QgsVectorLayer *lyr,
   QWidget *parent,
@@ -212,6 +217,15 @@ QgsVectorLayerProperties::QgsVectorLayerProperties(
   mAttributesFormFrame->setLayout( new QVBoxLayout( mAttributesFormFrame ) );
   mAttributesFormFrame->layout()->setMargin( 0 );
   mAttributesFormFrame->layout()->addWidget( mAttributesFormPropertiesDialog );
+
+#ifdef HAVE_3D
+  mVector3DWidget = new QgsVectorLayer3DRendererWidget( mLayer, QgisApp::instance()->mapCanvas(), mOptsPage_3DView );
+
+  mOptsPage_3DView->setLayout( new QVBoxLayout( mOptsPage_3DView ) );
+  mOptsPage_3DView->layout()->addWidget( mVector3DWidget );
+#else
+  delete mOptsPage_3DView;  // removes both the "3d view" list item and its page
+#endif
 
   syncToLayer();
 
@@ -527,6 +541,10 @@ void QgsVectorLayerProperties::syncToLayer()
   // set initial state for variable editor
   updateVariableEditor();
 
+#ifdef HAVE_3D
+  mVector3DWidget->setLayer( mLayer );
+#endif
+
 } // syncToLayer()
 
 void QgsVectorLayerProperties::apply()
@@ -711,6 +729,10 @@ void QgsVectorLayerProperties::apply()
   {
     QMessageBox::warning( nullptr, tr( "Dependency cycle" ), tr( "This configuration introduces a cycle in data dependencies and will be ignored" ) );
   }
+
+#ifdef HAVE_3D
+  mVector3DWidget->apply();
+#endif
 
   // update symbology
   emit refreshLegend( mLayer->id() );
