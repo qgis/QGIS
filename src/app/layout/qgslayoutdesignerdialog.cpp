@@ -316,6 +316,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveAsTemplate );
   connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::addItemsFromTemplate );
   connect( mActionDuplicateLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::duplicate );
+  connect( mActionRenameLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::renameLayout );
 
   connect( mActionZoomIn, &QAction::triggered, mView, &QgsLayoutView::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );
@@ -1378,6 +1379,17 @@ void QgsLayoutDesignerDialog::showManager()
   {
     QgisApp::instance()->showLayoutManager();
   } );
+}
+
+void QgsLayoutDesignerDialog::renameLayout()
+{
+  QString currentTitle = currentLayout()->name();
+  QString newTitle;
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentTitle ) )
+  {
+    return;
+  }
+  currentLayout()->setName( newTitle );
 }
 
 void QgsLayoutDesignerDialog::paste()

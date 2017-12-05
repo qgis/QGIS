@@ -7351,14 +7351,13 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
   }
   QString titleMsg = chooseMsg;
 
-  QStringList cNames;
-  cNames << newTitle;
-#if 0 //TODO
-  Q_FOREACH ( QgsComposition *c, QgsProject::instance()->layoutManager()->compositions() )
+  QStringList layoutNames;
+  layoutNames << newTitle;
+  const QList< QgsLayout * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  for ( QgsLayout *l : layouts )
   {
-    cNames << c->name();
+    layoutNames << l->name();
   }
-#endif
   while ( !titleValid )
   {
     newTitle = QInputDialog::getText( parent,
@@ -7384,9 +7383,9 @@ bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmp
         newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
       }
     }
-    else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
+    else if ( layoutNames.indexOf( newTitle, 1 ) >= 0 )
     {
-      cNames[0] = QString(); // clear non-unique name
+      layoutNames[0] = QString(); // clear non-unique name
       titleMsg = chooseMsg + "\n\n" + tr( "Title already exists!" );
     }
     else
