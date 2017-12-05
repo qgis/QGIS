@@ -617,6 +617,7 @@ QgsLayout *QgsLayoutDesignerDialog::currentLayout()
 
 void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
+  layout->deselectAll();
   mLayout = layout;
   connect( mLayout, &QgsLayout::destroyed, this, &QgsLayoutDesignerDialog::close );
 
