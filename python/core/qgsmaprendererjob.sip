@@ -137,9 +137,11 @@ List of errors that happened during the rendering job - available when the rende
 
     int renderingTime() const;
 %Docstring
-Find out how long it took to finish the job (in milliseconds)
+ Returns the total time it took to finish the job (in milliseconds).
+.. seealso:: perLayerRenderingTime()
  :rtype: int
 %End
+
 
     const QgsMapSettings &mapSettings() const;
 %Docstring
@@ -167,6 +169,7 @@ emitted when asynchronous rendering is finished (or canceled).
 %End
 
   protected:
+
 
 
 

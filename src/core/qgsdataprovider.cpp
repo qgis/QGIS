@@ -42,3 +42,7 @@ void QgsDataProvider::setListening( bool isListening )
   Q_UNUSED( isListening );
 }
 
+bool QgsDataProvider::renderInPreview( const PreviewContext &context )
+{
+  return context.lastRenderingTimeMs <= context.maxRenderingTimeMs;
+}
