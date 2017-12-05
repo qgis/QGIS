@@ -182,7 +182,7 @@ QList<QAction *> QgsGeoPackageCollectionItem::actions( QWidget *parent )
   }
 
   // Add table to existing DB
-  QAction *actionAddTable = new QAction( tr( "Create a new layer or table..." ), parent );
+  QAction *actionAddTable = new QAction( tr( "Create a New Layer or Table..." ), parent );
   connect( actionAddTable, &QAction::triggered, this, &QgsGeoPackageCollectionItem::addTable );
   lst.append( actionAddTable );
 
