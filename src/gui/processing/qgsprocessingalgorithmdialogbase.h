@@ -46,7 +46,16 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     /**
      * Constructor for QgsProcessingAlgorithmDialogFeedback.
      */
-    QgsProcessingAlgorithmDialogFeedback( QgsProcessingAlgorithmDialogBase *dialog );
+    QgsProcessingAlgorithmDialogFeedback();
+
+  signals:
+
+    void progressTextChanged( const QString &text );
+    void errorReported( const QString &text );
+    void infoPushed( const QString &text );
+    void commandInfoPushed( const QString &text );
+    void debugInfoPushed( const QString &text );
+    void consoleInfoPushed( const QString &text );
 
   public slots:
 
@@ -57,9 +66,6 @@ class QgsProcessingAlgorithmDialogFeedback : public QgsProcessingFeedback
     void pushDebugInfo( const QString &info ) override;
     void pushConsoleInfo( const QString &info ) override;
 
-  private:
-
-    QgsProcessingAlgorithmDialogBase *mDialog = nullptr;
 
 };
 #endif
