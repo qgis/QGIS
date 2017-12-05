@@ -17,11 +17,14 @@
 #include "qgssettings.h"
 #include "qgslayout.h"
 #include "qgslayoutpagecollection.h"
+#include "qgsgui.h"
 
 QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )
 {
   setupUi( this );
+
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   //make button exclusive
   QButtonGroup *buttonGroup = new QButtonGroup( this );
