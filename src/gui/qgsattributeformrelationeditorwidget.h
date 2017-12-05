@@ -45,8 +45,8 @@ class GUI_EXPORT QgsAttributeFormRelationEditorWidget : public QgsAttributeFormW
     virtual QString currentFilterExpression() const override;
 
   private:
-    QgsRelationAggregateSearchWidgetWrapper *mSearchWidget;
-    QgsRelationWidgetWrapper *mWrapper;
+    QgsRelationAggregateSearchWidgetWrapper *mSearchWidget = nullptr;
+    QgsRelationWidgetWrapper *mWrapper = nullptr;
 };
 
 #endif // QGSATTRIBUTEFORMRELATIONEDITORWIDGET_H
