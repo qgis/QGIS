@@ -34,6 +34,7 @@ class QgsDropMZValuesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
   public:
 
     QgsDropMZValuesAlgorithm() = default;
+    Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
     QStringList tags() const override;

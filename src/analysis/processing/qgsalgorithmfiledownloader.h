@@ -34,6 +34,7 @@ class QgsFileDownloaderAlgorithm : public QgsProcessingAlgorithm, public QObject
 {
   public:
     QgsFileDownloaderAlgorithm() = default;
+    Flags flags() const override;
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;
     QString name() const override;
     QString displayName() const override;

@@ -31,6 +31,11 @@ QString QgsTessellateAlgorithm::displayName() const
   return QObject::tr( "Tessellate" );
 }
 
+QgsProcessingAlgorithm::Flags QgsTessellateAlgorithm::flags() const
+{
+  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 QStringList QgsTessellateAlgorithm::tags() const
 {
   return QObject::tr( "3d,triangle" ).split( ',' );

@@ -60,6 +60,11 @@ QgsFileDownloaderAlgorithm *QgsFileDownloaderAlgorithm::createInstance() const
   return new QgsFileDownloaderAlgorithm();
 }
 
+QgsProcessingAlgorithm::Flags QgsFileDownloaderAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 void QgsFileDownloaderAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterString( QStringLiteral( "URL" ), tr( "URL" ), QVariant(), false, false ) );

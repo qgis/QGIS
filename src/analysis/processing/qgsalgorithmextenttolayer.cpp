@@ -24,6 +24,11 @@ QString QgsExtentToLayerAlgorithm::name() const
   return QStringLiteral( "extenttolayer" );
 }
 
+QgsProcessingAlgorithm::Flags QgsExtentToLayerAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 void QgsExtentToLayerAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterExtent( QStringLiteral( "INPUT" ), QObject::tr( "Extent" ) ) );

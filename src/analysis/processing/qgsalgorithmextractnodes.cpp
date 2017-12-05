@@ -59,6 +59,11 @@ QgsExtractNodesAlgorithm *QgsExtractNodesAlgorithm::createInstance() const
   return new QgsExtractNodesAlgorithm();
 }
 
+QgsProcessingAlgorithm::Flags QgsExtractNodesAlgorithm::flags() const
+{
+  return QgsProcessingAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 void QgsExtractNodesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

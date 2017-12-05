@@ -28,7 +28,7 @@ __revision__ = '$Format:%H$'
 from pprint import pformat
 import time
 
-from qgis.PyQt.QtCore import QCoreApplication
+from qgis.PyQt.QtCore import QCoreApplication, Qt
 from qgis.PyQt.QtWidgets import QMessageBox, QPushButton, QSizePolicy, QDialogButtonBox
 from qgis.PyQt.QtGui import QColor, QPalette
 
@@ -241,6 +241,7 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     feedback.pushInfo('')
 
                     self.cancelButton().setEnabled(False)
+
                     self.finish(ok, results, context, feedback)
 
                 if self.algorithm().flags() & QgsProcessingAlgorithm.FlagCanRunInBackground:
@@ -248,7 +249,6 @@ class AlgorithmDialog(QgsProcessingAlgorithmDialogBase):
                     task.executed.connect(on_complete)
                     QgsApplication.taskManager().addTask(task)
                 else:
-                    self.setWindowModality(Qt.ApplicationModal)
                     ok, results = execute(self.algorithm(), parameters, context, feedback)
                     on_complete(ok, results)
 

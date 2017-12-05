@@ -49,6 +49,11 @@ QString QgsCentroidAlgorithm::outputName() const
   return QObject::tr( "Centroids" );
 }
 
+QgsProcessingAlgorithm::Flags QgsCentroidAlgorithm::flags() const
+{
+  return QgsProcessingFeatureBasedAlgorithm::flags() | QgsProcessingAlgorithm::FlagCanRunInBackground;
+}
+
 void QgsCentroidAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

@@ -32,6 +32,7 @@ class QgsCollectorAlgorithm : public QgsProcessingAlgorithm
 {
   protected:
 
+    Flags flags() const override;
     QVariantMap processCollection( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback,
                                    const std::function<QgsGeometry( const QVector<QgsGeometry>& )> &collector, int maxQueueLength = 0 );
 };
