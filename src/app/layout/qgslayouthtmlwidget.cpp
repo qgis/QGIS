@@ -20,6 +20,7 @@
 #include "qgscodeeditorhtml.h"
 #include "qgscodeeditorcss.h"
 #include "qgssettings.h"
+#include "qgslayoutundostack.h"
 
 #include <QFileDialog>
 

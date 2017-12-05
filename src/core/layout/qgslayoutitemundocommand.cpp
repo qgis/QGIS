@@ -20,6 +20,7 @@
 #include "qgsreadwritecontext.h"
 #include "qgslayout.h"
 #include "qgsproject.h"
+#include "qgslayoutundostack.h"
 
 ///@cond PRIVATE
 QgsLayoutItemUndoCommand::QgsLayoutItemUndoCommand( QgsLayoutItem *item, const QString &text, int id, QUndoCommand *parent )

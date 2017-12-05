@@ -25,6 +25,7 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemgroupundocommand.h"
 #include "qgslayoutmultiframe.h"
+#include "qgslayoutundostack.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
   : mProject( project )

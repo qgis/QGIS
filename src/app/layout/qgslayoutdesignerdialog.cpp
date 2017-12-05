@@ -48,6 +48,8 @@
 #include "qgslayoutitemslistview.h"
 #include "qgsproject.h"
 #include "qgsbusyindicatordialog.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>

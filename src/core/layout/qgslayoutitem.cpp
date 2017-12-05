@@ -24,6 +24,8 @@
 #include "qgslayoutitemgroup.h"
 #include "qgspainting.h"
 #include "qgslayouteffect.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>

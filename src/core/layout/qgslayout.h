@@ -21,15 +21,15 @@
 #include "qgslayoutcontext.h"
 #include "qgslayoutsnapper.h"
 #include "qgsexpressioncontextgenerator.h"
-#include "qgslayoutpagecollection.h"
 #include "qgslayoutgridsettings.h"
 #include "qgslayoutguidecollection.h"
-#include "qgslayoutundostack.h"
 #include "qgslayoutexporter.h"
 
 class QgsLayoutItemMap;
 class QgsLayoutModel;
 class QgsLayoutMultiFrame;
+class QgsLayoutPageCollection;
+class QgsLayoutUndoStack;
 
 /**
  * \ingroup core

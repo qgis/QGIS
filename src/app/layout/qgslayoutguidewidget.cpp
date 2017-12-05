@@ -19,6 +19,8 @@
 #include "qgslayoutview.h"
 #include "qgsdoublespinbox.h"
 #include "qgslayoutunitscombobox.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutGuideWidget::QgsLayoutGuideWidget( QWidget *parent, QgsLayout *layout, QgsLayoutView *layoutView )
   : QgsPanelWidget( parent )

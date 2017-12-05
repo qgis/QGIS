@@ -25,6 +25,7 @@
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutnewitempropertiesdialog.h"
 #include "qgssettings.h"
+#include "qgslayoutundostack.h"
 #include <QGraphicsRectItem>
 #include <QPen>
 #include <QBrush>

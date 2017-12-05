@@ -17,6 +17,7 @@
 #include "qgslayoutpropertieswidget.h"
 #include "qgslayout.h"
 #include "qgslayoutsnapper.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout )
   : QgsPanelWidget( parent )

@@ -19,6 +19,7 @@
 #include "qgslayout.h"
 #include "qgslayoutitemnodeitem.h"
 #include "qgssettings.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutViewToolMoveItemContent::QgsLayoutViewToolMoveItemContent( QgsLayoutView *view )
   : QgsLayoutViewTool( view, tr( "Select" ) )

@@ -31,6 +31,8 @@
 #include "qgslayoutitemundocommand.h"
 #include "qgsproject.h"
 #include "qgslayoutitemgroup.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <memory>
 #include <QDesktopWidget>
 #include <QMenu>

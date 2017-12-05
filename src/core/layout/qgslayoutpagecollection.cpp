@@ -20,6 +20,8 @@
 #include "qgsproject.h"
 #include "qgslayoutitemundocommand.h"
 #include "qgssymbollayerutils.h"
+#include "qgslayoutframe.h"
+#include "qgslayoutundostack.h"
 
 QgsLayoutPageCollection::QgsLayoutPageCollection( QgsLayout *layout )
   : QObject( layout )

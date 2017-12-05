@@ -18,6 +18,8 @@
 #include "qgslayoutitemregistry.h"
 #include "qgslayout.h"
 #include "qgslayoututils.h"
+#include "qgslayoutundostack.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutItemGroup::QgsLayoutItemGroup( QgsLayout *layout )
   : QgsLayoutItem( layout )

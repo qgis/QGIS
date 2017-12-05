@@ -27,6 +27,8 @@
 #include "qgslayoutitemshape.h"
 #include "qgslayouteffect.h"
 #include "qgsfillsymbollayer.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <QObject>
 #include <QPainter>
 #include <QImage>

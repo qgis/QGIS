@@ -28,6 +28,7 @@
 #include "qgssymbollayerutils.h"
 #include "qgslayoutmapgridwidget.h"
 #include "qgsstyle.h"
+#include "qgslayoutundostack.h"
 #include <QMenu>
 #include <QMessageBox>
 

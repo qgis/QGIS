@@ -16,7 +16,7 @@
 #include "qgslayoutnewitempropertiesdialog.h"
 #include "qgssettings.h"
 #include "qgslayout.h"
-
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutItemPropertiesDialog::QgsLayoutItemPropertiesDialog( QWidget *parent, Qt::WindowFlags flags )
   : QDialog( parent, flags )

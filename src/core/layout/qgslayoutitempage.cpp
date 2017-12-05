@@ -20,6 +20,8 @@
 #include "qgspagesizeregistry.h"
 #include "qgssymbollayerutils.h"
 #include "qgslayoutitemundocommand.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 

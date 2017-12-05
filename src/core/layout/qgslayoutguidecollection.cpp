@@ -18,6 +18,8 @@
 #include "qgslayout.h"
 #include "qgsproject.h"
 #include "qgsreadwritecontext.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 #include <QGraphicsLineItem>
 
 

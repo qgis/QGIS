@@ -16,6 +16,8 @@
 
 #include "qgslayoutexporter.h"
 #include "qgslayout.h"
+#include "qgslayoutitemmap.h"
+#include "qgslayoutpagecollection.h"
 
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )

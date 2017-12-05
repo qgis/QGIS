@@ -20,6 +20,8 @@
 #include "qgsproject.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutitemshape.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 
 class TestQgsLayout: public QObject
 {

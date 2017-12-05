@@ -17,6 +17,7 @@
 #include "qgis.h"
 #include "qgslayoutview.h"
 #include "qgslogger.h"
+#include "qgslayoutpagecollection.h"
 #include <QDragEnterEvent>
 #include <QGraphicsLineItem>
 #include <QPainter>

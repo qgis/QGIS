@@ -25,6 +25,7 @@
 #include "qgsfillsymbollayer.h"
 #include "qgslinesymbollayer.h"
 #include "qgsmultirenderchecker.h"
+#include "qgslayoutpagecollection.h"
 #include <QObject>
 #include "qgstest.h"
 

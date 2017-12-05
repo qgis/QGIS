@@ -23,6 +23,8 @@
 #include "qgsapplication.h"
 #include "qgsproject.h"
 #include "qgslayoutitemhtml.h"
+#include "qgslayoutpagecollection.h"
+#include "qgslayoutundostack.h"
 
 #include <QObject>
 #include "qgstest.h"

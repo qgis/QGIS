@@ -23,6 +23,7 @@
 #include "qgslayoutframe.h"
 #include "qgsfontutils.h"
 #include "qgssettings.h"
+#include "qgslayoutpagecollection.h"
 
 //
 // QgsLayoutTableStyle
