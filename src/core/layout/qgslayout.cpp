@@ -32,7 +32,6 @@ QgsLayout::QgsLayout( QgsProject *project )
   , mGridSettings( this )
   , mPageCollection( new QgsLayoutPageCollection( this ) )
   , mUndoStack( new QgsLayoutUndoStack( this ) )
-  , mExporter( QgsLayoutExporter( this ) )
 {
   // just to make sure - this should be the default, but maybe it'll change in some future Qt version...
   setBackgroundBrush( Qt::NoBrush );
@@ -110,11 +109,6 @@ QgsProject *QgsLayout::project() const
 QgsLayoutModel *QgsLayout::itemsModel()
 {
   return mItemsModel.get();
-}
-
-QgsLayoutExporter &QgsLayout::exporter()
-{
-  return mExporter;
 }
 
 void QgsLayout::setName( const QString &name )

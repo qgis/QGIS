@@ -217,7 +217,8 @@ bool QgsLayoutChecker::testLayout( QString &checkedReport, int page, int pixelDi
   outputImage.setDotsPerMeterY( mDotsPerMeter );
   drawBackground( &outputImage );
   QPainter p( &outputImage );
-  mLayout->exporter().renderPage( &p, page );
+  QgsLayoutExporter exporter( mLayout );
+  exporter.renderPage( &p, page );
   p.end();
 
   QString renderedFilePath = QDir::tempPath() + '/' + QFileInfo( mTestName ).baseName() + "_rendered.png";

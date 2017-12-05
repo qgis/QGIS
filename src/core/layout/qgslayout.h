@@ -94,12 +94,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     QgsLayoutModel *itemsModel();
 
     /**
-     * Returns the layout's exporter, which is used for rendering the layout and exporting
-     * to various formats.
-     */
-    QgsLayoutExporter &exporter();
-
-    /**
      * Returns the layout's name.
      * \see setName()
      */
@@ -608,7 +602,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     std::unique_ptr< QgsLayoutPageCollection > mPageCollection;
     std::unique_ptr< QgsLayoutUndoStack > mUndoStack;
-    QgsLayoutExporter mExporter;
 
     //! List of multiframe objects
     QList<QgsLayoutMultiFrame *> mMultiFrames;
