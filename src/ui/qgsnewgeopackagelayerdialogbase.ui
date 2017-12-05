@@ -69,7 +69,7 @@
        <item row="4" column="0">
         <widget class="QCheckBox" name="mCheckBoxCreateSpatialIndex">
          <property name="toolTip">
-          <string>Add an integer id field as the primary key for the new layer</string>
+          <string>Create a spatial index for this layer</string>
          </property>
          <property name="text">
           <string>Create a spatial index</string>
