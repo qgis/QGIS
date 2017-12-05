@@ -45,6 +45,7 @@ class QgsMapLayerConfigWidgetFactory;
 class QgsMapLayerConfigWidget;
 class QgsMetadataWidget;
 class QgsPanelWidget;
+class QgsVectorLayer3DRendererWidget;
 
 class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private Ui::QgsVectorLayerPropertiesBase, private QgsExpressionContextGenerator
 {
@@ -236,6 +237,8 @@ class APP_EXPORT QgsVectorLayerProperties : public QgsOptionsDialogBase, private
     QAction *mAuxiliaryLayerActionExport = nullptr;
     QAction *mAuxiliaryLayerActionDeleteField = nullptr;
     QAction *mAuxiliaryLayerActionAddField = nullptr;
+
+    QgsVectorLayer3DRendererWidget *mVector3DWidget = nullptr;
 
   private slots:
     void openPanel( QgsPanelWidget *panel );
