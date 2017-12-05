@@ -133,8 +133,20 @@ sub processDoxygenLine {
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
         return ".. versionadded:: $1\n";
     }
-    if ( $line =~ m/\\see (.*)/ ) {
-        return ".. seealso:: $1\n";
+    if ( $line =~ m/\\see +(\w+(\.\w+)*(\(\))?)/ ) {
+        my $seealso = $1;
+        if (  $seealso =~ m/^Qgs[A-Z]\w+$/ ) {
+            return ".. seealso:: :py:class:`$seealso`\n";
+        }
+        elsif (  $seealso =~ m/^(Qgs[A-Z]\w+)\.(\w+(\(\))?)$/ ) {
+            return ".. seealso:: :py:func:`$1.$2`\n";
+        }
+        elsif (  $seealso =~ m/^[a-z]\w+(\(\))?$/ ) {
+            return ".. seealso:: :py:func:`$seealso`\n";
+        }
+        else {
+            return ".. seealso:: $seealso\n";
+        }
     }
     if ( $line =~ m/[\\@]note (.*)/ ) {
         return ".. note::\n\n   $1\n";
