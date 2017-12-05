@@ -98,6 +98,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns whether a given \a page index is empty, ie, it contains no items except for the background
      * paper item.
+     * \see shouldExportPage()
      */
     bool pageIsEmpty( int page ) const;
 

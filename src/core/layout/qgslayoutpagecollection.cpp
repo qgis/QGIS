@@ -368,6 +368,28 @@ QList<QgsLayoutItem *> QgsLayoutPageCollection::itemsOnPage( int page ) const
   return itemList;
 }
 
+bool QgsLayoutPageCollection::shouldExportPage( int page ) const
+{
+  if ( page >= mPages.count() || page < 0 )
+  {
+    //page number out of range, of course we shouldn't export it - stop smoking crack!
+    return false;
+  }
+
+  //check all frame items on page
+  QList<QgsLayoutFrame *> frames;
+  itemsOnPage( frames, page );
+  for ( QgsLayoutFrame *frame : qgis::as_const( frames ) )
+  {
+    if ( frame->hidePageIfEmpty() && frame->isEmpty() )
+    {
+      //frame is set to hide page if empty, and frame is empty, so we don't want to export this page
+      return false;
+    }
+  }
+  return true;
+}
+
 void QgsLayoutPageCollection::addPage( QgsLayoutItemPage *page )
 {
   if ( !mBlockUndoCommands )

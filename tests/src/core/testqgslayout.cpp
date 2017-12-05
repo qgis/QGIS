@@ -24,6 +24,8 @@
 #include "qgslayoutundostack.h"
 #include "qgslayoutitemlabel.h"
 #include "qgslayoutitempolyline.h"
+#include "qgslayoutitemhtml.h"
+#include "qgslayoutframe.h"
 
 class TestQgsLayout: public QObject
 {
@@ -47,6 +49,7 @@ class TestQgsLayout: public QObject
     void layoutItemByUuid();
     void undoRedoOccurred();
     void itemsOnPage(); //test fetching matching items on a set page
+    void shouldExportPage();
     void pageIsEmpty();
     void clear();
 
@@ -612,6 +615,50 @@ void TestQgsLayout::itemsOnPage()
   QCOMPARE( labels.length(), 0 );
   l.pageCollection()->itemsOnPage( labels, 2 );
   QCOMPARE( labels.length(), 0 );
+}
+
+void TestQgsLayout::shouldExportPage()
+{
+  QgsProject proj;
+  QgsLayout l( &proj );
+  QgsLayoutItemPage *page = new QgsLayoutItemPage( &l );
+  page->setPageSize( "A4" );
+  l.pageCollection()->addPage( page );
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4" );
+  l.pageCollection()->addPage( page2 );
+
+  QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
+  //frame on page 1
+  QgsLayoutFrame *frame1 = new QgsLayoutFrame( &l, htmlItem );
+  frame1->attemptSetSceneRect( QRectF( 0, 0, 100, 100 ) );
+  //frame on page 2
+  QgsLayoutFrame *frame2 = new QgsLayoutFrame( &l, htmlItem );
+  frame2->attemptSetSceneRect( QRectF( 0, 320, 100, 100 ) );
+  frame2->setHidePageIfEmpty( true );
+  htmlItem->addFrame( frame1 );
+  htmlItem->addFrame( frame2 );
+  htmlItem->setContentMode( QgsLayoutItemHtml::ManualHtml );
+  //short content, so frame 2 should be empty
+  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
+
+  //long content, so frame 2 should not be empty
+  htmlItem->setHtml( QStringLiteral( "<p style=\"height: 10000px\"><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
+
+  //...and back again...
+  htmlItem->setHtml( QStringLiteral( "<p><i>Test manual <b>html</b></i></p>" ) );
+  htmlItem->loadHtml();
+
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
 }
 
 void TestQgsLayout::pageIsEmpty()
