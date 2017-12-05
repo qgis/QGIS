@@ -304,6 +304,18 @@ class TestQgsLayoutManager(unittest.TestCase):
         manager.addComposition(composition2)
         manager.addComposition(composition3)
 
+        # add a bunch of layouts
+        layout = QgsLayout(project)
+        layout.setName('test layout')
+        layout2 = QgsLayout(project)
+        layout2.setName('test layout2')
+        layout3 = QgsLayout(project)
+        layout3.setName('test layout3')
+
+        manager.addLayout(layout)
+        manager.addLayout(layout2)
+        manager.addLayout(layout3)
+
         # save to xml
         doc = QDomDocument("testdoc")
         elem = manager.writeXml(doc)
@@ -317,6 +329,10 @@ class TestQgsLayoutManager(unittest.TestCase):
         self.assertEqual(len(manager2.compositions()), 3)
         names = [c.name() for c in manager2.compositions()]
         self.assertEqual(set(names), {'test composition', 'test composition2', 'test composition3'})
+
+        self.assertEqual(len(manager2.layouts()), 3)
+        names = [c.name() for c in manager2.layouts()]
+        self.assertCountEqual(names, ['test layout', 'test layout2', 'test layout3'])
 
     def testSaveAsTemplate(self):
         """
