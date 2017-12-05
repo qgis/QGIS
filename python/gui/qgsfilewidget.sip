@@ -157,12 +157,12 @@ returns if the relative path is with respect to the project path or the default 
 determines if the relative path is with respect to the project path or the default path
 %End
 
-    QLineEdit *lineEdit();
+    QgsFilterLineEdit *lineEdit();
 %Docstring
  Returns a pointer to the widget's line edit, which can be used to customize
  the appearance and behavior of the line edit portion of the widget.
 .. versionadded:: 3.0
- :rtype: QLineEdit
+ :rtype: QgsFilterLineEdit
 %End
 
   signals:

@@ -41,11 +41,25 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   setupUi( this );
   connect( mAddButton, &QPushButton::clicked, this, &QgsLayoutManagerDialog::mAddButton_clicked );
   connect( mTemplate, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsLayoutManagerDialog::mTemplate_currentIndexChanged );
-  connect( mTemplatePathBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatePathBtn_pressed );
   connect( mTemplatesDefaultDirBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed );
   connect( mTemplatesUserDirBtn, &QPushButton::pressed, this, &QgsLayoutManagerDialog::mTemplatesUserDirBtn_pressed );
 
   QgsGui::instance()->enableAutoGeometryRestore( this );
+  mTemplateFileWidget->setStorageMode( QgsFileWidget::GetFile );
+  mTemplateFileWidget->setFilter( tr( "Layout templates" ) + QStringLiteral( " (*.qpt *.QPT)" ) );
+  mTemplateFileWidget->setDialogTitle( tr( "Select a Template" ) );
+  mTemplateFileWidget->lineEdit()->setShowClearButton( false );
+  QgsSettings settings;
+  mTemplateFileWidget->setDefaultRoot( settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QString() ).toString() );
+  mTemplateFileWidget->setFilePath( settings.value( QStringLiteral( "UI/ComposerManager/templatePath" ), QString() ).toString() );
+
+  connect( mTemplateFileWidget, &QgsFileWidget::fileChanged, this, [ = ]
+  {
+    QgsSettings settings;
+    settings.setValue( QStringLiteral( "UI/ComposerManager/templatePath" ), mTemplateFileWidget->filePath() );
+    QFileInfo tmplFileInfo( mTemplateFileWidget->filePath() );
+    settings.setValue( QStringLiteral( "UI/lastComposerTemplateDir" ), tmplFileInfo.absolutePath() );
+  } );
 
   mModel = new QgsLayoutManagerModel( QgsProject::instance()->layoutManager(),
                                       this );
@@ -84,9 +98,6 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   QMap<QString, QString> defaultTemplateMap = defaultTemplates( false );
   this->addTemplates( defaultTemplateMap );
   this->addTemplates( this->otherTemplates() );
-
-  QgsSettings settings;
-  mTemplatePathLineEdit->setText( settings.value( QStringLiteral( "UI/ComposerManager/templatePath" ), QString() ).toString() );
 
   toggleButtons();
 }
@@ -193,7 +204,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
   {
     if ( mTemplate->currentIndex() == 1 )
     {
-      templateFile.setFileName( mTemplatePathLineEdit->text() );
+      templateFile.setFileName( mTemplateFileWidget->filePath() );
     }
     else
     {
@@ -254,25 +265,7 @@ void QgsLayoutManagerDialog::mAddButton_clicked()
 void QgsLayoutManagerDialog::mTemplate_currentIndexChanged( int indx )
 {
   bool specific = ( indx == 1 ); // comes just after empty template
-  mTemplatePathLineEdit->setEnabled( specific );
-  mTemplatePathBtn->setEnabled( specific );
-}
-
-void QgsLayoutManagerDialog::mTemplatePathBtn_pressed()
-{
-  QgsSettings settings;
-  QString lastTmplDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
-  QString tmplPath = QFileDialog::getOpenFileName( this,
-                     tr( "Choose template" ),
-                     lastTmplDir,
-                     tr( "Layout templates" ) + QStringLiteral( " (*.qpt *.QPT)" ) );
-  if ( !tmplPath.isEmpty() )
-  {
-    mTemplatePathLineEdit->setText( tmplPath );
-    settings.setValue( QStringLiteral( "UI/ComposerManager/templatePath" ), tmplPath );
-    QFileInfo tmplFileInfo( tmplPath );
-    settings.setValue( QStringLiteral( "UI/lastComposerTemplateDir" ), tmplFileInfo.absolutePath() );
-  }
+  mTemplateFileWidget->setEnabled( specific );
 }
 
 void QgsLayoutManagerDialog::mTemplatesDefaultDirBtn_pressed()

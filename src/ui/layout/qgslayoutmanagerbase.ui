@@ -57,20 +57,14 @@
          </sizepolicy>
         </property>
         <property name="text">
-         <string>Add</string>
+         <string>Create</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="0" colspan="2">
-       <widget class="QComboBox" name="mTemplate"/>
-      </item>
-      <item row="1" column="0">
-       <widget class="QLineEdit" name="mTemplatePathLineEdit"/>
-      </item>
-      <item row="1" column="1">
-       <widget class="QPushButton" name="mTemplatePathBtn">
-        <property name="text">
-         <string>…</string>
+      <item row="1" column="0" colspan="3">
+       <widget class="QgsFileWidget" name="mTemplateFileWidget" native="true">
+        <property name="focusPolicy">
+         <enum>Qt::StrongFocus</enum>
         </property>
        </widget>
       </item>
@@ -98,7 +92,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>user</string>
+           <string>User</string>
           </property>
          </widget>
         </item>
@@ -111,7 +105,7 @@
            </sizepolicy>
           </property>
           <property name="text">
-           <string>default</string>
+           <string>Default</string>
           </property>
          </widget>
         </item>
@@ -129,6 +123,9 @@
          </spacer>
         </item>
        </layout>
+      </item>
+      <item row="0" column="0" colspan="2">
+       <widget class="QComboBox" name="mTemplate"/>
       </item>
      </layout>
     </widget>
@@ -152,17 +149,21 @@
    <header>qgscollapsiblegroupbox.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>mLayoutListView</tabstop>
   <tabstop>mTemplateGrpBox</tabstop>
   <tabstop>mTemplate</tabstop>
   <tabstop>mAddButton</tabstop>
-  <tabstop>mTemplatePathLineEdit</tabstop>
-  <tabstop>mTemplatePathBtn</tabstop>
+  <tabstop>mTemplateFileWidget</tabstop>
   <tabstop>mTemplatesUserDirBtn</tabstop>
   <tabstop>mTemplatesDefaultDirBtn</tabstop>
-  <tabstop>mButtonBox</tabstop>
  </tabstops>
  <resources/>
  <connections>
