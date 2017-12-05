@@ -24,40 +24,39 @@
 
 ///@cond NOT_STABLE
 
-QgsProcessingAlgorithmDialogFeedback::QgsProcessingAlgorithmDialogFeedback( QgsProcessingAlgorithmDialogBase *dialog )
+QgsProcessingAlgorithmDialogFeedback::QgsProcessingAlgorithmDialogFeedback()
   : QgsProcessingFeedback()
-  , mDialog( dialog )
 {
 }
 
 void QgsProcessingAlgorithmDialogFeedback::setProgressText( const QString &text )
 {
-  mDialog->setProgressText( text );
+  emit progressTextChanged( text );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::reportError( const QString &error )
 {
-  mDialog->reportError( error );
+  emit errorReported( error );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushInfo( const QString &info )
 {
-  mDialog->pushInfo( info );
+  emit infoPushed( info );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushCommandInfo( const QString &info )
 {
-  mDialog->pushCommandInfo( info );
+  emit commandInfoPushed( info );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushDebugInfo( const QString &info )
 {
-  mDialog->pushDebugInfo( info );
+  emit debugInfoPushed( info );
 }
 
 void QgsProcessingAlgorithmDialogFeedback::pushConsoleInfo( const QString &info )
 {
-  mDialog->pushConsoleInfo( info );
+  emit consoleInfoPushed( info );
 }
 
 //
@@ -158,8 +157,14 @@ QVariantMap QgsProcessingAlgorithmDialogBase::getParameterValues() const
 
 QgsProcessingFeedback *QgsProcessingAlgorithmDialogBase::createFeedback()
 {
-  auto feedback = qgis::make_unique< QgsProcessingAlgorithmDialogFeedback >( this );
+  auto feedback = qgis::make_unique< QgsProcessingAlgorithmDialogFeedback >();
   connect( feedback.get(), &QgsProcessingFeedback::progressChanged, this, &QgsProcessingAlgorithmDialogBase::setPercentage );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::commandInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushCommandInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::consoleInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushConsoleInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::debugInfoPushed, this, &QgsProcessingAlgorithmDialogBase::pushDebugInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::errorReported, this, &QgsProcessingAlgorithmDialogBase::reportError );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::infoPushed, this, &QgsProcessingAlgorithmDialogBase::pushInfo );
+  connect( feedback.get(), &QgsProcessingAlgorithmDialogFeedback::progressTextChanged, this, &QgsProcessingAlgorithmDialogBase::setProgressText );
   connect( buttonCancel, &QPushButton::clicked, feedback.get(), &QgsProcessingFeedback::cancel );
   return feedback.release();
 }
