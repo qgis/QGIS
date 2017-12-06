@@ -3,8 +3,8 @@ Takes vector stream data, transforms it to raster and subtracts depth from the o
 Raster (r.*)
 QgsProcessingParameterRasterLayer|raster|Elevation|None|False
 QgsProcessingParameterVectorLayer|vector|Vector layer containing stream(s)|1|None|False
-QgsProcessingParameterNumber|width|Stream width (in meters). Default is raster cell width|QgsProcessingParameterNumber.Double|1|False|None|None
-QgsProcessingParameterNumber|depth|Additional stream depth (in meters)|QgsProcessingParameterNumber.Double|1|False|None|None
+QgsProcessingParameterNumber|width|Stream width (in meters). Default is raster cell width|QgsProcessingParameterNumber.Double|None|True|None|None
+QgsProcessingParameterNumber|depth|Additional stream depth (in meters)|QgsProcessingParameterNumber.Double|None|True|None|None
 QgsProcessingParameterBoolean|-n|No flat areas allowed in flow direction|False
 QgsProcessingParameterRasterDestination|output|Modified elevation
 QgsProcessingParameterVectorDestination|points|Adjusted stream points

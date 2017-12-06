@@ -3,7 +3,7 @@ Prints terse list of category values found in a raster layer.
 Raster (r.*)
 QgsProcessingParameterRasterLayer|map|input raster layer|None|False
 QgsProcessingParameterString|null_value|String representing NULL value|*|False|True
-QgsProcessingParameterNumber|nsteps|Number of quantization steps|QgsProcessingParameterNumber.Integer|255|False|1|None
+QgsProcessingParameterNumber|nsteps|Number of quantization steps|QgsProcessingParameterNumber.Integer|255|True|1|None
 QgsProcessingParameterEnum|sort|Sort output by distance|asc;desc|False|0|True
 QgsProcessingParameterBoolean|-r|Only print the range of the data|False
 QgsProcessingParameterBoolean|-n|Suppress reporting of any NULLs|False
