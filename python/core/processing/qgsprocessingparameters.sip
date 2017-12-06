@@ -236,7 +236,7 @@ class QgsProcessingParameterDefinition
 %Docstring
  Returns the name of the parameter. This is the internal identifier by which
  algorithms access this parameter.
- @see setName()
+.. seealso:: :py:func:`setName()`
  :rtype: str
 %End
 
@@ -244,14 +244,14 @@ class QgsProcessingParameterDefinition
 %Docstring
  Sets the ``name`` of the parameter. This is the internal identifier by which
  algorithms access this parameter.
- @see name()
+.. seealso:: :py:func:`name()`
 %End
 
     QString description() const;
 %Docstring
  Returns the description for the parameter. This is the user-visible string
  used to identify this parameter.
- @see setDescription()
+.. seealso:: :py:func:`setDescription()`
  :rtype: str
 %End
 
@@ -259,13 +259,13 @@ class QgsProcessingParameterDefinition
 %Docstring
  Sets the ``description`` for the parameter. This is the user-visible string
  used to identify this parameter.
- @see description()
+.. seealso:: :py:func:`description()`
 %End
 
     QVariant defaultValue() const;
 %Docstring
  Returns the default value for the parameter.
- @see setDefaultValue()
+.. seealso:: :py:func:`setDefaultValue()`
  :rtype: QVariant
 %End
 
@@ -273,20 +273,20 @@ class QgsProcessingParameterDefinition
 %Docstring
  Sets the default ``value`` for the parameter. Caller takes responsibility
  to ensure that ``value`` is a valid input for the parameter subclass.
- @see defaultValue()
+.. seealso:: :py:func:`defaultValue()`
 %End
 
     Flags flags() const;
 %Docstring
  Returns any flags associated with the parameter.
- @see setFlags()
+.. seealso:: :py:func:`setFlags()`
  :rtype: Flags
 %End
 
     void setFlags( const Flags &flags );
 %Docstring
  Sets the ``flags`` associated with the parameter.
- @see flags()
+.. seealso:: :py:func:`flags()`
 %End
 
     virtual bool checkValueIsAcceptable( const QVariant &input, QgsProcessingContext *context = 0 ) const;

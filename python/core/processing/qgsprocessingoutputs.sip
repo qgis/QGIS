@@ -65,7 +65,7 @@ class QgsProcessingOutputDefinition
 %Docstring
  Returns the name of the output. This is the internal identifier by which
  algorithms access this output.
- @see setName()
+.. seealso:: :py:func:`setName()`
  :rtype: str
 %End
 
@@ -73,14 +73,14 @@ class QgsProcessingOutputDefinition
 %Docstring
  Sets the ``name`` of the output. This is the internal identifier by which
  algorithms access this output.
- @see name()
+.. seealso:: :py:func:`name()`
 %End
 
     QString description() const;
 %Docstring
  Returns the description for the output. This is the user-visible string
  used to identify this output.
- @see setDescription()
+.. seealso:: :py:func:`setDescription()`
  :rtype: str
 %End
 
@@ -88,7 +88,7 @@ class QgsProcessingOutputDefinition
 %Docstring
  Sets the ``description`` for the output. This is the user-visible string
  used to identify this output.
- @see description()
+.. seealso:: :py:func:`description()`
 %End
 
   protected:
