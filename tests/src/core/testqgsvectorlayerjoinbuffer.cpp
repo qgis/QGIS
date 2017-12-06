@@ -33,7 +33,7 @@
  * @ingroup UnitTests
  * This is a unit test for the vector layer join buffer
  *
- * @see QgsVectorLayerJoinBuffer
+ * \see QgsVectorLayerJoinBuffer
  */
 class TestVectorLayerJoinBuffer : public QObject
 {
