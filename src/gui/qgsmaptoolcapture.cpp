@@ -763,7 +763,7 @@ int QgsMapToolCapture::size()
   return mCaptureCurve.numPoints();
 }
 
-QVector<QgsPointXY> QgsMapToolCapture::points()
+QVector<QgsPointXY> QgsMapToolCapture::points() const
 {
   QgsPointSequence pts;
   QVector<QgsPointXY> points;

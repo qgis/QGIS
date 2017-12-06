@@ -192,7 +192,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * List of digitized points
      * \returns List of points
      */
-    QVector<QgsPointXY> points();
+    QVector<QgsPointXY> points() const;
 
     /**
      * Set the points on which to work
@@ -258,6 +258,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * again after every time a new trace with offset is created (to get new "anchor" point)
      */
     QgsPointXY mTracingStartPoint;
+
+    friend class TestQgsMapToolReshape;
 
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;
