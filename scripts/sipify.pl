@@ -125,31 +125,31 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
     # replace \returns with :return:
-    $line =~ s/\\return(s)?/:return:/g;
+    $line =~ s/\\return(s)?/\n :return:/g;
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
-        return ".. versionadded:: $1\n";
+        return "\n.. versionadded:: $1\n";
     }
     if ( $line =~ m/\\see +(\w+(\.\w+)*(\(\))?)/ ) {
         my $seealso = $1;
         if (  $seealso =~ m/^Qgs[A-Z]\w+$/ ) {
-            return ".. seealso:: :py:class:`$seealso`\n";
+            return "\n.. seealso:: :py:class:`$seealso`\n";
         }
         elsif (  $seealso =~ m/^(Qgs[A-Z]\w+)\.(\w+(\(\))?)$/ ) {
-            return ".. seealso:: :py:func:`$1.$2`\n";
+            return "\n.. seealso:: :py:func:`$1.$2`\n";
         }
         elsif (  $seealso =~ m/^[a-z]\w+(\(\))?$/ ) {
-            return ".. seealso:: :py:func:`$seealso`\n";
+            return "\n.. seealso:: :py:func:`$seealso`\n";
         }
         else {
-            return ".. seealso:: $seealso\n";
+            return "\n.. seealso:: $seealso\n";
         }
     }
     if ( $line =~ m/[\\@]note (.*)/ ) {
-        return ".. note::\n\n   $1\n";
+        return "\n.. note::\n\n   $1\n";
     }
     if ( $line =~ m/[\\@]brief (.*)/ ) {
         return " $1\n";
@@ -293,6 +293,8 @@ sub detect_comment_block{
             $LINE = read_line();
             $COMMENT .= processDoxygenLine( $LINE =~ s/\s*\*?(.*?)(\/)?\n?$/$1/r );
         }
+        $COMMENT =~ s/\n\s+\n/\n\n/;
+        $COMMENT =~ s/\n{3,}/\n\n/;
         $COMMENT =~ s/\n+$//;
         return 1;
     }
@@ -932,9 +934,22 @@ while ($LINE_IDX < $LINE_COUNT){
             dbg_info('writing comment');
             write_output("CM1", "%Docstring\n");
             if ( $COMMENT !~ m/^\s*$/ ){
-                write_output("CM2", "$COMMENT\n");
+                my @comment_lines = split /\n/, $COMMENT;
+                foreach my $comment_line (@comment_lines) {
+                  if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
+                      # return type must be added before any other paragraph-level markup
+                      write_output("CM5", " :rtype: $RETURN_TYPE\n\n");
+                      $RETURN_TYPE = '';
+                  }
+                  write_output("CM2", "$comment_line\n");
+                  if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
+                      # return type must be added before any other paragraph-level markup
+                      write_output("CM5", " :rtype: $RETURN_TYPE\n\n");
+                      $RETURN_TYPE = '';
+                  }
+                }
             }
-            if ($RETURN_TYPE ne '' ){
+            if ( $RETURN_TYPE ne '' ){
                 write_output("CM3", " :rtype: $RETURN_TYPE\n");
             }
             write_output("CM4", "%End\n");
