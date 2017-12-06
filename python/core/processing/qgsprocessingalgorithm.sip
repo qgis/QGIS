@@ -43,6 +43,7 @@ class QgsProcessingAlgorithm
       FlagSupportsBatch,
       FlagCanCancel,
       FlagRequiresMatchingCrs,
+      FlagIterator,
       FlagDeprecated,
     };
     typedef QFlags<QgsProcessingAlgorithm::Flag> Flags;

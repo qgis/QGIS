@@ -64,6 +64,7 @@ SET(QGIS_ANALYSIS_SRCS
   processing/qgsalgorithmtransect.cpp
   processing/qgsalgorithmtransform.cpp
   processing/qgsalgorithmtranslate.cpp
+  processing/qgsforloopiterator.cpp
 
   processing/qgsnativealgorithms.cpp
 
@@ -243,6 +244,7 @@ INCLUDE_DIRECTORIES(
   ${CMAKE_SOURCE_DIR}/src/core/
   ${CMAKE_SOURCE_DIR}/src/core/geometry
   ${CMAKE_SOURCE_DIR}/src/core/processing
+  ${CMAKE_SOURCE_DIR}/src/core/processing/models
   ${CMAKE_SOURCE_DIR}/src/core/raster
   ${CMAKE_SOURCE_DIR}/src/core/symbology
   ${CMAKE_SOURCE_DIR}/src/core/metadata

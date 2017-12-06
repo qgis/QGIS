@@ -378,6 +378,16 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     QVariantMap parametersForChildAlgorithm( const QgsProcessingModelChildAlgorithm &child, const QVariantMap &modelParameters, const QVariantMap &results, const QgsExpressionContext &expressionContext ) const;
 
+    void processChildAlgorithm(
+      const QString &childId,
+      const QVariantMap &parameters,
+      QgsProcessingContext &context,
+      QgsProcessingFeedback *feedback,
+      QgsProcessingMultiStepFeedback *modelFeedback,
+      QVariantMap &childrenResults,
+      QVariantMap &finalResults,
+      QSet< QString > &executed );
+
     /**
      * Returns true if an output from a child algorithm is required elsewhere in
      * the model.

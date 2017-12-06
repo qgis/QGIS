@@ -110,6 +110,7 @@ SET(QGIS_CORE_SRCS
   processing/models/qgsprocessingmodelchildalgorithm.cpp
   processing/models/qgsprocessingmodelchildparametersource.cpp
   processing/models/qgsprocessingmodelcomponent.cpp
+  processing/models/qgsprocessingmodeliterator.cpp
   processing/models/qgsprocessingmodelparameter.cpp
   processing/models/qgsprocessingmodeloutput.cpp
 
@@ -1049,6 +1050,7 @@ SET(QGIS_CORE_HDRS
   processing/models/qgsprocessingmodelchildalgorithm.h
   processing/models/qgsprocessingmodelchildparametersource.h
   processing/models/qgsprocessingmodelcomponent.h
+  processing/models/qgsprocessingmodeliterator.h
   processing/models/qgsprocessingmodeloutput.h
   processing/models/qgsprocessingmodelparameter.h
 

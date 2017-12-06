@@ -61,6 +61,7 @@
 #include "qgsalgorithmtransect.h"
 #include "qgsalgorithmtransform.h"
 #include "qgsalgorithmtranslate.h"
+#include "qgsforloopiterator.h"
 
 
 ///@cond PRIVATE
@@ -143,6 +144,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsTransectAlgorithm() );
   addAlgorithm( new QgsTransformAlgorithm() );
   addAlgorithm( new QgsTranslateAlgorithm() );
+  addAlgorithm( new QgsForLoopIterator() );
 }
 
 

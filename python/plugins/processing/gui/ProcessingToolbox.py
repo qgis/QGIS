@@ -405,6 +405,8 @@ class ProcessingToolbox(BASE, WIDGET):
         for alg in algs:
             if alg.flags() & QgsProcessingAlgorithm.FlagHideFromToolbox:
                 continue
+            if alg.flags() & QgsProcessingAlgorithm.FlagIterator:
+                continue
             groupItem = None
             if alg.group() in groups:
                 groupItem = groups[alg.group()]

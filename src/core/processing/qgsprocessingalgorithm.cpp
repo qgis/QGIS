@@ -397,7 +397,7 @@ bool QgsProcessingAlgorithm::prepare( const QVariantMap &parameters, QgsProcessi
 QVariantMap QgsProcessingAlgorithm::runPrepared( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   Q_ASSERT_X( mHasPrepared, "QgsProcessingAlgorithm::runPrepared", QString( "prepare() was not called for the algorithm instance %1" ).arg( name() ).toLatin1() );
-  Q_ASSERT_X( !mHasExecuted, "QgsProcessingAlgorithm::runPrepared", "runPrepared() was already called for this algorithm instance" );
+  //Q_ASSERT_X( !mHasExecuted, "QgsProcessingAlgorithm::runPrepared", "runPrepared() was already called for this algorithm instance" );
 
   // Hey kids, let's all be thread safe! It's the fun thing to do!
   //

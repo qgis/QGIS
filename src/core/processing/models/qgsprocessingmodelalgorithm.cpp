@@ -18,6 +18,7 @@
 #include "qgsprocessingmodelalgorithm.h"
 #include "qgsprocessingregistry.h"
 #include "qgsprocessingfeedback.h"
+#include "qgsprocessingmodeliterator.h"
 #include "qgsprocessingutils.h"
 #include "qgsxmlutils.h"
 #include "qgsexception.h"
@@ -200,6 +201,135 @@ bool QgsProcessingModelAlgorithm::childOutputIsRequired( const QString &childId,
   return false;
 }
 
+void QgsProcessingModelAlgorithm::processChildAlgorithm(
+  const QString &childId,
+  const QVariantMap &parameters,
+  QgsProcessingContext &context,
+  QgsProcessingFeedback *feedback,
+  QgsProcessingMultiStepFeedback *modelFeedback,
+  QVariantMap &childResults,
+  QVariantMap &finalResults,
+  QSet< QString > &executed )
+{
+  if ( feedback && feedback->isCanceled() )
+    return;
+
+  if ( executed.contains( childId ) )
+    return;
+
+  Q_FOREACH ( const QString &dependency, dependsOnChildAlgorithms( childId ) )
+  {
+    if ( !executed.contains( dependency ) )
+    {
+      processChildAlgorithm( dependency, parameters, context, feedback, modelFeedback, childResults, finalResults, executed );
+    }
+  }
+
+  if ( executed.contains( childId ) )
+    return;
+
+  QgsExpressionContext baseContext = createExpressionContext( parameters, context );
+
+  if ( feedback )
+    feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
+
+  const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
+
+  QgsExpressionContext expContext = baseContext;
+  expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context )
+             << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
+
+  QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
+
+  /*
+  if ( feedback )
+    feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
+  */
+
+  QStringList params;
+  for ( auto childParamIt = childParams.constBegin(); childParamIt != childParams.constEnd(); ++childParamIt )
+  {
+    params << QStringLiteral( "%1: %2" ).arg( childParamIt.key(),
+           child.algorithm()->parameterDefinition( childParamIt.key() )->valueAsPythonString( childParamIt.value(), context ) );
+  }
+
+  if ( feedback )
+  {
+    feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
+    feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
+  }
+
+  QTime childTime;
+  childTime.start();
+
+  bool ok = false;
+  QVariantMap results;
+
+  if ( child.algorithm()->flags() & QgsProcessingAlgorithm::FlagIterator )
+  {
+    std::unique_ptr< QgsProcessingModelIterator > iterator( static_cast<QgsProcessingModelIterator *>( child.algorithm()->create( child.configuration() ) ) );
+    iterator->prepare( childParams, context, modelFeedback );
+    QList<QVariantMap> iterator_results;
+    do
+    {
+      QVariantMap iteration_results;
+
+      results = iterator->runPrepared( childParams, context, modelFeedback );
+      childResults.insert( childId, results );
+      executed.insert( childId );
+
+      Q_FOREACH ( const QString &dependency, dependentChildAlgorithms( childId ) )
+      {
+        processChildAlgorithm( dependency, parameters, context, feedback, modelFeedback, childResults, iteration_results, executed );
+        executed.remove( dependency );
+      }
+
+      iterator_results << iteration_results;
+    }
+    while ( iterator->next() );
+    Q_FOREACH ( const QString &dependency, dependentChildAlgorithms( childId ) )
+    {
+      executed.insert( dependency );
+    }
+    ok = true;
+
+    finalResults.insert( childId, QVariant::fromValue<QList<QVariantMap>>( iterator_results ) );
+    iterator.reset( nullptr );
+  }
+  else
+  {
+    std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
+    results = childAlg->run( childParams, context, modelFeedback, &ok );
+
+    childResults.insert( childId, results );
+
+    // look through child alg's outputs to determine whether any of these should be copied
+    // to the final model outputs
+    QMap<QString, QgsProcessingModelOutput> outputs = child.modelOutputs();
+    QMap<QString, QgsProcessingModelOutput>::const_iterator outputIt = outputs.constBegin();
+    for ( ; outputIt != outputs.constEnd(); ++outputIt )
+    {
+      finalResults.insert( childId + ':' + outputIt->name(), results.value( outputIt->childOutputName() ) );
+    }
+    childAlg.reset( nullptr );
+  }
+
+  if ( !ok )
+  {
+    QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
+    if ( feedback )
+      feedback->reportError( error );
+    throw QgsProcessingException( error );
+  }
+
+  if ( feedback )
+    feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
+
+  executed.insert( childId );
+
+  modelFeedback->setCurrentStep( executed.count() );
+}
+
 QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )
 {
   QSet< QString > toExecute;
@@ -216,8 +346,8 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
   QgsProcessingMultiStepFeedback modelFeedback( toExecute.count(), feedback );
   QgsExpressionContext baseContext = createExpressionContext( parameters, context );
 
-  QVariantMap childResults;
   QVariantMap finalResults;
+  QVariantMap childResults;
   QSet< QString > executed;
   bool executedAlg = true;
   while ( executedAlg && executed.count() < toExecute.count() )
@@ -225,81 +355,7 @@ QVariantMap QgsProcessingModelAlgorithm::processAlgorithm( const QVariantMap &pa
     executedAlg = false;
     Q_FOREACH ( const QString &childId, toExecute )
     {
-      if ( feedback && feedback->isCanceled() )
-        break;
-
-      if ( executed.contains( childId ) )
-        continue;
-
-      bool canExecute = true;
-      Q_FOREACH ( const QString &dependency, dependsOnChildAlgorithms( childId ) )
-      {
-        if ( !executed.contains( dependency ) )
-        {
-          canExecute = false;
-          break;
-        }
-      }
-
-      if ( !canExecute )
-        continue;
-
-      executedAlg = true;
-      if ( feedback )
-        feedback->pushDebugInfo( QObject::tr( "Prepare algorithm: %1" ).arg( childId ) );
-
-      const QgsProcessingModelChildAlgorithm &child = mChildAlgorithms[ childId ];
-
-      QgsExpressionContext expContext = baseContext;
-      expContext << QgsExpressionContextUtils::processingAlgorithmScope( child.algorithm(), parameters, context )
-                 << createExpressionContextScopeForChildAlgorithm( childId, context, parameters, childResults );
-
-      QVariantMap childParams = parametersForChildAlgorithm( child, parameters, childResults, expContext );
-      if ( feedback )
-        feedback->setProgressText( QObject::tr( "Running %1 [%2/%3]" ).arg( child.description() ).arg( executed.count() + 1 ).arg( toExecute.count() ) );
-
-      QStringList params;
-      for ( auto childParamIt = childParams.constBegin(); childParamIt != childParams.constEnd(); ++childParamIt )
-      {
-        params << QStringLiteral( "%1: %2" ).arg( childParamIt.key(),
-               child.algorithm()->parameterDefinition( childParamIt.key() )->valueAsPythonString( childParamIt.value(), context ) );
-      }
-
-      if ( feedback )
-      {
-        feedback->pushInfo( QObject::tr( "Input Parameters:" ) );
-        feedback->pushCommandInfo( QStringLiteral( "{ %1 }" ).arg( params.join( QStringLiteral( ", " ) ) ) );
-      }
-
-      QTime childTime;
-      childTime.start();
-
-      bool ok = false;
-      std::unique_ptr< QgsProcessingAlgorithm > childAlg( child.algorithm()->create( child.configuration() ) );
-      QVariantMap results = childAlg->run( childParams, context, &modelFeedback, &ok );
-      childAlg.reset( nullptr );
-      if ( !ok )
-      {
-        QString error = QObject::tr( "Error encountered while running %1" ).arg( child.description() );
-        if ( feedback )
-          feedback->reportError( error );
-        throw QgsProcessingException( error );
-      }
-      childResults.insert( childId, results );
-
-      // look through child alg's outputs to determine whether any of these should be copied
-      // to the final model outputs
-      QMap<QString, QgsProcessingModelOutput> outputs = child.modelOutputs();
-      QMap<QString, QgsProcessingModelOutput>::const_iterator outputIt = outputs.constBegin();
-      for ( ; outputIt != outputs.constEnd(); ++outputIt )
-      {
-        finalResults.insert( childId + ':' + outputIt->name(), results.value( outputIt->childOutputName() ) );
-      }
-
-      executed.insert( childId );
-      modelFeedback.setCurrentStep( executed.count() );
-      if ( feedback )
-        feedback->pushInfo( QObject::tr( "OK. Execution took %1 s (%2 outputs)." ).arg( childTime.elapsed() / 1000.0 ).arg( results.count() ) );
+      processChildAlgorithm( childId, parameters, context, feedback, &modelFeedback, childResults, finalResults, executed );
     }
 
     if ( feedback && feedback->isCanceled() )
@@ -1038,8 +1094,8 @@ void QgsProcessingModelAlgorithm::dependentChildAlgorithmsRecursive( const QStri
     {
       Q_FOREACH ( const QgsProcessingModelChildParameterSource &source, paramIt.value() )
       {
-        if ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput
-             && source.outputChildId() == childId )
+        if ( ( source.source() == QgsProcessingModelChildParameterSource::ChildOutput
+               && source.outputChildId() == childId ) )
         {
           depends.insert( childIt->childId() );
           dependsOnChildAlgorithmsRecursive( childIt->childId(), depends );
