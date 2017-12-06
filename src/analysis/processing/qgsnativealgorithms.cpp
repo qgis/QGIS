@@ -41,6 +41,7 @@
 #include "qgsalgorithmloadlayer.h"
 #include "qgsalgorithmmeancoordinates.h"
 #include "qgsalgorithmmergelines.h"
+#include "qgsalgorithmmergevector.h"
 #include "qgsalgorithmminimumenclosingcircle.h"
 #include "qgsalgorithmmultiparttosinglepart.h"
 #include "qgsalgorithmorderbyexpression.h"
@@ -122,6 +123,7 @@ void QgsNativeAlgorithms::loadAlgorithms()
   addAlgorithm( new QgsLoadLayerAlgorithm() );
   addAlgorithm( new QgsMeanCoordinatesAlgorithm() );
   addAlgorithm( new QgsMergeLinesAlgorithm() );
+  addAlgorithm( new QgsMergeVectorAlgorithm() );
   addAlgorithm( new QgsMinimumEnclosingCircleAlgorithm() );
   addAlgorithm( new QgsMultipartToSinglepartAlgorithm() );
   addAlgorithm( new QgsOrderByExpressionAlgorithm() );
