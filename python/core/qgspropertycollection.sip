@@ -42,14 +42,14 @@ class QgsAbstractPropertyCollection
     QString name() const;
 %Docstring
  Returns the descriptive name of the property collection.
-.. seealso:: setName()
+.. seealso:: :py:func:`setName()`
  :rtype: str
 %End
 
     void setName( const QString &name );
 %Docstring
  Sets the descriptive name for the property collection.
-.. seealso:: name()
+.. seealso:: :py:func:`name()`
 %End
 
     virtual QSet<int> propertyKeys() const = 0;
@@ -68,7 +68,7 @@ class QgsAbstractPropertyCollection
  Returns true if the collection contains a property with the specified key.
  \param key integer key for property. The intended use case is that a context specific enum is cast to
  int and used for the key value.
-.. seealso:: property()
+.. seealso:: :py:func:`property()`
  :rtype: bool
 %End
 
@@ -78,7 +78,7 @@ class QgsAbstractPropertyCollection
  \param key integer key for property to return. The intended use case is that a context specific enum is cast to
  int and used for the key value.
  :return: matching property, or null if no matching, active property found.
-.. seealso:: hasProperty()
+.. seealso:: :py:func:`hasProperty()`
  :rtype: QgsProperty
 %End
 
@@ -91,11 +91,11 @@ class QgsAbstractPropertyCollection
  \param defaultValue default value to return if no matching, active property found or if the property value
  cannot be calculated
  :return: calculated property value, or default value if property could not be evaluated
-.. seealso:: valueAsString()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsInt()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: QVariant
 %End
 
@@ -108,11 +108,11 @@ class QgsAbstractPropertyCollection
  \param defaultString default string to return if the property cannot be calculated as a string
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to string
-.. seealso:: value()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsInt()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: str
 %End
 
@@ -125,11 +125,11 @@ class QgsAbstractPropertyCollection
  \param defaultColor default color to return if the property cannot be calculated as a color
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to color
-.. seealso:: value()
-.. seealso:: valueAsString()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsInt()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: QColor
 %End
 
@@ -142,11 +142,11 @@ class QgsAbstractPropertyCollection
  \param defaultValue default double to return if the property cannot be calculated as a double
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to double
-.. seealso:: value()
-.. seealso:: valueAsString()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsInt()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: float
 %End
 
@@ -159,11 +159,11 @@ class QgsAbstractPropertyCollection
  \param defaultValue default integer to return if the property cannot be calculated as a integer
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to integer
-.. seealso:: value()
-.. seealso:: valueAsString()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: int
 %End
 
@@ -176,11 +176,11 @@ class QgsAbstractPropertyCollection
  \param defaultValue default boolean to return if the property cannot be calculated as a boolean
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to bool
-.. seealso:: value()
-.. seealso:: valueAsString()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsInt()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsInt()`
  :rtype: bool
 %End
 
@@ -211,7 +211,7 @@ class QgsAbstractPropertyCollection
 %Docstring
  Returns true if the collection has any active properties, or false if all properties
  within the collection are deactivated.
-.. seealso:: hasDynamicProperties()
+.. seealso:: :py:func:`hasDynamicProperties()`
  :rtype: bool
 %End
 
@@ -219,7 +219,7 @@ class QgsAbstractPropertyCollection
 %Docstring
  Returns true if the collection has any active, non-static properties, or false if either all non-static properties
  within the collection are deactivated or if the collection only contains static properties.
-.. seealso:: hasActiveProperties()
+.. seealso:: :py:func:`hasActiveProperties()`
  :rtype: bool
 %End
 
@@ -228,7 +228,7 @@ class QgsAbstractPropertyCollection
  Writes the current state of the property collection into an XML element
  \param collectionElem destination element for the property collection's state
  \param definitions property definitions
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 
@@ -237,7 +237,7 @@ class QgsAbstractPropertyCollection
  Reads property collection state from an XML element.
  \param collectionElem source DOM element for property collection's state
  \param definitions property definitions
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 
@@ -246,7 +246,7 @@ class QgsAbstractPropertyCollection
  Saves this property collection to a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-.. seealso:: loadVariant()
+.. seealso:: :py:func:`loadVariant()`
  :rtype: QVariant
 %End
 
@@ -255,7 +255,7 @@ class QgsAbstractPropertyCollection
  Loads this property collection from a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.readVariant to save it to an XML document.
 
-.. seealso:: toVariant()
+.. seealso:: :py:func:`toVariant()`
  :rtype: bool
 %End
 
@@ -309,7 +309,7 @@ class QgsPropertyCollection : QgsAbstractPropertyCollection
  \param key integer key for property to return. The intended use case is that a context specific enum is cast to
  int and used for the key value.
  :return: matching property, or null if no matching, active property found.
-.. seealso:: hasProperty()
+.. seealso:: :py:func:`hasProperty()`
  :rtype: QgsProperty
 %End
 
@@ -420,8 +420,8 @@ Copy constructor
 %Docstring
  Returns true if the collection has any active properties, or false if all properties
  within the collection are deactivated.
-.. seealso:: isActive()
-.. seealso:: hasDynamicProperties()
+.. seealso:: :py:func:`isActive()`
+.. seealso:: :py:func:`hasDynamicProperties()`
  :rtype: bool
 %End
 
@@ -430,7 +430,7 @@ Copy constructor
 %Docstring
  Returns true if the collection has any active, non-static properties, or false if either all non-static properties
  within the collection are deactivated or if the collection only contains static properties.
-.. seealso:: hasActiveProperties()
+.. seealso:: :py:func:`hasActiveProperties()`
  :rtype: bool
 %End
 
@@ -440,7 +440,7 @@ Copy constructor
  Returns true if the stack contains an active property with the specified key.
  \param key integer key for property to test. The intended use case is that a context specific enum is cast to
  int and used for the key value.
-.. seealso:: hasActiveProperties()
+.. seealso:: :py:func:`hasActiveProperties()`
  :rtype: bool
 %End
 
@@ -451,7 +451,7 @@ Copy constructor
  \param key integer key for property to return. The intended use case is that a context specific enum is cast to
  int and used for the key value.
  :return: matching property, or null if no matching, active property found.
-.. seealso:: hasActiveProperty()
+.. seealso:: :py:func:`hasActiveProperty()`
  :rtype: QgsProperty
 %End
 

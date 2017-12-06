@@ -52,13 +52,13 @@ Returns the QgsProject singleton instance
  Sets the project's title.
  \param title new title
 .. versionadded:: 2.4
-.. seealso:: title()
+.. seealso:: :py:func:`title()`
 %End
 
     QString title() const;
 %Docstring
  Returns the project's title.
-.. seealso:: setTitle()
+.. seealso:: :py:func:`setTitle()`
  :rtype: str
 %End
 
@@ -73,22 +73,22 @@ Returns the QgsProject singleton instance
  Sets the file name associated with the project. This is the file which contains the project's XML
  representation.
  \param name project file name
-.. seealso:: fileName()
+.. seealso:: :py:func:`fileName()`
 %End
 
     QString fileName() const;
 %Docstring
  Returns the project's file name. This is the file which contains the project's XML
  representation.
-.. seealso:: setFileName()
-.. seealso:: fileInfo()
+.. seealso:: :py:func:`setFileName()`
+.. seealso:: :py:func:`fileInfo()`
  :rtype: str
 %End
 
     QFileInfo fileInfo() const;
 %Docstring
  Returns QFileInfo object for the project's associated file.
-.. seealso:: fileName()
+.. seealso:: :py:func:`fileName()`
 .. versionadded:: 2.9
  :rtype: QFileInfo
 %End
@@ -97,8 +97,8 @@ Returns the QgsProject singleton instance
 %Docstring
  Returns the project's native coordinate reference system.
 .. versionadded:: 3.0
-.. seealso:: setCrs()
-.. seealso:: ellipsoid()
+.. seealso:: :py:func:`setCrs()`
+.. seealso:: :py:func:`ellipsoid()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -106,15 +106,15 @@ Returns the QgsProject singleton instance
 %Docstring
  Sets the project's native coordinate reference system.
 .. versionadded:: 3.0
-.. seealso:: crs()
-.. seealso:: setEllipsoid()
+.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`setEllipsoid()`
 %End
 
     QString ellipsoid() const;
 %Docstring
  Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
-.. seealso:: setEllipsoid()
-.. seealso:: crs()
+.. seealso:: :py:func:`setEllipsoid()`
+.. seealso:: :py:func:`crs()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -122,8 +122,8 @@ Returns the QgsProject singleton instance
     void setEllipsoid( const QString &ellipsoid );
 %Docstring
  Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
-.. seealso:: ellipsoid()
-.. seealso:: setCrs()
+.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`setCrs()`
 .. versionadded:: 3.0
 %End
 
@@ -379,8 +379,8 @@ Convenience function to query topological editing status
 %Docstring
  Convenience function to query default distance measurement units for project.
 .. versionadded:: 2.14
-.. seealso:: setDistanceUnits()
-.. seealso:: areaUnits()
+.. seealso:: :py:func:`setDistanceUnits()`
+.. seealso:: :py:func:`areaUnits()`
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
@@ -388,15 +388,15 @@ Convenience function to query topological editing status
 %Docstring
  Sets the default distance measurement units for the project.
 .. versionadded:: 3.0
-.. seealso:: distanceUnits()
-.. seealso:: setAreaUnits()
+.. seealso:: :py:func:`distanceUnits()`
+.. seealso:: :py:func:`setAreaUnits()`
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;
 %Docstring
  Convenience function to query default area measurement units for project.
 .. versionadded:: 2.14
-.. seealso:: distanceUnits()
+.. seealso:: :py:func:`distanceUnits()`
  :rtype: QgsUnitTypes.AreaUnit
 %End
 
@@ -404,8 +404,8 @@ Convenience function to query topological editing status
 %Docstring
  Sets the default area measurement units for the project.
 .. versionadded:: 3.0
-.. seealso:: areaUnits()
-.. seealso:: setDistanceUnits()
+.. seealso:: :py:func:`areaUnits()`
+.. seealso:: :py:func:`setDistanceUnits()`
 %End
 
     QString homePath() const;
@@ -588,8 +588,8 @@ Returns the number of registered layers.
  Retrieve a pointer to a registered layer by layer ID.
  \param layerId ID of layer to retrieve
  :return: matching layer, or None if no matching layer found
-.. seealso:: mapLayersByName()
-.. seealso:: mapLayers()
+.. seealso:: :py:func:`mapLayersByName()`
+.. seealso:: :py:func:`mapLayers()`
  :rtype: QgsMapLayer
 %End
 
@@ -598,17 +598,17 @@ Returns the number of registered layers.
  Retrieve a list of matching registered layers by layer name.
  \param layerName name of layers to match
  :return: list of matching layers
-.. seealso:: mapLayer()
-.. seealso:: mapLayers()
+.. seealso:: :py:func:`mapLayer()`
+.. seealso:: :py:func:`mapLayers()`
  :rtype: list of QgsMapLayer
 %End
 
     QMap<QString, QgsMapLayer *> mapLayers() const;
 %Docstring
  Returns a map of all registered layers by layer ID.
-.. seealso:: mapLayer()
-.. seealso:: mapLayersByName()
-.. seealso:: layers()
+.. seealso:: :py:func:`mapLayer()`
+.. seealso:: :py:func:`mapLayersByName()`
+.. seealso:: :py:func:`layers()`
  :rtype: QMap<str, QgsMapLayer *>
 %End
 
@@ -649,7 +649,7 @@ Returns the number of registered layers.
    takeOwnership is not available in the Python bindings - the registry will always
  take ownership
 .. versionadded:: 1.8
-.. seealso:: addMapLayer()
+.. seealso:: :py:func:`addMapLayer()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -675,7 +675,7 @@ Returns the number of registered layers.
 
  :return: None if unable to add layer, otherwise pointer to newly added layer
 
-.. seealso:: addMapLayers
+.. seealso:: :py:func:`addMapLayers`
 
 .. note::
 
@@ -687,7 +687,7 @@ Returns the number of registered layers.
 
    takeOwnership is not available in the Python bindings - the registry will always
  take ownership
-.. seealso:: addMapLayers()
+.. seealso:: :py:func:`addMapLayers()`
  :rtype: QgsMapLayer
 %End
 
@@ -705,8 +705,8 @@ Returns the number of registered layers.
 
    As a side-effect the QgsProject instance is marked dirty.
 .. versionadded:: 1.8
-.. seealso:: removeMapLayer()
-.. seealso:: removeAllMapLayers()
+.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeAllMapLayers()`
 %End
 
     void removeMapLayers( const QList<QgsMapLayer *> &layers );
@@ -724,8 +724,8 @@ Returns the number of registered layers.
 .. note::
 
    As a side-effect the QgsProject instance is marked dirty.
-.. seealso:: removeMapLayers()
-.. seealso:: removeAllMapLayers()
+.. seealso:: :py:func:`removeMapLayers()`
+.. seealso:: :py:func:`removeAllMapLayers()`
 %End
 
     void removeMapLayer( QgsMapLayer *layer );
@@ -741,8 +741,8 @@ Returns the number of registered layers.
 .. note::
 
    As a side-effect the QgsProject instance is marked dirty.
-.. seealso:: removeMapLayers()
-.. seealso:: removeAllMapLayers()
+.. seealso:: :py:func:`removeMapLayers()`
+.. seealso:: :py:func:`removeAllMapLayers()`
 %End
 
     QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) /TransferBack/;
@@ -750,7 +750,7 @@ Returns the number of registered layers.
  Takes a layer from the registry. If the layer was owned by the project, the
  layer will be returned without deleting it. The caller takes ownership of
  the layer and is responsible for deleting it.
-.. seealso:: removeMapLayer()
+.. seealso:: :py:func:`removeMapLayer()`
 .. versionadded:: 3.0
  :rtype: QgsMapLayer
 %End
@@ -767,15 +767,15 @@ Returns the number of registered layers.
 
    Calling this method will cause the removeAll() signal to
  be emitted.
-.. seealso:: removeMapLayer()
-.. seealso:: removeMapLayers()
+.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeMapLayers()`
 %End
 
     void reloadAllLayers();
 %Docstring
  Reload all registered layer's provider data caches, synchronising the layer
  with any changes in the datasource.
-.. seealso:: QgsMapLayer.reload()
+.. seealso:: :py:func:`QgsMapLayer.reload()`
 %End
 
     QgsCoordinateReferenceSystem defaultCrsForNewLayers() const;
@@ -908,8 +908,8 @@ emitted whenever the configuration for snapping has changed
  Emitted when the project ``ellipsoid`` is changed.
 
 .. versionadded:: 3.0
-.. seealso:: setEllipsoid()
-.. seealso:: ellipsoid()
+.. seealso:: :py:func:`setEllipsoid()`
+.. seealso:: :py:func:`ellipsoid()`
 %End
 
     void transactionGroupsChanged();
@@ -959,8 +959,8 @@ emitted whenever the configuration for snapping has changed
  Emitted when one or more layers are about to be removed from the registry.
 
  \param layerIds A list of IDs for the layers which are to be removed.
-.. seealso:: layerWillBeRemoved()
-.. seealso:: layersRemoved()
+.. seealso:: :py:func:`layerWillBeRemoved()`
+.. seealso:: :py:func:`layersRemoved()`
 %End
 
     void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
@@ -968,8 +968,8 @@ emitted whenever the configuration for snapping has changed
  Emitted when one or more layers are about to be removed from the registry.
 
  \param layers A list of layers which are to be removed.
-.. seealso:: layerWillBeRemoved()
-.. seealso:: layersRemoved()
+.. seealso:: :py:func:`layerWillBeRemoved()`
+.. seealso:: :py:func:`layersRemoved()`
 %End
 
     void layerWillBeRemoved( const QString &layerId );
@@ -981,8 +981,8 @@ emitted whenever the configuration for snapping has changed
 .. note::
 
    Consider using layersWillBeRemoved() instead
-.. seealso:: layersWillBeRemoved()
-.. seealso:: layerRemoved()
+.. seealso:: :py:func:`layersWillBeRemoved()`
+.. seealso:: :py:func:`layerRemoved()`
 %End
 
     void layerWillBeRemoved( QgsMapLayer *layer );
@@ -994,8 +994,8 @@ emitted whenever the configuration for snapping has changed
 .. note::
 
    Consider using layersWillBeRemoved() instead
-.. seealso:: layersWillBeRemoved()
-.. seealso:: layerRemoved()
+.. seealso:: :py:func:`layersWillBeRemoved()`
+.. seealso:: :py:func:`layerRemoved()`
 %End
 
     void layersRemoved( const QStringList &layerIds );
@@ -1003,7 +1003,7 @@ emitted whenever the configuration for snapping has changed
  Emitted after one or more layers were removed from the registry.
 
  \param layerIds  A list of IDs of the layers which were removed.
-.. seealso:: layersWillBeRemoved()
+.. seealso:: :py:func:`layersWillBeRemoved()`
 %End
 
     void layerRemoved( const QString &layerId );
@@ -1015,7 +1015,7 @@ emitted whenever the configuration for snapping has changed
 .. note::
 
    Consider using layersRemoved() instead
-.. seealso:: layerWillBeRemoved()
+.. seealso:: :py:func:`layerWillBeRemoved()`
 %End
 
     void removeAll();
@@ -1028,8 +1028,8 @@ emitted whenever the configuration for snapping has changed
 
  \param layers List of layers which have been added.
 
-.. seealso:: legendLayersAdded()
-.. seealso:: layerWasAdded()
+.. seealso:: :py:func:`legendLayersAdded()`
+.. seealso:: :py:func:`layerWasAdded()`
 %End
 
     void layerWasAdded( QgsMapLayer *layer );
@@ -1039,7 +1039,7 @@ emitted whenever the configuration for snapping has changed
 .. note::
 
    Consider using layersAdded() instead
-.. seealso:: layersAdded()
+.. seealso:: :py:func:`layersAdded()`
 %End
 
     void legendLayersAdded( const QList<QgsMapLayer *> &layers );

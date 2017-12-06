@@ -109,7 +109,7 @@ Sets new scene rectangle bounds and recalculates hight and extent
 %Docstring
  Returns the map scale.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: setNewScale()
+.. seealso:: :py:func:`setNewScale()`
  :rtype: float
 %End
 
@@ -117,7 +117,7 @@ Sets new scene rectangle bounds and recalculates hight and extent
 %Docstring
  Sets new map ``scale`` and changes only the map extent.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: scale()
+.. seealso:: :py:func:`scale()`
 %End
 
     void setNewExtent( const QgsRectangle &extent );
@@ -126,7 +126,7 @@ Sets new scene rectangle bounds and recalculates hight and extent
  item to ensure that the extent exactly matches the specified extent, with no
  overlap or margin. This method implicitly alters the map scale.
  \param extent new extent for the map
-.. seealso:: zoomToExtent
+.. seealso:: :py:func:`zoomToExtent`
 %End
 
     void zoomToExtent( const QgsRectangle &extent );
@@ -136,7 +136,7 @@ Sets new scene rectangle bounds and recalculates hight and extent
  an overlap or margin from the specified extent. This method implicitly alters the
  map scale.
  \param extent new extent for the map
-.. seealso:: setNewExtent
+.. seealso:: :py:func:`setNewExtent`
 .. versionadded:: 2.5
 %End
 
@@ -152,7 +152,7 @@ Atlas preview extents are only temporary, and are regenerated whenever the atlas
  extent or the temporary atlas-driven feature extent depending on the current atlas state
  of the composition. Both a const and non-const version are included.
  :return: pointer to current map extent
-.. seealso:: visibleExtentPolygon
+.. seealso:: :py:func:`visibleExtentPolygon`
  :rtype: QgsRectangle
 %End
 
@@ -164,8 +164,8 @@ Atlas preview extents are only temporary, and are regenerated whenever the atlas
  CRS is not set then the map's CRS will follow the composition's
  project's CRS.
 .. versionadded:: 3.0
-.. seealso:: presetCrs()
-.. seealso:: setCrs()
+.. seealso:: :py:func:`presetCrs()`
+.. seealso:: :py:func:`setCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -176,8 +176,8 @@ Atlas preview extents are only temporary, and are regenerated whenever the atlas
  setting. If the returned CRS is not valid then the project CRS
  will be used to render the map.
 .. versionadded:: 3.0
-.. seealso:: crs()
-.. seealso:: setCrs()
+.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`setCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -186,8 +186,8 @@ Atlas preview extents are only temporary, and are regenerated whenever the atlas
  Sets the map's preset coordinate reference system. If a valid CRS is
  set, this CRS will be used to render the map regardless of any project CRS
  setting. If the CRS is not valid then the project CRS will be used to render the map.
-.. seealso:: crs()
-.. seealso:: presetCrs()
+.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`presetCrs()`
 .. versionadded:: 3.0
 %End
 
@@ -197,8 +197,8 @@ Atlas preview extents are only temporary, and are regenerated whenever the atlas
  or the current layer set of the QGIS map canvas. This is just a GUI flag,
  and itself does not change which layers are rendered in the map.
  Instead, use setLayers() to control which layers are rendered.
-.. seealso:: setKeepLayerSet()
-.. seealso:: layers()
+.. seealso:: :py:func:`setKeepLayerSet()`
+.. seealso:: :py:func:`layers()`
  :rtype: bool
 %End
 
@@ -208,16 +208,16 @@ Atlas preview extents are only temporary, and are regenerated whenever the atlas
  or the current layer set of the QGIS map canvas. This is just a GUI flag,
  and itself does not change which layers are rendered in the map.
  Instead, use setLayers() to control which layers are rendered.
-.. seealso:: keepLayerSet()
-.. seealso:: layers()
+.. seealso:: :py:func:`keepLayerSet()`
+.. seealso:: :py:func:`layers()`
 %End
 
     QList<QgsMapLayer *> layers() const;
 %Docstring
  Getter for stored layer set. If empty, the current canvas layers will
  be used instead.
-.. seealso:: setLayers()
-.. seealso:: keepLayerSet()
+.. seealso:: :py:func:`setLayers()`
+.. seealso:: :py:func:`keepLayerSet()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -225,8 +225,8 @@ Atlas preview extents are only temporary, and are regenerated whenever the atlas
 %Docstring
  Setter for stored layer set. If empty, the current canvas layers will
  be used instead.
-.. seealso:: layers()
-.. seealso:: keepLayerSet()
+.. seealso:: :py:func:`layers()`
+.. seealso:: :py:func:`keepLayerSet()`
 %End
 
     bool keepLayerStyles() const;
@@ -332,7 +332,7 @@ True if composer map contains layers with blend modes or flattened layers for ve
  Returns the map item's grid stack, which is used to control how grids
  are drawn over the map's contents.
  :return: pointer to grid stack
-.. seealso:: grid()
+.. seealso:: :py:func:`grid()`
 .. versionadded:: 2.5
  :rtype: QgsComposerMapGridStack
 %End
@@ -341,7 +341,7 @@ True if composer map contains layers with blend modes or flattened layers for ve
 %Docstring
  Returns the map item's first grid. This is a convenience function.
  :return: pointer to first grid for map item
-.. seealso:: grids()
+.. seealso:: :py:func:`grids()`
 .. versionadded:: 2.5
  :rtype: QgsComposerMapGrid
 %End
@@ -351,7 +351,7 @@ True if composer map contains layers with blend modes or flattened layers for ve
  Returns the map item's overview stack, which is used to control how overviews
  are drawn over the map's contents.
  :return: pointer to overview stack
-.. seealso:: overview()
+.. seealso:: :py:func:`overview()`
 .. versionadded:: 2.5
  :rtype: QgsComposerMapOverviewStack
 %End
@@ -360,7 +360,7 @@ True if composer map contains layers with blend modes or flattened layers for ve
 %Docstring
  Returns the map item's first overview. This is a convenience function.
  :return: pointer to first overview for map item
-.. seealso:: overviews()
+.. seealso:: :py:func:`overviews()`
 .. versionadded:: 2.5
  :rtype: QgsComposerMapOverview
 %End
@@ -382,7 +382,7 @@ In case of annotations, the bounding rectangle can be larger than the map item r
  Sets the ``rotation`` for the map - this does not affect the composer item shape, only the
  way the map is drawn within the item. Rotation is in degrees, clockwise.
 .. versionadded:: 2.1
-.. seealso:: mapRotation()
+.. seealso:: :py:func:`mapRotation()`
 %End
 
     double mapRotation( QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
@@ -391,20 +391,20 @@ In case of annotations, the bounding rectangle can be larger than the map item r
  \param valueType controls whether the returned value is the user specified rotation,
  or the current evaluated rotation (which may be affected by data driven rotation
  settings).
-.. seealso:: setMapRotation()
+.. seealso:: :py:func:`setMapRotation()`
  :rtype: float
 %End
 
     void setDrawAnnotations( bool draw );
 %Docstring
  Sets whether annotations are drawn within the composer map.
-.. seealso:: drawAnnotations()
+.. seealso:: :py:func:`drawAnnotations()`
 %End
 
     bool drawAnnotations() const;
 %Docstring
  Returns whether annotations are drawn within the composer map.
-.. seealso:: setDrawAnnotations()
+.. seealso:: :py:func:`setDrawAnnotations()`
  :rtype: bool
 %End
 
@@ -424,8 +424,8 @@ Usually, this function is called before adding the composer map to the compositi
 %Docstring
  Returns whether the map extent is set to follow the current atlas feature.
  :return: true if map will follow the current atlas feature.
-.. seealso:: setAtlasDriven
-.. seealso:: atlasScalingMode
+.. seealso:: :py:func:`setAtlasDriven`
+.. seealso:: :py:func:`atlasScalingMode`
  :rtype: bool
 %End
 
@@ -433,8 +433,8 @@ Usually, this function is called before adding the composer map to the compositi
 %Docstring
  Sets whether the map extent will follow the current atlas feature.
  \param enabled set to true if the map extents should be set by the current atlas feature.
-.. seealso:: atlasDriven
-.. seealso:: setAtlasScalingMode
+.. seealso:: :py:func:`atlasDriven`
+.. seealso:: :py:func:`setAtlasScalingMode`
 %End
 
     AtlasScalingMode atlasScalingMode() const;
@@ -446,8 +446,8 @@ Usually, this function is called before adding the composer map to the compositi
 .. note::
 
    this parameter is only used if atlasDriven() is true
-.. seealso:: setAtlasScalingMode
-.. seealso:: atlasDriven
+.. seealso:: :py:func:`setAtlasScalingMode`
+.. seealso:: :py:func:`atlasDriven`
  :rtype: AtlasScalingMode
 %End
 
@@ -460,8 +460,8 @@ Usually, this function is called before adding the composer map to the compositi
 .. note::
 
    this parameter is only used if atlasDriven() is true
-.. seealso:: atlasScalingMode
-.. seealso:: atlasDriven
+.. seealso:: :py:func:`atlasScalingMode`
+.. seealso:: :py:func:`atlasDriven`
 %End
 
     double atlasMargin( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
@@ -474,8 +474,8 @@ Usually, this function is called before adding the composer map to the compositi
 .. note::
 
    this is only used if atlasScalingMode() is Auto.
-.. seealso:: atlasScalingMode
-.. seealso:: setAtlasMargin
+.. seealso:: :py:func:`atlasScalingMode`
+.. seealso:: :py:func:`setAtlasMargin`
  :rtype: float
 %End
 
@@ -486,8 +486,8 @@ Usually, this function is called before adding the composer map to the compositi
 .. note::
 
    this is only used if atlasScalingMode() is Auto.
-.. seealso:: atlasScalingMode
-.. seealso:: atlasMargin
+.. seealso:: :py:func:`atlasScalingMode`
+.. seealso:: :py:func:`atlasMargin`
 %End
 
     virtual int numberExportLayers() const;
@@ -506,7 +506,7 @@ Usually, this function is called before adding the composer map to the compositi
  If the map rotation is 0, the result is the same as currentMapExtent
  :return: polygon with the four corner points representing the visible map extent. The points are
  clockwise, starting at the top-left point
-.. seealso:: currentMapExtent
+.. seealso:: :py:func:`currentMapExtent`
  :rtype: QPolygonF
 %End
 

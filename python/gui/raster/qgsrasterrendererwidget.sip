@@ -37,15 +37,15 @@ class QgsRasterRendererWidget: QWidget
  Sets the map canvas associated with the widget. This allows the widget to retrieve the current
  map extent and other properties from the canvas.
  \param canvas map canvas
-.. seealso:: mapCanvas()
+.. seealso:: :py:func:`mapCanvas()`
 .. versionadded:: 2.16
 %End
 
     QgsMapCanvas *mapCanvas();
 %Docstring
  Returns the map canvas associated with the widget.
-.. seealso:: setMapCanvas()
-.. seealso:: canvasExtent()
+.. seealso:: :py:func:`setMapCanvas()`
+.. seealso:: :py:func:`canvasExtent()`
 .. versionadded:: 2.16
  :rtype: QgsMapCanvas
 %End

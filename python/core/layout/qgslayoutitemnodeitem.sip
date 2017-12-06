@@ -25,13 +25,13 @@ class QgsLayoutNodesItem: QgsLayoutItem
     void setNodes( const QPolygonF &nodes );
 %Docstring
  Sets the ``nodes`` the shape consists of.
-.. seealso:: nodes()
+.. seealso:: :py:func:`nodes()`
 %End
 
     QPolygonF nodes() const;
 %Docstring
  Returns the nodes the shape consists of.
-.. seealso:: setNodes()
+.. seealso:: :py:func:`setNodes()`
  :rtype: QPolygonF
 %End
 

@@ -158,14 +158,14 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
     QgsProcessing::SourceType dataType() const;
 %Docstring
  Returns the layer type for the output layer.
-.. seealso:: setDataType()
+.. seealso:: :py:func:`setDataType()`
  :rtype: QgsProcessing.SourceType
 %End
 
     void setDataType( QgsProcessing::SourceType type );
 %Docstring
  Sets the layer ``type`` for the output layer.
-.. seealso:: dataType()
+.. seealso:: :py:func:`dataType()`
 %End
 
 };

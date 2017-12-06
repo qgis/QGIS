@@ -54,7 +54,7 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
  \param f      Will write to this feature
  :return: bool  true if the operation was OK
 
-.. seealso:: bool getFeature( QgsFeature& f )
+.. seealso:: :py:func:`bool`
  :rtype: bool
 %End
 
@@ -114,7 +114,7 @@ class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
  \param f      Will write to this feature
  :return: bool  true if the operation was OK
 
-.. seealso:: bool getFeature( QgsFeature& f )
+.. seealso:: :py:func:`bool`
  :rtype: bool
 %End
 

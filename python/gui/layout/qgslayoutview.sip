@@ -32,8 +32,8 @@ class QgsLayoutView: QGraphicsView
     QgsLayout *currentLayout();
 %Docstring
  Returns the current layout associated with the view.
-.. seealso:: setCurrentLayout()
-.. seealso:: layoutSet()
+.. seealso:: :py:func:`setCurrentLayout()`
+.. seealso:: :py:func:`layoutSet()`
  :rtype: QgsLayout
 %End
 
@@ -41,22 +41,22 @@ class QgsLayoutView: QGraphicsView
     void setCurrentLayout( QgsLayout *layout /KeepReference/ );
 %Docstring
  Sets the current ``layout`` to edit in the view.
-.. seealso:: currentLayout()
-.. seealso:: layoutSet()
+.. seealso:: :py:func:`currentLayout()`
+.. seealso:: :py:func:`layoutSet()`
 %End
 
     QgsLayoutViewTool *tool();
 %Docstring
  Returns the currently active tool for the view.
-.. seealso:: setTool()
+.. seealso:: :py:func:`setTool()`
  :rtype: QgsLayoutViewTool
 %End
 
     void setTool( QgsLayoutViewTool *tool );
 %Docstring
  Sets the ``tool`` currently being used in the view.
-.. seealso:: unsetTool()
-.. seealso:: tool()
+.. seealso:: :py:func:`unsetTool()`
+.. seealso:: :py:func:`tool()`
 %End
 
     void unsetTool( QgsLayoutViewTool *tool );
@@ -72,13 +72,13 @@ class QgsLayoutView: QGraphicsView
 %Docstring
  Sets whether a preview effect should be used to alter the view's appearance.
  \param enabled Set to true to enable the preview effect on the view.
-.. seealso:: setPreviewMode()
+.. seealso:: :py:func:`setPreviewMode()`
 %End
 
     bool previewModeEnabled() const;
 %Docstring
  Returns true if a preview effect is being used to alter the view's appearance.
-.. seealso:: setPreviewModeEnabled()
+.. seealso:: :py:func:`setPreviewModeEnabled()`
  :rtype: bool
 %End
 
@@ -86,16 +86,16 @@ class QgsLayoutView: QGraphicsView
 %Docstring
  Sets the preview ``mode`` which should be used to modify the view's appearance. Preview modes are only used
  if previewModeEnabled() is true.
-.. seealso:: setPreviewModeEnabled()
-.. seealso:: previewMode()
+.. seealso:: :py:func:`setPreviewModeEnabled()`
+.. seealso:: :py:func:`previewMode()`
 %End
 
     QgsPreviewEffect::PreviewMode previewMode() const;
 %Docstring
  Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
  if previewModeEnabled() is true.
-.. seealso:: setPreviewMode()
-.. seealso:: previewModeEnabled()
+.. seealso:: :py:func:`setPreviewMode()`
+.. seealso:: :py:func:`previewModeEnabled()`
  :rtype: QgsPreviewEffect.PreviewMode
 %End
 
@@ -113,25 +113,25 @@ class QgsLayoutView: QGraphicsView
     void setHorizontalRuler( QgsLayoutRuler *ruler );
 %Docstring
  Sets a horizontal ``ruler`` to synchronize with the view state.
-.. seealso:: setVerticalRuler()
+.. seealso:: :py:func:`setVerticalRuler()`
 %End
 
     void setVerticalRuler( QgsLayoutRuler *ruler );
 %Docstring
  Sets a vertical ``ruler`` to synchronize with the view state.
-.. seealso:: setHorizontalRuler()
+.. seealso:: :py:func:`setHorizontalRuler()`
 %End
 
     void setMenuProvider( QgsLayoutViewMenuProvider *provider /Transfer/ );
 %Docstring
  Sets a ``provider`` for context menus. Ownership of the provider is transferred to the view.
-.. seealso:: menuProvider()
+.. seealso:: :py:func:`menuProvider()`
 %End
 
     QgsLayoutViewMenuProvider *menuProvider() const;
 %Docstring
  Returns the provider for context menus. Returned value may be None if no provider is set.
-.. seealso:: setMenuProvider()
+.. seealso:: :py:func:`setMenuProvider()`
  :rtype: QgsLayoutViewMenuProvider
 %End
 
@@ -140,43 +140,43 @@ class QgsLayoutView: QGraphicsView
  Returns the page visible in the view. This method
  considers the page at the center of the view as the current visible
  page.
-.. seealso:: pageChanged()
+.. seealso:: :py:func:`pageChanged()`
  :rtype: int
 %End
 
     QList< QgsLayoutItemPage * > visiblePages() const;
 %Docstring
  Returns a list of page items which are currently visible in the view.
-.. seealso:: visiblePageNumbers()
+.. seealso:: :py:func:`visiblePageNumbers()`
  :rtype: list of QgsLayoutItemPage
 %End
 
     QList< int > visiblePageNumbers() const;
 %Docstring
  Returns a list of page numbers for pages which are currently visible in the view.
-.. seealso:: visiblePages()
+.. seealso:: :py:func:`visiblePages()`
  :rtype: list of int
 %End
 
     void alignSelectedItems( QgsLayoutAligner::Alignment alignment );
 %Docstring
  Aligns all selected items using the specified ``alignment``.
-.. seealso:: distributeSelectedItems()
-.. seealso:: resizeSelectedItems()
+.. seealso:: :py:func:`distributeSelectedItems()`
+.. seealso:: :py:func:`resizeSelectedItems()`
 %End
 
     void distributeSelectedItems( QgsLayoutAligner::Distribution distribution );
 %Docstring
  Distributes all selected items using the specified ``distribution``.
-.. seealso:: alignSelectedItems()
-.. seealso:: resizeSelectedItems()
+.. seealso:: :py:func:`alignSelectedItems()`
+.. seealso:: :py:func:`resizeSelectedItems()`
 %End
 
     void resizeSelectedItems( QgsLayoutAligner::Resize resize );
 %Docstring
  Resizes all selected items using the specified ``resize`` mode.
-.. seealso:: alignSelectedItems()
-.. seealso:: distributeSelectedItems()
+.. seealso:: :py:func:`alignSelectedItems()`
+.. seealso:: :py:func:`distributeSelectedItems()`
 %End
 
     QPointF deltaForKeyEvent( QKeyEvent *event );
@@ -191,41 +191,41 @@ class QgsLayoutView: QGraphicsView
     void zoomFull();
 %Docstring
  Zooms the view to the full extent of the layout.
-.. seealso:: zoomIn()
-.. seealso:: zoomOut()
-.. seealso:: zoomActual()
+.. seealso:: :py:func:`zoomIn()`
+.. seealso:: :py:func:`zoomOut()`
+.. seealso:: :py:func:`zoomActual()`
 %End
 
     void zoomWidth();
 %Docstring
  Zooms the view to the full width of the layout.
-.. seealso:: zoomIn()
-.. seealso:: zoomOut()
-.. seealso:: zoomActual()
+.. seealso:: :py:func:`zoomIn()`
+.. seealso:: :py:func:`zoomOut()`
+.. seealso:: :py:func:`zoomActual()`
 %End
 
     void zoomIn();
 %Docstring
  Zooms in to the view by a preset amount.
-.. seealso:: zoomFull()
-.. seealso:: zoomOut()
-.. seealso:: zoomActual()
+.. seealso:: :py:func:`zoomFull()`
+.. seealso:: :py:func:`zoomOut()`
+.. seealso:: :py:func:`zoomActual()`
 %End
 
     void zoomOut();
 %Docstring
  Zooms out of the view by a preset amount.
-.. seealso:: zoomFull()
-.. seealso:: zoomIn()
-.. seealso:: zoomActual()
+.. seealso:: :py:func:`zoomFull()`
+.. seealso:: :py:func:`zoomIn()`
+.. seealso:: :py:func:`zoomActual()`
 %End
 
     void zoomActual();
 %Docstring
  Zooms to the actual size of the layout.
-.. seealso:: zoomFull()
-.. seealso:: zoomIn()
-.. seealso:: zoomOut()
+.. seealso:: :py:func:`zoomFull()`
+.. seealso:: :py:func:`zoomIn()`
+.. seealso:: :py:func:`zoomOut()`
 %End
 
     void emitZoomLevelChanged();
@@ -234,86 +234,86 @@ class QgsLayoutView: QGraphicsView
     void selectAll();
 %Docstring
  Selects all items in the view.
-.. seealso:: deselectAll()
-.. seealso:: invertSelection()
-.. seealso:: selectNextItemAbove()
-.. seealso:: selectNextItemBelow()
+.. seealso:: :py:func:`deselectAll()`
+.. seealso:: :py:func:`invertSelection()`
+.. seealso:: :py:func:`selectNextItemAbove()`
+.. seealso:: :py:func:`selectNextItemBelow()`
 %End
 
     void deselectAll();
 %Docstring
  Deselects all items in the view.
-.. seealso:: selectAll()
-.. seealso:: invertSelection()
+.. seealso:: :py:func:`selectAll()`
+.. seealso:: :py:func:`invertSelection()`
 %End
 
     void invertSelection();
 %Docstring
  Inverts the current selection, selecting deselected items
  and deselecting and selected items.
-.. seealso:: selectAll()
-.. seealso:: deselectAll()
+.. seealso:: :py:func:`selectAll()`
+.. seealso:: :py:func:`deselectAll()`
 %End
 
     void selectNextItemAbove();
 %Docstring
  Selects the next item above the existing selection, by item z order.
-.. seealso:: selectNextItemBelow()
-.. seealso:: selectAll()
-.. seealso:: deselectAll()
+.. seealso:: :py:func:`selectNextItemBelow()`
+.. seealso:: :py:func:`selectAll()`
+.. seealso:: :py:func:`deselectAll()`
 %End
 
     void selectNextItemBelow();
 %Docstring
  Selects the next item below the existing selection, by item z order.
-.. seealso:: selectNextItemAbove()
-.. seealso:: selectAll()
-.. seealso:: deselectAll()
+.. seealso:: :py:func:`selectNextItemAbove()`
+.. seealso:: :py:func:`selectAll()`
+.. seealso:: :py:func:`deselectAll()`
 %End
 
     void raiseSelectedItems();
 %Docstring
  Raises the selected items up the z-order.
-.. seealso:: lowerSelectedItems()
-.. seealso:: moveSelectedItemsToTop()
-.. seealso:: moveSelectedItemsToBottom()
+.. seealso:: :py:func:`lowerSelectedItems()`
+.. seealso:: :py:func:`moveSelectedItemsToTop()`
+.. seealso:: :py:func:`moveSelectedItemsToBottom()`
 %End
 
     void lowerSelectedItems();
 %Docstring
  Lowers the selected items down the z-order.
-.. seealso:: raiseSelectedItems()
-.. seealso:: moveSelectedItemsToTop()
-.. seealso:: moveSelectedItemsToBottom()
+.. seealso:: :py:func:`raiseSelectedItems()`
+.. seealso:: :py:func:`moveSelectedItemsToTop()`
+.. seealso:: :py:func:`moveSelectedItemsToBottom()`
 %End
 
     void moveSelectedItemsToTop();
 %Docstring
  Raises the selected items to the top of the z-order.
-.. seealso:: raiseSelectedItems()
-.. seealso:: lowerSelectedItems()
-.. seealso:: moveSelectedItemsToBottom()
+.. seealso:: :py:func:`raiseSelectedItems()`
+.. seealso:: :py:func:`lowerSelectedItems()`
+.. seealso:: :py:func:`moveSelectedItemsToBottom()`
 %End
 
     void moveSelectedItemsToBottom();
 %Docstring
  Lowers the selected items to the bottom of the z-order.
-.. seealso:: raiseSelectedItems()
-.. seealso:: lowerSelectedItems()
-.. seealso:: moveSelectedItemsToTop()
+.. seealso:: :py:func:`raiseSelectedItems()`
+.. seealso:: :py:func:`lowerSelectedItems()`
+.. seealso:: :py:func:`moveSelectedItemsToTop()`
 %End
 
     void lockSelectedItems();
 %Docstring
  Locks any selected items, preventing them from being interacted with
  by mouse interactions.
-.. seealso:: unlockAllItems()
+.. seealso:: :py:func:`unlockAllItems()`
 %End
 
     void unlockAllItems();
 %Docstring
  Unlocks all locked items in the layout.
-.. seealso:: lockSelectedItems()
+.. seealso:: :py:func:`lockSelectedItems()`
 %End
 
     void deleteSelectedItems();
@@ -324,13 +324,13 @@ class QgsLayoutView: QGraphicsView
     void groupSelectedItems();
 %Docstring
  Groups all selected items.
-.. seealso:: ungroupSelectedItems()
+.. seealso:: :py:func:`ungroupSelectedItems()`
 %End
 
     void ungroupSelectedItems();
 %Docstring
  Ungroups all selected items.
-.. seealso:: groupSelectedItems()
+.. seealso:: :py:func:`groupSelectedItems()`
 %End
 
     void viewChanged();
@@ -346,7 +346,7 @@ class QgsLayoutView: QGraphicsView
  Pushes a new status bar ``message`` to the view. This causes statusMessage()
  to be emitted, which should cause the message to appear in the status bar
  for the parent window.
-.. seealso:: statusMessage()
+.. seealso:: :py:func:`statusMessage()`
 %End
 
   signals:
@@ -354,14 +354,14 @@ class QgsLayoutView: QGraphicsView
     void layoutSet( QgsLayout *layout );
 %Docstring
  Emitted when a ``layout`` is set for the view.
-.. seealso:: currentLayout()
-.. seealso:: setCurrentLayout()
+.. seealso:: :py:func:`currentLayout()`
+.. seealso:: :py:func:`setCurrentLayout()`
 %End
 
     void toolSet( QgsLayoutViewTool *tool );
 %Docstring
  Emitted when the current ``tool`` is changed.
-.. seealso:: setTool()
+.. seealso:: :py:func:`setTool()`
 %End
 
     void zoomLevelChanged();
@@ -381,14 +381,14 @@ class QgsLayoutView: QGraphicsView
  Emitted when the page visible in the view is changed. This signal
  considers the page at the center of the view as the current visible
  page.
-.. seealso:: currentPage()
+.. seealso:: :py:func:`currentPage()`
 %End
 
     void statusMessage( const QString &message );
 %Docstring
  Emitted when the view has a ``message`` for display in a parent window's
  status bar.
-.. seealso:: pushStatusMessage()
+.. seealso:: :py:func:`pushStatusMessage()`
 %End
 
     void itemFocused( QgsLayoutItem *item );
@@ -429,7 +429,7 @@ class QgsLayoutViewMenuProvider
  Implementations of this interface can be made to allow QgsLayoutView
  instances to provide custom context menus (opened upon right-click).
 
-.. seealso:: QgsLayoutView
+.. seealso:: :py:class:`QgsLayoutView`
 .. versionadded:: 3.0
 %End
 

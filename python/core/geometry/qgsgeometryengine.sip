@@ -50,7 +50,7 @@ class QgsGeometryEngine
  This should be called for any geometry which is used for multiple relation
  tests against other geometries.
 
-.. seealso:: geometryChanged()
+.. seealso:: :py:func:`geometryChanged()`
 %End
 
     virtual QgsAbstractGeometry *intersection( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;

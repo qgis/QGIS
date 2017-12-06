@@ -42,7 +42,7 @@ class QgsPaintEffectAbstractMetadata
 %Docstring
  Returns the unique string representing the paint effect class
  :return: unique string
-.. seealso:: visibleName
+.. seealso:: :py:func:`visibleName`
  :rtype: str
 %End
 
@@ -50,7 +50,7 @@ class QgsPaintEffectAbstractMetadata
 %Docstring
  Returns the user visible string representing the paint effect class
  :return: friendly user visible string
-.. seealso:: name
+.. seealso:: :py:func:`name`
  :rtype: str
 %End
 
@@ -146,7 +146,7 @@ class QgsPaintEffectRegistry
  effects. All effects except the standard draw source effect are disabled,
  but are included so that they can be easily drawn just by enabling the effect.
  :return: default effects stack
-.. seealso:: isDefaultStack()
+.. seealso:: :py:func:`isDefaultStack()`
  :rtype: QgsPaintEffect
 %End
 
@@ -156,7 +156,7 @@ class QgsPaintEffectRegistry
  \param effect paint effect to test
  :return: true if effect is default stack
 .. versionadded:: 2.12
-.. seealso:: defaultStack()
+.. seealso:: :py:func:`defaultStack()`
  :rtype: bool
 %End
 

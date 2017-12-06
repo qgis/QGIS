@@ -81,8 +81,8 @@ class QgsFeatureSource
  If specified, the ``limit`` option can be used to limit the number of returned values.
  The base class implementation uses a non-optimised approach of looping through
  all features in the source.
-.. seealso:: minimumValue()
-.. seealso:: maximumValue()
+.. seealso:: :py:func:`minimumValue()`
+.. seealso:: :py:func:`maximumValue()`
  :rtype: set of QVariant
 %End
 
@@ -91,8 +91,8 @@ class QgsFeatureSource
  Returns the minimum value for an attribute column or an invalid variant in case of error.
  The base class implementation uses a non-optimised approach of looping through
  all features in the source.
-.. seealso:: maximumValue()
-.. seealso:: uniqueValues()
+.. seealso:: :py:func:`maximumValue()`
+.. seealso:: :py:func:`uniqueValues()`
  :rtype: QVariant
 %End
 
@@ -101,8 +101,8 @@ class QgsFeatureSource
  Returns the maximum value for an attribute column or an invalid variant in case of error.
  The base class implementation uses a non-optimised approach of looping through
  all features in the source.
-.. seealso:: minimumValue()
-.. seealso:: uniqueValues()
+.. seealso:: :py:func:`minimumValue()`
+.. seealso:: :py:func:`uniqueValues()`
  :rtype: QVariant
 %End
 

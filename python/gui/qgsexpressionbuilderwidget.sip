@@ -165,7 +165,7 @@ Sets the expression string for the widget
 %Docstring
  Returns the expression context for the widget. The context is used for the expression
  preview result and for populating the list of available functions and variables.
-.. seealso:: setExpressionContext
+.. seealso:: :py:func:`setExpressionContext`
 .. versionadded:: 2.12
  :rtype: QgsExpressionContext
 %End
@@ -175,7 +175,7 @@ Sets the expression string for the widget
  Sets the expression context for the widget. The context is used for the expression
  preview result and for populating the list of available functions and variables.
  \param context expression context
-.. seealso:: expressionContext
+.. seealso:: :py:func:`expressionContext`
 .. versionadded:: 2.12
 %End
 
@@ -247,7 +247,7 @@ Sets the expression string for the widget
     QgsProject *project();
 %Docstring
  Returns the project currently associated with the widget.
-.. seealso:: setProject()
+.. seealso:: :py:func:`setProject()`
 .. versionadded:: 3.0
  :rtype: QgsProject
 %End
@@ -256,7 +256,7 @@ Sets the expression string for the widget
 %Docstring
  Sets the ``project`` currently associated with the widget. This
  controls which layers and relations and other project-specific items are shown in the widget.
-.. seealso:: project()
+.. seealso:: :py:func:`project()`
 .. versionadded:: 3.0
 %End
 

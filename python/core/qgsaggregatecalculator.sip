@@ -65,15 +65,15 @@ class QgsAggregateCalculator
 %Docstring
  Optional filter for calculating aggregate over a subset of features, or an
  empty string to use all features.
-.. seealso:: QgsAggregateCalculator.setFilter()
-.. seealso:: QgsAggregateCalculator.filter()
+.. seealso:: :py:func:`QgsAggregateCalculator.setFilter()`
+.. seealso:: :py:func:`QgsAggregateCalculator.filter()`
 %End
 
       QString delimiter;
 %Docstring
  Delimiter to use for joining values with the StringConcatenate aggregate.
-.. seealso:: QgsAggregateCalculator.setDelimiter()
-.. seealso:: QgsAggregateCalculator.delimiter()
+.. seealso:: :py:func:`QgsAggregateCalculator.setDelimiter()`
+.. seealso:: :py:func:`QgsAggregateCalculator.delimiter()`
 %End
     };
 
@@ -99,13 +99,13 @@ class QgsAggregateCalculator
 %Docstring
  Sets a filter to limit the features used during the aggregate calculation.
  \param filterExpression expression for filtering features, or empty string to remove filter
-.. seealso:: filter()
+.. seealso:: :py:func:`filter()`
 %End
 
     QString filter() const;
 %Docstring
  Returns the filter which limits the features used during the aggregate calculation.
-.. seealso:: setFilter()
+.. seealso:: :py:func:`setFilter()`
  :rtype: str
 %End
 
@@ -113,13 +113,13 @@ class QgsAggregateCalculator
 %Docstring
  Sets the delimiter to use for joining values with the StringConcatenate aggregate.
  \param delimiter string delimiter
-.. seealso:: delimiter()
+.. seealso:: :py:func:`delimiter()`
 %End
 
     QString delimiter() const;
 %Docstring
  Returns the delimiter used for joining values with the StringConcatenate aggregate.
-.. seealso:: setDelimiter()
+.. seealso:: :py:func:`setDelimiter()`
  :rtype: str
 %End
 

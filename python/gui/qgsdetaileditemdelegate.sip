@@ -14,7 +14,7 @@ class QgsDetailedItemDelegate : QAbstractItemDelegate
 %Docstring
  A custom model/view delegate that can display an icon, heading
  and detail sections.
-.. seealso:: also QgsDetailedItemData
+.. seealso:: :py:func:`also`
 %End
 
 %TypeHeaderCode

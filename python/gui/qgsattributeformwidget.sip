@@ -59,13 +59,13 @@ class QgsAttributeFormWidget : QWidget /Abstract/
  Sets the current mode for the widget. The widget will adapt its state and visible widgets to
  reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
  \param mode widget mode
-.. seealso:: mode()
+.. seealso:: :py:func:`mode()`
 %End
 
     Mode mode() const;
 %Docstring
  Returns the current mode for the widget.
-.. seealso:: setMode()
+.. seealso:: :py:func:`setMode()`
  :rtype: Mode
 %End
 

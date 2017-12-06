@@ -41,14 +41,14 @@ class QgsLayoutRuler: QWidget
     QgsLayoutView *layoutView();
 %Docstring
  Returns the current layout view associated with the ruler.
-.. seealso:: setLayoutView()
+.. seealso:: :py:func:`setLayoutView()`
  :rtype: QgsLayoutView
 %End
 
     void setLayoutView( QgsLayoutView *view );
 %Docstring
  Sets the current layout ``view`` to synchronize the ruler with.
-.. seealso:: layoutView()
+.. seealso:: :py:func:`layoutView()`
 %End
 
     int rulerSize() const;

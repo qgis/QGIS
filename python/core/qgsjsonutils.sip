@@ -38,13 +38,13 @@ class QgsJsonExporter
  Sets the maximum number of decimal places to use in geometry coordinates.
  The RFC 7946 GeoJSON specification recommends limiting coordinate precision to 6
  \param precision number of decimal places
-.. seealso:: precision()
+.. seealso:: :py:func:`precision()`
 %End
 
     int precision() const;
 %Docstring
  Returns the maximum number of decimal places to use in geometry coordinates.
-.. seealso:: setPrecision()
+.. seealso:: :py:func:`setPrecision()`
  :rtype: int
 %End
 
@@ -52,13 +52,13 @@ class QgsJsonExporter
 %Docstring
  Sets whether to include geometry in the JSON exports.
  \param includeGeometry set to false to prevent geometry inclusion
-.. seealso:: includeGeometry()
+.. seealso:: :py:func:`includeGeometry()`
 %End
 
     bool includeGeometry() const;
 %Docstring
  Returns whether geometry will be included in the JSON exports.
-.. seealso:: setIncludeGeometry()
+.. seealso:: :py:func:`setIncludeGeometry()`
  :rtype: bool
 %End
 
@@ -66,13 +66,13 @@ class QgsJsonExporter
 %Docstring
  Sets whether to include attributes in the JSON exports.
  \param includeAttributes set to false to prevent attribute inclusion
-.. seealso:: includeAttributes()
+.. seealso:: :py:func:`includeAttributes()`
 %End
 
     bool includeAttributes() const;
 %Docstring
  Returns whether attributes will be included in the JSON exports.
-.. seealso:: setIncludeAttributes()
+.. seealso:: :py:func:`setIncludeAttributes()`
  :rtype: bool
 %End
 
@@ -84,13 +84,13 @@ class QgsJsonExporter
 .. note::
 
    associated vector layer must be set with setVectorLayer()
-.. seealso:: includeRelated()
+.. seealso:: :py:func:`includeRelated()`
 %End
 
     bool includeRelated() const;
 %Docstring
  Returns whether attributes of related (child) features will be included in the JSON exports.
-.. seealso:: setIncludeRelated()
+.. seealso:: :py:func:`setIncludeRelated()`
  :rtype: bool
 %End
 
@@ -99,13 +99,13 @@ class QgsJsonExporter
  Sets the associated vector layer (required for related attribute export). This will automatically
  update the sourceCrs() to match.
  \param vectorLayer vector layer
-.. seealso:: vectorLayer()
+.. seealso:: :py:func:`vectorLayer()`
 %End
 
     QgsVectorLayer *vectorLayer() const;
 %Docstring
  Returns the associated vector layer, if set.
-.. seealso:: setVectorLayer()
+.. seealso:: :py:func:`setVectorLayer()`
  :rtype: QgsVectorLayer
 %End
 
@@ -117,14 +117,14 @@ class QgsJsonExporter
 .. note::
 
    the source CRS will be overwritten when a vector layer is specified via setVectorLayer()
-.. seealso:: sourceCrs()
+.. seealso:: :py:func:`sourceCrs()`
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
  Returns the source CRS for feature geometries. The source CRS must be set if geometries are to be
  correctly automatically reprojected to WGS 84, to match GeoJSON specifications.
-.. seealso:: setSourceCrs()
+.. seealso:: :py:func:`setSourceCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -133,8 +133,8 @@ class QgsJsonExporter
  Sets the list of attributes to include in the JSON exports.
  \param attributes list of attribute indexes, or an empty list to include all
  attributes
-.. seealso:: attributes()
-.. seealso:: setExcludedAttributes()
+.. seealso:: :py:func:`attributes()`
+.. seealso:: :py:func:`setExcludedAttributes()`
 .. note::
 
    Attributes excluded via setExcludedAttributes() take precedence over
@@ -145,8 +145,8 @@ class QgsJsonExporter
 %Docstring
  Returns the list of attributes which will be included in the JSON exports, or
  an empty list if all attributes will be included.
-.. seealso:: setAttributes()
-.. seealso:: excludedAttributes()
+.. seealso:: :py:func:`setAttributes()`
+.. seealso:: :py:func:`excludedAttributes()`
 .. note::
 
    Attributes excluded via excludedAttributes() take precedence over
@@ -159,16 +159,16 @@ class QgsJsonExporter
  Sets a list of attributes to specifically exclude from the JSON exports. Excluded attributes
  take precedence over attributes included via setAttributes().
  \param attributes list of attribute indexes to exclude
-.. seealso:: excludedAttributes()
-.. seealso:: setAttributes()
+.. seealso:: :py:func:`excludedAttributes()`
+.. seealso:: :py:func:`setAttributes()`
 %End
 
     QgsAttributeList excludedAttributes() const;
 %Docstring
  Returns a list of attributes which will be specifically excluded from the JSON exports. Excluded attributes
  take precedence over attributes included via attributes().
-.. seealso:: setExcludedAttributes()
-.. seealso:: attributes()
+.. seealso:: :py:func:`setExcludedAttributes()`
+.. seealso:: :py:func:`attributes()`
  :rtype: QgsAttributeList
 %End
 
@@ -182,7 +182,7 @@ class QgsJsonExporter
  \param id optional ID to use as GeoJSON feature's ID instead of input feature's ID. If omitted, feature's
  ID is used.
  :return: GeoJSON string
-.. seealso:: exportFeatures()
+.. seealso:: :py:func:`exportFeatures()`
  :rtype: str
 %End
 
@@ -192,7 +192,7 @@ class QgsJsonExporter
  Returns a GeoJSON string representation of a list of features (feature collection).
  \param features features to convert
  :return: GeoJSON string
-.. seealso:: exportFeature()
+.. seealso:: :py:func:`exportFeature()`
  :rtype: str
 %End
 
@@ -218,7 +218,7 @@ class QgsJsonUtils
  \param fields fields collection to use for parsed features
  \param encoding text encoding
  :return: list of parsed features, or an empty list if no features could be parsed
-.. seealso:: stringToFields()
+.. seealso:: :py:func:`stringToFields()`
 .. note::
 
    this function is a wrapper around QgsOgrUtils.stringToFeatureList()
@@ -231,7 +231,7 @@ class QgsJsonUtils
  \param string GeoJSON string to parse
  \param encoding text encoding
  :return: retrieved fields collection, or an empty list if no fields could be determined from the string
-.. seealso:: stringToFeatureList()
+.. seealso:: :py:func:`stringToFeatureList()`
 .. note::
 
    this function is a wrapper around QgsOgrUtils.stringToFields()

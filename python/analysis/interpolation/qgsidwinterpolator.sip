@@ -35,7 +35,7 @@ class QgsIDWInterpolator: QgsInterpolator
 
  Point values are weighted by 1 / ( distance ^ coefficient ).
 
-.. seealso:: distanceCoefficient()
+.. seealso:: :py:func:`distanceCoefficient()`
 .. versionadded:: 3.0
 %End
 
@@ -47,7 +47,7 @@ class QgsIDWInterpolator: QgsInterpolator
 
  Point values are weighted by 1 / ( distance ^ coefficient ).
 
-.. seealso:: setDistanceCoefficient()
+.. seealso:: :py:func:`setDistanceCoefficient()`
 .. versionadded:: 3.0
  :rtype: float
 %End

@@ -38,8 +38,8 @@ class QgsAuthManager : QObject
  \param pluginPath the plugin path
  \param authDatabasePath the authentication DB path
  :return: true on success
-.. seealso:: QgsApplication.pluginPath
-.. seealso:: QgsApplication.qgisAuthDatabaseFilePath
+.. seealso:: :py:func:`QgsApplication.pluginPath`
+.. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
  :rtype: bool
 %End
 
@@ -79,7 +79,7 @@ Standard message for when QCA's qca-ossl plugin is missing and system is disable
     const QString authenticationDatabasePath() const;
 %Docstring
  The standard authentication database file in ~/.qgis3/ or defined location
-.. seealso:: QgsApplication.qgisAuthDatabaseFilePath
+.. seealso:: :py:func:`QgsApplication.qgisAuthDatabaseFilePath`
  :rtype: str
 %End
 
@@ -738,7 +738,7 @@ The display name of the Authentication Manager
     void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
 %Docstring
  Custom logging signal to relay to console output and QgsMessageLog
-.. seealso:: QgsMessageLog
+.. seealso:: :py:class:`QgsMessageLog`
  \param message Message to send
  \param tag Associated tag (title)
  \param level Message log level

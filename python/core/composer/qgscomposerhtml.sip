@@ -31,9 +31,9 @@ class QgsComposerHtml: QgsComposerMultiFrame
 %Docstring
  Sets the source mode for item's HTML content.
  \param mode ContentMode for the item's source
-.. seealso:: contentMode
-.. seealso:: setUrl
-.. seealso:: setHtml
+.. seealso:: :py:func:`contentMode`
+.. seealso:: :py:func:`setUrl`
+.. seealso:: :py:func:`setHtml`
 .. versionadded:: 2.5
 %End
 
@@ -41,9 +41,9 @@ class QgsComposerHtml: QgsComposerMultiFrame
 %Docstring
  Returns the source mode for item's HTML content.
  :return: ContentMode for the item's source
-.. seealso:: setContentMode
-.. seealso:: url
-.. seealso:: html
+.. seealso:: :py:func:`setContentMode`
+.. seealso:: :py:func:`url`
+.. seealso:: :py:func:`html`
 .. versionadded:: 2.5
  :rtype: ContentMode
 %End
@@ -54,8 +54,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
  the QgsComposerHtml.Url mode. Content is automatically fetched and the
  HTML item refreshed after calling this function.
  \param url URL of content to display in the item
-.. seealso:: url
-.. seealso:: contentMode
+.. seealso:: :py:func:`url`
+.. seealso:: :py:func:`contentMode`
 %End
 
     QUrl url() const;
@@ -63,8 +63,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
  Returns the URL of the content displayed in the item if the item is using
  the QgsComposerHtml.Url mode.
  :return: url for content displayed in item
-.. seealso:: setUrl
-.. seealso:: contentMode
+.. seealso:: :py:func:`setUrl`
+.. seealso:: :py:func:`contentMode`
  :rtype: QUrl
 %End
 
@@ -75,9 +75,9 @@ class QgsComposerHtml: QgsComposerMultiFrame
  does not automatically refresh the item's contents. Call loadHtml to trigger
  a refresh of the item after setting the HTML content.
  \param html HTML to display in item
-.. seealso:: html
-.. seealso:: contentMode
-.. seealso:: loadHtml
+.. seealso:: :py:func:`html`
+.. seealso:: :py:func:`contentMode`
+.. seealso:: :py:func:`loadHtml`
 .. versionadded:: 2.5
 %End
 
@@ -86,8 +86,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
  Returns the HTML source displayed in the item if the item is using
  the QgsComposerHtml.ManualHtml mode.
  :return: HTML displayed in item
-.. seealso:: setHtml
-.. seealso:: contentMode
+.. seealso:: :py:func:`setHtml`
+.. seealso:: :py:func:`contentMode`
 .. versionadded:: 2.5
  :rtype: str
 %End
@@ -99,7 +99,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
  treated as a QGIS expression and evaluated against the current atlas
  feature.
  :return: true if html item will evaluate expressions in the content
-.. seealso:: setEvaluateExpressions
+.. seealso:: :py:func:`setEvaluateExpressions`
 .. versionadded:: 2.5
  :rtype: bool
 %End
@@ -111,7 +111,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
  treated as a QGIS expression and evaluated against the current atlas
  feature.
  \param evaluateExpressions set to true to evaluate expressions in the HTML content
-.. seealso:: evaluateExpressions
+.. seealso:: :py:func:`evaluateExpressions`
 .. versionadded:: 2.5
 %End
 
@@ -120,7 +120,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
  Returns whether html item is using smart breaks. Smart breaks prevent
  the html frame contents from breaking mid-way though a line of text.
  :return: true if html item is using smart breaks
-.. seealso:: setUseSmartBreaks
+.. seealso:: :py:func:`setUseSmartBreaks`
  :rtype: bool
 %End
 
@@ -130,7 +130,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
  the html frame contents from breaking mid-way though a line of text.
  \param useSmartBreaks set to true to prevent content from breaking
  mid-way through a line of text
-.. seealso:: useSmartBreaks
+.. seealso:: :py:func:`useSmartBreaks`
 %End
 
     void setMaxBreakDistance( double maxBreakDistance );
@@ -144,8 +144,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
  \param maxBreakDistance maximum amount of empty space to leave when calculating
  page break locations
 .. versionadded:: 2.3
-.. seealso:: maxBreakDistance
-.. seealso:: setUseSmartBreaks
+.. seealso:: :py:func:`maxBreakDistance`
+.. seealso:: :py:func:`setUseSmartBreaks`
 %End
 
     double maxBreakDistance() const;
@@ -156,8 +156,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
  is only effective if useSmartBreaks is true.
  :return: maximum amount of empty space to leave when calculating page break locations
 .. versionadded:: 2.3
-.. seealso:: setMaxBreakDistance
-.. seealso:: useSmartBreaks
+.. seealso:: :py:func:`setMaxBreakDistance`
+.. seealso:: :py:func:`useSmartBreaks`
  :rtype: float
 %End
 
@@ -168,9 +168,9 @@ class QgsComposerHtml: QgsComposerMultiFrame
  using this function does not automatically refresh the item's contents. Call loadHtml
  to trigger a refresh of the item after setting the stylesheet rules.
  \param stylesheet CSS rules for user stylesheet
-.. seealso:: userStylesheet
-.. seealso:: setUserStylesheetEnabled
-.. seealso:: loadHtml
+.. seealso:: :py:func:`userStylesheet`
+.. seealso:: :py:func:`setUserStylesheetEnabled`
+.. seealso:: :py:func:`loadHtml`
 .. versionadded:: 2.5
 %End
 
@@ -179,8 +179,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
  Returns the user stylesheet CSS rules used while rendering the HTML content. These
  overriding the styles specified within the HTML source.
  :return: CSS rules for user stylesheet
-.. seealso:: setUserStylesheet
-.. seealso:: userStylesheetEnabled
+.. seealso:: :py:func:`setUserStylesheet`
+.. seealso:: :py:func:`userStylesheetEnabled`
 .. versionadded:: 2.5
  :rtype: str
 %End
@@ -189,8 +189,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
 %Docstring
  Sets whether user stylesheets are enabled for the HTML content.
  \param stylesheetEnabled set to true to enable user stylesheets
-.. seealso:: userStylesheetEnabled
-.. seealso:: setUserStylesheet
+.. seealso:: :py:func:`userStylesheetEnabled`
+.. seealso:: :py:func:`setUserStylesheet`
 .. versionadded:: 2.5
 %End
 
@@ -198,8 +198,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
 %Docstring
  Returns whether user stylesheets are enabled for the HTML content.
  :return: true if user stylesheets are enabled
-.. seealso:: setUserStylesheetEnabled
-.. seealso:: userStylesheet
+.. seealso:: :py:func:`setUserStylesheetEnabled`
+.. seealso:: :py:func:`userStylesheet`
 .. versionadded:: 2.5
  :rtype: bool
 %End
@@ -226,8 +226,8 @@ class QgsComposerHtml: QgsComposerMultiFrame
  \param useCache set to true to use a cached copy of remote html
  content
  \param context expression context for evaluating data defined urls and expressions in html
-.. seealso:: setUrl
-.. seealso:: url
+.. seealso:: :py:func:`setUrl`
+.. seealso:: :py:func:`url`
 %End
 
     virtual void recalculateFrameSizes();

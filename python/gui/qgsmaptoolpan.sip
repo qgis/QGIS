@@ -13,7 +13,7 @@ class QgsMapToolPan : QgsMapTool
 {
 %Docstring
  A map tool for panning the map.
-.. seealso:: QgsMapTool
+.. seealso:: :py:class:`QgsMapTool`
 %End
 
 %TypeHeaderCode

@@ -102,7 +102,7 @@ For given data type returns wider type and sets no data value
 %Docstring
  True if the block has no data value.
  :return: true if the block has no data value
-.. seealso:: noDataValue(), setNoDataValue(), resetNoDataValue()
+.. seealso:: :py:func:`noDataValue()`
  :rtype: bool
 %End
 
@@ -119,7 +119,7 @@ For given data type returns wider type and sets no data value
 %Docstring
  Sets cell value that will be considered as "no data".
 .. versionadded:: 3.0
-.. seealso:: noDataValue(), hasNoDataValue(), resetNoDataValue()
+.. seealso:: :py:func:`noDataValue()`
 %End
 
     void resetNoDataValue();
@@ -127,7 +127,7 @@ For given data type returns wider type and sets no data value
  Reset no data value: if there was a no data value previously set,
  it will be discarded.
 .. versionadded:: 3.0
-.. seealso:: noDataValue(), hasNoDataValue(), setNoDataValue()
+.. seealso:: :py:func:`noDataValue()`
 %End
 
     double noDataValue() const;
@@ -135,7 +135,7 @@ For given data type returns wider type and sets no data value
  Return no data value. If the block does not have a no data value the
   returned value is undefined.
  :return: No data value
-.. seealso:: hasNoDataValue(), setNoDataValue(), resetNoDataValue()
+.. seealso:: :py:func:`hasNoDataValue()`
  :rtype: float
 %End
 
@@ -394,7 +394,7 @@ For given data type returns wider type and sets no data value
     int width() const;
 %Docstring
  Returns the width (number of columns) of the raster block.
-.. seealso:: height
+.. seealso:: :py:func:`height`
 .. versionadded:: 2.10
  :rtype: int
 %End
@@ -402,7 +402,7 @@ For given data type returns wider type and sets no data value
     int height() const;
 %Docstring
  Returns the height (number of rows) of the raster block.
-.. seealso:: width
+.. seealso:: :py:func:`width`
 .. versionadded:: 2.10
  :rtype: int
 %End

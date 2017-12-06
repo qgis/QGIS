@@ -28,40 +28,40 @@ class QgsGeoNodeConnection
     QString connectionName() const;
 %Docstring
  Returns the name of the connection.
-.. seealso:: setConnectionName()
+.. seealso:: :py:func:`setConnectionName()`
  :rtype: str
 %End
 
     void setConnectionName( const QString &connectionName );
 %Docstring
  Sets the ``name`` of the connection.
-.. seealso:: connectionName()
+.. seealso:: :py:func:`connectionName()`
 %End
 
     QgsDataSourceUri uri() const;
 %Docstring
  Returns the URI for the GeoNode connection.
-.. seealso:: setUri()
+.. seealso:: :py:func:`setUri()`
  :rtype: QgsDataSourceUri
 %End
 
     void setUri( const QgsDataSourceUri &uri );
 %Docstring
  Sets the ``uri`` for the GeoNode connection.
-.. seealso:: uri()
+.. seealso:: :py:func:`uri()`
 %End
 
     QgsDataSourceUri &addWmsConnectionSettings( QgsDataSourceUri &uri ) const;
 %Docstring
  Adds uri parameters relating to the settings for a WMS layer on the connection to a QgsDataSourceUri ``uri``.
-.. seealso:: addWmsWcsConnectionSettings()
+.. seealso:: :py:func:`addWmsWcsConnectionSettings()`
  :rtype: QgsDataSourceUri
 %End
 
     QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri ) const;
 %Docstring
  Adds uri parameters relating to the settings for a WFS layer on the connection to a QgsDataSourceUri ``uri``.
-.. seealso:: addWmsWcsConnectionSettings()
+.. seealso:: :py:func:`addWmsWcsConnectionSettings()`
  :rtype: QgsDataSourceUri
 %End
 

@@ -37,14 +37,14 @@ class QgsScaleWidget : QWidget
 .. note::
 
    the map canvas must be defined to show the button
-.. seealso:: showCurrentScaleButton()
-.. seealso:: setMapCanvas()
+.. seealso:: :py:func:`showCurrentScaleButton()`
+.. seealso:: :py:func:`setMapCanvas()`
 %End
 
     bool showCurrentScaleButton();
 %Docstring
  Returns whether a button to set the scale from map canvas is shown or not.
-.. seealso:: setShowCurrentScaleButton()
+.. seealso:: :py:func:`setShowCurrentScaleButton()`
  :rtype: bool
 %End
 
@@ -56,14 +56,14 @@ class QgsScaleWidget : QWidget
     QString scaleString() const;
 %Docstring
  Returns the selected scale as a string, e.g. "1:150".
-.. seealso:: setScaleString()
+.. seealso:: :py:func:`setScaleString()`
  :rtype: str
 %End
 
     bool setScaleString( const QString &string );
 %Docstring
  Set the selected scale from a ``string``, e.g. "1:150".
-.. seealso:: scaleString()
+.. seealso:: :py:func:`scaleString()`
  :rtype: bool
 %End
 
@@ -71,7 +71,7 @@ class QgsScaleWidget : QWidget
 %Docstring
  Returns the selected scale as a double.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: setScale()
+.. seealso:: :py:func:`setScale()`
  :rtype: float
 %End
 
@@ -90,7 +90,7 @@ class QgsScaleWidget : QWidget
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
  The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
-.. seealso:: toDouble()
+.. seealso:: :py:func:`toDouble()`
  :rtype: str
 %End
 
@@ -99,7 +99,7 @@ class QgsScaleWidget : QWidget
  Helper function to convert a scale ``string`` to double.
  The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
-.. seealso:: toString()
+.. seealso:: :py:func:`toString()`
  :rtype: float
 %End
 
@@ -109,7 +109,7 @@ class QgsScaleWidget : QWidget
 %Docstring
  Set the selected scale from a double.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: scale()
+.. seealso:: :py:func:`scale()`
 %End
 
     void updateScales( const QStringList &scales = QStringList() );
@@ -121,7 +121,7 @@ class QgsScaleWidget : QWidget
     void setScaleFromCanvas();
 %Docstring
  Assigns the current scale from the map canvas, if set.
-.. seealso:: setMapCanvas()
+.. seealso:: :py:func:`setMapCanvas()`
 %End
 
     void setMinScale( double scale );

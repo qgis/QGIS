@@ -70,27 +70,27 @@ Constructor
 %Docstring
  The icon that will be shown in the UI for the panel.
  :return: A QIcon for the panel icon.
-.. seealso:: setIcon()
+.. seealso:: :py:func:`setIcon()`
  :rtype: QIcon
 %End
 
     void setIcon( const QIcon &icon );
 %Docstring
  Set the ``icon`` to show in the interface for the factory object.
-.. seealso:: icon()
+.. seealso:: :py:func:`icon()`
 %End
 
     virtual QString title() const;
 %Docstring
  The title of the panel.
-.. seealso:: setTitle()
+.. seealso:: :py:func:`setTitle()`
  :rtype: str
 %End
 
     void setTitle( const QString &title );
 %Docstring
  Set the ``title`` for the interface.
-.. seealso:: title()
+.. seealso:: :py:func:`title()`
 %End
 
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = 0 ) const = 0 /Factory/;

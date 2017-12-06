@@ -51,7 +51,7 @@ class QgsFontButton : QToolButton
     QgsFontButton::Mode mode() const;
 %Docstring
  Returns the current button mode.
-.. seealso:: setMode()
+.. seealso:: :py:func:`setMode()`
  :rtype: QgsFontButton.Mode
 %End
 
@@ -61,26 +61,26 @@ class QgsFontButton : QToolButton
  the full capabilities of the button (for configuring QgsTextFormat/QgsTextRenderer objects)
  and a cut-back version for configuring QFont object properties (i.e. with
  no color settings or the other advanced options QgsTextFormat allows).
-.. seealso:: mode()
+.. seealso:: :py:func:`mode()`
 %End
 
     void setDialogTitle( const QString &title );
 %Docstring
  Sets the ``title`` for the text settings dialog window.
-.. seealso:: dialogTitle()
+.. seealso:: :py:func:`dialogTitle()`
 %End
 
     QString dialogTitle() const;
 %Docstring
  Returns the title for the text settings dialog window.
-.. seealso:: setDialogTitle()
+.. seealso:: :py:func:`setDialogTitle()`
  :rtype: str
 %End
 
     QgsMapCanvas *mapCanvas() const;
 %Docstring
  Returns the map canvas associated with the widget.
-.. seealso:: setMapCanvas()
+.. seealso:: :py:func:`setMapCanvas()`
  :rtype: QgsMapCanvas
 %End
 
@@ -88,14 +88,14 @@ class QgsFontButton : QToolButton
 %Docstring
  Sets a map ``canvas`` to associate with the widget. This allows the
  widget to fetch current settings from the map canvas, such as current scale.
-.. seealso:: mapCanvas()
+.. seealso:: :py:func:`mapCanvas()`
 %End
 
     QgsTextFormat textFormat() const;
 %Docstring
  Returns the current text formatting set by the widget.
  This is only used when mode() is ModeTextRenderer.
-.. seealso:: setTextFormat()
+.. seealso:: :py:func:`setTextFormat()`
  :rtype: QgsTextFormat
 %End
 
@@ -103,7 +103,7 @@ class QgsFontButton : QToolButton
 %Docstring
  Returns the current QFont set by the widget.
  This is only used when mode() is ModeQFont.
-.. seealso:: setCurrentFont()
+.. seealso:: :py:func:`setCurrentFont()`
  :rtype: QFont
 %End
 
@@ -114,14 +114,14 @@ class QgsFontButton : QToolButton
 %Docstring
  Sets the current text ``format`` to show in the widget.
  This is only used when mode() is ModeTextRenderer.
-.. seealso:: textFormat()
+.. seealso:: :py:func:`textFormat()`
 %End
 
     void setCurrentFont( const QFont &font );
 %Docstring
  Sets the current text ``font`` to show in the widget.
  This is only used when mode() is ModeQFont.
-.. seealso:: currentFont()
+.. seealso:: :py:func:`currentFont()`
 %End
 
     void setColor( const QColor &color );
@@ -134,21 +134,21 @@ class QgsFontButton : QToolButton
     void copyFormat();
 %Docstring
  Copies the current text format to the clipboard.
-.. seealso:: pasteFormat()
+.. seealso:: :py:func:`pasteFormat()`
 %End
 
     void pasteFormat();
 %Docstring
  Pastes a format from the clipboard. If clipboard does not contain a valid
  format then no change is applied.
-.. seealso:: copyFormat()
+.. seealso:: :py:func:`copyFormat()`
 %End
 
     void copyColor();
 %Docstring
  Copies the current text color to the clipboard.
  This is only used when mode() is ModeTextRenderer.
-.. seealso:: pasteColor()
+.. seealso:: :py:func:`pasteColor()`
 %End
 
     void pasteColor();
@@ -156,7 +156,7 @@ class QgsFontButton : QToolButton
  Pastes a color from the clipboard to the text format. If clipboard does not contain a valid
  color or string representation of a color, then no change is applied.
  This is only used when mode() is ModeTextRenderer.
-.. seealso:: copyColor()
+.. seealso:: :py:func:`copyColor()`
 %End
 
   signals:

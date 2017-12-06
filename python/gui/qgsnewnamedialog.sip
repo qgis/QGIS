@@ -43,7 +43,7 @@ class QgsNewNameDialog : QgsDialog
  Sets the hint string for the dialog (the text shown above the name
  input box).
  \param hintString hint text
-.. seealso:: hintString()
+.. seealso:: :py:func:`hintString()`
 .. versionadded:: 2.12
 %End
 
@@ -51,7 +51,7 @@ class QgsNewNameDialog : QgsDialog
 %Docstring
  Returns the hint string for the dialog (the text shown above the name
  input box).
-.. seealso:: setHintString()
+.. seealso:: :py:func:`setHintString()`
 .. versionadded:: 2.12
  :rtype: str
 %End
@@ -62,14 +62,14 @@ class QgsNewNameDialog : QgsDialog
  the dialog will reflect that the new name will overwrite an existing name. If false,
  then the dialog will not accept names which already exist.
 .. versionadded:: 2.12
-.. seealso:: overwriteEnabled()
+.. seealso:: :py:func:`overwriteEnabled()`
 %End
 
     bool overwriteEnabled() const;
 %Docstring
  Returns whether users are permitted to overwrite existing names.
 .. versionadded:: 2.12
-.. seealso:: setOverwriteEnabled()
+.. seealso:: :py:func:`setOverwriteEnabled()`
  :rtype: bool
 %End
 
@@ -78,14 +78,14 @@ class QgsNewNameDialog : QgsDialog
  Sets the string used for warning users if a conflicting name exists.
  \param string warning string. If empty a default warning string will be used.
 .. versionadded:: 2.12
-.. seealso:: conflictingNameWarning()
+.. seealso:: :py:func:`conflictingNameWarning()`
 %End
 
     QString conflictingNameWarning() const;
 %Docstring
  Returns the string used for warning users if a conflicting name exists.
 .. versionadded:: 2.12
-.. seealso:: setConflictingNameWarning()
+.. seealso:: :py:func:`setConflictingNameWarning()`
  :rtype: str
 %End
 

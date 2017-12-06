@@ -47,7 +47,7 @@ class QgsProcessingRegistry : QObject
  in the registry).
  Adding a provider to the registry automatically triggers the providers QgsProcessingProvider.load()
  method to populate the provider with algorithms.
-.. seealso:: removeProvider()
+.. seealso:: :py:func:`removeProvider()`
  :rtype: bool
 %End
 
@@ -55,7 +55,7 @@ class QgsProcessingRegistry : QObject
 %Docstring
  Removes a provider implementation from the registry (the provider object is deleted).
  Returns false if the provider could not be removed (eg provider does not exist in the registry).
-.. seealso:: addProvider()
+.. seealso:: :py:func:`addProvider()`
  :rtype: bool
 %End
 
@@ -63,7 +63,7 @@ class QgsProcessingRegistry : QObject
 %Docstring
  Removes a provider implementation from the registry (the provider object is deleted).
  Returns false if the provider could not be removed (eg provider does not exist in the registry).
-.. seealso:: addProvider()
+.. seealso:: :py:func:`addProvider()`
  :rtype: bool
 %End
 
@@ -76,7 +76,7 @@ class QgsProcessingRegistry : QObject
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 %Docstring
  Returns a list of all available algorithms from registered providers.
-.. seealso:: algorithmById()
+.. seealso:: :py:func:`algorithmById()`
  :rtype: list of const QgsProcessingAlgorithm
 %End
 
@@ -84,8 +84,8 @@ class QgsProcessingRegistry : QObject
 %Docstring
  Finds an algorithm by its ID. If no matching algorithm is found, a None
  is returned.
-.. seealso:: algorithms()
-.. seealso:: createAlgorithmById()
+.. seealso:: :py:func:`algorithms()`
+.. seealso:: :py:func:`createAlgorithmById()`
  :rtype: QgsProcessingAlgorithm
 %End
 
@@ -101,8 +101,8 @@ class QgsProcessingRegistry : QObject
  algorithms in a model, allowing them to adjust their behavior at run time
  according to some user configuration.
 
-.. seealso:: algorithms()
-.. seealso:: algorithmById()
+.. seealso:: :py:func:`algorithms()`
+.. seealso:: :py:func:`algorithmById()`
  :rtype: QgsProcessingAlgorithm
 %End
 

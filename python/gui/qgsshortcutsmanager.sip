@@ -40,8 +40,8 @@ class QgsShortcutsManager : QObject
  passed object.
  \param object parent object containing actions and shortcuts to register
  \param recursive set to true to recursively add child actions and shortcuts
-.. seealso:: registerAllChildActions()
-.. seealso:: registerAllChildShortcuts()
+.. seealso:: :py:func:`registerAllChildActions()`
+.. seealso:: :py:func:`registerAllChildShortcuts()`
 %End
 
     void registerAllChildActions( QObject *object, bool recursive = false );
@@ -49,9 +49,9 @@ class QgsShortcutsManager : QObject
  Automatically registers all QActions which are children of the passed object.
  \param object parent object containing actions to register
  \param recursive set to true to recursively add child actions
-.. seealso:: registerAction()
-.. seealso:: registerAllChildren()
-.. seealso:: registerAllChildShortcuts()
+.. seealso:: :py:func:`registerAction()`
+.. seealso:: :py:func:`registerAllChildren()`
+.. seealso:: :py:func:`registerAllChildShortcuts()`
 %End
 
     void registerAllChildShortcuts( QObject *object, bool recursive = false );
@@ -59,9 +59,9 @@ class QgsShortcutsManager : QObject
  Automatically registers all QShortcuts which are children of the passed object.
  \param object parent object containing shortcuts to register
  \param recursive set to true to recursively add child shortcuts
-.. seealso:: registerShortcut()
-.. seealso:: registerAllChildren()
-.. seealso:: registerAllChildActions()
+.. seealso:: :py:func:`registerShortcut()`
+.. seealso:: :py:func:`registerAllChildren()`
+.. seealso:: :py:func:`registerAllChildActions()`
 %End
 
     bool registerAction( QAction *action, const QString &defaultShortcut = QString() );
@@ -71,9 +71,9 @@ class QgsShortcutsManager : QObject
  identification.
  \param defaultShortcut default key sequence for action
  :return: true if action was successfully registered
-.. seealso:: registerShortcut()
-.. seealso:: unregisterAction()
-.. seealso:: registerAllChildActions()
+.. seealso:: :py:func:`registerShortcut()`
+.. seealso:: :py:func:`unregisterAction()`
+.. seealso:: :py:func:`registerAllChildActions()`
  :rtype: bool
 %End
 
@@ -84,8 +84,8 @@ class QgsShortcutsManager : QObject
  identification.
  \param defaultSequence default key sequence for shortcut
  :return: true if shortcut was successfully registered
-.. seealso:: registerAction()
-.. seealso:: registerAllChildShortcuts()
+.. seealso:: :py:func:`registerAction()`
+.. seealso:: :py:func:`registerAllChildShortcuts()`
  :rtype: bool
 %End
 
@@ -95,8 +95,8 @@ class QgsShortcutsManager : QObject
  \param action action to remove
  :return: true if action was previously registered in manager and has been removed, or
  false if action was not previously registered in manager
-.. seealso:: registerAction()
-.. seealso:: unregisterShortcut()
+.. seealso:: :py:func:`registerAction()`
+.. seealso:: :py:func:`unregisterShortcut()`
  :rtype: bool
 %End
 
@@ -106,32 +106,32 @@ class QgsShortcutsManager : QObject
  \param shortcut shortcut to remove
  :return: true if shortcut was previously registered in manager and has been removed, or
  false if shortcut was not previously registered in manager
-.. seealso:: registerShortcut()
-.. seealso:: unregisterAction()
+.. seealso:: :py:func:`registerShortcut()`
+.. seealso:: :py:func:`unregisterAction()`
  :rtype: bool
 %End
 
     QList<QAction *> listActions() const;
 %Docstring
  Returns a list of all actions in the manager.
-.. seealso:: listShortcuts()
-.. seealso:: listAll()
+.. seealso:: :py:func:`listShortcuts()`
+.. seealso:: :py:func:`listAll()`
  :rtype: list of QAction
 %End
 
     QList<QShortcut *> listShortcuts() const;
 %Docstring
  Returns a list of shortcuts in the manager.
-.. seealso:: listActions()
-.. seealso:: listAll()
+.. seealso:: :py:func:`listActions()`
+.. seealso:: :py:func:`listAll()`
  :rtype: list of QShortcut
 %End
 
     QList<QObject *> listAll() const;
 %Docstring
  Returns a list of both actions and shortcuts in the manager.
-.. seealso:: listAction()
-.. seealso:: listShortcuts()
+.. seealso:: :py:func:`listAction()`
+.. seealso:: :py:func:`listShortcuts()`
  :rtype: list of QObject
 %End
 
@@ -140,7 +140,7 @@ class QgsShortcutsManager : QObject
  Returns the default sequence for an object (either a QAction or QShortcut).
  An empty return string indicates no shortcut.
  \param object QAction or QShortcut to return default key sequence for
-.. seealso:: defaultKeySequence()
+.. seealso:: :py:func:`defaultKeySequence()`
  :rtype: str
 %End
 
@@ -149,7 +149,7 @@ class QgsShortcutsManager : QObject
  Returns the default sequence for an action. An empty return string indicates
  no default sequence.
  \param action action to return default key sequence for
-.. seealso:: objectDefaultKeySequence()
+.. seealso:: :py:func:`objectDefaultKeySequence()`
  :rtype: str
 %End
 
@@ -158,7 +158,7 @@ class QgsShortcutsManager : QObject
  Returns the default sequence for a shortcut. An empty return string indicates
  no default sequence.
  \param shortcut shortcut to return default key sequence for
-.. seealso:: objectDefaultKeySequence()
+.. seealso:: :py:func:`objectDefaultKeySequence()`
  :rtype: str
 %End
 
@@ -168,7 +168,7 @@ class QgsShortcutsManager : QObject
  \param name name of action or shortcut to modify. Must match the action's QAction.text() or the
  shortcut's QObject.objectName()
  \param sequence new shortcut key sequence
-.. seealso:: setObjectKeySequence()
+.. seealso:: :py:func:`setObjectKeySequence()`
  :rtype: bool
 %End
 
@@ -177,7 +177,7 @@ class QgsShortcutsManager : QObject
  Modifies an object's (either a QAction or a QShortcut) key sequence.
  \param object QAction or QShortcut to modify
  \param sequence new shortcut key sequence
-.. seealso:: setKeySequence()
+.. seealso:: :py:func:`setKeySequence()`
  :rtype: bool
 %End
 
@@ -186,7 +186,7 @@ class QgsShortcutsManager : QObject
  Modifies an action's key sequence.
  \param action action to modify
  \param sequence new shortcut key sequence
-.. seealso:: setObjectKeySequence()
+.. seealso:: :py:func:`setObjectKeySequence()`
  :rtype: bool
 %End
 
@@ -195,7 +195,7 @@ class QgsShortcutsManager : QObject
  Modifies a shortcuts's key sequence.
  \param shortcut QShortcut to modify
  \param sequence new shortcut key sequence
-.. seealso:: setObjectKeySequence()
+.. seealso:: :py:func:`setObjectKeySequence()`
  :rtype: bool
 %End
 
@@ -204,8 +204,8 @@ class QgsShortcutsManager : QObject
  Returns the object (QAction or QShortcut) matching the specified key sequence,
  \param sequence key sequence to find
  :return: object with matching sequence, or None if not found
-.. seealso:: actionForSequence()
-.. seealso:: shortcutForSequence()
+.. seealso:: :py:func:`actionForSequence()`
+.. seealso:: :py:func:`shortcutForSequence()`
  :rtype: QObject
 %End
 
@@ -213,8 +213,8 @@ class QgsShortcutsManager : QObject
 %Docstring
  Returns the action which is associated for a shortcut sequence, or None if no action is associated.
  \param sequence shortcut key sequence
-.. seealso:: objectForSequence()
-.. seealso:: shortcutForSequence()
+.. seealso:: :py:func:`objectForSequence()`
+.. seealso:: :py:func:`shortcutForSequence()`
  :rtype: QAction
 %End
 
@@ -222,8 +222,8 @@ class QgsShortcutsManager : QObject
 %Docstring
  Returns the shortcut which is associated for a key sequence, or None if no shortcut is associated.
  \param sequence shortcut key sequence
-.. seealso:: objectForSequence()
-.. seealso:: actionForSequence()
+.. seealso:: :py:func:`objectForSequence()`
+.. seealso:: :py:func:`actionForSequence()`
  :rtype: QShortcut
 %End
 
@@ -231,7 +231,7 @@ class QgsShortcutsManager : QObject
 %Docstring
  Returns an action by its name, or None if nothing found.
  \param name action name. Must match QAction's text.
-.. seealso:: shortcutByName()
+.. seealso:: :py:func:`shortcutByName()`
  :rtype: QAction
 %End
 
@@ -239,7 +239,7 @@ class QgsShortcutsManager : QObject
 %Docstring
  Returns a shortcut by its name, or None if nothing found
  \param name shortcut name. Must match QShortcut's QObject.objectName() property.
-.. seealso:: actionByName()
+.. seealso:: :py:func:`actionByName()`
  :rtype: QShortcut
 %End
 

@@ -72,14 +72,14 @@ class QgsFeatureSelectionModel : QItemSelectionModel
 %Docstring
  Overwritten to do NOTHING (we handle selection ourselves)
 
-.. seealso:: selectFeatures( const QItemSelection&, SelectionFlags )
+.. seealso:: :py:func:`selectFeatures`
 %End
 
     virtual void select( const QItemSelection &selection, SelectionFlags command );
 %Docstring
  Overwritten to do NOTHING (we handle selection ourselves)
 
-.. seealso:: selectFeatures( const QItemSelection&, SelectionFlags )
+.. seealso:: :py:func:`selectFeatures`
 %End
 
     virtual void selectFeatures( const QItemSelection &selection, SelectionFlags command );

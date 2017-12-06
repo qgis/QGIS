@@ -107,7 +107,7 @@ XYZ tileserver URL for layer
  overlapping requests results in undefined behavior. Use separate instances
  of QgsGeoNodeRequest instead to avoid this.
 
-.. seealso:: requestBlocking()
+.. seealso:: :py:func:`requestBlocking()`
 %End
 
     bool requestBlocking( const QString &endPoint );
@@ -118,7 +118,7 @@ XYZ tileserver URL for layer
  Calling this method will block while waiting for a result. It should not be
  used from any code which potentially blocks operation in the main GUI thread.
 
-.. seealso:: request()
+.. seealso:: :py:func:`request()`
  :rtype: bool
 %End
 
@@ -134,8 +134,8 @@ XYZ tileserver URL for layer
  overlapping requests results in undefined behavior. Use separate instances
  of QgsGeoNodeRequest instead to avoid this.
 
-.. seealso:: layersFetched()
-.. seealso:: fetchLayersBlocking()
+.. seealso:: :py:func:`layersFetched()`
+.. seealso:: :py:func:`fetchLayersBlocking()`
 %End
 
     QList<QgsGeoNodeRequest::ServiceLayerDetail> fetchLayersBlocking();
@@ -145,7 +145,7 @@ XYZ tileserver URL for layer
  This method is blocking and will wait for results from the server before returning.
  Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 
-.. seealso:: fetchLayers()
+.. seealso:: :py:func:`fetchLayers()`
  :rtype: list of QgsGeoNodeRequest.ServiceLayerDetail
 %End
 
@@ -211,14 +211,14 @@ XYZ tileserver URL for layer
     QString protocol() const;
 %Docstring
  Returns the network protocol (e.g. 'http') used for connecting with the server.
-.. seealso:: setProtocol()
+.. seealso:: :py:func:`setProtocol()`
  :rtype: str
 %End
 
     void setProtocol( const QString &protocol );
 %Docstring
  Sets the network ``protocol`` (e.g. 'http') used for connecting with the server.
-.. seealso:: protocol()
+.. seealso:: :py:func:`protocol()`
 %End
 
   public slots:

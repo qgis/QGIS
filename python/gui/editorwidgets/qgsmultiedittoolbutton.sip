@@ -54,32 +54,32 @@ class QgsMultiEditToolButton : QToolButton
 %Docstring
  Sets whether the associated field contains mixed values.
  \param mixed whether field values are mixed
-.. seealso:: isMixed()
-.. seealso:: setIsChanged()
-.. seealso:: resetChanges()
+.. seealso:: :py:func:`isMixed()`
+.. seealso:: :py:func:`setIsChanged()`
+.. seealso:: :py:func:`resetChanges()`
 %End
 
     void setIsChanged( bool changed );
 %Docstring
  Sets whether the associated field has changed.
  \param changed whether field has changed
-.. seealso:: isChanged()
-.. seealso:: setIsMixed()
-.. seealso:: resetChanges()
+.. seealso:: :py:func:`isChanged()`
+.. seealso:: :py:func:`setIsMixed()`
+.. seealso:: :py:func:`resetChanges()`
 %End
 
     void resetChanges();
 %Docstring
  Resets the changed state for the field.
-.. seealso:: setIsMixed()
-.. seealso:: setIsChanged()
-.. seealso:: changesCommitted()
+.. seealso:: :py:func:`setIsMixed()`
+.. seealso:: :py:func:`setIsChanged()`
+.. seealso:: :py:func:`changesCommitted()`
 %End
 
     void changesCommitted();
 %Docstring
  Called when field values have been changed and field now contains all the same values.
-.. seealso:: resetChanges()
+.. seealso:: :py:func:`resetChanges()`
 %End
 
   signals:

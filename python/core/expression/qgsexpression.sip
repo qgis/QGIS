@@ -154,7 +154,7 @@ Returns root node of the expression. Root node is null is parsing has failed
  all attributes from the layer are required for evaluation of the expression.
  QgsFeatureRequest.setSubsetOfAttributes automatically handles this case.
 
-.. seealso:: referencedAttributeIndexes()
+.. seealso:: :py:func:`referencedAttributeIndexes()`
  :rtype: set of str
 %End
 
@@ -265,9 +265,9 @@ Set evaluation error (used internally by evaluation functions)
 %Docstring
  Return calculator used for distance and area calculations
  (used by $length, $area and $perimeter functions only)
-.. seealso:: setGeomCalculator()
-.. seealso:: distanceUnits()
-.. seealso:: areaUnits()
+.. seealso:: :py:func:`setGeomCalculator()`
+.. seealso:: :py:func:`distanceUnits()`
+.. seealso:: :py:func:`areaUnits()`
  :rtype: QgsDistanceArea
 %End
 
@@ -279,7 +279,7 @@ Set evaluation error (used internally by evaluation functions)
  Cartesian methods (ie no ellipsoidal calculations).
  \param calc geometry calculator. Ownership is not transferred. Set to a None to force
  Cartesian calculations.
-.. seealso:: geomCalculator()
+.. seealso:: :py:func:`geomCalculator()`
 %End
 
     QgsUnitTypes::DistanceUnit distanceUnits() const;
@@ -289,8 +289,8 @@ Set evaluation error (used internally by evaluation functions)
 
    distances are only converted when a geomCalculator() has been set
 .. versionadded:: 2.14
-.. seealso:: setDistanceUnits()
-.. seealso:: areaUnits()
+.. seealso:: :py:func:`setDistanceUnits()`
+.. seealso:: :py:func:`areaUnits()`
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
@@ -301,8 +301,8 @@ Set evaluation error (used internally by evaluation functions)
 
    distances are only converted when a geomCalculator() has been set
 .. versionadded:: 2.14
-.. seealso:: distanceUnits()
-.. seealso:: setAreaUnits()
+.. seealso:: :py:func:`distanceUnits()`
+.. seealso:: :py:func:`setAreaUnits()`
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;
@@ -312,8 +312,8 @@ Set evaluation error (used internally by evaluation functions)
 
    areas are only converted when a geomCalculator() has been set
 .. versionadded:: 2.14
-.. seealso:: setAreaUnits()
-.. seealso:: distanceUnits()
+.. seealso:: :py:func:`setAreaUnits()`
+.. seealso:: :py:func:`distanceUnits()`
  :rtype: QgsUnitTypes.AreaUnit
 %End
 
@@ -324,8 +324,8 @@ Set evaluation error (used internally by evaluation functions)
 
    areas are only converted when a geomCalculator() has been set
 .. versionadded:: 2.14
-.. seealso:: areaUnits()
-.. seealso:: setDistanceUnits()
+.. seealso:: :py:func:`areaUnits()`
+.. seealso:: :py:func:`setDistanceUnits()`
 %End
 
     static QString replaceExpressionText( const QString &action, const QgsExpressionContext *context,
@@ -387,7 +387,7 @@ Set evaluation error (used internally by evaluation functions)
  \param function function to register
  \param transferOwnership set to true to transfer ownership of function to expression engine
  :return: true on successful registration
-.. seealso:: unregisterFunction
+.. seealso:: :py:func:`unregisterFunction`
  :rtype: bool
 %End
 
@@ -395,7 +395,7 @@ Set evaluation error (used internally by evaluation functions)
 %Docstring
  Unregisters a function from the expression engine. The function will no longer be usable in expressions.
  \param name function name
-.. seealso:: registerFunction
+.. seealso:: :py:func:`registerFunction`
  :rtype: bool
 %End
 
@@ -428,16 +428,16 @@ return index of the function in Functions array
     static QString quotedColumnRef( QString name );
 %Docstring
  Returns a quoted column reference (in double quotes)
-.. seealso:: quotedString()
-.. seealso:: quotedValue()
+.. seealso:: :py:func:`quotedString()`
+.. seealso:: :py:func:`quotedValue()`
  :rtype: str
 %End
 
     static QString quotedString( QString text );
 %Docstring
  Returns a quoted version of a string (in single quotes)
-.. seealso:: quotedValue()
-.. seealso:: quotedColumnRef()
+.. seealso:: :py:func:`quotedValue()`
+.. seealso:: :py:func:`quotedColumnRef()`
  :rtype: str
 %End
 
@@ -447,8 +447,8 @@ return index of the function in Functions array
  quotations where required.
  \param value value to convert to a string representation
 .. versionadded:: 2.14
-.. seealso:: quotedString()
-.. seealso:: quotedColumnRef()
+.. seealso:: :py:func:`quotedString()`
+.. seealso:: :py:func:`quotedColumnRef()`
  :rtype: str
 %End
 
@@ -459,8 +459,8 @@ return index of the function in Functions array
  \param value value to convert to a string representation
  \param type value type
 .. versionadded:: 2.14
-.. seealso:: quotedString()
-.. seealso:: quotedColumnRef()
+.. seealso:: :py:func:`quotedString()`
+.. seealso:: :py:func:`quotedColumnRef()`
  :rtype: str
 %End
 
@@ -469,8 +469,8 @@ return index of the function in Functions array
 %Docstring
  Returns the help text for a specified function.
  \param name function name
-.. seealso:: variableHelpText()
-.. seealso:: formatVariableHelp()
+.. seealso:: :py:func:`variableHelpText()`
+.. seealso:: :py:func:`formatVariableHelp()`
  :rtype: str
 %End
 
@@ -480,7 +480,7 @@ return index of the function in Functions array
  \param variableName name of variable
  \param showValue set to true to include current value of variable in help text
  \param value current value of variable to show in help text
-.. seealso:: helpText()
+.. seealso:: :py:func:`helpText()`
 .. versionadded:: 2.12
  :rtype: str
 %End
@@ -491,8 +491,8 @@ return index of the function in Functions array
  \param description translated description of variable
  \param showValue set to true to include current value of variable in help text
  \param value current value of variable to show in help text
-.. seealso:: helpText()
-.. seealso:: variableHelpText()
+.. seealso:: :py:func:`helpText()`
+.. seealso:: :py:func:`variableHelpText()`
 .. versionadded:: 3.0
  :rtype: str
 %End

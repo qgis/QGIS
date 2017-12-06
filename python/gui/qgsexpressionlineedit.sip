@@ -42,13 +42,13 @@ class QgsExpressionLineEdit : QWidget
 %Docstring
  Sets the title used in the expression builder dialog
  \param title dialog title
-.. seealso:: expressionDialogTitle()
+.. seealso:: :py:func:`expressionDialogTitle()`
 %End
 
     QString expressionDialogTitle() const;
 %Docstring
  Returns the title used for the expression dialog.
-.. seealso:: setExpressionDialogTitle()
+.. seealso:: :py:func:`setExpressionDialogTitle()`
  :rtype: str
 %End
 
@@ -72,13 +72,13 @@ class QgsExpressionLineEdit : QWidget
  This will also automatically register the layer as expression context generator if
  no generator has been set before or the previous layer has been used as generator.
 
-.. seealso:: registerExpressionContextGenerator
+.. seealso:: :py:func:`registerExpressionContextGenerator`
 %End
 
     QString expression() const;
 %Docstring
  Returns the current expression shown in the widget.
-.. seealso:: setExpression()
+.. seealso:: :py:func:`setExpression()`
  :rtype: str
 %End
 
@@ -111,7 +111,7 @@ class QgsExpressionLineEdit : QWidget
 %Docstring
  Sets the current expression to show in the widget.
  \param expression expression string
-.. seealso:: expression()
+.. seealso:: :py:func:`expression()`
 %End
 
   protected:

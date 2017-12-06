@@ -37,7 +37,7 @@ class QgsLegendSettings
 %Docstring
  Returns the alignment of the legend title
  :return: Qt.AlignmentFlag for the legend title
-.. seealso:: setTitleAlignment
+.. seealso:: :py:func:`setTitleAlignment`
  :rtype: Qt.AlignmentFlag
 %End
 
@@ -45,7 +45,7 @@ class QgsLegendSettings
 %Docstring
  Sets the alignment of the legend title
  \param alignment Text alignment for drawing the legend title
-.. seealso:: titleAlignment
+.. seealso:: :py:func:`titleAlignment`
 %End
 
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
@@ -106,9 +106,9 @@ Returns style
     bool drawRasterStroke() const;
 %Docstring
  Returns whether a stroke will be drawn around raster symbol items.
-.. seealso:: setDrawRasterStroke()
-.. seealso:: rasterStrokeColor()
-.. seealso:: rasterStrokeWidth()
+.. seealso:: :py:func:`setDrawRasterStroke()`
+.. seealso:: :py:func:`rasterStrokeColor()`
+.. seealso:: :py:func:`rasterStrokeWidth()`
 .. versionadded:: 2.12
  :rtype: bool
 %End
@@ -117,9 +117,9 @@ Returns style
 %Docstring
  Sets whether a stroke will be drawn around raster symbol items.
  \param enabled set to true to draw borders
-.. seealso:: drawRasterStroke()
-.. seealso:: setRasterStrokeColor()
-.. seealso:: setRasterStrokeWidth()
+.. seealso:: :py:func:`drawRasterStroke()`
+.. seealso:: :py:func:`setRasterStrokeColor()`
+.. seealso:: :py:func:`setRasterStrokeWidth()`
 .. versionadded:: 2.12
 %End
 
@@ -127,9 +127,9 @@ Returns style
 %Docstring
  Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
  only drawn if drawRasterStroke() is true.
-.. seealso:: setRasterStrokeColor()
-.. seealso:: drawRasterStroke()
-.. seealso:: rasterStrokeWidth()
+.. seealso:: :py:func:`setRasterStrokeColor()`
+.. seealso:: :py:func:`drawRasterStroke()`
+.. seealso:: :py:func:`rasterStrokeWidth()`
 .. versionadded:: 2.12
  :rtype: QColor
 %End
@@ -139,9 +139,9 @@ Returns style
  Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
  only drawn if drawRasterStroke() is true.
  \param color stroke color
-.. seealso:: rasterStrokeColor()
-.. seealso:: setDrawRasterStroke()
-.. seealso:: setRasterStrokeWidth()
+.. seealso:: :py:func:`rasterStrokeColor()`
+.. seealso:: :py:func:`setDrawRasterStroke()`
+.. seealso:: :py:func:`setRasterStrokeWidth()`
 .. versionadded:: 2.12
 %End
 
@@ -149,9 +149,9 @@ Returns style
 %Docstring
  Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
  only drawn if drawRasterStroke() is true.
-.. seealso:: setRasterStrokeWidth()
-.. seealso:: drawRasterStroke()
-.. seealso:: rasterStrokeColor()
+.. seealso:: :py:func:`setRasterStrokeWidth()`
+.. seealso:: :py:func:`drawRasterStroke()`
+.. seealso:: :py:func:`rasterStrokeColor()`
 .. versionadded:: 2.12
  :rtype: float
 %End
@@ -161,9 +161,9 @@ Returns style
  Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
  only drawn if drawRasterStroke() is true.
  \param width stroke width in millimeters
-.. seealso:: rasterStrokeWidth()
-.. seealso:: setDrawRasterStroke()
-.. seealso:: setRasterStrokeColor()
+.. seealso:: :py:func:`rasterStrokeWidth()`
+.. seealso:: :py:func:`setDrawRasterStroke()`
+.. seealso:: :py:func:`setRasterStrokeColor()`
 .. versionadded:: 2.12
 %End
 
@@ -195,7 +195,7 @@ Returns style
 %Docstring
  Returns the legend map scale.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: setMapScale()
+.. seealso:: :py:func:`setMapScale()`
  :rtype: float
 %End
 
@@ -203,7 +203,7 @@ Returns style
 %Docstring
  Sets the legend map ``scale``.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: mapScale()
+.. seealso:: :py:func:`mapScale()`
 %End
 
     int dpi() const;

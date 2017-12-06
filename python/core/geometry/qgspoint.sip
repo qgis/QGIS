@@ -93,32 +93,32 @@ class QgsPoint: QgsAbstractGeometry
     double x() const;
 %Docstring
  Returns the point's x-coordinate.
-.. seealso:: setX()
-.. seealso:: rx()
+.. seealso:: :py:func:`setX()`
+.. seealso:: :py:func:`rx()`
  :rtype: float
 %End
 
     double y() const;
 %Docstring
  Returns the point's y-coordinate.
-.. seealso:: setY()
-.. seealso:: ry()
+.. seealso:: :py:func:`setY()`
+.. seealso:: :py:func:`ry()`
  :rtype: float
 %End
 
     double z() const;
 %Docstring
  Returns the point's z-coordinate.
-.. seealso:: setZ()
-.. seealso:: rz()
+.. seealso:: :py:func:`setZ()`
+.. seealso:: :py:func:`rz()`
  :rtype: float
 %End
 
     double m() const;
 %Docstring
  Returns the point's m value.
-.. seealso:: setM()
-.. seealso:: rm()
+.. seealso:: :py:func:`setM()`
+.. seealso:: :py:func:`rm()`
  :rtype: float
 %End
 
@@ -130,14 +130,14 @@ class QgsPoint: QgsAbstractGeometry
 %Docstring
  Sets the point's x-coordinate.
 .. seealso:: x()
-.. seealso:: rx()
+.. seealso:: :py:func:`rx()`
 %End
 
     void setY( double y );
 %Docstring
  Sets the point's y-coordinate.
 .. seealso:: y()
-.. seealso:: ry()
+.. seealso:: :py:func:`ry()`
 %End
 
     void setZ( double z );
@@ -148,7 +148,7 @@ class QgsPoint: QgsAbstractGeometry
    calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
  add a z value and force the point to have a z dimension.
 .. seealso:: z()
-.. seealso:: rz()
+.. seealso:: :py:func:`rz()`
 %End
 
     void setM( double m );
@@ -159,7 +159,7 @@ class QgsPoint: QgsAbstractGeometry
    calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
  add a m value and force the point to have an m dimension.
 .. seealso:: m()
-.. seealso:: rm()
+.. seealso:: :py:func:`rm()`
 %End
 
     QPointF toQPointF() const;
@@ -175,7 +175,7 @@ class QgsPoint: QgsAbstractGeometry
  cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
  when comparing distances.
 .. versionadded:: 3.0
-.. seealso:: distanceSquared()
+.. seealso:: :py:func:`distanceSquared()`
  :rtype: float
 %End
 
@@ -193,7 +193,7 @@ class QgsPoint: QgsAbstractGeometry
  Returns the squared distance between this point a specified x, y coordinate. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
  distances where the extra expense of calling distance() is not required.
-.. seealso:: distance()
+.. seealso:: :py:func:`distance()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -203,7 +203,7 @@ class QgsPoint: QgsAbstractGeometry
  Returns the squared distance between this point another point. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
  distances where the extra expense of calling distance() is not required.
-.. seealso:: distance()
+.. seealso:: :py:func:`distance()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -214,7 +214,7 @@ class QgsPoint: QgsAbstractGeometry
  cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
  when comparing distances.
 .. versionadded:: 3.0
-.. seealso:: distanceSquared()
+.. seealso:: :py:func:`distanceSquared()`
  :rtype: float
 %End
 
@@ -232,7 +232,7 @@ class QgsPoint: QgsAbstractGeometry
  Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
  distances where the extra expense of calling distance() is not required.
-.. seealso:: distance()
+.. seealso:: :py:func:`distance()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -242,7 +242,7 @@ class QgsPoint: QgsAbstractGeometry
  Returns the 3D squared distance between this point another point. Calling
  this is faster than calling distance(), and may be useful in use cases such as comparing
  distances where the extra expense of calling distance() is not required.
-.. seealso:: distance()
+.. seealso:: :py:func:`distance()`
 .. versionadded:: 3.0
  :rtype: float
 %End

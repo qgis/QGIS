@@ -83,7 +83,7 @@ Returns root node of the statement. Root node is null is parsing has failed
     static QString quotedIdentifier( QString name );
 %Docstring
  Returns a quoted column reference (in double quotes)
-.. seealso:: quotedString(), quotedIdentifierIfNeeded()
+.. seealso:: :py:func:`quotedString()`
  :rtype: str
 %End
 
@@ -91,21 +91,21 @@ Returns root node of the statement. Root node is null is parsing has failed
 %Docstring
  Returns a quoted column reference (in double quotes) if needed, or
  otherwise the original string.
-.. seealso:: quotedString(), quotedIdentifier()
+.. seealso:: :py:func:`quotedString()`
  :rtype: str
 %End
 
     static QString stripQuotedIdentifier( QString text );
 %Docstring
  Remove double quotes from an identifier.
-.. seealso:: quotedIdentifier()
+.. seealso:: :py:func:`quotedIdentifier()`
  :rtype: str
 %End
 
     static QString quotedString( QString text );
 %Docstring
  Returns a quoted version of a string (in single quotes)
-.. seealso:: quotedIdentifier(), quotedIdentifierIfNeeded()
+.. seealso:: :py:func:`quotedIdentifier()`
  :rtype: str
 %End
 

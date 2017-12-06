@@ -60,7 +60,7 @@ class QgsFeatureListView : QListView
 
  \param displayExpression  The expression used to render the feature
 
-.. seealso:: QgsExpression
+.. seealso:: :py:class:`QgsExpression`
  :rtype: bool
 %End
 
@@ -70,7 +70,7 @@ class QgsFeatureListView : QListView
 
  :return: A string containing the currend display expression
 
-.. seealso:: QgsExpression
+.. seealso:: :py:class:`QgsExpression`
  :rtype: str
 %End
 

@@ -101,14 +101,14 @@ Create new data item.
  Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
  \param child child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
  \param refresh - set to true to refresh populated item, emitting relevant signals to the model
-.. seealso:: deleteChildItem()
+.. seealso:: :py:func:`deleteChildItem()`
 %End
 
     virtual void deleteChildItem( QgsDataItem *child );
 %Docstring
  Removes and deletes a child item, emitting relevant signals to the model.
  \param child child to remove. Item must exist as a current child.
-.. seealso:: addChildItem()
+.. seealso:: :py:func:`addChildItem()`
 %End
 
     virtual QgsDataItem *removeChildItem( QgsDataItem *child ) /TransferBack/;
@@ -155,7 +155,7 @@ Create new data item.
 %Docstring
  Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
  Subclasses should override this and handleDrop() to accept dropped layers.
-.. seealso:: handleDrop()
+.. seealso:: :py:func:`handleDrop()`
  :rtype: bool
 %End
 
@@ -163,7 +163,7 @@ Create new data item.
 %Docstring
  Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
  accept dropped layers.
-.. seealso:: acceptDrop()
+.. seealso:: :py:func:`acceptDrop()`
  :rtype: bool
 %End
 
@@ -181,7 +181,7 @@ Create new data item.
  Returns true if the item may be dragged.
  Default implementation returns false.
  A draggable item has to implement mimeUri() that will be used to pass data.
-.. seealso:: mimeUri()
+.. seealso:: :py:func:`mimeUri()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -190,7 +190,7 @@ Create new data item.
 %Docstring
  Return mime URI for the data item.
  Items that return valid URI will be returned in mime data when dragging a selection from browser model.
-.. seealso:: hasDragEnabled()
+.. seealso:: :py:func:`hasDragEnabled()`
 .. versionadded:: 3.0
  :rtype: QgsMimeDataUtils.Uri
 %End
@@ -654,13 +654,13 @@ class QgsFavoritesItem : QgsDataCollectionItem
     void addDirectory( const QString &directory );
 %Docstring
  Adds a new directory to the favorites group.
-.. seealso:: removeDirectory()
+.. seealso:: :py:func:`removeDirectory()`
 %End
 
     void removeDirectory( QgsDirectoryItem *item );
 %Docstring
  Removes an existing directory from the favorites group.
-.. seealso:: addDirectory()
+.. seealso:: :py:func:`addDirectory()`
 %End
 
     static QIcon iconFavorites();

@@ -16,8 +16,8 @@ class QgsMapUnitScaleWidget : QgsPanelWidget
  and millimeters. This widget is designed to allow users to edit the properties of a
  QgsMapUnitScale object.
 .. versionadded:: 3.0
-.. seealso:: QgsMapUnitScaleDialog
-.. seealso:: QgsUnitSelectionWidget
+.. seealso:: :py:class:`QgsMapUnitScaleDialog`
+.. seealso:: :py:class:`QgsUnitSelectionWidget`
 %End
 
 %TypeHeaderCode
@@ -35,8 +35,8 @@ class QgsMapUnitScaleWidget : QgsPanelWidget
 %Docstring
  Returns a QgsMapUnitScale representing the settings shown in the
  widget.
-.. seealso:: setMapUnitScale()
-.. seealso:: mapUnitScaleChanged()
+.. seealso:: :py:func:`setMapUnitScale()`
+.. seealso:: :py:func:`mapUnitScaleChanged()`
  :rtype: QgsMapUnitScale
 %End
 
@@ -45,8 +45,8 @@ class QgsMapUnitScaleWidget : QgsPanelWidget
  Updates the widget to reflect the settings from the specified
  QgsMapUnitScale object.
  \param scale map unit scale to show in widget
-.. seealso:: mapUnitScale()
-.. seealso:: mapUnitScaleChanged()
+.. seealso:: :py:func:`mapUnitScale()`
+.. seealso:: :py:func:`mapUnitScaleChanged()`
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -72,8 +72,8 @@ class QgsMapUnitScaleDialog : QDialog
  A dialog which allows the user to choose the minimum and maximum scale of an object in map units
  and millimeters. This dialog is designed to allow users to edit the properties of a
  QgsMapUnitScale object.
-.. seealso:: QgsMapUnitScaleWidget
-.. seealso:: QgsUnitSelectionWidget
+.. seealso:: :py:class:`QgsMapUnitScaleWidget`
+.. seealso:: :py:class:`QgsUnitSelectionWidget`
 %End
 
 %TypeHeaderCode
@@ -91,7 +91,7 @@ class QgsMapUnitScaleDialog : QDialog
 %Docstring
  Returns a QgsMapUnitScale representing the settings shown in the
  dialog.
-.. seealso:: setMapUnitScale()
+.. seealso:: :py:func:`setMapUnitScale()`
  :rtype: QgsMapUnitScale
 %End
 
@@ -100,7 +100,7 @@ class QgsMapUnitScaleDialog : QDialog
  Updates the dialog to reflect the settings from the specified
  QgsMapUnitScale object.
  \param scale map unit scale to show in dialog
-.. seealso:: mapUnitScale()
+.. seealso:: :py:func:`mapUnitScale()`
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -119,8 +119,8 @@ class QgsUnitSelectionWidget : QWidget
  A widget displaying a combobox allowing the user to choose between various display units,
  such as millimeters or map unit. If the user chooses map units, a button appears allowing
  adjustment of minimum and maximum scaling.
-.. seealso:: QgsMapUnitScaleWidget
-.. seealso:: QgsMapUnitScaleDialog
+.. seealso:: :py:class:`QgsMapUnitScaleWidget`
+.. seealso:: :py:class:`QgsMapUnitScaleDialog`
 %End
 
 %TypeHeaderCode

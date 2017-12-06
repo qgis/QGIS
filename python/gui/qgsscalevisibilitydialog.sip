@@ -37,8 +37,8 @@ class QgsScaleVisibilityDialog : QDialog
 %Docstring
  Returns the selected minimum scale, or 0 if minimum scale is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: maximumScale()
-.. seealso:: setMinimumScale()
+.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`setMinimumScale()`
  :rtype: float
 %End
 
@@ -46,8 +46,8 @@ class QgsScaleVisibilityDialog : QDialog
 %Docstring
  Returns the selected maximum scale, or 0 if maximum scale is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: minimumScale()
-.. seealso:: setMaximumScale())
+.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`setMaximumScale()`
  :rtype: float
 %End
 
@@ -56,23 +56,23 @@ class QgsScaleVisibilityDialog : QDialog
     void setScaleVisiblity( bool hasScaleVisibility );
 %Docstring
  Set whether scale based visibility is enabled.
-.. seealso:: hasScaleVisibility()
+.. seealso:: :py:func:`hasScaleVisibility()`
 %End
 
     void setMinimumScale( double scale );
 %Docstring
  Set the minimum ``scale``, or 0 to indicate the minimum is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: minimumScale()
-.. seealso:: setMaximumScale()
+.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`setMaximumScale()`
 %End
 
     void setMaximumScale( double scale );
 %Docstring
  Set the maximum ``scale``, or 0 to indicate the minimum is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: maximumScale()
-.. seealso:: setMinimumScale()
+.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`setMinimumScale()`
 %End
 
 

@@ -30,14 +30,14 @@ class QgsScaleComboBox : QComboBox
     QString scaleString() const;
 %Docstring
  Returns the selected scale as a string, e.g. "1:150".
-.. seealso:: setScaleString()
+.. seealso:: :py:func:`setScaleString()`
  :rtype: str
 %End
 
     bool setScaleString( const QString &string );
 %Docstring
  Set the selected scale from a ``string``, e.g. "1:150".
-.. seealso:: scaleString()
+.. seealso:: :py:func:`scaleString()`
  :rtype: bool
 %End
 
@@ -45,7 +45,7 @@ class QgsScaleComboBox : QComboBox
 %Docstring
  Returns the selected scale as a double.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: setScale()
+.. seealso:: :py:func:`setScale()`
  :rtype: float
 %End
 
@@ -64,7 +64,7 @@ class QgsScaleComboBox : QComboBox
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
  The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
-.. seealso:: toDouble()
+.. seealso:: :py:func:`toDouble()`
  :rtype: str
 %End
 
@@ -73,7 +73,7 @@ class QgsScaleComboBox : QComboBox
  Helper function to convert a scale ``string`` to double.
  The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
-.. seealso:: toString()
+.. seealso:: :py:func:`toString()`
  :rtype: float
 %End
 
@@ -97,7 +97,7 @@ class QgsScaleComboBox : QComboBox
 %Docstring
  Set the selected scale from a double.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: scale()
+.. seealso:: :py:func:`scale()`
 %End
 
     void setMinScale( double scale );

@@ -60,7 +60,7 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
     QStringList options() const;
 %Docstring
  Returns list of selected options
-.. seealso:: setOptions()
+.. seealso:: :py:func:`setOptions()`
  :rtype: list of str
 %End
 
@@ -68,7 +68,7 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
 %Docstring
  Populate widget with user-defined options. String should contain
  key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
-.. seealso:: options()
+.. seealso:: :py:func:`options()`
 .. versionadded:: 3.0
 %End
 

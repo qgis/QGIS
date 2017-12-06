@@ -25,27 +25,27 @@ class QgsProcessingModelComponent
     QString description() const;
 %Docstring
  Returns the friendly description text for the component.
-.. seealso:: setDescription()
+.. seealso:: :py:func:`setDescription()`
  :rtype: str
 %End
 
     void setDescription( const QString &description );
 %Docstring
  Sets the friendly ``description`` text for the component.
-.. seealso:: description()
+.. seealso:: :py:func:`description()`
 %End
 
     QPointF position() const;
 %Docstring
  Returns the position of the model component within the graphical modeler.
-.. seealso:: setPosition()
+.. seealso:: :py:func:`setPosition()`
  :rtype: QPointF
 %End
 
     void setPosition( const QPointF &position );
 %Docstring
  Sets the ``position`` of the model component within the graphical modeler.
-.. seealso:: position()
+.. seealso:: :py:func:`position()`
 %End
 
   protected:
@@ -64,13 +64,13 @@ Copies are protected to avoid slicing
     void saveCommonProperties( QVariantMap &map ) const;
 %Docstring
  Saves the component properties to a QVariantMap.
-.. seealso:: restoreCommonProperties()
+.. seealso:: :py:func:`restoreCommonProperties()`
 %End
 
     void restoreCommonProperties( const QVariantMap &map );
 %Docstring
  Restores the component properties from a QVariantMap.
-.. seealso:: saveCommonProperties()
+.. seealso:: :py:func:`saveCommonProperties()`
 %End
 
 };

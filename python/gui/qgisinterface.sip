@@ -58,8 +58,8 @@ Constructor
  If menu argument is not empty, the action will be also added to a menu within the main window,
  creating menu with the given name if it does not exist yet.
 
-.. seealso:: removeCustomActionForLayerType()
-.. seealso:: addCustomActionForLayer()
+.. seealso:: :py:func:`removeCustomActionForLayerType()`
+.. seealso:: :py:func:`addCustomActionForLayer()`
 %End
 
     virtual void addCustomActionForLayer( QAction *action, QgsMapLayer *layer ) = 0;
@@ -67,13 +67,13 @@ Constructor
  Add action to context menu for a specific layer in the layer tree.
  It is necessary to first call addCustomActionForLayerType() with allLayers=false
  in order for this method to have any effect.
-.. seealso:: addCustomActionForLayerType()
+.. seealso:: :py:func:`addCustomActionForLayerType()`
 %End
 
     virtual bool removeCustomActionForLayerType( QAction *action ) = 0;
 %Docstring
  Remove action for layers in the layer tree previously added with addCustomActionForLayerType()
-.. seealso:: addCustomActionForLayerType()
+.. seealso:: :py:func:`addCustomActionForLayerType()`
  :rtype: bool
 %End
 
@@ -88,7 +88,7 @@ Constructor
 %Docstring
  Create a new map canvas with the specified unique ``name``.
 .. versionadded:: 3.0
-.. seealso:: closeMapCanvas()
+.. seealso:: :py:func:`closeMapCanvas()`
  :rtype: QgsMapCanvas
 %End
 
@@ -96,7 +96,7 @@ Constructor
 %Docstring
  Closes the additional map canvas with matching ``name``.
 .. versionadded:: 3.0
-.. seealso:: createNewMapCanvas()
+.. seealso:: :py:func:`createNewMapCanvas()`
 %End
 
     virtual QSize iconSize( bool dockedToolbar = false ) const = 0;
@@ -917,7 +917,7 @@ Adds a widget to the user input tool bar.
  brings an already open composer window to the foreground if one
  is already created for the composition.
 .. versionadded:: 3.0
-.. seealso:: closeComposer()
+.. seealso:: :py:func:`closeComposer()`
  :rtype: QgsComposerInterface
 %End
 
@@ -926,7 +926,7 @@ Adds a widget to the user input tool bar.
  Closes an open composer window showing the specified ``composition``.
  The composition remains unaffected.
 .. versionadded:: 3.0
-.. seealso:: openComposer()
+.. seealso:: :py:func:`openComposer()`
 %End
 
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
@@ -935,7 +935,7 @@ Adds a widget to the user input tool bar.
  brings an already open designer window to the foreground if one
  is already created for the layout.
 .. versionadded:: 3.0
-.. seealso:: closeComposer()
+.. seealso:: :py:func:`closeComposer()`
  :rtype: QgsLayoutDesignerInterface
 %End
 
@@ -1070,14 +1070,14 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 
    Ownership of the factory is not transferred, and the factory must
        be unregistered when plugin is unloaded.
-.. seealso:: unregisterMapLayerPropertiesFactory() *
+.. seealso:: :py:func:`unregisterMapLayerPropertiesFactory()`
 %End
 
     virtual void unregisterMapLayerConfigWidgetFactory( QgsMapLayerConfigWidgetFactory *factory ) = 0;
 %Docstring
  Unregister a previously registered tab in the vector layer properties dialog.
 .. versionadded:: 2.16
-.. seealso:: registerMapLayerPropertiesFactory()
+.. seealso:: :py:func:`registerMapLayerPropertiesFactory()`
 %End
 
     virtual void registerOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
@@ -1088,14 +1088,14 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 
    Ownership of the factory is not transferred, and the factory must
        be unregistered when plugin is unloaded.
-.. seealso:: unregisterOptionsWidgetFactory() *
+.. seealso:: :py:func:`unregisterOptionsWidgetFactory()`
 %End
 
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) = 0;
 %Docstring
  Unregister a previously registered tab in the options dialog.
 .. versionadded:: 3.0
-.. seealso:: registerOptionsWidgetFactory()
+.. seealso:: :py:func:`registerOptionsWidgetFactory()`
 %End
 
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
@@ -1106,14 +1106,14 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 
    Ownership of the factory is not transferred, and the factory must
        be unregistered when plugin is unloaded.
-.. seealso:: unregisterCustomDropHandler() *
+.. seealso:: :py:func:`unregisterCustomDropHandler()`
 %End
 
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
 %Docstring
  Unregister a previously registered custom drop handler.
 .. versionadded:: 3.0
-.. seealso:: registerCustomDropHandler() *
+.. seealso:: :py:func:`registerCustomDropHandler()`
 %End
 
 
@@ -1169,7 +1169,7 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
  locator.
  \warning Plugins which register filters to the locator bar must take care to correctly call
  deregisterLocatorFilter() and deregister their filters upon plugin unload to avoid crashes.
-.. seealso:: deregisterLocatorFilter()
+.. seealso:: :py:func:`deregisterLocatorFilter()`
 .. versionadded:: 3.0
 %End
 
@@ -1181,7 +1181,7 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
  Plugins which register filters to the locator bar must take care to correctly call
  deregisterLocatorFilter() to deregister their filters upon plugin unload to avoid crashes.
 
-.. seealso:: registerLocatorFilter()
+.. seealso:: :py:func:`registerLocatorFilter()`
 .. versionadded:: 3.0
 %End
 
@@ -1204,7 +1204,7 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 %Docstring
  This signal is emitted when a new composer window has been opened.
 .. versionadded:: 3.0
-.. seealso:: composerWillBeClosed()
+.. seealso:: :py:func:`composerWillBeClosed()`
 %End
 
     void composerWillBeClosed( QgsComposerInterface *composer );
@@ -1212,23 +1212,23 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
  This signal is emitted before a composer window is going to be closed
  and deleted.
 .. versionadded:: 3.0
-.. seealso:: composerClosed()
-.. seealso:: composerOpened()
+.. seealso:: :py:func:`composerClosed()`
+.. seealso:: :py:func:`composerOpened()`
 %End
 
     void composerClosed( QgsComposerInterface *composer );
 %Docstring
  This signal is emitted after a composer window is closed.
 .. versionadded:: 3.0
-.. seealso:: composerWillBeClosed()
-.. seealso:: composerOpened()
+.. seealso:: :py:func:`composerWillBeClosed()`
+.. seealso:: :py:func:`composerOpened()`
 %End
 
     void layoutDesignerOpened( QgsLayoutDesignerInterface *designer );
 %Docstring
  This signal is emitted when a new layout ``designer`` has been opened.
 .. versionadded:: 3.0
-.. seealso:: layoutDesignerWillBeClosed()
+.. seealso:: :py:func:`layoutDesignerWillBeClosed()`
 %End
 
     void layoutDesignerWillBeClosed( QgsLayoutDesignerInterface *designer );
@@ -1236,16 +1236,16 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
  This signal is emitted before a layout ``designer`` is going to be closed
  and deleted.
 .. versionadded:: 3.0
-.. seealso:: layoutDesignerClosed()
-.. seealso:: layoutDesignerOpened()
+.. seealso:: :py:func:`layoutDesignerClosed()`
+.. seealso:: :py:func:`layoutDesignerOpened()`
 %End
 
     void layoutDesignerClosed();
 %Docstring
  This signal is emitted after a layout designer window is closed.
 .. versionadded:: 3.0
-.. seealso:: layoutDesignerWillBeClosed()
-.. seealso:: layoutDesignerOpened()
+.. seealso:: :py:func:`layoutDesignerWillBeClosed()`
+.. seealso:: :py:func:`layoutDesignerOpened()`
 %End
 
     void initializationCompleted();

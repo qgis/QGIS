@@ -40,8 +40,8 @@ class QgsPanelWidgetStack : QWidget
 
    a stack can have only one main panel. Any existing main panel
  should be removed by first calling takeMainPanel().
-.. seealso:: mainPanel()
-.. seealso:: takeMainPanel()
+.. seealso:: :py:func:`mainPanel()`
+.. seealso:: :py:func:`takeMainPanel()`
 %End
 
     QgsPanelWidget *mainPanel();
@@ -49,7 +49,7 @@ class QgsPanelWidgetStack : QWidget
  The main panel widget that is set in the stack. The main widget can not be closed
  and doesn't display a back button.
  :return: The main QgsPanelWidget that is active in the stack.
-.. seealso:: setMainPanel()
+.. seealso:: :py:func:`setMainPanel()`
  :rtype: QgsPanelWidget
 %End
 
@@ -62,8 +62,8 @@ class QgsPanelWidgetStack : QWidget
 
    Calling this will clear out any current stacked panels by accepting
  each panel in turn.
-.. seealso:: mainPanel()
-.. seealso:: setMainPanel()
+.. seealso:: :py:func:`mainPanel()`
+.. seealso:: :py:func:`setMainPanel()`
  :rtype: QgsPanelWidget
 %End
 
@@ -87,14 +87,14 @@ class QgsPanelWidgetStack : QWidget
  Accept the current active widget in the stack.
 
  Calls the panelAccepeted signal on the active widget.
-.. seealso:: acceptAllPanels()
+.. seealso:: :py:func:`acceptAllPanels()`
 %End
 
     void acceptAllPanels();
 %Docstring
  Accepts all panel widgets open in the stack in turn until until only the mainPanel()
  remains.
-.. seealso:: acceptCurrentPanel();
+.. seealso:: :py:func:`acceptCurrentPanel()`
 .. versionadded:: 3.0
 %End
 

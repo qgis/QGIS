@@ -48,7 +48,7 @@ class QgsAttributeFormEditorWidget : QgsAttributeFormWidget
     bool hasChanged() const;
 %Docstring
  Returns true if the widget's value has been changed since it was initialized.
-.. seealso:: initialize()
+.. seealso:: :py:func:`initialize()`
  :rtype: bool
 %End
 

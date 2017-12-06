@@ -19,7 +19,7 @@ class QgsReferencedGeometryBase
  associated with them.
 
 .. versionadded:: 3.0
-.. seealso:: QgsReferencedRectangle
+.. seealso:: :py:class:`QgsReferencedRectangle`
 %End
 
 %TypeHeaderCode
@@ -36,7 +36,7 @@ class QgsReferencedGeometryBase
 %Docstring
  Returns the associated coordinate reference system, or an invalid CRS if
  no reference system is set.
-.. seealso:: setCrs()
+.. seealso:: :py:func:`setCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -44,7 +44,7 @@ class QgsReferencedGeometryBase
 %Docstring
  Sets the associated ``crs``. Set to an invalid CRS if
  no reference system is required.
-.. seealso:: crs()
+.. seealso:: :py:func:`crs()`
 %End
 
 };

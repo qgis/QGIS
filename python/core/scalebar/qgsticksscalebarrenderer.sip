@@ -42,13 +42,13 @@ class QgsTicksScaleBarRenderer: QgsScaleBarRenderer
     void setTickPosition( TickPosition position );
 %Docstring
  Sets the ``position`` for tick marks in the scalebar.
-.. seealso:: tickPosition()
+.. seealso:: :py:func:`tickPosition()`
 %End
 
     TickPosition tickPosition() const;
 %Docstring
  Returns the position for tick marks in the scalebar.
-.. seealso:: setTickPosition()
+.. seealso:: :py:func:`setTickPosition()`
  :rtype: TickPosition
 %End
 

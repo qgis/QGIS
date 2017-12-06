@@ -81,7 +81,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  Return the multiframe type as a string.
 
  This string must be a unique, single word, character only representation of the item type, eg "LayoutHtml"
-.. seealso:: type()
+.. seealso:: :py:func:`type()`
  :rtype: str
 %End
 
@@ -93,8 +93,8 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  :return: fixed size for frame. If the size has a width or height of 0, then
  the frame size is not fixed in that direction and frames can have variable width
  or height accordingly.
-.. seealso:: minFrameSize()
-.. seealso:: recalculateFrameRects()
+.. seealso:: :py:func:`minFrameSize()`
+.. seealso:: :py:func:`recalculateFrameRects()`
  :rtype: QSizeF
 %End
 
@@ -106,8 +106,8 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  \param frameIndex frame number
  :return: minimum size for frame. If the size has a width or height of 0, then
  the frame size has no minimum in that direction.
-.. seealso:: fixedFrameSize()
-.. seealso:: recalculateFrameRects()
+.. seealso:: :py:func:`fixedFrameSize()`
+.. seealso:: :py:func:`recalculateFrameRects()`
  :rtype: QSizeF
 %End
 
@@ -127,7 +127,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 
  If ``recalcFrameSizes`` is set to true, then a recalculation of all existing frame sizes will be forced.
 
-.. seealso:: removeFrame()
+.. seealso:: :py:func:`removeFrame()`
 %End
 
     virtual double findNearbyPageBreak( double yPos );
@@ -147,26 +147,26 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  If ``removeEmptyPages`` is set to true, then pages which are empty after the frame is removed will
  also be removed from the layout.
 
-.. seealso:: addFrame()
-.. seealso:: deleteFrames()
+.. seealso:: :py:func:`addFrame()`
+.. seealso:: :py:func:`deleteFrames()`
 %End
 
     void deleteFrames();
 %Docstring
  Removes and deletes all child frames.
-.. seealso:: removeFrame()
+.. seealso:: :py:func:`removeFrame()`
 %End
 
     void setResizeMode( ResizeMode mode );
 %Docstring
  Sets the resize ``mode`` for the multiframe, and recalculates frame sizes to match.
-.. seealso:: resizeMode()
+.. seealso:: :py:func:`resizeMode()`
 %End
 
     ResizeMode resizeMode() const;
 %Docstring
  Returns the resize mode for the multiframe.
-.. seealso:: setResizeMode()
+.. seealso:: :py:func:`setResizeMode()`
  :rtype: ResizeMode
 %End
 
@@ -177,7 +177,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  \param document DOM document
  \param context read write context
  \param ignoreFrames set to false to avoid writing state information about child frames into DOM
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 
@@ -188,28 +188,28 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  \param document DOM document
  \param context read write context
  \param ignoreFrames set to false to avoid read state information about child frames from DOM
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 
     QList<QgsLayoutFrame *> frames() const;
 %Docstring
  Returns a list of all child frames for this multiframe.
-.. seealso:: frameCount()
+.. seealso:: :py:func:`frameCount()`
  :rtype: list of QgsLayoutFrame
 %End
 
     int frameCount() const;
 %Docstring
  Returns the number of frames associated with this multiframe.
-.. seealso:: frames()
+.. seealso:: :py:func:`frames()`
  :rtype: int
 %End
 
     QgsLayoutFrame *frame( int index ) const;
 %Docstring
  Returns the child frame at a specified ``index`` from the multiframe.
-.. seealso:: frameIndex()
+.. seealso:: :py:func:`frameIndex()`
  :rtype: QgsLayoutFrame
 %End
 
@@ -217,7 +217,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
 %Docstring
  Returns the index of a ``frame`` within the multiframe.
  :return: index for frame if found, -1 if frame not found in multiframe
-.. seealso:: frame()
+.. seealso:: :py:func:`frame()`
  :rtype: int
 %End
 
@@ -246,22 +246,22 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  The ``commandText`` should be a capitalized, imperative tense description (e.g. "Add Map Item").
  If specified, multiple consecutive commands for this item with the same ``command`` will
  be collapsed into a single undo command in the layout history.
-.. seealso:: endCommand()
-.. seealso:: cancelCommand()
+.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`cancelCommand()`
 %End
 
     void endCommand();
 %Docstring
  Completes the current item command and push it onto the layout's undo stack.
-.. seealso:: beginCommand()
-.. seealso:: cancelCommand()
+.. seealso:: :py:func:`beginCommand()`
+.. seealso:: :py:func:`cancelCommand()`
 %End
 
     void cancelCommand();
 %Docstring
  Cancels the current item command and discards it.
-.. seealso:: beginCommand()
-.. seealso:: endCommand()
+.. seealso:: :py:func:`beginCommand()`
+.. seealso:: :py:func:`endCommand()`
 %End
 
   public slots:
@@ -283,7 +283,7 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  component frames. If the resize mode is set to anything but UseExistingFrames then
  this may cause new frames to be added or frames to be removed, in order to fit
  the current size of the multiframe's content.
-.. seealso:: recalculateFrameRects()
+.. seealso:: :py:func:`recalculateFrameRects()`
 %End
 
     void recalculateFrameRects();
@@ -291,9 +291,9 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  Forces a recalculation of all the associated frame's scene rectangles. This
  method is useful for multiframes which implement a minFrameSize() or
  fixedFrameSize() method.
-.. seealso:: minFrameSize()
-.. seealso:: fixedFrameSize()
-.. seealso:: recalculateFrameSizes
+.. seealso:: :py:func:`minFrameSize()`
+.. seealso:: :py:func:`fixedFrameSize()`
+.. seealso:: :py:func:`recalculateFrameSizes`
 %End
 
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
@@ -326,8 +326,8 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  \param element is the DOM element to store the multiframe's properties in
  \param document DOM document
  \param context read write context
-.. seealso:: writeXml()
-.. seealso:: readPropertiesFromElement()
+.. seealso:: :py:func:`writeXml()`
+.. seealso:: :py:func:`readPropertiesFromElement()`
  :rtype: bool
 %End
 
@@ -337,8 +337,8 @@ class QgsLayoutMultiFrame: QgsLayoutObject, QgsLayoutUndoObjectInterface
  \param element is the DOM element for the multiframe
  \param document DOM document
  \param context read write context
-.. seealso:: writePropertiesToElement()
-.. seealso:: readXml()
+.. seealso:: :py:func:`writePropertiesToElement()`
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 

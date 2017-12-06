@@ -13,7 +13,7 @@ class QgsTaskManagerWidget : QWidget
 {
 %Docstring
  A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
-.. seealso:: QgsTaskManager
+.. seealso:: :py:class:`QgsTaskManager`
 .. versionadded:: 3.0
 %End
 

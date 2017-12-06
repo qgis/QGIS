@@ -85,7 +85,7 @@ Copy constructor
     Placement placement() const;
 %Docstring
  Returns the diagram placement.
-.. seealso:: setPlacement()
+.. seealso:: :py:func:`setPlacement()`
 .. versionadded:: 2.16
  :rtype: Placement
 %End
@@ -94,7 +94,7 @@ Copy constructor
 %Docstring
  Sets the diagram placement.
  \param value placement value
-.. seealso:: placement()
+.. seealso:: :py:func:`placement()`
 .. versionadded:: 2.16
 %End
 
@@ -102,7 +102,7 @@ Copy constructor
 %Docstring
  Returns the diagram placement flags. These are only used if the diagram placement
  is set to a line type.
-.. seealso:: setLinePlacementFlags()
+.. seealso:: :py:func:`setLinePlacementFlags()`
 .. versionadded:: 2.16
  :rtype: LinePlacementFlags
 %End
@@ -112,7 +112,7 @@ Copy constructor
  Sets the the diagram placement flags. These are only used if the diagram placement
  is set to a line type.
  \param flags placement value
-.. seealso:: getPlacement()
+.. seealso:: :py:func:`getPlacement()`
 .. versionadded:: 2.16
 %End
 
@@ -124,7 +124,7 @@ Copy constructor
 
    placement priority is shared with labeling, so diagrams with a high priority may displace labels
  and vice-versa
-.. seealso:: setPriority()
+.. seealso:: :py:func:`setPriority()`
 .. versionadded:: 2.16
  :rtype: int
 %End
@@ -133,7 +133,7 @@ Copy constructor
 %Docstring
  Sets the diagram priority.
  \param value priority, where 0 = low and 10 = high
-.. seealso:: priority()
+.. seealso:: :py:func:`priority()`
 .. versionadded:: 2.16
 %End
 
@@ -145,7 +145,7 @@ Copy constructor
 
    z-index ordering is shared with labeling, so diagrams with a high z-index may be drawn over labels
  with a low z-index and vice-versa
-.. seealso:: setZIndex()
+.. seealso:: :py:func:`setZIndex()`
 .. versionadded:: 2.16
  :rtype: float
 %End
@@ -155,14 +155,14 @@ Copy constructor
  Sets the diagram z-index. Diagrams (or labels) with a higher z-index are drawn over diagrams
  with a lower z-index.
  \param index diagram z-index
-.. seealso:: zIndex()
+.. seealso:: :py:func:`zIndex()`
 .. versionadded:: 2.16
 %End
 
     bool isObstacle() const;
 %Docstring
  Returns whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
-.. seealso:: setIsObstacle()
+.. seealso:: :py:func:`setIsObstacle()`
 .. versionadded:: 2.16
  :rtype: bool
 %End
@@ -171,14 +171,14 @@ Copy constructor
 %Docstring
  Sets whether the feature associated with a diagram acts as an obstacle for other labels or diagrams.
  \param isObstacle set to true for feature to act as obstacle
-.. seealso:: isObstacle()
+.. seealso:: :py:func:`isObstacle()`
 .. versionadded:: 2.16
 %End
 
     double distance() const;
 %Docstring
  Returns the distance between the diagram and the feature (in mm).
-.. seealso:: setDistance()
+.. seealso:: :py:func:`setDistance()`
 .. versionadded:: 2.16
  :rtype: float
 %End
@@ -187,14 +187,14 @@ Copy constructor
 %Docstring
  Sets the distance between the diagram and the feature.
  \param distance distance in mm
-.. seealso:: distance()
+.. seealso:: :py:func:`distance()`
 .. versionadded:: 2.16
 %End
 
     QgsDiagramRenderer *renderer();
 %Docstring
  Returns the diagram renderer associated with the layer.
-.. seealso:: setRenderer()
+.. seealso:: :py:func:`setRenderer()`
 .. versionadded:: 2.16
  :rtype: QgsDiagramRenderer
 %End
@@ -204,7 +204,7 @@ Copy constructor
 %Docstring
  Sets the diagram renderer associated with the layer.
  \param diagramRenderer diagram renderer. Ownership is transferred to the object.
-.. seealso:: renderer()
+.. seealso:: :py:func:`renderer()`
 .. versionadded:: 2.16
 %End
 
@@ -212,7 +212,7 @@ Copy constructor
 %Docstring
  Returns the coordinate transform associated with the layer, or an
  invalid transform if no transformation is required.
-.. seealso:: setCoordinateTransform()
+.. seealso:: :py:func:`setCoordinateTransform()`
 .. versionadded:: 2.16
  :rtype: QgsCoordinateTransform
 %End
@@ -221,14 +221,14 @@ Copy constructor
 %Docstring
  Sets the coordinate transform associated with the layer.
  \param transform coordinate transform. Ownership is transferred to the object.
-.. seealso:: coordinateTransform()
+.. seealso:: :py:func:`coordinateTransform()`
 .. versionadded:: 2.16
 %End
 
     bool showAllDiagrams() const;
 %Docstring
  Returns whether the layer should show all diagrams, including overlapping diagrams
-.. seealso:: setShowAllDiagrams()
+.. seealso:: :py:func:`setShowAllDiagrams()`
 .. versionadded:: 2.16
  :rtype: bool
 %End
@@ -237,20 +237,20 @@ Copy constructor
 %Docstring
  Sets whether the layer should show all diagrams, including overlapping diagrams
  \param showAllDiagrams set to true to show all diagrams
-.. seealso:: showAllDiagrams()
+.. seealso:: :py:func:`showAllDiagrams()`
 .. versionadded:: 2.16
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
  Reads the diagram settings from a DOM element.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
 %End
 
     void writeXml( QDomElement &layerElem, QDomDocument &doc ) const;
 %Docstring
  Writes the diagram settings to a DOM element.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
 %End
 
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
@@ -274,7 +274,7 @@ Copy constructor
 %Docstring
  Returns a reference to the diagram's property collection, used for data defined overrides.
 .. versionadded:: 3.0
-.. seealso:: setDataDefinedProperties()
+.. seealso:: :py:func:`setDataDefinedProperties()`
  :rtype: QgsPropertyCollection
 %End
 
@@ -284,7 +284,7 @@ Copy constructor
  Sets the diagram's property collection, used for data defined overrides.
  \param collection property collection. Existing properties will be replaced.
 .. versionadded:: 3.0
-.. seealso:: dataDefinedProperties()
+.. seealso:: :py:func:`dataDefinedProperties()`
 %End
 
 };
@@ -383,7 +383,7 @@ Opacity, from 0 (transparent) to 1.0 (opaque)
  The maximum map scale (i.e. most "zoomed in" scale) at which the diagrams will be visible.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A scale of 0 indicates no maximum scale visibility.
-.. seealso:: minimumScale
+.. seealso:: :py:func:`minimumScale`
 %End
 
     double minimumScale;
@@ -391,7 +391,7 @@ Opacity, from 0 (transparent) to 1.0 (opaque)
  The minimum map scale (i.e. most "zoomed out" scale) at which the diagrams will be visible.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A scale of 0 indicates no minimum scale visibility.
-.. seealso:: maximumScale
+.. seealso:: :py:func:`maximumScale`
 %End
 
     double minimumSize;
@@ -524,14 +524,14 @@ Returns list with all diagram settings in the renderer
 %Docstring
  Reads diagram state from a DOM element. Subclasses should ensure that _readXml() is called
  by their readXml implementation to restore the general QgsDiagramRenderer settings.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
 %End
 
     virtual void writeXml( QDomElement &layerElem, QDomDocument &doc, const QgsReadWriteContext &context ) const = 0;
 %Docstring
  Writes diagram state to a DOM element. Subclasses should ensure that _writeXml() is called
  by their writeXml implementation to save the general QgsDiagramRenderer settings.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
 %End
 
     virtual QList< QgsLayerTreeModelLegendNode * > legendItems( QgsLayerTreeLayer *nodeLayer ) const /Factory/;
@@ -548,8 +548,8 @@ Returns list with all diagram settings in the renderer
 %Docstring
  Returns true if renderer will show legend items for diagram attributes.
 .. versionadded:: 2.16
-.. seealso:: setAttributeLegend()
-.. seealso:: sizeLegend()
+.. seealso:: :py:func:`setAttributeLegend()`
+.. seealso:: :py:func:`sizeLegend()`
  :rtype: bool
 %End
 
@@ -558,8 +558,8 @@ Returns list with all diagram settings in the renderer
  Sets whether the renderer will show legend items for diagram attributes.
  \param enabled set to true to show diagram attribute legend
 .. versionadded:: 2.16
-.. seealso:: attributeLegend()
-.. seealso:: setSizeLegend()
+.. seealso:: :py:func:`attributeLegend()`
+.. seealso:: :py:func:`setSizeLegend()`
 %End
 
   protected:
@@ -708,7 +708,7 @@ Returns list with all diagram settings in the renderer
     QString classificationField() const;
 %Docstring
  Returns the field name used for interpolating the diagram size.
-.. seealso:: setClassificationField()
+.. seealso:: :py:func:`setClassificationField()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -716,7 +716,7 @@ Returns list with all diagram settings in the renderer
     void setClassificationField( const QString &field );
 %Docstring
  Sets the field name used for interpolating the diagram size.
-.. seealso:: classificationField()
+.. seealso:: :py:func:`classificationField()`
 .. versionadded:: 3.0
 %End
 

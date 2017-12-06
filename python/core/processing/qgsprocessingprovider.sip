@@ -34,14 +34,14 @@ class QgsProcessingProvider : QObject
     virtual QIcon icon() const;
 %Docstring
  Returns an icon for the provider.
-.. seealso:: svgIconPath()
+.. seealso:: :py:func:`svgIconPath()`
  :rtype: QIcon
 %End
 
     virtual QString svgIconPath() const;
 %Docstring
  Returns a path to an SVG version of the provider's icon.
-.. seealso:: icon()
+.. seealso:: :py:func:`icon()`
  :rtype: str
 %End
 
@@ -50,7 +50,7 @@ class QgsProcessingProvider : QObject
  Returns the unique provider id, used for identifying the provider. This string
  should be a unique, short, character only string, eg "qgis" or "gdal". This
  string should not be localised.
-.. seealso:: name()
+.. seealso:: :py:func:`name()`
  :rtype: str
 %End
 
@@ -58,8 +58,8 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns the provider name, which is used to describe the provider within the GUI.
  This string should be short (e.g. "Lastools") and localised.
-.. seealso:: longName()
-.. seealso:: id()
+.. seealso:: :py:func:`longName()`
+.. seealso:: :py:func:`id()`
  :rtype: str
 %End
 
@@ -71,8 +71,8 @@ class QgsProcessingProvider : QObject
 
  The default implementation returns the same string as name().
 
-.. seealso:: name()
-.. seealso:: id()
+.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`id()`
  :rtype: str
 %End
 
@@ -80,7 +80,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
  missing external dependencies).
-.. seealso:: isActive()
+.. seealso:: :py:func:`isActive()`
  :rtype: bool
 %End
 
@@ -93,16 +93,16 @@ class QgsProcessingProvider : QObject
     virtual QStringList supportedOutputRasterLayerExtensions() const;
 %Docstring
  Returns a list of the raster format file extensions supported by this provider.
-.. seealso:: supportedOutputVectorLayerExtensions()
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
  :rtype: list of str
 %End
 
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
  Returns a list of the vector format file extensions supported by this provider.
-.. seealso:: defaultVectorFileExtension()
-.. seealso:: supportedOutputRasterLayerExtensions()
-.. seealso:: supportsNonFileBasedOutput()
+.. seealso:: :py:func:`defaultVectorFileExtension()`
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions()`
+.. seealso:: :py:func:`supportsNonFileBasedOutput()`
  :rtype: list of str
 %End
 
@@ -118,8 +118,8 @@ class QgsProcessingProvider : QObject
  setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
  Otherwise the first reported supported vector format will be used.
 
-.. seealso:: supportedOutputVectorLayerExtensions()
-.. seealso:: defaultRasterFileExtension()
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
+.. seealso:: :py:func:`defaultRasterFileExtension()`
  :rtype: str
 %End
 
@@ -132,8 +132,8 @@ class QgsProcessingProvider : QObject
  setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
  Otherwise the first reported supported raster format will be used.
 
-.. seealso:: supportedOutputRasterLayerExtensions()
-.. seealso:: defaultVectorFileExtension()
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions()`
+.. seealso:: :py:func:`defaultVectorFileExtension()`
  :rtype: str
 %End
 
@@ -141,7 +141,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns true if the provider supports non-file based outputs (such as memory layers
  or direct database outputs).
-.. seealso:: supportedOutputVectorLayerExtensions()
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
  :rtype: bool
 %End
 
@@ -153,14 +153,14 @@ class QgsProcessingProvider : QObject
  occur within the loadAlgorithms() method. Instead, subclasses should call refreshAlgorithms()
  from any overloaded load() method to trigger an initial load of the provider's algorithms.
  :return: true if provider could be successfully loaded
-.. seealso:: unload()
+.. seealso:: :py:func:`unload()`
  :rtype: bool
 %End
 
     virtual void unload();
 %Docstring
  Unloads the provider. Any tear-down steps required by the provider should be implemented here.
-.. seealso:: load()
+.. seealso:: :py:func:`load()`
 %End
 
     void refreshAlgorithms();
@@ -171,7 +171,7 @@ class QgsProcessingProvider : QObject
     QList< const QgsProcessingAlgorithm * > algorithms() const;
 %Docstring
  Returns a list of algorithms supplied by this provider.
-.. seealso:: algorithm()
+.. seealso:: :py:func:`algorithm()`
  :rtype: list of const QgsProcessingAlgorithm
 %End
 
@@ -179,7 +179,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Returns the matching algorithm by ``name``, or a None if no matching
  algorithm is contained by this provider.
-.. seealso:: algorithms()
+.. seealso:: :py:func:`algorithms()`
  :rtype: QgsProcessingAlgorithm
 %End
 
@@ -189,7 +189,7 @@ class QgsProcessingProvider : QObject
 %Docstring
  Emitted when the provider has loaded (or refreshed) its list of available
  algorithms.
-.. seealso:: refreshAlgorithms()
+.. seealso:: :py:func:`refreshAlgorithms()`
 %End
 
   protected:

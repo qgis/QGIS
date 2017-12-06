@@ -35,15 +35,15 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
     QList< QgsLayoutItemPage * > pages();
 %Docstring
  Returns a list of pages in the collection.
-.. seealso:: page()
-.. seealso:: pageCount()
+.. seealso:: :py:func:`page()`
+.. seealso:: :py:func:`pageCount()`
  :rtype: list of QgsLayoutItemPage
 %End
 
     int pageCount() const;
 %Docstring
  Returns the number of pages in the collection.
-.. seealso:: pages()
+.. seealso:: :py:func:`pages()`
  :rtype: int
 %End
 
@@ -53,7 +53,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  Internal page numbering starts at 0 - so a ``pageNumber`` of 0
  corresponds to the first page in the collection.
  A None is returned if an invalid page number is specified.
-.. seealso:: pages()
+.. seealso:: :py:func:`pages()`
  :rtype: QgsLayoutItemPage
 %End
 
@@ -68,7 +68,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 %Docstring
  Returns a list of the pages which are visible within the specified
  ``region`` (in layout coordinates).
-.. seealso:: visiblePageNumbers()
+.. seealso:: :py:func:`visiblePageNumbers()`
  :rtype: list of QgsLayoutItemPage
 %End
 
@@ -76,7 +76,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 %Docstring
  Returns a list of the page numbers which are visible within the specified
  ``region`` (in layout coordinates).
-.. seealso:: visiblePages()
+.. seealso:: :py:func:`visiblePages()`
  :rtype: list of int
 %End
 
@@ -102,8 +102,8 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
  Calling addPage() automatically triggers a reflow() of pages.
 
-.. seealso:: extendByNewPage()
-.. seealso:: insertPage()
+.. seealso:: :py:func:`extendByNewPage()`
+.. seealso:: :py:func:`insertPage()`
 %End
 
     QgsLayoutItemPage *extendByNewPage();
@@ -113,8 +113,8 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
  The newly created page will be returned.
 
-.. seealso:: addPage()
-.. seealso:: insertPage()
+.. seealso:: :py:func:`addPage()`
+.. seealso:: :py:func:`insertPage()`
  :rtype: QgsLayoutItemPage
 %End
 
@@ -132,7 +132,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
  Calling insertPage() automatically triggers a reflow() of pages.
 
-.. seealso:: addPage()
+.. seealso:: :py:func:`addPage()`
 %End
 
     void deletePage( int pageNumber );
@@ -165,13 +165,13 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  Sets the ``symbol`` to use for drawing pages in the collection.
 
  Ownership is not transferred, and a copy of the symbol is created internally.
-.. seealso:: pageStyleSymbol()
+.. seealso:: :py:func:`pageStyleSymbol()`
 %End
 
     const QgsFillSymbol *pageStyleSymbol() const;
 %Docstring
  Returns the symbol to use for drawing pages in the collection.
-.. seealso:: setPageStyleSymbol()
+.. seealso:: :py:func:`setPageStyleSymbol()`
  :rtype: QgsFillSymbol
 %End
 
@@ -201,9 +201,9 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  it does not consider x coordinates and vertical coordinates before the first page or
  after the last page will still return the nearest page.
 
-.. seealso:: predicatePageNumberForPoint()
-.. seealso:: pageAtPoint()
-.. seealso:: positionOnPage()
+.. seealso:: :py:func:`predicatePageNumberForPoint()`
+.. seealso:: :py:func:`pageAtPoint()`
+.. seealso:: :py:func:`positionOnPage()`
  :rtype: int
 %End
 
@@ -219,9 +219,9 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
  Page numbers in collections begin at 0 - so a page number of 0 indicates the
  first page.
 
-.. seealso:: pageNumberForPoint()
-.. seealso:: pageAtPoint()
-.. seealso:: positionOnPage()
+.. seealso:: :py:func:`pageNumberForPoint()`
+.. seealso:: :py:func:`pageAtPoint()`
+.. seealso:: :py:func:`positionOnPage()`
  :rtype: int
 %End
 
@@ -236,21 +236,21 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
    Unlike pageNumberForPoint(), this method only returns pages which
  directly intersect with the specified point.
 
-.. seealso:: pageNumberForPoint()
+.. seealso:: :py:func:`pageNumberForPoint()`
  :rtype: QgsLayoutItemPage
 %End
 
     QPointF pagePositionToLayoutPosition( int page, const QgsLayoutPoint &position ) const;
 %Docstring
  Converts a ``position`` on a ``page`` to an absolute position in layout coordinates.\
-.. seealso:: pagePositionToAbsolute()
+.. seealso:: :py:func:`pagePositionToAbsolute()`
  :rtype: QPointF
 %End
 
     QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
 %Docstring
  Converts a ``position`` on a ``page`` to an absolute position in (maintaining the units from the input ``position``).
-.. seealso:: pagePositionToLayoutPosition()
+.. seealso:: :py:func:`pagePositionToLayoutPosition()`
  :rtype: QgsLayoutPoint
 %End
 
@@ -258,7 +258,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 %Docstring
  Returns the position within a page of a ``point`` in the layout (in layout units).
 
-.. seealso:: pageNumberForPoint()
+.. seealso:: :py:func:`pageNumberForPoint()`
  :rtype: QPointF
 %End
 
@@ -278,7 +278,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
 %Docstring
  Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 
@@ -286,7 +286,7 @@ class QgsLayoutPageCollection : QObject, QgsLayoutSerializableObject
 
 %Docstring
  Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 

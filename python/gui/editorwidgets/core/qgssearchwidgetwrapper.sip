@@ -94,7 +94,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
 %Docstring
  Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
 .. versionadded:: 2.16
-.. seealso:: nonExclusiveFilterFlags()
+.. seealso:: :py:func:`nonExclusiveFilterFlags()`
  :rtype: list of QgsSearchWidgetWrapper.FilterFlag
 %End
 
@@ -102,7 +102,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
 %Docstring
  Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
 .. versionadded:: 2.16
-.. seealso:: exclusiveFilterFlags()
+.. seealso:: :py:func:`exclusiveFilterFlags()`
  :rtype: list of QgsSearchWidgetWrapper.FilterFlag
 %End
 
@@ -127,7 +127,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
 %Docstring
  Returns filter flags supported by the search widget.
 .. versionadded:: 2.16
-.. seealso:: defaultFlags()
+.. seealso:: :py:func:`defaultFlags()`
  :rtype: FilterFlags
 %End
 
@@ -135,7 +135,7 @@ class QgsSearchWidgetWrapper : QgsWidgetWrapper
 %Docstring
  Returns the filter flags which should be set by default for the search widget.
 .. versionadded:: 2.16
-.. seealso:: supportedFlags()
+.. seealso:: :py:func:`supportedFlags()`
  :rtype: FilterFlags
 %End
 

@@ -100,7 +100,7 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
  Update all the symbols but leave categories and colors. This method also sets the source
  symbol for the renderer.
  \param sym source symbol to use for categories. Ownership is not transferred.
-.. seealso:: setSourceSymbol()
+.. seealso:: :py:func:`setSourceSymbol()`
 %End
 
     const QgsCategoryList &categories() const;
@@ -176,8 +176,8 @@ create renderer from XML element
 %Docstring
  Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
  the categories' color.
-.. seealso:: setSourceSymbol()
-.. seealso:: sourceColorRamp()
+.. seealso:: :py:func:`setSourceSymbol()`
+.. seealso:: :py:func:`sourceColorRamp()`
  :rtype: QgsSymbol
 %End
 
@@ -186,15 +186,15 @@ create renderer from XML element
  Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
  the categories' color.
  \param sym source symbol, ownership is transferred to the renderer
-.. seealso:: sourceSymbol()
-.. seealso:: setSourceColorRamp()
+.. seealso:: :py:func:`sourceSymbol()`
+.. seealso:: :py:func:`setSourceColorRamp()`
 %End
 
     QgsColorRamp *sourceColorRamp();
 %Docstring
  Returns the source color ramp, from which each categories' color is derived.
-.. seealso:: setSourceColorRamp()
-.. seealso:: sourceSymbol()
+.. seealso:: :py:func:`setSourceColorRamp()`
+.. seealso:: :py:func:`sourceSymbol()`
  :rtype: QgsColorRamp
 %End
 
@@ -202,8 +202,8 @@ create renderer from XML element
 %Docstring
  Sets the source color ramp.
  \param ramp color ramp. Ownership is transferred to the renderer
-.. seealso:: sourceColorRamp()
-.. seealso:: setSourceSymbol()
+.. seealso:: :py:func:`sourceColorRamp()`
+.. seealso:: :py:func:`setSourceSymbol()`
 %End
 
     void updateColorRamp( QgsColorRamp *ramp /Transfer/ );

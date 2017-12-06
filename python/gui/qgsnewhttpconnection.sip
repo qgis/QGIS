@@ -95,7 +95,7 @@ class QgsNewHttpConnection : QDialog
     virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring
  Returns the QSettings key for WFS related settings for the connection.
-.. seealso:: wmsSettingsKey()
+.. seealso:: :py:func:`wmsSettingsKey()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -103,7 +103,7 @@ class QgsNewHttpConnection : QDialog
     virtual QString wmsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring
  Returns the QSettings key for WMS related settings for the connection.
-.. seealso:: wfsSettingsKey()
+.. seealso:: :py:func:`wfsSettingsKey()`
 .. versionadded:: 3.0
  :rtype: str
 %End

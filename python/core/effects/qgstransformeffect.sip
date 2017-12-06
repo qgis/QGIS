@@ -45,20 +45,20 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets the transform x translation.
  \param translateX distance to translate along the x axis
-.. seealso:: translateX
-.. seealso:: setTranslateY
-.. seealso:: setTranslateUnit
-.. seealso:: setTranslateMapUnitScale
+.. seealso:: :py:func:`translateX`
+.. seealso:: :py:func:`setTranslateY`
+.. seealso:: :py:func:`setTranslateUnit`
+.. seealso:: :py:func:`setTranslateMapUnitScale`
 %End
 
     double translateX() const;
 %Docstring
  Returns the transform x translation.
  :return: X distance translated along the x axis
-.. seealso:: setTranslateX
-.. seealso:: translateY
-.. seealso:: translateUnit
-.. seealso:: translateMapUnitScale
+.. seealso:: :py:func:`setTranslateX`
+.. seealso:: :py:func:`translateY`
+.. seealso:: :py:func:`translateUnit`
+.. seealso:: :py:func:`translateMapUnitScale`
  :rtype: float
 %End
 
@@ -66,20 +66,20 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets the transform y translation.
  \param translateY distance to translate along the y axis
-.. seealso:: translateY
-.. seealso:: setTranslateX
-.. seealso:: setTranslateUnit
-.. seealso:: setTranslateMapUnitScale
+.. seealso:: :py:func:`translateY`
+.. seealso:: :py:func:`setTranslateX`
+.. seealso:: :py:func:`setTranslateUnit`
+.. seealso:: :py:func:`setTranslateMapUnitScale`
 %End
 
     double translateY() const;
 %Docstring
  Returns the transform y translation.
  :return: Y distance translated along the y axis
-.. seealso:: setTranslateY
-.. seealso:: translateX
-.. seealso:: translateUnit
-.. seealso:: translateMapUnitScale
+.. seealso:: :py:func:`setTranslateY`
+.. seealso:: :py:func:`translateX`
+.. seealso:: :py:func:`translateUnit`
+.. seealso:: :py:func:`translateMapUnitScale`
  :rtype: float
 %End
 
@@ -87,20 +87,20 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets the units used for the transform translation.
  \param unit units for translation
-.. seealso:: translateUnit
-.. seealso:: setTranslateX
-.. seealso:: setTranslateY
-.. seealso:: setTranslateMapUnitScale
+.. seealso:: :py:func:`translateUnit`
+.. seealso:: :py:func:`setTranslateX`
+.. seealso:: :py:func:`setTranslateY`
+.. seealso:: :py:func:`setTranslateMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit translateUnit() const;
 %Docstring
  Returns the units used for the transform translation.
  :return: units for translation
-.. seealso:: setTranslateUnit
-.. seealso:: translateX
-.. seealso:: translateY
-.. seealso:: translateMapUnitScale
+.. seealso:: :py:func:`setTranslateUnit`
+.. seealso:: :py:func:`translateX`
+.. seealso:: :py:func:`translateY`
+.. seealso:: :py:func:`translateMapUnitScale`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -108,20 +108,20 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets the map unit scale used for the transform translation.
  \param scale map unit scale for translation
-.. seealso:: translateMapUnitScale
-.. seealso:: setTranslateX
-.. seealso:: setTranslateY
-.. seealso:: setTranslateUnit
+.. seealso:: :py:func:`translateMapUnitScale`
+.. seealso:: :py:func:`setTranslateX`
+.. seealso:: :py:func:`setTranslateY`
+.. seealso:: :py:func:`setTranslateUnit`
 %End
 
     const QgsMapUnitScale &translateMapUnitScale() const;
 %Docstring
  Returns the map unit scale used for the transform translation.
  :return: map unit scale for translation
-.. seealso:: setTranslateMapUnitScale
-.. seealso:: translateX
-.. seealso:: translateY
-.. seealso:: translateUnit
+.. seealso:: :py:func:`setTranslateMapUnitScale`
+.. seealso:: :py:func:`translateX`
+.. seealso:: :py:func:`translateY`
+.. seealso:: :py:func:`translateUnit`
  :rtype: QgsMapUnitScale
 %End
 
@@ -129,16 +129,16 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets the x axis scaling factor.
  \param scaleX factor to scale x axis by, where 1.0 = no scaling
-.. seealso:: scaleX
-.. seealso:: setScaleY
+.. seealso:: :py:func:`scaleX`
+.. seealso:: :py:func:`setScaleY`
 %End
 
     double scaleX() const;
 %Docstring
  Returns the x axis scaling factor.
  :return: x axis scaling factor, where 1.0 = no scaling
-.. seealso:: setScaleX
-.. seealso:: scaleY
+.. seealso:: :py:func:`setScaleX`
+.. seealso:: :py:func:`scaleY`
  :rtype: float
 %End
 
@@ -146,28 +146,28 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets the y axis scaling factor.
  \param scaleY factor to scale y axis by, where 1.0 = no scaling
-.. seealso:: scaleX
+.. seealso:: :py:func:`scaleX`
 %End
 
     double scaleY() const;
 %Docstring
  Returns the y axis scaling factor.
  :return: y axis scaling factor, where 1.0 = no scaling
-.. seealso:: setScaleY
-.. seealso:: scaleX
+.. seealso:: :py:func:`setScaleY`
+.. seealso:: :py:func:`scaleX`
  :rtype: float
 %End
 
     void setRotation( const double rotation );
 %Docstring
  Sets the transform ``rotation``, in degrees clockwise.
-.. seealso:: rotation()
+.. seealso:: :py:func:`rotation()`
 %End
 
     double rotation() const;
 %Docstring
  Returns the transform rotation, in degrees clockwise.
-.. seealso:: setRotation()
+.. seealso:: :py:func:`setRotation()`
  :rtype: float
 %End
 
@@ -175,16 +175,16 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets the x axis shearing factor.
  \param shearX x axis shearing
-.. seealso:: shearX
-.. seealso:: setShearY
+.. seealso:: :py:func:`shearX`
+.. seealso:: :py:func:`setShearY`
 %End
 
     double shearX() const;
 %Docstring
  Returns the x axis shearing factor.
  :return: x axis shearing
-.. seealso:: setShearX
-.. seealso:: shearY
+.. seealso:: :py:func:`setShearX`
+.. seealso:: :py:func:`shearY`
  :rtype: float
 %End
 
@@ -192,16 +192,16 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets the y axis shearing factor.
  \param shearY y axis shearing
-.. seealso:: shearY
-.. seealso:: setShearX
+.. seealso:: :py:func:`shearY`
+.. seealso:: :py:func:`setShearX`
 %End
 
     double shearY() const;
 %Docstring
  Returns the y axis shearing factor.
  :return: y axis shearing
-.. seealso:: setShearY
-.. seealso:: shearX
+.. seealso:: :py:func:`setShearY`
+.. seealso:: :py:func:`shearX`
  :rtype: float
 %End
 
@@ -209,16 +209,16 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets whether to reflect along the x-axis
  \param reflectX true to reflect horizontally
-.. seealso:: reflectX
-.. seealso:: setReflectY
+.. seealso:: :py:func:`reflectX`
+.. seealso:: :py:func:`setReflectY`
 %End
 
     bool reflectX() const;
 %Docstring
  Returns whether transform will be reflected along the x-axis
  :return: true if transform will reflect horizontally
-.. seealso:: setReflectX
-.. seealso:: reflectY
+.. seealso:: :py:func:`setReflectX`
+.. seealso:: :py:func:`reflectY`
  :rtype: bool
 %End
 
@@ -226,16 +226,16 @@ class QgsTransformEffect : QgsPaintEffect
 %Docstring
  Sets whether to reflect along the y-axis
  \param reflectY true to reflect horizontally
-.. seealso:: reflectY
-.. seealso:: setReflectX
+.. seealso:: :py:func:`reflectY`
+.. seealso:: :py:func:`setReflectX`
 %End
 
     bool reflectY() const;
 %Docstring
  Returns whether transform will be reflected along the y-axis
  :return: true if transform will reflect horizontally
-.. seealso:: setReflectY
-.. seealso:: reflectX
+.. seealso:: :py:func:`setReflectY`
+.. seealso:: :py:func:`reflectX`
  :rtype: bool
 %End
 

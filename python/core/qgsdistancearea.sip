@@ -45,7 +45,7 @@ Constructor
  Returns whether calculations will use the ellipsoid. Calculations will only use the
  ellipsoid if a valid ellipsoid() has been set.
 .. versionadded:: 2.14
-.. seealso:: ellipsoid()
+.. seealso:: :py:func:`ellipsoid()`
  :rtype: bool
 %End
 
@@ -53,13 +53,13 @@ Constructor
 %Docstring
  Sets source spatial reference system.
 .. versionadded:: 2.2
-.. seealso:: sourceCrs()
+.. seealso:: :py:func:`sourceCrs()`
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
  Returns the source spatial reference system.
-.. seealso:: setSourceCrs()
+.. seealso:: :py:func:`setSourceCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -69,8 +69,8 @@ Constructor
  retrieved using QgsEllipsoidUtils.acronyms().
  Calculations will only use the ellipsoid if a valid ellipsoid has been set.
  :return: true if ellipsoid was successfully set
-.. seealso:: ellipsoid()
-.. seealso:: willUseEllipsoid()
+.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`willUseEllipsoid()`
  :rtype: bool
 %End
 
@@ -79,8 +79,8 @@ Constructor
  Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
  a valid ellipsoid been set.
  :return: true if ellipsoid was successfully set
-.. seealso:: ellipsoid()
-.. seealso:: willUseEllipsoid()
+.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`willUseEllipsoid()`
  :rtype: bool
 %End
 
@@ -88,26 +88,26 @@ Constructor
 %Docstring
  Returns ellipsoid's acronym. Calculations will only use the
  ellipsoid if a valid ellipsoid has been set.
-.. seealso:: setEllipsoid()
-.. seealso:: willUseEllipsoid()
+.. seealso:: :py:func:`setEllipsoid()`
+.. seealso:: :py:func:`willUseEllipsoid()`
  :rtype: str
 %End
 
     double ellipsoidSemiMajor() const;
 %Docstring
  Returns the ellipsoid's semi major axis.
-.. seealso:: ellipsoid()
-.. seealso:: ellipsoidSemiMinor()
-.. seealso:: ellipsoidInverseFlattening()
+.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoidSemiMinor()`
+.. seealso:: :py:func:`ellipsoidInverseFlattening()`
  :rtype: float
 %End
 
     double ellipsoidSemiMinor() const;
 %Docstring
  Returns ellipsoid's semi minor axis.
-.. seealso:: ellipsoid()
-.. seealso:: ellipsoidSemiMajor()
-.. seealso:: ellipsoidInverseFlattening()
+.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoidSemiMajor()`
+.. seealso:: :py:func:`ellipsoidInverseFlattening()`
  :rtype: float
 %End
 
@@ -115,9 +115,9 @@ Constructor
 %Docstring
  Returns ellipsoid's inverse flattening.
  The inverse flattening is calculated with invf = a/(a-b).
-.. seealso:: ellipsoid()
-.. seealso:: ellipsoidSemiMajor()
-.. seealso:: ellipsoidSemiMinor()
+.. seealso:: :py:func:`ellipsoid()`
+.. seealso:: :py:func:`ellipsoidSemiMajor()`
+.. seealso:: :py:func:`ellipsoidSemiMinor()`
  :rtype: float
 %End
 
@@ -128,9 +128,9 @@ Constructor
  :return: area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
  returned area can be retrieved by calling areaUnits().
 .. versionadded:: 2.12
-.. seealso:: measureLength()
-.. seealso:: measurePerimeter()
-.. seealso:: areaUnits()
+.. seealso:: :py:func:`measureLength()`
+.. seealso:: :py:func:`measurePerimeter()`
+.. seealso:: :py:func:`areaUnits()`
  :rtype: float
 %End
 
@@ -141,9 +141,9 @@ Constructor
  :return: length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
  returned distance can be retrieved by calling lengthUnits().
 .. versionadded:: 2.12
-.. seealso:: lengthUnits()
-.. seealso:: measureArea()
-.. seealso:: measurePerimeter()
+.. seealso:: :py:func:`lengthUnits()`
+.. seealso:: :py:func:`measureArea()`
+.. seealso:: :py:func:`measurePerimeter()`
  :rtype: float
 %End
 
@@ -154,9 +154,9 @@ Constructor
  :return: perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
  returned perimeter can be retrieved by calling lengthUnits().
 .. versionadded:: 2.12
-.. seealso:: lengthUnits()
-.. seealso:: measureArea()
-.. seealso:: measurePerimeter()
+.. seealso:: :py:func:`lengthUnits()`
+.. seealso:: :py:func:`measureArea()`
+.. seealso:: :py:func:`measurePerimeter()`
  :rtype: float
 %End
 
@@ -165,7 +165,7 @@ Constructor
  Measures the length of a line with multiple segments.
  \param points list of points in line
  :return: length of line. The units for the returned length can be retrieved by calling lengthUnits().
-.. seealso:: lengthUnits()
+.. seealso:: :py:func:`lengthUnits()`
  :rtype: float
 %End
 
@@ -175,7 +175,7 @@ Constructor
  \param p1 start of line
  \param p2 end of line
  :return: distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
-.. seealso:: lengthUnits()
+.. seealso:: :py:func:`lengthUnits()`
  :rtype: float
 %End
 
@@ -192,8 +192,8 @@ Constructor
  \param azimuth - azimuth in radians, clockwise from North
  \param projectedPoint calculated projected point
  :return: distance in mapUnits
-.. seealso:: sourceCrs()
-.. seealso:: computeSpheroidProject()
+.. seealso:: :py:func:`sourceCrs()`
+.. seealso:: :py:func:`computeSpheroidProject()`
  :rtype: float
 %End
 
@@ -201,7 +201,7 @@ Constructor
 %Docstring
  Returns the units of distance for length calculations made by this object.
 .. versionadded:: 2.14
-.. seealso:: areaUnits()
+.. seealso:: :py:func:`areaUnits()`
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
@@ -209,7 +209,7 @@ Constructor
 %Docstring
  Returns the units of area for areal calculations made by this object.
 .. versionadded:: 2.14
-.. seealso:: lengthUnits()
+.. seealso:: :py:func:`lengthUnits()`
  :rtype: QgsUnitTypes.AreaUnit
 %End
 
@@ -235,7 +235,7 @@ Constructor
  kilometers
  :return: formatted distance string
 .. versionadded:: 2.16
-.. seealso:: formatArea()
+.. seealso:: :py:func:`formatArea()`
  :rtype: str
 %End
 
@@ -249,7 +249,7 @@ Constructor
  square kilometers
  :return: formatted area string
 .. versionadded:: 2.14
-.. seealso:: formatDistance()
+.. seealso:: :py:func:`formatDistance()`
  :rtype: str
 %End
 
@@ -261,7 +261,7 @@ Constructor
  was calculated by this class, ie that its unit of length is equal to lengthUnits().
  \param toUnits distance unit to convert measurement to
  :return: converted distance
-.. seealso:: convertAreaMeasurement()
+.. seealso:: :py:func:`convertAreaMeasurement()`
 .. versionadded:: 2.14
  :rtype: float
 %End
@@ -274,7 +274,7 @@ Constructor
  was calculated by this class, ie that its unit of area is equal to areaUnits().
  \param toUnits area unit to convert measurement to
  :return: converted area
-.. seealso:: convertLengthMeasurement()
+.. seealso:: :py:func:`convertLengthMeasurement()`
 .. versionadded:: 2.14
  :rtype: float
 %End

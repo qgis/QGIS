@@ -31,7 +31,7 @@ class QgsAtlasComposition : QObject
 %Docstring
  Returns whether the atlas generation is enabled
  :return: true if atlas is enabled
-.. seealso:: setEnabled
+.. seealso:: :py:func:`setEnabled`
  :rtype: bool
 %End
 
@@ -39,14 +39,14 @@ class QgsAtlasComposition : QObject
 %Docstring
  Sets whether the atlas is enabled
  \param enabled set to true to enable to atlas
-.. seealso:: enabled
+.. seealso:: :py:func:`enabled`
 %End
 
     bool hideCoverage() const;
 %Docstring
  Returns true if the atlas is set to hide the coverage layer
  :return: true if coverage layer is hidden
-.. seealso:: setHideCoverage
+.. seealso:: :py:func:`setHideCoverage`
  :rtype: bool
 %End
 
@@ -54,7 +54,7 @@ class QgsAtlasComposition : QObject
 %Docstring
  Sets whether the coverage layer should be hidden in map items in the composition
  \param hide set to true to hide the coverage layer
-.. seealso:: hideCoverage
+.. seealso:: :py:func:`hideCoverage`
 %End
 
     QString filenamePattern() const;
@@ -62,8 +62,8 @@ class QgsAtlasComposition : QObject
  Returns the filename expression used for generating output filenames for each
  atlas page.
  :return: filename pattern
-.. seealso:: setFilenamePattern
-.. seealso:: filenamePatternErrorString
+.. seealso:: :py:func:`setFilenamePattern`
+.. seealso:: :py:func:`filenamePatternErrorString`
 .. note::
 
    This property has no effect when exporting to PDF if singleFile() is true
@@ -76,8 +76,8 @@ class QgsAtlasComposition : QObject
  atlas page.
  :return: true if filename expression could be successful set, false if expression is invalid
  \param pattern expression to use for output filenames
-.. seealso:: filenamePattern
-.. seealso:: filenamePatternErrorString
+.. seealso:: :py:func:`filenamePattern`
+.. seealso:: :py:func:`filenamePatternErrorString`
 .. note::
 
    This method has no effect when exporting to PDF if singleFile() is true
@@ -88,8 +88,8 @@ class QgsAtlasComposition : QObject
 %Docstring
  Returns an error string from parsing the filename expression.
  :return: filename pattern parser error
-.. seealso:: setFilenamePattern
-.. seealso:: filenamePattern
+.. seealso:: :py:func:`setFilenamePattern`
+.. seealso:: :py:func:`filenamePattern`
  :rtype: str
 %End
 
@@ -97,7 +97,7 @@ class QgsAtlasComposition : QObject
 %Docstring
  Returns the coverage layer used for the atlas features
  :return: atlas coverage layer
-.. seealso:: setCoverageLayer
+.. seealso:: :py:func:`setCoverageLayer`
  :rtype: QgsVectorLayer
 %End
 
@@ -105,15 +105,15 @@ class QgsAtlasComposition : QObject
 %Docstring
  Sets the coverage layer to use for the atlas features
  \param layer vector coverage layer
-.. seealso:: coverageLayer
+.. seealso:: :py:func:`coverageLayer`
 %End
 
     QString pageNameExpression() const;
 %Docstring
  Returns the expression used for calculating the page name.
  :return: expression string, or field name from coverage layer
-.. seealso:: setPageNameExpression
-.. seealso:: nameForPage
+.. seealso:: :py:func:`setPageNameExpression`
+.. seealso:: :py:func:`nameForPage`
 .. versionadded:: 2.12
  :rtype: str
 %End
@@ -122,7 +122,7 @@ class QgsAtlasComposition : QObject
 %Docstring
  Sets the expression used for calculating the page name.
  \param pageNameExpression expression string, or field name from coverage layer
-.. seealso:: pageNameExpression
+.. seealso:: :py:func:`pageNameExpression`
 .. versionadded:: 2.12
 %End
 
@@ -131,7 +131,7 @@ class QgsAtlasComposition : QObject
  Returns the calculated name for a specified atlas page number.
  \param pageNumber number of page, where 0 = first page
  :return: page name
-.. seealso:: pageNameExpression
+.. seealso:: :py:func:`pageNameExpression`
 .. versionadded:: 2.12
  :rtype: str
 %End
@@ -141,7 +141,7 @@ class QgsAtlasComposition : QObject
  Returns whether the atlas will be exported to a single file. This is only
  applicable for PDF exports.
  :return: true if atlas will be exported to a single file
-.. seealso:: setSingleFile
+.. seealso:: :py:func:`setSingleFile`
 .. note::
 
    This property is only used for PDF exports.
@@ -153,7 +153,7 @@ class QgsAtlasComposition : QObject
  Sets whether the atlas should be exported to a single file. This is only
  applicable for PDF exports.
  \param single set to true to export atlas to a single file.
-.. seealso:: singleFile
+.. seealso:: :py:func:`singleFile`
 .. note::
 
    This method is only used for PDF exports.
@@ -163,7 +163,7 @@ class QgsAtlasComposition : QObject
 %Docstring
  Returns the  atlas file format used for image exports.
  :return: true if atlas will be exported to a single file
-.. seealso:: setFileFormat
+.. seealso:: :py:func:`setFileFormat`
 .. note::
 
    This property is only used for image exports.
@@ -175,7 +175,7 @@ class QgsAtlasComposition : QObject
 %Docstring
  Sets the  atlas file format used for image exports.
  \param format set the file format extension
-.. seealso:: fileFormat
+.. seealso:: :py:func:`fileFormat`
 .. note::
 
    This property is only used for image exports.
@@ -210,8 +210,8 @@ class QgsAtlasComposition : QObject
 %Docstring
  Returns an error string from parsing the feature filter expression.
  :return: filename pattern parser error
-.. seealso:: setFilenamePattern
-.. seealso:: filenamePattern
+.. seealso:: :py:func:`setFilenamePattern`
+.. seealso:: :py:func:`filenamePattern`
  :rtype: str
 %End
 
@@ -226,8 +226,8 @@ class QgsAtlasComposition : QObject
  Returns the current list of predefined scales for the atlas. This is used
  for maps which are set to the predefined atlas scaling mode.
  :return: a vector of doubles representing predefined scales
-.. seealso:: setPredefinedScales
-.. seealso:: QgsComposerMap.atlasScalingMode
+.. seealso:: :py:func:`setPredefinedScales`
+.. seealso:: :py:func:`QgsComposerMap.atlasScalingMode`
  :rtype: list of qreal
 %End
 
@@ -236,8 +236,8 @@ class QgsAtlasComposition : QObject
  Sets the list of predefined scales for the atlas. This is used
  for maps which are set to the predefined atlas scaling mode.
  \param scales a vector of doubles representing predefined scales
-.. seealso:: predefinedScales
-.. seealso:: QgsComposerMap.atlasScalingMode
+.. seealso:: :py:func:`predefinedScales`
+.. seealso:: :py:func:`QgsComposerMap.atlasScalingMode`
 %End
 
     bool beginRender();
@@ -286,7 +286,7 @@ Returns the current filename. Must be called after prepareForFeature()
  Reads general atlas settings from xml
  \param elem a QDomElement holding the atlas properties.
  \param doc QDomDocument for the source xml.
-.. seealso:: readXMLMapSettings
+.. seealso:: :py:func:`readXMLMapSettings`
 .. note::
 
    This method should be called before restoring composer item properties

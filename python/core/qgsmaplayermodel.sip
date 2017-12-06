@@ -15,8 +15,8 @@ class QgsMapLayerModel : QAbstractItemModel
 {
 %Docstring
  The QgsMapLayerModel class is a model to display layers in widgets.
-.. seealso:: QgsMapLayerProxyModel to sort and/filter the layers
-.. seealso:: QgsFieldModel to combine in with a field selector.
+.. seealso:: :py:class:`QgsMapLayerProxyModel`
+.. seealso:: :py:class:`QgsFieldModel`
 .. versionadded:: 2.3
 %End
 
@@ -56,14 +56,14 @@ class QgsMapLayerModel : QAbstractItemModel
     void setAllowEmptyLayer( bool allowEmpty );
 %Docstring
  Sets whether an optional empty layer ("not set") option is present in the model.
-.. seealso:: allowEmptyLayer()
+.. seealso:: :py:func:`allowEmptyLayer()`
 .. versionadded:: 3.0
 %End
 
     bool allowEmptyLayer() const;
 %Docstring
  Returns true if the model allows the empty layer ("not set") choice.
-.. seealso:: setAllowEmptyLayer()
+.. seealso:: :py:func:`setAllowEmptyLayer()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -71,14 +71,14 @@ class QgsMapLayerModel : QAbstractItemModel
     void setShowCrs( bool showCrs );
 %Docstring
  Sets whether the CRS of layers is also included in the model's display role.
-.. seealso:: showCrs()
+.. seealso:: :py:func:`showCrs()`
 .. versionadded:: 3.0
 %End
 
     bool showCrs() const;
 %Docstring
  Returns true if the model includes layer's CRS in the display role.
-.. seealso:: setShowCrs()
+.. seealso:: :py:func:`setShowCrs()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -97,7 +97,7 @@ returns if the items can be checked or not
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
 %Docstring
  indexFromLayer returns the model index for a given layer
-.. seealso:: layerFromIndex()
+.. seealso:: :py:func:`layerFromIndex()`
  :rtype: QModelIndex
 %End
 
@@ -105,7 +105,7 @@ returns if the items can be checked or not
 %Docstring
  Returns the map layer corresponding to the specified ``index``.
 .. versionadded:: 3.0
-.. seealso:: indexFromLayer()
+.. seealso:: :py:func:`indexFromLayer()`
  :rtype: QgsMapLayer
 %End
 
@@ -114,14 +114,14 @@ returns if the items can be checked or not
  Sets a list of additional (non map layer) items to include at the end of the model.
  These may represent additional layers such as layers which are not included in the map
  layer registry, or paths to layers which have not yet been loaded into QGIS.
-.. seealso:: additionalItems()
+.. seealso:: :py:func:`additionalItems()`
 .. versionadded:: 3.0
 %End
 
     QStringList additionalItems() const;
 %Docstring
  Return the list of additional (non map layer) items included at the end of the model.
-.. seealso:: setAdditionalItems()
+.. seealso:: :py:func:`setAdditionalItems()`
 .. versionadded:: 3.0
  :rtype: list of str
 %End

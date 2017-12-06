@@ -12,7 +12,7 @@ class QgsColorSwatchDelegate : QAbstractItemDelegate
 {
 %Docstring
  A delegate for showing a color swatch in a list
-.. seealso:: QgsColorSchemeList
+.. seealso:: :py:class:`QgsColorSchemeList`
 .. versionadded:: 2.5
 %End
 
@@ -35,7 +35,7 @@ class QgsColorSchemeModel: QAbstractItemModel
 {
 %Docstring
  A model for colors in a color scheme
-.. seealso:: QgsColorSchemeList
+.. seealso:: :py:class:`QgsColorSchemeList`
 .. versionadded:: 2.5
 %End
 
@@ -101,7 +101,7 @@ class QgsColorSchemeModel: QAbstractItemModel
 %Docstring
  Get the current color scheme context for the model
  :return: context string which is passed to scheme for color generation
-.. seealso:: baseColor
+.. seealso:: :py:func:`baseColor`
  :rtype: str
 %End
 
@@ -109,7 +109,7 @@ class QgsColorSchemeModel: QAbstractItemModel
 %Docstring
  Get the base color for the color scheme used by the model
  :return: base color which is passed to scheme for color generation
-.. seealso:: context
+.. seealso:: :py:func:`context`
  :rtype: QColor
 %End
 
@@ -134,7 +134,7 @@ class QgsColorSchemeList: QTreeView
 {
 %Docstring
  An editable list of color swatches, taken from an associated QgsColorScheme.
-.. seealso:: QgsColorSchemeList
+.. seealso:: :py:class:`QgsColorSchemeList`
 .. versionadded:: 2.5
 %End
 
@@ -166,7 +166,7 @@ class QgsColorSchemeList: QTreeView
 %Docstring
  Import colors from a GPL palette file to the list
  \param file file to import
-.. seealso:: exportColorsToGpl
+.. seealso:: :py:func:`exportColorsToGpl`
  :rtype: bool
 %End
 
@@ -174,7 +174,7 @@ class QgsColorSchemeList: QTreeView
 %Docstring
  Export colors to a GPL palette file from the list
  \param file destination file
-.. seealso:: importColorsFromGpl
+.. seealso:: :py:func:`importColorsFromGpl`
  :rtype: bool
 %End
 
@@ -189,7 +189,7 @@ class QgsColorSchemeList: QTreeView
 %Docstring
  Returns the scheme currently selected in the list.
 .. versionadded:: 3.0
-.. seealso:: setScheme()
+.. seealso:: :py:func:`setScheme()`
  :rtype: QgsColorScheme
 %End
 
@@ -201,7 +201,7 @@ class QgsColorSchemeList: QTreeView
  \param scheme QgsColorScheme for colors to show in the list
  \param context context string provided to color scheme
  \param baseColor base color for color scheme
-.. seealso:: scheme()
+.. seealso:: :py:func:`scheme()`
 %End
 
     void removeSelection();
@@ -220,27 +220,27 @@ class QgsColorSchemeList: QTreeView
     void pasteColors();
 %Docstring
  Pastes colors from clipboard to the list
-.. seealso:: copyColors
+.. seealso:: :py:func:`copyColors`
 %End
 
     void copyColors();
 %Docstring
  Copies colors from the list to the clipboard
-.. seealso:: pasteColors
+.. seealso:: :py:func:`pasteColors`
 %End
 
     void showImportColorsDialog();
 %Docstring
  Displays a file picker dialog allowing users to import colors into the list from a file.
 .. versionadded:: 3.0
-.. seealso:: showExportColorsDialog()
+.. seealso:: :py:func:`showExportColorsDialog()`
 %End
 
     void showExportColorsDialog();
 %Docstring
  Displays a file picker dialog allowing users to export colors from the list into a file.
 .. versionadded:: 3.0
-.. seealso:: showImportColorsDialog()
+.. seealso:: :py:func:`showImportColorsDialog()`
 %End
 
   signals:

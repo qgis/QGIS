@@ -13,7 +13,7 @@ class QgsSymbolLevelsWidget : QgsPanelWidget
 {
 %Docstring
  A widget which allows the user to modify the rendering order of symbol layers.
-.. seealso:: QgsSymbolLevelsDialog
+.. seealso:: :py:class:`QgsSymbolLevelsDialog`
 .. versionadded:: 3.0
 %End
 
@@ -58,7 +58,7 @@ class QgsSymbolLevelsDialog : QDialog
 {
 %Docstring
  A dialog which allows the user to modify the rendering order of symbol layers.
-.. seealso:: QgsSymbolLevelsWidget
+.. seealso:: :py:class:`QgsSymbolLevelsWidget`
 %End
 
 %TypeHeaderCode

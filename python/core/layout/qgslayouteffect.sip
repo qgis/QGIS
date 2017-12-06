@@ -34,14 +34,14 @@ class QgsLayoutEffect : QGraphicsEffect
 %Docstring
  Sets the composition (blending) ``mode`` used for rendering
  the item.
-.. seealso:: compositionMode()
+.. seealso:: :py:func:`compositionMode()`
 %End
 
     QPainter::CompositionMode compositionMode() const;
 %Docstring
  Returns the composition (blending) mode used for rendering
  the item.
-.. seealso:: setCompositionMode()
+.. seealso:: :py:func:`setCompositionMode()`
  :rtype: QPainter.CompositionMode
 %End
 

@@ -106,7 +106,7 @@ class QgsTask : QObject
  time. Any subtasks owned by this task will also be canceled.
  Derived classes must ensure that the base class implementation is called
  from any overridden version.
-.. seealso:: isCanceled()
+.. seealso:: :py:func:`isCanceled()`
 %End
 
     void hold();
@@ -115,7 +115,7 @@ class QgsTask : QObject
  (ie it is already running or has finished) then calling this has no effect.
  Calling this method only has an effect for tasks which are managed
  by a QgsTaskManager.
-.. seealso:: unhold()
+.. seealso:: :py:func:`unhold()`
 %End
 
     void unhold();
@@ -123,7 +123,7 @@ class QgsTask : QObject
  Releases the task from being held. For tasks managed by a QgsTaskManager
  calling this will re-add them to the queue. If the
  task in not currently being held then calling this has no effect.
-.. seealso:: hold()
+.. seealso:: :py:func:`hold()`
 %End
 
     enum SubTaskDependency
@@ -159,14 +159,14 @@ class QgsTask : QObject
 %Docstring
  Sets a list of layers on which the task depends. The task will automatically
  be canceled if any of these layers are about to be removed.
-.. seealso:: dependentLayerIds()
+.. seealso:: :py:func:`dependentLayerIds()`
 %End
 
     QList< QgsMapLayer * > dependentLayers() const;
 %Docstring
  Returns the list of layers on which the task depends. The task will automatically
  be canceled if any of these layers are about to be removed.
-.. seealso:: setDependentLayers()
+.. seealso:: :py:func:`setDependentLayers()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -395,29 +395,29 @@ Returns true if all dependencies for the specified task are satisfied
  be canceled if any of these layers are above to be removed.
  \param taskId task ID
  :return: list of layers
-.. seealso:: tasksDependentOnLayer()
+.. seealso:: :py:func:`tasksDependentOnLayer()`
  :rtype: list of QgsMapLayer
 %End
 
     QList< QgsTask * > tasksDependentOnLayer( QgsMapLayer *layer ) const;
 %Docstring
  Returns a list of tasks which depend on a layer.
-.. seealso:: dependentLayers()
+.. seealso:: :py:func:`dependentLayers()`
  :rtype: list of QgsTask
 %End
 
     QList< QgsTask * > activeTasks() const;
 %Docstring
  Returns a list of the active (queued or running) tasks.
-.. seealso:: countActiveTasks()
+.. seealso:: :py:func:`countActiveTasks()`
  :rtype: list of QgsTask
 %End
 
     int countActiveTasks() const;
 %Docstring
  Returns the number of active (queued or running) tasks.
-.. seealso:: activeTasks()
-.. seealso:: countActiveTasksChanged()
+.. seealso:: :py:func:`activeTasks()`
+.. seealso:: :py:func:`countActiveTasksChanged()`
  :rtype: int
 %End
 
@@ -459,13 +459,13 @@ Returns true if all dependencies for the specified task are satisfied
     void allTasksFinished();
 %Docstring
  Emitted when all tasks are complete
-.. seealso:: countActiveTasksChanged()
+.. seealso:: :py:func:`countActiveTasksChanged()`
 %End
 
     void countActiveTasksChanged( int count );
 %Docstring
  Emitted when the number of active tasks changes
-.. seealso:: countActiveTasks()
+.. seealso:: :py:func:`countActiveTasks()`
 %End
 
 };

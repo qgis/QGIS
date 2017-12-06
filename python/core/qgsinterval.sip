@@ -63,7 +63,7 @@ Seconds per minute
     double years() const;
 %Docstring
  Returns the interval duration in years (based on an average year length)
-.. seealso:: setYears()
+.. seealso:: :py:func:`setYears()`
  :rtype: float
 %End
 
@@ -71,13 +71,13 @@ Seconds per minute
 %Docstring
  Sets the interval duration in years.
  \param years duration in years (based on average year length)
-.. seealso:: years()
+.. seealso:: :py:func:`years()`
 %End
 
     double months() const;
 %Docstring
  Returns the interval duration in months (based on a 30 day month).
-.. seealso:: setMonths()
+.. seealso:: :py:func:`setMonths()`
  :rtype: float
 %End
 
@@ -85,13 +85,13 @@ Seconds per minute
 %Docstring
  Sets the interval duration in months.
  \param months duration in months (based on a 30 day month)
-.. seealso:: months()
+.. seealso:: :py:func:`months()`
 %End
 
     double weeks() const;
 %Docstring
  Returns the interval duration in weeks.
-.. seealso:: setWeeks()
+.. seealso:: :py:func:`setWeeks()`
  :rtype: float
 %End
 
@@ -99,13 +99,13 @@ Seconds per minute
 %Docstring
  Sets the interval duration in weeks.
  \param weeks duration in weeks
-.. seealso:: weeks()
+.. seealso:: :py:func:`weeks()`
 %End
 
     double days() const;
 %Docstring
  Returns the interval duration in days.
-.. seealso:: setDays()
+.. seealso:: :py:func:`setDays()`
  :rtype: float
 %End
 
@@ -113,13 +113,13 @@ Seconds per minute
 %Docstring
  Sets the interval duration in days.
  \param days duration in days
-.. seealso:: days()
+.. seealso:: :py:func:`days()`
 %End
 
     double hours() const;
 %Docstring
  Returns the interval duration in hours.
-.. seealso:: setHours()
+.. seealso:: :py:func:`setHours()`
  :rtype: float
 %End
 
@@ -127,13 +127,13 @@ Seconds per minute
 %Docstring
  Sets the interval duration in hours.
  \param hours duration in hours
-.. seealso:: hours()
+.. seealso:: :py:func:`hours()`
 %End
 
     double minutes() const;
 %Docstring
  Returns the interval duration in minutes.
-.. seealso:: setMinutes()
+.. seealso:: :py:func:`setMinutes()`
  :rtype: float
 %End
 
@@ -141,13 +141,13 @@ Seconds per minute
 %Docstring
  Sets the interval duration in minutes.
  \param minutes duration in minutes
-.. seealso:: minutes()
+.. seealso:: :py:func:`minutes()`
 %End
 
     double seconds() const;
 %Docstring
  Returns the interval duration in seconds.
-.. seealso:: setSeconds()
+.. seealso:: :py:func:`setSeconds()`
  :rtype: float
 %End
 
@@ -155,13 +155,13 @@ Seconds per minute
 %Docstring
  Sets the interval duration in seconds.
  \param seconds duration in seconds
-.. seealso:: seconds()
+.. seealso:: :py:func:`seconds()`
 %End
 
     bool isValid() const;
 %Docstring
  Returns true if the interval is valid.
-.. seealso:: setValid()
+.. seealso:: :py:func:`setValid()`
  :rtype: bool
 %End
 
@@ -169,7 +169,7 @@ Seconds per minute
 %Docstring
  Sets whether the interval is valid.
  \param valid set to true to set the interval as valid.
-.. seealso:: isValid()
+.. seealso:: :py:func:`isValid()`
 %End
 
     bool operator==( QgsInterval other ) const;

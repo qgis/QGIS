@@ -116,8 +116,8 @@ Returns the text as it appears on screen (with replaced data field)
  value. The margins can be individually controlled using the setMarginX
  and setMarginY methods.
  \param m margin in mm
-.. seealso:: setMarginX
-.. seealso:: setMarginY
+.. seealso:: :py:func:`setMarginX`
+.. seealso:: :py:func:`setMarginY`
 %End
 
     void setMarginX( const double margin );
@@ -125,8 +125,8 @@ Returns the text as it appears on screen (with replaced data field)
  Sets the horizontal margin between the edge of the frame and the label
  contents.
  \param margin horizontal margin in mm
-.. seealso:: setMargin
-.. seealso:: setMarginY
+.. seealso:: :py:func:`setMargin`
+.. seealso:: :py:func:`setMarginY`
 .. versionadded:: 2.7
 %End
 
@@ -135,8 +135,8 @@ Returns the text as it appears on screen (with replaced data field)
  Sets the vertical margin between the edge of the frame and the label
  contents.
  \param margin vertical margin in mm
-.. seealso:: setMargin
-.. seealso:: setMarginX
+.. seealso:: :py:func:`setMargin`
+.. seealso:: :py:func:`setMarginX`
 .. versionadded:: 2.7
 %End
 

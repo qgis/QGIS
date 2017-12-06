@@ -162,7 +162,7 @@ class QgsFeature
 %Docstring
  Get the feature ID for this feature.
  :return: feature ID
-.. seealso:: setId()
+.. seealso:: :py:func:`setId()`
  :rtype: QgsFeatureId
 %End
 
@@ -170,14 +170,14 @@ class QgsFeature
 %Docstring
  Sets the feature ID for this feature.
  \param id feature id
-.. seealso:: id
+.. seealso:: :py:func:`id`
 %End
 
     QgsAttributes attributes() const;
 %Docstring
  Returns the feature's attributes.
  :return: list of feature's attributes
-.. seealso:: setAttributes
+.. seealso:: :py:func:`setAttributes`
 .. versionadded:: 2.9
 .. note::
 
@@ -190,8 +190,8 @@ class QgsFeature
  Sets the feature's attributes.
  The feature will be valid after.
  \param attrs attribute list
-.. seealso:: setAttribute
-.. seealso:: attributes
+.. seealso:: :py:func:`setAttribute`
+.. seealso:: :py:func:`attributes`
 %End
 
     bool setAttribute( int field, const QVariant &attr /GetWrapper/ );
@@ -207,7 +207,7 @@ class QgsFeature
 .. note::
 
    Alternatively in Python: @code feature[field] = attr @endcode
-.. seealso:: setAttributes
+.. seealso:: :py:func:`setAttributes`
  :rtype: bool
 %End
 %MethodCode
@@ -241,7 +241,7 @@ class QgsFeature
 %Docstring
  Deletes an attribute and its value.
  \param field the index of the field
-.. seealso:: setAttribute
+.. seealso:: :py:func:`setAttribute`
 .. note::
 
    For Python: raises a KeyError exception if the field is not found
@@ -264,7 +264,7 @@ class QgsFeature
  Returns the validity of this feature. This is normally set by
  the provider to indicate some problem that makes the feature
  invalid or to indicate a null feature.
-.. seealso:: setValid
+.. seealso:: :py:func:`setValid`
  :rtype: bool
 %End
 
@@ -272,13 +272,13 @@ class QgsFeature
 %Docstring
  Sets the validity of the feature.
  \param validity set to true if feature is valid
-.. seealso:: isValid
+.. seealso:: :py:func:`isValid`
 %End
 
     bool hasGeometry() const;
 %Docstring
  Returns true if the feature has an associated geometry.
-.. seealso:: geometry()
+.. seealso:: :py:func:`geometry()`
 .. versionadded:: 3.0.
  :rtype: bool
 %End
@@ -287,8 +287,8 @@ class QgsFeature
 %Docstring
  Returns the geometry associated with this feature. If the feature has no geometry,
  an empty QgsGeometry object will be returned.
-.. seealso:: hasGeometry()
-.. seealso:: setGeometry()
+.. seealso:: :py:func:`hasGeometry()`
+.. seealso:: :py:func:`setGeometry()`
  :rtype: QgsGeometry
 %End
 
@@ -296,15 +296,15 @@ class QgsFeature
 %Docstring
  Set the feature's geometry. The feature will be valid after.
  \param geometry new feature geometry
-.. seealso:: geometry()
-.. seealso:: clearGeometry()
+.. seealso:: :py:func:`geometry()`
+.. seealso:: :py:func:`clearGeometry()`
 %End
 
     void clearGeometry();
 %Docstring
  Removes any geometry associated with the feature.
-.. seealso:: setGeometry()
-.. seealso:: hasGeometry()
+.. seealso:: :py:func:`setGeometry()`
+.. seealso:: :py:func:`hasGeometry()`
 .. versionadded:: 3.0
 %End
 
@@ -316,13 +316,13 @@ class QgsFeature
                         C++: Defaults to false
                         Python: Defaults to true
 .. versionadded:: 2.9
-.. seealso:: fields
+.. seealso:: :py:func:`fields`
 %End
 
     QgsFields fields() const;
 %Docstring
  Returns the field map associated with the feature.
-.. seealso:: setFields
+.. seealso:: :py:func:`setFields`
  :rtype: QgsFields
 %End
 
@@ -340,7 +340,7 @@ class QgsFeature
 .. note::
 
    Alternatively in Python: @code feature[name] = attr @endcode
-.. seealso:: setFields
+.. seealso:: :py:func:`setFields`
 %End
 %MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
@@ -374,7 +374,7 @@ class QgsFeature
 .. note::
 
    Alternatively in Python: @code del feature[name] @endcode
-.. seealso:: setFields
+.. seealso:: :py:func:`setFields`
  :rtype: bool
 %End
 %MethodCode
@@ -404,7 +404,7 @@ class QgsFeature
 .. note::
 
    Alternatively in Python: @code feature[name] @endcode
-.. seealso:: setFields
+.. seealso:: :py:func:`setFields`
 %End
 %MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
@@ -432,7 +432,7 @@ class QgsFeature
 .. note::
 
    Alternatively in Python: @code feature[fieldIdx] @endcode
-.. seealso:: setFields
+.. seealso:: :py:func:`setFields`
 %End
 %MethodCode
     {
@@ -455,7 +455,7 @@ class QgsFeature
   before this method can be used.
   \param fieldName name of field to get attribute index of
   :return: -1 if field does not exist or field map is not associated.
-.. seealso:: setFields
+.. seealso:: :py:func:`setFields`
  :rtype: int
 %End
 

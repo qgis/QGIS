@@ -170,7 +170,7 @@ Set zoom level, where a zoom level of 1.0 corresponds to 100%
  Sets whether a preview effect should be used to alter the view's appearance
  \param enabled Set to true to enable the preview effect on the view
 .. versionadded:: 2.3
-.. seealso:: setPreviewMode
+.. seealso:: :py:func:`setPreviewMode`
 %End
 
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
@@ -179,7 +179,7 @@ Set zoom level, where a zoom level of 1.0 corresponds to 100%
  if setPreviewMode is set to true.
  \param mode PreviewMode to be used to draw the view
 .. versionadded:: 2.3
-.. seealso:: setPreviewModeEnabled
+.. seealso:: :py:func:`setPreviewModeEnabled`
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
@@ -187,13 +187,13 @@ Set zoom level, where a zoom level of 1.0 corresponds to 100%
  Sets the map canvas associated with the view. This allows the
  view to retrieve map settings from the canvas.
 .. versionadded:: 3.0
-.. seealso:: mapCanvas()
+.. seealso:: :py:func:`mapCanvas()`
 %End
 
     QgsMapCanvas *mapCanvas() const;
 %Docstring
  Returns the map canvas associated with the view.
-.. seealso:: setMapCanvas()
+.. seealso:: :py:func:`setMapCanvas()`
 .. versionadded:: 3.0
  :rtype: QgsMapCanvas
 %End

@@ -16,7 +16,7 @@ class QgsLegendSymbolItem
  The class stores information about one class/rule of a vector layer renderer in a unified way
  that can be used by legend model for rendering of legend.
 
-.. seealso:: QgsSymbolLegendNode
+.. seealso:: :py:class:`QgsSymbolLegendNode`
 .. versionadded:: 2.6
 %End
 

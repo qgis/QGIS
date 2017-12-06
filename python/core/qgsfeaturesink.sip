@@ -35,7 +35,7 @@ class QgsFeatureSink
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
 %Docstring
  Adds a single ``feature`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
-.. seealso:: addFeatures()
+.. seealso:: :py:func:`addFeatures()`
  :return: true in case of success and false in case of failure
  :rtype: bool
 %End
@@ -43,7 +43,7 @@ class QgsFeatureSink
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) = 0;
 %Docstring
  Adds a list of ``features`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
-.. seealso:: addFeature()
+.. seealso:: :py:func:`addFeature()`
  :return: true in case of success and false in case of failure
  :rtype: bool
 %End

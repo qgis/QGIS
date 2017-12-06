@@ -45,7 +45,7 @@ class QgsLayoutViewTool : QObject
     QgsLayoutViewTool::Flags flags() const;
 %Docstring
  Returns the current combination of flags set for the tool.
-.. seealso:: setFlags()
+.. seealso:: :py:func:`setFlags()`
  :rtype: QgsLayoutViewTool.Flags
 %End
 
@@ -98,13 +98,13 @@ class QgsLayoutViewTool : QObject
  method of QgsLayoutView is called the action's state will be set to on.
  Usually this will cause a toolbutton to appear pressed in and
  the previously used toolbutton to pop out.
-.. seealso:: action()
+.. seealso:: :py:func:`action()`
 %End
 
     QAction *action();
 %Docstring
  Returns the action associated with the tool or None if no action is associated.
-.. seealso:: setAction()
+.. seealso:: :py:func:`setAction()`
  :rtype: QAction
 %End
 
@@ -134,14 +134,14 @@ class QgsLayoutViewTool : QObject
     QgsLayoutView *view() const;
 %Docstring
  Returns the view associated with the tool.
-.. seealso:: layout()
+.. seealso:: :py:func:`layout()`
  :rtype: QgsLayoutView
 %End
 
     QgsLayout *layout() const;
 %Docstring
  Returns the layout associated with the tool.
-.. seealso:: view()
+.. seealso:: :py:func:`view()`
  :rtype: QgsLayout
 %End
 
@@ -175,7 +175,7 @@ class QgsLayoutViewTool : QObject
     void setFlags( const QgsLayoutViewTool::Flags flags );
 %Docstring
  Sets the combination of ``flags`` that will be used for the tool.
-.. seealso:: flags()
+.. seealso:: :py:func:`flags()`
 %End
 
     QgsLayoutViewTool( QgsLayoutView *view /TransferThis/, const QString &name );

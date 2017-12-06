@@ -47,23 +47,23 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     void setOriginalExtent( const QgsRectangle &originalExtent, const QgsCoordinateReferenceSystem &originalCrs );
 %Docstring
  Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.
-.. seealso:: originalExtent()
-.. seealso:: originalCrs()
+.. seealso:: :py:func:`originalExtent()`
+.. seealso:: :py:func:`originalCrs()`
 %End
 
     QgsRectangle originalExtent() const;
 %Docstring
  Returns the original extent set for the widget.
-.. seealso:: setOriginalExtent()
-.. seealso:: originalCrs()
+.. seealso:: :py:func:`setOriginalExtent()`
+.. seealso:: :py:func:`originalCrs()`
  :rtype: QgsRectangle
 %End
 
     QgsCoordinateReferenceSystem originalCrs() const;
 %Docstring
  Returns the original coordinate reference system set for the widget.
-.. seealso:: originalExtent()
-.. seealso:: setOriginalExtent()
+.. seealso:: :py:func:`originalExtent()`
+.. seealso:: :py:func:`setOriginalExtent()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -71,16 +71,16 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 %Docstring
  Sets the current extent to show in the widget - should be called as part of initialization (or whenever current extent changes).
  The current extent is usually set to match the current map canvas extent.
-.. seealso:: currentExtent()
-.. seealso:: currentCrs()
+.. seealso:: :py:func:`currentExtent()`
+.. seealso:: :py:func:`currentCrs()`
 %End
 
     QgsRectangle currentExtent() const;
 %Docstring
  Returns the current extent set for the widget. The current extent is usually set to match the
  current map canvas extent.
-.. seealso:: setCurrentExtent()
-.. seealso:: currentCrs()
+.. seealso:: :py:func:`setCurrentExtent()`
+.. seealso:: :py:func:`currentCrs()`
  :rtype: QgsRectangle
 %End
 
@@ -88,8 +88,8 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 %Docstring
  Returns the coordinate reference system for the current extent set for the widget. The current
  extent and CRS usually reflects the map canvas extent and CRS.
-.. seealso:: setCurrentExtent()
-.. seealso:: currentExtent()
+.. seealso:: :py:func:`setCurrentExtent()`
+.. seealso:: :py:func:`currentExtent()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -116,14 +116,14 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
 %Docstring
  Sets the base part of ``title`` of the group box (will be appended with extent state)
 .. versionadded:: 2.12
-.. seealso:: titleBase()
+.. seealso:: :py:func:`titleBase()`
 %End
 
     QString titleBase() const;
 %Docstring
  Returns the base part of title of the group box (will be appended with extent state).
 .. versionadded:: 2.12
-.. seealso:: setTitleBase()
+.. seealso:: :py:func:`setTitleBase()`
  :rtype: str
 %End
 

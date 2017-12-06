@@ -36,15 +36,15 @@ class QgsRasterMinMaxWidget: QWidget
  map extent from the canvas. If a canvas is set it will take precedence over any extent
  set from calling setExtent().
  \param canvas map canvas
-.. seealso:: mapCanvas()
+.. seealso:: :py:func:`mapCanvas()`
 .. versionadded:: 2.16
 %End
 
     QgsMapCanvas *mapCanvas();
 %Docstring
  Returns the map canvas associated with the widget.
-.. seealso:: setMapCanvas()
-.. seealso:: canvasExtent()
+.. seealso:: :py:func:`setMapCanvas()`
+.. seealso:: :py:func:`canvasExtent()`
 .. versionadded:: 2.16
  :rtype: QgsMapCanvas
 %End

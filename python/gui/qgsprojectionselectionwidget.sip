@@ -47,14 +47,14 @@ class QgsProjectionSelectionWidget : QWidget
  Sets whether a predefined CRS option should be shown in the widget.
  \param option CRS option to show/hide
  \param visible whether the option should be shown
-.. seealso:: optionVisible()
+.. seealso:: :py:func:`optionVisible()`
 %End
 
     bool optionVisible( CrsOption option ) const;
 %Docstring
  Returns whether the specified CRS option is visible in the widget.
 .. versionadded:: 3.0
-.. seealso:: setOptionVisible()
+.. seealso:: :py:func:`setOptionVisible()`
  :rtype: bool
 %End
 

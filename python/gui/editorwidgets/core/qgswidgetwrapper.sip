@@ -120,7 +120,7 @@ class QgsWidgetWrapper : QObject
 
  :return: The layer
 
-.. seealso:: field()
+.. seealso:: :py:func:`field()`
  :rtype: QgsVectorLayer
 %End
 
@@ -152,7 +152,7 @@ class QgsWidgetWrapper : QObject
 %Docstring
  Returns a reference to the editor widget's property collection, used for data defined overrides.
 .. versionadded:: 3.0
-.. seealso:: setDataDefinedProperties()
+.. seealso:: :py:func:`setDataDefinedProperties()`
  :rtype: QgsPropertyCollection
 %End
 
@@ -161,7 +161,7 @@ class QgsWidgetWrapper : QObject
  Sets the editor widget's property collection, used for data defined overrides.
  \param collection property collection. Existing properties will be replaced.
 .. versionadded:: 3.0
-.. seealso:: dataDefinedProperties()
+.. seealso:: :py:func:`dataDefinedProperties()`
 %End
 
   protected:

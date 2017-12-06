@@ -40,13 +40,13 @@ class QgsHtmlAnnotation: QgsAnnotation
     void setSourceFile( const QString &htmlFile );
 %Docstring
  Sets the file path for the source HTML file.
-.. seealso:: sourceFile()
+.. seealso:: :py:func:`sourceFile()`
 %End
 
     QString sourceFile() const;
 %Docstring
  Returns the file path for the source HTML file.
-.. seealso:: setSourceFile()
+.. seealso:: :py:func:`setSourceFile()`
  :rtype: str
 %End
 

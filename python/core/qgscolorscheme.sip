@@ -91,7 +91,7 @@ class QgsColorScheme
 %Docstring
  Returns whether the color scheme is editable
  :return: true if scheme is editable
-.. seealso:: setColors
+.. seealso:: :py:func:`setColors`
  :rtype: bool
 %End
 
@@ -102,7 +102,7 @@ class QgsColorScheme
  \param context to set colors for
  \param baseColor base color to set colors for
  :return: true if colors were set successfully
-.. seealso:: isEditable
+.. seealso:: :py:func:`isEditable`
  :rtype: bool
 %End
 
@@ -237,14 +237,14 @@ class QgsRecentColorScheme : QgsColorScheme
  Adds a color to the list of recent colors.
  \param color color to add
 .. versionadded:: 2.14
-.. seealso:: lastUsedColor()
+.. seealso:: :py:func:`lastUsedColor()`
 %End
 
     static QColor lastUsedColor();
 %Docstring
  Returns the most recently used color.
 .. versionadded:: 3.0
-.. seealso:: addRecentColor()
+.. seealso:: :py:func:`addRecentColor()`
  :rtype: QColor
 %End
 };

@@ -19,7 +19,7 @@ class QgsCustomLayerOrderWidget : QWidget
  propagated to the assigned QgsLayerTreeMapCanvasBridge. Also, any updates
  to the layer tree cause refresh of the list.
 
-.. seealso:: QgsLayerTreeMapCanvasBridge
+.. seealso:: :py:class:`QgsLayerTreeMapCanvasBridge`
 .. versionadded:: 2.4
 %End
 

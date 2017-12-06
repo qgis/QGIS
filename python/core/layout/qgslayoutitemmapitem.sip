@@ -37,7 +37,7 @@ class QgsLayoutItemMapItem : QgsLayoutObject
 %Docstring
  Stores map item state in a DOM element, where ``element`` is the DOM element
  corresponding to a 'LayoutMap' tag.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 
@@ -45,20 +45,20 @@ class QgsLayoutItemMapItem : QgsLayoutObject
 %Docstring
  Sets the map item state from a DOM document, where ``element`` is the DOM
  node corresponding to a 'LayoutMapGrid' tag.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 
     void setMap( QgsLayoutItemMap *map );
 %Docstring
  Sets the corresponding layout ``map`` for the item.
-.. seealso:: map()
+.. seealso:: :py:func:`map()`
 %End
 
     const QgsLayoutItemMap *map() const;
 %Docstring
  Returns the layout item map for the item.
-.. seealso:: setMap()
+.. seealso:: :py:func:`setMap()`
  :rtype: QgsLayoutItemMap
 %End
 
@@ -71,26 +71,26 @@ class QgsLayoutItemMapItem : QgsLayoutObject
     void setName( const QString &name );
 %Docstring
  Sets the friendly display ``name`` for the item.
-.. seealso:: name()
+.. seealso:: :py:func:`name()`
 %End
 
     QString name() const;
 %Docstring
  Returns the friendly display name for the item.
-.. seealso:: setName()
+.. seealso:: :py:func:`setName()`
  :rtype: str
 %End
 
     void setEnabled( bool enabled );
 %Docstring
  Controls whether the item will be drawn. Set ``enabled`` to true to enable drawing of the item.
-.. seealso:: enabled()
+.. seealso:: :py:func:`enabled()`
 %End
 
     bool enabled() const;
 %Docstring
  Returns whether the item will be drawn.
-.. seealso:: setEnabled()
+.. seealso:: :py:func:`setEnabled()`
  :rtype: bool
 %End
 
@@ -117,7 +117,7 @@ class QgsLayoutItemMapItemStack
  QgsLayoutItemMap. The item stack controls which items are drawn and the
  order they are drawn in.
 .. versionadded:: 3.0
-.. seealso:: QgsLayoutItemMapItem
+.. seealso:: :py:class:`QgsLayoutItemMapItem`
 %End
 
 %TypeHeaderCode
@@ -143,7 +143,7 @@ class QgsLayoutItemMapItemStack
 %Docstring
  Stores the state of the item stack in a DOM node, where ``element`` is the DOM element corresponding to a 'LayoutMap' tag.
  Returns true if write was successful.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 
@@ -151,7 +151,7 @@ class QgsLayoutItemMapItemStack
 %Docstring
  Sets the item stack's state from a DOM document, where ``element`` is a DOM node corresponding to a 'LayoutMap' tag.
  Returns true if read was successful.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 
@@ -178,7 +178,7 @@ class QgsLayoutItemMapItemStack
 
    After adding an item to the stack update()
  should be called for the QgsLayoutItemMap to prevent rendering artifacts.
-.. seealso:: removeItem()
+.. seealso:: :py:func:`removeItem()`
 %End
 
     void removeItem( const QString &itemId );
@@ -188,7 +188,7 @@ class QgsLayoutItemMapItemStack
 
    After removing an item from the stack, update()
  should be called for the QgsLayoutItemMap to prevent rendering artifacts.
-.. seealso:: addItem()
+.. seealso:: :py:func:`addItem()`
 %End
 
     void moveItemUp( const QString &itemId );
@@ -198,7 +198,7 @@ class QgsLayoutItemMapItemStack
 
    After moving an item within the stack, update() should be
  called for the QgsLayoutItemMap to redraw the map with the new item stack order.
-.. seealso:: moveItemDown()
+.. seealso:: :py:func:`moveItemDown()`
 %End
 
     void moveItemDown( const QString &itemId );
@@ -208,20 +208,20 @@ class QgsLayoutItemMapItemStack
 
    After moving an item within the stack, update() should be
  called for the QgsLayoutItemMap to redraw the map with the new item stack order.
-.. seealso:: moveItemUp()
+.. seealso:: :py:func:`moveItemUp()`
 %End
 
     QgsLayoutItemMapItem *item( const QString &itemId ) const;
 %Docstring
  Returns a reference to an item which matching ``itemId`` within the stack.
-.. seealso:: constItem()
+.. seealso:: :py:func:`constItem()`
  :rtype: QgsLayoutItemMapItem
 %End
 
     QgsLayoutItemMapItem *item( int index ) const;
 %Docstring
  Returns a reference to the item at the specified ``index`` within the stack.
-.. seealso:: constItem
+.. seealso:: :py:func:`constItem`
  :rtype: QgsLayoutItemMapItem
 %End
 

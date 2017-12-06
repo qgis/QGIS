@@ -30,8 +30,8 @@ class QgsOpacityWidget : QWidget
 %Docstring
  Returns the current opacity selected in the widget, where opacity ranges from 0.0 (transparent)
  to 1.0 (opaque).
-.. seealso:: setOpacity()
-.. seealso:: opacityChanged()
+.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`opacityChanged()`
  :rtype: float
 %End
 
@@ -41,8 +41,8 @@ class QgsOpacityWidget : QWidget
 %Docstring
  Sets the current ``opacity`` to show in the widget, where ``opacity`` ranges from 0.0 (transparent)
  to 1.0 (opaque).
-.. seealso:: opacity()
-.. seealso:: opacityChanged()
+.. seealso:: :py:func:`opacity()`
+.. seealso:: :py:func:`opacityChanged()`
 %End
 
   signals:
@@ -51,8 +51,8 @@ class QgsOpacityWidget : QWidget
 %Docstring
  Emitted when the ``opacity`` is changed in the widget, where ``opacity`` ranges from 0.0 (transparent)
  to 1.0 (opaque).
-.. seealso:: setOpacity()
-.. seealso:: opacity()
+.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`opacity()`
 %End
 
 };

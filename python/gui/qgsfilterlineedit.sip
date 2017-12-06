@@ -49,7 +49,7 @@ class QgsFilterLineEdit : QLineEdit
     bool showClearButton() const;
 %Docstring
  Returns true if the widget's clear button is visible.
-.. seealso:: setShowClearButton()
+.. seealso:: :py:func:`setShowClearButton()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -58,7 +58,7 @@ class QgsFilterLineEdit : QLineEdit
 %Docstring
  Sets whether the widget's clear button is visible.
  \param visible set to false to hide the clear button
-.. seealso:: showClearButton()
+.. seealso:: :py:func:`showClearButton()`
 .. versionadded:: 3.0
 %End
 
@@ -66,7 +66,7 @@ class QgsFilterLineEdit : QLineEdit
 %Docstring
  Returns the clear mode for the widget. The clear mode defines the behavior of the
  widget when its value is cleared. This defaults to ClearToNull.
-.. seealso:: setClearMode()
+.. seealso:: :py:func:`setClearMode()`
 .. versionadded:: 3.0
  :rtype: ClearMode
 %End
@@ -75,7 +75,7 @@ class QgsFilterLineEdit : QLineEdit
 %Docstring
  Sets the clear mode for the widget. The clear mode defines the behavior of the
  widget when its value is cleared. This defaults to ClearToNull.
-.. seealso:: clearMode()
+.. seealso:: :py:func:`clearMode()`
 .. versionadded:: 3.0
 %End
 
@@ -85,14 +85,14 @@ class QgsFilterLineEdit : QLineEdit
  affect the values returned for null values by value(), rather it only affects
  the text that is shown to users when the widget's value is null.
  \param nullValue string to show when widget's value is null
-.. seealso:: nullValue()
+.. seealso:: :py:func:`nullValue()`
 %End
 
     QString nullValue() const;
 %Docstring
  Returns the string used for representating null values in the widget.
-.. seealso:: setNullValue()
-.. seealso:: isNull()
+.. seealso:: :py:func:`setNullValue()`
+.. seealso:: :py:func:`isNull()`
  :rtype: str
 %End
 
@@ -118,8 +118,8 @@ class QgsFilterLineEdit : QLineEdit
  which the widget will be reset to if it is cleared and the clearMode()
  is equal to ClearToDefault.
  \param defaultValue default value
-.. seealso:: defaultValue()
-.. seealso:: clearMode()
+.. seealso:: :py:func:`defaultValue()`
+.. seealso:: :py:func:`clearMode()`
 .. versionadded:: 3.0
 %End
 
@@ -128,8 +128,8 @@ class QgsFilterLineEdit : QLineEdit
  Returns the default value for the widget. The default value is a value
  which the widget will be reset to if it is cleared and the clearMode()
  is equal to ClearToDefault.
-.. seealso:: setDefaultValue()
-.. seealso:: clearMode()
+.. seealso:: :py:func:`setDefaultValue()`
+.. seealso:: :py:func:`clearMode()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -140,7 +140,7 @@ class QgsFilterLineEdit : QLineEdit
 
  \param value The text to set. If a null string is provided, the text shown in the
  widget will be set to the current nullValue().
-.. seealso:: value()
+.. seealso:: :py:func:`value()`
 %End
 
     QString value() const;
@@ -150,7 +150,7 @@ class QgsFilterLineEdit : QLineEdit
  a null string.
 
  :return: Current text (or null string if it matches the nullValue() property )
-.. seealso:: setValue()
+.. seealso:: :py:func:`setValue()`
  :rtype: str
 %End
 
@@ -159,7 +159,7 @@ class QgsFilterLineEdit : QLineEdit
  Determine if the current text represents null.
 
  :return: True if the widget's value is null.
-.. seealso:: nullValue()
+.. seealso:: :py:func:`nullValue()`
  :rtype: bool
 %End
 
@@ -200,7 +200,7 @@ class QgsFilterLineEdit : QLineEdit
     virtual void clearValue();
 %Docstring
  Clears the widget and resets it to the null value.
-.. seealso:: nullValue()
+.. seealso:: :py:func:`nullValue()`
 .. versionadded:: 3.0
 %End
 
@@ -209,7 +209,7 @@ class QgsFilterLineEdit : QLineEdit
     void cleared();
 %Docstring
  Emitted when the widget is cleared
-.. seealso:: clearValue()
+.. seealso:: :py:func:`clearValue()`
 %End
 
     void valueChanged( const QString &value );

@@ -262,7 +262,7 @@ class QgsAuxiliaryStorage
 
  The project filename is used to build a database path at the same
  location, but with a different extension. Then, it's the same logic as
-.. seealso:: QgsAuxiliaryStorage(const QString &, bool copy).
+.. seealso:: :py:class:`QgsAuxiliaryStorage`
 
 
  \param project The project for which the auxiliary storage has to be used

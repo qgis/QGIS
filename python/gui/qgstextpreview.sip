@@ -42,13 +42,13 @@ class QgsTextPreview : QLabel
 %Docstring
  Sets the text format for previewing in the widget.
  \param format text format
-.. seealso:: format()
+.. seealso:: :py:func:`format()`
 %End
 
     QgsTextFormat format() const;
 %Docstring
  Returns the text format used for previewing text in the widget.
-.. seealso:: setFormat()
+.. seealso:: :py:func:`setFormat()`
  :rtype: QgsTextFormat
 %End
 
@@ -56,16 +56,16 @@ class QgsTextPreview : QLabel
 %Docstring
  Sets the ``scale`` to use for previewing format sizes in map units.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: scale()
-.. seealso:: setMapUnits()
+.. seealso:: :py:func:`scale()`
+.. seealso:: :py:func:`setMapUnits()`
 %End
 
     double scale() const;
 %Docstring
  Returns the scale used for previewing format sizes in map units.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: setScale()
-.. seealso:: mapUnits()
+.. seealso:: :py:func:`setScale()`
+.. seealso:: :py:func:`mapUnits()`
  :rtype: float
 %End
 
@@ -73,15 +73,15 @@ class QgsTextPreview : QLabel
 %Docstring
  Sets the map unit type for previewing format sizes in map units.
  \param unit map units
-.. seealso:: mapUnits()
-.. seealso:: setScale()
+.. seealso:: :py:func:`mapUnits()`
+.. seealso:: :py:func:`setScale()`
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
 %Docstring
  Returns the map unit type used for previewing format sizes in map units.
-.. seealso:: setMapUnits()
-.. seealso:: scale()
+.. seealso:: :py:func:`setMapUnits()`
+.. seealso:: :py:func:`scale()`
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 

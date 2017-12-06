@@ -59,7 +59,7 @@ Constructor
  empty string before setLayers() calls can be made.
 
 .. versionadded:: 3.0
-.. seealso:: layers()
+.. seealso:: :py:func:`layers()`
 %End
 
     void setCurrentLayer( QgsMapLayer *layer );
@@ -264,7 +264,7 @@ Pan to the selected features of current (vector) layer keeping same extent.
    If the features or geometries are already available, flashGeometries() is much more efficient.
 
 .. versionadded:: 3.0
-.. seealso:: flashGeometries()
+.. seealso:: :py:func:`flashGeometries()`
 %End
 
     void flashGeometries( const QList< QgsGeometry > &geometries, const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem(),
@@ -280,7 +280,7 @@ Pan to the selected features of current (vector) layer keeping same extent.
  ``flashes`` and ``duration`` of each flash (in milliseconds).
 
 .. versionadded:: 3.0
-.. seealso:: flashFeatureIds()
+.. seealso:: :py:func:`flashFeatureIds()`
 %End
 
     void setMapTool( QgsMapTool *mapTool, bool clean = false );
@@ -346,7 +346,7 @@ return number of layers on the map
     QList<QgsMapLayer *> layers() const;
 %Docstring
  Return the list of layers shown within the map canvas.
-.. seealso:: setLayers()
+.. seealso:: :py:func:`setLayers()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -356,18 +356,18 @@ return number of layers on the map
  responding to events while layers are being added/removed etc.
  \param frozen Boolean specifying if the canvas should be frozen (true) or
  thawed (false). Default is true.
-.. seealso:: isFrozen()
-.. seealso:: setRenderFlag(). freeze() should be used to programmatically halt map updates,
+.. seealso:: :py:func:`isFrozen()`
+.. seealso:: :py:func:`setRenderFlag()`
  while setRenderFlag() should only be used when users disable rendering via GUI.
 %End
 
     bool isFrozen() const;
 %Docstring
  Returns true if canvas is frozen.
-.. seealso:: renderFlag(). isFrozen() should be used to determine whether map updates
+.. seealso:: :py:func:`renderFlag()`
  have been halted programmatically, while renderFlag() should be used to
  determine whether a user has disabled rendering via GUI.
-.. seealso:: freeze()
+.. seealso:: :py:func:`freeze()`
  :rtype: bool
 %End
 
@@ -375,8 +375,8 @@ return number of layers on the map
 %Docstring
  Returns true if canvas render is disabled as a result of user disabling
  renders via the GUI.
-.. seealso:: setRenderFlag()
-.. seealso:: isFrozen(). isFrozen() should be used to determine whether map updates
+.. seealso:: :py:func:`setRenderFlag()`
+.. seealso:: :py:func:`isFrozen()`
  have been halted programmatically, while renderFlag() should be used to
  determine whether a user has disabled rendering via GUI.
  :rtype: bool
@@ -393,7 +393,7 @@ return number of layers on the map
 %Docstring
  Returns the stored overrides of styles for layers.
 .. versionadded:: 2.12
-.. seealso:: setLayerStyleOverrides().
+.. seealso:: :py:func:`setLayerStyleOverrides()`
  :rtype: QMap<str, QString>
 %End
 
@@ -407,7 +407,7 @@ return number of layers on the map
  empty string before setLayerStyleOverrides() calls can be made.
 
 .. versionadded:: 2.12
-.. seealso:: layerStyleOverrides()
+.. seealso:: :py:func:`layerStyleOverrides()`
 %End
 
     void setTheme( const QString &theme );
@@ -427,14 +427,14 @@ return number of layers on the map
  If an empty string is passed then the current theme association will be
  cleared.
 .. versionadded:: 3.0
-.. seealso:: theme()
+.. seealso:: :py:func:`theme()`
 %End
 
     QString theme() const;
 %Docstring
  Returns the map's theme shown in the canvas, if set.
 .. versionadded:: 3.0
-.. seealso:: setTheme()
+.. seealso:: :py:func:`setTheme()`
  :rtype: str
 %End
 
@@ -488,7 +488,7 @@ Zooms in/out with a given center
 %Docstring
  Returns whether the scale is locked, so zooming can be performed using magnication.
 .. versionadded:: 2.16
-.. seealso:: setScaleLocked()
+.. seealso:: :py:func:`setScaleLocked()`
  :rtype: bool
 %End
 
@@ -528,7 +528,7 @@ returns last position of mouse cursor
 %Docstring
  Enables a preview mode for the map canvas
  \param previewEnabled set to true to enable a preview mode
-.. seealso:: setPreviewMode
+.. seealso:: :py:func:`setPreviewMode`
 .. versionadded:: 2.3
 %End
 
@@ -536,8 +536,8 @@ returns last position of mouse cursor
 %Docstring
  Returns whether a preview mode is enabled for the map canvas
  :return: true if a preview mode is currently enabled
-.. seealso:: setPreviewModeEnabled
-.. seealso:: previewMode
+.. seealso:: :py:func:`setPreviewModeEnabled`
+.. seealso:: :py:func:`previewMode`
 .. versionadded:: 2.3
  :rtype: bool
 %End
@@ -547,9 +547,9 @@ returns last position of mouse cursor
  Sets a preview mode for the map canvas. This setting only has an effect if
  previewModeEnabled is true.
  \param mode preview mode for the canvas
-.. seealso:: previewMode
-.. seealso:: setPreviewModeEnabled
-.. seealso:: previewModeEnabled
+.. seealso:: :py:func:`previewMode`
+.. seealso:: :py:func:`setPreviewModeEnabled`
+.. seealso:: :py:func:`previewModeEnabled`
 .. versionadded:: 2.3
 %End
 
@@ -558,8 +558,8 @@ returns last position of mouse cursor
  Returns the current preview mode for the map canvas. This setting only has an effect if
  previewModeEnabled is true.
  :return: preview mode for map canvas
-.. seealso:: setPreviewMode
-.. seealso:: previewModeEnabled
+.. seealso:: :py:func:`setPreviewMode`
+.. seealso:: :py:func:`previewModeEnabled`
 .. versionadded:: 2.3
  :rtype: QgsPreviewEffect.PreviewMode
 %End
@@ -593,7 +593,7 @@ returns last position of mouse cursor
  context scope for the canvas.
  \param scope new expression context scope
 .. versionadded:: 2.12
-.. seealso:: expressionContextScope()
+.. seealso:: :py:func:`expressionContextScope()`
 %End
 
     QgsExpressionContextScope &expressionContextScope();
@@ -602,7 +602,7 @@ returns last position of mouse cursor
  into the expression context used for rendering the map, and can be used to apply specific variable
  overrides for expression evaluation for the map canvas render.
 .. versionadded:: 2.12
-.. seealso:: setExpressionContextScope()
+.. seealso:: :py:func:`setExpressionContextScope()`
  :rtype: QgsExpressionContextScope
 %End
 
@@ -630,7 +630,7 @@ returns last position of mouse cursor
 %Docstring
  Returns true if annotations are visible within the map canvas.
 .. versionadded:: 3.0
-.. seealso:: setAnnotationsVisible()
+.. seealso:: :py:func:`setAnnotationsVisible()`
  :rtype: bool
 %End
 
@@ -638,7 +638,7 @@ returns last position of mouse cursor
 %Docstring
  Sets whether annotations are ``visible`` in the canvas.
 .. versionadded:: 3.0
-.. seealso:: annotationsVisible()
+.. seealso:: :py:func:`annotationsVisible()`
 %End
 
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
@@ -660,7 +660,7 @@ returns last position of mouse cursor
  of the view just outside of the canvas extent, to allow preview of these
  out-of-canvas areas when panning or zooming out the map) are enabled
  for the canvas.
-.. seealso:: setPreviewJobsEnabled()
+.. seealso:: :py:func:`setPreviewJobsEnabled()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -671,7 +671,7 @@ returns last position of mouse cursor
  of the view just outside of the canvas extent, to allow preview of these
  out-of-canvas areas when panning or zooming out the map) are ``enabled``
  for the canvas.
-.. seealso:: previewJobsEnabled()
+.. seealso:: :py:func:`previewJobsEnabled()`
 .. versionadded:: 3.0
 %End
 
@@ -706,8 +706,8 @@ This slot is connected to the layer's CRS change
 %Docstring
  Sets whether a user has disabled canvas renders via the GUI.
  \param flag set to false to indicate that user has disabled renders
-.. seealso:: renderFlag()
-.. seealso:: freeze(). freeze() should be used to programmatically halt map updates,
+.. seealso:: :py:func:`renderFlag()`
+.. seealso:: :py:func:`freeze()`
  while setRenderFlag() should only be used when users disable rendering via GUI.
 %End
 
@@ -744,7 +744,7 @@ ask user about datum transformation
 %Docstring
  Lock the scale, so zooming can be performed using magnication
 .. versionadded:: 2.16
-.. seealso:: scaleLocked()
+.. seealso:: :py:func:`scaleLocked()`
 %End
 
     void zoomIn();
@@ -870,7 +870,7 @@ Emitted when zoom next status changed
     void themeChanged( const QString &theme );
 %Docstring
  Emitted when the canvas has been assigned a different map theme.
-.. seealso:: setTheme()
+.. seealso:: :py:func:`setTheme()`
 .. versionadded:: 3.0
 %End
 

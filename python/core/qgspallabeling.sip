@@ -281,13 +281,13 @@ class QgsPalLayerSettings
 %Docstring
  Name of field (or an expression) to use for label text.
  If fieldName is an expression, then isExpression should be set to true.
-.. seealso:: isExpression
+.. seealso:: :py:func:`isExpression`
 %End
 
     bool isExpression;
 %Docstring
  True if this label is made from a expression string, e.g., FieldName || 'mm'
-.. seealso:: fieldName
+.. seealso:: :py:func:`fieldName`
 %End
 
     QgsExpression *getLabelExpression();
@@ -325,30 +325,30 @@ Horizontal alignment of multi-line labels.
  will be automatically added to the label text, pointing in the
  direction of the line or polygon ring.
  This setting only affects line or perimeter based labels.
-.. seealso:: leftDirectionSymbol
-.. seealso:: rightDirectionSymbol
-.. seealso:: placeDirectionSymbol
-.. seealso:: reverseDirectionSymbol
+.. seealso:: :py:func:`leftDirectionSymbol`
+.. seealso:: :py:func:`rightDirectionSymbol`
+.. seealso:: :py:func:`placeDirectionSymbol`
+.. seealso:: :py:func:`reverseDirectionSymbol`
 %End
 
     QString leftDirectionSymbol;
 %Docstring
  String to use for left direction arrows.
-.. seealso:: addDirectionSymbol
-.. seealso:: rightDirectionSymbol
+.. seealso:: :py:func:`addDirectionSymbol`
+.. seealso:: :py:func:`rightDirectionSymbol`
 %End
 
     QString rightDirectionSymbol;
 %Docstring
  String to use for right direction arrows.
-.. seealso:: addDirectionSymbol
-.. seealso:: leftDirectionSymbol
+.. seealso:: :py:func:`addDirectionSymbol`
+.. seealso:: :py:func:`leftDirectionSymbol`
 %End
 
     DirectionSymbols placeDirectionSymbol;
 %Docstring
  Placement option for direction symbols. Controls whether to place symbols to the left/right, above or below label.
-.. seealso:: addDirectionSymbol
+.. seealso:: :py:func:`addDirectionSymbol`
 %End
 
     bool reverseDirectionSymbol;
@@ -360,22 +360,22 @@ True if direction symbols should be reversed
 %Docstring
  Set to true to format numeric label text as numbers (e.g. inserting thousand separators
  and fixed number of decimal places).
-.. seealso:: decimals
-.. seealso:: plusSign
+.. seealso:: :py:func:`decimals`
+.. seealso:: :py:func:`plusSign`
 %End
 
     int decimals;
 %Docstring
  Number of decimal places to show for numeric labels. formatNumbers must be true for this
  setting to have an effect.
-.. seealso:: formatNumbers
+.. seealso:: :py:func:`formatNumbers`
 %End
 
     bool plusSign;
 %Docstring
  Whether '+' signs should be prepended to positive numeric labels. formatNumbers must be true for this
  setting to have an effect.
-.. seealso:: formatNumbers
+.. seealso:: :py:func:`formatNumbers`
 %End
 
 
@@ -404,22 +404,22 @@ True if direction symbols should be reversed
     double dist;
 %Docstring
  Distance from feature to the label. Units are specified via distUnits.
-.. seealso:: distUnits
-.. seealso:: distMapUnitScale
+.. seealso:: :py:func:`distUnits`
+.. seealso:: :py:func:`distMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit distUnits;
 %Docstring
  Units the distance from feature to the label.
-.. seealso:: dist
-.. seealso:: distMapUnitScale
+.. seealso:: :py:func:`dist`
+.. seealso:: :py:func:`distMapUnitScale`
 %End
 
     QgsMapUnitScale distMapUnitScale;
 %Docstring
  Map unit scale for label feature distance.
-.. seealso:: dist
-.. seealso:: distUnits
+.. seealso:: :py:func:`dist`
+.. seealso:: :py:func:`distUnits`
 %End
 
     OffsetType offsetType;
@@ -430,22 +430,22 @@ Offset type for layer (only applies in certain placement modes)
     double repeatDistance;
 %Docstring
  Distance for repeating labels for a single feature.
-.. seealso:: repeatDistanceUnit
-.. seealso:: repeatDistanceMapUnitScale
+.. seealso:: :py:func:`repeatDistanceUnit`
+.. seealso:: :py:func:`repeatDistanceMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit repeatDistanceUnit;
 %Docstring
  Units for repeating labels for a single feature.
-.. seealso:: repeatDistance
-.. seealso:: repeatDistanceMapUnitScale
+.. seealso:: :py:func:`repeatDistance`
+.. seealso:: :py:func:`repeatDistanceMapUnitScale`
 %End
 
     QgsMapUnitScale repeatDistanceMapUnitScale;
 %Docstring
  Map unit scale for repeating labels for a single feature.
-.. seealso:: repeatDistance
-.. seealso:: repeatDistanceUnit
+.. seealso:: :py:func:`repeatDistance`
+.. seealso:: :py:func:`repeatDistanceUnit`
 %End
 
     QuadrantPosition quadOffset;
@@ -456,33 +456,33 @@ Offset type for layer (only applies in certain placement modes)
     double xOffset;
 %Docstring
  Horizontal offset of label. Units are specified via offsetUnits.
-.. seealso:: yOffset
-.. seealso:: offsetUnits
-.. seealso:: labelOffsetMapUnitScale
+.. seealso:: :py:func:`yOffset`
+.. seealso:: :py:func:`offsetUnits`
+.. seealso:: :py:func:`labelOffsetMapUnitScale`
 %End
 
     double yOffset;
 %Docstring
  Vertical offset of label. Units are specified via offsetUnits.
-.. seealso:: xOffset
-.. seealso:: offsetUnits
-.. seealso:: labelOffsetMapUnitScale
+.. seealso:: :py:func:`xOffset`
+.. seealso:: :py:func:`offsetUnits`
+.. seealso:: :py:func:`labelOffsetMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnits;
 %Docstring
  Units for offsets of label.
-.. seealso:: xOffset
-.. seealso:: yOffset
-.. seealso:: labelOffsetMapUnitScale
+.. seealso:: :py:func:`xOffset`
+.. seealso:: :py:func:`yOffset`
+.. seealso:: :py:func:`labelOffsetMapUnitScale`
 %End
 
     QgsMapUnitScale labelOffsetMapUnitScale;
 %Docstring
  Map unit scale for label offset.
-.. seealso:: xOffset
-.. seealso:: yOffset
-.. seealso:: offsetUnits
+.. seealso:: :py:func:`xOffset`
+.. seealso:: :py:func:`yOffset`
+.. seealso:: :py:func:`offsetUnits`
 %End
 
     double angleOffset;
@@ -498,13 +498,13 @@ True if label rotation should be preserved during label pin/unpin operations.
     double maxCurvedCharAngleIn;
 %Docstring
  Maximum angle between inside curved label characters (valid range 20.0 to 60.0).
-.. seealso:: maxCurvedCharAngleOut
+.. seealso:: :py:func:`maxCurvedCharAngleOut`
 %End
 
     double maxCurvedCharAngleOut;
 %Docstring
  Maximum angle between outside curved label characters (valid range -20.0 to -95.0)
-.. seealso:: maxCurvedCharAngleIn
+.. seealso:: :py:func:`maxCurvedCharAngleIn`
 %End
 
     int priority;
@@ -517,8 +517,8 @@ True if label rotation should be preserved during label pin/unpin operations.
     bool scaleVisibility;
 %Docstring
  Set to true to limit label visibility to a range of scales.
-.. seealso:: maximumScale
-.. seealso:: minimumScale
+.. seealso:: :py:func:`maximumScale`
+.. seealso:: :py:func:`minimumScale`
 %End
 
     double maximumScale;
@@ -529,8 +529,8 @@ True if label rotation should be preserved during label pin/unpin operations.
 
  This setting is only considered if scaleVisibility is true.
 
-.. seealso:: minimumScale
-.. seealso:: scaleVisibility
+.. seealso:: :py:func:`minimumScale`
+.. seealso:: :py:func:`scaleVisibility`
 %End
 
     double minimumScale;
@@ -541,29 +541,29 @@ True if label rotation should be preserved during label pin/unpin operations.
 
  This setting is only considered if scaleVisibility is true.
 
-.. seealso:: maximumScale
-.. seealso:: scaleVisibility
+.. seealso:: :py:func:`maximumScale`
+.. seealso:: :py:func:`scaleVisibility`
 %End
 
     bool fontLimitPixelSize;
 %Docstring
  True if label sizes should be limited by pixel size.
-.. seealso:: fontMinPixelSize
-.. seealso:: fontMaxPixelSize
+.. seealso:: :py:func:`fontMinPixelSize`
+.. seealso:: :py:func:`fontMaxPixelSize`
 %End
 
     int fontMinPixelSize;
 %Docstring
  Minimum pixel size for showing rendered map unit labels (1 - 1000).
-.. seealso:: fontLimitPixelSize
-.. seealso:: fontMaxPixelSize
+.. seealso:: :py:func:`fontLimitPixelSize`
+.. seealso:: :py:func:`fontMaxPixelSize`
 %End
 
     int fontMaxPixelSize;
 %Docstring
  Maximum pixel size for showing rendered map unit labels (1 - 10000).
-.. seealso:: fontLimitPixelSize
-.. seealso:: fontMinPixelSize
+.. seealso:: :py:func:`fontLimitPixelSize`
+.. seealso:: :py:func:`fontMinPixelSize`
 %End
 
     bool displayAll;
@@ -591,14 +591,14 @@ Controls whether upside down labels are displayed and how they are handled.
     bool limitNumLabels;
 %Docstring
  True if the number of labels drawn should be limited.
-.. seealso:: maxNumLabels
+.. seealso:: :py:func:`maxNumLabels`
 %End
 
     int maxNumLabels;
 %Docstring
  The maximum number of labels which should be drawn for this layer.
  This only has an effect if limitNumLabels is true.
-.. seealso:: limitNumLabels
+.. seealso:: :py:func:`limitNumLabels`
 %End
 
     double minFeatureSize;
@@ -609,23 +609,23 @@ Controls whether upside down labels are displayed and how they are handled.
     bool obstacle;
 %Docstring
  True if features for layer are obstacles to labels of other layers.
-.. seealso:: obstacleFactor
-.. seealso:: obstacleType
+.. seealso:: :py:func:`obstacleFactor`
+.. seealso:: :py:func:`obstacleType`
 %End
 
     double obstacleFactor;
 %Docstring
  Obstacle factor, where 1.0 = default, < 1.0 more likely to be covered by labels,
  > 1.0 less likely to be covered
-.. seealso:: obstacle
-.. seealso:: obstacleType
+.. seealso:: :py:func:`obstacle`
+.. seealso:: :py:func:`obstacleType`
 %End
 
     ObstacleType obstacleType;
 %Docstring
  Controls how features act as obstacles for labels.
-.. seealso:: obstacle
-.. seealso:: obstacleFactor
+.. seealso:: :py:func:`obstacle`
+.. seealso:: :py:func:`obstacleFactor`
 %End
 
     double zIndex;
@@ -668,7 +668,7 @@ Z-Index of label, where labels with a higher z-index are rendered on top of labe
 %Docstring
  Returns a reference to the label's property collection, used for data defined overrides.
 .. versionadded:: 3.0
-.. seealso:: setDataDefinedProperties()
+.. seealso:: :py:func:`setDataDefinedProperties()`
  :rtype: QgsPropertyCollection
 %End
 
@@ -678,13 +678,13 @@ Z-Index of label, where labels with a higher z-index are rendered on top of labe
  Sets the label's property collection, used for data defined overrides.
  \param collection property collection. Existing properties will be replaced.
 .. versionadded:: 3.0
-.. seealso:: dataDefinedProperties()
+.. seealso:: :py:func:`dataDefinedProperties()`
 %End
 
     const QgsTextFormat &format() const;
 %Docstring
  Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
-.. seealso:: setFormat()
+.. seealso:: :py:func:`setFormat()`
 .. versionadded:: 3.0
  :rtype: QgsTextFormat
 %End
@@ -693,7 +693,7 @@ Z-Index of label, where labels with a higher z-index are rendered on top of labe
 %Docstring
  Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
  \param format label text format
-.. seealso:: format()
+.. seealso:: :py:func:`format()`
 .. versionadded:: 3.0
 %End
 

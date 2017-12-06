@@ -52,15 +52,15 @@ Create a renderer from XML element
 %Docstring
  Sets the line width for the displacement group circle.
  \param width line width in mm
-.. seealso:: circleWidth()
-.. seealso:: setCircleColor()
+.. seealso:: :py:func:`circleWidth()`
+.. seealso:: :py:func:`setCircleColor()`
 %End
 
     double circleWidth() const;
 %Docstring
  Returns the line width for the displacement group circle in mm.
-.. seealso:: setCircleWidth()
-.. seealso:: circleColor()
+.. seealso:: :py:func:`setCircleWidth()`
+.. seealso:: :py:func:`circleColor()`
  :rtype: float
 %End
 
@@ -68,15 +68,15 @@ Create a renderer from XML element
 %Docstring
  Sets the color used for drawing the displacement group circle.
  \param color circle color
-.. seealso:: circleColor()
-.. seealso:: setCircleWidth()
+.. seealso:: :py:func:`circleColor()`
+.. seealso:: :py:func:`setCircleWidth()`
 %End
 
     QColor circleColor() const;
 %Docstring
  Returns the color used for drawing the displacement group circle.
-.. seealso:: setCircleColor()
-.. seealso:: circleWidth()
+.. seealso:: :py:func:`setCircleColor()`
+.. seealso:: :py:func:`circleWidth()`
  :rtype: QColor
 %End
 
@@ -84,20 +84,20 @@ Create a renderer from XML element
 %Docstring
  Sets a factor for increasing the ring size of displacement groups.
  \param distance addition factor
-.. seealso:: circleRadiusAddition()
+.. seealso:: :py:func:`circleRadiusAddition()`
 %End
 
     double circleRadiusAddition() const;
 %Docstring
  Returns the factor for increasing the ring size of displacement groups.
-.. seealso:: setCircleRadiusAddition()
+.. seealso:: :py:func:`setCircleRadiusAddition()`
  :rtype: float
 %End
 
     Placement placement() const;
 %Docstring
  Returns the placement method used for dispersing the points.
-.. seealso:: setPlacement()
+.. seealso:: :py:func:`setPlacement()`
 .. versionadded:: 2.12
  :rtype: Placement
 %End
@@ -106,14 +106,14 @@ Create a renderer from XML element
 %Docstring
  Sets the placement method used for dispersing the points.
  \param placement placement method
-.. seealso:: placement()
+.. seealso:: :py:func:`placement()`
 .. versionadded:: 2.12
 %End
 
     QgsMarkerSymbol *centerSymbol();
 %Docstring
  Returns the symbol for the center of a displacement group (but not ownership of the symbol).
-.. seealso:: setCenterSymbol()
+.. seealso:: :py:func:`setCenterSymbol()`
  :rtype: QgsMarkerSymbol
 %End
 
@@ -121,7 +121,7 @@ Create a renderer from XML element
 %Docstring
  Sets the center symbol for a displacement group.
  \param symbol new center symbol. Ownership is transferred to the renderer.
-.. seealso:: centerSymbol()
+.. seealso:: :py:func:`centerSymbol()`
 %End
 
     static QgsPointDisplacementRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;

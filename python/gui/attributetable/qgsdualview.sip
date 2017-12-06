@@ -60,13 +60,13 @@ class QgsDualView : QStackedWidget
  Change the current view mode.
 
  \param view The view mode to set
-.. seealso:: view()
+.. seealso:: :py:func:`view()`
 %End
 
     ViewMode view() const;
 %Docstring
  Returns the current view mode.
-.. seealso:: setView()
+.. seealso:: :py:func:`setView()`
 .. versionadded:: 2.16
  :rtype: ViewMode
 %End

@@ -59,14 +59,14 @@ class QgsMetadataWidget : QWidget
     static QStringList parseLinkTypes();
 %Docstring
  Returns a list of link types available by default in the wizard.
-.. seealso:: https://github.com/OSGeo/Cat-Interop/blob/master/LinkPropertyLookupTable.csv
+.. seealso:: :py:func:`https`
  :rtype: list of str
 %End
 
     static QStringList parseMimeTypes();
 %Docstring
  Returns a list of MIME types available by default in the wizard.
-.. seealso:: https://fr.wikipedia.org/wiki/Type_MIME
+.. seealso:: :py:func:`https`
  :rtype: list of str
 %End
 

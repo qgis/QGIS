@@ -112,7 +112,7 @@ set the geometry calculator used in the expression dialog
     QgsVectorLayer *layer() const;
 %Docstring
  Returns the layer currently associated with the widget.
-.. seealso:: setLayer()
+.. seealso:: :py:func:`setLayer()`
  :rtype: QgsVectorLayer
 %End
 
@@ -141,7 +141,7 @@ fieldChanged signal with indication of the validity of the expression
     void setLayer( QgsMapLayer *layer );
 %Docstring
  Sets the layer used to display the fields and expression.
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
 %End
 
     void setRow( int row );

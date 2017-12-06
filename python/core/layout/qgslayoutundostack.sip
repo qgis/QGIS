@@ -37,7 +37,7 @@ class QgsLayoutUndoStack : QObject
  beginMacro() and endMacro() block are collapsed into a single
  undo command, which will be applied or rolled back in a single step.
 
-.. seealso:: endMacro()
+.. seealso:: :py:func:`endMacro()`
 %End
 
     void endMacro();
@@ -50,7 +50,7 @@ class QgsLayoutUndoStack : QObject
  beginMacro() and endMacro() block are collapsed into a single
  undo command, which will be applied or rolled back in a single step.
 
-.. seealso:: beginMacro()
+.. seealso:: :py:func:`beginMacro()`
 %End
 
     void beginCommand( QgsLayoutUndoObjectInterface *object, const QString &commandText, int id = 0 );
@@ -63,22 +63,22 @@ class QgsLayoutUndoStack : QObject
  The ``id`` argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
  command compression can apply to the command.
 
-.. seealso:: endCommand()
-.. seealso:: cancelCommand()
+.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`cancelCommand()`
 %End
 
     void endCommand();
 %Docstring
  Saves final state of an object and pushes the active command to the undo history.
-.. seealso:: beginCommand()
-.. seealso:: cancelCommand()
+.. seealso:: :py:func:`beginCommand()`
+.. seealso:: :py:func:`cancelCommand()`
 %End
 
     void cancelCommand();
 %Docstring
  Cancels the active command, discarding it without pushing to the undo history.
-.. seealso:: endCommand()
-.. seealso:: cancelCommand()
+.. seealso:: :py:func:`endCommand()`
+.. seealso:: :py:func:`cancelCommand()`
 %End
 
     QUndoStack *stack();
@@ -102,13 +102,13 @@ class QgsLayoutUndoStack : QObject
  Note that calls to blockCommands are stacked, so two calls blocking the commands
  will take two calls unblocking commands in order to release the block.
 
-.. seealso:: isBlocked()
+.. seealso:: :py:func:`isBlocked()`
 %End
 
     bool isBlocked() const;
 %Docstring
  Returns true if undo commands are currently blocked.
-.. seealso:: blockCommands()
+.. seealso:: :py:func:`blockCommands()`
  :rtype: bool
 %End
 

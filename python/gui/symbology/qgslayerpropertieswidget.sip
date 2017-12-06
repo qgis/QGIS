@@ -32,14 +32,14 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 %Docstring
  Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
  \param context symbol widget context
-.. seealso:: context()
+.. seealso:: :py:func:`context()`
 .. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
 %Docstring
  Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-.. seealso:: setContext()
+.. seealso:: :py:func:`setContext()`
 .. versionadded:: 3.0
  :rtype: QgsSymbolWidgetContext
 %End

@@ -104,15 +104,15 @@ class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 %Docstring
  Sets the units for the symbol's width.
  \param unit symbol units
-.. seealso:: symbolWidthUnit()
-.. seealso:: setSymbolHeightUnit()
+.. seealso:: :py:func:`symbolWidthUnit()`
+.. seealso:: :py:func:`setSymbolHeightUnit()`
 %End
 
     QgsUnitTypes::RenderUnit symbolWidthUnit() const;
 %Docstring
  Returns the units for the symbol's width.
-.. seealso:: setSymbolWidthUnit()
-.. seealso:: symbolHeightUnit()
+.. seealso:: :py:func:`setSymbolWidthUnit()`
+.. seealso:: :py:func:`symbolHeightUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -126,15 +126,15 @@ class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 %Docstring
  Sets the units for the symbol's height.
  \param unit symbol units
-.. seealso:: symbolHeightUnit()
-.. seealso:: setSymbolWidthUnit()
+.. seealso:: :py:func:`symbolHeightUnit()`
+.. seealso:: :py:func:`setSymbolWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit symbolHeightUnit() const;
 %Docstring
  Returns the units for the symbol's height.
-.. seealso:: setSymbolHeightUnit()
-.. seealso:: symbolWidthUnit()
+.. seealso:: :py:func:`setSymbolHeightUnit()`
+.. seealso:: :py:func:`symbolWidthUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -148,13 +148,13 @@ class QgsEllipseSymbolLayer: QgsMarkerSymbolLayer
 %Docstring
  Sets the units for the symbol's stroke width.
  \param unit symbol units
-.. seealso:: strokeWidthUnit()
+.. seealso:: :py:func:`strokeWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
  Returns the units for the symbol's stroke width.
-.. seealso:: setStrokeWidthUnit()
+.. seealso:: :py:func:`setStrokeWidthUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 

@@ -55,13 +55,13 @@ class QgsSpinBox : QSpinBox
  Sets whether the widget will show a clear button. The clear button
  allows users to reset the widget to a default or empty state.
  \param showClearButton set to true to show the clear button, or false to hide it
-.. seealso:: showClearButton()
+.. seealso:: :py:func:`showClearButton()`
 %End
 
     bool showClearButton() const;
 %Docstring
  Returns whether the widget is showing a clear button.
-.. seealso:: setShowClearButton()
+.. seealso:: :py:func:`setShowClearButton()`
  :rtype: bool
 %End
 
@@ -92,7 +92,7 @@ Set the current value to the value defined by the clear value.
  Defines the clear value as a custom value and will automatically set the clear value mode to CustomValue.
  \param customValue defines the numerical value used as the clear value
  \param clearValueText is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
-.. seealso:: setClearValue()
+.. seealso:: :py:func:`setClearValue()`
 %End
 
     void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
@@ -105,7 +105,7 @@ Set the current value to the value defined by the clear value.
     int clearValue() const;
 %Docstring
  Returns the value used when clear() is called.
-.. seealso:: setClearValue()
+.. seealso:: :py:func:`setClearValue()`
  :rtype: int
 %End
 

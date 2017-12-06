@@ -52,13 +52,13 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
     void setSource( ContentSource source );
 %Docstring
  Sets the ``source`` for attributes to show in table body.
-.. seealso:: source()
+.. seealso:: :py:func:`source()`
 %End
 
     ContentSource source() const;
 %Docstring
  Returns the source for attributes shown in the table body.
-.. seealso:: setSource()
+.. seealso:: :py:func:`setSource()`
  :rtype: ContentSource
 %End
 
@@ -77,7 +77,7 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
 
  This is only considered if the table source() is LayerAttributes.
 
-.. seealso:: vectorLayer()
+.. seealso:: :py:func:`vectorLayer()`
 %End
 
     QgsVectorLayer *vectorLayer() const;
@@ -86,16 +86,16 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
 
  This is only considered if the table source() is LayerAttributes.
 
-.. seealso:: setVectorLayer()
-.. seealso:: sourceLayer()
+.. seealso:: :py:func:`setVectorLayer()`
+.. seealso:: :py:func:`sourceLayer()`
  :rtype: QgsVectorLayer
 %End
 
     void setRelationId( const QString &id );
 %Docstring
  Sets the relation ``id`` from which to display child features
-.. seealso:: relationId()
-.. seealso:: setSource()
+.. seealso:: :py:func:`relationId()`
+.. seealso:: :py:func:`setSource()`
 .. note::
 
    Only used if table source() is set to RelationChildren.
@@ -104,8 +104,8 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
     QString relationId() const;
 %Docstring
  Returns the relation id which the table displays child features from.
-.. seealso:: setRelationId()
-.. seealso:: source()
+.. seealso:: :py:func:`setRelationId()`
+.. seealso:: :py:func:`source()`
 .. note::
 
    Only used if table source() is set to RelationChildren.
@@ -115,7 +115,7 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
     void resetColumns();
 %Docstring
  Resets the attribute table's columns to match the vector layer's fields.
-.. seealso:: setVectorLayer()
+.. seealso:: :py:func:`setVectorLayer()`
 %End
 
     void setMap( QgsLayoutItemMap *map );
@@ -125,16 +125,16 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  set to true. Changing the map forces the table to refetch features from its
  vector layer, and may result in the table changing size to accommodate the new displayed
  feature attributes.
-.. seealso:: map()
-.. seealso:: setDisplayOnlyVisibleFeatures
+.. seealso:: :py:func:`map()`
+.. seealso:: :py:func:`setDisplayOnlyVisibleFeatures`
 %End
 
     QgsLayoutItemMap *map() const;
 %Docstring
  Returns the layout map whose extents are controlling the features shown in the
  table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
-.. seealso:: setMap()
-.. seealso:: displayOnlyVisibleFeatures()
+.. seealso:: :py:func:`setMap()`
+.. seealso:: :py:func:`displayOnlyVisibleFeatures()`
  :rtype: QgsLayoutItemMap
 %End
 
@@ -143,13 +143,13 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  Sets the maximum number of ``features`` shown by the table. Changing this setting may result
  in the attribute table changing its size to accommodate the new number of rows, and requires
  the table to refetch features from its vector layer.
-.. seealso:: maximumNumberOfFeatures()
+.. seealso:: :py:func:`maximumNumberOfFeatures()`
 %End
 
     int maximumNumberOfFeatures() const;
 %Docstring
  Returns the maximum number of features to be shown by the table.
-.. seealso:: setMaximumNumberOfFeatures()
+.. seealso:: :py:func:`setMaximumNumberOfFeatures()`
  :rtype: int
 %End
 
@@ -160,14 +160,14 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  Set ``uniqueOnly`` to true to show only unique rows. Duplicate rows
  will be stripped from the table.
 
-.. seealso:: uniqueRowsOnly()
+.. seealso:: :py:func:`uniqueRowsOnly()`
 %End
 
     bool uniqueRowsOnly() const;
 %Docstring
  Returns true if the table is set to show only unique rows.
 
-.. seealso:: setUniqueRowsOnly()
+.. seealso:: :py:func:`setUniqueRowsOnly()`
  :rtype: bool
 %End
 
@@ -177,8 +177,8 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  this setting forces the table to refetch features from its vector layer, and may result in
  the table changing size to accommodate the new displayed feature attributes.
 
-.. seealso:: displayOnlyVisibleFeatures()
-.. seealso:: setMap()
+.. seealso:: :py:func:`displayOnlyVisibleFeatures()`
+.. seealso:: :py:func:`setMap()`
 %End
 
     bool displayOnlyVisibleFeatures() const;
@@ -186,8 +186,8 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  Returns true if the table is set to show only features visible on a corresponding
  map item.
 
-.. seealso:: map()
-.. seealso:: setDisplayOnlyVisibleFeatures()
+.. seealso:: :py:func:`map()`
+.. seealso:: :py:func:`setDisplayOnlyVisibleFeatures()`
  :rtype: bool
 %End
 
@@ -196,7 +196,7 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  Sets attribute table to only show features which intersect the current atlas
  feature.
 
-.. seealso:: filterToAtlasFeature()
+.. seealso:: :py:func:`filterToAtlasFeature()`
 %End
 
     bool filterToAtlasFeature() const;
@@ -204,7 +204,7 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  Returns true if the table is set to only show features which intersect the current atlas
  feature.
 
-.. seealso:: setFilterToAtlasFeature()
+.. seealso:: :py:func:`setFilterToAtlasFeature()`
  :rtype: bool
 %End
 
@@ -212,8 +212,8 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
 %Docstring
  Returns true if a feature filter is active on the attribute table.
 
-.. seealso:: setFilterFeatures()
-.. seealso:: featureFilter()
+.. seealso:: :py:func:`setFilterFeatures()`
+.. seealso:: :py:func:`featureFilter()`
  :rtype: bool
 %End
 
@@ -222,8 +222,8 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  Sets whether the feature filter is active for the attribute table. Changing
  this setting forces the table to refetch features from its vector layer, and may result in
  the table changing size to accommodate the new displayed feature attributes.
-.. seealso:: filterFeatures()
-.. seealso:: setFeatureFilter()
+.. seealso:: :py:func:`filterFeatures()`
+.. seealso:: :py:func:`setFeatureFilter()`
 %End
 
     QString featureFilter() const;
@@ -231,8 +231,8 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  Returns the current expression used to filter features for the table. The filter is only
  active if filterFeatures() is true.
 
-.. seealso:: setFeatureFilter()
-.. seealso:: filterFeatures()
+.. seealso:: :py:func:`setFeatureFilter()`
+.. seealso:: :py:func:`filterFeatures()`
  :rtype: str
 %End
 
@@ -243,8 +243,8 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  to refetch features from its vector layer, and may result in
  the table changing size to accommodate the new displayed feature attributes.
 
-.. seealso:: featureFilter()
-.. seealso:: setFilterFeatures()
+.. seealso:: :py:func:`featureFilter()`
+.. seealso:: :py:func:`setFilterFeatures()`
 %End
 
     void setDisplayedFields( const QStringList &fields, bool refresh = true );
@@ -263,14 +263,14 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
  Sets a string to wrap the contents of the table cells by. Occurrences of this string will
  be replaced by a line break.
  \param wrapString string to replace with line break
-.. seealso:: wrapString()
+.. seealso:: :py:func:`wrapString()`
 %End
 
     QString wrapString() const;
 %Docstring
  Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
  be replaced by a line break.
-.. seealso:: setWrapString()
+.. seealso:: :py:func:`setWrapString()`
  :rtype: str
 %End
 

@@ -59,7 +59,7 @@ class QgsLayoutItemTextTable : QgsLayoutTable
 %Docstring
  Sets the contents of the text table.
  \param contents list of table rows
-.. seealso:: addRow
+.. seealso:: :py:func:`addRow`
 %End
 
     virtual bool getTableContents( QgsLayoutTableContents &contents );

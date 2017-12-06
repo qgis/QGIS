@@ -144,7 +144,7 @@ class QgsSymbolLayer
 %Docstring
  Returns true if symbol layer is enabled and will be drawn.
 .. versionadded:: 3.0
-.. seealso:: setEnabled()
+.. seealso:: :py:func:`setEnabled()`
  :rtype: bool
 %End
 
@@ -154,7 +154,7 @@ class QgsSymbolLayer
  layers are not drawn, but remain part of the symbol and can be re-enabled
  when desired.
 .. versionadded:: 3.0
-.. seealso:: enabled()
+.. seealso:: :py:func:`enabled()`
 %End
 
     virtual QColor color() const;
@@ -273,7 +273,7 @@ be affected by data defined symbology rules.*
  layer may use it to specify the units for the marker size, while a line symbol
  layer may use it to specify the units for the line width.
  \param unit output units
-.. seealso:: outputUnit()
+.. seealso:: :py:func:`outputUnit()`
 %End
 
     virtual QgsUnitTypes::RenderUnit outputUnit() const;
@@ -283,7 +283,7 @@ be affected by data defined symbology rules.*
  layer may use it to specify the units for the marker size, while a line symbol
  layer may use it to specify the units for the line width.
  :return: output unit, or QgsUnitTypes.RenderUnknownUnit if the symbol layer contains mixed units
-.. seealso:: setOutputUnit()
+.. seealso:: :py:func:`setOutputUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -311,8 +311,8 @@ be affected by data defined symbology rules.*
  Sets a data defined property for the layer. Any existing property with the same key
  will be overwritten.
 .. versionadded:: 3.0
-.. seealso:: getDataDefinedProperty
-.. seealso:: removeDataDefinedProperty
+.. seealso:: :py:func:`getDataDefinedProperty`
+.. seealso:: :py:func:`removeDataDefinedProperty`
 %End
 
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
@@ -374,7 +374,7 @@ get brush/fill style
  Returns the current paint effect for the layer.
  :return: paint effect
 .. versionadded:: 2.9
-.. seealso:: setPaintEffect
+.. seealso:: :py:func:`setPaintEffect`
  :rtype: QgsPaintEffect
 %End
 
@@ -383,7 +383,7 @@ get brush/fill style
  Sets the current paint effect for the layer.
  \param effect paint effect. Ownership is transferred to the layer.
 .. versionadded:: 2.9
-.. seealso:: paintEffect
+.. seealso:: :py:func:`paintEffect`
 %End
 
     virtual void prepareExpressions( const QgsSymbolRenderContext &context );
@@ -398,7 +398,7 @@ get brush/fill style
 %Docstring
  Returns a reference to the symbol layer's property collection, used for data defined overrides.
 .. versionadded:: 3.0
-.. seealso:: setProperties()
+.. seealso:: :py:func:`setProperties()`
  :rtype: QgsPropertyCollection
 %End
 
@@ -408,7 +408,7 @@ get brush/fill style
  Sets the symbol layer's property collection, used for data defined overrides.
  \param collection property collection. Existing properties will be replaced.
 .. versionadded:: 3.0
-.. seealso:: properties()
+.. seealso:: :py:func:`properties()`
 %End
 
   protected:
@@ -486,14 +486,14 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
 %Docstring
  Sets the rotation angle for the marker.
  \param angle angle in degrees clockwise from north.
-.. seealso:: angle()
-.. seealso:: setLineAngle()
+.. seealso:: :py:func:`angle()`
+.. seealso:: :py:func:`setLineAngle()`
 %End
 
     double angle() const;
 %Docstring
  Returns the rotation angle for the marker, in degrees clockwise from north.
-.. seealso:: setAngle()
+.. seealso:: :py:func:`setAngle()`
  :rtype: float
 %End
 
@@ -504,25 +504,25 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
  is usually used for orienting symbols to match a line's angle.
  \param lineAngle Angle in degrees clockwise from north, valid values are between 0 and 360
 .. versionadded:: 2.9
-.. seealso:: setAngle()
-.. seealso:: angle()
+.. seealso:: :py:func:`setAngle()`
+.. seealso:: :py:func:`angle()`
 %End
 
     void setSize( double size );
 %Docstring
  Sets the symbol size.
  \param size symbol size. Units are specified by sizeUnit().
-.. seealso:: size()
-.. seealso:: setSizeUnit()
-.. seealso:: setSizeMapUnitScale()
+.. seealso:: :py:func:`size()`
+.. seealso:: :py:func:`setSizeUnit()`
+.. seealso:: :py:func:`setSizeMapUnitScale()`
 %End
 
     double size() const;
 %Docstring
  Returns the symbol size. Units are specified by sizeUnit().
-.. seealso:: setSize()
-.. seealso:: sizeUnit()
-.. seealso:: sizeUnitMapScale()
+.. seealso:: :py:func:`setSize()`
+.. seealso:: :py:func:`sizeUnit()`
+.. seealso:: :py:func:`sizeUnitMapScale()`
  :rtype: float
 %End
 
@@ -530,17 +530,17 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
 %Docstring
  Sets the units for the symbol's size.
  \param unit size units
-.. seealso:: sizeUnit()
-.. seealso:: setSize()
-.. seealso:: setSizeMapUnitScale()
+.. seealso:: :py:func:`sizeUnit()`
+.. seealso:: :py:func:`setSize()`
+.. seealso:: :py:func:`setSizeMapUnitScale()`
 %End
 
     QgsUnitTypes::RenderUnit sizeUnit() const;
 %Docstring
  Returns the units for the symbol's size.
-.. seealso:: setSizeUnit()
-.. seealso:: size()
-.. seealso:: sizeMapUnitScale()
+.. seealso:: :py:func:`setSizeUnit()`
+.. seealso:: :py:func:`size()`
+.. seealso:: :py:func:`sizeMapUnitScale()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -548,17 +548,17 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
 %Docstring
  Sets the map unit scale for the symbol's size.
  \param scale size map unit scale
-.. seealso:: sizeMapUnitScale()
-.. seealso:: setSize()
-.. seealso:: setSizeUnit()
+.. seealso:: :py:func:`sizeMapUnitScale()`
+.. seealso:: :py:func:`setSize()`
+.. seealso:: :py:func:`setSizeUnit()`
 %End
 
     const QgsMapUnitScale &sizeMapUnitScale() const;
 %Docstring
  Returns the map unit scale for the symbol's size.
-.. seealso:: setSizeMapUnitScale()
-.. seealso:: size()
-.. seealso:: sizeUnit()
+.. seealso:: :py:func:`setSizeMapUnitScale()`
+.. seealso:: :py:func:`size()`
+.. seealso:: :py:func:`sizeUnit()`
  :rtype: QgsMapUnitScale
 %End
 
@@ -566,13 +566,13 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
 %Docstring
  Sets the method to use for scaling the marker's size.
  \param scaleMethod scale method
-.. seealso:: scaleMethod()
+.. seealso:: :py:func:`scaleMethod()`
 %End
 
     QgsSymbol::ScaleMethod scaleMethod() const;
 %Docstring
  Returns the method to use for scaling the marker's size.
-.. seealso:: setScaleMethod()
+.. seealso:: :py:func:`setScaleMethod()`
  :rtype: QgsSymbol.ScaleMethod
 %End
 
@@ -581,18 +581,18 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
  Sets the marker's offset, which is the horizontal and vertical displacement which the rendered marker
  should have from the original feature's geometry.
  \param offset marker offset. Units are specified by offsetUnit()
-.. seealso:: offset()
-.. seealso:: setOffsetUnit()
-.. seealso:: setOffsetMapUnitScale()
+.. seealso:: :py:func:`offset()`
+.. seealso:: :py:func:`setOffsetUnit()`
+.. seealso:: :py:func:`setOffsetMapUnitScale()`
 %End
 
     QPointF offset() const;
 %Docstring
  Returns the marker's offset, which is the horizontal and vertical displacement which the rendered marker
  will have from the original feature's geometry. Units are specified by offsetUnit().
-.. seealso:: setOffset()
-.. seealso:: offsetUnit()
-.. seealso:: offsetMapUnitScale()
+.. seealso:: :py:func:`setOffset()`
+.. seealso:: :py:func:`offsetUnit()`
+.. seealso:: :py:func:`offsetMapUnitScale()`
  :rtype: QPointF
 %End
 
@@ -600,17 +600,17 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
 %Docstring
  Sets the units for the symbol's offset.
  \param unit offset units
-.. seealso:: offsetUnit()
-.. seealso:: setOffset()
-.. seealso:: setOffsetMapUnitScale()
+.. seealso:: :py:func:`offsetUnit()`
+.. seealso:: :py:func:`setOffset()`
+.. seealso:: :py:func:`setOffsetMapUnitScale()`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
  Returns the units for the symbol's offset.
-.. seealso:: setOffsetUnit()
-.. seealso:: offset()
-.. seealso:: offsetMapUnitScale()
+.. seealso:: :py:func:`setOffsetUnit()`
+.. seealso:: :py:func:`offset()`
+.. seealso:: :py:func:`offsetMapUnitScale()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -618,17 +618,17 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
 %Docstring
  Sets the map unit scale for the symbol's offset.
  \param scale offset map unit scale
-.. seealso:: offsetMapUnitScale()
-.. seealso:: setOffset()
-.. seealso:: setOffsetUnit()
+.. seealso:: :py:func:`offsetMapUnitScale()`
+.. seealso:: :py:func:`setOffset()`
+.. seealso:: :py:func:`setOffsetUnit()`
 %End
 
     const QgsMapUnitScale &offsetMapUnitScale() const;
 %Docstring
  Returns the map unit scale for the symbol's offset.
-.. seealso:: setOffsetMapUnitScale()
-.. seealso:: offset()
-.. seealso:: offsetUnit()
+.. seealso:: :py:func:`setOffsetMapUnitScale()`
+.. seealso:: :py:func:`offset()`
+.. seealso:: :py:func:`offsetUnit()`
  :rtype: QgsMapUnitScale
 %End
 
@@ -637,16 +637,16 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
  Sets the horizontal anchor point for positioning the symbol.
  \param h anchor point. Symbol will be drawn so that the horizontal anchor point is aligned with
  the marker's desired location.
-.. seealso:: horizontalAnchorPoint()
-.. seealso:: setVerticalAnchorPoint()
+.. seealso:: :py:func:`horizontalAnchorPoint()`
+.. seealso:: :py:func:`setVerticalAnchorPoint()`
 %End
 
     HorizontalAnchorPoint horizontalAnchorPoint() const;
 %Docstring
  Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
  the horizontal anchor point is aligned with the marker's desired location.
-.. seealso:: setHorizontalAnchorPoint()
-.. seealso:: verticalAnchorPoint()
+.. seealso:: :py:func:`setHorizontalAnchorPoint()`
+.. seealso:: :py:func:`verticalAnchorPoint()`
  :rtype: HorizontalAnchorPoint
 %End
 
@@ -655,16 +655,16 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
  Sets the vertical anchor point for positioning the symbol.
  \param v anchor point. Symbol will be drawn so that the vertical anchor point is aligned with
  the marker's desired location.
-.. seealso:: verticalAnchorPoint()
-.. seealso:: setHorizontalAnchorPoint()
+.. seealso:: :py:func:`verticalAnchorPoint()`
+.. seealso:: :py:func:`setHorizontalAnchorPoint()`
 %End
 
     VerticalAnchorPoint verticalAnchorPoint() const;
 %Docstring
  Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
  the vertical anchor point is aligned with the marker's desired location.
-.. seealso:: setVerticalAnchorPoint()
-.. seealso:: horizontalAnchorPoint()
+.. seealso:: :py:func:`setVerticalAnchorPoint()`
+.. seealso:: :py:func:`horizontalAnchorPoint()`
  :rtype: VerticalAnchorPoint
 %End
 
@@ -776,13 +776,13 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 %Docstring
  Sets the units for the line's width.
  \param unit width units
-.. seealso:: widthUnit()
+.. seealso:: :py:func:`widthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit widthUnit() const;
 %Docstring
  Returns the units for the line's width.
-.. seealso:: setWidthUnit()
+.. seealso:: :py:func:`setWidthUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -796,13 +796,13 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 %Docstring
  Sets the units for the line's offset.
  \param unit offset units
-.. seealso:: offsetUnit()
+.. seealso:: :py:func:`offsetUnit()`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
  Returns the units for the line's offset.
-.. seealso:: setOffsetUnit()
+.. seealso:: :py:func:`setOffsetUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 

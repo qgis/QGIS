@@ -18,7 +18,7 @@ class QgsRectangle
 
  QgsRectangle is used to store a rectangle when double values are required.
  Examples are storing a layer extent or the current view extent of a map
-.. seealso:: QgsBox3d
+.. seealso:: :py:class:`QgsBox3d`
 %End
 
 %TypeHeaderCode
@@ -130,16 +130,16 @@ Copy constructor
     double width() const;
 %Docstring
  Returns the width of the rectangle.
-.. seealso:: height()
-.. seealso:: area()
+.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`area()`
  :rtype: float
 %End
 
     double height() const;
 %Docstring
  Returns the height of the rectangle.
-.. seealso:: width()
-.. seealso:: area()
+.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`area()`
  :rtype: float
 %End
 
@@ -147,9 +147,9 @@ Copy constructor
 %Docstring
  Returns the area of the rectangle.
 .. versionadded:: 3.0
-.. seealso:: width()
-.. seealso:: height()
-.. seealso:: perimeter()
+.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`perimeter()`
  :rtype: float
 %End
 
@@ -157,7 +157,7 @@ Copy constructor
 %Docstring
  Returns the perimeter of the rectangle.
 .. versionadded:: 3.0
-.. seealso:: area()
+.. seealso:: :py:func:`area()`
  :rtype: float
 %End
 
@@ -180,7 +180,7 @@ Copy constructor
     void grow( double delta );
 %Docstring
  Grows the rectangle in place by the specified amount.
-.. seealso:: buffered()
+.. seealso:: :py:func:`buffered()`
 %End
 
     void include( const QgsPointXY &p );
@@ -195,7 +195,7 @@ Copy constructor
 
    In earlier QGIS releases this method was named buffer().
 .. versionadded:: 3.0
-.. seealso:: grow()
+.. seealso:: :py:func:`grow()`
  :rtype: QgsRectangle
 %End
 

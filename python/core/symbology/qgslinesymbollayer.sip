@@ -102,13 +102,13 @@ class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
 %Docstring
  Sets the units for lengths used in the custom dash pattern.
  \param unit length units
-.. seealso:: customDashPatternUnit()
+.. seealso:: :py:func:`customDashPatternUnit()`
 %End
 
     QgsUnitTypes::RenderUnit customDashPatternUnit() const;
 %Docstring
  Returns the units for lengths used in the custom dash pattern.
-.. seealso:: setCustomDashPatternUnit()
+.. seealso:: :py:func:`setCustomDashPatternUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -249,8 +249,8 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
     double interval() const;
 %Docstring
  Returns the interval between individual markers. Units are specified through intervalUnits().
-.. seealso:: setInterval()
-.. seealso:: intervalUnit()
+.. seealso:: :py:func:`setInterval()`
+.. seealso:: :py:func:`intervalUnit()`
  :rtype: float
 %End
 
@@ -258,8 +258,8 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
 %Docstring
  Sets the interval between individual markers.
  \param interval interval size. Units are specified through setIntervalUnits()
-.. seealso:: interval()
-.. seealso:: setIntervalUnits()
+.. seealso:: :py:func:`interval()`
+.. seealso:: :py:func:`setIntervalUnits()`
 %End
 
     Placement placement() const;
@@ -281,9 +281,9 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
  This setting has no effect for Vertex or CentralPoint placements.
  :return: The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
 .. versionadded:: 2.3
-.. seealso:: setOffsetAlongLine
-.. seealso:: offsetAlongLineUnit
-.. seealso:: placement
+.. seealso:: :py:func:`setOffsetAlongLine`
+.. seealso:: :py:func:`offsetAlongLineUnit`
+.. seealso:: :py:func:`placement`
  :rtype: float
 %End
 
@@ -296,17 +296,17 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
  \param offsetAlongLine Distance to offset markers along the line. The offset
  unit is set via setOffsetAlongLineUnit.
 .. versionadded:: 2.3
-.. seealso:: offsetAlongLine
-.. seealso:: setOffsetAlongLineUnit
-.. seealso:: setPlacement
+.. seealso:: :py:func:`offsetAlongLine`
+.. seealso:: :py:func:`setOffsetAlongLineUnit`
+.. seealso:: :py:func:`setPlacement`
 %End
 
     QgsUnitTypes::RenderUnit offsetAlongLineUnit() const;
 %Docstring
  Returns the unit used for calculating the offset along line for markers.
  :return: Offset along line unit type.
-.. seealso:: setOffsetAlongLineUnit
-.. seealso:: offsetAlongLine
+.. seealso:: :py:func:`setOffsetAlongLineUnit`
+.. seealso:: :py:func:`offsetAlongLine`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -314,8 +314,8 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
 %Docstring
  Sets the unit used for calculating the offset along line for markers.
  \param unit Offset along line unit type.
-.. seealso:: offsetAlongLineUnit
-.. seealso:: setOffsetAlongLine
+.. seealso:: :py:func:`offsetAlongLineUnit`
+.. seealso:: :py:func:`setOffsetAlongLine`
 %End
 
     const QgsMapUnitScale &offsetAlongLineMapUnitScale() const;
@@ -335,15 +335,15 @@ class QgsMarkerLineSymbolLayer : QgsLineSymbolLayer
 %Docstring
  Sets the units for the interval between markers.
  \param unit interval units
-.. seealso:: intervalUnit()
-.. seealso:: setInterval()
+.. seealso:: :py:func:`intervalUnit()`
+.. seealso:: :py:func:`setInterval()`
 %End
 
     QgsUnitTypes::RenderUnit intervalUnit() const;
 %Docstring
  Returns the units for the interval between markers.
-.. seealso:: setIntervalUnit()
-.. seealso:: interval()
+.. seealso:: :py:func:`setIntervalUnit()`
+.. seealso:: :py:func:`interval()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 

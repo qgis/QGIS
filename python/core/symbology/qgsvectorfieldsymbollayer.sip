@@ -125,13 +125,13 @@ class QgsVectorFieldSymbolLayer: QgsMarkerSymbolLayer
 %Docstring
  Sets the units for the distance.
  \param unit distance units
-.. seealso:: distanceUnit()
+.. seealso:: :py:func:`distanceUnit()`
 %End
 
     QgsUnitTypes::RenderUnit distanceUnit() const;
 %Docstring
  Returns the units for the distance.
-.. seealso:: setDistanceUnit()
+.. seealso:: :py:func:`setDistanceUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 

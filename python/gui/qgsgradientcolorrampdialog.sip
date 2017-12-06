@@ -33,7 +33,7 @@ class QgsGradientColorRampDialog : QDialog
     QgsGradientColorRamp ramp() const;
 %Docstring
  Returns a color ramp representing the current settings from the dialog.
-.. seealso:: setRamp()
+.. seealso:: :py:func:`setRamp()`
  :rtype: QgsGradientColorRamp
 %End
 
@@ -41,7 +41,7 @@ class QgsGradientColorRampDialog : QDialog
 %Docstring
  Sets the color ramp to show in the dialog.
  \param ramp color ramp
-.. seealso:: ramp()
+.. seealso:: :py:func:`ramp()`
 %End
 
   signals:
@@ -56,13 +56,13 @@ Emitted when the dialog settings change
     void setColor1( const QColor &color );
 %Docstring
  Sets the start color for the gradient ramp.
-.. seealso:: setColor2()
+.. seealso:: :py:func:`setColor2()`
 %End
 
     void setColor2( const QColor &color );
 %Docstring
  Sets the end color for the gradient ramp.
-.. seealso:: setColor1()
+.. seealso:: :py:func:`setColor1()`
 %End
 
 };

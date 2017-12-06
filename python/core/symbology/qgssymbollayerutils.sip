@@ -124,24 +124,24 @@ class QgsSymbolLayerUtils
     static QString encodePoint( QPointF point );
 %Docstring
  Encodes a QPointF to a string.
-.. seealso:: decodePoint()
-.. seealso:: encodeSize()
+.. seealso:: :py:func:`decodePoint()`
+.. seealso:: :py:func:`encodeSize()`
  :rtype: str
 %End
 
     static QPointF decodePoint( const QString &string );
 %Docstring
  Decodes a QSizeF from a string.
-.. seealso:: encodePoint()
-.. seealso:: decodeSize()
+.. seealso:: :py:func:`encodePoint()`
+.. seealso:: :py:func:`decodeSize()`
  :rtype: QPointF
 %End
 
     static QString encodeSize( QSizeF size );
 %Docstring
  Encodes a QSizeF to a string.
-.. seealso:: decodeSize()
-.. seealso:: encodePoint()
+.. seealso:: :py:func:`decodeSize()`
+.. seealso:: :py:func:`encodePoint()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -149,8 +149,8 @@ class QgsSymbolLayerUtils
     static QSizeF decodeSize( const QString &string );
 %Docstring
  Decodes a QSizeF from a string.
-.. seealso:: encodeSize()
-.. seealso:: decodePoint()
+.. seealso:: :py:func:`encodeSize()`
+.. seealso:: :py:func:`decodePoint()`
 .. versionadded:: 3.0
  :rtype: QSizeF
 %End
@@ -188,7 +188,7 @@ class QgsSymbolLayerUtils
  \param unit unit to encode
  \param scaleFactor if specified, will be set to scale factor for unit of measure
  :return: encoded string
-.. seealso:: decodeSldUom()
+.. seealso:: :py:func:`decodeSldUom()`
  :rtype: str
 %End
 
@@ -198,7 +198,7 @@ class QgsSymbolLayerUtils
  \param str string to decode
  \param scaleFactor if specified, will be set to scale factor for unit of measure
  :return: matching render unit
-.. seealso:: encodeSldUom()
+.. seealso:: :py:func:`encodeSldUom()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -232,7 +232,7 @@ class QgsSymbolLayerUtils
  \param symbol symbol
  \param size target pixmap size
  \param padding space between icon edge and symbol
-.. seealso:: symbolPreviewPixmap()
+.. seealso:: :py:func:`symbolPreviewPixmap()`
  :rtype: QIcon
 %End
 
@@ -246,7 +246,7 @@ class QgsSymbolLayerUtils
 .. note::
 
    Parameter customContext added in QGIS 2.6
-.. seealso:: symbolPreviewIcon()
+.. seealso:: :py:func:`symbolPreviewIcon()`
  :rtype: QPixmap
 %End
 
@@ -259,7 +259,7 @@ class QgsSymbolLayerUtils
  \param scale map unit scale for preview
  :return: QPicture containing symbol layer preview
 .. versionadded:: 2.9
-.. seealso:: symbolLayerPreviewIcon()
+.. seealso:: :py:func:`symbolLayerPreviewIcon()`
  :rtype: QPicture
 %End
 
@@ -271,7 +271,7 @@ class QgsSymbolLayerUtils
  \param size target size of preview icon
  \param scale map unit scale for preview
  :return: icon containing symbol layer preview
-.. seealso:: symbolLayerPreviewPicture()
+.. seealso:: :py:func:`symbolLayerPreviewPicture()`
  :rtype: QIcon
 %End
 
@@ -281,7 +281,7 @@ class QgsSymbolLayerUtils
  \param ramp color ramp
  \param size target icon size
  \param padding space between icon edge and color ramp
-.. seealso:: colorRampPreviewPixmap()
+.. seealso:: :py:func:`colorRampPreviewPixmap()`
  :rtype: QIcon
 %End
 
@@ -291,7 +291,7 @@ class QgsSymbolLayerUtils
  \param ramp color ramp
  \param size target pixmap size
  \param padding space between icon edge and color ramp
-.. seealso:: colorRampPreviewIcon()
+.. seealso:: :py:func:`colorRampPreviewIcon()`
  :rtype: QPixmap
 %End
 
@@ -561,7 +561,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  Creates new mime data from a ``symbol``.
  This also sets the mime color data to match the symbol's color, so that copied symbols
  can be paste in places where a color is expected.
-.. seealso:: symbolFromMimeData()
+.. seealso:: :py:func:`symbolFromMimeData()`
 .. versionadded:: 3.0
  :rtype: QMimeData
 %End
@@ -570,7 +570,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
 %Docstring
  Attempts to parse ``mime`` data as a symbol. A new symbol instance will be returned
  if the data was successfully converted to a symbol.
-.. seealso:: symbolToMimeData()
+.. seealso:: :py:func:`symbolToMimeData()`
 .. versionadded:: 3.0
  :rtype: QgsSymbol
 %End
@@ -580,7 +580,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  Creates a color ramp from the settings encoded in an XML element
  \param element DOM element
  :return: new color ramp. Caller takes responsibility for deleting the returned value.
-.. seealso:: saveColorRamp()
+.. seealso:: :py:func:`saveColorRamp()`
  :rtype: QgsColorRamp
 %End
 
@@ -591,7 +591,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  \param ramp color ramp to save
  \param doc XML document
  :return: DOM element representing state of color ramp
-.. seealso:: loadColorRamp()
+.. seealso:: :py:func:`loadColorRamp()`
  :rtype: QDomElement
 %End
 
@@ -600,7 +600,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  Saves a color ramp to a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-.. seealso:: loadColorRamp( const QVariant &value )
+.. seealso:: :py:func:`loadColorRamp`
  :rtype: QVariant
 %End
 
@@ -609,7 +609,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  Load a color ramp from a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.readVariant to load it from an XML document.
 
-.. seealso:: colorRampToVariant()
+.. seealso:: :py:func:`colorRampToVariant()`
  :rtype: QgsColorRamp
 %End
 
@@ -637,7 +637,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  Creates mime data from a color. Sets both the mime data's color data, and the
  mime data's text with the color's hex code.
  \param color color to encode as mime data
-.. seealso:: colorFromMimeData
+.. seealso:: :py:func:`colorFromMimeData`
 .. versionadded:: 2.5
  :rtype: QMimeData
 %End
@@ -680,7 +680,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  \param paletteName name of palette, which is stored in gpl file
  \param colors colors to export
  :return: true if export was successful
-.. seealso:: importColorsFromGpl
+.. seealso:: :py:func:`importColorsFromGpl`
  :rtype: bool
 %End
 
@@ -691,7 +691,7 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
  \param ok will be true if file was successfully read
  \param name will be set to palette name from gpl file, if present
  :return: list of imported colors
-.. seealso:: saveColorsToGpl
+.. seealso:: :py:func:`saveColorsToGpl`
  :rtype: QgsNamedColorList
 %End
 

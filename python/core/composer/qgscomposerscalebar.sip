@@ -56,9 +56,9 @@ Return correct graphics item type.
     QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const;
 %Docstring
  Returns the size mode for scale bar segments.
-.. seealso:: setSegmentSizeMode
-.. seealso:: minBarWidth
-.. seealso:: maxBarWidth
+.. seealso:: :py:func:`setSegmentSizeMode`
+.. seealso:: :py:func:`minBarWidth`
+.. seealso:: :py:func:`maxBarWidth`
 .. versionadded:: 2.9
  :rtype: QgsScaleBarSettings.SegmentSizeMode
 %End
@@ -67,9 +67,9 @@ Return correct graphics item type.
 %Docstring
  Sets the size mode for scale bar segments.
  \param mode size mode
-.. seealso:: segmentSizeMode
-.. seealso:: setMinBarWidth
-.. seealso:: setMaxBarWidth
+.. seealso:: :py:func:`segmentSizeMode`
+.. seealso:: :py:func:`setMinBarWidth`
+.. seealso:: :py:func:`setMaxBarWidth`
 .. versionadded:: 2.9
 %End
 
@@ -78,9 +78,9 @@ Return correct graphics item type.
  Returns the minimum size (in millimeters) for scale bar segments. This
  property is only effective if the segmentSizeMode() is set
  to SegmentSizeFitWidth.
-.. seealso:: segmentSizeMode
-.. seealso:: setMinBarWidth
-.. seealso:: maxBarWidth
+.. seealso:: :py:func:`segmentSizeMode`
+.. seealso:: :py:func:`setMinBarWidth`
+.. seealso:: :py:func:`maxBarWidth`
 .. versionadded:: 2.9
  :rtype: float
 %End
@@ -91,9 +91,9 @@ Return correct graphics item type.
  property is only effective if the segmentSizeMode() is set
  to SegmentSizeFitWidth.
  \param minWidth minimum width in millimeters
-.. seealso:: minBarWidth
-.. seealso:: setMaxBarWidth
-.. seealso:: setSegmentSizeMode
+.. seealso:: :py:func:`minBarWidth`
+.. seealso:: :py:func:`setMaxBarWidth`
+.. seealso:: :py:func:`setSegmentSizeMode`
 .. versionadded:: 2.9
 %End
 
@@ -102,9 +102,9 @@ Return correct graphics item type.
  Returns the maximum size (in millimeters) for scale bar segments. This
  property is only effective if the segmentSizeMode() is set
  to SegmentSizeFitWidth.
-.. seealso:: segmentSizeMode
-.. seealso:: setMaxBarWidth
-.. seealso:: minBarWidth
+.. seealso:: :py:func:`segmentSizeMode`
+.. seealso:: :py:func:`setMaxBarWidth`
+.. seealso:: :py:func:`minBarWidth`
 .. versionadded:: 2.9
  :rtype: float
 %End
@@ -115,9 +115,9 @@ Return correct graphics item type.
  property is only effective if the segmentSizeMode() is set
  to SegmentSizeFitWidth.
  \param maxWidth maximum width in millimeters
-.. seealso:: minBarWidth
-.. seealso:: setMaxBarWidth
-.. seealso:: setSegmentSizeMode
+.. seealso:: :py:func:`minBarWidth`
+.. seealso:: :py:func:`setMaxBarWidth`
+.. seealso:: :py:func:`setSegmentSizeMode`
 .. versionadded:: 2.9
 %End
 
@@ -143,8 +143,8 @@ Return correct graphics item type.
 %Docstring
  Returns the color used for drawing text in the scalebar.
  :return: font color for scalebar.
-.. seealso:: setFontColor
-.. seealso:: font
+.. seealso:: :py:func:`setFontColor`
+.. seealso:: :py:func:`font`
  :rtype: QColor
 %End
 
@@ -152,15 +152,15 @@ Return correct graphics item type.
 %Docstring
  Sets the color used for drawing text in the scalebar.
  \param c font color for scalebar.
-.. seealso:: fontColor
-.. seealso:: setFont
+.. seealso:: :py:func:`fontColor`
+.. seealso:: :py:func:`setFont`
 %End
 
     QColor fillColor() const;
 %Docstring
  Returns the color used for fills in the scalebar.
-.. seealso:: setFillColor()
-.. seealso:: fillColor2()
+.. seealso:: :py:func:`setFillColor()`
+.. seealso:: :py:func:`fillColor2()`
 .. versionadded:: 3.0
  :rtype: QColor
 %End
@@ -168,16 +168,16 @@ Return correct graphics item type.
     void setFillColor( const QColor &color );
 %Docstring
  Sets the color used for fills in the scalebar.
-.. seealso:: fillColor()
-.. seealso:: setFillColor2()
+.. seealso:: :py:func:`fillColor()`
+.. seealso:: :py:func:`setFillColor2()`
 .. versionadded:: 3.0
 %End
 
     QColor fillColor2() const;
 %Docstring
  Returns the secondary color used for fills in the scalebar.
-.. seealso:: setFillColor2()
-.. seealso:: fillColor()
+.. seealso:: :py:func:`setFillColor2()`
+.. seealso:: :py:func:`fillColor()`
 .. versionadded:: 3.0
  :rtype: QColor
 %End
@@ -185,15 +185,15 @@ Return correct graphics item type.
     void setFillColor2( const QColor &color );
 %Docstring
  Sets the secondary color used for fills in the scalebar.
-.. seealso:: fillColor2()
-.. seealso:: setFillColor2()
+.. seealso:: :py:func:`fillColor2()`
+.. seealso:: :py:func:`setFillColor2()`
 .. versionadded:: 3.0
 %End
 
     QColor lineColor() const;
 %Docstring
  Returns the color used for lines in the scalebar.
-.. seealso:: setLineColor()
+.. seealso:: :py:func:`setLineColor()`
 .. versionadded:: 3.0
  :rtype: QColor
 %End
@@ -201,14 +201,14 @@ Return correct graphics item type.
     void setLineColor( const QColor &color );
 %Docstring
  Sets the color used for lines in the scalebar.
-.. seealso:: lineColor()
+.. seealso:: :py:func:`lineColor()`
 .. versionadded:: 3.0
 %End
 
     double lineWidth() const;
 %Docstring
  Returns the line width in millimeters for lines in the scalebar.
-.. seealso:: setLineWidth()
+.. seealso:: :py:func:`setLineWidth()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -216,7 +216,7 @@ Return correct graphics item type.
     void setLineWidth( double width );
 %Docstring
  Sets the line width in millimeters for lines in the scalebar.
-.. seealso:: lineWidth()
+.. seealso:: :py:func:`lineWidth()`
 .. versionadded:: 3.0
 %End
 
@@ -224,8 +224,8 @@ Return correct graphics item type.
 %Docstring
  Returns the pen used for drawing the scalebar.
  :return: QPen used for drawing the scalebar outlines.
-.. seealso:: setPen
-.. seealso:: brush
+.. seealso:: :py:func:`setPen`
+.. seealso:: :py:func:`brush`
  :rtype: QPen
 %End
 
@@ -233,9 +233,9 @@ Return correct graphics item type.
 %Docstring
  Returns the primary brush for the scalebar.
  :return: QBrush used for filling the scalebar
-.. seealso:: setBrush
-.. seealso:: brush2
-.. seealso:: pen
+.. seealso:: :py:func:`setBrush`
+.. seealso:: :py:func:`brush2`
+.. seealso:: :py:func:`pen`
  :rtype: QBrush
 %End
 
@@ -244,8 +244,8 @@ Return correct graphics item type.
  Returns the secondary brush for the scalebar. This is used for alternating color style scalebars, such
  as single and double box styles.
  :return: QBrush used for secondary color areas
-.. seealso:: setBrush2
-.. seealso:: brush
+.. seealso:: :py:func:`setBrush2`
+.. seealso:: :py:func:`brush`
  :rtype: QBrush
 %End
 
@@ -305,7 +305,7 @@ Return correct graphics item type.
  Returns the join style used for drawing lines in the scalebar
  :return: Join style for lines
 .. versionadded:: 2.3
-.. seealso:: setLineJoinStyle
+.. seealso:: :py:func:`setLineJoinStyle`
  :rtype: Qt.PenJoinStyle
 %End
 
@@ -315,7 +315,7 @@ Return correct graphics item type.
  \param style Join style for lines
  :return: nothing
 .. versionadded:: 2.3
-.. seealso:: lineJoinStyle
+.. seealso:: :py:func:`lineJoinStyle`
 %End
 
     Qt::PenCapStyle lineCapStyle() const;
@@ -323,7 +323,7 @@ Return correct graphics item type.
  Returns the cap style used for drawing lines in the scalebar
  :return: Cap style for lines
 .. versionadded:: 2.3
-.. seealso:: setLineCapStyle
+.. seealso:: :py:func:`setLineCapStyle`
  :rtype: Qt.PenCapStyle
 %End
 
@@ -333,7 +333,7 @@ Return correct graphics item type.
  \param style Cap style for lines
  :return: nothing
 .. versionadded:: 2.3
-.. seealso:: lineCapStyle
+.. seealso:: :py:func:`lineCapStyle`
 %End
 
     void applyDefaultSettings();

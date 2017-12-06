@@ -71,8 +71,8 @@ return new default symbol for specified geometry type
  Returns list of symbol layers contained in the symbol.
  :return: symbol layers list
 .. versionadded:: 2.7
-.. seealso:: symbolLayer
-.. seealso:: symbolLayerCount
+.. seealso:: :py:func:`symbolLayer`
+.. seealso:: :py:func:`symbolLayerCount`
  :rtype: QgsSymbolLayerList
 %End
 
@@ -82,8 +82,8 @@ return new default symbol for specified geometry type
  \param layer layer number
  :return: corresponding symbol layer
 .. versionadded:: 2.7
-.. seealso:: symbolLayers
-.. seealso:: symbolLayerCount
+.. seealso:: :py:func:`symbolLayers`
+.. seealso:: :py:func:`symbolLayerCount`
  :rtype: QgsSymbolLayer
 %End
 
@@ -92,8 +92,8 @@ return new default symbol for specified geometry type
  Returns total number of symbol layers contained in the symbol.
  :return: count of symbol layers
 .. versionadded:: 2.7
-.. seealso:: symbolLayers
-.. seealso:: symbolLayer
+.. seealso:: :py:func:`symbolLayers`
+.. seealso:: :py:func:`symbolLayer`
  :rtype: int
 %End
 
@@ -145,7 +145,7 @@ delete layer at specified index and set a new one
  \param fields fields for features to be rendered (usually the associated
  vector layer's fields). Required for correct calculation of data defined
  overrides.
-.. seealso:: stopRender()
+.. seealso:: :py:func:`stopRender()`
 %End
 
     void stopRender( QgsRenderContext &context );
@@ -153,7 +153,7 @@ delete layer at specified index and set a new one
  Ends the rendering process. This should be called after rendering all desired features.
  \param context render context, must match the context specified when startRender()
  was called.
-.. seealso:: startRender()
+.. seealso:: :py:func:`startRender()`
 %End
 
     void setColor( const QColor &color );
@@ -210,7 +210,7 @@ Generate symbol as image
  may use it to specify the units for the marker size, while a line symbol
  may use it to specify the units for the line width.
  :return: output unit, or QgsUnitTypes.RenderUnknownUnit if the symbol contains mixed units
-.. seealso:: setOutputUnit()
+.. seealso:: :py:func:`setOutputUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -221,7 +221,7 @@ Generate symbol as image
  may use it to specify the units for the marker size, while a line symbol
  may use it to specify the units for the line width.
  \param unit output units
-.. seealso:: outputUnit()
+.. seealso:: :py:func:`outputUnit()`
 %End
 
     QgsMapUnitScale mapUnitScale() const;
@@ -234,7 +234,7 @@ Generate symbol as image
 %Docstring
  Returns the opacity for the symbol.
  :return: opacity value between 0 (fully transparent) and 1 (fully opaque)
-.. seealso:: setOpacity()
+.. seealso:: :py:func:`setOpacity()`
  :rtype: qreal
 %End
 
@@ -242,19 +242,19 @@ Generate symbol as image
 %Docstring
  Sets the ``opacity`` for the symbol.
  \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
-.. seealso:: opacity()
+.. seealso:: :py:func:`opacity()`
 %End
 
     void setRenderHints( RenderHints hints );
 %Docstring
  Sets rendering hint flags for the symbol.
-.. seealso:: renderHints()
+.. seealso:: :py:func:`renderHints()`
 %End
 
     RenderHints renderHints() const;
 %Docstring
  Returns the rendering hint flags for the symbol.
-.. seealso:: setRenderHints()
+.. seealso:: :py:func:`setRenderHints()`
  :rtype: RenderHints
 %End
 
@@ -266,7 +266,7 @@ Generate symbol as image
  side effects for certain symbol types.
  \param clipFeaturesToExtent set to true to enable clipping (defaults to true)
 .. versionadded:: 2.9
-.. seealso:: clipFeaturesToExtent
+.. seealso:: :py:func:`clipFeaturesToExtent`
 %End
 
     bool clipFeaturesToExtent() const;
@@ -277,7 +277,7 @@ Generate symbol as image
  side effects for certain symbol types.
  :return: true if features will be clipped
 .. versionadded:: 2.9
-.. seealso:: setClipFeaturesToExtent
+.. seealso:: :py:func:`setClipFeaturesToExtent`
  :rtype: bool
 %End
 
@@ -439,7 +439,7 @@ Sets the output unit for the context
 %Docstring
  Returns the opacity for the symbol.
  :return: opacity value between 0 (fully transparent) and 1 (fully opaque)
-.. seealso:: setOpacity()
+.. seealso:: :py:func:`setOpacity()`
  :rtype: qreal
 %End
 
@@ -447,7 +447,7 @@ Sets the output unit for the context
 %Docstring
  Sets the ``opacity`` for the symbol.
  \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
-.. seealso:: opacity()
+.. seealso:: :py:func:`opacity()`
 %End
 
     bool selected() const;
@@ -459,14 +459,14 @@ Sets the output unit for the context
     QgsSymbol::RenderHints renderHints() const;
 %Docstring
  Returns the rendering hint flags for the symbol.
-.. seealso:: setRenderHints()
+.. seealso:: :py:func:`setRenderHints()`
  :rtype: QgsSymbol.RenderHints
 %End
 
     void setRenderHints( QgsSymbol::RenderHints hints );
 %Docstring
  Sets rendering hint flags for the symbol.
-.. seealso:: renderHints()
+.. seealso:: :py:func:`renderHints()`
 %End
 
     void setFeature( const QgsFeature *f );
@@ -479,7 +479,7 @@ Current feature being rendered - may be null
     void setOriginalGeometryType( QgsWkbTypes::GeometryType type );
 %Docstring
  Sets the geometry type for the original feature geometry being rendered.
-.. seealso:: originalGeometryType()
+.. seealso:: :py:func:`originalGeometryType()`
 .. versionadded:: 3.0
 %End
 
@@ -489,7 +489,7 @@ Current feature being rendered - may be null
  useful if symbol layers alter their appearance based on geometry type - eg offsetting a
  simple line style will look different if the simple line is rendering a polygon feature
  (a closed buffer) vs a line feature (an unclosed offset line).
-.. seealso:: originalGeometryType()
+.. seealso:: :py:func:`originalGeometryType()`
 .. versionadded:: 3.0
  :rtype: QgsWkbTypes.GeometryType
 %End
@@ -586,7 +586,7 @@ class QgsMarkerSymbol : QgsSymbol
  Sets the angle for the whole symbol. Individual symbol layer sizes
  will be rotated to maintain their current relative angle to the whole symbol angle.
  \param symbolAngle new symbol angle
-.. seealso:: angle()
+.. seealso:: :py:func:`angle()`
 %End
 
     double angle() const;
@@ -595,7 +595,7 @@ class QgsMarkerSymbol : QgsSymbol
  multiple symbol layers, this will correspond just to the angle of
  the first symbol layer.
 .. versionadded:: 2.16
-.. seealso:: setAngle()
+.. seealso:: :py:func:`setAngle()`
  :rtype: float
 %End
 
@@ -603,7 +603,7 @@ class QgsMarkerSymbol : QgsSymbol
 %Docstring
  Set data defined angle for whole symbol (including all symbol layers).
 .. versionadded:: 3.0
-.. seealso:: dataDefinedAngle()
+.. seealso:: :py:func:`dataDefinedAngle()`
 %End
 
     QgsProperty dataDefinedAngle() const;
@@ -612,7 +612,7 @@ class QgsMarkerSymbol : QgsSymbol
  :return: data defined angle, or invalid property if angle is not set
  at the marker level.
 .. versionadded:: 3.0
-.. seealso:: setDataDefinedAngle()
+.. seealso:: :py:func:`setDataDefinedAngle()`
  :rtype: QgsProperty
 %End
 
@@ -630,18 +630,18 @@ class QgsMarkerSymbol : QgsSymbol
  Sets the size for the whole symbol. Individual symbol layer sizes
  will be scaled to maintain their current relative size to the whole symbol size.
  \param size new symbol size
-.. seealso:: size()
-.. seealso:: setSizeUnit()
-.. seealso:: setSizeMapUnitScale()
+.. seealso:: :py:func:`size()`
+.. seealso:: :py:func:`setSizeUnit()`
+.. seealso:: :py:func:`setSizeMapUnitScale()`
 %End
 
     double size() const;
 %Docstring
  Returns the size for the whole symbol, which is the maximum size of
  all marker symbol layers in the symbol.
-.. seealso:: setSize()
-.. seealso:: sizeUnit()
-.. seealso:: sizeMapUnitScale()
+.. seealso:: :py:func:`setSize()`
+.. seealso:: :py:func:`sizeUnit()`
+.. seealso:: :py:func:`sizeMapUnitScale()`
  :rtype: float
 %End
 
@@ -650,9 +650,9 @@ class QgsMarkerSymbol : QgsSymbol
  Sets the size units for the whole symbol (including all symbol layers).
  \param unit size units
 .. versionadded:: 2.16
-.. seealso:: sizeUnit()
-.. seealso:: setSizeMapUnitScale()
-.. seealso:: setSize()
+.. seealso:: :py:func:`sizeUnit()`
+.. seealso:: :py:func:`setSizeMapUnitScale()`
+.. seealso:: :py:func:`setSize()`
 %End
 
     QgsUnitTypes::RenderUnit sizeUnit() const;
@@ -660,9 +660,9 @@ class QgsMarkerSymbol : QgsSymbol
  Returns the size units for the whole symbol (including all symbol layers).
  :return: size units, or mixed units if symbol layers have different units
 .. versionadded:: 2.16
-.. seealso:: setSizeUnit()
-.. seealso:: sizeMapUnitScale()
-.. seealso:: size()
+.. seealso:: :py:func:`setSizeUnit()`
+.. seealso:: :py:func:`sizeMapUnitScale()`
+.. seealso:: :py:func:`size()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -671,9 +671,9 @@ class QgsMarkerSymbol : QgsSymbol
  Sets the size map unit scale for the whole symbol (including all symbol layers).
  \param scale map unit scale
 .. versionadded:: 2.16
-.. seealso:: sizeMapUnitScale()
-.. seealso:: setSizeUnit()
-.. seealso:: setSize()
+.. seealso:: :py:func:`sizeMapUnitScale()`
+.. seealso:: :py:func:`setSizeUnit()`
+.. seealso:: :py:func:`setSize()`
 %End
 
     QgsMapUnitScale sizeMapUnitScale() const;
@@ -682,9 +682,9 @@ class QgsMarkerSymbol : QgsSymbol
  multiple symbol layers, this will correspond just to the map unit scale
  for the first symbol layer.
 .. versionadded:: 2.16
-.. seealso:: setSizeMapUnitScale()
-.. seealso:: sizeUnit()
-.. seealso:: size()
+.. seealso:: :py:func:`setSizeMapUnitScale()`
+.. seealso:: :py:func:`sizeUnit()`
+.. seealso:: :py:func:`size()`
  :rtype: QgsMapUnitScale
 %End
 
@@ -692,7 +692,7 @@ class QgsMarkerSymbol : QgsSymbol
 %Docstring
  Set data defined size for whole symbol (including all symbol layers).
 .. versionadded:: 3.0
-.. seealso:: dataDefinedSize()
+.. seealso:: :py:func:`dataDefinedSize()`
 %End
 
     QgsProperty dataDefinedSize() const;
@@ -701,7 +701,7 @@ class QgsMarkerSymbol : QgsSymbol
  :return: data defined size, or invalid property if size is not set
  at the marker level.
 .. versionadded:: 3.0
-.. seealso:: setDataDefinedSize
+.. seealso:: :py:func:`setDataDefinedSize`
  :rtype: QgsProperty
 %End
 
@@ -758,7 +758,7 @@ class QgsLineSymbol : QgsSymbol
     void setDataDefinedWidth( const QgsProperty &property );
 %Docstring
  Set data defined width for whole symbol (including all symbol layers).
-.. seealso:: dataDefinedWidth()
+.. seealso:: :py:func:`dataDefinedWidth()`
 .. versionadded:: 3.0
 %End
 
@@ -768,7 +768,7 @@ class QgsLineSymbol : QgsSymbol
  :return: data defined width, or invalid property if size is not set
  at the line level. Caller takes responsibility for deleting the returned object.
 .. versionadded:: 3.0
-.. seealso:: setDataDefinedWidth
+.. seealso:: :py:func:`setDataDefinedWidth`
  :rtype: QgsProperty
 %End
 

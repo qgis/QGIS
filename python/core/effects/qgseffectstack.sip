@@ -81,7 +81,7 @@ class QgsEffectStack : QgsPaintEffect
  Appends an effect to the end of the stack.
  \param effect QgsPaintEffect to append. Ownership of the effect will be
  transferred to the stack object.
-.. seealso:: insertEffect
+.. seealso:: :py:func:`insertEffect`
 %End
 
     bool insertEffect( const int index, QgsPaintEffect *effect /Transfer/ );
@@ -90,7 +90,7 @@ class QgsEffectStack : QgsPaintEffect
  \param index position to insert the effect
  \param effect QgsPaintEffect to insert. Ownership of the effect will be
  transferred to the stack object.
-.. seealso:: appendEffect
+.. seealso:: :py:func:`appendEffect`
  :rtype: bool
 %End
 

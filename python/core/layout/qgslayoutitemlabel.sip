@@ -50,42 +50,42 @@ class QgsLayoutItemLabel: QgsLayoutItem
     void adjustSizeToText();
 %Docstring
  Resizes the item so that the label's text fits to the item. Keeps the top left point stationary.
-.. seealso:: sizeForText()
+.. seealso:: :py:func:`sizeForText()`
 %End
 
     QSizeF sizeForText() const;
 %Docstring
  Returns the required item size (in layout units) for the label's text to fill the item.
-.. seealso:: adjustSizeToText()
+.. seealso:: :py:func:`adjustSizeToText()`
  :rtype: QSizeF
 %End
 
     QString text();
 %Docstring
  Returns the label's preset text.
-.. seealso:: currentText()
-.. seealso:: setText()
+.. seealso:: :py:func:`currentText()`
+.. seealso:: :py:func:`setText()`
  :rtype: str
 %End
 
     void setText( const QString &text );
 %Docstring
  Sets the label's preset ``text``.
-.. seealso:: text()
+.. seealso:: :py:func:`text()`
 %End
 
     QString currentText() const;
 %Docstring
  Returns the text as it appears on the label (with evaluated expressions
  and other dynamic content).
-.. seealso:: text()
+.. seealso:: :py:func:`text()`
  :rtype: str
 %End
 
     Mode mode() const;
 %Docstring
  Returns the label's current mode.
-.. seealso:: setMode()
+.. seealso:: :py:func:`setMode()`
  :rtype: Mode
 %End
 
@@ -93,58 +93,58 @@ class QgsLayoutItemLabel: QgsLayoutItem
 %Docstring
  Sets the label's current ``mode``, allowing the label
  to switch between font based and HTML based rendering.
-.. seealso:: mode()
+.. seealso:: :py:func:`mode()`
 %End
 
     QFont font() const;
 %Docstring
  Returns the label's current font.
-.. seealso:: setFont()
+.. seealso:: :py:func:`setFont()`
  :rtype: QFont
 %End
 
     void setFont( const QFont &font );
 %Docstring
  Sets the label's current ``font``.
-.. seealso:: font()
+.. seealso:: :py:func:`font()`
 %End
 
     Qt::AlignmentFlag vAlign() const;
 %Docstring
  Returns for the vertical alignment of the label.
-.. seealso:: setVAlign()
-.. seealso:: hAlign()
+.. seealso:: :py:func:`setVAlign()`
+.. seealso:: :py:func:`hAlign()`
  :rtype: Qt.AlignmentFlag
 %End
 
     Qt::AlignmentFlag hAlign() const;
 %Docstring
  Returns the horizontal alignment of the label.
-.. seealso:: vAlign()
-.. seealso:: setHAlign()
+.. seealso:: :py:func:`vAlign()`
+.. seealso:: :py:func:`setHAlign()`
  :rtype: Qt.AlignmentFlag
 %End
 
     void setHAlign( Qt::AlignmentFlag alignment );
 %Docstring
  Sets the horizontal ``alignment`` of the label.
-.. seealso:: hAlign()
-.. seealso:: setVAlign()
+.. seealso:: :py:func:`hAlign()`
+.. seealso:: :py:func:`setVAlign()`
 %End
 
     void setVAlign( Qt::AlignmentFlag alignment );
 %Docstring
  Sets for the vertical ``alignment`` of the label.
-.. seealso:: vAlign()
-.. seealso:: setHAlign()
+.. seealso:: :py:func:`vAlign()`
+.. seealso:: :py:func:`setHAlign()`
 %End
 
     double marginX() const;
 %Docstring
  Returns the horizontal margin between the edge of the frame and the label
  contents, in layout units.
-.. seealso:: setMargin()
-.. seealso:: marginY()
+.. seealso:: :py:func:`setMargin()`
+.. seealso:: :py:func:`marginY()`
  :rtype: float
 %End
 
@@ -152,8 +152,8 @@ class QgsLayoutItemLabel: QgsLayoutItem
 %Docstring
  Returns the vertical margin between the edge of the frame and the label
  contents, in layout units.
-.. seealso:: setMargin()
-.. seealso:: marginX()
+.. seealso:: :py:func:`setMargin()`
+.. seealso:: :py:func:`marginX()`
  :rtype: float
 %End
 
@@ -166,36 +166,36 @@ class QgsLayoutItemLabel: QgsLayoutItem
 
  Margins are set using the current layout units.
 
-.. seealso:: setMarginX()
-.. seealso:: setMarginY()
+.. seealso:: :py:func:`setMarginX()`
+.. seealso:: :py:func:`setMarginY()`
 %End
 
     void setMarginX( double margin );
 %Docstring
  Sets the horizontal ``margin`` between the edge of the frame and the label
  contents, in layout units.
-.. seealso:: setMargin()
-.. seealso:: setMarginY()
+.. seealso:: :py:func:`setMargin()`
+.. seealso:: :py:func:`setMarginY()`
 %End
 
     void setMarginY( double margin );
 %Docstring
  Sets the vertical ``margin`` between the edge of the frame and the label
  contents, in layout units.
-.. seealso:: setMargin()
-.. seealso:: setMarginX()
+.. seealso:: :py:func:`setMargin()`
+.. seealso:: :py:func:`setMarginX()`
 %End
 
     void setFontColor( const QColor &color );
 %Docstring
  Sets the label font ``color``.
-.. seealso:: fontColor()
+.. seealso:: :py:func:`fontColor()`
 %End
 
     QColor fontColor() const;
 %Docstring
  Returns the label font color.
-.. seealso:: setFontColor()
+.. seealso:: :py:func:`setFontColor()`
  :rtype: QColor
 %End
 

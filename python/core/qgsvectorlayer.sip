@@ -391,7 +391,7 @@ Set to true if the default layer style should be loaded
  If the displayExpression is more complex than a simple field, a null string will
  be returned.
 
-.. seealso:: displayExpression
+.. seealso:: :py:func:`displayExpression`
  :rtype: str
 %End
 
@@ -457,7 +457,7 @@ Setup the coordinate system transformation for the layer
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 %Docstring
  Sets the list of dependencies.
-.. seealso:: dependencies()
+.. seealso:: :py:func:`dependencies()`
 
  \param layers set of QgsMapLayerDependency. Only user-defined dependencies will be added
  :return: false if a dependency cycle has been detected
@@ -467,7 +467,7 @@ Setup the coordinate system transformation for the layer
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
-.. seealso:: setDataDependencies)
+.. seealso:: :py:func:`setDataDependencies`
  as well as dependencies given by the provider
 
  :return: a set of QgsMapLayerDependency
@@ -544,9 +544,9 @@ Setup the coordinate system transformation for the layer
  \param rect search rectangle
  \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
-.. seealso:: invertSelectionInRectangle(QgsRectangle & rect)
-.. seealso:: selectByExpression()
-.. seealso:: selectByIds()
+.. seealso:: :py:func:`invertSelectionInRectangle`
+.. seealso:: :py:func:`selectByExpression()`
+.. seealso:: :py:func:`selectByIds()`
 %End
 
     void selectByExpression( const QString &expression, SelectBehavior behavior = SetSelection );
@@ -556,8 +556,8 @@ Setup the coordinate system transformation for the layer
  \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
 .. versionadded:: 2.16
-.. seealso:: selectByRect()
-.. seealso:: selectByIds()
+.. seealso:: :py:func:`selectByRect()`
+.. seealso:: :py:func:`selectByIds()`
 %End
 
     void selectByIds( const QgsFeatureIds &ids, SelectBehavior behavior = SetSelection );
@@ -568,8 +568,8 @@ Setup the coordinate system transformation for the layer
  \param behavior selection type, allows adding to current selection, removing
  from selection, etc.
 .. versionadded:: 2.16
-.. seealso:: selectByRect()
-.. seealso:: selectByExpression()
+.. seealso:: :py:func:`selectByRect()`
+.. seealso:: :py:func:`selectByExpression()`
 %End
 
     void modifySelection( const QgsFeatureIds &selectIds, const QgsFeatureIds &deselectIds );
@@ -579,11 +579,11 @@ Setup the coordinate system transformation for the layer
  \param selectIds    Select these ids
  \param deselectIds  Deselect these ids
 
-.. seealso::   select(QgsFeatureIds)
-.. seealso::   select(QgsFeatureId)
-.. seealso::   deselect(QgsFeatureIds)
-.. seealso::   deselect(QgsFeatureId)
-.. seealso:: selectByExpression()
+.. seealso:: :py:func:`select`
+.. seealso:: :py:func:`select`
+.. seealso:: :py:func:`deselect`
+.. seealso:: :py:func:`deselect`
+.. seealso:: :py:func:`selectByExpression()`
 %End
 
     void invertSelection();
@@ -602,7 +602,7 @@ Select all the features
 
  \param rect  The rectangle in which the selection of features will be inverted
 
-.. seealso::   invertSelection()
+.. seealso:: :py:func:`invertSelection()`
 %End
 
     QgsFeatureList selectedFeatures() const;
@@ -611,8 +611,8 @@ Select all the features
 
  :return: A list of QgsFeature
 
-.. seealso::    selectedFeatureIds()
-.. seealso::    getSelectedFeatures() which is more memory friendly when handling large selections
+.. seealso:: :py:func:`selectedFeatureIds()`
+.. seealso:: :py:func:`getSelectedFeatures()`
  :rtype: QgsFeatureList
 %End
 
@@ -625,8 +625,8 @@ Select all the features
 
  :return: Iterator over the selected features
 
-.. seealso::    selectedFeatureIds()
-.. seealso::    selectedFeatures()
+.. seealso:: :py:func:`selectedFeatureIds()`
+.. seealso:: :py:func:`selectedFeatures()`
  :rtype: QgsFeatureIterator
 %End
 
@@ -635,7 +635,7 @@ Select all the features
  Return reference to identifiers of selected features
 
  :return: A list of QgsFeatureId
-.. seealso:: selectedFeatures()
+.. seealso:: :py:func:`selectedFeatures()`
  :rtype: QgsFeatureIds
 %End
 
@@ -1364,7 +1364,7 @@ Change feature's geometry
 %Docstring
  Returns the alias of an attribute name or a null string if there is no alias.
 
-.. seealso:: {attributeDisplayName( int attributeIndex )} which returns the field name
+ \see {attributeDisplayName( int attributeIndex )} which returns the field name
       if no alias is defined.
  :rtype: str
 %End
@@ -1452,7 +1452,7 @@ Delete a feature from the layer (but does not commit it)
  so if a stage fails, it's difficult to roll back cleanly.
  Therefore any error message also includes which stage failed so
  that the user has some chance of repairing the damage cleanly.
-.. seealso:: commitErrors()
+.. seealso:: :py:func:`commitErrors()`
  :rtype: bool
 %End
 
@@ -1460,7 +1460,7 @@ Delete a feature from the layer (but does not commit it)
 %Docstring
  Returns a list containing any error messages generated when attempting
  to commit changes to the layer.
-.. seealso:: commitChanges()
+.. seealso:: :py:func:`commitChanges()`
  :rtype: list of str
 %End
 
@@ -1541,7 +1541,7 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  specified, a default context will be created
  :return: calculated default value
 .. versionadded:: 3.0
-.. seealso:: setDefaultValueDefinition()
+.. seealso:: :py:func:`setDefaultValueDefinition()`
  :rtype: QVariant
 %End
 
@@ -1554,8 +1554,8 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  an empty expression to clear the default.
 
 .. versionadded:: 3.0
-.. seealso:: defaultValue()
-.. seealso:: defaultValueDefinition()
+.. seealso:: :py:func:`defaultValue()`
+.. seealso:: :py:func:`defaultValueDefinition()`
 %End
 
     QgsDefaultValue defaultValueDefinition( int index ) const;
@@ -1566,8 +1566,8 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  when calculating default values for field, or definition with an
  empty string if no default is set
 .. versionadded:: 3.0
-.. seealso:: defaultValue()
-.. seealso:: setDefaultValueDefinition()
+.. seealso:: :py:func:`defaultValue()`
+.. seealso:: :py:func:`setDefaultValueDefinition()`
  :rtype: QgsDefaultValue
 %End
 
@@ -1577,7 +1577,7 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  field index. These constraints may be inherited from the layer's data provider
  or may be set manually on the vector layer from within QGIS.
 .. versionadded:: 3.0
-.. seealso:: setFieldConstraint()
+.. seealso:: :py:func:`setFieldConstraint()`
  :rtype: QgsFieldConstraints.Constraints
 %End
 
@@ -1595,8 +1595,8 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  data provider will be kept intact and cannot be modified. Ie, calling this method only allows for new
  constraints to be added on top of the existing provider constraints.
 .. versionadded:: 3.0
-.. seealso:: fieldConstraints()
-.. seealso:: removeFieldConstraint()
+.. seealso:: :py:func:`fieldConstraints()`
+.. seealso:: :py:func:`removeFieldConstraint()`
 %End
 
     void removeFieldConstraint( int index, QgsFieldConstraints::Constraint constraint );
@@ -1604,17 +1604,17 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  Removes a constraint for a specified field index. Any constraints inherited from the layer's
  data provider will be kept intact and cannot be removed.
 .. versionadded:: 3.0
-.. seealso:: fieldConstraints()
-.. seealso:: setFieldConstraint()
+.. seealso:: :py:func:`fieldConstraints()`
+.. seealso:: :py:func:`setFieldConstraint()`
 %End
 
     QString constraintExpression( int index ) const;
 %Docstring
  Returns the constraint expression for for a specified field index, if set.
 .. versionadded:: 3.0
-.. seealso:: fieldConstraints()
-.. seealso:: constraintDescription()
-.. seealso:: setConstraintExpression()
+.. seealso:: :py:func:`fieldConstraints()`
+.. seealso:: :py:func:`constraintDescription()`
+.. seealso:: :py:func:`setConstraintExpression()`
  :rtype: str
 %End
 
@@ -1622,9 +1622,9 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
 %Docstring
  Returns the descriptive name for the constraint expression for a specified field index.
 .. versionadded:: 3.0
-.. seealso:: constraints()
-.. seealso:: constraintExpression()
-.. seealso:: setConstraintExpression()
+.. seealso:: :py:func:`constraints()`
+.. seealso:: :py:func:`constraintExpression()`
+.. seealso:: :py:func:`setConstraintExpression()`
  :rtype: str
 %End
 
@@ -1633,9 +1633,9 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  Set the constraint expression for the specified field index. An optional descriptive name for the constraint
  can also be set. Setting an empty expression will clear any existing expression constraint.
 .. versionadded:: 3.0
-.. seealso:: constraintExpression()
-.. seealso:: constraintDescription()
-.. seealso:: constraints()
+.. seealso:: :py:func:`constraintExpression()`
+.. seealso:: :py:func:`constraintDescription()`
+.. seealso:: :py:func:`constraints()`
 %End
 
     void setEditorWidgetSetup( int index, const QgsEditorWidgetSetup &setup );
@@ -1662,8 +1662,8 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  returned list).
  \param fieldIndex column index for attribute
  \param limit maximum number of values to return (or -1 if unlimited)
-.. seealso:: minimumValue()
-.. seealso:: maximumValue()
+.. seealso:: :py:func:`minimumValue()`
+.. seealso:: :py:func:`maximumValue()`
  :rtype: set of QVariant
 %End
 
@@ -1691,8 +1691,8 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  Note that in some circumstances when unsaved changes are present for the layer then the
  returned value may be outdated (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value may be returned as the minimum).
-.. seealso:: maximumValue()
-.. seealso:: uniqueValues()
+.. seealso:: :py:func:`maximumValue()`
+.. seealso:: :py:func:`uniqueValues()`
  :rtype: QVariant
 %End
 
@@ -1703,8 +1703,8 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  Note that in some circumstances when unsaved changes are present for the layer then the
  returned value may be outdated (for instance when the attribute value in a saved feature has
  been changed inside the edit buffer then the previous saved value may be returned as the maximum).
-.. seealso:: minimumValue()
-.. seealso:: uniqueValues()
+.. seealso:: :py:func:`minimumValue()`
+.. seealso:: :py:func:`uniqueValues()`
  :rtype: QVariant
 %End
 
@@ -1734,7 +1734,7 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  \param feedback optional feedback object to allow cancelation
  :return: list of fetched values
 .. versionadded:: 2.9
-.. seealso:: getDoubleValues
+.. seealso:: :py:func:`getDoubleValues`
  :rtype: list of QVariant
 %End
 
@@ -1749,7 +1749,7 @@ Draws a vertex symbol at (screen) coordinates x, y. (Useful to assist vertex edi
  \param feedback optional feedback object to allow cancelation
  :return: list of fetched values
 .. versionadded:: 2.9
-.. seealso:: getValues
+.. seealso:: :py:func:`getValues`
  :rtype: list of float
 %End
 
@@ -1767,8 +1767,8 @@ Returns the current blending mode for features
 %Docstring
  Sets the ``opacity`` for the vector layer, where ``opacity`` is a value between 0 (totally transparent)
  and 1.0 (fully opaque).
-.. seealso:: opacity()
-.. seealso:: opacityChanged()
+.. seealso:: :py:func:`opacity()`
+.. seealso:: :py:func:`opacityChanged()`
 .. versionadded:: 3.0
 %End
 
@@ -1776,8 +1776,8 @@ Returns the current blending mode for features
 %Docstring
  Returns the opacity for the vector layer, where opacity is a value between 0 (totally transparent)
  and 1.0 (fully opaque).
-.. seealso:: setOpacity()
-.. seealso:: opacityChanged()
+.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`opacityChanged()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -1912,7 +1912,7 @@ Returns the current blending mode for features
 
  \param featureId  The id of the feature to select
 
-.. seealso:: select(QgsFeatureIds)
+.. seealso:: :py:func:`select`
 %End
 
     void select( const QgsFeatureIds &featureIds );
@@ -1921,7 +1921,7 @@ Returns the current blending mode for features
 
  \param featureIds The ids of the features to select
 
-.. seealso:: select(QgsFeatureId)
+.. seealso:: :py:func:`select`
 %End
 
     void deselect( const QgsFeatureId featureId );
@@ -1930,7 +1930,7 @@ Returns the current blending mode for features
 
  \param featureId  The id of the feature to deselect
 
-.. seealso:: deselect(QgsFeatureIds)
+.. seealso:: :py:func:`deselect`
 %End
 
     void deselect( const QgsFeatureIds &featureIds );
@@ -1939,14 +1939,14 @@ Returns the current blending mode for features
 
  \param featureIds The ids of the features to deselect
 
-.. seealso:: deselect(QgsFeatureId)
+.. seealso:: :py:func:`deselect`
 %End
 
     void removeSelection();
 %Docstring
  Clear selection
 
-.. seealso:: selectByIds()
+.. seealso:: :py:func:`selectByIds()`
 %End
 
     virtual void updateExtents( bool force = false );
@@ -2019,7 +2019,7 @@ Is emitted, before changes are rolled back
 
  \param idx The index of the new attribute
 
-.. seealso:: updatedFields()
+.. seealso:: :py:func:`updatedFields()`
 %End
 
     void beforeAddingExpressionField( const QString &fieldName );
@@ -2037,7 +2037,7 @@ Is emitted, before changes are rolled back
 
  \param idx The index of the deleted attribute
 
-.. seealso:: updatedFields()
+.. seealso:: :py:func:`updatedFields()`
 %End
 
     void beforeRemovingExpressionField( int idx );
@@ -2142,8 +2142,8 @@ Signal emitted when setFeatureBlendMode() is called
  Emitted when the layer's opacity is changed, where ``opacity`` is a value between 0 (transparent)
  and 1 (opaque).
 .. versionadded:: 3.0
-.. seealso:: setOpacity()
-.. seealso:: opacity()
+.. seealso:: :py:func:`setOpacity()`
+.. seealso:: :py:func:`opacity()`
 %End
 
     void editCommandStarted( const QString &text );
