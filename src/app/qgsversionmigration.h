@@ -35,8 +35,8 @@ class APP_EXPORT QgsVersionMigration
 
     /**
      * Check if two version has a migration options.
-     * @param fromVersion The version migrating from.
-     * @param toVersion The version migrating to.
+     * \param fromVersion The version migrating from.
+     * \param toVersion The version migrating to.
      * @return
      */
     static QgsVersionMigration *canMigrate( int fromVersion, int toVersion );

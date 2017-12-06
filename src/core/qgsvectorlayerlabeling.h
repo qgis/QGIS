@@ -107,9 +107,9 @@ class CORE_EXPORT QgsAbstractVectorLayerLabeling
     /**
      * Writes a TextSymbolizer element contents based on the provided labeling settings
      * @brief writeTextSymbolizer
-     * @param parent the node that will have the text symbolizer element added to it
-     * @param settings the settings getting translated to a TextSymbolizer
-     * @param props a open ended set of properties that can drive/inform the SLD encoding
+     * \param parent the node that will have the text symbolizer element added to it
+     * \param settings the settings getting translated to a TextSymbolizer
+     * \param props a open ended set of properties that can drive/inform the SLD encoding
      */
     virtual void writeTextSymbolizer( QDomNode &parent, QgsPalLayerSettings &settings, const QgsStringMap &props ) const;
 

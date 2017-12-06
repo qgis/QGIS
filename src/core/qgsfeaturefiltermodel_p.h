@@ -108,7 +108,7 @@ class QgsFieldExpressionValuesGatherer: public QThread
 
     /**
      * Emitted when values have been collected
-     * @param values list of unique matching string values
+     * \param values list of unique matching string values
      */
     void collectedValues();
 
