@@ -33,7 +33,7 @@ class GUI_EXPORT QgsEncodingFileDialog: public QFileDialog
   public:
 
     /**
-     * @brief QgsEncodingFileDialog constructor for QgsEncodingFileDialog
+     * Constructor for QgsEncodingFileDialog
      */
     QgsEncodingFileDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                            const QString &caption = QString(), const QString &directory = QString(),

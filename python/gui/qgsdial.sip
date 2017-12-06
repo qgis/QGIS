@@ -19,7 +19,7 @@ class QgsDial : QDial
 
     QgsDial( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- QgsDial constructor for QgsDial
+ Constructor for QgsDial
  \param parent parent object
 %End
 

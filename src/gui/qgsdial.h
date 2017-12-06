@@ -32,7 +32,7 @@ class GUI_EXPORT QgsDial : public QDial
   public:
 
     /**
-     * @brief QgsDial constructor for QgsDial
+     * Constructor for QgsDial
      * \param parent parent object
      */
     QgsDial( QWidget *parent SIP_TRANSFERTHIS = nullptr );
