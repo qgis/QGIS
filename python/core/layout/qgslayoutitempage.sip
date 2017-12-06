@@ -53,7 +53,7 @@ class QgsLayoutItemPage : QgsLayoutItem
     void setPageSize( const QgsLayoutSize &size );
 %Docstring
  Sets the ``size`` of the page.
-.. seealso:: pageSize()
+.. seealso:: :py:func:`pageSize()`
 %End
 
     bool setPageSize( const QString &size, Orientation orientation = Portrait );
@@ -64,14 +64,14 @@ class QgsLayoutItemPage : QgsLayoutItem
  The function returns true if ``size`` was a valid page size and the page
  size was changed. If false is returned then ``size`` could not be matched
  to a known page size.
-.. seealso:: pageSize()
+.. seealso:: :py:func:`pageSize()`
  :rtype: bool
 %End
 
     QgsLayoutSize pageSize() const;
 %Docstring
  Returns the size of the page.
-.. seealso:: setPageSize()
+.. seealso:: :py:func:`setPageSize()`
  :rtype: QgsLayoutSize
 %End
 

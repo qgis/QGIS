@@ -52,15 +52,15 @@ class QgsVertexMarker : QgsMapCanvasItem
     void setColor( const QColor &color );
 %Docstring
  Sets the stroke ``color`` for the marker.
-.. seealso:: color()
-.. seealso:: setFillColor()
+.. seealso:: :py:func:`color()`
+.. seealso:: :py:func:`setFillColor()`
 %End
 
     QColor color() const;
 %Docstring
  Returns the stroke color for the marker.
-.. seealso:: setColor()
-.. seealso:: fillColor()
+.. seealso:: :py:func:`setColor()`
+.. seealso:: :py:func:`fillColor()`
 .. versionadded:: 3.0
  :rtype: QColor
 %End
@@ -70,8 +70,8 @@ class QgsVertexMarker : QgsMapCanvasItem
  Sets the fill ``color`` for the marker. This setting only
  applies to some icon types.
 .. versionadded:: 3.0
-.. seealso:: fillColor()
-.. seealso:: setColor()
+.. seealso:: :py:func:`fillColor()`
+.. seealso:: :py:func:`setColor()`
 %End
 
     QColor fillColor() const;
@@ -79,8 +79,8 @@ class QgsVertexMarker : QgsMapCanvasItem
  Returns the fill ``color`` for the marker. This setting only
  applies to some icon types.
 .. versionadded:: 3.0
-.. seealso:: setFillColor()
-.. seealso:: color()
+.. seealso:: :py:func:`setFillColor()`
+.. seealso:: :py:func:`color()`
  :rtype: QColor
 %End
 

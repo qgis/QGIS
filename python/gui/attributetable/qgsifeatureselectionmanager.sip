@@ -59,7 +59,7 @@ class QgsIFeatureSelectionManager : QObject
  Return reference to identifiers of selected features
 
  :return: A list of QgsFeatureId's
-.. seealso:: selectedFeatures()
+.. seealso:: :py:func:`selectedFeatures()`
  :rtype: QgsFeatureIds
 %End
 

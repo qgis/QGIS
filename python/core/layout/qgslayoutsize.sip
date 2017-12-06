@@ -16,7 +16,7 @@ class QgsLayoutSize
  This class provides a method of storing sizes, consisting of a width and height,
  for use in QGIS layouts. Measurement units are stored alongside the size.
 
-.. seealso:: QgsLayoutMeasurementConverter
+.. seealso:: :py:class:`QgsLayoutMeasurementConverter`
 .. versionadded:: 3.0
 .. note::
 
@@ -54,45 +54,45 @@ class QgsLayoutSize
     void setSize( const double width, const double height );
 %Docstring
  Sets new ``width`` and ``height`` for the size.
-.. seealso:: setWidth()
-.. seealso:: setHeight()
-.. seealso:: setUnits()
+.. seealso:: :py:func:`setWidth()`
+.. seealso:: :py:func:`setHeight()`
+.. seealso:: :py:func:`setUnits()`
 %End
 
     double width() const;
 %Docstring
  Returns the width of the size.
-.. seealso:: setWidth()
-.. seealso:: height()
+.. seealso:: :py:func:`setWidth()`
+.. seealso:: :py:func:`height()`
  :rtype: float
 %End
 
     void setWidth( const double width );
 %Docstring
  Sets the ``width`` for the size.
-.. seealso:: width()
-.. seealso:: setHeight()
+.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`setHeight()`
 %End
 
     double height() const;
 %Docstring
  Returns the height of the size.
-.. seealso:: setHeight()
-.. seealso:: width()
+.. seealso:: :py:func:`setHeight()`
+.. seealso:: :py:func:`width()`
  :rtype: float
 %End
 
     void setHeight( const double height );
 %Docstring
  Sets the ``height`` for the size.
-.. seealso:: height()
-.. seealso:: setWidth()
+.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`setWidth()`
 %End
 
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
  Returns the units for the size.
-.. seealso:: setUnits()
+.. seealso:: :py:func:`setUnits()`
  :rtype: QgsUnitTypes.LayoutUnit
 %End
 
@@ -100,7 +100,7 @@ class QgsLayoutSize
 %Docstring
  Sets the ``units`` for the size. Does not alter the stored width or height,
  ie. no conversion is done.
-.. seealso:: units()
+.. seealso:: :py:func:`units()`
 %End
 
     bool isEmpty() const;
@@ -122,14 +122,14 @@ class QgsLayoutSize
     QString encodeSize() const;
 %Docstring
  Encodes the layout size to a string
-.. seealso:: decodeSize()
+.. seealso:: :py:func:`decodeSize()`
  :rtype: str
 %End
 
     static QgsLayoutSize decodeSize( const QString &string );
 %Docstring
  Decodes a size from a ``string``.
-.. seealso:: encodeSize()
+.. seealso:: :py:func:`encodeSize()`
  :rtype: QgsLayoutSize
 %End
 

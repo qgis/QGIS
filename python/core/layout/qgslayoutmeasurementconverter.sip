@@ -17,7 +17,7 @@ class QgsLayoutMeasurementConverter
  one unit to another. Conversion to or from pixel units utilizes a specified
  dots per inch (DPI) property for the converter. Converters default to using
  300 DPI.
-.. seealso:: QgsLayoutMeasurement
+.. seealso:: :py:class:`QgsLayoutMeasurement`
 .. versionadded:: 3.0
 %End
 
@@ -35,14 +35,14 @@ class QgsLayoutMeasurementConverter
 %Docstring
  Sets the dots per inch (``dpi``) for the measurement converter. This is used
  when converting measurements to and from pixels.
-.. seealso:: dpi()
+.. seealso:: :py:func:`dpi()`
 %End
 
     double dpi() const;
 %Docstring
  Returns the Dots per inch (DPI) of the measurement converter. This is used
  when converting measurements to and from pixels.
-.. seealso:: setDpi()
+.. seealso:: :py:func:`setDpi()`
  :rtype: float
 %End
 

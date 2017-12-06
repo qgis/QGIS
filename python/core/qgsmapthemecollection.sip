@@ -133,7 +133,7 @@ Add a new record for a layer.
     void insert( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
 %Docstring
  Inserts a new map theme to the collection.
-.. seealso:: update()
+.. seealso:: :py:func:`update()`
 %End
 
     void update( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
@@ -141,7 +141,7 @@ Add a new record for a layer.
  Updates a map theme within the collection.
  \param name name of map theme to update
  \param state map theme record to replace existing map theme
-.. seealso:: insert()
+.. seealso:: :py:func:`insert()`
 %End
 
     void removeMapTheme( const QString &name );
@@ -204,14 +204,14 @@ Remove all map themes from the collection.
 %Docstring
  Reads the map theme collection state from XML
  \param doc DOM document
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
 %End
 
     void writeXml( QDomDocument &doc );
 %Docstring
  Writes the map theme collection state to XML.
  \param doc DOM document
-.. seealso:: readXml
+.. seealso:: :py:func:`readXml`
 %End
 
     static QgsMapThemeCollection::MapThemeRecord createThemeFromCurrentState( QgsLayerTreeGroup *root, QgsLayerTreeModel *model );
@@ -248,7 +248,7 @@ Remove all map themes from the collection.
  Returns the master layer order (this will always match the project's QgsProject.layerOrder() ).
  All map themes will maintain the same layer order as the master layer order.
 .. versionadded:: 3.0
-.. seealso:: masterVisibleLayers()
+.. seealso:: :py:func:`masterVisibleLayers()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -258,7 +258,7 @@ Remove all map themes from the collection.
  of masterLayerOrder(), but the returned layers are filtered to only include those visible
  in the project's layer tree.
 .. versionadded:: 3.0
-.. seealso:: masterLayerOrder()
+.. seealso:: :py:func:`masterLayerOrder()`
  :rtype: list of QgsMapLayer
 %End
 

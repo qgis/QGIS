@@ -104,7 +104,7 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
  Returns a reference to the object's property collection, used for data defined overrides.
-.. seealso:: setDataDefinedProperties()
+.. seealso:: :py:func:`setDataDefinedProperties()`
  :rtype: QgsPropertyCollection
 %End
 
@@ -113,7 +113,7 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
 %Docstring
  Sets the objects's property collection, used for data defined overrides.
  \param collection property collection. Existing properties will be replaced.
-.. seealso:: dataDefinedProperties()
+.. seealso:: :py:func:`dataDefinedProperties()`
 %End
 
 
@@ -122,9 +122,9 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  Set a custom property for the object.
  \param key property key. If a property with the same key already exists it will be overwritten.
  \param value property value
-.. seealso:: customProperty()
-.. seealso:: removeCustomProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`customProperties()`
 %End
 
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
@@ -133,9 +133,9 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  \param key property key
  \param defaultValue default value to return if property with matching key does not exist
  :return: value of matching property
-.. seealso:: setCustomProperty()
-.. seealso:: removeCustomProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`customProperties()`
  :rtype: QVariant
 %End
 
@@ -143,17 +143,17 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
 %Docstring
  Remove a custom property from the object.
  \param key property key
-.. seealso:: setCustomProperty()
-.. seealso:: customProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperties()`
 %End
 
     QStringList customProperties() const;
 %Docstring
  Return list of keys stored in custom properties for the object.
-.. seealso:: setCustomProperty()
-.. seealso:: customProperty()
-.. seealso:: removeCustomProperty()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
  :rtype: list of str
 %End
 
@@ -188,7 +188,7 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  \param document DOM document
  \param context read write context
  :return: true if write was successful
-.. seealso:: readObjectPropertiesFromElement()
+.. seealso:: :py:func:`readObjectPropertiesFromElement()`
  :rtype: bool
 %End
 
@@ -199,7 +199,7 @@ class QgsLayoutObject: QObject, QgsExpressionContextGenerator
  \param document DOM document
  \param context read write context
  :return: true if read was successful
-.. seealso:: writeObjectPropertiesToElement()
+.. seealso:: :py:func:`writeObjectPropertiesToElement()`
  :rtype: bool
 %End
 

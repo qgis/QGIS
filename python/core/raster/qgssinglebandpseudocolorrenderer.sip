@@ -96,7 +96,7 @@ Returns the raster shader
     void setBand( int bandNo );
 %Docstring
  Sets the band used by the renderer.
-.. seealso:: band
+.. seealso:: :py:func:`band`
 .. versionadded:: 2.10
 %End
 

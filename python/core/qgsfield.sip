@@ -68,8 +68,8 @@ class QgsField
     QString name() const;
 %Docstring
  Returns the name of the field.
-.. seealso:: setName()
-.. seealso:: displayName()
+.. seealso:: :py:func:`setName()`
+.. seealso:: :py:func:`displayName()`
  :rtype: str
 %End
 
@@ -77,8 +77,8 @@ class QgsField
 %Docstring
  Returns the name to use when displaying this field. This will be the
  field alias if set, otherwise the field name.
-.. seealso:: name()
-.. seealso:: alias()
+.. seealso:: :py:func:`name()`
+.. seealso:: :py:func:`alias()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -184,7 +184,7 @@ Gets variant type of the field as it will be retrieved from data source
  :return: expression evaluated when calculating default values for field, or an
  empty string if no default is set
 .. versionadded:: 3.0
-.. seealso:: setDefaultValueDefinition()
+.. seealso:: :py:func:`setDefaultValueDefinition()`
  :rtype: QgsDefaultValue
 %End
 
@@ -194,14 +194,14 @@ Gets variant type of the field as it will be retrieved from data source
  \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
  a default constructed QgsDefaultValue() to reset.
 .. versionadded:: 3.0
-.. seealso:: defaultValueDefinition()
+.. seealso:: :py:func:`defaultValueDefinition()`
 %End
 
     const QgsFieldConstraints &constraints() const;
 %Docstring
  Returns constraints which are present for the field.
 .. versionadded:: 3.0
-.. seealso:: setConstraints()
+.. seealso:: :py:func:`setConstraints()`
  :rtype: QgsFieldConstraints
 %End
 
@@ -209,14 +209,14 @@ Gets variant type of the field as it will be retrieved from data source
 %Docstring
  Sets constraints which are present for the field.
 .. versionadded:: 3.0
-.. seealso:: constraints()
+.. seealso:: :py:func:`constraints()`
 %End
 
     QString alias() const;
 %Docstring
  Returns the alias for the field (the friendly displayed name of the field ),
  or an empty string if there is no alias.
-.. seealso:: setAlias()
+.. seealso:: :py:func:`setAlias()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -225,7 +225,7 @@ Gets variant type of the field as it will be retrieved from data source
 %Docstring
  Sets the alias for the field (the friendly displayed name of the field ).
  \param alias field alias, or empty string to remove an existing alias
-.. seealso:: alias()
+.. seealso:: :py:func:`alias()`
 .. versionadded:: 3.0
 %End
 

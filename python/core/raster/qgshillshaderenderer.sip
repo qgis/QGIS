@@ -63,34 +63,34 @@ class QgsHillshadeRenderer : QgsRasterRenderer
     void setBand( int bandNo );
 %Docstring
  Sets the band used by the renderer.
-.. seealso:: band
+.. seealso:: :py:func:`band`
 %End
 
     double azimuth() const;
 %Docstring
  Returns the direction of the light over the raster between 0-360.
-.. seealso:: setAzimuth()
+.. seealso:: :py:func:`setAzimuth()`
  :rtype: float
 %End
 
     double altitude()  const;
 %Docstring
  Returns the angle of the light source over the raster.
-.. seealso:: setAltitude()
+.. seealso:: :py:func:`setAltitude()`
  :rtype: float
 %End
 
     double zFactor()  const;
 %Docstring
  Returns the Z scaling factor.
-.. seealso:: setZFactor()
+.. seealso:: :py:func:`setZFactor()`
  :rtype: float
 %End
 
     bool multiDirectional() const;
 %Docstring
  Returns true if the renderer is using multi-directional hillshading.
-.. seealso:: setMultiDirectional()
+.. seealso:: :py:func:`setMultiDirectional()`
  :rtype: bool
 %End
 
@@ -98,28 +98,28 @@ class QgsHillshadeRenderer : QgsRasterRenderer
 %Docstring
  Set the azimuth of the light source.
  \param azimuth The azimuth of the light source, between 0 and 360.0
-.. seealso:: azimuth()
+.. seealso:: :py:func:`azimuth()`
 %End
 
     void setAltitude( double altitude );
 %Docstring
  Set the altitude of the light source
  \param altitude the altitude
-.. seealso:: altitude()
+.. seealso:: :py:func:`altitude()`
 %End
 
     void setZFactor( double zfactor );
 %Docstring
  Set the Z scaling factor of the result image.
  \param zfactor The z factor
-.. seealso:: zFactor()
+.. seealso:: :py:func:`zFactor()`
 %End
 
     void setMultiDirectional( bool isMultiDirectional );
 %Docstring
  Sets whether to render using a multi-directional hillshade algorithm.
  \param isMultiDirectional set to true to use multi directional rendering
-.. seealso:: multiDirectional()
+.. seealso:: :py:func:`multiDirectional()`
 %End
 
 };

@@ -77,7 +77,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     QString name() const;
 %Docstring
  Returns the composition's name.
-.. seealso:: setName()
+.. seealso:: :py:func:`setName()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -85,7 +85,7 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
     void setName( const QString &name );
 %Docstring
  Sets the composition's name.
-.. seealso:: name()
+.. seealso:: :py:func:`name()`
 .. versionadded:: 3.0
 %End
 
@@ -97,16 +97,16 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
  \param height page height in mm
  \param keepRelativeItemPosition if true, all items and guides will be moved so that they retain
  their same relative position to the top left corner of their current page.
-.. seealso:: paperHeight
-.. seealso:: paperWidth
+.. seealso:: :py:func:`paperHeight`
+.. seealso:: :py:func:`paperWidth`
 %End
 
     double paperHeight() const;
 %Docstring
  Height of paper item
  :return: height in mm
-.. seealso:: paperWidth
-.. seealso:: setPaperSize
+.. seealso:: :py:func:`paperWidth`
+.. seealso:: :py:func:`setPaperSize`
  :rtype: float
 %End
 
@@ -114,8 +114,8 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
 %Docstring
  Width of paper item
  :return: width in mm
-.. seealso:: paperHeight
-.. seealso:: setPaperSize
+.. seealso:: :py:func:`paperHeight`
+.. seealso:: :py:func:`setPaperSize`
  :rtype: float
 %End
 
@@ -132,8 +132,8 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
  \param marginBottom bottom margin  (millimeters)
  \param marginLeft left margin (millimeters)
 .. versionadded:: 2.12
-.. seealso:: setResizeToContentsMargins()
-.. seealso:: resizeToContentsMargins()
+.. seealso:: :py:func:`setResizeToContentsMargins()`
+.. seealso:: :py:func:`resizeToContentsMargins()`
 %End
 
     void setResizeToContentsMargins( double marginTop, double marginRight,
@@ -146,8 +146,8 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
  \param marginBottom bottom margin  (millimeters)
  \param marginLeft left margin (millimeters)
 .. versionadded:: 2.12
-.. seealso:: resizePageToContents()
-.. seealso:: resizeToContentsMargins()
+.. seealso:: :py:func:`resizePageToContents()`
+.. seealso:: :py:func:`resizeToContentsMargins()`
 %End
 
     void resizeToContentsMargins( double &marginTop /Out/, double &marginRight /Out/,
@@ -160,8 +160,8 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
  \param marginBottom reference for bottom margin  (millimeters)
  \param marginLeft reference for left margin (millimeters)
 .. versionadded:: 2.12
-.. seealso:: resizePageToContents()
-.. seealso:: setResizeToContentsMargins()
+.. seealso:: :py:func:`resizePageToContents()`
+.. seealso:: :py:func:`setResizeToContentsMargins()`
 %End
 
     double spaceBetweenPages() const;
@@ -175,14 +175,14 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
 %Docstring
  Sets the number of pages for the composition.
  \param pages number of pages
-.. seealso:: numPages
+.. seealso:: :py:func:`numPages`
 %End
 
     int numPages() const;
 %Docstring
  Returns the number of pages in the composition.
  :return: number of pages
-.. seealso:: setNumPages
+.. seealso:: :py:func:`setNumPages`
  :rtype: int
 %End
 
@@ -193,9 +193,9 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
  \param page page number, starting with 1
  :return: true if page is empty
 .. versionadded:: 2.5
-.. seealso:: numPages
-.. seealso:: setNumPages
-.. seealso:: shouldExportPage
+.. seealso:: :py:func:`numPages`
+.. seealso:: :py:func:`setNumPages`
+.. seealso:: :py:func:`shouldExportPage`
  :rtype: bool
 %End
 
@@ -205,8 +205,8 @@ class QgsComposition : QGraphicsScene, QgsExpressionContextGenerator
  \param page page number, starting with 1
  :return: true if page should be exported
 .. versionadded:: 2.5
-.. seealso:: numPages
-.. seealso:: pageIsEmpty
+.. seealso:: :py:func:`numPages`
+.. seealso:: :py:func:`pageIsEmpty`
  :rtype: bool
 %End
 
@@ -286,7 +286,7 @@ Hides / shows custom snap lines
  will also prevent them from being rendered in composition exports.
  \param visible set to true to show pages, false to hide pages
 .. versionadded:: 2.12
-.. seealso:: pagesVisible()
+.. seealso:: :py:func:`pagesVisible()`
 %End
 
     bool pagesVisible() const;
@@ -295,7 +295,7 @@ Hides / shows custom snap lines
  effects both display of the page boundaries in composer views and
  whether they will be rendered in composition exports.
 .. versionadded:: 2.12
-.. seealso:: setPagesVisible()
+.. seealso:: :py:func:`setPagesVisible()`
  :rtype: bool
 %End
 
@@ -339,7 +339,7 @@ Removes all snap lines
  Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
  and the edges and centers of other items.
  \param snapTolerance snap tolerance in pixels
-.. seealso:: alignmentSnapTolerance
+.. seealso:: :py:func:`alignmentSnapTolerance`
 .. versionadded:: 2.5
 %End
 
@@ -348,7 +348,7 @@ Removes all snap lines
  Returns the snap tolerance to use when automatically snapping items during movement and resizing to guides
  and the edges and centers of other items.
  :return: snap tolerance in pixels
-.. seealso:: setAlignmentSnapTolerance
+.. seealso:: :py:func:`setAlignmentSnapTolerance`
 .. versionadded:: 2.5
  :rtype: int
 %End
@@ -357,7 +357,7 @@ Removes all snap lines
 %Docstring
  Sets whether selection bounding boxes should be shown in the composition
  \param boundsVisible set to true to show selection bounding box
-.. seealso:: boundingBoxesVisible
+.. seealso:: :py:func:`boundingBoxesVisible`
 .. versionadded:: 2.7
 %End
 
@@ -365,7 +365,7 @@ Removes all snap lines
 %Docstring
  Returns whether selection bounding boxes should be shown in the composition
  :return: true if selection bounding boxes should be shown
-.. seealso:: setBoundingBoxesVisible
+.. seealso:: :py:func:`setBoundingBoxesVisible`
 .. versionadded:: 2.7
  :rtype: bool
 %End
@@ -465,8 +465,8 @@ Returns on which page number (0-based) is displayed an item
 %Docstring
  Returns true if the composition will generate corresponding world files when pages
  are exported.
-.. seealso:: setGenerateWorldFile()
-.. seealso:: referenceMap()
+.. seealso:: :py:func:`setGenerateWorldFile()`
+.. seealso:: :py:func:`referenceMap()`
  :rtype: bool
 %End
 
@@ -475,8 +475,8 @@ Returns on which page number (0-based) is displayed an item
  Sets whether the composition will generate corresponding world files when pages
  are exported.
  \param enabled set to true to generate world files
-.. seealso:: generateWorldFile()
-.. seealso:: setReferenceMap()
+.. seealso:: :py:func:`generateWorldFile()`
+.. seealso:: :py:func:`setReferenceMap()`
 %End
 
     QgsComposerMap *referenceMap() const;
@@ -484,8 +484,8 @@ Returns on which page number (0-based) is displayed an item
  Returns the map item which will be used to generate corresponding world files when the
  composition is exported. If no map was explicitly set via setReferenceMap(), the largest
  map in the composition will be returned (or None if there are no maps in the composition).
-.. seealso:: setReferenceMap()
-.. seealso:: generateWorldFile()
+.. seealso:: :py:func:`setReferenceMap()`
+.. seealso:: :py:func:`generateWorldFile()`
  :rtype: QgsComposerMap
 %End
 
@@ -494,8 +494,8 @@ Returns on which page number (0-based) is displayed an item
  Sets the map item which will be used to generate corresponding world files when the
  composition is exported.
  \param map composer map item
-.. seealso:: referenceMap()
-.. seealso:: setGenerateWorldFile()
+.. seealso:: :py:func:`referenceMap()`
+.. seealso:: :py:func:`setGenerateWorldFile()`
 %End
 
     bool useAdvancedEffects() const;
@@ -796,8 +796,8 @@ Prepare the printer for printing in a PDF
  \param dpi optional dpi override, or 0 to use default composition print resolution. This
  parameter has no effect if imageSize is specified.
  :return: rendered image, or null image if image does not fit into available memory
-.. seealso:: renderRectAsRaster()
-.. seealso:: renderPage()
+.. seealso:: :py:func:`renderRectAsRaster()`
+.. seealso:: :py:func:`renderPage()`
  :rtype: QImage
 %End
 
@@ -813,8 +813,8 @@ Prepare the printer for printing in a PDF
  parameter has no effect if imageSize is specified.
  :return: rendered image, or null image if image does not fit into available memory
 .. versionadded:: 2.12
-.. seealso:: printPageAsRaster()
-.. seealso:: renderRect()
+.. seealso:: :py:func:`printPageAsRaster()`
+.. seealso:: :py:func:`renderRect()`
  :rtype: QImage
 %End
 
@@ -823,8 +823,8 @@ Prepare the printer for printing in a PDF
  Renders a full page to a paint device.
  \param p destination painter
  \param page page number, 0 based such that the first page is page 0
-.. seealso:: renderRect()
-.. seealso:: printPageAsRaster()
+.. seealso:: :py:func:`renderRect()`
+.. seealso:: :py:func:`printPageAsRaster()`
 %End
 
     void renderRect( QPainter *p, const QRectF &rect );
@@ -834,8 +834,8 @@ Prepare the printer for printing in a PDF
  \param p destination painter
  \param rect region of composition to render
 .. versionadded:: 2.12
-.. seealso:: renderPage()
-.. seealso:: renderRectAsRaster()
+.. seealso:: :py:func:`renderPage()`
+.. seealso:: :py:func:`renderRectAsRaster()`
 %End
 
     void georeferenceOutput( const QString &file, QgsComposerMap *referenceMap = 0,
@@ -879,7 +879,7 @@ Prepare the printer for printing in a PDF
 %Docstring
  Returns the current atlas mode of the composition
  :return: current atlas mode
-.. seealso:: setAtlasMode
+.. seealso:: :py:func:`setAtlasMode`
  :rtype: QgsComposition.AtlasMode
 %End
 
@@ -888,7 +888,7 @@ Prepare the printer for printing in a PDF
  Sets the current atlas mode of the composition.
  \param mode atlas mode to switch to
  :return: false if the mode could not be changed.
-.. seealso:: atlasMode
+.. seealso:: :py:func:`atlasMode`
  :rtype: bool
 %End
 
@@ -915,9 +915,9 @@ Prepare the printer for printing in a PDF
  Set a custom property for the composition.
  \param key property key. If a property with the same key already exists it will be overwritten.
  \param value property value
-.. seealso:: customProperty()
-.. seealso:: removeCustomProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`customProperties()`
 .. versionadded:: 2.12
 %End
 
@@ -927,9 +927,9 @@ Prepare the printer for printing in a PDF
  \param key property key
  \param defaultValue default value to return if property with matching key does not exist
  :return: value of matching property
-.. seealso:: setCustomProperty()
-.. seealso:: removeCustomProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`customProperties()`
 .. versionadded:: 2.12
  :rtype: QVariant
 %End
@@ -938,18 +938,18 @@ Prepare the printer for printing in a PDF
 %Docstring
  Remove a custom property from the composition.
  \param key property key
-.. seealso:: setCustomProperty()
-.. seealso:: customProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperties()`
 .. versionadded:: 2.12
 %End
 
     QStringList customProperties() const;
 %Docstring
  Return list of keys stored in custom properties for composition.
-.. seealso:: setCustomProperty()
-.. seealso:: customProperty()
-.. seealso:: removeCustomProperty()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
 .. versionadded:: 2.12
  :rtype: list of str
 %End
@@ -984,7 +984,7 @@ Prepare the printer for printing in a PDF
 %Docstring
  Returns a reference to the composition's property collection, used for data defined overrides.
 .. versionadded:: 3.0
-.. seealso:: setDataDefinedProperties()
+.. seealso:: :py:func:`setDataDefinedProperties()`
  :rtype: QgsPropertyCollection
 %End
 
@@ -1041,7 +1041,7 @@ Casts object to the proper subclass type and calls corresponding itemAdded signa
  Sets the composition's property collection, used for data defined overrides.
  \param collection property collection. Existing properties will be replaced.
 .. versionadded:: 3.0
-.. seealso:: dataDefinedProperties()
+.. seealso:: :py:func:`dataDefinedProperties()`
 %End
 
   protected:
@@ -1054,7 +1054,7 @@ Casts object to the proper subclass type and calls corresponding itemAdded signa
 %Docstring
  Emitted when the composition's name is changed.
 .. versionadded:: 3.0
-.. seealso:: setName()
+.. seealso:: :py:func:`setName()`
 %End
 
     void paperSizeChanged();

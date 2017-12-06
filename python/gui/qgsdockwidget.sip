@@ -40,7 +40,7 @@ class QgsDockWidget : QDockWidget
 %Docstring
  Returns true if the dock is both opened and raised to the front (ie not hidden by
  any other tabs.
-.. seealso:: setUserVisible()
+.. seealso:: :py:func:`setUserVisible()`
  :rtype: bool
 %End
 
@@ -58,7 +58,7 @@ class QgsDockWidget : QDockWidget
  - hiding a dock which is open and raised (ie, user visible) will cause the dock to
  be closed
  - hiding a dock which is closed has no effect and raises no signals
-.. seealso:: isUserVisible()
+.. seealso:: :py:func:`isUserVisible()`
 %End
 
   protected:
@@ -71,31 +71,31 @@ class QgsDockWidget : QDockWidget
     void closed();
 %Docstring
  Emitted when dock widget is closed.
-.. seealso:: closedStateChanged()
-.. seealso:: opened()
+.. seealso:: :py:func:`closedStateChanged()`
+.. seealso:: :py:func:`opened()`
 %End
 
     void closedStateChanged( bool wasClosed );
 %Docstring
  Emitted when dock widget is closed (or opened).
  \param wasClosed will be true if dock widget was closed, or false if dock widget was opened
-.. seealso:: closed()
-.. seealso:: openedStateChanged()
+.. seealso:: :py:func:`closed()`
+.. seealso:: :py:func:`openedStateChanged()`
 %End
 
     void opened();
 %Docstring
  Emitted when dock widget is opened.
-.. seealso:: openedStateChanged()
-.. seealso:: closed()
+.. seealso:: :py:func:`openedStateChanged()`
+.. seealso:: :py:func:`closed()`
 %End
 
     void openedStateChanged( bool wasOpened );
 %Docstring
  Emitted when dock widget is opened (or closed).
  \param wasOpened will be true if dock widget was opened, or false if dock widget was closed
-.. seealso:: closedStateChanged()
-.. seealso:: opened()
+.. seealso:: :py:func:`closedStateChanged()`
+.. seealso:: :py:func:`opened()`
 %End
 
 };

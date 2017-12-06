@@ -39,30 +39,30 @@ class QgsAbstractLayoutUndoCommand: QUndoCommand
     void saveBeforeState();
 %Docstring
  Saves current layout state as before state.
-.. seealso:: beforeState()
-.. seealso:: saveAfterState()
+.. seealso:: :py:func:`beforeState()`
+.. seealso:: :py:func:`saveAfterState()`
 %End
 
     void saveAfterState();
 %Docstring
  Saves current layout state as after state.
-.. seealso:: afterState()
-.. seealso:: saveBeforeState()
+.. seealso:: :py:func:`afterState()`
+.. seealso:: :py:func:`saveBeforeState()`
 %End
 
     QDomDocument beforeState() const;
 %Docstring
  Returns the before state for the layout.
-.. seealso:: saveBeforeState()
-.. seealso:: afterState()
+.. seealso:: :py:func:`saveBeforeState()`
+.. seealso:: :py:func:`afterState()`
  :rtype: QDomDocument
 %End
 
     QDomDocument afterState() const;
 %Docstring
  Returns the after state for the layout.
-.. seealso:: saveAfterState()
-.. seealso:: beforeState()
+.. seealso:: :py:func:`saveAfterState()`
+.. seealso:: :py:func:`beforeState()`
  :rtype: QDomDocument
 %End
 
@@ -80,7 +80,7 @@ class QgsAbstractLayoutUndoCommand: QUndoCommand
 
  Subclasses must implement this to handle encapsulating their current state into a DOM document.
 
-.. seealso:: restoreState()
+.. seealso:: :py:func:`restoreState()`
 %End
 
     virtual void restoreState( QDomDocument &stateDoc ) = 0;
@@ -89,7 +89,7 @@ class QgsAbstractLayoutUndoCommand: QUndoCommand
 
  Subclasses must implement this to handle restoring their current state from the encapsulated state.
 
-.. seealso:: saveState()
+.. seealso:: :py:func:`saveState()`
 %End
 
     void setAfterState( const QDomDocument &stateDoc );

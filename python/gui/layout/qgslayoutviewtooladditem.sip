@@ -25,7 +25,7 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
     int itemMetadataId() const;
 %Docstring
  Returns the item metadata id for items created by the tool.
-.. seealso:: setItemMetadataId()
+.. seealso:: :py:func:`setItemMetadataId()`
  :rtype: int
 %End
 
@@ -36,7 +36,7 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
  The ``metadataId`` associates the current tool behavior with a metadata entry
  from QgsLayoutItemGuiRegistry.
 
-.. seealso:: itemMetadataId()
+.. seealso:: :py:func:`itemMetadataId()`
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );

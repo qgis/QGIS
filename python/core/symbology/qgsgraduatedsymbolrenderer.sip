@@ -334,8 +334,8 @@ create renderer from XML element
 %Docstring
  Returns the renderer's source symbol, which is the base symbol used for the each classes' symbol before applying
  the classes' color.
-.. seealso:: setSourceSymbol()
-.. seealso:: sourceColorRamp()
+.. seealso:: :py:func:`setSourceSymbol()`
+.. seealso:: :py:func:`sourceColorRamp()`
  :rtype: QgsSymbol
 %End
 
@@ -344,15 +344,15 @@ create renderer from XML element
  Sets the source symbol for the renderer, which is the base symbol used for the each classes' symbol before applying
  the classes' color.
  \param sym source symbol, ownership is transferred to the renderer
-.. seealso:: sourceSymbol()
-.. seealso:: setSourceColorRamp()
+.. seealso:: :py:func:`sourceSymbol()`
+.. seealso:: :py:func:`setSourceColorRamp()`
 %End
 
     QgsColorRamp *sourceColorRamp();
 %Docstring
  Returns the source color ramp, from which each classes' color is derived.
-.. seealso:: setSourceColorRamp()
-.. seealso:: sourceSymbol()
+.. seealso:: :py:func:`setSourceColorRamp()`
+.. seealso:: :py:func:`sourceSymbol()`
  :rtype: QgsColorRamp
 %End
 
@@ -374,7 +374,7 @@ create renderer from XML element
  Update all the symbols but leave breaks and colors. This method also sets the source
  symbol for the renderer.
  \param sym source symbol to use for classes. Ownership is not transferred.
-.. seealso:: setSourceSymbol()
+.. seealso:: :py:func:`setSourceSymbol()`
 %End
 
     void setSymbolSizes( double minSize, double maxSize );

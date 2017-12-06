@@ -154,7 +154,7 @@ class QgsFeatureRequest
 %Docstring
  Prepare the expression with the given context.
 
-.. seealso:: QgsExpression.prepare
+.. seealso:: :py:func:`QgsExpression.prepare`
 
 .. versionadded:: 3.0
  :rtype: bool
@@ -302,7 +302,7 @@ copy constructor
  is expected to be in the same CRS as the destinationCrs(). Otherwise, ``rectangle``
  should use the same CRS as the source layer/provider.
 
-.. seealso:: filterRect()
+.. seealso:: :py:func:`filterRect()`
  :rtype: QgsFeatureRequest
 %End
 
@@ -315,7 +315,7 @@ copy constructor
  will be in the same CRS as the destinationCrs(). Otherwise, the rectangle
  will use the same CRS as the source layer/provider.
 
-.. seealso:: setFilterRect()
+.. seealso:: :py:func:`setFilterRect()`
  :rtype: QgsRectangle
 %End
 
@@ -348,7 +348,7 @@ Get feature IDs that should be fetched.
 
    Invalid geometry checking is not performed when retrieving features
  directly from a QgsVectorDataProvider.
-.. seealso:: invalidGeometryCheck()
+.. seealso:: :py:func:`invalidGeometryCheck()`
 .. versionadded:: 3.0
  :rtype: QgsFeatureRequest
 %End
@@ -356,7 +356,7 @@ Get feature IDs that should be fetched.
     InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
  Returns the invalid geometry checking behavior.
-.. seealso:: setInvalidGeometryCheck()
+.. seealso:: :py:func:`setInvalidGeometryCheck()`
 .. versionadded:: 3.0
  :rtype: InvalidGeometryCheck
 %End
@@ -367,7 +367,7 @@ Get feature IDs that should be fetched.
  invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
  called using the feature with invalid geometry as a parameter.
 .. versionadded:: 3.0
-.. seealso:: invalidGeometryCallback()
+.. seealso:: :py:func:`invalidGeometryCallback()`
  :rtype: QgsFeatureRequest
 %End
 %MethodCode
@@ -388,18 +388,18 @@ Get feature IDs that should be fetched.
 
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 %Docstring
-.. seealso:: QgsExpression}
+.. seealso:: :py:class:`QgsExpression`
  \param expression expression string
-.. seealso:: filterExpression
-.. seealso:: setExpressionContext
+.. seealso:: :py:func:`filterExpression`
+.. seealso:: :py:func:`setExpressionContext`
  :rtype: QgsFeatureRequest
 %End
 
     QgsExpression *filterExpression() const;
 %Docstring
  Returns the filter expression if set.
-.. seealso:: setFilterExpression
-.. seealso:: expressionContext
+.. seealso:: :py:func:`setFilterExpression`
+.. seealso:: :py:func:`expressionContext`
  :rtype: QgsExpression
 %End
 
@@ -416,8 +416,8 @@ Get feature IDs that should be fetched.
 %Docstring
  Returns the expression context used to evaluate filter expressions.
 .. versionadded:: 2.12
-.. seealso:: setExpressionContext
-.. seealso:: filterExpression
+.. seealso:: :py:func:`setExpressionContext`
+.. seealso:: :py:func:`filterExpression`
  :rtype: QgsExpressionContext
 %End
 
@@ -425,8 +425,8 @@ Get feature IDs that should be fetched.
 %Docstring
  Sets the expression context used to evaluate filter expressions.
 .. versionadded:: 2.12
-.. seealso:: expressionContext
-.. seealso:: setFilterExpression
+.. seealso:: :py:func:`expressionContext`
+.. seealso:: :py:func:`setFilterExpression`
  :rtype: QgsFeatureRequest
 %End
 
@@ -487,7 +487,7 @@ Get feature IDs that should be fetched.
 %Docstring
  Set the maximum number of features to request.
  \param limit maximum number of features, or -1 to request all features.
-.. seealso:: limit()
+.. seealso:: :py:func:`limit()`
 .. versionadded:: 2.14
  :rtype: QgsFeatureRequest
 %End
@@ -495,7 +495,7 @@ Get feature IDs that should be fetched.
     long limit() const;
 %Docstring
  Returns the maximum number of features to request, or -1 if no limit set.
-.. seealso:: setLimit
+.. seealso:: :py:func:`setLimit`
 .. versionadded:: 2.14
  :rtype: long
 %End
@@ -555,7 +555,7 @@ Set a subset of attributes by names that will be fetched
  Returns the destination coordinate reference system for feature's geometries,
  or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
  and all features will be left with their original geometry.
-.. seealso:: setDestinationCrs()
+.. seealso:: :py:func:`setDestinationCrs()`
 .. versionadded:: 3.0
  :rtype: QgsCoordinateReferenceSystem
 %End
@@ -581,7 +581,7 @@ Set a subset of attributes by names that will be fetched
  original geometry in the source CRS, so these values are not affected by
  any destination CRS transform present in the feature request.
 
-.. seealso:: destinationCrs()
+.. seealso:: :py:func:`destinationCrs()`
 .. versionadded:: 3.0
  :rtype: QgsFeatureRequest
 %End
@@ -592,8 +592,8 @@ Set a subset of attributes by names that will be fetched
  features and a destinationCrs() is set. This function will be
  called using the feature which encountered the transform error as a parameter.
 .. versionadded:: 3.0
-.. seealso:: transformErrorCallback()
-.. seealso:: setDestinationCrs()
+.. seealso:: :py:func:`transformErrorCallback()`
+.. seealso:: :py:func:`setDestinationCrs()`
  :rtype: QgsFeatureRequest
 %End
 %MethodCode

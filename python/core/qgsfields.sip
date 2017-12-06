@@ -236,7 +236,7 @@ Get field's origin index (its meaning is specific to each type of origin)
  \param fieldName The name of the field.
 
  :return: The field index if found or -1 in case it cannot be found.
-.. seealso:: lookupField For a more tolerant alternative.
+.. seealso:: :py:func:`lookupField`
  :rtype: int
 %End
 
@@ -249,7 +249,7 @@ Get field's origin index (its meaning is specific to each type of origin)
  \param fieldName The name of the field.
 
  :return: The field index if found or -1 in case it cannot be found.
-.. seealso:: lookupField For a more tolerant alternative.
+.. seealso:: :py:func:`lookupField`
 .. versionadded:: 3.0
  :rtype: int
 %End
@@ -266,7 +266,7 @@ Get field's origin index (its meaning is specific to each type of origin)
  \param fieldName The name to look for.
 
  :return: The field index if found or -1 in case it cannot be found.
-.. seealso:: indexFromName For a more performant and precise but less tolerant alternative.
+.. seealso:: :py:func:`indexFromName`
 .. versionadded:: 2.4
  :rtype: int
 %End

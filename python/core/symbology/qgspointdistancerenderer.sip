@@ -104,20 +104,20 @@ Optional label text
 %Docstring
  Sets the attribute name for labeling points.
  \param name attribute name, or empty string to avoid labeling features by the renderer
-.. seealso:: labelAttributeName()
-.. seealso:: setLabelFont()
-.. seealso:: setLabelColor()
-.. seealso:: setMinimumLabelScale()
+.. seealso:: :py:func:`labelAttributeName()`
+.. seealso:: :py:func:`setLabelFont()`
+.. seealso:: :py:func:`setLabelColor()`
+.. seealso:: :py:func:`setMinimumLabelScale()`
 %End
 
     QString labelAttributeName() const;
 %Docstring
  Returns the attribute name used for labeling points, or an empty string if no labeling
  will be done by the renderer.
-.. seealso:: setLabelAttributeName()
-.. seealso:: labelFont()
-.. seealso:: minimumLabelScale()
-.. seealso:: labelColor()
+.. seealso:: :py:func:`setLabelAttributeName()`
+.. seealso:: :py:func:`labelFont()`
+.. seealso:: :py:func:`minimumLabelScale()`
+.. seealso:: :py:func:`labelColor()`
  :rtype: str
 %End
 
@@ -125,17 +125,17 @@ Optional label text
 %Docstring
  Sets the font used for labeling points.
  \param font label font
-.. seealso:: labelFont()
-.. seealso:: setLabelAttributeName()
-.. seealso:: setLabelColor()
+.. seealso:: :py:func:`labelFont()`
+.. seealso:: :py:func:`setLabelAttributeName()`
+.. seealso:: :py:func:`setLabelColor()`
 %End
 
     QFont labelFont() const;
 %Docstring
  Returns the font used for labeling points.
-.. seealso:: setLabelFont()
-.. seealso:: labelAttributeName()
-.. seealso:: labelColor()
+.. seealso:: :py:func:`setLabelFont()`
+.. seealso:: :py:func:`labelAttributeName()`
+.. seealso:: :py:func:`labelColor()`
  :rtype: QFont
 %End
 
@@ -143,16 +143,16 @@ Optional label text
 %Docstring
  Sets the minimum map ``scale`` (i.e. most "zoomed out") at which points should be labeled by the renderer.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: minimumLabelScale()
-.. seealso:: setLabelAttributeName()
+.. seealso:: :py:func:`minimumLabelScale()`
+.. seealso:: :py:func:`setLabelAttributeName()`
 %End
 
     double minimumLabelScale() const;
 %Docstring
  Returns the minimum map scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: setMinimumLabelScale()
-.. seealso:: labelAttributeName()
+.. seealso:: :py:func:`setMinimumLabelScale()`
+.. seealso:: :py:func:`labelAttributeName()`
  :rtype: float
 %End
 
@@ -160,17 +160,17 @@ Optional label text
 %Docstring
  Sets the color to use for for labeling points.
  \param color label color
-.. seealso:: labelColor()
-.. seealso:: setLabelAttributeName()
-.. seealso:: setLabelFont()
+.. seealso:: :py:func:`labelColor()`
+.. seealso:: :py:func:`setLabelAttributeName()`
+.. seealso:: :py:func:`setLabelFont()`
 %End
 
     QColor labelColor() const;
 %Docstring
  Returns the color used for for labeling points.
-.. seealso:: setLabelColor()
-.. seealso:: labelAttributeName()
-.. seealso:: labelFont()
+.. seealso:: :py:func:`setLabelColor()`
+.. seealso:: :py:func:`labelAttributeName()`
+.. seealso:: :py:func:`labelFont()`
  :rtype: QColor
 %End
 
@@ -179,16 +179,16 @@ Optional label text
  Sets the tolerance distance for grouping points. Units are specified using
  setToleranceUnit().
  \param distance tolerance distance
-.. seealso:: tolerance()
-.. seealso:: setToleranceUnit()
+.. seealso:: :py:func:`tolerance()`
+.. seealso:: :py:func:`setToleranceUnit()`
 %End
 
     double tolerance() const;
 %Docstring
  Returns the tolerance distance for grouping points. Units are retrieved using
  toleranceUnit().
-.. seealso:: setTolerance()
-.. seealso:: toleranceUnit()
+.. seealso:: :py:func:`setTolerance()`
+.. seealso:: :py:func:`toleranceUnit()`
  :rtype: float
 %End
 
@@ -196,16 +196,16 @@ Optional label text
 %Docstring
  Sets the units for the tolerance distance.
  \param unit tolerance distance units
-.. seealso:: setTolerance()
-.. seealso:: toleranceUnit()
+.. seealso:: :py:func:`setTolerance()`
+.. seealso:: :py:func:`toleranceUnit()`
 .. versionadded:: 2.12
 %End
 
     QgsUnitTypes::RenderUnit toleranceUnit() const;
 %Docstring
  Returns the units for the tolerance distance.
-.. seealso:: tolerance()
-.. seealso:: setToleranceUnit()
+.. seealso:: :py:func:`tolerance()`
+.. seealso:: :py:func:`setToleranceUnit()`
 .. versionadded:: 2.12
  :rtype: QgsUnitTypes.RenderUnit
 %End
@@ -215,16 +215,16 @@ Optional label text
  Sets the map unit scale object for the distance tolerance. This is only used if the
  toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
  \param scale scale for distance tolerance
-.. seealso:: toleranceMapUnitScale()
-.. seealso:: setToleranceUnit()
+.. seealso:: :py:func:`toleranceMapUnitScale()`
+.. seealso:: :py:func:`setToleranceUnit()`
 %End
 
     const QgsMapUnitScale &toleranceMapUnitScale() const;
 %Docstring
  Returns the map unit scale object for the distance tolerance. This is only used if the
  toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
-.. seealso:: setToleranceMapUnitScale()
-.. seealso:: toleranceUnit()
+.. seealso:: :py:func:`setToleranceMapUnitScale()`
+.. seealso:: :py:func:`toleranceUnit()`
  :rtype: QgsMapUnitScale
 %End
 

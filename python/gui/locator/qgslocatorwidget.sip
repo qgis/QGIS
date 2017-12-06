@@ -15,7 +15,7 @@ class QgsLocatorWidget : QWidget
 %Docstring
  A special locator widget which allows searching for matching results from a QgsLocator
  and presenting them to users for selection.
-.. seealso:: QgsLocator
+.. seealso:: :py:class:`QgsLocator`
 .. versionadded:: 3.0
 %End
 

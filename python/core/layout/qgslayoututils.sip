@@ -51,7 +51,7 @@ class QgsLayoutUtils
  This method returns a new QgsRenderContext which matches the scale and settings of the
  target map. If the ``dpi`` argument is not specified then the dpi will be taken from the destination
  painter device.
-.. seealso:: createRenderContextForLayout()
+.. seealso:: :py:func:`createRenderContextForLayout()`
  :rtype: QgsRenderContext
 %End
 
@@ -62,7 +62,7 @@ class QgsLayoutUtils
  QgsLayout.referenceMap().
  If the ``dpi`` argument is not specified then the dpi will be taken from the destination
  painter device.
-.. seealso:: createRenderContextForMap()
+.. seealso:: :py:func:`createRenderContextForMap()`
  :rtype: QgsRenderContext
 %End
 
@@ -99,20 +99,20 @@ class QgsLayoutUtils
     static double fontAscentMM( const QFont &font );
 %Docstring
  Calculates a ``font`` ascent in millimeters, including workarounds for QT font rendering issues.
-.. seealso:: fontDescentMM()
-.. seealso:: fontHeightMM()
-.. seealso:: fontHeightCharacterMM()
-.. seealso:: textWidthMM()
+.. seealso:: :py:func:`fontDescentMM()`
+.. seealso:: :py:func:`fontHeightMM()`
+.. seealso:: :py:func:`fontHeightCharacterMM()`
+.. seealso:: :py:func:`textWidthMM()`
  :rtype: float
 %End
 
     static double fontDescentMM( const QFont &font );
 %Docstring
  Calculate a ``font`` descent in millimeters, including workarounds for QT font rendering issues.
-.. seealso:: fontAscentMM()
-.. seealso:: fontHeightMM()
-.. seealso:: fontHeightCharacterMM()
-.. seealso:: textWidthMM()
+.. seealso:: :py:func:`fontAscentMM()`
+.. seealso:: :py:func:`fontHeightMM()`
+.. seealso:: :py:func:`fontHeightCharacterMM()`
+.. seealso:: :py:func:`textWidthMM()`
  :rtype: float
 %End
 
@@ -120,10 +120,10 @@ class QgsLayoutUtils
 %Docstring
  Calculate a ``font`` height in millimeters, including workarounds for QT font rendering issues.
  The font height is the font ascent + descent + 1 (for the baseline).
-.. seealso:: fontAscentMM()
-.. seealso:: fontDescentMM()
-.. seealso:: fontHeightCharacterMM()
-.. seealso:: textWidthMM()
+.. seealso:: :py:func:`fontAscentMM()`
+.. seealso:: :py:func:`fontDescentMM()`
+.. seealso:: :py:func:`fontHeightCharacterMM()`
+.. seealso:: :py:func:`textWidthMM()`
  :rtype: float
 %End
 
@@ -131,10 +131,10 @@ class QgsLayoutUtils
 %Docstring
  Calculate a ``font`` height in millimeters of a single ``character``, including workarounds for QT font
  rendering issues.
-.. seealso:: fontAscentMM()
-.. seealso:: fontDescentMM()
-.. seealso:: fontHeightMM()
-.. seealso:: textWidthMM()
+.. seealso:: :py:func:`fontAscentMM()`
+.. seealso:: :py:func:`fontDescentMM()`
+.. seealso:: :py:func:`fontHeightMM()`
+.. seealso:: :py:func:`textWidthMM()`
  :rtype: float
 %End
 
@@ -142,11 +142,11 @@ class QgsLayoutUtils
 %Docstring
  Calculate a ``font`` width in millimeters for a ``text`` string, including workarounds for QT font
  rendering issues.
-.. seealso:: fontAscentMM()
-.. seealso:: fontDescentMM()
-.. seealso:: fontHeightMM()
-.. seealso:: fontHeightCharacterMM()
-.. seealso:: textHeightMM()
+.. seealso:: :py:func:`fontAscentMM()`
+.. seealso:: :py:func:`fontDescentMM()`
+.. seealso:: :py:func:`fontHeightMM()`
+.. seealso:: :py:func:`fontHeightCharacterMM()`
+.. seealso:: :py:func:`textHeightMM()`
  :rtype: float
 %End
 
@@ -158,7 +158,7 @@ class QgsLayoutUtils
 
  The ``multiLineHeight`` parameter specifies the line spacing factor.
 
-.. seealso:: textWidthMM()
+.. seealso:: :py:func:`textWidthMM()`
  :rtype: float
 %End
 

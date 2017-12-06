@@ -33,13 +33,13 @@ class QgsLayoutItemPropertiesDialog : QDialog
     void setItemPosition( QgsLayoutPoint position );
 %Docstring
  Sets the item ``position`` to show in the dialog.
-.. seealso:: itemPosition()
+.. seealso:: :py:func:`itemPosition()`
 %End
 
     QgsLayoutPoint itemPosition() const;
 %Docstring
  Returns the current item position defined by the dialog.
-.. seealso:: setItemPosition()
+.. seealso:: :py:func:`setItemPosition()`
  :rtype: QgsLayoutPoint
 %End
 
@@ -52,27 +52,27 @@ class QgsLayoutItemPropertiesDialog : QDialog
     void setItemSize( QgsLayoutSize size );
 %Docstring
  Sets the item ``size`` to show in the dialog.
-.. seealso:: itemSize()
+.. seealso:: :py:func:`itemSize()`
 %End
 
     QgsLayoutSize itemSize() const;
 %Docstring
  Returns the item size defined by the dialog.
-.. seealso:: setItemSize()
+.. seealso:: :py:func:`setItemSize()`
  :rtype: QgsLayoutSize
 %End
 
     QgsLayoutItem::ReferencePoint referencePoint() const;
 %Docstring
  Returns the item reference point defined by the dialog.
-.. seealso:: setReferencePoint()
+.. seealso:: :py:func:`setReferencePoint()`
  :rtype: QgsLayoutItem.ReferencePoint
 %End
 
     void setReferencePoint( QgsLayoutItem::ReferencePoint point );
 %Docstring
  Sets the item reference ``point`` defined to show in the dialog.
-.. seealso:: referencePoint()
+.. seealso:: :py:func:`referencePoint()`
 %End
 
     void setLayout( QgsLayout *layout );

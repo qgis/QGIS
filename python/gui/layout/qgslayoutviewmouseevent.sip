@@ -53,7 +53,7 @@ class QgsLayoutViewMouseEvent : QMouseEvent
     QPointF layoutPoint() const;
 %Docstring
  Returns the event point location in layout coordinates.
-.. seealso:: pos()
+.. seealso:: :py:func:`pos()`
  :rtype: QPointF
 %End
 
@@ -61,15 +61,15 @@ class QgsLayoutViewMouseEvent : QMouseEvent
 %Docstring
  Returns the snapped event point location in layout coordinates. The snapped point will consider
  all possible snapping methods, such as snapping to grid or guide lines.
-.. seealso:: isSnapped()
-.. seealso:: pos()
+.. seealso:: :py:func:`isSnapped()`
+.. seealso:: :py:func:`pos()`
  :rtype: QPointF
 %End
 
     bool isSnapped() const;
 %Docstring
  Returns true if point was snapped, e.g. to grid or guide lines.
-.. seealso:: snappedPoint()
+.. seealso:: :py:func:`snappedPoint()`
  :rtype: bool
 %End
 

@@ -98,8 +98,8 @@ Copy constructor will prompt a deep copy of the object
    In QGIS 2.x this method was named geometry().
 
 .. versionadded:: 3.0
-.. seealso:: primitive()
-.. seealso:: set()
+.. seealso:: :py:func:`primitive()`
+.. seealso:: :py:func:`set()`
  :rtype: QgsAbstractGeometry
 %End
 
@@ -115,8 +115,8 @@ Copy constructor will prompt a deep copy of the object
    In QGIS 2.x this method was named geometry().
 
 .. versionadded:: 3.0
-.. seealso:: constGet()
-.. seealso:: set()
+.. seealso:: :py:func:`constGet()`
+.. seealso:: :py:func:`set()`
  :rtype: QgsAbstractGeometry
 %End
 
@@ -129,17 +129,17 @@ Copy constructor will prompt a deep copy of the object
    In QGIS 2.x this method was named setGeometry().
 
 .. versionadded:: 3.0
-.. seealso:: get()
-.. seealso:: constGet()
+.. seealso:: :py:func:`get()`
+.. seealso:: :py:func:`constGet()`
 %End
 
     bool isNull() const;
 %Docstring
  Returns true if the geometry is null (ie, contains no underlying geometry
  accessible via geometry() ).
-.. seealso:: geometry
+.. seealso:: :py:func:`geometry`
 .. versionadded:: 2.10
-.. seealso:: isEmpty()
+.. seealso:: :py:func:`isEmpty()`
  :rtype: bool
 %End
 
@@ -171,7 +171,7 @@ Creates a new geometry from a QgsMultiPointXY object
    In QGIS 2.x this method was available as fromPolyline().
 
 .. versionadded:: 3.0
-.. seealso:: fromPolyline()
+.. seealso:: :py:func:`fromPolyline()`
  :rtype: QgsGeometry
 %End
 
@@ -225,14 +225,14 @@ Creates a new multipart geometry from a list of QgsGeometry objects
     QgsWkbTypes::Type wkbType() const;
 %Docstring
  Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
-.. seealso:: type
+.. seealso:: :py:func:`type`
  :rtype: QgsWkbTypes.Type
 %End
 
     QgsWkbTypes::GeometryType type() const;
 %Docstring
  Returns type of the geometry as a QgsWkbTypes.GeometryType
-.. seealso:: wkbType
+.. seealso:: :py:func:`wkbType`
  :rtype: QgsWkbTypes.GeometryType
 %End
 
@@ -241,7 +241,7 @@ Creates a new multipart geometry from a list of QgsGeometry objects
  Returns true if the geometry is empty (eg a linestring with no vertices,
  or a collection with no geometries). A null geometry will always
  return true for isEmpty().
-.. seealso:: isNull()
+.. seealso:: :py:func:`isNull()`
  :rtype: bool
 %End
 
@@ -325,7 +325,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  In case of error -1 will be returned.
 
 .. versionadded:: 3.0
-.. seealso:: hausdorffDistanceDensify()
+.. seealso:: :py:func:`hausdorffDistanceDensify()`
  :rtype: float
 %End
 
@@ -346,7 +346,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  In case of error -1 will be returned.
 
 .. versionadded:: 3.0
-.. seealso:: hausdorffDistance()
+.. seealso:: :py:func:`hausdorffDistance()`
  :rtype: float
 %End
 
@@ -370,7 +370,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  \param vertex vertex index to calculate bisector angle at
  :return: bisector angle, in radians clockwise from north
 .. versionadded:: 3.0
-.. seealso:: interpolateAngle()
+.. seealso:: :py:func:`interpolateAngle()`
  :rtype: float
 %End
 
@@ -472,7 +472,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
 %Docstring
  Returns the nearest point on this geometry to another geometry.
 .. versionadded:: 2.14
-.. seealso:: shortestLine()
+.. seealso:: :py:func:`shortestLine()`
  :rtype: QgsGeometry
 %End
 
@@ -480,7 +480,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
 %Docstring
  Returns the shortest line joining this geometry to another geometry.
 .. versionadded:: 2.14
-.. seealso:: nearestPoint()
+.. seealso:: :py:func:`nearestPoint()`
  :rtype: QgsGeometry
 %End
 
@@ -636,7 +636,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
     QgsRectangle boundingBox() const;
 %Docstring
  Returns the bounding box of the geometry.
-.. seealso:: orientedMinimumBoundingBox()
+.. seealso:: :py:func:`orientedMinimumBoundingBox()`
  :rtype: QgsRectangle
 %End
 
@@ -646,7 +646,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
  width and height of the rotated bounding box will also be returned.
 .. versionadded:: 3.0
-.. seealso:: boundingBox()
+.. seealso:: :py:func:`boundingBox()`
  :rtype: QgsGeometry
 %End
 
@@ -656,7 +656,7 @@ Returns true if WKB of the geometry is of WKBMulti* type
  Returns the minimal enclosing circle for the geometry.
  \param center Center of the minimal enclosing circle returneds
  \param radius Radius of the minimal enclosing circle returned
-.. seealso:: QgsEllipse.toPolygon()
+.. seealso:: :py:func:`QgsEllipse.toPolygon()`
 .. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
@@ -868,7 +868,7 @@ Returns a simplified version of this geometry using a specified tolerance value
  at the added nodes.
  Curved geometry types are automatically segmentized by this routine.
 .. versionadded:: 3.0
-.. seealso:: densifyByDistance()
+.. seealso:: :py:func:`densifyByDistance()`
  :rtype: QgsGeometry
 %End
 
@@ -885,7 +885,7 @@ Returns a simplified version of this geometry using a specified tolerance value
  at the added nodes.
  Curved geometry types are automatically segmentized by this routine.
 .. versionadded:: 3.0
-.. seealso:: densifyByCount()
+.. seealso:: :py:func:`densifyByCount()`
  :rtype: QgsGeometry
 %End
 
@@ -902,8 +902,8 @@ Returns a simplified version of this geometry using a specified tolerance value
 
    for line based geometries, the center point of the line is returned,
  and for point based geometries, the point itself is returned
-.. seealso:: pointOnSurface()
-.. seealso:: poleOfInaccessibility()
+.. seealso:: :py:func:`pointOnSurface()`
+.. seealso:: :py:func:`poleOfInaccessibility()`
  :rtype: QgsGeometry
 %End
 
@@ -918,8 +918,8 @@ Returns a simplified version of this geometry using a specified tolerance value
  If an error was encountered while creating the result, more information can be retrieved
  by calling `error()` on the returned geometry.
 
-.. seealso:: centroid()
-.. seealso:: poleOfInaccessibility()
+.. seealso:: :py:func:`centroid()`
+.. seealso:: :py:func:`poleOfInaccessibility()`
  :rtype: QgsGeometry
 %End
 
@@ -932,8 +932,8 @@ Returns a simplified version of this geometry using a specified tolerance value
  tolerance. More precise tolerances require more iterations and will take longer
  to calculate.
  Optionally, the distance to the polygon boundary from the pole can be stored.
-.. seealso:: centroid()
-.. seealso:: pointOnSurface()
+.. seealso:: :py:func:`centroid()`
+.. seealso:: :py:func:`pointOnSurface()`
 .. versionadded:: 3.0
  :rtype: QgsGeometry
 %End
@@ -1011,7 +1011,7 @@ Returns a simplified version of this geometry using a specified tolerance value
  by calling `error()` on the returned geometry.
 
 .. versionadded:: 2.0
-.. seealso:: lineLocatePoint()
+.. seealso:: :py:func:`lineLocatePoint()`
  :rtype: QgsGeometry
 %End
 
@@ -1026,7 +1026,7 @@ Returns a simplified version of this geometry using a specified tolerance value
 .. note::
 
    only valid for linestring geometries
-.. seealso:: interpolate()
+.. seealso:: :py:func:`interpolate()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -1039,7 +1039,7 @@ Returns a simplified version of this geometry using a specified tolerance value
  of the node is returned.
  \param distance distance along geometry
 .. versionadded:: 3.0
-.. seealso:: angleAtVertex()
+.. seealso:: :py:func:`angleAtVertex()`
  :rtype: float
 %End
 
@@ -1362,7 +1362,7 @@ Returns an extruded version of this geometry.
 %Docstring
  Converts the geometry to straight line segments, if it is a curved geometry type.
 .. versionadded:: 2.10
-.. seealso:: requiresConversionToStraightSegments
+.. seealso:: :py:func:`requiresConversionToStraightSegments`
 %End
 
     bool requiresConversionToStraightSegments() const;
@@ -1370,7 +1370,7 @@ Returns an extruded version of this geometry.
  Returns true if the geometry is a curved geometry type which requires conversion to
  display as straight line segments.
 .. versionadded:: 2.10
-.. seealso:: convertToStraightSegment
+.. seealso:: :py:func:`convertToStraightSegment`
  :rtype: bool
 %End
 
@@ -1397,7 +1397,7 @@ Returns an extruded version of this geometry.
  Returns true if vertex was found.
 
 .. versionadded:: 2.10
-.. seealso:: vertexNrFromVertexId()
+.. seealso:: :py:func:`vertexNrFromVertexId()`
  :rtype: bool
 %End
 
@@ -1411,7 +1411,7 @@ Returns an extruded version of this geometry.
  Returns -1 if a corresponding vertex could not be found.
 
 .. versionadded:: 2.10
-.. seealso:: vertexIdFromVertexNr()
+.. seealso:: :py:func:`vertexIdFromVertexNr()`
  :rtype: int
 %End
 
@@ -1449,7 +1449,7 @@ Returns an extruded version of this geometry.
  Creates a QgsPolylineXY from a QPolygonF.
  \param polygon source polygon
  :return: QgsPolylineXY
-.. seealso:: createPolygonFromQPolygonF
+.. seealso:: :py:func:`createPolygonFromQPolygonF`
  :rtype: QgsPolylineXY
 %End
 
@@ -1458,7 +1458,7 @@ Returns an extruded version of this geometry.
  Creates a QgsPolygonXYfrom a QPolygonF.
  \param polygon source polygon
  :return: QgsPolygon
-.. seealso:: createPolylineFromQPolygonF
+.. seealso:: :py:func:`createPolylineFromQPolygonF`
  :rtype: QgsPolygonXY
 %End
 

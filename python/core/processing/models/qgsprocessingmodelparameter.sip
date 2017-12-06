@@ -33,7 +33,7 @@ class QgsProcessingModelParameter : QgsProcessingModelComponent
 %Docstring
  Returns the associated parameter name. The parameter name should match one of the
  parameters from the parent model.
-.. seealso:: parameterName()
+.. seealso:: :py:func:`parameterName()`
  :rtype: str
 %End
 
@@ -41,20 +41,20 @@ class QgsProcessingModelParameter : QgsProcessingModelComponent
 %Docstring
  Sets the associated parameter name. The parameter name should match one of the
  parameters from the parent model.
-.. seealso:: parameterName()
+.. seealso:: :py:func:`parameterName()`
 %End
 
     QVariant toVariant() const;
 %Docstring
  Saves this parameter to a QVariant.
-.. seealso:: loadVariant()
+.. seealso:: :py:func:`loadVariant()`
  :rtype: QVariant
 %End
 
     bool loadVariant( const QVariantMap &map );
 %Docstring
  Loads this parameter from a QVariantMap.
-.. seealso:: toVariant()
+.. seealso:: :py:func:`toVariant()`
  :rtype: bool
 %End
 

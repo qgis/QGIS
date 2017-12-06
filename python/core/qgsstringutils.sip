@@ -71,14 +71,14 @@ Returns true if match only applies to whole words, or false if partial word matc
     QgsStringMap properties() const;
 %Docstring
  Returns a map of the replacement properties.
-.. seealso:: fromProperties()
+.. seealso:: :py:func:`fromProperties()`
  :rtype: QgsStringMap
 %End
 
     static QgsStringReplacement fromProperties( const QgsStringMap &properties );
 %Docstring
  Creates a new QgsStringReplacement from an encoded properties map.
-.. seealso:: properties()
+.. seealso:: :py:func:`properties()`
  :rtype: QgsStringReplacement
 %End
 
@@ -107,7 +107,7 @@ class QgsStringReplacementCollection
     QList< QgsStringReplacement > replacements() const;
 %Docstring
  Returns the list of string replacements in this collection.
-.. seealso:: setReplacements()
+.. seealso:: :py:func:`setReplacements()`
  :rtype: list of QgsStringReplacement
 %End
 
@@ -116,7 +116,7 @@ class QgsStringReplacementCollection
  Sets the list of string replacements in this collection.
  \param replacements list of string replacements to apply. Replacements are applied in the
  order they are specified here.
-.. seealso:: replacements()
+.. seealso:: :py:func:`replacements()`
 %End
 
     QString process( const QString &input ) const;
@@ -134,14 +134,14 @@ class QgsStringReplacementCollection
  Writes the collection state to an XML element.
  \param elem target DOM element
  \param doc DOM document
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
  Reads the collection state from an XML element.
  \param elem DOM element
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
 %End
 
 };

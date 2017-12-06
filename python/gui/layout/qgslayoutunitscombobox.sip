@@ -29,14 +29,14 @@ class QgsLayoutUnitsComboBox : QComboBox
     QgsUnitTypes::LayoutUnit unit() const;
 %Docstring
  Returns the unit currently selected in the combo box.
-.. seealso:: setUnit()
+.. seealso:: :py:func:`setUnit()`
  :rtype: QgsUnitTypes.LayoutUnit
 %End
 
     void setUnit( QgsUnitTypes::LayoutUnit unit );
 %Docstring
  Sets the ``unit`` currently selected in the combo box.
-.. seealso:: unit()
+.. seealso:: :py:func:`unit()`
 %End
 
     void linkToWidget( QDoubleSpinBox *widget );
@@ -48,13 +48,13 @@ class QgsLayoutUnitsComboBox : QComboBox
 
  A measurement converter() must be set in order for the automatic unit conversion to occur.
 
-.. seealso:: setConverter()
+.. seealso:: :py:func:`setConverter()`
 %End
 
     QgsLayoutMeasurementConverter *converter() const;
 %Docstring
  Returns the converter used when automatically converting units for linked widgets.
-.. seealso:: setConverter()
+.. seealso:: :py:func:`setConverter()`
  :rtype: QgsLayoutMeasurementConverter
 %End
 
@@ -63,7 +63,7 @@ class QgsLayoutUnitsComboBox : QComboBox
  Sets a ``converter`` to use when automatically converting units for linked widgets.
  The ownership of ``converter`` is not transferred, and converter must exist for the
  life of the combo box.
-.. seealso:: converter()
+.. seealso:: :py:func:`converter()`
 %End
 
   signals:

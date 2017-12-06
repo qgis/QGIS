@@ -35,8 +35,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 %Docstring
  Returns the child algorithm's unique ID string, used the identify
  this child algorithm within its parent model.
-.. seealso:: setChildId()
-.. seealso:: generateChildId()
+.. seealso:: :py:func:`setChildId()`
+.. seealso:: :py:func:`generateChildId()`
  :rtype: str
 %End
 
@@ -44,23 +44,23 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 %Docstring
  Sets the child algorithm's unique ``id`` string, used the identify
  this child algorithm within its parent model.
-.. seealso:: childId()
-.. seealso:: generateChildId()
+.. seealso:: :py:func:`childId()`
+.. seealso:: :py:func:`generateChildId()`
 %End
 
     void generateChildId( const QgsProcessingModelAlgorithm &model );
 %Docstring
  Automatically generates a unique childId() for the algorithm,
  avoiding child IDs which are already present in ``model``.
-.. seealso:: childId()
-.. seealso:: setChildId()
+.. seealso:: :py:func:`childId()`
+.. seealso:: :py:func:`setChildId()`
 %End
 
     QString algorithmId() const;
 %Docstring
  Returns the underlying child algorithm's ID.
-.. seealso:: algorithm()
-.. seealso:: setAlgorithmId()
+.. seealso:: :py:func:`algorithm()`
+.. seealso:: :py:func:`setAlgorithmId()`
  :rtype: str
 %End
 
@@ -68,8 +68,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 %Docstring
  Sets the underlying child algorithm's ID. This
  should be set to an existing QgsProcessingAlgorithm algorithm ID.
-.. seealso:: algorithm()
-.. seealso:: algorithmId()
+.. seealso:: :py:func:`algorithm()`
+.. seealso:: :py:func:`algorithmId()`
 %End
 
     QVariantMap configuration() const;
@@ -81,7 +81,7 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  and outputs according to this configuration. This allows child algorithms in the model
  to adjust their behavior at run time according to some user configuration.
 
-.. seealso:: setConfiguration()
+.. seealso:: :py:func:`setConfiguration()`
  :rtype: QVariantMap
 %End
 
@@ -94,14 +94,14 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  and outputs according to this configuration. This allows child algorithms in the model
  to adjust their behavior at run time according to some user configuration.
 
-.. seealso:: configuration()
+.. seealso:: :py:func:`configuration()`
 %End
 
     const QgsProcessingAlgorithm *algorithm() const;
 %Docstring
  Returns the underlying child algorithm, or a None
  if a matching algorithm is not available.
-.. seealso:: algorithmId()
+.. seealso:: :py:func:`algorithmId()`
  :rtype: QgsProcessingAlgorithm
 %End
 
@@ -109,8 +109,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 %Docstring
  Returns a map of parameter sources. The keys are the child algorithm
  parameter names, the values are the sources for that parameter.
-.. seealso:: setParameterSources()
-.. seealso:: addParameterSources()
+.. seealso:: :py:func:`setParameterSources()`
+.. seealso:: :py:func:`addParameterSources()`
  :rtype: QMap< str, QList< QgsProcessingModelChildParameterSource > >
 %End
 
@@ -118,8 +118,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 %Docstring
  Sets the map of parameter ``sources``. The keys are the child algorithm
  parameter names, the values are the sources for that parameter.
-.. seealso:: parameterSources()
-.. seealso:: addParameterSources()
+.. seealso:: :py:func:`parameterSources()`
+.. seealso:: :py:func:`addParameterSources()`
 %End
 
     void addParameterSources( const QString &name, const QList< QgsProcessingModelChildParameterSource > &source );
@@ -129,21 +129,21 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  argument is used to set the sources for that parameter.
 
  Any existing parameter sources with matching name will be replaced.
-.. seealso:: parameterSources()
-.. seealso:: setParameterSources()
+.. seealso:: :py:func:`parameterSources()`
+.. seealso:: :py:func:`setParameterSources()`
 %End
 
     bool isActive() const;
 %Docstring
  Returns true if the child algorithm is active.
-.. seealso:: setActive()
+.. seealso:: :py:func:`setActive()`
  :rtype: bool
 %End
 
     void setActive( bool active );
 %Docstring
  Sets whether the child algorithm is active.
-.. seealso:: isActive()
+.. seealso:: :py:func:`isActive()`
 %End
 
     QStringList dependencies() const;
@@ -151,7 +151,7 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  Returns the list of child algorithms from the parent model on which this
  algorithm is dependent. The returned list contains the id() of the
  dependent algorithms.
-.. seealso:: setDependencies()
+.. seealso:: :py:func:`setDependencies()`
  :rtype: list of str
 %End
 
@@ -160,15 +160,15 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  Sets the list of child algorithms from the parent model on which this
  algorithm is dependent. The list should contain the id() of the
  dependent algorithms.
-.. seealso:: dependencies()
+.. seealso:: :py:func:`dependencies()`
 %End
 
     bool parametersCollapsed() const;
 %Docstring
  Returns true if the list of parameters for this algorithm should be collapsed
  in the graphical modeller.
-.. seealso:: setParametersCollapsed()
-.. seealso:: outputsCollapsed()
+.. seealso:: :py:func:`setParametersCollapsed()`
+.. seealso:: :py:func:`outputsCollapsed()`
  :rtype: bool
 %End
 
@@ -176,16 +176,16 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 %Docstring
  Sets whether the list of parameters for this algorithm should be collapsed
  in the graphical modeller.
-.. seealso:: parametersCollapsed()
-.. seealso:: setOutputsCollapsed()
+.. seealso:: :py:func:`parametersCollapsed()`
+.. seealso:: :py:func:`setOutputsCollapsed()`
 %End
 
     bool outputsCollapsed() const;
 %Docstring
  Returns true if the list of outputs for this algorithm should be collapsed
  in the graphical modeller.
-.. seealso:: setParametersCollapsed()
-.. seealso:: parametersCollapsed()
+.. seealso:: :py:func:`setParametersCollapsed()`
+.. seealso:: :py:func:`parametersCollapsed()`
  :rtype: bool
 %End
 
@@ -193,8 +193,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
 %Docstring
  Sets whether the list of outputs for this algorithm should be collapsed
  in the graphical modeller.
-.. seealso:: outputsCollapsed()
-.. seealso:: setParametersCollapsed()
+.. seealso:: :py:func:`outputsCollapsed()`
+.. seealso:: :py:func:`setParametersCollapsed()`
 %End
 
     QMap<QString, QgsProcessingModelOutput> modelOutputs() const;
@@ -202,8 +202,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  Returns the map of final model outputs which are generated by this child algorithm.
  The keys are the output names from this child algorithm. Only outputs which are
  part of the final outputs from the model are included in this map.
-.. seealso:: setModelOutputs()
-.. seealso:: modelOutput()
+.. seealso:: :py:func:`setModelOutputs()`
+.. seealso:: :py:func:`modelOutput()`
  :rtype: QMap<str, QgsProcessingModelOutput>
 %End
 
@@ -215,8 +215,8 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  If child model outputs are altered by this method, QgsProcessingModelAlgorithm.updateDestinationParameters()
  must be called on the parent model.
 
-.. seealso:: modelOutputs()
-.. seealso:: setModelOutputs()
+.. seealso:: :py:func:`modelOutputs()`
+.. seealso:: :py:func:`setModelOutputs()`
  :rtype: QgsProcessingModelOutput
 %End
 
@@ -228,20 +228,20 @@ class QgsProcessingModelChildAlgorithm : QgsProcessingModelComponent
  If child model outputs are altered by this method, QgsProcessingModelAlgorithm.updateDestinationParameters()
  must be called on the parent model.
 
-.. seealso:: modelOutputs()
+.. seealso:: :py:func:`modelOutputs()`
 %End
 
     QVariant toVariant() const;
 %Docstring
  Saves this child to a QVariant.
-.. seealso:: loadVariant()
+.. seealso:: :py:func:`loadVariant()`
  :rtype: QVariant
 %End
 
     bool loadVariant( const QVariant &child );
 %Docstring
  Loads this child from a QVariant.
-.. seealso:: toVariant()
+.. seealso:: :py:func:`toVariant()`
  :rtype: bool
 %End
 

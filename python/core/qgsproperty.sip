@@ -250,28 +250,28 @@ Copy constructor
     bool isActive() const;
 %Docstring
  Returns whether the property is currently active.
-.. seealso:: setActive()
+.. seealso:: :py:func:`setActive()`
  :rtype: bool
 %End
 
     void setActive( bool active );
 %Docstring
  Sets whether the property is currently active.
-.. seealso:: isActive()
+.. seealso:: :py:func:`isActive()`
 %End
 
     void setStaticValue( const QVariant &value );
 %Docstring
  Sets the static value for the property. Calling this will
  transform the property into an StaticProperty.
-.. seealso:: staticValue()
+.. seealso:: :py:func:`staticValue()`
 %End
 
     QVariant staticValue() const;
 %Docstring
  Returns the current static value for the property. If the property
  is not a StaticProperty this will return an invalid variant.
-.. seealso:: setStaticValue()
+.. seealso:: :py:func:`setStaticValue()`
  :rtype: QVariant
 %End
 
@@ -279,14 +279,14 @@ Copy constructor
 %Docstring
  Sets the field name the property references. Calling this will
  transform the property into an FieldBasedProperty.
-.. seealso:: field()
+.. seealso:: :py:func:`field()`
 %End
 
     QString field() const;
 %Docstring
  Returns the current field name the property references. If the property
  is not a FieldBasedProperty this will return an empty string.
-.. seealso:: setField()
+.. seealso:: :py:func:`setField()`
  :rtype: str
 %End
 
@@ -294,14 +294,14 @@ Copy constructor
 %Docstring
  Sets the expression to use for the property value. Calling this will
  transform the property into an ExpressionBasedProperty.
-.. seealso:: expressionString()
+.. seealso:: :py:func:`expressionString()`
 %End
 
     QString expressionString() const;
 %Docstring
  Returns the expression used for the property value. If the property
  is not a ExpressionBasedProperty this will return an empty string.
-.. seealso:: setExpressionString()
+.. seealso:: :py:func:`setExpressionString()`
  :rtype: str
 %End
 
@@ -336,11 +336,11 @@ Copy constructor
  \param defaultValue default value to return if the property is not active or cannot be calculated
  \param ok if specified, will be set to true if conversion was successful
  :return: calculated value for property
-.. seealso:: valueAsString()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsInt()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: QVariant
 %End
 
@@ -351,11 +351,11 @@ Copy constructor
  \param defaultString default string to return if the property cannot be calculated as a string
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to string
-.. seealso:: value()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsInt()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: str
 %End
 
@@ -366,11 +366,11 @@ Copy constructor
  \param defaultColor default color to return if the property cannot be calculated as a color
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to color
-.. seealso:: value()
-.. seealso:: valueAsString()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsInt()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: QColor
 %End
 
@@ -381,11 +381,11 @@ Copy constructor
  \param defaultValue default double to return if the property cannot be calculated as a double
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to double
-.. seealso:: value()
-.. seealso:: valueAsString()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsInt()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsInt()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: float
 %End
 
@@ -396,11 +396,11 @@ Copy constructor
  \param defaultValue default integer to return if the property cannot be calculated as an integer
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to integer
-.. seealso:: value()
-.. seealso:: valueAsString()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsBool()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsBool()`
  :rtype: int
 %End
 
@@ -411,11 +411,11 @@ Copy constructor
  \param defaultValue default boolean to return if the property cannot be calculated as an boolean
  \param ok if specified, will be set to true if conversion was successful
  :return: value parsed to boolean
-.. seealso:: value()
-.. seealso:: valueAsString()
-.. seealso:: valueAsColor()
-.. seealso:: valueAsDouble()
-.. seealso:: valueAsInt()
+.. seealso:: :py:func:`value()`
+.. seealso:: :py:func:`valueAsString()`
+.. seealso:: :py:func:`valueAsColor()`
+.. seealso:: :py:func:`valueAsDouble()`
+.. seealso:: :py:func:`valueAsInt()`
  :rtype: bool
 %End
 
@@ -424,7 +424,7 @@ Copy constructor
  Saves this property to a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-.. seealso:: loadVariant()
+.. seealso:: :py:func:`loadVariant()`
  :rtype: QVariant
 %End
 
@@ -433,7 +433,7 @@ Copy constructor
  Loads this property from a QVariantMap, wrapped in a QVariant.
  You can use QgsXmlUtils.readVariant to load it from an XML document.
 
-.. seealso:: toVariant()
+.. seealso:: :py:func:`toVariant()`
  :rtype: bool
 %End
 
@@ -442,13 +442,13 @@ Copy constructor
  Sets an optional transformer to use for manipulating the calculated values for the property.
  \param transformer transformer to install. Ownership is transferred to the property, and any
  existing transformer will be deleted. Set to null to remove an existing transformer.
-.. seealso:: transformer()
+.. seealso:: :py:func:`transformer()`
 %End
 
     const QgsPropertyTransformer *transformer() const;
 %Docstring
  Returns the existing transformer used for manipulating the calculated values for the property, if set.
-.. seealso:: setTransformer()
+.. seealso:: :py:func:`setTransformer()`
  :rtype: QgsPropertyTransformer
 %End
 

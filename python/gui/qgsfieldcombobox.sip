@@ -17,7 +17,7 @@ class QgsFieldComboBox : QComboBox
  The QgsFieldComboBox is a combo box which displays the list of fields of a given layer.
  It might be combined with a QgsMapLayerComboBox to automatically update fields according to a chosen layer.
  If expression must be used, QgsFieldExpressionWidget shall be used instead.
-.. seealso:: QgsMapLayerComboBox
+.. seealso:: :py:class:`QgsMapLayerComboBox`
 .. versionadded:: 2.3
 %End
 
@@ -46,14 +46,14 @@ currently used filter on list of fields
     void setAllowEmptyFieldName( bool allowEmpty );
 %Docstring
  Sets whether an optional empty field ("not set") option is shown in the combo box.
-.. seealso:: allowEmptyFieldName()
+.. seealso:: :py:func:`allowEmptyFieldName()`
 .. versionadded:: 3.0
 %End
 
     bool allowEmptyFieldName() const;
 %Docstring
  Returns true if the combo box allows the empty field ("not set") choice.
-.. seealso:: setAllowEmptyFieldName()
+.. seealso:: :py:func:`setAllowEmptyFieldName()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -67,7 +67,7 @@ return the currently selected field
     QgsVectorLayer *layer() const;
 %Docstring
  Returns the layer currently associated with the combobox.
-.. seealso:: setLayer()
+.. seealso:: :py:func:`setLayer()`
  :rtype: QgsVectorLayer
 %End
 
@@ -83,7 +83,7 @@ the signal is emitted when the currently selected field changes
 %Docstring
  Sets the layer for which fields are listed in the combobox. If no layer is set
  or a non-vector layer is set then the combobox will be empty.
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
 %End
 
     void setField( const QString &fieldName );

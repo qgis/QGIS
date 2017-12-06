@@ -78,7 +78,7 @@ class QgsAttributeForm : QWidget
 %Docstring
  Returns the current mode of the form.
 .. versionadded:: 2.16
-.. seealso:: setMode()
+.. seealso:: :py:func:`setMode()`
  :rtype: Mode
 %End
 
@@ -87,7 +87,7 @@ class QgsAttributeForm : QWidget
  Sets the current mode of the form.
  \param mode form mode
 .. versionadded:: 2.16
-.. seealso:: mode()
+.. seealso:: :py:func:`mode()`
 %End
 
     void setEditCommandMessage( const QString &message );

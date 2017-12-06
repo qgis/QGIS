@@ -57,7 +57,7 @@ class QgsLayoutItemPolyline: QgsLayoutNodesItem
     QgsLineSymbol *symbol();
 %Docstring
  Returns the line symbol used to draw the shape.
-.. seealso:: setSymbol()
+.. seealso:: :py:func:`setSymbol()`
  :rtype: QgsLineSymbol
 %End
 
@@ -65,124 +65,124 @@ class QgsLayoutItemPolyline: QgsLayoutNodesItem
 %Docstring
  Sets the ``symbol`` used to draw the shape.
  Ownership of ``symbol`` is not transferred.
-.. seealso:: symbol()
+.. seealso:: :py:func:`symbol()`
 %End
 
     MarkerMode startMarker() const;
 %Docstring
  Returns the start marker mode, which controls what marker is drawn at the start of the line.
-.. seealso:: setStartMarker()
-.. seealso:: endMarker()
+.. seealso:: :py:func:`setStartMarker()`
+.. seealso:: :py:func:`endMarker()`
  :rtype: MarkerMode
 %End
 
     void setStartMarker( MarkerMode mode );
 %Docstring
  Sets the start marker ``mode``, which controls what marker is drawn at the start of the line.
-.. seealso:: startMarker()
-.. seealso:: setEndMarker()
+.. seealso:: :py:func:`startMarker()`
+.. seealso:: :py:func:`setEndMarker()`
 %End
 
     MarkerMode endMarker() const;
 %Docstring
  Returns the end marker mode, which controls what marker is drawn at the end of the line.
-.. seealso:: setEndMarker()
-.. seealso:: startMarker()
+.. seealso:: :py:func:`setEndMarker()`
+.. seealso:: :py:func:`startMarker()`
  :rtype: MarkerMode
 %End
 
     void setEndMarker( MarkerMode mode );
 %Docstring
  Sets the end marker ``mode``, which controls what marker is drawn at the end of the line.
-.. seealso:: endMarker()
-.. seealso:: setStartMarker()
+.. seealso:: :py:func:`endMarker()`
+.. seealso:: :py:func:`setStartMarker()`
 %End
 
     void setArrowHeadWidth( double width );
 %Docstring
  Sets the ``width`` of line arrow heads in mm.
-.. seealso:: arrowHeadWidth()
+.. seealso:: :py:func:`arrowHeadWidth()`
 %End
 
     double arrowHeadWidth() const;
 %Docstring
  Returns the width of line arrow heads in mm.
-.. seealso:: setArrowHeadWidth()
+.. seealso:: :py:func:`setArrowHeadWidth()`
  :rtype: float
 %End
 
     void setStartSvgMarkerPath( const QString &path );
 %Docstring
  Sets the ``path`` to a SVG marker to draw at the start of the line.
-.. seealso:: startSvgMarkerPath()
-.. seealso:: setEndSvgMarkerPath()
+.. seealso:: :py:func:`startSvgMarkerPath()`
+.. seealso:: :py:func:`setEndSvgMarkerPath()`
 %End
 
     QString startSvgMarkerPath() const;
 %Docstring
  Returns the path the an SVG marker drawn at the start of the line.
-.. seealso:: setStartSvgMarkerPath()
-.. seealso:: endSvgMarkerPath
+.. seealso:: :py:func:`setStartSvgMarkerPath()`
+.. seealso:: :py:func:`endSvgMarkerPath`
  :rtype: str
 %End
 
     void setEndSvgMarkerPath( const QString &path );
 %Docstring
  Sets the ``path`` to a SVG marker to draw at the end of the line.
-.. seealso:: endSvgMarkerPath()
-.. seealso:: setStartSvgMarkerPath()
+.. seealso:: :py:func:`endSvgMarkerPath()`
+.. seealso:: :py:func:`setStartSvgMarkerPath()`
 %End
 
     QString endSvgMarkerPath() const;
 %Docstring
  Returns the path the an SVG marker drawn at the end of the line.
-.. seealso:: setEndSvgMarkerPath()
-.. seealso:: startSvgMarkerPath
+.. seealso:: :py:func:`setEndSvgMarkerPath()`
+.. seealso:: :py:func:`startSvgMarkerPath`
  :rtype: str
 %End
 
     QColor arrowHeadStrokeColor() const;
 %Docstring
  Returns the color used to draw the stroke around the the arrow head.
-.. seealso:: arrowHeadFillColor()
-.. seealso:: setArrowHeadStrokeColor()
+.. seealso:: :py:func:`arrowHeadFillColor()`
+.. seealso:: :py:func:`setArrowHeadStrokeColor()`
  :rtype: QColor
 %End
 
     void setArrowHeadStrokeColor( const QColor &color );
 %Docstring
  Sets the ``color`` used to draw the stroke around the arrow head.
-.. seealso:: setArrowHeadFillColor()
-.. seealso:: arrowHeadStrokeColor()
+.. seealso:: :py:func:`setArrowHeadFillColor()`
+.. seealso:: :py:func:`arrowHeadStrokeColor()`
 %End
 
     QColor arrowHeadFillColor() const;
 %Docstring
  Returns the color used to fill the arrow head.
-.. seealso:: arrowHeadStrokeColor()
-.. seealso:: setArrowHeadFillColor()
+.. seealso:: :py:func:`arrowHeadStrokeColor()`
+.. seealso:: :py:func:`setArrowHeadFillColor()`
  :rtype: QColor
 %End
 
     void setArrowHeadFillColor( const QColor &color );
 %Docstring
  Sets the ``color`` used to fill the arrow head.
-.. seealso:: arrowHeadFillColor()
-.. seealso:: setArrowHeadStrokeColor()
+.. seealso:: :py:func:`arrowHeadFillColor()`
+.. seealso:: :py:func:`setArrowHeadStrokeColor()`
 %End
 
     void setArrowHeadStrokeWidth( double width );
 %Docstring
  Sets the pen ``width`` in millimeters for the stroke of the arrow head
-.. seealso:: arrowHeadStrokeWidth()
-.. seealso:: setArrowHeadStrokeColor()
+.. seealso:: :py:func:`arrowHeadStrokeWidth()`
+.. seealso:: :py:func:`setArrowHeadStrokeColor()`
 %End
 
     double arrowHeadStrokeWidth() const;
 %Docstring
  Returns the pen width in millimeters for the stroke of the arrow head.
-.. seealso:: setArrowHeadStrokeWidth()
-.. seealso:: arrowHeadStrokeColor()
+.. seealso:: :py:func:`setArrowHeadStrokeWidth()`
+.. seealso:: :py:func:`arrowHeadStrokeColor()`
  :rtype: float
 %End
 

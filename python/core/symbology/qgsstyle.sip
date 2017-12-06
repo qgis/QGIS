@@ -91,7 +91,7 @@ class QgsStyle : QObject
  Returns a list of all tags in the style database
 
 .. versionadded:: 2.16
-.. seealso:: addTag()
+.. seealso:: :py:func:`addTag()`
  :rtype: list of str
 %End
 
@@ -325,7 +325,7 @@ Changes ramp's name
   This function creates a new on-disk permanent style database.
   :return: returns the success state of the database creation
 .. versionadded:: 3.0
-.. seealso:: createMemoryDb()
+.. seealso:: :py:func:`createMemoryDb()`
  :rtype: bool
 %End
 
@@ -336,7 +336,7 @@ Changes ramp's name
   This function is used to create a temporary style database in case a permanent on-disk database is not needed.
   :return: returns the success state of the temporary memory database creation
 .. versionadded:: 3.0
-.. seealso:: createDb()
+.. seealso:: :py:func:`createDb()`
  :rtype: bool
 %End
 
@@ -347,7 +347,7 @@ Changes ramp's name
   This function is used to create the tables structure in a newly-created database.
   :return: returns the success state of the temporary memory database creation
 .. versionadded:: 3.0
-.. seealso:: createDB(), createMemoryDB()
+.. seealso:: :py:func:`createDB()`
 %End
 
     bool load( const QString &filename );

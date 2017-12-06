@@ -149,7 +149,7 @@ class QgsCoordinateReferenceSystem
  used by ESRI. They look very similar, but they are not the same. QGIS is able to consume
  both flavors.
 
-.. seealso:: QgsCoordinateTransform
+.. seealso:: :py:class:`QgsCoordinateTransform`
 %End
 
 %TypeHeaderCode
@@ -184,7 +184,7 @@ Constructs an invalid CRS object
 
  If no prefix is specified, WKT definition is assumed.
  \param definition A String containing a coordinate reference system definition.
-.. seealso:: createFromString()
+.. seealso:: :py:func:`createFromString()`
 / // TODO QGIS 3: remove "POSTGIS" and "INTERNAL", allow PROJ4 without the prefix
 %End
 
@@ -216,7 +216,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
  Returns a list of all valid SRS IDs present in the CRS database. Any of the
  returned values can be safely passed to fromSrsId() to create a new, valid
  QgsCoordinateReferenceSystem object.
-.. seealso:: fromSrsId()
+.. seealso:: :py:func:`fromSrsId()`
 .. versionadded:: 3.0
  :rtype: list of long
 %End
@@ -228,7 +228,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
  \param ogcCrs OGR compliant CRS definition, e.g., "EPSG:4326"
  :return: matching CRS, or an invalid CRS if string could not be matched
 .. versionadded:: 3.0
-.. seealso:: createFromOgcWmsCrs()
+.. seealso:: :py:func:`createFromOgcWmsCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -247,7 +247,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
  \param proj4 proj4 format string
  :return: matching CRS, or an invalid CRS if string could not be matched
 .. versionadded:: 3.0
-.. seealso:: createFromProj4()
+.. seealso:: :py:func:`createFromProj4()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -257,7 +257,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
  \param wkt WKT for the desired spatial reference system.
  :return: matching CRS, or an invalid CRS if string could not be matched
 .. versionadded:: 3.0
-.. seealso:: createFromWkt()
+.. seealso:: :py:func:`createFromWkt()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -267,8 +267,8 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
  \param srsId internal QGIS SRS ID
  :return: matching CRS, or an invalid CRS if ID could not be found
 .. versionadded:: 3.0
-.. seealso:: createFromSrsId()
-.. seealso:: validSrsIds()
+.. seealso:: :py:func:`createFromSrsId()`
+.. seealso:: :py:func:`validSrsIds()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -296,7 +296,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
  :return: True on success else false
-.. seealso:: fromOgcWmsCrs()
+.. seealso:: :py:func:`fromOgcWmsCrs()`
 /     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
  :rtype: bool
 %End
@@ -326,7 +326,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
    this method uses an internal cache. Call invalidateCache() to clear the cache.
  \param wkt The WKT for the desired spatial reference system.
  :return: True on success else false
-.. seealso:: fromWkt()
+.. seealso:: :py:func:`fromWkt()`
  :rtype: bool
 %End
 
@@ -341,7 +341,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
    this method uses an internal cache. Call invalidateCache() to clear the cache.
  \param srsId The internal QGIS CRS ID for the desired spatial reference system.
  :return: True on success else false
-.. seealso:: fromSrsId()
+.. seealso:: :py:func:`fromSrsId()`
  :rtype: bool
 %End
 
@@ -371,7 +371,7 @@ Allows direct construction of QVariants from QgsCoordinateReferenceSystem.
    this method uses an internal cache. Call invalidateCache() to clear the cache.
  \param projString A proj4 format string
  :return: True on success else false
-.. seealso:: fromProj4()
+.. seealso:: :py:func:`fromProj4()`
  :rtype: bool
 %End
 
@@ -446,7 +446,7 @@ Returns whether this CRS is correctly initialized and usable
 
    It is not usually necessary to use this function, unless you
  are trying to force this CRS to be valid.
-.. seealso:: setCustomCrsValidation(), customCrsValidation()
+.. seealso:: :py:func:`setCustomCrsValidation()`
 %End
 
     long findMatchingProj();
@@ -519,7 +519,7 @@ Returns whether this CRS is correctly initialized and usable
  If CRS object is a custom CRS (not found in database), the method will return
  internal QGIS CRS ID with "QGIS" authority, for example "QGIS:100005"
  :return: the authority identifier for this CRS
-.. seealso:: description()
+.. seealso:: :py:func:`description()`
  :rtype: str
 %End
 
@@ -532,7 +532,7 @@ Returns whether this CRS is correctly initialized and usable
 .. note::
 
    an empty string will be returned if the description is not available for the CRS
-.. seealso:: authid()
+.. seealso:: :py:func:`authid()`
  :rtype: str
 %End
 
@@ -543,7 +543,7 @@ Returns whether this CRS is correctly initialized and usable
 .. note::
 
    an empty string will be returned if the projectionAcronym is not available for the CRS
-.. seealso:: ellipsoidAcronym()
+.. seealso:: :py:func:`ellipsoidAcronym()`
  :rtype: str
 %End
 
@@ -554,7 +554,7 @@ Returns whether this CRS is correctly initialized and usable
 .. note::
 
    an empty string will be returned if the ellipsoidAcronym is not available for the CRS
-.. seealso:: projectionAcronym()
+.. seealso:: :py:func:`projectionAcronym()`
  :rtype: str
 %End
 
@@ -562,7 +562,7 @@ Returns whether this CRS is correctly initialized and usable
 %Docstring
  Returns a WKT representation of this CRS.
  :return: string containing WKT of the CRS
-.. seealso:: toProj4()
+.. seealso:: :py:func:`toProj4()`
  :rtype: str
 %End
 
@@ -577,7 +577,7 @@ Returns whether this CRS is correctly initialized and usable
 .. note::
 
    an empty string will be returned if the CRS could not be represented by a Proj4 string
-.. seealso:: toWkt()
+.. seealso:: :py:func:`toWkt()`
  :rtype: str
 %End
 

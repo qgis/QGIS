@@ -46,16 +46,16 @@ class QgsProjectProperty
     virtual bool isKey() const = 0;
 %Docstring
  Returns true if the property is a QgsProjectPropertyKey.
-.. seealso:: isValue()
-.. seealso:: isLeaf()
+.. seealso:: :py:func:`isValue()`
+.. seealso:: :py:func:`isLeaf()`
  :rtype: bool
 %End
 
     virtual bool isValue() const = 0;
 %Docstring
  Returns true if the property is a QgsProjectPropertyValue.
-.. seealso:: isKey()
-.. seealso:: isLeaf()
+.. seealso:: :py:func:`isKey()`
+.. seealso:: :py:func:`isLeaf()`
  :rtype: bool
 %End
 
@@ -181,7 +181,7 @@ class QgsProjectPropertyKey : QgsProjectProperty
     QString name() const;
 %Docstring
  The name of the property is used as identifier.
-.. seealso:: setName()
+.. seealso:: :py:func:`setName()`
  :rtype: str
 %End
 
@@ -190,7 +190,7 @@ class QgsProjectPropertyKey : QgsProjectProperty
  The name of the property is used as identifier.
 
 .. versionadded:: 3.0
-.. seealso:: name()
+.. seealso:: :py:func:`name()`
 %End
 
     virtual QVariant value() const;
@@ -259,13 +259,13 @@ class QgsProjectPropertyKey : QgsProjectProperty
     void entryList( QStringList &entries ) const;
 %Docstring
  Returns any sub-keys contained by this property that do not contain other keys.
-.. seealso:: subkeyList()
+.. seealso:: :py:func:`subkeyList()`
 %End
 
     void subkeyList( QStringList &entries ) const;
 %Docstring
  Return any sub-keys contained by this property which themselves contain other keys.
-.. seealso:: entryList()
+.. seealso:: :py:func:`entryList()`
 %End
 
     virtual void clear();

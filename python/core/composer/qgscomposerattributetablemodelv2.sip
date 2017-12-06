@@ -78,7 +78,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
  :return: QgsComposerTableColumn for specified index
  \param index a QModelIndex
 .. versionadded:: 2.3
-.. seealso:: indexFromColumn
+.. seealso:: :py:func:`indexFromColumn`
  :rtype: QgsComposerTableColumn
 %End
 
@@ -88,7 +88,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
  :return: QModelIndex for specified QgsComposerTableColumn
  \param column a QgsComposerTableColumn
 .. versionadded:: 2.3
-.. seealso:: columnFromIndex
+.. seealso:: :py:func:`columnFromIndex`
  :rtype: QModelIndex
 %End
 
@@ -99,8 +99,8 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
  \param column a QgsComposerTableColumn
  \param order sort order for column
 .. versionadded:: 2.3
-.. seealso:: removeColumnFromSort
-.. seealso:: moveColumnInSortRank
+.. seealso:: :py:func:`removeColumnFromSort`
+.. seealso:: :py:func:`moveColumnInSortRank`
 %End
 
     void setColumnAsUnsorted( QgsComposerTableColumn *column );
@@ -109,7 +109,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
  removed from the sort rank list.
  \param column a QgsComposerTableColumn
 .. versionadded:: 2.3
-.. seealso:: setColumnAsSorted
+.. seealso:: :py:func:`setColumnAsSorted`
 %End
 
     bool moveColumnInSortRank( QgsComposerTableColumn *column, ShiftDirection direction );
@@ -118,7 +118,7 @@ class QgsComposerAttributeTableColumnModelV2: QAbstractTableModel
  \param column a QgsComposerTableColumn
  \param direction direction to move the column in the sort rank list
 .. versionadded:: 2.3
-.. seealso:: setColumnAsSorted
+.. seealso:: :py:func:`setColumnAsSorted`
  :rtype: bool
 %End
 
@@ -168,7 +168,7 @@ class QgsComposerTableSortColumnsProxyModelV2: QSortFilterProxyModel
  :return: QgsComposerTableColumn for specified row
  \param row a row number
 .. versionadded:: 2.3
-.. seealso:: columnFromIndex
+.. seealso:: :py:func:`columnFromIndex`
  :rtype: QgsComposerTableColumn
 %End
 
@@ -178,8 +178,8 @@ class QgsComposerTableSortColumnsProxyModelV2: QSortFilterProxyModel
  :return: QgsComposerTableColumn for specified index
  \param index a QModelIndex
 .. versionadded:: 2.3
-.. seealso:: columnFromRow
-.. seealso:: columnFromSourceIndex
+.. seealso:: :py:func:`columnFromRow`
+.. seealso:: :py:func:`columnFromSourceIndex`
  :rtype: QgsComposerTableColumn
 %End
 
@@ -190,8 +190,8 @@ class QgsComposerTableSortColumnsProxyModelV2: QSortFilterProxyModel
  :return: QgsComposerTableColumn for specified index from QgsComposerAttributeTableColumnModel
  \param sourceIndex a QModelIndex
 .. versionadded:: 2.3
-.. seealso:: columnFromRow
-.. seealso:: columnFromIndex
+.. seealso:: :py:func:`columnFromRow`
+.. seealso:: :py:func:`columnFromIndex`
  :rtype: QgsComposerTableColumn
 %End
 

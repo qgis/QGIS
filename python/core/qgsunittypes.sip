@@ -142,7 +142,7 @@ class QgsUnitTypes
  Encodes a distance unit to a string.
  \param unit unit to encode
  :return: encoded string
-.. seealso:: decodeDistanceUnit()
+.. seealso:: :py:func:`decodeDistanceUnit()`
  :rtype: str
 %End
 
@@ -152,7 +152,7 @@ class QgsUnitTypes
  \param string string to decode
  \param ok optional boolean, will be set to true if string was converted successfully
  :return: decoded units
-.. seealso:: encodeUnit()
+.. seealso:: :py:func:`encodeUnit()`
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
@@ -160,7 +160,7 @@ class QgsUnitTypes
 %Docstring
  Returns a translated string representing a distance unit.
  \param unit unit to convert to string
-.. seealso:: stringToDistanceUnit()
+.. seealso:: :py:func:`stringToDistanceUnit()`
  :rtype: str
 %End
 
@@ -168,7 +168,7 @@ class QgsUnitTypes
 %Docstring
  Returns a translated abbreviation representing a distance unit.
  \param unit unit to convert to string
-.. seealso:: stringToDistanceUnit()
+.. seealso:: :py:func:`stringToDistanceUnit()`
 
 .. versionadded:: 3.0
  :rtype: str
@@ -179,7 +179,7 @@ class QgsUnitTypes
  Converts a translated string to a distance unit.
  \param string string representing a distance unit
  \param ok optional boolean, will be set to true if string was converted successfully
-.. seealso:: toString()
+.. seealso:: :py:func:`toString()`
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
@@ -204,7 +204,7 @@ class QgsUnitTypes
  Encodes an areal unit to a string.
  \param unit unit to encode
  :return: encoded string
-.. seealso:: decodeAreaUnit()
+.. seealso:: :py:func:`decodeAreaUnit()`
  :rtype: str
 %End
 
@@ -214,7 +214,7 @@ class QgsUnitTypes
  \param string string to decode
  \param ok optional boolean, will be set to true if string was converted successfully
  :return: decoded units
-.. seealso:: encodeUnit()
+.. seealso:: :py:func:`encodeUnit()`
  :rtype: AreaUnit
 %End
 
@@ -222,7 +222,7 @@ class QgsUnitTypes
 %Docstring
  Returns a translated string representing an areal unit.
  \param unit unit to convert to string
-.. seealso:: stringToAreaUnit()
+.. seealso:: :py:func:`stringToAreaUnit()`
  :rtype: str
 %End
 
@@ -230,7 +230,7 @@ class QgsUnitTypes
 %Docstring
  Returns a translated abbreviation representing an areal unit.
  \param unit unit to convert to string
-.. seealso:: stringToAreaUnit()
+.. seealso:: :py:func:`stringToAreaUnit()`
 
 .. versionadded:: 3.0
  :rtype: str
@@ -241,7 +241,7 @@ class QgsUnitTypes
  Converts a translated string to an areal unit.
  \param string string representing an areal unit
  \param ok optional boolean, will be set to true if string was converted successfully
-.. seealso:: toString()
+.. seealso:: :py:func:`toString()`
  :rtype: AreaUnit
 %End
 
@@ -268,7 +268,7 @@ class QgsUnitTypes
  Encodes an angular unit to a string.
  \param unit unit to encode
  :return: encoded string
-.. seealso:: decodeAngleUnit()
+.. seealso:: :py:func:`decodeAngleUnit()`
  :rtype: str
 %End
 
@@ -278,7 +278,7 @@ class QgsUnitTypes
  \param string string to decode
  \param ok optional boolean, will be set to true if string was converted successfully
  :return: decoded units
-.. seealso:: encodeUnit()
+.. seealso:: :py:func:`encodeUnit()`
  :rtype: AngleUnit
 %End
 
@@ -343,7 +343,7 @@ class QgsUnitTypes
  kilometers
  :return: formatted distance string
 .. versionadded:: 3.0
-.. seealso:: formatArea()
+.. seealso:: :py:func:`formatArea()`
  :rtype: str
 %End
 
@@ -357,7 +357,7 @@ class QgsUnitTypes
  square kilometers
  :return: formatted area string
 .. versionadded:: 3.0
-.. seealso:: formatDistance()
+.. seealso:: :py:func:`formatDistance()`
  :rtype: str
 %End
 
@@ -367,7 +367,7 @@ class QgsUnitTypes
  Encodes a render unit to a string.
  \param unit unit to encode
  :return: encoded string
-.. seealso:: decodeRenderUnit()
+.. seealso:: :py:func:`decodeRenderUnit()`
  :rtype: str
 %End
 
@@ -377,7 +377,7 @@ class QgsUnitTypes
  \param string string to decode
  \param ok optional boolean, will be set to true if string was converted successfully
  :return: decoded units
-.. seealso:: encodeUnit()
+.. seealso:: :py:func:`encodeUnit()`
  :rtype: RenderUnit
 %End
 
@@ -395,7 +395,7 @@ class QgsUnitTypes
  Encodes a layout unit to a string.
  \param unit unit to encode
  :return: encoded string
-.. seealso:: decodeLayoutUnit()
+.. seealso:: :py:func:`decodeLayoutUnit()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -406,7 +406,7 @@ class QgsUnitTypes
  \param string string to decode
  \param ok optional boolean, will be set to true if string was converted successfully
  :return: decoded units
-.. seealso:: encodeUnit()
+.. seealso:: :py:func:`encodeUnit()`
 .. versionadded:: 3.0
  :rtype: LayoutUnit
 %End

@@ -47,7 +47,7 @@ class QgsLayoutFrame: QgsLayoutItem
 %Docstring
  Sets the visible part of the multiframe's content which is visible within
  this frame (relative to the total multiframe extent in layout units).
-.. seealso:: extent()
+.. seealso:: :py:func:`extent()`
 %End
 
     QgsLayoutMultiFrame *multiFrame() const;
@@ -66,7 +66,7 @@ class QgsLayoutFrame: QgsLayoutItem
 %Docstring
  Returns the visible portion of the multi frame's content which
  is shown in this frame, in layout units.
-.. seealso:: setContentSection()
+.. seealso:: :py:func:`setContentSection()`
  :rtype: QRectF
 %End
 
@@ -74,7 +74,7 @@ class QgsLayoutFrame: QgsLayoutItem
 %Docstring
  Returns whether the page should be hidden (ie, not included in layout exports) if this frame is empty
  :return: true if page should be hidden if frame is empty
-.. seealso:: setHidePageIfEmpty()
+.. seealso:: :py:func:`setHidePageIfEmpty()`
  :rtype: bool
 %End
 
@@ -82,14 +82,14 @@ class QgsLayoutFrame: QgsLayoutItem
 %Docstring
  Sets whether the page should be hidden (ie, not included in layout exports) if this frame is empty
  \param hidePageIfEmpty set to true if page should be hidden if frame is empty
-.. seealso:: hidePageIfEmpty()
+.. seealso:: :py:func:`hidePageIfEmpty()`
 %End
 
     bool hideBackgroundIfEmpty() const;
 %Docstring
  Returns whether the background and frame stroke should be hidden if this frame is empty
  :return: true if background and stroke should be hidden if frame is empty
-.. seealso:: setHideBackgroundIfEmpty()
+.. seealso:: :py:func:`setHideBackgroundIfEmpty()`
  :rtype: bool
 %End
 
@@ -97,13 +97,13 @@ class QgsLayoutFrame: QgsLayoutItem
 %Docstring
  Sets whether the background and frame stroke should be hidden if this frame is empty
  \param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
-.. seealso:: hideBackgroundIfEmpty()
+.. seealso:: :py:func:`hideBackgroundIfEmpty()`
 %End
 
     bool isEmpty() const;
 %Docstring
  Returns whether the frame is empty.
-.. seealso:: hidePageIfEmpty()
+.. seealso:: :py:func:`hidePageIfEmpty()`
  :rtype: bool
 %End
 

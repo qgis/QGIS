@@ -68,7 +68,7 @@ class QgsLayoutItemMap : QgsLayoutItem
 %Docstring
  Returns the map scale.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: setScale()
+.. seealso:: :py:func:`setScale()`
  :rtype: float
 %End
 
@@ -78,7 +78,7 @@ class QgsLayoutItemMap : QgsLayoutItem
 
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-.. seealso:: scale()
+.. seealso:: :py:func:`scale()`
 %End
 
     void setExtent( const QgsRectangle &extent );
@@ -86,8 +86,8 @@ class QgsLayoutItemMap : QgsLayoutItem
  Sets a new ``extent`` for the map. This method may change the width or height of the map
  item to ensure that the extent exactly matches the specified extent, with no
  overlap or margin. This method implicitly alters the map scale.
-.. seealso:: zoomToExtent()
-.. seealso:: extentChanged()
+.. seealso:: :py:func:`zoomToExtent()`
+.. seealso:: :py:func:`extentChanged()`
 %End
 
     void zoomToExtent( const QgsRectangle &extent );
@@ -96,14 +96,14 @@ class QgsLayoutItemMap : QgsLayoutItem
  This method will not change the width or height of the map, and may result in
  an overlap or margin from the specified extent. This method implicitly alters the
  map scale.
-.. seealso:: setExtent()
+.. seealso:: :py:func:`setExtent()`
 %End
 
     QgsRectangle extent() const;
 %Docstring
  Returns the current map extent.
-.. seealso:: visibleExtentPolygon()
-.. seealso:: extentChanged()
+.. seealso:: :py:func:`visibleExtentPolygon()`
+.. seealso:: :py:func:`extentChanged()`
  :rtype: QgsRectangle
 %End
 
@@ -114,7 +114,7 @@ class QgsLayoutItemMap : QgsLayoutItem
  If the map rotation is 0, the result is the same as currentMapExtent
  :return: polygon with the four corner points representing the visible map extent. The points are
  clockwise, starting at the top-left point
-.. seealso:: extent()
+.. seealso:: :py:func:`extent()`
  :rtype: QPolygonF
 %End
 
@@ -124,8 +124,8 @@ class QgsLayoutItemMap : QgsLayoutItem
  This will match the presetCrs() if that is set, or if a preset
  CRS is not set then the map's CRS will follow the composition's
  project's CRS.
-.. seealso:: presetCrs()
-.. seealso:: setCrs()
+.. seealso:: :py:func:`presetCrs()`
+.. seealso:: :py:func:`setCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -135,8 +135,8 @@ class QgsLayoutItemMap : QgsLayoutItem
  CRS will be used to render the map regardless of any project CRS
  setting. If the returned CRS is not valid then the project CRS
  will be used to render the map.
-.. seealso:: crs()
-.. seealso:: setCrs()
+.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`setCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -145,8 +145,8 @@ class QgsLayoutItemMap : QgsLayoutItem
  Sets the map's preset ``crs`` (coordinate reference system). If a valid CRS is
  set, this CRS will be used to render the map regardless of any project CRS
  setting. If the CRS is not valid then the project CRS will be used to render the map.
-.. seealso:: crs()
-.. seealso:: presetCrs()
+.. seealso:: :py:func:`crs()`
+.. seealso:: :py:func:`presetCrs()`
 %End
 
     bool keepLayerSet() const;
@@ -155,8 +155,8 @@ class QgsLayoutItemMap : QgsLayoutItem
  or the current layer set from the project associated with the layout. This is just a GUI flag,
  and itself does not change which layers are rendered in the map.
  Instead, use setLayers() to control which layers are rendered.
-.. seealso:: setKeepLayerSet()
-.. seealso:: layers()
+.. seealso:: :py:func:`setKeepLayerSet()`
+.. seealso:: :py:func:`layers()`
  :rtype: bool
 %End
 
@@ -166,16 +166,16 @@ class QgsLayoutItemMap : QgsLayoutItem
  or the current layer set of the associated project. This is just a GUI flag,
  and itself does not change which layers are rendered in the map.
  Instead, use setLayers() to control which layers are rendered.
-.. seealso:: keepLayerSet()
-.. seealso:: layers()
+.. seealso:: :py:func:`keepLayerSet()`
+.. seealso:: :py:func:`layers()`
 %End
 
     QList<QgsMapLayer *> layers() const;
 %Docstring
  Returns the stored layer set. If empty, the current project layers will
  be used instead.
-.. seealso:: setLayers()
-.. seealso:: keepLayerSet()
+.. seealso:: :py:func:`setLayers()`
+.. seealso:: :py:func:`keepLayerSet()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -183,34 +183,34 @@ class QgsLayoutItemMap : QgsLayoutItem
 %Docstring
  Sets the stored ``layers`` set. If empty, the current project layers will
  be used instead.
-.. seealso:: layers()
-.. seealso:: keepLayerSet()
+.. seealso:: :py:func:`layers()`
+.. seealso:: :py:func:`keepLayerSet()`
 %End
 
     bool keepLayerStyles() const;
 %Docstring
  Returns whether current styles of layers should be overridden by previously stored styles.
-.. seealso:: setKeepLayerStyles()
+.. seealso:: :py:func:`setKeepLayerStyles()`
  :rtype: bool
 %End
 
     void setKeepLayerStyles( bool enabled );
 %Docstring
  Sets whether current styles of layers should be overridden by previously stored styles.
-.. seealso:: keepLayerStyles()
+.. seealso:: :py:func:`keepLayerStyles()`
 %End
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
  Returns stored overrides of styles for layers.
-.. seealso:: setLayerStyleOverrides()
+.. seealso:: :py:func:`setLayerStyleOverrides()`
  :rtype: QMap<str, QString>
 %End
 
     void setLayerStyleOverrides( const QMap<QString, QString> &overrides );
 %Docstring
  Sets the stored overrides of styles for layers.
-.. seealso:: layerStyleOverrides()
+.. seealso:: :py:func:`layerStyleOverrides()`
 %End
 
     void storeCurrentLayerStyles();
@@ -240,14 +240,14 @@ class QgsLayoutItemMap : QgsLayoutItem
 %Docstring
  Preset name that decides which layers and layer styles are used for map rendering. It is only
  used when followVisibilityPreset() returns true.
-.. seealso:: setFollowVisibilityPresetName()
+.. seealso:: :py:func:`setFollowVisibilityPresetName()`
  :rtype: str
 %End
 
     void setFollowVisibilityPresetName( const QString &name );
 %Docstring
  Sets preset name for map rendering. See followVisibilityPresetName() for more details.
-.. seealso:: followVisibilityPresetName()
+.. seealso:: :py:func:`followVisibilityPresetName()`
 %End
 
     virtual void moveContent( double dx, double dy );
@@ -275,8 +275,8 @@ Returns true if the map contains layers with blend modes or flattened layers for
 %Docstring
  Sets the ``rotation`` for the map - this does not affect the composer item shape, only the
  way the map is drawn within the item. Rotation is in degrees, clockwise.
-.. seealso:: mapRotation()
-.. seealso:: mapRotationChanged()
+.. seealso:: :py:func:`mapRotation()`
+.. seealso:: :py:func:`mapRotationChanged()`
 %End
 
     double mapRotation( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue ) const;
@@ -285,21 +285,21 @@ Returns true if the map contains layers with blend modes or flattened layers for
  \param valueType controls whether the returned value is the user specified rotation,
  or the current evaluated rotation (which may be affected by data driven rotation
  settings).
-.. seealso:: setMapRotation()
-.. seealso:: mapRotationChanged()
+.. seealso:: :py:func:`setMapRotation()`
+.. seealso:: :py:func:`mapRotationChanged()`
  :rtype: float
 %End
 
     void setDrawAnnotations( bool draw );
 %Docstring
  Sets whether annotations are drawn within the composer map.
-.. seealso:: drawAnnotations()
+.. seealso:: :py:func:`drawAnnotations()`
 %End
 
     bool drawAnnotations() const;
 %Docstring
  Returns whether annotations are drawn within the composer map.
-.. seealso:: setDrawAnnotations()
+.. seealso:: :py:func:`setDrawAnnotations()`
  :rtype: bool
 %End
 
@@ -308,8 +308,8 @@ Returns true if the map contains layers with blend modes or flattened layers for
 %Docstring
  Returns whether the map extent is set to follow the current atlas feature.
  :return: true if map will follow the current atlas feature.
-.. seealso:: setAtlasDriven
-.. seealso:: atlasScalingMode
+.. seealso:: :py:func:`setAtlasDriven`
+.. seealso:: :py:func:`atlasScalingMode`
  :rtype: bool
 %End
 
@@ -317,8 +317,8 @@ Returns true if the map contains layers with blend modes or flattened layers for
 %Docstring
  Sets whether the map extent will follow the current atlas feature.
  \param enabled set to true if the map extents should be set by the current atlas feature.
-.. seealso:: atlasDriven
-.. seealso:: setAtlasScalingMode
+.. seealso:: :py:func:`atlasDriven`
+.. seealso:: :py:func:`setAtlasScalingMode`
 %End
 
     AtlasScalingMode atlasScalingMode() const;
@@ -330,8 +330,8 @@ Returns true if the map contains layers with blend modes or flattened layers for
 .. note::
 
    this parameter is only used if atlasDriven() is true
-.. seealso:: setAtlasScalingMode
-.. seealso:: atlasDriven
+.. seealso:: :py:func:`setAtlasScalingMode`
+.. seealso:: :py:func:`atlasDriven`
  :rtype: AtlasScalingMode
 %End
 
@@ -344,8 +344,8 @@ Returns true if the map contains layers with blend modes or flattened layers for
 .. note::
 
    this parameter is only used if atlasDriven() is true
-.. seealso:: atlasScalingMode
-.. seealso:: atlasDriven
+.. seealso:: :py:func:`atlasScalingMode`
+.. seealso:: :py:func:`atlasDriven`
 %End
 
     double atlasMargin( const QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue );
@@ -358,8 +358,8 @@ Returns true if the map contains layers with blend modes or flattened layers for
 .. note::
 
    this is only used if atlasScalingMode() is Auto.
-.. seealso:: atlasScalingMode
-.. seealso:: setAtlasMargin
+.. seealso:: :py:func:`atlasScalingMode`
+.. seealso:: :py:func:`setAtlasMargin`
  :rtype: float
 %End
 
@@ -370,22 +370,22 @@ Returns true if the map contains layers with blend modes or flattened layers for
 .. note::
 
    this is only used if atlasScalingMode() is Auto.
-.. seealso:: atlasScalingMode
-.. seealso:: atlasMargin
+.. seealso:: :py:func:`atlasScalingMode`
+.. seealso:: :py:func:`atlasMargin`
 %End
 
     QgsLayoutItemMapGridStack *grids();
 %Docstring
  Returns the map item's grid stack, which is used to control how grids
  are drawn over the map's contents.
-.. seealso:: grid()
+.. seealso:: :py:func:`grid()`
  :rtype: QgsLayoutItemMapGridStack
 %End
 
     QgsLayoutItemMapGrid *grid();
 %Docstring
  Returns the map item's first grid. This is a convenience function.
-.. seealso:: grids()
+.. seealso:: :py:func:`grids()`
  :rtype: QgsLayoutItemMapGrid
 %End
 
@@ -394,7 +394,7 @@ Returns true if the map contains layers with blend modes or flattened layers for
  Returns the map item's overview stack, which is used to control how overviews
  are drawn over the map's contents.
  :return: pointer to overview stack
-.. seealso:: overview()
+.. seealso:: :py:func:`overview()`
  :rtype: QgsLayoutItemMapOverviewStack
 %End
 
@@ -402,7 +402,7 @@ Returns true if the map contains layers with blend modes or flattened layers for
 %Docstring
  Returns the map item's first overview. This is a convenience function.
  :return: pointer to first overview for map item
-.. seealso:: overviews()
+.. seealso:: :py:func:`overviews()`
  :rtype: QgsLayoutItemMapOverview
 %End
 
@@ -465,15 +465,15 @@ Transforms map coordinates to item coordinates (considering rotation and move of
     void extentChanged();
 %Docstring
  Is emitted when the map's extent changes.
-.. seealso:: setExtent()
-.. seealso:: extent()
+.. seealso:: :py:func:`setExtent()`
+.. seealso:: :py:func:`extent()`
 %End
 
     void mapRotationChanged( double newRotation );
 %Docstring
  Is emitted when the map's rotation changes.
-.. seealso:: setMapRotation()
-.. seealso:: mapRotation()
+.. seealso:: :py:func:`setMapRotation()`
+.. seealso:: :py:func:`mapRotation()`
 %End
 
     void preparedForAtlas();

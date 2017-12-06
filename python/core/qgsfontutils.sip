@@ -106,7 +106,7 @@ class QgsFontUtils
  \param elementName name for DOM element
  :return: DOM element containing font settings
 .. versionadded:: 2.10
-.. seealso:: setFromXmlElement
+.. seealso:: :py:func:`setFromXmlElement`
  :rtype: QDomElement
 %End
 
@@ -118,8 +118,8 @@ class QgsFontUtils
  \param element DOM element
  :return: true if properties were successfully read from element
 .. versionadded:: 2.10
-.. seealso:: toXmlElement
-.. seealso:: setFromXmlChildNode
+.. seealso:: :py:func:`toXmlElement`
+.. seealso:: :py:func:`setFromXmlChildNode`
  :rtype: bool
 %End
 
@@ -132,8 +132,8 @@ class QgsFontUtils
  \param childNode name of child node
  :return: true if child node exists and properties were successfully read from node
 .. versionadded:: 2.10
-.. seealso:: setFromXmlElement
-.. seealso:: toXmlElement
+.. seealso:: :py:func:`setFromXmlElement`
+.. seealso:: :py:func:`toXmlElement`
  :rtype: bool
 %End
 
@@ -141,7 +141,7 @@ class QgsFontUtils
 %Docstring
  Returns new mime data representing the specified ``font`` settings.
  Caller takes responsibility for deleting the returned object.
-.. seealso:: fromMimeData()
+.. seealso:: :py:func:`fromMimeData()`
 .. versionadded:: 3.0
  :rtype: QMimeData
 %End
@@ -150,7 +150,7 @@ class QgsFontUtils
 %Docstring
  Attempts to parse the provided mime ``data`` as a QFont.
  If data can be parsed as a QFont, ``ok`` will be set to true.
-.. seealso:: toMimeData()
+.. seealso:: :py:func:`toMimeData()`
 .. versionadded:: 3.0
  :rtype: QFont
 %End
@@ -161,7 +161,7 @@ class QgsFontUtils
  \param namedStyle a named style, i.e. "Bold", "Italic", etc
  :return: The localized named style
 .. versionadded:: 2.12
-.. seealso:: untranslateNamedStyle
+.. seealso:: :py:func:`untranslateNamedStyle`
  :rtype: str
 %End
 
@@ -171,7 +171,7 @@ class QgsFontUtils
  \param namedStyle a localized named style, i.e. "Fett", "Kursiv", etc
  :return: The english named style
 .. versionadded:: 2.12
-.. seealso:: translateNamedStyle
+.. seealso:: :py:func:`translateNamedStyle`
  :rtype: str
 %End
 
@@ -192,13 +192,13 @@ class QgsFontUtils
 %Docstring
  Adds a font ``family`` to the list of recently used font families.
 .. versionadded:: 3.0
-.. seealso:: recentFontFamilies()
+.. seealso:: :py:func:`recentFontFamilies()`
 %End
 
     static QStringList recentFontFamilies();
 %Docstring
  Returns a list of recently used font families.
-.. seealso:: addRecentFontFamily()
+.. seealso:: :py:func:`addRecentFontFamily()`
 .. versionadded:: 3.0
  :rtype: list of str
 %End

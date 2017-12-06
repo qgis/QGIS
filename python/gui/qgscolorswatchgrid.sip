@@ -12,7 +12,7 @@ class QgsColorSwatchGrid : QWidget
 %Docstring
  A grid of color swatches, which allows for user selection. Colors are taken from an
  associated QgsColorScheme.
-.. seealso:: QgsColorGridAction
+.. seealso:: :py:class:`QgsColorGridAction`
 .. versionadded:: 2.5
 %End
 
@@ -37,7 +37,7 @@ class QgsColorSwatchGrid : QWidget
 %Docstring
  Get the current context for the grid
  :return: context string which is passed to scheme for color generation
-.. seealso:: setContext
+.. seealso:: :py:func:`setContext`
  :rtype: str
 %End
 
@@ -45,14 +45,14 @@ class QgsColorSwatchGrid : QWidget
 %Docstring
  Sets the current context for the grid
  \param context string which is passed to scheme for color generation
-.. seealso:: context
+.. seealso:: :py:func:`context`
 %End
 
     QColor baseColor() const;
 %Docstring
  Get the base color for the widget
  :return: base color which is passed to scheme for color generation
-.. seealso:: setBaseColor
+.. seealso:: :py:func:`setBaseColor`
  :rtype: QColor
 %End
 
@@ -60,7 +60,7 @@ class QgsColorSwatchGrid : QWidget
 %Docstring
  Sets the base color for the widget
  \param baseColor base color to pass to scheme for color generation
-.. seealso:: baseColor
+.. seealso:: :py:func:`baseColor`
 %End
 
     QgsNamedColorList *colors();
@@ -115,7 +115,7 @@ class QgsColorSwatchGridAction: QWidgetAction
 {
 %Docstring
  A color swatch grid which can be embedded into a menu.
-.. seealso:: QgsColorSwatchGrid
+.. seealso:: :py:class:`QgsColorSwatchGrid`
 .. versionadded:: 2.5
 %End
 
@@ -137,14 +137,14 @@ class QgsColorSwatchGridAction: QWidgetAction
 %Docstring
  Sets the base color for the color grid
  \param baseColor base color to pass to scheme for color generation
-.. seealso:: baseColor
+.. seealso:: :py:func:`baseColor`
 %End
 
     QColor baseColor() const;
 %Docstring
  Get the base color for the color grid
  :return: base color which is passed to scheme for color generation
-.. seealso:: setBaseColor
+.. seealso:: :py:func:`setBaseColor`
  :rtype: QColor
 %End
 
@@ -152,7 +152,7 @@ class QgsColorSwatchGridAction: QWidgetAction
 %Docstring
  Get the current context for the color grid
  :return: context string which is passed to scheme for color generation
-.. seealso:: setContext
+.. seealso:: :py:func:`setContext`
  :rtype: str
 %End
 
@@ -160,7 +160,7 @@ class QgsColorSwatchGridAction: QWidgetAction
 %Docstring
  Sets the current context for the color grid
  \param context string which is passed to scheme for color generation
-.. seealso:: context
+.. seealso:: :py:func:`context`
 %End
 
     void setDismissOnColorSelection( bool dismiss );
@@ -170,7 +170,7 @@ class QgsColorSwatchGridAction: QWidgetAction
  \param dismiss set to true (default) to immediately close the menu when a color is selected
  from the widget. If set to false, the colorChanged signal will be emitted but the menu will
  stay open.
-.. seealso:: dismissOnColorSelection()
+.. seealso:: :py:func:`dismissOnColorSelection()`
 .. versionadded:: 2.14
 %End
 
@@ -178,7 +178,7 @@ class QgsColorSwatchGridAction: QWidgetAction
 %Docstring
  Returns whether the parent menu will be dismissed after a color is selected from the
  action's color widget.
-.. seealso:: setDismissOnColorSelection
+.. seealso:: :py:func:`setDismissOnColorSelection`
 .. versionadded:: 2.14
  :rtype: bool
 %End

@@ -32,14 +32,14 @@ class QgsRatioLockButton : QToolButton
 %Docstring
  Sets whether the button state is locked.
  \param locked locked state
-.. seealso:: locked
+.. seealso:: :py:func:`locked`
 %End
 
     bool locked() const;
 %Docstring
  Returns whether the button state is locked.
  :return: true if the button state is locked.
-.. seealso:: setLocked
+.. seealso:: :py:func:`setLocked`
  :rtype: bool
 %End
 
@@ -52,7 +52,7 @@ class QgsRatioLockButton : QToolButton
  width spin box will automatically update the height spin box to a value which keeps the
  same locked ratio.
 
-.. seealso:: setHeightSpinBox()
+.. seealso:: :py:func:`setHeightSpinBox()`
 %End
 
     void setHeightSpinBox( QDoubleSpinBox *widget );
@@ -64,7 +64,7 @@ class QgsRatioLockButton : QToolButton
  width spin box will automatically update the height spin box to a value which keeps the
  same locked ratio.
 
-.. seealso:: setWidthSpinBox()
+.. seealso:: :py:func:`setWidthSpinBox()`
 %End
 
     void resetRatio();

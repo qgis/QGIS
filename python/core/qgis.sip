@@ -179,7 +179,7 @@ double qgsPermissiveToDouble( QString string, bool &ok );
  \param ok will be set to true if conversion was successful
  :return: string converted to double if possible
 .. versionadded:: 2.9
-.. seealso:: permissiveToInt
+.. seealso:: :py:func:`permissiveToInt`
  :rtype: float
 %End
 
@@ -191,7 +191,7 @@ int qgsPermissiveToInt( QString string, bool &ok );
  \param ok will be set to true if conversion was successful
  :return: string converted to int if possible
 .. versionadded:: 2.9
-.. seealso:: permissiveToDouble
+.. seealso:: :py:func:`permissiveToDouble`
  :rtype: int
 %End
 
@@ -200,7 +200,7 @@ bool qgsVariantLessThan( const QVariant &lhs, const QVariant &rhs );
  Compares two QVariant values and returns whether the first is less than the second.
  Useful for sorting lists of variants, correctly handling sorting of the various
  QVariant data types (such as strings, numeric values, dates and times)
-.. seealso:: qgsVariantGreaterThan()
+.. seealso:: :py:func:`qgsVariantGreaterThan()`
  :rtype: bool
 %End
 
@@ -209,7 +209,7 @@ bool qgsVariantGreaterThan( const QVariant &lhs, const QVariant &rhs );
  Compares two QVariant values and returns whether the first is greater than the second.
  Useful for sorting lists of variants, correctly handling sorting of the various
  QVariant data types (such as strings, numeric values, dates and times)
-.. seealso:: qgsVariantLessThan()
+.. seealso:: :py:func:`qgsVariantLessThan()`
  :rtype: bool
 %End
 

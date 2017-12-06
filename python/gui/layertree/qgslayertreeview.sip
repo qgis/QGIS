@@ -23,7 +23,7 @@ class QgsLayerTreeView : QTreeView
  Allows the client to specify a context menu provider with custom actions. Also it comes
  with a set of default actions that can be used when building context menu.
 
-.. seealso:: QgsLayerTreeModel
+.. seealso:: :py:class:`QgsLayerTreeModel`
 .. versionadded:: 2.4
 %End
 
@@ -178,7 +178,7 @@ class QgsLayerTreeViewMenuProvider
  Implementation of this interface can be implemented to allow QgsLayerTreeView
  instance to provide custom context menus (opened upon right-click).
 
-.. seealso:: QgsLayerTreeView
+.. seealso:: :py:class:`QgsLayerTreeView`
 .. versionadded:: 2.4
 %End
 

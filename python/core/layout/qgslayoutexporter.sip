@@ -32,7 +32,7 @@ class QgsLayoutExporter
  The ``page`` argument specifies the page number to render. Page numbers
  are 0 based, such that the first page in a layout is page 0.
 
-.. seealso:: renderRect()
+.. seealso:: :py:func:`renderRect()`
 %End
 
     void renderRegion( QPainter *painter, const QRectF &region );
@@ -40,7 +40,7 @@ class QgsLayoutExporter
  Renders a ``region`` from the layout to a ``painter``. This method can be used
  to render sections of pages rather than full pages.
 
-.. seealso:: renderPage()
+.. seealso:: :py:func:`renderPage()`
 %End
 
 };

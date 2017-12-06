@@ -54,14 +54,14 @@ class QgsVectorLayerCache : QObject
  Enable or disable the caching of geometries
 
  \param cacheGeometry    Enable or disable the caching of geometries
-.. seealso:: cacheGeometry()
+.. seealso:: :py:func:`cacheGeometry()`
 %End
 
     bool cacheGeometry() const;
 %Docstring
  Returns true if the cache will fetch and cache feature geometries.
 .. versionadded:: 3.0
-.. seealso:: setCacheGeometry()
+.. seealso:: :py:func:`setCacheGeometry()`
  :rtype: bool
 %End
 
@@ -94,7 +94,7 @@ class QgsVectorLayerCache : QObject
 
    when a cache is invalidated() (e.g. by adding an attribute to a layer) this setting
  is reset. A full cache rebuild must be performed by calling setFullCache( true ) again.
-.. seealso:: hasFullCache()
+.. seealso:: :py:func:`hasFullCache()`
 %End
 
     bool hasFullCache() const;
@@ -102,7 +102,7 @@ class QgsVectorLayerCache : QObject
  Returns true if the cache is complete, ie it contains all features. This may happen as
  a result of a call to setFullCache() or by through a feature request which resulted in
  all available features being cached.
-.. seealso:: setFullCache()
+.. seealso:: :py:func:`setFullCache()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -159,7 +159,7 @@ class QgsVectorLayerCache : QObject
  Check if a certain feature id is cached.
  \param  fid The feature id to look for
  :return: True if this id is in the cache
-.. seealso:: cachedFeatureIds()
+.. seealso:: :py:func:`cachedFeatureIds()`
  :rtype: bool
 %End
 
@@ -167,7 +167,7 @@ class QgsVectorLayerCache : QObject
 %Docstring
  Returns the set of feature IDs for features which are cached.
 .. versionadded:: 3.0
-.. seealso:: isFidCached()
+.. seealso:: :py:func:`isFidCached()`
  :rtype: QgsFeatureIds
 %End
 

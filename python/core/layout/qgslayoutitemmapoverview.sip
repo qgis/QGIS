@@ -17,7 +17,7 @@ class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
  QgsLayoutItemMap. The overview stack controls which overviews are drawn and the
  order they are drawn in.
 .. versionadded:: 3.0
-.. seealso:: QgsLayoutItemMapOverview
+.. seealso:: :py:class:`QgsLayoutItemMapOverview`
 %End
 
 %TypeHeaderCode
@@ -40,7 +40,7 @@ class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
 
    After adding a overview to the stack, update()
  should be called for the QgsLayoutItemMap to prevent rendering artifacts.
-.. seealso:: removeOverview()
+.. seealso:: :py:func:`removeOverview()`
 %End
 
     void removeOverview( const QString &overviewId );
@@ -50,7 +50,7 @@ class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
 
    After removing an overview from the stack, update()
  should be called for the QgsLayoutItemMap to prevent rendering artifacts.
-.. seealso:: addOverview()
+.. seealso:: :py:func:`addOverview()`
 %End
 
     void moveOverviewUp( const QString &overviewId );
@@ -60,7 +60,7 @@ class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
 
    After moving an overview within the stack, update() should be
  called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
-.. seealso:: moveOverviewDown()
+.. seealso:: :py:func:`moveOverviewDown()`
 %End
 
     void moveOverviewDown( const QString &overviewId );
@@ -70,20 +70,20 @@ class QgsLayoutItemMapOverviewStack : QgsLayoutItemMapItemStack
 
    After moving an overview within the stack, update() should be
  called for the QgsLayoutItemMap to redraw the map with the new overview stack order.
-.. seealso:: moveOverviewUp()
+.. seealso:: :py:func:`moveOverviewUp()`
 %End
 
     QgsLayoutItemMapOverview *overview( const QString &overviewId ) const;
 %Docstring
  Returns a reference to an overview with matching overviewId within the stack.
-.. seealso:: constOverview()
+.. seealso:: :py:func:`constOverview()`
  :rtype: QgsLayoutItemMapOverview
 %End
 
     QgsLayoutItemMapOverview *overview( const int index ) const;
 %Docstring
  Returns a reference to an overview at the specified ``index`` within the stack.
-.. seealso:: constOverview()
+.. seealso:: :py:func:`constOverview()`
  :rtype: QgsLayoutItemMapOverview
 %End
 
@@ -105,7 +105,7 @@ class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
  An individual overview which is drawn above the map content in a
  QgsLayoutItemMap, and shows the extent of another QgsLayoutItemMap.
 .. versionadded:: 3.0
-.. seealso:: QgsLayoutItemMapOverviewStack
+.. seealso:: :py:class:`QgsLayoutItemMapOverviewStack`
 %End
 
 %TypeHeaderCode
@@ -133,28 +133,28 @@ class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
 %Docstring
  Sets overview frame map ``uuid``. Set an empty ``uuid`` to disable
  the overview frame.
-.. seealso:: frameMapUuid()
-.. seealso:: setFrameMap()
+.. seealso:: :py:func:`frameMapUuid()`
+.. seealso:: :py:func:`setFrameMap()`
 %End
 
     QString frameMapUuid() const;
 %Docstring
  Returns the uuid of source map, or an empty string if no map set.
-.. seealso:: setFrameMapUuid()
-.. seealso:: frameMap()
+.. seealso:: :py:func:`setFrameMapUuid()`
+.. seealso:: :py:func:`frameMap()`
  :rtype: str
 %End
 
     void setFrameMap( QgsLayoutItemMap *map );
 %Docstring
  Sets the ``map`` to show the overview extent of.
-.. seealso:: frameMap()
+.. seealso:: :py:func:`frameMap()`
 %End
 
     QgsLayoutItemMap *frameMap();
 %Docstring
  Returns the source map to show the overview extent of.
-.. seealso:: setFrameMap()
+.. seealso:: :py:func:`setFrameMap()`
  :rtype: QgsLayoutItemMap
 %End
 
@@ -162,34 +162,34 @@ class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
 %Docstring
  Sets the fill ``symbol`` used for drawing the overview extent. Ownership
  is transferred to the overview.
-.. seealso:: frameSymbol()
+.. seealso:: :py:func:`frameSymbol()`
 %End
 
     QgsFillSymbol *frameSymbol();
 %Docstring
  Returns the fill symbol used for drawing the overview extent.
-.. seealso:: setFrameSymbol()
+.. seealso:: :py:func:`setFrameSymbol()`
  :rtype: QgsFillSymbol
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
  Retrieves the blending mode used for drawing the overview.
-.. seealso:: setBlendMode()
+.. seealso:: :py:func:`setBlendMode()`
  :rtype: QPainter.CompositionMode
 %End
 
     void setBlendMode( const QPainter::CompositionMode mode );
 %Docstring
  Sets the blending ``mode`` used for drawing the overview.
-.. seealso:: blendMode()
+.. seealso:: :py:func:`blendMode()`
 %End
 
     bool inverted() const;
 %Docstring
  Returns whether the overview frame is inverted, ie, whether the shaded area is drawn outside
  the extent of the overview map.
-.. seealso:: setInverted()
+.. seealso:: :py:func:`setInverted()`
  :rtype: bool
 %End
 
@@ -197,20 +197,20 @@ class QgsLayoutItemMapOverview : QgsLayoutItemMapItem
 %Docstring
  Sets whether the overview frame is ``inverted``, ie, whether the shaded area is drawn outside
  the extent of the overview map.
-.. seealso:: inverted()
+.. seealso:: :py:func:`inverted()`
 %End
 
     bool centered() const;
 %Docstring
  Returns whether the extent of the map is forced to center on the overview.
-.. seealso:: setCentered()
+.. seealso:: :py:func:`setCentered()`
  :rtype: bool
 %End
 
     void setCentered( const bool centered );
 %Docstring
  Sets whether the extent of the map is forced to center on the overview
-.. seealso:: centered()
+.. seealso:: :py:func:`centered()`
 %End
 
     void connectSignals();

@@ -95,8 +95,8 @@ class QgsRelation
  \param feature A feature from the referenced (parent) layer
 
  :return: An iterator with all the referenced features
-.. seealso:: getRelatedFeaturesRequest()
-.. seealso:: getRelatedFeaturesFilter()
+.. seealso:: :py:func:`getRelatedFeaturesRequest()`
+.. seealso:: :py:func:`getRelatedFeaturesFilter()`
  :rtype: QgsFeatureIterator
 %End
 
@@ -108,8 +108,8 @@ class QgsRelation
  \param feature A feature from the referenced (parent) layer
 
  :return: A request for all the referencing features
-.. seealso:: getRelatedFeatures()
-.. seealso:: getRelatedFeaturesFilter()
+.. seealso:: :py:func:`getRelatedFeatures()`
+.. seealso:: :py:func:`getRelatedFeaturesFilter()`
  :rtype: QgsFeatureRequest
 %End
 
@@ -120,8 +120,8 @@ class QgsRelation
  \param feature A feature from the referenced (parent) layer
  :return: expression filter string for all the referencing features
 .. versionadded:: 2.16
-.. seealso:: getRelatedFeatures()
-.. seealso:: getRelatedFeaturesRequest()
+.. seealso:: :py:func:`getRelatedFeatures()`
+.. seealso:: :py:func:`getRelatedFeaturesRequest()`
  :rtype: str
 %End
 
@@ -165,7 +165,7 @@ class QgsRelation
 %Docstring
  Returns a human readable name for this relation. Mostly used as title for the children.
 
-.. seealso:: id()
+.. seealso:: :py:func:`id()`
 
  :return: A name
  :rtype: str

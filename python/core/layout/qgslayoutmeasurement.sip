@@ -15,7 +15,7 @@ class QgsLayoutMeasurement
 %Docstring
  This class provides a method of storing measurements for use in QGIS layouts
  using a variety of different measurement units.
-.. seealso:: QgsLayoutMeasurementConverter
+.. seealso:: :py:class:`QgsLayoutMeasurementConverter`
 .. versionadded:: 3.0
 %End
 
@@ -34,20 +34,20 @@ class QgsLayoutMeasurement
     double length() const;
 %Docstring
  Returns the length of the measurement.
-.. seealso:: setLength()
+.. seealso:: :py:func:`setLength()`
  :rtype: float
 %End
 
     void setLength( const double length );
 %Docstring
  Sets the ``length`` of the measurement.
-.. seealso:: length()
+.. seealso:: :py:func:`length()`
 %End
 
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
  Returns the units for the measurement.
-.. seealso:: setUnits()
+.. seealso:: :py:func:`setUnits()`
  :rtype: QgsUnitTypes.LayoutUnit
 %End
 
@@ -55,20 +55,20 @@ class QgsLayoutMeasurement
 %Docstring
  Sets the ``units`` for the measurement. Does not alter the stored length,
  ie. no length conversion is done.
-.. seealso:: units()
+.. seealso:: :py:func:`units()`
 %End
 
     QString encodeMeasurement() const;
 %Docstring
  Encodes the layout measurement to a string
-.. seealso:: decodeMeasurement()
+.. seealso:: :py:func:`decodeMeasurement()`
  :rtype: str
 %End
 
     static QgsLayoutMeasurement decodeMeasurement( const QString &string );
 %Docstring
  Decodes a measurement from a ``string``.
-.. seealso:: encodeMeasurement()
+.. seealso:: :py:func:`encodeMeasurement()`
  :rtype: QgsLayoutMeasurement
 %End
 

@@ -41,40 +41,40 @@ class QgsLayoutItemShape : QgsLayoutItem
     QgsLayoutItemShape::Shape shapeType() const;
 %Docstring
  Returns the type of shape (e.g. rectangle, ellipse, etc).
-.. seealso:: setShapeType()
+.. seealso:: :py:func:`setShapeType()`
  :rtype: QgsLayoutItemShape.Shape
 %End
 
     void setShapeType( QgsLayoutItemShape::Shape type );
 %Docstring
  Sets the ``type`` of shape (e.g. rectangle, ellipse, etc).
-.. seealso:: shapeType()
+.. seealso:: :py:func:`shapeType()`
 %End
 
     void setSymbol( QgsFillSymbol *symbol );
 %Docstring
  Sets the fill ``symbol`` used to draw the shape. Ownership is not transferred
  and a clone of the symbol is made.
-.. seealso:: symbol()
+.. seealso:: :py:func:`symbol()`
 %End
 
     QgsFillSymbol *symbol();
 %Docstring
  Returns the fill symbol used to draw the shape.
-.. seealso:: setSymbol()
+.. seealso:: :py:func:`setSymbol()`
  :rtype: QgsFillSymbol
 %End
 
     void setCornerRadius( QgsLayoutMeasurement radius );
 %Docstring
  Sets the corner ``radius`` for rounded rectangle corners.
-.. seealso:: cornerRadius()
+.. seealso:: :py:func:`cornerRadius()`
 %End
 
     QgsLayoutMeasurement cornerRadius() const;
 %Docstring
  Returns the corner radius for rounded rectangle corners.
-.. seealso:: setCornerRadius()
+.. seealso:: :py:func:`setCornerRadius()`
  :rtype: QgsLayoutMeasurement
 %End
 

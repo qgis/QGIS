@@ -122,14 +122,14 @@ Sets the x and y value of the point
     double sqrDist( double x, double y ) const;
 %Docstring
  Returns the squared distance between this point a specified x, y coordinate.
-.. seealso:: distance()
+.. seealso:: :py:func:`distance()`
  :rtype: float
 %End
 
     double sqrDist( const QgsPointXY &other ) const;
 %Docstring
  Returns the squared distance between this point another point.
-.. seealso:: distance()
+.. seealso:: :py:func:`distance()`
  :rtype: float
 %End
 
@@ -138,7 +138,7 @@ Sets the x and y value of the point
  Returns the distance between this point and a specified x, y coordinate.
  \param x x-coordniate
  \param y y-coordinate
-.. seealso:: sqrDist()
+.. seealso:: :py:func:`sqrDist()`
 .. versionadded:: 2.16
  :rtype: float
 %End
@@ -147,7 +147,7 @@ Sets the x and y value of the point
 %Docstring
  Returns the distance between this point and another point.
  \param other other point
-.. seealso:: sqrDist()
+.. seealso:: :py:func:`sqrDist()`
 .. versionadded:: 2.16
  :rtype: float
 %End

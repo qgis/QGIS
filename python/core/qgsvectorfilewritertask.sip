@@ -16,8 +16,8 @@ class QgsVectorFileWriterTask : QgsTask
  task. This can be used to save a vector layer out to a file without blocking the
  QGIS interface.
 .. versionadded:: 3.0
-.. seealso:: QgsVectorLayerExporterTask
-.. seealso:: QgsRasterFileWriterTask
+.. seealso:: :py:class:`QgsVectorLayerExporterTask`
+.. seealso:: :py:class:`QgsRasterFileWriterTask`
 %End
 
 %TypeHeaderCode

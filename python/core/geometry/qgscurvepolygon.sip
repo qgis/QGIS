@@ -98,8 +98,8 @@ class QgsCurvePolygon: QgsSurface
  of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
  from the CurvePolygon and all interior rings.
  \param ring new exterior ring. Ownership is transferred to the CurvePolygon.
-.. seealso:: setInteriorRings()
-.. seealso:: exteriorRing()
+.. seealso:: :py:func:`setInteriorRings()`
+.. seealso:: :py:func:`exteriorRing()`
 %End
 
     void setInteriorRings( const QVector<QgsCurve *> &rings /Transfer/ );
@@ -116,7 +116,7 @@ Adds an interior ring to the geometry (takes ownership)
  Removes an interior ring from the polygon. The first interior ring has index 0.
  The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
  the function will return true.  It is not possible to remove the exterior ring using this method.
-.. seealso:: removeInteriorRings()
+.. seealso:: :py:func:`removeInteriorRings()`
  :rtype: bool
 %End
 
@@ -126,7 +126,7 @@ Adds an interior ring to the geometry (takes ownership)
  parameter is specified then only rings smaller than this minimum
  area will be removed.
 .. versionadded:: 3.0
-.. seealso:: removeInteriorRing()
+.. seealso:: :py:func:`removeInteriorRing()`
 %End
 
     virtual void draw( QPainter &p ) const;

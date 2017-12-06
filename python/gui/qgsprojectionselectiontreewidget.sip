@@ -21,8 +21,8 @@ class QgsProjectionSelectionTreeWidget : QWidget
  QgsProjectionSelectionDialog dialog. In most cases it is more
  suitable to use the compact QgsProjectionSelectionWidget widget.
 
-.. seealso:: QgsProjectionSelectionDialog.
-.. seealso:: QgsProjectionSelectionWidget
+.. seealso:: :py:class:`QgsProjectionSelectionDialog`
+.. seealso:: :py:class:`QgsProjectionSelectionWidget`
 .. versionadded:: 3.0
 %End
 
@@ -42,7 +42,7 @@ class QgsProjectionSelectionTreeWidget : QWidget
 %Docstring
  Returns the CRS currently selected in the widget.
 .. versionadded:: 3.0
-.. seealso:: setCrs()
+.. seealso:: :py:func:`setCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -50,14 +50,14 @@ class QgsProjectionSelectionTreeWidget : QWidget
 %Docstring
  Sets whether a "no/invalid" projection option should be shown. If this
  option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-.. seealso:: showNoProjection()
+.. seealso:: :py:func:`showNoProjection()`
 .. versionadded:: 3.0
 %End
 
     void setShowBoundsMap( bool show );
 %Docstring
  Sets whether to show the bounnds preview map.
-.. seealso:: showBoundsMap()
+.. seealso:: :py:func:`showBoundsMap()`
 .. versionadded:: 3.0
 %End
 
@@ -66,7 +66,7 @@ class QgsProjectionSelectionTreeWidget : QWidget
  Returns whether the "no/invalid" projection option is shown. If this
  option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
 .. versionadded:: 3.0
-.. seealso:: setShowNoProjection()
+.. seealso:: :py:func:`setShowNoProjection()`
  :rtype: bool
 %End
 
@@ -74,7 +74,7 @@ class QgsProjectionSelectionTreeWidget : QWidget
 %Docstring
  Returns whether the bounds preview map is shown.
 .. versionadded:: 3.0
-.. seealso:: setShowBoundsMap()
+.. seealso:: :py:func:`setShowBoundsMap()`
  :rtype: bool
 %End
 
@@ -93,21 +93,21 @@ class QgsProjectionSelectionTreeWidget : QWidget
 %Docstring
  Sets the initial ``crs`` to show within the dialog.
 .. versionadded:: 3.0
-.. seealso:: crs()
+.. seealso:: :py:func:`crs()`
 %End
 
     void setPreviewRect( const QgsRectangle &rect );
 %Docstring
  Sets the initial "preview" rectangle for the bounds overview map.
 .. versionadded:: 3.0
-.. seealso:: previewRect()
+.. seealso:: :py:func:`previewRect()`
 %End
 
     QgsRectangle previewRect() const;
 %Docstring
  The initial "preview" rectangle for the bounds overview map.
 .. versionadded:: 3.0
-.. seealso:: previewRect()
+.. seealso:: :py:func:`previewRect()`
  :rtype: QgsRectangle
 %End
 

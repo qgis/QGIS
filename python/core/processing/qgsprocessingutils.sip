@@ -31,8 +31,8 @@ class QgsProcessingUtils
 
  If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
  value.
-.. seealso:: compatibleVectorLayers()
-.. seealso:: compatibleLayers()
+.. seealso:: :py:func:`compatibleVectorLayers()`
+.. seealso:: :py:func:`compatibleLayers()`
  :rtype: list of QgsRasterLayer
 %End
 
@@ -49,8 +49,8 @@ class QgsProcessingUtils
 
  If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
  value.
-.. seealso:: compatibleRasterLayers()
-.. seealso:: compatibleLayers()
+.. seealso:: :py:func:`compatibleRasterLayers()`
+.. seealso:: :py:func:`compatibleLayers()`
  :rtype: list of QgsVectorLayer
 %End
 
@@ -61,8 +61,8 @@ class QgsProcessingUtils
 
  If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
  value.
-.. seealso:: compatibleRasterLayers()
-.. seealso:: compatibleVectorLayers()
+.. seealso:: :py:func:`compatibleRasterLayers()`
+.. seealso:: :py:func:`compatibleVectorLayers()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -158,7 +158,7 @@ class QgsProcessingUtils
     static QString tempFolder();
 %Docstring
  Returns a session specific processing temporary folder for use in processing algorithms.
-.. seealso:: generateTempFileName()
+.. seealso:: :py:func:`generateTempFileName()`
  :rtype: str
 %End
 
@@ -167,7 +167,7 @@ class QgsProcessingUtils
  Returns a temporary filename for a given file, putting it into
  a temporary folder (creating that folder in the process),
  but not changing the ``basename``.
-.. seealso:: tempFolder()
+.. seealso:: :py:func:`tempFolder()`
  :rtype: str
 %End
 

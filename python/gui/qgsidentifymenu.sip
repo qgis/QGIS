@@ -13,8 +13,8 @@
 class QgsIdentifyMenu : QMenu
 {
 %Docstring
-.. seealso:: QgsMapToolIdentify).
-.. seealso:: QgsAction) as well as map layer actions (\see QgsMapLayerAction).
+.. seealso:: :py:class:`QgsMapToolIdentify`
+.. seealso:: :py:class:`QgsAction`
  It can also embed custom map layer actions, defined for this menu exclusively.
  If used in a QgsMapToolIdentify, it is accessible via QgsMapToolIdentify.identifyMenu() and can be customized in the map tool sub-class.
 %End
@@ -95,8 +95,8 @@ define if the menu will be shown with a single idetify result
 .. note::
 
    custom actions will be shown in any case if they exist.
-.. seealso:: QgsAction
-.. seealso:: QgsMapLayerActionRegistry
+.. seealso:: :py:class:`QgsAction`
+.. seealso:: :py:class:`QgsMapLayerActionRegistry`
 %End
     bool showFeatureActions();
 %Docstring
@@ -106,7 +106,7 @@ define if the menu will be shown with a single idetify result
     void setResultsIfExternalAction( bool resultsIfExternalAction );
 %Docstring
  setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
-.. seealso:: setShowFeatureActions)
+.. seealso:: :py:func:`setShowFeatureActions`
 %End
     bool resultsIfExternalAction();
 %Docstring

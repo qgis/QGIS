@@ -43,7 +43,7 @@ The builder widget that is used by the dialog
 %Docstring
  Returns the expression context for the dialog. The context is used for the expression
  preview result and for populating the list of available functions and variables.
-.. seealso:: setExpressionContext
+.. seealso:: :py:func:`setExpressionContext`
 .. versionadded:: 2.12
  :rtype: QgsExpressionContext
 %End
@@ -53,7 +53,7 @@ The builder widget that is used by the dialog
  Sets the expression context for the dialog. The context is used for the expression
  preview result and for populating the list of available functions and variables.
  \param context expression context
-.. seealso:: expressionContext
+.. seealso:: :py:func:`expressionContext`
 .. versionadded:: 2.12
 %End
 

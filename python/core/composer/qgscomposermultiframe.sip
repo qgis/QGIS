@@ -74,8 +74,8 @@ class QgsComposerMultiFrame: QgsComposerObject
  the frame size is not fixed in that direction and frames can have variable width
  or height accordingly.
 .. versionadded:: 2.5
-.. seealso:: minFrameSize
-.. seealso:: recalculateFrameRects
+.. seealso:: :py:func:`minFrameSize`
+.. seealso:: :py:func:`recalculateFrameRects`
  :rtype: QSizeF
 %End
 
@@ -88,8 +88,8 @@ class QgsComposerMultiFrame: QgsComposerObject
  :return: minimum size for frame. If the size has a width or height of 0, then
  the frame size has no minimum in that direction.
 .. versionadded:: 2.5
-.. seealso:: fixedFrameSize
-.. seealso:: recalculateFrameRects
+.. seealso:: :py:func:`fixedFrameSize`
+.. seealso:: :py:func:`recalculateFrameRects`
  :rtype: QSizeF
 %End
 
@@ -107,7 +107,7 @@ class QgsComposerMultiFrame: QgsComposerObject
  Adds a frame to the multiframe.
  \param frame frame to add
  \param recalcFrameSizes set to true to force recalculation of all existing frame sizes
-.. seealso:: removeFrame
+.. seealso:: :py:func:`removeFrame`
 %End
 
     virtual double findNearbyPageBreak( double yPos );
@@ -126,28 +126,28 @@ class QgsComposerMultiFrame: QgsComposerObject
  composition.
  \param i index of frame to remove
  \param removeEmptyPages set to true to remove pages which are empty after the frame is removed
-.. seealso:: addFrame
-.. seealso:: deleteFrames
+.. seealso:: :py:func:`addFrame`
+.. seealso:: :py:func:`deleteFrames`
 %End
 
     void deleteFrames();
 %Docstring
  Removes and deletes all child frames.
-.. seealso:: removeFrame
+.. seealso:: :py:func:`removeFrame`
 %End
 
     void setResizeMode( ResizeMode mode );
 %Docstring
  Sets the resize mode for the multiframe, and recalculates frame sizes to match.
  \param mode resize mode
-.. seealso:: resizeMode
+.. seealso:: :py:func:`resizeMode`
 %End
 
     ResizeMode resizeMode() const;
 %Docstring
  Returns the resize mode for the multiframe.
  :return: resize mode
-.. seealso:: setResizeMode
+.. seealso:: :py:func:`setResizeMode`
  :rtype: ResizeMode
 %End
 
@@ -169,7 +169,7 @@ class QgsComposerMultiFrame: QgsComposerObject
  \param elem is DOM element
  \param doc is the DOM document
  \param ignoreFrames set to false to avoid writing state information about child frames into DOM
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
  :rtype: bool
 %End
 
@@ -191,7 +191,7 @@ class QgsComposerMultiFrame: QgsComposerObject
  \param itemElem is DOM element
  \param doc is the DOM document
  \param ignoreFrames set to false to avoid reading state information about child frames from DOM
-.. seealso:: readXml
+.. seealso:: :py:func:`readXml`
  :rtype: bool
 %End
 
@@ -206,7 +206,7 @@ class QgsComposerMultiFrame: QgsComposerObject
 %Docstring
  Returns whether undo commands should be created for interactions with the multiframe.
  :return: true if undo commands should be created
-.. seealso:: setCreateUndoCommands
+.. seealso:: :py:func:`setCreateUndoCommands`
  :rtype: bool
 %End
 
@@ -214,7 +214,7 @@ class QgsComposerMultiFrame: QgsComposerObject
 %Docstring
  Sets whether undo commands should be created for interactions with the multiframe.
  \param enabled set to true if undo commands should be created
-.. seealso:: createUndoCommands
+.. seealso:: :py:func:`createUndoCommands`
 %End
 
     int frameCount() const;
@@ -230,7 +230,7 @@ class QgsComposerMultiFrame: QgsComposerObject
  Returns a child frame from the multiframe.
  \param i index of frame
  :return: child frame if found
-.. seealso:: frameIndex
+.. seealso:: :py:func:`frameIndex`
  :rtype: QgsComposerFrame
 %End
 
@@ -240,7 +240,7 @@ class QgsComposerMultiFrame: QgsComposerObject
  \param frame frame to find index of
  :return: index for frame if found, -1 if frame not found in multiframe
 .. versionadded:: 2.5
-.. seealso:: frame
+.. seealso:: :py:func:`frame`
  :rtype: int
 %End
 
@@ -277,7 +277,7 @@ class QgsComposerMultiFrame: QgsComposerObject
  component frames. If the resize mode is set to anything but UseExistingFrames then
  this may cause new frames to be added or frames to be removed, in order to fit
  the current size of the multiframe's content.
-.. seealso:: recalculateFrameRects
+.. seealso:: :py:func:`recalculateFrameRects`
 %End
 
     void recalculateFrameRects();
@@ -286,9 +286,9 @@ class QgsComposerMultiFrame: QgsComposerObject
  method is useful for multiframes which implement a minFrameSize() or
  fixedFrameSize() method.
 .. versionadded:: 2.5
-.. seealso:: minFrameSize()
-.. seealso:: fixedFrameSize()
-.. seealso:: recalculateFrameSizes
+.. seealso:: :py:func:`minFrameSize()`
+.. seealso:: :py:func:`fixedFrameSize()`
+.. seealso:: :py:func:`recalculateFrameSizes`
 %End
 
     void handleFrameRemoval( QgsComposerItem *item );

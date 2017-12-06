@@ -66,14 +66,14 @@ Return composer item type.
 %Docstring
  Sets the width of the arrow head in mm
  \param width width of arrow head
-.. seealso:: arrowHeadWidth
+.. seealso:: :py:func:`arrowHeadWidth`
 %End
 
     double arrowHeadWidth() const;
 %Docstring
  Returns the width of the arrow head in mm
  :return: width of arrow head
-.. seealso:: setArrowHeadWidth
+.. seealso:: :py:func:`setArrowHeadWidth`
  :rtype: float
 %End
 
@@ -81,16 +81,16 @@ Return composer item type.
 %Docstring
  Sets the marker to draw at the start of the line
  \param svgPath file path for svg marker graphic to draw
-.. seealso:: startMarker
-.. seealso:: setEndMarker
+.. seealso:: :py:func:`startMarker`
+.. seealso:: :py:func:`setEndMarker`
 %End
 
     QString startMarker() const;
 %Docstring
  Returns the marker drawn at the start of the line
  :return: file path for svg marker graphic
-.. seealso:: setStartMarker
-.. seealso:: endMarker
+.. seealso:: :py:func:`setStartMarker`
+.. seealso:: :py:func:`endMarker`
  :rtype: str
 %End
 
@@ -98,16 +98,16 @@ Return composer item type.
 %Docstring
  Sets the marker to draw at the end of the line
  \param svgPath file path for svg marker graphic to draw
-.. seealso:: endMarker
-.. seealso:: setStartMarker
+.. seealso:: :py:func:`endMarker`
+.. seealso:: :py:func:`setStartMarker`
 %End
 
     QString endMarker() const;
 %Docstring
  Returns the marker drawn at the end of the line
  :return: file path for svg marker graphic
-.. seealso:: setEndMarker
-.. seealso:: startMarker
+.. seealso:: :py:func:`setEndMarker`
+.. seealso:: :py:func:`startMarker`
  :rtype: str
 %End
 
@@ -115,8 +115,8 @@ Return composer item type.
 %Docstring
  Returns the color used to draw stroke around the the arrow head.
  :return: arrow head stroke color
-.. seealso:: arrowHeadFillColor
-.. seealso:: setArrowHeadStrokeColor
+.. seealso:: :py:func:`arrowHeadFillColor`
+.. seealso:: :py:func:`setArrowHeadStrokeColor`
 .. versionadded:: 2.5
  :rtype: QColor
 %End
@@ -125,8 +125,8 @@ Return composer item type.
 %Docstring
  Sets the color used to draw the stroke around the arrow head.
  \param color arrow head stroke color
-.. seealso:: setArrowHeadFillColor
-.. seealso:: arrowHeadStrokeColor
+.. seealso:: :py:func:`setArrowHeadFillColor`
+.. seealso:: :py:func:`arrowHeadStrokeColor`
 .. versionadded:: 2.5
 %End
 
@@ -134,8 +134,8 @@ Return composer item type.
 %Docstring
  Returns the color used to fill the arrow head.
  :return: arrow head fill color
-.. seealso:: arrowHeadStrokeColor
-.. seealso:: setArrowHeadFillColor
+.. seealso:: :py:func:`arrowHeadStrokeColor`
+.. seealso:: :py:func:`setArrowHeadFillColor`
 .. versionadded:: 2.5
  :rtype: QColor
 %End
@@ -144,8 +144,8 @@ Return composer item type.
 %Docstring
  Sets the color used to fill the arrow head.
  \param color arrow head fill color
-.. seealso:: arrowHeadFillColor
-.. seealso:: setArrowHeadStrokeColor
+.. seealso:: :py:func:`arrowHeadFillColor`
+.. seealso:: :py:func:`setArrowHeadStrokeColor`
 .. versionadded:: 2.5
 %End
 
@@ -153,8 +153,8 @@ Return composer item type.
 %Docstring
  Sets the pen width for the stroke of the arrow head
  \param width pen width for arrow head stroke
-.. seealso:: arrowHeadStrokeWidth
-.. seealso:: setArrowHeadStrokeColor
+.. seealso:: :py:func:`arrowHeadStrokeWidth`
+.. seealso:: :py:func:`setArrowHeadStrokeColor`
 .. versionadded:: 2.5
 %End
 
@@ -162,8 +162,8 @@ Return composer item type.
 %Docstring
  Returns the pen width for the stroke of the arrow head
  :return: pen width for arrow head stroke
-.. seealso:: setArrowHeadStrokeWidth
-.. seealso:: arrowHeadStrokeColor
+.. seealso:: :py:func:`setArrowHeadStrokeWidth`
+.. seealso:: :py:func:`arrowHeadStrokeColor`
 .. versionadded:: 2.5
  :rtype: float
 %End
@@ -172,7 +172,7 @@ Return composer item type.
 %Docstring
  Sets the line symbol used for drawing the line portion of the arrow
  \param symbol line symbol
-.. seealso:: lineSymbol
+.. seealso:: :py:func:`lineSymbol`
 .. versionadded:: 2.5
 %End
 
@@ -180,7 +180,7 @@ Return composer item type.
 %Docstring
  Returns the line symbol used for drawing the line portion of the arrow
  :return: line symbol
-.. seealso:: setLineSymbol
+.. seealso:: :py:func:`setLineSymbol`
 .. versionadded:: 2.5
  :rtype: QgsLineSymbol
 %End
@@ -189,7 +189,7 @@ Return composer item type.
 %Docstring
  Returns marker mode, which controls how the arrow endpoints are drawn
  :return: marker mode
-.. seealso:: setMarkerMode
+.. seealso:: :py:func:`setMarkerMode`
  :rtype: MarkerMode
 %End
 
@@ -197,7 +197,7 @@ Return composer item type.
 %Docstring
  Sets the marker mode, which controls how the arrow endpoints are drawn
  \param mode marker mode
-.. seealso:: setMarkerMode
+.. seealso:: :py:func:`setMarkerMode`
 %End
 
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;

@@ -55,7 +55,7 @@ class QgsHistogram
  Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths are
  determined by the inter-quartile range of values and the number of values.
  :return: optimal width for bins
-.. seealso:: optimalNumberBins
+.. seealso:: :py:func:`optimalNumberBins`
 .. note::
 
    values must first be specified using setValues()
@@ -68,7 +68,7 @@ class QgsHistogram
  Freedman-Diaconis rule. The number of bins are determined by the inter-quartile range
  of values and the number of values.
  :return: optimal number of bins
-.. seealso:: optimalBinWidth
+.. seealso:: :py:func:`optimalBinWidth`
 .. note::
 
    values must first be specified using setValues()

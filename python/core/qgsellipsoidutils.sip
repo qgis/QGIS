@@ -80,7 +80,7 @@ Ellipsoid parameters
 %Docstring
  Returns a list of the definitions for all known ellipsoids from the
  internal ellipsoid database.
-.. seealso:: acronyms()
+.. seealso:: :py:func:`acronyms()`
  :rtype: list of QgsEllipsoidUtils.EllipsoidDefinition
 %End
 
@@ -88,7 +88,7 @@ Ellipsoid parameters
 %Docstring
  Returns a list of all known ellipsoid acronyms from the internal
  ellipsoid database.
-.. seealso:: definitions()
+.. seealso:: :py:func:`definitions()`
  :rtype: list of str
 %End
 

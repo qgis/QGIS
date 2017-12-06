@@ -17,7 +17,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
  QgsComposerMap. The overview stack controls which overviews are drawn and the
  order they are drawn in.
 .. versionadded:: 2.5
-.. seealso:: QgsComposerMapOverview
+.. seealso:: :py:class:`QgsComposerMapOverview`
 %End
 
 %TypeHeaderCode
@@ -41,7 +41,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
 
    after adding a overview to the stack, update()
  should be called for the QgsComposerMap to prevent rendering artifacts
-.. seealso:: removeOverview
+.. seealso:: :py:func:`removeOverview`
 %End
 
     void removeOverview( const QString &overviewId );
@@ -52,7 +52,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
 
    after removing an overview from the stack, update()
  should be called for the QgsComposerMap to prevent rendering artifacts
-.. seealso:: addOverview
+.. seealso:: :py:func:`addOverview`
 %End
 
     void moveOverviewUp( const QString &overviewId );
@@ -63,7 +63,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
 
    after moving an overview within the stack, update() should be
  called for the QgsComposerMap to redraw the map with the new overview stack order
-.. seealso:: moveOverviewDown
+.. seealso:: :py:func:`moveOverviewDown`
 %End
 
     void moveOverviewDown( const QString &overviewId );
@@ -74,7 +74,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
 
    after moving an overview within the stack, update() should be
  called for the QgsComposerMap to redraw the map with the new overview stack order
-.. seealso:: moveOverviewUp
+.. seealso:: :py:func:`moveOverviewUp`
 %End
 
     const QgsComposerMapOverview *constOverview( const QString &overviewId ) const;
@@ -82,7 +82,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
  Returns a const reference to an overview within the stack
  \param overviewId id for the QgsComposerMapOverview to find
  :return: const reference to overview, if found
-.. seealso:: overview
+.. seealso:: :py:func:`overview`
  :rtype: QgsComposerMapOverview
 %End
 
@@ -91,7 +91,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
  Returns a reference to an overview within the stack
  \param overviewId id for the QgsComposerMapOverview to find
  :return: reference to overview if found
-.. seealso:: constOverview
+.. seealso:: :py:func:`constOverview`
  :rtype: QgsComposerMapOverview
 %End
 
@@ -100,7 +100,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
  Returns a reference to an overview within the stack
  \param index overview position in the stack
  :return: reference to overview if found
-.. seealso:: constOverview
+.. seealso:: :py:func:`constOverview`
  :rtype: QgsComposerMapOverview
 %End
 
@@ -120,7 +120,7 @@ class QgsComposerMapOverviewStack : QgsComposerMapItemStack
  \param elem is DOM node corresponding to a 'ComposerMap' tag
  \param doc DOM document
  :return: true if read was successful
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
  :rtype: bool
 %End
 
@@ -132,7 +132,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
  An individual overview which is drawn above the map content in a
  QgsComposerMap, and shows the extent of another QgsComposerMap.
 .. versionadded:: 2.5
-.. seealso:: QgsComposerMapOverviewStack
+.. seealso:: :py:class:`QgsComposerMapOverviewStack`
 %End
 
 %TypeHeaderCode
@@ -162,7 +162,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
  Stores overview state in DOM element
  \param elem is DOM element corresponding to a 'ComposerMap' tag
  \param doc DOM document
-.. seealso:: readXml
+.. seealso:: :py:func:`readXml`
  :rtype: bool
 %End
 
@@ -172,7 +172,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
  Sets overview state from a DOM document
  \param itemElem is DOM node corresponding to a 'ComposerMapOverview' tag
  \param doc is DOM document
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
  :rtype: bool
 %End
 
@@ -183,7 +183,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
 %Docstring
  Sets overview frame map.
  \param mapId source map id. -1 disables the overview frame
-.. seealso:: frameMapId
+.. seealso:: :py:func:`frameMapId`
 %End
 
     int frameMapId() const;
@@ -197,14 +197,14 @@ class QgsComposerMapOverview : QgsComposerMapItem
 %Docstring
  Sets the fill symbol used for drawing the overview extent.
  \param symbol fill symbol for overview
-.. seealso:: frameSymbol
+.. seealso:: :py:func:`frameSymbol`
 %End
 
     QgsFillSymbol *frameSymbol();
 %Docstring
  Gets the fill symbol used for drawing the overview extent.
  :return: fill symbol for overview
-.. seealso:: setFrameSymbol
+.. seealso:: :py:func:`setFrameSymbol`
  :rtype: QgsFillSymbol
 %End
 
@@ -213,7 +213,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
 %Docstring
  Retrieves the blending mode used for drawing the overview.
  :return: blending mode for overview
-.. seealso:: setBlendMode
+.. seealso:: :py:func:`setBlendMode`
  :rtype: QPainter.CompositionMode
 %End
 
@@ -221,7 +221,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
 %Docstring
  Sets the blending mode used for drawing the overview.
  \param blendMode blending mode for overview
-.. seealso:: blendMode
+.. seealso:: :py:func:`blendMode`
 %End
 
     bool inverted() const;
@@ -229,7 +229,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
  Returns whether the overview frame is inverted, ie, whether the shaded area is drawn outside
  the extent of the overview map.
  :return: true if overview frame is inverted
-.. seealso:: setInverted
+.. seealso:: :py:func:`setInverted`
  :rtype: bool
 %End
 
@@ -238,14 +238,14 @@ class QgsComposerMapOverview : QgsComposerMapItem
  Sets whether the overview frame is inverted, ie, whether the shaded area is drawn outside
  the extent of the overview map.
  \param inverted set to true if overview frame is to be inverted
-.. seealso:: inverted
+.. seealso:: :py:func:`inverted`
 %End
 
     bool centered() const;
 %Docstring
  Returns whether the extent of the map is forced to center on the overview
  :return: true if map will be centered on overview
-.. seealso:: setCentered
+.. seealso:: :py:func:`setCentered`
  :rtype: bool
 %End
 
@@ -253,7 +253,7 @@ class QgsComposerMapOverview : QgsComposerMapItem
 %Docstring
  Sets whether the extent of the map is forced to center on the overview
  \param centered set to true if map will be centered on overview
-.. seealso:: centered
+.. seealso:: :py:func:`centered`
 %End
 
     void connectSignals();

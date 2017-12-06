@@ -44,24 +44,24 @@ class QgsSearchWidgetToolButton : QToolButton
  (see activeFlags()) which are not present in the new available filter
  flags will be cleared;
  \param flags available flags to show in widget
-.. seealso:: availableFlags()
-.. seealso:: setActiveFlags()
-.. seealso:: setDefaultFlags()
+.. seealso:: :py:func:`availableFlags()`
+.. seealso:: :py:func:`setActiveFlags()`
+.. seealso:: :py:func:`setDefaultFlags()`
 %End
 
     void setDefaultFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 %Docstring
  Sets the default filter flags to show in the widget.
  \param flags default flags to show in widget
-.. seealso:: setAvailableFlags()
-.. seealso:: setActiveFlags()
+.. seealso:: :py:func:`setAvailableFlags()`
+.. seealso:: :py:func:`setActiveFlags()`
 %End
 
     QgsSearchWidgetWrapper::FilterFlags availableFlags() const;
 %Docstring
  Returns the available filter flags shown in the widget.
-.. seealso:: setAvailableFlags()
-.. seealso:: activeFlags()
+.. seealso:: :py:func:`setAvailableFlags()`
+.. seealso:: :py:func:`activeFlags()`
  :rtype: QgsSearchWidgetWrapper.FilterFlags
 %End
 
@@ -71,9 +71,9 @@ class QgsSearchWidgetToolButton : QToolButton
  which are not present in the available filter flags (see availableFlags())
  will not be set.
  \param flags active flags to show in widget
-.. seealso:: toggleFlag()
-.. seealso:: activeFlags()
-.. seealso:: setAvailableFlags()
+.. seealso:: :py:func:`toggleFlag()`
+.. seealso:: :py:func:`activeFlags()`
+.. seealso:: :py:func:`setAvailableFlags()`
 %End
 
     void toggleFlag( QgsSearchWidgetWrapper::FilterFlag flag );
@@ -83,24 +83,24 @@ class QgsSearchWidgetToolButton : QToolButton
  will be ignore. Other flags may be cleared if they conflict with the newly
  toggled flag.
  \param flag flag to toggle
-.. seealso:: setActiveFlags()
-.. seealso:: activeFlags()
+.. seealso:: :py:func:`setActiveFlags()`
+.. seealso:: :py:func:`activeFlags()`
 %End
 
     QgsSearchWidgetWrapper::FilterFlags activeFlags() const;
 %Docstring
  Returns the active filter flags shown in the widget.
-.. seealso:: setActiveFlags()
-.. seealso:: toggleFlag()
-.. seealso:: availableFlags()
+.. seealso:: :py:func:`setActiveFlags()`
+.. seealso:: :py:func:`toggleFlag()`
+.. seealso:: :py:func:`availableFlags()`
  :rtype: QgsSearchWidgetWrapper.FilterFlags
 %End
 
     bool isActive() const;
 %Docstring
  Returns true if the widget is set to be included in the search.
-.. seealso:: setInactive()
-.. seealso:: setActive()
+.. seealso:: :py:func:`setInactive()`
+.. seealso:: :py:func:`setActive()`
  :rtype: bool
 %End
 
@@ -109,15 +109,15 @@ class QgsSearchWidgetToolButton : QToolButton
     void setInactive();
 %Docstring
  Sets the search widget as inactive, ie do not search the corresponding field.
-.. seealso:: isActive()
-.. seealso:: setActive()
+.. seealso:: :py:func:`isActive()`
+.. seealso:: :py:func:`setActive()`
 %End
 
     void setActive();
 %Docstring
  Sets the search widget as active by selecting the first available search type.
-.. seealso:: isActive()
-.. seealso:: setInactive()
+.. seealso:: :py:func:`isActive()`
+.. seealso:: :py:func:`setInactive()`
 %End
 
   signals:

@@ -154,7 +154,7 @@ Translated description of variable, for use within expression builder widgets.
  with the same name is already set then its value is overwritten, otherwise a new variable is added to the scope.
  If the ``isStatic`` parameter is set to true, this variable can be cached during the execution
  of QgsExpression.prepare().
-.. seealso:: addVariable()
+.. seealso:: :py:func:`addVariable()`
 %End
 
     void addVariable( const QgsExpressionContextScope::StaticVariable &variable );
@@ -162,8 +162,8 @@ Translated description of variable, for use within expression builder widgets.
  Adds a variable into the context scope. If a variable with the same name is already set then its
  value is overwritten, otherwise a new variable is added to the scope.
  \param variable definition of variable to insert
-.. seealso:: setVariable()
-.. seealso:: addFunction()
+.. seealso:: :py:func:`setVariable()`
+.. seealso:: :py:func:`addFunction()`
 %End
 
     bool removeVariable( const QString &name );
@@ -180,8 +180,8 @@ Translated description of variable, for use within expression builder widgets.
  Tests whether a variable with the specified name exists in the scope.
  \param name variable name
  :return: true if matching variable was found in the scope
-.. seealso:: variable()
-.. seealso:: hasFunction()
+.. seealso:: :py:func:`variable()`
+.. seealso:: :py:func:`hasFunction()`
  :rtype: bool
 %End
 
@@ -190,16 +190,16 @@ Translated description of variable, for use within expression builder widgets.
  Retrieves a variable's value from the scope.
  \param name variable name
  :return: variable value, or invalid QVariant if matching variable could not be found
-.. seealso:: hasVariable()
-.. seealso:: function()
+.. seealso:: :py:func:`hasVariable()`
+.. seealso:: :py:func:`function()`
  :rtype: QVariant
 %End
 
     QStringList variableNames() const;
 %Docstring
  Returns a list of variable names contained within the scope.
-.. seealso:: functionNames()
-.. seealso:: filteredVariableNames()
+.. seealso:: :py:func:`functionNames()`
+.. seealso:: :py:func:`filteredVariableNames()`
  :rtype: list of str
 %End
 
@@ -208,7 +208,7 @@ Translated description of variable, for use within expression builder widgets.
  Returns a filtered and sorted list of variable names contained within the scope.
  Hidden variable names will be excluded, and the list will be sorted so that
  read only variables are listed first.
-.. seealso:: variableNames()
+.. seealso:: :py:func:`variableNames()`
  :rtype: list of str
 %End
 
@@ -250,8 +250,8 @@ Translated description of variable, for use within expression builder widgets.
  Tests whether a function with the specified name exists in the scope.
  \param name function name
  :return: true if matching function was found in the scope
-.. seealso:: function()
-.. seealso:: hasFunction()
+.. seealso:: :py:func:`function()`
+.. seealso:: :py:func:`hasFunction()`
  :rtype: bool
 %End
 
@@ -260,17 +260,17 @@ Translated description of variable, for use within expression builder widgets.
  Retrieves a function from the scope.
  \param name function name
  :return: function, or null if matching function could not be found
-.. seealso:: hasFunction()
-.. seealso:: functionNames()
-.. seealso:: variable()
+.. seealso:: :py:func:`hasFunction()`
+.. seealso:: :py:func:`functionNames()`
+.. seealso:: :py:func:`variable()`
  :rtype: QgsExpressionFunction
 %End
 
     QStringList functionNames() const;
 %Docstring
  Retrieves a list of names of functions contained in the scope.
-.. seealso:: function()
-.. seealso:: variableNames()
+.. seealso:: :py:func:`function()`
+.. seealso:: :py:func:`variableNames()`
  :rtype: list of str
 %End
 
@@ -279,22 +279,22 @@ Translated description of variable, for use within expression builder widgets.
  Adds a function to the scope.
  \param name function name
  \param function function to insert. Ownership is transferred to the scope.
-.. seealso:: addVariable()
+.. seealso:: :py:func:`addVariable()`
 %End
 
     bool hasFeature() const;
 %Docstring
  Returns true if the scope has a feature associated with it.
 .. versionadded:: 3.0
-.. seealso:: feature()
+.. seealso:: :py:func:`feature()`
  :rtype: bool
 %End
 
     QgsFeature feature() const;
 %Docstring
  Sets the feature associated with the scope.
-.. seealso:: setFeature()
-.. seealso:: hasFeature()
+.. seealso:: :py:func:`setFeature()`
+.. seealso:: :py:func:`hasFeature()`
 .. versionadded:: 3.0
  :rtype: QgsFeature
 %End
@@ -304,16 +304,16 @@ Translated description of variable, for use within expression builder widgets.
  Convenience function for setting a feature for the scope. Any existing
  feature set by the scope will be overwritten.
  \param feature feature for scope
-.. seealso:: removeFeature()
-.. seealso:: feature()
+.. seealso:: :py:func:`removeFeature()`
+.. seealso:: :py:func:`feature()`
 %End
 
     void removeFeature();
 %Docstring
  Removes any feature associated with the scope.
 .. versionadded:: 3.0
-.. seealso:: setFeature()
-.. seealso:: hasFeature()
+.. seealso:: :py:func:`setFeature()`
+.. seealso:: :py:func:`hasFeature()`
 %End
 
     void setFields( const QgsFields &fields );
@@ -370,8 +370,8 @@ Constructor for QgsExpressionContext
  Check whether a variable is specified by any scope within the context.
  \param name variable name
  :return: true if variable is set
-.. seealso:: variable()
-.. seealso:: variableNames()
+.. seealso:: :py:func:`variable()`
+.. seealso:: :py:func:`variableNames()`
  :rtype: bool
 %End
 
@@ -382,8 +382,8 @@ Constructor for QgsExpressionContext
  variable set.
  \param name variable name
  :return: variable value if matching variable exists in the context, otherwise an invalid QVariant
-.. seealso:: hasVariable()
-.. seealso:: variableNames()
+.. seealso:: :py:func:`hasVariable()`
+.. seealso:: :py:func:`variableNames()`
  :rtype: QVariant
 %End
 
@@ -401,7 +401,7 @@ Constructor for QgsExpressionContext
  user. This is used by the expression builder to more prominently display the
  variable.
  \param name variable name
-.. seealso:: setHighlightedVariables()
+.. seealso:: :py:func:`setHighlightedVariables()`
  :rtype: bool
 %End
 
@@ -410,7 +410,7 @@ Constructor for QgsExpressionContext
  Sets the list of variable names within the context intended to be highlighted to the user. This
  is used by the expression builder to more prominently display these variables.
  \param variableNames variable names to highlight
-.. seealso:: isHighlightedVariable()
+.. seealso:: :py:func:`isHighlightedVariable()`
 %End
 
     QgsExpressionContextScope *activeScopeForVariable( const QString &name );
@@ -429,14 +429,14 @@ Constructor for QgsExpressionContext
  Returns the scope at the specified index within the context.
  \param index index of scope
  :return: matching scope, or null if none found
-.. seealso:: lastScope()
+.. seealso:: :py:func:`lastScope()`
  :rtype: QgsExpressionContextScope
 %End
 
     QgsExpressionContextScope *lastScope();
 %Docstring
  Returns the last scope added to the context.
-.. seealso:: scope()
+.. seealso:: :py:func:`scope()`
  :rtype: QgsExpressionContextScope
 %End
 
@@ -468,10 +468,10 @@ Constructor for QgsExpressionContext
 %Docstring
  Returns a list of variables names set by all scopes in the context.
  :return: list of unique variable names
-.. seealso:: filteredVariableNames
-.. seealso:: functionNames
-.. seealso:: hasVariable
-.. seealso:: variable
+.. seealso:: :py:func:`filteredVariableNames`
+.. seealso:: :py:func:`functionNames`
+.. seealso:: :py:func:`hasVariable`
+.. seealso:: :py:func:`variable`
  :rtype: list of str
 %End
 
@@ -480,7 +480,7 @@ Constructor for QgsExpressionContext
  Returns a filtered list of variables names set by all scopes in the context. The included
  variables are those which should be seen by users.
  :return: filtered list of unique variable names
-.. seealso:: variableNames
+.. seealso:: :py:func:`variableNames`
  :rtype: list of str
 %End
 
@@ -509,15 +509,15 @@ Constructor for QgsExpressionContext
  Checks whether a specified function is contained in the context.
  \param name function name
  :return: true if context provides a matching function
-.. seealso:: function
+.. seealso:: :py:func:`function`
  :rtype: bool
 %End
 
     QStringList functionNames() const;
 %Docstring
  Retrieves a list of function names contained in the context.
-.. seealso:: function()
-.. seealso:: variableNames()
+.. seealso:: :py:func:`function()`
+.. seealso:: :py:func:`variableNames()`
  :rtype: list of str
 %End
 
@@ -528,7 +528,7 @@ Constructor for QgsExpressionContext
  function set.
  \param name function name
  :return: function if contained by the context, otherwise null.
-.. seealso:: hasFunction
+.. seealso:: :py:func:`hasFunction`
  :rtype: QgsExpressionFunction
 %End
 
@@ -569,21 +569,21 @@ Constructor for QgsExpressionContext
  will be set within the last scope of the context, so will override any
  existing features within the context.
  \param feature feature for context
-.. seealso:: feature()
+.. seealso:: :py:func:`feature()`
 %End
 
     bool hasFeature() const;
 %Docstring
  Returns true if the context has a feature associated with it.
 .. versionadded:: 3.0
-.. seealso:: feature()
+.. seealso:: :py:func:`feature()`
  :rtype: bool
 %End
 
     QgsFeature feature() const;
 %Docstring
  Convenience function for retrieving the feature for the context, if set.
-.. seealso:: setFeature
+.. seealso:: :py:func:`setFeature`
  :rtype: QgsFeature
 %End
 
@@ -593,13 +593,13 @@ Constructor for QgsExpressionContext
  will be set within the last scope of the context, so will override any
  existing fields within the context.
  \param fields fields for context
-.. seealso:: fields()
+.. seealso:: :py:func:`fields()`
 %End
 
     QgsFields fields() const;
 %Docstring
  Convenience function for retrieving the fields for the context, if set.
-.. seealso:: setFields
+.. seealso:: :py:func:`setFields`
  :rtype: QgsFields
 %End
 
@@ -618,9 +618,9 @@ Constructor for QgsExpressionContext
  expression context.
  \param key unique key for retrieving cached value
  \param value value to cache
-.. seealso:: hasCachedValue()
-.. seealso:: cachedValue()
-.. seealso:: clearCachedValues()
+.. seealso:: :py:func:`hasCachedValue()`
+.. seealso:: :py:func:`cachedValue()`
+.. seealso:: :py:func:`clearCachedValues()`
 .. versionadded:: 2.16
 %End
 
@@ -628,9 +628,9 @@ Constructor for QgsExpressionContext
 %Docstring
  Returns true if the expression context contains a cached value with a matching key.
  \param key unique key used to store cached value
-.. seealso:: setCachedValue()
-.. seealso:: cachedValue()
-.. seealso:: clearCachedValues()
+.. seealso:: :py:func:`setCachedValue()`
+.. seealso:: :py:func:`cachedValue()`
+.. seealso:: :py:func:`clearCachedValues()`
 .. versionadded:: 2.16
  :rtype: bool
 %End
@@ -641,9 +641,9 @@ Constructor for QgsExpressionContext
  of an expensive expression sub-calculation.
  \param key unique key used to store cached value
  :return: matching cached value, or invalid QVariant if not set
-.. seealso:: setCachedValue()
-.. seealso:: hasCachedValue()
-.. seealso:: clearCachedValues()
+.. seealso:: :py:func:`setCachedValue()`
+.. seealso:: :py:func:`hasCachedValue()`
+.. seealso:: :py:func:`clearCachedValues()`
 .. versionadded:: 2.16
  :rtype: QVariant
 %End
@@ -651,9 +651,9 @@ Constructor for QgsExpressionContext
     void clearCachedValues() const;
 %Docstring
  Clears all cached values from the context.
-.. seealso:: setCachedValue()
-.. seealso:: hasCachedValue()
-.. seealso:: cachedValue()
+.. seealso:: :py:func:`setCachedValue()`
+.. seealso:: :py:func:`hasCachedValue()`
+.. seealso:: :py:func:`cachedValue()`
 .. versionadded:: 2.16
 %End
 
@@ -718,7 +718,7 @@ class QgsExpressionContextUtils
 %Docstring
  Creates a new scope which contains variables and functions relating to the global QGIS context.
  For instance, QGIS version numbers and variables specified through QGIS options.
-.. seealso:: setGlobalVariable()
+.. seealso:: :py:func:`setGlobalVariable()`
  :rtype: QgsExpressionContextScope
 %End
 
@@ -728,9 +728,9 @@ class QgsExpressionContextUtils
  globalScope().
  \param name variable name
  \param value variable value
-.. seealso:: setGlobalVariable()
-.. seealso:: globalScope()
-.. seealso:: removeGlobalVariable()
+.. seealso:: :py:func:`setGlobalVariable()`
+.. seealso:: :py:func:`globalScope()`
+.. seealso:: :py:func:`removeGlobalVariable()`
 %End
 
     static void setGlobalVariables( const QVariantMap &variables );
@@ -738,18 +738,18 @@ class QgsExpressionContextUtils
  Sets all global context variables. Existing global variables will be removed and replaced
  with the variables specified.
  \param variables new set of global variables
-.. seealso:: setGlobalVariable()
-.. seealso:: globalScope()
-.. seealso:: removeGlobalVariable()
+.. seealso:: :py:func:`setGlobalVariable()`
+.. seealso:: :py:func:`globalScope()`
+.. seealso:: :py:func:`removeGlobalVariable()`
 %End
 
     static void removeGlobalVariable( const QString &name );
 %Docstring
  Remove a global context variable.
  \param name variable name
-.. seealso:: setGlobalVariable()
-.. seealso:: setGlobalVariables()
-.. seealso:: globalScope()
+.. seealso:: :py:func:`setGlobalVariable()`
+.. seealso:: :py:func:`setGlobalVariables()`
+.. seealso:: :py:func:`globalScope()`
 %End
 
     static QgsExpressionContextScope *projectScope( const QgsProject *project ) /Factory/;
@@ -757,7 +757,7 @@ class QgsExpressionContextUtils
  Creates a new scope which contains variables and functions relating to a QGIS project.
  For instance, project path and title, and variables specified through the project properties.
  \param project What project to use
-.. seealso:: setProjectVariable()
+.. seealso:: :py:func:`setProjectVariable()`
  :rtype: QgsExpressionContextScope
 %End
 
@@ -768,9 +768,9 @@ class QgsExpressionContextUtils
  \param project Project to apply changes to
  \param name variable name
  \param value variable value
-.. seealso:: setProjectVariables()
-.. seealso:: removeProjectVariable()
-.. seealso:: projectScope()
+.. seealso:: :py:func:`setProjectVariables()`
+.. seealso:: :py:func:`removeProjectVariable()`
+.. seealso:: :py:func:`projectScope()`
 %End
 
     static void setProjectVariables( QgsProject *project, const QVariantMap &variables );
@@ -779,9 +779,9 @@ class QgsExpressionContextUtils
  with the variables specified.
  \param project Project to apply changes to
  \param variables new set of project variables
-.. seealso:: setProjectVariable()
-.. seealso:: removeProjectVariable()
-.. seealso:: projectScope()
+.. seealso:: :py:func:`setProjectVariable()`
+.. seealso:: :py:func:`removeProjectVariable()`
+.. seealso:: :py:func:`projectScope()`
 %End
 
     static void removeProjectVariable( QgsProject *project, const QString &name );
@@ -789,9 +789,9 @@ class QgsExpressionContextUtils
  Remove project context variable.
  \param project Project to apply changes to
  \param name variable name
-.. seealso:: setProjectVariable()
-.. seealso:: setProjectVariables()
-.. seealso:: projectScope()
+.. seealso:: :py:func:`setProjectVariable()`
+.. seealso:: :py:func:`setProjectVariables()`
+.. seealso:: :py:func:`projectScope()`
 %End
 
     static QgsExpressionContextScope *layerScope( const QgsMapLayer *layer ) /Factory/;
@@ -815,8 +815,8 @@ class QgsExpressionContextUtils
  \param layer map layer
  \param name variable name
  \param value variable value
-.. seealso:: setLayerVariables()
-.. seealso:: layerScope()
+.. seealso:: :py:func:`setLayerVariables()`
+.. seealso:: :py:func:`layerScope()`
 %End
 
     static void setLayerVariables( QgsMapLayer *layer, const QVariantMap &variables );
@@ -825,8 +825,8 @@ class QgsExpressionContextUtils
  with the variables specified.
  \param layer map layer
  \param variables new set of layer variables
-.. seealso:: setLayerVariable()
-.. seealso:: layerScope()
+.. seealso:: :py:func:`setLayerVariable()`
+.. seealso:: :py:func:`layerScope()`
 %End
 
     static QgsExpressionContextScope *mapSettingsScope( const QgsMapSettings &mapSettings ) /Factory/;
@@ -869,8 +869,8 @@ class QgsExpressionContextUtils
  \param composition target composition
  \param name variable name
  \param value variable value
-.. seealso:: setCompositionVariables()
-.. seealso:: compositionScope()
+.. seealso:: :py:func:`setCompositionVariables()`
+.. seealso:: :py:func:`compositionScope()`
 %End
 
     static void setCompositionVariables( QgsComposition *composition, const QVariantMap &variables );
@@ -879,8 +879,8 @@ class QgsExpressionContextUtils
  with the variables specified.
  \param composition target composition
  \param variables new set of layer variables
-.. seealso:: setCompositionVariable()
-.. seealso:: compositionScope()
+.. seealso:: :py:func:`setCompositionVariable()`
+.. seealso:: :py:func:`compositionScope()`
 %End
 
     static QgsExpressionContextScope *layoutScope( const QgsLayout *layout ) /Factory/;
@@ -898,8 +898,8 @@ class QgsExpressionContextUtils
  \param layout target layout
  \param name variable name
  \param value variable value
-.. seealso:: setLayoutVariables()
-.. seealso:: layoutScope()
+.. seealso:: :py:func:`setLayoutVariables()`
+.. seealso:: :py:func:`layoutScope()`
 .. versionadded:: 3.0
 %End
 
@@ -909,8 +909,8 @@ class QgsExpressionContextUtils
  with the variables specified.
  \param layout target layout
  \param variables new set of layer variables
-.. seealso:: setLayoutVariable()
-.. seealso:: layoutScope()
+.. seealso:: :py:func:`setLayoutVariable()`
+.. seealso:: :py:func:`layoutScope()`
 .. versionadded:: 3.0
 %End
 
@@ -937,8 +937,8 @@ class QgsExpressionContextUtils
  \param composerItem target composer item
  \param name variable name
  \param value variable value
-.. seealso:: setComposerItemVariables()
-.. seealso:: composerItemScope()
+.. seealso:: :py:func:`setComposerItemVariables()`
+.. seealso:: :py:func:`composerItemScope()`
 %End
 
     static void setComposerItemVariables( QgsComposerItem *composerItem, const QVariantMap &variables );
@@ -947,8 +947,8 @@ class QgsExpressionContextUtils
  with the variables specified.
  \param composerItem target composer item
  \param variables new set of layer variables
-.. seealso:: setComposerItemVariable()
-.. seealso:: composerItemScope()
+.. seealso:: :py:func:`setComposerItemVariable()`
+.. seealso:: :py:func:`composerItemScope()`
 %End
 
     static QgsExpressionContext createFeatureBasedContext( const QgsFeature &feature, const QgsFields &fields );

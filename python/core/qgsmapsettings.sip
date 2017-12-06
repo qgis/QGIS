@@ -66,7 +66,7 @@ Set the size of the resulting map image
 %Docstring
  Returns the rotation of the resulting map image, in degrees clockwise.
 .. versionadded:: 2.8
-.. seealso:: setRotation()
+.. seealso:: :py:func:`setRotation()`
  :rtype: float
 %End
 
@@ -74,7 +74,7 @@ Set the size of the resulting map image
 %Docstring
  Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 .. versionadded:: 2.8
-.. seealso:: rotation()
+.. seealso:: :py:func:`rotation()`
 %End
 
     double outputDpi() const;
@@ -93,14 +93,14 @@ Set DPI used for conversion between real world units (e.g. mm) and pixels
  Set the magnification factor.
  \param factor the factor of magnification
 .. versionadded:: 2.16
-.. seealso:: magnificationFactor()
+.. seealso:: :py:func:`magnificationFactor()`
 %End
 
     double magnificationFactor() const;
 %Docstring
  Return the magnification factor.
 .. versionadded:: 2.16
-.. seealso:: setMagnificationFactor()
+.. seealso:: :py:func:`setMagnificationFactor()`
  :rtype: float
 %End
 
@@ -142,7 +142,7 @@ Set DPI used for conversion between real world units (e.g. mm) and pixels
  Get custom rendering flags. Layers might honour these to alter their rendering.
   :return: custom flags strings, separated by ';'
 .. versionadded:: 2.16
-.. seealso:: setCustomRenderFlags()
+.. seealso:: :py:func:`setCustomRenderFlags()`
  :rtype: str
 %End
 
@@ -151,7 +151,7 @@ Set DPI used for conversion between real world units (e.g. mm) and pixels
  Sets the custom rendering flags. Layers might honour these to alter their rendering.
  \param customRenderFlags custom flags strings, separated by ';'
 .. versionadded:: 2.16
-.. seealso:: customRenderFlags()
+.. seealso:: :py:func:`customRenderFlags()`
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -177,7 +177,7 @@ Get units of map's geographical coordinates - used for scale calculation
  Calculations will only use the ellipsoid if a valid ellipsoid has been set.
  :return: true if ellipsoid was successfully set
 .. versionadded:: 3.0
-.. seealso:: ellipsoid()
+.. seealso:: :py:func:`ellipsoid()`
  :rtype: bool
 %End
 
@@ -186,7 +186,7 @@ Get units of map's geographical coordinates - used for scale calculation
  Returns ellipsoid's acronym. Calculations will only use the
  ellipsoid if a valid ellipsoid has been set.
 .. versionadded:: 3.0
-.. seealso:: setEllipsoid()
+.. seealso:: :py:func:`setEllipsoid()`
  :rtype: str
 %End
 
@@ -291,7 +291,7 @@ Return the distance in geographical coordinates that equals to one pixel in the 
 %Docstring
  Sets the expression context. This context is used for all expression evaluation
  associated with this map settings.
-.. seealso:: expressionContext()
+.. seealso:: :py:func:`expressionContext()`
 .. versionadded:: 2.12
 %End
 
@@ -299,7 +299,7 @@ Return the distance in geographical coordinates that equals to one pixel in the 
 %Docstring
  Gets the expression context. This context should be used for all expression evaluation
  associated with this map settings.
-.. seealso:: setExpressionContext()
+.. seealso:: :py:func:`setExpressionContext()`
 .. versionadded:: 2.12
  :rtype: QgsExpressionContext
 %End
@@ -327,7 +327,7 @@ Return the distance in geographical coordinates that equals to one pixel in the 
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 %Docstring
  transform bounding box from layer's CRS to output CRS
-.. seealso:: layerToMapCoordinates( QgsMapLayer* layer, QgsRectangle rect ) if you want to transform a rectangle
+.. seealso:: :py:func:`layerToMapCoordinates`
  :return: a bounding box (aligned rectangle) containing the transformed extent
  :rtype: QgsRectangle
 %End
@@ -335,7 +335,7 @@ Return the distance in geographical coordinates that equals to one pixel in the 
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 %Docstring
  transform bounding box from output CRS to layer's CRS
-.. seealso:: mapToLayerCoordinates( QgsMapLayer* layer,QgsRectangle rect ) if you want to transform a rectangle
+.. seealso:: :py:func:`mapToLayerCoordinates`
  :return: a bounding box (aligned rectangle) containing the transformed extent
  :rtype: QgsRectangle
 %End
@@ -350,7 +350,7 @@ Return the distance in geographical coordinates that equals to one pixel in the 
     QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 %Docstring
  transform rectangle from layer's CRS to output CRS
-.. seealso:: layerExtentToOutputExtent() if you want to transform a bounding box
+.. seealso:: :py:func:`layerExtentToOutputExtent()`
  :return: the transformed rectangle
  :rtype: QgsRectangle
 %End
@@ -365,7 +365,7 @@ Return the distance in geographical coordinates that equals to one pixel in the 
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 %Docstring
  transform rectangle from output CRS to layer's CRS
-.. seealso:: outputExtentToLayerExtent() if you want to transform a bounding box
+.. seealso:: :py:func:`outputExtentToLayerExtent()`
  :return: the transformed rectangle
  :rtype: QgsRectangle
 %End

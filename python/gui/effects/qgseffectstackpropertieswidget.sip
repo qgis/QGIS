@@ -18,9 +18,9 @@ class QgsEffectStackPropertiesWidget : QgsPanelWidget
  and reordering effects within the stack.
 
 .. versionadded:: 2.9
-.. seealso:: QgsEffectStack
-.. seealso:: QgsEffectStackPropertiesDialog
-.. seealso:: QgsEffectStackCompactWidget
+.. seealso:: :py:class:`QgsEffectStack`
+.. seealso:: :py:class:`QgsEffectStackPropertiesDialog`
+.. seealso:: :py:class:`QgsEffectStackCompactWidget`
 %End
 
 %TypeHeaderCode
@@ -129,9 +129,9 @@ class QgsEffectStackPropertiesDialog: QgsDialog
  and reordering effects within the stack.
 
 .. versionadded:: 2.9
-.. seealso:: QgsEffectStack
-.. seealso:: QgsEffectStackPropertiesWidget
-.. seealso:: QgsEffectStackCompactWidget
+.. seealso:: :py:class:`QgsEffectStack`
+.. seealso:: :py:class:`QgsEffectStackPropertiesWidget`
+.. seealso:: :py:class:`QgsEffectStackCompactWidget`
 %End
 
 %TypeHeaderCode
@@ -174,9 +174,9 @@ class QgsEffectStackCompactWidget: QgsPanelWidget
  and a button for opening an effect stack customisation dialog.
 
 .. versionadded:: 2.9
-.. seealso:: QgsEffectStack
-.. seealso:: QgsEffectStackPropertiesWidget
-.. seealso:: QgsEffectStackPropertiesDialog
+.. seealso:: :py:class:`QgsEffectStack`
+.. seealso:: :py:class:`QgsEffectStackPropertiesWidget`
+.. seealso:: :py:class:`QgsEffectStackPropertiesDialog`
 %End
 
 %TypeHeaderCode
@@ -200,14 +200,14 @@ class QgsEffectStackCompactWidget: QgsPanelWidget
  \param effect QgsPaintEffect for modification by the widget. If the effect
  is not a QgsEffectStack, it will be automatically converted to an effect
  stack consisting of the original effect
-.. seealso:: paintEffect
+.. seealso:: :py:func:`paintEffect`
 %End
 
     QgsPaintEffect *paintEffect() const;
 %Docstring
  Returns paint effect attached to the widget
  :return: QgsPaintEffect modified by the widget
-.. seealso:: setPaintEffect
+.. seealso:: :py:func:`setPaintEffect`
  :rtype: QgsPaintEffect
 %End
 

@@ -38,34 +38,34 @@ class QgsSymbolButton : QToolButton
  Sets the symbol ``type`` which the button requires.
  If the type differs from the current symbol type, the symbol will be reset
  to a default symbol style of the new type.
-.. seealso:: symbolType()
+.. seealso:: :py:func:`symbolType()`
 %End
 
     QgsSymbol::SymbolType symbolType() const;
 %Docstring
  Returns the symbol type which the button requires.
-.. seealso:: setSymbolType()
+.. seealso:: :py:func:`setSymbolType()`
  :rtype: QgsSymbol.SymbolType
 %End
 
     void setDialogTitle( const QString &title );
 %Docstring
  Sets the ``title`` for the symbol settings dialog window.
-.. seealso:: dialogTitle()
+.. seealso:: :py:func:`dialogTitle()`
 %End
 
     QString dialogTitle() const;
 %Docstring
  Returns the title for the symbol settings dialog window.
-.. seealso:: setDialogTitle()
+.. seealso:: :py:func:`setDialogTitle()`
  :rtype: str
 %End
 
     QgsSymbol *symbol();
 %Docstring
  Returns the current symbol defined by the button.
-.. seealso:: setSymbol()
-.. seealso:: changed()
+.. seealso:: :py:func:`setSymbol()`
+.. seealso:: :py:func:`changed()`
  :rtype: QgsSymbol
 %End
 
@@ -73,7 +73,7 @@ class QgsSymbolButton : QToolButton
     QgsMapCanvas *mapCanvas() const;
 %Docstring
  Returns the map canvas associated with the widget.
-.. seealso:: setMapCanvas()
+.. seealso:: :py:func:`setMapCanvas()`
  :rtype: QgsMapCanvas
 %End
 
@@ -81,13 +81,13 @@ class QgsSymbolButton : QToolButton
 %Docstring
  Sets a map ``canvas`` to associate with the widget. This allows the
  widget to fetch current settings from the map canvas, such as current scale.
-.. seealso:: mapCanvas()
+.. seealso:: :py:func:`mapCanvas()`
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
  Returns the layer associated with the widget.
-.. seealso:: setLayer()
+.. seealso:: :py:func:`setLayer()`
  :rtype: QgsVectorLayer
 %End
 
@@ -96,7 +96,7 @@ class QgsSymbolButton : QToolButton
  Sets a ``layer`` to associate with the widget. This allows the
  widget to setup layer related settings within the symbol settings dialog,
  such as correctly populating data defined override buttons.
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
 %End
 
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
@@ -111,8 +111,8 @@ class QgsSymbolButton : QToolButton
 %Docstring
  Sets the ``symbol`` for the button. Ownership of ``symbol`` is transferred to the
  button.
-.. seealso:: symbol()
-.. seealso:: changed()
+.. seealso:: :py:func:`symbol()`
+.. seealso:: :py:func:`changed()`
 %End
 
     void setColor( const QColor &color );
@@ -124,27 +124,27 @@ class QgsSymbolButton : QToolButton
     void copySymbol();
 %Docstring
  Copies the current symbol to the clipboard.
-.. seealso:: pasteSymbol()
+.. seealso:: :py:func:`pasteSymbol()`
 %End
 
     void pasteSymbol();
 %Docstring
  Pastes a symbol from the clipboard. If clipboard does not contain a valid
  symbol then no change is applied.
-.. seealso:: copySymbol()
+.. seealso:: :py:func:`copySymbol()`
 %End
 
     void copyColor();
 %Docstring
  Copies the current symbol color to the clipboard.
-.. seealso:: pasteColor()
+.. seealso:: :py:func:`pasteColor()`
 %End
 
     void pasteColor();
 %Docstring
  Pastes a color from the clipboard to the symbol. If clipboard does not contain a valid
  color or string representation of a color, then no change is applied.
-.. seealso:: copyColor()
+.. seealso:: :py:func:`copyColor()`
 %End
 
   signals:
@@ -152,8 +152,8 @@ class QgsSymbolButton : QToolButton
     void changed();
 %Docstring
  Emitted when the symbol's settings are changed.
-.. seealso:: symbol()
-.. seealso:: setSymbol()
+.. seealso:: :py:func:`symbol()`
+.. seealso:: :py:func:`setSymbol()`
 %End
 
   protected:

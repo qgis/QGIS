@@ -51,7 +51,7 @@ class QgsAuthSettingsWidget : QWidget
 %Docstring
  setWarningText set the text of the warning label
  \param warningText the text of the warning label
-.. seealso:: formattedWarning()
+.. seealso:: :py:func:`formattedWarning()`
 %End
 
     void setBasicText( const QString &basicText );
@@ -140,14 +140,14 @@ class QgsAuthSettingsWidget : QWidget
 %Docstring
  setStoreUsernameChecked check the "Store" checkbox for the username
  \param checked
-.. seealso:: showStoreCheckboxes
+.. seealso:: :py:func:`showStoreCheckboxes`
 %End
 
     void setStorePasswordChecked( bool checked );
 %Docstring
  setStorePasswordCheched check the "Store" checkbox for the password
  \param checked
-.. seealso:: showStoreCheckboxes
+.. seealso:: :py:func:`showStoreCheckboxes`
 %End
 
     bool storePasswordIsChecked( ) const;

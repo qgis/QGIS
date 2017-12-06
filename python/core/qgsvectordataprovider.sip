@@ -205,7 +205,7 @@ Bitmask of all provider's editing capabilities
  Deletes one or more features from the provider. This requires the DeleteFeatures capability.
  \param id list containing feature ids to delete
  :return: true in case of success and false in case of failure
-.. seealso:: truncate()
+.. seealso:: :py:func:`truncate()`
  :rtype: bool
 %End
 
@@ -215,7 +215,7 @@ Bitmask of all provider's editing capabilities
  Providers with the FastTruncate capability will use an optimised method to truncate the layer.
  :return: true in case of success and false in case of failure.
 .. versionadded:: 3.0
-.. seealso:: deleteFeatures()
+.. seealso:: :py:func:`deleteFeatures()`
  :rtype: bool
 %End
 
@@ -282,7 +282,7 @@ Bitmask of all provider's editing capabilities
  is calculated as a result of a sequence). It is recommended that you instead use the methods
  in QgsVectorLayerUtils such as QgsVectorLayerUtils.createFeature()
  so that default value handling and validation is automatically carried out.
-.. seealso:: defaultValueClause()
+.. seealso:: :py:func:`defaultValueClause()`
  :rtype: QVariant
 %End
 
@@ -291,7 +291,7 @@ Bitmask of all provider's editing capabilities
  Returns any default value clauses which are present at the provider for a specified
  field index. These clauses are usually SQL fragments which must be evaluated by the
  provider, e.g., sequence values.
-.. seealso:: defaultValue()
+.. seealso:: :py:func:`defaultValue()`
 .. versionadded:: 3.0
  :rtype: str
 %End
@@ -301,7 +301,7 @@ Bitmask of all provider's editing capabilities
  Returns any constraints which are present at the provider for a specified
  field index.
 .. versionadded:: 3.0
-.. seealso:: skipConstraintCheck()
+.. seealso:: :py:func:`skipConstraintCheck()`
  :rtype: QgsFieldConstraints.Constraints
 %End
 
@@ -311,7 +311,7 @@ Bitmask of all provider's editing capabilities
  the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
  passed which can help refine the skip constraint check.
 .. versionadded:: 3.0
-.. seealso:: fieldConstraints()
+.. seealso:: :py:func:`fieldConstraints()`
  :rtype: bool
 %End
 

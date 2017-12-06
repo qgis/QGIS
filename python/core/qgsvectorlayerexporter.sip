@@ -93,24 +93,24 @@ class QgsVectorLayerExporter : QgsFeatureSink
     ExportError errorCode() const;
 %Docstring
  Returns any encountered error code, or false if no error was encountered.
-.. seealso:: errorMessage()
-.. seealso:: errorCount()
+.. seealso:: :py:func:`errorMessage()`
+.. seealso:: :py:func:`errorCount()`
  :rtype: ExportError
 %End
 
     QString errorMessage() const;
 %Docstring
  Returns any error message encountered during the export.
-.. seealso:: errorCount()
-.. seealso:: errorCode()
+.. seealso:: :py:func:`errorCount()`
+.. seealso:: :py:func:`errorCode()`
  :rtype: str
 %End
 
     int errorCount() const;
 %Docstring
  Returns the number of error messages encountered during the export.
-.. seealso:: errorMessage()
-.. seealso:: errorCode()
+.. seealso:: :py:func:`errorMessage()`
+.. seealso:: :py:func:`errorCode()`
  :rtype: int
 %End
 
@@ -139,8 +139,8 @@ class QgsVectorLayerExporterTask : QgsTask
  task. This can be used to export a vector layer out to a provider without blocking the
  QGIS interface.
 .. versionadded:: 3.0
-.. seealso:: QgsVectorFileWriterTask
-.. seealso:: QgsRasterFileWriterTask
+.. seealso:: :py:class:`QgsVectorFileWriterTask`
+.. seealso:: :py:class:`QgsRasterFileWriterTask`
 %End
 
 %TypeHeaderCode

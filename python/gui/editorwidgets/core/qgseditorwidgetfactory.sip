@@ -84,7 +84,7 @@ class QgsEditorWidgetFactory
  \param fieldIdx  The field index
  :return:          True if the type is supported for this field
 
-.. seealso:: fieldScore( const QgsVectorLayer* vl, ind fieldIdx )
+.. seealso:: :py:func:`fieldScore`
  :rtype: bool
 %End
 
@@ -106,7 +106,7 @@ class QgsEditorWidgetFactory
  :return: 0 if the field is not supported or a bigger number if it can (the widget with the biggest number will be
       taken by default). The default implementation returns 5..
 
-.. seealso:: supportsField( QgsVectorLayer* vl, fieldIdx )
+.. seealso:: :py:func:`supportsField`
 %End
 
 };

@@ -172,7 +172,7 @@ class QgsDataProvider : QObject
     static QString SUBLAYER_SEPARATOR;
 %Docstring
  String sequence used for separating components of sublayers strings.
-.. seealso:: subLayers()
+.. seealso:: :py:func:`subLayers()`
 .. versionadded:: 3.0
 %End
 
@@ -375,7 +375,7 @@ Current time stamp of data source
 
  The default implementation does nothing.
 
-.. seealso:: notify
+.. seealso:: :py:func:`notify`
 
 .. versionadded:: 3.0
 %End
@@ -403,7 +403,7 @@ Current time stamp of data source
 %Docstring
  Emitted when datasource issues a notification
 
-.. seealso:: setListening
+.. seealso:: :py:func:`setListening`
 
 .. versionadded:: 3.0
 %End

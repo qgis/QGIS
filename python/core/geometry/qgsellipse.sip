@@ -100,29 +100,29 @@ An ellipse is empty if axes are equal to 0
     QgsPoint center() const;
 %Docstring
  Returns the center point.
-.. seealso:: setCenter()
-.. seealso:: rcenter()
+.. seealso:: :py:func:`setCenter()`
+.. seealso:: :py:func:`rcenter()`
  :rtype: QgsPoint
 %End
 
     double semiMajorAxis() const;
 %Docstring
  Returns the semi-major axis.
-.. seealso:: setSemiMajorAxis()
+.. seealso:: :py:func:`setSemiMajorAxis()`
  :rtype: float
 %End
 
     double semiMinorAxis() const;
 %Docstring
  Returns the semi-minor axis.
-.. seealso:: setSemiMinorAxis()
+.. seealso:: :py:func:`setSemiMinorAxis()`
  :rtype: float
 %End
 
     double azimuth() const;
 %Docstring
  Returns the azimuth.
-.. seealso:: setAzimuth()
+.. seealso:: :py:func:`setAzimuth()`
  :rtype: float
 %End
 
@@ -130,33 +130,33 @@ An ellipse is empty if axes are equal to 0
     void setCenter( const QgsPoint &center );
 %Docstring
  Sets the center point.
-.. seealso:: center()
-.. seealso:: rcenter()
+.. seealso:: :py:func:`center()`
+.. seealso:: :py:func:`rcenter()`
 %End
 
     virtual void setSemiMajorAxis( const double semiMajorAxis );
 %Docstring
  Sets the semi-major axis.
-.. seealso:: semiMajorAxis()
+.. seealso:: :py:func:`semiMajorAxis()`
 %End
 
     virtual void setSemiMinorAxis( const double semiMinorAxis );
 %Docstring
  Sets the semi-minor axis.
-.. seealso:: semiMinorAxis()
+.. seealso:: :py:func:`semiMinorAxis()`
 %End
 
     void setAzimuth( const double azimuth );
 %Docstring
  Sets the azimuth (orientation).
-.. seealso:: azimuth()
+.. seealso:: :py:func:`azimuth()`
 %End
 
     virtual double focusDistance() const;
 %Docstring
  The distance between the center and each foci.
-.. seealso:: fromFoci()
-.. seealso:: foci()
+.. seealso:: :py:func:`fromFoci()`
+.. seealso:: :py:func:`foci()`
  :return: The distance between the center and each foci.
  :rtype: float
 %End
@@ -164,8 +164,8 @@ An ellipse is empty if axes are equal to 0
     virtual QVector<QgsPoint> foci() const;
 %Docstring
  Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
-.. seealso:: fromFoci()
-.. seealso:: focusDistance()
+.. seealso:: :py:func:`fromFoci()`
+.. seealso:: :py:func:`focusDistance()`
  :return: the two foci.
  :rtype: list of QgsPoint
 %End

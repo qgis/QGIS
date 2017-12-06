@@ -54,7 +54,7 @@ class QgsComposerUtils
  Ensures that an angle is in the range 0 <= angle < 360
  \param angle angle in degrees
  :return: equivalent angle within the range [0, 360)
-.. seealso:: snappedAngle
+.. seealso:: :py:func:`snappedAngle`
  :rtype: float
 %End
 
@@ -81,7 +81,7 @@ class QgsComposerUtils
 %Docstring
  Returns the size in mm corresponding to a font point size
  \param pointSize font size in points
-.. seealso:: mmToPoints
+.. seealso:: :py:func:`mmToPoints`
  :rtype: float
 %End
 
@@ -89,7 +89,7 @@ class QgsComposerUtils
 %Docstring
  Returns the size in mm corresponding to a font point size
  \param mmSize font size in mm
-.. seealso:: pointsToMM
+.. seealso:: :py:func:`pointsToMM`
  :rtype: float
 %End
 
@@ -139,15 +139,15 @@ class QgsComposerUtils
 %Docstring
  Reads all pre 3.0 data defined properties from an XML element.
 .. versionadded:: 3.0
-.. seealso:: readDataDefinedProperty
-.. seealso:: writeDataDefinedPropertyMap
+.. seealso:: :py:func:`readDataDefinedProperty`
+.. seealso:: :py:func:`writeDataDefinedPropertyMap`
 %End
 
     static QgsProperty readOldDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property, const QDomElement &ddElem );
 %Docstring
  Reads a pre 3.0 data defined property from an XML DOM element.
 .. versionadded:: 3.0
-.. seealso:: readDataDefinedPropertyMap
+.. seealso:: :py:func:`readDataDefinedPropertyMap`
  :rtype: QgsProperty
 %End
 
@@ -167,10 +167,10 @@ class QgsComposerUtils
  \param font input font
  :return: font ascent in millimeters
 .. versionadded:: 2.5
-.. seealso:: fontDescentMM
-.. seealso:: fontHeightMM
-.. seealso:: fontHeightCharacterMM
-.. seealso:: textWidthMM
+.. seealso:: :py:func:`fontDescentMM`
+.. seealso:: :py:func:`fontHeightMM`
+.. seealso:: :py:func:`fontHeightCharacterMM`
+.. seealso:: :py:func:`textWidthMM`
  :rtype: float
 %End
 
@@ -180,10 +180,10 @@ class QgsComposerUtils
  \param font input font
  :return: font descent in millimeters
 .. versionadded:: 2.5
-.. seealso:: fontAscentMM
-.. seealso:: fontHeightMM
-.. seealso:: fontHeightCharacterMM
-.. seealso:: textWidthMM
+.. seealso:: :py:func:`fontAscentMM`
+.. seealso:: :py:func:`fontHeightMM`
+.. seealso:: :py:func:`fontHeightCharacterMM`
+.. seealso:: :py:func:`textWidthMM`
  :rtype: float
 %End
 
@@ -194,10 +194,10 @@ class QgsComposerUtils
  \param font input font
  :return: font height in millimeters
 .. versionadded:: 2.5
-.. seealso:: fontAscentMM
-.. seealso:: fontDescentMM
-.. seealso:: fontHeightCharacterMM
-.. seealso:: textWidthMM
+.. seealso:: :py:func:`fontAscentMM`
+.. seealso:: :py:func:`fontDescentMM`
+.. seealso:: :py:func:`fontHeightCharacterMM`
+.. seealso:: :py:func:`textWidthMM`
  :rtype: float
 %End
 
@@ -209,10 +209,10 @@ class QgsComposerUtils
  \param character character to calculate height for
  :return: character height in millimeters
 .. versionadded:: 2.5
-.. seealso:: fontAscentMM
-.. seealso:: fontDescentMM
-.. seealso:: fontHeightMM
-.. seealso:: textWidthMM
+.. seealso:: :py:func:`fontAscentMM`
+.. seealso:: :py:func:`fontDescentMM`
+.. seealso:: :py:func:`fontHeightMM`
+.. seealso:: :py:func:`textWidthMM`
  :rtype: float
 %End
 
@@ -224,11 +224,11 @@ class QgsComposerUtils
  \param text string to calculate width of
  :return: string width in millimeters
 .. versionadded:: 2.5
-.. seealso:: fontAscentMM
-.. seealso:: fontDescentMM
-.. seealso:: fontHeightMM
-.. seealso:: fontHeightCharacterMM
-.. seealso:: textHeightMM
+.. seealso:: :py:func:`fontAscentMM`
+.. seealso:: :py:func:`fontDescentMM`
+.. seealso:: :py:func:`fontHeightMM`
+.. seealso:: :py:func:`fontHeightCharacterMM`
+.. seealso:: :py:func:`textHeightMM`
  :rtype: float
 %End
 
@@ -242,7 +242,7 @@ class QgsComposerUtils
  \param multiLineHeight line spacing factor
  :return: string height in millimeters
 .. versionadded:: 2.12
-.. seealso:: textWidthMM
+.. seealso:: :py:func:`textWidthMM`
  :rtype: float
 %End
 
@@ -280,7 +280,7 @@ class QgsComposerUtils
  target map. If the ``dpi`` argument is not specified then the dpi will be taken from the destinatation
  painter device.
 .. versionadded:: 3.0
-.. seealso:: createRenderContextForComposition()
+.. seealso:: :py:func:`createRenderContextForComposition()`
  :rtype: QgsRenderContext
 %End
 
@@ -290,7 +290,7 @@ class QgsComposerUtils
  This method returns a new QgsRenderContext which matches the scale and settings from the composition's
  QgsComposition.referenceMap().
 .. versionadded:: 3.0
-.. seealso:: createRenderContextForMap()
+.. seealso:: :py:func:`createRenderContextForMap()`
  :rtype: QgsRenderContext
 %End
 

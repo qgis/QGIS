@@ -29,7 +29,7 @@ class QgsRasterBandComboBox : QComboBox
     QgsRasterLayer *layer() const;
 %Docstring
  Returns the layer currently associated with the combobox.
-.. seealso:: setLayer()
+.. seealso:: :py:func:`setLayer()`
  :rtype: QgsRasterLayer
 %End
 
@@ -37,14 +37,14 @@ class QgsRasterBandComboBox : QComboBox
 %Docstring
  Returns the current band number selected in the combobox, or -1
  if no band is selected.
-.. seealso:: setBand()
+.. seealso:: :py:func:`setBand()`
  :rtype: int
 %End
 
     bool isShowingNotSetOption() const;
 %Docstring
  Returns true if the combo box is showing the "not set" option.
-.. seealso:: setShowNotSetOption()
+.. seealso:: :py:func:`setShowNotSetOption()`
  :rtype: bool
 %End
 
@@ -53,7 +53,7 @@ class QgsRasterBandComboBox : QComboBox
  Sets whether the combo box should show the "not set" option.
  Optionally the built in "not set" text can be overridden by specifying
  a ``string``.
-.. seealso:: setShowNotSetOption()
+.. seealso:: :py:func:`setShowNotSetOption()`
 %End
 
   public slots:
@@ -62,13 +62,13 @@ class QgsRasterBandComboBox : QComboBox
 %Docstring
  Sets the raster ``layer`` for which the bands are listed in the combobox. If no layer is set
  or a non-raster layer is set then the combobox will be empty.
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
 %End
 
     void setBand( int band );
 %Docstring
  Sets the current ``band`` number selected in the combobox.
-.. seealso:: band()
+.. seealso:: :py:func:`band()`
 %End
 
   signals:

@@ -41,14 +41,14 @@ class QgsLayoutSerializableObject : QgsLayoutUndoObjectInterface
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 %Docstring
  Stores the objects's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) = 0;
 %Docstring
  Sets the objects's state from a DOM element. ``element`` is the DOM node corresponding to the object.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 

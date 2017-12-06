@@ -76,7 +76,7 @@ class QgsLineString: QgsCurve
  \param index index of node, where the first node in the line is 0
  :return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
  does not have a z dimension
-.. seealso:: setZAt()
+.. seealso:: :py:func:`setZAt()`
  :rtype: float
 %End
 
@@ -86,7 +86,7 @@ class QgsLineString: QgsCurve
  \param index index of node, where the first node in the line is 0
  :return: m value of node, or ``nan`` if index is out of bounds or the line
  does not have m values
-.. seealso:: setMAt()
+.. seealso:: :py:func:`setMAt()`
  :rtype: float
 %End
 
@@ -96,7 +96,7 @@ class QgsLineString: QgsCurve
  \param index index of node, where the first node in the line is 0. Corresponding
  node must already exist in line string.
  \param x x-coordinate of node
-.. seealso:: xAt()
+.. seealso:: :py:func:`xAt()`
 %End
 
     void setYAt( int index, double y );
@@ -105,7 +105,7 @@ class QgsLineString: QgsCurve
  \param index index of node, where the first node in the line is 0. Corresponding
  node must already exist in line string.
  \param y y-coordinate of node
-.. seealso:: yAt()
+.. seealso:: :py:func:`yAt()`
 %End
 
     void setZAt( int index, double z );
@@ -114,7 +114,7 @@ class QgsLineString: QgsCurve
  \param index index of node, where the first node in the line is 0. Corresponding
  node must already exist in line string, and the line string must have z-dimension.
  \param z z-coordinate of node
-.. seealso:: zAt()
+.. seealso:: :py:func:`zAt()`
 %End
 
     void setMAt( int index, double m );
@@ -123,7 +123,7 @@ class QgsLineString: QgsCurve
  \param index index of node, where the first node in the line is 0. Corresponding
  node must already exist in line string, and the line string must have m values.
  \param m m value of node
-.. seealso:: mAt()
+.. seealso:: :py:func:`mAt()`
 %End
 
     void setPoints( const QgsPointSequence &points );

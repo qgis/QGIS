@@ -40,8 +40,8 @@ class QgsHistogramWidget : QWidget
     QgsVectorLayer *layer();
 %Docstring
  Returns the layer currently associated with the widget.
-.. seealso:: setLayer
-.. seealso:: sourceFieldExp
+.. seealso:: :py:func:`setLayer`
+.. seealso:: :py:func:`sourceFieldExp`
  :rtype: QgsVectorLayer
 %End
 
@@ -49,8 +49,8 @@ class QgsHistogramWidget : QWidget
 %Docstring
  Returns the source field name or expression used to calculate values displayed
  in the histogram.
-.. seealso:: setSourceFieldExp
-.. seealso:: layer
+.. seealso:: :py:func:`setSourceFieldExp`
+.. seealso:: :py:func:`layer`
  :rtype: str
 %End
 
@@ -60,15 +60,15 @@ class QgsHistogramWidget : QWidget
  pen will be automatically calculated. If ranges have been set using setGraduatedRanges()
  then the pen and brush will have no effect.
  \param pen histogram pen
-.. seealso:: pen
-.. seealso:: setBrush
+.. seealso:: :py:func:`pen`
+.. seealso:: :py:func:`setBrush`
 %End
 
     QPen pen() const;
 %Docstring
  Returns the pen used when drawing histogram bars.
-.. seealso:: setPen
-.. seealso:: brush
+.. seealso:: :py:func:`setPen`
+.. seealso:: :py:func:`brush`
  :rtype: QPen
 %End
 
@@ -77,15 +77,15 @@ class QgsHistogramWidget : QWidget
  Sets the brush used for drawing histogram bars. If ranges have been set using setGraduatedRanges()
  then the pen and brush will have no effect.
  \param brush histogram brush
-.. seealso:: brush
-.. seealso:: setPen
+.. seealso:: :py:func:`brush`
+.. seealso:: :py:func:`setPen`
 %End
 
     QBrush brush() const;
 %Docstring
  Returns the brush used when drawing histogram bars.
-.. seealso:: setBrush
-.. seealso:: pen
+.. seealso:: :py:func:`setBrush`
+.. seealso:: :py:func:`pen`
  :rtype: QBrush
 %End
 
@@ -94,7 +94,7 @@ class QgsHistogramWidget : QWidget
  Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
  bars and for showing vertical dividers at the histogram breaks.
  \param ranges graduated range list
-.. seealso:: graduatedRanges
+.. seealso:: :py:func:`graduatedRanges`
 %End
 
     QgsRangeList graduatedRanges() const;
@@ -102,15 +102,15 @@ class QgsHistogramWidget : QWidget
  Returns the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
  bars and for showing vertical dividers at the histogram breaks.
  :return: graduated range list
-.. seealso:: setGraduatedRanges
+.. seealso:: :py:func:`setGraduatedRanges`
  :rtype: QgsRangeList
 %End
 
     QString xAxisTitle() const;
 %Docstring
  Returns the title for the histogram's x-axis.
-.. seealso:: setXAxisTitle
-.. seealso:: yAxisTitle
+.. seealso:: :py:func:`setXAxisTitle`
+.. seealso:: :py:func:`yAxisTitle`
  :rtype: str
 %End
 
@@ -118,15 +118,15 @@ class QgsHistogramWidget : QWidget
 %Docstring
  Sets the title for the histogram's x-axis.
  \param title x-axis title, or empty string to remove title
-.. seealso:: xAxisTitle
-.. seealso:: setYAxisTitle
+.. seealso:: :py:func:`xAxisTitle`
+.. seealso:: :py:func:`setYAxisTitle`
 %End
 
     QString yAxisTitle() const;
 %Docstring
  Returns the title for the histogram's y-axis.
-.. seealso:: setYAxisTitle
-.. seealso:: xAxisTitle
+.. seealso:: :py:func:`setYAxisTitle`
+.. seealso:: :py:func:`xAxisTitle`
  :rtype: str
 %End
 
@@ -134,8 +134,8 @@ class QgsHistogramWidget : QWidget
 %Docstring
  Sets the title for the histogram's y-axis.
  \param title y-axis title, or empty string to remove title
-.. seealso:: yAxisTitle
-.. seealso:: setXAxisTitle
+.. seealso:: :py:func:`yAxisTitle`
+.. seealso:: :py:func:`setXAxisTitle`
 %End
 
   public slots:
@@ -155,14 +155,14 @@ class QgsHistogramWidget : QWidget
 %Docstring
  Sets the vector layer associated with the histogram.
  \param layer source vector layer
-.. seealso:: setSourceFieldExp
+.. seealso:: :py:func:`setSourceFieldExp`
 %End
 
     void setSourceFieldExp( const QString &fieldOrExp );
 %Docstring
  Sets the source field or expression to use for values in the histogram.
  \param fieldOrExp field name or expression string
-.. seealso:: setLayer
+.. seealso:: :py:func:`setLayer`
 %End
 
   protected:

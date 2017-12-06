@@ -49,7 +49,7 @@ Returns the file format for storage
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
  Returns the selected CRS for the new layer.
-.. seealso:: setCrs()
+.. seealso:: :py:func:`setCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -57,7 +57,7 @@ Returns the file format for storage
 %Docstring
  Sets the ``crs`` value for the new layer in the dialog.
 .. versionadded:: 3.0
-.. seealso:: crs()
+.. seealso:: :py:func:`crs()`
 %End
 
 };

@@ -26,7 +26,7 @@ class QgsComposerFrame: QgsComposerItem
  Sets the visible part of the multiframe's content which is visible within
  this frame (relative to the total multiframe extent in mm).
  \param section visible portion of content
-.. seealso:: extent
+.. seealso:: :py:func:`extent`
 %End
 
     QgsComposerMultiFrame *multiFrame() const;
@@ -59,7 +59,7 @@ class QgsComposerFrame: QgsComposerItem
  is shown in this frame.
  :return: extent of visible portion
 .. versionadded:: 2.5
-.. seealso:: setContentSection
+.. seealso:: :py:func:`setContentSection`
  :rtype: QRectF
 %End
 
@@ -68,7 +68,7 @@ class QgsComposerFrame: QgsComposerItem
  Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
  :return: true if page should be hidden if frame is empty
 .. versionadded:: 2.5
-.. seealso:: setHidePageIfEmpty
+.. seealso:: :py:func:`setHidePageIfEmpty`
  :rtype: bool
 %End
 
@@ -77,7 +77,7 @@ class QgsComposerFrame: QgsComposerItem
  Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
  \param hidePageIfEmpty set to true if page should be hidden if frame is empty
 .. versionadded:: 2.5
-.. seealso:: hidePageIfEmpty
+.. seealso:: :py:func:`hidePageIfEmpty`
 %End
 
     bool hideBackgroundIfEmpty() const;
@@ -85,7 +85,7 @@ class QgsComposerFrame: QgsComposerItem
  Returns whether the background and frame stroke should be hidden if this frame is empty
  :return: true if background and stroke should be hidden if frame is empty
 .. versionadded:: 2.5
-.. seealso:: setHideBackgroundIfEmpty
+.. seealso:: :py:func:`setHideBackgroundIfEmpty`
  :rtype: bool
 %End
 
@@ -94,7 +94,7 @@ class QgsComposerFrame: QgsComposerItem
  Sets whether the background and frame stroke should be hidden if this frame is empty
  \param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
 .. versionadded:: 2.5
-.. seealso:: hideBackgroundIfEmpty
+.. seealso:: :py:func:`hideBackgroundIfEmpty`
 %End
 
     bool isEmpty() const;
@@ -102,7 +102,7 @@ class QgsComposerFrame: QgsComposerItem
  Returns whether the frame is empty
  :return: true if frame is empty
 .. versionadded:: 2.5
-.. seealso:: hidePageIfEmpty
+.. seealso:: :py:func:`hidePageIfEmpty`
  :rtype: bool
 %End
 

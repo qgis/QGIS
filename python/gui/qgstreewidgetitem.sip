@@ -91,7 +91,7 @@ class QgsTreeWidgetItem : QTreeWidgetItem
  text will be used when sorting.
  \param column column index
  \param value sort value
-.. seealso:: sortData()
+.. seealso:: :py:func:`sortData()`
 %End
 
     QVariant sortData( int column ) const;
@@ -99,7 +99,7 @@ class QgsTreeWidgetItem : QTreeWidgetItem
  Returns the custom sort data for a specified column. If set, this value will be used when
  sorting the item instead of the item's display text. If not set, the item's display
  text will be used when sorting.
-.. seealso:: setSortData()
+.. seealso:: :py:func:`setSortData()`
  :rtype: QVariant
 %End
 
@@ -109,7 +109,7 @@ class QgsTreeWidgetItem : QTreeWidgetItem
  sort column and sort or display value for the item.
  \param priority priority for sorting always on top items. Items with a lower priority will
  be placed above items with a higher priority.
-.. seealso:: alwaysOnTopPriority()
+.. seealso:: :py:func:`alwaysOnTopPriority()`
 %End
 
     int alwaysOnTopPriority() const;
@@ -117,7 +117,7 @@ class QgsTreeWidgetItem : QTreeWidgetItem
  Returns the item's priority when it is set to show always on top. Items with a lower priority will
  be placed above items with a higher priority.
  :return: priority, or -1 if item is not set to show always on top
-.. seealso:: setAlwaysOnTopPriority()
+.. seealso:: :py:func:`setAlwaysOnTopPriority()`
  :rtype: int
 %End
 

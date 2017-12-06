@@ -34,8 +34,8 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
  name.
  \param style style containing symbols to match with
  :return: number of symbols matched
-.. seealso:: matchToSymbolsFromLibrary
-.. seealso:: matchToSymbolsFromXml
+.. seealso:: :py:func:`matchToSymbolsFromLibrary`
+.. seealso:: :py:func:`matchToSymbolsFromXml`
 .. versionadded:: 2.9
  :rtype: int
 %End
@@ -63,8 +63,8 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 %Docstring
  Replaces category symbols with the symbols from the users' symbol library that have a
  matching name.
-.. seealso:: matchToSymbolsFromXml
-.. seealso:: matchToSymbols
+.. seealso:: :py:func:`matchToSymbolsFromXml`
+.. seealso:: :py:func:`matchToSymbols`
 .. versionadded:: 2.9
 %End
 
@@ -72,8 +72,8 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 %Docstring
  Prompts for selection of an xml file, then replaces category symbols with the symbols
  from the XML file with a matching name.
-.. seealso:: matchToSymbolsFromLibrary
-.. seealso:: matchToSymbols
+.. seealso:: :py:func:`matchToSymbolsFromLibrary`
+.. seealso:: :py:func:`matchToSymbols`
 .. versionadded:: 2.9
 %End
 

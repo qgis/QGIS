@@ -49,14 +49,14 @@ class QgsDxfExport
 %Docstring
  Sets the export flags.
 .. versionadded:: 3.0
-.. seealso:: flags()
+.. seealso:: :py:func:`flags()`
 %End
 
     QgsDxfExport::Flags flags() const;
 %Docstring
  Returns the export flags.
 .. versionadded:: 3.0
-.. seealso:: setFlags()
+.. seealso:: :py:func:`setFlags()`
  :rtype: QgsDxfExport.Flags
 %End
 
@@ -64,7 +64,7 @@ class QgsDxfExport
 %Docstring
  Add layers to export
  \param layers list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
-.. seealso:: setLayerTitleAsName
+.. seealso:: :py:func:`setLayerTitleAsName`
 %End
 
     int writeToFile( QIODevice *d, const QString &codec );  //maybe add progress dialog? other parameters (e.g. scale, dpi)?
@@ -74,7 +74,7 @@ class QgsDxfExport
  Set reference ``scale`` for output.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. versionadded:: 3.0
-.. seealso:: symbologyScale()
+.. seealso:: :py:func:`symbologyScale()`
 %End
 
     double symbologyScale() const;
@@ -82,7 +82,7 @@ class QgsDxfExport
  Returns the reference scale for output.
  The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. versionadded:: 3.0
-.. seealso:: setSymbologyScale()
+.. seealso:: :py:func:`setSymbologyScale()`
  :rtype: float
 %End
 
@@ -96,14 +96,14 @@ class QgsDxfExport
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
  Set destination CRS
-.. seealso:: destinationCrs()
+.. seealso:: :py:func:`destinationCrs()`
 .. versionadded:: 3.0
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
  Returns the destination CRS, or an invalid CRS if no reprojection will be done.
-.. seealso:: setDestinationCrs()
+.. seealso:: :py:func:`setDestinationCrs()`
 .. versionadded:: 3.0
  :rtype: QgsCoordinateReferenceSystem
 %End
@@ -118,7 +118,7 @@ class QgsDxfExport
 %Docstring
  Get symbology export mode
  :return: mode
-.. seealso:: setSymbologyExport
+.. seealso:: :py:func:`setSymbologyExport`
  :rtype: QgsDxfExport.SymbologyExport
 %End
 
@@ -132,7 +132,7 @@ class QgsDxfExport
 %Docstring
  Get extent of area to export
  :return: area to export
-.. seealso:: setExtent
+.. seealso:: :py:func:`setExtent`
  :rtype: QgsRectangle
 %End
 
@@ -141,14 +141,14 @@ class QgsDxfExport
  Enable use of title (where set) instead of layer name,
  when attribute index of corresponding layer index is -1
  \param layerTitleAsName flag
-.. seealso:: addLayers
+.. seealso:: :py:func:`addLayers`
 %End
 
     bool layerTitleAsName();
 %Docstring
  Retrieve whether layer title (where set) instead of name shall be use
  :return: flag
-.. seealso:: setLayerTitleAsName
+.. seealso:: :py:func:`setLayerTitleAsName`
  :rtype: bool
 %End
 
@@ -156,14 +156,14 @@ class QgsDxfExport
 %Docstring
  Force 2d output (eg. to support linewidth in polylines)
  \param force2d flag
-.. seealso:: force2d
+.. seealso:: :py:func:`force2d`
 %End
 
     bool force2d();
 %Docstring
  Retrieve whether the output should be forced to 2d
  :return: flag
-.. seealso:: setForce2d
+.. seealso:: :py:func:`setForce2d`
  :rtype: bool
 %End
 
@@ -188,7 +188,7 @@ class QgsDxfExport
  Get name for layer respecting the use layer title as layer name mode
  \param vl the vector layer
  :return: name of layer
-.. seealso:: setLayerTitleAsName
+.. seealso:: :py:func:`setLayerTitleAsName`
  :rtype: str
 %End
 

@@ -33,7 +33,7 @@ class QgsTextAnnotation: QgsAnnotation
 %Docstring
  Returns the text document which will be rendered
  within the annotation.
-.. seealso:: setDocument()
+.. seealso:: :py:func:`setDocument()`
  :rtype: QTextDocument
 %End
 
@@ -41,7 +41,7 @@ class QgsTextAnnotation: QgsAnnotation
 %Docstring
  Sets the text document which will be rendered
  within the annotation. Ownership is not transferred.
-.. seealso:: document()
+.. seealso:: :py:func:`document()`
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;

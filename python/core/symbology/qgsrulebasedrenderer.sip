@@ -162,8 +162,8 @@ Constructor takes ownership of the symbol
  Returns the maximum map scale (i.e. most "zoomed in" scale) at which the rule will be active.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A scale of 0 indicates no maximum scale visibility.
-.. seealso:: minimumScale()
-.. seealso:: setMaximumScale()
+.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`setMaximumScale()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -173,8 +173,8 @@ Constructor takes ownership of the symbol
  Returns the minimum map scale (i.e. most "zoomed out" scale) at which the rule will be active.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A scale of 0 indicates no minimum scale visibility.
-.. seealso:: maximumScale()
-.. seealso:: setMinimumScale()
+.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`setMinimumScale()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -233,8 +233,8 @@ set a new symbol (or NULL). Deletes old symbol.
  Sets the minimum map ``scale`` (i.e. most "zoomed out" scale) at which the rule will be active.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A ``scale`` of 0 indicates no minimum scale visibility.
-.. seealso:: minimumScale()
-.. seealso:: setMaximumScale()
+.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`setMaximumScale()`
 %End
 
         void setMaximumScale( double scale );
@@ -242,8 +242,8 @@ set a new symbol (or NULL). Deletes old symbol.
  Sets the maximum map ``scale`` (i.e. most "zoomed in" scale) at which the rule will be active.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A ``scale`` of 0 indicates no maximum scale visibility.
-.. seealso:: maximumScale()
-.. seealso:: setMinimumScale()
+.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`setMinimumScale()`
 %End
 
         void setFilterExpression( const QString &filterExp );

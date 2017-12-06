@@ -38,14 +38,14 @@ class QgsVariableEditorWidget : QWidget
  allows the widget to show all inherited variables for the context,
  and highlight any overridden variables within scopes.
  \param context expression context
-.. seealso:: context()
+.. seealso:: :py:func:`context()`
 %End
 
     QgsExpressionContext *context() const;
 %Docstring
  Returns the current expression context for the widget. QgsVariableEditorWidget widgets
  are created with an empty context by default.
-.. seealso:: setContext()
+.. seealso:: :py:func:`setContext()`
  :rtype: QgsExpressionContext
 %End
 
@@ -55,14 +55,14 @@ class QgsVariableEditorWidget : QWidget
  be modified by users.
  \param scopeIndex index of current editable scope. Set to -1 to disable
  editing and make the widget read-only.
-.. seealso:: editableScope()
+.. seealso:: :py:func:`editableScope()`
 %End
 
     QgsExpressionContextScope *editableScope() const;
 %Docstring
  Returns the current editable scope for the widget.
  :return: editable scope, or 0 if no editable scope is set
-.. seealso:: setEditableScopeIndex()
+.. seealso:: :py:func:`setEditableScopeIndex()`
  :rtype: QgsExpressionContextScope
 %End
 
@@ -72,7 +72,7 @@ class QgsVariableEditorWidget : QWidget
  the same setting group will synchronise their settings, e.g., the size
  of columns in the tree widget.
  \param group setting group
-.. seealso:: settingGroup()
+.. seealso:: :py:func:`settingGroup()`
 %End
 
     QString settingGroup() const;
@@ -81,7 +81,7 @@ class QgsVariableEditorWidget : QWidget
  the same setting group will synchronise their settings, e.g., the size
  of columns in the tree widget.
  :return: setting group name
-.. seealso:: setSettingGroup()
+.. seealso:: :py:func:`setSettingGroup()`
  :rtype: str
 %End
 
@@ -99,7 +99,7 @@ class QgsVariableEditorWidget : QWidget
 %Docstring
  Reloads all scopes from the editor's current context. This method should be called
  after adding or removing scopes from the attached context.
-.. seealso:: context()
+.. seealso:: :py:func:`context()`
 %End
 
   signals:

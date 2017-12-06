@@ -192,7 +192,7 @@ class QgsLayoutItemRegistry : QObject
  QgsLayoutItemRegistry is not usually directly created, but rather accessed through
  QgsApplication.layoutItemRegistry().
 
-.. seealso:: populate()
+.. seealso:: :py:func:`populate()`
 %End
 
     ~QgsLayoutItemRegistry();
@@ -209,7 +209,7 @@ class QgsLayoutItemRegistry : QObject
 %Docstring
  Returns the metadata for the specified item ``type``. Returns None if
  a corresponding type was not found in the registry.
-.. seealso:: multiFrameMetadata()
+.. seealso:: :py:func:`multiFrameMetadata()`
  :rtype: QgsLayoutItemAbstractMetadata
 %End
 
@@ -217,35 +217,35 @@ class QgsLayoutItemRegistry : QObject
 %Docstring
  Returns the metadata for the specified multiframe ``type``. Returns None if
  a corresponding type was not found in the registry.
-.. seealso:: itemMetadata()
+.. seealso:: :py:func:`itemMetadata()`
  :rtype: QgsLayoutMultiFrameAbstractMetadata
 %End
 
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata /Transfer/ );
 %Docstring
  Registers a new layout item type. Takes ownership of the metadata instance.
-.. seealso:: addLayoutMultiFrameType()
+.. seealso:: :py:func:`addLayoutMultiFrameType()`
  :rtype: bool
 %End
 
     bool addLayoutMultiFrameType( QgsLayoutMultiFrameAbstractMetadata *metadata /Transfer/ );
 %Docstring
  Registers a new layout multiframe type. Takes ownership of the metadata instance.
-.. seealso:: addLayoutItemType()
+.. seealso:: :py:func:`addLayoutItemType()`
  :rtype: bool
 %End
 
     QgsLayoutItem *createItem( int type, QgsLayout *layout ) const /Factory/;
 %Docstring
  Creates a new instance of a layout item given the item ``type``, and target ``layout``.
-.. seealso:: createMultiFrame()
+.. seealso:: :py:func:`createMultiFrame()`
  :rtype: QgsLayoutItem
 %End
 
     QgsLayoutMultiFrame *createMultiFrame( int type, QgsLayout *layout ) const /Factory/;
 %Docstring
  Creates a new instance of a layout multiframe given the multiframe ``type``, and target ``layout``.
-.. seealso:: createItem()
+.. seealso:: :py:func:`createItem()`
  :rtype: QgsLayoutMultiFrame
 %End
 

@@ -92,7 +92,7 @@ class QgsRenderContext
     QPainter *painter();
 %Docstring
  Returns the destination QPainter for the render operation.
-.. seealso:: setPainter()
+.. seealso:: :py:func:`setPainter()`
  :rtype: QPainter
 %End
 
@@ -125,7 +125,7 @@ class QgsRenderContext
  Returns the scaling factor for the render to convert painter units
  to physical sizes. This is usually equal to the number of pixels
  per millimeter.
-.. seealso:: setScaleFactor()
+.. seealso:: :py:func:`setScaleFactor()`
  :rtype: float
 %End
 
@@ -159,7 +159,7 @@ class QgsRenderContext
 %Docstring
  Returns the renderer map scale. This will match the desired scale denominator
  for the rendered map, eg 1000.0 for a 1:1000 map render.
-.. seealso:: setRendererScale()
+.. seealso:: :py:func:`setRendererScale()`
  :rtype: float
 %End
 
@@ -173,8 +173,8 @@ class QgsRenderContext
 %Docstring
  Returns true if vector selections should be shown in the rendered map
  :return: true if selections should be shown
-.. seealso:: setShowSelection
-.. seealso:: selectionColor
+.. seealso:: :py:func:`setShowSelection`
+.. seealso:: :py:func:`selectionColor`
 .. versionadded:: 2.4
  :rtype: bool
 %End
@@ -203,14 +203,14 @@ Sets coordinate transformation.
  Sets the scaling factor for the render to convert painter units
  to physical sizes. This should usually be equal to the number of pixels
  per millimeter.
-.. seealso:: scaleFactor()
+.. seealso:: :py:func:`scaleFactor()`
 %End
 
     void setRendererScale( double scale );
 %Docstring
  Sets the renderer map scale. This should match the desired scale denominator
  for the rendered map, eg 1000.0 for a 1:1000 map render.
-.. seealso:: rendererScale()
+.. seealso:: :py:func:`rendererScale()`
 %End
 
     void setPainter( QPainter *p );
@@ -218,7 +218,7 @@ Sets coordinate transformation.
  Sets the destination QPainter for the render operation. Ownership of the painter
  is not transferred and the QPainter destination must stay alive for the duration
  of any rendering operations.
-.. seealso:: painter()
+.. seealso:: :py:func:`painter()`
 %End
 
     void setForceVectorOutput( bool force );
@@ -229,8 +229,8 @@ Sets coordinate transformation.
 %Docstring
  Sets whether vector selections should be shown in the rendered map
  \param showSelection set to true if selections should be shown
-.. seealso:: showSelection
-.. seealso:: setSelectionColor
+.. seealso:: :py:func:`showSelection`
+.. seealso:: :py:func:`setSelectionColor`
 .. versionadded:: 2.4
 %End
 
@@ -253,7 +253,7 @@ Added in QGIS v2.4
 %Docstring
  Sets the expression context. This context is used for all expression evaluation
  associated with this render context.
-.. seealso:: expressionContext()
+.. seealso:: :py:func:`expressionContext()`
 .. versionadded:: 2.12
 %End
 
@@ -261,7 +261,7 @@ Added in QGIS v2.4
 %Docstring
  Gets the expression context. This context should be used for all expression evaluation
  associated with this render context.
-.. seealso:: setExpressionContext()
+.. seealso:: :py:func:`setExpressionContext()`
 .. versionadded:: 2.12
  :rtype: QgsExpressionContext
 %End
@@ -282,7 +282,7 @@ Sets pointer to original (unsegmentized) geometry
  Set a filter feature provider used for additional filtering of rendered features.
  \param ffp the filter feature provider
 .. versionadded:: 2.14
-.. seealso:: featureFilterProvider()
+.. seealso:: :py:func:`featureFilterProvider()`
 %End
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
@@ -290,7 +290,7 @@ Sets pointer to original (unsegmentized) geometry
  Get the filter feature provider used for additional filtering of rendered features.
  :return: the filter feature provider
 .. versionadded:: 2.14
-.. seealso:: setFeatureFilterProvider()
+.. seealso:: :py:func:`setFeatureFilterProvider()`
  :rtype: QgsFeatureFilterProvider
 %End
 
@@ -322,7 +322,7 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
  Converts a size from the specified units to painter units (pixels). The conversion respects the limits
  specified by the optional scale parameter.
 .. versionadded:: 3.0
-.. seealso:: convertToMapUnits()
+.. seealso:: :py:func:`convertToMapUnits()`
  :rtype: float
 %End
 
@@ -331,7 +331,7 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
  Converts a size from the specified units to map units. The conversion respects the limits
  specified by the optional scale parameter.
 .. versionadded:: 3.0
-.. seealso:: convertToPainterUnits()
+.. seealso:: :py:func:`convertToPainterUnits()`
  :rtype: float
 %End
 
@@ -339,7 +339,7 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 %Docstring
  Converts a size from map units to the specified units.
 .. versionadded:: 3.0
-.. seealso:: convertToMapUnits()
+.. seealso:: :py:func:`convertToMapUnits()`
  :rtype: float
 %End
 

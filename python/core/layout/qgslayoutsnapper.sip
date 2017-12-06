@@ -33,53 +33,53 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
     void setSnapTolerance( const int snapTolerance );
 %Docstring
  Sets the snap ``tolerance`` (in pixels) to use when snapping.
-.. seealso:: snapTolerance()
+.. seealso:: :py:func:`snapTolerance()`
 %End
 
     int snapTolerance() const;
 %Docstring
  Returns the snap tolerance (in pixels) to use when snapping.
-.. seealso:: setSnapTolerance()
+.. seealso:: :py:func:`setSnapTolerance()`
  :rtype: int
 %End
 
     bool snapToGrid() const;
 %Docstring
  Returns true if snapping to grid is enabled.
-.. seealso:: setSnapToGrid()
+.. seealso:: :py:func:`setSnapToGrid()`
  :rtype: bool
 %End
 
     void setSnapToGrid( bool enabled );
 %Docstring
  Sets whether snapping to grid is ``enabled``.
-.. seealso:: snapToGrid()
+.. seealso:: :py:func:`snapToGrid()`
 %End
 
     bool snapToGuides() const;
 %Docstring
  Returns true if snapping to guides is enabled.
-.. seealso:: setSnapToGuides()
+.. seealso:: :py:func:`setSnapToGuides()`
  :rtype: bool
 %End
 
     void setSnapToGuides( bool enabled );
 %Docstring
  Sets whether snapping to guides is ``enabled``.
-.. seealso:: snapToGuides()
+.. seealso:: :py:func:`snapToGuides()`
 %End
 
     bool snapToItems() const;
 %Docstring
  Returns true if snapping to items is enabled.
-.. seealso:: setSnapToItems()
+.. seealso:: :py:func:`setSnapToItems()`
  :rtype: bool
 %End
 
     void setSnapToItems( bool enabled );
 %Docstring
  Sets whether snapping to items is ``enabled``.
-.. seealso:: snapToItems()
+.. seealso:: :py:func:`snapToItems()`
 %End
 
     QPointF snapPoint( QPointF point, double scaleFactor, bool &snapped /Out/, QGraphicsLineItem *horizontalSnapLine = 0,
@@ -99,7 +99,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
 
  A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
 
-.. seealso:: snapRect()
+.. seealso:: :py:func:`snapRect()`
  :rtype: QPointF
 %End
 
@@ -123,7 +123,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
 
  A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
 
-.. seealso:: snapPoint()
+.. seealso:: :py:func:`snapPoint()`
  :rtype: QRectF
 %End
 
@@ -140,7 +140,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  If snapToGrid() is disabled, this method will return the point
  unchanged.
 
-.. seealso:: snapPointsToGrid()
+.. seealso:: :py:func:`snapPointsToGrid()`
  :rtype: QPointF
 %End
 
@@ -158,7 +158,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  The returned value is the smallest delta which the points need to be shifted by in order to align
  one of the points to the grid.
 
-.. seealso:: snapPointToGrid()
+.. seealso:: :py:func:`snapPointToGrid()`
  :rtype: QPointF
 %End
 
@@ -174,7 +174,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  If snapToGuides() is disabled, this method will return the point
  unchanged.
 
-.. seealso:: snapPointsToGuides()
+.. seealso:: :py:func:`snapPointsToGuides()`
  :rtype: float
 %End
 
@@ -192,7 +192,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  The returned value is the smallest delta which the points need to be shifted by in order to align
  one of the points to a guide.
 
-.. seealso:: snapPointToGuides()
+.. seealso:: :py:func:`snapPointToGuides()`
  :rtype: float
 %End
 
@@ -214,7 +214,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  If ``snapLine`` is specified, the snapper will automatically show (or hide) the snap line
  based on the result of the snap, and position it at the correct location for the snap.
 
-.. seealso:: snapPointsToItems()
+.. seealso:: :py:func:`snapPointsToItems()`
  :rtype: float
 %End
 
@@ -233,7 +233,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
  The returned value is the smallest delta which the points need to be shifted by in order to align
  one of the points to an item bound.
 
-.. seealso:: snapPointToItems()
+.. seealso:: :py:func:`snapPointToItems()`
  :rtype: float
 %End
 
@@ -241,7 +241,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
 
 %Docstring
  Stores the snapper's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 
@@ -249,7 +249,7 @@ class QgsLayoutSnapper: QgsLayoutSerializableObject
 
 %Docstring
  Sets the snapper's state from a DOM element. snapperElement is the DOM node corresponding to the snapper.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 

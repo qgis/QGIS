@@ -51,28 +51,28 @@ class QgsFieldModel : QAbstractItemModel
     void setAllowExpression( bool allowExpression );
 %Docstring
  Sets whether custom expressions are accepted and displayed in the model.
-.. seealso:: allowExpression()
-.. seealso:: setExpression()
+.. seealso:: :py:func:`allowExpression()`
+.. seealso:: :py:func:`setExpression()`
 %End
 
     bool allowExpression();
 %Docstring
  Returns true if the model allows custom expressions to be created and displayed.
-.. seealso:: setAllowExpression()
+.. seealso:: :py:func:`setAllowExpression()`
  :rtype: bool
 %End
 
     void setAllowEmptyFieldName( bool allowEmpty );
 %Docstring
  Sets whether an optional empty field ("not set") option is present in the model.
-.. seealso:: allowEmptyFieldName()
+.. seealso:: :py:func:`allowEmptyFieldName()`
 .. versionadded:: 3.0
 %End
 
     bool allowEmptyFieldName() const;
 %Docstring
  Returns true if the model allows the empty field ("not set") choice.
-.. seealso:: setAllowEmptyFieldName()
+.. seealso:: :py:func:`setAllowEmptyFieldName()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -87,22 +87,22 @@ class QgsFieldModel : QAbstractItemModel
     void setExpression( const QString &expression );
 %Docstring
  Sets a single expression to be added after the fields at the end of the model.
-.. seealso:: setAllowExpression()
-.. seealso:: allowExpression()
-.. seealso:: removeExpression()
+.. seealso:: :py:func:`setAllowExpression()`
+.. seealso:: :py:func:`allowExpression()`
+.. seealso:: :py:func:`removeExpression()`
 %End
 
     void removeExpression();
 %Docstring
  Removes any custom expression from the model.
-.. seealso:: setExpression()
-.. seealso:: allowExpression()
+.. seealso:: :py:func:`setExpression()`
+.. seealso:: :py:func:`allowExpression()`
 %End
 
     QgsVectorLayer *layer();
 %Docstring
  Returns the layer associated with the model.
-.. seealso:: setLayer()
+.. seealso:: :py:func:`setLayer()`
  :rtype: QgsVectorLayer
 %End
 
@@ -122,7 +122,7 @@ class QgsFieldModel : QAbstractItemModel
     void setLayer( QgsVectorLayer *layer );
 %Docstring
  Set the layer from which fields are displayed.
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
 %End
 
   protected slots:

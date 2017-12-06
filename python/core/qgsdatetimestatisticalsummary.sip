@@ -51,7 +51,7 @@ class QgsDateTimeStatisticalSummary
 %Docstring
  Returns flags which specify which statistics will be calculated. Some statistics
  are always calculated (e.g., count).
-.. seealso:: setStatistics
+.. seealso:: :py:func:`setStatistics`
  :rtype: Statistics
 %End
 
@@ -60,7 +60,7 @@ class QgsDateTimeStatisticalSummary
  Sets flags which specify which statistics will be calculated. Some statistics
  are always calculated (e.g., count).
  \param stats flags for statistics to calculate
-.. seealso:: statistics
+.. seealso:: :py:func:`statistics`
 %End
 
     void reset();
@@ -73,7 +73,7 @@ class QgsDateTimeStatisticalSummary
  Calculates summary statistics for a list of variants. Any non-datetime variants will be
  ignored.
  \param values list of variants
-.. seealso:: addValue()
+.. seealso:: :py:func:`addValue()`
 %End
 
     void addValue( const QVariant &value );
@@ -91,15 +91,15 @@ class QgsDateTimeStatisticalSummary
 
    finalize() must be called after adding the final value and before
  retrieving calculated statistics.
-.. seealso:: calculate()
-.. seealso:: finalize()
+.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`finalize()`
 %End
 
     void finalize();
 %Docstring
  Must be called after adding all datetimes with addValue() and before retrieving
  any calculated datetime statistics.
-.. seealso:: addValue()
+.. seealso:: :py:func:`addValue()`
 %End
 
     QVariant statistic( QgsDateTimeStatisticalSummary::Statistic stat ) const;

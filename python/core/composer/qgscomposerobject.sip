@@ -120,7 +120,7 @@ class QgsComposerObject: QObject, QgsExpressionContextGenerator
 %Docstring
  Returns a reference to the object's property collection, used for data defined overrides.
 .. versionadded:: 3.0
-.. seealso:: setDataDefinedProperties()
+.. seealso:: :py:func:`setDataDefinedProperties()`
  :rtype: QgsPropertyCollection
 %End
 
@@ -130,7 +130,7 @@ class QgsComposerObject: QObject, QgsExpressionContextGenerator
  Sets the objects's property collection, used for data defined overrides.
  \param collection property collection. Existing properties will be replaced.
 .. versionadded:: 3.0
-.. seealso:: dataDefinedProperties()
+.. seealso:: :py:func:`dataDefinedProperties()`
 %End
 
     void setCustomProperty( const QString &key, const QVariant &value );
@@ -138,9 +138,9 @@ class QgsComposerObject: QObject, QgsExpressionContextGenerator
  Set a custom property for the object.
  \param key property key. If a property with the same key already exists it will be overwritten.
  \param value property value
-.. seealso:: customProperty()
-.. seealso:: removeCustomProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`customProperties()`
 .. versionadded:: 2.12
 %End
 
@@ -150,9 +150,9 @@ class QgsComposerObject: QObject, QgsExpressionContextGenerator
  \param key property key
  \param defaultValue default value to return if property with matching key does not exist
  :return: value of matching property
-.. seealso:: setCustomProperty()
-.. seealso:: removeCustomProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`customProperties()`
 .. versionadded:: 2.12
  :rtype: QVariant
 %End
@@ -161,18 +161,18 @@ class QgsComposerObject: QObject, QgsExpressionContextGenerator
 %Docstring
  Remove a custom property from the object.
  \param key property key
-.. seealso:: setCustomProperty()
-.. seealso:: customProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperties()`
 .. versionadded:: 2.12
 %End
 
     QStringList customProperties() const;
 %Docstring
  Return list of keys stored in custom properties for the object.
-.. seealso:: setCustomProperty()
-.. seealso:: customProperty()
-.. seealso:: removeCustomProperty()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
 .. versionadded:: 2.12
  :rtype: list of str
 %End
