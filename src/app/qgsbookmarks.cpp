@@ -234,15 +234,15 @@ void QgsBookmarks::zoomToBookmark()
   double ymin = index.sibling( index.row(), 4 ).data().toDouble();
   double xmax = index.sibling( index.row(), 5 ).data().toDouble();
   double ymax = index.sibling( index.row(), 6 ).data().toDouble();
-  int srid = index.sibling( index.row(), 7 ).data().toInt();
+  QString authid = index.sibling( index.row(), 7 ).data().toString();
 
   QgsRectangle rect = QgsRectangle( xmin, ymin, xmax, ymax );
 
   // backwards compatibility, older version had -1 in the srid column
-  if ( srid > 0 &&
-       srid != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().srsid() )
+  if ( ! authid.isEmpty( ) &&
+       authid != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid() )
   {
-    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromSrsId( srid ),
+    QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid ),
                                QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() );
     rect = ct.transform( rect );
     if ( rect.isEmpty() )
