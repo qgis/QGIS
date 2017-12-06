@@ -45,6 +45,7 @@ my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
 
 my $COMMENT = '';
+my $COMMENT_PARAM_LIST = 0;
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
@@ -125,7 +126,17 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
     # replace \returns with :return:
-    $line =~ s/\\return(s)?/\n :return:/g;
+    $line =~ s/\\return(s)?/\n :return:/;
+
+    if ( $line =~ m/\\param / ){
+        if ( $COMMENT_PARAM_LIST == 0 )
+        {
+            $line = "\n$line";
+        }
+        $COMMENT_PARAM_LIST = 1;
+        $line =~ s/\\param (\w+)\b/ :param $1:/g;
+    }
+
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
@@ -283,6 +294,7 @@ sub fix_annotations {
 sub detect_comment_block{
     my %args = ( strict_mode => STRICT, @_ );
     # dbg_info("detect comment strict:" . $args{strict_mode} );
+    $COMMENT_PARAM_LIST = 0;
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
         dbg_info("found comment block");
         do {no warnings 'uninitialized';
@@ -684,6 +696,7 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $SIP_RUN == 0 ){
         if ( $LINE =~ m/^\s*\/\// ){
             if ($LINE =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
+                $COMMENT_PARAM_LIST = 0;
                 $COMMENT = processDoxygenLine( $1 );
                 $COMMENT =~ s/\n+$//;
             }
@@ -950,7 +963,7 @@ while ($LINE_IDX < $LINE_COUNT){
                 }
             }
             if ( $RETURN_TYPE ne '' ){
-                write_output("CM3", " :rtype: $RETURN_TYPE\n");
+                write_output("CM3", "\n :rtype: $RETURN_TYPE\n");
             }
             write_output("CM4", "%End\n");
         }
