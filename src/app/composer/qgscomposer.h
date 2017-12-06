@@ -489,10 +489,10 @@ class QgsComposer: public QMainWindow, private Ui::QgsComposerBase
     QgsPanelWidget *createItemWidget( QgsComposerItem *item );
 
     /*Saves image to file, possibly using format specific options (e.g. LZW compression for tiff)
-        @param img the image to save
-        @param imageFileName output file path
-        @param imageFormat format string
-        @param return true in case of success*/
+        \param img the image to save
+        \param imageFileName output file path
+        \param imageFormat format string
+        \param return true in case of success*/
     static bool saveImage( const QImage &img, const QString &imageFilename, const QString &imageFormat );
 
     QgsAppComposerInterface *mInterface = nullptr;

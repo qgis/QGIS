@@ -97,7 +97,7 @@ destructor
     QString header( const QString &name ) const;
 %Docstring
  Return the header value
- @param name of the header
+ \param name of the header
  @return the header value or an empty string
  :rtype: str
 %End
@@ -105,8 +105,8 @@ destructor
     void setHeader( const QString &name, const QString &value );
 %Docstring
  Set an header
- @param name
- @param value
+ \param name
+ \param value
 %End
 
     QMap<QString, QString> headers() const;
@@ -119,7 +119,7 @@ destructor
     void removeHeader( const QString &name );
 %Docstring
  Remove an header
- @param name
+ \param name
 %End
 
     virtual QByteArray data() const;
