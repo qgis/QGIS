@@ -35,7 +35,7 @@ class GUI_EXPORT QgsErrorDialog: public QDialog, private Ui::QgsErrorDialogBase
   public:
 
     /**
-     * @brief QgsErrorDialog constructor for QgsErrorDialog
+     * Constructor for QgsErrorDialog
      */
     QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 

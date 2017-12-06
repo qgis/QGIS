@@ -60,7 +60,7 @@ class GUI_EXPORT QgsDataSourceManagerDialog : public QgsOptionsDialogBase, priva
     ~QgsDataSourceManagerDialog();
 
     /**
-     * @brief openPage open a given page in the dialog
+     * Open a given page in the dialog
      * \param pageName the page name, usually the provider name or "browser" (for the browser panel)
      *        or "ogr" (vector layers) or "raster" (raster layers)
      */

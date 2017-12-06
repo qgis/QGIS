@@ -25,7 +25,7 @@ class QgsEncodingFileDialog: QFileDialog
                            const QString &caption = QString(), const QString &directory = QString(),
                            const QString &filter = QString(), const QString &encoding = QString() );
 %Docstring
- QgsEncodingFileDialog constructor for QgsEncodingFileDialog
+ Constructor for QgsEncodingFileDialog
 %End
     QString encoding() const;
 %Docstring
