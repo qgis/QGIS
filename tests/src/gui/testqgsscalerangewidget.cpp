@@ -32,7 +32,7 @@
  * @ingroup UnitTests
  * This is a unit test for the scale range widget
  *
- * @see QgsScaleRangeWidget
+ * \see QgsScaleRangeWidget
  */
 class TestQgsScaleRangeWidget : public QObject
 {
