@@ -735,7 +735,7 @@ class QgsLayoutItem : QgsLayoutObject, QGraphicsRectItem, QgsLayoutUndoObjectInt
 %Docstring
  Draws a debugging rectangle of the item's current bounds within the specified
  painter.
- @param painter destination QPainter
+ \param painter destination QPainter
 %End
 
     virtual void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;

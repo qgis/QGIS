@@ -316,7 +316,7 @@ namespace QgsServerProjectUtils
   QStringList wfsLayerIds( const QgsProject &project );
 %Docstring
  Returns the Layer ids list defined in a QGIS project as published in WFS.
- @param project the QGIS project
+ \param project the QGIS project
  @return the Layer ids list.
  :rtype: list of str
 %End
@@ -325,8 +325,8 @@ namespace QgsServerProjectUtils
   int wfsLayerPrecision( const QgsProject &project, const QString &layerId );
 %Docstring
  Returns the Layer precision defined in a QGIS project for the WFS GetFeature.
- @param project the QGIS project
- @param layerId the layer id in the project
+ \param project the QGIS project
+ \param layerId the layer id in the project
  @return the layer precision for WFS GetFeature.
  :rtype: int
 %End
@@ -334,7 +334,7 @@ namespace QgsServerProjectUtils
   QStringList wfstUpdateLayerIds( const QgsProject &project );
 %Docstring
  Returns the Layer ids list defined in a QGIS project as published as WFS-T with update capabilities.
- @param project the QGIS project
+ \param project the QGIS project
  @return the Layer ids list.
  :rtype: list of str
 %End
@@ -342,7 +342,7 @@ namespace QgsServerProjectUtils
   QStringList wfstInsertLayerIds( const QgsProject &project );
 %Docstring
  Returns the Layer ids list defined in a QGIS project as published as WFS-T with insert capabilities.
- @param project the QGIS project
+ \param project the QGIS project
  @return the Layer ids list.
  :rtype: list of str
 %End
@@ -350,7 +350,7 @@ namespace QgsServerProjectUtils
   QStringList wfstDeleteLayerIds( const QgsProject &project );
 %Docstring
  Returns the Layer ids list defined in a QGIS project as published as WFS-T with delete capabilities.
- @param project the QGIS project
+ \param project the QGIS project
  @return the Layer ids list.
  :rtype: list of str
 %End

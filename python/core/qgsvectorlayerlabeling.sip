@@ -98,9 +98,9 @@ Try to create instance of an implementation based on the XML data
 %Docstring
  Writes a TextSymbolizer element contents based on the provided labeling settings
  writeTextSymbolizer
- @param parent the node that will have the text symbolizer element added to it
- @param settings the settings getting translated to a TextSymbolizer
- @param props a open ended set of properties that can drive/inform the SLD encoding
+ \param parent the node that will have the text symbolizer element added to it
+ \param settings the settings getting translated to a TextSymbolizer
+ \param props a open ended set of properties that can drive/inform the SLD encoding
 %End
 
   private:

@@ -214,7 +214,7 @@ class QgsBrowserTreeFilterProxyModel : public QSortFilterProxyModel
 
     /**
       * Constructor for QgsBrowserTreeFilterProxyModel
-      * @param parent parent widget
+      * \param parent parent widget
       */
     explicit QgsBrowserTreeFilterProxyModel( QObject *parent );
     //! Set the browser model

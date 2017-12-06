@@ -36,7 +36,7 @@ class QgsWidgetStateHelper : public QObject
 
     /**
      * QgsWidgetStateHelper
-     * @param parent Parent object
+     * \param parent Parent object
      */
     explicit QgsWidgetStateHelper( QObject *parent = 0 );
 
