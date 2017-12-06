@@ -35,6 +35,13 @@ class QgsLayoutUndoStack;
  * \ingroup core
  * \class QgsLayout
  * \brief Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
+ *
+ * While the raw QGraphicsScene API can be used to render the contents of a QgsLayout
+ * to a QPainter, it is recommended to instead use a QgsLayoutExporter to handle rendering
+ * layouts instead. QgsLayoutExporter automatically takes care of the intracacies of
+ * preparing the layout and paint devices for correct exports, respecting various
+ * user settings such as the layout context DPI.
+ *
  * \since QGIS 3.0
  */
 class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContextGenerator, public QgsLayoutUndoObjectInterface
