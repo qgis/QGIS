@@ -603,6 +603,67 @@ tests:
         name: expected/merge_lines.gml
         type: vector
 
+  - algorithm: native:mergevectorlayers
+    name: Merge points
+    params:
+      LAYERS:
+        params:
+        - name: custom/points.shp
+          type: vector
+        - name: custom/pointszm.shp
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_points.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            path: skip
+
+  - algorithm: native:mergevectorlayers
+    name: Merge polygons
+    params:
+      LAYERS:
+        params:
+        - name: multipolys.gml
+          type: vector
+        - name: polys.gml
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_polys.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            path: skip
+
+  - algorithm: native:mergevectorlayers
+    name: Merge polygons with CRS
+    params:
+      CRS: EPSG:3785
+      LAYERS:
+        params:
+        - name: multipolys.gml
+          type: vector
+        - name: polys.gml
+          type: vector
+        type: multi
+    results:
+      OUTPUT:
+        name: expected/merged_polys_crs.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+            layer: skip
+            path: skip
+          geometry:
+            precision: 0
+
   - algorithm: native:multiparttosingleparts
     name: Multiparts to singleparts
     params:
