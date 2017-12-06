@@ -420,6 +420,32 @@ QRectF QgsLayout::layoutBounds( bool ignorePages, double margin ) const
 
 }
 
+QRectF QgsLayout::pageItemBounds( int page, bool visibleOnly ) const
+{
+  //start with an empty rectangle
+  QRectF bounds;
+
+  //add all QgsLayoutItems on page
+  const QList<QGraphicsItem *> itemList = items();
+  for ( QGraphicsItem *item : itemList )
+  {
+    const QgsLayoutItem *layoutItem = dynamic_cast<const QgsLayoutItem *>( item );
+    if ( layoutItem && layoutItem->type() != QgsLayoutItemRegistry::LayoutPage && layoutItem->page() == page )
+    {
+      if ( visibleOnly && !layoutItem->isVisible() )
+        continue;
+
+      //expand bounds with current item's bounds
+      if ( bounds.isValid() )
+        bounds = bounds.united( item->sceneBoundingRect() );
+      else
+        bounds = item->sceneBoundingRect();
+    }
+  }
+
+  return bounds;
+}
+
 void QgsLayout::addLayoutItem( QgsLayoutItem *item )
 {
   addLayoutItemPrivate( item );

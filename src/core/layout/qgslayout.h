@@ -427,8 +427,22 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \param ignorePages set to true to ignore page items
      * \param margin optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
      * \returns layout bounds, in layout units.
+     *
+     * \see pageItemBounds()
      */
     QRectF layoutBounds( bool ignorePages = false, double margin = 0.0 ) const;
+
+    /**
+     * Returns the bounding box of the items contained on a specified \a page.
+     * A page number of 0 represents the first page in the layout.
+     *
+     * Set \a visibleOnly to true to only include visible items.
+     *
+     * The returned bounds are in layout units.
+     *
+     * \see layoutBounds()
+     */
+    QRectF pageItemBounds( int page, bool visibleOnly = false ) const;
 
     /**
      * Adds an \a item to the layout. This should be called instead of the base class addItem()

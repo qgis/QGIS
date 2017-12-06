@@ -306,25 +306,23 @@ void TestQgsLayout::bounds()
   QGSCOMPARENEAR( layoutBoundsNoPage.left(), 9.85, 0.01 );
   QGSCOMPARENEAR( layoutBoundsNoPage.top(), 49.79, 0.01 );
 
-#if 0
-  QRectF page1Bounds = composition->pageItemBounds( 0, true );
+  QRectF page1Bounds = l.pageItemBounds( 0, true );
   QGSCOMPARENEAR( page1Bounds.height(), 150.36, 0.01 );
   QGSCOMPARENEAR( page1Bounds.width(), 155.72, 0.01 );
   QGSCOMPARENEAR( page1Bounds.left(), 54.43, 0.01 );
   QGSCOMPARENEAR( page1Bounds.top(), 49.79, 0.01 );
 
-  QRectF page2Bounds = composition->pageItemBounds( 1, true );
+  QRectF page2Bounds = l.pageItemBounds( 1, true );
   QGSCOMPARENEAR( page2Bounds.height(), 100.30, 0.01 );
   QGSCOMPARENEAR( page2Bounds.width(), 50.30, 0.01 );
   QGSCOMPARENEAR( page2Bounds.left(), 209.85, 0.01 );
   QGSCOMPARENEAR( page2Bounds.top(), 249.85, 0.01 );
 
-  QRectF page2BoundsWithHidden = composition->pageItemBounds( 1, false );
+  QRectF page2BoundsWithHidden = l.pageItemBounds( 1, false );
   QGSCOMPARENEAR( page2BoundsWithHidden.height(), 120.30, 0.01 );
   QGSCOMPARENEAR( page2BoundsWithHidden.width(), 250.30, 0.01 );
   QGSCOMPARENEAR( page2BoundsWithHidden.left(), 9.85, 0.01 );
   QGSCOMPARENEAR( page2BoundsWithHidden.top(), 249.85, 0.01 );
-#endif
 }
 
 void TestQgsLayout::addItem()
