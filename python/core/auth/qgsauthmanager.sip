@@ -738,19 +738,19 @@ The display name of the Authentication Manager
     void messageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO ) const;
 %Docstring
  Custom logging signal to relay to console output and QgsMessageLog
-.. seealso:: :py:class:`QgsMessageLog`
  \param message Message to send
  \param tag Associated tag (title)
  \param level Message log level
+.. seealso:: :py:class:`QgsMessageLog`
 %End
 
     void passwordHelperMessageOut( const QString &message, const QString &tag = QgsAuthManager::AUTH_MAN_TAG, QgsAuthManager::MessageLevel level = QgsAuthManager::INFO );
 %Docstring
  Custom logging signal to inform the user about master password <-> password manager interactions
- @see QgsMessageLog
  \param message Message to send
  \param tag Associated tag (title)
  \param level Message log level
+.. seealso:: :py:class:`QgsMessageLog`
 %End
 
 
