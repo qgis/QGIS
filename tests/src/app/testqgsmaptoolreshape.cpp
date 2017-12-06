@@ -1,7 +1,7 @@
 /***************************************************************************
      testqgsmaptoolreshape.cpp
      --------------------------------
-    Date                 : 2017-121
+    Date                 : 2017-12-1
     Copyright            : (C) 2017 by Paul Blottiere
     Email                : paul.blottiere@oslandia.com
  ***************************************************************************
@@ -111,10 +111,10 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   tool0.reshape( vl.get() );
 
   f0 = vl->getFeature( 1 );
-  QCOMPARE( f0.geometry().asJson(), QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [1, 1], [1, 2], [2, 1]]}" ) );
+  QCOMPARE( f0.geometry().asWkt(), QStringLiteral( "LineString (0 0, 1 1, 1 2, 2 1)" ) );
 
   f1 = vl->getFeature( 2 );
-  QCOMPARE( f1.geometry().asJson(), QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [2, 1], [3, 2], [3, 3], [2, 2]]}" ) );
+  QCOMPARE( f1.geometry().asWkt(), QStringLiteral( "LineString (2 1, 3 2, 3 3, 2 2)" ) );
 
   vl->rollBack();
 
@@ -131,10 +131,10 @@ void TestQgsMapToolReshape::reshapeWithBindingLine()
   tool1.reshape( vl.get() );
 
   f0 = vl->getFeature( 1 );
-  QCOMPARE( f0.geometry().asJson(), QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [0, 0], [1, 1], [1, 2]]}" ) );
+  QCOMPARE( f0.geometry().asWkt(), QStringLiteral( "LineString (0 0, 1 1, 1 2)" ) );
 
   f1 = vl->getFeature( 2 );
-  QCOMPARE( f1.geometry().asJson(), QStringLiteral( "{\"type\": \"LineString\", \"coordinates\": [ [1, 2], [2, 1], [3, 2], [3, 3], [2, 2]]}" ) );
+  QCOMPARE( f1.geometry().asWkt(), QStringLiteral( "LineString (1 2, 2 1, 3 2, 3 3, 2 2)" ) );
 
   vl->rollBack();
 }
