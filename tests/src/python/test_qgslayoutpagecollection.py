@@ -250,9 +250,9 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.pageCount(), 3)
         self.assertEqual(new_page2.sizeWithUnits(), new_page.sizeWithUnits())
 
-    def testMaxPageWidth(self):
+    def testMaxPageWidthAndSize(self):
         """
-        Test calculating maximum page width
+        Test calculating maximum page width and size
         """
         p = QgsProject()
         l = QgsLayout(p)
@@ -263,18 +263,24 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         page.setPageSize('A4')
         collection.addPage(page)
         self.assertEqual(collection.maximumPageWidth(), 210.0)
+        self.assertEqual(collection.maximumPageSize().width(), 210.0)
+        self.assertEqual(collection.maximumPageSize().height(), 297.0)
 
         # add a second page
         page2 = QgsLayoutItemPage(l)
         page2.setPageSize('A3')
         collection.addPage(page2)
         self.assertEqual(collection.maximumPageWidth(), 297.0)
+        self.assertEqual(collection.maximumPageSize().width(), 297.0)
+        self.assertEqual(collection.maximumPageSize().height(), 420.0)
 
         # add a page with other units
         page3 = QgsLayoutItemPage(l)
         page3.setPageSize(QgsLayoutSize(100, 100, QgsUnitTypes.LayoutMeters))
         collection.addPage(page3)
         self.assertEqual(collection.maximumPageWidth(), 100000.0)
+        self.assertEqual(collection.maximumPageSize().width(), 100000.0)
+        self.assertEqual(collection.maximumPageSize().height(), 100000.0)
 
     def testReflow(self):
         """

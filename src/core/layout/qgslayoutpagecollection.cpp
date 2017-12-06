@@ -71,11 +71,28 @@ void QgsLayoutPageCollection::reflow()
 double QgsLayoutPageCollection::maximumPageWidth() const
 {
   double maxWidth = 0;
-  Q_FOREACH ( QgsLayoutItemPage *page, mPages )
+  for ( QgsLayoutItemPage *page : mPages )
   {
     maxWidth = std::max( maxWidth, mLayout->convertToLayoutUnits( page->pageSize() ).width() );
   }
   return maxWidth;
+}
+
+QSizeF QgsLayoutPageCollection::maximumPageSize() const
+{
+  double maxArea = 0;
+  QSizeF maxSize;
+  for ( QgsLayoutItemPage *page : mPages )
+  {
+    QSizeF pageSize = mLayout->convertToLayoutUnits( page->pageSize() );
+    double area = pageSize.width() * pageSize.height();
+    if ( area > maxArea )
+    {
+      maxArea = area;
+      maxSize = pageSize;
+    }
+  }
+  return maxSize;
 }
 
 int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const

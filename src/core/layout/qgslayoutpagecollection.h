@@ -229,8 +229,18 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     /**
      * Returns the maximum width of pages in the collection. The returned value is
      * in layout units.
+     *
+     * \see maximumPageSize()
      */
     double maximumPageWidth() const;
+
+    /**
+     * Returns the maximum size of any page in the collection, by area. The returned value
+     * is in layout units.
+     *
+     * \see maximumPageWidth()
+     */
+    QSizeF maximumPageSize() const;
 
     /**
      * Returns the page number corresponding to a \a point in the layout (in layout units).
