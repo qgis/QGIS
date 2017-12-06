@@ -34,24 +34,24 @@ class QgsColorSchemeRegistry
     void populateFromInstance();
 %Docstring
  Adds all color schemes from the global instance to this color scheme.
-.. seealso:: addDefaultSchemes
-.. seealso:: addColorScheme
+.. seealso:: :py:func:`addDefaultSchemes`
+.. seealso:: :py:func:`addColorScheme`
 %End
 
     void addDefaultSchemes();
 %Docstring
  Adds all default color schemes to this color scheme.
-.. seealso:: populateFromInstance
-.. seealso:: addColorScheme
-.. seealso:: addUserSchemes
+.. seealso:: :py:func:`populateFromInstance`
+.. seealso:: :py:func:`addColorScheme`
+.. seealso:: :py:func:`addUserSchemes`
 %End
 
     void addUserSchemes();
 %Docstring
  Creates schemes for all gpl palettes in the user's palettes folder.
-.. seealso:: populateFromInstance
-.. seealso:: addDefaultSchemes
-.. seealso:: addColorScheme
+.. seealso:: :py:func:`populateFromInstance`
+.. seealso:: :py:func:`addDefaultSchemes`
+.. seealso:: :py:func:`addColorScheme`
 %End
 
     void addColorScheme( QgsColorScheme *scheme /Transfer/ );
@@ -59,8 +59,8 @@ class QgsColorSchemeRegistry
  Adds a color scheme to the registry. Ownership of the scheme is transferred
  to the registry.
  \param scheme color scheme to add
-.. seealso:: populateFromInstance
-.. seealso:: removeColorScheme
+.. seealso:: :py:func:`populateFromInstance`
+.. seealso:: :py:func:`removeColorScheme`
 %End
 
     bool removeColorScheme( QgsColorScheme *scheme );
@@ -68,7 +68,7 @@ class QgsColorSchemeRegistry
  Removes all matching color schemes from the registry
  \param scheme color scheme to remove
  :return: true if scheme was found and removed
-.. seealso:: addColorScheme
+.. seealso:: :py:func:`addColorScheme`
  :rtype: bool
 %End
 

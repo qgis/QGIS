@@ -99,38 +99,38 @@ class QgsAbstractGeometry
     virtual QString geometryType() const = 0;
 %Docstring
  Returns a unique string representing the geometry type.
-.. seealso:: wkbType
-.. seealso:: wktTypeStr
+.. seealso:: :py:func:`wkbType`
+.. seealso:: :py:func:`wktTypeStr`
  :rtype: str
 %End
 
     QgsWkbTypes::Type wkbType() const;
 %Docstring
  Returns the WKB type of the geometry.
-.. seealso:: geometryType
-.. seealso:: wktTypeStr
+.. seealso:: :py:func:`geometryType`
+.. seealso:: :py:func:`wktTypeStr`
  :rtype: QgsWkbTypes.Type
 %End
 
     QString wktTypeStr() const;
 %Docstring
  Returns the WKT type string of the geometry.
-.. seealso:: geometryType
-.. seealso:: wkbType
+.. seealso:: :py:func:`geometryType`
+.. seealso:: :py:func:`wkbType`
  :rtype: str
 %End
 
     bool is3D() const;
 %Docstring
  Returns true if the geometry is 3D and contains a z-value.
-.. seealso:: isMeasure
+.. seealso:: :py:func:`isMeasure`
  :rtype: bool
 %End
 
     bool isMeasure() const;
 %Docstring
  Returns true if the geometry contains m values.
-.. seealso:: is3D
+.. seealso:: :py:func:`is3D`
  :rtype: bool
 %End
 
@@ -148,14 +148,14 @@ class QgsAbstractGeometry
 %Docstring
  Sets the geometry from a WKB string.
  After successful read the wkb argument will be at the position where the reading has stopped.
-.. seealso:: fromWkt
+.. seealso:: :py:func:`fromWkt`
  :rtype: bool
 %End
 
     virtual bool fromWkt( const QString &wkt ) = 0;
 %Docstring
  Sets the geometry from a WKT string.
-.. seealso:: fromWkb
+.. seealso:: :py:func:`fromWkb`
  :rtype: bool
 %End
 
@@ -163,10 +163,10 @@ class QgsAbstractGeometry
     virtual QByteArray asWkb() const = 0;
 %Docstring
  Returns a WKB representation of the geometry.
-.. seealso:: asWkt
-.. seealso:: asGML2
-.. seealso:: asGML3
-.. seealso:: asJson()
+.. seealso:: :py:func:`asWkt`
+.. seealso:: :py:func:`asGML2`
+.. seealso:: :py:func:`asGML3`
+.. seealso:: :py:func:`asJson()`
 .. versionadded:: 3.0
  :rtype: QByteArray
 %End
@@ -175,10 +175,10 @@ class QgsAbstractGeometry
 %Docstring
  Returns a WKT representation of the geometry.
  \param precision number of decimal places for coordinates
-.. seealso:: asWkb()
-.. seealso:: asGml2()
-.. seealso:: asGml3()
-.. seealso:: asJson()
+.. seealso:: :py:func:`asWkb()`
+.. seealso:: :py:func:`asGml2()`
+.. seealso:: :py:func:`asGml3()`
+.. seealso:: :py:func:`asJson()`
  :rtype: str
 %End
 
@@ -188,10 +188,10 @@ class QgsAbstractGeometry
  \param doc DOM document
  \param precision number of decimal places for coordinates
  \param ns XML namespace
-.. seealso:: asWkb()
-.. seealso:: asWkt()
-.. seealso:: asGml3()
-.. seealso:: asJson()
+.. seealso:: :py:func:`asWkb()`
+.. seealso:: :py:func:`asWkt()`
+.. seealso:: :py:func:`asGml3()`
+.. seealso:: :py:func:`asJson()`
  :rtype: QDomElement
 %End
 
@@ -201,10 +201,10 @@ class QgsAbstractGeometry
  \param doc DOM document
  \param precision number of decimal places for coordinates
  \param ns XML namespace
-.. seealso:: asWkb()
-.. seealso:: asWkt()
-.. seealso:: asGml2()
-.. seealso:: asJson()
+.. seealso:: :py:func:`asWkb()`
+.. seealso:: :py:func:`asWkt()`
+.. seealso:: :py:func:`asGml2()`
+.. seealso:: :py:func:`asJson()`
  :rtype: QDomElement
 %End
 
@@ -212,10 +212,10 @@ class QgsAbstractGeometry
 %Docstring
  Returns a GeoJSON representation of the geometry.
  \param precision number of decimal places for coordinates
-.. seealso:: asWkb()
-.. seealso:: asWkt()
-.. seealso:: asGml2()
-.. seealso:: asGml3()
+.. seealso:: :py:func:`asWkb()`
+.. seealso:: :py:func:`asWkt()`
+.. seealso:: :py:func:`asGml2()`
+.. seealso:: :py:func:`asGml3()`
  :rtype: str
 %End
 
@@ -321,8 +321,8 @@ class QgsAbstractGeometry
  \param position vertex id for position of inserted vertex
  \param vertex vertex to insert
  :return: true if insert was successful
-.. seealso:: moveVertex
-.. seealso:: deleteVertex
+.. seealso:: :py:func:`moveVertex`
+.. seealso:: :py:func:`deleteVertex`
  :rtype: bool
 %End
 
@@ -332,8 +332,8 @@ class QgsAbstractGeometry
  \param position vertex id for vertex to move
  \param newPos new position of vertex
  :return: true if move was successful
-.. seealso:: insertVertex
-.. seealso:: deleteVertex
+.. seealso:: :py:func:`insertVertex`
+.. seealso:: :py:func:`deleteVertex`
  :rtype: bool
 %End
 
@@ -342,32 +342,32 @@ class QgsAbstractGeometry
  Deletes a vertex within the geometry
  \param position vertex id for vertex to delete
  :return: true if delete was successful
-.. seealso:: insertVertex
-.. seealso:: moveVertex
+.. seealso:: :py:func:`insertVertex`
+.. seealso:: :py:func:`moveVertex`
  :rtype: bool
 %End
 
     virtual double length() const;
 %Docstring
  Returns the length of the geometry.
-.. seealso:: area()
-.. seealso:: perimeter()
+.. seealso:: :py:func:`area()`
+.. seealso:: :py:func:`perimeter()`
  :rtype: float
 %End
 
     virtual double perimeter() const;
 %Docstring
  Returns the perimeter of the geometry.
-.. seealso:: area()
-.. seealso:: length()
+.. seealso:: :py:func:`area()`
+.. seealso:: :py:func:`length()`
  :rtype: float
 %End
 
     virtual double area() const;
 %Docstring
  Returns the area of the geometry.
-.. seealso:: length()
-.. seealso:: perimeter()
+.. seealso:: :py:func:`length()`
+.. seealso:: :py:func:`perimeter()`
  :rtype: float
 %End
 
@@ -484,8 +484,8 @@ Returns the centroid of the geometry
     virtual int partCount() const = 0;
 %Docstring
  Returns count of parts contained in the geometry.
-.. seealso:: vertexCount
-.. seealso:: ringCount
+.. seealso:: :py:func:`vertexCount`
+.. seealso:: :py:func:`ringCount`
  :rtype: int
 %End
 
@@ -495,8 +495,8 @@ Returns the centroid of the geometry
  \param zValue initial z-value for all nodes
  :return: true on success
 .. versionadded:: 2.12
-.. seealso:: dropZValue()
-.. seealso:: addMValue()
+.. seealso:: :py:func:`dropZValue()`
+.. seealso:: :py:func:`addMValue()`
  :rtype: bool
 %End
 
@@ -506,8 +506,8 @@ Returns the centroid of the geometry
  \param mValue initial m-value for all nodes
  :return: true on success
 .. versionadded:: 2.12
-.. seealso:: dropMValue()
-.. seealso:: addZValue()
+.. seealso:: :py:func:`dropMValue()`
+.. seealso:: :py:func:`addZValue()`
  :rtype: bool
 %End
 
@@ -515,8 +515,8 @@ Returns the centroid of the geometry
 %Docstring
  Drops any z-dimensions which exist in the geometry.
  :return: true if Z values were present and have been removed
-.. seealso:: addZValue()
-.. seealso:: dropMValue()
+.. seealso:: :py:func:`addZValue()`
+.. seealso:: :py:func:`dropMValue()`
 .. versionadded:: 2.14
  :rtype: bool
 %End
@@ -525,8 +525,8 @@ Returns the centroid of the geometry
 %Docstring
  Drops any measure values which exist in the geometry.
  :return: true if m-values were present and have been removed
-.. seealso:: addMValue()
-.. seealso:: dropZValue()
+.. seealso:: :py:func:`addMValue()`
+.. seealso:: :py:func:`dropZValue()`
 .. versionadded:: 2.14
  :rtype: bool
 %End
@@ -553,7 +553,7 @@ Returns the centroid of the geometry
 %Docstring
  Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
  To create it, the geometry is default constructed and then the WKB is changed.
-.. seealso:: clone()
+.. seealso:: :py:func:`clone()`
 .. versionadded:: 3.0
 .. note::
 

@@ -54,7 +54,7 @@ Export the selected layer tree nodes to a QLR-XML document
   Layer definitions can be used to load a layer and styling all from a single file.
 
   This is a low-level routine that does not write layer tree.
-.. seealso:: exportLayerDefinition()
+.. seealso:: :py:func:`exportLayerDefinition()`
  :rtype: QDomDocument
 %End
 
@@ -62,7 +62,7 @@ Export the selected layer tree nodes to a QLR-XML document
 %Docstring
  Creates new layers from a layer definition document.
  This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
-.. seealso:: loadLayerDefinition()
+.. seealso:: :py:func:`loadLayerDefinition()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -70,7 +70,7 @@ Export the selected layer tree nodes to a QLR-XML document
 %Docstring
  Creates new layers from a layer definition file (.QLR)
  This is a low-level routine that does not resolve layer ID conflicts, dependencies and joins
-.. seealso:: loadLayerDefinition()
+.. seealso:: :py:func:`loadLayerDefinition()`
  :rtype: list of QgsMapLayer
 %End
 

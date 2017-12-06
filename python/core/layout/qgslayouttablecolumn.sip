@@ -35,7 +35,7 @@ class QgsLayoutTableColumn : QObject
  Writes the column's properties to xml for storage.
  \param columnElem an existing QDomElement in which to store the column's properties.
  \param doc QDomDocument for the destination xml.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 
@@ -43,7 +43,7 @@ class QgsLayoutTableColumn : QObject
 %Docstring
  Reads the column's properties from xml.
  \param columnElem a QDomElement holding the column's desired properties.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 
@@ -51,21 +51,21 @@ class QgsLayoutTableColumn : QObject
 %Docstring
  Returns the width for the column in mm,
  or 0 if column width is automatically calculated.
-.. seealso:: setWidth()
+.. seealso:: :py:func:`setWidth()`
  :rtype: float
 %End
 
     void setWidth( const double width );
 %Docstring
  Sets the width for a column in mm. Set the ``width`` to 0 if the column width is to be automatically calculated.
-.. seealso:: width()
+.. seealso:: :py:func:`width()`
 %End
 
     QString heading() const;
 %Docstring
  Returns the heading for a column, which is the value displayed in the column's
  header cell.
-.. seealso:: setHeading()
+.. seealso:: :py:func:`setHeading()`
  :rtype: str
 %End
 
@@ -73,15 +73,15 @@ class QgsLayoutTableColumn : QObject
 %Docstring
  Sets the ``heading`` for a column, which is the value displayed in the column's
  header cell.
-.. seealso:: heading()
+.. seealso:: :py:func:`heading()`
 %End
 
     Qt::AlignmentFlag hAlignment() const;
 %Docstring
  Returns the horizontal alignment for a column, which controls the alignment
  used for drawing column values within cells.
-.. seealso:: setHAlignment()
-.. seealso:: vAlignment()
+.. seealso:: :py:func:`setHAlignment()`
+.. seealso:: :py:func:`vAlignment()`
  :rtype: Qt.AlignmentFlag
 %End
 
@@ -89,16 +89,16 @@ class QgsLayoutTableColumn : QObject
 %Docstring
  Sets the horizontal ``alignment`` for a column, which controls the alignment
  used for drawing column values within cells.
-.. seealso:: hAlignment()
-.. seealso:: setVAlignment()
+.. seealso:: :py:func:`hAlignment()`
+.. seealso:: :py:func:`setVAlignment()`
 %End
 
     Qt::AlignmentFlag vAlignment() const;
 %Docstring
  Returns the vertical alignment for a column, which controls the alignment
  used for drawing column values within cells.
-.. seealso:: setVAlignment()
-.. seealso:: hAlignment()
+.. seealso:: :py:func:`setVAlignment()`
+.. seealso:: :py:func:`hAlignment()`
  :rtype: Qt.AlignmentFlag
 %End
 
@@ -106,8 +106,8 @@ class QgsLayoutTableColumn : QObject
 %Docstring
  Sets the vertical ``alignment`` for a column, which controls the alignment
  used for drawing column values within cells.
-.. seealso:: vAlignment()
-.. seealso:: setHAlignment()
+.. seealso:: :py:func:`vAlignment()`
+.. seealso:: :py:func:`setHAlignment()`
 %End
 
     QString attribute() const;
@@ -117,7 +117,7 @@ class QgsLayoutTableColumn : QObject
 .. note::
 
    only applicable when used in a QgsLayoutItemAttributeTable
-.. seealso:: setAttribute()
+.. seealso:: :py:func:`setAttribute()`
  :rtype: str
 %End
 
@@ -128,7 +128,7 @@ class QgsLayoutTableColumn : QObject
 .. note::
 
    only applicable when used in a QgsLayoutItemAttributeTable
-.. seealso:: attribute()
+.. seealso:: :py:func:`attribute()`
 %End
 
     Qt::SortOrder sortOrder() const;
@@ -138,8 +138,8 @@ class QgsLayoutTableColumn : QObject
 .. note::
 
    only applicable when used in a QgsLayoutItemAttributeTable
-.. seealso:: setSortOrder()
-.. seealso:: sortByRank()
+.. seealso:: :py:func:`setSortOrder()`
+.. seealso:: :py:func:`sortByRank()`
  :rtype: Qt.SortOrder
 %End
 
@@ -150,8 +150,8 @@ class QgsLayoutTableColumn : QObject
 .. note::
 
    only applicable when used in a QgsLayoutItemAttributeTable
-.. seealso:: sortOrder()
-.. seealso:: setSortByRank()
+.. seealso:: :py:func:`sortOrder()`
+.. seealso:: :py:func:`setSortByRank()`
 %End
 
     int sortByRank() const;
@@ -167,8 +167,8 @@ class QgsLayoutTableColumn : QObject
 .. note::
 
    only applicable when used in a QgsLayoutItemAttributeTable
-.. seealso:: setSortByRank()
-.. seealso:: sortOrder()
+.. seealso:: :py:func:`setSortByRank()`
+.. seealso:: :py:func:`sortOrder()`
  :rtype: int
 %End
 
@@ -184,8 +184,8 @@ class QgsLayoutTableColumn : QObject
 .. note::
 
    only applicable when used in a QgsLayoutItemAttributeTable
-.. seealso:: sortByRank()
-.. seealso:: setSortOrder()
+.. seealso:: :py:func:`sortByRank()`
+.. seealso:: :py:func:`setSortOrder()`
 %End
 
     QgsLayoutTableColumn *clone() /Factory/;

@@ -34,13 +34,13 @@ class QgsGradientStopEditor : QWidget
 %Docstring
  Sets the current ramp shown in the editor.
  \param ramp color ramp
-.. seealso:: gradientRamp()
+.. seealso:: :py:func:`gradientRamp()`
 %End
 
     QgsGradientColorRamp gradientRamp() const;
 %Docstring
  Returns the current ramp created by the editor.
-.. seealso:: setGradientRamp()
+.. seealso:: :py:func:`setGradientRamp()`
  :rtype: QgsGradientColorRamp
 %End
 
@@ -48,13 +48,13 @@ class QgsGradientStopEditor : QWidget
 %Docstring
  Sets the currently selected stop.
  \param index index of stop, where 0 corresponds to the first stop
-.. seealso:: selectedStop()
+.. seealso:: :py:func:`selectedStop()`
 %End
 
     QgsGradientStop selectedStop() const;
 %Docstring
  Returns details about the currently selected stop.
-.. seealso:: selectStop()
+.. seealso:: :py:func:`selectStop()`
  :rtype: QgsGradientStop
 %End
 
@@ -68,10 +68,10 @@ class QgsGradientStopEditor : QWidget
 %Docstring
  Sets the color for the current selected stop.
  \param color new stop color
-.. seealso:: setSelectedStopOffset()
-.. seealso:: setSelectedStopDetails()
-.. seealso:: setColor1()
-.. seealso:: setColor2()
+.. seealso:: :py:func:`setSelectedStopOffset()`
+.. seealso:: :py:func:`setSelectedStopDetails()`
+.. seealso:: :py:func:`setColor1()`
+.. seealso:: :py:func:`setColor2()`
 %End
 
     void setSelectedStopOffset( double offset );
@@ -79,8 +79,8 @@ class QgsGradientStopEditor : QWidget
  Sets the offset for the current selected stop. This slot has no effect if either the
  first or last stop is selected, as they cannot be repositioned.
  \param offset new stop offset
-.. seealso:: setSelectedStopColor()
-.. seealso:: setSelectedStopDetails()
+.. seealso:: :py:func:`setSelectedStopColor()`
+.. seealso:: :py:func:`setSelectedStopDetails()`
 %End
 
     void setSelectedStopDetails( const QColor &color, double offset );
@@ -88,8 +88,8 @@ class QgsGradientStopEditor : QWidget
  Sets the color and offset for the current selected stop.
  \param color new stop color
  \param offset new stop offset
-.. seealso:: setSelectedStopColor()
-.. seealso:: setSelectedStopOffset()
+.. seealso:: :py:func:`setSelectedStopColor()`
+.. seealso:: :py:func:`setSelectedStopOffset()`
 %End
 
     void deleteSelectedStop();
@@ -102,16 +102,16 @@ class QgsGradientStopEditor : QWidget
 %Docstring
  Sets the color for the first stop.
  \param color new stop color
-.. seealso:: setColor2()
-.. seealso:: setSelectedStopColor()
+.. seealso:: :py:func:`setColor2()`
+.. seealso:: :py:func:`setSelectedStopColor()`
 %End
 
     void setColor2( const QColor &color );
 %Docstring
  Sets the color for the last stop.
  \param color new stop color
-.. seealso:: setColor1()
-.. seealso:: setSelectedStopColor()
+.. seealso:: :py:func:`setColor1()`
+.. seealso:: :py:func:`setSelectedStopColor()`
 %End
 
   signals:

@@ -294,7 +294,7 @@ Current time stamp of data source
 %Docstring
  Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
  By default providers are not editable. Use setEditable() method to enable/disable editing.
-.. seealso:: setEditable(), writeBlock()
+.. seealso:: :py:func:`setEditable()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -309,7 +309,7 @@ Current time stamp of data source
  the underlying data source into editing mode, so it is necessary to check the return
  value whether the operation was successful.
  :return: true if the switch to/from editing mode was successful
-.. seealso:: isEditable(), writeBlock()
+.. seealso:: :py:func:`isEditable()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -332,7 +332,7 @@ Current time stamp of data source
 
  Writing is supported only by some data providers. Provider has to be in editing mode
  in order to allow write operations.
-.. seealso:: isEditable(), setEditable()
+.. seealso:: :py:func:`isEditable()`
  :return: true on success
 .. versionadded:: 3.0
  :rtype: bool
@@ -413,7 +413,7 @@ Remove dataset
     virtual int stepWidth() const;
 %Docstring
  Step width for raster iterations.
-.. seealso:: stepHeight()
+.. seealso:: :py:func:`stepHeight()`
 .. versionadded:: 3.0
  :rtype: int
 %End
@@ -421,7 +421,7 @@ Remove dataset
     virtual int stepHeight() const;
 %Docstring
  Step height for raster iterations.
-.. seealso:: stepWidth()
+.. seealso:: :py:func:`stepWidth()`
 .. versionadded:: 3.0
  :rtype: int
 %End

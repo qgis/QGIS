@@ -43,8 +43,8 @@ class QgsLayoutManager : QObject
  Adds a composition to the manager. Ownership of the composition is transferred to the manager.
  Returns true if the addition was successful, or false if the composition could not be added (eg
  as a result of a duplicate composition name).
-.. seealso:: removeComposition()
-.. seealso:: compositionAdded()
+.. seealso:: :py:func:`removeComposition()`
+.. seealso:: :py:func:`compositionAdded()`
  :rtype: bool
 %End
 
@@ -53,17 +53,17 @@ class QgsLayoutManager : QObject
  Removes a composition from the manager. The composition is deleted.
  Returns true if the removal was successful, or false if the removal failed (eg as a result
  of removing a composition which is not contained in the manager).
-.. seealso:: addComposition()
-.. seealso:: compositionRemoved()
-.. seealso:: compositionAboutToBeRemoved()
-.. seealso:: clear()
+.. seealso:: :py:func:`addComposition()`
+.. seealso:: :py:func:`compositionRemoved()`
+.. seealso:: :py:func:`compositionAboutToBeRemoved()`
+.. seealso:: :py:func:`clear()`
  :rtype: bool
 %End
 
     void clear();
 %Docstring
  Removes and deletes all compositions from the manager.
-.. seealso:: removeComposition()
+.. seealso:: :py:func:`removeComposition()`
 %End
 
     QList< QgsComposition * > compositions() const;
@@ -83,14 +83,14 @@ class QgsLayoutManager : QObject
 %Docstring
  Reads the manager's state from a DOM element, restoring all compositions
  present in the XML document.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
  Returns a DOM element representing the state of the manager.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: QDomElement
 %End
 

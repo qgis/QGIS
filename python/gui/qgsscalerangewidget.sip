@@ -35,8 +35,8 @@ class QgsScaleRangeWidget : QWidget
 %Docstring
  Returns the selected minimum scale (i.e. most "zoomed out" scale), or 0 if minimum scale is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: maximumScale()
-.. seealso:: setMinimumScale()
+.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`setMinimumScale()`
  :rtype: float
 %End
 
@@ -44,8 +44,8 @@ class QgsScaleRangeWidget : QWidget
 %Docstring
  Returns the selected maximum scale (i.e. most "zoomed in" scale), or 0 if maximum scale is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: minimumScale()
-.. seealso:: setMaximumScale()
+.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`setMaximumScale()`
  :rtype: float
 %End
 
@@ -60,18 +60,18 @@ class QgsScaleRangeWidget : QWidget
 %Docstring
  Set the minimum ``scale`` (i.e. most "zoomed out" scale), or 0 to indicate the minimum is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: minimumScale()
-.. seealso:: setMaximumScale()
-.. seealso:: setScaleRange()
+.. seealso:: :py:func:`minimumScale()`
+.. seealso:: :py:func:`setMaximumScale()`
+.. seealso:: :py:func:`setScaleRange()`
 %End
 
     void setMaximumScale( double scale );
 %Docstring
  Set the maximum ``scale`` (i.e. most "zoomed in" scale), or 0 to indicate the minimum is not set.
  The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-.. seealso:: maximumScale()
-.. seealso:: setMinimumScale()
-.. seealso:: setScaleRange()
+.. seealso:: :py:func:`maximumScale()`
+.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setScaleRange()`
 %End
 
     void setScaleRange( double min, double max );
@@ -79,8 +79,8 @@ class QgsScaleRangeWidget : QWidget
  Sets the scale range, from ``min`` scale (i.e. most "zoomed out" scale) to ``max`` scale (most "zoomed in" scale).
  The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map,
  or 0 to indicate not set.
-.. seealso:: setMinimumScale()
-.. seealso:: setMaximumScale()
+.. seealso:: :py:func:`setMinimumScale()`
+.. seealso:: :py:func:`setMaximumScale()`
 %End
 
   signals:

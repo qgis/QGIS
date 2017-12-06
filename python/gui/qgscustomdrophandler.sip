@@ -47,7 +47,7 @@ class QgsCustomDropHandler : QObject
  the URI entry's providerKey in order for handleCustomUriDrop()
  to be called.
 
-.. seealso:: handleCustomUriDrop()
+.. seealso:: :py:func:`handleCustomUriDrop()`
  :rtype: str
 %End
 
@@ -59,7 +59,7 @@ class QgsCustomDropHandler : QObject
  also implement customUriProviderKey() to indicate the providerKey
  value which the handler accepts.
 
-.. seealso:: customUriProviderKey()
+.. seealso:: :py:func:`customUriProviderKey()`
 %End
 
     virtual void handleMimeData( const QMimeData *data );

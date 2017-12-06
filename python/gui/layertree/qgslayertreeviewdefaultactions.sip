@@ -17,7 +17,7 @@ class QgsLayerTreeViewDefaultActions : QObject
  The QgsLayerTreeViewDefaultActions class serves as a factory of actions
  that can be used together with a layer tree view.
 
-.. seealso:: QgsLayerTreeView
+.. seealso:: :py:class:`QgsLayerTreeView`
 .. versionadded:: 2.4
 %End
 

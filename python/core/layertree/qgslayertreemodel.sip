@@ -23,7 +23,7 @@ class QgsLayerTreeModel : QAbstractItemModel
  Behavior of the model can be customized with flags. For example, whether to show legend or
  whether to allow changes to the layer tree.
 
-.. seealso:: QgsLayerTreeView
+.. seealso:: :py:class:`QgsLayerTreeView`
 .. versionadded:: 2.4
 %End
 
@@ -153,7 +153,7 @@ Return index for a given node. If the node does not belong to the layer tree, th
 .. note::
 
    Parameter skipNodeEmbeddedInParent added in QGIS 2.18
-.. seealso:: layerOriginalLegendNodes()
+.. seealso:: :py:func:`layerOriginalLegendNodes()`
  :rtype: list of QgsLayerTreeModelLegendNode
 %End
 
@@ -161,7 +161,7 @@ Return index for a given node. If the node does not belong to the layer tree, th
 %Docstring
  Return original (unfiltered) list of legend nodes attached to a particular layer node
 .. versionadded:: 2.14
-.. seealso:: layerLegendNodes()
+.. seealso:: :py:func:`layerLegendNodes()`
  :rtype: list of QgsLayerTreeModelLegendNode
 %End
 
@@ -237,7 +237,7 @@ Return at what number of legend nodes the layer node should be collapsed. -1 mea
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  Setting ``scale`` <= 0 will disable the functionality.
 .. versionadded:: 2.6
-.. seealso:: legendFilterByScale()
+.. seealso:: :py:func:`legendFilterByScale()`
 %End
 
     double legendFilterByScale() const;
@@ -246,7 +246,7 @@ Return at what number of legend nodes the layer node should be collapsed. -1 mea
  The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
  A scale <= 0 indicates that no scale filtering is being performed.
 .. versionadded:: 2.6
-.. seealso:: setLegendFilterByScale()
+.. seealso:: :py:func:`setLegendFilterByScale()`
  :rtype: float
 %End
 

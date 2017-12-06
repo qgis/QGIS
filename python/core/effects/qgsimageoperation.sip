@@ -170,7 +170,7 @@ class QgsImageOperation
  it will be centered in the returned rectangle.
  \param center return rectangle will be centered on the center of the original image if set to true
 .. versionadded:: 2.9
-.. seealso:: cropTransparent
+.. seealso:: :py:func:`cropTransparent`
  :rtype: QRect
 %End
 

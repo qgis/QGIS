@@ -15,7 +15,7 @@ class QgsLayerTreeEmbeddedWidgetProvider
 %Docstring
  Provider interface to be implemented in order to introduce new kinds of embedded widgets for use in layer tree.
  Embedded widgets are assigned per individual map layers and they are shown before any legend entries.
-.. seealso:: QgsLayerTreeEmbeddedWidgetRegistry
+.. seealso:: :py:class:`QgsLayerTreeEmbeddedWidgetRegistry`
 .. versionadded:: 2.16
 %End
 
@@ -62,7 +62,7 @@ class QgsLayerTreeEmbeddedWidgetRegistry
  QgsLayerTreeEmbeddedWidgetRegistry is not usually directly created, but rather accessed through
  QgsGui.layerTreeEmbeddedWidgetRegistry().
 
-.. seealso:: QgsLayerTreeEmbeddedWidgetRegistry
+.. seealso:: :py:class:`QgsLayerTreeEmbeddedWidgetRegistry`
 .. versionadded:: 2.16
 %End
 

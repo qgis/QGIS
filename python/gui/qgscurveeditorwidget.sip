@@ -33,14 +33,14 @@ class QgsCurveEditorWidget : QWidget
     QgsCurveTransform curve() const;
 %Docstring
  Returns a curve representing the current curve from the widget.
-.. seealso:: setCurve()
+.. seealso:: :py:func:`setCurve()`
  :rtype: QgsCurveTransform
 %End
 
     void setCurve( const QgsCurveTransform &curve );
 %Docstring
  Sets the ``curve`` to show in the widget.
-.. seealso:: curve()
+.. seealso:: :py:func:`curve()`
 %End
 
     void setHistogramSource( const QgsVectorLayer *layer, const QString &expression );
@@ -48,23 +48,23 @@ class QgsCurveEditorWidget : QWidget
  Sets a ``layer`` and ``expression`` source for values to show in a histogram
  behind the curve. The histogram is generated in a background thread to keep
  the widget responsive.
-.. seealso:: minHistogramValueRange()
-.. seealso:: maxHistogramValueRange()
+.. seealso:: :py:func:`minHistogramValueRange()`
+.. seealso:: :py:func:`maxHistogramValueRange()`
 %End
 
     double minHistogramValueRange() const;
 %Docstring
  Returns the minimum expected value for the range of values shown in the histogram.
-.. seealso:: maxHistogramValueRange()
-.. seealso:: setMinHistogramValueRange()
+.. seealso:: :py:func:`maxHistogramValueRange()`
+.. seealso:: :py:func:`setMinHistogramValueRange()`
  :rtype: float
 %End
 
     double maxHistogramValueRange() const;
 %Docstring
  Returns the maximum expected value for the range of values shown in the histogram.
-.. seealso:: minHistogramValueRange()
-.. seealso:: setMaxHistogramValueRange()
+.. seealso:: :py:func:`minHistogramValueRange()`
+.. seealso:: :py:func:`setMaxHistogramValueRange()`
  :rtype: float
 %End
 
@@ -73,15 +73,15 @@ class QgsCurveEditorWidget : QWidget
     void setMinHistogramValueRange( double minValueRange );
 %Docstring
  Sets the minimum expected value for the range of values shown in the histogram.
-.. seealso:: setMaxHistogramValueRange()
-.. seealso:: minHistogramValueRange()
+.. seealso:: :py:func:`setMaxHistogramValueRange()`
+.. seealso:: :py:func:`minHistogramValueRange()`
 %End
 
     void setMaxHistogramValueRange( double maxValueRange );
 %Docstring
  Sets the maximum expected value for the range of values shown in the histogram.
-.. seealso:: setMinHistogramValueRange()
-.. seealso:: maxHistogramValueRange()
+.. seealso:: :py:func:`setMinHistogramValueRange()`
+.. seealso:: :py:func:`maxHistogramValueRange()`
 %End
 
   signals:

@@ -30,7 +30,7 @@ class QgsPresetColorRampWidget : QgsPanelWidget
     QgsPresetSchemeColorRamp ramp() const;
 %Docstring
  Returns a color ramp representing the current settings from the dialog.
-.. seealso:: setRamp()
+.. seealso:: :py:func:`setRamp()`
  :rtype: QgsPresetSchemeColorRamp
 %End
 
@@ -38,7 +38,7 @@ class QgsPresetColorRampWidget : QgsPanelWidget
 %Docstring
  Sets the color ramp to show in the dialog.
  \param ramp color ramp
-.. seealso:: ramp()
+.. seealso:: :py:func:`ramp()`
 %End
 
   signals:
@@ -72,7 +72,7 @@ class QgsPresetColorRampDialog : QDialog
     QgsPresetSchemeColorRamp ramp() const;
 %Docstring
  Returns a color ramp representing the current settings from the dialog.
-.. seealso:: setRamp()
+.. seealso:: :py:func:`setRamp()`
  :rtype: QgsPresetSchemeColorRamp
 %End
 
@@ -80,7 +80,7 @@ class QgsPresetColorRampDialog : QDialog
 %Docstring
  Sets the color ramp to show in the dialog.
  \param ramp color ramp
-.. seealso:: ramp()
+.. seealso:: :py:func:`ramp()`
 %End
 
   signals:

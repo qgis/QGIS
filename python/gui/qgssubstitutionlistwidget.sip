@@ -14,7 +14,7 @@ class QgsSubstitutionListWidget : QgsPanelWidget
  A widget which allows users to specify a list of substitutions to apply to a string, with
  options for exporting and importing substitution lists.
 .. versionadded:: 3.0
-.. seealso:: QgsSubstitutionListDialog
+.. seealso:: :py:class:`QgsSubstitutionListDialog`
 %End
 
 %TypeHeaderCode
@@ -32,13 +32,13 @@ class QgsSubstitutionListWidget : QgsPanelWidget
 %Docstring
  Sets the list of substitutions to show in the widget.
  \param substitutions substitution list
-.. seealso:: substitutions()
+.. seealso:: :py:func:`substitutions()`
 %End
 
     QgsStringReplacementCollection substitutions() const;
 %Docstring
  Returns the list of substitutions currently defined by the widget.
-.. seealso:: setSubstitutions()
+.. seealso:: :py:func:`setSubstitutions()`
  :rtype: QgsStringReplacementCollection
 %End
 
@@ -57,7 +57,7 @@ class QgsSubstitutionListDialog : QDialog
  A dialog which allows users to specify a list of substitutions to apply to a string, with
  options for exporting and importing substitution lists.
 .. versionadded:: 3.0
-.. seealso:: QgsSubstitutionListWidget
+.. seealso:: :py:class:`QgsSubstitutionListWidget`
 %End
 
 %TypeHeaderCode
@@ -75,13 +75,13 @@ class QgsSubstitutionListDialog : QDialog
 %Docstring
  Sets the list of substitutions to show in the dialog.
  \param substitutions substitution list
-.. seealso:: substitutions()
+.. seealso:: :py:func:`substitutions()`
 %End
 
     QgsStringReplacementCollection substitutions() const;
 %Docstring
  Returns the list of substitutions currently defined by the dialog.
-.. seealso:: setSubstitutions()
+.. seealso:: :py:func:`setSubstitutions()`
  :rtype: QgsStringReplacementCollection
 %End
 

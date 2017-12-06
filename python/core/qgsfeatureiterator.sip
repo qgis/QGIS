@@ -253,7 +253,7 @@ destructor deletes the iterator if it has no more references
  An invalid iterator was probably introduced by a failed attempt to acquire a connection
  or is a default constructed iterator.
 
-.. seealso:: isClosed to check if the iterator successfully completed and returned all the features.
+.. seealso:: :py:func:`isClosed`
 
 .. versionadded:: 3.0
  :rtype: bool

@@ -34,14 +34,14 @@ class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
 %Docstring
  Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
  \param context symbol widget context
-.. seealso:: context()
+.. seealso:: :py:func:`context()`
 .. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
 %Docstring
  Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
-.. seealso:: setContext()
+.. seealso:: :py:func:`setContext()`
 .. versionadded:: 3.0
  :rtype: QgsSymbolWidgetContext
 %End
@@ -79,7 +79,7 @@ class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
  Should be emitted whenever the sub symbol changed on this symbol layer configuration.
  Normally changed() should be preferred.
 
-.. seealso:: changed()
+.. seealso:: :py:func:`changed()`
 %End
 
   protected slots:

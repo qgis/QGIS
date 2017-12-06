@@ -47,7 +47,7 @@ Runs the map hit test
  \param symbol symbol to find
  \param layer vector layer
 .. versionadded:: 2.12
-.. seealso:: legendKeyVisible()
+.. seealso:: :py:func:`legendKeyVisible()`
  :rtype: bool
 %End
 
@@ -57,7 +57,7 @@ Runs the map hit test
  \param ruleKey legend rule key
  \param layer vector layer
 .. versionadded:: 2.14
-.. seealso:: symbolVisible()
+.. seealso:: :py:func:`symbolVisible()`
  :rtype: bool
 %End
 

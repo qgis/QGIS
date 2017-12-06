@@ -82,7 +82,7 @@ Tell whether the rendering job is currently running in background.
  Returns true if the render job was able to use a cached labeling solution.
  If so, any previously stored labeling results (see takeLabelingResults())
  should be retained.
-.. seealso:: takeLabelingResults()
+.. seealso:: :py:func:`takeLabelingResults()`
 .. versionadded:: 3.0
  :rtype: bool
 %End
@@ -91,7 +91,7 @@ Tell whether the rendering job is currently running in background.
 %Docstring
  Get pointer to internal labeling engine (in order to get access to the results).
  This should not be used if cached labeling was redrawn - see usedCachedLabels().
-.. seealso:: usedCachedLabels()
+.. seealso:: :py:func:`usedCachedLabels()`
  :rtype: QgsLabelingResults
 %End
 
@@ -138,7 +138,7 @@ List of errors that happened during the rendering job - available when the rende
     int renderingTime() const;
 %Docstring
  Returns the total time it took to finish the job (in milliseconds).
-.. seealso:: perLayerRenderingTime()
+.. seealso:: :py:func:`perLayerRenderingTime()`
  :rtype: int
 %End
 

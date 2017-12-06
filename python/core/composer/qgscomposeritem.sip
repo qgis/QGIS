@@ -204,7 +204,7 @@ Return correct graphics item type.
  command.
  :return: true if the item has been removed from the composition
 .. versionadded:: 2.5
-.. seealso:: setIsRemoved
+.. seealso:: :py:func:`setIsRemoved`
  :rtype: bool
 %End
 
@@ -215,7 +215,7 @@ Return correct graphics item type.
  command.
  \param removed set to true if the item has been removed from the composition
 .. versionadded:: 2.5
-.. seealso:: isRemoved
+.. seealso:: :py:func:`isRemoved`
 %End
 
     virtual void setSelected( bool s );
@@ -254,8 +254,8 @@ Moves item in canvas coordinates
 %Docstring
  Gets the page the item is currently on.
  :return: page number for item, beginning on page 1
-.. seealso:: pagePos
-.. seealso:: updatePagePos
+.. seealso:: :py:func:`pagePos`
+.. seealso:: :py:func:`updatePagePos`
 .. versionadded:: 2.4
  :rtype: int
 %End
@@ -264,8 +264,8 @@ Moves item in canvas coordinates
 %Docstring
  Returns the item's position relative to its current page.
  :return: position relative to the page's top left corner.
-.. seealso:: page
-.. seealso:: updatePagePos
+.. seealso:: :py:func:`page`
+.. seealso:: :py:func:`updatePagePos`
 .. versionadded:: 2.4
  :rtype: QPointF
 %End
@@ -276,8 +276,8 @@ Moves item in canvas coordinates
  when the paper size changes.
  \param newPageWidth new width of the page in mm
  \param newPageHeight new height of the page in mm
-.. seealso:: page
-.. seealso:: pagePos
+.. seealso:: :py:func:`page`
+.. seealso:: :py:func:`pagePos`
 .. versionadded:: 2.4
 %End
 
@@ -333,10 +333,10 @@ Reads parameter that are not subclass specific in document. Usually called from 
 %Docstring
  Whether this item has a frame or not.
  :return: true if there is a frame around this item, otherwise false.
-.. seealso:: setFrameEnabled
-.. seealso:: frameStrokeWidth
-.. seealso:: frameJoinStyle
-.. seealso:: frameStrokeColor
+.. seealso:: :py:func:`setFrameEnabled`
+.. seealso:: :py:func:`frameStrokeWidth`
+.. seealso:: :py:func:`frameJoinStyle`
+.. seealso:: :py:func:`frameStrokeColor`
  :rtype: bool
 %End
 
@@ -344,10 +344,10 @@ Reads parameter that are not subclass specific in document. Usually called from 
 %Docstring
  Set whether this item has a frame drawn around it or not.
  \param drawFrame draw frame
-.. seealso:: hasFrame
-.. seealso:: setFrameStrokeWidth
-.. seealso:: setFrameJoinStyle
-.. seealso:: setFrameStrokeColor
+.. seealso:: :py:func:`hasFrame`
+.. seealso:: :py:func:`setFrameStrokeWidth`
+.. seealso:: :py:func:`setFrameJoinStyle`
+.. seealso:: :py:func:`setFrameStrokeColor`
 %End
 
     virtual void setFrameStrokeColor( const QColor &color );
@@ -355,10 +355,10 @@ Reads parameter that are not subclass specific in document. Usually called from 
  Sets frame stroke color
  \param color new color for stroke frame
 .. versionadded:: 2.6
-.. seealso:: frameStrokeColor
-.. seealso:: setFrameEnabled
-.. seealso:: setFrameJoinStyle
-.. seealso:: setFrameStrokeWidth
+.. seealso:: :py:func:`frameStrokeColor`
+.. seealso:: :py:func:`setFrameEnabled`
+.. seealso:: :py:func:`setFrameJoinStyle`
+.. seealso:: :py:func:`setFrameStrokeWidth`
 %End
 
     QColor frameStrokeColor() const;
@@ -366,10 +366,10 @@ Reads parameter that are not subclass specific in document. Usually called from 
  Returns the frame's stroke color. Only used if hasFrame is true.
  :return: frame stroke color
 .. versionadded:: 2.6
-.. seealso:: hasFrame
-.. seealso:: setFrameStrokeColor
-.. seealso:: frameJoinStyle
-.. seealso:: setFrameStrokeColor
+.. seealso:: :py:func:`hasFrame`
+.. seealso:: :py:func:`setFrameStrokeColor`
+.. seealso:: :py:func:`frameJoinStyle`
+.. seealso:: :py:func:`setFrameStrokeColor`
  :rtype: QColor
 %End
 
@@ -378,10 +378,10 @@ Reads parameter that are not subclass specific in document. Usually called from 
  Sets frame stroke width
  \param strokeWidth new width for stroke frame
 .. versionadded:: 2.2
-.. seealso:: frameStrokeWidth
-.. seealso:: setFrameEnabled
-.. seealso:: setFrameJoinStyle
-.. seealso:: setFrameStrokeColor
+.. seealso:: :py:func:`frameStrokeWidth`
+.. seealso:: :py:func:`setFrameEnabled`
+.. seealso:: :py:func:`setFrameJoinStyle`
+.. seealso:: :py:func:`setFrameStrokeColor`
 %End
 
     double frameStrokeWidth() const;
@@ -389,10 +389,10 @@ Reads parameter that are not subclass specific in document. Usually called from 
  Returns the frame's stroke width. Only used if hasFrame is true.
  :return: Frame stroke width
 .. versionadded:: 2.3
-.. seealso:: hasFrame
-.. seealso:: setFrameStrokeWidth
-.. seealso:: frameJoinStyle
-.. seealso:: frameStrokeColor
+.. seealso:: :py:func:`hasFrame`
+.. seealso:: :py:func:`setFrameStrokeWidth`
+.. seealso:: :py:func:`frameJoinStyle`
+.. seealso:: :py:func:`frameStrokeColor`
  :rtype: float
 %End
 
@@ -401,10 +401,10 @@ Reads parameter that are not subclass specific in document. Usually called from 
  Returns the join style used for drawing the item's frame
  :return: Join style for stroke frame
 .. versionadded:: 2.3
-.. seealso:: hasFrame
-.. seealso:: setFrameJoinStyle
-.. seealso:: frameStrokeWidth
-.. seealso:: frameStrokeColor
+.. seealso:: :py:func:`hasFrame`
+.. seealso:: :py:func:`setFrameJoinStyle`
+.. seealso:: :py:func:`frameStrokeWidth`
+.. seealso:: :py:func:`frameStrokeColor`
  :rtype: Qt.PenJoinStyle
 %End
 
@@ -413,10 +413,10 @@ Reads parameter that are not subclass specific in document. Usually called from 
  Sets join style used when drawing the item's frame
  \param style Join style for stroke frame
 .. versionadded:: 2.3
-.. seealso:: setFrameEnabled
-.. seealso:: frameJoinStyle
-.. seealso:: setFrameStrokeWidth
-.. seealso:: setFrameStrokeColor
+.. seealso:: :py:func:`setFrameEnabled`
+.. seealso:: :py:func:`frameJoinStyle`
+.. seealso:: :py:func:`setFrameStrokeWidth`
+.. seealso:: :py:func:`setFrameStrokeColor`
 %End
 
     virtual double estimatedFrameBleed() const;
@@ -426,7 +426,7 @@ Reads parameter that are not subclass specific in document. Usually called from 
  1mm of this frame is drawn outside the item's rect. In this case the
  return value will be 1.0
 .. versionadded:: 2.2
-.. seealso:: rectWithFrame
+.. seealso:: :py:func:`rectWithFrame`
  :rtype: float
 %End
 
@@ -438,7 +438,7 @@ Reads parameter that are not subclass specific in document. Usually called from 
   function, as rect() makes no allowances for the portion of outlines which are drawn
   outside of the item.
 .. versionadded:: 2.2
-.. seealso:: estimatedFrameBleed
+.. seealso:: :py:func:`estimatedFrameBleed`
  :rtype: QRectF
 %End
 
@@ -446,8 +446,8 @@ Reads parameter that are not subclass specific in document. Usually called from 
 %Docstring
  Whether this item has a Background or not.
  :return: true if there is a Background around this item, otherwise false.
-.. seealso:: setBackgroundEnabled
-.. seealso:: backgroundColor
+.. seealso:: :py:func:`setBackgroundEnabled`
+.. seealso:: :py:func:`backgroundColor`
  :rtype: bool
 %End
 
@@ -456,16 +456,16 @@ Reads parameter that are not subclass specific in document. Usually called from 
  Set whether this item has a Background drawn around it or not.
  \param drawBackground draw Background
  :return: nothing
-.. seealso:: hasBackground
-.. seealso:: setBackgroundColor
+.. seealso:: :py:func:`hasBackground`
+.. seealso:: :py:func:`setBackgroundColor`
 %End
 
     QColor backgroundColor() const;
 %Docstring
  Gets the background color for this item
  :return: background color
-.. seealso:: setBackgroundColor
-.. seealso:: hasBackground
+.. seealso:: :py:func:`setBackgroundColor`
+.. seealso:: :py:func:`hasBackground`
  :rtype: QColor
 %End
 
@@ -474,15 +474,15 @@ Reads parameter that are not subclass specific in document. Usually called from 
  Sets the background color for this item
  \param backgroundColor new background color
  :return: nothing
-.. seealso:: backgroundColor
-.. seealso:: setBackgroundEnabled
+.. seealso:: :py:func:`backgroundColor`
+.. seealso:: :py:func:`setBackgroundEnabled`
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
  Returns the item's composition blending mode.
  :return: item blending mode
-.. seealso:: setBlendMode
+.. seealso:: :py:func:`setBlendMode`
  :rtype: QPainter.CompositionMode
 %End
 
@@ -490,7 +490,7 @@ Reads parameter that are not subclass specific in document. Usually called from 
 %Docstring
  Sets the item's composition blending mode
  \param blendMode blending mode for item
-.. seealso:: blendMode
+.. seealso:: :py:func:`blendMode`
 %End
 
     double itemOpacity() const;
@@ -499,7 +499,7 @@ Reads parameter that are not subclass specific in document. Usually called from 
  QGraphicsItem.opacity() as any data defined overrides will be
  respected.
  :return: opacity as double between 1.0 (opaque) and 0 (transparent).
-.. seealso:: setItemOpacity()
+.. seealso:: :py:func:`setItemOpacity()`
  :rtype: float
 %End
 
@@ -509,16 +509,16 @@ Reads parameter that are not subclass specific in document. Usually called from 
  QGraphicsItem.setOpacity() as any data defined overrides will be
  respected.
  \param opacity double between 1.0 (opaque) and 0 (transparent).
-.. seealso:: itemOpacity()
+.. seealso:: :py:func:`itemOpacity()`
 %End
 
     bool effectsEnabled() const;
 %Docstring
  Returns whether effects (e.g., blend modes) are enabled for the item
  :return: true if effects are enabled
-.. seealso:: setEffectsEnabled
-.. seealso:: itemOpacity()
-.. seealso:: blendMode
+.. seealso:: :py:func:`setEffectsEnabled`
+.. seealso:: :py:func:`itemOpacity()`
+.. seealso:: :py:func:`blendMode`
  :rtype: bool
 %End
 
@@ -526,9 +526,9 @@ Reads parameter that are not subclass specific in document. Usually called from 
 %Docstring
  Sets whether effects (e.g., blend modes) are enabled for the item
  \param effectsEnabled set to true to enable effects
-.. seealso:: effectsEnabled
-.. seealso:: setItemOpacity()
-.. seealso:: setBlendMode
+.. seealso:: :py:func:`effectsEnabled`
+.. seealso:: :py:func:`setItemOpacity()`
+.. seealso:: :py:func:`setBlendMode`
 %End
 
     virtual void addItem( QgsComposerItem *item );
@@ -558,14 +558,14 @@ Finish current command and push it onto the undo stack
 %Docstring
  Locks / unlocks the item position for mouse drags
  \param lock set to true to prevent item movement and resizing via the mouse
-.. seealso:: positionLock
+.. seealso:: :py:func:`positionLock`
 %End
 
     bool positionLock() const;
 %Docstring
  Returns whether position lock for mouse drags is enabled
  returns true if item is locked for mouse movement and resizing
-.. seealso:: setPositionLock
+.. seealso:: :py:func:`setPositionLock`
  :rtype: bool
 %End
 
@@ -576,7 +576,7 @@ Finish current command and push it onto the undo stack
  or the current evaluated rotation (which may be affected by data driven rotation
  settings).
 .. versionadded:: 2.1
-.. seealso:: setItemRotation()
+.. seealso:: :py:func:`setItemRotation()`
  :rtype: float
 %End
 
@@ -591,7 +591,7 @@ Finish current command and push it onto the undo stack
 %Docstring
  Get item's id (which is not necessarly unique)
  :return: item id
-.. seealso:: setId
+.. seealso:: :py:func:`setId`
  :rtype: str
 %End
 
@@ -599,7 +599,7 @@ Finish current command and push it onto the undo stack
 %Docstring
  Set item's id (which is not necessarly unique)
  \param id new id for item
-.. seealso:: id
+.. seealso:: :py:func:`id`
 %End
 
     QString uuid() const;
@@ -609,8 +609,8 @@ Finish current command and push it onto the undo stack
 .. note::
 
    there is not setter since one can't manually set the id
-.. seealso:: id
-.. seealso:: setId
+.. seealso:: :py:func:`id`
+.. seealso:: :py:func:`setId`
  :rtype: str
 %End
 
@@ -619,8 +619,8 @@ Finish current command and push it onto the undo stack
  Get item display name. This is the item's id if set, and if
  not, a user-friendly string identifying item type.
  :return: display name for item
-.. seealso:: id
-.. seealso:: setId
+.. seealso:: :py:func:`id`
+.. seealso:: :py:func:`setId`
 .. versionadded:: 2.5
  :rtype: str
 %End
@@ -644,7 +644,7 @@ Finish current command and push it onto the undo stack
  or the current evaluated value (which may be affected by data driven settings).
  :return: true if item should be excluded
 .. versionadded:: 2.5
-.. seealso:: setExcludeFromExports
+.. seealso:: :py:func:`setExcludeFromExports`
  :rtype: bool
 %End
 
@@ -653,7 +653,7 @@ Finish current command and push it onto the undo stack
  Sets whether the item should be excluded from composer exports and prints
  \param exclude set to true to exclude the item from exports
 .. versionadded:: 2.5
-.. seealso:: excludeFromExports
+.. seealso:: :py:func:`excludeFromExports`
 %End
 
     bool isGroupMember() const;
@@ -661,7 +661,7 @@ Finish current command and push it onto the undo stack
  Returns whether this item is part of a group
  :return: true if item is in a group
 .. versionadded:: 2.5
-.. seealso:: setIsGroupMember
+.. seealso:: :py:func:`setIsGroupMember`
  :rtype: bool
 %End
 
@@ -670,7 +670,7 @@ Finish current command and push it onto the undo stack
  Sets whether this item is part of a group
  \param isGroupMember set to true if item is in a group
 .. versionadded:: 2.5
-.. seealso:: isGroupMember
+.. seealso:: :py:func:`isGroupMember`
 %End
 
     virtual int numberExportLayers() const;
@@ -679,7 +679,7 @@ Finish current command and push it onto the undo stack
  :return: 0 if this item is to be placed on the same layer as the previous item,
  1 if it should be placed on its own layer, and >1 if it requires multiple export layers
 .. versionadded:: 2.4
-.. seealso:: setCurrentExportLayer
+.. seealso:: :py:func:`setCurrentExportLayer`
  :rtype: int
 %End
 
@@ -688,7 +688,7 @@ Finish current command and push it onto the undo stack
  Sets the current layer to draw for exporting
  \param layerIdx can be set to -1 to draw all item layers, and must be less than numberExportLayers()
 .. versionadded:: 2.4
-.. seealso:: numberExportLayers
+.. seealso:: :py:func:`numberExportLayers`
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -706,7 +706,7 @@ Finish current command and push it onto the undo stack
  multiple item updates when many settings for an item are
  changed sequentially.
 .. versionadded:: 3.0
-.. seealso:: updatesEnabled()
+.. seealso:: :py:func:`updatesEnabled()`
 %End
 
     bool updatesEnabled() const;
@@ -716,7 +716,7 @@ Finish current command and push it onto the undo stack
  multiple item updates when many settings for an item are
  changed sequentially.
 .. versionadded:: 3.0
-.. seealso:: setUpdatesEnabled()
+.. seealso:: :py:func:`setUpdatesEnabled()`
  :rtype: bool
 %End
 
@@ -729,7 +729,7 @@ Finish current command and push it onto the undo stack
  \param adjustPosition set to true if item should be shifted so that rotation occurs
  around item center. If false, rotation occurs around item origin
 .. versionadded:: 2.1
-.. seealso:: itemRotation
+.. seealso:: :py:func:`itemRotation`
 %End
 
     virtual void repaint();

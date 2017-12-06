@@ -388,7 +388,7 @@ Returns the short name regular expression for line edit validator
 %Docstring
  Returns the user's operating system login account name.
 .. versionadded:: 2.14
-.. seealso:: userFullName()
+.. seealso:: :py:func:`userFullName()`
  :rtype: str
 %End
 
@@ -396,7 +396,7 @@ Returns the short name regular expression for line edit validator
 %Docstring
  Returns the user's operating system login account full display name.
 .. versionadded:: 2.14
-.. seealso:: userLoginName()
+.. seealso:: :py:func:`userLoginName()`
  :rtype: str
 %End
 
@@ -404,7 +404,7 @@ Returns the short name regular expression for line edit validator
 %Docstring
  Returns a string name of the operating system QGIS is running on.
 .. versionadded:: 2.14
-.. seealso:: platform()
+.. seealso:: :py:func:`platform()`
  :rtype: str
 %End
 
@@ -412,7 +412,7 @@ Returns the short name regular expression for line edit validator
 %Docstring
  Returns the QGIS platform name, e.g., "desktop" or "server".
 .. versionadded:: 2.14
-.. seealso:: osName()
+.. seealso:: :py:func:`osName()`
  :rtype: str
 %End
 
@@ -600,9 +600,9 @@ Returns path to the build output directory. Valid only when running from build d
     static void applyGdalSkippedDrivers();
 %Docstring
  Apply the skipped drivers list to gdal
-.. seealso:: skipGdalDriver
-.. seealso:: restoreGdalDriver
-.. seealso:: skippedGdalDrivers *
+.. seealso:: :py:func:`skipGdalDriver`
+.. seealso:: :py:func:`restoreGdalDriver`
+.. seealso:: :py:func:`skippedGdalDrivers`
 %End
 
     static int maxThreads();
@@ -708,7 +708,7 @@ Returns path to the build output directory. Valid only when running from build d
 .. note::
 
    this can be a null pointer if called before initQgis
-.. seealso:: initQgis
+.. seealso:: :py:func:`initQgis`
 .. versionadded:: 3.0
  :rtype: QgsAuthManager
 %End
@@ -781,7 +781,7 @@ Returns path to the build output directory. Valid only when running from build d
  Custom expression variables for this application.
  This does not include generated variables (like system name, user name etc.)
 
-.. seealso:: QgsExpressionContextUtils.globalVariables().
+.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables()`
 .. versionadded:: 3.0
  :rtype: QVariantMap
 %End
@@ -791,7 +791,7 @@ Returns path to the build output directory. Valid only when running from build d
  Custom expression variables for this application.
  Do not include generated variables (like system name, user name etc.)
 
-.. seealso:: QgsExpressionContextUtils.globalVariables().
+.. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables()`
 .. versionadded:: 3.0
 %End
 

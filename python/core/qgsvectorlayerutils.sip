@@ -62,7 +62,7 @@ Constructor for QgsDuplicateFeatureContext
  Returns true if the specified value already exists within a field. This method can be used to test for uniqueness
  of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
  with IDs within this list are ignored when testing for existence of the value.
-.. seealso:: createUniqueValue()
+.. seealso:: :py:func:`createUniqueValue()`
  :rtype: bool
 %End
 
@@ -70,7 +70,7 @@ Constructor for QgsDuplicateFeatureContext
 %Docstring
  Returns a new attribute value for the specified field index which is guaranteed to be unique. The optional seed
  value can be used as a basis for generated values.
-.. seealso:: valueExists()
+.. seealso:: :py:func:`valueExists()`
  :rtype: QVariant
 %End
 

@@ -36,15 +36,15 @@ class QgsFieldValuesLineEdit: QgsFilterLineEdit
 %Docstring
  Sets the layer containing the field that values will be shown from.
  \param layer vector layer
-.. seealso:: layer()
-.. seealso:: setAttributeIndex()
+.. seealso:: :py:func:`layer()`
+.. seealso:: :py:func:`setAttributeIndex()`
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
  Returns the layer containing the field that values will be shown from.
-.. seealso:: setLayer()
-.. seealso:: attributeIndex()
+.. seealso:: :py:func:`setLayer()`
+.. seealso:: :py:func:`attributeIndex()`
  :rtype: QgsVectorLayer
 %End
 
@@ -52,15 +52,15 @@ class QgsFieldValuesLineEdit: QgsFilterLineEdit
 %Docstring
  Sets the attribute index for the field containing values to show in the widget.
  \param index index of attribute
-.. seealso:: attributeIndex()
-.. seealso:: setLayer()
+.. seealso:: :py:func:`attributeIndex()`
+.. seealso:: :py:func:`setLayer()`
 %End
 
     int attributeIndex() const;
 %Docstring
  Returns the attribute index for the field containing values shown in the widget.
-.. seealso:: setAttributeIndex()
-.. seealso:: layer()
+.. seealso:: :py:func:`setAttributeIndex()`
+.. seealso:: :py:func:`layer()`
  :rtype: int
 %End
 

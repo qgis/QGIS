@@ -490,7 +490,7 @@ Filter string for file picker dialogs
  The ``options`` argument can be used to control the sorting and filtering of
  returned formats.
 
-.. seealso:: supportedOutputVectorLayerExtensions()
+.. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
  :rtype: list of QgsVectorFileWriter.FilterFormatDetails
 %End
 
@@ -502,7 +502,7 @@ Filter string for file picker dialogs
  returned formats.
 
 .. versionadded:: 3.0
-.. seealso:: supportedFiltersAndFormats()
+.. seealso:: :py:func:`supportedFiltersAndFormats()`
  :rtype: list of str
 %End
 
@@ -612,7 +612,7 @@ Close opened shapefile for writing
  Returns the reference scale for output.
  The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. versionadded:: 3.0
-.. seealso:: setSymbologyScale()
+.. seealso:: :py:func:`setSymbologyScale()`
  :rtype: float
 %End
 
@@ -621,7 +621,7 @@ Close opened shapefile for writing
  Set reference ``scale`` for output.
  The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 .. versionadded:: 3.0
-.. seealso:: symbologyScale()
+.. seealso:: :py:func:`symbologyScale()`
 %End
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
@@ -634,7 +634,7 @@ Close opened shapefile for writing
  Returns a list of the default dataset options for a specified driver.
  \param driverName name of OGR driver
 .. versionadded:: 3.0
-.. seealso:: defaultLayerOptions()
+.. seealso:: :py:func:`defaultLayerOptions()`
  :rtype: list of str
 %End
 
@@ -643,7 +643,7 @@ Close opened shapefile for writing
  Returns a list of the default layer options for a specified driver.
  \param driverName name of OGR driver
 .. versionadded:: 3.0
-.. seealso:: defaultDatasetOptions()
+.. seealso:: :py:func:`defaultDatasetOptions()`
  :rtype: list of str
 %End
 

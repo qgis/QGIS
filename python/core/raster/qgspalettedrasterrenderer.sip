@@ -111,14 +111,14 @@ Returns number of colors
 %Docstring
  Set the source color ``ramp``. Ownership is transferred to the renderer.
 .. versionadded:: 3.0
-.. seealso:: sourceColorRamp()
+.. seealso:: :py:func:`sourceColorRamp()`
 %End
 
     QgsColorRamp *sourceColorRamp() const;
 %Docstring
  Get the source color ramp
 .. versionadded:: 3.0
-.. seealso:: setSourceColorRamp()
+.. seealso:: :py:func:`setSourceColorRamp()`
  :rtype: QgsColorRamp
 %End
 
@@ -133,8 +133,8 @@ Returns number of colors
 %Docstring
  Converts a ``string`` containing a color table or class data to to paletted renderer class data.
 .. versionadded:: 3.0
-.. seealso:: classDataFromFile()
-.. seealso:: classDataToString()
+.. seealso:: :py:func:`classDataFromFile()`
+.. seealso:: :py:func:`classDataToString()`
  :rtype: QgsPalettedRasterRenderer.ClassData
 %End
 
@@ -142,7 +142,7 @@ Returns number of colors
 %Docstring
  Opens a color table file and returns corresponding paletted renderer class data.
 .. versionadded:: 3.0
-.. seealso:: classDataFromString()
+.. seealso:: :py:func:`classDataFromString()`
  :rtype: QgsPalettedRasterRenderer.ClassData
 %End
 
@@ -150,7 +150,7 @@ Returns number of colors
 %Docstring
  Converts classes to a string representation, using the .clr/gdal color table file format.
 .. versionadded:: 3.0
-.. seealso:: classDataFromString()
+.. seealso:: :py:func:`classDataFromString()`
  :rtype: str
 %End
 

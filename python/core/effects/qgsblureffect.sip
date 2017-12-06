@@ -52,8 +52,8 @@ class QgsBlurEffect : QgsPaintEffect
  Sets blur level (strength)
  \param level blur level. Depending on the current blurMethod(), this parameter
  has different effects
-.. seealso:: blurLevel
-.. seealso:: blurMethod
+.. seealso:: :py:func:`blurLevel`
+.. seealso:: :py:func:`blurMethod`
 %End
 
     int blurLevel() const;
@@ -61,8 +61,8 @@ class QgsBlurEffect : QgsPaintEffect
  Returns the blur level (strength)
  :return: blur level. Depending on the current blurMethod(), this parameter
  has different effects
-.. seealso:: setBlurLevel
-.. seealso:: blurMethod
+.. seealso:: :py:func:`setBlurLevel`
+.. seealso:: :py:func:`blurMethod`
  :rtype: int
 %End
 
@@ -70,14 +70,14 @@ class QgsBlurEffect : QgsPaintEffect
 %Docstring
  Sets the blur method (algorithm) to use for performing the blur.
  \param method blur method
-.. seealso:: blurMethod
+.. seealso:: :py:func:`blurMethod`
 %End
 
     BlurMethod blurMethod() const;
 %Docstring
  Returns the blur method (algorithm) used for performing the blur.
  :return: blur method
-.. seealso:: setBlurMethod
+.. seealso:: :py:func:`setBlurMethod`
  :rtype: BlurMethod
 %End
 
@@ -86,7 +86,7 @@ class QgsBlurEffect : QgsPaintEffect
  Sets the ``opacity`` for the effect.
  \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
-.. seealso:: opacity()
+.. seealso:: :py:func:`opacity()`
 %End
 
     double opacity() const;
@@ -94,7 +94,7 @@ class QgsBlurEffect : QgsPaintEffect
  Returns the opacity for the effect.
  :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
-.. seealso:: setOpacity()
+.. seealso:: :py:func:`setOpacity()`
  :rtype: float
 %End
 
@@ -103,7 +103,7 @@ class QgsBlurEffect : QgsPaintEffect
  Sets the blend mode for the effect
  \param mode blend mode used for drawing the effect on to a destination
  paint device
-.. seealso:: blendMode
+.. seealso:: :py:func:`blendMode`
 %End
 
     QPainter::CompositionMode blendMode() const;
@@ -111,7 +111,7 @@ class QgsBlurEffect : QgsPaintEffect
  Returns the blend mode for the effect
  :return: blend mode used for drawing the effect on to a destination
  paint device
-.. seealso:: setBlendMode
+.. seealso:: :py:func:`setBlendMode`
  :rtype: QPainter.CompositionMode
 %End
 

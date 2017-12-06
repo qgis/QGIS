@@ -23,8 +23,8 @@ class QgsRange
  whether ranges overlap or during calculation of range intersections.
 
 .. versionadded:: 3.0
-.. seealso:: QgsDoubleRange
-.. seealso:: QgsIntRange
+.. seealso:: :py:class:`QgsDoubleRange`
+.. seealso:: :py:class:`QgsIntRange`
 .. note::
 
    not available in Python bindings (but class provided for template-based inheritance)
@@ -44,16 +44,16 @@ class QgsRange
     T lower() const;
 %Docstring
  Returns the lower bound of the range.
-.. seealso:: upper()
-.. seealso:: includeLower()
+.. seealso:: :py:func:`upper()`
+.. seealso:: :py:func:`includeLower()`
  :rtype: T
 %End
 
     T upper() const;
 %Docstring
  Returns the upper bound of the range.
-.. seealso:: lower()
-.. seealso:: includeUpper()
+.. seealso:: :py:func:`lower()`
+.. seealso:: :py:func:`includeUpper()`
  :rtype: T
 %End
 
@@ -61,8 +61,8 @@ class QgsRange
 %Docstring
  Returns true if the lower bound is inclusive, or false if the lower
  bound is exclusive.
-.. seealso:: lower()
-.. seealso:: includeUpper()
+.. seealso:: :py:func:`lower()`
+.. seealso:: :py:func:`includeUpper()`
  :rtype: bool
 %End
 
@@ -70,8 +70,8 @@ class QgsRange
 %Docstring
  Returns true if the upper bound is inclusive, or false if the upper
  bound is exclusive.
-.. seealso:: upper()
-.. seealso:: includeLower()
+.. seealso:: :py:func:`upper()`
+.. seealso:: :py:func:`includeLower()`
  :rtype: bool
 %End
 
@@ -79,21 +79,21 @@ class QgsRange
 %Docstring
  Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
  and either the bounds are exclusive.
-.. seealso:: isSingleton()
+.. seealso:: :py:func:`isSingleton()`
  :rtype: bool
 %End
 
     bool isSingleton() const;
 %Docstring
  Returns true if the range consists only of a single value or instant.
-.. seealso:: isEmpty()
+.. seealso:: :py:func:`isEmpty()`
  :rtype: bool
 %End
 
     bool contains( const QgsRange<T> &other ) const;
 %Docstring
  Returns true if this range contains another range.
-.. seealso:: overlaps()
+.. seealso:: :py:func:`overlaps()`
  :rtype: bool
 %End
 
@@ -106,7 +106,7 @@ class QgsRange
     bool overlaps( const QgsRange<T> &other ) const;
 %Docstring
  Returns true if this range overlaps another range.
-.. seealso:: contains()
+.. seealso:: :py:func:`contains()`
  :rtype: bool
 %End
 
@@ -136,7 +136,7 @@ class QgsTemporalRange
  whether ranges overlap or during calculation of range intersections.
 
 .. versionadded:: 3.0
-.. seealso:: QgsDateRange
+.. seealso:: :py:class:`QgsDateRange`
 .. note::
 
    not available in Python bindings (but class provided for template-based inheritance)
@@ -160,16 +160,16 @@ class QgsTemporalRange
     T begin() const;
 %Docstring
  Returns the beginning of the range.
-.. seealso:: end()
-.. seealso:: includeBeginning()
+.. seealso:: :py:func:`end()`
+.. seealso:: :py:func:`includeBeginning()`
  :rtype: T
 %End
 
     T end() const;
 %Docstring
  Returns the upper bound of the range.
-.. seealso:: begin()
-.. seealso:: includeEnd()
+.. seealso:: :py:func:`begin()`
+.. seealso:: :py:func:`includeEnd()`
  :rtype: T
 %End
 
@@ -177,32 +177,32 @@ class QgsTemporalRange
 %Docstring
  Returns true if the beginning is inclusive, or false if the beginning
  is exclusive.
-.. seealso:: begin()
-.. seealso:: includeEnd()
+.. seealso:: :py:func:`begin()`
+.. seealso:: :py:func:`includeEnd()`
  :rtype: bool
 %End
 
     bool includeEnd() const;
 %Docstring
  Returns true if the end is inclusive, or false if the end is exclusive.
-.. seealso:: end()
-.. seealso:: includeBeginning()
+.. seealso:: :py:func:`end()`
+.. seealso:: :py:func:`includeBeginning()`
  :rtype: bool
 %End
 
     bool isInstant() const;
 %Docstring
  Returns true if the range consists only of a single instant.
-.. seealso:: isEmpty()
-.. seealso:: isInfinite()
+.. seealso:: :py:func:`isEmpty()`
+.. seealso:: :py:func:`isInfinite()`
  :rtype: bool
 %End
 
     bool isInfinite() const;
 %Docstring
  Returns true if the range consists of all possible values.
-.. seealso:: isEmpty()
-.. seealso:: isInstant()
+.. seealso:: :py:func:`isEmpty()`
+.. seealso:: :py:func:`isInstant()`
  :rtype: bool
 %End
 

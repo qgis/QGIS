@@ -45,7 +45,7 @@ class CharacterWidget : QWidget
     QChar character() const;
 %Docstring
  Returns the currently selected character in the widget.
-.. seealso:: setCharacter()
+.. seealso:: :py:func:`setCharacter()`
 .. versionadded:: 3.0
  :rtype: QChar
 %End
@@ -53,7 +53,7 @@ class CharacterWidget : QWidget
     QFont font() const;
 %Docstring
  Returns the font shown in the widget
-.. seealso:: setFont()
+.. seealso:: :py:func:`setFont()`
 .. versionadded:: 3.0
  :rtype: QFont
 %End
@@ -63,7 +63,7 @@ class CharacterWidget : QWidget
     void setFont( const QFont &font );
 %Docstring
  Sets the ``font`` to show in the widget.
-.. seealso:: font()
+.. seealso:: :py:func:`font()`
 .. versionadded:: 3.0
 %End
 
@@ -90,8 +90,8 @@ class CharacterWidget : QWidget
     void setCharacter( QChar character );
 %Docstring
  Sets the currently selected ``character`` in the widget.
-.. seealso:: character()
-.. seealso:: characterSelected()
+.. seealso:: :py:func:`character()`
+.. seealso:: :py:func:`characterSelected()`
 %End
 
   signals:

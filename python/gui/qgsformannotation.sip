@@ -40,13 +40,13 @@ Returns the optimal frame size
     void setDesignerForm( const QString &uiFile );
 %Docstring
  Sets the path to the Qt Designer UI file to show in the annotation.
-.. seealso:: designerForm()
+.. seealso:: :py:func:`designerForm()`
 %End
 
     QString designerForm() const;
 %Docstring
  Returns the path to the Qt Designer UI file to show in the annotation.
-.. seealso:: setDesignerForm()
+.. seealso:: :py:func:`setDesignerForm()`
  :rtype: str
 %End
 

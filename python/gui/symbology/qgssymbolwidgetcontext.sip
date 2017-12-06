@@ -42,13 +42,13 @@ class QgsSymbolWidgetContext
  Sets the map canvas associated with the widget. This allows the widget to retrieve the current
  map scale and other properties from the canvas.
  \param canvas map canvas
-.. seealso:: mapCanvas()
+.. seealso:: :py:func:`mapCanvas()`
 %End
 
     QgsMapCanvas *mapCanvas() const;
 %Docstring
  Returns the map canvas associated with the widget.
-.. seealso:: setMapCanvas()
+.. seealso:: :py:func:`setMapCanvas()`
  :rtype: QgsMapCanvas
 %End
 
@@ -58,8 +58,8 @@ class QgsSymbolWidgetContext
  evaluating data defined symbol properties and for populating based expression widgets in
  the layer widget.
  \param context expression context pointer. Ownership is not transferred.
-.. seealso:: expressionContext()
-.. seealso:: setAdditionalExpressionContextScopes()
+.. seealso:: :py:func:`expressionContext()`
+.. seealso:: :py:func:`setAdditionalExpressionContextScopes()`
 %End
 
     QgsExpressionContext *expressionContext() const;
@@ -67,7 +67,7 @@ class QgsSymbolWidgetContext
  Returns the expression context used for the widget, if set. This expression context is used for
  evaluating data defined symbol properties and for populating based expression widgets in
  the layer widget.
-.. seealso:: setExpressionContext()
+.. seealso:: :py:func:`setExpressionContext()`
  :rtype: QgsExpressionContext
 %End
 
@@ -75,13 +75,13 @@ class QgsSymbolWidgetContext
 %Docstring
  Sets a list of additional expression context scopes to show as available within the layer.
  \param scopes list of additional scopes which will be added in order to the end of the default expression context
-.. seealso:: setExpressionContext()
+.. seealso:: :py:func:`setExpressionContext()`
 %End
 
     QList< QgsExpressionContextScope > additionalExpressionContextScopes() const;
 %Docstring
  Returns the list of additional expression context scopes to show as available within the layer.
-.. seealso:: setAdditionalExpressionContextScopes()
+.. seealso:: :py:func:`setAdditionalExpressionContextScopes()`
  :rtype: list of QgsExpressionContextScope
 %End
 

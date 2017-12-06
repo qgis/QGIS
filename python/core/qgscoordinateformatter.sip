@@ -56,7 +56,7 @@ class QgsCoordinateFormatter
 
  Optional ``flags`` can be specified to control the output format.
 
-.. seealso:: formatY()
+.. seealso:: :py:func:`formatY()`
  :rtype: str
 %End
 
@@ -70,7 +70,7 @@ class QgsCoordinateFormatter
 
  Optional ``flags`` can be specified to control the output format.
 
-.. seealso:: formatX()
+.. seealso:: :py:func:`formatX()`
  :rtype: str
 %End
 

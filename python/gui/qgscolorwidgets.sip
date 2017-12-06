@@ -48,7 +48,7 @@ class QgsColorWidget : QWidget
 %Docstring
  Returns the current color for the widget
  :return: current widget color
-.. seealso:: setColor
+.. seealso:: :py:func:`setColor`
  :rtype: QColor
 %End
 
@@ -56,7 +56,7 @@ class QgsColorWidget : QWidget
 %Docstring
  Returns the color component which the widget controls
  :return: color component for widget
-.. seealso:: setComponent
+.. seealso:: :py:func:`setComponent`
  :rtype: ColorComponent
 %End
 
@@ -65,8 +65,8 @@ class QgsColorWidget : QWidget
  Returns the current value of the widget's color component
  :return: value of color component, or -1 if widget has multiple components or an invalid color
  set
-.. seealso:: setComponentValue
-.. seealso:: component
+.. seealso:: :py:func:`setComponentValue`
+.. seealso:: :py:func:`component`
  :rtype: int
 %End
 
@@ -84,14 +84,14 @@ class QgsColorWidget : QWidget
  Sets the color for the widget
  \param color widget color
  \param emitSignals set to true to emit the colorChanged signal after setting color
-.. seealso:: color
+.. seealso:: :py:func:`color`
 %End
 
     virtual void setComponent( const ColorComponent component );
 %Docstring
  Sets the color component which the widget controls
  \param component color component for widget
-.. seealso:: component
+.. seealso:: :py:func:`component`
 %End
 
     virtual void setComponentValue( const int value );
@@ -99,8 +99,8 @@ class QgsColorWidget : QWidget
  Alters the widget's color by setting the value for the widget's color component
  \param value value for widget's color component. This value is automatically
  clipped to the range of valid values for the color component.
-.. seealso:: componentValue
-.. seealso:: setComponent
+.. seealso:: :py:func:`componentValue`
+.. seealso:: :py:func:`setComponent`
 .. note::
 
    this method has no effect if the widget is set to the QgsColorWidget.Multiple
@@ -146,7 +146,7 @@ class QgsColorWidget : QWidget
  handles hue values when the color has an ambiguous hue (e.g., black or white shades)
  \param component color component to return
  :return: value of color component, or -1 if widget has an invalid color set
-.. seealso:: hue
+.. seealso:: :py:func:`hue`
  :rtype: int
 %End
 
@@ -194,7 +194,7 @@ class QgsColorWidgetAction: QWidgetAction
 {
 %Docstring
  An action containing a color widget, which can be embedded into a menu.
-.. seealso:: QgsColorWidget
+.. seealso:: :py:class:`QgsColorWidget`
 .. versionadded:: 2.14
 %End
 
@@ -224,14 +224,14 @@ class QgsColorWidgetAction: QWidgetAction
  \param dismiss set to true (default) to immediately close the menu when a color is selected
  from the widget. If set to false, the colorChanged signal will be emitted but the menu will
  stay open.
-.. seealso:: dismissOnColorSelection()
+.. seealso:: :py:func:`dismissOnColorSelection()`
 %End
 
     bool dismissOnColorSelection() const;
 %Docstring
  Returns whether the parent menu will be dismissed after a color is selected from the
  action's color widget.
-.. seealso:: setDismissOnColorSelection
+.. seealso:: :py:func:`setDismissOnColorSelection`
  :rtype: bool
 %End
 
@@ -369,14 +369,14 @@ class QgsColorRampWidget : QgsColorWidget
 %Docstring
  Sets the orientation for the color ramp
  \param orientation new orientation for the ramp
-.. seealso:: orientation
+.. seealso:: :py:func:`orientation`
 %End
 
     Orientation orientation() const;
 %Docstring
  Fetches the orientation for the color ramp
  :return: orientation for the ramp
-.. seealso:: setOrientation
+.. seealso:: :py:func:`setOrientation`
  :rtype: Orientation
 %End
 
@@ -384,14 +384,14 @@ class QgsColorRampWidget : QgsColorWidget
 %Docstring
  Sets the margin between the edge of the widget and the ramp
  \param margin margin around the ramp
-.. seealso:: interiorMargin
+.. seealso:: :py:func:`interiorMargin`
 %End
 
     int interiorMargin() const;
 %Docstring
  Fetches the margin between the edge of the widget and the ramp
  :return: margin around the ramp
-.. seealso:: setInteriorMargin
+.. seealso:: :py:func:`setInteriorMargin`
  :rtype: int
 %End
 
@@ -399,14 +399,14 @@ class QgsColorRampWidget : QgsColorWidget
 %Docstring
  Sets whether the ramp should be drawn within a frame
  \param showFrame set to true to draw a frame around the ramp
-.. seealso:: showFrame
+.. seealso:: :py:func:`showFrame`
 %End
 
     bool showFrame() const;
 %Docstring
  Fetches whether the ramp is drawn within a frame
  :return: true if a frame is drawn around the ramp
-.. seealso:: setShowFrame
+.. seealso:: :py:func:`setShowFrame`
  :rtype: bool
 %End
 
@@ -518,8 +518,8 @@ class QgsColorPreviewWidget : QgsColorWidget
  Returns the secondary color for the widget
  :return: secondary widget color, or an invalid color if the widget
  has no secondary color
-.. seealso:: color
-.. seealso:: setColor2
+.. seealso:: :py:func:`color`
+.. seealso:: :py:func:`setColor2`
  :rtype: QColor
 %End
 
@@ -530,8 +530,8 @@ class QgsColorPreviewWidget : QgsColorWidget
  Sets the second color for the widget
  \param color secondary widget color. Set to an invalid color to prevent
  drawing of a secondary color
-.. seealso:: setColor
-.. seealso:: color2
+.. seealso:: :py:func:`setColor`
+.. seealso:: :py:func:`color2`
 %End
 
   protected:

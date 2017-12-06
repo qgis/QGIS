@@ -44,7 +44,7 @@ class QgsTinInterpolator: QgsInterpolator
  Returns the fields output by features when saving the triangulation.
  These fields should be used when creating
  a suitable feature sink for setTriangulationSink()
-.. seealso:: setTriangulationSink()
+.. seealso:: :py:func:`setTriangulationSink()`
 .. versionadded:: 3.0
  :rtype: QgsFields
 %End
@@ -56,7 +56,7 @@ class QgsTinInterpolator: QgsInterpolator
  The sink must be setup to accept LineString features, with fields matching
  those returned by triangulationFields().
 
-.. seealso:: triangulationFields()
+.. seealso:: :py:func:`triangulationFields()`
 .. versionadded:: 3.0
 %End
 

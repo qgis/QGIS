@@ -121,7 +121,7 @@ return a new renderer - used by default in vector layers
  \param context  Additional information passed to the renderer about the job which will be rendered
  \param fields   The fields available for rendering
 
-.. seealso:: stopRender()
+.. seealso:: :py:func:`stopRender()`
 
  \warning This method is not thread safe. Before calling startRender() in a non-main thread,
  the renderer should instead be cloned and startRender()/stopRender() called on the clone.
@@ -136,7 +136,7 @@ return a new renderer - used by default in vector layers
  \warning This method is not thread safe. Before calling startRender() in a non-main thread,
  the renderer should instead be cloned and startRender()/stopRender() called on the clone.
 
-.. seealso:: startRender()
+.. seealso:: :py:func:`startRender()`
 %End
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
@@ -190,8 +190,8 @@ return a new renderer - used by default in vector layers
  If layer is not -1, the renderer should draw only a particula layer from symbols
  (in order to support symbol level rendering).
 
-.. seealso:: startRender()
-.. seealso:: stopRender()
+.. seealso:: :py:func:`startRender()`
+.. seealso:: :py:func:`stopRender()`
  :rtype: bool
 %End
 
@@ -366,7 +366,7 @@ set type and size of editing vertex markers for subsequent rendering
  Returns the current paint effect for the renderer.
  :return: paint effect
 .. versionadded:: 2.9
-.. seealso:: setPaintEffect
+.. seealso:: :py:func:`setPaintEffect`
  :rtype: QgsPaintEffect
 %End
 
@@ -375,14 +375,14 @@ set type and size of editing vertex markers for subsequent rendering
  Sets the current paint effect for the renderer.
  \param effect paint effect. Ownership is transferred to the renderer.
 .. versionadded:: 2.9
-.. seealso:: paintEffect
+.. seealso:: :py:func:`paintEffect`
 %End
 
     bool forceRasterRender() const;
 %Docstring
  Returns whether the renderer must render as a raster.
 .. versionadded:: 2.12
-.. seealso:: setForceRasterRender
+.. seealso:: :py:func:`setForceRasterRender`
  :rtype: bool
 %End
 
@@ -392,7 +392,7 @@ set type and size of editing vertex markers for subsequent rendering
  \param forceRaster set to true if renderer must be drawn on a raster surface.
  This may be desirable for highly detailed layers where rendering as a vector
  would result in a large, complex vector output.
-.. seealso:: forceRasterRender
+.. seealso:: :py:func:`forceRasterRender`
 .. versionadded:: 2.12
 %End
 
@@ -403,7 +403,7 @@ set type and size of editing vertex markers for subsequent rendering
 .. note::
 
    this property has no effect if orderByEnabled() is false
-.. seealso:: orderByEnabled()
+.. seealso:: :py:func:`orderByEnabled()`
  :rtype: QgsFeatureRequest.OrderBy
 %End
 
@@ -414,15 +414,15 @@ set type and size of editing vertex markers for subsequent rendering
 
    this property has no effect if orderByEnabled() is false
 .. versionadded:: 2.14
-.. seealso:: setOrderByEnabled()
+.. seealso:: :py:func:`setOrderByEnabled()`
 %End
 
     bool orderByEnabled() const;
 %Docstring
  Returns whether custom ordering will be applied before features are processed by this renderer.
 .. versionadded:: 2.14
-.. seealso:: orderBy()
-.. seealso:: setOrderByEnabled()
+.. seealso:: :py:func:`orderBy()`
+.. seealso:: :py:func:`setOrderByEnabled()`
  :rtype: bool
 %End
 
@@ -431,8 +431,8 @@ set type and size of editing vertex markers for subsequent rendering
  Sets whether custom ordering should be applied before features are processed by this renderer.
  \param enabled set to true to enable custom feature ordering
 .. versionadded:: 2.14
-.. seealso:: setOrderBy()
-.. seealso:: orderByEnabled()
+.. seealso:: :py:func:`setOrderBy()`
+.. seealso:: :py:func:`orderByEnabled()`
 %End
 
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );
@@ -440,7 +440,7 @@ set type and size of editing vertex markers for subsequent rendering
  Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
  does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
  \param subRenderer the embedded renderer. Ownership will be transferred.
-.. seealso:: embeddedRenderer()
+.. seealso:: :py:func:`embeddedRenderer()`
 .. versionadded:: 2.16
 %End
 
@@ -448,7 +448,7 @@ set type and size of editing vertex markers for subsequent rendering
 %Docstring
  Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
  implementation does not use subrenderers and will always return null.
-.. seealso:: setEmbeddedRenderer()
+.. seealso:: :py:func:`setEmbeddedRenderer()`
 .. versionadded:: 2.16
  :rtype: QgsFeatureRenderer
 %End

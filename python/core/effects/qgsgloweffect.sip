@@ -42,18 +42,18 @@ class QgsGlowEffect : QgsPaintEffect
 %Docstring
  Sets the spread distance for drawing the glow effect.
  \param spread spread distance. Units are specified via setSpreadUnit()
-.. seealso:: spread
-.. seealso:: setSpreadUnit
-.. seealso:: setSpreadMapUnitScale
+.. seealso:: :py:func:`spread`
+.. seealso:: :py:func:`setSpreadUnit`
+.. seealso:: :py:func:`setSpreadMapUnitScale`
 %End
 
     double spread() const;
 %Docstring
  Returns the spread distance used for drawing the glow effect.
  :return: spread distance. Units are retrieved via spreadUnit()
-.. seealso:: setSpread
-.. seealso:: spreadUnit
-.. seealso:: spreadMapUnitScale
+.. seealso:: :py:func:`setSpread`
+.. seealso:: :py:func:`spreadUnit`
+.. seealso:: :py:func:`spreadMapUnitScale`
  :rtype: float
 %End
 
@@ -61,18 +61,18 @@ class QgsGlowEffect : QgsPaintEffect
 %Docstring
  Sets the units used for the glow spread distance.
  \param unit units for spread distance
-.. seealso:: spreadUnit
-.. seealso:: setSpread
-.. seealso:: setSpreadMapUnitScale
+.. seealso:: :py:func:`spreadUnit`
+.. seealso:: :py:func:`setSpread`
+.. seealso:: :py:func:`setSpreadMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit spreadUnit() const;
 %Docstring
  Returns the units used for the glow spread distance.
  :return: units for spread distance
-.. seealso:: setSpreadUnit
-.. seealso:: spread
-.. seealso:: spreadMapUnitScale
+.. seealso:: :py:func:`setSpreadUnit`
+.. seealso:: :py:func:`spread`
+.. seealso:: :py:func:`spreadMapUnitScale`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -80,18 +80,18 @@ class QgsGlowEffect : QgsPaintEffect
 %Docstring
  Sets the map unit scale used for the spread distance.
  \param scale map unit scale for spread distance
-.. seealso:: spreadMapUnitScale
-.. seealso:: setSpread
-.. seealso:: setSpreadUnit
+.. seealso:: :py:func:`spreadMapUnitScale`
+.. seealso:: :py:func:`setSpread`
+.. seealso:: :py:func:`setSpreadUnit`
 %End
 
     const QgsMapUnitScale &spreadMapUnitScale() const;
 %Docstring
  Returns the map unit scale used for the spread distance.
  :return: map unit scale for spread distance
-.. seealso:: setSpreadMapUnitScale
-.. seealso:: spread
-.. seealso:: spreadUnit
+.. seealso:: :py:func:`setSpreadMapUnitScale`
+.. seealso:: :py:func:`spread`
+.. seealso:: :py:func:`spreadUnit`
  :rtype: QgsMapUnitScale
 %End
 
@@ -101,7 +101,7 @@ class QgsGlowEffect : QgsPaintEffect
  output from the glow effect.
  \param level blur level. Values between 0 and 16 are valid, with larger
  values indicating greater blur strength.
-.. seealso:: blurLevel
+.. seealso:: :py:func:`blurLevel`
 %End
 
     int blurLevel() const;
@@ -109,7 +109,7 @@ class QgsGlowEffect : QgsPaintEffect
  Returns the blur level (strength) for the glow.
  :return: blur level. Value will be between 0 and 16, with larger
  values indicating greater blur strength.
-.. seealso:: setBlurLevel
+.. seealso:: :py:func:`setBlurLevel`
  :rtype: int
 %End
 
@@ -118,7 +118,7 @@ class QgsGlowEffect : QgsPaintEffect
  Sets the ``opacity`` for the effect.
  \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
-.. seealso:: opacity()
+.. seealso:: :py:func:`opacity()`
 %End
 
     double opacity() const;
@@ -126,7 +126,7 @@ class QgsGlowEffect : QgsPaintEffect
  Returns the opacity for the effect.
  :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
-.. seealso:: setOpacity().
+.. seealso:: :py:func:`setOpacity()`
  :rtype: float
 %End
 
@@ -136,8 +136,8 @@ class QgsGlowEffect : QgsPaintEffect
  is set to SingleColor. The glow will fade between the specified color and
  a totally transparent version of the color.
  \param color glow color
-.. seealso:: color
-.. seealso:: setColorType
+.. seealso:: :py:func:`color`
+.. seealso:: :py:func:`setColorType`
 %End
 
     QColor color() const;
@@ -146,8 +146,8 @@ class QgsGlowEffect : QgsPaintEffect
  is set to SingleColor. The glow will fade between the specified color and
  a totally transparent version of the color.
  :return: glow color
-.. seealso:: setColor
-.. seealso:: colorType
+.. seealso:: :py:func:`setColor`
+.. seealso:: :py:func:`colorType`
  :rtype: QColor
 %End
 
@@ -156,8 +156,8 @@ class QgsGlowEffect : QgsPaintEffect
  Sets the color ramp for the glow. This only applies if the colorType()
  is set to ColorRamp. The glow will utilize colors from the ramp.
  \param ramp color ramp for glow. Ownership of the ramp is transferred to the effect.
-.. seealso:: ramp
-.. seealso:: setColorType
+.. seealso:: :py:func:`ramp`
+.. seealso:: :py:func:`setColorType`
 %End
 
     QgsColorRamp *ramp() const;
@@ -165,8 +165,8 @@ class QgsGlowEffect : QgsPaintEffect
  Returns the color ramp used for the glow. This only applies if the colorType()
  is set to ColorRamp. The glow will utilize colors from the ramp.
  :return: color ramp for glow
-.. seealso:: setRamp
-.. seealso:: colorType
+.. seealso:: :py:func:`setRamp`
+.. seealso:: :py:func:`colorType`
  :rtype: QgsColorRamp
 %End
 
@@ -175,7 +175,7 @@ class QgsGlowEffect : QgsPaintEffect
  Sets the blend mode for the effect
  \param mode blend mode used for drawing the effect on to a destination
  paint device
-.. seealso:: blendMode
+.. seealso:: :py:func:`blendMode`
 %End
 
     QPainter::CompositionMode blendMode() const;
@@ -183,7 +183,7 @@ class QgsGlowEffect : QgsPaintEffect
  Returns the blend mode for the effect
  :return: blend mode used for drawing the effect on to a destination
  paint device
-.. seealso:: setBlendMode
+.. seealso:: :py:func:`setBlendMode`
  :rtype: QPainter.CompositionMode
 %End
 
@@ -193,9 +193,9 @@ class QgsGlowEffect : QgsPaintEffect
  color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
  for the glow.
  \param colorType color type to use for glow
-.. seealso:: colorType
-.. seealso:: setColor
-.. seealso:: setRamp
+.. seealso:: :py:func:`colorType`
+.. seealso:: :py:func:`setColor`
+.. seealso:: :py:func:`setRamp`
 %End
 
     GlowColorType colorType() const;
@@ -203,9 +203,9 @@ class QgsGlowEffect : QgsPaintEffect
  Returns the color mode used for the glow. The glow can either be drawn using a QgsColorRamp
  color ramp or by specificing a single color.
  :return: current color mode used for the glow
-.. seealso:: setColorType
-.. seealso:: color
-.. seealso:: ramp
+.. seealso:: :py:func:`setColorType`
+.. seealso:: :py:func:`color`
+.. seealso:: :py:func:`ramp`
  :rtype: GlowColorType
 %End
 

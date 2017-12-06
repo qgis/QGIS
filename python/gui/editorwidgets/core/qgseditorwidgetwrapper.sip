@@ -63,7 +63,7 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 
  :return: The index of the field you are working on
 
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
  :rtype: int
 %End
 
@@ -73,7 +73,7 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 
  :return: The field you are working on
 
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
  :rtype: QgsField
 %End
 
@@ -83,7 +83,7 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 
  :return: the default value of the field
 
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
  :rtype: QVariant
 %End
 
@@ -144,8 +144,8 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
  :return: true if the constraint is valid or if there's no constraint,
  false otherwise
 .. versionadded:: 2.16
-.. seealso:: constraintFailureReason()
-.. seealso:: isBlockingCommit()
+.. seealso:: :py:func:`constraintFailureReason()`
+.. seealso:: :py:func:`isBlockingCommit()`
  :rtype: bool
 %End
 
@@ -154,7 +154,7 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
  Returns true if the widget is preventing the feature from being committed. This may be true as a result
  of attribute values failing enforced field constraints.
 .. versionadded:: 3.0
-.. seealso:: isValidConstraint()
+.. seealso:: :py:func:`isValidConstraint()`
  :rtype: bool
 %End
 
@@ -162,7 +162,7 @@ class QgsEditorWidgetWrapper : QgsWidgetWrapper
 %Docstring
  Returns the reason why a constraint check has failed (or an empty string
  if constraint check was successful).
-.. seealso:: isValidConstraint()
+.. seealso:: :py:func:`isValidConstraint()`
 .. versionadded:: 3.0
  :rtype: str
 %End

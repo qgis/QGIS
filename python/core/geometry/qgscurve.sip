@@ -39,14 +39,14 @@ class QgsCurve: QgsAbstractGeometry
     virtual QgsPoint startPoint() const = 0;
 %Docstring
  Returns the starting point of the curve.
-.. seealso:: endPoint
+.. seealso:: :py:func:`endPoint`
  :rtype: QgsPoint
 %End
 
     virtual QgsPoint endPoint() const = 0;
 %Docstring
  Returns the end point of the curve.
-.. seealso:: startPoint
+.. seealso:: :py:func:`startPoint`
  :rtype: QgsPoint
 %End
 
@@ -158,7 +158,7 @@ class QgsCurve: QgsAbstractGeometry
  Returns the x-coordinate of the specified node in the line string.
  \param index index of node, where the first node in the line is 0
  :return: x-coordinate of node, or 0.0 if index is out of bounds
-.. seealso:: setXAt()
+.. seealso:: :py:func:`setXAt()`
  :rtype: float
 %End
 
@@ -167,7 +167,7 @@ class QgsCurve: QgsAbstractGeometry
  Returns the y-coordinate of the specified node in the line string.
  \param index index of node, where the first node in the line is 0
  :return: y-coordinate of node, or 0.0 if index is out of bounds
-.. seealso:: setYAt()
+.. seealso:: :py:func:`setYAt()`
  :rtype: float
 %End
 

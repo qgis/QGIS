@@ -18,7 +18,7 @@ class QgsEditorConfigWidget : QWidget, QgsExpressionContextGenerator
 
  It implements the GUI configuration widget and transforms this to/from a configuration.
 
-.. seealso:: QgsEditorWidgetFactory}
+.. seealso:: :py:class:`QgsEditorWidgetFactory`
 %End
 
 %TypeHeaderCode

@@ -90,7 +90,7 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  Returns true if a repeating lock is set for the constraint. Repeating locks are not
  automatically cleared after a new point is added.
 .. versionadded:: 2.16
-.. seealso:: setRepeatingLock()
+.. seealso:: :py:func:`setRepeatingLock()`
  :rtype: bool
 %End
 
@@ -123,7 +123,7 @@ class QgsAdvancedDigitizingDockWidget : QgsDockWidget
  automatically cleared after a new point is added.
  \param repeating set to true to set the lock to repeat automatically
 .. versionadded:: 2.16
-.. seealso:: isRepeatingLock()
+.. seealso:: :py:func:`isRepeatingLock()`
 %End
 
         void setRelative( bool relative );

@@ -44,14 +44,14 @@ class QgsGraphEdge
     int toVertex() const;
 %Docstring
  Returns the index of the vertex at the end of this edge.
-.. seealso:: fromVertex()
+.. seealso:: :py:func:`fromVertex()`
  :rtype: int
 %End
 
     int fromVertex() const;
 %Docstring
  Returns the index of the vertex at the start of this edge.
-.. seealso:: toVertex()
+.. seealso:: :py:func:`toVertex()`
  :rtype: int
 %End
 
@@ -86,14 +86,14 @@ class QgsGraphVertex
     QgsGraphEdgeIds incomingEdges() const;
 %Docstring
  Returns the incoming edge ids, i.e. edges which end at this node.
-.. seealso:: outgoingEdges()
+.. seealso:: :py:func:`outgoingEdges()`
  :rtype: QgsGraphEdgeIds
 %End
 
     QgsGraphEdgeIds outgoingEdges() const;
 %Docstring
  Returns outgoing edge ids, i.e. edges which start at this node.
-.. seealso:: incomingEdges()
+.. seealso:: :py:func:`incomingEdges()`
  :rtype: QgsGraphEdgeIds
 %End
 

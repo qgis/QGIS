@@ -77,7 +77,7 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
     QgsPoint center() const;
 %Docstring
  Returns the center point of the regular polygon.
-.. seealso:: setCenter()
+.. seealso:: :py:func:`setCenter()`
  :rtype: QgsPoint
 %End
 
@@ -85,15 +85,15 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
 %Docstring
  Returns the radius.
  This is also the radius of the circumscribing circle.
-.. seealso:: apothem()
-.. seealso:: setRadius()
+.. seealso:: :py:func:`apothem()`
+.. seealso:: :py:func:`setRadius()`
  :rtype: float
 %End
 
     QgsPoint firstVertex() const;
 %Docstring
  Returns the first vertex (corner) of the regular polygon.
-.. seealso:: setFirstVertex()
+.. seealso:: :py:func:`setFirstVertex()`
  :rtype: QgsPoint
 %End
 
@@ -101,42 +101,42 @@ A regular polygon is empty if radius equal to 0 or number of sides < 3
 %Docstring
  Returns the apothem of the regular polygon.
  The apothem is the radius of the inscribed circle.
-.. seealso:: radius()
+.. seealso:: :py:func:`radius()`
  :rtype: float
 %End
 
     unsigned int numberSides() const;
 %Docstring
  Returns the number of sides of the regular polygon.
-.. seealso:: setNumberSides()
+.. seealso:: :py:func:`setNumberSides()`
 %End
 
     void setCenter( const QgsPoint &center );
 %Docstring
  Sets the center point.
  Radius is unchanged. The first vertex is reprojected from the new center.
-.. seealso:: center()
+.. seealso:: :py:func:`center()`
 %End
 
     void setRadius( const double radius );
 %Docstring
  Sets the radius.
  Center is unchanged. The first vertex is reprojected from the center with the new radius.
-.. seealso:: radius()
+.. seealso:: :py:func:`radius()`
 %End
 
     void setFirstVertex( const QgsPoint &firstVertex );
 %Docstring
  Sets the first vertex.
  Radius is unchanged. The center is reprojected from the new first vertex.
-.. seealso:: firstVertex()
+.. seealso:: :py:func:`firstVertex()`
 %End
 
     void setNumberSides( const unsigned int numberSides );
 %Docstring
  Sets the number of sides.
  If numberSides < 3, the number of sides is unchanged.
-.. seealso:: numberSides()
+.. seealso:: :py:func:`numberSides()`
 %End
 
     QgsPointSequence points() const;

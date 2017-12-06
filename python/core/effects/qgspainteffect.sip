@@ -30,7 +30,7 @@ class QgsPaintEffect
  method. This will perform the paint effect on the intercepted drawing operations
  and render the result to the render context's paint device.
 
-.. seealso:: QgsPaintEffectRegistry
+.. seealso:: :py:class:`QgsPaintEffectRegistry`
 .. versionadded:: 2.9
 %End
 
@@ -111,8 +111,8 @@ class QgsPaintEffect
  Returns the properties describing the paint effect encoded in a
  string format.
  :return: string map of properties, in the form property key, value
-.. seealso:: readProperties
-.. seealso:: saveProperties
+.. seealso:: :py:func:`readProperties`
+.. seealso:: :py:func:`saveProperties`
  :rtype: QgsStringMap
 %End
 
@@ -121,7 +121,7 @@ class QgsPaintEffect
  Reads a string map of an effect's properties and restores the effect
  to the state described by the properties map.
  \param props effect properties encoded in a string map
-.. seealso:: properties
+.. seealso:: :py:func:`properties`
 %End
 
     virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
@@ -132,7 +132,7 @@ class QgsPaintEffect
  \param doc destination DOM document
  \param element destination DOM element
  :return: true if save was successful
-.. seealso:: readProperties
+.. seealso:: :py:func:`readProperties`
  :rtype: bool
 %End
 
@@ -141,7 +141,7 @@ class QgsPaintEffect
  Restores the effect to the state described by a DOM element.
  \param element DOM element describing an effect's state
  :return: true if read was successful
-.. seealso:: saveProperties
+.. seealso:: :py:func:`saveProperties`
  :rtype: bool
 %End
 
@@ -150,7 +150,7 @@ class QgsPaintEffect
  Renders a picture using the effect.
  \param picture source QPicture to render
  \param context destination render context
-.. seealso:: begin
+.. seealso:: :py:func:`begin`
 %End
 
     virtual void begin( QgsRenderContext &context );
@@ -159,8 +159,8 @@ class QgsPaintEffect
  end() member is called all intercepted paint operations will be
  drawn to the render context after being modified by the effect.
  \param context destination render context
-.. seealso:: end
-.. seealso:: render
+.. seealso:: :py:func:`end`
+.. seealso:: :py:func:`render`
 %End
 
     virtual void end( QgsRenderContext &context );
@@ -168,14 +168,14 @@ class QgsPaintEffect
  Ends interception of paint operations to a render context, and draws the result
  to the render context after being modified by the effect.
  \param context destination render context
-.. seealso:: begin
+.. seealso:: :py:func:`begin`
 %End
 
     bool enabled() const;
 %Docstring
  Returns whether the effect is enabled
  :return: true if effect is enabled
-.. seealso:: setEnabled
+.. seealso:: :py:func:`setEnabled`
  :rtype: bool
 %End
 
@@ -183,7 +183,7 @@ class QgsPaintEffect
 %Docstring
  Sets whether the effect is enabled
  \param enabled set to false to disable the effect
-.. seealso:: enabled
+.. seealso:: :py:func:`enabled`
 %End
 
     DrawMode drawMode() const;
@@ -191,7 +191,7 @@ class QgsPaintEffect
  Returns the draw mode for the effect. This property only has an
  effect if the paint effect is used in a QgsEffectStack.
  :return: draw mode for effect
-.. seealso:: setDrawMode
+.. seealso:: :py:func:`setDrawMode`
  :rtype: DrawMode
 %End
 
@@ -200,7 +200,7 @@ class QgsPaintEffect
  Sets the draw mode for the effect. This property only has an
  effect if the paint effect is used in a QgsEffectStack.
  \param drawMode draw mode for effect
-.. seealso:: drawMode
+.. seealso:: :py:func:`drawMode`
 %End
 
   protected:
@@ -212,7 +212,7 @@ class QgsPaintEffect
  Derived classes must reimplement this method to apply any transformations to
  the source QPicture and draw the result using the context's painter.
  \param context destination render context
-.. seealso:: drawSource
+.. seealso:: :py:func:`drawSource`
 %End
 
     void drawSource( QPainter &painter );
@@ -220,8 +220,8 @@ class QgsPaintEffect
  Draws the source QPicture onto the specified painter. Handles scaling of the picture
  to account for the destination painter's DPI.
  \param painter destination painter
-.. seealso:: source
-.. seealso:: sourceAsImage
+.. seealso:: :py:func:`source`
+.. seealso:: :py:func:`sourceAsImage`
 %End
 
     const QPicture *source() const;
@@ -229,8 +229,8 @@ class QgsPaintEffect
  Returns the source QPicture. The draw() member can utilize this when
  drawing the effect.
  :return: source QPicture
-.. seealso:: drawSource
-.. seealso:: sourceAsImage
+.. seealso:: :py:func:`drawSource`
+.. seealso:: :py:func:`sourceAsImage`
  :rtype: QPicture
 %End
 
@@ -241,10 +241,10 @@ class QgsPaintEffect
  source QPicture by the results of the boundingRect() method.
  The result is cached to speed up subsequent calls to sourceAsImage.
  :return: source QPicture rendered to an image
-.. seealso:: drawSource
-.. seealso:: source
-.. seealso:: imageOffset
-.. seealso:: boundingRect
+.. seealso:: :py:func:`drawSource`
+.. seealso:: :py:func:`source`
+.. seealso:: :py:func:`imageOffset`
+.. seealso:: :py:func:`boundingRect`
  :rtype: QImage
 %End
 
@@ -254,7 +254,7 @@ class QgsPaintEffect
  render context.
  \param context destination render context
  :return: point offset for image top left corner
-.. seealso:: sourceAsImage
+.. seealso:: :py:func:`sourceAsImage`
  :rtype: QPointF
 %End
 
@@ -266,7 +266,7 @@ class QgsPaintEffect
  \param rect original source bounding rect
  \param context destination render context
  :return: modified bounding rect
-.. seealso:: sourceAsImage
+.. seealso:: :py:func:`sourceAsImage`
  :rtype: QRectF
 %End
 
@@ -322,7 +322,7 @@ Constructor for QgsDrawSourceEffect
  Sets the ``opacity`` for the effect.
  \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
-.. seealso:: opacity()
+.. seealso:: :py:func:`opacity()`
 %End
 
     double opacity() const;
@@ -330,7 +330,7 @@ Constructor for QgsDrawSourceEffect
  Returns the opacity for the effect
  :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
-.. seealso:: setOpacity()
+.. seealso:: :py:func:`setOpacity()`
  :rtype: float
 %End
 
@@ -339,7 +339,7 @@ Constructor for QgsDrawSourceEffect
  Sets the blend mode for the effect
  \param mode blend mode used for drawing the source on to a destination
  paint device
-.. seealso:: blendMode
+.. seealso:: :py:func:`blendMode`
 %End
 
     QPainter::CompositionMode blendMode() const;
@@ -347,7 +347,7 @@ Constructor for QgsDrawSourceEffect
  Returns the blend mode for the effect
  :return: blend mode used for drawing the source on to a destination
  paint device
-.. seealso:: setBlendMode
+.. seealso:: :py:func:`setBlendMode`
  :rtype: QPainter.CompositionMode
 %End
 

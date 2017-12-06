@@ -36,7 +36,7 @@ class QgsPreviewEffect: QGraphicsEffect
  Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
  \param mode PreviewMode to use to draw the widget
 .. versionadded:: 2.3
-.. seealso:: mode
+.. seealso:: :py:func:`mode`
 %End
 
     PreviewMode mode() const;
@@ -44,7 +44,7 @@ class QgsPreviewEffect: QGraphicsEffect
  Returns the mode used for the preview effect.
  :return: PreviewMode currently used by the effect
 .. versionadded:: 2.3
-.. seealso:: setMode
+.. seealso:: :py:func:`setMode`
  :rtype: PreviewMode
 %End
 

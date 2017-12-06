@@ -66,7 +66,7 @@ class QgsColorDialog : QDialog
  \param title the title of the dialog.
  \param allowOpacity set to true to allow modification of color opacity value (transparency)
  :return: Selected color on accepted() or initialColor on rejected().
-.. seealso:: getColor
+.. seealso:: :py:func:`getColor`
  :rtype: QColor
 %End
 
@@ -79,7 +79,7 @@ class QgsColorDialog : QDialog
  \param title the title of the dialog.
  \param allowOpacity set to true to allow modification of color opacity value (transparency)
  :return: Selected color on accepted() or initialColor on rejected().
-.. seealso:: getLiveColor
+.. seealso:: :py:func:`getLiveColor`
  :rtype: QColor
 %End
 

@@ -54,7 +54,7 @@ class QgsLocator : QObject
  locator.
  \warning Plugins which register filters to the locator must take care to correctly call
  deregisterFilter() and deregister their filters upon plugin unload to avoid crashes.
-.. seealso:: deregisterFilter()
+.. seealso:: :py:func:`deregisterFilter()`
 %End
 
     void deregisterFilter( QgsLocatorFilter *filter );
@@ -65,13 +65,13 @@ class QgsLocator : QObject
  Plugins which register filters to the locator must take care to correctly call
  deregisterFilter() to deregister their filters upon plugin unload to avoid crashes.
 
-.. seealso:: registerFilter()
+.. seealso:: :py:func:`registerFilter()`
 %End
 
     QList< QgsLocatorFilter *> filters();
 %Docstring
  Returns the list of filters registered in the locator.
-.. seealso:: prefixedFilters()
+.. seealso:: :py:func:`prefixedFilters()`
  :rtype: list of QgsLocatorFilter
 %End
 
@@ -79,7 +79,7 @@ class QgsLocator : QObject
 %Docstring
  Returns a map of prefix to filter, for all registered filters
  with valid prefixes.
-.. seealso:: filters()
+.. seealso:: :py:func:`filters()`
  :rtype: QMap< str, QgsLocatorFilter *>
 %End
 
@@ -99,14 +99,14 @@ class QgsLocator : QObject
 %Docstring
  Cancels any current running query, and blocks until query is completely canceled by
  all filters.
-.. seealso:: cancelWithoutBlocking()
+.. seealso:: :py:func:`cancelWithoutBlocking()`
 %End
 
     void cancelWithoutBlocking();
 %Docstring
  Triggers cancelation of any current running query without blocking. The query may
  take some time to cancel after calling this.
-.. seealso:: cancel()
+.. seealso:: :py:func:`cancel()`
 %End
 
     bool isRunning() const;

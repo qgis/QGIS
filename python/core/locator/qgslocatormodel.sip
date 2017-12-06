@@ -43,7 +43,7 @@ class QgsLocatorModel : QAbstractTableModel
     void clear();
 %Docstring
  Resets the model and clears all existing results.
-.. seealso:: deferredClear()
+.. seealso:: :py:func:`deferredClear()`
 %End
 
     void deferredClear();
@@ -51,7 +51,7 @@ class QgsLocatorModel : QAbstractTableModel
  Resets the model and clears all existing results after a short delay, or whenever the next result is added to the model
  (whichever occurs first). Using deferredClear() instead of clear() can avoid the visually distracting frequent clears
  which may occur if the model is being updated quickly multiple times as a result of users typing in a search query.
-.. seealso:: deferredClear()
+.. seealso:: :py:func:`deferredClear()`
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;

@@ -52,8 +52,8 @@ class QgsMapLayerStore : QObject
  Retrieve a pointer to a layer by layer ``id``.
  \param id ID of layer to retrieve
  :return: matching layer, or None if no matching layer found
-.. seealso:: mapLayersByName()
-.. seealso:: mapLayers()
+.. seealso:: :py:func:`mapLayersByName()`
+.. seealso:: :py:func:`mapLayers()`
  :rtype: QgsMapLayer
 %End
 
@@ -62,17 +62,17 @@ class QgsMapLayerStore : QObject
  Retrieve a list of matching layers by layer ``name``.
  \param name name of layers to match
  :return: list of matching layers
-.. seealso:: mapLayer()
-.. seealso:: mapLayers()
+.. seealso:: :py:func:`mapLayer()`
+.. seealso:: :py:func:`mapLayers()`
  :rtype: list of QgsMapLayer
 %End
 
     QMap<QString, QgsMapLayer *> mapLayers() const;
 %Docstring
  Returns a map of all layers by layer ID.
-.. seealso:: mapLayer()
-.. seealso:: mapLayersByName()
-.. seealso:: layers()
+.. seealso:: :py:func:`mapLayer()`
+.. seealso:: :py:func:`mapLayersByName()`
+.. seealso:: :py:func:`layers()`
  :rtype: QMap<str, QgsMapLayer *>
 %End
 
@@ -95,7 +95,7 @@ class QgsMapLayerStore : QObject
          successfully. If a layer is invalid, or already exists in the store,
          it will not be part of the returned list.
 
-.. seealso:: addMapLayer()
+.. seealso:: :py:func:`addMapLayer()`
  :rtype: list of QgsMapLayer
 %End
 
@@ -117,12 +117,12 @@ class QgsMapLayerStore : QObject
 
  :return: None if unable to add layer, otherwise pointer to newly added layer
 
-.. seealso:: addMapLayers
+.. seealso:: :py:func:`addMapLayers`
 
 .. note::
 
    Use addMapLayers() if adding more than one layer at a time.
-.. seealso:: addMapLayers()
+.. seealso:: :py:func:`addMapLayers()`
  :rtype: QgsMapLayer
 %End
 
@@ -136,9 +136,9 @@ class QgsMapLayerStore : QObject
 
  \param layerIds list of IDs of the layers to remove
 
-.. seealso:: takeMapLayer()
-.. seealso:: removeMapLayer()
-.. seealso:: removeAllMapLayers()
+.. seealso:: :py:func:`takeMapLayer()`
+.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeAllMapLayers()`
 .. note::
 
    available in Python bindings as removeMapLayersById.
@@ -154,9 +154,9 @@ class QgsMapLayerStore : QObject
 
  \param layers A list of layers to remove. Null pointers are ignored.
 
-.. seealso:: takeMapLayer()
-.. seealso:: removeMapLayer()
-.. seealso:: removeAllMapLayers()
+.. seealso:: :py:func:`takeMapLayer()`
+.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeAllMapLayers()`
 %End
 
     void removeMapLayer( const QString &id );
@@ -168,9 +168,9 @@ class QgsMapLayerStore : QObject
 
  \param id ID of the layer to remove
 
-.. seealso:: takeMapLayer()
-.. seealso:: removeMapLayers()
-.. seealso:: removeAllMapLayers()
+.. seealso:: :py:func:`takeMapLayer()`
+.. seealso:: :py:func:`removeMapLayers()`
+.. seealso:: :py:func:`removeAllMapLayers()`
 %End
 
     void removeMapLayer( QgsMapLayer *layer );
@@ -182,9 +182,9 @@ class QgsMapLayerStore : QObject
 
  \param layer The layer to remove. Null pointers are ignored.
 
-.. seealso:: takeMapLayer()
-.. seealso:: removeMapLayers()
-.. seealso:: removeAllMapLayers()
+.. seealso:: :py:func:`takeMapLayer()`
+.. seealso:: :py:func:`removeMapLayers()`
+.. seealso:: :py:func:`removeAllMapLayers()`
 %End
 
     QgsMapLayer *takeMapLayer( QgsMapLayer *layer ) /TransferBack/;
@@ -192,7 +192,7 @@ class QgsMapLayerStore : QObject
  Takes a ``layer`` from the store. If the layer was owned by the store, the
  layer will be returned without deleting it. The caller takes ownership of
  the layer and is responsible for deleting it.
-.. seealso:: removeMapLayer()
+.. seealso:: :py:func:`removeMapLayer()`
  :rtype: QgsMapLayer
 %End
 
@@ -204,8 +204,8 @@ class QgsMapLayerStore : QObject
 
    Calling this method will cause the removeAll() signal to
  be emitted.
-.. seealso:: removeMapLayer()
-.. seealso:: removeMapLayers()
+.. seealso:: :py:func:`removeMapLayer()`
+.. seealso:: :py:func:`removeMapLayers()`
 %End
 
     void transferLayersFromStore( QgsMapLayerStore *other );
@@ -222,8 +222,8 @@ class QgsMapLayerStore : QObject
  Emitted when one or more layers are about to be removed from the store.
 
  \param layerIds A list of IDs for the layers which are to be removed.
-.. seealso:: layerWillBeRemoved()
-.. seealso:: layersRemoved()
+.. seealso:: :py:func:`layerWillBeRemoved()`
+.. seealso:: :py:func:`layersRemoved()`
 %End
 
     void layersWillBeRemoved( const QList<QgsMapLayer *> &layers );
@@ -231,8 +231,8 @@ class QgsMapLayerStore : QObject
  Emitted when one or more layers are about to be removed from the store.
 
  \param layers A list of layers which are to be removed.
-.. seealso:: layerWillBeRemoved()
-.. seealso:: layersRemoved()
+.. seealso:: :py:func:`layerWillBeRemoved()`
+.. seealso:: :py:func:`layersRemoved()`
 %End
 
     void layerWillBeRemoved( const QString &layerId );
@@ -244,8 +244,8 @@ class QgsMapLayerStore : QObject
 .. note::
 
    Consider using layersWillBeRemoved() instead.
-.. seealso:: layersWillBeRemoved()
-.. seealso:: layerRemoved()
+.. seealso:: :py:func:`layersWillBeRemoved()`
+.. seealso:: :py:func:`layerRemoved()`
 %End
 
     void layerWillBeRemoved( QgsMapLayer *layer );
@@ -257,8 +257,8 @@ class QgsMapLayerStore : QObject
 .. note::
 
    Consider using layersWillBeRemoved() instead.
-.. seealso:: layersWillBeRemoved()
-.. seealso:: layerRemoved()
+.. seealso:: :py:func:`layersWillBeRemoved()`
+.. seealso:: :py:func:`layerRemoved()`
 %End
 
     void layersRemoved( const QStringList &layerIds );
@@ -266,7 +266,7 @@ class QgsMapLayerStore : QObject
  Emitted after one or more layers were removed from the store.
 
  \param layerIds  A list of IDs of the layers which were removed.
-.. seealso:: layersWillBeRemoved()
+.. seealso:: :py:func:`layersWillBeRemoved()`
 %End
 
     void layerRemoved( const QString &layerId );
@@ -278,7 +278,7 @@ class QgsMapLayerStore : QObject
 .. note::
 
    Consider using layersRemoved() instead
-.. seealso:: layerWillBeRemoved()
+.. seealso:: :py:func:`layerWillBeRemoved()`
 %End
 
     void allLayersRemoved();
@@ -295,8 +295,8 @@ class QgsMapLayerStore : QObject
 
  \param layers List of layers which have been added.
 
-.. seealso:: legendLayersAdded()
-.. seealso:: layerWasAdded()
+.. seealso:: :py:func:`legendLayersAdded()`
+.. seealso:: :py:func:`layerWasAdded()`
 %End
 
     void layerWasAdded( QgsMapLayer *layer );
@@ -306,7 +306,7 @@ class QgsMapLayerStore : QObject
 .. note::
 
    Consider using layersAdded() instead
-.. seealso:: layersAdded()
+.. seealso:: :py:func:`layersAdded()`
 %End
 
 };

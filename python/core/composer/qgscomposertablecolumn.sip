@@ -35,7 +35,7 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  \param columnElem an existing QDomElement in which to store the column's properties.
  \param doc QDomDocument for the destination xml.
 .. versionadded:: 2.3
-.. seealso:: readXml
+.. seealso:: :py:func:`readXml`
  :rtype: bool
 %End
 
@@ -44,7 +44,7 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  Reads the column's properties from xml.
  \param columnElem a QDomElement holding the column's desired properties.
 .. versionadded:: 2.3
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
  :rtype: bool
 %End
 
@@ -53,7 +53,7 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  Returns the width for a column.
  :return: column width in mm, or 0 if column width is automatically calculated.
 .. versionadded:: 2.5
-.. seealso:: setWidth
+.. seealso:: :py:func:`setWidth`
  :rtype: float
 %End
 
@@ -62,7 +62,7 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  Sets the width for a column.
  \param width column width in mm, or 0 if column width is to be automatically calculated.
 .. versionadded:: 2.5
-.. seealso:: width
+.. seealso:: :py:func:`width`
 %End
 
     QString heading() const;
@@ -71,7 +71,7 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  header cell.
  :return: Heading for column.
 .. versionadded:: 2.3
-.. seealso:: setHeading
+.. seealso:: :py:func:`setHeading`
  :rtype: str
 %End
 
@@ -81,7 +81,7 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  header cell.
  \param heading Heading for column.
 .. versionadded:: 2.3
-.. seealso:: heading
+.. seealso:: :py:func:`heading`
 %End
 
     Qt::AlignmentFlag hAlignment() const;
@@ -90,8 +90,8 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  used for drawing column values within cells.
  :return: horizontal alignment.
 .. versionadded:: 2.3
-.. seealso:: setHAlignment
-.. seealso:: vAlignment
+.. seealso:: :py:func:`setHAlignment`
+.. seealso:: :py:func:`vAlignment`
  :rtype: Qt.AlignmentFlag
 %End
 
@@ -101,8 +101,8 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  used for drawing column values within cells.
  \param alignment horizontal alignment for cell.
 .. versionadded:: 2.3
-.. seealso:: hAlignment
-.. seealso:: setVAlignment
+.. seealso:: :py:func:`hAlignment`
+.. seealso:: :py:func:`setVAlignment`
 %End
 
     Qt::AlignmentFlag vAlignment() const;
@@ -111,8 +111,8 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  used for drawing column values within cells.
  :return: vertical alignment.
 .. versionadded:: 2.12
-.. seealso:: setVAlignment
-.. seealso:: hAlignment
+.. seealso:: :py:func:`setVAlignment`
+.. seealso:: :py:func:`hAlignment`
  :rtype: Qt.AlignmentFlag
 %End
 
@@ -122,8 +122,8 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
  used for drawing column values within cells.
  \param alignment vertical alignment for cell.
 .. versionadded:: 2.12
-.. seealso:: vAlignment
-.. seealso:: setHAlignment
+.. seealso:: :py:func:`vAlignment`
+.. seealso:: :py:func:`setHAlignment`
 %End
 
     QString attribute() const;
@@ -135,7 +135,7 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
 .. note::
 
    only applicable when used in a QgsComposerAttributeTable
-.. seealso:: setAttribute
+.. seealso:: :py:func:`setAttribute`
  :rtype: str
 %End
 
@@ -148,7 +148,7 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
 .. note::
 
    only applicable when used in a QgsComposerAttributeTable
-.. seealso:: attribute
+.. seealso:: :py:func:`attribute`
 %End
 
     Qt::SortOrder sortOrder() const;
@@ -160,8 +160,8 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
 .. note::
 
    only applicable when used in a QgsComposerAttributeTable
-.. seealso:: setSortOrder
-.. seealso:: sortByRank
+.. seealso:: :py:func:`setSortOrder`
+.. seealso:: :py:func:`sortByRank`
  :rtype: Qt.SortOrder
 %End
 
@@ -174,8 +174,8 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
 .. note::
 
    only applicable when used in a QgsComposerAttributeTable
-.. seealso:: sortOrder
-.. seealso:: setSortByRank
+.. seealso:: :py:func:`sortOrder`
+.. seealso:: :py:func:`setSortByRank`
 %End
 
     int sortByRank() const;
@@ -191,8 +191,8 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
 .. note::
 
    only applicable when used in a QgsComposerAttributeTable
-.. seealso:: setSortByRank
-.. seealso:: sortOrder
+.. seealso:: :py:func:`setSortByRank`
+.. seealso:: :py:func:`sortOrder`
  :rtype: int
 %End
 
@@ -209,8 +209,8 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
 .. note::
 
    only applicable when used in a QgsComposerAttributeTable
-.. seealso:: sortByRank
-.. seealso:: setSortOrder
+.. seealso:: :py:func:`sortByRank`
+.. seealso:: :py:func:`setSortOrder`
 %End
 
     QgsComposerTableColumn *clone();

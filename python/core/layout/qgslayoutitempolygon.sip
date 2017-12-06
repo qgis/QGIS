@@ -51,7 +51,7 @@ class QgsLayoutItemPolygon: QgsLayoutNodesItem
     QgsFillSymbol *symbol();
 %Docstring
  Returns the fill symbol used to draw the shape.
-.. seealso:: setSymbol()
+.. seealso:: :py:func:`setSymbol()`
  :rtype: QgsFillSymbol
 %End
 
@@ -59,7 +59,7 @@ class QgsLayoutItemPolygon: QgsLayoutNodesItem
 %Docstring
  Sets the ``symbol`` used to draw the shape.
  Ownership of ``symbol`` is not transferred.
-.. seealso:: symbol()
+.. seealso:: :py:func:`symbol()`
 %End
 
   protected:

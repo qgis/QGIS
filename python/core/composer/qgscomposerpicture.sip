@@ -63,8 +63,8 @@ Reimplementation of QCanvasItem.paint
  picture source may override this value. The path can either be a local path
  or a remote (http) path.
  \param path path for the source image
-.. seealso:: usePictureExpression
-.. seealso:: picturePath
+.. seealso:: :py:func:`usePictureExpression`
+.. seealso:: :py:func:`picturePath`
 .. versionadded:: 2.5
 %End
 
@@ -73,8 +73,8 @@ Reimplementation of QCanvasItem.paint
  Returns the path of the source image. Data defined picture source may override
  this value. The path can either be a local path or a remote (http) path.
  :return: path for the source image
-.. seealso:: usePictureExpression
-.. seealso:: setPicturePath
+.. seealso:: :py:func:`usePictureExpression`
+.. seealso:: :py:func:`setPicturePath`
 .. versionadded:: 2.5
  :rtype: str
 %End
@@ -109,8 +109,8 @@ Reimplementation of QCanvasItem.paint
  Returns the rotation used for drawing the picture within the item's frame,
  in degrees clockwise.
 .. versionadded:: 2.2
-.. seealso:: setPictureRotation()
-.. seealso:: rotationMap()
+.. seealso:: :py:func:`setPictureRotation()`
+.. seealso:: :py:func:`rotationMap()`
  :rtype: float
 %End
 
@@ -121,8 +121,8 @@ Reimplementation of QCanvasItem.paint
  amount as the specified map object. This is useful especially for
  syncing north arrows with a map item.
  \param composerMapId composer map id to sync rotation with
-.. seealso:: setPictureRotation
-.. seealso:: rotationMap
+.. seealso:: :py:func:`setPictureRotation`
+.. seealso:: :py:func:`rotationMap`
 %End
 
     int rotationMap() const;
@@ -131,8 +131,8 @@ Reimplementation of QCanvasItem.paint
  disabled.  If this is set then the picture is rotated by the same amount
  as the specified map object.
  :return: id of map object
-.. seealso:: setRotationMap
-.. seealso:: useRotationMap
+.. seealso:: :py:func:`setRotationMap`
+.. seealso:: :py:func:`useRotationMap`
  :rtype: int
 %End
 
@@ -140,16 +140,16 @@ Reimplementation of QCanvasItem.paint
 %Docstring
  True if the picture rotation is matched to a map item.
  :return: true if rotation map is in use
-.. seealso:: rotationMap
-.. seealso:: setRotationMap
+.. seealso:: :py:func:`rotationMap`
+.. seealso:: :py:func:`setRotationMap`
  :rtype: bool
 %End
 
     NorthMode northMode() const;
 %Docstring
  Returns the mode used to align the picture to a map's North.
-.. seealso:: setNorthMode()
-.. seealso:: northOffset()
+.. seealso:: :py:func:`setNorthMode()`
+.. seealso:: :py:func:`northOffset()`
 .. versionadded:: 2.18
  :rtype: NorthMode
 %End
@@ -157,16 +157,16 @@ Reimplementation of QCanvasItem.paint
     void setNorthMode( NorthMode mode );
 %Docstring
  Sets the mode used to align the picture to a map's North.
-.. seealso:: northMode()
-.. seealso:: setNorthOffset()
+.. seealso:: :py:func:`northMode()`
+.. seealso:: :py:func:`setNorthOffset()`
 .. versionadded:: 2.18
 %End
 
     double northOffset() const;
 %Docstring
  Returns the offset added to the picture's rotation from a map's North.
-.. seealso:: setNorthOffset()
-.. seealso:: northMode()
+.. seealso:: :py:func:`setNorthOffset()`
+.. seealso:: :py:func:`northMode()`
 .. versionadded:: 2.18
  :rtype: float
 %End
@@ -174,8 +174,8 @@ Reimplementation of QCanvasItem.paint
     void setNorthOffset( double offset );
 %Docstring
  Sets the offset added to the picture's rotation from a map's North.
-.. seealso:: northOffset()
-.. seealso:: setNorthMode()
+.. seealso:: :py:func:`northOffset()`
+.. seealso:: :py:func:`setNorthMode()`
 .. versionadded:: 2.18
 %End
 
@@ -185,7 +185,7 @@ Reimplementation of QCanvasItem.paint
  item's frame.
  :return: resize mode of picture
 .. versionadded:: 2.3
-.. seealso:: setResizeMode
+.. seealso:: :py:func:`setResizeMode`
  :rtype: ResizeMode
 %End
 
@@ -195,7 +195,7 @@ Reimplementation of QCanvasItem.paint
  within the picture item's frame.
  \param anchor anchor point for picture
 .. versionadded:: 2.3
-.. seealso:: pictureAnchor
+.. seealso:: :py:func:`pictureAnchor`
 %End
 
     ItemPositionMode pictureAnchor() const;
@@ -204,15 +204,15 @@ Reimplementation of QCanvasItem.paint
  within the picture item's frame.
  :return: anchor point for picture
 .. versionadded:: 2.3
-.. seealso:: setPictureAnchor
+.. seealso:: :py:func:`setPictureAnchor`
  :rtype: ItemPositionMode
 %End
 
     QColor svgFillColor() const;
 %Docstring
  Returns the fill color used for parametrized SVG files.
-.. seealso:: setSvgFillColor()
-.. seealso:: svgStrokeColor()
+.. seealso:: :py:func:`setSvgFillColor()`
+.. seealso:: :py:func:`svgStrokeColor()`
 .. versionadded:: 2.14.1
  :rtype: QColor
 %End
@@ -225,16 +225,16 @@ Reimplementation of QCanvasItem.paint
 
    this setting only has an effect on parametrized SVG files, and is ignored for
  non-parametrized SVG files.
-.. seealso:: svgFillColor()
-.. seealso:: setSvgStrokeColor()
+.. seealso:: :py:func:`svgFillColor()`
+.. seealso:: :py:func:`setSvgStrokeColor()`
 .. versionadded:: 2.14.1
 %End
 
     QColor svgStrokeColor() const;
 %Docstring
  Returns the stroke color used for parametrized SVG files.
-.. seealso:: setSvgStrokeColor()
-.. seealso:: svgFillColor()
+.. seealso:: :py:func:`setSvgStrokeColor()`
+.. seealso:: :py:func:`svgFillColor()`
 .. versionadded:: 2.14.1
  :rtype: QColor
 %End
@@ -247,16 +247,16 @@ Reimplementation of QCanvasItem.paint
 
    this setting only has an effect on parametrized SVG files, and is ignored for
  non-parametrized SVG files.
-.. seealso:: svgStrokelColor()
-.. seealso:: setSvgFillColor()
+.. seealso:: :py:func:`svgStrokelColor()`
+.. seealso:: :py:func:`setSvgFillColor()`
 .. versionadded:: 2.14.1
 %End
 
     double svgStrokeWidth() const;
 %Docstring
  Returns the stroke width (in mm) used for parametrized SVG files.
-.. seealso:: setSvgStrokeWidth()
-.. seealso:: svgStrokeColor()
+.. seealso:: :py:func:`setSvgStrokeWidth()`
+.. seealso:: :py:func:`svgStrokeColor()`
 .. versionadded:: 2.14.1
  :rtype: float
 %End
@@ -269,8 +269,8 @@ Reimplementation of QCanvasItem.paint
 
    this setting only has an effect on parametrized SVG files, and is ignored for
  non-parametrized SVG files.
-.. seealso:: svgStrokeWidth()
-.. seealso:: setSvgStrokeColor()
+.. seealso:: :py:func:`svgStrokeWidth()`
+.. seealso:: :py:func:`setSvgStrokeColor()`
 .. versionadded:: 2.14.1
 %End
 
@@ -288,7 +288,7 @@ Reimplementation of QCanvasItem.paint
 %Docstring
  Sets the picture ``rotation`` within the item bounds, in degrees clockwise. This does not affect
  the item's frame, only the way the picture is drawn within the item.
-.. seealso:: pictureRotation()
+.. seealso:: :py:func:`pictureRotation()`
 .. versionadded:: 2.2
 %End
 
@@ -297,7 +297,7 @@ Reimplementation of QCanvasItem.paint
  Sets the resize mode used for drawing the picture within the item bounds.
  \param mode ResizeMode to use for image file
 .. versionadded:: 2.3
-.. seealso:: resizeMode
+.. seealso:: :py:func:`resizeMode`
 %End
 
     void refreshPicture( const QgsExpressionContext *context = 0 );

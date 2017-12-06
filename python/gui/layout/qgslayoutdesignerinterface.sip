@@ -36,7 +36,7 @@ class QgsLayoutDesignerInterface: QObject
     virtual QgsLayout *layout() = 0;
 %Docstring
  Returns the layout displayed in the designer.
-.. seealso:: view()
+.. seealso:: :py:func:`view()`
  :rtype: QgsLayout
 %End
 
@@ -44,7 +44,7 @@ class QgsLayoutDesignerInterface: QObject
     virtual QgsLayoutView *view() = 0;
 %Docstring
  Returns the layout view utilized by the designer.
-.. seealso:: layout()
+.. seealso:: :py:func:`layout()`
  :rtype: QgsLayoutView
 %End
 

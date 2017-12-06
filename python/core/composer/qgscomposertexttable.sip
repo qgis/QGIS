@@ -40,7 +40,7 @@ class QgsComposerTextTableV2 : QgsComposerTableV2
 %Docstring
  Sets the contents of the text table.
  \param contents list of table rows
-.. seealso:: addRow
+.. seealso:: :py:func:`addRow`
 %End
 
     virtual bool getTableContents( QgsComposerTableContents &contents );

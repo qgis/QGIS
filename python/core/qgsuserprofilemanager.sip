@@ -81,7 +81,7 @@ class QgsUserProfileManager : QObject
  Before calling this, ensure that the correct root location has been set via
  calling setRootLocation().
 
-.. seealso:: isNewProfileNotificationEnabled()
+.. seealso:: :py:func:`isNewProfileNotificationEnabled()`
 %End
 
     bool isNewProfileNotificationEnabled() const;
@@ -90,7 +90,7 @@ class QgsUserProfileManager : QObject
  the profilesChanged() signal when this occurs. By default new profile notification
  is disabled.
 
-.. seealso:: setNewProfileNotificationEnabled()
+.. seealso:: :py:func:`setNewProfileNotificationEnabled()`
  :rtype: bool
 %End
 
@@ -198,8 +198,8 @@ class QgsUserProfileManager : QObject
  This signal will only be emitted when isNewProfileNotificationEnabled() is true.
  By default new profile notification is disabled.
 
-.. seealso:: isNewProfileNotificationEnabled()
-.. seealso:: setNewProfileNotificationEnabled()
+.. seealso:: :py:func:`isNewProfileNotificationEnabled()`
+.. seealso:: :py:func:`setNewProfileNotificationEnabled()`
 %End
 
 };

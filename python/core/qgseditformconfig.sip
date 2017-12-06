@@ -142,7 +142,7 @@ Get path to the .ui form. Only meaningful with EditorLayout.UiFileLayout.
  :return: false if a field exists with the provided widgetName. In this case
           QgsVectorLayer.setEditorWidgetSetup should be used.
 
-.. seealso:: QgsVectorLayer.setEditorWidgetSetup() for field configurations.
+.. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup()`
  :rtype: bool
 %End
 

@@ -76,7 +76,7 @@ class QgsEncodingSelectionDialog: QDialog
     QString encoding() const;
 %Docstring
  Returns the encoding selected within the dialog.
-.. seealso:: setEncoding()
+.. seealso:: :py:func:`setEncoding()`
  :rtype: str
 %End
 

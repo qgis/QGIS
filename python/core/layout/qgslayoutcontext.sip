@@ -35,35 +35,35 @@ class QgsLayoutContext : QObject
     void setFlags( const QgsLayoutContext::Flags flags );
 %Docstring
  Sets the combination of ``flags`` that will be used for rendering the layout.
-.. seealso:: setFlag()
-.. seealso:: flags()
-.. seealso:: testFlag()
+.. seealso:: :py:func:`setFlag()`
+.. seealso:: :py:func:`flags()`
+.. seealso:: :py:func:`testFlag()`
 %End
 
     void setFlag( const QgsLayoutContext::Flag flag, const bool on = true );
 %Docstring
  Enables or disables a particular rendering ``flag`` for the layout. Other existing
  flags are not affected.
-.. seealso:: setFlags()
-.. seealso:: flags()
-.. seealso:: testFlag()
+.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`flags()`
+.. seealso:: :py:func:`testFlag()`
 %End
 
     QgsLayoutContext::Flags flags() const;
 %Docstring
  Returns the current combination of flags used for rendering the layout.
-.. seealso:: setFlags()
-.. seealso:: setFlag()
-.. seealso:: testFlag()
+.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlag()`
+.. seealso:: :py:func:`testFlag()`
  :rtype: QgsLayoutContext.Flags
 %End
 
     bool testFlag( const Flag flag ) const;
 %Docstring
  Check whether a particular rendering ``flag`` is enabled for the layout.
-.. seealso:: setFlags()
-.. seealso:: setFlag()
-.. seealso:: flags()
+.. seealso:: :py:func:`setFlags()`
+.. seealso:: :py:func:`setFlag()`
+.. seealso:: :py:func:`flags()`
  :rtype: bool
 %End
 
@@ -78,7 +78,7 @@ class QgsLayoutContext : QObject
  Sets the current ``feature`` for evaluating the layout. This feature may
  be used for altering an item's content and appearance for a report
  or atlas layout.
-.. seealso:: feature()
+.. seealso:: :py:func:`feature()`
 %End
 
     QgsFeature feature() const;
@@ -86,34 +86,34 @@ class QgsLayoutContext : QObject
  Returns the current feature for evaluating the layout. This feature may
  be used for altering an item's content and appearance for a report
  or atlas layout.
-.. seealso:: setFeature()
+.. seealso:: :py:func:`setFeature()`
  :rtype: QgsFeature
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
  Returns the vector layer associated with the layout's context.
-.. seealso:: setLayer()
+.. seealso:: :py:func:`setLayer()`
  :rtype: QgsVectorLayer
 %End
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
  Sets the vector ``layer`` associated with the layout's context.
-.. seealso:: layer()
+.. seealso:: :py:func:`layer()`
 %End
 
     void setDpi( double dpi );
 %Docstring
  Sets the ``dpi`` for outputting the layout. This also sets the
  corresponding DPI for the context's measurementConverter().
-.. seealso:: dpi()
+.. seealso:: :py:func:`dpi()`
 %End
 
     double dpi() const;
 %Docstring
  Returns the ``dpi`` for outputting the layout.
-.. seealso:: setDpi()
+.. seealso:: :py:func:`setDpi()`
  :rtype: float
 %End
 
@@ -136,27 +136,27 @@ class QgsLayoutContext : QObject
     bool gridVisible() const;
 %Docstring
  Returns true if the page grid should be drawn.
-.. seealso:: setGridVisible()
+.. seealso:: :py:func:`setGridVisible()`
  :rtype: bool
 %End
 
     void setGridVisible( bool visible );
 %Docstring
  Sets whether the page grid should be ``visible``.
-.. seealso:: gridVisible()
+.. seealso:: :py:func:`gridVisible()`
 %End
 
     bool boundingBoxesVisible() const;
 %Docstring
  Returns true if the item bounding boxes should be drawn.
-.. seealso:: setBoundingBoxesVisible()
+.. seealso:: :py:func:`setBoundingBoxesVisible()`
  :rtype: bool
 %End
 
     void setBoundingBoxesVisible( bool visible );
 %Docstring
  Sets whether the item bounding boxes should be ``visible``.
-.. seealso:: boundingBoxesVisible()
+.. seealso:: :py:func:`boundingBoxesVisible()`
 %End
 
     void setPagesVisible( bool visible );
@@ -164,7 +164,7 @@ class QgsLayoutContext : QObject
  Sets whether the page items should be ``visible`` in the layout. Removing
  them will prevent both display of the page boundaries in layout views and
  will also prevent them from being rendered in layout exports.
-.. seealso:: pagesVisible()
+.. seealso:: :py:func:`pagesVisible()`
 %End
 
     bool pagesVisible() const;
@@ -172,7 +172,7 @@ class QgsLayoutContext : QObject
  Returns whether the page items are be visible in the layout. This setting
  effects both display of the page boundaries in layout views and
  whether they will be rendered in layout exports.
-.. seealso:: setPagesVisible()
+.. seealso:: :py:func:`setPagesVisible()`
  :rtype: bool
 %End
 
@@ -184,7 +184,7 @@ class QgsLayoutContext : QObject
 
  If ``layer`` is -1, all item layers will be rendered.
 
-.. seealso:: currentExportLayer()
+.. seealso:: :py:func:`currentExportLayer()`
 %End
 
     int currentExportLayer() const;
@@ -195,7 +195,7 @@ class QgsLayoutContext : QObject
 
  If ``layer`` is -1, all item layers should be rendered.
 
-.. seealso:: setCurrentExportLayer()
+.. seealso:: :py:func:`setCurrentExportLayer()`
  :rtype: int
 %End
 
@@ -204,7 +204,7 @@ class QgsLayoutContext : QObject
     void flagsChanged( QgsLayoutContext::Flags flags );
 %Docstring
  Emitted whenever the context's ``flags`` change.
-.. seealso:: setFlags()
+.. seealso:: :py:func:`setFlags()`
 %End
 
 };

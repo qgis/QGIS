@@ -64,7 +64,7 @@ class QgsStatusBar : QWidget
     QString currentMessage() const;
 %Docstring
  Returns the current message shown in the status bar.
-.. seealso:: showMessage()
+.. seealso:: :py:func:`showMessage()`
  :rtype: str
 %End
 
@@ -75,14 +75,14 @@ class QgsStatusBar : QWidget
  Displays the given ``message`` for the specified number of milli-seconds (``timeout``).
  If ``timeout`` is 0 (default), the message remains displayed until the clearMessage()
  slot is called or until the showMessage() slot is called again to change the message.
-.. seealso:: clearMessage()
-.. seealso:: currentMessage()
+.. seealso:: :py:func:`clearMessage()`
+.. seealso:: :py:func:`currentMessage()`
 %End
 
     void clearMessage();
 %Docstring
  Removes any temporary message being shown.
-.. seealso:: showMessage()
+.. seealso:: :py:func:`showMessage()`
 %End
 
 };

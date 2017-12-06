@@ -100,7 +100,7 @@ class QgsComposerModel: QAbstractItemModel
  Adds an item to the top of the composition z stack.
  \param item item to add. The item must not already exist in the z-order list.
 .. versionadded:: 2.5
-.. seealso:: reorderItemToTop
+.. seealso:: :py:func:`reorderItemToTop`
 %End
 
     void removeItem( QgsComposerItem *item );
@@ -116,9 +116,9 @@ class QgsComposerModel: QAbstractItemModel
  \param item item to move
  :return: true if item was moved. Returns false if item was not found
  in z-order list or was already at the top of the z-order list.
-.. seealso:: reorderItemDown
-.. seealso:: reorderItemToTop
-.. seealso:: reorderItemToBottom
+.. seealso:: :py:func:`reorderItemDown`
+.. seealso:: :py:func:`reorderItemToTop`
+.. seealso:: :py:func:`reorderItemToBottom`
 .. versionadded:: 2.5
  :rtype: bool
 %End
@@ -129,9 +129,9 @@ class QgsComposerModel: QAbstractItemModel
  \param item item to move
  :return: true if item was moved. Returns false if item was not found
  in z-order list or was already at the bottom of the z-order list.
-.. seealso:: reorderItemUp
-.. seealso:: reorderItemToTop
-.. seealso:: reorderItemToBottom
+.. seealso:: :py:func:`reorderItemUp`
+.. seealso:: :py:func:`reorderItemToTop`
+.. seealso:: :py:func:`reorderItemToBottom`
 .. versionadded:: 2.5
  :rtype: bool
 %End
@@ -142,9 +142,9 @@ class QgsComposerModel: QAbstractItemModel
  \param item item to move
  :return: true if item was moved. Returns false if item was not found
  in z-order list or was already at the top of the z-order list.
-.. seealso:: reorderItemUp
-.. seealso:: reorderItemDown
-.. seealso:: reorderItemToBottom
+.. seealso:: :py:func:`reorderItemUp`
+.. seealso:: :py:func:`reorderItemDown`
+.. seealso:: :py:func:`reorderItemToBottom`
 .. versionadded:: 2.5
  :rtype: bool
 %End
@@ -155,9 +155,9 @@ class QgsComposerModel: QAbstractItemModel
  \param item item to move
  :return: true if item was moved. Returns false if item was not found
  in z-order list or was already at the bottom of the z-order list.
-.. seealso:: reorderItemUp
-.. seealso:: reorderItemDown
-.. seealso:: reorderItemToTop
+.. seealso:: :py:func:`reorderItemUp`
+.. seealso:: :py:func:`reorderItemDown`
+.. seealso:: :py:func:`reorderItemToTop`
 .. versionadded:: 2.5
  :rtype: bool
 %End
@@ -170,7 +170,7 @@ class QgsComposerModel: QAbstractItemModel
  \param item item to search above
  :return: item above specified item. If no items were found, no item
  will be returned.
-.. seealso:: getComposerItemBelow
+.. seealso:: :py:func:`getComposerItemBelow`
 .. versionadded:: 2.5
  :rtype: QgsComposerItem
 %End
@@ -183,7 +183,7 @@ class QgsComposerModel: QAbstractItemModel
  \param item item to search above
  :return: item below specified item. If no items were found, no item
  will be returned.
-.. seealso:: getComposerItemAbove
+.. seealso:: :py:func:`getComposerItemAbove`
 .. versionadded:: 2.5
  :rtype: QgsComposerItem
 %End
@@ -202,7 +202,7 @@ class QgsComposerModel: QAbstractItemModel
  Marks an item as removed from the composition. This must be called whenever an item
  has been removed from the composition.
  \param item to mark as removed from the composition
-.. seealso:: setItemRestored
+.. seealso:: :py:func:`setItemRestored`
 .. versionadded:: 2.5
 %End
 
@@ -211,7 +211,7 @@ class QgsComposerModel: QAbstractItemModel
  Restores an item to the composition. This must be called whenever an item removed
  from the composition is restored to the composition.
  \param item to mark as restored to the composition
-.. seealso:: setItemRemoved
+.. seealso:: :py:func:`setItemRemoved`
 .. versionadded:: 2.5
 %End
 
@@ -219,9 +219,9 @@ class QgsComposerModel: QAbstractItemModel
 %Docstring
  Must be called when an item's display name is modified
  \param item item to update
-.. seealso:: updateItemLockStatus
-.. seealso:: updateItemVisibility
-.. seealso:: updateItemSelectStatus
+.. seealso:: :py:func:`updateItemLockStatus`
+.. seealso:: :py:func:`updateItemVisibility`
+.. seealso:: :py:func:`updateItemSelectStatus`
 .. versionadded:: 2.5
 %End
 
@@ -229,9 +229,9 @@ class QgsComposerModel: QAbstractItemModel
 %Docstring
  Must be called when an item's lock status changes
  \param item item to update
-.. seealso:: updateItemDisplayName
-.. seealso:: updateItemVisibility
-.. seealso:: updateItemSelectStatus
+.. seealso:: :py:func:`updateItemDisplayName`
+.. seealso:: :py:func:`updateItemVisibility`
+.. seealso:: :py:func:`updateItemSelectStatus`
 .. versionadded:: 2.5
 %End
 
@@ -239,9 +239,9 @@ class QgsComposerModel: QAbstractItemModel
 %Docstring
  Must be called when an item's visibility changes
  \param item item to update
-.. seealso:: updateItemDisplayName
-.. seealso:: updateItemLockStatus
-.. seealso:: updateItemSelectStatus
+.. seealso:: :py:func:`updateItemDisplayName`
+.. seealso:: :py:func:`updateItemLockStatus`
+.. seealso:: :py:func:`updateItemSelectStatus`
 .. versionadded:: 2.5
 %End
 
@@ -249,9 +249,9 @@ class QgsComposerModel: QAbstractItemModel
 %Docstring
  Must be called when an item's selection status changes
  \param item item to update
-.. seealso:: updateItemDisplayName
-.. seealso:: updateItemVisibility
-.. seealso:: updateItemLockStatus
+.. seealso:: :py:func:`updateItemDisplayName`
+.. seealso:: :py:func:`updateItemVisibility`
+.. seealso:: :py:func:`updateItemLockStatus`
 .. versionadded:: 2.5
 %End
 
@@ -303,7 +303,7 @@ class QgsComposerProxyModel: QSortFilterProxyModel
 %Docstring
  Returns the current item type filter, or QgsComposerItem.ComposerItem if no
  item type filter is set.
-.. seealso:: setFilterType()
+.. seealso:: :py:func:`setFilterType()`
  :rtype: QgsComposerItem.ItemType
 %End
 
@@ -312,20 +312,20 @@ class QgsComposerProxyModel: QSortFilterProxyModel
  Sets the item type filter. Only matching item types will be shown.
  \param itemType type to filter. Set to QgsComposerItem.ComposerItem to show all
  item types.
-.. seealso:: filterType()
+.. seealso:: :py:func:`filterType()`
 %End
 
     void setExceptedItemList( const QList< QgsComposerItem * > &exceptList );
 %Docstring
  Sets a list of specific items to exclude from the model
  \param exceptList list of items to exclude
-.. seealso:: exceptedItemList()
+.. seealso:: :py:func:`exceptedItemList()`
 %End
 
     QList< QgsComposerItem * > exceptedItemList() const;
 %Docstring
  Returns the list of specific items excluded from the model.
-.. seealso:: setExceptedItemList()
+.. seealso:: :py:func:`setExceptedItemList()`
  :rtype: list of QgsComposerItem
 %End
 

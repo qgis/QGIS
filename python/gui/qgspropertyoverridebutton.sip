@@ -85,7 +85,7 @@ class QgsPropertyOverrideButton: QToolButton
 %Docstring
  Returns a QgsProperty object encapsulating the current state of the
  widget.
-.. seealso:: setToProperty()
+.. seealso:: :py:func:`setToProperty()`
  :rtype: QgsProperty
 %End
 
@@ -124,28 +124,28 @@ class QgsPropertyOverrideButton: QToolButton
     QString usageInfo() const;
 %Docstring
  Returns usage information for the property.
-.. seealso:: setUsageInfo()
+.. seealso:: :py:func:`setUsageInfo()`
  :rtype: str
 %End
 
     void setUsageInfo( const QString &info );
 %Docstring
  Set the usage information for the property.
-.. seealso:: usageInfo()
+.. seealso:: :py:func:`usageInfo()`
 %End
 
     void setVectorLayer( const QgsVectorLayer *layer );
 %Docstring
  Sets the vector layer associated with the button. This controls which fields are
  displayed within the widget's pop up menu.
-.. seealso:: vectorLayer()
+.. seealso:: :py:func:`vectorLayer()`
 %End
 
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
  Returns the vector layer associated with the button. This controls which fields are
  displayed within the widget's pop up menu.
-.. seealso:: setVectorLayer()
+.. seealso:: :py:func:`setVectorLayer()`
  :rtype: QgsVectorLayer
 %End
 

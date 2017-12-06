@@ -41,13 +41,13 @@ class QgsComposerItemComboBox : QComboBox
  Sets a filter for the item type to show in the combo box.
  \param itemType type of items to show. Set to QgsComposerItem.ComposerItem to
  show all items.
-.. seealso:: itemType()
+.. seealso:: :py:func:`itemType()`
 %End
 
     QgsComposerItem::ItemType itemType() const;
 %Docstring
  Returns the filter for the item types to show in the combo box.
-.. seealso:: setItemType()
+.. seealso:: :py:func:`setItemType()`
  :rtype: QgsComposerItem.ItemType
 %End
 
@@ -55,13 +55,13 @@ class QgsComposerItemComboBox : QComboBox
 %Docstring
  Sets a list of specific items to exclude from the combo box.
  \param exceptList list of items to exclude
-.. seealso:: exceptedItemList()
+.. seealso:: :py:func:`exceptedItemList()`
 %End
 
     QList< QgsComposerItem * > exceptedItemList() const;
 %Docstring
  Returns the list of specific items excluded from the combo box.
-.. seealso:: setExceptedItemList()
+.. seealso:: :py:func:`setExceptedItemList()`
  :rtype: list of QgsComposerItem
 %End
 
@@ -69,7 +69,7 @@ class QgsComposerItemComboBox : QComboBox
 %Docstring
  Return the item currently shown at the specified index within the combo box.
  \param index position of item to return
-.. seealso:: currentItem()
+.. seealso:: :py:func:`currentItem()`
  :rtype: QgsComposerItem
 %End
 

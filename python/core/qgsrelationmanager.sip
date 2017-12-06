@@ -70,7 +70,7 @@ class QgsRelationManager : QObject
  \param id The id to search for
 
  :return: A relation. Invalid if not found.
-.. seealso:: relationsByName()
+.. seealso:: :py:func:`relationsByName()`
  :rtype: QgsRelation
 %End
 
@@ -80,7 +80,7 @@ class QgsRelationManager : QObject
  \param name relation name to search for. Searching is case insensitive.
  :return: a list of matching relations
 .. versionadded:: 2.16
-.. seealso:: relation()
+.. seealso:: :py:func:`relation()`
  :rtype: list of QgsRelation
 %End
 

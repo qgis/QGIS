@@ -30,7 +30,7 @@ class QgsLimitedRandomColorRampWidget : QgsPanelWidget
     QgsLimitedRandomColorRamp ramp() const;
 %Docstring
  Returns a color ramp representing the current settings from the dialog.
-.. seealso:: setRamp()
+.. seealso:: :py:func:`setRamp()`
  :rtype: QgsLimitedRandomColorRamp
 %End
 
@@ -38,7 +38,7 @@ class QgsLimitedRandomColorRampWidget : QgsPanelWidget
 %Docstring
  Sets the color ramp to show in the dialog.
  \param ramp color ramp
-.. seealso:: ramp()
+.. seealso:: :py:func:`ramp()`
 %End
 
   signals:
@@ -104,7 +104,7 @@ class QgsLimitedRandomColorRampDialog : QDialog
     QgsLimitedRandomColorRamp ramp() const;
 %Docstring
  Returns a color ramp representing the current settings from the dialog.
-.. seealso:: setRamp()
+.. seealso:: :py:func:`setRamp()`
  :rtype: QgsLimitedRandomColorRamp
 %End
 
@@ -112,7 +112,7 @@ class QgsLimitedRandomColorRampDialog : QDialog
 %Docstring
  Sets the color ramp to show in the dialog.
  \param ramp color ramp
-.. seealso:: ramp()
+.. seealso:: :py:func:`ramp()`
 %End
 
   signals:

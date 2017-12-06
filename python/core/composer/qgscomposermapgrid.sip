@@ -17,7 +17,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
  QgsComposerMap. The grid stack controls which grids are drawn and the
  order they are drawn in.
 .. versionadded:: 2.5
-.. seealso:: QgsComposerMapGrid
+.. seealso:: :py:class:`QgsComposerMapGrid`
 %End
 
 %TypeHeaderCode
@@ -41,7 +41,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 
    after adding a grid to the stack, updateBoundingRect() and update()
  should be called for the QgsComposerMap to prevent rendering artifacts
-.. seealso:: removeGrid
+.. seealso:: :py:func:`removeGrid`
 %End
 
     void removeGrid( const QString &gridId );
@@ -52,7 +52,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 
    after removing a grid from the stack, updateBoundingRect() and update()
  should be called for the QgsComposerMap to prevent rendering artifacts
-.. seealso:: addGrid
+.. seealso:: :py:func:`addGrid`
 %End
 
     void moveGridUp( const QString &gridId );
@@ -63,7 +63,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 
    after moving a grid within the stack, update() should be
  called for the QgsComposerMap to redraw the map with the new grid stack order
-.. seealso:: moveGridDown
+.. seealso:: :py:func:`moveGridDown`
 %End
 
     void moveGridDown( const QString &gridId );
@@ -74,7 +74,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
 
    after moving a grid within the stack, update() should be
  called for the QgsComposerMap to redraw the map with the new grid stack order
-.. seealso:: moveGridUp
+.. seealso:: :py:func:`moveGridUp`
 %End
 
     const QgsComposerMapGrid *constGrid( const QString &gridId ) const;
@@ -82,7 +82,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
  Returns a const reference to a grid within the stack
  \param gridId id for the QgsComposerMapGrid to find
  :return: const reference to grid, if found
-.. seealso:: grid
+.. seealso:: :py:func:`grid`
  :rtype: QgsComposerMapGrid
 %End
 
@@ -91,7 +91,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
  Returns a reference to a grid within the stack
  \param gridId id for the QgsComposerMapGrid to find
  :return: reference to grid if found
-.. seealso:: constGrid
+.. seealso:: :py:func:`constGrid`
  :rtype: QgsComposerMapGrid
 %End
 
@@ -100,7 +100,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
  Returns a reference to a grid within the stack
  \param index grid position in the stack
  :return: reference to grid if found
-.. seealso:: constGrid
+.. seealso:: :py:func:`constGrid`
  :rtype: QgsComposerMapGrid
 %End
 
@@ -120,7 +120,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
  \param elem is DOM node corresponding to 'a ComposerMap' tag
  \param doc DOM document
  :return: true if read was successful
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
  :rtype: bool
 %End
 
@@ -129,7 +129,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
  Calculates the maximum distance grids within the stack extend
  beyond the QgsComposerMap's item rect
  :return: maximum grid extension
-.. seealso:: calculateMaxGridExtension()
+.. seealso:: :py:func:`calculateMaxGridExtension()`
  :rtype: float
 %End
 
@@ -143,7 +143,7 @@ class QgsComposerMapGridStack : QgsComposerMapItemStack
  \param bottom storage for bottom extension
  \param left storage for left extension
 .. versionadded:: 2.12
-.. seealso:: maxGridExtension()
+.. seealso:: :py:func:`maxGridExtension()`
 %End
 };
 
@@ -154,7 +154,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  An individual grid which is drawn above the map content in a
  QgsComposerMap.
 .. versionadded:: 2.5
-.. seealso:: QgsComposerMapGridStack
+.. seealso:: :py:class:`QgsComposerMapGridStack`
 %End
 
 %TypeHeaderCode
@@ -268,7 +268,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Stores grid state in DOM element
  \param elem is DOM element corresponding to a 'ComposerMap' tag
  \param doc DOM document
-.. seealso:: readXml
+.. seealso:: :py:func:`readXml`
  :rtype: bool
 %End
 
@@ -278,7 +278,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets grid state from a DOM document
  \param itemElem is DOM node corresponding to a 'ComposerMapGrid' tag
  \param doc is DOM document
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
  :rtype: bool
 %End
 
@@ -286,14 +286,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the CRS for the grid.
  \param crs coordinate reference system for grid
-.. seealso:: crs
+.. seealso:: :py:func:`crs`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
  Retrieves the CRS for the grid.
  :return: coordinate reference system for grid
-.. seealso:: setCrs
+.. seealso:: :py:func:`setCrs`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -301,14 +301,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the blending mode used for drawing the grid.
  \param mode blending mode for grid
-.. seealso:: blendMode
+.. seealso:: :py:func:`blendMode`
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
  Retrieves the blending mode used for drawing the grid.
  :return: blending mode for grid
-.. seealso:: setBlendMode
+.. seealso:: :py:func:`setBlendMode`
  :rtype: QPainter.CompositionMode
 %End
 
@@ -333,7 +333,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  \param bottom storage for bottom extension
  \param left storage for left extension
 .. versionadded:: 2.12
-.. seealso:: maxExtension()
+.. seealso:: :py:func:`maxExtension()`
 %End
 
 
@@ -342,7 +342,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the units to use for grid measurements such as the interval
  and offset for grid lines.
  \param unit unit for grid measurements
-.. seealso:: units
+.. seealso:: :py:func:`units`
 %End
 
     GridUnit units() const;
@@ -350,7 +350,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the units used for grid measurements such as the interval
  and offset for grid lines.
  :return: for grid measurements
-.. seealso:: setUnits
+.. seealso:: :py:func:`setUnits`
  :rtype: GridUnit
 %End
 
@@ -359,8 +359,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the interval between grid lines in the x-direction. The units
  are controlled through the setUnits method
  \param interval interval between horizontal grid lines
-.. seealso:: setIntervalY
-.. seealso:: intervalX
+.. seealso:: :py:func:`setIntervalY`
+.. seealso:: :py:func:`intervalX`
 %End
 
     double intervalX() const;
@@ -368,8 +368,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the interval between grid lines in the x-direction. The units
  are retrieved through the units() method.
  :return: interval between horizontal grid lines
-.. seealso:: setIntervalX
-.. seealso:: intervalY
+.. seealso:: :py:func:`setIntervalX`
+.. seealso:: :py:func:`intervalY`
  :rtype: float
 %End
 
@@ -378,8 +378,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the interval between grid lines in the y-direction. The units
  are controlled through the setUnits method
  \param interval interval between vertical grid lines
-.. seealso:: setIntervalX
-.. seealso:: intervalY
+.. seealso:: :py:func:`setIntervalX`
+.. seealso:: :py:func:`intervalY`
 %End
 
     double intervalY() const;
@@ -387,8 +387,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the interval between grid lines in the y-direction. The units
  are retrieved through the units() method.
  :return: interval between vertical grid lines
-.. seealso:: setIntervalY
-.. seealso:: intervalX
+.. seealso:: :py:func:`setIntervalY`
+.. seealso:: :py:func:`intervalX`
  :rtype: float
 %End
 
@@ -397,8 +397,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the offset for grid lines in the x-direction. The units
  are controlled through the setUnits method
  \param offset offset for horizontal grid lines
-.. seealso:: setOffsetY
-.. seealso:: offsetX
+.. seealso:: :py:func:`setOffsetY`
+.. seealso:: :py:func:`offsetX`
 %End
 
     double offsetX() const;
@@ -406,8 +406,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the offset for grid lines in the x-direction. The units
  are retrieved through the units() method.
  :return: offset for horizontal grid lines
-.. seealso:: setOffsetX
-.. seealso:: offsetY
+.. seealso:: :py:func:`setOffsetX`
+.. seealso:: :py:func:`offsetY`
  :rtype: float
 %End
 
@@ -416,8 +416,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the offset for grid lines in the y-direction. The units
  are controlled through the setUnits method
  \param offset offset for vertical grid lines
-.. seealso:: setOffsetX
-.. seealso:: offsetY
+.. seealso:: :py:func:`setOffsetX`
+.. seealso:: :py:func:`offsetY`
 %End
 
     double offsetY() const;
@@ -425,8 +425,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the offset for grid lines in the y-direction. The units
  are retrieved through the units() method.
  :return: offset for vertical grid lines
-.. seealso:: setOffsetY
-.. seealso:: offsetX
+.. seealso:: :py:func:`setOffsetY`
+.. seealso:: :py:func:`offsetX`
  :rtype: float
 %End
 
@@ -436,7 +436,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the grid style, which controls how the grid is drawn
  over the map's contents
  \param style desired grid style
-.. seealso:: style
+.. seealso:: :py:func:`style`
 %End
 
     GridStyle style() const;
@@ -444,7 +444,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the grid's style, which controls how the grid is drawn
  over the map's contents
  :return: current grid style
-.. seealso:: setStyle
+.. seealso:: :py:func:`setStyle`
  :rtype: GridStyle
 %End
 
@@ -453,7 +453,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the length of the cross segments drawn for the grid. This is only used for grids
  with QgsComposerMapGrid.Cross styles
  \param length cross length in millimeters
-.. seealso:: crossLength
+.. seealso:: :py:func:`crossLength`
 %End
 
     double crossLength() const;
@@ -461,7 +461,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Retrieves the length of the cross segments drawn for the grid. This is only used for grids
  with QgsComposerMapGrid.Cross styles
  :return: cross length in millimeters
-.. seealso:: setCrossLength
+.. seealso:: :py:func:`setCrossLength`
  :rtype: float
 %End
 
@@ -471,8 +471,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  or QgsComposerMapGrid.Cross styles. For more control over grid line appearance, use
  setLineSymbol instead.
  \param width grid line width
-.. seealso:: setLineSymbol
-.. seealso:: setGridLineColor
+.. seealso:: :py:func:`setLineSymbol`
+.. seealso:: :py:func:`setGridLineColor`
 %End
 
     void setGridLineColor( const QColor &color );
@@ -481,8 +481,8 @@ class QgsComposerMapGrid : QgsComposerMapItem
  or QgsComposerMapGrid.Cross styles. For more control over grid line appearance, use
  setLineSymbol instead.
  \param color color of grid lines
-.. seealso:: setLineSymbol
-.. seealso:: setGridLineWidth
+.. seealso:: :py:func:`setLineSymbol`
+.. seealso:: :py:func:`setGridLineWidth`
 %End
 
     void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
@@ -490,9 +490,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the line symbol used for drawing grid lines. This is only used for grids with
  QgsComposerMapGrid.Solid or QgsComposerMapGrid.Cross styles.
  \param symbol line symbol for grid lines
-.. seealso:: lineSymbol
-.. seealso:: setMarkerSymbol
-.. seealso:: setStyle
+.. seealso:: :py:func:`lineSymbol`
+.. seealso:: :py:func:`setMarkerSymbol`
+.. seealso:: :py:func:`setStyle`
 %End
 
 
@@ -501,9 +501,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the line symbol used for drawing grid lines. This is only used for grids with
  QgsComposerMapGrid.Solid or QgsComposerMapGrid.Cross styles.
  :return: line symbol for grid lines
-.. seealso:: setLineSymbol
-.. seealso:: markerSymbol
-.. seealso:: style
+.. seealso:: :py:func:`setLineSymbol`
+.. seealso:: :py:func:`markerSymbol`
+.. seealso:: :py:func:`style`
  :rtype: QgsLineSymbol
 %End
 
@@ -512,9 +512,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the marker symbol used for drawing grid points. This is only used for grids with a
  QgsComposerMapGrid.Markers style.
  \param symbol marker symbol for grid intersection points
-.. seealso:: markerSymbol
-.. seealso:: setLineSymbol
-.. seealso:: setStyle
+.. seealso:: :py:func:`markerSymbol`
+.. seealso:: :py:func:`setLineSymbol`
+.. seealso:: :py:func:`setStyle`
 %End
 
 
@@ -523,9 +523,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the marker symbol used for drawing grid points. This is only used for grids with a
  QgsComposerMapGrid.Markers style.
  :return: marker symbol for grid intersection points
-.. seealso:: setMarkerSymbol
-.. seealso:: lineSymbol
-.. seealso:: style
+.. seealso:: :py:func:`setMarkerSymbol`
+.. seealso:: :py:func:`lineSymbol`
+.. seealso:: :py:func:`style`
  :rtype: QgsMarkerSymbol
 %End
 
@@ -534,14 +534,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets whether annotations should be shown for the grid.
  \param enabled set to true to draw annotations for the grid
-.. seealso:: annotationEnabled
+.. seealso:: :py:func:`annotationEnabled`
 %End
 
     bool annotationEnabled() const;
 %Docstring
  Gets whether annotations are shown for the grid.
  :return: true if annotations are drawn for the grid
-.. seealso:: setAnnotationEnabled
+.. seealso:: :py:func:`setAnnotationEnabled`
  :rtype: bool
 %End
 
@@ -549,14 +549,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the font used for drawing grid annotations
  \param font font for annotations
-.. seealso:: annotationFont
+.. seealso:: :py:func:`annotationFont`
 %End
 
     QFont annotationFont() const;
 %Docstring
  Gets the font used for drawing grid annotations
  :return: font for annotations
-.. seealso:: setAnnotationFont
+.. seealso:: :py:func:`setAnnotationFont`
  :rtype: QFont
 %End
 
@@ -564,14 +564,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the font color used for drawing grid annotations
  \param color font color for annotations
-.. seealso:: annotationFontColor
+.. seealso:: :py:func:`annotationFontColor`
 %End
 
     QColor annotationFontColor() const;
 %Docstring
  Gets the font color used for drawing grid annotations
  :return: font color for annotations
-.. seealso:: setAnnotationFontColor
+.. seealso:: :py:func:`setAnnotationFontColor`
  :rtype: QColor
 %End
 
@@ -579,14 +579,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the coordinate precision for grid annotations
  \param precision number of decimal places to show when drawing grid annotations
-.. seealso:: annotationPrecision
+.. seealso:: :py:func:`annotationPrecision`
 %End
 
     int annotationPrecision() const;
 %Docstring
  Returns the coordinate precision for grid annotations
  :return: number of decimal places shown when drawing grid annotations
-.. seealso:: setAnnotationPrecision
+.. seealso:: :py:func:`setAnnotationPrecision`
  :rtype: int
 %End
 
@@ -596,7 +596,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  or whether grid annotations should be disabled for the side.
  \param display display mode for annotations
  \param border side of map for annotations
-.. seealso:: annotationDisplay
+.. seealso:: :py:func:`annotationDisplay`
 .. versionadded:: 2.7
 %End
 
@@ -607,7 +607,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  from a side of the map frame.
  \param border side of map for annotations
  :return: display mode for grid annotations
-.. seealso:: setAnnotationDisplay
+.. seealso:: :py:func:`setAnnotationDisplay`
 .. versionadded:: 2.7
  :rtype: DisplayMode
 %End
@@ -618,7 +618,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  frame.
  \param position position to draw grid annotations
  \param border side of map for annotations
-.. seealso:: annotationPosition
+.. seealso:: :py:func:`annotationPosition`
 %End
 
     AnnotationPosition annotationPosition( const BorderSide border ) const;
@@ -627,7 +627,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  frame.
  \param border side of map for annotations
  :return: position that grid annotations are drawn in
-.. seealso:: setAnnotationPosition
+.. seealso:: :py:func:`setAnnotationPosition`
  :rtype: AnnotationPosition
 %End
 
@@ -635,14 +635,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the distance between the map frame and annotations. Units are in millimeters.
  \param distance margin between map frame and annotations
-.. seealso:: annotationFrameDistance
+.. seealso:: :py:func:`annotationFrameDistance`
 %End
 
     double annotationFrameDistance() const;
 %Docstring
  Gets the distance between the map frame and annotations. Units are in millimeters.
  :return: margin between map frame and annotations
-.. seealso:: setAnnotationFrameDistance
+.. seealso:: :py:func:`setAnnotationFrameDistance`
  :rtype: float
 %End
 
@@ -651,14 +651,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the direction for drawing frame annotations.
  \param direction direction for frame annotations
  \param border side of map for annotations
-.. seealso:: annotationDirection
+.. seealso:: :py:func:`annotationDirection`
 %End
 
     void setAnnotationDirection( const AnnotationDirection direction );
 %Docstring
  Sets the direction for drawing all frame annotations.
  \param direction direction for frame annotations
-.. seealso:: annotationDirection
+.. seealso:: :py:func:`annotationDirection`
 %End
 
     AnnotationDirection annotationDirection( const BorderSide border ) const;
@@ -666,7 +666,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the direction for drawing frame annotations.
  \param border side of map for annotations
  :return: direction for frame annotations
-.. seealso:: setAnnotationDirection
+.. seealso:: :py:func:`setAnnotationDirection`
  :rtype: AnnotationDirection
 %End
 
@@ -674,14 +674,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the format for drawing grid annotations.
  \param format format for grid annotations
-.. seealso:: annotationFormat
+.. seealso:: :py:func:`annotationFormat`
 %End
 
     AnnotationFormat annotationFormat() const;
 %Docstring
  Gets the format for drawing grid annotations.
  :return: format for grid annotations
-.. seealso:: setAnnotationFormat
+.. seealso:: :py:func:`setAnnotationFormat`
  :rtype: AnnotationFormat
 %End
 
@@ -690,7 +690,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets the expression used for drawing grid annotations. This is only used when annotationFormat()
  is QgsComposerMapGrid.CustomFormat.
  \param expression expression for evaluating custom grid annotations
-.. seealso:: annotationExpression
+.. seealso:: :py:func:`annotationExpression`
 .. versionadded:: 2.12
 %End
 
@@ -699,7 +699,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Returns the expression used for drawing grid annotations. This is only used when annotationFormat()
  is QgsComposerMapGrid.CustomFormat.
  :return: expression for evaluating custom grid annotations
-.. seealso:: setAnnotationExpression
+.. seealso:: :py:func:`setAnnotationExpression`
 .. versionadded:: 2.12
  :rtype: str
 %End
@@ -709,14 +709,14 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the grid frame style.
  \param style style for grid frame
-.. seealso:: frameStyle
+.. seealso:: :py:func:`frameStyle`
 %End
 
     FrameStyle frameStyle() const;
 %Docstring
  Gets the grid frame style.
  :return: style for grid frame
-.. seealso:: setFrameStyle
+.. seealso:: :py:func:`setFrameStyle`
  :rtype: FrameStyle
 %End
 
@@ -725,7 +725,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets what type of grid divisions should be used for frames on a specified side of the map.
  \param divisions grid divisions for frame
  \param border side of map for frame
-.. seealso:: frameDivisions
+.. seealso:: :py:func:`frameDivisions`
 .. versionadded:: 2.7
 %End
 
@@ -734,7 +734,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Gets the type of grid divisions which are used for frames on a specified side of the map.
  \param border side of map for frame
  :return: grid divisions for frame
-.. seealso:: setFrameDivisions
+.. seealso:: :py:func:`setFrameDivisions`
 .. versionadded:: 2.7
  :rtype: DisplayMode
 %End
@@ -744,9 +744,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets flags for grid frame sides. Setting these flags controls which sides
  of the map item the grid frame is drawn on.
  \param flags flags for grid frame sides
-.. seealso:: setFrameSideFlag
-.. seealso:: frameSideFlags
-.. seealso:: testFrameSideFlag
+.. seealso:: :py:func:`setFrameSideFlag`
+.. seealso:: :py:func:`frameSideFlags`
+.. seealso:: :py:func:`testFrameSideFlag`
 %End
 
     void setFrameSideFlag( const FrameSideFlag flag, bool on = true );
@@ -754,9 +754,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Sets whether the grid frame is drawn for a certain side of the map item.
  \param flag flag for grid frame side
  \param on set to true to draw grid frame on that side of the map
-.. seealso:: setFrameSideFlags
-.. seealso:: frameSideFlags
-.. seealso:: testFrameSideFlag
+.. seealso:: :py:func:`setFrameSideFlags`
+.. seealso:: :py:func:`frameSideFlags`
+.. seealso:: :py:func:`testFrameSideFlag`
 %End
 
     FrameSideFlags frameSideFlags() const;
@@ -764,9 +764,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
  Returns the flags which control which sides of the map item the grid frame
  is drawn on.
  :return: flags for side of map grid is drawn on
-.. seealso:: setFrameSideFlags
-.. seealso:: setFrameSideFlag
-.. seealso:: testFrameSideFlag
+.. seealso:: :py:func:`setFrameSideFlags`
+.. seealso:: :py:func:`setFrameSideFlag`
+.. seealso:: :py:func:`testFrameSideFlag`
  :rtype: FrameSideFlags
 %End
 
@@ -776,9 +776,9 @@ class QgsComposerMapGrid : QgsComposerMapItem
  item.
  \param flag flag for grid frame side
  :return: true if grid frame should be drawn for that side of the map
-.. seealso:: setFrameSideFlags
-.. seealso:: setFrameSideFlag
-.. seealso:: frameSideFlags
+.. seealso:: :py:func:`setFrameSideFlags`
+.. seealso:: :py:func:`setFrameSideFlag`
+.. seealso:: :py:func:`frameSideFlags`
  :rtype: bool
 %End
 
@@ -788,7 +788,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  The size of the line outlines drawn in the frame is controlled through the
  setFramePenSize method.
  \param width width of grid frame in millimeters
-.. seealso:: frameWidth
+.. seealso:: :py:func:`frameWidth`
 %End
 
     double frameWidth() const;
@@ -797,7 +797,7 @@ class QgsComposerMapGrid : QgsComposerMapItem
  The size of the line outlines drawn in the frame can be retrieved via the
  framePenSize method.
  :return: width of grid frame in millimeters
-.. seealso:: setFrameWidth
+.. seealso:: :py:func:`setFrameWidth`
  :rtype: float
 %End
 
@@ -805,16 +805,16 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the width of the stroke drawn in the grid frame.
  \param width width of grid frame stroke
-.. seealso:: framePenSize
-.. seealso:: setFramePenColor
+.. seealso:: :py:func:`framePenSize`
+.. seealso:: :py:func:`setFramePenColor`
 %End
 
     double framePenSize() const;
 %Docstring
  Retrieves the width of the stroke drawn in the grid frame.
  :return: width of grid frame stroke
-.. seealso:: setFramePenSize
-.. seealso:: framePenColor
+.. seealso:: :py:func:`setFramePenSize`
+.. seealso:: :py:func:`framePenColor`
  :rtype: float
 %End
 
@@ -822,20 +822,20 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the color of the stroke drawn in the grid frame.
  \param color color of grid frame stroke
-.. seealso:: framePenColor
-.. seealso:: setFramePenSize
-.. seealso:: setFrameFillColor1
-.. seealso:: setFrameFillColor2
+.. seealso:: :py:func:`framePenColor`
+.. seealso:: :py:func:`setFramePenSize`
+.. seealso:: :py:func:`setFrameFillColor1`
+.. seealso:: :py:func:`setFrameFillColor2`
 %End
 
     QColor framePenColor() const;
 %Docstring
  Retrieves the color of the stroke drawn in the grid frame.
  :return: color of grid frame stroke
-.. seealso:: setFramePenColor
-.. seealso:: framePenSize
-.. seealso:: frameFillColor1
-.. seealso:: frameFillColor2
+.. seealso:: :py:func:`setFramePenColor`
+.. seealso:: :py:func:`framePenSize`
+.. seealso:: :py:func:`frameFillColor1`
+.. seealso:: :py:func:`frameFillColor2`
  :rtype: QColor
 %End
 
@@ -843,18 +843,18 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the first fill color used for the grid frame.
  \param color first fill color for grid frame
-.. seealso:: frameFillColor1
-.. seealso:: setFramePenColor
-.. seealso:: setFrameFillColor2
+.. seealso:: :py:func:`frameFillColor1`
+.. seealso:: :py:func:`setFramePenColor`
+.. seealso:: :py:func:`setFrameFillColor2`
 %End
 
     QColor frameFillColor1() const;
 %Docstring
  Retrieves the first fill color for the grid frame.
  :return: first fill color for grid frame
-.. seealso:: setFrameFillColor1
-.. seealso:: framePenColor
-.. seealso:: frameFillColor2
+.. seealso:: :py:func:`setFrameFillColor1`
+.. seealso:: :py:func:`framePenColor`
+.. seealso:: :py:func:`frameFillColor2`
  :rtype: QColor
 %End
 
@@ -862,18 +862,18 @@ class QgsComposerMapGrid : QgsComposerMapItem
 %Docstring
  Sets the second fill color used for the grid frame.
  \param color second fill color for grid frame
-.. seealso:: frameFillColor2
-.. seealso:: setFramePenColor
-.. seealso:: setFrameFillColor1
+.. seealso:: :py:func:`frameFillColor2`
+.. seealso:: :py:func:`setFramePenColor`
+.. seealso:: :py:func:`setFrameFillColor1`
 %End
 
     QColor frameFillColor2() const;
 %Docstring
  Retrieves the second fill color for the grid frame.
  :return: second fill color for grid frame
-.. seealso:: setFrameFillColor2
-.. seealso:: framePenColor
-.. seealso:: frameFillColor1
+.. seealso:: :py:func:`setFrameFillColor2`
+.. seealso:: :py:func:`framePenColor`
+.. seealso:: :py:func:`frameFillColor1`
  :rtype: QColor
 %End
 

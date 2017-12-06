@@ -51,7 +51,7 @@ Cell background color
  Writes the style's properties to XML for storage.
  \param styleElem an existing QDomElement in which to store the style's properties.
  \param doc QDomDocument for the destination XML.
-.. seealso:: readXml
+.. seealso:: :py:func:`readXml`
  :rtype: bool
 %End
 
@@ -59,7 +59,7 @@ Cell background color
 %Docstring
  Reads the style's properties from XML.
  \param styleElem a QDomElement holding the style's desired properties.
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
  :rtype: bool
 %End
 
@@ -129,27 +129,27 @@ class QgsLayoutTable: QgsLayoutMultiFrame
     void setCellMargin( const double margin );
 %Docstring
  Sets the ``margin`` distance in mm between cell borders and their contents.
-.. seealso:: cellMargin()
+.. seealso:: :py:func:`cellMargin()`
 %End
 
     double cellMargin() const;
 %Docstring
  Returns the margin distance between cell borders and their contents in mm.
-.. seealso:: setCellMargin()
+.. seealso:: :py:func:`setCellMargin()`
  :rtype: float
 %End
 
     void setEmptyTableBehavior( const EmptyTableMode mode );
 %Docstring
  Sets the behavior ``mode`` for empty tables with no content rows.
-.. seealso:: emptyTableBehavior()
+.. seealso:: :py:func:`emptyTableBehavior()`
 %End
 
     EmptyTableMode emptyTableBehavior() const;
 %Docstring
  Returns the behavior mode for empty tables. This property controls
  how the table is drawn if it contains no content rows.
-.. seealso:: setEmptyTableBehavior()
+.. seealso:: :py:func:`setEmptyTableBehavior()`
  :rtype: EmptyTableMode
 %End
 
@@ -158,8 +158,8 @@ class QgsLayoutTable: QgsLayoutMultiFrame
  Sets the ``message`` for empty tables with no content rows. This message
  is displayed in the table body if the empty table behavior is
  set to ShowMessage.
-.. seealso:: emptyTableMessage()
-.. seealso:: setEmptyTableBehavior()
+.. seealso:: :py:func:`emptyTableMessage()`
+.. seealso:: :py:func:`setEmptyTableBehavior()`
 %End
 
     QString emptyTableMessage() const;
@@ -167,8 +167,8 @@ class QgsLayoutTable: QgsLayoutMultiFrame
  Returns the message for empty tables with no content rows. This message
  is displayed in the table body if the empty table behavior is
  set to ShowMessage.
-.. seealso:: setEmptyTableMessage()
-.. seealso:: emptyTableBehavior()
+.. seealso:: :py:func:`setEmptyTableMessage()`
+.. seealso:: :py:func:`emptyTableBehavior()`
  :rtype: str
 %End
 
@@ -176,58 +176,58 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 %Docstring
  Sets whether empty rows should be drawn. Tables default to hiding empty rows.
  \param showEmpty set to true to show empty rows in the table
-.. seealso:: showEmptyRows()
+.. seealso:: :py:func:`showEmptyRows()`
 %End
 
     bool showEmptyRows() const;
 %Docstring
  Returns whether empty rows are drawn in the table.
-.. seealso:: setShowEmptyRows()
+.. seealso:: :py:func:`setShowEmptyRows()`
  :rtype: bool
 %End
 
     void setHeaderFont( const QFont &font );
 %Docstring
  Sets the ``font`` used to draw header text in the table.
-.. seealso:: headerFont()
-.. seealso:: setContentFont()
+.. seealso:: :py:func:`headerFont()`
+.. seealso:: :py:func:`setContentFont()`
 %End
 
     QFont headerFont() const;
 %Docstring
  Returns the font used to draw header text in the table.
-.. seealso:: setHeaderFont()
-.. seealso:: contentFont()
+.. seealso:: :py:func:`setHeaderFont()`
+.. seealso:: :py:func:`contentFont()`
  :rtype: QFont
 %End
 
     void setHeaderFontColor( const QColor &color );
 %Docstring
  Sets the ``color`` used to draw header text in the table.
-.. seealso:: headerFontColor()
-.. seealso:: setHeaderFont()
-.. seealso:: setContentFontColor()
+.. seealso:: :py:func:`headerFontColor()`
+.. seealso:: :py:func:`setHeaderFont()`
+.. seealso:: :py:func:`setContentFontColor()`
 %End
 
     QColor headerFontColor() const;
 %Docstring
  Returns the color used to draw header text in the table.
-.. seealso:: setHeaderFontColor()
-.. seealso:: headerFont()
-.. seealso:: contentFontColor()
+.. seealso:: :py:func:`setHeaderFontColor()`
+.. seealso:: :py:func:`headerFont()`
+.. seealso:: :py:func:`contentFontColor()`
  :rtype: QColor
 %End
 
     void setHeaderHAlignment( const HeaderHAlignment alignment );
 %Docstring
  Sets the horizontal ``alignment`` for table headers.
-.. seealso:: headerHAlignment()
+.. seealso:: :py:func:`headerHAlignment()`
 %End
 
     HeaderHAlignment headerHAlignment() const;
 %Docstring
  Returns the horizontal alignment for table headers.
-.. seealso:: setHeaderHAlignment()
+.. seealso:: :py:func:`setHeaderHAlignment()`
  :rtype: HeaderHAlignment
 %End
 
@@ -235,46 +235,46 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 %Docstring
  Sets the display ``mode`` for headers in the table. This property controls
  if and where headers are shown in the table.
-.. seealso:: headerMode()
+.. seealso:: :py:func:`headerMode()`
 %End
 
     HeaderMode headerMode() const;
 %Docstring
  Returns the display mode for headers in the table. This property controls
  if and where headers are shown in the table.
-.. seealso:: setHeaderMode()
+.. seealso:: :py:func:`setHeaderMode()`
  :rtype: HeaderMode
 %End
 
     void setContentFont( const QFont &font );
 %Docstring
  Sets the ``font`` used to draw text in table body cells.
-.. seealso:: contentFont()
-.. seealso:: setHeaderFont()
+.. seealso:: :py:func:`contentFont()`
+.. seealso:: :py:func:`setHeaderFont()`
 %End
 
     QFont contentFont() const;
 %Docstring
  Returns the font used to draw text in table body cells.
-.. seealso:: setContentFont()
-.. seealso:: headerFont()
+.. seealso:: :py:func:`setContentFont()`
+.. seealso:: :py:func:`headerFont()`
  :rtype: QFont
 %End
 
     void setContentFontColor( const QColor &color );
 %Docstring
  Sets the ``color`` used to draw text in table body cells.
-.. seealso:: contentFontColor()
-.. seealso:: setContentFont()
-.. seealso:: setHeaderFontColor()
+.. seealso:: :py:func:`contentFontColor()`
+.. seealso:: :py:func:`setContentFont()`
+.. seealso:: :py:func:`setHeaderFontColor()`
 %End
 
     QColor contentFontColor() const;
 %Docstring
  Returns the color used to draw text in table body cells.
-.. seealso:: setContentFontColor()
-.. seealso:: contentFont()
-.. seealso:: headerFontColor()
+.. seealso:: :py:func:`setContentFontColor()`
+.. seealso:: :py:func:`contentFont()`
+.. seealso:: :py:func:`headerFontColor()`
  :rtype: QColor
 %End
 
@@ -282,51 +282,51 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 %Docstring
  Sets whether grid lines should be drawn in the table
  \param showGrid set to true to show grid lines
-.. seealso:: showGrid()
-.. seealso:: setGridStrokeWidth()
-.. seealso:: setGridColor()
+.. seealso:: :py:func:`showGrid()`
+.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridColor()`
 %End
 
     bool showGrid() const;
 %Docstring
  Returns whether grid lines are drawn in the table
-.. seealso:: setShowGrid()
-.. seealso:: gridStrokeWidth()
-.. seealso:: gridColor()
+.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`gridStrokeWidth()`
+.. seealso:: :py:func:`gridColor()`
  :rtype: bool
 %End
 
     void setGridStrokeWidth( const double width );
 %Docstring
  Sets the ``width`` in mm for grid lines in the table.
-.. seealso:: gridStrokeWidth()
-.. seealso:: setShowGrid()
-.. seealso:: setGridColor()
+.. seealso:: :py:func:`gridStrokeWidth()`
+.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setGridColor()`
 %End
 
     double gridStrokeWidth() const;
 %Docstring
  Returns the width of grid lines in the table in mm.
-.. seealso:: setGridStrokeWidth()
-.. seealso:: showGrid()
-.. seealso:: gridColor()
+.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`showGrid()`
+.. seealso:: :py:func:`gridColor()`
  :rtype: float
 %End
 
     void setGridColor( const QColor &color );
 %Docstring
  Sets the ``color`` used for grid lines in the table.
-.. seealso:: gridColor()
-.. seealso:: setShowGrid()
-.. seealso:: setGridStrokeWidth()
+.. seealso:: :py:func:`gridColor()`
+.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setGridStrokeWidth()`
 %End
 
     QColor gridColor() const;
 %Docstring
  Returns the color used for grid lines in the table.
-.. seealso:: setGridColor()
-.. seealso:: showGrid()
-.. seealso:: gridStrokeWidth()
+.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`showGrid()`
+.. seealso:: :py:func:`gridStrokeWidth()`
  :rtype: QColor
 %End
 
@@ -334,19 +334,19 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 %Docstring
  Sets whether the grid's horizontal lines should be drawn in the table
  \param horizontalGrid set to true to draw grid's horizontal lines
-.. seealso:: setShowGrid()
-.. seealso:: setGridStrokeWidth()
-.. seealso:: setGridColor()
-.. seealso:: setVerticalGrid()
+.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setVerticalGrid()`
 %End
 
     bool horizontalGrid() const;
 %Docstring
  Returns whether the grid's horizontal lines are drawn in the table.
-.. seealso:: setShowGrid()
-.. seealso:: setGridStrokeWidth()
-.. seealso:: setGridColor()
-.. seealso:: setVerticalGrid()
+.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setVerticalGrid()`
  :rtype: bool
 %End
 
@@ -354,34 +354,34 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 %Docstring
  Sets whether the grid's vertical lines should be drawn in the table
  \param verticalGrid set to true to draw grid's vertical lines
-.. seealso:: setShowGrid()
-.. seealso:: setGridStrokeWidth()
-.. seealso:: setGridColor()
-.. seealso:: setHorizontalGrid()
+.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setHorizontalGrid()`
 %End
 
     bool verticalGrid() const;
 %Docstring
  Returns whether the grid's vertical lines are drawn in the table.
-.. seealso:: setShowGrid()
-.. seealso:: setGridStrokeWidth()
-.. seealso:: setGridColor()
-.. seealso:: setHorizontalGrid()
+.. seealso:: :py:func:`setShowGrid()`
+.. seealso:: :py:func:`setGridStrokeWidth()`
+.. seealso:: :py:func:`setGridColor()`
+.. seealso:: :py:func:`setHorizontalGrid()`
  :rtype: bool
 %End
 
     void setBackgroundColor( const QColor &color );
 %Docstring
  Sets the ``color`` used for background of table.
-.. seealso:: backgroundColor()
-.. seealso:: setGridColor()
+.. seealso:: :py:func:`backgroundColor()`
+.. seealso:: :py:func:`setGridColor()`
 %End
 
     QColor backgroundColor() const;
 %Docstring
  Returns the color used for the background of the table.
-.. seealso:: setBackgroundColor()
-.. seealso:: gridColor()
+.. seealso:: :py:func:`setBackgroundColor()`
+.. seealso:: :py:func:`gridColor()`
  :rtype: QColor
 %End
 
@@ -389,21 +389,21 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 %Docstring
  Sets the wrap ``behavior`` for the table, which controls how text within cells is
  automatically wrapped.
-.. seealso:: wrapBehavior()
+.. seealso:: :py:func:`wrapBehavior()`
 %End
 
     WrapBehavior wrapBehavior() const;
 %Docstring
  Returns the wrap behavior for the table, which controls how text within cells is
  automatically wrapped.
-.. seealso:: setWrapBehavior()
+.. seealso:: :py:func:`setWrapBehavior()`
  :rtype: WrapBehavior
 %End
 
     QgsLayoutTableColumns &columns();
 %Docstring
  Returns a reference to the list of QgsLayoutTableColumns shown in the table
-.. seealso:: setColumns()
+.. seealso:: :py:func:`setColumns()`
  :rtype: QgsLayoutTableColumns
 %End
 
@@ -411,19 +411,19 @@ class QgsLayoutTable: QgsLayoutMultiFrame
 %Docstring
  Replaces the columns in the table with a specified list of QgsLayoutTableColumns.
  \param columns list of QgsLayoutTableColumns to show in table.
-.. seealso:: columns()
+.. seealso:: :py:func:`columns()`
 %End
 
     void setCellStyle( CellStyleGroup group, const QgsLayoutTableStyle &style );
 %Docstring
  Sets the cell ``style`` for a cell ``group``.
-.. seealso:: cellStyle()
+.. seealso:: :py:func:`cellStyle()`
 %End
 
     const QgsLayoutTableStyle *cellStyle( CellStyleGroup group ) const;
 %Docstring
  Returns the cell style for a cell ``group``.
-.. seealso:: setCellStyle()
+.. seealso:: :py:func:`setCellStyle()`
  :rtype: QgsLayoutTableStyle
 %End
 
@@ -466,7 +466,7 @@ class QgsLayoutTable: QgsLayoutMultiFrame
  Refreshes the contents shown in the table by querying for new data.
  This also causes the column widths and size of the table to change to accommodate the
  new data.
-.. seealso:: adjustFrameToSize()
+.. seealso:: :py:func:`adjustFrameToSize()`
 %End
 
     virtual void recalculateFrameSizes();
@@ -560,7 +560,7 @@ class QgsLayoutTable: QgsLayoutMultiFrame
  \param lastRow index corresponding to last row shown in frame. If greater than the number of content rows in the
  table, then the default row height will be used for the remaining rows.
  \param drawHeaderLines set to true to include for the table header
-.. seealso:: drawVerticalGridLines()
+.. seealso:: :py:func:`drawVerticalGridLines()`
 %End
 
 

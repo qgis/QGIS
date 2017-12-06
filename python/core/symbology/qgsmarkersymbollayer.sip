@@ -79,7 +79,7 @@ Returns a list of all available shape types.
     QgsSimpleMarkerSymbolLayerBase::Shape shape() const;
 %Docstring
  Returns the shape for the rendered marker symbol.
-.. seealso:: setShape()
+.. seealso:: :py:func:`setShape()`
  :rtype: QgsSimpleMarkerSymbolLayerBase.Shape
 %End
 
@@ -87,7 +87,7 @@ Returns a list of all available shape types.
 %Docstring
  Sets the rendered marker shape.
  \param shape new marker shape
-.. seealso:: shape()
+.. seealso:: :py:func:`shape()`
 %End
 
     static QgsSimpleMarkerSymbolLayerBase::Shape decodeShape( const QString &name, bool *ok = 0 );
@@ -97,7 +97,7 @@ Returns a list of all available shape types.
  \param name encoded shape name
  \param ok if specified, will be set to true if shape was successfully decoded
  :return: decoded name
-.. seealso:: encodeShape()
+.. seealso:: :py:func:`encodeShape()`
  :rtype: QgsSimpleMarkerSymbolLayerBase.Shape
 %End
 
@@ -106,7 +106,7 @@ Returns a list of all available shape types.
  Encodes a shape to its string representation.
  \param shape shape to encode
  :return: encoded string
-.. seealso:: decodeShape()
+.. seealso:: :py:func:`decodeShape()`
  :rtype: str
 %End
 
@@ -274,9 +274,9 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
     virtual QColor strokeColor() const;
 %Docstring
  Returns the marker's stroke color.
-.. seealso:: setStrokeColor()
-.. seealso:: strokeStyle()
-.. seealso:: penJoinStyle()
+.. seealso:: :py:func:`setStrokeColor()`
+.. seealso:: :py:func:`strokeStyle()`
+.. seealso:: :py:func:`penJoinStyle()`
  :rtype: QColor
 %End
 
@@ -284,18 +284,18 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 %Docstring
  Sets the marker's stroke color.
  \param color stroke color
-.. seealso:: strokeColor()
-.. seealso:: setStrokeStyle()
-.. seealso:: setPenJoinStyle()
+.. seealso:: :py:func:`strokeColor()`
+.. seealso:: :py:func:`setStrokeStyle()`
+.. seealso:: :py:func:`setPenJoinStyle()`
 %End
 
     Qt::PenStyle strokeStyle() const;
 %Docstring
  Returns the marker's stroke style (e.g., solid, dashed, etc)
 .. versionadded:: 2.4
-.. seealso:: setStrokeStyle()
-.. seealso:: strokeColor()
-.. seealso:: penJoinStyle()
+.. seealso:: :py:func:`setStrokeStyle()`
+.. seealso:: :py:func:`strokeColor()`
+.. seealso:: :py:func:`penJoinStyle()`
  :rtype: Qt.PenStyle
 %End
 
@@ -304,18 +304,18 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
  Sets the marker's stroke style (e.g., solid, dashed, etc)
  \param strokeStyle style
 .. versionadded:: 2.4
-.. seealso:: strokeStyle()
-.. seealso:: setStrokeColor()
-.. seealso:: setPenJoinStyle()
+.. seealso:: :py:func:`strokeStyle()`
+.. seealso:: :py:func:`setStrokeColor()`
+.. seealso:: :py:func:`setPenJoinStyle()`
 %End
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
  Returns the marker's stroke join style (e.g., miter, bevel, etc).
 .. versionadded:: 2.16
-.. seealso:: setPenJoinStyle()
-.. seealso:: strokeColor()
-.. seealso:: strokeStyle()
+.. seealso:: :py:func:`setPenJoinStyle()`
+.. seealso:: :py:func:`strokeColor()`
+.. seealso:: :py:func:`strokeStyle()`
  :rtype: Qt.PenJoinStyle
 %End
 
@@ -324,17 +324,17 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
  Sets the marker's stroke join style (e.g., miter, bevel, etc).
  \param style join style
 .. versionadded:: 2.16
-.. seealso:: penJoinStyle()
-.. seealso:: setStrokeColor()
-.. seealso:: setStrokeStyle()
+.. seealso:: :py:func:`penJoinStyle()`
+.. seealso:: :py:func:`setStrokeColor()`
+.. seealso:: :py:func:`setStrokeStyle()`
 %End
 
     double strokeWidth() const;
 %Docstring
  Returns the width of the marker's stroke.
-.. seealso:: setStrokeWidth()
-.. seealso:: strokeWidthUnit()
-.. seealso:: strokeWidthMapUnitScale()
+.. seealso:: :py:func:`setStrokeWidth()`
+.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidthMapUnitScale()`
  :rtype: float
 %End
 
@@ -342,26 +342,26 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 %Docstring
  Sets the width of the marker's stroke.
  \param w stroke width. See strokeWidthUnit() for units.
-.. seealso:: strokeWidth()
-.. seealso:: setStrokeWidthUnit()
-.. seealso:: setStrokeWidthMapUnitScale()
+.. seealso:: :py:func:`strokeWidth()`
+.. seealso:: :py:func:`setStrokeWidthUnit()`
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale()`
 %End
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit u );
 %Docstring
  Sets the unit for the width of the marker's stroke.
  \param u stroke width unit
-.. seealso:: strokeWidthUnit()
-.. seealso:: setStrokeWidth()
-.. seealso:: setStrokeWidthMapUnitScale()
+.. seealso:: :py:func:`strokeWidthUnit()`
+.. seealso:: :py:func:`setStrokeWidth()`
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale()`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
  Returns the unit for the width of the marker's stroke.
-.. seealso:: setStrokeWidthUnit()
-.. seealso:: strokeWidth()
-.. seealso:: strokeWidthMapUnitScale()
+.. seealso:: :py:func:`setStrokeWidthUnit()`
+.. seealso:: :py:func:`strokeWidth()`
+.. seealso:: :py:func:`strokeWidthMapUnitScale()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 
@@ -369,17 +369,17 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
 %Docstring
  Sets the map scale for the width of the marker's stroke.
  \param scale stroke width map unit scale
-.. seealso:: strokeWidthMapUnitScale()
-.. seealso:: setStrokeWidth()
-.. seealso:: setStrokeWidthUnit()
+.. seealso:: :py:func:`strokeWidthMapUnitScale()`
+.. seealso:: :py:func:`setStrokeWidth()`
+.. seealso:: :py:func:`setStrokeWidthUnit()`
 %End
 
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 %Docstring
  Returns the map scale for the width of the marker's stroke.
-.. seealso:: setStrokeWidthMapUnitScale()
-.. seealso:: strokeWidth()
-.. seealso:: strokeWidthUnit()
+.. seealso:: :py:func:`setStrokeWidthMapUnitScale()`
+.. seealso:: :py:func:`strokeWidth()`
+.. seealso:: :py:func:`strokeWidthUnit()`
  :rtype: QgsMapUnitScale
 %End
 
@@ -525,7 +525,7 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
     QString path() const;
 %Docstring
  Returns the marker SVG path.
-.. seealso:: setPath()
+.. seealso:: :py:func:`setPath()`
  :rtype: str
 %End
 
@@ -533,13 +533,13 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
 %Docstring
  Set the marker SVG path.
  \param path SVG path
-.. seealso:: path()
+.. seealso:: :py:func:`path()`
 %End
 
     double defaultAspectRatio() const;
 %Docstring
  Returns the default marker aspect ratio between width and height, 0 if not yet calculated.
-.. seealso:: updateDefaultAspectRatio()
+.. seealso:: :py:func:`updateDefaultAspectRatio()`
  :rtype: float
 %End
 
@@ -547,14 +547,14 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
 %Docstring
  Calculates the default marker aspect ratio between width and height.
  :return: the default aspect ratio value
-.. seealso:: defaultAspectRatio()
+.. seealso:: :py:func:`defaultAspectRatio()`
  :rtype: float
 %End
 
     bool preservedAspectRatio() const;
 %Docstring
  Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
-.. seealso:: setPreservedAspectRatio()
+.. seealso:: :py:func:`setPreservedAspectRatio()`
  :rtype: bool
 %End
 
@@ -563,7 +563,7 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
  Set preserved the marker aspect ratio between width and height.
  \param par Preserved Aspect Ratio
  :return: the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
-.. seealso:: preservedAspectRatio()
+.. seealso:: :py:func:`preservedAspectRatio()`
  :rtype: bool
 %End
 
@@ -571,7 +571,7 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
 %Docstring
  Returns the marker aspect ratio between width and height to be used in rendering,
  if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
-.. seealso:: setFixedAspectRatio() QgsSvgCache
+.. seealso:: :py:func:`setFixedAspectRatio()`
  :rtype: float
 %End
 
@@ -580,7 +580,7 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
  Set the marker aspect ratio between width and height to be used in rendering,
  if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
  \param ratio Fixed Aspect Ratio
-.. seealso:: fixedAspectRatio() QgsSvgCache
+.. seealso:: :py:func:`fixedAspectRatio()`
 %End
 
     virtual QColor fillColor() const;
@@ -599,13 +599,13 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
 %Docstring
  Sets the units for the stroke width.
  \param unit width units
-.. seealso:: strokeWidthUnit()
+.. seealso:: :py:func:`strokeWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
  Returns the units for the stroke width.
-.. seealso:: strokeWidthUnit()
+.. seealso:: :py:func:`strokeWidthUnit()`
  :rtype: QgsUnitTypes.RenderUnit
 %End
 

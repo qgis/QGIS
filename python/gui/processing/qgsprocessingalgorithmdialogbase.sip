@@ -34,26 +34,26 @@ class QgsProcessingAlgorithmDialogBase : QDialog
     void setAlgorithm( QgsProcessingAlgorithm *algorithm );
 %Docstring
  Sets the ``algorithm`` to run in the dialog.
-.. seealso:: algorithm()
+.. seealso:: :py:func:`algorithm()`
 %End
 
     QgsProcessingAlgorithm *algorithm();
 %Docstring
  Returns the algorithm running in the dialog.
-.. seealso:: setAlgorithm()
+.. seealso:: :py:func:`setAlgorithm()`
  :rtype: QgsProcessingAlgorithm
 %End
 
     void setMainWidget( QWidget *widget /Transfer/ );
 %Docstring
  Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
-.. seealso:: mainWidget()
+.. seealso:: :py:func:`mainWidget()`
 %End
 
     QWidget *mainWidget();
 %Docstring
  Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
-.. seealso:: setMainWidget()
+.. seealso:: :py:func:`setMainWidget()`
  :rtype: QWidget
 %End
 

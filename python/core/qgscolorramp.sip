@@ -160,16 +160,16 @@ Creates a new QgsColorRamp from a map of properties
     QColor color1() const;
 %Docstring
  Returns the gradient start color.
-.. seealso:: setColor1()
-.. seealso:: color2()
+.. seealso:: :py:func:`setColor1()`
+.. seealso:: :py:func:`color2()`
  :rtype: QColor
 %End
 
     QColor color2() const;
 %Docstring
  Returns the gradient end color.
-.. seealso:: setColor2()
-.. seealso:: color1()
+.. seealso:: :py:func:`setColor2()`
+.. seealso:: :py:func:`color1()`
  :rtype: QColor
 %End
 
@@ -177,23 +177,23 @@ Creates a new QgsColorRamp from a map of properties
 %Docstring
  Sets the gradient start color.
  \param color start color
-.. seealso:: color1()
-.. seealso:: setColor2()
+.. seealso:: :py:func:`color1()`
+.. seealso:: :py:func:`setColor2()`
 %End
 
     void setColor2( const QColor &color );
 %Docstring
  Sets the gradient end color.
  \param color end color
-.. seealso:: color2()
-.. seealso:: setColor1()
+.. seealso:: :py:func:`color2()`
+.. seealso:: :py:func:`setColor1()`
 %End
 
     bool isDiscrete() const;
 %Docstring
  Returns true if the gradient is using discrete interpolation, rather than
  smoothly interpolating between colors.
-.. seealso:: setDiscrete()
+.. seealso:: :py:func:`setDiscrete()`
  :rtype: bool
 %End
 
@@ -202,8 +202,8 @@ Creates a new QgsColorRamp from a map of properties
  Sets whether the gradient should use discrete interpolation, rather than
  smoothly interpolating between colors.
  \param discrete set to true to use discrete interpolation
-.. seealso:: convertToDiscrete()
-.. seealso:: isDiscrete()
+.. seealso:: :py:func:`convertToDiscrete()`
+.. seealso:: :py:func:`isDiscrete()`
 %End
 
     void convertToDiscrete( bool discrete );
@@ -212,7 +212,7 @@ Creates a new QgsColorRamp from a map of properties
  interpolation.
  \param discrete set to true to convert the gradient stops to discrete,
  or false to convert them to smooth interpolation
-.. seealso:: isDiscrete()
+.. seealso:: :py:func:`isDiscrete()`
 %End
 
     void setStops( const QgsGradientStopsList &stops );
@@ -221,20 +221,20 @@ Creates a new QgsColorRamp from a map of properties
  \param stops list of stops. Any existing color stops will be replaced. The stop
  list will be automatically reordered so that stops are listed in ascending offset
  order.
-.. seealso:: stops()
+.. seealso:: :py:func:`stops()`
 %End
 
     QgsGradientStopsList stops() const;
 %Docstring
  Returns the list of intermediate gradient stops for the ramp.
-.. seealso:: setStops()
+.. seealso:: :py:func:`setStops()`
  :rtype: QgsGradientStopsList
 %End
 
     QgsStringMap info() const;
 %Docstring
  Returns any additional info attached to the gradient ramp (e.g., authorship notes)
-.. seealso:: setInfo()
+.. seealso:: :py:func:`setInfo()`
  :rtype: QgsStringMap
 %End
 
@@ -242,7 +242,7 @@ Creates a new QgsColorRamp from a map of properties
 %Docstring
  Sets additional info to attach to the gradient ramp (e.g., authorship notes)
  \param info map of string info to attach
-.. seealso:: info()
+.. seealso:: :py:func:`info()`
 %End
 
     void addStopsToGradient( QGradient *gradient, double opacity = 1 );
@@ -291,7 +291,7 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
  Returns a new QgsLimitedRandomColorRamp color ramp created using the properties encoded in a string
  map.
  \param properties color ramp properties
-.. seealso:: properties()
+.. seealso:: :py:func:`properties()`
  :rtype: QgsColorRamp
 %End
 
@@ -321,42 +321,42 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
     int hueMin() const;
 %Docstring
  Returns the minimum hue for generated colors
-.. seealso:: setHueMin()
+.. seealso:: :py:func:`setHueMin()`
  :rtype: int
 %End
 
     int hueMax() const;
 %Docstring
  Returns the maximum hue for generated colors
-.. seealso:: setHueMax()
+.. seealso:: :py:func:`setHueMax()`
  :rtype: int
 %End
 
     int satMin() const;
 %Docstring
  Returns the minimum saturation for generated colors
-.. seealso:: setSatMin()
+.. seealso:: :py:func:`setSatMin()`
  :rtype: int
 %End
 
     int satMax() const;
 %Docstring
  Returns the maximum saturation for generated colors
-.. seealso:: setSatMax()
+.. seealso:: :py:func:`setSatMax()`
  :rtype: int
 %End
 
     int valMin() const;
 %Docstring
  Returns the minimum value for generated colors
-.. seealso:: setValMin()
+.. seealso:: :py:func:`setValMin()`
  :rtype: int
 %End
 
     int valMax() const;
 %Docstring
  Returns the maximum value for generated colors
-.. seealso:: setValMax()
+.. seealso:: :py:func:`setValMax()`
  :rtype: int
 %End
 
@@ -368,37 +368,37 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
     void setHueMin( int val );
 %Docstring
  Sets the minimum hue for generated colors
-.. seealso:: hueMin()
+.. seealso:: :py:func:`hueMin()`
 %End
 
     void setHueMax( int val );
 %Docstring
  Sets the maximum hue for generated colors
-.. seealso:: hueMax()
+.. seealso:: :py:func:`hueMax()`
 %End
 
     void setSatMin( int val );
 %Docstring
  Sets the minimum saturation for generated colors
-.. seealso:: satMin()
+.. seealso:: :py:func:`satMin()`
 %End
 
     void setSatMax( int val );
 %Docstring
  Sets the maximum saturation for generated colors
-.. seealso:: satMax()
+.. seealso:: :py:func:`satMax()`
 %End
 
     void setValMin( int val );
 %Docstring
  Sets the minimum value for generated colors
-.. seealso:: valMin()
+.. seealso:: :py:func:`valMin()`
 %End
 
     void setValMax( int val );
 %Docstring
  Sets the maximum value for generated colors
-.. seealso:: valMax()
+.. seealso:: :py:func:`valMax()`
 %End
 
   protected:
@@ -485,7 +485,7 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
  Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
  map.
  \param properties color ramp properties
-.. seealso:: properties()
+.. seealso:: :py:func:`properties()`
  :rtype: QgsColorRamp
 %End
 
@@ -493,14 +493,14 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
 %Docstring
  Sets the list of colors used by the ramp.
  \param colors list of colors
-.. seealso:: colors()
+.. seealso:: :py:func:`colors()`
  :rtype: bool
 %End
 
     QList< QColor > colors() const;
 %Docstring
  Returns the list of colors used by the ramp.
-.. seealso:: setColors()
+.. seealso:: :py:func:`setColors()`
  :rtype: list of QColor
 %End
 
@@ -549,7 +549,7 @@ class QgsColorBrewerColorRamp : QgsColorRamp
  Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
  map.
  \param properties color ramp properties
-.. seealso:: properties()
+.. seealso:: :py:func:`properties()`
  :rtype: QgsColorRamp
 %End
 
@@ -564,14 +564,14 @@ class QgsColorBrewerColorRamp : QgsColorRamp
     QString schemeName() const;
 %Docstring
  Returns the name of the color brewer color scheme.
-.. seealso:: setSchemeName()
+.. seealso:: :py:func:`setSchemeName()`
  :rtype: str
 %End
 
     int colors() const;
 %Docstring
  Returns the number of colors in the ramp.
-.. seealso:: setColors()
+.. seealso:: :py:func:`setColors()`
  :rtype: int
 %End
 
@@ -579,8 +579,8 @@ class QgsColorBrewerColorRamp : QgsColorRamp
 %Docstring
  Sets the name of the color brewer color scheme.
  \param schemeName scheme name, must match a valid color brewer scheme name
-.. seealso:: schemeName()
-.. seealso:: listSchemeNames()
+.. seealso:: :py:func:`schemeName()`
+.. seealso:: :py:func:`listSchemeNames()`
 %End
 
     void setColors( int colors );
@@ -588,13 +588,13 @@ class QgsColorBrewerColorRamp : QgsColorRamp
  Sets the number of colors in the ramp.
  \param colors number of colors. Must match a valid value for the scheme,
  which can be retrieved using listSchemeVariants()
-.. seealso:: colors()
+.. seealso:: :py:func:`colors()`
 %End
 
     static QStringList listSchemeNames();
 %Docstring
  Returns a list of all valid color brewer scheme names.
-.. seealso:: listSchemeVariants()
+.. seealso:: :py:func:`listSchemeVariants()`
  :rtype: list of str
 %End
 
@@ -603,7 +603,7 @@ class QgsColorBrewerColorRamp : QgsColorRamp
  Returns a list of the valid variants (numbers of colors) for a specified
  color brewer scheme name
  \param schemeName color brewer scheme name
-.. seealso:: listSchemeNames()
+.. seealso:: :py:func:`listSchemeNames()`
  :rtype: list of int
 %End
 

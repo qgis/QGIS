@@ -26,7 +26,7 @@ class QgsXmlUtils
  Decodes a distance unit from a DOM element.
  \param element DOM element to decode
  :return: distance units
-.. seealso:: writeMapUnits()
+.. seealso:: :py:func:`writeMapUnits()`
  :rtype: QgsUnitTypes.DistanceUnit
 %End
 
@@ -42,7 +42,7 @@ class QgsXmlUtils
  \param units units to encode
  \param doc DOM document
  :return: element containing encoded units
-.. seealso:: readMapUnits()
+.. seealso:: :py:func:`readMapUnits()`
  :rtype: QDomElement
 %End
 

@@ -34,7 +34,7 @@ class QgsCheckableComboBox : QComboBox
     QString separator() const;
 %Docstring
  Returns separator used to separate items in the display text.
-.. seealso:: setSeparator()
+.. seealso:: :py:func:`setSeparator()`
  :rtype: str
 %End
 
@@ -42,14 +42,14 @@ class QgsCheckableComboBox : QComboBox
 %Docstring
  Set separator used to separate items in the display text.
  \param separator separator to use
-.. seealso:: separator()
+.. seealso:: :py:func:`separator()`
 %End
 
     QString defaultText() const;
 %Docstring
  Returns default text which will be displayed in the widget
  when no items selected.
-.. seealso:: setDefaultText()
+.. seealso:: :py:func:`setDefaultText()`
  :rtype: str
 %End
 
@@ -58,13 +58,13 @@ class QgsCheckableComboBox : QComboBox
  Set default text which will be displayed in the widget when
  no items selected.
  \param text default text
-.. seealso:: defaultText()
+.. seealso:: :py:func:`defaultText()`
 %End
 
     QStringList checkedItems() const;
 %Docstring
  Returns currently checked items.
-.. seealso:: setCheckedItems()
+.. seealso:: :py:func:`setCheckedItems()`
  :rtype: list of str
 %End
 
@@ -72,8 +72,8 @@ class QgsCheckableComboBox : QComboBox
 %Docstring
  Returns the checked state of the item identified by index
  \param index item index
-.. seealso:: setItemCheckState()
-.. seealso:: toggleItemCheckState()
+.. seealso:: :py:func:`setItemCheckState()`
+.. seealso:: :py:func:`toggleItemCheckState()`
  :rtype: Qt.CheckState
 %End
 
@@ -82,16 +82,16 @@ class QgsCheckableComboBox : QComboBox
  Sets the item check state to state
  \param index item index
  \param state check state
-.. seealso:: itemCheckState()
-.. seealso:: toggleItemCheckState()
+.. seealso:: :py:func:`itemCheckState()`
+.. seealso:: :py:func:`toggleItemCheckState()`
 %End
 
     void toggleItemCheckState( int index );
 %Docstring
  Toggles the item check state
  \param index item index
-.. seealso:: itemCheckState()
-.. seealso:: setItemCheckState()
+.. seealso:: :py:func:`itemCheckState()`
+.. seealso:: :py:func:`setItemCheckState()`
 %End
 
     virtual void hidePopup();
@@ -119,7 +119,7 @@ class QgsCheckableComboBox : QComboBox
 %Docstring
  Set items which should be checked/selected.
  \param items items to select
-.. seealso:: checkedItems()
+.. seealso:: :py:func:`checkedItems()`
 %End
 
   protected:

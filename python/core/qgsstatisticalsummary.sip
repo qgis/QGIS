@@ -63,7 +63,7 @@ class QgsStatisticalSummary
 %Docstring
  Returns flags which specify which statistics will be calculated. Some statistics
  are always calculated (e.g., sum, min and max).
-.. seealso:: setStatistics
+.. seealso:: :py:func:`setStatistics`
  :rtype: Statistics
 %End
 
@@ -72,7 +72,7 @@ class QgsStatisticalSummary
  Sets flags which specify which statistics will be calculated. Some statistics
  are always calculated (e.g., sum, min and max).
  \param stats flags for statistics to calculate
-.. seealso:: statistics
+.. seealso:: :py:func:`statistics`
 %End
 
     void reset();
@@ -101,9 +101,9 @@ class QgsStatisticalSummary
 
    finalize() must be called after adding the final value and before
  retrieving calculated statistics.
-.. seealso:: calculate()
-.. seealso:: addVariant()
-.. seealso:: finalize()
+.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`addVariant()`
+.. seealso:: :py:func:`finalize()`
 .. versionadded:: 2.16
 %End
 
@@ -122,9 +122,9 @@ class QgsStatisticalSummary
 
    finalize() must be called after adding the final value and before
  retrieving calculated statistics.
-.. seealso:: addValue()
-.. seealso:: calculate()
-.. seealso:: finalize()
+.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`finalize()`
 .. versionadded:: 2.16
 %End
 
@@ -132,8 +132,8 @@ class QgsStatisticalSummary
 %Docstring
  Must be called after adding all values with addValues() and before retrieving
  any calculated statistics.
-.. seealso:: addValue()
-.. seealso:: addVariant()
+.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`addVariant()`
 .. versionadded:: 2.16
 %End
 
@@ -206,7 +206,7 @@ class QgsStatisticalSummary
  Returns population standard deviation. This is only calculated if Statistic.StDev has
  been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
  be calculated.
-.. seealso:: sampleStDev
+.. seealso:: :py:func:`sampleStDev`
  :rtype: float
 %End
 
@@ -215,7 +215,7 @@ class QgsStatisticalSummary
  Returns sample standard deviation. This is only calculated if Statistic.StDev has
  been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
  be calculated.
-.. seealso:: stDev
+.. seealso:: :py:func:`stDev`
  :rtype: float
 %End
 
@@ -233,7 +233,7 @@ class QgsStatisticalSummary
  This is only calculated if Statistic.Minority has been specified in the constructor
  or via setStatistics. A NaN value may be returned if the minority cannot
  be calculated.
-.. seealso:: majority
+.. seealso:: :py:func:`majority`
  :rtype: float
 %End
 
@@ -243,7 +243,7 @@ class QgsStatisticalSummary
  This is only calculated if Statistic.Majority has been specified in the constructor
  or via setStatistics. A NaN value may be returned if the majority cannot
  be calculated.
-.. seealso:: minority
+.. seealso:: :py:func:`minority`
  :rtype: float
 %End
 
@@ -252,8 +252,8 @@ class QgsStatisticalSummary
  Returns the first quartile of the values. The quartile is calculated using the
  "Tukey's hinges" method. A NaN value may be returned if the first quartile cannot
  be calculated.
-.. seealso:: thirdQuartile
-.. seealso:: interQuartileRange
+.. seealso:: :py:func:`thirdQuartile`
+.. seealso:: :py:func:`interQuartileRange`
  :rtype: float
 %End
 
@@ -262,8 +262,8 @@ class QgsStatisticalSummary
  Returns the third quartile of the values. The quartile is calculated using the
  "Tukey's hinges" method. A NaN value may be returned if the third quartile cannot
  be calculated.
-.. seealso:: firstQuartile
-.. seealso:: interQuartileRange
+.. seealso:: :py:func:`firstQuartile`
+.. seealso:: :py:func:`interQuartileRange`
  :rtype: float
 %End
 
@@ -272,8 +272,8 @@ class QgsStatisticalSummary
  Returns the inter quartile range of the values. The quartiles are calculated using the
  "Tukey's hinges" method. A NaN value may be returned if the IQR cannot
  be calculated.
-.. seealso:: firstQuartile
-.. seealso:: thirdQuartile
+.. seealso:: :py:func:`firstQuartile`
+.. seealso:: :py:func:`thirdQuartile`
  :rtype: float
 %End
 

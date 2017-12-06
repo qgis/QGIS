@@ -54,7 +54,7 @@ class QgsStringStatisticalSummary
 %Docstring
  Returns flags which specify which statistics will be calculated. Some statistics
  are always calculated (e.g., count).
-.. seealso:: setStatistics
+.. seealso:: :py:func:`setStatistics`
  :rtype: Statistics
 %End
 
@@ -63,7 +63,7 @@ class QgsStringStatisticalSummary
  Sets flags which specify which statistics will be calculated. Some statistics
  are always calculated (e.g., count).
  \param stats flags for statistics to calculate
-.. seealso:: statistics
+.. seealso:: :py:func:`statistics`
 %End
 
     void reset();
@@ -75,8 +75,8 @@ class QgsStringStatisticalSummary
 %Docstring
  Calculates summary statistics for an entire list of strings at once.
  \param values list of strings
-.. seealso:: calculateFromVariants()
-.. seealso:: addString()
+.. seealso:: :py:func:`calculateFromVariants()`
+.. seealso:: :py:func:`addString()`
 %End
 
     void calculateFromVariants( const QVariantList &values );
@@ -84,8 +84,8 @@ class QgsStringStatisticalSummary
  Calculates summary statistics for an entire list of variants at once. Any
  non-string variants will be ignored.
  \param values list of variants
-.. seealso:: calculate()
-.. seealso:: addValue()
+.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`addValue()`
 %End
 
     void addString( const QString &string );
@@ -103,9 +103,9 @@ class QgsStringStatisticalSummary
 
    finalize() must be called after adding the final string and before
  retrieving calculated statistics.
-.. seealso:: calculate()
-.. seealso:: addValue()
-.. seealso:: finalize()
+.. seealso:: :py:func:`calculate()`
+.. seealso:: :py:func:`addValue()`
+.. seealso:: :py:func:`finalize()`
 %End
 
     void addValue( const QVariant &value );
@@ -123,15 +123,15 @@ class QgsStringStatisticalSummary
 
    finalize() must be called after adding the final value and before
  retrieving calculated statistics.
-.. seealso:: calculateFromVariants()
-.. seealso:: finalize()
+.. seealso:: :py:func:`calculateFromVariants()`
+.. seealso:: :py:func:`finalize()`
 %End
 
     void finalize();
 %Docstring
  Must be called after adding all strings with addString() and before retrieving
  any calculated string statistics.
-.. seealso:: addString()
+.. seealso:: :py:func:`addString()`
 %End
 
     QVariant statistic( QgsStringStatisticalSummary::Statistic stat ) const;
@@ -151,14 +151,14 @@ class QgsStringStatisticalSummary
     int countDistinct() const;
 %Docstring
  Returns the number of distinct string values.
-.. seealso:: distinctValues()
+.. seealso:: :py:func:`distinctValues()`
  :rtype: int
 %End
 
     QSet< QString > distinctValues() const;
 %Docstring
  Returns the set of distinct string values.
-.. seealso:: countDistinct()
+.. seealso:: :py:func:`countDistinct()`
  :rtype: set of str
 %End
 

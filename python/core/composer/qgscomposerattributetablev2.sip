@@ -73,7 +73,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  \param elem an existing QDomElement in which to store the attribute table's properties.
  \param doc QDomDocument for the destination xml.
  \param ignoreFrames ignore frames
-.. seealso:: readXml
+.. seealso:: :py:func:`readXml`
  :rtype: bool
 %End
 
@@ -83,7 +83,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  \param itemElem a QDomElement holding the attribute table's desired properties.
  \param doc QDomDocument for the source xml.
  \param ignoreFrames ignore frames
-.. seealso:: writeXml
+.. seealso:: :py:func:`writeXml`
  :rtype: bool
 %End
 
@@ -93,14 +93,14 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
 %Docstring
  Sets the source for attributes to show in table body.
  \param source content source
-.. seealso:: source
+.. seealso:: :py:func:`source`
 %End
 
     ContentSource source() const;
 %Docstring
  Returns the source for attributes shown in the table body.
  :return: content source
-.. seealso:: setSource
+.. seealso:: :py:func:`setSource`
  :rtype: ContentSource
 %End
 
@@ -118,14 +118,14 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
 %Docstring
  Sets the vector layer from which to display feature attributes
  \param layer Vector layer for attribute table
-.. seealso:: vectorLayer
+.. seealso:: :py:func:`vectorLayer`
 %End
 
     QgsVectorLayer *vectorLayer() const;
 %Docstring
  Returns the vector layer the attribute table is currently using
  :return: attribute table's current vector layer
-.. seealso:: setVectorLayer
+.. seealso:: :py:func:`setVectorLayer`
  :rtype: QgsVectorLayer
 %End
 
@@ -133,8 +133,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
 %Docstring
  Sets the relation id from which to display child features
  \param relationId id for relation to display child features from
-.. seealso:: relationId
-.. seealso:: setSource
+.. seealso:: :py:func:`relationId`
+.. seealso:: :py:func:`setSource`
 .. note::
 
    only used if table source is set to RelationChildren
@@ -144,8 +144,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
 %Docstring
  Returns the relation id which the table displays child features from
  :return: relation id
-.. seealso:: setRelationId
-.. seealso:: source
+.. seealso:: :py:func:`setRelationId`
+.. seealso:: :py:func:`source`
 .. note::
 
    only used if table source is set to RelationChildren
@@ -155,7 +155,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
     void resetColumns();
 %Docstring
  Resets the attribute table's columns to match the vector layer's fields
-.. seealso:: setVectorLayer
+.. seealso:: :py:func:`setVectorLayer`
 %End
 
     void setComposerMap( const QgsComposerMap *map );
@@ -166,8 +166,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  vector layer, and may result in the table changing size to accommodate the new displayed
  feature attributes.
  \param map QgsComposerMap which drives the extents of the table's features
-.. seealso:: composerMap
-.. seealso:: setDisplayOnlyVisibleFeatures
+.. seealso:: :py:func:`composerMap`
+.. seealso:: :py:func:`setDisplayOnlyVisibleFeatures`
 %End
 
     const QgsComposerMap *composerMap() const;
@@ -175,8 +175,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  Returns the composer map whose extents are controlling the features shown in the
  table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
  :return: composer map controlling the attribute table
-.. seealso:: setComposerMap
-.. seealso:: displayOnlyVisibleFeatures
+.. seealso:: :py:func:`setComposerMap`
+.. seealso:: :py:func:`displayOnlyVisibleFeatures`
  :rtype: QgsComposerMap
 %End
 
@@ -186,14 +186,14 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  in the attribute table changing its size to accommodate the new number of rows, and requires
  the table to refetch features from its vector layer.
  \param features maximum number of features to show in the table
-.. seealso:: maximumNumberOfFeatures
+.. seealso:: :py:func:`maximumNumberOfFeatures`
 %End
 
     int maximumNumberOfFeatures() const;
 %Docstring
  Returns the maximum number of features to be shown by the table.
  :return: maximum number of features
-.. seealso:: setMaximumNumberOfFeatures
+.. seealso:: :py:func:`setMaximumNumberOfFeatures`
  :rtype: int
 %End
 
@@ -202,7 +202,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  Sets attribute table to only show unique rows.
  \param uniqueOnly set to true to show only unique rows. Duplicate rows
  will be stripped from the table.
-.. seealso:: uniqueRowsOnly
+.. seealso:: :py:func:`uniqueRowsOnly`
 %End
 
     bool uniqueRowsOnly() const;
@@ -210,7 +210,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  Returns true if the table is set to show only unique rows.
  :return: true if table only shows unique rows and is stripping out
  duplicate rows.
-.. seealso:: setUniqueRowsOnly
+.. seealso:: :py:func:`setUniqueRowsOnly`
  :rtype: bool
 %End
 
@@ -220,8 +220,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  this setting forces the table to refetch features from its vector layer, and may result in
  the table changing size to accommodate the new displayed feature attributes.
  \param visibleOnly set to true to show only visible features
-.. seealso:: displayOnlyVisibleFeatures
-.. seealso:: setComposerMap
+.. seealso:: :py:func:`displayOnlyVisibleFeatures`
+.. seealso:: :py:func:`setComposerMap`
 %End
 
     bool displayOnlyVisibleFeatures() const;
@@ -229,8 +229,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  Returns true if the table is set to show only features visible on a corresponding
  composer map item.
  :return: true if table only shows visible features
-.. seealso:: composerMap
-.. seealso:: setDisplayOnlyVisibleFeatures
+.. seealso:: :py:func:`composerMap`
+.. seealso:: :py:func:`setDisplayOnlyVisibleFeatures`
  :rtype: bool
 %End
 
@@ -240,7 +240,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  feature.
  \param filterToAtlas set to true to show only features which intersect
  the atlas feature
-.. seealso:: filterToAtlasFeature
+.. seealso:: :py:func:`filterToAtlasFeature`
 %End
 
     bool filterToAtlasFeature() const;
@@ -248,7 +248,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  Returns true if the table is set to only show features which intersect the current atlas
  feature.
  :return: true if table only shows features which intersect the atlas feature
-.. seealso:: setFilterToAtlasFeature
+.. seealso:: :py:func:`setFilterToAtlasFeature`
  :rtype: bool
 %End
 
@@ -256,8 +256,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
 %Docstring
  Returns true if a feature filter is active on the attribute table
  :return: bool state of the feature filter
-.. seealso:: setFilterFeatures
-.. seealso:: featureFilter
+.. seealso:: :py:func:`setFilterFeatures`
+.. seealso:: :py:func:`featureFilter`
  :rtype: bool
 %End
 
@@ -267,8 +267,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  this setting forces the table to refetch features from its vector layer, and may result in
  the table changing size to accommodate the new displayed feature attributes.
  \param filter Set to true to enable the feature filter
-.. seealso:: filterFeatures
-.. seealso:: setFeatureFilter
+.. seealso:: :py:func:`filterFeatures`
+.. seealso:: :py:func:`setFeatureFilter`
 %End
 
     QString featureFilter() const;
@@ -276,8 +276,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  Returns the current expression used to filter features for the table. The filter is only
  active if filterFeatures() is true.
  :return: feature filter expression
-.. seealso:: setFeatureFilter
-.. seealso:: filterFeatures
+.. seealso:: :py:func:`setFeatureFilter`
+.. seealso:: :py:func:`filterFeatures`
  :rtype: str
 %End
 
@@ -288,8 +288,8 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  to refetch features from its vector layer, and may result in
  the table changing size to accommodate the new displayed feature attributes.
  \param expression filter to use for selecting which features to display in the table
-.. seealso:: featureFilter
-.. seealso:: setFilterFeatures
+.. seealso:: :py:func:`featureFilter`
+.. seealso:: :py:func:`setFilterFeatures`
 %End
 
     void setDisplayedFields( const QStringList &fields, bool refresh = true );
@@ -310,7 +310,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  be replaced by a line break.
  \param wrapString string to replace with line break
 .. versionadded:: 2.12
-.. seealso:: wrapString
+.. seealso:: :py:func:`wrapString`
 %End
 
     QString wrapString() const;
@@ -319,7 +319,7 @@ class QgsComposerAttributeTableV2: QgsComposerTableV2
  be replaced by a line break.
  :return: string which will be replaced with line break
 .. versionadded:: 2.12
-.. seealso:: setWrapString
+.. seealso:: :py:func:`setWrapString`
  :rtype: str
 %End
 

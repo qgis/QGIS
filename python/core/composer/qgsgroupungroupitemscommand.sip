@@ -33,7 +33,7 @@ class QgsGroupUngroupItemsCommand: QObject, QUndoCommand
 %Docstring
  Create a group or ungroup command
 
-.. seealso:: State)
+.. seealso:: State
  \param item the group item being created or ungrouped
  \param c the composition including this group
  \param text command label

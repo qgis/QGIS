@@ -38,27 +38,27 @@ Construct a new raster block feedback object
 %Docstring
  Whether the raster provider should return only data that are already available
  without waiting for full result. By default this flag is not enabled.
-.. seealso:: setPreviewOnly()
+.. seealso:: :py:func:`setPreviewOnly()`
  :rtype: bool
 %End
 
     void setPreviewOnly( bool preview );
 %Docstring
  set flag whether the block request is for preview purposes only
-.. seealso:: isPreviewOnly()
+.. seealso:: :py:func:`isPreviewOnly()`
 %End
 
     bool renderPartialOutput() const;
 %Docstring
  Whether our painter is drawing to a temporary image used just by this layer
-.. seealso:: setRenderPartialOutput()
+.. seealso:: :py:func:`setRenderPartialOutput()`
  :rtype: bool
 %End
 
     void setRenderPartialOutput( bool enable );
 %Docstring
  Set whether our painter is drawing to a temporary image used just by this layer
-.. seealso:: renderPartialOutput()
+.. seealso:: :py:func:`renderPartialOutput()`
 %End
 
 };
@@ -367,7 +367,7 @@ Set on/off
            bool includeOutOfRange = false )];
 %Docstring
  Returns true if histogram is available (cached, already calculated)
-.. seealso:: histogram()
+.. seealso:: :py:func:`histogram()`
  :rtype: bool
 %End
 %MethodCode
@@ -445,7 +445,7 @@ Sets base class members from xml. Usually called from create() methods of subcla
             bool includeOutOfRange = false )];
 %Docstring
  Fill in histogram defaults if not specified
-.. seealso:: histogram()
+.. seealso:: :py:func:`histogram()`
 %End
 %MethodCode
     double minimum;

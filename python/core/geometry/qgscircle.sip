@@ -136,16 +136,16 @@ class QgsCircle : QgsEllipse
 
 %Docstring
  Inherited method. Use setRadius instead.
-.. seealso:: radius()
-.. seealso:: setRadius()
+.. seealso:: :py:func:`radius()`
+.. seealso:: :py:func:`setRadius()`
 %End
 
     virtual void setSemiMinorAxis( const double semiMinorAxis );
 
 %Docstring
  Inherited method. Use setRadius instead.
-.. seealso:: radius()
-.. seealso:: setRadius()
+.. seealso:: :py:func:`radius()`
+.. seealso:: :py:func:`setRadius()`
 %End
 
     double radius() const;
@@ -163,7 +163,7 @@ Set the radius of the circle
  The four quadrants of the ellipse.
  They are oriented and started from North.
  :return: quadrants defined by four points.
-.. seealso:: quadrant()
+.. seealso:: :py:func:`quadrant()`
  :rtype: list of QgsPoint
 %End
 

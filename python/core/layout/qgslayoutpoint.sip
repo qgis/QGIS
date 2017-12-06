@@ -15,7 +15,7 @@ class QgsLayoutPoint
  This class provides a method of storing points, consisting of an x and y coordinate,
  for use in QGIS layouts. Measurement units are stored alongside the position.
 
-.. seealso:: QgsLayoutMeasurementConverter
+.. seealso:: :py:class:`QgsLayoutMeasurementConverter`
 .. versionadded:: 3.0
 .. note::
 
@@ -50,15 +50,15 @@ class QgsLayoutPoint
     void setPoint( const double x, const double y );
 %Docstring
  Sets new x and y coordinates for the point.
-.. seealso:: setX()
-.. seealso:: setY()
-.. seealso:: setUnits()
+.. seealso:: :py:func:`setX()`
+.. seealso:: :py:func:`setY()`
+.. seealso:: :py:func:`setUnits()`
 %End
 
     double x() const;
 %Docstring
  Returns x coordinate of point.
-.. seealso:: setX()
+.. seealso:: :py:func:`setX()`
 .. seealso:: y()
  :rtype: float
 %End
@@ -67,13 +67,13 @@ class QgsLayoutPoint
 %Docstring
  Sets the x coordinate of point.
 .. seealso:: x()
-.. seealso:: setY()
+.. seealso:: :py:func:`setY()`
 %End
 
     double y() const;
 %Docstring
  Returns y coordinate of point.
-.. seealso:: setY()
+.. seealso:: :py:func:`setY()`
 .. seealso:: x()
  :rtype: float
 %End
@@ -82,13 +82,13 @@ class QgsLayoutPoint
 %Docstring
  Sets y coordinate of point.
 .. seealso:: y()
-.. seealso:: setX()
+.. seealso:: :py:func:`setX()`
 %End
 
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
  Returns the units for the point.
-.. seealso:: setUnits()
+.. seealso:: :py:func:`setUnits()`
  :rtype: QgsUnitTypes.LayoutUnit
 %End
 
@@ -96,7 +96,7 @@ class QgsLayoutPoint
 %Docstring
  Sets the ``units`` for the point. Does not alter the stored coordinates,
  ie. no conversion is done.
-.. seealso:: units()
+.. seealso:: :py:func:`units()`
 %End
 
     bool isNull() const;
@@ -118,14 +118,14 @@ class QgsLayoutPoint
     QString encodePoint() const;
 %Docstring
  Encodes the layout point to a string
-.. seealso:: decodePoint()
+.. seealso:: :py:func:`decodePoint()`
  :rtype: str
 %End
 
     static QgsLayoutPoint decodePoint( const QString &string );
 %Docstring
  Decodes a point from a ``string``.
-.. seealso:: encodePoint()
+.. seealso:: :py:func:`encodePoint()`
  :rtype: QgsLayoutPoint
 %End
 

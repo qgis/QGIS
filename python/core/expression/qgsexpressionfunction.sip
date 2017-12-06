@@ -229,7 +229,7 @@ Does this function use a geometry object.
 %Docstring
  Returns a list of the groups the function belongs to.
 .. versionadded:: 3.0
-.. seealso:: group()
+.. seealso:: :py:func:`group()`
  :rtype: list of str
 %End
 

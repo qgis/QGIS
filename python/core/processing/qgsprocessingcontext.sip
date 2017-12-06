@@ -47,27 +47,27 @@ class QgsProcessingContext
     QgsProcessingContext::Flags flags() const;
 %Docstring
  Returns any flags set in the context.
-.. seealso:: setFlags()
+.. seealso:: :py:func:`setFlags()`
  :rtype: QgsProcessingContext.Flags
 %End
 
     void setFlags( const QgsProcessingContext::Flags &flags );
 %Docstring
  Sets ``flags`` for the context.
-.. seealso:: flags()
+.. seealso:: :py:func:`flags()`
 %End
 
     QgsProject *project() const;
 %Docstring
  Returns the project in which the algorithm is being executed.
-.. seealso:: setProject()
+.. seealso:: :py:func:`setProject()`
  :rtype: QgsProject
 %End
 
     void setProject( QgsProject *project );
 %Docstring
  Sets the ``project`` in which the algorithm will be executed.
-.. seealso:: project()
+.. seealso:: :py:func:`project()`
 %End
 
     QgsExpressionContext &expressionContext();
@@ -117,30 +117,30 @@ Destination project
     QMap< QString, QgsProcessingContext::LayerDetails > layersToLoadOnCompletion() const;
 %Docstring
  Returns a map of layers (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
-.. seealso:: setLayersToLoadOnCompletion()
-.. seealso:: addLayerToLoadOnCompletion()
+.. seealso:: :py:func:`setLayersToLoadOnCompletion()`
+.. seealso:: :py:func:`addLayerToLoadOnCompletion()`
  :rtype: QMap< str, QgsProcessingContext.LayerDetails >
 %End
 
     void setLayersToLoadOnCompletion( const QMap< QString, QgsProcessingContext::LayerDetails > &layers );
 %Docstring
  Sets the map of ``layers`` (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
-.. seealso:: addLayerToLoadOnCompletion()
-.. seealso:: layersToLoadOnCompletion()
+.. seealso:: :py:func:`addLayerToLoadOnCompletion()`
+.. seealso:: :py:func:`layersToLoadOnCompletion()`
 %End
 
     void addLayerToLoadOnCompletion( const QString &layer, const QgsProcessingContext::LayerDetails &details );
 %Docstring
  Adds a ``layer`` to load (by ID or datasource) into the canvas upon completion of the algorithm or model.
  The ``details`` parameter dictates the LayerDetails.
-.. seealso:: setLayersToLoadOnCompletion()
-.. seealso:: layersToLoadOnCompletion()
+.. seealso:: :py:func:`setLayersToLoadOnCompletion()`
+.. seealso:: :py:func:`layersToLoadOnCompletion()`
 %End
 
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
  Returns the behavior used for checking invalid geometries in input layers.
-.. seealso:: setInvalidGeometryCheck()
+.. seealso:: :py:func:`setInvalidGeometryCheck()`
  :rtype: QgsFeatureRequest.InvalidGeometryCheck
 %End
 
@@ -149,7 +149,7 @@ Destination project
  Sets the behavior used for checking invalid geometries in input layers.
  Settings this to anything but QgsFeatureRequest.GeometryNoCheck will also
  reset the invalidGeometryCallback() to a default implementation.
-.. seealso:: invalidGeometryCheck()
+.. seealso:: :py:func:`invalidGeometryCheck()`
 %End
 
     void setInvalidGeometryCallback( SIP_PYCALLABLE / AllowNone / );
@@ -158,7 +158,7 @@ Destination project
  invalidGeometryCheck() is set to GeometryAbortOnInvalid. This function will be
  called using the feature with invalid geometry as a parameter.
 .. versionadded:: 3.0
-.. seealso:: invalidGeometryCallback()
+.. seealso:: :py:func:`invalidGeometryCallback()`
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -180,7 +180,7 @@ Destination project
  features. This function will be
  called using the feature which encountered the transform error as a parameter.
 .. versionadded:: 3.0
-.. seealso:: transformErrorCallback()
+.. seealso:: :py:func:`transformErrorCallback()`
 %End
 %MethodCode
     Py_BEGIN_ALLOW_THREADS
@@ -199,20 +199,20 @@ Destination project
     QString defaultEncoding() const;
 %Docstring
  Returns the default encoding to use for newly created files.
-.. seealso:: setDefaultEncoding()
+.. seealso:: :py:func:`setDefaultEncoding()`
  :rtype: str
 %End
 
     void setDefaultEncoding( const QString &encoding );
 %Docstring
  Sets the default ``encoding`` to use for newly created files.
-.. seealso:: defaultEncoding()
+.. seealso:: :py:func:`defaultEncoding()`
 %End
 
     QgsProcessingFeedback *feedback();
 %Docstring
  Returns the associated feedback object.
-.. seealso:: setFeedback()
+.. seealso:: :py:func:`setFeedback()`
  :rtype: QgsProcessingFeedback
 %End
 
@@ -223,13 +223,13 @@ Destination project
  object should outlive the context, only a weak pointer to ``feedback`` is stored
  and no errors will occur if feedback is deleted before the context.
  Ownership of ``feedback`` is not transferred.
-.. seealso:: setFeedback()
+.. seealso:: :py:func:`setFeedback()`
 %End
 
     QThread *thread();
 %Docstring
  Returns the thread in which the context lives.
-.. seealso:: pushToThread()
+.. seealso:: :py:func:`pushToThread()`
  :rtype: QThread
 %End
 
@@ -238,7 +238,7 @@ Destination project
  Pushes the thread affinity for the context (including all layers contained in the temporaryLayerStore()) into
  another ``thread``. This method is only safe to call when the current thread matches the existing thread
  affinity for the context (see thread()).
-.. seealso:: thread()
+.. seealso:: :py:func:`thread()`
 %End
 
     void takeResultsFrom( QgsProcessingContext &context );

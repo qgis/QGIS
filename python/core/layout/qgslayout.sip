@@ -72,14 +72,14 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
     QString name() const;
 %Docstring
  Returns the layout's name.
-.. seealso:: setName()
+.. seealso:: :py:func:`setName()`
  :rtype: str
 %End
 
     void setName( const QString &name );
 %Docstring
  Sets the layout's name.
-.. seealso:: name()
+.. seealso:: :py:func:`name()`
 %End
 
 
@@ -115,8 +115,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  raiseItem() calls to be made in sequence without the cost of
  updating the scene for each one.
 
-.. seealso:: lowerItem()
-.. seealso:: updateZValues()
+.. seealso:: :py:func:`lowerItem()`
+.. seealso:: :py:func:`updateZValues()`
  :rtype: bool
 %End
 
@@ -130,8 +130,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  raiseItem() calls to be made in sequence without the cost of
  updating the scene for each one.
 
-.. seealso:: raiseItem()
-.. seealso:: updateZValues()
+.. seealso:: :py:func:`raiseItem()`
+.. seealso:: :py:func:`updateZValues()`
  :rtype: bool
 %End
 
@@ -145,8 +145,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  raiseItem() calls to be made in sequence without the cost of
  updating the scene for each one.
 
-.. seealso:: moveItemToBottom()
-.. seealso:: updateZValues()
+.. seealso:: :py:func:`moveItemToBottom()`
+.. seealso:: :py:func:`updateZValues()`
  :rtype: bool
 %End
 
@@ -159,8 +159,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  raiseItem() calls to be made in sequence without the cost of
  updating the scene for each one.
 
-.. seealso:: moveItemToTop()
-.. seealso:: updateZValues()
+.. seealso:: :py:func:`moveItemToTop()`
+.. seealso:: :py:func:`updateZValues()`
  :rtype: bool
 %End
 
@@ -175,7 +175,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None
  if a matching item could not be found.
-.. seealso:: multiFrameByUuid()
+.. seealso:: :py:func:`multiFrameByUuid()`
  :rtype: QgsLayoutItem
 %End
 
@@ -183,7 +183,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Returns the layout multiframe with matching ``uuid`` unique identifier, or a None
  if a matching multiframe could not be found.
-.. seealso:: itemByUuid()
+.. seealso:: :py:func:`itemByUuid()`
  :rtype: QgsLayoutMultiFrame
 %End
 
@@ -205,15 +205,15 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Sets the native measurement ``units`` for the layout. These also form the default unit
  for measurements for the layout.
-.. seealso:: units()
-.. seealso:: convertToLayoutUnits()
+.. seealso:: :py:func:`units()`
+.. seealso:: :py:func:`convertToLayoutUnits()`
 %End
 
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
  Returns the native units for the layout.
-.. seealso:: setUnits()
-.. seealso:: convertToLayoutUnits()
+.. seealso:: :py:func:`setUnits()`
+.. seealso:: :py:func:`convertToLayoutUnits()`
  :rtype: QgsUnitTypes.LayoutUnit
 %End
 
@@ -221,8 +221,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Converts a measurement into the layout's native units.
  :return: length of measurement in layout units
-.. seealso:: convertFromLayoutUnits()
-.. seealso:: units()
+.. seealso:: :py:func:`convertFromLayoutUnits()`
+.. seealso:: :py:func:`units()`
  :rtype: float
 %End
 
@@ -230,8 +230,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Converts a size into the layout's native units.
  :return: size of measurement in layout units
-.. seealso:: convertFromLayoutUnits()
-.. seealso:: units()
+.. seealso:: :py:func:`convertFromLayoutUnits()`
+.. seealso:: :py:func:`units()`
  :rtype: QSizeF
 %End
 
@@ -239,8 +239,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Converts a ``point`` into the layout's native units.
  :return: point in layout units
-.. seealso:: convertFromLayoutUnits()
-.. seealso:: units()
+.. seealso:: :py:func:`convertFromLayoutUnits()`
+.. seealso:: :py:func:`units()`
  :rtype: QPointF
 %End
 
@@ -248,8 +248,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Converts a ``length`` measurement from the layout's native units to a specified target ``unit``.
  :return: length of measurement in specified units
-.. seealso:: convertToLayoutUnits()
-.. seealso:: units()
+.. seealso:: :py:func:`convertToLayoutUnits()`
+.. seealso:: :py:func:`units()`
  :rtype: QgsLayoutMeasurement
 %End
 
@@ -257,8 +257,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Converts a ``size`` from the layout's native units to a specified target ``unit``.
  :return: size of measurement in specified units
-.. seealso:: convertToLayoutUnits()
-.. seealso:: units()
+.. seealso:: :py:func:`convertToLayoutUnits()`
+.. seealso:: :py:func:`units()`
  :rtype: QgsLayoutSize
 %End
 
@@ -266,8 +266,8 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Converts a ``point`` from the layout's native units to a specified target ``unit``.
  :return: point in specified units
-.. seealso:: convertToLayoutUnits()
-.. seealso:: units()
+.. seealso:: :py:func:`convertToLayoutUnits()`
+.. seealso:: :py:func:`units()`
  :rtype: QgsLayoutPoint
 %End
 
@@ -315,9 +315,9 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  Set a custom property for the layout.
  \param key property key. If a property with the same key already exists it will be overwritten.
  \param value property value
-.. seealso:: customProperty()
-.. seealso:: removeCustomProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`customProperties()`
 %End
 
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
@@ -326,9 +326,9 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  \param key property key
  \param defaultValue default value to return if property with matching key does not exist
  :return: value of matching property
-.. seealso:: setCustomProperty()
-.. seealso:: removeCustomProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
+.. seealso:: :py:func:`customProperties()`
  :rtype: QVariant
 %End
 
@@ -336,17 +336,17 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Remove a custom property from the layout.
  \param key property key
-.. seealso:: setCustomProperty()
-.. seealso:: customProperty()
-.. seealso:: customProperties()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`customProperties()`
 %End
 
     QStringList customProperties() const;
 %Docstring
  Return list of keys stored in custom properties for the layout.
-.. seealso:: setCustomProperty()
-.. seealso:: customProperty()
-.. seealso:: removeCustomProperty()
+.. seealso:: :py:func:`setCustomProperty()`
+.. seealso:: :py:func:`customProperty()`
+.. seealso:: :py:func:`removeCustomProperty()`
  :rtype: list of str
 %End
 
@@ -391,36 +391,36 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
     void addMultiFrame( QgsLayoutMultiFrame *multiFrame /Transfer/ );
 %Docstring
  Adds a ``multiFrame`` to the layout. The object is owned by the layout until removeMultiFrame() is called.
-.. seealso:: removeMultiFrame()
-.. seealso:: multiFrames()
+.. seealso:: :py:func:`removeMultiFrame()`
+.. seealso:: :py:func:`multiFrames()`
 %End
 
     void removeMultiFrame( QgsLayoutMultiFrame *multiFrame );
 %Docstring
  Removes a ``multiFrame`` from the layout (but does not delete it).
-.. seealso:: addMultiFrame()
-.. seealso:: multiFrames()
+.. seealso:: :py:func:`addMultiFrame()`
+.. seealso:: :py:func:`multiFrames()`
 %End
 
     QList< QgsLayoutMultiFrame * > multiFrames() const;
 %Docstring
  Returns a list of multi frames contained in the layout.
-.. seealso:: addMultiFrame()
-.. seealso:: removeMultiFrame()
+.. seealso:: :py:func:`addMultiFrame()`
+.. seealso:: :py:func:`removeMultiFrame()`
  :rtype: list of QgsLayoutMultiFrame
 %End
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Returns the layout's state encapsulated in a DOM element.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: QDomElement
 %End
 
     bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
  Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 
@@ -439,7 +439,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Creates a new group from a list of layout ``items`` and adds the group to the layout.
  If grouping was not possible, a None will be returned.
-.. seealso:: ungroupItems()
+.. seealso:: :py:func:`ungroupItems()`
  :rtype: QgsLayoutItemGroup
 %End
 
@@ -451,7 +451,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  Returns a list of the items removed from the group, or an empty list if ungrouping
  was not successful.
 
-.. seealso:: groupItems()
+.. seealso:: :py:func:`groupItems()`
  :rtype: list of QgsLayoutItem
 %End
 
@@ -464,7 +464,7 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  to refresh their contents. Calling this also triggers a recalculation of all data defined
  attributes within the layout.
 
-.. seealso:: refreshed()
+.. seealso:: :py:func:`refreshed()`
 %End
 
     void updateBounds();

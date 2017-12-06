@@ -39,13 +39,13 @@ Returns the selected geometry type
 %Docstring
  Sets the ``crs`` value for the new layer in the dialog.
 .. versionadded:: 3.0
-.. seealso:: crs()
+.. seealso:: :py:func:`crs()`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
  Returns the selected CRS for the new layer.
-.. seealso:: setCrs()
+.. seealso:: :py:func:`setCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 

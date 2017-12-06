@@ -76,24 +76,24 @@ Default constructor, creates an invalid QgsCoordinateTransform.
 %Docstring
  Sets the source coordinate reference system.
  \param crs CRS to transform coordinates from
-.. seealso:: sourceCrs()
-.. seealso:: setDestinationCrs()
+.. seealso:: :py:func:`sourceCrs()`
+.. seealso:: :py:func:`setDestinationCrs()`
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
  Sets the destination coordinate reference system.
  \param crs CRS to transform coordinates to
-.. seealso:: destinationCrs()
-.. seealso:: setSourceCrs()
+.. seealso:: :py:func:`destinationCrs()`
+.. seealso:: :py:func:`setSourceCrs()`
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
  Returns the source coordinate reference system, which the transform will
  transform coordinates from.
-.. seealso:: setSourceCrs()
-.. seealso:: destinationCrs()
+.. seealso:: :py:func:`setSourceCrs()`
+.. seealso:: :py:func:`destinationCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -101,8 +101,8 @@ Default constructor, creates an invalid QgsCoordinateTransform.
 %Docstring
  Returns the destination coordinate reference system, which the transform will
  transform coordinates to.
-.. seealso:: setDestinationCrs()
-.. seealso:: sourceCrs()
+.. seealso:: :py:func:`setDestinationCrs()`
+.. seealso:: :py:func:`sourceCrs()`
  :rtype: QgsCoordinateReferenceSystem
 %End
 
@@ -222,7 +222,7 @@ initialize is used to actually create the Transformer instance
  Restores state from the given Dom node.
  \param node The node from which state will be restored
  :return: bool True on success, False on failure
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
  :rtype: bool
 %End
 
@@ -232,7 +232,7 @@ initialize is used to actually create the Transformer instance
  \param node The node in which state will be restored
  \param document The document in which state will be stored
  :return: bool True on success, False on failure
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
  :rtype: bool
 %End
 

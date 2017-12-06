@@ -136,7 +136,7 @@ Constructor for ColumnConfig
 %Docstring
  Returns the width of a column, or -1 if column should use default width.
  \param column column index
-.. seealso:: setColumnWidth()
+.. seealso:: :py:func:`setColumnWidth()`
  :rtype: int
 %End
 
@@ -145,14 +145,14 @@ Constructor for ColumnConfig
  Sets the width of a column.
  \param column column index
  \param width column width in pixels, or -1 if column should use default width
-.. seealso:: columnWidth()
+.. seealso:: :py:func:`columnWidth()`
 %End
 
     bool columnHidden( int column ) const;
 %Docstring
  Returns true if the specified column is hidden.
  \param column column index
-.. seealso:: setColumnHidden()
+.. seealso:: :py:func:`setColumnHidden()`
  :rtype: bool
 %End
 
@@ -161,7 +161,7 @@ Constructor for ColumnConfig
  Sets whether the specified column should be hidden.
  \param column column index
  \param hidden set to true to hide column
-.. seealso:: columnHidden()
+.. seealso:: :py:func:`columnHidden()`
 %End
 
     Qt::SortOrder sortOrder() const;

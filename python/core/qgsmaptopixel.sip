@@ -180,7 +180,7 @@ String representation of the parameters used in the transform
     double xCenter() const;
 %Docstring
  Returns the center x-coordinate for the transform.
-.. seealso:: yCenter()
+.. seealso:: :py:func:`yCenter()`
 .. versionadded:: 3.0
  :rtype: float
 %End
@@ -188,7 +188,7 @@ String representation of the parameters used in the transform
     double yCenter() const;
 %Docstring
  Returns the center y-coordinate for the transform.
-.. seealso:: xCenter()
+.. seealso:: :py:func:`xCenter()`
 .. versionadded:: 3.0
  :rtype: float
 %End

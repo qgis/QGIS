@@ -44,7 +44,7 @@ class QgsColorEffect : QgsPaintEffect
  \param brightness Valid values are between -255 and 255, where 0 represents
  no change, negative values indicate darkening and positive values indicate
  lightening
-.. seealso:: setBrightness
+.. seealso:: :py:func:`setBrightness`
 %End
 
     int brightness() const;
@@ -53,7 +53,7 @@ class QgsColorEffect : QgsPaintEffect
  :return: brightness value. Values are between -255 and 255, where 0 represents
  no change, negative values indicate darkening and positive values indicate
  lightening
-.. seealso:: setBrightness
+.. seealso:: :py:func:`setBrightness`
  :rtype: int
 %End
 
@@ -63,7 +63,7 @@ class QgsColorEffect : QgsPaintEffect
  \param contrast Valid values are between -100 and 100, where 0 represents
  no change, negative values indicate less contrast and positive values indicate
  greater contrast
-.. seealso:: setContrast
+.. seealso:: :py:func:`setContrast`
 %End
 
     int contrast() const;
@@ -72,7 +72,7 @@ class QgsColorEffect : QgsPaintEffect
  :return: contrast value. Values are between -100 and 100, where 0 represents
  no change, negative values indicate less contrast and positive values indicate
  greater contrast
-.. seealso:: setContrast
+.. seealso:: :py:func:`setContrast`
  :rtype: int
 %End
 
@@ -82,7 +82,7 @@ class QgsColorEffect : QgsPaintEffect
  \param saturation Valid values are between 0 and 2.0, where 1.0 represents
  no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
  greater saturation
-.. seealso:: saturation
+.. seealso:: :py:func:`saturation`
 %End
 
     double saturation() const;
@@ -91,7 +91,7 @@ class QgsColorEffect : QgsPaintEffect
  :return: saturation value. Values are between 0 and 2.0, where 1.0 represents
  no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
  greater saturation
-.. seealso:: setSaturation
+.. seealso:: :py:func:`setSaturation`
  :rtype: float
 %End
 
@@ -99,14 +99,14 @@ class QgsColorEffect : QgsPaintEffect
 %Docstring
  Sets whether the effect should convert a picture to grayscale.
  \param grayscaleMode method for grayscale conversion
-.. seealso:: grayscaleMode
+.. seealso:: :py:func:`grayscaleMode`
 %End
 
     QgsImageOperation::GrayscaleMode grayscaleMode() const;
 %Docstring
  Returns whether the effect will convert a picture to grayscale.
  :return: method for grayscale conversion
-.. seealso:: setGrayscaleMode
+.. seealso:: :py:func:`setGrayscaleMode`
  :rtype: QgsImageOperation.GrayscaleMode
 %End
 
@@ -114,18 +114,18 @@ class QgsColorEffect : QgsPaintEffect
 %Docstring
  Sets whether the effect should colorize a picture.
  \param colorizeOn set to true to enable colorization
-.. seealso:: colorizeOn
-.. seealso:: setColorizeColor
-.. seealso:: setColorizeStrength
+.. seealso:: :py:func:`colorizeOn`
+.. seealso:: :py:func:`setColorizeColor`
+.. seealso:: :py:func:`setColorizeStrength`
 %End
 
     bool colorizeOn() const;
 %Docstring
  Returns whether the effect will colorize a picture.
  :return: true if colorization is enableds
-.. seealso:: setColorizeOn
-.. seealso:: colorizeColor
-.. seealso:: colorizeStrength
+.. seealso:: :py:func:`setColorizeOn`
+.. seealso:: :py:func:`colorizeColor`
+.. seealso:: :py:func:`colorizeStrength`
  :rtype: bool
 %End
 
@@ -134,9 +134,9 @@ class QgsColorEffect : QgsPaintEffect
  Sets the color used for colorizing a picture. This is only used if
   setColorizeOn() is set to true.
  \param colorizeColor colorization color
-.. seealso:: colorizeColor
-.. seealso:: setColorizeOn
-.. seealso:: setColorizeStrength
+.. seealso:: :py:func:`colorizeColor`
+.. seealso:: :py:func:`setColorizeOn`
+.. seealso:: :py:func:`setColorizeStrength`
 %End
 
     QColor colorizeColor() const;
@@ -144,9 +144,9 @@ class QgsColorEffect : QgsPaintEffect
  Returns the color used for colorizing a picture. This is only used if
  colorizeOn() is set to true.
  :return: colorization color
-.. seealso:: setColorizeColor
-.. seealso:: colorizeOn
-.. seealso:: colorizeStrength
+.. seealso:: :py:func:`setColorizeColor`
+.. seealso:: :py:func:`colorizeOn`
+.. seealso:: :py:func:`colorizeStrength`
  :rtype: QColor
 %End
 
@@ -155,9 +155,9 @@ class QgsColorEffect : QgsPaintEffect
  Sets the strength for colorizing a picture. This is only used if
   setColorizeOn() is set to true.
  \param colorizeStrength colorization strength, between 0 and 100
-.. seealso:: colorizeStrength
-.. seealso:: setColorizeOn
-.. seealso:: setColorizeColor
+.. seealso:: :py:func:`colorizeStrength`
+.. seealso:: :py:func:`setColorizeOn`
+.. seealso:: :py:func:`setColorizeColor`
 %End
 
     int colorizeStrength() const;
@@ -165,9 +165,9 @@ class QgsColorEffect : QgsPaintEffect
  Returns the strength used for colorizing a picture. This is only used if
  setColorizeOn() is set to true.
  :return: colorization strength, between 0 and 100
-.. seealso:: setColorizeStrengths
-.. seealso:: colorizeOn
-.. seealso:: colorizeColor
+.. seealso:: :py:func:`setColorizeStrengths`
+.. seealso:: :py:func:`colorizeOn`
+.. seealso:: :py:func:`colorizeColor`
  :rtype: int
 %End
 
@@ -176,7 +176,7 @@ class QgsColorEffect : QgsPaintEffect
  Sets the ``opacity`` for the effect.
  \param opacity double between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque
-.. seealso:: opacity()
+.. seealso:: :py:func:`opacity()`
 %End
 
     double opacity() const;
@@ -184,7 +184,7 @@ class QgsColorEffect : QgsPaintEffect
  Returns the opacity for the effect.
  :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
  and 1 is fully opaque.
-.. seealso:: setOpacity()
+.. seealso:: :py:func:`setOpacity()`
  :rtype: float
 %End
 
@@ -193,7 +193,7 @@ class QgsColorEffect : QgsPaintEffect
  Sets the blend mode for the effect
  \param mode blend mode used for drawing the effect on to a destination
  paint device
-.. seealso:: blendMode
+.. seealso:: :py:func:`blendMode`
 %End
 
     QPainter::CompositionMode blendMode() const;
@@ -201,7 +201,7 @@ class QgsColorEffect : QgsPaintEffect
  Returns the blend mode for the effect
  :return: blend mode used for drawing the effect on to a destination
  paint device
-.. seealso:: setBlendMode
+.. seealso:: :py:func:`setBlendMode`
  :rtype: QPainter.CompositionMode
 %End
 

@@ -16,8 +16,8 @@ class QgsMapToolAdvancedDigitizing : QgsMapToolEdit
  The QgsMapToolAdvancedDigitizing class is a QgsMapTool which gives event directly in map coordinates and allows filtering its events.
  Events from QgsMapTool are caught and their QMouseEvent are transformed into QgsMapMouseEvent (with map coordinates).
  Events are then forwarded to corresponding virtual methods which can be reimplemented in subclasses.
-.. seealso:: QgsMapToolMapEventFilter).
-.. seealso:: QgsCadDocWidget).
+.. seealso:: :py:class:`QgsMapToolMapEventFilter`
+.. seealso:: :py:class:`QgsCadDocWidget`
 .. note::
 
    the event filter definition is not exposed in Python API to avoid any unexpected behavior.

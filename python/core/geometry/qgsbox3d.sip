@@ -18,7 +18,7 @@ class QgsBox3d
  extent of a geometry or collection of geometries.
 
 .. versionadded:: 3.0
-.. seealso:: QgsRectangle
+.. seealso:: :py:class:`QgsRectangle`
 %End
 
 %TypeHeaderCode
@@ -40,90 +40,90 @@ class QgsBox3d
     void setXMinimum( double x );
 %Docstring
  Sets the minimum ``x`` value.
-.. seealso:: xMinimum()
-.. seealso:: setXMaximum()
+.. seealso:: :py:func:`xMinimum()`
+.. seealso:: :py:func:`setXMaximum()`
 %End
 
     void setXMaximum( double x );
 %Docstring
  Sets the maximum ``x`` value.
-.. seealso:: xMaximum()
-.. seealso:: setXMinimum()
+.. seealso:: :py:func:`xMaximum()`
+.. seealso:: :py:func:`setXMinimum()`
 %End
 
     double xMinimum() const;
 %Docstring
  Returns the minimum x value.
-.. seealso:: setXMinimum()
-.. seealso:: xMaximum()
+.. seealso:: :py:func:`setXMinimum()`
+.. seealso:: :py:func:`xMaximum()`
  :rtype: float
 %End
 
     double xMaximum() const;
 %Docstring
  Returns the maximum x value.
-.. seealso:: setXMaximum()
-.. seealso:: xMinimum()
+.. seealso:: :py:func:`setXMaximum()`
+.. seealso:: :py:func:`xMinimum()`
  :rtype: float
 %End
 
     void setYMinimum( double y );
 %Docstring
  Sets the minimum ``y`` value.
-.. seealso:: yMinimum()
-.. seealso:: setYMaximum()
+.. seealso:: :py:func:`yMinimum()`
+.. seealso:: :py:func:`setYMaximum()`
 %End
 
     void setYMaximum( double y );
 %Docstring
  Sets the maximum ``y`` value.
-.. seealso:: yMaximum()
-.. seealso:: setYMinimum()
+.. seealso:: :py:func:`yMaximum()`
+.. seealso:: :py:func:`setYMinimum()`
 %End
 
     double yMinimum() const;
 %Docstring
  Returns the minimum y value.
-.. seealso:: setYMinimum()
-.. seealso:: yMaximum()
+.. seealso:: :py:func:`setYMinimum()`
+.. seealso:: :py:func:`yMaximum()`
  :rtype: float
 %End
 
     double yMaximum() const;
 %Docstring
  Returns the maximum y value.
-.. seealso:: setYMaximum()
-.. seealso:: yMinimum()
+.. seealso:: :py:func:`setYMaximum()`
+.. seealso:: :py:func:`yMinimum()`
  :rtype: float
 %End
 
     void setZMinimum( double z );
 %Docstring
  Sets the minimum ``z`` value.
-.. seealso:: zMinimum()
-.. seealso:: setZMaximum()
+.. seealso:: :py:func:`zMinimum()`
+.. seealso:: :py:func:`setZMaximum()`
 %End
 
     void setZMaximum( double z );
 %Docstring
  Sets the maximum ``z`` value.
-.. seealso:: zMaximum()
-.. seealso:: setZMinimum()
+.. seealso:: :py:func:`zMaximum()`
+.. seealso:: :py:func:`setZMinimum()`
 %End
 
     double zMinimum() const;
 %Docstring
  Returns the minimum z value.
-.. seealso:: setZMinimum()
-.. seealso:: zMaximum()
+.. seealso:: :py:func:`setZMinimum()`
+.. seealso:: :py:func:`zMaximum()`
  :rtype: float
 %End
 
     double zMaximum() const;
 %Docstring
  Returns the maximum z value.
-.. seealso:: setZMaximum()
-.. seealso:: zMinimum()
+.. seealso:: :py:func:`setZMaximum()`
+.. seealso:: :py:func:`zMinimum()`
  :rtype: float
 %End
 
@@ -135,24 +135,24 @@ class QgsBox3d
     double width() const;
 %Docstring
  Returns the width of the box.
-.. seealso:: height()
-.. seealso:: depth()
+.. seealso:: :py:func:`height()`
+.. seealso:: :py:func:`depth()`
  :rtype: float
 %End
 
     double height() const;
 %Docstring
  Returns the height of the box.
-.. seealso:: width()
-.. seealso:: depth()
+.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`depth()`
  :rtype: float
 %End
 
     double depth() const;
 %Docstring
  Returns the depth of the box.
-.. seealso:: width()
-.. seealso:: height()
+.. seealso:: :py:func:`width()`
+.. seealso:: :py:func:`height()`
  :rtype: float
 %End
 

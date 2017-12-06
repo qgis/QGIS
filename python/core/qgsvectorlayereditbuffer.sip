@@ -113,7 +113,7 @@ Stop editing and discard the edits
     QgsFeatureMap addedFeatures() const;
 %Docstring
  Returns a map of new features which are not committed.
-.. seealso:: isFeatureAdded()
+.. seealso:: :py:func:`isFeatureAdded()`
  :rtype: QgsFeatureMap
 %End
 
@@ -122,14 +122,14 @@ Stop editing and discard the edits
  Returns true if the specified feature ID has been added but not committed.
  \param id feature ID
 .. versionadded:: 3.0
-.. seealso:: addedFeatures()
+.. seealso:: :py:func:`addedFeatures()`
  :rtype: bool
 %End
 
     QgsChangedAttributesMap changedAttributeValues() const;
 %Docstring
  Returns a map of features with changed attributes values which are not committed.
-.. seealso:: isFeatureAttributesChanged()
+.. seealso:: :py:func:`isFeatureAttributesChanged()`
  :rtype: QgsChangedAttributesMap
 %End
 
@@ -138,14 +138,14 @@ Stop editing and discard the edits
  Returns true if the specified feature ID has had an attribute changed but not committed.
  \param id feature ID
 .. versionadded:: 3.0
-.. seealso:: changedAttributeValues()
+.. seealso:: :py:func:`changedAttributeValues()`
  :rtype: bool
 %End
 
     QgsAttributeList deletedAttributeIds() const;
 %Docstring
  Returns a list of deleted attributes fields which are not committed. The list is kept sorted.
-.. seealso:: isAttributeDeleted()
+.. seealso:: :py:func:`isAttributeDeleted()`
  :rtype: QgsAttributeList
 %End
 
@@ -154,7 +154,7 @@ Stop editing and discard the edits
  Returns true if the specified attribute has been deleted but not committed.
  \param index attribute index
 .. versionadded:: 3.0
-.. seealso:: deletedAttributeIds()
+.. seealso:: :py:func:`deletedAttributeIds()`
  :rtype: bool
 %End
 
@@ -167,7 +167,7 @@ Stop editing and discard the edits
     QgsGeometryMap changedGeometries() const;
 %Docstring
  Returns a map of features with changed geometries which are not committed.
-.. seealso:: hasFeatureGeometryChange()
+.. seealso:: :py:func:`hasFeatureGeometryChange()`
  :rtype: QgsGeometryMap
 %End
 
@@ -176,14 +176,14 @@ Stop editing and discard the edits
  Returns true if the specified feature ID has had its geometry changed but not committed.
  \param id feature ID
 .. versionadded:: 3.0
-.. seealso:: changedGeometries()
+.. seealso:: :py:func:`changedGeometries()`
  :rtype: bool
 %End
 
     QgsFeatureIds deletedFeatureIds() const;
 %Docstring
  Returns a list of deleted feature IDs which are not committed.
-.. seealso:: isFeatureDeleted()
+.. seealso:: :py:func:`isFeatureDeleted()`
  :rtype: QgsFeatureIds
 %End
 
@@ -192,7 +192,7 @@ Stop editing and discard the edits
  Returns true if the specified feature ID has been deleted but not committed.
  \param id feature ID
 .. versionadded:: 3.0
-.. seealso:: deletedFeatureIds()
+.. seealso:: :py:func:`deletedFeatureIds()`
  :rtype: bool
 %End
 
