@@ -34,7 +34,7 @@ class QgsLayoutItemShape : QgsLayoutItem
 %End
 
     virtual int type() const;
-    virtual QString stringType() const;
+
 
     virtual QString displayName() const;
 

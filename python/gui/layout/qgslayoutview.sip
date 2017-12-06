@@ -24,6 +24,19 @@ class QgsLayoutView: QGraphicsView
 %End
   public:
 
+    enum ClipboardOperation
+    {
+      ClipboardCut,
+      ClipboardCopy,
+    };
+
+    enum PasteMode
+    {
+      PasteModeCursor,
+      PasteModeCenter,
+      PasteModeInPlace,
+    };
+
     QgsLayoutView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  Constructor for QgsLayoutView.
@@ -179,6 +192,50 @@ class QgsLayoutView: QGraphicsView
 .. seealso:: :py:func:`distributeSelectedItems()`
 %End
 
+    void copySelectedItems( ClipboardOperation operation );
+%Docstring
+ Cuts or copies the selected items, respecting the specified ``operation``.
+.. seealso:: :py:func:`copyItems()`
+.. seealso:: :py:func:`pasteItems()`
+%End
+
+    void copyItems( const QList< QgsLayoutItem * > &items, ClipboardOperation operation );
+%Docstring
+ Cuts or copies the a list of ``items``, respecting the specified ``operation``.
+.. seealso:: :py:func:`copySelectedItems()`
+.. seealso:: :py:func:`pasteItems()`
+%End
+
+    QList< QgsLayoutItem * > pasteItems( PasteMode mode );
+%Docstring
+ Pastes items from clipboard, using the specified ``mode``.
+
+ A list of pasted items is returned.
+
+.. seealso:: :py:func:`copySelectedItems()`
+.. seealso:: :py:func:`hasItemsInClipboard()`
+ :rtype: list of QgsLayoutItem
+%End
+
+    QList< QgsLayoutItem * > pasteItems( QPointF layoutPoint );
+%Docstring
+ Pastes items from clipboard, at the specified ``layoutPoint``,
+ in layout units.
+
+ A list of pasted items is returned.
+
+.. seealso:: :py:func:`copySelectedItems()`
+.. seealso:: :py:func:`hasItemsInClipboard()`
+ :rtype: list of QgsLayoutItem
+%End
+
+    bool hasItemsInClipboard() const;
+%Docstring
+ Returns true if the current clipboard contains layout items.
+.. seealso:: :py:func:`pasteItems()`
+ :rtype: bool
+%End
+
     QPointF deltaForKeyEvent( QKeyEvent *event );
 %Docstring
  Returns the delta (in layout coordinates) by which to move items
@@ -319,6 +376,13 @@ class QgsLayoutView: QGraphicsView
     void deleteSelectedItems();
 %Docstring
  Deletes all selected items.
+.. seealso:: :py:func:`deleteItems()`
+%End
+
+    void deleteItems( const QList< QgsLayoutItem * > &items );
+%Docstring
+ Delete the specified ``items``.
+.. seealso:: :py:func:`deleteSelectedItems()`
 %End
 
     void groupSelectedItems();
@@ -415,6 +479,8 @@ class QgsLayoutView: QGraphicsView
     virtual void resizeEvent( QResizeEvent *event );
 
     virtual void scrollContentsBy( int dx, int dy );
+
+    virtual void dragEnterEvent( QDragEnterEvent *e );
 
 
 };

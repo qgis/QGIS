@@ -41,6 +41,7 @@ QgsLayoutItemRegistry::QgsLayoutItemRegistry( QObject *parent )
 QgsLayoutItemRegistry::~QgsLayoutItemRegistry()
 {
   qDeleteAll( mMetadata );
+  qDeleteAll( mMultiFrameMetadata );
 }
 
 bool QgsLayoutItemRegistry::populate()
@@ -48,6 +49,7 @@ bool QgsLayoutItemRegistry::populate()
   if ( !mMetadata.isEmpty() )
     return false;
 
+#if 0
   // add temporary item to register
   auto createTemporaryItem = []( QgsLayout * layout )->QgsLayoutItem*
   {
@@ -55,6 +57,8 @@ bool QgsLayoutItemRegistry::populate()
   };
 
   addLayoutItemType( new QgsLayoutItemMetadata( QgsLayoutItemRegistry::LayoutItem + 1002, QStringLiteral( "temp type" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddLabel.svg" ) ), createTemporaryItem ) );
+#endif
+
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutGroup, QStringLiteral( "Group" ), QIcon(), QgsLayoutItemGroup::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutFrame, QStringLiteral( "Frame" ), QIcon(), QgsLayoutFrame::create ) );
   addLayoutItemType( new QgsLayoutItemMetadata( LayoutPage, QStringLiteral( "Page" ), QgsApplication::getThemeIcon( QStringLiteral( "/mActionFileNew.svg" ) ), QgsLayoutItemPage::create ) );
@@ -153,6 +157,7 @@ QMap<int, QString> QgsLayoutItemRegistry::itemTypes() const
 }
 
 ///@cond TEMPORARY
+#if 0
 TestLayoutItem::TestLayoutItem( QgsLayout *layout )
   : QgsLayoutItem( layout )
 {
@@ -201,4 +206,5 @@ void TestLayoutItem::draw( QgsRenderContext &context, const QStyleOptionGraphics
   painter->restore();
   stack.end( context );
 }
+#endif
 ///@endcond

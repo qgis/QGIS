@@ -24,7 +24,6 @@
 
 class QgisApp;
 
-
 /**
  * \class QgisAppInterface
  * \brief Interface class to provide access to private methods in QgisApp
@@ -237,6 +236,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     QgsComposerInterface *openComposer( QgsComposition *composition ) override;
     void closeComposer( QgsComposition *composition ) override;
 
+    void showLayoutManager() override;
     QList<QgsLayoutDesignerInterface *> openLayoutDesigners() override;
     QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) override;
 
@@ -330,7 +330,7 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *factory ) override;
 
     /**
-     * Register a new custom drop handler.
+     * Register a new custom drop \a handler.
      * \since QGIS 3.0
      * \note Ownership of the factory is not transferred, and the factory must
      *       be unregistered when plugin is unloaded.
@@ -338,10 +338,13 @@ class APP_EXPORT QgisAppInterface : public QgisInterface
     virtual void registerCustomDropHandler( QgsCustomDropHandler *handler ) override;
 
     /**
-     * Unregister a previously registered custom drop handler.
+     * Unregister a previously registered custom drop \a handler.
      * \since QGIS 3.0
      * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) override;
+
+    void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
+    void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) override;
 
     /**
      * Accessors for inserting items into menus and toolbars.

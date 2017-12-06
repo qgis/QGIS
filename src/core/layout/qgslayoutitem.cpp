@@ -79,6 +79,11 @@ QgsLayoutItem::QgsLayoutItem( QgsLayout *layout, bool manageZValue )
 
 QgsLayoutItem::~QgsLayoutItem()
 {
+  cleanup();
+}
+
+void QgsLayoutItem::cleanup()
+{
   if ( mLayout && mLayoutManagesZValue )
   {
     mLayout->itemsModel()->removeItem( this );
@@ -435,6 +440,21 @@ void QgsLayoutItem::attemptSetSceneRect( const QRectF &rect, bool includesFrame 
   emit sizePositionChanged();
 }
 
+void QgsLayoutItem::attemptMoveBy( double deltaX, double deltaY )
+{
+  if ( !mLayout )
+  {
+    moveBy( deltaX, deltaY );
+    return;
+  }
+
+  QgsLayoutPoint itemPos = positionWithUnits();
+  QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
+  itemPos.setX( itemPos.x() + deltaPos.x() );
+  itemPos.setY( itemPos.y() + deltaPos.y() );
+  attemptMove( itemPos );
+}
+
 int QgsLayoutItem::page() const
 {
   if ( !mLayout )
@@ -504,12 +524,14 @@ double QgsLayoutItem::itemRotation() const
 bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, const QgsReadWriteContext &context ) const
 {
   QDomElement element = doc.createElement( QStringLiteral( "LayoutItem" ) );
-  element.setAttribute( QStringLiteral( "type" ), stringType() );
+  element.setAttribute( QStringLiteral( "type" ), QString::number( type() ) );
 
   element.setAttribute( QStringLiteral( "uuid" ), mUuid );
+  element.setAttribute( QStringLiteral( "templateUuid" ), mUuid );
   element.setAttribute( QStringLiteral( "id" ), mId );
   element.setAttribute( QStringLiteral( "referencePoint" ), QString::number( static_cast< int >( mReferencePoint ) ) );
   element.setAttribute( QStringLiteral( "position" ), mItemPosition.encodePoint() );
+  element.setAttribute( QStringLiteral( "positionOnPage" ), pagePositionWithUnits().encodePoint() );
   element.setAttribute( QStringLiteral( "size" ), mItemSize.encodeSize() );
   element.setAttribute( QStringLiteral( "itemRotation" ), QString::number( mItemRotation ) );
   element.setAttribute( QStringLiteral( "groupUuid" ), mParentGroupUuid );
@@ -582,7 +604,7 @@ bool QgsLayoutItem::writeXml( QDomElement &parentElement, QDomDocument &doc, con
 
 bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc, const QgsReadWriteContext &context )
 {
-  if ( element.nodeName() != QStringLiteral( "LayoutItem" ) || element.attribute( QStringLiteral( "type" ) ) != stringType() )
+  if ( element.nodeName() != QStringLiteral( "LayoutItem" ) )
   {
     return false;
   }
@@ -605,12 +627,7 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
       group->addItem( this );
     }
   }
-
-  //TODO
-  /*
-  // temporary for groups imported from templates
-  mTemplateUuid = itemElem.attribute( "templateUuid" );
-  */
+  mTemplateUuid = element.attribute( "templateUuid" );
 
   //position lock for mouse moves/resizes
   QString positionLock = element.attribute( "positionLock" );
@@ -720,6 +737,10 @@ bool QgsLayoutItem::readXml( const QDomElement &element, const QDomDocument &doc
   emit changed();
   update();
   return result;
+}
+
+void QgsLayoutItem::finalizeRestoreFromXml()
+{
 }
 
 QgsAbstractLayoutUndoCommand *QgsLayoutItem::createCommand( const QString &text, int id, QUndoCommand *parent )

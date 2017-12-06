@@ -24,11 +24,11 @@ class QgsLayoutItemGroup: QgsLayoutItem
 %Docstring
  Constructor for QgsLayoutItemGroup, belonging to the specified ``layout``.
 %End
-    ~QgsLayoutItemGroup();
+
+    virtual void cleanup();
+
 
     virtual int type() const;
-
-    virtual QString stringType() const;
 
     virtual QString displayName() const;
 
@@ -68,6 +68,9 @@ class QgsLayoutItemGroup: QgsLayoutItem
 
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+
+    virtual void finalizeRestoreFromXml();
 
 
   protected:

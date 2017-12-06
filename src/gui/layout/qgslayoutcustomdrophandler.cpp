@@ -1,9 +1,9 @@
 /***************************************************************************
-                             qgslayoutapputils.h
-                             -------------------
-    Date                 : October 2017
-    Copyright            : (C) 2017 Nyall Dawson
-    Email                : nyall dot dawson at gmail dot com
+    qgslayoutcustomdrophandler.cpp
+    ------------------------------
+    begin                : December 2017
+    copyright            : (C) 2017 by nyall Dawson
+    email                : nyall dot dawson at gmail dot com
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -13,26 +13,15 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef QGSLAYOUTAPPUTILS_H
-#define QGSLAYOUTAPPUTILS_H
+#include "qgslayoutcustomdrophandler.h"
 
-#include "qgis.h"
-
-/**
- * Utils for layout handling from app.
- */
-class QgsLayoutAppUtils
+QgsLayoutCustomDropHandler::QgsLayoutCustomDropHandler( QObject *parent )
+  : QObject( parent )
 {
 
-  public:
+}
 
-    /**
-     * Registers the GUI handlers for known layout item types.
-     */
-    static void registerGuiForKnownItemTypes();
-
-};
-
-
-
-#endif // QGSLAYOUTAPPUTILS_H
+bool QgsLayoutCustomDropHandler::handleFileDrop( QgsLayoutDesignerInterface *, const QString & )
+{
+  return false;
+}

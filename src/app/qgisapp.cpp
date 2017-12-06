@@ -205,8 +205,12 @@ Q_GUI_EXPORT extern int qt_defaultDpiX();
 #include "qgslayertreeutils.h"
 #include "qgslayertreeview.h"
 #include "qgslayertreeviewdefaultactions.h"
+#include "qgslayout.h"
+#include "qgslayoutcustomdrophandler.h"
 #include "qgslayoutdesignerdialog.h"
 #include "qgslayoutmanager.h"
+#include "qgslayoutmanagerdialog.h"
+#include "qgslayoutqptdrophandler.h"
 #include "qgslayoutapputils.h"
 #include "qgslocatorwidget.h"
 #include "qgslocator.h"
@@ -1396,10 +1400,13 @@ QgisApp::~QgisApp()
   // cancel request for FileOpen events
   QgsApplication::setFileOpenEventReceiver( nullptr );
 
+  unregisterCustomLayoutDropHandler( mLayoutQptDropHandler );
+
   delete mPythonUtils;
   delete mTray;
   delete mDataSourceManagerDialog;
   qDeleteAll( mCustomDropHandlers );
+  qDeleteAll( mCustomLayoutDropHandlers );
 
   // This function *MUST* be the last one called, as it destroys in
   // particular GDAL. As above objects can hold GDAL/OGR objects, it is not
@@ -1558,6 +1565,22 @@ void QgisApp::registerCustomDropHandler( QgsCustomDropHandler *handler )
 void QgisApp::unregisterCustomDropHandler( QgsCustomDropHandler *handler )
 {
   mCustomDropHandlers.removeOne( handler );
+}
+
+void QgisApp::registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  if ( !mCustomLayoutDropHandlers.contains( handler ) )
+    mCustomLayoutDropHandlers << handler;
+}
+
+void QgisApp::unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  mCustomLayoutDropHandlers.removeOne( handler );
+}
+
+QVector<QPointer<QgsLayoutCustomDropHandler> > QgisApp::customLayoutDropHandlers() const
+{
+  return mCustomLayoutDropHandlers;
 }
 
 void QgisApp::handleDropUriList( const QgsMimeDataUtils::UriList &lst )
@@ -7293,7 +7316,7 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
       else
       {
         titleValid = true;
-        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueComposerTitle();
       }
     }
     else if ( cNames.indexOf( newTitle, 1 ) >= 0 )
@@ -7312,11 +7335,75 @@ bool QgisApp::uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool
   return true;
 }
 
+bool QgisApp::uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, const QString &currentTitle )
+{
+  if ( !parent )
+  {
+    parent = this;
+  }
+  bool ok = false;
+  bool titleValid = false;
+  QString newTitle = QString( currentTitle );
+  QString chooseMsg = tr( "Create unique print layout title" );
+  if ( acceptEmpty )
+  {
+    chooseMsg += '\n' + tr( "(title generated if left empty)" );
+  }
+  QString titleMsg = chooseMsg;
+
+  QStringList layoutNames;
+  layoutNames << newTitle;
+  const QList< QgsLayout * > layouts = QgsProject::instance()->layoutManager()->layouts();
+  for ( QgsLayout *l : layouts )
+  {
+    layoutNames << l->name();
+  }
+  while ( !titleValid )
+  {
+    newTitle = QInputDialog::getText( parent,
+                                      tr( "Layout title" ),
+                                      titleMsg,
+                                      QLineEdit::Normal,
+                                      newTitle,
+                                      &ok );
+    if ( !ok )
+    {
+      return false;
+    }
+
+    if ( newTitle.isEmpty() )
+    {
+      if ( !acceptEmpty )
+      {
+        titleMsg = chooseMsg + "\n\n" + tr( "Title can not be empty!" );
+      }
+      else
+      {
+        titleValid = true;
+        newTitle = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+      }
+    }
+    else if ( layoutNames.indexOf( newTitle, 1 ) >= 0 )
+    {
+      layoutNames[0] = QString(); // clear non-unique name
+      titleMsg = chooseMsg + "\n\n" + tr( "Title already exists!" );
+    }
+    else
+    {
+      titleValid = true;
+    }
+  }
+
+  title = newTitle;
+
+  return true;
+}
+
 QgsComposer *QgisApp::createNewComposer( QString title )
 {
   if ( title.isEmpty() )
   {
-    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+    title = QgsProject::instance()->layoutManager()->generateUniqueComposerTitle();
   }
   //create new composition object
   QgsComposition *composition = new QgsComposition( QgsProject::instance() );
@@ -7358,6 +7445,20 @@ QgsComposer *QgisApp::openComposer( QgsComposition *composition )
   return newComposerObject;
 }
 
+QgsLayoutDesignerDialog *QgisApp::createNewLayout( QString title )
+{
+  if ( title.isEmpty() )
+  {
+    title = QgsProject::instance()->layoutManager()->generateUniqueTitle();
+  }
+  //create new layout object
+  QgsLayout *layout = new QgsLayout( QgsProject::instance() );
+  layout->setName( title );
+  layout->initializeDefaults();
+  QgsProject::instance()->layoutManager()->addLayout( layout );
+  return openLayoutDesignerDialog( layout );
+}
+
 QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
 {
   // maybe a designer already open for this layout
@@ -7387,7 +7488,9 @@ QgsLayoutDesignerDialog *QgisApp::openLayoutDesignerDialog( QgsLayout *layout )
 
   newDesigner->open();
   emit layoutDesignerOpened( newDesigner->iface() );
-  //connect( newDesigner, &QgsLayoutDesignerDialog::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
+#if 0 //TODO
+  connect( newDesigner, &QgsLayoutDesignerDialog::atlasPreviewFeatureChanged, this, &QgisApp::refreshMapCanvas );
+#endif
 
   return newDesigner;
 }
@@ -7418,6 +7521,21 @@ QgsComposer *QgisApp::duplicateComposer( QgsComposer *currentComposer, QString t
   }
   newComposer->activate();
   return newComposer;
+}
+
+QgsLayoutDesignerDialog *QgisApp::duplicateLayout( QgsLayout *layout, const QString &t )
+{
+  QString title = t;
+  if ( title.isEmpty() )
+  {
+    // TODO: inject a bit of randomness in auto-titles?
+    title = tr( "%1 copy" ).arg( layout->name() );
+  }
+
+  QgsLayout *newLayout = QgsProject::instance()->layoutManager()->duplicateLayout( layout, title );
+  QgsLayoutDesignerDialog *dlg = openLayoutDesignerDialog( newLayout );
+  dlg->activate();
+  return dlg;
 }
 
 void QgisApp::deletePrintComposers()
@@ -9992,6 +10110,16 @@ void QgisApp::reloadConnections()
   emit connectionsChanged( );
 }
 
+void QgisApp::showLayoutManager()
+{
+  if ( !mLayoutManagerDialog )
+  {
+    mLayoutManagerDialog = new QgsLayoutManagerDialog( this, Qt::Window );
+    mLayoutManagerDialog->setAttribute( Qt::WA_DeleteOnClose );
+  }
+  mLayoutManagerDialog->show();
+  mLayoutManagerDialog->activate();
+}
 
 QgsVectorLayer *QgisApp::addVectorLayer( const QString &vectorLayerPath, const QString &name, const QString &providerKey )
 {
@@ -10227,6 +10355,9 @@ void QgisApp::initNativeProcessing()
 void QgisApp::initLayouts()
 {
   QgsLayoutAppUtils::registerGuiForKnownItemTypes();
+
+  mLayoutQptDropHandler = new QgsLayoutQptDropHandler( this );
+  registerCustomLayoutDropHandler( mLayoutQptDropHandler );
 }
 
 void QgisApp::new3DMapCanvas()

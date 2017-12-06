@@ -252,6 +252,7 @@ bool QgsLayoutPageCollection::readXml( const QDomElement &e, const QDomDocument 
     QDomElement pageElement = pageList.at( i ).toElement();
     std::unique_ptr< QgsLayoutItemPage > page( new QgsLayoutItemPage( mLayout ) );
     page->readXml( pageElement, document, context );
+    page->finalizeRestoreFromXml();
     mPages.append( page.get() );
     mLayout->addItem( page.release() );
   }
@@ -445,6 +446,26 @@ void QgsLayoutPageCollection::deletePage( QgsLayoutItemPage *page )
   emit pageAboutToBeRemoved( mPages.indexOf( page ) );
   mPages.removeAll( page );
   page->deleteLater();
+  reflow();
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->endCommand();
+    mLayout->undoStack()->endMacro();
+  }
+}
+
+void QgsLayoutPageCollection::clear()
+{
+  if ( !mBlockUndoCommands )
+  {
+    mLayout->undoStack()->beginMacro( tr( "Remove Pages" ) );
+    mLayout->undoStack()->beginCommand( this, tr( "Remove Pages" ) );
+  }
+  for ( int i = mPages.count() - 1;  i >= 0; --i )
+  {
+    emit pageAboutToBeRemoved( i );
+    mPages.takeAt( i )->deleteLater();
+  }
   reflow();
   if ( !mBlockUndoCommands )
   {

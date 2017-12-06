@@ -54,6 +54,11 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
 #endif
 }
 
+int QgsLayoutItemShape::type() const
+{
+  return QgsLayoutItemRegistry::LayoutShape;
+}
+
 QString QgsLayoutItemShape::displayName() const
 {
   if ( !id().isEmpty() )

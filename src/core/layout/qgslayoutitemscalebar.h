@@ -44,7 +44,6 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     QgsLayoutItemScaleBar( QgsLayout *layout );
 
     int type() const override;
-    QString stringType() const override;
 
     /**
      * Returns a new scale bar item for the specified \a layout.
@@ -422,7 +421,7 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
     void update();
 
     void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
-
+    void finalizeRestoreFromXml() override;
   protected:
 
     void draw( QgsRenderContext &context, const QStyleOptionGraphicsItem *itemStyle = nullptr ) override;
@@ -437,6 +436,8 @@ class CORE_EXPORT QgsLayoutItemScaleBar: public QgsLayoutItem
 
     //! Linked map
     QgsLayoutItemMap *mMap = nullptr;
+    QString mMapUuid;
+    int mMapId = -1;
 
     QgsScaleBarSettings mSettings;
 

@@ -49,8 +49,6 @@ class QgsLayoutItemPolyline: QgsLayoutNodesItem
 
     virtual int type() const;
 
-    virtual QString stringType() const;
-
     virtual QString displayName() const;
 
 

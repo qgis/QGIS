@@ -65,8 +65,6 @@ class QgsLayoutItemLegend : QgsLayoutItem
 
     virtual int type() const;
 
-    virtual QString stringType() const;
-
     virtual QString displayName() const;
 
 
@@ -449,6 +447,9 @@ class QgsLayoutItemLegend : QgsLayoutItem
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
+
+
+    virtual void finalizeRestoreFromXml();
 
 
 

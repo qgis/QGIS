@@ -110,11 +110,6 @@ int QgsLayoutFrame::type() const
   return QgsLayoutItemRegistry::LayoutFrame;
 }
 
-QString QgsLayoutFrame::stringType() const
-{
-  return QStringLiteral( "ItemFrame" );
-}
-
 QString QgsLayoutFrame::uuid() const
 {
   if ( mMultiFrame )

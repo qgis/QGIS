@@ -311,6 +311,9 @@ bool QgsLayoutMouseHandles::selectionRotation( double &rotation ) const
 
 double QgsLayoutMouseHandles::rectHandlerBorderTolerance()
 {
+  if ( !mView )
+    return 0;
+
   //calculate size for resize handles
   //get view scale factor
   double viewScaleFactor = mView->transform().m11();
@@ -608,12 +611,7 @@ void QgsLayoutMouseHandles::mouseReleaseEvent( QGraphicsSceneMouseEvent *event )
       std::unique_ptr< QgsAbstractLayoutUndoCommand > command( item->createCommand( QString(), 0 ) );
       command->saveBeforeState();
 
-      // need to convert delta from layout units -> item units
-      QgsLayoutPoint itemPos = item->positionWithUnits();
-      QgsLayoutPoint deltaPos = mLayout->convertFromLayoutUnits( QPointF( deltaX, deltaY ), itemPos.units() );
-      itemPos.setX( itemPos.x() + deltaPos.x() );
-      itemPos.setY( itemPos.y() + deltaPos.y() );
-      item->attemptMove( itemPos );
+      item->attemptMoveBy( deltaX, deltaY );
 
       command->saveAfterState();
       mLayout->undoStack()->push( command.release() );

@@ -50,6 +50,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
     QgsLayout *layout() override;
     QgsLayoutView *view() override;
+    void selectItems( const QList< QgsLayoutItem * > items ) override;
 
   public slots:
 
@@ -106,6 +107,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * shown and raised to the top of the interface.
      */
     void showItemOptions( QgsLayoutItem *item, bool bringPanelToFront = true );
+
+    /**
+     * Selects the specified \a items.
+     */
+    void selectItems( const QList< QgsLayoutItem * > items );
 
   public slots:
 
@@ -216,6 +222,18 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      */
     void refreshLayout();
 
+    /**
+     * Pastes items from the clipboard to the current layout.
+     * \see pasteInPlace()
+     */
+    void paste();
+
+    /**
+     * Pastes item (in place) from the clipboard to the current layout.
+     * \see paste()
+     */
+    void pasteInPlace();
+
   signals:
 
     /**
@@ -225,7 +243,9 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
   protected:
 
-    virtual void closeEvent( QCloseEvent * ) override;
+    void closeEvent( QCloseEvent * ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
 
   private slots:
 
@@ -246,6 +266,14 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void statusMessageReceived( const QString &message );
     void dockVisibilityChanged( bool visible );
     void undoRedoOccurredForItems( const QSet< QString > itemUuids );
+    void saveAsTemplate();
+    void addItemsFromTemplate();
+    void duplicate();
+    void saveProject();
+    void newLayout();
+    void showManager();
+    void renameLayout();
+    void deleteLayout();
 
   private:
 
@@ -301,6 +329,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     QAction *mUndoAction = nullptr;
     QAction *mRedoAction = nullptr;
+    //! Copy/cut/paste actions
+    QAction *mActionCut = nullptr;
+    QAction *mActionCopy = nullptr;
+    QAction *mActionPaste = nullptr;
 
     struct PanelStatus
     {

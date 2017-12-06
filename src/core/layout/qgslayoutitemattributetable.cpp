@@ -95,11 +95,6 @@ int QgsLayoutItemAttributeTable::type() const
   return QgsLayoutItemRegistry::LayoutAttributeTable;
 }
 
-QString QgsLayoutItemAttributeTable::stringType() const
-{
-  return QStringLiteral( "LayoutAttributeTable" );
-}
-
 QgsLayoutItemAttributeTable *QgsLayoutItemAttributeTable::create( QgsLayout *layout )
 {
   return new QgsLayoutItemAttributeTable( layout );
@@ -726,7 +721,7 @@ bool QgsLayoutItemAttributeTable::readPropertiesFromElement( const QDomElement &
   }
   else
   {
-    mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mapUuid ) );
+    mMap = qobject_cast< QgsLayoutItemMap *>( mLayout->itemByUuid( mapUuid, true ) );
   }
 
   if ( mMap )

@@ -48,7 +48,6 @@ class TestItem : public QgsLayoutItem
 
     //implement pure virtual methods
     int type() const override { return QgsLayoutItemRegistry::LayoutItem + 101; }
-    QString stringType() const override { return QStringLiteral( "TestItemType" ); }
 
     bool forceResize = false;
 
@@ -1200,6 +1199,21 @@ void TestQgsLayoutItem::move()
   QCOMPARE( item->scenePos().x(), 10.0 );
   QCOMPARE( item->scenePos().y(), 12.0 );
 
+  //moveBy
+  item.reset( new TestItem( &l ) );
+  item->attemptMove( QgsLayoutPoint( 5, 9, QgsUnitTypes::LayoutCentimeters ) );
+  item->attemptResize( QgsLayoutSize( 4, 6 ) );
+  QCOMPARE( item->positionWithUnits().x(), 5.0 );
+  QCOMPARE( item->positionWithUnits().y(), 9.0 );
+  QCOMPARE( item->scenePos().x(), 50.0 );
+  QCOMPARE( item->scenePos().y(), 90.0 );
+  item->attemptMoveBy( 5, -6 );
+  QCOMPARE( item->positionWithUnits().x(), 5.5 );
+  QCOMPARE( item->positionWithUnits().y(), 8.4 );
+  QCOMPARE( item->positionWithUnits().units(), QgsUnitTypes::LayoutCentimeters );
+  QCOMPARE( item->scenePos().x(), 55.0 );
+  QCOMPARE( item->scenePos().y(), 84.0 );
+
   //item with frame
   item.reset( new TestItem( &l ) );
   item->attemptResize( QgsLayoutSize( 2, 4 ) );
@@ -1513,7 +1527,7 @@ void TestQgsLayoutItem::writeXml()
   QDomElement element = rootNode.firstChildElement();
 
   QCOMPARE( element.nodeName(), QString( "LayoutItem" ) );
-  QCOMPARE( element.attribute( "type", "" ), item->stringType() );
+  QCOMPARE( element.attribute( "type", "" ).toInt(), item->type() );
 
   //check that element has an object node
   QDomNodeList objectNodeList = element.elementsByTagName( QStringLiteral( "LayoutObject" ) );
@@ -1539,11 +1553,6 @@ void TestQgsLayoutItem::readXml()
   QDomElement noNode;
   QVERIFY( !item->readXml( badElement, doc, QgsReadWriteContext() ) );
   QVERIFY( !item->readXml( noNode, doc, QgsReadWriteContext() ) );
-
-  //element with wrong type
-  QDomElement wrongType = doc.createElement( QStringLiteral( "LayoutItem" ) );
-  wrongType.setAttribute( QStringLiteral( "type" ), QStringLiteral( "bad" ) );
-  QVERIFY( !item->readXml( wrongType, doc, QgsReadWriteContext() ) );
 
   //try good element
   QDomElement goodElement = doc.createElement( QStringLiteral( "LayoutItem" ) );

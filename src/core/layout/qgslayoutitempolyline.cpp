@@ -48,11 +48,6 @@ int QgsLayoutItemPolyline::type() const
   return QgsLayoutItemRegistry::LayoutPolyline;
 }
 
-QString QgsLayoutItemPolyline::stringType() const
-{
-  return QStringLiteral( "ItemPolyline" );
-}
-
 bool QgsLayoutItemPolyline::_addNode( const int indexPoint,
                                       QPointF newPoint,
                                       const double radius )

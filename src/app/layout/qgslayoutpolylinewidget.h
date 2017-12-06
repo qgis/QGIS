@@ -35,7 +35,7 @@ class QgsLayoutPolylineWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLa
     bool setNewItem( QgsLayoutItem *item ) override;
 
   private:
-    QgsLayoutItemPolyline *mPolyline = nullptr;
+    QPointer< QgsLayoutItemPolyline > mPolyline;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     void enableStartSvgInputElements( bool enable );

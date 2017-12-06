@@ -49,6 +49,13 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  a new layout.
 %End
 
+    void clear();
+%Docstring
+ Clears the layout.
+
+ Calling this method removes all items and pages from the layout.
+%End
+
     QgsProject *project() const;
 %Docstring
  The project associated with the layout. Used to get access to layers, map themes,
@@ -171,10 +178,14 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  which deferred z-order updates.
 %End
 
-    QgsLayoutItem *itemByUuid( const QString &uuid );
+    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false );
 %Docstring
  Returns the layout item with matching ``uuid`` unique identifier, or a None
  if a matching item could not be found.
+
+ If ``includeTemplateUuids`` is true, then item's QgsLayoutItem.templateUuid()
+ will also be tested when trying to match the uuid.
+
 .. seealso:: :py:func:`multiFrameByUuid()`
  :rtype: QgsLayoutItem
 %End
@@ -410,6 +421,28 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  :rtype: list of QgsLayoutMultiFrame
 %End
 
+    bool saveAsTemplate( const QString &path, const QgsReadWriteContext &context ) const;
+%Docstring
+ Saves the layout as a template at the given file ``path``.
+ Returns true if save was successful.
+.. seealso:: :py:func:`loadFromTemplate()`
+ :rtype: bool
+%End
+
+    QList< QgsLayoutItem * > loadFromTemplate( const QDomDocument &document, const QgsReadWriteContext &context, bool clearExisting = true, bool *ok /Out/ = 0 );
+%Docstring
+ Load a layout template ``document``.
+
+ By default this method will clear all items from the existing layout and real all layout
+ settings from the template. Setting ``clearExisting`` to false will only add new items
+ from the template, without overwriting the existing items or layout settings.
+
+ If ``ok`` is specified, it will be set to true if the load was successful.
+
+ Returns a list of loaded items.
+ :rtype: list of QgsLayoutItem
+%End
+
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
  Returns the layout's state encapsulated in a DOM element.
@@ -422,6 +455,23 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
  Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
 .. seealso:: :py:func:`writeXml()`
  :rtype: bool
+%End
+
+    QList< QgsLayoutItem * > addItemsFromXml( const QDomElement &parentElement, const QDomDocument &document,
+        const QgsReadWriteContext &context,
+        QPointF *position = 0, bool pasteInPlace = false );
+%Docstring
+ Add items from an XML representation to the layout. Used for project file reading and pasting items from clipboard.
+
+ The ``position`` argument is optional, and if it is not specified the items will be restored to their
+ original position from the XML serialization. If specified, the items will be positioned such that the top-left
+ bounds of all added items is located at this ``position``.
+
+ The ``pasteInPlace`` argument determines whether the serialized position should be respected, but remapped to the
+ origin of the page corresponding to the page at ``position``.
+
+ A list of the newly added items is returned.
+ :rtype: list of QgsLayoutItem
 %End
 
     QgsLayoutUndoStack *undoStack();
@@ -489,6 +539,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Is emitted when the layout has been refreshed and items should also be refreshed
  and updated.
+%End
+
+    void nameChanged( const QString &name );
+%Docstring
+ Emitted when the layout's name is changed.
+.. seealso:: :py:func:`setName()`
 %End
 
 };

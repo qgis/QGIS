@@ -38,8 +38,6 @@ class QgsLayoutItemHtml: QgsLayoutMultiFrame
 
     virtual int type() const;
 
-    virtual QString stringType() const;
-
 
     static QgsLayoutItemHtml *create( QgsLayout *layout ) /Factory/;
 %Docstring

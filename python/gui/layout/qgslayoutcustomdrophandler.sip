@@ -1,7 +1,7 @@
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layout/qgslayoutviewtoolselect.h                             *
+ * src/gui/layout/qgslayoutcustomdrophandler.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/
@@ -9,47 +9,41 @@
 
 
 
-class QgsLayoutViewToolSelect : QgsLayoutViewTool
+class QgsLayoutCustomDropHandler : QObject
 {
 %Docstring
- Layout view tool for selecting items in the layout.
+ Abstract base class that may be implemented to handle new types of data to be dropped in QGIS layouts.
+
 .. versionadded:: 3.0
 %End
 
 %TypeHeaderCode
-#include "qgslayoutviewtoolselect.h"
+#include "qgslayoutcustomdrophandler.h"
 %End
   public:
 
-    QgsLayoutViewToolSelect( QgsLayoutView *view /TransferThis/ );
+    QgsLayoutCustomDropHandler( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsLayoutViewToolSelect.
+ Constructor for QgsLayoutCustomDropHandler.
 %End
-    ~QgsLayoutViewToolSelect();
 
-    virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );
+    virtual ~QgsLayoutCustomDropHandler();
 
-    virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );
+    virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file );
+%Docstring
+ Called when the specified ``file`` has been dropped onto a QGIS layout. If true
+ is returned, then the handler has accepted this file and it should not
+ be further processed (e.g. by other QgsLayoutCustomDropHandler).
 
-    virtual void layoutReleaseEvent( QgsLayoutViewMouseEvent *event );
-
-    virtual void wheelEvent( QWheelEvent *event );
-
-    virtual void keyPressEvent( QKeyEvent *event );
-
-    virtual void deactivate();
-
-
-
-
-    void setLayout( QgsLayout *layout );
-
+ The base class implementation does nothing.
+ :rtype: bool
+%End
 };
 
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *
- * src/gui/layout/qgslayoutviewtoolselect.h                             *
+ * src/gui/layout/qgslayoutcustomdrophandler.h                          *
  *                                                                      *
  * Do not edit manually ! Edit header and run scripts/sipify.pl again   *
  ************************************************************************/

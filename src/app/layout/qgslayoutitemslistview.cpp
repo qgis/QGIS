@@ -17,7 +17,9 @@
 #include "qgslayout.h"
 #include "qgslayoutmodel.h"
 #include "qgslayoutdesignerdialog.h"
+#include "qgslayoutview.h"
 #include <QHeaderView>
+#include <QMouseEvent>
 
 QgsLayoutItemsListView::QgsLayoutItemsListView( QWidget *parent, QgsLayoutDesignerDialog *designer )
   : QTreeView( parent )
@@ -57,6 +59,20 @@ void QgsLayoutItemsListView::showContextMenu( QPoint point )
     return;
 
   QMenu *menu = new QMenu( this );
+
+  QAction *copyAction = new QAction( tr( "Copy Item" ), menu );
+  connect( copyAction, &QAction::triggered, this, [this, item]()
+  {
+    mDesigner->view()->copyItems( QList< QgsLayoutItem * >() << item, QgsLayoutView::ClipboardCopy );
+  } );
+  menu->addAction( copyAction );
+  QAction *deleteAction = new QAction( tr( "Delete Item" ), menu );
+  connect( deleteAction, &QAction::triggered, this, [this, item]()
+  {
+    mDesigner->view()->deleteItems( QList< QgsLayoutItem * >() << item );
+  } );
+  menu->addAction( deleteAction );
+  menu->addSeparator();
 
   QAction *itemPropertiesAction = new QAction( tr( "Item Properties…" ), menu );
   connect( itemPropertiesAction, &QAction::triggered, this, [this, item]()

@@ -155,7 +155,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      * the appearance and behavior of the line edit portion of the widget.
      * \since QGIS 3.0
      */
-    QLineEdit *lineEdit();
+    QgsFilterLineEdit *lineEdit();
 
   signals:
     //! emitted as soon as the current file or directory is changed

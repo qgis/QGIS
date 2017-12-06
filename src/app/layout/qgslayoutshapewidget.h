@@ -38,7 +38,7 @@ class QgsLayoutShapeWidget: public QgsLayoutItemBaseWidget, private Ui::QgsLayou
 
 
   private:
-    QgsLayoutItemShape *mShape = nullptr;
+    QPointer< QgsLayoutItemShape > mShape;
     QgsLayoutItemPropertiesWidget *mItemPropertiesWidget = nullptr;
 
     //! Blocks / unblocks the signal of all GUI elements

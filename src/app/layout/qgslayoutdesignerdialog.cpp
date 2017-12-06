@@ -22,6 +22,8 @@
 #include "qgslogger.h"
 #include "qgslayout.h"
 #include "qgslayoutappmenuprovider.h"
+#include "qgslayoutcustomdrophandler.h"
+#include "qgslayoutmanager.h"
 #include "qgslayoutview.h"
 #include "qgslayoutviewtooladditem.h"
 #include "qgslayoutviewtooladdnodeitem.h"
@@ -44,6 +46,8 @@
 #include "qgslayoutmousehandles.h"
 #include "qgslayoutmodel.h"
 #include "qgslayoutitemslistview.h"
+#include "qgsproject.h"
+#include "qgsbusyindicatordialog.h"
 #include <QShortcut>
 #include <QComboBox>
 #include <QLineEdit>
@@ -52,6 +56,8 @@
 #include <QLabel>
 #include <QUndoView>
 #include <QTreeView>
+#include <QFileDialog>
+#include <QMessageBox>
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -79,6 +85,11 @@ QgsLayoutView *QgsAppLayoutDesignerInterface::view()
   return mDesigner->view();
 }
 
+void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> items )
+{
+  mDesigner->selectItems( items );
+}
+
 void QgsAppLayoutDesignerInterface::close()
 {
   mDesigner->close();
@@ -101,6 +112,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   setupUi( this );
   setWindowTitle( tr( "QGIS Layout Designer" ) );
+  setAcceptDrops( true );
 
   setAttribute( Qt::WA_DeleteOnClose );
 #if QT_VERSION >= 0x050600
@@ -146,6 +158,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mVerticalRuler->setContextMenu( rulerMenu );
 
   connect( mActionRefreshView, &QAction::triggered, this, &QgsLayoutDesignerDialog::refreshLayout );
+  connect( mActionSaveProject, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveProject );
+  connect( mActionNewLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::newLayout );
+  connect( mActionLayoutManager, &QAction::triggered, this, &QgsLayoutDesignerDialog::showManager );
+  connect( mActionRemoveLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::deleteLayout );
 
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
@@ -156,6 +172,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
 
   connect( mActionShowBoxes, &QAction::triggered, this, &QgsLayoutDesignerDialog::showBoxes );
   connect( mActionShowPage, &QAction::triggered, this, &QgsLayoutDesignerDialog::showPages );
+
+  connect( mActionPasteInPlace, &QAction::triggered, this, &QgsLayoutDesignerDialog::pasteInPlace );
 
   mView = new QgsLayoutView();
   //mView->setMapCanvas( mQgis->mapCanvas() );
@@ -297,6 +315,11 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   mActionPreviewProtanope->setActionGroup( previewGroup );
   mActionPreviewDeuteranope->setActionGroup( previewGroup );
 
+  connect( mActionSaveAsTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::saveAsTemplate );
+  connect( mActionLoadFromTemplate, &QAction::triggered, this, &QgsLayoutDesignerDialog::addItemsFromTemplate );
+  connect( mActionDuplicateLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::duplicate );
+  connect( mActionRenameLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::renameLayout );
+
   connect( mActionZoomIn, &QAction::triggered, mView, &QgsLayoutView::zoomIn );
   connect( mActionZoomOut, &QAction::triggered, mView, &QgsLayoutView::zoomOut );
   connect( mActionZoomAll, &QAction::triggered, mView, &QgsLayoutView::zoomFull );
@@ -404,6 +427,36 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   {
     mView->ungroupSelectedItems();
   } );
+
+  //cut/copy/paste actions. Note these are not included in the ui file
+  //as ui files have no support for QKeySequence shortcuts
+  mActionCut = new QAction( tr( "Cu&t" ), this );
+  mActionCut->setShortcuts( QKeySequence::Cut );
+  mActionCut->setStatusTip( tr( "Cut" ) );
+  mActionCut->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCut.svg" ) ) );
+  connect( mActionCut, &QAction::triggered, this, [ = ]
+  {
+    mView->copySelectedItems( QgsLayoutView::ClipboardCut );
+  } );
+
+  mActionCopy = new QAction( tr( "&Copy" ), this );
+  mActionCopy->setShortcuts( QKeySequence::Copy );
+  mActionCopy->setStatusTip( tr( "Copy" ) );
+  mActionCopy->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditCopy.svg" ) ) );
+  connect( mActionCopy, &QAction::triggered, this, [ = ]
+  {
+    mView->copySelectedItems( QgsLayoutView::ClipboardCopy );
+  } );
+
+  mActionPaste = new QAction( tr( "&Paste" ), this );
+  mActionPaste->setShortcuts( QKeySequence::Paste );
+  mActionPaste->setStatusTip( tr( "Paste" ) );
+  mActionPaste->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionEditPaste.svg" ) ) );
+  connect( mActionPaste, &QAction::triggered, this, &QgsLayoutDesignerDialog::paste );
+
+  menuEdit->insertAction( mActionPasteInPlace, mActionCut );
+  menuEdit->insertAction( mActionPasteInPlace, mActionCopy );
+  menuEdit->insertAction( mActionPasteInPlace, mActionPaste );
 
   //create status bar labels
   mStatusCursorXLabel = new QLabel( mStatusBar );
@@ -564,7 +617,10 @@ QgsLayout *QgsLayoutDesignerDialog::currentLayout()
 
 void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
 {
+  layout->deselectAll();
   mLayout = layout;
+  connect( mLayout, &QgsLayout::destroyed, this, &QgsLayoutDesignerDialog::close );
+
   mView->setCurrentLayout( layout );
 
   // add undo/redo actions which apply to the correct layout undo stack
@@ -586,6 +642,8 @@ void QgsLayoutDesignerDialog::setCurrentLayout( QgsLayout *layout )
   {
     mLayout->guides().clear();
   } );
+  connect( mLayout, &QgsLayout::nameChanged, this, &QgsLayoutDesignerDialog::setWindowTitle );
+  setWindowTitle( mLayout->name() );
 
   mActionShowGrid->setChecked( mLayout->context().gridVisible() );
   mActionSnapGrid->setChecked( mLayout->snapper().snapToGrid() );
@@ -862,6 +920,104 @@ void QgsLayoutDesignerDialog::closeEvent( QCloseEvent * )
   saveWindowState();
 }
 
+void QgsLayoutDesignerDialog::dropEvent( QDropEvent *event )
+{
+  // dragging app is locked for the duration of dropEvent. This causes explorer windows to hang
+  // while large projects/layers are loaded. So instead we return from dropEvent as quickly as possible
+  // and do the actual handling of the drop after a very short timeout
+  QTimer *timer = new QTimer( this );
+  timer->setSingleShot( true );
+  timer->setInterval( 50 );
+
+  // get the file list
+  QList<QUrl>::iterator i;
+  QList<QUrl>urls = event->mimeData()->urls();
+  QStringList files;
+  for ( i = urls.begin(); i != urls.end(); ++i )
+  {
+    QString fileName = i->toLocalFile();
+#ifdef Q_OS_MAC
+    // Mac OS X 10.10, under Qt4.8 ,changes dropped URL format
+    // https://bugreports.qt.io/browse/QTBUG-40449
+    // [pzion 20150805] Work around
+    if ( fileName.startsWith( "/.file/id=" ) )
+    {
+      QgsDebugMsg( "Mac dropped URL with /.file/id= (converting)" );
+      CFStringRef relCFStringRef =
+        CFStringCreateWithCString(
+          kCFAllocatorDefault,
+          fileName.toUtf8().constData(),
+          kCFStringEncodingUTF8
+        );
+      CFURLRef relCFURL =
+        CFURLCreateWithFileSystemPath(
+          kCFAllocatorDefault,
+          relCFStringRef,
+          kCFURLPOSIXPathStyle,
+          false // isDirectory
+        );
+      CFErrorRef error = 0;
+      CFURLRef absCFURL =
+        CFURLCreateFilePathURL(
+          kCFAllocatorDefault,
+          relCFURL,
+          &error
+        );
+      if ( !error )
+      {
+        static const CFIndex maxAbsPathCStrBufLen = 4096;
+        char absPathCStr[maxAbsPathCStrBufLen];
+        if ( CFURLGetFileSystemRepresentation(
+               absCFURL,
+               true, // resolveAgainstBase
+               reinterpret_cast<UInt8 *>( &absPathCStr[0] ),
+               maxAbsPathCStrBufLen ) )
+        {
+          fileName = QString( absPathCStr );
+        }
+      }
+      CFRelease( absCFURL );
+      CFRelease( relCFURL );
+      CFRelease( relCFStringRef );
+    }
+#endif
+    // seems that some drag and drop operations include an empty url
+    // so we test for length to make sure we have something
+    if ( !fileName.isEmpty() )
+    {
+      files << fileName;
+    }
+  }
+
+  connect( timer, &QTimer::timeout, this, [this, timer, files]
+  {
+    for ( const QString &file : qgis::as_const( files ) )
+    {
+      const QVector<QPointer<QgsLayoutCustomDropHandler >> handlers = QgisApp::instance()->customLayoutDropHandlers();
+      for ( QgsLayoutCustomDropHandler *handler : handlers )
+      {
+        if ( handler && handler->handleFileDrop( iface(), file ) )
+        {
+          break;
+        }
+      }
+    }
+
+    timer->deleteLater();
+  } );
+
+  event->acceptProposedAction();
+  timer->start();
+}
+
+void QgsLayoutDesignerDialog::dragEnterEvent( QDragEnterEvent *event )
+{
+  if ( event->mimeData()->hasUrls() )
+  {
+    event->acceptProposedAction();
+  }
+}
+
 void QgsLayoutDesignerDialog::itemTypeAdded( int id )
 {
   if ( QgsGui::layoutItemGuiRegistry()->itemMetadata( id )->flags() & QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools )
@@ -1098,6 +1254,192 @@ void QgsLayoutDesignerDialog::undoRedoOccurredForItems( const QSet<QString> item
     showItemOptions( focusItem );
 }
 
+void QgsLayoutDesignerDialog::saveAsTemplate()
+{
+  //show file dialog
+  QgsSettings settings;
+  QString lastSaveDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
+#ifdef Q_OS_MAC
+  mQgis->activateWindow();
+  this->raise();
+#endif
+  QString saveFileName = QFileDialog::getSaveFileName(
+                           this,
+                           tr( "Save template" ),
+                           lastSaveDir,
+                           tr( "Layout templates" ) + " (*.qpt *.QPT)" );
+  if ( saveFileName.isEmpty() )
+    return;
+
+  QFileInfo saveFileInfo( saveFileName );
+  //check if suffix has been added
+  if ( saveFileInfo.suffix().isEmpty() )
+  {
+    QString saveFileNameWithSuffix = saveFileName.append( ".qpt" );
+    saveFileInfo = QFileInfo( saveFileNameWithSuffix );
+  }
+  settings.setValue( QStringLiteral( "UI/lastComposerTemplateDir" ), saveFileInfo.absolutePath() );
+
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  if ( !currentLayout()->saveAsTemplate( saveFileName, context ) )
+  {
+    QMessageBox::warning( nullptr, tr( "Save template" ), tr( "Error creating template file." ) );
+  }
+}
+
+void QgsLayoutDesignerDialog::addItemsFromTemplate()
+{
+  if ( !currentLayout() )
+    return;
+
+  QgsSettings settings;
+  QString openFileDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
+  QString openFileString = QFileDialog::getOpenFileName( nullptr, tr( "Load template" ), openFileDir, tr( "Layout templates" ) + " (*.qpt *.QPT)" );
+
+  if ( openFileString.isEmpty() )
+  {
+    return; //canceled by the user
+  }
+
+  QFileInfo openFileInfo( openFileString );
+  settings.setValue( QStringLiteral( "UI/LastComposerTemplateDir" ), openFileInfo.absolutePath() );
+
+  QFile templateFile( openFileString );
+  if ( !templateFile.open( QIODevice::ReadOnly ) )
+  {
+    QMessageBox::warning( this, tr( "Load from template" ), tr( "Could not read template file." ) );
+    return;
+  }
+
+  QDomDocument templateDoc;
+  QgsReadWriteContext context;
+  context.setPathResolver( QgsProject::instance()->pathResolver() );
+  if ( templateDoc.setContent( &templateFile ) )
+  {
+    bool ok = false;
+    QList< QgsLayoutItem * > items = currentLayout()->loadFromTemplate( templateDoc, context, false, &ok );
+    if ( !ok )
+    {
+      QMessageBox::warning( this, tr( "Load from template" ), tr( "Could not read template file." ) );
+      return;
+    }
+    else
+    {
+      whileBlocking( currentLayout() )->deselectAll();
+      selectItems( items );
+    }
+  }
+}
+
+void QgsLayoutDesignerDialog::duplicate()
+{
+  QString newTitle;
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, tr( "%1 copy" ).arg( currentLayout()->name() ) ) )
+  {
+    return;
+  }
+
+  // provide feedback, since loading of template into duplicate layout will be hidden
+  QDialog *dlg = new QgsBusyIndicatorDialog( tr( "Duplicating layout…" ) );
+  dlg->setStyleSheet( QgisApp::instance()->styleSheet() );
+  dlg->show();
+
+  QgsLayoutDesignerDialog *newDialog = QgisApp::instance()->duplicateLayout( currentLayout(), newTitle );
+
+  dlg->close();
+  delete dlg;
+  dlg = nullptr;
+
+  if ( !newDialog )
+  {
+    QMessageBox::warning( this, tr( "Duplicate layout" ),
+                          tr( "Layout duplication failed." ) );
+  }
+}
+
+void QgsLayoutDesignerDialog::saveProject()
+{
+  QgisApp::instance()->actionSaveProject()->trigger();
+}
+
+void QgsLayoutDesignerDialog::newLayout()
+{
+  QString title;
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, title, true ) )
+  {
+    return;
+  }
+  QgisApp::instance()->createNewLayout( title );
+}
+
+void QgsLayoutDesignerDialog::showManager()
+{
+  // NOTE: Avoid crash where composer that spawned modal manager from toolbar ends up
+  // being deleted by user, but event loop tries to return to layout on manager close
+  // (does not seem to be an issue for menu action)
+  QTimer::singleShot( 0, this, [ = ]
+  {
+    QgisApp::instance()->showLayoutManager();
+  } );
+}
+
+void QgsLayoutDesignerDialog::renameLayout()
+{
+  QString currentTitle = currentLayout()->name();
+  QString newTitle;
+  if ( !QgisApp::instance()->uniqueLayoutTitle( this, newTitle, false, currentTitle ) )
+  {
+    return;
+  }
+  currentLayout()->setName( newTitle );
+}
+
+void QgsLayoutDesignerDialog::deleteLayout()
+{
+  if ( QMessageBox::question( this, tr( "Delete Layout" ), tr( "Are you sure you want to delete the layout “%1”?" ).arg( currentLayout()->name() ),
+                              QMessageBox::Yes | QMessageBox::No, QMessageBox::No ) != QMessageBox::Yes )
+    return;
+
+  currentLayout()->project()->layoutManager()->removeLayout( currentLayout() );
+  close();
+}
+
+void QgsLayoutDesignerDialog::paste()
+{
+  QPointF pt = mView->mapFromGlobal( QCursor::pos() );
+  //TODO - use a better way of determining whether paste was triggered by keystroke
+  //or menu item
+  QList< QgsLayoutItem * > items;
+  if ( ( pt.x() < 0 ) || ( pt.y() < 0 ) )
+  {
+    //action likely triggered by menu, paste items in center of screen
+    items = mView->pasteItems( QgsLayoutView::PasteModeCenter );
+  }
+  else
+  {
+    //action likely triggered by keystroke, paste items at cursor position
+    items = mView->pasteItems( QgsLayoutView::PasteModeCursor );
+  }
+
+  whileBlocking( currentLayout() )->deselectAll();
+  selectItems( items );
+
+  //switch back to select tool so that pasted items can be moved/resized (#8958)
+  mView->setTool( mSelectTool );
+}
+
+void QgsLayoutDesignerDialog::pasteInPlace()
+{
+  QList< QgsLayoutItem * > items = mView->pasteItems( QgsLayoutView::PasteModeInPlace );
+
+  whileBlocking( currentLayout() )->deselectAll();
+  selectItems( items );
+
+  //switch back to select tool so that pasted items can be moved/resized (#8958)
+  mView->setTool( mSelectTool );
+}
+
 QgsLayoutView *QgsLayoutDesignerDialog::view()
 {
   return mView;
@@ -1176,6 +1518,28 @@ void QgsLayoutDesignerDialog::initializeRegistry()
 
   QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), false, QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
 
+}
+
+void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
+{
+  for ( QGraphicsItem *item : items )
+  {
+    if ( item )
+    {
+      item->setSelected( true );
+    }
+  }
+
+  //update item panel
+  const QList<QgsLayoutItem *> selectedItemList = currentLayout()->selectedLayoutItems();
+  if ( !selectedItemList.isEmpty() )
+  {
+    showItemOptions( selectedItemList.at( 0 ) );
+  }
+  else
+  {
+    showItemOptions( nullptr );
+  }
 }
 
 

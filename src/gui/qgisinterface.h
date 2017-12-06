@@ -29,6 +29,7 @@ class QgsAdvancedDigitizingDockWidget;
 class QgsAttributeDialog;
 class QgsComposerInterface;
 class QgsCustomDropHandler;
+class QgsLayoutCustomDropHandler;
 class QgsFeature;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
@@ -547,6 +548,12 @@ class GUI_EXPORT QgisInterface : public QObject
     virtual void closeComposer( QgsComposition *composition ) = 0;
 
     /**
+     * Opens the layout manager dialog.
+     * \since QGIS 3.0
+     */
+    virtual void showLayoutManager() = 0;
+
+    /**
      * Opens a new layout designer dialog for the specified \a layout, or
      * brings an already open designer window to the foreground if one
      * is already created for the layout.
@@ -678,6 +685,20 @@ class GUI_EXPORT QgisInterface : public QObject
      * \since QGIS 3.0
      * \see registerCustomDropHandler() */
     virtual void unregisterCustomDropHandler( QgsCustomDropHandler *handler ) = 0;
+
+    /**
+     * Register a new custom drop \a handler for layout windows.
+     * \since QGIS 3.0
+     * \note Ownership of the factory is not transferred, and the factory must
+     *       be unregistered when plugin is unloaded.
+     * \see unregisterCustomLayoutDropHandler() */
+    virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+
+    /**
+     * Unregister a previously registered custom drop \a handler for layout windows.
+     * \since QGIS 3.0
+     * \see registerCustomLayoutDropHandler() */
+    virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
 
     // @todo is this deprecated in favour of QgsContextHelp?
 

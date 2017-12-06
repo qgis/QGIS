@@ -160,6 +160,7 @@ SET(QGIS_GUI_SRCS
   layertree/qgslayertreeview.cpp
   layertree/qgslayertreeviewdefaultactions.cpp
 
+  layout/qgslayoutcustomdrophandler.cpp
   layout/qgslayoutitemguiregistry.cpp
   layout/qgslayoutitemcombobox.cpp
   layout/qgslayoutitemwidget.cpp
@@ -678,6 +679,7 @@ SET(QGIS_GUI_MOC_HDRS
   layertree/qgslayertreeview.h
   layertree/qgslayertreeviewdefaultactions.h
 
+  layout/qgslayoutcustomdrophandler.h
   layout/qgslayoutdesignerinterface.h
   layout/qgslayoutitemcombobox.h
   layout/qgslayoutitemguiregistry.h

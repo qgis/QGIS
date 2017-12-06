@@ -71,6 +71,7 @@ void QgsLayoutItemUndoCommand::restoreState( QDomDocument &stateDoc )
   }
 
   item->readXml( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext() );
+  item->finalizeRestoreFromXml();
   mLayout->project()->setDirty( true );
   mLayout->undoStack()->notifyUndoRedoOccurred( item );
 }
@@ -119,8 +120,10 @@ void QgsLayoutItemDeleteUndoCommand::redo()
   QgsLayoutItem *item = layout()->itemByUuid( itemUuid() );
   //Q_ASSERT_X( item, "QgsLayoutItemDeleteUndoCommand::redo", "could not find item to re-delete!" );
 
+  layout()->undoStack()->blockCommands( true );
   if ( item )
     layout()->removeLayoutItemPrivate( item );
+  layout()->undoStack()->blockCommands( false );
 }
 
 QgsLayoutItemAddItemCommand::QgsLayoutItemAddItemCommand( QgsLayoutItem *item, const QString &text, int id, QUndoCommand *parent )

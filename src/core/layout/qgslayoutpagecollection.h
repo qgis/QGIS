@@ -153,6 +153,8 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * the first page in the collection.
      *
      * Calling deletePage() automatically triggers a reflow() of pages.
+     *
+     * \see clear()
      */
     void deletePage( int pageNumber );
 
@@ -161,8 +163,16 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      * from the collection's layout().
      *
      * Calling deletePage() automatically triggers a reflow() of pages.
+     *
+     * \see clear()
      */
     void deletePage( QgsLayoutItemPage *page );
+
+    /**
+     * Removes all pages from the collection.
+     * \see deletePage()
+     */
+    void clear();
 
     /**
      * Takes a \a page from the collection, returning ownership of the page to the caller.

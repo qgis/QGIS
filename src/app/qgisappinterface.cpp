@@ -446,6 +446,11 @@ void QgisAppInterface::closeComposer( QgsComposition *composition )
   }
 }
 
+void QgisAppInterface::showLayoutManager()
+{
+  qgis->showLayoutManager();
+}
+
 QList<QgsLayoutDesignerInterface *> QgisAppInterface::openLayoutDesigners()
 {
   QList<QgsLayoutDesignerInterface *> designerInterfaceList;
@@ -582,6 +587,16 @@ void QgisAppInterface::unregisterOptionsWidgetFactory( QgsOptionsWidgetFactory *
 void QgisAppInterface::registerCustomDropHandler( QgsCustomDropHandler *handler )
 {
   qgis->registerCustomDropHandler( handler );
+}
+
+void QgisAppInterface::registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  qgis->registerCustomLayoutDropHandler( handler );
+}
+
+void QgisAppInterface::unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler )
+{
+  qgis->unregisterCustomLayoutDropHandler( handler );
 }
 
 void QgisAppInterface::unregisterCustomDropHandler( QgsCustomDropHandler *handler )

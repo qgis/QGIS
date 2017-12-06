@@ -1003,7 +1003,7 @@ void TestQgsLayoutTable::wrapChar()
   table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
   table->setBackgroundColor( Qt::yellow );
 
-  QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > multiLineLayer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "multiline\nstring" );
@@ -1012,7 +1012,7 @@ void TestQgsLayoutTable::wrapChar()
   multiLineLayer->dataProvider()->addFeatures( QgsFeatureList() << f1 );
 
   table->setMaximumNumberOfFeatures( 1 );
-  table->setVectorLayer( multiLineLayer );
+  table->setVectorLayer( multiLineLayer.get() );
   table->setWrapString( QStringLiteral( "in" ) );
 
   QVector<QStringList> expectedRows;
@@ -1044,7 +1044,7 @@ void TestQgsLayoutTable::autoWrap()
   table->setHeaderFont( QgsFontUtils::getStandardTestFont() );
   table->setBackgroundColor( Qt::yellow );
 
-  QgsVectorLayer *multiLineLayer = new QgsVectorLayer( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
+  std::unique_ptr< QgsVectorLayer > multiLineLayer = qgis::make_unique< QgsVectorLayer >( QStringLiteral( "Point?field=col1:string&field=col2:string&field=col3:string" ), QStringLiteral( "multiline" ), QStringLiteral( "memory" ) );
   QVERIFY( multiLineLayer->isValid() );
   QgsFeature f1( multiLineLayer->dataProvider()->fields(), 1 );
   f1.setAttribute( QStringLiteral( "col1" ), "long multiline\nstring" );
@@ -1067,7 +1067,7 @@ void TestQgsLayoutTable::autoWrap()
   frame2->attemptSetSceneRect( QRectF( 5, 40, 100, 90 ) );
 
   table->setMaximumNumberOfFeatures( 20 );
-  table->setVectorLayer( multiLineLayer );
+  table->setVectorLayer( multiLineLayer.get() );
   table->setWrapBehavior( QgsLayoutTable::WrapText );
 
   table->columns().at( 0 )->setWidth( 25 );

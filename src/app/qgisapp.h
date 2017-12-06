@@ -62,8 +62,10 @@ class QgsGeometry;
 class QgsLayerTreeMapCanvasBridge;
 class QgsLayerTreeView;
 class QgsLayout;
+class QgsLayoutCustomDropHandler;
 class QgsLayoutDesignerDialog;
 class QgsLayoutDesignerInterface;
+class QgsLayoutManagerDialog;
 class QgsMapCanvas;
 class QgsMapCanvasDockWidget;
 class QgsMapLayer;
@@ -128,6 +130,7 @@ class QgsLocatorWidget;
 class QgsDataSourceManagerDialog;
 class QgsBrowserModel;
 class QgsGeoCmsProviderRegistry;
+class QgsLayoutQptDropHandler;
 
 
 #include <QMainWindow>
@@ -359,6 +362,21 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \returns QString() if user cancels input dialog
      */
     bool uniqueComposerTitle( QWidget *parent, QString &composerTitle, bool acceptEmpty, const QString &currentTitle = QString() );
+
+    /**
+     * Gets a unique title from user for new and duplicate layouts.
+     *
+     * The \a title argument will be filled with the new layout title.
+     *
+     * If \a acceptEmpty is true then empty titles will be acceptable (one will be generated).
+     *
+     * The \a currentTitle argument specifies a base name for initial title choice.
+     *
+     * \returns true if user did not cancel the dialog.
+     */
+    bool uniqueLayoutTitle( QWidget *parent, QString &title, bool acceptEmpty, const QString &currentTitle = QString() );
+
+
     //! Creates a new composer and returns a pointer to it
     QgsComposer *createNewComposer( QString title = QString() );
 
@@ -366,6 +384,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Opens a composer window for an existing \a composition.
      */
     QgsComposer *openComposer( QgsComposition *composition );
+
+    //! Creates a new layout and returns a pointer to it
+    QgsLayoutDesignerDialog *createNewLayout( QString title = QString() );
 
     /**
      * Opens a layout designer dialog for an existing \a layout.
@@ -380,6 +401,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * Duplicates a composer and adds it to Set
      */
     QgsComposer *duplicateComposer( QgsComposer *currentComposer, QString title = QString() );
+
+    /**
+     * Duplicates a \a layout and adds it to the current project.
+     *
+     * If \a title is set, it will be used as the title for the new layout. If it is not set,
+     * and auto-generated title will be used instead.
+     */
+    QgsLayoutDesignerDialog *duplicateLayout( QgsLayout *layout, const QString &title = QString() );
 
     //! Overloaded function used to sort menu entries alphabetically
     QMenu *createPopupMenu() override;
@@ -644,6 +673,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Unregister a previously registered custom drop handler.
     void unregisterCustomDropHandler( QgsCustomDropHandler *handler );
 
+    //! Register a new custom layout drop handler.
+    void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler );
+
+    //! Unregister a previously registered custom layout drop handler.
+    void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler );
+
+    //! Returns a list of registered custom layout drop handlers.
+    QVector<QPointer<QgsLayoutCustomDropHandler >> customLayoutDropHandlers() const;
+
     //! Returns the active map layer.
     QgsMapLayer *activeLayer();
 
@@ -902,6 +940,12 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      * \since QGIS 3.0
      */
     void reloadConnections();
+
+    /**
+     * Shows the layout manager dialog.
+     * \since QGIS 3.0
+     */
+    void showLayoutManager();
 
   protected:
 
@@ -2075,6 +2119,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsLayerStylingWidget *mMapStyleWidget = nullptr;
 
     QgsComposerManager *mComposerManager = nullptr;
+    QPointer< QgsLayoutManagerDialog > mLayoutManagerDialog;
 
     //! Persistent tile scale slider
     QgsTileScaleWidget *mpTileScaleWidget = nullptr;
@@ -2119,6 +2164,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QList<QPointer<QgsOptionsWidgetFactory>> mOptionsWidgetFactories;
 
     QVector<QPointer<QgsCustomDropHandler>> mCustomDropHandlers;
+    QVector<QPointer<QgsLayoutCustomDropHandler>> mCustomLayoutDropHandlers;
+
+    QgsLayoutQptDropHandler *mLayoutQptDropHandler = nullptr;
 
     QDateTime mProjectLastModified;
 

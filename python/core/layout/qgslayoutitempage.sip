@@ -46,9 +46,8 @@ class QgsLayoutItemPage : QgsLayoutItem
  :rtype: QgsLayoutItemPage
 %End
 
-
     virtual int type() const;
-    virtual QString stringType() const;
+
 
     void setPageSize( const QgsLayoutSize &size );
 %Docstring

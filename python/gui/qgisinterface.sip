@@ -929,6 +929,12 @@ Adds a widget to the user input tool bar.
 .. seealso:: :py:func:`openComposer()`
 %End
 
+    virtual void showLayoutManager() = 0;
+%Docstring
+ Opens the layout manager dialog.
+.. versionadded:: 3.0
+%End
+
     virtual QgsLayoutDesignerInterface *openLayoutDesigner( QgsLayout *layout ) = 0;
 %Docstring
  Opens a new layout designer dialog for the specified ``layout``, or
@@ -1114,6 +1120,24 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
  Unregister a previously registered custom drop handler.
 .. versionadded:: 3.0
 .. seealso:: :py:func:`registerCustomDropHandler()`
+%End
+
+    virtual void registerCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+%Docstring
+ Register a new custom drop ``handler`` for layout windows.
+.. versionadded:: 3.0
+.. note::
+
+   Ownership of the factory is not transferred, and the factory must
+       be unregistered when plugin is unloaded.
+.. seealso:: :py:func:`unregisterCustomLayoutDropHandler()`
+%End
+
+    virtual void unregisterCustomLayoutDropHandler( QgsLayoutCustomDropHandler *handler ) = 0;
+%Docstring
+ Unregister a previously registered custom drop ``handler`` for layout windows.
+.. versionadded:: 3.0
+.. seealso:: :py:func:`registerCustomLayoutDropHandler()`
 %End
 
 

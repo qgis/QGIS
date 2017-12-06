@@ -52,11 +52,6 @@ int QgsLayoutItemScaleBar::type() const
   return QgsLayoutItemRegistry::LayoutScaleBar;
 }
 
-QString QgsLayoutItemScaleBar::stringType() const
-{
-  return QStringLiteral( "ItemScaleBar" );
-}
-
 QgsLayoutItemScaleBar *QgsLayoutItemScaleBar::create( QgsLayout *layout )
 {
   return new QgsLayoutItemScaleBar( layout );
@@ -784,9 +779,19 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   mSettings.setAlignment( static_cast< QgsScaleBarSettings::Alignment >( itemElem.attribute( QStringLiteral( "alignment" ), QStringLiteral( "0" ) ).toInt() ) );
 
   //map
+  mMapUuid.clear();
+  mMapId = -1;
+
+  mMapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
+  mMapUuid = itemElem.attribute( QStringLiteral( "mapUuid" ) );
+  return true;
+}
+
+
+void QgsLayoutItemScaleBar::finalizeRestoreFromXml()
+{
 #if 0 //TODO
-  int mapId = itemElem.attribute( QStringLiteral( "mapId" ), QStringLiteral( "-1" ) ).toInt();
-  if ( mapId >= 0 )
+  if ( mMapId >= 0 )
   {
     const QgsLayoutItemMap *composerMap = mComposition->getComposerMapById( mapId );
     mMap = const_cast< QgsComposerMap *>( composerMap );
@@ -798,15 +803,14 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   }
 #endif
 
-  QString mapId = itemElem.attribute( QStringLiteral( "mapUuid" ) );
-  if ( !mLayout || mapId.isEmpty() )
+  if ( !mLayout || mMapUuid.isEmpty() )
   {
     mMap = nullptr;
   }
   else
   {
     disconnectCurrentMap();
-    mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mapId ) );
+    mMap = qobject_cast< QgsLayoutItemMap * >( mLayout->itemByUuid( mMapUuid, true ) );
     if ( mMap )
     {
       connect( mMap, &QgsLayoutItemMap::extentChanged, this, &QgsLayoutItemScaleBar::updateScale );
@@ -815,6 +819,4 @@ bool QgsLayoutItemScaleBar::readPropertiesFromElement( const QDomElement &itemEl
   }
 
   updateScale();
-  return true;
 }
-
