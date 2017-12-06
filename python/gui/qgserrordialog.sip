@@ -19,7 +19,7 @@ class QgsErrorDialog: QDialog
 
     QgsErrorDialog( const QgsError &error, const QString &title, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
- QgsErrorDialog constructor for QgsErrorDialog
+ Constructor for QgsErrorDialog
 %End
 
     static void show( const QgsError &error, const QString &title, QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );

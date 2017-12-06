@@ -26,7 +26,7 @@
 #include "qgsogrdbtablemodel.h"
 
 /**
- * @brief The QgsOgrDbSourceSelect class is a generic class for DB based OGR
+ * The QgsOgrDbSourceSelect class is a generic class for DB based OGR
  * source selects.
  *
  */
