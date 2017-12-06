@@ -84,7 +84,6 @@ from .ImportIntoPostGIS import ImportIntoPostGIS
 from .ImportIntoSpatialite import ImportIntoSpatialite
 from .Intersection import Intersection
 from .LinesToPolygons import LinesToPolygons
-from .Merge import Merge
 from .MinimumBoundingGeometry import MinimumBoundingGeometry
 from .NearestNeighbourAnalysis import NearestNeighbourAnalysis
 from .OffsetLine import OffsetLine
@@ -208,7 +207,6 @@ class QGISAlgorithmProvider(QgsProcessingProvider):
                 ImportIntoSpatialite(),
                 Intersection(),
                 LinesToPolygons(),
-                Merge(),
                 MinimumBoundingGeometry(),
                 NearestNeighbourAnalysis(),
                 OffsetLine(),
