@@ -42,6 +42,7 @@ QString QgsMergeVectorAlgorithm::group() const
 void QgsMergeVectorAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypeVector ) );
+  addParameter( new QgsProcessingParameterCrs( QStringLiteral( "CRS" ), QObject::tr( "Destination CRS" ), QVariant(), true ) );
   addParameter( new QgsProcessingParameterFeatureSink( QStringLiteral( "OUTPUT" ), QObject::tr( "Merged" ) ) );
 }
 
@@ -50,9 +51,10 @@ QString QgsMergeVectorAlgorithm::shortHelpString() const
   return QObject::tr( "This algorithm combines multiple vector layers of the same geometry type into a single one.\n\n"
                       "If attributes tables are different, the attribute table of the resulting layer will contain the attributes "
                       "from all input layers. New attributes will be added for the original layer name and source.\n\n"
-                      "The layers will all be reprojected to match the coordinate reference system of the first input layer.\n\n"
                       "If any input layers contain Z or M values, then the output layer will also contain these values. Similarly, "
-                      "if any of the input layers are multi-part, the output layer will also be a multi-part layer." );
+                      "if any of the input layers are multi-part, the output layer will also be a multi-part layer.\n\n"
+                      "Optionally, the destination coordinate reference system (CRS) for the merged layer can be set. If it is not set, the CRS will be "
+                      "taken from the first input layer. All layers will all be reprojected to match this CRS." );
 }
 
 QgsMergeVectorAlgorithm *QgsMergeVectorAlgorithm::createInstance() const
@@ -67,7 +69,10 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
   QgsFields outputFields;
   long totalFeatureCount = 0;
   QgsWkbTypes::Type outputType = QgsWkbTypes::Unknown;
-  QgsCoordinateReferenceSystem outputCrs;
+  QgsCoordinateReferenceSystem outputCrs = parameterAsCrs( parameters, QStringLiteral( "CRS" ), context );
+
+  if ( outputCrs.isValid() )
+    feedback->pushInfo( QObject::tr( "Using specified destination CRS %1" ).arg( outputCrs.authid() ) );
 
   bool errored = false;
 
@@ -92,8 +97,11 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
 
     QgsVectorLayer *vl = qobject_cast< QgsVectorLayer * >( layer );
 
-    if ( !outputCrs.isValid() )
+    if ( !outputCrs.isValid() && vl->crs().isValid() )
+    {
       outputCrs = vl->crs();
+      feedback->pushInfo( QObject::tr( "Taking destination CRS %1 from layer" ).arg( outputCrs.authid() ) );
+    }
 
     // check wkb type
     if ( outputType != QgsWkbTypes::Unknown && outputType != QgsWkbTypes::NoGeometry )
@@ -138,8 +146,8 @@ QVariantMap QgsMergeVectorAlgorithm::processAlgorithm( const QVariantMap &parame
           found = true;
           if ( destField.type() != sourceField.type() )
           {
-            throw QgsProcessingException( QObject::tr( "%1 field in layer %2 has different data type than in other layers" )
-                                          .arg( sourceField.name() ).arg( i ) );
+            throw QgsProcessingException( QObject::tr( "%1 field in layer %2 has different data type than in other layers (%3 instead of %4)" )
+                                          .arg( sourceField.name(), vl->name() ).arg( sourceField.typeName() ).arg( destField.typeName() ) );
           }
           break;
         }
