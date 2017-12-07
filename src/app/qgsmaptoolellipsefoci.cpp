@@ -30,7 +30,7 @@ QgsMapToolEllipseFoci::QgsMapToolEllipseFoci( QgsMapToolCapture *parentTool,
 
 void QgsMapToolEllipseFoci::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -54,7 +54,7 @@ void QgsMapToolEllipseFoci::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolEllipseFoci::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( mTempRubberBand )
   {

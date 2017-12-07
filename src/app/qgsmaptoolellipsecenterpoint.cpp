@@ -28,7 +28,7 @@ QgsMapToolEllipseCenterPoint::QgsMapToolEllipseCenterPoint( QgsMapToolCapture *p
 
 void QgsMapToolEllipseCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -52,7 +52,7 @@ void QgsMapToolEllipseCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolEllipseCenterPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
   if ( mTempRubberBand )
   {
     mEllipse = QgsEllipse().fromCenterPoint( mPoints.at( 0 ), mapPoint );
