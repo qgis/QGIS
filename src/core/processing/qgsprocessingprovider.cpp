@@ -18,6 +18,7 @@
 #include "qgsprocessingprovider.h"
 #include "qgsapplication.h"
 #include "qgsvectorfilewriter.h"
+#include "qgsrasterfilewriter.h"
 #include "qgssettings.h"
 
 QgsProcessingProvider::QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS )
@@ -47,7 +48,7 @@ QString QgsProcessingProvider::longName() const
 
 QStringList QgsProcessingProvider::supportedOutputRasterLayerExtensions() const
 {
-  return QStringList() << QStringLiteral( "tif" );
+  return QgsRasterFileWriter::supportedFormatExtensions();
 }
 
 void QgsProcessingProvider::refreshAlgorithms()
@@ -136,4 +137,3 @@ QString QgsProcessingProvider::defaultRasterFileExtension() const
     return defaultExtension;
   }
 }
-
