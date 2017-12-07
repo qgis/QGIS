@@ -157,7 +157,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      *
      * \since QGIS 3.0
      */
-    QgsPoint pointFromPointXY( const QgsPointXY &point ) const;
+    QgsPoint fromPointXY( const QgsPointXY &point ) const;
 
     /**
      * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)

@@ -29,7 +29,7 @@ QgsMapToolCircleCenterPoint::QgsMapToolCircleCenterPoint( QgsMapToolCapture *par
 
 void QgsMapToolCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint = pointFromPointXY( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -54,7 +54,7 @@ void QgsMapToolCircleCenterPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolCircleCenterPoint::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint = pointFromPointXY( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
   if ( mTempRubberBand )
   {
     mCircle = QgsCircle().fromCenterPoint( mPoints.at( 0 ), mapPoint );

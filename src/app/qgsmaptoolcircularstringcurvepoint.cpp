@@ -29,7 +29,7 @@ QgsMapToolCircularStringCurvePoint::QgsMapToolCircularStringCurvePoint( QgsMapTo
 
 void QgsMapToolCircularStringCurvePoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint = pointFromPointXY( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {

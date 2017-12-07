@@ -768,7 +768,7 @@ void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
     mSnappingMatches.append( QgsPointLocator::Match() );
 }
 
-QgsPoint QgsMapToolCapture::pointFromPointXY( const QgsPointXY &point ) const
+QgsPoint QgsMapToolCapture::fromPointXY( const QgsPointXY &point ) const
 {
   QgsPoint newPoint( QgsWkbTypes::Point, point.x(), point.y() );
 

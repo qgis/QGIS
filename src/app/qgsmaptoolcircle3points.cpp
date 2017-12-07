@@ -29,7 +29,7 @@ QgsMapToolCircle3Points::QgsMapToolCircle3Points( QgsMapToolCapture *parentTool,
 
 void QgsMapToolCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint = pointFromPointXY( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -53,7 +53,7 @@ void QgsMapToolCircle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolCircle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint = pointFromPointXY( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( mTempRubberBand )
   {
