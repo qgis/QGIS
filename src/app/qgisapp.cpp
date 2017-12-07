@@ -13385,7 +13385,11 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
   QgsVectorLayer *layer = qobject_cast<QgsVectorLayer *>( mlayer );
 
   layer->startEditing();
-  mMapCanvas->setMapTool( mMapTools.mDigitizeFeature );
+
+  QgsMapToolDigitizeFeature *digiFeature = nullptr;
+  digiFeature = new QgsMapToolDigitizeFeature( mMapCanvas, QgsMapToolCapture::CaptureNone );
+
+  mMapCanvas->setMapTool( digiFeature );
   mMapCanvas->window()->raise();
   mMapCanvas->activateWindow();
   mMapCanvas->setFocus();
@@ -13394,7 +13398,7 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
   messageBar()->pushMessage( msg, QgsMessageBar::INFO, 3 );
 
   QMetaObject::Connection *connDigitizingFinished = new QMetaObject::Connection();
-  *connDigitizingFinished = connect( mMapTools.mDigitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )( const QgsFeature & )>( &QgsMapToolDigitizeFeature::digitizingFinished ), this, [this, layer, feature, connDigitizingFinished]( const QgsFeature & digitizedFeature )
+  *connDigitizingFinished = connect( digiFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )( const QgsFeature & )>( &QgsMapToolDigitizeFeature::digitizingFinished ), this, [this, layer, feature, connDigitizingFinished, digiFeature]( const QgsFeature & digitizedFeature )
   {
     QString msg = tr( "Duplicate digitized" );
     messageBar()->pushMessage( msg, QgsMessageBar::INFO, 1 );
@@ -13412,10 +13416,18 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
     }
 
     messageBar()->pushMessage( tr( "Feature on layer %2 duplicated\n%3" ).arg( layer->name() ).arg( childrenInfo ), QgsMessageBar::SUCCESS, 5 );
-    mMapCanvas->unsetMapTool( mMapTools.mDigitizeFeature );
-    disconnect( *connDigitizingFinished );
+    mMapCanvas->unsetMapTool( digiFeature );
+    //disconnect( *connDigitizingFinished );
+    //delete digiFeature;
   }
                                    );
+
+  QMetaObject::Connection *connDigitizingAborted = new QMetaObject::Connection();
+  *connDigitizingAborted = connect( digiFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::deactivate ), this, [this, layer, feature, connDigitizingFinished, digiFeature]()
+  {
+    delete digiFeature;
+  }
+                                  );
 
   return QgsFeature();
 }
