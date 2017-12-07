@@ -17,13 +17,6 @@
    <bool>true</bool>
   </property>
   <layout class="QGridLayout">
-   <item row="9" column="0" colspan="2">
-    <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
-     <property name="focusPolicy">
-      <enum>Qt::StrongFocus</enum>
-     </property>
-    </widget>
-   </item>
    <item row="14" column="0" colspan="2">
     <widget class="QDialogButtonBox" name="buttonBox">
      <property name="orientation">
@@ -309,6 +302,13 @@
       <widget class="QCheckBox" name="mGeometryWithZCheckBox">
        <property name="text">
         <string>Include Z dimension</string>
+       </property>
+      </widget>
+     </item>
+     <item row="5" column="1" colspan="2">
+      <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <property name="focusPolicy">
+        <enum>Qt::StrongFocus</enum>
        </property>
       </widget>
      </item>
