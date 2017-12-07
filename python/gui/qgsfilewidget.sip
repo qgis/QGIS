@@ -31,6 +31,7 @@ class QgsFileWidget : QWidget
       GetFile,
       GetDirectory,
       GetMultipleFiles,
+      SaveFile,
     };
 
     enum RelativeStorage
@@ -95,6 +96,18 @@ returns the filters used for QDialog.getOpenFileName
 %Docstring
  setFilter sets the filter used by the model to filters. The filter is used to specify the kind of files that should be shown.
  \param filter Only files that match the given filter are shown, it may be an empty string. If you want multiple filters, separate them with ';;',
+%End
+
+    void setConfirmOverwrite( bool confirmOverwrite );
+%Docstring
+ Sets whether a confirmation to overwrite an existing file will appear
+ \param confirmOverwrite If set to true, an overwrite confirmation will be shown
+%End
+
+    bool confirmOverwrite() const;
+%Docstring
+ Returns whether a confirmation will be shown when overwriting an existing file
+ :rtype: bool
 %End
 
     bool fileWidgetButtonVisible() const;

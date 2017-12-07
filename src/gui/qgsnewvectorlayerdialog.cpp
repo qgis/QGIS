@@ -17,6 +17,7 @@
 
 #include "qgsnewvectorlayerdialog.h"
 #include "qgsapplication.h"
+#include "qgsfilewidget.h"
 #include "qgis.h"
 #include "qgslogger.h"
 #include "qgscoordinatereferencesystem.h"
@@ -35,10 +36,9 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   : QDialog( parent, fl )
 {
   setupUi( this );
+
   connect( mAddAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mAddAttributeButton_clicked );
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::mRemoveAttributeButton_clicked );
-  connect( mFileNameEdit, &QLineEdit::textChanged, this, &QgsNewVectorLayerDialog::checkOk );
-  connect( mBrowseFileName, &QToolButton::clicked, this, &QgsNewVectorLayerDialog::selectFileName );
   connect( mFileFormatComboBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mFileFormatComboBox_currentIndexChanged );
   connect( mTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewVectorLayerDialog::mTypeBox_currentIndexChanged );
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsNewVectorLayerDialog::showHelp );
@@ -100,6 +100,18 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
+
+  mFileName->setStorageMode( QgsFileWidget::SaveFile );
+  mFileName->setFilter( QgsVectorFileWriter::filterForDriver( mFileFormatComboBox->currentData( Qt::UserRole ).toString() ) );
+  mFileName->setDialogTitle( tr( "Select Layer as..." ) );
+  mFileName->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
+  connect( mFileName, &QgsFileWidget::fileChanged, this, [ = ]
+  {
+    QgsSettings settings;
+    QFileInfo tmplFileInfo( mFileName->filePath() );
+    settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
+    checkOk();
+  } );
 }
 
 QgsNewVectorLayerDialog::~QgsNewVectorLayerDialog()
@@ -224,29 +236,14 @@ void QgsNewVectorLayerDialog::selectionChanged()
   mRemoveAttributeButton->setDisabled( mAttributeView->selectedItems().isEmpty() );
 }
 
-void QgsNewVectorLayerDialog::selectFileName()
-{
-  QString fileformat = mFileFormatComboBox->currentData( Qt::UserRole ).toString();
-  QgsSettings settings;
-  QString lastUsedDir = settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString();
-  QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
-  QString fileName = QFileDialog::getSaveFileName( nullptr, tr( "Save Layer as..." ), lastUsedDir, filterString );
-  if ( fileName.isEmpty() )
-    return;
-
-  if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
-    fileName += QLatin1String( ".shp" );
-  mFileNameEdit->setText( fileName );
-}
-
 QString QgsNewVectorLayerDialog::filename() const
 {
-  return mFileNameEdit->text();
+  return mFileName->filePath();
 }
 
 void QgsNewVectorLayerDialog::checkOk()
 {
-  bool ok = ( !mFileNameEdit->text().isEmpty() && mAttributeView->topLevelItemCount() > 0 );
+  bool ok = ( !mFileName->filePath().isEmpty() && mAttributeView->topLevelItemCount() > 0 );
   mOkButton->setEnabled( ok );
 }
 
@@ -271,6 +268,8 @@ QString QgsNewVectorLayerDialog::runAndCreateLayer( QWidget *parent, QString *pE
   QgsSettings settings;
   QString filterString = QgsVectorFileWriter::filterForDriver( fileformat );
   QString fileName = geomDialog.filename();
+  if ( fileformat == QLatin1String( "ESRI Shapefile" ) && !fileName.endsWith( QLatin1String( ".shp" ), Qt::CaseInsensitive ) )
+    fileName += QLatin1String( ".shp" );
 
   settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), QFileInfo( fileName ).absolutePath() );
   settings.setValue( QStringLiteral( "UI/encoding" ), enc );
