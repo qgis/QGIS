@@ -45,6 +45,11 @@ Returns the file format for storage
 Returns the file format for storage
  :rtype: str
 %End
+    QString filename() const;
+%Docstring
+Returns the name for the new layer
+ :rtype: str
+%End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
