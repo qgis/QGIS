@@ -100,7 +100,8 @@ returns the filters used for QDialog.getOpenFileName
 
     void setConfirmOverwrite( bool confirmOverwrite );
 %Docstring
- Sets whether a confirmation to overwrite an existing file will appear
+ Sets whether a confirmation to overwrite an existing file will appear.
+ By default, a confirmation will appear.
  \param confirmOverwrite If set to true, an overwrite confirmation will be shown
 %End
 
