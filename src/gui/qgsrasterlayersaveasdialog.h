@@ -90,8 +90,6 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
 
   private slots:
     void mRawModeRadioButton_toggled( bool );
-    void mBrowseButton_clicked();
-    void mSaveAsLineEdit_textChanged( const QString &text );
     void mFormatComboBox_currentIndexChanged( const QString &text );
     void mResolutionRadioButton_toggled( bool ) { toggleResolutionSize(); }
     void mOriginalResolutionPushButton_clicked() { setOriginalResolution(); }

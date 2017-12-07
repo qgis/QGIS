@@ -44,8 +44,6 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
 {
   setupUi( this );
   connect( mRawModeRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mRawModeRadioButton_toggled );
-  connect( mBrowseButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mBrowseButton_clicked );
-  connect( mSaveAsLineEdit, &QLineEdit::textChanged, this, &QgsRasterLayerSaveAsDialog::mSaveAsLineEdit_textChanged );
   connect( mFormatComboBox, static_cast<void ( QComboBox::* )( const QString & )>( &QComboBox::currentIndexChanged ), this, &QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged );
   connect( mResolutionRadioButton, &QRadioButton::toggled, this, &QgsRasterLayerSaveAsDialog::mResolutionRadioButton_toggled );
   connect( mOriginalResolutionPushButton, &QPushButton::clicked, this, &QgsRasterLayerSaveAsDialog::mOriginalResolutionPushButton_clicked );
@@ -161,6 +159,59 @@ QgsRasterLayerSaveAsDialog::QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLa
 
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/RasterLayerSaveAs/geometry" ) ).toByteArray() );
+
+  if ( mTileModeCheckBox->isChecked() )
+  {
+    mFilename->setStorageMode( QgsFileWidget::GetDirectory );
+    mFilename->setDialogTitle( tr( "Select output directory" ) );
+  }
+  else
+  {
+    mFilename->setStorageMode( QgsFileWidget::SaveFile );
+    mFilename->setDialogTitle( tr( "Select output file" ) );
+  }
+  mFilename->setDefaultRoot( settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() );
+  connect( mFilename, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
+  {
+    QgsSettings settings;
+    QFileInfo tmplFileInfo( filePath );
+    settings.setValue( QStringLiteral( "UI/lastRasterFileDir" ), tmplFileInfo.absolutePath() );
+
+    if ( mTileModeCheckBox->isChecked() )
+    {
+      QString fileName = filePath;
+      Q_FOREVER
+      {
+        // TODO: would not it be better to select .vrt file instead of directory?
+        //fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), QString(), tr( "VRT" ) + " (*.vrt *.VRT)" );
+        if ( fileName.isEmpty() )
+          break; // canceled
+
+        // Check if directory is empty
+        QDir dir( fileName );
+        QString baseName = QFileInfo( fileName ).baseName();
+        QStringList filters;
+        filters << QStringLiteral( "%1.*" ).arg( baseName );
+        QStringList files = dir.entryList( filters );
+        if ( files.isEmpty() )
+          break;
+
+        if ( QMessageBox::warning( this, tr( "Warning" ),
+                                   tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QStringLiteral( ", " ) ) ),
+                                   QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
+          break;
+
+        fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ), tmplFileInfo.absolutePath() );
+      }
+    }
+
+    QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
+    if ( !okButton )
+    {
+      return;
+    }
+    okButton->setEnabled( tmplFileInfo.absoluteDir().exists() );
+  } );
 }
 
 QgsRasterLayerSaveAsDialog::~QgsRasterLayerSaveAsDialog()
@@ -241,84 +292,6 @@ void QgsRasterLayerSaveAsDialog::setValidators()
   mMaximumSizeYLineEdit->setValidator( new QIntValidator( this ) );
 }
 
-void QgsRasterLayerSaveAsDialog::mBrowseButton_clicked()
-{
-  QString fileName;
-
-  QgsSettings settings;
-  QString dirName = mSaveAsLineEdit->text().isEmpty() ? settings.value( QStringLiteral( "UI/lastRasterFileDir" ), QDir::homePath() ).toString() : mSaveAsLineEdit->text();
-
-  if ( mTileModeCheckBox->isChecked() )
-  {
-    Q_FOREVER
-    {
-      // TODO: would not it be better to select .vrt file instead of directory?
-      fileName = QFileDialog::getExistingDirectory( this, tr( "Select output directory" ), dirName );
-      //fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), QString(), tr( "VRT" ) + " (*.vrt *.VRT)" );
-
-      if ( fileName.isEmpty() )
-        break; // canceled
-
-      // Check if directory is empty
-      QDir dir( fileName );
-      QString baseName = QFileInfo( fileName ).baseName();
-      QStringList filters;
-      filters << QStringLiteral( "%1.*" ).arg( baseName );
-      QStringList files = dir.entryList( filters );
-      if ( files.isEmpty() )
-        break;
-
-      if ( QMessageBox::warning( this, tr( "Warning" ),
-                                 tr( "The directory %1 contains files which will be overwritten: %2" ).arg( dir.absolutePath(), files.join( QStringLiteral( ", " ) ) ),
-                                 QMessageBox::Ok | QMessageBox::Cancel ) == QMessageBox::Ok )
-        break;
-
-      fileName.clear();
-    }
-  }
-  else
-  {
-    QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
-    QString filter;
-    QString defaultExt;
-    if ( extensions.empty() )
-      filter = tr( "All files (*.*)" );
-    else
-    {
-      filter = QStringLiteral( "%1 (*.%2);;%3" ).arg( mFormatComboBox->currentText(),
-               extensions.join( QStringLiteral( " *." ) ),
-               tr( "All files (*.*)" ) );
-      defaultExt = extensions.at( 0 );
-    }
-
-    fileName = QFileDialog::getSaveFileName( this, tr( "Select output file" ), dirName, filter );
-
-    // ensure the user never omits the extension from the file name
-    QFileInfo fi( fileName );
-    if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
-    {
-      fileName += '.' + defaultExt;
-    }
-  }
-
-  if ( !fileName.isEmpty() )
-  {
-    mSaveAsLineEdit->setText( fileName );
-  }
-}
-
-void QgsRasterLayerSaveAsDialog::mSaveAsLineEdit_textChanged( const QString &text )
-{
-  QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
-  if ( !okButton )
-  {
-    return;
-  }
-
-  okButton->setEnabled( QFileInfo( text ).absoluteDir().exists() );
-}
-
-
 void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QString & )
 {
   //gdal-specific
@@ -327,6 +300,18 @@ void QgsRasterLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( const QStr
     mCreateOptionsWidget->setFormat( outputFormat() );
     mCreateOptionsWidget->update();
   }
+
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
+  QString filter;
+  if ( extensions.empty() )
+    filter = tr( "All files (*.*)" );
+  else
+  {
+    filter = QStringLiteral( "%1 (*.%2);;%3" ).arg( mFormatComboBox->currentText(),
+             extensions.join( QStringLiteral( " *." ) ),
+             tr( "All files (*.*)" ) );
+  }
+  mFilename->setFilter( filter );
 }
 
 int QgsRasterLayerSaveAsDialog::nColumns() const
@@ -371,7 +356,22 @@ bool QgsRasterLayerSaveAsDialog::addToCanvas() const
 
 QString QgsRasterLayerSaveAsDialog::outputFileName() const
 {
-  return mSaveAsLineEdit->text();
+  QStringList extensions = QgsRasterFileWriter::extensionsForFormat( outputFormat() );
+  QString defaultExt;
+  if ( !extensions.empty() )
+  {
+    defaultExt = extensions.at( 0 );
+  }
+
+  // ensure the user never omits the extension from the file name
+  QString fileName = mFilename->filePath();
+  QFileInfo fi( fileName );
+  if ( !fileName.isEmpty() && fi.suffix().isEmpty() )
+  {
+    fileName += '.' + defaultExt;
+  }
+
+  return fileName;
 }
 
 QString QgsRasterLayerSaveAsDialog::outputFormat() const
@@ -398,8 +398,7 @@ void QgsRasterLayerSaveAsDialog::hideFormat()
 void QgsRasterLayerSaveAsDialog::hideOutput()
 {
   mSaveAsLabel->hide();
-  mSaveAsLineEdit->hide();
-  mBrowseButton->hide();
+  mFilename->hide();
   QPushButton *okButton = mButtonBox->button( QDialogButtonBox::Ok );
   if ( okButton )
   {
@@ -710,10 +709,14 @@ void QgsRasterLayerSaveAsDialog::mTileModeCheckBox_toggled( bool toggled )
 
     // Show / hide tile options
     mTilesGroupBox->show();
+    mFilename->setStorageMode( QgsFileWidget::GetDirectory );
+    mFilename->setDialogTitle( tr( "Select output directory" ) );
   }
   else
   {
     mTilesGroupBox->hide();
+    mFilename->setStorageMode( QgsFileWidget::SaveFile );
+    mFilename->setDialogTitle( tr( "Select output file" ) );
   }
 }
 
