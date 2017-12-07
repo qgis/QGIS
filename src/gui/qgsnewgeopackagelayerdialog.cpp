@@ -51,8 +51,6 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   connect( mRemoveAttributeButton, &QToolButton::clicked, this, &QgsNewGeoPackageLayerDialog::mRemoveAttributeButton_clicked );
   connect( mFieldTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewGeoPackageLayerDialog::mFieldTypeBox_currentIndexChanged );
   connect( mGeometryTypeBox, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsNewGeoPackageLayerDialog::mGeometryTypeBox_currentIndexChanged );
-  connect( mSelectDatabaseButton, &QToolButton::clicked, this, &QgsNewGeoPackageLayerDialog::mSelectDatabaseButton_clicked );
-  connect( mDatabaseEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::mDatabaseEdit_textChanged );
   connect( mTableNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::mTableNameEdit_textChanged );
   connect( mTableNameEdit, &QLineEdit::textEdited, this, &QgsNewGeoPackageLayerDialog::mTableNameEdit_textEdited );
   connect( mLayerIdentifierEdit, &QLineEdit::textEdited, this, &QgsNewGeoPackageLayerDialog::mLayerIdentifierEdit_textEdited );
@@ -102,12 +100,29 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   connect( mFieldNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::fieldNameChanged );
   connect( mAttributeView, &QTreeWidget::itemSelectionChanged, this, &QgsNewGeoPackageLayerDialog::selectionChanged );
   connect( mTableNameEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::checkOk );
-  connect( mDatabaseEdit, &QLineEdit::textChanged, this, &QgsNewGeoPackageLayerDialog::checkOk );
 
   mAddAttributeButton->setEnabled( false );
   mRemoveAttributeButton->setEnabled( false );
 
   mCheckBoxCreateSpatialIndex->setChecked( true );
+
+  mDatabase->setStorageMode( QgsFileWidget::SaveFile );
+  mDatabase->setFilter( tr( "GeoPackage" ) + " (*.gpkg)" );
+  mDatabase->setDialogTitle( tr( "Select Existing or Create a New GeoPackage Database File..." ) );
+  mDatabase->setDefaultRoot( settings.value( QStringLiteral( "UI/lastVectorFileFilterDir" ), QDir::homePath() ).toString() );
+  mDatabase->setConfirmOverwrite( false );
+  connect( mDatabase, &QgsFileWidget::fileChanged, this, [ = ]( const QString & filePath )
+  {
+    QgsSettings settings;
+    QFileInfo tmplFileInfo( filePath );
+    settings.setValue( QStringLiteral( "UI/lastVectorFileFilterDir" ), tmplFileInfo.absolutePath() );
+    if ( !filePath.isEmpty() && !mTableNameEdited )
+    {
+      QFileInfo fileInfo( filePath );
+      mTableNameEdit->setText( fileInfo.baseName() );
+    }
+    checkOk();
+  } );
 }
 
 QgsNewGeoPackageLayerDialog::~QgsNewGeoPackageLayerDialog()
@@ -123,10 +138,7 @@ void QgsNewGeoPackageLayerDialog::setCrs( const QgsCoordinateReferenceSystem &cr
 
 void QgsNewGeoPackageLayerDialog::lockDatabasePath()
 {
-  mDatabaseEdit->setReadOnly( true );
-  mSelectDatabaseButton->hide();
-  mSelectDatabaseButton->deleteLater();
-  mSelectDatabaseButton = nullptr;
+  mDatabase->setReadOnly( true );
 }
 
 void QgsNewGeoPackageLayerDialog::mFieldTypeBox_currentIndexChanged( int )
@@ -148,34 +160,6 @@ void QgsNewGeoPackageLayerDialog::mGeometryTypeBox_currentIndexChanged( int )
   mGeometryColumnEdit->setEnabled( isSpatial );
   mCheckBoxCreateSpatialIndex->setEnabled( isSpatial );
   mCrsSelector->setEnabled( isSpatial );
-}
-
-void QgsNewGeoPackageLayerDialog::mSelectDatabaseButton_clicked()
-{
-  QString fileName = QFileDialog::getSaveFileName( this, tr( "Select existing or create new GeoPackage Database File" ),
-                     QDir::homePath(),
-                     tr( "GeoPackage" ) + " (*.gpkg)",
-                     nullptr,
-                     QFileDialog::DontConfirmOverwrite );
-
-  if ( fileName.isEmpty() )
-    return;
-
-  if ( !fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
-  {
-    fileName += QLatin1String( ".gpkg" );
-  }
-
-  mDatabaseEdit->setText( fileName );
-}
-
-void QgsNewGeoPackageLayerDialog::mDatabaseEdit_textChanged( const QString &text )
-{
-  if ( !text.isEmpty() && !mTableNameEdited )
-  {
-    QFileInfo fileInfo( text );
-    mTableNameEdit->setText( fileInfo.baseName() );
-  }
 }
 
 void QgsNewGeoPackageLayerDialog::mTableNameEdit_textChanged( const QString &text )
@@ -201,7 +185,7 @@ void QgsNewGeoPackageLayerDialog::mLayerIdentifierEdit_textEdited( const QString
 
 void QgsNewGeoPackageLayerDialog::checkOk()
 {
-  bool ok = !mDatabaseEdit->text().isEmpty() &&
+  bool ok = !mDatabase->filePath().isEmpty() &&
             !mTableNameEdit->text().isEmpty();
   mOkButton->setEnabled( ok );
 }
@@ -258,7 +242,10 @@ void QgsNewGeoPackageLayerDialog::buttonBox_rejected()
 
 bool QgsNewGeoPackageLayerDialog::apply()
 {
-  QString fileName( mDatabaseEdit->text() );
+  QString fileName( mDatabase->filePath() );
+  if ( !fileName.endsWith( QLatin1String( ".gpkg" ), Qt::CaseInsensitive ) )
+    fileName += QLatin1String( ".gpkg" );
+
   bool createNewDb = false;
 
   if ( QFile( fileName ).exists( fileName ) )
@@ -490,7 +477,7 @@ bool QgsNewGeoPackageLayerDialog::apply()
   }
   hDS.reset();
 
-  QString uri( QStringLiteral( "%1|layername=%2" ).arg( mDatabaseEdit->text(), tableName ) );
+  QString uri( QStringLiteral( "%1|layername=%2" ).arg( fileName, tableName ) );
   QString userVisiblelayerName( layerIdentifier.isEmpty() ? tableName : layerIdentifier );
   QgsVectorLayer *layer = new QgsVectorLayer( uri, userVisiblelayerName, QStringLiteral( "ogr" ) );
   if ( layer->isValid() )
