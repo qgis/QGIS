@@ -58,9 +58,9 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   mGeometryTypeBox->addItem( tr( "Point" ), QgsWkbTypes::Point );
   mGeometryTypeBox->addItem( tr( "Line" ), QgsWkbTypes::LineString );
   mGeometryTypeBox->addItem( tr( "Polygon" ), QgsWkbTypes::Polygon );
-  mGeometryTypeBox->addItem( tr( "Multi point" ), QgsWkbTypes::MultiPoint );
-  mGeometryTypeBox->addItem( tr( "Multi line" ), QgsWkbTypes::MultiLineString );
-  mGeometryTypeBox->addItem( tr( "Multi polygon" ), QgsWkbTypes::MultiPolygon );
+  mGeometryTypeBox->addItem( tr( "MultiPoint" ), QgsWkbTypes::MultiPoint );
+  mGeometryTypeBox->addItem( tr( "MultiLine" ), QgsWkbTypes::MultiLineString );
+  mGeometryTypeBox->addItem( tr( "MultiPolygon" ), QgsWkbTypes::MultiPolygon );
 
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
