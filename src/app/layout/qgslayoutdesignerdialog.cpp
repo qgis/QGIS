@@ -58,6 +58,9 @@
 #include <QTreeView>
 #include <QFileDialog>
 #include <QMessageBox>
+#ifdef Q_OS_MACX
+#include <ApplicationServices/ApplicationServices.h>
+#endif
 
 #ifdef ENABLE_MODELTEST
 #include "modeltest.h"
@@ -1260,7 +1263,7 @@ void QgsLayoutDesignerDialog::saveAsTemplate()
   QgsSettings settings;
   QString lastSaveDir = settings.value( QStringLiteral( "UI/lastComposerTemplateDir" ), QDir::homePath() ).toString();
 #ifdef Q_OS_MAC
-  mQgis->activateWindow();
+  QgisApp::instance()->activateWindow();
   this->raise();
 #endif
   QString saveFileName = QFileDialog::getSaveFileName(
