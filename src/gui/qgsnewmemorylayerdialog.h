@@ -71,6 +71,7 @@ class GUI_EXPORT QgsNewMemoryLayerDialog: public QDialog, private Ui::QgsNewMemo
 
   private slots:
 
+    void geometryTypeChanged( int index );
     void showHelp();
 };
 
