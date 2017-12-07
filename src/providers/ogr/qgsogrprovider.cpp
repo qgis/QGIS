@@ -2993,47 +2993,18 @@ QGISEXTERN bool createEmptyDataSource( const QString &uri,
   OGRwkbGeometryType OGRvectortype = wkbUnknown;
   switch ( vectortype )
   {
-    case QgsWkbTypes::Point:
-      OGRvectortype = wkbPoint;
-      break;
-    case QgsWkbTypes::Point25D:
-      OGRvectortype = wkbPoint25D;
-      break;
-    case QgsWkbTypes::LineString:
-      OGRvectortype = wkbLineString;
-      break;
-    case QgsWkbTypes::LineString25D:
-      OGRvectortype = wkbLineString25D;
-      break;
-    case QgsWkbTypes::Polygon:
-      OGRvectortype = wkbPolygon;
-      break;
-    case QgsWkbTypes::Polygon25D:
-      OGRvectortype = wkbPolygon25D;
-      break;
-    case QgsWkbTypes::MultiPoint:
-      OGRvectortype = wkbMultiPoint;
-      break;
-    case QgsWkbTypes::MultiPoint25D:
-      OGRvectortype = wkbMultiPoint25D;
-      break;
-    case QgsWkbTypes::MultiLineString:
-      OGRvectortype = wkbMultiLineString;
-      break;
-    case QgsWkbTypes::MultiLineString25D:
-      OGRvectortype = wkbMultiLineString25D;
-      break;
-    case QgsWkbTypes::MultiPolygon:
-      OGRvectortype = wkbMultiPolygon;
-      break;
-    case QgsWkbTypes::MultiPolygon25D:
-      OGRvectortype = wkbMultiPolygon25D;
-      break;
-    default:
+    case QgsWkbTypes::GeometryCollection:
+    case QgsWkbTypes::GeometryCollectionZ:
+    case QgsWkbTypes::GeometryCollectionM:
+    case QgsWkbTypes::GeometryCollectionZM:
+    case QgsWkbTypes::Unknown:
     {
       QgsMessageLog::logMessage( QObject::tr( "Unknown vector type of %1" ).arg( ( int )( vectortype ) ), QObject::tr( "OGR" ) );
       return false;
     }
+
+    default:
+      OGRvectortype = QgsOgrProviderUtils::ogrTypeFromQgisType( vectortype );
   }
 
   char **papszOptions = nullptr;
@@ -4388,6 +4359,285 @@ void QgsOgrProviderUtils::invalidateCachedLastModifiedDate( const QString &dsNam
     QgsDebugMsg( QString( "invalidating last modified date for %1" ).arg( dsName ) );
     iter.value() = iter.value().addSecs( -10 );
   }
+}
+
+OGRwkbGeometryType QgsOgrProviderUtils::ogrTypeFromQgisType( QgsWkbTypes::Type type )
+{
+  switch ( type )
+  {
+    case QgsWkbTypes::Point:
+      return wkbPoint;
+    case QgsWkbTypes::Point25D:
+    case QgsWkbTypes::PointZ:
+      return wkbPoint25D;
+    case QgsWkbTypes::PointM:
+      return wkbPointM;
+    case QgsWkbTypes::PointZM:
+      return wkbPointZM;
+
+    case QgsWkbTypes::LineString:
+      return wkbLineString;
+    case QgsWkbTypes::LineString25D:
+    case QgsWkbTypes::LineStringZ:
+      return wkbLineString25D;
+    case QgsWkbTypes::LineStringM:
+      return wkbLineStringM;
+    case QgsWkbTypes::LineStringZM:
+      return wkbLineStringZM;
+
+    case QgsWkbTypes::Polygon:
+      return wkbPolygon;
+    case QgsWkbTypes::Polygon25D:
+    case QgsWkbTypes::PolygonZ:
+      return wkbPolygon25D;
+    case QgsWkbTypes::PolygonM:
+      return wkbPolygonM;
+    case QgsWkbTypes::PolygonZM:
+      return wkbPolygonZM;
+
+    case QgsWkbTypes::MultiPoint:
+      return wkbMultiPoint;
+    case QgsWkbTypes::MultiPoint25D:
+    case QgsWkbTypes::MultiPointZ:
+      return wkbMultiPoint25D;
+    case QgsWkbTypes::MultiPointM:
+      return wkbMultiPointM;
+    case QgsWkbTypes::MultiPointZM:
+      return wkbMultiPointZM;
+
+    case QgsWkbTypes::MultiLineString:
+      return wkbMultiLineString;
+    case QgsWkbTypes::MultiLineString25D:
+    case QgsWkbTypes::MultiLineStringZ:
+      return wkbMultiLineString25D;
+    case QgsWkbTypes::MultiLineStringM:
+      return wkbMultiLineStringM;
+    case QgsWkbTypes::MultiLineStringZM:
+      return wkbMultiLineStringZM;
+
+    case QgsWkbTypes::MultiPolygon:
+      return wkbMultiPolygon;
+    case QgsWkbTypes::MultiPolygon25D:
+    case QgsWkbTypes::MultiPolygonZ:
+      return wkbMultiPolygon25D;
+    case QgsWkbTypes::MultiPolygonM:
+      return wkbMultiPolygonM;
+    case QgsWkbTypes::MultiPolygonZM:
+      return wkbMultiPolygonZM;
+
+    case QgsWkbTypes::CircularString:
+      return wkbCircularString;
+    case QgsWkbTypes::CircularStringZ:
+      return wkbCircularStringZ;
+    case QgsWkbTypes::CircularStringM:
+      return wkbCircularStringM;
+    case QgsWkbTypes::CircularStringZM:
+      return wkbCircularStringZM;
+
+    case QgsWkbTypes::CompoundCurve:
+      return wkbCompoundCurve;
+    case QgsWkbTypes::CompoundCurveZ:
+      return wkbCompoundCurveZ;
+    case QgsWkbTypes::CompoundCurveM:
+      return wkbCompoundCurveM;
+    case QgsWkbTypes::CompoundCurveZM:
+      return wkbCompoundCurveZM;
+
+    case QgsWkbTypes::CurvePolygon:
+      return wkbCurvePolygon;
+    case QgsWkbTypes::CurvePolygonZ:
+      return wkbCurvePolygonZ;
+    case QgsWkbTypes::CurvePolygonM:
+      return wkbCurvePolygonM;
+    case QgsWkbTypes::CurvePolygonZM:
+      return wkbCurvePolygonZM;
+
+    case QgsWkbTypes::MultiCurve:
+      return wkbMultiCurve;
+    case QgsWkbTypes::MultiCurveZ:
+      return wkbMultiCurveZ;
+    case QgsWkbTypes::MultiCurveM:
+      return wkbMultiCurveM;
+    case QgsWkbTypes::MultiCurveZM:
+      return wkbMultiCurveZM;
+
+    case QgsWkbTypes::MultiSurface:
+      return wkbMultiSurface;
+    case QgsWkbTypes::MultiSurfaceZ:
+      return wkbMultiSurfaceZ;
+    case QgsWkbTypes::MultiSurfaceM:
+      return wkbMultiSurfaceM;
+    case QgsWkbTypes::MultiSurfaceZM:
+      return wkbMultiSurfaceZM;
+
+    case QgsWkbTypes::Triangle:
+      return wkbTriangle;
+    case QgsWkbTypes::TriangleZ:
+      return wkbTriangleZ;
+    case QgsWkbTypes::TriangleM:
+      return wkbTriangleM;
+    case QgsWkbTypes::TriangleZM:
+      return wkbTriangleZM;
+
+    case QgsWkbTypes::NoGeometry:
+      return wkbNone;
+
+    case QgsWkbTypes::GeometryCollection:
+      return wkbGeometryCollection;
+    case QgsWkbTypes::GeometryCollectionZ:
+      return wkbGeometryCollection25D;
+    case QgsWkbTypes::GeometryCollectionM:
+      return wkbGeometryCollectionM;
+    case QgsWkbTypes::GeometryCollectionZM:
+      return wkbGeometryCollectionZM;
+
+    case QgsWkbTypes::Unknown:
+      return wkbUnknown;
+  }
+  // no warnings!
+  return wkbUnknown;
+}
+
+QgsWkbTypes::Type QgsOgrProviderUtils::qgisTypeFromOgrType( OGRwkbGeometryType type )
+{
+  switch ( type )
+  {
+    case wkbUnknown:
+      return QgsWkbTypes::Unknown;
+
+    case wkbPoint:
+      return QgsWkbTypes::Point;
+    case wkbLineString:
+      return QgsWkbTypes::LineString;
+    case wkbPolygon:
+      return QgsWkbTypes::Polygon;
+    case wkbMultiPoint:
+      return QgsWkbTypes::MultiPoint;
+    case wkbMultiLineString:
+      return QgsWkbTypes::MultiLineString;
+    case wkbMultiPolygon:
+      return QgsWkbTypes::MultiPolygon;
+    case wkbGeometryCollection:
+      return QgsWkbTypes::GeometryCollection;
+    case wkbCircularString:
+      return QgsWkbTypes::CircularString;
+    case wkbCompoundCurve:
+      return QgsWkbTypes::CompoundCurve;
+    case wkbCurvePolygon:
+      return QgsWkbTypes::CurvePolygon;
+    case wkbMultiCurve:
+      return QgsWkbTypes::MultiCurve;
+    case wkbMultiSurface:
+      return QgsWkbTypes::MultiSurface;
+    case wkbTriangle:
+      return QgsWkbTypes::Triangle;
+    case wkbNone:
+      return QgsWkbTypes::NoGeometry;
+
+    case wkbCircularStringZ:
+      return QgsWkbTypes::CircularStringZ;
+    case wkbCompoundCurveZ:
+      return QgsWkbTypes::CompoundCurveZ;
+    case wkbCurvePolygonZ:
+      return QgsWkbTypes::PolygonZ;
+    case wkbMultiCurveZ:
+      return QgsWkbTypes::MultiCurveZ;
+    case wkbMultiSurfaceZ:
+      return QgsWkbTypes::MultiSurfaceZ;
+    case wkbTriangleZ:
+      return QgsWkbTypes::TriangleZ;
+
+    case wkbPointM:
+      return QgsWkbTypes::PointM;
+    case wkbLineStringM:
+      return QgsWkbTypes::LineStringM;
+    case wkbPolygonM:
+      return QgsWkbTypes::PolygonM;
+    case wkbMultiPointM:
+      return QgsWkbTypes::PointM;
+    case wkbMultiLineStringM:
+      return QgsWkbTypes::LineStringM;
+    case wkbMultiPolygonM:
+      return QgsWkbTypes::PolygonM;
+    case wkbGeometryCollectionM:
+      return QgsWkbTypes::GeometryCollectionM;
+    case wkbCircularStringM:
+      return QgsWkbTypes::CircularStringM;
+    case wkbCompoundCurveM:
+      return QgsWkbTypes::CompoundCurveM;
+    case wkbCurvePolygonM:
+      return QgsWkbTypes::PolygonM;
+    case wkbMultiCurveM:
+      return QgsWkbTypes::MultiCurveM;
+    case wkbMultiSurfaceM:
+      return QgsWkbTypes::MultiSurfaceM;
+    case wkbTriangleM:
+      return QgsWkbTypes::TriangleM;
+
+    case wkbPointZM:
+      return QgsWkbTypes::PointZM;
+    case wkbLineStringZM:
+      return QgsWkbTypes::LineStringZM;
+    case wkbPolygonZM:
+      return QgsWkbTypes::PolygonZM;
+    case wkbMultiPointZM:
+      return QgsWkbTypes::MultiPointZM;
+    case wkbMultiLineStringZM:
+      return QgsWkbTypes::MultiLineStringZM;
+    case wkbMultiPolygonZM:
+      return QgsWkbTypes::MultiPolygonZM;
+    case wkbGeometryCollectionZM:
+      return QgsWkbTypes::GeometryCollectionZM;
+    case wkbCircularStringZM:
+      return QgsWkbTypes::CircularStringZM;
+    case wkbCompoundCurveZM:
+      return QgsWkbTypes::CompoundCurveZM;
+    case wkbCurvePolygonZM:
+      return QgsWkbTypes::CurvePolygonZM;
+    case wkbMultiCurveZM:
+      return QgsWkbTypes::MultiCurveZM;
+    case wkbMultiSurfaceZM:
+      return QgsWkbTypes::MultiSurfaceZM;
+    case wkbTriangleZM:
+      return QgsWkbTypes::TriangleZM;
+
+    case wkbPoint25D:
+      return QgsWkbTypes::Point25D;
+    case wkbLineString25D:
+      return QgsWkbTypes::LineString25D;
+    case wkbPolygon25D:
+      return QgsWkbTypes::Polygon25D;
+    case wkbMultiPoint25D:
+      return QgsWkbTypes::MultiPoint25D;
+    case wkbMultiLineString25D:
+      return QgsWkbTypes::MultiLineString25D;
+    case wkbMultiPolygon25D:
+      return QgsWkbTypes::MultiPolygon25D;
+    case wkbGeometryCollection25D:
+      return QgsWkbTypes::GeometryCollectionZ;
+
+    case wkbCurve:
+    case wkbSurface:
+    case wkbCurveZ:
+    case wkbSurfaceZ:
+    case wkbCurveM:
+    case wkbSurfaceM:
+    case wkbCurveZM:
+    case wkbSurfaceZM:
+      return QgsWkbTypes::Unknown; // abstract types - no direct mapping to QGIS types
+
+    case wkbLinearRing:
+    case wkbTIN:
+    case wkbTINZ:
+    case wkbTINM:
+    case wkbTINZM:
+    case wkbPolyhedralSurface:
+    case wkbPolyhedralSurfaceZ:
+    case wkbPolyhedralSurfaceM:
+    case wkbPolyhedralSurfaceZM:
+      return QgsWkbTypes::Unknown; // unsupported types
+  }
+  return QgsWkbTypes::Unknown;
 }
 
 

@@ -361,33 +361,22 @@ static QgsOgrLayerItem *dataItemForLayer( QgsDataItem *parentItem, QString name,
 
   QgsLayerItem::LayerType layerType = QgsLayerItem::Vector;
   OGRwkbGeometryType ogrType = QgsOgrProvider::getOgrGeomType( hLayer );
-  switch ( ogrType )
+  QgsWkbTypes::Type wkbType = QgsOgrProviderUtils::qgisTypeFromOgrType( ogrType );
+  switch ( QgsWkbTypes::geometryType( wkbType ) )
   {
-    case wkbUnknown:
-    case wkbGeometryCollection:
+    case QgsWkbTypes::UnknownGeometry:
       break;
-    case wkbNone:
+    case QgsWkbTypes::NullGeometry:
       layerType = QgsLayerItem::TableLayer;
       break;
-    case wkbPoint:
-    case wkbMultiPoint:
-    case wkbPoint25D:
-    case wkbMultiPoint25D:
+    case QgsWkbTypes::PointGeometry:
       layerType = QgsLayerItem::Point;
       break;
-    case wkbLineString:
-    case wkbMultiLineString:
-    case wkbLineString25D:
-    case wkbMultiLineString25D:
+    case QgsWkbTypes::LineGeometry:
       layerType = QgsLayerItem::Line;
       break;
-    case wkbPolygon:
-    case wkbMultiPolygon:
-    case wkbPolygon25D:
-    case wkbMultiPolygon25D:
+    case QgsWkbTypes::PolygonGeometry:
       layerType = QgsLayerItem::Polygon;
-      break;
-    default:
       break;
   }
 
