@@ -65,6 +65,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
       GetFile, //! Select a single file
       GetDirectory, //! Select a directory
       GetMultipleFiles, //! Select multiple files
+      SaveFile, //! Select a single new or pre-existing file
     };
 
     /**
@@ -120,6 +121,17 @@ class GUI_EXPORT QgsFileWidget : public QWidget
      */
     void setFilter( const QString &filter );
 
+    /**
+     * Sets whether a confirmation to overwrite an existing file will appear
+     * \param confirmOverwrite If set to true, an overwrite confirmation will be shown
+     */
+    void setConfirmOverwrite( bool confirmOverwrite ) { mConfirmOverwrite = confirmOverwrite; }
+
+    /**
+     * Returns whether a confirmation will be shown when overwriting an existing file
+     */
+    bool confirmOverwrite() const { return mConfirmOverwrite; }
+
     //! determines if the tool button is shown
     bool fileWidgetButtonVisible() const;
     //! determines if the tool button is shown
@@ -173,6 +185,7 @@ class GUI_EXPORT QgsFileWidget : public QWidget
     QString mDialogTitle;
     QString mFilter;
     QString mDefaultRoot;
+    bool mConfirmOverwrite = true;
     StorageMode mStorageMode = GetFile;
     RelativeStorage mRelativeStorage = Absolute;
 
