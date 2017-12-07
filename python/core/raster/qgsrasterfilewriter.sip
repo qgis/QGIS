@@ -194,6 +194,18 @@ Filter string for file picker dialogs
  :rtype: list of QgsRasterFileWriter.FilterFormatDetails
 %End
 
+    static QStringList supportedFormatExtensions( RasterFormatOptions options = SortRecommended );
+%Docstring
+ Returns a list of file extensions for supported formats.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned formats.
+
+.. versionadded:: 3.0
+.. seealso:: :py:func:`supportedFiltersAndFormats()`
+ :rtype: list of str
+%End
+
     static QString driverForExtension( const QString &extension );
 %Docstring
  Returns the GDAL driver name for a specified file ``extension``. E.g. the

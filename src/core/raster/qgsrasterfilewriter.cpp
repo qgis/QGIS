@@ -1103,3 +1103,23 @@ QList< QgsRasterFileWriter::FilterFormatDetails > QgsRasterFileWriter::supported
 
   return results;
 }
+
+QStringList QgsRasterFileWriter::supportedFormatExtensions( const RasterFormatOptions options )
+{
+  const auto formats = supportedFiltersAndFormats( options );
+  QStringList extensions;
+
+  QRegularExpression rx( QStringLiteral( "\\*\\.([a-zA-Z0-9]*)" ) );
+
+  for ( const FilterFormatDetails &format : formats )
+  {
+    QString ext = format.filterString;
+    QRegularExpressionMatch match = rx.match( ext );
+    if ( !match.hasMatch() )
+      continue;
+
+    QString matched = match.captured( 1 );
+    extensions << matched;
+  }
+  return extensions;
+}

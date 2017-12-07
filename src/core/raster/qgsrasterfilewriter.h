@@ -172,6 +172,17 @@ class CORE_EXPORT QgsRasterFileWriter
     static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );
 
     /**
+     * Returns a list of file extensions for supported formats.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
+     * \since QGIS 3.0
+     * \see supportedFiltersAndFormats()
+     */
+    static QStringList supportedFormatExtensions( RasterFormatOptions options = SortRecommended );
+
+    /**
      * Returns the GDAL driver name for a specified file \a extension. E.g. the
      * driver name for the ".tif" extension is "GTiff".
      * If no suitable drivers are found then an empty string is returned.
