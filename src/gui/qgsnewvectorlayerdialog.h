@@ -67,7 +67,6 @@ class GUI_EXPORT QgsNewVectorLayerDialog: public QDialog, private Ui::QgsNewVect
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 
   private slots:
-    void selectFileName();
     void mAddAttributeButton_clicked();
     void mRemoveAttributeButton_clicked();
     void mFileFormatComboBox_currentIndexChanged( int index );
