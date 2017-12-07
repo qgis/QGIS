@@ -138,6 +138,27 @@ QgsCircle QgsCircle::from3Points( const QgsPoint &pt1, const QgsPoint &pt2, cons
   double aSlope = yDelta_a / xDelta_a;
   double bSlope = yDelta_b / xDelta_b;
 
+  // set z cooridnate for center
+  double z = std::numeric_limits<double>::quiet_NaN();
+  if ( p1.is3D() )
+  {
+    z = p1.z();
+  }
+  else if ( p2.is3D() )
+  {
+    z = p2.z();
+  }
+  else if ( p3.is3D() )
+  {
+    z = p3.z();
+  }
+
+  if ( ! std::isnan( z ) )
+  {
+    center.convertTo( QgsWkbTypes::addZ( center.wkbType() ) );
+    center.setZ( z );
+  }
+
   if ( ( std::fabs( xDelta_a ) <= epsilon ) && ( std::fabs( yDelta_b ) <= epsilon ) )
   {
     center.setX( 0.5 * ( p2.x() + p3.x() ) );
@@ -249,10 +270,10 @@ void QgsCircle::setSemiMinorAxis( const double semiMinorAxis )
 QVector<QgsPoint> QgsCircle::northQuadrant() const
 {
   QVector<QgsPoint> quad;
-  quad.append( QgsPoint( mCenter.x(), mCenter.y() + mSemiMajorAxis ) );
-  quad.append( QgsPoint( mCenter.x() + mSemiMajorAxis, mCenter.y() ) );
-  quad.append( QgsPoint( mCenter.x(), mCenter.y() - mSemiMajorAxis ) );
-  quad.append( QgsPoint( mCenter.x() - mSemiMajorAxis, mCenter.y() ) );
+  quad.append( QgsPoint( mCenter.x(), mCenter.y() + mSemiMajorAxis, mCenter.z() ) );
+  quad.append( QgsPoint( mCenter.x() + mSemiMajorAxis, mCenter.y(), mCenter.z() ) );
+  quad.append( QgsPoint( mCenter.x(), mCenter.y() - mSemiMajorAxis, mCenter.z() ) );
+  quad.append( QgsPoint( mCenter.x() - mSemiMajorAxis, mCenter.y(), mCenter.z() ) );
 
   return quad;
 }

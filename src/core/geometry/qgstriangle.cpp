@@ -574,7 +574,28 @@ QgsPoint QgsTriangle::inscribedCenter() const
                l.at( 1 ) * vertexAt( 0 ).y() +
                l.at( 2 ) * vertexAt( 1 ).y() ) / perimeter();
 
-  return QgsPoint( x, y );
+  double z = std::numeric_limits<double>::quiet_NaN();
+  if ( vertexAt( 0 ).is3D() )
+  {
+    z = vertexAt( 0 ).z();
+  }
+  else if ( vertexAt( 1 ).is3D() )
+  {
+    z = vertexAt( 1 ).z();
+  }
+  else if ( vertexAt( 2 ).is3D() )
+  {
+    z = vertexAt( 2 ).z();
+  }
+
+  QgsPoint center( x, y );
+  if ( !std::isnan( z ) )
+  {
+    center.convertTo( QgsWkbTypes::PointZ );
+    center.setZ( z );
+  }
+
+  return center;
 }
 
 double QgsTriangle::inscribedRadius() const
@@ -590,6 +611,3 @@ QgsCircle QgsTriangle::inscribedCircle() const
     return QgsCircle();
   return QgsCircle( inscribedCenter(), inscribedRadius() );
 }
-
-
-
