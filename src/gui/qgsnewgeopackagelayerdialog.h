@@ -54,13 +54,13 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
      * Returns the database path
      * \since QGIS 3.0
      */
-    QString databasePath() const { return mDatabaseEdit->text(); }
+    QString databasePath() const { return mDatabase->filePath(); }
 
     /**
      * Sets the initial database \a path
      * \since QGIS 3.0
      */
-    void setDatabasePath( const QString &path ) { mDatabaseEdit->setText( path ); }
+    void setDatabasePath( const QString &path ) { mDatabase->setFilePath( path ); }
 
     /**
      * Sets the database path widgets to a locked and read-only mode.
@@ -82,8 +82,6 @@ class GUI_EXPORT QgsNewGeoPackageLayerDialog: public QDialog, private Ui::QgsNew
     void mRemoveAttributeButton_clicked();
     void mFieldTypeBox_currentIndexChanged( int index );
     void mGeometryTypeBox_currentIndexChanged( int index );
-    void mSelectDatabaseButton_clicked();
-    void mDatabaseEdit_textChanged( const QString &text );
     void mTableNameEdit_textChanged( const QString &text );
     void mTableNameEdit_textEdited( const QString &text );
     void mLayerIdentifierEdit_textEdited( const QString &text );

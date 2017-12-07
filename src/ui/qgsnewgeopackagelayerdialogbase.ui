@@ -149,7 +149,7 @@
          <item row="1" column="2">
           <layout class="QHBoxLayout" name="horizontalLayout">
            <item>
-            <widget class="QLineEdit" name="mDatabaseEdit">
+            <widget class="QgsFileWidget" name="mDatabase">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -158,16 +158,6 @@
              </property>
              <property name="toolTip">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Existing or new GeoPackage database file name&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <widget class="QToolButton" name="mSelectDatabaseButton">
-             <property name="toolTip">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Select an existing or create a new database&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-             <property name="text">
-              <string>…</string>
              </property>
             </widget>
            </item>
@@ -478,11 +468,16 @@
    <header>qgsscrollarea.h</header>
    <container>1</container>
   </customwidget>
+  <customwidget>
+   <class>QgsFileWidget</class>
+   <extends>QWidget</extends>
+   <header>qgsfilewidget.h</header>
+   <container>1</container>
+  </customwidget>
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mDatabaseEdit</tabstop>
-  <tabstop>mSelectDatabaseButton</tabstop>
+  <tabstop>mDatabase</tabstop>
   <tabstop>mTableNameEdit</tabstop>
   <tabstop>mLayerIdentifierEdit</tabstop>
   <tabstop>mLayerDescriptionEdit</tabstop>
