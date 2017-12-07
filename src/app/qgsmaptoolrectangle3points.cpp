@@ -31,7 +31,7 @@ QgsMapToolRectangle3Points::QgsMapToolRectangle3Points( QgsMapToolCapture *paren
 
 void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -56,7 +56,7 @@ void QgsMapToolRectangle3Points::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( mTempRubberBand )
   {
@@ -82,14 +82,15 @@ void QgsMapToolRectangle3Points::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 
         setSide( side < 0 ? -1 : 1 );
 
-        double xMin = mPoints.at( 0 ).x();
-        double xMax = mPoints.at( 0 ).x() + distance2( );
+        const double xMin = mPoints.at( 0 ).x();
+        const double xMax = mPoints.at( 0 ).x() + distance2( );
 
-        double yMin = mPoints.at( 0 ).y();
-        double yMax = mPoints.at( 0 ).y() + distance1();
+        const double yMin = mPoints.at( 0 ).y();
+        const double yMax = mPoints.at( 0 ).y() + distance1();
 
-        mRectangle = QgsRectangle( xMin, yMin,
-                                   xMax, yMax );
+        const double z = mPoints.at( 0 ).z();
+
+        mRectangle = QgsBox3d( xMin, yMin, z, xMax, yMax, z );
 
 
         mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon( true ) );

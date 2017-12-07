@@ -84,12 +84,12 @@ void QgsMapToolAddRectangle::keyReleaseEvent( QKeyEvent *e )
 QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOriented ) const
 {
   std::unique_ptr<QgsLineString> ext( new QgsLineString() );
-  if ( mRectangle.isEmpty() )
+  if ( mRectangle.toRectangle().isEmpty() )
   {
     return ext.release();
   }
 
-  QgsPoint x0( mRectangle.xMinimum(), mRectangle.yMinimum() );
+  QgsPoint x0( mRectangle.xMinimum(), mRectangle.yMinimum(), mRectangle.zMinimum() );
 
   QgsPoint x1, x2, x3;
   if ( isOriented )
@@ -101,10 +101,11 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
   }
   else
   {
-    x1 = QgsPoint( mRectangle.xMinimum(), mRectangle.yMaximum() );
-    x2 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMaximum() );
-    x3 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMinimum() );
+    x1 = QgsPoint( mRectangle.xMinimum(), mRectangle.yMaximum(), mRectangle.zMinimum() );
+    x2 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMaximum(), mRectangle.zMinimum() );
+    x3 = QgsPoint( mRectangle.xMaximum(), mRectangle.yMinimum(), mRectangle.zMinimum() );
   }
+
   ext->addVertex( x0 );
   ext->addVertex( x1 );
   ext->addVertex( x2 );
@@ -117,7 +118,7 @@ QgsLineString *QgsMapToolAddRectangle::rectangleToLinestring( const bool isOrien
 QgsPolygon *QgsMapToolAddRectangle::rectangleToPolygon( const bool isOriented ) const
 {
   std::unique_ptr<QgsPolygon> polygon( new QgsPolygon() );
-  if ( mRectangle.isEmpty() )
+  if ( mRectangle.toRectangle().isEmpty() )
   {
     return polygon.release();
   }
@@ -129,7 +130,7 @@ QgsPolygon *QgsMapToolAddRectangle::rectangleToPolygon( const bool isOriented ) 
 
 void QgsMapToolAddRectangle::deactivate( const bool isOriented )
 {
-  if ( !mParentTool || mRectangle.isEmpty() )
+  if ( !mParentTool || mRectangle.toRectangle().isEmpty() )
   {
     return;
   }
@@ -162,5 +163,5 @@ void QgsMapToolAddRectangle::clean()
     mParentTool->deleteTempRubberBand();
   }
 
-  mRectangle = QgsRectangle();
+  mRectangle = QgsBox3d();
 }

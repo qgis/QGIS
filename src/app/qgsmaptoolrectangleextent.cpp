@@ -31,7 +31,7 @@ QgsMapToolRectangleExtent::QgsMapToolRectangleExtent( QgsMapToolCapture *parentT
 
 void QgsMapToolRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( e->button() == Qt::LeftButton )
   {
@@ -55,7 +55,7 @@ void QgsMapToolRectangleExtent::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
 
 void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
 {
-  QgsPoint mapPoint( e->mapPoint() );
+  QgsPoint mapPoint = fromPointXY( e->mapPoint() );
 
   if ( mTempRubberBand )
   {
@@ -65,7 +65,7 @@ void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
       {
         if ( qgsDoubleNear( mCanvas->rotation(), 0.0 ) )
         {
-          mRectangle = QgsRectangle( mPoints.at( 0 ), mapPoint );
+          mRectangle = QgsBox3d( mPoints.at( 0 ), mapPoint );
           mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon( ) );
         }
         else
@@ -73,7 +73,7 @@ void QgsMapToolRectangleExtent::cadCanvasMoveEvent( QgsMapMouseEvent *e )
           double dist = mPoints.at( 0 ).distance( mapPoint );
           double angle = mPoints.at( 0 ).azimuth( mapPoint );
 
-          mRectangle = QgsRectangle( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
+          mRectangle = QgsBox3d( mPoints.at( 0 ), mPoints.at( 0 ).project( dist, angle ) );
           mTempRubberBand->setGeometry( QgsMapToolAddRectangle::rectangleToPolygon() );
         }
       }
