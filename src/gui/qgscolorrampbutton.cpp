@@ -69,7 +69,8 @@ QSize QgsColorRampButton::sizeHint() const
 #ifdef Q_OS_WIN
   return QSize( 120, 22 );
 #else
-  return QSize( 120, 28 );
+  // Adjust height for HiDPI screens
+  return QSize( 120, std::max( static_cast<int>( fontMetrics().height( ) * 1.4 ), 28 ) );
 #endif
 }
 
