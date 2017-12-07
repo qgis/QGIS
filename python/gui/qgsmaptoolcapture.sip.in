@@ -102,6 +102,19 @@ convenient method to clean members
 
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
 
+    QgsPoint pointFromPointXY( const QgsPointXY &point ) const;
+%Docstring
+ Creates a QgsPoint with ZM support if necessary (according to the
+ WkbType of the current layer) from a QgsPointXY.
+
+ \param point A QgsPointXY to convert
+
+ :return: a point if ZM support if necessary
+
+.. versionadded:: 3.0
+ :rtype: QgsPoint
+%End
+
     int addVertex( const QgsPointXY &point );
 
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );

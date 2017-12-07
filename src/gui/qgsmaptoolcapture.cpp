@@ -768,3 +768,48 @@ void QgsMapToolCapture::setPoints( const QVector<QgsPointXY> &pointList )
     mSnappingMatches.append( QgsPointLocator::Match() );
 }
 
+QgsPoint QgsMapToolCapture::pointFromPointXY( const QgsPointXY &point ) const
+{
+  QgsPoint newPoint( QgsWkbTypes::Point, point.x(), point.y() );
+
+  // get current layer
+  QgsVectorLayer *vlayer = qobject_cast<QgsVectorLayer *>( mCanvas->currentLayer() );
+  if ( !vlayer )
+  {
+    return newPoint;
+  }
+
+  // convert to the corresponding type for a full ZM support
+  QgsWkbTypes::Type type = vlayer->wkbType();
+  if ( QgsWkbTypes::hasZ( type ) && !QgsWkbTypes::hasM( type ) )
+  {
+    newPoint.convertTo( QgsWkbTypes::PointZ );
+  }
+  else if ( !QgsWkbTypes::hasZ( type ) && QgsWkbTypes::hasM( type ) )
+  {
+    newPoint.convertTo( QgsWkbTypes::PointM );
+  }
+  else if ( QgsWkbTypes::hasZ( type ) && QgsWkbTypes::hasM( type ) )
+  {
+    newPoint.convertTo( QgsWkbTypes::PointZM );
+  }
+
+  // set default value for Z if necessary
+  if ( QgsWkbTypes::hasZ( newPoint.wkbType() ) )
+    newPoint.setZ( defaultZValue() );
+
+  return newPoint;
+}
+
+#ifdef Q_OS_WIN
+bool QgsMapToolCapture::eventFilter( QObject *obj, QEvent *event )
+{
+  if ( event->type() != QEvent::ContextMenu )
+    return false;
+
+  if ( --mSkipNextContextMenuEvent == 0 )
+    obj->removeEventFilter( this );
+
+  return mSkipNextContextMenuEvent >= 0;
+}
+#endif

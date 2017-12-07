@@ -604,6 +604,24 @@ bool QgsGeometryUtils::segmentMidPoint( const QgsPoint &p1, const QgsPoint &p2, 
   }
 
   result = possibleMidPoints.at( minDistIndex );
+
+  // add z support if necessary
+  if ( p1.is3D() && p2.is3D() )
+  {
+    result.convertTo( p1.wkbType() );
+    result.setZ( ( p1.z() + p2.z() ) / 2. );
+  }
+  else if ( p1.is3D() && !p2.is3D() )
+  {
+    result.convertTo( p1.wkbType() );
+    result.setZ( p1.z() );
+  }
+  else if ( !p1.is3D() && p2.is3D() )
+  {
+    result.convertTo( p2.wkbType() );
+    result.setZ( p2.z() );
+  }
+
   return true;
 }
 

@@ -148,6 +148,18 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
 
     /**
+     * Creates a QgsPoint with ZM support if necessary (according to the
+     * WkbType of the current layer) from a QgsPointXY.
+     *
+     * \param point A QgsPointXY to convert
+     *
+     * \returns a point if ZM support if necessary
+     *
+     * \since QGIS 3.0
+     */
+    QgsPoint pointFromPointXY( const QgsPointXY &point ) const;
+
+    /**
      * Adds a point to the rubber band (in map coordinates) and to the capture list (in layer coordinates)
      * \returns 0 in case of success, 1 if current layer is not a vector layer, 2 if coordinate transformation failed
      */
