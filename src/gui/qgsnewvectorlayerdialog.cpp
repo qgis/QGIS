@@ -167,8 +167,11 @@ QgsWkbTypes::Type QgsNewVectorLayerDialog::selectedType() const
   wkbType = static_cast<QgsWkbTypes::Type>
             ( mGeometryTypeBox->currentData( Qt::UserRole ).toInt() );
 
-  if ( mGeometryWithZCheckBox->isChecked() && wkbType != QgsWkbTypes::Unknown )
-    wkbType = QgsWkbTypes::to25D( wkbType );
+  if ( mGeometryWithZCheckBox->isChecked() )
+    wkbType = QgsWkbTypes::addZ( wkbType );
+
+  if ( mGeometryWithMCheckBox->isChecked() )
+    wkbType = QgsWkbTypes::addM( wkbType );
 
   return wkbType;
 }
