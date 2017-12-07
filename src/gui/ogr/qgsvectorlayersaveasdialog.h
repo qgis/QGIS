@@ -126,8 +126,6 @@ class GUI_EXPORT QgsVectorLayerSaveAsDialog : public QDialog, private Ui::QgsVec
   private slots:
 
     void mFormatComboBox_currentIndexChanged( int idx );
-    void leFilename_textChanged( const QString &text );
-    void browseFilename_clicked();
     void mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs );
     void showHelp();
     void mSymbologyExportComboBox_currentIndexChanged( const QString &text );
