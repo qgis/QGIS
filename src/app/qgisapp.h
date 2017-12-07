@@ -74,6 +74,7 @@ class QgsMapOverviewCanvas;
 class QgsMapTip;
 class QgsMapTool;
 class QgsMapToolAddFeature;
+class QgsMapToolDigitizeFeature;
 class QgsMapToolAdvancedDigitizing;
 class QgsMapToolIdentifyAction;
 class QgsPluginLayer;
@@ -1940,6 +1941,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
         QgsMapTool *mMeasureArea = nullptr;
         QgsMapTool *mMeasureAngle = nullptr;
         QgsMapToolAddFeature *mAddFeature = nullptr;
+        QgsMapToolDigitizeFeature *mDigitizeFeature = nullptr;
         QgsMapTool *mCircularStringCurvePoint = nullptr;
         QgsMapTool *mCircularStringRadius = nullptr;
         QgsMapTool *mCircle2Points = nullptr;
@@ -2209,7 +2211,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     QgsBrowserModel *mBrowserModel = nullptr;
 
     void setupDuplicateFeaturesAction();
+
     QgsFeature duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &feature );
+    QgsFeature duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFeature &feature );
 
     friend class TestQgisAppPython;
 };

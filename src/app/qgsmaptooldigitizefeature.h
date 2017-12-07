@@ -1,9 +1,10 @@
 /***************************************************************************
-    qgsmaptooladdfeature.h  -  map tool for adding point/line/polygon features
-    ---------------------
-    begin                : April 2007
-    copyright            : (C) 2007 by Marco Hugentobler
-    email                : marco dot hugentobler at karto dot baug dot ethz dot ch
+  qgsmaptooldigitizegeometry - %{Cpp:License:ClassName}
+
+ ---------------------
+ begin                : 7.12.2017
+ copyright            : (C) 2017 by david
+ email                : [your-email-here]
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -12,20 +13,28 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+#ifndef QGSMAPTOOLDIGITIZEFEATURE_H
+#define QGSMAPTOOLDIGITIZEFEATURE_H
 
-#include "qgsmaptooldigitizefeature.h"
+#include "qgsmaptoolcapture.h"
+#include "qgis_app.h"
 
-//! This tool adds new point/line/polygon features to already existing vector layers
-class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
+//! This tool digitizes geometry of new point/line/polygon features on already existing vector layers
+class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
     //! \since QGIS 2.12
-    QgsMapToolAddFeature( QgsMapCanvas *canvas, CaptureMode mode );
+    QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, CaptureMode mode );
 
-    bool addFeature( QgsVectorLayer *vlayer, QgsFeature *f, bool showModal = true );
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
-    void digitized( QgsFeature *f ) override;
+    virtual void digitized( QgsFeature *f );
+
+    virtual void activate() override;
+
+  signals:
+    void digitizingFinished( const QgsFeature & );
 
   protected:
 
@@ -48,3 +57,5 @@ class APP_EXPORT QgsMapToolAddFeature : public QgsMapToolDigitizeFeature
      * \since QGIS 2.12 */
     bool mCheckGeometryType;
 };
+
+#endif // QGSMAPTOOLDIGITIZEFEATURE_H
