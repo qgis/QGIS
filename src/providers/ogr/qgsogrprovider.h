@@ -421,6 +421,13 @@ class QgsOgrProviderUtils
 
     //! Invalidate the cached last modified date of a dataset
     static void invalidateCachedLastModifiedDate( const QString &dsName );
+
+    //! Converts a QGIS WKB type to the corresponding OGR wkb type
+    static OGRwkbGeometryType ogrTypeFromQgisType( QgsWkbTypes::Type type );
+
+    //! Converts a OGR WKB type to the corresponding QGIS wkb type
+    static QgsWkbTypes::Type qgisTypeFromOgrType( OGRwkbGeometryType type );
+
 };
 
 
