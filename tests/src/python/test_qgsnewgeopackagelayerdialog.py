@@ -21,7 +21,7 @@ from qgis.PyQt.QtWidgets import QLineEdit, QDialogButtonBox, QTreeWidget, QCombo
 from qgis.PyQt.QtTest import QTest
 
 from qgis.core import QgsProject, QgsSettings, QgsWkbTypes
-from qgis.gui import QgsNewGeoPackageLayerDialog
+from qgis.gui import QgsNewGeoPackageLayerDialog, QgsFileWidget
 from qgis.testing import start_app, unittest
 
 
@@ -63,7 +63,7 @@ class TestPyQgsNewGeoPackageLayerDialog(unittest.TestCase):
         dialog = QgsNewGeoPackageLayerDialog()
         dialog.setProperty("hideDialogs", True)
 
-        mDatabase = dialog.findChild(QLineEdit, "mDatabase")
+        mDatabase = dialog.findChild(QgsFileWidget, "mDatabase")
         buttonBox = dialog.findChild(QDialogButtonBox, "buttonBox")
         ok_button = buttonBox.button(QDialogButtonBox.Ok)
         mTableNameEdit = dialog.findChild(QLineEdit, "mTableNameEdit")
