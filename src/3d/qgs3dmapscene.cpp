@@ -166,6 +166,11 @@ void Qgs3DMapScene::viewZoomFull()
   mCameraController->resetView( side );  // assuming FOV being 45 degrees
 }
 
+int Qgs3DMapScene::terrainPendingJobsCount() const
+{
+  return mTerrain ? mTerrain->pendingJobsCount() : 0;
+}
+
 QgsChunkedEntity::SceneState _sceneState( QgsCameraController *cameraController )
 {
   Qt3DRender::QCamera *camera = cameraController->camera();
@@ -315,6 +320,10 @@ void Qgs3DMapScene::createTerrainDeferred()
   }
 
   mTerrainUpdateScheduled = false;
+
+  connect( mTerrain, &QgsTerrainEntity::pendingJobsCountChanged, this, &Qgs3DMapScene::terrainPendingJobsCountChanged );
+
+  emit terrainEntityChanged();
 }
 
 void Qgs3DMapScene::onBackgroundColorChanged()

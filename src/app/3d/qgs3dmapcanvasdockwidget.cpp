@@ -18,6 +18,7 @@
 #include "qgisapp.h"
 #include "qgs3dmapcanvas.h"
 #include "qgs3dmapconfigwidget.h"
+#include "qgs3dmapscene.h"
 #include "qgscameracontroller.h"
 #include "qgsmapcanvas.h"
 
@@ -27,6 +28,7 @@
 #include <QBoxLayout>
 #include <QDialog>
 #include <QDialogButtonBox>
+#include <QProgressBar>
 #include <QToolBar>
 
 Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
@@ -45,19 +47,38 @@ Qgs3DMapCanvasDockWidget::Qgs3DMapCanvasDockWidget( QWidget *parent )
 
   mCanvas = new Qgs3DMapCanvas( contentsWidget );
   mCanvas->setMinimumSize( QSize( 200, 200 ) );
+  mCanvas->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-  QVBoxLayout *layout = new QVBoxLayout( contentsWidget );
+  mLabelPendingJobs = new QLabel( this );
+  mProgressPendingJobs = new QProgressBar( this );
+  mProgressPendingJobs->setRange( 0, 0 );
+
+  QHBoxLayout *topLayout = new QHBoxLayout;
+  topLayout->setContentsMargins( 0, 0, 0, 0 );
+  topLayout->setSpacing( style()->pixelMetric( QStyle::PM_LayoutHorizontalSpacing ) );
+  topLayout->addWidget( toolBar );
+  topLayout->addStretch( 1 );
+  topLayout->addWidget( mLabelPendingJobs );
+  topLayout->addWidget( mProgressPendingJobs );
+
+  QVBoxLayout *layout = new QVBoxLayout;
   layout->setContentsMargins( 0, 0, 0, 0 );
   layout->setSpacing( 0 );
-  layout->addWidget( toolBar );
-  layout->addWidget( mCanvas, 1 );
+  layout->addLayout( topLayout );
+  layout->addWidget( mCanvas );
+
+  contentsWidget->setLayout( layout );
 
   setWidget( contentsWidget );
+
+  onTerrainPendingJobsCountChanged();
 }
 
 void Qgs3DMapCanvasDockWidget::setMapSettings( Qgs3DMapSettings *map )
 {
   mCanvas->setMap( map );
+
+  connect( mCanvas->scene(), &Qgs3DMapScene::terrainPendingJobsCountChanged, this, &Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged );
 }
 
 void Qgs3DMapCanvasDockWidget::setMainCanvas( QgsMapCanvas *canvas )
@@ -115,4 +136,13 @@ void Qgs3DMapCanvasDockWidget::onMainCanvasLayersChanged()
 void Qgs3DMapCanvasDockWidget::onMainCanvasColorChanged()
 {
   mCanvas->map()->setBackgroundColor( mMainCanvas->canvasColor() );
+}
+
+void Qgs3DMapCanvasDockWidget::onTerrainPendingJobsCountChanged()
+{
+  int count = mCanvas->scene() ? mCanvas->scene()->terrainPendingJobsCount() : 0;
+  mProgressPendingJobs->setVisible( count );
+  mLabelPendingJobs->setVisible( count );
+  if ( count )
+    mLabelPendingJobs->setText( tr( "Loading %1 tiles" ).arg( count ) );
 }
