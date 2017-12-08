@@ -88,12 +88,12 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mCheckBoxCreateSpatialIndex->setEnabled( false );
   mCrsSelector->setEnabled( false );
 
-  mFieldTypeBox->addItem( tr( "Text data" ), "text" );
-  mFieldTypeBox->addItem( tr( "Whole number (integer)" ), "integer" );
-  mFieldTypeBox->addItem( tr( "Whole number (integer 64 bit)" ), "integer64" );
-  mFieldTypeBox->addItem( tr( "Decimal number (real)" ), "real" );
-  mFieldTypeBox->addItem( tr( "Date" ), "date" );
-  mFieldTypeBox->addItem( tr( "Date&time" ), "datetime" );
+  mFieldTypeBox->addItem( QIcon( path + "/mIconFieldText.svg" ), tr( "Text data" ), "text" );
+  mFieldTypeBox->addItem( QIcon( path + "/mIconFieldInteger.svg" ), tr( "Whole number (integer)" ), "integer" );
+  mFieldTypeBox->addItem( QIcon( path + "/mIconFieldInteger.svg" ), tr( "Whole number (integer 64 bit)" ), "integer64" );
+  mFieldTypeBox->addItem( QIcon( path + "/mIconFieldFloat.svg" ), tr( "Decimal number (real)" ), "real" );
+  mFieldTypeBox->addItem( QIcon( path + "/mIconFieldDate.svg" ), tr( "Date" ), "date" );
+  mFieldTypeBox->addItem( QIcon( path + "/mIconFieldDateTime.svg" ), tr( "Date&time" ), "datetime" );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );

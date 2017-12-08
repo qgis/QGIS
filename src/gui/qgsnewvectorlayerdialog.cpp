@@ -48,10 +48,11 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
-  mTypeBox->addItem( tr( "Text data" ), "String" );
-  mTypeBox->addItem( tr( "Whole number" ), "Integer" );
-  mTypeBox->addItem( tr( "Decimal number" ), "Real" );
-  mTypeBox->addItem( tr( "Date" ), "Date" );
+  QString path = QgsApplication::defaultThemePath();
+  mTypeBox->addItem( QIcon( path + "/mIconFieldText.svg" ), tr( "Text data" ), "String" );
+  mTypeBox->addItem( QIcon( path + "/mIconFieldInteger.svg" ), tr( "Whole number" ), "Integer" );
+  mTypeBox->addItem( QIcon( path + "/mIconFieldFloat.svg" ), tr( "Decimal number" ), "Real" );
+  mTypeBox->addItem( QIcon( path + "/mIconFieldDate.svg" ), tr( "Date" ), "Date" );
 
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
