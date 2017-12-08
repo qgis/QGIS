@@ -21,6 +21,7 @@
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"
+#include "qgsgui.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -49,6 +50,8 @@ QgsSvgAnnotationDialog::QgsSvgAnnotationDialog( QgsMapCanvasAnnotationItem *item
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsSvgAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
+
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 }
 
 void QgsSvgAnnotationDialog::mBrowseToolButton_clicked()
