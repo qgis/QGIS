@@ -64,22 +64,23 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
 
-  mGeometryTypeBox->addItem( tr( "Non spatial" ), wkbNone );
-  mGeometryTypeBox->addItem( tr( "Point" ), wkbPoint );
-  mGeometryTypeBox->addItem( tr( "Line" ), wkbLineString );
-  mGeometryTypeBox->addItem( tr( "Polygon" ), wkbPolygon );
-  mGeometryTypeBox->addItem( tr( "MultiPoint" ), wkbMultiPoint );
-  mGeometryTypeBox->addItem( tr( "MultiLine" ), wkbMultiLineString );
-  mGeometryTypeBox->addItem( tr( "MultiPolygon" ), wkbMultiPolygon );
+  QString path = QgsApplication::defaultThemePath();
+  mGeometryTypeBox->addItem( QIcon( path + "/mActionOpenTable.svg" ), tr( "Non spatial" ), wkbNone );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "Point" ), wkbPoint );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "Line" ), wkbLineString );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "Polygon" ), wkbPolygon );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "MultiPoint" ), wkbMultiPoint );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "MultiLine" ), wkbMultiLineString );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "MultiPolygon" ), wkbMultiPolygon );
 
 #if 0
   // QGIS always create CompoundCurve and there's no real interest of having just CircularString. CompoundCurve are more useful
-  mGeometryTypeBox->addItem( tr( "CircularString" ), wkbCircularString );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "CircularString" ), wkbCircularString );
 #endif
-  mGeometryTypeBox->addItem( tr( "CompoundCurve" ), wkbCompoundCurve );
-  mGeometryTypeBox->addItem( tr( "CurvePolygon" ), wkbCurvePolygon );
-  mGeometryTypeBox->addItem( tr( "MultiCurve" ), wkbMultiCurve );
-  mGeometryTypeBox->addItem( tr( "MultiSurface" ), wkbMultiSurface );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "CompoundCurve" ), wkbCompoundCurve );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "CurvePolygon" ), wkbCurvePolygon );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "MultiCurve" ), wkbMultiCurve );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "MultiSurface" ), wkbMultiSurface );
 
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
