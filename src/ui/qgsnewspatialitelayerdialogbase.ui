@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>450</width>
+    <width>490</width>
     <height>627</height>
    </rect>
   </property>
@@ -142,6 +142,24 @@
         </widget>
        </item>
        <item row="3" column="1" colspan="2">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
+         <item>
+          <widget class="QCheckBox" name="mGeometryWithZCheckBox">
+           <property name="text">
+            <string>Include Z dimension</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="mGeometryWithMCheckBox">
+           <property name="text">
+            <string>Include M values</string>
+           </property>
+          </widget>
+         </item>
+        </layout>       
+       </item>       
+       <item row="4" column="1" colspan="2">
         <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLineEdit" name="leSRID">
@@ -175,7 +193,7 @@
          </item>
         </layout>
        </item>
-       <item row="4" colspan="3">
+       <item row="5" colspan="3">
         <widget class="QGroupBox" name="groupBox1">
          <property name="title">
           <string>New field</string>
@@ -265,7 +283,7 @@
          </layout>
         </widget>
        </item>
-       <item row="5" colspan="3">
+       <item row="6" colspan="3">
         <widget class="QGroupBox" name="groupBox_2">
          <property name="title">
           <string>Fields list</string>
@@ -339,7 +357,7 @@
          </layout>
         </widget>
        </item>
-       <item row="6" colspan="3">
+       <item row="7" colspan="3">
         <widget class="QgsCollapsibleGroupBox" name="groupBox">
          <property name="title">
           <string>Advanced options</string>
