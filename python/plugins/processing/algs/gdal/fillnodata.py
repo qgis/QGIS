@@ -86,7 +86,7 @@ class fillnodata(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-md')
         arguments.append(str(self.parameterAsInt(parameters, self.DISTANCE, context)))

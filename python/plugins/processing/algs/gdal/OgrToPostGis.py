@@ -184,7 +184,7 @@ class OgrToPostGis(GdalAlgorithm):
             arguments.append('user=' + user)
         return GdalUtils.escapeAndJoin(arguments)
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsSource(parameters, self.INPUT, context)
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)

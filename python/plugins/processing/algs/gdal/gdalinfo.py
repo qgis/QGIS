@@ -83,7 +83,7 @@ class gdalinfo(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-info.png'))
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         if self.parameterAsBool(parameters, self.MIN_MAX, context):
             arguments.append('-mm')

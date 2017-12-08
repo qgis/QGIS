@@ -105,7 +105,7 @@ class ClipRasterByExtent(GdalAlgorithm):
     def commandName(self):
         return "gdal_translate"
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         bbox = self.parameterAsExtent(parameters, self.EXTENT, context, inLayer.crs())
         nodata = self.parameterAsDouble(parameters, self.NODATA, context)

@@ -59,7 +59,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
     def createCustomParametersWidget(self, parent):
         return GdalAlgorithmDialog(self)
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return None
 
     def getOgrCompatibleSource(self, parameter_name, parameters, context, feedback):
@@ -94,7 +94,7 @@ class GdalAlgorithm(QgsProcessingAlgorithm):
         self.output_values[name] = value
 
     def processAlgorithm(self, parameters, context, feedback):
-        commands = self.getConsoleCommands(parameters, context, feedback)
+        commands = self.getConsoleCommands(parameters, context, feedback, executing=True)
         GdalUtils.runGdal(commands, feedback)
 
         # auto generate outputs
