@@ -57,10 +57,19 @@ class _3D_EXPORT Qgs3DMapScene : public Qt3DCore::QEntity
     //! Returns camera controller
     QgsCameraController *cameraController() { return mCameraController; }
     //! Returns terrain entity
-    QgsTerrainEntity *terrain() { return mTerrain; }
+    QgsTerrainEntity *terrainEntity() { return mTerrain; }
 
     //! Resets camera view to show the whole scene (top view)
     void viewZoomFull();
+
+    //! Returns number of pending jobs of the terrain entity
+    int terrainPendingJobsCount() const;
+
+  signals:
+    //! Emitted when the current terrain entity is replaced by a new one
+    void terrainEntityChanged();
+    //! Emitted when the number of terrain's pending jobs changes
+    void terrainPendingJobsCountChanged();
 
   private slots:
     void onCameraChanged();

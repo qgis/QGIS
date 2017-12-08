@@ -82,6 +82,9 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
     //! Returns the root node of the whole quadtree hierarchy of nodes
     QgsChunkNode *rootNode() const { return mRootNode; }
 
+    //! Returns number of jobs pending for this entity until it is fully loaded/updated in the current view
+    int pendingJobsCount() const;
+
   protected:
     //! Cancels the background job that is currently in progress
     void cancelActiveJob();
@@ -98,6 +101,10 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
 
   private slots:
     void onActiveJobFinished();
+
+  signals:
+    //! Emitted when the number of pending jobs changes (some jobs have finished or some jobs have been just created)
+    void pendingJobsCountChanged();
 
   protected:
     //! root node of the quadtree hierarchy
