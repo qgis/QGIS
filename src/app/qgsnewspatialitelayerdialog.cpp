@@ -71,9 +71,9 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
-  mTypeBox->addItem( tr( "Text data" ), "text" );
-  mTypeBox->addItem( tr( "Whole number" ), "integer" );
-  mTypeBox->addItem( tr( "Decimal number" ), "real" );
+  mTypeBox->addItem( QIcon( path + "/mIconFieldText.svg" ), tr( "Text data" ), "text" );
+  mTypeBox->addItem( QIcon( path + "/mIconFieldInteger.svg" ), tr( "Whole number" ), "integer" );
+  mTypeBox->addItem( QIcon( path + "/mIconFieldFloat.svg" ), tr( "Decimal number" ), "real" );
 
   // Populate the database list from the stored connections
   settings.beginGroup( QStringLiteral( "SpatiaLite/connections" ) );
