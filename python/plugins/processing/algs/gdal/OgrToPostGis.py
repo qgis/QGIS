@@ -186,7 +186,7 @@ class OgrToPostGis(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsSource(parameters, self.INPUT, context)
-        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context).authid()
         tsrs = self.parameterAsCrs(parameters, self.T_SRS, context).authid()
