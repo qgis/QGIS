@@ -273,6 +273,10 @@ class QgsProcessingFeatureSource : QgsFeatureSource
 
     virtual QVariant maximumValue( int fieldIndex ) const;
 
+    virtual QgsRectangle sourceExtent() const;
+
+    virtual QgsFeatureIds allFeatureIds() const;
+
 
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 %Docstring

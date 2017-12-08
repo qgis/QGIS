@@ -729,6 +729,16 @@ QVariant QgsProcessingFeatureSource::maximumValue( int fieldIndex ) const
   return mSource->maximumValue( fieldIndex );
 }
 
+QgsRectangle QgsProcessingFeatureSource::sourceExtent() const
+{
+  return mSource->sourceExtent();
+}
+
+QgsFeatureIds QgsProcessingFeatureSource::allFeatureIds() const
+{
+  return mSource->allFeatureIds();
+}
+
 QgsExpressionContextScope *QgsProcessingFeatureSource::createExpressionContextScope() const
 {
   QgsExpressionContextScope *expressionContextScope = nullptr;
