@@ -64,8 +64,8 @@ QgsBookmarks::QgsBookmarks( QWidget *parent )
   btnExport->setIcon( QgsApplication::getThemeIcon( "/mActionSharingExport.svg" ) );
   btnImport->setIcon( QgsApplication::getThemeIcon( "/mActionSharingImport.svg" ) );
 
-  connect( btnExport, SIGNAL( triggered() ), this, SLOT( exportToXML() ) );
-  connect( btnImport, SIGNAL( triggered() ), this, SLOT( importFromXML() ) );
+  connect( btnExport, SIGNAL( triggered() ), this, SLOT( exportToXml() ) );
+  connect( btnImport, SIGNAL( triggered() ), this, SLOT( importFromXml() ) );
   btnImpExp->setMenu( share );
 
 
