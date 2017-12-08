@@ -126,7 +126,7 @@ void QgsNewSpatialiteLayerDialog::toolButtonNewDatabase_clicked()
 {
   QString fileName = QFileDialog::getSaveFileName( this, tr( "New SpatiaLite Database File" ),
                      QDir::homePath(),
-                     tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)" );
+                     tr( "SpatiaLite" ) + " (*.sqlite *.db *.sqlite3 *.db3 *.s3db)", nullptr, QFileDialog::DontConfirmOverwrite );
 
   if ( fileName.isEmpty() )
     return;
@@ -138,6 +138,7 @@ void QgsNewSpatialiteLayerDialog::toolButtonNewDatabase_clicked()
 
   mDatabaseComboBox->insertItem( 0, fileName );
   mDatabaseComboBox->setCurrentIndex( 0 );
+
   createDb();
 }
 
@@ -149,8 +150,7 @@ QString QgsNewSpatialiteLayerDialog::selectedType() const
 void QgsNewSpatialiteLayerDialog::checkOk()
 {
   bool created  = !leLayerName->text().isEmpty() &&
-                  ( checkBoxPrimaryKey->isChecked() || mAttributeView->topLevelItemCount() > 0 ) &&
-                  createDb();
+                  ( checkBoxPrimaryKey->isChecked() || mAttributeView->topLevelItemCount() > 0 );
   mOkButton->setEnabled( created );
 }
 
@@ -251,6 +251,28 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     return false;
 
   QFile newDb( dbPath );
+  if ( newDb.exists() )
+  {
+    QMessageBox msgBox;
+    msgBox.setIcon( QMessageBox::Question );
+    msgBox.setWindowTitle( tr( "The File Already Exists." ) );
+    msgBox.setText( tr( "Do you want to overwrite the existing file with a new database or add a new layer to it?" ) );
+    QPushButton *overwriteButton = msgBox.addButton( tr( "Overwrite" ), QMessageBox::ActionRole );
+    QPushButton *addNewLayerButton = msgBox.addButton( tr( "Add new layer" ), QMessageBox::ActionRole );
+    msgBox.setStandardButtons( QMessageBox::Cancel );
+    msgBox.setDefaultButton( addNewLayerButton );
+    int ret = msgBox.exec();
+    if ( ret == QMessageBox::Cancel )
+    {
+      return false;
+    }
+
+    if ( msgBox.clickedButton() == overwriteButton )
+    {
+      newDb.remove();
+    }
+  }
+
   if ( !newDb.exists() )
   {
     QString errCause;
