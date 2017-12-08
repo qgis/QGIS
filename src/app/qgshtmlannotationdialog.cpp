@@ -19,6 +19,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgsannotationmanager.h"
+#include "qgsgui.h"
 #include <QFileDialog>
 #include <QFileInfo>
 #include <QGraphicsScene>
@@ -47,6 +48,8 @@ QgsHtmlAnnotationDialog::QgsHtmlAnnotationDialog( QgsMapCanvasAnnotationItem *it
   QPushButton *deleteButton = new QPushButton( tr( "Delete" ) );
   QObject::connect( deleteButton, &QPushButton::clicked, this, &QgsHtmlAnnotationDialog::deleteItem );
   mButtonBox->addButton( deleteButton, QDialogButtonBox::RejectRole );
+
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 }
 
 void QgsHtmlAnnotationDialog::applySettingsToItem()

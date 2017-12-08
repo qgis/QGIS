@@ -21,6 +21,7 @@
 #include "qgsmapcanvasannotationitem.h"
 #include "qgsannotationmanager.h"
 #include "qgsproject.h"
+#include "qgsgui.h"
 #include <QColorDialog>
 #include <QGraphicsScene>
 
@@ -43,6 +44,8 @@ QgsTextAnnotationDialog::QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *it
     mTextDocument.reset( annotation->document() ? annotation->document()->clone() : nullptr );
     mTextEdit->setDocument( mTextDocument.get() );
   }
+
+  QgsGui::instance()->enableAutoGeometryRestore( this );
 
   mFontColorButton->setColorDialogTitle( tr( "Select Font Color" ) );
   mFontColorButton->setAllowOpacity( true );
