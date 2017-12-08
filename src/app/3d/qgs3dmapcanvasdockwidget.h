@@ -18,10 +18,12 @@
 
 #include "qgsdockwidget.h"
 
-class Qgs3DMapCanvas;
-class QgsMapCanvas;
+class QLabel;
+class QProgressBar;
 
+class Qgs3DMapCanvas;
 class Qgs3DMapSettings;
+class QgsMapCanvas;
 
 
 class Qgs3DMapCanvasDockWidget : public QgsDockWidget
@@ -43,10 +45,13 @@ class Qgs3DMapCanvasDockWidget : public QgsDockWidget
 
     void onMainCanvasLayersChanged();
     void onMainCanvasColorChanged();
+    void onTerrainPendingJobsCountChanged();
 
   private:
     Qgs3DMapCanvas *mCanvas = nullptr;
     QgsMapCanvas *mMainCanvas = nullptr;
+    QProgressBar *mProgressPendingJobs = nullptr;
+    QLabel *mLabelPendingJobs = nullptr;
 };
 
 #endif // QGS3DMAPCANVASDOCKWIDGET_H
