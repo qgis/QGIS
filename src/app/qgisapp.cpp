@@ -8161,15 +8161,7 @@ void QgisApp::selectAll()
     return;
   }
 
-  // Turn off rendering to improve speed.
-  bool wasFrozen = mMapCanvas->isFrozen();
-  freezeCanvases();
-
   vlayer->selectAll();
-
-  // Turn on rendering (if it was on previously)
-  if ( !wasFrozen )
-    freezeCanvases( false );
 }
 
 void QgisApp::selectByExpression()
