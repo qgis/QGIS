@@ -183,7 +183,6 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
             # to get credentials input when needed
             uri = GeoDB(uri=uri).uri
 
-        inLayer = self.parameterAsSource(parameters, self.INPUT, context)
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context).authid()
@@ -201,8 +200,6 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         simplify = self.parameterAsString(parameters, self.SIMPLIFY, context)
         segmentize = self.parameterAsString(parameters, self.SEGMENTIZE, context)
         spat = self.parameterAsExtent(parameters, self.SPAT, context)
-        if spat.isNull():
-            spat = inLayer.sourceExtent()
         clip = self.parameterAsBool(parameters, self.CLIP, context)
         where = self.parameterAsString(parameters, self.WHERE, context)
         wherestring = '-where "' + where + '"'

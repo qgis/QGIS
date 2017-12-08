@@ -122,7 +122,7 @@ class OgrToPostGis(GdalAlgorithm):
                                                        self.tr('Maximum distance between 2 nodes (densification)'),
                                                        defaultValue='', optional=True))
         self.addParameter(QgsProcessingParameterExtent(self.SPAT,
-                                                       self.tr('Select features by extent (defined in input layer CRS)')))
+                                                       self.tr('Select features by extent (defined in input layer CRS)'), optional=True))
         self.addParameter(QgsProcessingParameterBoolean(self.CLIP,
                                                         self.tr('Clip the input layer using the above (rectangle) extent'),
                                                         defaultValue=False))
@@ -203,8 +203,6 @@ class OgrToPostGis(GdalAlgorithm):
         simplify = self.parameterAsString(parameters, self.SIMPLIFY, context)
         segmentize = self.parameterAsString(parameters, self.SEGMENTIZE, context)
         spat = self.parameterAsExtent(parameters, self.SPAT, context)
-        if spat.isNull():
-            spat = inLayer.sourceExtent()
         clip = self.parameterAsBool(parameters, self.CLIP, context)
         where = self.parameterAsString(parameters, self.WHERE, context)
         wherestring = '-where "' + where + '"'
