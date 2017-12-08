@@ -93,7 +93,7 @@
         </widget>
        </item>
        <item row="1" column="0">
-        <widget class="QLabel" name="label">
+        <widget class="QLabel" name="label1">
          <property name="text">
           <string>Layer name</string>
          </property>
@@ -176,7 +176,7 @@
         </layout>
        </item>
        <item row="4" colspan="3">
-        <widget class="QGroupBox" name="groupBox">
+        <widget class="QGroupBox" name="groupBox1">
          <property name="title">
           <string>New field</string>
          </property>
@@ -417,12 +417,6 @@
  </customwidgets>
  <tabstops>
   <tabstop>scrollArea</tabstop>
-  <tabstop>mPointRadioButton</tabstop>
-  <tabstop>mLineRadioButton</tabstop>
-  <tabstop>mPolygonRadioButton</tabstop>
-  <tabstop>mMultipointRadioButton</tabstop>
-  <tabstop>mMultilineRadioButton</tabstop>
-  <tabstop>mMultipolygonRadioButton</tabstop>
   <tabstop>mDatabaseComboBox</tabstop>
   <tabstop>toolButtonNewDatabase</tabstop>
   <tabstop>leLayerName</tabstop>
