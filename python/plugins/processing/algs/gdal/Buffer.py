@@ -100,7 +100,7 @@ class Buffer(GdalAlgorithm):
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         geometry = self.parameterAsString(parameters, self.GEOMETRY, context)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)
         fieldName = self.parameterAsString(parameters, self.FIELD, context)

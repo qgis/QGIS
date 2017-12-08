@@ -75,7 +75,7 @@ class ClipVectorByExtent(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
+        ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         source = self.parameterAsSource(parameters, self.INPUT, context)
         extent = self.parameterAsExtent(parameters, self.EXTENT, context, source.sourceCrs())
         options = self.parameterAsString(parameters, self.OPTIONS, context)

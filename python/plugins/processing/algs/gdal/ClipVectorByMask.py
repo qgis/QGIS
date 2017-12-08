@@ -74,8 +74,8 @@ class ClipVectorByMask(GdalAlgorithm):
         return 'ogr2ogr'
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        inLayer, inLayerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
-        maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback)
+        inLayer, inLayerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
+        maskLayer, maskLayerName = self.getOgrCompatibleSource(self.MASK, parameters, context, feedback, executing)
         options = self.parameterAsString(parameters, self.OPTIONS, context)
         outFile = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
 
