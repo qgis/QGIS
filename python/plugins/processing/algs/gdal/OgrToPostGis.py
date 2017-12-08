@@ -185,7 +185,6 @@ class OgrToPostGis(GdalAlgorithm):
         return GdalUtils.escapeAndJoin(arguments)
 
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
-        inLayer = self.parameterAsSource(parameters, self.INPUT, context)
         ogrLayer, layername = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         shapeEncoding = self.parameterAsString(parameters, self.SHAPE_ENCODING, context)
         ssrs = self.parameterAsCrs(parameters, self.S_SRS, context).authid()
@@ -233,7 +232,7 @@ class OgrToPostGis(GdalAlgorithm):
         arguments.append('"')
         arguments.append(dimstring)
         arguments.append(ogrLayer)
-        arguments.append(GdalUtils.ogrLayerName(inLayer))
+        arguments.append(layername)
         if index:
             arguments.append(indexstring)
         if launder:
@@ -254,7 +253,7 @@ class OgrToPostGis(GdalAlgorithm):
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
-            table = GdalUtils.ogrLayerName(inLayer).lower()
+            table = layername.lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')
