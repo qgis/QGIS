@@ -253,7 +253,7 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
         elif primary_key is not None:
             arguments.append("-lco FID=" + primary_key)
         if len(table) == 0:
-            table = GdalUtils.ogrLayerName(inLayer).lower()
+            table = layername.lower()
         if schema:
             table = '{}.{}'.format(schema, table)
         arguments.append('-nln')
