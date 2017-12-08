@@ -152,7 +152,7 @@ class warp(GdalAlgorithm):
     def tags(self):
         return self.tr('transform,reproject,crs,srs').split(',')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         out = self.parameterAsOutputLayer(parameters, self.OUTPUT, context)
         sourceCrs = self.parameterAsCrs(parameters, self.SOURCE_CRS, context)

@@ -155,7 +155,7 @@ class GridInverseDistance(GdalAlgorithm):
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
 
         arguments = ['-l']

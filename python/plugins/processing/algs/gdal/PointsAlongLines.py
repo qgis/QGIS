@@ -86,7 +86,7 @@ class PointsAlongLines(GdalAlgorithm):
     def commandName(self):
         return 'ogr2ogr'
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         fields = self.parameterAsSource(parameters, self.INPUT, context).fields()
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback)
         distance = self.parameterAsDouble(parameters, self.DISTANCE, context)

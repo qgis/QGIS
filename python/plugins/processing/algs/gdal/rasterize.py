@@ -94,7 +94,7 @@ class rasterize(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.getParameterValue(self.INPUT)
         noData = self.getParameterValue(self.NO_DATA)
         rastext = str(self.getParameterValue(self.RAST_EXT))

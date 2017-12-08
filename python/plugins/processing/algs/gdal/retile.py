@@ -160,7 +160,7 @@ class retile(GdalAlgorithm):
     def commandName(self):
         return "gdal_retile"
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
 
         arguments.append('-ps')

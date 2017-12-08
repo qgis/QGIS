@@ -100,7 +100,7 @@ class buildvrt(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = []
         arguments.append('-resolution')
         arguments.append(self.RESOLUTION_OPTIONS[self.parameterAsEnum(parameters, self.RESOLUTION, context)])
