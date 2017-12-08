@@ -55,13 +55,19 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewSpatiaLiteLayer/geometry" ) ).toByteArray() );
 
+  mGeometryTypeBox->addItem( tr( "Point" ), QStringLiteral( "POINT" ) );
+  mGeometryTypeBox->addItem( tr( "Line" ), QStringLiteral( "LINE" ) );
+  mGeometryTypeBox->addItem( tr( "Polygon" ), QStringLiteral( "POLYGON" ) );
+  mGeometryTypeBox->addItem( tr( "MultiPoint" ), QStringLiteral( "MULTIPOINT" ) );
+  mGeometryTypeBox->addItem( tr( "MultiLine" ), QStringLiteral( "MULTILINE" ) );
+  mGeometryTypeBox->addItem( tr( "MultiPolygon" ), QStringLiteral( "MULTIPOLYGON" ) );
+
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
   mTypeBox->addItem( tr( "Text data" ), "text" );
   mTypeBox->addItem( tr( "Whole number" ), "integer" );
   mTypeBox->addItem( tr( "Decimal number" ), "real" );
 
-  mPointRadioButton->setChecked( true );
   // Populate the database list from the stored connections
   settings.beginGroup( QStringLiteral( "SpatiaLite/connections" ) );
   QStringList keys = settings.childGroups();
@@ -137,33 +143,7 @@ void QgsNewSpatialiteLayerDialog::toolButtonNewDatabase_clicked()
 
 QString QgsNewSpatialiteLayerDialog::selectedType() const
 {
-  if ( mPointRadioButton->isChecked() )
-  {
-    return QStringLiteral( "POINT" );
-  }
-  else if ( mLineRadioButton->isChecked() )
-  {
-    return QStringLiteral( "LINESTRING" );
-  }
-  else if ( mPolygonRadioButton->isChecked() )
-  {
-    return QStringLiteral( "POLYGON" );
-  }
-  else if ( mMultipointRadioButton->isChecked() )
-  {
-    return QStringLiteral( "MULTIPOINT" );
-  }
-  else if ( mMultilineRadioButton->isChecked() )
-  {
-    return QStringLiteral( "MULTILINESTRING" );
-  }
-  else if ( mMultipolygonRadioButton->isChecked() )
-  {
-    return QStringLiteral( "MULTIPOLYGON" );
-  }
-
-  Q_ASSERT( !"no type selected" );
-  return QLatin1String( "" );
+  return mGeometryTypeBox->currentData( Qt::UserRole ).toString();
 }
 
 void QgsNewSpatialiteLayerDialog::checkOk()
