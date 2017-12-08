@@ -56,9 +56,9 @@ QgsNewVectorLayerDialog::QgsNewVectorLayerDialog( QWidget *parent, Qt::WindowFla
   mWidth->setValidator( new QIntValidator( 1, 255, this ) );
   mPrecision->setValidator( new QIntValidator( 0, 15, this ) );
 
-  mGeometryTypeBox->addItem( tr( "Point" ), QgsWkbTypes::Point );
-  mGeometryTypeBox->addItem( tr( "Line" ), QgsWkbTypes::LineString );
-  mGeometryTypeBox->addItem( tr( "Polygon" ), QgsWkbTypes::Polygon );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "Point" ), QgsWkbTypes::Point );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "Line" ), QgsWkbTypes::LineString );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "Polygon" ), QgsWkbTypes::Polygon );
 
   mOkButton = buttonBox->button( QDialogButtonBox::Ok );
   mOkButton->setEnabled( false );
