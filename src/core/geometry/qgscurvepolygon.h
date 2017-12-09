@@ -136,8 +136,8 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
 
     /**
      * Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
-     *  \param vertex the vertex id
-     *  \returns rotation in radians, clockwise from north
+     * \param vertex the vertex id
+     * \returns rotation in radians, clockwise from north
      */
     double vertexAngle( QgsVertexId vertex ) const override;
 
