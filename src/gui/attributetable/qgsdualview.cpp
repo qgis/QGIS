@@ -318,6 +318,10 @@ void QgsDualView::restoreRecentDisplayExpressions()
 
 void QgsDualView::saveRecentDisplayExpressions() const
 {
+  if ( ! mLayer )
+  {
+    return;
+  }
   QList<QAction *> actions = mFeatureListPreviewButton->actions();
 
   // Remove existing same action
@@ -396,6 +400,7 @@ void QgsDualView::insertRecentlyUsedDisplayExpression( const QString &expression
   mFeatureListPreviewButton->insertAction( mLastDisplayExpressionAction, previewAction );
   mLastDisplayExpressionAction = previewAction;
 }
+
 
 void QgsDualView::mFeatureList_aboutToChangeEditSelection( bool &ok )
 {
@@ -513,6 +518,12 @@ void QgsDualView::copyCellContent() const
     QVariant var = masterModel()->data( index, Qt::DisplayRole );
     QApplication::clipboard()->setText( var.toString() );
   }
+}
+
+void QgsDualView::cancelProgress()
+{
+  if ( mProgressDlg )
+    mProgressDlg->cancel();
 }
 
 void QgsDualView::hideEvent( QHideEvent *event )

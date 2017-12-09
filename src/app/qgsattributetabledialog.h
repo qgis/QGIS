@@ -230,7 +230,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
     QMenu *mFilterColumnsMenu = nullptr;
     QSignalMapper *mFilterActionMapper = nullptr;
 
-    QgsVectorLayer *mLayer = nullptr;
+    QPointer< QgsVectorLayer > mLayer = nullptr;
     QgsSearchWidgetWrapper *mCurrentSearchWidgetWrapper = nullptr;
     QStringList mVisibleFields;
     QgsAttributeEditorContext mEditorContext;
