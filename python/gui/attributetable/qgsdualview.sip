@@ -210,6 +210,12 @@ class QgsDualView : QStackedWidget
 .. versionadded:: 1.16
 %End
 
+    void cancelProgress( );
+%Docstring
+ Cancel the progress dialog (if any)
+.. versionadded:: 3.0
+%End
+
   signals:
 
     void displayExpressionChanged( const QString &expression );
