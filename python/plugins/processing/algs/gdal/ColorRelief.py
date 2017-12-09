@@ -92,7 +92,7 @@ class ColorRelief(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['color-relief']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         arguments.append(inLayer.source())

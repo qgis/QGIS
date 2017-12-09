@@ -128,7 +128,7 @@ class proximity(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
-    def getConsoleCommands(self, parameters, context, feedback):
+    def getConsoleCommands(self, parameters, context, feedback, executing=True):
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)
         distance = self.parameterAsDouble(parameters, self.MAX_DISTANCE, context)
         replaceValue = self.parameterAsDouble(parameters, self.REPLACE, context)

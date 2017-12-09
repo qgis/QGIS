@@ -118,7 +118,7 @@ class GdalParametersPanel(ParametersPanel):
                     self.text.setPlainText('')
                     return
 
-            commands = self.alg.getConsoleCommands(parameters, context, feedback)
+            commands = self.alg.getConsoleCommands(parameters, context, feedback, executing=False)
             commands = [c for c in commands if c not in ['cmd.exe', '/C ']]
             self.text.setPlainText(" ".join(commands))
         except AlgorithmDialogBase.InvalidParameterValue as e:

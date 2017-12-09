@@ -82,10 +82,10 @@ from .OffsetCurve import OffsetCurve
 from .ogr2ogr import ogr2ogr
 from .ogrinfo import ogrinfo
 from .OgrToPostGis import OgrToPostGis
+from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 from .OneSideBuffer import OneSideBuffer
 from .PointsAlongLines import PointsAlongLines
 
-# from .ogr2ogrtopostgislist import Ogr2OgrToPostGisList
 # from .ogr2ogrtabletopostgislist import Ogr2OgrTableToPostGisList
 
 pluginPath = os.path.normpath(os.path.join(
@@ -187,9 +187,9 @@ class GdalAlgorithmProvider(QgsProcessingProvider):
             ogr2ogr(),
             ogrinfo(),
             OgrToPostGis(),
+            Ogr2OgrToPostGisList(),
             OneSideBuffer(),
             PointsAlongLines(),
-            # Ogr2OgrToPostGisList(),
             # Ogr2OgrTableToPostGisList(),
         ]
         for a in self.algs:
