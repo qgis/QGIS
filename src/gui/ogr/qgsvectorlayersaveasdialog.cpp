@@ -104,7 +104,7 @@ void QgsVectorLayerSaveAsDialog::setup()
   mGeometryTypeComboBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), QgsWkbTypes::displayString( QgsWkbTypes::LineString ), QgsWkbTypes::LineString );
   mGeometryTypeComboBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), QgsWkbTypes::displayString( QgsWkbTypes::Polygon ), QgsWkbTypes::Polygon );
   mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::GeometryCollection ), QgsWkbTypes::GeometryCollection );
-  mGeometryTypeComboBox->addItem( QIcon( path + "/mActionOpenTable.svg" ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
+  mGeometryTypeComboBox->addItem( QIcon( path + "/mIconTableLayer.svg" ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
   mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( -1 ) );
 
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );
