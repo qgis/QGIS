@@ -74,10 +74,10 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
 
 #if 0
   // QGIS always create CompoundCurve and there's no real interest of having just CircularString. CompoundCurve are more useful
-  mGeometryTypeBox->addItem( tr( "Circular string" ), wkbCircularString );
+  mGeometryTypeBox->addItem( tr( "CircularString" ), wkbCircularString );
 #endif
-  mGeometryTypeBox->addItem( tr( "Compound curve" ), wkbCompoundCurve );
-  mGeometryTypeBox->addItem( tr( "Curve polygon" ), wkbCurvePolygon );
+  mGeometryTypeBox->addItem( tr( "CompoundCurve" ), wkbCompoundCurve );
+  mGeometryTypeBox->addItem( tr( "CurvePolygon" ), wkbCurvePolygon );
   mGeometryTypeBox->addItem( tr( "MultiCurve" ), wkbMultiCurve );
   mGeometryTypeBox->addItem( tr( "MultiSurface" ), wkbMultiSurface );
 
