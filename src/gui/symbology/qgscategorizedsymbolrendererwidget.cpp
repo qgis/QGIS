@@ -64,9 +64,12 @@ void QgsCategorizedSymbolRendererModel::setRenderer( QgsCategorizedSymbolRendere
   }
   if ( renderer )
   {
-    beginInsertRows( QModelIndex(), 0, renderer->categories().size() - 1 );
     mRenderer = renderer;
-    endInsertRows();
+    if ( renderer->categories().size() > 0 )
+    {
+      beginInsertRows( QModelIndex(), 0, renderer->categories().size() - 1 );
+      endInsertRows();
+    }
   }
 }
 
