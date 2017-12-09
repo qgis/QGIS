@@ -56,13 +56,15 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewSpatiaLiteLayer/geometry" ) ).toByteArray() );
 
+  QString path = QgsApplication::defaultThemePath();
+
   mGeometryTypeBox->addItem( tr( "Non spatial" ), QStringLiteral( "" ) );
-  mGeometryTypeBox->addItem( tr( "Point" ), QStringLiteral( "POINT" ) );
-  mGeometryTypeBox->addItem( tr( "Line" ), QStringLiteral( "LINESTRING" ) );
-  mGeometryTypeBox->addItem( tr( "Polygon" ), QStringLiteral( "POLYGON" ) );
-  mGeometryTypeBox->addItem( tr( "MultiPoint" ), QStringLiteral( "MULTIPOINT" ) );
-  mGeometryTypeBox->addItem( tr( "MultiLine" ), QStringLiteral( "MULTILINESTRING" ) );
-  mGeometryTypeBox->addItem( tr( "MultiPolygon" ), QStringLiteral( "MULTIPOLYGON" ) );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "Point" ), QStringLiteral( "POINT" ) );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "Line" ), QStringLiteral( "LINESTRING" ) );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "Polygon" ), QStringLiteral( "POLYGON" ) );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "MultiPoint" ), QStringLiteral( "MULTIPOINT" ) );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "MultiLine" ), QStringLiteral( "MULTILINESTRING" ) );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "MultiPolygon" ), QStringLiteral( "MULTIPOLYGON" ) );
 
   pbnFindSRID->setEnabled( false );
   mGeometryWithZCheckBox->setEnabled( false );
