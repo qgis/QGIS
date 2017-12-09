@@ -55,7 +55,7 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
 
   QString path = QgsApplication::defaultThemePath();
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconTableLayer.svg" ), tr( "Non spatial" ), QgsWkbTypes::NoGeometry );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconTableLayer.svg" ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
   mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "Point" ), QgsWkbTypes::Point );
   mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "Line" ), QgsWkbTypes::LineString );
   mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "Polygon" ), QgsWkbTypes::Polygon );
