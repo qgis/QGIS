@@ -65,7 +65,7 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
 
   QString path = QgsApplication::defaultThemePath();
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconTableLayer.svg" ), tr( "Non spatial" ), wkbNone );
+  mGeometryTypeBox->addItem( QIcon( path + "/mIconTableLayer.svg" ), tr( "No geometry" ), wkbNone );
   mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "Point" ), wkbPoint );
   mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "Line" ), wkbLineString );
   mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "Polygon" ), wkbPolygon );
