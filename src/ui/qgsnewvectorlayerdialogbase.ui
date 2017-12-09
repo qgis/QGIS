@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>471</width>
-    <height>604</height>
+    <width>867</width>
+    <height>993</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -103,7 +103,7 @@
          <string>Add to fields list</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/mActionNewAttribute.svg</normaloff>:/images/themes/default/mActionNewAttribute.svg</iconset>
         </property>
         <property name="toolButtonStyle">
@@ -200,7 +200,7 @@
          <string>Remove field</string>
         </property>
         <property name="icon">
-         <iconset>
+         <iconset resource="../../images/images.qrc">
           <normaloff>:/images/themes/default/mActionDeleteAttribute.svg</normaloff>:/images/themes/default/mActionDeleteAttribute.svg</iconset>
         </property>
         <property name="toolButtonStyle">
@@ -271,33 +271,6 @@
        </property>
       </widget>
      </item>
-     <item row="0" column="1">
-      <widget class="QgsFileWidget" name="mFileName"/>
-     </item>
-     <item row="1" column="1">
-      <widget class="QComboBox" name="mFileEncoding">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QComboBox" name="mFileFormatComboBox">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item row="3" column="1">
-      <widget class="QComboBox" name="mGeometryTypeBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-      </widget>
-     </item>
      <item row="4" column="1">
       <widget class="QCheckBox" name="mGeometryWithZCheckBox">
        <property name="text">
@@ -307,10 +280,50 @@
      </item>
      <item row="5" column="1" colspan="2">
       <widget class="QgsProjectionSelectionWidget" name="mCrsSelector" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>0</width>
+         <height>20</height>
+        </size>
+       </property>
        <property name="focusPolicy">
         <enum>Qt::StrongFocus</enum>
        </property>
       </widget>
+     </item>
+     <item row="4" column="2">
+      <widget class="QCheckBox" name="mGeometryWithMCheckBox">
+       <property name="text">
+        <string>Include M values</string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1" colspan="2">
+      <widget class="QComboBox" name="mFileEncoding">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1" colspan="2">
+      <widget class="QComboBox" name="mFileFormatComboBox">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+     <item row="3" column="1" colspan="2">
+      <widget class="QComboBox" name="mGeometryTypeBox">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1" colspan="2">
+      <widget class="QgsFileWidget" name="mFileName" native="true"/>
      </item>
     </layout>
    </item>
@@ -332,11 +345,11 @@
   </customwidget>
  </customwidgets>
  <tabstops>
-  <tabstop>mFileName</tabstop>
   <tabstop>mFileEncoding</tabstop>
   <tabstop>mFileFormatComboBox</tabstop>
   <tabstop>mGeometryTypeBox</tabstop>
   <tabstop>mGeometryWithZCheckBox</tabstop>
+  <tabstop>mGeometryWithMCheckBox</tabstop>
   <tabstop>mCrsSelector</tabstop>
   <tabstop>mNameEdit</tabstop>
   <tabstop>mTypeBox</tabstop>
@@ -346,7 +359,35 @@
   <tabstop>mAttributeView</tabstop>
   <tabstop>mRemoveAttributeButton</tabstop>
  </tabstops>
- <resources/>
+ <resources>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+  <include location="../../images/images.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
