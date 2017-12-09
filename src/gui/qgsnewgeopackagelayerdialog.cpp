@@ -68,18 +68,18 @@ QgsNewGeoPackageLayerDialog::QgsNewGeoPackageLayerDialog( QWidget *parent, Qt::W
   mGeometryTypeBox->addItem( tr( "Point" ), wkbPoint );
   mGeometryTypeBox->addItem( tr( "Line" ), wkbLineString );
   mGeometryTypeBox->addItem( tr( "Polygon" ), wkbPolygon );
-  mGeometryTypeBox->addItem( tr( "Multi point" ), wkbMultiPoint );
-  mGeometryTypeBox->addItem( tr( "Multi line" ), wkbMultiLineString );
-  mGeometryTypeBox->addItem( tr( "Multi polygon" ), wkbMultiPolygon );
+  mGeometryTypeBox->addItem( tr( "MultiPoint" ), wkbMultiPoint );
+  mGeometryTypeBox->addItem( tr( "MultiLine" ), wkbMultiLineString );
+  mGeometryTypeBox->addItem( tr( "MultiPolygon" ), wkbMultiPolygon );
 
 #if 0
   // QGIS always create CompoundCurve and there's no real interest of having just CircularString. CompoundCurve are more useful
-  mGeometryTypeBox->addItem( tr( "Circular string" ), wkbCircularString );
+  mGeometryTypeBox->addItem( tr( "CircularString" ), wkbCircularString );
 #endif
-  mGeometryTypeBox->addItem( tr( "Compound curve" ), wkbCompoundCurve );
-  mGeometryTypeBox->addItem( tr( "Curve polygon" ), wkbCurvePolygon );
-  mGeometryTypeBox->addItem( tr( "Multi curve" ), wkbMultiCurve );
-  mGeometryTypeBox->addItem( tr( "Multi surface" ), wkbMultiSurface );
+  mGeometryTypeBox->addItem( tr( "CompoundCurve" ), wkbCompoundCurve );
+  mGeometryTypeBox->addItem( tr( "CurvePolygon" ), wkbCurvePolygon );
+  mGeometryTypeBox->addItem( tr( "MultiCurve" ), wkbMultiCurve );
+  mGeometryTypeBox->addItem( tr( "MultiSurface" ), wkbMultiSurface );
 
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
