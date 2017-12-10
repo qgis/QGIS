@@ -31,6 +31,7 @@
 #include <QVector3D>
 #include <algorithm>
 
+
 static void make_quad( float x0, float y0, float z0, float x1, float y1, float z1, float height, QVector<float> &data, bool addNormals )
 {
   float dx = x1 - x0;
@@ -65,10 +66,11 @@ static void make_quad( float x0, float y0, float z0, float x1, float y1, float z
 }
 
 
-QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals )
+QgsTessellator::QgsTessellator( double originX, double originY, bool addNormals, bool invertNormals )
   : mOriginX( originX )
   , mOriginY( originY )
   , mAddNormals( addNormals )
+  , mInvertNormals( invertNormals )
 {
   mStride = 3 * sizeof( float );
   if ( addNormals )
@@ -118,7 +120,7 @@ static void _makeWalls( const QgsCurve &ring, bool ccw, float extrusionHeight, Q
   }
 }
 
-static QVector3D _calculateNormal( const QgsCurve *curve, double originX, double originY )
+static QVector3D _calculateNormal( const QgsCurve *curve, double originX, double originY, bool invertNormal )
 {
   QgsVertexId::VertexType vt;
   QgsPoint pt1, pt2;
@@ -171,7 +173,8 @@ static QVector3D _calculateNormal( const QgsCurve *curve, double originX, double
   }
 
   QVector3D normal( nx, ny, nz );
-  //normal = -normal;  // TODO: some datasets seem to work better with, others without inversion
+  if ( invertNormal )
+    normal = -normal;
   normal.normalize();
   return normal;
 }
@@ -320,7 +323,7 @@ void QgsTessellator::addPolygon( const QgsPolygon &polygon, float extrusionHeigh
 {
   const QgsCurve *exterior = polygon.exteriorRing();
 
-  const QVector3D pNormal = _calculateNormal( exterior, mOriginX, mOriginY );
+  const QVector3D pNormal = _calculateNormal( exterior, mOriginX, mOriginY, mInvertNormals );
   const int pCount = exterior->numPoints();
 
   if ( pCount == 4 && polygon.numInteriorRings() == 0 )
