@@ -71,6 +71,11 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     //! Sets front/back culling mode
     void setCullingMode( Qt3DRender::QCullFace::CullingMode mode ) { mCullingMode = mode; }
 
+    //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+    bool invertNormals() const { return mInvertNormals; }
+    //! Sets whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
+    void setInvertNormals( bool invert ) { mInvertNormals = invert; }
+
   private:
     //! how to handle altitude of vector features
     AltitudeClamping mAltClamping = AltClampRelative;
@@ -81,6 +86,7 @@ class _3D_EXPORT QgsPolygon3DSymbol : public QgsAbstract3DSymbol
     float mExtrusionHeight = 0.0f;  //!< How much to extrude (0 means no walls)
     QgsPhongMaterialSettings mMaterial;  //!< Defines appearance of objects
     Qt3DRender::QCullFace::CullingMode mCullingMode = Qt3DRender::QCullFace::NoCulling;  //!< Front/back culling mode
+    bool mInvertNormals = false;
 };
 
 

@@ -32,6 +32,7 @@ QgsPolygon3DSymbolWidget::QgsPolygon3DSymbolWidget( QWidget *parent )
   connect( cboAltClamping, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboAltBinding, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
   connect( cboCullingMode, static_cast<void ( QComboBox::* )( int )>( &QComboBox::currentIndexChanged ), this, &QgsPolygon3DSymbolWidget::changed );
+  connect( chkInvertNormals, &QCheckBox::clicked, this, &QgsPolygon3DSymbolWidget::changed );
   connect( widgetMaterial, &QgsPhongMaterialWidget::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnHeightDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
   connect( btnExtrusionDD, &QgsPropertyOverrideButton::changed, this, &QgsPolygon3DSymbolWidget::changed );
@@ -70,6 +71,7 @@ void QgsPolygon3DSymbolWidget::setSymbol( const QgsPolygon3DSymbol &symbol, QgsV
   cboAltClamping->setCurrentIndex( ( int ) symbol.altitudeClamping() );
   cboAltBinding->setCurrentIndex( ( int ) symbol.altitudeBinding() );
   cboCullingMode->setCurrentIndex( _cullingModeToIndex( symbol.cullingMode() ) );
+  chkInvertNormals->setChecked( symbol.invertNormals() );
   widgetMaterial->setMaterial( symbol.material() );
 
   btnHeightDD->init( QgsAbstract3DSymbol::PropertyHeight, symbol.dataDefinedProperties(), QgsAbstract3DSymbol::propertyDefinitions(), layer, true );
@@ -84,6 +86,7 @@ QgsPolygon3DSymbol QgsPolygon3DSymbolWidget::symbol() const
   sym.setAltitudeClamping( ( AltitudeClamping ) cboAltClamping->currentIndex() );
   sym.setAltitudeBinding( ( AltitudeBinding ) cboAltBinding->currentIndex() );
   sym.setCullingMode( _cullingModeFromIndex( cboCullingMode->currentIndex() ) );
+  sym.setInvertNormals( chkInvertNormals->isChecked() );
   sym.setMaterial( widgetMaterial->material() );
 
   QgsPropertyCollection ddp;
