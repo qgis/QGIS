@@ -69,7 +69,6 @@ RUN  apt-get update \
     qt5keychain-dev \
     qtbase5-dev \
     qtpositioning5-dev \
-    qtscript5-dev \
     qttools5-dev \
     qttools5-dev-tools \
     spawn-fcgi \
