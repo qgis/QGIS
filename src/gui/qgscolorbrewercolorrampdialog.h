@@ -19,7 +19,6 @@
 #include <QDialog>
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
-#include "qgshelp.h"
 #include "ui_qgscolorbrewercolorrampwidgetbase.h"
 #include "qgis_gui.h"
 #include "qgis.h"

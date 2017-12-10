@@ -17,6 +17,8 @@
 
 #include "qgscolorramp.h"
 #include "qgssymbollayerutils.h"
+#include "qgshelp.h"
+
 #include <QAbstractButton>
 #include <QDialogButtonBox>
 
