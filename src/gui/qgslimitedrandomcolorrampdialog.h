@@ -20,7 +20,6 @@
 #include "qgis.h"
 #include "qgspanelwidget.h"
 #include "qgscolorramp.h"
-#include "qgshelp.h"
 #include "ui_qgslimitedrandomcolorrampwidgetbase.h"
 #include "qgis_gui.h"
 
