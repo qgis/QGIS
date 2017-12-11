@@ -169,6 +169,16 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  \param direction transform direction (defaults to forward transformation)
 %End
 
+    QgsRectangle transform( const QgsRectangle &rectangle, TransformDirection direction = ForwardTransform ) const;
+%Docstring
+ Transforms a rectangle to the destination CRS.
+ If the direction is ForwardTransform then coordinates are transformed from source to destination,
+ otherwise points are transformed from destination to source CRS.
+ \param rectangle rectangle to transform
+ \param direction transform direction (defaults to ForwardTransform)
+ :return: transformed rectangle
+ :rtype: QgsRectangle
+%End
 
     void transformCoords( int numPoint, double *x, double *y, double *z, TransformDirection direction = ForwardTransform ) const;
 %Docstring

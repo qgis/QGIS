@@ -47,6 +47,30 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertAlmostEqual(myExpectedValues[2], myProjectedExtent.xMaximum(), msg=myMessage)
         self.assertAlmostEqual(myExpectedValues[3], myProjectedExtent.yMaximum(), msg=myMessage)
 
+    def testTransformQgsRectangle_Regression17600(self):
+        """Test that rectangle transform is in the bindings"""
+        myExtent = QgsRectangle(-1797107, 4392148, 6025926, 6616304)
+        myGeoCrs = QgsCoordinateReferenceSystem()
+        myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
+        myUtmCrs = QgsCoordinateReferenceSystem()
+        myUtmCrs.createFromId(3857, QgsCoordinateReferenceSystem.EpsgCrsId)
+        myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs)
+        myTransformedExtent = myXForm.transform(myExtent)
+        myTransformedExtentForward = myXForm.transform(myExtent, QgsCoordinateTransform.ForwardTransform)
+        self.assertAlmostEquals(myTransformedExtentForward.xMaximum(), myTransformedExtent.xMaximum())
+        self.assertAlmostEquals(myTransformedExtentForward.xMinimum(), myTransformedExtent.xMinimum())
+        self.assertAlmostEquals(myTransformedExtentForward.yMaximum(), myTransformedExtent.yMaximum())
+        self.assertAlmostEquals(myTransformedExtentForward.yMinimum(), myTransformedExtent.yMinimum())
+        self.assertAlmostEquals(myTransformedExtentForward.xMaximum(), 54.13181426773211)
+        self.assertAlmostEquals(myTransformedExtentForward.xMinimum(), -16.14368685298181)
+        self.assertAlmostEquals(myTransformedExtentForward.yMaximum(), 50.971783118386895)
+        self.assertAlmostEquals(myTransformedExtentForward.yMinimum(), 36.66235970825241)
+        myTransformedExtentReverse = myXForm.transform(myTransformedExtent, QgsCoordinateTransform.ReverseTransform)
+        self.assertAlmostEquals(myTransformedExtentReverse.xMaximum(), myExtent.xMaximum())
+        self.assertAlmostEquals(myTransformedExtentReverse.xMinimum(), myExtent.xMinimum())
+        self.assertAlmostEquals(myTransformedExtentReverse.yMaximum(), myExtent.yMaximum())
+        self.assertAlmostEquals(myTransformedExtentReverse.yMinimum(), myExtent.yMinimum())
+
 
 if __name__ == '__main__':
     unittest.main()
