@@ -361,7 +361,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
                                   QgsWkbTypes::Type type, int nDims, int little_endian,
                                   int endian_arch );
     int computeSizeFromGeosWKB2D( const unsigned char *blob, int size,
-                                  int type, int nDims, int little_endian,
+                                  QgsWkbTypes::Type type, int nDims, int little_endian,
                                   int endian_arch );
 
     void fetchConstraints();

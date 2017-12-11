@@ -1122,7 +1122,7 @@ QgsFeatureIterator QgsSpatiaLiteProvider::getFeatures( const QgsFeatureRequest &
 
 
 int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
-    int size, int type, int nDims,
+    int size, QgsWkbTypes::Type type, int nDims,
     int little_endian, int endian_arch )
 {
   Q_UNUSED( size );
@@ -1133,49 +1133,33 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
   const unsigned char *p_in = blob + 5;
   int gsize = 5;
 
-  switch ( type )
+  if ( QgsWkbTypes::isMultiType( type ) )
   {
-    // compunting the required size
-    case GAIA_POINT:
-      switch ( nDims )
-      {
-        case GAIA_XY_Z_M:
-          gsize += 4 * sizeof( double );
-          break;
-        case GAIA_XY_M:
-        case GAIA_XY_Z:
-          gsize += 3 * sizeof( double );
-          break;
-        default:
-          gsize += 2 * sizeof( double );
-          break;
-      }
-      break;
-    case GAIA_LINESTRING:
-      points = gaiaImport32( p_in, little_endian, endian_arch );
-      gsize += 4;
-      switch ( nDims )
-      {
-        case GAIA_XY_Z_M:
-          gsize += points * ( 4 * sizeof( double ) );
-          break;
-        case GAIA_XY_M:
-        case GAIA_XY_Z:
-          gsize += points * ( 3 * sizeof( double ) );
-          break;
-        default:
-          gsize += points * ( 2 * sizeof( double ) );
-          break;
-      }
-      break;
-    case GAIA_POLYGON:
-      rings = gaiaImport32( p_in, little_endian, endian_arch );
-      p_in += 4;
-      gsize += 4;
-      for ( ib = 0; ib < rings; ib++ )
-      {
+    gsize += computeSizeFromMultiWKB2D( p_in, nDims, little_endian,
+                                        endian_arch );
+  }
+  else
+  {
+    switch ( QgsWkbTypes::geometryType( type ) )
+    {
+      // compunting the required size
+      case QgsWkbTypes::PointGeometry:
+        switch ( nDims )
+        {
+          case GAIA_XY_Z_M:
+            gsize += 4 * sizeof( double );
+            break;
+          case GAIA_XY_M:
+          case GAIA_XY_Z:
+            gsize += 3 * sizeof( double );
+            break;
+          default:
+            gsize += 2 * sizeof( double );
+            break;
+        }
+        break;
+      case QgsWkbTypes::LineGeometry:
         points = gaiaImport32( p_in, little_endian, endian_arch );
-        p_in += 4;
         gsize += 4;
         switch ( nDims )
         {
@@ -1190,13 +1174,33 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
             gsize += points * ( 2 * sizeof( double ) );
             break;
         }
-        p_in += points * ( 2 * sizeof( double ) );
-      }
-      break;
-    default:
-      gsize += computeSizeFromMultiWKB2D( p_in, nDims, little_endian,
-                                          endian_arch );
-      break;
+        break;
+      case QgsWkbTypes::PolygonGeometry:
+        rings = gaiaImport32( p_in, little_endian, endian_arch );
+        p_in += 4;
+        gsize += 4;
+        for ( ib = 0; ib < rings; ib++ )
+        {
+          points = gaiaImport32( p_in, little_endian, endian_arch );
+          p_in += 4;
+          gsize += 4;
+          switch ( nDims )
+          {
+            case GAIA_XY_Z_M:
+              gsize += points * ( 4 * sizeof( double ) );
+              break;
+            case GAIA_XY_M:
+            case GAIA_XY_Z:
+              gsize += points * ( 3 * sizeof( double ) );
+              break;
+            default:
+              gsize += points * ( 2 * sizeof( double ) );
+              break;
+          }
+          p_in += points * ( 2 * sizeof( double ) );
+        }
+        break;
+    }
   }
 
   return gsize;
@@ -1232,16 +1236,18 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB2D( const unsigned char *p_in,
         {
           case GAIA_XY_Z_M:
             size += 4 * sizeof( double );
+            p_in += 4 * sizeof( double );
             break;
           case GAIA_XY_Z:
           case GAIA_XY_M:
             size += 3 * sizeof( double );
+            p_in += 3 * sizeof( double );
             break;
           default:
             size += 2 * sizeof( double );
+            p_in += 2 * sizeof( double );
             break;
         }
-        p_in += 2 * sizeof( double );
         break;
       case GAIA_LINESTRING:
         points = gaiaImport32( p_in, little_endian, endian_arch );
@@ -1251,16 +1257,18 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB2D( const unsigned char *p_in,
         {
           case GAIA_XY_Z_M:
             size += points * ( 4 * sizeof( double ) );
+            p_in += points * ( 4 * sizeof( double ) );
             break;
           case GAIA_XY_Z:
           case GAIA_XY_M:
             size += points * ( 3 * sizeof( double ) );
+            p_in += points * ( 3 * sizeof( double ) );
             break;
           default:
             size += points * ( 2 * sizeof( double ) );
+            p_in += points * ( 2 * sizeof( double ) );
             break;
         }
-        p_in += points * ( 2 * sizeof( double ) );
         break;
       case GAIA_POLYGON:
         rings = gaiaImport32( p_in, little_endian, endian_arch );
@@ -1275,16 +1283,18 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB2D( const unsigned char *p_in,
           {
             case GAIA_XY_Z_M:
               size += points * ( 4 * sizeof( double ) );
+              p_in += points * ( 4 * sizeof( double ) );
               break;
             case GAIA_XY_Z:
             case GAIA_XY_M:
               size += points * ( 3 * sizeof( double ) );
+              p_in += points * ( 3 * sizeof( double ) );
               break;
             default:
               size += points * ( 2 * sizeof( double ) );
+              p_in += points * ( 2 * sizeof( double ) );
               break;
           }
-          p_in += points * ( 2 * sizeof( double ) );
         }
         break;
     }
@@ -1305,49 +1315,33 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
   const unsigned char *p_in = blob + 5;
   int gsize = 5;
 
-  switch ( QgsWkbTypes::geometryType( type ) )
+  if ( QgsWkbTypes::isMultiType( type ) )
   {
-    // compunting the required size
-    case QgsWkbTypes::PointGeometry:
-      switch ( nDims )
-      {
-        case GAIA_XY_Z_M:
-          gsize += 4 * sizeof( double );
-          break;
-        case GAIA_XY_M:
-        case GAIA_XY_Z:
-          gsize += 3 * sizeof( double );
-          break;
-        default:
-          gsize += 2 * sizeof( double );
-          break;
-      }
-      break;
-    case QgsWkbTypes::LineGeometry:
-      points = gaiaImport32( p_in, little_endian, endian_arch );
-      gsize += 4;
-      switch ( nDims )
-      {
-        case GAIA_XY_Z_M:
-          gsize += points * ( 4 * sizeof( double ) );
-          break;
-        case GAIA_XY_M:
-        case GAIA_XY_Z:
-          gsize += points * ( 3 * sizeof( double ) );
-          break;
-        default:
-          gsize += points * ( 2 * sizeof( double ) );
-          break;
-      }
-      break;
-    case QgsWkbTypes::PolygonGeometry:
-      rings = gaiaImport32( p_in, little_endian, endian_arch );
-      p_in += 4;
-      gsize += 4;
-      for ( ib = 0; ib < rings; ib++ )
-      {
+    gsize += computeSizeFromMultiWKB3D( p_in, nDims, little_endian,
+                                        endian_arch );
+  }
+  else
+  {
+    switch ( QgsWkbTypes::geometryType( type ) )
+    {
+      // compunting the required size
+      case QgsWkbTypes::PointGeometry:
+        switch ( nDims )
+        {
+          case GAIA_XY_Z_M:
+            gsize += 4 * sizeof( double );
+            break;
+          case GAIA_XY_M:
+          case GAIA_XY_Z:
+            gsize += 3 * sizeof( double );
+            break;
+          default:
+            gsize += 2 * sizeof( double );
+            break;
+        }
+        break;
+      case QgsWkbTypes::LineGeometry:
         points = gaiaImport32( p_in, little_endian, endian_arch );
-        p_in += 4;
         gsize += 4;
         switch ( nDims )
         {
@@ -1362,13 +1356,33 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
             gsize += points * ( 2 * sizeof( double ) );
             break;
         }
-        p_in += points * ( 3 * sizeof( double ) );
-      }
-      break;
-    default:
-      gsize += computeSizeFromMultiWKB3D( p_in, nDims, little_endian,
-                                          endian_arch );
-      break;
+        break;
+      case QgsWkbTypes::PolygonGeometry:
+        rings = gaiaImport32( p_in, little_endian, endian_arch );
+        p_in += 4;
+        gsize += 4;
+        for ( ib = 0; ib < rings; ib++ )
+        {
+          points = gaiaImport32( p_in, little_endian, endian_arch );
+          p_in += 4;
+          gsize += 4;
+          switch ( nDims )
+          {
+            case GAIA_XY_Z_M:
+              gsize += points * ( 4 * sizeof( double ) );
+              break;
+            case GAIA_XY_M:
+            case GAIA_XY_Z:
+              gsize += points * ( 3 * sizeof( double ) );
+              break;
+            default:
+              gsize += points * ( 2 * sizeof( double ) );
+              break;
+          }
+          p_in += points * ( 3 * sizeof( double ) );
+        }
+        break;
+    }
   }
 
   return gsize;
@@ -1404,16 +1418,18 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB3D( const unsigned char *p_in,
         {
           case GAIA_XY_Z_M:
             size += 4 * sizeof( double );
+            p_in += 4 * sizeof( double );
             break;
           case GAIA_XY_Z:
           case GAIA_XY_M:
             size += 3 * sizeof( double );
+            p_in += 3 * sizeof( double );
             break;
           default:
             size += 2 * sizeof( double );
+            p_in += 2 * sizeof( double );
             break;
         }
-        p_in += 3 * sizeof( double );
         break;
       case QgsWkbTypes::LineGeometry:
         points = gaiaImport32( p_in, little_endian, endian_arch );
@@ -1423,16 +1439,18 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB3D( const unsigned char *p_in,
         {
           case GAIA_XY_Z_M:
             size += points * ( 4 * sizeof( double ) );
+            p_in += points * ( 4 * sizeof( double ) );
             break;
           case GAIA_XY_Z:
           case GAIA_XY_M:
             size += points * ( 3 * sizeof( double ) );
+            p_in += points * ( 3 * sizeof( double ) );
             break;
           default:
             size += points * ( 2 * sizeof( double ) );
+            p_in += points * ( 2 * sizeof( double ) );
             break;
         }
-        p_in += points * ( 3 * sizeof( double ) );
         break;
       case QgsWkbTypes::PolygonGeometry:
         rings = gaiaImport32( p_in, little_endian, endian_arch );
@@ -1447,16 +1465,18 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB3D( const unsigned char *p_in,
           {
             case GAIA_XY_Z_M:
               size += points * ( 4 * sizeof( double ) );
+              p_in += points * ( 4 * sizeof( double ) );
               break;
             case GAIA_XY_Z:
             case GAIA_XY_M:
               size += points * ( 3 * sizeof( double ) );
+              p_in += points * ( 3 * sizeof( double ) );
               break;
             default:
               size += points * ( 2 * sizeof( double ) );
+              p_in += points * ( 2 * sizeof( double ) );
               break;
           }
-          p_in += points * ( 3 * sizeof( double ) );
         }
         break;
     }
@@ -1505,7 +1525,7 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB( const unsigned char *blob,
     return;
   }
 
-// we need creating a GAIA WKB
+  // we need creating a GAIA WKB
   if ( gDims == 3 )
     gsize = computeSizeFromGeosWKB3D( blob, blob_size, type, nDims,
                                       little_endian, endian_arch );
@@ -3183,7 +3203,7 @@ void QgsSpatiaLiteProvider::convertToGeosWKB( const unsigned char *blob,
       {
         p_in += 5;
         *p_out++ = 0x01;
-        gaiaExport32( p_out, type == GAIA_MULTIPOLYGONZ ? QgsWkbTypes::Polygon25D : QgsWkbTypes::PolygonZM, 1, endian_arch );
+        gaiaExport32( p_out, type == GAIA_MULTIPOLYGONZ ? QgsWkbTypes::Polygon25D : QgsWkbTypes::PolygonM, 1, endian_arch );
         p_out += 4;
         rings = gaiaImport32( p_in, little_endian, endian_arch );
         p_in += 4;
