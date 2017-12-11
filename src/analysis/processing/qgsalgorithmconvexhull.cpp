@@ -39,6 +39,11 @@ QString QgsConvexHullAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsConvexHullAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsConvexHullAlgorithm::outputName() const
 {
   return QObject::tr( "Convex hulls" );

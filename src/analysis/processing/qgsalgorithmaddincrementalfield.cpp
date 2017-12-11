@@ -49,6 +49,11 @@ QString QgsAddIncrementalFieldAlgorithm::group() const
   return QObject::tr( "Vector table" );
 }
 
+QString QgsAddIncrementalFieldAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectortable" );
+}
+
 QString QgsAddIncrementalFieldAlgorithm::outputName() const
 {
   return QObject::tr( "Incremented" );

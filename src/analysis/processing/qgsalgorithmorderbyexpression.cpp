@@ -42,6 +42,11 @@ QString QgsOrderByExpressionAlgorithm::group() const
   return QObject::tr( "Vector general" );
 }
 
+QString QgsOrderByExpressionAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
+}
+
 void QgsOrderByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

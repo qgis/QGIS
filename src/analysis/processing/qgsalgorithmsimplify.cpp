@@ -39,6 +39,11 @@ QString QgsSimplifyAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsSimplifyAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsSimplifyAlgorithm::outputName() const
 {
   return QObject::tr( "Simplified" );

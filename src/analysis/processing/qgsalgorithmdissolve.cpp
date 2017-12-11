@@ -181,6 +181,11 @@ QString QgsDissolveAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsDissolveAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 
 void QgsDissolveAlgorithm::initAlgorithm( const QVariantMap & )
 {
@@ -235,6 +240,11 @@ QStringList QgsCollectAlgorithm::tags() const
 QString QgsCollectAlgorithm::group() const
 {
   return QObject::tr( "Vector geometry" );
+}
+
+QString QgsCollectAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
 }
 
 QVariantMap QgsCollectAlgorithm::processAlgorithm( const QVariantMap &parameters, QgsProcessingContext &context, QgsProcessingFeedback *feedback )

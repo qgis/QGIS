@@ -39,6 +39,11 @@ QString QgsAssignProjectionAlgorithm::group() const
   return QObject::tr( "Vector general" );
 }
 
+QString QgsAssignProjectionAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
+}
+
 QString QgsAssignProjectionAlgorithm::outputName() const
 {
   return QObject::tr( "Assigned CRS" );

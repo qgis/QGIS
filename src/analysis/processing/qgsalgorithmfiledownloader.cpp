@@ -45,6 +45,11 @@ QString QgsFileDownloaderAlgorithm::group() const
   return tr( "File tools" );
 }
 
+QString QgsFileDownloaderAlgorithm::groupId() const
+{
+  return QStringLiteral( "filetools" );
+}
+
 QString QgsFileDownloaderAlgorithm::shortHelpString() const
 {
   return tr( "This algorithm downloads a URL on the file system." );

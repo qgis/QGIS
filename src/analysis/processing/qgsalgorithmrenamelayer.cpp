@@ -44,6 +44,11 @@ QString QgsRenameLayerAlgorithm::group() const
   return QObject::tr( "Modeler tools" );
 }
 
+QString QgsRenameLayerAlgorithm::groupId() const
+{
+  return QStringLiteral( "modelertools" );
+}
+
 QString QgsRenameLayerAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm renames a layer." );

@@ -40,6 +40,11 @@ QString QgsLineIntersectionAlgorithm::group() const
   return QObject::tr( "Vector overlay" );
 }
 
+QString QgsLineIntersectionAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectoroverlay" );
+}
+
 void QgsLineIntersectionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),

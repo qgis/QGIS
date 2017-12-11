@@ -39,6 +39,11 @@ QString QgsExtractByExpressionAlgorithm::group() const
   return QObject::tr( "Vector selection" );
 }
 
+QString QgsExtractByExpressionAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorselection" );
+}
+
 void QgsExtractByExpressionAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

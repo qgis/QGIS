@@ -39,6 +39,11 @@ QString QgsExtractByAttributeAlgorithm::group() const
   return QObject::tr( "Vector selection" );
 }
 
+QString QgsExtractByAttributeAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorselection" );
+}
+
 void QgsExtractByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

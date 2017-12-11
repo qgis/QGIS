@@ -245,6 +245,11 @@ QString QgsSelectByLocationAlgorithm::group() const
   return QObject::tr( "Vector selection" );
 }
 
+QString QgsSelectByLocationAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorselection" );
+}
+
 QString QgsSelectByLocationAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a selection in a vector layer. The criteria for selecting "
@@ -311,6 +316,11 @@ QStringList QgsExtractByLocationAlgorithm::tags() const
 QString QgsExtractByLocationAlgorithm::group() const
 {
   return QObject::tr( "Vector selection" );
+}
+
+QString QgsExtractByLocationAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorselection" );
 }
 
 QString QgsExtractByLocationAlgorithm::shortHelpString() const
