@@ -64,9 +64,6 @@
 #include <QEventLoop>
 #include <QTextCodec>
 #include <QThread>
-#include <QScriptEngine>
-#include <QScriptValue>
-#include <QScriptValueIterator>
 #include <QNetworkDiskCache>
 #include <QTimer>
 
@@ -2972,39 +2969,33 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
       else if ( jsonPart != -1 )
       {
         QString json = QString::fromUtf8( mIdentifyResultBodies.value( jsonPart ) );
-        json.prepend( '(' ).append( ')' );
-
-        QScriptEngine engine;
-        engine.evaluate( QStringLiteral( "function json_stringify(obj) { return JSON.stringify(obj); }" ) );
-        QScriptValue json_stringify = engine.globalObject().property( QStringLiteral( "json_stringify" ) );
-        Q_ASSERT( json_stringify.isFunction() );
-
-        QScriptValue result = engine.evaluate( json );
 
         QgsFeatureStoreList featureStoreList;
         QgsCoordinateTransform coordinateTransform;
 
         try
         {
-          QgsDebugMsg( QString( "result:%1" ).arg( result.toString() ) );
+          QJsonDocument doc = QJsonDocument::fromJson( json.toUtf8() );
+          if ( doc.isNull() )
+            throw QStringLiteral( "Doc expected" );
+          if ( !doc.isObject() )
+            throw QStringLiteral( "Object expected" );
 
-          if ( !result.isObject() )
-            throw QStringLiteral( "object expected" );
+          QJsonObject result = doc.object();
+          if ( result.value( QLatin1String( "type" ) ).toString() != QLatin1String( "FeatureCollection" ) )
+            throw QStringLiteral( "Type FeatureCollection expected: %1" ).arg( result.value( QLatin1String( "type" ) ).toString() );
 
-          if ( result.property( QStringLiteral( "type" ) ).toString() != QLatin1String( "FeatureCollection" ) )
-            throw QStringLiteral( "type FeatureCollection expected: %1" ).arg( result.property( QStringLiteral( "type" ) ).toString() );
-
-          if ( result.property( QStringLiteral( "crs" ) ).isValid() )
+          if ( result.value( QLatin1String( "crs" ) ).isObject() )
           {
-            QString crsType = result.property( QStringLiteral( "crs" ) ).property( QStringLiteral( "type" ) ).toString();
+            QString crsType = result.value( QLatin1String( "crs" ) ).toObject().value( QLatin1String( "type" ) ).toString();
             QString crsText;
             if ( crsType == QLatin1String( "name" ) )
-              crsText = result.property( QStringLiteral( "crs" ) ).property( QStringLiteral( "properties" ) ).property( QStringLiteral( "name" ) ).toString();
+              crsText = result.value( QStringLiteral( "crs" ) ).toObject().value( QLatin1String( "properties" ) ).toObject().value( QLatin1String( "name" ) ).toString();
             else if ( crsType == QLatin1String( "EPSG" ) )
-              crsText = QStringLiteral( "%1:%2" ).arg( crsType, result.property( QStringLiteral( "crs" ) ).property( QStringLiteral( "properties" ) ).property( QStringLiteral( "code" ) ).toString() );
+              crsText = QStringLiteral( "%1:%2" ).arg( crsType, result.value( QLatin1String( "crs" ) ).toObject().value( QLatin1String( "properties" ) ).toObject().value( QStringLiteral( "code" ) ).toString() );
             else
             {
-              QgsDebugMsg( QString( "crs not supported:%1" ).arg( result.property( "crs" ).toString() ) );
+              QgsDebugMsg( QStringLiteral( "crs not supported:%1" ).arg( result.value( QLatin1String( "crs" ) ).toString() ) );
             }
 
             QgsCoordinateReferenceSystem featuresCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( crsText );
@@ -3018,16 +3009,18 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
             }
           }
 
-          QScriptValue fc = result.property( QStringLiteral( "features" ) );
+          const QJsonValue fc = result.value( QLatin1String( "features" ) );
           if ( !fc.isArray() )
             throw QStringLiteral( "FeatureCollection array expected" );
 
-          QScriptValue f;
-          for ( int i = 0; f = fc.property( i ), f.isValid(); i++ )
-          {
-            QgsDebugMsg( QString( "feature %1" ).arg( i ) );
+          const QJsonArray features = fc.toArray();
 
-            QScriptValue props = f.property( QStringLiteral( "properties" ) );
+          int i = -1;
+          for ( const QJsonValue &fv : features )
+          {
+            ++i;
+            const QJsonObject f = fv.toObject();
+            const QJsonValue props = f.value( QLatin1String( "properties" ) );
             if ( !props.isObject() )
             {
               QgsDebugMsg( "no properties found" );
@@ -3035,52 +3028,52 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
             }
 
             QgsFields fields;
-            QScriptValueIterator it( props );
-            while ( it.hasNext() )
+
+            const QJsonObject properties = props.toObject();
+            auto fieldIterator = properties.constBegin();
+
+            for ( ; fieldIterator != properties.constEnd(); ++fieldIterator )
             {
-              it.next();
-              fields.append( QgsField( it.name(), QVariant::String ) );
+              fields.append( QgsField( fieldIterator.key(), QVariant::String ) );
             }
 
             QgsFeature feature( fields );
 
-            if ( f.property( QStringLiteral( "geometry" ) ).isValid() )
+            if ( f.value( QLatin1String( "geometry" ) ).isObject() )
             {
-              QScriptValue geom = json_stringify.call( QScriptValue(), QScriptValueList() << f.property( QStringLiteral( "geometry" ) ) );
-              if ( geom.isString() )
+              QJsonDocument serializer( f.value( QLatin1String( "geometry" ) ).toObject() );
+              QString geom = serializer.toJson( QJsonDocument::JsonFormat::Compact );
+
+              gdal::ogr_geometry_unique_ptr ogrGeom( OGR_G_CreateGeometryFromJson( geom.toUtf8() ) );
+              if ( ogrGeom )
               {
-                gdal::ogr_geometry_unique_ptr ogrGeom( OGR_G_CreateGeometryFromJson( geom.toString().toUtf8() ) );
-                if ( ogrGeom )
+                int wkbSize = OGR_G_WkbSize( ogrGeom.get() );
+                unsigned char *wkb = new unsigned char[ wkbSize ];
+                OGR_G_ExportToWkb( ogrGeom.get(), ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
+
+                QgsGeometry g;
+                g.fromWkb( wkb, wkbSize );
+                feature.setGeometry( g );
+
+                if ( coordinateTransform.isValid() && feature.hasGeometry() )
                 {
-                  int wkbSize = OGR_G_WkbSize( ogrGeom.get() );
-                  unsigned char *wkb = new unsigned char[ wkbSize ];
-                  OGR_G_ExportToWkb( ogrGeom.get(), ( OGRwkbByteOrder ) QgsApplication::endian(), wkb );
-
-                  QgsGeometry g;
-                  g.fromWkb( wkb, wkbSize );
-                  feature.setGeometry( g );
-
-                  if ( coordinateTransform.isValid() && feature.hasGeometry() )
-                  {
-                    QgsGeometry transformed = feature.geometry();
-                    transformed.transform( coordinateTransform );
-                    feature.setGeometry( transformed );
-                  }
+                  QgsGeometry transformed = feature.geometry();
+                  transformed.transform( coordinateTransform );
+                  feature.setGeometry( transformed );
                 }
               }
             }
 
             int j = 0;
-            it.toFront();
-            while ( it.hasNext() )
+            fieldIterator = properties.constBegin();
+            for ( ; fieldIterator != properties.constEnd(); ++fieldIterator )
             {
-              it.next();
-              feature.setAttribute( j++, it.value().toString() );
+              feature.setAttribute( j++, fieldIterator.value().toString() );
             }
 
             QgsFeatureStore featureStore( fields, crs() );
 
-            QMap<QString, QVariant> params;
+            QVariantMap params;
             params.insert( QStringLiteral( "sublayer" ), layerList[count] );
             params.insert( QStringLiteral( "featureType" ), QStringLiteral( "%1_%2" ).arg( count ).arg( i ) );
             params.insert( QStringLiteral( "getFeatureInfoUrl" ), requestUrl.toString() );
