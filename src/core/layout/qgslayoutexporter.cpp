@@ -214,15 +214,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
     {
       georeferenceOutput( outputFilePath, nullptr, bounds, settings.dpi );
 
-#if 0
       if ( settings.generateWorldFile )
       {
         // should generate world file for this page
         double a, b, c, d, e, f;
         if ( bounds.isValid() )
-          mLayout->computeWorldFileParameters( bounds, a, b, c, d, e, f );
+          computeWorldFileParameters( bounds, a, b, c, d, e, f, settings.dpi );
         else
-          mLayout->computeWorldFileParameters( a, b, c, d, e, f );
+          computeWorldFileParameters( a, b, c, d, e, f, settings.dpi );
 
         QFileInfo fi( outputFilePath );
         // build the world file name
@@ -232,7 +231,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
         writeWorldFile( worldFileName, a, b, c, d, e, f );
       }
-#endif
     }
 
   }
@@ -321,6 +319,25 @@ double *QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, con
   t[5] = -cosAlpha * pixelHeightScale;
 
   return t;
+}
+
+void QgsLayoutExporter::writeWorldFile( const QString &worldFileName, double a, double b, double c, double d, double e, double f ) const
+{
+  QFile worldFile( worldFileName );
+  if ( !worldFile.open( QIODevice::WriteOnly | QIODevice::Text | QIODevice::Truncate ) )
+  {
+    return;
+  }
+  QTextStream fout( &worldFile );
+
+  // QString::number does not use locale settings (for the decimal point)
+  // which is what we want here
+  fout << QString::number( a, 'f', 12 ) << "\r\n";
+  fout << QString::number( d, 'f', 12 ) << "\r\n";
+  fout << QString::number( b, 'f', 12 ) << "\r\n";
+  fout << QString::number( e, 'f', 12 ) << "\r\n";
+  fout << QString::number( c, 'f', 12 ) << "\r\n";
+  fout << QString::number( f, 'f', 12 ) << "\r\n";
 }
 
 bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMap *map, const QRectF &exportRegion, double dpi ) const

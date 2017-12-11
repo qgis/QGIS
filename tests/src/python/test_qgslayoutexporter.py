@@ -276,6 +276,45 @@ class TestQgsLayoutExporter(unittest.TestCase):
         page2_path = os.path.join(self.basetestpath, 'test_exporttoimagesize_2.png')
         self.assertTrue(self.checkImage('exporttoimagesize_page2', 'exporttoimagesize_page2', page2_path))
 
+    def testExportWorldFile(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+
+        # add some items
+        map = QgsLayoutItemMap(l)
+        map.attemptSetSceneRect(QRectF(30, 60, 200, 100))
+        extent = QgsRectangle(2000, 2800, 2500, 2900)
+        map.setExtent(extent)
+        l.addLayoutItem(map)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.ImageExportSettings()
+        settings.dpi = 80
+        settings.generateWorldFile = False
+
+        rendered_file_path = os.path.join(self.basetestpath, 'test_exportwithworldfile.png')
+        world_file_path = os.path.join(self.basetestpath, 'test_exportwithworldfile.pgw')
+        self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(rendered_file_path))
+        self.assertFalse(os.path.exists(world_file_path))
+
+        # with world file
+        settings.generateWorldFile = True
+        rendered_file_path = os.path.join(self.basetestpath, 'test_exportwithworldfile.png')
+        self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(rendered_file_path))
+        self.assertTrue(os.path.exists(world_file_path))
+
+        lines = tuple(open(world_file_path, 'r'))
+        values = [float(f) for f in lines]
+        self.assertAlmostEqual(values[0], 0.794117647059, 2)
+        self.assertAlmostEqual(values[1], 0.0, 2)
+        self.assertAlmostEqual(values[2], 0.0, 2)
+        self.assertAlmostEqual(values[3], -0.794251134644, 2)
+        self.assertAlmostEqual(values[4], 1925.000000000000, 2)
+        self.assertAlmostEqual(values[5], 3050.000000000000, 2)
+
 
 if __name__ == '__main__':
     unittest.main()
