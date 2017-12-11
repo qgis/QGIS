@@ -155,6 +155,25 @@ Resolution to export layout at
  :rtype: ExportResult
 %End
 
+    bool georeferenceOutput( const QString &file, QgsLayoutItemMap *referenceMap = 0,
+                             const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
+%Docstring
+ Georeferences a ``file`` (image of PDF) exported from the layout.
+
+ The ``referenceMap`` argument specifies a map item to use for georeferencing. If left as None, the
+ default layout QgsLayout.referenceMap() will be used.
+
+ The ``exportRegion`` argument can be set to a valid rectangle to indicate that only part of the layout was
+ exported.
+
+ Similarly, the ``dpi`` can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+
+ The function will return true if the output was successfully georeferenced.
+
+.. seealso:: :py:func:`computeGeoTransform()`
+ :rtype: bool
+%End
+
 };
 
 

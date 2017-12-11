@@ -18,8 +18,12 @@
 #include "qgslayout.h"
 #include "qgslayoutitemmap.h"
 #include "qgslayoutpagecollection.h"
+#include "qgsogrutils.h"
 #include <QImageWriter>
 #include <QSize>
+
+#include "gdal.h"
+#include "cpl_conv.h"
 
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )
@@ -206,10 +210,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
       return FileError;
     }
 
-#if 0 //TODO
     if ( page == worldFilePageNo )
     {
-      mLayout->georeferenceOutput( outputFilePath, nullptr, bounds, imageDlg.resolution() );
+#if 0
+      georeferenceOutput( outputFilePath, nullptr, bounds, imageDlg.resolution() );
 
       if ( settings.generateWorldFile )
       {
@@ -228,10 +232,128 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
         writeWorldFile( worldFileName, a, b, c, d, e, f );
       }
-    }
 #endif
+    }
+
   }
   return Success;
+}
+
+double *QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, const QRectF &region, double dpi ) const
+{
+  if ( !map )
+    map = mLayout->referenceMap();
+
+  if ( !map )
+    return nullptr;
+
+  if ( dpi < 0 )
+    dpi = mLayout->context().dpi();
+
+  // calculate region of composition to export (in mm)
+  QRectF exportRegion = region;
+  if ( !exportRegion.isValid() )
+  {
+    int pageNumber = map->page();
+
+    QgsLayoutItemPage *page = mLayout->pageCollection()->page( pageNumber );
+    double pageY = page->pos().y();
+    QSizeF pageSize = page->rect().size();
+    exportRegion = QRectF( 0, pageY, pageSize.width(), pageSize.height() );
+  }
+
+  // map rectangle (in mm)
+  QRectF mapItemSceneRect = map->mapRectToScene( map->rect() );
+
+  // destination width/height in mm
+  double outputHeightMM = exportRegion.height();
+  double outputWidthMM = exportRegion.width();
+
+  // map properties
+  QgsRectangle mapExtent = map->extent();
+  double mapXCenter = mapExtent.center().x();
+  double mapYCenter = mapExtent.center().y();
+  double alpha = - map->mapRotation() / 180 * M_PI;
+  double sinAlpha = std::sin( alpha );
+  double cosAlpha = std::cos( alpha );
+
+  // get the extent (in map units) for the exported region
+  QPointF mapItemPos = map->pos();
+  //adjust item position so it is relative to export region
+  mapItemPos.rx() -= exportRegion.left();
+  mapItemPos.ry() -= exportRegion.top();
+
+  // calculate extent of entire page in map units
+  double xRatio = mapExtent.width() / mapItemSceneRect.width();
+  double yRatio = mapExtent.height() / mapItemSceneRect.height();
+  double xmin = mapExtent.xMinimum() - mapItemPos.x() * xRatio;
+  double ymax = mapExtent.yMaximum() + mapItemPos.y() * yRatio;
+  QgsRectangle paperExtent( xmin, ymax - outputHeightMM * yRatio, xmin + outputWidthMM * xRatio, ymax );
+
+  // calculate origin of page
+  double X0 = paperExtent.xMinimum();
+  double Y0 = paperExtent.yMaximum();
+
+  if ( !qgsDoubleNear( alpha, 0.0 ) )
+  {
+    // translate origin to account for map rotation
+    double X1 = X0 - mapXCenter;
+    double Y1 = Y0 - mapYCenter;
+    double X2 = X1 * cosAlpha + Y1 * sinAlpha;
+    double Y2 = -X1 * sinAlpha + Y1 * cosAlpha;
+    X0 = X2 + mapXCenter;
+    Y0 = Y2 + mapYCenter;
+  }
+
+  // calculate scaling of pixels
+  int pageWidthPixels = static_cast< int >( dpi * outputWidthMM / 25.4 );
+  int pageHeightPixels = static_cast< int >( dpi * outputHeightMM / 25.4 );
+  double pixelWidthScale = paperExtent.width() / pageWidthPixels;
+  double pixelHeightScale = paperExtent.height() / pageHeightPixels;
+
+  // transform matrix
+  double *t = new double[6];
+  t[0] = X0;
+  t[1] = cosAlpha * pixelWidthScale;
+  t[2] = -sinAlpha * pixelWidthScale;
+  t[3] = Y0;
+  t[4] = -sinAlpha * pixelHeightScale;
+  t[5] = -cosAlpha * pixelHeightScale;
+
+  return t;
+}
+
+bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMap *map, const QRectF &exportRegion, double dpi ) const
+{
+  if ( !map )
+    map = mLayout->referenceMap();
+
+  if ( !map )
+    return false; // no reference map
+
+  if ( dpi < 0 )
+    dpi = mLayout->context().dpi();
+
+  double *t = computeGeoTransform( map, exportRegion, dpi );
+  if ( !t )
+    return false;
+
+  // important - we need to manually specify the DPI in advance, as GDAL will otherwise
+  // assume a DPI of 150
+  CPLSetConfigOption( "GDAL_PDF_DPI", QString::number( dpi ).toLocal8Bit().constData() );
+  gdal::dataset_unique_ptr outputDS( GDALOpen( file.toLocal8Bit().constData(), GA_Update ) );
+  if ( outputDS )
+  {
+    GDALSetGeoTransform( outputDS.get(), t );
+#if 0
+    //TODO - metadata can be set here, e.g.:
+    GDALSetMetadataItem( outputDS, "AUTHOR", "me", nullptr );
+#endif
+    GDALSetProjection( outputDS.get(), map->crs().toWkt().toLocal8Bit().constData() );
+  }
+  CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
+  delete[] t;
+  return true;
 }
 
 QImage QgsLayoutExporter::createImage( const QgsLayoutExporter::ImageExportSettings &settings, int page, QRectF &bounds, bool &skipPage ) const

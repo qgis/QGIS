@@ -20,9 +20,11 @@
 #include "qgsmargins.h"
 #include <QPointer>
 #include <QSize>
+#include <QRectF>
 
 class QgsLayout;
 class QPainter;
+class QgsLayoutItemMap;
 
 /**
  * \ingroup core
@@ -166,6 +168,24 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult exportToImage( const QString &filePath, const ImageExportSettings &settings );
 
+    /**
+     * Georeferences a \a file (image of PDF) exported from the layout.
+     *
+     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as nullptr, the
+     * default layout QgsLayout::referenceMap() will be used.
+     *
+     * The \a exportRegion argument can be set to a valid rectangle to indicate that only part of the layout was
+     * exported.
+     *
+     * Similarly, the \a dpi can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+     *
+     * The function will return true if the output was successfully georeferenced.
+     *
+     * \see computeGeoTransform()
+     */
+    bool georeferenceOutput( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
+                             const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
+
   private:
 
     QPointer< QgsLayout > mLayout;
@@ -178,6 +198,23 @@ class CORE_EXPORT QgsLayoutExporter
      * Saves an image to a file, possibly using format specific options (e.g. LZW compression for tiff)
     */
     static bool saveImage( const QImage &image, const QString &imageFilename, const QString &imageFormat );
+
+    /**
+     * Computes a GDAL style geotransform for georeferencing a layout.
+     *
+     * The \a referenceMap argument specifies a map item to use for georeferencing. If left as nullptr, the
+     * default layout QgsLayout::referenceMap() will be used.
+     *
+     * The \a exportRegion argument can be set to a valid rectangle to indicate that only part of the layout was
+     * exported.
+     *
+     * Similarly, the \a dpi can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+     *
+     * \see georeferenceOutput()
+     */
+    double *computeGeoTransform( const QgsLayoutItemMap *referenceMap = nullptr, const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
+
+    friend class TestQgsLayout;
 
 };
 

@@ -52,6 +52,7 @@ class TestQgsLayout: public QObject
     void shouldExportPage();
     void pageIsEmpty();
     void clear();
+    void georeference();
 
   private:
     QString mReport;
@@ -722,6 +723,75 @@ void TestQgsLayout::clear()
   l.layoutItems( items );
   QVERIFY( items.empty() );
   QCOMPARE( l.undoStack()->stack()->count(), 0 );
+}
+
+void TestQgsLayout::georeference()
+{
+  QgsRectangle extent( 2000, 2800, 2500, 2900 );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutExporter exporter( &l );
+
+  // no map
+  double *t = exporter.computeGeoTransform( nullptr );
+  QVERIFY( !t );
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
+
+  t = exporter.computeGeoTransform( map );
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3050, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
+  delete[] t;
+
+  // don't specify map
+  l.setReferenceMap( map );
+  t = exporter.computeGeoTransform();
+  QGSCOMPARENEAR( t[0], 1925.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211719, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3050, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
+  delete[] t;
+
+  // specify extent
+  t = exporter.computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
+  QGSCOMPARENEAR( t[0], 2100.0, 1.0 );
+  QGSCOMPARENEAR( t[1], 0.211864, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 2800, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.211864, 0.0001 );
+  delete[] t;
+
+  // specify dpi
+  t = exporter.computeGeoTransform( map, QRectF(), 75 );
+  QGSCOMPARENEAR( t[0], 1925.0, 1 );
+  QGSCOMPARENEAR( t[1], 0.847603, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[3], 3050.0, 1 );
+  QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
+  QGSCOMPARENEAR( t[5], -0.846774, 0.0001 );
+  delete[] t;
+
+  // rotation
+  map->setMapRotation( 45 );
+  t = exporter.computeGeoTransform( map );
+  QGSCOMPARENEAR( t[0], 1878.768940, 1 );
+  QGSCOMPARENEAR( t[1], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[2], 0.149708, 0.0001 );
+  QGSCOMPARENEAR( t[3], 2761.611652, 1 );
+  QGSCOMPARENEAR( t[4], 0.14969, 0.0001 );
+  QGSCOMPARENEAR( t[5], -0.14969, 0.0001 );
+  delete[] t;
 }
 
 
