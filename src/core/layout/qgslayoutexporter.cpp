@@ -155,6 +155,8 @@ class LayoutDpiRestorer
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings )
 {
+  mErrorFileName.clear();
+
   int worldFilePageNo = -1;
   if ( QgsLayoutItemMap *referenceMap = mLayout->referenceMap() )
   {
@@ -199,14 +201,17 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
     if ( skip )
       continue; // should skip this page, e.g. null size
 
+    QString outputFilePath = generateFileName( path, baseName, extension, page );
+
     if ( image.isNull() )
     {
+      mErrorFileName = outputFilePath;
       return MemoryError;
     }
 
-    QString outputFilePath = generateFileName( path, baseName, extension, page );
     if ( !saveImage( image, outputFilePath, extension ) )
     {
+      mErrorFileName = outputFilePath;
       return FileError;
     }
 
