@@ -30,6 +30,8 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
 
   private slots:
 
+    void updateGui();
+
     void gridResolutionChanged( double d );
     void gridResolutionUnitsChanged( QgsUnitTypes::LayoutUnit unit );
     void gridOffsetXChanged( double d );

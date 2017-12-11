@@ -624,7 +624,7 @@ class QgsLayoutUndoCommand: public QgsAbstractLayoutUndoCommand
         return;
       }
 
-      mLayout->readXmlLayoutSettings( stateDoc.documentElement().firstChild().toElement(), stateDoc, QgsReadWriteContext() );
+      mLayout->readXmlLayoutSettings( stateDoc.documentElement(), stateDoc, QgsReadWriteContext() );
       mLayout->project()->setDirty( true );
     }
 
@@ -753,6 +753,7 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
   setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
   mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
+  emit changed();
 
   return true;
 }
@@ -848,12 +849,16 @@ bool QgsLayout::readXml( const QDomElement &layoutElement, const QDomDocument &d
     return object->readXml( layoutElement, document, context );
   };
 
+  blockSignals( true ); // defer changed signal to end
   readXmlLayoutSettings( layoutElement, document, context );
+  blockSignals( false );
 
   restore( mPageCollection.get() );
   restore( &mSnapper );
   restore( &mGridSettings );
   addItemsFromXml( layoutElement, document, context );
+
+  emit changed();
 
   return true;
 }

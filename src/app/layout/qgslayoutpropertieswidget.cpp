@@ -74,7 +74,14 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mReferenceMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutPropertiesWidget::referenceMapChanged );
 
   mReferenceMapComboBox->setCurrentLayout( mLayout );
-  mReferenceMapComboBox->setItem( mLayout->referenceMap() );
+
+  connect( mLayout, &QgsLayout::changed, this, &QgsLayoutPropertiesWidget::updateGui );
+  updateGui();
+}
+
+void QgsLayoutPropertiesWidget::updateGui()
+{
+  whileBlocking( mReferenceMapComboBox )->setItem( mLayout->referenceMap() );
 }
 
 void QgsLayoutPropertiesWidget::updateSnappingElements()
