@@ -186,6 +186,22 @@ class CORE_EXPORT QgsLayoutExporter
     bool georeferenceOutput( const QString &file, QgsLayoutItemMap *referenceMap = nullptr,
                              const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 
+    /**
+     * Compute world file parameters. Assumes the whole page containing the reference map item
+     * will be exported.
+     *
+     * The \a dpi argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+     */
+    void computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
+
+    /**
+     * Computes the world file parameters for a specified \a region of the layout.
+     *
+     * The \a dpi argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+     */
+    void computeWorldFileParameters( const QRectF &region, double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
+
+
   private:
 
     QPointer< QgsLayout > mLayout;

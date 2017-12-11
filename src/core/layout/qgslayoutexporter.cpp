@@ -212,9 +212,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
     if ( page == worldFilePageNo )
     {
-#if 0
-      georeferenceOutput( outputFilePath, nullptr, bounds, imageDlg.resolution() );
+      georeferenceOutput( outputFilePath, nullptr, bounds, settings.dpi );
 
+#if 0
       if ( settings.generateWorldFile )
       {
         // should generate world file for this page
@@ -354,6 +354,94 @@ bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMa
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
   delete[] t;
   return true;
+}
+
+void QgsLayoutExporter::computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi ) const
+{
+  QgsLayoutItemMap *map = mLayout->referenceMap();
+  if ( !map )
+  {
+    return;
+  }
+
+  int pageNumber = map->page();
+  QgsLayoutItemPage *page = mLayout->pageCollection()->page( pageNumber );
+  double pageY = page->pos().y();
+  QSizeF pageSize = page->rect().size();
+  QRectF pageRect( 0, pageY, pageSize.width(), pageSize.height() );
+  computeWorldFileParameters( pageRect, a, b, c, d, e, f, dpi );
+}
+
+void QgsLayoutExporter::computeWorldFileParameters( const QRectF &exportRegion, double &a, double &b, double &c, double &d, double &e, double &f, double dpi ) const
+{
+  // World file parameters : affine transformation parameters from pixel coordinates to map coordinates
+  QgsLayoutItemMap *map = mLayout->referenceMap();
+  if ( !map )
+  {
+    return;
+  }
+
+  double destinationHeight = exportRegion.height();
+  double destinationWidth = exportRegion.width();
+
+  QRectF mapItemSceneRect = map->mapRectToScene( map->rect() );
+  QgsRectangle mapExtent = map->extent();
+
+  double alpha = map->mapRotation() / 180 * M_PI;
+
+  double xRatio = mapExtent.width() / mapItemSceneRect.width();
+  double yRatio = mapExtent.height() / mapItemSceneRect.height();
+
+  double xCenter = mapExtent.center().x();
+  double yCenter = mapExtent.center().y();
+
+  // get the extent (in map units) for the region
+  QPointF mapItemPos = map->pos();
+  //adjust item position so it is relative to export region
+  mapItemPos.rx() -= exportRegion.left();
+  mapItemPos.ry() -= exportRegion.top();
+
+  double xmin = mapExtent.xMinimum() - mapItemPos.x() * xRatio;
+  double ymax = mapExtent.yMaximum() + mapItemPos.y() * yRatio;
+  QgsRectangle paperExtent( xmin, ymax - destinationHeight * yRatio, xmin + destinationWidth * xRatio, ymax );
+
+  double X0 = paperExtent.xMinimum();
+  double Y0 = paperExtent.yMinimum();
+
+  if ( dpi < 0 )
+    dpi = mLayout->context().dpi();
+
+  int widthPx = static_cast< int >( dpi * destinationWidth / 25.4 );
+  int heightPx = static_cast< int >( dpi * destinationHeight / 25.4 );
+
+  double Ww = paperExtent.width() / widthPx;
+  double Hh = paperExtent.height() / heightPx;
+
+  // scaling matrix
+  double s[6];
+  s[0] = Ww;
+  s[1] = 0;
+  s[2] = X0;
+  s[3] = 0;
+  s[4] = -Hh;
+  s[5] = Y0 + paperExtent.height();
+
+  // rotation matrix
+  double r[6];
+  r[0] = std::cos( alpha );
+  r[1] = -std::sin( alpha );
+  r[2] = xCenter * ( 1 - std::cos( alpha ) ) + yCenter * std::sin( alpha );
+  r[3] = std::sin( alpha );
+  r[4] = std::cos( alpha );
+  r[5] = - xCenter * std::sin( alpha ) + yCenter * ( 1 - std::cos( alpha ) );
+
+  // result = rotation x scaling = rotation(scaling(X))
+  a = r[0] * s[0] + r[1] * s[3];
+  b = r[0] * s[1] + r[1] * s[4];
+  c = r[0] * s[2] + r[1] * s[5] + r[2];
+  d = r[3] * s[0] + r[4] * s[3];
+  e = r[3] * s[1] + r[4] * s[4];
+  f = r[3] * s[2] + r[4] * s[5] + r[5];
 }
 
 QImage QgsLayoutExporter::createImage( const QgsLayoutExporter::ImageExportSettings &settings, int page, QRectF &bounds, bool &skipPage ) const

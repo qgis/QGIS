@@ -27,6 +27,7 @@
 #include "qgsproject.h"
 #include "qgsmapthemecollection.h"
 #include "qgsproperty.h"
+#include "qgslayoutpagecollection.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -46,8 +47,9 @@ class TestQgsLayoutMap : public QObject
     void render();
 #if 0
     void uniqueId(); //test if map id is adapted when doing copy paste
-    void worldFileGeneration(); // test world file generation
 #endif
+    void worldFileGeneration(); // test world file generation
+
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
@@ -189,17 +191,31 @@ void TestQgsLayoutMap::uniqueId()
 
   QVERIFY( oldId != newId );
 }
+#endif
 
 void TestQgsLayoutMap::worldFileGeneration()
 {
-  mComposerMap->setNewExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
-  mComposerMap->setMapRotation( 30.0 );
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+  QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
+  page2->setPageSize( "A4", QgsLayoutItemPage::Landscape );
+  l.pageCollection()->addPage( page2 );
 
-  mComposition->setGenerateWorldFile( true );
-  mComposition->setReferenceMap( mComposerMap );
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 20, 20, 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setLayers( QList<QgsMapLayer *>() << mRasterLayer );
+  l.addLayoutItem( map );
+
+  map->setExtent( QgsRectangle( 781662.375, 3339523.125, 793062.375, 3345223.125 ) );
+  map->setMapRotation( 30.0 );
+
+  l.setReferenceMap( map );
+
+  QgsLayoutExporter exporter( &l );
 
   double a, b, c, d, e, f;
-  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+  exporter.computeWorldFileParameters( a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18048, 0.001 );
   QGSCOMPARENEAR( b, 2.41331, 0.001 );
@@ -209,8 +225,8 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( f, 3.34241e+06, 1e+03 );
 
   //test with map on second page. Parameters should be the same
-  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
-  mComposition->computeWorldFileParameters( a, b, c, d, e, f );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ), true, false, 1 );
+  exporter.computeWorldFileParameters( a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18048, 0.001 );
   QGSCOMPARENEAR( b, 2.41331, 0.001 );
@@ -220,8 +236,8 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( f, 3.34241e+06, 1e+03 );
 
   //test computing parameters for specific region
-  mComposerMap->setItemPosition( 20, 20, QgsComposerItem::UpperLeft, 2 );
-  mComposition->computeWorldFileParameters( QRectF( 10, 5, 260, 200 ), a, b, c, d, e, f );
+  map->attemptMove( QgsLayoutPoint( 20, 20 ), true, false, 1 );
+  exporter.computeWorldFileParameters( QRectF( 10, 5, 260, 200 ), a, b, c, d, e, f );
 
   QGSCOMPARENEAR( a, 4.18061, 0.001 );
   QGSCOMPARENEAR( b, 2.41321, 0.001 );
@@ -229,12 +245,7 @@ void TestQgsLayoutMap::worldFileGeneration()
   QGSCOMPARENEAR( d, 2.4137, 0.001 );
   QGSCOMPARENEAR( e, -4.1798, 0.001 );
   QGSCOMPARENEAR( f, 3.35331e+06, 1e+03 );
-
-  mComposition->setGenerateWorldFile( false );
-  mComposerMap->setMapRotation( 0.0 );
-
 }
-#endif
 
 
 void TestQgsLayoutMap::mapPolygonVertices()

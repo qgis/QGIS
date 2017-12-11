@@ -174,6 +174,22 @@ Resolution to export layout at
  :rtype: bool
 %End
 
+    void computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
+%Docstring
+ Compute world file parameters. Assumes the whole page containing the reference map item
+ will be exported.
+
+ The ``dpi`` argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+%End
+
+    void computeWorldFileParameters( const QRectF &region, double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
+%Docstring
+ Computes the world file parameters for a specified ``region`` of the layout.
+
+ The ``dpi`` argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+%End
+
+
 };
 
 
