@@ -467,6 +467,14 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime );
   }
 
+  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    // boolean data type - likely other drivers also support this
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 );
+  }
+
+
   setNativeTypes( nativeTypes );
 
   QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );
