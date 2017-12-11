@@ -1,10 +1,10 @@
 /***************************************************************************
-  qgsmaptooldigitizefeature- %{Cpp:License:ClassName}
+  qgsmaptooldigitizefeature.cpp
 
  ---------------------
  begin                : 7.12.2017
- copyright            : (C) 2017 by david
- email                : [your-email-here]
+ copyright            : (C) 2017 by David Signer
+ email                : david@opengis.ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -41,14 +41,14 @@ QgsMapToolDigitizeFeature::QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, Capt
   : QgsMapToolCapture( canvas, QgisApp::instance()->cadDockWidget(), mode )
   , mCheckGeometryType( true )
 {
-  mToolName = tr( "Add feature" );
+  mToolName = tr( "Digitize feature" );
   connect( QgisApp::instance(), &QgisApp::newProject, this, &QgsMapToolDigitizeFeature::stopCapturing );
   connect( QgisApp::instance(), &QgisApp::projectRead, this, &QgsMapToolDigitizeFeature::stopCapturing );
 }
 
 void QgsMapToolDigitizeFeature::digitized( QgsFeature *f )
 {
-    emit digitizingFinished( static_cast< const QgsFeature & > ( *f ) );
+  emit digitizingFinished( static_cast< const QgsFeature & >( *f ) );
 }
 
 void QgsMapToolDigitizeFeature::activate()
@@ -58,10 +58,20 @@ void QgsMapToolDigitizeFeature::activate()
   {
     QgsFeature f;
     digitized( &f );
+    emit digitizingFinalized();
     return;
   }
 
+  //refresh the layer, with the current layer - so capturemode will be set at activate
+  canvas()->setCurrentLayer( canvas()->currentLayer() );
+
   QgsMapToolCapture::activate();
+}
+
+void QgsMapToolDigitizeFeature::deactivate()
+{
+  QgsMapToolCapture::deactivate();
+  emit digitizingAborted();
 }
 
 bool QgsMapToolDigitizeFeature::checkGeometryType() const
@@ -178,10 +188,12 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       f.setGeometry( g );
       f.setValid( true );
 
-      digitized(  &f );
+      digitized( &f );
 
       // we are done with digitizing for now so instruct advanced digitizing dock to reset its CAD points
       cadDockWidget()->clearPoints();
+
+      emit digitizingFinalized();
     }
   }
 
@@ -303,6 +315,8 @@ void QgsMapToolDigitizeFeature::cadCanvasReleaseEvent( QgsMapMouseEvent *e )
       digitized( f.get() );
 
       stopCapturing();
+
+      emit digitizingFinalized();
     }
   }
 }

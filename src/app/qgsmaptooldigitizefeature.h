@@ -1,10 +1,10 @@
 /***************************************************************************
-  qgsmaptooldigitizegeometry - %{Cpp:License:ClassName}
+  qgsmaptooldigitizegeometry.h
 
  ---------------------
  begin                : 7.12.2017
- copyright            : (C) 2017 by david
- email                : [your-email-here]
+ copyright            : (C) 2017 by David Signer
+ email                : david@opengis.ch
  ***************************************************************************
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
@@ -24,7 +24,7 @@ class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
 {
     Q_OBJECT
   public:
-    //! \since QGIS 2.12
+    //! \since QGIS 3.2
     QgsMapToolDigitizeFeature( QgsMapCanvas *canvas, CaptureMode mode );
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
@@ -32,9 +32,12 @@ class APP_EXPORT QgsMapToolDigitizeFeature : public QgsMapToolCapture
     virtual void digitized( QgsFeature *f );
 
     virtual void activate() override;
+    virtual void deactivate() override;
 
   signals:
     void digitizingFinished( const QgsFeature & );
+    void digitizingFinalized( );
+    void digitizingAborted( );
 
   protected:
 

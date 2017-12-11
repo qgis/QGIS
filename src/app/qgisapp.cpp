@@ -13348,7 +13348,8 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
   }
   else
   {
-    for ( const QgsFeature &f : layer->selectedFeatures() )
+    const auto selectedFeatures = layer->selectedFeatures();
+    for ( const QgsFeature &f : selectedFeatures )
     {
       featureList.append( f );
     }
@@ -13365,13 +13366,14 @@ QgsFeature QgisApp::duplicateFeatures( QgsMapLayer *mlayer, const QgsFeature &fe
     QgsVectorLayerUtils::duplicateFeature( layer, f, QgsProject::instance(), 0, duplicateFeatureContext );
     featureCount += 1;
 
-    for ( QgsVectorLayer *chl : duplicateFeatureContext.layers() )
+    const auto duplicatedFeatureContextLayers = duplicateFeatureContext.layers();
+    for ( QgsVectorLayer *chl : duplicatedFeatureContextLayers )
     {
-      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( duplicateFeatureContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
+      childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( QString::number( duplicateFeatureContext.duplicatedFeatures( chl ).size() ), chl->name() ) );
     }
   }
 
-  messageBar()->pushMessage( tr( "%1 features on layer %2 duplicated\n%3" ).arg( featureCount ).arg( layer->name() ).arg( childrenInfo ), QgsMessageBar::SUCCESS, 5 );
+  messageBar()->pushMessage( tr( "%1 features on layer %2 duplicated\n%3" ).arg( QString::number( featureCount ), layer->name(), childrenInfo ), QgsMessageBar::SUCCESS, 5 );
 
   return QgsFeature();
 }
@@ -13386,10 +13388,9 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
 
   layer->startEditing();
 
-  QgsMapToolDigitizeFeature *digiFeature = nullptr;
-  digiFeature = new QgsMapToolDigitizeFeature( mMapCanvas, QgsMapToolCapture::CaptureNone );
+  QgsMapToolDigitizeFeature *digitizeFeature = new QgsMapToolDigitizeFeature( mMapCanvas, QgsMapToolCapture::CaptureNone );
 
-  mMapCanvas->setMapTool( digiFeature );
+  mMapCanvas->setMapTool( digitizeFeature );
   mMapCanvas->window()->raise();
   mMapCanvas->activateWindow();
   mMapCanvas->setFocus();
@@ -13397,8 +13398,7 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
   QString msg = tr( "Digitize the duplicate, please." ).arg( layer->name() );
   messageBar()->pushMessage( msg, QgsMessageBar::INFO, 3 );
 
-  QMetaObject::Connection *connDigitizingFinished = new QMetaObject::Connection();
-  *connDigitizingFinished = connect( digiFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )( const QgsFeature & )>( &QgsMapToolDigitizeFeature::digitizingFinished ), this, [this, layer, feature, connDigitizingFinished, digiFeature]( const QgsFeature & digitizedFeature )
+  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )( const QgsFeature & )>( &QgsMapToolDigitizeFeature::digitizingFinished ), this, [this, layer, feature, digitizeFeature]( const QgsFeature & digitizedFeature )
   {
     QString msg = tr( "Duplicate digitized" );
     messageBar()->pushMessage( msg, QgsMessageBar::INFO, 1 );
@@ -13410,24 +13410,28 @@ QgsFeature QgisApp::duplicateFeatureDigitized( QgsMapLayer *mlayer, const QgsFea
     QgsVectorLayerUtils::duplicateFeature( layer, newFeature, QgsProject::instance(), 0, duplicateFeatureContext );
 
     QString childrenInfo;
-    for ( QgsVectorLayer *chl : duplicateFeatureContext.layers() )
+    const auto duplicateFeatureContextLayers = duplicateFeatureContext.layers();
+    for ( QgsVectorLayer *chl : duplicateFeatureContextLayers )
     {
       childrenInfo += ( tr( "%1 children on layer %2 duplicated" ).arg( duplicateFeatureContext.duplicatedFeatures( chl ).size() ).arg( chl->name() ) );
     }
 
     messageBar()->pushMessage( tr( "Feature on layer %2 duplicated\n%3" ).arg( layer->name() ).arg( childrenInfo ), QgsMessageBar::SUCCESS, 5 );
-    mMapCanvas->unsetMapTool( digiFeature );
-    //disconnect( *connDigitizingFinished );
-    //delete digiFeature;
-  }
-                                   );
 
-  QMetaObject::Connection *connDigitizingAborted = new QMetaObject::Connection();
-  *connDigitizingAborted = connect( digiFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::deactivate ), this, [this, layer, feature, connDigitizingFinished, digiFeature]()
-  {
-    delete digiFeature;
   }
-                                  );
+         );
+
+  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::digitizingFinalized ), this, [this, digitizeFeature]()
+  {
+    mMapCanvas->unsetMapTool( digitizeFeature );
+  }
+         );
+
+  connect( digitizeFeature, static_cast<void ( QgsMapToolDigitizeFeature::* )()>( &QgsMapToolDigitizeFeature::digitizingAborted ), this, [this, digitizeFeature]()
+  {
+    delete digitizeFeature;
+  }
+         );
 
   return QgsFeature();
 }
