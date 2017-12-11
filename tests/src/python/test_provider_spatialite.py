@@ -28,7 +28,8 @@ from qgis.core import (QgsVectorLayer,
                        QgsFieldConstraints,
                        QgsVectorLayerUtils,
                        QgsSettings,
-                       QgsDefaultValue)
+                       QgsDefaultValue,
+                       QgsWkbTypes)
 
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
@@ -89,6 +90,33 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         cur.execute(sql)
         sql = "INSERT INTO test_pg (id, name, geometry) "
         sql += "VALUES (1, 'toto', GeomFromText('POLYGON((0 0,1 0,1 1,0 1,0 0))', 4326))"
+        cur.execute(sql)
+
+        # table with Z dimension geometry
+        sql = "CREATE TABLE test_z (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_z', 'geometry', 4326, 'POINT', 'XYZ')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_z (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT Z (0 0 1)', 4326))"
+        cur.execute(sql)
+
+        # table with M value geometry
+        sql = "CREATE TABLE test_m (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_m', 'geometry', 4326, 'POINT', 'XYM')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_m (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT M (0 0 1)', 4326))"
+        cur.execute(sql)
+
+        # table with Z dimension and M value geometry
+        sql = "CREATE TABLE test_zm (id INTEGER NOT NULL PRIMARY KEY, name TEXT NOT NULL)"
+        cur.execute(sql)
+        sql = "SELECT AddGeometryColumn('test_zm', 'geometry', 4326, 'POINT', 'XYZM')"
+        cur.execute(sql)
+        sql = "INSERT INTO test_zm (id, name, geometry) "
+        sql += "VALUES (1, 'toto', GeomFromText('POINT ZM (0 0 1 1)', 4326))"
         cur.execute(sql)
 
         # table with multiple column primary key
@@ -307,6 +335,31 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sum_id2 = sum(f.attributes()[0] for f in l.getFeatures())
         self.assertEqual(sum_id1, 32)
         self.assertEqual(sum_id2, 32)
+
+    def test_zm(self):
+        """Test Z dimension and M value"""
+        l = QgsVectorLayer("dbname=%s table='test_z' (geometry) key='id'" % self.dbname, "test_z", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasZ(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.z(), 1.0)
+
+        l = QgsVectorLayer("dbname=%s table='test_m' (geometry) key='id'" % self.dbname, "test_m", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasM(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.m(), 1.0)
+
+        l = QgsVectorLayer("dbname=%s table='test_zm' (geometry) key='id'" % self.dbname, "test_zm", "spatialite")
+        self.assertTrue(l.isValid())
+        self.assertTrue(QgsWkbTypes.hasZ(l.wkbType()))
+        self.assertTrue(QgsWkbTypes.hasM(l.wkbType()))
+        feature = l.getFeature(1)
+        geom = feature.geometry().constGet()
+        self.assertEqual(geom.z(), 1.0)
+        self.assertEqual(geom.m(), 1.0)
 
     def test_case(self):
         """Test case sensitivity issues"""

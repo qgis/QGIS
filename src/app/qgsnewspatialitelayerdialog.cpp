@@ -56,10 +56,10 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewSpatiaLiteLayer/geometry" ) ).toByteArray() );
 
   mGeometryTypeBox->addItem( tr( "Point" ), QStringLiteral( "POINT" ) );
-  mGeometryTypeBox->addItem( tr( "Line" ), QStringLiteral( "LINE" ) );
+  mGeometryTypeBox->addItem( tr( "Line" ), QStringLiteral( "LINESTRING" ) );
   mGeometryTypeBox->addItem( tr( "Polygon" ), QStringLiteral( "POLYGON" ) );
   mGeometryTypeBox->addItem( tr( "MultiPoint" ), QStringLiteral( "MULTIPOINT" ) );
-  mGeometryTypeBox->addItem( tr( "MultiLine" ), QStringLiteral( "MULTILINE" ) );
+  mGeometryTypeBox->addItem( tr( "MultiLine" ), QStringLiteral( "MULTILINESTRING" ) );
   mGeometryTypeBox->addItem( tr( "MultiPolygon" ), QStringLiteral( "MULTIPOLYGON" ) );
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
@@ -145,6 +145,24 @@ void QgsNewSpatialiteLayerDialog::toolButtonNewDatabase_clicked()
 QString QgsNewSpatialiteLayerDialog::selectedType() const
 {
   return mGeometryTypeBox->currentData( Qt::UserRole ).toString();
+}
+
+QString QgsNewSpatialiteLayerDialog::selectedZM() const
+{
+  if ( mGeometryWithZCheckBox->isChecked() && !mGeometryWithMCheckBox->isChecked() )
+  {
+    return QStringLiteral( "XYZ" );
+  }
+  else if ( !mGeometryWithZCheckBox->isChecked() && mGeometryWithMCheckBox->isChecked() )
+  {
+    return QStringLiteral( "XYM" );
+  }
+  else if ( mGeometryWithZCheckBox->isChecked() && mGeometryWithMCheckBox->isChecked() )
+  {
+    return QStringLiteral( "XYZM" );
+  }
+
+  return QStringLiteral( "XY" );
 }
 
 void QgsNewSpatialiteLayerDialog::checkOk()
@@ -320,7 +338,8 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), fi.fileName() + tr( "@" ) + fi.canonicalFilePath() );
     settings.setValue( key, fi.canonicalFilePath() );
 
-    QMessageBox::information( nullptr, tr( "SpatiaLite Database" ), tr( "Registered new database!" ) );
+    // Reload connections to refresh browser panel
+    QgisApp::instance()->reloadConnections();
   }
 
   pbnFindSRID->setEnabled( true );
@@ -366,11 +385,12 @@ bool QgsNewSpatialiteLayerDialog::apply()
 
   QgsDebugMsg( sql ); // OK
 
-  QString sqlAddGeom = QStringLiteral( "select AddGeometryColumn(%1,%2,%3,%4,2)" )
+  QString sqlAddGeom = QStringLiteral( "select AddGeometryColumn(%1,%2,%3,%4,%5)" )
                        .arg( quotedValue( leLayerName->text() ),
                              quotedValue( leGeometryColumn->text() ) )
                        .arg( mCrsId.split( ':' ).value( 1, QStringLiteral( "0" ) ).toInt() )
-                       .arg( quotedValue( selectedType() ) );
+                       .arg( quotedValue( selectedType() ) )
+                       .arg( quotedValue( selectedZM() ) );
   QgsDebugMsg( sqlAddGeom ); // OK
 
   QString sqlCreateIndex = QStringLiteral( "select CreateSpatialIndex(%1,%2)" )
@@ -426,6 +446,9 @@ bool QgsNewSpatialiteLayerDialog::apply()
                   leGeometryColumn->text() ), leLayerName->text(), QStringLiteral( "spatialite" ) );
         if ( layer->isValid() )
         {
+          // Reload connections to refresh browser panel
+          QgisApp::instance()->reloadConnections();
+
           // register this layer with the central layers registry
           QList<QgsMapLayer *> myList;
           myList << layer;
