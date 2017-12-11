@@ -323,10 +323,11 @@ class Repositories(QObject):
         settings.endGroup()
 
     # ----------------------------------------- #
-    def requestFetching(self, key):
+    def requestFetching(self, key, url=None, redirectionCounter=0):
         """ start fetching the repository given by key """
         self.mRepositories[key]["state"] = 1
-        url = QUrl(self.mRepositories[key]["url"] + self.urlParams())
+        if not url:
+            url = QUrl(self.mRepositories[key]["url"] + self.urlParams())
         # v=str(Qgis.QGIS_VERSION_INT)
         # url.addQueryItem('qgis', '.'.join([str(int(s)) for s in [v[0], v[1:3]]]) ) # don't include the bugfix version!
 
@@ -345,6 +346,7 @@ class Repositories(QObject):
         self.mRepositories[key]["QRequest"].setAttribute(QNetworkRequest.User, key)
         self.mRepositories[key]["xmlData"] = QgsNetworkAccessManager.instance().get(self.mRepositories[key]["QRequest"])
         self.mRepositories[key]["xmlData"].setProperty('reposName', key)
+        self.mRepositories[key]["xmlData"].setProperty('redirectionCounter', redirectionCounter)
         self.mRepositories[key]["xmlData"].downloadProgress.connect(self.mRepositories[key]["Relay"].dataReadProgress)
         self.mRepositories[key]["xmlData"].finished.connect(self.xmlDownloaded)
 
@@ -373,6 +375,19 @@ class Repositories(QObject):
             self.mRepositories[reposName]["error"] = reply.errorString()
             if reply.error() == QNetworkReply.OperationCanceledError:
                 self.mRepositories[reposName]["error"] += "\n\n" + QCoreApplication.translate("QgsPluginInstaller", "If you haven't canceled the download manually, it was most likely caused by a timeout. In this case consider increasing the connection timeout value in QGIS options window.")
+        elif reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 301:
+            redirectionUrl = reply.attribute(QNetworkRequest.RedirectionTargetAttribute)
+            if redirectionUrl.isRelative():
+                redirectionUrl = reply.url().resolved(redirectionUrl)
+            redirectionCounter = reply.property('redirectionCounter') + 1
+            if redirectionCounter > 4:
+                self.mRepositories[reposName]["state"] = 3
+                self.mRepositories[reposName]["error"] = QCoreApplication.translate("QgsPluginInstaller", "Too many redirections")
+            else:
+                # Fire a new request and exit immediately in order to quietly destroy the old one
+                self.requestFetching(reposName, redirectionUrl, redirectionCounter)
+                reply.deleteLater()
+                return
         else:
             reposXML = QDomDocument()
             content = reply.readAll()

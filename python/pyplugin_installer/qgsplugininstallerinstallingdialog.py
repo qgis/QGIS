@@ -50,15 +50,19 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
         self.labelName.setText(plugin["name"])
         self.buttonBox.clicked.connect(self.abort)
 
-        url = QUrl(plugin["download_url"])
+        self.url = QUrl(plugin["download_url"])
+        self.redirectionCounter = 0
 
         fileName = plugin["filename"]
         tmpDir = QDir.tempPath()
         tmpPath = QDir.cleanPath(tmpDir + "/" + fileName)
         self.file = QFile(tmpPath)
 
-        self.request = QNetworkRequest(url)
-        authcfg = repositories.all()[plugin["zip_repository"]]["authcfg"]
+        self.requestDownloading()
+
+    def requestDownloading(self):
+        self.request = QNetworkRequest(self.url)
+        authcfg = repositories.all()[self.plugin["zip_repository"]]["authcfg"]
         if authcfg and isinstance(authcfg, str):
             if not QgsApplication.authManager().updateNetworkRequest(
                     self.request, authcfg.strip()):
@@ -106,6 +110,23 @@ class QgsPluginInstallerInstallingDialog(QDialog, Ui_QgsPluginInstallerInstallin
             self.reject()
             reply.deleteLater()
             return
+        elif reply.attribute(QNetworkRequest.HttpStatusCodeAttribute) == 301:
+            redirectionUrl = reply.attribute(QNetworkRequest.RedirectionTargetAttribute)
+            self.redirectionCounter += 1
+            if self.redirectionCounter > 4:
+                self.mResult = QCoreApplication.translate("QgsPluginInstaller", "Too many redirections")
+                self.reject()
+                reply.deleteLater()
+                return
+            else:
+                if redirectionUrl.isRelative():
+                    redirectionUrl = reply.url().resolved(redirectionUrl)
+                # Fire a new request and exit immediately in order to quietly destroy the old one
+                self.url = redirectionUrl
+                self.requestDownloading()
+                reply.deleteLater()
+                return
+
         self.file.open(QFile.WriteOnly)
         self.file.write(reply.readAll())
         self.file.close()
