@@ -112,6 +112,23 @@ QgsVectorFileWriter::QgsVectorFileWriter( const QString &vectorFileName,
         layerName, action );
 }
 
+bool QgsVectorFileWriter::supportsFeatureStyles( const QString &driverName )
+{
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+  GDALDriverH gdalDriver = GDALGetDriverByName( driverName.toLocal8Bit().constData() );
+  if ( !gdalDriver )
+    return false;
+
+  char **driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
+  if ( !driverMetadata )
+    return false;
+
+  return CSLFetchBoolean( driverMetadata, GDAL_DCAP_FEATURE_STYLES, false );
+#else
+  return driverName == QLatin1String( "DXF" ) || driverName == QLatin1String( "KML" ) || driverName == QLatin1String( "MapInfo File" ) || driverName == QLatin1String( "MapInfo MIF" );
+#endif
+}
+
 void QgsVectorFileWriter::init( QString vectorFileName,
                                 QString fileEncoding,
                                 const QgsFields &fields,
@@ -2724,7 +2741,7 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
         driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
       }
 
-      bool nonSpatialFormat = nonSpatialFormat = CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false );
+      bool nonSpatialFormat = CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false );
 #else
       bool nonSpatialFormat = ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) );
 #endif

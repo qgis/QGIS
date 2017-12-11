@@ -388,7 +388,7 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   }
 
   // Show symbology options only for some formats
-  if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "KML" ) || sFormat == QLatin1String( "MapInfo File" ) || sFormat == QLatin1String( "MapInfo MIF" ) )
+  if ( QgsVectorFileWriter::supportsFeatureStyles( sFormat ) )
   {
     mSymbologyExportLabel->setVisible( true );
     mSymbologyExportComboBox->setVisible( true );
