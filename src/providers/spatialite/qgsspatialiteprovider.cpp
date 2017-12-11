@@ -1200,6 +1200,10 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
           p_in += points * ( 2 * sizeof( double ) );
         }
         break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        break;
     }
   }
 
@@ -1382,6 +1386,10 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
           p_in += points * ( 3 * sizeof( double ) );
         }
         break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        break;
     }
   }
 
@@ -1478,6 +1486,10 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB3D( const unsigned char *p_in,
               break;
           }
         }
+        break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         break;
     }
   }
@@ -2452,6 +2464,10 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
                   break;
               }
               break;
+
+            case QgsWkbTypes::UnknownGeometry:
+            case QgsWkbTypes::NullGeometry:
+              break;
           }
           p_out += 4;
           switch ( QgsWkbTypes::geometryType( type2 ) )
@@ -2550,8 +2566,16 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
                 }
               }
               break;
+
+            case QgsWkbTypes::UnknownGeometry:
+            case QgsWkbTypes::NullGeometry:
+              break;
           }
         }
+        break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         break;
     }
   }
@@ -2726,6 +2750,10 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
             }
           }
         }
+        break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         break;
     }
   }
