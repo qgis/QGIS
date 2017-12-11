@@ -197,18 +197,13 @@ QgsSnappingWidget::QgsSnappingWidget( QgsProject *project, QgsMapCanvas *canvas,
     QToolButton *topoButton = new QToolButton();
     topoButton->addAction( mTopologicalEditingAction );
     topoButton->setDefaultAction( mTopologicalEditingAction );
-    if ( mDisplayMode == Widget )
-    {
-      topoButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    }
+    topoButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     layout->addWidget( topoButton );
+
     QToolButton *interButton = new QToolButton();
     interButton->addAction( mIntersectionSnappingAction );
     interButton->setDefaultAction( mIntersectionSnappingAction );
-    if ( mDisplayMode == Widget )
-    {
-      interButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    }
+    interButton->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
     layout->addWidget( interButton );
 
     layout->setContentsMargins( 0, 0, 0, 0 );
@@ -384,8 +379,8 @@ void QgsSnappingWidget::enableIntersectionSnapping( bool enabled )
 
 void QgsSnappingWidget::onSnappingTreeLayersChanged()
 {
+  mLayerTreeView->expandAll();
   mLayerTreeView->resizeColumnToContents( 0 );
-  QTimer::singleShot( 0, mLayerTreeView, &QTreeView::expandAll );
 }
 
 void QgsSnappingWidget::modeButtonTriggered( QAction *action )
