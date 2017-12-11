@@ -73,7 +73,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
     //! Start of rubber band creation
     QPointF mRubberBandStartPos;
 
-    QgsLayoutMouseHandles *mMouseHandles = nullptr; //owned by scene
+    QPointer< QgsLayoutMouseHandles > mMouseHandles; //owned by scene
 };
 
 #endif // QGSLAYOUTVIEWTOOLSELECT_H

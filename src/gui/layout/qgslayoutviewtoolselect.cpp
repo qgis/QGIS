@@ -33,7 +33,12 @@ QgsLayoutViewToolSelect::QgsLayoutViewToolSelect( QgsLayoutView *view )
 QgsLayoutViewToolSelect::~QgsLayoutViewToolSelect()
 {
   if ( mMouseHandles )
+  {
+    // want to force them to be removed from the scene
+    if ( mMouseHandles->scene() )
+      mMouseHandles->scene()->removeItem( mMouseHandles );
     mMouseHandles->deleteLater();
+  }
 }
 
 void QgsLayoutViewToolSelect::layoutPressEvent( QgsLayoutViewMouseEvent *event )
