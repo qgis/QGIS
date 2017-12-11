@@ -95,6 +95,24 @@ QSizeF QgsLayoutPageCollection::maximumPageSize() const
   return maxSize;
 }
 
+bool QgsLayoutPageCollection::hasUniformPageSizes() const
+{
+  QSizeF size;
+  for ( QgsLayoutItemPage *page : mPages )
+  {
+    QSizeF pageSize = mLayout->convertToLayoutUnits( page->pageSize() );
+    if ( !size.isValid() )
+      size = pageSize;
+    else
+    {
+      if ( !qgsDoubleNear( pageSize.width(), size.width(), 0.01 )
+           || !qgsDoubleNear( pageSize.height(), size.height(), 0.01 ) )
+        return false;
+    }
+  }
+  return true;
+}
+
 int QgsLayoutPageCollection::pageNumberForPoint( QPointF point ) const
 {
   int pageNumber = 0;

@@ -243,6 +243,14 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QSizeF maximumPageSize() const;
 
     /**
+     * Returns true if the layout has uniform page sizes, e.g. all pages are the same size.
+     *
+     * This method does not consider differing units as non-uniform sizes, only the actual
+     * physical size of the pages.
+     */
+    bool hasUniformPageSizes() const;
+
+    /**
      * Returns the page number corresponding to a \a point in the layout (in layout units).
      *
      * Page numbers in collections begin at 0 - so a page number of 0 indicates the

@@ -282,6 +282,34 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(collection.maximumPageSize().width(), 100000.0)
         self.assertEqual(collection.maximumPageSize().height(), 100000.0)
 
+    def testUniformPageSizes(self):
+        """
+        Test detection of uniform page sizes
+        """
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        self.assertTrue(collection.hasUniformPageSizes())
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        self.assertTrue(collection.hasUniformPageSizes())
+
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize(QgsLayoutSize(21.0, 29.7, QgsUnitTypes.LayoutCentimeters))
+        collection.addPage(page2)
+        self.assertTrue(collection.hasUniformPageSizes())
+
+        # add a page with other units
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A5')
+        collection.addPage(page3)
+        self.assertFalse(collection.hasUniformPageSizes())
+
     def testReflow(self):
         """
         Test reflowing pages

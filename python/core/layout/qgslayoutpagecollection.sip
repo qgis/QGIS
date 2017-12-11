@@ -198,6 +198,15 @@ Returns the maximum width of pages in the collection. The returned value is
 in layout units.
 %End
 
+    bool hasUniformPageSizes() const;
+%Docstring
+ Returns true if the layout has uniform page sizes, e.g. all pages are the same size.
+
+ This method does not consider differing units as non-uniform sizes, only the actual
+ physical size of the pages.
+ :rtype: bool
+%End
+
     int pageNumberForPoint( QPointF point ) const;
 %Docstring
 Returns the page number corresponding to a ``point`` in the layout (in layout units).
