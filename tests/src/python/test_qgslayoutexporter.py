@@ -196,7 +196,7 @@ class TestQgsLayoutExporter(unittest.TestCase):
         image.save(rendered_file_path, "PNG")
         self.assertTrue(self.checkImage('rendertoimageregiondpi', 'rendertoimageregiondpi', rendered_file_path))
 
-        # overridding dpi
+        # overriding dpi
         image = exporter.renderRegionToImage(QRectF(5, 10, 110, 100), QSize(), 80)
         self.assertFalse(image.isNull())
 
