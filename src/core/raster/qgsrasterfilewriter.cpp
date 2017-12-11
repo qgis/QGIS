@@ -1039,9 +1039,9 @@ QString QgsRasterFileWriter::filterForDriver( const QString &driverName )
     QString filter = drvName + " (";
     for ( const QString &ext : extensions )
     {
-      filter.append( QStringLiteral( "*.%1 *.%2" ).arg( ext.toLower(), ext.toUpper() ) );
+      filter.append( QStringLiteral( "*.%1 *.%2 " ).arg( ext.toLower(), ext.toUpper() ) );
     }
-    filter.append( QStringLiteral( ")" ) );
+    filter = filter.trimmed().append( QStringLiteral( ")" ) );
     return filter;
   }
 
