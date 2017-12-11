@@ -35,7 +35,7 @@
       <enum>QTabWidget::Rounded</enum>
      </property>
      <property name="currentIndex">
-      <number>7</number>
+      <number>0</number>
      </property>
      <widget class="QWidget" name="tabIdentificationDialog">
       <attribute name="title">
@@ -67,8 +67,8 @@
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>752</width>
-            <height>625</height>
+            <width>777</width>
+            <height>596</height>
            </rect>
           </property>
           <layout class="QVBoxLayout" name="verticalLayout_15">
@@ -352,10 +352,14 @@
             <item>
              <widget class="QPushButton" name="btnNewCategory">
               <property name="toolTip">
-               <string>Categories chosen will be added as a new entry in the keywords tab.</string>
+               <string>Create a new category</string>
               </property>
               <property name="text">
-               <string>New</string>
+               <string/>
+              </property>
+              <property name="icon">
+               <iconset resource="../../images/images.qrc">
+                <normaloff>:/images/themes/default/symbologyAdd.svg</normaloff>:/images/themes/default/symbologyAdd.svg</iconset>
               </property>
              </widget>
             </item>
@@ -368,7 +372,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Categories chosen will be added as a new entry in the keywords tab.</string>
+               <string>Add category to selection</string>
               </property>
               <property name="text">
                <string/>
@@ -394,7 +398,7 @@
                </sizepolicy>
               </property>
               <property name="toolTip">
-               <string>Categories chosen will be added as a new entry in the keywords tab.</string>
+               <string>Remove category from selection</string>
               </property>
               <property name="text">
                <string/>
@@ -425,7 +429,7 @@
             <item>
              <widget class="QLabel" name="label_22">
               <property name="text">
-               <string>Categories</string>
+               <string>Chosen categories</string>
               </property>
              </widget>
             </item>
