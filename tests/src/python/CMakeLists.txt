@@ -83,6 +83,7 @@ ADD_PYTHON_TEST(PyQgsLayerTreeMapCanvasBridge test_qgslayertreemapcanvasbridge.p
 ADD_PYTHON_TEST(PyQgsLayerTree test_qgslayertree.py)
 ADD_PYTHON_TEST(PyQgsLayout test_qgslayout.py)
 ADD_PYTHON_TEST(PyQgsLayoutAlign test_qgslayoutaligner.py)
+ADD_PYTHON_TEST(PyQgsLayoutExporter test_qgslayoutexporter.py)
 ADD_PYTHON_TEST(PyQgsLayoutManager test_qgslayoutmanager.py)
 ADD_PYTHON_TEST(PyQgsLayoutPageCollection test_qgslayoutpagecollection.py)
 ADD_PYTHON_TEST(PyQgsLayoutView test_qgslayoutview.py)
