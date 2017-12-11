@@ -1456,6 +1456,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   imageDlg.setResolution( dpi );
   imageDlg.setCropToContents( cropToContents );
   imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+  imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
 
 #if 0 //TODO
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
@@ -1505,7 +1506,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   {
     settings.imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
   }
-  settings.generateWorldFile = mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool();
+  settings.generateWorldFile = imageDlg.generateWorldFile();
 
   switch ( exporter.exportToImage( fileNExt.first, settings ) )
   {

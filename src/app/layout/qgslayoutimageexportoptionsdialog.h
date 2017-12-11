@@ -85,6 +85,18 @@ class QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutIm
     bool cropToContents() const;
 
     /**
+     * Sets whether the generate world file option should be checked.
+     * \see generateWorldFile()
+     */
+    void setGenerateWorldFile( bool generate );
+
+    /**
+     * Returns whether the generate world file option is checked in the dialog.
+     * \see setGenerateWorldFile()
+     */
+    bool generateWorldFile() const;
+
+    /**
      * Fetches the current crop to contents margin values, in pixels.
      * \param topMargin destination for top margin
      * \param rightMargin destination for right margin

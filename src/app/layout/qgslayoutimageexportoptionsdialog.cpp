@@ -95,6 +95,16 @@ bool QgsLayoutImageExportOptionsDialog::cropToContents() const
   return mClipToContentGroupBox->isChecked();
 }
 
+void QgsLayoutImageExportOptionsDialog::setGenerateWorldFile( bool generate )
+{
+  mGenerateWorldFile->setChecked( generate );
+}
+
+bool QgsLayoutImageExportOptionsDialog::generateWorldFile() const
+{
+  return mGenerateWorldFile->isChecked();
+}
+
 void QgsLayoutImageExportOptionsDialog::getCropMargins( int &topMargin, int &rightMargin, int &bottomMargin, int &leftMargin ) const
 {
   topMargin = mTopMarginSpinBox->value();
