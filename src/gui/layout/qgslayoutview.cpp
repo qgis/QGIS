@@ -1002,6 +1002,19 @@ void QgsLayoutView::dragEnterEvent( QDragEnterEvent *e )
   e->ignore();
 }
 
+void QgsLayoutView::paintEvent( QPaintEvent *event )
+{
+  if ( mPaintingEnabled )
+  {
+    QGraphicsView::paintEvent( event );
+    event->accept();
+  }
+  else
+  {
+    event->ignore();
+  }
+}
+
 void QgsLayoutView::invalidateCachedRenders()
 {
   if ( !currentLayout() )
