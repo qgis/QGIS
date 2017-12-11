@@ -338,7 +338,8 @@ bool QgsNewSpatialiteLayerDialog::createDb()
     settings.setValue( QStringLiteral( "SpatiaLite/connections/selected" ), fi.fileName() + tr( "@" ) + fi.canonicalFilePath() );
     settings.setValue( key, fi.canonicalFilePath() );
 
-    QMessageBox::information( nullptr, tr( "SpatiaLite Database" ), tr( "Registered new database!" ) );
+    // Reload connections to refresh browser panel
+    QgisApp::instance()->reloadConnections();
   }
 
   pbnFindSRID->setEnabled( true );
@@ -445,6 +446,9 @@ bool QgsNewSpatialiteLayerDialog::apply()
                   leGeometryColumn->text() ), leLayerName->text(), QStringLiteral( "spatialite" ) );
         if ( layer->isValid() )
         {
+          // Reload connections to refresh browser panel
+          QgisApp::instance()->reloadConnections();
+
           // register this layer with the central layers registry
           QList<QgsMapLayer *> myList;
           myList << layer;
