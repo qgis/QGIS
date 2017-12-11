@@ -245,6 +245,16 @@
     </widget>
    </item>
    <item>
+    <widget class="QCheckBox" name="mAntialiasingCheckBox">
+     <property name="toolTip">
+      <string>If unchecked, the generated images will not be antialiased</string>
+     </property>
+     <property name="text">
+      <string>Enable antialiasing</string>
+     </property>
+    </widget>
+   </item>
+   <item>
     <spacer name="verticalSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>

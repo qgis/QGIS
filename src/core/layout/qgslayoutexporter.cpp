@@ -85,6 +85,8 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
   setSnapLinesVisible( false );
 #endif
 
+  painter->setRenderHint( QPainter::Antialiasing, mLayout->context().flags() & QgsLayoutContext::FlagAntialiasing );
+
   mLayout->render( painter, QRectF( 0, 0, paintDevice->width(), paintDevice->height() ), region );
 
 #if 0 // TODO
@@ -132,24 +134,27 @@ QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize image
 }
 
 ///@cond PRIVATE
-class LayoutDpiRestorer
+class LayoutContextSettingsRestorer
 {
   public:
 
-    LayoutDpiRestorer( QgsLayout *layout )
+    LayoutContextSettingsRestorer( QgsLayout *layout )
       : mLayout( layout )
-      , mPreviousSetting( layout->context().dpi() )
+      , mPreviousDpi( layout->context().dpi() )
+      , mPreviousFlags( layout->context().flags() )
     {
     }
 
-    ~LayoutDpiRestorer()
+    ~LayoutContextSettingsRestorer()
     {
-      mLayout->context().setDpi( mPreviousSetting );
+      mLayout->context().setDpi( mPreviousDpi );
+      mLayout->context().setFlags( mPreviousFlags );
     }
 
   private:
     QgsLayout *mLayout = nullptr;
-    double mPreviousSetting = 0;
+    double mPreviousDpi = 0;
+    QgsLayoutContext::Flags mPreviousFlags = 0;
 };
 ///@endcond PRIVATE
 
@@ -168,9 +173,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   QString baseName = fi.baseName();
   QString extension = fi.completeSuffix();
 
-  LayoutDpiRestorer dpiRestorer( mLayout );
+  LayoutContextSettingsRestorer dpiRestorer( mLayout );
   ( void )dpiRestorer;
   mLayout->context().setDpi( settings.dpi );
+  mLayout->context().setFlags( settings.flags );
 
   QList< int > pages;
   if ( settings.pages.empty() )

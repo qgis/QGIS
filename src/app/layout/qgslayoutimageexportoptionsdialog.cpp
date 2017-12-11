@@ -105,6 +105,16 @@ bool QgsLayoutImageExportOptionsDialog::generateWorldFile() const
   return mGenerateWorldFile->isChecked();
 }
 
+void QgsLayoutImageExportOptionsDialog::setAntialiasing( bool antialias )
+{
+  mAntialiasingCheckBox->setChecked( antialias );
+}
+
+bool QgsLayoutImageExportOptionsDialog::antialiasing() const
+{
+  return mAntialiasingCheckBox->isChecked();
+}
+
 void QgsLayoutImageExportOptionsDialog::getCropMargins( int &topMargin, int &rightMargin, int &bottomMargin, int &leftMargin ) const
 {
   topMargin = mTopMarginSpinBox->value();

@@ -97,6 +97,18 @@ class QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutIm
     bool generateWorldFile() const;
 
     /**
+     * Sets whether antialiasing should be used in the export.
+     * \see antialiasing()
+     */
+    void setAntialiasing( bool antialias );
+
+    /**
+     * Returns whether antialiasing should be used in the export.
+     * \see setAntialiasing()
+     */
+    bool antialiasing() const;
+
+    /**
      * Fetches the current crop to contents margin values, in pixels.
      * \param topMargin destination for top margin
      * \param rightMargin destination for right margin

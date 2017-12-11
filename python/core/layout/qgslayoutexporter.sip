@@ -95,6 +95,11 @@ to render sections of pages rather than full pages.
 
     struct ImageExportSettings
     {
+      ImageExportSettings();
+%Docstring
+Constructor for ImageExportSettings
+%End
+
       double dpi;
 %Docstring
 Resolution to export layout at
@@ -139,6 +144,11 @@ Resolution to export layout at
 %Docstring
  Set to true to generate an external world file alonside
  exported images.
+%End
+
+      QgsLayoutContext::Flags flags;
+%Docstring
+ Layout context flags, which control how the export will be created.
 %End
 
     };

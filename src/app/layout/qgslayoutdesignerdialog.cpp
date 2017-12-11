@@ -1450,6 +1450,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   int marginRight = mLayout->customProperty( QStringLiteral( "imageCropMarginRight" ), 0 ).toInt();
   int marginBottom = mLayout->customProperty( QStringLiteral( "imageCropMarginBottom" ), 0 ).toInt();
   int marginLeft = mLayout->customProperty( QStringLiteral( "imageCropMarginLeft" ), 0 ).toInt();
+  bool antialias = mLayout->customProperty( QStringLiteral( "imageAntialias" ), true ).toBool();
 
   QgsLayoutImageExportOptionsDialog imageDlg( this );
   imageDlg.setImageSize( maxPageSize );
@@ -1457,6 +1458,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   imageDlg.setCropToContents( cropToContents );
   imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
   imageDlg.setGenerateWorldFile( mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool() );
+  imageDlg.setAntialiasing( antialias );
 
 #if 0 //TODO
   QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
@@ -1494,6 +1496,8 @@ void QgsLayoutDesignerDialog::exportToRaster()
   mLayout->setCustomProperty( QStringLiteral( "imageCropMarginBottom" ), marginBottom );
   mLayout->setCustomProperty( QStringLiteral( "imageCropMarginLeft" ), marginLeft );
 
+  mLayout->setCustomProperty( QStringLiteral( "imageAntialias" ), imageDlg.antialiasing() );
+
   mView->setPaintingEnabled( false );
 
   QgsLayoutExporter exporter( mLayout );
@@ -1507,6 +1511,9 @@ void QgsLayoutDesignerDialog::exportToRaster()
     settings.imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
   }
   settings.generateWorldFile = imageDlg.generateWorldFile();
+  settings.flags = QgsLayoutContext::FlagUseAdvancedEffects;
+  if ( imageDlg.antialiasing() )
+    settings.flags |= QgsLayoutContext::FlagAntialiasing;
 
   switch ( exporter.exportToImage( fileNExt.first, settings ) )
   {

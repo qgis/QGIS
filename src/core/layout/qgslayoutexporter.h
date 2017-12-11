@@ -18,6 +18,7 @@
 
 #include "qgis_core.h"
 #include "qgsmargins.h"
+#include "qgslayoutcontext.h"
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
@@ -111,6 +112,11 @@ class CORE_EXPORT QgsLayoutExporter
     //! Contains settings relating to exporting layouts to raster images
     struct ImageExportSettings
     {
+      //! Constructor for ImageExportSettings
+      ImageExportSettings()
+        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+      {}
+
       //! Resolution to export layout at
       double dpi;
 
@@ -154,6 +160,11 @@ class CORE_EXPORT QgsLayoutExporter
        * exported images.
        */
       bool generateWorldFile = false;
+
+      /**
+       * Layout context flags, which control how the export will be created.
+       */
+      QgsLayoutContext::Flags flags = 0;
 
     };
 
