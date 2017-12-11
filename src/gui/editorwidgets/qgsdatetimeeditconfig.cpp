@@ -146,6 +146,6 @@ void QgsDateTimeEditConfig::setConfig( const QVariantMap &config )
     mDisplayFormatComboBox->setCurrentIndex( 1 );
   }
 
-  mCalendarPopupCheckBox->setChecked( config.value( QStringLiteral( "calendar_popup" ), false ).toBool() );
+  mCalendarPopupCheckBox->setChecked( config.value( QStringLiteral( "calendar_popup" ), true ).toBool() );
   mAllowNullCheckBox->setChecked( config.value( QStringLiteral( "allow_null" ), true ).toBool() );
 }
