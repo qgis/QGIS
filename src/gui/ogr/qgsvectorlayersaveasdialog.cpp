@@ -57,6 +57,7 @@ QgsVectorLayerSaveAsDialog::QgsVectorLayerSaveAsDialog( QgsVectorLayer *layer, i
     mLayerExtent = layer->extent();
   }
   setup();
+
   if ( !( options & Symbology ) )
   {
     mSymbologyExportLabel->hide();
@@ -384,6 +385,22 @@ void QgsVectorLayerSaveAsDialog::mFormatComboBox_currentIndexChanged( int idx )
   {
     mAttributesSelection->setVisible( true );
     fieldsAsDisplayedValues = ( sFormat == QLatin1String( "CSV" ) || sFormat == QLatin1String( "XLS" ) || sFormat == QLatin1String( "XLSX" ) || sFormat == QLatin1String( "ODS" ) );
+  }
+
+  // Show symbology options only for some formats
+  if ( sFormat == QLatin1String( "DXF" ) || sFormat == QLatin1String( "KML" ) || sFormat == QLatin1String( "MapInfo File" ) || sFormat == QLatin1String( "MapInfo MIF" ) )
+  {
+    mSymbologyExportLabel->setVisible( true );
+    mSymbologyExportComboBox->setVisible( true );
+    mScaleLabel->setVisible( true );
+    mScaleWidget->setVisible( true );
+  }
+  else
+  {
+    mSymbologyExportLabel->hide();
+    mSymbologyExportComboBox->hide();
+    mScaleLabel->hide();
+    mScaleWidget->hide();
   }
 
   leLayername->setEnabled( sFormat == QLatin1String( "KML" ) ||
