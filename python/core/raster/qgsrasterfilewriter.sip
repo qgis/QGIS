@@ -35,6 +35,13 @@ class QgsRasterFileWriter
       WriteCanceled,
     };
 
+    enum RasterFormatOption
+    {
+      SortRecommended,
+    };
+    typedef QFlags<QgsRasterFileWriter::RasterFormatOption> RasterFormatOptions;
+
+
     QgsRasterFileWriter( const QString &outputUrl );
 
     QgsRasterDataProvider *createOneBandRaster( Qgis::DataType dataType,
@@ -153,6 +160,49 @@ class QgsRasterFileWriter
     void setPyramidsConfigOptions( const QStringList &list );
     QStringList pyramidsConfigOptions() const;
 %Docstring
+ :rtype: list of str
+%End
+
+    static QString filterForDriver( const QString &driverName );
+%Docstring
+Creates a filter for an GDAL driver key
+ :rtype: str
+%End
+
+    struct FilterFormatDetails
+    {
+      QString driverName;
+%Docstring
+Unique driver name
+%End
+
+      QString filterString;
+%Docstring
+Filter string for file picker dialogs
+%End
+    };
+
+    static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );
+%Docstring
+ Returns a list or pairs, with format filter string as first element and GDAL format key as second element.
+ Relies on GDAL_DMD_EXTENSIONS metadata, if it is empty corresponding driver will be skipped even if supported.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned formats.
+
+.. seealso:: :py:func:`supportedOutputRasterLayerExtensions()`
+ :rtype: list of QgsRasterFileWriter.FilterFormatDetails
+%End
+
+    static QStringList supportedFormatExtensions( RasterFormatOptions options = SortRecommended );
+%Docstring
+ Returns a list of file extensions for supported formats.
+
+ The ``options`` argument can be used to control the sorting and filtering of
+ returned formats.
+
+.. versionadded:: 3.0
+.. seealso:: :py:func:`supportedFiltersAndFormats()`
  :rtype: list of str
 %End
 

@@ -54,6 +54,16 @@ class CORE_EXPORT QgsRasterFileWriter
       WriteCanceled = 6, //!< Writing was manually canceled
     };
 
+    /**
+     * Options for sorting and filtering raster formats.
+     * \since QGIS 3.0
+     */
+    enum RasterFormatOption
+    {
+      SortRecommended = 1 << 1, //!< Use recommended sort order, with extremely commonly used formats listed first
+    };
+    Q_DECLARE_FLAGS( RasterFormatOptions, RasterFormatOption )
+
     QgsRasterFileWriter( const QString &outputUrl );
 
     /**
@@ -133,6 +143,44 @@ class CORE_EXPORT QgsRasterFileWriter
 
     void setPyramidsConfigOptions( const QStringList &list ) { mPyramidsConfigOptions = list; }
     QStringList pyramidsConfigOptions() const { return mPyramidsConfigOptions; }
+
+    //! Creates a filter for an GDAL driver key
+    static QString filterForDriver( const QString &driverName );
+
+    /**
+     * Details of available filters and formats.
+     * \since QGIS 3.0
+     */
+    struct FilterFormatDetails
+    {
+      //! Unique driver name
+      QString driverName;
+
+      //! Filter string for file picker dialogs
+      QString filterString;
+    };
+
+    /**
+     * Returns a list or pairs, with format filter string as first element and GDAL format key as second element.
+     * Relies on GDAL_DMD_EXTENSIONS metadata, if it is empty corresponding driver will be skipped even if supported.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
+     * \see supportedOutputRasterLayerExtensions()
+     */
+    static QList< QgsRasterFileWriter::FilterFormatDetails > supportedFiltersAndFormats( RasterFormatOptions options = SortRecommended );
+
+    /**
+     * Returns a list of file extensions for supported formats.
+     *
+     * The \a options argument can be used to control the sorting and filtering of
+     * returned formats.
+     *
+     * \since QGIS 3.0
+     * \see supportedFiltersAndFormats()
+     */
+    static QStringList supportedFormatExtensions( RasterFormatOptions options = SortRecommended );
 
     /**
      * Returns the GDAL driver name for a specified file \a extension. E.g. the

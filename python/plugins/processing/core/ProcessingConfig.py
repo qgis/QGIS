@@ -31,7 +31,8 @@ from qgis.PyQt.QtCore import QCoreApplication, QObject, pyqtSignal
 from qgis.core import (NULL,
                        QgsApplication,
                        QgsSettings,
-                       QgsVectorFileWriter)
+                       QgsVectorFileWriter,
+                       QgsRasterFileWriter)
 from processing.tools.system import defaultOutputFolder
 import processing.tools.dataobjects
 
@@ -170,7 +171,7 @@ class ProcessingConfig:
             valuetype=Setting.SELECTION,
             options=extensions))
 
-        extensions = processing.tools.dataobjects.getSupportedOutputRasterLayerExtensions()
+        extensions = QgsRasterFileWriter.supportedFormatExtensions()
         ProcessingConfig.addSetting(Setting(
             ProcessingConfig.tr('General'),
             ProcessingConfig.DEFAULT_OUTPUT_RASTER_LAYER_EXT,
