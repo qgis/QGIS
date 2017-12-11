@@ -129,6 +129,10 @@ class GUI_EXPORT QgsLimitedRandomColorRampDialog : public QDialog
 
     QgsLimitedRandomColorRampWidget *mWidget = nullptr;
 
+  private slots:
+
+    void showHelp();
+
 };
 
 #endif

@@ -102,6 +102,9 @@ class GUI_EXPORT QgsSymbolLevelsDialog : public QDialog
 
     QgsSymbolLevelsWidget *mWidget = nullptr;
 
+  private slots:
+
+    void showHelp();
 };
 
 #ifndef SIP_RUN

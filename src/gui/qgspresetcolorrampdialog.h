@@ -117,6 +117,10 @@ class GUI_EXPORT QgsPresetColorRampDialog : public QDialog
 
     QgsPresetColorRampWidget *mWidget = nullptr;
 
+  private slots:
+
+    void showHelp();
+
 };
 
 #endif //QGSPRESETCOLORRAMPDIALOG_H
