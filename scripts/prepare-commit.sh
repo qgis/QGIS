@@ -16,7 +16,7 @@
 
 TOPLEVEL=$(git rev-parse --show-toplevel)
 
-PATH=$TOPLEVEL/scripts:$PATH
+PATH=$TOPLEVEL/scripts:$PATH:$PWD/scripts
 
 if ! tty -s && [[ "$0" =~ /pre-commit ]]; then
     exec </dev/tty
