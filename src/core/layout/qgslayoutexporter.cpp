@@ -148,12 +148,13 @@ class LayoutDpiRestorer
     double mPreviousSetting = 0;
 };
 ///@endcond PRIVATE
+
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings )
 {
   int worldFilePageNo = -1;
-  if ( mLayout->referenceMap() )
+  if ( QgsLayoutItemMap *referenceMap = mLayout->referenceMap() )
   {
-    worldFilePageNo = mLayout->referenceMap()->page();
+    worldFilePageNo = referenceMap->page();
   }
 
   QFileInfo fi( filePath );

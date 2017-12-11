@@ -239,27 +239,23 @@ void TestQgsLayout::referenceMap()
 
   // no maps
   QVERIFY( !l.referenceMap() );
-#if 0
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-  map->setNewExtent( extent );
-  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
-  l.addComposerMap( map );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
   QCOMPARE( l.referenceMap(), map );
-#endif
-#if 0 // TODO
 
   // add a larger map
   QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
-  map2->setNewExtent( extent );
-  map2->setSceneRect( QRectF( 30, 60, 250, 150 ) );
-  l.addComposerMap( map2 );
+  map2->attemptSetSceneRect( QRectF( 30, 60, 250, 150 ) );
+  map2->setExtent( extent );
+  l.addLayoutItem( map2 );
+
   QCOMPARE( l.referenceMap(), map2 );
   // explicitly set reference map
   l.setReferenceMap( map );
   QCOMPARE( l.referenceMap(), map );
-#endif
-
 }
 
 void TestQgsLayout::bounds()

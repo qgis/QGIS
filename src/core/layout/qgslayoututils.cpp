@@ -117,15 +117,14 @@ QgsRenderContext QgsLayoutUtils::createRenderContextForMap( QgsLayoutItemMap *ma
     {
       dpi = ( painter && painter->device() ) ? painter->device()->logicalDpiX() : 88;
     }
-#if 0
     double dotsPerMM = dpi / 25.4;
-// TODO
+
     // get map settings from reference map
-    QgsRectangle extent = *( map->currentMapExtent() );
-    QSizeF mapSizeMM = map->rect().size();
+    QgsRectangle extent = map->extent();
+    QSizeF mapSizeLayoutUnits = map->rect().size();
+    QSizeF mapSizeMM = map->layout()->convertFromLayoutUnits( mapSizeLayoutUnits, QgsUnitTypes::LayoutMillimeters ).toQSizeF();
     QgsMapSettings ms = map->mapSettings( extent, mapSizeMM * dotsPerMM, dpi );
-#endif
-    QgsRenderContext context; // = QgsRenderContext::fromMapSettings( ms );
+    QgsRenderContext context = QgsRenderContext::fromMapSettings( ms );
     if ( painter )
       context.setPainter( painter );
 

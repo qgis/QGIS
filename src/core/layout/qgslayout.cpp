@@ -25,6 +25,7 @@
 #include "qgslayoutitemgroup.h"
 #include "qgslayoutitemgroupundocommand.h"
 #include "qgslayoutmultiframe.h"
+#include "qgslayoutitemmap.h"
 #include "qgslayoutundostack.h"
 
 QgsLayout::QgsLayout( QgsProject *project )
@@ -214,7 +215,7 @@ bool QgsLayout::moveItemToBottom( QgsLayoutItem *item, bool deferUpdate )
   return result;
 }
 
-QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateUuids )
+QgsLayoutItem *QgsLayout::itemByUuid( const QString &uuid, bool includeTemplateUuids ) const
 {
   QList<QgsLayoutItem *> itemList;
   layoutItems( itemList );
@@ -358,12 +359,31 @@ QStringList QgsLayout::customProperties() const
 
 QgsLayoutItemMap *QgsLayout::referenceMap() const
 {
-  return nullptr;
+  // prefer explicitly set reference map
+  if ( QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( itemByUuid( mWorldFileMapId ) ) )
+    return map;
+
+  // else try to find largest map
+  QList< QgsLayoutItemMap * > maps;
+  layoutItems( maps );
+  QgsLayoutItemMap *largestMap = nullptr;
+  double largestMapArea = 0;
+  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  {
+    double area = map->rect().width() * map->rect().height();
+    if ( area > largestMapArea )
+    {
+      largestMapArea = area;
+      largestMap = map;
+    }
+  }
+  return largestMap;
 }
 
 void QgsLayout::setReferenceMap( QgsLayoutItemMap *map )
 {
-  Q_UNUSED( map );
+  mWorldFileMapId = map ? map->uuid() : QString();
+  mProject->setDirty( true );
 }
 
 QgsLayoutPageCollection *QgsLayout::pageCollection()
@@ -689,6 +709,7 @@ void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &docu
   mCustomProperties.writeXml( element, document );
   element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
+  element.setAttribute( QStringLiteral( "worldFileMap" ), mWorldFileMapId );
 }
 
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -731,6 +752,8 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
   mCustomProperties.readXml( layoutElement );
   setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
+  mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
+
   return true;
 }
 

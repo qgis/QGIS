@@ -19,6 +19,7 @@
 #include "qgslayoutsnapper.h"
 #include "qgslayoutpagecollection.h"
 #include "qgslayoutundostack.h"
+#include "qgslayoutitemmap.h"
 
 QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout *layout )
   : QgsPanelWidget( parent )
@@ -69,6 +70,11 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mBottomMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
   connect( mLeftMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
   connect( mResizePageButton, &QPushButton::clicked, this, &QgsLayoutPropertiesWidget::resizeToContents );
+
+  connect( mReferenceMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutPropertiesWidget::referenceMapChanged );
+
+  mReferenceMapComboBox->setCurrentLayout( mLayout );
+  mReferenceMapComboBox->setItem( mLayout->referenceMap() );
 }
 
 void QgsLayoutPropertiesWidget::updateSnappingElements()
@@ -148,6 +154,14 @@ void QgsLayoutPropertiesWidget::resizeToContents()
       mMarginUnitsComboBox->unit() );
 
   mLayout->undoStack()->endMacro();
+}
+
+void QgsLayoutPropertiesWidget::referenceMapChanged( QgsLayoutItem *item )
+{
+  mLayout->undoStack()->beginCommand( mLayout, tr( "Set Reference Map" ) );
+  QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item );
+  mLayout->setReferenceMap( map );
+  mLayout->undoStack()->endCommand();
 }
 
 void QgsLayoutPropertiesWidget::blockSignals( bool block )

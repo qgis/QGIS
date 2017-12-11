@@ -86,6 +86,8 @@ class TestQgsLayout(unittest.TestCase):
         item2.setId('zzyyzz')
         l.addItem(item2)
 
+        l.setReferenceMap(item2)
+
         doc = QDomDocument("testdoc")
         elem = l.writeXml(doc, QgsReadWriteContext())
 
@@ -112,6 +114,7 @@ class TestQgsLayout(unittest.TestCase):
         new_item2 = l2.itemByUuid(item2.uuid())
         self.assertTrue(new_item2)
         self.assertEqual(new_item2.id(), 'zzyyzz')
+        self.assertEqual(l2.referenceMap().id(), 'zzyyzz')
 
     def testAddItemsFromXml(self):
         p = QgsProject()

@@ -244,10 +244,8 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
 
   // add a reference map
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
-#if 0 // TODO
-  map->setNewExtent( extent );
-  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
-#endif
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
   l.addLayoutItem( map );
   l.setReferenceMap( map );
 
@@ -306,16 +304,12 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QgsProject project;
   QgsLayout l( &project );
 
-#if 0 // TODO
   // add a map
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptSetSceneRect( QRectF( 30, 60, 200, 100 ) );
+  map->setExtent( extent );
+  l.addLayoutItem( map );
 
-  map->setNewExtent( extent );
-  map->setSceneRect( QRectF( 30, 60, 200, 100 ) );
-  l.addComposerMap( map );
-#endif
-
-#if 0 //TODO
   rc = QgsLayoutUtils::createRenderContextForMap( map, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
   QGSCOMPARENEAR( rc.rendererScale(), map->scale(), 1000000 );
@@ -329,10 +323,9 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
 
   // secondary map
   QgsLayoutItemMap *map2 = new QgsLayoutItemMap( &l );
-
-  map2->setNewExtent( extent );
-  map2->setSceneRect( QRectF( 30, 60, 100, 50 ) );
-  composition->addComposerMap( map2 );
+  map2->attemptSetSceneRect( QRectF( 30, 60, 100, 50 ) );
+  map2->setExtent( extent );
+  l.addLayoutItem( map2 );
 
   rc = QgsLayoutUtils::createRenderContextForMap( map2, &p );
   QGSCOMPARENEAR( rc.scaleFactor(), 150 / 25.4, 0.001 );
@@ -357,7 +350,7 @@ void TestQgsLayoutUtils::createRenderContextFromMap()
   QVERIFY( ( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
   QVERIFY( ( rc.flags() & QgsRenderContext::ForceVectorOutput ) );
-#endif
+
   p.end();
 }
 

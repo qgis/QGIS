@@ -38,7 +38,7 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
     void snapToleranceChanged( int tolerance );
     void resizeMarginsChanged();
     void resizeToContents();
-
+    void referenceMapChanged( QgsLayoutItem *item );
   private:
 
     QgsLayout *mLayout = nullptr;

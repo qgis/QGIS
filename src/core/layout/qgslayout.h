@@ -116,7 +116,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * Returns a list of layout items of a specific type.
      * \note not available in Python bindings
      */
-    template<class T> void layoutItems( QList<T *> &itemList ) SIP_SKIP
+    template<class T> void layoutItems( QList<T *> &itemList ) const SIP_SKIP
     {
       itemList.clear();
       QList<QGraphicsItem *> graphicsItemList = items();
@@ -223,7 +223,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      *
      * \see multiFrameByUuid()
      */
-    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false );
+    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 
     /**
      * Returns the layout multiframe with matching \a uuid unique identifier, or a nullptr
@@ -404,7 +404,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see setReferenceMap()
      * \see generateWorldFile()
      */
-    //TODO
     QgsLayoutItemMap *referenceMap() const;
 
     /**
@@ -413,7 +412,6 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      * \see referenceMap()
      * \see setGenerateWorldFile()
      */
-    //TODO
     void setReferenceMap( QgsLayoutItemMap *map );
 
     /**
@@ -626,6 +624,9 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 
     //! List of multiframe objects
     QList<QgsLayoutMultiFrame *> mMultiFrames;
+
+    //! Item ID for composer map to use for the world file generation
+    QString mWorldFileMapId;
 
     //! Writes only the layout settings (not member settings like grid settings, etc) to XML
     void writeXmlLayoutSettings( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
