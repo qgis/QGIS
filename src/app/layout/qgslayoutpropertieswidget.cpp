@@ -54,6 +54,9 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   QgsUnitTypes::LayoutUnit marginUnit = static_cast< QgsUnitTypes::LayoutUnit >(
                                           mLayout->customProperty( QStringLiteral( "imageCropMarginUnit" ), QgsUnitTypes::LayoutMillimeters ).toInt() );
 
+  bool exportWorldFile = mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool();
+  mGenerateWorldFileCheckBox->setChecked( exportWorldFile );
+
   mTopMarginSpinBox->setValue( topMargin );
   mMarginUnitsComboBox->linkToWidget( mTopMarginSpinBox );
   mRightMarginSpinBox->setValue( rightMargin );
@@ -71,6 +74,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mLeftMarginSpinBox, static_cast < void ( QDoubleSpinBox::* )( double ) > ( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::resizeMarginsChanged );
   connect( mResizePageButton, &QPushButton::clicked, this, &QgsLayoutPropertiesWidget::resizeToContents );
 
+  connect( mResolutionSpinBox, static_cast < void ( QSpinBox::* )( int ) > ( &QSpinBox::valueChanged ), this, &QgsLayoutPropertiesWidget::dpiChanged );
   connect( mReferenceMapComboBox, &QgsLayoutItemComboBox::itemChanged, this, &QgsLayoutPropertiesWidget::referenceMapChanged );
 
   mReferenceMapComboBox->setCurrentLayout( mLayout );
@@ -82,6 +86,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
 void QgsLayoutPropertiesWidget::updateGui()
 {
   whileBlocking( mReferenceMapComboBox )->setItem( mLayout->referenceMap() );
+  whileBlocking( mResolutionSpinBox )->setValue( mLayout->context().dpi() );
 }
 
 void QgsLayoutPropertiesWidget::updateSnappingElements()
@@ -169,6 +174,18 @@ void QgsLayoutPropertiesWidget::referenceMapChanged( QgsLayoutItem *item )
   QgsLayoutItemMap *map = qobject_cast< QgsLayoutItemMap * >( item );
   mLayout->setReferenceMap( map );
   mLayout->undoStack()->endCommand();
+}
+
+void QgsLayoutPropertiesWidget::dpiChanged( int value )
+{
+  mLayout->undoStack()->beginCommand( mLayout, tr( "Set Default DPI" ), QgsLayout::UndoLayoutDpi );
+  mLayout->context().setDpi( value );
+  mLayout->undoStack()->endCommand();
+}
+
+void QgsLayoutPropertiesWidget::worldFileToggled()
+{
+  mLayout->setCustomProperty( QStringLiteral( "exportWorldFile" ), mGenerateWorldFileCheckBox->isChecked() );
 }
 
 void QgsLayoutPropertiesWidget::blockSignals( bool block )

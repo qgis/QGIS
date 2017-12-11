@@ -64,6 +64,13 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
       ZSnapIndicator = 10002, //!< Z-value for snapping indicator
     };
 
+    //! Layout undo commands, used for collapsing undo commands
+    enum UndoCommand
+    {
+      UndoLayoutDpi, //!< Change layout default DPI
+      UndoNone = -1, //!< No command suppression
+    };
+
     /**
      * Construct a new layout linked to the specified \a project.
      *

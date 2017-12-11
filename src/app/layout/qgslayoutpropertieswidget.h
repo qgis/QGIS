@@ -41,6 +41,9 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
     void resizeMarginsChanged();
     void resizeToContents();
     void referenceMapChanged( QgsLayoutItem *item );
+    void dpiChanged( int value );
+    void worldFileToggled();
+
   private:
 
     QgsLayout *mLayout = nullptr;

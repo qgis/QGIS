@@ -33,6 +33,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
       ZSnapIndicator,
     };
 
+    enum UndoCommand
+    {
+      UndoLayoutDpi,
+      UndoNone,
+    };
+
     QgsLayout( QgsProject *project );
 %Docstring
 Construct a new layout linked to the specified ``project``.

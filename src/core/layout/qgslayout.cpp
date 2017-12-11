@@ -710,6 +710,7 @@ void QgsLayout::writeXmlLayoutSettings( QDomElement &element, QDomDocument &docu
   element.setAttribute( QStringLiteral( "name" ), mName );
   element.setAttribute( QStringLiteral( "units" ), QgsUnitTypes::encodeUnit( mUnits ) );
   element.setAttribute( QStringLiteral( "worldFileMap" ), mWorldFileMapId );
+  element.setAttribute( QStringLiteral( "printResolution" ), mContext.dpi() );
 }
 
 QDomElement QgsLayout::writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const
@@ -753,6 +754,7 @@ bool QgsLayout::readXmlLayoutSettings( const QDomElement &layoutElement, const Q
   setName( layoutElement.attribute( QStringLiteral( "name" ) ) );
   setUnits( QgsUnitTypes::decodeLayoutUnit( layoutElement.attribute( QStringLiteral( "units" ) ) ) );
   mWorldFileMapId = layoutElement.attribute( QStringLiteral( "worldFileMap" ) );
+  mContext.setDpi( layoutElement.attribute( QStringLiteral( "printResolution" ), "300" ).toDouble() );
   emit changed();
 
   return true;
