@@ -54,15 +54,10 @@ QgsGeometryCheckerSetupTab::QgsGeometryCheckerSetupTab( QgisInterface *iface, QD
   mAbortButton = new QPushButton( tr( "Abort" ) );
   mRunButton->setEnabled( false );
 
-  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
-  for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
+  const auto drivers = QgsVectorFileWriter::ogrDriverList( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
+  for ( const QgsVectorFileWriter::DriverDetails &driver : drivers )
   {
-    QString driverName = filter.driverName;
-    ui.comboBoxOutputFormat->addItem( driverName );
-    if ( driverName == QLatin1String( "ESRI Shapefile" ) )
-    {
-      ui.comboBoxOutputFormat->setCurrentIndex( ui.comboBoxOutputFormat->count() - 1 );
-    }
+    ui.comboBoxOutputFormat->addItem( driver.longName, driver.driverName );
   }
   ui.listWidgetInputLayers->setIconSize( QSize( 16, 16 ) );
 
@@ -215,16 +210,6 @@ void QgsGeometryCheckerSetupTab::validateInput()
 
 void QgsGeometryCheckerSetupTab::selectOutputDirectory()
 {
-  QString filterString = QgsVectorFileWriter::filterForDriver( QStringLiteral( "GPKG" ) );
-  const auto filterFormatMap = QgsVectorFileWriter::supportedFiltersAndFormats( QgsVectorFileWriter::SortRecommended | QgsVectorFileWriter::SkipNonSpatialFormats );
-  for ( const QgsVectorFileWriter::FilterFormatDetails &filter : filterFormatMap )
-  {
-    QString driverName = filter.driverName;
-    if ( driverName != QLatin1String( "ESRI Shapefile" ) ) // Default entry, first in list (see above)
-    {
-      filterString += ";;" + filter.filterString;
-    }
-  }
   QString initialdir = ui.lineEditOutputDirectory->text();
   if ( initialdir.isEmpty() || !QDir( initialdir ).exists() )
   {
@@ -297,7 +282,7 @@ void QgsGeometryCheckerSetupTab::runChecks()
   {
     // Get output directory and file extension
     QDir outputDir = QDir( ui.lineEditOutputDirectory->text() );
-    QString outputDriverName = ui.comboBoxOutputFormat->currentText();
+    QString outputDriverName = ui.comboBoxOutputFormat->currentData().toString();
     QgsVectorFileWriter::MetaData metadata;
     if ( !QgsVectorFileWriter::driverMetadata( outputDriverName, metadata ) )
     {
