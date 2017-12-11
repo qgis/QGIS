@@ -56,6 +56,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
 
   bool exportWorldFile = mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool();
   mGenerateWorldFileCheckBox->setChecked( exportWorldFile );
+  connect( mGenerateWorldFileCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::worldFileToggled );
 
   mTopMarginSpinBox->setValue( topMargin );
   mMarginUnitsComboBox->linkToWidget( mTopMarginSpinBox );

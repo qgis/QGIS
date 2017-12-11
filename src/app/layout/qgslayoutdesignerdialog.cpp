@@ -33,6 +33,9 @@
 #include "qgslayoutviewtoolselect.h"
 #include "qgslayoutviewtooleditnodes.h"
 #include "qgslayoutitemwidget.h"
+#include "qgslayoutimageexportoptionsdialog.h"
+#include "qgslayoutitemmap.h"
+#include "qgsmessageviewer.h"
 #include "qgsgui.h"
 #include "qgslayoutitemguiregistry.h"
 #include "qgslayoutpropertieswidget.h"
@@ -167,6 +170,8 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionNewLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::newLayout );
   connect( mActionLayoutManager, &QAction::triggered, this, &QgsLayoutDesignerDialog::showManager );
   connect( mActionRemoveLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::deleteLayout );
+
+  connect( mActionExportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToRaster );
 
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
@@ -1410,6 +1415,123 @@ void QgsLayoutDesignerDialog::deleteLayout()
   close();
 }
 
+void QgsLayoutDesignerDialog::exportToRaster()
+{
+  if ( containsWmsLayers() )
+    showWmsPrintingWarning();
+
+  // Image size
+  double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
+  QSizeF maxPageSize = mLayout->pageCollection()->maximumPageSize();
+  bool hasUniformPageSizes = mLayout->pageCollection()->hasUniformPageSizes();
+  int width = ( int )( mLayout->context().dpi() * maxPageSize.width() / oneInchInLayoutUnits );
+  int height = ( int )( mLayout->context().dpi() * maxPageSize.height() / oneInchInLayoutUnits );
+  double dpi = mLayout->context().dpi();
+
+  int memuse = width * height * 3 / 1000000;  // pixmap + image
+  QgsDebugMsg( QString( "Image %1x%2" ).arg( width ).arg( height ) );
+  QgsDebugMsg( QString( "memuse = %1" ).arg( memuse ) );
+
+  if ( memuse > 400 )   // about 4500x4500
+  {
+    int answer = QMessageBox::warning( nullptr, tr( "Export layout" ),
+                                       tr( "To create an image of %1x%2 requires about %3 MB of memory. Proceed?" )
+                                       .arg( width ).arg( height ).arg( memuse ),
+                                       QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
+
+    raise();
+    if ( answer == QMessageBox::Cancel )
+      return;
+  }
+
+  //get some defaults from the composition
+  bool cropToContents = mLayout->customProperty( QStringLiteral( "imageCropToContents" ), false ).toBool();
+  int marginTop = mLayout->customProperty( QStringLiteral( "imageCropMarginTop" ), 0 ).toInt();
+  int marginRight = mLayout->customProperty( QStringLiteral( "imageCropMarginRight" ), 0 ).toInt();
+  int marginBottom = mLayout->customProperty( QStringLiteral( "imageCropMarginBottom" ), 0 ).toInt();
+  int marginLeft = mLayout->customProperty( QStringLiteral( "imageCropMarginLeft" ), 0 ).toInt();
+
+  QgsLayoutImageExportOptionsDialog imageDlg( this );
+  imageDlg.setImageSize( maxPageSize );
+  imageDlg.setResolution( dpi );
+  imageDlg.setCropToContents( cropToContents );
+  imageDlg.setCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+
+#if 0 //TODO
+  QgsAtlasComposition *atlasMap = &mComposition->atlasComposition();
+#endif
+
+  QString outputFileName;
+#if 0 //TODO
+  if ( atlasMap->enabled() && mComposition->atlasMode() == QgsComposition::PreviewAtlas )
+  {
+    QString lastUsedDir = settings.value( QStringLiteral( "UI/lastSaveAsImageDir" ), QDir::homePath() ).toString();
+    outputFileName = QDir( lastUsedDir ).filePath( atlasMap->currentFilename() );
+  }
+#endif
+
+#ifdef Q_OS_MAC
+  mQgis->activateWindow();
+  this->raise();
+#endif
+  QPair<QString, QString> fileNExt = QgsGuiUtils::getSaveAsImageName( this, tr( "Save layout as" ), outputFileName );
+  this->activateWindow();
+
+  if ( fileNExt.first.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !imageDlg.exec() )
+    return;
+
+  cropToContents = imageDlg.cropToContents();
+  imageDlg.getCropMargins( marginTop, marginRight, marginBottom, marginLeft );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropToContents" ), cropToContents );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginTop" ), marginTop );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginRight" ), marginRight );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginBottom" ), marginBottom );
+  mLayout->setCustomProperty( QStringLiteral( "imageCropMarginLeft" ), marginLeft );
+
+  mView->setPaintingEnabled( false );
+
+  QgsLayoutExporter exporter( mLayout );
+
+  QgsLayoutExporter::ImageExportSettings settings;
+  settings.cropToContents = cropToContents;
+  settings.cropMargins = QgsMargins( marginLeft, marginTop, marginRight, marginBottom );
+  settings.dpi = imageDlg.resolution();
+  if ( hasUniformPageSizes )
+  {
+    settings.imageSize = QSize( imageDlg.imageWidth(), imageDlg.imageHeight() );
+  }
+  settings.generateWorldFile = mLayout->customProperty( QStringLiteral( "exportWorldFile" ), false ).toBool();
+
+  switch ( exporter.exportToImage( fileNExt.first, settings ) )
+  {
+    case QgsLayoutExporter::Success:
+      break;
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Image Export Error" ),
+                            QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( exporter.errorFile() ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( nullptr, tr( "Memory Allocation Error" ),
+                            tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." )
+                            .arg( exporter.errorFile() ).arg( imageDlg.imageWidth() ).arg( imageDlg.imageHeight() ).arg( settings.dpi ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+
+  }
+  mView->setPaintingEnabled( true );
+}
+
 void QgsLayoutDesignerDialog::paste()
 {
   QPointF pt = mView->mapFromGlobal( QCursor::pos() );
@@ -1523,6 +1645,36 @@ void QgsLayoutDesignerDialog::initializeRegistry()
 
   QgsGui::layoutItemGuiRegistry()->addLayoutItemGuiMetadata( new QgsLayoutItemGuiMetadata( QgsLayoutItemRegistry::LayoutPage, QObject::tr( "Page" ), QIcon(), createPageWidget, nullptr, QString(), false, QgsLayoutItemAbstractGuiMetadata::FlagNoCreationTools ) );
 
+}
+
+bool QgsLayoutDesignerDialog::containsWmsLayers() const
+{
+  QList< QgsLayoutItemMap *> maps;
+  mLayout->layoutItems( maps );
+
+  for ( QgsLayoutItemMap *map : qgis::as_const( maps ) )
+  {
+    if ( map->containsWmsLayer() )
+      return true;
+  }
+  return false;
+}
+
+void QgsLayoutDesignerDialog::showWmsPrintingWarning()
+{
+  QgsSettings settings;
+  bool displayWMSWarning = settings.value( QStringLiteral( "/UI/displayComposerWMSWarning" ), true ).toBool();
+  if ( displayWMSWarning )
+  {
+    QgsMessageViewer *m = new QgsMessageViewer( this );
+    m->setWindowTitle( tr( "Project Contains WMS Layers" ) );
+    m->setMessage( tr( "Some WMS servers (e.g. UMN mapserver) have a limit for the WIDTH and HEIGHT parameter. Printing layers from such servers may exceed this limit. If this is the case, the WMS layer will not be printed" ), QgsMessageOutput::MessageText );
+    m->setCheckBoxText( tr( "Don't show this message again" ) );
+    m->setCheckBoxState( Qt::Unchecked );
+    m->setCheckBoxVisible( true );
+    m->setCheckBoxQgsSettingsLabel( QStringLiteral( "/UI/displayComposerWMSWarning" ) );
+    m->exec(); //deleted on close
+  }
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )

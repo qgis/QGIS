@@ -274,6 +274,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void showManager();
     void renameLayout();
     void deleteLayout();
+    void exportToRaster();
 
   private:
 
@@ -360,6 +361,10 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     void initializeRegistry();
 
+    bool containsWmsLayers() const;
+
+    //! Displays a warning because of possible min/max size in WMS
+    void showWmsPrintingWarning();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

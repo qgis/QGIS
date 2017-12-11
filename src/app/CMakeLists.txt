@@ -185,6 +185,7 @@ SET(QGIS_APP_SRCS
   layout/qgslayoutdesignerdialog.cpp
   layout/qgslayoutguidewidget.cpp
   layout/qgslayouthtmlwidget.cpp
+  layout/qgslayoutimageexportoptionsdialog.cpp
   layout/qgslayoutitemslistview.cpp
   layout/qgslayoutappmenuprovider.cpp
   layout/qgslayoutlabelwidget.cpp
@@ -403,6 +404,7 @@ SET (QGIS_APP_MOC_HDRS
   layout/qgslayoutdesignerdialog.h
   layout/qgslayoutguidewidget.h
   layout/qgslayouthtmlwidget.h
+  layout/qgslayoutimageexportoptionsdialog.h
   layout/qgslayoutitemslistview.h
   layout/qgslayoutlabelwidget.h
   layout/qgslayoutlegendwidget.h
