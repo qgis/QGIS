@@ -2715,13 +2715,26 @@ QList< QgsVectorFileWriter::FilterFormatDetails > QgsVectorFileWriter::supported
     if ( drv )
     {
       QString drvName = OGR_Dr_GetName( drv );
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+      GDALDriverH gdalDriver = GDALGetDriverByName( drvName.toLocal8Bit().constData() );
+      char **driverMetadata = nullptr;
+      if ( gdalDriver )
+      {
+        driverMetadata = GDALGetMetadata( gdalDriver, nullptr );
+      }
+
+      bool nonSpatialFormat = nonSpatialFormat = CSLFetchBoolean( driverMetadata, GDAL_DCAP_NONSPATIAL, false );
+#else
+      bool nonSpatialFormat = ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) );
+#endif
+
       if ( OGR_Dr_TestCapability( drv, "CreateDataSource" ) != 0 )
       {
         if ( options & SkipNonSpatialFormats )
         {
           // skip non-spatial formats
-          // TODO - use GDAL metadata to determine this, when support exists in GDAL
-          if ( drvName == QLatin1String( "ODS" ) || drvName == QLatin1String( "XLSX" ) || drvName == QLatin1String( "XLS" ) )
+          if ( nonSpatialFormat )
             continue;
         }
 
