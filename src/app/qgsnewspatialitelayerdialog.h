@@ -42,6 +42,7 @@ class APP_EXPORT QgsNewSpatialiteLayerDialog: public QDialog, private Ui::QgsNew
   protected slots:
     void mAddAttributeButton_clicked();
     void mRemoveAttributeButton_clicked();
+    void mGeometryTypeBox_currentIndexChanged( int index );
     void mTypeBox_currentIndexChanged( int index );
     void pbnFindSRID_clicked();
     void toolButtonNewDatabase_clicked();
