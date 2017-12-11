@@ -38,10 +38,33 @@ class CORE_EXPORT QgsLayoutExporter
 
   public:
 
+    //! Contains details of a page being exported by the class
+    struct PageExportDetails
+    {
+      //! Target folder
+      QString directory;
+
+      //! Base part of filename (i.e. file name without extension or '.')
+      QString baseName;
+
+      //! File suffix/extension (without the leading '.')
+      QString extension;
+
+      //! Page number, where 0 = first page.
+      int page = 0;
+    };
+
     /**
      * Constructor for QgsLayoutExporter, for the specified \a layout.
      */
     QgsLayoutExporter( QgsLayout *layout );
+
+    virtual ~QgsLayoutExporter() = default;
+
+    /**
+     * Returns the layout linked to this exporter.
+     */
+    QgsLayout *layout() const;
 
     /**
      * Renders a full page to a destination \a painter.
@@ -219,6 +242,14 @@ class CORE_EXPORT QgsLayoutExporter
      */
     void computeWorldFileParameters( const QRectF &region, double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
 
+  protected:
+
+    /**
+     * Generates the file name for a page during export.
+     *
+     * Subclasses can override this method to customise page file naming.
+     */
+    virtual QString generateFileName( const PageExportDetails &details ) const;
 
   private:
 
@@ -227,8 +258,6 @@ class CORE_EXPORT QgsLayoutExporter
     QString mErrorFileName;
 
     QImage createImage( const ImageExportSettings &settings, int page, QRectF &bounds, bool &skipPage ) const;
-
-    QString generateFileName( const QString &path, const QString &baseName, const QString &suffix, int page ) const;
 
     /**
      * Saves an image to a file, possibly using format specific options (e.g. LZW compression for tiff)

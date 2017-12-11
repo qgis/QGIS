@@ -31,6 +31,11 @@ QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
 
 }
 
+QgsLayout *QgsLayoutExporter::layout() const
+{
+  return mLayout;
+}
+
 void QgsLayoutExporter::renderPage( QPainter *painter, int page ) const
 {
   if ( !mLayout )
@@ -169,9 +174,11 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   }
 
   QFileInfo fi( filePath );
-  QString path = fi.path();
-  QString baseName = fi.baseName();
-  QString extension = fi.completeSuffix();
+
+  PageExportDetails pageDetails;
+  pageDetails.directory = fi.path();
+  pageDetails.baseName = fi.baseName();
+  pageDetails.extension = fi.completeSuffix();
 
   LayoutContextSettingsRestorer dpiRestorer( mLayout );
   ( void )dpiRestorer;
@@ -207,7 +214,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
     if ( skip )
       continue; // should skip this page, e.g. null size
 
-    QString outputFilePath = generateFileName( path, baseName, extension, page );
+    pageDetails.page = page;
+    QString outputFilePath = generateFileName( pageDetails );
 
     if ( image.isNull() )
     {
@@ -215,7 +223,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
       return MemoryError;
     }
 
-    if ( !saveImage( image, outputFilePath, extension ) )
+    if ( !saveImage( image, outputFilePath, pageDetails.extension ) )
     {
       mErrorFileName = outputFilePath;
       return FileError;
@@ -509,15 +517,15 @@ QImage QgsLayoutExporter::createImage( const QgsLayoutExporter::ImageExportSetti
   }
 }
 
-QString QgsLayoutExporter::generateFileName( const QString &path, const QString &baseName, const QString &suffix, int page ) const
+QString QgsLayoutExporter::generateFileName( const PageExportDetails &details ) const
 {
-  if ( page == 0 )
+  if ( details.page == 0 )
   {
-    return path + '/' + baseName + '.' + suffix;
+    return details.directory + '/' + details.baseName + '.' + details.extension;
   }
   else
   {
-    return path + '/' + baseName + '_' + QString::number( page + 1 ) + '.' + suffix;
+    return details.directory + '/' + details.baseName + '_' + QString::number( details.page + 1 ) + '.' + details.extension;
   }
 }
 

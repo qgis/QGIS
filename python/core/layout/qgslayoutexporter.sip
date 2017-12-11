@@ -21,9 +21,40 @@ class QgsLayoutExporter
 %End
   public:
 
+    struct PageExportDetails
+    {
+      QString directory;
+%Docstring
+Target folder
+%End
+
+      QString baseName;
+%Docstring
+Base part of filename (i.e. file name without extension or '.')
+%End
+
+      QString extension;
+%Docstring
+File suffix/extension (without the leading '.')
+%End
+
+      int page;
+%Docstring
+Page number, where 0 = first page.
+%End
+    };
+
     QgsLayoutExporter( QgsLayout *layout );
 %Docstring
 Constructor for QgsLayoutExporter, for the specified ``layout``.
+%End
+
+    virtual ~QgsLayoutExporter();
+
+    QgsLayout *layout() const;
+%Docstring
+ Returns the layout linked to this exporter.
+ :rtype: QgsLayout
 %End
 
     void renderPage( QPainter *painter, int page ) const;
@@ -207,6 +238,15 @@ Resolution to export layout at
  The ``dpi`` argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
 %End
 
+  protected:
+
+    virtual QString generateFileName( const PageExportDetails &details ) const;
+%Docstring
+ Generates the file name for a page during export.
+
+ Subclasses can override this method to customise page file naming.
+ :rtype: str
+%End
 
 };
 

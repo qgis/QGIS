@@ -317,6 +317,20 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertAlmostEqual(values[4], 1925.000000000000, 2)
         self.assertAlmostEqual(values[5], 3050.000000000000, 2)
 
+    def testPageFileName(self):
+        l = QgsLayout(QgsProject.instance())
+        exporter = QgsLayoutExporter(l)
+        details = QgsLayoutExporter.PageExportDetails()
+        details.directory = '/tmp/output'
+        details.baseName = 'my_maps'
+        details.extension = 'png'
+        details.page = 0
+        self.assertEqual(exporter.generateFileName(details), '/tmp/output/my_maps.png')
+        details.page = 1
+        self.assertEqual(exporter.generateFileName(details), '/tmp/output/my_maps_2.png')
+        details.page = 2
+        self.assertEqual(exporter.generateFileName(details), '/tmp/output/my_maps_3.png')
+
 
 if __name__ == '__main__':
     unittest.main()
