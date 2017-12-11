@@ -66,7 +66,7 @@ void QgsDateTimeEditWrapper::initWidget( QWidget *editor )
   const QString displayFormat = config( QStringLiteral( "display_format" ), QgsDateTimeFieldFormatter::defaultFormat( field().type() ) ).toString();
   mQDateTimeEdit->setDisplayFormat( displayFormat );
 
-  const bool calendar = config( QStringLiteral( "calendar_popup" ), false ).toBool();
+  const bool calendar = config( QStringLiteral( "calendar_popup" ), true ).toBool();
   mQDateTimeEdit->setCalendarPopup( calendar );
   if ( calendar && mQDateTimeEdit->calendarWidget() )
   {
