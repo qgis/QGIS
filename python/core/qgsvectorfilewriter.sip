@@ -506,6 +506,16 @@ Filter string for file picker dialogs
  :rtype: list of str
 %End
 
+    static bool supportsFeatureStyles( const QString &driverName );
+%Docstring
+ Returns true if the specified ``driverName`` supports feature styles.
+
+ The ``driverName`` argument must be a valid GDAL driver name.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
     struct DriverDetails
     {
       QString longName;

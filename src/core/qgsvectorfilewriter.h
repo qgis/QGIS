@@ -539,6 +539,15 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     static QStringList supportedFormatExtensions( VectorFormatOptions options = SortRecommended );
 
     /**
+     * Returns true if the specified \a driverName supports feature styles.
+     *
+     * The \a driverName argument must be a valid GDAL driver name.
+     *
+     * \since QGIS 3.0
+     */
+    static bool supportsFeatureStyles( const QString &driverName );
+
+    /**
      * Details of available driver formats.
      * \since QGIS 3.0
      */

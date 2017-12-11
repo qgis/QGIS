@@ -842,6 +842,14 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         self.assertEqual(QgsVectorFileWriter.driverForExtension('not a format'), '')
         self.assertEqual(QgsVectorFileWriter.driverForExtension(''), '')
 
+    def testSupportsFeatureStyles(self):
+        self.assertFalse(QgsVectorFileWriter.supportsFeatureStyles('ESRI Shapefile'))
+        self.assertFalse(QgsVectorFileWriter.supportsFeatureStyles('not a driver'))
+        self.assertTrue(QgsVectorFileWriter.supportsFeatureStyles('DXF'))
+        self.assertTrue(QgsVectorFileWriter.supportsFeatureStyles('KML'))
+        self.assertTrue(QgsVectorFileWriter.supportsFeatureStyles('MapInfo File'))
+        self.assertTrue(QgsVectorFileWriter.supportsFeatureStyles('MapInfo MIF'))
+
 
 if __name__ == '__main__':
     unittest.main()
