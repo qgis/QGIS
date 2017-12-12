@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsDoubleSpinBoxPlugin : public QObject, public QDesi
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsDoubleSpinBoxPlugin( QObject *parent = 0 );
+    explicit QgsDoubleSpinBoxPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

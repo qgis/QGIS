@@ -66,7 +66,7 @@ class CORE_EXPORT QgsComposerModel: public QAbstractItemModel
      * \param composition composition to attach to
      * \param parent parent object
      */
-    explicit QgsComposerModel( QgsComposition *composition, QObject *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsComposerModel( QgsComposition *composition, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //reimplemented QAbstractItemModel methods
     QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
@@ -334,7 +334,7 @@ class CORE_EXPORT QgsComposerProxyModel: public QSortFilterProxyModel
      * \param composition composition to attach model to
      * \param parent optional parent
      */
-    QgsComposerProxyModel( QgsComposition *composition, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsComposerProxyModel( QgsComposition *composition, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the current item type filter, or QgsComposerItem::ComposerItem if no

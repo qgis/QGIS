@@ -55,7 +55,7 @@ public:
     /**
      * Constructor
      */
-    KPtyDevice(QObject *parent = 0);
+    KPtyDevice(QObject *parent = nullptr);
 
     /**
      * Destructor:

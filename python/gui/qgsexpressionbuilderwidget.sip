@@ -295,7 +295,8 @@ Sets the expression string for the widget
 %End
 
   protected:
-    void showEvent( QShowEvent *e );
+    virtual void showEvent( QShowEvent *e );
+
 
 };
 

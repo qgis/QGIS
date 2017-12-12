@@ -15,7 +15,11 @@ class QgsTransactionGroup : QObject
 #include "qgstransactiongroup.h"
 %End
   public:
+
     explicit QgsTransactionGroup( QObject *parent = 0 );
+%Docstring
+Constructor for QgsTransactionGroup
+%End
 
     bool addLayer( QgsVectorLayer *layer );
 %Docstring

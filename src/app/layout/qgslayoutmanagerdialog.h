@@ -62,7 +62,7 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
 {
     Q_OBJECT
   public:
-    QgsLayoutManagerDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsLayoutManagerDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
     void addTemplates( const QMap<QString, QString> &templates );
 

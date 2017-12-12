@@ -41,7 +41,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      * \param parent parent widget
      * \param ramp optional initial gradient ramp
      */
-    QgsGradientStopEditor( QWidget *parent SIP_TRANSFERTHIS = 0, QgsGradientColorRamp *ramp = nullptr );
+    QgsGradientStopEditor( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsGradientColorRamp *ramp = nullptr );
 
     /**
      * Sets the current ramp shown in the editor.

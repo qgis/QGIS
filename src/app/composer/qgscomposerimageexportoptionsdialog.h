@@ -37,7 +37,7 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
      * \param parent parent widget
      * \param flags window flags
      */
-    QgsComposerImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsComposerImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     ~QgsComposerImageExportOptionsDialog();
 

@@ -36,7 +36,7 @@ class QgsWmtsDimensions : public QDialog, private Ui::QgsWmtsDimensionsBase
 
   public:
     //! Constructor
-    QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+    QgsWmtsDimensions( const QgsWmtsTileLayer &layer, QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
     ~QgsWmtsDimensions();
 

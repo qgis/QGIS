@@ -646,7 +646,7 @@ void QgsGrassRasterValue::stop()
     mProcess->waitForFinished();
     QgsDebugMsg( "process finished" );
     delete mProcess;
-    mProcess = 0;
+    mProcess = nullptr;
   }
 }
 

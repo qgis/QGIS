@@ -1111,7 +1111,7 @@ void QgsGrassModuleVectorField::updateFields()
     QString current = comboBox->currentText();
     comboBox->clear();
 
-    if ( mLayerInput == 0 )
+    if ( mLayerInput == nullptr )
     {
       continue;
     }
@@ -1293,7 +1293,7 @@ QgsVectorLayer *QgsGrassModuleSelection::currentSelectionLayer()
   QString id = currentSelectionLayerId();
   if ( id.isEmpty() )
   {
-    return 0;
+    return nullptr;
   }
   QgsMapLayer *layer = QgsProject::instance()->mapLayer( id );
   return qobject_cast<QgsVectorLayer *>( layer );
@@ -1470,7 +1470,7 @@ void QgsGrassModuleFile::browse()
     else
       path = QFileInfo( path ).absolutePath();
 
-    QStringList files = QFileDialog::getOpenFileNames( this, 0, path, mFilters );
+    QStringList files = QFileDialog::getOpenFileNames( this, nullptr, path, mFilters );
     if ( files.isEmpty() )
       return;
 
@@ -1485,11 +1485,11 @@ void QgsGrassModuleFile::browse()
       selectedFile = lastDir;
 
     if ( mType == New )
-      selectedFile = QFileDialog::getSaveFileName( this, 0, selectedFile, mFilters );
+      selectedFile = QFileDialog::getSaveFileName( this, nullptr, selectedFile, mFilters );
     else if ( mType == Directory )
-      selectedFile = QFileDialog::getExistingDirectory( this, 0, selectedFile );
+      selectedFile = QFileDialog::getExistingDirectory( this, nullptr, selectedFile );
     else
-      selectedFile = QFileDialog::getOpenFileName( this, 0, selectedFile, mFilters );
+      selectedFile = QFileDialog::getOpenFileName( this, nullptr, selectedFile, mFilters );
 
     lastDir = QFileInfo( selectedFile ).absolutePath();
 

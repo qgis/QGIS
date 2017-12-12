@@ -217,10 +217,10 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     //! Pointer to layout view.
     QgsLayoutView *mView = nullptr;
 
-    QgsLayoutViewTool::Flags mFlags;
+    QgsLayoutViewTool::Flags mFlags = nullptr;
 
     //! Cursor used by tool
-    QCursor mCursor;
+    QCursor mCursor = Qt::ArrowCursor;
 
     //! Optional action associated with tool
     QPointer< QAction > mAction;

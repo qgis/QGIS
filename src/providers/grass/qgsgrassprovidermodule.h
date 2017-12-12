@@ -213,7 +213,7 @@ class QgsGrassImportItemWidget : public QWidget
 {
     Q_OBJECT
   public:
-    explicit QgsGrassImportItemWidget( QWidget *parent = 0 );
+    explicit QgsGrassImportItemWidget( QWidget *parent = nullptr );
 
     void setHtml( const QString &html );
 

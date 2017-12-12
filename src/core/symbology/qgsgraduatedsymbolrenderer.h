@@ -313,7 +313,7 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
      * Doesn't alter current breaks.
      * \param ramp color ramp. Ownership is transferred to the renderer
      */
-    void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER = 0 );
+    void updateColorRamp( QgsColorRamp *ramp SIP_TRANSFER = nullptr );
 
     /**
      * Update all the symbols but leave breaks and colors. This method also sets the source

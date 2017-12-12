@@ -37,7 +37,7 @@ class GUI_EXPORT QgsArrowSymbolLayerWidget: public QgsSymbolLayerWidget, private
      * \param layer the layer where this symbol layer is applied
      * \param parent the parent widget
      */
-    QgsArrowSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsArrowSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Static creation method

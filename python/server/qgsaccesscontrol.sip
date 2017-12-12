@@ -45,14 +45,16 @@ Constructor
  \param layers to filter
 %End
 
-    void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+    virtual void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
+
 %Docstring
  Filter the features of the layer
  \param layer the layer to control
  \param filterFeatures the request to fill
 %End
 
-    QgsFeatureFilterProvider *clone() const /Factory/;
+    virtual QgsFeatureFilterProvider *clone() const /Factory/;
+
 %Docstring
  Return a clone of the object
  :return: A clone

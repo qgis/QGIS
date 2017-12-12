@@ -77,7 +77,7 @@ public:
     /**
      * Constructor
      */
-    explicit KProcess(QObject *parent = 0);
+    explicit KProcess(QObject *parent = nullptr);
 
     /**
      * Destructor

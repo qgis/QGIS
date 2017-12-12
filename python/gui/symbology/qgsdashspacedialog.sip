@@ -18,7 +18,11 @@ class QgsDashSpaceDialog: QDialog
 #include "qgsdashspacedialog.h"
 %End
   public:
+
     QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = 0 );
+%Docstring
+Constructor for QgsDashSpaceDialog
+%End
 
     QVector<qreal> dashDotVector() const;
 %Docstring

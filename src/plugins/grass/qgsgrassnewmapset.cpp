@@ -100,7 +100,7 @@ QgsGrassNewMapset::QgsGrassNewMapset( QgisInterface *iface,
 
   sRunning = true;
   mIface = iface;
-  mProjectionSelector = 0;
+  mProjectionSelector = nullptr;
   mPreviousPage = -1;
   mRegionModified = false;
 
@@ -412,8 +412,8 @@ void QgsGrassNewMapset::setGrassProjection()
   {
     mCellHead.proj = PROJECTION_XY;
     mCellHead.zone = 0;
-    mProjInfo = 0;
-    mProjUnits = 0;
+    mProjInfo = nullptr;
+    mProjUnits = nullptr;
 
     button( QWizard::NextButton )->setEnabled( true );
     return;
@@ -439,8 +439,8 @@ void QgsGrassNewMapset::setGrassProjection()
 
       mCellHead.proj = PROJECTION_XY;
       mCellHead.zone = 0;
-      mProjInfo = 0;
-      mProjUnits = 0;
+      mProjInfo = nullptr;
+      mProjUnits = nullptr;
     }
     else
     {
@@ -483,8 +483,8 @@ void QgsGrassNewMapset::setGrassProjection()
   {
     mCellHead.proj = PROJECTION_XY;
     mCellHead.zone = 0;
-    mProjInfo = 0;
-    mProjUnits = 0;
+    mProjInfo = nullptr;
+    mProjUnits = nullptr;
   }
   button( QWizard::NextButton )->setEnabled( mProjInfo && mProjUnits );
 }

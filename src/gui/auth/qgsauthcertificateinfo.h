@@ -41,9 +41,11 @@ class GUI_EXPORT QgsAuthCertInfo : public QWidget, private Ui::QgsAuthCertInfo
     Q_OBJECT
 
   public:
+
+    //! Constructor for QgsAuthCertInfo
     explicit QgsAuthCertInfo( const QSslCertificate &cert,
                               bool manageCertTrust = false,
-                              QWidget *parent SIP_TRANSFERTHIS = 0,
+                              QWidget *parent SIP_TRANSFERTHIS = nullptr,
                               const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     bool trustCacheRebuilt() { return mTrustCacheRebuilt; }
@@ -155,7 +157,7 @@ class GUI_EXPORT QgsAuthCertInfoDialog : public QDialog
      */
     explicit QgsAuthCertInfoDialog( const QSslCertificate &cert,
                                     bool manageCertTrust,
-                                    QWidget *parent SIP_TRANSFERTHIS = 0,
+                                    QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 
     //! Get access to embedded info widget

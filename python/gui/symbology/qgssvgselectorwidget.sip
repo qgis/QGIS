@@ -74,7 +74,11 @@ class QgsSvgSelectorWidget : QWidget
 #include "qgssvgselectorwidget.h"
 %End
   public:
+
     QgsSvgSelectorWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSvgSelectorWidget
+%End
 
     QString currentSvgPath() const;
 %Docstring

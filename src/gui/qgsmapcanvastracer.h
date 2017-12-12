@@ -43,7 +43,7 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
   public:
     //! Create tracer associated with a particular map canvas, optionally message bar for reporting
-    explicit QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = 0 );
+    explicit QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = nullptr );
     ~QgsMapCanvasTracer();
 
     //! Access to action that user may use to toggle tracing on/off. May be null if no action was associated
@@ -67,7 +67,7 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
 
   protected:
     //! Sets configuration from current snapping settings and canvas settings
-    virtual void configure();
+    void configure() override;
 
   private slots:
     void onCurrentLayerChanged();

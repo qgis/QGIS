@@ -35,7 +35,8 @@ class QgsQtLocationConnection: QgsGPSConnection
 Needed to make QtLocation detected
 %End
 
-    void parseData();
+    virtual void parseData();
+
 %Docstring
 Parse available data source content
 %End

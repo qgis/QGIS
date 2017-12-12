@@ -39,7 +39,7 @@ class CORE_EXPORT QgsDatabaseFilterProxyModel: public QSortFilterProxyModel
     /**
      * Constructor for QgsDatabaseFilterProxyModel.
      */
-    QgsDatabaseFilterProxyModel( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsDatabaseFilterProxyModel( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Calls QSortFilterProxyModel::setFilterWildcard and triggers update
     void _setFilterWildcard( const QString &pattern );

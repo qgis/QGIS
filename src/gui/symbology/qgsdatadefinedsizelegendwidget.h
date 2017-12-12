@@ -95,7 +95,7 @@ class SizeClassDelegate : public QStyledItemDelegate
     {
     }
 
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &, const QModelIndex & ) const override
     {
       QLineEdit *lineEdit = new QLineEdit( parent );
       QDoubleValidator *validator = new QDoubleValidator( 0, 1e6, 1, lineEdit );

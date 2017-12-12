@@ -45,7 +45,7 @@ class QgsGPSInformationWidget: public QWidget, private Ui::QgsGPSInformationWidg
 {
     Q_OBJECT
   public:
-    QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsGPSInformationWidget( QgsMapCanvas *thepCanvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsGPSInformationWidget();
 
   private slots:

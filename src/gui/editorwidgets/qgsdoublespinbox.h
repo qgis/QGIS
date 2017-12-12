@@ -70,7 +70,7 @@ class GUI_EXPORT QgsDoubleSpinBox : public QDoubleSpinBox
      * Constructor for QgsDoubleSpinBox.
      * \param parent parent widget
      */
-    explicit QgsDoubleSpinBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsDoubleSpinBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets whether the widget will show a clear button. The clear button

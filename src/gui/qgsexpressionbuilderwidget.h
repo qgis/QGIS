@@ -138,7 +138,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     /**
      * Create a new expression builder widget with an optional parent.
      */
-    QgsExpressionBuilderWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsExpressionBuilderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsExpressionBuilderWidget();
 
     /**
@@ -317,7 +317,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     void expressionParsed( bool isValid );
 
   protected:
-    void showEvent( QShowEvent *e );
+    void showEvent( QShowEvent *e ) override;
 
   private:
     void runPythonCode( const QString &code );

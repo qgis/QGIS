@@ -34,7 +34,7 @@ class QgsProjectBookmarksTableModel: public QAbstractTableModel
 
   public:
 
-    QgsProjectBookmarksTableModel( QObject *parent = 0 );
+    QgsProjectBookmarksTableModel( QObject *parent = nullptr );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 
@@ -59,7 +59,7 @@ class QgsBookmarksProxyModel: public QSortFilterProxyModel
 
   public:
 
-    QgsBookmarksProxyModel( QObject *parent = 0 );
+    QgsBookmarksProxyModel( QObject *parent = nullptr );
 
     //! This override is required because the merge model only defines headers for the SQL model
     QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const override;
@@ -104,7 +104,7 @@ class QgsMergedBookmarksTableModel: public QAbstractTableModel
 
   public:
 
-    QgsMergedBookmarksTableModel( QAbstractTableModel &qgisTableModel, QAbstractTableModel &projectTableModel, QTreeView *treeView, QObject *parent = 0 );
+    QgsMergedBookmarksTableModel( QAbstractTableModel &qgisTableModel, QAbstractTableModel &projectTableModel, QTreeView *treeView, QObject *parent = nullptr );
 
     int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
 

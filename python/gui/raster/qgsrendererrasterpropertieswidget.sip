@@ -47,7 +47,8 @@ class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 called when user changes renderer type
 %End
 
-    void apply();
+    virtual void apply();
+
 %Docstring
 Apply the changes from the dialog to the layer.
 %End

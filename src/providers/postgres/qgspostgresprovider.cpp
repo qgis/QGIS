@@ -90,7 +90,6 @@ QgsPostgresProvider::pkType( const QgsField &f ) const
 QgsPostgresProvider::QgsPostgresProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
   , mShared( new QgsPostgresSharedData )
-  , mEnabledCapabilities( 0 )
 {
 
   QgsDebugMsg( QString( "URI: %1 " ).arg( uri ) );

@@ -51,13 +51,14 @@ class GUI_EXPORT QgsRasterLayerSaveAsDialog: public QDialog, private Ui::QgsRast
       UserResolution
     };
 
+    //! Constructor for QgsRasterLayerSaveAsDialog
     QgsRasterLayerSaveAsDialog( QgsRasterLayer *rasterLayer,
                                 QgsRasterDataProvider *sourceProvider,
                                 const QgsRectangle &currentExtent,
                                 const QgsCoordinateReferenceSystem &layerCrs,
                                 const QgsCoordinateReferenceSystem &currentCrs,
                                 QWidget *parent SIP_TRANSFERTHIS = nullptr,
-                                Qt::WindowFlags f = 0 );
+                                Qt::WindowFlags f = nullptr );
     ~QgsRasterLayerSaveAsDialog();
 
     Mode mode() const;

@@ -24,7 +24,11 @@ class QgsMapLayerLegend : QObject
 #include "qgsmaplayerlegend.h"
 %End
   public:
+
     explicit QgsMapLayerLegend( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMapLayerLegend
+%End
 
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 /Factory/;

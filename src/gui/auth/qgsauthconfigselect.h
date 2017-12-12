@@ -42,7 +42,7 @@ class GUI_EXPORT QgsAuthConfigSelect : public QWidget, private Ui::QgsAuthConfig
      * \param parent Parent widget
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthConfigSelect( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &dataprovider = QString() );
+    explicit QgsAuthConfigSelect( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &dataprovider = QString() );
 
     //! Set the authentication config id for the resource
     void setConfigId( const QString &authcfg );
@@ -118,7 +118,7 @@ class GUI_EXPORT QgsAuthConfigUriEdit : public QDialog, private Ui::QgsAuthConfi
      * \param datauri URI QString with of without an authcfg=ID string
      * \param dataprovider The key of the calling layer provider, if applicable
      */
-    explicit QgsAuthConfigUriEdit( QWidget *parent SIP_TRANSFERTHIS = 0,
+    explicit QgsAuthConfigUriEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr,
                                    const QString &datauri = QString(),
                                    const QString &dataprovider = QString() );
 

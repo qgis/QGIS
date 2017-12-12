@@ -23,7 +23,11 @@ class QgsValueRelationSearchWidgetWrapper : QgsSearchWidgetWrapper
 #include "qgsvaluerelationsearchwidgetwrapper.h"
 %End
   public:
+
     explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsValueRelationSearchWidgetWrapper
+%End
     virtual bool applyDirectly();
 
     virtual QString expression() const;

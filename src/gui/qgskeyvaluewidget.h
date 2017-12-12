@@ -37,7 +37,7 @@ class GUI_EXPORT QgsKeyValueModel : public QAbstractTableModel
     Q_OBJECT
   public:
 
-    explicit QgsKeyValueModel( QObject *parent = 0 );
+    explicit QgsKeyValueModel( QObject *parent = nullptr );
     void setMap( const QVariantMap &map );
     QVariantMap map() const;
 
@@ -72,7 +72,7 @@ class GUI_EXPORT QgsKeyValueWidget: public QgsTableWidgetBase
     /**
      * Constructor.
      */
-    explicit QgsKeyValueWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsKeyValueWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Set the initial value of the widget.

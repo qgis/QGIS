@@ -560,7 +560,7 @@ void QgsAttributeTableDialog::replaceSearchWidget( QWidget *oldw, QWidget *neww 
 {
   mFilterLayout->removeWidget( oldw );
   oldw->setVisible( false );
-  mFilterLayout->addWidget( neww, 0, 0, 0 );
+  mFilterLayout->addWidget( neww, 0, 0, nullptr );
   neww->setVisible( true );
   neww->setFocus();
 }

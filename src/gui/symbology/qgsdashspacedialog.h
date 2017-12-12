@@ -28,7 +28,9 @@ class GUI_EXPORT QgsDashSpaceDialog: public QDialog, private Ui::QgsDashSpaceDia
 {
     Q_OBJECT
   public:
-    QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = 0 );
+
+    //! Constructor for QgsDashSpaceDialog
+    QgsDashSpaceDialog( const QVector<qreal> &v, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags f = nullptr );
 
     QVector<qreal> dashDotVector() const;
 

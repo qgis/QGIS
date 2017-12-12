@@ -20,7 +20,11 @@ class QgsBlendModeComboBox : QComboBox
 #include "qgsblendmodecombobox.h"
 %End
   public:
+
     QgsBlendModeComboBox( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBlendModeComboBox
+%End
 
     QPainter::CompositionMode blendMode();
 %Docstring

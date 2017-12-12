@@ -59,7 +59,7 @@ class QgsGrassModuleCheckBox : public QCheckBox
     /**
      * \brief Constructor
      */
-    QgsGrassModuleCheckBox( const QString &text, QWidget *parent = 0 );
+    QgsGrassModuleCheckBox( const QString &text, QWidget *parent = nullptr );
 
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -186,7 +186,7 @@ class QgsGrassModuleGroupBoxItem : public QGroupBox, public QgsGrassModuleParam
      */
     QgsGrassModuleGroupBoxItem( QgsGrassModule *module, QString key,
                                 QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                                bool direct, QWidget *parent = 0 );
+                                bool direct, QWidget *parent = nullptr );
 
     void resizeEvent( QResizeEvent *event ) override;
 
@@ -208,7 +208,7 @@ class QgsGrassModuleMultiParam : public QgsGrassModuleGroupBoxItem
   public:
     QgsGrassModuleMultiParam( QgsGrassModule *module, QString key,
                               QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                              bool direct, QWidget *parent = 0 );
+                              bool direct, QWidget *parent = nullptr );
 
   public slots:
     virtual void addRow() {}
@@ -250,7 +250,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
      */
     QgsGrassModuleOption( QgsGrassModule *module, QString key,
                           QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                          bool direct, QWidget *parent = 0 );
+                          bool direct, QWidget *parent = nullptr );
 
     //! Control option
     enum ControlType { NoControl, LineEdit, ComboBox, SpinBox, CheckBoxes };
@@ -355,7 +355,7 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
      */
     QgsGrassModuleFlag( QgsGrassModule *module, QString key,
                         QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                        bool direct, QWidget *parent = 0 );
+                        bool direct, QWidget *parent = nullptr );
 
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;
@@ -382,7 +382,7 @@ class QgsGrassModuleGdalInput : public QgsGrassModuleGroupBoxItem
      */
     QgsGrassModuleGdalInput( QgsGrassModule *module, QgsGrassModuleGdalInput::Type type, QString key,
                              QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                             bool direct, QWidget *parent = 0 );
+                             bool direct, QWidget *parent = nullptr );
 
     //! Reimplemented
     QStringList options() override;
@@ -443,7 +443,7 @@ class QgsGrassModuleField : public QgsGrassModuleOption
      */
     QgsGrassModuleField( QgsGrassModule *module, QString key,
                          QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                         bool direct, QWidget *parent = 0 );
+                         bool direct, QWidget *parent = nullptr );
 };
 
 /*********************** QgsGrassModuleVectorField **********************/
@@ -467,7 +467,7 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
                                QgsGrassModuleStandardOptions *options,
                                QString key,
                                QDomElement &qdesc, QDomElement &gdesc, QDomNode &gnode,
-                               bool direct, QWidget *parent = 0 );
+                               bool direct, QWidget *parent = nullptr );
 
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;
@@ -531,7 +531,7 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
                              QString key,
                              QDomElement &qdesc, QDomElement &gdesc,
                              QDomNode &gnode,
-                             bool direct, QWidget *parent = 0 );
+                             bool direct, QWidget *parent = nullptr );
 
     //! Returns list of options which will be passed to module
     virtual QStringList options() override;
@@ -596,7 +596,7 @@ class QgsGrassModuleFile : public QgsGrassModuleGroupBoxItem
                         QString key,
                         QDomElement &qdesc, QDomElement &gdesc,
                         QDomNode &gnode,
-                        bool direct, QWidget *parent = 0 );
+                        bool direct, QWidget *parent = nullptr );
 
     //! File type
     enum Type { Old, New, Multiple, Directory };

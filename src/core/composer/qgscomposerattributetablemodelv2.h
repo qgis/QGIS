@@ -53,7 +53,7 @@ class CORE_EXPORT QgsComposerAttributeTableColumnModelV2: public QAbstractTableM
      * \param composerTable QgsComposerAttributeTable the model is attached to
      * \param parent optional parent
      */
-    QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsComposerAttributeTableColumnModelV2( QgsComposerAttributeTableV2 *composerTable, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -163,7 +163,7 @@ class CORE_EXPORT QgsComposerTableSortColumnsProxyModelV2: public QSortFilterPro
      * \param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * \param parent optional parent
      */
-    QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsComposerTableSortColumnsProxyModelV2( QgsComposerAttributeTableV2 *composerTable, ColumnFilterType filterType, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;

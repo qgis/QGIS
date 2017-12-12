@@ -52,7 +52,7 @@ class QgsMemoryProvider : public QgsVectorDataProvider
     virtual QgsWkbTypes::Type wkbType() const override;
     virtual long featureCount() const override;
     virtual QgsFields fields() const override;
-    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool addAttributes( const QList<QgsField> &attributes ) override;
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes ) override;

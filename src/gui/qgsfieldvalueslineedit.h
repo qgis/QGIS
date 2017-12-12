@@ -137,7 +137,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
      * Constructor for QgsFieldValuesLineEdit
      * \param parent parent widget
      */
-    QgsFieldValuesLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsFieldValuesLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual ~QgsFieldValuesLineEdit();
 

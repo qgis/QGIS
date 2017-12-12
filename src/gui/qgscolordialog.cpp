@@ -102,7 +102,7 @@ QColor QgsColorDialog::getLiveColor( const QColor &initialColor, QObject *update
   }
   else
   {
-    QgsColorDialog *liveDialog = new QgsColorDialog( parent, 0, initialColor );
+    QgsColorDialog *liveDialog = new QgsColorDialog( parent, nullptr, initialColor );
     liveDialog->setWindowTitle( title.isEmpty() ? tr( "Select Color" ) : title );
     if ( !allowOpacity )
     {
@@ -135,7 +135,7 @@ QColor QgsColorDialog::getColor( const QColor &initialColor, QWidget *parent, co
   }
   else
   {
-    QgsColorDialog *dialog = new QgsColorDialog( parent, 0, initialColor );
+    QgsColorDialog *dialog = new QgsColorDialog( parent, nullptr, initialColor );
     dialog->setWindowTitle( dialogTitle );
     dialog->setAllowOpacity( allowOpacity );
 

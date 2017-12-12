@@ -34,6 +34,9 @@ class QgsProjectionSelectionWidget : QWidget
     };
 
     explicit QgsProjectionSelectionWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsProjectionSelectionWidget
+%End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring

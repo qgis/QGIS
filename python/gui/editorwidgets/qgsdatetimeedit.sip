@@ -19,7 +19,11 @@ class QgsDateTimeEdit : QDateTimeEdit
 #include "qgsdatetimeedit.h"
 %End
   public:
+
     explicit QgsDateTimeEdit( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDateTimeEdit
+%End
 
     void setAllowNull( bool allowNull );
 %Docstring

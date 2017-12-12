@@ -83,7 +83,7 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
                                     const QString &providerKey,
                                     const QgsCoordinateReferenceSystem &destCRS,
                                     bool onlySelected = false,
-                                    QString *errorMessage SIP_OUT = 0,
+                                    QString *errorMessage SIP_OUT = nullptr,
                                     const QMap<QString, QVariant> &options = QMap<QString, QVariant>(),
                                     QgsFeedback *feedback = nullptr
                                   );
@@ -133,8 +133,8 @@ class CORE_EXPORT QgsVectorLayerExporter : public QgsFeatureSink
      */
     int errorCount() const { return mErrorCount; }
 
-    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) override;
-    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
      * Finalizes the export and closes the new created layer.

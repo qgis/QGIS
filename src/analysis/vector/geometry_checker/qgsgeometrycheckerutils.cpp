@@ -81,7 +81,7 @@ namespace QgsGeometryCheckerUtils
     // End
     mFeatureIt = QgsFeatureIds::const_iterator();
     delete mCurrentFeature;
-    mCurrentFeature = 0;
+    mCurrentFeature = nullptr;
     return false;
   }
 

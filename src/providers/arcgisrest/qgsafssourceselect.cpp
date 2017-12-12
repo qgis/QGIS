@@ -108,7 +108,7 @@ void QgsAfsSourceSelect::buildQuery( const QgsOwsConnection &connection, const Q
   }
 
   //show expression builder
-  QgsExpressionBuilderDialog d( 0, filterIndex.data().toString() );
+  QgsExpressionBuilderDialog d( nullptr, filterIndex.data().toString() );
 
   //add available attributes to expression builder
   QgsExpressionBuilderWidget *w = d.expressionBuilder();

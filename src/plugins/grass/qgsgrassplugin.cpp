@@ -114,9 +114,9 @@ int QgsGrassPlugin::type()
  */
 void QgsGrassPlugin::initGui()
 {
-  mToolBarPointer = 0;
-  mTools = 0;
-  mNewMapset = 0;
+  mToolBarPointer = nullptr;
+  mTools = nullptr;
+  mNewMapset = nullptr;
 
   mCanvas = qGisInterface->mapCanvas();
 
@@ -328,7 +328,7 @@ void QgsGrassPlugin::onCurrentLayerChanged( QgsMapLayer *layer )
 void QgsGrassPlugin::resetEditActions()
 {
 
-  QgsGrassProvider *grassProvider = 0;
+  QgsGrassProvider *grassProvider = nullptr;
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
   if ( vectorLayer )
   {
@@ -448,7 +448,7 @@ void QgsGrassPlugin::onFieldsChanged()
 
 void QgsGrassPlugin::addFeature()
 {
-  QgsGrassProvider *grassProvider = 0;
+  QgsGrassProvider *grassProvider = nullptr;
   QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
   if ( vectorLayer )
   {
@@ -496,7 +496,7 @@ void QgsGrassPlugin::onSplitFeaturesTriggered( bool checked )
 {
   if ( checked )
   {
-    QgsGrassProvider *grassProvider = 0;
+    QgsGrassProvider *grassProvider = nullptr;
     QgsVectorLayer *vectorLayer = qobject_cast<QgsVectorLayer *>( qGisInterface->activeLayer() );
     if ( vectorLayer )
     {
@@ -575,7 +575,7 @@ void QgsGrassPlugin::newVector()
                        QgsGrass::getDefaultLocation(),
                        QgsGrass::getDefaultMapset() );
 
-  struct Map_info *Map = 0;
+  struct Map_info *Map = nullptr;
   G_TRY
   {
     Map = QgsGrass::vectNewMapStruct();
@@ -604,7 +604,7 @@ void QgsGrassPlugin::newVector()
 
   if ( !layer )
   {
-    QMessageBox::warning( 0, tr( "Warning" ),
+    QMessageBox::warning( nullptr, tr( "Warning" ),
                           tr( "New vector created but cannot be opened by data provider." ) );
     return;
   }
@@ -699,7 +699,7 @@ void QgsGrassPlugin::openMapset()
 
   if ( !err.isNull() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open the mapset. %1" ).arg( err ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot open the mapset. %1" ).arg( err ) );
     return;
   }
   QgsGrass::saveMapset();
@@ -762,7 +762,7 @@ void QgsGrassPlugin::projectRead()
 
   if ( !err.isNull() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open GRASS mapset. %1" ).arg( err ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot open GRASS mapset. %1" ).arg( err ) );
     return;
   }
 }
@@ -840,10 +840,10 @@ void QgsGrassPlugin::unload()
   delete mAddArea;
 
   delete mToolBarPointer;
-  mToolBarPointer = 0;
+  mToolBarPointer = nullptr;
 
   delete mTools;
-  mTools = 0;
+  mTools = nullptr;
 }
 
 // Set icons to the current theme

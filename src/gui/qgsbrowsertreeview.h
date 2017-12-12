@@ -33,7 +33,9 @@ class GUI_EXPORT QgsBrowserTreeView : public QTreeView
 {
     Q_OBJECT
   public:
-    QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsBrowserTreeView
+    QgsBrowserTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void setModel( QAbstractItemModel *model ) override;
     //! Set the browser model

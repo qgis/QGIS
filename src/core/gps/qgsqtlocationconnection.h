@@ -58,7 +58,7 @@ class CORE_EXPORT QgsQtLocationConnection: public QgsGPSConnection
     void broadcastConnectionAvailable();
 
     //! Parse available data source content
-    void parseData();
+    void parseData() override;
 
     /**
      * Called when the position updated.

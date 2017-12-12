@@ -52,7 +52,8 @@ class GUI_EXPORT QgsProjectionSelectionWidget : public QWidget
       CrsNotSet, //!< Not set (hidden by default)
     };
 
-    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    //! Constructor for QgsProjectionSelectionWidget
+    explicit QgsProjectionSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the currently selected CRS for the widget

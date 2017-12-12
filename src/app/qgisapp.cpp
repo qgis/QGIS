@@ -1295,7 +1295,7 @@ QgisApp::QgisApp( QSplashScreen *splash, bool restorePlugins, bool skipVersionCh
 } // QgisApp ctor
 
 QgisApp::QgisApp()
-  : QMainWindow( nullptr, 0 )
+  : QMainWindow( nullptr, nullptr )
 #ifdef Q_OS_MAC
   , mWindowMenu( nullptr )
 #endif
@@ -5749,7 +5749,7 @@ void QgisApp::dxfExport()
     dxfExport.setDestinationCrs( d.crs() );
     dxfExport.setForce2d( d.force2d() );
 
-    QgsDxfExport::Flags flags = 0;
+    QgsDxfExport::Flags flags = nullptr;
     if ( !d.useMText() )
       flags = flags | QgsDxfExport::FlagNoMText;
     dxfExport.setFlags( flags );

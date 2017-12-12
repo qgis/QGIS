@@ -1412,7 +1412,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
   }
 
   QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDecimalDegrees;
-  QgsCoordinateFormatter::FormatFlags flags = 0;
+  QgsCoordinateFormatter::FormatFlags flags = nullptr;
   switch ( mGridAnnotationFormat )
   {
     case Decimal:
@@ -1432,7 +1432,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
 
     case DegreeMinuteNoSuffix:
       format = QgsCoordinateFormatter::FormatDegreesMinutes;
-      flags = 0;
+      flags = nullptr;
       break;
 
     case DegreeMinutePadded:
@@ -1442,7 +1442,7 @@ QString QgsLayoutItemMapGrid::gridAnnotationString( double value, QgsLayoutItemM
 
     case DegreeMinuteSecondNoSuffix:
       format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
-      flags = 0;
+      flags = nullptr;
       break;
 
     case DegreeMinuteSecondPadded:

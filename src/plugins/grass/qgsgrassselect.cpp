@@ -436,7 +436,7 @@ void QgsGrassSelect::accept()
   if ( type != QgsGrassSelect::MapSet && map.isEmpty() )
   {
     QString msg = tr( "Select a map." );
-    QMessageBox::warning( 0, tr( "No map" ), msg );
+    QMessageBox::warning( nullptr, tr( "No map" ), msg );
     return;
   }
 
@@ -444,7 +444,7 @@ void QgsGrassSelect::accept()
   {
     if ( elayer->count() == 0 )
     {
-      QMessageBox::warning( 0, tr( "No layer" ),
+      QMessageBox::warning( nullptr, tr( "No layer" ),
                             tr( "No layers available in this map" ) );
       return;
     }
