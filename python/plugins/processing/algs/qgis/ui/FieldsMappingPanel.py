@@ -324,7 +324,7 @@ class FieldsMappingPanel(BASE, WIDGET):
             self.on_resetButton_clicked()
             return
         dlg = QMessageBox(self)
-        dlg.setText("Do you want to reset the field mapping?")
+        dlg.setText(self.tr("Do you want to reset the field mapping?"))
         dlg.setStandardButtons(
             QMessageBox.StandardButtons(QMessageBox.Yes |
                                         QMessageBox.No))
