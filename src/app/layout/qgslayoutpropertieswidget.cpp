@@ -58,6 +58,8 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   mGenerateWorldFileCheckBox->setChecked( exportWorldFile );
   connect( mGenerateWorldFileCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::worldFileToggled );
 
+  connect( mRasterizeCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::rasteriseToggled );
+
   mTopMarginSpinBox->setValue( topMargin );
   mMarginUnitsComboBox->linkToWidget( mTopMarginSpinBox );
   mRightMarginSpinBox->setValue( rightMargin );
@@ -88,6 +90,9 @@ void QgsLayoutPropertiesWidget::updateGui()
 {
   whileBlocking( mReferenceMapComboBox )->setItem( mLayout->referenceMap() );
   whileBlocking( mResolutionSpinBox )->setValue( mLayout->context().dpi() );
+
+  bool rasterise = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
+  whileBlocking( mRasterizeCheckBox )->setChecked( rasterise );
 }
 
 void QgsLayoutPropertiesWidget::updateSnappingElements()
@@ -187,6 +192,11 @@ void QgsLayoutPropertiesWidget::dpiChanged( int value )
 void QgsLayoutPropertiesWidget::worldFileToggled()
 {
   mLayout->setCustomProperty( QStringLiteral( "exportWorldFile" ), mGenerateWorldFileCheckBox->isChecked() );
+}
+
+void QgsLayoutPropertiesWidget::rasteriseToggled()
+{
+  mLayout->setCustomProperty( QStringLiteral( "rasterise" ), mRasterizeCheckBox->isChecked() );
 }
 
 void QgsLayoutPropertiesWidget::blockSignals( bool block )

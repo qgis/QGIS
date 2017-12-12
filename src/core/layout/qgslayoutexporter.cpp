@@ -19,6 +19,7 @@
 #include "qgslayoutitemmap.h"
 #include "qgslayoutpagecollection.h"
 #include "qgsogrutils.h"
+#include "qgspaintenginehack.h"
 #include <QImageWriter>
 #include <QSize>
 
@@ -76,6 +77,41 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
   return renderRegionToImage( paperRect, imageSize, dpi );
 }
 
+///@cond PRIVATE
+class LayoutItemCacheSettingRestorer
+{
+  public:
+
+    LayoutItemCacheSettingRestorer( QgsLayout *layout )
+      : mLayout( layout )
+    {
+      mLayout->context().mIsPreviewRender = false;
+
+      const QList< QGraphicsItem * > items = mLayout->items();
+      for ( QGraphicsItem *item : items )
+      {
+        mPrevCacheMode.insert( item, item->cacheMode() );
+        item->setCacheMode( QGraphicsItem::NoCache );
+      }
+    }
+
+    ~LayoutItemCacheSettingRestorer()
+    {
+      for ( auto it = mPrevCacheMode.constBegin(); it != mPrevCacheMode.constEnd(); ++it )
+      {
+        it.key()->setCacheMode( it.value() );
+      }
+
+      mLayout->context().mIsPreviewRender = true;
+    }
+
+  private:
+    QgsLayout *mLayout = nullptr;
+    QHash< QGraphicsItem *, QGraphicsItem::CacheMode > mPrevCacheMode;
+};
+
+///@endcond PRIVATE
+
 void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) const
 {
   QPaintDevice *paintDevice = painter->device();
@@ -84,7 +120,8 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
     return;
   }
 
-  mLayout->context().mIsPreviewRender = false;
+  LayoutItemCacheSettingRestorer cacheRestorer( mLayout );
+  ( void )cacheRestorer;
 
 #if 0 //TODO
   setSnapLinesVisible( false );
@@ -97,8 +134,6 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
 #if 0 // TODO
   setSnapLinesVisible( true );
 #endif
-
-  mLayout->context().mIsPreviewRender = true;
 }
 
 QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize imageSize, double dpi ) const
@@ -163,8 +198,12 @@ class LayoutContextSettingsRestorer
 };
 ///@endcond PRIVATE
 
-QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings )
+QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &s )
 {
+  ImageExportSettings settings = s;
+  if ( settings.dpi <= 0 )
+    settings.dpi = mLayout->context().dpi();
+
   mErrorFileName.clear();
 
   int worldFilePageNo = -1;
@@ -252,6 +291,173 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
       }
     }
 
+  }
+  return Success;
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &s )
+{
+  PdfExportSettings settings = s;
+  if ( settings.dpi <= 0 )
+    settings.dpi = mLayout->context().dpi();
+
+  mErrorFileName.clear();
+
+  LayoutContextSettingsRestorer contextRestorer( mLayout );
+  ( void )contextRestorer;
+  mLayout->context().setDpi( settings.dpi );
+
+  // If we are not printing as raster, temporarily disable advanced effects
+  // as QPrinter does not support composition modes and can result
+  // in items missing from the output
+  mLayout->context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, settings.rasteriseWholeImage );
+
+  QPrinter printer;
+  preparePrintAsPdf( printer, filePath );
+  preparePrint( printer, false );
+  QPainter p;
+  if ( !p.begin( &printer ) )
+  {
+    //error beginning print
+    return PrintError;
+  }
+
+  ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasteriseWholeImage );
+  p.end();
+
+#if 0//TODO
+  georeferenceOutput( filePath );
+#endif
+
+  return result;
+}
+
+void QgsLayoutExporter::preparePrintAsPdf( QPrinter &printer, const QString &filePath )
+{
+  printer.setOutputFileName( filePath );
+  // setOutputFormat should come after setOutputFileName, which auto-sets format to QPrinter::PdfFormat.
+  // [LS] This should be QPrinter::NativeFormat for Mac, otherwise fonts are not embed-able
+  // and text is not searchable; however, there are several bugs with <= Qt 4.8.5, 5.1.1, 5.2.0:
+  // https://bugreports.qt-project.org/browse/QTBUG-10094 - PDF font embedding fails
+  // https://bugreports.qt-project.org/browse/QTBUG-33583 - PDF output converts text to outline
+  // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
+  printer.setOutputFormat( QPrinter::PdfFormat );
+
+#if 0 //TODO
+  refreshPageSize();
+#endif
+
+  //must set orientation to portrait before setting paper size, otherwise size will be flipped
+  //for landscape sized outputs (#11352)
+  printer.setOrientation( QPrinter::Portrait );
+
+#if 0 //TODO
+  printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+#endif
+
+  // TODO: add option for this in Composer
+  // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
+  //printer.setFontEmbeddingEnabled( true );
+
+  QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
+}
+
+void QgsLayoutExporter::preparePrint( QPrinter &printer, bool evaluateDDPageSize )
+{
+  printer.setFullPage( true );
+  printer.setColorMode( QPrinter::Color );
+
+  //set user-defined resolution
+  printer.setResolution( mLayout->context().dpi() );
+
+#if 0 //TODO
+  if ( evaluateDDPageSize && ddPageSizeActive() )
+  {
+    //set data defined page size
+    refreshPageSize();
+    //must set orientation to portrait before setting paper size, otherwise size will be flipped
+    //for landscape sized outputs (#11352)
+    printer.setOrientation( QPrinter::Portrait );
+    printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+  }
+#endif
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer )
+{
+  preparePrint( printer, true );
+  QPainter p;
+  if ( !p.begin( &printer ) )
+  {
+    //error beginning print
+    return PrintError;
+  }
+
+  printPrivate( printer, p );
+  p.end();
+  return Success;
+}
+
+QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage, double dpi, bool rasterise )
+{
+#if 0 //TODO
+  if ( ddPageSizeActive() )
+  {
+    //set the page size again so that data defined page size takes effect
+    refreshPageSize();
+    //must set orientation to portrait before setting paper size, otherwise size will be flipped
+    //for landscape sized outputs (#11352)
+    printer.setOrientation( QPrinter::Portrait );
+    printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+  }
+#endif
+
+  //layout starts page numbering at 0
+  int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1;
+  int toPage = ( printer.toPage() < 1 ) ? mLayout->pageCollection()->pageCount() - 1 : printer.toPage() - 1;
+
+  bool pageExported = false;
+  if ( rasterise )
+  {
+    for ( int i = fromPage; i <= toPage; ++i )
+    {
+      if ( !mLayout->pageCollection()->shouldExportPage( i ) )
+      {
+        continue;
+      }
+      if ( ( pageExported && i > fromPage ) || startNewPage )
+      {
+        printer.newPage();
+      }
+
+      QImage image = renderPageToImage( i, QSize(), dpi );
+      if ( !image.isNull() )
+      {
+        QRectF targetArea( 0, 0, image.width(), image.height() );
+        painter.drawImage( targetArea, image, targetArea );
+      }
+      else
+      {
+        return MemoryError;
+      }
+      pageExported = true;
+    }
+  }
+  else
+  {
+    for ( int i = fromPage; i <= toPage; ++i )
+    {
+      if ( !mLayout->pageCollection()->shouldExportPage( i ) )
+      {
+        continue;
+      }
+      if ( ( pageExported && i > fromPage ) || startNewPage )
+      {
+        printer.newPage();
+      }
+      renderPage( &painter, i );
+      pageExported = true;
+    }
   }
   return Success;
 }

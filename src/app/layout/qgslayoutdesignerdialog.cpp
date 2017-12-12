@@ -172,6 +172,7 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   connect( mActionRemoveLayout, &QAction::triggered, this, &QgsLayoutDesignerDialog::deleteLayout );
 
   connect( mActionExportAsImage, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToRaster );
+  connect( mActionExportAsPDF, &QAction::triggered, this, &QgsLayoutDesignerDialog::exportToPdf );
 
   connect( mActionShowGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::showGrid );
   connect( mActionSnapGrid, &QAction::triggered, this, &QgsLayoutDesignerDialog::snapToGrid );
@@ -1499,6 +1500,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   mLayout->setCustomProperty( QStringLiteral( "imageAntialias" ), imageDlg.antialiasing() );
 
   mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
 
   QgsLayoutExporter exporter( mLayout );
 
@@ -1518,11 +1520,12 @@ void QgsLayoutDesignerDialog::exportToRaster()
   switch ( exporter.exportToImage( fileNExt.first, settings ) )
   {
     case QgsLayoutExporter::Success:
+    case QgsLayoutExporter::PrintError:
       break;
 
     case QgsLayoutExporter::FileError:
       QMessageBox::warning( this, tr( "Image Export Error" ),
-                            QString( tr( "Cannot write to %1.\n\nThis file may be open in another application." ) ).arg( exporter.errorFile() ),
+                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( exporter.errorFile() ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -1536,8 +1539,103 @@ void QgsLayoutDesignerDialog::exportToRaster()
                             QMessageBox::Ok, QMessageBox::Ok );
       break;
 
+
   }
+  QApplication::restoreOverrideCursor();
   mView->setPaintingEnabled( true );
+}
+
+void QgsLayoutDesignerDialog::exportToPdf()
+{
+  if ( containsWmsLayers() )
+  {
+    showWmsPrintingWarning();
+  }
+
+  if ( containsAdvancedEffects() )
+  {
+    showAdvancedEffectsWarning();
+  }
+
+  QgsSettings settings;
+  QString lastUsedFile = settings.value( QStringLiteral( "UI/lastSaveAsPdfFile" ), QStringLiteral( "qgis.pdf" ) ).toString();
+  QFileInfo file( lastUsedFile );
+  QString outputFileName;
+
+#if 0// TODO
+  if ( hasAnAtlas && !atlasOnASingleFile &&
+       ( mode == QgsComposer::Atlas || mComposition->atlasMode() == QgsComposition::PreviewAtlas ) )
+  {
+    outputFileName = QDir( file.path() ).filePath( atlasMap->currentFilename() ) + ".pdf";
+  }
+  else
+  {
+#endif
+    outputFileName = file.path();
+#if 0 //TODO
+  }
+#endif
+
+#ifdef Q_OS_MAC
+  mQgis->activateWindow();
+  this->raise();
+#endif
+  outputFileName = QFileDialog::getSaveFileName(
+                     this,
+                     tr( "Export to PDF" ),
+                     outputFileName,
+                     tr( "PDF Format" ) + " (*.pdf *.PDF)" );
+  this->activateWindow();
+  if ( outputFileName.isEmpty() )
+  {
+    return;
+  }
+
+  if ( !outputFileName.endsWith( QLatin1String( ".pdf" ), Qt::CaseInsensitive ) )
+  {
+    outputFileName += QLatin1String( ".pdf" );
+  }
+
+  settings.setValue( QStringLiteral( "UI/lastSaveAsPdfFile" ), outputFileName );
+
+  mView->setPaintingEnabled( false );
+  QApplication::setOverrideCursor( Qt::BusyCursor );
+
+  QgsLayoutExporter::PdfExportSettings pdfSettings;
+  pdfSettings.rasteriseWholeImage = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
+
+  QgsLayoutExporter exporter( mLayout );
+  switch ( exporter.exportToPdf( outputFileName, pdfSettings ) )
+  {
+    case QgsLayoutExporter::Success:
+      break;
+
+    case QgsLayoutExporter::FileError:
+      QMessageBox::warning( this, tr( "Export to PDF" ),
+                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( exporter.errorFile() ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+    case QgsLayoutExporter::PrintError:
+      QMessageBox::warning( this, tr( "Export to PDF" ),
+                            tr( "Could not create print device." ),
+                            QMessageBox::Ok,
+                            QMessageBox::Ok );
+      break;
+
+
+    case QgsLayoutExporter::MemoryError:
+      QMessageBox::warning( nullptr, tr( "Memory Allocation Error" ),
+                            tr( "Exporting the PDF "
+                                "resulted in a memory overflow.\n\n"
+                                "Please try a lower resolution or a smaller paper size." ),
+                            QMessageBox::Ok, QMessageBox::Ok );
+      break;
+  }
+
+  mView->setPaintingEnabled( true );
+  QApplication::restoreOverrideCursor();
 }
 
 void QgsLayoutDesignerDialog::paste()
@@ -1634,9 +1732,9 @@ void QgsLayoutDesignerDialog::createLayoutPropertiesWidget()
   QgsLayoutGuideWidget *oldGuideWidget = qobject_cast<QgsLayoutGuideWidget *>( mGuideStack->takeMainPanel() );
   delete oldGuideWidget;
 
-  QgsLayoutPropertiesWidget *widget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
-  widget->setDockMode( true );
-  mGeneralPropertiesStack->setMainPanel( widget );
+  mLayoutPropertiesWidget = new QgsLayoutPropertiesWidget( mGeneralDock, mLayout );
+  mLayoutPropertiesWidget->setDockMode( true );
+  mGeneralPropertiesStack->setMainPanel( mLayoutPropertiesWidget );
 
   QgsLayoutGuideWidget *guideWidget = new QgsLayoutGuideWidget( mGuideDock, mLayout, mView );
   guideWidget->setDockMode( true );
@@ -1683,6 +1781,40 @@ void QgsLayoutDesignerDialog::showWmsPrintingWarning()
     m->setCheckBoxQgsSettingsLabel( QStringLiteral( "/UI/displayComposerWMSWarning" ) );
     m->exec(); //deleted on close
   }
+}
+
+bool QgsLayoutDesignerDialog::containsAdvancedEffects() const
+{
+  QList< QgsLayoutItem *> items;
+  mLayout->layoutItems( items );
+
+  for ( QgsLayoutItem *currentItem : qgis::as_const( items ) )
+  {
+    if ( currentItem->containsAdvancedEffects() )
+      return true;
+  }
+  return false;
+}
+
+void QgsLayoutDesignerDialog::showAdvancedEffectsWarning()
+{
+  bool rasterize = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
+  if ( rasterise )
+    return;
+
+  QgsMessageViewer *m = new QgsMessageViewer( this, QgsGuiUtils::ModalDialogFlags, false );
+  m->setWindowTitle( tr( "Composition Effects" ) );
+  m->setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this layout, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
+  m->setCheckBoxText( tr( "Print as raster" ) );
+  m->setCheckBoxState( Qt::Checked );
+  m->setCheckBoxVisible( true );
+  m->showMessage( true );
+
+  mLayout->setCustomProperty( QStringLiteral( "rasterise" ), m->checkBoxState() == Qt::Checked );
+  //make sure print as raster checkbox is updated
+  mLayoutPropertiesWidget->updateGui();
+
+  delete m;
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )

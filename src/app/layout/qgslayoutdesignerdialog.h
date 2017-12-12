@@ -41,6 +41,7 @@ class QgsDockWidget;
 class QUndoView;
 class QTreeView;
 class QgsLayoutItemsListView;
+class QgsLayoutPropertiesWidget;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -275,6 +276,7 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void renameLayout();
     void deleteLayout();
     void exportToRaster();
+    void exportToPdf();
 
   private:
 
@@ -322,6 +324,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsDockWidget *mGuideDock = nullptr;
     QgsPanelWidgetStack *mGuideStack = nullptr;
 
+    QgsLayoutPropertiesWidget *mLayoutPropertiesWidget = nullptr;
+
     QUndoView *mUndoView = nullptr;
     QgsDockWidget *mUndoDock = nullptr;
 
@@ -365,6 +369,12 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
 
     //! Displays a warning because of possible min/max size in WMS
     void showWmsPrintingWarning();
+
+    //! True if the layout contains advanced effects, such as blend modes
+    bool containsAdvancedEffects() const;
+
+    //! Displays a warning because of incompatibility between blend modes and QPrinter
+    void showAdvancedEffectsWarning();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

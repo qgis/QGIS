@@ -122,6 +122,7 @@ to render sections of pages rather than full pages.
       Success,
       MemoryError,
       FileError,
+      PrintError,
     };
 
     struct ImageExportSettings
@@ -133,7 +134,7 @@ Constructor for ImageExportSettings
 
       double dpi;
 %Docstring
-Resolution to export layout at
+Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
 %End
 
       QSize imageSize;
@@ -173,7 +174,7 @@ Resolution to export layout at
 
       bool generateWorldFile;
 %Docstring
- Set to true to generate an external world file alonside
+ Set to true to generate an external world file alongside
  exported images.
 %End
 
@@ -184,7 +185,7 @@ Resolution to export layout at
 
     };
 
-    ExportResult exportToImage( const QString &filePath, const ImageExportSettings &settings );
+    ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
 %Docstring
  Exports the layout to the a ``filePath``, using the specified export ``settings``.
 
@@ -194,6 +195,39 @@ Resolution to export layout at
  Returns a result code indicating whether the export was successful or an
  error was encountered. If an error code is returned, errorFile() can be called
  to determine the filename for the export which encountered the error.
+ :rtype: ExportResult
+%End
+
+    struct PdfExportSettings
+    {
+      PdfExportSettings();
+%Docstring
+Constructor for PdfExportSettings
+%End
+
+      double dpi;
+%Docstring
+Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+%End
+
+      bool rasterizeWholeImage;
+%Docstring
+Set to true to force whole layout to be rasterized while exporting
+%End
+
+      QgsLayoutContext::Flags flags;
+%Docstring
+ Layout context flags, which control how the export will be created.
+%End
+
+    };
+
+    ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
+%Docstring
+ Exports the layout as a PDF to the a ``filePath``, using the specified export ``settings``.
+
+ Returns a result code indicating whether the export was successful or an
+ error was encountered.
  :rtype: ExportResult
 %End
 

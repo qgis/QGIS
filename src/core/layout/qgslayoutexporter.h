@@ -22,6 +22,7 @@
 #include <QPointer>
 #include <QSize>
 #include <QRectF>
+#include <QPrinter>
 
 class QgsLayout;
 class QPainter;
@@ -130,6 +131,7 @@ class CORE_EXPORT QgsLayoutExporter
       Success, //!< Export was successful
       MemoryError, //!< Unable to allocate memory required to export
       FileError, //!< Could not write to destination file, likely due to a lock held by another application
+      PrintError, //!< Could not start printing to destination device
     };
 
     //! Contains settings relating to exporting layouts to raster images
@@ -140,8 +142,8 @@ class CORE_EXPORT QgsLayoutExporter
         : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
       {}
 
-      //! Resolution to export layout at
-      double dpi;
+      //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+      double dpi = -1;
 
       /**
        * Manual size in pixels for output image. If imageSize is not
@@ -179,7 +181,7 @@ class CORE_EXPORT QgsLayoutExporter
       QList< int > pages;
 
       /**
-       * Set to true to generate an external world file alonside
+       * Set to true to generate an external world file alongside
        * exported images.
        */
       bool generateWorldFile = false;
@@ -201,7 +203,36 @@ class CORE_EXPORT QgsLayoutExporter
      * error was encountered. If an error code is returned, errorFile() can be called
      * to determine the filename for the export which encountered the error.
      */
-    ExportResult exportToImage( const QString &filePath, const ImageExportSettings &settings );
+    ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
+
+    //! Contains settings relating to exporting layouts to PDF
+    struct PdfExportSettings
+    {
+      //! Constructor for PdfExportSettings
+      PdfExportSettings()
+        : flags( QgsLayoutContext::FlagAntialiasing | QgsLayoutContext::FlagUseAdvancedEffects )
+      {}
+
+      //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
+      double dpi = -1;
+
+      //! Set to true to force whole layout to be rasterized while exporting
+      bool rasterizeWholeImage = false;
+
+      /**
+       * Layout context flags, which control how the export will be created.
+       */
+      QgsLayoutContext::Flags flags = 0;
+
+    };
+
+    /**
+     * Exports the layout as a PDF to the a \a filePath, using the specified export \a settings.
+     *
+     * Returns a result code indicating whether the export was successful or an
+     * error was encountered.
+     */
+    ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
 
     /**
      * Returns the file name corresponding to the last error encountered during
@@ -281,6 +312,26 @@ class CORE_EXPORT QgsLayoutExporter
 
     //! Write a world file
     void writeWorldFile( const QString &fileName, double a, double b, double c, double d, double e, double f ) const;
+
+    /**
+     * Prepare a \a printer for printing a layout as a PDF, to the destination \a filePath.
+     */
+    void preparePrintAsPdf( QPrinter &printer, const QString &filePath );
+
+    void preparePrint( QPrinter &printer, bool evaluateDDPageSize = false );
+
+    /**
+     * Convenience function that prepares the printer and prints.
+     */
+    ExportResult print( QPrinter &printer );
+
+    /**
+     * Print on a preconfigured printer
+     * \param printer QPrinter destination
+     * \param painter QPainter source
+     * \param startNewPage set to true to begin the print on a new page
+     */
+    ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
 
     friend class TestQgsLayout;
