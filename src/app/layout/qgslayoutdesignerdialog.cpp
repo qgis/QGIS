@@ -1529,7 +1529,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
   switch ( exporter.exportToImage( fileNExt.first, settings ) )
   {
     case QgsLayoutExporter::Success:
-      mMessageBar->pushInfo( tr( "Export layout" ), tr( "Successfully exported layout to %1" ).arg( fileNExt.first ) );
+      mMessageBar->pushInfo( tr( "Export layout" ), tr( "Successfully exported layout to <a href=\"%1\">%2</a>" ).arg( QUrl::fromLocalFile( fileNExt.first ).toString(), fileNExt.first ) );
       break;
 
     case QgsLayoutExporter::PrintError:

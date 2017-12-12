@@ -408,7 +408,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     /**
      * Return map settings that will be used for drawing of the map.
      */
-    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
+    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi ) const;
 
     void finalizeRestoreFromXml() override;
 

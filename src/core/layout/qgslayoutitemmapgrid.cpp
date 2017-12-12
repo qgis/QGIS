@@ -1219,7 +1219,11 @@ void QgsLayoutItemMapGrid::drawCoordinateAnnotation( QPainter *p, QPointF pos, c
         ypos += ( mAnnotationFrameDistance + textHeight + gridFrameDistance );
         xpos -= textWidth / 2.0;
         if ( extension )
+        {
           extension->bottom = std::max( extension->bottom, mAnnotationFrameDistance + gridFrameDistance + textHeight );
+          extension->left = std::max( extension->left, textWidth / 2.0 ); // annotation at bottom left/right may extend outside the bounds
+          extension->right = std::max( extension->right, textWidth / 2.0 );
+        }
       }
       else if ( mBottomGridAnnotationDirection == QgsLayoutItemMapGrid::VerticalDescending )
       {

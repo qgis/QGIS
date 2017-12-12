@@ -28,6 +28,7 @@
 #include "qgsmapthemecollection.h"
 #include "qgsproperty.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutitempolyline.h"
 #include <QObject>
 #include "qgstest.h"
 
@@ -53,6 +54,7 @@ class TestQgsLayoutMap : public QObject
     void mapPolygonVertices(); // test mapPolygon function with no map rotation
     void dataDefinedLayers(); //test data defined layer string
     void dataDefinedStyles(); //test data defined styles
+    void rasterized();
 
   private:
     QgsRasterLayer *mRasterLayer = nullptr;
@@ -437,6 +439,67 @@ void TestQgsLayoutMap::dataDefinedStyles()
 
   QgsLayoutChecker checker( QStringLiteral( "composermap_ddstyles" ), &l );
   checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+}
+
+void TestQgsLayoutMap::rasterized()
+{
+  // test a map which must be rasterised
+  QgsLayout l( QgsProject::instance() );
+  l.initializeDefaults();
+
+  QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
+  map->attemptMove( QgsLayoutPoint( 20, 30 ) );
+  map->attemptResize( QgsLayoutSize( 200, 100 ) );
+  map->setFrameEnabled( true );
+  map->setExtent( QgsRectangle( -110.0, 25.0, -90, 40.0 ) );
+  QList<QgsMapLayer *> layers = QList<QgsMapLayer *>() << mLinesLayer;
+  map->setLayers( layers );
+  map->setBackgroundColor( Qt::yellow );
+  l.addLayoutItem( map );
+
+  // add some guide lines, just for reference
+  QPolygonF points;
+  points << QPointF( 0, 30 ) << QPointF( 10, 30 );
+  QgsLayoutItemPolyline *line1 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line1 );
+  points.clear();
+  points << QPointF( 0, 30 + map->rect().height() ) << QPointF( 10, 30 + map->rect().height() );
+  QgsLayoutItemPolyline *line2 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line2 );
+  points.clear();
+  points << QPointF( 20, 0 ) << QPointF( 20, 20 );
+  QgsLayoutItemPolyline *line3 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line3 );
+  points.clear();
+  points << QPointF( 220, 0 ) << QPointF( 220, 20 );
+  QgsLayoutItemPolyline *line4 = new QgsLayoutItemPolyline( points, &l );
+  l.addLayoutItem( line4 );
+
+  // force rasterization
+  QgsLayoutItemMapGrid *grid = new QgsLayoutItemMapGrid( "test", map );
+  grid->setIntervalX( 10 );
+  grid->setIntervalY( 10 );
+  grid->setBlendMode( QPainter::CompositionMode_Darken );
+  grid->setAnnotationEnabled( true );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Left );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Top );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Right );
+  grid->setAnnotationDisplay( QgsLayoutItemMapGrid::ShowAll, QgsLayoutItemMapGrid::Bottom );
+  map->grids()->addGrid( grid );
+  map->updateBoundingRect();
+
+  QVERIFY( map->containsAdvancedEffects() );
+
+  QgsLayoutChecker checker( QStringLiteral( "layoutmap_rasterized" ), &l );
+  checker.setControlPathPrefix( QStringLiteral( "composer_map" ) );
+  QVERIFY( checker.testLayout( mReport, 0, 0 ) );
+
+  // try rendering again, without requiring rasterization, for comparison
+  // (we can use the same test image, because CompositionMode_Darken doesn't actually have any noticable
+  // rendering differences for the black grid!)
+  grid->setBlendMode( QPainter::CompositionMode_SourceOver );
+  QVERIFY( !map->containsAdvancedEffects() );
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 }
 

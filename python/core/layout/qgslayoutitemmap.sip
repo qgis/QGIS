@@ -457,7 +457,7 @@ This is calculated using the width of the map item and the width of the
 current visible map extent.
 %End
 
-    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
+    QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, double dpi ) const;
 %Docstring
 Return map settings that will be used for drawing of the map.
 %End
