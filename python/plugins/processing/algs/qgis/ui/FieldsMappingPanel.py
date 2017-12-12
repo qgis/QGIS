@@ -225,8 +225,7 @@ class FieldsMappingModel(QAbstractTableModel):
 
         self._mapping = []
         if layer is not None:
-            dp = layer.dataProvider()
-            for field in dp.fields():
+            for field in layer.fields():
                 self._mapping.append(self.newField(field))
 
         self.endResetModel()
@@ -263,6 +262,7 @@ class ExpressionDelegate(QStyledItemDelegate):
         editor.registerExpressionContextGenerator(index.model().contextGenerator())
         editor.fieldChanged.connect(self.on_expression_fieldChange)
         editor.setAutoFillBackground(True)
+        editor.setAllowEvalErrors(self.parent().dialogType == DIALOG_MODELER)
         return editor
 
     def setEditorData(self, editor, index):
@@ -303,6 +303,7 @@ class FieldsMappingPanel(BASE, WIDGET):
 
         self.layerCombo.setAllowEmptyLayer(True)
         self.layerCombo.setFilters(QgsMapLayerProxyModel.VectorLayer)
+        self.dialogType = None
 
     def configure(self):
         self.model = FieldsMappingModel()
@@ -472,7 +473,9 @@ class FieldsMappingWidgetWrapper(WidgetWrapper):
         self._layer = None
 
     def createWidget(self):
-        return FieldsMappingPanel()
+        panel = FieldsMappingPanel()
+        panel.dialogType = self.dialogType
+        return panel
 
     def postInitialize(self, wrappers):
         for wrapper in wrappers:
