@@ -88,7 +88,7 @@ Determine whether given scale is within the scale range. Returns true if scale o
 
     int level() const;
 %Docstring
-Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+Indentation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
  :rtype: int
 %End
 

@@ -79,7 +79,7 @@ class CORE_EXPORT QgsLegendSymbolItem
      */
     int scaleMaxDenom() const { return mScaleMaxDenom; }
 
-    //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+    //! Indentation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
     int level() const { return mLevel; }
 
     /**
@@ -129,7 +129,7 @@ class CORE_EXPORT QgsLegendSymbolItem
     int mScaleMinDenom = -1;
     int mScaleMaxDenom = -1;
 
-    //! Identation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
+    //! Indentation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
     int mLevel = 0;
     //! Key of the parent legend node. For legends with tree hierarchy
     QString mParentKey;

@@ -71,7 +71,7 @@ Set the scale for the arrow width
 
     double arrowStartWidth() const;
 %Docstring
-Get current arrow start width. Only meaningfull for single headed arrows
+Get current arrow start width. Only meaningful for single headed arrows
  :rtype: float
 %End
     void setArrowStartWidth( double width );
