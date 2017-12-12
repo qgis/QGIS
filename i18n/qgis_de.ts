@@ -52445,7 +52445,7 @@ Immer Netzwerk: immer aus dem Netzwerk laden und nicht prüfen, ob im Cache ein 
         <translation>In der Offline-Kopie werden Z- und M-Werte des Layers %1 weggelassen.</translation>
     </message>
     <message>
-        <source>Syncronization failed</source>
+        <source>Synchronization failed</source>
         <translation>Synchronisation gescheitert</translation>
     </message>
 </context>

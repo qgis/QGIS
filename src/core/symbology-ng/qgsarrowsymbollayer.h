@@ -65,7 +65,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayerV2
     /** Set the scale for the arrow width */
     void setArrowWidthUnitScale( const QgsMapUnitScale& scale ) { mArrowWidthUnitScale = scale; }
 
-    /** Get current arrow start width. Only meaningfull for single headed arrows */
+    /** Get current arrow start width. Only meaningful for single headed arrows */
     double arrowStartWidth() const { return mArrowStartWidth; }
     /** Set the arrow start width */
     void setArrowStartWidth( double width ) { mArrowStartWidth = width; }

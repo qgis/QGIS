@@ -316,7 +316,7 @@ void QgsOfflineEditing::synchronize()
         else
         {
           remoteLayer->rollBack();
-          showWarning( tr( "Syncronization failed" ) );
+          showWarning( tr( "Synchronization failed" ) );
         }
       }
       else
