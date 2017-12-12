@@ -266,6 +266,22 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     void setProject( QgsProject *project );
 
+    /**
+     * Will be set to true if the current expression text reported an eval error
+     * with the context.
+     *
+     * \since QGIS 3.0
+     */
+    bool evalError() const;
+
+    /**
+     * Will be set to true if the current expression text reports a parser error
+     * with the context.
+     *
+     * \since QGIS 3.0
+     */
+    bool parserError() const;
+
   public slots:
 
     /**
@@ -310,11 +326,27 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
 
     /**
      * Emitted when the user changes the expression in the widget.
-      * Users of this widget should connect to this signal to decide if to let the user
-      * continue.
-      * \param isValid Is true if the expression the user has typed is valid.
-      */
+     * Users of this widget should connect to this signal to decide if to let the user
+     * continue.
+     * \param isValid Is true if the expression the user has typed is valid.
+     */
     void expressionParsed( bool isValid );
+
+    /**
+     * Will be set to true if the current expression text reported an eval error
+     * with the context.
+     *
+     * \since QGIS 3.0
+     */
+    void evalErrorChanged();
+
+    /**
+     * Will be set to true if the current expression text reported a parser error
+     * with the context.
+     *
+     * \since QGIS 3.0
+     */
+    void parserErrorChanged();
 
   protected:
     void showEvent( QShowEvent *e ) override;
@@ -359,6 +391,22 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      */
     QString formatLayerHelp( const QgsMapLayer *layer ) const;
 
+    /**
+     * Will be set to true if the current expression text reported an eval error
+     * with the context.
+     *
+     * \since QGIS 3.0
+     */
+    void setEvalError( bool evalError );
+
+    /**
+     * Will be set to true if the current expression text reports a parser error
+     * with the context.
+     *
+     * \since QGIS 3.0
+     */
+    void setParserError( bool parserError );
+
     bool mAutoSave = true;
     QString mFunctionsPath;
     QgsVectorLayer *mLayer = nullptr;
@@ -374,6 +422,8 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
     QMap<QString, QStringList> mFieldValues;
     QgsExpressionContext mExpressionContext;
     QPointer< QgsProject > mProject;
+    bool mEvalError = true;
+    bool mParserError = true;
 };
 
 // clazy:excludeall=qstring-allocations
