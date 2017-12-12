@@ -117,6 +117,7 @@ class QgsLayoutManagerDialog: public QDialog, private Ui::QgsLayoutManagerBase
     //! Duplicate layout
     void duplicateClicked();
     void renameClicked();
+    void itemDoubleClicked( const QModelIndex &index );
 };
 
 #endif // QGSLAYOUTMANAGERDIALOG_H
