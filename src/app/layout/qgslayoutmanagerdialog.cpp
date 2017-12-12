@@ -535,7 +535,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
 Qt::ItemFlags QgsLayoutManagerModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractListModel::flags( index );
-#if 0 // double click is now used for opening the layout
+#if 0 // double-click is now used for opening the layout
   if ( index.isValid() )
   {
     return flags | Qt::ItemIsEditable;
