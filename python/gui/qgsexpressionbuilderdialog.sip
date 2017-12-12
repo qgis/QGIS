@@ -62,6 +62,33 @@ The builder widget that is used by the dialog
 Sets geometry calculator used in distance/area calculations.
 %End
 
+    bool allowEvalErrors() const;
+%Docstring
+ Allow accepting invalid expressions. This can be useful when we are not able to
+ provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setAllowEvalErrors( bool allowEvalErrors );
+%Docstring
+ Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+ provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
+%End
+
+  signals:
+
+    void allowEvalErrorsChanged();
+%Docstring
+ Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+ provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
+%End
+
   protected:
 
     virtual void done( int r );

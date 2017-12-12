@@ -260,6 +260,24 @@ Sets the expression string for the widget
 .. versionadded:: 3.0
 %End
 
+    bool evalError() const;
+%Docstring
+ Will be set to true if the current expression text reported an eval error
+ with the context.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    bool parserError() const;
+%Docstring
+ Will be set to true if the current expression text reports a parser error
+ with the context.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   public slots:
 
     void loadSampleValues();
@@ -292,6 +310,22 @@ Sets the expression string for the widget
  Users of this widget should connect to this signal to decide if to let the user
  continue.
  \param isValid Is true if the expression the user has typed is valid.
+%End
+
+    void evalErrorChanged();
+%Docstring
+ Will be set to true if the current expression text reported an eval error
+ with the context.
+
+.. versionadded:: 3.0
+%End
+
+    void parserErrorChanged();
+%Docstring
+ Will be set to true if the current expression text reported a parser error
+ with the context.
+
+.. versionadded:: 3.0
 %End
 
   protected:

@@ -125,6 +125,23 @@ set the geometry calculator used in the expression dialog
 .. versionadded:: 3.0
 %End
 
+    bool allowEvalErrors() const;
+%Docstring
+ Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+ provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
+    void setAllowEvalErrors( bool allowEvalErrors );
+%Docstring
+ Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+ provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
+%End
+
   signals:
     void fieldChanged( const QString &fieldName );
 %Docstring
@@ -134,6 +151,14 @@ the signal is emitted when the currently selected field changes
     void fieldChanged( const QString &fieldName, bool isValid );
 %Docstring
 fieldChanged signal with indication of the validity of the expression
+%End
+
+    void allowEvalErrorsChanged();
+%Docstring
+ Allow accepting expressions with evaluation errors. This can be useful when we are not able to
+ provide an expression context of which we are sure it's completely populated.
+
+.. versionadded:: 3.0
 %End
 
   public slots:
