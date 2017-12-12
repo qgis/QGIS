@@ -310,7 +310,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   // If we are not printing as raster, temporarily disable advanced effects
   // as QPrinter does not support composition modes and can result
   // in items missing from the output
-  mLayout->context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, settings.rasteriseWholeImage );
+  mLayout->context().setFlag( QgsLayoutContext::FlagUseAdvancedEffects, !settings.forceVectorOutput );
+
+  mLayout->context().setFlag( QgsLayoutContext::FlagForceVectorOutput, settings.forceVectorOutput );
 
   QPrinter printer;
   preparePrintAsPdf( printer, filePath );
@@ -322,7 +324,7 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
     return PrintError;
   }
 
-  ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasteriseWholeImage );
+  ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
 #if 0//TODO

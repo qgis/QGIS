@@ -53,9 +53,9 @@
       <property name="geometry">
        <rect>
         <x>0</x>
-        <y>0</y>
+        <y>-316</y>
         <width>297</width>
-        <height>778</height>
+        <height>810</height>
        </rect>
       </property>
       <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -210,7 +210,7 @@
           <string>Export settings</string>
          </property>
          <layout class="QGridLayout" name="gridLayout_3">
-          <item row="3" column="0" colspan="2">
+          <item row="4" column="0" colspan="2">
            <widget class="QCheckBox" name="mGenerateWorldFileCheckBox">
             <property name="sizePolicy">
              <sizepolicy hsizetype="Minimum" vsizetype="Preferred">
@@ -251,8 +251,21 @@
           </item>
           <item row="2" column="0" colspan="2">
            <widget class="QCheckBox" name="mRasterizeCheckBox">
+            <property name="toolTip">
+             <string>If checked, exports from this layout will be rasterized.</string>
+            </property>
             <property name="text">
-             <string>Export as raster</string>
+             <string>Print as raster</string>
+            </property>
+           </widget>
+          </item>
+          <item row="3" column="0" colspan="2">
+           <widget class="QCheckBox" name="mForceVectorCheckBox">
+            <property name="toolTip">
+             <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterised in order to keep their appearance intact.</string>
+            </property>
+            <property name="text">
+             <string>Always export as vectors</string>
             </property>
            </widget>
           </item>
@@ -445,6 +458,7 @@
   <tabstop>mSnapToleranceSpinBox</tabstop>
   <tabstop>mResolutionSpinBox</tabstop>
   <tabstop>mRasterizeCheckBox</tabstop>
+  <tabstop>mForceVectorCheckBox</tabstop>
   <tabstop>mGenerateWorldFileCheckBox</tabstop>
   <tabstop>mMarginUnitsComboBox</tabstop>
   <tabstop>mTopMarginSpinBox</tabstop>

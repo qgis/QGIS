@@ -242,18 +242,32 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     return;
   }
 
-  double destinationDpi = itemStyle->matrix.m11() * 25.4;
+  bool previewRender = !mLayout || mLayout->context().isPreviewRender();
+  double destinationDpi = previewRender ? itemStyle->matrix.m11() * 25.4 : mLayout->context().dpi();
   bool useImageCache = false;
+  bool forceRasterOutput = containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) );
 
-  if ( useImageCache )
+  if ( useImageCache || forceRasterOutput )
   {
-    double widthInPixels = boundingRect().width() * itemStyle->matrix.m11();
-    double heightInPixels = boundingRect().height() * itemStyle->matrix.m11();
+    double widthInPixels = 0;
+    double heightInPixels = 0;
+
+    if ( previewRender )
+    {
+      widthInPixels = boundingRect().width() * itemStyle->matrix.m11();
+      heightInPixels = boundingRect().height() * itemStyle->matrix.m11();
+    }
+    else
+    {
+      double layoutUnitsToPixels = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutPixels ).length() : destinationDpi / 25.4;
+      widthInPixels = boundingRect().width() * layoutUnitsToPixels;
+      heightInPixels = boundingRect().height() * layoutUnitsToPixels;
+    }
 
     // limit size of image for better performance
-    double scale = 1.0;
-    if ( widthInPixels > CACHE_SIZE_LIMIT || heightInPixels > CACHE_SIZE_LIMIT )
+    if ( previewRender && ( widthInPixels > CACHE_SIZE_LIMIT || heightInPixels > CACHE_SIZE_LIMIT ) )
     {
+      double scale = 1.0;
       if ( widthInPixels > heightInPixels )
       {
         scale = widthInPixels / CACHE_SIZE_LIMIT;
@@ -269,7 +283,7 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       destinationDpi = destinationDpi / scale;
     }
 
-    if ( !mItemCachedImage.isNull() && qgsDoubleNear( mItemCacheDpi, destinationDpi ) )
+    if ( previewRender && !mItemCachedImage.isNull() && qgsDoubleNear( mItemCacheDpi, destinationDpi ) )
     {
       // can reuse last cached image
       QgsRenderContext context = QgsLayoutUtils::createRenderContextForMap( nullptr, painter, destinationDpi );
@@ -284,13 +298,11 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
     }
     else
     {
-      mItemCacheDpi = destinationDpi;
-
-      mItemCachedImage = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
-      mItemCachedImage.fill( Qt::transparent );
-      mItemCachedImage.setDotsPerMeterX( 1000 * destinationDpi * 25.4 );
-      mItemCachedImage.setDotsPerMeterY( 1000 * destinationDpi * 25.4 );
-      QPainter p( &mItemCachedImage );
+      QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
+      image.fill( Qt::transparent );
+      image.setDotsPerMeterX( 1000 * destinationDpi * 25.4 );
+      image.setDotsPerMeterY( 1000 * destinationDpi * 25.4 );
+      QPainter p( &image );
 
       preparePainter( &p );
       QgsRenderContext context = QgsLayoutUtils::createRenderContextForLayout( nullptr, &p, destinationDpi );
@@ -306,8 +318,14 @@ void QgsLayoutItem::paint( QPainter *painter, const QStyleOptionGraphicsItem *it
       // scale painter from mm to dots
       painter->scale( 1.0 / context.scaleFactor(), 1.0 / context.scaleFactor() );
       painter->drawImage( boundingRect().x() * context.scaleFactor(),
-                          boundingRect().y() * context.scaleFactor(), mItemCachedImage );
+                          boundingRect().y() * context.scaleFactor(), image );
       painter->restore();
+
+      if ( previewRender )
+      {
+        mItemCacheDpi = destinationDpi;
+        mItemCachedImage = image;
+      }
     }
   }
   else
@@ -842,7 +860,12 @@ void QgsLayoutItem::setExcludeFromExports( bool exclude )
 
 bool QgsLayoutItem::containsAdvancedEffects() const
 {
-  return blendMode() != QPainter::CompositionMode_SourceOver;
+  return false;
+}
+
+bool QgsLayoutItem::requiresRasterization() const
+{
+  return itemOpacity() < 1.0 || blendMode() != QPainter::CompositionMode_SourceOver;
 }
 
 double QgsLayoutItem::estimatedFrameBleed() const

@@ -827,6 +827,16 @@ Sets whether the item should be excluded from composer exports and prints.
 
  Subclasses should ensure that implemented overrides of this method
  also check the base class result.
+
+.. seealso:: :py:func:`requiresRasterization()`
+ :rtype: bool
+%End
+
+    virtual bool requiresRasterization() const;
+%Docstring
+ Returns true if the item is drawn in such a way that forces the whole layout
+ to be rasterised when exporting to vector formats.
+.. seealso:: :py:func:`containsAdvancedEffects()`
  :rtype: bool
 %End
 

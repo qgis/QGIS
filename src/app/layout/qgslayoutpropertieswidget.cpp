@@ -59,6 +59,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   connect( mGenerateWorldFileCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::worldFileToggled );
 
   connect( mRasterizeCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::rasteriseToggled );
+  connect( mForceVectorCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::forceVectorToggled );
 
   mTopMarginSpinBox->setValue( topMargin );
   mMarginUnitsComboBox->linkToWidget( mTopMarginSpinBox );
@@ -93,6 +94,19 @@ void QgsLayoutPropertiesWidget::updateGui()
 
   bool rasterise = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
   whileBlocking( mRasterizeCheckBox )->setChecked( rasterise );
+
+  bool forceVectors = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+  whileBlocking( mForceVectorCheckBox )->setChecked( forceVectors );
+
+  if ( rasterise )
+  {
+    mForceVectorCheckBox->setChecked( false );
+    mForceVectorCheckBox->setEnabled( false );
+  }
+  else
+  {
+    mForceVectorCheckBox->setEnabled( true );
+  }
 }
 
 void QgsLayoutPropertiesWidget::updateSnappingElements()
@@ -197,6 +211,21 @@ void QgsLayoutPropertiesWidget::worldFileToggled()
 void QgsLayoutPropertiesWidget::rasteriseToggled()
 {
   mLayout->setCustomProperty( QStringLiteral( "rasterise" ), mRasterizeCheckBox->isChecked() );
+
+  if ( mRasterizeCheckBox->isChecked() )
+  {
+    mForceVectorCheckBox->setChecked( false );
+    mForceVectorCheckBox->setEnabled( false );
+  }
+  else
+  {
+    mForceVectorCheckBox->setEnabled( true );
+  }
+}
+
+void QgsLayoutPropertiesWidget::forceVectorToggled()
+{
+  mLayout->setCustomProperty( QStringLiteral( "forceVector" ), mForceVectorCheckBox->isChecked() );
 }
 
 void QgsLayoutPropertiesWidget::blockSignals( bool block )

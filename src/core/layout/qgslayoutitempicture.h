@@ -265,6 +265,7 @@ class CORE_EXPORT QgsLayoutItemPicture: public QgsLayoutItem
     void recalculateSize();
 
     void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties ) override;
+    bool containsAdvancedEffects() const override;
 
   signals:
     //! Is emitted on picture rotation change

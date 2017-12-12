@@ -216,8 +216,21 @@ class CORE_EXPORT QgsLayoutExporter
       //! Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
       double dpi = -1;
 
-      //! Set to true to force whole layout to be rasterized while exporting
+      /**
+       * Set to true to force whole layout to be rasterized while exporting.
+       *
+       * This option is mutually exclusive with forceVectorOutput.
+       */
       bool rasterizeWholeImage = false;
+
+      /**
+       * Set to true to force vector object exports, even when the resultant appearance will differ
+       * from the layout. If false, some items may be rasterized in order to maintain their
+       * correct appearance in the output.
+       *
+       * This option is mutually exclusive with rasterizeWholeImage.
+       */
+      bool forceVectorOutput = false;
 
       /**
        * Layout context flags, which control how the export will be created.

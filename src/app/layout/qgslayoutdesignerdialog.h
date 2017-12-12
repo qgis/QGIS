@@ -371,10 +371,13 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     void showWmsPrintingWarning();
 
     //! True if the layout contains advanced effects, such as blend modes
+    bool requiresRasterization() const;
+
     bool containsAdvancedEffects() const;
 
     //! Displays a warning because of incompatibility between blend modes and QPrinter
-    void showAdvancedEffectsWarning();
+    void showRasterizationWarning();
+    void showForceVectorWarning();
 };
 
 #endif // QGSLAYOUTDESIGNERDIALOG_H

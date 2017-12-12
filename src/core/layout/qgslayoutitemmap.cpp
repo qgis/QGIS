@@ -798,19 +798,46 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
     }
 
     QgsRectangle cExtent = extent();
-
     QSizeF size( cExtent.width() * mapUnitsToLayoutUnits(), cExtent.height() * mapUnitsToLayoutUnits() );
 
-    painter->save();
-    painter->translate( mXOffset, mYOffset );
+    if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) ) )
+    {
+      // rasterise
+      double destinationDpi = mLayout ? mLayout->context().dpi() : style->matrix.m11() * 25.4;
 
-    double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
-    size *= dotsPerMM; // output size will be in dots (pixels)
-    painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
-    drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
+      double layoutUnitsToPixels = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutPixels ).length() : destinationDpi / 25.4;
+      double widthInPixels = boundingRect().width() * layoutUnitsToPixels;
+      double heightInPixels = boundingRect().height() * layoutUnitsToPixels;
+      QImage image = QImage( widthInPixels, heightInPixels, QImage::Format_ARGB32 );
 
-    //restore rotation
-    painter->restore();
+      image.fill( Qt::transparent );
+      image.setDotsPerMeterX( 1000 * destinationDpi / 25.4 );
+      image.setDotsPerMeterY( 1000 * destinationDpi / 25.4 );
+      QPainter p( &image );
+      double dotsPerMM = image.logicalDpiX() / 25.4;
+      drawMap( &p, cExtent, image.size(), destinationDpi );
+      p.end();
+
+      dotsPerMM = paintDevice->logicalDpiX() / 25.4;
+      painter->save();
+      painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+      painter->drawImage( 0, 0, image );
+      painter->restore();
+
+    }
+    else
+    {
+      painter->save();
+      painter->translate( mXOffset, mYOffset );
+
+      double dotsPerMM = paintDevice->logicalDpiX() / 25.4;
+      size *= dotsPerMM; // output size will be in dots (pixels)
+      painter->scale( 1 / dotsPerMM, 1 / dotsPerMM ); // scale painter from mm to dots
+      drawMap( painter, cExtent, size, paintDevice->logicalDpiX() );
+
+      painter->restore();
+    }
+
     mDrawing = false;
   }
 

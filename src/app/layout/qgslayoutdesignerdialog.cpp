@@ -1552,9 +1552,14 @@ void QgsLayoutDesignerDialog::exportToPdf()
     showWmsPrintingWarning();
   }
 
-  if ( containsAdvancedEffects() )
+  if ( requiresRasterization() )
   {
-    showAdvancedEffectsWarning();
+    showRasterizationWarning();
+  }
+
+  if ( containsAdvancedEffects() && ( mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() ) )
+  {
+    showForceVectorWarning();
   }
 
   QgsSettings settings;
@@ -1602,7 +1607,8 @@ void QgsLayoutDesignerDialog::exportToPdf()
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   QgsLayoutExporter::PdfExportSettings pdfSettings;
-  pdfSettings.rasteriseWholeImage = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
+  pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
+  pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
 
   QgsLayoutExporter exporter( mLayout );
   switch ( exporter.exportToPdf( outputFileName, pdfSettings ) )
@@ -1783,6 +1789,19 @@ void QgsLayoutDesignerDialog::showWmsPrintingWarning()
   }
 }
 
+bool QgsLayoutDesignerDialog::requiresRasterization() const
+{
+  QList< QgsLayoutItem *> items;
+  mLayout->layoutItems( items );
+
+  for ( QgsLayoutItem *currentItem : qgis::as_const( items ) )
+  {
+    if ( currentItem->requiresRasterization() )
+      return true;
+  }
+  return false;
+}
+
 bool QgsLayoutDesignerDialog::containsAdvancedEffects() const
 {
   QList< QgsLayoutItem *> items;
@@ -1796,10 +1815,11 @@ bool QgsLayoutDesignerDialog::containsAdvancedEffects() const
   return false;
 }
 
-void QgsLayoutDesignerDialog::showAdvancedEffectsWarning()
+void QgsLayoutDesignerDialog::showRasterizationWarning()
 {
-  bool rasterize = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
-  if ( rasterise )
+
+  if ( mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool() ||
+       mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() )
     return;
 
   QgsMessageViewer *m = new QgsMessageViewer( this, QgsGuiUtils::ModalDialogFlags, false );
@@ -1814,6 +1834,27 @@ void QgsLayoutDesignerDialog::showAdvancedEffectsWarning()
   //make sure print as raster checkbox is updated
   mLayoutPropertiesWidget->updateGui();
 
+  delete m;
+}
+
+void QgsLayoutDesignerDialog::showForceVectorWarning()
+{
+  QgsSettings settings;
+  if ( settings.value( QStringLiteral( "LayoutDesigner/hideForceVectorWarning" ), false, QgsSettings::App ).toBool() )
+    return;
+
+  QgsMessageViewer *m = new QgsMessageViewer( this, QgsGuiUtils::ModalDialogFlags, false );
+  m->setWindowTitle( tr( "Force Vector" ) );
+  m->setMessage( tr( "This layout has the \"Always export as vectors\" option enabled, but the layout contains effects such as blend modes or vector layer transparency, which cannot be printed as vectors. The generated file will differ from the layout contents." ), QgsMessageOutput::MessageText );
+  m->setCheckBoxText( tr( "Never show this message again" ) );
+  m->setCheckBoxState( Qt::Unchecked );
+  m->setCheckBoxVisible( true );
+  m->showMessage( true );
+
+  if ( m->checkBoxState() == Qt::Checked )
+  {
+    settings.setValue( QStringLiteral( "LayoutDesigner/hideForceVectorWarning" ), true, QgsSettings::App );
+  }
   delete m;
 }
 

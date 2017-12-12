@@ -666,6 +666,14 @@ void QgsLayoutItemPicture::refreshDataDefinedProperty( const QgsLayoutObject::Da
   QgsLayoutItem::refreshDataDefinedProperty( property );
 }
 
+bool QgsLayoutItemPicture::containsAdvancedEffects() const
+{
+  if ( QgsLayoutItem::containsAdvancedEffects() )
+    return true;
+
+  return mMode == FormatSVG && itemOpacity() < 1.0;
+}
+
 void QgsLayoutItemPicture::setPicturePath( const QString &path )
 {
   mSourcePath = path;

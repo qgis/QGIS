@@ -296,6 +296,8 @@ Forces a recalculation of the picture's frame size
 
     virtual void refreshDataDefinedProperty( const QgsLayoutObject::DataDefinedProperty property = QgsLayoutObject::AllProperties );
 
+    virtual bool containsAdvancedEffects() const;
+
 
   signals:
     void pictureRotationChanged( double newRotation );
