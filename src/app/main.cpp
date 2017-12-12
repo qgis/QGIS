@@ -100,6 +100,7 @@ typedef SInt32 SRefCon;
 #include "qgscrashhandler.h"
 #include "qgsziputils.h"
 #include "qgsversionmigration.h"
+#include "qgsfirstrundialog.h"
 
 #include "qgsuserprofilemanager.h"
 #include "qgsuserprofile.h"
@@ -862,11 +863,29 @@ int main( int argc, char *argv[] )
   // Settings migration is only supported on the default profile for now.
   if ( profileName == "default" )
   {
+    // Note: this flag is ka version number so that we can reset it once we change the version.
+    // Note2: Is this a good idea can we do it better.
+
+    int firstRunVersion = settings.value( QStringLiteral( "migration/firstRunVersionFlag" ), 0 ).toInt();
+    bool showWelcome = ( firstRunVersion == 0 || Qgis::QGIS_VERSION_INT > firstRunVersion );
+
     std::unique_ptr< QgsVersionMigration > migration( QgsVersionMigration::canMigrate( 20000, Qgis::QGIS_VERSION_INT ) );
     if ( migration && ( mySettingsMigrationForce || migration->requiresMigration() ) )
     {
-      QgsDebugMsg( "RUNNING MIGRATION" );
-      migration->runMigration();
+      bool runMigration = true;
+      if ( !mySettingsMigrationForce && showWelcome )
+      {
+        QgsFirstRunDialog dlg;
+        dlg.exec();
+        runMigration = dlg.migrateSettings();
+        settings.setValue( QStringLiteral( "migration/firstRunVersionFlag" ), Qgis::QGIS_VERSION_INT );
+      }
+
+      if ( runMigration )
+      {
+        QgsDebugMsg( "RUNNING MIGRATION" );
+        migration->runMigration();
+      }
     }
   }
 
