@@ -588,12 +588,11 @@ void TestQgsExpressionContext::globalScope()
 
   //test removeGlobalVariables
   QgsExpressionContextUtils::setGlobalVariable( QStringLiteral( "key" ), "value" );
-  QgsExpressionContextScope *globalScope3 = QgsExpressionContextUtils::globalScope();
+  std::unique_ptr< QgsExpressionContextScope > globalScope3( QgsExpressionContextUtils::globalScope() );
   QVERIFY( globalScope3->hasVariable( "key" ) );
   QgsExpressionContextUtils::removeGlobalVariable( QStringLiteral( "key" ) );
-  globalScope3 = QgsExpressionContextUtils::globalScope();
+  globalScope3.reset( QgsExpressionContextUtils::globalScope() );
   QVERIFY( !globalScope3->hasVariable( "key" ) );
-  delete globalScope3;
 }
 
 void TestQgsExpressionContext::projectScope()
