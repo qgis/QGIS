@@ -82,8 +82,8 @@ class CORE_EXPORT QgsVectorLayerUndoPassthroughCommand : public QgsVectorLayerUn
     QString errorMessage() const;
 
   private:
-    QString mSavePointId;
     QString mError;
+    QString mSavePointId;
     bool mHasError;
     bool mRecreateSavePoint;
 };
