@@ -113,7 +113,7 @@ QVector<QgsDataItem *> QgsSLConnectionItem::createChildren()
   QVector<QgsDataItem *> children;
   QgsSpatiaLiteConnection connection( mName );
 
-  QgsSpatiaLiteConnection::Error err = connection.fetchTables( false ); // TODO: allow geometryless tables
+  QgsSpatiaLiteConnection::Error err = connection.fetchTables( true );
   if ( err != QgsSpatiaLiteConnection::NoError )
   {
     QString msg;
