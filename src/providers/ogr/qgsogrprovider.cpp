@@ -466,9 +466,15 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime );
   }
 
-  if ( mGDALDriverName == QLatin1String( "GPKG" ) )
+  if ( mGDALDriverName == QLatin1String( "GeoJSON" ) ||
+       mGDALDriverName == QLatin1String( "GML" ) ||
+       mGDALDriverName == QLatin1String( "CSV" ) ||
+       mGDALDriverName == QLatin1String( "PostgreSQL" ) ||
+       mGDALDriverName == QLatin1String( "PGDump" ) ||
+       mGDALDriverName == QLatin1String( "SQLite" ) ||
+       mGDALDriverName == QLatin1String( "GPKG" ) )
   {
-    // boolean data type - likely other drivers also support this
+    // boolean data type
     nativeTypes
         << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 );
   }
