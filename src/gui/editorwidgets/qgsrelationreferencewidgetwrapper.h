@@ -44,12 +44,14 @@ class GUI_EXPORT QgsRelationReferenceWidgetWrapper : public QgsEditorWidgetWrapp
 {
     Q_OBJECT
   public:
+
+    //! Constructor for QgsRelationReferenceWidgetWrapper
     explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl,
         int fieldIdx,
         QWidget *editor,
         QgsMapCanvas *canvas,
         QgsMessageBar *messageBar,
-        QWidget *parent SIP_TRANSFERTHIS = 0 );
+        QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual QWidget *createWidget( QWidget *parent ) override;
     virtual void initWidget( QWidget *editor ) override;

@@ -51,7 +51,7 @@ class GUI_EXPORT QgsAttributeDialog : public QDialog
      * \param context           The context in which this dialog is created
      *
      */
-    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = 0, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
+    QgsAttributeDialog( QgsVectorLayer *vl, QgsFeature *thepFeature, bool featureOwner, QWidget *parent SIP_TRANSFERTHIS = nullptr, bool showDialogButtons = true, const QgsAttributeEditorContext &context = QgsAttributeEditorContext() );
 
     ~QgsAttributeDialog();
 

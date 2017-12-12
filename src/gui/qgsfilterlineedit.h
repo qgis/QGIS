@@ -71,7 +71,7 @@ class GUI_EXPORT QgsFilterLineEdit : public QLineEdit
      * \param parent parent widget
      * \param nullValue string for representing null values
      */
-    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &nullValue = QString() );
+    QgsFilterLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &nullValue = QString() );
 
     /**
      * Returns true if the widget's clear button is visible.

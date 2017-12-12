@@ -22,6 +22,9 @@ class QgsComposerItemCommand: QUndoCommand
 %End
   public:
     QgsComposerItemCommand( QgsComposerItem *item, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsComposerItemCommand
+%End
 
     virtual void undo();
 

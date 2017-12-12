@@ -44,7 +44,7 @@ class GUI_EXPORT QgsNullSymbolRendererWidget : public QgsRendererWidget
     ~QgsNullSymbolRendererWidget();
 
     //! Returns a pointer to the configured renderer
-    virtual QgsFeatureRenderer *renderer();
+    virtual QgsFeatureRenderer *renderer() override;
 
   protected:
 

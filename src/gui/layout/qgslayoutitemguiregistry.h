@@ -63,7 +63,7 @@ class GUI_EXPORT QgsLayoutItemAbstractGuiMetadata
      *
      * If \a isNodeBased is true, then the corresponding item is a node based item.
      */
-    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = 0 )
+    QgsLayoutItemAbstractGuiMetadata( int type, const QString &visibleName, const QString &groupId = QString(), bool isNodeBased = false, Flags flags = nullptr )
       : mType( type )
       , mGroupId( groupId )
       , mIsNodeBased( isNodeBased )
@@ -184,7 +184,7 @@ class GUI_EXPORT QgsLayoutItemGuiMetadata : public QgsLayoutItemAbstractGuiMetad
                               QgsLayoutItemWidgetFunc pfWidget = nullptr,
                               QgsLayoutItemRubberBandFunc pfRubberBand = nullptr, const QString &groupId = QString(),
                               bool isNodeBased = false,
-                              QgsLayoutItemAbstractGuiMetadata::Flags flags = 0,
+                              QgsLayoutItemAbstractGuiMetadata::Flags flags = nullptr,
                               QgsLayoutItemCreateFunc pfCreateFunc = nullptr )
       : QgsLayoutItemAbstractGuiMetadata( type, visibleName, groupId, isNodeBased, flags )
       , mIcon( creationIcon )

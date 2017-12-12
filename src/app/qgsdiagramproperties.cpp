@@ -908,7 +908,7 @@ void QgsDiagramProperties::apply()
     qFatal( "Invalid settings" );
   }
 
-  QgsDiagramLayerSettings::LinePlacementFlags flags = 0;
+  QgsDiagramLayerSettings::LinePlacementFlags flags = nullptr;
   if ( chkLineAbove->isChecked() )
     flags |= QgsDiagramLayerSettings::AboveLine;
   if ( chkLineBelow->isChecked() )

@@ -47,7 +47,7 @@ class GUI_EXPORT QgsGradientColorRampDialog : public QDialog, private Ui::QgsGra
      * \param ramp initial ramp to show in dialog
      * \param parent parent widget
      */
-    QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsGradientColorRampDialog();
 
     /**

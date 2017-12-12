@@ -31,7 +31,8 @@
 #include "qgssettings.h"
 
 QgsBrowserWatcher::QgsBrowserWatcher( QgsDataItem *item )
-  : mItem( item )
+  : QFutureWatcher( nullptr )
+  , mItem( item )
 {
 }
 

@@ -21,7 +21,11 @@ class QgsDetailedItemDelegate : QAbstractItemDelegate
 #include "qgsdetaileditemdelegate.h"
 %End
   public:
+
     QgsDetailedItemDelegate( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDetailedItemDelegate
+%End
     ~QgsDetailedItemDelegate();
      virtual void paint( QPainter *painter,
                 const QStyleOptionViewItem &option,

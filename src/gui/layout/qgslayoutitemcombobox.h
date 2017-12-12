@@ -42,7 +42,7 @@ class GUI_EXPORT QgsLayoutItemComboBox : public QComboBox
      * If \a layout is not set, no items will be shown
      * until setCurrentLayout() is called
      */
-    explicit QgsLayoutItemComboBox( QWidget *parent SIP_TRANSFERTHIS = 0, QgsLayout *layout = nullptr );
+    explicit QgsLayoutItemComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsLayout *layout = nullptr );
 
     /**
      * Sets the \a layout containing the items to list in the combo box.

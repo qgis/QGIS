@@ -462,7 +462,7 @@ class CORE_EXPORT QgsDxfExport
     double mFactor = 1.0;
     bool mForce2d = false;
 
-    QgsDxfExport::Flags mFlags = 0;
+    QgsDxfExport::Flags mFlags = nullptr;
 
 };
 

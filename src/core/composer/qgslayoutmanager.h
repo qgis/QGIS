@@ -49,7 +49,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      * Constructor for QgsLayoutManager. The project will become the parent object for this
      * manager.
      */
-    explicit QgsLayoutManager( QgsProject *project SIP_TRANSFERTHIS = 0 );
+    explicit QgsLayoutManager( QgsProject *project SIP_TRANSFERTHIS = nullptr );
 
     ~QgsLayoutManager();
 

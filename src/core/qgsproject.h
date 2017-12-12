@@ -100,7 +100,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      *
      * Most of the time you want to use QgsProject::instance() instead as many components of QGIS work with the singleton.
      */
-    explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsProject();
 

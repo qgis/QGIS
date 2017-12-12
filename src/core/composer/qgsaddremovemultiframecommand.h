@@ -40,7 +40,8 @@ class CORE_EXPORT QgsAddRemoveMultiFrameCommand: public QUndoCommand
       Removed
     };
 
-    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame *multiFrame, QgsComposition *c, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
+    //! Constructor for QgsAddRemoveMultiFrameCommand
+    QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame *multiFrame, QgsComposition *c, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsAddRemoveMultiFrameCommand();
     void redo() override;
     void undo() override;

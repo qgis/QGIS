@@ -71,7 +71,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * \param parent   The usual QWidget parent.
      * \param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeature &feature, const QString &actionScope, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Constructs a new QgsActionMenu
@@ -81,7 +81,7 @@ class GUI_EXPORT QgsActionMenu : public QMenu
      * \param parent   The usual QWidget parent.
      * \param actionScope The action scope this menu will run in
      */
-    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsActionMenu( QgsVectorLayer *layer, const QgsFeatureId fid, const QString &actionScope, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Change the feature on which actions are performed

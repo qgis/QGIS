@@ -125,9 +125,9 @@ class TestQgsLegendRenderer : public QObject
 
   private:
     QgsLayerTree *mRoot = nullptr;
-    QgsVectorLayer *mVL1 =  0 ; // line
-    QgsVectorLayer *mVL2 =  0 ; // polygon
-    QgsVectorLayer *mVL3 =  0 ; // point
+    QgsVectorLayer *mVL1 =  nullptr ; // line
+    QgsVectorLayer *mVL2 =  nullptr ; // polygon
+    QgsVectorLayer *mVL3 =  nullptr ; // point
     QgsRasterLayer *mRL = nullptr;
     QString mReport;
     bool _testLegendColumns( int itemCount, int columnCount, const QString &testName );
@@ -230,7 +230,7 @@ void TestQgsLegendRenderer::init()
 void TestQgsLegendRenderer::cleanup()
 {
   delete mRoot;
-  mRoot = 0;
+  mRoot = nullptr;
 
   QgsProject::instance()->removeAllMapLayers();
 }
@@ -632,7 +632,7 @@ void TestQgsLegendRenderer::testFilterByExpression()
   QVERIFY( _verifyImage( testName, mReport ) );
 
   // test again with setLegendFilter and only expressions
-  legendModel.setLegendFilterByMap( 0 );
+  legendModel.setLegendFilterByMap( nullptr );
   legendModel.setLegendFilter( &mapSettings, /*useExtent*/ false );
 
   QString testName2 = testName + "2";

@@ -30,8 +30,12 @@ class GUI_EXPORT QgsSlider : public QSlider
 {
     Q_OBJECT
   public:
-    QgsSlider( QWidget *parent SIP_TRANSFERTHIS = 0 );
-    QgsSlider( Qt::Orientation orientation, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsSlider
+    QgsSlider( QWidget *parent SIP_TRANSFERTHIS = nullptr );
+
+    //! Constructor for QgsSlider
+    QgsSlider( Qt::Orientation orientation, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setMinimum( const QVariant &min );
     void setMaximum( const QVariant &max );

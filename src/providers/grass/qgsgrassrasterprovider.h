@@ -97,7 +97,7 @@ class GRASS_LIB_EXPORT QgsGrassRasterProvider : public QgsRasterDataProvider
      *                otherwise we contact the host directly.
      *
      */
-    explicit QgsGrassRasterProvider( QString const &uri = 0 );
+    explicit QgsGrassRasterProvider( QString const &uri = QString() );
 
 
     ~QgsGrassRasterProvider();

@@ -39,7 +39,7 @@ class TerrainMapUpdateJobFactory : public QgsChunkQueueJobFactory
     {
     }
 
-    virtual QgsChunkQueueJob *createJob( QgsChunkNode *chunk )
+    virtual QgsChunkQueueJob *createJob( QgsChunkNode *chunk ) override
     {
       return new TerrainMapUpdateJob( mTextureGenerator, chunk );
     }

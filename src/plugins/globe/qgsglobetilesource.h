@@ -86,7 +86,7 @@ class QgsGlobeTileUpdateManager : public QObject
 {
     Q_OBJECT
   public:
-    QgsGlobeTileUpdateManager( QObject *parent = 0 );
+    QgsGlobeTileUpdateManager( QObject *parent = nullptr );
     ~QgsGlobeTileUpdateManager();
     void updateLayerSet( const QList<QgsMapLayer *> &layers ) { mLayers = layers; }
     void addTile( QgsGlobeTileImage *tile );

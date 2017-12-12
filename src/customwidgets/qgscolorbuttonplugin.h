@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsColorButtonPlugin : public QObject, public QDesign
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsColorButtonPlugin( QObject *parent = 0 );
+    explicit QgsColorButtonPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

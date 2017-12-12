@@ -53,7 +53,7 @@ class GUI_EXPORT QgsFeatureListView : public QListView
      *
      * \param parent   owner
      */
-    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsFeatureListView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the layer cache

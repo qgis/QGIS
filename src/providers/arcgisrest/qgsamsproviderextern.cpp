@@ -78,7 +78,7 @@ QGISEXTERN QgsDataItem *dataItem( QString path, QgsDataItem *parentItem )
     }
   }
 
-  return 0;
+  return nullptr;
 }
 
 

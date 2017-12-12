@@ -51,7 +51,7 @@ class GUI_EXPORT QgsCptCityColorRampDialog : public QDialog, private Ui::QgsCptC
      * \param ramp initial ramp to show in dialog
      * \param parent parent widget
      */
-    QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns a color ramp representing the current settings from the dialog.

@@ -110,7 +110,7 @@ class GUI_EXPORT QgsMapLayerConfigWidgetFactory
      * \param parent The parent of the widget.
      * \returns A new QgsMapStylePanel which is shown in the map style dock.
      */
-    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent SIP_TRANSFERTHIS = 0 ) const = 0 SIP_FACTORY;
+    virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent SIP_TRANSFERTHIS = nullptr ) const = 0 SIP_FACTORY;
 
   private:
     QIcon mIcon;

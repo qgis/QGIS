@@ -60,7 +60,9 @@ class GUI_EXPORT QgsLayerTreeView : public QTreeView
 
     Q_OBJECT
   public:
-    explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsLayerTreeView
+    explicit QgsLayerTreeView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsLayerTreeView();
 
     //! Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.

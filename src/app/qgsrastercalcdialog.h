@@ -28,7 +28,7 @@ class APP_EXPORT QgsRasterCalcDialog: public QDialog, private Ui::QgsRasterCalcD
 {
     Q_OBJECT
   public:
-    QgsRasterCalcDialog( QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsRasterCalcDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
     ~QgsRasterCalcDialog();
 
     QString formulaString() const;

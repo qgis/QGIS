@@ -27,7 +27,11 @@ class QgsCustomLayerOrderWidget : QWidget
 #include "qgscustomlayerorderwidget.h"
 %End
   public:
+
     explicit QgsCustomLayerOrderWidget( QgsLayerTreeMapCanvasBridge *bridge, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCustomLayerOrderWidget
+%End
 
   signals:
 

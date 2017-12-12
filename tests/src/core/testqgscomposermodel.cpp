@@ -147,8 +147,8 @@ void TestQgsComposerModel::clear()
 void TestQgsComposerModel::addItemDirectly()
 {
   //create some items not attached to the composition
-  QgsComposerLabel *bottomItem = new QgsComposerLabel( 0 );
-  QgsComposerLabel *topItem = new QgsComposerLabel( 0 );
+  QgsComposerLabel *bottomItem = new QgsComposerLabel( nullptr );
+  QgsComposerLabel *topItem = new QgsComposerLabel( nullptr );
 
   mComposition->itemsModel()->clear();
 
@@ -202,8 +202,8 @@ void TestQgsComposerModel::removeItem()
   //start with an empty model
   mComposition->itemsModel()->clear();
 
-  QgsComposerLabel *item1 = new QgsComposerLabel( 0 );
-  QgsComposerLabel *item2 = new QgsComposerLabel( 0 );
+  QgsComposerLabel *item1 = new QgsComposerLabel( nullptr );
+  QgsComposerLabel *item2 = new QgsComposerLabel( nullptr );
 
   //add one item to the model
   mComposition->itemsModel()->addItemAtTop( item1 );
@@ -216,7 +216,7 @@ void TestQgsComposerModel::removeItem()
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.at( 0 ), item1 );
 
   //try removing a missing item
-  mComposition->itemsModel()->removeItem( 0 );
+  mComposition->itemsModel()->removeItem( nullptr );
   QCOMPARE( mComposition->itemsModel()->zOrderListSize(), 1 );
   QCOMPARE( mComposition->itemsModel()->rowCount(), 1 );
 
@@ -248,8 +248,8 @@ void TestQgsComposerModel::reorderUp()
   QCOMPARE( mComposition->itemsModel()->zOrderList()->at( 2 ), mItem1 );
 
   //try reordering some bad items
-  QVERIFY( ! mComposition->itemsModel()->reorderItemUp( 0 ) );
-  QgsComposerLabel *label = new QgsComposerLabel( 0 );
+  QVERIFY( ! mComposition->itemsModel()->reorderItemUp( nullptr ) );
+  QgsComposerLabel *label = new QgsComposerLabel( nullptr );
   QVERIFY( ! mComposition->itemsModel()->reorderItemUp( label ) );
 
   //trying to reorder up the topmost item should fail
@@ -284,8 +284,8 @@ void TestQgsComposerModel::reorderDown()
   QCOMPARE( mComposition->itemsModel()->zOrderList()->at( 2 ), mItem1 );
 
   //try reordering some bad items
-  QVERIFY( ! mComposition->itemsModel()->reorderItemDown( 0 ) );
-  QgsComposerLabel *label = new QgsComposerLabel( 0 );
+  QVERIFY( ! mComposition->itemsModel()->reorderItemDown( nullptr ) );
+  QgsComposerLabel *label = new QgsComposerLabel( nullptr );
   QVERIFY( ! mComposition->itemsModel()->reorderItemDown( label ) );
 
   //trying to reorder down the bottommost item should fail
@@ -319,8 +319,8 @@ void TestQgsComposerModel::reorderTop()
   QCOMPARE( mComposition->itemsModel()->zOrderList()->at( 2 ), mItem1 );
 
   //try reordering some bad items
-  QVERIFY( ! mComposition->itemsModel()->reorderItemToTop( 0 ) );
-  QgsComposerLabel *label = new QgsComposerLabel( 0 );
+  QVERIFY( ! mComposition->itemsModel()->reorderItemToTop( nullptr ) );
+  QgsComposerLabel *label = new QgsComposerLabel( nullptr );
   QVERIFY( ! mComposition->itemsModel()->reorderItemToTop( label ) );
 
   //trying to reorder up the topmost item should fail
@@ -354,8 +354,8 @@ void TestQgsComposerModel::reorderBottom()
   QCOMPARE( mComposition->itemsModel()->zOrderList()->at( 2 ), mItem1 );
 
   //try reordering some bad items
-  QVERIFY( ! mComposition->itemsModel()->reorderItemToBottom( 0 ) );
-  QgsComposerLabel *label = new QgsComposerLabel( 0 );
+  QVERIFY( ! mComposition->itemsModel()->reorderItemToBottom( nullptr ) );
+  QgsComposerLabel *label = new QgsComposerLabel( nullptr );
   QVERIFY( ! mComposition->itemsModel()->reorderItemToBottom( label ) );
 
   //trying to reorder down the bottommost item should fail
@@ -389,8 +389,8 @@ void TestQgsComposerModel::getComposerItemAbove()
   QCOMPARE( mComposition->itemsModel()->zOrderList()->at( 2 ), mItem1 );
 
   //try getting item above some bad items
-  QVERIFY( ! mComposition->itemsModel()->getComposerItemAbove( 0 ) );
-  QgsComposerLabel *label = new QgsComposerLabel( 0 );
+  QVERIFY( ! mComposition->itemsModel()->getComposerItemAbove( nullptr ) );
+  QgsComposerLabel *label = new QgsComposerLabel( nullptr );
   QVERIFY( ! mComposition->itemsModel()->getComposerItemAbove( label ) );
 
   //trying to get item above topmost item should fail
@@ -415,8 +415,8 @@ void TestQgsComposerModel::getComposerItemBelow()
   QCOMPARE( mComposition->itemsModel()->zOrderList()->at( 2 ), mItem1 );
 
   //try getting item below some bad items
-  QVERIFY( ! mComposition->itemsModel()->getComposerItemBelow( 0 ) );
-  QgsComposerLabel *label = new QgsComposerLabel( 0 );
+  QVERIFY( ! mComposition->itemsModel()->getComposerItemBelow( nullptr ) );
+  QgsComposerLabel *label = new QgsComposerLabel( nullptr );
   QVERIFY( ! mComposition->itemsModel()->getComposerItemBelow( label ) );
 
   //trying to get item below bottom most item should fail
@@ -442,8 +442,8 @@ void TestQgsComposerModel::setItemRemoved()
   QCOMPARE( mComposition->itemsModel()->mItemsInScene.size(), 3 );
 
   //try marking some bad items as removed
-  mComposition->itemsModel()->setItemRemoved( 0 );
-  QgsComposerLabel *label = new QgsComposerLabel( 0 );
+  mComposition->itemsModel()->setItemRemoved( nullptr );
+  QgsComposerLabel *label = new QgsComposerLabel( nullptr );
   mComposition->itemsModel()->setItemRemoved( label );
   QVERIFY( !label->isRemoved() );
 

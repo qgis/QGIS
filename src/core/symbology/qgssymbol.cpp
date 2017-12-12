@@ -79,9 +79,6 @@ QgsProperty scaleWholeSymbol( double scaleFactorX, double scaleFactorY, const Qg
 QgsSymbol::QgsSymbol( SymbolType type, const QgsSymbolLayerList &layers )
   : mType( type )
   , mLayers( layers )
-  , mRenderHints( 0 )
-  , mClipFeaturesToExtent( true )
-  , mLayer( nullptr )
 {
 
   // check they're all correct symbol layers

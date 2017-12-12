@@ -275,7 +275,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
 #ifndef Q_OS_WIN
   if ( sEditedCount > 0 && !mEditBuffer )
   {
-    return 0;
+    return nullptr;
   }
 #endif
   // for now, only one map may be edited at time
@@ -283,7 +283,7 @@ QgsVectorDataProvider::Capabilities QgsGrassProvider::capabilities() const
   {
     return AddFeatures | DeleteFeatures | ChangeGeometries | AddAttributes | DeleteAttributes | ChangeAttributeValues;
   }
-  return 0;
+  return nullptr;
 }
 
 bool QgsGrassProvider::openLayer()
@@ -361,7 +361,7 @@ void QgsGrassProvider::update()
   if ( mLayer )
   {
     mLayer->close();
-    mLayer = 0;
+    mLayer = nullptr;
   }
 
   if ( !openLayer() )
@@ -576,7 +576,7 @@ void QgsGrassProvider::freeze()
   {
     mLayer->close();
     mLayer->map()->close(); // closes all iterators, blocking
-    mLayer = 0;
+    mLayer = nullptr;
   }
 }
 
@@ -603,8 +603,8 @@ bool QgsGrassProvider::closeEdit( bool newMap, QgsVectorLayer *vectorLayer )
     return false;
   }
 
-  mEditBuffer = 0;
-  mEditLayer = 0;
+  mEditBuffer = nullptr;
+  mEditLayer = nullptr;
   // drivers must be closed in reversed order in which were opened
   // TODO: close driver order for simultaneous editing of multiple vector maps
   for ( int i = mOtherEditLayers.size() - 1; i >= 0; i-- )
@@ -710,7 +710,7 @@ bool QgsGrassProvider::nodeCoor( int node, double *x, double *y )
     return false;
   }
 
-  Vect_get_node_coor( map(), node, x, y, NULL );
+  Vect_get_node_coor( map(), node, x, y, nullptr );
   return true;
 }
 
@@ -1191,7 +1191,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
       type = mNewFeatureType == GV_AREA ? GV_BOUNDARY : mNewFeatureType;
     }
     // geometry
-    const QgsAbstractGeometry *geometry = 0;
+    const QgsAbstractGeometry *geometry = nullptr;
     if ( !mEditBuffer->isFeatureAdded( fid ) )
     {
 #ifdef QGISDEBUG
@@ -1407,7 +1407,7 @@ void QgsGrassProvider::onFeatureAdded( QgsFeatureId fid )
     else
     {
       QgsDebugMsg( QString( "the line does not exist -> restore old geometry" ) );
-      const QgsAbstractGeometry *geometry = 0;
+      const QgsAbstractGeometry *geometry = nullptr;
 
       // If it is not new feature, we should have the geometry in oldGeometries
       if ( mLayer->map()->oldGeometries().contains( lid ) )

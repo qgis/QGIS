@@ -34,7 +34,9 @@ class GUI_EXPORT QgsCodeEditorHTML : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorHTML( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsCodeEditorHTML
+    QgsCodeEditorHTML( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private:
     void setSciLexerHTML();

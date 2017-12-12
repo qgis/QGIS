@@ -26,7 +26,11 @@ class QgsUserInputDockWidget : QgsDockWidget
 #include "qgsuserinputdockwidget.h"
 %End
   public:
+
     QgsUserInputDockWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsUserInputDockWidget
+%End
 
     void addUserInputWidget( QWidget *widget );
 %Docstring

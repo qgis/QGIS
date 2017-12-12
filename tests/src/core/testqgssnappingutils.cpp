@@ -30,7 +30,7 @@ struct FilterExcludePoint : public QgsPointLocator::MatchFilter
 {
   explicit FilterExcludePoint( const QgsPointXY &p ) : mPoint( p ) {}
 
-  bool acceptMatch( const QgsPointLocator::Match &match ) { return match.point() != mPoint; }
+  bool acceptMatch( const QgsPointLocator::Match &match ) override { return match.point() != mPoint; }
 
   QgsPointXY mPoint;
 };

@@ -38,7 +38,9 @@ class GUI_EXPORT QgsValueRelationSearchWidgetWrapper : public QgsSearchWidgetWra
 {
     Q_OBJECT
   public:
-    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsValueRelationSearchWidgetWrapper
+    explicit QgsValueRelationSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     bool applyDirectly() override;
     QString expression() const override;
     bool valid() const override;

@@ -41,7 +41,7 @@ class TestSignalReceiver : public QObject
 
   public:
     TestSignalReceiver()
-      : QObject( 0 )
+      : QObject( nullptr )
       , featureBlendMode( QPainter::CompositionMode( 0 ) )
     {}
     bool rendererChanged =  false ;

@@ -54,7 +54,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     virtual QgsWkbTypes::Type wkbType() const override;
     virtual long featureCount() const override;
     virtual QgsFields fields() const override;
-    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
     virtual QgsVectorDataProvider::Capabilities capabilities() const override;
@@ -75,7 +75,7 @@ class QgsGPXProvider : public QgsVectorDataProvider
     void changeAttributeValues( QgsGPSObject &obj,
                                 const QgsAttributeMap &attrs );
 
-    bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeature( QgsFeature &f, QgsFeatureSink::Flags flags = nullptr ) override;
 
 
     enum DataType

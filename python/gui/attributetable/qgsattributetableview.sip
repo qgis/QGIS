@@ -25,7 +25,11 @@ class QgsAttributeTableView : QTableView
 #include "qgsattributetableview.h"
 %End
   public:
+
     QgsAttributeTableView( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAttributeTableView
+%End
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 

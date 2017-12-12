@@ -24,7 +24,11 @@ class QgsCodeEditorHTML : QgsCodeEditor
 #include "qgscodeeditorhtml.h"
 %End
   public:
+
     QgsCodeEditorHTML( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCodeEditorHTML
+%End
 
 };
 

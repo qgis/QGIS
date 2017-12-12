@@ -175,7 +175,7 @@ class GUI_EXPORT QgsTreeWidgetItemObject: public QObject, public QgsTreeWidgetIt
     explicit QgsTreeWidgetItemObject( QTreeWidget *parent SIP_TRANSFERTHIS, int type = Type );
 
     //! Sets the value for the item's column and role to the given value.
-    virtual void setData( int column, int role, const QVariant &value );
+    virtual void setData( int column, int role, const QVariant &value ) override;
 
   signals:
     //! This signal is emitted when the contents of the column in the specified item has been edited by the user.

@@ -45,7 +45,7 @@ class GUI_EXPORT QgsExpressionSelectionDialog : public QDialog, private Ui::QgsE
      * \param startText A default expression text to be applied (Defaults to empty)
      * \param parent parent object (owner)
      */
-    QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * The builder widget that is used by the dialog

@@ -462,7 +462,7 @@ QgsFeatureRenderer::Capabilities QgsInvertedPolygonRenderer::capabilities()
 {
   if ( !mSubRenderer )
   {
-    return 0;
+    return nullptr;
   }
   return mSubRenderer->capabilities();
 }

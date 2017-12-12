@@ -58,7 +58,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
      * Constructor for QgsFloatingWidget.
      * \param parent parent widget
      */
-    QgsFloatingWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsFloatingWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the

@@ -256,7 +256,9 @@ class GUI_EXPORT QgsSvgSelectorWidget : public QWidget, private Ui::WidgetSvgSel
     Q_OBJECT
 
   public:
-    QgsSvgSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsSvgSelectorWidget
+    QgsSvgSelectorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     QString currentSvgPath() const;
 

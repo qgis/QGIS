@@ -73,6 +73,9 @@ class QgsComposerView: QGraphicsView
     };
 
     QgsComposerView( QWidget *parent /TransferThis/ = 0, const char *name = 0, Qt::WindowFlags f = 0 );
+%Docstring
+Constructor for QgsComposerView
+%End
 
     void groupItems();
 %Docstring

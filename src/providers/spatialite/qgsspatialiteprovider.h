@@ -105,7 +105,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     bool isValid() const override;
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
-    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
     bool addAttributes( const QList<QgsField> &attributes ) override;
@@ -298,7 +298,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     //! this Geometry is supported by an MBR cache spatial index
     bool mSpatialIndexMbrCache = false;
 
-    QgsVectorDataProvider::Capabilities mEnabledCapabilities;
+    QgsVectorDataProvider::Capabilities mEnabledCapabilities = nullptr;
 
     QgsField field( int index ) const;
 

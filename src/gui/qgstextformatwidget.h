@@ -59,7 +59,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      * \param mapCanvas associated map canvas
      * \param parent parent widget
      */
-    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsTextFormatWidget();
 
@@ -232,7 +232,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      * \param parent parent widget
      * \param fl window flags for dialog
      */
-    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
+    QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     virtual ~QgsTextFormatDialog();
 
@@ -270,7 +270,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
      * \param mapCanvas optional associated map canvas
      * \param parent parent widget
      */
-    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns the current formatting settings defined by the widget.

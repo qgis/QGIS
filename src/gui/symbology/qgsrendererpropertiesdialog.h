@@ -52,7 +52,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * than shown as a dialog by itself
      * \param parent parent widget
      */
-    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsRendererPropertiesDialog();
 
     /**

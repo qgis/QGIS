@@ -165,7 +165,7 @@ void QgsGrassTools::runModule( QString name, bool direct )
   }
 
 #ifdef HAVE_POSIX_OPENPT
-  QgsGrassShell *sh = 0;
+  QgsGrassShell *sh = nullptr;
 #endif
 
   QWidget *m = nullptr;
@@ -271,12 +271,12 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
 
   if ( !file.exists() )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "The config file (%1) not found." ).arg( filePath ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "The config file (%1) not found." ).arg( filePath ) );
     return false;
   }
   if ( ! file.open( QIODevice::ReadOnly ) )
   {
-    QMessageBox::warning( 0, tr( "Warning" ), tr( "Cannot open config file (%1)." ).arg( filePath ) );
+    QMessageBox::warning( nullptr, tr( "Warning" ), tr( "Cannot open config file (%1)." ).arg( filePath ) );
     return false;
   }
 
@@ -288,7 +288,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
     QString errmsg = tr( "Cannot read config file (%1):" ).arg( filePath )
                      + tr( "\n%1\nat line %2 column %3" ).arg( err ).arg( line ).arg( column );
     QgsDebugMsg( errmsg );
-    QMessageBox::warning( 0, tr( "Warning" ), errmsg );
+    QMessageBox::warning( nullptr, tr( "Warning" ), errmsg );
     file.close();
     return false;
   }
@@ -306,7 +306,7 @@ bool QgsGrassTools::loadConfig( QString filePath, QStandardItemModel *treeModel,
   QDomElement modulesElem = modulesNode.toElement();
 
   // Go through the sections and modules and add them to the list view
-  addModules( 0, modulesElem, treeModel, modulesListModel, false );
+  addModules( nullptr, modulesElem, treeModel, modulesListModel, false );
   if ( direct )
   {
     removeEmptyItems( treeModel );
@@ -587,7 +587,7 @@ void QgsGrassTools::itemClicked( const QModelIndex &index )
     }
     QModelIndex modelIndex = proxyModel->mapToSource( index );
 
-    QStandardItemModel *model = 0;
+    QStandardItemModel *model = nullptr;
     if ( proxyModel == mTreeModelProxy )
     {
       model = mTreeModel;

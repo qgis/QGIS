@@ -36,7 +36,7 @@ class GUI_EXPORT QgsVectorFieldSymbolLayerWidget: public QgsSymbolLayerWidget, p
      * \param vl associated vector layer
      * \param parent parent widget
      */
-    QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Creates a new QgsVectorFieldSymbolLayerWidget.

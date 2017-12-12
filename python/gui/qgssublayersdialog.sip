@@ -37,6 +37,9 @@ class QgsSublayersDialog : QDialog
                         const QString &name,
                         QWidget *parent /TransferThis/ = 0,
                         Qt::WindowFlags fl = 0 );
+%Docstring
+Constructor for QgsSublayersDialog
+%End
 
     ~QgsSublayersDialog();
 
@@ -81,10 +84,8 @@ class QgsSublayersDialog : QDialog
 %End
 
   public slots:
-    int exec();
-%Docstring
- :rtype: int
-%End
+    virtual int exec();
+
 
   protected:
 

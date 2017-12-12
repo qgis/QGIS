@@ -50,7 +50,7 @@ class GUI_EXPORT QgsMapUnitScaleWidget : public QgsPanelWidget, private Ui::QgsM
      * Constructor for QgsMapUnitScaleWidget.
      * \param parent parent widget
      */
-    QgsMapUnitScaleWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsMapUnitScaleWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Returns a QgsMapUnitScale representing the settings shown in the
@@ -165,7 +165,7 @@ class GUI_EXPORT QgsUnitSelectionWidget : public QWidget, private Ui::QgsUnitSel
      * Constructor for QgsUnitSelectionWidget.
      * \param parent parent widget
      */
-    QgsUnitSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsUnitSelectionWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the units which the user can choose from in the combobox.

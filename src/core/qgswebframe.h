@@ -40,7 +40,7 @@ class CORE_EXPORT QWebFrame : public QObject
     Q_OBJECT
 
   public:
-    QWebFrame( QObject *parent = 0 )
+    QWebFrame( QObject *parent = nullptr )
       : QObject( parent )
     {
 

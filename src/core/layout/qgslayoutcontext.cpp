@@ -58,7 +58,7 @@ bool QgsLayoutContext::testFlag( const QgsLayoutContext::Flag flag ) const
 
 QgsRenderContext::Flags QgsLayoutContext::renderContextFlags() const
 {
-  QgsRenderContext::Flags flags = 0;
+  QgsRenderContext::Flags flags = nullptr;
   if ( mFlags & FlagAntialiasing )
     flags = flags | QgsRenderContext::Antialiasing;
   if ( mFlags & FlagUseAdvancedEffects )

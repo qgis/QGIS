@@ -81,7 +81,7 @@ class QgsAmsProvider : public QgsRasterDataProvider
     QgsRasterInterface *clone() const override;
     QString htmlMetadata() override;
     bool supportsLegendGraphic() const override { return true; }
-    QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = 0 ) override;
+    QImage getLegendGraphic( double scale = 0, bool forceRefresh = false, const QgsRectangle *visibleExtent = nullptr ) override;
     QgsImageFetcher *getLegendGraphicFetcher( const QgsMapSettings *mapSettings ) override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
 

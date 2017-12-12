@@ -29,7 +29,7 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
 {
     Q_OBJECT
   public:
-    QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsTextAnnotationDialog( QgsMapCanvasAnnotationItem *item, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
   protected:
 

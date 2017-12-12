@@ -122,7 +122,7 @@ class QgsWmsProvider : public QgsRasterDataProvider
      * \param   capabilities   Optionally existing parsed capabilities for the given URI
      *
      */
-    QgsWmsProvider( const QString &uri = QString(), const QgsWmsCapabilities *capabilities = 0 );
+    QgsWmsProvider( const QString &uri = QString(), const QgsWmsCapabilities *capabilities = nullptr );
 
 
     virtual ~QgsWmsProvider();

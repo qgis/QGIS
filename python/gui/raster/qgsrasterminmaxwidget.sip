@@ -18,7 +18,11 @@ class QgsRasterMinMaxWidget: QWidget
 #include "qgsrasterminmaxwidget.h"
 %End
   public:
+
     QgsRasterMinMaxWidget( QgsRasterLayer *layer, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRasterMinMaxWidget
+%End
 
     void setExtent( const QgsRectangle &extent );
 %Docstring

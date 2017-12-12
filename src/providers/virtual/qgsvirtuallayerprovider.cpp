@@ -567,7 +567,7 @@ QgsVectorDataProvider::Capabilities QgsVirtualLayerProvider::capabilities() cons
   {
     return SelectAtId;
   }
-  return 0;
+  return nullptr;
 }
 
 QString QgsVirtualLayerProvider::name() const

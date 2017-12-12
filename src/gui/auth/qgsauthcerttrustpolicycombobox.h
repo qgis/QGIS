@@ -39,7 +39,7 @@ class GUI_EXPORT QgsAuthCertTrustPolicyComboBox : public QComboBox
      * \param defaultpolicy Default trust policy
      */
     explicit QgsAuthCertTrustPolicyComboBox(
-      QWidget *parent SIP_TRANSFERTHIS = 0,
+      QWidget *parent SIP_TRANSFERTHIS = nullptr,
       QgsAuthCertUtils::CertTrustPolicy policy = QgsAuthCertUtils::DefaultTrust,
       QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 

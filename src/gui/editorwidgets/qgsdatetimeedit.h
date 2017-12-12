@@ -33,7 +33,9 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     Q_PROPERTY( bool allowNull READ allowNull WRITE setAllowNull )
 
   public:
-    explicit QgsDateTimeEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsDateTimeEdit
+    explicit QgsDateTimeEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Determines if the widget allows setting null date/time.
     void setAllowNull( bool allowNull );

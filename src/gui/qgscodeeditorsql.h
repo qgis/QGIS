@@ -35,7 +35,8 @@ class GUI_EXPORT QgsCodeEditorSQL : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    //! Constructor for QgsCodeEditorSQL
+    QgsCodeEditorSQL( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private:
     //QgsCodeEditor *mSciWidget;
@@ -61,7 +62,7 @@ class QgsCaseInsensitiveLexerSQL: public QsciLexerSQL
 
   public:
     //! constructor
-    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = 0 ) : QsciLexerSQL( parent ) {}
+    explicit QgsCaseInsensitiveLexerSQL( QObject *parent = nullptr ) : QsciLexerSQL( parent ) {}
 
     bool caseSensitive() const override { return false; }
 };

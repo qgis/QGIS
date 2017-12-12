@@ -59,7 +59,7 @@ QList<QAction *> QgsAfsRootItem::actions( QWidget *parent )
 
 QWidget *QgsAfsRootItem::paramWidget()
 {
-  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( 0, 0, QgsProviderRegistry::WidgetMode::Manager );
+  QgsAfsSourceSelect *select = new QgsAfsSourceSelect( nullptr, nullptr, QgsProviderRegistry::WidgetMode::Manager );
   connect( select, &QgsArcGisServiceSourceSelect::connectionsChanged, this, &QgsAfsRootItem::onConnectionsChanged );
   return select;
 }
@@ -71,7 +71,7 @@ void QgsAfsRootItem::onConnectionsChanged()
 
 void QgsAfsRootItem::newConnection()
 {
-  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ) );
   nc.setWindowTitle( tr( "Create a New ArcGIS Feature Server Connection" ) );
 
   if ( nc.exec() )
@@ -116,7 +116,7 @@ QVector<QgsDataItem *> QgsAfsConnectionItem::createChildren()
 bool QgsAfsConnectionItem::equal( const QgsDataItem *other )
 {
   const QgsAfsConnectionItem *o = dynamic_cast<const QgsAfsConnectionItem *>( other );
-  return ( type() == other->type() && o != 0 && mPath == o->mPath && mName == o->mName );
+  return ( type() == other->type() && o && mPath == o->mPath && mName == o->mName );
 }
 
 #ifdef HAVE_GUI
@@ -137,7 +137,7 @@ QList<QAction *> QgsAfsConnectionItem::actions( QWidget *parent )
 
 void QgsAfsConnectionItem::editConnection()
 {
-  QgsNewHttpConnection nc( 0, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), mName );
+  QgsNewHttpConnection nc( nullptr, QgsNewHttpConnection::ConnectionOther, QStringLiteral( "qgis/connections-arcgisfeatureserver/" ), mName );
   nc.setWindowTitle( tr( "Modify ArcGIS Feature Server Connection" ) );
 
   if ( nc.exec() )

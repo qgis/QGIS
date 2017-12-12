@@ -59,9 +59,6 @@ static const QString TEXT_PROVIDER_DESCRIPTION = QStringLiteral( "WFS data provi
 QgsWFSProvider::QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Capabilities &caps )
   : QgsVectorDataProvider( uri )
   , mShared( new QgsWFSSharedData( uri ) )
-  , mWKBType( QgsWkbTypes::Unknown )
-  , mValid( true )
-  , mCapabilities( 0 )
 {
   mShared->mCaps = caps;
   connect( mShared.get(), &QgsWFSSharedData::raiseError, this, &QgsWFSProvider::pushErrorSlot );

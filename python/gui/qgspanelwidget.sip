@@ -155,7 +155,8 @@ class QgsPanelWidget : QWidget
 
   protected:
 
-    void keyPressEvent( QKeyEvent *event );
+    virtual void keyPressEvent( QKeyEvent *event );
+
 %Docstring
  Overridden key press event to handle the esc event on the widget.
  \param event The key event

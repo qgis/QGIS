@@ -466,7 +466,7 @@ bool QgsMapLayer::readLayerXml( const QDomElement &layerElement, const QgsReadWr
     setMinimumScale( layerElement.attribute( QStringLiteral( "minScale" ) ).toDouble() );
   }
 
-  setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), 0 ).toInt() );
+  setAutoRefreshInterval( layerElement.attribute( QStringLiteral( "autoRefreshTime" ), QStringLiteral( "0" ) ).toInt() );
   setAutoRefreshEnabled( layerElement.attribute( QStringLiteral( "autoRefreshEnabled" ), QStringLiteral( "0" ) ).toInt() );
   setRefreshOnNofifyMessage( layerElement.attribute( QStringLiteral( "refreshOnNotifyMessage" ), QString() ) );
   setRefreshOnNotifyEnabled( layerElement.attribute( QStringLiteral( "refreshOnNotifyEnabled" ), QStringLiteral( "0" ) ).toInt() );

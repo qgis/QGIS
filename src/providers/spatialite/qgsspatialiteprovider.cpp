@@ -436,7 +436,6 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
 
 QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
-  , mEnabledCapabilities( 0 )
 {
   nDims = GAIA_XY;
   QgsDataSourceUri anUri = QgsDataSourceUri( uri );

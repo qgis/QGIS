@@ -51,7 +51,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      * Constructor for QgsVariableEditorWidget.
      * \param parent parent widget
      */
-    QgsVariableEditorWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsVariableEditorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsVariableEditorWidget();
 
