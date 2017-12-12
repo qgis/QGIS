@@ -375,7 +375,7 @@ void QgsLayoutItemMapGrid::setCrs( const QgsCoordinateReferenceSystem &crs )
 
 bool QgsLayoutItemMapGrid::usesAdvancedEffects() const
 {
-  return mBlendMode == QPainter::CompositionMode_SourceOver;
+  return mBlendMode != QPainter::CompositionMode_SourceOver;
 }
 
 QPolygonF QgsLayoutItemMapGrid::scalePolygon( const QPolygonF &polygon, const double scale ) const
