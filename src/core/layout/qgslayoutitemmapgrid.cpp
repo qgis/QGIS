@@ -2028,11 +2028,11 @@ void QgsLayoutItemMapGrid::calculateMaxExtension( double &top, double &right, do
   QList< QPair< double, QLineF > > horizontalLines;
   if ( mGridUnit == MapUnit && mCRS.isValid() && mCRS != mMap->crs() )
   {
-    drawGridCrsTransform( context, 0, horizontalLines, verticalLines, false );
+    drawGridCrsTransform( context, 0, horizontalLines, verticalLines, true );
   }
   else
   {
-    drawGridNoTransform( context, 0, horizontalLines, verticalLines, false );
+    drawGridNoTransform( context, 0, horizontalLines, verticalLines, true );
   }
 
   if ( mGridFrameStyle != QgsLayoutItemMapGrid::NoFrame )
