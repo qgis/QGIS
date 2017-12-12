@@ -46,6 +46,12 @@ Returns the layout view utilized by the designer.
 .. seealso:: :py:func:`layout()`
 %End
 
+    virtual QgsMessageBar *messageBar() = 0;
+%Docstring
+ Returns the designer's message bar.
+ :rtype: QgsMessageBar
+%End
+
     virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;
 %Docstring
 Selects the specified ``items``.

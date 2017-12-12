@@ -93,6 +93,11 @@ QgsLayoutView *QgsAppLayoutDesignerInterface::view()
   return mDesigner->view();
 }
 
+QgsMessageBar *QgsAppLayoutDesignerInterface::messageBar()
+{
+  return mDesigner->messageBar();
+}
+
 void QgsAppLayoutDesignerInterface::selectItems( const QList<QgsLayoutItem *> items )
 {
   mDesigner->selectItems( items );
@@ -135,6 +140,10 @@ QgsLayoutDesignerDialog::QgsLayoutDesignerDialog( QWidget *parent, Qt::WindowFla
   centralWidget()->layout()->setSpacing( 0 );
   centralWidget()->layout()->setMargin( 0 );
   centralWidget()->layout()->setContentsMargins( 0, 0, 0, 0 );
+
+  mMessageBar = new QgsMessageBar( centralWidget() );
+  mMessageBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+  static_cast< QGridLayout * >( centralWidget()->layout() )->addWidget( mMessageBar, 0, 0, 1, 1, Qt::AlignTop );
 
   mHorizontalRuler = new QgsLayoutRuler( nullptr, Qt::Horizontal );
   mVerticalRuler = new QgsLayoutRuler( nullptr, Qt::Vertical );
@@ -1520,6 +1529,9 @@ void QgsLayoutDesignerDialog::exportToRaster()
   switch ( exporter.exportToImage( fileNExt.first, settings ) )
   {
     case QgsLayoutExporter::Success:
+      mMessageBar->pushInfo( tr( "Export layout" ), tr( "Successfully exported layout to %1" ).arg( fileNExt.first ) );
+      break;
+
     case QgsLayoutExporter::PrintError:
       break;
 
@@ -1614,11 +1626,14 @@ void QgsLayoutDesignerDialog::exportToPdf()
   switch ( exporter.exportToPdf( outputFileName, pdfSettings ) )
   {
     case QgsLayoutExporter::Success:
+    {
+      mMessageBar->pushInfo( tr( "Export layout" ), tr( "Successfully exported layout to %1" ).arg( outputFileName ) );
       break;
+    }
 
     case QgsLayoutExporter::FileError:
       QMessageBox::warning( this, tr( "Export to PDF" ),
-                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( exporter.errorFile() ),
+                            tr( "Cannot write to %1.\n\nThis file may be open in another application." ).arg( outputFileName ),
                             QMessageBox::Ok,
                             QMessageBox::Ok );
       break;
@@ -1878,6 +1893,11 @@ void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
   {
     showItemOptions( nullptr );
   }
+}
+
+QgsMessageBar *QgsLayoutDesignerDialog::messageBar()
+{
+  return mMessageBar;
 }
 
 

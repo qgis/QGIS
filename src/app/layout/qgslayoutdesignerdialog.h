@@ -42,6 +42,7 @@ class QUndoView;
 class QTreeView;
 class QgsLayoutItemsListView;
 class QgsLayoutPropertiesWidget;
+class QgsMessageBar;
 
 class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
 {
@@ -51,6 +52,7 @@ class QgsAppLayoutDesignerInterface : public QgsLayoutDesignerInterface
     QgsAppLayoutDesignerInterface( QgsLayoutDesignerDialog *dialog );
     QgsLayout *layout() override;
     QgsLayoutView *view() override;
+    QgsMessageBar *messageBar() override;
     void selectItems( const QList< QgsLayoutItem * > items ) override;
 
   public slots:
@@ -113,6 +115,11 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
      * Selects the specified \a items.
      */
     void selectItems( const QList< QgsLayoutItem * > items );
+
+    /**
+     * Returns the designer's message bar.
+     */
+    QgsMessageBar *messageBar();
 
   public slots:
 
@@ -285,6 +292,8 @@ class QgsLayoutDesignerDialog: public QMainWindow, private Ui::QgsLayoutDesigner
     QgsAppLayoutDesignerInterface *mInterface = nullptr;
 
     QgsLayout *mLayout = nullptr;
+
+    QgsMessageBar *mMessageBar = nullptr;
 
     QActionGroup *mToolsActionGroup = nullptr;
 

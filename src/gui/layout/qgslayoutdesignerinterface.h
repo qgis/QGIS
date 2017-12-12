@@ -23,6 +23,7 @@
 class QgsLayout;
 class QgsLayoutView;
 class QgsLayoutItem;
+class QgsMessageBar;
 
 /**
  * \ingroup gui
@@ -60,6 +61,11 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
      * \see layout()
      */
     virtual QgsLayoutView *view() = 0;
+
+    /**
+     * Returns the designer's message bar.
+     */
+    virtual QgsMessageBar *messageBar() = 0;
 
     /**
      * Selects the specified \a items.
