@@ -68,6 +68,7 @@ QgsLayoutManagerDialog::QgsLayoutManagerDialog( QWidget *parent, Qt::WindowFlags
   connect( mButtonBox, &QDialogButtonBox::rejected, this, &QWidget::close );
   connect( mLayoutListView->selectionModel(), &QItemSelectionModel::selectionChanged,
            this, &QgsLayoutManagerDialog::toggleButtons );
+  connect( mLayoutListView, &QListView::doubleClicked, this, &QgsLayoutManagerDialog::itemDoubleClicked );
 
   mShowButton = mButtonBox->addButton( tr( "&Show" ), QDialogButtonBox::ActionRole );
   connect( mShowButton, &QAbstractButton::clicked, this, &QgsLayoutManagerDialog::showClicked );
@@ -435,6 +436,14 @@ void QgsLayoutManagerDialog::renameClicked()
   currentLayout->setName( newTitle );
 }
 
+void QgsLayoutManagerDialog::itemDoubleClicked( const QModelIndex &index )
+{
+  if ( QgsLayout *l = mModel->layoutFromIndex( index ) )
+  {
+    QgisApp::instance()->openLayoutDesignerDialog( l );
+  }
+}
+
 //
 // QgsLayoutManagerModel
 //
@@ -520,7 +529,7 @@ bool QgsLayoutManagerModel::setData( const QModelIndex &index, const QVariant &v
 Qt::ItemFlags QgsLayoutManagerModel::flags( const QModelIndex &index ) const
 {
   Qt::ItemFlags flags = QAbstractListModel::flags( index );
-
+#if 0 // double click is now used for opening the layout
   if ( index.isValid() )
   {
     return flags | Qt::ItemIsEditable;
@@ -529,6 +538,8 @@ Qt::ItemFlags QgsLayoutManagerModel::flags( const QModelIndex &index ) const
   {
     return flags;
   }
+#endif
+  return flags;
 }
 
 QgsLayout *QgsLayoutManagerModel::layoutFromIndex( const QModelIndex &index ) const
