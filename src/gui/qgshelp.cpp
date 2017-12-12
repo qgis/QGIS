@@ -152,7 +152,7 @@ bool QgsHelp::urlExists( const QString &url )
     socket.setProxy( proxy );
   }
 
-  socket.connectToHost( helpUrl.host(), 443 );
+  socket.connectToHost( helpUrl.host(), 80 );
   if ( socket.waitForConnected() )
   {
     socket.write( "HEAD " + helpUrl.path().toUtf8() + " HTTP/1.1\r\n"
