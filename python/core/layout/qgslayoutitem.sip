@@ -820,6 +820,16 @@ Sets whether the item should be excluded from composer exports and prints.
 .. seealso:: :py:func:`excludeFromExports()`
 %End
 
+    virtual bool containsAdvancedEffects() const;
+%Docstring
+ Returns true if the item contains contents with blend modes or transparency
+ effects which can only be reproduced by rastering the item.
+
+ Subclasses should ensure that implemented overrides of this method
+ also check the base class result.
+ :rtype: bool
+%End
+
     virtual double estimatedFrameBleed() const;
 %Docstring
 Returns the estimated amount the item's frame bleeds outside the item's

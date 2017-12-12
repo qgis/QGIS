@@ -743,6 +743,15 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setExcludeFromExports( bool exclude );
 
     /**
+     * Returns true if the item contains contents with blend modes or transparency
+     * effects which can only be reproduced by rastering the item.
+     *
+     * Subclasses should ensure that implemented overrides of this method
+     * also check the base class result.
+     */
+    virtual bool containsAdvancedEffects() const;
+
+    /**
      * Returns the estimated amount the item's frame bleeds outside the item's
      * actual rectangle. For instance, if the item has a 2mm frame stroke, then
      * 1mm of this frame is drawn outside the item's rect. In this case the

@@ -379,6 +379,9 @@ bool QgsLayoutItemMap::containsWmsLayer() const
 
 bool QgsLayoutItemMap::containsAdvancedEffects() const
 {
+  if ( QgsLayoutItem::containsAdvancedEffects() )
+    return true;
+
   //check easy things first
 
   //overviews

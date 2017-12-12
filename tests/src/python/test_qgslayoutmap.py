@@ -34,12 +34,17 @@ from qgis.core import (QgsLayoutItemMap,
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from qgslayoutchecker import QgsLayoutChecker
+from test_qgslayoutitem import LayoutItemTestCase
 
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsComposerMap(unittest.TestCase):
+class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.item_class = QgsLayoutItemMap
 
     def __init__(self, methodName):
         """Run once on class initialization."""

@@ -840,6 +840,11 @@ void QgsLayoutItem::setExcludeFromExports( bool exclude )
   refreshDataDefinedProperty( QgsLayoutObject::ExcludeFromExports );
 }
 
+bool QgsLayoutItem::containsAdvancedEffects() const
+{
+  return blendMode() != QPainter::CompositionMode_SourceOver;
+}
+
 double QgsLayoutItem::estimatedFrameBleed() const
 {
   if ( !hasFrame() )

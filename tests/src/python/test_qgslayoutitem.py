@@ -26,11 +26,32 @@ from qgis.core import (QgsProject,
                        QgsLayoutSize,
                        QgsApplication)
 from qgis.PyQt.QtCore import QRectF
-from qgis.PyQt.QtGui import QColor
+from qgis.PyQt.QtGui import QColor, QPainter
 from qgis.PyQt.QtTest import QSignalSpy
 
 
 start_app()
+
+
+class LayoutItemTestCase(object):
+
+    '''
+        This is a collection of generic tests for QgsLayoutItem subclasses.
+        To make use of it, subclass it and set self.item_class to a QgsLayoutItem subclass you want to test.
+    '''
+
+    def make_item(self, layout):
+        if hasattr(self, 'item_class'):
+            return self.item_class(layout)
+        else:
+            return self.createItem(layout)
+
+    def testContainsAdvancedEffects(self):
+        l = QgsLayout(QgsProject.instance())
+        item = self.make_item(l)
+        self.assertFalse(item.containsAdvancedEffects())
+        item.setBlendMode(QPainter.CompositionMode_SourceIn)
+        self.assertTrue(item.containsAdvancedEffects())
 
 
 class TestQgsLayoutItem(unittest.TestCase):

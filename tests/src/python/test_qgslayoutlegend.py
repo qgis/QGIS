@@ -34,11 +34,17 @@ from utilities import unitTestDataPath
 from qgslayoutchecker import QgsLayoutChecker
 import os
 
+from test_qgslayoutitem import LayoutItemTestCase
+
 start_app()
 TEST_DATA_DIR = unitTestDataPath()
 
 
-class TestQgsLayoutItemLegend(unittest.TestCase):
+class TestQgsLayoutItemLegend(unittest.TestCase, LayoutItemTestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        cls.item_class = QgsLayoutItemLegend
 
     def testInitialSizeSymbolMapUnits(self):
         """Test initial size of legend with a symbol size in map units"""
