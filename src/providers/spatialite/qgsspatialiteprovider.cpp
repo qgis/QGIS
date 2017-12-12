@@ -1200,6 +1200,10 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB2D( const unsigned char *blob,
           p_in += points * ( 2 * sizeof( double ) );
         }
         break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        break;
     }
   }
 
@@ -1382,6 +1386,10 @@ int QgsSpatiaLiteProvider::computeSizeFromGeosWKB3D( const unsigned char *blob,
           p_in += points * ( 3 * sizeof( double ) );
         }
         break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
+        break;
     }
   }
 
@@ -1478,6 +1486,10 @@ int QgsSpatiaLiteProvider::computeSizeFromMultiWKB3D( const unsigned char *p_in,
               break;
           }
         }
+        break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         break;
     }
   }
@@ -2389,169 +2401,8 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
         }
         break;
 
-      case QgsWkbTypes::GeometryCollection:
-        entities = gaiaImport32( p_in, little_endian, endian_arch );
-        p_in += 4;
-        gaiaExport32( p_out, entities, 1, endian_arch );
-        p_out += 4;
-        for ( ie = 0; ie < entities; ie++ )
-        {
-          QgsWkbTypes::Type type2 = static_cast< QgsWkbTypes::Type >( gaiaImport32( p_in + 1, little_endian, endian_arch ) );
-          p_in += 5;
-          *p_out++ = 0x01;
-          switch ( QgsWkbTypes::geometryType( type2 ) )
-          {
-            case QgsWkbTypes::PointGeometry:
-              switch ( nDims )
-              {
-                case GAIA_XY_Z_M:
-                  gaiaExport32( p_out, GAIA_POINTZM, 1, endian_arch );
-                  break;
-                case GAIA_XY_Z:
-                  gaiaExport32( p_out, GAIA_POINTZ, 1, endian_arch );
-                  break;
-                case GAIA_XY_M:
-                  gaiaExport32( p_out, GAIA_POINTM, 1, endian_arch );
-                  break;
-                default:
-                  gaiaExport32( p_out, GAIA_POINT, 1, endian_arch );
-                  break;
-              }
-              break;
-            case QgsWkbTypes::LineGeometry:
-              switch ( nDims )
-              {
-                case GAIA_XY_Z_M:
-                  gaiaExport32( p_out, GAIA_LINESTRINGZM, 1, endian_arch );
-                  break;
-                case GAIA_XY_Z:
-                  gaiaExport32( p_out, GAIA_LINESTRINGZ, 1, endian_arch );
-                  break;
-                case GAIA_XY_M:
-                  gaiaExport32( p_out, GAIA_LINESTRINGM, 1, endian_arch );
-                  break;
-                default:
-                  gaiaExport32( p_out, GAIA_LINESTRING, 1, endian_arch );
-                  break;
-              }
-              break;
-            case QgsWkbTypes::PolygonGeometry:
-              switch ( nDims )
-              {
-                case GAIA_XY_Z_M:
-                  gaiaExport32( p_out, GAIA_POLYGONZM, 1, endian_arch );
-                  break;
-                case GAIA_XY_Z:
-                  gaiaExport32( p_out, GAIA_POLYGONZ, 1, endian_arch );
-                  break;
-                case GAIA_XY_M:
-                  gaiaExport32( p_out, GAIA_POLYGONM, 1, endian_arch );
-                  break;
-                default:
-                  gaiaExport32( p_out, GAIA_POLYGON, 1, endian_arch );
-                  break;
-              }
-              break;
-          }
-          p_out += 4;
-          switch ( QgsWkbTypes::geometryType( type2 ) )
-          {
-            // setting sub-Geometry values
-            case QgsWkbTypes::PointGeometry:
-              coord = gaiaImport64( p_in, little_endian, endian_arch );
-              gaiaExport64( p_out, coord, 1, endian_arch );  // X
-              p_in += sizeof( double );
-              p_out += sizeof( double );
-              coord = gaiaImport64( p_in, little_endian, endian_arch );
-              gaiaExport64( p_out, coord, 1, endian_arch );  // Y
-              p_in += sizeof( double );
-              p_out += sizeof( double );
-              if ( nDims == GAIA_XY_Z || nDims == GAIA_XY_Z_M )
-              {
-                coord = gaiaImport64( p_in, little_endian, endian_arch );
-                gaiaExport64( p_out, coord, 1, endian_arch );  // Z
-                p_in += sizeof( double );
-                p_out += sizeof( double );
-              }
-              if ( nDims == GAIA_XY_M || nDims == GAIA_XY_Z_M )
-              {
-                coord = gaiaImport64( p_in, little_endian, endian_arch );
-                gaiaExport64( p_out, coord, 1, endian_arch );  // M
-                p_in += sizeof( double );
-                p_out += sizeof( double );
-              }
-              break;
-            case QgsWkbTypes::LineGeometry:
-              points = gaiaImport32( p_in, little_endian, endian_arch );
-              p_in += 4;
-              gaiaExport32( p_out, points, 1, endian_arch );
-              p_out += 4;
-              for ( iv = 0; iv < points; iv++ )
-              {
-                coord = gaiaImport64( p_in, little_endian, endian_arch );
-                gaiaExport64( p_out, coord, 1, endian_arch );  // X
-                p_in += sizeof( double );
-                p_out += sizeof( double );
-                coord = gaiaImport64( p_in, little_endian, endian_arch );
-                gaiaExport64( p_out, coord, 1, endian_arch );  // Y
-                p_in += sizeof( double );
-                p_out += sizeof( double );
-                if ( nDims == GAIA_XY_Z || nDims == GAIA_XY_Z_M )
-                {
-                  coord = gaiaImport64( p_in, little_endian, endian_arch );
-                  gaiaExport64( p_out, coord, 1, endian_arch );  // Z
-                  p_in += sizeof( double );
-                  p_out += sizeof( double );
-                }
-                if ( nDims == GAIA_XY_M || nDims == GAIA_XY_Z_M )
-                {
-                  coord = gaiaImport64( p_in, little_endian, endian_arch );
-                  gaiaExport64( p_out, coord, 1, endian_arch );  // M
-                  p_in += sizeof( double );
-                  p_out += sizeof( double );
-                }
-              }
-              break;
-            case QgsWkbTypes::PolygonGeometry:
-              rings = gaiaImport32( p_in, little_endian, endian_arch );
-              p_in += 4;
-              gaiaExport32( p_out, rings, 1, endian_arch );
-              p_out += 4;
-              for ( ib = 0; ib < rings; ib++ )
-              {
-                points = gaiaImport32( p_in, little_endian, endian_arch );
-                p_in += 4;
-                gaiaExport32( p_out, points, 1, endian_arch );
-                p_out += 4;
-                for ( iv = 0; iv < points; iv++ )
-                {
-                  coord = gaiaImport64( p_in, little_endian, endian_arch );
-                  gaiaExport64( p_out, coord, 1, endian_arch );  // X
-                  p_in += sizeof( double );
-                  p_out += sizeof( double );
-                  coord = gaiaImport64( p_in, little_endian, endian_arch );
-                  gaiaExport64( p_out, coord, 1, endian_arch );  // Y
-                  p_in += sizeof( double );
-                  p_out += sizeof( double );
-                  if ( nDims == GAIA_XY_Z || nDims == GAIA_XY_Z_M )
-                  {
-                    coord = gaiaImport64( p_in, little_endian, endian_arch );
-                    gaiaExport64( p_out, coord, 1, endian_arch );  // Z
-                    p_in += sizeof( double );
-                    p_out += sizeof( double );
-                  }
-                  if ( nDims == GAIA_XY_M || nDims == GAIA_XY_Z_M )
-                  {
-                    coord = gaiaImport64( p_in, little_endian, endian_arch );
-                    gaiaExport64( p_out, coord, 1, endian_arch );  // M
-                    p_in += sizeof( double );
-                    p_out += sizeof( double );
-                  }
-                }
-              }
-              break;
-          }
-        }
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         break;
     }
   }
@@ -2726,6 +2577,10 @@ void QgsSpatiaLiteProvider::convertFromGeosWKB3D( const unsigned char *blob,
             }
           }
         }
+        break;
+
+      case QgsWkbTypes::UnknownGeometry:
+      case QgsWkbTypes::NullGeometry:
         break;
     }
   }
