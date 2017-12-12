@@ -98,7 +98,7 @@ class QgsGeometryUtils
  :rtype: bool
 %End
 
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter /Out/, double tolerance );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter /Out/, bool &isIntersect /Out/, double tolerance, bool acceptImproperIntersection = false );
 %Docstring
  Compute the intersection between two segments
  \param p1 First segment start point
@@ -106,7 +106,9 @@ class QgsGeometryUtils
  \param q1 Second segment start point
  \param q2 Second segment end point
  \param inter Output parameter, the intersection point
+ \param isIntersect Output parameter, return true if an intersection is found
  \param tolerance The tolerance to use
+ \param acceptImproperIntersection By defaut this method return only intersection point if segments are not contigus. If set on true, return also contigus point as an intersection point.
  :return:  Whether the segments intersect
  :rtype: bool
 %End

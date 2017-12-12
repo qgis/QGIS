@@ -495,14 +495,15 @@ QVector<QgsLineString> QgsTriangle::bisectors( double lengthTolerance ) const
   QgsLineString bis3;
   QgsPoint incenter = inscribedCenter();
   QgsPoint out;
+  bool intersection;
 
-  QgsGeometryUtils::segmentIntersection( vertexAt( 0 ), incenter, vertexAt( 1 ), vertexAt( 2 ), out, lengthTolerance );
+  QgsGeometryUtils::segmentIntersection( vertexAt( 0 ), incenter, vertexAt( 1 ), vertexAt( 2 ), out, intersection, lengthTolerance );
   bis1.setPoints( QgsPointSequence() <<  vertexAt( 0 ) << out );
 
-  QgsGeometryUtils::segmentIntersection( vertexAt( 1 ), incenter, vertexAt( 0 ), vertexAt( 2 ), out, lengthTolerance );
+  QgsGeometryUtils::segmentIntersection( vertexAt( 1 ), incenter, vertexAt( 0 ), vertexAt( 2 ), out, intersection, lengthTolerance );
   bis2.setPoints( QgsPointSequence() <<  vertexAt( 1 ) << out );
 
-  QgsGeometryUtils::segmentIntersection( vertexAt( 2 ), incenter, vertexAt( 0 ), vertexAt( 1 ), out, lengthTolerance );
+  QgsGeometryUtils::segmentIntersection( vertexAt( 2 ), incenter, vertexAt( 0 ), vertexAt( 1 ), out, intersection, lengthTolerance );
   bis3.setPoints( QgsPointSequence() <<  vertexAt( 2 ) << out );
 
   bis.append( bis1 );
@@ -529,7 +530,8 @@ QgsPoint QgsTriangle::orthocenter( double lengthTolerance ) const
     return QgsPoint();
   QVector<QgsLineString> alt = altitudes();
   QgsPoint ortho;
-  QgsGeometryUtils::segmentIntersection( alt.at( 0 ).pointN( 0 ), alt.at( 0 ).pointN( 1 ), alt.at( 1 ).pointN( 0 ), alt.at( 1 ).pointN( 1 ), ortho, lengthTolerance );
+  bool intersection;
+  QgsGeometryUtils::segmentIntersection( alt.at( 0 ).pointN( 0 ), alt.at( 0 ).pointN( 1 ), alt.at( 1 ).pointN( 0 ), alt.at( 1 ).pointN( 1 ), ortho, intersection, lengthTolerance );
 
   return ortho;
 }

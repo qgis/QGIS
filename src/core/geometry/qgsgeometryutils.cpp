@@ -251,14 +251,16 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v, const 
   return true;
 }
 
-bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter, double tolerance )
+bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter, bool &isIntersect, double tolerance, bool acceptImproperIntersection )
 {
+  isIntersect = false;
+
   QgsVector v( p2.x() - p1.x(), p2.y() - p1.y() );
   QgsVector w( q2.x() - q1.x(), q2.y() - q1.y() );
   double vl = v.length();
   double wl = w.length();
 
-  if ( qgsDoubleNear( vl, 0, 0.000000000001 ) || qgsDoubleNear( wl, 0, 0.000000000001 ) )
+  if ( qgsDoubleNear( vl, 0.0, tolerance ) || qgsDoubleNear( wl, 0.0, tolerance ) )
   {
     return false;
   }
@@ -266,7 +268,24 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
   w = w / wl;
 
   if ( !QgsGeometryUtils::lineIntersection( p1, v, q1, w, inter ) )
+  {
     return false;
+  }
+
+  isIntersect = true;
+  if ( acceptImproperIntersection )
+  {
+    if ( ( p1 == q1 ) || ( p1 == q2 ) )
+    {
+      inter = p1;
+      return true;
+    }
+    else if ( ( p2 == q1 ) || ( p2 == q2 ) )
+    {
+      inter == p2;
+      return true;
+    }
+  }
 
   double lambdav = QgsVector( inter.x() - p1.x(), inter.y() - p1.y() ) *  v;
   if ( lambdav < 0. + tolerance || lambdav > vl - tolerance )
@@ -299,7 +318,8 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersectio
       QgsPoint pl = geom->vertexAt( QgsVertexId( part, ring, l ) );
 
       QgsPoint inter;
-      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, tolerance ) ) continue;
+      bool intersection;
+      if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, intersection, tolerance ) ) continue;
 
       SelfIntersection s;
       s.segment1 = i;

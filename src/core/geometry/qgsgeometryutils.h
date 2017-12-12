@@ -107,10 +107,12 @@ class CORE_EXPORT QgsGeometryUtils
      * \param q1 Second segment start point
      * \param q2 Second segment end point
      * \param inter Output parameter, the intersection point
+     * \param isIntersect Output parameter, return true if an intersection is found
      * \param tolerance The tolerance to use
+     * \param acceptImproperIntersection By defaut this method return only intersection point if segments are not contigus. If set on true, return also contigus point as an intersection point.
      * \returns  Whether the segments intersect
      */
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter SIP_OUT, double tolerance );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter SIP_OUT, bool &isIntersect SIP_OUT, double tolerance, bool acceptImproperIntersection = false );
 
     /**
      * \brief Project the point on a segment
