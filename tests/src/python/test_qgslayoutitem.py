@@ -46,12 +46,12 @@ class LayoutItemTestCase(object):
         else:
             return self.createItem(layout)
 
-    def testContainsAdvancedEffects(self):
+    def testRequiresRasterization(self):
         l = QgsLayout(QgsProject.instance())
         item = self.make_item(l)
-        self.assertFalse(item.containsAdvancedEffects())
+        self.assertFalse(item.requiresRasterization())
         item.setBlendMode(QPainter.CompositionMode_SourceIn)
-        self.assertTrue(item.containsAdvancedEffects())
+        self.assertTrue(item.requiresRasterization())
 
 
 class TestQgsLayoutItem(unittest.TestCase):

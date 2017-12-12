@@ -16,9 +16,9 @@ import qgis  # NOQA
 
 import os
 
-from qgis.PyQt.QtCore import QFileInfo, QRectF
+from qgis.PyQt.QtCore import QFileInfo, QRectF, QDir
 from qgis.PyQt.QtXml import QDomDocument
-from qgis.PyQt.QtGui import QPainter
+from qgis.PyQt.QtGui import QPainter, QColor
 
 from qgis.core import (QgsLayoutItemMap,
                        QgsRectangle,
@@ -45,6 +45,14 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
     @classmethod
     def setUpClass(cls):
         cls.item_class = QgsLayoutItemMap
+
+    def setUp(self):
+        self.report = "<h1>Python QgsLayoutItemMap Tests</h1>\n"
+
+    def tearDown(self):
+        report_file_path = "%s/qgistest.html" % QDir.tempPath()
+        with open(report_file_path, 'a') as report_file:
+            report_file.write(self.report)
 
     def __init__(self, methodName):
         """Run once on class initialization."""
@@ -92,6 +100,7 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
         checker.setColorTolerance(6)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.layout.removeLayoutItem(overviewMap)
         assert myTestResult, myMessage
 
@@ -111,6 +120,7 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_overview_blending', self.layout)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.layout.removeLayoutItem(overviewMap)
         assert myTestResult, myMessage
 
@@ -130,6 +140,7 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_overview_invert', self.layout)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.layout.removeLayoutItem(overviewMap)
         assert myTestResult, myMessage
 
@@ -150,6 +161,7 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_overview_center', self.layout)
         checker.setControlPathPrefix("composer_mapoverview")
         myTestResult, myMessage = checker.testLayout()
+        self.report += checker.report()
         self.layout.removeLayoutItem(overviewMap)
         assert myTestResult, myMessage
 
@@ -181,6 +193,7 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_crs3857', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         # overwrite CRS
@@ -192,6 +205,7 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
         checker = QgsLayoutChecker('composermap_crs4326', layout)
         checker.setControlPathPrefix("composer_map")
         result, message = checker.testLayout()
+        self.report += checker.report()
         self.assertTrue(result, message)
 
         # change back to project CRS
@@ -221,6 +235,37 @@ class TestQgsComposerMap(unittest.TestCase, LayoutItemTestCase):
         self.layout.removeComposerItem(newMap)
         myMessage = 'old: %s new: %s' % (oldId, newId)
         assert oldId != newId, myMessage
+
+    def testContainsAdvancedEffects(self):
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        layout = QgsLayout(QgsProject.instance())
+        map = QgsLayoutItemMap(layout)
+
+        self.assertFalse(map.containsAdvancedEffects())
+        self.vector_layer.setBlendMode(QPainter.CompositionMode_Darken)
+        result = map.containsAdvancedEffects()
+        self.vector_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
+        self.assertTrue(result)
+
+    def testRasterization(self):
+        map_settings = QgsMapSettings()
+        map_settings.setLayers([self.vector_layer])
+        layout = QgsLayout(QgsProject.instance())
+        map = QgsLayoutItemMap(layout)
+
+        self.assertFalse(map.requiresRasterization())
+        self.vector_layer.setBlendMode(QPainter.CompositionMode_Darken)
+        self.assertFalse(map.requiresRasterization())
+        self.assertTrue(map.containsAdvancedEffects())
+
+        map.setBackgroundEnabled(False)
+        self.assertTrue(map.requiresRasterization())
+        map.setBackgroundEnabled(True)
+        map.setBackgroundColor(QColor(1, 1, 1, 1))
+        self.assertTrue(map.requiresRasterization())
+
+        self.vector_layer.setBlendMode(QPainter.CompositionMode_SourceOver)
 
     def testWorldFileGeneration(self):
         return

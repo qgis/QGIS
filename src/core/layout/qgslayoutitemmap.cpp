@@ -377,6 +377,26 @@ bool QgsLayoutItemMap::containsWmsLayer() const
   return false;
 }
 
+bool QgsLayoutItemMap::requiresRasterization() const
+{
+  if ( QgsLayoutItem::requiresRasterization() )
+    return true;
+
+  // we MUST force the whole layout to render as a raster if any map item
+  // uses blend modes, and we are not drawing on a solid opaque background
+  // because in this case the map item needs to be rendered as a raster, but
+  // it also needs to interact with items below it
+  if ( !containsAdvancedEffects() )
+    return false;
+
+  // TODO layer transparency is probably ok to allow without forcing rasterization
+
+  if ( hasBackground() && qgsDoubleNear( backgroundColor().alphaF(), 1.0 ) )
+    return false;
+
+  return true;
+}
+
 bool QgsLayoutItemMap::containsAdvancedEffects() const
 {
   if ( QgsLayoutItem::containsAdvancedEffects() )

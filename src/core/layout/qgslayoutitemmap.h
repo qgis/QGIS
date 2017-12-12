@@ -275,6 +275,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     //! Returns true if the map contains a WMS layer.
     bool containsWmsLayer() const;
 
+    bool requiresRasterization() const override;
     bool containsAdvancedEffects() const override;
 
     /**
