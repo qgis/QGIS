@@ -74,8 +74,8 @@ void QgsBrowserModel::updateProjectHome()
   {
     connectItem( mProjectHome );
 
-    beginInsertRows( QModelIndex(), 0, 0 );
-    mRootItems.insert( 0, mProjectHome );
+    beginInsertRows( QModelIndex(), 1, 1 );
+    mRootItems.insert( 1, mProjectHome );
     endInsertRows();
   }
 }
@@ -84,14 +84,6 @@ void QgsBrowserModel::addRootItems()
 {
   updateProjectHome();
 
-  // give the home directory a prominent second place
-  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
-  QStyle *style = QApplication::style();
-  QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
-  item->setIcon( homeIcon );
-  connectItem( item );
-  mRootItems << item;
-
   // add favorite directories
   mFavorites = new QgsFavoritesItem( nullptr, tr( "Favorites" ) );
   if ( mFavorites )
@@ -99,6 +91,14 @@ void QgsBrowserModel::addRootItems()
     connectItem( mFavorites );
     mRootItems << mFavorites;
   }
+
+  // give the home directory a prominent third place
+  QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
+  QStyle *style = QApplication::style();
+  QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
+  item->setIcon( homeIcon );
+  connectItem( item );
+  mRootItems << item;
 
   // add drives
   Q_FOREACH ( const QFileInfo &drive, QDir::drives() )
