@@ -123,7 +123,7 @@ QgsSymbol *QgsGrassEditRenderer::symbolForFeature( QgsFeature &feature, QgsRende
   int symbolCode = feature.attribute( QStringLiteral( "topo_symbol" ) ).toInt();
   QgsDebugMsgLevel( QString( "fid = %1 symbolCode = %2" ).arg( feature.id() ).arg( symbolCode ), 3 );
 
-  QgsSymbol *symbol = 0;
+  QgsSymbol *symbol = nullptr;
   if ( symbolCode == QgsGrassVectorMap::TopoPoint || symbolCode == QgsGrassVectorMap::TopoCentroidIn ||
        symbolCode == QgsGrassVectorMap::TopoCentroidOut || symbolCode == QgsGrassVectorMap::TopoCentroidDupl ||
        symbolCode == QgsGrassVectorMap::TopoNode0 || symbolCode == QgsGrassVectorMap::TopoNode1 ||

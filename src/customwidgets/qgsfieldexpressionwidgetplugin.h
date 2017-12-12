@@ -29,7 +29,7 @@ class CUSTOMWIDGETS_EXPORT QgsFieldExpressionWidgetPlugin : public QObject, publ
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsFieldExpressionWidgetPlugin( QObject *parent = 0 );
+    explicit QgsFieldExpressionWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

@@ -30,6 +30,9 @@ class QgsMessageBar: QFrame
     };
 
     QgsMessageBar( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsMessageBar
+%End
 
     void pushItem( QgsMessageBarItem *item /Transfer/ );
 %Docstring

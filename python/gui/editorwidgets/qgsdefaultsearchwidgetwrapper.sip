@@ -20,7 +20,11 @@ class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
 #include "qgsdefaultsearchwidgetwrapper.h"
 %End
   public:
+
     explicit QgsDefaultSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDefaultSearchWidgetWrapper
+%End
 
   public:
     virtual QString expression() const;

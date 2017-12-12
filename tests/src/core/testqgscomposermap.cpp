@@ -136,7 +136,7 @@ void TestQgsComposerMap::uniqueId()
   mComposition->addItemsFromXml( documentElement, doc, false );
 
   //test if both composer maps have different ids
-  const QgsComposerMap *newMap = 0;
+  const QgsComposerMap *newMap = nullptr;
   QList<const QgsComposerMap *> mapList = mComposition->composerMapItems();
   QList<const QgsComposerMap *>::const_iterator mapIt = mapList.constBegin();
   for ( ; mapIt != mapList.constEnd(); ++mapIt )

@@ -21,7 +21,11 @@ class QgsValueMapSearchWidgetWrapper : QgsSearchWidgetWrapper
 #include "qgsvaluemapsearchwidgetwrapper.h"
 %End
   public:
+
     explicit QgsValueMapSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsValueMapSearchWidgetWrapper
+%End
     virtual bool applyDirectly();
 
     virtual QString expression() const;

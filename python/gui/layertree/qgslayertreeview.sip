@@ -37,7 +37,11 @@ class QgsLayerTreeView : QTreeView
       sipType = 0;
 %End
   public:
+
     explicit QgsLayerTreeView( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsLayerTreeView
+%End
     ~QgsLayerTreeView();
 
     virtual void setModel( QAbstractItemModel *model );

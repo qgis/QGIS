@@ -54,7 +54,7 @@ class CORE_EXPORT QgsVectorLayerTools : public QObject
      *
      * TODO QGIS 3: remove const qualifier
      */
-    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = 0 ) const = 0;
+    virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues = QgsAttributeMap(), const QgsGeometry &defaultGeometry = QgsGeometry(), QgsFeature *feature SIP_OUT = nullptr ) const = 0;
 
     /**
      * This will be called, whenever a vector layer should be switched to edit mode. Check the providers

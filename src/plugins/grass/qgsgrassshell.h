@@ -24,7 +24,7 @@ class QgsGrassShell : public QFrame
     Q_OBJECT
 
   public:
-    QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent = 0, const char *name = 0 );
+    QgsGrassShell( QgsGrassTools *tools, QTabWidget *parent = nullptr, const char *name = nullptr );
 
   private slots:
     void closeShell();

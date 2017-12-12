@@ -139,7 +139,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * by default). Use setDefaultFormat() before calling this constructor to change the default
      * format used by this constructor.
      */
-    explicit QgsSettings( QObject *parent = 0 );
+    explicit QgsSettings( QObject *parent = nullptr );
     ~QgsSettings();
 
     /**

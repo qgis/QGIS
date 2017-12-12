@@ -210,7 +210,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * scopes for global, project and composition properties.
      * \since QGIS 2.12
      */
-    virtual QgsExpressionContext createExpressionContext() const;
+    virtual QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 

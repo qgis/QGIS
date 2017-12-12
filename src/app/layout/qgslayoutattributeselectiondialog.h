@@ -63,7 +63,7 @@ class QgsLayoutAttributeTableColumnModel: public QAbstractTableModel
      * \param table QgsLayoutItemAttributeTable the model is attached to
      * \param parent optional parent
      */
-    QgsLayoutAttributeTableColumnModel( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsLayoutAttributeTableColumnModel( QgsLayoutItemAttributeTable *table, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -156,7 +156,7 @@ class QgsLayoutTableSortColumnsProxyModel: public QSortFilterProxyModel
      * \param filterType filter for columns, controls whether sorted or unsorted columns are shown
      * \param parent optional parent
      */
-    QgsLayoutTableSortColumnsProxyModel( QgsLayoutItemAttributeTable *table, ColumnFilterType filterType, QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsLayoutTableSortColumnsProxyModel( QgsLayoutItemAttributeTable *table, ColumnFilterType filterType, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     bool lessThan( const QModelIndex &left, const QModelIndex &right ) const override;
     int columnCount( const QModelIndex &parent = QModelIndex() ) const override;
@@ -284,7 +284,7 @@ class QgsLayoutAttributeSelectionDialog: public QDialog, private Ui::QgsLayoutAt
 {
     Q_OBJECT
   public:
-    QgsLayoutAttributeSelectionDialog( QgsLayoutItemAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = 0 );
+    QgsLayoutAttributeSelectionDialog( QgsLayoutItemAttributeTable *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
     ~QgsLayoutAttributeSelectionDialog();
 

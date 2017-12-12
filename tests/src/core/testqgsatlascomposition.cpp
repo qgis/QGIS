@@ -181,7 +181,7 @@ void TestQgsAtlasComposition::init()
 void TestQgsAtlasComposition::cleanup()
 {
   delete mComposition;
-  mComposition = 0;
+  mComposition = nullptr;
 }
 
 void TestQgsAtlasComposition::filename()
@@ -406,7 +406,7 @@ void TestQgsAtlasComposition::test_remove_layer()
 
   //remove coverage layer while atlas is enabled
   QgsProject::instance()->removeMapLayer( mVectorLayer2->id() );
-  mVectorLayer2 = 0;
+  mVectorLayer2 = nullptr;
 
   QVERIFY( !mAtlas->enabled() );
   QVERIFY( spyToggled.count() == 1 );

@@ -19,7 +19,11 @@ class QgsDetailedItemWidget : QWidget
 #include "qgsdetaileditemwidget.h"
 %End
   public:
+
     QgsDetailedItemWidget( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsDetailedItemWidget
+%End
     void setData( const QgsDetailedItemData &data );
     void setChecked( bool flag );
 };

@@ -33,7 +33,9 @@ class GUI_EXPORT QgsRelationWidgetWrapper : public QgsWidgetWrapper
     Q_OBJECT
 
   public:
-    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsRelationWidgetWrapper
+    explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Defines if a title lable should be shown for this widget.

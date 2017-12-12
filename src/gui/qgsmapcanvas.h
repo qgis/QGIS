@@ -90,7 +90,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
   public:
 
     //! Constructor
-    QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     ~QgsMapCanvas();
 

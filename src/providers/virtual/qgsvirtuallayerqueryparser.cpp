@@ -48,7 +48,7 @@ namespace QgsVirtualLayerQueryParser
 
         // create a dummy table to skip this error
         QString createStr = QStringLiteral( "CREATE TABLE \"%1\" (id int)" ).arg( tableName.replace( QLatin1String( "\"" ), QLatin1String( "\"\"" ) ) );
-        ( void )sqlite3_exec( db.get(), createStr.toUtf8().constData(), nullptr, NULL, NULL );
+        ( void )sqlite3_exec( db.get(), createStr.toUtf8().constData(), nullptr, nullptr, nullptr );
       }
       else
       {

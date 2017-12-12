@@ -31,7 +31,9 @@ class GUI_EXPORT QgsDetailedItemWidget : public QWidget, private Ui::QgsDetailed
 {
     Q_OBJECT
   public:
-    QgsDetailedItemWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsDetailedItemWidget
+    QgsDetailedItemWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
     void setData( const QgsDetailedItemData &data );
     void setChecked( bool flag );
   private:

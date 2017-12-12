@@ -426,7 +426,6 @@ static QString AnalyzeURI( QString const &uri,
 
 QgsOgrProvider::QgsOgrProvider( QString const &uri )
   : QgsVectorDataProvider( uri )
-  , mCapabilities( 0 )
 {
   QgsApplication::registerOgrDrivers();
 
@@ -2160,7 +2159,7 @@ QgsVectorDataProvider::Capabilities QgsOgrProvider::capabilities() const
 
 void QgsOgrProvider::computeCapabilities()
 {
-  QgsVectorDataProvider::Capabilities ability = 0;
+  QgsVectorDataProvider::Capabilities ability = nullptr;
 
   // collect abilities reported by OGR
   if ( mOgrLayer )
@@ -3560,12 +3559,12 @@ void QgsOgrProviderUtils::GDALCloseWrapper( GDALDatasetH hDS )
           CPLPushErrorHandler( CPLQuietErrorHandler );
           OGRLayerH hSqlLyr = GDALDatasetExecuteSQL( hDS,
                               "PRAGMA journal_mode",
-                              NULL, NULL );
+                              nullptr, nullptr );
           CPLPopErrorHandler();
-          if ( hSqlLyr != NULL )
+          if ( hSqlLyr != nullptr )
           {
             gdal::ogr_feature_unique_ptr hFeat( OGR_L_GetNextFeature( hSqlLyr ) );
-            if ( hFeat != NULL )
+            if ( hFeat != nullptr )
             {
               const char *pszRet = OGR_F_GetFieldAsString( hFeat.get(), 0 );
               QgsDebugMsg( QString( "Return: %1" ).arg( pszRet ) );
@@ -3783,7 +3782,7 @@ OGRLayerH QgsOgrProviderUtils::setSubsetString( OGRLayerH layer, GDALDatasetH ds
       layerName = encoding->fromUnicode( modifiedLayerName );
     }
   }
-  OGRLayerH subsetLayer = 0;
+  OGRLayerH subsetLayer = nullptr;
   if ( subsetString.startsWith( QLatin1String( "SELECT " ), Qt::CaseInsensitive ) )
   {
     QByteArray sql = encoding->fromUnicode( subsetString );

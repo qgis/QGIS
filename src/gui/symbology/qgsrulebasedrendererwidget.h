@@ -232,7 +232,7 @@ class GUI_EXPORT QgsRendererRulePropsWidget : public QgsPanelWidget, private Ui:
      * Set the widget in dock mode.
      * \param dockMode True for dock mode.
      */
-    virtual void setDockMode( bool dockMode );
+    virtual void setDockMode( bool dockMode ) override;
 
   protected:
     QgsRuleBasedRenderer::Rule *mRule; // borrowed
@@ -262,7 +262,7 @@ class GUI_EXPORT QgsRendererRulePropsDialog : public QDialog
      * \param parent parent widget
      * \param context symbol widget context
      */
-    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
+    QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 
     ~QgsRendererRulePropsDialog();
 

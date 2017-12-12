@@ -335,7 +335,7 @@ void QgsCptCityColorRampDialog::pbtnLicenseDetails_pressed()
   descFile = mArchive->descFileName( path );
 
   // prepare dialog
-  QgsDialog dlg( this, 0, QDialogButtonBox::Close );
+  QgsDialog dlg( this, nullptr, QDialogButtonBox::Close );
   QVBoxLayout *layout = dlg.layout();
   dlg.setWindowTitle( title );
   QTextEdit *textEdit = new QTextEdit( &dlg );

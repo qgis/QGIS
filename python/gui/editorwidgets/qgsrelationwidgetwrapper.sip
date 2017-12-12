@@ -22,7 +22,11 @@ class QgsRelationWidgetWrapper : QgsWidgetWrapper
 #include "qgsrelationwidgetwrapper.h"
 %End
   public:
+
     explicit QgsRelationWidgetWrapper( QgsVectorLayer *vl, const QgsRelation &relation, QWidget *editor = 0, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRelationWidgetWrapper
+%End
 
     bool showLabel() const;
 %Docstring

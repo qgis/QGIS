@@ -30,12 +30,16 @@ class QgsRelationReferenceWidgetWrapper : QgsEditorWidgetWrapper
 #include "qgsrelationreferencewidgetwrapper.h"
 %End
   public:
+
     explicit QgsRelationReferenceWidgetWrapper( QgsVectorLayer *vl,
         int fieldIdx,
         QWidget *editor,
         QgsMapCanvas *canvas,
         QgsMessageBar *messageBar,
         QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsRelationReferenceWidgetWrapper
+%End
 
     virtual QWidget *createWidget( QWidget *parent );
     virtual void initWidget( QWidget *editor );

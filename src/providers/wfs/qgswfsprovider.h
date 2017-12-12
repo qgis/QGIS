@@ -103,7 +103,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //Editing operations
 
-    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = 0 ) override;
+    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
     virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
@@ -133,13 +133,13 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString mSubsetString;
 
     //! Geometry type of the features in this layer
-    mutable QgsWkbTypes::Type mWKBType;
+    mutable QgsWkbTypes::Type mWKBType = QgsWkbTypes::Unknown;
     //! Flag if provider is valid
-    bool mValid;
+    bool mValid = true;
     //! Namespace URL of the server (comes from DescribeFeatureDocument)
     QString mApplicationNamespace;
     //! Server capabilities for this layer (generated from capabilities document)
-    QgsVectorDataProvider::Capabilities mCapabilities;
+    QgsVectorDataProvider::Capabilities mCapabilities = nullptr;
     //! Fields of this typename. Might be different from mShared->mFields in case of SELECT
     QgsFields mThisTypenameFields;
 

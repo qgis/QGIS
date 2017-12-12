@@ -224,7 +224,7 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
     Q_OBJECT
 
   public:
-    QgsFileDropEdit( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsFileDropEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     void setStorageMode( QgsFileWidget::StorageMode storageMode ) { mStorageMode = storageMode; }
 

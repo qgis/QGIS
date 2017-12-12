@@ -138,7 +138,7 @@ void TestQgsPaintEffect::initTestCase()
   QgsApplication::initQgis();
 
   mReport += QLatin1String( "<h1>Paint Effect Tests</h1>\n" );
-  mPicture = 0;
+  mPicture = nullptr;
 
   QgsPaintEffectRegistry *registry = QgsApplication::paintEffectRegistry();
   registry->addEffectType( new QgsPaintEffectMetadata( QStringLiteral( "Dummy" ), QStringLiteral( "Dummy effect" ), DummyPaintEffect::create ) );

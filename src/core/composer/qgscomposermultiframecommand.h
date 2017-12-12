@@ -33,7 +33,9 @@ class QgsComposerMultiFrame;
 class CORE_EXPORT QgsComposerMultiFrameCommand: public QUndoCommand
 {
   public:
-    QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsComposerMultiFrameCommand
+    QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
 
     void undo() override;
     void redo() override;

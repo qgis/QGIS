@@ -38,7 +38,9 @@ class GUI_EXPORT QgsDetailedItemDelegate : public QAbstractItemDelegate
 {
     Q_OBJECT
   public:
-    QgsDetailedItemDelegate( QObject *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsDetailedItemDelegate
+    QgsDetailedItemDelegate( QObject *parent SIP_TRANSFERTHIS = nullptr );
     ~QgsDetailedItemDelegate();
     //! Reimplement for parent class
     void paint( QPainter *painter,

@@ -37,16 +37,16 @@ namespace QgsWcs
         : mServerIface( serverIface )
       {}
 
-      QString name()    const { return QStringLiteral( "WCS" ); }
-      QString version() const { return implementationVersion(); }
+      QString name()    const override { return QStringLiteral( "WCS" ); }
+      QString version() const override { return implementationVersion(); }
 
-      bool allowMethod( QgsServerRequest::Method method ) const
+      bool allowMethod( QgsServerRequest::Method method ) const override
       {
         return method == QgsServerRequest::GetMethod || method == QgsServerRequest::PostMethod;
       }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
-                           const QgsProject *project )
+                           const QgsProject *project ) override
       {
         Q_UNUSED( project );
 
@@ -99,7 +99,7 @@ namespace QgsWcs
 class QgsWcsModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsg( "WCSModule::registerSelf called" );
       registry.registerService( new  QgsWcs::Service( serverIface ) );

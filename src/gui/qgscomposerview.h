@@ -109,7 +109,8 @@ class GUI_EXPORT QgsComposerView: public QGraphicsView
       ActiveUntilMouseRelease
     };
 
-    QgsComposerView( QWidget *parent SIP_TRANSFERTHIS = nullptr, const char *name = nullptr, Qt::WindowFlags f = 0 );
+    //! Constructor for QgsComposerView
+    QgsComposerView( QWidget *parent SIP_TRANSFERTHIS = nullptr, const char *name = nullptr, Qt::WindowFlags f = nullptr );
 
     //! Add an item group containing the selected items
     void groupItems();

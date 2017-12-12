@@ -128,7 +128,7 @@ void QgsColorButton::showColorDialog()
     }
     else
     {
-      QgsColorDialog dialog( this, 0, color() );
+      QgsColorDialog dialog( this, nullptr, color() );
       dialog.setTitle( mColorDialogTitle );
       dialog.setAllowOpacity( mAllowOpacity );
 

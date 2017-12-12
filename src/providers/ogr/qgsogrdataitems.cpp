@@ -262,7 +262,7 @@ QList<QgsOgrDbLayerInfo *> QgsOgrLayerItem::subLayers( const QString &path, cons
     else
     {
       QString uri( QStringLiteral( "%1:%2" ).arg( driver, path ) );
-      QString name = GDALGetMetadataItem( hDS.get(), "IDENTIFIER", NULL );
+      QString name = GDALGetMetadataItem( hDS.get(), "IDENTIFIER", nullptr );
       hDS.reset();
       // Fallback: will not be able to delete the table
       if ( name.isEmpty() )

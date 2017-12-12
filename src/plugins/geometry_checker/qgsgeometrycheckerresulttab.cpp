@@ -339,7 +339,7 @@ void QgsGeometryCheckerResultTab::highlightErrors( bool current )
     {
       QgsRubberBand *featureRubberBand = new QgsRubberBand( mIface->mapCanvas() );
       QgsGeometry geom( geometry->clone() );
-      featureRubberBand->addGeometry( geom, 0 );
+      featureRubberBand->addGeometry( geom, nullptr );
       featureRubberBand->setWidth( 5 );
       featureRubberBand->setColor( Qt::yellow );
       mCurrentRubberBands.append( featureRubberBand );

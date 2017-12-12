@@ -40,7 +40,7 @@ class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsCom
      * \param parent parent widget
      * \param flags window flags
      */
-    QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2 *table, QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2 *table, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     ~QgsComposerTableBackgroundColorsDialog();
 

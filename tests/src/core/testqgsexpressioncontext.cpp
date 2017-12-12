@@ -229,7 +229,7 @@ void TestQgsExpressionContext::contextScopeFunctions()
   QVERIFY( scope.hasFunction( "get_test_value" ) );
   QVERIFY( scope.function( "get_test_value" ) );
   QgsExpressionContext temp;
-  QCOMPARE( scope.function( "get_test_value" )->func( QVariantList(), &temp, 0, nullptr ).toInt(), 42 );
+  QCOMPARE( scope.function( "get_test_value" )->func( QVariantList(), &temp, nullptr, nullptr ).toInt(), 42 );
 
   //test functionNames
   scope.addFunction( QStringLiteral( "get_test_value2" ), new GetTestValueFunction() );
@@ -372,27 +372,27 @@ void TestQgsExpressionContext::contextStackFunctions()
   QVERIFY( context.hasFunction( "get_test_value" ) );
   QVERIFY( context.function( "get_test_value" ) );
   QgsExpressionContext temp;
-  QCOMPARE( context.function( "get_test_value" )->func( QVariantList(), &temp, 0, nullptr ).toInt(), 42 );
+  QCOMPARE( context.function( "get_test_value" )->func( QVariantList(), &temp, nullptr, nullptr ).toInt(), 42 );
 
   //add a second scope, should override the first
   context << new QgsExpressionContextScope();
   //test without setting function first...
   QVERIFY( context.hasFunction( "get_test_value" ) );
   QVERIFY( context.function( "get_test_value" ) );
-  QCOMPARE( context.function( "get_test_value" )->func( QVariantList(), &temp, 0, nullptr ).toInt(), 42 );
+  QCOMPARE( context.function( "get_test_value" )->func( QVariantList(), &temp, nullptr, nullptr ).toInt(), 42 );
 
   //then set the variable so it overrides
   QgsExpressionContextScope *scope2 = context.scope( 1 );
   scope2->addFunction( QStringLiteral( "get_test_value" ), new GetTestValueFunction2() );
   QVERIFY( context.hasFunction( "get_test_value" ) );
   QVERIFY( context.function( "get_test_value" ) );
-  QCOMPARE( context.function( "get_test_value" )->func( QVariantList(), &temp, 0, nullptr ).toInt(), 43 );
+  QCOMPARE( context.function( "get_test_value" )->func( QVariantList(), &temp, nullptr, nullptr ).toInt(), 43 );
 
   //make sure stack falls back to earlier contexts
   scope2->addFunction( QStringLiteral( "get_test_value2" ), new GetTestValueFunction() );
   QVERIFY( context.hasFunction( "get_test_value2" ) );
   QVERIFY( context.function( "get_test_value2" ) );
-  QCOMPARE( context.function( "get_test_value2" )->func( QVariantList(), &temp, 0, nullptr ).toInt(), 42 );
+  QCOMPARE( context.function( "get_test_value2" )->func( QVariantList(), &temp, nullptr, nullptr ).toInt(), 42 );
 
   //test functionNames
   QStringList names = context.functionNames();
@@ -430,7 +430,7 @@ void TestQgsExpressionContext::evaluate()
   QVERIFY( !expShorthandBad.evaluate( &context ).isValid() );
 
   //test with a function provided by a context
-  QgsExpression::registerFunction( new ModifiableFunction( 0 ), true );
+  QgsExpression::registerFunction( new ModifiableFunction( nullptr ), true );
   QgsExpression testExpWContextFunction( QStringLiteral( "test_function(1)" ) );
   QVERIFY( !testExpWContextFunction.evaluate().isValid() );
 
@@ -647,7 +647,7 @@ void TestQgsExpressionContext::projectScope()
   projectScope = QgsExpressionContextUtils::projectScope( project );
   QVERIFY( !projectScope->hasVariable( "key" ) );
   delete projectScope;
-  projectScope = 0;
+  projectScope = nullptr;
 
   //test project scope functions
 
@@ -672,11 +672,11 @@ void TestQgsExpressionContext::projectScope()
 void TestQgsExpressionContext::layerScope()
 {
   //test passing no layer - should be no crash
-  QgsExpressionContextScope *layerScope = QgsExpressionContextUtils::layerScope( 0 );
+  QgsExpressionContextScope *layerScope = QgsExpressionContextUtils::layerScope( nullptr );
   QCOMPARE( layerScope->name(), tr( "Layer" ) );
   QCOMPARE( layerScope->variableCount(), 0 );
   delete layerScope;
-  layerScope = 0;
+  layerScope = nullptr;
 
   //create a map layer
   std::unique_ptr<QgsVectorLayer> vectorLayer( new QgsVectorLayer( QStringLiteral( "Point?field=col1:integer&field=col2:integer&field=col3:integer" ), QStringLiteral( "test layer" ), QStringLiteral( "memory" ) ) );

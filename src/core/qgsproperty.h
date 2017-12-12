@@ -366,7 +366,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_OUT = 0 ) const;
+    QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a string.
@@ -380,7 +380,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = 0 ) const;
+    QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a color.
@@ -394,7 +394,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = 0 ) const;
+    QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as a double.
@@ -408,7 +408,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsInt()
      * \see valueAsBool()
      */
-    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = 0 ) const;
+    double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an integer.
@@ -422,7 +422,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsDouble()
      * \see valueAsBool()
      */
-    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = 0 ) const;
+    int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Calculates the current value of the property and interprets it as an boolean.
@@ -436,7 +436,7 @@ class CORE_EXPORT QgsProperty
      * \see valueAsDouble()
      * \see valueAsInt()
      */
-    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = 0 ) const;
+    bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok SIP_OUT = nullptr ) const;
 
     /**
      * Saves this property to a QVariantMap, wrapped in a QVariant.

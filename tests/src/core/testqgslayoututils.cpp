@@ -263,7 +263,7 @@ void TestQgsLayoutUtils::createRenderContextFromLayout()
   QVERIFY( !rc.painter() );
 
   // check render context flags are correctly set
-  l.context().setFlags( 0 );
+  l.context().setFlags( nullptr );
   rc = QgsLayoutUtils::createRenderContextForLayout( &l, nullptr );
   QVERIFY( !( rc.flags() & QgsRenderContext::Antialiasing ) );
   QVERIFY( !( rc.flags() & QgsRenderContext::UseAdvancedEffects ) );
@@ -490,7 +490,7 @@ void TestQgsLayoutUtils::textHeightMM()
 void TestQgsLayoutUtils::drawTextPos()
 {
   //test drawing with no painter
-  QgsLayoutUtils::drawText( 0, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsLayoutUtils::drawText( nullptr, QPointF( 5, 15 ), QStringLiteral( "Abc123" ), mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );
@@ -515,7 +515,7 @@ void TestQgsLayoutUtils::drawTextPos()
 void TestQgsLayoutUtils::drawTextRect()
 {
   //test drawing with no painter
-  QgsLayoutUtils::drawText( 0, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
+  QgsLayoutUtils::drawText( nullptr, QRectF( 5, 15, 200, 50 ), QStringLiteral( "Abc123" ), mTestFont );
 
   //test drawing text on to image
   mTestFont.setPointSize( 48 );

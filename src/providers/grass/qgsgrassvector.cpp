@@ -219,7 +219,7 @@ bool QgsGrassVector::openHead()
   // TODO: We are currently using vectDestroyMapStruct in G_CATCH blocks because we know
   // that it cannot call another G_fatal_error, but once we switch to hypothetical Vect_destroy_map_struct
   // it should be verified if it can still be in G_CATCH
-  struct Map_info *map = 0;
+  struct Map_info *map = nullptr;
   int level = -1;
 
   // Vect_open_old_head GRASS is raising fatal error if topo exists but it is in different (older) version.

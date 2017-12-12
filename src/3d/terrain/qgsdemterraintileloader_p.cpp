@@ -180,7 +180,7 @@ int QgsDemHeightMapGenerator::render( int x, int y, int z )
   // make a clone of the data provider so it is safe to use in worker thread
   jd.future = QtConcurrent::run( _readDtmData, mClonedProvider, extent, mResolution, mTilingScheme.crs() );
 
-  QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>;
+  QFutureWatcher<QByteArray> *fw = new QFutureWatcher<QByteArray>( nullptr );
   fw->setFuture( jd.future );
   connect( fw, &QFutureWatcher<QByteArray>::finished, this, &QgsDemHeightMapGenerator::onFutureFinished );
 

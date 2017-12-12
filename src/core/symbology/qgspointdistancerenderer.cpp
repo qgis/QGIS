@@ -222,7 +222,7 @@ QgsFeatureRenderer::Capabilities QgsPointDistanceRenderer::capabilities()
 {
   if ( !mRenderer )
   {
-    return 0;
+    return nullptr;
   }
   return mRenderer->capabilities();
 }

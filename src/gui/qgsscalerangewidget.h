@@ -40,7 +40,7 @@ class GUI_EXPORT QgsScaleRangeWidget : public QWidget
     /**
      * Constructor for QgsScaleRangeWidget.
      */
-    explicit QgsScaleRangeWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsScaleRangeWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the map \a canvas which will be used for the current scale buttons.

@@ -38,7 +38,7 @@ class QgsWidgetStateHelper : public QObject
      * QgsWidgetStateHelper
      * \param parent Parent object
      */
-    explicit QgsWidgetStateHelper( QObject *parent = 0 );
+    explicit QgsWidgetStateHelper( QObject *parent = nullptr );
 
     /**
      * Event filter to catch events from registered widgets.
@@ -46,7 +46,7 @@ class QgsWidgetStateHelper : public QObject
      * \param event Event sent from Qt.
      * \return Always returns True so that widget still gets event.
      */
-    bool eventFilter( QObject *object, QEvent *event );
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
     /**
      * Register a widget to have it geometry state automatically saved and restored.

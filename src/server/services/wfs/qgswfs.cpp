@@ -43,16 +43,16 @@ namespace QgsWfs
         : mServerIface( serverIface )
       {}
 
-      QString name()    const { return QStringLiteral( "WFS" ); }
-      QString version() const { return implementationVersion(); }
+      QString name()    const override { return QStringLiteral( "WFS" ); }
+      QString version() const override { return implementationVersion(); }
 
-      bool allowMethod( QgsServerRequest::Method method ) const
+      bool allowMethod( QgsServerRequest::Method method ) const override
       {
         return method == QgsServerRequest::GetMethod || method == QgsServerRequest::PostMethod;
       }
 
       void executeRequest( const QgsServerRequest &request, QgsServerResponse &response,
-                           const QgsProject *project )
+                           const QgsProject *project ) override
       {
         QgsServerRequest::Parameters params = request.parameters();
         QString versionString = params.value( "VERSION" );
@@ -123,7 +123,7 @@ namespace QgsWfs
 class QgsWfsModule: public QgsServiceModule
 {
   public:
-    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface )
+    void registerSelf( QgsServiceRegistry &registry, QgsServerInterface *serverIface ) override
     {
       QgsDebugMsg( "WFSModule::registerSelf called" );
       registry.registerService( new  QgsWfs::Service( serverIface ) );

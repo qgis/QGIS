@@ -64,7 +64,7 @@ class GUI_EXPORT QgsExtentGroupBox : public QgsCollapsibleGroupBox, private Ui::
     /**
      * Constructor for QgsExtentGroupBox.
      */
-    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsExtentGroupBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the original extent and coordinate reference system for the widget. This should be called as part of initialization.

@@ -34,7 +34,9 @@ class GUI_EXPORT QgsCodeEditorCSS : public QgsCodeEditor
     Q_OBJECT
 
   public:
-    QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsCodeEditorCSS
+    QgsCodeEditorCSS( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
   private:
     void setSciLexerCSS();

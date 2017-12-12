@@ -22,7 +22,11 @@ class QgsRasterHistogramWidget : QgsMapLayerConfigWidget
 #include "qgsrasterhistogramwidget.h"
 %End
   public:
-    QgsRasterHistogramWidget( QgsRasterLayer *lyr, QWidget *parent /TransferThis/ = 0 );
+
+    QgsRasterHistogramWidget( QgsRasterLayer *layer, QWidget *parent /TransferThis/ = 0 );
+%Docstring
+ Constructor for QgsRasterHistogramWidget, for the specified raster ``layer``.
+%End
 
     bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );
 %Docstring

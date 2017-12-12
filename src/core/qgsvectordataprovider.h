@@ -227,7 +227,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ); enumList.clear(); }
 
-    virtual bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = 0 ) override;
+    virtual bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.

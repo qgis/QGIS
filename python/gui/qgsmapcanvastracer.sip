@@ -61,6 +61,7 @@ Report a path finding error to the user
 
   protected:
     virtual void configure();
+
 %Docstring
 Sets configuration from current snapping settings and canvas settings
 %End

@@ -41,7 +41,7 @@ class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidge
     /**
      * Constructor
      */
-    explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *layer, QgsRelationWidgetWrapper *wrapper, QWidget *parent SIP_TRANSFERTHIS = 0 );
+    explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *layer, QgsRelationWidgetWrapper *wrapper, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual QString expression() const override;
 

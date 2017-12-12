@@ -37,7 +37,11 @@ class QgsFeatureListModel : QAbstractProxyModel, QgsFeatureModel
     };
 
   public:
+
     explicit QgsFeatureListModel( QgsAttributeTableFilterModel *sourceModel, QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsFeatureListModel
+%End
 
     virtual void setSourceModel( QgsAttributeTableFilterModel *sourceModel );
     QgsVectorLayerCache *layerCache();

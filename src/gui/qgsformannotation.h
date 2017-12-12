@@ -38,7 +38,7 @@ class GUI_EXPORT QgsFormAnnotation: public QgsAnnotation
     /**
      * Constructor for QgsFormAnnotation.
      */
-    QgsFormAnnotation( QObject *parent SIP_TRANSFERTHIS = 0 );
+    QgsFormAnnotation( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
     QgsFormAnnotation *clone() const override SIP_FACTORY;
 

@@ -148,7 +148,7 @@ class QgsGrassModuleStandardOptions: public QWidget, public QgsGrassModuleOption
       QgsGrassTools *tools, QgsGrassModule *module,
       QgisInterface *iface,
       QString xname, QDomElement confDocElem,
-      bool direct, QWidget *parent = 0, Qt::WindowFlags f = 0 );
+      bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
     //! Get module options as list of arguments for QProcess
     QStringList arguments() override;

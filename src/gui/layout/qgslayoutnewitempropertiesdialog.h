@@ -42,7 +42,7 @@ class GUI_EXPORT QgsLayoutItemPropertiesDialog : public QDialog, private Ui::Qgs
     /**
      * Constructor for QgsLayoutNewItemPropertiesDialog.
      */
-    QgsLayoutItemPropertiesDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = 0 );
+    QgsLayoutItemPropertiesDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
     /**
      * Sets the item \a position to show in the dialog.

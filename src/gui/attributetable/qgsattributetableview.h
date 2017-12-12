@@ -49,7 +49,9 @@ class GUI_EXPORT QgsAttributeTableView : public QTableView
     Q_OBJECT
 
   public:
-    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsAttributeTableView
+    QgsAttributeTableView( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     virtual void setModel( QgsAttributeTableFilterModel *filterModel );
 

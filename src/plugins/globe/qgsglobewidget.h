@@ -23,7 +23,7 @@ class QgsGlobeWidget : public QDockWidget
 {
     Q_OBJECT
   public:
-    QgsGlobeWidget( QgisInterface *iface, QWidget *parent = 0 );
+    QgsGlobeWidget( QgisInterface *iface, QWidget *parent = nullptr );
     QStringList getSelectedLayerIds() const;
 
   signals:

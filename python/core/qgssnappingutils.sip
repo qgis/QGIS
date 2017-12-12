@@ -34,7 +34,11 @@ class QgsSnappingUtils : QObject
 #include "qgssnappingutils.h"
 %End
   public:
+
     QgsSnappingUtils( QObject *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsSnappingUtils
+%End
     ~QgsSnappingUtils();
 
 

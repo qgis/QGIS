@@ -1485,7 +1485,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
   }
 
   QgsCoordinateFormatter::Format format = QgsCoordinateFormatter::FormatDecimalDegrees;
-  QgsCoordinateFormatter::FormatFlags flags = 0;
+  QgsCoordinateFormatter::FormatFlags flags = nullptr;
   switch ( mGridAnnotationFormat )
   {
     case Decimal:
@@ -1505,7 +1505,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
 
     case DegreeMinuteNoSuffix:
       format = QgsCoordinateFormatter::FormatDegreesMinutes;
-      flags = 0;
+      flags = nullptr;
       break;
 
     case DegreeMinutePadded:
@@ -1515,7 +1515,7 @@ QString QgsComposerMapGrid::gridAnnotationString( double value, QgsComposerMapGr
 
     case DegreeMinuteSecondNoSuffix:
       format = QgsCoordinateFormatter::FormatDegreesMinutesSeconds;
-      flags = 0;
+      flags = nullptr;
       break;
 
     case DegreeMinuteSecondPadded:

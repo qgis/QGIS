@@ -72,7 +72,7 @@ class QgsWFSUtilsKeepAlive: public QThread
     QgsWFSUtilsKeepAlive();
     ~QgsWFSUtilsKeepAlive();
 
-    void run();
+    void run() override;
   private slots:
     void updateTimestamp();
   private:

@@ -30,7 +30,9 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
     Q_OBJECT
 
   public:
-    explicit QgsPixmapLabel( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsPixmapLabel
+    explicit QgsPixmapLabel( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Calculates the height for the given width.

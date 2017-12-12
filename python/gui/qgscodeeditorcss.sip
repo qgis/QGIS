@@ -22,7 +22,11 @@ class QgsCodeEditorCSS : QgsCodeEditor
 #include "qgscodeeditorcss.h"
 %End
   public:
+
     QgsCodeEditorCSS( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCodeEditorCSS
+%End
 
 };
 

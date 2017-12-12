@@ -49,7 +49,7 @@ class eVisImageDisplayWidget : public QWidget
 
   public:
     //! \brief Constructor
-    eVisImageDisplayWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+    eVisImageDisplayWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
     ~eVisImageDisplayWidget();
 

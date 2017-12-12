@@ -31,7 +31,9 @@ class GUI_EXPORT QgsBlendModeComboBox : public QComboBox
 {
     Q_OBJECT
   public:
-    QgsBlendModeComboBox( QWidget *parent SIP_TRANSFERTHIS = 0 );
+
+    //! Constructor for QgsBlendModeComboBox
+    QgsBlendModeComboBox( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     //! Function to read the selected blend mode as QPainter::CompositionMode
     QPainter::CompositionMode blendMode();

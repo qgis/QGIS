@@ -26,6 +26,9 @@ class QgsAddRemoveMultiFrameCommand: QUndoCommand
     };
 
     QgsAddRemoveMultiFrameCommand( State s, QgsComposerMultiFrame *multiFrame, QgsComposition *c, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsAddRemoveMultiFrameCommand
+%End
     ~QgsAddRemoveMultiFrameCommand();
     virtual void redo();
 

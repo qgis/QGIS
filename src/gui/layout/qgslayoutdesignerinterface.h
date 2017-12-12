@@ -44,7 +44,7 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
     /**
      * Constructor for QgsLayoutDesignerInterface.
      */
-    QgsLayoutDesignerInterface( QObject *parent SIP_TRANSFERTHIS = 0 )
+    QgsLayoutDesignerInterface( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QObject( parent )
     {}
 

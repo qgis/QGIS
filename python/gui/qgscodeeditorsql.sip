@@ -25,6 +25,9 @@ class QgsCodeEditorSQL : QgsCodeEditor
 %End
   public:
     QgsCodeEditorSQL( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsCodeEditorSQL
+%End
 
 };
 

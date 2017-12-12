@@ -44,7 +44,7 @@ class GUI_EXPORT QgsSubstitutionListWidget : public QgsPanelWidget, private Ui::
      * Constructor for QgsSubstitutionListWidget.
      * \param parent parent widget
      */
-    QgsSubstitutionListWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsSubstitutionListWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the list of substitutions to show in the widget.
@@ -97,7 +97,7 @@ class GUI_EXPORT QgsSubstitutionListDialog : public QDialog
      * Constructor for QgsSubstitutionListDialog.
      * \param parent parent widget
      */
-    QgsSubstitutionListDialog( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsSubstitutionListDialog( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the list of substitutions to show in the dialog.

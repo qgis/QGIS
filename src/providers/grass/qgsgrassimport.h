@@ -43,7 +43,7 @@ class GRASS_LIB_EXPORT QgsGrassImportProgress : public QObject
 {
     Q_OBJECT
   public:
-    QgsGrassImportProgress( QProcess *process, QObject *parent = 0 );
+    QgsGrassImportProgress( QProcess *process, QObject *parent = nullptr );
 
     void setProcess( QProcess *process );
     QString progressHtml() { return mProgressHtml; }
@@ -108,7 +108,7 @@ class GRASS_LIB_EXPORT QgsGrassImport : public QObject
     bool mCanceled;
     QProcess *mProcess = nullptr;
     QgsGrassImportProgress *mProgress = nullptr;
-    QFutureWatcher<bool> *mFutureWatcher;
+    QFutureWatcher<bool> *mFutureWatcher = nullptr;
 };
 
 class GRASS_LIB_EXPORT QgsGrassRasterImport : public QgsGrassImport

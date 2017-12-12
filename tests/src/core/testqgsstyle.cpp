@@ -208,7 +208,7 @@ void TestStyle::testLoadColorRamps()
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
     QgsColorRamp *ramp = mStyle->colorRamp( name );
-    QVERIFY( ramp != 0 );
+    QVERIFY( ramp != nullptr );
     // test colors
     if ( colorTests.contains( name ) )
     {
@@ -236,7 +236,7 @@ void TestStyle::testSaveLoad()
     QgsDebugMsg( "colorRamp " + name );
     QVERIFY( colorRamps.contains( name ) );
     QgsColorRamp *ramp = mStyle->colorRamp( name );
-    QVERIFY( ramp != 0 );
+    QVERIFY( ramp != nullptr );
     if ( ramp )
       delete ramp;
   }

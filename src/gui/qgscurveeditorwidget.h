@@ -149,7 +149,7 @@ class GUI_EXPORT QgsCurveEditorWidget : public QWidget
     /**
      * Constructor for QgsCurveEditorWidget.
      */
-    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QgsCurveTransform &curve = QgsCurveTransform() );
+    QgsCurveEditorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QgsCurveTransform &curve = QgsCurveTransform() );
 
     ~QgsCurveEditorWidget();
 

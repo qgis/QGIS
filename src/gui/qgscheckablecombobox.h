@@ -55,7 +55,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * (ItemIsUserCheckable).
      * \param index item index
      */
-    virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+    virtual Qt::ItemFlags flags( const QModelIndex &index ) const override;
 
     /**
      * Returns the data stored under the given role for the item
@@ -63,7 +63,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * \param index item index
      * \param role data role
      */
-    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+    virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const override;
 
     /**
      * Sets the role data for the item at index to value.
@@ -72,7 +72,7 @@ class QgsCheckableItemModel : public QStandardItemModel
      * \param role data role
      * \returns true on success, false otherwise
      */
-    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+    virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
 
   signals:
 
@@ -111,7 +111,7 @@ class QgsCheckBoxDelegate : public QStyledItemDelegate
      * \param option style option
      * \param index item index
      */
-    virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 #endif
 

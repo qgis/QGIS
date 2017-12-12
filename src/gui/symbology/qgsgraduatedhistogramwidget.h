@@ -43,7 +43,7 @@ class GUI_EXPORT QgsGraduatedHistogramWidget : public QgsHistogramWidget
      * QgsGraduatedHistogramWidget constructor
      * \param parent parent widget
      */
-    QgsGraduatedHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = 0 );
+    QgsGraduatedHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
     /**
      * Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.

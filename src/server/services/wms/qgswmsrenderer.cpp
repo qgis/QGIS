@@ -2672,7 +2672,7 @@ namespace QgsWms
     if ( !wmsLayer->isValid() )
     {
       delete wmsLayer;
-      return 0;
+      return nullptr;
     }
 
     return wmsLayer;

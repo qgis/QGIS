@@ -22,7 +22,11 @@ class QgsBrowserTreeView : QTreeView
 #include "qgsbrowsertreeview.h"
 %End
   public:
+
     QgsBrowserTreeView( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsBrowserTreeView
+%End
 
     virtual void setModel( QAbstractItemModel *model );
     void setBrowserModel( QgsBrowserModel *model );

@@ -68,7 +68,7 @@ class CORE_EXPORT QgsWebView : public QTextBrowser
 /// @cond NOT_STABLE_API
     Q_OBJECT
   public:
-    explicit QgsWebView( QWidget *parent = 0 )
+    explicit QgsWebView( QWidget *parent = nullptr )
       : QTextBrowser( parent )
       , mSettings( new QWebSettings() )
       , mPage( new QWebPage( this ) )

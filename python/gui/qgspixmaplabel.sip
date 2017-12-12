@@ -19,7 +19,11 @@ class QgsPixmapLabel : QLabel
 #include "qgspixmaplabel.h"
 %End
   public:
+
     explicit QgsPixmapLabel( QWidget *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsPixmapLabel
+%End
 
     virtual int heightForWidth( int width ) const;
 %Docstring

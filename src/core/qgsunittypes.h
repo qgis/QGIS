@@ -194,7 +194,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns decoded units
      * \see encodeUnit()
      */
-    Q_INVOKABLE static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString &string, bool *ok SIP_OUT = 0 );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnit decodeDistanceUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing a distance unit.
@@ -218,7 +218,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param ok optional boolean, will be set to true if string was converted successfully
      * \see toString()
      */
-    Q_INVOKABLE static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok SIP_OUT = 0 );
+    Q_INVOKABLE static QgsUnitTypes::DistanceUnit stringToDistanceUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns the conversion factor between the specified distance units.
@@ -250,7 +250,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns decoded units
      * \see encodeUnit()
     */
-    Q_INVOKABLE static AreaUnit decodeAreaUnit( const QString &string, bool *ok SIP_OUT = 0 );
+    Q_INVOKABLE static AreaUnit decodeAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing an areal unit.
@@ -274,7 +274,7 @@ class CORE_EXPORT QgsUnitTypes
      * \param ok optional boolean, will be set to true if string was converted successfully
      * \see toString()
      */
-    Q_INVOKABLE static AreaUnit stringToAreaUnit( const QString &string, bool *ok SIP_OUT = 0 );
+    Q_INVOKABLE static AreaUnit stringToAreaUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns the conversion factor between the specified areal units.
@@ -308,7 +308,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns decoded units
      * \see encodeUnit()
     */
-    Q_INVOKABLE static AngleUnit decodeAngleUnit( const QString &string, bool *ok SIP_OUT = 0 );
+    Q_INVOKABLE static AngleUnit decodeAngleUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing an angular unit.
@@ -399,7 +399,7 @@ class CORE_EXPORT QgsUnitTypes
      * \returns decoded units
      * \see encodeUnit()
      */
-    Q_INVOKABLE static RenderUnit decodeRenderUnit( const QString &string, bool *ok SIP_OUT = 0 );
+    Q_INVOKABLE static RenderUnit decodeRenderUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns a translated string representing a render \a unit.
@@ -427,7 +427,7 @@ class CORE_EXPORT QgsUnitTypes
      * \see encodeUnit()
      * \since QGIS 3.0
      */
-    Q_INVOKABLE static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = 0 );
+    Q_INVOKABLE static LayoutUnit decodeLayoutUnit( const QString &string, bool *ok SIP_OUT = nullptr );
 
     /**
      * Returns the type for a unit of measurement.

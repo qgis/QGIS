@@ -20,8 +20,6 @@
 QgsLayoutViewTool::QgsLayoutViewTool( QgsLayoutView *view, const QString &name )
   : QObject( view )
   , mView( view )
-  , mFlags( 0 )
-  , mCursor( Qt::ArrowCursor )
   , mToolName( name )
 {
 

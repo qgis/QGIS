@@ -34,7 +34,8 @@ class GUI_EXPORT QgsRasterPyramidsOptionsWidget: public QWidget, private Ui::Qgs
 
   public:
 
-    QgsRasterPyramidsOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = 0, const QString &provider = "gdal" );
+    //! Constructor for QgsRasterPyramidsOptionsWidget
+    QgsRasterPyramidsOptionsWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QString &provider = "gdal" );
 
     QStringList configOptions() const { return mSaveOptionsWidget->options(); }
     QgsRasterFormatSaveOptionsWidget *createOptionsWidget() SIP_FACTORY { return mSaveOptionsWidget; }

@@ -43,7 +43,7 @@ class GUI_EXPORT QgsComposerInterface: public QObject
     /**
      * Constructor for QgsComposerInterface.
      */
-    QgsComposerInterface( QObject *parent SIP_TRANSFERTHIS = 0 )
+    QgsComposerInterface( QObject *parent SIP_TRANSFERTHIS = nullptr )
       : QObject( parent )
     {}
 

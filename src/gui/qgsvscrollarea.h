@@ -36,7 +36,7 @@ class GUI_EXPORT QgsVScrollArea : public QgsScrollArea
      * QgsVScrollArea
      * \param parent The parent widget
      */
-    QgsVScrollArea( QWidget *parent = 0 );
+    QgsVScrollArea( QWidget *parent = nullptr );
 
     bool eventFilter( QObject *o, QEvent *e ) override;
 };

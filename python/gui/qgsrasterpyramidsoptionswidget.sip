@@ -22,6 +22,9 @@ class QgsRasterPyramidsOptionsWidget: QWidget
   public:
 
     QgsRasterPyramidsOptionsWidget( QWidget *parent /TransferThis/ = 0, const QString &provider = "gdal" );
+%Docstring
+Constructor for QgsRasterPyramidsOptionsWidget
+%End
 
     QStringList configOptions() const;
 %Docstring

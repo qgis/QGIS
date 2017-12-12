@@ -73,7 +73,7 @@ class GUI_EXPORT QgsNewHttpConnection : public QDialog, private Ui::QgsNewHttpCo
                           QgsNewHttpConnection::ConnectionTypes types = ConnectionWms,
                           const QString &baseKey = "qgis/connections-wms/",
                           const QString &connectionName = QString(),
-                          QgsNewHttpConnection::Flags flags = 0,
+                          QgsNewHttpConnection::Flags flags = nullptr,
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
     /**

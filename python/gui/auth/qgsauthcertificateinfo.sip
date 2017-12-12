@@ -21,10 +21,14 @@ class QgsAuthCertInfo : QWidget
 #include "qgsauthcertificateinfo.h"
 %End
   public:
+
     explicit QgsAuthCertInfo( const QSslCertificate &cert,
                               bool manageCertTrust = false,
                               QWidget *parent /TransferThis/ = 0,
                               const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
+%Docstring
+Constructor for QgsAuthCertInfo
+%End
 
     bool trustCacheRebuilt();
 %Docstring

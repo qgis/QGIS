@@ -36,7 +36,7 @@ class GUI_EXPORT QgsListModel : public QAbstractTableModel
     Q_OBJECT
   public:
 
-    explicit QgsListModel( QVariant::Type subType, QObject *parent = 0 );
+    explicit QgsListModel( QVariant::Type subType, QObject *parent = nullptr );
     void setList( const QVariantList &list );
     QVariantList list() const;
     bool valid() const;

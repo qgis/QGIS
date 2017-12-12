@@ -228,7 +228,7 @@ void QgsAttributesFormProperties::loadAttributeTypeDialog()
     mAttributeTypeDialog->setUniqueEnforced( cfg.mConstraintStrength.value( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintStrengthHard ) == QgsFieldConstraints::ConstraintStrengthHard );
 
     QgsFieldConstraints constraints = cfg.mFieldConstraints;
-    QgsFieldConstraints::Constraints providerConstraints = 0;
+    QgsFieldConstraints::Constraints providerConstraints = nullptr;
     if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
       providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
     if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintOriginProvider )
@@ -268,14 +268,14 @@ void QgsAttributesFormProperties::storeAttributeTypeDialog()
 
   //confustion (will be removed): wir laden teilweise sachen einfach beim store anstelle des applys auf die mLayer - eingie Sachen laden wir auch vom layer anstatt über das cfg. wieso
   QgsFieldConstraints constraints = mLayer->fields().at( mAttributeTypeDialog->fieldIdx() ).constraints();
-  QgsFieldConstraints::Constraints providerConstraints = 0;
+  QgsFieldConstraints::Constraints providerConstraints = nullptr;
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintNotNull ) == QgsFieldConstraints::ConstraintOriginProvider )
     providerConstraints |= QgsFieldConstraints::ConstraintNotNull;
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintUnique ) == QgsFieldConstraints::ConstraintOriginProvider )
     providerConstraints |= QgsFieldConstraints::ConstraintUnique;
   if ( constraints.constraintOrigin( QgsFieldConstraints::ConstraintExpression ) == QgsFieldConstraints::ConstraintOriginProvider )
     providerConstraints |= QgsFieldConstraints::ConstraintExpression;
-  cfg.mConstraints = 0;
+  cfg.mConstraints = nullptr;
   if ( mAttributeTypeDialog->notNull() && !( providerConstraints & QgsFieldConstraints::ConstraintNotNull ) )
   {
     cfg.mConstraints |= QgsFieldConstraints::ConstraintNotNull;

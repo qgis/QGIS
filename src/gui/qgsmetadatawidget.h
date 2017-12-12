@@ -149,7 +149,7 @@ class LinkItemDelegate : public QStyledItemDelegate
     /**
      * Create a special editor with a QCombobox in the link view.
      */
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 /**
@@ -175,7 +175,7 @@ class ConstraintItemDelegate : public QStyledItemDelegate
     /**
      * Create a special editor with a QCombobox in the constraint view.
      */
-    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+    QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const override;
 };
 
 /**

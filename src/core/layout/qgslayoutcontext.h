@@ -220,7 +220,7 @@ class CORE_EXPORT QgsLayoutContext : public QObject
 
   private:
 
-    Flags mFlags = 0;
+    Flags mFlags = nullptr;
 
     int mCurrentExportLayer = -1;
 

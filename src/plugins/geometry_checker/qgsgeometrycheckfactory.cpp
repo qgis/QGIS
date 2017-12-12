@@ -559,7 +559,7 @@ template<> QgsGeometryCheck *QgsGeometryCheckFactoryT<QgsGeometrySelfContactChec
   }
   else
   {
-    return 0;
+    return nullptr;
   }
 }
 

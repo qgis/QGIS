@@ -18,7 +18,11 @@ class QgsComposerMultiFrameCommand: QUndoCommand
 #include "qgscomposermultiframecommand.h"
 %End
   public:
+
     QgsComposerMultiFrameCommand( QgsComposerMultiFrame *multiFrame, const QString &text, QUndoCommand *parent /TransferThis/ = 0 );
+%Docstring
+Constructor for QgsComposerMultiFrameCommand
+%End
 
     virtual void undo();
 

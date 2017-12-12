@@ -736,11 +736,13 @@ struct CORE_EXPORT QgsVertexId
 };
 
 #ifndef SIP_RUN
+
 template <class T>
 inline T qgsgeometry_cast( const QgsAbstractGeometry *geom )
 {
   return const_cast<T>( reinterpret_cast<T>( 0 )->cast( geom ) );
 }
+
 #endif
 
 // clazy:excludeall=qstring-allocations

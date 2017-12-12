@@ -28,7 +28,7 @@ class CUSTOMWIDGETS_EXPORT QgsProjectionSelectionWidgetPlugin : public QObject, 
     Q_INTERFACES( QDesignerCustomWidgetInterface )
 
   public:
-    explicit QgsProjectionSelectionWidgetPlugin( QObject *parent = 0 );
+    explicit QgsProjectionSelectionWidgetPlugin( QObject *parent = nullptr );
 
   private:
     bool mInitialized;

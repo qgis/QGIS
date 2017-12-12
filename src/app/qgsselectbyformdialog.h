@@ -47,7 +47,7 @@ class APP_EXPORT QgsSelectByFormDialog : public QDialog
      */
     QgsSelectByFormDialog( QgsVectorLayer *layer,
                            const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
-                           QWidget *parent = nullptr, Qt::WindowFlags fl = 0 );
+                           QWidget *parent = nullptr, Qt::WindowFlags fl = nullptr );
 
     ~QgsSelectByFormDialog();
 
