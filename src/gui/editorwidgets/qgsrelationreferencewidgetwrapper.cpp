@@ -35,7 +35,7 @@ QWidget *QgsRelationReferenceWidgetWrapper::createWidget( QWidget *parent )
 
 void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 {
-  QgsRelationReferenceWidget *w = dynamic_cast<QgsRelationReferenceWidget *>( editor );
+  QgsRelationReferenceWidget *w = qobject_cast<QgsRelationReferenceWidget *>( editor );
   if ( !w )
   {
     w = new QgsRelationReferenceWidget( editor );
@@ -43,7 +43,9 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
 
   mWidget = w;
 
-  mWidget->setEditorContext( context(), mCanvas, mMessageBar );
+  const QgsAttributeEditorContext *ctx = &context();
+
+  mWidget->setEditorContext( *ctx, mCanvas, mMessageBar );
 
   bool showForm = config( QStringLiteral( "ShowForm" ), false ).toBool();
   bool mapIdent = config( QStringLiteral( "MapIdentification" ), false ).toBool();
@@ -72,14 +74,14 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget *editor )
     relation = layer()->referencingRelations( fieldIdx() )[0];
 
   // If this widget is already embedded by the same relation, reduce functionality
-  const QgsAttributeEditorContext *ctx = &context();
   do
   {
     if ( ctx->relation().name() == relation.name() )
     {
       mWidget->setEmbedForm( false );
-      mWidget->setReadOnlySelector( false );
+      mWidget->setReadOnlySelector( true );
       mWidget->setAllowMapIdentification( false );
+      mWidget->setOpenFormButtonVisible( false );
       break;
     }
     ctx = ctx->parentContext();
