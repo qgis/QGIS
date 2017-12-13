@@ -62,6 +62,8 @@ class ScriptEditorDialog(BASE, WIDGET):
         super(ScriptEditorDialog, self).__init__(None)
         self.setupUi(self)
 
+        self.searchWidget.setVisible(False)
+
         self.setWindowFlags(Qt.WindowMinimizeButtonHint |
                             Qt.WindowMaximizeButtonHint |
                             Qt.WindowCloseButtonHint)
@@ -76,6 +78,8 @@ class ScriptEditorDialog(BASE, WIDGET):
             QIcon(os.path.join(pluginPath, 'images', 'edithelp.png')))
         self.btnRun.setIcon(
             QIcon(os.path.join(pluginPath, 'images', 'runalgorithm.png')))
+        self.btnSearch.setIcon(
+            QIcon(os.path.join(pluginPath, 'images', 'search.png')))
         self.btnCut.setIcon(QgsApplication.getThemeIcon('/mActionEditCut.svg'))
         self.btnCopy.setIcon(
             QgsApplication.getThemeIcon('/mActionEditCopy.svg'))
@@ -97,9 +101,14 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.btnPaste.clicked.connect(self.editor.paste)
         self.btnUndo.clicked.connect(self.editor.undo)
         self.btnRedo.clicked.connect(self.editor.redo)
+        self.btnSearch.clicked.connect(self.toggleSearchBox)
         self.btnIncreaseFont.clicked.connect(self.editor.zoomIn)
         self.btnDecreaseFont.clicked.connect(self.editor.zoomOut)
+        self.btnFind.clicked.connect(self.find)
+        self.btnReplace.clicked.connect(self.replace)
         self.editor.textChanged.connect(lambda: self.setHasChanged(True))
+
+        self.lastSearch = None
 
         self.alg = alg
         self.algType = algType
@@ -137,6 +146,22 @@ class ScriptEditorDialog(BASE, WIDGET):
         self.setHasChanged(False)
 
         self.editor.setLexerType(self.algType)
+
+    def find(self):
+        txt = self.findBox.text()
+        cs = self.chkCaseSensitive.isChecked()
+        wo = self.chkWholeWord.isChecked()
+        if self.lastSearch is None or txt != self.lastSearch:
+            self.editor.findFirst(txt, False, cs, wo, True)
+        else:
+            self.editor.findNext()
+
+    def replace(self):
+        txt = self.replaceBox.text()
+        self.editor.replaceSelectedText(txt)
+
+    def toggleSearchBox(self):
+        self.searchWidget.setVisible(not self.searchWidget.isVisible())
 
     def showSnippets(self, evt):
         popupmenu = QMenu()
