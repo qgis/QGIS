@@ -98,15 +98,15 @@ class QgsGeometryUtils
  :rtype: bool
 %End
 
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter /Out/, bool &isIntersect /Out/, double tolerance, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint /Out/, bool &isIntersection /Out/, double tolerance, bool acceptImproperIntersection = false );
 %Docstring
  Compute the intersection between two segments
  \param p1 First segment start point
  \param p2 First segment end point
  \param q1 Second segment start point
  \param q2 Second segment end point
- \param inter Output parameter, the intersection point
- \param isIntersect Output parameter, return true if an intersection is found
+ \param intersectionPoint Output parameter, the intersection point
+ \param isIntersection Output parameter, return true if an intersection is found
  \param tolerance The tolerance to use
  \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
  :return:  Whether the segments intersect

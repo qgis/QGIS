@@ -106,8 +106,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param p2 First segment end point
      * \param q1 Second segment start point
      * \param q2 Second segment end point
-     * \param inter Output parameter, the intersection point
-     * \param isIntersect Output parameter, return true if an intersection is found
+     * \param intersectionPoint Output parameter, the intersection point
+     * \param isIntersection Output parameter, return true if an intersection is found
      * \param tolerance The tolerance to use
      * \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
      * \returns  Whether the segments intersect
@@ -135,7 +135,7 @@ class CORE_EXPORT QgsGeometryUtils
      *   # (True, 'Point (0 0)', True)
      * \endcode
      */
-    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter SIP_OUT, bool &isIntersect SIP_OUT, double tolerance, bool acceptImproperIntersection = false );
+    static bool segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint SIP_OUT, bool &isIntersection SIP_OUT, double tolerance, bool acceptImproperIntersection = false );
 
     /**
      * \brief Project the point on a segment

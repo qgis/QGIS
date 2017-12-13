@@ -251,9 +251,9 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v, const 
   return true;
 }
 
-bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &inter, bool &isIntersect, double tolerance, bool acceptImproperIntersection )
+bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint, bool &isIntersection, double tolerance, bool acceptImproperIntersection )
 {
-  isIntersect = false;
+  isIntersection = false;
 
   QgsVector v( p2.x() - p1.x(), p2.y() - p1.y() );
   QgsVector w( q2.x() - q1.x(), q2.y() - q1.y() );
@@ -267,53 +267,53 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
   v = v / vl;
   w = w / wl;
 
-  if ( !QgsGeometryUtils::lineIntersection( p1, v, q1, w, inter ) )
+  if ( !QgsGeometryUtils::lineIntersection( p1, v, q1, w, intersectionPoint ) )
   {
     return false;
   }
 
-  isIntersect = true;
+  isIntersection = true;
   if ( acceptImproperIntersection )
   {
     if ( ( p1 == q1 ) || ( p1 == q2 ) )
     {
-      inter = p1;
+      intersectionPoint = p1;
       return true;
     }
     else if ( ( p2 == q1 ) || ( p2 == q2 ) )
     {
-      inter == p2;
+      intersectionPoint == p2;
       return true;
     }
 
     double x, y;
     if ( qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( p1.x(), p1.y(), q1.x(), q1.y(), q2.x(), q2.y(), x, y, tolerance ), 0.0, tolerance ) )
     {
-      inter == p1;
+      intersectionPoint == p1;
       return true;
     }
     else if ( qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( p2.x(), p2.y(), q1.x(), q1.y(), q2.x(), q2.y(), x, y, tolerance ), 0.0, tolerance ) )
     {
-      inter == p2;
+      intersectionPoint == p2;
       return true;
     }
     else if ( qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( q1.x(), q1.y(), p1.x(), p1.y(), p2.x(), p2.y(), x, y, tolerance ), 0.0, tolerance ) )
     {
-      inter == q1;
+      intersectionPoint == q1;
       return true;
     }
     else if ( qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( q2.x(), q2.y(), p1.x(), p1.y(), p2.x(), p2.y(), x, y, tolerance ), 0.0, tolerance ) )
     {
-      inter == q2;
+      intersectionPoint == q2;
       return true;
     }
   }
 
-  double lambdav = QgsVector( inter.x() - p1.x(), inter.y() - p1.y() ) *  v;
+  double lambdav = QgsVector( intersectionPoint.x() - p1.x(), intersectionPoint.y() - p1.y() ) *  v;
   if ( lambdav < 0. + tolerance || lambdav > vl - tolerance )
     return false;
 
-  double lambdaw = QgsVector( inter.x() - q1.x(), inter.y() - q1.y() ) * w;
+  double lambdaw = QgsVector( intersectionPoint.x() - q1.x(), intersectionPoint.y() - q1.y() ) * w;
   return !( lambdaw < 0. + tolerance || lambdaw >= wl - tolerance );
 }
 

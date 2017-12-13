@@ -1453,7 +1453,8 @@ QgsGeometryUtils         {#qgis_api_break_3_0_QgsGeometryUtils}
 
 - componentType enum has been renamed to ComponentType and its members were CamelCased too: VERTEX, RING and PART become Vertex, Ring and Part, respectively.
 - adjacentVertices was removed - use QgsAbstractGeometry.adjacentVertices instead.
-
+- segmentIntersection takes an optional boolean parameter "acceptImproperIntersection" returning true even if the intersection is improper.
+Takes another boolean argument "isIntersection" returning if there is an intersection or not. The "inter" parameter has been renamed "intersectionPoint".
 
 QgsGPSConnectionRegistry        {#qgis_api_break_3_0_QgsGPSConnectionRegistry}
 ------------------------
