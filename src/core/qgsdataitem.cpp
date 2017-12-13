@@ -102,6 +102,11 @@ QIcon QgsFavoritesItem::iconFavorites()
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconFavourites.png" ) );
 }
 
+QVariant QgsFavoritesItem::sortKey() const
+{
+  return QStringLiteral( " 0" );
+}
+
 QIcon QgsZipItem::iconZip()
 {
   return QgsApplication::getThemeIcon( QStringLiteral( "/mIconZip.png" ) );
@@ -148,6 +153,16 @@ QgsDataItem::~QgsDataItem()
 QString QgsDataItem::pathComponent( const QString &string )
 {
   return QString( string ).replace( QRegExp( "[\\\\/]" ), QStringLiteral( "|" ) );
+}
+
+QVariant QgsDataItem::sortKey() const
+{
+  return mSortKey.isValid() ? mSortKey : name();
+}
+
+void QgsDataItem::setSortKey( const QVariant &key )
+{
+  mSortKey = key;
 }
 
 void QgsDataItem::deleteLater()
@@ -753,6 +768,10 @@ QVector<QgsDataItem *> QgsDirectoryItem::createChildren()
       continue;
 
     QgsDirectoryItem *item = new QgsDirectoryItem( this, subdir, subdirPath, path );
+
+    // we want directories shown before files
+    item->setSortKey( QStringLiteral( "  %1" ).arg( subdir ) );
+
     // propagate signals up to top
 
     children.append( item );

@@ -23,6 +23,7 @@ class QgsBrowserModel : QAbstractItemModel
     {
       PathRole,
       CommentRole,
+      SortRole,
     };
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;

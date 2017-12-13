@@ -72,6 +72,7 @@ void QgsBrowserModel::updateProjectHome()
   mProjectHome = home.isNull() ? nullptr : new QgsDirectoryItem( nullptr, tr( "Project home" ), home, "project:" + home );
   if ( mProjectHome )
   {
+    mProjectHome->setSortKey( QStringLiteral( " 1" ) );
     connectItem( mProjectHome );
 
     beginInsertRows( QModelIndex(), 0, 0 );
@@ -84,8 +85,9 @@ void QgsBrowserModel::addRootItems()
 {
   updateProjectHome();
 
-  // give the home directory a prominent second place
+  // give the home directory a prominent third place
   QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, tr( "Home" ), QDir::homePath(), "home:" + QDir::homePath() );
+  item->setSortKey( QStringLiteral( " 2" ) );
   QStyle *style = QApplication::style();
   QIcon homeIcon( style->standardPixmap( QStyle::SP_DirHomeIcon ) );
   item->setIcon( homeIcon );
@@ -109,6 +111,7 @@ void QgsBrowserModel::addRootItems()
       continue;
 
     QgsDirectoryItem *item = new QgsDirectoryItem( nullptr, path, path );
+    item->setSortKey( QStringLiteral( " 3 %1" ).arg( path ) );
 
     connectItem( item );
     mRootItems << item;
@@ -211,6 +214,10 @@ QVariant QgsBrowserModel::data( const QModelIndex &index, int role ) const
   else if ( role == Qt::DisplayRole )
   {
     return item->name();
+  }
+  else if ( role == QgsBrowserModel::SortRole )
+  {
+    return item->sortKey();
   }
   else if ( role == Qt::ToolTipRole )
   {
