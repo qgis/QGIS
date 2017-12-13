@@ -703,6 +703,28 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
     void init();
 };
 
+
+///@cond PRIVATE
+#ifndef SIP_RUN
+
+/**
+ * \ingroup core
+ * A directory item showing the current project directory.
+ * \since QGIS 3.0
+*/
+class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
+{
+  public:
+
+    QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
+
+    QIcon icon() override;
+    QVariant sortKey() const override;
+
+};
+#endif
+
+
 #endif // QGSDATAITEM_H
 
 
