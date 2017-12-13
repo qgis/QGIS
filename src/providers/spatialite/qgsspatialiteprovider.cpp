@@ -236,10 +236,11 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
           throw SLException( errMsg );
       }
 
-      sql = QStringLiteral( "CREATE TABLE %1 (%2 %3 PRIMARY KEY)" )
+      sql = QStringLiteral( "CREATE TABLE %1 (%2 %3 PRIMARY KEY%4)" )
             .arg( quotedIdentifier( tableName ),
                   quotedIdentifier( primaryKey ),
-                  primaryKeyType );
+                  primaryKeyType,
+                  primaryKeyType == QLatin1String( "INTEGER" ) ? QStringLiteral( " AUTOINCREMENT" ) : QString() );
 
       ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
@@ -867,7 +868,7 @@ void QgsSpatiaLiteProvider::fetchConstraints()
 
     if ( mAttributeFields[ fieldIdx ].name() == mPrimaryKey )
     {
-      QString sql = QStringLiteral( "SELECT sql FROM sqlite_master WHERE tbl_name=%1" ).arg( quotedIdentifier( mTableName ) );
+      QString sql = QStringLiteral( "SELECT sql FROM sqlite_master WHERE type = 'table' AND tbl_name like %1" ).arg( quotedIdentifier( mTableName ) );
       int ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
       if ( ret != SQLITE_OK )
       {

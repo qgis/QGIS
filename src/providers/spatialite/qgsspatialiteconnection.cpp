@@ -330,7 +330,7 @@ bool QgsSpatiaLiteConnection::getTableInfoAbstractInterface( sqlite3 *handle, bo
       for ( i = 1; i <= rows; i++ )
       {
         QString tableName = QString::fromUtf8( results[( i * columns ) + 0] );
-        if ( !ignoreTableNames.contains( tableName ) )
+        if ( !ignoreTableNames.contains( tableName, Qt::CaseInsensitive ) )
           mTables.append( TableEntry( tableName, QString(), QStringLiteral( "qgis_table" ) ) );
       }
     }
