@@ -193,6 +193,7 @@ SET(QGIS_CORE_SRCS
   qgsgml.cpp
   qgsgmlschema.cpp
   qgshistogram.cpp
+  qgshtmlutils.cpp
   qgsinterval.cpp
   qgsjsonutils.cpp
   qgslabelfeature.cpp
@@ -616,6 +617,7 @@ SET(QGIS_CORE_MOC_HDRS
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
+  qgshtmlutils.h
   qgsmaplayer.h
   qgsmaplayerlegend.h
   qgsmaplayermodel.h

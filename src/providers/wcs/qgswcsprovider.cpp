@@ -1178,10 +1178,10 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
   metadata += QLatin1String( "<table width=\"100%\">" );
 
   // Table header
-  metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+  metadata += QLatin1String( "<tr><th class=\"strong\">" );
   metadata += tr( "Property" );
   metadata += QLatin1String( "</th>" );
-  metadata += QLatin1String( "<th class=\"glossy\">" );
+  metadata += QLatin1String( "<th class=\"strong\">" );
   metadata += tr( "Value" );
   metadata += QLatin1String( "</th></tr>" );
 
@@ -1233,8 +1233,7 @@ QString QgsWcsProvider::coverageMetadata( const QgsWcsCoverageSummary &coverage 
 QString QgsWcsProvider::htmlMetadata()
 {
   QString metadata;
-
-  metadata += QLatin1String( "<tr><td>" );
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "WCS Info" ) + QStringLiteral( "</td><td><div>" );
 
   metadata += QLatin1String( "</a>&nbsp;<a href=\"#coverages\">" );
   metadata += tr( "Coverages" );
@@ -1247,22 +1246,22 @@ QString QgsWcsProvider::htmlMetadata()
   metadata += "</a> ";
 #endif
 
-  metadata += QLatin1String( "</td></tr>" );
+  metadata += QLatin1String( "<br /><table class=\"tabular-view\">" );  // Nested table 1
 
   // Server Properties section
-  metadata += QLatin1String( "<tr><th class=\"glossy\"><a name=\"serverproperties\"></a>" );
+  metadata += QLatin1String( "<tr><th class=\"strong\"><a name=\"serverproperties\"></a>" );
   metadata += tr( "Server Properties" );
   metadata += QLatin1String( "</th></tr>" );
 
   // Use a nested table
   metadata += QLatin1String( "<tr><td>" );
-  metadata += QLatin1String( "<table width=\"100%\">" );
+  metadata += QLatin1String( "<table width=\"100%\">" );  // Nested table 2
 
   // Table header
-  metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+  metadata += QLatin1String( "<tr><th class=\"strong\">" );
   metadata += tr( "Property" );
   metadata += QLatin1String( "</th>" );
-  metadata += QLatin1String( "<th class=\"glossy\">" );
+  metadata += QLatin1String( "<th class=\"strong\">" );
   metadata += tr( "Value" );
   metadata += QLatin1String( "</th></tr>" );
 
@@ -1285,11 +1284,11 @@ QString QgsWcsProvider::htmlMetadata()
   metadata += htmlRow( tr( "Get Coverage Url" ), mCapabilities.getCoverageUrl() + ( mIgnoreGetCoverageUrl ? tr( "&nbsp;<font color=\"red\">(advertised but ignored)</font>" ) : QLatin1String( "" ) ) );
 
   // Close the nested table
-  metadata += QLatin1String( "</table>" );
+  metadata += QLatin1String( "</table>" );  // End nested table 2
   metadata += QLatin1String( "</td></tr>" );
 
   // Coverage properties
-  metadata += QLatin1String( "<tr><th class=\"glossy\"><a name=\"coverages\"></a>" );
+  metadata += QLatin1String( "<tr><th class=\"strong\"><a name=\"coverages\"></a>" );
   metadata += tr( "Coverages" );
   metadata += QLatin1String( "</th></tr>" );
 
@@ -1307,8 +1306,7 @@ QString QgsWcsProvider::htmlMetadata()
     metadata += tr( "And %1 more coverages" ).arg( mCapabilities.coverages().size() - count );
   }
 
-  QgsDebugMsg( "exiting with '"  + metadata  + "'." );
-
+  metadata += QStringLiteral( "</table></div></td></tr>\n" );  // End nested table 1
   return metadata;
 }
 
