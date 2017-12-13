@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   height="16"
+   width="16"
+   enable-background="new"
+   version="1.1"
+   id="svg41"
+   sodipodi:docname="mIconQgsProjectFile.svg"
+   inkscape:version="0.92.2 (5c3e80d, 2017-08-06)">
+  <metadata
+     id="metadata47">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs45" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="848"
+     inkscape:window-height="480"
+     id="namedview43"
+     showgrid="false"
+     inkscape:zoom="14.75"
+     inkscape:cx="8"
+     inkscape:cy="8"
+     inkscape:window-x="0"
+     inkscape:window-y="27"
+     inkscape:window-maximized="0"
+     inkscape:current-layer="svg41" />
+  <linearGradient
+     id="a">
+    <stop
+       offset="0"
+       stop-color="#f5f5f5"
+       id="stop2" />
+    <stop
+       offset="1"
+       stop-color="#fff"
+       id="stop4" />
+  </linearGradient>
+  <filter
+     id="c"
+     color-interpolation-filters="sRGB">
+    <feFlood
+       flood-opacity=".5"
+       result="flood"
+       id="feFlood7" />
+    <feComposite
+       in="flood"
+       in2="SourceGraphic"
+       operator="in"
+       result="composite1"
+       id="feComposite9" />
+    <feGaussianBlur
+       result="blur"
+       stdDeviation="2"
+       id="feGaussianBlur11" />
+    <feOffset
+       dx="1.5"
+       dy="1.5"
+       result="offset"
+       id="feOffset13" />
+    <feComposite
+       in="SourceGraphic"
+       in2="offset"
+       result="composite2"
+       id="feComposite15" />
+  </filter>
+  <clipPath
+     id="b">
+    <path
+       d="M41.456 282.456h170.306v157.495H41.456z"
+       id="path18" />
+  </clipPath>
+  <g
+     clip-path="url(#b)"
+     transform="matrix(.07044 0 0 .07552 -.896 -19.217)"
+     stroke-width=".963"
+     filter="url(#c)"
+     id="g37">
+    <path
+       d="M17.678 270.142H235.87V451.97H17.678z"
+       fill="#b9df4f"
+       stroke="#f4e9d4"
+       stroke-width="6.064"
+       id="path21" />
+    <path
+       d="M149.643 297.429l56.786 46.071-47.143 61.071L100.714 356z"
+       fill="#159401"
+       stroke="#000"
+       id="path23" />
+    <path
+       d="M7.87 281.042l204.507 168.257"
+       fill="#fcfc48"
+       stroke="#fcfcb4"
+       stroke-width="14.83"
+       id="path25" />
+    <path
+       d="M67.68 331.256l-70.71 86.368"
+       fill="none"
+       stroke="#fcfcb4"
+       stroke-width="9.626"
+       id="path27" />
+    <path
+       d="M157.584 406.513l106.57-134.856"
+       fill="none"
+       stroke="#fcfcb4"
+       stroke-width="4.813"
+       id="path29" />
+    <path
+       d="M100.005 358.53l81.317-100.005"
+       fill="none"
+       stroke="#fcfcb4"
+       stroke-width="9.626"
+       id="path31" />
+    <path
+       d="M150.008 297.416l56.568 45.962 19.193 103.036"
+       fill="none"
+       stroke="#fcfcb4"
+       stroke-width="4.813"
+       id="path33" />
+    <path
+       d="M118.188 375.703L5.556 407.018"
+       fill="none"
+       stroke="#fcfcb0"
+       stroke-width="4.813"
+       id="path35" />
+  </g>
+  <path
+     style="isolation:auto;mix-blend-mode:normal"
+     color="#000"
+     overflow="visible"
+     opacity=".579"
+     fill="none"
+     stroke="#159401"
+     enable-background="accumulate"
+     d="M.52.52h14.959v14.959H.52z"
+     id="path391" />
+</svg>
