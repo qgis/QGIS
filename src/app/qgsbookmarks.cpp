@@ -340,6 +340,7 @@ void QgsBookmarks::importFromXml()
   }
   mQgisModel->setSort( 0, Qt::AscendingOrder );
   mQgisModel->select();
+  mProxyModel->_resetModel();
 }
 
 void QgsBookmarks::exportToXml()
@@ -388,8 +389,17 @@ void QgsBookmarks::exportToXml()
       if ( idx.isValid() )
       {
         QString value = idx.data( Qt::DisplayRole ).toString();
-        QDomText idText = doc.createTextNode( value );
         QString header = headerList.at( j );
+        // If it's the EPSG code, convert it to internal srid
+        if ( header == QStringLiteral( "sr_id" ) )
+        {
+          QgsCoordinateReferenceSystem crs;
+          if ( crs.createFromOgcWmsCrs( value ) )
+            value = QString::number( QgsCoordinateReferenceSystem::fromOgcWmsCrs( value ).srsid( ) );
+          else
+            value = QString();
+        }
+        QDomText idText = doc.createTextNode( value );
         QDomElement id = doc.createElement( header );
         id.appendChild( idText );
         bookmark.appendChild( id );
