@@ -928,7 +928,8 @@ QgsOptions::QgsOptions( QWidget *parent, Qt::WindowFlags fl )
   mVariableEditor->reloadContext();
   mVariableEditor->setEditableScopeIndex( 0 );
 
-
+  const QString key = "/QgsRelationReferenceWidget/cacheSize";
+  mSettings->setValue( key, mSettings->value( key, 200000 ) );
 
   mAdvancedSettingsEditor->setSettingsObject( mSettings );
 
