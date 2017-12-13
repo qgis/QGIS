@@ -271,6 +271,27 @@ Create path component replacing path separators
  :rtype: str
 %End
 
+    virtual QVariant sortKey() const;
+%Docstring
+ Returns the sorting key for the item. By default name() is returned,
+ but setSortKey() can be used to set a custom sort key for the item.
+
+ Alternatively subclasses can override this method to return a custom
+ sort key.
+
+.. seealso:: :py:func:`setSortKey()`
+.. versionadded:: 3.0
+ :rtype: QVariant
+%End
+
+    void setSortKey( const QVariant &key );
+%Docstring
+ Sets a custom sorting ``key`` for the item.
+.. seealso:: :py:func:`sortKey()`
+.. versionadded:: 3.0
+%End
+
+
     void setIcon( const QIcon &icon );
     void setIconName( const QString &iconName );
 
@@ -305,6 +326,7 @@ Move object and all its descendants to thread
  createChildren() immediately because result will be useless. *
  :rtype: bool
 %End
+
 
 
   public slots:
@@ -668,6 +690,9 @@ class QgsFavoritesItem : QgsDataCollectionItem
 Icon for favorites group
  :rtype: QIcon
 %End
+
+    virtual QVariant sortKey() const;
+
 
 };
 
