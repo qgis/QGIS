@@ -113,6 +113,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QVariant defaultValue( int fieldId ) const override;
+    virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     bool createAttributeIndex( int field ) override;
 
     /**
@@ -249,6 +250,9 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
 
     //! Name of the primary key column in the table
     QString mPrimaryKey;
+
+    //! Flag indicating whether the primary key is auto-generated
+    bool mPrimaryKeyAutoIncrement = false;
 
     //! List of primary key columns in the table
     QgsAttributeList mPrimaryKeyAttrs;

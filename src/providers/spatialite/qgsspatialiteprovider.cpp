@@ -582,7 +582,7 @@ QgsSpatiaLiteProvider::QgsSpatiaLiteProvider( QString const &uri )
     return;
   }
 
-  if ( mTableBased && hasRowid() )
+  if ( mTableBased && hasRowid() && mPrimaryKey.isEmpty() )
   {
     mPrimaryKey = QStringLiteral( "ROWID" );
   }
@@ -860,11 +860,33 @@ void QgsSpatiaLiteProvider::fetchConstraints()
 
   Q_FOREACH ( int fieldIdx, mPrimaryKeyAttrs )
   {
-    //primary keys are unique, not null
     QgsFieldConstraints constraints = mAttributeFields.at( fieldIdx ).constraints();
     constraints.setConstraint( QgsFieldConstraints::ConstraintUnique, QgsFieldConstraints::ConstraintOriginProvider );
     constraints.setConstraint( QgsFieldConstraints::ConstraintNotNull, QgsFieldConstraints::ConstraintOriginProvider );
     mAttributeFields[ fieldIdx ].setConstraints( constraints );
+
+    if ( mAttributeFields[ fieldIdx ].name() == mPrimaryKey )
+    {
+      QString sql = QStringLiteral( "SELECT sql FROM sqlite_master WHERE tbl_name=%1" ).arg( quotedIdentifier( mTableName ) );
+      int ret = sqlite3_get_table( mSqliteHandle, sql.toUtf8().constData(), &results, &rows, &columns, &errMsg );
+      if ( ret != SQLITE_OK )
+      {
+        handleError( sql, errMsg );
+        return;
+      }
+
+      if ( rows >= 1 )
+      {
+        QString tableSql = QString::fromUtf8( results[ 1 ] );
+        QRegularExpression rx( QStringLiteral( "[(,]\\s*%1\\s+INTEGER PRIMARY KEY AUTOINCREMENT" ).arg( mPrimaryKey ), QRegularExpression::CaseInsensitiveOption );
+        if ( tableSql.contains( rx ) )
+        {
+          mPrimaryKeyAutoIncrement = true;
+          insertDefaultValue( fieldIdx, tr( "Autogenerate" ) );
+        }
+      }
+      sqlite3_free_table( results );
+    }
   }
 }
 
@@ -872,27 +894,31 @@ void QgsSpatiaLiteProvider::insertDefaultValue( int fieldIndex, QString defaultV
 {
   if ( !defaultVal.isEmpty() )
   {
-    QVariant defaultVariant;
-    switch ( mAttributeFields.at( fieldIndex ).type() )
+    QVariant defaultVariant = defaultVal;
+
+    if ( mAttributeFields.at( fieldIndex ).name() != mPrimaryKey || ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey && !mPrimaryKeyAutoIncrement ) )
     {
-      case QVariant::LongLong:
-        defaultVariant = defaultVal.toLongLong();
-        break;
-
-      case QVariant::Double:
-        defaultVariant = defaultVal.toDouble();
-        break;
-
-      default:
+      switch ( mAttributeFields.at( fieldIndex ).type() )
       {
-        if ( defaultVal.startsWith( '\'' ) )
-          defaultVal = defaultVal.remove( 0, 1 );
-        if ( defaultVal.endsWith( '\'' ) )
-          defaultVal.chop( 1 );
-        defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
+        case QVariant::LongLong:
+          defaultVariant = defaultVal.toLongLong();
+          break;
 
-        defaultVariant = defaultVal;
-        break;
+        case QVariant::Double:
+          defaultVariant = defaultVal.toDouble();
+          break;
+
+        default:
+        {
+          if ( defaultVal.startsWith( '\'' ) )
+            defaultVal = defaultVal.remove( 0, 1 );
+          if ( defaultVal.endsWith( '\'' ) )
+            defaultVal.chop( 1 );
+          defaultVal.replace( QLatin1String( "''" ), QLatin1String( "'" ) );
+
+          defaultVariant = defaultVal;
+          break;
+        }
       }
     }
     mDefaultValues.insert( fieldIndex, defaultVariant );
@@ -978,6 +1004,12 @@ void QgsSpatiaLiteProvider::loadFields()
     }
     sqlite3_free_table( results );
 
+    if ( pkCount == 1 )
+    {
+      // setting the Primary Key column name
+      mPrimaryKey = pkName;
+    }
+
     // check for constraints
     fetchConstraints();
 
@@ -986,7 +1018,6 @@ void QgsSpatiaLiteProvider::loadFields()
     {
       determineViewPrimaryKey();
     }
-
   }
   else
   {
@@ -1037,12 +1068,12 @@ void QgsSpatiaLiteProvider::loadFields()
       }
     }
     sqlite3_finalize( stmt );
-  }
 
-  if ( pkCount == 1 )
-  {
-    // setting the Primary Key column name
-    mPrimaryKey = pkName;
+    if ( pkCount == 1 )
+    {
+      // setting the Primary Key column name
+      mPrimaryKey = pkName;
+    }
   }
 
   updatePrimaryKeyCapabilities();
@@ -3932,6 +3963,11 @@ bool QgsSpatiaLiteProvider::addFeatures( QgsFeatureList &flist, Flags flags )
           {
             ++ia;
           }
+          else if ( fieldname == mPrimaryKey && mPrimaryKeyAutoIncrement && v == QVariant( tr( "Autogenerate" ) ) )
+          {
+            // use auto-generated value if user hasn't specified a unique value
+            ++ia;
+          }
           else if ( v.isNull() )
           {
             // binding a NULL value
@@ -4377,6 +4413,20 @@ QgsVectorDataProvider::Capabilities QgsSpatiaLiteProvider::capabilities() const
 QVariant QgsSpatiaLiteProvider::defaultValue( int fieldId ) const
 {
   return mDefaultValues.value( fieldId, QVariant() );
+}
+
+bool QgsSpatiaLiteProvider::skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value ) const
+{
+  Q_UNUSED( constraint );
+
+  // If the field is the primary key, skip in case it's autog-enerated / auto-incrementing
+  if ( mAttributeFields.at( fieldIndex ).name() == mPrimaryKey  && mPrimaryKeyAutoIncrement )
+  {
+    const QVariant defVal = mDefaultValues.value( fieldIndex );
+    return defVal.toInt() == value.toInt();
+  }
+
+  return false;
 }
 
 void QgsSpatiaLiteProvider::closeDb()
