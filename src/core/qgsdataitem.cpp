@@ -1540,3 +1540,22 @@ QStringList QgsZipItem::getZipFileList()
 
   return mZipFileList;
 }
+
+///@cond PRIVATE
+
+QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
+  : QgsDirectoryItem( parent, name, dirPath, path )
+{
+}
+
+QIcon QgsProjectHomeItem::icon()
+{
+  return QgsApplication::getThemeIcon( QStringLiteral( "mIconQgsProjectFile.svg" ) );
+}
+
+QVariant QgsProjectHomeItem::sortKey() const
+{
+  return QStringLiteral( " 1" );
+}
+
+///@endcond

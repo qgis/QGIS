@@ -69,10 +69,9 @@ void QgsBrowserModel::updateProjectHome()
     endRemoveRows();
   }
   delete mProjectHome;
-  mProjectHome = home.isNull() ? nullptr : new QgsDirectoryItem( nullptr, tr( "Project home" ), home, "project:" + home );
+  mProjectHome = home.isNull() ? nullptr : new QgsProjectHomeItem( nullptr, tr( "Project Home" ), home, "project:" + home );
   if ( mProjectHome )
   {
-    mProjectHome->setSortKey( QStringLiteral( " 1" ) );
     connectItem( mProjectHome );
 
     beginInsertRows( QModelIndex(), 0, 0 );
