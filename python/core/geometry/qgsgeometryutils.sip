@@ -108,8 +108,31 @@ class QgsGeometryUtils
  \param inter Output parameter, the intersection point
  \param isIntersect Output parameter, return true if an intersection is found
  \param tolerance The tolerance to use
- \param acceptImproperIntersection By defaut this method return only intersection point if segments are not contigus. If set on true, return also contigus point as an intersection point.
+ \param acceptImproperIntersection By default, this method returns true only if segments have proper intersection. If set true, returns also true if segments have improper intersection (end of one segment on other segment ; continuous segments).
  :return:  Whether the segments intersect
+ * Example:
+ \code{.py}
+   epsilon = 1e-8
+   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ), epsilon )
+   ret[0], ret[1].asWkt(), ret[2]
+   # Whether the segments intersect, the intersection point, is intersect
+   # (False, 'Point (0 0)', False)
+   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), epsilon )
+   ret[0], ret[1].asWkt(), ret[2]
+   # (False, 'Point (0 5)', True)
+   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), epsilon, True )
+   ret[0], ret[1].asWkt(), ret[2]
+   # (True, 'Point (0 5)', True)
+   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), epsilon )
+   ret[0], ret[1].asWkt(), ret[2]
+   # (False, 'Point (0 2)', True)
+   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 2 ), QgsPoint( 1, 5 ), epsilon, True )
+   ret[0], ret[1].asWkt(), ret[2]
+   # (True, 'Point (0 2)', True)
+   ret = QgsGeometryUtils.segmentIntersection( QgsPoint( 0, -5 ), QgsPoint( 0, 5 ), QgsPoint( 2, 0 ), QgsPoint( -1, 0 ), epsilon )
+   ret[0], ret[1].asWkt(), ret[2]
+   # (True, 'Point (0 0)', True)
+ \endcode
  :rtype: bool
 %End
 
