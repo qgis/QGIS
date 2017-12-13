@@ -795,7 +795,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 if layer is not None:
                     return layer
                 else:
-                    return self.combo.currentText()
+                    return self.combo.currentText() or None
             except:
                 return self.combo.currentText()
         elif self.dialogType == DIALOG_BATCH:
