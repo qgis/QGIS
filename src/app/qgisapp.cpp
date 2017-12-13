@@ -7615,7 +7615,7 @@ void QgisApp::setupDuplicateFeaturesAction()
 {
   QgsMapLayerAction *action = new QgsMapLayerAction( QString( tr( "Duplicate feature" ) ),
       this, QgsMapLayerAction::AllActions,
-      QgsApplication::getThemeIcon( QStringLiteral( "/mIconAtlas.svg" ) ) );
+      QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeature.svg" ) ) );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( action );
   connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
@@ -7626,7 +7626,7 @@ void QgisApp::setupDuplicateFeaturesAction()
 
   action = new QgsMapLayerAction( QString( tr( "Duplicate feature redigitized" ) ),
                                   this, QgsMapLayerAction::AllActions,
-                                  QgsApplication::getThemeIcon( QStringLiteral( "/mIconAms.svg" ) ) );
+                                  QgsApplication::getThemeIcon( QStringLiteral( "/mActionDuplicateFeatureDigitized.svg" ) ) );
 
   QgsGui::mapLayerActionRegistry()->addMapLayerAction( action );
   connect( action, &QgsMapLayerAction::triggeredForFeature, this, [this]( QgsMapLayer * layer, const QgsFeature & feat )
