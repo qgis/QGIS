@@ -751,7 +751,6 @@ class QgsZipItem : QgsDataCollectionItem
 
 
 
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

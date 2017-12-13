@@ -1542,7 +1542,7 @@ QStringList QgsZipItem::getZipFileList()
 }
 
 ///@cond PRIVATE
-///
+
 QgsProjectHomeItem::QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path )
   : QgsDirectoryItem( parent, name, dirPath, path )
 {

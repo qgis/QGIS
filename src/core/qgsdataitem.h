@@ -723,7 +723,7 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
 
 };
 #endif
-
+///@endcond
 
 #endif // QGSDATAITEM_H
 
