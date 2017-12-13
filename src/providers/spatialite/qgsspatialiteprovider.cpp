@@ -236,10 +236,11 @@ QgsSpatiaLiteProvider::createEmptyLayer( const QString &uri,
           throw SLException( errMsg );
       }
 
-      sql = QStringLiteral( "CREATE TABLE %1 (%2 %3 PRIMARY KEY)" )
+      sql = QStringLiteral( "CREATE TABLE %1 (%2 %3 PRIMARY KEY%4)" )
             .arg( quotedIdentifier( tableName ),
                   quotedIdentifier( primaryKey ),
-                  primaryKeyType );
+                  primaryKeyType,
+                  primaryKeyType == QLatin1String( "INTEGER" ) ? QStringLiteral( " AUTOINCREMENT" ) : QString() );
 
       ret = sqlite3_exec( sqliteHandle, sql.toUtf8().constData(), nullptr, nullptr, &errMsg );
       if ( ret != SQLITE_OK )
