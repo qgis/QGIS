@@ -64,6 +64,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     {
       PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
       CommentRole = Qt::UserRole + 1, //!< Item comment
+      SortRole, //!< Custom sort role, see QgsDataItem::sortKey()
     };
     // implemented methods from QAbstractItemModel for read-only access
 

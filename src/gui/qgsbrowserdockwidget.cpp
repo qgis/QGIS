@@ -122,6 +122,8 @@ void QgsBrowserDockWidget::showEvent( QShowEvent *e )
     mBrowserView->setSettingsSection( objectName().toLower() ); // to distinguish 2 or more instances of the browser
     mBrowserView->setBrowserModel( mModel );
     mBrowserView->setModel( mProxyModel );
+    mBrowserView->setSortingEnabled( true );
+    mBrowserView->sortByColumn( 0, Qt::AscendingOrder );
     // provide a horizontal scroll bar instead of using ellipse (...) for longer items
     mBrowserView->setTextElideMode( Qt::ElideNone );
     mBrowserView->header()->setSectionResizeMode( 0, QHeaderView::ResizeToContents );

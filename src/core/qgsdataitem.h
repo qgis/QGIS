@@ -255,6 +255,26 @@ class CORE_EXPORT QgsDataItem : public QObject
     //! Create path component replacing path separators
     static QString pathComponent( const QString &component );
 
+    /**
+     * Returns the sorting key for the item. By default name() is returned,
+     * but setSortKey() can be used to set a custom sort key for the item.
+     *
+     * Alternatively subclasses can override this method to return a custom
+     * sort key.
+     *
+     * \see setSortKey()
+     * \since QGIS 3.0
+     */
+    virtual QVariant sortKey() const;
+
+    /**
+     * Sets a custom sorting \a key for the item.
+     * \see sortKey()
+     * \since QGIS 3.0
+     */
+    void setSortKey( const QVariant &key );
+
+
     // Because QIcon (QPixmap) must not be used in outside the GUI thread, it is
     // not possible to set mIcon in constructor. Either use mIconName/setIconName()
     // or implement icon().
@@ -302,6 +322,9 @@ class CORE_EXPORT QgsDataItem : public QObject
     QString mIconName;
     QIcon mIcon;
     QMap<QString, QIcon> mIconMap;
+
+    //! Custom sort key. If invalid, name() will be used for sorting instead.
+    QVariant mSortKey;
 
   public slots:
 
@@ -630,6 +653,8 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
 
     //! Icon for favorites group
     static QIcon iconFavorites();
+
+    QVariant sortKey() const override;
 
   private:
     QVector<QgsDataItem *> createChildren( const QString &favDir );
