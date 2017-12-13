@@ -69,7 +69,7 @@ void QgsBrowserModel::updateProjectHome()
     endRemoveRows();
   }
   delete mProjectHome;
-  mProjectHome = home.isNull() ? nullptr : new QgsProjectHomeItem( nullptr, tr( "Project home" ), home, "project:" + home );
+  mProjectHome = home.isNull() ? nullptr : new QgsProjectHomeItem( nullptr, tr( "Project Home" ), home, "project:" + home );
   if ( mProjectHome )
   {
     connectItem( mProjectHome );
