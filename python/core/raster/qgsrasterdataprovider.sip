@@ -450,15 +450,6 @@ Copy member variables from other raster data provider. Useful for implementation
 %End
 
 
-    static QString makeTableCell( const QString &value );
-%Docstring
- :rtype: str
-%End
-    static QString makeTableCells( const QStringList &values );
-%Docstring
- :rtype: str
-%End
-
 
 
 

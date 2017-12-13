@@ -216,29 +216,33 @@ QgsRasterInterface *QgsAmsProvider::clone() const
 
 static inline QString dumpVariantMap( const QVariantMap &variantMap, const QString &title = QString() )
 {
-  QString result = QStringLiteral( "<table>" );
+  QString result;
   if ( !title.isEmpty() )
   {
-    result += QStringLiteral( "<tr><td class=\"glossy\" colspan=\"2\">%1</td></tr>" ).arg( title );
+    result += QStringLiteral( "<tr><td class=\"highlight\">%1</td><td>" ).arg( title );
+  }
+  else
+  {
+    result += QStringLiteral( "<tr><td>" );
   }
   for ( auto it = variantMap.constBegin(); it != variantMap.constEnd(); ++it )
   {
     QVariantMap childMap = it.value().toMap();
     if ( childMap.isEmpty() )
     {
-      result += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key(), it.value().toString() );
+      result += QStringLiteral( "%1:%2</td></tr>" ).arg( it.key(), it.value().toString() );
     }
     else
     {
-      result += QStringLiteral( "<tr><td>%1</td><td>%2</td></tr>" ).arg( it.key(), dumpVariantMap( childMap ) );
+      result += QStringLiteral( "%1:<table>%2</table></td></tr>" ).arg( it.key(), dumpVariantMap( childMap ) );
     }
   }
-  result += QLatin1String( "</table>" );
   return result;
 }
 
 QString QgsAmsProvider::htmlMetadata()
 {
+  // This must return the content of a HTML table starting by tr and ending by tr
   return dumpVariantMap( mServiceInfo, tr( "Service Info" ) ) + dumpVariantMap( mLayerInfo, tr( "Layer Info" ) );
 }
 
