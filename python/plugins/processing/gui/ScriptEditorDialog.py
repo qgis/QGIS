@@ -147,7 +147,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
         self.editor.setLexerType(self.algType)
 
-
     def find(self):
         txt = self.findBox.text()
         cs = self.chkCaseSensitive.isChecked()
@@ -163,7 +162,6 @@ class ScriptEditorDialog(BASE, WIDGET):
 
     def toggleSearchBox(self):
         self.searchWidget.setVisible(not self.searchWidget.isVisible())
-
 
     def showSnippets(self, evt):
         popupmenu = QMenu()
