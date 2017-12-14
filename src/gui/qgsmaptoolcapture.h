@@ -192,7 +192,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      * List of digitized points
      * @return List of points
      */
-    QList<QgsPoint> points();
+    QList<QgsPoint> points() const;
 
     /**
      * List of digitized points with z support
