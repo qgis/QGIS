@@ -651,9 +651,20 @@ void TestQgsGeometryUtils::testClosestPoint()
 void TestQgsGeometryUtils::testSegmentIntersection()
 {
   const double epsilon = 1e-8;
-  bool intersection, isIntersect;
+  bool intersection = false, isIntersect = false;
   QgsPoint inter;
+  // null
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 5, 5 ), QgsPoint( 5, 5 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 5, 5 ), QgsPoint( 5, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( !intersection );
+  QVERIFY( !isIntersect );
+  QVERIFY( inter == QgsPoint() );
   // parallel
+  inter = QgsPoint();
   intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 1 ), QgsPoint( 1, 1 ), QgsPoint( 1, 0 ), inter, isIntersect, epsilon );
   QVERIFY( !intersection );
   QVERIFY( !isIntersect );
@@ -686,6 +697,36 @@ void TestQgsGeometryUtils::testSegmentIntersection()
   QVERIFY( inter == QgsPoint( 0, 5 ) );
   inter = QgsPoint();
   intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 0 ), QgsPoint( 0, 5 ), QgsPoint( 1, 5 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon, true );
+  QVERIFY( intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 1, 5 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon );
+  QVERIFY( !intersection );
+  QVERIFY( isIntersect );
+  QVERIFY( inter == QgsPoint( 0, 5 ) );
+  inter = QgsPoint();
+  intersection = QgsGeometryUtils::segmentIntersection( QgsPoint( 0, 5 ), QgsPoint( 0, 0 ), QgsPoint( 1, 5 ), QgsPoint( 0, 5 ), inter, isIntersect, epsilon, true );
   QVERIFY( intersection );
   QVERIFY( isIntersect );
   QVERIFY( inter == QgsPoint( 0, 5 ) );

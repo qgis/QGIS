@@ -282,7 +282,7 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
     }
     else if ( ( p2 == q1 ) || ( p2 == q2 ) )
     {
-      intersectionPoint == p2;
+      intersectionPoint = p2;
       return true;
     }
 
@@ -340,7 +340,7 @@ QVector<QgsGeometryUtils::SelfIntersection> QgsGeometryUtils::getSelfIntersectio
       QgsPoint pl = geom->vertexAt( QgsVertexId( part, ring, l ) );
 
       QgsPoint inter;
-      bool intersection;
+      bool intersection = false;
       if ( !QgsGeometryUtils::segmentIntersection( pi, pj, pk, pl, inter, intersection, tolerance ) ) continue;
 
       SelfIntersection s;

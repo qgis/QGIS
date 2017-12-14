@@ -182,7 +182,7 @@ QgsCircle QgsCircle::fromCenterPoint( const QgsPoint &center, const QgsPoint &pt
 QgsCircle QgsCircle::from3Tangents( const QgsPoint &pt1_tg1, const QgsPoint &pt2_tg1, const QgsPoint &pt1_tg2, const QgsPoint &pt2_tg2, const QgsPoint &pt1_tg3, const QgsPoint &pt2_tg3, double epsilon )
 {
   QgsPoint p1, p2, p3;
-  bool isIntersect;
+  bool isIntersect = false;
   QgsGeometryUtils::segmentIntersection( pt1_tg1, pt2_tg1, pt1_tg2, pt2_tg2, p1, isIntersect, epsilon );
   if ( !isIntersect )
     return QgsCircle();

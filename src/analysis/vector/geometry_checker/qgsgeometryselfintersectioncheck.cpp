@@ -114,7 +114,7 @@ void QgsGeometrySelfIntersectionCheck::fixError( QgsGeometryCheckError *error, i
   QgsPoint p2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment1 + 1 ) % nVerts ) );
   QgsPoint q2 = geom->vertexAt( QgsVertexId( vidx.part, vidx.ring, ( inter.segment2 + 1 ) % nVerts ) );
   QgsPoint s;
-  bool intersection;
+  bool intersection = false;
   if ( !QgsGeometryUtils::segmentIntersection( p1, p2, q1, q2, s, intersection, mContext->tolerance ) )
   {
     error->setObsolete();

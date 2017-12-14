@@ -257,7 +257,7 @@ namespace QgsGeometryCheckerUtils
   {
     QList<QgsPoint> intersections;
     QgsPoint inter;
-    bool intersection;
+    bool intersection = false;
     for ( int i = 0, n = line1->vertexCount() - 1; i < n; ++i )
     {
       for ( int j = 0, m = line2->vertexCount() - 1; j < m; ++j )

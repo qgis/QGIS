@@ -495,7 +495,7 @@ QVector<QgsLineString> QgsTriangle::bisectors( double lengthTolerance ) const
   QgsLineString bis3;
   QgsPoint incenter = inscribedCenter();
   QgsPoint out;
-  bool intersection;
+  bool intersection = false;
 
   QgsGeometryUtils::segmentIntersection( vertexAt( 0 ), incenter, vertexAt( 1 ), vertexAt( 2 ), out, intersection, lengthTolerance );
   bis1.setPoints( QgsPointSequence() <<  vertexAt( 0 ) << out );

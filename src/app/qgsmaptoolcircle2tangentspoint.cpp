@@ -62,7 +62,7 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
     }
     if ( mPoints.size() == 4 )
     {
-      bool isIntersect;
+      bool isIntersect = false;
       const double epsilon = 1e-8;
       QgsPoint ptInter;
       QgsGeometryUtils::segmentIntersection( mPoints.at( 0 ), mPoints.at( 1 ),
@@ -172,7 +172,7 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
     QgsGeometry line2m = line2.offsetCurve( - mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
     QgsGeometry line2p = line2.offsetCurve( + mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
 
-    bool isIntersect;
+    bool isIntersect = false;
     const double epsilon = 1e-8;
     QgsPoint inter;
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
