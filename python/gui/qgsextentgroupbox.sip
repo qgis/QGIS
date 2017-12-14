@@ -103,7 +103,16 @@ class QgsExtentGroupBox : QgsCollapsibleGroupBox
     QgsRectangle outputExtent() const;
 %Docstring
  Returns the extent shown in the widget - in output CRS coordinates.
+.. seealso:: :py:func:`outputCrs`
  :rtype: QgsRectangle
+%End
+
+    QgsCoordinateReferenceSystem outputCrs() const;
+%Docstring
+ Returns the current output CRS, used in the display.
+.. seealso:: :py:func:`outputExtent`
+.. versionadded:: 3.0
+ :rtype: QgsCoordinateReferenceSystem
 %End
 
     QgsExtentGroupBox::ExtentState extentState() const;
