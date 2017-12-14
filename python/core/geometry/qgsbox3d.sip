@@ -37,6 +37,12 @@ class QgsBox3d
  The box is normalized after construction.
 %End
 
+    QgsBox3d( const QgsRectangle &rect );
+%Docstring
+ Constructs a QgsBox3D from a rectangle.
+ Z Minimum and Z Maximum are set to 0.0.
+%End
+
     void setXMinimum( double x );
 %Docstring
  Sets the minimum ``x`` value.
