@@ -33,6 +33,7 @@ import osgeo.gdal  # NOQA
 
 from test_qgsserver import QgsServerTestBase
 from qgis.core import QgsProject
+from qgis.server import QgsServerRequest
 
 # Strip path and content length because path may vary
 RE_STRIP_UNCHECKABLE = b'MAP=[^"]+|Content-Length: \d+'
@@ -302,7 +303,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             "REQUEST": "GetPrint",
             "TEMPLATE": "layoutA4",
             "FORMAT": "png",
-            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0%3AEXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
             "CRS": "EPSG:3857",
             "SELECTION": "Country: 4",
@@ -313,14 +314,15 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
         r, h = self._result(self._execute_request(qs))
         self._img_diff_error(r, h, "WMS_GetPrint_Opacity")
 
-        qs = "?" + "&".join(["%s=%s" % i for i in list({
+    def test_wms_getprint_opacity_post(self):
+        qs = "&".join(["%s=%s" % i for i in list({
             "MAP": urllib.parse.quote(self.projectPath),
             "SERVICE": "WMS",
             "VERSION": "1.1.1",
             "REQUEST": "GetPrint",
             "TEMPLATE": "layoutA4",
             "FORMAT": "png",
-            "map0:EXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
+            "map0%3AEXTENT": "-33626185.498,-13032965.185,33978427.737,16020257.031",
             "map0:LAYERS": "Country,Hello",
             "CRS": "EPSG:3857",
             "SELECTION": "Country: 4",
@@ -328,7 +330,7 @@ class TestQgsServerWMSGetPrint(QgsServerTestBase):
             "OPACITIES": "125%2C125"
         }.items())])
 
-        r, h = self._result(self._execute_request(qs))
+        r, h = self._result(self._execute_request('', QgsServerRequest.PostMethod, data=qs.encode('utf-8')))
         self._img_diff_error(r, h, "WMS_GetPrint_Opacity")
 
     def test_wms_getprint_highlight(self):
