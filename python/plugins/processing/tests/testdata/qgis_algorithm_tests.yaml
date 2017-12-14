@@ -408,11 +408,33 @@ tests:
       INPUT:
         name: points.gml
         type: vector
-      FIELD_NAME: id2
+      FIELDS: id2
     results:
       OUTPUT:
         name: expected/unique_values.gml
         type: vector
+        pk:
+        - id2
+
+  - algorithm: qgis:listuniquevalues
+    name: Unique values (multiple fields)
+    params:
+      FIELDS:
+      - name
+      - intval
+      INPUT:
+        name: dissolve_polys.gml
+        type: vector
+    results:
+      OUTPUT:
+        name: expected/unique_values_multiple.gml
+        type: vector
+        compare:
+          fields:
+            fid: skip
+        pk:
+        - name
+        - intval
 
   - algorithm: native:addautoincrementalfield
     name: Add autoincremental field

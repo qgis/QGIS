@@ -7,8 +7,8 @@
       <FeatureCount>3</FeatureCount>
     </DatasetSpecificInfo>
     <PropertyDefn>
-      <Name>VALUES</Name>
-      <ElementPath>VALUES</ElementPath>
+      <Name>id2</Name>
+      <ElementPath>id2</ElementPath>
       <Type>Integer</Type>
     </PropertyDefn>
   </GMLFeatureClass>
