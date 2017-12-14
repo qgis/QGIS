@@ -54,14 +54,13 @@ QgsNewMemoryLayerDialog::QgsNewMemoryLayerDialog( QWidget *parent, Qt::WindowFla
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewMemoryLayer/geometry" ) ).toByteArray() );
 
-  QString path = QgsApplication::defaultThemePath();
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconTableLayer.svg" ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "Point" ), QgsWkbTypes::Point );
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "Line" ), QgsWkbTypes::LineString );
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "Polygon" ), QgsWkbTypes::Polygon );
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconPointLayer.svg" ), tr( "MultiPoint" ), QgsWkbTypes::MultiPoint );
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconLineLayer.svg" ), tr( "MultiLine" ), QgsWkbTypes::MultiLineString );
-  mGeometryTypeBox->addItem( QIcon( path + "/mIconPolygonLayer.svg" ), tr( "MultiPolygon" ), QgsWkbTypes::MultiPolygon );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QgsWkbTypes::Point );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "Line" ), QgsWkbTypes::LineString );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QgsWkbTypes::Polygon );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QgsWkbTypes::MultiPoint );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiLine" ), QgsWkbTypes::MultiLineString );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiPolygon" ), QgsWkbTypes::MultiPolygon );
 
   mGeometryWithZCheckBox->setEnabled( false );
   mGeometryWithMCheckBox->setEnabled( false );
