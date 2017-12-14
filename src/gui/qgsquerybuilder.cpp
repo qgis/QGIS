@@ -159,6 +159,7 @@ void QgsQueryBuilder::fillValues( int idx, int limit )
     mModelValues->insertRow( mModelValues->rowCount(), myItem );
     QgsDebugMsg( QString( "Value is null: %1\nvalue: %2" ).arg( var.isNull() ).arg( var.isNull() ? nullValue : var.toString() ) );
   }
+  mModelValues->sort( 0 );
 }
 
 void QgsQueryBuilder::btnSampleValues_clicked()
