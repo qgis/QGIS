@@ -248,8 +248,21 @@ class CORE_EXPORT QgsDataItem : public QObject
     void setParent( QgsDataItem *parent );
     QVector<QgsDataItem *> children() const { return mChildren; }
     virtual QIcon icon();
+
+    /**
+     * Returns the name of the item (the displayed text for the item).
+     *
+     * \see setName()
+     */
     QString name() const { return mName; }
-    void setName( const QString &name ) { mName = name; }
+
+    /**
+     * Sets the \a name of the item (the displayed text for the item).
+     *
+     * \see name()
+     */
+    void setName( const QString &name );
+
     QString path() const { return mPath; }
     void setPath( const QString &path ) { mPath = path; }
     //! Create path component replacing path separators

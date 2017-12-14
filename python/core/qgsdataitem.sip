@@ -255,11 +255,22 @@ Create new data item.
 %Docstring
  :rtype: QIcon
 %End
+
     QString name() const;
 %Docstring
+ Returns the name of the item (the displayed text for the item).
+
+.. seealso:: :py:func:`setName()`
  :rtype: str
 %End
+
     void setName( const QString &name );
+%Docstring
+ Sets the ``name`` of the item (the displayed text for the item).
+
+.. seealso:: :py:func:`name()`
+%End
+
     QString path() const;
 %Docstring
  :rtype: str

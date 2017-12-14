@@ -229,6 +229,12 @@ QIcon QgsDataItem::icon()
   return mIconMap.value( mIconName );
 }
 
+void QgsDataItem::setName( const QString &name )
+{
+  mName = name;
+  emit dataChanged( this );
+}
+
 QVector<QgsDataItem *> QgsDataItem::createChildren()
 {
   return QVector<QgsDataItem *>();
