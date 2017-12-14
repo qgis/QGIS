@@ -33,6 +33,8 @@ class APP_EXPORT QgsMapToolReshape: public QgsMapToolCapture
     void reshape( QgsVectorLayer *vlayer );
 
     bool isBindingLine( QgsVectorLayer *vlayer, const QgsRectangle &bbox ) const;
+
+    friend class TestQgsMapToolReshape;
 };
 
 #endif

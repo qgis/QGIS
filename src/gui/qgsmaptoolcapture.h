@@ -248,6 +248,8 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
 
     QgsVertexMarker* mSnappingMarker;
 
+    friend class TestQgsMapToolReshape;
+
 #ifdef Q_OS_WIN
     int mSkipNextContextMenuEvent;
 #endif
