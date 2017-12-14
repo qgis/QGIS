@@ -48,6 +48,7 @@ QgsExtentGroupBox::QgsExtentGroupBox( QWidget *parent )
 
   mOriginalExtentButton->setVisible( false );
   mButtonDrawOnCanvas->setVisible( false );
+  mCurrentExtentButton->setVisible( false );
 
   connect( mCurrentExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromCurrent );
   connect( mOriginalExtentButton, &QAbstractButton::clicked, this, &QgsExtentGroupBox::setOutputExtentFromOriginal );
@@ -332,9 +333,11 @@ void QgsExtentGroupBox::setMapCanvas( QgsMapCanvas *canvas )
   {
     mCanvas = canvas;
     mButtonDrawOnCanvas->setVisible( true );
+    mCurrentExtentButton->setVisible( true );
   }
   else
   {
     mButtonDrawOnCanvas->setVisible( false );
+    mCurrentExtentButton->setVisible( false );
   }
 }
