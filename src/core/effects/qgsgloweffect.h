@@ -49,10 +49,10 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
     QgsGlowEffect();
     QgsGlowEffect( const QgsGlowEffect &other );
-    virtual ~QgsGlowEffect();
+    ~QgsGlowEffect() override;
 
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap &props ) override;
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
 
     /**
      * Sets the spread distance for drawing the glow effect.
@@ -220,8 +220,8 @@ class CORE_EXPORT QgsGlowEffect : public QgsPaintEffect
 
   protected:
 
-    virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
-    virtual void draw( QgsRenderContext &context ) override;
+    QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const override;
+    void draw( QgsRenderContext &context ) override;
 
     /**
      * Specifies whether the glow is drawn outside the picture or within
@@ -266,12 +266,12 @@ class CORE_EXPORT QgsOuterGlowEffect : public QgsGlowEffect
 
     QgsOuterGlowEffect();
 
-    virtual QString type() const override { return QStringLiteral( "outerGlow" ); }
-    virtual QgsOuterGlowEffect *clone() const override SIP_FACTORY;
+    QString type() const override { return QStringLiteral( "outerGlow" ); }
+    QgsOuterGlowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    virtual bool shadeExterior() const override { return true; }
+    bool shadeExterior() const override { return true; }
 
 };
 
@@ -298,12 +298,12 @@ class CORE_EXPORT QgsInnerGlowEffect : public QgsGlowEffect
 
     QgsInnerGlowEffect();
 
-    virtual QString type() const override { return QStringLiteral( "innerGlow" ); }
-    virtual QgsInnerGlowEffect *clone() const override SIP_FACTORY;
+    QString type() const override { return QStringLiteral( "innerGlow" ); }
+    QgsInnerGlowEffect *clone() const override SIP_FACTORY;
 
   protected:
 
-    virtual bool shadeExterior() const override { return false; }
+    bool shadeExterior() const override { return false; }
 
 };
 

@@ -40,8 +40,11 @@ Constructor for QgsTransformEffect.
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
     virtual QgsTransformEffect *clone() const /Factory/;
+
 
     void setTranslateX( const double translateX );
 %Docstring
@@ -322,7 +325,9 @@ Returns whether transform will be reflected along the y-axis
   protected:
 
     virtual void draw( QgsRenderContext &context );
+
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+
 
 };
 

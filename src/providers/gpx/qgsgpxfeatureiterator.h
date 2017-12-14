@@ -27,9 +27,9 @@ class QgsGPXFeatureSource : public QgsAbstractFeatureSource
 {
   public:
     explicit QgsGPXFeatureSource( const QgsGPXProvider *p );
-    ~QgsGPXFeatureSource();
+    ~QgsGPXFeatureSource() override;
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
     QString mFileName;
@@ -48,14 +48,14 @@ class QgsGPXFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsGPX
   public:
     QgsGPXFeatureIterator( QgsGPXFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
 
-    ~QgsGPXFeatureIterator();
+    ~QgsGPXFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
 
   private:
 

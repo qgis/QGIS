@@ -60,14 +60,14 @@ class GUI_EXPORT QgsSvgSelectorLoader : public QThread
      */
     QgsSvgSelectorLoader( QObject *parent = nullptr );
 
-    ~QgsSvgSelectorLoader();
+    ~QgsSvgSelectorLoader() override;
 
     /**
      * Starts the loader finding and generating previews for SVG images. foundSvgs() will be
      * emitted as the loader encounters SVG images.
      * \brief run
      */
-    virtual void run() override;
+    void run() override;
 
     /**
      * Cancels the current loading operation. Waits until the thread has finished operation
@@ -126,13 +126,13 @@ class GUI_EXPORT QgsSvgGroupLoader : public QThread
      */
     QgsSvgGroupLoader( QObject *parent = nullptr );
 
-    ~QgsSvgGroupLoader();
+    ~QgsSvgGroupLoader() override;
 
     /**
      * Starts the loader finding folders for SVG images.
      * \brief run
      */
-    virtual void run() override;
+    void run() override;
 
     /**
      * Cancels the current loading operation. Waits until the thread has finished operation
@@ -236,7 +236,7 @@ class GUI_EXPORT QgsSvgSelectorGroupsModel : public QStandardItemModel
 
   public:
     QgsSvgSelectorGroupsModel( QObject *parent SIP_TRANSFERTHIS );
-    ~QgsSvgSelectorGroupsModel();
+    ~QgsSvgSelectorGroupsModel() override;
 
   private:
     QgsSvgGroupLoader *mLoader = nullptr;
@@ -305,7 +305,7 @@ class GUI_EXPORT QgsSvgSelectorDialog : public QDialog
                           Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
-    ~QgsSvgSelectorDialog();
+    ~QgsSvgSelectorDialog() override;
 
     //! Returns pointer to the embedded SVG selector widget
     QgsSvgSelectorWidget *svgSelector() { return mSvgSelector; }

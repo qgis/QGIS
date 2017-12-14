@@ -53,7 +53,7 @@ class GUI_EXPORT QgsRendererPropertiesDialog : public QDialog, private Ui::QgsRe
      * \param parent parent widget
      */
     QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsRendererPropertiesDialog();
+    ~QgsRendererPropertiesDialog() override;
 
     /**
      * Sets the map canvas associated with the dialog. This allows the widget to retrieve the current

@@ -33,7 +33,7 @@ class QgsGeometryCheckerResultTab : public QWidget
     Q_OBJECT
   public:
     QgsGeometryCheckerResultTab( QgisInterface *iface, QgsGeometryChecker *checker, QTabWidget *tabWidget, QWidget *parent = nullptr );
-    ~QgsGeometryCheckerResultTab();
+    ~QgsGeometryCheckerResultTab() override;
     void finalize();
     bool isCloseable() const { return mCloseable; }
 

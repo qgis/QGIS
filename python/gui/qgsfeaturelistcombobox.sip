@@ -129,7 +129,9 @@ The index of the currently selected item.
 
     virtual void focusOutEvent( QFocusEvent *event );
 
+
     virtual void keyPressEvent( QKeyEvent *event );
+
 
   signals:
 

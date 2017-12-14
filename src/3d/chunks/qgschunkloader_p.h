@@ -44,7 +44,7 @@ class QgsChunkLoader : public QgsChunkQueueJob
     {
     }
 
-    virtual ~QgsChunkLoader() = default;
+    ~QgsChunkLoader() override = default;
 
     /**
      * Run in main thread to use loaded data.

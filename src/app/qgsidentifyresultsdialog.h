@@ -126,7 +126,7 @@ class APP_EXPORT QgsIdentifyResultsDialog: public QDialog, private Ui::QgsIdenti
     // that it is independent of whoever created it.
     QgsIdentifyResultsDialog( QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    ~QgsIdentifyResultsDialog();
+    ~QgsIdentifyResultsDialog() override;
 
     //! Add add feature from vector layer
     void addFeature( QgsVectorLayer *layer,

@@ -1019,8 +1019,8 @@ can break valid model execution - so use with extreme caution, and consider usin
 :rtype: QgsFeature
 %End
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback );
+     virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 
     virtual QgsFeatureRequest request() const;
 %Docstring

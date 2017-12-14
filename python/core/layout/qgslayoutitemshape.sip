@@ -39,6 +39,7 @@ Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
 
     virtual QString displayName() const;
 
+
     QgsLayoutItemShape::Shape shapeType() const;
 %Docstring
 Returns the type of shape (e.g. rectangle, ellipse, etc).

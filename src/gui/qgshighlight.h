@@ -66,7 +66,7 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
      * \param layer vector layer
      */
     QgsHighlight( QgsMapCanvas *mapCanvas, const QgsFeature &feature, QgsVectorLayer *layer );
-    ~QgsHighlight();
+    ~QgsHighlight() override;
 
     /**
      * Set line/stroke to color, polygon fill to color with alpha = 63.
@@ -107,10 +107,10 @@ class GUI_EXPORT QgsHighlight: public QgsMapCanvasItem
      */
     QgsMapLayer *layer() const { return mLayer; }
 
-    virtual void updatePosition() override;
+    void updatePosition() override;
 
   protected:
-    virtual void paint( QPainter *p ) override;
+    void paint( QPainter *p ) override;
 
     //! recalculates needed rectangle
     void updateRect();

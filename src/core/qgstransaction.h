@@ -72,7 +72,7 @@ class CORE_EXPORT QgsTransaction : public QObject SIP_ABSTRACT
      */
     static QgsTransaction *create( const QSet<QgsVectorLayer *> &layers ) SIP_FACTORY;
 
-    virtual ~QgsTransaction();
+    ~QgsTransaction() override;
 
     /**
      * Add the \a layer to the transaction. The layer must not be

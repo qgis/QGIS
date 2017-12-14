@@ -206,7 +206,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
                              const QString &providerKey = "gdal",
                              const QgsRasterLayer::LayerOptions &options = QgsRasterLayer::LayerOptions() );
 
-    ~QgsRasterLayer();
+    ~QgsRasterLayer() override;
 
     /**
      * Returns a new instance equivalent to this one. A new provider is
@@ -214,7 +214,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsRasterLayer *clone() const override SIP_FACTORY;
+    QgsRasterLayer *clone() const override SIP_FACTORY;
 
     //! \brief This enumerator describes the types of shading that can be used
     enum ColorShadingAlgorithm
@@ -287,13 +287,13 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     const QgsRasterDataProvider *dataProvider() const SIP_PYNAME( constDataProvider ) override;
 
     //! Synchronises with changes in the datasource
-    virtual void reload() override;
+    void reload() override;
 
     /**
      * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     //! \brief This is an overloaded version of the draw() function that is called by both draw() and thumbnailAsPixmap
     void draw( QPainter *theQPainter,
@@ -303,7 +303,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     //! Returns a list with classification items (Text and color)
     QgsLegendColorList legendSymbologyItems() const;
 
-    virtual bool isSpatial() const override { return true; }
+    bool isSpatial() const override { return true; }
 
     QString htmlMetadata() const override;
 
@@ -359,7 +359,7 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
     void setDefaultContrastEnhancement();
 
     //! \brief Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
-    virtual QStringList subLayers() const override;
+    QStringList subLayers() const override;
 
     /**
      * \brief Draws a preview of the rasterlayer into a QImage
@@ -373,15 +373,15 @@ class CORE_EXPORT QgsRasterLayer : public QgsMapLayer
      * (Useful for providers that manage their own layers, such as WMS)
      *
      */
-    virtual void setLayerOrder( const QStringList &layers ) override;
+    void setLayerOrder( const QStringList &layers ) override;
 
     /**
      * Set the visibility of the given sublayer name
      */
-    virtual void setSubLayerVisibility( const QString &name, bool vis ) override;
+    void setSubLayerVisibility( const QString &name, bool vis ) override;
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
-    virtual QDateTime timestamp() const override;
+    QDateTime timestamp() const override;
 
   public slots:
     void showStatusMessage( const QString &message );

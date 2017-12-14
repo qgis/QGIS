@@ -83,7 +83,7 @@ class CORE_EXPORT QgsAuthManager : public QObject
      */
     bool init( const QString &pluginPath = QString(),  const QString &authDatabasePath = QString() );
 
-    ~QgsAuthManager();
+    ~QgsAuthManager() override;
 
     //! Set up the application instance of the authentication database connection
     QSqlDatabase authDatabaseConnection() const;

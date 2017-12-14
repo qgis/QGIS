@@ -323,7 +323,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
     };
 
     explicit QgsGrassMapcalcObject( int type );
-    ~QgsGrassMapcalcObject();
+    ~QgsGrassMapcalcObject() override;
 
     // Set map name, constant value or function/operator
     void setValue( QString val, QString lab = "" );
@@ -356,7 +356,7 @@ class QgsGrassMapcalcObject: public QGraphicsRectItem, public QgsGrassMapcalcIte
                        QgsGrassMapcalcConnector *connector = nullptr, int end = 0 );
 
     // Object type
-    virtual int type() const override;
+    int type() const override;
 
     // Value
     QString value() { return mValue; }
@@ -448,7 +448,7 @@ class QgsGrassMapcalcConnector: public QGraphicsLineItem, public QgsGrassMapcalc
 {
   public:
     explicit QgsGrassMapcalcConnector( QGraphicsScene * );
-    ~QgsGrassMapcalcConnector();
+    ~QgsGrassMapcalcConnector() override;
 
     void paint( QPainter *painter,
                 const QStyleOptionGraphicsItem *option, QWidget *widget ) override;

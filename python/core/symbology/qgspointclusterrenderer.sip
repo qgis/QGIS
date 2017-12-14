@@ -27,11 +27,13 @@ A renderer that automatically clusters points with the same geographic position.
     virtual QgsPointClusterRenderer *clone() const /Factory/;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
 
     static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring

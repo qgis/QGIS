@@ -303,7 +303,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     QgsComposerMapGrid( const QString &name, QgsComposerMap *map );
 
-    virtual ~QgsComposerMapGrid();
+    ~QgsComposerMapGrid() override;
 
     /**
      * Draws a grid
@@ -922,7 +922,7 @@ class CORE_EXPORT QgsComposerMapGrid : public QgsComposerMapItem
      */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }
 
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
   private:
 

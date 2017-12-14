@@ -190,8 +190,8 @@ class CORE_EXPORT QgsCurve: public QgsAbstractGeometry
 
     void clearCache() const override;
 
-    virtual int childCount() const override;
-    virtual QgsPoint childPoint( int index ) const override;
+    int childCount() const override;
+    QgsPoint childPoint( int index ) const override;
 
 #ifndef SIP_RUN
 

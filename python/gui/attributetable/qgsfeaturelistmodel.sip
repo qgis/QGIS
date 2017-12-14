@@ -50,7 +50,9 @@ Constructor for QgsFeatureListModel
 :rtype: QgsVectorLayerCache
 %End
     virtual QVariant data( const QModelIndex &index, int role ) const;
+
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
 
     void setInjectNull( bool injectNull );
 %Docstring
@@ -120,7 +122,9 @@ for a meaningful error message.
 %End
 
     virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
+
     virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const;
+
 
     virtual QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
 %Docstring
@@ -145,9 +149,13 @@ for a meaningful error message.
 %End
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
     virtual QModelIndex parent( const QModelIndex &child ) const;
+
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
 
     virtual QModelIndex fidToIndex( QgsFeatureId fid );
 

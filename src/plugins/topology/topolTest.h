@@ -104,7 +104,7 @@ class topolTest: public QObject
 
   public:
     explicit topolTest( QgisInterface *qgsIface );
-    ~topolTest();
+    ~topolTest() override;
 
     /**
      * Returns copy of the test map

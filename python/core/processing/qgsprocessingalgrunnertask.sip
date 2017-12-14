@@ -34,6 +34,7 @@ and processing ``context``.
 
     virtual void cancel();
 
+
   signals:
 
     void executed( bool successful, const QVariantMap &results );
@@ -46,7 +47,9 @@ contains the results reported by the algorithm.
   protected:
 
     virtual bool run();
+
     virtual void finished( bool result );
+
 
 };
 

@@ -155,7 +155,9 @@ Make sure that this is only called after the layers are loaded.
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
 
+
     virtual QgsLayerTree *clone() const /Factory/;
+
 
     void clear();
 %Docstring

@@ -305,6 +305,7 @@ Item that represents a layer that can be opened with one of the providers
 
 
     virtual bool equal( const QgsCptCityDataItem *other );
+
     virtual int leafCount() const;
 
     const QgsCptCityColorRamp &ramp() const;
@@ -366,6 +367,7 @@ A directory: contains subdirectories and color ramps
 
     virtual bool equal( const QgsCptCityDataItem *other );
 
+
     static QgsCptCityDataItem *dataItem( QgsCptCityDataItem *parent,
                                          const QString &name, const QString &path );
 %Docstring
@@ -402,6 +404,7 @@ A selection: contains subdirectories and color ramps
 
 
     virtual bool equal( const QgsCptCityDataItem *other );
+
 
     QStringList selectionsList() const;
 %Docstring
@@ -453,11 +456,17 @@ class QgsCptCityBrowserModel : QAbstractItemModel
     ~QgsCptCityBrowserModel();
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
+
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
+
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
+
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
 
     QModelIndex findItem( QgsCptCityDataItem *item, QgsCptCityDataItem *parent = 0 ) const;
 %Docstring
@@ -466,6 +475,7 @@ class QgsCptCityBrowserModel : QAbstractItemModel
 %End
 
     virtual QModelIndex parent( const QModelIndex &index ) const;
+
 
 
 

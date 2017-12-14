@@ -168,6 +168,7 @@ Also resolves textual references to layers from the project (calls resolveRefere
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
+
 %Docstring
 Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
 %End
@@ -179,6 +180,7 @@ Does not resolve textual references to layers. Call resolveReferences() afterwar
 %End
 
     virtual QString dump() const;
+
 %Docstring
 Return text representation of the tree. For debugging purposes only.
 
@@ -186,6 +188,7 @@ Return text representation of the tree. For debugging purposes only.
 %End
 
     virtual QgsLayerTreeGroup *clone() const /Factory/;
+
 %Docstring
 Return a clone of the group. The children are cloned too.
 
@@ -193,6 +196,7 @@ Return a clone of the group. The children are cloned too.
 %End
 
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
 %Docstring
 Calls resolveReferences() on child tree nodes
 
@@ -200,6 +204,7 @@ Calls resolveReferences() on child tree nodes
 %End
 
     virtual void setItemVisibilityCheckedRecursive( bool checked );
+
 %Docstring
 Check or uncheck a node and all its children (taking into account exclusion rules)
 %End

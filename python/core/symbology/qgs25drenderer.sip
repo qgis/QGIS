@@ -40,7 +40,9 @@ Create a new 2.5D renderer from XML
 
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
 
     QColor roofColor() const;
 %Docstring

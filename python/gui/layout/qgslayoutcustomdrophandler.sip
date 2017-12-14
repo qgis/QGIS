@@ -27,7 +27,7 @@ Abstract base class that may be implemented to handle new types of data to be dr
 Constructor for QgsLayoutCustomDropHandler.
 %End
 
-    virtual ~QgsLayoutCustomDropHandler();
+    ~QgsLayoutCustomDropHandler();
 
     virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file );
 %Docstring

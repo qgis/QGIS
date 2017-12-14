@@ -909,6 +909,7 @@ Retrieves the second fill color for the grid frame.
 
     virtual QgsExpressionContext createExpressionContext() const;
 
+
       public:
 };
 

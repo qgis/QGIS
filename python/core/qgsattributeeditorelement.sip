@@ -150,7 +150,7 @@ Creates a new attribute editor container
 %End
 
 
-    virtual ~QgsAttributeEditorContainer();
+    ~QgsAttributeEditorContainer();
 
     virtual void addChildElement( QgsAttributeEditorElement *element /Transfer/ );
 %Docstring
@@ -218,6 +218,7 @@ Set the number of columns in this group
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
 %Docstring
 Creates a deep copy of this element. To be implemented by subclasses.
 
@@ -279,6 +280,7 @@ Return the index of the field
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
 
+
 };
 
 class QgsAttributeEditorRelation : QgsAttributeEditorElement
@@ -331,6 +333,7 @@ Initializes the relation from the id
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
+
 
     bool showLinkButton() const;
 %Docstring

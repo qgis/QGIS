@@ -28,15 +28,23 @@ It is safe to call that function while rendering is active to see preview of the
     ~QgsMapRendererSequentialJob();
 
     virtual void start();
+
     virtual void cancel();
+
     virtual void cancelWithoutBlocking();
+
     virtual void waitForFinished();
+
     virtual bool isActive() const;
 
+
     virtual bool usedCachedLabels() const;
+
     virtual QgsLabelingResults *takeLabelingResults() /Transfer/;
 
+
     virtual QImage renderedImage();
+
 
   public slots:
 

@@ -45,47 +45,47 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
   public:
     DualEdgeTriangulation();
     DualEdgeTriangulation( int nop, Triangulation *decorator );
-    virtual ~DualEdgeTriangulation();
+    ~DualEdgeTriangulation() override;
     void setDecorator( Triangulation *d ) {mDecorator = d;}
     void addLine( const QVector< QgsPoint > &points, QgsInterpolator::SourceType lineType ) override;
     int addPoint( const QgsPoint &p ) override;
     //! Performs a consistency check, remove this later
-    virtual void performConsistencyTest() override;
+    void performConsistencyTest() override;
     //! Calculates the normal at a point on the surface
-    virtual bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Draws the points, edges and the forced lines
     //virtual void draw(QPainter* p, double xlowleft, double ylowleft, double xupright, double yupright, double width, double height) const;
     //! Returns a pointer to the point with number i
-    virtual QgsPoint *getPoint( int i ) const override;
+    QgsPoint *getPoint( int i ) const override;
     int getOppositePoint( int p1, int p2 ) override;
     bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, int &n1 SIP_OUT, QgsPoint &p2 SIP_OUT, int &n2 SIP_OUT, QgsPoint &p3 SIP_OUT, int &n3 SIP_OUT ) SIP_PYNAME( getTriangleVertices ) override;
     bool getTriangle( double x, double y, QgsPoint &p1 SIP_OUT, QgsPoint &p2 SIP_OUT, QgsPoint &p3 SIP_OUT ) override;
     QList<int> getSurroundingTriangles( int pointno ) override;
     //! Returns the largest x-coordinate value of the bounding box
-    virtual double getXMax() const override { return xMax; }
+    double getXMax() const override { return xMax; }
     //! Returns the smallest x-coordinate value of the bounding box
-    virtual double getXMin() const override { return xMin; }
+    double getXMin() const override { return xMin; }
     //! Returns the largest y-coordinate value of the bounding box
-    virtual double getYMax() const override { return yMax; }
+    double getYMax() const override { return yMax; }
     //! Returns the smallest x-coordinate value of the bounding box
-    virtual double getYMin() const override { return yMin; }
+    double getYMin() const override { return yMin; }
     //! Returns the number of points
-    virtual int getNumberOfPoints() const override;
+    int getNumberOfPoints() const override;
     //! Sets the behavior of the triangulation in case of crossing forced lines
-    virtual void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) override;
+    void setForcedCrossBehavior( Triangulation::ForcedCrossBehavior b ) override;
     //! Sets the color of the normal edges
-    virtual void setEdgeColor( int r, int g, int b ) override;
+    void setEdgeColor( int r, int g, int b ) override;
     //! Sets the color of the forced edges
-    virtual void setForcedEdgeColor( int r, int g, int b ) override;
+    void setForcedEdgeColor( int r, int g, int b ) override;
     //! Sets the color of the breaklines
-    virtual void setBreakEdgeColor( int r, int g, int b ) override;
+    void setBreakEdgeColor( int r, int g, int b ) override;
     //! Sets an interpolator object
     void setTriangleInterpolator( TriangleInterpolator *interpolator ) override;
     //! Eliminates the horizontal triangles by swapping or by insertion of new points
     void eliminateHorizontalTriangles() override;
     //! Adds points to make the triangles better shaped (algorithm of ruppert)
-    virtual void ruppertRefinement() override;
+    void ruppertRefinement() override;
     //! Returns true, if the point with coordinates x and y is inside the convex hull and false otherwise
     bool pointInside( double x, double y ) override;
     //! Reads the dual edge structure of a taff file
@@ -93,11 +93,11 @@ class ANALYSIS_EXPORT DualEdgeTriangulation: public Triangulation
     //! Saves the dual edge structure to a taff file
     //bool saveToTAFF(QString fileName) const;
     //! Swaps the edge which is closest to the point with x and y coordinates (if this is possible)
-    virtual bool swapEdge( double x, double y ) override;
+    bool swapEdge( double x, double y ) override;
     //! Returns a value list with the numbers of the four points, which would be affected by an edge swap. This function is e.g. needed by NormVecDecorator to know the points, for which the normals have to be recalculated. The returned ValueList has to be deleted by the code which calls the method
-    virtual QList<int> *getPointsAroundEdge( double x, double y ) override;
+    QList<int> *getPointsAroundEdge( double x, double y ) override;
 
-    virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
+    bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
   protected:
     //! X-coordinate of the upper right corner of the bounding box

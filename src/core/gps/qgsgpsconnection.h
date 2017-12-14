@@ -97,7 +97,7 @@ class CORE_EXPORT QgsGPSConnection : public QObject
         \param dev input device for the connection (e.g. serial device). The class takes ownership of the object
       */
     QgsGPSConnection( QIODevice *dev SIP_TRANSFER );
-    virtual ~QgsGPSConnection();
+    ~QgsGPSConnection() override;
     //! Opens connection to device
     bool connect();
     //! Closes connection to device

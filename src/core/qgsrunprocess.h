@@ -59,7 +59,7 @@ class CORE_EXPORT QgsRunProcess: public QObject SIP_NODEFAULTCTORS
 
   private:
     QgsRunProcess( const QString &action, bool capture ) SIP_FORCE;
-    ~QgsRunProcess() SIP_FORCE;
+    ~QgsRunProcess() override SIP_FORCE;
 
     // Deletes the instance of the class
     void die();

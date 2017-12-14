@@ -61,6 +61,7 @@ A symbol layer class for displaying displacement arrows based on point layer att
 
     virtual QColor color() const;
 
+
     virtual void renderPoint( QPointF point, QgsSymbolRenderContext &context );
 
     virtual void startRender( QgsSymbolRenderContext &context );

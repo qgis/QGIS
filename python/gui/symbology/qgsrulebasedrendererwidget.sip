@@ -33,15 +33,22 @@ Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
+
     virtual QVariant data( const QModelIndex &index, int role = Qt::DisplayRole ) const;
-    virtual QVariant headerData( int section, Qt::Orientation orientation,
-                                 int role = Qt::DisplayRole ) const;
+
+     virtual QVariant headerData( int section, Qt::Orientation orientation,
+                         int role = Qt::DisplayRole ) const;
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
     virtual int columnCount( const QModelIndex & = QModelIndex() ) const;
+
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
+
     virtual QModelIndex parent( const QModelIndex &index ) const;
 
+
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
 
     virtual Qt::DropActions supportedDropActions() const;
 
@@ -96,6 +103,7 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
     ~QgsRuleBasedRendererWidget();
 
     virtual QgsFeatureRenderer *renderer();
+
 
   public slots:
 
@@ -211,6 +219,7 @@ Apply any changes from the widget to the set rule.
 %End
 
     virtual void setDockMode( bool dockMode );
+
 %Docstring
 Set the widget in dock mode.
 :param dockMode: True for dock mode.

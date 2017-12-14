@@ -37,11 +37,14 @@ Constructor for QgsDefaultSearchWidgetWrapper
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
 
     virtual void clearWidget();
 
+
     virtual void setEnabled( bool enabled );
+
 
   protected slots:
     virtual void setExpression( const QString &exp );

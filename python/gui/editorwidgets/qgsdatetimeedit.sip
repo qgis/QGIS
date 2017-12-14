@@ -56,6 +56,7 @@ Determines if the widget allows setting null date/time.
 %End
 
     virtual void clear();
+
 %Docstring
 Set the current date as NULL
 
@@ -73,6 +74,7 @@ Resets the widget to show no value (ie, an "unknown" state).
 
   protected:
     virtual void resizeEvent( QResizeEvent *event );
+
 
     virtual void mousePressEvent( QMouseEvent *event );
 

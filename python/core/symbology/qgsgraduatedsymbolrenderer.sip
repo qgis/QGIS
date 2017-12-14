@@ -171,18 +171,27 @@ class QgsGraduatedSymbolRenderer : QgsFeatureRenderer
 
     QgsGraduatedSymbolRenderer( const QString &attrName = QString(), const QgsRangeList &ranges = QgsRangeList() );
 
-    virtual ~QgsGraduatedSymbolRenderer();
+    ~QgsGraduatedSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
     virtual QString dump() const;
+
     virtual QgsGraduatedSymbolRenderer *clone() const /Factory/;
+
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
 
     QString classAttribute() const;
 %Docstring
@@ -368,9 +377,11 @@ create renderer from XML element
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+
 
     QgsSymbol *sourceSymbol();
 %Docstring
@@ -480,9 +491,13 @@ set the method used for graduation (either size or color)
 %End
 
     virtual bool legendSymbolItemsCheckable() const;
+
     virtual bool legendSymbolItemChecked( const QString &key );
+
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
+
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
+
     virtual QString legendClassificationAttribute() const;
 
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;

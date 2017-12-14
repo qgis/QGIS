@@ -39,7 +39,7 @@ class GUI_EXPORT QgsLayoutCustomDropHandler : public QObject
      */
     QgsLayoutCustomDropHandler( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsLayoutCustomDropHandler() = default;
+    ~QgsLayoutCustomDropHandler() override = default;
 
     /**
      * Called when the specified \a file has been dropped onto a QGIS layout. If true

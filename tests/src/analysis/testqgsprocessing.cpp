@@ -47,7 +47,7 @@ class DummyAlgorithm : public QgsProcessingAlgorithm
     QString displayName() const override { return mName; }
     QVariantMap processAlgorithm( const QVariantMap &, QgsProcessingContext &, QgsProcessingFeedback * ) override { return QVariantMap(); }
 
-    virtual Flags flags() const override { return mFlags; }
+    Flags flags() const override { return mFlags; }
     DummyAlgorithm *createInstance() const override { return new DummyAlgorithm( name() ); }
 
     QString mName;
@@ -284,9 +284,9 @@ class DummyProvider : public QgsProcessingProvider
 
     DummyProvider( const QString &id ) : mId( id ) {}
 
-    virtual QString id() const override { return mId; }
+    QString id() const override { return mId; }
 
-    virtual QString name() const override { return "dummy"; }
+    QString name() const override { return "dummy"; }
 
     void unload() override { if ( unloaded ) { *unloaded = true; } }
 
@@ -304,7 +304,7 @@ class DummyProvider : public QgsProcessingProvider
 
   protected:
 
-    virtual void loadAlgorithms() override
+    void loadAlgorithms() override
     {
       QVERIFY( addAlgorithm( new DummyAlgorithm( "alg1" ) ) );
       QVERIFY( addAlgorithm( new DummyAlgorithm( "alg2" ) ) );

@@ -142,23 +142,23 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * \param request feature request describing parameters of features to return
      * \returns iterator for matching features from provider
      */
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override = 0;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override = 0;
 
     /**
      * Returns the geometry type which is returned by this layer
      */
-    virtual QgsWkbTypes::Type wkbType() const override = 0;
+    QgsWkbTypes::Type wkbType() const override = 0;
 
     /**
      * Number of features in the layer
      * \returns long containing number of features
      */
-    virtual long featureCount() const override = 0;
+    long featureCount() const override = 0;
 
     /**
      * Returns the fields associated with this data provider.
      */
-    virtual QgsFields fields() const override = 0;
+    QgsFields fields() const override = 0;
 
     QgsCoordinateReferenceSystem sourceCrs() const override;
     QgsRectangle sourceExtent() const override;
@@ -178,7 +178,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * and maximal values. If provider has facilities to retrieve minimal
      * value directly, override this function.
      */
-    virtual QVariant minimumValue( int index ) const override;
+    QVariant minimumValue( int index ) const override;
 
     /**
      * Returns the maximum value of an attribute
@@ -188,7 +188,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * and maximal values. If provider has facilities to retrieve maximal
      * value directly, override this function.
      */
-    virtual QVariant maximumValue( int index ) const override;
+    QVariant maximumValue( int index ) const override;
 
     /**
      * Returns unique string values of an attribute which contain a specified subset string. Subset
@@ -227,7 +227,7 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      */
     virtual void enumValues( int index, QStringList &enumList SIP_OUT ) const { Q_UNUSED( index ); enumList.clear(); }
 
-    virtual bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool addFeatures( QgsFeatureList &flist SIP_INOUT, QgsFeatureSink::Flags flags = nullptr ) override;
 
     /**
      * Deletes one or more features from the provider. This requires the DeleteFeatures capability.

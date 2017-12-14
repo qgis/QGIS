@@ -186,6 +186,7 @@ The main tasks carried out by the constructor are:
     ~QgsRasterLayer();
 
     virtual QgsRasterLayer *clone() const /Factory/;
+
 %Docstring
 Returns a new instance equivalent to this one. A new provider is
 created for the same data source and renderer is cloned too.
@@ -327,11 +328,13 @@ Returns the data provider in a const-correct manner
 %End
 
     virtual void reload();
+
 %Docstring
 Synchronises with changes in the datasource
 %End
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
 %Docstring
 Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
 
@@ -413,6 +416,7 @@ Returns a list with classification items (Text and color)
 %End
 
     virtual QStringList subLayers() const;
+
 %Docstring
  Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
 
@@ -430,6 +434,7 @@ Returns a list with classification items (Text and color)
 %End
 
     virtual void setLayerOrder( const QStringList &layers );
+
 %Docstring
 Reorders the *previously selected* sublayers of this layer from bottom to top
 
@@ -437,11 +442,13 @@ Reorders the *previously selected* sublayers of this layer from bottom to top
 %End
 
     virtual void setSubLayerVisibility( const QString &name, bool vis );
+
 %Docstring
 Set the visibility of the given sublayer name
 %End
 
     virtual QDateTime timestamp() const;
+
 %Docstring
 Time stamp of data source in the moment when data/metadata were loaded by provider
 

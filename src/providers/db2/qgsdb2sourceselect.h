@@ -62,7 +62,7 @@ class QgsDb2GeomColumnTypeThread : public QThread
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
-    virtual void run() override;
+    void run() override;
 
   signals:
     void setLayerType( QgsDb2LayerProperty layerProperty );
@@ -101,7 +101,7 @@ class QgsDb2SourceSelect : public QgsAbstractDataSourceWidget, private Ui::QgsDb
     //! Constructor
     QgsDb2SourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsDb2SourceSelect();
+    ~QgsDb2SourceSelect() override;
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables

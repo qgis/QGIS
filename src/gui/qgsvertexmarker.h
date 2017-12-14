@@ -104,7 +104,7 @@ class GUI_EXPORT QgsVertexMarker : public QgsMapCanvasItem
 
     QRectF boundingRect() const override;
 
-    virtual void updatePosition() override;
+    void updatePosition() override;
 
   private:
 

@@ -46,8 +46,11 @@ Constructor for QgsBlurEffect.
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
     virtual QgsBlurEffect *clone() const /Factory/;
+
 
     void setBlurLevel( const int level );
 %Docstring
@@ -138,7 +141,9 @@ paint device
   protected:
 
     virtual void draw( QgsRenderContext &context );
+
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+
 
 };
 

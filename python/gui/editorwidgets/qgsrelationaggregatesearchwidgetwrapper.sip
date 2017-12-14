@@ -33,10 +33,15 @@ Constructor
 
     virtual QString expression() const;
 
+
     virtual bool valid() const;
+
     virtual QWidget *createWidget( QWidget *parent );
+
     virtual bool applyDirectly();
+
     virtual void setExpression( const QString &value );
+
 
 };
 

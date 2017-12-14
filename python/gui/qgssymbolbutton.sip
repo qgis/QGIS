@@ -31,7 +31,9 @@ Use ``dialogTitle`` string to define the title to show in the symbol settings di
 %End
 
     virtual QSize minimumSizeHint() const;
+
     virtual QSize sizeHint() const;
+
 
     void setSymbolType( QgsSymbol::SymbolType type );
 %Docstring

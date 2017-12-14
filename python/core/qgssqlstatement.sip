@@ -366,8 +366,10 @@ Operand
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -412,8 +414,10 @@ Right operand
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
         int precedence() const;
 %Docstring
@@ -447,7 +451,7 @@ Is left associative ?
 %Docstring
 Constructor
 %End
-        virtual ~NodeInOperator();
+        ~NodeInOperator();
 
         QgsSQLStatement::Node *node() const;
 %Docstring
@@ -473,8 +477,10 @@ Values list
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -525,8 +531,10 @@ Maximum bound
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -545,7 +553,7 @@ Function with a name and arguments node *
 %Docstring
 Constructor
 %End
-        virtual ~NodeFunction();
+        ~NodeFunction();
 
         QString name() const;
 %Docstring
@@ -564,8 +572,10 @@ Return arguments
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
 
@@ -596,8 +606,10 @@ The value of the literal.
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -657,8 +669,10 @@ Whether this is prefixed by DISTINCT
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeColumnRef *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
@@ -683,7 +697,7 @@ Selected column *
 %Docstring
 Constructor
 %End
-        virtual ~NodeSelectedColumn();
+        ~NodeSelectedColumn();
 
         void setAlias( const QString &alias );
 %Docstring
@@ -707,8 +721,10 @@ Alias name
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeSelectedColumn *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
@@ -733,7 +749,7 @@ CAST operator *
 %Docstring
 Constructor
 %End
-        virtual ~NodeCast();
+        ~NodeCast();
 
         QgsSQLStatement::Node *node() const;
 %Docstring
@@ -752,8 +768,10 @@ Type
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };
@@ -794,8 +812,10 @@ Table alias
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeTableDef *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
@@ -824,7 +844,7 @@ Constructor with table definition, ON expression
 %Docstring
 Constructor with table definition and USING columns
 %End
-        virtual ~NodeJoin();
+        ~NodeJoin();
 
         QgsSQLStatement::NodeTableDef *tableDef() const;
 %Docstring
@@ -857,8 +877,10 @@ Join type
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeJoin *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
@@ -902,8 +924,10 @@ Whether the column is sorted in ascending order
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
         QgsSQLStatement::NodeColumnSorted *cloneThis() const /Factory/;
 %Docstring
 Clone with same type return
@@ -928,7 +952,7 @@ SELECT node *
 %Docstring
 Constructor
 %End
-        virtual ~NodeSelect();
+        ~NodeSelect();
 
         void setJoins( const QList<QgsSQLStatement::NodeJoin *> &joins /Transfer/ );
 %Docstring
@@ -987,8 +1011,10 @@ Return the list of order by columns
         virtual QgsSQLStatement::NodeType nodeType() const;
         virtual QString dump() const;
 
+
         virtual void accept( QgsSQLStatement::Visitor &v ) const;
         virtual QgsSQLStatement::Node *clone() const /Factory/;
+
 
       protected:
     };

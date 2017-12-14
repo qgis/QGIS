@@ -265,6 +265,7 @@ Returns whether user stylesheets are enabled for the HTML content.
 %End
 
     virtual QString displayName() const;
+
     virtual QSizeF totalSize() const;
 
     virtual void render( QPainter *p, const QRectF &renderExtent, const int frameIndex );
@@ -300,6 +301,7 @@ Recalculates the frame sizes for the current viewport dimensions
     void refreshExpressionContext();
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
+
 
 };
 

@@ -56,7 +56,7 @@ Construct a new multiframe item.
 :param createUndoCommands:
 %End
 
-    virtual ~QgsComposerMultiFrame();
+    ~QgsComposerMultiFrame();
 
     virtual QSizeF totalSize() const = 0;
 %Docstring

@@ -29,7 +29,7 @@ to a common area of analysis.
 Constructor for QgsProcessingProvider.
 %End
 
-    virtual ~QgsProcessingProvider();
+    ~QgsProcessingProvider();
 
 
     virtual QIcon icon() const;

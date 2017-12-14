@@ -29,7 +29,7 @@ class QgsVirtualLayerFeatureSource : public QgsAbstractFeatureSource
   public:
     QgsVirtualLayerFeatureSource( const QgsVirtualLayerProvider *p );
 
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) override;
 
   private:
 
@@ -55,14 +55,14 @@ class QgsVirtualLayerFeatureIterator : public QgsAbstractFeatureIteratorFromSour
 {
   public:
     QgsVirtualLayerFeatureIterator( QgsVirtualLayerFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
-    ~QgsVirtualLayerFeatureIterator();
+    ~QgsVirtualLayerFeatureIterator() override;
 
-    virtual bool rewind() override;
-    virtual bool close() override;
+    bool rewind() override;
+    bool close() override;
 
   protected:
 
-    virtual bool fetchFeature( QgsFeature &feature ) override;
+    bool fetchFeature( QgsFeature &feature ) override;
 
   private:
 

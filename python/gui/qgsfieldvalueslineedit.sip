@@ -31,7 +31,7 @@ Constructor for QgsFieldValuesLineEdit
 :param parent: parent widget
 %End
 
-    virtual ~QgsFieldValuesLineEdit();
+    ~QgsFieldValuesLineEdit();
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring

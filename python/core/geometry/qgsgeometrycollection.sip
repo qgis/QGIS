@@ -25,7 +25,7 @@ class QgsGeometryCollection: QgsAbstractGeometry
   public:
     QgsGeometryCollection();
     QgsGeometryCollection( const QgsGeometryCollection &c );
-    virtual ~QgsGeometryCollection();
+    ~QgsGeometryCollection();
 
     virtual QgsGeometryCollection *clone() const /Factory/;
 

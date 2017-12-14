@@ -40,7 +40,7 @@ class QgsAfsFeatureIterator : public QgsAbstractFeatureIteratorFromSource<QgsAfs
 {
   public:
     QgsAfsFeatureIterator( QgsAfsFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
-    ~QgsAfsFeatureIterator();
+    ~QgsAfsFeatureIterator() override;
     bool rewind() override;
     bool close() override;
 

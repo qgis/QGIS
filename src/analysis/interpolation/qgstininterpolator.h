@@ -51,7 +51,7 @@ class ANALYSIS_EXPORT QgsTinInterpolator: public QgsInterpolator
      * Ownership of \a feedback is not transferred and callers must ensure that it exists for the lifetime of this object.
      */
     QgsTinInterpolator( const QList<QgsInterpolator::LayerData> &inputData, TinInterpolation interpolation = Linear, QgsFeedback *feedback = nullptr );
-    ~QgsTinInterpolator();
+    ~QgsTinInterpolator() override;
 
     int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback ) override;
 

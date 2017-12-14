@@ -127,7 +127,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * \param enabled  Enable or Disable?
      */
-    virtual void setEnabled( bool enabled ) override;
+    void setEnabled( bool enabled ) override;
 
     /**
      * Sets the widget to display in an indeterminate "mixed value" state.
@@ -246,7 +246,7 @@ class GUI_EXPORT QgsEditorWidgetWrapper : public QgsWidgetWrapper
      *
      * \param feature The new feature
      */
-    virtual void setFeature( const QgsFeature &feature ) override;
+    void setFeature( const QgsFeature &feature ) override;
 
     /**
      * Is called, when the value of the widget needs to be changed. Update the widget representation

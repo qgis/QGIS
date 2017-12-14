@@ -73,21 +73,33 @@ Constructor for QgsPointDistanceRenderer.
 %End
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
     virtual QgsFeatureRenderer::Capabilities capabilities();
+
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
+
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *r /Transfer/ );
 
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
@@ -101,6 +113,7 @@ Constructor for QgsPointDistanceRenderer.
     virtual void checkLegendSymbolItem( const QString &key, bool state );
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
+
 
     void setLabelAttributeName( const QString &name );
 %Docstring

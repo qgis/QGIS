@@ -46,7 +46,9 @@ Use ``dialogTitle`` string to define the title to show in the text settings dial
 %End
 
     virtual QSize minimumSizeHint() const;
+
     virtual QSize sizeHint() const;
+
 
     QgsFontButton::Mode mode() const;
 %Docstring

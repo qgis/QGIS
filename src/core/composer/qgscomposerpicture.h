@@ -67,7 +67,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
     QgsComposerPicture( QgsComposition *composition SIP_TRANSFERTHIS );
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerPicture; }
+    int type() const override { return ComposerPicture; }
 
     //! Reimplementation of QCanvasItem::paint
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
@@ -306,7 +306,7 @@ class CORE_EXPORT QgsComposerPicture: public QgsComposerItem
      */
     void recalculateSize();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   signals:
     //! Is emitted on picture rotation change

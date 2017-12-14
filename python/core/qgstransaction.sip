@@ -58,7 +58,7 @@ provider.
 :rtype: QgsTransaction
 %End
 
-    virtual ~QgsTransaction();
+    ~QgsTransaction();
 
     bool addLayer( QgsVectorLayer *layer );
 %Docstring

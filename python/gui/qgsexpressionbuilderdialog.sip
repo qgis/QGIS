@@ -100,6 +100,7 @@ provide an expression context of which we are sure it's completely populated.
   protected:
 
     virtual void done( int r );
+
 %Docstring
 Is called when the dialog get accepted or rejected
 Used to save geometry
@@ -108,6 +109,7 @@ Used to save geometry
 %End
 
     virtual void accept();
+
 
 };
 

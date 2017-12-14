@@ -105,7 +105,9 @@ Constructor for QgsVectorLayerUndoPassthroughCommandAddFeatures
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
     QgsFeatureList features() const;
 %Docstring
@@ -139,7 +141,9 @@ Constructor for QgsVectorLayerUndoPassthroughCommandDeleteFeatures
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -166,7 +170,9 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeGeometry
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -194,7 +200,9 @@ Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttribute
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -220,7 +228,9 @@ Constructor for QgsVectorLayerUndoPassthroughCommandAddAttribute
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -246,7 +256,9 @@ Constructor for QgsVectorLayerUndoCommandDeleteAttribute
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -273,7 +285,9 @@ Constructor for QgsVectorLayerUndoCommandRenameAttribute
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -300,7 +314,9 @@ Constructor for QgsVectorLayerUndoCommandUpdate
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 

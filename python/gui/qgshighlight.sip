@@ -95,8 +95,10 @@ Return the layer for which this highlight has been created.
 
     virtual void updatePosition();
 
+
   protected:
     virtual void paint( QPainter *p );
+
 
     void updateRect();
 %Docstring

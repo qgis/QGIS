@@ -29,7 +29,7 @@ class QgsMapToolCircle2TangentsPoint: public QgsMapToolAddCircle
 
   public:
     QgsMapToolCircle2TangentsPoint( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolCircle2TangentsPoint();
+    ~QgsMapToolCircle2TangentsPoint() override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

@@ -39,6 +39,7 @@ wrapper
 
     virtual void createSearchWidgetWrappers();
 
+
     void initialize( const QVariant &initialValue, bool mixedValues = false );
 %Docstring
 Resets the widget to an initial value.

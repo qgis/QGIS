@@ -39,24 +39,29 @@ Creates an advanced digitizing maptool
 %End
 
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
+
 %Docstring
 Catch the mouse press event, filters it, transforms it to map coordinates and send it to virtual method
 %End
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+
 %Docstring
 Catch the mouse release event, filters it, transforms it to map coordinates and send it to virtual method
 %End
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+
 %Docstring
 Catch the mouse move event, filters it, transforms it to map coordinates and send it to virtual method
 %End
 
     virtual void activate();
+
 %Docstring
 Registers this maptool with the cad dock widget
 %End
 
     virtual void deactivate();
+
 %Docstring
 Unregisters this maptool from the cad dock widget
 %End

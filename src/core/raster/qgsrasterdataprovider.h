@@ -91,21 +91,21 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
 
     QgsRasterDataProvider( const QString &uri );
 
-    virtual QgsRasterInterface *clone() const override = 0;
+    QgsRasterInterface *clone() const override = 0;
 
     /* It makes no sense to set input on provider */
     bool setInput( QgsRasterInterface *input ) override { Q_UNUSED( input ); return false; }
 
-    virtual QgsRectangle extent() const override = 0;
+    QgsRectangle extent() const override = 0;
 
     //! Returns data type for the band specified by number
-    virtual Qgis::DataType dataType( int bandNo ) const override = 0;
+    Qgis::DataType dataType( int bandNo ) const override = 0;
 
     /**
      * Returns source data type for the band specified by number,
      *  source data type may be shorter than dataType
      */
-    virtual Qgis::DataType sourceDataType( int bandNo ) const override = 0;
+    Qgis::DataType sourceDataType( int bandNo ) const override = 0;
 
     //! Returns data type for the band specified by number
     virtual int colorInterpretation( int bandNo ) const
@@ -197,7 +197,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     // TODO: remove or make protected all readBlock working with void*
 
     //! Read block of data using given extent and size.
-    virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
+    QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = nullptr ) override;
 
     //! Return true if source band has no data value
     virtual bool sourceHasNoDataValue( int bandNo ) const { return mSrcHasNoDataValue.value( bandNo - 1 ); }
@@ -222,7 +222,7 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * \brief Returns the sublayers of this layer - useful for providers that manage
      *  their own layers, such as WMS */
-    virtual QStringList subLayers() const override
+    QStringList subLayers() const override
     {
       return QStringList();
     }
@@ -361,10 +361,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     void setDpi( int dpi ) { mDpi = dpi; }
 
     //! Time stamp of data source in the moment when data/metadata were loaded by provider
-    virtual QDateTime timestamp() const override { return mTimestamp; }
+    QDateTime timestamp() const override { return mTimestamp; }
 
     //! Current time stamp of data source
-    virtual QDateTime dataTimestamp() const override { return QDateTime(); }
+    QDateTime dataTimestamp() const override { return QDateTime(); }
 
     /**
      * Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.

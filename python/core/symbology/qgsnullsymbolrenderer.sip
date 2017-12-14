@@ -25,16 +25,25 @@ and diagrams for the layer. Selected features will also be drawn with a default 
     QgsNullSymbolRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 
+
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+
     virtual void stopRender( QgsRenderContext &context );
+
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
 
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
     virtual QString dump() const;
+
     virtual QgsFeatureRenderer *clone() const /Factory/;
+
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
@@ -48,6 +57,7 @@ Creates a null renderer from XML element.
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
 
     static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring

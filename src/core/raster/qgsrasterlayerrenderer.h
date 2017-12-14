@@ -49,7 +49,7 @@ class CORE_EXPORT QgsRasterLayerRendererFeedback : public QgsRasterBlockFeedback
     explicit QgsRasterLayerRendererFeedback( QgsRasterLayerRenderer *r );
 
     //! when notified of new data in data provider it launches a preview draw of the raster
-    virtual void onNewData() override;
+    void onNewData() override;
   private:
     QgsRasterLayerRenderer *mR = nullptr;   //!< Parent renderer instance
     int mMinimalPreviewInterval;  //!< In milliseconds
@@ -69,11 +69,11 @@ class CORE_EXPORT QgsRasterLayerRenderer : public QgsMapLayerRenderer
 {
   public:
     QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRenderContext &rendererContext );
-    ~QgsRasterLayerRenderer();
+    ~QgsRasterLayerRenderer() override;
 
-    virtual bool render() override;
+    bool render() override;
 
-    virtual QgsFeedback *feedback() const override;
+    QgsFeedback *feedback() const override;
 
   private:
 

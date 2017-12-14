@@ -34,6 +34,7 @@ installed as an event filter for parent.
 
     virtual bool eventFilter( QObject *obj, QEvent *event );
 
+
   signals:
 
     void focusChanged( bool focused );

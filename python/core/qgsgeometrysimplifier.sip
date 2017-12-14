@@ -67,6 +67,7 @@ is specified in layer units.
 
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const;
 
+
   protected:
 
 };

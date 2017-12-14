@@ -134,11 +134,16 @@ Constructs simple labeling configuration with given initial settings
 %End
 
     virtual QString type() const;
+
     virtual QgsAbstractVectorLayerLabeling *clone() const /Factory/;
+
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
 
+
     virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() );
+
 %Docstring
 Set pal settings (takes ownership).
 
@@ -151,6 +156,7 @@ Set pal settings (takes ownership).
     virtual bool requiresAdvancedEffects() const;
 
     virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
+
 
     static QgsVectorLayerSimpleLabeling *create( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring

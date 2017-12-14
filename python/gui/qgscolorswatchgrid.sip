@@ -33,7 +33,9 @@ Construct a new color swatch grid.
 
     virtual QSize minimumSizeHint() const;
 
+
     virtual QSize sizeHint() const;
+
 
     QString context() const;
 %Docstring

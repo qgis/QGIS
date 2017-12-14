@@ -60,7 +60,7 @@ class GUI_EXPORT QgsProjectionSelectionDialog : public QDialog, private Ui::QgsG
                                   Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
-    ~QgsProjectionSelectionDialog();
+    ~QgsProjectionSelectionDialog() override;
 
     /**
      * Returns the CRS currently selected in the widget.

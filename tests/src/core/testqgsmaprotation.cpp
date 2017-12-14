@@ -47,7 +47,7 @@ class TestQgsMapRotation : public QObject
       mTestDataDir = QStringLiteral( TEST_DATA_DIR ) + '/';
     }
 
-    ~TestQgsMapRotation();
+    ~TestQgsMapRotation() override;
 
   private slots:
     void initTestCase();// will be called before the first testfunction is executed.

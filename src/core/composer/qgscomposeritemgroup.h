@@ -33,10 +33,10 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     Q_OBJECT
   public:
     QgsComposerItemGroup( QgsComposition *c SIP_TRANSFERTHIS );
-    ~QgsComposerItemGroup();
+    ~QgsComposerItemGroup() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerItemGroup; }
+    int type() const override { return ComposerItemGroup; }
 
     /**
      * Adds an item to the group. All the group members are deleted
@@ -53,7 +53,7 @@ class CORE_EXPORT QgsComposerItemGroup: public QgsComposerItem
     void setSceneRect( const QRectF &rectangle ) override;
 
     //overridden to also hide grouped items
-    virtual void setVisibility( const bool visible ) override;
+    void setVisibility( const bool visible ) override;
 
     /**
      * Stores state in Dom node

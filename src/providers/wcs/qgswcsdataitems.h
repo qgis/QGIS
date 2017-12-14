@@ -26,7 +26,7 @@ class QgsWCSConnectionItem : public QgsDataCollectionItem
     QgsWCSConnectionItem( QgsDataItem *parent, QString name, QString path, QString uri );
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
@@ -72,7 +72,7 @@ class QgsWCSRootItem : public QgsDataCollectionItem
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
-    virtual QWidget *paramWidget() override;
+    QWidget *paramWidget() override;
 #endif
 
   public slots:

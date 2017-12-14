@@ -40,6 +40,7 @@ Constructor for QgsAttributeTableView
 %End
 
     virtual bool eventFilter( QObject *object, QEvent *event );
+
 %Docstring
 This event filter is installed on the verticalHeader to intercept mouse press and release
 events. These are used to disable / enable live synchronisation with the map canvas selection
@@ -143,6 +144,7 @@ Emitted when a column in the view has been resized.
     void repaintRequested( const QModelIndexList &indexes );
     void repaintRequested();
     virtual void selectAll();
+
     virtual void selectRow( int row );
     virtual void _q_selectRow( int row );
 

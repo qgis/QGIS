@@ -53,7 +53,7 @@ Constructor
 :param vlayer: The target vector layer in join definition
 %End
 
-    virtual ~QgsAuxiliaryLayer();
+    ~QgsAuxiliaryLayer();
 %Docstring
 Destructor
 %End
@@ -140,6 +140,7 @@ Commits changes and starts editing then.
 %End
 
     virtual bool deleteAttribute( int attr );
+
 %Docstring
 Removes attribute from the layer and commits changes. The layer remains
 editable.

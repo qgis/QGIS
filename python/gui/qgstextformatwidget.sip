@@ -143,7 +143,7 @@ Constructor for QgsTextFormatDialog.
 :param fl: window flags for dialog
 %End
 
-    virtual ~QgsTextFormatDialog();
+    ~QgsTextFormatDialog();
 
     QgsTextFormat format() const;
 %Docstring
@@ -188,6 +188,7 @@ Returns the current formatting settings defined by the widget.
 %End
 
     virtual void setDockMode( bool dockMode );
+
 
 };
 

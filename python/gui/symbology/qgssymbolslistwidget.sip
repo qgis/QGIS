@@ -31,7 +31,7 @@ Constructor for QgsSymbolsListWidget.
 %End
 
 
-    virtual ~QgsSymbolsListWidget();
+    ~QgsSymbolsListWidget();
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring

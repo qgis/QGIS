@@ -174,6 +174,7 @@ remove all custom actions from the menu to be built
   protected:
     virtual void closeEvent( QCloseEvent *e );
 
+
 };
 
 

@@ -62,7 +62,7 @@ class GUI_EXPORT QgsSublayersDialog : public QDialog, private Ui::QgsSublayersDi
                         QWidget *parent SIP_TRANSFERTHIS = nullptr,
                         Qt::WindowFlags fl = nullptr );
 
-    ~QgsSublayersDialog();
+    ~QgsSublayersDialog() override;
 
     /**
      * Populate the table with layers

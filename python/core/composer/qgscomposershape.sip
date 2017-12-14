@@ -123,17 +123,21 @@ QgsComposerItem as it needs to call updateBoundingRect after the shape's size ch
 
     virtual QString displayName() const;
 
+
   protected:
     virtual void drawFrame( QPainter *p );
+
 %Docstring
 reimplement drawFrame, since it's not a rect, but a custom shape */
 %End
     virtual void drawBackground( QPainter *p );
+
 %Docstring
 reimplement drawBackground, since it's not a rect, but a custom shape */
 %End
 
     virtual double estimatedFrameBleed() const;
+
 %Docstring
 Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
 rather than the item's pen *

@@ -34,7 +34,7 @@ class CORE_EXPORT QgsFallbackFieldFormatter : public QgsFieldFormatter
       * Default constructor of field formatter as a fallback when no specialized formatter is defined.
       */
     QgsFallbackFieldFormatter() = default;
-    virtual QString id() const override;
+    QString id() const override;
 };
 
 #endif // QGSFALLBACKFIELDKIT_H

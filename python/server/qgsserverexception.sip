@@ -104,6 +104,7 @@ return exception version
 %End
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
+
 %Docstring
 Overridden from QgsServerException
 

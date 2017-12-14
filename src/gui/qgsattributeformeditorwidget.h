@@ -55,9 +55,9 @@ class GUI_EXPORT QgsAttributeFormEditorWidget : public QgsAttributeFormWidget
     explicit QgsAttributeFormEditorWidget( QgsEditorWidgetWrapper *editorWidget, const QString &widgetType,
                                            QgsAttributeForm *form  SIP_TRANSFERTHIS );
 
-    ~QgsAttributeFormEditorWidget();
+    ~QgsAttributeFormEditorWidget() override;
 
-    virtual void createSearchWidgetWrappers( const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) override;
+    void createSearchWidgetWrappers( const QgsAttributeEditorContext &context SIP_PYARGREMOVE = QgsAttributeEditorContext() ) override;
 
     /**
      * Resets the widget to an initial value.

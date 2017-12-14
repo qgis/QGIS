@@ -296,9 +296,11 @@ Returns the rubberband as a Geometry
 
     virtual void updatePosition();
 
+
   protected:
 
     virtual void paint( QPainter *p );
+
 %Docstring
 Paints the rubber band in response to an update event.
 :param p: The QPainter object

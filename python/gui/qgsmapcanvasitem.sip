@@ -26,16 +26,16 @@ map canvas.
 protected constructor: cannot be constructed directly
 %End
 
-    virtual ~QgsMapCanvasItem();
+    ~QgsMapCanvasItem();
 
     virtual void paint( QPainter *painter ) = 0;
 %Docstring
 function to be implemented by derived classes
 %End
 
-    virtual void paint( QPainter *painter,
-                        const QStyleOptionGraphicsItem *option,
-                        QWidget *widget = 0 );
+     virtual void paint( QPainter *painter,
+                const QStyleOptionGraphicsItem *option,
+                QWidget *widget = 0 );
 
     void updateCanvas();
 %Docstring
@@ -61,6 +61,7 @@ called on changed extent or resize event to update position of the item
 %End
 
     virtual QRectF boundingRect() const;
+
 
     QgsRectangle rect() const;
 %Docstring

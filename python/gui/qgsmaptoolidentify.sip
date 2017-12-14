@@ -68,14 +68,19 @@ Constructor for IdentifyResult
 constructor
 %End
 
-    virtual ~QgsMapToolIdentify();
+    ~QgsMapToolIdentify();
 
     virtual Flags flags() const;
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
+
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+
     virtual void activate();
+
     virtual void deactivate();
+
 
     QList<QgsMapToolIdentify::IdentifyResult> identify( int x, int y, const QList<QgsMapLayer *> &layerList = QList<QgsMapLayer *>(), IdentifyMode mode = DefaultQgsSetting );
 %Docstring

@@ -38,6 +38,7 @@ Ownership will be transferred.
 
 
     virtual QgsInvertedPolygonRenderer *clone() const /Factory/;
+
 %Docstring
 Direct copies are forbidden. Use clone() instead.
 
@@ -45,7 +46,9 @@ Direct copies are forbidden. Use clone() instead.
 %End
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
+
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+
 %Docstring
 Renders a given feature.
 This will here collect features. The actual rendering will be postponed to stopRender()
@@ -61,6 +64,7 @@ This will here collect features. The actual rendering will be postponed to stopR
 %End
 
     virtual void stopRender( QgsRenderContext &context );
+
 %Docstring
 The actual rendering will take place here.
 Features collected during renderFeature() are rendered using the embedded feature renderer
@@ -68,13 +72,16 @@ Features collected during renderFeature() are rendered using the embedded featur
 
     virtual QString dump() const;
 
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
 :rtype: set of str
 %End
     virtual QgsFeatureRenderer::Capabilities capabilities();
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
@@ -82,6 +89,7 @@ Proxy that will call this method on the embedded renderer.
 %End
 
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
@@ -89,6 +97,7 @@ Proxy that will call this method on the embedded renderer.
 %End
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
@@ -96,6 +105,7 @@ Proxy that will call this method on the embedded renderer.
 %End
 
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context );
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
@@ -103,6 +113,7 @@ Proxy that will call this method on the embedded renderer.
 %End
 
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
@@ -110,6 +121,7 @@ Proxy that will call this method on the embedded renderer.
 %End
 
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
@@ -117,6 +129,7 @@ Proxy that will call this method on the embedded renderer.
 %End
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
@@ -124,6 +137,7 @@ Proxy that will call this method on the embedded renderer.
 %End
 
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
+
 %Docstring
 Proxy that will call this method on the embedded renderer.
 
@@ -139,6 +153,7 @@ Creates a renderer out of an XML, for loading
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
+
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *subRenderer /Transfer/ );
 
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
@@ -146,9 +161,13 @@ Creates a renderer out of an XML, for loading
 
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol );
 
+
     virtual bool legendSymbolItemsCheckable() const;
+
     virtual bool legendSymbolItemChecked( const QString &key );
+
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
+
 
     bool preprocessingEnabled() const;
 %Docstring

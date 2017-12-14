@@ -28,7 +28,7 @@ class QgsWFSDescribeFeatureType : public QgsWfsRequest
     bool requestFeatureType( const QString &WFSVersion, const QString &typeName );
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 };
 
 #endif // QGSWFSDESCRIBEFEATURETYPE_H

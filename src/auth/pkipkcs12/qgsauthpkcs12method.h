@@ -30,7 +30,7 @@ class QgsAuthPkcs12Method : public QgsAuthMethod
 
   public:
     explicit QgsAuthPkcs12Method();
-    ~QgsAuthPkcs12Method();
+    ~QgsAuthPkcs12Method() override;
 
     // QgsAuthMethod interface
     QString key() const override;

@@ -54,7 +54,7 @@ class CORE_EXPORT QgsSnappingUtils : public QObject
 
     //! Constructor for QgsSnappingUtils
     QgsSnappingUtils( QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsSnappingUtils();
+    ~QgsSnappingUtils() override;
 
     // main actions
 

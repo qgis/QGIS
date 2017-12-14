@@ -78,7 +78,7 @@ class QgsDxfExportDialog : public QDialog, private Ui::QgsDxfExportDialogBase
     Q_OBJECT
   public:
     QgsDxfExportDialog( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsDxfExportDialog();
+    ~QgsDxfExportDialog() override;
 
     QList< QPair<QgsVectorLayer *, int> > layers() const;
 

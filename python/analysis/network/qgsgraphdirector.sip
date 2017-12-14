@@ -32,7 +32,7 @@ using "builder" design patter.
 %End
   public:
 
-    virtual ~QgsGraphDirector();
+    ~QgsGraphDirector();
 
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPointXY > &additionalPoints,

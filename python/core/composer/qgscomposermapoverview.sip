@@ -173,7 +173,7 @@ Constructor for QgsComposerMapOverview.
 :param map: QgsComposerMap the overview is attached to
 %End
 
-    virtual ~QgsComposerMapOverview();
+    ~QgsComposerMapOverview();
 
     virtual void draw( QPainter *painter );
 

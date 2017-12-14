@@ -101,6 +101,7 @@ Returns the permanent storage type for this layer as a friendly name.
 %End
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
+
 %Docstring
 Query the provider for features specified in request.
 :param request: feature request describing parameters of features to return
@@ -111,6 +112,7 @@ Query the provider for features specified in request.
 %End
 
     virtual QgsWkbTypes::Type wkbType() const = 0;
+
 %Docstring
 Returns the geometry type which is returned by this layer
 
@@ -118,6 +120,7 @@ Returns the geometry type which is returned by this layer
 %End
 
     virtual long featureCount() const = 0;
+
 %Docstring
 Number of features in the layer
 
@@ -127,6 +130,7 @@ Number of features in the layer
 %End
 
     virtual QgsFields fields() const = 0;
+
 %Docstring
 Returns the fields associated with this data provider.
 
@@ -148,6 +152,7 @@ providing access to (e.g. the comment for postgres table).
 %End
 
     virtual QVariant minimumValue( int index ) const;
+
 %Docstring
 Returns the minimum value of an attribute
 :param index: the index of the attribute
@@ -160,6 +165,7 @@ value directly, override this function.
 %End
 
     virtual QVariant maximumValue( int index ) const;
+
 %Docstring
 Returns the maximum value of an attribute
 :param index: the index of the attribute
@@ -216,6 +222,7 @@ or if the given attribute is not an enum type.
 %End
 
     virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );
+
 
     virtual bool deleteFeatures( const QgsFeatureIds &id );
 %Docstring

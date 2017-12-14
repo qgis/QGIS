@@ -398,6 +398,7 @@ Forces a recalculation of the picture's frame size
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
 
+
   signals:
     void pictureRotationChanged( double newRotation );
 %Docstring

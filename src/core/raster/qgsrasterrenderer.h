@@ -47,7 +47,7 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
      * Constructor for QgsRasterRenderer.
      */
     QgsRasterRenderer( QgsRasterInterface *input = nullptr, const QString &type = QString() );
-    virtual ~QgsRasterRenderer();
+    ~QgsRasterRenderer() override;
 
     //! QgsRasterRenderer cannot be copied. Use clone() instead.
     QgsRasterRenderer( const QgsRasterRenderer & ) = delete;
@@ -56,19 +56,19 @@ class CORE_EXPORT QgsRasterRenderer : public QgsRasterInterface
 
     QgsRasterRenderer *clone() const override = 0 SIP_FACTORY;
 
-    virtual int bandCount() const override;
+    int bandCount() const override;
 
-    virtual Qgis::DataType dataType( int bandNo ) const override;
+    Qgis::DataType dataType( int bandNo ) const override;
 
     virtual QString type() const { return mType; }
 
-    virtual bool setInput( QgsRasterInterface *input ) override;
+    bool setInput( QgsRasterInterface *input ) override;
 
-    virtual QgsRasterBlock *block( int bandNo,
-                                   const QgsRectangle &extent,
-                                   int width,
-                                   int height,
-                                   QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
+    QgsRasterBlock *block( int bandNo,
+                           const QgsRectangle &extent,
+                           int width,
+                           int height,
+                           QgsRasterBlockFeedback *feedback = nullptr ) override = 0 SIP_FACTORY;
 
     bool usesTransparency() const;
 

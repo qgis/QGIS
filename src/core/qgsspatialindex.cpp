@@ -103,7 +103,7 @@ class QgsFeatureIteratorDataStream : public IDataStream
       readNextEntry();
     }
 
-    ~QgsFeatureIteratorDataStream()
+    ~QgsFeatureIteratorDataStream() override
     {
       delete mNextData;
     }

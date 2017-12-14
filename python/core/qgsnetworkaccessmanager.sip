@@ -110,6 +110,7 @@ return whether the system proxy should be used
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
 
+
 };
 
 

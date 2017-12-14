@@ -80,6 +80,7 @@ Sets a map canvas associated with the dialog.
   protected:
 
     virtual void closeEvent( QCloseEvent *closeEvent );
+
 %Docstring
 Implementation for closeEvent
 Saves the window geometry
@@ -87,6 +88,7 @@ Saves the window geometry
 %End
 
     virtual void done( int r );
+
 %Docstring
 Implementation for done (default behavior when pressing esc)
 Calls close, so the window geometry gets saved and the object deleted.

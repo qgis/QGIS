@@ -37,6 +37,7 @@ Constructor for QgsNullSymbolRendererWidget
     ~QgsNullSymbolRendererWidget();
 
     virtual QgsFeatureRenderer *renderer();
+
 %Docstring
 Returns a pointer to the configured renderer
 

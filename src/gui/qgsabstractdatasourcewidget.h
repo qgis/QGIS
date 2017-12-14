@@ -45,7 +45,7 @@ class GUI_EXPORT QgsAbstractDataSourceWidget : public QDialog
   public:
 
     //! Destructor
-    ~QgsAbstractDataSourceWidget() = default;
+    ~QgsAbstractDataSourceWidget() override = default;
 
     /**
      * Store a pointer to the map canvas to retrieve extent and CRS

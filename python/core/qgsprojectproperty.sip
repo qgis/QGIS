@@ -188,7 +188,7 @@ that will contain a QgsProjectPropertyValue.
 %Docstring
 Create a new QgsProjectPropertyKey with the specified identifier.
 %End
-    virtual ~QgsProjectPropertyKey();
+    ~QgsProjectPropertyKey();
 
     QString name() const;
 %Docstring

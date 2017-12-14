@@ -54,7 +54,7 @@ class GUI_EXPORT QgsQueryBuilder : public QDialog, private Ui::QgsQueryBuilderBa
     QgsQueryBuilder( QgsVectorLayer *layer, QWidget *parent SIP_TRANSFERTHIS = nullptr,
                      Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsQueryBuilder();
+    ~QgsQueryBuilder() override;
 
     void showEvent( QShowEvent *event ) override;
 

@@ -868,6 +868,7 @@ include data defined parameters such as offset and rotation
 
     virtual QgsMarkerSymbol *clone() const /Factory/;
 
+
 };
 
 
@@ -923,6 +924,7 @@ at the line level. Caller takes responsibility for deleting the returned object.
 
     virtual QgsLineSymbol *clone() const /Factory/;
 
+
 };
 
 
@@ -947,6 +949,7 @@ This is a convenience method for easier creation of fill symbols.
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, const QgsFeature *f, QgsRenderContext &context, int layer = -1, bool selected = false );
 
     virtual QgsFillSymbol *clone() const /Factory/;
+
 
 };
 

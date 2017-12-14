@@ -36,7 +36,7 @@ class CORE_EXPORT QgsLayoutSerializableObject : public QgsLayoutUndoObjectInterf
 {
   public:
 
-    virtual ~QgsLayoutSerializableObject() = default;
+    ~QgsLayoutSerializableObject() override = default;
 
     /**
      * Return the object type as a string.

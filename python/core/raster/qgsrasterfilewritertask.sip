@@ -41,6 +41,7 @@ be deleted when the task completes.
 
     virtual void cancel();
 
+
   signals:
 
     void writeComplete( const QString &outputUrl );
@@ -58,7 +59,9 @@ the task is canceled). The writing ``error`` will be reported.
   protected:
 
     virtual bool run();
+
     virtual void finished( bool result );
+
 
 };
 

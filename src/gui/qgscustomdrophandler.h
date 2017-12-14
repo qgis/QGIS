@@ -49,7 +49,7 @@ class GUI_EXPORT QgsCustomDropHandler : public QObject
     Q_OBJECT
 
   public:
-    virtual ~QgsCustomDropHandler() = default;
+    ~QgsCustomDropHandler() override = default;
 
     /**
      * Type of custom URI recognized by the handler. This must match

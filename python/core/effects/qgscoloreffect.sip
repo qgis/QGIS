@@ -37,8 +37,11 @@ Creates a new QgsColorEffect effect from a properties string map.
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
     virtual QgsColorEffect *clone() const /Factory/;
+
 
     void setBrightness( int brightness );
 %Docstring
@@ -258,6 +261,7 @@ paint device
   protected:
 
     virtual void draw( QgsRenderContext &context );
+
 
 };
 

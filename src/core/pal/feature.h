@@ -110,7 +110,7 @@ namespace pal
       /**
        * Delete the feature
        */
-      virtual ~FeaturePart();
+      ~FeaturePart() override;
 
       /**
        * Returns the parent feature.

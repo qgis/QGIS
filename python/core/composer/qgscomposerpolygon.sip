@@ -38,6 +38,7 @@ Constructor
 %End
 
     virtual QString displayName() const;
+
 %Docstring
 Overridden to return shape name
 

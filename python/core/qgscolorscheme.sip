@@ -150,10 +150,11 @@ class QgsGplColorScheme : QgsColorScheme
 Constructor for QgsGplColorScheme.
 %End
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() );
+     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() );
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
+
 
   protected:
 
@@ -190,11 +191,14 @@ Constructs a new user color scheme, using a specified gpl palette file
 
     virtual QString schemeName() const;
 
+
     virtual QgsUserColorScheme *clone() const /Factory/;
+
 
     virtual bool isEditable() const;
 
     virtual QgsColorScheme::SchemeFlags flags() const;
+
 
     void setName( const QString &name );
 %Docstring
@@ -225,6 +229,7 @@ Sets whether a this scheme should be shown in color button menus.
 
     virtual QString gplFilePath();
 
+
 };
 
 class QgsRecentColorScheme : QgsColorScheme
@@ -249,8 +254,8 @@ Constructor for QgsRecentColorScheme.
 
     virtual SchemeFlags flags() const;
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() );
+     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() );
 
     virtual QgsRecentColorScheme *clone() const /Factory/;
 
@@ -299,12 +304,13 @@ Constructor for QgsCustomColorScheme.
 
     virtual SchemeFlags flags() const;
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() );
+     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() );
 
     virtual bool isEditable() const;
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
+
 
     virtual QgsCustomColorScheme *clone() const /Factory/;
 
@@ -332,12 +338,13 @@ Constructor for QgsProjectColorScheme.
 
     virtual SchemeFlags flags() const;
 
-    virtual QgsNamedColorList fetchColors( const QString &context = QString(),
-                                           const QColor &baseColor = QColor() );
+     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
+                                   const QColor &baseColor = QColor() );
 
     virtual bool isEditable() const;
 
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
+
 
     virtual QgsProjectColorScheme *clone() const /Factory/;
 

@@ -130,6 +130,7 @@ be placed above items with a higher priority.
 %End
 
     virtual bool operator<( const QTreeWidgetItem &other ) const;
+
 %Docstring
 Returns true if this item should appear before another item when sorting
 a list of items.
@@ -172,6 +173,7 @@ Constructs a tree widget item of the specified type and appends it to the items 
 %End
 
     virtual void setData( int column, int role, const QVariant &value );
+
 %Docstring
 Sets the value for the item's column and role to the given value.
 %End

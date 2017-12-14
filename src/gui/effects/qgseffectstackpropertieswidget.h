@@ -59,7 +59,7 @@ class GUI_EXPORT QgsEffectStackPropertiesWidget : public QgsPanelWidget, private
      */
     QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsEffectStackPropertiesWidget();
+    ~QgsEffectStackPropertiesWidget() override;
 
     /**
      * Returns effect stack attached to the widget
@@ -224,7 +224,7 @@ class GUI_EXPORT QgsEffectStackCompactWidget: public QgsPanelWidget
      * stack consisting of the original effect
      */
     QgsEffectStackCompactWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsPaintEffect *effect = nullptr );
-    ~QgsEffectStackCompactWidget();
+    ~QgsEffectStackCompactWidget() override;
 
     /**
      * Sets paint effect attached to the widget,

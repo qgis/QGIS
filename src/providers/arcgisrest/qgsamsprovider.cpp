@@ -465,11 +465,11 @@ class QgsAmsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
-    virtual QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
-    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "arcgismapserver" ); }
+    QString text() const override { return QObject::tr( "ArcGIS Map Server" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 140; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddAmsLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsAmsSourceSelect( parent, fl, widgetMode );
     }

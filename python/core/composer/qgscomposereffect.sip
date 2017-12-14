@@ -27,6 +27,7 @@ Constructor for QgsComposerEffect.
 
   protected:
     virtual void draw( QPainter *painter );
+
 %Docstring
 Called whenever source needs to be drawn
 %End

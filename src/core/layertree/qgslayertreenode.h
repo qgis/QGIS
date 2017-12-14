@@ -100,7 +100,7 @@ class CORE_EXPORT QgsLayerTreeNode : public QObject
       NodeLayer    //!< Leaf node pointing to a layer
     };
 
-    ~QgsLayerTreeNode();
+    ~QgsLayerTreeNode() override;
 
     //! Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
     NodeType nodeType() const { return mNodeType; }

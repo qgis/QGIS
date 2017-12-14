@@ -34,6 +34,7 @@ Draws the item on to a painter
 %End
 
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+
 %Docstring
 Stores map item state in DOM element
 :param elem: is DOM element corresponding to a 'ComposerMap' tag
@@ -45,6 +46,7 @@ Stores map item state in DOM element
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+
 %Docstring
 Sets map item state from a DOM document
 :param itemElem: is DOM node corresponding to a 'ComposerMapGrid' tag

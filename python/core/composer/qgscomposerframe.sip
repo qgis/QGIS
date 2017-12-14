@@ -41,6 +41,7 @@ Returns the parent multiframe for the frame.
 
     virtual QString displayName() const;
 
+
     virtual void setSceneRect( const QRectF &rectangle );
 
 
@@ -130,6 +131,7 @@ Returns whether the frame is empty
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
 };
 

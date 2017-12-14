@@ -314,7 +314,7 @@ class CORE_EXPORT QgsPropertyCollection : public QgsAbstractPropertyCollection
     virtual QgsProperty &property( int key );
 
     QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const override;
-    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
     bool isActive( int key ) const override;
     bool hasActiveProperties() const override;
@@ -373,7 +373,7 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      */
     QgsPropertyCollectionStack() = default;
 
-    ~QgsPropertyCollectionStack();
+    ~QgsPropertyCollectionStack() override;
 
     //! Copy constructor
     QgsPropertyCollectionStack( const QgsPropertyCollectionStack &other );
@@ -467,14 +467,14 @@ class CORE_EXPORT QgsPropertyCollectionStack : public QgsAbstractPropertyCollect
      * \param context expression context the properties will be evaluated against.
      */
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
-    virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
+    bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const override;
 
     QSet<int> propertyKeys() const override;
     bool hasProperty( int key ) const override;
 
-    virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
+    QVariant toVariant( const QgsPropertiesDefinition &definitions ) const override;
 
-    virtual bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
+    bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions ) override;
 
   private:
 

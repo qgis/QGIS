@@ -114,7 +114,7 @@ Convenience metadata class that uses static functions to create renderer and its
 
 
 
-    virtual ~QgsRendererMetadata();
+    ~QgsRendererMetadata();
 
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;

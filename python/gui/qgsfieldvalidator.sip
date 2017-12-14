@@ -20,7 +20,9 @@ class QgsFieldValidator : QValidator
     ~QgsFieldValidator();
 
     virtual State validate( QString &s /Constrained/, int &i /In,Out/ ) const;
+
     virtual void fixup( QString &s /Constrained/ ) const;
+
 
     QString dateFormat() const;
 %Docstring

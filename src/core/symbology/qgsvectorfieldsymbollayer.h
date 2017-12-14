@@ -58,7 +58,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     QgsSymbol *subSymbol() override { return mLineSymbol.get(); }
 
     void setColor( const QColor &color ) override;
-    virtual QColor color() const override;
+    QColor color() const override;
 
     void renderPoint( QPointF point, QgsSymbolRenderContext &context ) override;
     void startRender( QgsSymbolRenderContext &context ) override;
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsVectorFieldSymbolLayer: public QgsMarkerSymbolLayer
     const QgsMapUnitScale &distanceMapUnitScale() const { return mDistanceMapUnitScale; }
 
     // TODO - implement properly
-    virtual QRectF bounds( QPointF, QgsSymbolRenderContext & ) override { return QRectF(); }
+    QRectF bounds( QPointF, QgsSymbolRenderContext & ) override { return QRectF(); }
 
   private:
 #ifdef SIP_RUN

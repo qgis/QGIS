@@ -37,6 +37,7 @@ Constructor for QgsVectorLayerFeatureSource.
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() );
 
 
+
     QgsFields fields() const;
 %Docstring
 Returns the fields that will be available for features that are retrieved from
@@ -84,6 +85,7 @@ typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbs
     ~QgsVectorLayerFeatureIterator();
 
     virtual bool rewind();
+
 %Docstring
 reset the iterator to the starting position
 
@@ -91,6 +93,7 @@ reset the iterator to the starting position
 %End
 
     virtual bool close();
+
 %Docstring
 end of iterating: free the resources / lock
 
@@ -114,8 +117,10 @@ end of iterating: free the resources / lock
 
     virtual bool isValid() const;
 
+
   protected:
     virtual bool fetchFeature( QgsFeature &feature );
+
 %Docstring
 fetch next feature, return true on success
 
@@ -131,6 +136,7 @@ while for others filtering is left to the provider implementation.
 %End
 
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
+
 %Docstring
 Setup the simplification of geometries to fetch using the specified simplify method
 

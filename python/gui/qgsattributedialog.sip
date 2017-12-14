@@ -86,6 +86,7 @@ Sets the edit command message (Undo) that will be used when the dialog is accept
 %End
 
     virtual bool event( QEvent *e );
+
 %Docstring
 Intercept window activate/deactive events to show/hide the highlighted feature.
 

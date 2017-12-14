@@ -303,9 +303,10 @@ Constructs a new color wheel widget.
 :param parent: parent QWidget for the widget
 %End
 
-    virtual ~QgsColorWheel();
+    ~QgsColorWheel();
 
     virtual QSize sizeHint() const;
+
     virtual void paintEvent( QPaintEvent *event );
 
 
@@ -313,12 +314,17 @@ Constructs a new color wheel widget.
 
     virtual void setColor( const QColor &color, const bool emitSignals = false );
 
+
   protected:
 
     virtual void resizeEvent( QResizeEvent *event );
+
     virtual void mouseMoveEvent( QMouseEvent *event );
+
     virtual void mousePressEvent( QMouseEvent *event );
+
     virtual void mouseReleaseEvent( QMouseEvent *event );
+
 
 };
 
@@ -348,22 +354,28 @@ which vary along the horizontal and vertical axis are automatically assigned
 based on this constant color component.
 %End
 
-    virtual ~QgsColorBox();
+    ~QgsColorBox();
 
     virtual QSize sizeHint() const;
+
     virtual void paintEvent( QPaintEvent *event );
 
 
     virtual void setComponent( const ColorComponent component );
 
+
   public slots:
     virtual void setColor( const QColor &color, const bool emitSignals = false );
+
 
   protected:
 
     virtual void resizeEvent( QResizeEvent *event );
+
     virtual void mouseMoveEvent( QMouseEvent *event );
+
     virtual void mousePressEvent( QMouseEvent *event );
+
 
 };
 
@@ -400,6 +412,7 @@ Construct a new color ramp widget.
 %End
 
     virtual QSize sizeHint() const;
+
     virtual void paintEvent( QPaintEvent *event );
 
 
@@ -477,9 +490,13 @@ Emitted when the widget's color component value changes
   protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event );
+
     virtual void wheelEvent( QWheelEvent *event );
+
     virtual void mousePressEvent( QMouseEvent *event );
+
     virtual void keyPressEvent( QKeyEvent *event );
+
 
 };
 
@@ -506,8 +523,11 @@ Construct a new color slider widget.
 %End
 
     virtual void setComponent( const ColorComponent component );
+
     virtual void setComponentValue( const int value );
+
     virtual void setColor( const QColor &color, const bool emitSignals = false );
+
 
 };
 
@@ -534,6 +554,7 @@ Construct a new color line edit widget.
 %End
 
     virtual void setColor( const QColor &color, const bool emitSignals = false );
+
 
   protected:
     virtual void resizeEvent( QResizeEvent *event );
@@ -565,6 +586,7 @@ Construct a new color preview widget.
     virtual void paintEvent( QPaintEvent *event );
 
     virtual QSize sizeHint() const;
+
 
     QColor color2() const;
 %Docstring

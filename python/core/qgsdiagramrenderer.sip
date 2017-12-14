@@ -777,6 +777,7 @@ Returns list with all diagram settings in the renderer
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
+
     virtual QString rendererName() const;
 
     void setLowerValue( double val );

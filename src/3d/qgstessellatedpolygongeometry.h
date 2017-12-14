@@ -39,7 +39,7 @@ class QgsTessellatedPolygonGeometry : public Qt3DRender::QGeometry
   public:
     //! Constructor
     QgsTessellatedPolygonGeometry( QNode *parent = nullptr );
-    ~QgsTessellatedPolygonGeometry();
+    ~QgsTessellatedPolygonGeometry() override;
 
     //! Returns whether the normals of triangles will be inverted (useful for fixing clockwise / counter-clockwise face vertex orders)
     bool invertNormals() const { return mInvertNormals; }

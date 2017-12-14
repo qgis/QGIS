@@ -28,6 +28,7 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
 
     virtual QgsFeatureRenderer *renderer();
 
+
   public slots:
     void changeGraduatedSymbol();
     void graduatedColumnChanged( const QString &field );

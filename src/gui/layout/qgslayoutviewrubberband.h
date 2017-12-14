@@ -155,7 +155,7 @@ class GUI_EXPORT QgsLayoutViewRectangularRubberBand : public QgsLayoutViewRubber
     QgsLayoutViewRectangularRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewRectangularRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewRectangularRubberBand();
+    ~QgsLayoutViewRectangularRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
@@ -186,7 +186,7 @@ class GUI_EXPORT QgsLayoutViewEllipticalRubberBand : public QgsLayoutViewRubberB
     QgsLayoutViewEllipticalRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewEllipticalRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewEllipticalRubberBand();
+    ~QgsLayoutViewEllipticalRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;
@@ -217,7 +217,7 @@ class GUI_EXPORT QgsLayoutViewTriangleRubberBand : public QgsLayoutViewRubberBan
     QgsLayoutViewTriangleRubberBand( QgsLayoutView *view = nullptr );
     QgsLayoutViewTriangleRubberBand *create( QgsLayoutView *view ) const override SIP_FACTORY;
 
-    ~QgsLayoutViewTriangleRubberBand();
+    ~QgsLayoutViewTriangleRubberBand() override;
 
     void start( QPointF position, Qt::KeyboardModifiers modifiers ) override;
     void update( QPointF position, Qt::KeyboardModifiers modifiers ) override;

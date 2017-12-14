@@ -50,7 +50,7 @@ class QgsDemTerrainTileLoader : public QgsTerrainTileLoader
     //! Constructs loader for the given chunk node
     QgsDemTerrainTileLoader( QgsTerrainEntity *terrain, QgsChunkNode *node );
 
-    virtual Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
+    Qt3DCore::QEntity *createEntity( Qt3DCore::QEntity *parent ) override;
 
   private slots:
     void onHeightMapReady( int jobId, const QByteArray &heightMap );
@@ -80,7 +80,7 @@ class QgsDemHeightMapGenerator : public QObject
      * terrain's tiling scheme and height map resolution (number of height values on each side of tile)
      */
     QgsDemHeightMapGenerator( QgsRasterLayer *dtm, const QgsTilingScheme &tilingScheme, int resolution );
-    ~QgsDemHeightMapGenerator();
+    ~QgsDemHeightMapGenerator() override;
 
     //! asynchronous terrain read for a tile (array of floats)
     int render( int x, int y, int z );

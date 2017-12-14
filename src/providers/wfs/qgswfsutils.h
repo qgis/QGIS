@@ -70,7 +70,7 @@ class QgsWFSUtilsKeepAlive: public QThread
     Q_OBJECT
   public:
     QgsWFSUtilsKeepAlive();
-    ~QgsWFSUtilsKeepAlive();
+    ~QgsWFSUtilsKeepAlive() override;
 
     void run() override;
   private slots:

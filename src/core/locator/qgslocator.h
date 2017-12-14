@@ -65,7 +65,7 @@ class CORE_EXPORT QgsLocator : public QObject
     /**
      * Destructor for QgsLocator. Destruction will block while any currently running query is terminated.
      */
-    ~QgsLocator();
+    ~QgsLocator() override;
 
     /**
      * Registers a \a filter within the locator. Ownership of the filter is transferred to the

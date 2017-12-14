@@ -68,7 +68,9 @@ A table that displays attributes from a vector layer
 
     virtual QString displayName() const;
 
+
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
+
 %Docstring
 Writes properties specific to attribute tables
 :param elem: an existing QDomElement in which to store the attribute table's properties.
@@ -81,6 +83,7 @@ Writes properties specific to attribute tables
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
+
 %Docstring
 Reads the properties specific to an attribute table from xml.
 :param itemElem: a QDomElement holding the attribute table's desired properties.
@@ -93,6 +96,7 @@ Reads the properties specific to an attribute table from xml.
 %End
 
     virtual void addFrame( QgsComposerFrame *frame /Transfer/, bool recalcFrameSizes = true );
+
 
     void setSource( const ContentSource source );
 %Docstring
@@ -392,6 +396,7 @@ be replaced by a line break.
 
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
 };
 

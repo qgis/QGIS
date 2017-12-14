@@ -81,7 +81,7 @@ class QgsMapCoordsDialog : public QDialog, private Ui::QgsMapCoordsDialogBase
 
   public:
     QgsMapCoordsDialog( QgsMapCanvas *qgisCanvas, const QgsPointXY &pixelCoords, QWidget *parent = nullptr );
-    ~QgsMapCoordsDialog();
+    ~QgsMapCoordsDialog() override;
 
   private slots:
     void buttonBox_accepted();

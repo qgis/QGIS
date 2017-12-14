@@ -101,7 +101,7 @@ to change due to centralization.
     }
 %End
 
-    virtual ~QgsApplication();
+    ~QgsApplication();
 
     static QgsApplication *instance();
 %Docstring
@@ -114,6 +114,7 @@ Returns the singleton instance of the QgsApplication.
 
 
     virtual bool event( QEvent *event );
+
 %Docstring
 Watch for QFileOpenEvent.
 
@@ -121,6 +122,7 @@ Watch for QFileOpenEvent.
 %End
 
     virtual bool notify( QObject *receiver, QEvent *event );
+
 %Docstring
 Catch exceptions when sending event to receiver.
 

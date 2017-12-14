@@ -28,7 +28,9 @@ Default constructor of field formatter for a list field.
 %End
     virtual QString id() const;
 
+
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
 };
 
 /************************************************************************

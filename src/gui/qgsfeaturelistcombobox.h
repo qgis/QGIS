@@ -135,9 +135,9 @@ class GUI_EXPORT QgsFeatureListComboBox : public QComboBox
      */
     QModelIndex currentModelIndex() const;
 
-    virtual void focusOutEvent( QFocusEvent *event ) override;
+    void focusOutEvent( QFocusEvent *event ) override;
 
-    virtual void keyPressEvent( QKeyEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
   signals:
 

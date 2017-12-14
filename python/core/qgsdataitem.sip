@@ -57,7 +57,7 @@ Parent/children hierarchy is not based on QObject.
 %Docstring
 Create new data item.
 %End
-    virtual ~QgsDataItem();
+    ~QgsDataItem();
 
     bool hasChildren();
 %Docstring
@@ -472,9 +472,11 @@ Item that represents a layer that can be opened with one of the providers
 
     virtual bool equal( const QgsDataItem *other );
 
+
     virtual bool hasDragEnabled() const;
 
     virtual QgsMimeDataUtils::Uri mimeUri() const;
+
 
 
     QgsMapLayer::LayerType mapLayerType() const;
@@ -641,6 +643,7 @@ Constructor.
 
     virtual void setState( State state );
 
+
     virtual QVector<QgsDataItem *> createChildren();
 
 
@@ -650,8 +653,11 @@ Constructor.
 :rtype: str
 %End
     virtual bool equal( const QgsDataItem *other );
+
     virtual QIcon icon();
+
     virtual QWidget *paramWidget() /Factory/;
+
 
     static bool hiddenPath( const QString &path );
 %Docstring
@@ -666,6 +672,7 @@ Check if the given path is hidden from the browser model
 
   public slots:
     virtual void childrenCreated();
+
     void directoryChanged();
 
   protected:

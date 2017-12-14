@@ -107,7 +107,7 @@ class CORE_EXPORT QgsFileDownloader : public QObject
 #endif
 
   protected:
-    ~QgsFileDownloader();
+    ~QgsFileDownloader() override;
 
   private:
 

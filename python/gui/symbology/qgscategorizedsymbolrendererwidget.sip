@@ -29,6 +29,7 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 
     virtual QgsFeatureRenderer *renderer();
 
+
     int matchToSymbols( QgsStyle *style );
 %Docstring
 Replaces category symbols with the symbols from a style that have a matching

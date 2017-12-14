@@ -68,7 +68,9 @@ be closed
   protected:
 
     virtual void closeEvent( QCloseEvent * );
+
     virtual void showEvent( QShowEvent *event );
+
 
   signals:
 

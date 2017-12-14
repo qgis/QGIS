@@ -42,7 +42,9 @@ class QgsFeatureListViewDelegate : QItemDelegate
 
   protected:
     virtual QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
     virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
+
 
 };
 

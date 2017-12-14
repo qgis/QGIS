@@ -63,7 +63,7 @@ class QgsComposerManager: public QDialog, private Ui::QgsComposerManagerBase
     Q_OBJECT
   public:
     QgsComposerManager( QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsComposerManager();
+    ~QgsComposerManager() override;
 
     void addTemplates( const QMap<QString, QString> &templates );
 

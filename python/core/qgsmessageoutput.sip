@@ -98,11 +98,15 @@ Constructor for QgsMessageOutputConsole.
 
     virtual void setMessage( const QString &message, MessageType msgType );
 
+
     virtual void appendMessage( const QString &message );
+
 
     virtual void setTitle( const QString &title );
 
+
     virtual void showMessage( bool blocking = true );
+
 %Docstring
 sends the message to the standard output
 %End

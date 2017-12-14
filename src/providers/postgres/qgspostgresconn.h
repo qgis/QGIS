@@ -354,7 +354,7 @@ class QgsPostgresConn : public QObject
 
   private:
     QgsPostgresConn( const QString &conninfo, bool readOnly, bool shared, bool transaction );
-    ~QgsPostgresConn();
+    ~QgsPostgresConn() override;
 
     int mRef;
     int mOpenCursors;

@@ -207,7 +207,9 @@ Returns a QPolygonF representing the points.
 
 
     virtual int childCount() const;
+
     virtual QgsPoint childPoint( int index ) const;
+
 
 
 };

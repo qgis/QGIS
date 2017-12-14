@@ -75,15 +75,15 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
      */
     explicit QgsSpatiaLiteProvider( QString const &uri = QString() );
 
-    virtual ~ QgsSpatiaLiteProvider();
+    ~ QgsSpatiaLiteProvider() override;
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
-    virtual QString storageType() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
-    virtual QString subsetString() const override;
-    virtual bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
-    virtual bool supportsSubsetString() const override { return true; }
+    QgsAbstractFeatureSource *featureSource() const override;
+    QString storageType() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsFeatureIterator getFeatures( const QgsFeatureRequest &request ) const override;
+    QString subsetString() const override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
+    bool supportsSubsetString() const override { return true; }
     QgsWkbTypes::Type wkbType() const override;
 
     /**
@@ -94,17 +94,17 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     size_t layerCount() const;
 
     long featureCount() const override;
-    virtual QgsRectangle extent() const override;
-    virtual void updateExtents() override;
+    QgsRectangle extent() const override;
+    void updateExtents() override;
     QgsFields fields() const override;
     QVariant minimumValue( int index ) const override;
     QVariant maximumValue( int index ) const override;
-    virtual QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
-    virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
-        QgsFeedback *feedback = nullptr ) const override;
+    QSet<QVariant> uniqueValues( int index, int limit = -1 ) const override;
+    QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
+                                       QgsFeedback *feedback = nullptr ) const override;
 
     bool isValid() const override;
-    virtual bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
+    bool isSaveAndLoadStyleToDatabaseSupported() const override { return true; }
     bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
     bool deleteFeatures( const QgsFeatureIds &id ) override;
     bool truncate() override;
@@ -113,7 +113,7 @@ class QgsSpatiaLiteProvider: public QgsVectorDataProvider
     bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
     QgsVectorDataProvider::Capabilities capabilities() const override;
     QVariant defaultValue( int fieldId ) const override;
-    virtual bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
+    bool skipConstraintCheck( int fieldIndex, QgsFieldConstraints::Constraint constraint, const QVariant &value = QVariant() ) const override;
     bool createAttributeIndex( int field ) override;
 
     /**

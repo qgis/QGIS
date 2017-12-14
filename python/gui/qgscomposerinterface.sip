@@ -31,7 +31,7 @@ open composer dialogs.
 Constructor for QgsComposerInterface.
 %End
 
-    virtual ~QgsComposerInterface();
+    ~QgsComposerInterface();
 
     virtual QgsComposerView *view() = 0;
 %Docstring

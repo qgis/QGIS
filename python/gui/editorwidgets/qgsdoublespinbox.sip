@@ -90,6 +90,7 @@ evaluated and then discarded.
 %End
 
     virtual void clear();
+
 %Docstring
 Set the current value to the value defined by the clear value.
 %End
@@ -120,12 +121,15 @@ Returns the value used when clear() is called.
 %End
 
     virtual double valueFromText( const QString &text ) const;
+
     virtual QValidator::State validate( QString &input, int &pos ) const;
+
     virtual void paintEvent( QPaintEvent *e );
 
 
   protected:
     virtual void changeEvent( QEvent *event );
+
     virtual void wheelEvent( QWheelEvent *event );
 
 

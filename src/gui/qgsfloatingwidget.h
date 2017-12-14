@@ -119,7 +119,7 @@ class GUI_EXPORT QgsFloatingWidget: public QWidget
 
   protected:
     void showEvent( QShowEvent *e ) override;
-    virtual void paintEvent( QPaintEvent *e ) override;
+    void paintEvent( QPaintEvent *e ) override;
 
   private slots:
 
@@ -149,7 +149,7 @@ class QgsFloatingWidgetEventFilter: public QObject
 
     QgsFloatingWidgetEventFilter( QWidget *parent = nullptr );
 
-    virtual bool eventFilter( QObject *object, QEvent *event ) override;
+    bool eventFilter( QObject *object, QEvent *event ) override;
 
   signals:
 

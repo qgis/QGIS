@@ -35,10 +35,10 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     Q_OBJECT
   public:
     QgsComposerLabel( QgsComposition *composition SIP_TRANSFERTHIS );
-    ~QgsComposerLabel();
+    ~QgsComposerLabel() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerLabel; }
+    int type() const override { return ComposerLabel; }
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
@@ -151,7 +151,7 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     //Overridden to contain part of label's text
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     /**
      * In case of negative margins, the bounding rect may be larger than the
@@ -162,12 +162,12 @@ class CORE_EXPORT QgsComposerLabel: public QgsComposerItem
     /**
      * Reimplemented to call prepareGeometryChange after toggling frame
      */
-    virtual void setFrameEnabled( const bool drawFrame ) override;
+    void setFrameEnabled( const bool drawFrame ) override;
 
     /**
      * Reimplemented to call prepareGeometryChange after changing stroke width
      */
-    virtual void setFrameStrokeWidth( const double strokeWidth ) override;
+    void setFrameStrokeWidth( const double strokeWidth ) override;
 
   public slots:
 

@@ -31,7 +31,7 @@ class APP_EXPORT QgsLoadStyleFromDBDialog : public QDialog, private Ui::QgsLoadS
   public:
     explicit QgsLoadStyleFromDBDialog( QWidget *parent = nullptr );
 
-    ~QgsLoadStyleFromDBDialog();
+    ~QgsLoadStyleFromDBDialog() override;
 
     void initializeLists( const QStringList &ids, const QStringList &names, const QStringList &descriptions, int sectionLimit );
     QString getSelectedStyleId();

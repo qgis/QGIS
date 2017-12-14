@@ -111,6 +111,7 @@ Emitted when the widget curve changes
 
     virtual void keyPressEvent( QKeyEvent *event );
 
+
 };
 
 

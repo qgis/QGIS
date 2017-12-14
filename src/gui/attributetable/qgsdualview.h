@@ -270,7 +270,7 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     void formModeChanged( QgsAttributeForm::Mode mode );
 
   protected:
-    virtual void hideEvent( QHideEvent *event ) override;
+    void hideEvent( QHideEvent *event ) override;
 
   private slots:
 

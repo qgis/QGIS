@@ -55,6 +55,7 @@ corresponds to 1 scene size unit*
 
     virtual void setVisibility( const bool visible );
 
+
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
 %Docstring

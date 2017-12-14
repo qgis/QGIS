@@ -157,7 +157,7 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     /**
      * Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
      */
-    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
     /**
      * Read children from XML and append them to the group.
@@ -168,23 +168,23 @@ class CORE_EXPORT QgsLayerTreeGroup : public QgsLayerTreeNode
     /**
      * Return text representation of the tree. For debugging purposes only.
      */
-    virtual QString dump() const override;
+    QString dump() const override;
 
     /**
      * Return a clone of the group. The children are cloned too.
      */
-    virtual QgsLayerTreeGroup *clone() const override SIP_FACTORY;
+    QgsLayerTreeGroup *clone() const override SIP_FACTORY;
 
     /**
      * Calls resolveReferences() on child tree nodes
      * \since QGIS 3.0
      */
-    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
+    void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
     /**
      * Check or uncheck a node and all its children (taking into account exclusion rules)
      */
-    virtual void setItemVisibilityCheckedRecursive( bool checked ) override;
+    void setItemVisibilityCheckedRecursive( bool checked ) override;
 
     /**
      * Return whether the group is mutually exclusive (only one child can be checked at a time)

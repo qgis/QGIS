@@ -33,10 +33,12 @@ picture.
 
     QgsGlowEffect();
     QgsGlowEffect( const QgsGlowEffect &other );
-    virtual ~QgsGlowEffect();
+    ~QgsGlowEffect();
 
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
 
     void setSpread( const double spread );
 %Docstring
@@ -269,7 +271,9 @@ color ramp or by specificing a single color.
   protected:
 
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+
     virtual void draw( QgsRenderContext &context );
+
 
     virtual bool shadeExterior() const = 0;
 %Docstring
@@ -315,6 +319,7 @@ Creates a new QgsOuterGlowEffect effect from a properties string map.
     virtual QString type() const;
     virtual QgsOuterGlowEffect *clone() const /Factory/;
 
+
   protected:
 
     virtual bool shadeExterior() const;
@@ -350,6 +355,7 @@ Creates a new QgsInnerGlowEffect effect from a properties string map.
 
     virtual QString type() const;
     virtual QgsInnerGlowEffect *clone() const /Factory/;
+
 
   protected:
 

@@ -49,7 +49,7 @@ class QgsPalettedRendererClassGatherer: public QThread
       , mWasCanceled( false )
     {}
 
-    virtual void run() override
+    void run() override
     {
       mWasCanceled = false;
 
@@ -155,7 +155,7 @@ class QgsPalettedRendererModel : public QAbstractItemModel
     bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole ) override;
     Qt::ItemFlags flags( const QModelIndex &index ) const override;
     bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
-    virtual bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
+    bool insertRows( int row, int count, const QModelIndex &parent = QModelIndex() ) override;
     Qt::DropActions supportedDropActions() const override;
     QStringList mimeTypes() const override;
     QMimeData *mimeData( const QModelIndexList &indexes ) const override;
@@ -191,7 +191,7 @@ class GUI_EXPORT QgsPalettedRendererWidget: public QgsRasterRendererWidget, priv
   public:
 
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
-    ~QgsPalettedRendererWidget();
+    ~QgsPalettedRendererWidget() override;
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) SIP_FACTORY { return new QgsPalettedRendererWidget( layer, extent ); }
 
     QgsRasterRenderer *renderer() override;

@@ -64,7 +64,9 @@ Constructor for QgsVectorLayerUndoCommandAddFeature
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -89,7 +91,9 @@ Constructor for QgsVectorLayerUndoCommandDeleteFeature
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -114,9 +118,13 @@ Constructor for QgsVectorLayerUndoCommandChangeGeometry
 %End
 
     virtual void undo();
+
     virtual void redo();
+
     virtual int id() const;
+
     virtual bool mergeWith( const QUndoCommand * );
+
 
 };
 
@@ -143,7 +151,9 @@ Constructor for QgsVectorLayerUndoCommandChangeAttribute
 :param oldValue: previous value of attribute
 %End
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -167,7 +177,9 @@ Constructor for QgsVectorLayerUndoCommandAddAttribute
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -191,7 +203,9 @@ Constructor for QgsVectorLayerUndoCommandDeleteAttribute
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 
@@ -219,7 +233,9 @@ Constructor for QgsVectorLayerUndoCommandRenameAttribute
 %End
 
     virtual void undo();
+
     virtual void redo();
+
 
 };
 

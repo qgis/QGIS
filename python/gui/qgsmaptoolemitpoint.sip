@@ -28,8 +28,11 @@ constructor
 
     virtual Flags flags() const;
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
+
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+
 
   signals:
     void canvasClicked( const QgsPointXY &point, Qt::MouseButton button );

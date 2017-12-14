@@ -69,7 +69,7 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
      */
     QgsGradientStop selectedStop() const;
 
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
     void paintEvent( QPaintEvent *event ) override;
 
   public slots:
@@ -137,10 +137,10 @@ class GUI_EXPORT QgsGradientStopEditor : public QWidget
 
   protected:
 
-    virtual void mouseMoveEvent( QMouseEvent *event ) override;
-    virtual void mousePressEvent( QMouseEvent *event ) override;
-    virtual void mouseDoubleClickEvent( QMouseEvent *event ) override;
-    virtual void keyPressEvent( QKeyEvent *event ) override;
+    void mouseMoveEvent( QMouseEvent *event ) override;
+    void mousePressEvent( QMouseEvent *event ) override;
+    void mouseDoubleClickEvent( QMouseEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
     //Reimplemented to accept dragged colors
     void dragEnterEvent( QDragEnterEvent *e ) override;

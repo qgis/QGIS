@@ -86,7 +86,7 @@ class CORE_EXPORT QgsVectorLayerCache : public QObject
 
   public:
     QgsVectorLayerCache( QgsVectorLayer *layer, int cacheSize, QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsVectorLayerCache();
+    ~QgsVectorLayerCache() override;
 
     /**
      * Sets the maximum number of features to keep in the cache. Some features will be removed from

@@ -28,7 +28,7 @@ class ANALYSIS_EXPORT QgsSlopeFilter: public QgsDerivativeFilter
 {
   public:
     QgsSlopeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
-    ~QgsSlopeFilter() = default;
+    ~QgsSlopeFilter() override = default;
 
     /**
      * Calculates output value from nine input values. The input values and the output value can be equal to the

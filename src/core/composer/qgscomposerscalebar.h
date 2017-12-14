@@ -39,10 +39,10 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
   public:
 
     QgsComposerScaleBar( QgsComposition *composition SIP_TRANSFERTHIS );
-    ~QgsComposerScaleBar();
+    ~QgsComposerScaleBar() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerScaleBar; }
+    int type() const override { return ComposerScaleBar; }
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsComposerScaleBar: public QgsComposerItem
     void updateSegmentSize();
     //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   private:
 

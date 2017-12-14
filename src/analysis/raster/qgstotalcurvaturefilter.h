@@ -28,7 +28,7 @@ class ANALYSIS_EXPORT QgsTotalCurvatureFilter: public QgsNineCellFilter
 {
   public:
     QgsTotalCurvatureFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
-    ~QgsTotalCurvatureFilter() = default;
+    ~QgsTotalCurvatureFilter() override = default;
 
   protected:
 

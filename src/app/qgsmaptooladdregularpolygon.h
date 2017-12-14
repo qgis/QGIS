@@ -28,7 +28,7 @@ class QgsMapToolAddRegularPolygon: public QgsMapToolCapture
 
   public:
     QgsMapToolAddRegularPolygon( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolAddRegularPolygon();
+    ~QgsMapToolAddRegularPolygon() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;

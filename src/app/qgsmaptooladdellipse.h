@@ -27,7 +27,7 @@ class QgsMapToolAddEllipse: public QgsMapToolCapture
     Q_OBJECT
   public:
     QgsMapToolAddEllipse( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolAddEllipse();
+    ~QgsMapToolAddEllipse() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;

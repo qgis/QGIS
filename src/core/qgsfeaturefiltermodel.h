@@ -70,7 +70,7 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      * Create a new QgsFeatureFilterModel, optionally specifying a \a parent.
      */
     explicit QgsFeatureFilterModel( QObject *parent = nullptr );
-    ~QgsFeatureFilterModel();
+    ~QgsFeatureFilterModel() override;
 
     /**
      * The source layer from which features will be fetched.
@@ -112,11 +112,11 @@ class CORE_EXPORT QgsFeatureFilterModel : public QAbstractItemModel
      */
     void setFilterValue( const QString &filterValue );
 
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
-    virtual QModelIndex parent( const QModelIndex &child ) const override;
-    virtual int rowCount( const QModelIndex &parent ) const override;
-    virtual int columnCount( const QModelIndex &parent ) const override;
-    virtual QVariant data( const QModelIndex &index, int role ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent ) const override;
+    QModelIndex parent( const QModelIndex &child ) const override;
+    int rowCount( const QModelIndex &parent ) const override;
+    int columnCount( const QModelIndex &parent ) const override;
+    QVariant data( const QModelIndex &index, int role ) const override;
 
     /**
      * An additional filter expression to apply, next to the filterValue.

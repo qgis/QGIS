@@ -67,11 +67,11 @@ class CORE_EXPORT QgsVectorLayerDiagramProvider : public QgsAbstractLabelProvide
     explicit QgsVectorLayerDiagramProvider( QgsVectorLayer *layer, bool ownFeatureLoop = true );
 
     //! Clean up
-    ~QgsVectorLayerDiagramProvider();
+    ~QgsVectorLayerDiagramProvider() override;
 
-    virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
+    QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
-    virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
     // new virtual methods
 
