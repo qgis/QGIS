@@ -165,9 +165,13 @@ Reload the whole model
     void itemDataChanged( QgsDataItem *item );
     void itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState );
 
-    void addFavoriteDirectory( const QString &directory );
+    void addFavoriteDirectory( const QString &directory, const QString &name = QString() );
 %Docstring
- Adds a directory to the favorites group.
+ Adds a ``directory`` to the favorites group.
+
+ If ``name`` is specified, it will be used as the favorite's name. Otherwise
+ the name will be set to match ``directory``.
+
 .. versionadded:: 3.0
 .. seealso:: :py:func:`removeFavorite()`
 %End

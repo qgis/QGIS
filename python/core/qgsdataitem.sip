@@ -255,11 +255,22 @@ Create new data item.
 %Docstring
  :rtype: QIcon
 %End
+
     QString name() const;
 %Docstring
+ Returns the name of the item (the displayed text for the item).
+
+.. seealso:: :py:func:`setName()`
  :rtype: str
 %End
+
     void setName( const QString &name );
+%Docstring
+ Sets the ``name`` of the item (the displayed text for the item).
+
+.. seealso:: :py:func:`name()`
+%End
+
     QString path() const;
 %Docstring
  :rtype: str
@@ -673,9 +684,13 @@ class QgsFavoritesItem : QgsDataCollectionItem
     virtual QVector<QgsDataItem *> createChildren();
 
 
-    void addDirectory( const QString &directory );
+    void addDirectory( const QString &directory, const QString &name = QString() );
 %Docstring
- Adds a new directory to the favorites group.
+ Adds a new ``directory`` to the favorites group.
+
+ If ``name`` is specified, it will be used as the favorite's name. Otherwise
+ the name will be set to match ``directory``.
+
 .. seealso:: :py:func:`removeDirectory()`
 %End
 
@@ -683,6 +698,11 @@ class QgsFavoritesItem : QgsDataCollectionItem
 %Docstring
  Removes an existing directory from the favorites group.
 .. seealso:: :py:func:`addDirectory()`
+%End
+
+    void renameFavorite( const QString &path, const QString &name );
+%Docstring
+ Renames the stored favorite with corresponding ``path`` a new ``name``.
 %End
 
     static QIcon iconFavorites();
