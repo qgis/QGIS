@@ -40,6 +40,9 @@ class DeleteColumn(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def __init__(self):
         super().__init__()
         self.fields_to_delete = []

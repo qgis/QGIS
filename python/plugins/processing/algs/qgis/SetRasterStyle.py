@@ -44,6 +44,9 @@ class SetRasterStyle(QgisAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
+    def groupId(self):
+        return 'rastertools'
+
     def __init__(self):
         super().__init__()
 

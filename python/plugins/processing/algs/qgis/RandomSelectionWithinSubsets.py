@@ -59,6 +59,9 @@ class RandomSelectionWithinSubsets(QgisAlgorithm):
     def group(self):
         return self.tr('Vector selection')
 
+    def groupId(self):
+        return 'vectorselection'
+
     def __init__(self):
         super().__init__()
 

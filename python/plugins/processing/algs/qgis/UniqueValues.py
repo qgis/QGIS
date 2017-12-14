@@ -63,6 +63,9 @@ class UniqueValues(QgisAlgorithm):
     def group(self):
         return self.tr('Vector analysis')
 
+    def groupId(self):
+        return 'vectoranalysis'
+
     def __init__(self):
         super().__init__()
 

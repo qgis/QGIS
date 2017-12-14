@@ -65,6 +65,9 @@ class RandomPointsLayer(QgisAlgorithm):
     def group(self):
         return self.tr('Vector creation')
 
+    def groupId(self):
+        return 'vectorcreation'
+
     def __init__(self):
         super().__init__()
 

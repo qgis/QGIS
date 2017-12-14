@@ -46,6 +46,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def initParameters(self, config=None):
 
         class ParameterFieldsMapping(QgsProcessingParameterDefinition):

@@ -140,6 +140,9 @@ class RasterizeAlgorithm(QgisAlgorithm):
     def group(self):
         return self.tr('Raster tools')
 
+    def groupId(self):
+        return 'rastertools'
+
     def tags(self):
         return self.tr('layer,raster,convert,file,map themes,tiles,render').split(',')
 

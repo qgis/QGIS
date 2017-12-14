@@ -64,6 +64,9 @@ class MinimumBoundingGeometry(QgisAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.type_names = [self.tr('Envelope (Bounding Box)'),
