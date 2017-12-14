@@ -640,10 +640,14 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
     /**
-     * Adds a new directory to the favorites group.
+     * Adds a new \a directory to the favorites group.
+     *
+     * If \a name is specified, it will be used as the favorite's name. Otherwise
+     * the name will be set to match \a directory.
+     *
      * \see removeDirectory()
      */
-    void addDirectory( const QString &directory );
+    void addDirectory( const QString &directory, const QString &name = QString() );
 
     /**
      * Removes an existing directory from the favorites group.
@@ -651,13 +655,18 @@ class CORE_EXPORT QgsFavoritesItem : public QgsDataCollectionItem
      */
     void removeDirectory( QgsDirectoryItem *item );
 
+    /**
+     * Renames the stored favorite with corresponding \a path a new \a name.
+     */
+    void renameFavorite( const QString &path, const QString &name );
+
     //! Icon for favorites group
     static QIcon iconFavorites();
 
     QVariant sortKey() const override;
 
   private:
-    QVector<QgsDataItem *> createChildren( const QString &favDir );
+    QVector<QgsDataItem *> createChildren( const QString &favDir, const QString &name );
 };
 
 /**
@@ -714,6 +723,8 @@ class CORE_EXPORT QgsZipItem : public QgsDataCollectionItem
 */
 class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
 {
+    Q_OBJECT
+
   public:
 
     QgsProjectHomeItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
@@ -722,6 +733,30 @@ class CORE_EXPORT QgsProjectHomeItem : public QgsDirectoryItem
     QVariant sortKey() const override;
 
 };
+
+/**
+ * \ingroup core
+ * A directory item showing the a single favorite directory.
+ * \since QGIS 3.0
+*/
+class CORE_EXPORT QgsFavoriteItem : public QgsDirectoryItem
+{
+    Q_OBJECT
+
+  public:
+
+    QgsFavoriteItem( QgsFavoritesItem *parent, const QString &name, const QString &dirPath, const QString &path );
+
+    /**
+     * Sets a new \a name for the favorite, storing the new name permanently for the favorite.
+     */
+    void rename( const QString &name );
+
+  private:
+
+    QgsFavoritesItem *mFavorites = nullptr;
+};
+
 #endif
 ///@endcond
 

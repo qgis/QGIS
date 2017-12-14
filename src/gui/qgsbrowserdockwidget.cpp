@@ -31,6 +31,7 @@
 #include "qgsvectorlayer.h"
 #include "qgsproject.h"
 #include "qgssettings.h"
+#include "qgsnewnamedialog.h"
 
 // browser layer properties dialog
 #include "qgsapplication.h"
@@ -168,6 +169,24 @@ void QgsBrowserDockWidget::itemDoubleClicked( const QModelIndex &index )
     addLayerAtIndex( index ); // default double-click handler
 }
 
+void QgsBrowserDockWidget::renameFavorite()
+{
+  QgsDataItem *dataItem = mModel->dataItem( mProxyModel->mapToSource( mBrowserView->currentIndex() ) );
+  if ( !dataItem )
+    return;
+
+  QgsFavoriteItem *favorite = qobject_cast< QgsFavoriteItem * >( dataItem );
+  if ( !favorite )
+    return;
+
+  QgsNewNameDialog dlg( tr( "favorite “%1”" ).arg( favorite->name() ), favorite->name() );
+  dlg.setWindowTitle( tr( "Rename Favorite" ) );
+  if ( dlg.exec() != QDialog::Accepted || dlg.name() == favorite->name() )
+    return;
+
+  favorite->rename( dlg.name() );
+}
+
 void QgsBrowserDockWidget::showContextMenu( QPoint pt )
 {
   QModelIndex index = mProxyModel->mapToSource( mBrowserView->indexAt( pt ) );
@@ -180,9 +199,8 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
   if ( item->type() == QgsDataItem::Directory )
   {
     QgsSettings settings;
-    QStringList favDirs = settings.value( QStringLiteral( "browser/favourites" ) ).toStringList();
-    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
 
+    bool inFavDirs = item->parent() && item->parent()->type() == QgsDataItem::Favorites;
     if ( item->parent() && !inFavDirs )
     {
       // only non-root directories can be added as favorites
@@ -190,8 +208,11 @@ void QgsBrowserDockWidget::showContextMenu( QPoint pt )
     }
     else if ( inFavDirs )
     {
-      // only favorites can be removed
+      QAction *actionRename = new QAction( tr( "Rename Favorite..." ), this );
+      connect( actionRename, &QAction::triggered, this, &QgsBrowserDockWidget::renameFavorite );
+      menu->addAction( actionRename );
       menu->addAction( tr( "Remove Favorite" ), this, SLOT( removeFavorite() ) );
+      menu->addSeparator();
     }
     menu->addAction( tr( "Properties..." ), this, SLOT( showProperties() ) );
     menu->addAction( tr( "Hide from Browser" ), this, SLOT( hideItem() ) );
@@ -261,9 +282,9 @@ void QgsBrowserDockWidget::addFavoriteDirectory()
   }
 }
 
-void QgsBrowserDockWidget::addFavoriteDirectory( const QString &favDir )
+void QgsBrowserDockWidget::addFavoriteDirectory( const QString &favDir, const QString &name )
 {
-  mModel->addFavoriteDirectory( favDir );
+  mModel->addFavoriteDirectory( favDir, name );
 }
 
 void QgsBrowserDockWidget::removeFavorite()

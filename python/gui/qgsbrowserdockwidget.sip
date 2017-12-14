@@ -29,7 +29,7 @@ class QgsBrowserDockWidget : QgsDockWidget
  \param parent parent widget
 %End
     ~QgsBrowserDockWidget();
-    void addFavoriteDirectory( const QString &favDir );
+    void addFavoriteDirectory( const QString &favDir, const QString &name = QString() );
 %Docstring
 Add directory to favorites
 %End

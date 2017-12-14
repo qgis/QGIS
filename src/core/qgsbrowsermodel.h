@@ -164,11 +164,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState );
 
     /**
-     * Adds a directory to the favorites group.
+     * Adds a \a directory to the favorites group.
+     *
+     * If \a name is specified, it will be used as the favorite's name. Otherwise
+     * the name will be set to match \a directory.
+     *
      * \since QGIS 3.0
      * \see removeFavorite()
      */
-    void addFavoriteDirectory( const QString &directory );
+    void addFavoriteDirectory( const QString &directory, const QString &name = QString() );
 
     /**
      * Removes a favorite directory from its corresponding model index.

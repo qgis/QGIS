@@ -546,10 +546,10 @@ void QgsBrowserModel::refresh( const QModelIndex &index )
   item->refresh();
 }
 
-void QgsBrowserModel::addFavoriteDirectory( const QString &directory )
+void QgsBrowserModel::addFavoriteDirectory( const QString &directory, const QString &name )
 {
   Q_ASSERT( mFavorites );
-  mFavorites->addDirectory( directory );
+  mFavorites->addDirectory( directory, name );
 }
 
 void QgsBrowserModel::removeFavorite( const QModelIndex &index )
