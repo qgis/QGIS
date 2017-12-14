@@ -146,6 +146,9 @@ class warp(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
+    def groupId(self):
+        return 'rasterprojections'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'warp.png'))
 

@@ -99,6 +99,9 @@ class gdaladdo(GdalAlgorithm):
     def group(self):
         return self.tr('Raster miscellaneous')
 
+    def groupId(self):
+        return 'rastermiscellaneous'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-overview.png'))
 

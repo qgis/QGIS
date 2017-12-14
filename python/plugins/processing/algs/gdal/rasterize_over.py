@@ -67,6 +67,9 @@ class rasterize_over(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
+    def groupId(self):
+        return 'vectorconversion'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         context = dataobjects.createContext()
         inLayer = QgsProcessingUtils.mapLayerFromString(self.getParameterValue(self.INPUT), context)

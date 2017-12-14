@@ -63,6 +63,9 @@ class ExtractProjection(GdalAlgorithm):
     def group(self):
         return self.tr('Raster projections')
 
+    def groupId(self):
+        return 'rasterprojections'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         return ["extractprojection"]
 
