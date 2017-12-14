@@ -92,7 +92,6 @@ Returns the composer object property definitions.
 Constructor
 :param composition: parent composition
 %End
-    ~QgsComposerObject();
 
     const QgsComposition *composition() const;
 %Docstring

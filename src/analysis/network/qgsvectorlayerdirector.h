@@ -68,8 +68,6 @@ class ANALYSIS_EXPORT QgsVectorLayerDirector : public QgsGraphDirector
                             const Direction defaultDirection
                           );
 
-    ~QgsVectorLayerDirector() override = default;
-
     /*
      * MANDATORY DIRECTOR PROPERTY DECLARATION
      */

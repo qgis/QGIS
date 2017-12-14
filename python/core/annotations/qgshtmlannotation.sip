@@ -30,8 +30,6 @@ An annotation item that embeds HTML content.
 Constructor for QgsHtmlAnnotation.
 %End
 
-    ~QgsHtmlAnnotation();
-
     virtual QgsHtmlAnnotation *clone() const /Factory/;
 
 

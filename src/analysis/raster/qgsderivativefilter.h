@@ -28,7 +28,7 @@ class ANALYSIS_EXPORT QgsDerivativeFilter : public QgsNineCellFilter
 {
   public:
     QgsDerivativeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
-    ~QgsDerivativeFilter() override = default;
+
     //to be implemented by subclasses
     float processNineCellWindow( float *x11, float *x21, float *x31,
                                  float *x12, float *x22, float *x32,

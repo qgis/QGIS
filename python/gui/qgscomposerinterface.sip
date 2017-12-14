@@ -31,8 +31,6 @@ open composer dialogs.
 Constructor for QgsComposerInterface.
 %End
 
-    ~QgsComposerInterface();
-
     virtual QgsComposerView *view() = 0;
 %Docstring
 Returns the composer's QgsComposerView editor widget.

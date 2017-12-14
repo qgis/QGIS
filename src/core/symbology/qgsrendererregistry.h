@@ -149,8 +149,6 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     , mLayerTypes( layerTypes )
     {}
 
-    ~QgsRendererMetadata() override = default;
-
     QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY
     { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
     QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override SIP_FACTORY

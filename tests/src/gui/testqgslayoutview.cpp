@@ -242,7 +242,6 @@ class TestItem : public QgsLayoutItem
   public:
 
     TestItem( QgsLayout *layout ) : QgsLayoutItem( layout ) {}
-    ~TestItem() override = default;
 
     int mFlag = 0;
 

@@ -21,7 +21,6 @@ Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies top
 %End
   public:
     QgsRuggednessFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
-    ~QgsRuggednessFilter();
 
   protected:
 

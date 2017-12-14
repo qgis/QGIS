@@ -20,7 +20,6 @@ Calculates slope values in a window of 3x3 cells based on first order derivative
 %End
   public:
     QgsSlopeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
-    ~QgsSlopeFilter();
 
      virtual float processNineCellWindow( float *x11, float *x21, float *x31,
                                  float *x12, float *x22, float *x32,

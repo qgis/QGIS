@@ -116,7 +116,6 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * \param composition parent composition
      */
     QgsComposerObject( QgsComposition *composition );
-    ~QgsComposerObject() override = default;
 
     /**
      * Returns the composition the item is attached to.

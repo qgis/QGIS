@@ -27,11 +27,6 @@ and add layers.
 %End
   public:
 
-    ~QgsAbstractDataSourceWidget();
-%Docstring
-Destructor
-%End
-
     void setMapCanvas( const QgsMapCanvas *mapCanvas );
 %Docstring
 Store a pointer to the map canvas to retrieve extent and CRS

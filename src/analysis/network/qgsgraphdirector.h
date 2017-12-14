@@ -56,8 +56,6 @@ class ANALYSIS_EXPORT QgsGraphDirector : public QObject
 
   public:
 
-    ~QgsGraphDirector() override = default;
-
     /**
      * Make a graph using QgsGraphBuilder
      *

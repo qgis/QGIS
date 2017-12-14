@@ -48,8 +48,6 @@ class GUI_EXPORT QgsLayoutDesignerInterface: public QObject
       : QObject( parent )
     {}
 
-    ~QgsLayoutDesignerInterface() override = default;
-
     /**
      * Returns the layout displayed in the designer.
      * \see view()

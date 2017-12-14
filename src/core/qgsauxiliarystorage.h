@@ -73,11 +73,6 @@ class CORE_EXPORT QgsAuxiliaryLayer : public QgsVectorLayer
     QgsAuxiliaryLayer( const QString &pkField, const QString &filename, const QString &table, QgsVectorLayer *vlayer );
 
     /**
-     * Destructor
-     */
-    ~QgsAuxiliaryLayer() override = default;
-
-    /**
      * Copy constructor deactivated
      */
     QgsAuxiliaryLayer( const QgsAuxiliaryLayer &rhs ) = delete;

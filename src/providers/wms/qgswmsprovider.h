@@ -86,7 +86,7 @@ class QgsCachedImageFetcher: public QgsImageFetcher
     Q_OBJECT
   public:
     explicit QgsCachedImageFetcher( const QImage &img );
-    ~QgsCachedImageFetcher() override = default;
+
     void start() override;
   private:
     const QImage _img; // copy is intentional

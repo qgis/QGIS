@@ -31,8 +31,6 @@ open layout designer dialogs.
 Constructor for QgsLayoutDesignerInterface.
 %End
 
-    ~QgsLayoutDesignerInterface();
-
     virtual QgsLayout *layout() = 0;
 %Docstring
 Returns the layout displayed in the designer.
