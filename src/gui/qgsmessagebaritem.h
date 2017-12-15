@@ -23,9 +23,10 @@
 
 #include <QWidget>
 #include <QIcon>
-#include <QTextEdit>
 #include <QHBoxLayout>
 #include "qgis_gui.h"
+
+class QTextBrowser;
 
 /**
  * \ingroup gui
@@ -94,6 +95,9 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     //! emitted when the message level has changed
     void styleChanged( const QString &styleSheet );
 
+  private slots:
+
+    void urlClicked( const QUrl &url );
 
   private:
     void writeContent();
@@ -107,7 +111,7 @@ class GUI_EXPORT QgsMessageBarItem : public QWidget
     QHBoxLayout *mLayout = nullptr;
     QLabel *mLblIcon = nullptr;
     QString mStyleSheet;
-    QTextEdit *mTextEdit = nullptr;
+    QTextBrowser *mTextBrowser = nullptr;
 };
 
 #endif // qgsmessagebaritem_H

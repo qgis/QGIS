@@ -9,6 +9,7 @@
 
 
 
+
 class QgsMessageBarItem : QWidget
 {
 
@@ -113,7 +114,6 @@ returns the styleSheet
 %Docstring
 emitted when the message level has changed
 %End
-
 
 };
 
