@@ -287,24 +287,17 @@ bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &
     }
 
     double x, y;
-    if ( qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( p1.x(), p1.y(), q1.x(), q1.y(), q2.x(), q2.y(), x, y, tolerance ), 0.0, tolerance ) )
+    if (
+      // intersectionPoint = p1
+      qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( p1.x(), p1.y(), q1.x(), q1.y(), q2.x(), q2.y(), x, y, tolerance ), 0.0, tolerance ) ||
+      // intersectionPoint = p2
+      qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( p2.x(), p2.y(), q1.x(), q1.y(), q2.x(), q2.y(), x, y, tolerance ), 0.0, tolerance ) ||
+      // intersectionPoint = q1
+      qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( q1.x(), q1.y(), p1.x(), p1.y(), p2.x(), p2.y(), x, y, tolerance ), 0.0, tolerance ) ||
+      // intersectionPoint = q2
+      qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( q2.x(), q2.y(), p1.x(), p1.y(), p2.x(), p2.y(), x, y, tolerance ), 0.0, tolerance )
+    )
     {
-      intersectionPoint == p1;
-      return true;
-    }
-    else if ( qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( p2.x(), p2.y(), q1.x(), q1.y(), q2.x(), q2.y(), x, y, tolerance ), 0.0, tolerance ) )
-    {
-      intersectionPoint == p2;
-      return true;
-    }
-    else if ( qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( q1.x(), q1.y(), p1.x(), p1.y(), p2.x(), p2.y(), x, y, tolerance ), 0.0, tolerance ) )
-    {
-      intersectionPoint == q1;
-      return true;
-    }
-    else if ( qgsDoubleNear( QgsGeometryUtils::sqrDistToLine( q2.x(), q2.y(), p1.x(), p1.y(), p2.x(), p2.y(), x, y, tolerance ), 0.0, tolerance ) )
-    {
-      intersectionPoint == q2;
       return true;
     }
   }
