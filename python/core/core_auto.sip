@@ -55,6 +55,7 @@
 %Include qgsfontutils.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgshistogram.sip
+%Include qgshtmlutils.sip
 %Include qgsinterval.sip
 %Include qgsjsonutils.sip
 %Include qgslayerdefinition.sip
@@ -318,7 +319,6 @@
 %Include qgsgeometryvalidator.sip
 %Include qgsgml.sip
 %Include qgsgmlschema.sip
-%Include qgshtmlutils.sip
 %Include qgsmaplayer.sip
 %Include qgsmaplayerlegend.sip
 %Include qgsmaplayermodel.sip
