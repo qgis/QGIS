@@ -78,7 +78,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
      * \see currentText()
      * \see setText()
      */
-    QString text() { return mText; }
+    QString text() const { return mText; }
 
     /**
      * Sets the label's preset \a text.

@@ -45,6 +45,11 @@ QgsLayoutItemShape::QgsLayoutItemShape( QgsLayout *layout )
   } );
 }
 
+QgsLayoutItemShape *QgsLayoutItemShape::create( QgsLayout *layout )
+{
+  return new QgsLayoutItemShape( layout );
+}
+
 int QgsLayoutItemShape::type() const
 {
   return QgsLayoutItemRegistry::LayoutShape;

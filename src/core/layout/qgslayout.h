@@ -678,6 +678,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
     friend class QgsLayoutItemGroupUndoCommand;
     friend class QgsLayoutModel;
     friend class QgsLayoutMultiFrame;
+    friend class QgsCompositionConverter;
 };
 
 #endif //QGSLAYOUT_H

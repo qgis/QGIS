@@ -1,0 +1,90 @@
+<Layout name="new" units="mm">
+ <Snapper tolerance="5" snapToItems="1" snapToGrid="0" snapToGuides="1"/>
+ <Grid offsetUnits="mm" offsetX="0" resolution="10" resUnits="mm" offsetY="0"/>
+ <PageCollection>
+  <symbol type="fill" alpha="1" clip_to_extent="1" name="">
+   <layer locked="0" enabled="1" pass="0" class="SimpleFill">
+    <prop v="3x:0,0,0,0,0,0" k="border_width_map_unit_scale"/>
+    <prop v="227,26,28,255" k="color"/>
+    <prop v="miter" k="joinstyle"/>
+    <prop v="0,0" k="offset"/>
+    <prop v="3x:0,0,0,0,0,0" k="offset_map_unit_scale"/>
+    <prop v="MM" k="offset_unit"/>
+    <prop v="0,0,0,255" k="outline_color"/>
+    <prop v="no" k="outline_style"/>
+    <prop v="0.26" k="outline_width"/>
+    <prop v="MM" k="outline_width_unit"/>
+    <prop v="solid" k="style"/>
+    <data_defined_properties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </data_defined_properties>
+   </layer>
+  </symbol>
+  <LayoutItem outlineWidthM="0.3,mm" type="65638" opacity="1" id="" size="297,210,mm" referencePoint="0" frameJoinStyle="miter" zValue="0" uuid="{fcfab9a4-b7c7-4860-bf60-0c1d2b76f5cc}" positionOnPage="0,0,mm" frame="false" itemRotation="0" positionLock="false" templateUuid="{fcfab9a4-b7c7-4860-bf60-0c1d2b76f5cc}" position="0,0,mm" visibility="1" background="true" excludeFromExports="0" blendMode="0" groupUuid="">
+   <FrameColor blue="0" alpha="255" red="0" green="0"/>
+   <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+   <LayoutObject>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </LayoutObject>
+  </LayoutItem>
+  <LayoutItem outlineWidthM="0.3,mm" type="65638" opacity="1" id="" size="210,297,mm" referencePoint="0" frameJoinStyle="miter" zValue="0" uuid="{ca90183b-589d-4067-9ef4-e8987b6ee167}" positionOnPage="0,0,mm" frame="false" itemRotation="0" positionLock="false" templateUuid="{ca90183b-589d-4067-9ef4-e8987b6ee167}" position="0,220,mm" visibility="1" background="true" excludeFromExports="0" blendMode="0" groupUuid="">
+   <FrameColor blue="0" alpha="255" red="0" green="0"/>
+   <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+   <LayoutObject>
+    <dataDefinedProperties>
+     <Option type="Map">
+      <Option type="QString" name="name" value=""/>
+      <Option name="properties"/>
+      <Option type="QString" name="type" value="collection"/>
+     </Option>
+    </dataDefinedProperties>
+    <customproperties/>
+   </LayoutObject>
+  </LayoutItem>
+  <GuideCollection visible="1"/>
+ </PageCollection>
+ <LayoutItem outlineWidthM="0.3,mm" type="65641" opacity="1" id="" size="146.584,43.113,mm" referencePoint="4" frameJoinStyle="miter" zValue="2" uuid="{e2c152ef-e653-4bf6-a3eb-b61994a8c400}" positionOnPage="31.708,210.433,mm" frame="false" marginY="0" itemRotation="0" labelText="Lorem ipsum" positionLock="false" marginX="0" halign="8" templateUuid="{e2c152ef-e653-4bf6-a3eb-b61994a8c400}" valign="32" position="105,451.989,mm" visibility="1" background="false" htmlState="0" excludeFromExports="0" blendMode="0" groupUuid="">
+  <FrameColor blue="0" alpha="255" red="0" green="0"/>
+  <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+  <LayoutObject>
+   <dataDefinedProperties>
+    <Option type="Map">
+     <Option type="QString" name="name" value=""/>
+     <Option name="properties"/>
+     <Option type="QString" name="type" value="collection"/>
+    </Option>
+   </dataDefinedProperties>
+   <customproperties/>
+  </LayoutObject>
+  <LabelFont description="Ubuntu,48,-1,5,25,1,0,0,0,0,Light Italic" style="Light Italic"/>
+  <FontColor blue="43" red="201" green="240"/>
+ </LayoutItem>
+ <LayoutItem outlineWidthM="0.3,mm" type="65641" opacity="1" id="" size="146.584,43.113,mm" referencePoint="4" frameJoinStyle="miter" zValue="1" uuid="{8ebacd90-f769-4ffc-8369-b8248ecde556}" positionOnPage="83.6899,40.644,mm" frame="false" marginY="0" itemRotation="0" labelText="Lorem ipsum" positionLock="false" marginX="0" halign="8" templateUuid="{8ebacd90-f769-4ffc-8369-b8248ecde556}" valign="32" position="156.982,62.2005,mm" visibility="1" background="false" htmlState="0" excludeFromExports="0" blendMode="0" groupUuid="">
+  <FrameColor blue="0" alpha="255" red="0" green="0"/>
+  <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
+  <LayoutObject>
+   <dataDefinedProperties>
+    <Option type="Map">
+     <Option type="QString" name="name" value=""/>
+     <Option name="properties"/>
+     <Option type="QString" name="type" value="collection"/>
+    </Option>
+   </dataDefinedProperties>
+   <customproperties/>
+  </LayoutObject>
+  <LabelFont description="Ubuntu,48,-1,5,57,0,0,0,0,0,Medium" style="Medium"/>
+  <FontColor blue="43" red="201" green="240"/>
+ </LayoutItem>
+ <customproperties/>
+</Layout>
