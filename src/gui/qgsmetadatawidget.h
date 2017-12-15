@@ -101,13 +101,13 @@ class GUI_EXPORT QgsMetadataWidget : public QWidget, private Ui::QgsMetadataWidg
     void removeSelectedRight() const;
     void addConstraint() const;
     void removeSelectedConstraint() const;
-    void addContact() const;
-    void removeSelectedContact() const;
+    void toggleExtentSelector() const;
+    void addAddress() const;
+    void removeSelectedAddress() const;
     void addLink() const;
     void removeSelectedLink() const;
     void addHistory();
     void removeSelectedHistory() const;
-    void updateContactDetails() const;
     void fillComboBox() const;
     void setPropertiesFromLayer() const;
     void syncFromCategoriesTabToKeywordsTab() const;
