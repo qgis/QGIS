@@ -332,6 +332,29 @@ class TestQgsCoordinateTransformContext(unittest.TestCase):
         self.assertEqual(context2.sourceDestinationDatumTransforms(), {('EPSG:4204', 'EPSG:4326'): QgsCoordinateTransform.TransformPair(source_id_1, dest_id_1),
                                                                        ('EPSG:4205', 'EPSG:4326'): QgsCoordinateTransform.TransformPair(source_id_2, dest_id_2)})
 
+    def testMissingTransforms(self):
+        # fudge context xml with a missing transform
+        doc = QDomDocument("testdoc")
+        elem = doc.createElement("test")
+        contextElem = doc.createElement("transformContext")
+        transformElem = doc.createElement("srcDest")
+        transformElem.setAttribute("source", 'EPSG:4204')
+        transformElem.setAttribute("dest", 'EPSG:4326')
+        transformElem.setAttribute("sourceTransform", 'not valid')
+        transformElem.setAttribute("destTransform", 'not valid 2')
+        contextElem.appendChild(transformElem)
+
+        elem2 = doc.createElement("test2")
+        elem2.appendChild(contextElem)
+
+        # restore from xml
+        context2 = QgsCoordinateTransformContext()
+        ok, errors = context2.readXml(elem2, QgsReadWriteContext())
+        self.assertFalse(ok)
+
+        # check result
+        self.assertEqual(errors, ['not valid', 'not valid 2'])
+
     def testProject(self):
         """
         Test project's transform context
