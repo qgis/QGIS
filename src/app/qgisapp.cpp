@@ -6186,8 +6186,8 @@ void QgisApp::togglePanelsVisibility()
 {
   QgsSettings settings;
 
-  QStringList docksTitle = settings.value( QStringLiteral( "UI/hiddenDocksTitle" ), QString() ).toStringList();
-  QStringList docksActive = settings.value( QStringLiteral( "UI/hiddenDocksActive" ), QString() ).toStringList();
+  QStringList docksTitle = settings.value( QStringLiteral( "UI/hiddenDocksTitle" ), QStringList() ).toStringList();
+  QStringList docksActive = settings.value( QStringLiteral( "UI/hiddenDocksActive" ), QStringList() ).toStringList();
 
   QList<QDockWidget *> docks = findChildren<QDockWidget *>();
   QList<QTabBar *> tabBars = findChildren<QTabBar *>();
