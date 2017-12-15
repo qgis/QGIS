@@ -262,7 +262,7 @@
           <item row="3" column="0" colspan="2">
            <widget class="QCheckBox" name="mForceVectorCheckBox">
             <property name="toolTip">
-             <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterised in order to keep their appearance intact.</string>
+             <string>If checked, the layout will always be kept as vector objects when exported to a compatible format, even if the appearance of the resultant file does not match the layouts settings. If unchecked, some elements in the layout may be rasterized in order to keep their appearance intact.</string>
             </property>
             <property name="text">
              <string>Always export as vectors</string>

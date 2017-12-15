@@ -343,6 +343,8 @@ class CORE_EXPORT QgsLayoutExporter
      * \param printer QPrinter destination
      * \param painter QPainter source
      * \param startNewPage set to true to begin the print on a new page
+     * \param dpi set to a value > 0 to manually override the layout's default dpi
+     * \param rasterize set to true to force print as a raster image
      */
     ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 

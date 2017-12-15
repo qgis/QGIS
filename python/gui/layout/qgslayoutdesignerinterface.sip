@@ -48,8 +48,7 @@ Returns the layout view utilized by the designer.
 
     virtual QgsMessageBar *messageBar() = 0;
 %Docstring
- Returns the designer's message bar.
- :rtype: QgsMessageBar
+Returns the designer's message bar.
 %End
 
     virtual void selectItems( const QList< QgsLayoutItem * > items ) = 0;

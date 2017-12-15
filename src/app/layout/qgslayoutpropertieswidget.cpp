@@ -58,7 +58,7 @@ QgsLayoutPropertiesWidget::QgsLayoutPropertiesWidget( QWidget *parent, QgsLayout
   mGenerateWorldFileCheckBox->setChecked( exportWorldFile );
   connect( mGenerateWorldFileCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::worldFileToggled );
 
-  connect( mRasterizeCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::rasteriseToggled );
+  connect( mRasterizeCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::rasterizeToggled );
   connect( mForceVectorCheckBox, &QCheckBox::toggled, this, &QgsLayoutPropertiesWidget::forceVectorToggled );
 
   mTopMarginSpinBox->setValue( topMargin );
@@ -92,13 +92,13 @@ void QgsLayoutPropertiesWidget::updateGui()
   whileBlocking( mReferenceMapComboBox )->setItem( mLayout->referenceMap() );
   whileBlocking( mResolutionSpinBox )->setValue( mLayout->context().dpi() );
 
-  bool rasterise = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
-  whileBlocking( mRasterizeCheckBox )->setChecked( rasterise );
+  bool rasterize = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
+  whileBlocking( mRasterizeCheckBox )->setChecked( rasterize );
 
   bool forceVectors = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
   whileBlocking( mForceVectorCheckBox )->setChecked( forceVectors );
 
-  if ( rasterise )
+  if ( rasterize )
   {
     mForceVectorCheckBox->setChecked( false );
     mForceVectorCheckBox->setEnabled( false );
@@ -208,9 +208,9 @@ void QgsLayoutPropertiesWidget::worldFileToggled()
   mLayout->setCustomProperty( QStringLiteral( "exportWorldFile" ), mGenerateWorldFileCheckBox->isChecked() );
 }
 
-void QgsLayoutPropertiesWidget::rasteriseToggled()
+void QgsLayoutPropertiesWidget::rasterizeToggled()
 {
-  mLayout->setCustomProperty( QStringLiteral( "rasterise" ), mRasterizeCheckBox->isChecked() );
+  mLayout->setCustomProperty( QStringLiteral( "rasterize" ), mRasterizeCheckBox->isChecked() );
 
   if ( mRasterizeCheckBox->isChecked() )
   {

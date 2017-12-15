@@ -834,7 +834,7 @@ void QgsLayoutItemMap::paint( QPainter *painter, const QStyleOptionGraphicsItem 
 
     if ( containsAdvancedEffects() && ( !mLayout || !( mLayout->context().flags() & QgsLayoutContext::FlagForceVectorOutput ) ) )
     {
-      // rasterise
+      // rasterize
       double destinationDpi = style->matrix.m11() * 25.4;
       double layoutUnitsInInches = mLayout ? mLayout->convertFromLayoutUnits( 1, QgsUnitTypes::LayoutInches ).length() : 1;
       int widthInPixels = std::round( boundingRect().width() * layoutUnitsInInches * destinationDpi );

@@ -1624,7 +1624,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
   QgsLayoutExporter::PdfExportSettings pdfSettings;
-  pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
+  pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool();
   pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
 
   // force a refresh, to e.g. update data defined properties, tables, etc
@@ -1843,7 +1843,7 @@ bool QgsLayoutDesignerDialog::containsAdvancedEffects() const
 void QgsLayoutDesignerDialog::showRasterizationWarning()
 {
 
-  if ( mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool() ||
+  if ( mLayout->customProperty( QStringLiteral( "rasterize" ), false ).toBool() ||
        mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() )
     return;
 
@@ -1855,7 +1855,7 @@ void QgsLayoutDesignerDialog::showRasterizationWarning()
   m.setCheckBoxVisible( true );
   m.showMessage( true );
 
-  mLayout->setCustomProperty( QStringLiteral( "rasterise" ), m.checkBoxState() == Qt::Checked );
+  mLayout->setCustomProperty( QStringLiteral( "rasterize" ), m.checkBoxState() == Qt::Checked );
   //make sure print as raster checkbox is updated
   mLayoutPropertiesWidget->updateGui();
 }

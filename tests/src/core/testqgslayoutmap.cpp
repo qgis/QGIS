@@ -444,7 +444,7 @@ void TestQgsLayoutMap::dataDefinedStyles()
 
 void TestQgsLayoutMap::rasterized()
 {
-  // test a map which must be rasterised
+  // test a map which must be rasterized
   QgsLayout l( QgsProject::instance() );
   l.initializeDefaults();
 
@@ -496,7 +496,7 @@ void TestQgsLayoutMap::rasterized()
   QVERIFY( checker.testLayout( mReport, 0, 0 ) );
 
   // try rendering again, without requiring rasterization, for comparison
-  // (we can use the same test image, because CompositionMode_Darken doesn't actually have any noticable
+  // (we can use the same test image, because CompositionMode_Darken doesn't actually have any noticeable
   // rendering differences for the black grid!)
   grid->setBlendMode( QPainter::CompositionMode_SourceOver );
   QVERIFY( !map->containsAdvancedEffects() );

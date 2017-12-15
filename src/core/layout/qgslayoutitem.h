@@ -755,7 +755,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
 
     /**
      * Returns true if the item is drawn in such a way that forces the whole layout
-     * to be rasterised when exporting to vector formats.
+     * to be rasterized when exporting to vector formats.
      * \see containsAdvancedEffects()
      */
     virtual bool requiresRasterization() const;

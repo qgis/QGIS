@@ -46,7 +46,7 @@ class QgsLayoutPropertiesWidget: public QgsPanelWidget, private Ui::QgsLayoutWid
     void referenceMapChanged( QgsLayoutItem *item );
     void dpiChanged( int value );
     void worldFileToggled();
-    void rasteriseToggled();
+    void rasterizeToggled();
     void forceVectorToggled();
 
   private:

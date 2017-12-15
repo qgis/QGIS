@@ -13,6 +13,12 @@ class QgsLayout : QGraphicsScene, QgsExpressionContextGenerator, QgsLayoutUndoOb
 %Docstring
  Base class for layouts, which can contain items such as maps, labels, scalebars, etc.
 
+While the raw QGraphicsScene API can be used to render the contents of a QgsLayout
+to a QPainter, it is recommended to instead use a QgsLayoutExporter to handle rendering
+layouts instead. QgsLayoutExporter automatically takes care of the intracacies of
+preparing the layout and paint devices for correct exports, respecting various
+user settings such as the layout context DPI.
+
 .. versionadded:: 3.0
 %End
 
@@ -72,12 +78,6 @@ relations and various other bits. It is never null.
     QgsLayoutModel *itemsModel();
 %Docstring
 Returns the items model attached to the layout.
-%End
-
-    QgsLayoutExporter &exporter();
-%Docstring
-Returns the layout's exporter, which is used for rendering the layout and exporting
-to various formats.
 %End
 
     QString name() const;
@@ -182,7 +182,7 @@ z order list. This should be called after any stacking changes
 which deferred z-order updates.
 %End
 
-    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false );
+    QgsLayoutItem *itemByUuid( const QString &uuid, bool includeTemplateUuids = false ) const;
 %Docstring
 Returns the layout item with matching ``uuid`` unique identifier, or a None
 if a matching item could not be found.
@@ -387,8 +387,25 @@ Return list of keys stored in custom properties for the layout.
 %End
 
     QgsLayoutItemMap *referenceMap() const;
+%Docstring
+Returns the map item which will be used to generate corresponding world files when the
+layout is exported. If no map was explicitly set via setReferenceMap(), the largest
+map in the layout will be returned (or None if there are no maps in the layout).
+
+.. seealso:: :py:func:`setReferenceMap()`
+
+.. seealso:: :py:func:`generateWorldFile()`
+%End
 
     void setReferenceMap( QgsLayoutItemMap *map );
+%Docstring
+Sets the ``map`` item which will be used to generate corresponding world files when the
+layout is exported.
+
+.. seealso:: :py:func:`referenceMap()`
+
+.. seealso:: :py:func:`setGenerateWorldFile()`
+%End
 
     QgsLayoutPageCollection *pageCollection();
 %Docstring
@@ -406,6 +423,20 @@ and other cosmetic items.
 :param margin: optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
 
 :return: layout bounds, in layout units.
+
+.. seealso:: :py:func:`pageItemBounds()`
+%End
+
+    QRectF pageItemBounds( int page, bool visibleOnly = false ) const;
+%Docstring
+Returns the bounding box of the items contained on a specified ``page``.
+A page number of 0 represents the first page in the layout.
+
+Set ``visibleOnly`` to true to only include visible items.
+
+The returned bounds are in layout units.
+
+.. seealso:: :py:func:`layoutBounds()`
 %End
 
     void addLayoutItem( QgsLayoutItem *item /Transfer/ );
@@ -549,9 +580,9 @@ Updates the scene bounds of the layout.
 
     void changed();
 %Docstring
- Is emitted when properties of the layout change. This signal is only
- emitted for settings directly managed by the layout, and is not emitted
- when child items change.
+Is emitted when properties of the layout change. This signal is only
+emitted for settings directly managed by the layout, and is not emitted
+when child items change.
 %End
 
     void variablesChanged();

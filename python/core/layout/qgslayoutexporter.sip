@@ -53,8 +53,7 @@ Constructor for QgsLayoutExporter, for the specified ``layout``.
 
     QgsLayout *layout() const;
 %Docstring
- Returns the layout linked to this exporter.
- :rtype: QgsLayout
+Returns the layout linked to this exporter.
 %End
 
     void renderPage( QPainter *painter, int page ) const;
@@ -69,23 +68,23 @@ are 0 based, such that the first page in a layout is page 0.
 
     QImage renderPageToImage( int page, QSize imageSize = QSize(), double dpi = 0 ) const;
 %Docstring
- Renders a full page to an image.
+Renders a full page to an image.
 
- The ``page`` argument specifies the page number to render. Page numbers
- are 0 based, such that the first page in a layout is page 0.
+The ``page`` argument specifies the page number to render. Page numbers
+are 0 based, such that the first page in a layout is page 0.
 
- The optional ``imageSize`` parameter can specify the target image size, in pixels.
- It is the caller's responsibility to ensure that the ratio of the target image size
- matches the ratio of the corresponding layout page size.
+The optional ``imageSize`` parameter can specify the target image size, in pixels.
+It is the caller's responsibility to ensure that the ratio of the target image size
+matches the ratio of the corresponding layout page size.
 
- The ``dpi`` parameter is an optional dpi override. Set to 0 to use the default layout print
- resolution. This parameter has no effect if ``imageSize`` is specified.
+The ``dpi`` parameter is an optional dpi override. Set to 0 to use the default layout print
+resolution. This parameter has no effect if ``imageSize`` is specified.
 
- Returns the rendered image, or a null QImage if the image does not fit into available memory.
+Returns the rendered image, or a null QImage if the image does not fit into available memory.
 
 .. seealso:: :py:func:`renderPage()`
+
 .. seealso:: :py:func:`renderRegionToImage()`
- :rtype: QImage
 %End
 
     void renderRegion( QPainter *painter, const QRectF &region ) const;
@@ -94,26 +93,27 @@ Renders a ``region`` from the layout to a ``painter``. This method can be used
 to render sections of pages rather than full pages.
 
 .. seealso:: :py:func:`renderPage()`
+
 .. seealso:: :py:func:`renderRegionToImage()`
 %End
 
     QImage renderRegionToImage( const QRectF &region, QSize imageSize = QSize(), double dpi = 0 ) const;
 %Docstring
- Renders a ``region`` of the layout to an image. This method can be used to render
- sections of pages rather than full pages.
+Renders a ``region`` of the layout to an image. This method can be used to render
+sections of pages rather than full pages.
 
- The optional ``imageSize`` parameter can specify the target image size, in pixels.
- It is the caller's responsibility to ensure that the ratio of the target image size
- matches the ratio of the specified region of the layout.
+The optional ``imageSize`` parameter can specify the target image size, in pixels.
+It is the caller's responsibility to ensure that the ratio of the target image size
+matches the ratio of the specified region of the layout.
 
- The ``dpi`` parameter is an optional dpi override. Set to 0 to use the default layout print
- resolution. This parameter has no effect if ``imageSize`` is specified.
+The ``dpi`` parameter is an optional dpi override. Set to 0 to use the default layout print
+resolution. This parameter has no effect if ``imageSize`` is specified.
 
- Returns the rendered image, or a null QImage if the image does not fit into available memory.
+Returns the rendered image, or a null QImage if the image does not fit into available memory.
 
 .. seealso:: :py:func:`renderRegion()`
+
 .. seealso:: :py:func:`renderPageToImage()`
- :rtype: QImage
 %End
 
 
@@ -139,63 +139,62 @@ Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
 
       QSize imageSize;
 %Docstring
- Manual size in pixels for output image. If imageSize is not
- set then it will be automatically calculated based on the
- output dpi and layout size.
+Manual size in pixels for output image. If imageSize is not
+set then it will be automatically calculated based on the
+output dpi and layout size.
 
- If cropToContents is true then imageSize has no effect.
+If cropToContents is true then imageSize has no effect.
 
- Be careful when specifying manual sizes if pages in the layout
- have differing sizes! It's likely not going to give a reasonable
- output in this case, and the automatic dpi-based image size should be
- used instead.
+Be careful when specifying manual sizes if pages in the layout
+have differing sizes! It's likely not going to give a reasonable
+output in this case, and the automatic dpi-based image size should be
+used instead.
 %End
 
       bool cropToContents;
 %Docstring
- Set to true if image should be cropped so only parts of the layout
- containing items are exported.
+Set to true if image should be cropped so only parts of the layout
+containing items are exported.
 %End
 
       QgsMargins cropMargins;
 %Docstring
- Crop to content margins, in pixels. These margins will be added
- to the bounds of the exported layout if cropToContents is true.
+Crop to content margins, in pixels. These margins will be added
+to the bounds of the exported layout if cropToContents is true.
 %End
 
       QList< int > pages;
 %Docstring
- List of specific pages to export, or an empty list to
- export all pages.
+List of specific pages to export, or an empty list to
+export all pages.
 
- Page numbers are 0 index based, so the first page in the
- layout corresponds to page 0.
+Page numbers are 0 index based, so the first page in the
+layout corresponds to page 0.
 %End
 
       bool generateWorldFile;
 %Docstring
- Set to true to generate an external world file alongside
- exported images.
+Set to true to generate an external world file alongside
+exported images.
 %End
 
       QgsLayoutContext::Flags flags;
 %Docstring
- Layout context flags, which control how the export will be created.
+Layout context flags, which control how the export will be created.
 %End
 
     };
 
     ExportResult exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &settings );
 %Docstring
- Exports the layout to the a ``filePath``, using the specified export ``settings``.
+Exports the layout to the a ``filePath``, using the specified export ``settings``.
 
- If the layout is a multi-page layout, then filenames for each page will automatically
- be generated by appending "_1", "_2", etc to the image file's base name.
+If the layout is a multi-page layout, then filenames for each page will automatically
+be generated by appending "_1", "_2", etc to the image file's base name.
 
- Returns a result code indicating whether the export was successful or an
- error was encountered. If an error code is returned, errorFile() can be called
- to determine the filename for the export which encountered the error.
- :rtype: ExportResult
+Returns a result code indicating whether the export was successful or an
+error was encountered. If an error code is returned, errorFile() can be called
+to determine the filename for the export which encountered the error.
 %End
 
     struct PdfExportSettings
@@ -212,85 +211,81 @@ Resolution to export layout at. If dpi <= 0 the default layout dpi will be used.
 
       bool rasterizeWholeImage;
 %Docstring
- Set to true to force whole layout to be rasterized while exporting.
+Set to true to force whole layout to be rasterized while exporting.
 
- This option is mutually exclusive with forceVectorOutput.
+This option is mutually exclusive with forceVectorOutput.
 %End
 
       bool forceVectorOutput;
 %Docstring
- Set to true to force vector object exports, even when the resultant appearance will differ
- from the layout. If false, some items may be rasterized in order to maintain their
- correct appearance in the output.
+Set to true to force vector object exports, even when the resultant appearance will differ
+from the layout. If false, some items may be rasterized in order to maintain their
+correct appearance in the output.
 
- This option is mutually exclusive with rasterizeWholeImage.
+This option is mutually exclusive with rasterizeWholeImage.
 %End
 
       QgsLayoutContext::Flags flags;
 %Docstring
- Layout context flags, which control how the export will be created.
+Layout context flags, which control how the export will be created.
 %End
 
     };
 
     ExportResult exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &settings );
 %Docstring
- Exports the layout as a PDF to the a ``filePath``, using the specified export ``settings``.
+Exports the layout as a PDF to the a ``filePath``, using the specified export ``settings``.
 
- Returns a result code indicating whether the export was successful or an
- error was encountered.
- :rtype: ExportResult
+Returns a result code indicating whether the export was successful or an
+error was encountered.
 %End
 
     QString errorFile() const;
 %Docstring
- Returns the file name corresponding to the last error encountered during
- an export.
- :rtype: str
+Returns the file name corresponding to the last error encountered during
+an export.
 %End
 
     bool georeferenceOutput( const QString &file, QgsLayoutItemMap *referenceMap = 0,
                              const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 %Docstring
- Georeferences a ``file`` (image of PDF) exported from the layout.
+Georeferences a ``file`` (image of PDF) exported from the layout.
 
- The ``referenceMap`` argument specifies a map item to use for georeferencing. If left as None, the
- default layout QgsLayout.referenceMap() will be used.
+The ``referenceMap`` argument specifies a map item to use for georeferencing. If left as None, the
+default layout QgsLayout.referenceMap() will be used.
 
- The ``exportRegion`` argument can be set to a valid rectangle to indicate that only part of the layout was
- exported.
+The ``exportRegion`` argument can be set to a valid rectangle to indicate that only part of the layout was
+exported.
 
- Similarly, the ``dpi`` can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+Similarly, the ``dpi`` can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
 
- The function will return true if the output was successfully georeferenced.
+The function will return true if the output was successfully georeferenced.
 
 .. seealso:: :py:func:`computeGeoTransform()`
- :rtype: bool
 %End
 
     void computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
 %Docstring
- Compute world file parameters. Assumes the whole page containing the reference map item
- will be exported.
+Compute world file parameters. Assumes the whole page containing the reference map item
+will be exported.
 
- The ``dpi`` argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+The ``dpi`` argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
 %End
 
     void computeWorldFileParameters( const QRectF &region, double &a, double &b, double &c, double &d, double &e, double &f, double dpi = -1 ) const;
 %Docstring
- Computes the world file parameters for a specified ``region`` of the layout.
+Computes the world file parameters for a specified ``region`` of the layout.
 
- The ``dpi`` argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
+The ``dpi`` argument can be set to the actual DPI of exported file, or left as -1 to use the layout's default DPI.
 %End
 
   protected:
 
     virtual QString generateFileName( const PageExportDetails &details ) const;
 %Docstring
- Generates the file name for a page during export.
+Generates the file name for a page during export.
 
- Subclasses can override this method to customise page file naming.
- :rtype: str
+Subclasses can override this method to customise page file naming.
 %End
 
 };

@@ -427,14 +427,14 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer )
   return Success;
 }
 
-QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage, double dpi, bool rasterise )
+QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage, double dpi, bool rasterize )
 {
   //layout starts page numbering at 0
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1;
   int toPage = ( printer.toPage() < 1 ) ? mLayout->pageCollection()->pageCount() - 1 : printer.toPage() - 1;
 
   bool pageExported = false;
-  if ( rasterise )
+  if ( rasterize )
   {
     for ( int i = fromPage; i <= toPage; ++i )
     {

@@ -85,11 +85,21 @@ Returns a list of the page numbers which are visible within the specified
 %Docstring
 Returns whether a given ``page`` index is empty, ie, it contains no items except for the background
 paper item.
+
+.. seealso:: :py:func:`shouldExportPage()`
 %End
 
     QList< QgsLayoutItem *> itemsOnPage( int page ) const;
 %Docstring
 Returns a list of layout items on the specified ``page`` index.
+%End
+
+
+    bool shouldExportPage( int page ) const;
+%Docstring
+Returns whether the specified ``page`` number should be included in exports of the layouts.
+
+.. seealso:: :py:func:`pageIsEmpty()`
 %End
 
     void addPage( QgsLayoutItemPage *page /Transfer/ );
@@ -188,17 +198,19 @@ Returns the symbol to use for drawing pages in the collection.
 
     void beginPageSizeChange();
 %Docstring
- Should be called before changing any page item sizes, and followed by a call to
- endPageSizeChange(). If page size changes are wrapped in these calls, then items
- will maintain their same relative position on pages after the page sizes are updated.
+Should be called before changing any page item sizes, and followed by a call to
+endPageSizeChange(). If page size changes are wrapped in these calls, then items
+will maintain their same relative position on pages after the page sizes are updated.
+
 .. seealso:: :py:func:`endPageSizeChange()`
 %End
 
     void endPageSizeChange();
 %Docstring
- Should be called after changing any page item sizes, and preceded by a call to
- beginPageSizeChange(). If page size changes are wrapped in these calls, then items
- will maintain their same relative position on pages after the page sizes are updated.
+Should be called after changing any page item sizes, and preceded by a call to
+beginPageSizeChange(). If page size changes are wrapped in these calls, then items
+will maintain their same relative position on pages after the page sizes are updated.
+
 .. seealso:: :py:func:`beginPageSizeChange()`
 %End
 
@@ -212,15 +224,24 @@ for page size/orientation change.
 %Docstring
 Returns the maximum width of pages in the collection. The returned value is
 in layout units.
+
+.. seealso:: :py:func:`maximumPageSize()`
+%End
+
+    QSizeF maximumPageSize() const;
+%Docstring
+Returns the maximum size of any page in the collection, by area. The returned value
+is in layout units.
+
+.. seealso:: :py:func:`maximumPageWidth()`
 %End
 
     bool hasUniformPageSizes() const;
 %Docstring
- Returns true if the layout has uniform page sizes, e.g. all pages are the same size.
+Returns true if the layout has uniform page sizes, e.g. all pages are the same size.
 
- This method does not consider differing units as non-uniform sizes, only the actual
- physical size of the pages.
- :rtype: bool
+This method does not consider differing units as non-uniform sizes, only the actual
+physical size of the pages.
 %End
 
     int pageNumberForPoint( QPointF point ) const;
@@ -309,12 +330,12 @@ Returns the size of the page shadow, in layout units.
 
     void resizeToContents( const QgsMargins &margins, QgsUnitTypes::LayoutUnit marginUnits );
 %Docstring
- Resizes the layout to a single page which fits the current contents of the layout.
+Resizes the layout to a single page which fits the current contents of the layout.
 
- Calling this method resets the number of pages to 1, with the size set to the
- minimum size required to fit all existing layout items. Items will also be
- repositioned so that the new top-left bounds of the layout is at the point
- (marginLeft, marginTop). An optional margin can be specified.
+Calling this method resets the number of pages to 1, with the size set to the
+minimum size required to fit all existing layout items. Items will also be
+repositioned so that the new top-left bounds of the layout is at the point
+(marginLeft, marginTop). An optional margin can be specified.
 %End
 
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;

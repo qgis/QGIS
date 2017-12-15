@@ -216,10 +216,9 @@ the a specified ``rotation`` amount.
 
     static QgsLayoutItemPage::Orientation decodePaperOrientation( const QString &string, bool &ok );
 %Docstring
- Decodes a ``string`` representing a paper orientation and returns the
- decoded orientation.
- If the string was correctly decoded, ``ok`` will be set to true.
- :rtype: QgsLayoutItemPage.Orientation
+Decodes a ``string`` representing a paper orientation and returns the
+decoded orientation.
+If the string was correctly decoded, ``ok`` will be set to true.
 %End
 
 };
