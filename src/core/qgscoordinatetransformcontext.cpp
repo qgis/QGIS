@@ -188,14 +188,18 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
     const QDomElement transformElem = srcDestNodes.at( i ).toElement();
     QString key1 = transformElem.attribute( QStringLiteral( "source" ) );
     QString key2 = transformElem.attribute( QStringLiteral( "dest" ) );
-    bool ok = false;
-    int value1 = transformElem.attribute( QStringLiteral( "sourceTransform" ) ).toInt( &ok );
-    bool ok2 = false;
-    int value2 = transformElem.attribute( QStringLiteral( "destTransform" ) ).toInt( &ok2 );
-    if ( ok && ok2 )
-    {
-      d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsCoordinateTransform::TransformPair( value1, value2 ) );
-    }
+
+    QString value1 = transformElem.attribute( QStringLiteral( "sourceTransform" ) );
+    QString value2 = transformElem.attribute( QStringLiteral( "destTransform" ) );
+
+    int datumId1 = -1;
+    int datumId2 = -1;
+    if ( !value1.isEmpty() )
+      datumId1 = QgsCoordinateTransform::projStringToDatumTransformId( value1 );
+    if ( !value2.isEmpty() )
+      datumId2 = QgsCoordinateTransform::projStringToDatumTransformId( value2 );
+    //TODO - throw warning if value1 or value2 is non-empty, yet no matching transform was found
+    d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsCoordinateTransform::TransformPair( datumId1, datumId2 ) );
   }
 
 #if 0
@@ -205,12 +209,13 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
   {
     const QDomElement transformElem = srcNodes.at( i ).toElement();
     QString key = transformElem.attribute( QStringLiteral( "crs" ) );
-    bool ok = false;
-    int value = transformElem.attribute( QStringLiteral( "transform" ) ).toInt( &ok );
-    if ( ok )
-    {
-      d->mSourceDatumTransforms.insert( key, value );
-    }
+    QString value = transformElem.attribute( QStringLiteral( "transform" ) );
+    if ( value.isEmpty() )
+      continue;
+
+    int datumId = QgsCoordinateTransform::projStringToDatumTransformId( value );
+    //TODO - throw warning if datumId is -1
+    d->mSourceDatumTransforms.insert( key, datumId );
   }
 
   // dest transforms
@@ -219,12 +224,13 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
   {
     const QDomElement transformElem = destNodes.at( i ).toElement();
     QString key = transformElem.attribute( QStringLiteral( "crs" ) );
-    bool ok = false;
-    int value = transformElem.attribute( QStringLiteral( "transform" ) ).toInt( &ok );
-    if ( ok )
-    {
-      d->mDestDatumTransforms.insert( key, value );
-    }
+    QString value = transformElem.attribute( QStringLiteral( "transform" ) );
+    if ( value.isEmpty() )
+      continue;
+
+    int datumId = QgsCoordinateTransform::projStringToDatumTransformId( value );
+    //TODO - throw warning if datumId is -1
+    d->mDestDatumTransforms.insert( key, datumId );
   }
 #endif
 
@@ -243,8 +249,8 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
     QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "srcDest" ) );
     transformElem.setAttribute( QStringLiteral( "source" ), it.key().first );
     transformElem.setAttribute( QStringLiteral( "dest" ), it.key().second );
-    transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().sourceTransformId );
-    transformElem.setAttribute( QStringLiteral( "destTransform" ), it.value().destinationTransformId );
+    transformElem.setAttribute( QStringLiteral( "sourceTransform" ), it.value().sourceTransformId < 0 ? QString() : QgsCoordinateTransform::datumTransformToProj( it.value().sourceTransformId ) );
+    transformElem.setAttribute( QStringLiteral( "destTransform" ), it.value().destinationTransformId < 0 ? QString() : QgsCoordinateTransform::datumTransformToProj( it.value().destinationTransformId ) );
     contextElem.appendChild( transformElem );
   }
 
@@ -254,7 +260,7 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
   {
     QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "source" ) );
     transformElem.setAttribute( QStringLiteral( "crs" ), it.key() );
-    transformElem.setAttribute( QStringLiteral( "transform" ), it.value() );
+    transformElem.setAttribute( QStringLiteral( "transform" ), it.value() < 0 ? QString() : it.value() );
     contextElem.appendChild( transformElem );
   }
 
@@ -263,7 +269,7 @@ void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsRea
   {
     QDomElement transformElem = element.ownerDocument().createElement( QStringLiteral( "dest" ) );
     transformElem.setAttribute( QStringLiteral( "crs" ), it.key() );
-    transformElem.setAttribute( QStringLiteral( "transform" ), it.value() );
+    transformElem.setAttribute( QStringLiteral( "transform" ), it.value() < 0 ? QString() : it.value() );
     contextElem.appendChild( transformElem );
   }
 #endif
@@ -305,13 +311,15 @@ void QgsCoordinateTransformContext::readSettings()
         destAuthId = split.at( 1 ).split( '_' ).at( 0 );
       }
 
+      QString proj = settings.value( *pkeyIt ).toString();
+      int datumId = QgsCoordinateTransform::projStringToDatumTransformId( proj );
       if ( pkeyIt->contains( QLatin1String( "srcTransform" ) ) )
       {
-        transforms[ qMakePair( srcAuthId, destAuthId )].first = settings.value( *pkeyIt ).toInt();
+        transforms[ qMakePair( srcAuthId, destAuthId )].first = datumId;
       }
       else if ( pkeyIt->contains( QLatin1String( "destTransform" ) ) )
       {
-        transforms[ qMakePair( srcAuthId, destAuthId )].second = settings.value( *pkeyIt ).toInt();
+        transforms[ qMakePair( srcAuthId, destAuthId )].second = datumId;
       }
     }
   }
@@ -346,10 +354,16 @@ void QgsCoordinateTransformContext::writeSettings()
     QString srcAuthId = transformIt.key().first;
     QString destAuthId = transformIt.key().second;
     int sourceDatumTransform = transformIt.value().sourceTransformId;
+    QString sourceDatumProj;
+    if ( sourceDatumTransform >= 0 )
+      sourceDatumProj = QgsCoordinateTransform::datumTransformToProj( sourceDatumTransform );
     int destinationDatumTransform = transformIt.value().destinationTransformId;
+    QString destinationDatumProj;
+    if ( destinationDatumTransform >= 0 )
+      destinationDatumProj = QgsCoordinateTransform::datumTransformToProj( destinationDatumTransform );
 
-    settings.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumTransform );
-    settings.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumTransform );
+    settings.setValue( srcAuthId + "//" + destAuthId + "_srcTransform", sourceDatumProj );
+    settings.setValue( srcAuthId + "//" + destAuthId + "_destTransform", destinationDatumProj );
   }
 
   settings.endGroup();
