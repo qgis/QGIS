@@ -174,8 +174,20 @@ void TestQgsRelationReferenceWidget::testChainFilter()
 
   // set the filter for "raccord" and then reset filter for "diameter". As
   // chain filter is activated, the filter on "raccord" field should be reset
+  cbs[0]->setCurrentIndex( 0 );
+  QCOMPARE( w.mComboBox->currentIndex(), 0 );
+
+  cbs[0]->setCurrentIndex( cbs[0]->findText( "iron" ) );
+  QCOMPARE( w.mComboBox->currentIndex(), 1 );
+
+  cbs[1]->setCurrentIndex( cbs[1]->findText( "120" ) );
+  QCOMPARE( w.mComboBox->currentIndex(), 1 );
+
   cbs[2]->setCurrentIndex( cbs[2]->findText( "brides" ) );
+  QCOMPARE( w.mComboBox->currentIndex(), 1 );
+
   cbs[1]->setCurrentIndex( cbs[1]->findText( "diameter" ) );
+  QCOMPARE( w.mComboBox->currentIndex(), 0 );
 
   // combobox should propose NULL, 10 and 11 because the filter is now:
   // "material" == 'iron'
