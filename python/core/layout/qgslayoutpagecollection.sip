@@ -186,6 +186,22 @@ Returns the symbol to use for drawing pages in the collection.
 .. seealso:: :py:func:`setPageStyleSymbol()`
 %End
 
+    void beginPageSizeChange();
+%Docstring
+ Should be called before changing any page item sizes, and followed by a call to
+ endPageSizeChange(). If page size changes are wrapped in these calls, then items
+ will maintain their same relative position on pages after the page sizes are updated.
+.. seealso:: :py:func:`endPageSizeChange()`
+%End
+
+    void endPageSizeChange();
+%Docstring
+ Should be called after changing any page item sizes, and preceded by a call to
+ beginPageSizeChange(). If page size changes are wrapped in these calls, then items
+ will maintain their same relative position on pages after the page sizes are updated.
+.. seealso:: :py:func:`beginPageSizeChange()`
+%End
+
     void reflow();
 %Docstring
 Forces the page collection to reflow the arrangement of pages, e.g. to account

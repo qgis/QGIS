@@ -24,6 +24,7 @@
 #include "qgslayoutitempage.h"
 #include "qgslayoutitem.h"
 #include "qgslayoutserializableobject.h"
+#include "qgslayoutpoint.h"
 #include <QObject>
 #include <memory>
 
@@ -221,6 +222,22 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     const QgsFillSymbol *pageStyleSymbol() const { return mPageStyleSymbol.get(); }
 
     /**
+     * Should be called before changing any page item sizes, and followed by a call to
+     * endPageSizeChange(). If page size changes are wrapped in these calls, then items
+     * will maintain their same relative position on pages after the page sizes are updated.
+     * \see endPageSizeChange()
+     */
+    void beginPageSizeChange();
+
+    /**
+     * Should be called after changing any page item sizes, and preceded by a call to
+     * beginPageSizeChange(). If page size changes are wrapped in these calls, then items
+     * will maintain their same relative position on pages after the page sizes are updated.
+     * \see beginPageSizeChange()
+     */
+    void endPageSizeChange();
+
+    /**
      * Forces the page collection to reflow the arrangement of pages, e.g. to account
      * for page size/orientation change.
      */
@@ -390,6 +407,8 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
     QList< QgsLayoutItemPage * > mPages;
 
     bool mBlockUndoCommands = false;
+
+    QMap< QString, QPair< int, QgsLayoutPoint > > mPreviousItemPositions;
 
     void createDefaultPageStyleSymbol();
 

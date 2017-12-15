@@ -365,6 +365,120 @@ class TestQgsLayoutPageCollection(unittest.TestCase):
         self.assertEqual(page3.pos().x(), 0)
         self.assertEqual(page3.pos().y(), 130)
 
+    def testInsertPageWithItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        collection.addPage(page2)
+
+        # item on pages
+        shape1 = QgsLayoutItemShape(l)
+        shape1.attemptResize(QgsLayoutSize(90, 50))
+        shape1.attemptMove(QgsLayoutPoint(90, 50), page=0)
+        l.addLayoutItem(shape1)
+
+        shape2 = QgsLayoutItemShape(l)
+        shape2.attemptResize(QgsLayoutSize(110, 50))
+        shape2.attemptMove(QgsLayoutPoint(100, 150), page=1)
+        l.addLayoutItem(shape2)
+
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape2.page(), 1)
+
+        # third page, slotted in middle
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A3')
+        collection.insertPage(page3, 0)
+
+        # check item position
+        self.assertEqual(shape1.page(), 1)
+        self.assertEqual(shape1.pagePositionWithUnits(), QgsLayoutPoint(90, 50))
+        self.assertEqual(shape2.page(), 2)
+        self.assertEqual(shape2.pagePositionWithUnits(), QgsLayoutPoint(100, 150))
+
+    def testDeletePageWithItems(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A4')
+        collection.addPage(page2)
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A4')
+        collection.addPage(page3)
+
+        # item on pages
+        shape1 = QgsLayoutItemShape(l)
+        shape1.attemptResize(QgsLayoutSize(90, 50))
+        shape1.attemptMove(QgsLayoutPoint(90, 50), page=0)
+        l.addLayoutItem(shape1)
+
+        shape2 = QgsLayoutItemShape(l)
+        shape2.attemptResize(QgsLayoutSize(110, 50))
+        shape2.attemptMove(QgsLayoutPoint(100, 150), page=2)
+        l.addLayoutItem(shape2)
+
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape2.page(), 2)
+
+        collection.deletePage(1)
+
+        # check item position
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape1.pagePositionWithUnits(), QgsLayoutPoint(90, 50))
+        self.assertEqual(shape2.page(), 1)
+        self.assertEqual(shape2.pagePositionWithUnits(), QgsLayoutPoint(100, 150))
+
+    def testDeletePageWithItems2(self):
+        p = QgsProject()
+        l = QgsLayout(p)
+        collection = l.pageCollection()
+
+        # add a page
+        page = QgsLayoutItemPage(l)
+        page.setPageSize('A4')
+        collection.addPage(page)
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A4')
+        collection.addPage(page2)
+        page3 = QgsLayoutItemPage(l)
+        page3.setPageSize('A4')
+        collection.addPage(page3)
+
+        # item on pages
+        shape1 = QgsLayoutItemShape(l)
+        shape1.attemptResize(QgsLayoutSize(90, 50))
+        shape1.attemptMove(QgsLayoutPoint(90, 50), page=0)
+        l.addLayoutItem(shape1)
+
+        shape2 = QgsLayoutItemShape(l)
+        shape2.attemptResize(QgsLayoutSize(110, 50))
+        shape2.attemptMove(QgsLayoutPoint(100, 150), page=2)
+        l.addLayoutItem(shape2)
+
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape2.page(), 2)
+
+        collection.deletePage(page2)
+
+        # check item position
+        self.assertEqual(shape1.page(), 0)
+        self.assertEqual(shape1.pagePositionWithUnits(), QgsLayoutPoint(90, 50))
+        self.assertEqual(shape2.page(), 1)
+        self.assertEqual(shape2.pagePositionWithUnits(), QgsLayoutPoint(100, 150))
+
     def testDataDefinedSize(self):
         p = QgsProject()
         l = QgsLayout(p)

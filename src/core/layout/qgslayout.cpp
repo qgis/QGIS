@@ -701,6 +701,9 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
 void QgsLayout::refresh()
 {
   emit refreshed();
+  mPageCollection->beginPageSizeChange();
+  mPageCollection->reflow();
+  mPageCollection->endPageSizeChange();
   update();
 }
 
