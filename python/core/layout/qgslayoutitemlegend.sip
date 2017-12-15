@@ -13,9 +13,9 @@
 class QgsLegendModel : QgsLayerTreeModel
 {
 %Docstring
- Item model implementation based on layer tree model for layout legend.
+Item model implementation based on layer tree model for layout legend.
 
- Overrides some functionality of QgsLayerTreeModel to better fit the needs of layout legends.
+Overrides some functionality of QgsLayerTreeModel to better fit the needs of layout legends.
 
 .. versionadded:: 2.6
 %End
@@ -41,7 +41,8 @@ Construct the model based on the given layer tree
 class QgsLayoutItemLegend : QgsLayoutItem
 {
 %Docstring
- A layout item subclass for map legends.
+A layout item subclass for map legends.
+
 .. versionadded:: 3.0
 %End
 
@@ -52,15 +53,16 @@ class QgsLayoutItemLegend : QgsLayoutItem
 
     QgsLayoutItemLegend( QgsLayout *layout );
 %Docstring
- Constructor for QgsLayoutItemLegend, with the specified parent ``layout``.
+Constructor for QgsLayoutItemLegend, with the specified parent ``layout``.
 %End
 
     static QgsLayoutItemLegend *create( QgsLayout *layout ) /Factory/;
 %Docstring
- Returns a new legend item for the specified ``layout``.
+Returns a new legend item for the specified ``layout``.
 
- The caller takes responsibility for deleting the returned object.
- :rtype: QgsLayoutItemLegend
+The caller takes responsibility for deleting the returned object.
+
+:rtype: QgsLayoutItemLegend
 %End
 
     virtual int type() const;
@@ -70,380 +72,465 @@ class QgsLayoutItemLegend : QgsLayoutItem
 
     void adjustBoxSize();
 %Docstring
- Sets the legend's item bounds to fit the whole legend content.
+Sets the legend's item bounds to fit the whole legend content.
 %End
 
     void setResizeToContents( bool enabled );
 %Docstring
- Sets whether the legend should automatically resize to fit its contents.
- \param enabled set to false to disable automatic resizing. The legend frame will not
- be expanded to fit legend items, and items may be cropped from display.
+Sets whether the legend should automatically resize to fit its contents.
+:param enabled: set to false to disable automatic resizing. The legend frame will not
+be expanded to fit legend items, and items may be cropped from display.
+
 .. seealso:: :py:func:`resizeToContents()`
 %End
 
     bool resizeToContents() const;
 %Docstring
- Returns whether the legend should automatically resize to fit its contents.
+Returns whether the legend should automatically resize to fit its contents.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setResizeToContents()`
- :rtype: bool
 %End
 
     QgsLegendModel *model();
 %Docstring
- Returns the legend model.
- :rtype: QgsLegendModel
+Returns the legend model.
+
+:rtype: QgsLegendModel
 %End
 
     void setAutoUpdateModel( bool autoUpdate );
 %Docstring
- Sets whether the legend content should auto update to reflect changes in the project's
- layer tree.
+Sets whether the legend content should auto update to reflect changes in the project's
+layer tree.
+
 .. seealso:: :py:func:`autoUpdateModel()`
 %End
 
     bool autoUpdateModel() const;
 %Docstring
- Returns whether the legend content should auto update to reflect changes in the project's
- layer tree.
+Returns whether the legend content should auto update to reflect changes in the project's
+layer tree.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setAutoUpdateModel()`
- :rtype: bool
 %End
 
     void setLegendFilterByMapEnabled( bool enabled );
 %Docstring
- Set whether legend items should be filtered to show just the ones visible in the associated map.
+Set whether legend items should be filtered to show just the ones visible in the associated map.
+
 .. seealso:: :py:func:`legendFilterByMapEnabled()`
 %End
 
     bool legendFilterByMapEnabled() const;
 %Docstring
- Find out whether legend items are filtered to show just the ones visible in the associated map
+Find out whether legend items are filtered to show just the ones visible in the associated map
+
+:rtype: bool
+
 .. seealso:: :py:func:`setLegendFilterByMapEnabled()`
- :rtype: bool
 %End
 
 
     void setLegendFilterOutAtlas( bool doFilter );
 %Docstring
- When set to true, during an atlas rendering, it will filter out legend elements
- where features are outside the current atlas feature.
+When set to true, during an atlas rendering, it will filter out legend elements
+where features are outside the current atlas feature.
+
 .. seealso:: :py:func:`legendFilterOutAtlas()`
 %End
 
     bool legendFilterOutAtlas() const;
 %Docstring
- Returns whether to filter out legend elements outside of the current atlas feature.
+Returns whether to filter out legend elements outside of the current atlas feature.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setLegendFilterOutAtlas()`
- :rtype: bool
 %End
 
     void setTitle( const QString &title );
 %Docstring
- Sets the legend ``title``.
+Sets the legend ``title``.
+
 .. seealso:: :py:func:`title()`
 %End
 
     QString title() const;
 %Docstring
- Returns the legend title.
+Returns the legend title.
+
+:rtype: str
+
 .. seealso:: :py:func:`setTitle()`
- :rtype: str
 %End
 
     Qt::AlignmentFlag titleAlignment() const;
 %Docstring
- Returns the alignment of the legend title.
+Returns the alignment of the legend title.
+
+:rtype: Qt.AlignmentFlag
+
 .. seealso:: :py:func:`setTitleAlignment()`
- :rtype: Qt.AlignmentFlag
 %End
 
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 %Docstring
- Sets the ``alignment`` of the legend title.
+Sets the ``alignment`` of the legend title.
+
 .. seealso:: :py:func:`titleAlignment()`
 %End
 
     QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
 %Docstring
- Returns reference to modifiable legend style.
- :rtype: QgsLegendStyle
+Returns reference to modifiable legend style.
+
+:rtype: QgsLegendStyle
 %End
 
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
 %Docstring
- Returns legend style.
- :rtype: QgsLegendStyle
+Returns legend style.
+
+:rtype: QgsLegendStyle
 %End
 
     void setStyle( QgsLegendStyle::Style component, const QgsLegendStyle &style );
 %Docstring
- Sets the style of ``component`` to ``style`` for the legend.
+Sets the style of ``component`` to ``style`` for the legend.
 %End
 
     QFont styleFont( QgsLegendStyle::Style component ) const;
 %Docstring
- Returns the font settings for a legend ``component``.
+Returns the font settings for a legend ``component``.
+
+:rtype: QFont
+
 .. seealso:: :py:func:`setStyleFont()`
- :rtype: QFont
 %End
 
     void setStyleFont( QgsLegendStyle::Style component, const QFont &font );
 %Docstring
- Sets the style ``font`` for a legend ``component``.
+Sets the style ``font`` for a legend ``component``.
+
 .. seealso:: :py:func:`styleFont()`
 %End
 
     void setStyleMargin( QgsLegendStyle::Style component, double margin );
 %Docstring
- Set the ``margin`` for a legend ``component``.
+Set the ``margin`` for a legend ``component``.
 %End
 
     void setStyleMargin( QgsLegendStyle::Style component, QgsLegendStyle::Side side, double margin );
 %Docstring
- Set the ``margin`` for a particular ``side`` of a legend ``component``.
+Set the ``margin`` for a particular ``side`` of a legend ``component``.
 %End
 
     double lineSpacing() const;
 %Docstring
- Returns the spacing in-between lines in layout units.
+Returns the spacing in-between lines in layout units.
+
+:rtype: float
+
 .. seealso:: :py:func:`setLineSpacing()`
- :rtype: float
 %End
 
     void setLineSpacing( double spacing );
 %Docstring
- Sets the ``spacing`` in-between multiple lines.
+Sets the ``spacing`` in-between multiple lines.
+
 .. seealso:: :py:func:`lineSpacing()`
 %End
 
     double boxSpace() const;
 %Docstring
- Returns the legend box space.
+Returns the legend box space.
+
+:rtype: float
+
 .. seealso:: :py:func:`setBoxSpace()`
- :rtype: float
 %End
 
     void setBoxSpace( double space );
 %Docstring
- Sets the legend box ``space``.
+Sets the legend box ``space``.
+
 .. seealso:: :py:func:`boxSpace()`
 %End
 
     double columnSpace() const;
 %Docstring
- Returns the legend column spacing.
+Returns the legend column spacing.
+
+:rtype: float
+
 .. seealso:: :py:func:`setColumnSpace()`
- :rtype: float
 %End
 
     void setColumnSpace( double spacing );
 %Docstring
- Sets the legend column ``spacing``.
+Sets the legend column ``spacing``.
+
 .. seealso:: :py:func:`columnSpace()`
 %End
 
     QColor fontColor() const;
 %Docstring
- Returns the legend font color.
+Returns the legend font color.
+
+:rtype: QColor
+
 .. seealso:: :py:func:`setFontColor()`
- :rtype: QColor
 %End
 
     void setFontColor( const QColor &color );
 %Docstring
- Sets the legend font ``color``.
+Sets the legend font ``color``.
+
 .. seealso:: :py:func:`fontColor()`
 %End
 
     double symbolWidth() const;
 %Docstring
- Returns the legend symbol width.
+Returns the legend symbol width.
+
+:rtype: float
+
 .. seealso:: :py:func:`setSymbolWidth()`
- :rtype: float
 %End
 
     void setSymbolWidth( double width );
 %Docstring
- Sets the legend symbol ``width``.
+Sets the legend symbol ``width``.
+
 .. seealso:: :py:func:`symbolWidth()`
 %End
 
     double symbolHeight() const;
 %Docstring
- Returns the legend symbol height.
+Returns the legend symbol height.
+
+:rtype: float
+
 .. seealso:: :py:func:`setSymbolHeight()`
- :rtype: float
 %End
 
     void setSymbolHeight( double height );
 %Docstring
- Sets the legend symbol ``height``.
+Sets the legend symbol ``height``.
+
 .. seealso:: :py:func:`symbolHeight()`
 %End
 
     double wmsLegendWidth() const;
 %Docstring
- Returns the WMS legend width.
+Returns the WMS legend width.
+
+:rtype: float
+
 .. seealso:: :py:func:`setWmsLegendWidth()`
- :rtype: float
 %End
 
     void setWmsLegendWidth( double width );
 %Docstring
- Sets the WMS legend ``width``.
+Sets the WMS legend ``width``.
+
 .. seealso:: :py:func:`wmsLegendWidth()`
 %End
 
     double wmsLegendHeight() const;
 %Docstring
- Returns the WMS legend height.
+Returns the WMS legend height.
+
+:rtype: float
+
 .. seealso:: :py:func:`setWmsLegendHeight()`
- :rtype: float
 %End
 
     void setWmsLegendHeight( double height );
 %Docstring
- Sets the WMS legend ``height``.
+Sets the WMS legend ``height``.
+
 .. seealso:: :py:func:`wmsLegendHeight()`
 %End
 
     void setWrapString( const QString &string );
 %Docstring
- Sets the legend text wrapping ``string``.
+Sets the legend text wrapping ``string``.
+
 .. seealso:: :py:func:`wrapString()`
 %End
 
     QString wrapString() const;
 %Docstring
- Returns the legend text wrapping string.
+Returns the legend text wrapping string.
+
+:rtype: str
+
 .. seealso:: :py:func:`setWrapString()`
- :rtype: str
 %End
 
     int columnCount() const;
 %Docstring
- Returns the legend column count.
+Returns the legend column count.
+
+:rtype: int
+
 .. seealso:: :py:func:`setColumnCount()`
- :rtype: int
 %End
 
     void setColumnCount( int count );
 %Docstring
- Sets the legend column ``count``.
+Sets the legend column ``count``.
+
 .. seealso:: :py:func:`columnCount()`
 %End
 
     bool splitLayer() const;
 %Docstring
- Returns whether the legend items from a single layer can be split
- over multiple columns.
+Returns whether the legend items from a single layer can be split
+over multiple columns.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setSplitLayer()`
- :rtype: bool
 %End
 
     void setSplitLayer( bool enabled );
 %Docstring
- Sets whether the legend items from a single layer can be split
- over multiple columns.
+Sets whether the legend items from a single layer can be split
+over multiple columns.
+
 .. seealso:: :py:func:`splitLayer()`
 %End
 
     bool equalColumnWidth() const;
 %Docstring
- Returns whether column widths should be equalized.
+Returns whether column widths should be equalized.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setEqualColumnWidth()`
- :rtype: bool
 %End
 
     void setEqualColumnWidth( bool equalize );
 %Docstring
- Sets whether column widths should be equalized.
+Sets whether column widths should be equalized.
+
 .. seealso:: :py:func:`equalColumnWidth()`
 %End
 
     bool drawRasterStroke() const;
 %Docstring
- Returns whether a stroke will be drawn around raster symbol items.
+Returns whether a stroke will be drawn around raster symbol items.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setDrawRasterStroke()`
+
 .. seealso:: :py:func:`rasterStrokeColor()`
+
 .. seealso:: :py:func:`rasterStrokeWidth()`
- :rtype: bool
 %End
 
     void setDrawRasterStroke( bool enabled );
 %Docstring
- Sets whether a stroke will be drawn around raster symbol items.
- \param enabled set to true to draw borders
+Sets whether a stroke will be drawn around raster symbol items.
+:param enabled: set to true to draw borders
+
 .. seealso:: :py:func:`drawRasterStroke()`
+
 .. seealso:: :py:func:`setRasterStrokeColor()`
+
 .. seealso:: :py:func:`setRasterStrokeWidth()`
 %End
 
     QColor rasterStrokeColor() const;
 %Docstring
- Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
- only drawn if drawRasterStroke() is true.
+Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
+only drawn if drawRasterStroke() is true.
+
+:rtype: QColor
+
 .. seealso:: :py:func:`setRasterStrokeColor()`
+
 .. seealso:: :py:func:`drawRasterStroke()`
+
 .. seealso:: :py:func:`rasterStrokeWidth()`
- :rtype: QColor
 %End
 
     void setRasterStrokeColor( const QColor &color );
 %Docstring
- Sets the stroke ``color`` for the stroke drawn around raster symbol items. The stroke is
- only drawn if drawRasterStroke() is true.
+Sets the stroke ``color`` for the stroke drawn around raster symbol items. The stroke is
+only drawn if drawRasterStroke() is true.
+
 .. seealso:: :py:func:`rasterStrokeColor()`
+
 .. seealso:: :py:func:`setDrawRasterStroke()`
+
 .. seealso:: :py:func:`setRasterStrokeWidth()`
 %End
 
     double rasterStrokeWidth() const;
 %Docstring
- Returns the stroke width (in layout units) for the stroke drawn around raster symbol items. The stroke is
- only drawn if drawRasterStroke() is true.
+Returns the stroke width (in layout units) for the stroke drawn around raster symbol items. The stroke is
+only drawn if drawRasterStroke() is true.
+
+:rtype: float
+
 .. seealso:: :py:func:`setRasterStrokeWidth()`
+
 .. seealso:: :py:func:`drawRasterStroke()`
+
 .. seealso:: :py:func:`rasterStrokeColor()`
- :rtype: float
 %End
 
     void setRasterStrokeWidth( double width );
 %Docstring
- Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
- only drawn if drawRasterStroke() is true.
+Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
+only drawn if drawRasterStroke() is true.
+
 .. seealso:: :py:func:`rasterStrokeWidth()`
+
 .. seealso:: :py:func:`setDrawRasterStroke()`
+
 .. seealso:: :py:func:`setRasterStrokeColor()`
 %End
 
     void setMap( QgsLayoutItemMap *map );
 %Docstring
- Sets the ``map`` to associate with the legend.
+Sets the ``map`` to associate with the legend.
+
 .. seealso:: :py:func:`map()`
 %End
 
     QgsLayoutItemMap *map() const;
 %Docstring
- Returns the associated map.
+Returns the associated map.
+
+:rtype: QgsLayoutItemMap
+
 .. seealso:: :py:func:`setMap()`
- :rtype: QgsLayoutItemMap
 %End
 
     void updateLegend();
 %Docstring
- Updates the model and all legend entries.
+Updates the model and all legend entries.
 %End
 
     void updateFilterByMap( bool redraw = true );
 %Docstring
- Updates the legend content when filtered by map.
+Updates the legend content when filtered by map.
 %End
 
     const QgsLegendSettings &legendSettings() const;
 %Docstring
- Returns the legend's renderer settings object.
- :rtype: QgsLegendSettings
+Returns the legend's renderer settings object.
+
+:rtype: QgsLegendSettings
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );

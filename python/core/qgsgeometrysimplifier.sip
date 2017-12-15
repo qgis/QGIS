@@ -13,7 +13,7 @@
 class QgsAbstractGeometrySimplifier
 {
 %Docstring
- Abstract base class for simplify geometries using a specific algorithm
+Abstract base class for simplify geometries using a specific algorithm
 %End
 
 %TypeHeaderCode
@@ -25,19 +25,22 @@ class QgsAbstractGeometrySimplifier
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const = 0;
 %Docstring
 Returns a simplified version the specified geometry
- :rtype: QgsGeometry
+
+:rtype: QgsGeometry
 %End
 
   public:
     static bool isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol = 1.0f );
 %Docstring
 Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
- :rtype: bool
+
+:rtype: bool
 %End
     static bool isGeneralizableByDeviceBoundingBox( const QVector<QPointF> &points, float mapToPixelTol = 1.0f );
 %Docstring
 Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
- :rtype: bool
+
+:rtype: bool
 %End
 };
 
@@ -45,10 +48,10 @@ Returns whether the device-geometry can be replaced by its BBOX when is applied 
 class QgsTopologyPreservingSimplifier : QgsAbstractGeometrySimplifier
 {
 %Docstring
- Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
+Implementation of GeometrySimplifier using the Douglas-Peucker algorithm
 
- Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.
- The simplification uses a maximum distance difference algorithm similar to the one used in the Douglas-Peucker algorithm.
+Simplifies a geometry, ensuring that the result is a valid geometry having the same dimension and number of components as the input.
+The simplification uses a maximum distance difference algorithm similar to the one used in the Douglas-Peucker algorithm.
 %End
 
 %TypeHeaderCode
@@ -58,8 +61,8 @@ class QgsTopologyPreservingSimplifier : QgsAbstractGeometrySimplifier
 
     QgsTopologyPreservingSimplifier( double tolerance );
 %Docstring
- Constructor for QgsTopologyPreservingSimplifier. The tolerance parameter
- is specified in layer units.
+Constructor for QgsTopologyPreservingSimplifier. The tolerance parameter
+is specified in layer units.
 %End
 
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const;

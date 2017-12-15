@@ -18,7 +18,7 @@ class QgsGeometryValidator : QThread
 
     QgsGeometryValidator( const QgsGeometry &geoemtry, QVector<QgsGeometry::Error> *errors = 0, QgsGeometry::ValidationMethod method = QgsGeometry::ValidatorQgisInternal );
 %Docstring
- Constructor for QgsGeometryValidator.
+Constructor for QgsGeometryValidator.
 %End
     ~QgsGeometryValidator();
 

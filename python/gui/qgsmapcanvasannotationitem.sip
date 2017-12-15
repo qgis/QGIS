@@ -13,7 +13,8 @@
 class QgsMapCanvasAnnotationItem: QObject, QgsMapCanvasItem
 {
 %Docstring
- An interactive map canvas item which displays a QgsAnnotation.
+An interactive map canvas item which displays a QgsAnnotation.
+
 .. versionadded:: 3.0
 %End
 
@@ -39,14 +40,15 @@ class QgsMapCanvasAnnotationItem: QObject, QgsMapCanvasItem
 
     QgsMapCanvasAnnotationItem( QgsAnnotation *annotation /Transfer/, QgsMapCanvas *mapCanvas /TransferThis/ );
 %Docstring
- Constructor for QgsMapCanvasAnnotationItem.
+Constructor for QgsMapCanvasAnnotationItem.
 %End
 
 
     QgsAnnotation *annotation();
 %Docstring
- Returns the item's annotation.
- :rtype: QgsAnnotation
+Returns the item's annotation.
+
+:rtype: QgsAnnotation
 %End
 
     virtual void updatePosition();
@@ -60,14 +62,16 @@ class QgsMapCanvasAnnotationItem: QObject, QgsMapCanvasItem
 
     MouseMoveAction moveActionForPosition( QPointF pos ) const;
 %Docstring
- Returns the mouse move behavior for a given position in scene coordinates
- :rtype: MouseMoveAction
+Returns the mouse move behavior for a given position in scene coordinates
+
+:rtype: MouseMoveAction
 %End
 
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
 %Docstring
- Returns matching cursor shape for a mouse move action.
- :rtype: Qt.CursorShape
+Returns matching cursor shape for a mouse move action.
+
+:rtype: Qt.CursorShape
 %End
 
 };

@@ -14,9 +14,9 @@ class QgsRelationAggregateSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
 
- Search widget for the children of a relation.
- For each attribute of the child, an additional QgsAggregateToolButton will be shown
- to determine how the values should be aggregated for searching.
+Search widget for the children of a relation.
+For each attribute of the child, an additional QgsAggregateToolButton will be shown
+to determine how the values should be aggregated for searching.
 
 .. versionadded:: 3.0
 %End
@@ -28,7 +28,7 @@ class QgsRelationAggregateSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *layer, QgsRelationWidgetWrapper *wrapper, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor
+Constructor
 %End
 
     virtual QString expression() const;

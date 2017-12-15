@@ -20,13 +20,15 @@ class QgsSmartGroupCondition : QWidget
     QString constraint();
 %Docstring
 returns the constraint key
- :rtype: str
+
+:rtype: str
 %End
 
     QString parameter();
 %Docstring
 returns the parameter
- :rtype: str
+
+:rtype: str
 %End
 
     void setConstraint( const QString &constraint );
@@ -70,14 +72,16 @@ class QgsSmartGroupEditorDialog : QDialog
     QString smartgroupName();
 %Docstring
 returns the value from mNameLineEdit
- :rtype: str
+
+:rtype: str
 %End
 
 
     QString conditionOperator();
 %Docstring
 returns the AND/OR condition
- :rtype: str
+
+:rtype: str
 %End
 
 

@@ -12,31 +12,31 @@
 class QgsMultiRenderChecker
 {
 %Docstring
- This class allows checking rendered images against comparison images.
- Its main purpose is for the unit testing framework.
+This class allows checking rendered images against comparison images.
+Its main purpose is for the unit testing framework.
 
- It will either
- <ul>
-   <li>take an externally rendered image (setRenderedImage())</li>
-   <li>render the image based on provided mapSettings (setMapSettings())</li>
- </ul>
+It will either
+<ul>
+<li>take an externally rendered image (setRenderedImage())</li>
+<li>render the image based on provided mapSettings (setMapSettings())</li>
+</ul>
 
- This image will then be compared against one or several images in a folder inside
- the control directory (tests/testdata/control_images/{controlName}).
+This image will then be compared against one or several images in a folder inside
+the control directory (tests/testdata/control_images/{controlName}).
 
- There are modes for single and for multiple reference images.
- <ul>
-   <li>If there are no subfolders in the control directory, it will assume an image
-       with the name {controlImage}.png in the control directory itself.</li>
+There are modes for single and for multiple reference images.
+<ul>
+<li>If there are no subfolders in the control directory, it will assume an image
+with the name {controlImage}.png in the control directory itself.</li>
 
-   <li>If there are subfolders inside the control directory, it will search for images
-       with the name {controlImage}.png in every subfolder.</li>
- </ul>
+<li>If there are subfolders inside the control directory, it will search for images
+with the name {controlImage}.png in every subfolder.</li>
+</ul>
 
- For every control image there may be one or several randomly named anomaly images defining
- allowed anomalies.
- For every control image, the allowed mismatch and color tolerance values will be calculated
- individually.
+For every control image there may be one or several randomly named anomaly images defining
+allowed anomalies.
+For every control image, the allowed mismatch and color tolerance values will be calculated
+individually.
 
 .. versionadded:: 2.8
 %End
@@ -48,81 +48,85 @@ class QgsMultiRenderChecker
 
     QgsMultiRenderChecker();
 %Docstring
- Constructor for QgsMultiRenderChecker.
+Constructor for QgsMultiRenderChecker.
 %End
 
     virtual ~QgsMultiRenderChecker();
 
     void setControlName( const QString &name );
 %Docstring
- Base directory name for the control image (with control image path
- suffixed) the path to the image will be constructed like this:
- controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
+Base directory name for the control image (with control image path
+suffixed) the path to the image will be constructed like this:
+controlImagePath + '/' + mControlName + '/' + mControlName + '.png'
 %End
 
     void setControlPathPrefix( const QString &prefix );
 
     void setRenderedImage( const QString &renderedImagePath );
 %Docstring
- Set the path to the rendered image. If this is not set or set to null QString, an image
- will be rendered based on the provided mapsettings
+Set the path to the rendered image. If this is not set or set to null QString, an image
+will be rendered based on the provided mapsettings
 
- \param renderedImagePath A path to the rendered image with which control images will be compared
+:param renderedImagePath: A path to the rendered image with which control images will be compared
 %End
 
     void setMapSettings( const QgsMapSettings &mapSettings );
 %Docstring
- Set the map settings to use to render the image
+Set the map settings to use to render the image
 
- \param mapSettings The map settings
+:param mapSettings: The map settings
 %End
 
     void setColorTolerance( unsigned int colorTolerance );
 %Docstring
- Set tolerance for color components used by runTest()
- Default value is 0.
+Set tolerance for color components used by runTest()
+Default value is 0.
 
- \param colorTolerance The maximum difference for each color component
-                          including alpha to be considered correct.
+:param colorTolerance: The maximum difference for each color component
+including alpha to be considered correct.
 %End
 
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 %Docstring
- Test using renderer to generate the image to be compared.
+Test using renderer to generate the image to be compared.
 
- \param testName - to be used as the basis for writing a file to
- e.g. /tmp/theTestName.png
+:param testName: - to be used as the basis for writing a file to
+e.g. /tmp/theTestName.png
 
- \param mismatchCount - defaults to 0 - the number of pixels that
- are allowed to be different from the control image. In some cases
- rendering may be non-deterministic. This parameter allows you to account
- for that by providing a tolerance.
+:param mismatchCount: - defaults to 0 - the number of pixels that
+are allowed to be different from the control image. In some cases
+rendering may be non-deterministic. This parameter allows you to account
+for that by providing a tolerance.
+
+:rtype: bool
 
 .. note::
 
    make sure to call setExpectedImage and setMapSettings first
- :rtype: bool
 %End
 
     QString report() const;
 %Docstring
- Returns a report for this test
+Returns a report for this test
 
- :return: A report
- :rtype: str
+:return: A report
+:rtype: str
+
 %End
 
     QString controlImagePath() const;
 %Docstring
  controlImagePath
- :return:
- :rtype: str
+
+:return:
+:rtype: str
+
 %End
 
     static void drawBackground( QImage *image );
 %Docstring
- Draws a checkboard pattern for image backgrounds, so that opacity is visible
- without requiring a transparent background for the image
+Draws a checkboard pattern for image backgrounds, so that opacity is visible
+without requiring a transparent background for the image
 %End
 
 };
@@ -134,7 +138,7 @@ class QgsMultiRenderChecker
 class QgsCompositionChecker : QgsMultiRenderChecker
 {
 %Docstring
- Renders a composition to an image and compares with an expected output
+Renders a composition to an image and compares with an expected output
 %End
 
 %TypeHeaderCode
@@ -147,7 +151,8 @@ class QgsCompositionChecker : QgsMultiRenderChecker
 
     bool testComposition( QString &checkedReport, int page = 0, int pixelDiff = 0 );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
 };
@@ -155,7 +160,8 @@ class QgsCompositionChecker : QgsMultiRenderChecker
 class QgsLayoutChecker : QgsMultiRenderChecker
 {
 %Docstring
- Renders a layout to an image and compares with an expected output
+Renders a layout to an image and compares with an expected output
+
 .. versionadded:: 3.0
 %End
 
@@ -166,26 +172,27 @@ class QgsLayoutChecker : QgsMultiRenderChecker
 
     QgsLayoutChecker( const QString &testName, QgsLayout *layout );
 %Docstring
- Constructor for QgsLayoutChecker.
+Constructor for QgsLayoutChecker.
 %End
 
     void setSize( QSize size );
 %Docstring
- Sets the output (reference) image ``size``.
+Sets the output (reference) image ``size``.
 %End
 
     bool testLayout( QString &report, int page = 0, int pixelDiff = 0 );
 %Docstring
- Runs a render check on the layout, adding results to the specified ``report``.
+Runs a render check on the layout, adding results to the specified ``report``.
 
- The maximum number of allowable pixels differing from the reference image is
- specified via the ``pixelDiff`` argument.
+The maximum number of allowable pixels differing from the reference image is
+specified via the ``pixelDiff`` argument.
 
- The page number is specified via ``page``, where 0 corresponds to the first
- page in the layout.
+The page number is specified via ``page``, where 0 corresponds to the first
+page in the layout.
 
- Returns false if the rendered layout differs from the expected reference image.
- :rtype: bool
+Returns false if the rendered layout differs from the expected reference image.
+
+:rtype: bool
 %End
 
 };

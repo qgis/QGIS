@@ -13,8 +13,8 @@ class QgsAggregateToolButton : QToolButton
 {
 %Docstring
 
- Offers a toolbutton to choose between different aggregate functions.
- Functions are filtered based on the type.
+Offers a toolbutton to choose between different aggregate functions.
+Functions are filtered based on the type.
 
 .. versionadded:: 3.0
 %End
@@ -26,52 +26,55 @@ class QgsAggregateToolButton : QToolButton
 
     QgsAggregateToolButton();
 %Docstring
- Constructor
+Constructor
 %End
 
     void setType( QVariant::Type type );
 %Docstring
- Based on the ``type`` of underlying data, some aggregates will be available or not.
+Based on the ``type`` of underlying data, some aggregates will be available or not.
 %End
 
     QVariant::Type type() const;
 %Docstring
- Based on the ``type`` of underlying data, some aggregates will be available or not.
- :rtype: QVariant.Type
+Based on the ``type`` of underlying data, some aggregates will be available or not.
+
+:rtype: QVariant.Type
 %End
 
     void setActive( bool active );
 %Docstring
- When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
 %End
 
     bool active() const;
 %Docstring
- When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
- :rtype: bool
+When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
+
+:rtype: bool
 %End
 
     QString aggregate() const;
 %Docstring
- The function name of the selected aggregate or a Null String if none is chosen.
- :rtype: str
+The function name of the selected aggregate or a Null String if none is chosen.
+
+:rtype: str
 %End
 
     void setAggregate( const QString &aggregate );
 %Docstring
- The function name of the selected aggregate or a Null String if none is chosen.
+The function name of the selected aggregate or a Null String if none is chosen.
 %End
 
   signals:
 
     void aggregateChanged();
 %Docstring
- The function name of the selected aggregate has changed.
+The function name of the selected aggregate has changed.
 %End
 
     void activeChanged();
 %Docstring
- A function has been selected or deselected.
+A function has been selected or deselected.
 %End
 
 };

@@ -22,7 +22,8 @@ class QgsSingleBandPseudoColorRendererWidget: QgsRasterRendererWidget
 
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
 %Docstring
- :rtype: QgsRasterRendererWidget
+
+:rtype: QgsRasterRendererWidget
 %End
     virtual QgsRasterRenderer *renderer();
 
@@ -38,7 +39,7 @@ class QgsSingleBandPseudoColorRendererWidget: QgsRasterRendererWidget
 
     void classify();
 %Docstring
- Executes the single band pseudo raster classficiation
+Executes the single band pseudo raster classficiation
 %End
     void loadMinMax( int bandNo, double min, double max );
 %Docstring

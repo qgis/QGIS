@@ -12,7 +12,7 @@
 class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 {
 %Docstring
- A unary node is either negative as in boolean (not) or as in numbers (minus).
+A unary node is either negative as in boolean (not) or as in numbers (minus).
 %End
 
 %TypeHeaderCode
@@ -28,17 +28,19 @@ class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 
     QgsExpressionNodeUnaryOperator( QgsExpressionNodeUnaryOperator::UnaryOperator op, QgsExpressionNode *operand /Transfer/ );
 %Docstring
- A node unary operator is modifying the value of ``operand`` by negating it with ``op``.
+A node unary operator is modifying the value of ``operand`` by negating it with ``op``.
 %End
     ~QgsExpressionNodeUnaryOperator();
 
     QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
 %Docstring
- :rtype: QgsExpressionNodeUnaryOperator.UnaryOperator
+
+:rtype: QgsExpressionNodeUnaryOperator.UnaryOperator
 %End
     QgsExpressionNode *operand() const;
 %Docstring
- :rtype: QgsExpressionNode
+
+:rtype: QgsExpressionNode
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
@@ -55,9 +57,10 @@ class QgsExpressionNodeUnaryOperator : QgsExpressionNode
 
     QString text() const;
 %Docstring
- Returns a the name of this operator without the operands.
- I.e. "NOT" or "-"
- :rtype: str
+Returns a the name of this operator without the operands.
+I.e. "NOT" or "-"
+
+:rtype: str
 %End
 
 };
@@ -106,21 +109,24 @@ class QgsExpressionNodeBinaryOperator : QgsExpressionNode
 
     QgsExpressionNodeBinaryOperator( QgsExpressionNodeBinaryOperator::BinaryOperator op, QgsExpressionNode *opLeft /Transfer/, QgsExpressionNode *opRight /Transfer/ );
 %Docstring
- Binary combination of the left and the right with op.
+Binary combination of the left and the right with op.
 %End
     ~QgsExpressionNodeBinaryOperator();
 
     QgsExpressionNodeBinaryOperator::BinaryOperator op() const;
 %Docstring
- :rtype: QgsExpressionNodeBinaryOperator.BinaryOperator
+
+:rtype: QgsExpressionNodeBinaryOperator.BinaryOperator
 %End
     QgsExpressionNode *opLeft() const;
 %Docstring
- :rtype: QgsExpressionNode
+
+:rtype: QgsExpressionNode
 %End
     QgsExpressionNode *opRight() const;
 %Docstring
- :rtype: QgsExpressionNode
+
+:rtype: QgsExpressionNode
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
@@ -136,18 +142,21 @@ class QgsExpressionNodeBinaryOperator : QgsExpressionNode
 
     int precedence() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     bool leftAssociative() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     QString text() const;
 %Docstring
- Returns a the name of this operator without the operands.
- I.e. "AND", "OR", ...
- :rtype: str
+Returns a the name of this operator without the operands.
+I.e. "AND", "OR", ...
+
+:rtype: str
 %End
 
 };
@@ -162,21 +171,24 @@ class QgsExpressionNodeInOperator : QgsExpressionNode
 
     QgsExpressionNodeInOperator( QgsExpressionNode *node /Transfer/, QgsExpressionNode::NodeList *list /Transfer/, bool notin = false );
 %Docstring
- This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is false.
+This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is false.
 %End
     virtual ~QgsExpressionNodeInOperator();
 
     QgsExpressionNode *node() const;
 %Docstring
- :rtype: QgsExpressionNode
+
+:rtype: QgsExpressionNode
 %End
     bool isNotIn() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     QgsExpressionNode::NodeList *list() const;
 %Docstring
- :rtype: QgsExpressionNode.NodeList
+
+:rtype: QgsExpressionNode.NodeList
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
@@ -202,19 +214,21 @@ class QgsExpressionNodeFunction : QgsExpressionNode
 
     QgsExpressionNodeFunction( int fnIndex, QgsExpressionNode::NodeList *args /Transfer/ );
 %Docstring
- A function node consists of an index of the function in the global function array and
- a list of arguments that will be passed to it.
+A function node consists of an index of the function in the global function array and
+a list of arguments that will be passed to it.
 %End
 
     virtual ~QgsExpressionNodeFunction();
 
     int fnIndex() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     QgsExpressionNode::NodeList *args() const;
 %Docstring
- :rtype: QgsExpressionNode.NodeList
+
+:rtype: QgsExpressionNode.NodeList
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
@@ -231,7 +245,8 @@ class QgsExpressionNodeFunction : QgsExpressionNode
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
 %Docstring
 Tests whether the provided argument list is valid for the matching function
- :rtype: bool
+
+:rtype: bool
 %End
 
 };
@@ -248,7 +263,8 @@ class QgsExpressionNodeLiteral : QgsExpressionNode
     QVariant value() const;
 %Docstring
 The value of the literal.
- :rtype: QVariant
+
+:rtype: QVariant
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
@@ -276,7 +292,8 @@ class QgsExpressionNodeColumnRef : QgsExpressionNode
     QString name() const;
 %Docstring
 The name of the column.
- :rtype: str
+
+:rtype: str
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
@@ -310,15 +327,16 @@ class QgsExpressionNodeCondition : QgsExpressionNode
 
         WhenThen( QgsExpressionNode *whenExp, QgsExpressionNode *thenExp );
 %Docstring
- A combination of when and then. Simple as that.
+A combination of when and then. Simple as that.
 %End
         ~WhenThen();
 
 
         QgsExpressionNodeCondition::WhenThen *clone() const /Factory/;
 %Docstring
- Get a deep copy of this WhenThen combination.
- :rtype: QgsExpressionNodeCondition.WhenThen
+Get a deep copy of this WhenThen combination.
+
+:rtype: QgsExpressionNodeCondition.WhenThen
 %End
 
       private:
@@ -328,7 +346,7 @@ class QgsExpressionNodeCondition : QgsExpressionNode
 
     QgsExpressionNodeCondition( QgsExpressionNodeCondition::WhenThenList *conditions, QgsExpressionNode *elseExp = 0 );
 %Docstring
- Create a new node with the given list of ``conditions`` and an optional ``elseExp`` expression.
+Create a new node with the given list of ``conditions`` and an optional ``elseExp`` expression.
 %End
 
 

@@ -17,7 +17,7 @@
 class QgsVertexMarker : QgsMapCanvasItem
 {
 %Docstring
- A class for marking vertices of features using e.g. circles or 'x'.
+A class for marking vertices of features using e.g. circles or 'x'.
 %End
 
 %TypeHeaderCode
@@ -51,37 +51,50 @@ class QgsVertexMarker : QgsMapCanvasItem
 
     void setColor( const QColor &color );
 %Docstring
- Sets the stroke ``color`` for the marker.
+Sets the stroke ``color`` for the marker.
+
 .. seealso:: :py:func:`color()`
+
 .. seealso:: :py:func:`setFillColor()`
 %End
 
     QColor color() const;
 %Docstring
- Returns the stroke color for the marker.
+Returns the stroke color for the marker.
+
+:rtype: QColor
+
 .. seealso:: :py:func:`setColor()`
+
 .. seealso:: :py:func:`fillColor()`
+
 .. versionadded:: 3.0
- :rtype: QColor
 %End
 
     void setFillColor( const QColor &color );
 %Docstring
- Sets the fill ``color`` for the marker. This setting only
- applies to some icon types.
+Sets the fill ``color`` for the marker. This setting only
+applies to some icon types.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`fillColor()`
+
 .. seealso:: :py:func:`setColor()`
 %End
 
     QColor fillColor() const;
 %Docstring
- Returns the fill ``color`` for the marker. This setting only
- applies to some icon types.
+Returns the fill ``color`` for the marker. This setting only
+applies to some icon types.
+
+:rtype: QColor
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`setFillColor()`
+
 .. seealso:: :py:func:`color()`
- :rtype: QColor
 %End
 
     void setPenWidth( int width );

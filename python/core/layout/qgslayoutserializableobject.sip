@@ -13,7 +13,8 @@
 class QgsLayoutSerializableObject : QgsLayoutUndoObjectInterface
 {
 %Docstring
- An interface for layout objects which can be stored and read from DOM elements.
+An interface for layout objects which can be stored and read from DOM elements.
+
 .. versionadded:: 3.0
 %End
 
@@ -26,30 +27,36 @@ class QgsLayoutSerializableObject : QgsLayoutUndoObjectInterface
 
     virtual QString stringType() const = 0;
 %Docstring
- Return the object type as a string.
+Return the object type as a string.
 
- This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
- :rtype: str
+This string must be a unique, single word, character only representation of the item type, eg "LayoutScaleBar"
+
+:rtype: str
 %End
 
     virtual QgsLayout *layout() = 0;
 %Docstring
- Returns the layout the object belongs to.
- :rtype: QgsLayout
+Returns the layout the object belongs to.
+
+:rtype: QgsLayout
 %End
 
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const = 0;
 %Docstring
- Stores the objects's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+Stores the objects's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+
+:rtype: bool
+
 .. seealso:: :py:func:`readXml()`
- :rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context ) = 0;
 %Docstring
- Sets the objects's state from a DOM element. ``element`` is the DOM node corresponding to the object.
+Sets the objects's state from a DOM element. ``element`` is the DOM node corresponding to the object.
+
+:rtype: bool
+
 .. seealso:: :py:func:`writeXml()`
- :rtype: bool
 %End
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;

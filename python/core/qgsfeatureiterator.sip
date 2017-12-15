@@ -13,7 +13,7 @@
 class QgsAbstractFeatureIterator
 {
 %Docstring
- Internal feature iterator to be implemented within data providers
+Internal feature iterator to be implemented within data providers
 %End
 
 %TypeHeaderCode
@@ -41,101 +41,116 @@ destructor makes sure that the iterator is closed properly
     virtual bool nextFeature( QgsFeature &f );
 %Docstring
 fetch next feature, return true on success
- :rtype: bool
+
+:rtype: bool
 %End
 
     virtual bool rewind() = 0;
 %Docstring
 reset the iterator to the starting position
- :rtype: bool
+
+:rtype: bool
 %End
     virtual bool close() = 0;
 %Docstring
 end of iterating: free the resources / lock
- :rtype: bool
+
+:rtype: bool
 %End
 
 
     CompileStatus compileStatus() const;
 %Docstring
- Returns the status of expression compilation for filter expression requests.
+Returns the status of expression compilation for filter expression requests.
+
+:rtype: CompileStatus
+
 .. versionadded:: 2.16
- :rtype: CompileStatus
 %End
 
     virtual bool isValid() const;
 %Docstring
- Returns if this iterator is valid.
- An invalid feature iterator is not able to provide a reliable source for data.
- If an iterator is invalid, either give up or try to send the request again (preferably
- after a timeout to give the system some time to stay responsive).
+Returns if this iterator is valid.
+An invalid feature iterator is not able to provide a reliable source for data.
+If an iterator is invalid, either give up or try to send the request again (preferably
+after a timeout to give the system some time to stay responsive).
 
- If you want to check if the iterator successfully completed, better use QgsFeatureIterator.isClosed().
+If you want to check if the iterator successfully completed, better use QgsFeatureIterator.isClosed().
+
+:rtype: bool
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
   protected:
 
     virtual bool fetchFeature( QgsFeature &f ) = 0;
 %Docstring
- If you write a feature iterator for your provider, this is the method you
- need to implement!!
+If you write a feature iterator for your provider, this is the method you
+need to implement!!
 
- \param f The feature to write to
- :return:  true if a feature was written to f
- :rtype: bool
+:param f: The feature to write to
+
+:return:  true if a feature was written to f
+:rtype: bool
+
 %End
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 %Docstring
- By default, the iterator will fetch all features and check if the feature
- matches the expression.
- If you have a more sophisticated metodology (SQL request for the features...)
- and you check for the expression in your fetchFeature method, you can just
- redirect this call to fetchFeature so the default check will be omitted.
+By default, the iterator will fetch all features and check if the feature
+matches the expression.
+If you have a more sophisticated metodology (SQL request for the features...)
+and you check for the expression in your fetchFeature method, you can just
+redirect this call to fetchFeature so the default check will be omitted.
 
- \param f The feature to write to
- :return:  true if a feature was written to f
- :rtype: bool
+:param f: The feature to write to
+
+:return:  true if a feature was written to f
+:rtype: bool
+
 %End
 
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 %Docstring
- By default, the iterator will fetch all features and check if the id
- is in the request.
- If you have a more sophisticated metodology (SQL request for the features...)
- and you are sure, that any feature you return from fetchFeature will match
- if the request was FilterFids you can just redirect this call to fetchFeature
- so the default check will be omitted.
+By default, the iterator will fetch all features and check if the id
+is in the request.
+If you have a more sophisticated metodology (SQL request for the features...)
+and you are sure, that any feature you return from fetchFeature will match
+if the request was FilterFids you can just redirect this call to fetchFeature
+so the default check will be omitted.
 
- \param f The feature to write to
- :return:  true if a feature was written to f
- :rtype: bool
+:param f: The feature to write to
+
+:return:  true if a feature was written to f
+:rtype: bool
+
 %End
 
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
 %Docstring
- Transforms ``feature``'s geometry according to the specified coordinate ``transform``.
- If ``feature`` has no geometry or ``transform`` is invalid then calling this method
- has no effect and will be shortcut.
- Iterators should call this method before returning features to ensure that any
- QgsFeatureRequest.destinationCrs() set on the request is respected.
+Transforms ``feature``'s geometry according to the specified coordinate ``transform``.
+If ``feature`` has no geometry or ``transform`` is invalid then calling this method
+has no effect and will be shortcut.
+Iterators should call this method before returning features to ensure that any
+QgsFeatureRequest.destinationCrs() set on the request is respected.
+
 .. versionadded:: 3.0
 %End
 
 
     QgsRectangle filterRectToSourceCrs( const QgsCoordinateTransform &transform ) const;
 %Docstring
- Returns a rectangle representing the original request's QgsFeatureRequest.filterRect().
- If ``transform`` is a valid coordinate transform, the return rectangle will represent
- the requested filterRect() transformed to the source's coordinate reference system.
- Iterators should call this method and use the returned rectangle for filtering
- features to ensure that any QgsFeatureRequest.destinationCrs() set on the request is respected.
- Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
+Returns a rectangle representing the original request's QgsFeatureRequest.filterRect().
+If ``transform`` is a valid coordinate transform, the return rectangle will represent
+the requested filterRect() transformed to the source's coordinate reference system.
+Iterators should call this method and use the returned rectangle for filtering
+features to ensure that any QgsFeatureRequest.destinationCrs() set on the request is respected.
+Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
+
+:rtype: QgsRectangle
+
 .. versionadded:: 3.0
- :rtype: QgsRectangle
 %End
 
 
@@ -155,7 +170,8 @@ Remove reference, delete if refs == 0
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
 %Docstring
 Setup the simplification of geometries to fetch using the specified simplify method
- :rtype: bool
+
+:rtype: bool
 %End
 
 
@@ -166,7 +182,8 @@ template<T>
 class QgsAbstractFeatureIteratorFromSource : QgsAbstractFeatureIterator
 {
 %Docstring
- Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+Helper template that cares of two things: 1. automatic deletion of source if owned by iterator, 2. notification of open/closed iterator.
+
 .. note::
 
    not available in Python bindings (although present in SIP file)
@@ -192,7 +209,7 @@ to be called by from subclass in close()
 class QgsFeatureIterator
 {
 %Docstring
- Wrapper for iterator of features from vector data provider or vector layer
+Wrapper for iterator of features from vector data provider or vector layer
 %End
 
 %TypeHeaderCode
@@ -202,7 +219,8 @@ class QgsFeatureIterator
 
     QgsFeatureIterator *__iter__();
 %Docstring
- :rtype: QgsFeatureIterator
+
+:rtype: QgsFeatureIterator
 %End
 %MethodCode
     sipRes = sipCpp;
@@ -236,41 +254,48 @@ destructor deletes the iterator if it has no more references
 
     bool nextFeature( QgsFeature &f );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool rewind();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool close();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     virtual bool isValid() const;
 %Docstring
- Will return if this iterator is valid.
- An invalid iterator was probably introduced by a failed attempt to acquire a connection
- or is a default constructed iterator.
+Will return if this iterator is valid.
+An invalid iterator was probably introduced by a failed attempt to acquire a connection
+or is a default constructed iterator.
+
+:rtype: bool
 
 .. seealso:: :py:func:`isClosed`
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
     bool isClosed() const;
 %Docstring
 find out whether the iterator is still valid or closed already
- :rtype: bool
+
+:rtype: bool
 %End
 
 
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const;
 %Docstring
- Returns the status of expression compilation for filter expression requests.
+Returns the status of expression compilation for filter expression requests.
+
+:rtype: QgsAbstractFeatureIterator.CompileStatus
+
 .. versionadded:: 2.16
- :rtype: QgsAbstractFeatureIterator.CompileStatus
 %End
 
 

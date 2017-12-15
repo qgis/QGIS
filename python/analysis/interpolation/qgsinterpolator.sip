@@ -15,8 +15,8 @@ struct QgsInterpolatorVertexData
 
   QgsInterpolatorVertexData( double x, double y, double z );
 %Docstring
- Constructor for QgsInterpolatorVertexData with the specified
- ``x``, ``y``, and ``z`` coordinate.
+Constructor for QgsInterpolatorVertexData with the specified
+``x``, ``y``, and ``z`` coordinate.
 %End
 
   QgsInterpolatorVertexData();
@@ -41,9 +41,9 @@ Z-coordinate
 class QgsInterpolator
 {
 %Docstring
- Interface class for interpolations. Interpolators take
- the vertices of a vector layer as base data. The z-Value
- can be an attribute or the z-coordinates in case of 3D types.
+Interface class for interpolations. Interpolators take
+the vertices of a vector layer as base data. The z-Value
+can be an attribute or the z-coordinates in case of 3D types.
 %End
 
 %TypeHeaderCode
@@ -99,13 +99,15 @@ Source type
 
     virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback = 0 ) = 0;
 %Docstring
- Calculates interpolation value for map coordinates x, y
- \param x x-coordinate (in map units)
- \param y y-coordinate (in map units)
- \param result out: interpolation result
- \param feedback optional feedback object for progress and cancelation support
- :return: 0 in case of success*
- :rtype: int
+Calculates interpolation value for map coordinates x, y
+:param x: x-coordinate (in map units)
+:param y: y-coordinate (in map units)
+:param result: out: interpolation result
+:param feedback: optional feedback object for progress and cancelation support
+
+:return: 0 in case of success*
+:rtype: int
+
 %End
 
 
@@ -113,14 +115,15 @@ Source type
 
     Result cacheBaseData( QgsFeedback *feedback = 0 );
 %Docstring
- Caches the vertex and value data from the provider. All the vertex data
- will be held in virtual memory.
+Caches the vertex and value data from the provider. All the vertex data
+will be held in virtual memory.
 
- An optional ``feedback`` argument may be specified to allow cancelation and
- progress reports from the cache operation.
+An optional ``feedback`` argument may be specified to allow cancelation and
+progress reports from the cache operation.
 
- :return: Success in case of success
- :rtype: Result
+:return: Success in case of success
+:rtype: Result
+
 %End
 
 

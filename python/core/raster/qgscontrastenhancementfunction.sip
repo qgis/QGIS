@@ -12,10 +12,10 @@
 class QgsContrastEnhancementFunction
 {
 %Docstring
- A contrast enhancement function is the base class for all raster contrast enhancements.
+A contrast enhancement function is the base class for all raster contrast enhancements.
 
- The purpose of a contrast enhancement is to enhanceContrast or clip a pixel value into
- a specified bounding range.
+The purpose of a contrast enhancement is to enhanceContrast or clip a pixel value into
+a specified bounding range.
 %End
 
 %TypeHeaderCode
@@ -29,13 +29,15 @@ class QgsContrastEnhancementFunction
     virtual int enhance( double );
 %Docstring
  A customizable method that takes in a double and returns a int between 0 and 255
- :rtype: int
+
+:rtype: int
 %End
 
     virtual bool isValueInDisplayableRange( double );
 %Docstring
  A customicable method to indicate if the pixels is displayable
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setMaximumValue( double );

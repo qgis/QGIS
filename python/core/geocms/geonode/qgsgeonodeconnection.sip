@@ -12,6 +12,7 @@ class QgsGeoNodeConnection
 {
 %Docstring
  Encapsulates settings related to a single GeoNode connection.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,47 +23,57 @@ class QgsGeoNodeConnection
 
     explicit QgsGeoNodeConnection( const QString &name );
 %Docstring
- Constructor for a QgsGeoNodeConnection with the specified ``name``.
+Constructor for a QgsGeoNodeConnection with the specified ``name``.
 %End
 
     QString connectionName() const;
 %Docstring
- Returns the name of the connection.
+Returns the name of the connection.
+
+:rtype: str
+
 .. seealso:: :py:func:`setConnectionName()`
- :rtype: str
 %End
 
     void setConnectionName( const QString &connectionName );
 %Docstring
- Sets the ``name`` of the connection.
+Sets the ``name`` of the connection.
+
 .. seealso:: :py:func:`connectionName()`
 %End
 
     QgsDataSourceUri uri() const;
 %Docstring
- Returns the URI for the GeoNode connection.
+Returns the URI for the GeoNode connection.
+
+:rtype: QgsDataSourceUri
+
 .. seealso:: :py:func:`setUri()`
- :rtype: QgsDataSourceUri
 %End
 
     void setUri( const QgsDataSourceUri &uri );
 %Docstring
- Sets the ``uri`` for the GeoNode connection.
+Sets the ``uri`` for the GeoNode connection.
+
 .. seealso:: :py:func:`uri()`
 %End
 
     QgsDataSourceUri &addWmsConnectionSettings( QgsDataSourceUri &uri ) const;
 %Docstring
- Adds uri parameters relating to the settings for a WMS layer on the connection to a QgsDataSourceUri ``uri``.
+Adds uri parameters relating to the settings for a WMS layer on the connection to a QgsDataSourceUri ``uri``.
+
+:rtype: QgsDataSourceUri
+
 .. seealso:: :py:func:`addWmsWcsConnectionSettings()`
- :rtype: QgsDataSourceUri
 %End
 
     QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri ) const;
 %Docstring
- Adds uri parameters relating to the settings for a WFS layer on the connection to a QgsDataSourceUri ``uri``.
+Adds uri parameters relating to the settings for a WFS layer on the connection to a QgsDataSourceUri ``uri``.
+
+:rtype: QgsDataSourceUri
+
 .. seealso:: :py:func:`addWmsWcsConnectionSettings()`
- :rtype: QgsDataSourceUri
 %End
 
 };
@@ -71,7 +82,8 @@ class QgsGeoNodeConnectionUtils
 {
 %Docstring
  Contains various utilities for managing the known collection of
- GeoNode servers associated with a QGIS install.
+GeoNode servers associated with a QGIS install.
+
 .. versionadded:: 3.0
 %End
 
@@ -82,25 +94,28 @@ class QgsGeoNodeConnectionUtils
 
     static QStringList connectionList();
 %Docstring
- Returns a list of all known GeoNode connection names.
- :rtype: list of str
+Returns a list of all known GeoNode connection names.
+
+:rtype: list of str
 %End
 
     static void deleteConnection( const QString &name );
 %Docstring
- Deletes the GeoNode connection with matching ``name``.
+Deletes the GeoNode connection with matching ``name``.
 %End
 
     static QString pathGeoNodeConnection();
 %Docstring
- Returns the base path for settings related to GeoNode connections.
- :rtype: str
+Returns the base path for settings related to GeoNode connections.
+
+:rtype: str
 %End
 
     static QString pathGeoNodeConnectionDetails();
 %Docstring
- Returns the base path for settings related to GeoNode connection details.
- :rtype: str
+Returns the base path for settings related to GeoNode connection details.
+
+:rtype: str
 %End
 
 };

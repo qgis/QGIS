@@ -13,10 +13,12 @@
 class QgsIdentifyMenu : QMenu
 {
 %Docstring
+
 .. seealso:: :py:class:`QgsMapToolIdentify`
+
 .. seealso:: :py:class:`QgsAction`
- It can also embed custom map layer actions, defined for this menu exclusively.
- If used in a QgsMapToolIdentify, it is accessible via QgsMapToolIdentify.identifyMenu() and can be customized in the map tool sub-class.
+It can also embed custom map layer actions, defined for this menu exclusively.
+If used in a QgsMapToolIdentify, it is accessible via QgsMapToolIdentify.identifyMenu() and can be customized in the map tool sub-class.
 %End
 
 %TypeHeaderCode
@@ -62,7 +64,8 @@ define if the menu executed can return multiple results (e.g. all results or all
 %End
     bool allowMultipleReturn();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setExecWithSingleResult( bool execWithSingleResult );
@@ -71,70 +74,82 @@ define if the menu will be shown with a single idetify result
 %End
     bool execWithSingleResult();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setExpressionContextScope( const QgsExpressionContextScope &scope );
 %Docstring
- Sets an expression context scope used to resolve underlying actions.
+Sets an expression context scope used to resolve underlying actions.
 
 .. versionadded:: 3.0
 %End
 
     QgsExpressionContextScope expressionContextScope() const;
 %Docstring
- Returns an expression context scope used to resolve underlying actions.
+Returns an expression context scope used to resolve underlying actions.
+
+:rtype: QgsExpressionContextScope
 
 .. versionadded:: 3.0
- :rtype: QgsExpressionContextScope
 %End
 
     void setShowFeatureActions( bool showFeatureActions );
 %Docstring
  define if attribute actions(1) and map layer actions(2) can be listed and run from the menu
+
 .. note::
 
    custom actions will be shown in any case if they exist.
+
 .. seealso:: :py:class:`QgsAction`
+
 .. seealso:: :py:class:`QgsMapLayerActionRegistry`
 %End
     bool showFeatureActions();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setResultsIfExternalAction( bool resultsIfExternalAction );
 %Docstring
  setResultsIfExternalAction if set to false (default) the menu will not return any results if an external action has been triggered
+
 .. seealso:: :py:func:`setShowFeatureActions`
 %End
     bool resultsIfExternalAction();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setMaxLayerDisplay( int maxLayerDisplay );
 %Docstring
- Defines the maximum number of layers displayed in the menu (default is 10).
+Defines the maximum number of layers displayed in the menu (default is 10).
+
 .. note::
 
    0 is unlimited.
 %End
     int maxLayerDisplay();
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     void setMaxFeatureDisplay( int maxFeatureDisplay );
 %Docstring
- Defines the maximum number of features displayed in the menu for vector layers (default is 10).
+Defines the maximum number of features displayed in the menu for vector layers (default is 10).
+
 .. note::
 
    0 is unlimited.
 %End
     int maxFeatureDisplay();
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     void addCustomAction( QgsMapLayerAction *action );
@@ -150,9 +165,10 @@ remove all custom actions from the menu to be built
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 %Docstring
  exec
- \param idResults the list of identify results to choose within
- \param pos the position where the menu will be executed
- :rtype: list of QgsMapToolIdentify.IdentifyResult
+:param idResults: the list of identify results to choose within
+:param pos: the position where the menu will be executed
+
+:rtype: list of QgsMapToolIdentify.IdentifyResult
 %End
 
   protected:

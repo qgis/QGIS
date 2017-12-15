@@ -19,7 +19,8 @@ class QgsBrushStyleComboBox : QComboBox
 
     Qt::BrushStyle brushStyle() const;
 %Docstring
- :rtype: Qt.BrushStyle
+
+:rtype: Qt.BrushStyle
 %End
 
     void setBrushStyle( Qt::BrushStyle style );
@@ -27,7 +28,8 @@ class QgsBrushStyleComboBox : QComboBox
   protected:
     QIcon iconForBrush( Qt::BrushStyle style );
 %Docstring
- :rtype: QIcon
+
+:rtype: QIcon
 %End
 
 };

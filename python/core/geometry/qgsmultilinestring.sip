@@ -12,6 +12,7 @@ class QgsMultiLineString: QgsMultiCurve
 {
 %Docstring
  Multi line string geometry collection.
+
 .. versionadded:: 2.10
 %End
 
@@ -43,9 +44,11 @@ class QgsMultiLineString: QgsMultiCurve
     virtual QgsMultiCurve *toCurveType() const /Factory/;
 
 %Docstring
- Returns the geometry converted to the more generic curve type QgsMultiCurve
+Returns the geometry converted to the more generic curve type QgsMultiCurve
+
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsMultiCurve
+:rtype: QgsMultiCurve
+
 %End
 
   protected:

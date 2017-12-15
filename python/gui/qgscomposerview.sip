@@ -12,10 +12,10 @@
 class QgsComposerView: QGraphicsView
 {
 %Docstring
- Widget to display the composer items. Manages the composer tools and the
- mouse/key events.
- Creates the composer items according to the current map tools and keeps track
- of the rubber band item.
+Widget to display the composer items. Manages the composer tools and the
+mouse/key events.
+Creates the composer items according to the current map tools and keeps track
+of the rubber band item.
 %End
 
 %TypeHeaderCode
@@ -119,32 +119,36 @@ Inverts current selection
 
     QgsComposerView::Tool currentTool() const;
 %Docstring
- :rtype: QgsComposerView.Tool
+
+:rtype: QgsComposerView.Tool
 %End
     void setCurrentTool( QgsComposerView::Tool t );
 
     void setComposition( QgsComposition *c /KeepReference/ );
 %Docstring
- Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
- be set BEFORE adding any items to the composition.
+Sets the composition for the view. If the composition is being set manually and not by a QgsComposer, then this must
+be set BEFORE adding any items to the composition.
 %End
 
     QgsComposition *composition();
 %Docstring
 Returns the composition or 0 in case of error
- :rtype: QgsComposition
+
+:rtype: QgsComposition
 %End
 
     QMainWindow *composerWindow();
 %Docstring
 Returns the composer main window
- :rtype: QMainWindow
+
+:rtype: QMainWindow
 %End
 
     void setPaintingEnabled( bool enabled );
     bool paintingEnabled() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void updateRulers();
@@ -162,43 +166,53 @@ Set zoom level, where a zoom level of 1.0 corresponds to 100%
 
     void scaleSafe( double scale );
 %Docstring
- Scales the view in a safe way, by limiting the acceptable range
- of the scale applied.
- \param scale factor to scale view by
+Scales the view in a safe way, by limiting the acceptable range
+of the scale applied.
+:param scale: factor to scale view by
+
 .. versionadded:: 2.16
 %End
 
     void setPreviewModeEnabled( bool enabled );
 %Docstring
- Sets whether a preview effect should be used to alter the view's appearance
- \param enabled Set to true to enable the preview effect on the view
+Sets whether a preview effect should be used to alter the view's appearance
+:param enabled: Set to true to enable the preview effect on the view
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setPreviewMode`
 %End
 
     void setPreviewMode( QgsPreviewEffect::PreviewMode mode );
 %Docstring
- Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
- if setPreviewMode is set to true.
- \param mode PreviewMode to be used to draw the view
+Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
+if setPreviewMode is set to true.
+:param mode: PreviewMode to be used to draw the view
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setPreviewModeEnabled`
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
- Sets the map canvas associated with the view. This allows the
- view to retrieve map settings from the canvas.
+Sets the map canvas associated with the view. This allows the
+view to retrieve map settings from the canvas.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`mapCanvas()`
 %End
 
     QgsMapCanvas *mapCanvas() const;
 %Docstring
- Returns the map canvas associated with the view.
+Returns the map canvas associated with the view.
+
+:rtype: QgsMapCanvas
+
 .. seealso:: :py:func:`setMapCanvas()`
+
 .. versionadded:: 3.0
- :rtype: QgsMapCanvas
 %End
 
   protected:
@@ -244,7 +258,7 @@ Is emitted when a composer item has been removed from the scene
 
     void actionFinished();
 %Docstring
- Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
+Current action (e.g. adding composer map) has been finished. The purpose of this signal is that
 QgsComposer may set the selection tool again*
 %End
     void cursorPosChanged( QPointF );

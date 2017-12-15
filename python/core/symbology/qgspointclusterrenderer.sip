@@ -12,7 +12,8 @@
 class QgsPointClusterRenderer: QgsPointDistanceRenderer
 {
 %Docstring
- A renderer that automatically clusters points with the same geographic position.
+A renderer that automatically clusters points with the same geographic position.
+
 .. versionadded:: 3.0
 %End
 
@@ -35,35 +36,42 @@ class QgsPointClusterRenderer: QgsPointDistanceRenderer
     static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates a renderer from XML element
- :rtype: QgsFeatureRenderer
+
+:rtype: QgsFeatureRenderer
 %End
 
     QgsMarkerSymbol *clusterSymbol();
 %Docstring
- Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
+Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
+
+:rtype: QgsMarkerSymbol
+
 .. seealso:: :py:func:`setClusterSymbol()`
- :rtype: QgsMarkerSymbol
 %End
 
     void setClusterSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
- Sets the symbol for rendering clustered groups.
- \param symbol new cluster symbol. Ownership is transferred to the renderer.
+Sets the symbol for rendering clustered groups.
+:param symbol: new cluster symbol. Ownership is transferred to the renderer.
+
 .. seealso:: :py:func:`clusterSymbol()`
 %End
 
     static QgsPointClusterRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- Creates a QgsPointClusterRenderer from an existing renderer.
- :return: a new renderer if the conversion was possible, otherwise None.
- :rtype: QgsPointClusterRenderer
+Creates a QgsPointClusterRenderer from an existing renderer.
+
+:return: a new renderer if the conversion was possible, otherwise None.
+:rtype: QgsPointClusterRenderer
+
 %End
 
   private:
     QgsPointClusterRenderer( const QgsPointClusterRenderer & );
     QgsPointClusterRenderer &operator=( const QgsPointClusterRenderer & );
 %Docstring
- :rtype: QgsPointClusterRenderer
+
+:rtype: QgsPointClusterRenderer
 %End
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) ;
 

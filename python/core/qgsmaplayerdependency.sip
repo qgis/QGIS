@@ -13,11 +13,11 @@
 class QgsMapLayerDependency
 {
 %Docstring
- This class models dependencies with or between map layers.
- A dependency is defined by a layer ID, a type and an origin.
- The two combinations of type/origin that are currently supported are:
-  - PresenceDependency && FromProvider: virtual layers for instance which may depend on other layers already loaded to work
-  - DataDependency && FromUser: dependencies given by the user, mainly to represent database triggers
+This class models dependencies with or between map layers.
+A dependency is defined by a layer ID, a type and an origin.
+The two combinations of type/origin that are currently supported are:
+- PresenceDependency && FromProvider: virtual layers for instance which may depend on other layers already loaded to work
+- DataDependency && FromUser: dependencies given by the user, mainly to represent database triggers
 
 .. versionadded:: 3.0
 %End
@@ -46,19 +46,22 @@ Standard constructor
     Type type() const;
 %Docstring
 Return the dependency type
- :rtype: Type
+
+:rtype: Type
 %End
 
     Origin origin() const;
 %Docstring
 Return the dependency origin
- :rtype: Origin
+
+:rtype: Origin
 %End
 
     QString layerId() const;
 %Docstring
 Return the ID of the layer this dependency depends on
- :rtype: str
+
+:rtype: str
 %End
 
     bool operator==( const QgsMapLayerDependency &other ) const;
@@ -66,7 +69,8 @@ Return the ID of the layer this dependency depends on
     //! hash operator
     long __hash__() const;
 %Docstring
- :rtype: long
+
+:rtype: long
 %End
 %MethodCode
     sipRes = qHash( *sipCpp );

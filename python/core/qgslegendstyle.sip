@@ -13,7 +13,7 @@
 class QgsLegendStyle
 {
 %Docstring
- Composer legend components style
+Composer legend components style
 %End
 
 %TypeHeaderCode
@@ -43,19 +43,21 @@ class QgsLegendStyle
 
     QFont font() const;
 %Docstring
- The font for this style.
- :rtype: QFont
+The font for this style.
+
+:rtype: QFont
 %End
 
     void setFont( const QFont &font );
 %Docstring
- The font for this style.
+The font for this style.
 %End
 
 
     double margin( Side side );
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     void setMargin( Side side, double margin );
 
@@ -71,19 +73,22 @@ set all margins
     static QString styleName( Style s );
 %Docstring
 Get name for style, used in project file
- :rtype: str
+
+:rtype: str
 %End
 
     static Style styleFromName( const QString &styleName );
 %Docstring
 Get style from name, used in project file
- :rtype: Style
+
+:rtype: Style
 %End
 
     static QString styleLabel( Style s );
 %Docstring
 Get style label, translated, used in UI
- :rtype: str
+
+:rtype: str
 %End
 
 };

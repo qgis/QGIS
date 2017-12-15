@@ -10,8 +10,8 @@
 class QgsTabWidget : QTabWidget
 {
 %Docstring
- The QgsTabWidget class is the same as the QTabWidget but with additional methods to
- temporarily hide/show tabs.
+The QgsTabWidget class is the same as the QTabWidget but with additional methods to
+temporarily hide/show tabs.
 
 .. versionadded:: 3.0
 %End
@@ -23,56 +23,57 @@ class QgsTabWidget : QTabWidget
 
     QgsTabWidget( QWidget *parent = 0 );
 %Docstring
- Create a new QgsTabWidget with the optionally provided parent.
+Create a new QgsTabWidget with the optionally provided parent.
 
 .. versionadded:: 3.0
 %End
 
     void hideTab( QWidget *tab );
 %Docstring
- Hides the tab with the given widget
+Hides the tab with the given widget
 
 .. versionadded:: 3.0
 %End
 
     void showTab( QWidget *tab );
 %Docstring
- Shows the tab with the given widget
+Shows the tab with the given widget
 
 .. versionadded:: 3.0
 %End
 
     void setTabVisible( QWidget *tab, bool visible );
 %Docstring
- Control the visibility for the tab with the given widget.
+Control the visibility for the tab with the given widget.
 
 .. versionadded:: 3.0
 %End
 
     int realTabIndex( QWidget *widget );
 %Docstring
- Returns the index of the tab with the given widget.
- This index is not the same as the one provided to insertTab and removeTab
- since these methods are not aware of hidden tabs.
+Returns the index of the tab with the given widget.
+This index is not the same as the one provided to insertTab and removeTab
+since these methods are not aware of hidden tabs.
+
+:rtype: int
 
 .. versionadded:: 3.0
- :rtype: int
 %End
 
     virtual void tabInserted( int index );
 %Docstring
- Is called internally whenever a new tab has been inserted.
+Is called internally whenever a new tab has been inserted.
 
- Is used to keep track of currently available and visible tabs.
+Is used to keep track of currently available and visible tabs.
 
 .. versionadded:: 3.0
 %End
 
     virtual void tabRemoved( int index );
 %Docstring
- Is called internally whenever a tab has been removed.
+Is called internally whenever a tab has been removed.
 
- Is used to keep track of currently available and visible tabs.
+Is used to keep track of currently available and visible tabs.
 
 .. versionadded:: 3.0
 %End

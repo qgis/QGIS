@@ -14,7 +14,8 @@
 class QgsComposerPolygon: QgsComposerNodesItem
 {
 %Docstring
- Composer item for polygons.
+Composer item for polygons.
+
 .. versionadded:: 2.16
 %End
 
@@ -25,27 +26,29 @@ class QgsComposerPolygon: QgsComposerNodesItem
 
     QgsComposerPolygon( QgsComposition *c );
 %Docstring
- Constructor
- \param c parent composition
+Constructor
+:param c: parent composition
 %End
 
     QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c );
 %Docstring
- Constructor
- \param polygon nodes of the shape
- \param c parent composition
+Constructor
+:param polygon: nodes of the shape
+:param c: parent composition
 %End
 
     virtual QString displayName() const;
 %Docstring
 Overridden to return shape name
- :rtype: str
+
+:rtype: str
 %End
 
     QgsFillSymbol *polygonStyleSymbol();
 %Docstring
 Returns the QgsSymbol used to draw the shape.
- :rtype: QgsFillSymbol
+
+:rtype: QgsFillSymbol
 %End
 
     void setPolygonStyleSymbol( QgsFillSymbol *symbol );
@@ -56,7 +59,8 @@ Set the QgsSymbol used to draw the shape.
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
- :rtype: int
+
+:rtype: int
 %End
 
   protected:
@@ -65,9 +69,10 @@ Return correct graphics item type.
     virtual bool _addNode( const int indexPoint, QPointF newPoint, const double radius );
 
 %Docstring
- Add the node newPoint at the given position according to some
- criteres. *
- :rtype: bool
+Add the node newPoint at the given position according to some
+criteres. *
+
+:rtype: bool
 %End
 
     virtual bool _removeNode( const int nodeIndex );

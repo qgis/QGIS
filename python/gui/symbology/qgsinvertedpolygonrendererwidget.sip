@@ -11,7 +11,7 @@
 class QgsInvertedPolygonRendererWidget : QgsRendererWidget
 {
 %Docstring
- A widget used represent options of a QgsInvertedPolygonRenderer
+A widget used represent options of a QgsInvertedPolygonRenderer
 
 .. versionadded:: 2.4
 %End
@@ -23,19 +23,20 @@ class QgsInvertedPolygonRendererWidget : QgsRendererWidget
 
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- Static creation method
- \param layer the layer where this renderer is applied
- \param style
- \param renderer the mask renderer (will not take ownership)
- :rtype: QgsRendererWidget
+Static creation method
+:param layer: the layer where this renderer is applied
+:param style:
+:param renderer: the mask renderer (will not take ownership)
+
+:rtype: QgsRendererWidget
 %End
 
     QgsInvertedPolygonRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 %Docstring
- Constructor
- \param layer the layer where this renderer is applied
- \param style
- \param renderer the mask renderer (will not take ownership)
+Constructor
+:param layer: the layer where this renderer is applied
+:param style:
+:param renderer: the mask renderer (will not take ownership)
 %End
 
     virtual QgsFeatureRenderer *renderer();

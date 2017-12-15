@@ -13,8 +13,8 @@
 class QgsObjectCustomProperties
 {
 %Docstring
- Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
- in \verbatim <customproperties> \endverbatim element.
+Simple key-value store (keys = strings, values = variants) that supports loading/saving to/from XML
+in \verbatim <customproperties> \endverbatim element.
 
 .. versionadded:: 2.4
 %End
@@ -26,13 +26,14 @@ class QgsObjectCustomProperties
 
     QgsObjectCustomProperties();
 %Docstring
- Constructor for QgsObjectCustomProperties.
+Constructor for QgsObjectCustomProperties.
 %End
 
     QStringList keys() const;
 %Docstring
 Return list of stored keys
- :rtype: list of str
+
+:rtype: list of str
 %End
 
     void setValue( const QString &key, const QVariant &value );
@@ -43,7 +44,8 @@ Add an entry to the store. If the entry with the keys exists already, it will be
     QVariant value( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
 Return value for the given key. If the key is not stored, default value will be used
- :rtype: QVariant
+
+:rtype: QVariant
 %End
 
     void remove( const QString &key );
@@ -54,9 +56,9 @@ Remove a key (entry) from the store
 
     void readXml( const QDomNode &parentNode, const QString &keyStartsWith = QString() );
 %Docstring
- Read store contents from XML
-\param parentNode node to read from
-\param keyStartsWith reads only properties starting with the specified string (or all if the string is empty)
+Read store contents from XML
+:param parentNode: node to read from
+:param keyStartsWith: reads only properties starting with the specified string (or all if the string is empty)
 %End
 
     void writeXml( QDomNode &parentNode, QDomDocument &doc ) const;

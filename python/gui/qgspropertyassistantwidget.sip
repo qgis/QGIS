@@ -14,7 +14,8 @@
 class QgsPropertyAssistantWidget : QgsPanelWidget
 {
 %Docstring
- Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
+Shows a user-friendly assistant guiding users through the creation of QgsProperty overrides.
+
 .. versionadded:: 3.0
 %End
 
@@ -28,23 +29,23 @@ class QgsPropertyAssistantWidget : QgsPanelWidget
                                 const QgsProperty &initialState = QgsProperty(),
                                 const QgsVectorLayer *layer = 0 );
 %Docstring
- Constructor for QgsPropertyAssistantWidget. Aside from a ``parent`` widget, the constructor accepts a
- corresponding property ``definition`` from which it customises the displayed options (eg a color based
- property definition will show an assistant to allow creation of color based properties).
- The ``initialState`` dictates the initial state to show in the widget. A corresponding ``layer``
- can also be set to allow population of GUI widgets such as field selectors.
+Constructor for QgsPropertyAssistantWidget. Aside from a ``parent`` widget, the constructor accepts a
+corresponding property ``definition`` from which it customises the displayed options (eg a color based
+property definition will show an assistant to allow creation of color based properties).
+The ``initialState`` dictates the initial state to show in the widget. A corresponding ``layer``
+can also be set to allow population of GUI widgets such as field selectors.
 %End
 
     void registerExpressionContextGenerator( QgsExpressionContextGenerator *generator );
 %Docstring
- Register an expression context generator class that will be used to retrieve
- an expression context for the button when required.
+Register an expression context generator class that will be used to retrieve
+an expression context for the button when required.
 %End
 
     void updateProperty( QgsProperty &property );
 %Docstring
- Updates a ``property`` in place to corresponding to the current settings shown
- in the widget.
+Updates a ``property`` in place to corresponding to the current settings shown
+in the widget.
 %End
 
 

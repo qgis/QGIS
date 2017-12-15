@@ -15,15 +15,15 @@
 class QgsMessageOutput
 {
 %Docstring
- Interface for showing messages from QGIS in GUI independent way.
- This class provides abstraction of a dialog for showing output to the user.
- By default QgsMessageConsoleOutput will be used if not overridden with other
- message output creator function.
+Interface for showing messages from QGIS in GUI independent way.
+This class provides abstraction of a dialog for showing output to the user.
+By default QgsMessageConsoleOutput will be used if not overridden with other
+message output creator function.
 
- QGIS application uses QgsMessageView class for displaying a dialog to the user.
+QGIS application uses QgsMessageView class for displaying a dialog to the user.
 
- Object deletes itself when it's not needed anymore. Children should use
- signal destroyed() to notify the deletion
+Object deletes itself when it's not needed anymore. Children should use
+signal destroyed() to notify the deletion
 %End
 
 %TypeHeaderCode
@@ -60,16 +60,18 @@ display the message to the user and deletes itself
 
     static void showMessage( const QString &title, const QString &message, MessageType msgType );
 %Docstring
- Display the blocking message to the user.
+Display the blocking message to the user.
+
 .. versionadded:: 2.10
 %End
 
 
     static QgsMessageOutput *createMessageOutput();
 %Docstring
- function that returns new class derived from QgsMessageOutput
- (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
- :rtype: QgsMessageOutput
+function that returns new class derived from QgsMessageOutput
+(don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
+
+:rtype: QgsMessageOutput
 %End
 
 };
@@ -91,7 +93,7 @@ be the right choice for apps without GUI.
 
     QgsMessageOutputConsole();
 %Docstring
- Constructor for QgsMessageOutputConsole.
+Constructor for QgsMessageOutputConsole.
 %End
 
     virtual void setMessage( const QString &message, MessageType msgType );

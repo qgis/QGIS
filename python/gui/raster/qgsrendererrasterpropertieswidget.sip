@@ -21,24 +21,26 @@ class QgsRendererRasterPropertiesWidget : QgsMapLayerConfigWidget
 
     QgsRendererRasterPropertiesWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
- A widget to hold the renderer properties for a raster layer.
- \param layer The raster layer to style
- \param canvas The canvas object used to calculate the max and min values from the extent.
- \param parent Parent object
+A widget to hold the renderer properties for a raster layer.
+:param layer: The raster layer to style
+:param canvas: The canvas object used to calculate the max and min values from the extent.
+:param parent: Parent object
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
- Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
- map scale and other properties from the canvas.
- \param canvas map canvas
+Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+map scale and other properties from the canvas.
+:param canvas: map canvas
+
 .. versionadded:: 2.12
 %End
 
     QgsRasterRendererWidget *currentRenderWidget();
 %Docstring
- Return the active render widget. Can be null.
- :rtype: QgsRasterRendererWidget
+Return the active render widget. Can be null.
+
+:rtype: QgsRasterRendererWidget
 %End
 
   public slots:
@@ -56,7 +58,7 @@ Apply the changes from the dialog to the layer.
     void syncToLayer( QgsRasterLayer *layer );
 %Docstring
  Sync the widget to the given layer.
- \param layer The layer to use for the widget
+:param layer: The layer to use for the widget
 %End
 
 };

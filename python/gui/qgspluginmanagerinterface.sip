@@ -39,7 +39,8 @@ refresh plugin list model (and metadata browser content if necessary)
     virtual const QMap<QString, QString> *pluginMetadata( const QString &key ) const = 0;
 %Docstring
 return given plugin metadata
- :rtype: QMap<str, QString>
+
+:rtype: QMap<str, QString>
 %End
 
     virtual void clearRepositoryList() = 0;

@@ -10,9 +10,9 @@
 class QgsListFieldFormatter : QgsFieldFormatter
 {
 %Docstring
- Field formatter for a list field.
- This represents a list type value.
- Values will be represented as a comma-separated list.
+Field formatter for a list field.
+This represents a list type value.
+Values will be represented as a comma-separated list.
 
 .. versionadded:: 3.0
 %End
@@ -24,7 +24,7 @@ class QgsListFieldFormatter : QgsFieldFormatter
 
     QgsListFieldFormatter();
 %Docstring
- Default constructor of field formatter for a list field.
+Default constructor of field formatter for a list field.
 %End
     virtual QString id() const;
 

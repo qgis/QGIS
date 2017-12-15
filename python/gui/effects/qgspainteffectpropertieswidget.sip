@@ -26,33 +26,33 @@ class QgsPaintEffectPropertiesWidget : QWidget
 
     QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- QgsPaintEffectPropertiesWidget constructor
- \param effect QgsPaintEffect to modify in the widget
- \param parent parent widget
+QgsPaintEffectPropertiesWidget constructor
+:param effect: QgsPaintEffect to modify in the widget
+:param parent: parent widget
 %End
 
   public slots:
 
     void effectTypeChanged();
 %Docstring
- Update widget when effect type changes
+Update widget when effect type changes
 %End
 
     void emitSignalChanged();
 %Docstring
- Emits the changed signal
+Emits the changed signal
 %End
 
   signals:
 
     void changed();
 %Docstring
- Emitted when paint effect properties changes
+Emitted when paint effect properties changes
 %End
 
     void changeEffect( QgsPaintEffect *effect );
 %Docstring
- Emitted when paint effect type changes
+Emitted when paint effect type changes
 %End
 
 };

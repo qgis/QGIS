@@ -13,7 +13,8 @@
 class QgsFieldConstraints
 {
 %Docstring
- Stores information about constraints which may be present on a field.
+Stores information about constraints which may be present on a field.
+
 .. versionadded:: 3.0
 %End
 
@@ -47,80 +48,104 @@ class QgsFieldConstraints
 
     QgsFieldConstraints();
 %Docstring
- Constructor for QgsFieldConstraints.
+Constructor for QgsFieldConstraints.
 %End
 
     Constraints constraints() const;
 %Docstring
- Returns any constraints which are present for the field.
+Returns any constraints which are present for the field.
+
+:rtype: Constraints
+
 .. seealso:: :py:func:`setConstraints()`
+
 .. seealso:: :py:func:`constraintOrigin()`
- :rtype: Constraints
 %End
 
     ConstraintOrigin constraintOrigin( Constraint constraint ) const;
 %Docstring
- Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
- is not present on this field.
+Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
+is not present on this field.
+
+:rtype: ConstraintOrigin
+
 .. seealso:: :py:func:`constraints()`
- :rtype: ConstraintOrigin
 %End
 
     ConstraintStrength constraintStrength( Constraint constraint ) const;
 %Docstring
- Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
- is not present on this field.
+Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
+is not present on this field.
+
+:rtype: ConstraintStrength
+
 .. seealso:: :py:func:`constraints()`
+
 .. seealso:: :py:func:`setConstraintStrength()`
- :rtype: ConstraintStrength
 %End
 
     void setConstraintStrength( Constraint constraint, ConstraintStrength strength );
 %Docstring
- Sets the strength of a constraint. Note that the strength of constraints which originate
- from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
- explicitly changed.
+Sets the strength of a constraint. Note that the strength of constraints which originate
+from a provider cannot be changed. Constraints default to ConstraintStrengthHard unless
+explicitly changed.
+
 .. seealso:: :py:func:`constraintStrength()`
 %End
 
     void setConstraint( Constraint constraint, ConstraintOrigin origin = ConstraintOriginLayer );
 %Docstring
- Sets a constraint on the field.
+Sets a constraint on the field.
+
 .. seealso:: :py:func:`constraints()`
+
 .. seealso:: :py:func:`removeConstraint()`
 %End
 
     void removeConstraint( Constraint constraint );
 %Docstring
- Removes a constraint from the field.
+Removes a constraint from the field.
+
 .. seealso:: :py:func:`setConstraint()`
+
 .. seealso:: :py:func:`constraints()`
 %End
 
     QString constraintExpression() const;
 %Docstring
- Returns the constraint expression for the field, if set.
+Returns the constraint expression for the field, if set.
+
+:rtype: str
+
 .. seealso:: :py:func:`constraints()`
+
 .. seealso:: :py:func:`constraintDescription()`
+
 .. seealso:: :py:func:`setConstraintExpression()`
- :rtype: str
 %End
 
     QString constraintDescription() const;
 %Docstring
- Returns the descriptive name for the constraint expression.
+Returns the descriptive name for the constraint expression.
+
+:rtype: str
+
 .. seealso:: :py:func:`constraints()`
+
 .. seealso:: :py:func:`constraintExpression()`
+
 .. seealso:: :py:func:`setConstraintExpression()`
- :rtype: str
 %End
 
     void setConstraintExpression( const QString &expression, const QString &description = QString() );
 %Docstring
- Set the constraint expression for the field. An optional descriptive name for the constraint
- can also be set. Setting an empty expression will clear any existing expression constraint.
+Set the constraint expression for the field. An optional descriptive name for the constraint
+can also be set. Setting an empty expression will clear any existing expression constraint.
+
 .. seealso:: :py:func:`constraintExpression()`
+
 .. seealso:: :py:func:`constraintDescription()`
+
 .. seealso:: :py:func:`constraints()`
 %End
 

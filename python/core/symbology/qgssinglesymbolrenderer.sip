@@ -25,7 +25,8 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
     QgsSymbol *symbol() const;
 %Docstring
- :rtype: QgsSymbol
+
+:rtype: QgsSymbol
 %End
     void setSymbol( QgsSymbol *s /Transfer/ );
 
@@ -36,7 +37,8 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
 %Docstring
- :rtype: QgsFeatureRenderer
+
+:rtype: QgsFeatureRenderer
 %End
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
@@ -45,7 +47,8 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 create renderer from XML element
- :rtype: QgsFeatureRenderer
+
+:rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
     virtual QgsLegendSymbolList legendSymbolItems() const;
@@ -54,30 +57,36 @@ create renderer from XML element
 
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- creates a QgsSingleSymbolRenderer from an existing renderer.
+creates a QgsSingleSymbolRenderer from an existing renderer.
+
+:rtype: QgsSingleSymbolRenderer
+
 .. versionadded:: 2.5
- :return: a new renderer if the conversion was possible, otherwise 0.
- :rtype: QgsSingleSymbolRenderer
+
+:return: a new renderer if the conversion was possible, otherwise 0.
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
- Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
- This allows configuring which values (symbol sizes) should be shown in the legend, whether to display
- different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
+This allows configuring which values (symbol sizes) should be shown in the legend, whether to display
+different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
 
- When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
- Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
- size legend.
+When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
+Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+size legend.
+
 .. versionadded:: 3.0
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
- Returns configuration of appearance of legend when using data-defined size for marker symbols.
- Will return null if the functionality is disabled.
+Returns configuration of appearance of legend when using data-defined size for marker symbols.
+Will return null if the functionality is disabled.
+
+:rtype: QgsDataDefinedSizeLegend
+
 .. versionadded:: 3.0
- :rtype: QgsDataDefinedSizeLegend
 %End
 
   protected:
@@ -86,7 +95,8 @@ create renderer from XML element
     QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer & );
     QgsSingleSymbolRenderer &operator=( const QgsSingleSymbolRenderer & );
 %Docstring
- :rtype: QgsSingleSymbolRenderer
+
+:rtype: QgsSingleSymbolRenderer
 %End
 };
 

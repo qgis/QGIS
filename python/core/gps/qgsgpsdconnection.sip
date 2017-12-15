@@ -13,7 +13,7 @@
 class QgsGpsdConnection: QgsNMEAConnection
 {
 %Docstring
- Evaluates NMEA sentences coming from gpsd*
+Evaluates NMEA sentences coming from gpsd*
 %End
 
 %TypeHeaderCode

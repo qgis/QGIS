@@ -11,10 +11,10 @@
 class QgsMapRendererParallelJob : QgsMapRendererQImageJob
 {
 %Docstring
- Job implementation that renders all layers in parallel.
+Job implementation that renders all layers in parallel.
 
- The resulting map image can be retrieved with renderedImage() function.
- It is safe to call that function while rendering is active to see preview of the map.
+The resulting map image can be retrieved with renderedImage() function.
+It is safe to call that function while rendering is active to see preview of the map.
 
 .. versionadded:: 2.4
 %End

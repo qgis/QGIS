@@ -17,13 +17,13 @@ class QgsAccessControlFilter
 %Docstring
  Class defining access control interface for QGIS Server plugins.
 
- Security can define any (or none) of the following method:
-  * layerFilterExpression() - To get an additional expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
-  * layerFilterSQL() - To get an additional SQL filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
-  * layerPermissions() - To give the general layer permissins (read / update / insert / delete)
-  * authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
-  * allowToEdit() - (all WFS-T requests)
-  * cacheKey()
+Security can define any (or none) of the following method:
+* layerFilterExpression() - To get an additional expression filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature)
+* layerFilterSQL() - To get an additional SQL filter (WMS/GetMap, WMS/GetFeatureInfo, WFS/GetFeature) for layer that support SQL
+* layerPermissions() - To give the general layer permissins (read / update / insert / delete)
+* authorizedLayerAttributes() - Tho filter the attributes (WMS/GetFeatureInfo, WFS/GetFeature)
+* allowToEdit() - (all WFS-T requests)
+* cacheKey()
 %End
 
 %TypeHeaderCode
@@ -33,9 +33,9 @@ class QgsAccessControlFilter
 
     QgsAccessControlFilter( const QgsServerInterface *serverInterface );
 %Docstring
- Constructor
- QgsServerInterface passed to plugins constructors
- and must be passed to QgsAccessControlFilter instances.
+Constructor
+QgsServerInterface passed to plugins constructors
+and must be passed to QgsAccessControlFilter instances.
 %End
 
     virtual ~QgsAccessControlFilter();
@@ -51,56 +51,69 @@ class QgsAccessControlFilter
     const QgsServerInterface *serverInterface() const;
 %Docstring
 Return the QgsServerInterface instance
- :rtype: QgsServerInterface
+
+:rtype: QgsServerInterface
 %End
 
     virtual QString layerFilterExpression( const QgsVectorLayer *layer ) const;
 %Docstring
- Return an additional expression filter
- \param layer the layer to control
- :return: the filter expression
- :rtype: str
+Return an additional expression filter
+:param layer: the layer to control
+
+:return: the filter expression
+:rtype: str
+
 %End
 
     virtual QString layerFilterSubsetString( const QgsVectorLayer *layer ) const;
 %Docstring
- Return an additional subset string (typically SQL) filter
- \param layer the layer to control
- :return: the subset string
- :rtype: str
+Return an additional subset string (typically SQL) filter
+:param layer: the layer to control
+
+:return: the subset string
+:rtype: str
+
 %End
 
     virtual LayerPermissions layerPermissions( const QgsMapLayer *layer ) const;
 %Docstring
- Return the layer permissions
- \param layer the layer to control
- :return: the permission to use on the layer
- :rtype: LayerPermissions
+Return the layer permissions
+:param layer: the layer to control
+
+:return: the permission to use on the layer
+:rtype: LayerPermissions
+
 %End
 
     virtual QStringList authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 %Docstring
- Return the authorized layer attributes
- \param layer the layer to control
- \param attributes the current list of visible attribute
- :return: the new list of visible attributes
- :rtype: list of str
+Return the authorized layer attributes
+:param layer: the layer to control
+:param attributes: the current list of visible attribute
+
+:return: the new list of visible attributes
+:rtype: list of str
+
 %End
 
     virtual bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 %Docstring
- Are we authorized to modify the following geometry
- \param layer the layer to control
- \param feature the concerned feature
- :return: true if we are allowed to edit
- :rtype: bool
+Are we authorized to modify the following geometry
+:param layer: the layer to control
+:param feature: the concerned feature
+
+:return: true if we are allowed to edit
+:rtype: bool
+
 %End
 
     virtual QString cacheKey() const;
 %Docstring
- Cache key to used to create the capabilities cache
- :return: the cache key, "" for no cache
- :rtype: str
+Cache key to used to create the capabilities cache
+
+:return: the cache key, "" for no cache
+:rtype: str
+
 %End
 
 };

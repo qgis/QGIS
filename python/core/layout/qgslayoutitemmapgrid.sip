@@ -14,9 +14,11 @@ class QgsLayoutItemMapGridStack : QgsLayoutItemMapItemStack
 {
 %Docstring
  A collection of grids which is drawn above the map content in a
- QgsLayoutItemMap. The grid stack controls which grids are drawn and the
- order they are drawn in.
+QgsLayoutItemMap. The grid stack controls which grids are drawn and the
+order they are drawn in.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:class:`QgsLayoutItemMapGrid`
 %End
 
@@ -27,71 +29,84 @@ class QgsLayoutItemMapGridStack : QgsLayoutItemMapItemStack
 
     QgsLayoutItemMapGridStack( QgsLayoutItemMap *map );
 %Docstring
- Constructor for QgsLayoutItemMapGridStack, attached to the specified ``map``.
+Constructor for QgsLayoutItemMapGridStack, attached to the specified ``map``.
 %End
 
     void addGrid( QgsLayoutItemMapGrid *grid /Transfer/ );
 %Docstring
- Adds a new map ``grid`` to the stack and takes ownership of the grid.
- The grid will be added to the end of the stack, and rendered
- above any existing map grids already present in the stack.
+Adds a new map ``grid`` to the stack and takes ownership of the grid.
+The grid will be added to the end of the stack, and rendered
+above any existing map grids already present in the stack.
+
 .. note::
 
    After adding a grid to the stack, updateBoundingRect() and update()
- should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+
 .. seealso:: :py:func:`removeGrid()`
 %End
 
     void removeGrid( const QString &gridId );
 %Docstring
- Removes a grid with matching ``gridId`` from the stack and deletes the corresponding QgsLayoutItemMapGrid.
+Removes a grid with matching ``gridId`` from the stack and deletes the corresponding QgsLayoutItemMapGrid.
+
 .. note::
 
    After removing a grid from the stack, updateBoundingRect() and update()
- should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+should be called for the QgsLayoutItemMap to prevent rendering artifacts.
+
 .. seealso:: :py:func:`addGrid()`
 %End
 
     void moveGridUp( const QString &gridId );
 %Docstring
- Moves a grid with matching ``gridId`` up the stack, causing it to be rendered above other grids.
+Moves a grid with matching ``gridId`` up the stack, causing it to be rendered above other grids.
+
 .. note::
 
    After moving a grid within the stack, update() should be
- called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
+called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
+
 .. seealso:: :py:func:`moveGridDown()`
 %End
 
     void moveGridDown( const QString &gridId );
 %Docstring
- Moves a grid with matching ``gridId`` down the stack, causing it to be rendered below other grids.
+Moves a grid with matching ``gridId`` down the stack, causing it to be rendered below other grids.
+
 .. note::
 
    After moving a grid within the stack, update() should be
- called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
+called for the QgsLayoutItemMap to redraw the map with the new grid stack order.
+
 .. seealso:: :py:func:`moveGridUp()`
 %End
 
     QgsLayoutItemMapGrid *grid( const QString &gridId ) const;
 %Docstring
- Returns a reference to a grid with matching ``gridId`` within the stack.
+Returns a reference to a grid with matching ``gridId`` within the stack.
+
+:rtype: QgsLayoutItemMapGrid
+
 .. seealso:: :py:func:`constGrid()`
- :rtype: QgsLayoutItemMapGrid
 %End
 
     QgsLayoutItemMapGrid *grid( int index ) const;
 %Docstring
- Returns a reference to a grid at the specified ``index`` within the stack.
+Returns a reference to a grid at the specified ``index`` within the stack.
+
+:rtype: QgsLayoutItemMapGrid
+
 .. seealso:: :py:func:`constGrid()`
- :rtype: QgsLayoutItemMapGrid
 %End
 
     QgsLayoutItemMapGrid &operator[]( int index );
 
     QList< QgsLayoutItemMapGrid * > asList() const;
 %Docstring
- Returns a list of QgsLayoutItemMapGrids contained by the stack.
- :rtype: list of QgsLayoutItemMapGrid
+Returns a list of QgsLayoutItemMapGrids contained by the stack.
+
+:rtype: list of QgsLayoutItemMapGrid
 %End
 
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
@@ -99,17 +114,20 @@ class QgsLayoutItemMapGridStack : QgsLayoutItemMapItemStack
 
     double maxGridExtension() const;
 %Docstring
- Calculates the maximum distance grids within the stack extend
- beyond the QgsLayoutItemMap's item rect.
+Calculates the maximum distance grids within the stack extend
+beyond the QgsLayoutItemMap's item rect.
+
+:rtype: float
+
 .. seealso:: :py:func:`calculateMaxGridExtension()`
- :rtype: float
 %End
 
     void calculateMaxGridExtension( double &top, double &right, double &bottom, double &left ) const;
 %Docstring
- Calculates the maximum distance grids within the stack extend beyond the
- QgsLayoutItemMap's item rect. This method calculates the distance for each side of the
- map item separately.
+Calculates the maximum distance grids within the stack extend beyond the
+QgsLayoutItemMap's item rect. This method calculates the distance for each side of the
+map item separately.
+
 .. seealso:: :py:func:`maxGridExtension()`
 %End
 };
@@ -119,8 +137,10 @@ class QgsLayoutItemMapGrid : QgsLayoutItemMapItem
 {
 %Docstring
  An individual grid which is drawn above the map content in a
- QgsLayoutItemMap.
+QgsLayoutItemMap.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:class:`QgsLayoutItemMapGridStack`
 %End
 
@@ -215,9 +235,9 @@ class QgsLayoutItemMapGrid : QgsLayoutItemMapItem
 
     QgsLayoutItemMapGrid( const QString &name, QgsLayoutItemMap *map );
 %Docstring
- Constructor for QgsLayoutItemMapGrid.
- \param name friendly display name for grid
- \param map QgsLayoutItemMap the grid is attached to
+Constructor for QgsLayoutItemMapGrid.
+:param name: friendly display name for grid
+:param map: QgsLayoutItemMap the grid is attached to
 %End
 
     virtual void draw( QPainter *painter );
@@ -229,28 +249,34 @@ class QgsLayoutItemMapGrid : QgsLayoutItemMapItem
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Sets the ``crs`` for the grid.
+Sets the ``crs`` for the grid.
+
 .. seealso:: :py:func:`crs()`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
- Retrieves the CRS for the grid.
+Retrieves the CRS for the grid.
+
+:rtype: QgsCoordinateReferenceSystem
+
 .. seealso:: :py:func:`setCrs()`
- :rtype: QgsCoordinateReferenceSystem
 %End
 
     void setBlendMode( const QPainter::CompositionMode mode );
 %Docstring
- Sets the blending ``mode`` used for drawing the grid.
+Sets the blending ``mode`` used for drawing the grid.
+
 .. seealso:: :py:func:`blendMode()`
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
- Retrieves the blending mode used for drawing the grid.
+Retrieves the blending mode used for drawing the grid.
+
+:rtype: QPainter.CompositionMode
+
 .. seealso:: :py:func:`setBlendMode()`
- :rtype: QPainter.CompositionMode
 %End
 
     virtual bool usesAdvancedEffects() const;
@@ -258,494 +284,627 @@ class QgsLayoutItemMapGrid : QgsLayoutItemMapItem
 
     double maxExtension() const;
 %Docstring
- Calculates the maximum distance the grid extends beyond the QgsLayoutItemMap's
- item rect (in layout units).
- :rtype: float
+Calculates the maximum distance the grid extends beyond the QgsLayoutItemMap's
+item rect (in layout units).
+
+:rtype: float
 %End
 
     void calculateMaxExtension( double &top, double &right, double &bottom, double &left ) const;
 %Docstring
- Calculates the maximum distance the grid extends beyond the
- QgsLayoutItemMap's item rect. This method calculates the distance for each side of the
- map item separately.
+Calculates the maximum distance the grid extends beyond the
+QgsLayoutItemMap's item rect. This method calculates the distance for each side of the
+map item separately.
+
 .. seealso:: :py:func:`maxExtension()`
 %End
 
 
     void setUnits( GridUnit unit );
 %Docstring
- Sets the ``unit`` to use for grid measurements such as the interval
- and offset for grid lines.
+Sets the ``unit`` to use for grid measurements such as the interval
+and offset for grid lines.
+
 .. seealso:: :py:func:`units`
 %End
 
     GridUnit units() const;
 %Docstring
- Returns the units used for grid measurements such as the interval
- and offset for grid lines.
+Returns the units used for grid measurements such as the interval
+and offset for grid lines.
+
+:rtype: GridUnit
+
 .. seealso:: :py:func:`setUnits()`
- :rtype: GridUnit
 %End
 
     void setIntervalX( double interval );
 %Docstring
- Sets the ``interval`` between grid lines in the x-direction. The units
- are controlled through the setUnits method
+Sets the ``interval`` between grid lines in the x-direction. The units
+are controlled through the setUnits method
+
 .. seealso:: :py:func:`setIntervalY()`
+
 .. seealso:: :py:func:`intervalX()`
 %End
 
     double intervalX() const;
 %Docstring
- Returns the interval between grid lines in the x-direction. The units
- are retrieved through the units() method.
+Returns the interval between grid lines in the x-direction. The units
+are retrieved through the units() method.
+
+:rtype: float
+
 .. seealso:: :py:func:`setIntervalX()`
+
 .. seealso:: :py:func:`intervalY()`
- :rtype: float
 %End
 
     void setIntervalY( double interval );
 %Docstring
- Sets the ``interval`` between grid lines in the y-direction. The units
- are controlled through the setUnits method
+Sets the ``interval`` between grid lines in the y-direction. The units
+are controlled through the setUnits method
+
 .. seealso:: :py:func:`setIntervalX()`
+
 .. seealso:: :py:func:`intervalY()`
 %End
 
     double intervalY() const;
 %Docstring
- Returns the interval between grid lines in the y-direction. The units
- are retrieved through the units() method.
+Returns the interval between grid lines in the y-direction. The units
+are retrieved through the units() method.
+
+:rtype: float
+
 .. seealso:: :py:func:`setIntervalY()`
+
 .. seealso:: :py:func:`intervalX()`
- :rtype: float
 %End
 
     void setOffsetX( const double offset );
 %Docstring
- Sets the ``offset`` for grid lines in the x-direction. The units
- are controlled through the setUnits method.
+Sets the ``offset`` for grid lines in the x-direction. The units
+are controlled through the setUnits method.
+
 .. seealso:: :py:func:`setOffsetY()`
+
 .. seealso:: :py:func:`offsetX()`
 %End
 
     double offsetX() const;
 %Docstring
- Returns the offset for grid lines in the x-direction. The units
- are retrieved through the units() method.
+Returns the offset for grid lines in the x-direction. The units
+are retrieved through the units() method.
+
+:rtype: float
+
 .. seealso:: :py:func:`setOffsetX()`
+
 .. seealso:: :py:func:`offsetY()`
- :rtype: float
 %End
 
     void setOffsetY( const double offset );
 %Docstring
- Sets the ``offset`` for grid lines in the y-direction. The units
- are controlled through the setUnits method.
+Sets the ``offset`` for grid lines in the y-direction. The units
+are controlled through the setUnits method.
+
 .. seealso:: :py:func:`setOffsetX()`
+
 .. seealso:: :py:func:`offsetY()`
 %End
 
     double offsetY() const;
 %Docstring
- Returns the offset for grid lines in the y-direction. The units
- are retrieved through the units() method.
+Returns the offset for grid lines in the y-direction. The units
+are retrieved through the units() method.
+
+:rtype: float
+
 .. seealso:: :py:func:`setOffsetY()`
+
 .. seealso:: :py:func:`offsetX()`
- :rtype: float
 %End
 
 
     void setStyle( const GridStyle style );
 %Docstring
- Sets the grid ``style``, which controls how the grid is drawn
- over the map's contents.
+Sets the grid ``style``, which controls how the grid is drawn
+over the map's contents.
+
 .. seealso:: :py:func:`style()`
 %End
 
     GridStyle style() const;
 %Docstring
- Returns the grid's style, which controls how the grid is drawn
- over the map's contents.
+Returns the grid's style, which controls how the grid is drawn
+over the map's contents.
+
+:rtype: GridStyle
+
 .. seealso:: :py:func:`setStyle()`
- :rtype: GridStyle
 %End
 
     void setCrossLength( const double length );
 %Docstring
- Sets the ``length`` (in layout units) of the cross segments drawn for the grid. This is only used for grids
- with QgsLayoutItemMapGrid.Cross styles.
+Sets the ``length`` (in layout units) of the cross segments drawn for the grid. This is only used for grids
+with QgsLayoutItemMapGrid.Cross styles.
+
 .. seealso:: :py:func:`crossLength()`
 %End
 
     double crossLength() const;
 %Docstring
- Retrieves the length (in layout units) of the cross segments drawn for the grid. This is only used for grids
- with QgsLayoutItemMapGrid.Cross styles.
+Retrieves the length (in layout units) of the cross segments drawn for the grid. This is only used for grids
+with QgsLayoutItemMapGrid.Cross styles.
+
+:rtype: float
+
 .. seealso:: :py:func:`setCrossLength()`
- :rtype: float
 %End
 
     void setGridLineWidth( const double width );
 %Docstring
- Sets the ``width`` of grid lines (in layout units). This is only used for grids with QgsLayoutItemMapGrid.Solid
- or QgsLayoutItemMapGrid.Cross styles. For more control over grid line appearance, use
- setLineSymbol instead.
+Sets the ``width`` of grid lines (in layout units). This is only used for grids with QgsLayoutItemMapGrid.Solid
+or QgsLayoutItemMapGrid.Cross styles. For more control over grid line appearance, use
+setLineSymbol instead.
+
 .. seealso:: :py:func:`setLineSymbol()`
+
 .. seealso:: :py:func:`setGridLineColor()`
 %End
 
     void setGridLineColor( const QColor &color );
 %Docstring
- Sets the ``color`` of grid lines. This is only used for grids with QgsLayoutItemMapGrid.Solid
- or QgsLayoutItemMapGrid.Cross styles. For more control over grid line appearance, use
- setLineSymbol instead.
+Sets the ``color`` of grid lines. This is only used for grids with QgsLayoutItemMapGrid.Solid
+or QgsLayoutItemMapGrid.Cross styles. For more control over grid line appearance, use
+setLineSymbol instead.
+
 .. seealso:: :py:func:`setLineSymbol()`
+
 .. seealso:: :py:func:`setGridLineWidth()`
 %End
 
     void setLineSymbol( QgsLineSymbol *symbol /Transfer/ );
 %Docstring
- Sets the line ``symbol`` used for drawing grid lines. This is only used for grids with
- QgsLayoutItemMapGrid.Solid or QgsLayoutItemMapGrid.Cross styles.
- Ownership of ``symbol`` is transferred to the grid.
+Sets the line ``symbol`` used for drawing grid lines. This is only used for grids with
+QgsLayoutItemMapGrid.Solid or QgsLayoutItemMapGrid.Cross styles.
+Ownership of ``symbol`` is transferred to the grid.
+
 .. seealso:: :py:func:`lineSymbol()`
+
 .. seealso:: :py:func:`setMarkerSymbol()`
+
 .. seealso:: :py:func:`setStyle()`
 %End
 
     QgsLineSymbol *lineSymbol();
 %Docstring
- Returns the line symbol used for drawing grid lines. This is only used for grids with
- QgsLayoutItemMapGrid.Solid or QgsLayoutItemMapGrid.Cross styles.
+Returns the line symbol used for drawing grid lines. This is only used for grids with
+QgsLayoutItemMapGrid.Solid or QgsLayoutItemMapGrid.Cross styles.
+
+:rtype: QgsLineSymbol
+
 .. seealso:: :py:func:`setLineSymbol()`
+
 .. seealso:: :py:func:`markerSymbol()`
+
 .. seealso:: :py:func:`style()`
- :rtype: QgsLineSymbol
 %End
 
     void setMarkerSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
- Sets the marker ``symbol`` used for drawing grid points. This is only used for grids with a
- QgsLayoutItemMapGrid.Markers style.
- Ownership of ``symbol`` is transferred to the grid.
+Sets the marker ``symbol`` used for drawing grid points. This is only used for grids with a
+QgsLayoutItemMapGrid.Markers style.
+Ownership of ``symbol`` is transferred to the grid.
+
 .. seealso:: :py:func:`markerSymbol()`
+
 .. seealso:: :py:func:`setLineSymbol()`
+
 .. seealso:: :py:func:`setStyle()`
 %End
 
     QgsMarkerSymbol *markerSymbol();
 %Docstring
- Returns the marker symbol used for drawing grid points. This is only used for grids with a
- QgsLayoutItemMapGrid.Markers style.
+Returns the marker symbol used for drawing grid points. This is only used for grids with a
+QgsLayoutItemMapGrid.Markers style.
+
+:rtype: QgsMarkerSymbol
+
 .. seealso:: :py:func:`setMarkerSymbol()`
+
 .. seealso:: :py:func:`lineSymbol()`
+
 .. seealso:: :py:func:`style()`
- :rtype: QgsMarkerSymbol
 %End
 
 
     void setAnnotationEnabled( const bool enabled );
 %Docstring
- Sets whether annotations should be shown for the grid.
+Sets whether annotations should be shown for the grid.
+
 .. seealso:: :py:func:`annotationEnabled()`
 %End
 
     bool annotationEnabled() const;
 %Docstring
- Returns whether annotations are shown for the grid.
+Returns whether annotations are shown for the grid.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setAnnotationEnabled()`
- :rtype: bool
 %End
 
     void setAnnotationFont( const QFont &font );
 %Docstring
- Sets the ``font`` used for drawing grid annotations.
+Sets the ``font`` used for drawing grid annotations.
+
 .. seealso:: :py:func:`annotationFont()`
 %End
 
     QFont annotationFont() const;
 %Docstring
- Returns the font used for drawing grid annotations.
+Returns the font used for drawing grid annotations.
+
+:rtype: QFont
+
 .. seealso:: :py:func:`setAnnotationFont()`
- :rtype: QFont
 %End
 
     void setAnnotationFontColor( const QColor &color );
 %Docstring
- Sets the font ``color`` used for drawing grid annotations.
+Sets the font ``color`` used for drawing grid annotations.
+
 .. seealso:: :py:func:`annotationFontColor()`
 %End
 
     QColor annotationFontColor() const;
 %Docstring
- Returns the font color used for drawing grid annotations.
+Returns the font color used for drawing grid annotations.
+
+:rtype: QColor
+
 .. seealso:: :py:func:`setAnnotationFontColor()`
- :rtype: QColor
 %End
 
     void setAnnotationPrecision( const int precision );
 %Docstring
- Sets the coordinate ``precision`` for grid annotations.
- The ``precision`` indicates the number of decimal places to show when drawing grid annotations.
+Sets the coordinate ``precision`` for grid annotations.
+The ``precision`` indicates the number of decimal places to show when drawing grid annotations.
+
 .. seealso:: :py:func:`annotationPrecision()`
 %End
 
     int annotationPrecision() const;
 %Docstring
- Returns the coordinate precision for grid annotations, which is the
- number of decimal places shown when drawing grid annotations.
+Returns the coordinate precision for grid annotations, which is the
+number of decimal places shown when drawing grid annotations.
+
+:rtype: int
+
 .. seealso:: :py:func:`setAnnotationPrecision()`
- :rtype: int
 %End
 
     void setAnnotationDisplay( const DisplayMode display, const BorderSide border );
 %Docstring
- Sets what types of grid annotations should be drawn for a specified side of the map frame,
- or whether grid annotations should be disabled for the side.
- \param display display mode for annotations
- \param border side of map for annotations
+Sets what types of grid annotations should be drawn for a specified side of the map frame,
+or whether grid annotations should be disabled for the side.
+:param display: display mode for annotations
+:param border: side of map for annotations
+
 .. seealso:: :py:func:`annotationDisplay()`
 %End
 
     DisplayMode annotationDisplay( const BorderSide border ) const;
 %Docstring
- Returns the display mode for the grid annotations on a specified side of the map
- frame. This property also specifies whether annotations have been disabled
- from a side of the map frame.
- \param border side of map for annotations
- :return: display mode for grid annotations
+Returns the display mode for the grid annotations on a specified side of the map
+frame. This property also specifies whether annotations have been disabled
+from a side of the map frame.
+:param border: side of map for annotations
+
+:return: display mode for grid annotations
+:rtype: DisplayMode
+
+
 .. seealso:: :py:func:`setAnnotationDisplay()`
- :rtype: DisplayMode
 %End
 
     void setAnnotationPosition( const AnnotationPosition position, const BorderSide side );
 %Docstring
- Sets the ``position`` for the grid annotations on a specified ``side`` of the map
- frame.
+Sets the ``position`` for the grid annotations on a specified ``side`` of the map
+frame.
+
 .. seealso:: :py:func:`annotationPosition()`
 %End
 
     AnnotationPosition annotationPosition( const BorderSide side ) const;
 %Docstring
- Returns the position for the grid annotations on a specified ``side`` of the map
- frame.
+Returns the position for the grid annotations on a specified ``side`` of the map
+frame.
+
+:rtype: AnnotationPosition
+
 .. seealso:: :py:func:`setAnnotationPosition()`
- :rtype: AnnotationPosition
 %End
 
     void setAnnotationFrameDistance( const double distance );
 %Docstring
- Sets the ``distance`` between the map frame and annotations. Units are layout units.
+Sets the ``distance`` between the map frame and annotations. Units are layout units.
+
 .. seealso:: :py:func:`annotationFrameDistance()`
 %End
 
     double annotationFrameDistance() const;
 %Docstring
- Returns the distance between the map frame and annotations. Units are in layout units.
+Returns the distance between the map frame and annotations. Units are in layout units.
+
+:rtype: float
+
 .. seealso:: :py:func:`setAnnotationFrameDistance()`
- :rtype: float
 %End
 
     void setAnnotationDirection( const AnnotationDirection direction, const BorderSide side );
 %Docstring
- Sets the ``direction`` for drawing frame annotations for the specified map ``side``.
+Sets the ``direction`` for drawing frame annotations for the specified map ``side``.
+
 .. seealso:: :py:func:`annotationDirection()`
 %End
 
     void setAnnotationDirection( const AnnotationDirection direction );
 %Docstring
- Sets the ``direction`` for drawing all frame annotations.
+Sets the ``direction`` for drawing all frame annotations.
+
 .. seealso:: :py:func:`annotationDirection()`
 %End
 
     AnnotationDirection annotationDirection( const BorderSide border ) const;
 %Docstring
- Returns the direction for drawing frame annotations, on the specified ``side``
- of the map.
+Returns the direction for drawing frame annotations, on the specified ``side``
+of the map.
+
+:rtype: AnnotationDirection
+
 .. seealso:: :py:func:`setAnnotationDirection()`
- :rtype: AnnotationDirection
 %End
 
     void setAnnotationFormat( const AnnotationFormat format );
 %Docstring
- Sets the ``format`` for drawing grid annotations.
+Sets the ``format`` for drawing grid annotations.
+
 .. seealso:: :py:func:`annotationFormat()`
 %End
 
     AnnotationFormat annotationFormat() const;
 %Docstring
- Returns the format for drawing grid annotations.
+Returns the format for drawing grid annotations.
+
+:rtype: AnnotationFormat
+
 .. seealso:: :py:func:`setAnnotationFormat()`
- :rtype: AnnotationFormat
 %End
 
     void setAnnotationExpression( const QString &expression );
 %Docstring
- Sets the ``expression`` used for drawing grid annotations. This is only used when annotationFormat()
- is QgsLayoutItemMapGrid.CustomFormat.
+Sets the ``expression`` used for drawing grid annotations. This is only used when annotationFormat()
+is QgsLayoutItemMapGrid.CustomFormat.
+
 .. seealso:: :py:func:`annotationExpression()`
 %End
 
     QString annotationExpression() const;
 %Docstring
- Returns the expression used for drawing grid annotations. This is only used when annotationFormat()
- is QgsLayoutItemMapGrid.CustomFormat.
+Returns the expression used for drawing grid annotations. This is only used when annotationFormat()
+is QgsLayoutItemMapGrid.CustomFormat.
+
+:rtype: str
+
 .. seealso:: :py:func:`setAnnotationExpression()`
- :rtype: str
 %End
 
 
     void setFrameStyle( const FrameStyle style );
 %Docstring
- Sets the grid frame ``style``.
+Sets the grid frame ``style``.
+
 .. seealso:: :py:func:`frameStyle()`
 %End
 
     FrameStyle frameStyle() const;
 %Docstring
- Returns the grid frame style.
+Returns the grid frame style.
+
+:rtype: FrameStyle
+
 .. seealso:: :py:func:`setFrameStyle()`
- :rtype: FrameStyle
 %End
 
     void setFrameDivisions( const DisplayMode divisions, const BorderSide side );
 %Docstring
- Sets what type of grid ``divisions`` should be used for frames on a specified ``side`` of the map.
+Sets what type of grid ``divisions`` should be used for frames on a specified ``side`` of the map.
+
 .. seealso:: :py:func:`frameDivisions()`
 %End
 
     DisplayMode frameDivisions( const BorderSide side ) const;
 %Docstring
- Returns the type of grid divisions which are used for frames on a specified ``side`` of the map.
+Returns the type of grid divisions which are used for frames on a specified ``side`` of the map.
+
+:rtype: DisplayMode
+
 .. seealso:: :py:func:`setFrameDivisions()`
- :rtype: DisplayMode
 %End
 
     void setFrameSideFlags( QgsLayoutItemMapGrid::FrameSideFlags flags );
 %Docstring
- Sets ``flags`` for grid frame sides. Setting these flags controls which sides
- of the map item the grid frame is drawn on.
+Sets ``flags`` for grid frame sides. Setting these flags controls which sides
+of the map item the grid frame is drawn on.
+
 .. seealso:: :py:func:`setFrameSideFlag()`
+
 .. seealso:: :py:func:`frameSideFlags()`
+
 .. seealso:: :py:func:`testFrameSideFlag()`
 %End
 
     void setFrameSideFlag( const QgsLayoutItemMapGrid::FrameSideFlag flag, bool on = true );
 %Docstring
- Sets whether the grid frame is drawn for a certain side of the map item.
- \param flag flag for grid frame side
- \param on set to true to draw grid frame on that side of the map
+Sets whether the grid frame is drawn for a certain side of the map item.
+:param flag: flag for grid frame side
+:param on: set to true to draw grid frame on that side of the map
+
 .. seealso:: :py:func:`setFrameSideFlags()`
+
 .. seealso:: :py:func:`frameSideFlags()`
+
 .. seealso:: :py:func:`testFrameSideFlag()`
 %End
 
     QgsLayoutItemMapGrid::FrameSideFlags frameSideFlags() const;
 %Docstring
- Returns the flags which control which sides of the map item the grid frame
- is drawn on.
+Returns the flags which control which sides of the map item the grid frame
+is drawn on.
+
+:rtype: QgsLayoutItemMapGrid.FrameSideFlags
+
 .. seealso:: :py:func:`setFrameSideFlags()`
+
 .. seealso:: :py:func:`setFrameSideFlag()`
+
 .. seealso:: :py:func:`testFrameSideFlag()`
- :rtype: QgsLayoutItemMapGrid.FrameSideFlags
 %End
 
     bool testFrameSideFlag( const FrameSideFlag flag ) const;
 %Docstring
- Tests whether the grid frame should be drawn on a specified side of the map
- item.
- \param flag flag for grid frame side
- :return: true if grid frame should be drawn for that side of the map
+Tests whether the grid frame should be drawn on a specified side of the map
+item.
+:param flag: flag for grid frame side
+
+:return: true if grid frame should be drawn for that side of the map
+:rtype: bool
+
+
 .. seealso:: :py:func:`setFrameSideFlags()`
+
 .. seealso:: :py:func:`setFrameSideFlag()`
+
 .. seealso:: :py:func:`frameSideFlags()`
- :rtype: bool
 %End
 
     void setFrameWidth( const double width );
 %Docstring
- Sets the grid frame ``width`` (in layout units). This property controls how wide the grid frame is.
- The size of the line outlines drawn in the frame is controlled through the
- setFramePenSize method.
+Sets the grid frame ``width`` (in layout units). This property controls how wide the grid frame is.
+The size of the line outlines drawn in the frame is controlled through the
+setFramePenSize method.
+
 .. seealso:: :py:func:`frameWidth()`
 %End
 
     double frameWidth() const;
 %Docstring
- Gets the grid frame width in layout units. This property controls how wide the grid frame is.
- The size of the line outlines drawn in the frame can be retrieved via the
- framePenSize method.
+Gets the grid frame width in layout units. This property controls how wide the grid frame is.
+The size of the line outlines drawn in the frame can be retrieved via the
+framePenSize method.
+
+:rtype: float
+
 .. seealso:: :py:func:`setFrameWidth()`
- :rtype: float
 %End
 
     void setFramePenSize( const double width );
 %Docstring
- Sets the ``width`` of the stroke drawn in the grid frame.
+Sets the ``width`` of the stroke drawn in the grid frame.
+
 .. seealso:: :py:func:`framePenSize()`
+
 .. seealso:: :py:func:`setFramePenColor()`
 %End
 
     double framePenSize() const;
 %Docstring
- Retrieves the width of the stroke drawn in the grid frame.
+Retrieves the width of the stroke drawn in the grid frame.
+
+:rtype: float
+
 .. seealso:: :py:func:`setFramePenSize()`
+
 .. seealso:: :py:func:`framePenColor()`
- :rtype: float
 %End
 
     void setFramePenColor( const QColor &color );
 %Docstring
- Sets the ``color`` of the stroke drawn in the grid frame.
+Sets the ``color`` of the stroke drawn in the grid frame.
+
 .. seealso:: :py:func:`framePenColor()`
+
 .. seealso:: :py:func:`setFramePenSize()`
+
 .. seealso:: :py:func:`setFrameFillColor1()`
+
 .. seealso:: :py:func:`setFrameFillColor2()`
 %End
 
     QColor framePenColor() const;
 %Docstring
- Retrieves the color of the stroke drawn in the grid frame.
+Retrieves the color of the stroke drawn in the grid frame.
+
+:rtype: QColor
+
 .. seealso:: :py:func:`setFramePenColor()`
+
 .. seealso:: :py:func:`framePenSize()`
+
 .. seealso:: :py:func:`frameFillColor1()`
+
 .. seealso:: :py:func:`frameFillColor2()`
- :rtype: QColor
 %End
 
     void setFrameFillColor1( const QColor &color );
 %Docstring
- Sets the first fill ``color`` used for the grid frame.
+Sets the first fill ``color`` used for the grid frame.
+
 .. seealso:: :py:func:`frameFillColor1()`
+
 .. seealso:: :py:func:`setFramePenColor()`
+
 .. seealso:: :py:func:`setFrameFillColor2()`
 %End
 
     QColor frameFillColor1() const;
 %Docstring
- Retrieves the first fill color for the grid frame.
+Retrieves the first fill color for the grid frame.
+
+:rtype: QColor
+
 .. seealso:: :py:func:`setFrameFillColor1()`
+
 .. seealso:: :py:func:`framePenColor()`
+
 .. seealso:: :py:func:`frameFillColor2()`
- :rtype: QColor
 %End
 
     void setFrameFillColor2( const QColor &color );
 %Docstring
- Sets the second fill ``color`` used for the grid frame.
+Sets the second fill ``color`` used for the grid frame.
+
 .. seealso:: :py:func:`frameFillColor2()`
+
 .. seealso:: :py:func:`setFramePenColor()`
+
 .. seealso:: :py:func:`setFrameFillColor1()`
 %End
 
     QColor frameFillColor2() const;
 %Docstring
- Retrieves the second fill color for the grid frame.
+Retrieves the second fill color for the grid frame.
+
+:rtype: QColor
+
 .. seealso:: :py:func:`setFrameFillColor2()`
+
 .. seealso:: :py:func:`framePenColor`
+
 .. seealso:: :py:func:`frameFillColor1()`
- :rtype: QColor
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;

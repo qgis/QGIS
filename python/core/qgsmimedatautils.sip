@@ -30,31 +30,36 @@ Constructs URI from encoded data
 
       bool isValid() const;
 %Docstring
- Returns whether the object contains valid data
+Returns whether the object contains valid data
+
+:rtype: bool
+
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
       QString data() const;
 %Docstring
 Returns encoded representation of the object
- :rtype: str
+
+:rtype: str
 %End
 
       QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
 %Docstring
- Get vector layer from uri if possible, otherwise returns 0 and error is set
- \param owner set to true if caller becomes owner
- \param error set to error message if cannot get vector
- :rtype: QgsVectorLayer
+Get vector layer from uri if possible, otherwise returns 0 and error is set
+:param owner: set to true if caller becomes owner
+:param error: set to error message if cannot get vector
+
+:rtype: QgsVectorLayer
 %End
 
       QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
 %Docstring
- Get raster layer from uri if possible, otherwise returns 0 and error is set
- \param owner set to true if caller becomes owner
- \param error set to error message if cannot get raster
- :rtype: QgsRasterLayer
+Get raster layer from uri if possible, otherwise returns 0 and error is set
+:param owner: set to true if caller becomes owner
+:param error: set to error message if cannot get raster
+
+:rtype: QgsRasterLayer
 %End
 
       QString layerType;
@@ -64,9 +69,9 @@ Type of URI. Recognized types: "vector" / "raster" / "plugin" / "custom"
 
       QString providerKey;
 %Docstring
- For "vector" / "raster" type: provider id.
- For "plugin" type: plugin layer type name.
- For "custom" type: key of its QgsCustomDropHandler
+For "vector" / "raster" type: provider id.
+For "plugin" type: plugin layer type name.
+For "custom" type: key of its QgsCustomDropHandler
 %End
       QString name;
 %Docstring
@@ -83,24 +88,29 @@ Identifier of the data source recognized by its providerKey
 
     static QMimeData *encodeUriList( const UriList &layers );
 %Docstring
- :rtype: QMimeData
+
+:rtype: QMimeData
 %End
 
     static bool isUriList( const QMimeData *data );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     static UriList decodeUriList( const QMimeData *data );
 %Docstring
- :rtype: UriList
+
+:rtype: UriList
 %End
 
     static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes );
 %Docstring
- Returns encoded URI list from a list of layer tree nodes.
+Returns encoded URI list from a list of layer tree nodes.
+
+:rtype: QByteArray
+
 .. versionadded:: 3.0
- :rtype: QByteArray
 %End
 
 };

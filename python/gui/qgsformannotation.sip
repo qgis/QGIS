@@ -12,7 +12,8 @@
 class QgsFormAnnotation: QgsAnnotation
 {
 %Docstring
- An annotation item that embeds a designer form showing the feature attribute
+An annotation item that embeds a designer form showing the feature attribute
+
 .. versionadded:: 3.0
 %End
 
@@ -23,7 +24,7 @@ class QgsFormAnnotation: QgsAnnotation
 
     QgsFormAnnotation( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsFormAnnotation.
+Constructor for QgsFormAnnotation.
 %End
 
     virtual QgsFormAnnotation *clone() const /Factory/;
@@ -34,20 +35,24 @@ class QgsFormAnnotation: QgsAnnotation
     QSizeF preferredFrameSize() const;
 %Docstring
 Returns the optimal frame size
- :rtype: QSizeF
+
+:rtype: QSizeF
 %End
 
     void setDesignerForm( const QString &uiFile );
 %Docstring
- Sets the path to the Qt Designer UI file to show in the annotation.
+Sets the path to the Qt Designer UI file to show in the annotation.
+
 .. seealso:: :py:func:`designerForm()`
 %End
 
     QString designerForm() const;
 %Docstring
- Returns the path to the Qt Designer UI file to show in the annotation.
+Returns the path to the Qt Designer UI file to show in the annotation.
+
+:rtype: str
+
 .. seealso:: :py:func:`setDesignerForm()`
- :rtype: str
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -58,8 +63,9 @@ Returns the optimal frame size
 
     static QgsFormAnnotation *create() /Factory/;
 %Docstring
- Returns a new QgsFormAnnotation object.
- :rtype: QgsFormAnnotation
+Returns a new QgsFormAnnotation object.
+
+:rtype: QgsFormAnnotation
 %End
 
   protected:

@@ -16,13 +16,13 @@ class QgsServerFilter
 {
 %Docstring
  Class defining I/O filters for QGIS Server and
- implemented in plugins.
+implemented in plugins.
 
- Filters can define any (or none) of the following hooks:
-  * requestReady() - called when request is ready
-  * responseComplete() - called when the response is complete
-    after core services have returned to main loop
-  * sendResponse() - called just before sending output to FGCI
+Filters can define any (or none) of the following hooks:
+* requestReady() - called when request is ready
+* responseComplete() - called when the response is complete
+after core services have returned to main loop
+* sendResponse() - called just before sending output to FGCI
 %End
 
 %TypeHeaderCode
@@ -32,9 +32,9 @@ class QgsServerFilter
 
     QgsServerFilter( QgsServerInterface *serverInterface );
 %Docstring
- Constructor
- QgsServerInterface passed to plugins constructors
- and must be passed to QgsServerFilter instances.
+Constructor
+QgsServerInterface passed to plugins constructors
+and must be passed to QgsServerFilter instances.
 %End
 
     virtual ~QgsServerFilter();
@@ -42,30 +42,31 @@ class QgsServerFilter
     QgsServerInterface *serverInterface();
 %Docstring
 Return the QgsServerInterface instance
- :rtype: QgsServerInterface
+
+:rtype: QgsServerInterface
 %End
 
     virtual void requestReady();
 %Docstring
- Method called when the QgsRequestHandler is ready and populated with
- parameters, just before entering the main switch for core services.*
+Method called when the QgsRequestHandler is ready and populated with
+parameters, just before entering the main switch for core services.*
 %End
 
     virtual void responseComplete();
 %Docstring
- Method called when the QgsRequestHandler processing has done and
- the response is ready, just after the main switch for core services
- and before final sending response to FCGI stdout.
+Method called when the QgsRequestHandler processing has done and
+the response is ready, just after the main switch for core services
+and before final sending response to FCGI stdout.
 %End
 
     virtual void sendResponse();
 %Docstring
- Method called when the QgsRequestHandler sends its data to FCGI stdout.
- This normally occurs at the end of core services processing just after
- the responseComplete() plugin hook. For streaming services (like WFS on
- getFeature requests, sendResponse() might have been called several times
- before the response is complete: in this particular case, sendResponse()
- is called once for each feature before hitting responseComplete()
+Method called when the QgsRequestHandler sends its data to FCGI stdout.
+This normally occurs at the end of core services processing just after
+the responseComplete() plugin hook. For streaming services (like WFS on
+getFeature requests, sendResponse() might have been called several times
+before the response is complete: in this particular case, sendResponse()
+is called once for each feature before hitting responseComplete()
 %End
 
 };

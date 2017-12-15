@@ -36,7 +36,7 @@ class QgsManageConnectionsDialog : QDialog
 
     QgsManageConnectionsDialog( QWidget *parent /TransferThis/ = 0, Mode mode = Export, Type type = WMS, const QString &fileName = QString() );
 %Docstring
- Constructor for QgsManageConnectionsDialog.
+Constructor for QgsManageConnectionsDialog.
 %End
 
   public slots:

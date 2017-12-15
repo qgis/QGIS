@@ -14,13 +14,13 @@
 class QgsAbstract3DRenderer /Abstract/
 {
 %Docstring
- Base class for all renderers that may to participate in 3D view.
+Base class for all renderers that may to participate in 3D view.
 
- 3D renderers implement the method createEntity() that returns a new 3D entity - that entity
- will be added to the 3D scene to represent data in renderer's display style.
+3D renderers implement the method createEntity() that returns a new 3D entity - that entity
+will be added to the 3D scene to represent data in renderer's display style.
 
- Renderers may store some custom properties (e.g. materials, sizes) that are written to and read from
- XML. It is therefore not recommended to store large amount of data within a renderer (e.g. arrays of vertices).
+Renderers may store some custom properties (e.g. materials, sizes) that are written to and read from
+XML. It is therefore not recommended to store large amount of data within a renderer (e.g. arrays of vertices).
 
 .. versionadded:: 3.0
 %End
@@ -34,12 +34,14 @@ class QgsAbstract3DRenderer /Abstract/
     virtual QString type() const = 0;
 %Docstring
 Returns unique identifier of the renderer class (used to identify subclass)
- :rtype: str
+
+:rtype: str
 %End
     virtual QgsAbstract3DRenderer *clone() const = 0 /Factory/;
 %Docstring
 Returns a cloned instance
- :rtype: QgsAbstract3DRenderer
+
+:rtype: QgsAbstract3DRenderer
 %End
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;

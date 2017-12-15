@@ -12,7 +12,7 @@
 class QgsBlendModeComboBox : QComboBox
 {
 %Docstring
- A combobox which lets the user select blend modes from a predefined list
+A combobox which lets the user select blend modes from a predefined list
 *
 %End
 
@@ -29,7 +29,8 @@ Constructor for QgsBlendModeComboBox
     QPainter::CompositionMode blendMode();
 %Docstring
 Function to read the selected blend mode as QPainter.CompositionMode
- :rtype: QPainter.CompositionMode
+
+:rtype: QPainter.CompositionMode
 %End
     void setBlendMode( QPainter::CompositionMode blendMode );
 %Docstring
@@ -39,8 +40,8 @@ Function to set the selected blend mode from QPainter.CompositionMode
 
     void updateModes();
 %Docstring
- Populates the blend mode combo box, and sets up mapping for
- blend modes to combo box indexes
+Populates the blend mode combo box, and sets up mapping for
+blend modes to combo box indexes
 %End
 
 };

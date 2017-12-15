@@ -12,7 +12,8 @@
 class QgsLayoutViewToolEditNodes : QgsLayoutViewTool
 {
 %Docstring
- Layout view tool for edit node based items in the layout.
+Layout view tool for edit node based items in the layout.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,12 +24,12 @@ class QgsLayoutViewToolEditNodes : QgsLayoutViewTool
 
     QgsLayoutViewToolEditNodes( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolEditNodes.
+Constructor for QgsLayoutViewToolEditNodes.
 %End
 
     void deleteSelectedNode();
 %Docstring
- Deletes the selected node from the item.
+Deletes the selected node from the item.
 %End
 
     virtual void activate();

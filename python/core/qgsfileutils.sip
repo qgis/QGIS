@@ -13,6 +13,7 @@ class QgsFileUtils
 {
 %Docstring
  Class for file utilities.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,8 +24,9 @@ class QgsFileUtils
 
     static QString representFileSize( qint64 bytes );
 %Docstring
- Return the human size from bytes
- :rtype: str
+Return the human size from bytes
+
+:rtype: str
 %End
 
 };

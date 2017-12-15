@@ -15,7 +15,7 @@
 class QgsMapOverviewCanvas : QWidget
 {
 %Docstring
- A widget that displays an overview map.
+A widget that displays an overview map.
 %End
 
 %TypeHeaderCode
@@ -42,7 +42,8 @@ updates layer set for overview
     QList<QgsMapLayer *> layers() const;
 %Docstring
 Returns list of layers visible in the overview
- :rtype: list of QgsMapLayer
+
+:rtype: list of QgsMapLayer
 %End
 
     void enableAntiAliasing( bool flag );
@@ -66,7 +67,7 @@ Should be called when the canvas destination CRS is changed
 
     void layerRepaintRequested( bool deferred = false );
 %Docstring
- Triggered when a layer in the overview requests a repaint.
+Triggered when a layer in the overview requests a repaint.
 %End
 
   protected:

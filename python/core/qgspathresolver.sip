@@ -13,7 +13,7 @@
 class QgsPathResolver
 {
 %Docstring
- Resolves relative paths into absolute paths and vice versa. Used for writing
+Resolves relative paths into absolute paths and vice versa. Used for writing
 
 .. versionadded:: 3.0
 %End
@@ -29,16 +29,18 @@ Initialize path resolver with a base filename. Null filename means no conversion
 
     QString writePath( const QString &filename ) const;
 %Docstring
- Prepare a filename to save it to the project file.
- Creates an absolute or relative path according to the project settings.
- Paths written to the project file should be prepared with this method.
- :rtype: str
+Prepare a filename to save it to the project file.
+Creates an absolute or relative path according to the project settings.
+Paths written to the project file should be prepared with this method.
+
+:rtype: str
 %End
 
     QString readPath( const QString &filename ) const;
 %Docstring
 Turn filename read from the project file to an absolute path
- :rtype: str
+
+:rtype: str
 %End
 
 };

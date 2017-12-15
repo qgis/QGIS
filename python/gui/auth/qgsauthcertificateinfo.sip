@@ -14,7 +14,7 @@
 class QgsAuthCertInfo : QWidget
 {
 %Docstring
- Widget for viewing detailed info on a certificate and its hierarchical trust chain
+Widget for viewing detailed info on a certificate and its hierarchical trust chain
 %End
 
 %TypeHeaderCode
@@ -32,7 +32,8 @@ Constructor for QgsAuthCertInfo
 
     bool trustCacheRebuilt();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
 };
@@ -41,7 +42,7 @@ Constructor for QgsAuthCertInfo
 class QgsAuthCertInfoDialog : QDialog
 {
 %Docstring
- Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain
+Dialog wrapper for widget displaying detailed info on a certificate and its hierarchical trust chain
 %End
 
 %TypeHeaderCode
@@ -54,26 +55,29 @@ class QgsAuthCertInfoDialog : QDialog
                                     QWidget *parent /TransferThis/ = 0,
                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 %Docstring
- Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
- \param cert Certificate object
- \param manageCertTrust Whether to show widgets to manage the trust policy of certs in hierarchy
- \param parent Parent widget
- \param connectionCAs List of hierarchical certificates in a connection
+Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
+:param cert: Certificate object
+:param manageCertTrust: Whether to show widgets to manage the trust policy of certs in hierarchy
+:param parent: Parent widget
+:param connectionCAs: List of hierarchical certificates in a connection
 %End
 
     QgsAuthCertInfo *certInfoWidget();
 %Docstring
 Get access to embedded info widget
- :rtype: QgsAuthCertInfo
+
+:rtype: QgsAuthCertInfo
 %End
 
     bool trustCacheRebuilt();
 %Docstring
- Whether the trust cache has been rebuilt
+Whether the trust cache has been rebuilt
+
+:rtype: bool
+
 .. note::
 
    This happens when a trust policy has been adjusted for any cert in the hierarchy
- :rtype: bool
 %End
 
 };

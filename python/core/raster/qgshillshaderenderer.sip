@@ -16,6 +16,7 @@ class QgsHillshadeRenderer : QgsRasterRenderer
 {
 %Docstring
  A renderer for generating live hillshade models.
+
 .. versionadded:: 2.16
 %End
 
@@ -27,10 +28,10 @@ class QgsHillshadeRenderer : QgsRasterRenderer
     QgsHillshadeRenderer( QgsRasterInterface *input, int band, double lightAzimuth, double lightAltitude );
 %Docstring
  A renderer for generating live hillshade models.
- \param input The input raster interface
- \param band The band in the raster to use
- \param lightAzimuth The azimuth of the light source
- \param lightAltitude The altitude of the light source
+:param input: The input raster interface
+:param band: The band in the raster to use
+:param lightAzimuth: The azimuth of the light source
+:param lightAltitude: The altitude of the light source
 %End
 
     virtual QgsHillshadeRenderer *clone() const /Factory/;
@@ -39,10 +40,12 @@ class QgsHillshadeRenderer : QgsRasterRenderer
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 %Docstring
  Factory method to create a new renderer
- \param elem A DOM element to create the renderer from.
- \param input The raster input interface.
- :return: A new QgsHillshadeRenderer.
- :rtype: QgsRasterRenderer
+:param elem: A DOM element to create the renderer from.
+:param input: The raster input interface.
+
+:return: A new QgsHillshadeRenderer.
+:rtype: QgsRasterRenderer
+
 %End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
@@ -56,69 +59,83 @@ class QgsHillshadeRenderer : QgsRasterRenderer
 
     int band() const;
 %Docstring
- Returns the band used by the renderer
- :rtype: int
+Returns the band used by the renderer
+
+:rtype: int
 %End
 
     void setBand( int bandNo );
 %Docstring
- Sets the band used by the renderer.
+Sets the band used by the renderer.
+
 .. seealso:: :py:func:`band`
 %End
 
     double azimuth() const;
 %Docstring
- Returns the direction of the light over the raster between 0-360.
+Returns the direction of the light over the raster between 0-360.
+
+:rtype: float
+
 .. seealso:: :py:func:`setAzimuth()`
- :rtype: float
 %End
 
     double altitude()  const;
 %Docstring
- Returns the angle of the light source over the raster.
+Returns the angle of the light source over the raster.
+
+:rtype: float
+
 .. seealso:: :py:func:`setAltitude()`
- :rtype: float
 %End
 
     double zFactor()  const;
 %Docstring
- Returns the Z scaling factor.
+Returns the Z scaling factor.
+
+:rtype: float
+
 .. seealso:: :py:func:`setZFactor()`
- :rtype: float
 %End
 
     bool multiDirectional() const;
 %Docstring
- Returns true if the renderer is using multi-directional hillshading.
+Returns true if the renderer is using multi-directional hillshading.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setMultiDirectional()`
- :rtype: bool
 %End
 
     void setAzimuth( double azimuth );
 %Docstring
  Set the azimuth of the light source.
- \param azimuth The azimuth of the light source, between 0 and 360.0
+:param azimuth: The azimuth of the light source, between 0 and 360.0
+
 .. seealso:: :py:func:`azimuth()`
 %End
 
     void setAltitude( double altitude );
 %Docstring
  Set the altitude of the light source
- \param altitude the altitude
+:param altitude: the altitude
+
 .. seealso:: :py:func:`altitude()`
 %End
 
     void setZFactor( double zfactor );
 %Docstring
  Set the Z scaling factor of the result image.
- \param zfactor The z factor
+:param zfactor: The z factor
+
 .. seealso:: :py:func:`zFactor()`
 %End
 
     void setMultiDirectional( bool isMultiDirectional );
 %Docstring
- Sets whether to render using a multi-directional hillshade algorithm.
- \param isMultiDirectional set to true to use multi directional rendering
+Sets whether to render using a multi-directional hillshade algorithm.
+:param isMultiDirectional: set to true to use multi directional rendering
+
 .. seealso:: :py:func:`multiDirectional()`
 %End
 

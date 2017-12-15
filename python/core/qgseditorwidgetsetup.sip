@@ -11,7 +11,7 @@
 class QgsEditorWidgetSetup
 {
 %Docstring
- Holder for the widget type and its configuration for a field.
+Holder for the widget type and its configuration for a field.
 
 .. versionadded:: 3.0
 %End
@@ -23,7 +23,7 @@ class QgsEditorWidgetSetup
 
     QgsEditorWidgetSetup( const QString &type, const QVariantMap &config );
 %Docstring
- Constructor
+Constructor
 %End
 
     QgsEditorWidgetSetup();
@@ -33,20 +33,26 @@ Constructor for QgsEditorWidgetSetup
 
     QString type() const;
 %Docstring
- :return: the widget type to use
- :rtype: str
+
+:return: the widget type to use
+:rtype: str
+
 %End
 
     QVariantMap config() const;
 %Docstring
- :return: the widget configuration to used
- :rtype: QVariantMap
+
+:return: the widget configuration to used
+:rtype: QVariantMap
+
 %End
 
     bool isNull() const;
 %Docstring
- :return: true if there is no widget configured.
- :rtype: bool
+
+:return: true if there is no widget configured.
+:rtype: bool
+
 %End
 
 };

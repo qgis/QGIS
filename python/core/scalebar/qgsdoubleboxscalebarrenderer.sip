@@ -11,7 +11,8 @@
 class QgsDoubleBoxScaleBarRenderer: QgsScaleBarRenderer
 {
 %Docstring
- Double box with alternating colors.
+Double box with alternating colors.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,7 +23,7 @@ class QgsDoubleBoxScaleBarRenderer: QgsScaleBarRenderer
 
     QgsDoubleBoxScaleBarRenderer();
 %Docstring
- Constructor for QgsDoubleBoxScaleBarRenderer.
+Constructor for QgsDoubleBoxScaleBarRenderer.
 %End
 
     virtual QString name() const;

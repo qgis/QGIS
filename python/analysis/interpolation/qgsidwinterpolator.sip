@@ -12,7 +12,7 @@
 class QgsIDWInterpolator: QgsInterpolator
 {
 %Docstring
- Inverse distance weight interpolator.
+Inverse distance weight interpolator.
 %End
 
 %TypeHeaderCode
@@ -22,7 +22,7 @@ class QgsIDWInterpolator: QgsInterpolator
 
     QgsIDWInterpolator( const QList<QgsInterpolator::LayerData> &layerData );
 %Docstring
- Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.
+Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.
 %End
 
     virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback = 0 );
@@ -30,26 +30,29 @@ class QgsIDWInterpolator: QgsInterpolator
 
     void setDistanceCoefficient( double coefficient );
 %Docstring
- Sets the distance ``coefficient``, the parameter that sets how the values are
- weighted with distance. Smaller values mean sharper peaks at the data points.
+Sets the distance ``coefficient``, the parameter that sets how the values are
+weighted with distance. Smaller values mean sharper peaks at the data points.
 
- Point values are weighted by 1 / ( distance ^ coefficient ).
+Point values are weighted by 1 / ( distance ^ coefficient ).
 
 .. seealso:: :py:func:`distanceCoefficient()`
+
 .. versionadded:: 3.0
 %End
 
     double distanceCoefficient() const;
 %Docstring
- Returns the distance coefficient, the parameter that sets how the values are
- weighted with distance. Smaller values mean sharper peaks at the data points.
- The default is a coefficient of 2.
+Returns the distance coefficient, the parameter that sets how the values are
+weighted with distance. Smaller values mean sharper peaks at the data points.
+The default is a coefficient of 2.
 
- Point values are weighted by 1 / ( distance ^ coefficient ).
+Point values are weighted by 1 / ( distance ^ coefficient ).
+
+:rtype: float
 
 .. seealso:: :py:func:`setDistanceCoefficient()`
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
 };

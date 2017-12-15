@@ -14,14 +14,14 @@
 class QgsLayerTreeRegistryBridge : QObject
 {
 %Docstring
- Listens to the updates in map layer registry and does changes in layer tree.
+Listens to the updates in map layer registry and does changes in layer tree.
 
- When connected to a layer tree, any layers added to the map layer registry
- will be also added to the layer tree. Similarly, map layers that are removed
- from registry will be removed from the layer tree.
+When connected to a layer tree, any layers added to the map layer registry
+will be also added to the layer tree. Similarly, map layers that are removed
+from registry will be removed from the layer tree.
 
- If a layer is completely removed from the layer tree, it will be also removed
- from the map layer registry.
+If a layer is completely removed from the layer tree, it will be also removed
+from the map layer registry.
 
 .. versionadded:: 2.4
 %End
@@ -38,26 +38,29 @@ Create the instance that synchronizes given project with a layer tree root
     void setEnabled( bool enabled );
     bool isEnabled() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setNewLayersVisible( bool enabled );
     bool newLayersVisible() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index );
 %Docstring
- Set where the new layers should be inserted - can be used to follow current selection.
- By default it is root group with zero index.
+Set where the new layers should be inserted - can be used to follow current selection.
+By default it is root group with zero index.
 %End
 
   signals:
 
     void addedLayersToLayerTree( const QList<QgsMapLayer *> &layers );
 %Docstring
- Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
+Tell others we have just added layers to the tree (used in QGIS to auto-select first newly added layer)
+
 .. versionadded:: 2.6
 %End
 

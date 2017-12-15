@@ -14,9 +14,9 @@
 class QgsSvgSelectorListModel : QAbstractListModel
 {
 %Docstring
- A model for displaying SVG files with a preview icon. Population of the model is performed in
- a background thread to ensure that initial creation of the model is responsive and does
- not block the GUI.
+A model for displaying SVG files with a preview icon. Population of the model is performed in
+a background thread to ensure that initial creation of the model is responsive and does
+not block the GUI.
 %End
 
 %TypeHeaderCode
@@ -26,18 +26,18 @@ class QgsSvgSelectorListModel : QAbstractListModel
 
     QgsSvgSelectorListModel( QObject *parent /TransferThis/, int iconSize = 30 );
 %Docstring
- Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
- search paths will be shown.
- \param parent parent object
- \param iconSize desired size of SVG icons to create
+Constructor for QgsSvgSelectorListModel. All SVGs in folders from the application SVG
+search paths will be shown.
+:param parent: parent object
+:param iconSize: desired size of SVG icons to create
 %End
 
     QgsSvgSelectorListModel( QObject *parent /TransferThis/, const QString &path, int iconSize = 30 );
 %Docstring
- Constructor for creating a model for SVG files in a specific path.
- \param parent parent object
- \param path initial path, which is recursively searched
- \param iconSize desired size of SVG icons to create
+Constructor for creating a model for SVG files in a specific path.
+:param parent: parent object
+:param path: initial path, which is recursively searched
+:param iconSize: desired size of SVG icons to create
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
@@ -53,9 +53,9 @@ class QgsSvgSelectorListModel : QAbstractListModel
 class QgsSvgSelectorGroupsModel : QStandardItemModel
 {
 %Docstring
- A model for displaying SVG search paths. Population of the model is performed in
- a background thread to ensure that initial creation of the model is responsive and does
- not block the GUI.
+A model for displaying SVG search paths. Population of the model is performed in
+a background thread to ensure that initial creation of the model is responsive and does
+not block the GUI.
 %End
 
 %TypeHeaderCode
@@ -82,7 +82,8 @@ Constructor for QgsSvgSelectorWidget
 
     QString currentSvgPath() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
   public slots:
@@ -112,14 +113,15 @@ class QgsSvgSelectorDialog : QDialog
                           QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close | QDialogButtonBox::Ok,
                           Qt::Orientation orientation = Qt::Horizontal );
 %Docstring
- Constructor for QgsSvgSelectorDialog.
+Constructor for QgsSvgSelectorDialog.
 %End
     ~QgsSvgSelectorDialog();
 
     QgsSvgSelectorWidget *svgSelector();
 %Docstring
 Returns pointer to the embedded SVG selector widget
- :rtype: QgsSvgSelectorWidget
+
+:rtype: QgsSvgSelectorWidget
 %End
 
   protected:

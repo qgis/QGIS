@@ -12,7 +12,8 @@
 class QgsMapToolZoom : QgsMapTool
 {
 %Docstring
- A map tool for zooming into the map.
+A map tool for zooming into the map.
+
 .. seealso:: :py:class:`QgsMapTool`
 %End
 

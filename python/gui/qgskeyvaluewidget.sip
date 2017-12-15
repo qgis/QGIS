@@ -13,7 +13,8 @@
 class QgsKeyValueWidget: QgsTableWidgetBase
 {
 %Docstring
- Widget allowing to edit a QVariantMap, using a table.
+Widget allowing to edit a QVariantMap, using a table.
+
 .. versionadded:: 3.0
 %End
 
@@ -24,19 +25,21 @@ class QgsKeyValueWidget: QgsTableWidgetBase
 
     explicit QgsKeyValueWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor.
+Constructor.
 %End
 
     void setMap( const QVariantMap &map );
 %Docstring
- Set the initial value of the widget.
+Set the initial value of the widget.
 %End
 
     QVariantMap map() const;
 %Docstring
- Get the edit value.
- :return: the QVariantMap
- :rtype: QVariantMap
+Get the edit value.
+
+:return: the QVariantMap
+:rtype: QVariantMap
+
 %End
 
 };

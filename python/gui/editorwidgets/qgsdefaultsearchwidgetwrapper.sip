@@ -13,7 +13,7 @@
 class QgsDefaultSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
- Wraps a search widget. Default form is just a QgsLineFilterEdit
+Wraps a search widget. Default form is just a QgsLineFilterEdit
 %End
 
 %TypeHeaderCode
@@ -57,22 +57,26 @@ Constructor for QgsDefaultSearchWidgetWrapper
 
     QgsFilterLineEdit *lineEdit();
 %Docstring
- Returns a pointer to the line edit part of the widget.
+Returns a pointer to the line edit part of the widget.
+
+:rtype: QgsFilterLineEdit
+
 .. note::
 
    this method is in place for unit testing only, and is not considered
- stable API
- :rtype: QgsFilterLineEdit
+stable API
 %End
 
     QCheckBox *caseSensitiveCheckBox();
 %Docstring
- Returns a pointer to the case sensitivity checkbox in the widget.
+Returns a pointer to the case sensitivity checkbox in the widget.
+
+:rtype: QCheckBox
+
 .. note::
 
    this method is in place for unit testing only, and is not considered
- stable API
- :rtype: QCheckBox
+stable API
 %End
 
 };

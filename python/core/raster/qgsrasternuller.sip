@@ -13,7 +13,7 @@
 class QgsRasterNuller : QgsRasterInterface
 {
 %Docstring
- Raster pipe that deals with null values.
+Raster pipe that deals with null values.
 %End
 
 %TypeHeaderCode
@@ -44,7 +44,8 @@ class QgsRasterNuller : QgsRasterInterface
 
     QgsRasterRangeList noData( int bandNo ) const;
 %Docstring
- :rtype: QgsRasterRangeList
+
+:rtype: QgsRasterRangeList
 %End
 
     void setOutputNoDataValue( int bandNo, double noData );

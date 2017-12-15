@@ -15,11 +15,11 @@
 class QgsPointXY
 {
 %Docstring
- A class to represent a 2D point.
+A class to represent a 2D point.
 
- A QgsPointXY represents a position with X and Y coordinates.
- In most scenarios it is preferable to use a QgsPoint instead which also
- supports Z and M values.
+A QgsPointXY represents a position with X and Y coordinates.
+In most scenarios it is preferable to use a QgsPoint instead which also
+supports Z and M values.
 
 .. versionadded:: 3.0
 %End
@@ -37,29 +37,31 @@ Create a point from another point
 
     QgsPointXY( double x, double y );
 %Docstring
- Create a point from x,y coordinates
- \param x x coordinate
- \param y y coordinate
+Create a point from x,y coordinates
+:param x: x coordinate
+:param y: y coordinate
 %End
 
     QgsPointXY( QPointF point );
 %Docstring
- Create a point from a QPointF
- \param point QPointF source
+Create a point from a QPointF
+:param point: QPointF source
+
 .. versionadded:: 2.7
 %End
 
     QgsPointXY( QPoint point );
 %Docstring
- Create a point from a QPoint
- \param point QPoint source
+Create a point from a QPoint
+:param point: QPoint source
+
 .. versionadded:: 2.7
 %End
 
     QgsPointXY( const QgsPoint &point );
 %Docstring
- Create a new point.
- Z and M values will be dropped.
+Create a new point.
+Z and M values will be dropped.
 
 .. versionadded:: 3.0
 %End
@@ -68,14 +70,14 @@ Create a point from another point
 
     void setX( double x );
 %Docstring
- Sets the x value of the point
- \param x x coordinate
+Sets the x value of the point
+:param x: x coordinate
 %End
 
     void setY( double y );
 %Docstring
- Sets the y value of the point
- \param y y coordinate
+Sets the y value of the point
+:param y: y coordinate
 %End
 
     void set( double x, double y );
@@ -85,103 +87,129 @@ Sets the x and y value of the point
 
     double x() const;
 %Docstring
- Get the x value of the point
- :return: x coordinate
- :rtype: float
+Get the x value of the point
+
+:return: x coordinate
+:rtype: float
+
 %End
 
     double y() const;
 %Docstring
- Get the y value of the point
- :return: y coordinate
- :rtype: float
+Get the y value of the point
+
+:return: y coordinate
+:rtype: float
+
 %End
 
     QPointF toQPointF() const;
 %Docstring
- Converts a point to a QPointF
- :return: QPointF with same x and y values
+Converts a point to a QPointF
+
+:return: QPointF with same x and y values
+:rtype: QPointF
+
+
 .. versionadded:: 2.7
- :rtype: QPointF
 %End
 
     QString toString( int precision = -1 ) const;
 %Docstring
- Returns a string representation of the point (x, y) with a preset ``precision``.
- If  ``precision`` is -1, then a default precision will be used.
- :rtype: str
+Returns a string representation of the point (x, y) with a preset ``precision``.
+If  ``precision`` is -1, then a default precision will be used.
+
+:rtype: str
 %End
 
     QString asWkt() const;
 %Docstring
- Return the well known text representation for the point (e.g. "POINT(x y)").
- The wkt is created without an SRID.
- :rtype: str
+Return the well known text representation for the point (e.g. "POINT(x y)").
+The wkt is created without an SRID.
+
+:rtype: str
 %End
 
     double sqrDist( double x, double y ) const;
 %Docstring
- Returns the squared distance between this point a specified x, y coordinate.
+Returns the squared distance between this point a specified x, y coordinate.
+
+:rtype: float
+
 .. seealso:: :py:func:`distance()`
- :rtype: float
 %End
 
     double sqrDist( const QgsPointXY &other ) const;
 %Docstring
- Returns the squared distance between this point another point.
+Returns the squared distance between this point another point.
+
+:rtype: float
+
 .. seealso:: :py:func:`distance()`
- :rtype: float
 %End
 
     double distance( double x, double y ) const;
 %Docstring
- Returns the distance between this point and a specified x, y coordinate.
- \param x x-coordniate
- \param y y-coordinate
+Returns the distance between this point and a specified x, y coordinate.
+:param x: x-coordniate
+:param y: y-coordinate
+
+:rtype: float
+
 .. seealso:: :py:func:`sqrDist()`
+
 .. versionadded:: 2.16
- :rtype: float
 %End
 
     double distance( const QgsPointXY &other ) const;
 %Docstring
- Returns the distance between this point and another point.
- \param other other point
+Returns the distance between this point and another point.
+:param other: other point
+
+:rtype: float
+
 .. seealso:: :py:func:`sqrDist()`
+
 .. versionadded:: 2.16
- :rtype: float
 %End
 
     double sqrDistToSegment( double x1, double y1, double x2, double y2, QgsPointXY &minDistPoint /Out/, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 %Docstring
 Returns the minimum distance between this point and a segment
- :rtype: float
+
+:rtype: float
 %End
 
     double azimuth( const QgsPointXY &other ) const;
 %Docstring
 Calculates azimuth between this point and other one (clockwise in degree, starting from north)
- :rtype: float
+
+:rtype: float
 %End
 
     QgsPointXY project( double distance, double bearing ) const;
 %Docstring
- Returns a new point which corresponds to this point projected by a specified distance
- in a specified bearing.
- \param distance distance to project
- \param bearing angle to project in, clockwise in degrees starting from north
+Returns a new point which corresponds to this point projected by a specified distance
+in a specified bearing.
+:param distance: distance to project
+:param bearing: angle to project in, clockwise in degrees starting from north
+
+:rtype: QgsPointXY
+
 .. versionadded:: 2.16
- :rtype: QgsPointXY
 %End
 
     bool compare( const QgsPointXY &other, double epsilon = 4 * DBL_EPSILON ) const;
 %Docstring
- Compares this point with another point with a fuzzy tolerance
- \param other point to compare with
- \param epsilon maximum difference for coordinates between the points
- :return: true if points are equal within specified tolerance
+Compares this point with another point with a fuzzy tolerance
+:param other: point to compare with
+:param epsilon: maximum difference for coordinates between the points
+
+:return: true if points are equal within specified tolerance
+:rtype: bool
+
+
 .. versionadded:: 2.9
- :rtype: bool
 %End
 
     bool operator==( const QgsPointXY &other );
@@ -189,7 +217,8 @@ Calculates azimuth between this point and other one (clockwise in degree, starti
     bool operator!=( const QgsPointXY &other ) const;
 %Docstring
 Inequality operator
- :rtype: bool
+
+:rtype: bool
 %End
 
     void multiply( double scalar );
@@ -201,55 +230,64 @@ Multiply x and y by the given value
     QgsVector operator-( const QgsPointXY &p ) const;
 %Docstring
 Calculates the vector obtained by subtracting a point from this point
- :rtype: QgsVector
+
+:rtype: QgsVector
 %End
 
     QgsPointXY &operator+=( QgsVector v );
 %Docstring
 Adds a vector to this point in place
- :rtype: QgsPointXY
+
+:rtype: QgsPointXY
 %End
 
     QgsPointXY &operator-=( QgsVector v );
 %Docstring
 Subtracts a vector from this point in place
- :rtype: QgsPointXY
+
+:rtype: QgsPointXY
 %End
 
     QgsPointXY operator+( QgsVector v ) const;
 %Docstring
 Adds a vector to this point
- :rtype: QgsPointXY
+
+:rtype: QgsPointXY
 %End
 
     QgsPointXY operator-( QgsVector v ) const;
 %Docstring
 Subtracts a vector from this point
- :rtype: QgsPointXY
+
+:rtype: QgsPointXY
 %End
 
     QgsPointXY operator*( double scalar ) const;
 %Docstring
 Multiplies the coordinates in this point by a scalar quantity
- :rtype: QgsPointXY
+
+:rtype: QgsPointXY
 %End
 
     QgsPointXY operator/( double scalar ) const;
 %Docstring
 Divides the coordinates in this point by a scalar quantity
- :rtype: QgsPointXY
+
+:rtype: QgsPointXY
 %End
 
     QgsPointXY &operator*=( double scalar );
 %Docstring
 Multiplies the coordinates in this point by a scalar quantity in place
- :rtype: QgsPointXY
+
+:rtype: QgsPointXY
 %End
 
     QgsPointXY &operator/=( double scalar );
 %Docstring
 Divides the coordinates in this point by a scalar quantity in place
- :rtype: QgsPointXY
+
+:rtype: QgsPointXY
 %End
 
     operator QVariant() const;
@@ -266,7 +304,8 @@ Allows direct construction of QVariants from points.
 
     int __len__();
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 %MethodCode
     sipRes = 2;
@@ -292,7 +331,8 @@ Allows direct construction of QVariants from points.
 
     long __hash__() const;
 %Docstring
- :rtype: long
+
+:rtype: long
 %End
 %MethodCode
     sipRes = qHash( *sipCpp );

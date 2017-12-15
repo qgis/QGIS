@@ -11,7 +11,8 @@
 class QgsDetailedItemWidget : QWidget
 {
 %Docstring
- A widget renderer for detailed item views.
+A widget renderer for detailed item views.
+
 .. seealso:: :py:func:`also`
 %End
 

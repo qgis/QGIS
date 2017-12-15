@@ -11,23 +11,23 @@
 class QgsMapTip : QWidget
 {
 %Docstring
- A maptip is a class to display a tip on a map canvas
- when a mouse is hovered over a feature.
+A maptip is a class to display a tip on a map canvas
+when a mouse is hovered over a feature.
 
- Since QGIS 2.16 a maptip can show full html.
- QgsMapTip is a QgsWebView, so you can load full HTML/JS/CSS in it.
+Since QGIS 2.16 a maptip can show full html.
+QgsMapTip is a QgsWebView, so you can load full HTML/JS/CSS in it.
 
- The code found in the map tips tab is inserted in a inline-block div
- so the frame can be resized based on the content size.
+The code found in the map tips tab is inserted in a inline-block div
+so the frame can be resized based on the content size.
 
- If no element in the html has a width attribute, the frame will squeeze down
- to the widest word. To avoid this you can wrap your HTML in a
- div style="width:300px" or similar.
+If no element in the html has a width attribute, the frame will squeeze down
+to the widest word. To avoid this you can wrap your HTML in a
+div style="width:300px" or similar.
 
- JS can be included using the script tag as usual, while CSS files must be
- linked using link rel="stylesheet" href="URL.css" the html specs
- discourages link rel="stylesheet" in the body, but all browsers allow it.
- see https://jakearchibald.com/2016/link-in-body
+JS can be included using the script tag as usual, while CSS files must be
+linked using link rel="stylesheet" href="URL.css" the html specs
+discourages link rel="stylesheet" in the body, but all browsers allow it.
+see https://jakearchibald.com/2016/link-in-body
 %End
 
 %TypeHeaderCode
@@ -37,7 +37,7 @@ class QgsMapTip : QWidget
 
     QgsMapTip();
 %Docstring
- Default constructor
+Default constructor
 %End
 
     void showMapTip( QgsMapLayer *thepLayer,
@@ -45,20 +45,20 @@ class QgsMapTip : QWidget
                      QPoint &pixelPosition,
                      QgsMapCanvas *mpMapCanvas );
 %Docstring
- Show a maptip at a given point on the map canvas
- \param thepLayer a qgis vector map layer pointer that will
-        be used to provide the attribute data for the map tip.
- \param mapPosition a reference to the position of the cursor
-        in map coordinatess.
- \param pixelPosition a reference to the position of the cursor
-        in pixel coordinates.
- \param mpMapCanvas a map canvas on which the tip is drawn
+Show a maptip at a given point on the map canvas
+:param thepLayer: a qgis vector map layer pointer that will
+be used to provide the attribute data for the map tip.
+:param mapPosition: a reference to the position of the cursor
+in map coordinatess.
+:param pixelPosition: a reference to the position of the cursor
+in pixel coordinates.
+:param mpMapCanvas: a map canvas on which the tip is drawn
 %End
 
     void clear( QgsMapCanvas *mpMapCanvas = 0 );
 %Docstring
- Clear the current maptip if it exists
- \param mpMapCanvas the canvas from which the tip should be cleared.
+Clear the current maptip if it exists
+:param mpMapCanvas: the canvas from which the tip should be cleared.
 %End
 };
 /************************************************************************

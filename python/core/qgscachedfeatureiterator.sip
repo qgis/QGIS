@@ -12,8 +12,8 @@
 class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 {
 %Docstring
- \brief
- Delivers features from the cache
+\brief
+Delivers features from the cache
 %End
 
 %TypeHeaderCode
@@ -23,48 +23,54 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 
     QgsCachedFeatureIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 %Docstring
- This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
+This constructor creates a feature iterator, that delivers all cached features. No request is made to the backend.
 
- \param vlCache          The vector layer cache to use
- \param featureRequest   The feature request to answer
+:param vlCache:          The vector layer cache to use
+:param featureRequest:   The feature request to answer
 %End
 
     virtual bool rewind();
 %Docstring
- Rewind to the beginning of the iterator
+Rewind to the beginning of the iterator
 
- :return: bool true if the operation was OK
- :rtype: bool
+:return: bool true if the operation was OK
+:rtype: bool
+
 %End
 
     virtual bool close();
 %Docstring
- Close this iterator. No further features will be available.
+Close this iterator. No further features will be available.
 
- :return: true if successful
- :rtype: bool
+:return: true if successful
+:rtype: bool
+
 %End
 
   protected:
 
     virtual bool fetchFeature( QgsFeature &f );
 %Docstring
- Implementation for fetching a feature.
+Implementation for fetching a feature.
 
- \param f      Will write to this feature
- :return: bool  true if the operation was OK
+:param f:      Will write to this feature
+
+:return: bool  true if the operation was OK
+:rtype: bool
+
 
 .. seealso:: :py:func:`bool`
- :rtype: bool
 %End
 
     virtual bool nextFeatureFilterFids( QgsFeature &f );
 %Docstring
- We have a local special iterator for FilterFids, no need to run the generic.
+We have a local special iterator for FilterFids, no need to run the generic.
 
- \param f      Will write to this feature
- :return: bool  true if the operation was OK
- :rtype: bool
+:param f:      Will write to this feature
+
+:return: bool  true if the operation was OK
+:rtype: bool
+
 %End
 
 };
@@ -72,8 +78,8 @@ class QgsCachedFeatureIterator : QgsAbstractFeatureIterator
 class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
 {
 %Docstring
- \brief
- Uses another iterator as backend and writes features to the cache
+\brief
+Uses another iterator as backend and writes features to the cache
 %End
 
 %TypeHeaderCode
@@ -83,39 +89,43 @@ class QgsCachedFeatureWriterIterator : QgsAbstractFeatureIterator
 
     QgsCachedFeatureWriterIterator( QgsVectorLayerCache *vlCache, const QgsFeatureRequest &featureRequest );
 %Docstring
- This constructor creates a feature iterator, which queries the backend and caches retrieved features.
+This constructor creates a feature iterator, which queries the backend and caches retrieved features.
 
- \param vlCache          The vector layer cache to use
- \param featureRequest   The feature request to answer
+:param vlCache:          The vector layer cache to use
+:param featureRequest:   The feature request to answer
 %End
 
     virtual bool rewind();
 %Docstring
- Rewind to the beginning of the iterator
+Rewind to the beginning of the iterator
 
- :return: bool true if the operation was OK
- :rtype: bool
+:return: bool true if the operation was OK
+:rtype: bool
+
 %End
 
     virtual bool close();
 %Docstring
- Close this iterator. No further features will be available.
+Close this iterator. No further features will be available.
 
- :return: true if successful
- :rtype: bool
+:return: true if successful
+:rtype: bool
+
 %End
 
   protected:
 
     virtual bool fetchFeature( QgsFeature &f );
 %Docstring
- Implementation for fetching a feature.
+Implementation for fetching a feature.
 
- \param f      Will write to this feature
- :return: bool  true if the operation was OK
+:param f:      Will write to this feature
+
+:return: bool  true if the operation was OK
+:rtype: bool
+
 
 .. seealso:: :py:func:`bool`
- :rtype: bool
 %End
 
 };

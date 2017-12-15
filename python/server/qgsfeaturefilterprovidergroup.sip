@@ -14,6 +14,7 @@ class QgsFeatureFilterProviderGroup : QgsFeatureFilterProvider
 {
 %Docstring
  A filter filter provider grouping several filter providers.
+
 .. versionadded:: 3.0
 *
 %End
@@ -29,24 +30,28 @@ Constructor
 
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
 %Docstring
- Filter the features of the layer
- \param layer the layer to control
- \param filterFeatures the request to fill
+Filter the features of the layer
+:param layer: the layer to control
+:param filterFeatures: the request to fill
 %End
 
     QgsFeatureFilterProvider *clone() const /Factory/;
 %Docstring
- Return a clone of the object
- :return: A clone
- :rtype: QgsFeatureFilterProvider
+Return a clone of the object
+
+:return: A clone
+:rtype: QgsFeatureFilterProvider
+
 %End
 
     QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
 %Docstring
- Add another filter provider to the group
- \param provider The provider to add
- :return: itself
- :rtype: QgsFeatureFilterProviderGroup
+Add another filter provider to the group
+:param provider: The provider to add
+
+:return: itself
+:rtype: QgsFeatureFilterProviderGroup
+
 %End
 
 };

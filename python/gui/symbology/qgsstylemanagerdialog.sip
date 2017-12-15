@@ -23,7 +23,8 @@ class QgsStyleManagerDialog : QDialog
                                        QString RampType = QString() );
 %Docstring
 open add color ramp dialog, return color ramp's name if the ramp has been added
- :rtype: str
+
+:rtype: str
 %End
 
   public slots:
@@ -63,12 +64,14 @@ Open the associated help
     int addTag();
 %Docstring
 add a tag
- :rtype: int
+
+:rtype: int
 %End
     int addSmartgroup();
 %Docstring
 add a smartgroup
- :rtype: int
+
+:rtype: int
 %End
     void removeGroup();
 %Docstring
@@ -118,7 +121,8 @@ Context menu for the listItems ( symbols list )
   protected slots:
     bool addColorRamp( QAction *action );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     void addFavoriteSelectedSymbols();
 %Docstring
@@ -165,40 +169,48 @@ populate list view with color ramps
 
     int currentItemType();
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     QString currentItemName();
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     bool addSymbol();
 %Docstring
 add a new symbol to style
- :rtype: bool
+
+:rtype: bool
 %End
     bool addColorRamp();
 %Docstring
 add a new color ramp to style
- :rtype: bool
+
+:rtype: bool
 %End
 
     bool editSymbol();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool editColorRamp();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     bool removeSymbol();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool removeColorRamp();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void enableSymbolInputs( bool );

@@ -13,8 +13,8 @@
 class QgsAttributeTableDelegate : QItemDelegate
 {
 %Docstring
- A delegate item class for QgsAttributeTable (see Qt documentation for
- QItemDelegate).
+A delegate item class for QgsAttributeTable (see Qt documentation for
+QItemDelegate).
 %End
 
 %TypeHeaderCode
@@ -24,39 +24,40 @@ class QgsAttributeTableDelegate : QItemDelegate
 
     QgsAttributeTableDelegate( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor
- \param parent parent object
+Constructor
+:param parent: parent object
 %End
 
     virtual QWidget *createEditor( QWidget *parent, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
 %Docstring
- Used to create an editor for when the user tries to
- change the contents of a cell
- :rtype: QWidget
+Used to create an editor for when the user tries to
+change the contents of a cell
+
+:rtype: QWidget
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
 %Docstring
- Overloads the paint method form the QItemDelegate base class
+Overloads the paint method form the QItemDelegate base class
 %End
 
     virtual void setModelData( QWidget *editor, QAbstractItemModel *model, const QModelIndex &index ) const;
 
 %Docstring
- Sets data from editor back to model. Overloads default method
- \param editor editor which was created by create editor function in this class
- \param model model where data should be updated
- \param index index of field which is to be modified
+Sets data from editor back to model. Overloads default method
+:param editor: editor which was created by create editor function in this class
+:param model: model where data should be updated
+:param index: index of field which is to be modified
 %End
 
     virtual void setEditorData( QWidget *editor, const QModelIndex &index ) const;
 
 %Docstring
- Sets data from model into the editor. Overloads default method
- \param editor editor which was created by create editor function in this class
- \param index index of field which is to be retrieved
+Sets data from model into the editor. Overloads default method
+:param editor: editor which was created by create editor function in this class
+:param index: index of field which is to be retrieved
 %End
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel );
@@ -65,14 +66,14 @@ class QgsAttributeTableDelegate : QItemDelegate
 
     void actionColumnItemPainted( const QModelIndex &index ) const;
 %Docstring
- Is emitted when an action column item is painted.
- The consumer of this signal can initialize the index widget.
+Is emitted when an action column item is painted.
+The consumer of this signal can initialize the index widget.
 
 .. note::
 
    This signal is emitted repeatedly whenever the item is being painted.
-       It is the consumers responsibility to check if initialization has already
-       happened before.
+It is the consumers responsibility to check if initialization has already
+happened before.
 %End
 
 };

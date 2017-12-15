@@ -14,7 +14,8 @@
 class QgsCheckboxSearchWidgetWrapper : QgsSearchWidgetWrapper
 {
 %Docstring
- Wraps a checkbox edit widget for searching.
+Wraps a checkbox edit widget for searching.
+
 .. versionadded:: 2.16
 %End
 
@@ -25,21 +26,23 @@ class QgsCheckboxSearchWidgetWrapper : QgsSearchWidgetWrapper
 
     explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsCheckboxSearchWidgetWrapper.
- \param vl associated vector layer
- \param fieldIdx index of associated field
- \param parent parent widget
+Constructor for QgsCheckboxSearchWidgetWrapper.
+:param vl: associated vector layer
+:param fieldIdx: index of associated field
+:param parent: parent widget
 %End
 
     QVariant value() const;
 %Docstring
- Returns a variant representing the current state of the widget.
+Returns a variant representing the current state of the widget.
+
+:rtype: QVariant
+
 .. note::
 
    this will not be a boolean true or false value, it will instead
- be the values configured to represent checked and unchecked states in
- the editor widget configuration.
- :rtype: QVariant
+be the values configured to represent checked and unchecked states in
+the editor widget configuration.
 %End
 
     virtual bool applyDirectly();

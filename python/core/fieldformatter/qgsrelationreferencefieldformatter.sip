@@ -10,9 +10,9 @@
 class QgsRelationReferenceFieldFormatter : QgsFieldFormatter
 {
 %Docstring
- Field formatter for a relation reference field.
- A value relation field formatter looks up the values from
- features on another layer.
+Field formatter for a relation reference field.
+A value relation field formatter looks up the values from
+features on another layer.
 
 .. versionadded:: 3.0
 %End
@@ -24,7 +24,7 @@ class QgsRelationReferenceFieldFormatter : QgsFieldFormatter
 
     QgsRelationReferenceFieldFormatter();
 %Docstring
- Default constructor of field formatter for a relation reference field.
+Default constructor of field formatter for a relation reference field.
 %End
 
     virtual QString id() const;

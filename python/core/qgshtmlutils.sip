@@ -13,6 +13,7 @@ class QgsHtmlUtils
 {
 %Docstring
  Class for HTML utilities.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,9 +24,10 @@ class QgsHtmlUtils
 
     static QString buildBulletList( const QStringList &values );
 %Docstring
- Build a bullet list.
- This will return a HTML "ul" element.
- :rtype: str
+Build a bullet list.
+This will return a HTML "ul" element.
+
+:rtype: str
 %End
 };
 

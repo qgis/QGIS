@@ -13,7 +13,7 @@
 class QgsRasterFormatSaveOptionsWidget: QWidget
 {
 %Docstring
- A widget to select format-specific raster saving options
+A widget to select format-specific raster saving options
 %End
 
 %TypeHeaderCode
@@ -37,49 +37,53 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
 
     void setFormat( const QString &format );
 %Docstring
- Set output raster format, it is used to determine list
- of available options
+Set output raster format, it is used to determine list
+of available options
 %End
 
     void setProvider( const QString &provider );
 %Docstring
- Set provider key, , it is used to determine list
- of available options
+Set provider key, , it is used to determine list
+of available options
 %End
 
     void setRasterLayer( QgsRasterLayer *rasterLayer );
 %Docstring
- Set output raster layer
+Set output raster layer
 %End
 
     void setRasterFileName( const QString &file );
 %Docstring
- Set output raster file name
+Set output raster file name
 %End
 
     QStringList options() const;
 %Docstring
- Returns list of selected options
+Returns list of selected options
+
+:rtype: list of str
+
 .. seealso:: :py:func:`setOptions()`
- :rtype: list of str
 %End
 
     void setOptions( const QString &options );
 %Docstring
- Populate widget with user-defined options. String should contain
- key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
+Populate widget with user-defined options. String should contain
+key=value pairs separated by spaces, e.g. "TILED=YES TFW=YES"
+
 .. seealso:: :py:func:`options()`
+
 .. versionadded:: 3.0
 %End
 
     void setType( QgsRasterFormatSaveOptionsWidget::Type type = Default );
 %Docstring
- Set widget look and feel
+Set widget look and feel
 %End
 
     void setPyramidsFormat( QgsRaster::RasterPyramidsFormat format );
 %Docstring
- Set pyramids format to use
+Set pyramids format to use
 %End
 
   public slots:
@@ -88,19 +92,20 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
 
     void helpOptions();
 %Docstring
- Opens window with options desctiption for given provider
- and output format
+Opens window with options desctiption for given provider
+and output format
 %End
 
     QString validateOptions( bool gui = true, bool reportOk = true );
 %Docstring
- Validates options correctness
- :rtype: str
+Validates options correctness
+
+:rtype: str
 %End
 
     void updateProfiles();
 %Docstring
- Reloads profiles list from QGIS settings
+Reloads profiles list from QGIS settings
 %End
 
   private slots:
@@ -124,15 +129,18 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
   private:
     QString settingsKey( QString profile ) const ;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     QString currentProfileKey() const ;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     QString createOptions( const QString &profile ) const ;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     void deleteCreateOptions( const QString &profile ) ;
     void setCreateOptions() ;
@@ -140,13 +148,15 @@ class QgsRasterFormatSaveOptionsWidget: QWidget
     void setCreateOptions( const QString &profile, const QStringList &list ) ;
     QStringList profiles() const ;
 %Docstring
- :rtype: list of str
+
+:rtype: list of str
 %End
     virtual bool eventFilter( QObject *obj, QEvent *event ) ;
 
     QString pseudoFormat() const ;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 };
 

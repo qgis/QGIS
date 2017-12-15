@@ -33,7 +33,7 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
 
     QgsRelationEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- \param parent parent widget
+:param parent: parent widget
 %End
 
     void setViewMode( QgsDualView::ViewMode mode );
@@ -44,20 +44,21 @@ Define the view mode for the dual view
     QgsDualView::ViewMode viewMode();
 %Docstring
 Get the view mode for the dual view
- :rtype: QgsDualView.ViewMode
+
+:rtype: QgsDualView.ViewMode
 %End
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
 
     void setRelations( const QgsRelation &relation, const QgsRelation &nmrelation );
 %Docstring
- Set the relation(s) for this widget
- If only one relation is set, it will act as a simple 1:N relation widget
- If both relations are set, it will act as an N:M relation widget
- inserting and deleting entries on the intermediate table as required.
+Set the relation(s) for this widget
+If only one relation is set, it will act as a simple 1:N relation widget
+If both relations are set, it will act as an N:M relation widget
+inserting and deleting entries on the intermediate table as required.
 
- \param relation    Relation referencing the edited table
- \param nmrelation  Optional reference from the referencing table to a 3rd N:M table
+:param relation:    Relation referencing the edited table
+:param nmrelation:  Optional reference from the referencing table to a 3rd N:M table
 %End
 
     void setFeature( const QgsFeature &feature );
@@ -66,52 +67,56 @@ Get the view mode for the dual view
 
     QgsIFeatureSelectionManager *featureSelectionManager();
 %Docstring
- The feature selection manager is responsible for the selected features
- which are currently being edited.
- :rtype: QgsIFeatureSelectionManager
+The feature selection manager is responsible for the selected features
+which are currently being edited.
+
+:rtype: QgsIFeatureSelectionManager
 %End
 
     bool showLabel() const;
 %Docstring
- Defines if a title label should be shown for this widget.
+Defines if a title label should be shown for this widget.
+
+:rtype: bool
 
 .. versionadded:: 2.18
- :rtype: bool
 %End
 
     void setShowLabel( bool showLabel );
 %Docstring
- Defines if a title label should be shown for this widget.
+Defines if a title label should be shown for this widget.
 
 .. versionadded:: 2.18
 %End
 
     bool showLinkButton() const;
 %Docstring
- Determines if the "link feature" button should be shown
+Determines if the "link feature" button should be shown
+
+:rtype: bool
 
 .. versionadded:: 2.18
- :rtype: bool
 %End
 
     void setShowLinkButton( bool showLinkButton );
 %Docstring
- Determines if the "link feature" button should be shown
+Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
 %End
 
     bool showUnlinkButton() const;
 %Docstring
- Determines if the "unlink feature" button should be shown
+Determines if the "unlink feature" button should be shown
+
+:rtype: bool
 
 .. versionadded:: 2.18
- :rtype: bool
 %End
 
     void setShowUnlinkButton( bool showUnlinkButton );
 %Docstring
- Determines if the "unlink feature" button should be shown
+Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
 %End

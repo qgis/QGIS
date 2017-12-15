@@ -12,16 +12,16 @@
 class QgsLayerTreeLayer : QgsLayerTreeNode
 {
 %Docstring
- Layer tree node points to a map layer.
+Layer tree node points to a map layer.
 
- The node can exist also without a valid instance of a layer (just ID). That
- means the referenced layer does not need to be loaded in order to use it
- in layer tree. In such case, resolveReferences() method can be called
- once the layer is loaded.
+The node can exist also without a valid instance of a layer (just ID). That
+means the referenced layer does not need to be loaded in order to use it
+in layer tree. In such case, resolveReferences() method can be called
+once the layer is loaded.
 
- A map layer is supposed to be present in one layer tree just once. It is
- however possible that temporarily a layer exists in one tree more than just
- once, e.g. while reordering items with drag and drop.
+A map layer is supposed to be present in one layer tree just once. It is
+however possible that temporarily a layer exists in one tree more than just
+once, e.g. while reordering items with drag and drop.
 
 .. versionadded:: 2.4
 %End
@@ -35,47 +35,55 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     explicit QgsLayerTreeLayer( const QString &layerId, const QString &name = QString(), const QString &source = QString(), const QString &provider = QString() );
 %Docstring
- Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, public ``source``, and ``provider`` key.
+Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, public ``source``, and ``provider`` key.
 %End
 
     QString layerId() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     QgsMapLayer *layer() const;
 %Docstring
- :rtype: QgsMapLayer
+
+:rtype: QgsMapLayer
 %End
 
     virtual QString name() const;
 
 %Docstring
- Returns the layer's name.
+Returns the layer's name.
+
+:rtype: str
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     virtual void setName( const QString &n );
 
 %Docstring
- Sets the layer's name.
+Sets the layer's name.
+
 .. versionadded:: 3.0
 %End
 
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
- Read layer node from XML. Returns new instance.
- Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
- :rtype: QgsLayerTreeLayer
+Read layer node from XML. Returns new instance.
+Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
+
+:rtype: QgsLayerTreeLayer
 %End
 
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
- Read layer node from XML. Returns new instance.
- Also resolves textual references to layers from the project (calls resolveReferences() internally).
+Read layer node from XML. Returns new instance.
+Also resolves textual references to layers from the project (calls resolveReferences() internally).
+
+:rtype: QgsLayerTreeLayer
+
 .. versionadded:: 3.0
- :rtype: QgsLayerTreeLayer
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
@@ -86,7 +94,8 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
 %Docstring
- Resolves reference to layer from stored layer ID (if it has not been resolved already)
+Resolves reference to layer from stored layer ID (if it has not been resolved already)
+
 .. versionadded:: 3.0
 %End
 
@@ -94,12 +103,13 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     void layerLoaded();
 %Docstring
- Emitted when a previously unavailable layer got loaded.
+Emitted when a previously unavailable layer got loaded.
 %End
 
     void layerWillBeUnloaded();
 %Docstring
- Emitted when a previously available layer got unloaded (from layer registry).
+Emitted when a previously available layer got unloaded (from layer registry).
+
 .. versionadded:: 2.6
 %End
 
@@ -111,7 +121,7 @@ class QgsLayerTreeLayer : QgsLayerTreeNode
 
     QgsLayerTreeLayer( const QgsLayerTreeLayer &other );
 %Docstring
- Copies are not allowed
+Copies are not allowed
 %End
 };
 

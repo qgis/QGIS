@@ -11,15 +11,15 @@
 class QgsMapCanvasTracer : QgsTracer
 {
 %Docstring
- Extension of QgsTracer that provides extra functionality:
-  - automatic updates of own configuration based on canvas settings
-  - reporting of issues to the user via message bar
-  - determines whether tracing is currently enabled by the user
+Extension of QgsTracer that provides extra functionality:
+- automatic updates of own configuration based on canvas settings
+- reporting of issues to the user via message bar
+- determines whether tracing is currently enabled by the user
 
- A simple registry of tracer instances associated to map canvas instances
- is kept for convenience. (Map tools do not need to create their local
- tracer instances and map canvas API is not "polluted" by this optional
- functionality).
+A simple registry of tracer instances associated to map canvas instances
+is kept for convenience. (Map tools do not need to create their local
+tracer instances and map canvas API is not "polluted" by this optional
+functionality).
 
 .. versionadded:: 2.14
 %End
@@ -37,21 +37,23 @@ Create tracer associated with a particular map canvas, optionally message bar fo
     QAction *actionEnableTracing() const;
 %Docstring
 Access to action that user may use to toggle tracing on/off. May be null if no action was associated
- :rtype: QAction
+
+:rtype: QAction
 %End
 
     void setActionEnableTracing( QAction *action );
 %Docstring
- Assign "enable tracing" checkable action to the tracer.
- The action is used to determine whether tracing is currently enabled by the user
+Assign "enable tracing" checkable action to the tracer.
+The action is used to determine whether tracing is currently enabled by the user
 %End
 
     static QgsMapCanvasTracer *tracerForCanvas( QgsMapCanvas *canvas );
 %Docstring
- Retrieve instance of this class associated with given canvas (if any).
- The class keeps a simple registry of tracers associated with map canvas
- instances for easier access to the common tracer by various map tools
- :rtype: QgsMapCanvasTracer
+Retrieve instance of this class associated with given canvas (if any).
+The class keeps a simple registry of tracers associated with map canvas
+instances for easier access to the common tracer by various map tools
+
+:rtype: QgsMapCanvasTracer
 %End
 
     void reportError( PathError err, bool addingVertex );

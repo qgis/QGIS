@@ -14,7 +14,7 @@
 class QgsOrderByDialog : QDialog
 {
 %Docstring
- This is a dialog to build and manage a list of order by clauses.
+This is a dialog to build and manage a list of order by clauses.
 
 .. versionadded:: 2.14
 %End
@@ -26,21 +26,22 @@ class QgsOrderByDialog : QDialog
 
     QgsOrderByDialog( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Create a new order by dialog. This helps building order by structures.
+Create a new order by dialog. This helps building order by structures.
 
- \param layer  The vector layer for which the order by should be produced
- \param parent The parent widget, optional
+:param layer:  The vector layer for which the order by should be produced
+:param parent: The parent widget, optional
 %End
 
     void setOrderBy( const QgsFeatureRequest::OrderBy &orderBy );
 %Docstring
- Set the order by to manage
+Set the order by to manage
 %End
 
     QgsFeatureRequest::OrderBy orderBy();
 %Docstring
- Get the order by defined in the dialog
- :rtype: QgsFeatureRequest.OrderBy
+Get the order by defined in the dialog
+
+:rtype: QgsFeatureRequest.OrderBy
 %End
 
   protected:
