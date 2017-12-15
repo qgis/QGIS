@@ -55,7 +55,7 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         myGeoCrs.createFromId(4326, QgsCoordinateReferenceSystem.EpsgCrsId)
         myUtmCrs = QgsCoordinateReferenceSystem()
         myUtmCrs.createFromId(3857, QgsCoordinateReferenceSystem.EpsgCrsId)
-        myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs)
+        myXForm = QgsCoordinateTransform(myUtmCrs, myGeoCrs, QgsProject.instance())
         myTransformedExtent = myXForm.transform(myExtent)
         myTransformedExtentForward = myXForm.transform(myExtent, QgsCoordinateTransform.ForwardTransform)
         self.assertAlmostEquals(myTransformedExtentForward.xMaximum(), myTransformedExtent.xMaximum())
