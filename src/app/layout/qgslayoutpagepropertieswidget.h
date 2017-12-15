@@ -49,6 +49,7 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
     void setToCustomSize();
     void symbolChanged();
     void excludeExportsToggled( bool checked );
+    void refreshLayout();
 
   private:
 

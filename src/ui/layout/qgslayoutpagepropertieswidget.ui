@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>397</width>
-    <height>409</height>
+    <width>717</width>
+    <height>473</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -49,13 +49,6 @@
       <string>Page size</string>
      </property>
      <layout class="QGridLayout" name="gridLayout" columnstretch="0,1">
-      <item row="2" column="0">
-       <widget class="QLabel" name="label_4">
-        <property name="text">
-         <string>Orientation</string>
-        </property>
-       </widget>
-      </item>
       <item row="3" column="0">
        <widget class="QLabel" name="mWidthLabel">
         <property name="text">
@@ -161,9 +154,6 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="1">
-       <widget class="QComboBox" name="mPageOrientationComboBox"/>
-      </item>
       <item row="0" column="1">
        <layout class="QHBoxLayout" name="horizontalLayout">
         <property name="topMargin">
@@ -185,6 +175,27 @@
        <widget class="QLabel" name="label_3">
         <property name="text">
          <string>Size</string>
+        </property>
+       </widget>
+      </item>
+      <item row="1" column="1">
+       <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <item>
+         <widget class="QComboBox" name="mPageOrientationComboBox"/>
+        </item>
+        <item>
+         <widget class="QgsPropertyOverrideButton" name="mOrientationDDBtn">
+          <property name="text">
+           <string>…</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item row="1" column="0">
+       <widget class="QLabel" name="label_4">
+        <property name="text">
+         <string>Orientation</string>
         </property>
        </widget>
       </item>
@@ -275,6 +286,7 @@
   <tabstop>mPageSizeComboBox</tabstop>
   <tabstop>mPaperSizeDDBtn</tabstop>
   <tabstop>mPageOrientationComboBox</tabstop>
+  <tabstop>mOrientationDDBtn</tabstop>
   <tabstop>mWidthSpin</tabstop>
   <tabstop>mWidthDDBtn</tabstop>
   <tabstop>mLockAspectRatio</tabstop>

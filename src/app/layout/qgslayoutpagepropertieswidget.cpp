@@ -66,7 +66,14 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   registerDataDefinedButton( mPaperSizeDDBtn, QgsLayoutObject::PresetPaperSize );
   registerDataDefinedButton( mWidthDDBtn, QgsLayoutObject::ItemWidth );
   registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ItemHeight );
+  registerDataDefinedButton( mOrientationDDBtn, QgsLayoutObject::PaperOrientation );
   registerDataDefinedButton( mExcludePageDDBtn, QgsLayoutObject::ExcludeFromExports );
+
+  connect( mPaperSizeDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
+  connect( mWidthDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
+  connect( mHeightDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
+  connect( mOrientationDDBtn, &QgsPropertyOverrideButton::changed, this, &QgsLayoutPagePropertiesWidget::refreshLayout );
+
   mExcludePageDDBtn->registerEnabledWidget( mExcludePageCheckBox, false );
 
   showCurrentPageSize();
@@ -166,6 +173,11 @@ void QgsLayoutPagePropertiesWidget::excludeExportsToggled( bool checked )
   mPage->beginCommand( !checked ? tr( "Include Page in Exports" ) : tr( "Exclude Page from Exports" ) );
   mPage->setExcludeFromExports( checked );
   mPage->endCommand();
+}
+
+void QgsLayoutPagePropertiesWidget::refreshLayout()
+{
+  mPage->layout()->refresh();
 }
 
 void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
