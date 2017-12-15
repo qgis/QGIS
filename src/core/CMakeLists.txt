@@ -617,7 +617,6 @@ SET(QGIS_CORE_MOC_HDRS
   qgsgeometryvalidator.h
   qgsgml.h
   qgsgmlschema.h
-  qgshtmlutils.h
   qgsmaplayer.h
   qgsmaplayerlegend.h
   qgsmaplayermodel.h
@@ -890,6 +889,7 @@ SET(QGIS_CORE_HDRS
   qgsfontutils.h
   qgsgeometrysimplifier.h
   qgshistogram.h
+  qgshtmlutils.h
   qgsindexedfeature.h
   qgsinterval.h
   qgsjsonutils.h
