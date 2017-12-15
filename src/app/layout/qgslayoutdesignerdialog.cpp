@@ -1304,7 +1304,7 @@ void QgsLayoutDesignerDialog::saveAsTemplate()
   context.setPathResolver( QgsProject::instance()->pathResolver() );
   if ( !currentLayout()->saveAsTemplate( saveFileName, context ) )
   {
-    QMessageBox::warning( nullptr, tr( "Save template" ), tr( "Error creating template file." ) );
+    QMessageBox::warning( this, tr( "Save template" ), tr( "Error creating template file." ) );
   }
 }
 
@@ -1444,7 +1444,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
 
   if ( memuse > 400 )   // about 4500x4500
   {
-    int answer = QMessageBox::warning( nullptr, tr( "Export layout" ),
+    int answer = QMessageBox::warning( this, tr( "Export layout" ),
                                        tr( "To create an image of %1x%2 requires about %3 MB of memory. Proceed?" )
                                        .arg( width ).arg( height ).arg( memuse ),
                                        QMessageBox::Ok | QMessageBox::Cancel, QMessageBox::Ok );
@@ -1548,7 +1548,7 @@ void QgsLayoutDesignerDialog::exportToRaster()
       break;
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( nullptr, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
                             tr( "Trying to create image %1 (%2×%3 @ %4dpi ) "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." )
@@ -1657,7 +1657,7 @@ void QgsLayoutDesignerDialog::exportToPdf()
 
 
     case QgsLayoutExporter::MemoryError:
-      QMessageBox::warning( nullptr, tr( "Memory Allocation Error" ),
+      QMessageBox::warning( this, tr( "Memory Allocation Error" ),
                             tr( "Exporting the PDF "
                                 "resulted in a memory overflow.\n\n"
                                 "Please try a lower resolution or a smaller paper size." ),
