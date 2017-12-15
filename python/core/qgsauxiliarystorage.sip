@@ -53,11 +53,6 @@ Constructor
 :param vlayer: The target vector layer in join definition
 %End
 
-    ~QgsAuxiliaryLayer();
-%Docstring
-Destructor
-%End
-
 
 
     QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const /Factory/;
