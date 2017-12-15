@@ -479,7 +479,8 @@ void QgsRelationReferenceWidget::init()
 
     QSet<QString> requestedAttrs;
 
-    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, 100000, this );
+    const int cacheSize = QSettings().value( "/QgsRelationReferenceWidget/cacheSize" ).toInt();
+    QgsVectorLayerCache* layerCache = new QgsVectorLayerCache( mReferencedLayer, cacheSize, this );
 
     if ( !mFilterFields.isEmpty() )
     {
@@ -583,8 +584,14 @@ void QgsRelationReferenceWidget::init()
       }
     }
 
-    QVariant featId = mFeature.isValid() ? mFeature.id() : QVariant( QVariant::Int );
-    mComboBox->setCurrentIndex( mComboBox->findData( featId, QgsAttributeTableModel::FeatureIdRole ) );
+    if ( mFeature.isValid() )
+    {
+      mComboBox->setCurrentIndex( mComboBox->findData( mFeature.id(), QgsAttributeTableModel::FeatureIdRole ) );
+    }
+    else
+    {
+      mComboBox->setCurrentIndex( -1 );
+    }
 
     // Only connect after iterating, to have only one iterator on the referenced table at once
     connect( mComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( comboReferenceChanged( int ) ) );

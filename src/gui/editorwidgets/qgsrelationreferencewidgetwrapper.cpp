@@ -71,7 +71,7 @@ void QgsRelationReferenceWidgetWrapper::initWidget( QWidget* editor )
     if ( ctx->relation().name() == relation.name() )
     {
       mWidget->setEmbedForm( false );
-      mWidget->setReadOnlySelector( false );
+      mWidget->setReadOnlySelector( true );
       mWidget->setAllowMapIdentification( false );
     }
     ctx = ctx->parentContext();
