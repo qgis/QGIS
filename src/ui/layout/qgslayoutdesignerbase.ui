@@ -70,6 +70,8 @@
    <addaction name="mActionLoadFromTemplate"/>
    <addaction name="mActionSaveAsTemplate"/>
    <addaction name="separator"/>
+   <addaction name="mActionAddPages"/>
+   <addaction name="separator"/>
    <addaction name="mActionExportAsImage"/>
    <addaction name="mActionExportAsSVG"/>
    <addaction name="mActionExportAsPDF"/>
@@ -444,7 +446,7 @@
   <action name="mActionAddPages">
    <property name="icon">
     <iconset resource="../../../images/images.qrc">
-     <normaloff>:/images/themes/default/mActionFileNew.svg</normaloff>:/images/themes/default/mActionFileNew.svg</iconset>
+     <normaloff>:/images/themes/default/mActionNewPage.svg</normaloff>:/images/themes/default/mActionNewPage.svg</iconset>
    </property>
    <property name="text">
     <string>Add Pages…</string>
