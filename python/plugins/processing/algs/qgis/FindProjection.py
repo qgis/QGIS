@@ -34,6 +34,7 @@ from qgis.core import (QgsGeometry,
                        QgsFields,
                        QgsCoordinateReferenceSystem,
                        QgsCoordinateTransform,
+                       QgsCoordinateTransformContext,
                        QgsWkbTypes,
                        QgsProcessingParameterFeatureSource,
                        QgsProcessingParameterExtent,
@@ -108,6 +109,7 @@ class FindProjection(QgisAlgorithm):
 
         found_results = 0
 
+        transform_context = QgsCoordinateTransformContext()
         for current, srs_id in enumerate(crses_to_check):
             if feedback.isCanceled():
                 break
@@ -116,7 +118,7 @@ class FindProjection(QgisAlgorithm):
             if not candidate_crs.isValid():
                 continue
 
-            transform_candidate = QgsCoordinateTransform(candidate_crs, target_crs)
+            transform_candidate = QgsCoordinateTransform(candidate_crs, target_crs, transform_context)
             transformed_bounds = QgsGeometry(layer_bounds)
             try:
                 if not transformed_bounds.transform(transform_candidate) == 0:

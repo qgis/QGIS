@@ -139,7 +139,7 @@ void QgsDecorationLayoutExtent::render( const QgsMapSettings &mapSettings, QgsRe
       {
         // reproject extent
         QgsCoordinateTransform ct( map->crs(),
-                                   mapSettings.destinationCrs() );
+                                   mapSettings.destinationCrs(), QgsProject::instance() );
         g = g.densifyByCount( 20 );
         try
         {

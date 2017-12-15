@@ -29,7 +29,6 @@
 #include "qgsmapthemecollection.h"
 #include "qgsmapcanvas.h"
 #include "qgsprojectionselectiondialog.h"
-#include "qgscrscache.h"
 #include "qgssettings.h"
 
 #include <QFileDialog>

@@ -413,7 +413,7 @@ bool QgsComposerAttributeTableV2::getTableContents( QgsComposerTableContents &co
     if ( layer )
     {
       //transform back to layer CRS
-      QgsCoordinateTransform coordTransform( layer->crs(), mComposerMap->crs() );
+      QgsCoordinateTransform coordTransform( layer->crs(), mComposerMap->crs(), mComposition->project() );
       try
       {
         selectionRect = coordTransform.transformBoundingBox( selectionRect, QgsCoordinateTransform::ReverseTransform );

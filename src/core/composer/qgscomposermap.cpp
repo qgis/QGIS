@@ -165,6 +165,7 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
   jobMapSettings.setBackgroundColor( Qt::transparent );
   jobMapSettings.setRotation( mEvaluatedMapRotation );
   jobMapSettings.setEllipsoid( mComposition->project()->ellipsoid() );
+  jobMapSettings.setTransformContext( mComposition->project()->transformContext() );
 
   //set layers to render
   QList<QgsMapLayer *> layers = layersToRender( &expressionContext );
@@ -203,9 +204,6 @@ QgsMapSettings QgsComposerMap::mapSettings( const QgsRectangle &extent, QSizeF s
   jobMapSettings.setFlag( QgsMapSettings::DrawEditingInfo, false );
   jobMapSettings.setFlag( QgsMapSettings::DrawSelection, false );
   jobMapSettings.setFlag( QgsMapSettings::UseAdvancedEffects, mComposition->useAdvancedEffects() ); // respect the composition's useAdvancedEffects flag
-
-  jobMapSettings.datumTransformStore().setDestinationCrs( renderCrs );
-
   jobMapSettings.setLabelingEngineSettings( mComposition->project()->labelingEngineSettings() );
 
   return jobMapSettings;
@@ -1890,7 +1888,7 @@ QPointF QgsComposerMap::composerMapPosForItem( const QgsAnnotation *annotation )
   if ( annotationCrs != crs() )
   {
     //need to reproject
-    QgsCoordinateTransform t( annotationCrs, crs() );
+    QgsCoordinateTransform t( annotationCrs, crs(), mComposition->project() );
     double z = 0.0;
     t.transformInPlace( mapX, mapY, z );
   }

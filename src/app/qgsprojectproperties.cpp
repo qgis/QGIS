@@ -24,6 +24,7 @@
 #include "qgisapp.h"
 #include "qgscomposer.h"
 #include "qgscoordinatetransform.h"
+#include "qgsdatumtransformtablewidget.h"
 #include "qgslayoutmanager.h"
 #include "qgslogger.h"
 #include "qgsmapcanvas.h"
@@ -154,6 +155,13 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   updateGuiForMapUnits( QgsProject::instance()->crs().mapUnits() );
   projectionSelector->setCrs( QgsProject::instance()->crs() );
 
+  // Datum transforms
+  QgsCoordinateTransformContext context = QgsProject::instance()->transformContext();
+  mDatumTransformTableWidget->setTransformContext( context );
+
+  bool show = settings.value( QStringLiteral( "/Projections/showDatumTransformDialog" ), false ).toBool();
+  mShowDatumTransformDialogCheckBox->setChecked( show );
+
   QPolygonF mainCanvasPoly = mapCanvas->mapSettings().visiblePolygon();
   QgsGeometry g = QgsGeometry::fromQPolygonF( mainCanvasPoly );
   // close polygon
@@ -163,7 +171,7 @@ QgsProjectProperties::QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *pa
   {
     // reproject extent
     QgsCoordinateTransform ct( QgsProject::instance()->crs(),
-                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ) );
+                               QgsCoordinateReferenceSystem::fromEpsgId( 4326 ), QgsProject::instance() );
 
     g = g.densifyByCount( 5 );
     try
@@ -805,6 +813,9 @@ void QgsProjectProperties::apply()
     // mark selected projection for push to front
     projectionSelector->pushProjectionToFront();
   }
+
+  QgsCoordinateTransformContext transformContext = mDatumTransformTableWidget->transformContext();
+  QgsProject::instance()->setTransformContext( transformContext );
 
   // Set the project title
   QgsProject::instance()->setTitle( title() );

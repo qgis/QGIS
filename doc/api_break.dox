@@ -276,9 +276,11 @@ Use QgsComposerAttributeTableV2 instead.
 - QgsCRSCache was removed. QgsCoordinateReferenceSystem now internally uses a cache for CRS creation,
 so there is no longer a need for the separate cache class. Code which previously called QgsCRSCache::updateCRSCache()
 should now call QgsCoordinateReferenceSystem::invalidateCache() and QgsCoordinateTransformCache::instance()->invalidateCrs( authid ).
+- QgsCoordinateTransformCache was removed. QgsCoordinateTransform now transparently caches transforms.
 - QgsDataDefined was removed. Use the QgsProperty framework instead.
 - QgsDataDefinedButton was removed. Use QgsPropertyOverrideButton instead.
 - QgsDataDefinedSymbolDialog was removed. Code using this dialog should be reworked to use QgsPropertyOverrideButton
+- QgsDatumTransformStore. Use QgsCoordinateTransformContext instead.
 - QgsDefaultPluginLayerLegend was removed. Use QgsMapLayer::setLegend() to provide legend nodes for plugin layers.
 - DualEdgeTriangulation
 - QgsFileNameWidgetWrapper was removed. Use QgsExternalResourceWidgetWrapper instead.
@@ -914,11 +916,12 @@ called if changes are made to the CRS database.
 QgsCoordinateTransform        {#qgis_api_break_3_0_QgsCoordinateTransform}
 ----------------------
 
-- QgsCoordinateTransform is no longer a QObject. readXml, writeXml and initialize are all normal public members now,
+- QgsCoordinateTransform is no longer a QObject. Initialize is a normal public members now,
 not slots. The invalidTransformInput() signal has been removed.
 - The extra QgsCoordinateTransform constructors (those not taking QgsCoordinateReferenceSystem arguments) have been
 removed. Now, QgsCoordinateTransform must be created using an already existing source and destination
-QgsCoordinateReferenceSystem object.
+QgsCoordinateReferenceSystem object, and either a QgsCoordinateTransformContext object or a reference to the
+current project instance.
 - QgsCoordinateTransform::clone() has been removed. Just use direct copies instead.
 - sourceCrs() and destCrs() now return a copy instead of a reference to the CRS. This has no effect on PyQGIS code, but c++
 plugins calling these methods will need to be updated.
@@ -930,7 +933,15 @@ plugins calling these methods will need to be updated.
 - 'p' argument in transform() has been renamed to 'point', 'theRect' to 'rectangle', 'poly' to 'polygon'
 - setDestCRSID has been removed, use setDestinationCrs() instead
 - 'theNode', 'theDoc' parameters in readXML and writeXML have been renamed to 'node' and 'document' respectively
-- readXML() and writeXML() have been renamed to readXml() and writeXml() for consistency
+- readXML() and writeXML() have been removed.
+- initialize() was removed.
+- datumTransformations() now returns a list of QgsCoordinateTransform.TransformPair instead of a list of lists.
+- datumTransformString() was renamed to datumTransformToProj()
+- datumTransformCrsInfo() was renamed to datumTransformInfo(), and now returns a QgsCoordinateTransform.TransformInfo object.
+- sourceDatumTransform() was renamed to sourceDatumTransformId()
+- setSourceDatumTransform() was renamed to setSourceDatumTransformId()
+- destinationDatumTransform() was renamed to destinationDatumTransformId()
+- setDestinationDatumTransform() was renamed to setDestinationDatumTransformId()
 
 
 QgsCoordinateTransformCache        {#qgis_api_break_3_0_QgsCoordinateTransformCache}
@@ -1636,6 +1647,7 @@ QgsMapCanvas        {#qgis_api_break_3_0_QgsMapCanvas}
 - setCrsTransformEnabled(), hasCrsTransformEnabled(), hasCrsTransformEnabledChanged() were removed. CRS transformation is now always enabled.
 - setMapUnits() was removed. The map units are dictated by the units for the destination CRS.
 - The mapUnitsChanged() signal was removed. Listen for the destinationCrsChanged() signal instead, as the destination CRS dictates the map units.
+- layerCrsChange() slot was removed. Datum transforms are now handled in QgisApp.
 
 QgsMapCanvasItem        {#qgis_api_break_3_0_QgsMapCanvasItem}
 ----------------

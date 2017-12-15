@@ -70,7 +70,7 @@ void QgsLayoutItemMapOverview::draw( QPainter *painter )
 
     // reproject extent
     QgsCoordinateTransform ct( overviewFrameMap->crs(),
-                               mMap->crs() );
+                               mMap->crs(), mLayout->project() );
     g = g.densifyByCount( 20 );
     try
     {

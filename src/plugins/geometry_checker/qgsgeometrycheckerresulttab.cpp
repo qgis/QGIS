@@ -28,7 +28,6 @@
 #include "qgsgeometrycheck.h"
 #include "qgsfeaturepool.h"
 
-#include "qgscrscache.h"
 #include "qgsgeometry.h"
 #include "qgisinterface.h"
 #include "qgsmapcanvas.h"
@@ -256,7 +255,7 @@ bool QgsGeometryCheckerResultTab::exportErrorsDo( const QString &file )
   {
     return false;
   }
-  if ( !createEmptyDataSource( file, QStringLiteral( "ESRI Shapefile" ), "UTF-8", QgsWkbTypes::Point, attributes, mIface->mapCanvas()->mapSettings().destinationCrs() ) )
+  if ( !createEmptyDataSource( file, QStringLiteral( "ESRI Shapefile" ), "UTF-8", QgsWkbTypes::Point, attributes, QgsProject::instance()->crs() ) )
   {
     return false;
   }

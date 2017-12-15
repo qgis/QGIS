@@ -475,7 +475,9 @@ bool QgsTracer::initGraph()
   int featuresCounted = 0;
   Q_FOREACH ( QgsVectorLayer *vl, mLayers )
   {
+    Q_NOWARN_DEPRECATED_PUSH
     QgsCoordinateTransform ct( vl->crs(), mCRS );
+    Q_NOWARN_DEPRECATED_POP
 
     QgsFeatureRequest request;
     request.setSubsetOfAttributes( QgsAttributeList() );

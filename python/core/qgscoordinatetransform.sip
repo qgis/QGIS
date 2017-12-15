@@ -45,12 +45,45 @@ class QgsCoordinateTransform
 Default constructor, creates an invalid QgsCoordinateTransform.
 %End
 
-    QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
-                            const QgsCoordinateReferenceSystem &destination );
+
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsCoordinateTransformContext &context );
 %Docstring
- Constructs a QgsCoordinateTransform using QgsCoordinateReferenceSystem objects.
- \param source source CRS, typically of the layer's coordinate system
- \param destination CRS, typically of the map canvas coordinate system
+ Constructs a QgsCoordinateTransform to transform from the ``source``
+ to ``destination`` coordinate reference system.
+
+ The ``context`` argument specifies the context under which the transform
+ will be applied, and is used for calculating necessary datum transforms
+ to utilize.
+
+.. versionadded:: 3.0
+%End
+
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     const QgsProject *project );
+%Docstring
+ Constructs a QgsCoordinateTransform to transform from the ``source``
+ to ``destination`` coordinate reference system, when used with the
+ given ``project``.
+
+ No reference to ``project`` is stored or utilized outside of the constructor,
+ and it is used to retrieve the project's transform context only.
+
+.. versionadded:: 3.0
+%End
+
+    explicit QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source,
+                                     const QgsCoordinateReferenceSystem &destination,
+                                     int sourceDatumTransformId,
+                                     int destinationDatumTransformId );
+%Docstring
+ Constructs a QgsCoordinateTransform to transform from the ``source``
+ to ``destination`` coordinate reference system, with the specified
+ datum transforms.
+
+.. versionadded:: 3.0
 %End
 
     QgsCoordinateTransform( const QgsCoordinateTransform &o );
@@ -86,6 +119,13 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  \param crs CRS to transform coordinates to
 .. seealso:: :py:func:`destinationCrs()`
 .. seealso:: :py:func:`setSourceCrs()`
+%End
+
+    void setContext( const QgsCoordinateTransformContext &context );
+%Docstring
+ Sets the ``context`` in which the coordinate transform should be
+ calculated.
+.. versionadded:: 3.0
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
@@ -198,52 +238,186 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  :rtype: bool
 %End
 
+    struct TransformPair
+    {
 
-    static QString datumTransformString( int datumTransform );
+      TransformPair( int sourceTransformId = -1, int destinationTransformId = -1 );
 %Docstring
+ Constructor for a TransformPair with the specified ``sourceTransformId``
+ and ``destinationTransformId`` transforms.
+%End
+
+      int sourceTransformId;
+%Docstring
+ ID for the datum transform to use when projecting from the source CRS.
+.. seealso:: :py:func:`QgsCoordinateTransform.datumTransformCrsInfo()`
+%End
+
+      int destinationTransformId;
+%Docstring
+ ID for the datum transform to use when projecting to the destination CRS.
+.. seealso:: :py:func:`QgsCoordinateTransform.datumTransformCrsInfo()`
+%End
+
+      bool operator==( const QgsCoordinateTransform::TransformPair &other ) const;
+
+      bool operator!=( const QgsCoordinateTransform::TransformPair &other ) const;
+%Docstring
+ :rtype: bool
+%End
+
+    };
+
+    static QList< QgsCoordinateTransform::TransformPair > datumTransformations( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+%Docstring
+ Returns a list of datum transformations which are available for the given ``source`` and ``destination`` CRS.
+.. seealso:: :py:func:`datumTransformToProj()`
+.. seealso:: :py:func:`datumTransformInfo()`
+ :rtype: list of QgsCoordinateTransform.TransformPair
+%End
+
+    static QString datumTransformToProj( int datumTransformId );
+%Docstring
+ Returns a proj string representing the specified ``datumTransformId`` datum transform ID.
+.. seealso:: :py:func:`datumTransformations()`
+.. seealso:: :py:func:`datumTransformInfo()`
+.. seealso:: :py:func:`projStringToDatumTransformId()`
  :rtype: str
 %End
 
-    static bool datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated );
+    static int projStringToDatumTransformId( const QString &string );
 %Docstring
- Gets name of source and dest geographical CRS (to show in a tooltip)
-:return: epsgNr epsg code of the transformation (or 0 if not in epsg db)*
- :rtype: bool
-%End
-
-    int sourceDatumTransform() const;
-%Docstring
+ Returns the datum transform ID corresponding to a specified proj ``string``.
+ Returns -1 if matching datum ID was not found.
+.. seealso:: :py:func:`datumTransformToProj()`
+.. versionadded:: 3.0
  :rtype: int
 %End
-    void setSourceDatumTransform( int dt );
-    int destinationDatumTransform() const;
+
+    struct TransformInfo
+    {
+      int datumTransformId;
 %Docstring
+Datum transform ID
+%End
+
+      int epsgCode;
+%Docstring
+EPSG code for the transform, or 0 if not found in EPSG database
+%End
+
+      QString sourceCrsAuthId;
+%Docstring
+Source CRS auth ID
+%End
+
+      QString destinationCrsAuthId;
+%Docstring
+Destination CRS auth ID
+%End
+
+      QString sourceCrsDescription;
+%Docstring
+Source CRS description
+%End
+
+      QString destinationCrsDescription;
+%Docstring
+Destination CRS description
+%End
+
+      QString remarks;
+%Docstring
+Transform remarks
+%End
+
+      QString scope;
+%Docstring
+Scope of transform
+%End
+
+      bool preferred;
+%Docstring
+True if transform is the preferred transform to use for the source/destination CRS combination
+%End
+
+      bool deprecated;
+%Docstring
+True if transform is deprecated
+%End
+
+    };
+
+    static QgsCoordinateTransform::TransformInfo datumTransformInfo( int datumTransformId );
+%Docstring
+ Returns detailed information about the specified ``datumTransformId``.
+ If ``datumTransformId`` was not a valid transform ID, a TransformInfo with TransformInfo.datumTransformId of
+ -1 will be returned.
+.. seealso:: :py:func:`datumTransformations()`
+.. seealso:: :py:func:`datumTransformToProj()`
+ :rtype: QgsCoordinateTransform.TransformInfo
+%End
+
+    int sourceDatumTransformId() const;
+%Docstring
+ Returns the ID of the datum transform to use when projecting from the source
+ CRS.
+
+ This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+ but can be manually overwritten by a call to setSourceDatumTransformId().
+
+.. seealso:: :py:func:`setSourceDatumTransformId()`
+.. seealso:: :py:func:`destinationDatumTransformId()`
+.. seealso:: :py:func:`datumTransformInfo()`
  :rtype: int
 %End
-    void setDestinationDatumTransform( int dt );
 
-    void initialize();
+    void setSourceDatumTransformId( int datumId );
 %Docstring
-initialize is used to actually create the Transformer instance
+ Sets the ``datumId`` ID of the datum transform to use when projecting from the source
+ CRS.
+
+ This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+ Calling this method will overwrite any automatically calculated datum transform.
+
+.. seealso:: :py:func:`sourceDatumTransformId()`
+.. seealso:: :py:func:`setDestinationDatumTransformId()`
+.. seealso:: :py:func:`datumTransformInfo()`
 %End
 
-    bool readXml( const QDomNode &node );
+    int destinationDatumTransformId() const;
 %Docstring
- Restores state from the given Dom node.
- \param node The node from which state will be restored
- :return: bool True on success, False on failure
-.. seealso:: :py:func:`writeXml()`
- :rtype: bool
+ Returns the ID of the datum transform to use when projecting to the destination
+ CRS.
+
+ This is usually calculated automatically from the transform's QgsCoordinateTransformContext,
+ but can be manually overwritten by a call to setDestinationDatumTransformId().
+
+.. seealso:: :py:func:`setDestinationDatumTransformId()`
+.. seealso:: :py:func:`sourceDatumTransformId()`
+.. seealso:: :py:func:`datumTransformInfo()`
+ :rtype: int
 %End
 
-    bool writeXml( QDomNode &node, QDomDocument &document ) const;
+    void setDestinationDatumTransformId( int datumId );
 %Docstring
- Stores state to the given Dom node in the given document
- \param node The node in which state will be restored
- \param document The document in which state will be stored
- :return: bool True on success, False on failure
-.. seealso:: :py:func:`readXml()`
- :rtype: bool
+ Sets the ``datumId`` ID of the datum transform to use when projecting to the destination
+ CRS.
+
+ This is usually calculated automatically from the transform's QgsCoordinateTransformContext.
+ Calling this method will overwrite any automatically calculated datum transform.
+
+.. seealso:: :py:func:`destinationDatumTransformId()`
+.. seealso:: :py:func:`setSourceDatumTransformId()`
+.. seealso:: :py:func:`datumTransformInfo()`
+%End
+
+    static void invalidateCache();
+%Docstring
+ Clears the internal cache used to initialize QgsCoordinateTransform objects.
+ This should be called whenever the srs database has
+ been modified in order to ensure that outdated CRS transforms are not created.
+.. versionadded:: 3.0
 %End
 
 };

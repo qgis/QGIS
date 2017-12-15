@@ -56,6 +56,7 @@ class QgsTransformAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     bool mCreatedTransform = false;
     QgsCoordinateReferenceSystem mDestCrs;
     QgsCoordinateTransform mTransform;
+    QgsCoordinateTransformContext mTransformContext;
 
 };
 

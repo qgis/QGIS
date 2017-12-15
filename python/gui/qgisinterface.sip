@@ -1209,6 +1209,15 @@ Unregister a previously registered action. (e.g. when plugin is going to be unlo
 .. versionadded:: 3.0
 %End
 
+    virtual bool askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs ) = 0;
+%Docstring
+ Checks available datum transforms and ask user if several are available and none
+ is chosen. Dialog is shown only if global option is set accordingly.
+ :return: true if a datum transform has been specifically chosen by user or only one is available.
+.. versionadded:: 3.0
+ :rtype: bool
+%End
+
   signals:
 
     void currentLayerChanged( QgsMapLayer *layer );

@@ -126,7 +126,7 @@ class ExportGeometryInfo(QgisAlgorithm):
             self.distance_area.setSourceCrs(source.sourceCrs())
             self.distance_area.setEllipsoid(context.project().ellipsoid())
         elif method == 1:
-            coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs())
+            coordTransform = QgsCoordinateTransform(source.sourceCrs(), context.project().crs(), context.project())
 
         features = source.getFeatures()
         total = 100.0 / source.featureCount() if source.featureCount() else 0

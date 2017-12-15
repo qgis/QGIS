@@ -253,7 +253,7 @@ void QgsBookmarks::zoomToBookmark()
        authid != QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs().authid() )
   {
     QgsCoordinateTransform ct( QgsCoordinateReferenceSystem::fromOgcWmsCrs( authid ),
-                               QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs() );
+                               QgisApp::instance()->mapCanvas()->mapSettings().destinationCrs(), QgsProject::instance() );
     rect = ct.transform( rect );
     if ( rect.isEmpty() )
     {

@@ -28,6 +28,7 @@ email                : jpalmer at linz dot govt dot nz
 #include "qgsexception.h"
 #include "qgslogger.h"
 #include "qgis.h"
+#include "qgsproject.h"
 
 #include <QMouseEvent>
 #include <QApplication>
@@ -176,7 +177,7 @@ QgsFeatureIds QgsMapToolSelectUtils::getMatchingFeatures( QgsMapCanvas *canvas, 
 
   try
   {
-    QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs() );
+    QgsCoordinateTransform ct( canvas->mapSettings().destinationCrs(), vlayer->crs(), QgsProject::instance() );
 
     if ( !ct.isShortCircuited() && selectGeomTrans.type() == QgsWkbTypes::PolygonGeometry )
     {

@@ -227,9 +227,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     /* Save the list of which gdal drivers should be used. */
     void saveGdalDriverList();
 
-    void removeDefaultTransformation();
-    void addDefaultTransformation();
-
     void addColor();
 
   private:
@@ -248,8 +245,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     //! Generate table row for custom environment variables
     void addCustomEnvVarRow( const QString &varName, const QString &varVal, const QString &varApply = QString() );
 
-    void saveDefaultDatumTransformations();
-
     void showHelp();
 
     QListWidgetItem *addScaleToScaleList( const QString &newScale );
@@ -267,7 +262,6 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
 
     QList< QgsOptionsPageWidget * > mAdditionalOptionWidgets;
     QgsLocatorOptionsWidget *mLocatorOptionsWidget = nullptr;
-
 };
 
 #endif // #ifndef QGSOPTIONS_H

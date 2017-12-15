@@ -304,10 +304,25 @@ Return the distance in geographical coordinates that equals to one pixel in the 
  :rtype: QgsExpressionContext
 %End
 
-
-    QgsDatumTransformStore &datumTransformStore();
+    QgsCoordinateTransformContext transformContext() const;
 %Docstring
- :rtype: QgsDatumTransformStore
+ Returns the coordinate transform context, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: :py:func:`setTransformContext()`
+ :rtype: QgsCoordinateTransformContext
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+ Sets the coordinate transform ``context``, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: :py:func:`transformContext()`
 %End
 
     const QgsMapToPixel &mapToPixel() const;
@@ -428,6 +443,7 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 %End
 
   protected:
+
 
 
 

@@ -161,8 +161,8 @@ QgsRasterLayerRenderer::QgsRasterLayerRenderer( QgsRasterLayer *layer, QgsRender
   {
     mRasterViewPort->mSrcCRS = layer->crs();
     mRasterViewPort->mDestCRS = rendererContext.coordinateTransform().destinationCrs();
-    mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform().sourceDatumTransform();
-    mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform().destinationDatumTransform();
+    mRasterViewPort->mSrcDatumTransform = rendererContext.coordinateTransform().sourceDatumTransformId();
+    mRasterViewPort->mDestDatumTransform = rendererContext.coordinateTransform().destinationDatumTransformId();
   }
   else
   {

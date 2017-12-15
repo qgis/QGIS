@@ -22,6 +22,7 @@
 #include "qgspointxy.h"
 #include "qgsrectangle.h"
 #include "qgsexception.h"
+#include "qgsproject.h"
 
 //qt includes
 #include <QDomNode>
@@ -40,6 +41,9 @@ extern "C"
 // if defined shows all information about transform to stdout
 // #define COORDINATE_TRANSFORM_VERBOSE
 
+QReadWriteLock QgsCoordinateTransform::sCacheLock;
+QMultiHash< QPair< QString, QString >, QgsCoordinateTransform > QgsCoordinateTransform::sTransforms; //same auth_id pairs might have different datum transformations
+
 QgsCoordinateTransform::QgsCoordinateTransform()
 {
   d = new QgsCoordinateTransformPrivate();
@@ -47,7 +51,67 @@ QgsCoordinateTransform::QgsCoordinateTransform()
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination )
 {
-  d = new QgsCoordinateTransformPrivate( source, destination );
+  d = new QgsCoordinateTransformPrivate( source, destination, QgsCoordinateTransformContext() );
+
+  if ( !d->checkValidity() )
+    return;
+
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
+}
+
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsCoordinateTransformContext &context )
+{
+  d = new QgsCoordinateTransformPrivate( source, destination, context );
+#ifdef QGISDEBUG
+  d->mHasContext = true;
+#endif
+
+  if ( !d->checkValidity() )
+    return;
+
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
+}
+
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, const QgsProject *project )
+{
+  d = new QgsCoordinateTransformPrivate( source, destination, project ? project->transformContext() : QgsCoordinateTransformContext() );
+#ifdef QGISDEBUG
+  d->mHasContext = true;
+#endif
+
+  if ( !d->checkValidity() )
+    return;
+
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
+}
+
+QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination, int sourceDatumTransform, int destinationDatumTransform )
+{
+  d = new QgsCoordinateTransformPrivate( source, destination, sourceDatumTransform, destinationDatumTransform );
+#ifdef QGISDEBUG
+  d->mHasContext = true; // not strictly true, but we don't need to worry if datums have been explicitly set
+#endif
+
+  if ( !d->checkValidity() )
+    return;
+
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 
 QgsCoordinateTransform::QgsCoordinateTransform( const QgsCoordinateTransform &o )
@@ -67,13 +131,47 @@ void QgsCoordinateTransform::setSourceCrs( const QgsCoordinateReferenceSystem &c
 {
   d.detach();
   d->mSourceCRS = crs;
-  d->initialize();
+  if ( !d->checkValidity() )
+    return;
+
+  d->calculateTransforms();
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 void QgsCoordinateTransform::setDestinationCrs( const QgsCoordinateReferenceSystem &crs )
 {
   d.detach();
   d->mDestCRS = crs;
-  d->initialize();
+  if ( !d->checkValidity() )
+    return;
+
+  d->calculateTransforms();
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
+}
+
+void QgsCoordinateTransform::setContext( const QgsCoordinateTransformContext &context )
+{
+  d.detach();
+  d->mContext = context;
+#ifdef QGISDEBUG
+  d->mHasContext = true;
+#endif
+  if ( !d->checkValidity() )
+    return;
+
+  d->calculateTransforms();
+  if ( !setFromCache( d->mSourceCRS, d->mDestCRS, d->mSourceDatumTransform, d->mDestinationDatumTransform ) )
+  {
+    d->initialize();
+    addToCache();
+  }
 }
 
 QgsCoordinateReferenceSystem QgsCoordinateTransform::sourceCrs() const
@@ -476,6 +574,11 @@ void QgsCoordinateTransform::transformCoords( int numPoints, double *x, double *
   QgsDebugMsg( QString( "[[[[[[ Number of points to transform: %1 ]]]]]]" ).arg( numPoints ) );
 #endif
 
+#ifdef QGISDEBUG
+  if ( !d->mHasContext )
+    qWarning( "No QgsCoordinateTransformContext context set for transform" );
+#endif
+
   // use proj4 to do the transform
 
   // if the source/destination projection is lat/long, convert the points to radians
@@ -574,44 +677,6 @@ bool QgsCoordinateTransform::isShortCircuited() const
   return !d->mIsValid || d->mShortCircuit;
 }
 
-bool QgsCoordinateTransform::readXml( const QDomNode &node )
-{
-  d.detach();
-
-  QgsDebugMsg( "Reading Coordinate Transform from xml ------------------------!" );
-
-  QDomNode mySrcNode = node.namedItem( QStringLiteral( "sourcesrs" ) );
-  d->mSourceCRS.readXml( mySrcNode );
-
-  QDomNode myDestNode = node.namedItem( QStringLiteral( "destinationsrs" ) );
-  d->mDestCRS.readXml( myDestNode );
-
-  d->mSourceDatumTransform = node.toElement().attribute( QStringLiteral( "sourceDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
-  d->mDestinationDatumTransform = node.toElement().attribute( QStringLiteral( "destinationDatumTransform" ), QStringLiteral( "-1" ) ).toInt();
-
-  return d->initialize();
-}
-
-bool QgsCoordinateTransform::writeXml( QDomNode &node, QDomDocument &doc ) const
-{
-  QDomElement myNodeElement = node.toElement();
-  QDomElement myTransformElement = doc.createElement( QStringLiteral( "coordinatetransform" ) );
-  myTransformElement.setAttribute( QStringLiteral( "sourceDatumTransform" ), QString::number( d->mSourceDatumTransform ) );
-  myTransformElement.setAttribute( QStringLiteral( "destinationDatumTransform" ), QString::number( d->mDestinationDatumTransform ) );
-
-  QDomElement mySourceElement = doc.createElement( QStringLiteral( "sourcesrs" ) );
-  d->mSourceCRS.writeXml( mySourceElement, doc );
-  myTransformElement.appendChild( mySourceElement );
-
-  QDomElement myDestElement = doc.createElement( QStringLiteral( "destinationsrs" ) );
-  d->mDestCRS.writeXml( myDestElement, doc );
-  myTransformElement.appendChild( myDestElement );
-
-  myNodeElement.appendChild( myTransformElement );
-
-  return true;
-}
-
 const char *finder( const char *name )
 {
   QString proj;
@@ -626,9 +691,9 @@ const char *finder( const char *name )
 
 
 
-QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS )
+QList< QgsCoordinateTransform::TransformPair > QgsCoordinateTransform::datumTransformations( const QgsCoordinateReferenceSystem &srcCRS, const QgsCoordinateReferenceSystem &destCRS )
 {
-  QList< QList< int > > transformations;
+  QList< QgsCoordinateTransform::TransformPair > transformations;
 
   QString srcGeoId = srcCRS.geographicCrsAuthId();
   QString destGeoId = destCRS.geographicCrsAuthId();
@@ -668,26 +733,22 @@ QList< QList< int > > QgsCoordinateTransform::datumTransformations( const QgsCoo
                         destToWgs84 );
 
   //add direct datum transformations
-  QList<int>::const_iterator directIt = directTransforms.constBegin();
-  for ( ; directIt != directTransforms.constEnd(); ++directIt )
+  for ( int transform : qgis::as_const( directTransforms ) )
   {
-    transformations.push_back( QList<int>() << *directIt << -1 );
+    transformations.push_back( TransformPair( transform, -1 ) );
   }
 
   //add direct datum transformations
-  directIt = reverseDirectTransforms.constBegin();
-  for ( ; directIt != reverseDirectTransforms.constEnd(); ++directIt )
+  for ( int transform : qgis::as_const( directTransforms ) )
   {
-    transformations.push_back( QList<int>() << -1 << *directIt );
+    transformations.push_back( TransformPair( -1, transform ) );
   }
 
-  QList<int>::const_iterator srcWgsIt = srcToWgs84.constBegin();
-  for ( ; srcWgsIt != srcToWgs84.constEnd(); ++srcWgsIt )
+  for ( int srcTransform : qgis::as_const( srcToWgs84 ) )
   {
-    QList<int>::const_iterator dstWgsIt = destToWgs84.constBegin();
-    for ( ; dstWgsIt != destToWgs84.constEnd(); ++dstWgsIt )
+    for ( int destTransform : qgis::as_const( destToWgs84 ) )
     {
-      transformations.push_back( QList<int>() << *srcWgsIt << *dstWgsIt );
+      transformations.push_back( TransformPair( srcTransform, destTransform ) );
     }
   }
 
@@ -719,18 +780,56 @@ void QgsCoordinateTransform::searchDatumTransform( const QString &sql, QList< in
   }
 }
 
-QString QgsCoordinateTransform::datumTransformString( int datumTransform )
+bool QgsCoordinateTransform::setFromCache( const QgsCoordinateReferenceSystem &src, const QgsCoordinateReferenceSystem &dest, int srcDatumTransform, int destDatumTransform )
+{
+  if ( !src.isValid() || !dest.isValid() )
+    return false;
+
+  sCacheLock.lockForRead();
+  const QList< QgsCoordinateTransform > values = sTransforms.values( qMakePair( src.authid(), dest.authid() ) );
+  for ( auto valIt = values.constBegin(); valIt != values.constEnd(); ++valIt )
+  {
+    if ( ( *valIt ).sourceDatumTransformId() == srcDatumTransform &&
+         ( *valIt ).destinationDatumTransformId() == destDatumTransform )
+    {
+      *this = *valIt;
+      sCacheLock.unlock();
+      return true;
+    }
+  }
+  sCacheLock.unlock();
+  return false;
+}
+
+void QgsCoordinateTransform::addToCache()
+{
+  if ( !d->mSourceCRS.isValid() || !d->mDestCRS.isValid() )
+    return;
+
+  sCacheLock.lockForWrite();
+  sTransforms.insertMulti( qMakePair( d->mSourceCRS.authid(), d->mDestCRS.authid() ), *this );
+  sCacheLock.unlock();
+}
+
+QString QgsCoordinateTransform::datumTransformToProj( int datumTransform )
 {
   return QgsCoordinateTransformPrivate::datumTransformString( datumTransform );
 }
 
-bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int &epsgNr, QString &srcProjection, QString &dstProjection, QString &remarks, QString &scope, bool &preferred, bool &deprecated )
+int QgsCoordinateTransform::projStringToDatumTransformId( const QString &string )
 {
+  return QgsCoordinateTransformPrivate::transformIdFromString( string );
+}
+
+QgsCoordinateTransform::TransformInfo QgsCoordinateTransform::datumTransformInfo( int datumTransform )
+{
+  TransformInfo info;
+
   sqlite3_database_unique_ptr database;
   int openResult = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
   if ( openResult != SQLITE_OK )
   {
-    return false;
+    return info;
   }
 
   sqlite3_statement_unique_ptr statement;
@@ -739,55 +838,59 @@ bool QgsCoordinateTransform::datumTransformCrsInfo( int datumTransform, int &eps
   statement = database.prepare( sql, prepareRes );
   if ( prepareRes != SQLITE_OK )
   {
-    return false;
+    return info;
   }
 
   int srcCrsId, destCrsId;
   if ( statement.step() != SQLITE_ROW )
   {
-    return false;
+    return info;
   }
 
-  epsgNr = statement.columnAsInt64( 0 );
+  info.datumTransformId = datumTransform;
+  info.epsgCode = statement.columnAsInt64( 0 );
   srcCrsId = statement.columnAsInt64( 1 );
   destCrsId = statement.columnAsInt64( 2 );
-  remarks = statement.columnAsText( 3 );
-  scope = statement.columnAsText( 4 );
-  preferred = statement.columnAsInt64( 5 ) != 0;
-  deprecated = statement.columnAsInt64( 6 ) != 0;
+  info.remarks = statement.columnAsText( 3 );
+  info.scope = statement.columnAsText( 4 );
+  info.preferred = statement.columnAsInt64( 5 ) != 0;
+  info.deprecated = statement.columnAsInt64( 6 ) != 0;
 
   QgsCoordinateReferenceSystem srcCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( srcCrsId ) );
-  srcProjection = srcCrs.description();
+  info.sourceCrsDescription = srcCrs.description();
+  info.sourceCrsAuthId = srcCrs.authid();
   QgsCoordinateReferenceSystem destCrs = QgsCoordinateReferenceSystem::fromOgcWmsCrs( QStringLiteral( "EPSG:%1" ).arg( destCrsId ) );
-  dstProjection = destCrs.description();
+  info.destinationCrsDescription = destCrs.description();
+  info.destinationCrsAuthId = destCrs.authid();
 
-  return true;
+  return info;
 }
 
-int QgsCoordinateTransform::sourceDatumTransform() const
+int QgsCoordinateTransform::sourceDatumTransformId() const
 {
   return d->mSourceDatumTransform;
 }
 
-void QgsCoordinateTransform::setSourceDatumTransform( int dt )
+void QgsCoordinateTransform::setSourceDatumTransformId( int dt )
 {
   d.detach();
   d->mSourceDatumTransform = dt;
 }
 
-int QgsCoordinateTransform::destinationDatumTransform() const
+int QgsCoordinateTransform::destinationDatumTransformId() const
 {
   return d->mDestinationDatumTransform;
 }
 
-void QgsCoordinateTransform::setDestinationDatumTransform( int dt )
+void QgsCoordinateTransform::setDestinationDatumTransformId( int dt )
 {
   d.detach();
   d->mDestinationDatumTransform = dt;
 }
 
-void QgsCoordinateTransform::initialize()
+void QgsCoordinateTransform::invalidateCache()
 {
-  d.detach();
-  d->initialize();
+  sCacheLock.lockForWrite();
+  sTransforms.clear();
+  sCacheLock.unlock();
 }

@@ -101,7 +101,7 @@ void QgsExtentGroupBox::setOutputCrs( const QgsCoordinateReferenceSystem &output
       case UserExtent:
         try
         {
-          QgsCoordinateTransform ct( mOutputCrs, outputCrs );
+          QgsCoordinateTransform ct( mOutputCrs, outputCrs, QgsProject::instance() );
           QgsRectangle extent = ct.transformBoundingBox( outputExtent() );
           mOutputCrs = outputCrs;
           setOutputExtentFromUser( extent, outputCrs );
@@ -129,7 +129,7 @@ void QgsExtentGroupBox::setOutputExtent( const QgsRectangle &r, const QgsCoordin
   {
     try
     {
-      QgsCoordinateTransform ct( srcCrs, mOutputCrs );
+      QgsCoordinateTransform ct( srcCrs, mOutputCrs, QgsProject::instance() );
       extent = ct.transformBoundingBox( r );
     }
     catch ( QgsCsException & )

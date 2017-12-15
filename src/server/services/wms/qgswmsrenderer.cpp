@@ -1105,7 +1105,6 @@ namespace QgsWms
       throw QgsException( QStringLiteral( "configureMapSettings: no paint device" ) );
     }
 
-    mapSettings.datumTransformStore().clear();
     mapSettings.setOutputSize( QSize( paintDevice->width(), paintDevice->height() ) );
     mapSettings.setOutputDpi( paintDevice->logicalDpiX() );
 

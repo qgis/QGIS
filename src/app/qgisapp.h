@@ -691,6 +691,14 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
      */
     QSize iconSize( bool dockedToolbar = false ) const;
 
+    /**
+      * Checks available datum transforms and ask user if several are available and none
+      * is chosen. Dialog is shown only if global option is set accordingly.
+      * \returns true if a datum transform has been specifically chosen by user or only one is available.
+      * \since 3.0
+      */
+    bool askUserForDatumTransform( const QgsCoordinateReferenceSystem &sourceCrs, const QgsCoordinateReferenceSystem &destinationCrs );
+
   public slots:
     //! save current vector layer
     void saveAsFile( QgsMapLayer *layer = nullptr );
@@ -1606,6 +1614,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void updateCrsStatusBar();
 
     void onFocusChanged( QWidget *oldWidget, QWidget *newWidget );
+
+    //! handle project crs changes
+    void projectCrsChanged();
 
   signals:
 

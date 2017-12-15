@@ -26,7 +26,6 @@
 
 #include "qgsabstractgeometry.h"
 #include "qgscoordinatereferencesystem.h"
-#include "qgsdatumtransformstore.h"
 #include "qgslabelingenginesettings.h"
 #include "qgsmaptopixel.h"
 #include "qgsrectangle.h"
@@ -268,11 +267,25 @@ class CORE_EXPORT QgsMapSettings
      */
     const QgsExpressionContext &expressionContext() const { return mExpressionContext; }
 
-    // -- utility functions --
+    /**
+     * Returns the coordinate transform context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \since QGIS 3.0
+     * \see setTransformContext()
+     */
+    QgsCoordinateTransformContext transformContext() const;
 
-    //! \note not available in Python bindings
-    const QgsDatumTransformStore &datumTransformStore() const { return mDatumTransformStore; } SIP_SKIP
-    QgsDatumTransformStore &datumTransformStore() { return mDatumTransformStore; }
+    /**
+     * Sets the coordinate transform \a context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \since QGIS 3.0
+     * \see transformContext()
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &context );
 
     const QgsMapToPixel &mapToPixel() const { return mMapToPixel; }
 
@@ -386,7 +399,6 @@ class CORE_EXPORT QgsMapSettings
     QgsCoordinateReferenceSystem mDestCRS;
     //! ellipsoid acronym (from table tbl_ellipsoids)
     QString mEllipsoid;
-    QgsDatumTransformStore mDatumTransformStore;
 
     QColor mBackgroundColor;
     QColor mSelectionColor;
@@ -409,6 +421,11 @@ class CORE_EXPORT QgsMapSettings
     // utiity stuff
     QgsScaleCalculator mScaleCalculator;
     QgsMapToPixel mMapToPixel;
+
+    QgsCoordinateTransformContext mTransformContext;
+#ifdef QGISDEBUG
+    bool mHasTransformContext = false;
+#endif
 
     void updateDerived();
 };

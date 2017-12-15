@@ -127,6 +127,30 @@ Returns the QgsProject singleton instance
 .. versionadded:: 3.0
 %End
 
+
+    QgsCoordinateTransformContext transformContext() const;
+%Docstring
+ Returns a copy of the project's coordinate transform context, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: :py:func:`setTransformContext()`
+.. seealso:: :py:func:`transformContextChanged()`
+ :rtype: QgsCoordinateTransformContext
+%End
+
+    void setTransformContext( const QgsCoordinateTransformContext &context );
+%Docstring
+ Sets the project's coordinate transform ``context``, which stores various
+ information regarding which datum transforms should be used when transforming points
+ from a source to destination coordinate reference system.
+
+.. versionadded:: 3.0
+.. seealso:: :py:func:`transformContext()`
+.. seealso:: :py:func:`transformContextChanged()`
+%End
+
     void clear();
 %Docstring
  Clear the project - removes all settings and resets it back to an empty, default state.
@@ -910,6 +934,21 @@ emitted whenever the configuration for snapping has changed
 .. versionadded:: 3.0
 .. seealso:: :py:func:`setEllipsoid()`
 .. seealso:: :py:func:`ellipsoid()`
+%End
+
+
+    void transformContextChanged();
+%Docstring
+ Emitted when the project transformContext() is changed.
+
+.. versionadded:: 3.0
+.. seealso:: :py:func:`transformContext()`
+%End
+
+    void missingDatumTransforms( const QStringList &missingTransforms );
+%Docstring
+ Emitted when datum transforms stored in the project are not available locally.
+.. versionadded:: 3.0
 %End
 
     void transactionGroupsChanged();

@@ -471,6 +471,17 @@ void QgsProject::setEllipsoid( const QString &ellipsoid )
   emit ellipsoidChanged( ellipsoid );
 }
 
+QgsCoordinateTransformContext QgsProject::transformContext() const
+{
+  return mTransformContext;
+}
+
+void QgsProject::setTransformContext( const QgsCoordinateTransformContext &context )
+{
+  mTransformContext = context;
+  emit transformContextChanged();
+}
+
 void QgsProject::clear()
 {
   mFile.setFileName( QString() );
@@ -481,6 +492,10 @@ void QgsProject::clear()
   mDirty = false;
   mTrustLayerMetadata = false;
   mCustomVariables.clear();
+
+  QgsCoordinateTransformContext context;
+  context.readSettings();
+  setTransformContext( context );
 
   mEmbeddedLayers.clear();
   mRelationManager->clear();
@@ -909,6 +924,13 @@ bool QgsProject::readProjectFile( const QString &filename )
     }
   }
   mCrs = projectCrs;
+
+  QStringList datumErrors;
+  if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) )
+  {
+    emit missingDatumTransforms( datumErrors );
+  }
+  emit transformContextChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );
   if ( nl.count() )
@@ -1445,6 +1467,8 @@ bool QgsProject::writeProjectFile( const QString &filename )
   mMapThemeCollection->writeXml( *doc );
 
   mLabelingEngineSettings->writeSettingsToProject( this );
+
+  mTransformContext.writeXml( qgisNode, context );
 
   QDomElement annotationsElem = mAnnotationManager->writeXml( *doc, context );
   qgisNode.appendChild( annotationsElem );

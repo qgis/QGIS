@@ -39,7 +39,6 @@
 #include "qgsvectorlayer.h"
 #include "qgsunittypes.h"
 #include "qgstextlabelfeature.h"
-#include "qgscrscache.h"
 #include "qgslogger.h"
 #include "qgsmaplayerstylemanager.h"
 
