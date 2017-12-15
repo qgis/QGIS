@@ -311,7 +311,7 @@ Return the distance in geographical coordinates that equals to one pixel in the 
  from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
-.. seealso:: setTransformContext()
+.. seealso:: :py:func:`setTransformContext()`
  :rtype: QgsCoordinateTransformContext
 %End
 
@@ -322,7 +322,7 @@ Return the distance in geographical coordinates that equals to one pixel in the 
  from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
-.. seealso:: transformContext()
+.. seealso:: :py:func:`transformContext()`
 %End
 
     const QgsMapToPixel &mapToPixel() const;

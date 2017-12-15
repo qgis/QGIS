@@ -135,8 +135,8 @@ Returns the QgsProject singleton instance
  from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
-.. seealso:: setTransformContext()
-.. seealso:: transformContextChanged()
+.. seealso:: :py:func:`setTransformContext()`
+.. seealso:: :py:func:`transformContextChanged()`
  :rtype: QgsCoordinateTransformContext
 %End
 
@@ -147,8 +147,8 @@ Returns the QgsProject singleton instance
  from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
-.. seealso:: transformContext()
-.. seealso:: transformContextChanged()
+.. seealso:: :py:func:`transformContext()`
+.. seealso:: :py:func:`transformContextChanged()`
 %End
 
     void clear();
@@ -942,7 +942,7 @@ emitted whenever the configuration for snapping has changed
  Emitted when the project transformContext() is changed.
 
 .. versionadded:: 3.0
-.. seealso:: transformContext()
+.. seealso:: :py:func:`transformContext()`
 %End
 
     void transactionGroupsChanged();

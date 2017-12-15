@@ -117,7 +117,7 @@ class QgsRenderContext
  from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
-.. seealso:: setTransformContext()
+.. seealso:: :py:func:`setTransformContext()`
  :rtype: QgsCoordinateTransformContext
 %End
 
@@ -128,7 +128,7 @@ class QgsRenderContext
  from a source to destination coordinate reference system.
 
 .. versionadded:: 3.0
-.. seealso:: transformContext()
+.. seealso:: :py:func:`transformContext()`
 %End
 
     const QgsRectangle &extent() const;

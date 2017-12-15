@@ -76,7 +76,7 @@ class QgsCoordinateTransformContext
  to use for a coordinate transform. Instead, always use calculateDatumTransforms()
  to determine this.
 
-.. seealso:: addSourceDestinationDatumTransform()
+.. seealso:: :py:func:`addSourceDestinationDatumTransform()`
  :rtype: QMap< QPair< str, QString>, QgsCoordinateTransform.TransformPair >
 %End
 
@@ -98,8 +98,8 @@ class QgsCoordinateTransformContext
    Transforms set using this method will override any specific source or destination
  transforms set by addSourceDatumTransform() or addDestinationDatumTransform().
 
-.. seealso:: sourceDestinationDatumTransforms()
-.. seealso:: removeSourceDestinationDatumTransform()
+.. seealso:: :py:func:`sourceDestinationDatumTransforms()`
+.. seealso:: :py:func:`removeSourceDestinationDatumTransform()`
  :rtype: bool
 %End
 
@@ -108,7 +108,7 @@ class QgsCoordinateTransformContext
 %Docstring
  Removes the source to destination datum transform pair for the specified ``sourceCrs`` and
  ``destinationCrs``.
-.. seealso:: addSourceDestinationDatumTransform()
+.. seealso:: :py:func:`addSourceDestinationDatumTransform()`
 %End
 
     bool hasTransform( const QgsCoordinateReferenceSystem &source,
@@ -140,26 +140,26 @@ class QgsCoordinateTransformContext
     void readXml( const QDomElement &element, const QgsReadWriteContext &context );
 %Docstring
  Reads the context's state from a DOM ``element``.
-.. seealso:: writeXml()
+.. seealso:: :py:func:`writeXml()`
 %End
 
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;
 %Docstring
  Writes the context's state to a DOM ``element``.
-.. seealso:: readXml()
+.. seealso:: :py:func:`readXml()`
 %End
 
 
     void readSettings();
 %Docstring
  Reads the context's state from application settings.
-.. seealso:: readSettings()
+.. seealso:: :py:func:`readSettings()`
 %End
 
     void writeSettings();
 %Docstring
  Write the context's state to application settings.
-.. seealso:: writeSettings()
+.. seealso:: :py:func:`writeSettings()`
 %End
 
 
