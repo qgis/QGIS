@@ -15,7 +15,7 @@
 class QgsDataDefinedSizeLegendWidget : QgsPanelWidget
 {
 %Docstring
- Widget for configuration of appearance of legend for marker symbols with data-defined size.
+Widget for configuration of appearance of legend for marker symbols with data-defined size.
 
 .. versionadded:: 3.0
 %End
@@ -27,17 +27,18 @@ class QgsDataDefinedSizeLegendWidget : QgsPanelWidget
 
     explicit QgsDataDefinedSizeLegendWidget( const QgsDataDefinedSizeLegend *ddsLegend, const QgsProperty &ddSize, QgsMarkerSymbol *overrideSymbol /Transfer/, QgsMapCanvas *canvas = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Creates the dialog and initializes the content to what is passed in the legend configuration (may be null).
- The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned
- to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
- when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
+Creates the dialog and initializes the content to what is passed in the legend configuration (may be null).
+The ddSize argument determines scaling of the marker symbol - it should have a size scale transformer assigned
+to know the range of sizes. The overrideSymbol argument may override the source symbol: this is useful in case
+when the symbol is given from outside rather than being set inside QgsDataDefinedSizeLegend.
 %End
     ~QgsDataDefinedSizeLegendWidget();
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const /Factory/;
 %Docstring
 Returns configuration as set up in the dialog (may be null). Ownership is passed to the caller.
- :rtype: QgsDataDefinedSizeLegend
+
+:rtype: QgsDataDefinedSizeLegend
 %End
 
   signals:

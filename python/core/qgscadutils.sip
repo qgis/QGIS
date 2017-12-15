@@ -13,7 +13,7 @@
 class QgsCadUtils
 {
 %Docstring
- The QgsCadUtils class provides routines for CAD editing.
+The QgsCadUtils class provides routines for CAD editing.
 
 .. versionadded:: 3.0
 %End
@@ -75,9 +75,9 @@ Constraint for soft lock to a common angle
 
       QList<QgsPointXY> cadPointList;
 %Docstring
- List of recent CAD points in map coordinates. These are used to turn relative constraints to absolute.
- First point is the most recent point. Currently using only "previous" point (index 1) and "penultimate"
- point (index 2) for alignment purposes.
+List of recent CAD points in map coordinates. These are used to turn relative constraints to absolute.
+First point is the most recent point. Currently using only "previous" point (index 1) and "penultimate"
+point (index 2) for alignment purposes.
 %End
 
     };
@@ -107,10 +107,11 @@ Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
 
     static QgsCadUtils::AlignMapPointOutput alignMapPoint( const QgsPointXY &originalMapPoint, const QgsCadUtils::AlignMapPointContext &ctx );
 %Docstring
- Applies X/Y/angle/distance constraints from the given context to a map point.
- Returns a structure containing aligned map point, whether the constraints are valid and
- some extra information.
- :rtype: QgsCadUtils.AlignMapPointOutput
+Applies X/Y/angle/distance constraints from the given context to a map point.
+Returns a structure containing aligned map point, whether the constraints are valid and
+some extra information.
+
+:rtype: QgsCadUtils.AlignMapPointOutput
 %End
 
 };

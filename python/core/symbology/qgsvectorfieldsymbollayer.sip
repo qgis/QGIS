@@ -12,7 +12,7 @@
 class QgsVectorFieldSymbolLayer: QgsMarkerSymbolLayer
 {
 %Docstring
- A symbol layer class for displaying displacement arrows based on point layer attributes*
+A symbol layer class for displaying displacement arrows based on point layer attributes*
 %End
 
 %TypeHeaderCode
@@ -42,11 +42,13 @@ class QgsVectorFieldSymbolLayer: QgsMarkerSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() );
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
     static QgsSymbolLayer *createFromSld( QDomElement &element );
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
     virtual QString layerType() const;
@@ -83,32 +85,38 @@ class QgsVectorFieldSymbolLayer: QgsMarkerSymbolLayer
     void setXAttribute( const QString &attribute );
     QString xAttribute() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     void setYAttribute( const QString &attribute );
     QString yAttribute() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     void setScale( double s );
     double scale() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     void setVectorFieldType( VectorFieldType type );
     VectorFieldType vectorFieldType() const;
 %Docstring
- :rtype: VectorFieldType
+
+:rtype: VectorFieldType
 %End
     void setAngleOrientation( AngleOrientation orientation );
     AngleOrientation angleOrientation() const;
 %Docstring
- :rtype: AngleOrientation
+
+:rtype: AngleOrientation
 %End
     void setAngleUnits( AngleUnits units );
     AngleUnits angleUnits() const;
 %Docstring
- :rtype: AngleUnits
+
+:rtype: AngleUnits
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -123,22 +131,26 @@ class QgsVectorFieldSymbolLayer: QgsMarkerSymbolLayer
 
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the distance.
- \param unit distance units
+Sets the units for the distance.
+:param unit: distance units
+
 .. seealso:: :py:func:`distanceUnit()`
 %End
 
     QgsUnitTypes::RenderUnit distanceUnit() const;
 %Docstring
- Returns the units for the distance.
+Returns the units for the distance.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setDistanceUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &distanceMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     virtual QRectF bounds( QPointF, QgsSymbolRenderContext & );

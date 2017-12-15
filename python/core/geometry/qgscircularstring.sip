@@ -15,6 +15,7 @@ class QgsCircularString: QgsCurve
 {
 %Docstring
  Circular string geometry type
+
 .. versionadded:: 2.10
 %End
 
@@ -61,8 +62,9 @@ class QgsCircularString: QgsCurve
 
     QgsPoint pointN( int i ) const;
 %Docstring
- Returns the point at index i within the circular string.
- :rtype: QgsPoint
+Returns the point at index i within the circular string.
+
+:rtype: QgsPoint
 %End
 
     virtual void points( QgsPointSequence &pts /Out/ ) const;
@@ -70,7 +72,7 @@ class QgsCircularString: QgsCurve
 
     void setPoints( const QgsPointSequence &points );
 %Docstring
- Sets the circular string's points
+Sets the circular string's points
 %End
 
     virtual double length() const;

@@ -12,9 +12,10 @@
 class QgsFloatingWidget: QWidget
 {
 %Docstring
- A QWidget subclass for creating widgets which float outside of the normal Qt layout
- system. Floating widgets use an "anchor widget" to determine how they are anchored
- within their parent widget.
+A QWidget subclass for creating widgets which float outside of the normal Qt layout
+system. Floating widgets use an "anchor widget" to determine how they are anchored
+within their parent widget.
+
 .. versionadded:: 3.0
 %End
 
@@ -38,56 +39,65 @@ class QgsFloatingWidget: QWidget
 
     QgsFloatingWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsFloatingWidget.
- \param parent parent widget
+Constructor for QgsFloatingWidget.
+:param parent: parent widget
 %End
 
     void setAnchorWidget( QWidget *widget );
 %Docstring
- Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
- anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
- \param widget anchor widget. Both the floating widget and the anchor widget must share some common parent.
+Sets the widget to "anchor" the floating widget to. The floating widget will be repositioned whenever the
+anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
+:param widget: anchor widget. Both the floating widget and the anchor widget must share some common parent.
+
 .. seealso:: :py:func:`anchorWidget()`
 %End
 
     QWidget *anchorWidget();
 %Docstring
- Returns the widget that the floating widget is "anchored" tto. The floating widget will be repositioned whenever the
- anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
+Returns the widget that the floating widget is "anchored" tto. The floating widget will be repositioned whenever the
+anchor widget moves or is resized so that it maintains the same relative position to the anchor widget.
+
+:rtype: QWidget
+
 .. seealso:: :py:func:`setAnchorWidget()`
- :rtype: QWidget
 %End
 
     AnchorPoint anchorPoint() const;
 %Docstring
- Returns the floating widget's anchor point, which corresponds to the point on the widget which should remain
- fixed in the same relative position whenever the widget's parent is resized or moved.
+Returns the floating widget's anchor point, which corresponds to the point on the widget which should remain
+fixed in the same relative position whenever the widget's parent is resized or moved.
+
+:rtype: AnchorPoint
+
 .. seealso:: :py:func:`setAnchorPoint()`
- :rtype: AnchorPoint
 %End
 
     void setAnchorPoint( AnchorPoint point );
 %Docstring
- Sets the floating widget's anchor point, which corresponds to the point on the widget which should remain
- fixed in the same relative position whenever the widget's parent is resized or moved.
- \param point anchor point
+Sets the floating widget's anchor point, which corresponds to the point on the widget which should remain
+fixed in the same relative position whenever the widget's parent is resized or moved.
+:param point: anchor point
+
 .. seealso:: :py:func:`anchorPoint()`
 %End
 
     AnchorPoint anchorWidgetPoint() const;
 %Docstring
- Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
- the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
- to this anchor widget whenever the widget's parent is resized or moved.
+Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
+the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
+to this anchor widget whenever the widget's parent is resized or moved.
+
+:rtype: AnchorPoint
+
 .. seealso:: :py:func:`setAnchorWidgetPoint()`
- :rtype: AnchorPoint
 %End
 
     void setAnchorWidgetPoint( AnchorPoint point );
 %Docstring
- Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
- the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
- to this anchor widget whenever the widget's parent is resized or moved.
+Returns the anchor widget's anchor point, which corresponds to the point on the anchor widget which
+the floating widget should "attach" to. The floating widget should remain fixed in the same relative position
+to this anchor widget whenever the widget's parent is resized or moved.
+
 .. seealso:: :py:func:`setAnchorWidgetPoint()`
 %End
 

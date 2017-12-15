@@ -19,7 +19,8 @@ class QgsPointDisplacementRendererWidget: QgsRendererWidget, QgsExpressionContex
   public:
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- :rtype: QgsRendererWidget
+
+:rtype: QgsRendererWidget
 %End
     QgsPointDisplacementRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsPointDisplacementRendererWidget();

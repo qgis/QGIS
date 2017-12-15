@@ -19,7 +19,8 @@ class QgsGraduatedSymbolRendererWidget : QgsRendererWidget
   public:
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- :rtype: QgsRendererWidget
+
+:rtype: QgsRendererWidget
 %End
 
     QgsGraduatedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
@@ -68,7 +69,8 @@ Toggle the link between classes boundaries
     void disconnectUpdateHandlers();
     bool rowsOrdered();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void updateGraduatedSymbolIcon();
@@ -76,11 +78,13 @@ Toggle the link between classes boundaries
     QList<int> selectedClasses();
 %Docstring
 return a list of indexes for the classes under selection
- :rtype: list of int
+
+:rtype: list of int
 %End
     QgsRangeList selectedRanges();
 %Docstring
- :rtype: QgsRangeList
+
+:rtype: QgsRangeList
 %End
 
     void changeRangeSymbol( int rangeIdx );
@@ -92,7 +96,8 @@ return a list of indexes for the classes under selection
 
     QgsSymbol *findSymbolForRange( double lowerBound, double upperBound, const QgsRangeList &ranges ) const;
 %Docstring
- :rtype: QgsSymbol
+
+:rtype: QgsSymbol
 %End
     virtual void refreshSymbolView();
 

@@ -12,7 +12,7 @@
 class QgsComposerLabel: QgsComposerItem
 {
 %Docstring
- A label that can be placed onto a map composition.
+A label that can be placed onto a map composition.
 %End
 
 %TypeHeaderCode
@@ -25,7 +25,8 @@ class QgsComposerLabel: QgsComposerItem
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
- :rtype: int
+
+:rtype: int
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -41,102 +42,126 @@ Resizes the widget such that the text fits to the item. Keeps top left point
 
     QString text();
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     void setText( const QString &text );
 
     int htmlState();
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     void setHtmlState( int state );
 
     QString displayText() const;
 %Docstring
 Returns the text as it appears on screen (with replaced data field)
- :rtype: str
+
+:rtype: str
 %End
 
     QFont font() const;
 %Docstring
- :rtype: QFont
+
+:rtype: QFont
 %End
     void setFont( const QFont &f );
 
     Qt::AlignmentFlag vAlign() const;
 %Docstring
- Accessor for the vertical alignment of the label
- :return: Qt.AlignmentFlag
- :rtype: Qt.AlignmentFlag
+Accessor for the vertical alignment of the label
+
+:return: Qt.AlignmentFlag
+:rtype: Qt.AlignmentFlag
+
 %End
 
     Qt::AlignmentFlag hAlign() const;
 %Docstring
- Accessor for the horizontal alignment of the label
- :return: Qt.AlignmentFlag
- :rtype: Qt.AlignmentFlag
+Accessor for the horizontal alignment of the label
+
+:return: Qt.AlignmentFlag
+:rtype: Qt.AlignmentFlag
+
 %End
 
     void setHAlign( Qt::AlignmentFlag a );
 %Docstring
- Mutator for the horizontal alignment of the label
- \param a alignment
- :return: void
+Mutator for the horizontal alignment of the label
+:param a: alignment
+
+:return: void
 %End
 
     void setVAlign( Qt::AlignmentFlag a );
 %Docstring
- Mutator for the vertical alignment of the label
- \param a alignment
- :return: void
+Mutator for the vertical alignment of the label
+:param a: alignment
+
+:return: void
 %End
 
     double marginX() const;
 %Docstring
- Returns the horizontal margin between the edge of the frame and the label
- contents.
- :return: horizontal margin in mm
+Returns the horizontal margin between the edge of the frame and the label
+contents.
+
+:return: horizontal margin in mm
+:rtype: float
+
+
 .. versionadded:: 2.7
- :rtype: float
 %End
 
     double marginY() const;
 %Docstring
- Returns the vertical margin between the edge of the frame and the label
- contents.
- :return: vertical margin in mm
+Returns the vertical margin between the edge of the frame and the label
+contents.
+
+:return: vertical margin in mm
+:rtype: float
+
+
 .. versionadded:: 2.7
- :rtype: float
 %End
 
     void setMargin( const double m );
 %Docstring
- Sets the margin between the edge of the frame and the label contents.
- This method sets both the horizontal and vertical margins to the same
- value. The margins can be individually controlled using the setMarginX
- and setMarginY methods.
- \param m margin in mm
+Sets the margin between the edge of the frame and the label contents.
+This method sets both the horizontal and vertical margins to the same
+value. The margins can be individually controlled using the setMarginX
+and setMarginY methods.
+:param m: margin in mm
+
 .. seealso:: :py:func:`setMarginX`
+
 .. seealso:: :py:func:`setMarginY`
 %End
 
     void setMarginX( const double margin );
 %Docstring
- Sets the horizontal margin between the edge of the frame and the label
- contents.
- \param margin horizontal margin in mm
+Sets the horizontal margin between the edge of the frame and the label
+contents.
+:param margin: horizontal margin in mm
+
 .. seealso:: :py:func:`setMargin`
+
 .. seealso:: :py:func:`setMarginY`
+
 .. versionadded:: 2.7
 %End
 
     void setMarginY( const double margin );
 %Docstring
- Sets the vertical margin between the edge of the frame and the label
- contents.
- \param margin vertical margin in mm
+Sets the vertical margin between the edge of the frame and the label
+contents.
+:param margin: vertical margin in mm
+
 .. seealso:: :py:func:`setMargin`
+
 .. seealso:: :py:func:`setMarginX`
+
 .. versionadded:: 2.7
 %End
 
@@ -147,25 +172,28 @@ Sets text color
     QColor fontColor() const;
 %Docstring
 Get font color
- :rtype: QColor
+
+:rtype: QColor
 %End
 
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
 %Docstring
- Stores state in Dom element
- \param elem is Dom element corresponding to 'Composer' tag
- \param doc document
- :rtype: bool
+Stores state in Dom element
+:param elem: is Dom element corresponding to 'Composer' tag
+:param doc: document
+
+:rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
- Sets state from Dom document
- \param itemElem is Dom element corresponding to 'ComposerLabel' tag
- \param doc document
- :rtype: bool
+Sets state from Dom document
+:param itemElem: is Dom element corresponding to 'ComposerLabel' tag
+:param doc: document
+
+:rtype: bool
 %End
 
     virtual QString displayName() const;
@@ -173,19 +201,20 @@ Get font color
     virtual QRectF boundingRect() const;
 
 %Docstring
- In case of negative margins, the bounding rect may be larger than the
- label's frame
- :rtype: QRectF
+In case of negative margins, the bounding rect may be larger than the
+label's frame
+
+:rtype: QRectF
 %End
 
     virtual void setFrameEnabled( const bool drawFrame );
 %Docstring
- Reimplemented to call prepareGeometryChange after toggling frame
+Reimplemented to call prepareGeometryChange after toggling frame
 %End
 
     virtual void setFrameStrokeWidth( const double strokeWidth );
 %Docstring
- Reimplemented to call prepareGeometryChange after changing stroke width
+Reimplemented to call prepareGeometryChange after changing stroke width
 %End
 
   public slots:

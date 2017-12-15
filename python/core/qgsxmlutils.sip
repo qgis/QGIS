@@ -12,7 +12,7 @@
 class QgsXmlUtils
 {
 %Docstring
- Assorted helper methods for reading and writing chunks of XML
+Assorted helper methods for reading and writing chunks of XML
 %End
 
 %TypeHeaderCode
@@ -23,51 +23,61 @@ class QgsXmlUtils
 
     static QgsUnitTypes::DistanceUnit readMapUnits( const QDomElement &element );
 %Docstring
- Decodes a distance unit from a DOM element.
- \param element DOM element to decode
- :return: distance units
+Decodes a distance unit from a DOM element.
+:param element: DOM element to decode
+
+:return: distance units
+:rtype: QgsUnitTypes.DistanceUnit
+
+
 .. seealso:: :py:func:`writeMapUnits()`
- :rtype: QgsUnitTypes.DistanceUnit
 %End
 
     static QgsRectangle readRectangle( const QDomElement &element );
 %Docstring
- :rtype: QgsRectangle
+
+:rtype: QgsRectangle
 %End
 
 
     static QDomElement writeMapUnits( QgsUnitTypes::DistanceUnit units, QDomDocument &doc );
 %Docstring
- Encodes a distance unit to a DOM element.
- \param units units to encode
- \param doc DOM document
- :return: element containing encoded units
+Encodes a distance unit to a DOM element.
+:param units: units to encode
+:param doc: DOM document
+
+:return: element containing encoded units
+:rtype: QDomElement
+
+
 .. seealso:: :py:func:`readMapUnits()`
- :rtype: QDomElement
 %End
 
     static QDomElement writeRectangle( const QgsRectangle &rect, QDomDocument &doc );
 %Docstring
- :rtype: QDomElement
+
+:rtype: QDomElement
 %End
 
     static QDomElement writeVariant( const QVariant &value, QDomDocument &doc );
 %Docstring
- Write a QVariant to a QDomElement.
+Write a QVariant to a QDomElement.
 
- Supported types are
+Supported types are
 
- - QVariant.Map
- - QVariant.Int
- - QVariant.Double
- - QVariant.String
- :rtype: QDomElement
+- QVariant.Map
+- QVariant.Int
+- QVariant.Double
+- QVariant.String
+
+:rtype: QDomElement
 %End
 
     static QVariant readVariant( const QDomElement &element );
 %Docstring
- Read a QVariant from a QDomElement.
- :rtype: QVariant
+Read a QVariant from a QDomElement.
+
+:rtype: QVariant
 %End
 };
 

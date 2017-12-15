@@ -12,6 +12,7 @@ class QgsMultiCurve: QgsGeometryCollection
 {
 %Docstring
  Multi curve geometry collection.
+
 .. versionadded:: 2.10
 %End
 
@@ -43,9 +44,11 @@ class QgsMultiCurve: QgsGeometryCollection
 
     QgsMultiCurve *reversed() const /Factory/;
 %Docstring
- Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+Returns a copy of the multi curve, where each component curve has had its line direction reversed.
+
+:rtype: QgsMultiCurve
+
 .. versionadded:: 2.14
- :rtype: QgsMultiCurve
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

@@ -12,8 +12,8 @@
 class QgsMapHitTest
 {
 %Docstring
- Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
- will be visible on the map - this is useful for content based legend.
+Class that runs a hit test with given map settings. Based on the hit test it returns which symbols
+will be visible on the map - this is useful for content based legend.
 
 .. versionadded:: 2.6
 %End
@@ -26,9 +26,9 @@ class QgsMapHitTest
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 %Docstring
- \param settings Map settings used to evaluate symbols
- \param polygon Polygon geometry to refine the hit test
- \param layerFilterExpression Expression string for each layer id to evaluate in order to refine the symbol selection
+:param settings: Map settings used to evaluate symbols
+:param polygon: Polygon geometry to refine the hit test
+:param layerFilterExpression: Expression string for each layer id to evaluate in order to refine the symbol selection
 %End
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsMapHitTest::LayerFilterExpression &layerFilterExpression );
@@ -43,22 +43,28 @@ Runs the map hit test
 
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 %Docstring
- Tests whether a symbol is visible for a specified layer.
- \param symbol symbol to find
- \param layer vector layer
+Tests whether a symbol is visible for a specified layer.
+:param symbol: symbol to find
+:param layer: vector layer
+
+:rtype: bool
+
 .. versionadded:: 2.12
+
 .. seealso:: :py:func:`legendKeyVisible()`
- :rtype: bool
 %End
 
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 %Docstring
- Tests whether a given legend key is visible for a specified layer.
- \param ruleKey legend rule key
- \param layer vector layer
+Tests whether a given legend key is visible for a specified layer.
+:param ruleKey: legend rule key
+:param layer: vector layer
+
+:rtype: bool
+
 .. versionadded:: 2.14
+
 .. seealso:: :py:func:`symbolVisible()`
- :rtype: bool
 %End
 
 };

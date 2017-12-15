@@ -22,53 +22,55 @@ class QgsRendererPropertiesDialog : QDialog
 
     QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsRendererPropertiesDialog.
- \param layer associated layer
- \param style style collection
- \param embedded set to true to indicate that the dialog will be embedded in another widget, rather
- than shown as a dialog by itself
- \param parent parent widget
+Constructor for QgsRendererPropertiesDialog.
+:param layer: associated layer
+:param style: style collection
+:param embedded: set to true to indicate that the dialog will be embedded in another widget, rather
+than shown as a dialog by itself
+:param parent: parent widget
 %End
     ~QgsRendererPropertiesDialog();
 
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
- Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
- map scale and other properties from the canvas.
- \param canvas map canvas
+Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
+map scale and other properties from the canvas.
+:param canvas: map canvas
+
 .. versionadded:: 2.12
 %End
 
     void setDockMode( bool dockMode );
 %Docstring
- Set the widget in dock mode which tells the widget to emit panel
- widgets and not open dialogs
- \param dockMode True to enable dock mode.
+Set the widget in dock mode which tells the widget to emit panel
+widgets and not open dialogs
+:param dockMode: True to enable dock mode.
 %End
 
   signals:
 
     void layerVariablesChanged();
 %Docstring
- Emitted when expression context variables on the associated
- vector layers have been changed. Will request the parent dialog
- to re-synchronize with the variables.
+Emitted when expression context variables on the associated
+vector layers have been changed. Will request the parent dialog
+to re-synchronize with the variables.
 %End
 
     void widgetChanged();
 %Docstring
- Emitted when something on the widget has changed.
- All widgets will fire this event to notify of an internal change.
+Emitted when something on the widget has changed.
+All widgets will fire this event to notify of an internal change.
 %End
 
     void showPanel( QgsPanelWidget *panel );
 %Docstring
- Emit when you require a panel to be show in the interface.
- \param panel The panel widget to show.
+Emit when you require a panel to be show in the interface.
+:param panel: The panel widget to show.
+
 .. note::
 
    If you are connected to this signal you should also connect
- given panels showPanel signal as they can be nested.
+given panels showPanel signal as they can be nested.
 %End
 
   public slots:
@@ -89,14 +91,14 @@ Apply and accept the changes for the dialog.
 
     void openPanel( QgsPanelWidget *panel );
 %Docstring
- Open a panel or dialog depending on dock mode setting
- If dock mode is true this method will emit the showPanel signal
- for connected slots to handle the open event.
+Open a panel or dialog depending on dock mode setting
+If dock mode is true this method will emit the showPanel signal
+for connected slots to handle the open event.
 
- If dock mode is false this method will open a dialog
- and block the user.
+If dock mode is false this method will open a dialog
+and block the user.
 
- \param panel The panel widget to open.
+:param panel: The panel widget to open.
 %End
 
 
@@ -104,12 +106,12 @@ Apply and accept the changes for the dialog.
 
     void connectValueChanged( const QList<QWidget *> &widgets, const char *slot );
 %Docstring
- Connect the given slot to the value changed event for the set of widgets
- Each widget is checked for type and the common type of signal is connected
- to the slot.
+Connect the given slot to the value changed event for the set of widgets
+Each widget is checked for type and the common type of signal is connected
+to the slot.
 
- \param widgets The list of widgets to check.
- \param slot The slot to connect to the signals.
+:param widgets: The list of widgets to check.
+:param slot: The slot to connect to the signals.
 %End
 
     virtual void keyPressEvent( QKeyEvent *event );

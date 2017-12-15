@@ -22,12 +22,12 @@ class QgsSymbolsListWidget : QWidget
 
     QgsSymbolsListWidget( QgsSymbol *symbol, QgsStyle *style, QMenu *menu, QWidget *parent /TransferThis/, QgsVectorLayer *layer = 0 );
 %Docstring
- Constructor for QgsSymbolsListWidget.
- \param symbol the symbol
- \param style the style
- \param menu the menu where to show it
- \param parent parent widget
- \param layer associated vector layer
+Constructor for QgsSymbolsListWidget.
+:param symbol: the symbol
+:param style: the style
+:param menu: the menu where to show it
+:param parent: parent widget
+:param layer: associated vector layer
 %End
 
 
@@ -35,25 +35,32 @@ class QgsSymbolsListWidget : QWidget
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
- Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
- \param context symbol widget context
+Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+:param context: symbol widget context
+
 .. seealso:: :py:func:`context()`
+
 .. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
 %Docstring
- Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
+:rtype: QgsSymbolWidgetContext
+
 .. seealso:: :py:func:`setContext()`
+
 .. versionadded:: 3.0
- :rtype: QgsSymbolWidgetContext
 %End
 
     const QgsVectorLayer *layer() const;
 %Docstring
- Returns the vector layer associated with the widget.
+Returns the vector layer associated with the widget.
+
+:rtype: QgsVectorLayer
+
 .. versionadded:: 2.12
- :rtype: QgsVectorLayer
 %End
 
   public slots:

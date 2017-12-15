@@ -24,20 +24,21 @@ class QgsProjectFileTransform
     QgsProjectFileTransform( QDomDocument &domDocument,
                              const QgsProjectVersion &version );
 %Docstring
- Create an instance from a Dom and a supplied version
- \param domDocument The Dom document to use as content
- \param version Version number
+Create an instance from a Dom and a supplied version
+:param domDocument: The Dom document to use as content
+:param version: Version number
 %End
 
 
     bool updateRevision( const QgsProjectVersion &version );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void dump();
 %Docstring
- Prints the contents via QgsDebugMsg()
+Prints the contents via QgsDebugMsg()
 %End
 
     static void convertRasterProperties( QDomDocument &doc, QDomNode &parentNode, QDomElement &rasterPropertiesElem, QgsRasterLayer *rlayer );

@@ -13,18 +13,21 @@ template <T>
 class QgsRange
 {
 %Docstring
- A template based class for storing ranges (lower to upper values).
+A template based class for storing ranges (lower to upper values).
 
- QgsRange classes represent a range of values of some element type. For instance,
- ranges of int might be used to represent integer ranges.
+QgsRange classes represent a range of values of some element type. For instance,
+ranges of int might be used to represent integer ranges.
 
- Ranges can indicate whether the upper and lower values are inclusive or exclusive.
- The inclusivity or exclusivity of bounds is considered when determining things like
- whether ranges overlap or during calculation of range intersections.
+Ranges can indicate whether the upper and lower values are inclusive or exclusive.
+The inclusivity or exclusivity of bounds is considered when determining things like
+whether ranges overlap or during calculation of range intersections.
 
 .. versionadded:: 3.0
+
 .. seealso:: :py:class:`QgsDoubleRange`
+
 .. seealso:: :py:class:`QgsIntRange`
+
 .. note::
 
    not available in Python bindings (but class provided for template-based inheritance)
@@ -37,77 +40,98 @@ class QgsRange
 
     QgsRange( T lower, T upper, bool includeLower = true, bool includeUpper = true );
 %Docstring
- Constructor for QgsRange. The ``lower`` and ``upper`` bounds are specified,
- and optionally whether or not these bounds are included in the range.
+Constructor for QgsRange. The ``lower`` and ``upper`` bounds are specified,
+and optionally whether or not these bounds are included in the range.
 %End
 
     T lower() const;
 %Docstring
- Returns the lower bound of the range.
+Returns the lower bound of the range.
+
+:rtype: T
+
 .. seealso:: :py:func:`upper()`
+
 .. seealso:: :py:func:`includeLower()`
- :rtype: T
 %End
 
     T upper() const;
 %Docstring
- Returns the upper bound of the range.
+Returns the upper bound of the range.
+
+:rtype: T
+
 .. seealso:: :py:func:`lower()`
+
 .. seealso:: :py:func:`includeUpper()`
- :rtype: T
 %End
 
     bool includeLower() const;
 %Docstring
- Returns true if the lower bound is inclusive, or false if the lower
- bound is exclusive.
+Returns true if the lower bound is inclusive, or false if the lower
+bound is exclusive.
+
+:rtype: bool
+
 .. seealso:: :py:func:`lower()`
+
 .. seealso:: :py:func:`includeUpper()`
- :rtype: bool
 %End
 
     bool includeUpper() const;
 %Docstring
- Returns true if the upper bound is inclusive, or false if the upper
- bound is exclusive.
+Returns true if the upper bound is inclusive, or false if the upper
+bound is exclusive.
+
+:rtype: bool
+
 .. seealso:: :py:func:`upper()`
+
 .. seealso:: :py:func:`includeLower()`
- :rtype: bool
 %End
 
     bool isEmpty() const;
 %Docstring
- Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
- and either the bounds are exclusive.
+Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
+and either the bounds are exclusive.
+
+:rtype: bool
+
 .. seealso:: :py:func:`isSingleton()`
- :rtype: bool
 %End
 
     bool isSingleton() const;
 %Docstring
- Returns true if the range consists only of a single value or instant.
+Returns true if the range consists only of a single value or instant.
+
+:rtype: bool
+
 .. seealso:: :py:func:`isEmpty()`
- :rtype: bool
 %End
 
     bool contains( const QgsRange<T> &other ) const;
 %Docstring
- Returns true if this range contains another range.
+Returns true if this range contains another range.
+
+:rtype: bool
+
 .. seealso:: :py:func:`overlaps()`
- :rtype: bool
 %End
 
     bool contains( T element ) const;
 %Docstring
- Returns true if this range contains a specified ``element``.
- :rtype: bool
+Returns true if this range contains a specified ``element``.
+
+:rtype: bool
 %End
 
     bool overlaps( const QgsRange<T> &other ) const;
 %Docstring
- Returns true if this range overlaps another range.
+Returns true if this range overlaps another range.
+
+:rtype: bool
+
 .. seealso:: :py:func:`contains()`
- :rtype: bool
 %End
 
 
@@ -126,17 +150,19 @@ template <T>
 class QgsTemporalRange
 {
 %Docstring
- A template based class for storing temporal ranges (beginning to end values).
+A template based class for storing temporal ranges (beginning to end values).
 
- QgsTemporalRange classes represent a range of values of some temporal type. For instance,
- ranges of QDateTime might be used to represent datetime ranges.
+QgsTemporalRange classes represent a range of values of some temporal type. For instance,
+ranges of QDateTime might be used to represent datetime ranges.
 
- Ranges can indicate whether the upper and lower values are inclusive or exclusive.
- The inclusivity or exclusivity of bounds is considered when determining things like
- whether ranges overlap or during calculation of range intersections.
+Ranges can indicate whether the upper and lower values are inclusive or exclusive.
+The inclusivity or exclusivity of bounds is considered when determining things like
+whether ranges overlap or during calculation of range intersections.
 
 .. versionadded:: 3.0
+
 .. seealso:: :py:class:`QgsDateRange`
+
 .. note::
 
    not available in Python bindings (but class provided for template-based inheritance)
@@ -149,8 +175,9 @@ class QgsTemporalRange
 
     QgsTemporalRange( const T &begin, const T &end, bool includeBeginning = true, bool includeEnd = true );
 %Docstring
- Constructor for QgsTemporalRange. The ``begin`` and ``end`` are specified,
- and optionally whether or not these bounds are included in the range.
+Constructor for QgsTemporalRange. The ``begin`` and ``end`` are specified,
+and optionally whether or not these bounds are included in the range.
+
 .. note::
 
    in Python ``begin`` and ``end`` must be provided.
@@ -159,77 +186,99 @@ class QgsTemporalRange
 
     T begin() const;
 %Docstring
- Returns the beginning of the range.
+Returns the beginning of the range.
+
+:rtype: T
+
 .. seealso:: :py:func:`end()`
+
 .. seealso:: :py:func:`includeBeginning()`
- :rtype: T
 %End
 
     T end() const;
 %Docstring
- Returns the upper bound of the range.
+Returns the upper bound of the range.
+
+:rtype: T
+
 .. seealso:: :py:func:`begin()`
+
 .. seealso:: :py:func:`includeEnd()`
- :rtype: T
 %End
 
     bool includeBeginning() const;
 %Docstring
- Returns true if the beginning is inclusive, or false if the beginning
- is exclusive.
+Returns true if the beginning is inclusive, or false if the beginning
+is exclusive.
+
+:rtype: bool
+
 .. seealso:: :py:func:`begin()`
+
 .. seealso:: :py:func:`includeEnd()`
- :rtype: bool
 %End
 
     bool includeEnd() const;
 %Docstring
- Returns true if the end is inclusive, or false if the end is exclusive.
+Returns true if the end is inclusive, or false if the end is exclusive.
+
+:rtype: bool
+
 .. seealso:: :py:func:`end()`
+
 .. seealso:: :py:func:`includeBeginning()`
- :rtype: bool
 %End
 
     bool isInstant() const;
 %Docstring
- Returns true if the range consists only of a single instant.
+Returns true if the range consists only of a single instant.
+
+:rtype: bool
+
 .. seealso:: :py:func:`isEmpty()`
+
 .. seealso:: :py:func:`isInfinite()`
- :rtype: bool
 %End
 
     bool isInfinite() const;
 %Docstring
- Returns true if the range consists of all possible values.
+Returns true if the range consists of all possible values.
+
+:rtype: bool
+
 .. seealso:: :py:func:`isEmpty()`
+
 .. seealso:: :py:func:`isInstant()`
- :rtype: bool
 %End
 
     bool isEmpty() const;
 %Docstring
- Returns true if the range is empty, ie the beginning equals (or exceeds) the end
- and either of the bounds are exclusive.
- A range with both invalid beginning and end is considered infinite and not empty.
- :rtype: bool
+Returns true if the range is empty, ie the beginning equals (or exceeds) the end
+and either of the bounds are exclusive.
+A range with both invalid beginning and end is considered infinite and not empty.
+
+:rtype: bool
 %End
 
     bool contains( const QgsTemporalRange<T> &other ) const;
 %Docstring
- Returns true if this range contains another range.
- :rtype: bool
+Returns true if this range contains another range.
+
+:rtype: bool
 %End
 
     bool contains( const T &element ) const;
 %Docstring
- Returns true if this range contains a specified ``element``.
- :rtype: bool
+Returns true if this range contains a specified ``element``.
+
+:rtype: bool
 %End
 
     bool overlaps( const QgsTemporalRange<T> &other ) const;
 %Docstring
- Returns true if this range overlaps another range.
- :rtype: bool
+Returns true if this range overlaps another range.
+
+:rtype: bool
 %End
 
 };

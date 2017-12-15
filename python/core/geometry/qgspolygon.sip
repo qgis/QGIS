@@ -13,6 +13,7 @@ class QgsPolygon: QgsCurvePolygon
 {
 %Docstring
  Polygon geometry type.
+
 .. versionadded:: 2.10
 %End
 
@@ -38,9 +39,11 @@ class QgsPolygon: QgsCurvePolygon
     virtual QgsCurvePolygon *toCurveType() const /Factory/;
 
 %Docstring
- Returns the geometry converted to the more generic curve type QgsCurvePolygon
+Returns the geometry converted to the more generic curve type QgsCurvePolygon
+
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsCurvePolygon
+:rtype: QgsCurvePolygon
+
 %End
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );
@@ -53,11 +56,13 @@ class QgsPolygon: QgsCurvePolygon
 
     double pointDistanceToBoundary( double x, double y ) const;
 %Docstring
- Returns the distance from a point to the boundary of the polygon (either the
- exterior ring or any closer interior rings). The returned distance will be
- negative if the point lies outside the polygon.
+Returns the distance from a point to the boundary of the polygon (either the
+exterior ring or any closer interior rings). The returned distance will be
+negative if the point lies outside the polygon.
+
+:rtype: float
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
 

@@ -12,7 +12,8 @@ class QgsNullSymbolRenderer : QgsFeatureRenderer
 {
 %Docstring
  Null symbol renderer. Renderer which draws no symbols for features by default, but allows for labeling
- and diagrams for the layer. Selected features will also be drawn with a default symbol.
+and diagrams for the layer. Selected features will also be drawn with a default symbol.
+
 .. versionadded:: 2.16
 %End
 
@@ -37,21 +38,25 @@ class QgsNullSymbolRenderer : QgsFeatureRenderer
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
- Creates a null renderer from XML element.
- \param element DOM element
- \param context reading context
- :return: new null symbol renderer
- :rtype: QgsFeatureRenderer
+Creates a null renderer from XML element.
+:param element: DOM element
+:param context: reading context
+
+:return: new null symbol renderer
+:rtype: QgsFeatureRenderer
+
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- Creates a QgsNullSymbolRenderer from an existing renderer.
- \param renderer renderer to convert from
- :return: a new renderer if the conversion was possible, otherwise None.
- :rtype: QgsNullSymbolRenderer
+Creates a QgsNullSymbolRenderer from an existing renderer.
+:param renderer: renderer to convert from
+
+:return: a new renderer if the conversion was possible, otherwise None.
+:rtype: QgsNullSymbolRenderer
+
 %End
 
 };

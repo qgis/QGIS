@@ -13,8 +13,9 @@
 class QgsPasswordLineEdit : QLineEdit
 {
 %Docstring
- QLineEdit subclass with built in support for showing/hiding
- entered password.
+QLineEdit subclass with built in support for showing/hiding
+entered password.
+
 .. versionadded:: 3.0
 *
 %End
@@ -26,26 +27,27 @@ class QgsPasswordLineEdit : QLineEdit
 
     QgsPasswordLineEdit( QWidget *parent = 0, bool passwordVisible = false );
 %Docstring
- Constructor for QgsPasswordLineEdit.
- \param parent parent widget
- \param passwordVisible Initial state of the password's visibility
+Constructor for QgsPasswordLineEdit.
+:param parent: parent widget
+:param passwordVisible: Initial state of the password's visibility
 %End
 
     void setShowLockIcon( bool visible );
 %Docstring
- Define if a lock icon shall be shown on the left of the widget
- \param visible set to false to hide the lock icon
+Define if a lock icon shall be shown on the left of the widget
+:param visible: set to false to hide the lock icon
 %End
 
     bool showLockIcon() const;
 %Docstring
- Returns if a lock icon shall be shown on the left of the widget
- :rtype: bool
+Returns if a lock icon shall be shown on the left of the widget
+
+:rtype: bool
 %End
 
     void setPasswordVisibility( bool visible );
 %Docstring
- Set state of the password's visibility
+Set state of the password's visibility
 %End
 
 };

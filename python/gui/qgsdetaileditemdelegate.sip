@@ -12,8 +12,9 @@
 class QgsDetailedItemDelegate : QAbstractItemDelegate
 {
 %Docstring
- A custom model/view delegate that can display an icon, heading
- and detail sections.
+A custom model/view delegate that can display an icon, heading
+and detail sections.
+
 .. seealso:: :py:func:`also`
 %End
 
@@ -37,21 +38,24 @@ Reimplement for parent class
                     const QModelIndex &index ) const;
 %Docstring
 Reimplement for parent class
- :rtype: QSize
+
+:rtype: QSize
 %End
 
     void setVerticalSpacing( int value );
 
     int verticalSpacing() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     void setHorizontalSpacing( int value );
 
     int horizontalSpacing() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
 };

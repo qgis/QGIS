@@ -14,9 +14,9 @@
 class QgsDataDefinedSizeLegend
 {
 %Docstring
- Object that keeps configuration of appearance of marker symbol's data-defined size in legend.
- For example: the list of classes (size values), whether the classes should appear in separate
- legend nodes or whether to collapse them into one legend node.
+Object that keeps configuration of appearance of marker symbol's data-defined size in legend.
+For example: the list of classes (size values), whether the classes should appear in separate
+legend nodes or whether to collapse them into one legend node.
 
 .. versionadded:: 3.0
 %End
@@ -28,7 +28,7 @@ class QgsDataDefinedSizeLegend
 
     QgsDataDefinedSizeLegend();
 %Docstring
- Constructor for QgsDataDefinedSizeLegend.
+Constructor for QgsDataDefinedSizeLegend.
 %End
 
     QgsDataDefinedSizeLegend( const QgsDataDefinedSizeLegend &other );
@@ -63,7 +63,8 @@ Sets how the legend should be rendered
     LegendType legendType() const;
 %Docstring
 Returns how the legend should be rendered
- :rtype: LegendType
+
+:rtype: LegendType
 %End
 
     void setSymbol( QgsMarkerSymbol *symbol /Transfer/ );
@@ -73,7 +74,8 @@ Sets marker symbol that will be used to draw markers in legend
     QgsMarkerSymbol *symbol() const;
 %Docstring
 Returns marker symbol that will be used to draw markers in legend
- :rtype: QgsMarkerSymbol
+
+:rtype: QgsMarkerSymbol
 %End
 
     void setSizeScaleTransformer( QgsSizeScaleTransformer *transformer /Transfer/ );
@@ -83,7 +85,8 @@ Sets transformer for scaling of symbol sizes. Takes ownership of the object. Acc
     QgsSizeScaleTransformer *sizeScaleTransformer() const;
 %Docstring
 Returns transformer for scaling of symbol sizes. Returns null if no transformer is defined.
- :rtype: QgsSizeScaleTransformer
+
+:rtype: QgsSizeScaleTransformer
 %End
 
     void setClasses( const QList< QgsDataDefinedSizeLegend::SizeClass > &classes );
@@ -93,7 +96,8 @@ Sets list of classes: each class is a pair of symbol size (in units used by the 
     QList< QgsDataDefinedSizeLegend::SizeClass > classes() const;
 %Docstring
 Returns list of classes: each class is a pair of symbol size (in units used by the symbol) and label
- :rtype: list of QgsDataDefinedSizeLegend.SizeClass
+
+:rtype: list of QgsDataDefinedSizeLegend.SizeClass
 %End
 
     void setTitle( const QString &title );
@@ -103,7 +107,8 @@ Sets title label for data-defined size legend
     QString title() const;
 %Docstring
 Returns title label for data-defined size legend
- :rtype: str
+
+:rtype: str
 %End
 
     void setVerticalAlignment( VerticalAlignment vAlign );
@@ -113,7 +118,8 @@ Sets vertical alignment of symbols - only valid for collapsed legend
     VerticalAlignment verticalAlignment() const;
 %Docstring
 Returns vertical alignment of symbols - only valid for collapsed legend
- :rtype: VerticalAlignment
+
+:rtype: VerticalAlignment
 %End
 
     void setFont( const QFont &font );
@@ -123,7 +129,8 @@ Sets font used for rendering of labels - only valid for collapsed legend
     QFont font() const;
 %Docstring
 Returns font used for rendering of labels - only valid for collapsed legend
- :rtype: QFont
+
+:rtype: QFont
 %End
 
     void setTextColor( const QColor &color );
@@ -133,7 +140,8 @@ Sets text color for rendering of labels - only valid for collapsed legend
     QColor textColor() const;
 %Docstring
 Returns text color for rendering of labels - only valid for collapsed legend
- :rtype: QColor
+
+:rtype: QColor
 %End
 
     void setTextAlignment( Qt::AlignmentFlag flag );
@@ -143,7 +151,8 @@ Sets horizontal text alignment for rendering of labels - only valid for collapse
     Qt::AlignmentFlag textAlignment() const;
 %Docstring
 Returns horizontal text alignment for rendering of labels - only valid for collapsed legend
- :rtype: Qt.AlignmentFlag
+
+:rtype: Qt.AlignmentFlag
 %End
 
 
@@ -155,26 +164,29 @@ Updates the list of classes, source symbol and title label from given symbol and
     QgsLegendSymbolList legendSymbolList() const;
 %Docstring
 Generates legend symbol items according to the configuration
- :rtype: QgsLegendSymbolList
+
+:rtype: QgsLegendSymbolList
 %End
 
     void drawCollapsedLegend( QgsRenderContext &context, QSize *outputSize /Out/ = 0, int *labelXOffset /Out/ = 0 ) const;
 %Docstring
- Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
- If the painter in context is null, it only does size calculation without actual rendering.
- Does nothing if legend is not configured as collapsed.
+Draw the legend if using LegendOneNodeForAll and optionally output size of the legend and x offset of labels (in painter units).
+If the painter in context is null, it only does size calculation without actual rendering.
+Does nothing if legend is not configured as collapsed.
 %End
 
     QImage collapsedLegendImage( QgsRenderContext &context, const QColor &backgroundColor = Qt::transparent, double paddingMM = 1 ) const;
 %Docstring
 Returns output image that would be shown in the legend. Returns invalid image if legend is not configured as collapsed.
- :rtype: QImage
+
+:rtype: QImage
 %End
 
     static QgsDataDefinedSizeLegend *readXml( const QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates instance from given element and returns it (caller takes ownership). Returns null on error.
- :rtype: QgsDataDefinedSizeLegend
+
+:rtype: QgsDataDefinedSizeLegend
 %End
 
     void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const;

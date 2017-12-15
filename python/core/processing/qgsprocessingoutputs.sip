@@ -15,10 +15,10 @@ class QgsProcessingOutputDefinition
 {
 %Docstring
 
- Base class for the definition of processing outputs.
+Base class for the definition of processing outputs.
 
- Output definitions encapsulate the properties regarding the outputs from algorithms, such
- as generated layers or calculated values.
+Output definitions encapsulate the properties regarding the outputs from algorithms, such
+as generated layers or calculated values.
 
 .. versionadded:: 3.0
 %End
@@ -50,44 +50,51 @@ class QgsProcessingOutputDefinition
 
     QgsProcessingOutputDefinition( const QString &name, const QString &description = QString() );
 %Docstring
- Constructor for QgsProcessingOutputDefinition.
+Constructor for QgsProcessingOutputDefinition.
 %End
 
     virtual ~QgsProcessingOutputDefinition();
 
     virtual QString type() const = 0;
 %Docstring
- Unique output type name.
- :rtype: str
+Unique output type name.
+
+:rtype: str
 %End
 
     QString name() const;
 %Docstring
- Returns the name of the output. This is the internal identifier by which
- algorithms access this output.
+Returns the name of the output. This is the internal identifier by which
+algorithms access this output.
+
+:rtype: str
+
 .. seealso:: :py:func:`setName()`
- :rtype: str
 %End
 
     void setName( const QString &name );
 %Docstring
- Sets the ``name`` of the output. This is the internal identifier by which
- algorithms access this output.
+Sets the ``name`` of the output. This is the internal identifier by which
+algorithms access this output.
+
 .. seealso:: :py:func:`name()`
 %End
 
     QString description() const;
 %Docstring
- Returns the description for the output. This is the user-visible string
- used to identify this output.
+Returns the description for the output. This is the user-visible string
+used to identify this output.
+
+:rtype: str
+
 .. seealso:: :py:func:`setDescription()`
- :rtype: str
 %End
 
     void setDescription( const QString &description );
 %Docstring
- Sets the ``description`` for the output. This is the user-visible string
- used to identify this output.
+Sets the ``description`` for the output. This is the user-visible string
+used to identify this output.
+
 .. seealso:: :py:func:`description()`
 %End
 
@@ -102,10 +109,10 @@ typedef QList< const QgsProcessingOutputDefinition * > QgsProcessingOutputDefini
 class QgsProcessingOutputMapLayer : QgsProcessingOutputDefinition
 {
 %Docstring
- A map layer output for processing algorithms, where layers may be either vector or raster.
+A map layer output for processing algorithms, where layers may be either vector or raster.
 
- If the actual layer output type is known (e.g. always vector or always raster), use
- QgsProcessingOutputVectorLayer or QgsProcessingOutputRasterLayer instead.
+If the actual layer output type is known (e.g. always vector or always raster), use
+QgsProcessingOutputVectorLayer or QgsProcessingOutputRasterLayer instead.
 
 .. versionadded:: 3.0
 %End
@@ -117,13 +124,14 @@ class QgsProcessingOutputMapLayer : QgsProcessingOutputDefinition
 
     QgsProcessingOutputMapLayer( const QString &name, const QString &description = QString() );
 %Docstring
- Constructor for QgsProcessingOutputMapLayer.
+Constructor for QgsProcessingOutputMapLayer.
 %End
 
     static QString typeName();
 %Docstring
- Returns the type name for the output class.
- :rtype: str
+Returns the type name for the output class.
+
+:rtype: str
 %End
 
     virtual QString type() const;
@@ -134,7 +142,8 @@ class QgsProcessingOutputMapLayer : QgsProcessingOutputDefinition
 class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 {
 %Docstring
- A vector layer output for processing algorithms.
+A vector layer output for processing algorithms.
+
 .. versionadded:: 3.0
 %End
 
@@ -145,26 +154,30 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 
     QgsProcessingOutputVectorLayer( const QString &name, const QString &description = QString(), QgsProcessing::SourceType type = QgsProcessing::TypeVectorAnyGeometry );
 %Docstring
- Constructor for QgsProcessingOutputVectorLayer.
+Constructor for QgsProcessingOutputVectorLayer.
 %End
 
     static QString typeName();
 %Docstring
- Returns the type name for the output class.
- :rtype: str
+Returns the type name for the output class.
+
+:rtype: str
 %End
     virtual QString type() const;
 
     QgsProcessing::SourceType dataType() const;
 %Docstring
- Returns the layer type for the output layer.
+Returns the layer type for the output layer.
+
+:rtype: QgsProcessing.SourceType
+
 .. seealso:: :py:func:`setDataType()`
- :rtype: QgsProcessing.SourceType
 %End
 
     void setDataType( QgsProcessing::SourceType type );
 %Docstring
- Sets the layer ``type`` for the output layer.
+Sets the layer ``type`` for the output layer.
+
 .. seealso:: :py:func:`dataType()`
 %End
 
@@ -173,7 +186,8 @@ class QgsProcessingOutputVectorLayer : QgsProcessingOutputDefinition
 class QgsProcessingOutputRasterLayer : QgsProcessingOutputDefinition
 {
 %Docstring
- A raster layer output for processing algorithms.
+A raster layer output for processing algorithms.
+
 .. versionadded:: 3.0
 %End
 
@@ -184,13 +198,14 @@ class QgsProcessingOutputRasterLayer : QgsProcessingOutputDefinition
 
     QgsProcessingOutputRasterLayer( const QString &name, const QString &description = QString() );
 %Docstring
- Constructor for QgsProcessingOutputRasterLayer.
+Constructor for QgsProcessingOutputRasterLayer.
 %End
 
     static QString typeName();
 %Docstring
- Returns the type name for the output class.
- :rtype: str
+Returns the type name for the output class.
+
+:rtype: str
 %End
     virtual QString type() const;
 
@@ -200,7 +215,8 @@ class QgsProcessingOutputRasterLayer : QgsProcessingOutputDefinition
 class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
 {
 %Docstring
- A HTML file output for processing algorithms.
+A HTML file output for processing algorithms.
+
 .. versionadded:: 3.0
 %End
 
@@ -211,13 +227,14 @@ class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
 
     QgsProcessingOutputHtml( const QString &name, const QString &description = QString() );
 %Docstring
- Constructor for QgsProcessingOutputHtml.
+Constructor for QgsProcessingOutputHtml.
 %End
 
     static QString typeName();
 %Docstring
- Returns the type name for the output class.
- :rtype: str
+Returns the type name for the output class.
+
+:rtype: str
 %End
     virtual QString type() const;
 
@@ -226,7 +243,8 @@ class QgsProcessingOutputHtml : QgsProcessingOutputDefinition
 class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
 {
 %Docstring
- A numeric output for processing algorithms.
+A numeric output for processing algorithms.
+
 .. versionadded:: 3.0
 %End
 
@@ -237,13 +255,14 @@ class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
 
     QgsProcessingOutputNumber( const QString &name, const QString &description = QString() );
 %Docstring
- Constructor for QgsProcessingOutputNumber.
+Constructor for QgsProcessingOutputNumber.
 %End
 
     static QString typeName();
 %Docstring
- Returns the type name for the output class.
- :rtype: str
+Returns the type name for the output class.
+
+:rtype: str
 %End
     virtual QString type() const;
 };
@@ -251,7 +270,8 @@ class QgsProcessingOutputNumber : QgsProcessingOutputDefinition
 class QgsProcessingOutputString : QgsProcessingOutputDefinition
 {
 %Docstring
- A string output for processing algorithms.
+A string output for processing algorithms.
+
 .. versionadded:: 3.0
 %End
 
@@ -262,13 +282,14 @@ class QgsProcessingOutputString : QgsProcessingOutputDefinition
 
     QgsProcessingOutputString( const QString &name, const QString &description = QString() );
 %Docstring
- Constructor for QgsProcessingOutputString.
+Constructor for QgsProcessingOutputString.
 %End
 
     static QString typeName();
 %Docstring
- Returns the type name for the output class.
- :rtype: str
+Returns the type name for the output class.
+
+:rtype: str
 %End
     virtual QString type() const;
 
@@ -277,7 +298,8 @@ class QgsProcessingOutputString : QgsProcessingOutputDefinition
 class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
 {
 %Docstring
- A folder output for processing algorithms.
+A folder output for processing algorithms.
+
 .. versionadded:: 3.0
 %End
 
@@ -289,13 +311,14 @@ class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
 
     QgsProcessingOutputFolder( const QString &name, const QString &description = QString() );
 %Docstring
- Constructor for QgsProcessingOutputFolder.
+Constructor for QgsProcessingOutputFolder.
 %End
 
     static QString typeName();
 %Docstring
- Returns the type name for the output class.
- :rtype: str
+Returns the type name for the output class.
+
+:rtype: str
 %End
     virtual QString type() const;
 
@@ -304,7 +327,8 @@ class QgsProcessingOutputFolder : QgsProcessingOutputDefinition
 class QgsProcessingOutputFile : QgsProcessingOutputDefinition
 {
 %Docstring
- A file output for processing algorithms.
+A file output for processing algorithms.
+
 .. versionadded:: 3.0
 %End
 
@@ -315,13 +339,14 @@ class QgsProcessingOutputFile : QgsProcessingOutputDefinition
 
     QgsProcessingOutputFile( const QString &name, const QString &description = QString() );
 %Docstring
- Constructor for QgsProcessingOutputFile.
+Constructor for QgsProcessingOutputFile.
 %End
 
     static QString typeName();
 %Docstring
- Returns the type name for the output class.
- :rtype: str
+Returns the type name for the output class.
+
+:rtype: str
 %End
     virtual QString type() const;
 

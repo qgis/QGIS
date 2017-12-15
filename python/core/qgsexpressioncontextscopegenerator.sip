@@ -11,7 +11,7 @@
 class QgsExpressionContextScopeGenerator
 {
 %Docstring
- Abstract interface for generating an expression context scope.
+Abstract interface for generating an expression context scope.
 
 .. versionadded:: 3.0
 %End
@@ -23,11 +23,12 @@ class QgsExpressionContextScopeGenerator
 
     virtual QgsExpressionContextScope *createExpressionContextScope() const = 0 /Factory/;
 %Docstring
- This method needs to be reimplemented in all classes which implement this interface
- and return an expression context scope.
+This method needs to be reimplemented in all classes which implement this interface
+and return an expression context scope.
+
+:rtype: QgsExpressionContextScope
 
 .. versionadded:: 3.0
- :rtype: QgsExpressionContextScope
 %End
 
     virtual ~QgsExpressionContextScopeGenerator();

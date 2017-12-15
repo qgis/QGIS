@@ -14,6 +14,7 @@
 class QgsGraphEdge
 {
 %Docstring
+
 .. versionadded:: 3.0
  This class implements a graph edge
 %End
@@ -25,34 +26,40 @@ class QgsGraphEdge
 
     QgsGraphEdge();
 %Docstring
- Constructor for QgsGraphEdge.
+Constructor for QgsGraphEdge.
 %End
 
     QVariant cost( int strategyIndex ) const;
 %Docstring
- Returns edge cost calculated using specified strategy
- \param strategyIndex strategy index
- :rtype: QVariant
+Returns edge cost calculated using specified strategy
+:param strategyIndex: strategy index
+
+:rtype: QVariant
 %End
 
     QVector< QVariant > strategies() const;
 %Docstring
- Returns array of available strategies
- :rtype: list of QVariant
+Returns array of available strategies
+
+:rtype: list of QVariant
 %End
 
     int toVertex() const;
 %Docstring
- Returns the index of the vertex at the end of this edge.
+Returns the index of the vertex at the end of this edge.
+
+:rtype: int
+
 .. seealso:: :py:func:`fromVertex()`
- :rtype: int
 %End
 
     int fromVertex() const;
 %Docstring
- Returns the index of the vertex at the start of this edge.
+Returns the index of the vertex at the start of this edge.
+
+:rtype: int
+
 .. seealso:: :py:func:`toVertex()`
- :rtype: int
 %End
 
 };
@@ -64,6 +71,7 @@ class QgsGraphVertex
 {
 %Docstring
  This class implements a graph vertex
+
 .. versionadded:: 3.0
 %End
 
@@ -74,33 +82,38 @@ class QgsGraphVertex
 
     QgsGraphVertex();
 %Docstring
- Default constructor. It is needed for Qt's container, e.g. QVector
+Default constructor. It is needed for Qt's container, e.g. QVector
 %End
 
 
     QgsGraphVertex( const QgsPointXY &point );
 %Docstring
- This constructor initializes QgsGraphVertex object and associates a vertex with a point
+This constructor initializes QgsGraphVertex object and associates a vertex with a point
 %End
 
     QgsGraphEdgeIds incomingEdges() const;
 %Docstring
- Returns the incoming edge ids, i.e. edges which end at this node.
+Returns the incoming edge ids, i.e. edges which end at this node.
+
+:rtype: QgsGraphEdgeIds
+
 .. seealso:: :py:func:`outgoingEdges()`
- :rtype: QgsGraphEdgeIds
 %End
 
     QgsGraphEdgeIds outgoingEdges() const;
 %Docstring
- Returns outgoing edge ids, i.e. edges which start at this node.
+Returns outgoing edge ids, i.e. edges which start at this node.
+
+:rtype: QgsGraphEdgeIds
+
 .. seealso:: :py:func:`incomingEdges()`
- :rtype: QgsGraphEdgeIds
 %End
 
     QgsPointXY point() const;
 %Docstring
- Returns point associated with graph vertex.
- :rtype: QgsPointXY
+Returns point associated with graph vertex.
+
+:rtype: QgsPointXY
 %End
 
 };
@@ -110,6 +123,7 @@ class QgsGraph
 {
 %Docstring
  Mathematical graph representation
+
 .. versionadded:: 3.0
 %End
 
@@ -120,52 +134,60 @@ class QgsGraph
 
     QgsGraph();
 %Docstring
- Constructor for QgsGraph.
+Constructor for QgsGraph.
 %End
 
 
     int addVertex( const QgsPointXY &pt );
 %Docstring
- Add a vertex to the graph
- :rtype: int
+Add a vertex to the graph
+
+:rtype: int
 %End
 
     int addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies );
 %Docstring
- Add an edge to the graph, going from the ``fromVertexIdx``
- to ``toVertexIdx``.
- :rtype: int
+Add an edge to the graph, going from the ``fromVertexIdx``
+to ``toVertexIdx``.
+
+:rtype: int
 %End
 
     int vertexCount() const;
 %Docstring
- Returns number of graph vertices
- :rtype: int
+Returns number of graph vertices
+
+:rtype: int
 %End
 
     const QgsGraphVertex &vertex( int idx ) const;
 %Docstring
- Returns vertex at given index
- :rtype: QgsGraphVertex
+Returns vertex at given index
+
+:rtype: QgsGraphVertex
 %End
 
     int edgeCount() const;
 %Docstring
- Returns number of graph edges
- :rtype: int
+Returns number of graph edges
+
+:rtype: int
 %End
 
     const QgsGraphEdge &edge( int idx ) const;
 %Docstring
- Returns edge at given index
- :rtype: QgsGraphEdge
+Returns edge at given index
+
+:rtype: QgsGraphEdge
 %End
 
     int findVertex( const QgsPointXY &pt ) const;
 %Docstring
- Find vertex by associated point
- :return: vertex index
- :rtype: int
+Find vertex by associated point
+
+:return: vertex index
+:rtype: int
+
 %End
 
 };

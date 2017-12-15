@@ -14,8 +14,8 @@ class QgsLayoutItemPropertiesDialog : QDialog
 %Docstring
  A dialog for configuring properties like the size and position of layout items.
 
- This is usually used only when constructing new layout items, allowing users to precisely
- enter their sizes and positions.
+This is usually used only when constructing new layout items, allowing users to precisely
+enter their sizes and positions.
 
 .. versionadded:: 3.0
 %End
@@ -27,59 +27,69 @@ class QgsLayoutItemPropertiesDialog : QDialog
 
     QgsLayoutItemPropertiesDialog( QWidget *parent = 0, Qt::WindowFlags flags = 0 );
 %Docstring
- Constructor for QgsLayoutNewItemPropertiesDialog.
+Constructor for QgsLayoutNewItemPropertiesDialog.
 %End
 
     void setItemPosition( QgsLayoutPoint position );
 %Docstring
- Sets the item ``position`` to show in the dialog.
+Sets the item ``position`` to show in the dialog.
+
 .. seealso:: :py:func:`itemPosition()`
 %End
 
     QgsLayoutPoint itemPosition() const;
 %Docstring
- Returns the current item position defined by the dialog.
+Returns the current item position defined by the dialog.
+
+:rtype: QgsLayoutPoint
+
 .. seealso:: :py:func:`setItemPosition()`
- :rtype: QgsLayoutPoint
 %End
 
     int page() const;
 %Docstring
- Returns the page number for the new item.
- :rtype: int
+Returns the page number for the new item.
+
+:rtype: int
 %End
 
     void setItemSize( QgsLayoutSize size );
 %Docstring
- Sets the item ``size`` to show in the dialog.
+Sets the item ``size`` to show in the dialog.
+
 .. seealso:: :py:func:`itemSize()`
 %End
 
     QgsLayoutSize itemSize() const;
 %Docstring
- Returns the item size defined by the dialog.
+Returns the item size defined by the dialog.
+
+:rtype: QgsLayoutSize
+
 .. seealso:: :py:func:`setItemSize()`
- :rtype: QgsLayoutSize
 %End
 
     QgsLayoutItem::ReferencePoint referencePoint() const;
 %Docstring
- Returns the item reference point defined by the dialog.
+Returns the item reference point defined by the dialog.
+
+:rtype: QgsLayoutItem.ReferencePoint
+
 .. seealso:: :py:func:`setReferencePoint()`
- :rtype: QgsLayoutItem.ReferencePoint
 %End
 
     void setReferencePoint( QgsLayoutItem::ReferencePoint point );
 %Docstring
- Sets the item reference ``point`` defined to show in the dialog.
+Sets the item reference ``point`` defined to show in the dialog.
+
 .. seealso:: :py:func:`referencePoint()`
 %End
 
     void setLayout( QgsLayout *layout );
 %Docstring
- Sets the ``layout`` associated with the dialog. This allows the dialog
- to retrieve properties from the layout and perform tasks like automatic
- conversion of units.
+Sets the ``layout`` associated with the dialog. This allows the dialog
+to retrieve properties from the layout and perform tasks like automatic
+conversion of units.
 %End
 
 };

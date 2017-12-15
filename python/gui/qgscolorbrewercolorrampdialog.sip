@@ -12,7 +12,8 @@
 class QgsColorBrewerColorRampWidget : QgsPanelWidget
 {
 %Docstring
- A widget which allows users to modify the properties of a QgsColorBrewerColorRamp.
+A widget which allows users to modify the properties of a QgsColorBrewerColorRamp.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,22 +24,25 @@ class QgsColorBrewerColorRampWidget : QgsPanelWidget
 
     QgsColorBrewerColorRampWidget( const QgsColorBrewerColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsColorBrewerColorRampWidget.
- \param ramp initial ramp to show in dialog
- \param parent parent widget
+Constructor for QgsColorBrewerColorRampWidget.
+:param ramp: initial ramp to show in dialog
+:param parent: parent widget
 %End
 
     QgsColorBrewerColorRamp ramp() const;
 %Docstring
- Returns a color ramp representing the current settings from the dialog.
+Returns a color ramp representing the current settings from the dialog.
+
+:rtype: QgsColorBrewerColorRamp
+
 .. seealso:: :py:func:`setRamp()`
- :rtype: QgsColorBrewerColorRamp
 %End
 
     void setRamp( const QgsColorBrewerColorRamp &ramp );
 %Docstring
- Sets the color ramp to show in the dialog.
- \param ramp color ramp
+Sets the color ramp to show in the dialog.
+:param ramp: color ramp
+
 .. seealso:: :py:func:`ramp()`
 %End
 
@@ -54,7 +58,8 @@ Emitted when the dialog settings change
 class QgsColorBrewerColorRampDialog : QDialog
 {
 %Docstring
- A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
+A dialog which allows users to modify the properties of a QgsColorBrewerColorRamp.
+
 .. versionadded:: 3.0
 %End
 
@@ -65,22 +70,25 @@ class QgsColorBrewerColorRampDialog : QDialog
 
     QgsColorBrewerColorRampDialog( const QgsColorBrewerColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsColorBrewerColorRampDialog.
- \param ramp initial ramp to show in dialog
- \param parent parent widget
+Constructor for QgsColorBrewerColorRampDialog.
+:param ramp: initial ramp to show in dialog
+:param parent: parent widget
 %End
 
     QgsColorBrewerColorRamp ramp() const;
 %Docstring
- Returns a color ramp representing the current settings from the dialog.
+Returns a color ramp representing the current settings from the dialog.
+
+:rtype: QgsColorBrewerColorRamp
+
 .. seealso:: :py:func:`setRamp()`
- :rtype: QgsColorBrewerColorRamp
 %End
 
     void setRamp( const QgsColorBrewerColorRamp &ramp );
 %Docstring
- Sets the color ramp to show in the dialog.
- \param ramp color ramp
+Sets the color ramp to show in the dialog.
+:param ramp: color ramp
+
 .. seealso:: :py:func:`ramp()`
 %End
 

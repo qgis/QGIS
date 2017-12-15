@@ -12,7 +12,8 @@
 class QgsLayoutFrame: QgsLayoutItem
 {
 %Docstring
- Base class for frame items, which form a layout multiframe item.
+Base class for frame items, which form a layout multiframe item.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,14 +24,15 @@ class QgsLayoutFrame: QgsLayoutItem
 
     QgsLayoutFrame( QgsLayout *layout, QgsLayoutMultiFrame *multiFrame );
 %Docstring
- Constructor for QgsLayoutFrame, with the specified parent ``layout``
- and belonging to a ``multiFrame``.
+Constructor for QgsLayoutFrame, with the specified parent ``layout``
+and belonging to a ``multiFrame``.
 %End
 
     static QgsLayoutFrame *create( QgsLayout *layout ) /Factory/;
 %Docstring
- Creates a new QgsLayoutFrame belonging to the specified ``layout``.
- :rtype: QgsLayoutFrame
+Creates a new QgsLayoutFrame belonging to the specified ``layout``.
+
+:rtype: QgsLayoutFrame
 %End
 
     virtual int type() const;
@@ -43,15 +45,17 @@ class QgsLayoutFrame: QgsLayoutItem
 
     void setContentSection( const QRectF &section );
 %Docstring
- Sets the visible part of the multiframe's content which is visible within
- this frame (relative to the total multiframe extent in layout units).
+Sets the visible part of the multiframe's content which is visible within
+this frame (relative to the total multiframe extent in layout units).
+
 .. seealso:: :py:func:`extent()`
 %End
 
     QgsLayoutMultiFrame *multiFrame() const;
 %Docstring
- Returns the parent multiframe for the frame.
- :rtype: QgsLayoutMultiFrame
+Returns the parent multiframe for the frame.
+
+:rtype: QgsLayoutMultiFrame
 %End
 
     virtual QgsLayoutSize minimumSize() const;
@@ -62,47 +66,59 @@ class QgsLayoutFrame: QgsLayoutItem
 
     QRectF extent() const;
 %Docstring
- Returns the visible portion of the multi frame's content which
- is shown in this frame, in layout units.
+Returns the visible portion of the multi frame's content which
+is shown in this frame, in layout units.
+
+:rtype: QRectF
+
 .. seealso:: :py:func:`setContentSection()`
- :rtype: QRectF
 %End
 
     bool hidePageIfEmpty() const;
 %Docstring
- Returns whether the page should be hidden (ie, not included in layout exports) if this frame is empty
- :return: true if page should be hidden if frame is empty
+Returns whether the page should be hidden (ie, not included in layout exports) if this frame is empty
+
+:return: true if page should be hidden if frame is empty
+:rtype: bool
+
+
 .. seealso:: :py:func:`setHidePageIfEmpty()`
- :rtype: bool
 %End
 
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
 %Docstring
- Sets whether the page should be hidden (ie, not included in layout exports) if this frame is empty
- \param hidePageIfEmpty set to true if page should be hidden if frame is empty
+Sets whether the page should be hidden (ie, not included in layout exports) if this frame is empty
+:param hidePageIfEmpty: set to true if page should be hidden if frame is empty
+
 .. seealso:: :py:func:`hidePageIfEmpty()`
 %End
 
     bool hideBackgroundIfEmpty() const;
 %Docstring
- Returns whether the background and frame stroke should be hidden if this frame is empty
- :return: true if background and stroke should be hidden if frame is empty
+Returns whether the background and frame stroke should be hidden if this frame is empty
+
+:return: true if background and stroke should be hidden if frame is empty
+:rtype: bool
+
+
 .. seealso:: :py:func:`setHideBackgroundIfEmpty()`
- :rtype: bool
 %End
 
     void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
 %Docstring
- Sets whether the background and frame stroke should be hidden if this frame is empty
- \param hideBackgroundIfEmpty set to true if background and stroke should be hidden if frame is empty
+Sets whether the background and frame stroke should be hidden if this frame is empty
+:param hideBackgroundIfEmpty: set to true if background and stroke should be hidden if frame is empty
+
 .. seealso:: :py:func:`hideBackgroundIfEmpty()`
 %End
 
     bool isEmpty() const;
 %Docstring
- Returns whether the frame is empty.
+Returns whether the frame is empty.
+
+:rtype: bool
+
 .. seealso:: :py:func:`hidePageIfEmpty()`
- :rtype: bool
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;

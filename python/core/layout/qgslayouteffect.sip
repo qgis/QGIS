@@ -14,8 +14,8 @@ class QgsLayoutEffect : QGraphicsEffect
 {
 %Docstring
 
- A QGraphicsEffect subclass used for rendering layout items
- onto a scene with custom composition modes.
+A QGraphicsEffect subclass used for rendering layout items
+onto a scene with custom composition modes.
 
 .. versionadded:: 3.0
 %End
@@ -27,22 +27,25 @@ class QgsLayoutEffect : QGraphicsEffect
 
     QgsLayoutEffect();
 %Docstring
- Constructor for QgsLayoutEffect.
+Constructor for QgsLayoutEffect.
 %End
 
     void setCompositionMode( QPainter::CompositionMode mode );
 %Docstring
- Sets the composition (blending) ``mode`` used for rendering
- the item.
+Sets the composition (blending) ``mode`` used for rendering
+the item.
+
 .. seealso:: :py:func:`compositionMode()`
 %End
 
     QPainter::CompositionMode compositionMode() const;
 %Docstring
- Returns the composition (blending) mode used for rendering
- the item.
+Returns the composition (blending) mode used for rendering
+the item.
+
+:rtype: QPainter.CompositionMode
+
 .. seealso:: :py:func:`setCompositionMode()`
- :rtype: QPainter.CompositionMode
 %End
 
   protected:

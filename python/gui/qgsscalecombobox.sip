@@ -12,8 +12,8 @@
 class QgsScaleComboBox : QComboBox
 {
 %Docstring
- A combobox which lets the user select map scale from predefined list
- and highlights nearest to current scale value
+A combobox which lets the user select map scale from predefined list
+and highlights nearest to current scale value
 *
 %End
 
@@ -24,88 +24,100 @@ class QgsScaleComboBox : QComboBox
 
     QgsScaleComboBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsScaleComboBox.
+Constructor for QgsScaleComboBox.
 %End
 
     QString scaleString() const;
 %Docstring
- Returns the selected scale as a string, e.g. "1:150".
+Returns the selected scale as a string, e.g. "1:150".
+
+:rtype: str
+
 .. seealso:: :py:func:`setScaleString()`
- :rtype: str
 %End
 
     bool setScaleString( const QString &string );
 %Docstring
- Set the selected scale from a ``string``, e.g. "1:150".
+Set the selected scale from a ``string``, e.g. "1:150".
+
+:rtype: bool
+
 .. seealso:: :py:func:`scaleString()`
- :rtype: bool
 %End
 
     double scale() const;
 %Docstring
- Returns the selected scale as a double.
- The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Returns the selected scale as a double.
+The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
+:rtype: float
+
 .. seealso:: :py:func:`setScale()`
- :rtype: float
 %End
 
     double minScale() const;
 %Docstring
- Returns the minimum scale, or 0 if no minimum scale set.
- The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
- Any scale lower than the minimum scale will automatically be converted to the minimum scale.
- Except for 0 which is always allowed.
- :rtype: float
+Returns the minimum scale, or 0 if no minimum scale set.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Any scale lower than the minimum scale will automatically be converted to the minimum scale.
+Except for 0 which is always allowed.
+
+:rtype: float
 %End
 
     static QString toString( double scale );
 %Docstring
- Helper function to convert a ``scale`` double to scale string.
- The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Helper function to convert a ``scale`` double to scale string.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
- The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
+The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
+
+:rtype: str
+
 .. seealso:: :py:func:`toDouble()`
- :rtype: str
 %End
 
     static double toDouble( const QString &string, bool *ok = 0 );
 %Docstring
- Helper function to convert a scale ``string`` to double.
- The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
- If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
+Helper function to convert a scale ``string`` to double.
+The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
+
+:rtype: float
+
 .. seealso:: :py:func:`toString()`
- :rtype: float
 %End
 
   signals:
 
     void scaleChanged( double scale );
 %Docstring
- Emitted when *user* has finished editing/selecting a new scale.
- The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Emitted when *user* has finished editing/selecting a new scale.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %End
 
   public slots:
 
     void updateScales( const QStringList &scales = QStringList() );
 %Docstring
- Sets the list of predefined ``scales`` to show in the combobox. List elements
- are expected to be valid scale strings, such as "1:1000000".
+Sets the list of predefined ``scales`` to show in the combobox. List elements
+are expected to be valid scale strings, such as "1:1000000".
 %End
 
     void setScale( double scale );
 %Docstring
- Set the selected scale from a double.
- The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Set the selected scale from a double.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+
 .. seealso:: :py:func:`scale()`
 %End
 
     void setMinScale( double scale );
 %Docstring
- Set the minimum allowed ``scale``. Set to 0 to disable the minimum scale.
- The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
- Any scale lower than the minimum scale will automatically be converted to the minimum scale.
- Except for 0 which is always allowed.
+Set the minimum allowed ``scale``. Set to 0 to disable the minimum scale.
+The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
+Any scale lower than the minimum scale will automatically be converted to the minimum scale.
+Except for 0 which is always allowed.
 %End
 
   protected:

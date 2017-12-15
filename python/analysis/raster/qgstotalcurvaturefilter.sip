@@ -12,7 +12,7 @@
 class QgsTotalCurvatureFilter: QgsNineCellFilter
 {
 %Docstring
- Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis*
+Calculates total curvature as described by Wilson, Gallant (2000): terrain analysis*
 %End
 
 %TypeHeaderCode
@@ -28,9 +28,10 @@ class QgsTotalCurvatureFilter: QgsNineCellFilter
                                  float *x12, float *x22, float *x32,
                                  float *x13, float *x23, float *x33 );
 %Docstring
- Calculates total curvature from nine input values. The input values and the output value can be equal to the
+Calculates total curvature from nine input values. The input values and the output value can be equal to the
 nodata value if not present or outside of the border. Must be implemented by subclasses*
- :rtype: float
+
+:rtype: float
 %End
 };
 

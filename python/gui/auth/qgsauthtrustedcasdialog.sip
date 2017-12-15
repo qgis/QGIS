@@ -14,7 +14,7 @@
 class QgsAuthTrustedCAsDialog : QDialog
 {
 %Docstring
- Widget for listing trusted Certificate (Intermediate) Authorities used in secure connections
+Widget for listing trusted Certificate (Intermediate) Authorities used in secure connections
 %End
 
 %TypeHeaderCode
@@ -25,9 +25,9 @@ class QgsAuthTrustedCAsDialog : QDialog
     explicit QgsAuthTrustedCAsDialog( QWidget *parent /TransferThis/ = 0,
                                       const QList<QSslCertificate> &trustedCAs = QList<QSslCertificate>() );
 %Docstring
- Construct a dialog that will list the trusted Certificate Authorities
- \param parent Parent widget
- \param trustedCAs List of trusted Certificate Authorities objects
+Construct a dialog that will list the trusted Certificate Authorities
+:param parent: Parent widget
+:param trustedCAs: List of trusted Certificate Authorities objects
 %End
 
   protected:

@@ -18,16 +18,17 @@ class QgsArrowSymbolLayerWidget: QgsSymbolLayerWidget
 
     QgsArrowSymbolLayerWidget( QgsVectorLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor
- \param layer the layer where this symbol layer is applied
- \param parent the parent widget
+Constructor
+:param layer: the layer where this symbol layer is applied
+:param parent: the parent widget
 %End
 
     static QgsSymbolLayerWidget *create( QgsVectorLayer *layer ) /Factory/;
 %Docstring
- Static creation method
- \param layer the layer where this symbol layer is applied
- :rtype: QgsSymbolLayerWidget
+Static creation method
+:param layer: the layer where this symbol layer is applied
+
+:rtype: QgsSymbolLayerWidget
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );

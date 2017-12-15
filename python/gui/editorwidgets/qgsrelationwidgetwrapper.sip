@@ -13,6 +13,7 @@
 class QgsRelationWidgetWrapper : QgsWidgetWrapper
 {
 %Docstring
+
 .. note::
 
    not available in Python bindings
@@ -30,57 +31,61 @@ Constructor for QgsRelationWidgetWrapper
 
     bool showLabel() const;
 %Docstring
- Defines if a title lable should be shown for this widget.
- Only has an effect after widget() has been called at least once.
+Defines if a title lable should be shown for this widget.
+Only has an effect after widget() has been called at least once.
+
+:rtype: bool
 
 .. versionadded:: 2.18
- :rtype: bool
 %End
 
     void setShowLabel( bool showLabel );
 %Docstring
- Defines if a title lable should be shown for this widget.
- Only has an effect after widget() has been called at least once.
+Defines if a title lable should be shown for this widget.
+Only has an effect after widget() has been called at least once.
 
 .. versionadded:: 2.18
 %End
 
     bool showLinkButton() const;
 %Docstring
- Determines if the "link feature" button should be shown
+Determines if the "link feature" button should be shown
+
+:rtype: bool
 
 .. versionadded:: 2.18
- :rtype: bool
 %End
 
     void setShowLinkButton( bool showLinkButton );
 %Docstring
- Determines if the "link feature" button should be shown
+Determines if the "link feature" button should be shown
 
 .. versionadded:: 2.18
 %End
 
     bool showUnlinkButton() const;
 %Docstring
- Determines if the "unlink feature" button should be shown
+Determines if the "unlink feature" button should be shown
+
+:rtype: bool
 
 .. versionadded:: 2.18
- :rtype: bool
 %End
 
     void setShowUnlinkButton( bool showUnlinkButton );
 %Docstring
- Determines if the "unlink feature" button should be shown
+Determines if the "unlink feature" button should be shown
 
 .. versionadded:: 2.18
 %End
 
     QgsRelation relation() const;
 %Docstring
- The relation for which this wrapper is created.
+The relation for which this wrapper is created.
+
+:rtype: QgsRelation
 
 .. versionadded:: 3.0
- :rtype: QgsRelation
 %End
 
   protected:
@@ -97,8 +102,9 @@ Constructor for QgsRelationWidgetWrapper
 
     void setVisible( bool visible );
 %Docstring
- Sets the visibility of the wrapper's widget.
- \param visible set to true to show widget, false to hide widget
+Sets the visibility of the wrapper's widget.
+:param visible: set to true to show widget, false to hide widget
+
 .. versionadded:: 2.16
 %End
 

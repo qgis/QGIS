@@ -17,13 +17,13 @@
 class QgsClipper
 {
 %Docstring
- A class to trim lines and polygons to within a rectangular region.
- The functions in this class are likely to be called from within a
- render loop and hence need to as CPU efficient as possible.
- The main purpose of the functions in this class are to trim lines
-  and polygons to lie within a rectangular region. This is necessary
-  for drawing items to an X11 display which have a limit on the
-   magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
+A class to trim lines and polygons to within a rectangular region.
+The functions in this class are likely to be called from within a
+render loop and hence need to as CPU efficient as possible.
+The main purpose of the functions in this class are to trim lines
+and polygons to lie within a rectangular region. This is necessary
+for drawing items to an X11 display which have a limit on the
+magnitude of the screen coordinates (+/- 32768, i.e. 16 bit integer).
 %End
 
 %TypeHeaderCode
@@ -65,10 +65,10 @@ Minimum Y-coordinate of the rectangular box used for clipping.
                              QVector<double> &y,
                              bool shapeOpen );
 %Docstring
- Trims the given feature to a rectangular box. Returns the trimmed
- feature in x and y. The shapeOpen parameter determines whether
- the function treats the points as a closed shape (polygon), or as
- an open shape (linestring).
+Trims the given feature to a rectangular box. Returns the trimmed
+feature in x and y. The shapeOpen parameter determines whether
+the function treats the points as a closed shape (polygon), or as
+an open shape (linestring).
 
 .. note::
 
@@ -81,11 +81,13 @@ Minimum Y-coordinate of the rectangular box used for clipping.
 
     static QPolygonF clippedLine( const QgsCurve &curve, const QgsRectangle &clipExtent );
 %Docstring
- Takes a linestring and clips it to clipExtent
- \param curve the linestring
- \param clipExtent clipping bounds
- :return: clipped line coordinates
- :rtype: QPolygonF
+Takes a linestring and clips it to clipExtent
+:param curve: the linestring
+:param clipExtent: clipping bounds
+
+:return: clipped line coordinates
+:rtype: QPolygonF
+
 %End
 
 };

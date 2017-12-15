@@ -12,10 +12,10 @@
 class QgsFeatureListComboBox : QComboBox
 {
 %Docstring
- This offers a combobox with autocompleter that allows selecting features from a layer.
+This offers a combobox with autocompleter that allows selecting features from a layer.
 
- It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression
- and whenever text is typed into the combobox, the completer and popup will adjust to features matching the typed text.
+It will show up to 100 entries at a time. The entries can be chosen based on the displayExpression
+and whenever text is typed into the combobox, the completer and popup will adjust to features matching the typed text.
 
 .. versionadded:: 3.0
 %End
@@ -27,96 +27,104 @@ class QgsFeatureListComboBox : QComboBox
 
     QgsFeatureListComboBox( QWidget *parent = 0 );
 %Docstring
- Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.
+Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.
 %End
 
     QgsVectorLayer *sourceLayer() const;
 %Docstring
- The layer from which features should be listed.
- :rtype: QgsVectorLayer
+The layer from which features should be listed.
+
+:rtype: QgsVectorLayer
 %End
 
     void setSourceLayer( QgsVectorLayer *sourceLayer );
 %Docstring
- The layer from which features should be listed.
+The layer from which features should be listed.
 %End
 
     QString displayExpression() const;
 %Docstring
- The display expression will be used to display features as well as
- the the value to match the typed text against.
- :rtype: str
+The display expression will be used to display features as well as
+the the value to match the typed text against.
+
+:rtype: str
 %End
 
     void setDisplayExpression( const QString &displayExpression );
 %Docstring
- The display expression will be used to display features as well as
- the the value to match the typed text against.
+The display expression will be used to display features as well as
+the the value to match the typed text against.
 %End
 
     QString filterExpression() const;
 %Docstring
- An additional expression to further restrict the available features.
- This can be used to integrate additional spatial or other constraints.
- :rtype: str
+An additional expression to further restrict the available features.
+This can be used to integrate additional spatial or other constraints.
+
+:rtype: str
 %End
 
     void setFilterExpression( const QString &filterExpression );
 %Docstring
- An additional expression to further restrict the available features.
- This can be used to integrate additional spatial or other constraints.
+An additional expression to further restrict the available features.
+This can be used to integrate additional spatial or other constraints.
 
- TODO!
+TODO!
 %End
 
     QVariant identifierValue() const;
 %Docstring
- The identifier value of the currently selected feature. A value from the
- identifierField.
- :rtype: QVariant
+The identifier value of the currently selected feature. A value from the
+identifierField.
+
+:rtype: QVariant
 %End
 
     void setIdentifierValue( const QVariant &identifierValue );
 %Docstring
- The identifier value of the currently selected feature. A value from the
- identifierField.
+The identifier value of the currently selected feature. A value from the
+identifierField.
 %End
 
     QgsFeatureRequest currentFeatureRequest() const;
 %Docstring
- Shorthand for getting a feature request to query the currently selected
- feature.
- :rtype: QgsFeatureRequest
+Shorthand for getting a feature request to query the currently selected
+feature.
+
+:rtype: QgsFeatureRequest
 %End
 
     bool allowNull() const;
 %Docstring
- Determines if a NULL value should be available in the list.
- :rtype: bool
+Determines if a NULL value should be available in the list.
+
+:rtype: bool
 %End
 
     void setAllowNull( bool allowNull );
 %Docstring
- Determines if a NULL value should be available in the list.
+Determines if a NULL value should be available in the list.
 %End
 
     QString identifierField() const;
 %Docstring
- Field name that will be used to uniquely identify the current feature.
- Normally the primary key of the layer.
- :rtype: str
+Field name that will be used to uniquely identify the current feature.
+Normally the primary key of the layer.
+
+:rtype: str
 %End
 
     void setIdentifierField( const QString &identifierField );
 %Docstring
- Field name that will be used to uniquely identify the current feature.
- Normally the primary key of the layer.
+Field name that will be used to uniquely identify the current feature.
+Normally the primary key of the layer.
 %End
 
     QModelIndex currentModelIndex() const;
 %Docstring
- The index of the currently selected item.
- :rtype: QModelIndex
+The index of the currently selected item.
+
+:rtype: QModelIndex
 %End
 
     virtual void focusOutEvent( QFocusEvent *event );
@@ -127,36 +135,36 @@ class QgsFeatureListComboBox : QComboBox
 
     void sourceLayerChanged();
 %Docstring
- The layer from which features should be listed.
+The layer from which features should be listed.
 %End
 
     void displayExpressionChanged();
 %Docstring
- The display expression will be used to display features as well as
- the the value to match the typed text against.
+The display expression will be used to display features as well as
+the the value to match the typed text against.
 %End
 
     void filterExpressionChanged();
 %Docstring
- An additional expression to further restrict the available features.
- This can be used to integrate additional spatial or other constraints.
+An additional expression to further restrict the available features.
+This can be used to integrate additional spatial or other constraints.
 %End
 
     void identifierValueChanged();
 %Docstring
- The identifier value of the currently selected feature. A value from the
- identifierField.
+The identifier value of the currently selected feature. A value from the
+identifierField.
 %End
 
     void identifierFieldChanged();
 %Docstring
- Field name that will be used to uniquely identify the current feature.
- Normally the primary key of the layer.
+Field name that will be used to uniquely identify the current feature.
+Normally the primary key of the layer.
 %End
 
     void allowNullChanged();
 %Docstring
- Determines if a NULL value should be available in the list.
+Determines if a NULL value should be available in the list.
 %End
 
 };

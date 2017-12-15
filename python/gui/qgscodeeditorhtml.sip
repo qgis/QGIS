@@ -12,9 +12,11 @@
 class QgsCodeEditorHTML : QgsCodeEditor
 {
 %Docstring
- A HTML editor based on QScintilla2. Adds syntax highlighting and
- code autocompletion.
+A HTML editor based on QScintilla2. Adds syntax highlighting and
+code autocompletion.
+
 .. versionadded:: 2.6
+
 .. note::
 
    may not be available in Python bindings, depending on platform support

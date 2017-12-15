@@ -14,7 +14,8 @@
 class QgsMapToolExtent : QgsMapTool
 {
 %Docstring
- A map tool that emits an extent from a rectangle drawn onto the map canvas.
+A map tool that emits an extent from a rectangle drawn onto the map canvas.
+
 .. versionadded:: 3.0
 %End
 
@@ -37,24 +38,26 @@ constructor
 
     void setRatio( QSize ratio );
 %Docstring
- Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
- To unset a fixed aspect ratio, set the width and height to zero.
- \param ratio aspect ratio's width and height
- *
+Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
+To unset a fixed aspect ratio, set the width and height to zero.
+:param ratio: aspect ratio's width and height
+*
 %End
 
     QSize ratio() const;
 %Docstring
- Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
- If the aspect ratio isn't fixed, the width and height will be set to zero.
- *
- :rtype: QSize
+Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
+If the aspect ratio isn't fixed, the width and height will be set to zero.
+*
+
+:rtype: QSize
 %End
 
     QgsRectangle extent() const;
 %Docstring
- Returns the current extent drawn onto the canvas.
- :rtype: QgsRectangle
+Returns the current extent drawn onto the canvas.
+
+:rtype: QgsRectangle
 %End
 
   signals:

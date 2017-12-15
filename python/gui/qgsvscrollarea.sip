@@ -12,8 +12,8 @@
 class QgsVScrollArea : QgsScrollArea
 {
 %Docstring
- QgsVScrollArea is a QScrollArea subclass which only displays a vertical
- scrollbar and fits the width to the contents.
+QgsVScrollArea is a QScrollArea subclass which only displays a vertical
+scrollbar and fits the width to the contents.
 
 .. versionadded:: 3.0
 %End
@@ -25,8 +25,8 @@ class QgsVScrollArea : QgsScrollArea
 
     QgsVScrollArea( QWidget *parent = 0 );
 %Docstring
- QgsVScrollArea
- \param parent The parent widget
+QgsVScrollArea
+:param parent: The parent widget
 %End
 
     virtual bool eventFilter( QObject *o, QEvent *e );

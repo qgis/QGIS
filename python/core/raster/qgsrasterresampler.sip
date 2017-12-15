@@ -13,7 +13,7 @@
 class QgsRasterResampler
 {
 %Docstring
- Interface for resampling rasters (e.g. to have a smoother appearance)
+Interface for resampling rasters (e.g. to have a smoother appearance)
 %End
 
 %TypeHeaderCode
@@ -35,17 +35,19 @@ class QgsRasterResampler
 
     virtual QString type() const = 0;
 %Docstring
- Get a descriptive type identifier for this raster resampler.
- Needs to be implemented by subclasses.
- :rtype: str
+Get a descriptive type identifier for this raster resampler.
+Needs to be implemented by subclasses.
+
+:rtype: str
 %End
 
     virtual QgsRasterResampler *clone() const = 0 /Factory/;
 %Docstring
- Get a deep copy of this object.
- Needs to be reimplemented by subclasses.
- Ownership is transferred to the caller.
- :rtype: QgsRasterResampler
+Get a deep copy of this object.
+Needs to be reimplemented by subclasses.
+Ownership is transferred to the caller.
+
+:rtype: QgsRasterResampler
 %End
 };
 

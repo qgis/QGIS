@@ -11,7 +11,7 @@
 class QgsEditorWidgetAutoConfPlugin
 {
 %Docstring
- Base class for plugins allowing to pick automatically a widget type for editing fields.
+Base class for plugins allowing to pick automatically a widget type for editing fields.
 
 .. versionadded:: 3.0
 %End
@@ -23,17 +23,18 @@ class QgsEditorWidgetAutoConfPlugin
 
     virtual QgsEditorWidgetSetup editorWidgetSetup( const QgsVectorLayer *vl, const QString &fieldName, int &score /Out/ ) const = 0;
 %Docstring
- Typical scores are:
-   * 0: no matching type found.
-   * 10: a widget has been guessed from the type of field.
-   * 20: a widget has been determined from an external configuration (for example a database table)
+Typical scores are:
+* 0: no matching type found.
+* 10: a widget has been guessed from the type of field.
+* 20: a widget has been determined from an external configuration (for example a database table)
 
- \param vl        The vector layer for which this widget will be created
- \param fieldName The field name on the specified layer for which this widget will be created
- \param score     Where the score is returned (default to 0)
+:param vl:        The vector layer for which this widget will be created
+:param fieldName: The field name on the specified layer for which this widget will be created
+:param score:     Where the score is returned (default to 0)
 
- :return: and integer value rating how good is the setup provided by this plugin.
- :rtype: QgsEditorWidgetSetup
+:return: and integer value rating how good is the setup provided by this plugin.
+:rtype: QgsEditorWidgetSetup
+
 %End
 
 };

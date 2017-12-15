@@ -12,8 +12,10 @@
 class QgsSymbolLevelsWidget : QgsPanelWidget
 {
 %Docstring
- A widget which allows the user to modify the rendering order of symbol layers.
+A widget which allows the user to modify the rendering order of symbol layers.
+
 .. seealso:: :py:class:`QgsSymbolLevelsDialog`
+
 .. versionadded:: 3.0
 %End
 
@@ -29,13 +31,14 @@ Constructor for QgsSymbolLevelsWidget
     bool usingLevels() const;
 %Docstring
 Returns whether the level ordering is enabled
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setForceOrderingEnabled( bool enabled );
 %Docstring
- Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
- \param enabled toggle level ordering
+Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
+:param enabled: toggle level ordering
 %End
 
   public slots:
@@ -57,7 +60,8 @@ Apply button
 class QgsSymbolLevelsDialog : QDialog
 {
 %Docstring
- A dialog which allows the user to modify the rendering order of symbol layers.
+A dialog which allows the user to modify the rendering order of symbol layers.
+
 .. seealso:: :py:class:`QgsSymbolLevelsWidget`
 %End
 

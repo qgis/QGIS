@@ -19,11 +19,13 @@ class QgsNewMemoryLayerDialog: QDialog
 
     static QgsVectorLayer *runAndCreateLayer( QWidget *parent = 0, const QgsCoordinateReferenceSystem &defaultCrs = QgsCoordinateReferenceSystem() );
 %Docstring
- Runs the dialog and creates a new memory layer
- \param parent parent widget
- \param defaultCrs default layer CRS to show in dialog
- :return: new memory layer
- :rtype: QgsVectorLayer
+Runs the dialog and creates a new memory layer
+:param parent: parent widget
+:param defaultCrs: default layer CRS to show in dialog
+
+:return: new memory layer
+:rtype: QgsVectorLayer
+
 %End
 
     QgsNewMemoryLayerDialog( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
@@ -32,27 +34,33 @@ class QgsNewMemoryLayerDialog: QDialog
     QgsWkbTypes::Type selectedType() const;
 %Docstring
 Returns the selected geometry type
- :rtype: QgsWkbTypes.Type
+
+:rtype: QgsWkbTypes.Type
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Sets the ``crs`` value for the new layer in the dialog.
+Sets the ``crs`` value for the new layer in the dialog.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`crs()`
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
- Returns the selected CRS for the new layer.
+Returns the selected CRS for the new layer.
+
+:rtype: QgsCoordinateReferenceSystem
+
 .. seealso:: :py:func:`setCrs()`
- :rtype: QgsCoordinateReferenceSystem
 %End
 
     QString layerName() const;
 %Docstring
 Returns the layer name
- :rtype: str
+
+:rtype: str
 %End
 
 };

@@ -13,7 +13,7 @@
 class QgsMultiBandColorRenderer: QgsRasterRenderer
 {
 %Docstring
- Renderer for multiband images with the color components
+Renderer for multiband images with the color components
 %End
 
 %TypeHeaderCode
@@ -30,12 +30,14 @@ class QgsMultiBandColorRenderer: QgsRasterRenderer
 
 %Docstring
 QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
- :rtype: QgsMultiBandColorRenderer
+
+:rtype: QgsMultiBandColorRenderer
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 %Docstring
- :rtype: QgsRasterRenderer
+
+:rtype: QgsRasterRenderer
 %End
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
@@ -43,23 +45,27 @@ QgsMultiBandColorRenderer cannot be copied. Use clone() instead.
 
     int redBand() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     void setRedBand( int band );
     int greenBand() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     void setGreenBand( int band );
     int blueBand() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     void setBlueBand( int band );
 
     const QgsContrastEnhancement *redContrastEnhancement() const;
 %Docstring
- :rtype: QgsContrastEnhancement
+
+:rtype: QgsContrastEnhancement
 %End
     void setRedContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
 %Docstring
@@ -68,7 +74,8 @@ Takes ownership
 
     const QgsContrastEnhancement *greenContrastEnhancement() const;
 %Docstring
- :rtype: QgsContrastEnhancement
+
+:rtype: QgsContrastEnhancement
 %End
     void setGreenContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
 %Docstring
@@ -77,7 +84,8 @@ Takes ownership
 
     const QgsContrastEnhancement *blueContrastEnhancement() const;
 %Docstring
- :rtype: QgsContrastEnhancement
+
+:rtype: QgsContrastEnhancement
 %End
     void setBlueContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
 %Docstring
@@ -94,7 +102,8 @@ Takes ownership
     QgsMultiBandColorRenderer( const QgsMultiBandColorRenderer & );
     const QgsMultiBandColorRenderer &operator=( const QgsMultiBandColorRenderer & );
 %Docstring
- :rtype: QgsMultiBandColorRenderer
+
+:rtype: QgsMultiBandColorRenderer
 %End
 };
 

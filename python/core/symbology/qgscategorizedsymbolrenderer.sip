@@ -22,7 +22,7 @@ class QgsRendererCategory
 
     QgsRendererCategory();
 %Docstring
- Constructor for QgsRendererCategory.
+Constructor for QgsRendererCategory.
 %End
 
     QgsRendererCategory( const QVariant &value, QgsSymbol *symbol /Transfer/, const QString &label, bool render = true );
@@ -38,15 +38,18 @@ copy constructor
 
     QVariant value() const;
 %Docstring
- :rtype: QVariant
+
+:rtype: QVariant
 %End
     QgsSymbol *symbol() const;
 %Docstring
- :rtype: QgsSymbol
+
+:rtype: QgsSymbol
 %End
     QString label() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     void setValue( const QVariant &value );
@@ -55,13 +58,15 @@ copy constructor
 
     bool renderState() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     void setRenderState( bool render );
 
     QString dump() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
@@ -97,53 +102,64 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
 
     void updateSymbols( QgsSymbol *sym );
 %Docstring
- Update all the symbols but leave categories and colors. This method also sets the source
- symbol for the renderer.
- \param sym source symbol to use for categories. Ownership is not transferred.
+Update all the symbols but leave categories and colors. This method also sets the source
+symbol for the renderer.
+:param sym: source symbol to use for categories. Ownership is not transferred.
+
 .. seealso:: :py:func:`setSourceSymbol()`
 %End
 
     const QgsCategoryList &categories() const;
 %Docstring
- :rtype: QgsCategoryList
+
+:rtype: QgsCategoryList
 %End
 
     int categoryIndexForValue( const QVariant &val );
 %Docstring
 return index of category with specified value (-1 if not found)
- :rtype: int
+
+:rtype: int
 %End
 
     int categoryIndexForLabel( const QString &val );
 %Docstring
- return index of category with specified label (-1 if not found or not unique)
+return index of category with specified label (-1 if not found or not unique)
+
+:rtype: int
+
 .. versionadded:: 2.5
- :rtype: int
 %End
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool updateCategorySymbol( int catIndex, QgsSymbol *symbol /Transfer/ );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool updateCategoryLabel( int catIndex, const QString &label );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     bool updateCategoryRenderState( int catIndex, bool render );
 %Docstring
+
+:rtype: bool
+
 .. versionadded:: 2.5
- :rtype: bool
 %End
 
     void addCategory( const QgsRendererCategory &category );
     bool deleteCategory( int catIndex );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     void deleteAllCategories();
 
@@ -157,14 +173,16 @@ Moves the category at index position from to index position to.
 
     QString classAttribute() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     void setClassAttribute( const QString &attr );
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 create renderer from XML element
- :rtype: QgsFeatureRenderer
+
+:rtype: QgsFeatureRenderer
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
@@ -174,42 +192,53 @@ create renderer from XML element
 
     QgsSymbol *sourceSymbol();
 %Docstring
- Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
- the categories' color.
+Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
+the categories' color.
+
+:rtype: QgsSymbol
+
 .. seealso:: :py:func:`setSourceSymbol()`
+
 .. seealso:: :py:func:`sourceColorRamp()`
- :rtype: QgsSymbol
 %End
 
     void setSourceSymbol( QgsSymbol *sym /Transfer/ );
 %Docstring
- Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
- the categories' color.
- \param sym source symbol, ownership is transferred to the renderer
+Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
+the categories' color.
+:param sym: source symbol, ownership is transferred to the renderer
+
 .. seealso:: :py:func:`sourceSymbol()`
+
 .. seealso:: :py:func:`setSourceColorRamp()`
 %End
 
     QgsColorRamp *sourceColorRamp();
 %Docstring
- Returns the source color ramp, from which each categories' color is derived.
+Returns the source color ramp, from which each categories' color is derived.
+
+:rtype: QgsColorRamp
+
 .. seealso:: :py:func:`setSourceColorRamp()`
+
 .. seealso:: :py:func:`sourceSymbol()`
- :rtype: QgsColorRamp
 %End
 
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
- Sets the source color ramp.
- \param ramp color ramp. Ownership is transferred to the renderer
+Sets the source color ramp.
+:param ramp: color ramp. Ownership is transferred to the renderer
+
 .. seealso:: :py:func:`sourceColorRamp()`
+
 .. seealso:: :py:func:`setSourceSymbol()`
 %End
 
     void updateColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
- Update the color ramp used and all symbols colors.
- \param ramp color ramp. Ownership is transferred to the renderer
+Update the color ramp used and all symbols colors.
+:param ramp: color ramp. Ownership is transferred to the renderer
+
 .. versionadded:: 2.5
 %End
 
@@ -221,30 +250,36 @@ create renderer from XML element
 
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- creates a QgsCategorizedSymbolRenderer from an existing renderer.
+creates a QgsCategorizedSymbolRenderer from an existing renderer.
+
+:rtype: QgsCategorizedSymbolRenderer
+
 .. versionadded:: 2.5
- :return: a new renderer if the conversion was possible, otherwise 0.
- :rtype: QgsCategorizedSymbolRenderer
+
+:return: a new renderer if the conversion was possible, otherwise 0.
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
 %Docstring
- Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
- This allows configuring for which values (symbol sizes) should be shown in the legend, whether to display
- different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
+Configures appearance of legend when renderer is configured to use data-defined size for marker symbols.
+This allows configuring for which values (symbol sizes) should be shown in the legend, whether to display
+different symbol sizes collapsed in one legend node or separated across multiple legend nodes etc.
 
- When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
- Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
- size legend.
+When renderer does not use data-defined size or does not use marker symbols, these settings will be ignored.
+Takes ownership of the passed settings objects. Null pointer is a valid input that disables data-defined
+size legend.
+
 .. versionadded:: 3.0
 %End
 
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const;
 %Docstring
- Returns configuration of appearance of legend when using data-defined size for marker symbols.
- Will return null if the functionality is disabled.
+Returns configuration of appearance of legend when using data-defined size for marker symbols.
+Will return null if the functionality is disabled.
+
+:rtype: QgsDataDefinedSizeLegend
+
 .. versionadded:: 3.0
- :rtype: QgsDataDefinedSizeLegend
 %End
 
   protected:
@@ -259,19 +294,22 @@ hashtable for faster access to symbols
 
     QgsSymbol *skipRender();
 %Docstring
- :rtype: QgsSymbol
+
+:rtype: QgsSymbol
 %End
 
     QgsSymbol *symbolForValue( const QVariant &value );
 %Docstring
- :rtype: QgsSymbol
+
+:rtype: QgsSymbol
 %End
 
   private:
     QgsCategorizedSymbolRenderer( const QgsCategorizedSymbolRenderer & );
     QgsCategorizedSymbolRenderer &operator=( const QgsCategorizedSymbolRenderer & );
 %Docstring
- :rtype: QgsCategorizedSymbolRenderer
+
+:rtype: QgsCategorizedSymbolRenderer
 %End
 };
 

@@ -10,8 +10,8 @@
 class QgsFallbackFieldFormatter : QgsFieldFormatter
 {
 %Docstring
- A default fallback field formatter in case no specialized field formatter is defined.
- The values will be returned unmodified.
+A default fallback field formatter in case no specialized field formatter is defined.
+The values will be returned unmodified.
 
 .. versionadded:: 3.0
 %End
@@ -23,7 +23,7 @@ class QgsFallbackFieldFormatter : QgsFieldFormatter
 
     QgsFallbackFieldFormatter();
 %Docstring
- Default constructor of field formatter as a fallback when no specialized formatter is defined.
+Default constructor of field formatter as a fallback when no specialized formatter is defined.
 %End
     virtual QString id() const;
 };

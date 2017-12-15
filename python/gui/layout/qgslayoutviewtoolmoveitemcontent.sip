@@ -11,7 +11,8 @@
 class QgsLayoutViewToolMoveItemContent : QgsLayoutViewTool
 {
 %Docstring
- Layout view tool for moving and zooming item content.
+Layout view tool for moving and zooming item content.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,7 +23,7 @@ class QgsLayoutViewToolMoveItemContent : QgsLayoutViewTool
 
     QgsLayoutViewToolMoveItemContent( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolMoveItemContent.
+Constructor for QgsLayoutViewToolMoveItemContent.
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );

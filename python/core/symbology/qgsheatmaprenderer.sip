@@ -12,6 +12,7 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
 {
 %Docstring
  A renderer which draws points as a live heatmap
+
 .. versionadded:: 2.7
 %End
 
@@ -30,29 +31,35 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
     virtual void stopRender( QgsRenderContext &context );
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 %Docstring
+
+:rtype: QgsSymbol
+
 .. note::
 
    symbolForFeature2 in Python bindings
- :rtype: QgsSymbol
 %End
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 %Docstring
+
+:rtype: QgsSymbolList
+
 .. note::
 
    symbol2 in Python bindings
- :rtype: QgsSymbolList
 %End
     virtual QString dump() const;
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates a new heatmap renderer instance from XML
- :rtype: QgsFeatureRenderer
+
+:rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- :rtype: QgsHeatmapRenderer
+
+:rtype: QgsHeatmapRenderer
 %End
 
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
@@ -60,122 +67,162 @@ Creates a new heatmap renderer instance from XML
 
     QgsColorRamp *colorRamp() const;
 %Docstring
- Returns the color ramp used for shading the heatmap.
- :return: color ramp for heatmap
+Returns the color ramp used for shading the heatmap.
+
+:return: color ramp for heatmap
+:rtype: QgsColorRamp
+
+
 .. seealso:: :py:func:`setColorRamp`
- :rtype: QgsColorRamp
 %End
 
     void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
- Sets the color ramp to use for shading the heatmap.
- \param ramp color ramp for heatmap. Ownership of ramp is transferred to the renderer.
+Sets the color ramp to use for shading the heatmap.
+:param ramp: color ramp for heatmap. Ownership of ramp is transferred to the renderer.
+
 .. seealso:: :py:func:`colorRamp`
 %End
 
     double radius() const;
 %Docstring
- Returns the radius for the heatmap
- :return: heatmap radius
+Returns the radius for the heatmap
+
+:return: heatmap radius
+:rtype: float
+
+
 .. seealso:: :py:func:`setRadius`
+
 .. seealso:: :py:func:`radiusUnit`
+
 .. seealso:: :py:func:`radiusMapUnitScale`
- :rtype: float
 %End
 
     void setRadius( const double radius );
 %Docstring
- Sets the radius for the heatmap
- \param radius heatmap radius
+Sets the radius for the heatmap
+:param radius: heatmap radius
+
 .. seealso:: :py:func:`radius`
+
 .. seealso:: :py:func:`setRadiusUnit`
+
 .. seealso:: :py:func:`setRadiusMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit radiusUnit() const;
 %Docstring
- Returns the units used for the heatmap's radius
- :return: units for heatmap radius
+Returns the units used for the heatmap's radius
+
+:return: units for heatmap radius
+:rtype: QgsUnitTypes.RenderUnit
+
+
 .. seealso:: :py:func:`radius`
+
 .. seealso:: :py:func:`setRadiusUnit`
+
 .. seealso:: :py:func:`radiusMapUnitScale`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setRadiusUnit( const QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units used for the heatmap's radius
- \param unit units for heatmap radius
+Sets the units used for the heatmap's radius
+:param unit: units for heatmap radius
+
 .. seealso:: :py:func:`radiusUnit`
+
 .. seealso:: :py:func:`setRadius`
+
 .. seealso:: :py:func:`radiusMapUnitScale`
 %End
 
     const QgsMapUnitScale &radiusMapUnitScale() const;
 %Docstring
- Returns the map unit scale used for the heatmap's radius
- :return: map unit scale for heatmap's radius
+Returns the map unit scale used for the heatmap's radius
+
+:return: map unit scale for heatmap's radius
+:rtype: QgsMapUnitScale
+
+
 .. seealso:: :py:func:`radius`
+
 .. seealso:: :py:func:`radiusUnit`
+
 .. seealso:: :py:func:`setRadiusMapUnitScale`
- :rtype: QgsMapUnitScale
 %End
 
     void setRadiusMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
- Sets the map unit scale used for the heatmap's radius
- \param scale map unit scale for heatmap's radius
+Sets the map unit scale used for the heatmap's radius
+:param scale: map unit scale for heatmap's radius
+
 .. seealso:: :py:func:`setRadius`
+
 .. seealso:: :py:func:`setRadiusUnit`
+
 .. seealso:: :py:func:`radiusMapUnitScale`
 %End
 
     double maximumValue() const;
 %Docstring
- Returns the maximum value used for shading the heatmap.
- :return: maximum value for heatmap shading. If 0, then maximum value will be automatically
- calculated.
+Returns the maximum value used for shading the heatmap.
+
+:return: maximum value for heatmap shading. If 0, then maximum value will be automatically
+:rtype: float
+
+calculated.
+
 .. seealso:: :py:func:`setMaximumValue`
- :rtype: float
 %End
 
     void setMaximumValue( const double value );
 %Docstring
- Sets the maximum value used for shading the heatmap.
- \param value maximum value for heatmap shading. Set to 0 for automatic calculation of
- maximum value.
+Sets the maximum value used for shading the heatmap.
+:param value: maximum value for heatmap shading. Set to 0 for automatic calculation of
+maximum value.
+
 .. seealso:: :py:func:`maximumValue`
 %End
 
     double renderQuality() const;
 %Docstring
- Returns the render quality used for drawing the heatmap.
- :return: render quality. A value of 1 indicates maximum quality, and increasing the
- value will result in faster drawing but lower quality rendering.
+Returns the render quality used for drawing the heatmap.
+
+:return: render quality. A value of 1 indicates maximum quality, and increasing the
+:rtype: float
+
+value will result in faster drawing but lower quality rendering.
+
 .. seealso:: :py:func:`setRenderQuality`
- :rtype: float
 %End
 
     void setRenderQuality( const int quality );
 %Docstring
- Sets the render quality used for drawing the heatmap.
- \param quality render quality. A value of 1 indicates maximum quality, and increasing the
- value will result in faster drawing but lower quality rendering.
+Sets the render quality used for drawing the heatmap.
+:param quality: render quality. A value of 1 indicates maximum quality, and increasing the
+value will result in faster drawing but lower quality rendering.
+
 .. seealso:: :py:func:`renderQuality`
 %End
 
     QString weightExpression() const;
 %Docstring
- Returns the expression used for weighting points when generating the heatmap.
- :return: point weight expression. If empty, all points are equally weighted.
+Returns the expression used for weighting points when generating the heatmap.
+
+:return: point weight expression. If empty, all points are equally weighted.
+:rtype: str
+
+
 .. seealso:: :py:func:`setWeightExpression`
- :rtype: str
 %End
 
     void setWeightExpression( const QString &expression );
 %Docstring
- Sets the expression used for weighting points when generating the heatmap.
- \param expression point weight expression. If set to empty, all points are equally weighted.
+Sets the expression used for weighting points when generating the heatmap.
+:param expression: point weight expression. If set to empty, all points are equally weighted.
+
 .. seealso:: :py:func:`weightExpression`
 %End
 

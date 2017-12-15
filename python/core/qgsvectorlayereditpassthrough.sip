@@ -43,15 +43,16 @@ class QgsVectorLayerEditPassthrough : QgsVectorLayerEditBuffer
 
     bool update( QgsTransaction *transaction, const QString &sql );
 %Docstring
- Update underlying data with a SQL query embedded in a transaction.
+Update underlying data with a SQL query embedded in a transaction.
 
- \param transaction Transaction in which the sql query has been run
- \param sql The SQL query updating data
+:param transaction: Transaction in which the sql query has been run
+:param sql: The SQL query updating data
 
- :return: true if the undo/redo command is well added to the stack, false otherwise
+:return: true if the undo/redo command is well added to the stack, false otherwise
+:rtype: bool
+
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
 };

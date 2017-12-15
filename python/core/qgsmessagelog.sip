@@ -12,16 +12,16 @@
 class QgsMessageLog : QObject
 {
 %Docstring
- Interface for logging messages from QGIS in GUI independent way.
- This class provides abstraction of a tabbed window for showing messages to the user.
- By default QgsMessageLogOutput will be used if not overridden with another
- message log creator function.
+Interface for logging messages from QGIS in GUI independent way.
+This class provides abstraction of a tabbed window for showing messages to the user.
+By default QgsMessageLogOutput will be used if not overridden with another
+message log creator function.
 
- QGIS application uses QgsMessageLog class for logging messages in a dockable
- window for the user.
+QGIS application uses QgsMessageLog class for logging messages in a dockable
+window for the user.
 
- QgsMessageLog is not usually directly created, but rather accessed through
- QgsApplication.messageLog().
+QgsMessageLog is not usually directly created, but rather accessed through
+QgsApplication.messageLog().
 %End
 
 %TypeHeaderCode
@@ -40,7 +40,7 @@ class QgsMessageLog : QObject
 
     QgsMessageLog();
 %Docstring
- Constructor for QgsMessageLog.
+Constructor for QgsMessageLog.
 %End
 
     static void logMessage( const QString &message, const QString &tag = QString(), MessageLevel level = QgsMessageLog::WARNING );

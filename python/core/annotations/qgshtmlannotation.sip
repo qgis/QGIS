@@ -15,7 +15,8 @@
 class QgsHtmlAnnotation: QgsAnnotation
 {
 %Docstring
- An annotation item that embeds HTML content.
+An annotation item that embeds HTML content.
+
 .. versionadded:: 3.0
 %End
 
@@ -26,7 +27,7 @@ class QgsHtmlAnnotation: QgsAnnotation
 
     QgsHtmlAnnotation( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsHtmlAnnotation.
+Constructor for QgsHtmlAnnotation.
 %End
 
     ~QgsHtmlAnnotation();
@@ -39,15 +40,18 @@ class QgsHtmlAnnotation: QgsAnnotation
 
     void setSourceFile( const QString &htmlFile );
 %Docstring
- Sets the file path for the source HTML file.
+Sets the file path for the source HTML file.
+
 .. seealso:: :py:func:`sourceFile()`
 %End
 
     QString sourceFile() const;
 %Docstring
- Returns the file path for the source HTML file.
+Returns the file path for the source HTML file.
+
+:rtype: str
+
 .. seealso:: :py:func:`setSourceFile()`
- :rtype: str
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
@@ -58,8 +62,9 @@ class QgsHtmlAnnotation: QgsAnnotation
 
     static QgsHtmlAnnotation *create() /Factory/;
 %Docstring
- Returns a new QgsHtmlAnnotation object.
- :rtype: QgsHtmlAnnotation
+Returns a new QgsHtmlAnnotation object.
+
+:rtype: QgsHtmlAnnotation
 %End
 
   protected:

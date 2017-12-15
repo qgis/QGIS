@@ -11,7 +11,7 @@
 class QgsAuthMethodPlugins : QDialog
 {
 %Docstring
- Dialog for viewing available authentication method plugins
+Dialog for viewing available authentication method plugins
 %End
 
 %TypeHeaderCode
@@ -21,8 +21,8 @@ class QgsAuthMethodPlugins : QDialog
 
     explicit QgsAuthMethodPlugins( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Construct a dialog for viewing available authentication method plugins
- \param parent Parent widget
+Construct a dialog for viewing available authentication method plugins
+:param parent: Parent widget
 %End
 
 };
@@ -31,7 +31,7 @@ class QgsAuthMethodPlugins : QDialog
 class QgsAuthEditorWidgets : QWidget
 {
 %Docstring
- Wrapper widget for available authentication editors
+Wrapper widget for available authentication editors
 %End
 
 %TypeHeaderCode
@@ -41,8 +41,8 @@ class QgsAuthEditorWidgets : QWidget
 
     explicit QgsAuthEditorWidgets( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Construct a widget to contain various authentication editors
- \param parent Parent widget
+Construct a widget to contain various authentication editors
+:param parent: Parent widget
 %End
 
 };

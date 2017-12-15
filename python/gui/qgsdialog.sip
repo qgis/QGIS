@@ -13,7 +13,7 @@
 class QgsDialog : QDialog
 {
 %Docstring
- A generic dialog with layout and button box
+A generic dialog with layout and button box
 %End
 
 %TypeHeaderCode
@@ -25,18 +25,20 @@ class QgsDialog : QDialog
                QDialogButtonBox::StandardButtons buttons = QDialogButtonBox::Close,
                Qt::Orientation orientation = Qt::Horizontal );
 %Docstring
- Constructor for QgsDialog.
+Constructor for QgsDialog.
 %End
 
     QVBoxLayout *layout();
 %Docstring
 Returns the central layout. Widgets added to it must have this dialog as parent.
- :rtype: QVBoxLayout
+
+:rtype: QVBoxLayout
 %End
     QDialogButtonBox *buttonBox();
 %Docstring
 Returns the button box.
- :rtype: QDialogButtonBox
+
+:rtype: QDialogButtonBox
 %End
 
   protected:

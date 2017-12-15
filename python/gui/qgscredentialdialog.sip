@@ -13,7 +13,7 @@
 class QgsCredentialDialog : QDialog, QgsCredentials
 {
 %Docstring
- A generic dialog for requesting credentials
+A generic dialog for requesting credentials
 %End
 
 %TypeHeaderCode

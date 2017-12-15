@@ -29,7 +29,8 @@ class QgsFeatureListViewDelegate : QItemDelegate
 
     Element positionToElement( QPoint pos );
 %Docstring
- :rtype: Element
+
+:rtype: Element
 %End
 
     void setFeatureSelectionModel( QgsFeatureSelectionModel *featureSelectionModel );

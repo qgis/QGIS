@@ -12,6 +12,7 @@ class QgsLayoutGridSettings : QgsLayoutSerializableObject
 {
 %Docstring
  Contains settings relating to the appearance, spacing and offset for layout grids.
+
 .. versionadded:: 3.0
 %End
 
@@ -29,7 +30,7 @@ class QgsLayoutGridSettings : QgsLayoutSerializableObject
 
     QgsLayoutGridSettings( QgsLayout *layout );
 %Docstring
- Constructor for QgsLayoutGridSettings.
+Constructor for QgsLayoutGridSettings.
 %End
 
     virtual QString stringType() const;
@@ -38,78 +39,102 @@ class QgsLayoutGridSettings : QgsLayoutSerializableObject
 
     void setResolution( const QgsLayoutMeasurement &resolution );
 %Docstring
- Sets the page/snap grid ``resolution``.
+Sets the page/snap grid ``resolution``.
+
 .. seealso:: :py:func:`resolution()`
+
 .. seealso:: :py:func:`setOffset()`
 %End
 
     QgsLayoutMeasurement resolution() const;
 %Docstring
- Returns the page/snap grid resolution.
+Returns the page/snap grid resolution.
+
+:rtype: QgsLayoutMeasurement
+
 .. seealso:: :py:func:`setResolution()`
+
 .. seealso:: :py:func:`offset()`
- :rtype: QgsLayoutMeasurement
 %End
 
     void setOffset( const QgsLayoutPoint offset );
 %Docstring
- Sets the ``offset`` of the page/snap grid.
+Sets the ``offset`` of the page/snap grid.
+
 .. seealso:: :py:func:`offset()`
+
 .. seealso:: :py:func:`setResolution()`
 %End
 
     QgsLayoutPoint offset() const;
 %Docstring
- Returns the offset of the page/snap grid.
+Returns the offset of the page/snap grid.
+
+:rtype: QgsLayoutPoint
+
 .. seealso:: :py:func:`setOffset()`
+
 .. seealso:: :py:func:`resolution()`
- :rtype: QgsLayoutPoint
 %End
 
     void setPen( const QPen &pen );
 %Docstring
- Sets the ``pen`` used for drawing page/snap grids.
+Sets the ``pen`` used for drawing page/snap grids.
+
 .. seealso:: :py:func:`pen()`
+
 .. seealso:: :py:func:`setStyle()`
 %End
 
     QPen pen() const;
 %Docstring
- Returns the pen used for drawing page/snap grids.
+Returns the pen used for drawing page/snap grids.
+
+:rtype: QPen
+
 .. seealso:: :py:func:`setPen()`
+
 .. seealso:: :py:func:`style()`
- :rtype: QPen
 %End
 
     void setStyle( const Style style );
 %Docstring
- Sets the ``style`` used for drawing the page/snap grids.
+Sets the ``style`` used for drawing the page/snap grids.
+
 .. seealso:: :py:func:`style()`
+
 .. seealso:: :py:func:`setPen()`
 %End
 
     Style style() const;
 %Docstring
- Returns the style used for drawing the page/snap grids.
+Returns the style used for drawing the page/snap grids.
+
+:rtype: Style
+
 .. seealso:: :py:func:`setStyle()`
+
 .. seealso:: :py:func:`pen()`
- :rtype: Style
 %End
 
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 %Docstring
- Stores the grid's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+Stores the grid's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
+
+:rtype: bool
+
 .. seealso:: :py:func:`readXml()`
- :rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &gridElement, const QDomDocument &document, const QgsReadWriteContext &context );
 
 %Docstring
- Sets the grid's state from a DOM element. gridElement is the DOM node corresponding to the grid.
+Sets the grid's state from a DOM element. gridElement is the DOM node corresponding to the grid.
+
+:rtype: bool
+
 .. seealso:: :py:func:`writeXml()`
- :rtype: bool
 %End
 
 };

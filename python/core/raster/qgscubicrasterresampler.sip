@@ -23,7 +23,7 @@ Cubic Raster Resampler
 
     QgsCubicRasterResampler();
 %Docstring
- Constructor for QgsCubicRasterResampler.
+Constructor for QgsCubicRasterResampler.
 %End
     virtual QgsCubicRasterResampler *clone() const /Factory/;
 

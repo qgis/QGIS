@@ -66,7 +66,7 @@ Constructor for TabData
 
     QgsEditFormConfig( const QgsEditFormConfig &o );
 %Docstring
- Copy constructor
+Copy constructor
 
 .. versionadded:: 3.0
 %End
@@ -77,34 +77,37 @@ Constructor for TabData
 
     void addTab( QgsAttributeEditorElement *data /Transfer/ );
 %Docstring
- Adds a new element to the invisible root container in the layout.
+Adds a new element to the invisible root container in the layout.
 
- This is only useful in combination with EditorLayout.TabLayout.
+This is only useful in combination with EditorLayout.TabLayout.
 %End
 
     QList< QgsAttributeEditorElement * > tabs() const;
 %Docstring
- Returns a list of tabs for EditorLayout.TabLayout obtained from the invisible root container.
- :rtype: list of QgsAttributeEditorElement
+Returns a list of tabs for EditorLayout.TabLayout obtained from the invisible root container.
+
+:rtype: list of QgsAttributeEditorElement
 %End
 
     void clearTabs();
 %Docstring
- Clears all the tabs for the attribute editor form with EditorLayout.TabLayout.
+Clears all the tabs for the attribute editor form with EditorLayout.TabLayout.
 %End
 
     QgsAttributeEditorContainer *invisibleRootContainer();
 %Docstring
- Get the invisible root container for the drag and drop designer form (EditorLayout.TabLayout).
+Get the invisible root container for the drag and drop designer form (EditorLayout.TabLayout).
+
+:rtype: QgsAttributeEditorContainer
 
 .. versionadded:: 3
- :rtype: QgsAttributeEditorContainer
 %End
 
     EditorLayout layout() const;
 %Docstring
 Get the active layout style for the attribute editor for this layer
- :rtype: EditorLayout
+
+:rtype: EditorLayout
 %End
 
     void setLayout( EditorLayout editorLayout );
@@ -115,84 +118,91 @@ Set the active layout style for the attribute editor for this layer
     QString uiForm() const;
 %Docstring
 Get path to the .ui form. Only meaningful with EditorLayout.UiFileLayout.
- :rtype: str
+
+:rtype: str
 %End
 
     void setUiForm( const QString &ui );
 %Docstring
- Set path to the .ui form.
- When a string is provided, the layout style will be set to EditorLayout.UiFileLayout,
- if an empty or a null string is provided, the layout style will be set to
- EditorLayout.GeneratedLayout.
+Set path to the .ui form.
+When a string is provided, the layout style will be set to EditorLayout.UiFileLayout,
+if an empty or a null string is provided, the layout style will be set to
+EditorLayout.GeneratedLayout.
 %End
 
     bool setWidgetConfig( const QString &widgetName, const QVariantMap &config );
 %Docstring
- Set the editor widget config for a widget which is not for a simple field.
+Set the editor widget config for a widget which is not for a simple field.
 
- Example:
- \code{.py}
-   editFormConfig = layer.editFormConfig()
-   editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
-   layer.setEditFormConfig(editFormConfig)
- \endcode
+Example:
+\code{.py}
+editFormConfig = layer.editFormConfig()
+editFormConfig.setWidgetConfig( 'relation_id', { 'nm-rel': 'other_relation' } )
+layer.setEditFormConfig(editFormConfig)
+\endcode
 
- \param widgetName  The name of the widget to configure
- \param config      The config to set for this widget
- :return: false if a field exists with the provided widgetName. In this case
-          QgsVectorLayer.setEditorWidgetSetup should be used.
+:param widgetName:  The name of the widget to configure
+:param config:      The config to set for this widget
+
+:return: false if a field exists with the provided widgetName. In this case
+:rtype: bool
+
+QgsVectorLayer.setEditorWidgetSetup should be used.
 
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup()`
- :rtype: bool
 %End
 
     QVariantMap widgetConfig( const QString &widgetName ) const;
 %Docstring
- Get the configuration for the editor widget with the given name.
+Get the configuration for the editor widget with the given name.
 
- \param widgetName The name of the widget.
+:param widgetName: The name of the widget.
 
- :return: The configuration for the editor widget or an empty config if the field does not exist
- :rtype: QVariantMap
+:return: The configuration for the editor widget or an empty config if the field does not exist
+:rtype: QVariantMap
+
 %End
 
     bool removeWidgetConfig( const QString &widgetName );
 %Docstring
- Remove the configuration for the editor widget with the given name
+Remove the configuration for the editor widget with the given name
 
- \param widgetName The name of the widget.
+:param widgetName: The name of the widget.
 
- :return: true if a configuration has been removed
- :rtype: bool
+:return: true if a configuration has been removed
+:rtype: bool
+
 %End
 
     bool readOnly( int idx ) const;
 %Docstring
- This returns true if the field is manually set to read only or if the field
- does not support editing like joins or virtual fields.
- :rtype: bool
+This returns true if the field is manually set to read only or if the field
+does not support editing like joins or virtual fields.
+
+:rtype: bool
 %End
 
     void setReadOnly( int idx, bool readOnly = true );
 %Docstring
- If set to false, the widget at the given index will be read-only.
+If set to false, the widget at the given index will be read-only.
 %End
 
     bool labelOnTop( int idx ) const;
 %Docstring
- If this returns true, the widget at the given index will receive its label on the previous line
- while if it returns false, the widget will receive its label on the left hand side.
- Labeling on top leaves more horizontal space for the widget itself.
+If this returns true, the widget at the given index will receive its label on the previous line
+while if it returns false, the widget will receive its label on the left hand side.
+Labeling on top leaves more horizontal space for the widget itself.
 *
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setLabelOnTop( int idx, bool onTop );
 %Docstring
- If this is set to true, the widget at the given index will receive its label on
- the previous line while if it is set to false, the widget will receive its label
- on the left hand side.
- Labeling on top leaves more horizontal space for the widget itself.
+If this is set to true, the widget at the given index will receive its label on
+the previous line while if it is set to false, the widget will receive its label
+on the left hand side.
+Labeling on top leaves more horizontal space for the widget itself.
 *
 %End
 
@@ -200,53 +210,57 @@ Get path to the .ui form. Only meaningful with EditorLayout.UiFileLayout.
 
     QString initFunction() const;
 %Docstring
- Get Python function for edit form initialization.
- Will be looked up in a Python file relative to the project folder if it
- includes a module name or if it's a pure function name it will searched
- in the Python code set with setInitCode().
- :rtype: str
+Get Python function for edit form initialization.
+Will be looked up in a Python file relative to the project folder if it
+includes a module name or if it's a pure function name it will searched
+in the Python code set with setInitCode().
+
+:rtype: str
 %End
 
     void setInitFunction( const QString &function );
 %Docstring
- Set Python function for edit form initialization.
- Will be looked up in a Python file relative to the project folder if it
- includes a module name or if it's a pure function name it will searched
- in the Python code set with setInitCode().
+Set Python function for edit form initialization.
+Will be looked up in a Python file relative to the project folder if it
+includes a module name or if it's a pure function name it will searched
+in the Python code set with setInitCode().
 %End
 
     QString initCode() const;
 %Docstring
- Get Python code for edit form initialization.
- :rtype: str
+Get Python code for edit form initialization.
+
+:rtype: str
 %End
 
     void setInitCode( const QString &code );
 %Docstring
- Set Python code for edit form initialization.
- Make sure that you also set the appropriate function name in
- setInitFunction().
+Set Python code for edit form initialization.
+Make sure that you also set the appropriate function name in
+setInitFunction().
 %End
 
     QString initFilePath() const;
 %Docstring
- Get Python external file path for edit form initialization.
- :rtype: str
+Get Python external file path for edit form initialization.
+
+:rtype: str
 %End
 
     void setInitFilePath( const QString &filePath );
 %Docstring
- Set Python external file path for edit form initialization.
- Make sure that you also set the appropriate function name in
- setInitFunction().
+Set Python external file path for edit form initialization.
+Make sure that you also set the appropriate function name in
+setInitFunction().
 %End
 
     PythonInitCodeSource initCodeSource() const;
 %Docstring
- Return Python code source for edit form initialization
-  (if it shall be loaded from a file, read from the
-  provided dialog editor or inherited from the environment)
- :rtype: PythonInitCodeSource
+Return Python code source for edit form initialization
+(if it shall be loaded from a file, read from the
+provided dialog editor or inherited from the environment)
+
+:rtype: PythonInitCodeSource
 %End
 
     void setInitCodeSource( PythonInitCodeSource initCodeSource );
@@ -257,7 +271,8 @@ Set if Python code shall be used for edit form initialization and its origin
     FeatureFormSuppress suppress() const;
 %Docstring
 Type of feature form pop-up suppression after feature creation (overrides app setting)
- :rtype: FeatureFormSuppress
+
+:rtype: FeatureFormSuppress
 %End
     void setSuppress( FeatureFormSuppress s );
 %Docstring
@@ -267,25 +282,26 @@ Set type of feature form pop-up suppression after feature creation (overrides ap
 
     void readXml( const QDomNode &node, const QgsReadWriteContext &context );
 %Docstring
- Read XML information
- Deserialize on project load
+Read XML information
+Deserialize on project load
 %End
 
     void writeXml( QDomNode &node, const QgsReadWriteContext &context ) const;
 %Docstring
- Write XML information
- Serialize on project save
+Write XML information
+Serialize on project save
 %End
 
     QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent );
 %Docstring
- Deserialize drag and drop designer elements.
- :rtype: QgsAttributeEditorElement
+Deserialize drag and drop designer elements.
+
+:rtype: QgsAttributeEditorElement
 %End
 
     explicit QgsEditFormConfig();
 %Docstring
- Create a new edit form config. Normally invoked by QgsVectorLayer
+Create a new edit form config. Normally invoked by QgsVectorLayer
 %End
 
 };

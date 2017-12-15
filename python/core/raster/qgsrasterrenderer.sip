@@ -15,7 +15,7 @@
 class QgsRasterRenderer : QgsRasterInterface
 {
 %Docstring
- Raster renderer pipe that applies colors to a raster.
+Raster renderer pipe that applies colors to a raster.
 %End
 
 %TypeHeaderCode
@@ -27,7 +27,7 @@ class QgsRasterRenderer : QgsRasterInterface
 
     QgsRasterRenderer( QgsRasterInterface *input = 0, const QString &type = QString() );
 %Docstring
- Constructor for QgsRasterRenderer.
+Constructor for QgsRasterRenderer.
 %End
     virtual ~QgsRasterRenderer();
 
@@ -36,7 +36,8 @@ class QgsRasterRenderer : QgsRasterInterface
 
 %Docstring
 QgsRasterRenderer cannot be copied. Use clone() instead.
- :rtype: QgsRasterRenderer
+
+:rtype: QgsRasterRenderer
 %End
 
     virtual int bandCount() const;
@@ -45,7 +46,8 @@ QgsRasterRenderer cannot be copied. Use clone() instead.
 
     virtual QString type() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     virtual bool setInput( QgsRasterInterface *input );
@@ -58,34 +60,40 @@ QgsRasterRenderer cannot be copied. Use clone() instead.
 
     bool usesTransparency() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setOpacity( double opacity );
 %Docstring
- Sets the ``opacity`` for the renderer, where ``opacity`` is a value between 0 (totally transparent)
- and 1.0 (fully opaque).
+Sets the ``opacity`` for the renderer, where ``opacity`` is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
 .. seealso:: :py:func:`opacity()`
 %End
 
     double opacity() const;
 %Docstring
- Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
- and 1.0 (fully opaque).
+Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
+and 1.0 (fully opaque).
+
+:rtype: float
+
 .. seealso:: :py:func:`setOpacity()`
- :rtype: float
 %End
 
     void setRasterTransparency( QgsRasterTransparency *t /Transfer/ );
     const QgsRasterTransparency *rasterTransparency() const;
 %Docstring
- :rtype: QgsRasterTransparency
+
+:rtype: QgsRasterTransparency
 %End
 
     void setAlphaBand( int band );
     int alphaBand() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
@@ -101,21 +109,24 @@ Sets base class members from xml. Usually called from create() methods of subcla
 
     void copyCommonProperties( const QgsRasterRenderer *other, bool copyMinMaxOrigin = true );
 %Docstring
- Copies common properties like opacity / transparency data from other renderer.
-  Useful when cloning renderers.
+Copies common properties like opacity / transparency data from other renderer.
+Useful when cloning renderers.
+
 .. versionadded:: 2.16
 %End
 
     virtual QList<int> usesBands() const;
 %Docstring
 Returns a list of band numbers used by the renderer
- :rtype: list of int
+
+:rtype: list of int
 %End
 
     const QgsRasterMinMaxOrigin &minMaxOrigin() const;
 %Docstring
 Returns const reference to origin of min/max values
- :rtype: QgsRasterMinMaxOrigin
+
+:rtype: QgsRasterMinMaxOrigin
 %End
 
     void setMinMaxOrigin( const QgsRasterMinMaxOrigin &origin );
@@ -138,7 +149,8 @@ Write upper class info into rasterrenderer element (called by writeXml method of
     QgsRasterRenderer( const QgsRasterRenderer & );
     const QgsRasterRenderer &operator=( const QgsRasterRenderer & );
 %Docstring
- :rtype: QgsRasterRenderer
+
+:rtype: QgsRasterRenderer
 %End
 };
 

@@ -12,6 +12,7 @@ class QgsLayoutItemShape : QgsLayoutItem
 {
 %Docstring
  Layout item for basic filled shapes (e.g. rectangles, ellipses).
+
 .. versionadded:: 3.0
 %End
 
@@ -30,7 +31,7 @@ class QgsLayoutItemShape : QgsLayoutItem
 
     explicit QgsLayoutItemShape( QgsLayout *layout );
 %Docstring
- Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
+Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
 %End
 
     virtual int type() const;
@@ -40,42 +41,51 @@ class QgsLayoutItemShape : QgsLayoutItem
 
     QgsLayoutItemShape::Shape shapeType() const;
 %Docstring
- Returns the type of shape (e.g. rectangle, ellipse, etc).
+Returns the type of shape (e.g. rectangle, ellipse, etc).
+
+:rtype: QgsLayoutItemShape.Shape
+
 .. seealso:: :py:func:`setShapeType()`
- :rtype: QgsLayoutItemShape.Shape
 %End
 
     void setShapeType( QgsLayoutItemShape::Shape type );
 %Docstring
- Sets the ``type`` of shape (e.g. rectangle, ellipse, etc).
+Sets the ``type`` of shape (e.g. rectangle, ellipse, etc).
+
 .. seealso:: :py:func:`shapeType()`
 %End
 
     void setSymbol( QgsFillSymbol *symbol );
 %Docstring
- Sets the fill ``symbol`` used to draw the shape. Ownership is not transferred
- and a clone of the symbol is made.
+Sets the fill ``symbol`` used to draw the shape. Ownership is not transferred
+and a clone of the symbol is made.
+
 .. seealso:: :py:func:`symbol()`
 %End
 
     QgsFillSymbol *symbol();
 %Docstring
- Returns the fill symbol used to draw the shape.
+Returns the fill symbol used to draw the shape.
+
+:rtype: QgsFillSymbol
+
 .. seealso:: :py:func:`setSymbol()`
- :rtype: QgsFillSymbol
 %End
 
     void setCornerRadius( QgsLayoutMeasurement radius );
 %Docstring
- Sets the corner ``radius`` for rounded rectangle corners.
+Sets the corner ``radius`` for rounded rectangle corners.
+
 .. seealso:: :py:func:`cornerRadius()`
 %End
 
     QgsLayoutMeasurement cornerRadius() const;
 %Docstring
- Returns the corner radius for rounded rectangle corners.
+Returns the corner radius for rounded rectangle corners.
+
+:rtype: QgsLayoutMeasurement
+
 .. seealso:: :py:func:`setCornerRadius()`
- :rtype: QgsLayoutMeasurement
 %End
 
     virtual QRectF boundingRect() const;

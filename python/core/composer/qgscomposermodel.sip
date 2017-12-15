@@ -15,18 +15,18 @@ class QgsComposerModel: QAbstractItemModel
 {
 %Docstring
 
- A model for items attached to a composition. The model also maintains the z-order for the
- composition, and must be notified whenever item stacking changes.
+A model for items attached to a composition. The model also maintains the z-order for the
+composition, and must be notified whenever item stacking changes.
 
- Internally, QgsComposerModel maintains two lists. One contains a complete list of all items for
- the composition, ordered by their position within the z-order stack. This list also contains
- items which have been removed from the composition, so that undo/redo commands can restore
- them to their correct position in the stacking order.
+Internally, QgsComposerModel maintains two lists. One contains a complete list of all items for
+the composition, ordered by their position within the z-order stack. This list also contains
+items which have been removed from the composition, so that undo/redo commands can restore
+them to their correct position in the stacking order.
 
- The second list contains only items which are currently displayed in the composition's scene.
- It is used as a cache of the last known stacking order, so that the model can compare the current
- stacking of items in the composition to the last known state, and emit the corresponding signals
- as required.
+The second list contains only items which are currently displayed in the composition's scene.
+It is used as a cache of the last known stacking order, so that the model can compare the current
+stacking of items in the composition to the last known state, and emit the corresponding signals
+as required.
 %End
 
 %TypeHeaderCode
@@ -43,9 +43,9 @@ class QgsComposerModel: QAbstractItemModel
 
     explicit QgsComposerModel( QgsComposition *composition, QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor
- \param composition composition to attach to
- \param parent parent object
+Constructor
+:param composition: composition to attach to
+:param parent: parent object
 %End
 
     virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const;
@@ -75,201 +75,267 @@ class QgsComposerModel: QAbstractItemModel
 
     void clear();
 %Docstring
- Clears all items from z-order list and resets the model
+Clears all items from z-order list and resets the model
+
 .. versionadded:: 2.5
 %End
 
     int zOrderListSize() const;
 %Docstring
- Returns the size of the z-order list, which includes items which may
- have been removed from the composition.
- :return: size of z-order list
+Returns the size of the z-order list, which includes items which may
+have been removed from the composition.
+
+:return: size of z-order list
+:rtype: int
+
+
 .. versionadded:: 2.5
- :rtype: int
 %End
 
     void rebuildZList();
 %Docstring
- Rebuilds the z-order list, based on the current stacking of items in the composition.
- This method should be called after adding multiple items to the composition.
+Rebuilds the z-order list, based on the current stacking of items in the composition.
+This method should be called after adding multiple items to the composition.
+
 .. versionadded:: 2.5
 %End
 
     void addItemAtTop( QgsComposerItem *item );
 %Docstring
- Adds an item to the top of the composition z stack.
- \param item item to add. The item must not already exist in the z-order list.
+Adds an item to the top of the composition z stack.
+:param item: item to add. The item must not already exist in the z-order list.
+
 .. versionadded:: 2.5
+
 .. seealso:: :py:func:`reorderItemToTop`
 %End
 
     void removeItem( QgsComposerItem *item );
 %Docstring
- Removes an item from the z-order list.
- \param item item to remove
+Removes an item from the z-order list.
+:param item: item to remove
+
 .. versionadded:: 2.5
 %End
 
     bool reorderItemUp( QgsComposerItem *item );
 %Docstring
- Moves an item up the z-order list.
- \param item item to move
- :return: true if item was moved. Returns false if item was not found
- in z-order list or was already at the top of the z-order list.
+Moves an item up the z-order list.
+:param item: item to move
+
+:return: true if item was moved. Returns false if item was not found
+:rtype: bool
+
+in z-order list or was already at the top of the z-order list.
+
 .. seealso:: :py:func:`reorderItemDown`
+
 .. seealso:: :py:func:`reorderItemToTop`
+
 .. seealso:: :py:func:`reorderItemToBottom`
+
 .. versionadded:: 2.5
- :rtype: bool
 %End
 
     bool reorderItemDown( QgsComposerItem *item );
 %Docstring
- Moves an item down the z-order list.
- \param item item to move
- :return: true if item was moved. Returns false if item was not found
- in z-order list or was already at the bottom of the z-order list.
+Moves an item down the z-order list.
+:param item: item to move
+
+:return: true if item was moved. Returns false if item was not found
+:rtype: bool
+
+in z-order list or was already at the bottom of the z-order list.
+
 .. seealso:: :py:func:`reorderItemUp`
+
 .. seealso:: :py:func:`reorderItemToTop`
+
 .. seealso:: :py:func:`reorderItemToBottom`
+
 .. versionadded:: 2.5
- :rtype: bool
 %End
 
     bool reorderItemToTop( QgsComposerItem *item );
 %Docstring
- Moves an item to the top of the z-order list.
- \param item item to move
- :return: true if item was moved. Returns false if item was not found
- in z-order list or was already at the top of the z-order list.
+Moves an item to the top of the z-order list.
+:param item: item to move
+
+:return: true if item was moved. Returns false if item was not found
+:rtype: bool
+
+in z-order list or was already at the top of the z-order list.
+
 .. seealso:: :py:func:`reorderItemUp`
+
 .. seealso:: :py:func:`reorderItemDown`
+
 .. seealso:: :py:func:`reorderItemToBottom`
+
 .. versionadded:: 2.5
- :rtype: bool
 %End
 
     bool reorderItemToBottom( QgsComposerItem *item );
 %Docstring
- Moves an item to the bottom of the z-order list.
- \param item item to move
- :return: true if item was moved. Returns false if item was not found
- in z-order list or was already at the bottom of the z-order list.
+Moves an item to the bottom of the z-order list.
+:param item: item to move
+
+:return: true if item was moved. Returns false if item was not found
+:rtype: bool
+
+in z-order list or was already at the bottom of the z-order list.
+
 .. seealso:: :py:func:`reorderItemUp`
+
 .. seealso:: :py:func:`reorderItemDown`
+
 .. seealso:: :py:func:`reorderItemToTop`
+
 .. versionadded:: 2.5
- :rtype: bool
 %End
 
     QgsComposerItem *getComposerItemAbove( QgsComposerItem *item ) const;
 %Docstring
- Finds the next composer item above an item. This method only considers
- items which are currently in the composition, and ignores items which have been
- removed from the composition.
- \param item item to search above
- :return: item above specified item. If no items were found, no item
- will be returned.
+Finds the next composer item above an item. This method only considers
+items which are currently in the composition, and ignores items which have been
+removed from the composition.
+:param item: item to search above
+
+:return: item above specified item. If no items were found, no item
+:rtype: QgsComposerItem
+
+will be returned.
+
 .. seealso:: :py:func:`getComposerItemBelow`
+
 .. versionadded:: 2.5
- :rtype: QgsComposerItem
 %End
 
     QgsComposerItem *getComposerItemBelow( QgsComposerItem *item ) const;
 %Docstring
- Finds the next composer item below an item. This method only considers
- items which are currently in the composition, and ignores items which have been
- removed from the composition.
- \param item item to search above
- :return: item below specified item. If no items were found, no item
- will be returned.
+Finds the next composer item below an item. This method only considers
+items which are currently in the composition, and ignores items which have been
+removed from the composition.
+:param item: item to search above
+
+:return: item below specified item. If no items were found, no item
+:rtype: QgsComposerItem
+
+will be returned.
+
 .. seealso:: :py:func:`getComposerItemAbove`
+
 .. versionadded:: 2.5
- :rtype: QgsComposerItem
 %End
 
     QList<QgsComposerItem *> *zOrderList();
 %Docstring
- Returns the item z-order list. This list includes both items currently in the
- composition and items which have been removed from the composition.
- :return: item z-order list
+Returns the item z-order list. This list includes both items currently in the
+composition and items which have been removed from the composition.
+
+:return: item z-order list
+:rtype: list of QgsComposerItem
+
+
 .. versionadded:: 2.5
- :rtype: list of QgsComposerItem
 %End
 
     void setItemRemoved( QgsComposerItem *item );
 %Docstring
- Marks an item as removed from the composition. This must be called whenever an item
- has been removed from the composition.
- \param item to mark as removed from the composition
+Marks an item as removed from the composition. This must be called whenever an item
+has been removed from the composition.
+:param item: to mark as removed from the composition
+
 .. seealso:: :py:func:`setItemRestored`
+
 .. versionadded:: 2.5
 %End
 
     void setItemRestored( QgsComposerItem *item );
 %Docstring
- Restores an item to the composition. This must be called whenever an item removed
- from the composition is restored to the composition.
- \param item to mark as restored to the composition
+Restores an item to the composition. This must be called whenever an item removed
+from the composition is restored to the composition.
+:param item: to mark as restored to the composition
+
 .. seealso:: :py:func:`setItemRemoved`
+
 .. versionadded:: 2.5
 %End
 
     void updateItemDisplayName( QgsComposerItem *item );
 %Docstring
- Must be called when an item's display name is modified
- \param item item to update
+Must be called when an item's display name is modified
+:param item: item to update
+
 .. seealso:: :py:func:`updateItemLockStatus`
+
 .. seealso:: :py:func:`updateItemVisibility`
+
 .. seealso:: :py:func:`updateItemSelectStatus`
+
 .. versionadded:: 2.5
 %End
 
     void updateItemLockStatus( QgsComposerItem *item );
 %Docstring
- Must be called when an item's lock status changes
- \param item item to update
+Must be called when an item's lock status changes
+:param item: item to update
+
 .. seealso:: :py:func:`updateItemDisplayName`
+
 .. seealso:: :py:func:`updateItemVisibility`
+
 .. seealso:: :py:func:`updateItemSelectStatus`
+
 .. versionadded:: 2.5
 %End
 
     void updateItemVisibility( QgsComposerItem *item );
 %Docstring
- Must be called when an item's visibility changes
- \param item item to update
+Must be called when an item's visibility changes
+:param item: item to update
+
 .. seealso:: :py:func:`updateItemDisplayName`
+
 .. seealso:: :py:func:`updateItemLockStatus`
+
 .. seealso:: :py:func:`updateItemSelectStatus`
+
 .. versionadded:: 2.5
 %End
 
     void updateItemSelectStatus( QgsComposerItem *item );
 %Docstring
- Must be called when an item's selection status changes
- \param item item to update
+Must be called when an item's selection status changes
+:param item: item to update
+
 .. seealso:: :py:func:`updateItemDisplayName`
+
 .. seealso:: :py:func:`updateItemVisibility`
+
 .. seealso:: :py:func:`updateItemLockStatus`
+
 .. versionadded:: 2.5
 %End
 
     QModelIndex indexForItem( QgsComposerItem *item, const int column = 0 );
 %Docstring
- Returns the QModelIndex corresponding to a QgsComposerItem, if possible
- \param item QgsComposerItem to find index for
- \param column column number for created QModelIndex
- :return: QModelIndex corresponding to item and specified column
- :rtype: QModelIndex
+Returns the QModelIndex corresponding to a QgsComposerItem, if possible
+:param item: QgsComposerItem to find index for
+:param column: column number for created QModelIndex
+
+:return: QModelIndex corresponding to item and specified column
+:rtype: QModelIndex
+
 %End
 
   public slots:
 
     void setSelected( const QModelIndex &index );
 %Docstring
- Sets an item as the current selection from a QModelIndex
- \param index QModelIndex of item to set as selected
+Sets an item as the current selection from a QModelIndex
+:param index: QModelIndex of item to set as selected
+
 .. versionadded:: 2.5
 %End
 
@@ -284,6 +350,7 @@ class QgsComposerProxyModel: QSortFilterProxyModel
 {
 %Docstring
  Allows for filtering a QgsComposerModel by item type.
+
 .. versionadded:: 2.16
 %End
 
@@ -294,54 +361,63 @@ class QgsComposerProxyModel: QSortFilterProxyModel
 
     QgsComposerProxyModel( QgsComposition *composition, QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsComposerProxyModel.
- \param composition composition to attach model to
- \param parent optional parent
+Constructor for QgsComposerProxyModel.
+:param composition: composition to attach model to
+:param parent: optional parent
 %End
 
     QgsComposerItem::ItemType filterType() const;
 %Docstring
- Returns the current item type filter, or QgsComposerItem.ComposerItem if no
- item type filter is set.
+Returns the current item type filter, or QgsComposerItem.ComposerItem if no
+item type filter is set.
+
+:rtype: QgsComposerItem.ItemType
+
 .. seealso:: :py:func:`setFilterType()`
- :rtype: QgsComposerItem.ItemType
 %End
 
     void setFilterType( QgsComposerItem::ItemType itemType );
 %Docstring
- Sets the item type filter. Only matching item types will be shown.
- \param itemType type to filter. Set to QgsComposerItem.ComposerItem to show all
- item types.
+Sets the item type filter. Only matching item types will be shown.
+:param itemType: type to filter. Set to QgsComposerItem.ComposerItem to show all
+item types.
+
 .. seealso:: :py:func:`filterType()`
 %End
 
     void setExceptedItemList( const QList< QgsComposerItem * > &exceptList );
 %Docstring
- Sets a list of specific items to exclude from the model
- \param exceptList list of items to exclude
+Sets a list of specific items to exclude from the model
+:param exceptList: list of items to exclude
+
 .. seealso:: :py:func:`exceptedItemList()`
 %End
 
     QList< QgsComposerItem * > exceptedItemList() const;
 %Docstring
- Returns the list of specific items excluded from the model.
+Returns the list of specific items excluded from the model.
+
+:rtype: list of QgsComposerItem
+
 .. seealso:: :py:func:`setExceptedItemList()`
- :rtype: list of QgsComposerItem
 %End
 
     QgsComposerModel *sourceLayerModel() const;
 %Docstring
- Returns the QgsComposerModel used in this proxy model.
- :rtype: QgsComposerModel
+Returns the QgsComposerModel used in this proxy model.
+
+:rtype: QgsComposerModel
 %End
 
     QgsComposerItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 %Docstring
- Returns the QgsComposerItem corresponding to an index from the source
- QgsComposerModel model.
- \param sourceIndex a QModelIndex
- :return: QgsComposerItem for specified index from QgsComposerModel
- :rtype: QgsComposerItem
+Returns the QgsComposerItem corresponding to an index from the source
+QgsComposerModel model.
+:param sourceIndex: a QModelIndex
+
+:return: QgsComposerItem for specified index from QgsComposerModel
+:rtype: QgsComposerItem
+
 %End
 
   protected:

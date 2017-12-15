@@ -20,21 +20,22 @@ class QgsGridFileWriter
 
     QgsGridFileWriter( QgsInterpolator *interpolator, const QString &outputPath, const QgsRectangle &extent, int nCols, int nRows );
 %Docstring
- Constructor for QgsGridFileWriter, for the specified ``interpolator``.
+Constructor for QgsGridFileWriter, for the specified ``interpolator``.
 
- The ``outputPath`` argument is used to set the output file path.
+The ``outputPath`` argument is used to set the output file path.
 
- The ``extent`` and ``nCols``, ``nRows`` arguments dictate the extent and size of the output raster.
+The ``extent`` and ``nCols``, ``nRows`` arguments dictate the extent and size of the output raster.
 %End
 
     int writeFile( QgsFeedback *feedback = 0 );
 %Docstring
- Writes the grid file.
+Writes the grid file.
 
- An optional ``feedback`` object can be set for progress reports and cancelation support
+An optional ``feedback`` object can be set for progress reports and cancelation support
 
- :return: 0 in case of success
- :rtype: int
+:return: 0 in case of success
+:rtype: int
+
 %End
 
 };

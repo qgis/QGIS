@@ -25,18 +25,19 @@ class QgsNewAuxiliaryFieldDialog: QDialog
 
     QgsNewAuxiliaryFieldDialog( const QgsPropertyDefinition &definition, QgsVectorLayer *layer, bool nameOnly = true, QWidget *parent = 0 );
 %Docstring
- Constructor.
+Constructor.
 
- \param definition The property definition to use to create the auxiliary field
- \param layer The vector layer for which the auxiliary layer has to be created
- \param nameOnly True to indicate that only the name widget is enabled
- \param parent Parent window
+:param definition: The property definition to use to create the auxiliary field
+:param layer: The vector layer for which the auxiliary layer has to be created
+:param nameOnly: True to indicate that only the name widget is enabled
+:param parent: Parent window
 %End
 
     QgsPropertyDefinition propertyDefinition() const;
 %Docstring
- Returns the underlying property definition.
- :rtype: QgsPropertyDefinition
+Returns the underlying property definition.
+
+:rtype: QgsPropertyDefinition
 %End
 
   protected:

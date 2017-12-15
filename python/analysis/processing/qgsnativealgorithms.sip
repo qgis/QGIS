@@ -12,6 +12,7 @@
 class QgsNativeAlgorithms: QgsProcessingProvider
 {
 %Docstring
+
 .. versionadded:: 3.0
  Native c++ processing algorithm provider.
 %End
@@ -23,7 +24,7 @@ class QgsNativeAlgorithms: QgsProcessingProvider
 
     QgsNativeAlgorithms( QObject *parent = 0 );
 %Docstring
- Constructor for QgsNativeAlgorithms.
+Constructor for QgsNativeAlgorithms.
 %End
 
     virtual QIcon icon() const;

@@ -22,7 +22,8 @@ class QgsAttributeFormInterface
 
     virtual bool acceptChanges( const QgsFeature &feature );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     virtual void initForm();
@@ -31,12 +32,14 @@ class QgsAttributeFormInterface
 
     QgsAttributeForm *form();
 %Docstring
- :rtype: QgsAttributeForm
+
+:rtype: QgsAttributeForm
 %End
 
     const QgsFeature &feature();
 %Docstring
- :rtype: QgsFeature
+
+:rtype: QgsFeature
 %End
 
 };

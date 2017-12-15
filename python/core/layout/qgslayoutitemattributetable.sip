@@ -13,7 +13,8 @@
 class QgsLayoutItemAttributeTable: QgsLayoutTable
 {
 %Docstring
- A layout table subclass that displays attributes from a vector layer.
+A layout table subclass that displays attributes from a vector layer.
+
 .. versionadded:: 3.0
 %End
 
@@ -31,9 +32,9 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
 
     QgsLayoutItemAttributeTable( QgsLayout *layout /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutItemAttributeTable, attached to the specified ``layout``.
+Constructor for QgsLayoutItemAttributeTable, attached to the specified ``layout``.
 
- Ownership is transferred to the layout.
+Ownership is transferred to the layout.
 %End
 
     virtual int type() const;
@@ -43,57 +44,67 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
 
     static QgsLayoutItemAttributeTable *create( QgsLayout *layout ) /Factory/;
 %Docstring
- Returns a new QgsLayoutItemAttributeTable for the specified parent ``layout``.
- :rtype: QgsLayoutItemAttributeTable
+Returns a new QgsLayoutItemAttributeTable for the specified parent ``layout``.
+
+:rtype: QgsLayoutItemAttributeTable
 %End
 
     void setSource( ContentSource source );
 %Docstring
- Sets the ``source`` for attributes to show in table body.
+Sets the ``source`` for attributes to show in table body.
+
 .. seealso:: :py:func:`source()`
 %End
 
     ContentSource source() const;
 %Docstring
- Returns the source for attributes shown in the table body.
+Returns the source for attributes shown in the table body.
+
+:rtype: ContentSource
+
 .. seealso:: :py:func:`setSource()`
- :rtype: ContentSource
 %End
 
     QgsVectorLayer *sourceLayer();
 %Docstring
- Returns the source layer for the table, considering the table source mode. For example,
- if the table is set to atlas feature mode, then the source layer will be the
- atlas coverage layer. If the table is set to layer attributes mode, then
- the source layer will be the user specified vector layer.
- :rtype: QgsVectorLayer
+Returns the source layer for the table, considering the table source mode. For example,
+if the table is set to atlas feature mode, then the source layer will be the
+atlas coverage layer. If the table is set to layer attributes mode, then
+the source layer will be the user specified vector layer.
+
+:rtype: QgsVectorLayer
 %End
 
     void setVectorLayer( QgsVectorLayer *layer );
 %Docstring
- Sets the vector ``layer`` from which to display feature attributes.
+Sets the vector ``layer`` from which to display feature attributes.
 
- This is only considered if the table source() is LayerAttributes.
+This is only considered if the table source() is LayerAttributes.
 
 .. seealso:: :py:func:`vectorLayer()`
 %End
 
     QgsVectorLayer *vectorLayer() const;
 %Docstring
- Returns the vector layer the attribute table is currently using.
+Returns the vector layer the attribute table is currently using.
 
- This is only considered if the table source() is LayerAttributes.
+This is only considered if the table source() is LayerAttributes.
+
+:rtype: QgsVectorLayer
 
 .. seealso:: :py:func:`setVectorLayer()`
+
 .. seealso:: :py:func:`sourceLayer()`
- :rtype: QgsVectorLayer
 %End
 
     void setRelationId( const QString &id );
 %Docstring
- Sets the relation ``id`` from which to display child features
+Sets the relation ``id`` from which to display child features
+
 .. seealso:: :py:func:`relationId()`
+
 .. seealso:: :py:func:`setSource()`
+
 .. note::
 
    Only used if table source() is set to RelationChildren.
@@ -101,175 +112,203 @@ class QgsLayoutItemAttributeTable: QgsLayoutTable
 
     QString relationId() const;
 %Docstring
- Returns the relation id which the table displays child features from.
+Returns the relation id which the table displays child features from.
+
+:rtype: str
+
 .. seealso:: :py:func:`setRelationId()`
+
 .. seealso:: :py:func:`source()`
+
 .. note::
 
    Only used if table source() is set to RelationChildren.
- :rtype: str
 %End
 
     void resetColumns();
 %Docstring
- Resets the attribute table's columns to match the vector layer's fields.
+Resets the attribute table's columns to match the vector layer's fields.
+
 .. seealso:: :py:func:`setVectorLayer()`
 %End
 
     void setMap( QgsLayoutItemMap *map );
 %Docstring
- Sets a layout ``map`` to use to limit the extent of features shown in the
- attribute table. This setting only has an effect if setDisplayOnlyVisibleFeatures is
- set to true. Changing the map forces the table to refetch features from its
- vector layer, and may result in the table changing size to accommodate the new displayed
- feature attributes.
+Sets a layout ``map`` to use to limit the extent of features shown in the
+attribute table. This setting only has an effect if setDisplayOnlyVisibleFeatures is
+set to true. Changing the map forces the table to refetch features from its
+vector layer, and may result in the table changing size to accommodate the new displayed
+feature attributes.
+
 .. seealso:: :py:func:`map()`
+
 .. seealso:: :py:func:`setDisplayOnlyVisibleFeatures`
 %End
 
     QgsLayoutItemMap *map() const;
 %Docstring
- Returns the layout map whose extents are controlling the features shown in the
- table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
+Returns the layout map whose extents are controlling the features shown in the
+table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
+
+:rtype: QgsLayoutItemMap
+
 .. seealso:: :py:func:`setMap()`
+
 .. seealso:: :py:func:`displayOnlyVisibleFeatures()`
- :rtype: QgsLayoutItemMap
 %End
 
     void setMaximumNumberOfFeatures( int features );
 %Docstring
- Sets the maximum number of ``features`` shown by the table. Changing this setting may result
- in the attribute table changing its size to accommodate the new number of rows, and requires
- the table to refetch features from its vector layer.
+Sets the maximum number of ``features`` shown by the table. Changing this setting may result
+in the attribute table changing its size to accommodate the new number of rows, and requires
+the table to refetch features from its vector layer.
+
 .. seealso:: :py:func:`maximumNumberOfFeatures()`
 %End
 
     int maximumNumberOfFeatures() const;
 %Docstring
- Returns the maximum number of features to be shown by the table.
+Returns the maximum number of features to be shown by the table.
+
+:rtype: int
+
 .. seealso:: :py:func:`setMaximumNumberOfFeatures()`
- :rtype: int
 %End
 
     void setUniqueRowsOnly( bool uniqueOnly );
 %Docstring
- Sets attribute table to only show unique rows.
+Sets attribute table to only show unique rows.
 
- Set ``uniqueOnly`` to true to show only unique rows. Duplicate rows
- will be stripped from the table.
+Set ``uniqueOnly`` to true to show only unique rows. Duplicate rows
+will be stripped from the table.
 
 .. seealso:: :py:func:`uniqueRowsOnly()`
 %End
 
     bool uniqueRowsOnly() const;
 %Docstring
- Returns true if the table is set to show only unique rows.
+Returns true if the table is set to show only unique rows.
+
+:rtype: bool
 
 .. seealso:: :py:func:`setUniqueRowsOnly()`
- :rtype: bool
 %End
 
     void setDisplayOnlyVisibleFeatures( bool visibleOnly );
 %Docstring
- Sets the attribute table to only show features which are visible in a map item. Changing
- this setting forces the table to refetch features from its vector layer, and may result in
- the table changing size to accommodate the new displayed feature attributes.
+Sets the attribute table to only show features which are visible in a map item. Changing
+this setting forces the table to refetch features from its vector layer, and may result in
+the table changing size to accommodate the new displayed feature attributes.
 
 .. seealso:: :py:func:`displayOnlyVisibleFeatures()`
+
 .. seealso:: :py:func:`setMap()`
 %End
 
     bool displayOnlyVisibleFeatures() const;
 %Docstring
- Returns true if the table is set to show only features visible on a corresponding
- map item.
+Returns true if the table is set to show only features visible on a corresponding
+map item.
+
+:rtype: bool
 
 .. seealso:: :py:func:`map()`
+
 .. seealso:: :py:func:`setDisplayOnlyVisibleFeatures()`
- :rtype: bool
 %End
 
     void setFilterToAtlasFeature( bool filterToAtlas );
 %Docstring
- Sets attribute table to only show features which intersect the current atlas
- feature.
+Sets attribute table to only show features which intersect the current atlas
+feature.
 
 .. seealso:: :py:func:`filterToAtlasFeature()`
 %End
 
     bool filterToAtlasFeature() const;
 %Docstring
- Returns true if the table is set to only show features which intersect the current atlas
- feature.
+Returns true if the table is set to only show features which intersect the current atlas
+feature.
+
+:rtype: bool
 
 .. seealso:: :py:func:`setFilterToAtlasFeature()`
- :rtype: bool
 %End
 
     bool filterFeatures() const;
 %Docstring
- Returns true if a feature filter is active on the attribute table.
+Returns true if a feature filter is active on the attribute table.
+
+:rtype: bool
 
 .. seealso:: :py:func:`setFilterFeatures()`
+
 .. seealso:: :py:func:`featureFilter()`
- :rtype: bool
 %End
 
     void setFilterFeatures( bool filter );
 %Docstring
- Sets whether the feature filter is active for the attribute table. Changing
- this setting forces the table to refetch features from its vector layer, and may result in
- the table changing size to accommodate the new displayed feature attributes.
+Sets whether the feature filter is active for the attribute table. Changing
+this setting forces the table to refetch features from its vector layer, and may result in
+the table changing size to accommodate the new displayed feature attributes.
+
 .. seealso:: :py:func:`filterFeatures()`
+
 .. seealso:: :py:func:`setFeatureFilter()`
 %End
 
     QString featureFilter() const;
 %Docstring
- Returns the current expression used to filter features for the table. The filter is only
- active if filterFeatures() is true.
+Returns the current expression used to filter features for the table. The filter is only
+active if filterFeatures() is true.
+
+:rtype: str
 
 .. seealso:: :py:func:`setFeatureFilter()`
+
 .. seealso:: :py:func:`filterFeatures()`
- :rtype: str
 %End
 
     void setFeatureFilter( const QString &expression );
 %Docstring
- Sets the ``expression`` used for filtering features in the table. The filter is only
- active if filterFeatures() is set to true. Changing this setting forces the table
- to refetch features from its vector layer, and may result in
- the table changing size to accommodate the new displayed feature attributes.
+Sets the ``expression`` used for filtering features in the table. The filter is only
+active if filterFeatures() is set to true. Changing this setting forces the table
+to refetch features from its vector layer, and may result in
+the table changing size to accommodate the new displayed feature attributes.
 
 .. seealso:: :py:func:`featureFilter()`
+
 .. seealso:: :py:func:`setFilterFeatures()`
 %End
 
     void setDisplayedFields( const QStringList &fields, bool refresh = true );
 %Docstring
- Sets the attributes to display in the table.
- \param fields list of fields names from the vector layer to show.
- Set to an empty list to show all feature attributes.
- \param refresh set to true to force the table to refetch features from its vector layer
- and immediately update the display of the table. This may result in the table changing size
- to accommodate the new displayed feature attributes.
+Sets the attributes to display in the table.
+:param fields: list of fields names from the vector layer to show.
+Set to an empty list to show all feature attributes.
+:param refresh: set to true to force the table to refetch features from its vector layer
+and immediately update the display of the table. This may result in the table changing size
+to accommodate the new displayed feature attributes.
 %End
 
 
     void setWrapString( const QString &wrapString );
 %Docstring
- Sets a string to wrap the contents of the table cells by. Occurrences of this string will
- be replaced by a line break.
- \param wrapString string to replace with line break
+Sets a string to wrap the contents of the table cells by. Occurrences of this string will
+be replaced by a line break.
+:param wrapString: string to replace with line break
+
 .. seealso:: :py:func:`wrapString()`
 %End
 
     QString wrapString() const;
 %Docstring
- Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
- be replaced by a line break.
+Returns the string used to wrap the contents of the table cells by. Occurrences of this string will
+be replaced by a line break.
+
+:rtype: str
+
 .. seealso:: :py:func:`setWrapString()`
- :rtype: str
 %End
 
 

@@ -12,8 +12,8 @@
 class QgsDetailedItemData
 {
 %Docstring
- This class is the data only representation of a
- QgsDetailedItemWidget, designed to be used in custom views.
+This class is the data only representation of a
+QgsDetailedItemWidget, designed to be used in custom views.
 %End
 
 %TypeHeaderCode
@@ -23,7 +23,7 @@ class QgsDetailedItemData
 
     QgsDetailedItemData();
 %Docstring
- Constructor for QgsDetailedItemData.
+Constructor for QgsDetailedItemData.
 %End
 
     void setTitle( const QString &title );
@@ -36,46 +36,55 @@ class QgsDetailedItemData
 
     void setRenderAsWidget( bool flag );
 %Docstring
- This is a hint to the delegate to render using
- a widget rather than manually painting every
- part of the list item.
+This is a hint to the delegate to render using
+a widget rather than manually painting every
+part of the list item.
+
 .. note::
 
    the delegate may completely ignore this
- depending on the delegate implementation.
+depending on the delegate implementation.
 %End
 
     QString title() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     QString detail() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     QString category() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     QPixmap icon() const;
 %Docstring
- :rtype: QPixmap
+
+:rtype: QPixmap
 %End
     bool isCheckable() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool isChecked() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool isEnabled() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool isRenderedAsWidget() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
 };

@@ -12,12 +12,12 @@
 class QgsFileDownloaderDialog : QProgressDialog
 {
 %Docstring
- QgsFileDownloaderDialog is a QProgressDialog subclass which
- handles file downloads and user feedback.
+QgsFileDownloaderDialog is a QProgressDialog subclass which
+handles file downloads and user feedback.
 
- Internally, it uses QgsFileDownloader to handle the download,
- while showing progress via a progress dialog and supporting
- cancelation.
+Internally, it uses QgsFileDownloader to handle the download,
+while showing progress via a progress dialog and supporting
+cancelation.
 
 .. note::
 
@@ -33,10 +33,10 @@ class QgsFileDownloaderDialog : QProgressDialog
 
     QgsFileDownloaderDialog( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString() );
 %Docstring
- QgsFileDownloader
- \param url the download url
- \param outputFileName file name where the downloaded content will be stored
- \param authcfg optionally apply this authentication configuration
+QgsFileDownloader
+:param url: the download url
+:param outputFileName: file name where the downloaded content will be stored
+:param authcfg: optionally apply this authentication configuration
 %End
 
   signals:

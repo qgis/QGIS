@@ -12,7 +12,8 @@
 class QgsSvgAnnotation: QgsAnnotation
 {
 %Docstring
- An annotation which renders the contents of an SVG file.
+An annotation which renders the contents of an SVG file.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,7 +24,7 @@ class QgsSvgAnnotation: QgsAnnotation
 
     QgsSvgAnnotation( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsSvgAnnotation.
+Constructor for QgsSvgAnnotation.
 %End
 
     virtual QgsSvgAnnotation *clone() const /Factory/;
@@ -34,21 +35,25 @@ class QgsSvgAnnotation: QgsAnnotation
 
     void setFilePath( const QString &file );
 %Docstring
- Sets the file path for the source SVG file.
+Sets the file path for the source SVG file.
+
 .. seealso:: :py:func:`filePath()`
 %End
 
     QString filePath() const;
 %Docstring
- Returns the file path for the source SVG file.
+Returns the file path for the source SVG file.
+
+:rtype: str
+
 .. seealso:: :py:func:`setFilePath()`
- :rtype: str
 %End
 
     static QgsSvgAnnotation *create() /Factory/;
 %Docstring
- Returns a new QgsSvgAnnotation object.
- :rtype: QgsSvgAnnotation
+Returns a new QgsSvgAnnotation object.
+
+:rtype: QgsSvgAnnotation
 %End
 
   protected:

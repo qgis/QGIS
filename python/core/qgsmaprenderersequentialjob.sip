@@ -12,10 +12,10 @@
 class QgsMapRendererSequentialJob : QgsMapRendererQImageJob
 {
 %Docstring
- Job implementation that renders everything sequentially in one thread.
+Job implementation that renders everything sequentially in one thread.
 
- The resulting map image can be retrieved with renderedImage() function.
- It is safe to call that function while rendering is active to see preview of the map.
+The resulting map image can be retrieved with renderedImage() function.
+It is safe to call that function while rendering is active to see preview of the map.
 
 .. versionadded:: 2.4
 %End

@@ -15,10 +15,10 @@ class QgsStatisticalSummary
 %Docstring
  Calculator for summary statistics for a list of doubles.
 
- Statistics are calculated by calling calculate() and passing a list of doubles. The
- individual statistics can then be retrieved using the associated methods. Note that not all statistics
- are calculated by default. Statistics which require slower computations are only calculated by
- specifying the statistic in the constructor or via setStatistics().
+Statistics are calculated by calling calculate() and passing a list of doubles. The
+individual statistics can then be retrieved using the associated methods. Note that not all statistics
+are calculated by default. Statistics which require slower computations are only calculated by
+specifying the statistic in the constructor or via setStatistics().
 
 .. versionadded:: 2.9
 %End
@@ -53,235 +53,283 @@ class QgsStatisticalSummary
 
     QgsStatisticalSummary( QgsStatisticalSummary::Statistics stats = QgsStatisticalSummary::All );
 %Docstring
- Constructor for QgsStatisticalSummary
- \param stats flags for statistics to calculate
+Constructor for QgsStatisticalSummary
+:param stats: flags for statistics to calculate
 %End
 
     virtual ~QgsStatisticalSummary();
 
     Statistics statistics() const;
 %Docstring
- Returns flags which specify which statistics will be calculated. Some statistics
- are always calculated (e.g., sum, min and max).
+Returns flags which specify which statistics will be calculated. Some statistics
+are always calculated (e.g., sum, min and max).
+
+:rtype: Statistics
+
 .. seealso:: :py:func:`setStatistics`
- :rtype: Statistics
 %End
 
     void setStatistics( QgsStatisticalSummary::Statistics stats );
 %Docstring
- Sets flags which specify which statistics will be calculated. Some statistics
- are always calculated (e.g., sum, min and max).
- \param stats flags for statistics to calculate
+Sets flags which specify which statistics will be calculated. Some statistics
+are always calculated (e.g., sum, min and max).
+:param stats: flags for statistics to calculate
+
 .. seealso:: :py:func:`statistics`
 %End
 
     void reset();
 %Docstring
- Resets the calculated values
+Resets the calculated values
 %End
 
     void calculate( const QList<double> &values );
 %Docstring
- Calculates summary statistics for a list of values
- \param values list of doubles
+Calculates summary statistics for a list of values
+:param values: list of doubles
 %End
 
     void addValue( double value );
 %Docstring
- Adds a single value to the statistics calculation. Calling this method
- allows values to be added to the calculation one at a time. For large
- quantities of values this may be more efficient then first adding all the
- values to a list and calling calculate().
- \param value value to add
+Adds a single value to the statistics calculation. Calling this method
+allows values to be added to the calculation one at a time. For large
+quantities of values this may be more efficient then first adding all the
+values to a list and calling calculate().
+:param value: value to add
+
 .. note::
 
    call reset() before adding the first value using this method
- to clear the results from any previous calculations
+to clear the results from any previous calculations
+
 .. note::
 
    finalize() must be called after adding the final value and before
- retrieving calculated statistics.
+retrieving calculated statistics.
+
 .. seealso:: :py:func:`calculate()`
+
 .. seealso:: :py:func:`addVariant()`
+
 .. seealso:: :py:func:`finalize()`
+
 .. versionadded:: 2.16
 %End
 
     void addVariant( const QVariant &value );
 %Docstring
- Adds a single value to the statistics calculation. Calling this method
- allows values to be added to the calculation one at a time. For large
- quantities of values this may be more efficient then first adding all the
- values to a list and calling calculate().
- \param value variant containing to add. Non-numeric values are treated as null.
+Adds a single value to the statistics calculation. Calling this method
+allows values to be added to the calculation one at a time. For large
+quantities of values this may be more efficient then first adding all the
+values to a list and calling calculate().
+:param value: variant containing to add. Non-numeric values are treated as null.
+
 .. note::
 
    call reset() before adding the first value using this method
- to clear the results from any previous calculations
+to clear the results from any previous calculations
+
 .. note::
 
    finalize() must be called after adding the final value and before
- retrieving calculated statistics.
+retrieving calculated statistics.
+
 .. seealso:: :py:func:`addValue()`
+
 .. seealso:: :py:func:`calculate()`
+
 .. seealso:: :py:func:`finalize()`
+
 .. versionadded:: 2.16
 %End
 
     void finalize();
 %Docstring
- Must be called after adding all values with addValues() and before retrieving
- any calculated statistics.
+Must be called after adding all values with addValues() and before retrieving
+any calculated statistics.
+
 .. seealso:: :py:func:`addValue()`
+
 .. seealso:: :py:func:`addVariant()`
+
 .. versionadded:: 2.16
 %End
 
     double statistic( QgsStatisticalSummary::Statistic stat ) const;
 %Docstring
- Returns the value of a specified statistic
- \param stat statistic to return
- :return: calculated value of statistic. A NaN value may be returned for invalid
- statistics.
- :rtype: float
+Returns the value of a specified statistic
+:param stat: statistic to return
+
+:return: calculated value of statistic. A NaN value may be returned for invalid
+:rtype: float
+
+statistics.
 %End
 
     int count() const;
 %Docstring
- Returns calculated count of values
- :rtype: int
+Returns calculated count of values
+
+:rtype: int
 %End
 
     int countMissing() const;
 %Docstring
- Returns the number of missing (null) values
+Returns the number of missing (null) values
+
+:rtype: int
+
 .. versionadded:: 2.16
- :rtype: int
 %End
 
     double sum() const;
 %Docstring
- Returns calculated sum of values
- :rtype: float
+Returns calculated sum of values
+
+:rtype: float
 %End
 
     double mean() const;
 %Docstring
- Returns calculated mean of values. A NaN value may be returned if the mean cannot
- be calculated.
- :rtype: float
+Returns calculated mean of values. A NaN value may be returned if the mean cannot
+be calculated.
+
+:rtype: float
 %End
 
     double median() const;
 %Docstring
- Returns calculated median of values. This is only calculated if Statistic.Median has
- been specified in the constructor or via setStatistics. A NaN value may be returned if the median cannot
- be calculated.
- :rtype: float
+Returns calculated median of values. This is only calculated if Statistic.Median has
+been specified in the constructor or via setStatistics. A NaN value may be returned if the median cannot
+be calculated.
+
+:rtype: float
 %End
 
     double min() const;
 %Docstring
- Returns calculated minimum from values. A NaN value may be returned if the minimum cannot
- be calculated.
- :rtype: float
+Returns calculated minimum from values. A NaN value may be returned if the minimum cannot
+be calculated.
+
+:rtype: float
 %End
 
     double max() const;
 %Docstring
- Returns calculated maximum from values. A NaN value may be returned if the maximum cannot
- be calculated.
- :rtype: float
+Returns calculated maximum from values. A NaN value may be returned if the maximum cannot
+be calculated.
+
+:rtype: float
 %End
 
     double range() const;
 %Docstring
- Returns calculated range (difference between maximum and minimum values). A NaN value may be returned if the range cannot
- be calculated.
- :rtype: float
+Returns calculated range (difference between maximum and minimum values). A NaN value may be returned if the range cannot
+be calculated.
+
+:rtype: float
 %End
 
     double stDev() const;
 %Docstring
- Returns population standard deviation. This is only calculated if Statistic.StDev has
- been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
- be calculated.
+Returns population standard deviation. This is only calculated if Statistic.StDev has
+been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
+be calculated.
+
+:rtype: float
+
 .. seealso:: :py:func:`sampleStDev`
- :rtype: float
 %End
 
     double sampleStDev() const;
 %Docstring
- Returns sample standard deviation. This is only calculated if Statistic.StDev has
- been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
- be calculated.
+Returns sample standard deviation. This is only calculated if Statistic.StDev has
+been specified in the constructor or via setStatistics. A NaN value may be returned if the standard deviation cannot
+be calculated.
+
+:rtype: float
+
 .. seealso:: :py:func:`stDev`
- :rtype: float
 %End
 
     int variety() const;
 %Docstring
- Returns variety of values. The variety is the count of unique values from the list.
- This is only calculated if Statistic.Variety has been specified in the constructor
- or via setStatistics.
- :rtype: int
+Returns variety of values. The variety is the count of unique values from the list.
+This is only calculated if Statistic.Variety has been specified in the constructor
+or via setStatistics.
+
+:rtype: int
 %End
 
     double minority() const;
 %Docstring
- Returns minority of values. The minority is the value with least occurrences in the list
- This is only calculated if Statistic.Minority has been specified in the constructor
- or via setStatistics. A NaN value may be returned if the minority cannot
- be calculated.
+Returns minority of values. The minority is the value with least occurrences in the list
+This is only calculated if Statistic.Minority has been specified in the constructor
+or via setStatistics. A NaN value may be returned if the minority cannot
+be calculated.
+
+:rtype: float
+
 .. seealso:: :py:func:`majority`
- :rtype: float
 %End
 
     double majority() const;
 %Docstring
- Returns majority of values. The majority is the value with most occurrences in the list
- This is only calculated if Statistic.Majority has been specified in the constructor
- or via setStatistics. A NaN value may be returned if the majority cannot
- be calculated.
+Returns majority of values. The majority is the value with most occurrences in the list
+This is only calculated if Statistic.Majority has been specified in the constructor
+or via setStatistics. A NaN value may be returned if the majority cannot
+be calculated.
+
+:rtype: float
+
 .. seealso:: :py:func:`minority`
- :rtype: float
 %End
 
     double firstQuartile() const;
 %Docstring
- Returns the first quartile of the values. The quartile is calculated using the
- "Tukey's hinges" method. A NaN value may be returned if the first quartile cannot
- be calculated.
+Returns the first quartile of the values. The quartile is calculated using the
+"Tukey's hinges" method. A NaN value may be returned if the first quartile cannot
+be calculated.
+
+:rtype: float
+
 .. seealso:: :py:func:`thirdQuartile`
+
 .. seealso:: :py:func:`interQuartileRange`
- :rtype: float
 %End
 
     double thirdQuartile() const;
 %Docstring
- Returns the third quartile of the values. The quartile is calculated using the
- "Tukey's hinges" method. A NaN value may be returned if the third quartile cannot
- be calculated.
+Returns the third quartile of the values. The quartile is calculated using the
+"Tukey's hinges" method. A NaN value may be returned if the third quartile cannot
+be calculated.
+
+:rtype: float
+
 .. seealso:: :py:func:`firstQuartile`
+
 .. seealso:: :py:func:`interQuartileRange`
- :rtype: float
 %End
 
     double interQuartileRange() const;
 %Docstring
- Returns the inter quartile range of the values. The quartiles are calculated using the
- "Tukey's hinges" method. A NaN value may be returned if the IQR cannot
- be calculated.
+Returns the inter quartile range of the values. The quartiles are calculated using the
+"Tukey's hinges" method. A NaN value may be returned if the IQR cannot
+be calculated.
+
+:rtype: float
+
 .. seealso:: :py:func:`firstQuartile`
+
 .. seealso:: :py:func:`thirdQuartile`
- :rtype: float
 %End
 
     static QString displayName( QgsStatisticalSummary::Statistic statistic );
 %Docstring
- Returns the friendly display name for a statistic
- \param statistic statistic to return name for
- :rtype: str
+Returns the friendly display name for a statistic
+:param statistic: statistic to return name for
+
+:rtype: str
 %End
 
 };

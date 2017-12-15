@@ -12,7 +12,7 @@
 class QgsRuggednessFilter: QgsNineCellFilter
 {
 %Docstring
- Calculates the ruggedness index based on a 3x3 moving window.
+Calculates the ruggedness index based on a 3x3 moving window.
 Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies topographic heterogeneity*
 %End
 
@@ -29,9 +29,10 @@ Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies top
                                  float *x12, float *x22, float *x32,
                                  float *x13, float *x23, float *x33 );
 %Docstring
- Calculates output value from nine input values. The input values and the output value can be equal to the
+Calculates output value from nine input values. The input values and the output value can be equal to the
 nodata value if not present or outside of the border. Must be implemented by subclasses*
- :rtype: float
+
+:rtype: float
 %End
 
 };

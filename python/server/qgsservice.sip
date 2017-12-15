@@ -14,11 +14,11 @@
 class QgsService
 {
 %Docstring
- QgsService
- Class defining interfaces for QGIS server services
+QgsService
+Class defining interfaces for QGIS server services
 
- This class provides methods for executing server requests
- They are registered at runtime for a given service name.
+This class provides methods for executing server requests
+They are registered at runtime for a given service name.
 
 .. versionadded:: 3.0
 %End
@@ -42,28 +42,33 @@ Destructor
 
     virtual QString name() const = 0;
 %Docstring
- :return: the name of the service
- :rtype: str
+
+:return: the name of the service
+:rtype: str
+
 %End
 
     virtual QString version() const = 0;
 %Docstring
- :return: the version of the service
- :rtype: str
+
+:return: the version of the service
+:rtype: str
+
 %End
 
     virtual bool allowMethod( QgsServerRequest::Method ) const = 0;
 %Docstring
- Return true if the given method is supported for that
- service.
- :rtype: bool
+Return true if the given method is supported for that
+service.
+
+:rtype: bool
 %End
 
     virtual void executeRequest( const QgsServerRequest &request,
                                  QgsServerResponse &response,
                                  const QgsProject *project ) = 0;
 %Docstring
- Execute the requests and set result in QgsServerRequest
+Execute the requests and set result in QgsServerRequest
 %End
 };
 

@@ -55,7 +55,7 @@ class QgsRasterCalcNode
 
     QgsRasterCalcNode();
 %Docstring
- Constructor for QgsRasterCalcNode.
+Constructor for QgsRasterCalcNode.
 %End
 
     QgsRasterCalcNode( double number );
@@ -68,7 +68,8 @@ class QgsRasterCalcNode
     Type type() const;
 %Docstring
 QgsRasterCalcNode cannot be copied
- :rtype: Type
+
+:rtype: Type
 %End
 
     void setLeft( QgsRasterCalcNode *left );
@@ -77,7 +78,8 @@ QgsRasterCalcNode cannot be copied
 
     static QgsRasterCalcNode *parseRasterCalcString( const QString &str, QString &parserErrorMsg ) /Factory/;
 %Docstring
- :rtype: QgsRasterCalcNode
+
+:rtype: QgsRasterCalcNode
 %End
 
   private:

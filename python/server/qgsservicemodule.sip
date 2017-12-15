@@ -14,12 +14,12 @@
 class QgsServiceModule
 {
 %Docstring
- QgsServiceModule
- Class defining the service module interface for QGIS server services
+QgsServiceModule
+Class defining the service module interface for QGIS server services
 
- This class acts as a service registrar for services.
+This class acts as a service registrar for services.
 
- For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point
+For dynamic modules, a QgsServiceModule instance is returned from the QGS_ServiceModule_Init() entry point
 %End
 
 %TypeHeaderCode
@@ -40,8 +40,8 @@ Destructor
     virtual void registerSelf( QgsServiceRegistry &registry,
                                QgsServerInterface *serverIface = 0 ) = 0;
 %Docstring
- Ask module to register all provided services
- \param registry QgsServiceRegistry
+Ask module to register all provided services
+:param registry: QgsServiceRegistry
 %End
 };
 

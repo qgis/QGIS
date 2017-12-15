@@ -13,7 +13,7 @@
 class QgsMessageLogViewer: QDialog
 {
 %Docstring
- A generic dialog widget for displaying QGIS log messages.
+A generic dialog widget for displaying QGIS log messages.
 %End
 
 %TypeHeaderCode
@@ -23,15 +23,15 @@ class QgsMessageLogViewer: QDialog
 
     QgsMessageLogViewer( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
- Create a new message log viewer. The viewer will automatically connect to the system's
- QgsApplication.messageLog() instance.
+Create a new message log viewer. The viewer will automatically connect to the system's
+QgsApplication.messageLog() instance.
 %End
 
   public slots:
 
     void logMessage( const QString &message, const QString &tag, QgsMessageLog::MessageLevel level );
 %Docstring
- Logs a ``message`` to the viewer.
+Logs a ``message`` to the viewer.
 %End
 
   protected:

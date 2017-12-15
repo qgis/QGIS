@@ -11,7 +11,8 @@
 class QgsOptionsPageWidget : QWidget
 {
 %Docstring
- Base class for widgets for pages included in the options dialog.
+Base class for widgets for pages included in the options dialog.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,28 +23,29 @@ class QgsOptionsPageWidget : QWidget
 
     QgsOptionsPageWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsOptionsPageWidget.
+Constructor for QgsOptionsPageWidget.
 %End
 
     virtual QString helpKey() const;
 %Docstring
- Returns the optional help key for the options page. The default implementation
- returns an empty string.
+Returns the optional help key for the options page. The default implementation
+returns an empty string.
 
- If a non-empty string is returned by this method, it will be used as the help key
- retrieved when the "help" button is clicked while this options page is active.
+If a non-empty string is returned by this method, it will be used as the help key
+retrieved when the "help" button is clicked while this options page is active.
 
- If an empty string is returned by this method the default QGIS options
- help will be retrieved.
- :rtype: str
+If an empty string is returned by this method the default QGIS options
+help will be retrieved.
+
+:rtype: str
 %End
 
   public slots:
 
     virtual void apply() = 0;
 %Docstring
- Called to permanently apply the settings shown in the options page (e.g. save them to
- QgsSettings objects). This is usually called when the options dialog is accepted.
+Called to permanently apply the settings shown in the options page (e.g. save them to
+QgsSettings objects). This is usually called when the options dialog is accepted.
 %End
 
 };
@@ -69,36 +71,45 @@ Constructor
     virtual QIcon icon() const;
 %Docstring
  The icon that will be shown in the UI for the panel.
- :return: A QIcon for the panel icon.
+
+:return: A QIcon for the panel icon.
+:rtype: QIcon
+
+
 .. seealso:: :py:func:`setIcon()`
- :rtype: QIcon
 %End
 
     void setIcon( const QIcon &icon );
 %Docstring
- Set the ``icon`` to show in the interface for the factory object.
+Set the ``icon`` to show in the interface for the factory object.
+
 .. seealso:: :py:func:`icon()`
 %End
 
     virtual QString title() const;
 %Docstring
- The title of the panel.
+The title of the panel.
+
+:rtype: str
+
 .. seealso:: :py:func:`setTitle()`
- :rtype: str
 %End
 
     void setTitle( const QString &title );
 %Docstring
- Set the ``title`` for the interface.
+Set the ``title`` for the interface.
+
 .. seealso:: :py:func:`title()`
 %End
 
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = 0 ) const = 0 /Factory/;
 %Docstring
  Factory function to create the widget on demand as needed by the options dialog.
- \param parent The parent of the widget.
- :return: A new widget to show as a page in the options dialog.
- :rtype: QgsOptionsPageWidget
+:param parent: The parent of the widget.
+
+:return: A new widget to show as a page in the options dialog.
+:rtype: QgsOptionsPageWidget
+
 %End
 
 };

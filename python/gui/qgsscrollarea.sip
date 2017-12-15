@@ -11,16 +11,16 @@
 class QgsScrollArea : QScrollArea
 {
 %Docstring
- A QScrollArea subclass with improved scrolling behavior.
+A QScrollArea subclass with improved scrolling behavior.
 
- QgsScrollArea should be used instead of QScrollArea widgets.
- In most cases the use is identical, however QgsScrollArea
- has extra logic to avoid wheel events changing child widget
- values when the mouse cursor is temporarily located over
- a child widget during a scroll event.
+QgsScrollArea should be used instead of QScrollArea widgets.
+In most cases the use is identical, however QgsScrollArea
+has extra logic to avoid wheel events changing child widget
+values when the mouse cursor is temporarily located over
+a child widget during a scroll event.
 
- All QGIS code and plugins should use QgsScrollArea in place
- of QScrollArea.
+All QGIS code and plugins should use QgsScrollArea in place
+of QScrollArea.
 
 .. versionadded:: 3.0
 %End
@@ -32,20 +32,21 @@ class QgsScrollArea : QScrollArea
 
     explicit QgsScrollArea( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsScrollArea.
+Constructor for QgsScrollArea.
 %End
 
     void scrollOccurred();
 %Docstring
- Should be called when a scroll occurs on with the
- QScrollArea itself or its child viewport().
+Should be called when a scroll occurs on with the
+QScrollArea itself or its child viewport().
 %End
 
     bool hasScrolled() const;
 %Docstring
- Returns true if a scroll recently occurred within
- the QScrollArea or its child viewport()
- :rtype: bool
+Returns true if a scroll recently occurred within
+the QScrollArea or its child viewport()
+
+:rtype: bool
 %End
 
   protected:

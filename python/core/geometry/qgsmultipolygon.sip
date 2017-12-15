@@ -12,6 +12,7 @@ class QgsMultiPolygon: QgsMultiSurface
 {
 %Docstring
  Multi polygon geometry collection.
+
 .. versionadded:: 2.10
 %End
 
@@ -42,9 +43,11 @@ class QgsMultiPolygon: QgsMultiSurface
     virtual QgsMultiSurface *toCurveType() const /Factory/;
 
 %Docstring
- Returns the geometry converted to the more generic curve type QgsMultiSurface
+Returns the geometry converted to the more generic curve type QgsMultiSurface
+
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsMultiSurface
+:rtype: QgsMultiSurface
+
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

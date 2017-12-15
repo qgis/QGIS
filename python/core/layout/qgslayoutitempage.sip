@@ -14,6 +14,7 @@ class QgsLayoutItemPage : QgsLayoutItem
 {
 %Docstring
  Item representing the paper in a layout.
+
 .. versionadded:: 3.0
 %End
 
@@ -35,15 +36,16 @@ class QgsLayoutItemPage : QgsLayoutItem
 
     explicit QgsLayoutItemPage( QgsLayout *layout /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
+Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %End
 
     static QgsLayoutItemPage *create( QgsLayout *layout ) /Factory/;
 %Docstring
- Returns a new page item for the specified ``layout``.
+Returns a new page item for the specified ``layout``.
 
- The caller takes responsibility for deleting the returned object.
- :rtype: QgsLayoutItemPage
+The caller takes responsibility for deleting the returned object.
+
+:rtype: QgsLayoutItemPage
 %End
 
     virtual int type() const;
@@ -51,44 +53,52 @@ class QgsLayoutItemPage : QgsLayoutItem
 
     void setPageSize( const QgsLayoutSize &size );
 %Docstring
- Sets the ``size`` of the page.
+Sets the ``size`` of the page.
+
 .. seealso:: :py:func:`pageSize()`
 %End
 
     bool setPageSize( const QString &size, Orientation orientation = Portrait );
 %Docstring
- Sets the page size to a known page ``size``, e.g. "A4" and ``orientation``.
- The known page sizes are managed by QgsPageSizeRegistry. Valid page sizes
- can be retrieved via QgsPageSizeRegistry.entries().
- The function returns true if ``size`` was a valid page size and the page
- size was changed. If false is returned then ``size`` could not be matched
- to a known page size.
+Sets the page size to a known page ``size``, e.g. "A4" and ``orientation``.
+The known page sizes are managed by QgsPageSizeRegistry. Valid page sizes
+can be retrieved via QgsPageSizeRegistry.entries().
+The function returns true if ``size`` was a valid page size and the page
+size was changed. If false is returned then ``size`` could not be matched
+to a known page size.
+
+:rtype: bool
+
 .. seealso:: :py:func:`pageSize()`
- :rtype: bool
 %End
 
     QgsLayoutSize pageSize() const;
 %Docstring
- Returns the size of the page.
+Returns the size of the page.
+
+:rtype: QgsLayoutSize
+
 .. seealso:: :py:func:`setPageSize()`
- :rtype: QgsLayoutSize
 %End
 
     Orientation orientation() const;
 %Docstring
- Returns the page orientiation.
+Returns the page orientiation.
+
+:rtype: Orientation
+
 .. note::
 
    There is no direct setter for page orientation - use setPageSize() instead.
- :rtype: Orientation
 %End
 
     static QgsLayoutItemPage::Orientation decodePageOrientation( const QString &string, bool *ok /Out/ = 0 );
 %Docstring
- Decodes a ``string`` representing a page orientation. If specified, ``ok``
- will be set to true if string could be successfully interpreted as a
- page orientation.
- :rtype: QgsLayoutItemPage.Orientation
+Decodes a ``string`` representing a page orientation. If specified, ``ok``
+will be set to true if string could be successfully interpreted as a
+page orientation.
+
+:rtype: QgsLayoutItemPage.Orientation
 %End
 
     virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );

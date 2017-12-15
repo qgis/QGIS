@@ -12,8 +12,8 @@
 class QgsBufferServerRequest : QgsServerRequest
 {
 %Docstring
- QgsBufferServerRequest
- Class defining request with  data
+QgsBufferServerRequest
+Class defining request with  data
 %End
 
 %TypeHeaderCode
@@ -23,22 +23,22 @@ class QgsBufferServerRequest : QgsServerRequest
 
     QgsBufferServerRequest( const QString &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), QByteArray *data = 0 );
 %Docstring
- Constructor
+Constructor
 
- \param url the url string
- \param method the request method, default to GET
- \param headers optional dictionary of header name-values
- \param data optional POST data
+:param url: the url string
+:param method: the request method, default to GET
+:param headers: optional dictionary of header name-values
+:param data: optional POST data
 %End
 
     QgsBufferServerRequest( const QUrl &url, QgsServerRequest::Method method = QgsServerRequest::GetMethod, const QgsServerRequest::Headers &headers = QgsServerRequest::Headers(), QByteArray *data = 0 );
 %Docstring
- Constructor
+Constructor
 
- \param url QUrl
- \param method the request method, default to GET
- \param headers optional dictionary of header name-values
- \param data optional POST data
+:param url: QUrl
+:param method: the request method, default to GET
+:param headers: optional dictionary of header name-values
+:param data: optional POST data
 %End
 
     virtual QByteArray data() const;

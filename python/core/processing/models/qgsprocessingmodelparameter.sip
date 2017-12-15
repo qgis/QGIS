@@ -14,7 +14,8 @@
 class QgsProcessingModelParameter : QgsProcessingModelComponent
 {
 %Docstring
- Represents an input parameter used by the model.
+Represents an input parameter used by the model.
+
 .. versionadded:: 3.0
 %End
 
@@ -25,37 +26,44 @@ class QgsProcessingModelParameter : QgsProcessingModelComponent
 
     QgsProcessingModelParameter( const QString &parameterName = QString() );
 %Docstring
- Constructor for QgsProcessingModelParameter. The parameter name should match one of the
- parameters from the parent model.
+Constructor for QgsProcessingModelParameter. The parameter name should match one of the
+parameters from the parent model.
 %End
 
     QString parameterName() const;
 %Docstring
- Returns the associated parameter name. The parameter name should match one of the
- parameters from the parent model.
+Returns the associated parameter name. The parameter name should match one of the
+parameters from the parent model.
+
+:rtype: str
+
 .. seealso:: :py:func:`parameterName()`
- :rtype: str
 %End
 
     void setParameterName( const QString &name );
 %Docstring
- Sets the associated parameter name. The parameter name should match one of the
- parameters from the parent model.
+Sets the associated parameter name. The parameter name should match one of the
+parameters from the parent model.
+
 .. seealso:: :py:func:`parameterName()`
 %End
 
     QVariant toVariant() const;
 %Docstring
- Saves this parameter to a QVariant.
+Saves this parameter to a QVariant.
+
+:rtype: QVariant
+
 .. seealso:: :py:func:`loadVariant()`
- :rtype: QVariant
 %End
 
     bool loadVariant( const QVariantMap &map );
 %Docstring
- Loads this parameter from a QVariantMap.
+Loads this parameter from a QVariantMap.
+
+:rtype: bool
+
 .. seealso:: :py:func:`toVariant()`
- :rtype: bool
 %End
 
 };
