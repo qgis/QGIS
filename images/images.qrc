@@ -599,6 +599,7 @@
         <file>themes/default/mActionRegularPolygon2Points.svg</file>
         <file>themes/default/mActionCircle3Tangents.svg</file>
         <file>themes/default/mActionAddGeoPackageLayer.svg</file>
+        <file>themes/default/mActionFindReplace.svg</file>
         <file>icons/qgis_icon.svg</file>
         <file>themes/default/mActionCircle2TangentsPoint.svg</file>
         <file>themes/default/mActionRegularPolygonCenterPoint.svg</file>
