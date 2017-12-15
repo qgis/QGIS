@@ -44,6 +44,8 @@ SET(QGIS_SERVER_SRCS
   qgsservicemodule.cpp
   qgsservicenativeloader.cpp
   qgsserviceregistry.cpp
+  qgsfeaturefilterprovidergroup.cpp
+  qgsfeaturefilter.cpp
 )
 
 SET (QGIS_SERVER_HDRS
