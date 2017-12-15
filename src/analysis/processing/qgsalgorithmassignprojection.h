@@ -38,6 +38,7 @@ class QgsAssignProjectionAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString displayName() const override;
     virtual QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsAssignProjectionAlgorithm *createInstance() const override SIP_FACTORY;
 

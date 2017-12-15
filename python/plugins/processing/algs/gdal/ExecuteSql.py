@@ -82,6 +82,9 @@ class ExecuteSql(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
+    def groupId(self):
+        return 'vectormiscellaneous'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         ogrLayer, layerName = self.getOgrCompatibleSource(self.INPUT, parameters, context, feedback, executing)
         sql = self.parameterAsString(parameters, self.SQL, context)

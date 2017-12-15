@@ -46,6 +46,9 @@ class SetMValue(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector geometry')
 
+    def groupId(self):
+        return 'vectorgeometry'
+
     def __init__(self):
         super().__init__()
         self.m_value = 0

@@ -26,9 +26,10 @@
 
 ///@cond NOT_STABLE
 
-QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group )
+QgsProcessingModelAlgorithm::QgsProcessingModelAlgorithm( const QString &name, const QString &group, const QString &groupId )
   : mModelName( name.isEmpty() ? QObject::tr( "model" ) : name )
   , mModelGroup( group )
+  , mModelGroupId( groupId )
 {}
 
 void QgsProcessingModelAlgorithm::initAlgorithm( const QVariantMap & )
@@ -48,6 +49,11 @@ QString QgsProcessingModelAlgorithm::displayName() const
 QString QgsProcessingModelAlgorithm::group() const
 {
   return mModelGroup;
+}
+
+QString QgsProcessingModelAlgorithm::groupId() const
+{
+  return mModelGroupId;
 }
 
 QIcon QgsProcessingModelAlgorithm::icon() const

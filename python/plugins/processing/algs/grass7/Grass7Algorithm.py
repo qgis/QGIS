@@ -27,6 +27,7 @@ __revision__ = '$Format:%H$'
 
 import sys
 import os
+import re
 import uuid
 import importlib
 
@@ -98,6 +99,8 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
         self._name = ''
         self._display_name = ''
         self._group = ''
+        self._groupId = ''
+        self.groupIdRegex = re.compile('^[^\s\(]+')
         self.grass7Name = ''
         self.params = []
         self.hardcodedStrings = []
@@ -137,6 +140,9 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
 
     def group(self):
         return self._group
+
+    def groupId(self):
+        return self._groupId
 
     def icon(self):
         return QgsApplication.getThemeIcon("/providerGrass.svg")
@@ -191,6 +197,7 @@ class Grass7Algorithm(QgsProcessingAlgorithm):
             # Read the grass group
             line = lines.readline().strip('\n').strip()
             self._group = QCoreApplication.translate("GrassAlgorithm", line)
+            self._groupId = self.groupIdRegex.search(line).group(0).lower()
             hasRasterOutput = False
             hasRasterInput = False
             hasVectorInput = False

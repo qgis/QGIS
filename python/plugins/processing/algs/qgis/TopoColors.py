@@ -63,6 +63,9 @@ class TopoColor(QgisAlgorithm):
     def group(self):
         return self.tr('Cartography')
 
+    def groupId(self):
+        return 'cartography'
+
     def __init__(self):
         super().__init__()
 

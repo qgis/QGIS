@@ -17,8 +17,6 @@
 ***************************************************************************
 """
 
-import os
-
 __author__ = 'Victor Olaya'
 __date__ = 'November 2016'
 __copyright__ = '(C) 2016, Victor Olaya'
@@ -27,6 +25,7 @@ __copyright__ = '(C) 2016, Victor Olaya'
 
 __revision__ = '$Format:%H$'
 
+import os
 import math
 from processing.algs.qgis.QgisAlgorithm import QgisAlgorithm
 from processing.algs.gdal.GdalUtils import GdalUtils
@@ -53,6 +52,9 @@ class RasterCalculator(QgisAlgorithm):
 
     def group(self):
         return self.tr('Raster analysis')
+
+    def groupId(self):
+        return 'rasteranalysis'
 
     def __init__(self):
         super().__init__()

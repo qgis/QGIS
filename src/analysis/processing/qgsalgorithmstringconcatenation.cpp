@@ -44,6 +44,11 @@ QString QgsStringConcatenationAlgorithm::group() const
   return QObject::tr( "Modeler tools" );
 }
 
+QString QgsStringConcatenationAlgorithm::groupId() const
+{
+  return QStringLiteral( "modelertools" );
+}
+
 QString QgsStringConcatenationAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm concatenates two strings together." );

@@ -38,6 +38,7 @@ class QgsFixGeometriesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString displayName() const override;
     virtual QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsFixGeometriesAlgorithm *createInstance() const override SIP_FACTORY;
 

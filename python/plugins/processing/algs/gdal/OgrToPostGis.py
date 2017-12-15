@@ -162,6 +162,9 @@ class OgrToPostGis(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
+    def groupId(self):
+        return 'vectormiscellaneous'
+
     def getConnectionString(self, parameters, context):
         host = self.parameterAsString(parameters, self.HOST, context)
         port = self.parameterAsString(parameters, self.PORT, context)

@@ -39,6 +39,11 @@ QString QgsPromoteToMultipartAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsPromoteToMultipartAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsPromoteToMultipartAlgorithm::outputName() const
 {
   return QObject::tr( "Multiparts" );

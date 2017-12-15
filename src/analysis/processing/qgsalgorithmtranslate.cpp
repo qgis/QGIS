@@ -39,6 +39,11 @@ QString QgsTranslateAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsTranslateAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsTranslateAlgorithm::outputName() const
 {
   return QObject::tr( "Translated" );

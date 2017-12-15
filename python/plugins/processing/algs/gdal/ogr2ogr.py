@@ -68,6 +68,9 @@ class ogr2ogr(GdalAlgorithm):
     def group(self):
         return self.tr('Vector conversion')
 
+    def groupId(self):
+        return 'vectorconversion'
+
     def commandName(self):
         return 'ogr2ogr'
 

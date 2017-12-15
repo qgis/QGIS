@@ -97,6 +97,9 @@ class slope(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
+    def groupId(self):
+        return 'rasteranalysis'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['slope']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)

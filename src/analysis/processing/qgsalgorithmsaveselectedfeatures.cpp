@@ -45,6 +45,11 @@ QString QgsSaveSelectedFeatures::group() const
   return QObject::tr( "Vector general" );
 }
 
+QString QgsSaveSelectedFeatures::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
+}
+
 QString QgsSaveSelectedFeatures::shortHelpString() const
 {
   return QObject::tr( "This algorithm creates a new layer with all the selected features in a given vector layer.\n\n"

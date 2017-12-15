@@ -39,6 +39,11 @@ QString QgsBoundingBoxAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsBoundingBoxAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsBoundingBoxAlgorithm::outputName() const
 {
   return QObject::tr( "Bounds" );

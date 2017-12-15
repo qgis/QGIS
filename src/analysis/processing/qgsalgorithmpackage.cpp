@@ -42,6 +42,11 @@ QString QgsPackageAlgorithm::group() const
   return QObject::tr( "Database" );
 }
 
+QString QgsPackageAlgorithm::groupId() const
+{
+  return QStringLiteral( "database" );
+}
+
 void QgsPackageAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypeVector ) );

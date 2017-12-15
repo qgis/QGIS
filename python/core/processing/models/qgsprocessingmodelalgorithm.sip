@@ -22,7 +22,7 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
 %End
   public:
 
-    QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString() );
+    QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString(), const QString &groupId = QString() );
 %Docstring
  Constructor for QgsProcessingModelAlgorithm.
 %End
@@ -35,6 +35,8 @@ class QgsProcessingModelAlgorithm : QgsProcessingAlgorithm
     virtual QString displayName() const;
 
     virtual QString group() const;
+
+    virtual QString groupId() const;
 
     virtual QIcon icon() const;
 

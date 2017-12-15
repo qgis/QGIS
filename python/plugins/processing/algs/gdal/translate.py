@@ -104,6 +104,9 @@ class translate(GdalAlgorithm):
     def group(self):
         return self.tr('Raster conversion')
 
+    def groupId(self):
+        return 'rasterconversion'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'translate.png'))
 

@@ -40,13 +40,14 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
     /**
      * Constructor for QgsProcessingModelAlgorithm.
      */
-    QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString() );
+    QgsProcessingModelAlgorithm( const QString &name = QString(), const QString &group = QString(), const QString &groupId = QString() );
 
     void initAlgorithm( const QVariantMap &configuration = QVariantMap() ) override;  //#spellok
 
     QString name() const override;
     QString displayName() const override;
     QString group() const override;
+    QString groupId() const override;
     QIcon icon() const override;
     QString svgIconPath() const override;
     QString shortHelpString() const override;
@@ -360,6 +361,7 @@ class CORE_EXPORT QgsProcessingModelAlgorithm : public QgsProcessingAlgorithm
 
     QString mModelName;
     QString mModelGroup;
+    QString mModelGroupId;
 
     QMap< QString, QgsProcessingModelChildAlgorithm > mChildAlgorithms;
 

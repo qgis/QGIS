@@ -39,6 +39,11 @@ QString QgsMinimumEnclosingCircleAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsMinimumEnclosingCircleAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsMinimumEnclosingCircleAlgorithm::outputName() const
 {
   return QObject::tr( "Minimum enclosing circles" );

@@ -97,6 +97,9 @@ class Relief(QgisAlgorithm):
     def group(self):
         return self.tr('Raster terrain analysis')
 
+    def groupId(self):
+        return 'rasterterrainanalysis'
+
     def __init__(self):
         super().__init__()
 

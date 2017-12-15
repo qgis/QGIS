@@ -39,6 +39,11 @@ QString QgsDropGeometryAlgorithm::group() const
   return QObject::tr( "Vector general" );
 }
 
+QString QgsDropGeometryAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
+}
+
 QString QgsDropGeometryAlgorithm::outputName() const
 {
   return QObject::tr( "Dropped geometries" );

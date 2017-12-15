@@ -44,6 +44,11 @@ QString QgsLoadLayerAlgorithm::group() const
   return QObject::tr( "Modeler tools" );
 }
 
+QString QgsLoadLayerAlgorithm::groupId() const
+{
+  return QStringLiteral( "modelertools" );
+}
+
 QString QgsLoadLayerAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm loads a layer to the current project." );

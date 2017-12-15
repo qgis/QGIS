@@ -39,6 +39,11 @@ QString QgsJoinByAttributeAlgorithm::group() const
   return QObject::tr( "Vector general" );
 }
 
+QString QgsJoinByAttributeAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
+}
+
 void QgsJoinByAttributeAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ),

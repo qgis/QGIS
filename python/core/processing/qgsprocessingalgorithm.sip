@@ -158,10 +158,20 @@ class QgsProcessingAlgorithm
 %Docstring
  Returns the name of the group this algorithm belongs to. This string
  should be localised.
+.. seealso:: :py:func:`groupId()`
 .. seealso:: :py:func:`tags()`
  :rtype: str
 %End
 
+    virtual QString groupId() const;
+%Docstring
+ Returns the unique ID of the group this algorithm belongs to. This string
+ should be fixed for the algorithm, and must not be localised. The group id
+ should be unique within each provider. Group id should contain lowercase
+ alphanumeric characters only and no spaces or other formatting characters.
+.. seealso:: :py:func:`group()`
+ :rtype: str
+%End
     virtual Flags flags() const;
 %Docstring
  Returns the flags indicating how and when the algorithm operates and should be exposed to users.

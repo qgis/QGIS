@@ -55,6 +55,11 @@ QString QgsTransformAlgorithm::group() const
   return QObject::tr( "Vector general" );
 }
 
+QString QgsTransformAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
+}
+
 QString QgsTransformAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm reprojects a vector layer. It creates a new layer with the same features "

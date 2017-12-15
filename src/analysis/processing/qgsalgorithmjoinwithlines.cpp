@@ -40,6 +40,11 @@ QString QgsJoinWithLinesAlgorithm::group() const
   return QObject::tr( "Vector analysis" );
 }
 
+QString QgsJoinWithLinesAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectoranalysis" );
+}
+
 void QgsJoinWithLinesAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "HUBS" ),

@@ -73,6 +73,7 @@ class SagaAlgorithm(SagaAlgorithmBase):
         self._name = ''
         self._display_name = ''
         self._group = ''
+        self._groupId = ''
         self.params = []
         self.defineCharacteristicsFromFile()
 
@@ -91,6 +92,9 @@ class SagaAlgorithm(SagaAlgorithmBase):
 
     def group(self):
         return self._group
+
+    def groupId(self):
+        return self._groupId
 
     def shortHelpString(self):
         return shortHelp.get(self.id(), None)
@@ -119,6 +123,10 @@ class SagaAlgorithm(SagaAlgorithmBase):
             line = lines.readline().strip('\n').strip()
             self.undecorated_group = line
             self._group = self.tr(decoratedGroupName(self.undecorated_group))
+
+            validChars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789:'
+            grpName = decoratedGroupName(self.undecorated_group).lower()
+            self._groupId = ''.join(c for c in grpName if c in validChars)
             line = lines.readline().strip('\n').strip()
             while line != '':
                 if line.startswith('Hardcoded'):
