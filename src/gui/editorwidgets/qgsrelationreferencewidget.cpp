@@ -941,6 +941,18 @@ void QgsRelationReferenceWidget::filterChanged()
   }
 
   mFilterModel->setFilteredFeatures( featureIds );
+
+  if ( mChainFilters && mComboBox->count() > 0 )
+  {
+    if ( scb->currentIndex() == 0 )
+    {
+      mComboBox->setCurrentIndex( 0 );
+    }
+    else if ( mComboBox->count() > 1 )
+    {
+      mComboBox->setCurrentIndex( 1 );
+    }
+  }
 }
 
 void QgsRelationReferenceWidget::addEntry()
