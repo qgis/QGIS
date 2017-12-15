@@ -63,10 +63,9 @@ void QgsMapToolCircle2TangentsPoint::cadCanvasReleaseEvent( QgsMapMouseEvent *e 
     if ( mPoints.size() == 4 )
     {
       bool isIntersect = false;
-      const double epsilon = 1e-8;
       QgsPoint ptInter;
       QgsGeometryUtils::segmentIntersection( mPoints.at( 0 ), mPoints.at( 1 ),
-                                             mPoints.at( 2 ), mPoints.at( 3 ), ptInter, isIntersect, epsilon );
+                                             mPoints.at( 2 ), mPoints.at( 3 ), ptInter, isIntersect );
       if ( !isIntersect )
       {
         QgisApp::instance()->messageBar()->pushMessage( tr( "Error" ), tr( "Segments are parallels" ),
@@ -173,19 +172,18 @@ void QgsMapToolCircle2TangentsPoint::getPossibleCenter( )
     QgsGeometry line2p = line2.offsetCurve( + mRadius, 8, QgsGeometry::JoinStyleBevel, 5 );
 
     bool isIntersect = false;
-    const double epsilon = 1e-8;
     QgsPoint inter;
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
-                                           QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect, epsilon );
+                                           QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect );
     mCenters.append( QgsPointXY( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1m.asPolyline().at( 0 ) ), QgsPoint( line1m.asPolyline().at( 1 ) ),
-                                           QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect, epsilon );
+                                           QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect );
     mCenters.append( QgsPointXY( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1p.asPolyline().at( 0 ) ), QgsPoint( line1p.asPolyline().at( 1 ) ),
-                                           QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect, epsilon );
+                                           QgsPoint( line2m.asPolyline().at( 0 ) ), QgsPoint( line2m.asPolyline().at( 1 ) ), inter, isIntersect );
     mCenters.append( QgsPointXY( inter ) );
     QgsGeometryUtils::segmentIntersection( QgsPoint( line1p.asPolyline().at( 0 ) ), QgsPoint( line1p.asPolyline().at( 1 ) ),
-                                           QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect, epsilon );
+                                           QgsPoint( line2p.asPolyline().at( 0 ) ), QgsPoint( line2p.asPolyline().at( 1 ) ), inter, isIntersect );
     mCenters.append( QgsPointXY( inter ) );
   }
 }

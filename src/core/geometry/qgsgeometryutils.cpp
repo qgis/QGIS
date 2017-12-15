@@ -251,7 +251,7 @@ bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v, const 
   return true;
 }
 
-bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint, bool &isIntersection, double tolerance, bool acceptImproperIntersection )
+bool QgsGeometryUtils::segmentIntersection( const QgsPoint &p1, const QgsPoint &p2, const QgsPoint &q1, const QgsPoint &q2, QgsPoint &intersectionPoint, bool &isIntersection, const double tolerance, bool acceptImproperIntersection )
 {
   isIntersection = false;
 
