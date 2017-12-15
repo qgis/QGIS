@@ -951,22 +951,22 @@ while ($LINE_IDX < $LINE_COUNT){
             if ( $COMMENT !~ m/^\s*$/ ){
                 my @comment_lines = split /\n/, $COMMENT;
                 foreach my $comment_line (@comment_lines) {
-                  if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
-                      # return type must be added before any other paragraph-level markup
-                      write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
-                      $RETURN_TYPE = '';
-                  }
+                  # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
+                  #     # return type must be added before any other paragraph-level markup
+                  #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
+                  #     $RETURN_TYPE = '';
+                  # }
                   write_output("CM2", "$comment_line\n");
-                  if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
-                      # return type must be added before any other paragraph-level markup
-                      write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
-                      $RETURN_TYPE = '';
-                  }
+                  # if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
+                  #     # return type must be added before any other paragraph-level markup
+                  #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
+                  #     $RETURN_TYPE = '';
+                  # }
                 }
             }
-            if ( $RETURN_TYPE ne '' ){
-                write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
-            }
+            # if ( $RETURN_TYPE ne '' ){
+            #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
+            # }
             write_output("CM4", "%End\n");
         }
         $COMMENT = '';
