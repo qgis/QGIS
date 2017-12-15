@@ -119,6 +119,8 @@ sub write_header_footer {
 
 sub processDoxygenLine {
     my $line = $_[0];
+    # remove prepending spaces
+    $line =~ s/^\s+//g;
     # remove \a formatting
     $line =~ s/\\a (.+?)\b/``$1``/g;
     # replace :: with . (changes c++ style namespace/class directives to Python style)
@@ -126,7 +128,7 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
     # replace \returns with :return:
-    $line =~ s/\\return(s)?/\n :return:/;
+    $line =~ s/\s*\\return(s)?/\n:return:/;
 
     if ( $line =~ m/\\param / ){
         if ( $COMMENT_PARAM_LIST == 0 )
@@ -134,7 +136,7 @@ sub processDoxygenLine {
             $line = "\n$line";
         }
         $COMMENT_PARAM_LIST = 1;
-        $line =~ s/\\param (\w+)\b/ :param $1:/g;
+        $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
     }
 
 
@@ -951,19 +953,19 @@ while ($LINE_IDX < $LINE_COUNT){
                 foreach my $comment_line (@comment_lines) {
                   if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
                       # return type must be added before any other paragraph-level markup
-                      write_output("CM5", " :rtype: $RETURN_TYPE\n\n");
+                      write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                       $RETURN_TYPE = '';
                   }
                   write_output("CM2", "$comment_line\n");
                   if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
                       # return type must be added before any other paragraph-level markup
-                      write_output("CM5", " :rtype: $RETURN_TYPE\n\n");
+                      write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
                       $RETURN_TYPE = '';
                   }
                 }
             }
             if ( $RETURN_TYPE ne '' ){
-                write_output("CM3", "\n :rtype: $RETURN_TYPE\n");
+                write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
             }
             write_output("CM4", "%End\n");
         }
