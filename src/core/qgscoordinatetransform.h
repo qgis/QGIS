@@ -363,8 +363,17 @@ class CORE_EXPORT QgsCoordinateTransform
      * Returns a proj string representing the specified \a datumTransformId datum transform ID.
      * \see datumTransformations()
      * \see datumTransformInfo()
+     * \see projStringToDatumTransformId()
      */
     static QString datumTransformToProj( int datumTransformId );
+
+    /**
+     * Returns the datum transform ID corresponding to a specified proj \a string.
+     * Returns -1 if matching datum ID was not found.
+     * \see datumTransformToProj()
+     * \since QGIS 3.0
+     */
+    static int projStringToDatumTransformId( const QString &string );
 
     /**
      * Contains datum transform information.

@@ -281,7 +281,17 @@ Default constructor, creates an invalid QgsCoordinateTransform.
  Returns a proj string representing the specified ``datumTransformId`` datum transform ID.
 .. seealso:: :py:func:`datumTransformations()`
 .. seealso:: :py:func:`datumTransformInfo()`
+.. seealso:: :py:func:`projStringToDatumTransformId()`
  :rtype: str
+%End
+
+    static int projStringToDatumTransformId( const QString &string );
+%Docstring
+ Returns the datum transform ID corresponding to a specified proj ``string``.
+ Returns -1 if matching datum ID was not found.
+.. seealso:: :py:func:`datumTransformToProj()`
+.. versionadded:: 3.0
+ :rtype: int
 %End
 
     struct TransformInfo

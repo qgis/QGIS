@@ -218,6 +218,19 @@ class TestQgsCoordinateTransform(unittest.TestCase):
         self.assertIn('EPSG:4326', [QgsCoordinateTransform.datumTransformInfo(t.destinationTransformId).destinationCrsAuthId for t in
                                     transforms])
 
+    def testStringToTransformId(self):
+        """
+        Test converting proj strings to corresponding datum IDs
+        """
+        self.assertEqual(QgsCoordinateTransform.projStringToDatumTransformId(''), -1)
+        self.assertEqual(QgsCoordinateTransform.projStringToDatumTransformId('not'), -1)
+        test_string = '+towgs84=-403,684,41'
+        id = QgsCoordinateTransform.projStringToDatumTransformId(test_string)
+        self.assertNotEqual(id, -1)
+        string = QgsCoordinateTransform.datumTransformToProj(id)
+        self.assertEqual(string, test_string)
+        self.assertEqual(QgsCoordinateTransform.projStringToDatumTransformId(test_string.upper()), id)
+
 
 if __name__ == '__main__':
     unittest.main()

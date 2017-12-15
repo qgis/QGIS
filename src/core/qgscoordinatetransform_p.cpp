@@ -341,6 +341,62 @@ QString QgsCoordinateTransformPrivate::datumTransformString( int datumTransform 
   return transformString;
 }
 
+int QgsCoordinateTransformPrivate::transformIdFromString( const QString &string )
+{
+  sqlite3_database_unique_ptr database;
+  int openResult = database.open_v2( QgsApplication::srsDatabaseFilePath(), SQLITE_OPEN_READONLY, nullptr );
+  if ( openResult != SQLITE_OK )
+  {
+    return -1;
+  }
+
+  sqlite3_statement_unique_ptr statement;
+  QString sql = QStringLiteral( "SELECT coord_op_method_code,p1,p2,p3,p4,p5,p6,p7,coord_op_code FROM tbl_datum_transform" );
+  int prepareRes;
+  statement = database.prepare( sql, prepareRes );
+  if ( prepareRes != SQLITE_OK )
+  {
+    return -1;
+  }
+
+  while ( statement.step() == SQLITE_ROW )
+  {
+    QString transformString;
+    //coord_op_methode_code
+    int methodCode = statement.columnAsInt64( 0 );
+    if ( methodCode == 9615 ) //ntv2
+    {
+      transformString = "+nadgrids=" + statement.columnAsText( 1 );
+    }
+    else if ( methodCode == 9603 || methodCode == 9606 || methodCode == 9607 )
+    {
+      transformString += QLatin1String( "+towgs84=" );
+      double p1 = statement.columnAsDouble( 1 );
+      double p2 = statement.columnAsDouble( 2 );
+      double p3 = statement.columnAsDouble( 3 );
+      double p4 = statement.columnAsDouble( 4 );
+      double p5 = statement.columnAsDouble( 5 );
+      double p6 = statement.columnAsDouble( 6 );
+      double p7 = statement.columnAsDouble( 7 );
+      if ( methodCode == 9603 ) //3 parameter transformation
+      {
+        transformString += QStringLiteral( "%1,%2,%3" ).arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ) );
+      }
+      else //7 parameter transformation
+      {
+        transformString += QStringLiteral( "%1,%2,%3,%4,%5,%6,%7" ).arg( QString::number( p1 ), QString::number( p2 ), QString::number( p3 ), QString::number( p4 ), QString::number( p5 ), QString::number( p6 ), QString::number( p7 ) );
+      }
+    }
+
+    if ( transformString.compare( string, Qt::CaseInsensitive ) == 0 )
+    {
+      return statement.columnAsInt64( 8 );
+    }
+  }
+
+  return -1;
+}
+
 void QgsCoordinateTransformPrivate::addNullGridShifts( QString &srcProjString, QString &destProjString,
     int sourceDatumTransform, int destinationDatumTransform ) const
 {

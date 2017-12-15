@@ -816,6 +816,11 @@ QString QgsCoordinateTransform::datumTransformToProj( int datumTransform )
   return QgsCoordinateTransformPrivate::datumTransformString( datumTransform );
 }
 
+int QgsCoordinateTransform::projStringToDatumTransformId( const QString &string )
+{
+  return QgsCoordinateTransformPrivate::transformIdFromString( string );
+}
+
 QgsCoordinateTransform::TransformInfo QgsCoordinateTransform::datumTransformInfo( int datumTransform )
 {
   TransformInfo info;
