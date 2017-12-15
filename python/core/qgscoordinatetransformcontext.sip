@@ -137,10 +137,15 @@ class QgsCoordinateTransformContext
  :rtype: QgsCoordinateTransform.TransformPair
 %End
 
-    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context, QStringList &missingTransforms /Out/ );
 %Docstring
  Reads the context's state from a DOM ``element``.
+
+ Returns false if transforms stored in the XML are not available. In this case ``missingTransforms`` will be
+ filled with missing datum transform strings.
+
 .. seealso:: :py:func:`writeXml()`
+ :rtype: bool
 %End
 
     void writeXml( QDomElement &element, const QgsReadWriteContext &context ) const;

@@ -3186,6 +3186,12 @@ void QgisApp::setupConnections()
   // project crs connections
   connect( QgsProject::instance(), &QgsProject::crsChanged, this, &QgisApp::projectCrsChanged );
 
+  connect( QgsProject::instance(), &QgsProject::missingDatumTransforms, this, [ = ]( const QStringList & transforms )
+  {
+    QString message = tr( "Transforms are not installed: %1 " ).arg( transforms.join( QStringLiteral( " ," ) ) );
+    messageBar()->pushWarning( tr( "Missing datum transforms" ), message );
+  } );
+
   connect( QgsProject::instance(), &QgsProject::labelingEngineSettingsChanged,
            this, [ = ]
   {

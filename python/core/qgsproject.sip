@@ -945,6 +945,12 @@ emitted whenever the configuration for snapping has changed
 .. seealso:: :py:func:`transformContext()`
 %End
 
+    void missingDatumTransforms( const QStringList &missingTransforms );
+%Docstring
+ Emitted when datum transforms stored in the project are not available locally.
+.. versionadded:: 3.0
+%End
+
     void transactionGroupsChanged();
 %Docstring
  Emitted whenever a new transaction group has been created or a

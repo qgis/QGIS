@@ -925,7 +925,11 @@ bool QgsProject::readProjectFile( const QString &filename )
   }
   mCrs = projectCrs;
 
-  mTransformContext.readXml( doc->documentElement(), context );
+  QStringList datumErrors;
+  if ( !mTransformContext.readXml( doc->documentElement(), context, datumErrors ) )
+  {
+    emit missingDatumTransforms( datumErrors );
+  }
   emit transformContextChanged();
 
   QDomNodeList nl = doc->elementsByTagName( QStringLiteral( "autotransaction" ) );

@@ -233,9 +233,13 @@ class CORE_EXPORT QgsCoordinateTransformContext
 
     /**
      * Reads the context's state from a DOM \a element.
+     *
+     * Returns false if transforms stored in the XML are not available. In this case \a missingTransforms will be
+     * filled with missing datum transform strings.
+     *
      * \see writeXml()
      */
-    void readXml( const QDomElement &element, const QgsReadWriteContext &context );
+    bool readXml( const QDomElement &element, const QgsReadWriteContext &context, QStringList &missingTransforms SIP_OUT );
 
     /**
      * Writes the context's state to a DOM \a element.

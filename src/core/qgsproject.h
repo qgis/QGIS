@@ -934,6 +934,12 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     void transformContextChanged();
 
     /**
+     * Emitted when datum transforms stored in the project are not available locally.
+     * \since QGIS 3.0
+     */
+    void missingDatumTransforms( const QStringList &missingTransforms );
+
+    /**
      * Emitted whenever a new transaction group has been created or a
      * transaction group has been removed.
      *

@@ -161,7 +161,7 @@ QgsCoordinateTransform::TransformPair QgsCoordinateTransformContext::calculateDa
 #endif
 }
 
-void QgsCoordinateTransformContext::readXml( const QDomElement &element, const QgsReadWriteContext & )
+bool QgsCoordinateTransformContext::readXml( const QDomElement &element, const QgsReadWriteContext &, QStringList &missingTransforms )
 {
   d.detach();
   d->mLock.lockForWrite();
@@ -176,8 +176,11 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
   if ( contextNodes.count() < 1 )
   {
     d->mLock.unlock();
-    return;
+    return true;
   }
+
+  missingTransforms.clear();
+  bool result = true;
 
   const QDomElement contextElem = contextNodes.at( 0 ).toElement();
 
@@ -194,11 +197,26 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
 
     int datumId1 = -1;
     int datumId2 = -1;
+    //warn if value1 or value2 is non-empty, yet no matching transform was found
     if ( !value1.isEmpty() )
+    {
       datumId1 = QgsCoordinateTransform::projStringToDatumTransformId( value1 );
+      if ( datumId1 < 0 )
+      {
+        result = false;
+        missingTransforms << value1;
+      }
+    }
     if ( !value2.isEmpty() )
+    {
       datumId2 = QgsCoordinateTransform::projStringToDatumTransformId( value2 );
-    //TODO - throw warning if value1 or value2 is non-empty, yet no matching transform was found
+      if ( datumId2 < 0 )
+      {
+        result = false;
+        missingTransforms << value2;
+      }
+    }
+
     d->mSourceDestDatumTransforms.insert( qMakePair( key1, key2 ), QgsCoordinateTransform::TransformPair( datumId1, datumId2 ) );
   }
 
@@ -235,6 +253,7 @@ void QgsCoordinateTransformContext::readXml( const QDomElement &element, const Q
 #endif
 
   d->mLock.unlock();
+  return result;
 }
 
 void QgsCoordinateTransformContext::writeXml( QDomElement &element, const QgsReadWriteContext & ) const
