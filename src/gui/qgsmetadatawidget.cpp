@@ -432,7 +432,12 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
   {
     // Even if it's a list, it seems we use only one for now (cf discussion with Tom)
     dateTimeFrom->setDateTime( temporalExtents.at( 0 ).begin() );
-    dateTimeFrom->setDateTime( temporalExtents.at( 0 ).end() );
+    dateTimeTo->setDateTime( temporalExtents.at( 0 ).end() );
+  }
+  else
+  {
+    dateTimeFrom->clear();
+    dateTimeTo->clear();
   }
 
   // Contacts
@@ -456,13 +461,14 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
     const QList<QgsLayerMetadata::Address> &addresses = contact.addresses;
     for ( const QgsLayerMetadata::Address &address : addresses )
     {
-      int currentRow = tabKeywords->rowCount() - 1;
-      tabAddresses->item( currentRow, 0 )->setText( address.type );
-      tabAddresses->item( currentRow, 1 )->setText( address.address );
-      tabAddresses->item( currentRow, 2 )->setText( address.postalCode );
-      tabAddresses->item( currentRow, 3 )->setText( address.city );
-      tabAddresses->item( currentRow, 4 )->setText( address.administrativeArea );
-      tabAddresses->item( currentRow, 5 )->setText( address.country );
+      int currentRow = tabAddresses->rowCount();
+      tabAddresses->setRowCount( currentRow + 1 );
+      tabAddresses->setItem( currentRow, 0,  new QTableWidgetItem( address.type ) );
+      tabAddresses->setItem( currentRow, 1,  new QTableWidgetItem( address.address ) );
+      tabAddresses->setItem( currentRow, 2,  new QTableWidgetItem( address.postalCode ) );
+      tabAddresses->setItem( currentRow, 3,  new QTableWidgetItem( address.city ) );
+      tabAddresses->setItem( currentRow, 4,  new QTableWidgetItem( address.administrativeArea ) );
+      tabAddresses->setItem( currentRow, 5,  new QTableWidgetItem( address.country ) );
     }
   }
 
