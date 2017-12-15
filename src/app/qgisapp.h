@@ -1266,6 +1266,9 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void newGeoPackageLayer();
     //! Print the current map view frame
     void newPrintComposer();
+    //! Create a new print layout
+    void newPrintLayout();
+
     void showComposerManager();
     //! Add all loaded layers into the overview - overrides qgisappbase method
     void addAllToOverview();
