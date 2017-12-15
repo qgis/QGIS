@@ -331,7 +331,7 @@ class CORE_EXPORT QgsLayoutExporter
      */
     void preparePrintAsPdf( QPrinter &printer, const QString &filePath );
 
-    void preparePrint( QPrinter &printer, bool evaluateDDPageSize = false );
+    void preparePrint( QPrinter &printer, bool setFirstPageSize = false );
 
     /**
      * Convenience function that prepares the printer and prints.
@@ -346,6 +346,7 @@ class CORE_EXPORT QgsLayoutExporter
      */
     ExportResult printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage = false, double dpi = -1, bool rasterize = false );
 
+    void updatePrinterPageSize( QPrinter &printer, int page );
 
     friend class TestQgsLayout;
 

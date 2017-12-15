@@ -362,10 +362,10 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
   ExportResult result = printPrivate( printer, p, false, settings.dpi, settings.rasterizeWholeImage );
   p.end();
 
-#if 0//TODO
-  georeferenceOutput( filePath );
-#endif
-
+  if ( mLayout->pageCollection()->pageCount() == 1 )
+  {
+    georeferenceOutput( filePath, nullptr, QRectF(), settings.dpi );
+  }
   return result;
 }
 
@@ -380,17 +380,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QPrinter &printer, const QString &fil
   // Also an issue with PDF paper size using QPrinter::NativeFormat on Mac (always outputs portrait letter-size)
   printer.setOutputFormat( QPrinter::PdfFormat );
 
-#if 0 //TODO
-  refreshPageSize();
-#endif
-
-  //must set orientation to portrait before setting paper size, otherwise size will be flipped
-  //for landscape sized outputs (#11352)
-  printer.setOrientation( QPrinter::Portrait );
-
-#if 0 //TODO
-  printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
-#endif
+  updatePrinterPageSize( printer, 0 );
 
   // TODO: add option for this in Composer
   // May not work on Windows or non-X11 Linux. Works fine on Mac using QPrinter::NativeFormat
@@ -399,7 +389,7 @@ void QgsLayoutExporter::preparePrintAsPdf( QPrinter &printer, const QString &fil
   QgsPaintEngineHack::fixEngineFlags( printer.paintEngine() );
 }
 
-void QgsLayoutExporter::preparePrint( QPrinter &printer, bool evaluateDDPageSize )
+void QgsLayoutExporter::preparePrint( QPrinter &printer, bool setFirstPageSize )
 {
   printer.setFullPage( true );
   printer.setColorMode( QPrinter::Color );
@@ -407,17 +397,10 @@ void QgsLayoutExporter::preparePrint( QPrinter &printer, bool evaluateDDPageSize
   //set user-defined resolution
   printer.setResolution( mLayout->context().dpi() );
 
-#if 0 //TODO
-  if ( evaluateDDPageSize && ddPageSizeActive() )
+  if ( setFirstPageSize )
   {
-    //set data defined page size
-    refreshPageSize();
-    //must set orientation to portrait before setting paper size, otherwise size will be flipped
-    //for landscape sized outputs (#11352)
-    printer.setOrientation( QPrinter::Portrait );
-    printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
+    updatePrinterPageSize( printer, 0 );
   }
-#endif
 }
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer )
@@ -437,18 +420,6 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::print( QPrinter &printer )
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &printer, QPainter &painter, bool startNewPage, double dpi, bool rasterise )
 {
-#if 0 //TODO
-  if ( ddPageSizeActive() )
-  {
-    //set the page size again so that data defined page size takes effect
-    refreshPageSize();
-    //must set orientation to portrait before setting paper size, otherwise size will be flipped
-    //for landscape sized outputs (#11352)
-    printer.setOrientation( QPrinter::Portrait );
-    printer.setPaperSize( QSizeF( paperWidth(), paperHeight() ), QPrinter::Millimeter );
-  }
-#endif
-
   //layout starts page numbering at 0
   int fromPage = ( printer.fromPage() < 1 ) ? 0 : printer.fromPage() - 1;
   int toPage = ( printer.toPage() < 1 ) ? mLayout->pageCollection()->pageCount() - 1 : printer.toPage() - 1;
@@ -462,6 +433,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &print
       {
         continue;
       }
+
+      if ( i > 0 )
+      {
+        updatePrinterPageSize( printer, i );
+      }
+
       if ( ( pageExported && i > fromPage ) || startNewPage )
       {
         printer.newPage();
@@ -488,6 +465,12 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &print
       {
         continue;
       }
+
+      if ( i > 0 )
+      {
+        updatePrinterPageSize( printer, i );
+      }
+
       if ( ( pageExported && i > fromPage ) || startNewPage )
       {
         printer.newPage();
@@ -497,6 +480,16 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::printPrivate( QPrinter &print
     }
   }
   return Success;
+}
+
+void QgsLayoutExporter::updatePrinterPageSize( QPrinter &printer, int page )
+{
+  //must set orientation to portrait before setting paper size, otherwise size will be flipped
+  //for landscape sized outputs (#11352)
+  printer.setOrientation( QPrinter::Portrait );
+  QgsLayoutSize pageSize = mLayout->pageCollection()->page( page )->sizeWithUnits();
+  QgsLayoutSize pageSizeMM = mLayout->context().measurementConverter().convert( pageSize, QgsUnitTypes::LayoutMillimeters );
+  printer.setPaperSize( pageSizeMM.toQSizeF(), QPrinter::Millimeter );
 }
 
 double *QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, const QRectF &region, double dpi ) const
