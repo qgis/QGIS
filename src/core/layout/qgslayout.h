@@ -672,6 +672,3 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
 };
 
 #endif //QGSLAYOUT_H
-
-
-

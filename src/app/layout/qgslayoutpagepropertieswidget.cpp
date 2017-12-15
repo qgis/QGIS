@@ -39,6 +39,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   mWidthSpin->setValue( mPage->pageSize().width() );
   mHeightSpin->setValue( mPage->pageSize().height() );
   mSizeUnitsComboBox->setUnit( mPage->pageSize().units() );
+  mExcludePageCheckBox->setChecked( mPage->excludeFromExports() );
 
   mPageOrientationComboBox->setCurrentIndex( mPageOrientationComboBox->findData( mPage->orientation() ) );
 
@@ -59,11 +60,14 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::updatePageSize );
   connect( mWidthSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
   connect( mHeightSpin, static_cast< void ( QDoubleSpinBox::* )( double )>( &QDoubleSpinBox::valueChanged ), this, &QgsLayoutPagePropertiesWidget::setToCustomSize );
+  connect( mExcludePageCheckBox, &QCheckBox::toggled, this, &QgsLayoutPagePropertiesWidget::excludeExportsToggled );
 
   connect( mSymbolButton, &QgsSymbolButton::changed, this, &QgsLayoutPagePropertiesWidget::symbolChanged );
   registerDataDefinedButton( mPaperSizeDDBtn, QgsLayoutObject::PresetPaperSize );
   registerDataDefinedButton( mWidthDDBtn, QgsLayoutObject::ItemWidth );
   registerDataDefinedButton( mHeightDDBtn, QgsLayoutObject::ItemHeight );
+  registerDataDefinedButton( mExcludePageDDBtn, QgsLayoutObject::ExcludeFromExports );
+  mExcludePageDDBtn->registerEnabledWidget( mExcludePageCheckBox, false );
 
   showCurrentPageSize();
 }
@@ -153,6 +157,13 @@ void QgsLayoutPagePropertiesWidget::symbolChanged()
   mPage->layout()->undoStack()->beginCommand( mPage->layout()->pageCollection(), tr( "Change Page Background" ), QgsLayoutItemPage::UndoPageSymbol );
   mPage->layout()->pageCollection()->setPageStyleSymbol( static_cast< QgsFillSymbol * >( mSymbolButton->symbol() )->clone() );
   mPage->layout()->undoStack()->endCommand();
+}
+
+void QgsLayoutPagePropertiesWidget::excludeExportsToggled( bool checked )
+{
+  mPage->beginCommand( !checked ? tr( "Include Page in Exports" ) : tr( "Exclude Page from Exports" ) );
+  mPage->setExcludeFromExports( checked );
+  mPage->endCommand();
 }
 
 void QgsLayoutPagePropertiesWidget::showCurrentPageSize()

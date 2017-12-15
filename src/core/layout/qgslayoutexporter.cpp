@@ -26,6 +26,30 @@
 #include "gdal.h"
 #include "cpl_conv.h"
 
+///@cond PRIVATE
+class LayoutContextPreviewSettingRestorer
+{
+  public:
+
+    LayoutContextPreviewSettingRestorer( QgsLayout *layout )
+      : mLayout( layout )
+      , mPreviousSetting( layout->context().mIsPreviewRender )
+    {
+      mLayout->context().mIsPreviewRender = false;
+    }
+
+    ~LayoutContextPreviewSettingRestorer()
+    {
+      mLayout->context().mIsPreviewRender = mPreviousSetting;
+    }
+
+  private:
+    QgsLayout *mLayout = nullptr;
+    bool mPreviousSetting = false;
+};
+
+///@endcond PRIVATE
+
 QgsLayoutExporter::QgsLayoutExporter( QgsLayout *layout )
   : mLayout( layout )
 {
@@ -53,6 +77,9 @@ void QgsLayoutExporter::renderPage( QPainter *painter, int page ) const
     return;
   }
 
+  LayoutContextPreviewSettingRestorer restorer( mLayout );
+  ( void )restorer;
+
   QRectF paperRect = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
   renderRegion( painter, paperRect );
 }
@@ -73,6 +100,9 @@ QImage QgsLayoutExporter::renderPageToImage( int page, QSize imageSize, double d
     return QImage();
   }
 
+  LayoutContextPreviewSettingRestorer restorer( mLayout );
+  ( void )restorer;
+
   QRectF paperRect = QRectF( pageItem->pos().x(), pageItem->pos().y(), pageItem->rect().width(), pageItem->rect().height() );
   return renderRegionToImage( paperRect, imageSize, dpi );
 }
@@ -85,8 +115,6 @@ class LayoutItemCacheSettingRestorer
     LayoutItemCacheSettingRestorer( QgsLayout *layout )
       : mLayout( layout )
     {
-      mLayout->context().mIsPreviewRender = false;
-
       const QList< QGraphicsItem * > items = mLayout->items();
       for ( QGraphicsItem *item : items )
       {
@@ -101,8 +129,6 @@ class LayoutItemCacheSettingRestorer
       {
         it.key()->setCacheMode( it.value() );
       }
-
-      mLayout->context().mIsPreviewRender = true;
     }
 
   private:
@@ -122,6 +148,8 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
 
   LayoutItemCacheSettingRestorer cacheRestorer( mLayout );
   ( void )cacheRestorer;
+  LayoutContextPreviewSettingRestorer restorer( mLayout );
+  ( void )restorer;
 
 #if 0 //TODO
   setSnapLinesVisible( false );
@@ -138,6 +166,9 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
 
 QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize imageSize, double dpi ) const
 {
+  LayoutContextPreviewSettingRestorer restorer( mLayout );
+  ( void )restorer;
+
   double resolution = mLayout->context().dpi();
   double oneInchInLayoutUnits = mLayout->convertToLayoutUnits( QgsLayoutMeasurement( 1, QgsUnitTypes::LayoutInches ) );
   if ( imageSize.isValid() )
@@ -219,6 +250,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
   pageDetails.baseName = fi.baseName();
   pageDetails.extension = fi.completeSuffix();
 
+  LayoutContextPreviewSettingRestorer restorer( mLayout );
+  ( void )restorer;
   LayoutContextSettingsRestorer dpiRestorer( mLayout );
   ( void )dpiRestorer;
   mLayout->context().setDpi( settings.dpi );
@@ -303,6 +336,8 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &f
 
   mErrorFileName.clear();
 
+  LayoutContextPreviewSettingRestorer restorer( mLayout );
+  ( void )restorer;
   LayoutContextSettingsRestorer contextRestorer( mLayout );
   ( void )contextRestorer;
   mLayout->context().setDpi( settings.dpi );

@@ -14,27 +14,7 @@
    <string>New Item Properties</string>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1">
-   <item row="3" column="0">
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
-   </item>
-   <item row="2" column="0">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string>Background</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
+   <item row="4" column="1">
     <widget class="QgsSymbolButton" name="mSymbolButton">
      <property name="enabled">
       <bool>true</bool>
@@ -53,6 +33,13 @@
      </property>
      <property name="text">
       <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Background</string>
      </property>
     </widget>
    </item>
@@ -204,6 +191,56 @@
      </layout>
     </widget>
    </item>
+   <item row="5" column="0">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QCheckBox" name="mExcludePageCheckBox">
+       <property name="toolTip">
+        <string>If checked, this page will not be included when exporting the layout</string>
+       </property>
+       <property name="text">
+        <string>Exclude page from exports</string>
+       </property>
+       <property name="checked">
+        <bool>false</bool>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QgsPropertyOverrideButton" name="mExcludePageDDBtn">
+       <property name="text">
+        <string>…</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
   </layout>
  </widget>
  <customwidgets>
@@ -244,6 +281,9 @@
   <tabstop>mHeightSpin</tabstop>
   <tabstop>mHeightDDBtn</tabstop>
   <tabstop>mSizeUnitsComboBox</tabstop>
+  <tabstop>mExcludePageCheckBox</tabstop>
+  <tabstop>mExcludePageDDBtn</tabstop>
+  <tabstop>mSymbolButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

@@ -236,7 +236,8 @@ class CORE_EXPORT QgsLayoutContext : public QObject
     bool mPagesVisible = true;
 
     friend class QgsLayoutExporter;
-    friend class LayoutItemCacheSettingRestorer;
+    friend class TestQgsLayout;
+    friend class LayoutContextPreviewSettingRestorer;
 
 
 };

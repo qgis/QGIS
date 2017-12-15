@@ -482,6 +482,10 @@ bool QgsLayoutPageCollection::shouldExportPage( int page ) const
     return false;
   }
 
+  QgsLayoutItemPage *pageItem = mPages.at( page );
+  if ( !pageItem->shouldDrawItem() )
+    return false;
+
   //check all frame items on page
   QList<QgsLayoutFrame *> frames;
   itemsOnPage( frames, page );

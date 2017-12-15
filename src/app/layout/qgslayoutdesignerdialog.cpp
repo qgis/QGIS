@@ -1511,6 +1511,9 @@ void QgsLayoutDesignerDialog::exportToRaster()
   mView->setPaintingEnabled( false );
   QApplication::setOverrideCursor( Qt::BusyCursor );
 
+  // force a refresh, to e.g. update data defined properties, tables, etc
+  mLayout->refresh();
+
   QgsLayoutExporter exporter( mLayout );
 
   QgsLayoutExporter::ImageExportSettings settings;
@@ -1623,6 +1626,9 @@ void QgsLayoutDesignerDialog::exportToPdf()
   QgsLayoutExporter::PdfExportSettings pdfSettings;
   pdfSettings.rasterizeWholeImage = mLayout->customProperty( QStringLiteral( "rasterise" ), false ).toBool();
   pdfSettings.forceVectorOutput = mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool();
+
+  // force a refresh, to e.g. update data defined properties, tables, etc
+  mLayout->refresh();
 
   QgsLayoutExporter exporter( mLayout );
   switch ( exporter.exportToPdf( outputFileName, pdfSettings ) )

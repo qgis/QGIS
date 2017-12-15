@@ -317,6 +317,52 @@ class TestQgsLayoutExporter(unittest.TestCase):
         self.assertAlmostEqual(values[4], 1925.000000000000, 2)
         self.assertAlmostEqual(values[5], 3050.000000000000, 2)
 
+    def testExcludePagesImage(self):
+        l = QgsLayout(QgsProject.instance())
+        l.initializeDefaults()
+        # add a second page
+        page2 = QgsLayoutItemPage(l)
+        page2.setPageSize('A5')
+        l.pageCollection().addPage(page2)
+
+        exporter = QgsLayoutExporter(l)
+        # setup settings
+        settings = QgsLayoutExporter.ImageExportSettings()
+        settings.dpi = 80
+        settings.generateWorldFile = False
+
+        rendered_file_path = os.path.join(self.basetestpath, 'test_exclude_export.png')
+        details = QgsLayoutExporter.PageExportDetails()
+        details.directory = self.basetestpath
+        details.baseName = 'test_exclude_export'
+        details.extension = 'png'
+        details.page = 0
+
+        self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
+        self.assertTrue(os.path.exists(exporter.generateFileName(details)))
+        details.page = 1
+        self.assertTrue(os.path.exists(exporter.generateFileName(details)))
+
+        # exclude a page
+        l.pageCollection().page(0).setExcludeFromExports(True)
+        rendered_file_path = os.path.join(self.basetestpath, 'test_exclude_export_excluded.png')
+        details.baseName = 'test_exclude_export_excluded'
+        details.page = 0
+        self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
+        self.assertFalse(os.path.exists(exporter.generateFileName(details)))
+        details.page = 1
+        self.assertTrue(os.path.exists(exporter.generateFileName(details)))
+
+        # exclude second page
+        l.pageCollection().page(1).setExcludeFromExports(True)
+        rendered_file_path = os.path.join(self.basetestpath, 'test_exclude_export_excluded_all.png')
+        details.baseName = 'test_exclude_export_excluded_all'
+        details.page = 0
+        self.assertEqual(exporter.exportToImage(rendered_file_path, settings), QgsLayoutExporter.Success)
+        self.assertFalse(os.path.exists(exporter.generateFileName(details)))
+        details.page = 1
+        self.assertFalse(os.path.exists(exporter.generateFileName(details)))
+
     def testPageFileName(self):
         l = QgsLayout(QgsProject.instance())
         exporter = QgsLayoutExporter(l)

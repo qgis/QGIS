@@ -580,9 +580,6 @@ Emitted when the layout's name is changed.
 
 };
 
-
-
-
 /************************************************************************
  * This file has been generated automatically from                      *
  *                                                                      *

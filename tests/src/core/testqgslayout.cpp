@@ -613,6 +613,7 @@ void TestQgsLayout::shouldExportPage()
   QgsLayoutItemPage *page2 = new QgsLayoutItemPage( &l );
   page2->setPageSize( "A4" );
   l.pageCollection()->addPage( page2 );
+  l.context().mIsPreviewRender = false;
 
   QgsLayoutItemHtml *htmlItem = new QgsLayoutItemHtml( &l );
   //frame on page 1
@@ -644,6 +645,33 @@ void TestQgsLayout::shouldExportPage()
   htmlItem->loadHtml();
 
   QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
+
+  // get rid of frames
+  l.removeItem( frame1 );
+  l.removeItem( frame2 );
+  l.removeMultiFrame( htmlItem );
+  delete htmlItem;
+  QgsApplication::sendPostedEvents( nullptr, QEvent::DeferredDelete );
+
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
+
+  // explicitly set exclude from exports
+  l.pageCollection()->page( 0 )->setExcludeFromExports( true );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( l.pageCollection()->shouldExportPage( 1 ) );
+
+  l.pageCollection()->page( 0 )->setExcludeFromExports( false );
+  l.pageCollection()->page( 1 )->setExcludeFromExports( true );
+  QVERIFY( l.pageCollection()->shouldExportPage( 0 ) );
+  QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
+
+  l.pageCollection()->page( 1 )->setExcludeFromExports( false );
+  l.pageCollection()->page( 0 )->dataDefinedProperties().setProperty( QgsLayoutObject::ExcludeFromExports, QgsProperty::fromExpression( "1" ) );
+  l.pageCollection()->page( 1 )->dataDefinedProperties().setProperty( QgsLayoutObject::ExcludeFromExports, QgsProperty::fromValue( true ) );
+  l.refresh();
+  QVERIFY( !l.pageCollection()->shouldExportPage( 0 ) );
   QVERIFY( !l.pageCollection()->shouldExportPage( 1 ) );
 }
 

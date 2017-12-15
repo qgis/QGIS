@@ -831,6 +831,11 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     void cancelCommand();
 
+    /**
+     * Returns whether the item should be drawn in the current context.
+     */
+    bool shouldDrawItem() const;
+
   public slots:
 
     /**
@@ -1048,11 +1053,6 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      * \see readXml()
      */
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
-
-    /**
-     * Returns whether the item should be drawn in the current context.
-     */
-    bool shouldDrawItem() const;
 
     /**
      * Applies any present data defined size overrides to the specified layout \a size.
