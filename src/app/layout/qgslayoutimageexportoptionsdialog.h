@@ -24,6 +24,7 @@
 
 /**
  * A dialog for customising the properties of an exported image file.
+ * \since QGIS 3.0
 */
 class QgsLayoutImageExportOptionsDialog: public QDialog, private Ui::QgsLayoutImageExportOptionsDialog
 {

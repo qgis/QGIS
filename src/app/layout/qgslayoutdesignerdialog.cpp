@@ -1847,19 +1847,17 @@ void QgsLayoutDesignerDialog::showRasterizationWarning()
        mLayout->customProperty( QStringLiteral( "forceVector" ), false ).toBool() )
     return;
 
-  QgsMessageViewer *m = new QgsMessageViewer( this, QgsGuiUtils::ModalDialogFlags, false );
-  m->setWindowTitle( tr( "Composition Effects" ) );
-  m->setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this layout, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
-  m->setCheckBoxText( tr( "Print as raster" ) );
-  m->setCheckBoxState( Qt::Checked );
-  m->setCheckBoxVisible( true );
-  m->showMessage( true );
+  QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
+  m.setWindowTitle( tr( "Composition Effects" ) );
+  m.setMessage( tr( "Advanced composition effects such as blend modes or vector layer transparency are enabled in this layout, which cannot be printed as vectors. Printing as a raster is recommended." ), QgsMessageOutput::MessageText );
+  m.setCheckBoxText( tr( "Print as raster" ) );
+  m.setCheckBoxState( Qt::Checked );
+  m.setCheckBoxVisible( true );
+  m.showMessage( true );
 
-  mLayout->setCustomProperty( QStringLiteral( "rasterise" ), m->checkBoxState() == Qt::Checked );
+  mLayout->setCustomProperty( QStringLiteral( "rasterise" ), m.checkBoxState() == Qt::Checked );
   //make sure print as raster checkbox is updated
   mLayoutPropertiesWidget->updateGui();
-
-  delete m;
 }
 
 void QgsLayoutDesignerDialog::showForceVectorWarning()
@@ -1868,19 +1866,18 @@ void QgsLayoutDesignerDialog::showForceVectorWarning()
   if ( settings.value( QStringLiteral( "LayoutDesigner/hideForceVectorWarning" ), false, QgsSettings::App ).toBool() )
     return;
 
-  QgsMessageViewer *m = new QgsMessageViewer( this, QgsGuiUtils::ModalDialogFlags, false );
-  m->setWindowTitle( tr( "Force Vector" ) );
-  m->setMessage( tr( "This layout has the \"Always export as vectors\" option enabled, but the layout contains effects such as blend modes or vector layer transparency, which cannot be printed as vectors. The generated file will differ from the layout contents." ), QgsMessageOutput::MessageText );
-  m->setCheckBoxText( tr( "Never show this message again" ) );
-  m->setCheckBoxState( Qt::Unchecked );
-  m->setCheckBoxVisible( true );
-  m->showMessage( true );
+  QgsMessageViewer m( this, QgsGuiUtils::ModalDialogFlags, false );
+  m.setWindowTitle( tr( "Force Vector" ) );
+  m.setMessage( tr( "This layout has the \"Always export as vectors\" option enabled, but the layout contains effects such as blend modes or vector layer transparency, which cannot be printed as vectors. The generated file will differ from the layout contents." ), QgsMessageOutput::MessageText );
+  m.setCheckBoxText( tr( "Never show this message again" ) );
+  m.setCheckBoxState( Qt::Unchecked );
+  m.setCheckBoxVisible( true );
+  m.showMessage( true );
 
-  if ( m->checkBoxState() == Qt::Checked )
+  if ( m.checkBoxState() == Qt::Checked )
   {
     settings.setValue( QStringLiteral( "LayoutDesigner/hideForceVectorWarning" ), true, QgsSettings::App );
   }
-  delete m;
 }
 
 void QgsLayoutDesignerDialog::selectItems( const QList<QgsLayoutItem *> items )
