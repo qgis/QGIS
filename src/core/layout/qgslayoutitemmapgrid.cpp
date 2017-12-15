@@ -2294,7 +2294,7 @@ int QgsLayoutItemMapGrid::crsGridParams( QgsRectangle &crsRect, QgsCoordinateTra
 
   try
   {
-    QgsCoordinateTransform tr( mMap->crs(), mCRS );
+    QgsCoordinateTransform tr( mMap->crs(), mCRS, mLayout->project() );
     QPolygonF mapPolygon = mMap->transformedMapPolygon();
     QRectF mbr = mapPolygon.boundingRect();
     QgsRectangle mapBoundingRect( mbr.left(), mbr.bottom(), mbr.right(), mbr.top() );

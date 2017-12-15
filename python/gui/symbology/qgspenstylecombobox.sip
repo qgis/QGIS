@@ -19,7 +19,8 @@ class QgsPenStyleComboBox : QComboBox
 
     Qt::PenStyle penStyle() const;
 %Docstring
- :rtype: Qt.PenStyle
+
+:rtype: Qt.PenStyle
 %End
 
     void setPenStyle( Qt::PenStyle style );
@@ -27,7 +28,8 @@ class QgsPenStyleComboBox : QComboBox
   protected:
     QIcon iconForPen( Qt::PenStyle style );
 %Docstring
- :rtype: QIcon
+
+:rtype: QIcon
 %End
 
 };
@@ -43,7 +45,8 @@ class QgsPenJoinStyleComboBox : QComboBox
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
- :rtype: Qt.PenJoinStyle
+
+:rtype: Qt.PenJoinStyle
 %End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
@@ -60,7 +63,8 @@ class QgsPenCapStyleComboBox : QComboBox
 
     Qt::PenCapStyle penCapStyle() const;
 %Docstring
- :rtype: Qt.PenCapStyle
+
+:rtype: Qt.PenCapStyle
 %End
 
     void setPenCapStyle( Qt::PenCapStyle style );

@@ -39,6 +39,11 @@ QString QgsAlgorithmRemoveDuplicateNodes::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsAlgorithmRemoveDuplicateNodes::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsAlgorithmRemoveDuplicateNodes::outputName() const
 {
   return QObject::tr( "Cleaned" );

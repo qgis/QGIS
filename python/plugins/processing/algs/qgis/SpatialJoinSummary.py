@@ -70,6 +70,9 @@ class SpatialJoinSummary(QgisAlgorithm):
     def group(self):
         return self.tr('Vector general')
 
+    def groupId(self):
+        return 'vectorgeneral'
+
     def __init__(self):
         super().__init__()
 
@@ -259,7 +262,7 @@ class SpatialJoinSummary(QgisAlgorithm):
         total = 100.0 / source.featureCount() if source.featureCount() else 0
 
         # bounding box transform
-        bbox_transform = QgsCoordinateTransform(source.sourceCrs(), join_source.sourceCrs())
+        bbox_transform = QgsCoordinateTransform(source.sourceCrs(), join_source.sourceCrs(), context.project())
 
         for current, f in enumerate(features):
             if feedback.isCanceled():

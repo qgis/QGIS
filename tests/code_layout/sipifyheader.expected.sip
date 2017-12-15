@@ -49,10 +49,12 @@ typedef QtClass<QVariant> QtClassQVariantBase;
 class QgsSipifyHeader : QtClassQVariantBase
 {
 %Docstring
- Documentation goes here
+Documentation goes here
 
- Here's some comment mentioning another class QgsAutoAwesomemater.makeAwesome.
+Here's some comment mentioning another class QgsAutoAwesomemater.makeAwesome.
+
 .. versionadded:: 3.0
+
 .. note::
 
    some other note
@@ -102,7 +104,7 @@ A constructor with definition in header
 
     QgsSipifyHeader( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- A classic constructor with arguments
+A classic constructor with arguments
 %End
 
     QgsSipifyHeader( bool a = true );
@@ -145,40 +147,45 @@ A multiline method signature
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 %Docstring
 Factory annotation
- :rtype: QgsMapLayerRenderer
+
+:rtype: QgsMapLayerRenderer
 %End
 
     SomeObject *createAnother() /Factory/;
 %Docstring
- :rtype: SomeObject
+
+:rtype: SomeObject
 %End
 
     virtual SomeObject *createAnother2() /Factory/;
 
     void LongDocStringMethod();
 %Docstring
- My long doc string
- is not very interesting!
+My long doc string
+is not very interesting!
 %End
 
     void LongDocStringMethodWithBrief();
 %Docstring
  some brief
- My long doc ``string``
- is not very interesting!
- Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome.
+My long doc ``string``
+is not very interesting!
+Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome.
 %End
 
     MyPointer *pointerReturnValue();
 %Docstring
- I return a pointer. If something bad happens, I return None.
- :return: pointer to something cool
- :rtype: MyPointer
+I return a pointer. If something bad happens, I return None.
+
+:return: pointer to something cool
+:rtype: MyPointer
+
 %End
 
     bool isOKwithErrMesg( QString &ErrMsg /Out/ );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void InOutParam( bool &ok = true /In,Out/ );
@@ -196,12 +203,14 @@ complex default value and type (i.e. containing commas) should be given as a str
 
     int inlineKeyWordShouldNotAppear();
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     void setComposition( QgsComposition *c /KeepReference/ );
@@ -210,7 +219,8 @@ complex default value and type (i.e. containing commas) should be given as a str
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
 
@@ -222,19 +232,22 @@ complex default value and type (i.e. containing commas) should be given as a str
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
 %Docstring
 Removing function body with namespaced return value
- :rtype: QgsRaster.RasterBuildPyramids
+
+:rtype: QgsRaster.RasterBuildPyramids
 %End
 
     virtual const QgsLayerMetadata &metadata() const;
 %Docstring
 Removing function body with virtual const reference
- :rtype: QgsLayerMetadata
+
+:rtype: QgsLayerMetadata
 %End
 
     bool myMultiLineBody();
 %Docstring
 Mulitline body
- :rtype: bool
+
+:rtype: bool
 %End
 
 
@@ -248,39 +261,46 @@ Mulitline body
 
     QString returnTypeString() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     double returnTypeDouble() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
 
     QList< QgsAnnotation * > returnTypeList();
 %Docstring
- :rtype: list of QgsAnnotation
+
+:rtype: list of QgsAnnotation
 %End
 
     QVector< QgsAnnotation > returnTypeVector();
 %Docstring
- :rtype: list of QgsAnnotation
+
+:rtype: list of QgsAnnotation
 %End
 
     QStringList returnTypeStringList();
 %Docstring
- :rtype: list of str
+
+:rtype: list of str
 %End
 
     QSet<QgsActionScope> returnTypeSet();
 %Docstring
- :rtype: set of QgsActionScope
+
+:rtype: set of QgsActionScope
 %End
 
     This<Member> shouldBeIncluded;
 
     static QString invokableMethod();
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     bool initializedMember;
@@ -291,7 +311,8 @@ Mulitline body
 
       bool isValid( const QgsAbstractGeometry *geom ) const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
       int part;
@@ -341,7 +362,8 @@ remove argument
   protected:
     bool thisShouldBeListed();
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
 
@@ -357,7 +379,7 @@ remove argument
 class ClassWithPrivateInheritanceOnly /Abstract/
 {
 %Docstring
- Documentation goes here
+Documentation goes here
 %End
 
 %TypeHeaderCode
@@ -374,7 +396,7 @@ A constructor with definition in header on several lines
 class AbstractClass /Abstract/
 {
 %Docstring
- Documentation goes here
+Documentation goes here
 %End
 
 %TypeHeaderCode

@@ -39,6 +39,11 @@ QString QgsSnapToGridAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsSnapToGridAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsSnapToGridAlgorithm::outputName() const
 {
   return QObject::tr( "Snapped" );

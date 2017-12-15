@@ -39,6 +39,11 @@ QString QgsCentroidAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsCentroidAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsCentroidAlgorithm::outputName() const
 {
   return QObject::tr( "Centroids" );

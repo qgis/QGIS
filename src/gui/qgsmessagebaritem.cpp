@@ -21,7 +21,8 @@
 
 #include <QHBoxLayout>
 #include <QLabel>
-#include <QTextEdit>
+#include <QTextBrowser>
+#include <QDesktopServices>
 
 QgsMessageBarItem::QgsMessageBarItem( const QString &text, QgsMessageBar::MessageLevel level, int duration, QWidget *parent )
   : QWidget( parent )
@@ -72,7 +73,7 @@ void QgsMessageBarItem::writeContent()
   {
     mLayout = new QHBoxLayout( this );
     mLayout->setContentsMargins( 0, 0, 0, 0 );
-    mTextEdit = nullptr;
+    mTextBrowser = nullptr;
     mLblIcon = nullptr;
   }
 
@@ -111,28 +112,31 @@ void QgsMessageBarItem::writeContent()
   // TITLE AND TEXT
   if ( mTitle.isEmpty() && mText.isEmpty() )
   {
-    if ( mTextEdit )
+    if ( mTextBrowser )
     {
-      delete mTextEdit;
-      mTextEdit = nullptr;
+      delete mTextBrowser;
+      mTextBrowser = nullptr;
     }
   }
   else
   {
-    if ( !mTextEdit )
+    if ( !mTextBrowser )
     {
-      mTextEdit = new QTextEdit( this );
-      mTextEdit->setObjectName( QStringLiteral( "textEdit" ) );
-      mTextEdit->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
-      mTextEdit->setReadOnly( true );
-      mTextEdit->setFrameShape( QFrame::NoFrame );
+      mTextBrowser = new QTextBrowser( this );
+      mTextBrowser->setObjectName( QStringLiteral( "textEdit" ) );
+      mTextBrowser->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Maximum );
+      mTextBrowser->setReadOnly( true );
+      mTextBrowser->setOpenLinks( false );
+      connect( mTextBrowser, &QTextBrowser::anchorClicked, this, &QgsMessageBarItem::urlClicked );
+
+      mTextBrowser->setFrameShape( QFrame::NoFrame );
       // stylesheet set here so Qt-style substitued scrollbar arrows can show within limited height
       // adjusts to height of font set in app options
-      mTextEdit->setStyleSheet( "QTextEdit { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
-                                "QScrollBar { background-color: rgba(0,0,0,0); } "
-                                "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
-                                "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
-      mLayout->addWidget( mTextEdit );
+      mTextBrowser->setStyleSheet( "QTextEdit { background-color: rgba(0,0,0,0); margin-top: 0.25em; max-height: 1.75em; min-height: 1.75em; } "
+                                   "QScrollBar { background-color: rgba(0,0,0,0); } "
+                                   "QScrollBar::add-page,QScrollBar::sub-page,QScrollBar::handle { background-color: rgba(0,0,0,0); color: rgba(0,0,0,0); } "
+                                   "QScrollBar::up-arrow,QScrollBar::down-arrow { color: rgb(0,0,0); } " );
+      mLayout->addWidget( mTextBrowser );
     }
     QString content = mText;
     if ( !mTitle.isEmpty() )
@@ -143,7 +147,7 @@ void QgsMessageBarItem::writeContent()
         t += QLatin1String( ": " );
       content.prepend( QStringLiteral( "<b>" ) + t + " </b>" );
     }
-    mTextEdit->setText( content );
+    mTextBrowser->setText( content );
   }
 
   // WIDGET
@@ -256,3 +260,7 @@ QgsMessageBarItem *QgsMessageBarItem::setDuration( int duration )
   return this;
 }
 
+void QgsMessageBarItem::urlClicked( const QUrl &url )
+{
+  QDesktopServices::openUrl( url );
+}

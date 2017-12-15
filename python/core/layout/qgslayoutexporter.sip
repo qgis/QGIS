@@ -12,6 +12,7 @@ class QgsLayoutExporter
 {
 %Docstring
  Handles rendering and exports of layouts to various formats.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,23 +23,23 @@ class QgsLayoutExporter
 
     QgsLayoutExporter( QgsLayout *layout );
 %Docstring
- Constructor for QgsLayoutExporter, for the specified ``layout``.
+Constructor for QgsLayoutExporter, for the specified ``layout``.
 %End
 
     void renderPage( QPainter *painter, int page );
 %Docstring
- Renders a full page to a destination ``painter``.
+Renders a full page to a destination ``painter``.
 
- The ``page`` argument specifies the page number to render. Page numbers
- are 0 based, such that the first page in a layout is page 0.
+The ``page`` argument specifies the page number to render. Page numbers
+are 0 based, such that the first page in a layout is page 0.
 
 .. seealso:: :py:func:`renderRect()`
 %End
 
     void renderRegion( QPainter *painter, const QRectF &region );
 %Docstring
- Renders a ``region`` from the layout to a ``painter``. This method can be used
- to render sections of pages rather than full pages.
+Renders a ``region`` from the layout to a ``painter``. This method can be used
+to render sections of pages rather than full pages.
 
 .. seealso:: :py:func:`renderPage()`
 %End

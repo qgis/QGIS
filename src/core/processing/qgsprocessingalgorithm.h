@@ -193,9 +193,19 @@ class CORE_EXPORT QgsProcessingAlgorithm
     /**
      * Returns the name of the group this algorithm belongs to. This string
      * should be localised.
+     * \see groupId()
      * \see tags()
     */
     virtual QString group() const { return QString(); }
+
+    /**
+     * Returns the unique ID of the group this algorithm belongs to. This string
+     * should be fixed for the algorithm, and must not be localised. The group id
+     * should be unique within each provider. Group id should contain lowercase
+     * alphanumeric characters only and no spaces or other formatting characters.
+     * \see group()
+     */
+    virtual QString groupId() const { return QString(); };
 
     /**
      * Returns the flags indicating how and when the algorithm operates and should be exposed to users.

@@ -13,8 +13,8 @@ class CharacterWidget : QWidget
 {
 %Docstring
 
- A widget for displaying characters available in a preset font, and allowing
- users to select an individual character.
+A widget for displaying characters available in a preset font, and allowing
+users to select an individual character.
 %End
 
 %TypeHeaderCode
@@ -24,7 +24,7 @@ class CharacterWidget : QWidget
 
     CharacterWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for CharacterWidget.
+Constructor for CharacterWidget.
 %End
 
     virtual QSize sizeHint() const;
@@ -32,50 +32,62 @@ class CharacterWidget : QWidget
 
     int columns() const;
 %Docstring
- Returns the number of columns of characters shown in the widget.
- :rtype: int
+Returns the number of columns of characters shown in the widget.
+
+:rtype: int
 %End
 
     int squareSize() const;
 %Docstring
- Returns the size (in pixels) of the square used to render each character preview.
- :rtype: int
+Returns the size (in pixels) of the square used to render each character preview.
+
+:rtype: int
 %End
 
     QChar character() const;
 %Docstring
- Returns the currently selected character in the widget.
+Returns the currently selected character in the widget.
+
+:rtype: QChar
+
 .. seealso:: :py:func:`setCharacter()`
+
 .. versionadded:: 3.0
- :rtype: QChar
 %End
 
     QFont font() const;
 %Docstring
- Returns the font shown in the widget
+Returns the font shown in the widget
+
+:rtype: QFont
+
 .. seealso:: :py:func:`setFont()`
+
 .. versionadded:: 3.0
- :rtype: QFont
 %End
 
   public slots:
 
     void setFont( const QFont &font );
 %Docstring
- Sets the ``font`` to show in the widget.
+Sets the ``font`` to show in the widget.
+
 .. seealso:: :py:func:`font()`
+
 .. versionadded:: 3.0
 %End
 
     void setFontSize( double fontSize );
 %Docstring
- Sets the font size (in points) to render in the widget.
+Sets the font size (in points) to render in the widget.
+
 .. versionadded:: 3.0
 %End
 
     void setFontStyle( const QString &fontStyle );
 %Docstring
- Sets the font style to show in the widget.
+Sets the font style to show in the widget.
+
 .. versionadded:: 3.0
 %End
 
@@ -83,14 +95,17 @@ class CharacterWidget : QWidget
 
     void setColumns( int columns );
 %Docstring
- Sets the number of columns of characters to show in the widget.
+Sets the number of columns of characters to show in the widget.
+
 .. versionadded:: 3.0
 %End
 
     void setCharacter( QChar character );
 %Docstring
- Sets the currently selected ``character`` in the widget.
+Sets the currently selected ``character`` in the widget.
+
 .. seealso:: :py:func:`character()`
+
 .. seealso:: :py:func:`characterSelected()`
 %End
 
@@ -98,7 +113,7 @@ class CharacterWidget : QWidget
 
     void characterSelected( QChar character );
 %Docstring
- Emitted when a character is selected in the widget.
+Emitted when a character is selected in the widget.
 %End
 
   protected:

@@ -652,9 +652,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! This slot is connected to the visibility change of one or more layers
     void layerStateChange();
 
-    //! This slot is connected to the layer's CRS change
-    void layerCrsChange();
-
     /**
      * Sets whether a user has disabled canvas renders via the GUI.
      * \param flag set to false to indicate that user has disabled renders
@@ -676,8 +673,10 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! called to write map canvas settings to project
     void writeProject( QDomDocument & );
 
+#if 0
     //! ask user about datum transformation
-    void getDatumTransformInfo( const QgsMapLayer *ml, const QString &srcAuthId, const QString &destAuthId );
+    void getDatumTransformInfo( const QgsCoordinateReferenceSystem &source, const QgsCoordinateReferenceSystem &destination );
+#endif
 
     /**
      * Sets the factor of magnification to apply to the map canvas. Indeed, we
@@ -876,9 +875,6 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
      */
     void connectNotify( const char *signal ) override;
 #endif
-
-    //! Make sure the datum transform store is properly populated
-    void updateDatumTransformEntries();
 
   protected slots:
     //! called on resize or changed extent to notify canvas items to change their rectangle

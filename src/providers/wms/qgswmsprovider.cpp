@@ -1188,7 +1188,10 @@ void QgsWmsProvider::setupXyzCapabilities( const QString &uri )
   QgsDataSourceUri parsedUri;
   parsedUri.setEncodedUri( uri );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform ct( QgsCoordinateReferenceSystem( QStringLiteral( "EPSG:4326" ) ), QgsCoordinateReferenceSystem( mSettings.mCrsId ) );
+  Q_NOWARN_DEPRECATED_POP
+
   // the whole world is projected to a square:
   // X going from 180 W to 180 E
   // Y going from ~85 N to ~85 S  (=atan(sinh(pi)) ... to get a square)
@@ -1318,7 +1321,10 @@ bool QgsWmsProvider::extentForNonTiledLayer( const QString &layerName, const QSt
   if ( !wgs.isValid() || !dst.isValid() )
     return false;
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform xform( wgs, dst );
+  Q_NOWARN_DEPRECATED_POP
+
   QgsDebugMsg( QString( "transforming layer extent %1" ).arg( extent.toString( true ) ) );
   try
   {
@@ -1548,7 +1554,9 @@ bool QgsWmsProvider::calculateExtent() const
         {
           QgsCoordinateReferenceSystem qgisSrsSource = QgsCoordinateReferenceSystem::fromOgcWmsCrs( mTileLayer->boundingBoxes[i].crs );
 
+          Q_NOWARN_DEPRECATED_PUSH
           QgsCoordinateTransform ct( qgisSrsSource, qgisSrsDest );
+          Q_NOWARN_DEPRECATED_POP
 
           QgsDebugMsg( QString( "ct: %1 => %2" ).arg( mTileLayer->boundingBoxes.at( i ).crs, mImageCrs ) );
 
@@ -1672,13 +1680,13 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
 
   // Use a nested table
   metadata += QLatin1String( "<tr><td>" );
-  metadata += QLatin1String( "<table width=\"100%\">" );
+  metadata += QLatin1String( "<table width=\"100%\" class=\"tabular-view\">" );
 
   // Table header
-  metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+  metadata += QLatin1String( "<tr><th class=\"strong\">" );
   metadata += tr( "Property" );
   metadata += QLatin1String( "</th>" );
-  metadata += QLatin1String( "<th class=\"glossy\">" );
+  metadata += QLatin1String( "<th class=\"strong\">" );
   metadata += tr( "Value" );
   metadata += QLatin1String( "</th></tr>" );
 
@@ -1794,10 +1802,10 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     metadata += QLatin1String( "<td>" );
 
     // Nested table.
-    metadata += QLatin1String( "<table width=\"100%\">" );
+    metadata += QLatin1String( "<table width=\"100%\" class=\"tabular-view\">" );
 
     // Layer Style Name
-    metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+    metadata += QLatin1String( "<tr><th class=\"strong\">" );
     metadata += tr( "Name" );
     metadata += QLatin1String( "</th>" );
     metadata += QLatin1String( "<td>" );
@@ -1805,7 +1813,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     metadata += QLatin1String( "</td></tr>" );
 
     // Layer Style Title
-    metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+    metadata += QLatin1String( "<tr><th class=\"strong\">" );
     metadata += tr( "Title" );
     metadata += QLatin1String( "</th>" );
     metadata += QLatin1String( "<td>" );
@@ -1813,7 +1821,7 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     metadata += QLatin1String( "</td></tr>" );
 
     // Layer Style Abstract
-    metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+    metadata += QLatin1String( "<tr><th class=\"strong\">" );
     metadata += tr( "Abstract" );
     metadata += QLatin1String( "</th>" );
     metadata += QLatin1String( "<td>" );
@@ -1823,10 +1831,10 @@ QString QgsWmsProvider::layerMetadata( QgsWmsLayerProperty &layer )
     // LegendURLs
     if ( !style.legendUrl.isEmpty() )
     {
-      metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+      metadata += QLatin1String( "<tr><th class=\"strong\">" );
       metadata += tr( "LegendURLs" );
       metadata += QLatin1String( "</th>" );
-      metadata += QLatin1String( "<td><table>" );
+      metadata += QLatin1String( "<td><table class=\"tabular-view\">" );
       metadata += QLatin1String( "<tr><th>Format</th><th>URL</th></tr>" );
       for ( int k = 0; k < style.legendUrl.size(); k++ )
       {
@@ -1852,7 +1860,7 @@ QString QgsWmsProvider::htmlMetadata()
 {
   QString metadata;
 
-  metadata += QLatin1String( "<tr><td>" );
+  metadata += QStringLiteral( "<tr><td class=\"highlight\">" ) + tr( "WMS Info" ) + QStringLiteral( "</td><td><div>" );
 
   if ( !mSettings.mTiled )
   {
@@ -1873,22 +1881,22 @@ QString QgsWmsProvider::htmlMetadata()
     metadata += QLatin1String( "</a> " );
   }
 
-  metadata += QLatin1String( "</td></tr>" );
+  metadata += QLatin1String( "<br /><table class=\"tabular-view\">" );  // Nested table 1
 
   // Server Properties section
-  metadata += QLatin1String( "<tr><th class=\"glossy\"><a name=\"serverproperties\"></a>" );
+  metadata += QLatin1String( "<tr><th class=\"strong\"><a name=\"serverproperties\"></a>" );
   metadata += tr( "Server Properties" );
   metadata += QLatin1String( "</th></tr>" );
 
   // Use a nested table
   metadata += QLatin1String( "<tr><td>" );
-  metadata += QLatin1String( "<table width=\"100%\">" );
+  metadata += QLatin1String( "<table width=\"100%\" class=\"tabular-view\">" );  // Nested table 2
 
   // Table header
-  metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+  metadata += QLatin1String( "<tr><th class=\"strong\">" );
   metadata += tr( "Property" );
   metadata += QLatin1String( "</th>" );
-  metadata += QLatin1String( "<th class=\"glossy\">" );
+  metadata += QLatin1String( "<th class=\"strong\">" );
   metadata += tr( "Value" );
   metadata += QLatin1String( "</th></tr>" );
 
@@ -2067,14 +2075,14 @@ QString QgsWmsProvider::htmlMetadata()
     metadata += QLatin1String( "</td></tr>" );
   }
 
-  // Close the nested table
+  // Close the nested table 2
   metadata += QLatin1String( "</table>" );
   metadata += QLatin1String( "</td></tr>" );
 
   // Layer properties
   if ( !mSettings.mTiled )
   {
-    metadata += QLatin1String( "<tr><th class=\"glossy\"><a name=\"selectedlayers\"></a>" );
+    metadata += QLatin1String( "<tr><th class=\"strong\"><a name=\"selectedlayers\"></a>" );
     metadata += tr( "Selected Layers" );
     metadata += QLatin1String( "</th></tr>" );
 
@@ -2091,7 +2099,7 @@ QString QgsWmsProvider::htmlMetadata()
     // Layer properties
     if ( n < mCaps.mLayersSupported.size() )
     {
-      metadata += QLatin1String( "<tr><th class=\"glossy\"><a name=\"otherlayers\"></a>" );
+      metadata += QLatin1String( "<tr><th class=\"strong\"><a name=\"otherlayers\"></a>" );
       metadata += tr( "Other Layers" );
       metadata += QLatin1String( "</th></tr>" );
 
@@ -2107,26 +2115,26 @@ QString QgsWmsProvider::htmlMetadata()
   else
   {
     // Tileset properties
-    metadata += QLatin1String( "<tr><th class=\"glossy\"><a name=\"tilesetproperties\"></a>" );
+    metadata += QLatin1String( "<tr><th class=\"strong\"><a name=\"tilesetproperties\"></a>" );
     metadata += tr( "Tileset Properties" );
     metadata += QLatin1String( "</th></tr>" );
 
     // Iterate through tilesets
     metadata += QLatin1String( "<tr><td>" );
 
-    metadata += QLatin1String( "<table width=\"100%\">" );
+    metadata += QLatin1String( "<table width=\"100%\" class=\"tabular-view\">" );  // Nested table 3
 
     Q_FOREACH ( const QgsWmtsTileLayer &l, mCaps.mTileLayersSupported )
     {
-      metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+      metadata += QLatin1String( "<tr><th class=\"strong\">" );
       metadata += tr( "Identifier" );
-      metadata += QLatin1String( "</th><th class=\"glossy\">" );
+      metadata += QLatin1String( "</th><th class=\"strong\">" );
       metadata += tr( "Tile mode" );
       metadata += QLatin1String( "</th></tr>" );
 
       metadata += QLatin1String( "<tr><td>" );
       metadata += l.identifier;
-      metadata += QLatin1String( "</td><td class=\"glossy\">" );
+      metadata += QLatin1String( "</td><td class=\"strong\">" );
 
       if ( l.tileMode == WMTS )
       {
@@ -2148,26 +2156,26 @@ QString QgsWmsProvider::htmlMetadata()
       metadata += QLatin1String( "</td></tr>" );
 
       // Table header
-      metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+      metadata += QLatin1String( "<tr><th class=\"strong\">" );
       metadata += tr( "Property" );
       metadata += QLatin1String( "</th>" );
-      metadata += QLatin1String( "<th class=\"glossy\">" );
+      metadata += QLatin1String( "<th class=\"strong\">" );
       metadata += tr( "Value" );
       metadata += QLatin1String( "</th></tr>" );
 
-      metadata += QLatin1String( "<tr><td class=\"glossy\">" );
+      metadata += QLatin1String( "<tr><td class=\"strong\">" );
       metadata += tr( "Selected" );
       metadata += QLatin1String( "</td>" );
-      metadata += QLatin1String( "<td class=\"glossy\">" );
+      metadata += QLatin1String( "<td class=\"strong\">" );
       metadata += l.identifier == mSettings.mActiveSubLayers.join( QStringLiteral( "," ) ) ? tr( "Yes" ) : tr( "No" );
       metadata += QLatin1String( "</td></tr>" );
 
       if ( !l.styles.isEmpty() )
       {
-        metadata += QLatin1String( "<tr><td class=\"glossy\">" );
+        metadata += QLatin1String( "<tr><td class=\"strong\">" );
         metadata += tr( "Available Styles" );
         metadata += QLatin1String( "</td>" );
-        metadata += QLatin1String( "<td class=\"glossy\">" );
+        metadata += QLatin1String( "<td class=\"strong\">" );
         QStringList styles;
         Q_FOREACH ( const QgsWmtsStyle &style, l.styles )
         {
@@ -2177,15 +2185,15 @@ QString QgsWmsProvider::htmlMetadata()
         metadata += QLatin1String( "</td></tr>" );
       }
 
-      metadata += QLatin1String( "<tr><td class=\"glossy\">" );
+      metadata += QLatin1String( "<tr><td class=\"strong\">" );
       metadata += tr( "CRS" );
       metadata += QLatin1String( "</td>" );
       metadata += QLatin1String( "<td>" );
-      metadata += QLatin1String( "<table><tr>" );
-      metadata += QLatin1String( "<td class=\"glossy\">" );
+      metadata += QLatin1String( "<table class=\"tabular-view\"><tr>" );  // Nested table 4
+      metadata += QLatin1String( "<td class=\"strong\">" );
       metadata += tr( "CRS" );
       metadata += QLatin1String( "</td>" );
-      metadata += QLatin1String( "<td class=\"glossy\">" );
+      metadata += QLatin1String( "<td class=\"strong\">" );
       metadata += tr( "Bounding Box" );
       metadata += QLatin1String( "</td>" );
       for ( int i = 0; i < l.boundingBoxes.size(); i++ )
@@ -2196,11 +2204,11 @@ QString QgsWmsProvider::htmlMetadata()
         metadata += l.boundingBoxes[i].box.toString();
         metadata += QLatin1String( "</td></tr>" );
       }
-      metadata += QLatin1String( "</table></td></tr>" );
+      metadata += QLatin1String( "</table></td></tr>" );  // End nested table 4
 
-      metadata += QLatin1String( "<tr><td class=\"glossy\">" );
+      metadata += QLatin1String( "<tr><td class=\"strong\">" );
       metadata += tr( "Available Tilesets" );
-      metadata += QLatin1String( "</td><td class=\"glossy\">" );
+      metadata += QLatin1String( "</td><td class=\"strong\">" );
 
       Q_FOREACH ( const QgsWmtsTileMatrixSetLink &setLink, l.setLinks )
       {
@@ -2210,30 +2218,30 @@ QString QgsWmsProvider::htmlMetadata()
       metadata += QLatin1String( "</td></tr>" );
     }
 
-    metadata += QLatin1String( "</table></td></tr>" );
+    metadata += QLatin1String( "</table></td></tr>" ); // End nested table 3
 
     if ( mTileMatrixSet )
     {
       // Iterate through tilesets
-      metadata += QLatin1String( "<tr><td><table width=\"100%\">" );
+      metadata += QLatin1String( "<tr><td><table width=\"100%\" class=\"tabular-view\">" );  // Nested table 3
 
-      metadata += QString( "<tr><th colspan=14 class=\"glossy\">%1 %2</th></tr>"
+      metadata += QString( "<tr><th colspan=14 class=\"strong\">%1 %2</th></tr>"
                            "<tr>"
-                           "<th rowspan=2 class=\"glossy\">%3</th>"
-                           "<th colspan=2 class=\"glossy\">%4</th>"
-                           "<th colspan=2 class=\"glossy\">%5</th>"
-                           "<th colspan=2 class=\"glossy\">%6</th>"
-                           "<th colspan=2 class=\"glossy\">%7</th>"
-                           "<th colspan=4 class=\"glossy\">%8</th>"
+                           "<th rowspan=2 class=\"strong\">%3</th>"
+                           "<th colspan=2 class=\"strong\">%4</th>"
+                           "<th colspan=2 class=\"strong\">%5</th>"
+                           "<th colspan=2 class=\"strong\">%6</th>"
+                           "<th colspan=2 class=\"strong\">%7</th>"
+                           "<th colspan=4 class=\"strong\">%8</th>"
                            "</tr><tr>"
-                           "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
-                           "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
-                           "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
-                           "<th class=\"glossy\">%9</th><th class=\"glossy\">%10</th>"
-                           "<th class=\"glossy\">%11</th>"
-                           "<th class=\"glossy\">%12</th>"
-                           "<th class=\"glossy\">%13</th>"
-                           "<th class=\"glossy\">%14</th>"
+                           "<th class=\"strong\">%9</th><th class=\"strong\">%10</th>"
+                           "<th class=\"strong\">%9</th><th class=\"strong\">%10</th>"
+                           "<th class=\"strong\">%9</th><th class=\"strong\">%10</th>"
+                           "<th class=\"strong\">%9</th><th class=\"strong\">%10</th>"
+                           "<th class=\"strong\">%11</th>"
+                           "<th class=\"strong\">%12</th>"
+                           "<th class=\"strong\">%13</th>"
+                           "<th class=\"strong\">%14</th>"
                            "</tr>" )
                   .arg( tr( "Selected tile matrix set " ),
                         mSettings.mTileMatrixSetId,
@@ -2329,21 +2337,21 @@ QString QgsWmsProvider::htmlMetadata()
         metadata += QLatin1String( "</tr>" );
       }
 
-      metadata += QLatin1String( "</table></td></tr>" );
+      metadata += QLatin1String( "</table></td></tr>" );  // End nested table 3
     }
 
     const QgsWmsStatistics::Stat &stat = QgsWmsStatistics::statForUri( dataSourceUri() );
 
-    metadata += QLatin1String( "<tr><th class=\"glossy\"><a name=\"cachestats\"></a>" );
+    metadata += QLatin1String( "<tr><th class=\"strong\"><a name=\"cachestats\"></a>" );
     metadata += tr( "Cache stats" );
     metadata += QLatin1String( "</th></tr>" );
 
-    metadata += QLatin1String( "<tr><td><table width=\"100%\">" );
+    metadata += QLatin1String( "<tr><td><table width=\"100%\" class=\"tabular-view\">" );  // Nested table 3
 
-    metadata += QLatin1String( "<tr><th class=\"glossy\">" );
+    metadata += QLatin1String( "<tr><th class=\"strong\">" );
     metadata += tr( "Property" );
     metadata += QLatin1String( "</th>" );
-    metadata += QLatin1String( "<th class=\"glossy\">" );
+    metadata += QLatin1String( "<th class=\"strong\">" );
     metadata += tr( "Value" );
     metadata += QLatin1String( "</th></tr>" );
 
@@ -2365,13 +2373,12 @@ QString QgsWmsProvider::htmlMetadata()
     metadata += QString::number( stat.errors );
     metadata += QLatin1String( "</td></tr>" );
 
-    metadata += QLatin1String( "</table></td></tr>" );
+    metadata += QLatin1String( "</table></td></tr>" );  // End nested table 3
   }
 
-  metadata += QLatin1String( "</table>" );
+  metadata += QLatin1String( "</table>" );  // End nested table 2
 
-  QgsDebugMsg( "exiting with '"  + metadata  + "'." );
-
+  metadata += QStringLiteral( "</table></div></td></tr>\n" );  // End nested table 1
   return metadata;
 }
 
@@ -2929,7 +2936,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
           QgsCoordinateTransform coordinateTransform;
           if ( featuresCrs.isValid() && featuresCrs != crs() )
           {
+            Q_NOWARN_DEPRECATED_PUSH
             coordinateTransform = QgsCoordinateTransform( featuresCrs, crs() );
+            Q_NOWARN_DEPRECATED_POP
           }
           QgsFeatureStore featureStore( fields, crs() );
           QMap<QString, QVariant> params;
@@ -3005,7 +3014,9 @@ QgsRasterIdentifyResult QgsWmsProvider::identify( const QgsPointXY &point, QgsRa
 
             if ( featuresCrs.isValid() && featuresCrs != crs() )
             {
+              Q_NOWARN_DEPRECATED_PUSH
               coordinateTransform = QgsCoordinateTransform( featuresCrs, crs() );
+              Q_NOWARN_DEPRECATED_POP
             }
           }
 

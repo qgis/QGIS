@@ -40,6 +40,11 @@ QString QgsClipAlgorithm::group() const
   return QObject::tr( "Vector overlay" );
 }
 
+QString QgsClipAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectoroverlay" );
+}
+
 void QgsClipAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

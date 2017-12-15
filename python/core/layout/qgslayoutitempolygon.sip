@@ -13,7 +13,8 @@
 class QgsLayoutItemPolygon: QgsLayoutNodesItem
 {
 %Docstring
- Layout item for node based polygon shapes.
+Layout item for node based polygon shapes.
+
 .. versionadded:: 3.0
 %End
 
@@ -24,21 +25,22 @@ class QgsLayoutItemPolygon: QgsLayoutNodesItem
 
     QgsLayoutItemPolygon( QgsLayout *layout );
 %Docstring
- Constructor for QgsLayoutItemPolygon for the specified ``layout``.
+Constructor for QgsLayoutItemPolygon for the specified ``layout``.
 %End
 
     QgsLayoutItemPolygon( const QPolygonF &polygon, QgsLayout *layout );
 %Docstring
- Constructor for QgsLayoutItemPolygon for the specified ``polygon``
- and ``layout``.
+Constructor for QgsLayoutItemPolygon for the specified ``polygon``
+and ``layout``.
 %End
 
     static QgsLayoutItemPolygon *create( QgsLayout *layout ) /Factory/;
 %Docstring
- Returns a new polygon item for the specified ``layout``.
+Returns a new polygon item for the specified ``layout``.
 
- The caller takes responsibility for deleting the returned object.
- :rtype: QgsLayoutItemPolygon
+The caller takes responsibility for deleting the returned object.
+
+:rtype: QgsLayoutItemPolygon
 %End
 
     virtual int type() const;
@@ -48,15 +50,18 @@ class QgsLayoutItemPolygon: QgsLayoutNodesItem
 
     QgsFillSymbol *symbol();
 %Docstring
- Returns the fill symbol used to draw the shape.
+Returns the fill symbol used to draw the shape.
+
+:rtype: QgsFillSymbol
+
 .. seealso:: :py:func:`setSymbol()`
- :rtype: QgsFillSymbol
 %End
 
     void setSymbol( QgsFillSymbol *symbol );
 %Docstring
- Sets the ``symbol`` used to draw the shape.
- Ownership of ``symbol`` is not transferred.
+Sets the ``symbol`` used to draw the shape.
+Ownership of ``symbol`` is not transferred.
+
 .. seealso:: :py:func:`symbol()`
 %End
 

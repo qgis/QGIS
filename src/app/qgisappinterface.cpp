@@ -31,6 +31,7 @@
 #include "qgsapplayertreeviewmenuprovider.h"
 #include "qgscomposer.h"
 #include "qgscomposerview.h"
+#include "qgsdatumtransformdialog.h"
 #include "qgsgui.h"
 #include "qgsmaplayer.h"
 #include "qgsmaptooladvanceddigitizing.h"
@@ -822,4 +823,9 @@ void QgisAppInterface::registerLocatorFilter( QgsLocatorFilter *filter )
 void QgisAppInterface::deregisterLocatorFilter( QgsLocatorFilter *filter )
 {
   qgis->mLocatorWidget->locator()->deregisterFilter( filter );
+}
+
+bool QgisAppInterface::askForDatumTransform( QgsCoordinateReferenceSystem sourceCrs, QgsCoordinateReferenceSystem destinationCrs )
+{
+  return qgis->askUserForDatumTransform( sourceCrs, destinationCrs );
 }

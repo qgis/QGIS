@@ -11,7 +11,8 @@
 class QgsLayoutItemGroup: QgsLayoutItem
 {
 %Docstring
- A container for grouping several QgsLayoutItems.
+A container for grouping several QgsLayoutItems.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,7 +23,7 @@ class QgsLayoutItemGroup: QgsLayoutItem
 
     explicit QgsLayoutItemGroup( QgsLayout *layout );
 %Docstring
- Constructor for QgsLayoutItemGroup, belonging to the specified ``layout``.
+Constructor for QgsLayoutItemGroup, belonging to the specified ``layout``.
 %End
 
     virtual void cleanup();
@@ -35,28 +36,30 @@ class QgsLayoutItemGroup: QgsLayoutItem
 
     static QgsLayoutItemGroup *create( QgsLayout *layout ) /Factory/;
 %Docstring
- Returns a new group item for the specified ``layout``.
+Returns a new group item for the specified ``layout``.
 
- The caller takes responsibility for deleting the returned object.
- :rtype: QgsLayoutItemGroup
+The caller takes responsibility for deleting the returned object.
+
+:rtype: QgsLayoutItemGroup
 %End
 
     void addItem( QgsLayoutItem *item /Transfer/ );
 %Docstring
- Adds an ``item`` to the group. Ownership of the item
- is transferred to the group.
+Adds an ``item`` to the group. Ownership of the item
+is transferred to the group.
 %End
 
     void removeItems();
 %Docstring
- Removes all items from the group (but does not delete them).
- Items remain in the scene but are no longer grouped together
+Removes all items from the group (but does not delete them).
+Items remain in the scene but are no longer grouped together
 %End
 
     QList<QgsLayoutItem *> items() const;
 %Docstring
- Returns a list of items contained by the group.
- :rtype: list of QgsLayoutItem
+Returns a list of items contained by the group.
+
+:rtype: list of QgsLayoutItem
 %End
 
     virtual void setVisibility( const bool visible );

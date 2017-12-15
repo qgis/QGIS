@@ -19,6 +19,8 @@
 #define QGSDATUMTRANSFORMDIALOG_H
 
 #include "ui_qgsdatumtransformdialogbase.h"
+#include "qgscoordinatereferencesystem.h"
+#include "qgscoordinatetransform.h"
 #include "qgis_gui.h"
 
 #define SIP_NO_FILE
@@ -33,34 +35,45 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
     Q_OBJECT
   public:
 
-    //! Constructor for QgsDatumTransformDialog
-    QgsDatumTransformDialog( const QString &layerName, const QList< QList< int > > &dt, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
+    /**
+     * Constructor for QgsDatumTransformDialog.
+     */
+    QgsDatumTransformDialog( const QgsCoordinateReferenceSystem &sourceCrs = QgsCoordinateReferenceSystem(),
+                             const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
+                             QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
+                             QWidget *parent = nullptr,
+                             Qt::WindowFlags f = nullptr );
     ~QgsDatumTransformDialog();
 
-    //! \since QGIS 2.4
-    void setDatumTransformInfo( const QString &srcCRSauthId, const QString &destCRSauthId );
+    /**
+     * Returns the number of possible datum transformation for currently selected source and destination CRS
+     * \since 3.0
+     */
+    int availableTransformationCount();
 
-    //! getter for selected datum transformations
-    QList< int > selectedDatumTransform();
-
-    //! dialog shall remember the selection
-    bool rememberSelection() const;
+    /**
+     * Returns the source and destination transforms, each being a pair of QgsCoordinateReferenceSystems and datum transform code
+     * \since 3.0
+     */
+    QPair< QPair<QgsCoordinateReferenceSystem, int>, QPair<QgsCoordinateReferenceSystem, int > > selectedDatumTransforms();
 
   private slots:
     void mHideDeprecatedCheckBox_stateChanged( int state );
     void mDatumTransformTreeWidget_currentItemChanged( QTreeWidgetItem *, QTreeWidgetItem * );
+    void setSourceCrs( const QgsCoordinateReferenceSystem &sourceCrs );
+    void setDestinationCrs( const QgsCoordinateReferenceSystem &destinationCrs );
 
   private:
-    QgsDatumTransformDialog();
-    void updateTitle();
     bool gridShiftTransformation( const QString &itemText ) const;
     //! Returns false if the location of the grid shift files is known (PROJ_LIB) and the shift file is not there
     bool testGridShiftFileAvailability( QTreeWidgetItem *item, int col ) const;
-    void load();
+    void load( const QPair<int, int> &selectedDatumTransforms = qMakePair( -1, -1 ) );
+    void setOKButtonEnabled();
 
-    const QList< QList< int > > &mDt;
-    QString mLayerName;
-    QString mSrcCRSauthId, mDestCRSauthId;
+
+    QList< QgsCoordinateTransform::TransformPair > mDatumTransforms;
+    QgsCoordinateReferenceSystem mSourceCrs;
+    QgsCoordinateReferenceSystem mDestinationCrs;
 };
 
 #endif // QGSDATUMTRANSFORMDIALOG_H

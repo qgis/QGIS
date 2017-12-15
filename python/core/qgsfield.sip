@@ -15,9 +15,10 @@
 class QgsField
 {
 %Docstring
- Encapsulate a field in an attribute table or data source.
- QgsField stores metadata about an attribute field, including name, type
- length, and if applicable, precision.
+Encapsulate a field in an attribute table or data source.
+QgsField stores metadata about an attribute field, including name, type
+length, and if applicable, precision.
+
 .. note::
 
    QgsField objects are implicitly shared.
@@ -36,24 +37,24 @@ class QgsField
               const QString &comment = QString(),
               QVariant::Type subType = QVariant::Invalid );
 %Docstring
- Constructor. Constructs a new QgsField object.
- \param name Field name
- \param type Field variant type, currently supported: String / Int / Double
- \param typeName Field type (e.g., char, varchar, text, int, serial, double).
- Field types are usually unique to the source and are stored exactly
- as returned from the data store.
- \param len Field length
- \param prec Field precision. Usually decimal places but may also be
- used in conjunction with other fields types (e.g., variable character fields)
- \param comment Comment for the field
- \param subType If the field is a collection, its element's type. When
-                all the elements don't need to have the same type, leave
-                this to QVariant.Invalid.
+Constructor. Constructs a new QgsField object.
+:param name: Field name
+:param type: Field variant type, currently supported: String / Int / Double
+:param typeName: Field type (e.g., char, varchar, text, int, serial, double).
+Field types are usually unique to the source and are stored exactly
+as returned from the data store.
+:param len: Field length
+:param prec: Field precision. Usually decimal places but may also be
+used in conjunction with other fields types (e.g., variable character fields)
+:param comment: Comment for the field
+:param subType: If the field is a collection, its element's type. When
+all the elements don't need to have the same type, leave
+this to QVariant.Invalid.
 %End
 
     QgsField( const QgsField &other );
 %Docstring
- Copy constructor
+Copy constructor
 %End
 
 
@@ -62,187 +63,225 @@ class QgsField
     bool operator==( const QgsField &other ) const;
     bool operator!=( const QgsField &other ) const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     QString name() const;
 %Docstring
- Returns the name of the field.
+Returns the name of the field.
+
+:rtype: str
+
 .. seealso:: :py:func:`setName()`
+
 .. seealso:: :py:func:`displayName()`
- :rtype: str
 %End
 
     QString displayName() const;
 %Docstring
- Returns the name to use when displaying this field. This will be the
- field alias if set, otherwise the field name.
+Returns the name to use when displaying this field. This will be the
+field alias if set, otherwise the field name.
+
+:rtype: str
+
 .. seealso:: :py:func:`name()`
+
 .. seealso:: :py:func:`alias()`
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     QVariant::Type type() const;
 %Docstring
 Gets variant type of the field as it will be retrieved from data source
- :rtype: QVariant.Type
+
+:rtype: QVariant.Type
 %End
 
     QVariant::Type subType() const;
 %Docstring
- If the field is a collection, gets its element's type.
- When all the elements don't need to have the same type, this returns
- QVariant.Invalid.
+If the field is a collection, gets its element's type.
+When all the elements don't need to have the same type, this returns
+QVariant.Invalid.
+
+:rtype: QVariant.Type
+
 .. versionadded:: 3.0
- :rtype: QVariant.Type
 %End
 
     QString typeName() const;
 %Docstring
- Gets the field type. Field types vary depending on the data source. Examples
- are char, int, double, blob, geometry, etc. The type is stored exactly as
- the data store reports it, with no attempt to standardize the value.
- :return: QString containing the field type
- :rtype: str
+Gets the field type. Field types vary depending on the data source. Examples
+are char, int, double, blob, geometry, etc. The type is stored exactly as
+the data store reports it, with no attempt to standardize the value.
+
+:return: QString containing the field type
+:rtype: str
+
 %End
 
     int length() const;
 %Docstring
- Gets the length of the field.
- :return: int containing the length of the field
- :rtype: int
+Gets the length of the field.
+
+:return: int containing the length of the field
+:rtype: int
+
 %End
 
     int precision() const;
 %Docstring
- Gets the precision of the field. Not all field types have a related precision.
- :return: int containing the precision or zero if not applicable to the field type.
- :rtype: int
+Gets the precision of the field. Not all field types have a related precision.
+
+:return: int containing the precision or zero if not applicable to the field type.
+:rtype: int
+
 %End
 
     QString comment() const;
 %Docstring
- Returns the field comment
- :rtype: str
+Returns the field comment
+
+:rtype: str
 %End
 
     bool isNumeric() const;
 %Docstring
- Returns if this field is numeric. Any integer or floating point type
- will return true for this.
+Returns if this field is numeric. Any integer or floating point type
+will return true for this.
+
+:rtype: bool
 
 .. versionadded:: 2.18
- :rtype: bool
 %End
 
     void setName( const QString &name );
 %Docstring
- Set the field name.
- \param name Name of the field
+Set the field name.
+:param name: Name of the field
 %End
 
     void setType( QVariant::Type type );
 %Docstring
- Set variant type.
+Set variant type.
 %End
 
     void setSubType( QVariant::Type subType );
 %Docstring
- If the field is a collection, set its element's type.
- When all the elements don't need to have the same type, set this to
- QVariant.Invalid.
+If the field is a collection, set its element's type.
+When all the elements don't need to have the same type, set this to
+QVariant.Invalid.
+
 .. versionadded:: 3.0
 %End
 
     void setTypeName( const QString &typeName );
 %Docstring
- Set the field type.
- \param typeName Field type
+Set the field type.
+:param typeName: Field type
 %End
 
     void setLength( int len );
 %Docstring
- Set the field length.
- \param len Length of the field
+Set the field length.
+:param len: Length of the field
 %End
 
     void setPrecision( int precision );
 %Docstring
- Set the field precision.
- \param precision Precision of the field
+Set the field precision.
+:param precision: Precision of the field
 %End
 
     void setComment( const QString &comment );
 %Docstring
- Set the field comment
+Set the field comment
 %End
 
     QgsDefaultValue defaultValueDefinition() const;
 %Docstring
- Returns the expression used when calculating the default value for the field.
- :return: expression evaluated when calculating default values for field, or an
- empty string if no default is set
+Returns the expression used when calculating the default value for the field.
+
+:return: expression evaluated when calculating default values for field, or an
+:rtype: QgsDefaultValue
+
+empty string if no default is set
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`setDefaultValueDefinition()`
- :rtype: QgsDefaultValue
 %End
 
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
 %Docstring
- Sets an expression to use when calculating the default value for the field.
- \param defaultValueDefinition expression to evaluate when calculating default values for field. Pass
- a default constructed QgsDefaultValue() to reset.
+Sets an expression to use when calculating the default value for the field.
+:param defaultValueDefinition: expression to evaluate when calculating default values for field. Pass
+a default constructed QgsDefaultValue() to reset.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`defaultValueDefinition()`
 %End
 
     const QgsFieldConstraints &constraints() const;
 %Docstring
- Returns constraints which are present for the field.
+Returns constraints which are present for the field.
+
+:rtype: QgsFieldConstraints
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`setConstraints()`
- :rtype: QgsFieldConstraints
 %End
 
     void setConstraints( const QgsFieldConstraints &constraints );
 %Docstring
- Sets constraints which are present for the field.
+Sets constraints which are present for the field.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`constraints()`
 %End
 
     QString alias() const;
 %Docstring
- Returns the alias for the field (the friendly displayed name of the field ),
- or an empty string if there is no alias.
+Returns the alias for the field (the friendly displayed name of the field ),
+or an empty string if there is no alias.
+
+:rtype: str
+
 .. seealso:: :py:func:`setAlias()`
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     void setAlias( const QString &alias );
 %Docstring
- Sets the alias for the field (the friendly displayed name of the field ).
- \param alias field alias, or empty string to remove an existing alias
+Sets the alias for the field (the friendly displayed name of the field ).
+:param alias: field alias, or empty string to remove an existing alias
+
 .. seealso:: :py:func:`alias()`
+
 .. versionadded:: 3.0
 %End
 
     QString displayString( const QVariant &v ) const;
 %Docstring
 Formats string for display
- :rtype: str
+
+:rtype: str
 %End
 
     bool convertCompatible( QVariant &v ) const;
 %Docstring
- Converts the provided variant to a compatible format
+Converts the provided variant to a compatible format
 
- \param v  The value to convert
+:param v:  The value to convert
 
- :return:   True if the conversion was successful
- :rtype: bool
+:return:   True if the conversion was successful
+:rtype: bool
+
 %End
 %MethodCode
     PyObject *sipParseErr = NULL;
@@ -301,20 +340,21 @@ Allows direct construction of QVariants from fields.
 
     void setEditorWidgetSetup( const QgsEditorWidgetSetup &v );
 %Docstring
- Set the editor widget setup for the field.
+Set the editor widget setup for the field.
 
- \param v  The value to set
+:param v:  The value to set
 %End
 
     QgsEditorWidgetSetup editorWidgetSetup() const;
 %Docstring
- Get the editor widget setup for the field.
+Get the editor widget setup for the field.
 
- Defaults may be set by the provider and can be overridden
- by manual field configuration.
+Defaults may be set by the provider and can be overridden
+by manual field configuration.
 
- :return: the value
- :rtype: QgsEditorWidgetSetup
+:return: the value
+:rtype: QgsEditorWidgetSetup
+
 %End
 
 }; // class QgsField

@@ -20,7 +20,8 @@ class QgsMultiBandColorRendererWidget: QgsRasterRendererWidget
     QgsMultiBandColorRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent );
 %Docstring
- :rtype: QgsRasterRendererWidget
+
+:rtype: QgsRasterRendererWidget
 %End
 
     virtual QgsRasterRenderer *renderer();

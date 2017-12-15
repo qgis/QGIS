@@ -13,7 +13,7 @@
 class QgsComposerShape: QgsComposerItem
 {
 %Docstring
- A composer items that draws common shapes (ellipse, triangle, rectangle)*
+A composer items that draws common shapes (ellipse, triangle, rectangle)*
 %End
 
 %TypeHeaderCode
@@ -35,7 +35,8 @@ class QgsComposerShape: QgsComposerItem
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
- :rtype: int
+
+:rtype: int
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -47,24 +48,27 @@ Return correct graphics item type.
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
 %Docstring
- Stores state in Dom element
- \param elem is Dom element corresponding to 'Composer' tag
- \param doc write template file
- :rtype: bool
+Stores state in Dom element
+:param elem: is Dom element corresponding to 'Composer' tag
+:param doc: write template file
+
+:rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
- Sets state from Dom document
- \param itemElem is Dom node corresponding to item tag
- \param doc is Dom document
- :rtype: bool
+Sets state from Dom document
+:param itemElem: is Dom node corresponding to item tag
+:param doc: is Dom document
+
+:rtype: bool
 %End
 
     QgsComposerShape::Shape shapeType() const;
 %Docstring
- :rtype: QgsComposerShape.Shape
+
+:rtype: QgsComposerShape.Shape
 %End
     void setShapeType( QgsComposerShape::Shape s );
 
@@ -75,42 +79,46 @@ Sets radius for rounded rectangle corners. Added in v2.1
     double cornerRadius() const;
 %Docstring
 Returns the radius for rounded rectangle corners
- :rtype: float
+
+:rtype: float
 %End
 
     void setShapeStyleSymbol( QgsFillSymbol *symbol );
 %Docstring
- Sets the QgsFillSymbol used to draw the shape. Must also call setUseSymbol( true ) to
- enable drawing with a symbol.
- Note: added in version 2.1*
+Sets the QgsFillSymbol used to draw the shape. Must also call setUseSymbol( true ) to
+enable drawing with a symbol.
+Note: added in version 2.1*
 %End
 
     QgsFillSymbol *shapeStyleSymbol();
 %Docstring
- Returns the QgsFillSymbol used to draw the shape.
- Note: added in version 2.1*
- :rtype: QgsFillSymbol
+Returns the QgsFillSymbol used to draw the shape.
+Note: added in version 2.1*
+
+:rtype: QgsFillSymbol
 %End
 
     void setUseSymbol( bool useSymbol );
 %Docstring
- Controls whether the shape should be drawn using a QgsFillSymbol.
- Note: Added in v2.1 *
+Controls whether the shape should be drawn using a QgsFillSymbol.
+Note: Added in v2.1 *
 %End
 
     virtual QRectF boundingRect() const;
 
 %Docstring
- Depending on the symbol style, the bounding rectangle can be larger than the shape
+Depending on the symbol style, the bounding rectangle can be larger than the shape
+
+:rtype: QRectF
+
 .. versionadded:: 2.3
- :rtype: QRectF
 %End
 
     virtual void setSceneRect( const QRectF &rectangle );
 
 %Docstring
- Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
- QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
+Sets new scene rectangle bounds and recalculates hight and extent. Reimplemented from
+QgsComposerItem as it needs to call updateBoundingRect after the shape's size changes
 %End
 
     virtual QString displayName() const;
@@ -118,27 +126,28 @@ Returns the radius for rounded rectangle corners
   protected:
     virtual void drawFrame( QPainter *p );
 %Docstring
- reimplement drawFrame, since it's not a rect, but a custom shape */
+reimplement drawFrame, since it's not a rect, but a custom shape */
 %End
     virtual void drawBackground( QPainter *p );
 %Docstring
- reimplement drawBackground, since it's not a rect, but a custom shape */
+reimplement drawBackground, since it's not a rect, but a custom shape */
 %End
 
     virtual double estimatedFrameBleed() const;
 %Docstring
- Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
- rather than the item's pen *
- :rtype: float
+Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
+rather than the item's pen *
+
+:rtype: float
 %End
 
   public slots:
 
     void refreshSymbol();
 %Docstring
- Should be called after the shape's symbol is changed. Redraws the shape and recalculates
- its selection bounds.
- Note: added in version 2.1*
+Should be called after the shape's symbol is changed. Redraws the shape and recalculates
+its selection bounds.
+Note: added in version 2.1*
 %End
 
 };

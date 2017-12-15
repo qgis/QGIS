@@ -364,8 +364,8 @@ class ModelerParametersDialog(QDialog):
     def openHelp(self):
         algHelp = self._alg.helpUrl()
         if not algHelp:
-            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}".format(
-                self._alg.provider().id(), self._alg.id())).toString()
+            algHelp = QgsHelp.helpUrl("processing_algs/{}/{}.html{}".format(
+                self._alg.provider().id(), self._alg.groupId(), self._alg.name())).toString()
 
         if algHelp not in [None, ""]:
             webbrowser.open(algHelp)

@@ -89,6 +89,8 @@
 #include "qgscomposerpicture.h"
 #include "qgscomposerscalebar.h"
 #include "qgscomposershape.h"
+#include "qgsfeaturefilterprovidergroup.h"
+#include "qgsogcutils.h"
 #include <QBuffer>
 #include <QPrinter>
 #include <QSvgGenerator>
@@ -919,21 +921,10 @@ namespace QgsWms
     }
 
     // The I/J parameters are Mandatory if they are not replaced by X/Y or FILTER or FILTER_GEOM
-    bool ijDefined = false;
-    if ( !mWmsParameters.i().isEmpty() && !mWmsParameters.j().isEmpty() )
-      ijDefined = true;
-
-    bool xyDefined = false;
-    if ( !mWmsParameters.x().isEmpty() && !mWmsParameters.y().isEmpty() )
-      xyDefined = true;
-
-    bool filtersDefined = false;
-    if ( !mWmsParameters.filters().isEmpty() )
-      filtersDefined = true;
-
-    bool filterGeomDefined = false;
-    if ( !mWmsParameters.filterGeom().isEmpty() )
-      filterGeomDefined = true;
+    const bool ijDefined = !mWmsParameters.i().isEmpty() && !mWmsParameters.j().isEmpty();
+    const bool xyDefined = !mWmsParameters.x().isEmpty() && !mWmsParameters.y().isEmpty();
+    const bool filtersDefined = !mWmsParameters.filters().isEmpty();
+    const bool filterGeomDefined = !mWmsParameters.filterGeom().isEmpty();
 
     if ( !ijDefined && !xyDefined && !filtersDefined && !filterGeomDefined )
     {
@@ -1114,7 +1105,6 @@ namespace QgsWms
       throw QgsException( QStringLiteral( "configureMapSettings: no paint device" ) );
     }
 
-    mapSettings.datumTransformStore().clear();
     mapSettings.setOutputSize( QSize( paintDevice->width(), paintDevice->height() ) );
     mapSettings.setOutputDpi( paintDevice->logicalDpiX() );
 
@@ -2694,10 +2684,13 @@ namespace QgsWms
     }
     else
     {
+      QgsFeatureFilterProviderGroup filters;
+      filters.addProvider( &mFeatureFilter );
 #ifdef HAVE_SERVER_PYTHON_PLUGINS
       mAccessControl->resolveFilterFeatures( mapSettings.layers() );
+      filters.addProvider( mAccessControl );
 #endif
-      QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads(), mAccessControl );
+      QgsMapRendererJobProxy renderJob( mSettings.parallelRendering(), mSettings.maxThreads(), &filters );
       renderJob.render( mapSettings, &image );
       painter = renderJob.takePainter();
     }
@@ -2723,34 +2716,53 @@ namespace QgsWms
     }
   }
 
-  void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QStringList &filters ) const
+  void QgsRenderer::setLayerFilter( QgsMapLayer *layer, const QStringList &filters )
   {
     if ( layer->type() == QgsMapLayer::VectorLayer )
     {
       QgsVectorLayer *filteredLayer = qobject_cast<QgsVectorLayer *>( layer );
       Q_FOREACH ( QString filter, filters )
       {
-        if ( !testFilterStringSafety( filter ) )
+        if ( filter.startsWith( QStringLiteral( "<" ) ) && filter.endsWith( QStringLiteral( "Filter>" ) ) )
         {
-          throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
-                                        QStringLiteral( "The filter string %1"
-                                            " has been rejected because of security reasons."
-                                            " Note: Text strings have to be enclosed in single or double quotes."
-                                            " A space between each word / special character is mandatory."
-                                            " Allowed Keywords and special characters are "
-                                            " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
-                                            " Not allowed are semicolons in the filter expression." ).arg( filter ) );
+          // OGC filter
+          QDomDocument filterXml;
+          QString errorMsg;
+          if ( !filterXml.setContent( filter, true, &errorMsg ) )
+          {
+            throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
+                                          QStringLiteral( "error message: %1. The XML string was: %2" ).arg( errorMsg, filter ) );
+          }
+          QDomElement filterElem = filterXml.firstChildElement();
+          QScopedPointer<QgsExpression> expression( QgsOgcUtils::expressionFromOgcFilter( filterElem ) );
+          mFeatureFilter.setFilter( filteredLayer, *expression );
         }
+        else
+        {
+          // QGIS (SQL) filter
+          if ( !testFilterStringSafety( filter ) )
+          {
+            throw QgsBadRequestException( QStringLiteral( "Filter string rejected" ),
+                                          QStringLiteral( "The filter string %1"
+                                              " has been rejected because of security reasons."
+                                              " Note: Text strings have to be enclosed in single or double quotes."
+                                              " A space between each word / special character is mandatory."
+                                              " Allowed Keywords and special characters are "
+                                              " AND,OR,IN,<,>=,>,>=,!=,',',(,),DMETAPHONE,SOUNDEX."
+                                              " Not allowed are semicolons in the filter expression." ).arg(
+                                            filter ) );
+          }
 
-        QString newSubsetString = filter;
-        if ( !filteredLayer->subsetString().isEmpty() )
-        {
-          newSubsetString.prepend( ") AND (" );
-          newSubsetString.append( ")" );
-          newSubsetString.prepend( filteredLayer->subsetString() );
-          newSubsetString.prepend( "(" );
+          QString newSubsetString = filter;
+          if ( !filteredLayer->subsetString().isEmpty() )
+          {
+            newSubsetString.prepend( ") AND (" );
+            newSubsetString.append( ")" );
+            newSubsetString.prepend( filteredLayer->subsetString() );
+            newSubsetString.prepend( "(" );
+          }
+          filteredLayer->setSubsetString( newSubsetString );
         }
-        filteredLayer->setSubsetString( newSubsetString );
       }
     }
   }

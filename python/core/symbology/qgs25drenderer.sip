@@ -19,11 +19,12 @@ class Qgs25DRenderer : QgsFeatureRenderer
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
- Create a new 2.5D renderer from XML
+Create a new 2.5D renderer from XML
 
- \param element XML information
- \param context reading context
- :rtype: QgsFeatureRenderer
+:param element: XML information
+:param context: reading context
+
+:rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
@@ -43,76 +44,83 @@ class Qgs25DRenderer : QgsFeatureRenderer
 
     QColor roofColor() const;
 %Docstring
- Get the roof color
- :rtype: QColor
+Get the roof color
+
+:rtype: QColor
 %End
 
     void setRoofColor( const QColor &roofColor );
 %Docstring
- Set the roof color
+Set the roof color
 %End
 
     QColor wallColor() const;
 %Docstring
- Get the wall color
- :rtype: QColor
+Get the wall color
+
+:rtype: QColor
 %End
 
     void setWallColor( const QColor &wallColor );
 %Docstring
- Set the wall color
+Set the wall color
 %End
 
     void setWallShadingEnabled( bool enabled );
 %Docstring
- Set wall shading enabled
+Set wall shading enabled
 %End
 
     bool wallShadingEnabled() const;
 %Docstring
- Get wall shading enabled
- :rtype: bool
+Get wall shading enabled
+
+:rtype: bool
 %End
 
     QColor shadowColor() const;
 %Docstring
- Get the shadow's color
- :rtype: QColor
+Get the shadow's color
+
+:rtype: QColor
 %End
 
     void setShadowColor( const QColor &shadowColor );
 %Docstring
- Set the shadow's color
+Set the shadow's color
 %End
 
     double shadowSpread() const;
 %Docstring
- Get the shadow's spread distance in map units
- :rtype: float
+Get the shadow's spread distance in map units
+
+:rtype: float
 %End
 
     void setShadowSpread( double shadowSpread );
 %Docstring
- Set the shadow's spread distance in map units
+Set the shadow's spread distance in map units
 %End
 
     static Qgs25DRenderer *convertFromRenderer( QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
- Try to convert from an existing renderer. If it is not of the same type
- we assume that the internals are not compatible and create a new default
- 2.5D renderer.
- :rtype: Qgs25DRenderer
+Try to convert from an existing renderer. If it is not of the same type
+we assume that the internals are not compatible and create a new default
+2.5D renderer.
+
+:rtype: Qgs25DRenderer
 %End
 
     bool shadowEnabled() const;
 %Docstring
- Is the shadow enabled
- :rtype: bool
+Is the shadow enabled
+
+:rtype: bool
 %End
 
     void setShadowEnabled( bool value );
 %Docstring
- Enable or disable the shadow
+Enable or disable the shadow
 %End
 
 };

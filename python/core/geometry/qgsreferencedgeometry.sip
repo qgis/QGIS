@@ -12,13 +12,14 @@
 class QgsReferencedGeometryBase
 {
 %Docstring
- A base class for geometry primitives which are stored with an associated reference system.
+A base class for geometry primitives which are stored with an associated reference system.
 
- QgsReferencedGeometryBase classes represent some form of geometry primitive
- (such as rectangles) which have an optional coordinate reference system
- associated with them.
+QgsReferencedGeometryBase classes represent some form of geometry primitive
+(such as rectangles) which have an optional coordinate reference system
+associated with them.
 
 .. versionadded:: 3.0
+
 .. seealso:: :py:class:`QgsReferencedRectangle`
 %End
 
@@ -29,21 +30,24 @@ class QgsReferencedGeometryBase
 
     QgsReferencedGeometryBase( const QgsCoordinateReferenceSystem &crs = QgsCoordinateReferenceSystem() );
 %Docstring
- Constructor for QgsReferencedGeometryBase, with the specified ``crs``.
+Constructor for QgsReferencedGeometryBase, with the specified ``crs``.
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
- Returns the associated coordinate reference system, or an invalid CRS if
- no reference system is set.
+Returns the associated coordinate reference system, or an invalid CRS if
+no reference system is set.
+
+:rtype: QgsCoordinateReferenceSystem
+
 .. seealso:: :py:func:`setCrs()`
- :rtype: QgsCoordinateReferenceSystem
 %End
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Sets the associated ``crs``. Set to an invalid CRS if
- no reference system is required.
+Sets the associated ``crs``. Set to an invalid CRS if
+no reference system is required.
+
 .. seealso:: :py:func:`crs()`
 %End
 
@@ -52,7 +56,8 @@ class QgsReferencedGeometryBase
 class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
 {
 %Docstring
- A QgsRectangle with associated coordinate reference system.
+A QgsRectangle with associated coordinate reference system.
+
 .. versionadded:: 3.0
 %End
 
@@ -63,13 +68,13 @@ class QgsReferencedRectangle : QgsRectangle, QgsReferencedGeometryBase
 
     QgsReferencedRectangle( const QgsRectangle &rectangle, const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Constructor for QgsReferencedRectangle, with the specified initial ``rectangle``
- and ``crs``.
+Constructor for QgsReferencedRectangle, with the specified initial ``rectangle``
+and ``crs``.
 %End
 
     QgsReferencedRectangle();
 %Docstring
- Constructor for QgsReferencedRectangle.
+Constructor for QgsReferencedRectangle.
 %End
 
     operator QVariant() const;
@@ -83,7 +88,8 @@ Allows direct construction of QVariants from rectangle.
 class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
 {
 %Docstring
- A QgsPointXY with associated coordinate reference system.
+A QgsPointXY with associated coordinate reference system.
+
 .. versionadded:: 3.0
 %End
 
@@ -94,13 +100,13 @@ class QgsReferencedPointXY : QgsPointXY, QgsReferencedGeometryBase
 
     QgsReferencedPointXY( const QgsPointXY &point, const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Constructor for QgsReferencedPointXY, with the specified initial ``point``
- and ``crs``.
+Constructor for QgsReferencedPointXY, with the specified initial ``point``
+and ``crs``.
 %End
 
     QgsReferencedPointXY();
 %Docstring
- Constructor for QgsReferencedPointXY.
+Constructor for QgsReferencedPointXY.
 %End
 
     operator QVariant() const;

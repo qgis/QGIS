@@ -62,6 +62,9 @@ class Intersection(QgisAlgorithm):
     def group(self):
         return self.tr('Vector overlay')
 
+    def groupId(self):
+        return 'vectoroverlay'
+
     def __init__(self):
         super().__init__()
 

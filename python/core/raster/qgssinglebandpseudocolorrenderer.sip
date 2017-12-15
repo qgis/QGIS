@@ -13,7 +13,7 @@
 class QgsSingleBandPseudoColorRenderer: QgsRasterRenderer
 {
 %Docstring
- Raster renderer pipe for single band pseudocolor.
+Raster renderer pipe for single band pseudocolor.
 %End
 
 %TypeHeaderCode
@@ -31,12 +31,14 @@ Note: takes ownership of QgsRasterShader
 
 %Docstring
 QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
- :rtype: QgsSingleBandPseudoColorRenderer
+
+:rtype: QgsSingleBandPseudoColorRenderer
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
 %Docstring
- :rtype: QgsRasterRenderer
+
+:rtype: QgsRasterRenderer
 %End
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
@@ -50,15 +52,18 @@ Takes ownership of the shader
     QgsRasterShader *shader();
 %Docstring
 Returns the raster shader
- :rtype: QgsRasterShader
+
+:rtype: QgsRasterShader
 %End
 
     const QgsRasterShader *shader() const /PyName=constShader/;
 %Docstring
+
+:rtype: QgsRasterShader
+
 .. note::
 
    available in Python as constShader
- :rtype: QgsRasterShader
 %End
 
     void createShader( QgsColorRamp *colorRamp = 0,
@@ -68,13 +73,13 @@ Returns the raster shader
                        bool clip = false,
                        const QgsRectangle &extent = QgsRectangle() );
 %Docstring
- Creates a color ramp shader
- \param colorRamp vector color ramp
- \param colorRampType type of color ramp shader
- \param classificationMode classification mode
- \param classes number of classes
- \param clip clip out of range values
- \param extent extent used in classification (only used in quantile mode)
+Creates a color ramp shader
+:param colorRamp: vector color ramp
+:param colorRampType: type of color ramp shader
+:param classificationMode: classification mode
+:param classes: number of classes
+:param clip: clip out of range values
+:param extent: extent used in classification (only used in quantile mode)
 %End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
@@ -88,25 +93,31 @@ Returns the raster shader
 
     int band() const;
 %Docstring
- Returns the band used by the renderer
+Returns the band used by the renderer
+
+:rtype: int
+
 .. versionadded:: 2.7
- :rtype: int
 %End
 
     void setBand( int bandNo );
 %Docstring
- Sets the band used by the renderer.
+Sets the band used by the renderer.
+
 .. seealso:: :py:func:`band`
+
 .. versionadded:: 2.10
 %End
 
     double classificationMin() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     double classificationMax() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     void setClassificationMin( double min );
     void setClassificationMax( double max );
@@ -115,7 +126,8 @@ Returns the raster shader
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & );
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & );
 %Docstring
- :rtype: QgsSingleBandPseudoColorRenderer
+
+:rtype: QgsSingleBandPseudoColorRenderer
 %End
 };
 

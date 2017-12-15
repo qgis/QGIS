@@ -46,6 +46,9 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def initParameters(self, config=None):
 
         class ParameterFieldsMapping(QgsProcessingParameterDefinition):
@@ -137,8 +140,8 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             if expression.hasParserError():
                 raise QgsProcessingException(
                     self.tr(u'Parser error in expression "{}": {}')
-                    .format(str(expression.expression()),
-                            str(expression.parserErrorString())))
+                    .format(expression.expression(),
+                            expression.parserErrorString()))
             self.expressions.append(expression)
         return True
 
@@ -160,8 +163,8 @@ class FieldsMapper(QgisFeatureBasedAlgorithm):
             if expression.hasEvalError():
                 raise QgsProcessingException(
                     self.tr(u'Evaluation error in expression "{}": {}')
-                        .format(str(expression.expression()),
-                                str(expression.parserErrorString())))
+                        .format(expression.expression(),
+                                expression.parserErrorString()))
             attributes.append(value)
         feature.setAttributes(attributes)
         self._row_number += 1

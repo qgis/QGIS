@@ -13,7 +13,7 @@
 class QgsAuthConfigSelect : QWidget
 {
 %Docstring
- Selector widget for authentication configs
+Selector widget for authentication configs
 %End
 
 %TypeHeaderCode
@@ -23,10 +23,10 @@ class QgsAuthConfigSelect : QWidget
 
     explicit QgsAuthConfigSelect( QWidget *parent /TransferThis/ = 0, const QString &dataprovider = QString() );
 %Docstring
- Create a dialog for setting an associated authentication config, either
- from existing configs, or creating/removing them from auth database
- \param parent Parent widget
- \param dataprovider The key of the calling layer provider, if applicable
+Create a dialog for setting an associated authentication config, either
+from existing configs, or creating/removing them from auth database
+:param parent: Parent widget
+:param dataprovider: The key of the calling layer provider, if applicable
 %End
 
     void setConfigId( const QString &authcfg );
@@ -37,7 +37,8 @@ Set the authentication config id for the resource
     const QString configId() const;
 %Docstring
 Get the authentication config id for the resource
- :rtype: str
+
+:rtype: str
 %End
 
     void setDataProviderKey( const QString &key );
@@ -76,7 +77,7 @@ Clear and hide small message bar
 class QgsAuthConfigUriEdit : QDialog
 {
 %Docstring
- Dialog wrapper of select widget to edit an authcfg in a data source URI
+Dialog wrapper of select widget to edit an authcfg in a data source URI
 %End
 
 %TypeHeaderCode
@@ -88,10 +89,10 @@ class QgsAuthConfigUriEdit : QDialog
                                    const QString &datauri = QString(),
                                    const QString &dataprovider = QString() );
 %Docstring
- Construct wrapper dialog for select widget to edit an authcfg in a data source URI
- \param parent Parent widget
- \param datauri URI QString with of without an authcfg=ID string
- \param dataprovider The key of the calling layer provider, if applicable
+Construct wrapper dialog for select widget to edit an authcfg in a data source URI
+:param parent: Parent widget
+:param datauri: URI QString with of without an authcfg=ID string
+:param dataprovider: The key of the calling layer provider, if applicable
 %End
 
     void setDataSourceUri( const QString &datauri );
@@ -102,13 +103,15 @@ Set the data source URI to parse
     QString dataSourceUri();
 %Docstring
 The returned, possibly edited data source URI
- :rtype: str
+
+:rtype: str
 %End
 
     static bool hasConfigId( const QString &txt );
 %Docstring
 Whether a string contains an authcfg ID
- :rtype: bool
+
+:rtype: bool
 %End
 
 };

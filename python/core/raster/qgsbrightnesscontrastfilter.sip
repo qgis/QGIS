@@ -13,7 +13,7 @@
 class QgsBrightnessContrastFilter : QgsRasterInterface
 {
 %Docstring
- Brightness/contrast filter pipe for rasters.
+Brightness/contrast filter pipe for rasters.
 %End
 
 %TypeHeaderCode
@@ -40,13 +40,15 @@ class QgsBrightnessContrastFilter : QgsRasterInterface
     void setBrightness( int brightness );
     int brightness() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     void setContrast( int contrast );
     int contrast() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;

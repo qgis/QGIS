@@ -11,7 +11,8 @@
 class QgsLayoutViewToolTemporaryKeyPan : QgsLayoutViewTool
 {
 %Docstring
- Layout view tool for temporarily panning a layout while a key is depressed.
+Layout view tool for temporarily panning a layout while a key is depressed.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,7 +23,7 @@ class QgsLayoutViewToolTemporaryKeyPan : QgsLayoutViewTool
 
     QgsLayoutViewToolTemporaryKeyPan( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolTemporaryKeyPan.
+Constructor for QgsLayoutViewToolTemporaryKeyPan.
 %End
 
     virtual void layoutMoveEvent( QgsLayoutViewMouseEvent *event );

@@ -466,6 +466,32 @@ QgsOgrProvider::QgsOgrProvider( QString const &uri )
         << QgsVectorDataProvider::NativeType( tr( "Date & Time" ), QStringLiteral( "datetime" ), QVariant::DateTime );
   }
 
+  bool supportsBoolean = false;
+
+#if GDAL_VERSION_NUM >= GDAL_COMPUTE_VERSION(2,3,0)
+  const char *pszDataTypes = GDALGetMetadataItem( mOgrOrigLayer->driver(), GDAL_DMD_CREATIONFIELDDATASUBTYPES, nullptr );
+  if ( pszDataTypes && strstr( pszDataTypes, "Boolean" ) )
+    supportsBoolean = true;
+#else
+  if ( mGDALDriverName == QLatin1String( "GeoJSON" ) ||
+       mGDALDriverName == QLatin1String( "GML" ) ||
+       mGDALDriverName == QLatin1String( "CSV" ) ||
+       mGDALDriverName == QLatin1String( "PostgreSQL" ) ||
+       mGDALDriverName == QLatin1String( "PGDump" ) ||
+       mGDALDriverName == QLatin1String( "SQLite" ) ||
+       mGDALDriverName == QLatin1String( "GPKG" ) )
+  {
+    supportsBoolean = true;
+  }
+#endif
+
+  if ( supportsBoolean )
+  {
+    // boolean data type
+    nativeTypes
+        << QgsVectorDataProvider::NativeType( tr( "Boolean" ), QStringLiteral( "bool" ), QVariant::Bool, -1, -1, -1, -1 );
+  }
+
   setNativeTypes( nativeTypes );
 
   QgsOgrConnPool::instance()->ref( QgsOgrProviderUtils::connectionPoolId( dataSourceUri( true ) ) );

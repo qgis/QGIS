@@ -25,15 +25,14 @@ QgsExpressionBuilderDialog::QgsExpressionBuilderDialog( QgsVectorLayer *layer, c
   setupUi( this );
   QgsGui::instance()->enableAutoGeometryRestore( this );
 
-  QPushButton *okButton = buttonBox->button( QDialogButtonBox::Ok );
-  connect( builder, &QgsExpressionBuilderWidget::expressionParsed, okButton, &QWidget::setEnabled );
+  connect( builder, &QgsExpressionBuilderWidget::parserErrorChanged, this, &QgsExpressionBuilderDialog::syncOkButtonEnabledState );
+  connect( builder, &QgsExpressionBuilderWidget::evalErrorChanged, this, &QgsExpressionBuilderDialog::syncOkButtonEnabledState );
 
   builder->setExpressionContext( context );
   builder->setLayer( layer );
   builder->setExpressionText( startText );
   builder->loadFieldNames();
   builder->loadRecent( mRecentKey );
-
 
   connect( buttonBox, &QDialogButtonBox::helpRequested, this, &QgsExpressionBuilderDialog::showHelp );
 }
@@ -80,7 +79,34 @@ void QgsExpressionBuilderDialog::setGeomCalculator( const QgsDistanceArea &da )
   builder->setGeomCalculator( da );
 }
 
+bool QgsExpressionBuilderDialog::allowEvalErrors() const
+{
+  return mAllowEvalErrors;
+}
+
+void QgsExpressionBuilderDialog::setAllowEvalErrors( bool allowEvalErrors )
+{
+  if ( allowEvalErrors == mAllowEvalErrors )
+    return;
+
+  mAllowEvalErrors = allowEvalErrors;
+  syncOkButtonEnabledState();
+  emit allowEvalErrorsChanged();
+}
+
 void QgsExpressionBuilderDialog::showHelp()
 {
   QgsHelp::openHelp( QStringLiteral( "working_with_vector/expression.html" ) );
+}
+
+void QgsExpressionBuilderDialog::syncOkButtonEnabledState()
+{
+  QPushButton *okButton = buttonBox->button( QDialogButtonBox::Ok );
+
+  if ( builder->parserError() )
+    okButton->setEnabled( false );
+  else if ( !builder->evalError() || mAllowEvalErrors )
+    okButton->setEnabled( true );
+  else
+    okButton->setEnabled( true );
 }

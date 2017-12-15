@@ -1221,6 +1221,7 @@ void QgsRasterLayerProperties::pbnAddValuesManually_clicked()
 
 void QgsRasterLayerProperties::mCrsSelector_crsChanged( const QgsCoordinateReferenceSystem &crs )
 {
+  QgisApp::instance()->askUserForDatumTransform( crs, QgsProject::instance()->crs() );
   mRasterLayer->setCrs( crs );
 }
 

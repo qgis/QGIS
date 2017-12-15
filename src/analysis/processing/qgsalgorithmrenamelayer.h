@@ -38,6 +38,7 @@ class QgsRenameLayerAlgorithm : public QgsProcessingAlgorithm
     QString displayName() const override;
     virtual QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsRenameLayerAlgorithm *createInstance() const override SIP_FACTORY;
 

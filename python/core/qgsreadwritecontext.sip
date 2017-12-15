@@ -12,7 +12,8 @@
 class QgsReadWriteContext
 {
 %Docstring
- The class is used as a container of context for various read/write operations on other objects.
+The class is used as a container of context for various read/write operations on other objects.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,13 +24,14 @@ class QgsReadWriteContext
 
     QgsReadWriteContext();
 %Docstring
- Constructor for QgsReadWriteContext.
+Constructor for QgsReadWriteContext.
 %End
 
     const QgsPathResolver &pathResolver() const;
 %Docstring
 Returns path resolver for conversion between relative and absolute paths
- :rtype: QgsPathResolver
+
+:rtype: QgsPathResolver
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );

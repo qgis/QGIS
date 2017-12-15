@@ -12,8 +12,10 @@
 class QgsTaskManagerWidget : QWidget
 {
 %Docstring
- A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
+A widget which displays tasks from a QgsTaskManager and allows for interaction with the manager.
+
 .. seealso:: :py:class:`QgsTaskManager`
+
 .. versionadded:: 3.0
 %End
 
@@ -24,9 +26,9 @@ class QgsTaskManagerWidget : QWidget
 
     QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsTaskManagerWidget
- \param manager task manager associated with widget
- \param parent parent widget
+Constructor for QgsTaskManagerWidget
+:param manager: task manager associated with widget
+:param parent: parent widget
 %End
 
     ~QgsTaskManagerWidget();

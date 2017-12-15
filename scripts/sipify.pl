@@ -45,6 +45,7 @@ my $ACTUAL_CLASS = '';
 my $PYTHON_SIGNATURE = '';
 
 my $COMMENT = '';
+my $COMMENT_PARAM_LIST = 0;
 my $GLOB_IFDEF_NESTING_IDX = 0;
 my @GLOB_BRACKET_NESTING_IDX = (0);
 my $PRIVATE_SECTION_LINE = '';
@@ -118,6 +119,8 @@ sub write_header_footer {
 
 sub processDoxygenLine {
     my $line = $_[0];
+    # remove prepending spaces
+    $line =~ s/^\s+//g;
     # remove \a formatting
     $line =~ s/\\a (.+?)\b/``$1``/g;
     # replace :: with . (changes c++ style namespace/class directives to Python style)
@@ -125,31 +128,41 @@ sub processDoxygenLine {
     # replace nullptr with None (nullptr means nothing to Python devs)
     $line =~ s/\bnullptr\b/None/g;
     # replace \returns with :return:
-    $line =~ s/\\return(s)?/:return:/g;
+    $line =~ s/\s*\\return(s)?/\n:return:/;
+
+    if ( $line =~ m/\\param / ){
+        if ( $COMMENT_PARAM_LIST == 0 )
+        {
+            $line = "\n$line";
+        }
+        $COMMENT_PARAM_LIST = 1;
+        $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
+    }
+
 
     if ( $line =~ m/[\\@](ingroup|class)/ ) {
         return ""
     }
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
-        return ".. versionadded:: $1\n";
+        return "\n.. versionadded:: $1\n";
     }
     if ( $line =~ m/\\see +(\w+(\.\w+)*(\(\))?)/ ) {
         my $seealso = $1;
         if (  $seealso =~ m/^Qgs[A-Z]\w+$/ ) {
-            return ".. seealso:: :py:class:`$seealso`\n";
+            return "\n.. seealso:: :py:class:`$seealso`\n";
         }
         elsif (  $seealso =~ m/^(Qgs[A-Z]\w+)\.(\w+(\(\))?)$/ ) {
-            return ".. seealso:: :py:func:`$1.$2`\n";
+            return "\n.. seealso:: :py:func:`$1.$2`\n";
         }
         elsif (  $seealso =~ m/^[a-z]\w+(\(\))?$/ ) {
-            return ".. seealso:: :py:func:`$seealso`\n";
+            return "\n.. seealso:: :py:func:`$seealso`\n";
         }
         else {
-            return ".. seealso:: $seealso\n";
+            return "\n.. seealso:: $seealso\n";
         }
     }
     if ( $line =~ m/[\\@]note (.*)/ ) {
-        return ".. note::\n\n   $1\n";
+        return "\n.. note::\n\n   $1\n";
     }
     if ( $line =~ m/[\\@]brief (.*)/ ) {
         return " $1\n";
@@ -283,6 +296,7 @@ sub fix_annotations {
 sub detect_comment_block{
     my %args = ( strict_mode => STRICT, @_ );
     # dbg_info("detect comment strict:" . $args{strict_mode} );
+    $COMMENT_PARAM_LIST = 0;
     if ( $LINE =~ m/^\s*\/\*/ || $args{strict_mode} == UNSTRICT && $LINE =~ m/\/\*/ ){
         dbg_info("found comment block");
         do {no warnings 'uninitialized';
@@ -293,6 +307,8 @@ sub detect_comment_block{
             $LINE = read_line();
             $COMMENT .= processDoxygenLine( $LINE =~ s/\s*\*?(.*?)(\/)?\n?$/$1/r );
         }
+        $COMMENT =~ s/\n\s+\n/\n\n/;
+        $COMMENT =~ s/\n{3,}/\n\n/;
         $COMMENT =~ s/\n+$//;
         return 1;
     }
@@ -682,6 +698,7 @@ while ($LINE_IDX < $LINE_COUNT){
     if ( $SIP_RUN == 0 ){
         if ( $LINE =~ m/^\s*\/\// ){
             if ($LINE =~ m/^\s*\/\/\!\s*(.*?)\n?$/){
+                $COMMENT_PARAM_LIST = 0;
                 $COMMENT = processDoxygenLine( $1 );
                 $COMMENT =~ s/\n+$//;
             }
@@ -932,10 +949,23 @@ while ($LINE_IDX < $LINE_COUNT){
             dbg_info('writing comment');
             write_output("CM1", "%Docstring\n");
             if ( $COMMENT !~ m/^\s*$/ ){
-                write_output("CM2", "$COMMENT\n");
+                my @comment_lines = split /\n/, $COMMENT;
+                foreach my $comment_line (@comment_lines) {
+                  if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
+                      # return type must be added before any other paragraph-level markup
+                      write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
+                      $RETURN_TYPE = '';
+                  }
+                  write_output("CM2", "$comment_line\n");
+                  if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
+                      # return type must be added before any other paragraph-level markup
+                      write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
+                      $RETURN_TYPE = '';
+                  }
+                }
             }
-            if ($RETURN_TYPE ne '' ){
-                write_output("CM3", " :rtype: $RETURN_TYPE\n");
+            if ( $RETURN_TYPE ne '' ){
+                write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
             }
             write_output("CM4", "%End\n");
         }

@@ -38,6 +38,7 @@ class QgsDropMZValuesAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsDropMZValuesAlgorithm *createInstance() const override SIP_FACTORY;
 

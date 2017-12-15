@@ -14,7 +14,7 @@
 class QgsComposerItemCommand: QUndoCommand
 {
 %Docstring
- Undo command to undo/redo all composer item related changes
+Undo command to undo/redo all composer item related changes
 %End
 
 %TypeHeaderCode
@@ -48,24 +48,29 @@ Saves current item state as after state
 
     QDomDocument previousState() const;
 %Docstring
- :rtype: QDomDocument
+
+:rtype: QDomDocument
 %End
     QDomDocument afterState() const;
 %Docstring
- :rtype: QDomDocument
+
+:rtype: QDomDocument
 %End
 
     bool containsChange() const;
 %Docstring
 Returns true if previous state and after state are valid and different
- :rtype: bool
+
+:rtype: bool
 %End
 
     QgsComposerItem *item() const;
 %Docstring
- Returns the target item the command applies to.
- :return: target composer item
- :rtype: QgsComposerItem
+Returns the target item the command applies to.
+
+:return: target composer item
+:rtype: QgsComposerItem
+
 %End
 
   protected:
@@ -82,7 +87,7 @@ Flag to prevent the first redo() if the command is pushed to the undo stack
 class QgsComposerMergeCommand: QgsComposerItemCommand
 {
 %Docstring
- A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
+A composer command that merges together with other commands having the same context (=id). Keeps the oldest previous state and uses the
 newest after state. The purpose is to avoid too many micro changes in the history
 %End
 

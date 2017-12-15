@@ -24,7 +24,7 @@ class QgsGraphBuilder : QgsGraphBuilderInterface
 
     QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 %Docstring
- Default constructor
+Default constructor
 %End
 
     ~QgsGraphBuilder();
@@ -32,7 +32,7 @@ class QgsGraphBuilder : QgsGraphBuilderInterface
     virtual void addVertex( int id, const QgsPointXY &pt );
 
 %Docstring
- MANDATORY BUILDER PROPERTY DECLARATION
+MANDATORY BUILDER PROPERTY DECLARATION
 %End
 
     virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &prop );
@@ -40,8 +40,9 @@ class QgsGraphBuilder : QgsGraphBuilderInterface
 
     QgsGraph *graph() /Factory/;
 %Docstring
- Returns generated QgsGraph
- :rtype: QgsGraph
+Returns generated QgsGraph
+
+:rtype: QgsGraph
 %End
 
 };

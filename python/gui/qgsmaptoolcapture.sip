@@ -39,54 +39,58 @@ constructor
 
     CaptureMode mode() const;
 %Docstring
- The capture mode
+The capture mode
 
- :return: Capture mode
- :rtype: CaptureMode
+:return: Capture mode
+:rtype: CaptureMode
+
 %End
 
     int addCurve( QgsCurve *c );
 %Docstring
 Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
- :rtype: int
+
+:rtype: int
 %End
 
     void clearCurve( );
 %Docstring
- Clear capture curve.
+Clear capture curve.
 
 .. versionadded:: 3.0
 %End
 
     const QgsCompoundCurve *captureCurve() const;
 %Docstring
- Get the capture curve
+Get the capture curve
 
- :return: Capture curve
- :rtype: QgsCompoundCurve
+:return: Capture curve
+:rtype: QgsCompoundCurve
+
 %End
 
     QList<QgsPointLocator::Match> snappingMatches() const;
 %Docstring
- Return a list of matches for each point on the captureCurve.
+Return a list of matches for each point on the captureCurve.
+
+:rtype: list of QgsPointLocator.Match
 
 .. versionadded:: 3.0
- :rtype: list of QgsPointLocator.Match
 %End
 
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
     virtual void keyPressEvent( QKeyEvent *e );
 %Docstring
- Intercept key events like Esc or Del to delete the last point
- \param e key event
+Intercept key events like Esc or Del to delete the last point
+:param e: key event
 %End
 
     virtual bool eventFilter( QObject *obj, QEvent *e );
 
     void deleteTempRubberBand();
 %Docstring
- Clean a temporary rubberband
+Clean a temporary rubberband
 %End
 
     virtual void clean();
@@ -98,31 +102,37 @@ convenient method to clean members
 
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     int addVertex( const QgsPointXY &point );
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
 %Docstring
- Variant to supply more information in the case of snapping
- \param mapPoint The vertex to add in map coordinates
- \param match Data about the snapping match. Can be an invalid match, if point not snapped.
+Variant to supply more information in the case of snapping
+:param mapPoint: The vertex to add in map coordinates
+:param match: Data about the snapping match. Can be an invalid match, if point not snapped.
+
+:rtype: int
+
 .. versionadded:: 2.14
- :rtype: int
 %End
 
     void undo();
@@ -132,49 +142,53 @@ Removes the last vertex from mRubberBand and mCaptureList
 
     void startCapturing();
 %Docstring
- Start capturing
+Start capturing
 %End
 
     bool isCapturing() const;
 %Docstring
- Are we currently capturing?
+Are we currently capturing?
 
- :return: Is the tool in capture mode?
- :rtype: bool
+:return: Is the tool in capture mode?
+:rtype: bool
+
 %End
 
     int size();
 %Docstring
- Number of points digitized
+Number of points digitized
 
- :return: Number of points
- :rtype: int
+:return: Number of points
+:rtype: int
+
 %End
 
     QVector<QgsPointXY> points() const;
 %Docstring
- List of digitized points
- :return: List of points
- :rtype: list of QgsPointXY
+List of digitized points
+
+:return: List of points
+:rtype: list of QgsPointXY
+
 %End
 
     void setPoints( const QVector<QgsPointXY> &pointList );
 %Docstring
- Set the points on which to work
+Set the points on which to work
 
- \param pointList A list of points
+:param pointList: A list of points
 %End
 
     void closePolygon();
 %Docstring
- Close an open polygon
+Close an open polygon
 %End
 
   protected slots:
 
     void stopCapturing();
 %Docstring
- Stop capturing
+Stop capturing
 %End
 
 };

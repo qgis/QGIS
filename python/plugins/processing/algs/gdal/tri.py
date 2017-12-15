@@ -80,6 +80,9 @@ class tri(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
+    def groupId(self):
+        return 'rasteranalysis'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         arguments = ['TRI']
         inLayer = self.parameterAsRasterLayer(parameters, self.INPUT, context)

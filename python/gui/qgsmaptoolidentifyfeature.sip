@@ -12,8 +12,8 @@ class QgsMapToolIdentifyFeature : QgsMapToolIdentify
 {
 %Docstring
  The QgsMapToolIdentifyFeature class is a map tool to identify a feature on a chosen layer.
- Once the map tool is enable, user can click on the map canvas to identify a feature.
- A signal will then be emitted.
+Once the map tool is enable, user can click on the map canvas to identify a feature.
+A signal will then be emitted.
 %End
 
 %TypeHeaderCode
@@ -24,8 +24,8 @@ class QgsMapToolIdentifyFeature : QgsMapToolIdentify
     QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl = 0 );
 %Docstring
  QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
- \param canvas the map canvas
- \param vl the vector layer. The map tool can be initialized without any layer and can be set afterward.
+:param canvas: the map canvas
+:param vl: the vector layer. The map tool can be initialized without any layer and can be set afterward.
 %End
 
     void setLayer( QgsVectorLayer *vl );

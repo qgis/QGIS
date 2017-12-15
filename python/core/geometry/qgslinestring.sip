@@ -16,6 +16,7 @@ class QgsLineString: QgsCurve
 {
 %Docstring
  Line string geometry type, with support for z-dimension and m-values.
+
 .. versionadded:: 2.10
 %End
 
@@ -27,9 +28,10 @@ class QgsLineString: QgsCurve
 
     QgsLineString( const QVector<QgsPoint> &points );
 %Docstring
- Construct a linestring from a vector of points.
- Z and M type will be set based on the type of the first point
- in the vector.
+Construct a linestring from a vector of points.
+Z and M type will be set based on the type of the first point
+in the vector.
+
 .. versionadded:: 3.0
 %End
 
@@ -37,19 +39,21 @@ class QgsLineString: QgsCurve
                    const QVector<double> &z = QVector<double>(),
                    const QVector<double> &m = QVector<double>() );
 %Docstring
- Construct a linestring from arrays of coordinates. If the z or m
- arrays are non-empty then the resultant linestring will have
- z and m types accordingly.
- This constructor is more efficient then calling setPoints()
- or repeatedly calling addVertex()
+Construct a linestring from arrays of coordinates. If the z or m
+arrays are non-empty then the resultant linestring will have
+z and m types accordingly.
+This constructor is more efficient then calling setPoints()
+or repeatedly calling addVertex()
+
 .. versionadded:: 3.0
 %End
 
     QgsLineString( const QVector<QgsPointXY> &points );
 %Docstring
- Construct a linestring from list of points.
- This constructor is more efficient then calling setPoints()
- or repeatedly calling addVertex()
+Construct a linestring from list of points.
+This constructor is more efficient then calling setPoints()
+or repeatedly calling addVertex()
+
 .. versionadded:: 3.0
 %End
 
@@ -60,9 +64,10 @@ class QgsLineString: QgsCurve
 
     QgsPoint pointN( int i ) const;
 %Docstring
- Returns the specified point from inside the line string.
- \param i index of point, starting at 0 for the first point
- :rtype: QgsPoint
+Returns the specified point from inside the line string.
+:param i: index of point, starting at 0 for the first point
+
+:rtype: QgsPoint
 %End
 
     virtual double xAt( int index ) const;
@@ -72,77 +77,87 @@ class QgsLineString: QgsCurve
 
     double zAt( int index ) const;
 %Docstring
- Returns the z-coordinate of the specified node in the line string.
- \param index index of node, where the first node in the line is 0
- :return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
- does not have a z dimension
+Returns the z-coordinate of the specified node in the line string.
+:param index: index of node, where the first node in the line is 0
+
+:return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
+:rtype: float
+
+does not have a z dimension
+
 .. seealso:: :py:func:`setZAt()`
- :rtype: float
 %End
 
     double mAt( int index ) const;
 %Docstring
- Returns the m value of the specified node in the line string.
- \param index index of node, where the first node in the line is 0
- :return: m value of node, or ``nan`` if index is out of bounds or the line
- does not have m values
+Returns the m value of the specified node in the line string.
+:param index: index of node, where the first node in the line is 0
+
+:return: m value of node, or ``nan`` if index is out of bounds or the line
+:rtype: float
+
+does not have m values
+
 .. seealso:: :py:func:`setMAt()`
- :rtype: float
 %End
 
     void setXAt( int index, double x );
 %Docstring
- Sets the x-coordinate of the specified node in the line string.
- \param index index of node, where the first node in the line is 0. Corresponding
- node must already exist in line string.
- \param x x-coordinate of node
+Sets the x-coordinate of the specified node in the line string.
+:param index: index of node, where the first node in the line is 0. Corresponding
+node must already exist in line string.
+:param x: x-coordinate of node
+
 .. seealso:: :py:func:`xAt()`
 %End
 
     void setYAt( int index, double y );
 %Docstring
- Sets the y-coordinate of the specified node in the line string.
- \param index index of node, where the first node in the line is 0. Corresponding
- node must already exist in line string.
- \param y y-coordinate of node
+Sets the y-coordinate of the specified node in the line string.
+:param index: index of node, where the first node in the line is 0. Corresponding
+node must already exist in line string.
+:param y: y-coordinate of node
+
 .. seealso:: :py:func:`yAt()`
 %End
 
     void setZAt( int index, double z );
 %Docstring
- Sets the z-coordinate of the specified node in the line string.
- \param index index of node, where the first node in the line is 0. Corresponding
- node must already exist in line string, and the line string must have z-dimension.
- \param z z-coordinate of node
+Sets the z-coordinate of the specified node in the line string.
+:param index: index of node, where the first node in the line is 0. Corresponding
+node must already exist in line string, and the line string must have z-dimension.
+:param z: z-coordinate of node
+
 .. seealso:: :py:func:`zAt()`
 %End
 
     void setMAt( int index, double m );
 %Docstring
- Sets the m value of the specified node in the line string.
- \param index index of node, where the first node in the line is 0. Corresponding
- node must already exist in line string, and the line string must have m values.
- \param m m value of node
+Sets the m value of the specified node in the line string.
+:param index: index of node, where the first node in the line is 0. Corresponding
+node must already exist in line string, and the line string must have m values.
+:param m: m value of node
+
 .. seealso:: :py:func:`mAt()`
 %End
 
     void setPoints( const QgsPointSequence &points );
 %Docstring
- Resets the line string to match the specified list of points. The line string will
- inherit the dimensionality of the first point in the list.
- \param points new points for line string. If empty, line string will be cleared.
+Resets the line string to match the specified list of points. The line string will
+inherit the dimensionality of the first point in the list.
+:param points: new points for line string. If empty, line string will be cleared.
 %End
 
     void append( const QgsLineString *line );
 %Docstring
- Appends the contents of another line string to the end of this line string.
- \param line line to append. Ownership is not transferred.
+Appends the contents of another line string to the end of this line string.
+:param line: line to append. Ownership is not transferred.
 %End
 
     void addVertex( const QgsPoint &pt );
 %Docstring
- Adds a new vertex to the end of the line string.
- \param pt vertex to add
+Adds a new vertex to the end of the line string.
+:param pt: vertex to add
 %End
 
     void close();
@@ -153,16 +168,19 @@ Closes the line string by appending the first point to the end of the line, if i
     virtual QgsCompoundCurve *toCurveType() const /Factory/;
 
 %Docstring
- Returns the geometry converted to the more generic curve type QgsCompoundCurve
+Returns the geometry converted to the more generic curve type QgsCompoundCurve
+
 :return: the converted geometry. Caller takes ownership*
- :rtype: QgsCompoundCurve
+:rtype: QgsCompoundCurve
+
 %End
 
     void extend( double startDistance, double endDistance );
 %Docstring
- Extends the line geometry by extrapolating out the start or end of the line
- by a specified distance. Lines are extended using the bearing of the first or last
- segment in the line.
+Extends the line geometry by extrapolating out the start or end of the line
+by a specified distance. Lines are extended using the bearing of the first or last
+segment in the line.
+
 .. versionadded:: 3.0
 %End
 
@@ -208,11 +226,12 @@ Closes the line string by appending the first point to the end of the line, if i
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const  /Factory/;
 
 %Docstring
- Returns a new line string geometry corresponding to a segmentized approximation
- of the curve.
- \param tolerance segmentation tolerance
- \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*
- :rtype: QgsLineString
+Returns a new line string geometry corresponding to a segmentized approximation
+of the curve.
+:param tolerance: segmentation tolerance
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+
+:rtype: QgsLineString
 %End
 
     virtual int numPoints() const;

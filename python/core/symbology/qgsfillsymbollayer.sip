@@ -29,11 +29,13 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
 
@@ -63,7 +65,8 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 
     Qt::BrushStyle brushStyle() const;
 %Docstring
- :rtype: Qt.BrushStyle
+
+:rtype: Qt.BrushStyle
 %End
     void setBrushStyle( Qt::BrushStyle style );
 
@@ -75,66 +78,78 @@ class QgsSimpleFillSymbolLayer : QgsFillSymbolLayer
 
     Qt::PenStyle strokeStyle() const;
 %Docstring
- :rtype: Qt.PenStyle
+
+:rtype: Qt.PenStyle
 %End
     void setStrokeStyle( Qt::PenStyle strokeStyle );
 
     double strokeWidth() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     void setStrokeWidth( double strokeWidth );
 
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
- :rtype: Qt.PenJoinStyle
+
+:rtype: Qt.PenJoinStyle
 %End
     void setPenJoinStyle( Qt::PenJoinStyle style );
 
     void setOffset( QPointF offset );
     QPointF offset();
 %Docstring
- :rtype: QPointF
+
+:rtype: QPointF
 %End
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the width of the fill's stroke.
- \param unit width units
+Sets the units for the width of the fill's stroke.
+:param unit: width units
+
 .. seealso:: :py:func:`strokeWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
- Returns the units for the width of the fill's stroke.
+Returns the units for the width of the fill's stroke.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setStrokeWidthUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the fill's offset.
- \param unit offset units
+Sets the units for the fill's offset.
+:param unit: offset units
+
 .. seealso:: :py:func:`offsetUnit()`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
- Returns the units for the fill's offset.
+Returns the units for the fill's offset.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setOffsetUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &offsetMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -217,7 +232,8 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
 
@@ -245,53 +261,63 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
     GradientType gradientType() const;
 %Docstring
 Type of gradient, e.g., linear or radial
- :rtype: GradientType
+
+:rtype: GradientType
 %End
     void setGradientType( GradientType gradientType );
 
     GradientColorType gradientColorType() const;
 %Docstring
 Gradient color mode, controls how gradient color stops are created
- :rtype: GradientColorType
+
+:rtype: GradientColorType
 %End
     void setGradientColorType( GradientColorType gradientColorType );
 
     QgsColorRamp *colorRamp();
 %Docstring
- Returns the color ramp used for the gradient fill. This is only
- used if the gradient color type is set to ColorRamp.
+Returns the color ramp used for the gradient fill. This is only
+used if the gradient color type is set to ColorRamp.
+
+:rtype: QgsColorRamp
+
 .. seealso:: :py:func:`setColorRamp()`
+
 .. seealso:: :py:func:`gradientColorType()`
- :rtype: QgsColorRamp
 %End
 
     void setColorRamp( QgsColorRamp *ramp );
 %Docstring
- Sets the color ramp used for the gradient fill. This is only
- used if the gradient color type is set to ColorRamp.
- \param ramp color ramp. Ownership is transferred.
+Sets the color ramp used for the gradient fill. This is only
+used if the gradient color type is set to ColorRamp.
+:param ramp: color ramp. Ownership is transferred.
+
 .. seealso:: :py:func:`colorRamp()`
+
 .. seealso:: :py:func:`setGradientColorType()`
 %End
 
     QColor color2() const;
 %Docstring
 Color for endpoint of gradient, only used if the gradient color type is set to SimpleTwoColor
- :rtype: QColor
+
+:rtype: QColor
 %End
     void setColor2( const QColor &color2 );
 
     GradientCoordinateMode coordinateMode() const;
 %Docstring
 Coordinate mode for gradient. Controls how the gradient stops are positioned.
- :rtype: GradientCoordinateMode
+
+:rtype: GradientCoordinateMode
 %End
     void setCoordinateMode( GradientCoordinateMode coordinateMode );
 
     GradientSpread gradientSpread() const;
 %Docstring
 Gradient spread mode. Controls how the gradient behaves outside of the predefined stops
- :rtype: GradientSpread
+
+:rtype: GradientSpread
 %End
     void setGradientSpread( GradientSpread gradientSpread );
 
@@ -301,7 +327,8 @@ Starting point of gradient fill, in the range [0,0] - [1,1]
 %End
     QPointF referencePoint1() const;
 %Docstring
- :rtype: QPointF
+
+:rtype: QPointF
 %End
 
     void setReferencePoint1IsCentroid( bool isCentroid );
@@ -310,7 +337,8 @@ Sets the starting point of the gradient to be the feature centroid
 %End
     bool referencePoint1IsCentroid() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setReferencePoint2( QPointF referencePoint );
@@ -319,7 +347,8 @@ End point of gradient fill, in the range [0,0] - [1,1]
 %End
     QPointF referencePoint2() const;
 %Docstring
- :rtype: QPointF
+
+:rtype: QPointF
 %End
 
     void setReferencePoint2IsCentroid( bool isCentroid );
@@ -328,7 +357,8 @@ Sets the end point of the gradient to be the feature centroid
 %End
     bool referencePoint2IsCentroid() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setOffset( QPointF offset );
@@ -337,7 +367,8 @@ Offset for gradient fill
 %End
     QPointF offset() const;
 %Docstring
- :rtype: QPointF
+
+:rtype: QPointF
 %End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
@@ -346,13 +377,15 @@ Units for gradient fill offset
 %End
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
- :rtype: QgsUnitTypes.RenderUnit
+
+:rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &offsetMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -395,7 +428,8 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
 
@@ -422,210 +456,294 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 
     void setBlurRadius( int blurRadius );
 %Docstring
- Sets the blur radius, which controls the amount of blurring applied to the fill.
- \param blurRadius Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
+Sets the blur radius, which controls the amount of blurring applied to the fill.
+:param blurRadius: Radius for fill blur. Values between 0 - 17 are valid, where higher values results in a stronger blur. Set to 0 to disable blur.
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`blurRadius`
 %End
 
     int blurRadius() const;
 %Docstring
- Returns the blur radius, which controls the amount of blurring applied to the fill.
- :return: Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
+Returns the blur radius, which controls the amount of blurring applied to the fill.
+
+:return: Integer representing the radius for fill blur. Higher values indicate a stronger blur. A 0 value indicates that blurring is disabled.
+:rtype: int
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setBlurRadius`
- :rtype: int
 %End
 
     void setUseWholeShape( bool useWholeShape );
 %Docstring
- Sets whether the shapeburst fill should be drawn using the entire shape.
- \param useWholeShape Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
- be shaded
+Sets whether the shapeburst fill should be drawn using the entire shape.
+:param useWholeShape: Set to true if shapeburst should cover entire shape. If false, setMaxDistance is used to calculate how far from the boundary of the shape should
+be shaded
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`useWholeShape`
+
 .. seealso:: :py:func:`setMaxDistance`
 %End
 
     bool useWholeShape() const;
 %Docstring
- Returns whether the shapeburst fill is set to cover the entire shape.
- :return: True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+Returns whether the shapeburst fill is set to cover the entire shape.
+
+:return: True if shapeburst fill will cover the entire shape. If false, shapeburst is drawn to a distance of maxDistance from the polygon's boundary.
+:rtype: bool
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setUseWholeShape`
+
 .. seealso:: :py:func:`maxDistance`
- :rtype: bool
 %End
 
     void setMaxDistance( double maxDistance );
 %Docstring
- Sets the maximum distance to shape inside of the shape from the polygon's boundary.
- \param maxDistance distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+Sets the maximum distance to shape inside of the shape from the polygon's boundary.
+:param maxDistance: distance from boundary to shade. setUseWholeShape must be set to false for this parameter to take effect. Distance unit is controlled by setDistanceUnit.
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`maxDistance`
+
 .. seealso:: :py:func:`setUseWholeShape`
+
 .. seealso:: :py:func:`setDistanceUnit`
 %End
 
     double maxDistance() const;
 %Docstring
- Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
- :return: the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
+Returns the maximum distance from the shape's boundary which is shaded. This parameter is only effective if useWholeShape is false.
+
+:return: the maximum distance from the polygon's boundary which is shaded. Distance units are indicated by distanceUnit.
+:rtype: float
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`useWholeShape`
+
 .. seealso:: :py:func:`setMaxDistance`
+
 .. seealso:: :py:func:`distanceUnit`
- :rtype: float
 %End
 
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
- \param unit distance unit for the maximum distance
+Sets the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
+:param unit: distance unit for the maximum distance
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setMaxDistance`
+
 .. seealso:: :py:func:`distanceUnit`
 %End
 
     QgsUnitTypes::RenderUnit distanceUnit() const;
 %Docstring
- Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
- :return: distance unit for the maximum distance
+Returns the unit for the maximum distance to shade inside of the shape from the polygon's boundary.
+
+:return: distance unit for the maximum distance
+:rtype: QgsUnitTypes.RenderUnit
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`maxDistance`
+
 .. seealso:: :py:func:`setDistanceUnit`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &distanceMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     void setColorType( ShapeburstColorType colorType );
 %Docstring
- Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
- or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
- \param colorType color type to use for shapeburst fill
+Sets the color mode to use for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
+or by simply specificing a start and end color. setColorType is used to specify which mode to use for the fill.
+:param colorType: color type to use for shapeburst fill
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`colorType`
+
 .. seealso:: :py:func:`setColor`
+
 .. seealso:: :py:func:`setColor2`
+
 .. seealso:: :py:func:`setColorRamp`
 %End
 
     ShapeburstColorType colorType() const;
 %Docstring
- Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
- or by simply specificing a start and end color.
- :return: current color mode used for the shapeburst fill
+Returns the color mode used for the shapeburst fill. Shapeburst can either be drawn using a QgsColorRamp color ramp
+or by simply specificing a start and end color.
+
+:return: current color mode used for the shapeburst fill
+:rtype: ShapeburstColorType
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setColorType`
+
 .. seealso:: :py:func:`color`
+
 .. seealso:: :py:func:`color2`
+
 .. seealso:: :py:func:`colorRamp`
- :rtype: ShapeburstColorType
 %End
 
     void setColorRamp( QgsColorRamp *ramp );
 %Docstring
- Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
- \param ramp color ramp to use for shapeburst fill
+Sets the color ramp used to draw the shapeburst fill. Color ramps are only used if setColorType is set ShapeburstColorType.ColorRamp.
+:param ramp: color ramp to use for shapeburst fill
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setColorType`
+
 .. seealso:: :py:func:`colorRamp`
 %End
 
     QgsColorRamp *colorRamp();
 %Docstring
- Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType.ColorRamp
- :return: a QgsColorRamp color ramp
+Returns the color ramp used for the shapeburst fill. The color ramp is only used if the colorType is set to ShapeburstColorType.ColorRamp
+
+:return: a QgsColorRamp color ramp
+:rtype: QgsColorRamp
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setColorRamp`
+
 .. seealso:: :py:func:`colorType`
- :rtype: QgsColorRamp
 %End
 
     void setColor2( const QColor &color2 );
 %Docstring
- Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType.SimpleTwoColor.
- \param color2 QColor to use for endpoint of gradient
+Sets the color for the endpoint of the shapeburst fill. This color is only used if setColorType is set ShapeburstColorType.SimpleTwoColor.
+:param color2: QColor to use for endpoint of gradient
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setColorType`
+
 .. seealso:: :py:func:`color2`
 %End
 
     QColor color2() const;
 %Docstring
- Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType.SimpleTwoColor
- :return: a QColor indicating the color of the endpoint of the gradient
+Returns the color used for the endpoint of the shapeburst fill. This color is only used if the colorType is set to ShapeburstColorType.SimpleTwoColor
+
+:return: a QColor indicating the color of the endpoint of the gradient
+:rtype: QColor
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setColor2`
+
 .. seealso:: :py:func:`colorType`
- :rtype: QColor
 %End
 
     void setIgnoreRings( bool ignoreRings );
 %Docstring
- Sets whether the shapeburst fill should ignore polygon rings when calculating
- the buffered shading.
- \param ignoreRings Set to true if buffers should ignore interior rings for polygons.
+Sets whether the shapeburst fill should ignore polygon rings when calculating
+the buffered shading.
+:param ignoreRings: Set to true if buffers should ignore interior rings for polygons.
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`ignoreRings`
 %End
 
     bool ignoreRings() const;
 %Docstring
- Returns whether the shapeburst fill is set to ignore polygon interior rings.
- :return: True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+Returns whether the shapeburst fill is set to ignore polygon interior rings.
+
+:return: True if the shapeburst fill will ignore interior rings when calculating buffered shading.
+:rtype: bool
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setIgnoreRings`
- :rtype: bool
 %End
 
     void setOffset( QPointF offset );
 %Docstring
- Sets the offset for the shapeburst fill.
- \param offset QPointF indicating the horizontal/vertical offset amount
+Sets the offset for the shapeburst fill.
+:param offset: QPointF indicating the horizontal/vertical offset amount
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`offset`
+
 .. seealso:: :py:func:`setOffsetUnit`
 %End
 
     QPointF offset() const;
 %Docstring
- Returns the offset for the shapeburst fill.
- :return: a QPointF indicating the horizontal/vertical offset amount
+Returns the offset for the shapeburst fill.
+
+:return: a QPointF indicating the horizontal/vertical offset amount
+:rtype: QPointF
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setOffset`
+
 .. seealso:: :py:func:`offsetUnit`
- :rtype: QPointF
 %End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units used for the offset for the shapeburst fill.
- \param unit units for fill offset
+Sets the units used for the offset for the shapeburst fill.
+:param unit: units for fill offset
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`setOffset`
+
 .. seealso:: :py:func:`offsetUnit`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
- Returns the units used for the offset of the shapeburst fill.
- :return: units used for the fill offset
+Returns the units used for the offset of the shapeburst fill.
+
+:return: units used for the fill offset
+:rtype: QgsUnitTypes.RenderUnit
+
+
 .. versionadded:: 2.3
+
 .. seealso:: :py:func:`offset`
+
 .. seealso:: :py:func:`setOffsetUnit`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &offsetMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -650,7 +768,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
 class QgsImageFillSymbolLayer: QgsFillSymbolLayer
 {
 %Docstring
- Base class for polygon renderers generating texture images*
+Base class for polygon renderers generating texture images*
 %End
 
 %TypeHeaderCode
@@ -667,22 +785,26 @@ class QgsImageFillSymbolLayer: QgsFillSymbolLayer
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the symbol's stroke width.
- \param unit symbol units
+Sets the units for the symbol's stroke width.
+:param unit: symbol units
+
 .. seealso:: :py:func:`strokeWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit strokeWidthUnit() const;
 %Docstring
- Returns the units for the symbol's stroke width.
+Returns the units for the symbol's stroke width.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setStrokeWidthUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -725,6 +847,7 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring
  A class for filling symbols with a repeated raster image.
+
 .. versionadded:: 2.7
 %End
 
@@ -743,7 +866,8 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
     virtual QString layerType() const;
@@ -765,165 +889,225 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 
     void setImageFilePath( const QString &imagePath );
 %Docstring
- Sets the path to the raster image used for the fill.
- \param imagePath path to image file
+Sets the path to the raster image used for the fill.
+:param imagePath: path to image file
+
 .. seealso:: :py:func:`imageFilePath`
 %End
 
     QString imageFilePath() const;
 %Docstring
- The path to the raster image used for the fill.
- :return: path to image file
+The path to the raster image used for the fill.
+
+:return: path to image file
+:rtype: str
+
+
 .. seealso:: :py:func:`setImageFilePath`
- :rtype: str
 %End
 
     void setCoordinateMode( const FillCoordinateMode mode );
 %Docstring
- Set the coordinate mode for fill. Controls how the top left corner of the image
- fill is positioned relative to the feature.
- \param mode coordinate mode
+Set the coordinate mode for fill. Controls how the top left corner of the image
+fill is positioned relative to the feature.
+:param mode: coordinate mode
+
 .. seealso:: :py:func:`coordinateMode`
 %End
 
     FillCoordinateMode coordinateMode() const;
 %Docstring
- Coordinate mode for fill. Controls how the top left corner of the image
- fill is positioned relative to the feature.
- :return: coordinate mode
+Coordinate mode for fill. Controls how the top left corner of the image
+fill is positioned relative to the feature.
+
+:return: coordinate mode
+:rtype: FillCoordinateMode
+
+
 .. seealso:: :py:func:`setCoordinateMode`
- :rtype: FillCoordinateMode
 %End
 
     void setOpacity( const double opacity );
 %Docstring
- Sets the ``opacity`` for the raster image used in the fill.
- \param opacity opacity value between 0 (fully transparent) and 1 (fully opaque)
+Sets the ``opacity`` for the raster image used in the fill.
+:param opacity: opacity value between 0 (fully transparent) and 1 (fully opaque)
+
 .. seealso:: :py:func:`opacity()`
 %End
 
     double opacity() const;
 %Docstring
- Returns the opacity for the raster image used in the fill.
- :return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+Returns the opacity for the raster image used in the fill.
+
+:return: opacity value between 0 (fully transparent) and 1 (fully opaque)
+:rtype: float
+
+
 .. seealso:: :py:func:`setOpacity()`
- :rtype: float
 %End
 
     void setOffset( QPointF offset );
 %Docstring
- Sets the offset for the fill.
- \param offset offset for fill
+Sets the offset for the fill.
+:param offset: offset for fill
+
 .. seealso:: :py:func:`offset`
+
 .. seealso:: :py:func:`setOffsetUnit`
+
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
     QPointF offset() const;
 %Docstring
- Returns the offset for the fill.
- :return: offset for fill
+Returns the offset for the fill.
+
+:return: offset for fill
+:rtype: QPointF
+
+
 .. seealso:: :py:func:`setOffset`
+
 .. seealso:: :py:func:`offsetUnit`
+
 .. seealso:: :py:func:`offsetMapUnitScale`
- :rtype: QPointF
 %End
 
     void setOffsetUnit( const QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the fill's offset.
- \param unit units for offset
+Sets the units for the fill's offset.
+:param unit: units for offset
+
 .. seealso:: :py:func:`offsetUnit`
+
 .. seealso:: :py:func:`setOffset`
+
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
- Returns the units for the fill's offset.
- :return: units for offset
+Returns the units for the fill's offset.
+
+:return: units for offset
+:rtype: QgsUnitTypes.RenderUnit
+
+
 .. seealso:: :py:func:`setOffsetUnit`
+
 .. seealso:: :py:func:`offset`
+
 .. seealso:: :py:func:`offsetMapUnitScale`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
- Sets the map unit scale for the fill's offset.
- \param scale map unit scale for offset
+Sets the map unit scale for the fill's offset.
+:param scale: map unit scale for offset
+
 .. seealso:: :py:func:`offsetMapUnitScale`
+
 .. seealso:: :py:func:`setOffset`
+
 .. seealso:: :py:func:`setOffsetUnit`
 %End
 
     const QgsMapUnitScale &offsetMapUnitScale() const;
 %Docstring
- Returns the map unit scale for the fill's offset.
- :return: map unit scale for offset
+Returns the map unit scale for the fill's offset.
+
+:return: map unit scale for offset
+:rtype: QgsMapUnitScale
+
+
 .. seealso:: :py:func:`setOffsetMapUnitScale`
+
 .. seealso:: :py:func:`offset`
+
 .. seealso:: :py:func:`offsetUnit`
- :rtype: QgsMapUnitScale
 %End
 
     void setWidth( const double width );
 %Docstring
- Sets the width for scaling the image used in the fill. The image's height will also be
- scaled to maintain the image's aspect ratio.
- \param width width for scaling the image
+Sets the width for scaling the image used in the fill. The image's height will also be
+scaled to maintain the image's aspect ratio.
+:param width: width for scaling the image
+
 .. seealso:: :py:func:`width`
+
 .. seealso:: :py:func:`setWidthUnit`
+
 .. seealso:: :py:func:`setWidthMapUnitScale`
 %End
 
     double width() const;
 %Docstring
- Returns the width used for scaling the image used in the fill. The image's height is
- scaled to maintain the image's aspect ratio.
- :return: width used for scaling the image
+Returns the width used for scaling the image used in the fill. The image's height is
+scaled to maintain the image's aspect ratio.
+
+:return: width used for scaling the image
+:rtype: float
+
+
 .. seealso:: :py:func:`setWidth`
+
 .. seealso:: :py:func:`widthUnit`
+
 .. seealso:: :py:func:`widthMapUnitScale`
- :rtype: float
 %End
 
     void setWidthUnit( const QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the image's width.
- \param unit units for width
+Sets the units for the image's width.
+:param unit: units for width
+
 .. seealso:: :py:func:`widthUnit`
+
 .. seealso:: :py:func:`setWidth`
+
 .. seealso:: :py:func:`setWidthMapUnitScale`
 %End
 
     QgsUnitTypes::RenderUnit widthUnit() const;
 %Docstring
- Returns the units for the image's width.
- :return: units for width
+Returns the units for the image's width.
+
+:return: units for width
+:rtype: QgsUnitTypes.RenderUnit
+
+
 .. seealso:: :py:func:`setWidthUnit`
+
 .. seealso:: :py:func:`width`
+
 .. seealso:: :py:func:`widthMapUnitScale`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setWidthMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
- Sets the map unit scale for the image's width.
- \param scale map unit scale for width
+Sets the map unit scale for the image's width.
+:param scale: map unit scale for width
+
 .. seealso:: :py:func:`widthMapUnitScale`
+
 .. seealso:: :py:func:`setWidth`
+
 .. seealso:: :py:func:`setWidthUnit`
 %End
 
     const QgsMapUnitScale &widthMapUnitScale() const;
 %Docstring
- Returns the map unit scale for the image's width.
- :return: map unit scale for width
+Returns the map unit scale for the image's width.
+
+:return: map unit scale for width
+:rtype: QgsMapUnitScale
+
+
 .. seealso:: :py:func:`setWidthMapUnitScale`
+
 .. seealso:: :py:func:`width`
+
 .. seealso:: :py:func:`widthUnit`
- :rtype: QgsMapUnitScale
 %End
 
   protected:
@@ -942,7 +1126,7 @@ Path to the image file
 class QgsSVGFillSymbolLayer: QgsImageFillSymbolLayer
 {
 %Docstring
- A class for svg fill patterns. The class automatically scales the pattern to
+A class for svg fill patterns. The class automatically scales the pattern to
 the appropriate pixel dimensions of the output device*
 %End
 
@@ -959,17 +1143,20 @@ Constructs SVG fill symbol layer with picture from given absolute path to a SVG 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
     static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
- Turns relative paths in properties map to absolute when reading and vice versa when writing.
- Used internally when reading/writing symbols.
+Turns relative paths in properties map to absolute when reading and vice versa when writing.
+Used internally when reading/writing symbols.
+
 .. versionadded:: 3.0
 %End
 
@@ -994,69 +1181,82 @@ Constructs SVG fill symbol layer with picture from given absolute path to a SVG 
     void setSvgFilePath( const QString &svgPath );
     QString svgFilePath() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     void setPatternWidth( double width );
     double patternWidth() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
 
     void setSvgFillColor( const QColor &c );
     QColor svgFillColor() const;
 %Docstring
- :rtype: QColor
+
+:rtype: QColor
 %End
 
     void setSvgStrokeColor( const QColor &c );
     QColor svgStrokeColor() const;
 %Docstring
- :rtype: QColor
+
+:rtype: QColor
 %End
     void setSvgStrokeWidth( double w );
     double svgStrokeWidth() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
 
     void setPatternWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the width of the SVG images in the pattern.
- \param unit width units
+Sets the units for the width of the SVG images in the pattern.
+:param unit: width units
+
 .. seealso:: :py:func:`patternWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit patternWidthUnit() const;
 %Docstring
- Returns the units for the width of the SVG images in the pattern.
+Returns the units for the width of the SVG images in the pattern.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setPatternWidthUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setPatternWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &patternWidthMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     void setSvgStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the stroke width.
- \param unit width units
+Sets the units for the stroke width.
+:param unit: width units
+
 .. seealso:: :py:func:`svgStrokeWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit svgStrokeWidthUnit() const;
 %Docstring
- Returns the units for the stroke width.
+Returns the units for the stroke width.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setSvgStrokeWidthUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setSvgStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &svgStrokeWidthMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -1090,11 +1290,13 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
     virtual QString layerType() const;
@@ -1120,35 +1322,43 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     QString ogrFeatureStyleWidth( double widthScaleFactor ) const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
 
     void setLineAngle( double a );
     double lineAngle() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
 
     void setDistance( double d );
 %Docstring
- Sets the distance between lines in the fill pattern.
- \param d distance. Units are specified by setDistanceUnit()
+Sets the distance between lines in the fill pattern.
+:param d: distance. Units are specified by setDistanceUnit()
+
 .. seealso:: :py:func:`distance()`
+
 .. seealso:: :py:func:`setDistanceUnit()`
 %End
 
     double distance() const;
 %Docstring
- Returns the distance between lines in the fill pattern. Units are retrieved by distanceUnit().
+Returns the distance between lines in the fill pattern. Units are retrieved by distanceUnit().
+
+:rtype: float
+
 .. seealso:: :py:func:`setDistance()`
+
 .. seealso:: :py:func:`distanceUnit()`
- :rtype: float
 %End
 
     void setLineWidth( double w );
     double lineWidth() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     virtual void setColor( const QColor &c );
 
@@ -1157,69 +1367,84 @@ class QgsLinePatternFillSymbolLayer: QgsImageFillSymbolLayer
     void setOffset( double offset );
     double offset() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
 
     void setDistanceUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the distance between lines in the fill pattern.
- \param unit distance units
+Sets the units for the distance between lines in the fill pattern.
+:param unit: distance units
+
 .. seealso:: :py:func:`distanceUnit()`
+
 .. seealso:: :py:func:`setDistance()`
 %End
 
     QgsUnitTypes::RenderUnit distanceUnit() const;
 %Docstring
- Returns the units for the distance between lines in the fill pattern.
+Returns the units for the distance between lines in the fill pattern.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setDistanceUnit()`
+
 .. seealso:: :py:func:`distance()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setDistanceMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &distanceMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     void setLineWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the line's width.
- \param unit width units
+Sets the units for the line's width.
+:param unit: width units
+
 .. seealso:: :py:func:`lineWidthUnit()`
 %End
 
     QgsUnitTypes::RenderUnit lineWidthUnit() const;
 %Docstring
- Returns the units for the line's width.
+Returns the units for the line's width.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setLineWidthUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setLineWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &lineWidthMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the line pattern's offset.
- \param unit offset units
+Sets the units for the line pattern's offset.
+:param unit: offset units
+
 .. seealso:: :py:func:`offsetUnit()`
 %End
 
     QgsUnitTypes::RenderUnit offsetUnit() const;
 %Docstring
- Returns the units for the line pattern's offset.
+Returns the units for the line pattern's offset.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setOffsetUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &offsetMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -1264,11 +1489,13 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
     virtual QString layerType() const;
@@ -1294,25 +1521,29 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     double distanceX() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     void setDistanceX( double d );
 
     double distanceY() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     void setDistanceY( double d );
 
     double displacementX() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     void setDisplacementX( double d );
 
     double displacementY() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     void setDisplacementY( double d );
 
@@ -1322,90 +1553,114 @@ class QgsPointPatternFillSymbolLayer: QgsImageFillSymbolLayer
 
     void setDistanceXUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the horizontal distance between points in the pattern.
- \param unit distance units
+Sets the units for the horizontal distance between points in the pattern.
+:param unit: distance units
+
 .. seealso:: :py:func:`distanceXUnit()`
+
 .. seealso:: :py:func:`setDistanceYUnit()`
 %End
 
     QgsUnitTypes::RenderUnit distanceXUnit() const;
 %Docstring
- Returns the units for the horizontal distance between points in the pattern.
+Returns the units for the horizontal distance between points in the pattern.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setDistanceXUnit()`
+
 .. seealso:: :py:func:`distanceYUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setDistanceXMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &distanceXMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     void setDistanceYUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the vertical distance between points in the pattern.
- \param unit distance units
+Sets the units for the vertical distance between points in the pattern.
+:param unit: distance units
+
 .. seealso:: :py:func:`distanceYUnit()`
+
 .. seealso:: :py:func:`setDistanceXUnit()`
 %End
 
     QgsUnitTypes::RenderUnit distanceYUnit() const;
 %Docstring
- Returns the units for the vertical distance between points in the pattern.
+Returns the units for the vertical distance between points in the pattern.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setDistanceYUnit()`
+
 .. seealso:: :py:func:`distanceXUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setDistanceYMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &distanceYMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     void setDisplacementXUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the horizontal displacement between rows in the pattern.
- \param unit displacement units
+Sets the units for the horizontal displacement between rows in the pattern.
+:param unit: displacement units
+
 .. seealso:: :py:func:`displacementXUnit()`
+
 .. seealso:: :py:func:`setDisplacementYUnit()`
 %End
 
     QgsUnitTypes::RenderUnit displacementXUnit() const;
 %Docstring
- Returns the units for the horizontal displacement between rows in the pattern.
+Returns the units for the horizontal displacement between rows in the pattern.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setDisplacementXUnit()`
+
 .. seealso:: :py:func:`displacementYUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setDisplacementXMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &displacementXMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     void setDisplacementYUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
- Sets the units for the vertical displacement between rows in the pattern.
- \param unit displacement units
+Sets the units for the vertical displacement between rows in the pattern.
+:param unit: displacement units
+
 .. seealso:: :py:func:`displacementYUnit()`
+
 .. seealso:: :py:func:`setDisplacementXUnit()`
 %End
 
     QgsUnitTypes::RenderUnit displacementYUnit() const;
 %Docstring
- Returns the units for the vertical displacement between rows in the pattern.
+Returns the units for the vertical displacement between rows in the pattern.
+
+:rtype: QgsUnitTypes.RenderUnit
+
 .. seealso:: :py:func:`setDisplacementYUnit()`
+
 .. seealso:: :py:func:`displacementXUnit()`
- :rtype: QgsUnitTypes.RenderUnit
 %End
 
     void setDisplacementYMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &displacementYMapUnitScale() const;
 %Docstring
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -1444,11 +1699,13 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
- :rtype: QgsSymbolLayer
+
+:rtype: QgsSymbolLayer
 %End
 
 
@@ -1498,20 +1755,24 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
     void setPointOnSurface( bool pointOnSurface );
     bool pointOnSurface() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setPointOnAllParts( bool pointOnAllParts );
 %Docstring
- Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+Sets whether a point is drawn for all parts or only on the biggest part of multi-part features.
+
 .. versionadded:: 2.16
 %End
 
     bool pointOnAllParts() const;
 %Docstring
- Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+Returns whether a point is drawn for all parts or only on the biggest part of multi-part features.
+
+:rtype: bool
+
 .. versionadded:: 2.16
- :rtype: bool
 %End
 
   protected:

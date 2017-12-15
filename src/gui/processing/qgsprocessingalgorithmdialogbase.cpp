@@ -230,7 +230,7 @@ void QgsProcessingAlgorithmDialogBase::openHelp()
   QUrl algHelp = mAlgorithm->helpUrl();
   if ( algHelp.isEmpty() )
   {
-    algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2" ).arg( mAlgorithm->provider()->id(), mAlgorithm->id() ) );
+    algHelp = QgsHelp::helpUrl( QStringLiteral( "processing_algs/%1/%2.html#%3" ).arg( mAlgorithm->provider()->id(), mAlgorithm->groupId(), mAlgorithm->name() ) );
   }
 
   if ( !algHelp.isEmpty() )

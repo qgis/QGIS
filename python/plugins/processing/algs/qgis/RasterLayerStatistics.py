@@ -54,6 +54,9 @@ class RasterLayerStatistics(QgisAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
+    def groupId(self):
+        return 'rasteranalysis'
+
     def __init__(self):
         super().__init__()
 

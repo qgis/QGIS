@@ -1250,7 +1250,9 @@ namespace QgsWms
       QgsRectangle wgs84BoundingRect;
       if ( !layerExtent.isNull() )
       {
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform exGeoTransform( layerCRS, wgs84 );
+        Q_NOWARN_DEPRECATED_POP
         try
         {
           wgs84BoundingRect = exGeoTransform.transformBoundingBox( layerExtent );
@@ -1342,7 +1344,9 @@ namespace QgsWms
       QgsRectangle crsExtent;
       if ( !layerExtent.isNull() )
       {
+        Q_NOWARN_DEPRECATED_PUSH
         QgsCoordinateTransform crsTransform( layerCRS, crs );
+        Q_NOWARN_DEPRECATED_POP
         try
         {
           crsExtent = crsTransform.transformBoundingBox( layerExtent );
@@ -1455,7 +1459,9 @@ namespace QgsWms
       }
 
       //get project crs
+      Q_NOWARN_DEPRECATED_PUSH
       QgsCoordinateTransform t( layerCrs, project->crs() );
+      Q_NOWARN_DEPRECATED_POP
 
       //transform
       try

@@ -42,6 +42,11 @@ QString QgsExtractNodesAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsExtractNodesAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsExtractNodesAlgorithm::shortHelpString() const
 {
   return QObject::tr( "This algorithm takes a line or polygon layer and generates a point layer with points representing the nodes in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to." ) +

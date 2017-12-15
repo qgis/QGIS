@@ -62,7 +62,7 @@ QgsTessellatedPolygonGeometry::~QgsTessellatedPolygonGeometry()
 
 void QgsTessellatedPolygonGeometry::setPolygons( const QList<QgsPolygon *> &polygons, const QgsPointXY &origin, float extrusionHeight, const QList<float> &extrusionHeightPerPolygon )
 {
-  QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals );
+  QgsTessellator tessellator( origin.x(), origin.y(), mWithNormals, mInvertNormals );
   for ( int i = 0; i < polygons.count(); ++i )
   {
     QgsPolygon *polygon = polygons.at( i );

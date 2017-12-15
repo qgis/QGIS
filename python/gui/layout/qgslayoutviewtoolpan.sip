@@ -11,7 +11,8 @@
 class QgsLayoutViewToolPan : QgsLayoutViewTool
 {
 %Docstring
- Layout view tool for panning the layout.
+Layout view tool for panning the layout.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,7 +23,7 @@ class QgsLayoutViewToolPan : QgsLayoutViewTool
 
     QgsLayoutViewToolPan( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolPan.
+Constructor for QgsLayoutViewToolPan.
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );

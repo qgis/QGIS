@@ -13,8 +13,9 @@
 class QgsMapRendererTask : QgsTask
 {
 %Docstring
- QgsTask task which draws a map to an image file or a painter as a background
- task. This can be used to draw maps without blocking the QGIS interface.
+QgsTask task which draws a map to an image file or a painter as a background
+task. This can be used to draw maps without blocking the QGIS interface.
+
 .. versionadded:: 3.0
 %End
 
@@ -34,28 +35,28 @@ class QgsMapRendererTask : QgsTask
                         const QString &fileFormat = QString( "PNG" ),
                         const bool forceRaster = false );
 %Docstring
- Constructor for QgsMapRendererTask to render a map to an image file.
+Constructor for QgsMapRendererTask to render a map to an image file.
 %End
 
     QgsMapRendererTask( const QgsMapSettings &ms,
                         QPainter *p );
 %Docstring
- Constructor for QgsMapRendererTask to render a map to a QPainter object.
+Constructor for QgsMapRendererTask to render a map to a QPainter object.
 %End
 
     void addAnnotations( QList< QgsAnnotation * > annotations );
 %Docstring
- Adds ``annotations`` to be rendered on the map.
+Adds ``annotations`` to be rendered on the map.
 %End
 
     void addDecorations( const QList<QgsMapDecoration *> &decorations );
 %Docstring
- Adds ``decorations`` to be rendered on the map.
+Adds ``decorations`` to be rendered on the map.
 %End
 
     void setSaveWorldFile( bool save );
 %Docstring
- Sets whether a world file will be created alongside an image file.
+Sets whether a world file will be created alongside an image file.
 %End
 
     virtual void cancel();
@@ -65,12 +66,12 @@ class QgsMapRendererTask : QgsTask
 
     void renderingComplete();
 %Docstring
- Emitted when the map rendering is successfully completed.
+Emitted when the map rendering is successfully completed.
 %End
 
     void errorOccurred( int error );
 %Docstring
- Emitted when map rendering failed.
+Emitted when map rendering failed.
 %End
 
   protected:

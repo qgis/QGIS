@@ -152,6 +152,9 @@ class GridInverseDistance(GdalAlgorithm):
     def group(self):
         return self.tr('Raster analysis')
 
+    def groupId(self):
+        return 'rasteranalysis'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'grid.png'))
 

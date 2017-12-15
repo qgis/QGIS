@@ -99,11 +99,11 @@ void QgsVectorLayerSaveAsDialog::setup()
 
   //add geometry types to combobox
   mGeometryTypeComboBox->addItem( tr( "Automatic" ), -1 );
-  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::Point ), QgsWkbTypes::Point );
-  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::LineString ), QgsWkbTypes::LineString );
-  mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::Polygon ), QgsWkbTypes::Polygon );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::Point ), QgsWkbTypes::Point );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::LineString ), QgsWkbTypes::LineString );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), QgsWkbTypes::displayString( QgsWkbTypes::Polygon ), QgsWkbTypes::Polygon );
   mGeometryTypeComboBox->addItem( QgsWkbTypes::displayString( QgsWkbTypes::GeometryCollection ), QgsWkbTypes::GeometryCollection );
-  mGeometryTypeComboBox->addItem( tr( "No geometry" ), QgsWkbTypes::NoGeometry );
+  mGeometryTypeComboBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), QgsWkbTypes::NoGeometry );
   mGeometryTypeComboBox->setCurrentIndex( mGeometryTypeComboBox->findData( -1 ) );
 
   mEncodingComboBox->addItems( QgsVectorDataProvider::availableEncodings() );

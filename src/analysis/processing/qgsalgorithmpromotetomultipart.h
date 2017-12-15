@@ -39,6 +39,7 @@ class QgsPromoteToMultipartAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString displayName() const override;
     virtual QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsPromoteToMultipartAlgorithm *createInstance() const override SIP_FACTORY;
 

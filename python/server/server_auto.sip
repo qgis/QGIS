@@ -17,6 +17,8 @@
 %Include qgsservice.sip
 %Include qgsservicemodule.sip
 %Include qgsserviceregistry.sip
+%Include qgsfeaturefilterprovidergroup.sip
+%Include qgsfeaturefilter.sip
 %If ( HAVE_SERVER_PYTHON_PLUGINS )
 %Include qgsserverfilter.sip
 %End

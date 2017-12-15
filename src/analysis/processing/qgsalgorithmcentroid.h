@@ -39,6 +39,7 @@ class QgsCentroidAlgorithm : public QgsProcessingFeatureBasedAlgorithm
     QString displayName() const override;
     QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsCentroidAlgorithm *createInstance() const override SIP_FACTORY;
 

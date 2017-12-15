@@ -11,7 +11,8 @@
 class QgsLayoutViewToolZoom : QgsLayoutViewTool
 {
 %Docstring
- Layout view tool for zooming into and out of the layout.
+Layout view tool for zooming into and out of the layout.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,7 +23,7 @@ class QgsLayoutViewToolZoom : QgsLayoutViewTool
 
     QgsLayoutViewToolZoom( QgsLayoutView *view /TransferThis/ );
 %Docstring
- Constructor for QgsLayoutViewToolZoom.
+Constructor for QgsLayoutViewToolZoom.
 %End
 
     virtual void layoutPressEvent( QgsLayoutViewMouseEvent *event );

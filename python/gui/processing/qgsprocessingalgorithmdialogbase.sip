@@ -15,9 +15,11 @@ class QgsProcessingAlgorithmDialogBase : QDialog
 {
 %Docstring
  Base class for processing algorithm dialogs.
+
 .. note::
 
    This is not considered stable API and may change in future QGIS versions.
+
 .. versionadded:: 3.0
 %End
 
@@ -28,57 +30,66 @@ class QgsProcessingAlgorithmDialogBase : QDialog
 
     QgsProcessingAlgorithmDialogBase( QWidget *parent = 0, Qt::WindowFlags flags = 0 );
 %Docstring
- Constructor for QgsProcessingAlgorithmDialogBase.
+Constructor for QgsProcessingAlgorithmDialogBase.
 %End
 
     void setAlgorithm( QgsProcessingAlgorithm *algorithm );
 %Docstring
- Sets the ``algorithm`` to run in the dialog.
+Sets the ``algorithm`` to run in the dialog.
+
 .. seealso:: :py:func:`algorithm()`
 %End
 
     QgsProcessingAlgorithm *algorithm();
 %Docstring
- Returns the algorithm running in the dialog.
+Returns the algorithm running in the dialog.
+
+:rtype: QgsProcessingAlgorithm
+
 .. seealso:: :py:func:`setAlgorithm()`
- :rtype: QgsProcessingAlgorithm
 %End
 
     void setMainWidget( QWidget *widget /Transfer/ );
 %Docstring
- Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
+Sets the main ``widget`` for the dialog, usually a panel for configuring algorithm parameters.
+
 .. seealso:: :py:func:`mainWidget()`
 %End
 
     QWidget *mainWidget();
 %Docstring
- Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
+Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
+
+:rtype: QWidget
+
 .. seealso:: :py:func:`setMainWidget()`
- :rtype: QWidget
 %End
 
     void showLog();
 %Docstring
- Switches the dialog to the log page.
+Switches the dialog to the log page.
 %End
 
     bool wasExecuted() const;
 %Docstring
- Returns true if an algorithm was executed in the dialog.
- :rtype: bool
+Returns true if an algorithm was executed in the dialog.
+
+:rtype: bool
 %End
 
     QgsProcessingFeedback *createFeedback() /Factory/;
 %Docstring
- Creates a new processing feedback object, automatically connected to the appropriate
- slots in this dialog.
- :rtype: QgsProcessingFeedback
+Creates a new processing feedback object, automatically connected to the appropriate
+slots in this dialog.
+
+:rtype: QgsProcessingFeedback
 %End
 
     virtual QVariantMap getParameterValues() const;
 %Docstring
- Returns the parameter values for the algorithm to run in the dialog.
- :rtype: QVariantMap
+Returns the parameter values for the algorithm to run in the dialog.
+
+:rtype: QVariantMap
 %End
 
   public slots:
@@ -90,37 +101,37 @@ class QgsProcessingAlgorithmDialogBase : QDialog
 
     void reportError( const QString &error );
 %Docstring
- Reports an ``error`` string to the dialog's log.
+Reports an ``error`` string to the dialog's log.
 %End
 
     void pushInfo( const QString &info );
 %Docstring
- Pushes an information string to the dialog's log.
+Pushes an information string to the dialog's log.
 %End
 
     void pushDebugInfo( const QString &message );
 %Docstring
- Pushes a debug info string to the dialog's log.
+Pushes a debug info string to the dialog's log.
 %End
 
     void pushCommandInfo( const QString &info );
 %Docstring
- Pushes command info to the dialog's log.
+Pushes command info to the dialog's log.
 %End
 
     void setPercentage( double percent );
 %Docstring
- Sets the percentage progress for the dialog, between 0 and 100.
+Sets the percentage progress for the dialog, between 0 and 100.
 %End
 
     void setProgressText( const QString &text );
 %Docstring
- Sets a progress text message.
+Sets a progress text message.
 %End
 
     void pushConsoleInfo( const QString &info );
 %Docstring
- Pushes a console info string to the dialog's log.
+Pushes a console info string to the dialog's log.
 %End
 
   protected:
@@ -130,64 +141,69 @@ class QgsProcessingAlgorithmDialogBase : QDialog
 
     QPushButton *runButton();
 %Docstring
- Returns the dialog's run button.
- :rtype: QPushButton
+Returns the dialog's run button.
+
+:rtype: QPushButton
 %End
 
     QPushButton *cancelButton();
 %Docstring
- Returns the dialog's cancel button.
- :rtype: QPushButton
+Returns the dialog's cancel button.
+
+:rtype: QPushButton
 %End
 
     QDialogButtonBox *buttonBox();
 %Docstring
- Returns the dialog's button box.
- :rtype: QDialogButtonBox
+Returns the dialog's button box.
+
+:rtype: QDialogButtonBox
 %End
 
     QTabWidget *tabWidget();
 %Docstring
- Returns the dialog's tab widget.
- :rtype: QTabWidget
+Returns the dialog's tab widget.
+
+:rtype: QTabWidget
 %End
 
     void clearProgress();
 %Docstring
- Clears any current progress from the dialog.
+Clears any current progress from the dialog.
 %End
 
     void setExecuted( bool executed );
 %Docstring
- Sets whether the algorithm was executed through the dialog.
+Sets whether the algorithm was executed through the dialog.
 %End
 
     void setInfo( const QString &message, bool isError = false, bool escapeHtml = true );
 %Docstring
- Displays an info ``message`` in the dialog's log.
+Displays an info ``message`` in the dialog's log.
 %End
 
     void resetGui();
 %Docstring
- Resets the dialog's gui, ready for another algorithm execution.
+Resets the dialog's gui, ready for another algorithm execution.
 %End
 
     QgsMessageBar *messageBar();
 %Docstring
- Returns the dialog's message bar.
- :rtype: QgsMessageBar
+Returns the dialog's message bar.
+
+:rtype: QgsMessageBar
 %End
 
     void hideShortHelp();
 %Docstring
- Hides the short help panel.
+Hides the short help panel.
 %End
 
   protected slots:
 
     virtual void finished( bool successful, const QVariantMap &result, QgsProcessingContext &context, QgsProcessingFeedback *feedback );
 %Docstring
- Called when the algorithm has finished executing.
+Called when the algorithm has finished executing.
 %End
 
 };

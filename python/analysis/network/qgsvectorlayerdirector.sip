@@ -13,6 +13,7 @@
 class QgsVectorLayerDirector : QgsGraphDirector
 {
 %Docstring
+
 .. versionadded:: 3.0
  Determine making the graph from vector line layer
 %End
@@ -37,14 +38,14 @@ class QgsVectorLayerDirector : QgsGraphDirector
                             const Direction defaultDirection
                           );
 %Docstring
- Default constructor
- \param source feature source representing network
- \param directionFieldId field containing direction value
- \param directDirectionValue value for direct one-way road
- \param reverseDirectionValue value for reversed one-way road
- \param bothDirectionValue value for two-way (bidirectional) road
- \param defaultDirection default direction. Will be used if corresponding
- attribute value is not set or does not equal to the given values
+Default constructor
+:param source: feature source representing network
+:param directionFieldId: field containing direction value
+:param directDirectionValue: value for direct one-way road
+:param reverseDirectionValue: value for reversed one-way road
+:param bothDirectionValue: value for two-way (bidirectional) road
+:param defaultDirection: default direction. Will be used if corresponding
+attribute value is not set or does not equal to the given values
 %End
 
     virtual ~QgsVectorLayerDirector();
@@ -54,7 +55,7 @@ class QgsVectorLayerDirector : QgsGraphDirector
                     QVector< QgsPointXY> &snappedPoints /Out/,
                     QgsFeedback *feedback = 0 ) const;
 %Docstring
- MANDATORY DIRECTOR PROPERTY DECLARATION
+MANDATORY DIRECTOR PROPERTY DECLARATION
 %End
 
     virtual QString name() const;

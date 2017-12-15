@@ -49,6 +49,7 @@
 #include "qgsgeometrycollection.h"
 #include "qgsgeometryfactory.h"
 #include "qgscurvepolygon.h"
+#include "qgsproject.h"
 
 //qgs unit test utility class
 #include "qgsrenderchecker.h"
@@ -715,7 +716,7 @@ void TestQgsGeometry::point()
   sourceSrs.createFromSrid( 3994 );
   QgsCoordinateReferenceSystem destSrs;
   destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
-  QgsCoordinateTransform tr( sourceSrs, destSrs );
+  QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
   QgsPoint p16( QgsWkbTypes::PointZM, 6374985, -3626584, 1, 2 );
   p16.transform( tr, QgsCoordinateTransform::ForwardTransform );
   QGSCOMPARENEAR( p16.x(), 175.771, 0.001 );
@@ -1593,7 +1594,7 @@ void TestQgsGeometry::circularString()
   sourceSrs.createFromSrid( 3994 );
   QgsCoordinateReferenceSystem destSrs;
   destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
-  QgsCoordinateTransform tr( sourceSrs, destSrs );
+  QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   // 2d CRS transform
   QgsCircularString l21;
@@ -3317,7 +3318,7 @@ void TestQgsGeometry::lineString()
   sourceSrs.createFromSrid( 3994 );
   QgsCoordinateReferenceSystem destSrs;
   destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
-  QgsCoordinateTransform tr( sourceSrs, destSrs );
+  QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   // 2d CRS transform
   QgsLineString l21;
@@ -5154,7 +5155,7 @@ void TestQgsGeometry::polygon()
   sourceSrs.createFromSrid( 3994 );
   QgsCoordinateReferenceSystem destSrs;
   destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
-  QgsCoordinateTransform tr( sourceSrs, destSrs );
+  QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   // 2d CRS transform
   QgsPolygon pTransform;
@@ -9397,7 +9398,7 @@ void TestQgsGeometry::compoundCurve()
   sourceSrs.createFromSrid( 3994 );
   QgsCoordinateReferenceSystem destSrs;
   destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
-  QgsCoordinateTransform tr( sourceSrs, destSrs );
+  QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   // 2d CRS transform
   QgsCompoundCurve c21;
@@ -14213,7 +14214,7 @@ void TestQgsGeometry::geometryCollection()
   sourceSrs.createFromSrid( 3994 );
   QgsCoordinateReferenceSystem destSrs;
   destSrs.createFromSrid( 4202 ); // want a transform with ellipsoid change
-  QgsCoordinateTransform tr( sourceSrs, destSrs );
+  QgsCoordinateTransform tr( sourceSrs, destSrs, QgsProject::instance() );
 
   // 2d CRS transform
   QgsGeometryCollection pTransform;

@@ -56,13 +56,13 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
   QgsSettings settings;
   restoreGeometry( settings.value( QStringLiteral( "Windows/NewSpatiaLiteLayer/geometry" ) ).toByteArray() );
 
-  mGeometryTypeBox->addItem( tr( "Non spatial" ), QStringLiteral( "" ) );
-  mGeometryTypeBox->addItem( tr( "Point" ), QStringLiteral( "POINT" ) );
-  mGeometryTypeBox->addItem( tr( "Line" ), QStringLiteral( "LINESTRING" ) );
-  mGeometryTypeBox->addItem( tr( "Polygon" ), QStringLiteral( "POLYGON" ) );
-  mGeometryTypeBox->addItem( tr( "MultiPoint" ), QStringLiteral( "MULTIPOINT" ) );
-  mGeometryTypeBox->addItem( tr( "MultiLine" ), QStringLiteral( "MULTILINESTRING" ) );
-  mGeometryTypeBox->addItem( tr( "MultiPolygon" ), QStringLiteral( "MULTIPOLYGON" ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconTableLayer.svg" ) ), tr( "No geometry" ), QStringLiteral( "" ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "Point" ), QStringLiteral( "POINT" ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "Line" ), QStringLiteral( "LINESTRING" ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "Polygon" ), QStringLiteral( "POLYGON" ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPointLayer.svg" ) ), tr( "MultiPoint" ), QStringLiteral( "MULTIPOINT" ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconLineLayer.svg" ) ), tr( "MultiLine" ), QStringLiteral( "MULTILINESTRING" ) );
+  mGeometryTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconPolygonLayer.svg" ) ), tr( "MultiPolygon" ), QStringLiteral( "MULTIPOLYGON" ) );
 
   pbnFindSRID->setEnabled( false );
   mGeometryWithZCheckBox->setEnabled( false );
@@ -71,9 +71,9 @@ QgsNewSpatialiteLayerDialog::QgsNewSpatialiteLayerDialog( QWidget *parent, Qt::W
 
   mAddAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionNewAttribute.svg" ) ) );
   mRemoveAttributeButton->setIcon( QgsApplication::getThemeIcon( QStringLiteral( "/mActionDeleteAttribute.svg" ) ) );
-  mTypeBox->addItem( tr( "Text data" ), "text" );
-  mTypeBox->addItem( tr( "Whole number" ), "integer" );
-  mTypeBox->addItem( tr( "Decimal number" ), "real" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldText.svg" ) ), tr( "Text data" ), "text" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldInteger.svg" ) ), tr( "Whole number" ), "integer" );
+  mTypeBox->addItem( QgsApplication::getThemeIcon( QStringLiteral( "/mIconFieldFloat.svg" ) ), tr( "Decimal number" ), "real" );
 
   // Populate the database list from the stored connections
   settings.beginGroup( QStringLiteral( "SpatiaLite/connections" ) );

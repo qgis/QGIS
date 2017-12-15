@@ -11,7 +11,8 @@
 class QgsNumericScaleBarRenderer: QgsScaleBarRenderer
 {
 %Docstring
- A scale bar style that draws text in the form of '1:XXXXX'.
+A scale bar style that draws text in the form of '1:XXXXX'.
+
 .. versionadded:: 3.0
 %End
 
@@ -22,7 +23,7 @@ class QgsNumericScaleBarRenderer: QgsScaleBarRenderer
 
     QgsNumericScaleBarRenderer();
 %Docstring
- Constructor for QgsNumericScaleBarRenderer.
+Constructor for QgsNumericScaleBarRenderer.
 %End
 
     virtual QString name() const;

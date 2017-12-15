@@ -15,14 +15,16 @@
 class QgsProjectionSelectionTreeWidget : QWidget
 {
 %Docstring
- A widget for selecting a coordinate reference system from a tree.
+A widget for selecting a coordinate reference system from a tree.
 
- This widget implements a tree view of projections, as seen in the
- QgsProjectionSelectionDialog dialog. In most cases it is more
- suitable to use the compact QgsProjectionSelectionWidget widget.
+This widget implements a tree view of projections, as seen in the
+QgsProjectionSelectionDialog dialog. In most cases it is more
+suitable to use the compact QgsProjectionSelectionWidget widget.
 
 .. seealso:: :py:class:`QgsProjectionSelectionDialog`
+
 .. seealso:: :py:class:`QgsProjectionSelectionWidget`
+
 .. versionadded:: 3.0
 %End
 
@@ -33,119 +35,142 @@ class QgsProjectionSelectionTreeWidget : QWidget
 
     QgsProjectionSelectionTreeWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsProjectionSelectionTreeWidget.
+Constructor for QgsProjectionSelectionTreeWidget.
 %End
 
     ~QgsProjectionSelectionTreeWidget();
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
- Returns the CRS currently selected in the widget.
+Returns the CRS currently selected in the widget.
+
+:rtype: QgsCoordinateReferenceSystem
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`setCrs()`
- :rtype: QgsCoordinateReferenceSystem
 %End
 
     void setShowNoProjection( bool show );
 %Docstring
- Sets whether a "no/invalid" projection option should be shown. If this
- option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+Sets whether a "no/invalid" projection option should be shown. If this
+option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+
 .. seealso:: :py:func:`showNoProjection()`
+
 .. versionadded:: 3.0
 %End
 
     void setShowBoundsMap( bool show );
 %Docstring
- Sets whether to show the bounnds preview map.
+Sets whether to show the bounnds preview map.
+
 .. seealso:: :py:func:`showBoundsMap()`
+
 .. versionadded:: 3.0
 %End
 
     bool showNoProjection() const;
 %Docstring
- Returns whether the "no/invalid" projection option is shown. If this
- option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+Returns whether the "no/invalid" projection option is shown. If this
+option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
+
+:rtype: bool
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`setShowNoProjection()`
- :rtype: bool
 %End
 
     bool showBoundsMap() const;
 %Docstring
- Returns whether the bounds preview map is shown.
+Returns whether the bounds preview map is shown.
+
+:rtype: bool
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`setShowBoundsMap()`
- :rtype: bool
 %End
 
     bool hasValidSelection() const;
 %Docstring
- Returns true if the current selection in the widget is a valid choice. Valid
- selections include any projection and also the "no/invalid projection" option
- (if setShowNoProjection() was called). Invalid selections are the group
- headers (such as "Geographic Coordinate Systems"
- :rtype: bool
+Returns true if the current selection in the widget is a valid choice. Valid
+selections include any projection and also the "no/invalid projection" option
+(if setShowNoProjection() was called). Invalid selections are the group
+headers (such as "Geographic Coordinate Systems"
+
+:rtype: bool
 %End
 
   public slots:
 
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
- Sets the initial ``crs`` to show within the dialog.
+Sets the initial ``crs`` to show within the dialog.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`crs()`
 %End
 
     void setPreviewRect( const QgsRectangle &rect );
 %Docstring
- Sets the initial "preview" rectangle for the bounds overview map.
+Sets the initial "preview" rectangle for the bounds overview map.
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`previewRect()`
 %End
 
     QgsRectangle previewRect() const;
 %Docstring
- The initial "preview" rectangle for the bounds overview map.
+The initial "preview" rectangle for the bounds overview map.
+
+:rtype: QgsRectangle
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`previewRect()`
- :rtype: QgsRectangle
 %End
 
     void setOgcWmsCrsFilter( const QSet<QString> &crsFilter );
 %Docstring
  filters this widget by the given CRSs
 
- Sets this widget to filter the available projections to those listed
- by the given Coordinate Reference Systems.
+Sets this widget to filter the available projections to those listed
+by the given Coordinate Reference Systems.
 
- \param crsFilter a list of OGC Coordinate Reference Systems to filter the
-                  list of projections by.  This is useful in (e.g.) WMS situations
-                  where you just want to offer what the WMS server can support.
+:param crsFilter: a list of OGC Coordinate Reference Systems to filter the
+list of projections by.  This is useful in (e.g.) WMS situations
+where you just want to offer what the WMS server can support.
 
- \warning This function's behavior is undefined if it is called after the widget is shown.
+\warning This function's behavior is undefined if it is called after the widget is shown.
 %End
 
     void pushProjectionToFront();
 %Docstring
- Marks the current selected projection for push to front of recent projections list.
+Marks the current selected projection for push to front of recent projections list.
 %End
 
   signals:
 
     void crsSelected();
 %Docstring
- Emitted when a projection is selected in the widget.
+Emitted when a projection is selected in the widget.
 %End
 
     void initialized();
 %Docstring
- Notifies others that the widget is now fully initialized, including deferred selection of projection.
+Notifies others that the widget is now fully initialized, including deferred selection of projection.
+
 .. versionadded:: 2.4
 %End
 
     void projectionDoubleClicked();
 %Docstring
- Emitted when a projection is double clicked in the list.
+Emitted when a projection is double clicked in the list.
+
 .. versionadded:: 2.14
 %End
 

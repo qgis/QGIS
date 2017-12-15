@@ -15,12 +15,12 @@ class QgsCoordinateFormatter
 %Docstring
  Contains methods for converting coordinates for display in various formats.
 
- QgsCoordinateFormatter contains static methods for converting numeric coordinates into different
- formats, for instance as degrees, minutes, seconds values. Note that QgsCoordinateFormatter has
- no consideration for the validity of converting coordinates to the various display formats, and it
- is up to the caller to ensure that sensible formats are used for particular coordinates. For instance,
- ensuring that only geographic coordinates and not projected coordinates are formatted to degree
- based formats.
+QgsCoordinateFormatter contains static methods for converting numeric coordinates into different
+formats, for instance as degrees, minutes, seconds values. Note that QgsCoordinateFormatter has
+no consideration for the validity of converting coordinates to the various display formats, and it
+is up to the caller to ensure that sensible formats are used for particular coordinates. For instance,
+ensuring that only geographic coordinates and not projected coordinates are formatted to degree
+based formats.
 
 .. versionadded:: 3.0
 %End
@@ -48,49 +48,53 @@ class QgsCoordinateFormatter
 
     static QString formatX( double x, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix );
 %Docstring
- Formats an ``x`` coordinate value according to the specified parameters.
+Formats an ``x`` coordinate value according to the specified parameters.
 
- The ``format`` argument indicates the desired display format for the coordinate.
+The ``format`` argument indicates the desired display format for the coordinate.
 
- The ``precision`` argument gives the number of decimal places to include for coordinates.
+The ``precision`` argument gives the number of decimal places to include for coordinates.
 
- Optional ``flags`` can be specified to control the output format.
+Optional ``flags`` can be specified to control the output format.
+
+:rtype: str
 
 .. seealso:: :py:func:`formatY()`
- :rtype: str
 %End
 
     static QString formatY( double y, Format format, int precision = 12, FormatFlags flags = FlagDegreesUseStringSuffix );
 %Docstring
- Formats a ``y`` coordinate value according to the specified parameters.
+Formats a ``y`` coordinate value according to the specified parameters.
 
- The ``format`` argument indicates the desired display format for the coordinate.
+The ``format`` argument indicates the desired display format for the coordinate.
 
- The ``precision`` argument gives the number of decimal places to include for coordinates.
+The ``precision`` argument gives the number of decimal places to include for coordinates.
 
- Optional ``flags`` can be specified to control the output format.
+Optional ``flags`` can be specified to control the output format.
+
+:rtype: str
 
 .. seealso:: :py:func:`formatX()`
- :rtype: str
 %End
 
     static QString format( QgsPointXY point, Format format, int precision = 12,  FormatFlags flags = FlagDegreesUseStringSuffix );
 %Docstring
- Formats a ``point`` according to the specified parameters.
+Formats a ``point`` according to the specified parameters.
 
- The ``format`` argument indicates the desired display format for the coordinate.
+The ``format`` argument indicates the desired display format for the coordinate.
 
- The ``precision`` argument gives the number of decimal places to include for coordinates.
+The ``precision`` argument gives the number of decimal places to include for coordinates.
 
- Optional ``flags`` can be specified to control the output format.
- :rtype: str
+Optional ``flags`` can be specified to control the output format.
+
+:rtype: str
 %End
 
     static QString asPair( double x, double y, int precision = 12 );
 %Docstring
- Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`` (number
- of decimal places to include).
- :rtype: str
+Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`` (number
+of decimal places to include).
+
+:rtype: str
 %End
 
 };

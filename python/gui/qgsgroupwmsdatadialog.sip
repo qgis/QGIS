@@ -23,19 +23,22 @@ Constructor
     QString groupTitle();
 %Docstring
 return group WMS title
- :rtype: str
+
+:rtype: str
 %End
 
     QString groupShortName();
 %Docstring
 return group WMS short name
- :rtype: str
+
+:rtype: str
 %End
 
     QString groupAbstract();
 %Docstring
 return group WMS abstract
- :rtype: str
+
+:rtype: str
 %End
 
 

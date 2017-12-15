@@ -13,7 +13,7 @@
 class QgsRasterPyramidsOptionsWidget: QWidget
 {
 %Docstring
- A widget to select format-specific raster saving options
+A widget to select format-specific raster saving options
 %End
 
 %TypeHeaderCode
@@ -28,23 +28,28 @@ Constructor for QgsRasterPyramidsOptionsWidget
 
     QStringList configOptions() const;
 %Docstring
- :rtype: list of str
+
+:rtype: list of str
 %End
     QgsRasterFormatSaveOptionsWidget *createOptionsWidget() /Factory/;
 %Docstring
- :rtype: QgsRasterFormatSaveOptionsWidget
+
+:rtype: QgsRasterFormatSaveOptionsWidget
 %End
     const QList<int> overviewList() const;
 %Docstring
- :rtype: list of int
+
+:rtype: list of int
 %End
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
 %Docstring
- :rtype: QgsRaster.RasterPyramidsFormat
+
+:rtype: QgsRaster.RasterPyramidsFormat
 %End
     QString resamplingMethod() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     void setRasterLayer( QgsRasterLayer *rasterLayer );
     void setRasterFileName( const QString &file );

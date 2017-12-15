@@ -795,7 +795,7 @@ class MapLayerWidgetWrapper(WidgetWrapper):
                 if layer is not None:
                     return layer
                 else:
-                    return self.combo.currentText()
+                    return self.combo.currentText() or None
             except:
                 return self.combo.currentText()
         elif self.dialogType == DIALOG_BATCH:
@@ -1362,11 +1362,11 @@ class TableFieldWidgetWrapper(WidgetWrapper):
         elif self.param.dataType() == QgsProcessingParameterField.DateTime:
             fieldTypes = [QVariant.Date, QVariant.Time, QVariant.DateTime]
 
-        fieldNames = set()
+        fieldNames = []
         for field in self._layer.fields():
             if not fieldTypes or field.type() in fieldTypes:
-                fieldNames.add(str(field.name()))
-        return sorted(list(fieldNames), key=cmp_to_key(locale.strcoll))
+                fieldNames.append(str(field.name()))
+        return fieldNames
 
     def setValue(self, value):
         if self.dialogType in (DIALOG_STANDARD, DIALOG_BATCH):

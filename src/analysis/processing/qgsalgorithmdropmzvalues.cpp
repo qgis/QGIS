@@ -39,6 +39,11 @@ QString QgsDropMZValuesAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsDropMZValuesAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsDropMZValuesAlgorithm::outputName() const
 {
   return QObject::tr( "Z/M Dropped" );

@@ -13,7 +13,7 @@
 class QgsRelationManager : QObject
 {
 %Docstring
- This class manages a set of relations between layers.
+This class manages a set of relations between layers.
 %End
 
 %TypeHeaderCode
@@ -23,102 +23,114 @@ class QgsRelationManager : QObject
 
     explicit QgsRelationManager( QgsProject *project = 0 );
 %Docstring
- Constructor for QgsRelationManager.
- \param project associated project (used to notify project of changes)
+Constructor for QgsRelationManager.
+:param project: associated project (used to notify project of changes)
 %End
 
     void setRelations( const QList<QgsRelation> &relations );
 %Docstring
- Will set the specified relations and remove any relation currently set.
+Will set the specified relations and remove any relation currently set.
 
- \param relations A list of relations to set.
+:param relations: A list of relations to set.
 %End
 
     QMap<QString, QgsRelation> relations() const;
 %Docstring
- Get access to the relations managed by this class.
+Get access to the relations managed by this class.
 
- :return: A QMap where the key is the relation id, the value the relation object.
- :rtype: QMap<str, QgsRelation>
+:return: A QMap where the key is the relation id, the value the relation object.
+:rtype: QMap<str, QgsRelation>
+
 %End
 
     void addRelation( const QgsRelation &relation );
 %Docstring
- Add a relation.
+Add a relation.
 
- \param relation The relation to add.
+:param relation: The relation to add.
 %End
 
     void removeRelation( const QString &id );
 %Docstring
- Remove a relation.
+Remove a relation.
 
- \param id The id of the relation to remove.
+:param id: The id of the relation to remove.
 %End
 
     void removeRelation( const QgsRelation &relation );
 %Docstring
- Remove a relation.
+Remove a relation.
 
- \param relation The relation to remove.
+:param relation: The relation to remove.
 %End
 
     QgsRelation relation( const QString &id ) const;
 %Docstring
- Get access to a relation by its id.
+Get access to a relation by its id.
 
- \param id The id to search for
+:param id: The id to search for
 
- :return: A relation. Invalid if not found.
+:return: A relation. Invalid if not found.
+:rtype: QgsRelation
+
+
 .. seealso:: :py:func:`relationsByName()`
- :rtype: QgsRelation
 %End
 
     QList<QgsRelation> relationsByName( const QString &name ) const;
 %Docstring
- Returns a list of relations with matching names.
- \param name relation name to search for. Searching is case insensitive.
- :return: a list of matching relations
+Returns a list of relations with matching names.
+:param name: relation name to search for. Searching is case insensitive.
+
+:return: a list of matching relations
+:rtype: list of QgsRelation
+
+
 .. versionadded:: 2.16
+
 .. seealso:: :py:func:`relation()`
- :rtype: list of QgsRelation
 %End
 
     void clear();
 %Docstring
- Remove any relation managed by this class.
+Remove any relation managed by this class.
 %End
 
     QList<QgsRelation> referencingRelations( const QgsVectorLayer *layer = 0, int fieldIdx = -2 ) const;
 %Docstring
- Get all relations where the specified layer (and field) is the referencing part (i.e. the child table with the foreign key).
+Get all relations where the specified layer (and field) is the referencing part (i.e. the child table with the foreign key).
 
- \param layer     The layer which should be searched for.
- \param fieldIdx  The field which should be part of the foreign key. If not set will return all relations.
+:param layer:     The layer which should be searched for.
+:param fieldIdx:  The field which should be part of the foreign key. If not set will return all relations.
 
- :return: A list of relations matching the given layer and fieldIdx.
- :rtype: list of QgsRelation
+:return: A list of relations matching the given layer and fieldIdx.
+:rtype: list of QgsRelation
+
 %End
 
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
 %Docstring
- Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
+Get all relations where this layer is the referenced part (i.e. the parent table with the primary key being referenced from another layer).
 
- \param layer   The layer which should be searched for.
+:param layer:   The layer which should be searched for.
 
- :return: A list of relations where the specified layer is the referenced part.
- :rtype: list of QgsRelation
+:return: A list of relations where the specified layer is the referenced part.
+:rtype: list of QgsRelation
+
 %End
 
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );
 %Docstring
- Discover all the relations available from the current layers.
+Discover all the relations available from the current layers.
 
- \param existingRelations the existing relations to filter them out
- \param layers the current layers
- :return: the list of discovered relations
+:param existingRelations: the existing relations to filter them out
+:param layers: the current layers
+
+:return: the list of discovered relations
+:rtype: list of QgsRelation
+
+
 .. versionadded:: 3.0
- :rtype: list of QgsRelation
 %End
 
   signals:
@@ -129,7 +141,8 @@ This signal is emitted when the relations were loaded after reading a project
 
     void changed();
 %Docstring
- Emitted when relations are added or removed to the manager.
+Emitted when relations are added or removed to the manager.
+
 .. versionadded:: 2.5
 %End
 

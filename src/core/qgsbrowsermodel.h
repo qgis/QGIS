@@ -64,6 +64,7 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     {
       PathRole = Qt::UserRole, //!< Item path used to access path in the tree, see QgsDataItem::mPath
       CommentRole = Qt::UserRole + 1, //!< Item comment
+      SortRole, //!< Custom sort role, see QgsDataItem::sortKey()
     };
     // implemented methods from QAbstractItemModel for read-only access
 
@@ -163,11 +164,15 @@ class CORE_EXPORT QgsBrowserModel : public QAbstractItemModel
     void itemStateChanged( QgsDataItem *item, QgsDataItem::State oldState );
 
     /**
-     * Adds a directory to the favorites group.
+     * Adds a \a directory to the favorites group.
+     *
+     * If \a name is specified, it will be used as the favorite's name. Otherwise
+     * the name will be set to match \a directory.
+     *
      * \since QGIS 3.0
      * \see removeFavorite()
      */
-    void addFavoriteDirectory( const QString &directory );
+    void addFavoriteDirectory( const QString &directory, const QString &name = QString() );
 
     /**
      * Removes a favorite directory from its corresponding model index.

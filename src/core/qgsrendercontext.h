@@ -32,6 +32,7 @@
 #include "qgsrectangle.h"
 #include "qgsvectorsimplifymethod.h"
 #include "qgsdistancearea.h"
+#include "qgscoordinatetransformcontext.h"
 
 class QPainter;
 class QgsAbstractGeometry;
@@ -130,6 +131,26 @@ class CORE_EXPORT QgsRenderContext
      * \since QGIS 3.0
      */
     const QgsDistanceArea &distanceArea() const { return mDistanceArea; }
+
+    /**
+     * Returns the context's coordinate transform context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \since QGIS 3.0
+     * \see setTransformContext()
+     */
+    QgsCoordinateTransformContext transformContext() const;
+
+    /**
+     * Sets the context's coordinate transform \a context, which stores various
+     * information regarding which datum transforms should be used when transforming points
+     * from a source to destination coordinate reference system.
+     *
+     * \since QGIS 3.0
+     * \see transformContext()
+     */
+    void setTransformContext( const QgsCoordinateTransformContext &context );
 
     const QgsRectangle &extent() const {return mExtent;}
 
@@ -397,6 +418,11 @@ class CORE_EXPORT QgsRenderContext
     double mSegmentationTolerance = M_PI_2 / 90;
 
     QgsAbstractGeometry::SegmentationToleranceType mSegmentationToleranceType = QgsAbstractGeometry::MaximumAngle;
+
+    QgsCoordinateTransformContext mTransformContext;
+#ifdef QGISDEBUG
+    bool mHasTransformContext = false;
+#endif
 };
 
 Q_DECLARE_OPERATORS_FOR_FLAGS( QgsRenderContext::Flags )

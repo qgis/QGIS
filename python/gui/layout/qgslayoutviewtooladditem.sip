@@ -11,7 +11,8 @@
 class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 {
 %Docstring
- Layout view tool for adding items to a layout.
+Layout view tool for adding items to a layout.
+
 .. versionadded:: 3.0
 %End
 
@@ -24,17 +25,19 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 
     int itemMetadataId() const;
 %Docstring
- Returns the item metadata id for items created by the tool.
+Returns the item metadata id for items created by the tool.
+
+:rtype: int
+
 .. seealso:: :py:func:`setItemMetadataId()`
- :rtype: int
 %End
 
     void setItemMetadataId( int metadataId );
 %Docstring
- Sets the item metadata ``metadataId`` for items created by the tool.
+Sets the item metadata ``metadataId`` for items created by the tool.
 
- The ``metadataId`` associates the current tool behavior with a metadata entry
- from QgsLayoutItemGuiRegistry.
+The ``metadataId`` associates the current tool behavior with a metadata entry
+from QgsLayoutItemGuiRegistry.
 
 .. seealso:: :py:func:`itemMetadataId()`
 %End
@@ -52,7 +55,7 @@ class QgsLayoutViewToolAddItem : QgsLayoutViewTool
 
     void createdItem();
 %Docstring
- Emitted when an item has been created using the tool.
+Emitted when an item has been created using the tool.
 %End
 
 };

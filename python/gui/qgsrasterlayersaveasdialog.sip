@@ -46,84 +46,104 @@ Constructor for QgsRasterLayerSaveAsDialog
 
     Mode mode() const;
 %Docstring
- :rtype: Mode
+
+:rtype: Mode
 %End
     int nColumns() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     int nRows() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     double xResolution() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     double yResolution() const;
 %Docstring
- :rtype: float
+
+:rtype: float
 %End
     int maximumTileSizeX() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     int maximumTileSizeY() const;
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
     bool tileMode() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     bool addToCanvas() const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     QString outputFileName() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     QString outputFormat() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     QgsCoordinateReferenceSystem outputCrs();
 %Docstring
- :rtype: QgsCoordinateReferenceSystem
+
+:rtype: QgsCoordinateReferenceSystem
 %End
     QStringList createOptions() const;
 %Docstring
- :rtype: list of str
+
+:rtype: list of str
 %End
     QgsRectangle outputRectangle() const;
 %Docstring
- :rtype: QgsRectangle
+
+:rtype: QgsRectangle
 %End
     QgsRasterRangeList noData() const;
 %Docstring
- :rtype: QgsRasterRangeList
+
+:rtype: QgsRasterRangeList
 %End
 
     QList< int > pyramidsList() const;
 %Docstring
- :rtype: list of int
+
+:rtype: list of int
 %End
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
 %Docstring
- :rtype: QgsRaster.RasterBuildPyramids
+
+:rtype: QgsRaster.RasterBuildPyramids
 %End
     QString pyramidsResamplingMethod() const;
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
 %Docstring
- :rtype: QgsRaster.RasterPyramidsFormat
+
+:rtype: QgsRaster.RasterPyramidsFormat
 %End
     QStringList pyramidsConfigOptions() const;
 %Docstring
- :rtype: list of str
+
+:rtype: list of str
 %End
 
     void hideFormat();

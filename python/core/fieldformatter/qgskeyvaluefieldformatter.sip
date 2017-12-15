@@ -10,12 +10,12 @@
 class QgsKeyValueFieldFormatter : QgsFieldFormatter
 {
 %Docstring
- Field formatter for a key value field.
- This represents a list type value.
- Values will be represented as a colon-delimited and
- comma-separated list.
+Field formatter for a key value field.
+This represents a list type value.
+Values will be represented as a colon-delimited and
+comma-separated list.
 
- E.g. "color: yellow, amount: 5"
+E.g. "color: yellow, amount: 5"
 
 .. versionadded:: 3.0
 %End
@@ -27,7 +27,7 @@ class QgsKeyValueFieldFormatter : QgsFieldFormatter
 
     QgsKeyValueFieldFormatter();
 %Docstring
- Default constructor of field formatter for a key value field.
+Default constructor of field formatter for a key value field.
 %End
     virtual QString id() const;
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;

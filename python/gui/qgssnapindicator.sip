@@ -14,7 +14,8 @@
 class QgsSnapIndicator
 {
 %Docstring
- Class that shows snapping marker on map canvas for the current snapping match.
+Class that shows snapping marker on map canvas for the current snapping match.
+
 .. versionadded:: 3.0
 %End
 
@@ -35,7 +36,8 @@ Sets snapping match that should be displayed in map canvas. Invalid match hides 
     QgsPointLocator::Match match() const;
 %Docstring
 Returns currently displayed snapping match
- :rtype: QgsPointLocator.Match
+
+:rtype: QgsPointLocator.Match
 %End
 
     void setVisible( bool visible = true );
@@ -45,14 +47,16 @@ Sets whether the snapping indicator is visible
     bool isVisible() const;
 %Docstring
 Returns whether the snapping indicator is visible
- :rtype: bool
+
+:rtype: bool
 %End
 
   private:
     QgsSnapIndicator( const QgsSnapIndicator &rh );
     QgsSnapIndicator &operator=( const QgsSnapIndicator & );
 %Docstring
- :rtype: QgsSnapIndicator
+
+:rtype: QgsSnapIndicator
 %End
 };
 

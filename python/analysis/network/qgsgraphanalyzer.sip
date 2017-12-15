@@ -14,8 +14,8 @@
 class QgsGraphAnalyzer
 {
 %Docstring
-  This class performs graph analysis, e.g. calculates shortest path between two
- points using different strategies with Dijkstra algorithm
+This class performs graph analysis, e.g. calculates shortest path between two
+points using different strategies with Dijkstra algorithm
 %End
 
 %TypeHeaderCode
@@ -25,12 +25,12 @@ class QgsGraphAnalyzer
 
     static SIP_PYLIST  dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = 0, QVector<double> *resultCost = 0 );
 %Docstring
- Solve shortest path problem using Dijkstra algorithm
- \param source source graph
- \param startVertexIdx index of the start vertex
- \param criterionNum index of the optimization strategy
- \param resultTree array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1
- \param resultCost array of the paths costs
+Solve shortest path problem using Dijkstra algorithm
+:param source: source graph
+:param startVertexIdx: index of the start vertex
+:param criterionNum: index of the optimization strategy
+:param resultTree: array that represents shortest path tree. resultTree[ vertexIndex ] == inboundingArcIndex if vertex reachable, otherwise resultTree[ vertexIndex ] == -1
+:param resultCost: array of the paths costs
 %End
 
 %MethodCode
@@ -64,11 +64,12 @@ class QgsGraphAnalyzer
 
     static QgsGraph *shortestTree( const QgsGraph *source, int startVertexIdx, int criterionNum );
 %Docstring
- Returns shortest path tree with root-node in startVertexIdx
- \param source source graph
- \param startVertexIdx index of the start vertex
- \param criterionNum index of the optimization strategy
- :rtype: QgsGraph
+Returns shortest path tree with root-node in startVertexIdx
+:param source: source graph
+:param startVertexIdx: index of the start vertex
+:param criterionNum: index of the optimization strategy
+
+:rtype: QgsGraph
 %End
 };
 

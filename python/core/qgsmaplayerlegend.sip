@@ -14,8 +14,8 @@
 class QgsMapLayerLegend : QObject
 {
 %Docstring
- The QgsMapLayerLegend class is abstract interface for implementations
- of legends for one map layer.
+The QgsMapLayerLegend class is abstract interface for implementations
+of legends for one map layer.
 
 .. versionadded:: 2.6
 %End
@@ -33,22 +33,25 @@ Constructor for QgsMapLayerLegend
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) = 0 /Factory/;
 %Docstring
- Return list of legend nodes to be used for a particular layer tree layer node.
- Ownership is transferred to the caller.
- :rtype: list of QgsLayerTreeModelLegendNode
+Return list of legend nodes to be used for a particular layer tree layer node.
+Ownership is transferred to the caller.
+
+:rtype: list of QgsLayerTreeModelLegendNode
 %End
 
 
     static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Create new legend implementation for vector layer
- :rtype: QgsMapLayerLegend
+
+:rtype: QgsMapLayerLegend
 %End
 
     static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) /Factory/;
 %Docstring
 Create new legend implementation for raster layer
- :rtype: QgsMapLayerLegend
+
+:rtype: QgsMapLayerLegend
 %End
 
   signals:
@@ -62,7 +65,7 @@ Emitted when existing items/nodes got invalid and should be replaced by new ones
 class QgsMapLayerLegendUtils
 {
 %Docstring
- Miscellaneous utility functions for handling of map layer legend
+Miscellaneous utility functions for handling of map layer legend
 
 .. versionadded:: 2.6
 %End
@@ -74,21 +77,25 @@ class QgsMapLayerLegendUtils
     static void setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, const QList<int> &order );
     static QList<int> legendNodeOrder( QgsLayerTreeLayer *nodeLayer );
 %Docstring
- :rtype: list of int
+
+:rtype: list of int
 %End
     static bool hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     static void setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel );
     static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
@@ -102,7 +109,8 @@ update according to layer node's custom properties (order of items, user labels 
 class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
 {
 %Docstring
- Default legend implementation for vector layers
+Default legend implementation for vector layers
+
 .. versionadded:: 2.6
 %End
 
@@ -120,7 +128,8 @@ class QgsDefaultVectorLayerLegend : QgsMapLayerLegend
 class QgsDefaultRasterLayerLegend : QgsMapLayerLegend
 {
 %Docstring
- Default legend implementation for raster layers
+Default legend implementation for raster layers
+
 .. versionadded:: 2.6
 %End
 

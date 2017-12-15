@@ -19,8 +19,9 @@
 class QgsFeature
 {
 %Docstring
- The feature class encapsulates a single feature including its id,
- geometry and a list of field/values attributes.
+The feature class encapsulates a single feature including its id,
+geometry and a list of field/values attributes.
+
 .. note::
 
    QgsFeature objects are implicitly shared.
@@ -137,20 +138,20 @@ class QgsFeature
 
     QgsFeature( qint64 id = 0 );
 %Docstring
- Constructor for QgsFeature
- \param id feature id
+Constructor for QgsFeature
+:param id: feature id
 %End
 
     QgsFeature( const QgsFields &fields, qint64 id = 0 );
 %Docstring
- Constructor for QgsFeature
- \param fields feature's fields
- \param id feature id
+Constructor for QgsFeature
+:param fields: feature's fields
+:param id: feature id
 %End
 
     QgsFeature( const QgsFeature &rhs );
 %Docstring
- Copy constructor
+Copy constructor
 %End
 
 
@@ -160,55 +161,71 @@ class QgsFeature
 
     QgsFeatureId id() const;
 %Docstring
- Get the feature ID for this feature.
- :return: feature ID
+Get the feature ID for this feature.
+
+:return: feature ID
+:rtype: QgsFeatureId
+
+
 .. seealso:: :py:func:`setId()`
- :rtype: QgsFeatureId
 %End
 
     void setId( QgsFeatureId id );
 %Docstring
- Sets the feature ID for this feature.
- \param id feature id
+Sets the feature ID for this feature.
+:param id: feature id
+
 .. seealso:: :py:func:`id`
 %End
 
     QgsAttributes attributes() const;
 %Docstring
- Returns the feature's attributes.
- :return: list of feature's attributes
+Returns the feature's attributes.
+
+:return: list of feature's attributes
+:rtype: QgsAttributes
+
+
 .. seealso:: :py:func:`setAttributes`
+
 .. versionadded:: 2.9
+
 .. note::
 
    Alternatively in Python: iterate feature, eg. @code [attr for attr in feature] @endcode
- :rtype: QgsAttributes
 %End
 
     void setAttributes( const QgsAttributes &attrs );
 %Docstring
- Sets the feature's attributes.
- The feature will be valid after.
- \param attrs attribute list
+Sets the feature's attributes.
+The feature will be valid after.
+:param attrs: attribute list
+
 .. seealso:: :py:func:`setAttribute`
+
 .. seealso:: :py:func:`attributes`
 %End
 
     bool setAttribute( int field, const QVariant &attr /GetWrapper/ );
 %Docstring
- Set an attribute's value by field index.
- The feature will be valid if it was successful.
- \param field the index of the field to set
- \param attr the value of the attribute
- :return: false, if the field index does not exist
+Set an attribute's value by field index.
+The feature will be valid if it was successful.
+:param field: the index of the field to set
+:param attr: the value of the attribute
+
+:return: false, if the field index does not exist
+:rtype: bool
+
+
 .. note::
 
    For Python: raises a KeyError exception instead of returning false
+
 .. note::
 
    Alternatively in Python: @code feature[field] = attr @endcode
+
 .. seealso:: :py:func:`setAttributes`
- :rtype: bool
 %End
 %MethodCode
     bool rv;
@@ -233,18 +250,21 @@ class QgsFeature
 
     void initAttributes( int fieldCount );
 %Docstring
- Initialize this feature with the given number of fields. Discard any previously set attribute data.
- \param fieldCount Number of fields to initialize
+Initialize this feature with the given number of fields. Discard any previously set attribute data.
+:param fieldCount: Number of fields to initialize
 %End
 
     void deleteAttribute( int field );
 %Docstring
- Deletes an attribute and its value.
- \param field the index of the field
+Deletes an attribute and its value.
+:param field: the index of the field
+
 .. seealso:: :py:func:`setAttribute`
+
 .. note::
 
    For Python: raises a KeyError exception if the field is not found
+
 .. note::
 
    Alternatively in Python: @code del feature[field] @endcode
@@ -261,85 +281,107 @@ class QgsFeature
 
     bool isValid() const;
 %Docstring
- Returns the validity of this feature. This is normally set by
- the provider to indicate some problem that makes the feature
- invalid or to indicate a null feature.
+Returns the validity of this feature. This is normally set by
+the provider to indicate some problem that makes the feature
+invalid or to indicate a null feature.
+
+:rtype: bool
+
 .. seealso:: :py:func:`setValid`
- :rtype: bool
 %End
 
     void setValid( bool validity );
 %Docstring
- Sets the validity of the feature.
- \param validity set to true if feature is valid
+Sets the validity of the feature.
+:param validity: set to true if feature is valid
+
 .. seealso:: :py:func:`isValid`
 %End
 
     bool hasGeometry() const;
 %Docstring
- Returns true if the feature has an associated geometry.
+Returns true if the feature has an associated geometry.
+
+:rtype: bool
+
 .. seealso:: :py:func:`geometry()`
+
 .. versionadded:: 3.0.
- :rtype: bool
 %End
 
     QgsGeometry geometry() const;
 %Docstring
- Returns the geometry associated with this feature. If the feature has no geometry,
- an empty QgsGeometry object will be returned.
+Returns the geometry associated with this feature. If the feature has no geometry,
+an empty QgsGeometry object will be returned.
+
+:rtype: QgsGeometry
+
 .. seealso:: :py:func:`hasGeometry()`
+
 .. seealso:: :py:func:`setGeometry()`
- :rtype: QgsGeometry
 %End
 
     void setGeometry( const QgsGeometry &geometry );
 %Docstring
- Set the feature's geometry. The feature will be valid after.
- \param geometry new feature geometry
+Set the feature's geometry. The feature will be valid after.
+:param geometry: new feature geometry
+
 .. seealso:: :py:func:`geometry()`
+
 .. seealso:: :py:func:`clearGeometry()`
 %End
 
     void clearGeometry();
 %Docstring
- Removes any geometry associated with the feature.
+Removes any geometry associated with the feature.
+
 .. seealso:: :py:func:`setGeometry()`
+
 .. seealso:: :py:func:`hasGeometry()`
+
 .. versionadded:: 3.0
 %End
 
     void setFields( const QgsFields &fields, bool initAttributes = true  );
 %Docstring
- Assign a field map with the feature to allow attribute access by attribute name.
-  \param fields The attribute fields which this feature holds
-  \param initAttributes If true, attributes are initialized. Clears any data previously assigned.
-                        C++: Defaults to false
-                        Python: Defaults to true
+Assign a field map with the feature to allow attribute access by attribute name.
+:param fields: The attribute fields which this feature holds
+:param initAttributes: If true, attributes are initialized. Clears any data previously assigned.
+C++: Defaults to false
+Python: Defaults to true
+
 .. versionadded:: 2.9
+
 .. seealso:: :py:func:`fields`
 %End
 
     QgsFields fields() const;
 %Docstring
- Returns the field map associated with the feature.
+Returns the field map associated with the feature.
+
+:rtype: QgsFields
+
 .. seealso:: :py:func:`setFields`
- :rtype: QgsFields
 %End
 
     void setAttribute( const QString &name, const QVariant &value /GetWrapper/ );
 %Docstring
- Insert a value into attribute. Returns false if attribute name could not be converted to index.
-  Field map must be associated using setFields() before this method can be used.
-  The feature will be valid if it was successful
-  \param name The name of the field to set
-  \param value The value to set
-  :return: false if attribute name could not be converted to index (C++ only)
+Insert a value into attribute. Returns false if attribute name could not be converted to index.
+Field map must be associated using setFields() before this method can be used.
+The feature will be valid if it was successful
+:param name: The name of the field to set
+:param value: The value to set
+
+:return: false if attribute name could not be converted to index (C++ only)
+
 .. note::
 
    For Python: raises a KeyError exception instead of returning false
+
 .. note::
 
    Alternatively in Python: @code feature[name] = attr @endcode
+
 .. seealso:: :py:func:`setFields`
 %End
 %MethodCode
@@ -364,18 +406,23 @@ class QgsFeature
 
     bool deleteAttribute( const QString &name );
 %Docstring
- Removes an attribute value by field name. Field map must be associated using setFields()
-  before this method can be used.
-  \param name The name of the field to delete
-  :return: false if attribute name could not be converted to index (C++ only)
+Removes an attribute value by field name. Field map must be associated using setFields()
+before this method can be used.
+:param name: The name of the field to delete
+
+:return: false if attribute name could not be converted to index (C++ only)
+:rtype: bool
+
+
 .. note::
 
    For Python: raises a KeyError exception instead of returning false
+
 .. note::
 
    Alternatively in Python: @code del feature[name] @endcode
+
 .. seealso:: :py:func:`setFields`
- :rtype: bool
 %End
 %MethodCode
     int fieldIdx = sipCpp->fieldNameIndex( *a0 );
@@ -394,16 +441,20 @@ class QgsFeature
 
     SIP_PYOBJECT attribute( const QString &name ) const;
 %Docstring
- Lookup attribute value from attribute name. Field map must be associated using setFields()
-  before this method can be used.
-  \param name The name of the attribute to get
-  :return: The value of the attribute (C++: Invalid variant if no such name exists )
+Lookup attribute value from attribute name. Field map must be associated using setFields()
+before this method can be used.
+:param name: The name of the attribute to get
+
+:return: The value of the attribute (C++: Invalid variant if no such name exists )
+
 .. note::
 
    For Python: raises a KeyError exception if the field is not found
+
 .. note::
 
    Alternatively in Python: @code feature[name] @endcode
+
 .. seealso:: :py:func:`setFields`
 %End
 %MethodCode
@@ -422,16 +473,20 @@ class QgsFeature
 
     SIP_PYOBJECT attribute( int fieldIdx ) const;
 %Docstring
- Lookup attribute value from its index. Field map must be associated using setFields()
-  before this method can be used.
-  \param fieldIdx The index of the attribute to get
-  :return: The value of the attribute (C++: Invalid variant if no such index exists )
+Lookup attribute value from its index. Field map must be associated using setFields()
+before this method can be used.
+:param fieldIdx: The index of the attribute to get
+
+:return: The value of the attribute (C++: Invalid variant if no such index exists )
+
 .. note::
 
    For Python: raises a KeyError exception if the field is not found
+
 .. note::
 
    Alternatively in Python: @code feature[fieldIdx] @endcode
+
 .. seealso:: :py:func:`setFields`
 %End
 %MethodCode
@@ -451,12 +506,15 @@ class QgsFeature
 
     int fieldNameIndex( const QString &fieldName ) const;
 %Docstring
- Utility method to get attribute index from name. Field map must be associated using setFields()
-  before this method can be used.
-  \param fieldName name of field to get attribute index of
-  :return: -1 if field does not exist or field map is not associated.
+Utility method to get attribute index from name. Field map must be associated using setFields()
+before this method can be used.
+:param fieldName: name of field to get attribute index of
+
+:return: -1 if field does not exist or field map is not associated.
+:rtype: int
+
+
 .. seealso:: :py:func:`setFields`
- :rtype: int
 %End
 
     operator QVariant() const;

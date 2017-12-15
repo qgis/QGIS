@@ -18,7 +18,7 @@
 class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
 {
 %Docstring
- Partial snapshot of vector layer's state (only the members necessary for access to features)
+Partial snapshot of vector layer's state (only the members necessary for access to features)
 %End
 
 %TypeHeaderCode
@@ -28,8 +28,8 @@ class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
 
     explicit QgsVectorLayerFeatureSource( const QgsVectorLayer *layer );
 %Docstring
- Constructor for QgsVectorLayerFeatureSource.
- \param layer source layer
+Constructor for QgsVectorLayerFeatureSource.
+:param layer: source layer
 %End
 
     ~QgsVectorLayerFeatureSource();
@@ -39,18 +39,21 @@ class QgsVectorLayerFeatureSource : QgsAbstractFeatureSource
 
     QgsFields fields() const;
 %Docstring
- Returns the fields that will be available for features that are retrieved from
- this source.
+Returns the fields that will be available for features that are retrieved from
+this source.
+
+:rtype: QgsFields
 
 .. versionadded:: 3.0
- :rtype: QgsFields
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
- Returns the coordinate reference system for features retrieved from this source.
+Returns the coordinate reference system for features retrieved from this source.
+
+:rtype: QgsCoordinateReferenceSystem
+
 .. versionadded:: 3.0
- :rtype: QgsCoordinateReferenceSystem
 %End
 
   protected:
@@ -83,13 +86,15 @@ typedef QgsAbstractFeatureIteratorFromSource<QgsVectorLayerFeatureSource> QgsAbs
     virtual bool rewind();
 %Docstring
 reset the iterator to the starting position
- :rtype: bool
+
+:rtype: bool
 %End
 
     virtual bool close();
 %Docstring
 end of iterating: free the resources / lock
- :rtype: bool
+
+:rtype: bool
 %End
 
 
@@ -113,20 +118,23 @@ end of iterating: free the resources / lock
     virtual bool fetchFeature( QgsFeature &feature );
 %Docstring
 fetch next feature, return true on success
- :rtype: bool
+
+:rtype: bool
 %End
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
 %Docstring
- Overrides default method as we only need to filter features in the edit buffer
- while for others filtering is left to the provider implementation.
- :rtype: bool
+Overrides default method as we only need to filter features in the edit buffer
+while for others filtering is left to the provider implementation.
+
+:rtype: bool
 %End
 
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
 %Docstring
 Setup the simplification of geometries to fetch using the specified simplify method
- :rtype: bool
+
+:rtype: bool
 %End
 
 
@@ -155,7 +163,8 @@ Setup the simplification of geometries to fetch using the specified simplify met
 class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource
 {
 %Docstring
- QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
+QgsFeatureSource subclass for the selected features from a QgsVectorLayer.
+
 .. versionadded:: 3.0
 %End
 
@@ -166,9 +175,9 @@ class QgsVectorLayerSelectedFeatureSource : QgsFeatureSource
 
     QgsVectorLayerSelectedFeatureSource( QgsVectorLayer *layer );
 %Docstring
- Constructor for QgsVectorLayerSelectedFeatureSource, for selected features from the specified ``layer``.
- The currently selected feature IDs are stored, so change to the layer selection after constructing
- the QgsVectorLayerSelectedFeatureSource will not be reflected.
+Constructor for QgsVectorLayerSelectedFeatureSource, for selected features from the specified ``layer``.
+The currently selected feature IDs are stored, so change to the layer selection after constructing
+the QgsVectorLayerSelectedFeatureSource will not be reflected.
 %End
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;

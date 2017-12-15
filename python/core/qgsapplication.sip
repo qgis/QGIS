@@ -13,10 +13,10 @@
 class QgsApplication : QApplication
 {
 %Docstring
- Extends QApplication to provide access to QGIS specific resources such
- as theme paths, database paths etc.
+Extends QApplication to provide access to QGIS specific resources such
+as theme paths, database paths etc.
 
- This is a subclass of QApplication and should be instantiated in place of
+This is a subclass of QApplication and should be instantiated in place of
 QApplication. Most methods are static in keeping with the design of QApplication.
 
 This class hides platform-specific path information and provides
@@ -105,23 +105,26 @@ to change due to centralization.
 
     static QgsApplication *instance();
 %Docstring
- Returns the singleton instance of the QgsApplication.
+Returns the singleton instance of the QgsApplication.
+
+:rtype: QgsApplication
 
 .. versionadded:: 3.0
- :rtype: QgsApplication
 %End
 
 
     virtual bool event( QEvent *event );
 %Docstring
 Watch for QFileOpenEvent.
- :rtype: bool
+
+:rtype: bool
 %End
 
     virtual bool notify( QObject *receiver, QEvent *event );
 %Docstring
 Catch exceptions when sending event to receiver.
- :rtype: bool
+
+:rtype: bool
 %End
 
     static void setFileOpenEventReceiver( QObject *receiver );
@@ -131,34 +134,37 @@ Set the FileOpen event receiver
 
     static void setThemeName( const QString &themeName );
 %Docstring
- Set the active theme to the specified theme.
- The theme name should be a single word e.g. 'default','classic'.
- The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
- but plugin writers etc can use themeName() as a basis for searching
- for resources in their own datastores e.g. a Qt4 resource bundle.
+Set the active theme to the specified theme.
+The theme name should be a single word e.g. 'default','classic'.
+The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
+but plugin writers etc can use themeName() as a basis for searching
+for resources in their own datastores e.g. a Qt4 resource bundle.
+
 .. note::
 
    A basic test will be carried out to ensure the theme search path
- based on the supplied theme name exists. If it does not the theme name will
- be reverted to 'default'.
+based on the supplied theme name exists. If it does not the theme name will
+be reverted to 'default'.
 %End
 
     static QString themeName();
 %Docstring
- Set the active theme to the specified theme.
- The theme name should be a single word e.g. 'default','classic'.
- The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
- but plugin writers etc can use this method as a basis for searching
- for resources in their own datastores e.g. a Qt4 resource bundle.
- :rtype: str
+Set the active theme to the specified theme.
+The theme name should be a single word e.g. 'default','classic'.
+The theme search path usually will be pkgDataPath + "/themes/" + themName + "/"
+but plugin writers etc can use this method as a basis for searching
+for resources in their own datastores e.g. a Qt4 resource bundle.
+
+:rtype: str
 %End
 
     static void setUITheme( const QString &themeName );
 %Docstring
  Set the current UI theme used to style the interface.  Use uiThemes() to
- find valid themes to use. Variables found in variables.qss will be added to the stylesheet
- on load.
- \param themeName The name of the theme.
+find valid themes to use. Variables found in variables.qss will be added to the stylesheet
+on load.
+:param themeName: The name of the theme.
+
 .. note::
 
    using an invalid theme name will reset to default
@@ -167,182 +173,214 @@ Set the FileOpen event receiver
     static QHash<QString, QString> uiThemes();
 %Docstring
  All themes found in ~/.qgis3/themes folder.
- The path is to the root folder for the theme
+The path is to the root folder for the theme
+
+:rtype: QHash<str, QString>
+
 .. note::
 
    Valid theme folders must contain a style.qss file.
- :return: A hash of theme name and theme path. Valid theme folders contain style.qss
- :rtype: QHash<str, QString>
+
+:return: A hash of theme name and theme path. Valid theme folders contain style.qss
 %End
 
     static QString authorsFilePath();
 %Docstring
 Returns the path to the authors file.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString contributorsFilePath();
 %Docstring
- Returns the path to the contributors file.
- Contributors are people who have submitted patches
- but don't have commit access. *
- :rtype: str
+Returns the path to the contributors file.
+Contributors are people who have submitted patches
+but don't have commit access. *
+
+:rtype: str
 %End
 
     static QString developersMapFilePath();
 %Docstring
- Returns the path to the developers map file.
- The developers map was created by using leaflet framework,
- it shows the doc/contributors.json file.
+Returns the path to the developers map file.
+The developers map was created by using leaflet framework,
+it shows the doc/contributors.json file.
+
+:rtype: str
+
 .. versionadded:: 2.7
- :rtype: str
 %End
 
     static QString sponsorsFilePath();
 %Docstring
 Returns the path to the sponsors file.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString donorsFilePath();
 %Docstring
 Returns the path to the donors file.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString serverResourcesPath();
 %Docstring
 Returns the path to the server resources directory.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString translatorsFilePath();
 %Docstring
- Returns the path to the sponsors file.
- :rtype: str
+Returns the path to the sponsors file.
+
+:rtype: str
 %End
 
     static QString licenceFilePath();
 %Docstring
 Returns the path to the licence file.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString i18nPath();
 %Docstring
 Returns the path to the translation directory.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString metadataPath();
 %Docstring
- Returns the path to the metadata directory.
+Returns the path to the metadata directory.
+
+:rtype: str
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     static QString qgisMasterDatabaseFilePath();
 %Docstring
 Returns the path to the master qgis.db file.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString qgisSettingsDirPath();
 %Docstring
 Returns the path to the settings directory in user's home dir
- :rtype: str
+
+:rtype: str
 %End
 
     static QString qgisUserDatabaseFilePath();
 %Docstring
 Returns the path to the user qgis.db file.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString qgisAuthDatabaseFilePath();
 %Docstring
 Returns the path to the user authentication database file: qgis-auth.db.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString splashPath();
 %Docstring
 Returns the path to the splash screen image directory.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString iconsPath();
 %Docstring
 Returns the path to the icons image directory.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString srsDatabaseFilePath();
 %Docstring
 Returns the path to the srs.db file.
- :rtype: str
+
+:rtype: str
 %End
 
     static QStringList svgPaths();
 %Docstring
 Returns the paths to svg directories.
- :rtype: list of str
+
+:rtype: list of str
 %End
 
     static QStringList composerTemplatePaths();
 %Docstring
 Returns the paths to composer template directories
- :rtype: list of str
+
+:rtype: list of str
 %End
 
     static QMap<QString, QString> systemEnvVars();
 %Docstring
 Returns the system environment variables passed to application.
- :rtype: QMap<str, QString>
+
+:rtype: QMap<str, QString>
 %End
 
     static QString prefixPath();
 %Docstring
 Returns the path to the application prefix directory.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString pluginPath();
 %Docstring
 Returns the path to the application plugin directory.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString pkgDataPath();
 %Docstring
 Returns the common root path of all application data directories.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString activeThemePath();
 %Docstring
 Returns the path to the currently active theme directory.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString defaultThemePath();
 %Docstring
 Returns the path to the default theme directory.
- :rtype: str
+
+:rtype: str
 %End
 
     static QString iconPath( const QString &iconFile );
 %Docstring
- Returns path to the desired icon file.
- First it tries to use the active theme path, then default theme path
- :rtype: str
+Returns path to the desired icon file.
+First it tries to use the active theme path, then default theme path
+
+:rtype: str
 %End
 
     static QIcon getThemeIcon( const QString &name );
 %Docstring
- Helper to get a theme icon. It will fall back to the
- default theme if the active theme does not have the required icon.
- :rtype: QIcon
+Helper to get a theme icon. It will fall back to the
+default theme if the active theme does not have the required icon.
+
+:rtype: QIcon
 %End
 
     enum Cursor
@@ -358,99 +396,122 @@ Returns the path to the default theme directory.
 
     static QCursor getThemeCursor( const Cursor &cursor );
 %Docstring
- Helper to get a theme cursor. It will fall back to the
- default theme if the active theme does not have the required icon.
- Cursors are automatically scaled to look like a 16px cursor on 96dpi
- screens.
- :rtype: QCursor
+Helper to get a theme cursor. It will fall back to the
+default theme if the active theme does not have the required icon.
+Cursors are automatically scaled to look like a 16px cursor on 96dpi
+screens.
+
+:rtype: QCursor
 %End
 
     static QPixmap getThemePixmap( const QString &name );
 %Docstring
- Helper to get a theme icon as a pixmap. It will fall back to the
- default theme if the active theme does not have the required icon.
- :rtype: QPixmap
+Helper to get a theme icon as a pixmap. It will fall back to the
+default theme if the active theme does not have the required icon.
+
+:rtype: QPixmap
 %End
 
     static QString userStylePath();
 %Docstring
 Returns the path to user's style.
- :rtype: str
+
+:rtype: str
 %End
 
     static QRegExp shortNameRegExp();
 %Docstring
 Returns the short name regular expression for line edit validator
- :rtype: QRegExp
+
+:rtype: QRegExp
 %End
 
     static QString userLoginName();
 %Docstring
- Returns the user's operating system login account name.
+Returns the user's operating system login account name.
+
+:rtype: str
+
 .. versionadded:: 2.14
+
 .. seealso:: :py:func:`userFullName()`
- :rtype: str
 %End
 
     static QString userFullName();
 %Docstring
- Returns the user's operating system login account full display name.
+Returns the user's operating system login account full display name.
+
+:rtype: str
+
 .. versionadded:: 2.14
+
 .. seealso:: :py:func:`userLoginName()`
- :rtype: str
 %End
 
     static QString osName();
 %Docstring
- Returns a string name of the operating system QGIS is running on.
+Returns a string name of the operating system QGIS is running on.
+
+:rtype: str
+
 .. versionadded:: 2.14
+
 .. seealso:: :py:func:`platform()`
- :rtype: str
 %End
 
     static QString platform();
 %Docstring
- Returns the QGIS platform name, e.g., "desktop" or "server".
+Returns the QGIS platform name, e.g., "desktop" or "server".
+
+:rtype: str
+
 .. versionadded:: 2.14
+
 .. seealso:: :py:func:`osName()`
- :rtype: str
 %End
 
     static QString locale();
 %Docstring
- Returns the QGIS locale.
+Returns the QGIS locale.
+
+:rtype: str
+
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     static QString userThemesFolder();
 %Docstring
 Returns the path to user's themes folder
- :rtype: str
+
+:rtype: str
 %End
 
     static QString defaultStylePath();
 %Docstring
 Returns the path to default style (works as a starting point).
- :rtype: str
+
+:rtype: str
 %End
 
     static QString defaultThemesFolder();
 %Docstring
 Returns the path to default themes folder from install (works as a starting point).
- :rtype: str
+
+:rtype: str
 %End
 
     static QString libraryPath();
 %Docstring
 Returns the path containing qgis_core, qgis_gui, qgispython (and other) libraries
- :rtype: str
+
+:rtype: str
 %End
 
     static QString libexecPath();
 %Docstring
 Returns the path with utility executables (help viewer, crssync, ...)
- :rtype: str
+
+:rtype: str
 %End
 
     static void setPrefixPath( const QString &prefixPath, bool useDefaultPaths = false );
@@ -486,13 +547,15 @@ loads providers
     static bool createDatabase( QString *errorMessage = 0 );
 %Docstring
 initialize qgis.db
- :rtype: bool
+
+:rtype: bool
 %End
 
     static bool createThemeFolder();
 %Docstring
 Create the users theme folder
- :rtype: bool
+
+:rtype: bool
 %End
 
     static void exitQgis();
@@ -503,7 +566,8 @@ deletes provider registry and map layer registry
     static QString appIconPath();
 %Docstring
 get application icon
- :rtype: str
+
+:rtype: str
 %End
 
     enum endian_t
@@ -515,290 +579,349 @@ get application icon
     static endian_t endian();
 %Docstring
 Returns whether this machine uses big or little endian
- :rtype: endian_t
+
+:rtype: endian_t
 %End
 
 
     static QString reportStyleSheet();
 %Docstring
  get a standard css style sheet for reports.
- Typically you will use this method by doing:
- QString myStyle = QgsApplication.reportStyleSheet();
- textBrowserReport->document()->setDefaultStyleSheet(myStyle);
- :return: QString containing the CSS 2.1 compliant stylesheet.
+Typically you will use this method by doing:
+QString myStyle = QgsApplication.reportStyleSheet();
+textBrowserReport->document()->setDefaultStyleSheet(myStyle);
+
+:return: QString containing the CSS 2.1 compliant stylesheet.
+:rtype: str
+
+
 .. note::
 
    you can use the special Qt extensions too, for example
- the gradient fills for backgrounds.
- :rtype: str
+the gradient fills for backgrounds.
 %End
 
     static QString showSettings();
 %Docstring
- Convenience function to get a summary of the paths used in this
- application instance useful for debugging mainly.*
- :rtype: str
+Convenience function to get a summary of the paths used in this
+application instance useful for debugging mainly.*
+
+:rtype: str
 %End
 
     static void registerOgrDrivers();
 %Docstring
- Register OGR drivers ensuring this only happens once.
- This is a workaround for an issue with older gdal versions that
- caused duplicate driver name entries to appear in the list
- of registered drivers when QgsApplication.registerOgrDrivers was called multiple
- times.
+Register OGR drivers ensuring this only happens once.
+This is a workaround for an issue with older gdal versions that
+caused duplicate driver name entries to appear in the list
+of registered drivers when QgsApplication.registerOgrDrivers was called multiple
+times.
 %End
 
     static QString absolutePathToRelativePath( const QString &apath, const QString &targetPath );
 %Docstring
 Converts absolute path to path relative to target
- :rtype: str
+
+:rtype: str
 %End
     static QString relativePathToAbsolutePath( const QString &rpath, const QString &targetPath );
 %Docstring
 Converts path relative to target to an absolute path
- :rtype: str
+
+:rtype: str
 %End
 
     static bool isRunningFromBuildDir();
 %Docstring
 Indicates whether running from build directory (not installed)
- :rtype: bool
+
+:rtype: bool
 %End
     static QString buildSourcePath();
 %Docstring
 Returns path to the source directory. Valid only when running from build directory
- :rtype: str
+
+:rtype: str
 %End
     static QString buildOutputPath();
 %Docstring
 Returns path to the build output directory. Valid only when running from build directory
- :rtype: str
+
+:rtype: str
 %End
 
     static void skipGdalDriver( const QString &driver );
 %Docstring
- Sets the GDAL_SKIP environment variable to include the specified driver
- and then calls GDALDriverManager.AutoSkipDrivers() to unregister it. The
- driver name should be the short format of the Gdal driver name e.g. GTIFF.
+Sets the GDAL_SKIP environment variable to include the specified driver
+and then calls GDALDriverManager.AutoSkipDrivers() to unregister it. The
+driver name should be the short format of the Gdal driver name e.g. GTIFF.
 %End
 
     static void restoreGdalDriver( const QString &driver );
 %Docstring
- Sets the GDAL_SKIP environment variable to exclude the specified driver
- and then calls GDALDriverManager.AutoSkipDrivers() to unregister it. The
- driver name should be the short format of the Gdal driver name e.g. GTIFF.
+Sets the GDAL_SKIP environment variable to exclude the specified driver
+and then calls GDALDriverManager.AutoSkipDrivers() to unregister it. The
+driver name should be the short format of the Gdal driver name e.g. GTIFF.
 %End
 
     static QStringList skippedGdalDrivers();
 %Docstring
- Returns the list of gdal drivers that should be skipped (based on
- GDAL_SKIP environment variable)
- :rtype: list of str
+Returns the list of gdal drivers that should be skipped (based on
+GDAL_SKIP environment variable)
+
+:rtype: list of str
 %End
 
     static void applyGdalSkippedDrivers();
 %Docstring
- Apply the skipped drivers list to gdal
+Apply the skipped drivers list to gdal
+
 .. seealso:: :py:func:`skipGdalDriver`
+
 .. seealso:: :py:func:`restoreGdalDriver`
+
 .. seealso:: :py:func:`skippedGdalDrivers`
 %End
 
     static int maxThreads();
 %Docstring
- Get maximum concurrent thread count
+Get maximum concurrent thread count
+
+:rtype: int
+
 .. versionadded:: 2.4
- :rtype: int
 %End
 
     static void setMaxThreads( int maxThreads );
 %Docstring
- Set maximum concurrent thread count
+Set maximum concurrent thread count
+
 .. note::
 
    must be between 1 and \#cores, -1 means use all available cores
+
 .. versionadded:: 2.4
 %End
 
     static QgsTaskManager *taskManager();
 %Docstring
- Returns the application's task manager, used for managing application
- wide background task handling.
+Returns the application's task manager, used for managing application
+wide background task handling.
+
+:rtype: QgsTaskManager
+
 .. versionadded:: 3.0
- :rtype: QgsTaskManager
 %End
 
     static QgsColorSchemeRegistry *colorSchemeRegistry();
 %Docstring
- Returns the application's color scheme registry, used for managing color schemes.
+Returns the application's color scheme registry, used for managing color schemes.
+
+:rtype: QgsColorSchemeRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsColorSchemeRegistry
 %End
 
     static QgsPaintEffectRegistry *paintEffectRegistry();
 %Docstring
- Returns the application's paint effect registry, used for managing paint effects.
+Returns the application's paint effect registry, used for managing paint effects.
+
+:rtype: QgsPaintEffectRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsPaintEffectRegistry
 %End
 
     static QgsRendererRegistry *rendererRegistry();
 %Docstring
- Returns the application's renderer registry, used for managing vector layer renderers.
+Returns the application's renderer registry, used for managing vector layer renderers.
+
+:rtype: QgsRendererRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsRendererRegistry
 %End
 
 
     static QgsDataItemProviderRegistry *dataItemProviderRegistry();
 %Docstring
- Returns the application's data item provider registry, which keeps a list of data item
- providers that may add items to the browser tree.
+Returns the application's data item provider registry, which keeps a list of data item
+providers that may add items to the browser tree.
+
+:rtype: QgsDataItemProviderRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsDataItemProviderRegistry
 %End
 
     static QgsSvgCache *svgCache();
 %Docstring
- Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
- within SVG files.
+Returns the application's SVG cache, used for caching SVG images and handling parameter replacement
+within SVG files.
+
+:rtype: QgsSvgCache
+
 .. versionadded:: 3.0
- :rtype: QgsSvgCache
 %End
 
     static QgsSymbolLayerRegistry *symbolLayerRegistry();
 %Docstring
- Returns the application's symbol layer registry, used for managing symbol layers.
+Returns the application's symbol layer registry, used for managing symbol layers.
+
+:rtype: QgsSymbolLayerRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsSymbolLayerRegistry
 %End
 
     static QgsLayoutItemRegistry *layoutItemRegistry();
 %Docstring
- Returns the application's layout item registry, used for layout item types.
+Returns the application's layout item registry, used for layout item types.
+
+:rtype: QgsLayoutItemRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsLayoutItemRegistry
 %End
 
     static QgsGPSConnectionRegistry *gpsConnectionRegistry();
 %Docstring
- Returns the application's GPS connection registry, used for managing GPS connections.
+Returns the application's GPS connection registry, used for managing GPS connections.
+
+:rtype: QgsGPSConnectionRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsGPSConnectionRegistry
 %End
 
     static QgsPluginLayerRegistry *pluginLayerRegistry();
 %Docstring
- Returns the application's plugin layer registry, used for managing plugin layer types.
+Returns the application's plugin layer registry, used for managing plugin layer types.
+
+:rtype: QgsPluginLayerRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsPluginLayerRegistry
 %End
 
     static QgsMessageLog *messageLog();
 %Docstring
- Returns the application's message log.
+Returns the application's message log.
+
+:rtype: QgsMessageLog
+
 .. versionadded:: 3.0
- :rtype: QgsMessageLog
 %End
 
     static QgsAuthManager *authManager();
 %Docstring
- Returns the application's authentication manager instance
+Returns the application's authentication manager instance
+
+:rtype: QgsAuthManager
+
 .. note::
 
    this can be a null pointer if called before initQgis
+
 .. seealso:: :py:func:`initQgis`
+
 .. versionadded:: 3.0
- :rtype: QgsAuthManager
 %End
 
     static QgsProcessingRegistry *processingRegistry();
 %Docstring
- Returns the application's processing registry, used for managing processing providers,
- algorithms, and various parameters and outputs.
+Returns the application's processing registry, used for managing processing providers,
+algorithms, and various parameters and outputs.
+
+:rtype: QgsProcessingRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsProcessingRegistry
 %End
 
     static QgsPageSizeRegistry *pageSizeRegistry();
 %Docstring
- Returns the application's page size registry, used for managing layout page sizes.
+Returns the application's page size registry, used for managing layout page sizes.
+
+:rtype: QgsPageSizeRegistry
+
 .. versionadded:: 3.0
- :rtype: QgsPageSizeRegistry
 %End
 
 
     static QgsActionScopeRegistry *actionScopeRegistry();
 %Docstring
- Returns the action scope registry.
+Returns the action scope registry.
+
+:rtype: QgsActionScopeRegistry
 
 .. versionadded:: 3.0
- :rtype: QgsActionScopeRegistry
 %End
 
     static QgsRuntimeProfiler *profiler();
 %Docstring
- Returns the application runtime profiler.
+Returns the application runtime profiler.
+
+:rtype: QgsRuntimeProfiler
+
 .. versionadded:: 3.0
- :rtype: QgsRuntimeProfiler
 %End
 
     static QgsFieldFormatterRegistry *fieldFormatterRegistry();
 %Docstring
- Get the registry of available field formatters.
- :rtype: QgsFieldFormatterRegistry
+Get the registry of available field formatters.
+
+:rtype: QgsFieldFormatterRegistry
 %End
 
     static Qgs3DRendererRegistry *renderer3DRegistry();
 %Docstring
- Returns registry of available 3D renderers.
+Returns registry of available 3D renderers.
+
+:rtype: Qgs3DRendererRegistry
+
 .. note::
 
    not available in Python bindings
+
 .. versionadded:: 3.0
- :rtype: Qgs3DRendererRegistry
 %End
 
     static QString nullRepresentation();
 %Docstring
- This string is used to represent the value `NULL` throughout QGIS.
+This string is used to represent the value `NULL` throughout QGIS.
 
- In general, when passing values around, prefer to use a null QVariant
- `QVariant( field.type() )` or `QVariant( QVariant.Int )`. This value
- should only be used in the final presentation step when showing values
- in a widget or sending it to a web browser.
- :rtype: str
+In general, when passing values around, prefer to use a null QVariant
+`QVariant( field.type() )` or `QVariant( QVariant.Int )`. This value
+should only be used in the final presentation step when showing values
+in a widget or sending it to a web browser.
+
+:rtype: str
 %End
 
     static void setNullRepresentation( const QString &nullRepresentation );
 %Docstring
- \copydoc nullRepresentation()
+\copydoc nullRepresentation()
 %End
 
     static QVariantMap customVariables();
 %Docstring
- Custom expression variables for this application.
- This does not include generated variables (like system name, user name etc.)
+Custom expression variables for this application.
+This does not include generated variables (like system name, user name etc.)
+
+:rtype: QVariantMap
 
 .. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables()`
+
 .. versionadded:: 3.0
- :rtype: QVariantMap
 %End
 
     static void setCustomVariables( const QVariantMap &customVariables );
 %Docstring
- Custom expression variables for this application.
- Do not include generated variables (like system name, user name etc.)
+Custom expression variables for this application.
+Do not include generated variables (like system name, user name etc.)
 
 .. seealso:: :py:func:`QgsExpressionContextUtils.globalVariables()`
+
 .. versionadded:: 3.0
 %End
 
 
     static void setCustomVariable( const QString &name, const QVariant &value );
 %Docstring
- Set a single custom expression variable.
+Set a single custom expression variable.
 
 .. versionadded:: 3.0
 %End
@@ -807,7 +930,8 @@ Returns path to the build output directory. Valid only when running from build d
     //dummy method to workaround sip generation issue
     bool x11EventFilter( XEvent *event );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 %End
 
@@ -815,14 +939,15 @@ Returns path to the build output directory. Valid only when running from build d
 
     void customVariablesChanged();
 %Docstring
- Emitted whenever a custom global variable changes.
+Emitted whenever a custom global variable changes.
+
 .. versionadded:: 3.0
 %End
 
 
     void nullRepresentationChanged();
 %Docstring
- \copydoc nullRepresentation()
+\copydoc nullRepresentation()
 %End
 
 };

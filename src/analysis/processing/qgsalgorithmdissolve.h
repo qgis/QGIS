@@ -50,6 +50,7 @@ class QgsDissolveAlgorithm : public QgsCollectorAlgorithm
     QString displayName() const override;
     virtual QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsDissolveAlgorithm *createInstance() const override SIP_FACTORY;
 
@@ -74,6 +75,7 @@ class QgsCollectAlgorithm : public QgsCollectorAlgorithm
     QString displayName() const override;
     virtual QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsCollectAlgorithm *createInstance() const override SIP_FACTORY;
 

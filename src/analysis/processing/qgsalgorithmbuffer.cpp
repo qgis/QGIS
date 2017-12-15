@@ -39,6 +39,11 @@ QString QgsBufferAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsBufferAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 void QgsBufferAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterFeatureSource( QStringLiteral( "INPUT" ), QObject::tr( "Input layer" ) ) );

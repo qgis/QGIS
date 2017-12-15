@@ -39,7 +39,11 @@ class Qgs3DMapCanvas : public QWidget
     //! Configure map scene being displayed. Takes ownership.
     void setMap( Qgs3DMapSettings *map );
 
+    //! Returns access to the 3D scene configuration
     Qgs3DMapSettings *map() { return mMap; }
+
+    //! Returns access to the 3D scene (root 3D entity)
+    Qgs3DMapScene *scene() { return mScene; }
 
     //! Returns access to the view's camera controller. Returns null pointer if the scene has not been initialized yet with setMap()
     QgsCameraController *cameraController();

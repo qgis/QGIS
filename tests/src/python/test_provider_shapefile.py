@@ -569,7 +569,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         ds = None
 
     def testOpenWithFilter(self):
-        file_path = os.path.join(TEST_DATA_DIR, 'provider')
+        file_path = os.path.join(TEST_DATA_DIR, 'provider', 'shapefile.shp')
         uri = '{}|layerid=0|subset="name" = \'Apple\''.format(file_path)
         # ensure that no longer required ogr SQL layers are correctly cleaned up
         # we need to run this twice for the incorrect cleanup asserts to trip,
@@ -577,7 +577,7 @@ class TestPyQgsShapefileProvider(unittest.TestCase, ProviderTestCase):
         # connection pool
         for i in range(2):
             vl = QgsVectorLayer(uri)
-            self.assertTrue(vl.isValid())
+            self.assertTrue(vl.isValid(), 'Layer not valid, iteration {}'.format(i + 1))
             self.assertEqual(vl.featureCount(), 1)
             f = next(vl.getFeatures())
             self.assertEqual(f['name'], 'Apple')

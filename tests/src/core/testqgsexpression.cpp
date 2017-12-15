@@ -2231,7 +2231,7 @@ class TestQgsExpression: public QObject
       s.createFromOgcWmsCrs( QStringLiteral( "EPSG:4326" ) );
       QgsCoordinateReferenceSystem d;
       d.createFromOgcWmsCrs( QStringLiteral( "EPSG:3857" ) );
-      QgsCoordinateTransform t( s, d );
+      QgsCoordinateTransform t( s, d, QgsProject::instance() );
 
       QgsGeometry tLine = QgsGeometry::fromPolylineXY( line );
       tLine.transform( t );

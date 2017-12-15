@@ -39,6 +39,11 @@ QString QgsSmoothAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsSmoothAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsSmoothAlgorithm::outputName() const
 {
   return QObject::tr( "Smoothed" );

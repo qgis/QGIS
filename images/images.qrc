@@ -599,6 +599,7 @@
         <file>themes/default/mActionRegularPolygon2Points.svg</file>
         <file>themes/default/mActionCircle3Tangents.svg</file>
         <file>themes/default/mActionAddGeoPackageLayer.svg</file>
+        <file>themes/default/mActionFindReplace.svg</file>
         <file>icons/qgis_icon.svg</file>
         <file>themes/default/mActionCircle2TangentsPoint.svg</file>
         <file>themes/default/mActionRegularPolygonCenterPoint.svg</file>
@@ -613,6 +614,7 @@
         <file>themes/default/cursors/mZoomIn.svg</file>
         <file>themes/default/cursors/mZoomOut.svg</file>
         <file>themes/default/cursors/mIdentify.svg</file>
+        <file>themes/default/mIconQgsProjectFile.svg</file>
     </qresource>
     <qresource prefix="/images/tips">
         <file alias="symbol_levels.png">qgis_tips/symbol_levels.png</file>

@@ -13,6 +13,7 @@ class QgsCompoundCurve: QgsCurve
 {
 %Docstring
  Compound curve geometry type
+
 .. versionadded:: 2.10
 %End
 
@@ -70,11 +71,12 @@ class QgsCompoundCurve: QgsCurve
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 
 %Docstring
- Returns a new line string geometry corresponding to a segmentized approximation
- of the curve.
- \param tolerance segmentation tolerance
- \param toleranceType maximum segmentation angle or maximum difference between approximation and curve*
- :rtype: QgsLineString
+Returns a new line string geometry corresponding to a segmentized approximation
+of the curve.
+:param tolerance: segmentation tolerance
+:param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
+
+:rtype: QgsLineString
 %End
 
     virtual QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
@@ -84,30 +86,32 @@ class QgsCompoundCurve: QgsCurve
 
     int nCurves() const;
 %Docstring
- Returns the number of curves in the geometry.
- :rtype: int
+Returns the number of curves in the geometry.
+
+:rtype: int
 %End
 
     const QgsCurve *curveAt( int i ) const;
 %Docstring
- Returns the curve at the specified index.
- :rtype: QgsCurve
+Returns the curve at the specified index.
+
+:rtype: QgsCurve
 %End
 
     void addCurve( QgsCurve *c /Transfer/ );
 %Docstring
- Adds a curve to the geometry (takes ownership)
+Adds a curve to the geometry (takes ownership)
 %End
 
     void removeCurve( int i );
 %Docstring
- Removes a curve from the geometry.
- \param i index of curve to remove
+Removes a curve from the geometry.
+:param i: index of curve to remove
 %End
 
     void addVertex( const QgsPoint &pt );
 %Docstring
- Adds a vertex to the end of the geometry.
+Adds a vertex to the end of the geometry.
 %End
 
     virtual void draw( QPainter &p ) const;

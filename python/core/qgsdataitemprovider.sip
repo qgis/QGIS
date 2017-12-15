@@ -15,14 +15,14 @@
 class QgsDataItemProvider
 {
 %Docstring
- This is the interface for those who want to add custom data items to the browser tree.
+This is the interface for those who want to add custom data items to the browser tree.
 
- The method createDataItem() is ever called only if capabilities() return non-zero value.
- There are two occasions when createDataItem() is called:
- 1. to create root items (passed path is empty, parent item is null).
- 2. to create items in directory structure. For this capabilities have to return at least
-    of the following: QgsDataProider.Dir or QgsDataProvider.File. Passed path is the file
-    or directory being inspected, parent item is a valid QgsDirectoryItem
+The method createDataItem() is ever called only if capabilities() return non-zero value.
+There are two occasions when createDataItem() is called:
+1. to create root items (passed path is empty, parent item is null).
+2. to create items in directory structure. For this capabilities have to return at least
+of the following: QgsDataProider.Dir or QgsDataProvider.File. Passed path is the file
+or directory being inspected, parent item is a valid QgsDirectoryItem
 
 .. versionadded:: 2.10
 %End
@@ -36,41 +36,46 @@ class QgsDataItemProvider
     virtual QString name() = 0;
 %Docstring
 Human-readable name of the provider name
- :rtype: str
+
+:rtype: str
 %End
 
     virtual int capabilities() = 0;
 %Docstring
 Return combination of flags from QgsDataProvider.DataCapabilities
- :rtype: int
+
+:rtype: int
 %End
 
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 /Factory/;
 %Docstring
- Create a new instance of QgsDataItem (or null) for given path and parent item.
- Caller takes responsibility of deleting created items.
- :rtype: QgsDataItem
+Create a new instance of QgsDataItem (or null) for given path and parent item.
+Caller takes responsibility of deleting created items.
+
+:rtype: QgsDataItem
 %End
 
     virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem );
 %Docstring
- Create a vector of instances of QgsDataItem (or null) for given path and parent item.
- Caller takes responsibility of deleting created items.
- :rtype: list of QgsDataItem
+Create a vector of instances of QgsDataItem (or null) for given path and parent item.
+Caller takes responsibility of deleting created items.
+
+:rtype: list of QgsDataItem
 %End
 
     virtual bool handlesDirectoryPath( const QString &path );
 %Docstring
- Returns true if the provider will handle the directory at the specified ``path``.
+Returns true if the provider will handle the directory at the specified ``path``.
 
- If the provider indicates that it will handle the directory, the default creation and
- population of directory items for the path will be avoided and it is left to the
- provider to correctly populate relevant entries for the path.
+If the provider indicates that it will handle the directory, the default creation and
+population of directory items for the path will be avoided and it is left to the
+provider to correctly populate relevant entries for the path.
 
- The default implementation returns false for all paths.
+The default implementation returns false for all paths.
+
+:rtype: bool
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 };
 

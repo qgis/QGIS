@@ -13,11 +13,11 @@
 class QgsDataItemProviderRegistry
 {
 %Docstring
- This class keeps a list of data item providers that may add items to the browser tree.
- When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
+This class keeps a list of data item providers that may add items to the browser tree.
+When created, it automatically adds providers from provider plugins (e.g. PostGIS, WMS, ...)
 
- QgsDataItemProviderRegistry is not usually directly created, but rather accessed through
- QgsApplication.dataItemProviderRegistry().
+QgsDataItemProviderRegistry is not usually directly created, but rather accessed through
+QgsApplication.dataItemProviderRegistry().
 
 .. versionadded:: 2.10
 %End
@@ -35,7 +35,8 @@ class QgsDataItemProviderRegistry
     QList<QgsDataItemProvider *> providers() const;
 %Docstring
 Get list of available providers
- :rtype: list of QgsDataItemProvider
+
+:rtype: list of QgsDataItemProvider
 %End
 
     void addProvider( QgsDataItemProvider *provider /Transfer/ );

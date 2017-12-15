@@ -34,7 +34,7 @@ from qgis.core import (QgsVectorLayer,
 from qgis.testing import start_app, unittest
 from utilities import unitTestDataPath
 from providertestbase import ProviderTestCase
-from qgis.PyQt.QtCore import QVariant
+from qgis.PyQt.QtCore import QObject, QVariant
 
 from qgis.utils import spatialite_connect
 
@@ -171,6 +171,12 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         sql = "CREATE TABLE test_relation_b(trackid INTEGER, trackname TEXT, trackartist INTEGER, FOREIGN KEY(trackartist) REFERENCES test_relation_a(artistid));"
         cur.execute(sql)
         sql = "SELECT AddGeometryColumn('test_relation_b', 'Geometry', 4326, 'POLYGON', 'XY')"
+        cur.execute(sql)
+
+        # table to test auto increment
+        sql = "CREATE TABLE test_autoincrement(id INTEGER PRIMARY KEY AUTOINCREMENT, num INTEGER);"
+        cur.execute(sql)
+        sql = "INSERT INTO test_autoincrement (num) VALUES (123);"
         cur.execute(sql)
 
         # tables with constraints
@@ -567,6 +573,14 @@ class TestQgsSpatialiteProvider(unittest.TestCase, ProviderTestCase):
         self.assertFalse(fields.at(3).constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
         self.assertTrue(fields.at(4).constraints().constraints() & QgsFieldConstraints.ConstraintUnique)
         self.assertEqual(fields.at(4).constraints().constraintOrigin(QgsFieldConstraints.ConstraintUnique), QgsFieldConstraints.ConstraintOriginProvider)
+
+    def testSkipConstraintCheck(self):
+        vl = QgsVectorLayer("dbname=%s table=test_autoincrement" % self.dbname, "test_autoincrement",
+                            "spatialite")
+        self.assertTrue(vl.isValid())
+
+        self.assertTrue(vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, str("Autogenerate")))
+        self.assertFalse(vl.dataProvider().skipConstraintCheck(0, QgsFieldConstraints.ConstraintUnique, 123))
 
     # This test would fail. It would require turning on WAL
     def XXXXXtestLocking(self):

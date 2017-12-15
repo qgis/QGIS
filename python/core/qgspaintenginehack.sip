@@ -11,7 +11,7 @@
 class QgsPaintEngineHack : QPaintEngine
 {
 %Docstring
- Hack to workaround Qt #5114 by disabling PatternTransform
+Hack to workaround Qt #5114 by disabling PatternTransform
 %End
 
 %TypeHeaderCode

@@ -374,6 +374,9 @@ class GUI_EXPORT QgsDualView : public QStackedWidget, private Ui::QgsDualViewBas
     QgsAttributeTableConfig mConfig;
     QgsScrollArea *mAttributeEditorScrollArea = nullptr;
     QgsMapCanvas *mMapCanvas = nullptr;
+    // If the current feature is set, while the form is still not initialized
+    // we will temporarily save it in here and set it on init
+    QgsFeature mTempAttributeFormFeature;
 
     friend class TestQgsDualView;
     friend class TestQgsAttributeTable;

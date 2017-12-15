@@ -13,8 +13,9 @@
 class QgsCodeEditorCSS : QgsCodeEditor
 {
 %Docstring
- A CSS editor based on QScintilla2. Adds syntax highlighting and
- code autocompletion.
+A CSS editor based on QScintilla2. Adds syntax highlighting and
+code autocompletion.
+
 .. versionadded:: 2.6
 %End
 

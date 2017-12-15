@@ -39,6 +39,11 @@ QString QgsMergeVectorAlgorithm::group() const
   return QObject::tr( "Vector general" );
 }
 
+QString QgsMergeVectorAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeneral" );
+}
+
 void QgsMergeVectorAlgorithm::initAlgorithm( const QVariantMap & )
 {
   addParameter( new QgsProcessingParameterMultipleLayers( QStringLiteral( "LAYERS" ), QObject::tr( "Input layers" ), QgsProcessing::TypeVector ) );

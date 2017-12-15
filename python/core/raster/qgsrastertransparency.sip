@@ -11,8 +11,8 @@
 class QgsRasterTransparency
 {
 %Docstring
- Defines the list of pixel values to be considered as transparent or semi
- transparent when rendering rasters.
+Defines the list of pixel values to be considered as transparent or semi
+transparent when rendering rasters.
 %End
 
 %TypeHeaderCode
@@ -22,7 +22,7 @@ class QgsRasterTransparency
 
     QgsRasterTransparency();
 %Docstring
- Constructor for QgsRasterTransparency.
+Constructor for QgsRasterTransparency.
 %End
 
     struct TransparentThreeValuePixel
@@ -43,13 +43,15 @@ class QgsRasterTransparency
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 %Docstring
  Accessor for transparentSingleValuePixelList
- :rtype: list of QgsRasterTransparency.TransparentSingleValuePixel
+
+:rtype: list of QgsRasterTransparency.TransparentSingleValuePixel
 %End
 
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 %Docstring
  Accessor for transparentThreeValuePixelList
- :rtype: list of QgsRasterTransparency.TransparentThreeValuePixel
+
+:rtype: list of QgsRasterTransparency.TransparentThreeValuePixel
 %End
 
     void initializeTransparentPixelList( double );
@@ -75,29 +77,32 @@ class QgsRasterTransparency
     int alphaValue( double, int globalTransparency = 255 ) const;
 %Docstring
  Returns the transparency value for a single value Pixel
- :rtype: int
+
+:rtype: int
 %End
 
     int alphaValue( double, double, double, int globalTransparency = 255 ) const;
 %Docstring
  Return the transparency value for a RGB Pixel
- :rtype: int
+
+:rtype: int
 %End
 
     bool isEmpty() const;
 %Docstring
 True if there are no entries in the pixel lists except the nodata value
- :rtype: bool
+
+:rtype: bool
 %End
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 %Docstring
- Writes the transparency information to an XML document.
+Writes the transparency information to an XML document.
 %End
 
     void readXml( const QDomElement &elem );
 %Docstring
- Reads the transparency information from an XML document.
+Reads the transparency information from an XML document.
 %End
 
 };

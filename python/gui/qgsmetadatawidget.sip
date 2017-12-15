@@ -25,55 +25,63 @@ class QgsMetadataWidget : QWidget
 
     QgsMetadataWidget( QWidget *parent, QgsMapLayer *layer = 0 );
 %Docstring
- Constructor for the wizard.
+Constructor for the wizard.
 %End
 
     void saveMetadata( QgsLayerMetadata &layerMetadata ) const;
 %Docstring
- Save all fields in a QgsLayerMetadata object.
+Save all fields in a QgsLayerMetadata object.
 %End
 
     bool checkMetadata() const;
 %Docstring
- Check if values in the wizard are correct.
- :rtype: bool
+Check if values in the wizard are correct.
+
+:rtype: bool
 %End
 
     void acceptMetadata();
 %Docstring
- Saves the metadata to the layer.
+Saves the metadata to the layer.
 %End
 
     static QMap<QString, QString> parseLanguages();
 %Docstring
- Returns a list of languages available by default in the wizard.
- :rtype: QMap<str, QString>
+Returns a list of languages available by default in the wizard.
+
+:rtype: QMap<str, QString>
 %End
 
     static QStringList parseLicenses();
 %Docstring
- Returns a list of licences available by default in the wizard.
- :rtype: list of str
+Returns a list of licences available by default in the wizard.
+
+:rtype: list of str
 %End
 
     static QStringList parseLinkTypes();
 %Docstring
- Returns a list of link types available by default in the wizard.
+Returns a list of link types available by default in the wizard.
+
+:rtype: list of str
+
 .. seealso:: :py:func:`https`
- :rtype: list of str
 %End
 
     static QStringList parseMimeTypes();
 %Docstring
- Returns a list of MIME types available by default in the wizard.
+Returns a list of MIME types available by default in the wizard.
+
+:rtype: list of str
+
 .. seealso:: :py:func:`https`
- :rtype: list of str
 %End
 
     static QMap<QString, QString> parseTypes();
 %Docstring
- Returns a list of types available by default in the wizard.
- :rtype: QMap<str, QString>
+Returns a list of types available by default in the wizard.
+
+:rtype: QMap<str, QString>
 %End
 
 };

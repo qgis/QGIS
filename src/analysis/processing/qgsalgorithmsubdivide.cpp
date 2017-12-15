@@ -46,6 +46,11 @@ QString QgsSubdivideAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsSubdivideAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QString QgsSubdivideAlgorithm::shortHelpString() const
 {
   return QObject::tr( "Subdivides the geometry. The returned geometry will be a collection containing subdivided parts "

@@ -15,7 +15,7 @@
 class QgsZonalStatistics
 {
 %Docstring
-  A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*
+A class that calculates raster statistics (count, sum, mean) for a polygon or multipolygon layer and appends the results as attributes*
 %End
 
 %TypeHeaderCode
@@ -48,14 +48,16 @@ class QgsZonalStatistics
                         int rasterBand = 1,
                         QgsZonalStatistics::Statistics stats = QgsZonalStatistics::Statistics( QgsZonalStatistics::Count | QgsZonalStatistics::Sum | QgsZonalStatistics::Mean ) );
 %Docstring
- Constructor for QgsZonalStatistics.
+Constructor for QgsZonalStatistics.
 %End
 
     int calculateStatistics( QgsFeedback *feedback );
 %Docstring
- Starts the calculation
+Starts the calculation
+
 :return: 0 in case of success*
- :rtype: int
+:rtype: int
+
 %End
 
       public:

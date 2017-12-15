@@ -18,7 +18,8 @@ class QgsFeatureModel
 
     virtual QModelIndex fidToIndex( QgsFeatureId fid ) = 0;
 %Docstring
- :rtype: QModelIndex
+
+:rtype: QModelIndex
 %End
 };
 

@@ -13,15 +13,15 @@
 class QgsCredentials
 {
 %Docstring
- Interface for requesting credentials in QGIS in GUI independent way.
- This class provides abstraction of a dialog for requesting credentials to the user.
- By default QgsCredentials will be used if not overridden with other
- credential creator function.
+Interface for requesting credentials in QGIS in GUI independent way.
+This class provides abstraction of a dialog for requesting credentials to the user.
+By default QgsCredentials will be used if not overridden with other
+credential creator function.
 
- QGIS application uses QgsCredentialDialog class for displaying a dialog to the user.
+QGIS application uses QgsCredentialDialog class for displaying a dialog to the user.
 
- Object deletes itself when it's not needed anymore. Children should use
- signal destroyed() to be notified of the deletion
+Object deletes itself when it's not needed anymore. Children should use
+signal destroyed() to be notified of the deletion
 %End
 
 %TypeHeaderCode
@@ -31,64 +31,73 @@ class QgsCredentials
 
     virtual ~QgsCredentials();
 %Docstring
- Destructor.
+Destructor.
 %End
 
     bool get( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
     void put( const QString &realm, const QString &username, const QString &password );
 
     bool getMasterPassword( QString &password /In,Out/, bool stored = false );
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     static QgsCredentials *instance();
 %Docstring
 retrieves instance
- :rtype: QgsCredentials
+
+:rtype: QgsCredentials
 %End
 
     void lock();
 %Docstring
- Lock the instance against access from multiple threads. This does not really lock access to get/put methds,
- it will just prevent other threads to lock the instance and continue the execution. When the class is used
- from non-GUI threads, they should call lock() before the get/put calls to avoid race conditions.
+Lock the instance against access from multiple threads. This does not really lock access to get/put methds,
+it will just prevent other threads to lock the instance and continue the execution. When the class is used
+from non-GUI threads, they should call lock() before the get/put calls to avoid race conditions.
+
 .. versionadded:: 2.4
 %End
 
     void unlock();
 %Docstring
- Unlock the instance after being locked.
+Unlock the instance after being locked.
+
 .. versionadded:: 2.4
 %End
 
     QMutex *mutex();
 %Docstring
- Return pointer to mutex
+Return pointer to mutex
+
+:rtype: QMutex
+
 .. versionadded:: 2.4
- :rtype: QMutex
 %End
 
   protected:
 
     QgsCredentials();
 %Docstring
- Constructor for QgsCredentials.
+Constructor for QgsCredentials.
 %End
 
     virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() ) = 0;
 %Docstring
 request a password
- :rtype: bool
+
+:rtype: bool
 %End
 
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false ) = 0;
 %Docstring
 request a master password
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setInstance( QgsCredentials *instance );

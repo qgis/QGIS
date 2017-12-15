@@ -12,6 +12,7 @@ class QgsMultiSurface: QgsGeometryCollection
 {
 %Docstring
  Multi surface geometry collection.
+
 .. versionadded:: 2.10
 %End
 

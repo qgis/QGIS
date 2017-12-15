@@ -15,6 +15,7 @@ class QgsMetadataValidator
 {
 %Docstring
  Abstract base class for metadata validators.
+
 .. versionadded:: 3.0
 %End
 
@@ -28,7 +29,7 @@ class QgsMetadataValidator
 
       ValidationResult( const QString &section, const QString &note, const QVariant &identifier = QVariant() );
 %Docstring
- Constructor for ValidationResult.
+Constructor for ValidationResult.
 %End
 
       QString section;
@@ -38,10 +39,10 @@ Metadata section which failed the validation
 
       QVariant identifier;
 %Docstring
- Optional identifier for the failed metadata item.
- For instance, in list type metadata elements this
- will be set to the list index of the failed metadata
- item.
+Optional identifier for the failed metadata item.
+For instance, in list type metadata elements this
+will be set to the list index of the failed metadata
+item.
 %End
 
       QString note;
@@ -54,12 +55,13 @@ The reason behind the validation failure.
 
     virtual bool validate( const QgsLayerMetadata &metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const = 0;
 %Docstring
- Validates a ``metadata`` object, and returns true if the
- metadata is considered valid.
- If validation fails, the ``results`` list will be filled with a list of
- items describing why the validation failed and what needs to be rectified
- to fix the metadata.
- :rtype: bool
+Validates a ``metadata`` object, and returns true if the
+metadata is considered valid.
+If validation fails, the ``results`` list will be filled with a list of
+items describing why the validation failed and what needs to be rectified
+to fix the metadata.
+
+:rtype: bool
 %End
 
 };
@@ -70,6 +72,7 @@ class QgsNativeMetadataValidator : QgsMetadataValidator
 {
 %Docstring
  A validator for the native QGIS metadata schema definition.
+
 .. versionadded:: 3.0
 %End
 
@@ -80,7 +83,7 @@ class QgsNativeMetadataValidator : QgsMetadataValidator
 
     QgsNativeMetadataValidator();
 %Docstring
- Constructor for QgsNativeMetadataValidator.
+Constructor for QgsNativeMetadataValidator.
 %End
 
     virtual bool validate( const QgsLayerMetadata &metadata, QList< QgsMetadataValidator::ValidationResult > &results /Out/ ) const;

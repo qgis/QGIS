@@ -39,6 +39,7 @@ class QgsFileDownloaderAlgorithm : public QgsProcessingAlgorithm, public QObject
     QString displayName() const override;
     virtual QStringList tags() const override;
     QString group() const override;
+    QString groupId() const override;
     QString shortHelpString() const override;
     QgsFileDownloaderAlgorithm *createInstance() const override SIP_FACTORY;
 

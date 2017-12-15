@@ -21,34 +21,39 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 
     QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsLayerPropertiesWidget.
- \param layer the symbol layer
- \param symbol the symbol
- \param vl associated vector layer
- \param parent parent widget
+Constructor for QgsLayerPropertiesWidget.
+:param layer: the symbol layer
+:param symbol: the symbol
+:param vl: associated vector layer
+:param parent: parent widget
 %End
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
- Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
- \param context symbol widget context
+Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+:param context: symbol widget context
+
 .. seealso:: :py:func:`context()`
+
 .. versionadded:: 3.0
 %End
 
     QgsSymbolWidgetContext context() const;
 %Docstring
- Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
+:rtype: QgsSymbolWidgetContext
+
 .. seealso:: :py:func:`setContext()`
+
 .. versionadded:: 3.0
- :rtype: QgsSymbolWidgetContext
 %End
 
     virtual void setDockMode( bool dockMode );
 %Docstring
- Set the widget in dock mode which tells the widget to emit panel
- widgets and not open dialogs
- \param dockMode True to enable dock mode.
+Set the widget in dock mode which tells the widget to emit panel
+widgets and not open dialogs
+:param dockMode: True to enable dock mode.
 %End
 
   public slots:
@@ -68,9 +73,10 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
 
     void registerDataDefinedButton( QgsPropertyOverrideButton *button, QgsSymbolLayer::Property key );
 %Docstring
- Registers a data defined override button. Handles setting up connections
- for the button and initializing the button to show the correct descriptions
- and help text for the associated property.
+Registers a data defined override button. Handles setting up connections
+for the button and initializing the button to show the correct descriptions
+and help text for the associated property.
+
 .. versionadded:: 3.0
 %End
 

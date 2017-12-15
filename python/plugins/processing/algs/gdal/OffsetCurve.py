@@ -78,6 +78,9 @@ class OffsetCurve(GdalAlgorithm):
     def group(self):
         return self.tr('Vector geoprocessing')
 
+    def groupId(self):
+        return 'vectorgeoprocessing'
+
     def commandName(self):
         return 'ogr2ogr'
 

@@ -267,7 +267,7 @@ qgis:linestopolygons: >
   The attribute table of the output layer is the same as the one from of the input line layer.
 
 qgis:listuniquevalues: >
-  This algorithm generates a report with information about the categories found in a given attribute of a vector layer.
+  This algorithm generates a report with information about the unique values found in a given attribute (or attributes) of a vector layer.
 
 qgis:meanandstandarddeviationplot:
 

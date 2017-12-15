@@ -23,51 +23,63 @@ class QgsRasterRendererWidget: QWidget
 
     virtual QgsRasterRenderer *renderer() = 0 /Factory/;
 %Docstring
- :rtype: QgsRasterRenderer
+
+:rtype: QgsRasterRenderer
 %End
 
     void setRasterLayer( QgsRasterLayer *layer );
     const QgsRasterLayer *rasterLayer() const;
 %Docstring
- :rtype: QgsRasterLayer
+
+:rtype: QgsRasterLayer
 %End
 
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
- Sets the map canvas associated with the widget. This allows the widget to retrieve the current
- map extent and other properties from the canvas.
- \param canvas map canvas
+Sets the map canvas associated with the widget. This allows the widget to retrieve the current
+map extent and other properties from the canvas.
+:param canvas: map canvas
+
 .. seealso:: :py:func:`mapCanvas()`
+
 .. versionadded:: 2.16
 %End
 
     QgsMapCanvas *mapCanvas();
 %Docstring
- Returns the map canvas associated with the widget.
+Returns the map canvas associated with the widget.
+
+:rtype: QgsMapCanvas
+
 .. seealso:: :py:func:`setMapCanvas()`
+
 .. seealso:: :py:func:`canvasExtent()`
+
 .. versionadded:: 2.16
- :rtype: QgsMapCanvas
 %End
 
     virtual QString min( int index = 0 );
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     virtual QString max( int index = 0 );
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     virtual void setMin( const QString &value, int index = 0 );
     virtual void setMax( const QString &value, int index = 0 );
     virtual QString stdDev();
 %Docstring
- :rtype: str
+
+:rtype: str
 %End
     virtual void setStdDev( const QString &value );
     virtual int selectedBand( int index = 0 );
 %Docstring
- :rtype: int
+
+:rtype: int
 %End
 
     virtual void doComputations();
@@ -78,15 +90,16 @@ Load programmatically with current values
     virtual QgsRasterMinMaxWidget *minMaxWidget();
 %Docstring
 Return min/max widget when it exists.
- :rtype: QgsRasterMinMaxWidget
+
+:rtype: QgsRasterMinMaxWidget
 %End
 
   signals:
 
     void widgetChanged();
 %Docstring
- Emitted when something on the widget has changed.
- All widgets will fire this event to notify of an internal change.
+Emitted when something on the widget has changed.
+All widgets will fire this event to notify of an internal change.
 %End
 
   protected:

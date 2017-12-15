@@ -14,6 +14,7 @@ class QgsArrowSymbolLayer : QgsLineSymbolLayer
 {
 %Docstring
  Line symbol layer used for representing lines as arrows.
+
 .. versionadded:: 2.16
 %End
 
@@ -28,12 +29,13 @@ Simple constructor
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
- Create a new QgsArrowSymbolLayer
+Create a new QgsArrowSymbolLayer
 
- \param properties A property map to deserialize saved information from properties()
+:param properties: A property map to deserialize saved information from properties()
 
- :return: A new QgsArrowSymbolLayer
- :rtype: QgsSymbolLayer
+:return: A new QgsArrowSymbolLayer
+:rtype: QgsSymbolLayer
+
 %End
 
     virtual QgsArrowSymbolLayer *clone() const /Factory/;
@@ -44,7 +46,8 @@ Simple constructor
     double arrowWidth() const;
 %Docstring
 Get current arrow width
- :rtype: float
+
+:rtype: float
 %End
     void setArrowWidth( double width );
 %Docstring
@@ -53,7 +56,8 @@ Set the arrow width
     QgsUnitTypes::RenderUnit arrowWidthUnit() const;
 %Docstring
 Get the unit for the arrow width
- :rtype: QgsUnitTypes.RenderUnit
+
+:rtype: QgsUnitTypes.RenderUnit
 %End
     void setArrowWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
@@ -62,7 +66,8 @@ Set the unit for the arrow width
     QgsMapUnitScale arrowWidthUnitScale() const;
 %Docstring
 Get the scale for the arrow width
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
     void setArrowWidthUnitScale( const QgsMapUnitScale &scale );
 %Docstring
@@ -71,8 +76,9 @@ Set the scale for the arrow width
 
     double arrowStartWidth() const;
 %Docstring
-Get current arrow start width. Only meaningfull for single headed arrows
- :rtype: float
+Get current arrow start width. Only meaningful for single headed arrows
+
+:rtype: float
 %End
     void setArrowStartWidth( double width );
 %Docstring
@@ -81,7 +87,8 @@ Set the arrow start width
     QgsUnitTypes::RenderUnit arrowStartWidthUnit() const;
 %Docstring
 Get the unit for the arrow start width
- :rtype: QgsUnitTypes.RenderUnit
+
+:rtype: QgsUnitTypes.RenderUnit
 %End
     void setArrowStartWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
@@ -90,7 +97,8 @@ Set the unit for the arrow start width
     QgsMapUnitScale arrowStartWidthUnitScale() const;
 %Docstring
 Get the scale for the arrow start width
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
     void setArrowStartWidthUnitScale( const QgsMapUnitScale &scale );
 %Docstring
@@ -100,7 +108,8 @@ Set the scale for the arrow start width
     double headLength() const;
 %Docstring
 Get the current arrow head length
- :rtype: float
+
+:rtype: float
 %End
     void setHeadLength( double length );
 %Docstring
@@ -109,7 +118,8 @@ Set the arrow head length
     QgsUnitTypes::RenderUnit headLengthUnit() const;
 %Docstring
 Get the unit for the head length
- :rtype: QgsUnitTypes.RenderUnit
+
+:rtype: QgsUnitTypes.RenderUnit
 %End
     void setHeadLengthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
@@ -118,7 +128,8 @@ Set the unit for the head length
     QgsMapUnitScale headLengthUnitScale() const;
 %Docstring
 Get the scale for the head length
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
     void setHeadLengthUnitScale( const QgsMapUnitScale &scale );
 %Docstring
@@ -128,7 +139,8 @@ Set the scale for the head length
     double headThickness() const;
 %Docstring
 Get the current arrow head height
- :rtype: float
+
+:rtype: float
 %End
     void setHeadThickness( double thickness );
 %Docstring
@@ -137,7 +149,8 @@ Set the arrow head height
     QgsUnitTypes::RenderUnit headThicknessUnit() const;
 %Docstring
 Get the unit for the head height
- :rtype: QgsUnitTypes.RenderUnit
+
+:rtype: QgsUnitTypes.RenderUnit
 %End
     void setHeadThicknessUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
@@ -146,7 +159,8 @@ Set the unit for the head height
     QgsMapUnitScale headThicknessUnitScale() const;
 %Docstring
 Get the scale for the head height
- :rtype: QgsMapUnitScale
+
+:rtype: QgsMapUnitScale
 %End
     void setHeadThicknessUnitScale( const QgsMapUnitScale &scale );
 %Docstring
@@ -156,7 +170,8 @@ Set the scale for the head height
     bool isCurved() const;
 %Docstring
 Return whether it is a curved arrow or a straight one
- :rtype: bool
+
+:rtype: bool
 %End
     void setIsCurved( bool isCurved );
 %Docstring
@@ -166,7 +181,8 @@ Set whether it is a curved arrow or a straight one
     bool isRepeated() const;
 %Docstring
 Return whether the arrow is repeated along the line or not
- :rtype: bool
+
+:rtype: bool
 %End
     void setIsRepeated( bool isRepeated );
 %Docstring
@@ -183,7 +199,8 @@ Set whether the arrow is repeated along the line
     HeadType headType() const;
 %Docstring
 Get the current head type
- :rtype: HeadType
+
+:rtype: HeadType
 %End
     void setHeadType( HeadType type );
 %Docstring
@@ -200,7 +217,8 @@ Set the head type
     ArrowType arrowType() const;
 %Docstring
 Get the current arrow type
- :rtype: ArrowType
+
+:rtype: ArrowType
 %End
     void setArrowType( ArrowType type );
 %Docstring

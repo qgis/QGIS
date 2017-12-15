@@ -13,6 +13,7 @@
 class QgsAdvancedDigitizingCanvasItem : QgsMapCanvasItem
 {
 %Docstring
+
 .. seealso:: :py:class:`QgsAdvancedDigitizingDockWidget`
 %End
 

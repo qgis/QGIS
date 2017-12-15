@@ -17,7 +17,7 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
 
     QgsTrackedVectorLayerTools();
 %Docstring
- Constructor for QgsTrackedVectorLayerTools.
+Constructor for QgsTrackedVectorLayerTools.
 %End
 
     virtual bool addFeature( QgsVectorLayer *layer, const QgsAttributeMap &defaultValues, const QgsGeometry &defaultGeometry, QgsFeature *feature ) const;
@@ -33,12 +33,12 @@ class QgsTrackedVectorLayerTools : QgsVectorLayerTools
 
     void setVectorLayerTools( const QgsVectorLayerTools *tools );
 %Docstring
- Set the vector layer tools that will be used to interact with the data
+Set the vector layer tools that will be used to interact with the data
 %End
 
     void rollback();
 %Docstring
- Delete all features which have been added via this object.
+Delete all features which have been added via this object.
 %End
 
 };

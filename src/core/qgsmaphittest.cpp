@@ -25,7 +25,6 @@
 #include "qgssymbollayerutils.h"
 #include "qgsgeometry.h"
 #include "qgsgeometryengine.h"
-#include "qgscrscache.h"
 
 QgsMapHitTest::QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon, const LayerFilterExpression &layerFilterExpression )
   : mSettings( settings )
@@ -115,7 +114,7 @@ void QgsMapHitTest::runHitTestLayer( QgsVectorLayer *vl, SymbolSet &usedSymbols,
   {
     if ( mSettings.destinationCrs() != vl->crs() )
     {
-      QgsCoordinateTransform ct = QgsCoordinateTransformCache::instance()->transform( mSettings.destinationCrs().authid(), vl->crs().authid() );
+      QgsCoordinateTransform ct( mSettings.destinationCrs(), vl->crs(), mSettings.transformContext() );
       transformedPolygon.transform( ct );
     }
   }

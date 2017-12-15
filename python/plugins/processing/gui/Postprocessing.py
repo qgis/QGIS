@@ -77,6 +77,8 @@ def handleAlgorithmResults(alg, context, feedback=None, showResults=True):
                 if style:
                     layer.loadNamedStyle(style)
                 details.project.addMapLayer(context.temporaryLayerStore().takeMapLayer(layer))
+            else:
+                wrongLayers.append(str(l))
         except Exception:
             QgsMessageLog.logMessage(QCoreApplication.translate('Postprocessing', "Error loading result layer:") + "\n" + traceback.format_exc(), 'Processing', QgsMessageLog.CRITICAL)
             wrongLayers.append(str(l))

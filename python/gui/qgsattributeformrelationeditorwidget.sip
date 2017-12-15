@@ -14,7 +14,7 @@ class QgsAttributeFormRelationEditorWidget : QgsAttributeFormWidget
 {
 %Docstring
 
- Widget to show for child relations on an attribute form.
+Widget to show for child relations on an attribute form.
 
 .. versionadded:: 3.0
 %End
@@ -26,7 +26,7 @@ class QgsAttributeFormRelationEditorWidget : QgsAttributeFormWidget
 
     explicit QgsAttributeFormRelationEditorWidget( QgsRelationWidgetWrapper *wrapper, QgsAttributeForm *form );
 %Docstring
- Constructor
+Constructor
 %End
 
     virtual void createSearchWidgetWrappers();

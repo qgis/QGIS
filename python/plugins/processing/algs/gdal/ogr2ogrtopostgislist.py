@@ -176,6 +176,9 @@ class Ogr2OgrToPostGisList(GdalAlgorithm):
     def group(self):
         return self.tr('Vector miscellaneous')
 
+    def groupId(self):
+        return 'vectormiscellaneous'
+
     def getConsoleCommands(self, parameters, context, feedback, executing=True):
         connection = self.parameterAsString(parameters, self.DATABASE, context)
         uri = uri_from_name(connection)

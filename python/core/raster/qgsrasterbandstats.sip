@@ -14,8 +14,8 @@
 class QgsRasterBandStats
 {
 %Docstring
- The RasterBandStats struct is a container for statistics about a single
- raster band.
+The RasterBandStats struct is a container for statistics about a single
+raster band.
 %End
 
 %TypeHeaderCode
@@ -40,7 +40,8 @@ class QgsRasterBandStats
     bool contains( const QgsRasterBandStats &s ) const;
 %Docstring
 Compares region, size etc. not collected statistics
- :rtype: bool
+
+:rtype: bool
 %End
 
     int bandNumber;
@@ -53,13 +54,13 @@ Compares region, size etc. not collected statistics
     double maximumValue;
 %Docstring
  The maximum cell value in the raster band. NO_DATA values
- are ignored. This does not use the gdal GetMaximmum function. *
+are ignored. This does not use the gdal GetMaximmum function. *
 %End
 
     double minimumValue;
 %Docstring
  The minimum cell value in the raster band. NO_DATA values
- are ignored. This does not use the gdal GetMinimum function. *
+are ignored. This does not use the gdal GetMinimum function. *
 %End
 
     double mean;

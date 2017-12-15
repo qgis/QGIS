@@ -13,7 +13,7 @@
 class QgsAuthServersEditor : QWidget
 {
 %Docstring
- Widget for viewing and editing servers in authentication database
+Widget for viewing and editing servers in authentication database
 %End
 
 %TypeHeaderCode
@@ -23,8 +23,8 @@ class QgsAuthServersEditor : QWidget
 
     explicit QgsAuthServersEditor( QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Widget for editing authentication configurations directly in database
- \param parent Parent Widget
+Widget for editing authentication configurations directly in database
+:param parent: Parent Widget
 %End
 
   protected:

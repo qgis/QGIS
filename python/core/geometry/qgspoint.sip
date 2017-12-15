@@ -14,6 +14,7 @@ class QgsPoint: QgsAbstractGeometry
 {
 %Docstring
  Point geometry type, with support for z-dimension and m-values.
+
 .. versionadded:: 3.0
 %End
 
@@ -24,29 +25,29 @@ class QgsPoint: QgsAbstractGeometry
 
     QgsPoint( double x = 0.0, double y = 0.0, SIP_PYOBJECT z = Py_None, SIP_PYOBJECT m = Py_None, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown ) [( double x = 0.0, double y = 0.0, double z = 0.0, double m = 0.0, QgsWkbTypes::Type wkbType = QgsWkbTypes::Unknown )];
 %Docstring
- Construct a point with the provided initial coordinate values.
+Construct a point with the provided initial coordinate values.
 
- If ``wkbType`` is set to `QgsWkbTypes.Point`, `QgsWkbTypes.PointZ`, `QgsWkbTypes.PointM` or `QgsWkbTypes.PointZM`
- the type will be set accordingly. If it is left to the default `QgsWkbTypes.Unknown`, the type will be set
- based on the following rules:
- - If only x and y are specified, the type will be a 2D point.
- - If any or both of the Z and M are specified, the appropriate type will be created.
+If ``wkbType`` is set to `QgsWkbTypes.Point`, `QgsWkbTypes.PointZ`, `QgsWkbTypes.PointM` or `QgsWkbTypes.PointZM`
+the type will be set accordingly. If it is left to the default `QgsWkbTypes.Unknown`, the type will be set
+based on the following rules:
+- If only x and y are specified, the type will be a 2D point.
+- If any or both of the Z and M are specified, the appropriate type will be created.
 
- \code{.py}
-   pt = QgsPoint(43.4, 5.3)
-   pt.asWkt() # Point(43.4 5.3)
+\code{.py}
+pt = QgsPoint(43.4, 5.3)
+pt.asWkt() # Point(43.4 5.3)
 
-   pt_z = QgsPoint(120, 343, 77)
-   pt.asWkt() # PointZ(120 343 77)
+pt_z = QgsPoint(120, 343, 77)
+pt.asWkt() # PointZ(120 343 77)
 
-   pt_m = QgsPoint(33, 88, m=5)
-   pt_m.m() # 5
-   pt_m.wkbType() # QgsWkbTypes.PointM
+pt_m = QgsPoint(33, 88, m=5)
+pt_m.m() # 5
+pt_m.wkbType() # QgsWkbTypes.PointM
 
-   pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
-   pt.z() # nan
-   pt.wkbType() # QgsWkbTypes.PointZ
- \endcode
+pt = QgsPoint(30, 40, wkbType=QgsWkbTypes.PointZ)
+pt.z() # nan
+pt.wkbType() # QgsWkbTypes.PointZ
+\endcode
 %End
 %MethodCode
     double z;
@@ -75,51 +76,64 @@ class QgsPoint: QgsAbstractGeometry
 
     explicit QgsPoint( const QgsPointXY &p );
 %Docstring
- Construct a QgsPoint from a QgsPointXY object
+Construct a QgsPoint from a QgsPointXY object
 %End
 
     explicit QgsPoint( QPointF p );
 %Docstring
- Construct a QgsPoint from a QPointF
+Construct a QgsPoint from a QPointF
 %End
 
 
     bool operator==( const QgsPoint &pt ) const;
     bool operator!=( const QgsPoint &pt ) const;
 %Docstring
- :rtype: bool
+
+:rtype: bool
 %End
 
     double x() const;
 %Docstring
- Returns the point's x-coordinate.
+Returns the point's x-coordinate.
+
+:rtype: float
+
 .. seealso:: :py:func:`setX()`
+
 .. seealso:: :py:func:`rx()`
- :rtype: float
 %End
 
     double y() const;
 %Docstring
- Returns the point's y-coordinate.
+Returns the point's y-coordinate.
+
+:rtype: float
+
 .. seealso:: :py:func:`setY()`
+
 .. seealso:: :py:func:`ry()`
- :rtype: float
 %End
 
     double z() const;
 %Docstring
- Returns the point's z-coordinate.
+Returns the point's z-coordinate.
+
+:rtype: float
+
 .. seealso:: :py:func:`setZ()`
+
 .. seealso:: :py:func:`rz()`
- :rtype: float
 %End
 
     double m() const;
 %Docstring
- Returns the point's m value.
+Returns the point's m value.
+
+:rtype: float
+
 .. seealso:: :py:func:`setM()`
+
 .. seealso:: :py:func:`rm()`
- :rtype: float
 %End
 
 
@@ -128,204 +142,255 @@ class QgsPoint: QgsAbstractGeometry
 
     void setX( double x );
 %Docstring
- Sets the point's x-coordinate.
+Sets the point's x-coordinate.
+
 .. seealso:: x()
+
 .. seealso:: :py:func:`rx()`
 %End
 
     void setY( double y );
 %Docstring
- Sets the point's y-coordinate.
+Sets the point's y-coordinate.
+
 .. seealso:: y()
+
 .. seealso:: :py:func:`ry()`
 %End
 
     void setZ( double z );
 %Docstring
- Sets the point's z-coordinate.
+Sets the point's z-coordinate.
+
 .. note::
 
    calling this will have no effect if the point does not contain a z-dimension. Use addZValue() to
- add a z value and force the point to have a z dimension.
+add a z value and force the point to have a z dimension.
+
 .. seealso:: z()
+
 .. seealso:: :py:func:`rz()`
 %End
 
     void setM( double m );
 %Docstring
- Sets the point's m-value.
+Sets the point's m-value.
+
 .. note::
 
    calling this will have no effect if the point does not contain a m-dimension. Use addMValue() to
- add a m value and force the point to have an m dimension.
+add a m value and force the point to have an m dimension.
+
 .. seealso:: m()
+
 .. seealso:: :py:func:`rm()`
 %End
 
     QPointF toQPointF() const;
 %Docstring
- Returns the point as a QPointF.
+Returns the point as a QPointF.
+
+:rtype: QPointF
+
 .. versionadded:: 2.14
- :rtype: QPointF
 %End
 
     double distance( double x, double y ) const;
 %Docstring
- Returns the distance between this point and a specified x, y coordinate. In certain
- cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
- when comparing distances.
+Returns the distance between this point and a specified x, y coordinate. In certain
+cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+when comparing distances.
+
+:rtype: float
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`distanceSquared()`
- :rtype: float
 %End
 
     double distance( const QgsPoint &other ) const;
 %Docstring
- Returns the 2D distance between this point and another point. In certain
- cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
- when comparing distances.
+Returns the 2D distance between this point and another point. In certain
+cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+when comparing distances.
+
+:rtype: float
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     double distanceSquared( double x, double y ) const;
 %Docstring
- Returns the squared distance between this point a specified x, y coordinate. Calling
- this is faster than calling distance(), and may be useful in use cases such as comparing
- distances where the extra expense of calling distance() is not required.
+Returns the squared distance between this point a specified x, y coordinate. Calling
+this is faster than calling distance(), and may be useful in use cases such as comparing
+distances where the extra expense of calling distance() is not required.
+
+:rtype: float
+
 .. seealso:: :py:func:`distance()`
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     double distanceSquared( const QgsPoint &other ) const;
 %Docstring
- Returns the squared distance between this point another point. Calling
- this is faster than calling distance(), and may be useful in use cases such as comparing
- distances where the extra expense of calling distance() is not required.
+Returns the squared distance between this point another point. Calling
+this is faster than calling distance(), and may be useful in use cases such as comparing
+distances where the extra expense of calling distance() is not required.
+
+:rtype: float
+
 .. seealso:: :py:func:`distance()`
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     double distance3D( double x, double y, double z ) const;
 %Docstring
- Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
- cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
- when comparing distances.
+Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
+cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+when comparing distances.
+
+:rtype: float
+
 .. versionadded:: 3.0
+
 .. seealso:: :py:func:`distanceSquared()`
- :rtype: float
 %End
 
     double distance3D( const QgsPoint &other ) const;
 %Docstring
- Returns the 3D distance between this point and another point. In certain
- cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
- when comparing distances.
+Returns the 3D distance between this point and another point. In certain
+cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
+when comparing distances.
+
+:rtype: float
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     double distanceSquared3D( double x, double y, double z ) const;
 %Docstring
- Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
- this is faster than calling distance(), and may be useful in use cases such as comparing
- distances where the extra expense of calling distance() is not required.
+Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
+this is faster than calling distance(), and may be useful in use cases such as comparing
+distances where the extra expense of calling distance() is not required.
+
+:rtype: float
+
 .. seealso:: :py:func:`distance()`
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     double distanceSquared3D( const QgsPoint &other ) const;
 %Docstring
- Returns the 3D squared distance between this point another point. Calling
- this is faster than calling distance(), and may be useful in use cases such as comparing
- distances where the extra expense of calling distance() is not required.
+Returns the 3D squared distance between this point another point. Calling
+this is faster than calling distance(), and may be useful in use cases such as comparing
+distances where the extra expense of calling distance() is not required.
+
+:rtype: float
+
 .. seealso:: :py:func:`distance()`
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     double azimuth( const QgsPoint &other ) const;
 %Docstring
- Calculates azimuth between this point and other one (clockwise in degree, starting from north)
+Calculates azimuth between this point and other one (clockwise in degree, starting from north)
+
+:rtype: float
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     double inclination( const QgsPoint &other ) const;
 %Docstring
- Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
- Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
+Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
+Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
+
+:rtype: float
+
 .. versionadded:: 3.0
- :rtype: float
 %End
 
     QgsPoint project( double distance, double azimuth, double inclination = 90.0 ) const;
 %Docstring
- Returns a new point which correspond to this point projected by a specified distance
- with specified angles (azimuth and inclination).
- M value is preserved.
- \param distance distance to project
- \param azimuth angle to project in X Y, clockwise in degrees starting from north
- \param inclination angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
- :return: The point projected. If a 2D point is projected a 3D point will be returned except if
-  inclination is 90. A 3D point is always returned if a 3D point is projected.
- Example:
- \code{.py}
-   p = QgsPoint( 1, 2 ) # 2D point
-   pr = p.project ( 1, 0 )
-   # pr is a 2D point: 'Point (1 3)'
-   pr = p.project ( 1, 0, 90 )
-   # pr is a 2D point: 'Point (1 3)'
-   pr = p.project (1, 0, 0 )
-   # pr is a 3D point: 'PointZ (1 2 1)'
-   p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
-   pr = p.project ( 1, 0 )
-   # pr is a 3D point: 'PointZ (1 3 2)'
-   pr = p.project ( 1, 0, 90 )
-   # pr is a 3D point: 'PointZ (1 3 2)'
-   pr = p.project (1, 0, 0 )
-   # pr is a 3D point: 'PointZ (1 2 3)'
- \endcode
+Returns a new point which correspond to this point projected by a specified distance
+with specified angles (azimuth and inclination).
+M value is preserved.
+:param distance: distance to project
+:param azimuth: angle to project in X Y, clockwise in degrees starting from north
+:param inclination: angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
+
+:return: The point projected. If a 2D point is projected a 3D point will be returned except if
+:rtype: QgsPoint
+
+inclination is 90. A 3D point is always returned if a 3D point is projected.
+Example:
+\code{.py}
+p = QgsPoint( 1, 2 ) # 2D point
+pr = p.project ( 1, 0 )
+# pr is a 2D point: 'Point (1 3)'
+pr = p.project ( 1, 0, 90 )
+# pr is a 2D point: 'Point (1 3)'
+pr = p.project (1, 0, 0 )
+# pr is a 3D point: 'PointZ (1 2 1)'
+p = QgsPoint( QgsWkbTypes.PointZ, 1, 2, 2 ) # 3D point
+pr = p.project ( 1, 0 )
+# pr is a 3D point: 'PointZ (1 3 2)'
+pr = p.project ( 1, 0, 90 )
+# pr is a 3D point: 'PointZ (1 3 2)'
+pr = p.project (1, 0, 0 )
+# pr is a 3D point: 'PointZ (1 2 3)'
+\endcode
+
 .. versionadded:: 3.0
- :rtype: QgsPoint
 %End
 
     QgsVector operator-( const QgsPoint &p ) const;
 %Docstring
- Calculates the vector obtained by subtracting a point from this point.
+Calculates the vector obtained by subtracting a point from this point.
+
+:rtype: QgsVector
+
 .. versionadded:: 3.0
- :rtype: QgsVector
 %End
 
     QgsPoint &operator+=( QgsVector v );
 %Docstring
- Adds a vector to this point in place.
+Adds a vector to this point in place.
+
+:rtype: QgsPoint
+
 .. versionadded:: 3.0
- :rtype: QgsPoint
 %End
 
     QgsPoint &operator-=( QgsVector v );
 %Docstring
- Subtracts a vector from this point in place.
+Subtracts a vector from this point in place.
+
+:rtype: QgsPoint
+
 .. versionadded:: 3.0
- :rtype: QgsPoint
 %End
 
     QgsPoint operator+( QgsVector v ) const;
 %Docstring
- Adds a vector to this point.
+Adds a vector to this point.
+
+:rtype: QgsPoint
+
 .. versionadded:: 3.0
- :rtype: QgsPoint
 %End
 
     QgsPoint operator-( QgsVector v ) const;
 %Docstring
- Subtracts a vector from this point.
+Subtracts a vector from this point.
+
+:rtype: QgsPoint
+
 .. versionadded:: 3.0
- :rtype: QgsPoint
 %End
 
     virtual bool isEmpty() const;
@@ -390,10 +455,12 @@ class QgsPoint: QgsAbstractGeometry
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
 %Docstring
- Angle undefined. Always returns 0.0
-\param vertex the vertex id
+Angle undefined. Always returns 0.0
+:param vertex: the vertex id
+
 :return: 0.0*
- :rtype: float
+:rtype: float
+
 %End
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const;

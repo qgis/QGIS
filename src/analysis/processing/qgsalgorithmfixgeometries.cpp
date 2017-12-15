@@ -39,6 +39,11 @@ QString QgsFixGeometriesAlgorithm::group() const
   return QObject::tr( "Vector geometry" );
 }
 
+QString QgsFixGeometriesAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
+}
+
 QgsProcessingFeatureSource::Flag QgsFixGeometriesAlgorithm::sourceFlags() const
 {
   return QgsProcessingFeatureSource::FlagSkipGeometryValidityChecks;

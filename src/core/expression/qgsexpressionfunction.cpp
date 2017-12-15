@@ -3369,7 +3369,9 @@ static QVariant fcnTransformGeometry( const QVariantList &values, const QgsExpre
   if ( ! d.isValid() )
     return QVariant::fromValue( fGeom );
 
+  Q_NOWARN_DEPRECATED_PUSH
   QgsCoordinateTransform t( s, d );
+  Q_NOWARN_DEPRECATED_POP
   try
   {
     if ( fGeom.transform( t ) == 0 )
@@ -3452,37 +3454,34 @@ static QVariant fcnRepresentValue( const QVariantList &values, const QgsExpressi
     else if ( values.size() == 2 )
       fieldName = QgsExpressionUtils::getStringValue( values.at( 1 ), parent );
   }
+
   QVariant value = values.at( 0 );
 
-  QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
+  const QgsFields fields = context->fields();
+  int fieldIndex = fields.lookupField( fieldName );
 
-  if ( layer )
+  if ( fieldIndex == -1 )
   {
-    const QgsFields fields = layer->fields();
-    int index = fields.lookupField( fieldName );
+    parent->setEvalErrorString( QCoreApplication::translate( "expression", "%1: Field not found %2" ).arg( QStringLiteral( "represent_value" ), fieldName ) );
+  }
+  else
+  {
+    QgsVectorLayer *layer = QgsExpressionUtils::getVectorLayer( context->variable( "layer" ), parent );
+    const QgsEditorWidgetSetup setup = fields.at( fieldIndex ).editorWidgetSetup();
+    const QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
 
-    if ( index == -1 )
+    const QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer ? layer->id() : QStringLiteral( "[None]" ), fieldName );
+
+    QVariant cache;
+    if ( !context->hasCachedValue( cacheKey ) )
     {
-      parent->setEvalErrorString( QCoreApplication::translate( "expression", "%1: Field not found %2" ).arg( QStringLiteral( "represent_value" ), fieldName ) );
+      cache = formatter->createCache( layer, fieldIndex, setup.config() );
+      context->setCachedValue( cacheKey, cache );
     }
     else
-    {
-      QgsEditorWidgetSetup setup = layer->editorWidgetSetup( index );
-      QgsFieldFormatter *formatter = QgsApplication::fieldFormatterRegistry()->fieldFormatter( setup.type() );
+      cache = context->cachedValue( cacheKey );
 
-      QString cacheKey = QStringLiteral( "repvalfcn:%1:%2" ).arg( layer->id(), fieldName );
-
-      QVariant cache;
-      if ( !context->hasCachedValue( cacheKey ) )
-      {
-        cache = formatter->createCache( layer, index, setup.config() );
-        context->setCachedValue( cacheKey, cache );
-      }
-      else
-        cache = context->cachedValue( cacheKey );
-
-      result = formatter->representValue( layer, index, setup.config(), cache, value );
-    }
+    result = formatter->representValue( layer, fieldIndex, setup.config(), cache, value );
   }
 
   return result;

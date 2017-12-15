@@ -12,7 +12,7 @@
 class QgsLayoutCustomDropHandler : QObject
 {
 %Docstring
- Abstract base class that may be implemented to handle new types of data to be dropped in QGIS layouts.
+Abstract base class that may be implemented to handle new types of data to be dropped in QGIS layouts.
 
 .. versionadded:: 3.0
 %End
@@ -24,19 +24,20 @@ class QgsLayoutCustomDropHandler : QObject
 
     QgsLayoutCustomDropHandler( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsLayoutCustomDropHandler.
+Constructor for QgsLayoutCustomDropHandler.
 %End
 
     virtual ~QgsLayoutCustomDropHandler();
 
     virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file );
 %Docstring
- Called when the specified ``file`` has been dropped onto a QGIS layout. If true
- is returned, then the handler has accepted this file and it should not
- be further processed (e.g. by other QgsLayoutCustomDropHandler).
+Called when the specified ``file`` has been dropped onto a QGIS layout. If true
+is returned, then the handler has accepted this file and it should not
+be further processed (e.g. by other QgsLayoutCustomDropHandler).
 
- The base class implementation does nothing.
- :rtype: bool
+The base class implementation does nothing.
+
+:rtype: bool
 %End
 };
 

@@ -12,7 +12,8 @@
 class QgsTextAnnotation: QgsAnnotation
 {
 %Docstring
- An annotation item that displays formatted text from a QTextDocument document.
+An annotation item that displays formatted text from a QTextDocument document.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,7 +24,7 @@ class QgsTextAnnotation: QgsAnnotation
 
     QgsTextAnnotation( QObject *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsTextAnnotation.
+Constructor for QgsTextAnnotation.
 %End
 
     virtual QgsTextAnnotation *clone() const /Factory/;
@@ -31,16 +32,19 @@ class QgsTextAnnotation: QgsAnnotation
 
     const QTextDocument *document() const;
 %Docstring
- Returns the text document which will be rendered
- within the annotation.
+Returns the text document which will be rendered
+within the annotation.
+
+:rtype: QTextDocument
+
 .. seealso:: :py:func:`setDocument()`
- :rtype: QTextDocument
 %End
 
     void setDocument( const QTextDocument *doc );
 %Docstring
- Sets the text document which will be rendered
- within the annotation. Ownership is not transferred.
+Sets the text document which will be rendered
+within the annotation. Ownership is not transferred.
+
 .. seealso:: :py:func:`document()`
 %End
 
@@ -49,8 +53,9 @@ class QgsTextAnnotation: QgsAnnotation
 
     static QgsTextAnnotation *create() /Factory/;
 %Docstring
- Returns a new QgsTextAnnotation object.
- :rtype: QgsTextAnnotation
+Returns a new QgsTextAnnotation object.
+
+:rtype: QgsTextAnnotation
 %End
 
   protected:

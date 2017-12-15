@@ -23,14 +23,13 @@
 %Include qgsconditionalstyle.sip
 %Include qgscoordinateformatter.sip
 %Include qgscoordinatetransform.sip
-%Include qgscrscache.sip
+%Include qgscoordinatetransformcontext.sip
 %Include qgsdartmeasurement.sip
 %Include qgsdatadefinedsizelegend.sip
 %Include qgsdataitemprovider.sip
 %Include qgsdataitemproviderregistry.sip
 %Include qgsdatasourceuri.sip
 %Include qgsdatetimestatisticalsummary.sip
-%Include qgsdatumtransformstore.sip
 %Include qgsdbfilterproxymodel.sip
 %Include qgsdefaultvalue.sip
 %Include qgsdiagramrenderer.sip
@@ -55,6 +54,7 @@
 %Include qgsfontutils.sip
 %Include qgsgeometrysimplifier.sip
 %Include qgshistogram.sip
+%Include qgshtmlutils.sip
 %Include qgsinterval.sip
 %Include qgsjsonutils.sip
 %Include qgslayerdefinition.sip

@@ -22,6 +22,7 @@
 #include "qgsvertexentry.h"
 #include "qgsvectorlayer.h"
 #include "qgsgeometryutils.h"
+#include "qgsproject.h"
 
 #include <QTableWidget>
 #include <QHeaderView>
@@ -366,7 +367,7 @@ void QgsNodeEditor::zoomToNode( int idx )
   double y = mSelectedFeature->vertexMap().at( idx )->point().y();
   QgsPointXY newCenter( x, y );
 
-  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs() );
+  QgsCoordinateTransform t( mLayer->crs(), mCanvas->mapSettings().destinationCrs(), QgsProject::instance() );
   QgsPointXY tCenter = t.transform( newCenter );
 
   QPolygonF ext = mCanvas->mapSettings().visiblePolygon();

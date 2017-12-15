@@ -10,24 +10,24 @@
 class QgsActionScope
 {
 %Docstring
- An action scope defines a "place" for an action to be shown and may add
- additional expression variables.
- Each QgsAction can be available in one or several action scopes.
+An action scope defines a "place" for an action to be shown and may add
+additional expression variables.
+Each QgsAction can be available in one or several action scopes.
 
- Examples:
- ---------
+Examples:
+---------
 
- <dl>
-   <dt>Canvas</dt>
-   <dd>Show for canvas tools. Adds `@clicked_x` and `@clicked_y` in map coordinates.</dd>
-   <dt>Feature</dt>
-   <dd>Show in feature specific places like the attribute table or feature
-   form.</dd>
-   <dt>Field</dt>
-   <dd>Show in context menus for individual fields (e.g. attribute table). Adds `@field_index`, `@field_name` and `@field_value`.</dd>
-   <dt>Layer</dt>
-   <dd>Show in attribute table and work on the layer or selection.</dd>
- </dl>
+<dl>
+<dt>Canvas</dt>
+<dd>Show for canvas tools. Adds `@clicked_x` and `@clicked_y` in map coordinates.</dd>
+<dt>Feature</dt>
+<dd>Show in feature specific places like the attribute table or feature
+form.</dd>
+<dt>Field</dt>
+<dd>Show in context menus for individual fields (e.g. attribute table). Adds `@field_index`, `@field_name` and `@field_value`.</dd>
+<dt>Layer</dt>
+<dd>Show in attribute table and work on the layer or selection.</dd>
+</dl>
 
 .. versionadded:: 3.0
 %End
@@ -39,41 +39,43 @@ class QgsActionScope
 
     explicit QgsActionScope();
 %Docstring
- Creates a new invalid action scope.
+Creates a new invalid action scope.
 
 .. versionadded:: 3.0
 %End
 
     explicit QgsActionScope( const QString &id, const QString &title, const QString &description, const QgsExpressionContextScope &expressionContextScope = QgsExpressionContextScope() );
 %Docstring
- Creates a new action scope.
- For details concerning the parameters check the documentation
- of the corresponding properties.
+Creates a new action scope.
+For details concerning the parameters check the documentation
+of the corresponding properties.
 %End
 
     bool operator==( const QgsActionScope &other ) const;
 
     QgsExpressionContextScope expressionContextScope() const;
 %Docstring
- An expression scope may offer additional variables for an action scope.
- This can be an `field_name` for the attribute which was clicked or
- `clicked_x` and `clicked_y` for actions which are available as map canvas clicks.
+An expression scope may offer additional variables for an action scope.
+This can be an `field_name` for the attribute which was clicked or
+`clicked_x` and `clicked_y` for actions which are available as map canvas clicks.
+
+:rtype: QgsExpressionContextScope
 
 .. versionadded:: 3.0
- :rtype: QgsExpressionContextScope
 %End
 
     void setExpressionContextScope( const QgsExpressionContextScope &expressionContextScope );
 %Docstring
- \copydoc expressionContextScope()
+\copydoc expressionContextScope()
 %End
 
     QString id() const;
 %Docstring
- A unique identifier for this action scope.
+A unique identifier for this action scope.
+
+:rtype: str
 
 .. versionadded:: 3.0
- :rtype: str
 %End
 
     void setId( const QString &id );
@@ -83,11 +85,12 @@ class QgsActionScope
 
     QString title() const;
 %Docstring
- The title is a human readable and translated string that will be
- presented to the user in the properties dialog.
+The title is a human readable and translated string that will be
+presented to the user in the properties dialog.
+
+:rtype: str
 
 .. versionadded:: 3.0
- :rtype: str
 %End
     void setTitle( const QString &title );
 %Docstring
@@ -96,12 +99,13 @@ class QgsActionScope
 
     QString description() const;
 %Docstring
- The description should be a longer description of where actions in this scope
- are available. It is not necessary to list the available expression variables
- in here, they are extracted automatically from the expressionContextScope().
+The description should be a longer description of where actions in this scope
+are available. It is not necessary to list the available expression variables
+in here, they are extracted automatically from the expressionContextScope().
+
+:rtype: str
 
 .. versionadded:: 3.0
- :rtype: str
 %End
     void setDescription( const QString &description );
 %Docstring
@@ -110,10 +114,11 @@ class QgsActionScope
 
     bool isValid() const;
 %Docstring
- Returns if this scope is valid.
+Returns if this scope is valid.
+
+:rtype: bool
 
 .. versionadded:: 3.0
- :rtype: bool
 %End
 
 };

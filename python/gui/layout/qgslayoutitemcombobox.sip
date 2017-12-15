@@ -12,7 +12,8 @@ class QgsLayoutItemComboBox : QComboBox
 {
 %Docstring
  The QgsLayoutItemComboBox class is a combo box which displays items of
- a matching type from a layout.
+a matching type from a layout.
+
 .. versionadded:: 3.0
 %End
 
@@ -23,63 +24,72 @@ class QgsLayoutItemComboBox : QComboBox
 
     explicit QgsLayoutItemComboBox( QWidget *parent /TransferThis/ = 0, QgsLayout *layout = 0 );
 %Docstring
- QgsLayoutItemComboBox creates a combo box to display a list of items in a
- ``layout``. The items can optionally be filtered by type.
- If ``layout`` is not set, no items will be shown
- until setCurrentLayout() is called
+QgsLayoutItemComboBox creates a combo box to display a list of items in a
+``layout``. The items can optionally be filtered by type.
+If ``layout`` is not set, no items will be shown
+until setCurrentLayout() is called
 %End
 
     void setCurrentLayout( QgsLayout *layout );
 %Docstring
- Sets the ``layout`` containing the items to list in the combo box.
+Sets the ``layout`` containing the items to list in the combo box.
 %End
 
     void setItemType( QgsLayoutItemRegistry::ItemType itemType );
 %Docstring
- Sets a filter for the item type to show in the combo box.
- \param itemType type of items to show. Set to QgsLayoutItemRegistry.LayoutItem to
- show all items.
+Sets a filter for the item type to show in the combo box.
+:param itemType: type of items to show. Set to QgsLayoutItemRegistry.LayoutItem to
+show all items.
+
 .. seealso:: :py:func:`itemType()`
 %End
 
     QgsLayoutItemRegistry::ItemType itemType() const;
 %Docstring
- Returns the filter for the item types to show in the combo box.
+Returns the filter for the item types to show in the combo box.
+
+:rtype: QgsLayoutItemRegistry.ItemType
+
 .. seealso:: :py:func:`setItemType()`
- :rtype: QgsLayoutItemRegistry.ItemType
 %End
 
     void setExceptedItemList( const QList< QgsLayoutItem * > &exceptList );
 %Docstring
- Sets a list of specific items to exclude from the combo box.
+Sets a list of specific items to exclude from the combo box.
+
 .. seealso:: :py:func:`exceptedItemList()`
 %End
 
     QList< QgsLayoutItem * > exceptedItemList() const;
 %Docstring
- Returns the list of specific items excluded from the combo box.
+Returns the list of specific items excluded from the combo box.
+
+:rtype: list of QgsLayoutItem
+
 .. seealso:: :py:func:`setExceptedItemList()`
- :rtype: list of QgsLayoutItem
 %End
 
     QgsLayoutItem *item( int index ) const;
 %Docstring
- Return the item currently shown at the specified ``index`` within the combo box.
+Return the item currently shown at the specified ``index`` within the combo box.
+
+:rtype: QgsLayoutItem
+
 .. seealso:: :py:func:`currentItem()`
- :rtype: QgsLayoutItem
 %End
 
     QgsLayoutItem *currentItem() const;
 %Docstring
- Returns the item currently selected in the combo box.
- :rtype: QgsLayoutItem
+Returns the item currently selected in the combo box.
+
+:rtype: QgsLayoutItem
 %End
 
   public slots:
 
     void setItem( const QgsLayoutItem *item );
 %Docstring
- Sets the currently selected ``item`` in the combo box.
+Sets the currently selected ``item`` in the combo box.
 %End
 
   signals:

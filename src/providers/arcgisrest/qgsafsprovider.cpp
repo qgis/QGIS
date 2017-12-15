@@ -89,7 +89,9 @@ QgsAfsProvider::QgsAfsProvider( const QString &uri )
       appendError( QgsErrorMessage( tr( "Could not parse spatial reference" ), QStringLiteral( "AFSProvider" ) ) );
       return;
     }
+    Q_NOWARN_DEPRECATED_PUSH
     mSharedData->mExtent = QgsCoordinateTransform( extentCrs, mSharedData->mSourceCRS ).transformBoundingBox( mSharedData->mExtent );
+    Q_NOWARN_DEPRECATED_POP
   }
 
   // Read fields

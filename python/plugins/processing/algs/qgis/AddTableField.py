@@ -46,6 +46,9 @@ class AddTableField(QgisFeatureBasedAlgorithm):
     def group(self):
         return self.tr('Vector table')
 
+    def groupId(self):
+        return 'vectortable'
+
     def __init__(self):
         super().__init__()
         self.type_names = [self.tr('Integer'),

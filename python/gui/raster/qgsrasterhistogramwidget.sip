@@ -15,7 +15,7 @@
 class QgsRasterHistogramWidget : QgsMapLayerConfigWidget
 {
 %Docstring
- Histogram widget
+Histogram widget
 %End
 
 %TypeHeaderCode
@@ -25,13 +25,14 @@ class QgsRasterHistogramWidget : QgsMapLayerConfigWidget
 
     QgsRasterHistogramWidget( QgsRasterLayer *layer, QWidget *parent /TransferThis/ = 0 );
 %Docstring
- Constructor for QgsRasterHistogramWidget, for the specified raster ``layer``.
+Constructor for QgsRasterHistogramWidget, for the specified raster ``layer``.
 %End
 
     bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );
 %Docstring
 Save the histogram as an image to disk
- :rtype: bool
+
+:rtype: bool
 %End
 
     void setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget = 0 );
@@ -47,7 +48,8 @@ Activate the histogram widget
     bool computeHistogram( bool forceComputeFlag );
 %Docstring
  Compute the histogram on demand.
- :rtype: bool
+
+:rtype: bool
 %End
 
     void histoAction( const QString &actionName, bool actionFlag = true );

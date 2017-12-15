@@ -36,7 +36,12 @@ QStringList QgsRemoveNullGeometryAlgorithm::tags() const
 
 QString QgsRemoveNullGeometryAlgorithm::group() const
 {
-  return QObject::tr( "Vector selection" );
+  return QObject::tr( "Vector geometry" );
+}
+
+QString QgsRemoveNullGeometryAlgorithm::groupId() const
+{
+  return QStringLiteral( "vectorgeometry" );
 }
 
 void QgsRemoveNullGeometryAlgorithm::initAlgorithm( const QVariantMap & )

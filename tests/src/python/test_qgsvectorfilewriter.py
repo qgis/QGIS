@@ -25,6 +25,7 @@ from qgis.core import (QgsVectorLayer,
                        QgsCoordinateReferenceSystem,
                        QgsVectorFileWriter,
                        QgsFeatureRequest,
+                       QgsProject,
                        QgsWkbTypes,
                        QgsRectangle,
                        QgsCoordinateTransform
@@ -221,7 +222,7 @@ class TestQgsVectorFileWriter(unittest.TestCase):
         options = QgsVectorFileWriter.SaveVectorOptions()
         options.driverName = 'ESRI Shapefile'
         options.filterExtent = QgsRectangle(-12511460, 3045157, -10646621, 4683497)
-        options.ct = QgsCoordinateTransform(source_layer.crs(), QgsCoordinateReferenceSystem.fromEpsgId(3785))
+        options.ct = QgsCoordinateTransform(source_layer.crs(), QgsCoordinateReferenceSystem.fromEpsgId(3785), QgsProject.instance())
 
         dest_file_name = os.path.join(str(QDir.tempPath()), 'extent_transform.shp')
         write_result, error_message = QgsVectorFileWriter.writeAsVectorFormat(

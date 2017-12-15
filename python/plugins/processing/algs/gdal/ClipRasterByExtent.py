@@ -99,6 +99,9 @@ class ClipRasterByExtent(GdalAlgorithm):
     def group(self):
         return self.tr('Raster extraction')
 
+    def groupId(self):
+        return 'rasterextraction'
+
     def icon(self):
         return QIcon(os.path.join(pluginPath, 'images', 'gdaltools', 'raster-clip.png'))
 

@@ -11,7 +11,7 @@
 class QgsDashSpaceDialog: QDialog
 {
 %Docstring
- A dialog to enter a custom dash space pattern for lines
+A dialog to enter a custom dash space pattern for lines
 %End
 
 %TypeHeaderCode
@@ -26,7 +26,8 @@ Constructor for QgsDashSpaceDialog
 
     QVector<qreal> dashDotVector() const;
 %Docstring
- :rtype: list of qreal
+
+:rtype: list of qreal
 %End
 
 };

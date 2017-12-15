@@ -35,9 +35,10 @@ QgsRasterLayer *QgsDemTerrainGenerator::layer() const
   return qobject_cast<QgsRasterLayer *>( mLayer.layer.data() );
 }
 
-void QgsDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs )
+void QgsDemTerrainGenerator::setCrs( const QgsCoordinateReferenceSystem &crs, const QgsCoordinateTransformContext &context )
 {
   mCrs = crs;
+  mTransformContext = context;
   updateGenerator();
 }
 
@@ -103,7 +104,7 @@ void QgsDemTerrainGenerator::updateGenerator()
   if ( dem )
   {
     QgsRectangle te = dem->extent();
-    QgsCoordinateTransform terrainToMapTransform( dem->crs(), mCrs );
+    QgsCoordinateTransform terrainToMapTransform( dem->crs(), mCrs, mTransformContext );
     te = terrainToMapTransform.transformBoundingBox( te );
 
     mTerrainTilingScheme = QgsTilingScheme( te, mCrs );

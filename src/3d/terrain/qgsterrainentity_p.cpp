@@ -68,7 +68,7 @@ QgsTerrainEntity::QgsTerrainEntity( int maxLevel, const Qgs3DMapSettings &map, Q
 
   connectToLayersRepaintRequest();
 
-  mTerrainToMapTransform = new QgsCoordinateTransform( map.terrainGenerator()->crs(), map.crs() );
+  mTerrainToMapTransform = new QgsCoordinateTransform( map.terrainGenerator()->crs(), map.crs(), map.transformContext() );
 
   mTextureGenerator = new QgsTerrainTextureGenerator( map );
 
