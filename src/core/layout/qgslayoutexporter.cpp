@@ -166,6 +166,9 @@ void QgsLayoutExporter::renderRegion( QPainter *painter, const QRectF &region ) 
 
 QImage QgsLayoutExporter::renderRegionToImage( const QRectF &region, QSize imageSize, double dpi ) const
 {
+  if ( !mLayout )
+    return QImage();
+
   LayoutContextPreviewSettingRestorer restorer( mLayout );
   ( void )restorer;
 
@@ -231,6 +234,9 @@ class LayoutContextSettingsRestorer
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString &filePath, const QgsLayoutExporter::ImageExportSettings &s )
 {
+  if ( !mLayout )
+    return PrintError;
+
   ImageExportSettings settings = s;
   if ( settings.dpi <= 0 )
     settings.dpi = mLayout->context().dpi();
@@ -330,6 +336,9 @@ QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToImage( const QString 
 
 QgsLayoutExporter::ExportResult QgsLayoutExporter::exportToPdf( const QString &filePath, const QgsLayoutExporter::PdfExportSettings &s )
 {
+  if ( !mLayout )
+    return PrintError;
+
   PdfExportSettings settings = s;
   if ( settings.dpi <= 0 )
     settings.dpi = mLayout->context().dpi();
@@ -597,6 +606,9 @@ void QgsLayoutExporter::writeWorldFile( const QString &worldFileName, double a, 
 
 bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMap *map, const QRectF &exportRegion, double dpi ) const
 {
+  if ( !mLayout )
+    return false;
+
   if ( !map )
     map = mLayout->referenceMap();
 
@@ -630,6 +642,9 @@ bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMa
 
 void QgsLayoutExporter::computeWorldFileParameters( double &a, double &b, double &c, double &d, double &e, double &f, double dpi ) const
 {
+  if ( !mLayout )
+    return;
+
   QgsLayoutItemMap *map = mLayout->referenceMap();
   if ( !map )
   {
@@ -646,6 +661,9 @@ void QgsLayoutExporter::computeWorldFileParameters( double &a, double &b, double
 
 void QgsLayoutExporter::computeWorldFileParameters( const QRectF &exportRegion, double &a, double &b, double &c, double &d, double &e, double &f, double dpi ) const
 {
+  if ( !mLayout )
+    return;
+
   // World file parameters : affine transformation parameters from pixel coordinates to map coordinates
   QgsLayoutItemMap *map = mLayout->referenceMap();
   if ( !map )
