@@ -18,6 +18,7 @@
 #define QGSLAYOUTUTILS_H
 
 #include "qgis_core.h"
+#include "qgslayoutitempage.h"
 #include <QFont>
 #include <QColor>
 
@@ -198,6 +199,12 @@ class CORE_EXPORT QgsLayoutUtils
      */
     static QRectF largestRotatedRectWithinBounds( const QRectF &originalRect, const QRectF &boundsRect, const double rotation );
 
+    /**
+     * Decodes a \a string representing a paper orientation and returns the
+     * decoded orientation.
+     * If the string was correctly decoded, \a ok will be set to true.
+     */
+    static QgsLayoutItemPage::Orientation decodePaperOrientation( const QString &string, bool &ok );
 
   private:
 

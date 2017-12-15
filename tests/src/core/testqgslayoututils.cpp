@@ -51,6 +51,7 @@ class TestQgsLayoutUtils: public QObject
     void drawTextPos(); //test drawing text at a pos
     void drawTextRect(); //test drawing text in a rect
     void largestRotatedRect(); //test largest rotated rect helper function
+    void decodePaperOrientation();
 
   private:
 
@@ -607,6 +608,23 @@ void TestQgsLayoutUtils::largestRotatedRect()
     //also verify that aspect ratio of rectangle has not changed
     QGSCOMPARENEAR( result.width() / result.height(), highRect.width() / highRect.height(), 4 * DBL_EPSILON );
   }
+}
+
+void TestQgsLayoutUtils::decodePaperOrientation()
+{
+  QgsLayoutItemPage::Orientation orientation;
+  bool ok = false;
+  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( "bad string" ), ok );
+  QVERIFY( !ok );
+  QCOMPARE( orientation, QgsLayoutItemPage::Landscape ); //should default to landscape
+  ok = false;
+  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( "portrait" ), ok );
+  QVERIFY( ok );
+  QCOMPARE( orientation, QgsLayoutItemPage::Portrait );
+  ok = false;
+  orientation = QgsLayoutUtils::decodePaperOrientation( QStringLiteral( " LANDSCAPE  " ), ok );
+  QVERIFY( ok );
+  QCOMPARE( orientation, QgsLayoutItemPage::Landscape );
 }
 
 bool TestQgsLayoutUtils::renderCheck( const QString &testName, QImage &image, int mismatchCount )

@@ -362,7 +362,23 @@ QRectF QgsLayoutUtils::largestRotatedRectWithinBounds( const QRectF &originalRec
   offsetY += std::fabs( minY );
 
   return QRectF( offsetX, offsetY, rectScaledWidth, rectScaledHeight );
+}
 
+QgsLayoutItemPage::Orientation QgsLayoutUtils::decodePaperOrientation( const QString &string, bool &ok )
+{
+  QString s = string.trimmed();
+  if ( s.compare( QLatin1String( "Portrait" ), Qt::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsLayoutItemPage::Portrait;
+  }
+  else if ( s.compare( QLatin1String( "Landscape" ), Qt::CaseInsensitive ) == 0 )
+  {
+    ok = true;
+    return QgsLayoutItemPage::Landscape;
+  }
+  ok = false;
+  return QgsLayoutItemPage::Landscape; // default to landscape
 }
 
 double QgsLayoutUtils::pointsToMM( const double pointSize )

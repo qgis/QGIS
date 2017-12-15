@@ -214,6 +214,13 @@ the a specified ``rotation`` amount.
 :return: largest scaled version of the rectangle possible
 %End
 
+    static QgsLayoutItemPage::Orientation decodePaperOrientation( const QString &string, bool &ok );
+%Docstring
+ Decodes a ``string`` representing a paper orientation and returns the
+ decoded orientation.
+ If the string was correctly decoded, ``ok`` will be set to true.
+ :rtype: QgsLayoutItemPage.Orientation
+%End
 
 };
 
