@@ -700,10 +700,12 @@ QList<QgsLayoutItem *> QgsLayout::ungroupItems( QgsLayoutItemGroup *group )
 
 void QgsLayout::refresh()
 {
+  mUndoStack->blockCommands( true );
   mPageCollection->beginPageSizeChange();
   emit refreshed();
   mPageCollection->reflow();
   mPageCollection->endPageSizeChange();
+  mUndoStack->blockCommands( false );
   update();
 }
 

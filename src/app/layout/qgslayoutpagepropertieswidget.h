@@ -58,6 +58,7 @@ class QgsLayoutPagePropertiesWidget : public QgsLayoutItemBaseWidget, private Ui
     QgsLayoutMeasurementConverter mConverter;
 
     bool mSettingPresetSize = false;
+    bool mBlockPageUpdate = false;
 
     void showCurrentPageSize();
 

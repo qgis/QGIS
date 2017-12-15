@@ -81,6 +81,7 @@ QgsLayoutPagePropertiesWidget::QgsLayoutPagePropertiesWidget( QWidget *parent, Q
 
 void QgsLayoutPagePropertiesWidget::pageSizeChanged( int )
 {
+  mBlockPageUpdate = true;
   if ( mPageSizeComboBox->currentData().toString().isEmpty() )
   {
     //custom size
@@ -111,6 +112,7 @@ void QgsLayoutPagePropertiesWidget::pageSizeChanged( int )
     }
     mSettingPresetSize = false;
   }
+  mBlockPageUpdate = false;
   updatePageSize();
 }
 
@@ -145,12 +147,17 @@ void QgsLayoutPagePropertiesWidget::orientationChanged( int )
 
 void QgsLayoutPagePropertiesWidget::updatePageSize()
 {
+  if ( mBlockPageUpdate )
+    return;
+
+  mPage->layout()->undoStack()->beginMacro( tr( "Change Page Size" ) );
   mPage->layout()->pageCollection()->beginPageSizeChange();
   mPage->layout()->undoStack()->beginCommand( mPage, tr( "Change Page Size" ), 1 + mPage->layout()->pageCollection()->pageNumber( mPage ) );
   mPage->setPageSize( QgsLayoutSize( mWidthSpin->value(), mHeightSpin->value(), mSizeUnitsComboBox->unit() ) );
   mPage->layout()->undoStack()->endCommand();
   mPage->layout()->pageCollection()->reflow();
   mPage->layout()->pageCollection()->endPageSizeChange();
+  mPage->layout()->undoStack()->endMacro();
 }
 
 void QgsLayoutPagePropertiesWidget::setToCustomSize()
@@ -186,7 +193,7 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   QString pageSize = QgsApplication::pageSizeRegistry()->find( paperSize );
   if ( !pageSize.isEmpty() )
   {
-    mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );
+    whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->findData( pageSize ) );
     mLockAspectRatio->setEnabled( false );
     mLockAspectRatio->setLocked( false );
     mSizeUnitsComboBox->setEnabled( false );
@@ -195,7 +202,7 @@ void QgsLayoutPagePropertiesWidget::showCurrentPageSize()
   else
   {
     // custom
-    mPageSizeComboBox->setCurrentIndex( mPageSizeComboBox->count() - 1 );
+    whileBlocking( mPageSizeComboBox )->setCurrentIndex( mPageSizeComboBox->count() - 1 );
     mLockAspectRatio->setEnabled( true );
     mSizeUnitsComboBox->setEnabled( true );
     mPageOrientationComboBox->setEnabled( false );
