@@ -1138,6 +1138,8 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
     void setScenePos( const QPointF &destinationPos );
     bool shouldBlockUndoCommands() const;
 
+    void applyDataDefinedOrientation( double &width, double &height, const QgsExpressionContext &context );
+
     friend class TestQgsLayoutItem;
     friend class TestQgsLayoutView;
     friend class QgsLayoutItemGroup;

@@ -26,6 +26,7 @@
 #include "qgslayouteffect.h"
 #include "qgslayoutundostack.h"
 #include "qgslayoutpagecollection.h"
+#include "qgslayoutitempage.h"
 #include <QPainter>
 #include <QStyleOptionGraphicsItem>
 #include <QUuid>
@@ -932,6 +933,37 @@ QgsLayoutPoint QgsLayoutItem::applyDataDefinedPosition( const QgsLayoutPoint &po
   return QgsLayoutPoint( evaluatedX, evaluatedY, position.units() );
 }
 
+void QgsLayoutItem::applyDataDefinedOrientation( double &width, double &height, const QgsExpressionContext &context )
+{
+  bool ok = false;
+  QString orientationString = mDataDefinedProperties.valueAsString( QgsLayoutObject::PaperOrientation, context, QString(), &ok );
+  if ( ok && !orientationString.isEmpty() )
+  {
+    QgsLayoutItemPage::Orientation orientation = QgsLayoutUtils::decodePaperOrientation( orientationString, ok );
+    if ( ok )
+    {
+      double heightD, widthD;
+      switch ( orientation )
+      {
+        case QgsLayoutItemPage::Portrait:
+        {
+          heightD = std::max( height, width );
+          widthD = std::min( height, width );
+          break;
+        }
+        case QgsLayoutItemPage::Landscape:
+        {
+          heightD = std::min( height, width );
+          widthD = std::max( height, width );
+          break;
+        }
+      }
+      width = widthD;
+      height = heightD;
+    }
+  }
+}
+
 QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
 {
   if ( !mLayout )
@@ -941,7 +973,8 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
 
   if ( !mDataDefinedProperties.isActive( QgsLayoutObject::PresetPaperSize ) &&
        !mDataDefinedProperties.isActive( QgsLayoutObject::ItemWidth ) &&
-       !mDataDefinedProperties.isActive( QgsLayoutObject::ItemHeight ) )
+       !mDataDefinedProperties.isActive( QgsLayoutObject::ItemHeight ) &&
+       !mDataDefinedProperties.isActive( QgsLayoutObject::PaperOrientation ) )
     return size;
 
 
@@ -962,6 +995,10 @@ QgsLayoutSize QgsLayoutItem::applyDataDefinedSize( const QgsLayoutSize &size )
   // highest priority is dd width/height
   evaluatedWidth = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemWidth, context, evaluatedWidth );
   evaluatedHeight = mDataDefinedProperties.valueAsDouble( QgsLayoutObject::ItemHeight, context, evaluatedHeight );
+
+  //which is finally overwritten by data defined orientation
+  applyDataDefinedOrientation( evaluatedWidth, evaluatedHeight, context );
+
   return QgsLayoutSize( evaluatedWidth, evaluatedHeight, size.units() );
 }
 
