@@ -432,7 +432,12 @@ void QgsMetadataWidget::setPropertiesFromLayer() const
   {
     // Even if it's a list, it seems we use only one for now (cf discussion with Tom)
     dateTimeFrom->setDateTime( temporalExtents.at( 0 ).begin() );
-    dateTimeFrom->setDateTime( temporalExtents.at( 0 ).end() );
+    dateTimeTo->setDateTime( temporalExtents.at( 0 ).end() );
+  }
+  else
+  {
+    dateTimeFrom->clear();
+    dateTimeTo->clear();
   }
 
   // Contacts
