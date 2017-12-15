@@ -762,7 +762,7 @@ void TestQgsLayout::georeference()
   QgsLayoutExporter exporter( &l );
 
   // no map
-  double *t = exporter.computeGeoTransform( nullptr );
+  std::unique_ptr< double [] > t = exporter.computeGeoTransform( nullptr );
   QVERIFY( !t );
 
   QgsLayoutItemMap *map = new QgsLayoutItemMap( &l );
@@ -777,7 +777,7 @@ void TestQgsLayout::georeference()
   QGSCOMPARENEAR( t[3], 3050, 1 );
   QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
   QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
-  delete[] t;
+  t.reset();
 
   // don't specify map
   l.setReferenceMap( map );
@@ -788,7 +788,7 @@ void TestQgsLayout::georeference()
   QGSCOMPARENEAR( t[3], 3050, 1 );
   QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
   QGSCOMPARENEAR( t[5], -0.211694, 0.0001 );
-  delete[] t;
+  t.reset();
 
   // specify extent
   t = exporter.computeGeoTransform( map, QRectF( 70, 100, 50, 60 ) );
@@ -798,7 +798,7 @@ void TestQgsLayout::georeference()
   QGSCOMPARENEAR( t[3], 2800, 1 );
   QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
   QGSCOMPARENEAR( t[5], -0.211864, 0.0001 );
-  delete[] t;
+  t.reset();
 
   // specify dpi
   t = exporter.computeGeoTransform( map, QRectF(), 75 );
@@ -808,7 +808,7 @@ void TestQgsLayout::georeference()
   QGSCOMPARENEAR( t[3], 3050.0, 1 );
   QGSCOMPARENEAR( t[4], 0.0, 4 * DBL_EPSILON );
   QGSCOMPARENEAR( t[5], -0.846774, 0.0001 );
-  delete[] t;
+  t.reset();
 
   // rotation
   map->setMapRotation( 45 );
@@ -819,7 +819,7 @@ void TestQgsLayout::georeference()
   QGSCOMPARENEAR( t[3], 2761.611652, 1 );
   QGSCOMPARENEAR( t[4], 0.14969, 0.0001 );
   QGSCOMPARENEAR( t[5], -0.14969, 0.0001 );
-  delete[] t;
+  t.reset();
 }
 
 

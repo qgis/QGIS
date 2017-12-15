@@ -321,7 +321,7 @@ class CORE_EXPORT QgsLayoutExporter
      *
      * \see georeferenceOutput()
      */
-    double *computeGeoTransform( const QgsLayoutItemMap *referenceMap = nullptr, const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
+    std::unique_ptr<double[]> computeGeoTransform( const QgsLayoutItemMap *referenceMap = nullptr, const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 
     //! Write a world file
     void writeWorldFile( const QString &fileName, double a, double b, double c, double d, double e, double f ) const;

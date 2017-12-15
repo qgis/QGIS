@@ -501,7 +501,7 @@ void QgsLayoutExporter::updatePrinterPageSize( QPrinter &printer, int page )
   printer.setPaperSize( pageSizeMM.toQSizeF(), QPrinter::Millimeter );
 }
 
-double *QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, const QRectF &region, double dpi ) const
+std::unique_ptr<double[]> QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, const QRectF &region, double dpi ) const
 {
   if ( !map )
     map = mLayout->referenceMap();
@@ -574,7 +574,7 @@ double *QgsLayoutExporter::computeGeoTransform( const QgsLayoutItemMap *map, con
   double pixelHeightScale = paperExtent.height() / pageHeightPixels;
 
   // transform matrix
-  double *t = new double[6];
+  std::unique_ptr<double[]> t( new double[6] );
   t[0] = X0;
   t[1] = cosAlpha * pixelWidthScale;
   t[2] = -sinAlpha * pixelWidthScale;
@@ -618,7 +618,7 @@ bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMa
   if ( dpi < 0 )
     dpi = mLayout->context().dpi();
 
-  double *t = computeGeoTransform( map, exportRegion, dpi );
+  std::unique_ptr<double[]> t = computeGeoTransform( map, exportRegion, dpi );
   if ( !t )
     return false;
 
@@ -628,7 +628,7 @@ bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMa
   gdal::dataset_unique_ptr outputDS( GDALOpen( file.toLocal8Bit().constData(), GA_Update ) );
   if ( outputDS )
   {
-    GDALSetGeoTransform( outputDS.get(), t );
+    GDALSetGeoTransform( outputDS.get(), t.get() );
 #if 0
     //TODO - metadata can be set here, e.g.:
     GDALSetMetadataItem( outputDS, "AUTHOR", "me", nullptr );
@@ -636,7 +636,7 @@ bool QgsLayoutExporter::georeferenceOutput( const QString &file, QgsLayoutItemMa
     GDALSetProjection( outputDS.get(), map->crs().toWkt().toLocal8Bit().constData() );
   }
   CPLSetConfigOption( "GDAL_PDF_DPI", nullptr );
-  delete[] t;
+
   return true;
 }
 
