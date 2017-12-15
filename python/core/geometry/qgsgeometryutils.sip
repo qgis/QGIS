@@ -99,14 +99,14 @@ Returns the squared distance between a point and a line.
 :rtype: float
 %End
 
-    static bool lineIntersection( const QgsPoint &p1, QgsVector v, const QgsPoint &q1, QgsVector w, QgsPoint &inter /Out/ );
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection /Out/ );
 %Docstring
  Compute the intersection between two lines
 :param p1: Point on the first line
-:param v: Direction vector of the first line
-:param q1: Point on the second line
-:param w: Direction vector of the second line
-:param inter: Output parameter, the intersection point
+:param v1: Direction vector of the first line
+:param p2: Point on the second line
+:param v2: Direction vector of the second line
+:param intersection: Output parameter, the intersection point
 
 :return: Whether the lines intersect
 :rtype: bool
