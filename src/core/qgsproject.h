@@ -235,18 +235,17 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
     /**
      * Writes the project to a file.
      * \param filename destination file
+     * \returns true if project was written successfully
      * \note calling this implicitly sets the project's filename (see setFileName() )
      * \note isDirty() will be set to false if project is successfully written
-     * \returns true if project was written successfully
-     *
      * \since QGIS 3.0
      */
     bool write( const QString &filename );
 
     /**
      * Writes the project to its current associated file (see fileName() ).
-     * \note isDirty() will be set to false if project is successfully written
      * \returns true if project was written successfully
+     * \note isDirty() will be set to false if project is successfully written
      */
     bool write();
 

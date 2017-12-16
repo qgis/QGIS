@@ -368,8 +368,8 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * creates a QgsGraduatedSymbolRenderer from an existing renderer.
-     * \since QGIS 2.6
      * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.6
      */
     static QgsGraduatedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

@@ -265,8 +265,8 @@ class CORE_EXPORT QgsGeos: public QgsGeometryEngine
      * where this linestring comes to the specified point.
      * \param point point to seek proximity to
      * \param errorMsg error messages emitted, if any
-     * \note only valid for linestring geometries
      * \returns distance along line, or -1 on error
+     * \note only valid for linestring geometries
      */
     double lineLocatePoint( const QgsPoint &point, QString *errorMsg = nullptr ) const;
 

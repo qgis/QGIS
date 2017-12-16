@@ -788,10 +788,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
 
     /**
      * Delete a style from the database
-     * \since QGIS 3.0
      * \param styleId the provider's layer_styles table id of the style to delete
      * \param msgError reference to string that will be updated with any error messages
      * \returns true in case of success
+     * \since QGIS 3.0
      */
     virtual bool deleteStyleFromDatabase( const QString &styleId, QString &msgError SIP_OUT );
 
@@ -1151,8 +1151,8 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
-     * \note geom is not going to be modified by the function
      * \returns 0 in case of success
+     * \note geom is not going to be modified by the function
      */
     int addTopologicalPoints( const QgsGeometry &geom );
 

@@ -70,8 +70,8 @@ class CORE_EXPORT QgsGeometryUtils
      * \param distance distance to traverse along geometry
      * \param previousVertex will be set to previous vertex ID
      * \param nextVertex will be set to next vertex ID
-     * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * \returns true if vertices were successfully retrieved
+     * \note if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
      * \since QGIS 3.0
      */
     static bool verticesAtDistance( const QgsAbstractGeometry &geometry,

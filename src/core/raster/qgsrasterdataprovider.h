@@ -303,40 +303,39 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     virtual QString htmlMetadata() = 0;
 
     /**
-     * \brief Identify raster value(s) found on the point position. The context
-     *         parameters extent, width and height are important to identify
-     *         on the same zoom level as a displayed map and to do effective
-     *         caching (WCS). If context params are not specified the highest
-     *         resolution is used. capabilities() may be used to test if format
-     *         is supported by provider. Values are set to 'no data' or empty string
-     *         if point is outside data source extent.
+     * Identify raster value(s) found on the point position. The context
+     * parameters extent, width and height are important to identify
+     * on the same zoom level as a displayed map and to do effective
+     * caching (WCS). If context params are not specified the highest
+     * resolution is used. capabilities() may be used to test if format
+     * is supported by provider. Values are set to 'no data' or empty string
+     * if point is outside data source extent.
      *
-     * \note  The arbitraryness of the returned document is enforced by WMS standards
-     *        up to at least v1.3.0
      * \param point coordinates in data source CRS
      * \param format result format
      * \param boundingBox context bounding box
      * \param width context width
      * \param height context height
      * \param dpi context dpi
-     * \returns QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
+     * \return QgsRaster::IdentifyFormatValue: map of values for each band, keys are band numbers
      *         (from 1).
      *         QgsRaster::IdentifyFormatFeature: map of QgsRasterFeatureList for each sublayer
      *         (WMS) - TODO: it is not consistent with QgsRaster::IdentifyFormatValue.
      *         QgsRaster::IdentifyFormatHtml: map of HTML strings for each sublayer (WMS).
      *         Empty if failed or there are no results (TODO: better error reporting).
+     * \note The arbitraryness of the returned document is enforced by WMS standards
+     *       up to at least v1.3.0
      */
     //virtual QMap<int, QVariant> identify( const QgsPointXY & point, QgsRaster::IdentifyFormat format, const QgsRectangle &extent = QgsRectangle(), int width = 0, int height = 0 );
     virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
 
     /**
-     * \brief   Returns the caption error text for the last error in this provider
+     * \brief Returns the caption error text for the last error in this provider
      *
      * If an operation returns 0 (e.g. draw()), this function
      * returns the text of the error associated with the failure.
      * Interactive users of this provider can then, for example,
      * call a QMessageBox to display the contents.
-     *
      */
     virtual QString lastErrorTitle() = 0;
 
@@ -377,10 +376,10 @@ class CORE_EXPORT QgsRasterDataProvider : public QgsDataProvider, public QgsRast
     /**
      * Turns on/off editing mode of the provider. When in editing mode, it is possible
      * to overwrite data of the provider using writeBlock() calls.
+     * \returns true if the switch to/from editing mode was successful
      * \note Only some providers support editing mode and even those may fail to turn
      * the underlying data source into editing mode, so it is necessary to check the return
      * value whether the operation was successful.
-     * \returns true if the switch to/from editing mode was successful
      * \see isEditable(), writeBlock()
      * \since QGIS 3.0
      */

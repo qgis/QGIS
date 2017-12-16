@@ -469,8 +469,8 @@ class CORE_EXPORT QgsAuthManager : public QObject
 
     /**
      * \brief ignoredSslErrorCache Get ignored SSL error cache, keyed with cert/connection's sha:host:port.
-     * \note not available in Python bindings
      * \return hash keyed with cert/connection's sha:host:port.
+     * \note not available in Python bindings
      * \since QGIS 3.0
      */
     QHash<QString, QSet<QSslError::SslError> > ignoredSslErrorCache() { return mIgnoredSslErrorsCache; } SIP_SKIP
