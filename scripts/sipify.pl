@@ -146,6 +146,7 @@ sub processDoxygenLine {
     if ( $line =~ m/\\since .*?([\d\.]+)/i ) {
         return "\n.. versionadded:: $1\n";
     }
+    # create links in see also
     if ( $line =~ m/\\see +(\w+(\.\w+)*(\(\))?)/ ) {
         my $seealso = $1;
         if (  $seealso =~ m/^Qgs[A-Z]\w+$/ ) {
@@ -161,6 +162,9 @@ sub processDoxygenLine {
             return "\n.. seealso:: $seealso\n";
         }
     }
+    # create links in plain text too (less performant)
+    $line =~ s/\b(Qgs[A-Z]\w+)\b(\.?$|[^\w]{2})/:py:class:`$1`$2/g;
+    $line =~ s/\b(Qgs[A-Z]\w+\.[a-z]\w+\(\))(\.|\b|$)/:py:func:`$1`/g;
     if ( $line =~ m/[\\@]note (.*)/ ) {
         return "\n.. note::\n\n   $1\n";
     }
