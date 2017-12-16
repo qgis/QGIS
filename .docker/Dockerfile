@@ -79,6 +79,8 @@ RUN  apt-get update \
     xfonts-base \
     xfonts-scalable \
     xvfb \
+    postgresql-9.5 \
+    postgresql-9.5-postgis-2.3 \
   && pip3 install \
     psycopg2 \
     numpy \
@@ -87,7 +89,7 @@ RUN  apt-get update \
     mock \
     future \
     termcolor \
-  && apt-get autoremove -y python3-pip python2.7 \
+  && apt-get autoremove -y python3-pip \
   && apt-get clean
 
 RUN echo "alias python=python3" >> ~/.bash_aliases
