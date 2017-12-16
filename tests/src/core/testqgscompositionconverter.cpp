@@ -183,6 +183,7 @@ void TestQgsCompositionConverter::importComposerTemplateShape()
   QCOMPARE( shape->backgroundColor(), QColor( 255, 255, 255, 255 ) );
   QCOMPARE( ( int )shape->rotation(), 0 );
   QCOMPARE( shape->hasFrame(), false );
+  QCOMPARE( shape->hasBackground(), false );
 
   qDeleteAll( items );
 }

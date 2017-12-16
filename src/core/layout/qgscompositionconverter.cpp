@@ -403,6 +403,9 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
 
     layoutItem->setSymbol( QgsFillSymbol::createSimple( properties ) );
   }
+  // Diable frame for shapes
+  layoutItem->setFrameEnabled( false );
+  layoutItem->setBackgroundEnabled( false );
 
   return true;
 }
