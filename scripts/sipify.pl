@@ -131,12 +131,12 @@ sub processDoxygenLine {
     $line =~ s/\s*\\return(s)?/\n:return:/;
 
     if ( $line =~ m/\\param / ){
+        $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
         if ( $COMMENT_PARAM_LIST == 0 )
         {
             $line = "\n$line";
         }
         $COMMENT_PARAM_LIST = 1;
-        $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
     }
 
 
