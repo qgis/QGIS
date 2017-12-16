@@ -139,7 +139,7 @@ QgsQptDataItem::QgsQptDataItem( QgsDataItem *parent, const QString &name, const 
   : QgsDataItem( QgsDataItem::Custom, parent, name, path )
 {
   setState( QgsDataItem::Populated ); // no children
-  setIconName( QStringLiteral( ":/images/icons/qgis-icon-16x16.png" ) );
+  setIconName( QStringLiteral( "/mIconQptFile.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
 }
 
@@ -182,7 +182,7 @@ QgsPyDataItem::QgsPyDataItem( QgsDataItem *parent, const QString &name, const QS
   : QgsDataItem( QgsDataItem::Custom, parent, name, path )
 {
   setState( QgsDataItem::Populated ); // no children
-  setIconName( QStringLiteral( ":/images/icons/qgis-icon-16x16.png" ) );
+  setIconName( QStringLiteral( "/mIconPythonFile.svg" ) );
   setToolTip( QDir::toNativeSeparators( path ) );
 }
 
