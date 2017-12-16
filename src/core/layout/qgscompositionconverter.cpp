@@ -43,16 +43,16 @@ void QgsCompositionConverter::initPropertyDefinitions()
   {
     { QgsCompositionConverter::TestProperty, QgsPropertyDefinition( "dataDefinedProperty", QgsPropertyDefinition::DataTypeString, "invalid property", QString() ) },
     {
-      QgsCompositionConverter::PresetPaperSize, QgsPropertyDefinition( "dataDefinedPaperSize", QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QLatin1String( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
+      QgsCompositionConverter::PresetPaperSize, QgsPropertyDefinition( "dataDefinedPaperSize", QgsPropertyDefinition::DataTypeString, QObject::tr( "Paper size" ), QObject::tr( "string " ) + QStringLiteral( "[<b>A5</b>|<b>A4</b>|<b>A3</b>|<b>A2</b>|<b>A1</b>|<b>A0</b>"
           "<b>B5</b>|<b>B4</b>|<b>B3</b>|<b>B2</b>|<b>B1</b>|<b>B0</b>"
           "<b>Legal</b>|<b>Ansi A</b>|<b>Ansi B</b>|<b>Ansi C</b>|<b>Ansi D</b>|<b>Ansi E</b>"
           "<b>Arch A</b>|<b>Arch B</b>|<b>Arch C</b>|<b>Arch D</b>|<b>Arch E</b>|<b>Arch E1</b>]"
-                                                                                                                                                                                                           ) )
+                                                                                                                                                                                                            ) )
     },
     { QgsCompositionConverter::PaperWidth, QgsPropertyDefinition( "dataDefinedPaperWidth", QObject::tr( "Page width" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsCompositionConverter::PaperHeight, QgsPropertyDefinition( "dataDefinedPaperHeight", QObject::tr( "Page height" ), QgsPropertyDefinition::DoublePositive ) },
     { QgsCompositionConverter::NumPages, QgsPropertyDefinition( "dataDefinedNumPages", QObject::tr( "Number of pages" ), QgsPropertyDefinition::IntegerPositive ) },
-    { QgsCompositionConverter::PaperOrientation, QgsPropertyDefinition( "dataDefinedPaperOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QLatin1String( "[<b>portrait</b>|<b>landscape</b>]" ) ) },
+    { QgsCompositionConverter::PaperOrientation, QgsPropertyDefinition( "dataDefinedPaperOrientation", QgsPropertyDefinition::DataTypeString, QObject::tr( "Symbol size" ), QObject::tr( "string " ) + QStringLiteral( "[<b>portrait</b>|<b>landscape</b>]" ) ) },
     { QgsCompositionConverter::PageNumber, QgsPropertyDefinition( "dataDefinedPageNumber", QObject::tr( "Page number" ), QgsPropertyDefinition::IntegerPositive ) },
     { QgsCompositionConverter::PositionX, QgsPropertyDefinition( "dataDefinedPositionX", QObject::tr( "Position (X)" ), QgsPropertyDefinition::Double ) },
     { QgsCompositionConverter::PositionY, QgsPropertyDefinition( "dataDefinedPositionY", QObject::tr( "Position (Y)" ), QgsPropertyDefinition::Double ) },
@@ -145,6 +145,29 @@ void QgsCompositionConverter::adjustPos( QgsLayout *layout, QgsLayoutItem *layou
   layoutItem->setZValue( layoutItem->zValue() + zOrderOffset );
 }
 
+void QgsCompositionConverter::restoreGeneralComposeItemProperties( QgsLayoutItem *layoutItem, const QDomElement &itemElem )
+{
+  //restore general composer item properties
+  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
+  if ( !composerItemList.isEmpty() )
+  {
+    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+
+    //rotation
+    if ( !qgsDoubleNear( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
+    {
+      //check for old (pre 2.1) rotation attribute
+      layoutItem->setItemRotation( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), false );
+    }
+
+    QgsCompositionConverter::readXml( layoutItem, composerItemElem );
+
+    // Frame color
+
+    // Background color
+  }
+}
+
 QList<QgsLayoutItem *> QgsCompositionConverter::addItemsFromCompositionXml( QgsLayout *layout, const QDomElement &parentElement, const QgsReadWriteContext &context, QPointF *position, bool pasteInPlace )
 {
 
@@ -227,6 +250,8 @@ bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *label, const QDo
     return false;
   }
 
+  restoreGeneralComposeItemProperties( label, itemElem );
+
   //restore label specific properties
 
   //text
@@ -277,21 +302,6 @@ bool QgsCompositionConverter::readLabelXml( QgsLayoutItemLabel *label, const QDo
     label->setFontColor( QColor( 0, 0, 0 ) );
   }
 
-  //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
-  if ( !composerItemList.isEmpty() )
-  {
-    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
-
-    //rotation
-    if ( !qgsDoubleNear( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
-    {
-      //check for old (pre 2.1) rotation attribute
-      label->setItemRotation( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), false );
-    }
-
-    QgsCompositionConverter::readXml( label, composerItemElem );
-  }
   return true;
 }
 
@@ -300,30 +310,24 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
   layoutItem->setShapeType( static_cast<QgsLayoutItemShape::Shape>( itemElem.attribute( QStringLiteral( "shapeType" ), QStringLiteral( "0" ) ).toInt() ) );
   layoutItem->setCornerRadius( QgsLayoutMeasurement( itemElem.attribute( QStringLiteral( "cornerRadius" ), QStringLiteral( "0" ) ).toDouble() ) );
 
-  //restore general composer item properties
-  QDomNodeList composerItemList = itemElem.elementsByTagName( QStringLiteral( "ComposerItem" ) );
-  if ( !composerItemList.isEmpty() )
-  {
-    QDomElement composerItemElem = composerItemList.at( 0 ).toElement();
+  restoreGeneralComposeItemProperties( layoutItem, itemElem );
 
-    //rotation
-    if ( !qgsDoubleNear( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble(), 0.0 ) )
-    {
-      //check for old (pre 2.1) rotation attribute
-      layoutItem->setItemRotation( composerItemElem.attribute( QStringLiteral( "rotation" ), QStringLiteral( "0" ) ).toDouble() );
-    }
-
-    readXml( layoutItem, composerItemElem );
-  }
 
   QgsReadWriteContext context;
   context.setPathResolver( QgsProject::instance()->pathResolver() );
 
+  if ( itemElem.elementsByTagName( QStringLiteral( "symbol" ) ).size() )
+  {
+    QDomElement symbolElement = itemElem.elementsByTagName( QStringLiteral( "symbol" ) ).at( 0 ).toElement();
+    QgsFillSymbol *shapeStyleSymbol = QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( symbolElement, context );
+    if ( shapeStyleSymbol )
+      layoutItem->setSymbol( shapeStyleSymbol );
+  } /*
   QDomElement shapeStyleSymbolElem = itemElem.firstChildElement( QStringLiteral( "symbol" ) );
   if ( !shapeStyleSymbolElem.isNull() )
   {
     layoutItem->setSymbol( QgsSymbolLayerUtils::loadSymbol<QgsFillSymbol>( shapeStyleSymbolElem, context ) );
-  }
+  } */
   else
   {
     //upgrade project file from 2.0 to use symbol styling
@@ -399,6 +403,8 @@ bool QgsCompositionConverter::readShapeXml( QgsLayoutItemShape *layoutItem, cons
 
     layoutItem->setSymbol( QgsFillSymbol::createSimple( properties ) );
   }
+
+  return true;
 }
 
 
@@ -418,23 +424,23 @@ bool QgsCompositionConverter::readXml( QgsLayoutItem *layoutItem, const QDomElem
   layoutItem->mTemplateUuid = itemElem.attribute( QStringLiteral( "templateUuid" ) );
 
   //id
-  QString id = itemElem.attribute( QStringLiteral( "id" ), QLatin1String( "" ) );
+  QString id = itemElem.attribute( QStringLiteral( "id" ), QStringLiteral( "" ) );
   layoutItem->setId( id );
 
   //frame
   QString frame = itemElem.attribute( QStringLiteral( "frame" ) );
-  layoutItem->setFrameEnabled( frame.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 ) ;
+  layoutItem->setFrameEnabled( frame.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 ) ;
 
   //frame
   QString background = itemElem.attribute( QStringLiteral( "background" ) );
-  layoutItem->setBackgroundEnabled( background.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
+  layoutItem->setBackgroundEnabled( background.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 );
 
   //position lock for mouse moves/resizes
   QString positionLock = itemElem.attribute( QStringLiteral( "positionLock" ) );
-  layoutItem->setLocked( positionLock.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 );
+  layoutItem->setLocked( positionLock.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 );
 
   //visibility
-  layoutItem->setVisibility( itemElem.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QLatin1String( "0" ) );
+  layoutItem->setVisibility( itemElem.attribute( QStringLiteral( "visibility" ), QStringLiteral( "1" ) ) != QStringLiteral( "0" ) );
 
   layoutItem->mParentGroupUuid = itemElem.attribute( QStringLiteral( "groupUuid" ) );
   if ( !layoutItem->mParentGroupUuid.isEmpty() )
@@ -636,7 +642,7 @@ QgsProperty QgsCompositionConverter::readOldDataDefinedProperty( const QgsCompos
 
   QString active = ddElem.attribute( QStringLiteral( "active" ) );
   bool isActive = false;
-  if ( active.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( active.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     isActive = true;
   }
@@ -645,7 +651,7 @@ QgsProperty QgsCompositionConverter::readOldDataDefinedProperty( const QgsCompos
 
   QString useExpr = ddElem.attribute( QStringLiteral( "useExpr" ) );
   bool isExpression = false;
-  if ( useExpr.compare( QLatin1String( "true" ), Qt::CaseInsensitive ) == 0 )
+  if ( useExpr.compare( QStringLiteral( "true" ), Qt::CaseInsensitive ) == 0 )
   {
     isExpression = true;
   }

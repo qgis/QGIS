@@ -70,7 +70,10 @@
   <LabelFont description="Ubuntu,48,-1,5,25,1,0,0,0,0,Light Italic" style="Light Italic"/>
   <FontColor blue="43" red="201" green="240"/>
  </LayoutItem>
- <LayoutItem outlineWidthM="0.3,mm" type="65641" opacity="1" id="" size="146.584,43.113,mm" referencePoint="4" frameJoinStyle="miter" zValue="1" uuid="{8ebacd90-f769-4ffc-8369-b8248ecde556}" positionOnPage="83.6899,40.644,mm" frame="false" marginY="0" itemRotation="0" labelText="Lorem ipsum" positionLock="false" marginX="0" halign="8" templateUuid="{8ebacd90-f769-4ffc-8369-b8248ecde556}" valign="32" position="156.982,62.2005,mm" visibility="1" background="false" htmlState="0" excludeFromExports="0" blendMode="0" groupUuid="">
+ <LayoutItem outlineWidthM="0.3,mm" type="65641" opacity="1" id="" size="146.584,43.113,mm" referencePoint="4" frameJoinStyle="miter" zValue="1" 
+ uuid="{8ebacd90-f769-4ffc-8369-b8248ecde556}" positionOnPage="83.6899,40.644,mm" frame="false" marginY="0" itemRotation="0" 
+ labelText="Lorem ipsum" positionLock="false" marginX="0" halign="8" templateUuid="{8ebacd90-f769-4ffc-8369-b8248ecde556}" 
+ valign="32" position="156.982,62.2005,mm" visibility="1" background="false" htmlState="0" excludeFromExports="0" blendMode="0" groupUuid="">
   <FrameColor blue="0" alpha="255" red="0" green="0"/>
   <BackgroundColor blue="255" alpha="255" red="255" green="255"/>
   <LayoutObject>

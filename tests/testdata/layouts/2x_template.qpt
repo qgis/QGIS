@@ -1,6 +1,8 @@
 <Composer>
- <Composition paperHeight="210" resizeToContentsMarginRight="0" guidesVisible="1" numPages="2" snapTolerancePixels="5" printResolution="305" snapGridOffsetX="0" showPages="1" smartGuides="1" 
- worldFileMap="" alignmentSnap="1" name="composer title" snapGridResolution="10" snapGridOffsetY="0" generateWorldFile="0" snapping="0" gridVisible="0" 
+ <Composition paperHeight="210" resizeToContentsMarginRight="0" guidesVisible="1" numPages="2" snapTolerancePixels="5" printResolution="305" 
+ snapGridOffsetX="0" showPages="1" smartGuides="1" 
+ worldFileMap="" alignmentSnap="1" name="composer title" snapGridResolution="10" snapGridOffsetY="0" generateWorldFile="0" snapping="0" 
+ gridVisible="0" 
  paperWidth="297" resizeToContentsMarginTop="0" printAsRaster="0" resizeToContentsMarginLeft="0" resizeToContentsMarginBottom="0">
   <symbol clip_to_extent="1" name="" alpha="1" type="fill">
    <layer class="SimpleFill" enabled="1" locked="0" pass="0">
@@ -202,7 +204,10 @@
     <node x="50.9157" y="22.1811"/>
     <node x="64.0227" y="0"/>
    </nodes>
-   <ComposerItem pagex="22.6852" positionLock="false" width="64.0227" frame="false" excludeFromExports="0" x="22.6852" background="true" positionMode="0" blendMode="0" page="2" id="" lastValidViewScaleFactor="-1" visibility="1" pagey="86.5024" height="22.1811" frameJoinStyle="miter" y="306.502" zValue="12" outlineWidth="0.3" uuid="{d5db4748-2b62-4b79-a785-46a6cb8df967}" opacity="1" itemRotation="0">
+   <ComposerItem pagex="22.6852" positionLock="false" width="64.0227" frame="false" excludeFromExports="0" x="22.6852" background="true" 
+   positionMode="0" blendMode="0" page="2" id="" lastValidViewScaleFactor="-1" visibility="1" 
+   pagey="86.5024" height="22.1811" frameJoinStyle="miter" y="306.502" zValue="12" outlineWidth="0.3" 
+   uuid="{d5db4748-2b62-4b79-a785-46a6cb8df967}" opacity="1" itemRotation="0">
     <FrameColor green="0" blue="0" red="0" alpha="255"/>
     <BackgroundColor green="255" blue="255" red="255" alpha="255"/>
     <dataDefinedProperties>

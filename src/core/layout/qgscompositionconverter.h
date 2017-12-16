@@ -151,6 +151,9 @@ class CORE_EXPORT QgsCompositionConverter
     //! Make some common import adjustments
     static void adjustPos( QgsLayout *layout, QgsLayoutItem *layoutItem, QDomNode &itemNode, QPointF *position, bool &pasteInPlace, int zOrderOffset, QPointF &pasteShiftPos, int &pageNumber );
 
+    //! Restore general composer item properties
+    static void restoreGeneralComposeItemProperties( QgsLayoutItem *layoutItem, const QDomElement &itemElem );
+
 };
 
 #endif // QGSCOMPOSITIONCONVERTER_H
