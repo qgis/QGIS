@@ -45,15 +45,11 @@ additional calls to QgsVectorLayer.
     virtual bool render() = 0;
 %Docstring
 Do the rendering (based on data stored in the class)
-
-:rtype: bool
 %End
 
     virtual QgsFeedback *feedback() const;
 %Docstring
 Access to feedback object of the layer renderer (may be null)
-
-:rtype: QgsFeedback
 
 .. versionadded:: 3.0
 %End
@@ -61,15 +57,11 @@ Access to feedback object of the layer renderer (may be null)
     QStringList errors() const;
 %Docstring
 Return list of errors (problems) that happened during the rendering
-
-:rtype: list of str
 %End
 
     QString layerId() const;
 %Docstring
 Get access to the ID of the layer rendered by this class
-
-:rtype: str
 %End
 
   protected:

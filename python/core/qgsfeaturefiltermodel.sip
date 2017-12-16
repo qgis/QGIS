@@ -38,8 +38,6 @@ Create a new QgsFeatureFilterModel, optionally specifying a ``parent``.
     QgsVectorLayer *sourceLayer() const;
 %Docstring
 The source layer from which features will be fetched.
-
-:rtype: QgsVectorLayer
 %End
 
     void setSourceLayer( QgsVectorLayer *sourceLayer );
@@ -53,8 +51,6 @@ The display expression will be used for
 
 - displaying values in the combobox
 - filtering based on filterValue
-
-:rtype: str
 %End
 
     void setDisplayExpression( const QString &displayExpression );
@@ -70,8 +66,6 @@ The display expression will be used for
 This value will be used to filter the features available from
 this model. Whenever a substring of the displayExpression of a feature
 matches the filter value, it will be accessible by this model.
-
-:rtype: str
 %End
 
     void setFilterValue( const QString &filterValue );
@@ -96,8 +90,6 @@ matches the filter value, it will be accessible by this model.
 %Docstring
 An additional filter expression to apply, next to the filterValue.
 Can be used for spatial filtering etc.
-
-:rtype: str
 %End
 
     void setFilterExpression( const QString &filterExpression );
@@ -109,16 +101,12 @@ Can be used for spatial filtering etc.
     bool isLoading() const;
 %Docstring
 Indicator if the model is currently performing any feature iteration in the background.
-
-:rtype: bool
 %End
 
     QString identifierField() const;
 %Docstring
 The identifier field should be a unique field that can be used to identify individual features.
 It is normally set to the primary key of the layer.
-
-:rtype: str
 %End
 
     void setIdentifierField( const QString &identifierField );
@@ -131,8 +119,6 @@ It is normally set to the primary key of the layer.
 %Docstring
 Allows specifying one value that does not need to match the filter criteria but will
 still be available in the model.
-
-:rtype: QVariant
 %End
 
     void setExtraIdentifierValue( const QVariant &extraIdentifierValue );
@@ -144,22 +130,16 @@ still be available in the model.
     int extraIdentifierValueIndex() const;
 %Docstring
 The index at which the extra identifier value is available within the model.
-
-:rtype: int
 %End
 
     bool extraValueDoesNotExist() const;
 %Docstring
 Flag indicating that the extraIdentifierValue does not exist in the data.
-
-:rtype: bool
 %End
 
     bool allowNull() const;
 %Docstring
 Add a NULL entry to the list.
-
-:rtype: bool
 %End
 
     void setAllowNull( bool allowNull );

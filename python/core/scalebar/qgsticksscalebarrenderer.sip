@@ -51,8 +51,6 @@ Sets the ``position`` for tick marks in the scalebar.
 %Docstring
 Returns the position for tick marks in the scalebar.
 
-:rtype: TickPosition
-
 .. seealso:: :py:func:`setTickPosition()`
 %End
 

@@ -110,8 +110,6 @@ Angle (in degrees) to which we have soft-locked ourselves (if not set it is -1)
 Applies X/Y/angle/distance constraints from the given context to a map point.
 Returns a structure containing aligned map point, whether the constraints are valid and
 some extra information.
-
-:rtype: QgsCadUtils.AlignMapPointOutput
 %End
 
 };

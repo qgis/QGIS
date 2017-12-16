@@ -35,8 +35,6 @@ properties.
     static QgsProject *instance();
 %Docstring
 Returns the QgsProject singleton instance
-
-:rtype: QgsProject
 %End
 
     explicit QgsProject( QObject *parent /TransferThis/ = 0 );
@@ -51,6 +49,7 @@ Most of the time you want to use QgsProject.instance() instead as many component
     void setTitle( const QString &title );
 %Docstring
 Sets the project's title.
+
 :param title: new title
 
 .. versionadded:: 2.4
@@ -62,22 +61,19 @@ Sets the project's title.
 %Docstring
 Returns the project's title.
 
-:rtype: str
-
 .. seealso:: :py:func:`setTitle()`
 %End
 
     bool isDirty() const;
 %Docstring
 Returns true if the project has been modified since the last write()
-
-:rtype: bool
 %End
 
     void setFileName( const QString &name );
 %Docstring
 Sets the file name associated with the project. This is the file which contains the project's XML
 representation.
+
 :param name: project file name
 
 .. seealso:: :py:func:`fileName()`
@@ -88,8 +84,6 @@ representation.
 Returns the project's file name. This is the file which contains the project's XML
 representation.
 
-:rtype: str
-
 .. seealso:: :py:func:`setFileName()`
 
 .. seealso:: :py:func:`fileInfo()`
@@ -99,8 +93,6 @@ representation.
 %Docstring
 Returns QFileInfo object for the project's associated file.
 
-:rtype: QFileInfo
-
 .. seealso:: :py:func:`fileName()`
 
 .. versionadded:: 2.9
@@ -109,8 +101,6 @@ Returns QFileInfo object for the project's associated file.
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the project's native coordinate reference system.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. versionadded:: 3.0
 
@@ -133,8 +123,6 @@ Sets the project's native coordinate reference system.
     QString ellipsoid() const;
 %Docstring
 Returns a proj string representing the project's ellipsoid setting, e.g., "WGS84".
-
-:rtype: str
 
 .. seealso:: :py:func:`setEllipsoid()`
 
@@ -160,8 +148,6 @@ Sets the project's ellipsoid from a proj string representation, e.g., "WGS84".
 Returns a copy of the project's coordinate transform context, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
-
-:rtype: QgsCoordinateTransformContext
 
 .. versionadded:: 3.0
 
@@ -193,11 +179,10 @@ Clear the project - removes all settings and resets it back to an empty, default
     bool read( const QString &filename );
 %Docstring
 Reads given project file from the given file.
+
 :param filename: name of project file to read
 
 :return: true if project file has been read successfully
-:rtype: bool
-
 %End
 
     bool read();
@@ -205,15 +190,11 @@ Reads given project file from the given file.
 Reads the project from its currently associated file (see fileName() ).
 
 :return: true if project file has been read successfully
-:rtype: bool
-
 %End
 
     bool readLayer( const QDomNode &layerNode );
 %Docstring
 Reads the layer described in the associated DOM node.
-
-:rtype: bool
 
 .. note::
 
@@ -227,9 +208,8 @@ this method with corrected DOM node adds the layer back to the project.
     bool write( const QString &filename );
 %Docstring
 Writes the project to a file.
-:param filename: destination file
 
-:rtype: bool
+:param filename: destination file
 
 .. note::
 
@@ -248,8 +228,6 @@ Writes the project to a file.
 %Docstring
 Writes the project to its current associated file (see fileName() ).
 
-:rtype: bool
-
 .. note::
 
    isDirty() will be set to false if project is successfully written
@@ -263,8 +241,6 @@ Write a boolean entry to the project file.
 
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
-
-:rtype: bool
 
 .. note::
 
@@ -282,8 +258,6 @@ Write a double entry to the project file.
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
 
-:rtype: bool
-
 .. note::
 
    The key string must be valid xml tag names in order to be saved to the file.
@@ -300,8 +274,6 @@ Write an integer entry to the project file.
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
 
-:rtype: bool
-
 .. note::
 
    The key string must be valid xml tag names in order to be saved to the file.
@@ -313,8 +285,6 @@ Write a string entry to the project file.
 
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
-
-:rtype: bool
 
 .. note::
 
@@ -328,8 +298,6 @@ Write a string list entry to the project file.
 Keys are '/'-delimited entries, implying
 a hierarchy of keys and corresponding values
 
-:rtype: bool
-
 .. note::
 
    The key string must be valid xml tag names in order to be saved to the file.
@@ -341,45 +309,23 @@ Key value accessors
 
 keys would be the familiar QgsSettings-like '/' delimited entries,
 implying a hierarchy of keys and corresponding values
-
-:rtype: list of str
 %End
 
     QString readEntry( const QString &scope, const QString &key, const QString &def = QString(), bool *ok = 0 ) const;
-%Docstring
-
-:rtype: str
-%End
     int readNumEntry( const QString &scope, const QString &key, int def = 0, bool *ok = 0 ) const;
-%Docstring
-
-:rtype: int
-%End
     double readDoubleEntry( const QString &scope, const QString &key, double def = 0, bool *ok = 0 ) const;
-%Docstring
-
-:rtype: float
-%End
     bool readBoolEntry( const QString &scope, const QString &key, bool def = false, bool *ok = 0 ) const;
-%Docstring
-
-:rtype: bool
-%End
 
 
     bool removeEntry( const QString &scope, const QString &key );
 %Docstring
 Remove the given key
-
-:rtype: bool
 %End
 
 
     QStringList entryList( const QString &scope, const QString &key ) const;
 %Docstring
 Return keys with values -- do not return keys that contain other keys
-
-:rtype: list of str
 
 .. note::
 
@@ -389,8 +335,6 @@ Return keys with values -- do not return keys that contain other keys
     QStringList subkeyList( const QString &scope, const QString &key ) const;
 %Docstring
 Return keys with keys -- do not return keys that contain only values
-
-:rtype: list of str
 
 .. note::
 
@@ -405,8 +349,6 @@ Return keys with keys -- do not return keys that contain only values
 Return path resolver object with considering whether the project uses absolute
 or relative paths and using current project's path.
 
-:rtype: QgsPathResolver
-
 .. versionadded:: 3.0
 %End
 
@@ -415,22 +357,16 @@ or relative paths and using current project's path.
 Prepare a filename to save it to the project file.
 Creates an absolute or relative path according to the project settings.
 Paths written to the project file should be prepared with this method.
-
-:rtype: str
 %End
 
     QString readPath( const QString &filename ) const;
 %Docstring
 Turn filename read from the project file to an absolute path
-
-:rtype: str
 %End
 
     QString error() const;
 %Docstring
 Return error message from previous read/write
-
-:rtype: str
 %End
 
     void setBadLayerHandler( QgsProjectBadLayerHandler *handler /Transfer/ );
@@ -442,16 +378,12 @@ Deletes old handler and takes ownership of the new one.
     QString layerIsEmbedded( const QString &id ) const;
 %Docstring
 Returns project file path if layer is embedded from other project file. Returns empty string if layer is not embedded
-
-:rtype: str
 %End
 
 
     QgsLayerTreeGroup *createEmbeddedGroup( const QString &groupName, const QString &projectFilePath, const QStringList &invisibleLayers );
 %Docstring
 Create layer group instance defined in an arbitrary project file.
-
-:rtype: QgsLayerTreeGroup
 
 .. versionadded:: 2.4
 %End
@@ -464,15 +396,11 @@ Convenience function to set topological editing
     bool topologicalEditing() const;
 %Docstring
 Convenience function to query topological editing status
-
-:rtype: bool
 %End
 
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 %Docstring
 Convenience function to query default distance measurement units for project.
-
-:rtype: QgsUnitTypes.DistanceUnit
 
 .. versionadded:: 2.14
 
@@ -496,8 +424,6 @@ Sets the default distance measurement units for the project.
 %Docstring
 Convenience function to query default area measurement units for project.
 
-:rtype: QgsUnitTypes.AreaUnit
-
 .. versionadded:: 2.14
 
 .. seealso:: :py:func:`distanceUnits()`
@@ -519,23 +445,15 @@ Sets the default area measurement units for the project.
 Return project's home path
 
 :return: home path of project (or null QString if not set) *
-:rtype: str
-
 %End
 
     QgsRelationManager *relationManager() const;
-%Docstring
-
-:rtype: QgsRelationManager
-%End
 
 
     QgsLayoutManager *layoutManager();
 %Docstring
 Returns the project's layout manager, which manages compositions within
 the project.
-
-:rtype: QgsLayoutManager
 
 .. versionadded:: 3.0
 %End
@@ -544,8 +462,6 @@ the project.
 %Docstring
 Return pointer to the root (invisible) node of the project's layer tree
 
-:rtype: QgsLayerTree
-
 .. versionadded:: 2.4
 %End
 
@@ -553,16 +469,12 @@ Return pointer to the root (invisible) node of the project's layer tree
 %Docstring
 Return pointer to the helper class that synchronizes map layer registry with layer tree
 
-:rtype: QgsLayerTreeRegistryBridge
-
 .. versionadded:: 2.4
 %End
 
     QgsMapThemeCollection *mapThemeCollection();
 %Docstring
 Returns pointer to the project's map theme collection.
-
-:rtype: QgsMapThemeCollection
 
 .. versionadded:: 2.12
 
@@ -574,8 +486,6 @@ Returns pointer to the project's map theme collection.
     QgsAnnotationManager *annotationManager();
 %Docstring
 Returns pointer to the project's annotation manager.
-
-:rtype: QgsAnnotationManager
 
 .. versionadded:: 3.0
 %End
@@ -594,8 +504,6 @@ Set a list of layers which should not be taken into account on map identificatio
     QStringList nonIdentifiableLayers() const;
 %Docstring
 Get the list of layers which currently should not be taken into account on map identification
-
-:rtype: list of str
 %End
 
     bool autoTransaction() const;
@@ -603,8 +511,6 @@ Get the list of layers which currently should not be taken into account on map i
 Transactional editing means that on supported datasources (postgres databases) the edit state of
 all tables that originate from the same database are synchronized and executed in a server side
 transaction.
-
-:rtype: bool
 
 .. versionadded:: 2.16
 %End
@@ -625,8 +531,6 @@ Make sure that this is only called when all layers are not in edit mode.
 %Docstring
 Should default values be evaluated on provider side when requested and not when committed.
 
-:rtype: bool
-
 .. versionadded:: 2.16
 %End
 
@@ -645,16 +549,12 @@ Defines if default values should be evaluated on provider side when requested an
 %Docstring
 The snapping configuration for this project.
 
-:rtype: QgsSnappingConfig
-
 .. versionadded:: 3.0
 %End
 
     QList<QgsVectorLayer *> avoidIntersectionsLayers() const;
 %Docstring
 A list of layers with which intersections should be avoided.
-
-:rtype: list of QgsVectorLayer
 
 .. versionadded:: 3.0
 %End
@@ -671,8 +571,6 @@ A list of layers with which intersections should be avoided.
 A map of custom project variables.
 To get all available variables including generated ones
 use QgsExpressionContextUtils.projectScope() instead.
-
-:rtype: QVariantMap
 %End
 
     void setCustomVariables( const QVariantMap &customVariables );
@@ -692,8 +590,6 @@ Sets project's global labeling engine settings
 %Docstring
 Returns project's global labeling engine settings
 
-:rtype: QgsLabelingEngineSettings
-
 .. versionadded:: 3.0
 %End
 
@@ -702,26 +598,21 @@ Returns project's global labeling engine settings
 %Docstring
 Returns a pointer to the project's internal layer store.
 /since QGIS 3.0
-
-:rtype: QgsMapLayerStore
 %End
 
 
     int count() const;
 %Docstring
 Returns the number of registered layers.
-
-:rtype: int
 %End
 
     QgsMapLayer *mapLayer( const QString &layerId ) const;
 %Docstring
 Retrieve a pointer to a registered layer by layer ID.
+
 :param layerId: ID of layer to retrieve
 
 :return: matching layer, or None if no matching layer found
-:rtype: QgsMapLayer
-
 
 .. seealso:: :py:func:`mapLayersByName()`
 
@@ -731,11 +622,10 @@ Retrieve a pointer to a registered layer by layer ID.
     QList<QgsMapLayer *> mapLayersByName( const QString &layerName ) const;
 %Docstring
 Retrieve a list of matching registered layers by layer name.
+
 :param layerName: name of layers to match
 
 :return: list of matching layers
-:rtype: list of QgsMapLayer
-
 
 .. seealso:: :py:func:`mapLayer()`
 
@@ -745,8 +635,6 @@ Retrieve a list of matching registered layers by layer name.
     QMap<QString, QgsMapLayer *> mapLayers() const;
 %Docstring
 Returns a map of all registered layers by layer ID.
-
-:rtype: QMap<str, QgsMapLayer *>
 
 .. seealso:: :py:func:`mapLayer()`
 
@@ -758,8 +646,6 @@ Returns a map of all registered layers by layer ID.
     bool isZipped() const;
 %Docstring
 Returns true if the project comes from a zip archive, false otherwise.
-
-:rtype: bool
 %End
 
 
@@ -782,10 +668,9 @@ If you specify false here you have take care of deleting
 the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
-:rtype: list of QgsMapLayer
-
 successfully. If a layer is invalid, or already exists in the registry,
 it will not be part of the returned QList.
+
 
 .. note::
 
@@ -822,7 +707,6 @@ If you specify false here you have take care of deleting
 the layer yourself. Not available in Python.
 
 :return: None if unable to add layer, otherwise pointer to newly added layer
-:rtype: QgsMapLayer
 
 
 .. seealso:: :py:func:`addMapLayers`
@@ -911,8 +795,6 @@ Takes a layer from the registry. If the layer was owned by the project, the
 layer will be returned without deleting it. The caller takes ownership of
 the layer and is responsible for deleting it.
 
-:rtype: QgsMapLayer
-
 .. seealso:: :py:func:`removeMapLayer()`
 
 .. versionadded:: 3.0
@@ -949,8 +831,6 @@ with any changes in the datasource.
 %Docstring
 Returns the default CRS for new layers based on the settings and
 the current project CRS
-
-:rtype: QgsCoordinateReferenceSystem
 %End
 
     void setTrustLayerMetadata( bool trust );
@@ -975,8 +855,6 @@ to determine it. Moreover, when this option is activated, primary key
 unicity is not checked for views and materialized views with Postgres
 provider.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -984,8 +862,6 @@ provider.
     QgsAuxiliaryStorage *auxiliaryStorage();
 %Docstring
 Returns the current auxiliary storage.
-
-:rtype: QgsAuxiliaryStorage
 
 .. versionadded:: 3.0
 %End
@@ -1034,6 +910,7 @@ emitted when an old project file is read.
     void layerLoaded( int i, int n );
 %Docstring
 Emitted when a layer from a projects was read.
+
 :param i: current layer
 :param n: number of layers
 %End

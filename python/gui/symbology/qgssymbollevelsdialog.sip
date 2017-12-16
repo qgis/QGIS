@@ -31,13 +31,12 @@ Constructor for QgsSymbolLevelsWidget
     bool usingLevels() const;
 %Docstring
 Returns whether the level ordering is enabled
-
-:rtype: bool
 %End
 
     void setForceOrderingEnabled( bool enabled );
 %Docstring
 Sets whether the level ordering is always forced on and hide the checkbox (used by rule-based renderer)
+
 :param enabled: toggle level ordering
 %End
 

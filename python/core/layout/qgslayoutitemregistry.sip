@@ -40,29 +40,21 @@ and ``visibleName``.
     int type() const;
 %Docstring
 Returns the unique item type code for the layout item class.
-
-:rtype: int
 %End
 
     virtual QIcon icon() const;
 %Docstring
 Returns an icon representing the layout item type.
-
-:rtype: QIcon
 %End
 
     QString visibleName() const;
 %Docstring
 Returns a translated, user visible name for the layout item class.
-
-:rtype: str
 %End
 
     virtual QgsLayoutItem *createItem( QgsLayout *layout ) = 0 /Factory/;
 %Docstring
 Creates a layout item of this class for a specified ``layout``.
-
-:rtype: QgsLayoutItem
 %End
 
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
@@ -110,29 +102,21 @@ and ``visibleName``.
     int type() const;
 %Docstring
 Returns the unique item type code for the layout multiframe class.
-
-:rtype: int
 %End
 
     virtual QIcon icon() const;
 %Docstring
 Returns an icon representing the layout multiframe type.
-
-:rtype: QIcon
 %End
 
     QString visibleName() const;
 %Docstring
 Returns a translated, user visible name for the layout multiframe class.
-
-:rtype: str
 %End
 
     virtual QgsLayoutMultiFrame *createMultiFrame( QgsLayout *layout ) = 0 /Factory/;
 %Docstring
 Creates a layout multiframe of this class for a specified ``layout``.
-
-:rtype: QgsLayoutMultiFrame
 %End
 
     virtual void resolvePaths( QVariantMap &properties, const QgsPathResolver &pathResolver, bool saving );
@@ -211,8 +195,6 @@ QgsApplication.layoutItemRegistry().
 %Docstring
 Populates the registry with standard item types. If called on a non-empty registry
 then this will have no effect and will return false.
-
-:rtype: bool
 %End
 
 
@@ -220,8 +202,6 @@ then this will have no effect and will return false.
 %Docstring
 Returns the metadata for the specified item ``type``. Returns None if
 a corresponding type was not found in the registry.
-
-:rtype: QgsLayoutItemAbstractMetadata
 
 .. seealso:: :py:func:`multiFrameMetadata()`
 %End
@@ -231,16 +211,12 @@ a corresponding type was not found in the registry.
 Returns the metadata for the specified multiframe ``type``. Returns None if
 a corresponding type was not found in the registry.
 
-:rtype: QgsLayoutMultiFrameAbstractMetadata
-
 .. seealso:: :py:func:`itemMetadata()`
 %End
 
     bool addLayoutItemType( QgsLayoutItemAbstractMetadata *metadata /Transfer/ );
 %Docstring
 Registers a new layout item type. Takes ownership of the metadata instance.
-
-:rtype: bool
 
 .. seealso:: :py:func:`addLayoutMultiFrameType()`
 %End
@@ -249,8 +225,6 @@ Registers a new layout item type. Takes ownership of the metadata instance.
 %Docstring
 Registers a new layout multiframe type. Takes ownership of the metadata instance.
 
-:rtype: bool
-
 .. seealso:: :py:func:`addLayoutItemType()`
 %End
 
@@ -258,16 +232,12 @@ Registers a new layout multiframe type. Takes ownership of the metadata instance
 %Docstring
 Creates a new instance of a layout item given the item ``type``, and target ``layout``.
 
-:rtype: QgsLayoutItem
-
 .. seealso:: :py:func:`createMultiFrame()`
 %End
 
     QgsLayoutMultiFrame *createMultiFrame( int type, QgsLayout *layout ) const /Factory/;
 %Docstring
 Creates a new instance of a layout multiframe given the multiframe ``type``, and target ``layout``.
-
-:rtype: QgsLayoutMultiFrame
 
 .. seealso:: :py:func:`createItem()`
 %End
@@ -282,8 +252,6 @@ and converting absolute paths to relative paths when saving.
     QMap< int, QString> itemTypes() const;
 %Docstring
 Returns a map of available item types to translated name.
-
-:rtype: QMap< int, str>
 %End
 
   signals:

@@ -40,8 +40,6 @@ Create a new configuration widget
  Create a configuration from the current GUI state
 
 :return: A widget configuration
-:rtype: QVariantMap
-
 %End
 
     virtual void setConfig( const QVariantMap &config ) = 0;
@@ -56,8 +54,6 @@ Create a new configuration widget
 Returns the field for which this configuration widget applies
 
 :return: The field index
-:rtype: int
-
 %End
 
     QgsVectorLayer *layer();
@@ -65,8 +61,6 @@ Returns the field for which this configuration widget applies
 Returns the layer for which this configuration widget applies
 
 :return: The layer
-:rtype: QgsVectorLayer
-
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -86,6 +80,7 @@ Emitted when the configuration of the widget is changed.
     void initializeDataDefinedButton( QgsPropertyOverrideButton *button, QgsWidgetWrapper::Property key );
 %Docstring
 Registers a property override button, setting up its initial value, connections and description.
+
 :param button: button to register
 :param key: corresponding data defined property key
 %End

@@ -41,29 +41,21 @@ destructor makes sure that the iterator is closed properly
     virtual bool nextFeature( QgsFeature &f );
 %Docstring
 fetch next feature, return true on success
-
-:rtype: bool
 %End
 
     virtual bool rewind() = 0;
 %Docstring
 reset the iterator to the starting position
-
-:rtype: bool
 %End
     virtual bool close() = 0;
 %Docstring
 end of iterating: free the resources / lock
-
-:rtype: bool
 %End
 
 
     CompileStatus compileStatus() const;
 %Docstring
 Returns the status of expression compilation for filter expression requests.
-
-:rtype: CompileStatus
 
 .. versionadded:: 2.16
 %End
@@ -76,8 +68,6 @@ If an iterator is invalid, either give up or try to send the request again (pref
 after a timeout to give the system some time to stay responsive).
 
 If you want to check if the iterator successfully completed, better use QgsFeatureIterator.isClosed().
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -92,8 +82,6 @@ need to implement!!
 :param f: The feature to write to
 
 :return:  true if a feature was written to f
-:rtype: bool
-
 %End
 
     virtual bool nextFeatureFilterExpression( QgsFeature &f );
@@ -107,8 +95,6 @@ redirect this call to fetchFeature so the default check will be omitted.
 :param f: The feature to write to
 
 :return:  true if a feature was written to f
-:rtype: bool
-
 %End
 
     virtual bool nextFeatureFilterFids( QgsFeature &f );
@@ -123,8 +109,6 @@ so the default check will be omitted.
 :param f: The feature to write to
 
 :return:  true if a feature was written to f
-:rtype: bool
-
 %End
 
     void geometryToDestinationCrs( QgsFeature &feature, const QgsCoordinateTransform &transform ) const;
@@ -148,8 +132,6 @@ Iterators should call this method and use the returned rectangle for filtering
 features to ensure that any QgsFeatureRequest.destinationCrs() set on the request is respected.
 Will throw a QgsCsException if the rect cannot be transformed from the destination CRS.
 
-:rtype: QgsRectangle
-
 .. versionadded:: 3.0
 %End
 
@@ -170,8 +152,6 @@ Remove reference, delete if refs == 0
     virtual bool prepareSimplification( const QgsSimplifyMethod &simplifyMethod );
 %Docstring
 Setup the simplification of geometries to fetch using the specified simplify method
-
-:rtype: bool
 %End
 
 
@@ -218,10 +198,6 @@ Wrapper for iterator of features from vector data provider or vector layer
   public:
 
     QgsFeatureIterator *__iter__();
-%Docstring
-
-:rtype: QgsFeatureIterator
-%End
 %MethodCode
     sipRes = sipCpp;
 %End
@@ -253,28 +229,14 @@ destructor deletes the iterator if it has no more references
 
 
     bool nextFeature( QgsFeature &f );
-%Docstring
-
-:rtype: bool
-%End
     bool rewind();
-%Docstring
-
-:rtype: bool
-%End
     bool close();
-%Docstring
-
-:rtype: bool
-%End
 
     virtual bool isValid() const;
 %Docstring
 Will return if this iterator is valid.
 An invalid iterator was probably introduced by a failed attempt to acquire a connection
 or is a default constructed iterator.
-
-:rtype: bool
 
 .. seealso:: :py:func:`isClosed`
 
@@ -284,16 +246,12 @@ or is a default constructed iterator.
     bool isClosed() const;
 %Docstring
 find out whether the iterator is still valid or closed already
-
-:rtype: bool
 %End
 
 
     QgsAbstractFeatureIterator::CompileStatus compileStatus() const;
 %Docstring
 Returns the status of expression compilation for filter expression requests.
-
-:rtype: QgsAbstractFeatureIterator.CompileStatus
 
 .. versionadded:: 2.16
 %End

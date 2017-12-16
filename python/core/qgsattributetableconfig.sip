@@ -59,25 +59,20 @@ Constructor for QgsAttributeTableConfig.
 %Docstring
 Get the list with all columns and their configuration.
 The list order defines the order of appearance.
-
-:rtype: list of QgsAttributeTableConfig.ColumnConfig
 %End
 
     bool isEmpty() const;
 %Docstring
 Returns true if the configuration is empty, ie it contains no columns.
-
-:rtype: bool
 %End
 
     int mapVisibleColumnToIndex( int visibleColumn ) const;
 %Docstring
 Maps a visible column index to its original column index.
+
 :param visibleColumn: index of visible column
 
 :return: corresponding index when hidden columns are considered
-:rtype: int
-
 %End
 
     void setColumns( const QVector<QgsAttributeTableConfig::ColumnConfig> &columns );
@@ -97,8 +92,6 @@ fields but not in the configuration will be appended.
     bool actionWidgetVisible() const;
 %Docstring
 Returns true if the action widget is visible
-
-:rtype: bool
 %End
 
     void setActionWidgetVisible( bool visible );
@@ -109,8 +102,6 @@ Set if the action widget is visible
     ActionWidgetStyle actionWidgetStyle() const;
 %Docstring
 Get the style of the action widget
-
-:rtype: ActionWidgetStyle
 %End
 
     void setActionWidgetStyle( ActionWidgetStyle actionWidgetStyle );
@@ -131,8 +122,6 @@ Deserialize to XML on layer load
     QString sortExpression() const;
 %Docstring
 Get the expression used for sorting.
-
-:rtype: str
 %End
 
     void setSortExpression( const QString &sortExpression );
@@ -143,9 +132,8 @@ Set the sort expression used for sorting.
     int columnWidth( int column ) const;
 %Docstring
 Returns the width of a column, or -1 if column should use default width.
-:param column: column index
 
-:rtype: int
+:param column: column index
 
 .. seealso:: :py:func:`setColumnWidth()`
 %End
@@ -153,6 +141,7 @@ Returns the width of a column, or -1 if column should use default width.
     void setColumnWidth( int column, int width );
 %Docstring
 Sets the width of a column.
+
 :param column: column index
 :param width: column width in pixels, or -1 if column should use default width
 
@@ -162,9 +151,8 @@ Sets the width of a column.
     bool columnHidden( int column ) const;
 %Docstring
 Returns true if the specified column is hidden.
-:param column: column index
 
-:rtype: bool
+:param column: column index
 
 .. seealso:: :py:func:`setColumnHidden()`
 %End
@@ -172,6 +160,7 @@ Returns true if the specified column is hidden.
     void setColumnHidden( int column, bool hidden );
 %Docstring
 Sets whether the specified column should be hidden.
+
 :param column: column index
 :param hidden: set to true to hide column
 
@@ -181,8 +170,6 @@ Sets whether the specified column should be hidden.
     Qt::SortOrder sortOrder() const;
 %Docstring
 Get the sort order
-
-:rtype: Qt.SortOrder
 
 .. versionadded:: 2.16
 %End

@@ -38,6 +38,7 @@ A ramp shader will color a raster pixel based on a list of values ranges in a ra
     QgsColorRampShader( double minimumValue = 0.0, double maximumValue = 255.0, QgsColorRamp *colorRamp = 0, Type type = Interpolated, ClassificationMode classificationMode = Continuous );
 %Docstring
 Creates a new color ramp shader.
+
 :param minimumValue: minimum value for the raster shader
 :param maximumValue: maximum value for the raster shader
 :param type: interpolation type used
@@ -69,31 +70,21 @@ convenience constructor
       QColor color;
 
       bool operator<( const QgsColorRampShader::ColorRampItem &other ) const;
-%Docstring
-
-:rtype: bool
-%End
     };
 
     QList<QgsColorRampShader::ColorRampItem> colorRampItemList() const;
 %Docstring
  Get the custom colormap
-
-:rtype: list of QgsColorRampShader.ColorRampItem
 %End
 
     Type colorRampType() const;
 %Docstring
  Get the color ramp type
-
-:rtype: Type
 %End
 
     QString colorRampTypeAsQString();
 %Docstring
  Get the color ramp type as a string
-
-:rtype: str
 %End
 
     void setColorRampItemList( const QList<QgsColorRampShader::ColorRampItem> &list ); //TODO: sort on set
@@ -106,8 +97,6 @@ convenience constructor
     QgsColorRamp *sourceColorRamp() const /Factory/;
 %Docstring
 Get the source color ramp
-
-:rtype: QgsColorRamp
 
 .. versionadded:: 3.0
 
@@ -131,6 +120,7 @@ Set the source color ramp. Ownership is transferred to the renderer.
     void classifyColorRamp( const int classes = 0, const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 );
 %Docstring
 Classify color ramp shader
+
 :param classes: number of classes
 :param band: raster band used in classification (only used in quantile mode)
 :param extent: extent used in classification (only used in quantile mode)
@@ -140,6 +130,7 @@ Classify color ramp shader
     void classifyColorRamp( const int band = -1, const QgsRectangle &extent = QgsRectangle(), QgsRasterInterface *input = 0 ) /PyName=classifyColorRampV2/;
 %Docstring
 Classify color ramp shader
+
 :param band: raster band used in classification (quantile mode only)
 :param extent: extent used in classification (quantile mode only)
 :param input: raster input used in classification (quantile mode only)
@@ -149,8 +140,6 @@ Classify color ramp shader
 
 %Docstring
  Generates and new RGB value based on one input value
-
-:rtype: bool
 %End
 
      virtual bool shade( double redValue, double greenValue,
@@ -159,8 +148,6 @@ Classify color ramp shader
                 int *returnBlueValue /Out/, int *returnAlphaValue /Out/ );
 %Docstring
  Generates and new RGB value based on original RGB value
-
-:rtype: bool
 %End
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
@@ -177,13 +164,12 @@ Sets classification mode
     ClassificationMode classificationMode() const;
 %Docstring
 Returns the classification mode
-
-:rtype: ClassificationMode
 %End
 
     void setClip( bool clip );
 %Docstring
 Sets whether the shader should not render values out of range.
+
 :param clip: set to true to clip values which are out of range.
 
 .. seealso:: :py:func:`clip()`
@@ -192,8 +178,6 @@ Sets whether the shader should not render values out of range.
     bool clip() const;
 %Docstring
 Returns whether the shader will clip values which are out of range.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setClip()`
 %End

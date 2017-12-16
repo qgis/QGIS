@@ -39,8 +39,6 @@ and a new preview image may be produced
 Whether the raster provider should return only data that are already available
 without waiting for full result. By default this flag is not enabled.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setPreviewOnly()`
 %End
 
@@ -54,8 +52,6 @@ set flag whether the block request is for preview purposes only
     bool renderPartialOutput() const;
 %Docstring
 Whether our painter is drawing to a temporary image used just by this layer
-
-:rtype: bool
 
 .. seealso:: :py:func:`setRenderPartialOutput()`
 %End
@@ -155,37 +151,27 @@ Base class for processing filters like renderers, reprojector, resampler etc.
     virtual QgsRasterInterface *clone() const = 0 /Factory/;
 %Docstring
 Clone itself, create deep copy
-
-:rtype: QgsRasterInterface
 %End
 
     virtual int capabilities() const;
 %Docstring
 Returns a bitmask containing the supported capabilities
-
-:rtype: int
 %End
 
     QString capabilitiesString() const;
 %Docstring
 Returns the above in friendly format.
-
-:rtype: str
 %End
 
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
 %Docstring
 Returns data type for the band specified by number
-
-:rtype: Qgis.DataType
 %End
 
     virtual Qgis::DataType sourceDataType( int bandNo ) const;
 %Docstring
 Returns source data type for the band specified by number,
 source data type may be shorter than dataType *
-
-:rtype: Qgis.DataType
 %End
 
     virtual QgsRectangle extent() const;
@@ -193,52 +179,30 @@ source data type may be shorter than dataType *
 Get the extent of the interface.
 
 :return: QgsRectangle containing the extent of the layer
-:rtype: QgsRectangle
-
 %End
 
     int dataTypeSize( int bandNo );
-%Docstring
-
-:rtype: int
-%End
 
     virtual int bandCount() const = 0;
 %Docstring
 Get number of bands
-
-:rtype: int
 %End
 
     virtual int xBlockSize() const;
 %Docstring
 Get block size
-
-:rtype: int
 %End
     virtual int yBlockSize() const;
-%Docstring
-
-:rtype: int
-%End
 
     virtual int xSize() const;
 %Docstring
 Get raster size
-
-:rtype: int
 %End
     virtual int ySize() const;
-%Docstring
-
-:rtype: int
-%End
 
     virtual QString generateBandName( int bandNumber ) const;
 %Docstring
  helper function to create zero padded band names
-
-:rtype: str
 %End
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
@@ -246,35 +210,28 @@ Get raster size
 Read block of data using given extent and size.
 Returns pointer to data.
 Caller is responsible to free the memory returned.
+
 :param bandNo: band number
 :param extent: extent of block
 :param width: pixel width of block
 :param height: pixel height of block
 :param feedback: optional raster feedback object for cancelation/preview. Added in QGIS 3.0.
-
-:rtype: QgsRasterBlock
 %End
 
     virtual bool setInput( QgsRasterInterface *input );
 %Docstring
 Set input.
 Returns true if set correctly, false if cannot use that input *
-
-:rtype: bool
 %End
 
     virtual QgsRasterInterface *input() const;
 %Docstring
 Current input
-
-:rtype: QgsRasterInterface
 %End
 
     virtual bool on() const;
 %Docstring
 Is on/off
-
-:rtype: bool
 %End
 
     virtual void setOn( bool on );
@@ -288,8 +245,6 @@ Set on/off
 Get source / raw input, the first in pipe, usually provider.
 It may be used to get info about original data, e.g. resolution to decide
 resampling etc.
-
-:rtype: QgsRasterInterface
 %End
 
     virtual QgsRasterBandStats bandStatistics( int bandNo,
@@ -298,6 +253,7 @@ resampling etc.
         int sampleSize = 0, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
  Get band statistics.
+
 :param bandNo: The band (number).
 :param stats: Requested statistics
 :param extent: Extent used to calc statistics, if empty, whole raster extent is used.
@@ -305,8 +261,6 @@ resampling etc.
 :param feedback: optional feedback object
 
 :return: Band statistics.
-:rtype: QgsRasterBandStats
-
 %End
 
     virtual bool hasStatistics( int bandNo,
@@ -317,8 +271,6 @@ resampling etc.
  Returns true if histogram is available (cached, already calculated).     *   The parameters are the same as in bandStatistics()
 
 :return: true if statistics are available (ready to use)
-:rtype: bool
-
 %End
 
 
@@ -340,6 +292,7 @@ resampling etc.
                          QgsRasterBlockFeedback *feedback = nullptr )];
 %Docstring
  Get histogram. Histograms are cached in providers.
+
 :param bandNo: The band (number).
 :param binCount: Number of bins (intervals,buckets). If 0, the number of bins is decided automatically according to data type, raster size etc.
 :param minimum: Minimum value, if NaN (None for Python), raster minimum value will be used.
@@ -350,8 +303,6 @@ resampling etc.
 :param feedback: optional feedback object
 
 :return: Vector of non NULL cell counts for each bin.
-:rtype: QgsRasterHistogram
-
 
 .. note::
 
@@ -400,8 +351,6 @@ resampling etc.
 %Docstring
  Returns true if histogram is available (cached, already calculated)
 
-:rtype: bool
-
 .. seealso:: :py:func:`histogram()`
 %End
 %MethodCode
@@ -438,6 +387,7 @@ resampling etc.
                                 int sampleSize = 0 );
 %Docstring
  Find values for cumulative pixel count cut.
+
 :param bandNo: The band (number).
 :param lowerCount: The lower count as fraction of 1, e.g. 0.02 = 2%
 :param upperCount: The upper count as fraction of 1, e.g. 0.98 = 98%
@@ -523,10 +473,6 @@ Fill in statistics defaults if not specified
   private:
     QgsRasterInterface( const QgsRasterInterface & );
     QgsRasterInterface &operator=( const QgsRasterInterface & );
-%Docstring
-
-:rtype: QgsRasterInterface
-%End
 };
 
 

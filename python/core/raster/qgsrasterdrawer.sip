@@ -25,6 +25,7 @@ The drawing pipe for raster layers.
     void draw( QPainter *p, QgsRasterViewPort *viewPort, const QgsMapToPixel *qgsMapToPixel, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
 Draws raster data.
+
 :param p: destination QPainter
 :param viewPort: viewport to render
 :param qgsMapToPixel: map to pixel converter

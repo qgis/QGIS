@@ -42,6 +42,7 @@ Widget for importing an identity certificate/key bundle into the authentication 
                                           QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a dialog for importing identities
+
 :param identitytype: Type of the identity to import
 :param parent: Parent widget
 %End
@@ -49,16 +50,12 @@ Construct a dialog for importing identities
     QgsAuthImportIdentityDialog::IdentityType identityType();
 %Docstring
 Get identity type
-
-:rtype: QgsAuthImportIdentityDialog.IdentityType
 %End
 
 
     const QgsPkiBundle pkiBundleToImport();
 %Docstring
 Get certificate/key bundle to be imported as a PKI bundle object
-
-:rtype: QgsPkiBundle
 %End
 
 };

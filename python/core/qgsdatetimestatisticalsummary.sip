@@ -44,6 +44,7 @@ specifying the statistic in the constructor or via setStatistics().
     QgsDateTimeStatisticalSummary( QgsDateTimeStatisticalSummary::Statistics stats = All );
 %Docstring
 Constructor for QgsDateTimeStatisticalSummary
+
 :param stats: flags for statistics to calculate
 %End
 
@@ -52,8 +53,6 @@ Constructor for QgsDateTimeStatisticalSummary
 Returns flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., count).
 
-:rtype: Statistics
-
 .. seealso:: :py:func:`setStatistics`
 %End
 
@@ -61,6 +60,7 @@ are always calculated (e.g., count).
 %Docstring
 Sets flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., count).
+
 :param stats: flags for statistics to calculate
 
 .. seealso:: :py:func:`statistics`
@@ -75,6 +75,7 @@ Resets the calculated values
 %Docstring
 Calculates summary statistics for a list of variants. Any non-datetime variants will be
 ignored.
+
 :param values: list of variants
 
 .. seealso:: :py:func:`addValue()`
@@ -86,6 +87,7 @@ Adds a single datetime to the statistics calculation. Calling this method
 allows datetimes to be added to the calculation one at a time. For large
 quantities of dates this may be more efficient then first adding all the
 variants to a list and calling calculate().
+
 :param value: datetime to add. Any non-datetime variants will be ignored.
 
 .. note::
@@ -114,68 +116,52 @@ any calculated datetime statistics.
     QVariant statistic( QgsDateTimeStatisticalSummary::Statistic stat ) const;
 %Docstring
 Returns the value of a specified statistic
+
 :param stat: statistic to return
 
 :return: calculated value of statistic
-:rtype: QVariant
-
 %End
 
     int count() const;
 %Docstring
 Returns the calculated count of values.
-
-:rtype: int
 %End
 
     int countDistinct() const;
 %Docstring
 Returns the number of distinct datetime values.
-
-:rtype: int
 %End
 
     QSet< QDateTime > distinctValues() const;
 %Docstring
 Returns the set of distinct datetime values.
-
-:rtype: set of QDateTime
 %End
 
     int countMissing() const;
 %Docstring
 Returns the number of missing (null) datetime values.
-
-:rtype: int
 %End
 
     QDateTime min() const;
 %Docstring
 Returns the minimum (earliest) non-null datetime value.
-
-:rtype: QDateTime
 %End
 
     QDateTime max() const;
 %Docstring
 Returns the maximum (latest) non-null datetime value.
-
-:rtype: QDateTime
 %End
 
     QgsInterval range() const;
 %Docstring
 Returns the range (interval between earliest and latest non-null datetime values).
-
-:rtype: QgsInterval
 %End
 
     static QString displayName( QgsDateTimeStatisticalSummary::Statistic statistic );
 %Docstring
 Returns the friendly display name for a statistic
-:param statistic: statistic to return name for
 
-:rtype: str
+:param statistic: statistic to return name for
 %End
 
 };

@@ -36,14 +36,13 @@ Constructor for QgsCheckableComboBox.
 %Docstring
 Returns separator used to separate items in the display text.
 
-:rtype: str
-
 .. seealso:: :py:func:`setSeparator()`
 %End
 
     void setSeparator( const QString &separator );
 %Docstring
 Set separator used to separate items in the display text.
+
 :param separator: separator to use
 
 .. seealso:: :py:func:`separator()`
@@ -54,8 +53,6 @@ Set separator used to separate items in the display text.
 Returns default text which will be displayed in the widget
 when no items selected.
 
-:rtype: str
-
 .. seealso:: :py:func:`setDefaultText()`
 %End
 
@@ -63,6 +60,7 @@ when no items selected.
 %Docstring
 Set default text which will be displayed in the widget when
 no items selected.
+
 :param text: default text
 
 .. seealso:: :py:func:`defaultText()`
@@ -72,17 +70,14 @@ no items selected.
 %Docstring
 Returns currently checked items.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`setCheckedItems()`
 %End
 
     Qt::CheckState itemCheckState( int index ) const;
 %Docstring
 Returns the checked state of the item identified by index
-:param index: item index
 
-:rtype: Qt.CheckState
+:param index: item index
 
 .. seealso:: :py:func:`setItemCheckState()`
 
@@ -92,6 +87,7 @@ Returns the checked state of the item identified by index
     void setItemCheckState( int index, Qt::CheckState state );
 %Docstring
 Sets the item check state to state
+
 :param index: item index
 :param state: check state
 
@@ -103,6 +99,7 @@ Sets the item check state to state
     void toggleItemCheckState( int index );
 %Docstring
 Toggles the item check state
+
 :param index: item index
 
 .. seealso:: :py:func:`itemCheckState()`
@@ -121,8 +118,6 @@ visible and resets the internal state.
 
 %Docstring
 Filters events to enable context menu
-
-:rtype: bool
 %End
 
   signals:
@@ -137,6 +132,7 @@ This signal is emitted whenever the checked items list changed.
     void setCheckedItems( const QStringList &items );
 %Docstring
 Set items which should be checked/selected.
+
 :param items: items to select
 
 .. seealso:: :py:func:`checkedItems()`

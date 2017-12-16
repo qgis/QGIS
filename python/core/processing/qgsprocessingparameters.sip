@@ -48,10 +48,6 @@ True if only selected features in the source should be used by algorithms.
     bool operator==( const QgsProcessingFeatureSourceDefinition &other );
 
     bool operator!=( const QgsProcessingFeatureSourceDefinition &other );
-%Docstring
-
-:rtype: bool
-%End
 
     operator QVariant() const;
 %Docstring
@@ -216,15 +212,11 @@ Constructor for QgsProcessingParameterDefinition.
     virtual QgsProcessingParameterDefinition *clone() const = 0 /Factory/;
 %Docstring
 Creates a clone of the parameter definition.
-
-:rtype: QgsProcessingParameterDefinition
 %End
 
     virtual QString type() const = 0;
 %Docstring
 Unique parameter type name.
-
-:rtype: str
 %End
 
     virtual bool isDestination() const;
@@ -232,16 +224,12 @@ Unique parameter type name.
 Returns true if this parameter represents a file or layer destination, e.g. parameters
 which are used for the destination for layers output by an algorithm will return
 true.
-
-:rtype: bool
 %End
 
     QString name() const;
 %Docstring
 Returns the name of the parameter. This is the internal identifier by which
 algorithms access this parameter.
-
-:rtype: str
 
 .. seealso:: :py:func:`setName()`
 %End
@@ -259,8 +247,6 @@ algorithms access this parameter.
 Returns the description for the parameter. This is the user-visible string
 used to identify this parameter.
 
-:rtype: str
-
 .. seealso:: :py:func:`setDescription()`
 %End
 
@@ -276,8 +262,6 @@ used to identify this parameter.
 %Docstring
 Returns the default value for the parameter.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`setDefaultValue()`
 %End
 
@@ -292,8 +276,6 @@ to ensure that ``value`` is a valid input for the parameter subclass.
     Flags flags() const;
 %Docstring
 Returns any flags associated with the parameter.
-
-:rtype: Flags
 
 .. seealso:: :py:func:`setFlags()`
 %End
@@ -312,8 +294,6 @@ parameter. Returns true if the value can be accepted.
 The optional ``context`` parameter can be specified to allow a more stringent
 check to be performed, capable of checking for the presence of required
 layers and other factors within the context.
-
-:rtype: bool
 %End
 
     virtual QString valueAsPythonString( const QVariant &value, QgsProcessingContext &context ) const;
@@ -321,24 +301,18 @@ layers and other factors within the context.
 Returns a string version of the parameter input ``value``, which is suitable for use as an input
 parameter value when running an algorithm directly from a Python command.
 The returned value must be correctly escaped - e.g. string values must be wrapped in ' 's.
-
-:rtype: str
 %End
 
     virtual QString asScriptCode() const;
 %Docstring
 Returns the parameter definition encoded in a string which can be used within a
 Python processing script.
-
-:rtype: str
 %End
 
     virtual QVariantMap toVariantMap() const;
 %Docstring
 Saves this parameter to a QVariantMap. Subclasses should ensure that they call the base class
 method and then extend the result with additional properties.
-
-:rtype: QVariantMap
 
 .. seealso:: :py:func:`fromVariantMap()`
 %End
@@ -348,8 +322,6 @@ method and then extend the result with additional properties.
 Restores this parameter to a QVariantMap. Subclasses should ensure that they call the base class
 method.
 
-:rtype: bool
-
 .. seealso:: :py:func:`toVariantMap()`
 %End
 
@@ -358,8 +330,6 @@ method.
 %Docstring
 Returns the parameter's freeform metadata. This is mostly used by parameter widget wrappers
 in order to customise their appearance and behavior.
-
-:rtype: QVariantMap
 
 .. seealso:: :py:func:`setMetadata()`
 %End
@@ -376,16 +346,12 @@ in order to customise their appearance and behavior.
 %Docstring
 Returns a list of other parameter names on which this parameter is dependent (e.g.
 field parameters which depend on a parent layer parameter).
-
-:rtype: list of str
 %End
 
     QgsProcessingAlgorithm *algorithm() const;
 %Docstring
 Returns a pointer to the algorithm which owns this parameter. May be None
 for non-owned parameters.
-
-:rtype: QgsProcessingAlgorithm
 
 .. seealso:: :py:func:`provider()`
 %End
@@ -395,8 +361,6 @@ for non-owned parameters.
 Returns a pointer to the provider for the algorithm which owns this parameter. May be None
 for non-owned parameters or algorithms.
 
-:rtype: QgsProcessingProvider
-
 .. seealso:: :py:func:`algorithm()`
 %End
 
@@ -404,16 +368,12 @@ for non-owned parameters or algorithms.
 %Docstring
 Returns a formatted tooltip for use with the parameter, which gives helpful information
 like parameter description, ID, and extra content like default values (depending on parameter type).
-
-:rtype: str
 %End
 
     bool isDynamic() const;
 %Docstring
 Returns true if the parameter supports is dynamic, and can support data-defined values
 (i.e. QgsProperty based values).
-
-:rtype: bool
 
 .. seealso:: :py:func:`setIsDynamic()`
 
@@ -437,8 +397,6 @@ Sets whether the parameter is ``dynamic``, and can support data-defined values
     QgsPropertyDefinition dynamicPropertyDefinition() const;
 %Docstring
 Returns the property definition for dynamic properties.
-
-:rtype: QgsPropertyDefinition
 
 .. seealso:: :py:func:`isDynamic()`
 
@@ -465,8 +423,6 @@ Returns the name of the parameter for a layer linked to a dynamic parameter, or 
 Dynamic parameters (see isDynamic()) can have an optional vector layer parameter linked to them,
 which indicates which layer the fields and values will be available from when evaluating
 the dynamic parameter.
-
-:rtype: str
 
 .. seealso:: :py:func:`setDynamicLayerParameterName()`
 
@@ -537,57 +493,41 @@ the evaluation to understand available map layers and expression contexts
 %Docstring
 Returns true if the parameter with matching ``name`` is a dynamic parameter, and must
 be evaluated once for every input feature processed.
-
-:rtype: bool
 %End
 
     static QString parameterAsString( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a static string value.
-
-:rtype: str
 %End
 
     static QString parameterAsExpression( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to an expression.
-
-:rtype: str
 %End
 
     static double parameterAsDouble( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a static double value.
-
-:rtype: float
 %End
 
     static int parameterAsInt( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a static integer value.
-
-:rtype: int
 %End
 
     static int parameterAsEnum( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a enum value.
-
-:rtype: int
 %End
 
     static QList<int> parameterAsEnums( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to list of enum values.
-
-:rtype: list of int
 %End
 
     static bool parameterAsBool( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, const QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a static boolean value.
-
-:rtype: bool
 %End
 
     static QgsFeatureSink *parameterAsSink( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
@@ -605,8 +545,6 @@ argument will be set to a string which can be used to retrieve the layer corresp
 to the sink, e.g. via calling QgsProcessingUtils.mapLayerFromString().
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
-
-:rtype: QgsFeatureSink
 %End
 
     static QgsProcessingFeatureSource *parameterAsSource( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context ) /Factory/;
@@ -617,8 +555,6 @@ Sources will either be taken from ``context``'s active project, or loaded from e
 sources and stored temporarily in the ``context``.
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
-
-:rtype: QgsProcessingFeatureSource
 %End
 
     static QString parameterAsCompatibleSourceLayerPath( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters,
@@ -634,8 +570,6 @@ in a temporary location. The function will then return the path to that temporar
 
 The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
 layer export is required. This defaults to shapefiles, because shapefiles are the future (don't believe the geopackage hype!).
-
-:rtype: str
 %End
 
     static QgsMapLayer *parameterAsLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -645,8 +579,6 @@ Evaluates the parameter with matching ``definition`` to a map layer.
 Layers will either be taken from ``context``'s active project, or loaded from external
 sources and stored temporarily in the ``context``. In either case, callers do not
 need to handle deletion of the returned layer.
-
-:rtype: QgsMapLayer
 %End
 
     static QgsRasterLayer *parameterAsRasterLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -656,22 +588,16 @@ Evaluates the parameter with matching ``definition`` to a raster layer.
 Layers will either be taken from ``context``'s active project, or loaded from external
 sources and stored temporarily in the ``context``. In either case, callers do not
 need to handle deletion of the returned layer.
-
-:rtype: QgsRasterLayer
 %End
 
     static QString parameterAsOutputLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a output layer destination.
-
-:rtype: str
 %End
 
     static QString parameterAsFileOutput( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a file based output destination.
-
-:rtype: str
 %End
 
     static QgsVectorLayer *parameterAsVectorLayer( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
@@ -681,15 +607,11 @@ Evaluates the parameter with matching ``definition`` to a vector layer.
 Layers will either be taken from ``context``'s active project, or loaded from external
 sources and stored temporarily in the ``context``. In either case, callers do not
 need to handle deletion of the returned layer.
-
-:rtype: QgsVectorLayer
 %End
 
     static QgsCoordinateReferenceSystem parameterAsCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a coordinate reference system.
-
-:rtype: QgsCoordinateReferenceSystem
 %End
 
     static QgsRectangle parameterAsExtent( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context,
@@ -699,8 +621,6 @@ Evaluates the parameter with matching ``definition`` to a rectangular extent.
 
 If ``crs`` is set, and the original coordinate reference system of the parameter can be determined, then the extent will be automatically
 reprojected so that it is in the specified ``crs``. In this case the extent of the reproject rectangle will be returned.
-
-:rtype: QgsRectangle
 
 .. seealso:: :py:func:`parameterAsExtentGeometry()`
 
@@ -717,8 +637,6 @@ reprojected so that it is in the specified ``crs``. Unlike parameterAsExtent(), 
 will no longer be a rectangle itself (i.e. this method returns the geometry of the actual reprojected rectangle, while parameterAsExtent() returns
 just the extent of the reprojected rectangle).
 
-:rtype: QgsGeometry
-
 .. seealso:: :py:func:`parameterAsExtent()`
 
 .. seealso:: :py:func:`parameterAsExtentCrs()`
@@ -727,8 +645,6 @@ just the extent of the reprojected rectangle).
     static QgsCoordinateReferenceSystem parameterAsExtentCrs( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Returns the coordinate reference system associated with an extent parameter value.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. seealso:: :py:func:`parameterAsExtent()`
 %End
@@ -740,8 +656,6 @@ Evaluates the parameter with matching ``definition`` to a point.
 
 If ``crs`` is set then the point will be automatically reprojected so that it is in the specified ``crs``.
 
-:rtype: QgsPointXY
-
 .. seealso:: :py:func:`parameterAsPointCrs()`
 %End
 
@@ -749,45 +663,33 @@ If ``crs`` is set then the point will be automatically reprojected so that it is
 %Docstring
 Returns the coordinate reference system associated with an point parameter value.
 
-:rtype: QgsCoordinateReferenceSystem
-
 .. seealso:: :py:func:`parameterAsPoint()`
 %End
 
     static QString parameterAsFile( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a file/folder name.
-
-:rtype: str
 %End
 
     static QVariantList parameterAsMatrix( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a matrix/table of values.
 Tables are collapsed to a 1 dimensional list.
-
-:rtype: QVariantList
 %End
 
     static QList< QgsMapLayer *> parameterAsLayerList( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of map layers.
-
-:rtype: list of QgsMapLayer
 %End
 
     static QList<double> parameterAsRange( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a range of values.
-
-:rtype: list of float
 %End
 
     static QStringList parameterAsFields( const QgsProcessingParameterDefinition *definition, const QVariantMap &parameters, QgsProcessingContext &context );
 %Docstring
 Evaluates the parameter with matching ``definition`` to a list of fields.
-
-:rtype: list of str
 %End
 
     static QgsProcessingParameterDefinition *parameterFromVariantMap( const QVariantMap &map ) /Factory/;
@@ -795,15 +697,11 @@ Evaluates the parameter with matching ``definition`` to a list of fields.
 Creates a new QgsProcessingParameterDefinition using the configuration from a
 supplied variant ``map``.
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsProcessingParameterDefinition
 %End
 
     static QString descriptionFromName( const QString &name );
 %Docstring
 Creates an autogenerated parameter description from a parameter ``name``.
-
-:rtype: str
 %End
 
     static QgsProcessingParameterDefinition *parameterFromScriptCode( const QString &code ) /Factory/;
@@ -811,8 +709,6 @@ Creates an autogenerated parameter description from a parameter ``name``.
 Creates a new QgsProcessingParameterDefinition using the configuration from a
 supplied script ``code`` string.
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsProcessingParameterDefinition
 %End
 
 };
@@ -841,8 +737,6 @@ Constructor for QgsProcessingParameterBoolean.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -855,8 +749,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterBoolean *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterBoolean
 %End
 };
 
@@ -882,8 +774,6 @@ Constructor for QgsProcessingParameterCrs.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -896,8 +786,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterCrs *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterCrs
 %End
 
 };
@@ -924,8 +812,6 @@ Constructor for QgsProcessingParameterMapLayer.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -938,8 +824,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterMapLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterMapLayer
 %End
 
 };
@@ -966,8 +850,6 @@ Constructor for QgsProcessingParameterExtent.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -980,8 +862,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterExtent *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterExtent
 %End
 
 };
@@ -1009,8 +889,6 @@ Constructor for QgsProcessingParameterPoint.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1023,8 +901,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterPoint *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterPoint
 %End
 
 };
@@ -1057,8 +933,6 @@ Constructor for QgsProcessingParameterFile.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1071,8 +945,6 @@ Returns the type name for the parameter class.
     Behavior behavior() const;
 %Docstring
 Returns the parameter behavior (e.g. File or Folder).
-
-:rtype: Behavior
 
 .. seealso:: :py:func:`setBehavior()`
 %End
@@ -1087,8 +959,6 @@ Sets the parameter ``behavior`` (e.g. File or Folder).
     QString extension() const;
 %Docstring
 Returns any specified file extension for the parameter.
-
-:rtype: str
 
 .. seealso:: :py:func:`setExtension()`
 %End
@@ -1108,8 +978,6 @@ Sets a file ``extension`` for the parameter.
     static QgsProcessingParameterFile *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition, Behavior behavior = File ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterFile
 %End
 
 };
@@ -1138,8 +1006,6 @@ Constructor for QgsProcessingParameterMatrix.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1152,8 +1018,6 @@ Returns the type name for the parameter class.
     QStringList headers() const;
 %Docstring
 Returns a list of column headers (if set).
-
-:rtype: list of str
 
 .. seealso:: :py:func:`setHeaders()`
 %End
@@ -1169,8 +1033,6 @@ Sets the list of column ``headers``.
 %Docstring
 Returns the fixed number of rows in the table. This parameter only has an
 effect if hasFixedNumberRows() is true.
-
-:rtype: int
 
 .. seealso:: :py:func:`setNumberRows()`
 
@@ -1190,8 +1052,6 @@ effect if hasFixedNumberRows() is true.
     bool hasFixedNumberRows() const;
 %Docstring
 Returns whether the table has a fixed number of rows.
-
-:rtype: bool
 
 .. seealso:: :py:func:`numberRows()`
 
@@ -1215,8 +1075,6 @@ Sets whether the table has a fixed number of rows.
     static QgsProcessingParameterMatrix *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterMatrix
 %End
 
 };
@@ -1244,8 +1102,6 @@ Constructor for QgsProcessingParameterMultipleLayers.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1261,8 +1117,6 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the layer type for layers acceptable by the parameter.
 
-:rtype: QgsProcessing.SourceType
-
 .. seealso:: :py:func:`setLayerType()`
 %End
 
@@ -1277,8 +1131,6 @@ Sets the layer ``type`` for layers acceptable by the parameter.
 %Docstring
 Returns the minimum number of layers required for the parameter. If the return value is < 1
 then the parameter accepts any number of layers.
-
-:rtype: int
 
 .. seealso:: :py:func:`setMinimumNumberInputs()`
 %End
@@ -1299,8 +1151,6 @@ if the parameter is not optional.
     static QgsProcessingParameterMultipleLayers *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterMultipleLayers
 %End
 
 };
@@ -1338,8 +1188,6 @@ Constructor for QgsProcessingParameterNumber.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1355,8 +1203,6 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the minimum value acceptable by the parameter.
 
-:rtype: float
-
 .. seealso:: :py:func:`setMinimum()`
 %End
 
@@ -1371,8 +1217,6 @@ Sets the ``minimum`` value acceptable by the parameter.
 %Docstring
 Returns the maximum value acceptable by the parameter.
 
-:rtype: float
-
 .. seealso:: :py:func:`setMaximum()`
 %End
 
@@ -1386,8 +1230,6 @@ Sets the ``maximum`` value acceptable by the parameter.
     Type dataType() const;
 %Docstring
 Returns the acceptable data type for the parameter.
-
-:rtype: Type
 
 .. seealso:: :py:func:`setDataType()`
 %End
@@ -1407,8 +1249,6 @@ Sets the acceptable data ``type`` for the parameter.
     static QgsProcessingParameterNumber *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterNumber
 %End
 
 };
@@ -1437,8 +1277,6 @@ Constructor for QgsProcessingParameterRange.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1451,8 +1289,6 @@ Returns the type name for the parameter class.
     QgsProcessingParameterNumber::Type dataType() const;
 %Docstring
 Returns the acceptable data type for the range.
-
-:rtype: QgsProcessingParameterNumber.Type
 
 .. seealso:: :py:func:`setDataType()`
 %End
@@ -1472,8 +1308,6 @@ Sets the acceptable data ``type`` for the range.
     static QgsProcessingParameterRange *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterRange
 %End
 
 };
@@ -1500,8 +1334,6 @@ Constructor for QgsProcessingParameterRasterLayer.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1514,8 +1346,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterRasterLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterRasterLayer
 %End
 
 };
@@ -1544,8 +1374,6 @@ Constructor for QgsProcessingParameterEnum.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1561,8 +1389,6 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the list of acceptable options for the parameter.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`setOptions()`
 %End
 
@@ -1576,8 +1402,6 @@ Sets the list of acceptable ``options`` for the parameter.
     bool allowMultiple() const;
 %Docstring
 Returns true if the parameter allows multiple selected values.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setAllowMultiple()`
 %End
@@ -1597,8 +1421,6 @@ Sets whether the parameter allows multiple selected values.
     static QgsProcessingParameterEnum *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterEnum
 %End
 
 };
@@ -1626,8 +1448,6 @@ Constructor for QgsProcessingParameterString.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1640,8 +1460,6 @@ Returns the type name for the parameter class.
     bool multiLine() const;
 %Docstring
 Returns true if the parameter allows multiline strings.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setMultiLine()`
 %End
@@ -1661,8 +1479,6 @@ Sets whether the parameter allows multiline strings.
     static QgsProcessingParameterString *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterString
 %End
 
 };
@@ -1690,8 +1506,6 @@ Constructor for QgsProcessingParameterExpression.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1704,8 +1518,6 @@ Returns the type name for the parameter class.
     QString parentLayerParameterName() const;
 %Docstring
 Returns the name of the parent layer parameter, or an empty string if this is not set.
-
-:rtype: str
 
 .. seealso:: :py:func:`setParentLayerParameterName()`
 %End
@@ -1725,8 +1537,6 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
     static QgsProcessingParameterExpression *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterExpression
 %End
 
 };
@@ -1753,8 +1563,6 @@ Constructor for QgsProcessingParameterLimitedDataTypes, with a list of acceptabl
     QList< int > dataTypes() const;
 %Docstring
 Returns the geometry types for sources acceptable by the parameter.
-
-:rtype: list of int
 
 .. seealso:: :py:func:`setDataTypes()`
 %End
@@ -1796,8 +1604,6 @@ Constructor for QgsProcessingParameterVectorLayer.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1815,8 +1621,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterVectorLayer *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterVectorLayer
 %End
 
 };
@@ -1854,8 +1658,6 @@ Constructor for QgsProcessingParameterField.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1873,8 +1675,6 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the name of the parent layer parameter, or an empty string if this is not set.
 
-:rtype: str
-
 .. seealso:: :py:func:`setParentLayerParameterName()`
 %End
 
@@ -1889,8 +1689,6 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
 %Docstring
 Returns the acceptable data type for the field.
 
-:rtype: DataType
-
 .. seealso:: :py:func:`setDataType()`
 %End
 
@@ -1904,8 +1702,6 @@ Sets the acceptable data ``type`` for the field.
     bool allowMultiple() const;
 %Docstring
 Returns whether multiple field selections are permitted.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setAllowMultiple()`
 %End
@@ -1925,8 +1721,6 @@ Sets whether multiple field selections are permitted.
     static QgsProcessingParameterField *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterField
 %End
 
 };
@@ -1955,8 +1749,6 @@ Constructor for QgsProcessingParameterFeatureSource.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -1976,8 +1768,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterFeatureSource *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterFeatureSource
 %End
 
 };
@@ -2012,16 +1802,12 @@ Constructor for QgsProcessingDestinationParameter.
 %Docstring
 Returns a new QgsProcessingOutputDefinition corresponding to the definition of the destination
 parameter.
-
-:rtype: QgsProcessingOutputDefinition
 %End
 
     bool supportsNonFileBasedOutputs() const;
 %Docstring
 Returns true if the destination parameter supports non filed-based outputs,
 such as memory layers or direct database outputs.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setSupportsNonFileBasedOutputs()`
 %End
@@ -2038,8 +1824,6 @@ such as memory layers or direct database outputs.
 %Docstring
 Returns the default file extension for destination file paths
 associated with this parameter.
-
-:rtype: str
 %End
 
     virtual QString generateTemporaryDestination() const;
@@ -2047,16 +1831,12 @@ associated with this parameter.
 Generates a temporary destination value for this parameter. The returned
 value will be a file path or QGIS data provider URI suitable for
 temporary storage of created layers and files.
-
-:rtype: str
 %End
 
     bool createByDefault() const;
 %Docstring
 Returns true if the destination should be created by default. For optional parameters,
 a return value of false indicates that the destination should not be created by default.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setCreateByDefault()`
 %End
@@ -2096,8 +1876,6 @@ Constructor for QgsProcessingParameterFeatureSink.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -2117,8 +1895,6 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the layer type for sinks associated with the parameter.
 
-:rtype: QgsProcessing.SourceType
-
 .. seealso:: :py:func:`setDataType()`
 %End
 
@@ -2126,8 +1902,6 @@ Returns the layer type for sinks associated with the parameter.
 %Docstring
 Returns true if sink is likely to include geometries. In cases were presence of geometry
 cannot be reliably determined in advance, this method will default to returning true.
-
-:rtype: bool
 %End
 
     void setDataType( QgsProcessing::SourceType type );
@@ -2147,8 +1921,6 @@ Sets the layer ``type`` for the sinks associated with the parameter.
     static QgsProcessingParameterFeatureSink *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterFeatureSink
 %End
 
 };
@@ -2182,8 +1954,6 @@ Constructor for QgsProcessingParameterVectorDestination.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -2203,8 +1973,6 @@ Returns the type name for the parameter class.
 %Docstring
 Returns the layer type for this created vector layer.
 
-:rtype: QgsProcessing.SourceType
-
 .. seealso:: :py:func:`setDataType()`
 %End
 
@@ -2212,8 +1980,6 @@ Returns the layer type for this created vector layer.
 %Docstring
 Returns true if the created layer is likely to include geometries. In cases were presence of geometry
 cannot be reliably determined in advance, this method will default to returning true.
-
-:rtype: bool
 %End
 
     void setDataType( QgsProcessing::SourceType type );
@@ -2231,8 +1997,6 @@ Sets the layer ``type`` for the created vector layer.
     static QgsProcessingParameterVectorDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterVectorDestination
 %End
 
 
@@ -2262,8 +2026,6 @@ Constructor for QgsProcessingParameterRasterDestination.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -2280,8 +2042,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterRasterDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterRasterDestination
 %End
 };
 
@@ -2310,8 +2070,6 @@ Constructor for QgsProcessingParameterFileDestination.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -2328,8 +2086,6 @@ Returns the type name for the parameter class.
     QString fileFilter() const;
 %Docstring
 Returns the file filter string for file destinations compatible with this parameter.
-
-:rtype: str
 
 .. seealso:: :py:func:`setFileFilter()`
 %End
@@ -2349,8 +2105,6 @@ Sets the file ``filter`` string for file destinations compatible with this param
     static QgsProcessingParameterFileDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterFileDestination
 %End
 
 
@@ -2381,8 +2135,6 @@ Constructor for QgsProcessingParameterFolderDestination.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -2397,8 +2149,6 @@ Returns the type name for the parameter class.
     static QgsProcessingParameterFolderDestination *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterFolderDestination
 %End
 
 };
@@ -2426,8 +2176,6 @@ Constructor for QgsProcessingParameterBand.
     static QString typeName();
 %Docstring
 Returns the type name for the parameter class.
-
-:rtype: str
 %End
     virtual QgsProcessingParameterDefinition *clone() const /Factory/;
 
@@ -2444,8 +2192,6 @@ Returns the type name for the parameter class.
     QString parentLayerParameterName() const;
 %Docstring
 Returns the name of the parent layer parameter, or an empty string if this is not set.
-
-:rtype: str
 
 .. seealso:: :py:func:`setParentLayerParameterName()`
 %End
@@ -2465,8 +2211,6 @@ Sets the name of the parent layer parameter. Use an empty string if this is not 
     static QgsProcessingParameterBand *fromScriptCode( const QString &name, const QString &description, bool isOptional, const QString &definition ) /Factory/;
 %Docstring
 Creates a new parameter using the definition from a script code.
-
-:rtype: QgsProcessingParameterBand
 %End
 
 };

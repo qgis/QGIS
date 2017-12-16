@@ -94,8 +94,6 @@ Shows a search widget on a filter form.
 %Docstring
 Returns a list of exclusive filter flags, which cannot be combined with other flags (e.g., EqualTo/NotEqualTo)
 
-:rtype: list of QgsSearchWidgetWrapper.FilterFlag
-
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`nonExclusiveFilterFlags()`
@@ -105,8 +103,6 @@ Returns a list of exclusive filter flags, which cannot be combined with other fl
 %Docstring
 Returns a list of non-exclusive filter flags, which can be combined with other flags (e.g., CaseInsensitive)
 
-:rtype: list of QgsSearchWidgetWrapper.FilterFlag
-
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`exclusiveFilterFlags()`
@@ -115,9 +111,8 @@ Returns a list of non-exclusive filter flags, which can be combined with other f
     static QString toString( QgsSearchWidgetWrapper::FilterFlag flag );
 %Docstring
 Returns a translated string representing a filter flag.
-:param flag: flag to convert to string
 
-:rtype: str
+:param flag: flag to convert to string
 
 .. versionadded:: 2.16
 %End
@@ -135,8 +130,6 @@ Create a new widget wrapper
 %Docstring
 Returns filter flags supported by the search widget.
 
-:rtype: FilterFlags
-
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`defaultFlags()`
@@ -145,8 +138,6 @@ Returns filter flags supported by the search widget.
     virtual FilterFlags defaultFlags() const;
 %Docstring
 Returns the filter flags which should be set by default for the search widget.
-
-:rtype: FilterFlags
 
 .. versionadded:: 2.16
 
@@ -162,31 +153,21 @@ If an invalid variant is returned this will be interpreted as no change.
 Be sure to return a NULL QVariant if it should be set to NULL.
 
 :return: The current value the widget represents
-:rtype: str
-
 %End
 
     virtual bool applyDirectly() = 0;
 %Docstring
 If this is true, then this search widget should take effect directly
 when its expression changes
-
-:rtype: bool
 %End
 
     virtual QString createExpression( FilterFlags flags ) const;
-%Docstring
-
-:rtype: str
-%End
 
     QString createFieldIdentifier() const;
 %Docstring
 Get a field name or expression to use as field comparison.
 If in SearchMode returns a quoted field identifier.
 If in AggregateSearchMode returns an appropriate aggregate expression.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -195,8 +176,6 @@ If in AggregateSearchMode returns an appropriate aggregate expression.
 %Docstring
 If in AggregateSearch mode, which aggregate should be used to construct
 the filter expression. Is a Null String if none.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -221,6 +200,7 @@ Clears the widget's current value and resets it back to the default state
     virtual void setEnabled( bool enabled );
 %Docstring
 Toggles whether the search widget is enabled or disabled.
+
 :param enabled: set to true to enable widget
 %End
 
@@ -229,6 +209,7 @@ Toggles whether the search widget is enabled or disabled.
     void expressionChanged( const QString &exp );
 %Docstring
 Emitted whenever the expression changes
+
 :param exp: The new search expression
 %End
 

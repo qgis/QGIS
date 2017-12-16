@@ -33,6 +33,7 @@ Constructor for QgsSymbolWidgetContext.
     QgsSymbolWidgetContext( const QgsSymbolWidgetContext &other );
 %Docstring
 Copy constructor.
+
 :param other: source QgsSymbolWidgetContext
 %End
 
@@ -41,6 +42,7 @@ Copy constructor.
 %Docstring
 Sets the map canvas associated with the widget. This allows the widget to retrieve the current
 map scale and other properties from the canvas.
+
 :param canvas: map canvas
 
 .. seealso:: :py:func:`mapCanvas()`
@@ -50,8 +52,6 @@ map scale and other properties from the canvas.
 %Docstring
 Returns the map canvas associated with the widget.
 
-:rtype: QgsMapCanvas
-
 .. seealso:: :py:func:`setMapCanvas()`
 %End
 
@@ -60,6 +60,7 @@ Returns the map canvas associated with the widget.
 Sets the optional expression context used for the widget. This expression context is used for
 evaluating data defined symbol properties and for populating based expression widgets in
 the layer widget.
+
 :param context: expression context pointer. Ownership is not transferred.
 
 .. seealso:: :py:func:`expressionContext()`
@@ -73,14 +74,13 @@ Returns the expression context used for the widget, if set. This expression cont
 evaluating data defined symbol properties and for populating based expression widgets in
 the layer widget.
 
-:rtype: QgsExpressionContext
-
 .. seealso:: :py:func:`setExpressionContext()`
 %End
 
     void setAdditionalExpressionContextScopes( const QList< QgsExpressionContextScope > &scopes );
 %Docstring
 Sets a list of additional expression context scopes to show as available within the layer.
+
 :param scopes: list of additional scopes which will be added in order to the end of the default expression context
 
 .. seealso:: :py:func:`setExpressionContext()`
@@ -90,8 +90,6 @@ Sets a list of additional expression context scopes to show as available within 
 %Docstring
 Returns the list of additional expression context scopes to show as available within the layer.
 
-:rtype: list of QgsExpressionContextScope
-
 .. seealso:: :py:func:`setAdditionalExpressionContextScopes()`
 %End
 
@@ -99,8 +97,6 @@ Returns the list of additional expression context scopes to show as available wi
 %Docstring
 Returns list of scopes: global, project, atlas, map, layer.
 Ownership is transferred to the caller.
-
-:rtype: list of QgsExpressionContextScope
 
 .. versionadded:: 3.0
 %End

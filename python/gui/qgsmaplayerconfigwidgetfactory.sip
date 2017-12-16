@@ -39,21 +39,18 @@ Constructor
  The icon that will be shown in the UI for the panel.
 
 :return: A QIcon for the panel icon.
-:rtype: QIcon
-
 %End
 
     void setIcon( const QIcon &icon );
 %Docstring
 Set the icon for the factory object.
+
 :param icon: The icon to show in the interface.
 %End
 
     virtual QString title() const;
 %Docstring
  The title of the panel.
-
-:rtype: str
 
 .. note::
 
@@ -70,6 +67,7 @@ Set the title for the interface
 
    Not all users may show this as a label
 e.g style dock uses this as a tooltip.
+
 :param title: The title to set.
 %End
 
@@ -79,13 +77,12 @@ Flag if widget is supported for use in style dock.
 The default implementation returns false.
 
 :return: True if supported
-:rtype: bool
-
 %End
 
     void setSupportsStyleDock( bool supports );
 %Docstring
 Set support flag for style dock
+
 :param supports: True if this widget is supported in the style dock.
 %End
 
@@ -95,13 +92,12 @@ Flag if widget is supported for use in layer properties dialog.
 The default implementation returns false.
 
 :return: True if supported
-:rtype: bool
-
 %End
 
     void setSupportLayerPropertiesDialog( bool supports );
 %Docstring
 Set support flag for style dock
+
 :param supports: True if this widget is supported in the style dock.
 %End
 
@@ -110,19 +106,16 @@ Set support flag for style dock
  Check if the layer is supported for this widget.
 
 :return: True if this layer is supported for this widget
-:rtype: bool
-
 %End
 
     virtual QgsMapLayerConfigWidget *createWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, bool dockWidget = true, QWidget *parent /TransferThis/ = 0 ) const = 0 /Factory/;
 %Docstring
  Factory function to create the widget on demand as needed by the dock.
 
-:rtype: QgsMapLayerConfigWidget
-
 .. note::
 
    This function is called each time the panel is selected. Keep it light for better UX.
+
 :param layer: The active layer in the dock.
 :param canvas: The map canvas.
 :param dockWidget: True of the widget will be shown a dock style widget.

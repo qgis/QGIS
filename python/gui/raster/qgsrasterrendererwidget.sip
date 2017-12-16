@@ -22,22 +22,15 @@ class QgsRasterRendererWidget: QWidget
     QgsRasterRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent );
 
     virtual QgsRasterRenderer *renderer() = 0 /Factory/;
-%Docstring
-
-:rtype: QgsRasterRenderer
-%End
 
     void setRasterLayer( QgsRasterLayer *layer );
     const QgsRasterLayer *rasterLayer() const;
-%Docstring
-
-:rtype: QgsRasterLayer
-%End
 
     virtual void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
 Sets the map canvas associated with the widget. This allows the widget to retrieve the current
 map extent and other properties from the canvas.
+
 :param canvas: map canvas
 
 .. seealso:: :py:func:`mapCanvas()`
@@ -49,8 +42,6 @@ map extent and other properties from the canvas.
 %Docstring
 Returns the map canvas associated with the widget.
 
-:rtype: QgsMapCanvas
-
 .. seealso:: :py:func:`setMapCanvas()`
 
 .. seealso:: :py:func:`canvasExtent()`
@@ -59,28 +50,12 @@ Returns the map canvas associated with the widget.
 %End
 
     virtual QString min( int index = 0 );
-%Docstring
-
-:rtype: str
-%End
     virtual QString max( int index = 0 );
-%Docstring
-
-:rtype: str
-%End
     virtual void setMin( const QString &value, int index = 0 );
     virtual void setMax( const QString &value, int index = 0 );
     virtual QString stdDev();
-%Docstring
-
-:rtype: str
-%End
     virtual void setStdDev( const QString &value );
     virtual int selectedBand( int index = 0 );
-%Docstring
-
-:rtype: int
-%End
 
     virtual void doComputations();
 %Docstring
@@ -90,8 +65,6 @@ Load programmatically with current values
     virtual QgsRasterMinMaxWidget *minMaxWidget();
 %Docstring
 Return min/max widget when it exists.
-
-:rtype: QgsRasterMinMaxWidget
 %End
 
   signals:

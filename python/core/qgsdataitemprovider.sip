@@ -36,31 +36,23 @@ or directory being inspected, parent item is a valid QgsDirectoryItem
     virtual QString name() = 0;
 %Docstring
 Human-readable name of the provider name
-
-:rtype: str
 %End
 
     virtual int capabilities() = 0;
 %Docstring
 Return combination of flags from QgsDataProvider.DataCapabilities
-
-:rtype: int
 %End
 
     virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) = 0 /Factory/;
 %Docstring
 Create a new instance of QgsDataItem (or null) for given path and parent item.
 Caller takes responsibility of deleting created items.
-
-:rtype: QgsDataItem
 %End
 
     virtual QVector<QgsDataItem *> createDataItems( const QString &path, QgsDataItem *parentItem );
 %Docstring
 Create a vector of instances of QgsDataItem (or null) for given path and parent item.
 Caller takes responsibility of deleting created items.
-
-:rtype: list of QgsDataItem
 %End
 
     virtual bool handlesDirectoryPath( const QString &path );
@@ -72,8 +64,6 @@ population of directory items for the path will be avoided and it is left to the
 provider to correctly populate relevant entries for the path.
 
 The default implementation returns false for all paths.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End

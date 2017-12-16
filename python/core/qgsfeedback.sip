@@ -43,8 +43,6 @@ Construct a feedback object
     bool isCanceled() const;
 %Docstring
 Tells whether the operation has been canceled already
-
-:rtype: bool
 %End
 
     void setProgress( double progress );
@@ -64,8 +62,6 @@ argument is in percentage and valid values range from 0-100.
 Returns the current progress reported by the feedback object. Depending on how the
 feedback object is used progress reporting may not be supported. The returned value
 is in percentage and ranges from 0-100.
-
-:rtype: float
 
 .. seealso:: :py:func:`setProgress()`
 

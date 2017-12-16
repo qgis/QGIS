@@ -25,6 +25,7 @@ Raster data container.
     QgsRasterBlock( Qgis::DataType dataType, int width, int height );
 %Docstring
  Constructor which allocates data block in memory
+
 :param dataType: raster data type
 :param width: width of data matrix
 :param height: height of data matrix
@@ -35,13 +36,12 @@ Raster data container.
     bool reset( Qgis::DataType dataType, int width, int height );
 %Docstring
  Reset block
+
 :param dataType: raster data type
 :param width: width of data matrix
 :param height: height of data matrix
 
 :return: true on success
-:rtype: bool
-
 %End
 
 
@@ -50,8 +50,6 @@ Raster data container.
  Returns true if the block is valid (correctly filled with data).
 An empty block may still be valid (if zero size block was requested).
 If the block is not valid, error may be retrieved by error() method.
-
-:rtype: bool
 %End
 
     void setValid( bool valid );
@@ -64,48 +62,30 @@ If the block is not valid, error may be retrieved by error() method.
 Returns true if block is empty, i.e. its size is 0 (zero rows or cols).
 This method does not return true if size is not zero and all values are
 'no data' (null).
-
-:rtype: bool
 %End
 
     static int typeSize( int dataType );
-%Docstring
-
-:rtype: int
-%End
 
     int dataTypeSize() const;
-%Docstring
-
-:rtype: int
-%End
 
     static bool typeIsNumeric( Qgis::DataType type );
 %Docstring
 Returns true if data type is numeric
-
-:rtype: bool
 %End
 
     static bool typeIsColor( Qgis::DataType type );
 %Docstring
 Returns true if data type is color
-
-:rtype: bool
 %End
 
     Qgis::DataType dataType() const;
 %Docstring
 Returns data type
-
-:rtype: Qgis.DataType
 %End
 
     static Qgis::DataType typeWithNoDataValue( Qgis::DataType dataType, double *noDataValue );
 %Docstring
 For given data type returns wider type and sets no data value
-
-:rtype: Qgis.DataType
 %End
 
     bool hasNoDataValue() const;
@@ -113,8 +93,6 @@ For given data type returns wider type and sets no data value
 True if the block has no data value.
 
 :return: true if the block has no data value
-:rtype: bool
-
 
 .. seealso:: :py:func:`noDataValue()`
 %End
@@ -126,8 +104,6 @@ that it really contains any no data. It can be used to speed up processing.
 Not the difference between this method and hasNoDataValue().
 
 :return: true if the block may contain no data *
-:rtype: bool
-
 %End
 
     void setNoDataValue( double noDataValue );
@@ -155,8 +131,6 @@ Return no data value. If the block does not have a no data value the
 returned value is undefined.
 
 :return: No data value
-:rtype: float
-
 
 .. seealso:: :py:func:`hasNoDataValue()`
 %End
@@ -164,144 +138,131 @@ returned value is undefined.
     static QByteArray valueBytes( Qgis::DataType dataType, double value );
 %Docstring
 Get byte array representing a value.
+
 :param dataType: data type
 :param value: value
 
 :return: byte array representing the value *
-:rtype: QByteArray
-
 %End
 
     double value( int row, int column ) const;
 %Docstring
  Read a single value if type of block is numeric. If type is color,
 returned value is undefined.
+
 :param row: row index
 :param column: column index
 
 :return: value *
-:rtype: float
-
 %End
 
     double value( qgssize index ) const;
 %Docstring
  Read a single value if type of block is numeric. If type is color,
 returned value is undefined.
+
 :param index: data matrix index (long type in Python)
 
 :return: value *
-:rtype: float
-
 %End
 
     QRgb color( int row, int column ) const;
 %Docstring
  Read a single color
+
 :param row: row index
 :param column: column index
 
 :return: color *
-:rtype: QRgb
-
 %End
 
     QRgb color( qgssize index ) const;
 %Docstring
  Read a single value
+
 :param index: data matrix index (long type in Python)
 
 :return: color *
-:rtype: QRgb
-
 %End
 
     bool isNoData( int row, int column );
 %Docstring
  Check if value at position is no data
+
 :param row: row index
 :param column: column index
 
 :return: true if value is no data *
-:rtype: bool
-
 %End
 
     bool isNoData( qgssize index );
 %Docstring
  Check if value at position is no data
+
 :param index: data matrix index (long type in Python)
 
 :return: true if value is no data *
-:rtype: bool
-
 %End
 
     bool setValue( int row, int column, double value );
 %Docstring
  Set value on position
+
 :param row: row index
 :param column: column index
 :param value: the value to be set
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     bool setValue( qgssize index, double value );
 %Docstring
  Set value on index (indexed line by line)
+
 :param index: data matrix index (long type in Python)
 :param value: the value to be set
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     bool setColor( int row, int column, QRgb color );
 %Docstring
  Set color on position
+
 :param row: row index
 :param column: column index
 :param color: the color to be set, QRgb value
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     bool setColor( qgssize index, QRgb color );
 %Docstring
  Set color on index (indexed line by line)
+
 :param index: data matrix index (long type in Python)
 :param color: the color to be set, QRgb value
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     bool setIsNoData( int row, int column );
 %Docstring
  Set no data on pixel
+
 :param row: row index
 :param column: column index
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     bool setIsNoData( qgssize index );
 %Docstring
  Set no data on pixel
+
 :param index: data matrix index (long type in Python)
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     bool setIsNoData();
@@ -309,8 +270,6 @@ returned value is undefined.
  Set the whole block to no data
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     bool setIsNoDataExcept( QRect exceptRect );
@@ -318,8 +277,6 @@ returned value is undefined.
  Set the whole block to no data except specified rectangle
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     void setIsData( int row, int column );
@@ -328,6 +285,7 @@ returned value is undefined.
 no data value set then an internal map of no data pixels is maintained for the block.
 In this case it is possible to reset a pixel to flag it as having valid data using this
 method. This method has no effect for raster blocks with an explicit no data value set.
+
 :param row: row index
 :param column: column index
 
@@ -340,6 +298,7 @@ method. This method has no effect for raster blocks with an explicit no data val
 no data value set then an internal map of no data pixels is maintained for the block.
 In this case it is possible to reset a pixel to flag it as having valid data using this
 method. This method has no effect for raster blocks with an explicit no data value set.
+
 :param index: data matrix index (long type in Python)
 
 .. versionadded:: 2.10
@@ -352,8 +311,6 @@ The returned QByteArray instance is not a copy of the data: it only refers to th
 owned by the QgsRasterBlock, therefore it is only valid while the QgsRasterBlock object
 still exists. Writing to the returned QByteArray will not affect the original data:
 a deep copy of the data will be made and only the local copy will be modified.
-
-:rtype: QByteArray
 
 .. note::
 
@@ -381,22 +338,20 @@ overwrite data somewhere in the middle of the internal buffer.
 %Docstring
  Print double value with all necessary significant digits.
 It is ensured that conversion back to double gives the same number.
+
 :param value: the value to be printed
 
 :return: string representing the value*
-:rtype: str
-
 %End
 
 
     bool convert( Qgis::DataType destDataType );
 %Docstring
  Convert data to different type.
+
 :param destDataType: dest data type
 
 :return: true on success *
-:rtype: bool
-
 %End
 
     QImage image() const;
@@ -404,18 +359,15 @@ It is ensured that conversion back to double gives the same number.
  Get image if type is color.
 
 :return: image *
-:rtype: QImage
-
 %End
 
     bool setImage( const QImage *image );
 %Docstring
  set image.
+
 :param image: image
 
 :return: true on success *
-:rtype: bool
-
 %End
 
 
@@ -432,8 +384,6 @@ Apply band scale and offset to raster block values
     QgsError error() const;
 %Docstring
  Get error
-
-:rtype: QgsError
 %End
 
     void setError( const QgsError &error );
@@ -442,31 +392,24 @@ Apply band scale and offset to raster block values
 %End
 
     QString toString() const;
-%Docstring
-
-:rtype: str
-%End
 
     static QRect subRect( const QgsRectangle &extent, int width, int height, const QgsRectangle &subExtent );
 %Docstring
  For extent and width, height find rectangle covered by subextent.
 The output rect has x oriented from left to right and y from top to bottom
 (upper-left to lower-right orientation).
+
 :param extent: extent, usually the larger
 :param width: numbers of columns in theExtent
 :param height: numbers of rows in theExtent
 :param subExtent: extent, usually smaller than theExtent
 
 :return: the rectangle covered by sub extent
-:rtype: QRect
-
 %End
 
     int width() const;
 %Docstring
 Returns the width (number of columns) of the raster block.
-
-:rtype: int
 
 .. seealso:: :py:func:`height`
 
@@ -476,8 +419,6 @@ Returns the width (number of columns) of the raster block.
     int height() const;
 %Docstring
 Returns the height (number of rows) of the raster block.
-
-:rtype: int
 
 .. seealso:: :py:func:`width`
 

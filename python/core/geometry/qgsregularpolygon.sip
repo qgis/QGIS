@@ -41,6 +41,7 @@ Constructor for QgsRegularPolygon.
     QgsRegularPolygon( const QgsPoint &center, const double radius, const double azimuth, const unsigned int numberSides, const ConstructionOption circle );
 %Docstring
 Constructs a regular polygon by ``center`` and parameters for the first vertex. An empty regular polygon is returned if ``numberSides`` < 3 or ``ConstructionOption`` isn't valid.
+
 :param center: The center of the regular polygon.
 :param radius: Distance from the center and the first vertex or sides (see ``ConstructionOption``).
 :param azimuth: Angle in degrees started from the North to the first vertex.
@@ -52,6 +53,7 @@ Constructs a regular polygon by ``center`` and parameters for the first vertex. 
     QgsRegularPolygon( const QgsPoint &center, const QgsPoint &pt1, const unsigned int numberSides, const ConstructionOption circle );
 %Docstring
 Constructs a regular polygon by ``center`` and another point.
+
 :param center: The center of the regular polygon.
 :param pt1: The first vertex if the polygon is inscribed in circle or the midpoint of a side if the polygon is circumscribed about circle.
 :param numberSides: Number of sides of the regular polygon.
@@ -61,6 +63,7 @@ Constructs a regular polygon by ``center`` and another point.
     QgsRegularPolygon( const QgsPoint &pt1, const QgsPoint &pt2, const unsigned int numberSides );
 %Docstring
 Constructs a regular polygon by two points of the first side.
+
 :param pt1: The first vertex of the first side, also first vertex of the regular polygon.
 :param pt2: The second vertex of the first side.
 :param numberSides: Number of sides of the regular polygon.
@@ -72,15 +75,11 @@ Constructs a regular polygon by two points of the first side.
     bool isEmpty() const;
 %Docstring
 A regular polygon is empty if radius equal to 0 or number of sides < 3
-
-:rtype: bool
 %End
 
     QgsPoint center() const;
 %Docstring
 Returns the center point of the regular polygon.
-
-:rtype: QgsPoint
 
 .. seealso:: :py:func:`setCenter()`
 %End
@@ -89,8 +88,6 @@ Returns the center point of the regular polygon.
 %Docstring
 Returns the radius.
 This is also the radius of the circumscribing circle.
-
-:rtype: float
 
 .. seealso:: :py:func:`apothem()`
 
@@ -101,8 +98,6 @@ This is also the radius of the circumscribing circle.
 %Docstring
 Returns the first vertex (corner) of the regular polygon.
 
-:rtype: QgsPoint
-
 .. seealso:: :py:func:`setFirstVertex()`
 %End
 
@@ -110,8 +105,6 @@ Returns the first vertex (corner) of the regular polygon.
 %Docstring
 Returns the apothem of the regular polygon.
 The apothem is the radius of the inscribed circle.
-
-:rtype: float
 
 .. seealso:: :py:func:`radius()`
 %End
@@ -158,98 +151,72 @@ If numberSides < 3, the number of sides is unchanged.
     QgsPointSequence points() const;
 %Docstring
 Returns a list including the vertices of the regular polygon.
-
-:rtype: QgsPointSequence
 %End
 
     QgsPolygon *toPolygon() const /Factory/;
 %Docstring
 Returns as a polygon.
-
-:rtype: QgsPolygon
 %End
 
     QgsLineString *toLineString() const /Factory/;
 %Docstring
 Returns as a linestring.
-
-:rtype: QgsLineString
 %End
 
     QgsTriangle toTriangle() const;
 %Docstring
 Returns as a triangle.
 An empty triangle is returned if the regular polygon is empty or if the number of sides is different from 3.
-
-:rtype: QgsTriangle
 %End
 
     QVector<QgsTriangle> triangulate() const;
 %Docstring
 Returns a triangulation (vertices from sides to the center) of the regular polygon.
 An empty list is returned if the regular polygon is empty.
-
-:rtype: list of QgsTriangle
 %End
 
     QgsCircle inscribedCircle() const;
 %Docstring
 Returns the inscribed circle
-
-:rtype: QgsCircle
 %End
 
     QgsCircle circumscribedCircle() const;
 %Docstring
 Returns the circumscribed circle
-
-:rtype: QgsCircle
 %End
 
     QString toString( int pointPrecision = 17, int radiusPrecision = 17, int anglePrecision = 2 ) const;
 %Docstring
 Returns a string representation of the regular polygon.
 Members will be truncated to the specified precision.
-
-:rtype: str
 %End
 
     double interiorAngle() const;
 %Docstring
 Returns the measure of the interior angles in degrees.
-
-:rtype: float
 %End
 
     double centralAngle() const;
 %Docstring
 Returns the measure of the central angle (the angle subtended at the center of the polygon by one of its sides) in degrees.
-
-:rtype: float
 %End
 
     double area() const;
 %Docstring
 Returns the area.
 Returns 0 if the regular polygon is empty.
-
-:rtype: float
 %End
 
     double perimeter() const;
 %Docstring
 Returns the perimeter.
 Returns 0 if the regular polygon is empty.
-
-:rtype: float
 %End
 
     double length() const;
 %Docstring
 Returns the length of a side.
 Returns 0 if the regular polygon is empty.
-
-:rtype: float
 %End
 
 };

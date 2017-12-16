@@ -17,10 +17,6 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 %End
   public:
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
-%Docstring
-
-:rtype: QgsRendererWidget
-%End
 
     QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsSingleSymbolRendererWidget();
@@ -36,6 +32,7 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 %Docstring
 Set the widget in dock mode which tells the widget to emit panel
 widgets and not open dialogs
+
 :param dockMode: True to enable dock mode.
 %End
 

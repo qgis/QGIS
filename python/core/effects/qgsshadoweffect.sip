@@ -32,6 +32,7 @@ class QgsShadowEffect : QgsPaintEffect
     void setBlurLevel( const int level );
 %Docstring
 Sets blur level (strength) for the shadow.
+
 :param level: blur level. Values between 0 and 16 are valid, with larger
 values indicating greater blur strength.
 
@@ -43,8 +44,6 @@ values indicating greater blur strength.
 Returns the blur level (strength) for the shadow.
 
 :return: blur level. Value will be between 0 and 16, with larger
-:rtype: int
-
 values indicating greater blur strength.
 
 .. seealso:: :py:func:`setBlurLevel`
@@ -53,6 +52,7 @@ values indicating greater blur strength.
     void setOffsetAngle( const int angle );
 %Docstring
 Sets the angle for offsetting the shadow.
+
 :param angle: offset angle in degrees clockwise from North
 
 .. seealso:: :py:func:`offsetAngle`
@@ -65,8 +65,6 @@ Sets the angle for offsetting the shadow.
 Returns the angle used for offsetting the shadow.
 
 :return: offset angle in degrees clockwise from North
-:rtype: int
-
 
 .. seealso:: :py:func:`setOffsetAngle`
 
@@ -76,6 +74,7 @@ Returns the angle used for offsetting the shadow.
     void setOffsetDistance( const double distance );
 %Docstring
 Sets the distance for offsetting the shadow.
+
 :param distance: offset distance. Units are specified via setOffsetUnit()
 
 .. seealso:: :py:func:`offsetDistance`
@@ -90,8 +89,6 @@ Sets the distance for offsetting the shadow.
 Returns the distance used for offsetting the shadow.
 
 :return: offset distance. Distance units are retrieved via offsetUnit()
-:rtype: float
-
 
 .. seealso:: :py:func:`setOffsetDistance`
 
@@ -103,6 +100,7 @@ Returns the distance used for offsetting the shadow.
     void setOffsetUnit( const QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units used for the shadow offset distance.
+
 :param unit: units for offset distance
 
 .. seealso:: :py:func:`offsetUnit`
@@ -117,8 +115,6 @@ Sets the units used for the shadow offset distance.
 Returns the units used for the shadow offset distance.
 
 :return: units for offset distance
-:rtype: QgsUnitTypes.RenderUnit
-
 
 .. seealso:: :py:func:`setOffsetUnit`
 
@@ -130,6 +126,7 @@ Returns the units used for the shadow offset distance.
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale used for the shadow offset distance.
+
 :param scale: map unit scale for offset distance
 
 .. seealso:: :py:func:`offsetMapUnitScale`
@@ -144,8 +141,6 @@ Sets the map unit scale used for the shadow offset distance.
 Returns the map unit scale used for the shadow offset distance.
 
 :return: map unit scale for offset distance
-:rtype: QgsMapUnitScale
-
 
 .. seealso:: :py:func:`setOffsetMapUnitScale`
 
@@ -157,6 +152,7 @@ Returns the map unit scale used for the shadow offset distance.
     void setColor( const QColor &color );
 %Docstring
 Sets the color for the shadow.
+
 :param color: shadow color
 
 .. seealso:: :py:func:`color`
@@ -167,8 +163,6 @@ Sets the color for the shadow.
 Returns the color used for the shadow.
 
 :return: shadow color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setColor`
 %End
@@ -176,6 +170,7 @@ Returns the color used for the shadow.
     void setOpacity( const double opacity );
 %Docstring
 Sets the ``opacity`` for the effect.
+
 :param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
 and 1 is fully opaque
 
@@ -187,8 +182,6 @@ and 1 is fully opaque
 Returns the opacity for the effect.
 
 :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-:rtype: float
-
 and 1 is fully opaque
 
 .. seealso:: :py:func:`setOpacity()`
@@ -197,6 +190,7 @@ and 1 is fully opaque
     void setBlendMode( const QPainter::CompositionMode mode );
 %Docstring
 Sets the blend mode for the effect
+
 :param mode: blend mode used for drawing the effect on to a destination
 paint device
 
@@ -208,8 +202,6 @@ paint device
 Returns the blend mode for the effect
 
 :return: blend mode used for drawing the effect on to a destination
-:rtype: QPainter.CompositionMode
-
 paint device
 
 .. seealso:: :py:func:`setBlendMode`
@@ -228,8 +220,6 @@ Specifies whether the shadow is drawn outside the picture or within
 the picture.
 
 :return: true if shadow is to be drawn outside the picture, or false
-:rtype: bool
-
 to draw shadow within the picture
 %End
 
@@ -253,11 +243,10 @@ class QgsDropShadowEffect : QgsShadowEffect
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 %Docstring
 Creates a new QgsDropShadowEffect effect from a properties string map.
+
 :param map: encoded properties string map
 
 :return: new QgsDropShadowEffect
-:rtype: QgsPaintEffect
-
 %End
 
     QgsDropShadowEffect();
@@ -291,11 +280,10 @@ within a picture.
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 %Docstring
 Creates a new QgsInnerShadowEffect effect from a properties string map.
+
 :param map: encoded properties string map
 
 :return: new QgsInnerShadowEffect
-:rtype: QgsPaintEffect
-
 %End
 
     QgsInnerShadowEffect();

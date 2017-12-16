@@ -115,37 +115,28 @@ Create an empty expression.
 Checks if this expression is valid.
 A valid expression could be parsed but does not necessarily evaluate properly.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     bool hasParserError() const;
 %Docstring
 Returns true if an error occurred when parsing the input expression
-
-:rtype: bool
 %End
     QString parserErrorString() const;
 %Docstring
 Returns parser error
-
-:rtype: str
 %End
 
     const QgsExpressionNode *rootNode() const;
 %Docstring
 Returns root node of the expression. Root node is null is parsing has failed
-
-:rtype: QgsExpressionNode
 %End
 
     bool prepare( const QgsExpressionContext *context );
 %Docstring
 Get the expression ready for evaluation - find out column indexes.
-:param context: context for preparing expression
 
-:rtype: bool
+:param context: context for preparing expression
 
 .. versionadded:: 2.12
 %End
@@ -153,8 +144,6 @@ Get the expression ready for evaluation - find out column indexes.
     QSet<QString> referencedColumns() const;
 %Docstring
 Get list of columns referenced by the expression.
-
-:rtype: set of str
 
 .. note::
 
@@ -171,8 +160,6 @@ Return a list of all variables which are used in this expression.
 If the list contains a NULL QString, there is a variable name used
 which is determined at runtime.
 
-:rtype: set of str
-
 .. versionadded:: 3.0
 %End
 
@@ -180,24 +167,18 @@ which is determined at runtime.
 %Docstring
 Return a list of field name indexes obtained from the provided fields.
 
-:rtype: set of int
-
 .. versionadded:: 3.0
 %End
 
     bool needsGeometry() const;
 %Docstring
 Returns true if the expression uses feature geometry for some computation
-
-:rtype: bool
 %End
 
 
     QVariant evaluate();
 %Docstring
 Evaluate the feature and return the result.
-
-:rtype: QVariant
 
 .. note::
 
@@ -209,9 +190,8 @@ Evaluate the feature and return the result.
     QVariant evaluate( const QgsExpressionContext *context );
 %Docstring
 Evaluate the expression against the specified context and return the result.
-:param context: context for evaluating expression
 
-:rtype: QVariant
+:param context: context for evaluating expression
 
 .. note::
 
@@ -223,14 +203,10 @@ Evaluate the expression against the specified context and return the result.
     bool hasEvalError() const;
 %Docstring
 Returns true if an error occurred when evaluating last input
-
-:rtype: bool
 %End
     QString evalErrorString() const;
 %Docstring
 Returns evaluation error
-
-:rtype: str
 %End
     void setEvalErrorString( const QString &str );
 %Docstring
@@ -241,21 +217,18 @@ Set evaluation error (used internally by evaluation functions)
 %Docstring
 Checks whether an expression consists only of a single field reference
 
-:rtype: bool
-
 .. versionadded:: 2.9
 %End
 
     static bool checkExpression( const QString &text, const QgsExpressionContext *context, QString &errorMessage /Out/ );
 %Docstring
 Tests whether a string is a valid expression.
+
 :param text: string to test
 :param context: optional expression context
 :param errorMessage: will be filled with any error message from the validation
 
 :return: true if string is a valid expression
-:rtype: bool
-
 
 .. versionadded:: 2.12
 %End
@@ -272,8 +245,6 @@ Set the expression string, will reset the whole internal structure.
 Return the original, unmodified expression string.
 If there was none supplied because it was constructed by sole
 API calls, dump() will be used to create one instead.
-
-:rtype: str
 %End
 
     QString dump() const;
@@ -282,16 +253,12 @@ Return an expression string, constructed from the internal
 abstract syntax tree. This does not contain any nice whitespace
 formatting or comments. In general it is preferable to use
 expression() instead.
-
-:rtype: str
 %End
 
     QgsDistanceArea *geomCalculator();
 %Docstring
 Return calculator used for distance and area calculations
 (used by $length, $area and $perimeter functions only)
-
-:rtype: QgsDistanceArea
 
 .. seealso:: :py:func:`setGeomCalculator()`
 
@@ -306,6 +273,7 @@ Sets the geometry calculator used for distance and area calculations in expressi
 (used by $length, $area and $perimeter functions only). By default, no geometry
 calculator is set and all distance and area calculations are performed using simple
 Cartesian methods (ie no ellipsoidal calculations).
+
 :param calc: geometry calculator. Ownership is not transferred. Set to a None to force
 Cartesian calculations.
 
@@ -315,8 +283,6 @@ Cartesian calculations.
     QgsUnitTypes::DistanceUnit distanceUnits() const;
 %Docstring
 Returns the desired distance units for calculations involving geomCalculator(), e.g., "$length" and "$perimeter".
-
-:rtype: QgsUnitTypes.DistanceUnit
 
 .. note::
 
@@ -347,8 +313,6 @@ Sets the desired distance units for calculations involving geomCalculator(), e.g
     QgsUnitTypes::AreaUnit areaUnits() const;
 %Docstring
 Returns the desired areal units for calculations involving geomCalculator(), e.g., "$area".
-
-:rtype: QgsUnitTypes.AreaUnit
 
 .. note::
 
@@ -383,12 +347,11 @@ This function replaces each expression between [% and %]
 in the string with the result of its evaluation with the specified context
 
 Additional substitutions can be passed through the substitutionMap parameter
+
 :param action: The source string in which placeholders should be replaced.
 :param context: Expression context
 :param distanceArea: Optional QgsDistanceArea. If specified, the QgsDistanceArea is used for distance
 and area conversion
-
-:rtype: str
 
 .. versionadded:: 2.12
 %End
@@ -397,12 +360,11 @@ and area conversion
 %Docstring
 Attempts to evaluate a text string as an expression to a resultant double
 value.
+
 :param text: text to evaluate as expression
 :param fallbackValue: value to return if text can not be evaluated as a double
 
 :return: evaluated double value, or fallback value
-:rtype: float
-
 
 .. versionadded:: 2.7
 
@@ -426,26 +388,17 @@ for one-off evaluations only.
     };
 
     static const QList<QgsExpressionFunction *> &Functions();
-%Docstring
-
-:rtype: list of QgsExpressionFunction
-%End
 
     static const QStringList &BuiltinFunctions();
-%Docstring
-
-:rtype: list of str
-%End
 
     static bool registerFunction( QgsExpressionFunction *function, bool transferOwnership = false );
 %Docstring
 Registers a function to the expression engine. This is required to allow expressions to utilize the function.
+
 :param function: function to register
 :param transferOwnership: set to true to transfer ownership of function to expression engine
 
 :return: true on successful registration
-:rtype: bool
-
 
 .. seealso:: :py:func:`unregisterFunction`
 %End
@@ -453,9 +406,8 @@ Registers a function to the expression engine. This is required to allow express
     static bool unregisterFunction( const QString &name );
 %Docstring
 Unregisters a function from the expression engine. The function will no longer be usable in expressions.
-:param name: function name
 
-:rtype: bool
+:param name: function name
 
 .. seealso:: :py:func:`registerFunction`
 %End
@@ -471,15 +423,11 @@ Deletes all registered functions whose ownership have been transferred to the ex
     static bool isFunctionName( const QString &name );
 %Docstring
 tells whether the identifier is a name of existing function
-
-:rtype: bool
 %End
 
     static int functionIndex( const QString &name );
 %Docstring
 return index of the function in Functions array
-
-:rtype: int
 %End
 
     static int functionCount();
@@ -487,15 +435,11 @@ return index of the function in Functions array
 Returns the number of functions defined in the parser
 
 :return: The number of function defined in the parser.
-:rtype: int
-
 %End
 
     static QString quotedColumnRef( QString name );
 %Docstring
 Returns a quoted column reference (in double quotes)
-
-:rtype: str
 
 .. seealso:: :py:func:`quotedString()`
 
@@ -506,8 +450,6 @@ Returns a quoted column reference (in double quotes)
 %Docstring
 Returns a quoted version of a string (in single quotes)
 
-:rtype: str
-
 .. seealso:: :py:func:`quotedValue()`
 
 .. seealso:: :py:func:`quotedColumnRef()`
@@ -517,9 +459,8 @@ Returns a quoted version of a string (in single quotes)
 %Docstring
 Returns a string representation of a literal value, including appropriate
 quotations where required.
-:param value: value to convert to a string representation
 
-:rtype: str
+:param value: value to convert to a string representation
 
 .. versionadded:: 2.14
 
@@ -532,10 +473,9 @@ quotations where required.
 %Docstring
 Returns a string representation of a literal value, including appropriate
 quotations where required.
+
 :param value: value to convert to a string representation
 :param type: value type
-
-:rtype: str
 
 .. versionadded:: 2.14
 
@@ -548,9 +488,8 @@ quotations where required.
     static QString helpText( QString name );
 %Docstring
 Returns the help text for a specified function.
-:param name: function name
 
-:rtype: str
+:param name: function name
 
 .. seealso:: :py:func:`variableHelpText()`
 
@@ -560,11 +499,10 @@ Returns the help text for a specified function.
     static QString variableHelpText( const QString &variableName );
 %Docstring
 Returns the help text for a specified variable.
+
 :param variableName: name of variable
 :param showValue: set to true to include current value of variable in help text
 :param value: current value of variable to show in help text
-
-:rtype: str
 
 .. seealso:: :py:func:`helpText()`
 
@@ -574,11 +512,10 @@ Returns the help text for a specified variable.
     static QString formatVariableHelp( const QString &description, bool showValue = true, const QVariant &value = QVariant() );
 %Docstring
 Returns formatted help text for a variable.
+
 :param description: translated description of variable
 :param showValue: set to true to include current value of variable in help text
 :param value: current value of variable to show in help text
-
-:rtype: str
 
 .. seealso:: :py:func:`helpText()`
 
@@ -590,20 +527,18 @@ Returns formatted help text for a variable.
     static QString group( const QString &group );
 %Docstring
 Returns the translated name for a function group.
-:param group: untranslated group name
 
-:rtype: str
+:param group: untranslated group name
 %End
 
     static QString formatPreviewString( const QVariant &value );
 %Docstring
 Formats an expression result for friendly display to the user. Truncates the result to a sensible
 length, and presents text representations of non numeric/text types (e.g., geometries and features).
+
 :param value: expression result to format
 
 :return: formatted string, may contain HTML formatting characters
-:rtype: str
-
 
 .. versionadded:: 2.14
 %End
@@ -612,12 +547,11 @@ length, and presents text representations of non numeric/text types (e.g., geome
 %Docstring
 Create an expression allowing to evaluate if a field is equal to a
 value. The value may be null.
+
 :param fieldName: the name of the field
 :param value: the value of the field
 
 :return: the expression to evaluate field equality
-:rtype: str
-
 
 .. versionadded:: 3.0
 %End

@@ -60,8 +60,6 @@ flags are not affected.
 %Docstring
 Returns the current combination of flags used for rendering the layout.
 
-:rtype: QgsLayoutContext.Flags
-
 .. seealso:: :py:func:`setFlags()`
 
 .. seealso:: :py:func:`setFlag()`
@@ -73,8 +71,6 @@ Returns the current combination of flags used for rendering the layout.
 %Docstring
 Check whether a particular rendering ``flag`` is enabled for the layout.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setFlags()`
 
 .. seealso:: :py:func:`setFlag()`
@@ -85,8 +81,6 @@ Check whether a particular rendering ``flag`` is enabled for the layout.
     QgsRenderContext::Flags renderContextFlags() const;
 %Docstring
 Returns the combination of render context flags matched to the layout context's settings.
-
-:rtype: QgsRenderContext.Flags
 %End
 
     void setFeature( const QgsFeature &feature );
@@ -104,16 +98,12 @@ Returns the current feature for evaluating the layout. This feature may
 be used for altering an item's content and appearance for a report
 or atlas layout.
 
-:rtype: QgsFeature
-
 .. seealso:: :py:func:`setFeature()`
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the vector layer associated with the layout's context.
-
-:rtype: QgsVectorLayer
 
 .. seealso:: :py:func:`setLayer()`
 %End
@@ -137,8 +127,6 @@ corresponding DPI for the context's measurementConverter().
 %Docstring
 Returns the ``dpi`` for outputting the layout.
 
-:rtype: float
-
 .. seealso:: :py:func:`setDpi()`
 %End
 
@@ -147,8 +135,6 @@ Returns the ``dpi`` for outputting the layout.
 %Docstring
 Returns the layout measurement converter to be used in the layout. This converter is used
 for translating between other measurement units and the layout's native unit.
-
-:rtype: QgsLayoutMeasurementConverter
 %End
 
     bool isPreviewRender() const;
@@ -156,15 +142,11 @@ for translating between other measurement units and the layout's native unit.
 Returns true if the render current being conducted is a preview render,
 i.e. it is being rendered inside a QGraphicsView widget as opposed to a destination
 device (such as an image).
-
-:rtype: bool
 %End
 
     bool gridVisible() const;
 %Docstring
 Returns true if the page grid should be drawn.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setGridVisible()`
 %End
@@ -179,8 +161,6 @@ Sets whether the page grid should be ``visible``.
     bool boundingBoxesVisible() const;
 %Docstring
 Returns true if the item bounding boxes should be drawn.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setBoundingBoxesVisible()`
 %End
@@ -207,8 +187,6 @@ Returns whether the page items are be visible in the layout. This setting
 effects both display of the page boundaries in layout views and
 whether they will be rendered in layout exports.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setPagesVisible()`
 %End
 
@@ -230,8 +208,6 @@ which support multi-layer SVG exports must check this
 and customise their rendering based on the layer.
 
 If ``layer`` is -1, all item layers should be rendered.
-
-:rtype: int
 
 .. seealso:: :py:func:`setCurrentExportLayer()`
 %End

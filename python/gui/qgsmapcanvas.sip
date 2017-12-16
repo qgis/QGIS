@@ -46,8 +46,6 @@ Constructor
 %Docstring
 Returns the magnification factor
 
-:rtype: float
-
 .. versionadded:: 2.16
 %End
 
@@ -71,8 +69,6 @@ empty string before setLayers() calls can be made.
 %Docstring
 Get access to properties used for map rendering
 
-:rtype: QgsMapSettings
-
 .. versionadded:: 2.4
 %End
 
@@ -94,8 +90,6 @@ Resets the ``flags`` for the canvas' map settings.
 %Docstring
 Get access to the labeling results (may be null)
 
-:rtype: QgsLabelingResults
-
 .. versionadded:: 2.4
 %End
 
@@ -109,8 +103,6 @@ Set whether to cache images of rendered layers
     bool isCachingEnabled() const;
 %Docstring
 Check whether images of rendered layers are curerently being cached
-
-:rtype: bool
 
 .. versionadded:: 2.4
 %End
@@ -151,8 +143,6 @@ Set whether the layers are rendered in parallel or sequentially
 %Docstring
 Check whether the layers are rendered in parallel or sequentially
 
-:rtype: bool
-
 .. versionadded:: 2.4
 %End
 
@@ -167,8 +157,6 @@ Set how often map preview should be updated while it is being rendered (in milli
 %Docstring
 Find out how often map preview should be updated while it is being rendered (in milliseconds)
 
-:rtype: int
-
 .. versionadded:: 2.4
 %End
 
@@ -176,28 +164,20 @@ Find out how often map preview should be updated while it is being rendered (in 
 %Docstring
 Returns the last reported scale of the canvas.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 %End
 
     double mapUnitsPerPixel() const;
 %Docstring
 Returns the mapUnitsPerPixel (map units per pixel) for the canvas
-
-:rtype: float
 %End
 
     QgsRectangle extent() const;
 %Docstring
 Returns the current zoom extent of the map canvas
-
-:rtype: QgsRectangle
 %End
     QgsRectangle fullExtent() const;
 %Docstring
 Returns the combined extent for all layers on the map canvas
-
-:rtype: QgsRectangle
 %End
 
     void setExtent( const QgsRectangle &r, bool magnified = false );
@@ -208,8 +188,6 @@ Set the extent of the map canvas
     double rotation() const;
 %Docstring
 Get the current map canvas rotation in clockwise degrees
-
-:rtype: float
 
 .. versionadded:: 2.8
 %End
@@ -231,8 +209,6 @@ Set the center of the map canvas, in geographical coordinates
     QgsPointXY center() const;
 %Docstring
 Get map center, in geographical coordinates
-
-:rtype: QgsPointXY
 
 .. versionadded:: 2.8
 %End
@@ -257,12 +233,14 @@ Zoom to the next extent (view)
     void zoomToSelected( QgsVectorLayer *layer = 0 );
 %Docstring
 Zoom to the extent of the selected features of current (vector) layer.
+
 :param layer: optionally specify different than current layer
 %End
 
     void zoomToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 %Docstring
 Set canvas extent to the bounding box of a set of features
+
 :param layer: the vector layer
 :param ids: the feature ids*
 %End
@@ -270,6 +248,7 @@ Set canvas extent to the bounding box of a set of features
     void panToFeatureIds( QgsVectorLayer *layer, const QgsFeatureIds &ids );
 %Docstring
 Centers canvas extent to feature ids
+
 :param layer: the vector layer
 :param ids: the feature ids*
 %End
@@ -332,8 +311,6 @@ You don't have to call it manually, QgsMapTool takes care of it.
     QgsMapTool *mapTool();
 %Docstring
 Returns the currently active tool
-
-:rtype: QgsMapTool
 %End
 
     void setCanvasColor( const QColor &_newVal );
@@ -343,8 +320,6 @@ Write property of QColor bgColor.
     QColor canvasColor() const;
 %Docstring
 Read property of QColor bgColor.
-
-:rtype: QColor
 %End
 
     void setSelectionColor( const QColor &color );
@@ -358,8 +333,6 @@ Set color of selected vector features
 %Docstring
 Returns color for selected features
 
-:rtype: QColor
-
 .. versionadded:: 3.0
 %End
 
@@ -371,22 +344,16 @@ Emits signal scaleChanged to update scale in main window
     QgsMapLayer *layer( int index );
 %Docstring
 return the map layer at position index in the layer stack
-
-:rtype: QgsMapLayer
 %End
 
     int layerCount() const;
 %Docstring
 return number of layers on the map
-
-:rtype: int
 %End
 
     QList<QgsMapLayer *> layers() const;
 %Docstring
 Return the list of layers shown within the map canvas.
-
-:rtype: list of QgsMapLayer
 
 .. seealso:: :py:func:`setLayers()`
 %End
@@ -395,6 +362,7 @@ Return the list of layers shown within the map canvas.
 %Docstring
 Freeze/thaw the map canvas. This is used to prevent the canvas from
 responding to events while layers are being added/removed etc.
+
 :param frozen: Boolean specifying if the canvas should be frozen (true) or
 thawed (false). Default is true.
 
@@ -408,8 +376,6 @@ while setRenderFlag() should only be used when users disable rendering via GUI.
 %Docstring
 Returns true if canvas is frozen.
 
-:rtype: bool
-
 .. seealso:: :py:func:`renderFlag()`
 have been halted programmatically, while renderFlag() should be used to
 determine whether a user has disabled rendering via GUI.
@@ -422,8 +388,6 @@ determine whether a user has disabled rendering via GUI.
 Returns true if canvas render is disabled as a result of user disabling
 renders via the GUI.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setRenderFlag()`
 
 .. seealso:: :py:func:`isFrozen()`
@@ -435,15 +399,11 @@ determine whether a user has disabled rendering via GUI.
 %Docstring
 Convience function for returning the current canvas map units. The map units
 are dictated by the canvas' destinationCrs() map units.
-
-:rtype: QgsUnitTypes.DistanceUnit
 %End
 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
 Returns the stored overrides of styles for layers.
-
-:rtype: QMap<str, QString>
 
 .. versionadded:: 2.12
 
@@ -490,8 +450,6 @@ cleared.
 %Docstring
 Returns the map's theme shown in the canvas, if set.
 
-:rtype: str
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setTheme()`
@@ -500,22 +458,16 @@ Returns the map's theme shown in the canvas, if set.
     const QgsMapToPixel *getCoordinateTransform();
 %Docstring
 Get the current coordinate transform
-
-:rtype: QgsMapToPixel
 %End
 
     bool isDrawing();
 %Docstring
 Find out whether rendering is in progress
-
-:rtype: bool
 %End
 
     QgsMapLayer *currentLayer();
 %Docstring
 returns current layer (set by legend widget)
-
-:rtype: QgsMapLayer
 %End
 
     void setWheelFactor( double factor );
@@ -550,8 +502,6 @@ and does a pan if rect is empty (point extent)
 %Docstring
 Returns whether the scale is locked, so zooming can be performed using magnication.
 
-:rtype: bool
-
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`setScaleLocked()`
@@ -565,8 +515,6 @@ used to determine if anti-aliasing is enabled or not
     bool antiAliasingEnabled() const;
 %Docstring
 true if antialising is enabled
-
-:rtype: bool
 %End
 
     void enableMapTileRendering( bool flag );
@@ -587,13 +535,12 @@ Called when mouse is moving and pan is activated
     QPoint mouseLastXY();
 %Docstring
 returns last position of mouse cursor
-
-:rtype: QPoint
 %End
 
     void setPreviewModeEnabled( bool previewEnabled );
 %Docstring
 Enables a preview mode for the map canvas
+
 :param previewEnabled: set to true to enable a preview mode
 
 .. seealso:: :py:func:`setPreviewMode`
@@ -606,8 +553,6 @@ Enables a preview mode for the map canvas
 Returns whether a preview mode is enabled for the map canvas
 
 :return: true if a preview mode is currently enabled
-:rtype: bool
-
 
 .. seealso:: :py:func:`setPreviewModeEnabled`
 
@@ -620,6 +565,7 @@ Returns whether a preview mode is enabled for the map canvas
 %Docstring
 Sets a preview mode for the map canvas. This setting only has an effect if
 previewModeEnabled is true.
+
 :param mode: preview mode for the canvas
 
 .. seealso:: :py:func:`previewMode`
@@ -637,8 +583,6 @@ Returns the current preview mode for the map canvas. This setting only has an ef
 previewModeEnabled is true.
 
 :return: preview mode for map canvas
-:rtype: QgsPreviewEffect.PreviewMode
-
 
 .. seealso:: :py:func:`setPreviewMode`
 
@@ -654,8 +598,6 @@ If no snapping utils instance has been associated previously, an internal will b
 (so map tools do not need to test for existence of the instance).
 
 Main canvas in QGIS returns an instance which is always up-to-date with the project's snapping configuration.
-
-:rtype: QgsSnappingUtils
 
 .. versionadded:: 2.8
 %End
@@ -677,6 +619,7 @@ Sets an expression context scope for the map canvas. This scope is injected into
 context used for rendering the map, and can be used to apply specific variable overrides for
 expression evaluation for the map canvas render. This method will overwrite the existing expression
 context scope for the canvas.
+
 :param scope: new expression context scope
 
 .. versionadded:: 2.12
@@ -690,8 +633,6 @@ Returns a reference to the expression context scope for the map canvas. This sco
 into the expression context used for rendering the map, and can be used to apply specific variable
 overrides for expression evaluation for the map canvas render.
 
-:rtype: QgsExpressionContextScope
-
 .. versionadded:: 2.12
 
 .. seealso:: :py:func:`setExpressionContextScope()`
@@ -701,12 +642,14 @@ overrides for expression evaluation for the map canvas render.
     void setSegmentationTolerance( double tolerance );
 %Docstring
 Sets the segmentation tolerance applied when rendering curved geometries
+
 :param tolerance: the segmentation tolerance*
 %End
 
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 %Docstring
 Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+
 :param type: the segmentation tolerance typename*
 %End
 
@@ -714,16 +657,12 @@ Sets segmentation tolerance type (maximum angle or maximum difference between cu
 %Docstring
 Returns a list of all annotation items in the canvas.
 
-:rtype: list of QgsMapCanvasAnnotationItem
-
 .. versionadded:: 3.0
 %End
 
     bool annotationsVisible() const;
 %Docstring
 Returns true if annotations are visible within the map canvas.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 
@@ -750,8 +689,6 @@ Sets global labeling engine settings in the internal map settings
 %Docstring
 Returns global labeling engine settings from the internal map settings
 
-:rtype: QgsLabelingEngineSettings
-
 .. versionadded:: 3.0
 %End
 
@@ -761,8 +698,6 @@ Returns true if canvas map preview jobs (low priority render jobs which render p
 of the view just outside of the canvas extent, to allow preview of these
 out-of-canvas areas when panning or zooming out the map) are enabled
 for the canvas.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setPreviewJobsEnabled()`
 
@@ -806,6 +741,7 @@ This slot is connected to the visibility change of one or more layers
     void setRenderFlag( bool flag );
 %Docstring
 Sets whether a user has disabled canvas renders via the GUI.
+
 :param flag: set to false to indicate that user has disabled renders
 
 .. seealso:: :py:func:`renderFlag()`
@@ -998,8 +934,6 @@ emit a message (usually to be displayed in a message bar)
 
 %Docstring
 Overridden standard event to be gestures aware
-
-:rtype: bool
 %End
 
     virtual void keyPressEvent( QKeyEvent *e );

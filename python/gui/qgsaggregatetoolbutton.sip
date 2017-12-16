@@ -37,8 +37,6 @@ Based on the ``type`` of underlying data, some aggregates will be available or n
     QVariant::Type type() const;
 %Docstring
 Based on the ``type`` of underlying data, some aggregates will be available or not.
-
-:rtype: QVariant.Type
 %End
 
     void setActive( bool active );
@@ -49,15 +47,11 @@ When this flag is false, the aggregate will be deactivated. I.e. no aggregate is
     bool active() const;
 %Docstring
 When this flag is false, the aggregate will be deactivated. I.e. no aggregate is chosen.
-
-:rtype: bool
 %End
 
     QString aggregate() const;
 %Docstring
 The function name of the selected aggregate or a Null String if none is chosen.
-
-:rtype: str
 %End
 
     void setAggregate( const QString &aggregate );

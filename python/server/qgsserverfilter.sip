@@ -42,8 +42,6 @@ and must be passed to QgsServerFilter instances.
     QgsServerInterface *serverInterface();
 %Docstring
 Return the QgsServerInterface instance
-
-:rtype: QgsServerInterface
 %End
 
     virtual void requestReady();

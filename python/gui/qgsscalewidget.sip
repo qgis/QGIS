@@ -48,8 +48,6 @@ Sets whether to show a button to set the scale to the current scale of the map c
 %Docstring
 Returns whether a button to set the scale from map canvas is shown or not.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setShowCurrentScaleButton()`
 %End
 
@@ -62,16 +60,12 @@ Set the map ``canvas`` associated to the current button.
 %Docstring
 Returns the selected scale as a string, e.g. "1:150".
 
-:rtype: str
-
 .. seealso:: :py:func:`setScaleString()`
 %End
 
     bool setScaleString( const QString &string );
 %Docstring
 Set the selected scale from a ``string``, e.g. "1:150".
-
-:rtype: bool
 
 .. seealso:: :py:func:`scaleString()`
 %End
@@ -80,8 +74,6 @@ Set the selected scale from a ``string``, e.g. "1:150".
 %Docstring
 Returns the selected scale as a double.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 
 .. seealso:: :py:func:`setScale()`
 %End
@@ -92,8 +84,6 @@ Returns the minimum scale, or 0 if no minimum scale set.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Any scale lower than the minimum scale will automatically be converted to the minimum scale.
 Except for 0 which is always allowed.
-
-:rtype: float
 %End
 
     static QString toString( double scale );
@@ -103,8 +93,6 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 
 The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
 
-:rtype: str
-
 .. seealso:: :py:func:`toDouble()`
 %End
 
@@ -113,8 +101,6 @@ The returned string will be rounded (e.g. 1:1000, not 1:1000.345).
 Helper function to convert a scale ``string`` to double.
 The returned value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 If specified, ``ok`` will be set to true if the string was successfully interpreted as a scale.
-
-:rtype: float
 
 .. seealso:: :py:func:`toString()`
 %End

@@ -76,6 +76,7 @@ Constructs an empty property.
     QgsPropertyDefinition( const QString &name, const QString &description, StandardPropertyTemplate type, const QString &origin = QString(), const QString &comment = QString() );
 %Docstring
 Constructor for QgsPropertyDefinition, using a standard property template.
+
 :param name: is used internally and should be a unique, alphanumeric string.
 :param description: can be any localised string describing what the property is used for.
 :param type: one of the predefined standard property template
@@ -86,6 +87,7 @@ Constructor for QgsPropertyDefinition, using a standard property template.
     QgsPropertyDefinition( const QString &name, DataType dataType, const QString &description, const QString &helpText, const QString &origin = QString(), const QString &comment = QString() );
 %Docstring
 Constructor for custom QgsPropertyDefinitions.
+
 :param name: is used internally and should be a unique, alphanumeric string.
 :param dataType: the data type for the property
 :param description: can be any localised string describing what the property is used for.
@@ -98,8 +100,6 @@ of value acceptable by the property (eg 'dashed' or 'solid' for a line style pro
     QString name() const;
 %Docstring
 Returns the name of the property. This is used internally and should be a unique, alphanumeric string.
-
-:rtype: str
 %End
 
     void setName( const QString &name );
@@ -112,8 +112,6 @@ Sets the name of the property
 Returns the origin of the property. For example, a PAL property has an
 origin set to "labeling" while a diagram property has an origin set to
 "diagram".
-
-:rtype: str
 %End
 
     void setOrigin( const QString &origin );
@@ -126,15 +124,11 @@ origin set to "labeling" while a diagram property has an origin set to
     QString description() const;
 %Docstring
 Descriptive name of the property.
-
-:rtype: str
 %End
 
     QString comment() const;
 %Docstring
 Returns the comment of the property
-
-:rtype: str
 %End
 
     void setComment( const QString &comment );
@@ -145,8 +139,6 @@ Sets comment of the property
     QString helpText() const;
 %Docstring
 Helper text for using the property, including a description of the valid values for the property.
-
-:rtype: str
 %End
 
     void setDataType( DataType type );
@@ -157,24 +149,18 @@ Sets the data type
     DataType dataType() const;
 %Docstring
 Returns the allowable field/value data type for the property.
-
-:rtype: DataType
 %End
 
     StandardPropertyTemplate standardTemplate() const;
 %Docstring
 Returns the property's standard template, if applicable. Non standard
 types will return the Custom template.
-
-:rtype: StandardPropertyTemplate
 %End
 
     bool supportsAssistant() const;
 %Docstring
 Returns true if the property is of a type which is compatible with property
 override assistants.
-
-:rtype: bool
 %End
 
 };
@@ -218,22 +204,16 @@ Constructor for a QgsAbstractProperty. The property will be set to an InvalidPro
     static QgsProperty fromExpression( const QString &expression, bool isActive = true );
 %Docstring
 Returns a new ExpressionBasedProperty created from the specified expression.
-
-:rtype: QgsProperty
 %End
 
     static QgsProperty fromField( const QString &fieldName, bool isActive = true );
 %Docstring
 Returns a new FieldBasedProperty created from the specified field name.
-
-:rtype: QgsProperty
 %End
 
     static QgsProperty fromValue( const QVariant &value, bool isActive = true );
 %Docstring
 Returns a new StaticProperty created from the specified value.
-
-:rtype: QgsProperty
 %End
 
     QgsProperty( const QgsProperty &other );
@@ -249,23 +229,15 @@ Returns true if the property is not an invalid type.
 
     bool operator==( const QgsProperty &other ) const;
     bool operator!=( const QgsProperty &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
     Type propertyType() const;
 %Docstring
 Returns the property type.
-
-:rtype: Type
 %End
 
     bool isActive() const;
 %Docstring
 Returns whether the property is currently active.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setActive()`
 %End
@@ -290,8 +262,6 @@ transform the property into an StaticProperty.
 Returns the current static value for the property. If the property
 is not a StaticProperty this will return an invalid variant.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`setStaticValue()`
 %End
 
@@ -307,8 +277,6 @@ transform the property into an FieldBasedProperty.
 %Docstring
 Returns the current field name the property references. If the property
 is not a FieldBasedProperty this will return an empty string.
-
-:rtype: str
 
 .. seealso:: :py:func:`setField()`
 %End
@@ -326,8 +294,6 @@ transform the property into an ExpressionBasedProperty.
 Returns the expression used for the property value. If the property
 is not a ExpressionBasedProperty this will return an empty string.
 
-:rtype: str
-
 .. seealso:: :py:func:`setExpressionString()`
 %End
 
@@ -335,8 +301,6 @@ is not a ExpressionBasedProperty this will return an empty string.
 %Docstring
 Returns an expression string representing the state of the property, or an empty
 string if the property could not be converted to an expression
-
-:rtype: str
 %End
 
     bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
@@ -344,21 +308,18 @@ string if the property could not be converted to an expression
 Prepares the property against a specified expression context. Calling prepare before evaluating the
 property multiple times allows precalculation of expensive setup tasks such as parsing expressions.
 Returns true if preparation was successful.
-
-:rtype: bool
 %End
 
     QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 %Docstring
 Returns the set of any fields referenced by the property for a specified
 expression context.
-
-:rtype: set of str
 %End
 
     QVariant value( const QgsExpressionContext &context, const QVariant &defaultValue = QVariant(), bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property, including any transforms which are set for the property
+
 :param context: QgsExpressionContext to evaluate the property for. The variables and functions contained
 in the expression context can be used to alter the calculated value for the property, so that a property
 is able to respond to the current environment, layers and features within QGIS.
@@ -366,8 +327,6 @@ is able to respond to the current environment, layers and features within QGIS.
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: calculated value for property
-:rtype: QVariant
-
 
 .. seealso:: :py:func:`valueAsString()`
 
@@ -383,13 +342,12 @@ is able to respond to the current environment, layers and features within QGIS.
     QString valueAsString( const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property and interprets it as a string.
+
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultString: default string to return if the property cannot be calculated as a string
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to string
-:rtype: str
-
 
 .. seealso:: :py:func:`value()`
 
@@ -405,13 +363,12 @@ Calculates the current value of the property and interprets it as a string.
     QColor valueAsColor( const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property and interprets it as a color.
+
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultColor: default color to return if the property cannot be calculated as a color
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`value()`
 
@@ -427,13 +384,12 @@ Calculates the current value of the property and interprets it as a color.
     double valueAsDouble( const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property and interprets it as a double.
+
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default double to return if the property cannot be calculated as a double
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to double
-:rtype: float
-
 
 .. seealso:: :py:func:`value()`
 
@@ -449,13 +405,12 @@ Calculates the current value of the property and interprets it as a double.
     int valueAsInt( const QgsExpressionContext &context, int defaultValue = 0, bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property and interprets it as an integer.
+
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default integer to return if the property cannot be calculated as an integer
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to integer
-:rtype: int
-
 
 .. seealso:: :py:func:`value()`
 
@@ -471,13 +426,12 @@ Calculates the current value of the property and interprets it as an integer.
     bool valueAsBool( const QgsExpressionContext &context, bool defaultValue = false, bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property and interprets it as an boolean.
+
 :param context: QgsExpressionContext to evaluate the property for.
 :param defaultValue: default boolean to return if the property cannot be calculated as an boolean
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to boolean
-:rtype: bool
-
 
 .. seealso:: :py:func:`value()`
 
@@ -495,8 +449,6 @@ Calculates the current value of the property and interprets it as an boolean.
 Saves this property to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`loadVariant()`
 %End
 
@@ -505,14 +457,13 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
 Loads this property from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.readVariant to load it from an XML document.
 
-:rtype: bool
-
 .. seealso:: :py:func:`toVariant()`
 %End
 
     void setTransformer( QgsPropertyTransformer *transformer /Transfer/ );
 %Docstring
 Sets an optional transformer to use for manipulating the calculated values for the property.
+
 :param transformer: transformer to install. Ownership is transferred to the property, and any
 existing transformer will be deleted. Set to null to remove an existing transformer.
 
@@ -523,8 +474,6 @@ existing transformer will be deleted. Set to null to remove an existing transfor
 %Docstring
 Returns the existing transformer used for manipulating the calculated values for the property, if set.
 
-:rtype: QgsPropertyTransformer
-
 .. seealso:: :py:func:`setTransformer()`
 %End
 
@@ -534,8 +483,6 @@ Attempts to convert an existing expression based property to a base expression w
 corresponding transformer. Returns true if conversion was successful. Note that
 calling this method requires multiple parsing of expressions, so it should only
 be called in non-performance critical code.
-
-:rtype: bool
 %End
 
     operator QVariant() const;

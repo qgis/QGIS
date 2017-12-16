@@ -32,8 +32,6 @@ Constructor for QgsProcessingModelOutput with the specified ``name`` and ``descr
 %Docstring
 Returns the model output name.
 
-:rtype: str
-
 .. seealso:: :py:func:`setName()`
 %End
 
@@ -47,8 +45,6 @@ Sets the model output ``name``.
     QString childId() const;
 %Docstring
 Returns the child algorithm ID from which this output is generated.
-
-:rtype: str
 
 .. seealso:: :py:func:`setChildId()`
 %End
@@ -64,8 +60,6 @@ Sets the child algorithm ``id`` from which this output is generated.
 %Docstring
 Returns the child algorithm output name from which this output is generated.
 
-:rtype: str
-
 .. seealso:: :py:func:`setOutputName()`
 %End
 
@@ -80,16 +74,12 @@ Sets the child algorithm output ``name`` from which this output is generated.
 %Docstring
 Saves this output to a QVariant.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`loadVariant()`
 %End
 
     bool loadVariant( const QVariantMap &map );
 %Docstring
 Loads this output from a QVariantMap.
-
-:rtype: bool
 
 .. seealso:: :py:func:`toVariant()`
 %End

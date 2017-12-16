@@ -26,11 +26,10 @@ source picture.
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 %Docstring
 Creates a new QgsColorEffect effect from a properties string map.
+
 :param map: encoded properties string map
 
 :return: new QgsColorEffect
-:rtype: QgsPaintEffect
-
 %End
 
     QgsColorEffect();
@@ -46,6 +45,7 @@ Creates a new QgsColorEffect effect from a properties string map.
     void setBrightness( int brightness );
 %Docstring
 Sets the brightness modification for the effect.
+
 :param brightness: Valid values are between -255 and 255, where 0 represents
 no change, negative values indicate darkening and positive values indicate
 lightening
@@ -58,8 +58,6 @@ lightening
 Returns the brightness modification for the effect.
 
 :return: brightness value. Values are between -255 and 255, where 0 represents
-:rtype: int
-
 no change, negative values indicate darkening and positive values indicate
 lightening
 
@@ -69,6 +67,7 @@ lightening
     void setContrast( int contrast );
 %Docstring
 Sets the contrast modification for the effect.
+
 :param contrast: Valid values are between -100 and 100, where 0 represents
 no change, negative values indicate less contrast and positive values indicate
 greater contrast
@@ -81,8 +80,6 @@ greater contrast
 Returns the contrast modification for the effect.
 
 :return: contrast value. Values are between -100 and 100, where 0 represents
-:rtype: int
-
 no change, negative values indicate less contrast and positive values indicate
 greater contrast
 
@@ -92,6 +89,7 @@ greater contrast
     void setSaturation( double saturation );
 %Docstring
 Sets the saturation modification for the effect.
+
 :param saturation: Valid values are between 0 and 2.0, where 1.0 represents
 no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
 greater saturation
@@ -104,8 +102,6 @@ greater saturation
 Returns the saturation modification for the effect.
 
 :return: saturation value. Values are between 0 and 2.0, where 1.0 represents
-:rtype: float
-
 no change, 0.0 represents totally desaturated (grayscale), and positive values indicate
 greater saturation
 
@@ -115,6 +111,7 @@ greater saturation
     void setGrayscaleMode( QgsImageOperation::GrayscaleMode grayscaleMode );
 %Docstring
 Sets whether the effect should convert a picture to grayscale.
+
 :param grayscaleMode: method for grayscale conversion
 
 .. seealso:: :py:func:`grayscaleMode`
@@ -125,8 +122,6 @@ Sets whether the effect should convert a picture to grayscale.
 Returns whether the effect will convert a picture to grayscale.
 
 :return: method for grayscale conversion
-:rtype: QgsImageOperation.GrayscaleMode
-
 
 .. seealso:: :py:func:`setGrayscaleMode`
 %End
@@ -134,6 +129,7 @@ Returns whether the effect will convert a picture to grayscale.
     void setColorizeOn( bool colorizeOn );
 %Docstring
 Sets whether the effect should colorize a picture.
+
 :param colorizeOn: set to true to enable colorization
 
 .. seealso:: :py:func:`colorizeOn`
@@ -148,8 +144,6 @@ Sets whether the effect should colorize a picture.
 Returns whether the effect will colorize a picture.
 
 :return: true if colorization is enableds
-:rtype: bool
-
 
 .. seealso:: :py:func:`setColorizeOn`
 
@@ -162,6 +156,7 @@ Returns whether the effect will colorize a picture.
 %Docstring
 Sets the color used for colorizing a picture. This is only used if
 setColorizeOn() is set to true.
+
 :param colorizeColor: colorization color
 
 .. seealso:: :py:func:`colorizeColor`
@@ -177,8 +172,6 @@ Returns the color used for colorizing a picture. This is only used if
 colorizeOn() is set to true.
 
 :return: colorization color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setColorizeColor`
 
@@ -191,6 +184,7 @@ colorizeOn() is set to true.
 %Docstring
 Sets the strength for colorizing a picture. This is only used if
 setColorizeOn() is set to true.
+
 :param colorizeStrength: colorization strength, between 0 and 100
 
 .. seealso:: :py:func:`colorizeStrength`
@@ -206,8 +200,6 @@ Returns the strength used for colorizing a picture. This is only used if
 setColorizeOn() is set to true.
 
 :return: colorization strength, between 0 and 100
-:rtype: int
-
 
 .. seealso:: :py:func:`setColorizeStrengths`
 
@@ -219,6 +211,7 @@ setColorizeOn() is set to true.
     void setOpacity( const double opacity );
 %Docstring
 Sets the ``opacity`` for the effect.
+
 :param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
 and 1 is fully opaque
 
@@ -230,8 +223,6 @@ and 1 is fully opaque
 Returns the opacity for the effect.
 
 :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-:rtype: float
-
 and 1 is fully opaque.
 
 .. seealso:: :py:func:`setOpacity()`
@@ -240,6 +231,7 @@ and 1 is fully opaque.
     void setBlendMode( const QPainter::CompositionMode mode );
 %Docstring
 Sets the blend mode for the effect
+
 :param mode: blend mode used for drawing the effect on to a destination
 paint device
 
@@ -251,8 +243,6 @@ paint device
 Returns the blend mode for the effect
 
 :return: blend mode used for drawing the effect on to a destination
-:rtype: QPainter.CompositionMode
-
 paint device
 
 .. seealso:: :py:func:`setBlendMode`

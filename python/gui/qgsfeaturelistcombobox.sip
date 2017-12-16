@@ -33,8 +33,6 @@ Create a new QgsFeatureListComboBox, optionally specifying a ``parent``.
     QgsVectorLayer *sourceLayer() const;
 %Docstring
 The layer from which features should be listed.
-
-:rtype: QgsVectorLayer
 %End
 
     void setSourceLayer( QgsVectorLayer *sourceLayer );
@@ -46,8 +44,6 @@ The layer from which features should be listed.
 %Docstring
 The display expression will be used to display features as well as
 the the value to match the typed text against.
-
-:rtype: str
 %End
 
     void setDisplayExpression( const QString &displayExpression );
@@ -60,8 +56,6 @@ the the value to match the typed text against.
 %Docstring
 An additional expression to further restrict the available features.
 This can be used to integrate additional spatial or other constraints.
-
-:rtype: str
 %End
 
     void setFilterExpression( const QString &filterExpression );
@@ -76,8 +70,6 @@ TODO!
 %Docstring
 The identifier value of the currently selected feature. A value from the
 identifierField.
-
-:rtype: QVariant
 %End
 
     void setIdentifierValue( const QVariant &identifierValue );
@@ -90,15 +82,11 @@ identifierField.
 %Docstring
 Shorthand for getting a feature request to query the currently selected
 feature.
-
-:rtype: QgsFeatureRequest
 %End
 
     bool allowNull() const;
 %Docstring
 Determines if a NULL value should be available in the list.
-
-:rtype: bool
 %End
 
     void setAllowNull( bool allowNull );
@@ -110,8 +98,6 @@ Determines if a NULL value should be available in the list.
 %Docstring
 Field name that will be used to uniquely identify the current feature.
 Normally the primary key of the layer.
-
-:rtype: str
 %End
 
     void setIdentifierField( const QString &identifierField );
@@ -123,8 +109,6 @@ Normally the primary key of the layer.
     QModelIndex currentModelIndex() const;
 %Docstring
 The index of the currently selected item.
-
-:rtype: QModelIndex
 %End
 
     virtual void focusOutEvent( QFocusEvent *event );

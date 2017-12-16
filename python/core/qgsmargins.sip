@@ -39,15 +39,11 @@ Constructs margins with the given ``left``, ``top``, ``right``, ``bottom``
     bool isNull() const;
 %Docstring
 Returns \c true if all margins are is 0; otherwise returns false.
-
-:rtype: bool
 %End
 
     double left() const;
 %Docstring
 Returns the left margin.
-
-:rtype: float
 
 .. seealso:: :py:func:`setLeft()`
 %End
@@ -56,8 +52,6 @@ Returns the left margin.
 %Docstring
 Returns the top margin.
 
-:rtype: float
-
 .. seealso:: :py:func:`setTop()`
 %End
 
@@ -65,16 +59,12 @@ Returns the top margin.
 %Docstring
 Returns the right margin.
 
-:rtype: float
-
 .. seealso:: :py:func:`setRight()`
 %End
 
     double bottom() const;
 %Docstring
 Returns the bottom margin.
-
-:rtype: float
 
 .. seealso:: :py:func:`setBottom()`
 %End
@@ -111,54 +101,40 @@ Sets the bottom margin to ``bottom``.
 %Docstring
 Add each component of ``margins`` to the respective component of this object
 and returns a reference to it.
-
-:rtype: QgsMargins
 %End
 
     QgsMargins &operator-=( const QgsMargins &margins );
 %Docstring
 Subtract each component of ``margins`` from the respective component of this object
 and returns a reference to it.
-
-:rtype: QgsMargins
 %End
 
     QgsMargins &operator+=( double addend );
 %Docstring
 Adds the ``addend`` to each component of this object and returns a reference to it.
-
-:rtype: QgsMargins
 %End
 
     QgsMargins &operator-=( double subtrahend );
 %Docstring
 Subtracts the ``subtrahend`` from each component of this object
 and returns a reference to it.
-
-:rtype: QgsMargins
 %End
 
     QgsMargins &operator*=( double factor );
 %Docstring
 Multiplies each component of this object by ``factor``
 and returns a reference to it.
-
-:rtype: QgsMargins
 %End
 
     QgsMargins &operator/=( double divisor );
 %Docstring
 Multiplies each component of this object by ``factor``
 and returns a reference to it.
-
-:rtype: QgsMargins
 %End
 
     QString toString() const;
 %Docstring
 Returns the margins encoded to a string.
-
-:rtype: str
 
 .. seealso:: :py:func:`fromString()`
 %End
@@ -167,8 +143,6 @@ Returns the margins encoded to a string.
 %Docstring
 Returns a QgsMargins object decoded from a string, or a null QgsMargins
 if the string could not be interpreted as margins.
-
-:rtype: QgsMargins
 
 .. seealso:: :py:func:`toString()`
 %End

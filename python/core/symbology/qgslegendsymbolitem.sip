@@ -44,70 +44,50 @@ Construct item. Does not take ownership of symbol (makes internal clone)
     QgsSymbol *symbol() const;
 %Docstring
 Return associated symbol. May be null.
-
-:rtype: QgsSymbol
 %End
     QString label() const;
 %Docstring
 Return text label
-
-:rtype: str
 %End
     QString ruleKey() const;
 %Docstring
 Return unique identifier of the rule for identification of the item within renderer
-
-:rtype: str
 %End
     bool isCheckable() const;
 %Docstring
 Return whether the item is user-checkable - whether renderer supports enabling/disabling it
-
-:rtype: bool
 %End
 
     QgsSymbol *legacyRuleKey() const;
 %Docstring
 Used for older code that identifies legend entries from symbol pointer within renderer
-
-:rtype: QgsSymbol
 %End
 
     bool isScaleOK( double scale ) const;
 %Docstring
 Determine whether given scale is within the scale range. Returns true if scale or scale range is invalid (value <= 0)
-
-:rtype: bool
 %End
 
     int scaleMinDenom() const;
 %Docstring
 Min scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 1000.
 Value <= 0 means the range is unbounded on this side
-
-:rtype: int
 %End
 
     int scaleMaxDenom() const;
 %Docstring
 Max scale denominator of the scale range. For range 1:1000 to 1:2000 this will return 2000.
 Value <= 0 means the range is unbounded on this side
-
-:rtype: int
 %End
 
     int level() const;
 %Docstring
 Indentation level that tells how deep the item is in a hierarchy of items. For flat lists level is 0
-
-:rtype: int
 %End
 
     QString parentRuleKey() const;
 %Docstring
 Key of the parent legend node. For legends with tree hierarchy
-
-:rtype: str
 
 .. note::
 
@@ -132,8 +112,6 @@ Takes ownership of the settings object.
     QgsDataDefinedSizeLegend *dataDefinedSizeLegendSettings() const;
 %Docstring
 Returns extra information for data-defined size legend rendering. Normally it returns null.
-
-:rtype: QgsDataDefinedSizeLegend
 
 .. versionadded:: 3.0
 %End

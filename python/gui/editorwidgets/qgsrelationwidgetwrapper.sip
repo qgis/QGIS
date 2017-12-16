@@ -34,8 +34,6 @@ Constructor for QgsRelationWidgetWrapper
 Defines if a title lable should be shown for this widget.
 Only has an effect after widget() has been called at least once.
 
-:rtype: bool
-
 .. versionadded:: 2.18
 %End
 
@@ -51,8 +49,6 @@ Only has an effect after widget() has been called at least once.
 %Docstring
 Determines if the "link feature" button should be shown
 
-:rtype: bool
-
 .. versionadded:: 2.18
 %End
 
@@ -67,8 +63,6 @@ Determines if the "link feature" button should be shown
 %Docstring
 Determines if the "unlink feature" button should be shown
 
-:rtype: bool
-
 .. versionadded:: 2.18
 %End
 
@@ -82,8 +76,6 @@ Determines if the "unlink feature" button should be shown
     QgsRelation relation() const;
 %Docstring
 The relation for which this wrapper is created.
-
-:rtype: QgsRelation
 
 .. versionadded:: 3.0
 %End
@@ -103,6 +95,7 @@ The relation for which this wrapper is created.
     void setVisible( bool visible );
 %Docstring
 Sets the visibility of the wrapper's widget.
+
 :param visible: set to true to show widget, false to hide widget
 
 .. versionadded:: 2.16

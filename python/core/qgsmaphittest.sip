@@ -26,6 +26,7 @@ will be visible on the map - this is useful for content based legend.
 
     QgsMapHitTest( const QgsMapSettings &settings, const QgsGeometry &polygon = QgsGeometry(), const QgsMapHitTest::LayerFilterExpression &layerFilterExpression = QgsMapHitTest::LayerFilterExpression() );
 %Docstring
+
 :param settings: Map settings used to evaluate symbols
 :param polygon: Polygon geometry to refine the hit test
 :param layerFilterExpression: Expression string for each layer id to evaluate in order to refine the symbol selection
@@ -44,10 +45,9 @@ Runs the map hit test
     bool symbolVisible( QgsSymbol *symbol, QgsVectorLayer *layer ) const;
 %Docstring
 Tests whether a symbol is visible for a specified layer.
+
 :param symbol: symbol to find
 :param layer: vector layer
-
-:rtype: bool
 
 .. versionadded:: 2.12
 
@@ -57,10 +57,9 @@ Tests whether a symbol is visible for a specified layer.
     bool legendKeyVisible( const QString &ruleKey, QgsVectorLayer *layer ) const;
 %Docstring
 Tests whether a given legend key is visible for a specified layer.
+
 :param ruleKey: legend rule key
 :param layer: vector layer
-
-:rtype: bool
 
 .. versionadded:: 2.14
 

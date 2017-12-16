@@ -55,8 +55,6 @@ Creates a new QgsMapMouseEvent. Should only be required to be called from the Qg
 %Docstring
  snapPoint will snap the points using the map canvas snapping utils configuration
 
-:rtype: QgsPointXY
-
 .. note::
 
    if snapping did not succeeded, the map point will be reset to its original position
@@ -68,8 +66,6 @@ Returns true if there is a snapped point cached.
 Will only be useful after snapPoint has previously been called.
 
 :return: True if there is a snapped point cached.
-:rtype: bool
-
 %End
 
     QgsPointXY mapPoint() const;
@@ -77,8 +73,6 @@ Will only be useful after snapPoint has previously been called.
  mapPoint returns the point in coordinates
 
 :return: the point in map coordinates, after snapping if requested in the event.
-:rtype: QgsPointXY
-
 %End
 
     QgsPointLocator::Match mapPointMatch() const;
@@ -86,8 +80,6 @@ Will only be useful after snapPoint has previously been called.
 Returns the matching data from the most recently snapped point.
 
 :return: the snapping data structure
-:rtype: QgsPointLocator.Match
-
 
 .. versionadded:: 2.14
 %End
@@ -105,8 +97,6 @@ The point in pixel coordinates will be calculated accordingly.
 Returns the original, unmodified map point of the mouse cursor.
 
 :return: The cursor position in map coordinates.
-:rtype: QgsPointXY
-
 %End
 
     QPoint pixelPoint() const;
@@ -114,8 +104,6 @@ Returns the original, unmodified map point of the mouse cursor.
 The snapped mouse cursor in pixel coordinates.
 
 :return: The snapped mouse cursor position in pixel coordinates.
-:rtype: QPoint
-
 %End
 
     QPoint originalPixelPoint() const;
@@ -124,8 +112,6 @@ The unsnapped, real mouse cursor position in pixel coordinates.
 Alias to pos()
 
 :return: Mouse position in pixel coordinates
-:rtype: QPoint
-
 %End
 
 };

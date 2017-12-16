@@ -44,8 +44,6 @@ Constructor for QgsProjectionSelectionTreeWidget.
 %Docstring
 Returns the CRS currently selected in the widget.
 
-:rtype: QgsCoordinateReferenceSystem
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setCrs()`
@@ -75,8 +73,6 @@ Sets whether to show the bounnds preview map.
 Returns whether the "no/invalid" projection option is shown. If this
 option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setShowNoProjection()`
@@ -85,8 +81,6 @@ option is selected, calling crs() will return an invalid QgsCoordinateReferenceS
     bool showBoundsMap() const;
 %Docstring
 Returns whether the bounds preview map is shown.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 
@@ -99,8 +93,6 @@ Returns true if the current selection in the widget is a valid choice. Valid
 selections include any projection and also the "no/invalid projection" option
 (if setShowNoProjection() was called). Invalid selections are the group
 headers (such as "Geographic Coordinate Systems"
-
-:rtype: bool
 %End
 
   public slots:
@@ -126,8 +118,6 @@ Sets the initial "preview" rectangle for the bounds overview map.
     QgsRectangle previewRect() const;
 %Docstring
 The initial "preview" rectangle for the bounds overview map.
-
-:rtype: QgsRectangle
 
 .. versionadded:: 3.0
 

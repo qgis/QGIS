@@ -86,27 +86,19 @@ Custom properties that have already been used within QGIS:
     NodeType nodeType() const;
 %Docstring
 Find out about type of the node. It is usually shorter to use convenience functions from QgsLayerTree namespace for that
-
-:rtype: NodeType
 %End
     QgsLayerTreeNode *parent();
 %Docstring
 Get pointer to the parent. If parent is a null pointer, the node is a root node
-
-:rtype: QgsLayerTreeNode
 %End
     QList<QgsLayerTreeNode *> children();
 %Docstring
 Get list of children of the node. Children are owned by the parent
-
-:rtype: list of QgsLayerTreeNode
 %End
 
     virtual QString name() const = 0;
 %Docstring
 Return name of the node
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -122,16 +114,12 @@ Set name of the node. Emits nameChanged signal.
 %Docstring
 Read layer tree from XML. Returns new instance.
 Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
-
-:rtype: QgsLayerTreeNode
 %End
 
     static QgsLayerTreeNode *readXml( QDomElement &element, const QgsProject *project ) /Factory/;
 %Docstring
 Read layer tree from XML. Returns new instance.
 Also resolves textual references to layers from the project (calls resolveReferences() internally).
-
-:rtype: QgsLayerTreeNode
 
 .. versionadded:: 3.0
 %End
@@ -144,15 +132,11 @@ Write layer tree to XML
     virtual QString dump() const = 0;
 %Docstring
 Return string with layer tree structure. For debug purposes only
-
-:rtype: str
 %End
 
     virtual QgsLayerTreeNode *clone() const = 0 /Factory/;
 %Docstring
 Create a copy of the node. Returns new instance
-
-:rtype: QgsLayerTreeNode
 %End
 
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) = 0;
@@ -171,16 +155,12 @@ will have different layer IDs.
 %Docstring
 Returns whether a node is really visible (ie checked and all its ancestors checked as well)
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     bool itemVisibilityChecked() const;
 %Docstring
 Returns whether a node is checked (independently of its ancestors or children)
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -210,16 +190,12 @@ Check or uncheck a node and all its parents
 %Docstring
 Return whether this node is checked and all its children.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     bool isItemVisibilityUncheckedRecursive() const;
 %Docstring
 Return whether this node is unchecked and all its children.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -229,16 +205,12 @@ Return whether this node is unchecked and all its children.
 Returns a list of any checked layers which belong to this node or its
 children.
 
-:rtype: list of QgsMapLayer
-
 .. versionadded:: 3.0
 %End
 
     bool isExpanded() const;
 %Docstring
 Return whether the node should be shown as expanded or collapsed in GUI
-
-:rtype: bool
 %End
     void setExpanded( bool expanded );
 %Docstring
@@ -252,8 +224,6 @@ Set a custom property for the node. Properties are stored in a map and saved in 
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
 Read a custom property from layer. Properties are stored in a map and saved in project file.
-
-:rtype: QVariant
 %End
     void removeCustomProperty( const QString &key );
 %Docstring
@@ -262,14 +232,10 @@ Remove a custom property from layer. Properties are stored in a map and saved in
     QStringList customProperties() const;
 %Docstring
 Return list of keys stored in custom properties
-
-:rtype: list of str
 %End
     bool takeChild( QgsLayerTreeNode *node );
 %Docstring
 Remove a child from a node
-
-:rtype: bool
 %End
 
   signals:

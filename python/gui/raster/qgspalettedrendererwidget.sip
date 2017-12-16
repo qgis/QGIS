@@ -22,10 +22,6 @@ class QgsPalettedRendererWidget: QgsRasterRendererWidget
     QgsPalettedRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
     ~QgsPalettedRendererWidget();
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
-%Docstring
-
-:rtype: QgsRasterRendererWidget
-%End
 
     virtual QgsRasterRenderer *renderer();
 

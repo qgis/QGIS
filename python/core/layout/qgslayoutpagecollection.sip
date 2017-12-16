@@ -37,8 +37,6 @@ Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 %Docstring
 Returns a list of pages in the collection.
 
-:rtype: list of QgsLayoutItemPage
-
 .. seealso:: :py:func:`page()`
 
 .. seealso:: :py:func:`pageCount()`
@@ -47,8 +45,6 @@ Returns a list of pages in the collection.
     int pageCount() const;
 %Docstring
 Returns the number of pages in the collection.
-
-:rtype: int
 
 .. seealso:: :py:func:`pages()`
 %End
@@ -60,8 +56,6 @@ Internal page numbering starts at 0 - so a ``pageNumber`` of 0
 corresponds to the first page in the collection.
 A None is returned if an invalid page number is specified.
 
-:rtype: QgsLayoutItemPage
-
 .. seealso:: :py:func:`pages()`
 %End
 
@@ -69,16 +63,12 @@ A None is returned if an invalid page number is specified.
 %Docstring
 Returns the page number for the specified ``page``, or -1 if the page
 is not contained in the collection.
-
-:rtype: int
 %End
 
     QList< QgsLayoutItemPage * > visiblePages( QRectF region ) const;
 %Docstring
 Returns a list of the pages which are visible within the specified
 ``region`` (in layout coordinates).
-
-:rtype: list of QgsLayoutItemPage
 
 .. seealso:: :py:func:`visiblePageNumbers()`
 %End
@@ -88,8 +78,6 @@ Returns a list of the pages which are visible within the specified
 Returns a list of the page numbers which are visible within the specified
 ``region`` (in layout coordinates).
 
-:rtype: list of int
-
 .. seealso:: :py:func:`visiblePages()`
 %End
 
@@ -97,15 +85,11 @@ Returns a list of the page numbers which are visible within the specified
 %Docstring
 Returns whether a given ``page`` index is empty, ie, it contains no items except for the background
 paper item.
-
-:rtype: bool
 %End
 
     QList< QgsLayoutItem *> itemsOnPage( int page ) const;
 %Docstring
 Returns a list of layout items on the specified ``page`` index.
-
-:rtype: list of QgsLayoutItem
 %End
 
     void addPage( QgsLayoutItemPage *page /Transfer/ );
@@ -128,8 +112,6 @@ Adds a new page to the end of the collection. This page will inherit the
 same size as the current final page in the collection.
 
 The newly created page will be returned.
-
-:rtype: QgsLayoutItemPage
 
 .. seealso:: :py:func:`addPage()`
 
@@ -186,8 +168,6 @@ Removes all pages from the collection.
     QgsLayoutItemPage *takePage( QgsLayoutItemPage *page ) /TransferBack/;
 %Docstring
 Takes a ``page`` from the collection, returning ownership of the page to the caller.
-
-:rtype: QgsLayoutItemPage
 %End
 
     void setPageStyleSymbol( QgsFillSymbol *symbol );
@@ -203,8 +183,6 @@ Ownership is not transferred, and a copy of the symbol is created internally.
 %Docstring
 Returns the symbol to use for drawing pages in the collection.
 
-:rtype: QgsFillSymbol
-
 .. seealso:: :py:func:`setPageStyleSymbol()`
 %End
 
@@ -218,8 +196,6 @@ for page size/orientation change.
 %Docstring
 Returns the maximum width of pages in the collection. The returned value is
 in layout units.
-
-:rtype: float
 %End
 
     int pageNumberForPoint( QPointF point ) const;
@@ -228,8 +204,6 @@ Returns the page number corresponding to a ``point`` in the layout (in layout un
 
 Page numbers in collections begin at 0 - so a page number of 0 indicates the
 first page.
-
-:rtype: int
 
 .. note::
 
@@ -256,8 +230,6 @@ imaginary pages will inherit the size of the existing final page in the layout.
 Page numbers in collections begin at 0 - so a page number of 0 indicates the
 first page.
 
-:rtype: int
-
 .. seealso:: :py:func:`pageNumberForPoint()`
 
 .. seealso:: :py:func:`pageAtPoint()`
@@ -271,8 +243,6 @@ Returns the page at a specified ``point`` (in layout coordinates).
 
 If no page exists at ``point``, None will be returned.
 
-:rtype: QgsLayoutItemPage
-
 .. note::
 
    Unlike pageNumberForPoint(), this method only returns pages which
@@ -285,16 +255,12 @@ directly intersect with the specified point.
 %Docstring
 Converts a ``position`` on a ``page`` to an absolute position in layout coordinates.\
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`pagePositionToAbsolute()`
 %End
 
     QgsLayoutPoint pagePositionToAbsolute( int page, const QgsLayoutPoint &position ) const;
 %Docstring
 Converts a ``position`` on a ``page`` to an absolute position in (maintaining the units from the input ``position``).
-
-:rtype: QgsLayoutPoint
 
 .. seealso:: :py:func:`pagePositionToLayoutPosition()`
 %End
@@ -303,31 +269,23 @@ Converts a ``position`` on a ``page`` to an absolute position in (maintaining th
 %Docstring
 Returns the position within a page of a ``point`` in the layout (in layout units).
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`pageNumberForPoint()`
 %End
 
     double spaceBetweenPages() const;
 %Docstring
 Returns the space between pages, in layout units.
-
-:rtype: float
 %End
 
     double pageShadowWidth() const;
 %Docstring
 Returns the size of the page shadow, in layout units.
-
-:rtype: float
 %End
 
     virtual bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 
 %Docstring
 Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -337,16 +295,12 @@ Stores the collection's state in a DOM element. The ``parentElement`` should ref
 %Docstring
 Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
 
-:rtype: bool
-
 .. seealso:: :py:func:`writeXml()`
 %End
 
     QgsLayoutGuideCollection &guides();
 %Docstring
 Returns a reference to the collection's guide collection, which manages page snap guides.
-
-:rtype: QgsLayoutGuideCollection
 %End
 
 

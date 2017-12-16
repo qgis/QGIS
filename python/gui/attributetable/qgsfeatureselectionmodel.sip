@@ -37,8 +37,6 @@ Returns the selection status of a given feature id.
 :param fid:  The featureid to determine the selection status of
 
 :return: The selection status
-:rtype: bool
-
 %End
 
     virtual bool isSelected( const QModelIndex &index );
@@ -48,8 +46,6 @@ Returns the selection status of a given QModelIndex.
 :param index:  The index to determine the selection status of
 
 :return: The selection status
-:rtype: bool
-
 %End
 
   signals:

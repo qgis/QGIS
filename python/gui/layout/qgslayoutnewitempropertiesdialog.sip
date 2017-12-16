@@ -41,16 +41,12 @@ Sets the item ``position`` to show in the dialog.
 %Docstring
 Returns the current item position defined by the dialog.
 
-:rtype: QgsLayoutPoint
-
 .. seealso:: :py:func:`setItemPosition()`
 %End
 
     int page() const;
 %Docstring
 Returns the page number for the new item.
-
-:rtype: int
 %End
 
     void setItemSize( QgsLayoutSize size );
@@ -64,16 +60,12 @@ Sets the item ``size`` to show in the dialog.
 %Docstring
 Returns the item size defined by the dialog.
 
-:rtype: QgsLayoutSize
-
 .. seealso:: :py:func:`setItemSize()`
 %End
 
     QgsLayoutItem::ReferencePoint referencePoint() const;
 %Docstring
 Returns the item reference point defined by the dialog.
-
-:rtype: QgsLayoutItem.ReferencePoint
 
 .. seealso:: :py:func:`setReferencePoint()`
 %End

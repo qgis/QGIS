@@ -42,10 +42,6 @@ A generic message view for displaying QGIS messages.
     void setCheckBoxVisible( bool visible );
     void setCheckBoxState( Qt::CheckState state );
     Qt::CheckState checkBoxState();
-%Docstring
-
-:rtype: Qt.CheckState
-%End
     void setCheckBoxQgsSettingsLabel( const QString &label );
 
 };

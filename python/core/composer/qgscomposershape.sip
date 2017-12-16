@@ -35,8 +35,6 @@ A composer items that draws common shapes (ellipse, triangle, rectangle)*
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
-
-:rtype: int
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -49,27 +47,21 @@ Return correct graphics item type.
 
 %Docstring
 Stores state in Dom element
+
 :param elem: is Dom element corresponding to 'Composer' tag
 :param doc: write template file
-
-:rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
 Sets state from Dom document
+
 :param itemElem: is Dom node corresponding to item tag
 :param doc: is Dom document
-
-:rtype: bool
 %End
 
     QgsComposerShape::Shape shapeType() const;
-%Docstring
-
-:rtype: QgsComposerShape.Shape
-%End
     void setShapeType( QgsComposerShape::Shape s );
 
     void setCornerRadius( double radius );
@@ -79,8 +71,6 @@ Sets radius for rounded rectangle corners. Added in v2.1
     double cornerRadius() const;
 %Docstring
 Returns the radius for rounded rectangle corners
-
-:rtype: float
 %End
 
     void setShapeStyleSymbol( QgsFillSymbol *symbol );
@@ -94,8 +84,6 @@ Note: added in version 2.1*
 %Docstring
 Returns the QgsFillSymbol used to draw the shape.
 Note: added in version 2.1*
-
-:rtype: QgsFillSymbol
 %End
 
     void setUseSymbol( bool useSymbol );
@@ -108,8 +96,6 @@ Note: Added in v2.1 *
 
 %Docstring
 Depending on the symbol style, the bounding rectangle can be larger than the shape
-
-:rtype: QRectF
 
 .. versionadded:: 2.3
 %End
@@ -141,8 +127,6 @@ reimplement drawBackground, since it's not a rect, but a custom shape */
 %Docstring
 Reimplement estimatedFrameBleed, since frames on shapes are drawn using symbology
 rather than the item's pen *
-
-:rtype: float
 %End
 
   public slots:

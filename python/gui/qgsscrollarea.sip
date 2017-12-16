@@ -45,8 +45,6 @@ QScrollArea itself or its child viewport().
 %Docstring
 Returns true if a scroll recently occurred within
 the QScrollArea or its child viewport()
-
-:rtype: bool
 %End
 
   protected:

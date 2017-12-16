@@ -35,8 +35,6 @@ Constructor for QgsTextAnnotation.
 Returns the text document which will be rendered
 within the annotation.
 
-:rtype: QTextDocument
-
 .. seealso:: :py:func:`setDocument()`
 %End
 
@@ -56,8 +54,6 @@ within the annotation. Ownership is not transferred.
     static QgsTextAnnotation *create() /Factory/;
 %Docstring
 Returns a new QgsTextAnnotation object.
-
-:rtype: QgsTextAnnotation
 %End
 
   protected:

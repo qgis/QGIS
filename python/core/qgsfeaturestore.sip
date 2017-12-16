@@ -31,8 +31,6 @@ Constructor
 %Docstring
 Returns the store's field list.
 
-:rtype: QgsFields
-
 .. seealso:: :py:func:`setFields()`
 %End
 
@@ -46,8 +44,6 @@ Sets the store's ``fields``. Every contained feature's fields will be reset to m
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the store's coordinate reference system.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. seealso:: :py:func:`setCrs()`
 %End
@@ -67,16 +63,12 @@ Sets the store's ``crs``.
     int count() const;
 %Docstring
 Returns the number of features contained in the store.
-
-:rtype: int
 %End
 
 
     int __len__() const;
 %Docstring
 Returns the number of features contained in the store.
-
-:rtype: int
 %End
 %MethodCode
     sipRes = sipCpp->count();
@@ -85,8 +77,6 @@ Returns the number of features contained in the store.
     QgsFeatureList features() const;
 %Docstring
 Returns the list of features contained in the store.
-
-:rtype: QgsFeatureList
 %End
 
     void setParams( const QMap<QString, QVariant> &parameters );
@@ -99,8 +89,6 @@ Sets a map of optional ``parameters`` for the store.
     QMap<QString, QVariant> params() const;
 %Docstring
 Returns the map of optional parameters.
-
-:rtype: QMap<str, QVariant>
 
 .. seealso:: :py:func:`setParams()`
 %End

@@ -27,6 +27,7 @@ Constructor for QgsRasterMinMaxWidget
     void setExtent( const QgsRectangle &extent );
 %Docstring
 Sets the extent to use for minimum and maximum value calculation.
+
 :param extent: extent in raster layer's CRS
 
 .. note::
@@ -40,6 +41,7 @@ precedence over any extent set using this method.
 Sets the map canvas associated with the widget. This allows the widget to retrieve the current
 map extent from the canvas. If a canvas is set it will take precedence over any extent
 set from calling setExtent().
+
 :param canvas: map canvas
 
 .. seealso:: :py:func:`mapCanvas()`
@@ -50,8 +52,6 @@ set from calling setExtent().
     QgsMapCanvas *mapCanvas();
 %Docstring
 Returns the map canvas associated with the widget.
-
-:rtype: QgsMapCanvas
 
 .. seealso:: :py:func:`setMapCanvas()`
 
@@ -66,15 +66,11 @@ Returns the map canvas associated with the widget.
 %Docstring
 Return the extent selected by the user.
 Either an empty extent for 'full' or the current visible extent.
-
-:rtype: QgsRectangle
 %End
 
     int sampleSize();
 %Docstring
 Return the selected sample size.
-
-:rtype: int
 %End
 
     void setFromMinMaxOrigin( const QgsRasterMinMaxOrigin & );
@@ -85,8 +81,6 @@ Return the selected sample size.
     QgsRasterMinMaxOrigin minMaxOrigin();
 %Docstring
  Return a QgsRasterMinMaxOrigin object with the widget values.
-
-:rtype: QgsRasterMinMaxOrigin
 %End
 
     void hideUpdatedExtent();
@@ -107,8 +101,6 @@ Uncheck cumulative cut, min/max, std-dev radio buttons
     bool isCollapsed() const;
 %Docstring
 Return if the widget is collaped.
-
-:rtype: bool
 %End
 
     void setCollapsed( bool b );

@@ -63,8 +63,6 @@ class QgsCircularString: QgsCurve
     QgsPoint pointN( int i ) const;
 %Docstring
 Returns the point at index i within the circular string.
-
-:rtype: QgsPoint
 %End
 
     virtual void points( QgsPointSequence &pts /Out/ ) const;

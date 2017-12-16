@@ -42,8 +42,6 @@ updates layer set for overview
     QList<QgsMapLayer *> layers() const;
 %Docstring
 Returns list of layers visible in the overview
-
-:rtype: list of QgsMapLayer
 %End
 
     void enableAntiAliasing( bool flag );

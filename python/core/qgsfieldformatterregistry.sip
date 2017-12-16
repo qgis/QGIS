@@ -55,16 +55,12 @@ Remove the field formatter with the specified id.
 %Docstring
 Get a field formatter by its id. If there is no such id registered,
 a default QgsFallbackFieldFormatter with a null id will be returned instead.
-
-:rtype: QgsFieldFormatter
 %End
 
     QgsFieldFormatter *fallbackFieldFormatter() const;
 %Docstring
 Returns a basic fallback field formatter which can be used
 to represent any field in an unspectacular manner.
-
-:rtype: QgsFieldFormatter
 %End
 
   signals:

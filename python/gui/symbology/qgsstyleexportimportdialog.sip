@@ -29,12 +29,14 @@ class QgsStyleExportImportDialog : QDialog
     void selectSymbols( const QStringList &symbolNames );
 %Docstring
  selectSymbols select symbols by name
+
 :param symbolNames: list of symbol names
 %End
 
     void deselectSymbols( const QStringList &symbolNames );
 %Docstring
  deselectSymbols deselect symbols by name
+
 :param symbolNames: list of symbol names
 %End
 
@@ -59,24 +61,28 @@ class QgsStyleExportImportDialog : QDialog
     void selectTag( const QString &tagName );
 %Docstring
 Select the symbols belonging to the given tag
+
 :param tagName: the name of the group to be selected
 %End
 
     void deselectTag( const QString &tagName );
 %Docstring
 Deselect the symbols belonging to the given tag
+
 :param tagName: the name of the group to be deselected
 %End
 
     void selectSmartgroup( const QString &groupName );
 %Docstring
  selectSmartgroup selects all symbols from a smart group
+
 :param groupName:
 %End
 
     void deselectSmartgroup( const QString &groupName );
 %Docstring
  deselectSmartgroup deselects all symbols from a smart group
+
 :param groupName:
 %End
 

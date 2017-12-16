@@ -34,14 +34,10 @@ XML. It is therefore not recommended to store large amount of data within a rend
     virtual QString type() const = 0;
 %Docstring
 Returns unique identifier of the renderer class (used to identify subclass)
-
-:rtype: str
 %End
     virtual QgsAbstract3DRenderer *clone() const = 0 /Factory/;
 %Docstring
 Returns a cloned instance
-
-:rtype: QgsAbstract3DRenderer
 %End
 
     virtual void writeXml( QDomElement &elem, const QgsReadWriteContext &context ) const = 0;

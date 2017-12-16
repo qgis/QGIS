@@ -44,8 +44,6 @@ Sets the ``crs`` value for the new layer in the dialog.
 %Docstring
 Returns the database path
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 

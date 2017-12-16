@@ -34,6 +34,7 @@ Constructor for QgsErrorMessage
     QgsErrorMessage( const QString &message, const QString &tag = QString(), const QString &file = QString(), const QString &function = QString(), int line = 0 );
 %Docstring
 Constructor.
+
 :param message: error message string
 :param tag: error label, for example GDAL, GDAL Provider, Raster layer
 :param file: the file where error was created
@@ -42,30 +43,10 @@ Constructor.
 %End
 
     QString message() const;
-%Docstring
-
-:rtype: str
-%End
     QString tag() const;
-%Docstring
-
-:rtype: str
-%End
     QString file() const;
-%Docstring
-
-:rtype: str
-%End
     QString function() const;
-%Docstring
-
-:rtype: str
-%End
     int line() const;
-%Docstring
-
-:rtype: int
-%End
 
 };
 
@@ -90,6 +71,7 @@ Constructor for QgsError
     QgsError( const QString &message, const QString &tag );
 %Docstring
 Constructor with single message.
+
 :param message: error message
 :param tag: short description, e.g. GDAL, Provider, Layer
 %End
@@ -97,6 +79,7 @@ Constructor with single message.
     void append( const QString &message, const QString &tag );
 %Docstring
 Append new error message.
+
 :param message: error message string
 :param tag: error label, for example GDAL, GDAL Provider, Raster layer
 %End
@@ -104,6 +87,7 @@ Append new error message.
     void append( const QgsErrorMessage &message );
 %Docstring
 Append new error message.
+
 :param message: error message
 %End
 
@@ -112,18 +96,15 @@ Append new error message.
 Test if any error is set.
 
 :return: true if contains error
-:rtype: bool
-
 %End
 
     QString message( QgsErrorMessage::Format format = QgsErrorMessage::Html ) const;
 %Docstring
 Full error messages description
+
 :param format: output format
 
 :return: error report
-:rtype: str
-
 %End
 
     QString summary() const;
@@ -131,8 +112,6 @@ Full error messages description
 Short error description, usually the first error in chain, the real error.
 
 :return: error description
-:rtype: str
-
 %End
 
     void clear();
@@ -145,8 +124,6 @@ Clear error messages
  messageList return the list of current error messages
 
 :return: current list of error messages
-:rtype: list of QgsErrorMessage
-
 %End
 
 };

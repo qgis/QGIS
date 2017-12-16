@@ -18,19 +18,11 @@ class QgsBrushStyleComboBox : QComboBox
     QgsBrushStyleComboBox( QWidget *parent /TransferThis/ = 0 );
 
     Qt::BrushStyle brushStyle() const;
-%Docstring
-
-:rtype: Qt.BrushStyle
-%End
 
     void setBrushStyle( Qt::BrushStyle style );
 
   protected:
     QIcon iconForBrush( Qt::BrushStyle style );
-%Docstring
-
-:rtype: QIcon
-%End
 
 };
 

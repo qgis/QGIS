@@ -24,6 +24,7 @@ Widget for viewing and editing servers in authentication database
     explicit QgsAuthServersEditor( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Widget for editing authentication configurations directly in database
+
 :param parent: Parent Widget
 %End
 

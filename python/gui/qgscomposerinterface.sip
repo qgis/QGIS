@@ -34,15 +34,11 @@ Constructor for QgsComposerInterface.
     virtual QgsComposerView *view() = 0;
 %Docstring
 Returns the composer's QgsComposerView editor widget.
-
-:rtype: QgsComposerView
 %End
 
     virtual QgsComposition *composition() = 0;
 %Docstring
 Returns the composition displated in the composer.
-
-:rtype: QgsComposition
 %End
 
     virtual void close() = 0;

@@ -49,23 +49,17 @@ Constructor
     static float calculateLengthSquared2D( double x1, double y1, double x2, double y2 );
 %Docstring
 Returns the squared 2D-distance of the vector defined by the two points specified
-
-:rtype: float
 %End
 
     static bool equalSnapToGrid( double x1, double y1, double x2, double y2, double gridOriginX, double gridOriginY, float gridInverseSizeXY );
 %Docstring
 Returns whether the points belong to the same grid
-
-:rtype: bool
 %End
 
   public:
     int simplifyFlags() const;
 %Docstring
 Gets the simplification hints of the vector layer managed
-
-:rtype: int
 %End
     void setSimplifyFlags( int simplifyFlags );
 %Docstring
@@ -75,8 +69,6 @@ Sets the simplification hints of the vector layer managed
     SimplifyAlgorithm simplifyAlgorithm() const;
 %Docstring
 Gets the local simplification algorithm of the vector layer managed
-
-:rtype: SimplifyAlgorithm
 %End
     void setSimplifyAlgorithm( SimplifyAlgorithm simplifyAlgorithm );
 %Docstring
@@ -87,8 +79,6 @@ Sets the local simplification algorithm of the vector layer managed
 
 %Docstring
 Returns a simplified version the specified geometry
-
-:rtype: QgsGeometry
 %End
 
     void setTolerance( double value );
@@ -101,15 +91,11 @@ Sets the tolerance of the vector layer managed
     static bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope, double map2pixelTol );
 %Docstring
 Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-
-:rtype: bool
 %End
 
     bool isGeneralizableByMapBoundingBox( const QgsRectangle &envelope ) const;
 %Docstring
 Returns whether the envelope can be replaced by its BBOX when is applied the specified map2pixel context
-
-:rtype: bool
 %End
 };
 

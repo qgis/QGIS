@@ -42,51 +42,35 @@ Construct raster info with a path to a raster file
         bool isValid() const;
 %Docstring
 Check whether the given path is a valid raster
-
-:rtype: bool
 %End
 
         QString crs() const;
 %Docstring
 Return CRS in WKT format
-
-:rtype: str
 %End
         QSize rasterSize() const;
 %Docstring
 Return size of the raster grid in pixels
-
-:rtype: QSize
 %End
         int bandCount() const;
 %Docstring
 Return number of raster bands in the file
-
-:rtype: int
 %End
         QSizeF cellSize() const;
 %Docstring
 Return cell size in map units
-
-:rtype: QSizeF
 %End
         QPointF gridOffset() const;
 %Docstring
 Return grid offset
-
-:rtype: QPointF
 %End
         QgsRectangle extent() const;
 %Docstring
 Return extent of the raster
-
-:rtype: QgsRectangle
 %End
         QPointF origin() const;
 %Docstring
 Return origin of the raster
-
-:rtype: QPointF
 %End
 
         void dump() const;
@@ -97,8 +81,6 @@ write contents of the object to standard error stream - for debugging
         double identify( double mx, double my );
 %Docstring
 Get raster value at the given coordinates (from the first band)
-
-:rtype: float
 %End
 
       protected:
@@ -159,11 +141,10 @@ used for rescaling of values (if necessary)
       virtual bool progress( double complete ) = 0;
 %Docstring
 Method to be overridden for progress reporting.
+
 :param complete: Overall progress of the alignment operation
 
 :return: false if the execution should be canceled, true otherwise
-:rtype: bool
-
 %End
 
       virtual ~ProgressHandler();
@@ -176,8 +157,6 @@ Assign a progress handler instance. Does not take ownership. None can be passed.
     ProgressHandler *progressHandler() const;
 %Docstring
 Get associated progress handler. May be None (default)
-
-:rtype: ProgressHandler
 %End
 
     void setRasters( const List &list );
@@ -187,16 +166,10 @@ Set list of rasters that will be aligned
     List rasters() const;
 %Docstring
 Get list of rasters that will be aligned
-
-:rtype: List
 %End
 
     void setGridOffset( QPointF offset );
     QPointF gridOffset() const;
-%Docstring
-
-:rtype: QPointF
-%End
 
     void setCellSize( double x, double y );
 %Docstring
@@ -209,8 +182,6 @@ Set output cell size
     QSizeF cellSize() const;
 %Docstring
 Get output cell size
-
-:rtype: QSizeF
 %End
 
     void setDestinationCrs( const QString &crsWkt );
@@ -220,8 +191,6 @@ Set the output CRS in WKT format
     QString destinationCrs() const;
 %Docstring
 Get the output CRS in WKT format
-
-:rtype: str
 %End
 
     void setClipExtent( double xmin, double ymin, double xmax, double ymax );
@@ -240,8 +209,6 @@ No extra clipping is done if the rectangle is null
 %Docstring
 Get clipping extent (region of interest).
 No extra clipping is done if the rectangle is null
-
-:rtype: QgsRectangle
 %End
 
     bool setParametersFromRaster( const RasterInfo &rasterInfo, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
@@ -255,16 +222,12 @@ If a custom CRS is provided, suggested reprojection is calculated first (using G
 to determine suitable defaults for cell size and grid offset.
 
 :return: true on success (may fail if it is not possible to reproject raster to given CRS)
-:rtype: bool
-
 %End
 
     bool setParametersFromRaster( const QString &filename, const QString &customCRSWkt = QString(), QSizeF customCellSize = QSizeF(), QPointF customGridOffset = QPointF( -1, -1 ) );
 %Docstring
 Overridden variant for convenience, taking filename instead RasterInfo object.
 See the other variant for details.
-
-:rtype: bool
 %End
 
     bool checkInputParameters();
@@ -272,15 +235,11 @@ See the other variant for details.
 Determine destination extent from the input rasters and calculate derived values
 
 :return: true on success, sets error on error (see errorMessage())
-:rtype: bool
-
 %End
 
     QSize alignedRasterSize() const;
 %Docstring
 Return expected size of the resulting aligned raster
-
-:rtype: QSize
 
 .. note::
 
@@ -290,8 +249,6 @@ Return expected size of the resulting aligned raster
     QgsRectangle alignedRasterExtent() const;
 %Docstring
 Return expected extent of the resulting aligned raster
-
-:rtype: QgsRectangle
 
 .. note::
 
@@ -303,16 +260,12 @@ Return expected extent of the resulting aligned raster
 Run the alignment process
 
 :return: true on success, sets error on error (see errorMessage())
-:rtype: bool
-
 %End
 
     QString errorMessage() const;
 %Docstring
 Return error from a previous run() call.
 Error message is empty if run() succeeded (returned true)
-
-:rtype: str
 %End
 
     void dump() const;
@@ -323,8 +276,6 @@ write contents of the object to standard error stream - for debugging
     int suggestedReferenceLayer() const;
 %Docstring
 Return index of the layer which has smallest cell size (returns -1 on error)
-
-:rtype: int
 %End
 
   protected:
@@ -332,15 +283,11 @@ Return index of the layer which has smallest cell size (returns -1 on error)
     bool createAndWarp( const Item &raster );
 %Docstring
 Internal function for processing of one raster (1. create output, 2. do the alignment)
-
-:rtype: bool
 %End
 
     static bool suggestedWarpOutput( const RasterInfo &info, const QString &destWkt, QSizeF *cellSize = 0, QPointF *gridOffset = 0, QgsRectangle *rect = 0 );
 %Docstring
 Determine suggested output of raster warp to a different CRS. Returns true on success
-
-:rtype: bool
 %End
 
   protected:

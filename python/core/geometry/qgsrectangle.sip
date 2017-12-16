@@ -50,8 +50,6 @@ Copy constructor
 Creates a new rectangle from a ``wkt`` string.
 The WKT must contain only 5 vertices, representing a rectangle aligned with X and Y axes.
 
-:rtype: QgsRectangle
-
 .. versionadded:: 3.0
 %End
 
@@ -59,8 +57,6 @@ The WKT must contain only 5 vertices, representing a rectangle aligned with X an
 %Docstring
 Creates a new rectangle, given the specified ``center`` point
 and ``width`` and ``height``.
-
-:rtype: QgsRectangle
 
 .. versionadded:: 3.0
 %End
@@ -106,29 +102,21 @@ and max corner is at min. It is NOT normalized.
     double xMaximum() const;
 %Docstring
 Returns the x maximum value (right side of rectangle).
-
-:rtype: float
 %End
 
     double xMinimum() const;
 %Docstring
 Returns the x minimum value (left side of rectangle).
-
-:rtype: float
 %End
 
     double yMaximum() const;
 %Docstring
 Returns the y maximum value (top side of rectangle).
-
-:rtype: float
 %End
 
     double yMinimum() const;
 %Docstring
 Returns the y minimum value (bottom side of rectangle).
-
-:rtype: float
 %End
 
     void normalize();
@@ -140,8 +128,6 @@ Normalize the rectangle so it has non-negative width/height.
 %Docstring
 Returns the width of the rectangle.
 
-:rtype: float
-
 .. seealso:: :py:func:`height()`
 
 .. seealso:: :py:func:`area()`
@@ -151,8 +137,6 @@ Returns the width of the rectangle.
 %Docstring
 Returns the height of the rectangle.
 
-:rtype: float
-
 .. seealso:: :py:func:`width()`
 
 .. seealso:: :py:func:`area()`
@@ -161,8 +145,6 @@ Returns the height of the rectangle.
     double area() const;
 %Docstring
 Returns the area of the rectangle.
-
-:rtype: float
 
 .. versionadded:: 3.0
 
@@ -177,8 +159,6 @@ Returns the area of the rectangle.
 %Docstring
 Returns the perimeter of the rectangle.
 
-:rtype: float
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`area()`
@@ -187,8 +167,6 @@ Returns the perimeter of the rectangle.
     QgsPointXY center() const;
 %Docstring
 Returns the center point of the rectangle.
-
-:rtype: QgsPointXY
 %End
 
     void scale( double scaleFactor, const QgsPointXY *c = 0 );
@@ -217,8 +195,6 @@ Updates the rectangle to include the specified point.
 %Docstring
 Get rectangle enlarged by buffer.
 
-:rtype: QgsRectangle
-
 .. note::
 
    In earlier QGIS releases this method was named buffer().
@@ -231,29 +207,21 @@ Get rectangle enlarged by buffer.
     QgsRectangle intersect( const QgsRectangle *rect ) const;
 %Docstring
 Return the intersection with the given rectangle.
-
-:rtype: QgsRectangle
 %End
 
     bool intersects( const QgsRectangle &rect ) const;
 %Docstring
 Returns true when rectangle intersects with other rectangle.
-
-:rtype: bool
 %End
 
     bool contains( const QgsRectangle &rect ) const;
 %Docstring
 Return true when rectangle contains other rectangle.
-
-:rtype: bool
 %End
 
     bool contains( const QgsPointXY &p ) const;
 %Docstring
 Return true when rectangle contains a point.
-
-:rtype: bool
 %End
 
     void combineExtentWith( const QgsRectangle &rect );
@@ -270,16 +238,12 @@ Expand the rectangle so that covers both the original rectangle and the given po
 %Docstring
 Returns a rectangle offset from this one in the direction of the reversed vector.
 
-:rtype: QgsRectangle
-
 .. versionadded:: 3.0
 %End
 
     QgsRectangle operator+( const QgsVector v ) const;
 %Docstring
 Returns a rectangle offset from this one in the direction of the vector.
-
-:rtype: QgsRectangle
 
 .. versionadded:: 3.0
 %End
@@ -288,16 +252,12 @@ Returns a rectangle offset from this one in the direction of the vector.
 %Docstring
 Moves this rectangle in the direction of the reversed vector.
 
-:rtype: QgsRectangle
-
 .. versionadded:: 3.0
 %End
 
     QgsRectangle &operator+=( const QgsVector v );
 %Docstring
 Moves this rectangle in the direction of the vector.
-
-:rtype: QgsRectangle
 
 .. versionadded:: 3.0
 %End
@@ -306,8 +266,6 @@ Moves this rectangle in the direction of the vector.
 %Docstring
 Returns true if the rectangle is empty.
 An empty rectangle may still be non-null if it contains valid information (e.g. bounding box of a point).
-
-:rtype: bool
 %End
 
     bool isNull() const;
@@ -315,30 +273,22 @@ An empty rectangle may still be non-null if it contains valid information (e.g. 
 Test if the rectangle is null (all coordinates zero or after call to setMinimal()).
 A null rectangle is also an empty rectangle.
 
-:rtype: bool
-
 .. versionadded:: 2.4
 %End
 
     QString asWktCoordinates() const;
 %Docstring
 Returns a string representation of the rectangle in WKT format.
-
-:rtype: str
 %End
 
     QString asWktPolygon() const;
 %Docstring
 Returns a string representation of the rectangle as a WKT Polygon.
-
-:rtype: str
 %End
 
     QRectF toRectF() const;
 %Docstring
 Returns a QRectF with same coordinates as the rectangle.
-
-:rtype: QRectF
 %End
 
     QString toString( int precision = 16 ) const;
@@ -346,15 +296,11 @@ Returns a QRectF with same coordinates as the rectangle.
 Returns a string representation of form xmin,ymin : xmax,ymax
 Coordinates will be truncated to the specified precision.
 If the specified precision is less than 0, a suitable minimum precision is used.
-
-:rtype: str
 %End
 
     QString asPolygon() const;
 %Docstring
 Returns the rectangle as a polygon.
-
-:rtype: str
 %End
 
     bool operator==( const QgsRectangle &r1 ) const;
@@ -364,8 +310,6 @@ Returns the rectangle as a polygon.
 Comparison operator
 
 :return: False if rectangles are equal
-:rtype: bool
-
 %End
 
 
@@ -373,8 +317,6 @@ Comparison operator
 %Docstring
 Returns true if the rectangle has finite boundaries. Will
 return false if any of the rectangle boundaries are NaN or Inf.
-
-:rtype: bool
 %End
 
     void invert();
@@ -386,8 +328,6 @@ Swap x/y coordinates in the rectangle.
 %Docstring
 Converts the rectangle to a 3D box, with the specified
 ``zMin`` and ``zMax`` z values.
-
-:rtype: QgsBox3d
 
 .. versionadded:: 3.0
 %End

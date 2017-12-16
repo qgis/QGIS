@@ -22,15 +22,11 @@ Abstract base class for the edit widget of authentication method plugins
     virtual bool validateConfig() = 0;
 %Docstring
 Validate the configuration of subclasses
-
-:rtype: bool
 %End
 
     virtual QgsStringMap configMap() const = 0;
 %Docstring
 The configuration key-vale map of subclasses
-
-:rtype: QgsStringMap
 %End
 
   signals:
@@ -44,6 +40,7 @@ Emitted when the configuration validatity changes
     virtual void loadConfig( const QgsStringMap &configmap ) = 0;
 %Docstring
 Load an existing config map into subclassed widget
+
 :param configmap:
 %End
 
@@ -66,6 +63,7 @@ Construct widget to edit an authentication method configuration
 .. note::
 
    Non-public since this is an abstract base class
+
 :param parent: Parent widget
 %End
 

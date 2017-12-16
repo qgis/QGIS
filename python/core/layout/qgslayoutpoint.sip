@@ -46,6 +46,7 @@ Constructor for QgsLayoutPoint.
     explicit QgsLayoutPoint( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for an empty point, where both x and y are set to 0.
+
 :param units: units for measurement
 %End
 
@@ -63,8 +64,6 @@ Sets new x and y coordinates for the point.
     double x() const;
 %Docstring
 Returns x coordinate of point.
-
-:rtype: float
 
 .. seealso:: :py:func:`setX()`
 
@@ -84,8 +83,6 @@ Sets the x coordinate of point.
 %Docstring
 Returns y coordinate of point.
 
-:rtype: float
-
 .. seealso:: :py:func:`setY()`
 
 .. seealso:: x()
@@ -104,8 +101,6 @@ Sets y coordinate of point.
 %Docstring
 Returns the units for the point.
 
-:rtype: QgsUnitTypes.LayoutUnit
-
 .. seealso:: :py:func:`setUnits()`
 %End
 
@@ -123,8 +118,6 @@ Tests whether the position is null, ie both its x and y coordinates
 are zero.
 
 :return: true if point is null
-:rtype: bool
-
 %End
 
     QPointF toQPointF() const;
@@ -133,15 +126,11 @@ Converts the layout point to a QPointF. The unit information is discarded
 during this operation.
 
 :return: QPointF with same x and y coordinates as layout point
-:rtype: QPointF
-
 %End
 
     QString encodePoint() const;
 %Docstring
 Encodes the layout point to a string
-
-:rtype: str
 
 .. seealso:: :py:func:`decodePoint()`
 %End
@@ -150,44 +139,30 @@ Encodes the layout point to a string
 %Docstring
 Decodes a point from a ``string``.
 
-:rtype: QgsLayoutPoint
-
 .. seealso:: :py:func:`encodePoint()`
 %End
 
     bool operator==( const QgsLayoutPoint &other ) const;
     bool operator!=( const QgsLayoutPoint &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
     QgsLayoutPoint operator*( const double v ) const;
 %Docstring
 Multiplies the x and y by a scalar value.
-
-:rtype: QgsLayoutPoint
 %End
 
     QgsLayoutPoint operator*=( const double v );
 %Docstring
 Multiplies the x and y by a scalar value.
-
-:rtype: QgsLayoutPoint
 %End
 
     QgsLayoutPoint operator/( const double v ) const;
 %Docstring
 Divides the x and y by a scalar value.
-
-:rtype: QgsLayoutPoint
 %End
 
     QgsLayoutPoint operator/=( const double v );
 %Docstring
 Divides the x and y by a scalar value.
-
-:rtype: QgsLayoutPoint
 %End
 
 };

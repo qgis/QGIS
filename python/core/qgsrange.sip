@@ -48,8 +48,6 @@ and optionally whether or not these bounds are included in the range.
 %Docstring
 Returns the lower bound of the range.
 
-:rtype: T
-
 .. seealso:: :py:func:`upper()`
 
 .. seealso:: :py:func:`includeLower()`
@@ -58,8 +56,6 @@ Returns the lower bound of the range.
     T upper() const;
 %Docstring
 Returns the upper bound of the range.
-
-:rtype: T
 
 .. seealso:: :py:func:`lower()`
 
@@ -71,8 +67,6 @@ Returns the upper bound of the range.
 Returns true if the lower bound is inclusive, or false if the lower
 bound is exclusive.
 
-:rtype: bool
-
 .. seealso:: :py:func:`lower()`
 
 .. seealso:: :py:func:`includeUpper()`
@@ -82,8 +76,6 @@ bound is exclusive.
 %Docstring
 Returns true if the upper bound is inclusive, or false if the upper
 bound is exclusive.
-
-:rtype: bool
 
 .. seealso:: :py:func:`upper()`
 
@@ -95,16 +87,12 @@ bound is exclusive.
 Returns true if the range is empty, ie the lower bound equals (or exceeds) the upper bound
 and either the bounds are exclusive.
 
-:rtype: bool
-
 .. seealso:: :py:func:`isSingleton()`
 %End
 
     bool isSingleton() const;
 %Docstring
 Returns true if the range consists only of a single value or instant.
-
-:rtype: bool
 
 .. seealso:: :py:func:`isEmpty()`
 %End
@@ -113,23 +101,17 @@ Returns true if the range consists only of a single value or instant.
 %Docstring
 Returns true if this range contains another range.
 
-:rtype: bool
-
 .. seealso:: :py:func:`overlaps()`
 %End
 
     bool contains( T element ) const;
 %Docstring
 Returns true if this range contains a specified ``element``.
-
-:rtype: bool
 %End
 
     bool overlaps( const QgsRange<T> &other ) const;
 %Docstring
 Returns true if this range overlaps another range.
-
-:rtype: bool
 
 .. seealso:: :py:func:`contains()`
 %End
@@ -188,8 +170,6 @@ and optionally whether or not these bounds are included in the range.
 %Docstring
 Returns the beginning of the range.
 
-:rtype: T
-
 .. seealso:: :py:func:`end()`
 
 .. seealso:: :py:func:`includeBeginning()`
@@ -198,8 +178,6 @@ Returns the beginning of the range.
     T end() const;
 %Docstring
 Returns the upper bound of the range.
-
-:rtype: T
 
 .. seealso:: :py:func:`begin()`
 
@@ -211,8 +189,6 @@ Returns the upper bound of the range.
 Returns true if the beginning is inclusive, or false if the beginning
 is exclusive.
 
-:rtype: bool
-
 .. seealso:: :py:func:`begin()`
 
 .. seealso:: :py:func:`includeEnd()`
@@ -221,8 +197,6 @@ is exclusive.
     bool includeEnd() const;
 %Docstring
 Returns true if the end is inclusive, or false if the end is exclusive.
-
-:rtype: bool
 
 .. seealso:: :py:func:`end()`
 
@@ -233,8 +207,6 @@ Returns true if the end is inclusive, or false if the end is exclusive.
 %Docstring
 Returns true if the range consists only of a single instant.
 
-:rtype: bool
-
 .. seealso:: :py:func:`isEmpty()`
 
 .. seealso:: :py:func:`isInfinite()`
@@ -243,8 +215,6 @@ Returns true if the range consists only of a single instant.
     bool isInfinite() const;
 %Docstring
 Returns true if the range consists of all possible values.
-
-:rtype: bool
 
 .. seealso:: :py:func:`isEmpty()`
 
@@ -256,29 +226,21 @@ Returns true if the range consists of all possible values.
 Returns true if the range is empty, ie the beginning equals (or exceeds) the end
 and either of the bounds are exclusive.
 A range with both invalid beginning and end is considered infinite and not empty.
-
-:rtype: bool
 %End
 
     bool contains( const QgsTemporalRange<T> &other ) const;
 %Docstring
 Returns true if this range contains another range.
-
-:rtype: bool
 %End
 
     bool contains( const T &element ) const;
 %Docstring
 Returns true if this range contains a specified ``element``.
-
-:rtype: bool
 %End
 
     bool overlaps( const QgsTemporalRange<T> &other ) const;
 %Docstring
 Returns true if this range overlaps another range.
-
-:rtype: bool
 %End
 
 };

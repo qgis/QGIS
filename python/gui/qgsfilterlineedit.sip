@@ -42,6 +42,7 @@ signal should be used instead of textChanged().
     QgsFilterLineEdit( QWidget *parent /TransferThis/ = 0, const QString &nullValue = QString() );
 %Docstring
 Constructor for QgsFilterLineEdit.
+
 :param parent: parent widget
 :param nullValue: string for representing null values
 %End
@@ -49,8 +50,6 @@ Constructor for QgsFilterLineEdit.
     bool showClearButton() const;
 %Docstring
 Returns true if the widget's clear button is visible.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setShowClearButton()`
 
@@ -60,6 +59,7 @@ Returns true if the widget's clear button is visible.
     void setShowClearButton( bool visible );
 %Docstring
 Sets whether the widget's clear button is visible.
+
 :param visible: set to false to hide the clear button
 
 .. seealso:: :py:func:`showClearButton()`
@@ -71,8 +71,6 @@ Sets whether the widget's clear button is visible.
 %Docstring
 Returns the clear mode for the widget. The clear mode defines the behavior of the
 widget when its value is cleared. This defaults to ClearToNull.
-
-:rtype: ClearMode
 
 .. seealso:: :py:func:`setClearMode()`
 
@@ -94,6 +92,7 @@ widget when its value is cleared. This defaults to ClearToNull.
 Sets the string representation for null values in the widget. This does not
 affect the values returned for null values by value(), rather it only affects
 the text that is shown to users when the widget's value is null.
+
 :param nullValue: string to show when widget's value is null
 
 .. seealso:: :py:func:`nullValue()`
@@ -102,8 +101,6 @@ the text that is shown to users when the widget's value is null.
     QString nullValue() const;
 %Docstring
 Returns the string used for representating null values in the widget.
-
-:rtype: str
 
 .. seealso:: :py:func:`setNullValue()`
 
@@ -114,6 +111,7 @@ Returns the string used for representating null values in the widget.
 %Docstring
 Define if a search icon shall be shown on the left of the image
 when no text is entered
+
 :param visible: set to false to hide the search icon
 
 .. versionadded:: 3.0
@@ -124,8 +122,6 @@ when no text is entered
 Returns if a search icon shall be shown on the left of the image
 when no text is entered
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -134,6 +130,7 @@ when no text is entered
 Sets the default value for the widget. The default value is a value
 which the widget will be reset to if it is cleared and the clearMode()
 is equal to ClearToDefault.
+
 :param defaultValue: default value
 
 .. seealso:: :py:func:`defaultValue()`
@@ -148,8 +145,6 @@ is equal to ClearToDefault.
 Returns the default value for the widget. The default value is a value
 which the widget will be reset to if it is cleared and the clearMode()
 is equal to ClearToDefault.
-
-:rtype: str
 
 .. seealso:: :py:func:`setDefaultValue()`
 
@@ -175,8 +170,6 @@ in the widget matches the current nullValue() then the returned value will be
 a null string.
 
 :return: Current text (or null string if it matches the nullValue() property )
-:rtype: str
-
 
 .. seealso:: :py:func:`setValue()`
 %End
@@ -186,8 +179,6 @@ a null string.
 Determine if the current text represents null.
 
 :return: True if the widget's value is null.
-:rtype: bool
-
 
 .. seealso:: :py:func:`nullValue()`
 %End
@@ -196,8 +187,6 @@ Determine if the current text represents null.
 %Docstring
 Show a spinner icon. This can be used for search boxes to indicate that
 something is going on in the background.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -213,8 +202,6 @@ something is going on in the background.
     bool selectOnFocus() const;
 %Docstring
 Will select all text when this widget receives the focus.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End

@@ -30,6 +30,7 @@ class QgsComposerHtml: QgsComposerMultiFrame
     void setContentMode( ContentMode mode );
 %Docstring
 Sets the source mode for item's HTML content.
+
 :param mode: ContentMode for the item's source
 
 .. seealso:: :py:func:`contentMode`
@@ -46,8 +47,6 @@ Sets the source mode for item's HTML content.
 Returns the source mode for item's HTML content.
 
 :return: ContentMode for the item's source
-:rtype: ContentMode
-
 
 .. seealso:: :py:func:`setContentMode`
 
@@ -63,6 +62,7 @@ Returns the source mode for item's HTML content.
 Sets the URL for content to display in the item when the item is using
 the QgsComposerHtml.Url mode. Content is automatically fetched and the
 HTML item refreshed after calling this function.
+
 :param url: URL of content to display in the item
 
 .. seealso:: :py:func:`url`
@@ -76,8 +76,6 @@ Returns the URL of the content displayed in the item if the item is using
 the QgsComposerHtml.Url mode.
 
 :return: url for content displayed in item
-:rtype: QUrl
-
 
 .. seealso:: :py:func:`setUrl`
 
@@ -90,6 +88,7 @@ Sets the HTML to display in the item when the item is using
 the QgsComposerHtml.ManualHtml mode. Setting the HTML using this function
 does not automatically refresh the item's contents. Call loadHtml to trigger
 a refresh of the item after setting the HTML content.
+
 :param html: HTML to display in item
 
 .. seealso:: :py:func:`html`
@@ -107,8 +106,6 @@ Returns the HTML source displayed in the item if the item is using
 the QgsComposerHtml.ManualHtml mode.
 
 :return: HTML displayed in item
-:rtype: str
-
 
 .. seealso:: :py:func:`setHtml`
 
@@ -125,8 +122,6 @@ treated as a QGIS expression and evaluated against the current atlas
 feature.
 
 :return: true if html item will evaluate expressions in the content
-:rtype: bool
-
 
 .. seealso:: :py:func:`setEvaluateExpressions`
 
@@ -139,6 +134,7 @@ Sets whether the html item will evaluate QGIS expressions prior to rendering
 the HTML content. If set, any content inside [% %] tags will be
 treated as a QGIS expression and evaluated against the current atlas
 feature.
+
 :param evaluateExpressions: set to true to evaluate expressions in the HTML content
 
 .. seealso:: :py:func:`evaluateExpressions`
@@ -152,8 +148,6 @@ Returns whether html item is using smart breaks. Smart breaks prevent
 the html frame contents from breaking mid-way though a line of text.
 
 :return: true if html item is using smart breaks
-:rtype: bool
-
 
 .. seealso:: :py:func:`setUseSmartBreaks`
 %End
@@ -162,6 +156,7 @@ the html frame contents from breaking mid-way though a line of text.
 %Docstring
 Sets whether the html item should use smart breaks. Smart breaks prevent
 the html frame contents from breaking mid-way though a line of text.
+
 :param useSmartBreaks: set to true to prevent content from breaking
 mid-way through a line of text
 
@@ -176,6 +171,7 @@ at the bottom of a frame after calculating the optimum break location. Setting
 a larger value will result in better choice of page break location, but more
 wasted space at the bottom of frames. This setting is only effective if
 useSmartBreaks is true.
+
 :param maxBreakDistance: maximum amount of empty space to leave when calculating
 page break locations
 
@@ -194,8 +190,6 @@ at the bottom of a frame after calculating the optimum break location. This sett
 is only effective if useSmartBreaks is true.
 
 :return: maximum amount of empty space to leave when calculating page break locations
-:rtype: float
-
 
 .. versionadded:: 2.3
 
@@ -210,6 +204,7 @@ Sets the user stylesheet CSS rules to use while rendering the HTML content. Thes
 allow for overriding the styles specified within the HTML source. Setting the stylesheet
 using this function does not automatically refresh the item's contents. Call loadHtml
 to trigger a refresh of the item after setting the stylesheet rules.
+
 :param stylesheet: CSS rules for user stylesheet
 
 .. seealso:: :py:func:`userStylesheet`
@@ -227,8 +222,6 @@ Returns the user stylesheet CSS rules used while rendering the HTML content. The
 overriding the styles specified within the HTML source.
 
 :return: CSS rules for user stylesheet
-:rtype: str
-
 
 .. seealso:: :py:func:`setUserStylesheet`
 
@@ -240,6 +233,7 @@ overriding the styles specified within the HTML source.
     void setUserStylesheetEnabled( const bool stylesheetEnabled );
 %Docstring
 Sets whether user stylesheets are enabled for the HTML content.
+
 :param stylesheetEnabled: set to true to enable user stylesheets
 
 .. seealso:: :py:func:`userStylesheetEnabled`
@@ -254,8 +248,6 @@ Sets whether user stylesheets are enabled for the HTML content.
 Returns whether user stylesheets are enabled for the HTML content.
 
 :return: true if user stylesheets are enabled
-:rtype: bool
-
 
 .. seealso:: :py:func:`setUserStylesheetEnabled`
 
@@ -284,6 +276,7 @@ Returns whether user stylesheets are enabled for the HTML content.
     void loadHtml( const bool useCache = false, const QgsExpressionContext *context = 0 );
 %Docstring
 Reloads the html source from the url and redraws the item.
+
 :param useCache: set to true to use a cached copy of remote html
 content
 :param context: expression context for evaluating data defined urls and expressions in html

@@ -37,8 +37,6 @@ This method should/will be called, whenever a new feature will be added to the l
 :param feature:         Updated feature after adding will be written back to this
 
 :return:                True in case of success, False if the operation failed/was aborted
-:rtype: bool
-
 
 TODO QGIS 3: remove const qualifier
 %End
@@ -52,8 +50,6 @@ If successful layer->startEditing() will be called and true returned.
 :param layer:  The layer on which to start an edit session
 
 :return:       True, if the editing session was started
-:rtype: bool
-
 
 TODO QGIS 3: remove const qualifier
 %End
@@ -67,8 +63,6 @@ Appropriate dialogs should be shown like
 :param allowCancel: True if a cancel button should be offered
 
 :return:            True if successful
-:rtype: bool
-
 
 TODO QGIS 3: remove const qualifier
 %End
@@ -80,8 +74,6 @@ Should be called, when the features should be committed but the editing session 
 :param layer:       The layer to commit
 
 :return:            True if successful
-:rtype: bool
-
 
 TODO QGIS 3: remove const qualifier
 %End
@@ -97,8 +89,6 @@ Copy and move features with defined translation.
 :param errorMsg: If given, it will contain the error message
 
 :return: True if all features could be copied.
-:rtype: bool
-
 
 TODO QGIS 3: remove const qualifier
 %End

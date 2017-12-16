@@ -108,8 +108,6 @@ The ``locator`` is used as the model's parent.
     QgsLocator *locator();
 %Docstring
 Returns a pointer to the locator utilized by this model.
-
-:rtype: QgsLocator
 %End
 
     void search( const QString &string );
@@ -128,8 +126,6 @@ search string as soon as possible.
 Returns a new locator context for searches. The default implementation
 returns a default constructed QgsLocatorContext. Subclasses can override
 this method to implement custom context creation logic.
-
-:rtype: QgsLocatorContext
 %End
 
 };

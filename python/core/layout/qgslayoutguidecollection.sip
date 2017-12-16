@@ -37,8 +37,6 @@ the corresponding layout for you.
 %Docstring
 Returns the layout the guide belongs to.
 
-:rtype: QgsLayout
-
 .. seealso:: :py:func:`setLayout()`
 %End
 
@@ -57,8 +55,6 @@ the corresponding layout for you.
     Qt::Orientation orientation() const;
 %Docstring
 Returns the guide's orientation.
-
-:rtype: Qt.Orientation
 %End
 
     QgsLayoutMeasurement position() const;
@@ -67,8 +63,6 @@ Returns the guide's position within the page.
 
 The position indicates either the horizontal or vertical position
 of the guide, depending on the guide's orientation().
-
-:rtype: QgsLayoutMeasurement
 
 .. seealso:: :py:func:`setPosition()`
 %End
@@ -86,8 +80,6 @@ of the guide, depending on the guide's orientation().
     QgsLayoutItemPage *page();
 %Docstring
 Returns the page the guide is contained within.
-
-:rtype: QgsLayoutItemPage
 
 .. seealso:: :py:func:`setPage()`
 %End
@@ -107,15 +99,11 @@ Updates the position of the guide's line item.
     QGraphicsLineItem *item();
 %Docstring
 Returns the guide's line item.
-
-:rtype: QGraphicsLineItem
 %End
 
     double layoutPosition() const;
 %Docstring
 Returns the guide's position in absolute layout units.
-
-:rtype: float
 
 .. seealso:: :py:func:`setLayoutPosition()`
 %End
@@ -226,8 +214,6 @@ Returns the list of guides contained in the collection with the specified
 ``orientation`` and on a matching ``page``.
 If ``page`` is -1, guides from all pages will be returned.
 
-:rtype: list of QgsLayoutGuide
-
 .. seealso:: :py:func:`guidesOnPage()`
 %End
 
@@ -235,16 +221,12 @@ If ``page`` is -1, guides from all pages will be returned.
 %Docstring
 Returns the list of guides contained on a matching ``page``.
 
-:rtype: list of QgsLayoutGuide
-
 .. seealso:: :py:func:`guides()`
 %End
 
     bool visible() const;
 %Docstring
 Returns true if the guide lines should be drawn.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setVisible()`
 %End
@@ -261,8 +243,6 @@ Sets whether the guide lines should be ``visible``.
 %Docstring
 Stores the collection's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
 
-:rtype: bool
-
 .. seealso:: :py:func:`readXml()`
 %End
 
@@ -270,8 +250,6 @@ Stores the collection's state in a DOM element. The ``parentElement`` should ref
 
 %Docstring
 Sets the collection's state from a DOM element. collectionElement is the DOM node corresponding to the collection.
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End

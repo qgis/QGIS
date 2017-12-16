@@ -39,6 +39,7 @@ to this file rather than to stdout.
     static void debug( const QString &msg, int debuglevel = 1, const char *file = 0, const char *function = 0, int line = -1 );
 %Docstring
 Goes to qDebug.
+
 :param msg: the message to be printed
 :param debuglevel:
 :param file: file name where the message comes from
@@ -72,8 +73,6 @@ Goes to qFatal
 %Docstring
 Reads the environment variable QGIS_DEBUG and converts it to int. If QGIS_DEBUG is not set,
 the function returns 1 if QGISDEBUG is defined and 0 if not*
-
-:rtype: int
 %End
 
     static void logMessageToFile( const QString &message );
@@ -85,8 +84,6 @@ Logs the message passed in to the logfile defined in QGIS_LOG_FILE if any. *
 %Docstring
 Reads the environment variable QGIS_LOG_FILE. Returns NULL if the variable is not set,
 otherwise returns a file name for writing log messages to.*
-
-:rtype: str
 %End
 
 };

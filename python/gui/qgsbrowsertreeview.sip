@@ -38,8 +38,6 @@ Set the browser model
     QgsBrowserModel *browserModel();
 %Docstring
 Return the browser model
-
-:rtype: QgsBrowserModel
 %End
     virtual void showEvent( QShowEvent *e );
 
@@ -47,10 +45,6 @@ Return the browser model
 
 
     bool hasExpandedDescendant( const QModelIndex &index ) const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setSettingsSection( const QString &section );
 

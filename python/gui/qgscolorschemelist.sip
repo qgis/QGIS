@@ -51,6 +51,7 @@ A model for colors in a color scheme
     explicit QgsColorSchemeModel( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor(), QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
+
 :param scheme: color scheme for list
 :param context: context string for color scheme
 :param baseColor: base color for color scheme
@@ -91,13 +92,12 @@ Constructor
 Returns a list of colors shown in the widget
 
 :return: colors shown in the widget
-:rtype: QgsNamedColorList
-
 %End
 
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 %Docstring
 Sets the color scheme to show in the widget
+
 :param scheme: color scheme
 :param context: context for color scheme
 :param baseColor: base color for color scheme
@@ -108,8 +108,6 @@ Sets the color scheme to show in the widget
 Get the current color scheme context for the model
 
 :return: context string which is passed to scheme for color generation
-:rtype: str
-
 
 .. seealso:: :py:func:`baseColor`
 %End
@@ -119,8 +117,6 @@ Get the current color scheme context for the model
 Get the base color for the color scheme used by the model
 
 :return: base color which is passed to scheme for color generation
-:rtype: QColor
-
 
 .. seealso:: :py:func:`context`
 %End
@@ -128,6 +124,7 @@ Get the base color for the color scheme used by the model
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 %Docstring
 Add a color to the list
+
 :param color: color to add
 :param label: label for color
 :param allowDuplicate: set to true to allow duplicate colors to be added (colors which are already present in the list)
@@ -138,8 +135,6 @@ Add a color to the list
 Returns whether the color scheme model has been modified
 
 :return: true if colors have been modified
-:rtype: bool
-
 %End
 
 };
@@ -162,6 +157,7 @@ An editable list of color swatches, taken from an associated QgsColorScheme.
     QgsColorSchemeList( QWidget *parent /TransferThis/ = 0, QgsColorScheme *scheme = 0, const QString &context = QString(), const QColor &baseColor = QColor() );
 %Docstring
 Construct a new color swatch grid.
+
 :param parent: parent widget
 :param scheme: QgsColorScheme for colors to show in the list
 :param context: context string provided to color scheme
@@ -173,8 +169,6 @@ Construct a new color swatch grid.
 Saves the current colors shown in the list back to a color scheme, if supported
 by the color scheme.
 
-:rtype: bool
-
 .. note::
 
    this method is only effective if the color scheme is editable
@@ -183,9 +177,8 @@ by the color scheme.
     bool importColorsFromGpl( QFile &file );
 %Docstring
 Import colors from a GPL palette file to the list
-:param file: file to import
 
-:rtype: bool
+:param file: file to import
 
 .. seealso:: :py:func:`exportColorsToGpl`
 %End
@@ -193,9 +186,8 @@ Import colors from a GPL palette file to the list
     bool exportColorsToGpl( QFile &file );
 %Docstring
 Export colors to a GPL palette file from the list
-:param file: destination file
 
-:rtype: bool
+:param file: destination file
 
 .. seealso:: :py:func:`importColorsFromGpl`
 %End
@@ -205,15 +197,11 @@ Export colors to a GPL palette file from the list
 Returns whether the color scheme list has been modified
 
 :return: true if colors have been modified
-:rtype: bool
-
 %End
 
     QgsColorScheme *scheme();
 %Docstring
 Returns the scheme currently selected in the list.
-
-:rtype: QgsColorScheme
 
 .. versionadded:: 3.0
 
@@ -225,6 +213,7 @@ Returns the scheme currently selected in the list.
     void setScheme( QgsColorScheme *scheme, const QString &context = QString(), const QColor &baseColor = QColor() );
 %Docstring
 Sets the color scheme to show in the list
+
 :param scheme: QgsColorScheme for colors to show in the list
 :param context: context string provided to color scheme
 :param baseColor: base color for color scheme
@@ -240,6 +229,7 @@ Removes any selected colors from the list
     void addColor( const QColor &color, const QString &label = QString(), bool allowDuplicate = false );
 %Docstring
 Adds a color to the list
+
 :param color: color to add
 :param label: optional label for color
 :param allowDuplicate: set to true to allow duplicate colors to be added, ie colors which already exist in the list
@@ -282,6 +272,7 @@ Displays a file picker dialog allowing users to export colors from the list into
     void colorSelected( const QColor &color );
 %Docstring
 Emitted when a color is selected from the list
+
 :param color: color selected
 %End
 

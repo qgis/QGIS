@@ -54,18 +54,15 @@ leaves the actual drawing of the symbols to subclasses.
     static QList< QgsSimpleMarkerSymbolLayerBase::Shape > availableShapes();
 %Docstring
 Returns a list of all available shape types.
-
-:rtype: list of QgsSimpleMarkerSymbolLayerBase.Shape
 %End
 
     static bool shapeIsFilled( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 %Docstring
 Returns true if a symbol shape has a fill.
+
 :param shape: shape to test
 
 :return: true if shape uses a fill, or false if shape uses lines only
-:rtype: bool
-
 %End
 
     QgsSimpleMarkerSymbolLayerBase( QgsSimpleMarkerSymbolLayerBase::Shape shape = Circle,
@@ -74,6 +71,7 @@ Returns true if a symbol shape has a fill.
                                     QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructor for QgsSimpleMarkerSymbolLayerBase.
+
 :param shape: symbol shape for markers
 :param size: symbol size (in mm)
 :param angle: symbol rotation angle
@@ -84,14 +82,13 @@ Constructor for QgsSimpleMarkerSymbolLayerBase.
 %Docstring
 Returns the shape for the rendered marker symbol.
 
-:rtype: QgsSimpleMarkerSymbolLayerBase.Shape
-
 .. seealso:: :py:func:`setShape()`
 %End
 
     void setShape( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 %Docstring
 Sets the rendered marker shape.
+
 :param shape: new marker shape
 
 .. seealso:: :py:func:`shape()`
@@ -101,12 +98,11 @@ Sets the rendered marker shape.
 %Docstring
 Attempts to decode a string representation of a shape name to the corresponding
 shape.
+
 :param name: encoded shape name
 :param ok: if specified, will be set to true if shape was successfully decoded
 
 :return: decoded name
-:rtype: QgsSimpleMarkerSymbolLayerBase.Shape
-
 
 .. seealso:: :py:func:`encodeShape()`
 %End
@@ -114,11 +110,10 @@ shape.
     static QString encodeShape( QgsSimpleMarkerSymbolLayerBase::Shape shape );
 %Docstring
 Encodes a shape to its string representation.
+
 :param shape: shape to encode
 
 :return: encoded string
-:rtype: str
-
 
 .. seealso:: :py:func:`decodeShape()`
 %End
@@ -138,8 +133,6 @@ Encodes a shape to its string representation.
 %Docstring
 Prepares the layer for drawing the specified shape (QPolygonF version)
 
-:rtype: bool
-
 .. note::
 
    not available in Python bindings
@@ -149,8 +142,6 @@ Prepares the layer for drawing the specified shape (QPolygonF version)
 %Docstring
 Prepares the layer for drawing the specified shape (QPainterPath version)
 
-:rtype: bool
-
 .. note::
 
    not available in Python bindings
@@ -159,12 +150,11 @@ Prepares the layer for drawing the specified shape (QPainterPath version)
     bool shapeToPolygon( Shape shape, QPolygonF &polygon ) const;
 %Docstring
 Creates a polygon representing the specified shape.
+
 :param shape: shape to create
 :param polygon: destination polygon for shape
 
 :return: true if shape was successfully stored in polygon
-:rtype: bool
-
 
 .. note::
 
@@ -174,12 +164,11 @@ Creates a polygon representing the specified shape.
     double calculateSize( QgsSymbolRenderContext &context, bool &hasDataDefinedSize ) const;
 %Docstring
 Calculates the desired size of the marker, considering data defined size overrides.
+
 :param context: symbol render context
 :param hasDataDefinedSize: will be set to true if marker uses data defined sizes
 
 :return: marker size, in original size units
-:rtype: float
-
 
 .. note::
 
@@ -189,6 +178,7 @@ Calculates the desired size of the marker, considering data defined size overrid
     void calculateOffsetAndRotation( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedRotation, QPointF &offset, double &angle ) const;
 %Docstring
 Calculates the marker offset and rotation.
+
 :param context: symbol render context
 :param scaledSize: size of symbol to render
 :param hasDataDefinedRotation: will be set to true if marker has data defined rotation
@@ -207,6 +197,7 @@ Calculates the marker offset and rotation.
     virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) = 0 ;
 %Docstring
 Derived classes must implement draw() to handle drawing the generated shape onto the painter surface.
+
 :param context: symbol render context
 :param shape: shape to draw
 :param polygon: polygon representing transformed marker shape. May be empty, in which case the shape will be specified
@@ -235,6 +226,7 @@ class QgsSimpleMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
                                 Qt::PenJoinStyle penJoinStyle = DEFAULT_SIMPLEMARKER_JOINSTYLE );
 %Docstring
 Constructor for QgsSimpleMarkerSymbolLayer.
+
 :param shape: symbol shape
 :param size: symbol size (in mm)
 :param angle: symbol rotation angle
@@ -248,21 +240,19 @@ Constructor for QgsSimpleMarkerSymbolLayer.
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
 Creates a new QgsSimpleMarkerSymbolLayer.
+
 :param properties: a property map containing symbol properties (see properties())
 
 :return: new QgsSimpleMarkerSymbolLayer
-:rtype: QgsSymbolLayer
-
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
 %Docstring
 Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
+
 :param element: XML element containing SLD definition of symbol
 
 :return: new QgsSimpleMarkerSymbolLayer
-:rtype: QgsSymbolLayer
-
 %End
 
 
@@ -304,8 +294,6 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
 %Docstring
 Returns the marker's stroke color.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setStrokeColor()`
 
 .. seealso:: :py:func:`strokeStyle()`
@@ -316,6 +304,7 @@ Returns the marker's stroke color.
     virtual void setStrokeColor( const QColor &color );
 %Docstring
 Sets the marker's stroke color.
+
 :param color: stroke color
 
 .. seealso:: :py:func:`strokeColor()`
@@ -329,8 +318,6 @@ Sets the marker's stroke color.
 %Docstring
 Returns the marker's stroke style (e.g., solid, dashed, etc)
 
-:rtype: Qt.PenStyle
-
 .. versionadded:: 2.4
 
 .. seealso:: :py:func:`setStrokeStyle()`
@@ -343,6 +330,7 @@ Returns the marker's stroke style (e.g., solid, dashed, etc)
     void setStrokeStyle( Qt::PenStyle strokeStyle );
 %Docstring
 Sets the marker's stroke style (e.g., solid, dashed, etc)
+
 :param strokeStyle: style
 
 .. versionadded:: 2.4
@@ -358,8 +346,6 @@ Sets the marker's stroke style (e.g., solid, dashed, etc)
 %Docstring
 Returns the marker's stroke join style (e.g., miter, bevel, etc).
 
-:rtype: Qt.PenJoinStyle
-
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`setPenJoinStyle()`
@@ -372,6 +358,7 @@ Returns the marker's stroke join style (e.g., miter, bevel, etc).
     void setPenJoinStyle( Qt::PenJoinStyle style );
 %Docstring
 Sets the marker's stroke join style (e.g., miter, bevel, etc).
+
 :param style: join style
 
 .. versionadded:: 2.16
@@ -387,8 +374,6 @@ Sets the marker's stroke join style (e.g., miter, bevel, etc).
 %Docstring
 Returns the width of the marker's stroke.
 
-:rtype: float
-
 .. seealso:: :py:func:`setStrokeWidth()`
 
 .. seealso:: :py:func:`strokeWidthUnit()`
@@ -399,6 +384,7 @@ Returns the width of the marker's stroke.
     void setStrokeWidth( double w );
 %Docstring
 Sets the width of the marker's stroke.
+
 :param w: stroke width. See strokeWidthUnit() for units.
 
 .. seealso:: :py:func:`strokeWidth()`
@@ -411,6 +397,7 @@ Sets the width of the marker's stroke.
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit u );
 %Docstring
 Sets the unit for the width of the marker's stroke.
+
 :param u: stroke width unit
 
 .. seealso:: :py:func:`strokeWidthUnit()`
@@ -424,8 +411,6 @@ Sets the unit for the width of the marker's stroke.
 %Docstring
 Returns the unit for the width of the marker's stroke.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setStrokeWidthUnit()`
 
 .. seealso:: :py:func:`strokeWidth()`
@@ -436,6 +421,7 @@ Returns the unit for the width of the marker's stroke.
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map scale for the width of the marker's stroke.
+
 :param scale: stroke width map unit scale
 
 .. seealso:: :py:func:`strokeWidthMapUnitScale()`
@@ -449,8 +435,6 @@ Sets the map scale for the width of the marker's stroke.
 %Docstring
 Returns the map scale for the width of the marker's stroke.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale()`
 
 .. seealso:: :py:func:`strokeWidth()`
@@ -463,6 +447,7 @@ Returns the map scale for the width of the marker's stroke.
     void drawMarker( QPainter *p, QgsSymbolRenderContext &context );
 %Docstring
 Draws the marker shape in the specified painter.
+
 :param p: destination QPainter
 :param context: symbol context
 
@@ -476,8 +461,6 @@ Draws the marker shape in the specified painter.
 Prepares cache image
 
 :return: true in case of success, false if cache image size too large
-:rtype: bool
-
 %End
 
 
@@ -508,6 +491,7 @@ the symbol to support advanced styling of the interior and stroke of the shape.
                                 QgsSymbol::ScaleMethod scaleMethod = DEFAULT_SCALE_METHOD );
 %Docstring
 Constructor for QgsFilledMarkerSymbolLayer.
+
 :param shape: symbol shape
 :param size: symbol size (in mm)
 :param angle: symbol rotation angle
@@ -517,11 +501,10 @@ Constructor for QgsFilledMarkerSymbolLayer.
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
 Creates a new QgsFilledMarkerSymbolLayer.
+
 :param properties: a property map containing symbol properties (see properties())
 
 :return: new QgsFilledMarkerSymbolLayer
-:rtype: QgsSymbolLayer
-
 %End
 
     virtual QString layerType() const;
@@ -572,15 +555,7 @@ Constructs SVG marker symbol layer with picture from given absolute path to a SV
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
 
     static void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
 %Docstring
@@ -616,14 +591,13 @@ Used internally when reading/writing symbols.
 %Docstring
 Returns the marker SVG path.
 
-:rtype: str
-
 .. seealso:: :py:func:`setPath()`
 %End
 
     void setPath( const QString &path );
 %Docstring
 Set the marker SVG path.
+
 :param path: SVG path
 
 .. seealso:: :py:func:`path()`
@@ -633,8 +607,6 @@ Set the marker SVG path.
 %Docstring
 Returns the default marker aspect ratio between width and height, 0 if not yet calculated.
 
-:rtype: float
-
 .. seealso:: :py:func:`updateDefaultAspectRatio()`
 %End
 
@@ -643,8 +615,6 @@ Returns the default marker aspect ratio between width and height, 0 if not yet c
 Calculates the default marker aspect ratio between width and height.
 
 :return: the default aspect ratio value
-:rtype: float
-
 
 .. seealso:: :py:func:`defaultAspectRatio()`
 %End
@@ -653,19 +623,16 @@ Calculates the default marker aspect ratio between width and height.
 %Docstring
 Returns the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setPreservedAspectRatio()`
 %End
 
     bool setPreservedAspectRatio( bool par );
 %Docstring
 Set preserved the marker aspect ratio between width and height.
+
 :param par: Preserved Aspect Ratio
 
 :return: the preserved aspect ratio value, true if fixed aspect ratio has been lower or equal to 0
-:rtype: bool
-
 
 .. seealso:: :py:func:`preservedAspectRatio()`
 %End
@@ -675,8 +642,6 @@ Set preserved the marker aspect ratio between width and height.
 Returns the marker aspect ratio between width and height to be used in rendering,
 if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
 
-:rtype: float
-
 .. seealso:: :py:func:`setFixedAspectRatio()`
 %End
 
@@ -684,6 +649,7 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
 %Docstring
 Set the marker aspect ratio between width and height to be used in rendering,
 if the value set is lower or equal to 0 the aspect ratio will be preserved in rendering
+
 :param ratio: Fixed Aspect Ratio
 
 .. seealso:: :py:func:`fixedAspectRatio()`
@@ -696,15 +662,12 @@ if the value set is lower or equal to 0 the aspect ratio will be preserved in re
     virtual void setStrokeColor( const QColor &c );
 
     double strokeWidth() const;
-%Docstring
-
-:rtype: float
-%End
     void setStrokeWidth( double w );
 
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the stroke width.
+
 :param unit: width units
 
 .. seealso:: :py:func:`strokeWidthUnit()`
@@ -714,17 +677,11 @@ Sets the units for the stroke width.
 %Docstring
 Returns the units for the stroke width.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`strokeWidthUnit()`
 %End
 
     void setStrokeWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &strokeWidthMapUnitScale() const;
-%Docstring
-
-:rtype: QgsMapUnitScale
-%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
@@ -747,11 +704,10 @@ Returns the units for the stroke width.
     double calculateAspectRatio( QgsSymbolRenderContext &context, double scaledSize, bool &hasDataDefinedAspectRatio ) const;
 %Docstring
 Calculates the marker aspect ratio between width and height.
+
 :param context: symbol render context
 :param scaledSize: size of symbol to render
 :param hasDataDefinedAspectRatio: will be set to true if marker has data defined aspectRatio
-
-:rtype: float
 
 .. note::
 
@@ -783,15 +739,7 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
 
 
     virtual QString layerType() const;
@@ -817,17 +765,9 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
 
 
     QString fontFamily() const;
-%Docstring
-
-:rtype: str
-%End
     void setFontFamily( const QString &family );
 
     QChar character() const;
-%Docstring
-
-:rtype: QChar
-%End
     void setCharacter( QChar ch );
 
     virtual QColor strokeColor() const;
@@ -836,8 +776,6 @@ class QgsFontMarkerSymbolLayer : QgsMarkerSymbolLayer
     double strokeWidth() const;
 %Docstring
 Get stroke width.
-
-:rtype: float
 
 .. versionadded:: 2.16
 %End
@@ -853,8 +791,6 @@ Set stroke width.
 %Docstring
 Get stroke width unit.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. versionadded:: 2.16
 %End
 
@@ -869,8 +805,6 @@ Set stroke width unit.
 %Docstring
 Get stroke width map unit scale.
 
-:rtype: QgsMapUnitScale
-
 .. versionadded:: 2.16
 %End
 
@@ -884,8 +818,6 @@ Set stroke width map unit scale.
     Qt::PenJoinStyle penJoinStyle() const;
 %Docstring
 Get stroke join style.
-
-:rtype: Qt.PenJoinStyle
 
 .. versionadded:: 2.16
 %End

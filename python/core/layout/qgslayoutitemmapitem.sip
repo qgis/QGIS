@@ -39,8 +39,6 @@ Draws the item on to a destination ``painter``.
 Stores map item state in a DOM element, where ``element`` is the DOM element
 corresponding to a 'LayoutMap' tag.
 
-:rtype: bool
-
 .. seealso:: :py:func:`readXml()`
 %End
 
@@ -48,8 +46,6 @@ corresponding to a 'LayoutMap' tag.
 %Docstring
 Sets the map item state from a DOM document, where ``element`` is the DOM
 node corresponding to a 'LayoutMapGrid' tag.
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End
@@ -65,16 +61,12 @@ Sets the corresponding layout ``map`` for the item.
 %Docstring
 Returns the layout item map for the item.
 
-:rtype: QgsLayoutItemMap
-
 .. seealso:: :py:func:`setMap()`
 %End
 
     QString id() const;
 %Docstring
 Returns the unique id for the map item.
-
-:rtype: str
 %End
 
     void setName( const QString &name );
@@ -87,8 +79,6 @@ Sets the friendly display ``name`` for the item.
     QString name() const;
 %Docstring
 Returns the friendly display name for the item.
-
-:rtype: str
 
 .. seealso:: :py:func:`setName()`
 %End
@@ -104,16 +94,12 @@ Controls whether the item will be drawn. Set ``enabled`` to true to enable drawi
 %Docstring
 Returns whether the item will be drawn.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setEnabled()`
 %End
 
     virtual bool usesAdvancedEffects() const;
 %Docstring
 Returns true if the item is drawn using advanced effects, such as blend modes.
-
-:rtype: bool
 %End
 
   protected:
@@ -154,16 +140,12 @@ specified ``map``.
     int size() const;
 %Docstring
 Returns the number of items in the stack.
-
-:rtype: int
 %End
 
     virtual bool writeXml( QDomElement &element, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores the state of the item stack in a DOM node, where ``element`` is the DOM element corresponding to a 'LayoutMap' tag.
 Returns true if write was successful.
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -172,8 +154,6 @@ Returns true if write was successful.
 %Docstring
 Sets the item stack's state from a DOM document, where ``element`` is a DOM node corresponding to a 'LayoutMap' tag.
 Returns true if read was successful.
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End
@@ -187,8 +167,6 @@ Draws the items from the stack on a specified ``painter``.
 %Docstring
 Returns whether any items within the stack contain advanced effects,
 such as blending modes.
-
-:rtype: bool
 %End
 
   protected:
@@ -247,16 +225,12 @@ called for the QgsLayoutItemMap to redraw the map with the new item stack order.
 %Docstring
 Returns a reference to an item which matching ``itemId`` within the stack.
 
-:rtype: QgsLayoutItemMapItem
-
 .. seealso:: :py:func:`constItem()`
 %End
 
     QgsLayoutItemMapItem *item( int index ) const;
 %Docstring
 Returns a reference to the item at the specified ``index`` within the stack.
-
-:rtype: QgsLayoutItemMapItem
 
 .. seealso:: :py:func:`constItem`
 %End
@@ -265,8 +239,6 @@ Returns a reference to the item at the specified ``index`` within the stack.
     QList< QgsLayoutItemMapItem * > asList() const;
 %Docstring
 Returns a list of QgsLayoutItemMapItems contained by the stack.
-
-:rtype: list of QgsLayoutItemMapItem
 %End
 
   protected:

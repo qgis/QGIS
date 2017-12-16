@@ -27,6 +27,7 @@ class QgsVectorLayerUndoPassthroughCommand : QgsVectorLayerUndoCommand
     QgsVectorLayerUndoPassthroughCommand( QgsVectorLayerEditBuffer *buffer, const QString &text, bool autocreate = true );
 %Docstring
 Constructor for QgsVectorLayerUndoPassthroughCommand
+
 :param buffer: associated edit buffer
 :param text: text associated with command
 :param autocreate: flag allowing to automatically create a savepoint if necessary
@@ -35,8 +36,6 @@ Constructor for QgsVectorLayerUndoPassthroughCommand
     bool hasError() const;
 %Docstring
 Returns error status
-
-:rtype: bool
 %End
 
   protected:
@@ -46,8 +45,6 @@ Returns error status
 Rollback command, release savepoint or set error status
 save point must be set prior to call
 error satus should be false prior to call
-
-:rtype: bool
 %End
 
     bool setSavePoint( const QString &savePointId = QString() );
@@ -56,8 +53,6 @@ Set the command savepoint or set error status.
 Error satus should be false prior to call. If the savepoint given in
 parameter is empty, then a new one is created if none is currently
 available in the transaction.
-
-:rtype: bool
 %End
 
     void setError();
@@ -75,8 +70,6 @@ Sets the error message.
     QString errorMessage() const;
 %Docstring
 Returns the error message or an empty string if there's none.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -100,6 +93,7 @@ class QgsVectorLayerUndoPassthroughCommandAddFeatures : QgsVectorLayerUndoPassth
     QgsVectorLayerUndoPassthroughCommandAddFeatures( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureList &features );
 %Docstring
 Constructor for QgsVectorLayerUndoPassthroughCommandAddFeatures
+
 :param buffer: associated edit buffer
 :param features: features to add to layer
 %End
@@ -112,8 +106,6 @@ Constructor for QgsVectorLayerUndoPassthroughCommandAddFeatures
     QgsFeatureList features() const;
 %Docstring
 List of features (added feaures can be modified by default values from database)
-
-:rtype: QgsFeatureList
 %End
 
 };
@@ -136,6 +128,7 @@ class QgsVectorLayerUndoPassthroughCommandDeleteFeatures : QgsVectorLayerUndoPas
     QgsVectorLayerUndoPassthroughCommandDeleteFeatures( QgsVectorLayerEditBuffer *buffer /Transfer/, const QgsFeatureIds &fids );
 %Docstring
 Constructor for QgsVectorLayerUndoPassthroughCommandDeleteFeatures
+
 :param buffer: associated edit buffer
 :param fids: feature IDs of features to delete from layer
 %End
@@ -164,6 +157,7 @@ class QgsVectorLayerUndoPassthroughCommandChangeGeometry : QgsVectorLayerUndoPas
     QgsVectorLayerUndoPassthroughCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer /Transfer/, const QgsFeatureId &fid, const QgsGeometry &geom );
 %Docstring
 Constructor for QgsVectorLayerUndoPassthroughCommandChangeGeometry
+
 :param buffer: associated edit buffer
 :param fid: feature ID of feature to change
 :param geom: new geometru
@@ -193,6 +187,7 @@ class QgsVectorLayerUndoPassthroughCommandChangeAttribute: QgsVectorLayerUndoPas
     QgsVectorLayerUndoPassthroughCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsFeatureId fid, int field, const QVariant &newValue );
 %Docstring
 Constructor for QgsVectorLayerUndoPassthroughCommandChangeAttribute
+
 :param buffer: associated edit buffer
 :param fid: feature ID of feature
 :param field:
@@ -223,6 +218,7 @@ class QgsVectorLayerUndoPassthroughCommandAddAttribute : QgsVectorLayerUndoPasst
     QgsVectorLayerUndoPassthroughCommandAddAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, const QgsField &field );
 %Docstring
 Constructor for QgsVectorLayerUndoPassthroughCommandAddAttribute
+
 :param buffer: associated edit buffer
 :param field:
 %End
@@ -251,6 +247,7 @@ class QgsVectorLayerUndoPassthroughCommandDeleteAttribute : QgsVectorLayerUndoPa
     QgsVectorLayerUndoPassthroughCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int attr );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandDeleteAttribute
+
 :param buffer: associated edit buffer
 :param attr:
 %End
@@ -279,6 +276,7 @@ class QgsVectorLayerUndoPassthroughCommandRenameAttribute : QgsVectorLayerUndoPa
     QgsVectorLayerUndoPassthroughCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer /Transfer/, int attr, const QString &newName );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandRenameAttribute
+
 :param buffer: associated edit buffer
 :param attr:
 :param newName:
@@ -308,6 +306,7 @@ class QgsVectorLayerUndoPassthroughCommandUpdate : QgsVectorLayerUndoPassthrough
     QgsVectorLayerUndoPassthroughCommandUpdate( QgsVectorLayerEditBuffer *buffer /Transfer/, QgsTransaction *transaction, const QString &sql );
 %Docstring
 Constructor for QgsVectorLayerUndoCommandUpdate
+
 :param buffer: associated edit buffer
 :param transaction: transaction running the sql query
 :param sql: the query

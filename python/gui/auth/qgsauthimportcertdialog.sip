@@ -38,6 +38,7 @@ Widget for importing a certificate into the authentication database
                                       QgsAuthImportCertDialog::CertInput input = AllInputs );
 %Docstring
 Construct a dialog for importing certificates
+
 :param parent: Parent widget
 :param filter: Certificate type filter to apply to dialog
 :param input: Type of input(s) for certificates
@@ -46,36 +47,26 @@ Construct a dialog for importing certificates
     const QList<QSslCertificate> certificatesToImport();
 %Docstring
 Get list of certificate objects to import
-
-:rtype: list of QSslCertificate
 %End
 
     const QString certFileToImport();
 %Docstring
 Get the file path to a certificate to import
-
-:rtype: str
 %End
 
     const QString certTextToImport();
 %Docstring
 Get certificate text to import
-
-:rtype: str
 %End
 
     bool allowInvalidCerts();
 %Docstring
 Whether to allow importation of invalid certificates (so trust policy can be overridden)
-
-:rtype: bool
 %End
 
     QgsAuthCertUtils::CertTrustPolicy certTrustPolicy();
 %Docstring
 Defined trust policy for imported certificates
-
-:rtype: QgsAuthCertUtils.CertTrustPolicy
 %End
 
 };

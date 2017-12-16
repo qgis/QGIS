@@ -55,8 +55,6 @@ Constructor for QgsFieldConstraints.
 %Docstring
 Returns any constraints which are present for the field.
 
-:rtype: Constraints
-
 .. seealso:: :py:func:`setConstraints()`
 
 .. seealso:: :py:func:`constraintOrigin()`
@@ -67,8 +65,6 @@ Returns any constraints which are present for the field.
 Returns the origin of a field constraint, or ConstraintOriginNotSet if the constraint
 is not present on this field.
 
-:rtype: ConstraintOrigin
-
 .. seealso:: :py:func:`constraints()`
 %End
 
@@ -76,8 +72,6 @@ is not present on this field.
 %Docstring
 Returns the strength of a field constraint, or ConstraintStrengthNotSet if the constraint
 is not present on this field.
-
-:rtype: ConstraintStrength
 
 .. seealso:: :py:func:`constraints()`
 
@@ -115,8 +109,6 @@ Removes a constraint from the field.
 %Docstring
 Returns the constraint expression for the field, if set.
 
-:rtype: str
-
 .. seealso:: :py:func:`constraints()`
 
 .. seealso:: :py:func:`constraintDescription()`
@@ -127,8 +119,6 @@ Returns the constraint expression for the field, if set.
     QString constraintDescription() const;
 %Docstring
 Returns the descriptive name for the constraint expression.
-
-:rtype: str
 
 .. seealso:: :py:func:`constraints()`
 

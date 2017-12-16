@@ -74,8 +74,6 @@ Block until the job has finished.
     virtual bool isActive() const = 0;
 %Docstring
 Tell whether the rendering job is currently running in background.
-
-:rtype: bool
 %End
 
     virtual bool usedCachedLabels() const = 0;
@@ -83,8 +81,6 @@ Tell whether the rendering job is currently running in background.
 Returns true if the render job was able to use a cached labeling solution.
 If so, any previously stored labeling results (see takeLabelingResults())
 should be retained.
-
-:rtype: bool
 
 .. seealso:: :py:func:`takeLabelingResults()`
 
@@ -95,8 +91,6 @@ should be retained.
 %Docstring
 Get pointer to internal labeling engine (in order to get access to the results).
 This should not be used if cached labeling was redrawn - see usedCachedLabels().
-
-:rtype: QgsLabelingResults
 
 .. seealso:: :py:func:`usedCachedLabels()`
 %End
@@ -113,8 +107,6 @@ before the render job.
 
     const QgsFeatureFilterProvider *featureFilterProvider() const;
 %Docstring
-
-:rtype: QgsFeatureFilterProvider
 
 .. versionadded:: 3.0
 Returns the feature filter provider used by the QgsRenderContext of
@@ -134,8 +126,6 @@ each LayerRenderJob.
     Errors errors() const;
 %Docstring
 List of errors that happened during the rendering job - available when the rendering has been finished
-
-:rtype: Errors
 %End
 
 
@@ -149,8 +139,6 @@ Does not take ownership of the object.
 %Docstring
 Returns the total time it took to finish the job (in milliseconds).
 
-:rtype: int
-
 .. seealso:: :py:func:`perLayerRenderingTime()`
 %End
 
@@ -160,8 +148,6 @@ Returns the total time it took to finish the job (in milliseconds).
 Return map settings with which this job was started.
 
 :return: A QgsMapSettings instance with render settings
-:rtype: QgsMapSettings
-
 
 .. versionadded:: 2.8
 %End
@@ -218,8 +204,6 @@ The image can be queried even while the rendering is still in progress to get in
     virtual QImage renderedImage() = 0;
 %Docstring
 Get a preview/resulting image
-
-:rtype: QImage
 %End
 
 };

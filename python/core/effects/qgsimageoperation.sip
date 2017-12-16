@@ -49,6 +49,7 @@ on which is faster for the particular operation.
     static void convertToGrayscale( QImage &image, const GrayscaleMode mode = GrayscaleLuminosity );
 %Docstring
 Convert a QImage to a grayscale image. Alpha channel is preserved.
+
 :param image: QImage to convert
 :param mode: mode to use during grayscale conversion
 %End
@@ -56,6 +57,7 @@ Convert a QImage to a grayscale image. Alpha channel is preserved.
     static void adjustBrightnessContrast( QImage &image, const int brightness, const double contrast );
 %Docstring
 Alter the brightness or contrast of a QImage.
+
 :param image: QImage to alter
 :param brightness: brightness value, in the range -255 to 255. A brightness value of 0 indicates
 no change to brightness, a negative value will darken the image, and a positive value will brighten
@@ -69,6 +71,7 @@ contrast of the image.
                                      const double colorizeStrength = 1.0 );
 %Docstring
 Alter the hue or saturation of a QImage.
+
 :param image: QImage to alter
 :param saturation: double between 0 and 2 inclusive, where 0 = desaturate and 1.0 = no change
 :param colorizeColor: color to use for colorizing image. Set to an invalid QColor to disable
@@ -79,6 +82,7 @@ colorization.
     static void multiplyOpacity( QImage &image, const double factor );
 %Docstring
 Multiplies opacity of image pixel values by a factor.
+
 :param image: QImage to alter
 :param factor: factor to multiple pixel's opacity by
 %End
@@ -87,6 +91,7 @@ Multiplies opacity of image pixel values by a factor.
 %Docstring
 Overlays a color onto an image. This operation retains the alpha channel of the
 original image, but replaces all image pixel colors with the specified color.
+
 :param image: QImage to alter
 :param color: color to overlay (any alpha component of the color is ignored)
 %End
@@ -123,6 +128,7 @@ Color ramp to use for shading the distance transform
 %Docstring
 Performs a distance transform on the source image and shades the result
 using a color ramp.
+
 :param image: QImage to alter
 :param properties: DistanceTransformProperties object with parameters
 for the distance transform operation
@@ -132,6 +138,7 @@ for the distance transform operation
 %Docstring
 Performs a stack blur on an image. Stack blur represents a good balance between
 speed and blur quality.
+
 :param image: QImage to blur
 :param radius: blur radius in pixels, maximum value of 16
 :param alphaOnly: set to true to blur only the alpha component of the image
@@ -146,12 +153,11 @@ alphaOnly is set to false, or ARGB32 if alphaOnly is true
 %Docstring
 Performs a gaussian blur on an image. Gaussian blur is slower but results in a high
 quality blur.
+
 :param image: QImage to blur
 :param radius: blur radius in pixels
 
 :return: blurred image
-:rtype: QImage
-
 
 .. note::
 
@@ -161,6 +167,7 @@ quality blur.
     static void flipImage( QImage &image, FlipType type );
 %Docstring
 Flips an image horizontally or vertically
+
 :param image: QImage to flip
 :param type: type of flip to perform (horizontal or vertical)
 %End
@@ -168,13 +175,12 @@ Flips an image horizontally or vertically
     static QRect nonTransparentImageRect( const QImage &image, QSize minSize = QSize(), bool center = false );
 %Docstring
 Calculates the non-transparent region of an image.
+
 :param image: source image
 :param minSize: minimum size for returned region, if desired. If the
 non-transparent region of the image is smaller than this minimum size,
 it will be centered in the returned rectangle.
 :param center: return rectangle will be centered on the center of the original image if set to true
-
-:rtype: QRect
 
 .. versionadded:: 2.9
 
@@ -184,13 +190,12 @@ it will be centered in the returned rectangle.
     static QImage cropTransparent( const QImage &image, QSize minSize = QSize(), bool center = false );
 %Docstring
 Crop any transparent border from around an image.
+
 :param image: source image
 :param minSize: minimum size for cropped image, if desired. If the
 cropped image is smaller than the minimum size, it will be centered
 in the returned image.
 :param center: cropped image will be centered on the center of the original image if set to true
-
-:rtype: QImage
 
 .. versionadded:: 2.9
 %End

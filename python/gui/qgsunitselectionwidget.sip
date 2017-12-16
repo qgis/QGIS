@@ -31,6 +31,7 @@ QgsMapUnitScale object.
     QgsMapUnitScaleWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapUnitScaleWidget.
+
 :param parent: parent widget
 %End
 
@@ -38,8 +39,6 @@ Constructor for QgsMapUnitScaleWidget.
 %Docstring
 Returns a QgsMapUnitScale representing the settings shown in the
 widget.
-
-:rtype: QgsMapUnitScale
 
 .. seealso:: :py:func:`setMapUnitScale()`
 
@@ -50,6 +49,7 @@ widget.
 %Docstring
 Updates the widget to reflect the settings from the specified
 QgsMapUnitScale object.
+
 :param scale: map unit scale to show in widget
 
 .. seealso:: :py:func:`mapUnitScale()`
@@ -61,6 +61,7 @@ QgsMapUnitScale object.
 %Docstring
 Sets the map canvas associated with the widget. This allows the
 widget to retrieve the current map scale from the canvas.
+
 :param canvas: map canvas
 %End
 
@@ -69,6 +70,7 @@ widget to retrieve the current map scale from the canvas.
     void mapUnitScaleChanged( const QgsMapUnitScale &scale );
 %Docstring
 Emitted when the settings in the widget are modified.
+
 :param scale: QgsMapUnitScale reflecting new settings from the widget
 %End
 
@@ -94,6 +96,7 @@ QgsMapUnitScale object.
     QgsMapUnitScaleDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMapUnitScaleDialog.
+
 :param parent: parent widget
 %End
 
@@ -102,8 +105,6 @@ Constructor for QgsMapUnitScaleDialog.
 Returns a QgsMapUnitScale representing the settings shown in the
 dialog.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setMapUnitScale()`
 %End
 
@@ -111,6 +112,7 @@ dialog.
 %Docstring
 Updates the dialog to reflect the settings from the specified
 QgsMapUnitScale object.
+
 :param scale: map unit scale to show in dialog
 
 .. seealso:: :py:func:`mapUnitScale()`
@@ -120,6 +122,7 @@ QgsMapUnitScale object.
 %Docstring
 Sets the map canvas associated with the dialog. This allows the dialog to retrieve the current
 map scale from the canvas.
+
 :param canvas: map canvas
 
 .. versionadded:: 2.12
@@ -147,12 +150,14 @@ adjustment of minimum and maximum scaling.
     QgsUnitSelectionWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsUnitSelectionWidget.
+
 :param parent: parent widget
 %End
 
     void setUnits( const QStringList &units, int mapUnitIdx );
 %Docstring
 Sets the units which the user can choose from in the combobox.
+
 :param units: list of strings for custom units to display in the widget
 :param mapUnitIdx: specifies which entry corresponds to the map units, or -1 if none
 %End
@@ -160,6 +165,7 @@ Sets the units which the user can choose from in the combobox.
     void setUnits( const QgsUnitTypes::RenderUnitList &units );
 %Docstring
 Sets the units which the user can choose from in the combobox. Clears any existing units.
+
 :param units: list of valid units
 
 .. versionadded:: 2.9
@@ -168,8 +174,6 @@ Sets the units which the user can choose from in the combobox. Clears any existi
     int getUnit() const;
 %Docstring
 Get the selected unit index
-
-:rtype: int
 %End
 
     QgsUnitTypes::RenderUnit unit() const;
@@ -177,8 +181,6 @@ Get the selected unit index
 Returns the current predefined selected unit (if applicable).
 
 :return: selected output unit, or QgsUnitTypes.RenderUnknownUnit if the widget was populated with custom unit types
-:rtype: QgsUnitTypes.RenderUnit
-
 
 .. versionadded:: 2.9
 %End
@@ -186,6 +188,7 @@ Returns the current predefined selected unit (if applicable).
     void setUnit( int unitIndex ) /PyName=setUnitIndex/;
 %Docstring
 Sets the selected unit index
+
 :param unitIndex: index of unit to set as current
 
 .. note::
@@ -196,14 +199,13 @@ Sets the selected unit index
     void setUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the selected unit
+
 :param unit: predefined unit to set as current
 %End
 
     QgsMapUnitScale getMapUnitScale() const;
 %Docstring
 Returns the map unit scale
-
-:rtype: QgsMapUnitScale
 %End
 
     void setMapUnitScale( const QgsMapUnitScale &scale );
@@ -215,6 +217,7 @@ Sets the map unit scale
 %Docstring
 Sets the map canvas associated with the widget. This allows the widget to retrieve the current
 map scale from the canvas.
+
 :param canvas: map canvas
 
 .. versionadded:: 2.12

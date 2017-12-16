@@ -41,8 +41,6 @@ Load settings according to current environment variables.
 Load setting for a specific environment variable name.
 
 :return: true if loading is successful, false in case of an invalid name.
-:rtype: bool
-
 %End
 
     void logSummary() const;
@@ -55,8 +53,6 @@ Log a summary of settings currently loaded.
 Returns the ini file loaded by QSetting.
 
 :return: the path of the ini file or an empty string if none is loaded.
-:rtype: str
-
 %End
 
     bool parallelRendering() const;
@@ -64,8 +60,6 @@ Returns the ini file loaded by QSetting.
 Returns parallel rendering setting.
 
 :return: true if parallel rendering is activated, false otherwise.
-:rtype: bool
-
 %End
 
     int maxThreads() const;
@@ -73,8 +67,6 @@ Returns parallel rendering setting.
 Returns the maximum number of threads to use.
 
 :return: the number of threads.
-:rtype: int
-
 %End
 
     int maxCacheLayers() const;
@@ -82,8 +74,6 @@ Returns the maximum number of threads to use.
 Returns the maximum number of cached layers.
 
 :return: the number of cached layers.
-:rtype: int
-
 %End
 
     QgsMessageLog::MessageLevel logLevel() const;
@@ -91,8 +81,6 @@ Returns the maximum number of cached layers.
 Returns the log level.
 
 :return: the log level.
-:rtype: QgsMessageLog.MessageLevel
-
 %End
 
     QString projectFile() const;
@@ -100,8 +88,6 @@ Returns the log level.
 Returns the QGS project file to use.
 
 :return: the path of the QGS project or an empty string if none is defined.
-:rtype: str
-
 %End
 
     QString logFile() const;
@@ -109,8 +95,6 @@ Returns the QGS project file to use.
 Returns the log file.
 
 :return: the path of the log file or an empty string if none is defined.
-:rtype: str
-
 %End
 
     qint64 cacheSize() const;
@@ -118,8 +102,6 @@ Returns the log file.
 Returns the cache size.
 
 :return: the cache size.
-:rtype: qint64
-
 %End
 
     QString cacheDirectory() const;
@@ -127,8 +109,6 @@ Returns the cache size.
 Returns the cache directory.
 
 :return: the directory.
-:rtype: str
-
 %End
 
 };

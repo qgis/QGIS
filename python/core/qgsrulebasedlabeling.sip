@@ -52,8 +52,6 @@ takes ownership of settings
         QgsPalLayerSettings *settings() const;
 %Docstring
 Get the labeling settings. May return a null pointer.
-
-:rtype: QgsPalLayerSettings
 %End
 
         bool dependsOnScale() const;
@@ -61,8 +59,6 @@ Get the labeling settings. May return a null pointer.
 Determines if scale based labeling is active
 
 :return: True if scale based labeling is active
-:rtype: bool
-
 %End
 
         double maximumScale() const;
@@ -70,8 +66,6 @@ Determines if scale based labeling is active
 Returns the maximum map scale (i.e. most "zoomed in" scale) at which the label rule will be active.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no maximum scale visibility.
-
-:rtype: float
 
 .. seealso:: :py:func:`minimumScale()`
 
@@ -86,8 +80,6 @@ Returns the minimum map scale (i.e. most "zoomed out" scale) at which the label 
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no minimum scale visibility.
 
-:rtype: float
-
 .. seealso:: :py:func:`maximumScale()`
 
 .. seealso:: :py:func:`setMinimumScale()`
@@ -100,8 +92,6 @@ A scale of 0 indicates no minimum scale visibility.
 A filter that will check if this rule applies
 
 :return: An expression
-:rtype: str
-
 %End
 
         QString description() const;
@@ -109,8 +99,6 @@ A filter that will check if this rule applies
 A human readable description for this rule
 
 :return: Description
-:rtype: str
-
 %End
 
         bool active() const;
@@ -118,8 +106,6 @@ A human readable description for this rule
 Returns if this rule is active
 
 :return: True if the rule is active
-:rtype: bool
-
 %End
 
         bool isElse() const;
@@ -127,15 +113,11 @@ Returns if this rule is active
 Check if this rule is an ELSE rule
 
 :return: True if this rule is an else rule
-:rtype: bool
-
 %End
 
         QString ruleKey() const;
 %Docstring
 Unique rule identifier (for identification of rule within labeling, used as provider ID)
-
-:rtype: str
 %End
 
         void setSettings( QgsPalLayerSettings *settings /Transfer/ );
@@ -182,6 +164,7 @@ Set a human readable description for this rule
         void setActive( bool state );
 %Docstring
 Sets if this rule is active
+
 :param state: Determines if the rule should be activated or deactivated
 %End
 
@@ -203,8 +186,6 @@ Override the assigned rule key (should be used just internally by rule-based lab
 Return all children rules of this rule
 
 :return: A list of rules
-:rtype: QgsRuleBasedLabeling.RuleList
-
 %End
 
 
@@ -213,8 +194,6 @@ Return all children rules of this rule
 Returns all children, grand-children, grand-grand-children, grand-gra... you get it
 
 :return: A list of descendant rules
-:rtype: QgsRuleBasedLabeling.RuleList
-
 %End
 
 
@@ -223,8 +202,6 @@ Returns all children, grand-children, grand-grand-children, grand-gra... you get
 The parent rule
 
 :return: Parent rule
-:rtype: QgsRuleBasedLabeling.Rule
-
 %End
 
         void appendChild( QgsRuleBasedLabeling::Rule *rule /Transfer/ );
@@ -245,35 +222,28 @@ delete child rule
         const QgsRuleBasedLabeling::Rule *findRuleByKey( const QString &key ) const;
 %Docstring
 Try to find a rule given its unique key
-
-:rtype: QgsRuleBasedLabeling.Rule
 %End
 
 
         QgsRuleBasedLabeling::Rule *clone() const /Factory/;
 %Docstring
 clone this rule, return new instance
-
-:rtype: QgsRuleBasedLabeling.Rule
 %End
 
 
         static QgsRuleBasedLabeling::Rule *create( const QDomElement &ruleElem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Create a rule from an XML definition
+
 :param ruleElem:  The XML rule element
 :param context: reading context
 
 :return: A new rule
-:rtype: QgsRuleBasedLabeling.Rule
-
 %End
 
         QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 store labeling info to XML element
-
-:rtype: QDomElement
 %End
 
 
@@ -285,8 +255,6 @@ store labeling info to XML element
 %Docstring
 Returns true if this rule or any of its children requires advanced composition effects
 to render.
-
-:rtype: bool
 %End
 
       private:
@@ -301,16 +269,10 @@ Constructs the labeling from given tree of rules (takes ownership)
     ~QgsRuleBasedLabeling();
 
     QgsRuleBasedLabeling::Rule *rootRule();
-%Docstring
-
-:rtype: QgsRuleBasedLabeling.Rule
-%End
 
     static QgsRuleBasedLabeling *create( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Create the instance from a DOM element with saved configuration
-
-:rtype: QgsRuleBasedLabeling
 %End
 
 

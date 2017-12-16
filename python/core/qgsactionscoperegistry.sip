@@ -43,8 +43,6 @@ to that one instead.
 %Docstring
 Get all registered action scopes.
 
-:rtype: set of QgsActionScope
-
 .. versionadded:: 3.0
 %End
 
@@ -65,8 +63,6 @@ Unregister an additional action scope.
     QgsActionScope actionScope( const QString &id );
 %Docstring
 Get an action scope by its id.
-
-:rtype: QgsActionScope
 
 .. versionadded:: 3.0
 %End

@@ -38,6 +38,7 @@ length, and if applicable, precision.
               QVariant::Type subType = QVariant::Invalid );
 %Docstring
 Constructor. Constructs a new QgsField object.
+
 :param name: Field name
 :param type: Field variant type, currently supported: String / Int / Double
 :param typeName: Field type (e.g., char, varchar, text, int, serial, double).
@@ -62,16 +63,10 @@ Copy constructor
 
     bool operator==( const QgsField &other ) const;
     bool operator!=( const QgsField &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
     QString name() const;
 %Docstring
 Returns the name of the field.
-
-:rtype: str
 
 .. seealso:: :py:func:`setName()`
 
@@ -83,8 +78,6 @@ Returns the name of the field.
 Returns the name to use when displaying this field. This will be the
 field alias if set, otherwise the field name.
 
-:rtype: str
-
 .. seealso:: :py:func:`name()`
 
 .. seealso:: :py:func:`alias()`
@@ -95,8 +88,6 @@ field alias if set, otherwise the field name.
     QVariant::Type type() const;
 %Docstring
 Gets variant type of the field as it will be retrieved from data source
-
-:rtype: QVariant.Type
 %End
 
     QVariant::Type subType() const;
@@ -104,8 +95,6 @@ Gets variant type of the field as it will be retrieved from data source
 If the field is a collection, gets its element's type.
 When all the elements don't need to have the same type, this returns
 QVariant.Invalid.
-
-:rtype: QVariant.Type
 
 .. versionadded:: 3.0
 %End
@@ -117,8 +106,6 @@ are char, int, double, blob, geometry, etc. The type is stored exactly as
 the data store reports it, with no attempt to standardize the value.
 
 :return: QString containing the field type
-:rtype: str
-
 %End
 
     int length() const;
@@ -126,8 +113,6 @@ the data store reports it, with no attempt to standardize the value.
 Gets the length of the field.
 
 :return: int containing the length of the field
-:rtype: int
-
 %End
 
     int precision() const;
@@ -135,15 +120,11 @@ Gets the length of the field.
 Gets the precision of the field. Not all field types have a related precision.
 
 :return: int containing the precision or zero if not applicable to the field type.
-:rtype: int
-
 %End
 
     QString comment() const;
 %Docstring
 Returns the field comment
-
-:rtype: str
 %End
 
     bool isNumeric() const;
@@ -151,14 +132,13 @@ Returns the field comment
 Returns if this field is numeric. Any integer or floating point type
 will return true for this.
 
-:rtype: bool
-
 .. versionadded:: 2.18
 %End
 
     void setName( const QString &name );
 %Docstring
 Set the field name.
+
 :param name: Name of the field
 %End
 
@@ -179,18 +159,21 @@ QVariant.Invalid.
     void setTypeName( const QString &typeName );
 %Docstring
 Set the field type.
+
 :param typeName: Field type
 %End
 
     void setLength( int len );
 %Docstring
 Set the field length.
+
 :param len: Length of the field
 %End
 
     void setPrecision( int precision );
 %Docstring
 Set the field precision.
+
 :param precision: Precision of the field
 %End
 
@@ -204,8 +187,6 @@ Set the field comment
 Returns the expression used when calculating the default value for the field.
 
 :return: expression evaluated when calculating default values for field, or an
-:rtype: QgsDefaultValue
-
 empty string if no default is set
 
 .. versionadded:: 3.0
@@ -216,6 +197,7 @@ empty string if no default is set
     void setDefaultValueDefinition( const QgsDefaultValue &defaultValueDefinition );
 %Docstring
 Sets an expression to use when calculating the default value for the field.
+
 :param defaultValueDefinition: expression to evaluate when calculating default values for field. Pass
 a default constructed QgsDefaultValue() to reset.
 
@@ -227,8 +209,6 @@ a default constructed QgsDefaultValue() to reset.
     const QgsFieldConstraints &constraints() const;
 %Docstring
 Returns constraints which are present for the field.
-
-:rtype: QgsFieldConstraints
 
 .. versionadded:: 3.0
 
@@ -249,8 +229,6 @@ Sets constraints which are present for the field.
 Returns the alias for the field (the friendly displayed name of the field ),
 or an empty string if there is no alias.
 
-:rtype: str
-
 .. seealso:: :py:func:`setAlias()`
 
 .. versionadded:: 3.0
@@ -259,6 +237,7 @@ or an empty string if there is no alias.
     void setAlias( const QString &alias );
 %Docstring
 Sets the alias for the field (the friendly displayed name of the field ).
+
 :param alias: field alias, or empty string to remove an existing alias
 
 .. seealso:: :py:func:`alias()`
@@ -269,8 +248,6 @@ Sets the alias for the field (the friendly displayed name of the field ).
     QString displayString( const QVariant &v ) const;
 %Docstring
 Formats string for display
-
-:rtype: str
 %End
 
     bool convertCompatible( QVariant &v ) const;
@@ -280,8 +257,6 @@ Converts the provided variant to a compatible format
 :param v:  The value to convert
 
 :return:   True if the conversion was successful
-:rtype: bool
-
 %End
 %MethodCode
     PyObject *sipParseErr = NULL;
@@ -353,8 +328,6 @@ Defaults may be set by the provider and can be overridden
 by manual field configuration.
 
 :return: the value
-:rtype: QgsEditorWidgetSetup
-
 %End
 
 }; // class QgsField

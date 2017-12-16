@@ -85,25 +85,26 @@ Delimiter to use for joining values with the StringConcatenate aggregate.
     QgsAggregateCalculator( const QgsVectorLayer *layer );
 %Docstring
 Constructor for QgsAggregateCalculator.
+
 :param layer: vector layer to calculate aggregate from
 %End
 
     const QgsVectorLayer *layer() const;
 %Docstring
 Returns the associated vector layer.
-
-:rtype: QgsVectorLayer
 %End
 
     void setParameters( const AggregateParameters &parameters );
 %Docstring
 Sets all aggregate parameters from a parameter bundle.
+
 :param parameters: aggregate parameters
 %End
 
     void setFilter( const QString &filterExpression );
 %Docstring
 Sets a filter to limit the features used during the aggregate calculation.
+
 :param filterExpression: expression for filtering features, or empty string to remove filter
 
 .. seealso:: :py:func:`filter()`
@@ -113,14 +114,13 @@ Sets a filter to limit the features used during the aggregate calculation.
 %Docstring
 Returns the filter which limits the features used during the aggregate calculation.
 
-:rtype: str
-
 .. seealso:: :py:func:`setFilter()`
 %End
 
     void setDelimiter( const QString &delimiter );
 %Docstring
 Sets the delimiter to use for joining values with the StringConcatenate aggregate.
+
 :param delimiter: string delimiter
 
 .. seealso:: :py:func:`delimiter()`
@@ -130,8 +130,6 @@ Sets the delimiter to use for joining values with the StringConcatenate aggregat
 %Docstring
 Returns the delimiter used for joining values with the StringConcatenate aggregate.
 
-:rtype: str
-
 .. seealso:: :py:func:`setDelimiter()`
 %End
 
@@ -139,6 +137,7 @@ Returns the delimiter used for joining values with the StringConcatenate aggrega
                         QgsExpressionContext *context = 0, bool *ok = 0 ) const;
 %Docstring
 Calculates the value of an aggregate.
+
 :param aggregate: aggregate to calculate
 :param fieldOrExpression: source field or expression to use as basis for aggregated values.
 If an expression is used, then the context parameter must be set.
@@ -146,26 +145,21 @@ If an expression is used, then the context parameter must be set.
 :param ok: if specified, will be set to true if aggregate calculation was successful
 
 :return: calculated aggregate value
-:rtype: QVariant
-
 %End
 
     static Aggregate stringToAggregate( const QString &string, bool *ok = 0 );
 %Docstring
 Converts a string to a aggregate type.
+
 :param string: string to convert
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: aggregate type
-:rtype: Aggregate
-
 %End
 
     static QList< QgsAggregateCalculator::AggregateInfo > aggregates();
 %Docstring
 Structured information for available aggregates.
-
-:rtype: list of QgsAggregateCalculator.AggregateInfo
 
 .. versionadded:: 3.2
 %End

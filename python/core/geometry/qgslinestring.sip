@@ -65,9 +65,8 @@ or repeatedly calling addVertex()
     QgsPoint pointN( int i ) const;
 %Docstring
 Returns the specified point from inside the line string.
-:param i: index of point, starting at 0 for the first point
 
-:rtype: QgsPoint
+:param i: index of point, starting at 0 for the first point
 %End
 
     virtual double xAt( int index ) const;
@@ -78,11 +77,10 @@ Returns the specified point from inside the line string.
     double zAt( int index ) const;
 %Docstring
 Returns the z-coordinate of the specified node in the line string.
+
 :param index: index of node, where the first node in the line is 0
 
 :return: z-coordinate of node, or ``nan`` if index is out of bounds or the line
-:rtype: float
-
 does not have a z dimension
 
 .. seealso:: :py:func:`setZAt()`
@@ -91,11 +89,10 @@ does not have a z dimension
     double mAt( int index ) const;
 %Docstring
 Returns the m value of the specified node in the line string.
+
 :param index: index of node, where the first node in the line is 0
 
 :return: m value of node, or ``nan`` if index is out of bounds or the line
-:rtype: float
-
 does not have m values
 
 .. seealso:: :py:func:`setMAt()`
@@ -104,6 +101,7 @@ does not have m values
     void setXAt( int index, double x );
 %Docstring
 Sets the x-coordinate of the specified node in the line string.
+
 :param index: index of node, where the first node in the line is 0. Corresponding
 node must already exist in line string.
 :param x: x-coordinate of node
@@ -114,6 +112,7 @@ node must already exist in line string.
     void setYAt( int index, double y );
 %Docstring
 Sets the y-coordinate of the specified node in the line string.
+
 :param index: index of node, where the first node in the line is 0. Corresponding
 node must already exist in line string.
 :param y: y-coordinate of node
@@ -124,6 +123,7 @@ node must already exist in line string.
     void setZAt( int index, double z );
 %Docstring
 Sets the z-coordinate of the specified node in the line string.
+
 :param index: index of node, where the first node in the line is 0. Corresponding
 node must already exist in line string, and the line string must have z-dimension.
 :param z: z-coordinate of node
@@ -134,6 +134,7 @@ node must already exist in line string, and the line string must have z-dimensio
     void setMAt( int index, double m );
 %Docstring
 Sets the m value of the specified node in the line string.
+
 :param index: index of node, where the first node in the line is 0. Corresponding
 node must already exist in line string, and the line string must have m values.
 :param m: m value of node
@@ -145,18 +146,21 @@ node must already exist in line string, and the line string must have m values.
 %Docstring
 Resets the line string to match the specified list of points. The line string will
 inherit the dimensionality of the first point in the list.
+
 :param points: new points for line string. If empty, line string will be cleared.
 %End
 
     void append( const QgsLineString *line );
 %Docstring
 Appends the contents of another line string to the end of this line string.
+
 :param line: line to append. Ownership is not transferred.
 %End
 
     void addVertex( const QgsPoint &pt );
 %Docstring
 Adds a new vertex to the end of the line string.
+
 :param pt: vertex to add
 %End
 
@@ -171,8 +175,6 @@ Closes the line string by appending the first point to the end of the line, if i
 Returns the geometry converted to the more generic curve type QgsCompoundCurve
 
 :return: the converted geometry. Caller takes ownership*
-:rtype: QgsCompoundCurve
-
 %End
 
     void extend( double startDistance, double endDistance );
@@ -228,10 +230,9 @@ segment in the line.
 %Docstring
 Returns a new line string geometry corresponding to a segmentized approximation
 of the curve.
+
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
-
-:rtype: QgsLineString
 %End
 
     virtual int numPoints() const;

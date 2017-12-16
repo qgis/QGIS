@@ -37,13 +37,12 @@ Ownership is transferred to the layout.
     static QgsLayoutItemTextTable *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new QgsLayoutItemTextTable for the specified parent ``layout``.
-
-:rtype: QgsLayoutItemTextTable
 %End
 
     void addRow( const QStringList &row );
 %Docstring
 Adds a row to the table
+
 :param row: list of strings to use for each cell's value in the newly added row
 
 .. note::
@@ -60,6 +59,7 @@ of columns in the table then these extra strings will be ignored.
     void setContents( const QVector< QStringList > &contents );
 %Docstring
 Sets the contents of the text table.
+
 :param contents: list of table rows
 
 .. seealso:: :py:func:`addRow`

@@ -45,8 +45,6 @@ Constructor
 Returns whether calculations will use the ellipsoid. Calculations will only use the
 ellipsoid if a valid ellipsoid() has been set.
 
-:rtype: bool
-
 .. versionadded:: 2.14
 
 .. seealso:: :py:func:`ellipsoid()`
@@ -65,8 +63,6 @@ Sets source spatial reference system.
 %Docstring
 Returns the source spatial reference system.
 
-:rtype: QgsCoordinateReferenceSystem
-
 .. seealso:: :py:func:`setSourceCrs()`
 %End
 
@@ -77,8 +73,6 @@ retrieved using QgsEllipsoidUtils.acronyms().
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: true if ellipsoid was successfully set
-:rtype: bool
-
 
 .. seealso:: :py:func:`ellipsoid()`
 
@@ -91,8 +85,6 @@ Sets ellipsoid by supplied radii. Calculations will only use the ellipsoid if
 a valid ellipsoid been set.
 
 :return: true if ellipsoid was successfully set
-:rtype: bool
-
 
 .. seealso:: :py:func:`ellipsoid()`
 
@@ -104,8 +96,6 @@ a valid ellipsoid been set.
 Returns ellipsoid's acronym. Calculations will only use the
 ellipsoid if a valid ellipsoid has been set.
 
-:rtype: str
-
 .. seealso:: :py:func:`setEllipsoid()`
 
 .. seealso:: :py:func:`willUseEllipsoid()`
@@ -114,8 +104,6 @@ ellipsoid if a valid ellipsoid has been set.
     double ellipsoidSemiMajor() const;
 %Docstring
 Returns the ellipsoid's semi major axis.
-
-:rtype: float
 
 .. seealso:: :py:func:`ellipsoid()`
 
@@ -127,8 +115,6 @@ Returns the ellipsoid's semi major axis.
     double ellipsoidSemiMinor() const;
 %Docstring
 Returns ellipsoid's semi minor axis.
-
-:rtype: float
 
 .. seealso:: :py:func:`ellipsoid()`
 
@@ -142,8 +128,6 @@ Returns ellipsoid's semi minor axis.
 Returns ellipsoid's inverse flattening.
 The inverse flattening is calculated with invf = a/(a-b).
 
-:rtype: float
-
 .. seealso:: :py:func:`ellipsoid()`
 
 .. seealso:: :py:func:`ellipsoidSemiMajor()`
@@ -154,11 +138,10 @@ The inverse flattening is calculated with invf = a/(a-b).
     double measureArea( const QgsGeometry &geometry ) const;
 %Docstring
 Measures the area of a geometry.
+
 :param geometry: geometry to measure
 
 :return: area of geometry. For geometry collections, non surface geometries will be ignored. The units for the
-:rtype: float
-
 returned area can be retrieved by calling areaUnits().
 
 .. versionadded:: 2.12
@@ -173,11 +156,10 @@ returned area can be retrieved by calling areaUnits().
     double measureLength( const QgsGeometry &geometry ) const;
 %Docstring
 Measures the length of a geometry.
+
 :param geometry: geometry to measure
 
 :return: length of geometry. For geometry collections, non curve geometries will be ignored. The units for the
-:rtype: float
-
 returned distance can be retrieved by calling lengthUnits().
 
 .. versionadded:: 2.12
@@ -192,11 +174,10 @@ returned distance can be retrieved by calling lengthUnits().
     double measurePerimeter( const QgsGeometry &geometry ) const;
 %Docstring
 Measures the perimeter of a polygon geometry.
+
 :param geometry: geometry to measure
 
 :return: perimeter of geometry. For geometry collections, any non-polygon geometries will be ignored. The units for the
-:rtype: float
-
 returned perimeter can be retrieved by calling lengthUnits().
 
 .. versionadded:: 2.12
@@ -211,11 +192,10 @@ returned perimeter can be retrieved by calling lengthUnits().
     double measureLine( const QVector<QgsPointXY> &points ) const;
 %Docstring
 Measures the length of a line with multiple segments.
+
 :param points: list of points in line
 
 :return: length of line. The units for the returned length can be retrieved by calling lengthUnits().
-:rtype: float
-
 
 .. seealso:: :py:func:`lengthUnits()`
 %End
@@ -223,12 +203,11 @@ Measures the length of a line with multiple segments.
     double measureLine( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 %Docstring
 Measures the distance between two points.
+
 :param p1: start of line
 :param p2: end of line
 
 :return: distance between points. The units for the returned distance can be retrieved by calling lengthUnits().
-:rtype: float
-
 
 .. seealso:: :py:func:`lengthUnits()`
 %End
@@ -241,9 +220,8 @@ otherwise QgsPoint.project() will be called after QgsUnitTypes.fromUnitToUnitFac
 \note:
 The input Point must be in the coordinate reference system being used
 
-:rtype: float
-
 .. versionadded:: 3.0
+
 :param p1: start point [can be Cartesian or Geographic]
 :param distance: must be in meters
 :param azimuth: - azimuth in radians, clockwise from North
@@ -260,8 +238,6 @@ The input Point must be in the coordinate reference system being used
 %Docstring
 Returns the units of distance for length calculations made by this object.
 
-:rtype: QgsUnitTypes.DistanceUnit
-
 .. versionadded:: 2.14
 
 .. seealso:: :py:func:`areaUnits()`
@@ -271,8 +247,6 @@ Returns the units of distance for length calculations made by this object.
 %Docstring
 Returns the units of area for areal calculations made by this object.
 
-:rtype: QgsUnitTypes.AreaUnit
-
 .. versionadded:: 2.14
 
 .. seealso:: :py:func:`lengthUnits()`
@@ -281,20 +255,17 @@ Returns the units of area for areal calculations made by this object.
     double measurePolygon( const QVector<QgsPointXY> &points ) const;
 %Docstring
 Measures the area of the polygon described by a set of points.
-
-:rtype: float
 %End
 
     double bearing( const QgsPointXY &p1, const QgsPointXY &p2 ) const;
 %Docstring
 Computes the bearing (in radians) between two points.
-
-:rtype: float
 %End
 
     static QString formatDistance( double distance, int decimals, QgsUnitTypes::DistanceUnit unit, bool keepBaseUnit = false );
 %Docstring
 Returns an distance formatted as a friendly string.
+
 :param distance: distance to format
 :param decimals: number of decimal places to show
 :param unit: unit of distance
@@ -302,8 +273,6 @@ Returns an distance formatted as a friendly string.
 kilometers
 
 :return: formatted distance string
-:rtype: str
-
 
 .. versionadded:: 2.16
 
@@ -313,6 +282,7 @@ kilometers
     static QString formatArea( double area, int decimals, QgsUnitTypes::AreaUnit unit, bool keepBaseUnit = false );
 %Docstring
 Returns an area formatted as a friendly string.
+
 :param area: area to format
 :param decimals: number of decimal places to show
 :param unit: unit of area
@@ -320,8 +290,6 @@ Returns an area formatted as a friendly string.
 square kilometers
 
 :return: formatted area string
-:rtype: str
-
 
 .. versionadded:: 2.14
 
@@ -332,13 +300,12 @@ square kilometers
 %Docstring
 Takes a length measurement calculated by this QgsDistanceArea object and converts it to a
 different distance unit.
+
 :param length: length value calculated by this class to convert. It is assumed that the length
 was calculated by this class, ie that its unit of length is equal to lengthUnits().
 :param toUnits: distance unit to convert measurement to
 
 :return: converted distance
-:rtype: float
-
 
 .. seealso:: :py:func:`convertAreaMeasurement()`
 
@@ -349,13 +316,12 @@ was calculated by this class, ie that its unit of length is equal to lengthUnits
 %Docstring
 Takes an area measurement calculated by this QgsDistanceArea object and converts it to a
 different areal unit.
+
 :param area: area value calculated by this class to convert. It is assumed that the area
 was calculated by this class, ie that its unit of area is equal to areaUnits().
 :param toUnits: area unit to convert measurement to
 
 :return: converted area
-:rtype: float
-
 
 .. seealso:: :py:func:`convertLengthMeasurement()`
 
@@ -369,8 +335,6 @@ location of the projected point. Based on Vincenty's formula
 for the geodetic direct problem as described in "Geocentric
 Datum of Australia Technical Manual", Chapter 4.
 
-:rtype: QgsPointXY
-
 .. note::
 
    code (and documentation) taken from rttopo project
@@ -381,6 +345,7 @@ https://git.osgeo.org/gogs/rttopo/librttopo
 --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
 
 .. versionadded:: 3.0
+
 :param p1: - location of first geographic (latitude/longitude) point as degrees.
 :param distance: - distance in meters.
 :param azimuth: - azimuth in radians, clockwise from North

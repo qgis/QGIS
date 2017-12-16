@@ -87,16 +87,12 @@ called for the QgsLayoutItemMap to redraw the map with the new overview stack or
 %Docstring
 Returns a reference to an overview with matching overviewId within the stack.
 
-:rtype: QgsLayoutItemMapOverview
-
 .. seealso:: :py:func:`constOverview()`
 %End
 
     QgsLayoutItemMapOverview *overview( const int index ) const;
 %Docstring
 Returns a reference to an overview at the specified ``index`` within the stack.
-
-:rtype: QgsLayoutItemMapOverview
 
 .. seealso:: :py:func:`constOverview()`
 %End
@@ -106,8 +102,6 @@ Returns a reference to an overview at the specified ``index`` within the stack.
     QList< QgsLayoutItemMapOverview * > asList() const;
 %Docstring
 Returns a list of QgsLayoutItemMapOverviews contained by the stack.
-
-:rtype: list of QgsLayoutItemMapOverview
 %End
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc, const QgsReadWriteContext &context );
 
@@ -133,6 +127,7 @@ QgsLayoutItemMap, and shows the extent of another QgsLayoutItemMap.
     QgsLayoutItemMapOverview( const QString &name, QgsLayoutItemMap *map );
 %Docstring
 Constructor for QgsLayoutItemMapOverview.
+
 :param name: friendly display name for overview
 :param map: QgsLayoutItemMap the overview is attached to
 %End
@@ -160,8 +155,6 @@ the overview frame.
 %Docstring
 Returns the uuid of source map, or an empty string if no map set.
 
-:rtype: str
-
 .. seealso:: :py:func:`setFrameMapUuid()`
 
 .. seealso:: :py:func:`frameMap()`
@@ -178,8 +171,6 @@ Sets the ``map`` to show the overview extent of.
 %Docstring
 Returns the source map to show the overview extent of.
 
-:rtype: QgsLayoutItemMap
-
 .. seealso:: :py:func:`setFrameMap()`
 %End
 
@@ -195,16 +186,12 @@ is transferred to the overview.
 %Docstring
 Returns the fill symbol used for drawing the overview extent.
 
-:rtype: QgsFillSymbol
-
 .. seealso:: :py:func:`setFrameSymbol()`
 %End
 
     QPainter::CompositionMode blendMode() const;
 %Docstring
 Retrieves the blending mode used for drawing the overview.
-
-:rtype: QPainter.CompositionMode
 
 .. seealso:: :py:func:`setBlendMode()`
 %End
@@ -221,8 +208,6 @@ Sets the blending ``mode`` used for drawing the overview.
 Returns whether the overview frame is inverted, ie, whether the shaded area is drawn outside
 the extent of the overview map.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setInverted()`
 %End
 
@@ -237,8 +222,6 @@ the extent of the overview map.
     bool centered() const;
 %Docstring
 Returns whether the extent of the map is forced to center on the overview.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setCentered()`
 %End

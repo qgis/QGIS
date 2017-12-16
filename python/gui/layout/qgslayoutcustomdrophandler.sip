@@ -34,8 +34,6 @@ is returned, then the handler has accepted this file and it should not
 be further processed (e.g. by other QgsLayoutCustomDropHandler).
 
 The base class implementation does nothing.
-
-:rtype: bool
 %End
 };
 

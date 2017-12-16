@@ -19,16 +19,16 @@ class QgsHeatmapRendererWidget : QgsRendererWidget
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Static creation method
+
 :param layer: the layer where this renderer is applied
 :param style:
 :param renderer: the mask renderer (will not take ownership)
-
-:rtype: QgsRendererWidget
 %End
 
     QgsHeatmapRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 %Docstring
 Constructor
+
 :param layer: the layer where this renderer is applied
 :param style:
 :param renderer: the mask renderer (will not take ownership)

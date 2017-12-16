@@ -23,131 +23,41 @@ class QgsSymbolLayerUtils
   public:
 
     static QString encodeColor( const QColor &color );
-%Docstring
-
-:rtype: str
-%End
     static QColor decodeColor( const QString &str );
-%Docstring
-
-:rtype: QColor
-%End
 
     static QString encodeSldAlpha( int alpha );
-%Docstring
-
-:rtype: str
-%End
     static int decodeSldAlpha( const QString &str );
-%Docstring
-
-:rtype: int
-%End
 
     static QString encodeSldFontStyle( QFont::Style style );
-%Docstring
-
-:rtype: str
-%End
     static QFont::Style decodeSldFontStyle( const QString &str );
-%Docstring
-
-:rtype: QFont.Style
-%End
 
     static QString encodeSldFontWeight( int weight );
-%Docstring
-
-:rtype: str
-%End
     static int decodeSldFontWeight( const QString &str );
-%Docstring
-
-:rtype: int
-%End
 
     static QString encodePenStyle( Qt::PenStyle style );
-%Docstring
-
-:rtype: str
-%End
     static Qt::PenStyle decodePenStyle( const QString &str );
-%Docstring
-
-:rtype: Qt.PenStyle
-%End
 
     static QString encodePenJoinStyle( Qt::PenJoinStyle style );
-%Docstring
-
-:rtype: str
-%End
     static Qt::PenJoinStyle decodePenJoinStyle( const QString &str );
-%Docstring
-
-:rtype: Qt.PenJoinStyle
-%End
 
     static QString encodePenCapStyle( Qt::PenCapStyle style );
-%Docstring
-
-:rtype: str
-%End
     static Qt::PenCapStyle decodePenCapStyle( const QString &str );
-%Docstring
-
-:rtype: Qt.PenCapStyle
-%End
 
     static QString encodeSldLineJoinStyle( Qt::PenJoinStyle style );
-%Docstring
-
-:rtype: str
-%End
     static Qt::PenJoinStyle decodeSldLineJoinStyle( const QString &str );
-%Docstring
-
-:rtype: Qt.PenJoinStyle
-%End
 
     static QString encodeSldLineCapStyle( Qt::PenCapStyle style );
-%Docstring
-
-:rtype: str
-%End
     static Qt::PenCapStyle decodeSldLineCapStyle( const QString &str );
-%Docstring
-
-:rtype: Qt.PenCapStyle
-%End
 
     static QString encodeBrushStyle( Qt::BrushStyle style );
-%Docstring
-
-:rtype: str
-%End
     static Qt::BrushStyle decodeBrushStyle( const QString &str );
-%Docstring
-
-:rtype: Qt.BrushStyle
-%End
 
     static QString encodeSldBrushStyle( Qt::BrushStyle style );
-%Docstring
-
-:rtype: str
-%End
     static Qt::BrushStyle decodeSldBrushStyle( const QString &str );
-%Docstring
-
-:rtype: Qt.BrushStyle
-%End
 
     static QString encodePoint( QPointF point );
 %Docstring
 Encodes a QPointF to a string.
-
-:rtype: str
 
 .. seealso:: :py:func:`decodePoint()`
 
@@ -158,8 +68,6 @@ Encodes a QPointF to a string.
 %Docstring
 Decodes a QSizeF from a string.
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`encodePoint()`
 
 .. seealso:: :py:func:`decodeSize()`
@@ -168,8 +76,6 @@ Decodes a QSizeF from a string.
     static QString encodeSize( QSizeF size );
 %Docstring
 Encodes a QSizeF to a string.
-
-:rtype: str
 
 .. seealso:: :py:func:`decodeSize()`
 
@@ -182,8 +88,6 @@ Encodes a QSizeF to a string.
 %Docstring
 Decodes a QSizeF from a string.
 
-:rtype: QSizeF
-
 .. seealso:: :py:func:`encodeSize()`
 
 .. seealso:: :py:func:`decodePoint()`
@@ -192,47 +96,22 @@ Decodes a QSizeF from a string.
 %End
 
     static QString encodeMapUnitScale( const QgsMapUnitScale &mapUnitScale );
-%Docstring
-
-:rtype: str
-%End
     static QgsMapUnitScale decodeMapUnitScale( const QString &str );
-%Docstring
-
-:rtype: QgsMapUnitScale
-%End
 
     static QString encodeRealVector( const QVector<qreal> &v );
-%Docstring
-
-:rtype: str
-%End
     static QVector<qreal> decodeRealVector( const QString &s );
-%Docstring
-
-:rtype: list of qreal
-%End
 
     static QString encodeSldRealVector( const QVector<qreal> &v );
-%Docstring
-
-:rtype: str
-%End
     static QVector<qreal> decodeSldRealVector( const QString &s );
-%Docstring
-
-:rtype: list of qreal
-%End
 
     static QString encodeSldUom( QgsUnitTypes::RenderUnit unit, double *scaleFactor );
 %Docstring
 Encodes a render unit into an SLD unit of measure string.
+
 :param unit: unit to encode
 :param scaleFactor: if specified, will be set to scale factor for unit of measure
 
 :return: encoded string
-:rtype: str
-
 
 .. seealso:: :py:func:`decodeSldUom()`
 %End
@@ -240,12 +119,11 @@ Encodes a render unit into an SLD unit of measure string.
     static QgsUnitTypes::RenderUnit decodeSldUom( const QString &str, double *scaleFactor );
 %Docstring
 Decodes a SLD unit of measure string to a render unit.
+
 :param str: string to decode
 :param scaleFactor: if specified, will be set to scale factor for unit of measure
 
 :return: matching render unit
-:rtype: QgsUnitTypes.RenderUnit
-
 
 .. seealso:: :py:func:`encodeSldUom()`
 %End
@@ -253,41 +131,27 @@ Decodes a SLD unit of measure string to a render unit.
     static double sizeInPixelsFromSldUom( const QString &uom, double size );
 %Docstring
 Returns the size scaled in pixels according to the uom attribute.
+
 :param uom: The uom attribute from SLD 1.1 version
 :param size: The original size
 
 :return: the size in pixels
-:rtype: float
-
 
 .. versionadded:: 3.0
 %End
 
     static QString encodeScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
-%Docstring
-
-:rtype: str
-%End
     static QgsSymbol::ScaleMethod decodeScaleMethod( const QString &str );
-%Docstring
-
-:rtype: QgsSymbol.ScaleMethod
-%End
 
     static QPainter::CompositionMode decodeBlendMode( const QString &s );
-%Docstring
-
-:rtype: QPainter.CompositionMode
-%End
 
     static QIcon symbolPreviewIcon( QgsSymbol *symbol, QSize size, int padding = 0 );
 %Docstring
 Returns an icon preview for a color ramp.
+
 :param symbol: symbol
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
-
-:rtype: QIcon
 
 .. seealso:: :py:func:`symbolPreviewPixmap()`
 %End
@@ -295,12 +159,11 @@ Returns an icon preview for a color ramp.
     static QPixmap symbolPreviewPixmap( QgsSymbol *symbol, QSize size, int padding = 0, QgsRenderContext *customContext = 0 );
 %Docstring
 Returns a pixmap preview for a color ramp.
+
 :param symbol: symbol
 :param size: target pixmap size
 :param padding: space between icon edge and symbol
 :param customContext: render context to use when rendering symbol
-
-:rtype: QPixmap
 
 .. note::
 
@@ -312,14 +175,13 @@ Returns a pixmap preview for a color ramp.
     static QPicture symbolLayerPreviewPicture( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit units, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 %Docstring
 Draws a symbol layer preview to a QPicture
+
 :param layer: symbol layer to draw
 :param units: size units
 :param size: target size of preview picture
 :param scale: map unit scale for preview
 
 :return: QPicture containing symbol layer preview
-:rtype: QPicture
-
 
 .. versionadded:: 2.9
 
@@ -329,14 +191,13 @@ Draws a symbol layer preview to a QPicture
     static QIcon symbolLayerPreviewIcon( QgsSymbolLayer *layer, QgsUnitTypes::RenderUnit u, QSize size, const QgsMapUnitScale &scale = QgsMapUnitScale() );
 %Docstring
 Draws a symbol layer preview to an icon.
+
 :param layer: symbol layer to draw
 :param u: size units
 :param size: target size of preview icon
 :param scale: map unit scale for preview
 
 :return: icon containing symbol layer preview
-:rtype: QIcon
-
 
 .. seealso:: :py:func:`symbolLayerPreviewPicture()`
 %End
@@ -344,11 +205,10 @@ Draws a symbol layer preview to an icon.
     static QIcon colorRampPreviewIcon( QgsColorRamp *ramp, QSize size, int padding = 0 );
 %Docstring
 Returns an icon preview for a color ramp.
+
 :param ramp: color ramp
 :param size: target icon size
 :param padding: space between icon edge and color ramp
-
-:rtype: QIcon
 
 .. seealso:: :py:func:`colorRampPreviewPixmap()`
 %End
@@ -356,11 +216,10 @@ Returns an icon preview for a color ramp.
     static QPixmap colorRampPreviewPixmap( QgsColorRamp *ramp, QSize size, int padding = 0 );
 %Docstring
 Returns a pixmap preview for a color ramp.
+
 :param ramp: color ramp
 :param size: target pixmap size
 :param padding: space between icon edge and color ramp
-
-:rtype: QPixmap
 
 .. seealso:: :py:func:`colorRampPreviewIcon()`
 %End
@@ -370,33 +229,26 @@ Returns a pixmap preview for a color ramp.
     static double estimateMaxSymbolBleed( QgsSymbol *symbol, const QgsRenderContext &context );
 %Docstring
 Returns the maximum estimated bleed for the symbol
-
-:rtype: float
 %End
 
     static QgsSymbol *loadSymbol( const QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Attempts to load a symbol from a DOM element
+
 :param element: DOM element representing symbol
 :param context: object to transform relative to absolute paths
 
 :return: decoded symbol, if possible
-:rtype: QgsSymbol
-
 %End
 
 
     static QgsSymbolLayer *loadSymbolLayer( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Reads and returns symbol layer from XML. Caller is responsible for deleting the returned object
-
-:rtype: QgsSymbolLayer
 %End
     static QDomElement saveSymbol( const QString &symbolName, QgsSymbol *symbol, QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
 Writes a symbol definition to XML
-
-:rtype: QDomElement
 %End
 
     static QString symbolProperties( QgsSymbol *symbol );
@@ -404,102 +256,36 @@ Writes a symbol definition to XML
 Returns a string representing the symbol. Can be used to test for equality
 between symbols.
 
-:rtype: str
-
 .. versionadded:: 2.12
 %End
 
     static bool createSymbolLayerListFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType, QgsSymbolLayerList &layers );
-%Docstring
-
-:rtype: bool
-%End
 
     static QgsSymbolLayer *createFillLayerFromSld( QDomElement &element ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
     static QgsSymbolLayer *createLineLayerFromSld( QDomElement &element ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
     static QgsSymbolLayer *createMarkerLayerFromSld( QDomElement &element ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
 
     static bool convertPolygonSymbolizerToPointMarker( QDomElement &element, QgsSymbolLayerList &layerList );
-%Docstring
-
-:rtype: bool
-%End
     static bool hasExternalGraphic( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
     static bool hasWellKnownMark( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
 
     static bool needFontMarker( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
     static bool needSvgMarker( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
     static bool needEllipseMarker( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
     static bool needMarkerLine( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
     static bool needLinePatternFill( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
     static bool needPointPatternFill( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
     static bool needSvgFill( QDomElement &element );
-%Docstring
-
-:rtype: bool
-%End
 
     static void fillToSld( QDomDocument &doc, QDomElement &element,
                            Qt::BrushStyle brushStyle, const QColor &color = QColor() );
     static bool fillFromSld( QDomElement &element,
                              Qt::BrushStyle &brushStyle, QColor &color );
-%Docstring
-
-:rtype: bool
-%End
 
     static bool lineFromSld( QDomElement &element,
                              Qt::PenStyle &penStyle, QColor &color, double &width,
                              Qt::PenJoinStyle *penJoinStyle = 0, Qt::PenCapStyle *penCapStyle = 0,
                              QVector<qreal> *customDashPattern = 0, double *dashOffset = 0 );
-%Docstring
-
-:rtype: bool
-%End
 
     static void externalGraphicToSld( QDomDocument &doc, QDomElement &element,
                                       const QString &path, const QString &mime,
@@ -507,10 +293,6 @@ between symbols.
     static bool externalGraphicFromSld( QDomElement &element,
                                         QString &path, QString &mime,
                                         QColor &color, double &size );
-%Docstring
-
-:rtype: bool
-%End
 
     static void wellKnownMarkerToSld( QDomDocument &doc, QDomElement &element,
                                       const QString &name, const QColor &color, const QColor &strokeColor, Qt::PenStyle strokeStyle,
@@ -520,8 +302,6 @@ between symbols.
                                         QString &name, QColor &color, QColor &strokeColor, Qt::PenStyle &strokeStyle,
                                         double &strokeWidth, double &size ) /PyName=wellKnownMarkerFromSld2/;
 %Docstring
-
-:rtype: bool
 
 .. note::
 
@@ -534,10 +314,6 @@ between symbols.
     static bool externalMarkerFromSld( QDomElement &element,
                                        QString &path, QString &format, int &markIndex,
                                        QColor &color, double &size );
-%Docstring
-
-:rtype: bool
-%End
 
 
     static void labelTextToSld( QDomDocument &doc, QDomElement &element, const QString &label,
@@ -550,42 +326,28 @@ between symbols.
                                        const QVector<qreal> *dashPattern = 0 );
 %Docstring
 Create ogr feature style string for pen
-
-:rtype: str
 %End
 
     static QString ogrFeatureStyleBrush( const QColor &fillColr );
 %Docstring
 Create ogr feature style string for brush
-:param fillColr: fill color*
 
-:rtype: str
+:param fillColr: fill color*
 %End
 
     static void createRotationElement( QDomDocument &doc, QDomElement &element, const QString &rotationFunc );
     static bool rotationFromSldElement( QDomElement &element, QString &rotationFunc );
-%Docstring
-
-:rtype: bool
-%End
 
     static void createOpacityElement( QDomDocument &doc, QDomElement &element, const QString &alphaFunc );
     static bool opacityFromSldElement( QDomElement &element, QString &alphaFunc );
-%Docstring
-
-:rtype: bool
-%End
 
     static void createDisplacementElement( QDomDocument &doc, QDomElement &element, QPointF offset );
     static bool displacementFromSldElement( QDomElement &element, QPointF &offset );
-%Docstring
-
-:rtype: bool
-%End
 
     static void createAnchorPointElement( QDomDocument &doc, QDomElement &element, QPointF anchor );
 %Docstring
  Creates a SE 1.1 anchor point element as a child of the specified element
+
 :param doc: The document
 :param element: The parent element
 :param anchor: An anchor specification, with values between 0 and 1
@@ -593,80 +355,39 @@ Create ogr feature style string for brush
 
     static void createOnlineResourceElement( QDomDocument &doc, QDomElement &element, const QString &path, const QString &format );
     static bool onlineResourceFromSldElement( QDomElement &element, QString &path, QString &format );
-%Docstring
-
-:rtype: bool
-%End
 
     static void createGeometryElement( QDomDocument &doc, QDomElement &element, const QString &geomFunc );
     static bool geometryFromSldElement( QDomElement &element, QString &geomFunc );
-%Docstring
-
-:rtype: bool
-%End
 
     static bool createExpressionElement( QDomDocument &doc, QDomElement &element, const QString &function );
 %Docstring
 Creates a OGC Expression element based on the provided function expression
+
 :param doc: The document owning the element
 :param element: The element parent
 :param function: The expression to be encoded
 
 :return:
-:rtype: bool
-
 %End
     static bool createFunctionElement( QDomDocument &doc, QDomElement &element, const QString &function );
-%Docstring
-
-:rtype: bool
-%End
     static bool functionFromSldElement( QDomElement &element, QString &function );
-%Docstring
-
-:rtype: bool
-%End
 
     static QDomElement createSvgParameterElement( QDomDocument &doc, const QString &name, const QString &value );
-%Docstring
-
-:rtype: QDomElement
-%End
     static QgsStringMap getSvgParameterList( QDomElement &element );
-%Docstring
-
-:rtype: QgsStringMap
-%End
 
     static QDomElement createVendorOptionElement( QDomDocument &doc, const QString &name, const QString &value );
-%Docstring
-
-:rtype: QDomElement
-%End
     static QgsStringMap getVendorOptionList( QDomElement &element );
-%Docstring
-
-:rtype: QgsStringMap
-%End
 
     static QgsStringMap parseProperties( QDomElement &element );
-%Docstring
-
-:rtype: QgsStringMap
-%End
     static void saveProperties( QgsStringMap props, QDomDocument &doc, QDomElement &element );
 
     static QgsSymbolMap loadSymbols( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Reads a collection of symbols from XML and returns them in a map. Caller is responsible for deleting returned symbols.
-
-:rtype: QgsSymbolMap
 %End
     static QDomElement saveSymbols( QgsSymbolMap &symbols, const QString &tagName, QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
 Writes a collection of symbols to XML with specified tagName for the top-level element
-
-:rtype: QDomElement
 %End
 
     static void clearSymbolMap( QgsSymbolMap &symbols );
@@ -676,8 +397,6 @@ Writes a collection of symbols to XML with specified tagName for the top-level e
 Creates new mime data from a ``symbol``.
 This also sets the mime color data to match the symbol's color, so that copied symbols
 can be paste in places where a color is expected.
-
-:rtype: QMimeData
 
 .. seealso:: :py:func:`symbolFromMimeData()`
 
@@ -689,8 +408,6 @@ can be paste in places where a color is expected.
 Attempts to parse ``mime`` data as a symbol. A new symbol instance will be returned
 if the data was successfully converted to a symbol.
 
-:rtype: QgsSymbol
-
 .. seealso:: :py:func:`symbolToMimeData()`
 
 .. versionadded:: 3.0
@@ -699,11 +416,10 @@ if the data was successfully converted to a symbol.
     static QgsColorRamp *loadColorRamp( QDomElement &element ) /Factory/;
 %Docstring
 Creates a color ramp from the settings encoded in an XML element
+
 :param element: DOM element
 
 :return: new color ramp. Caller takes responsibility for deleting the returned value.
-:rtype: QgsColorRamp
-
 
 .. seealso:: :py:func:`saveColorRamp()`
 %End
@@ -711,13 +427,12 @@ Creates a color ramp from the settings encoded in an XML element
     static QDomElement saveColorRamp( const QString &name, QgsColorRamp *ramp, QDomDocument &doc );
 %Docstring
 Encodes a color ramp's settings to an XML element
+
 :param name: name of ramp
 :param ramp: color ramp to save
 :param doc: XML document
 
 :return: DOM element representing state of color ramp
-:rtype: QDomElement
-
 
 .. seealso:: :py:func:`loadColorRamp()`
 %End
@@ -727,8 +442,6 @@ Encodes a color ramp's settings to an XML element
 Saves a color ramp to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`loadColorRamp`
 %End
 
@@ -737,19 +450,16 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
 Load a color ramp from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.readVariant to load it from an XML document.
 
-:rtype: QgsColorRamp
-
 .. seealso:: :py:func:`colorRampToVariant()`
 %End
 
     static QString colorToName( const QColor &color );
 %Docstring
 Returns a friendly display name for a color
+
 :param color: source color
 
 :return: display name for color
-:rtype: str
-
 
 .. versionadded:: 2.5
 %End
@@ -758,11 +468,10 @@ Returns a friendly display name for a color
 %Docstring
 Attempts to parse a string as a list of colors using a variety of common formats, including hex
 codes, rgb and rgba strings.
+
 :param colorStr: string representing the color list
 
 :return: list of parsed colors
-:rtype: list of QColor
-
 
 .. versionadded:: 2.5
 %End
@@ -771,9 +480,8 @@ codes, rgb and rgba strings.
 %Docstring
 Creates mime data from a color. Sets both the mime data's color data, and the
 mime data's text with the color's hex code.
-:param color: color to encode as mime data
 
-:rtype: QMimeData
+:param color: color to encode as mime data
 
 .. seealso:: :py:func:`colorFromMimeData`
 
@@ -783,13 +491,12 @@ mime data's text with the color's hex code.
     static QColor colorFromMimeData( const QMimeData *data, bool &hasAlpha );
 %Docstring
 Attempts to parse mime data as a color
+
 :param data: mime data to parse
 :param hasAlpha: will be set to true if mime data was interpreted as a color containing
 an explicit alpha value
 
 :return: valid color if mimedata could be interpreted as a color, otherwise an
-:rtype: QColor
-
 invalid color
 
 .. versionadded:: 2.5
@@ -798,11 +505,10 @@ invalid color
     static QgsNamedColorList colorListFromMimeData( const QMimeData *data );
 %Docstring
 Attempts to parse mime data as a list of named colors
+
 :param data: mime data to parse
 
 :return: list of parsed colors
-:rtype: QgsNamedColorList
-
 
 .. versionadded:: 2.5
 %End
@@ -810,12 +516,11 @@ Attempts to parse mime data as a list of named colors
     static QMimeData *colorListToMimeData( const QgsNamedColorList &colorList, const bool allFormats = true ) /Factory/;
 %Docstring
 Creates mime data from a list of named colors
+
 :param colorList: list of named colors
 :param allFormats: set to true to include additional mime formats, include text/plain and application/x-color
 
 :return: mime data containing encoded colors
-:rtype: QMimeData
-
 
 .. versionadded:: 2.5
 %End
@@ -823,13 +528,12 @@ Creates mime data from a list of named colors
     static bool saveColorsToGpl( QFile &file, const QString &paletteName, const QgsNamedColorList &colors );
 %Docstring
 Exports colors to a gpl GIMP palette file
+
 :param file: destination file
 :param paletteName: name of palette, which is stored in gpl file
 :param colors: colors to export
 
 :return: true if export was successful
-:rtype: bool
-
 
 .. seealso:: :py:func:`importColorsFromGpl`
 %End
@@ -837,13 +541,12 @@ Exports colors to a gpl GIMP palette file
     static QgsNamedColorList importColorsFromGpl( QFile &file, bool &ok, QString &name );
 %Docstring
 Imports colors from a gpl GIMP palette file
+
 :param file: source gpl file
 :param ok: will be true if file was successfully read
 :param name: will be set to palette name from gpl file, if present
 
 :return: list of imported colors
-:rtype: QgsNamedColorList
-
 
 .. seealso:: :py:func:`saveColorsToGpl`
 %End
@@ -852,12 +555,11 @@ Imports colors from a gpl GIMP palette file
 %Docstring
 Attempts to parse a string as a color using a variety of common formats, including hex
 codes, rgb and rgba strings.
+
 :param colorStr: string representing the color
 :param strictEval: set to true for stricter color parsing rules
 
 :return: parsed color
-:rtype: QColor
-
 
 .. versionadded:: 2.3
 %End
@@ -866,13 +568,12 @@ codes, rgb and rgba strings.
 %Docstring
 Attempts to parse a string as a color using a variety of common formats, including hex
 codes, rgb and rgba strings.
+
 :param colorStr: string representing the color
 :param containsAlpha: if colorStr contains an explicit alpha value then containsAlpha will be set to true
 :param strictEval: set to true for stricter color parsing rules
 
 :return: parsed color
-:rtype: QColor
-
 
 .. versionadded:: 2.3
 %End
@@ -901,22 +602,16 @@ Sorts the passed list in requested order
     static QPointF pointOnLineWithDistance( QPointF startPoint, QPointF directionPoint, double distance );
 %Docstring
 Returns a point on the line from startPoint to directionPoint that is a certain distance away from the starting point
-
-:rtype: QPointF
 %End
 
     static QStringList listSvgFiles();
 %Docstring
 Return a list of all available svg files
-
-:rtype: list of str
 %End
 
     static QStringList listSvgFilesAt( const QString &directory );
 %Docstring
 Return a list of svg files at the specified directory
-
-:rtype: list of str
 %End
 
     static QString svgSymbolNameToPath( QString name, const QgsPathResolver &pathResolver );
@@ -924,36 +619,26 @@ Return a list of svg files at the specified directory
 Get SVG symbol's path from its name.
 If the name is not absolute path the file is searched in SVG paths specified
 in settings svg/searchPathsForSVG.
-
-:rtype: str
 %End
 
     static QString svgSymbolPathToName( QString path, const QgsPathResolver &pathResolver );
 %Docstring
 Get SVG symbols's name from its path
-
-:rtype: str
 %End
 
     static QPointF polygonCentroid( const QPolygonF &points );
 %Docstring
 Calculate the centroid point of a QPolygonF
-
-:rtype: QPointF
 %End
 
     static QPointF polygonPointOnSurface( const QPolygonF &points );
 %Docstring
 Calculate a point within of a QPolygonF
-
-:rtype: QPointF
 %End
 
     static bool pointInPolygon( const QPolygonF &points, QPointF point );
 %Docstring
 Calculate whether a point is within of a QPolygonF
-
-:rtype: bool
 %End
 
     static QgsExpression *fieldOrExpressionToExpression( const QString &fieldOrExpression ) /Factory/;
@@ -962,8 +647,6 @@ Return a new valid expression instance for given field or expression string.
 If the input is not a valid expression, it is assumed that it is a field name and gets properly quoted.
 If the string is empty, returns null pointer.
 This is useful when accepting input which could be either a non-quoted field name or expression.
-
-:rtype: QgsExpression
 
 .. versionadded:: 2.2
 %End
@@ -975,8 +658,6 @@ Returns full expression string if the expression is more complex than just one f
 Using just expression->expression() method may return quoted field name, but that is not
 wanted for saving (due to backward compatibility) or display in GUI.
 
-:rtype: str
-
 .. versionadded:: 2.2
 %End
 
@@ -986,8 +667,6 @@ Computes a sequence of about 'classes' equally spaced round values
 which cover the range of values from 'minimum' to 'maximum'.
 The values are chosen so that they are 1, 2 or 5 times a power of 10.
 
-:rtype: list of float
-
 .. versionadded:: 2.10
 %End
 
@@ -995,8 +674,6 @@ The values are chosen so that they are 1, 2 or 5 times a power of 10.
 %Docstring
 Rescales the given size based on the uomScale found in the props, if any is found, otherwise
 returns the value un-modified
-
-:rtype: float
 
 .. versionadded:: 3.0
 %End
@@ -1006,8 +683,6 @@ returns the value un-modified
 Rescales the given point based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
 
-:rtype: QPointF
-
 .. versionadded:: 3.0
 %End
 
@@ -1015,8 +690,6 @@ returns a copy of the original point
 %Docstring
 Rescales the given array based on the uomScale found in the props, if any is found, otherwise
 returns a copy of the original point
-
-:rtype: list of qreal
 
 .. versionadded:: 3.0
 %End
@@ -1049,8 +722,6 @@ that cannot do SVG at all
     static QString getSvgParametricPath( const QString &basePath, const QColor &fillColor, const QColor &strokeColor, double strokeWidth );
 %Docstring
 Encodes a reference to a parametric SVG into a path with parameters according to the SVG Parameters spec
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End

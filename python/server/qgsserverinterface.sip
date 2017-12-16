@@ -41,8 +41,6 @@ a certain priority through the registerFilter( QgsServerFilter* , int) method.
 Get pointer to the capabiblities cache
 
 :return: QgsCapabilitiesCache
-:rtype: QgsCapabilitiesCache
-
 %End
 
     virtual QgsRequestHandler *requestHandler() = 0 /KeepReference/;
@@ -50,13 +48,12 @@ Get pointer to the capabiblities cache
 Get pointer to the request handler
 
 :return: QgsRequestHandler
-:rtype: QgsRequestHandler
-
 %End
 
     virtual void registerFilter( QgsServerFilter *filter /Transfer/, int priority = 0 ) = 0;
 %Docstring
 Register a QgsServerFilter
+
 :param filter: the QgsServerFilter to add
 :param priority: an optional priority for the filter order
 %End
@@ -64,6 +61,7 @@ Register a QgsServerFilter
     virtual void setFilters( QgsServerFiltersMap *filters /Transfer/ ) = 0;
 %Docstring
 Set the filters map
+
 :param filters: the QgsServerFiltersMap
 %End
 
@@ -72,13 +70,12 @@ Set the filters map
 Return the list of current QgsServerFilter
 
 :return: QgsServerFiltersMap list of QgsServerFilter
-:rtype: QgsServerFiltersMap
-
 %End
 
     virtual void registerAccessControl( QgsAccessControlFilter *accessControl /Transfer/, int priority = 0 ) = 0;
 %Docstring
 Register an access control filter
+
 :param accessControl: the access control to register
 :param priority: the priority used to order them
 %End
@@ -86,15 +83,11 @@ Register an access control filter
     virtual QgsAccessControl *accessControls() const = 0;
 %Docstring
 Gets the registered access control filters
-
-:rtype: QgsAccessControl
 %End
 
     virtual QString getEnv( const QString &name ) const = 0;
 %Docstring
 Return an enrironment variable, used to pass  environment variables to Python
-
-:rtype: str
 %End
 
     virtual QString configFilePath() = 0;
@@ -102,25 +95,26 @@ Return an enrironment variable, used to pass  environment variables to Python
 Return the configuration file path
 
 :return: QString containing the configuration file path
-:rtype: str
-
 %End
 
     virtual void setConfigFilePath( const QString &configFilePath ) = 0;
 %Docstring
 Set the configuration file path
+
 :param configFilePath: QString with the configuration file path
 %End
 
     virtual void removeConfigCacheEntry( const QString &path ) = 0;
 %Docstring
 Remove entry from config cache
+
 :param path: the path of the file to remove
 %End
 
     virtual void removeProjectLayers( const QString &path ) = 0;
 %Docstring
 Remove entries from layer cache
+
 :param path: the path of the project which own the layers to be removed
 %End
 
@@ -129,8 +123,6 @@ Remove entries from layer cache
 Return the service registry
 
 :return: QgsServiceResgistry
-:rtype: QgsServiceRegistry
-
 %End
 
 

@@ -84,8 +84,6 @@ Sets an expression context scope used to resolve underlying actions.
 %Docstring
 Returns an expression context scope used to resolve underlying actions.
 
-:rtype: QgsExpressionContextScope
-
 .. versionadded:: 3.0
 %End
 

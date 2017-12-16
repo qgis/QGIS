@@ -25,6 +25,7 @@ class QgsMapLayerConfigWidget : QgsPanelWidget
     QgsMapLayerConfigWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
  A panel widget that can be shown in the map style dock
+
 :param layer: The layer active in the dock.
 :param canvas: The canvas object.
 :param parent: The parent of the widget.

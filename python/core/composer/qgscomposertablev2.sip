@@ -47,10 +47,9 @@ Cell background color
     bool writeXml( QDomElement &styleElem, QDomDocument &doc ) const;
 %Docstring
 Writes the style's properties to XML for storage.
+
 :param styleElem: an existing QDomElement in which to store the style's properties.
 :param doc: QDomDocument for the destination XML.
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -58,9 +57,8 @@ Writes the style's properties to XML for storage.
     bool readXml( const QDomElement &styleElem );
 %Docstring
 Reads the style's properties from XML.
-:param styleElem: a QDomElement holding the style's desired properties.
 
-:rtype: bool
+:param styleElem: a QDomElement holding the style's desired properties.
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -130,6 +128,7 @@ the table to span over multiple frames
     void setCellMargin( const double margin );
 %Docstring
 Sets the margin distance between cell borders and their contents.
+
 :param margin: margin for cell contents
 
 .. seealso:: :py:func:`cellMargin`
@@ -140,8 +139,6 @@ Sets the margin distance between cell borders and their contents.
 Returns the margin distance between cell borders and their contents.
 
 :return: margin for cell contents
-:rtype: float
-
 
 .. seealso:: :py:func:`setCellMargin`
 %End
@@ -149,6 +146,7 @@ Returns the margin distance between cell borders and their contents.
     void setEmptyTableBehavior( const EmptyTableMode mode );
 %Docstring
 Sets the behavior for empty tables with no content rows.
+
 :param mode: behavior mode for empty tables
 
 .. seealso:: :py:func:`emptyTableBehavior`
@@ -160,8 +158,6 @@ Returns the behavior mode for empty tables. This property controls
 how the table is drawn if it contains no content rows.
 
 :return: behavior mode for empty tables
-:rtype: EmptyTableMode
-
 
 .. seealso:: :py:func:`setEmptyTableBehavior`
 %End
@@ -171,6 +167,7 @@ how the table is drawn if it contains no content rows.
 Sets the message for empty tables with no content rows. This message
 is displayed in the table body if the empty table behavior is
 set to ShowMessage
+
 :param message: message to show for empty tables
 
 .. seealso:: :py:func:`emptyTableMessage`
@@ -185,8 +182,6 @@ is displayed in the table body if the empty table behavior is
 set to ShowMessage
 
 :return: message to show for empty tables
-:rtype: str
-
 
 .. seealso:: :py:func:`setEmptyTableMessage`
 
@@ -196,6 +191,7 @@ set to ShowMessage
     void setShowEmptyRows( const bool showEmpty );
 %Docstring
 Sets whether empty rows should be drawn. Tables default to hiding empty rows.
+
 :param showEmpty: set to true to show empty rows in the table
 
 .. seealso:: :py:func:`showEmptyRows`
@@ -206,8 +202,6 @@ Sets whether empty rows should be drawn. Tables default to hiding empty rows.
 Returns whether empty rows are drawn in the table
 
 :return: true if empty rows are drawn
-:rtype: bool
-
 
 .. seealso:: :py:func:`setShowEmptyRows`
 %End
@@ -215,6 +209,7 @@ Returns whether empty rows are drawn in the table
     void setHeaderFont( const QFont &font );
 %Docstring
 Sets the font used to draw header text in the table.
+
 :param font: font for header cells
 
 .. seealso:: :py:func:`headerFont`
@@ -227,8 +222,6 @@ Sets the font used to draw header text in the table.
 Returns the font used to draw header text in the table.
 
 :return: font for header cells
-:rtype: QFont
-
 
 .. seealso:: :py:func:`setHeaderFont`
 
@@ -238,6 +231,7 @@ Returns the font used to draw header text in the table.
     void setHeaderFontColor( const QColor &color );
 %Docstring
 Sets the color used to draw header text in the table.
+
 :param color: header text color
 
 .. seealso:: :py:func:`headerFontColor`
@@ -252,8 +246,6 @@ Sets the color used to draw header text in the table.
 Returns the color used to draw header text in the table.
 
 :return: color for header text
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setHeaderFontColor`
 
@@ -265,6 +257,7 @@ Returns the color used to draw header text in the table.
     void setHeaderHAlignment( const HeaderHAlignment alignment );
 %Docstring
 Sets the horizontal alignment for table headers
+
 :param alignment: Horizontal alignment for table header cells
 
 .. seealso:: :py:func:`headerHAlignment`
@@ -275,8 +268,6 @@ Sets the horizontal alignment for table headers
 Returns the horizontal alignment for table headers
 
 :return: Horizontal alignment for table header cells
-:rtype: HeaderHAlignment
-
 
 .. seealso:: :py:func:`setHeaderHAlignment`
 %End
@@ -285,6 +276,7 @@ Returns the horizontal alignment for table headers
 %Docstring
 Sets the display mode for headers in the table. This property controls
 if and where headers are shown in the table.
+
 :param mode: display mode for headers
 
 .. seealso:: :py:func:`headerMode`
@@ -296,8 +288,6 @@ Returns the display mode for headers in the table. This property controls
 if and where headers are shown in the table.
 
 :return: display mode for headers
-:rtype: HeaderMode
-
 
 .. seealso:: :py:func:`setHeaderMode`
 %End
@@ -305,6 +295,7 @@ if and where headers are shown in the table.
     void setContentFont( const QFont &font );
 %Docstring
 Sets the font used to draw text in table body cells.
+
 :param font: font for table cells
 
 .. seealso:: :py:func:`contentFont`
@@ -317,8 +308,6 @@ Sets the font used to draw text in table body cells.
 Returns the font used to draw text in table body cells.
 
 :return: font for table cells
-:rtype: QFont
-
 
 .. seealso:: :py:func:`setContentFont`
 
@@ -328,6 +317,7 @@ Returns the font used to draw text in table body cells.
     void setContentFontColor( const QColor &color );
 %Docstring
 Sets the color used to draw text in table body cells.
+
 :param color: table cell text color
 
 .. seealso:: :py:func:`contentFontColor`
@@ -342,8 +332,6 @@ Sets the color used to draw text in table body cells.
 Returns the color used to draw text in table body cells.
 
 :return: text color for table cells
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setContentFontColor`
 
@@ -355,6 +343,7 @@ Returns the color used to draw text in table body cells.
     void setShowGrid( const bool showGrid );
 %Docstring
 Sets whether grid lines should be drawn in the table
+
 :param showGrid: set to true to show grid lines
 
 .. seealso:: :py:func:`showGrid`
@@ -369,8 +358,6 @@ Sets whether grid lines should be drawn in the table
 Returns whether grid lines are drawn in the table
 
 :return: true if grid lines are shown
-:rtype: bool
-
 
 .. seealso:: :py:func:`setShowGrid`
 
@@ -382,6 +369,7 @@ Returns whether grid lines are drawn in the table
     void setGridStrokeWidth( const double width );
 %Docstring
 Sets the width for grid lines in the table.
+
 :param width: grid line width
 
 .. seealso:: :py:func:`gridStrokeWidth`
@@ -396,8 +384,6 @@ Sets the width for grid lines in the table.
 Returns the width of grid lines in the table.
 
 :return: grid line width
-:rtype: float
-
 
 .. seealso:: :py:func:`setGridStrokeWidth`
 
@@ -409,6 +395,7 @@ Returns the width of grid lines in the table.
     void setGridColor( const QColor &color );
 %Docstring
 Sets color used for grid lines in the table.
+
 :param color: grid line color
 
 .. seealso:: :py:func:`gridColor`
@@ -423,8 +410,6 @@ Sets color used for grid lines in the table.
 Returns the color used for grid lines in the table.
 
 :return: grid line color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setGridColor`
 
@@ -436,6 +421,7 @@ Returns the color used for grid lines in the table.
     void setHorizontalGrid( const bool horizontalGrid );
 %Docstring
 Sets whether the grid's horizontal lines should be drawn in the table
+
 :param horizontalGrid: set to true to draw grid's horizontal lines
 
 .. seealso:: :py:func:`setShowGrid`
@@ -454,8 +440,6 @@ Sets whether the grid's horizontal lines should be drawn in the table
 Returns whether the grid's horizontal lines are drawn in the table
 
 :return: true if grid's horizontal lines are drawn
-:rtype: bool
-
 
 .. seealso:: :py:func:`setShowGrid`
 
@@ -471,6 +455,7 @@ Returns whether the grid's horizontal lines are drawn in the table
     void setVerticalGrid( const bool verticalGrid );
 %Docstring
 Sets whether the grid's vertical lines should be drawn in the table
+
 :param verticalGrid: set to true to draw grid's vertical lines
 
 .. seealso:: :py:func:`setShowGrid`
@@ -489,8 +474,6 @@ Sets whether the grid's vertical lines should be drawn in the table
 Returns whether the grid's vertical lines are drawn in the table
 
 :return: true if grid's vertical lines are drawn
-:rtype: bool
-
 
 .. seealso:: :py:func:`setShowGrid`
 
@@ -506,6 +489,7 @@ Returns whether the grid's vertical lines are drawn in the table
     void setBackgroundColor( const QColor &color );
 %Docstring
 Sets color used for background of table.
+
 :param color: table background color
 
 .. seealso:: :py:func:`backgroundColor`
@@ -518,8 +502,6 @@ Sets color used for background of table.
 Returns the color used for the background of the table.
 
 :return: table background color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setBackgroundColor`
 
@@ -530,6 +512,7 @@ Returns the color used for the background of the table.
 %Docstring
 Sets the wrap behavior for the table, which controls how text within cells is
 automatically wrapped.
+
 :param behavior: wrap behavior
 
 .. seealso:: :py:func:`wrapBehavior`
@@ -543,8 +526,6 @@ Returns the wrap behavior for the table, which controls how text within cells is
 automatically wrapped.
 
 :return: current wrap behavior
-:rtype: WrapBehavior
-
 
 .. seealso:: :py:func:`setWrapBehavior`
 
@@ -556,8 +537,6 @@ automatically wrapped.
 Returns a pointer to the list of QgsComposerTableColumns shown in the table
 
 :return: pointer to list of columns in table
-:rtype: QgsComposerTableColumns
-
 
 .. seealso:: :py:func:`setColumns`
 %End
@@ -565,6 +544,7 @@ Returns a pointer to the list of QgsComposerTableColumns shown in the table
     void setColumns( const QgsComposerTableColumns &columns /Transfer/ );
 %Docstring
 Replaces the columns in the table with a specified list of QgsComposerTableColumns.
+
 :param columns: list of QgsComposerTableColumns to show in table. Ownership of columns
 is transferred to the table.
 
@@ -574,6 +554,7 @@ is transferred to the table.
     void setCellStyle( CellStyleGroup group, const QgsComposerTableStyle &style );
 %Docstring
 Sets the cell style for a cell group.
+
 :param group: group to set style for
 :param style: new cell style
 
@@ -585,9 +566,8 @@ Sets the cell style for a cell group.
     const QgsComposerTableStyle *cellStyle( CellStyleGroup group ) const;
 %Docstring
 Returns the cell style for a cell group.
-:param group: group to retrieve style for
 
-:rtype: QgsComposerTableStyle
+:param group: group to retrieve style for
 
 .. seealso:: :py:func:`setCellStyle()`
 
@@ -600,7 +580,6 @@ Returns the cell style for a cell group.
 Fetches the contents used for the cells in the table.
 
 :return: true if table contents were successfully retrieved.
-:rtype: bool
 
 :param contents: QgsComposerTableContents to store retrieved row data in
 %End
@@ -610,8 +589,6 @@ Fetches the contents used for the cells in the table.
 Returns the current contents of the table. Excludes header cells.
 
 :return: table contents
-:rtype: QgsComposerTableContents
-
 %End
 
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
@@ -670,35 +647,24 @@ new data.
     virtual bool calculateMaxColumnWidths();
 %Docstring
 Calculates the maximum width of text shown in columns.
-
-:rtype: bool
 %End
 
     virtual bool calculateMaxRowHeights();
 %Docstring
 Calculates the maximum height of text shown in rows.
 
-:rtype: bool
-
 .. versionadded:: 2.12
 %End
 
     double totalWidth();
-%Docstring
-
-:rtype: float
-%End
 
     double totalHeight();
-%Docstring
-
-:rtype: float
-%End
 
     int rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
 %Docstring
 Calculates how many content rows would be visible within a frame of the specified
 height.
+
 :param frameHeight: height of frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
 :param includeHeader: set to true if frame would include a header row
@@ -707,8 +673,6 @@ if the frame would include all table content rows and have space left for extra 
 to true would also include a count of these extra blank rows.
 
 :return: number of visible content rows (excluding header row)
-:rtype: int
-
 
 .. versionadded:: 2.12
 %End
@@ -716,6 +680,7 @@ to true would also include a count of these extra blank rows.
     int rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const;
 %Docstring
 Calculates how many content rows are visible within a given frame.
+
 :param frameIndex: index number for frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
 :param includeEmptyRows: set to true to also include rows which would be empty in the returned count. For instance,
@@ -723,8 +688,6 @@ if the frame would include all table content rows and have space left for extra 
 to true would also include a count of these extra blank rows.
 
 :return: number of visible content rows (excludes header rows)
-:rtype: int
-
 
 .. versionadded:: 2.12
 %End
@@ -732,11 +695,10 @@ to true would also include a count of these extra blank rows.
     QPair<int, int> rowRange( const int frameIndex ) const;
 %Docstring
 Calculates a range of rows which should be visible in a given frame.
+
 :param frameIndex: index number for frame
 
 :return: row range
-:rtype: QPair<int, int>
-
 
 .. versionadded:: 2.12
 %End
@@ -744,6 +706,7 @@ Calculates a range of rows which should be visible in a given frame.
     void drawHorizontalGridLines( QPainter *painter, int firstRow, int lastRow, bool drawHeaderLines ) const;
 %Docstring
 Draws the horizontal grid lines for the table.
+
 :param painter: destination painter for grid lines
 :param firstRow: index corresponding to first row shown in frame
 :param lastRow: index corresponding to last row shown in frame. If greater than the number of content rows in the
@@ -764,12 +727,11 @@ Recalculates and updates the size of the table and all table frames.
     bool contentsContainsRow( const QgsComposerTableContents &contents, const QgsComposerTableRow &row ) const;
 %Docstring
 Checks whether a table contents contains a given row
+
 :param contents: table contents to check
 :param row: row to check for
 
 :return: true if contents contains rows
-:rtype: bool
-
 %End
 
 };

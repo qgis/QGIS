@@ -47,8 +47,6 @@ Item representing the paper.*
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
-
-:rtype: int
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -61,20 +59,18 @@ Return correct graphics item type.
 
 %Docstring
 Stores state in Dom element
+
 :param elem: is Dom element corresponding to 'Composer' tag
 :param doc: Dom document
-
-:rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
 Sets state from Dom document
+
 :param itemElem: is Dom node corresponding to item tag
 :param doc: is the Dom document
-
-:rtype: bool
 %End
 
     virtual void setSceneRect( const QRectF &rectangle );

@@ -31,8 +31,6 @@ and belonging to a ``multiFrame``.
     static QgsLayoutFrame *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Creates a new QgsLayoutFrame belonging to the specified ``layout``.
-
-:rtype: QgsLayoutFrame
 %End
 
     virtual int type() const;
@@ -54,8 +52,6 @@ this frame (relative to the total multiframe extent in layout units).
     QgsLayoutMultiFrame *multiFrame() const;
 %Docstring
 Returns the parent multiframe for the frame.
-
-:rtype: QgsLayoutMultiFrame
 %End
 
     virtual QgsLayoutSize minimumSize() const;
@@ -69,8 +65,6 @@ Returns the parent multiframe for the frame.
 Returns the visible portion of the multi frame's content which
 is shown in this frame, in layout units.
 
-:rtype: QRectF
-
 .. seealso:: :py:func:`setContentSection()`
 %End
 
@@ -79,8 +73,6 @@ is shown in this frame, in layout units.
 Returns whether the page should be hidden (ie, not included in layout exports) if this frame is empty
 
 :return: true if page should be hidden if frame is empty
-:rtype: bool
-
 
 .. seealso:: :py:func:`setHidePageIfEmpty()`
 %End
@@ -88,6 +80,7 @@ Returns whether the page should be hidden (ie, not included in layout exports) i
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
 %Docstring
 Sets whether the page should be hidden (ie, not included in layout exports) if this frame is empty
+
 :param hidePageIfEmpty: set to true if page should be hidden if frame is empty
 
 .. seealso:: :py:func:`hidePageIfEmpty()`
@@ -98,8 +91,6 @@ Sets whether the page should be hidden (ie, not included in layout exports) if t
 Returns whether the background and frame stroke should be hidden if this frame is empty
 
 :return: true if background and stroke should be hidden if frame is empty
-:rtype: bool
-
 
 .. seealso:: :py:func:`setHideBackgroundIfEmpty()`
 %End
@@ -107,6 +98,7 @@ Returns whether the background and frame stroke should be hidden if this frame i
     void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
 %Docstring
 Sets whether the background and frame stroke should be hidden if this frame is empty
+
 :param hideBackgroundIfEmpty: set to true if background and stroke should be hidden if frame is empty
 
 .. seealso:: :py:func:`hideBackgroundIfEmpty()`
@@ -115,8 +107,6 @@ Sets whether the background and frame stroke should be hidden if this frame is e
     bool isEmpty() const;
 %Docstring
 Returns whether the frame is empty.
-
-:rtype: bool
 
 .. seealso:: :py:func:`hidePageIfEmpty()`
 %End

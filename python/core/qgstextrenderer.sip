@@ -33,6 +33,7 @@ Container for settings relating to a text buffer.
     QgsTextBufferSettings( const QgsTextBufferSettings &other );
 %Docstring
 Copy constructor.
+
 :param other: source settings
 %End
 
@@ -40,6 +41,7 @@ Copy constructor.
     ~QgsTextBufferSettings();
 %Docstring
 Copy constructor.
+
 :param other: source QgsTextBufferSettings
 %End
 
@@ -47,14 +49,13 @@ Copy constructor.
 %Docstring
 Returns whether the buffer is enabled.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setEnabled()`
 %End
 
     void setEnabled( bool enabled );
 %Docstring
 Sets whether the text buffer will be drawn.
+
 :param enabled: set to true to draw buffer
 
 .. seealso:: :py:func:`enabled()`
@@ -64,8 +65,6 @@ Sets whether the text buffer will be drawn.
 %Docstring
 Returns the size of the buffer.
 
-:rtype: float
-
 .. seealso:: :py:func:`sizeUnit()`
 
 .. seealso:: :py:func:`setSize()`
@@ -74,6 +73,7 @@ Returns the size of the buffer.
     void setSize( double size );
 %Docstring
 Sets the size of the buffer. The size units are specified using setSizeUnit().
+
 :param size: buffer size
 
 .. seealso:: :py:func:`size()`
@@ -85,8 +85,6 @@ Sets the size of the buffer. The size units are specified using setSizeUnit().
 %Docstring
 Returns the units for the buffer size.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`size()`
 
 .. seealso:: :py:func:`setSizeUnit()`
@@ -95,6 +93,7 @@ Returns the units for the buffer size.
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units used for the buffer size.
+
 :param unit: size unit
 
 .. seealso:: :py:func:`setSize()`
@@ -107,8 +106,6 @@ Sets the units used for the buffer size.
 Returns the map unit scale object for the buffer size. This is only used if the
 buffer size is set to QgsUnitTypes.RenderMapUnit.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setSizeMapUnitScale()`
 
 .. seealso:: :py:func:`sizeUnit()`
@@ -118,6 +115,7 @@ buffer size is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Sets the map unit scale object for the buffer size. This is only used if the
 buffer size is set to QgsUnitTypes.RenderMapUnit.
+
 :param scale: scale for buffer size
 
 .. seealso:: :py:func:`sizeMapUnitScale()`
@@ -129,14 +127,13 @@ buffer size is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Returns the color of the buffer.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setColor()`
 %End
 
     void setColor( const QColor &color );
 %Docstring
 Sets the color for the buffer.
+
 :param color: buffer color
 
 .. seealso:: :py:func:`color()`
@@ -148,14 +145,13 @@ Returns whether the interior of the buffer will be filled in. If false, only the
 of the text will be drawn as the buffer. The effect of this setting is only visible for
 semi-transparent text.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setFillBufferInterior()`
 %End
 
     void setFillBufferInterior( bool fill );
 %Docstring
 Sets whether the interior of the buffer will be filled in.
+
 :param fill: set to false to drawn only the stroke of the text as the buffer, or true to also
 shade the area inside the text. The effect of this setting is only visible for semi-transparent text.
 
@@ -167,14 +163,13 @@ shade the area inside the text. The effect of this setting is only visible for s
 Returns the buffer opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
 opaque).
 
-:rtype: float
-
 .. seealso:: :py:func:`setOpacity()`
 %End
 
     void setOpacity( double opacity );
 %Docstring
 Sets the buffer opacity.
+
 :param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
 opaque)
 
@@ -185,14 +180,13 @@ opaque)
 %Docstring
 Returns the buffer join style.
 
-:rtype: Qt.PenJoinStyle
-
 .. seealso:: :py:func:`setJoinStyle`
 %End
 
     void setJoinStyle( Qt::PenJoinStyle style );
 %Docstring
 Sets the join style used for drawing the buffer.
+
 :param style: join style
 
 .. seealso:: :py:func:`joinStyle()`
@@ -202,14 +196,13 @@ Sets the join style used for drawing the buffer.
 %Docstring
 Returns the blending mode used for drawing the buffer.
 
-:rtype: QPainter.CompositionMode
-
 .. seealso:: :py:func:`setBlendMode()`
 %End
 
     void setBlendMode( QPainter::CompositionMode mode );
 %Docstring
 Sets the blending mode used for drawing the buffer.
+
 :param mode: blending mode
 
 .. seealso:: :py:func:`blendMode()`
@@ -218,6 +211,7 @@ Sets the blending mode used for drawing the buffer.
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
 Reads settings from a layer's custom properties (for QGIS 2.x projects).
+
 :param layer: source vector layer
 %End
 
@@ -232,8 +226,6 @@ Read settings from a DOM element.
 %Docstring
 Write settings into a DOM element.
 
-:rtype: QDomElement
-
 .. seealso:: :py:func:`readXml()`
 %End
 
@@ -242,8 +234,6 @@ Write settings into a DOM element.
 Returns the current paint effect for the buffer.
 
 :return: paint effect
-:rtype: QgsPaintEffect
-
 
 .. seealso:: :py:func:`setPaintEffect()`
 %End
@@ -251,6 +241,7 @@ Returns the current paint effect for the buffer.
     void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Sets the current paint ``effect`` for the buffer.
+
 :param effect: paint effect. Ownership is transferred to the buffer settings.
 
 .. seealso:: :py:func:`paintEffect()`
@@ -304,6 +295,7 @@ Container for settings relating to a text background object.
     QgsTextBackgroundSettings( const QgsTextBackgroundSettings &other );
 %Docstring
 Copy constructor.
+
 :param other: source QgsTextBackgroundSettings
 %End
 
@@ -314,14 +306,13 @@ Copy constructor.
 %Docstring
 Returns whether the background is enabled.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setEnabled()`
 %End
 
     void setEnabled( bool enabled );
 %Docstring
 Sets whether the text background will be drawn.
+
 :param enabled: set to true to draw background
 
 .. seealso:: :py:func:`enabled()`
@@ -331,14 +322,13 @@ Sets whether the text background will be drawn.
 %Docstring
 Returns the type of background shape (e.g., square, ellipse, SVG).
 
-:rtype: ShapeType
-
 .. seealso:: :py:func:`setType()`
 %End
 
     void setType( ShapeType type );
 %Docstring
 Sets the type of background shape to draw (e.g., square, ellipse, SVG).
+
 :param type: shape type
 
 .. seealso:: :py:func:`type()`
@@ -348,8 +338,6 @@ Sets the type of background shape to draw (e.g., square, ellipse, SVG).
 %Docstring
 Returns the absolute path to the background SVG file, if set.
 
-:rtype: str
-
 .. seealso:: :py:func:`setSvgFile()`
 %End
 
@@ -357,6 +345,7 @@ Returns the absolute path to the background SVG file, if set.
 %Docstring
 Sets the path to the background SVG file. This is only used if type() is set to
 QgsTextBackgroundSettings.ShapeSVG. The path must be absolute.
+
 :param file: Absolute SVG file path
 
 .. seealso:: :py:func:`svgFile()`
@@ -367,8 +356,6 @@ QgsTextBackgroundSettings.ShapeSVG. The path must be absolute.
 Returns the method used to determine the size of the background shape (e.g., fixed size or buffer
 around text).
 
-:rtype: SizeType
-
 .. seealso:: :py:func:`setSizeType()`
 
 .. seealso:: :py:func:`size()`
@@ -378,6 +365,7 @@ around text).
 %Docstring
 Sets the method used to determine the size of the background shape (e.g., fixed size or buffer
 around text).
+
 :param type: size method
 
 .. seealso:: :py:func:`sizeType()`
@@ -392,8 +380,6 @@ e.g., for size types of QgsTextBackgroundSettings.SizeFixed the size will repres
 height of the shape, for QgsTextBackgroundSettings.SizeBuffer the size will represent the horizontal
 and vertical margins to add to the text when calculating the size of the shape.
 
-:rtype: QSizeF
-
 .. seealso:: :py:func:`setSize()`
 
 .. seealso:: :py:func:`sizeType()`
@@ -405,6 +391,7 @@ Sets the size of the background shape. The meaning of the size depends on the cu
 e.g., for size types of QgsTextBackgroundSettings.SizeFixed the size will represent the actual width and
 height of the shape, for QgsTextBackgroundSettings.SizeBuffer the size will represent the horizontal
 and vertical margins to add to the text when calculating the size of the shape.
+
 :param size: QSizeF representing horizontal and vertical size components for shape
 
 .. seealso:: :py:func:`size()`
@@ -417,8 +404,6 @@ and vertical margins to add to the text when calculating the size of the shape.
 Returns the units used for the shape's size. This value has no meaning if the sizeType() is set to
 QgsTextBackgroundSettings.SizePercent.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setSizeUnit()`
 
 .. seealso:: :py:func:`sizeType()`
@@ -430,6 +415,7 @@ QgsTextBackgroundSettings.SizePercent.
 %Docstring
 Sets the units used for the shape's size. This value has no meaning if the sizeType() is set to
 QgsTextBackgroundSettings.SizePercent.
+
 :param unit: size units
 
 .. seealso:: :py:func:`sizeUnit()`
@@ -444,8 +430,6 @@ QgsTextBackgroundSettings.SizePercent.
 Returns the map unit scale object for the shape size. This is only used if the
 sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setSizeMapUnitScale()`
 
 .. seealso:: :py:func:`sizeUnit()`
@@ -455,6 +439,7 @@ sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Sets the map unit scale object for the shape size. This is only used if the
 sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
+
 :param scale: scale for shape size
 
 .. seealso:: :py:func:`sizeMapUnitScale()`
@@ -466,8 +451,6 @@ sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Returns the method used for rotating the background shape.
 
-:rtype: RotationType
-
 .. seealso:: :py:func:`setRotationType()`
 
 .. seealso:: :py:func:`rotation()`
@@ -476,6 +459,7 @@ Returns the method used for rotating the background shape.
     void setRotationType( RotationType type );
 %Docstring
 Sets the method used for rotating the background shape.
+
 :param type: rotation method
 
 .. seealso:: :py:func:`rotationType()`
@@ -486,8 +470,6 @@ Sets the method used for rotating the background shape.
     double rotation() const;
 %Docstring
 Returns the rotation for the background shape, in degrees clockwise.
-
-:rtype: float
 
 .. seealso:: :py:func:`rotationType()`
 
@@ -508,8 +490,6 @@ Sets the ``rotation`` for the background shape, in degrees clockwise.
 Returns the offset used for drawing the background shape. Units are determined
 via offsetUnit().
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`setOffset()`
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -519,6 +499,7 @@ via offsetUnit().
 %Docstring
 Sets the offset used for drawing the background shape. Units are specified using
 setOffsetUnit().
+
 :param offset: offset for shape
 
 .. seealso:: :py:func:`offset()`
@@ -530,8 +511,6 @@ setOffsetUnit().
 %Docstring
 Returns the units used for the shape's offset.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setOffsetUnit()`
 
 .. seealso:: :py:func:`offset()`
@@ -540,6 +519,7 @@ Returns the units used for the shape's offset.
     void setOffsetUnit( QgsUnitTypes::RenderUnit units );
 %Docstring
 Sets the units used for the shape's offset.
+
 :param units: offset units
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -552,8 +532,6 @@ Sets the units used for the shape's offset.
 Returns the map unit scale object for the shape offset. This is only used if the
 offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setOffsetMapUnitScale()`
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -563,6 +541,7 @@ offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Sets the map unit scale object for the shape offset. This is only used if the
 offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
+
 :param scale: scale for shape offset
 
 .. seealso:: :py:func:`offsetMapUnitScale()`
@@ -575,8 +554,6 @@ offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
 Returns the radii used for rounding the corners of shapes. Units are retrieved
 through radiiUnit().
 
-:rtype: QSizeF
-
 .. seealso:: :py:func:`setRadii()`
 
 .. seealso:: :py:func:`radiiUnit()`
@@ -586,6 +563,7 @@ through radiiUnit().
 %Docstring
 Sets the radii used for rounding the corners of shapes. This is only used if
 type() is set to QgsTextBackgroundSettings.ShapeRectangle or QgsTextBackgroundSettings.ShapeSquare.
+
 :param radii: QSizeF representing horizontal and vertical radii for rounded corners. Units are
 specified through setRadiiUnit()
 
@@ -598,8 +576,6 @@ specified through setRadiiUnit()
 %Docstring
 Returns the units used for the shape's radii.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setRadiiUnit()`
 
 .. seealso:: :py:func:`radii()`
@@ -608,6 +584,7 @@ Returns the units used for the shape's radii.
     void setRadiiUnit( QgsUnitTypes::RenderUnit units );
 %Docstring
 Sets the units used for the shape's radii.
+
 :param units: radii units
 
 .. seealso:: :py:func:`radiiUnit()`
@@ -620,8 +597,6 @@ Sets the units used for the shape's radii.
 Returns the map unit scale object for the shape radii. This is only used if the
 radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setRadiiMapUnitScale()`
 
 .. seealso:: :py:func:`radiiUnit()`
@@ -631,6 +606,7 @@ radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Sets the map unit scale object for the shape radii. This is only used if the
 radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
+
 :param scale: scale for shape radii
 
 .. seealso:: :py:func:`radiiMapUnitScale()`
@@ -643,14 +619,13 @@ radiiUnit() is set to QgsUnitTypes.RenderMapUnit.
 Returns the background shape's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
 opaque).
 
-:rtype: float
-
 .. seealso:: :py:func:`setOpacity()`
 %End
 
     void setOpacity( double opacity );
 %Docstring
 Sets the background shape's opacity.
+
 :param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
 opaque)
 
@@ -661,14 +636,13 @@ opaque)
 %Docstring
 Returns the blending mode used for drawing the background shape.
 
-:rtype: QPainter.CompositionMode
-
 .. seealso:: :py:func:`setBlendMode()`
 %End
 
     void setBlendMode( QPainter::CompositionMode mode );
 %Docstring
 Sets the blending mode used for drawing the background shape.
+
 :param mode: blending mode
 
 .. seealso:: :py:func:`blendMode()`
@@ -678,8 +652,6 @@ Sets the blending mode used for drawing the background shape.
 %Docstring
 Returns the color used for filing the background shape.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setFillColor()`
 
 .. seealso:: :py:func:`strokeColor()`
@@ -688,6 +660,7 @@ Returns the color used for filing the background shape.
     void setFillColor( const QColor &color );
 %Docstring
 Sets the color used for filing the background shape.
+
 :param color: background color
 
 .. seealso:: :py:func:`fillColor()`
@@ -699,8 +672,6 @@ Sets the color used for filing the background shape.
 %Docstring
 Returns the color used for outlining the background shape.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setStrokeColor()`
 
 .. seealso:: :py:func:`fillColor()`
@@ -709,6 +680,7 @@ Returns the color used for outlining the background shape.
     void setStrokeColor( const QColor &color );
 %Docstring
 Sets the color used for outlining the background shape.
+
 :param color: stroke color
 
 .. seealso:: :py:func:`strokeColor()`
@@ -720,8 +692,6 @@ Sets the color used for outlining the background shape.
 %Docstring
 Returns the width of the shape's stroke (stroke). Units are retrieved through
 strokeWidthUnit().
-
-:rtype: float
 
 .. seealso:: :py:func:`setStrokeWidth()`
 
@@ -742,8 +712,6 @@ setStrokeWidthUnit().
 %Docstring
 Returns the units used for the shape's stroke width.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setStrokeWidthUnit()`
 
 .. seealso:: :py:func:`strokeWidth()`
@@ -752,6 +720,7 @@ Returns the units used for the shape's stroke width.
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit units );
 %Docstring
 Sets the units used for the shape's stroke width.
+
 :param units: stroke width units
 
 .. seealso:: :py:func:`strokeWidthUnit()`
@@ -764,8 +733,6 @@ Sets the units used for the shape's stroke width.
 Returns the map unit scale object for the shape stroke width. This is only used if the
 strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setStrokeWidthMapUnitScale()`
 
 .. seealso:: :py:func:`strokeWidthUnit()`
@@ -775,6 +742,7 @@ strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Sets the map unit scale object for the shape stroke width. This is only used if the
 strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
+
 :param scale: scale for shape stroke width
 
 .. seealso:: :py:func:`strokeWidthMapUnitScale()`
@@ -786,14 +754,13 @@ strokeWidthUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Returns the join style used for drawing the background shape.
 
-:rtype: Qt.PenJoinStyle
-
 .. seealso:: :py:func:`setJoinStyle`
 %End
 
     void setJoinStyle( Qt::PenJoinStyle style );
 %Docstring
 Sets the join style used for drawing the background shape.
+
 :param style: join style
 
 .. seealso:: :py:func:`joinStyle()`
@@ -804,8 +771,6 @@ Sets the join style used for drawing the background shape.
 Returns the current paint effect for the background shape.
 
 :return: paint effect
-:rtype: QgsPaintEffect
-
 
 .. seealso:: :py:func:`setPaintEffect()`
 %End
@@ -813,6 +778,7 @@ Returns the current paint effect for the background shape.
     void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Sets the current paint ``effect`` for the background shape.
+
 :param effect: paint effect. Ownership is transferred to the background settings.
 
 .. seealso:: :py:func:`paintEffect()`
@@ -821,6 +787,7 @@ Sets the current paint ``effect`` for the background shape.
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
 Reads settings from a layer's custom properties (for QGIS 2.x projects).
+
 :param layer: source vector layer
 %End
 
@@ -834,8 +801,6 @@ Read settings from a DOM element.
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Write settings into a DOM element.
-
-:rtype: QDomElement
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -873,6 +838,7 @@ Container for settings relating to a text shadow.
     QgsTextShadowSettings( const QgsTextShadowSettings &other );
 %Docstring
 Copy constructor.
+
 :param other: source QgsTextShadowSettings
 %End
 
@@ -883,14 +849,13 @@ Copy constructor.
 %Docstring
 Returns whether the shadow is enabled.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setEnabled()`
 %End
 
     void setEnabled( bool enabled );
 %Docstring
 Sets whether the text shadow will be drawn.
+
 :param enabled: set to true to draw shadow
 
 .. seealso:: :py:func:`enabled()`
@@ -902,8 +867,6 @@ Returns the placement for the drop shadow. The placement determines
 both the z-order stacking position for the shadow and the what shape (e.g., text,
 background shape) is used for casting the shadow.
 
-:rtype: QgsTextShadowSettings.ShadowPlacement
-
 .. seealso:: :py:func:`setShadowPlacement()`
 %End
 
@@ -912,6 +875,7 @@ background shape) is used for casting the shadow.
 Sets the placement for the drop shadow. The placement determines
 both the z-order stacking position for the shadow and the what shape (e.g., text,
 background shape) is used for casting the shadow.
+
 :param placement: shadow placement
 
 .. seealso:: :py:func:`shadowPlacement()`
@@ -921,8 +885,6 @@ background shape) is used for casting the shadow.
 %Docstring
 Returns the angle for offsetting the position of the shadow from the text.
 
-:rtype: int
-
 .. seealso:: :py:func:`setOffsetAngle`
 
 .. seealso:: :py:func:`offsetDistance()`
@@ -931,6 +893,7 @@ Returns the angle for offsetting the position of the shadow from the text.
     void setOffsetAngle( int angle );
 %Docstring
 Sets the angle for offsetting the position of the shadow from the text.
+
 :param angle: offset angle in degrees
 
 .. seealso:: :py:func:`offsetAngle()`
@@ -943,8 +906,6 @@ Sets the angle for offsetting the position of the shadow from the text.
 Returns the distance for offsetting the position of the shadow from the text. Offset units
 are retrieved via offsetUnit().
 
-:rtype: float
-
 .. seealso:: :py:func:`setOffsetDistance()`
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -954,6 +915,7 @@ are retrieved via offsetUnit().
 %Docstring
 Sets the distance for offsetting the position of the shadow from the text. Offset units
 are specified via setOffsetUnit().
+
 :param distance: offset distance
 
 .. seealso:: :py:func:`offsetDistance()`
@@ -965,8 +927,6 @@ are specified via setOffsetUnit().
 %Docstring
 Returns the units used for the shadow's offset.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setOffsetUnit()`
 
 .. seealso:: :py:func:`offsetDistance()`
@@ -975,6 +935,7 @@ Returns the units used for the shadow's offset.
     void setOffsetUnit( QgsUnitTypes::RenderUnit units );
 %Docstring
 Sets the units used for the shadow's offset.
+
 :param units: shadow distance units
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -987,8 +948,6 @@ Sets the units used for the shadow's offset.
 Returns the map unit scale object for the shadow offset distance. This is only used if the
 offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setOffsetMapUnitScale()`
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -998,6 +957,7 @@ offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Sets the map unit scale object for the shadow offset distance. This is only used if the
 offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
+
 :param scale: scale for shadow offset
 
 .. seealso:: :py:func:`offsetMapUnitScale()`
@@ -1009,22 +969,19 @@ offsetUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Returns true if the global shadow offset will be used.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setOffsetGlobal()`
 %End
 
     void setOffsetGlobal( bool global );
 %Docstring
 Sets whether the global shadow offset should be used.
+
 :param global: set to true to use global shadow offset.
 %End
 
     double blurRadius() const;
 %Docstring
 Returns the blur radius for the shadow. Radius units are retrieved via blurRadiusUnits().
-
-:rtype: float
 
 .. seealso:: :py:func:`setBlurRadius()`
 
@@ -1034,6 +991,7 @@ Returns the blur radius for the shadow. Radius units are retrieved via blurRadiu
     void setBlurRadius( double blurRadius );
 %Docstring
 Sets the blur radius for the shadow. Radius units are specified via setBlurRadiusUnits().
+
 :param blurRadius: blur radius
 
 .. seealso:: :py:func:`blurRadius()`
@@ -1045,8 +1003,6 @@ Sets the blur radius for the shadow. Radius units are specified via setBlurRadiu
 %Docstring
 Returns the units used for the shadow's blur radius.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setBlurRadiusUnit()`
 
 .. seealso:: :py:func:`blurRadius()`
@@ -1055,6 +1011,7 @@ Returns the units used for the shadow's blur radius.
     void setBlurRadiusUnit( QgsUnitTypes::RenderUnit units );
 %Docstring
 Sets the units used for the shadow's blur radius.
+
 :param units: shadow blur radius units
 
 .. seealso:: :py:func:`blurRadiusUnit()`
@@ -1067,8 +1024,6 @@ Sets the units used for the shadow's blur radius.
 Returns the map unit scale object for the shadow blur radius. This is only used if the
 blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setBlurRadiusMapUnitScale()`
 
 .. seealso:: :py:func:`blurRadiusUnit()`
@@ -1078,6 +1033,7 @@ blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Sets the map unit scale object for the shadow blur radius. This is only used if the
 blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
+
 :param scale: scale for shadow blur radius
 
 .. seealso:: :py:func:`blurRadiusMapUnitScale()`
@@ -1089,14 +1045,13 @@ blurRadiusUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Returns whether only the alpha channel for the shadow will be blurred.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setBlurAlphaOnly()`
 %End
 
     void setBlurAlphaOnly( bool alphaOnly );
 %Docstring
 Sets whether only the alpha channel for the shadow should be blurred.
+
 :param alphaOnly: set to true to blur only the alpha channel. If false, all channels (including
 red, green and blue channel) will be blurred.
 
@@ -1108,14 +1063,13 @@ red, green and blue channel) will be blurred.
 Returns the shadow's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
 opaque).
 
-:rtype: float
-
 .. seealso:: :py:func:`setOpacity()`
 %End
 
     void setOpacity( double opacity );
 %Docstring
 Sets the shadow's opacity.
+
 :param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
 opaque)
 
@@ -1126,14 +1080,13 @@ opaque)
 %Docstring
 Returns the scaling used for the drop shadow (in percentage of original size).
 
-:rtype: int
-
 .. seealso:: :py:func:`setScale()`
 %End
 
     void setScale( int scale );
 %Docstring
 Sets the scaling used for the drop shadow (in percentage of original size).
+
 :param scale: scale percent for drop shadow
 
 .. seealso:: :py:func:`scale()`
@@ -1143,14 +1096,13 @@ Sets the scaling used for the drop shadow (in percentage of original size).
 %Docstring
 Returns the color of the drop shadow.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setColor()`
 %End
 
     void setColor( const QColor &color );
 %Docstring
 Sets the color for the drop shadow.
+
 :param color: shadow color
 
 .. seealso:: :py:func:`color()`
@@ -1160,14 +1112,13 @@ Sets the color for the drop shadow.
 %Docstring
 Returns the blending mode used for drawing the drop shadow.
 
-:rtype: QPainter.CompositionMode
-
 .. seealso:: :py:func:`setBlendMode()`
 %End
 
     void setBlendMode( QPainter::CompositionMode mode );
 %Docstring
 Sets the blending mode used for drawing the drop shadow.
+
 :param mode: blending mode
 
 .. seealso:: :py:func:`blendMode()`
@@ -1176,6 +1127,7 @@ Sets the blending mode used for drawing the drop shadow.
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
 Reads settings from a layer's custom properties (for QGIS 2.x projects).
+
 :param layer: source vector layer
 %End
 
@@ -1189,8 +1141,6 @@ Read settings from a DOM element.
     QDomElement writeXml( QDomDocument &doc ) const;
 %Docstring
 Write settings into a DOM element.
-
-:rtype: QDomElement
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -1221,6 +1171,7 @@ Container for all settings relating to text rendering.
     QgsTextFormat( const QgsTextFormat &other );
 %Docstring
 Copy constructor.
+
 :param other: source QgsTextFormat
 %End
 
@@ -1231,8 +1182,6 @@ Copy constructor.
 %Docstring
 Returns a reference to the text buffer settings.
 
-:rtype: QgsTextBufferSettings
-
 .. seealso:: :py:func:`setBuffer()`
 %End
 
@@ -1240,6 +1189,7 @@ Returns a reference to the text buffer settings.
     void setBuffer( const QgsTextBufferSettings &bufferSettings );
 %Docstring
 Sets the text's buffer settings.
+
 :param bufferSettings: buffer settings
 
 .. seealso:: :py:func:`buffer()`
@@ -1249,8 +1199,6 @@ Sets the text's buffer settings.
 %Docstring
 Returns a reference to the text background settings.
 
-:rtype: QgsTextBackgroundSettings
-
 .. seealso:: :py:func:`setBackground()`
 %End
 
@@ -1258,6 +1206,7 @@ Returns a reference to the text background settings.
     void setBackground( const QgsTextBackgroundSettings &backgroundSettings );
 %Docstring
 Sets the text's background settings.q
+
 :param backgroundSettings: background settings
 
 .. seealso:: :py:func:`background()`
@@ -1267,8 +1216,6 @@ Sets the text's background settings.q
 %Docstring
 Returns a reference to the text drop shadow settings.
 
-:rtype: QgsTextShadowSettings
-
 .. seealso:: :py:func:`setShadow()`
 %End
 
@@ -1276,6 +1223,7 @@ Returns a reference to the text drop shadow settings.
     void setShadow( const QgsTextShadowSettings &shadowSettings );
 %Docstring
 Sets the text's drop shadow settings.
+
 :param shadowSettings: shadow settings
 
 .. seealso:: :py:func:`shadow()`
@@ -1286,8 +1234,6 @@ Sets the text's drop shadow settings.
 Returns the font used for rendering text. Note that the size of the font
 is not used, and size() should be called instead to determine the size
 of rendered text.
-
-:rtype: QFont
 
 .. seealso:: :py:func:`scaledFont()`
 
@@ -1300,11 +1246,10 @@ of rendered text.
 %Docstring
 Returns a font with the size scaled to match the format's size settings (including
 units and map unit scale) for a specified render context.
+
 :param context: destination render context
 
 :return: font with scaled size
-:rtype: QFont
-
 
 .. seealso:: :py:func:`font()`
 
@@ -1316,6 +1261,7 @@ units and map unit scale) for a specified render context.
 Sets the font used for rendering text. Note that the size of the font
 is not used, and setSize() should be called instead to explicitly set the size
 of rendered text.
+
 :param font: desired font
 
 .. seealso:: :py:func:`font()`
@@ -1327,8 +1273,6 @@ of rendered text.
 %Docstring
 Returns the named style for the font used for rendering text (e.g., "bold").
 
-:rtype: str
-
 .. seealso:: :py:func:`setNamedStyle()`
 
 .. seealso:: :py:func:`font()`
@@ -1337,6 +1281,7 @@ Returns the named style for the font used for rendering text (e.g., "bold").
     void setNamedStyle( const QString &style );
 %Docstring
 Sets the named style for the font used for rendering text.
+
 :param style: named style, e.g., "bold"
 
 .. seealso:: :py:func:`namedStyle()`
@@ -1348,8 +1293,6 @@ Sets the named style for the font used for rendering text.
 %Docstring
 Returns the size for rendered text. Units are retrieved using sizeUnit().
 
-:rtype: float
-
 .. seealso:: :py:func:`setSize()`
 
 .. seealso:: :py:func:`sizeUnit()`
@@ -1358,6 +1301,7 @@ Returns the size for rendered text. Units are retrieved using sizeUnit().
     void setSize( double size );
 %Docstring
 Sets the size for rendered text.
+
 :param size: size of rendered text. Units are set using setSizeUnit()
 
 .. seealso:: :py:func:`size()`
@@ -1369,8 +1313,6 @@ Sets the size for rendered text.
 %Docstring
 Returns the units for the size of rendered text.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`size()`
 
 .. seealso:: :py:func:`setSizeUnit()`
@@ -1381,6 +1323,7 @@ Returns the units for the size of rendered text.
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the size of rendered text.
+
 :param unit: size units
 
 .. seealso:: :py:func:`setSize()`
@@ -1394,8 +1337,6 @@ Sets the units for the size of rendered text.
 %Docstring
 Returns the map unit scale object for the size. This is only used if the
 sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
-
-:rtype: QgsMapUnitScale
 
 .. seealso:: :py:func:`setSizeMapUnitScale()`
 
@@ -1416,14 +1357,13 @@ sizeUnit() is set to QgsUnitTypes.RenderMapUnit.
 %Docstring
 Returns the color that text will be rendered in.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setColor()`
 %End
 
     void setColor( const QColor &color );
 %Docstring
 Sets the color that text will be rendered in.
+
 :param color: text color
 
 .. seealso:: :py:func:`color()`
@@ -1434,14 +1374,13 @@ Sets the color that text will be rendered in.
 Returns the text's opacity. The opacity is a double value between 0 (fully transparent) and 1 (totally
 opaque).
 
-:rtype: float
-
 .. seealso:: :py:func:`setOpacity()`
 %End
 
     void setOpacity( double opacity );
 %Docstring
 Sets the text's opacity.
+
 :param opacity: opacity as a double value between 0 (fully transparent) and 1 (totally
 opaque)
 
@@ -1452,14 +1391,13 @@ opaque)
 %Docstring
 Returns the blending mode used for drawing the text.
 
-:rtype: QPainter.CompositionMode
-
 .. seealso:: :py:func:`setBlendMode()`
 %End
 
     void setBlendMode( QPainter::CompositionMode mode );
 %Docstring
 Sets the blending mode used for drawing the text.
+
 :param mode: blending mode
 
 .. seealso:: :py:func:`blendMode()`
@@ -1471,14 +1409,13 @@ Returns the line height for text. This is a number between
 0.0 and 10.0 representing the leading between lines as a
 multiplier of line height.
 
-:rtype: float
-
 .. seealso:: :py:func:`setLineHeight()`
 %End
 
     void setLineHeight( double height );
 %Docstring
 Sets the line height for text.
+
 :param height: a number between
 0.0 and 10.0 representing the leading between lines as a
 multiplier of line height.
@@ -1489,6 +1426,7 @@ multiplier of line height.
     void readFromLayer( QgsVectorLayer *layer );
 %Docstring
 Reads settings from a layer's custom properties (for QGIS 2.x projects).
+
 :param layer: source vector layer
 %End
 
@@ -1503,8 +1441,6 @@ Read settings from a DOM element.
 %Docstring
 Write settings into a DOM element.
 
-:rtype: QDomElement
-
 .. seealso:: :py:func:`readXml()`
 %End
 
@@ -1512,8 +1448,6 @@ Write settings into a DOM element.
 %Docstring
 Returns new mime data representing the text format settings.
 Caller takes responsibility for deleting the returned object.
-
-:rtype: QMimeData
 
 .. seealso:: :py:func:`fromMimeData()`
 %End
@@ -1523,8 +1457,6 @@ Caller takes responsibility for deleting the returned object.
 Attempts to parse the provided mime ``data`` as a QgsTextFormat.
 If data can be parsed as a text format, ``ok`` will be set to true.
 
-:rtype: QgsTextFormat
-
 .. seealso:: :py:func:`toMimeData()`
 %End
 
@@ -1532,16 +1464,12 @@ If data can be parsed as a text format, ``ok`` will be set to true.
 %Docstring
 Returns true if any component of the font format requires advanced effects
 such as blend modes, which require output in raster formats to be fully respected.
-
-:rtype: bool
 %End
 
     bool fontFound() const;
 %Docstring
 Returns true if the specified font was found on the system, or false
 if the font was not found and a replacement was used instead.
-
-:rtype: bool
 
 .. seealso:: :py:func:`resolvedFontFamily()`
 %End
@@ -1551,8 +1479,6 @@ if the font was not found and a replacement was used instead.
 Returns the family for the resolved font, ie if the specified font
 was not found on the system this will return the name of the replacement
 font.
-
-:rtype: str
 
 .. seealso:: :py:func:`fontFound()`
 %End
@@ -1592,14 +1518,13 @@ and background shapes.
     static int sizeToPixel( double size, const QgsRenderContext &c, QgsUnitTypes::RenderUnit unit, const QgsMapUnitScale &mapUnitScale = QgsMapUnitScale() );
 %Docstring
 Calculates pixel size (considering output size should be in pixel or map units, scale factors and optionally oversampling)
+
 :param size: size to convert
 :param c: rendercontext
 :param unit: size units
 :param mapUnitScale: a mapUnitScale clamper
 
 :return: font pixel size
-:rtype: int
-
 %End
 
     static void drawText( const QRectF &rect, double rotation, HAlignment alignment, const QStringList &textLines,
@@ -1607,6 +1532,7 @@ Calculates pixel size (considering output size should be in pixel or map units, 
                           bool drawAsOutlines = true );
 %Docstring
 Draws text within a rectangle using the specified settings.
+
 :param rect: destination rectangle for text
 :param rotation: text rotation
 :param alignment: horizontal alignment
@@ -1623,6 +1549,7 @@ rendering and may result in side effects like misaligned text buffers.
                           bool drawAsOutlines = true );
 %Docstring
 Draws text at a point origin using the specified settings.
+
 :param point: origin of text
 :param rotation: text rotation
 :param alignment: horizontal alignment
@@ -1639,6 +1566,7 @@ rendering and may result in side effects like misaligned text buffers.
                           TextPart part, bool drawAsOutlines = true );
 %Docstring
 Draws a single component of rendered text using the specified settings.
+
 :param rect: destination rectangle for text
 :param rotation: text rotation
 :param alignment: horizontal alignment
@@ -1658,6 +1586,7 @@ rendering and may result in side effects like misaligned text buffers.
                           TextPart part, bool drawAsOutlines = true );
 %Docstring
 Draws a single component of rendered text using the specified settings.
+
 :param origin: origin for start of text. Y coordinate will be used as baseline.
 :param rotation: text rotation
 :param alignment: horizontal alignment

@@ -66,29 +66,21 @@ Set status message to theMessage
 List of image formats (encodings) supported by provider
 
 :return: list of format/label pairs
-:rtype: list of QgsOWSSourceSelect.SupportedFormat
-
 %End
 
     virtual QStringList selectedLayersFormats();
 %Docstring
 List of formats supported for currently selected layer item(s)
-
-:rtype: list of str
 %End
 
     virtual QStringList selectedLayersCrses();
 %Docstring
 Server CRS supported for currently selected layer item(s)
-
-:rtype: list of str
 %End
 
     virtual QStringList selectedLayersTimes();
 %Docstring
 List of times (temporalDomain timePosition/timePeriod for currently selected layer item(s)
-
-:rtype: list of str
 %End
 
 
@@ -130,15 +122,11 @@ Clear times
     QString connName();
 %Docstring
 Connection name
-
-:rtype: str
 %End
 
     QString connectionInfo();
 %Docstring
 Connection info (uri)
-
-:rtype: str
 %End
 
     void setConnectionListPosition();
@@ -163,8 +151,6 @@ Add a few example servers to the list.
     QString descriptionForAuthId( const QString &authId );
 %Docstring
 Returns a textual description for the authority id
-
-:rtype: str
 %End
 
 
@@ -180,29 +166,21 @@ layer name derived from latest layer selection (updated as long it's not edited 
     QString selectedFormat();
 %Docstring
 Returns currently selected format
-
-:rtype: str
 %End
 
     QString selectedCrs();
 %Docstring
 Returns currently selected Crs
-
-:rtype: str
 %End
 
     QString selectedTime();
 %Docstring
 Returns currently selected time
-
-:rtype: str
 %End
 
     QNetworkRequest::CacheLoadControl selectedCacheLoadControl();
 %Docstring
 Returns currently selected cache load control
-
-:rtype: QNetworkRequest.CacheLoadControl
 %End
 
 

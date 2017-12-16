@@ -26,8 +26,6 @@ A scale bar item that can be added to a map composition.
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
-
-:rtype: int
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -37,31 +35,17 @@ Return correct graphics item type.
 %End
 
     int numSegments() const;
-%Docstring
-
-:rtype: int
-%End
     void setNumSegments( int nSegments );
 
     int numSegmentsLeft() const;
-%Docstring
-
-:rtype: int
-%End
     void setNumSegmentsLeft( int nSegmentsLeft );
 
     double numUnitsPerSegment() const;
-%Docstring
-
-:rtype: float
-%End
     void setNumUnitsPerSegment( double units );
 
     QgsScaleBarSettings::SegmentSizeMode segmentSizeMode() const;
 %Docstring
 Returns the size mode for scale bar segments.
-
-:rtype: QgsScaleBarSettings.SegmentSizeMode
 
 .. seealso:: :py:func:`setSegmentSizeMode`
 
@@ -75,6 +59,7 @@ Returns the size mode for scale bar segments.
     void setSegmentSizeMode( QgsScaleBarSettings::SegmentSizeMode mode );
 %Docstring
 Sets the size mode for scale bar segments.
+
 :param mode: size mode
 
 .. seealso:: :py:func:`segmentSizeMode`
@@ -92,8 +77,6 @@ Returns the minimum size (in millimeters) for scale bar segments. This
 property is only effective if the segmentSizeMode() is set
 to SegmentSizeFitWidth.
 
-:rtype: float
-
 .. seealso:: :py:func:`segmentSizeMode`
 
 .. seealso:: :py:func:`setMinBarWidth`
@@ -108,6 +91,7 @@ to SegmentSizeFitWidth.
 Sets the minimum size (in millimeters) for scale bar segments. This
 property is only effective if the segmentSizeMode() is set
 to SegmentSizeFitWidth.
+
 :param minWidth: minimum width in millimeters
 
 .. seealso:: :py:func:`minBarWidth`
@@ -125,8 +109,6 @@ Returns the maximum size (in millimeters) for scale bar segments. This
 property is only effective if the segmentSizeMode() is set
 to SegmentSizeFitWidth.
 
-:rtype: float
-
 .. seealso:: :py:func:`segmentSizeMode`
 
 .. seealso:: :py:func:`setMaxBarWidth`
@@ -141,6 +123,7 @@ to SegmentSizeFitWidth.
 Sets the maximum size (in millimeters) for scale bar segments. This
 property is only effective if the segmentSizeMode() is set
 to SegmentSizeFitWidth.
+
 :param maxWidth: maximum width in millimeters
 
 .. seealso:: :py:func:`minBarWidth`
@@ -153,24 +136,12 @@ to SegmentSizeFitWidth.
 %End
 
     double numMapUnitsPerScaleBarUnit() const;
-%Docstring
-
-:rtype: float
-%End
     void setNumMapUnitsPerScaleBarUnit( double d );
 
     QString unitLabeling() const;
-%Docstring
-
-:rtype: str
-%End
     void setUnitLabeling( const QString &label );
 
     QFont font() const;
-%Docstring
-
-:rtype: QFont
-%End
     void setFont( const QFont &font );
 
     QColor fontColor() const;
@@ -178,8 +149,6 @@ to SegmentSizeFitWidth.
 Returns the color used for drawing text in the scalebar.
 
 :return: font color for scalebar.
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setFontColor`
 
@@ -189,6 +158,7 @@ Returns the color used for drawing text in the scalebar.
     void setFontColor( const QColor &c );
 %Docstring
 Sets the color used for drawing text in the scalebar.
+
 :param c: font color for scalebar.
 
 .. seealso:: :py:func:`fontColor`
@@ -199,8 +169,6 @@ Sets the color used for drawing text in the scalebar.
     QColor fillColor() const;
 %Docstring
 Returns the color used for fills in the scalebar.
-
-:rtype: QColor
 
 .. seealso:: :py:func:`setFillColor()`
 
@@ -224,8 +192,6 @@ Sets the color used for fills in the scalebar.
 %Docstring
 Returns the secondary color used for fills in the scalebar.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setFillColor2()`
 
 .. seealso:: :py:func:`fillColor()`
@@ -248,8 +214,6 @@ Sets the secondary color used for fills in the scalebar.
 %Docstring
 Returns the color used for lines in the scalebar.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setLineColor()`
 
 .. versionadded:: 3.0
@@ -267,8 +231,6 @@ Sets the color used for lines in the scalebar.
     double lineWidth() const;
 %Docstring
 Returns the line width in millimeters for lines in the scalebar.
-
-:rtype: float
 
 .. seealso:: :py:func:`setLineWidth()`
 
@@ -289,8 +251,6 @@ Sets the line width in millimeters for lines in the scalebar.
 Returns the pen used for drawing the scalebar.
 
 :return: QPen used for drawing the scalebar outlines.
-:rtype: QPen
-
 
 .. seealso:: :py:func:`setPen`
 
@@ -302,8 +262,6 @@ Returns the pen used for drawing the scalebar.
 Returns the primary brush for the scalebar.
 
 :return: QBrush used for filling the scalebar
-:rtype: QBrush
-
 
 .. seealso:: :py:func:`setBrush`
 
@@ -318,8 +276,6 @@ Returns the secondary brush for the scalebar. This is used for alternating color
 as single and double box styles.
 
 :return: QBrush used for secondary color areas
-:rtype: QBrush
-
 
 .. seealso:: :py:func:`setBrush2`
 
@@ -327,10 +283,6 @@ as single and double box styles.
 %End
 
     double height() const;
-%Docstring
-
-:rtype: float
-%End
     void setHeight( double h );
 
     void setComposerMap( QgsComposerMap *map );
@@ -341,29 +293,17 @@ Sets the ``map`` item linked to the scalebar.
     QgsComposerMap *composerMap() const;
 %Docstring
 Returns the map item linked to the scalebar.
-
-:rtype: QgsComposerMap
 %End
 
     double labelBarSpace() const;
-%Docstring
-
-:rtype: float
-%End
     void setLabelBarSpace( double space );
 
     double boxContentSpace() const;
-%Docstring
-
-:rtype: float
-%End
     void setBoxContentSpace( double space );
 
     QgsScaleBarSettings::Alignment alignment() const;
 %Docstring
 Returns the alignment of the scalebar.
-
-:rtype: QgsScaleBarSettings.Alignment
 %End
 
     void setAlignment( QgsScaleBarSettings::Alignment alignment );
@@ -374,8 +314,6 @@ Sets the ``alignment`` of the scalebar.
     QgsUnitTypes::DistanceUnit units() const;
 %Docstring
 Returns the scalebar distance units.
-
-:rtype: QgsUnitTypes.DistanceUnit
 %End
 
     void setUnits( QgsUnitTypes::DistanceUnit u );
@@ -388,8 +326,6 @@ Sets the scalebar distance units.
 Returns the join style used for drawing lines in the scalebar
 
 :return: Join style for lines
-:rtype: Qt.PenJoinStyle
-
 
 .. versionadded:: 2.3
 
@@ -399,6 +335,7 @@ Returns the join style used for drawing lines in the scalebar
     void setLineJoinStyle( Qt::PenJoinStyle style );
 %Docstring
 Sets join style used when drawing the lines in the scalebar
+
 :param style: Join style for lines
 
 :return: nothing
@@ -413,8 +350,6 @@ Sets join style used when drawing the lines in the scalebar
 Returns the cap style used for drawing lines in the scalebar
 
 :return: Cap style for lines
-:rtype: Qt.PenCapStyle
-
 
 .. versionadded:: 2.3
 
@@ -424,6 +359,7 @@ Returns the cap style used for drawing lines in the scalebar
     void setLineCapStyle( Qt::PenCapStyle style );
 %Docstring
 Sets cap style used when drawing the lines in the scalebar
+
 :param style: Cap style for lines
 
 :return: nothing
@@ -445,14 +381,13 @@ Apply default size (scale bar 1/5 of map item width)
     void setStyle( const QString &styleName );
 %Docstring
 Sets style by name
+
 :param styleName: (untranslated) style name. Possibilities are: 'Single Box', 'Double Box', 'Line Ticks Middle', 'Line Ticks Down', 'Line Ticks Up', 'Numeric'*
 %End
 
     QString style() const;
 %Docstring
 Returns style name
-
-:rtype: str
 %End
 
     void adjustBoxSize();
@@ -470,20 +405,18 @@ Adjusts box size and calls QgsComposerItem.update()
 
 %Docstring
 Stores state in Dom element
+
 :param elem: is Dom element corresponding to 'Composer' tag
 :param doc: Dom document
-
-:rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
 Sets state from Dom document
+
 :param itemElem: is Dom node corresponding to item tag
 :param doc: is Dom document
-
-:rtype: bool
 %End
 
     void correctXPositionAlignment( double width, double widthAfter );

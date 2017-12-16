@@ -57,8 +57,6 @@ Add optimization strategy
     virtual QString name() const = 0;
 %Docstring
 Returns director name
-
-:rtype: str
 %End
 
   protected:

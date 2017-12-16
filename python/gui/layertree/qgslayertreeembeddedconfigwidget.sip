@@ -25,6 +25,7 @@ A widget to configure layer tree embedded widgets for a particular map layer.
     QgsLayerTreeEmbeddedConfigWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 A widget to configure layer tree embedded widgets for a particular map layer.
+
 :param parent: The parent of the widget.
 %End
 

@@ -27,8 +27,6 @@ Layout view tool for adding node based items to a layout.
 %Docstring
 Returns the item metadata id for items created by the tool.
 
-:rtype: int
-
 .. seealso:: :py:func:`setItemMetadataId()`
 %End
 

@@ -60,15 +60,11 @@ Remove all fields
     bool append( const QgsField &field, FieldOrigin origin = OriginProvider, int originIndex = -1 );
 %Docstring
 Append a field. The field must have unique name, otherwise it is rejected (returns false)
-
-:rtype: bool
 %End
 
     bool appendExpressionField( const QgsField &field, int originIndex );
 %Docstring
 Append an expression field. The field must have unique name, otherwise it is rejected (returns false)
-
-:rtype: bool
 %End
 
     void remove( int fieldIdx );
@@ -95,22 +91,14 @@ Extend with fields from another QgsFields container
     bool isEmpty() const;
 %Docstring
 Check whether the container is empty
-
-:rtype: bool
 %End
 
     int count() const;
 %Docstring
 Return number of items
-
-:rtype: int
 %End
 
     int __len__() const;
-%Docstring
-
-:rtype: int
-%End
 %MethodCode
     sipRes = sipCpp->count();
 %End
@@ -118,15 +106,11 @@ Return number of items
     int size() const;
 %Docstring
 Return number of items
-
-:rtype: int
 %End
 
     QStringList names() const;
 %Docstring
 Returns a list with field names
-
-:rtype: list of str
 
 .. versionadded:: 3.0
 %End
@@ -134,11 +118,10 @@ Returns a list with field names
     bool exists( int i ) const;
 %Docstring
 Return if a field index is valid
+
 :param i:  Index of the field which needs to be checked
 
 :return:   True if the field exists
-:rtype: bool
-
 %End
 
 
@@ -154,8 +137,6 @@ Return if a field index is valid
     QgsField at( int i ) const /Factory/;
 %Docstring
 Get field at particular index (must be in range 0..N-1)
-
-:rtype: QgsField
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -172,8 +153,6 @@ Get field at particular index (must be in range 0..N-1)
     QgsField field( int fieldIdx ) const /Factory/;
 %Docstring
 Get field at particular index (must be in range 0..N-1)
-
-:rtype: QgsField
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -190,8 +169,6 @@ Get field at particular index (must be in range 0..N-1)
     QgsField field( const QString &name ) const /Factory/;
 %Docstring
 Get field with matching name
-
-:rtype: QgsField
 %End
 %MethodCode
     int fieldIdx = sipCpp->indexFromName( *a0 );
@@ -209,8 +186,6 @@ Get field with matching name
     FieldOrigin fieldOrigin( int fieldIdx ) const;
 %Docstring
 Get field's origin (value from an enumeration)
-
-:rtype: FieldOrigin
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -227,8 +202,6 @@ Get field's origin (value from an enumeration)
     int fieldOriginIndex( int fieldIdx ) const;
 %Docstring
 Get field's origin index (its meaning is specific to each type of origin)
-
-:rtype: int
 %End
 %MethodCode
     if ( a0 < 0 || a0 >= sipCpp->count() )
@@ -252,8 +225,6 @@ Alias for indexOf
 :param fieldName: The name of the field.
 
 :return: The field index if found or -1 in case it cannot be found.
-:rtype: int
-
 
 .. seealso:: :py:func:`lookupField`
 %End
@@ -267,8 +238,6 @@ name of the field.
 :param fieldName: The name of the field.
 
 :return: The field index if found or -1 in case it cannot be found.
-:rtype: int
-
 
 .. seealso:: :py:func:`lookupField`
 
@@ -287,8 +256,6 @@ This method matches in the following order:
 :param fieldName: The name to look for.
 
 :return: The field index if found or -1 in case it cannot be found.
-:rtype: int
-
 
 .. seealso:: :py:func:`indexFromName`
 
@@ -299,23 +266,17 @@ This method matches in the following order:
 %Docstring
 Utility function to get list of attribute indexes
 
-:rtype: QgsAttributeList
-
 .. versionadded:: 2.4
 %End
 
     QList<QgsField> toList() const;
 %Docstring
 Utility function to return a list of QgsField instances
-
-:rtype: list of QgsField
 %End
 
     bool operator==( const QgsFields &other ) const;
     bool operator!=( const QgsFields &other ) const;
 %Docstring
-
-:rtype: bool
 
 .. versionadded:: 2.6
 %End
@@ -323,8 +284,6 @@ Utility function to return a list of QgsField instances
     QIcon iconForField( int fieldIdx ) const /Factory/;
 %Docstring
 Returns an icon corresponding to a field index, based on the field's type and source
-
-:rtype: QIcon
 
 .. versionadded:: 2.14
 %End

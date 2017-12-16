@@ -46,8 +46,6 @@ Constructor for QgsFieldModel - creates a model to display the fields of a given
     QModelIndex indexFromName( const QString &fieldName );
 %Docstring
 Returns the index corresponding to a given fieldName.
-
-:rtype: QModelIndex
 %End
 
     void setAllowExpression( bool allowExpression );
@@ -62,8 +60,6 @@ Sets whether custom expressions are accepted and displayed in the model.
     bool allowExpression();
 %Docstring
 Returns true if the model allows custom expressions to be created and displayed.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setAllowExpression()`
 %End
@@ -81,8 +77,6 @@ Sets whether an optional empty field ("not set") option is present in the model.
 %Docstring
 Returns true if the model allows the empty field ("not set") choice.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setAllowEmptyFieldName()`
 
 .. versionadded:: 3.0
@@ -92,8 +86,6 @@ Returns true if the model allows the empty field ("not set") choice.
 %Docstring
 Returns true if a string represents a field reference, or false if it is an
 expression consisting of more than direct field reference.
-
-:rtype: bool
 %End
 
     void setExpression( const QString &expression );
@@ -119,8 +111,6 @@ Removes any custom expression from the model.
     QgsVectorLayer *layer();
 %Docstring
 Returns the layer associated with the model.
-
-:rtype: QgsVectorLayer
 
 .. seealso:: :py:func:`setLayer()`
 %End

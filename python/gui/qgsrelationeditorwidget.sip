@@ -33,6 +33,7 @@ class QgsRelationEditorWidget : QgsCollapsibleGroupBox
 
     QgsRelationEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
+
 :param parent: parent widget
 %End
 
@@ -44,8 +45,6 @@ Define the view mode for the dual view
     QgsDualView::ViewMode viewMode();
 %Docstring
 Get the view mode for the dual view
-
-:rtype: QgsDualView.ViewMode
 %End
 
     void setRelationFeature( const QgsRelation &relation, const QgsFeature &feature );
@@ -69,15 +68,11 @@ inserting and deleting entries on the intermediate table as required.
 %Docstring
 The feature selection manager is responsible for the selected features
 which are currently being edited.
-
-:rtype: QgsIFeatureSelectionManager
 %End
 
     bool showLabel() const;
 %Docstring
 Defines if a title label should be shown for this widget.
-
-:rtype: bool
 
 .. versionadded:: 2.18
 %End
@@ -93,8 +88,6 @@ Defines if a title label should be shown for this widget.
 %Docstring
 Determines if the "link feature" button should be shown
 
-:rtype: bool
-
 .. versionadded:: 2.18
 %End
 
@@ -108,8 +101,6 @@ Determines if the "link feature" button should be shown
     bool showUnlinkButton() const;
 %Docstring
 Determines if the "unlink feature" button should be shown
-
-:rtype: bool
 
 .. versionadded:: 2.18
 %End

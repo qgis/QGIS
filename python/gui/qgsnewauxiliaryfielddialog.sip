@@ -36,8 +36,6 @@ Constructor.
     QgsPropertyDefinition propertyDefinition() const;
 %Docstring
 Returns the underlying property definition.
-
-:rtype: QgsPropertyDefinition
 %End
 
   protected:

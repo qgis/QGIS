@@ -30,36 +30,26 @@ An interface for objects which provide features via a getFeatures method.
 Returns an iterator for the features in the source.
 An optional ``request`` can be used to optimise the returned
 iterator, eg by restricting the returned attributes or geometry.
-
-:rtype: QgsFeatureIterator
 %End
 
     virtual QString sourceName() const = 0;
 %Docstring
 Returns a friendly display name for the source. The returned value can be an empty string.
-
-:rtype: str
 %End
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const = 0;
 %Docstring
 Returns the coordinate reference system for features in the source.
-
-:rtype: QgsCoordinateReferenceSystem
 %End
 
     virtual QgsFields fields() const = 0;
 %Docstring
 Returns the fields associated with features in the source.
-
-:rtype: QgsFields
 %End
 
     virtual QgsWkbTypes::Type wkbType() const = 0;
 %Docstring
 Returns the geometry type for features returned by this source.
-
-:rtype: QgsWkbTypes.Type
 %End
 
 
@@ -67,8 +57,6 @@ Returns the geometry type for features returned by this source.
 %Docstring
 Returns the number of features contained in the source, or -1
 if the feature count is unknown.
-
-:rtype: int
 %End
 %MethodCode
     sipRes = sipCpp->featureCount();
@@ -78,8 +66,6 @@ if the feature count is unknown.
 %Docstring
 Returns the number of features contained in the source, or -1
 if the feature count is unknown.
-
-:rtype: long
 %End
 
     virtual QSet<QVariant> uniqueValues( int fieldIndex, int limit = -1 ) const;
@@ -88,8 +74,6 @@ Returns the set of unique values contained within the specified ``fieldIndex`` f
 If specified, the ``limit`` option can be used to limit the number of returned values.
 The base class implementation uses a non-optimised approach of looping through
 all features in the source.
-
-:rtype: set of QVariant
 
 .. seealso:: :py:func:`minimumValue()`
 
@@ -102,8 +86,6 @@ Returns the minimum value for an attribute column or an invalid variant in case 
 The base class implementation uses a non-optimised approach of looping through
 all features in the source.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`maximumValue()`
 
 .. seealso:: :py:func:`uniqueValues()`
@@ -115,8 +97,6 @@ Returns the maximum value for an attribute column or an invalid variant in case 
 The base class implementation uses a non-optimised approach of looping through
 all features in the source.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`minimumValue()`
 
 .. seealso:: :py:func:`uniqueValues()`
@@ -127,15 +107,11 @@ all features in the source.
 Returns the extent of all geometries from the source.
 The base class implementation uses a non-optimised approach of looping through
 all features in the source.
-
-:rtype: QgsRectangle
 %End
 
     virtual QgsFeatureIds allFeatureIds() const;
 %Docstring
 Returns a list of all feature IDs for features present in the source.
-
-:rtype: QgsFeatureIds
 %End
 
     QgsVectorLayer *materialize( const QgsFeatureRequest &request,
@@ -160,8 +136,6 @@ before it has fully completed.
 
 The returned value is a new instance and the caller takes responsibility
 for its ownership.
-
-:rtype: QgsVectorLayer
 
 .. versionadded:: 3.0
 %End

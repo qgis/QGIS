@@ -37,6 +37,7 @@ Constructor for QgsEllipse.
     QgsEllipse( const QgsPoint &center, const double semiMajorAxis, const double semiMinorAxis, const double azimuth = 90 );
 %Docstring
 Constructs an ellipse by defining all the members.
+
 :param center: The center of the ellipse.
 :param semiMajorAxis: Semi-major axis of the ellipse.
 :param semiMinorAxis: Semi-minor axis of the ellipse.
@@ -49,11 +50,10 @@ Constructs an ellipse by foci (``pt1`` and ``pt2``) and a point ``pt3``.
 The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
 Axes are calculated from the 2D distance with the third point ``pt3``.
 The azimuth is the angle between ``pt1`` and ``pt2``.
+
 :param pt1: First focus.
 :param pt2: Second focus.
 :param pt3: A point to calculate the axes.
-
-:rtype: QgsEllipse
 %End
 
     static QgsEllipse fromExtent( const QgsPoint &pt1, const QgsPoint &pt2 );
@@ -62,10 +62,9 @@ Constructs an ellipse by an extent (aka bounding box / QgsRectangle).
 The center point can have z and m values which are the result from the midpoint operation between ``pt1`` and ``pt2``.
 Axes are calculated from the 2D distance between ``pt1`` and ``pt2``.
 The azimuth always takes the default value.
+
 :param pt1: First corner.
 :param pt2: Second corner.
-
-:rtype: QgsEllipse
 %End
 
     static QgsEllipse fromCenterPoint( const QgsPoint &ptc, const QgsPoint &pt1 );
@@ -74,10 +73,9 @@ Constructs an ellipse by a center point and a another point.
 The center point keeps z and m values from ``ptc``.
 Axes are calculated from the 2D distance between ``ptc`` and ``pt1``.
 The azimuth always takes the default value.
+
 :param ptc: Center point.
 :param pt1: First point.
-
-:rtype: QgsEllipse
 %End
 
     static QgsEllipse fromCenter2Points( const QgsPoint &ptc, const QgsPoint &pt1, const QgsPoint &pt2 );
@@ -86,11 +84,10 @@ Constructs an ellipse by a central point and two other points.
 The center point keeps z and m values from ``ptc``.
 Axes are calculated from the 2D distance between ``ptc`` and ``pt1`` and ``pt2``.
 The azimuth is the angle between ``ptc`` and ``pt1``.
+
 :param ptc: Center point.
 :param pt1: First point.
 :param pt2: Second point.
-
-:rtype: QgsEllipse
 %End
 
     virtual bool operator ==( const QgsEllipse &elp ) const;
@@ -99,15 +96,11 @@ The azimuth is the angle between ``ptc`` and ``pt1``.
     virtual bool isEmpty() const;
 %Docstring
 An ellipse is empty if axes are equal to 0
-
-:rtype: bool
 %End
 
     QgsPoint center() const;
 %Docstring
 Returns the center point.
-
-:rtype: QgsPoint
 
 .. seealso:: :py:func:`setCenter()`
 
@@ -118,8 +111,6 @@ Returns the center point.
 %Docstring
 Returns the semi-major axis.
 
-:rtype: float
-
 .. seealso:: :py:func:`setSemiMajorAxis()`
 %End
 
@@ -127,16 +118,12 @@ Returns the semi-major axis.
 %Docstring
 Returns the semi-minor axis.
 
-:rtype: float
-
 .. seealso:: :py:func:`setSemiMinorAxis()`
 %End
 
     double azimuth() const;
 %Docstring
 Returns the azimuth.
-
-:rtype: float
 
 .. seealso:: :py:func:`setAzimuth()`
 %End
@@ -176,8 +163,6 @@ Sets the azimuth (orientation).
 %Docstring
 The distance between the center and each foci.
 
-:rtype: float
-
 .. seealso:: :py:func:`fromFoci()`
 
 .. seealso:: :py:func:`foci()`
@@ -188,8 +173,6 @@ The distance between the center and each foci.
     virtual QVector<QgsPoint> foci() const;
 %Docstring
 Two foci of the ellipse. The axes are oriented by the azimuth and are on the semi-major axis.
-
-:rtype: list of QgsPoint
 
 .. seealso:: :py:func:`fromFoci()`
 
@@ -202,20 +185,14 @@ Two foci of the ellipse. The axes are oriented by the azimuth and are on the sem
 %Docstring
 The eccentricity of the ellipse.
 nan is returned if the ellipse is empty.
-
-:rtype: float
 %End
     virtual double area() const;
 %Docstring
 The area of the ellipse.
-
-:rtype: float
 %End
     virtual double perimeter() const;
 %Docstring
 The circumference of the ellipse using first approximation of Ramanujan.
-
-:rtype: float
 %End
 
     virtual QVector<QgsPoint> quadrant() const;
@@ -224,54 +201,43 @@ The four quadrants of the ellipse.
 They are oriented and started always from semi-major axis.
 
 :return: quadrants defined by four points.
-:rtype: list of QgsPoint
-
 %End
 
     virtual QgsPointSequence points( unsigned int segments = 36 ) const;
 %Docstring
 Returns a list of points with segmentation from ``segments``.
-:param segments: Number of segments used to segment geometry.
 
-:rtype: QgsPointSequence
+:param segments: Number of segments used to segment geometry.
 %End
 
     virtual QgsPolygon *toPolygon( unsigned int segments = 36 ) const /Factory/;
 %Docstring
 Returns a segmented polygon.
-:param segments: Number of segments used to segment geometry.
 
-:rtype: QgsPolygon
+:param segments: Number of segments used to segment geometry.
 %End
 
     virtual QgsLineString *toLineString( unsigned int segments = 36 ) const /Factory/;
 %Docstring
 Returns a segmented linestring.
-:param segments: Number of segments used to segment geometry.
 
-:rtype: QgsLineString
+:param segments: Number of segments used to segment geometry.
 %End
 
     virtual QgsPolygon *orientedBoundingBox() const /Factory/;
 %Docstring
 Returns the oriented minimal bounding box for the ellipse.
-
-:rtype: QgsPolygon
 %End
 
     virtual QgsRectangle boundingBox() const;
 %Docstring
 Returns the minimal bounding box for the ellipse.
-
-:rtype: QgsRectangle
 %End
 
     virtual QString toString( int pointPrecision = 17, int axisPrecision = 17, int azimuthPrecision = 2 ) const;
 %Docstring
 returns a string representation of the ellipse.
 Members will be truncated to the specified precision.
-
-:rtype: str
 %End
 
   protected:

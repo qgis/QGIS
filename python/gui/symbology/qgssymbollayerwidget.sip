@@ -20,20 +20,18 @@ class QgsSymbolLayerWidget : QWidget, protected QgsExpressionContextGenerator
     QgsSymbolLayerWidget( QWidget *parent /TransferThis/, QgsVectorLayer *vl = 0 );
 %Docstring
 Constructor for QgsSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer ) = 0;
     virtual QgsSymbolLayer *symbolLayer() = 0;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context()`
@@ -45,8 +43,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 %Docstring
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
-:rtype: QgsSymbolWidgetContext
-
 .. seealso:: :py:func:`setContext()`
 
 .. versionadded:: 3.0
@@ -55,8 +51,6 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-:rtype: QgsVectorLayer
 
 .. versionadded:: 2.12
 %End
@@ -110,6 +104,7 @@ class QgsSimpleLineSymbolLayerWidget : QgsSymbolLayerWidget
     QgsSimpleLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSimpleLineSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -117,9 +112,8 @@ Constructor for QgsSimpleLineSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsSimpleLineSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -147,6 +141,7 @@ class QgsSimpleMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     QgsSimpleMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSimpleMarkerSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -154,9 +149,8 @@ Constructor for QgsSimpleMarkerSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsSimpleMarkerSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -187,6 +181,7 @@ class QgsSimpleFillSymbolLayerWidget : QgsSymbolLayerWidget
     QgsSimpleFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSimpleFillSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -194,9 +189,8 @@ Constructor for QgsSimpleFillSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsSimpleFillSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -232,6 +226,7 @@ class QgsFilledMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     QgsFilledMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFilledMarkerSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -239,9 +234,8 @@ Constructor for QgsFilledMarkerSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsFilledMarkerSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -267,6 +261,7 @@ class QgsGradientFillSymbolLayerWidget : QgsSymbolLayerWidget
     QgsGradientFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGradientFillSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -274,9 +269,8 @@ Constructor for QgsGradientFillSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsGradientFillSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -314,6 +308,7 @@ class QgsShapeburstFillSymbolLayerWidget : QgsSymbolLayerWidget
     QgsShapeburstFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsShapeburstFillSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -321,9 +316,8 @@ Constructor for QgsShapeburstFillSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsShapeburstFillSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -353,6 +347,7 @@ class QgsMarkerLineSymbolLayerWidget : QgsSymbolLayerWidget
     QgsMarkerLineSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMarkerLineSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -360,9 +355,8 @@ Constructor for QgsMarkerLineSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsMarkerLineSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -395,6 +389,7 @@ class QgsSvgMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     QgsSvgMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSvgMarkerSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -402,9 +397,8 @@ Constructor for QgsSvgMarkerSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsSvgMarkerSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -434,6 +428,7 @@ class QgsRasterFillSymbolLayerWidget : QgsSymbolLayerWidget
     QgsRasterFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRasterFillSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -441,9 +436,8 @@ Constructor for QgsRasterFillSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsRasterFillSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -469,6 +463,7 @@ class QgsSVGFillSymbolLayerWidget : QgsSymbolLayerWidget
     QgsSVGFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSVGFillSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -476,9 +471,8 @@ Constructor for QgsSVGFillSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsSVGFillSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -493,6 +487,7 @@ Creates a new QgsSVGFillSymbolLayerWidget.
 %Docstring
 Enables or disables svg fill color, stroke color and stroke width based on whether the
 svg file supports custom parameters.
+
 :param resetValues: set to true to overwrite existing layer fill color, stroke color and stroke width
 with default values from svg file
 %End
@@ -513,6 +508,7 @@ class QgsLinePatternFillSymbolLayerWidget : QgsSymbolLayerWidget
     QgsLinePatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLinePatternFillSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -520,9 +516,8 @@ Constructor for QgsLinePatternFillSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsLinePatternFillSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -548,6 +543,7 @@ class QgsPointPatternFillSymbolLayerWidget: QgsSymbolLayerWidget
     QgsPointPatternFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsPointPatternFillSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -555,9 +551,8 @@ Constructor for QgsPointPatternFillSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsPointPatternFillSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -583,6 +578,7 @@ class QgsFontMarkerSymbolLayerWidget : QgsSymbolLayerWidget
     QgsFontMarkerSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFontMarkerSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -590,9 +586,8 @@ Constructor for QgsFontMarkerSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsFontMarkerSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -633,6 +628,7 @@ class QgsCentroidFillSymbolLayerWidget : QgsSymbolLayerWidget
     QgsCentroidFillSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCentroidFillSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -640,9 +636,8 @@ Constructor for QgsCentroidFillSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsCentroidFillSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
@@ -668,6 +663,7 @@ class QgsGeometryGeneratorSymbolLayerWidget : QgsSymbolLayerWidget
     QgsGeometryGeneratorSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGeometryGeneratorSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -675,8 +671,6 @@ Constructor for QgsGeometryGeneratorSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Will be registered as factory
-
-:rtype: QgsSymbolLayerWidget
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );

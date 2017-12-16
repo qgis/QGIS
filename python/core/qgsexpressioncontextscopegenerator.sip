@@ -26,8 +26,6 @@ Abstract interface for generating an expression context scope.
 This method needs to be reimplemented in all classes which implement this interface
 and return an expression context scope.
 
-:rtype: QgsExpressionContextScope
-
 .. versionadded:: 3.0
 %End
 

@@ -30,8 +30,6 @@ Constructor for QgsEncodingFileDialog
     QString encoding() const;
 %Docstring
 Returns a string describing the chosen encoding
-
-:rtype: str
 %End
     void addCancelAll();
 %Docstring
@@ -40,8 +38,6 @@ Adds a 'Cancel All' button for the user to click
     bool cancelAll();
 %Docstring
 Returns true if the user clicked 'Cancel All'
-
-:rtype: bool
 %End
 
   public slots:
@@ -79,8 +75,6 @@ The ``encoding`` argument can be used to specify the encoding initially selected
     QString encoding() const;
 %Docstring
 Returns the encoding selected within the dialog.
-
-:rtype: str
 
 .. seealso:: :py:func:`setEncoding()`
 %End

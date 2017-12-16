@@ -47,45 +47,13 @@ depending on the delegate implementation.
 %End
 
     QString title() const;
-%Docstring
-
-:rtype: str
-%End
     QString detail() const;
-%Docstring
-
-:rtype: str
-%End
     QString category() const;
-%Docstring
-
-:rtype: str
-%End
     QPixmap icon() const;
-%Docstring
-
-:rtype: QPixmap
-%End
     bool isCheckable() const;
-%Docstring
-
-:rtype: bool
-%End
     bool isChecked() const;
-%Docstring
-
-:rtype: bool
-%End
     bool isEnabled() const;
-%Docstring
-
-:rtype: bool
-%End
     bool isRenderedAsWidget() const;
-%Docstring
-
-:rtype: bool
-%End
 
 };
 

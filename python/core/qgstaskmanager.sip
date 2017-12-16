@@ -55,6 +55,7 @@ clean up and terminate at the earliest possible convenience.
     QgsTask( const QString &description = QString(), const Flags &flags = AllFlags );
 %Docstring
 Constructor for QgsTask.
+
 :param description: text description of task
 :param flags: task flags
 %End
@@ -64,44 +65,32 @@ Constructor for QgsTask.
     Flags flags() const;
 %Docstring
 Returns the flags associated with the task.
-
-:rtype: Flags
 %End
 
     bool canCancel() const;
 %Docstring
 Returns true if the task can be canceled.
-
-:rtype: bool
 %End
 
     bool isActive() const;
 %Docstring
 Returns true if the task is active, ie it is not complete and has
 not been canceled.
-
-:rtype: bool
 %End
 
     TaskStatus status() const;
 %Docstring
 Returns the current task status.
-
-:rtype: TaskStatus
 %End
 
     QString description() const;
 %Docstring
 Returns the task's description.
-
-:rtype: str
 %End
 
     double progress() const;
 %Docstring
 Returns the task's progress (between 0.0 and 100.0)
-
-:rtype: float
 %End
 
     virtual void cancel();
@@ -177,8 +166,6 @@ be canceled if any of these layers are about to be removed.
 Returns the list of layers on which the task depends. The task will automatically
 be canceled if any of these layers are about to be removed.
 
-:rtype: list of QgsMapLayer
-
 .. seealso:: :py:func:`setDependentLayers()`
 %End
 
@@ -191,8 +178,6 @@ In case the task already is finished, the method will return immediately while
 returning ``true``.
 
 The result will be false if the wait timed out and true in any other case.
-
-:rtype: bool
 %End
 
   signals:
@@ -200,6 +185,7 @@ The result will be false if the wait timed out and true in any other case.
     void progressChanged( double progress );
 %Docstring
 Will be emitted by task when its progress changes.
+
 :param progress: percent of progress, from 0.0 - 100.0
 
 .. note::
@@ -211,6 +197,7 @@ setProgress()
     void statusChanged( int status );
 %Docstring
 Will be emitted by task when its status changes.
+
 :param status: new task status
 
 .. note::
@@ -261,8 +248,6 @@ wish to perform in the background within this method.
 
 A task must return a boolean value to indicate whether the
 task was completed successfully or terminated before completion.
-
-:rtype: bool
 %End
 
     virtual void finished( bool result );
@@ -282,8 +267,6 @@ lengthy operations here.
 Will return true if task should terminate ASAP. If the task reports the CanCancel
 flag, then derived classes' run() methods should periodically check this and
 terminate in a safe manner.
-
-:rtype: bool
 %End
 
   protected slots:
@@ -292,6 +275,7 @@ terminate in a safe manner.
 %Docstring
 Sets the task's current progress. The derived class should call this method whenever
 the task wants to update its progress. Calling will automatically emit the progressChanged signal.
+
 :param progress: percent of progress, from 0.0 - 100.0
 %End
 
@@ -318,6 +302,7 @@ or accessed via QgsApplication.taskManager().
     QgsTaskManager( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTaskManager.
+
 :param parent: parent QObject
 %End
 
@@ -355,8 +340,6 @@ order of execution, with larger numbers
 taking precedence over lower priority numbers.
 
 :return: unique task ID
-:rtype: long
-
 %End
 
     long addTask( const TaskDefinition &task /Transfer/, int priority = 0 );
@@ -368,42 +351,34 @@ be used to control the run queue's order of execution, with larger numbers
 taking precedence over lower priority numbers.
 
 :return: unique task ID
-:rtype: long
-
 %End
 
     QgsTask *task( long id ) const;
 %Docstring
 Returns the task with matching ID.
+
 :param id: task ID
 
 :return: task if found, or None
-:rtype: QgsTask
-
 %End
 
     QList<QgsTask *> tasks() const;
 %Docstring
 Returns all tasks tracked by the manager.
-
-:rtype: list of QgsTask
 %End
 
     int count() const;
 %Docstring
 Returns the number of tasks tracked by the manager.
-
-:rtype: int
 %End
 
     long taskId( QgsTask *task ) const;
 %Docstring
 Returns the unique task ID corresponding to a task managed by the class.
+
 :param task: task to find
 
 :return: task ID, or -1 if task not found
-:rtype: long
-
 %End
 
     void cancelAll();
@@ -416,8 +391,6 @@ but will instead signal the tasks to cancel and then return immediately.
     bool dependenciesSatisfied( long taskId ) const;
 %Docstring
 Returns true if all dependencies for the specified task are satisfied
-
-:rtype: bool
 %End
 
 
@@ -425,11 +398,10 @@ Returns true if all dependencies for the specified task are satisfied
 %Docstring
 Returns a list of layers on which as task is dependent. The task will automatically
 be canceled if any of these layers are above to be removed.
+
 :param taskId: task ID
 
 :return: list of layers
-:rtype: list of QgsMapLayer
-
 
 .. seealso:: :py:func:`tasksDependentOnLayer()`
 %End
@@ -438,8 +410,6 @@ be canceled if any of these layers are above to be removed.
 %Docstring
 Returns a list of tasks which depend on a layer.
 
-:rtype: list of QgsTask
-
 .. seealso:: :py:func:`dependentLayers()`
 %End
 
@@ -447,16 +417,12 @@ Returns a list of tasks which depend on a layer.
 %Docstring
 Returns a list of the active (queued or running) tasks.
 
-:rtype: list of QgsTask
-
 .. seealso:: :py:func:`countActiveTasks()`
 %End
 
     int countActiveTasks() const;
 %Docstring
 Returns the number of active (queued or running) tasks.
-
-:rtype: int
 
 .. seealso:: :py:func:`activeTasks()`
 
@@ -468,6 +434,7 @@ Returns the number of active (queued or running) tasks.
     void progressChanged( long taskId, double progress );
 %Docstring
 Will be emitted when a task reports a progress change
+
 :param taskId: ID of task
 :param progress: percent of progress, from 0.0 - 100.0
 %End
@@ -476,12 +443,14 @@ Will be emitted when a task reports a progress change
 %Docstring
 Will be emitted when only a single task remains to complete
 and that task has reported a progress change
+
 :param progress: percent of progress, from 0.0 - 100.0
 %End
 
     void statusChanged( long taskId, int status );
 %Docstring
 Will be emitted when a task reports a status change
+
 :param taskId: ID of task
 :param status: new task status
 %End
@@ -489,12 +458,14 @@ Will be emitted when a task reports a status change
     void taskAdded( long taskId );
 %Docstring
 Emitted when a new task has been added to the manager
+
 :param taskId: ID of task
 %End
 
     void taskAboutToBeDeleted( long taskId );
 %Docstring
 Emitted when a task is about to be deleted
+
 :param taskId: ID of task
 %End
 

@@ -26,6 +26,7 @@ Widget for importing an SSL server certificate exception into the authentication
     QgsAuthSslImportDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct dialog for importing certificates
+
 :param parent:
 %End
 

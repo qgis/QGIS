@@ -26,8 +26,6 @@ class QgsNullSymbolRendererWidget : QgsRendererWidget
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Creates a new QgsNullSymbolRendererWidget object
-
-:rtype: QgsRendererWidget
 %End
 
     QgsNullSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
@@ -40,8 +38,6 @@ Constructor for QgsNullSymbolRendererWidget
 
 %Docstring
 Returns a pointer to the configured renderer
-
-:rtype: QgsFeatureRenderer
 %End
 
   protected:

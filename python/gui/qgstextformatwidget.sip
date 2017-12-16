@@ -37,6 +37,7 @@ of Labeling.
     QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTextFormatWidget.
+
 :param format: initial formatting settings to show in widget
 :param mapCanvas: associated map canvas
 :param parent: parent widget
@@ -47,8 +48,6 @@ Constructor for QgsTextFormatWidget.
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.
-
-:rtype: QgsTextFormat
 %End
 
   public slots:
@@ -56,6 +55,7 @@ Returns the current formatting settings defined by the widget.
     void setDockMode( bool enabled );
 %Docstring
 Sets whether the widget should be shown in a compact dock mode.
+
 :param enabled: set to true to show in dock mode.
 %End
 
@@ -77,6 +77,7 @@ Emitted when the text format defined by the widget changes
     QgsTextFormatWidget( QgsMapCanvas *mapCanvas, QWidget *parent /TransferThis/, Mode mode );
 %Docstring
 Constructor for QgsTextFormatWidget.
+
 :param mapCanvas: associated map canvas
 :param parent: parent widget
 :param mode: widget mode
@@ -85,18 +86,21 @@ Constructor for QgsTextFormatWidget.
     void updateWidgetForFormat( const QgsTextFormat &format );
 %Docstring
 Updates the widget's state to reflect the settings in a QgsTextFormat.
+
 :param format: source format
 %End
 
     void setPreviewBackground( const QColor &color );
 %Docstring
 Sets the background color for the text preview widget.
+
 :param color: background color
 %End
 
     void enableDataDefinedAlignment( bool enable );
 %Docstring
 Controls whether data defined alignment buttons are enabled.
+
 :param enable: set to true to enable alignment controls
 %End
 
@@ -137,6 +141,7 @@ a QgsTextFormat, including shadow, background and buffer.
     QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Constructor for QgsTextFormatDialog.
+
 :param format: initial format settings to show in dialog
 :param mapCanvas: optional associated map canvas
 :param parent: parent widget
@@ -148,8 +153,6 @@ Constructor for QgsTextFormatDialog.
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.
-
-:rtype: QgsTextFormat
 %End
 
 };
@@ -175,6 +178,7 @@ a QgsTextFormat, including shadow, background and buffer.
     QgsTextFormatPanelWidget( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = 0, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTextFormatPanelWidget.
+
 :param format: initial format settings to show in dialog
 :param mapCanvas: optional associated map canvas
 :param parent: parent widget
@@ -183,8 +187,6 @@ Constructor for QgsTextFormatPanelWidget.
     QgsTextFormat format() const;
 %Docstring
 Returns the current formatting settings defined by the widget.
-
-:rtype: QgsTextFormat
 %End
 
     virtual void setDockMode( bool dockMode );

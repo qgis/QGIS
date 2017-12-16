@@ -28,8 +28,6 @@ A legend that can be placed onto a map composition
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
-
-:rtype: int
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -41,8 +39,6 @@ Return correct graphics item type.
     QSizeF paintAndDetermineSize( QPainter *painter );
 %Docstring
 Paints the legend and calculates its size. If painter is 0, only size is calculated
-
-:rtype: QSizeF
 %End
 
     void adjustBoxSize();
@@ -53,6 +49,7 @@ Sets item box to the whole content
     void setResizeToContents( bool enabled );
 %Docstring
 Sets whether the legend should automatically resize to fit its contents.
+
 :param enabled: set to false to disable automatic resizing. The legend frame will not
 be expanded to fit legend items, and items may be cropped from display.
 
@@ -65,8 +62,6 @@ be expanded to fit legend items, and items may be cropped from display.
 %Docstring
 Returns whether the legend should automatically resize to fit its contents.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setResizeToContents()`
 
 .. versionadded:: 3.0
@@ -76,8 +71,6 @@ Returns whether the legend should automatically resize to fit its contents.
     QgsLegendModel *model();
 %Docstring
 Returns the legend model
-
-:rtype: QgsLegendModel
 %End
 
     void setAutoUpdateModel( bool autoUpdate );
@@ -87,8 +80,6 @@ Returns the legend model
 %End
     bool autoUpdateModel() const;
 %Docstring
-
-:rtype: bool
 
 .. versionadded:: 2.6
 %End
@@ -103,8 +94,6 @@ Set whether legend items should be filtered to show just the ones visible in the
     bool legendFilterByMapEnabled() const;
 %Docstring
 Find out whether legend items are filtered to show just the ones visible in the associated map
-
-:rtype: bool
 
 .. versionadded:: 2.6
 %End
@@ -129,8 +118,6 @@ where features are outside the current atlas feature.
 %Docstring
 Whether to filter out legend elements outside of the current atlas feature
 
-:rtype: bool
-
 .. seealso:: :py:func:`setLegendFilterOutAtlas()`
 
 .. versionadded:: 2.14
@@ -138,18 +125,12 @@ Whether to filter out legend elements outside of the current atlas feature
 
     void setTitle( const QString &t );
     QString title() const;
-%Docstring
-
-:rtype: str
-%End
 
     Qt::AlignmentFlag titleAlignment() const;
 %Docstring
 Returns the alignment of the legend title
 
 :return: Qt.AlignmentFlag for the legend title
-:rtype: Qt.AlignmentFlag
-
 
 .. versionadded:: 2.3
 
@@ -159,6 +140,7 @@ Returns the alignment of the legend title
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 %Docstring
 Sets the alignment of the legend title
+
 :param alignment: Text alignment for drawing the legend title
 
 .. versionadded:: 2.3
@@ -169,22 +151,14 @@ Sets the alignment of the legend title
     QgsLegendStyle &rstyle( QgsLegendStyle::Style s );
 %Docstring
 Returns reference to modifiable style
-
-:rtype: QgsLegendStyle
 %End
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
 %Docstring
 Returns style
-
-:rtype: QgsLegendStyle
 %End
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
 
     QFont styleFont( QgsLegendStyle::Style s ) const;
-%Docstring
-
-:rtype: QFont
-%End
     void setStyleFont( QgsLegendStyle::Style s, const QFont &f );
 %Docstring
 Set style font
@@ -200,8 +174,6 @@ Set style margin
 %Docstring
 Returns the spacing in-between lines in mm
 
-:rtype: float
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setLineSpacing`
@@ -210,6 +182,7 @@ Returns the spacing in-between lines in mm
     void setLineSpacing( double spacing );
 %Docstring
 Sets the spacing in-between multiple lines
+
 :param spacing: Double value to use as spacing in between multiple lines
 
 .. versionadded:: 3.0
@@ -218,87 +191,41 @@ Sets the spacing in-between multiple lines
 %End
 
     double boxSpace() const;
-%Docstring
-
-:rtype: float
-%End
     void setBoxSpace( double s );
 
     double columnSpace() const;
-%Docstring
-
-:rtype: float
-%End
     void setColumnSpace( double s );
 
     QColor fontColor() const;
-%Docstring
-
-:rtype: QColor
-%End
     void setFontColor( const QColor &c );
 
     double symbolWidth() const;
-%Docstring
-
-:rtype: float
-%End
     void setSymbolWidth( double w );
 
     double symbolHeight() const;
-%Docstring
-
-:rtype: float
-%End
     void setSymbolHeight( double h );
 
     double wmsLegendWidth() const;
-%Docstring
-
-:rtype: float
-%End
     void setWmsLegendWidth( double w );
 
     double wmsLegendHeight() const;
-%Docstring
-
-:rtype: float
-%End
     void setWmsLegendHeight( double h );
 
     void setWrapChar( const QString &t );
     QString wrapChar() const;
-%Docstring
-
-:rtype: str
-%End
 
     int columnCount() const;
-%Docstring
-
-:rtype: int
-%End
     void setColumnCount( int c );
 
     bool splitLayer() const;
-%Docstring
-
-:rtype: bool
-%End
     void setSplitLayer( bool s );
 
     bool equalColumnWidth() const;
-%Docstring
-
-:rtype: bool
-%End
     void setEqualColumnWidth( bool s );
 
     bool drawRasterStroke() const;
 %Docstring
 Returns whether a stroke will be drawn around raster symbol items.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setDrawRasterStroke()`
 
@@ -312,6 +239,7 @@ Returns whether a stroke will be drawn around raster symbol items.
     void setDrawRasterStroke( bool enabled );
 %Docstring
 Sets whether a stroke will be drawn around raster symbol items.
+
 :param enabled: set to true to draw borders
 
 .. seealso:: :py:func:`drawRasterStroke()`
@@ -328,8 +256,6 @@ Sets whether a stroke will be drawn around raster symbol items.
 Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setRasterStrokeColor()`
 
 .. seealso:: :py:func:`drawRasterStroke()`
@@ -343,6 +269,7 @@ only drawn if drawRasterStroke() is true.
 %Docstring
 Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
+
 :param color: stroke color
 
 .. seealso:: :py:func:`rasterStrokeColor()`
@@ -359,8 +286,6 @@ only drawn if drawRasterStroke() is true.
 Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
 
-:rtype: float
-
 .. seealso:: :py:func:`setRasterStrokeWidth()`
 
 .. seealso:: :py:func:`drawRasterStroke()`
@@ -374,6 +299,7 @@ only drawn if drawRasterStroke() is true.
 %Docstring
 Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
+
 :param width: stroke width in millimeters
 
 .. seealso:: :py:func:`rasterStrokeWidth()`
@@ -387,10 +313,6 @@ only drawn if drawRasterStroke() is true.
 
     void setComposerMap( const QgsComposerMap *map );
     const QgsComposerMap *composerMap() const;
-%Docstring
-
-:rtype: QgsComposerMap
-%End
 
     void updateLegend();
 %Docstring
@@ -401,20 +323,18 @@ Updates the model and all legend entries
 
 %Docstring
 Stores state in Dom node
+
 :param elem: is Dom element corresponding to 'Composer' tag
 :param doc: Dom document
-
-:rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
 Sets state from Dom document
+
 :param itemElem: is Dom node corresponding to item tag
 :param doc: is Dom document
-
-:rtype: bool
 %End
 
     virtual QString displayName() const;
@@ -423,8 +343,6 @@ Sets state from Dom document
     const QgsLegendSettings &legendSettings() const;
 %Docstring
 Returns the legend's renderer settings object.
-
-:rtype: QgsLegendSettings
 
 .. versionadded:: 3.0
 %End

@@ -48,8 +48,6 @@ same CRS as the reference source (ie, no reprojection is performed).
 Snaps a geometry to the reference layer and returns the result. The geometry must be in the same
 CRS as the reference layer, and must have the same type as the reference layer geometry. The snap tolerance
 is specified in the layer units for the reference layer.
-
-:rtype: QgsGeometry
 %End
 
     QgsFeatureList snapFeatures( const QgsFeatureList &features, double snapTolerance, SnapMode mode = PreferNodes );
@@ -57,15 +55,11 @@ is specified in the layer units for the reference layer.
 Snaps a set of features to the reference layer and returns the result. This operation is
 multithreaded for performance. The featureSnapped() signal will be emitted each time a feature
 is processed. The snap tolerance is specified in the layer units for the reference layer.
-
-:rtype: QgsFeatureList
 %End
 
     static QgsGeometry snapGeometry( const QgsGeometry &geometry, double snapTolerance, const QList<QgsGeometry> &referenceGeometries, SnapMode mode = PreferNodes );
 %Docstring
 Snaps a single geometry against a list of reference geometries.
-
-:rtype: QgsGeometry
 %End
 
   signals:
@@ -109,15 +103,11 @@ how geometries will be snapped by the snapper.
 %Docstring
 Snaps a single feature's geometry against all feature geometries already processed by
 calls to snapFeature() in this object, and returns the snapped geometry.
-
-:rtype: QgsGeometry
 %End
 
     QgsGeometryMap snappedGeometries() const;
 %Docstring
 Returns a QgsGeometryMap of all feature geometries snapped by this object.
-
-:rtype: QgsGeometryMap
 %End
 
 };

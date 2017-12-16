@@ -33,8 +33,6 @@ Construct a new filter legend button
     QString expressionText() const;
 %Docstring
 Returns the current text used as filter expression
-
-:rtype: str
 %End
 
     void setExpressionText( const QString &expression );
@@ -47,8 +45,6 @@ This will update the menu
 %Docstring
 Returns the current associated vectorLayer
 May be null
-
-:rtype: QgsVectorLayer
 %End
 
     void setVectorLayer( QgsVectorLayer *layer );

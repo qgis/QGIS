@@ -102,16 +102,12 @@ to generate the surface. The output path and file format are also required.
 %Docstring
 Runs the KDE calculation across the whole layer at once. Either call this method, or manually
 call run(), addFeature() and finalise() separately.
-
-:rtype: Result
 %End
 
     Result prepare();
 %Docstring
 Prepares the output file for writing and setups up the surface calculation. This must be called
 before adding features via addFeature().
-
-:rtype: Result
 
 .. seealso:: :py:func:`addFeature()`
 
@@ -122,8 +118,6 @@ before adding features via addFeature().
 %Docstring
 Adds a single feature to the KDE surface. prepare() must be called before adding features.
 
-:rtype: Result
-
 .. seealso:: :py:func:`prepare()`
 
 .. seealso:: :py:func:`finalise()`
@@ -132,8 +126,6 @@ Adds a single feature to the KDE surface. prepare() must be called before adding
     Result finalise();
 %Docstring
 Finalises the output file. Must be called after adding all features via addFeature().
-
-:rtype: Result
 
 .. seealso:: :py:func:`prepare()`
 

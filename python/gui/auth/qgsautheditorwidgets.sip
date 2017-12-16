@@ -22,6 +22,7 @@ Dialog for viewing available authentication method plugins
     explicit QgsAuthMethodPlugins( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a dialog for viewing available authentication method plugins
+
 :param parent: Parent widget
 %End
 
@@ -42,6 +43,7 @@ Wrapper widget for available authentication editors
     explicit QgsAuthEditorWidgets( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a widget to contain various authentication editors
+
 :param parent: Parent widget
 %End
 

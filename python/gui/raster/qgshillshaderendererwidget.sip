@@ -27,6 +27,7 @@ class QgsHillshadeRendererWidget: QgsRasterRendererWidget
     QgsHillshadeRendererWidget( QgsRasterLayer *layer, const QgsRectangle &extent = QgsRectangle() );
 %Docstring
  Renderer widget for the hill shade renderer.
+
 :param layer: The layer attached for this widget.
 :param extent: The current extent.
 %End
@@ -34,8 +35,6 @@ class QgsHillshadeRendererWidget: QgsRasterRendererWidget
     static QgsRasterRendererWidget *create( QgsRasterLayer *layer, const QgsRectangle &extent ) /Factory/;
 %Docstring
 Factory method to create the renderer for this type.
-
-:rtype: QgsRasterRendererWidget
 %End
 
     virtual QgsRasterRenderer *renderer();
@@ -44,21 +43,18 @@ Factory method to create the renderer for this type.
  The renderer for the widget.
 
 :return: A new renderer for the the config in the widget
-:rtype: QgsRasterRenderer
-
 %End
 
     void setFromRenderer( const QgsRasterRenderer *renderer );
 %Docstring
  Set the widget state from the given renderer.
+
 :param renderer: The renderer to take the state from.
 %End
 
     double azimuth() const;
 %Docstring
 Returns the direction of the light over the raster between 0-360.
-
-:rtype: float
 
 .. seealso:: :py:func:`setAzimuth()`
 %End
@@ -67,8 +63,6 @@ Returns the direction of the light over the raster between 0-360.
 %Docstring
 Returns the angle of the light source over the raster.
 
-:rtype: float
-
 .. seealso:: :py:func:`setAltitude()`
 %End
 
@@ -76,16 +70,12 @@ Returns the angle of the light source over the raster.
 %Docstring
 Returns the Z scaling factor.
 
-:rtype: float
-
 .. seealso:: :py:func:`setZFactor()`
 %End
 
     bool multiDirectional() const;
 %Docstring
 Returns true if the renderer should use the multi-directional hillshade algorithm.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setMultiDirectional()`
 %End
@@ -95,6 +85,7 @@ Returns true if the renderer should use the multi-directional hillshade algorith
     void setAltitude( double altitude );
 %Docstring
  Set the altitude of the light source
+
 :param altitude: the altitude
 
 .. seealso:: :py:func:`altitude()`
@@ -103,6 +94,7 @@ Returns true if the renderer should use the multi-directional hillshade algorith
     void setAzimuth( double azimuth );
 %Docstring
  Set the azimuth of the light source.
+
 :param azimuth: The azimuth of the light source, between 0 and 360.0
 
 .. seealso:: :py:func:`azimuth()`
@@ -111,6 +103,7 @@ Returns true if the renderer should use the multi-directional hillshade algorith
     void setZFactor( double zfactor );
 %Docstring
  Set the Z scaling factor of the result image.
+
 :param zfactor: The z factor
 
 .. seealso:: :py:func:`zFactor()`
@@ -119,6 +112,7 @@ Returns true if the renderer should use the multi-directional hillshade algorith
     void setMultiDirectional( bool isMultiDirectional );
 %Docstring
 Sets whether to render using a multi-directional hillshade algorithm.
+
 :param isMultiDirectional: set to true to use multi directional rendering
 
 .. seealso:: :py:func:`multiDirectional()`

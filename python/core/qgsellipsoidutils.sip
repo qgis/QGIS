@@ -73,16 +73,12 @@ Ellipsoid parameters
 %Docstring
 Returns the parameters for the specified ``ellipsoid``.
 Results are cached to allow for fast retrieval of parameters.
-
-:rtype: EllipsoidParameters
 %End
 
     static QList< QgsEllipsoidUtils::EllipsoidDefinition > definitions();
 %Docstring
 Returns a list of the definitions for all known ellipsoids from the
 internal ellipsoid database.
-
-:rtype: list of QgsEllipsoidUtils.EllipsoidDefinition
 
 .. seealso:: :py:func:`acronyms()`
 %End
@@ -91,8 +87,6 @@ internal ellipsoid database.
 %Docstring
 Returns a list of all known ellipsoid acronyms from the internal
 ellipsoid database.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`definitions()`
 %End

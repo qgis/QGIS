@@ -35,23 +35,17 @@ Constructor for QgsMapLayerLegend
 %Docstring
 Return list of legend nodes to be used for a particular layer tree layer node.
 Ownership is transferred to the caller.
-
-:rtype: list of QgsLayerTreeModelLegendNode
 %End
 
 
     static QgsMapLayerLegend *defaultVectorLegend( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Create new legend implementation for vector layer
-
-:rtype: QgsMapLayerLegend
 %End
 
     static QgsMapLayerLegend *defaultRasterLegend( QgsRasterLayer *rl ) /Factory/;
 %Docstring
 Create new legend implementation for raster layer
-
-:rtype: QgsMapLayerLegend
 %End
 
   signals:
@@ -76,27 +70,11 @@ Miscellaneous utility functions for handling of map layer legend
   public:
     static void setLegendNodeOrder( QgsLayerTreeLayer *nodeLayer, const QList<int> &order );
     static QList<int> legendNodeOrder( QgsLayerTreeLayer *nodeLayer );
-%Docstring
-
-:rtype: list of int
-%End
     static bool hasLegendNodeOrder( QgsLayerTreeLayer *nodeLayer );
-%Docstring
-
-:rtype: bool
-%End
 
     static void setLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex, const QString &newLabel );
     static QString legendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
-%Docstring
-
-:rtype: str
-%End
     static bool hasLegendNodeUserLabel( QgsLayerTreeLayer *nodeLayer, int originalIndex );
-%Docstring
-
-:rtype: bool
-%End
 
     static void applyLayerNodeProperties( QgsLayerTreeLayer *nodeLayer, QList<QgsLayerTreeModelLegendNode *> &nodes );
 %Docstring

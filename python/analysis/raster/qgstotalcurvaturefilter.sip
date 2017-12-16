@@ -29,8 +29,6 @@ Calculates total curvature as described by Wilson, Gallant (2000): terrain analy
 %Docstring
 Calculates total curvature from nine input values. The input values and the output value can be equal to the
 nodata value if not present or outside of the border. Must be implemented by subclasses*
-
-:rtype: float
 %End
 };
 

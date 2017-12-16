@@ -40,6 +40,7 @@ Is mostly referred to as "master model" within this doc and the source.
     QgsAttributeTableModel( QgsVectorLayerCache *layerCache, QObject *parent = 0 );
 %Docstring
 Constructor
+
 :param layerCache:  A layer cache to use as backend
 :param parent:      The parent QObject (owner)
 %End
@@ -48,64 +49,59 @@ Constructor
 
 %Docstring
 Returns the number of rows
-:param parent: parent index
 
-:rtype: int
+:param parent: parent index
 %End
 
     virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
 
 %Docstring
 Returns the number of columns
-:param parent: parent index
 
-:rtype: int
+:param parent: parent index
 %End
 
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role = Qt::DisplayRole ) const;
 
 %Docstring
 Returns header data
+
 :param section: required section
 :param orientation: horizontal or vertical orientation
 :param role: data role
-
-:rtype: QVariant
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
 
 %Docstring
 Returns data on the given index
+
 :param index: model index
 :param role: data role
-
-:rtype: QVariant
 %End
 
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
 
 %Docstring
 Updates data on given index
+
 :param index: model index
 :param value: new data value
 :param role: data role
-
-:rtype: bool
 %End
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
 %Docstring
 Returns item flags for the index
-:param index: model index
 
-:rtype: Qt.ItemFlags
+:param index: model index
 %End
 
     void reload( const QModelIndex &index1, const QModelIndex &index2 );
 %Docstring
 Reloads the model data between indices
+
 :param index1: start index
 :param index2: end index
 %End
@@ -114,8 +110,6 @@ Reloads the model data between indices
 
 %Docstring
 Remove rows
-
-:rtype: bool
 %End
 
     void resetModel();
@@ -128,48 +122,35 @@ Alias to loadLayer()
     int idToRow( QgsFeatureId id ) const;
 %Docstring
 Maps feature id to table row
-:param id: feature id
 
-:rtype: int
+:param id: feature id
 %End
 
     QModelIndex idToIndex( QgsFeatureId id ) const;
-%Docstring
-
-:rtype: QModelIndex
-%End
 
     QModelIndexList idToIndexList( QgsFeatureId id ) const;
-%Docstring
-
-:rtype: QModelIndexList
-%End
 
     int fieldIdx( int col ) const;
 %Docstring
 get field index from column
-
-:rtype: int
 %End
 
     int fieldCol( int idx ) const;
 %Docstring
 get column from field index
-
-:rtype: int
 %End
 
     QgsFeatureId rowToId( int row ) const;
 %Docstring
 Maps row to feature id
-:param row: row number
 
-:rtype: QgsFeatureId
+:param row: row number
 %End
 
     void swapRows( QgsFeatureId a, QgsFeatureId b );
 %Docstring
 Swaps two rows
+
 :param a: first row
 :param b: second row
 %End
@@ -177,15 +158,11 @@ Swaps two rows
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the layer this model uses as backend. Retrieved from the layer cache.
-
-:rtype: QgsVectorLayer
 %End
 
     QgsVectorLayerCache *layerCache() const;
 %Docstring
 Returns the layer cache this model uses as backend.
-
-:rtype: QgsVectorLayerCache
 %End
 
     void executeAction( const QUuid &action, const QModelIndex &idx ) const;
@@ -203,8 +180,6 @@ Execute a QgsMapLayerAction
 Return the feature attributes at given model index
 
 :return: feature attributes at given model index
-:rtype: QgsFeature
-
 %End
 
     void prefetchColumnData( int column );
@@ -227,8 +202,6 @@ the sorting can later be done in a performant way.
     QString sortCacheExpression() const;
 %Docstring
 The expression which was used to fill the sorting cache
-
-:rtype: str
 %End
 
     void setRequest( const QgsFeatureRequest &request );
@@ -241,10 +214,6 @@ to dynamically adjust it.
 %End
 
     const QgsFeatureRequest &request() const;
-%Docstring
-
-:rtype: QgsFeatureRequest
-%End
 
     void setEditorContext( const QgsAttributeEditorContext &context );
 %Docstring
@@ -260,16 +229,12 @@ Returns the context in which this table is shown.
 Will be forwarded to any editor widget created when editing data on this model.
 
 :return: The context
-:rtype: QgsAttributeEditorContext
-
 %End
 
     int extraColumns() const;
 %Docstring
 Empty extra columns to announce from this model.
 Any extra columns need to be implemented by proxy models in front of this model.
-
-:rtype: int
 %End
 
     void setExtraColumns( int extraColumns );
@@ -289,6 +254,7 @@ Preferably to be called, before using this model as source for any other proxy m
     void fieldConditionalStyleChanged( const QString &fieldName );
 %Docstring
 Handles updating the model when the conditional style for a field changes.
+
 :param fieldName: name of field whose conditional style has changed
 
 .. versionadded:: 2.12

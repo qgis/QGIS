@@ -33,30 +33,16 @@ Raster renderer pipe for single band gray.
 
 %Docstring
 QgsSingleBandGrayRenderer cannot be copied. Use clone() instead.
-
-:rtype: QgsSingleBandGrayRenderer
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
-%Docstring
-
-:rtype: QgsRasterRenderer
-%End
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
 
     int grayBand() const;
-%Docstring
-
-:rtype: int
-%End
     void setGrayBand( int band );
     const QgsContrastEnhancement *contrastEnhancement() const;
-%Docstring
-
-:rtype: QgsContrastEnhancement
-%End
     void setContrastEnhancement( QgsContrastEnhancement *ce /Transfer/ );
 %Docstring
 Takes ownership
@@ -64,10 +50,6 @@ Takes ownership
 
     void setGradient( Gradient gradient );
     Gradient gradient() const;
-%Docstring
-
-:rtype: Gradient
-%End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 
@@ -81,10 +63,6 @@ Takes ownership
   private:
     QgsSingleBandGrayRenderer( const QgsSingleBandGrayRenderer & );
     const QgsSingleBandGrayRenderer &operator=( const QgsSingleBandGrayRenderer & );
-%Docstring
-
-:rtype: QgsSingleBandGrayRenderer
-%End
 };
 
 /************************************************************************

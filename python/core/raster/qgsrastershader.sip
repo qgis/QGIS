@@ -27,22 +27,14 @@ Interface for all raster shaders.
     double maximumValue();
 %Docstring
  Return the maximum value for the raster shader
-
-:rtype: float
 %End
 
     double minimumValue();
 %Docstring
  Return the minimum value for the raster shader
-
-:rtype: float
 %End
 
     QgsRasterShaderFunction *rasterShaderFunction();
-%Docstring
-
-:rtype: QgsRasterShaderFunction
-%End
 
     bool shade( double value,
                 int *returnRedValue /Out/,
@@ -51,8 +43,6 @@ Interface for all raster shaders.
                 int *returnAlpha /Out/ );
 %Docstring
  generates and new RGBA value based on one input value
-
-:rtype: bool
 %End
 
     bool shade( double redValue,
@@ -65,8 +55,6 @@ Interface for all raster shaders.
                 int *returnAlpha /Out/ );
 %Docstring
  generates and new RGBA value based on original RGBA value
-
-:rtype: bool
 %End
 
     void setRasterShaderFunction( QgsRasterShaderFunction *function /Transfer/ );

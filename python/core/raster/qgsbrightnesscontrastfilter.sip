@@ -39,17 +39,9 @@ Brightness/contrast filter pipe for rasters.
 
     void setBrightness( int brightness );
     int brightness() const;
-%Docstring
-
-:rtype: int
-%End
 
     void setContrast( int contrast );
     int contrast() const;
-%Docstring
-
-:rtype: int
-%End
 
     virtual void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;
 

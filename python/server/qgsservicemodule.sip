@@ -41,6 +41,7 @@ Destructor
                                QgsServerInterface *serverIface = 0 ) = 0;
 %Docstring
 Ask module to register all provided services
+
 :param registry: QgsServiceRegistry
 %End
 };

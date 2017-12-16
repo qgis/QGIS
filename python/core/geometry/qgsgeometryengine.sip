@@ -58,16 +58,12 @@ tests against other geometries.
 %Docstring
 Calculate the intersection of this and ``geom``.
 
-:rtype: QgsAbstractGeometry
-
 .. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *difference( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
 Calculate the difference of this and ``geom``.
-
-:rtype: QgsAbstractGeometry
 
 .. versionadded:: 3.0
 %End
@@ -76,16 +72,12 @@ Calculate the difference of this and ``geom``.
 %Docstring
 Calculate the combination of this and ``geom``.
 
-:rtype: QgsAbstractGeometry
-
 .. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *combine( const QVector<QgsAbstractGeometry *> &geomList, QString *errorMsg ) const = 0 /Factory/;
 %Docstring
 Calculate the combination of this and ``geometries``.
-
-:rtype: QgsAbstractGeometry
 
 .. versionadded:: 3.0
 %End
@@ -94,8 +86,6 @@ Calculate the combination of this and ``geometries``.
 %Docstring
 Calculate the combination of this and ``geometries``.
 
-:rtype: QgsAbstractGeometry
-
 .. versionadded:: 3.0
 %End
 
@@ -103,42 +93,18 @@ Calculate the combination of this and ``geometries``.
 %Docstring
 Calculate the symmetric difference of this and ``geom``.
 
-:rtype: QgsAbstractGeometry
-
 .. versionadded:: 3.0
 %End
     virtual QgsAbstractGeometry *buffer( double distance, int segments, QString *errorMsg = 0 ) const = 0 /Factory/;
-%Docstring
-
-:rtype: QgsAbstractGeometry
-%End
     virtual QgsAbstractGeometry *buffer( double distance, int segments, int endCapStyle, int joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
-%Docstring
-
-:rtype: QgsAbstractGeometry
-%End
     virtual QgsAbstractGeometry *simplify( double tolerance, QString *errorMsg = 0 ) const = 0 /Factory/;
-%Docstring
-
-:rtype: QgsAbstractGeometry
-%End
     virtual QgsAbstractGeometry *interpolate( double distance, QString *errorMsg = 0 ) const = 0 /Factory/;
-%Docstring
-
-:rtype: QgsAbstractGeometry
-%End
     virtual QgsAbstractGeometry *envelope( QString *errorMsg = 0 ) const = 0 /Factory/;
-%Docstring
-
-:rtype: QgsAbstractGeometry
-%End
 
     virtual QgsPoint *centroid( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
 Calculates the centroid of this.
 May return a `None`.
-
-:rtype: QgsPoint
 
 .. versionadded:: 3.0
 %End
@@ -148,23 +114,17 @@ May return a `None`.
 Calculate a point that is guaranteed to be on the surface of this.
 May return a `None`.
 
-:rtype: QgsPoint
-
 .. versionadded:: 3.0
 %End
 
     virtual QgsAbstractGeometry *convexHull( QString *errorMsg = 0 ) const = 0 /Factory/;
 %Docstring
 Calculate the convex hull of this.
-
-:rtype: QgsAbstractGeometry
 %End
 
     virtual double distance( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Calculates the distance between this and ``geom``.
-
-:rtype: float
 
 .. versionadded:: 3.0
 %End
@@ -173,16 +133,12 @@ Calculates the distance between this and ``geom``.
 %Docstring
 Checks if ``geom`` intersects this.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     virtual bool touches( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` touches this.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -191,16 +147,12 @@ Checks if ``geom`` touches this.
 %Docstring
 Checks if ``geom`` crosses this.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     virtual bool within( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` is within this.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -209,16 +161,12 @@ Checks if ``geom`` is within this.
 %Docstring
 Checks if ``geom`` overlaps this.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     virtual bool contains( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if ``geom`` contains this.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -227,8 +175,6 @@ Checks if ``geom`` contains this.
 %Docstring
 Checks if ``geom`` is disjoint from this.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -236,12 +182,11 @@ Checks if ``geom`` is disjoint from this.
 %Docstring
 Returns the Dimensional Extended 9 Intersection Model (DE-9IM) representation of the
 relationship between the geometries.
+
 :param geom: geometry to relate to
 :param errorMsg: destination storage for any error message
 
 :return: DE-9IM string for relationship, or an empty string if an error occurred
-:rtype: str
-
 
 .. versionadded:: 2.12
 %End
@@ -250,53 +195,32 @@ relationship between the geometries.
 %Docstring
 Tests whether two geometries are related by a specified Dimensional Extended 9 Intersection Model (DE-9IM)
 pattern.
+
 :param geom: geometry to relate to
 :param pattern: DE-9IM pattern for match
 :param errorMsg: destination storage for any error message
 
 :return: true if geometry relationship matches with pattern
-:rtype: bool
-
 
 .. versionadded:: 2.14
 %End
 
     virtual double area( QString *errorMsg = 0 ) const = 0;
-%Docstring
-
-:rtype: float
-%End
     virtual double length( QString *errorMsg = 0 ) const = 0;
-%Docstring
-
-:rtype: float
-%End
     virtual bool isValid( QString *errorMsg = 0 ) const = 0;
-%Docstring
-
-:rtype: bool
-%End
 
     virtual bool isEqual( const QgsAbstractGeometry *geom, QString *errorMsg = 0 ) const = 0;
 %Docstring
 Checks if this is equal to ``geom``.
 If both are Null geometries, `false` is returned.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
     virtual bool isEmpty( QString *errorMsg ) const = 0;
-%Docstring
-
-:rtype: bool
-%End
 
     virtual bool isSimple( QString *errorMsg = 0 ) const = 0;
 %Docstring
 Determines whether the geometry is simple (according to OGC definition).
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -307,6 +231,7 @@ Determines whether the geometry is simple (according to OGC definition).
         QgsPointSequence &topologyTestPoints, QString *errorMsg = 0 ) const;
 %Docstring
 Splits this geometry according to a given line.
+
 :param splitLine: the line that splits the geometry
 \param[out] newGeometries list of new geometries that have been created with the split
 :param topological: true if topological editing is enabled
@@ -314,15 +239,9 @@ Splits this geometry according to a given line.
 \param[out] errorMsg error messages emitted, if any
 
 :return: 0 in case of success, 1 if geometry has not been split, error else
-:rtype: QgsGeometryEngine.EngineOperationResult
-
 %End
 
     virtual QgsAbstractGeometry *offsetCurve( double distance, int segments, int joinStyle, double miterLimit, QString *errorMsg = 0 ) const = 0 /Factory/;
-%Docstring
-
-:rtype: QgsAbstractGeometry
-%End
 
   protected:
 

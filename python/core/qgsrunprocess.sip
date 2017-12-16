@@ -25,10 +25,6 @@ process and displays them in a dialog box.
   public:
 
     static QgsRunProcess *create( const QString &action, bool capture ) /Factory/;
-%Docstring
-
-:rtype: QgsRunProcess
-%End
 
   public slots:
     void stdoutAvailable();

@@ -41,8 +41,6 @@ define the title used in the expression dialog
     const QString expressionDialogTitle();
 %Docstring
 return the title used for the expression dialog
-
-:rtype: str
 %End
 
     void setFilters( QgsFieldProxyModel::Filters filters );
@@ -55,8 +53,6 @@ setFilters allows fitering according to the type of field
     QgsFieldProxyModel::Filters filters() const;
 %Docstring
 currently used filter on list of fields
-
-:rtype: QgsFieldProxyModel.Filters
 %End
 
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -67,31 +63,24 @@ set the geometry calculator used in the expression dialog
     QString currentField( bool *isExpression = 0, bool *isValid = 0 ) const;
 %Docstring
  currentField returns the currently selected field or expression if allowed
+
 :param isExpression: determines if the string returned is the name of a field or an expression
 :param isValid: determines if the expression (or field) returned is valid
-
-:rtype: str
 %End
 
     bool isValidExpression( QString *expressionError = 0 ) const;
 %Docstring
 Return true if the current expression is valid
-
-:rtype: bool
 %End
 
     bool isExpression() const;
 %Docstring
 If the content is not just a simple field this method will return true.
-
-:rtype: bool
 %End
 
     QString currentText() const;
 %Docstring
 Return the current text that is set in the expression area
-
-:rtype: str
 %End
 
     QString asExpression() const;
@@ -99,8 +88,6 @@ Return the current text that is set in the expression area
 Returns the currently selected field or expression. If a field is currently selected, the returned
 value will be converted to a valid expression referencing this field (ie enclosing the field name with
 appropriate quotations).
-
-:rtype: str
 
 .. versionadded:: 2.14
 %End
@@ -113,16 +100,12 @@ appropriate quotations).
 
 Alias for asExpression()
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the layer currently associated with the widget.
-
-:rtype: QgsVectorLayer
 
 .. seealso:: :py:func:`setLayer()`
 %End
@@ -131,6 +114,7 @@ Returns the layer currently associated with the widget.
 %Docstring
 Register an expression context generator class that will be used to retrieve
 an expression context for the widget.
+
 :param generator: A QgsExpressionContextGenerator class that will be used to
 create an expression context when required.
 
@@ -141,8 +125,6 @@ create an expression context when required.
 %Docstring
 Allow accepting expressions with evaluation errors. This can be useful when we are not able to
 provide an expression context of which we are sure it's completely populated.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -222,15 +204,12 @@ when expression has been edited (finished) it will be added to the model
     void updateLineEditStyle( const QString &expression = QString() );
 %Docstring
  updateLineEditStyle will re-style (color/font) the line edit depending on content and status
+
 :param expression: if expression is given it will be evaluated for the given string, otherwise it takes
 current expression from the model
 %End
 
     bool isExpressionValid( const QString &expressionStr );
-%Docstring
-
-:rtype: bool
-%End
 
   protected:
     virtual void changeEvent( QEvent *event );

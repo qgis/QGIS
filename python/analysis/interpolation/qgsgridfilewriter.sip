@@ -34,8 +34,6 @@ Writes the grid file.
 An optional ``feedback`` object can be set for progress reports and cancelation support
 
 :return: 0 in case of success
-:rtype: int
-
 %End
 
 };

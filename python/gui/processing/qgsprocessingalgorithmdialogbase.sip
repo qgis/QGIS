@@ -44,8 +44,6 @@ Sets the ``algorithm`` to run in the dialog.
 %Docstring
 Returns the algorithm running in the dialog.
 
-:rtype: QgsProcessingAlgorithm
-
 .. seealso:: :py:func:`setAlgorithm()`
 %End
 
@@ -60,8 +58,6 @@ Sets the main ``widget`` for the dialog, usually a panel for configuring algorit
 %Docstring
 Returns the main widget for the dialog, usually a panel for configuring algorithm parameters.
 
-:rtype: QWidget
-
 .. seealso:: :py:func:`setMainWidget()`
 %End
 
@@ -73,23 +69,17 @@ Switches the dialog to the log page.
     bool wasExecuted() const;
 %Docstring
 Returns true if an algorithm was executed in the dialog.
-
-:rtype: bool
 %End
 
     QgsProcessingFeedback *createFeedback() /Factory/;
 %Docstring
 Creates a new processing feedback object, automatically connected to the appropriate
 slots in this dialog.
-
-:rtype: QgsProcessingFeedback
 %End
 
     virtual QVariantMap getParameterValues() const;
 %Docstring
 Returns the parameter values for the algorithm to run in the dialog.
-
-:rtype: QVariantMap
 %End
 
   public slots:
@@ -142,29 +132,21 @@ Pushes a console info string to the dialog's log.
     QPushButton *runButton();
 %Docstring
 Returns the dialog's run button.
-
-:rtype: QPushButton
 %End
 
     QPushButton *cancelButton();
 %Docstring
 Returns the dialog's cancel button.
-
-:rtype: QPushButton
 %End
 
     QDialogButtonBox *buttonBox();
 %Docstring
 Returns the dialog's button box.
-
-:rtype: QDialogButtonBox
 %End
 
     QTabWidget *tabWidget();
 %Docstring
 Returns the dialog's tab widget.
-
-:rtype: QTabWidget
 %End
 
     void clearProgress();
@@ -190,8 +172,6 @@ Resets the dialog's gui, ready for another algorithm execution.
     QgsMessageBar *messageBar();
 %Docstring
 Returns the dialog's message bar.
-
-:rtype: QgsMessageBar
 %End
 
     void hideShortHelp();

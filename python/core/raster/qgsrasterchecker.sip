@@ -24,21 +24,16 @@ or render time.
     QgsRasterChecker();
 
     QString report();
-%Docstring
-
-:rtype: str
-%End
 
     bool runTest( const QString &verifiedKey, QString verifiedUri,
                   const QString &expectedKey, QString expectedUri );
 %Docstring
 Test using renderer to generate the image to be compared.
+
 :param verifiedKey: verified provider key
 :param verifiedUri: URI of the raster to be verified
 :param expectedKey: expected provider key
 :param expectedUri: URI of the expected (control) raster
-
-:rtype: bool
 %End
 }; // class QgsRasterChecker
 

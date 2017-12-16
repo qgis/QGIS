@@ -25,8 +25,6 @@ class QgsFileUtils
     static QString representFileSize( qint64 bytes );
 %Docstring
 Return the human size from bytes
-
-:rtype: str
 %End
 
 };

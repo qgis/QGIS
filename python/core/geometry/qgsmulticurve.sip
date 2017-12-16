@@ -46,8 +46,6 @@ class QgsMultiCurve: QgsGeometryCollection
 %Docstring
 Returns a copy of the multi curve, where each component curve has had its line direction reversed.
 
-:rtype: QgsMultiCurve
-
 .. versionadded:: 2.14
 %End
 

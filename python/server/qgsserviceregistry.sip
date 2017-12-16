@@ -44,12 +44,11 @@ Destructor
     QgsService *getService( const QString &name, const QString &version = QString() );
 %Docstring
 Retrieve a service from its name
+
 :param name: the name of the service
 :param version: the version string (optional)
 
 :return: QgsService
-:rtype: QgsService
-
 
 If the version is not provided the higher version of the service is returned
 %End
@@ -74,8 +73,6 @@ Unregister service from its name and version
 :param version: (optional) the specific version to unload
 
 :return: the number of services unregistered
-:rtype: int
-
 
 If the version is not specified then all versions from the specified service
 are unloaded
@@ -84,6 +81,7 @@ are unloaded
     void init( const QString &nativeModulepath, QgsServerInterface *serverIface = 0 );
 %Docstring
 Initialize registry, load modules and auto register services
+
 :param serverIface: the server interface
 :param nativeModulepath: the native module path
 %End

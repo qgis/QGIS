@@ -25,6 +25,7 @@ This class can convert device coordinates to map coordinates and vice versa.
     QgsMapToPixel( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 %Docstring
 Constructor
+
 :param mapUnitsPerPixel: Map units per pixel
 :param centerX: X coordinate of map center, in geographical units
 :param centerY: Y coordinate of map center, in geographical units
@@ -38,19 +39,19 @@ Constructor
     QgsMapToPixel( double mapUnitsPerPixel );
 %Docstring
 Constructor
+
 :param mapUnitsPerPixel: Map units per pixel
 %End
 
     static QgsMapToPixel fromScale( double scale, QgsUnitTypes::DistanceUnit mapUnits, double dpi = 96 );
 %Docstring
 Returns a new QgsMapToPixel created using a specified ``scale`` and distance unit.
+
 :param scale: map scale denominator, e.g. 1000.0 for a 1:1000 map.
 :param dpi: screen DPI
 :param mapUnits: map units
 
 :return: matching QgsMapToPixel
-:rtype: QgsMapToPixel
-
 
 .. versionadded:: 3.0
 %End
@@ -65,11 +66,10 @@ Use setParameters to fill
     QgsPointXY transform( const QgsPointXY &p ) const;
 %Docstring
 Transform the point from map (world) coordinates to device coordinates
+
 :param p: Point to transform
 
 :return: QgsPointXY in device coordinates
-:rtype: QgsPointXY
-
 %End
 
     void transform( QgsPointXY *p ) const;
@@ -78,12 +78,11 @@ Transform the point from map (world) coordinates to device coordinates
 %Docstring
 Transform the point specified by x,y from map (world)
 coordinates to device coordinates
+
 :param x: x cordinate o point to transform
 :param y: y coordinate of point to transform
 
 :return: QgsPointXY in device coordinates
-:rtype: QgsPointXY
-
 %End
 
     void transformInPlace( double &x, double &y ) const;
@@ -96,53 +95,39 @@ transform.
 
 
     QgsPointXY toMapCoordinates( int x, int y ) const;
-%Docstring
-
-:rtype: QgsPointXY
-%End
 
     QgsPointXY toMapCoordinatesF( double x, double y ) const;
 %Docstring
 Transform device coordinates to map (world) coordinates
-
-:rtype: QgsPointXY
 %End
 
     QgsPointXY toMapCoordinates( QPoint p ) const;
 %Docstring
 Transform device coordinates to map (world) coordinates
+
 :param p: Point to be converted to map cooordinates
 
 :return: QgsPointXY in map coorndiates
-:rtype: QgsPointXY
-
 %End
 
     QgsPointXY toMapPoint( double x, double y ) const;
-%Docstring
-
-:rtype: QgsPointXY
-%End
 
     void setMapUnitsPerPixel( double mapUnitsPerPixel );
 %Docstring
 Set map units per pixel
+
 :param mapUnitsPerPixel: Map units per pixel
 %End
 
     double mapUnitsPerPixel() const;
 %Docstring
 Return current map units per pixel
-
-:rtype: float
 %End
 
     int mapWidth() const;
 %Docstring
 Return current map width in pixels
 The information is only known if setRotation was used
-
-:rtype: int
 
 .. versionadded:: 2.8
 %End
@@ -151,14 +136,13 @@ The information is only known if setRotation was used
 %Docstring
 Return current map height in pixels
 
-:rtype: int
-
 .. versionadded:: 2.8
 %End
 
     void setMapRotation( double degrees, double cx, double cy );
 %Docstring
 Set map rotation in degrees (clockwise)
+
 :param degrees: clockwise rotation in degrees
 :param cx: X ordinate of map center in geographical units
 :param cy: Y ordinate of map center in geographical units
@@ -170,14 +154,13 @@ Set map rotation in degrees (clockwise)
 %Docstring
 Return current map rotation in degrees
 
-:rtype: float
-
 .. versionadded:: 2.8
 %End
 
     void setParameters( double mapUnitsPerPixel, double centerX, double centerY, int widthPixels, int heightPixels, double rotation );
 %Docstring
 Set parameters for use in transforming coordinates
+
 :param mapUnitsPerPixel: Map units per pixel
 :param centerX: X coordinate of map center, in geographical units
 :param centerY: Y coordinate of map center, in geographical units
@@ -191,21 +174,13 @@ Set parameters for use in transforming coordinates
     QString showParameters() const;
 %Docstring
 String representation of the parameters used in the transform
-
-:rtype: str
 %End
 
     QTransform transform() const;
-%Docstring
-
-:rtype: QTransform
-%End
 
     double xCenter() const;
 %Docstring
 Returns the center x-coordinate for the transform.
-
-:rtype: float
 
 .. seealso:: :py:func:`yCenter()`
 
@@ -215,8 +190,6 @@ Returns the center x-coordinate for the transform.
     double yCenter() const;
 %Docstring
 Returns the center y-coordinate for the transform.
-
-:rtype: float
 
 .. seealso:: :py:func:`xCenter()`
 

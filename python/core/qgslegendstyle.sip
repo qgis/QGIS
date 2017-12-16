@@ -44,8 +44,6 @@ Composer legend components style
     QFont font() const;
 %Docstring
 The font for this style.
-
-:rtype: QFont
 %End
 
     void setFont( const QFont &font );
@@ -55,10 +53,6 @@ The font for this style.
 
 
     double margin( Side side );
-%Docstring
-
-:rtype: float
-%End
     void setMargin( Side side, double margin );
 
     void setMargin( double margin );
@@ -73,22 +67,16 @@ set all margins
     static QString styleName( Style s );
 %Docstring
 Get name for style, used in project file
-
-:rtype: str
 %End
 
     static Style styleFromName( const QString &styleName );
 %Docstring
 Get style from name, used in project file
-
-:rtype: Style
 %End
 
     static QString styleLabel( Style s );
 %Docstring
 Get style label, translated, used in UI
-
-:rtype: str
 %End
 
 };

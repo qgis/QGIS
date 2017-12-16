@@ -48,8 +48,6 @@ Updates a data defined button to reflect the item's current properties.
     QgsVectorLayer *coverageLayer() const;
 %Docstring
 Returns the current layout context coverage layer (if set).
-
-:rtype: QgsVectorLayer
 %End
 
 
@@ -78,8 +76,6 @@ Constructor for QgsLayoutItemBaseWidget, linked with the specified ``layoutObjec
     QgsLayoutObject *layoutObject();
 %Docstring
 Returns the layout object associated with this widget.
-
-:rtype: QgsLayoutObject
 %End
 
     bool setItem( QgsLayoutItem *item );
@@ -90,8 +86,6 @@ updated to match ``item``'s properties.
 
 If false is returned, then the widget could not be successfully updated
 to show the properties of ``item``.
-
-:rtype: bool
 %End
 
   protected:
@@ -110,8 +104,6 @@ Updates a previously registered data defined button to reflect the item's curren
     QgsVectorLayer *coverageLayer() const;
 %Docstring
 Returns the current layout context coverage layer (if set).
-
-:rtype: QgsVectorLayer
 %End
 
     virtual bool setNewItem( QgsLayoutItem *item );
@@ -123,8 +115,6 @@ Subclasses can override this if they support changing items in place.
 
 Implementations must return true if the item was accepted and
 the widget was updated.
-
-:rtype: bool
 %End
 
 
@@ -148,10 +138,6 @@ This widget can be embedded into other layout item widgets.
     QgsLayoutItemPropertiesWidget( QWidget *parent, QgsLayoutItem *item );
 
     QgsLayoutItem::ReferencePoint positionMode() const;
-%Docstring
-
-:rtype: QgsLayoutItem.ReferencePoint
-%End
 
     void showBackgroundGroup( bool showGroup );
 

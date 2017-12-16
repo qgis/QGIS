@@ -33,8 +33,6 @@ QgsAtlasComposition which is automatically created and attached to the compositi
 Returns whether the atlas generation is enabled
 
 :return: true if atlas is enabled
-:rtype: bool
-
 
 .. seealso:: :py:func:`setEnabled`
 %End
@@ -42,6 +40,7 @@ Returns whether the atlas generation is enabled
     void setEnabled( bool enabled );
 %Docstring
 Sets whether the atlas is enabled
+
 :param enabled: set to true to enable to atlas
 
 .. seealso:: :py:func:`enabled`
@@ -52,8 +51,6 @@ Sets whether the atlas is enabled
 Returns true if the atlas is set to hide the coverage layer
 
 :return: true if coverage layer is hidden
-:rtype: bool
-
 
 .. seealso:: :py:func:`setHideCoverage`
 %End
@@ -61,6 +58,7 @@ Returns true if the atlas is set to hide the coverage layer
     void setHideCoverage( bool hide );
 %Docstring
 Sets whether the coverage layer should be hidden in map items in the composition
+
 :param hide: set to true to hide the coverage layer
 
 .. seealso:: :py:func:`hideCoverage`
@@ -72,8 +70,6 @@ Returns the filename expression used for generating output filenames for each
 atlas page.
 
 :return: filename pattern
-:rtype: str
-
 
 .. seealso:: :py:func:`setFilenamePattern`
 
@@ -90,7 +86,6 @@ Sets the filename expression used for generating output filenames for each
 atlas page.
 
 :return: true if filename expression could be successful set, false if expression is invalid
-:rtype: bool
 
 :param pattern: expression to use for output filenames
 
@@ -108,8 +103,6 @@ atlas page.
 Returns an error string from parsing the filename expression.
 
 :return: filename pattern parser error
-:rtype: str
-
 
 .. seealso:: :py:func:`setFilenamePattern`
 
@@ -121,8 +114,6 @@ Returns an error string from parsing the filename expression.
 Returns the coverage layer used for the atlas features
 
 :return: atlas coverage layer
-:rtype: QgsVectorLayer
-
 
 .. seealso:: :py:func:`setCoverageLayer`
 %End
@@ -130,6 +121,7 @@ Returns the coverage layer used for the atlas features
     void setCoverageLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the coverage layer to use for the atlas features
+
 :param layer: vector coverage layer
 
 .. seealso:: :py:func:`coverageLayer`
@@ -140,8 +132,6 @@ Sets the coverage layer to use for the atlas features
 Returns the expression used for calculating the page name.
 
 :return: expression string, or field name from coverage layer
-:rtype: str
-
 
 .. seealso:: :py:func:`setPageNameExpression`
 
@@ -153,6 +143,7 @@ Returns the expression used for calculating the page name.
     void setPageNameExpression( const QString &pageNameExpression );
 %Docstring
 Sets the expression used for calculating the page name.
+
 :param pageNameExpression: expression string, or field name from coverage layer
 
 .. seealso:: :py:func:`pageNameExpression`
@@ -163,11 +154,10 @@ Sets the expression used for calculating the page name.
     QString nameForPage( int pageNumber ) const;
 %Docstring
 Returns the calculated name for a specified atlas page number.
+
 :param pageNumber: number of page, where 0 = first page
 
 :return: page name
-:rtype: str
-
 
 .. seealso:: :py:func:`pageNameExpression`
 
@@ -180,8 +170,6 @@ Returns whether the atlas will be exported to a single file. This is only
 applicable for PDF exports.
 
 :return: true if atlas will be exported to a single file
-:rtype: bool
-
 
 .. seealso:: :py:func:`setSingleFile`
 
@@ -194,6 +182,7 @@ applicable for PDF exports.
 %Docstring
 Sets whether the atlas should be exported to a single file. This is only
 applicable for PDF exports.
+
 :param single: set to true to export atlas to a single file.
 
 .. seealso:: :py:func:`singleFile`
@@ -208,8 +197,6 @@ applicable for PDF exports.
 Returns the  atlas file format used for image exports.
 
 :return: true if atlas will be exported to a single file
-:rtype: str
-
 
 .. seealso:: :py:func:`setFileFormat`
 
@@ -223,6 +210,7 @@ Returns the  atlas file format used for image exports.
     void setFileFormat( const QString &format );
 %Docstring
 Sets the  atlas file format used for image exports.
+
 :param format: set the file format extension
 
 .. seealso:: :py:func:`fileFormat`
@@ -235,31 +223,15 @@ Sets the  atlas file format used for image exports.
 %End
 
     bool sortFeatures() const;
-%Docstring
-
-:rtype: bool
-%End
     void setSortFeatures( bool doSort );
 
     bool sortAscending() const;
-%Docstring
-
-:rtype: bool
-%End
     void setSortAscending( bool ascending );
 
     bool filterFeatures() const;
-%Docstring
-
-:rtype: bool
-%End
     void setFilterFeatures( bool doFilter );
 
     QString featureFilter() const;
-%Docstring
-
-:rtype: str
-%End
     void setFeatureFilter( const QString &expression );
 
     QString featureFilterErrorString() const;
@@ -267,8 +239,6 @@ Sets the  atlas file format used for image exports.
 Returns an error string from parsing the feature filter expression.
 
 :return: filename pattern parser error
-:rtype: str
-
 
 .. seealso:: :py:func:`setFilenamePattern`
 
@@ -276,10 +246,6 @@ Returns an error string from parsing the feature filter expression.
 %End
 
     QString sortKeyAttributeName() const;
-%Docstring
-
-:rtype: str
-%End
     void setSortKeyAttributeName( const QString &fieldName );
 
     QVector<qreal> predefinedScales() const;
@@ -288,8 +254,6 @@ Returns the current list of predefined scales for the atlas. This is used
 for maps which are set to the predefined atlas scaling mode.
 
 :return: a vector of doubles representing predefined scales
-:rtype: list of qreal
-
 
 .. seealso:: :py:func:`setPredefinedScales`
 
@@ -300,6 +264,7 @@ for maps which are set to the predefined atlas scaling mode.
 %Docstring
 Sets the list of predefined scales for the atlas. This is used
 for maps which are set to the predefined atlas scaling mode.
+
 :param scales: a vector of doubles representing predefined scales
 
 .. seealso:: :py:func:`predefinedScales`
@@ -311,8 +276,6 @@ for maps which are set to the predefined atlas scaling mode.
 %Docstring
 Begins the rendering. Returns true if successful, false if no matching atlas
 features found.*
-
-:rtype: bool
 %End
     void endRender();
 %Docstring
@@ -322,19 +285,16 @@ Ends the rendering. Restores original extent
     int numFeatures() const;
 %Docstring
 Returns the number of features in the coverage layer
-
-:rtype: int
 %End
 
     bool prepareForFeature( const int i, const bool updateMaps = true );
 %Docstring
 Prepare the atlas map for the given feature. Sets the extent and context variables
+
 :param i: feature number
 :param updateMaps: set to true to redraw maps and recalculate their extent
 
 :return: true if feature was successfully prepared
-:rtype: bool
-
 %End
 
     bool prepareForFeature( const QgsFeature *feat );
@@ -342,15 +302,11 @@ Prepare the atlas map for the given feature. Sets the extent and context variabl
 Prepare the atlas map for the given feature. Sets the extent and context variables
 
 :return: true if feature was successfully prepared
-:rtype: bool
-
 %End
 
     QString currentFilename() const;
 %Docstring
 Returns the current filename. Must be called after prepareForFeature()
-
-:rtype: str
 %End
 
     void writeXml( QDomElement &elem, QDomDocument &doc ) const;
@@ -358,6 +314,7 @@ Returns the current filename. Must be called after prepareForFeature()
     void readXml( const QDomElement &elem, const QDomDocument &doc );
 %Docstring
 Reads general atlas settings from xml
+
 :param elem: a QDomElement holding the atlas properties.
 :param doc: QDomDocument for the source xml.
 
@@ -369,24 +326,16 @@ Reads general atlas settings from xml
 %End
 
     QgsComposition *composition();
-%Docstring
-
-:rtype: QgsComposition
-%End
 
     int updateFeatures();
 %Docstring
 Requeries the current atlas coverage layer and applies filtering and sorting. Returns
 number of matching features. Must be called after prepareForFeature()
-
-:rtype: int
 %End
 
     QgsFeature feature() const;
 %Docstring
 Returns the current atlas feature. Must be called after prepareForFeature().
-
-:rtype: QgsFeature
 
 .. versionadded:: 2.12
 %End
@@ -395,16 +344,12 @@ Returns the current atlas feature. Must be called after prepareForFeature().
 %Docstring
 Returns the name of the page for the current atlas feature. Must be called after prepareForFeature().
 
-:rtype: str
-
 .. versionadded:: 2.12
 %End
 
     int currentFeatureNumber() const;
 %Docstring
 Returns the current feature number, where a value of 0 corresponds to the first feature.
-
-:rtype: int
 
 .. versionadded:: 2.12
 %End
@@ -417,8 +362,6 @@ Recalculates the bounds of an atlas driven map
     QgsGeometry currentGeometry( const QgsCoordinateReferenceSystem &projectedTo = QgsCoordinateReferenceSystem() ) const;
 %Docstring
 Returns the current atlas geometry in the given projection system (default to the coverage layer's CRS)
-
-:rtype: QgsGeometry
 %End
 
   public slots:

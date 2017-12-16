@@ -26,6 +26,7 @@ class QgsStyleSaveDialog: QDialog
     QgsStyleSaveDialog( QWidget *parent /TransferThis/ = 0, QgsStyle::StyleEntity type = QgsStyle::SymbolEntity );
 %Docstring
 Constructor for QgsSymbolSaveDialog
+
 :param parent: parent widget
 :param type: the QgsStyle entity type being saved
 %End
@@ -33,22 +34,16 @@ Constructor for QgsSymbolSaveDialog
     QString name() const;
 %Docstring
 returns the text value of the name element
-
-:rtype: str
 %End
 
     QString tags() const;
 %Docstring
 returns the text value of the tags element
-
-:rtype: str
 %End
 
     bool isFavorite() const;
 %Docstring
 returns whether the favorite element is checked
-
-:rtype: bool
 %End
 
 

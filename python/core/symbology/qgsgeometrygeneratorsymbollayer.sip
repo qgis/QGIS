@@ -18,10 +18,6 @@ class QgsGeometryGeneratorSymbolLayer : QgsSymbolLayer
     ~QgsGeometryGeneratorSymbolLayer();
 
     static QgsSymbolLayer *create( const QgsStringMap &properties ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
 
     virtual QString layerType() const;
 
@@ -40,8 +36,6 @@ Access the symbol type. This defines the type of geometry
 that is created by this generator.
 
 :return: Symbol type
-:rtype: QgsSymbol.SymbolType
-
 %End
 
     virtual void startRender( QgsSymbolRenderContext &context );
@@ -67,8 +61,6 @@ Set the expression to generate this geometry.
     QString geometryExpression() const;
 %Docstring
 Get the expression to generate this geometry.
-
-:rtype: str
 %End
 
     virtual QgsSymbol *subSymbol();
@@ -85,8 +77,6 @@ Get the expression to generate this geometry.
 Will always return true.
 This is a hybrid layer, it constructs its own geometry so it does not
 care about the geometry of its parents.
-
-:rtype: bool
 %End
 
     virtual void render( QgsSymbolRenderContext &context );

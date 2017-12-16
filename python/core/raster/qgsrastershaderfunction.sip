@@ -49,8 +49,6 @@ typically used to render grayscale images as false color.
                         int *returnAlpha /Out/ );
 %Docstring
  generates and new RGBA value based on one input value
-
-:rtype: bool
 %End
 
     virtual bool shade( double redValue,
@@ -63,26 +61,12 @@ typically used to render grayscale images as false color.
                         int *returnAlpha /Out/ );
 %Docstring
  generates and new RGBA value based on original RGBA value
-
-:rtype: bool
 %End
 
     double minimumMaximumRange() const;
-%Docstring
-
-:rtype: float
-%End
 
     double minimumValue() const;
-%Docstring
-
-:rtype: float
-%End
     double maximumValue() const;
-%Docstring
-
-:rtype: float
-%End
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 

@@ -44,13 +44,12 @@ Constructor for QgsProjectionSelectionWidget
 Returns the currently selected CRS for the widget
 
 :return: current CRS
-:rtype: QgsCoordinateReferenceSystem
-
 %End
 
     void setOptionVisible( const CrsOption option, const bool visible );
 %Docstring
 Sets whether a predefined CRS option should be shown in the widget.
+
 :param option: CRS option to show/hide
 :param visible: whether the option should be shown
 
@@ -60,8 +59,6 @@ Sets whether a predefined CRS option should be shown in the widget.
     bool optionVisible( CrsOption option ) const;
 %Docstring
 Returns whether the specified CRS option is visible in the widget.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 
@@ -104,6 +101,7 @@ Emitted when the not set option is selected.
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Sets the current CRS for the widget
+
 :param crs: new CRS
 %End
 
@@ -111,6 +109,7 @@ Sets the current CRS for the widget
 %Docstring
 Sets the layer CRS for the widget. If set, this will be added as an option
 to the preset CRSes shown in the widget.
+
 :param crs: layer CRS
 %End
 

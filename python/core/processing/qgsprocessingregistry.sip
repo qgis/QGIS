@@ -37,8 +37,6 @@ Constructor for QgsProcessingRegistry.
     QList<QgsProcessingProvider *> providers() const;
 %Docstring
 Get list of available providers.
-
-:rtype: list of QgsProcessingProvider
 %End
 
     bool addProvider( QgsProcessingProvider *provider /Transfer/ );
@@ -50,8 +48,6 @@ in the registry).
 Adding a provider to the registry automatically triggers the providers QgsProcessingProvider.load()
 method to populate the provider with algorithms.
 
-:rtype: bool
-
 .. seealso:: :py:func:`removeProvider()`
 %End
 
@@ -59,8 +55,6 @@ method to populate the provider with algorithms.
 %Docstring
 Removes a provider implementation from the registry (the provider object is deleted).
 Returns false if the provider could not be removed (eg provider does not exist in the registry).
-
-:rtype: bool
 
 .. seealso:: :py:func:`addProvider()`
 %End
@@ -70,23 +64,17 @@ Returns false if the provider could not be removed (eg provider does not exist i
 Removes a provider implementation from the registry (the provider object is deleted).
 Returns false if the provider could not be removed (eg provider does not exist in the registry).
 
-:rtype: bool
-
 .. seealso:: :py:func:`addProvider()`
 %End
 
     QgsProcessingProvider *providerById( const QString &id );
 %Docstring
 Returns a matching provider by provider ID.
-
-:rtype: QgsProcessingProvider
 %End
 
     QList< const QgsProcessingAlgorithm *> algorithms() const;
 %Docstring
 Returns a list of all available algorithms from registered providers.
-
-:rtype: list of const QgsProcessingAlgorithm
 
 .. seealso:: :py:func:`algorithmById()`
 %End
@@ -95,8 +83,6 @@ Returns a list of all available algorithms from registered providers.
 %Docstring
 Finds an algorithm by its ID. If no matching algorithm is found, a None
 is returned.
-
-:rtype: QgsProcessingAlgorithm
 
 .. seealso:: :py:func:`algorithms()`
 
@@ -114,8 +100,6 @@ to the algorithm, allowing it to dynamically adjust its initialized parameters
 and outputs according to this configuration. This is generally used only for
 algorithms in a model, allowing them to adjust their behavior at run time
 according to some user configuration.
-
-:rtype: QgsProcessingAlgorithm
 
 .. seealso:: :py:func:`algorithms()`
 

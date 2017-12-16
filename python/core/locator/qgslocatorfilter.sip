@@ -96,16 +96,12 @@ Constructor for QgsLocatorFilter.
 %Docstring
 Returns the unique name for the filter. This should be an untranslated string identifying the filter.
 
-:rtype: str
-
 .. seealso:: :py:func:`displayName()`
 %End
 
     virtual QString displayName() const = 0;
 %Docstring
 Returns a translated, user-friendly name for the filter.
-
-:rtype: str
 
 .. seealso:: :py:func:`name()`
 %End
@@ -114,8 +110,6 @@ Returns a translated, user-friendly name for the filter.
 %Docstring
 Returns the priority for the filter, which controls how results are
 ordered in the locator.
-
-:rtype: Priority
 %End
 
     virtual QString prefix() const;
@@ -123,8 +117,6 @@ ordered in the locator.
 Returns the search prefix character(s) for this filter. Prefix a search
 with these characters will restrict the locator search to only include
 results from this filter.
-
-:rtype: str
 
 .. note::
 
@@ -163,8 +155,6 @@ result.
 Returns true if the filter should be used when no prefix
 is entered.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setUseWithoutPrefix()`
 %End
 
@@ -182,15 +172,11 @@ Tests a ``candidate`` string to see if it should be considered a match for
 a specified ``search`` string.
 Filter subclasses should use this method when comparing strings instead
 of directly using QString.contains() or Python 'in' checks.
-
-:rtype: bool
 %End
 
     bool enabled() const;
 %Docstring
 Returns true if the filter is enabled.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setEnabled()`
 %End
@@ -205,8 +191,6 @@ Sets whether the filter is ``enabled``.
     virtual bool hasConfigWidget() const;
 %Docstring
 Should return true if the filter has a configuration widget.
-
-:rtype: bool
 
 .. seealso:: :py:func:`createConfigWidget()`
 %End

@@ -61,8 +61,6 @@ Copy constructor
 %Docstring
 Returns a list of the control points for the transform.
 
-:rtype: list of QgsPointXY
-
 .. seealso:: :py:func:`setControlPoints()`
 %End
 
@@ -93,8 +91,6 @@ matching control point does not exist.
     double y( double x ) const;
 %Docstring
 Returns the mapped y value corresponding to the specified ``x`` value.
-
-:rtype: float
 %End
 
     QVector< double > y( const QVector< double > &x ) const;
@@ -102,17 +98,14 @@ Returns the mapped y value corresponding to the specified ``x`` value.
 Returns a list of y values corresponding to a list of ``x`` values.
 Calling this method is faster then calling the double variant multiple
 times.
-
-:rtype: list of float
 %End
 
     bool readXml( const QDomElement &elem, const QDomDocument &doc );
 %Docstring
 Reads the curve's state from an XML element.
+
 :param elem: source DOM element for transform's state
 :param doc: DOM document
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End
@@ -120,10 +113,9 @@ Reads the curve's state from an XML element.
     bool writeXml( QDomElement &transformElem, QDomDocument &doc ) const;
 %Docstring
 Writes the current state of the transform into an XML element
+
 :param transformElem: destination element for the transform's state
 :param doc: DOM document
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -133,8 +125,6 @@ Writes the current state of the transform into an XML element
 Saves this curve transformer to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`loadVariant()`
 %End
 
@@ -142,8 +132,6 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
 %Docstring
 Load this curve transformer from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to load it from an XML document.
-
-:rtype: bool
 
 .. seealso:: :py:func:`toVariant()`
 %End
@@ -185,14 +173,14 @@ Possible uses include transformers which map a value into a scaled size or color
     static QgsPropertyTransformer *create( Type type ) /Factory/;
 %Docstring
 Factory method for creating a new property transformer of the specified type.
-:param type: transformer type to create
 
-:rtype: QgsPropertyTransformer
+:param type: transformer type to create
 %End
 
     QgsPropertyTransformer( double minValue = 0.0, double maxValue = 1.0 );
 %Docstring
 Constructor for QgsPropertyTransformer
+
 :param minValue: minimum expected value from source property
 :param maxValue: maximum expected value from source property
 %End
@@ -207,23 +195,17 @@ Copy constructor.
     virtual Type transformerType() const = 0;
 %Docstring
 Returns the transformer type.
-
-:rtype: Type
 %End
 
     virtual QgsPropertyTransformer *clone() const = 0 /Factory/;
 %Docstring
 Returns a clone of the transformer.
-
-:rtype: QgsPropertyTransformer
 %End
 
     virtual bool loadVariant( const QVariant &transformer );
 %Docstring
 Loads this transformer from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.readVariant to read it from an XML document.
-
-:rtype: bool
 
 .. seealso:: :py:func:`toVariant()`
 %End
@@ -233,16 +215,12 @@ You can use QgsXmlUtils.readVariant to read it from an XML document.
 Saves this transformer to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`loadVariant()`
 %End
 
     double minValue() const;
 %Docstring
 Returns the minimum value expected by the transformer.
-
-:rtype: float
 
 .. seealso:: :py:func:`maxValue()`
 
@@ -252,6 +230,7 @@ Returns the minimum value expected by the transformer.
     void setMinValue( double min );
 %Docstring
 Sets the minimum value expected by the transformer.
+
 :param min: minimum value
 
 .. seealso:: :py:func:`setMaxValue()`
@@ -263,8 +242,6 @@ Sets the minimum value expected by the transformer.
 %Docstring
 Returns the maximum value expected by the transformer.
 
-:rtype: float
-
 .. seealso:: :py:func:`minValue()`
 
 .. seealso:: :py:func:`setMaxValue()`
@@ -273,6 +250,7 @@ Returns the maximum value expected by the transformer.
     void setMaxValue( double max );
 %Docstring
 Sets the maximum value expected by the transformer.
+
 :param max: maximum value
 
 .. seealso:: :py:func:`setMinValue()`
@@ -284,8 +262,6 @@ Sets the maximum value expected by the transformer.
 %Docstring
 Returns the curve transform applied to input values before they are transformed
 by the individual transform subclasses.
-
-:rtype: QgsCurveTransform
 
 .. seealso:: :py:func:`setCurveTransform()`
 %End
@@ -303,23 +279,21 @@ to the property transformer.
 %Docstring
 Calculates the transform of a value. Derived classes must implement this to perform their transformations
 on input values
+
 :param context: expression context
 :param value: input value to transform
-
-:rtype: QVariant
 %End
 
     virtual QString toExpression( const QString &baseExpression ) const = 0;
 %Docstring
 Converts the transformer to a QGIS expression string. The ``baseExpression`` string consists
 of a sub-expression reflecting the parent property's state.
-
-:rtype: str
 %End
 
     static QgsPropertyTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
 Attempts to parse an expression into a corresponding property transformer.
+
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
 is used to calculate the input to the property transformer. This will be set to an
@@ -329,8 +303,6 @@ to the property transformer. This will be set to an
 empty string if an expression is the transformer input.
 
 :return: corresponding property transformer, or None if expression could not
-:rtype: QgsPropertyTransformer
-
 be parsed to a transformer.
 %End
 
@@ -341,8 +313,6 @@ be parsed to a transformer.
 Applies base class numeric transformations. Derived classes should call this
 to transform an ``input`` numeric value before they apply any transform to the result.
 This applies any curve transforms which may exist on the transformer.
-
-:rtype: float
 %End
 };
 
@@ -368,6 +338,7 @@ class QgsGenericNumericTransformer : QgsPropertyTransformer
                                   double exponent = 1.0 );
 %Docstring
 Constructor for QgsGenericNumericTransformer.
+
 :param minValue: minimum expected input value
 :param maxValue: maximum expected input value
 :param minOutput: minimum value to return
@@ -391,6 +362,7 @@ Constructor for QgsGenericNumericTransformer.
     static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
 Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
+
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
 is used to calculate the input to the property transformer. This will be set to an
@@ -400,8 +372,6 @@ to the property transformer. This will be set to an
 empty string if an expression is the transformer input.
 
 :return: corresponding QgsSizeScaleTransformer, or None if expression could not
-:rtype: QgsGenericNumericTransformer
-
 be parsed to a size scale transformer.
 %End
 
@@ -410,15 +380,11 @@ be parsed to a size scale transformer.
 Calculates the size corresponding to a specific ``input`` value.
 
 :return: calculated size using size scale transformer's parameters and type
-:rtype: float
-
 %End
 
     double minOutputValue() const;
 %Docstring
 Returns the minimum calculated size.
-
-:rtype: float
 
 .. seealso:: :py:func:`setMinSize()`
 
@@ -428,6 +394,7 @@ Returns the minimum calculated size.
     void setMinOutputValue( double size );
 %Docstring
 Sets the minimum calculated size.
+
 :param size: minimum size
 
 .. seealso:: :py:func:`minSize()`
@@ -439,14 +406,13 @@ Sets the minimum calculated size.
 %Docstring
 Returns the maximum calculated size.
 
-:rtype: float
-
 .. seealso:: :py:func:`minSize()`
 %End
 
     void setMaxOutputValue( double size );
 %Docstring
 Sets the maximum calculated size.
+
 :param size: maximum size
 
 .. seealso:: :py:func:`maxSize()`
@@ -458,14 +424,13 @@ Sets the maximum calculated size.
 %Docstring
 Returns the size value when an expression evaluates to NULL.
 
-:rtype: float
-
 .. seealso:: :py:func:`setNullSize()`
 %End
 
     void setNullOutputValue( double size );
 %Docstring
 Sets the size value for when an expression evaluates to NULL.
+
 :param size: null size
 
 .. seealso:: :py:func:`nullSize()`
@@ -475,8 +440,6 @@ Sets the size value for when an expression evaluates to NULL.
 %Docstring
 Returns the exponent for an exponential expression.
 
-:rtype: float
-
 .. seealso:: :py:func:`setExponent()`
 
 .. seealso:: :py:func:`type()`
@@ -485,6 +448,7 @@ Returns the exponent for an exponential expression.
     void setExponent( double exponent );
 %Docstring
 Sets the exponent for an exponential expression.
+
 :param exponent: exponent
 
 .. seealso:: :py:func:`exponent()`
@@ -524,6 +488,7 @@ scaling methods.
                              double exponent = 1.0 );
 %Docstring
 Constructor for QgsSizeScaleTransformer.
+
 :param type: scaling type
 :param minValue: minimum expected value
 :param maxValue: maximum expected value
@@ -548,6 +513,7 @@ Constructor for QgsSizeScaleTransformer.
     static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
 Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
+
 :param expression: expression to parse
 :param baseExpression: will be set to the component of the source expression which
 is used to calculate the input to the property transformer. This will be set to an
@@ -557,26 +523,21 @@ to the property transformer. This will be set to an
 empty string if an expression is the transformer input.
 
 :return: corresponding QgsSizeScaleTransformer, or None if expression could not
-:rtype: QgsSizeScaleTransformer
-
 be parsed to a size scale transformer.
 %End
 
     double size( double value ) const;
 %Docstring
 Calculates the size corresponding to a specific value.
+
 :param value: value to calculate size for
 
 :return: calculated size using size scale transformer's parameters and type
-:rtype: float
-
 %End
 
     double minSize() const;
 %Docstring
 Returns the minimum calculated size.
-
-:rtype: float
 
 .. seealso:: :py:func:`setMinSize()`
 
@@ -586,6 +547,7 @@ Returns the minimum calculated size.
     void setMinSize( double size );
 %Docstring
 Sets the minimum calculated size.
+
 :param size: minimum size
 
 .. seealso:: :py:func:`minSize()`
@@ -597,14 +559,13 @@ Sets the minimum calculated size.
 %Docstring
 Returns the maximum calculated size.
 
-:rtype: float
-
 .. seealso:: :py:func:`minSize()`
 %End
 
     void setMaxSize( double size );
 %Docstring
 Sets the maximum calculated size.
+
 :param size: maximum size
 
 .. seealso:: :py:func:`maxSize()`
@@ -616,14 +577,13 @@ Sets the maximum calculated size.
 %Docstring
 Returns the size value when an expression evaluates to NULL.
 
-:rtype: float
-
 .. seealso:: :py:func:`setNullSize()`
 %End
 
     void setNullSize( double size );
 %Docstring
 Sets the size value for when an expression evaluates to NULL.
+
 :param size: null size
 
 .. seealso:: :py:func:`nullSize()`
@@ -633,8 +593,6 @@ Sets the size value for when an expression evaluates to NULL.
 %Docstring
 Returns the exponent for an exponential expression.
 
-:rtype: float
-
 .. seealso:: :py:func:`setExponent()`
 
 .. seealso:: :py:func:`type()`
@@ -643,6 +601,7 @@ Returns the exponent for an exponential expression.
     void setExponent( double exponent );
 %Docstring
 Sets the exponent for an exponential expression.
+
 :param exponent: exponent
 
 .. seealso:: :py:func:`exponent()`
@@ -653,8 +612,6 @@ Sets the exponent for an exponential expression.
 Returns the size transformer's scaling type (the method used to calculate
 the size from a value).
 
-:rtype: ScaleType
-
 .. seealso:: :py:func:`setType()`
 %End
 
@@ -662,6 +619,7 @@ the size from a value).
 %Docstring
 Sets the size transformer's scaling type (the method used to calculate
 the size from a value).
+
 :param type: scale type
 
 .. seealso:: :py:func:`type()`
@@ -690,6 +648,7 @@ color ramp.
                              const QColor &nullColor = QColor( 0, 0, 0, 0 ) );
 %Docstring
 Constructor for QgsColorRampTransformer.
+
 :param minValue: minimum expected value
 :param maxValue: maximum expected value
 :param ramp: source color ramp. Ownership is transferred to the transformer.
@@ -717,11 +676,10 @@ Copy constructor
     QColor color( double value ) const;
 %Docstring
 Calculates the color corresponding to a specific value.
+
 :param value: value to calculate color for
 
 :return: calculated color using transformer's parameters and type
-:rtype: QColor
-
 %End
 
     QgsColorRamp *colorRamp() const;
@@ -729,8 +687,6 @@ Calculates the color corresponding to a specific value.
 Returns the color ramp used for calculating property colors.
 
 :return: color ramp
-:rtype: QgsColorRamp
-
 
 .. seealso:: :py:func:`setColorRamp()`
 %End
@@ -738,6 +694,7 @@ Returns the color ramp used for calculating property colors.
     void setColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
 Sets the color ramp to use for calculating property colors.
+
 :param ramp: color ramp, ownership of ramp is transferred to the transformer.
 
 .. seealso:: :py:func:`colorRamp()`
@@ -747,14 +704,13 @@ Sets the color ramp to use for calculating property colors.
 %Docstring
 Returns the color corresponding to a null value.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setNullColor()`
 %End
 
     void setNullColor( const QColor &color );
 %Docstring
 Sets the color corresponding to a null value.
+
 :param color: null color
 
 .. seealso:: :py:func:`nullSize()`
@@ -763,8 +719,6 @@ Sets the color corresponding to a null value.
     QString rampName() const;
 %Docstring
 Returns the color ramp's name.
-
-:rtype: str
 
 .. seealso:: :py:func:`setRampName()`
 %End

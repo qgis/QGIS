@@ -50,8 +50,6 @@ Sets the page/snap grid ``resolution``.
 %Docstring
 Returns the page/snap grid resolution.
 
-:rtype: QgsLayoutMeasurement
-
 .. seealso:: :py:func:`setResolution()`
 
 .. seealso:: :py:func:`offset()`
@@ -69,8 +67,6 @@ Sets the ``offset`` of the page/snap grid.
     QgsLayoutPoint offset() const;
 %Docstring
 Returns the offset of the page/snap grid.
-
-:rtype: QgsLayoutPoint
 
 .. seealso:: :py:func:`setOffset()`
 
@@ -90,8 +86,6 @@ Sets the ``pen`` used for drawing page/snap grids.
 %Docstring
 Returns the pen used for drawing page/snap grids.
 
-:rtype: QPen
-
 .. seealso:: :py:func:`setPen()`
 
 .. seealso:: :py:func:`style()`
@@ -110,8 +104,6 @@ Sets the ``style`` used for drawing the page/snap grids.
 %Docstring
 Returns the style used for drawing the page/snap grids.
 
-:rtype: Style
-
 .. seealso:: :py:func:`setStyle()`
 
 .. seealso:: :py:func:`pen()`
@@ -122,8 +114,6 @@ Returns the style used for drawing the page/snap grids.
 %Docstring
 Stores the grid's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
 
-:rtype: bool
-
 .. seealso:: :py:func:`readXml()`
 %End
 
@@ -131,8 +121,6 @@ Stores the grid's state in a DOM element. The ``parentElement`` should refer to 
 
 %Docstring
 Sets the grid's state from a DOM element. gridElement is the DOM node corresponding to the grid.
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End
