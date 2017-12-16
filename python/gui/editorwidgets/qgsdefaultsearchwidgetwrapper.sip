@@ -37,11 +37,14 @@ Constructor for QgsDefaultSearchWidgetWrapper
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
 
     virtual void clearWidget();
 
+
     virtual void setEnabled( bool enabled );
+
 
   protected slots:
     virtual void setExpression( const QString &exp );
@@ -59,8 +62,6 @@ Constructor for QgsDefaultSearchWidgetWrapper
 %Docstring
 Returns a pointer to the line edit part of the widget.
 
-:rtype: QgsFilterLineEdit
-
 .. note::
 
    this method is in place for unit testing only, and is not considered
@@ -70,8 +71,6 @@ stable API
     QCheckBox *caseSensitiveCheckBox();
 %Docstring
 Returns a pointer to the case sensitivity checkbox in the widget.
-
-:rtype: QCheckBox
 
 .. note::
 

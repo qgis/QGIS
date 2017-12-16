@@ -31,10 +31,6 @@ Constructor for QgsAuthCertInfo
 %End
 
     bool trustCacheRebuilt();
-%Docstring
-
-:rtype: bool
-%End
 
 };
 
@@ -56,6 +52,7 @@ Dialog wrapper for widget displaying detailed info on a certificate and its hier
                                     const QList<QSslCertificate> &connectionCAs = QList<QSslCertificate>() );
 %Docstring
 Construct a dialog displaying detailed info on a certificate and its hierarchical trust chain
+
 :param cert: Certificate object
 :param manageCertTrust: Whether to show widgets to manage the trust policy of certs in hierarchy
 :param parent: Parent widget
@@ -65,15 +62,11 @@ Construct a dialog displaying detailed info on a certificate and its hierarchica
     QgsAuthCertInfo *certInfoWidget();
 %Docstring
 Get access to embedded info widget
-
-:rtype: QgsAuthCertInfo
 %End
 
     bool trustCacheRebuilt();
 %Docstring
 Whether the trust cache has been rebuilt
-
-:rtype: bool
 
 .. note::
 

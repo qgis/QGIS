@@ -70,8 +70,6 @@ will be sorted on top, regardless of the current sort column
 Returns if selected features are currently shown on top
 
 :return: True if selected are shown on top
-:rtype: bool
-
 %End
 
     virtual void setFilteredFeatures( const QgsFeatureIds &ids );
@@ -87,8 +85,6 @@ The filter mode will automatically be adjusted to show only these features (Show
 Get a list of currently filtered feature ids
 
 :return: A list of feature ids
-:rtype: QgsFeatureIds
-
 %End
 
     void setFilterMode( FilterMode filterMode );
@@ -101,8 +97,6 @@ Set the filter mode the filter will use.
     FilterMode filterMode();
 %Docstring
 The current filterModel
-
-:rtype: FilterMode
 %End
 
     QgsVectorLayer *layer() const;
@@ -110,8 +104,6 @@ The current filterModel
 Returns the layer this filter acts on.
 
 :return: Abovementioned layer
-:rtype: QgsVectorLayer
-
 %End
 
     QgsVectorLayerCache *layerCache() const;
@@ -119,8 +111,6 @@ Returns the layer this filter acts on.
 Returns the layerCache this filter acts on.
 
 :return: The layer cache
-:rtype: QgsVectorLayerCache
-
 %End
 
     QgsAttributeTableModel *masterModel() const;
@@ -128,8 +118,6 @@ Returns the layerCache this filter acts on.
 Returns the table model this filter is using
 
 :return: the table model in quesion
-:rtype: QgsAttributeTableModel
-
 %End
 
     QgsFeatureId rowToId( const QModelIndex &row );
@@ -139,38 +127,28 @@ Returns the feature id for a given model index.
 :param row: A model index of the row in question
 
 :return: The feature id of the feature visible in the provided row
-:rtype: QgsFeatureId
-
 %End
 
     virtual QModelIndex fidToIndex( QgsFeatureId fid );
 
 
     QModelIndexList fidToIndexList( QgsFeatureId fid );
-%Docstring
-
-:rtype: QModelIndexList
-%End
 
     QModelIndex mapToMaster( const QModelIndex &proxyIndex ) const;
-%Docstring
-
-:rtype: QModelIndex
-%End
 
     QModelIndex mapFromMaster( const QModelIndex &sourceIndex ) const;
-%Docstring
-
-:rtype: QModelIndex
-%End
 
     virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 
+
     virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const;
+
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
+
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+
 %Docstring
 Sort by the given column using the given order.
 Prefetches all the data from the layer to speed up sorting.
@@ -191,18 +169,15 @@ Prefetches all the data from the layer to speed up sorting.
     QString sortExpression() const;
 %Docstring
 The expression which is used to sort the attribute table.
-
-:rtype: str
 %End
 
     QgsMapCanvas *mapCanvas() const;
 %Docstring
 Returns the map canvas
-
-:rtype: QgsMapCanvas
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
+
 
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 
@@ -211,8 +186,6 @@ Returns the map canvas
 %Docstring
 Get the index of the first column that contains an action widget.
 Returns -1 if none is defined.
-
-:rtype: int
 %End
 
     virtual int columnCount( const QModelIndex &parent ) const;
@@ -230,6 +203,7 @@ is shown.
     void sortColumnChanged( int column, Qt::SortOrder order );
 %Docstring
 Is emitted whenever the sort column is changed
+
 :param column: The sort column
 :param order: The sort order
 %End
@@ -243,8 +217,6 @@ Returns true if the source row will be accepted
 
 :param sourceRow: row from the source model
 :param sourceParent: parent index in the source model
-
-:rtype: bool
 %End
 
     void generateListOfVisibleFeatures();
@@ -258,8 +230,6 @@ Is called automatically when the filter mode is adjusted or the extents changed.
 %Docstring
 Used by the sorting algorithm. Compares the two model indices. Will also consider the
 selection state of the feature in case selected features are to be shown on top.
-
-:rtype: bool
 %End
 
   public slots:

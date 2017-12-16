@@ -118,10 +118,6 @@ Inverts current selection
 %End
 
     QgsComposerView::Tool currentTool() const;
-%Docstring
-
-:rtype: QgsComposerView.Tool
-%End
     void setCurrentTool( QgsComposerView::Tool t );
 
     void setComposition( QgsComposition *c /KeepReference/ );
@@ -133,23 +129,15 @@ be set BEFORE adding any items to the composition.
     QgsComposition *composition();
 %Docstring
 Returns the composition or 0 in case of error
-
-:rtype: QgsComposition
 %End
 
     QMainWindow *composerWindow();
 %Docstring
 Returns the composer main window
-
-:rtype: QMainWindow
 %End
 
     void setPaintingEnabled( bool enabled );
     bool paintingEnabled() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void updateRulers();
 %Docstring
@@ -168,6 +156,7 @@ Set zoom level, where a zoom level of 1.0 corresponds to 100%
 %Docstring
 Scales the view in a safe way, by limiting the acceptable range
 of the scale applied.
+
 :param scale: factor to scale view by
 
 .. versionadded:: 2.16
@@ -176,6 +165,7 @@ of the scale applied.
     void setPreviewModeEnabled( bool enabled );
 %Docstring
 Sets whether a preview effect should be used to alter the view's appearance
+
 :param enabled: Set to true to enable the preview effect on the view
 
 .. versionadded:: 2.3
@@ -187,6 +177,7 @@ Sets whether a preview effect should be used to alter the view's appearance
 %Docstring
 Sets the preview mode which should be used to modify the view's appearance. Preview modes are only used
 if setPreviewMode is set to true.
+
 :param mode: PreviewMode to be used to draw the view
 
 .. versionadded:: 2.3
@@ -207,8 +198,6 @@ view to retrieve map settings from the canvas.
     QgsMapCanvas *mapCanvas() const;
 %Docstring
 Returns the map canvas associated with the view.
-
-:rtype: QgsMapCanvas
 
 .. seealso:: :py:func:`setMapCanvas()`
 

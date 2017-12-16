@@ -34,7 +34,7 @@ class APP_EXPORT QgsAttributeTypeDialog: public QWidget, private Ui::QgsAttribut
 
   public:
     QgsAttributeTypeDialog( QgsVectorLayer *vl, int fieldIdx, QWidget *parent = nullptr );
-    ~QgsAttributeTypeDialog();
+    ~QgsAttributeTypeDialog() override;
 
     /**
      * Setting page which is to be selected

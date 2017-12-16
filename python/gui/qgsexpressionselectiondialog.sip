@@ -27,6 +27,7 @@ remove from the current selection or select within the current selection.
     QgsExpressionSelectionDialog( QgsVectorLayer *layer, const QString &startText = QString(), QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Creates a new selection dialog.
+
 :param layer:     The layer on which the selection is to be performed.
 :param startText: A default expression text to be applied (Defaults to empty)
 :param parent: parent object (owner)
@@ -37,13 +38,12 @@ Creates a new selection dialog.
 The builder widget that is used by the dialog
 
 :return: The builder widget that is used by the dialog
-:rtype: QgsExpressionBuilderWidget
-
 %End
 
     void setExpressionText( const QString &text );
 %Docstring
 Sets the current expression text
+
 :param text: the expression text to set
 %End
 
@@ -52,8 +52,6 @@ Sets the current expression text
 Returns the current expression text
 
 :return: The expression text
-:rtype: str
-
 %End
 
     void setGeomCalculator( const QgsDistanceArea &da );
@@ -65,6 +63,7 @@ Sets geometry calculator used in distance/area calculations.
 %Docstring
 Sets the message bar to display feedback from the dialog. This is used when zooming to
 features to display the count of selected features.
+
 :param messageBar: target message bar
 
 .. versionadded:: 3.0
@@ -80,16 +79,20 @@ Sets a map canvas associated with the dialog.
   protected:
 
     virtual void closeEvent( QCloseEvent *closeEvent );
+
 %Docstring
 Implementation for closeEvent
 Saves the window geometry
+
 :param closeEvent: Event object. Unused.
 %End
 
     virtual void done( int r );
+
 %Docstring
 Implementation for done (default behavior when pressing esc)
 Calls close, so the window geometry gets saved and the object deleted.
+
 :param r:   Result value. Unused.
 %End
 

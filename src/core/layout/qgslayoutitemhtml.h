@@ -53,7 +53,7 @@ class CORE_EXPORT QgsLayoutItemHtml: public QgsLayoutMultiFrame
      */
     QgsLayoutItemHtml( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    ~QgsLayoutItemHtml();
+    ~QgsLayoutItemHtml() override;
 
     int type() const override;
 

@@ -35,6 +35,7 @@ and composer.
                                const QgsVectorLayer *layer = 0 );
 %Docstring
 Constructor for QgsPropertyOverrideButton.
+
 :param parent: parent widget
 :param layer: associated vector layer
 %End
@@ -47,6 +48,7 @@ Constructor for QgsPropertyOverrideButton.
                bool auxiliaryStorageEnabled = false );
 %Docstring
 Initialize a newly constructed property button (useful if button was included in a UI layout).
+
 :param propertyKey: key for corresponding property
 :param property: initial value of associated property to show in widget
 :param definitions: properties definitions for corresponding collection
@@ -61,6 +63,7 @@ Initialize a newly constructed property button (useful if button was included in
                bool auxiliaryStorageEnabled = false );
 %Docstring
 Initialize a newly constructed property button (useful if button was included in a UI layout).
+
 :param propertyKey: key for corresponding property
 :param property: initial value of associated property to show in widget
 :param definition: properties definition for button
@@ -75,6 +78,7 @@ Initialize a newly constructed property button (useful if button was included in
                bool auxiliaryStorageEnabled = false );
 %Docstring
 Initialize a newly constructed property button (useful if button was included in a UI layout).
+
 :param propertyKey: key for corresponding property
 :param collection: associated property collection
 :param definitions: properties definitions for collection
@@ -87,8 +91,6 @@ Initialize a newly constructed property button (useful if button was included in
 Returns a QgsProperty object encapsulating the current state of the
 widget.
 
-:rtype: QgsProperty
-
 .. seealso:: :py:func:`setToProperty()`
 %End
 
@@ -100,15 +102,11 @@ Sets the widget to reflect the current state of a QgsProperty.
     int propertyKey() const;
 %Docstring
 Returns the property key linked to the button.
-
-:rtype: int
 %End
 
     bool isActive() const;
 %Docstring
 Returns true if the button has an active property.
-
-:rtype: bool
 %End
 
     QgsPropertyDefinition::DataType validDataType() const;
@@ -116,23 +114,17 @@ Returns true if the button has an active property.
 Returns the data type which the widget will accept. This is used to filter
 out fields from the associated vector layer to only show fields which
 are compatible with the property.
-
-:rtype: QgsPropertyDefinition.DataType
 %End
 
     QString fullDescription() const;
 %Docstring
 Returns the full definition description and current definition
 (internally generated on a contextual basis).
-
-:rtype: str
 %End
 
     QString usageInfo() const;
 %Docstring
 Returns usage information for the property.
-
-:rtype: str
 
 .. seealso:: :py:func:`setUsageInfo()`
 %End
@@ -156,8 +148,6 @@ displayed within the widget's pop up menu.
 %Docstring
 Returns the vector layer associated with the button. This controls which fields are
 displayed within the widget's pop up menu.
-
-:rtype: QgsVectorLayer
 
 .. seealso:: :py:func:`setVectorLayer()`
 %End

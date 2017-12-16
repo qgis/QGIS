@@ -33,8 +33,6 @@ Typical scores are:
 :param score:     Where the score is returned (default to 0)
 
 :return: and integer value rating how good is the setup provided by this plugin.
-:rtype: QgsEditorWidgetSetup
-
 %End
 
 };

@@ -30,10 +30,6 @@ Constructor for QgsDateTimeEdit
 Determines if the widget allows setting null date/time.
 %End
     bool allowNull() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setDateTime( const QDateTime &dateTime );
 %Docstring
@@ -48,14 +44,13 @@ Determines if the widget allows setting null date/time.
 %Docstring
  dateTime returns the date time which can eventually be a null date/time
 
-:rtype: QDateTime
-
 .. note::
 
    since QDateTimeEdit.dateTime() is not virtual, dateTime must be called for QgsDateTimeEdit.
 %End
 
     virtual void clear();
+
 %Docstring
 Set the current date as NULL
 
@@ -73,6 +68,7 @@ Resets the widget to show no value (ie, an "unknown" state).
 
   protected:
     virtual void resizeEvent( QResizeEvent *event );
+
 
     virtual void mousePressEvent( QMouseEvent *event );
 

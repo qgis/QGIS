@@ -46,13 +46,13 @@ Use ``dialogTitle`` string to define the title to show in the text settings dial
 %End
 
     virtual QSize minimumSizeHint() const;
+
     virtual QSize sizeHint() const;
+
 
     QgsFontButton::Mode mode() const;
 %Docstring
 Returns the current button mode.
-
-:rtype: QgsFontButton.Mode
 
 .. seealso:: :py:func:`setMode()`
 %End
@@ -78,16 +78,12 @@ Sets the ``title`` for the text settings dialog window.
 %Docstring
 Returns the title for the text settings dialog window.
 
-:rtype: str
-
 .. seealso:: :py:func:`setDialogTitle()`
 %End
 
     QgsMapCanvas *mapCanvas() const;
 %Docstring
 Returns the map canvas associated with the widget.
-
-:rtype: QgsMapCanvas
 
 .. seealso:: :py:func:`setMapCanvas()`
 %End
@@ -105,8 +101,6 @@ widget to fetch current settings from the map canvas, such as current scale.
 Returns the current text formatting set by the widget.
 This is only used when mode() is ModeTextRenderer.
 
-:rtype: QgsTextFormat
-
 .. seealso:: :py:func:`setTextFormat()`
 %End
 
@@ -114,8 +108,6 @@ This is only used when mode() is ModeTextRenderer.
 %Docstring
 Returns the current QFont set by the widget.
 This is only used when mode() is ModeQFont.
-
-:rtype: QFont
 
 .. seealso:: :py:func:`setCurrentFont()`
 %End

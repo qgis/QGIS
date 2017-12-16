@@ -29,6 +29,7 @@ QgsGui.shortcutsManager().
     QgsShortcutsManager( QObject *parent /TransferThis/ = 0, const QString &settingsRoot = "/shortcuts/" );
 %Docstring
 Constructor for QgsShortcutsManager.
+
 :param parent: parent object
 :param settingsRoot: root QgsSettings path for storing settings, e.g., "/myplugin/shortcuts". Leave
 as the default value to store settings alongside built in QGIS shortcuts, but care must be
@@ -39,6 +40,7 @@ taken to not register actions which conflict with the built in QGIS actions.
 %Docstring
 Automatically registers all QActions and QShortcuts which are children of the
 passed object.
+
 :param object: parent object containing actions and shortcuts to register
 :param recursive: set to true to recursively add child actions and shortcuts
 
@@ -50,6 +52,7 @@ passed object.
     void registerAllChildActions( QObject *object, bool recursive = false );
 %Docstring
 Automatically registers all QActions which are children of the passed object.
+
 :param object: parent object containing actions to register
 :param recursive: set to true to recursively add child actions
 
@@ -63,6 +66,7 @@ Automatically registers all QActions which are children of the passed object.
     void registerAllChildShortcuts( QObject *object, bool recursive = false );
 %Docstring
 Automatically registers all QShortcuts which are children of the passed object.
+
 :param object: parent object containing shortcuts to register
 :param recursive: set to true to recursively add child shortcuts
 
@@ -76,13 +80,12 @@ Automatically registers all QShortcuts which are children of the passed object.
     bool registerAction( QAction *action, const QString &defaultShortcut = QString() );
 %Docstring
 Registers an action with the manager so the shortcut can be configured in GUI.
+
 :param action: action to register. The action must have a unique text string for
 identification.
 :param defaultShortcut: default key sequence for action
 
 :return: true if action was successfully registered
-:rtype: bool
-
 
 .. seealso:: :py:func:`registerShortcut()`
 
@@ -94,13 +97,12 @@ identification.
     bool registerShortcut( QShortcut *shortcut, const QString &defaultSequence = QString() );
 %Docstring
 Registers a QShortcut with the manager so the shortcut can be configured in GUI.
+
 :param shortcut: QShortcut to register. The shortcut must have a unique QObject.objectName() for
 identification.
 :param defaultSequence: default key sequence for shortcut
 
 :return: true if shortcut was successfully registered
-:rtype: bool
-
 
 .. seealso:: :py:func:`registerAction()`
 
@@ -110,11 +112,10 @@ identification.
     bool unregisterAction( QAction *action );
 %Docstring
 Removes an action from the manager.
+
 :param action: action to remove
 
 :return: true if action was previously registered in manager and has been removed, or
-:rtype: bool
-
 false if action was not previously registered in manager
 
 .. seealso:: :py:func:`registerAction()`
@@ -125,11 +126,10 @@ false if action was not previously registered in manager
     bool unregisterShortcut( QShortcut *shortcut );
 %Docstring
 Removes a shortcut from the manager.
+
 :param shortcut: shortcut to remove
 
 :return: true if shortcut was previously registered in manager and has been removed, or
-:rtype: bool
-
 false if shortcut was not previously registered in manager
 
 .. seealso:: :py:func:`registerShortcut()`
@@ -141,8 +141,6 @@ false if shortcut was not previously registered in manager
 %Docstring
 Returns a list of all actions in the manager.
 
-:rtype: list of QAction
-
 .. seealso:: :py:func:`listShortcuts()`
 
 .. seealso:: :py:func:`listAll()`
@@ -151,8 +149,6 @@ Returns a list of all actions in the manager.
     QList<QShortcut *> listShortcuts() const;
 %Docstring
 Returns a list of shortcuts in the manager.
-
-:rtype: list of QShortcut
 
 .. seealso:: :py:func:`listActions()`
 
@@ -163,8 +159,6 @@ Returns a list of shortcuts in the manager.
 %Docstring
 Returns a list of both actions and shortcuts in the manager.
 
-:rtype: list of QObject
-
 .. seealso:: :py:func:`listAction()`
 
 .. seealso:: :py:func:`listShortcuts()`
@@ -174,9 +168,8 @@ Returns a list of both actions and shortcuts in the manager.
 %Docstring
 Returns the default sequence for an object (either a QAction or QShortcut).
 An empty return string indicates no shortcut.
-:param object: QAction or QShortcut to return default key sequence for
 
-:rtype: str
+:param object: QAction or QShortcut to return default key sequence for
 
 .. seealso:: :py:func:`defaultKeySequence()`
 %End
@@ -185,9 +178,8 @@ An empty return string indicates no shortcut.
 %Docstring
 Returns the default sequence for an action. An empty return string indicates
 no default sequence.
-:param action: action to return default key sequence for
 
-:rtype: str
+:param action: action to return default key sequence for
 
 .. seealso:: :py:func:`objectDefaultKeySequence()`
 %End
@@ -196,9 +188,8 @@ no default sequence.
 %Docstring
 Returns the default sequence for a shortcut. An empty return string indicates
 no default sequence.
-:param shortcut: shortcut to return default key sequence for
 
-:rtype: str
+:param shortcut: shortcut to return default key sequence for
 
 .. seealso:: :py:func:`objectDefaultKeySequence()`
 %End
@@ -206,11 +197,10 @@ no default sequence.
     bool setKeySequence( const QString &name, const QString &sequence );
 %Docstring
 Modifies an action or shortcut's key sequence.
+
 :param name: name of action or shortcut to modify. Must match the action's QAction.text() or the
 shortcut's QObject.objectName()
 :param sequence: new shortcut key sequence
-
-:rtype: bool
 
 .. seealso:: :py:func:`setObjectKeySequence()`
 %End
@@ -218,10 +208,9 @@ shortcut's QObject.objectName()
     bool setObjectKeySequence( QObject *object, const QString &sequence );
 %Docstring
 Modifies an object's (either a QAction or a QShortcut) key sequence.
+
 :param object: QAction or QShortcut to modify
 :param sequence: new shortcut key sequence
-
-:rtype: bool
 
 .. seealso:: :py:func:`setKeySequence()`
 %End
@@ -229,10 +218,9 @@ Modifies an object's (either a QAction or a QShortcut) key sequence.
     bool setKeySequence( QAction *action, const QString &sequence );
 %Docstring
 Modifies an action's key sequence.
+
 :param action: action to modify
 :param sequence: new shortcut key sequence
-
-:rtype: bool
 
 .. seealso:: :py:func:`setObjectKeySequence()`
 %End
@@ -240,10 +228,9 @@ Modifies an action's key sequence.
     bool setKeySequence( QShortcut *shortcut, const QString &sequence );
 %Docstring
 Modifies a shortcuts's key sequence.
+
 :param shortcut: QShortcut to modify
 :param sequence: new shortcut key sequence
-
-:rtype: bool
 
 .. seealso:: :py:func:`setObjectKeySequence()`
 %End
@@ -251,11 +238,10 @@ Modifies a shortcuts's key sequence.
     QObject *objectForSequence( const QKeySequence &sequence ) const;
 %Docstring
 Returns the object (QAction or QShortcut) matching the specified key sequence,
+
 :param sequence: key sequence to find
 
 :return: object with matching sequence, or None if not found
-:rtype: QObject
-
 
 .. seealso:: :py:func:`actionForSequence()`
 
@@ -265,9 +251,8 @@ Returns the object (QAction or QShortcut) matching the specified key sequence,
     QAction *actionForSequence( const QKeySequence &sequence ) const;
 %Docstring
 Returns the action which is associated for a shortcut sequence, or None if no action is associated.
-:param sequence: shortcut key sequence
 
-:rtype: QAction
+:param sequence: shortcut key sequence
 
 .. seealso:: :py:func:`objectForSequence()`
 
@@ -277,9 +262,8 @@ Returns the action which is associated for a shortcut sequence, or None if no ac
     QShortcut *shortcutForSequence( const QKeySequence &sequence ) const;
 %Docstring
 Returns the shortcut which is associated for a key sequence, or None if no shortcut is associated.
-:param sequence: shortcut key sequence
 
-:rtype: QShortcut
+:param sequence: shortcut key sequence
 
 .. seealso:: :py:func:`objectForSequence()`
 
@@ -289,9 +273,8 @@ Returns the shortcut which is associated for a key sequence, or None if no short
     QAction *actionByName( const QString &name ) const;
 %Docstring
 Returns an action by its name, or None if nothing found.
-:param name: action name. Must match QAction's text.
 
-:rtype: QAction
+:param name: action name. Must match QAction's text.
 
 .. seealso:: :py:func:`shortcutByName()`
 %End
@@ -299,9 +282,8 @@ Returns an action by its name, or None if nothing found.
     QShortcut *shortcutByName( const QString &name ) const;
 %Docstring
 Returns a shortcut by its name, or None if nothing found
-:param name: shortcut name. Must match QShortcut's QObject.objectName() property.
 
-:rtype: QShortcut
+:param name: shortcut name. Must match QShortcut's QObject.objectName() property.
 
 .. seealso:: :py:func:`actionByName()`
 %End
@@ -309,8 +291,6 @@ Returns a shortcut by its name, or None if nothing found
     QString settingsPath() const;
 %Docstring
 Returns the root settings path used to store shortcut customisation.
-
-:rtype: str
 %End
 
 };

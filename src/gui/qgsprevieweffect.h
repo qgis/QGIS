@@ -60,7 +60,7 @@ class GUI_EXPORT QgsPreviewEffect: public QGraphicsEffect
     PreviewMode mode() const { return mMode; }
 
   protected:
-    virtual void draw( QPainter *painter ) override;
+    void draw( QPainter *painter ) override;
 
   private:
 

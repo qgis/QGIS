@@ -66,7 +66,9 @@ Constructor for a QgsLayoutModel attached to the specified ``layout``.
     virtual Qt::DropActions supportedDropActions() const;
 
     virtual QStringList mimeTypes() const;
+
     virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+
     virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
     virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );
@@ -77,16 +79,12 @@ Constructor for a QgsLayoutModel attached to the specified ``layout``.
 %Docstring
 Returns the QgsLayoutItem corresponding to a QModelIndex ``index``, if possible.
 
-:rtype: QgsLayoutItem
-
 .. seealso:: :py:func:`indexForItem()`
 %End
 
     QModelIndex indexForItem( QgsLayoutItem *item, const int column = 0 );
 %Docstring
 Returns the QModelIndex corresponding to a QgsLayoutItem ``item`` and ``column``, if possible.
-
-:rtype: QModelIndex
 
 .. seealso:: :py:func:`itemFromIndex()`
 %End
@@ -120,8 +118,6 @@ Constructor for QgsLayoutProxyModelm, attached to the specified ``layout``.
 Returns the current item type filter, or QgsLayoutItemRegistry.LayoutItem if no
 item type filter is set.
 
-:rtype: QgsLayoutItemRegistry.ItemType
-
 .. seealso:: :py:func:`setFilterType()`
 %End
 
@@ -145,24 +141,18 @@ Sets a list of specific ``items`` to exclude from the model.
 %Docstring
 Returns the list of specific items excluded from the model.
 
-:rtype: list of QgsLayoutItem
-
 .. seealso:: :py:func:`setExceptedItemList()`
 %End
 
     QgsLayoutModel *sourceLayerModel() const;
 %Docstring
 Returns the QgsLayoutModel used in this proxy model.
-
-:rtype: QgsLayoutModel
 %End
 
     QgsLayoutItem *itemFromSourceIndex( const QModelIndex &sourceIndex ) const;
 %Docstring
 Returns the QgsLayoutItem corresponding to an index from the source
 QgsLayoutModel model.
-
-:rtype: QgsLayoutItem
 %End
 
   protected:

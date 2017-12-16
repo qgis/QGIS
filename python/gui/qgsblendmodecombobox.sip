@@ -29,8 +29,6 @@ Constructor for QgsBlendModeComboBox
     QPainter::CompositionMode blendMode();
 %Docstring
 Function to read the selected blend mode as QPainter.CompositionMode
-
-:rtype: QPainter.CompositionMode
 %End
     void setBlendMode( QPainter::CompositionMode blendMode );
 %Docstring

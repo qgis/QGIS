@@ -235,18 +235,18 @@ double QgsGeometryUtils::sqrDistToLine( double ptX, double ptY, double x1, doubl
   return dist;
 }
 
-bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v, const QgsPoint &q1, QgsVector w, QgsPoint &inter )
+bool QgsGeometryUtils::lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection )
 {
-  double d = v.y() * w.x() - v.x() * w.y();
+  double d = v1.y() * v2.x() - v1.x() * v2.y();
 
   if ( qgsDoubleNear( d, 0 ) )
     return false;
 
-  double dx = q1.x() - p1.x();
-  double dy = q1.y() - p1.y();
-  double k = ( dy * w.x() - dx * w.y() ) / d;
+  double dx = p2.x() - p1.x();
+  double dy = p2.y() - p1.y();
+  double k = ( dy * v2.x() - dx * v2.y() ) / d;
 
-  inter = QgsPoint( p1.x() + v.x() * k, p1.y() + v.y() * k );
+  intersection = QgsPoint( p1.x() + v1.x() * k, p1.y() + v1.y() * k );
 
   return true;
 }

@@ -50,8 +50,6 @@ search mode.
 Creates an expression matching the current search filter value and
 search properties represented in the widget.
 
-:rtype: str
-
 .. versionadded:: 2.16
 %End
 
@@ -60,6 +58,7 @@ search properties represented in the widget.
 %Docstring
 Sets the current mode for the widget. The widget will adapt its state and visible widgets to
 reflect the updated mode. For example, showing multi edit tool buttons if the mode is set to MultiEditMode.
+
 :param mode: widget mode
 
 .. seealso:: :py:func:`mode()`
@@ -69,23 +68,17 @@ reflect the updated mode. For example, showing multi edit tool buttons if the mo
 %Docstring
 Returns the current mode for the widget.
 
-:rtype: Mode
-
 .. seealso:: :py:func:`setMode()`
 %End
 
     QgsVectorLayer *layer();
 %Docstring
 The layer for which this widget and its form is shown.
-
-:rtype: QgsVectorLayer
 %End
 
     QgsAttributeForm *form() const;
 %Docstring
 The form on which this widget is shown.
-
-:rtype: QgsAttributeForm
 %End
 
 
@@ -94,6 +87,7 @@ The form on which this widget is shown.
 %Docstring
 Sets the search widget wrapper for the widget used when the form is in
 search mode.
+
 :param wrapper: search widget wrapper.
 
 .. note::
@@ -118,8 +112,6 @@ Used to register a secondary search widget as used for "between" searches.
 Returns the search widget wrapper used in this widget. The wrapper must
 first be created using createSearchWidgetWrapper()
 
-:rtype: list of QgsSearchWidgetWrapper
-
 .. note::
 
    this method is in place for unit testing only, and is not considered
@@ -135,8 +127,6 @@ Resets the search/filter value of the widget.
 %Docstring
 The visibility of the search widget tool button, that allows (de)activating
 this search widgte or defines the comparison operator to use.
-
-:rtype: bool
 %End
 
     void setSearchWidgetToolButtonVisible( bool searchWidgetToolButtonVisible );

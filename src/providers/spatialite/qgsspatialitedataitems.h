@@ -40,14 +40,14 @@ class QgsSLConnectionItem : public QgsDataCollectionItem
     QgsSLConnectionItem( QgsDataItem *parent, const QString &name, const QString &path );
 
     QVector<QgsDataItem *> createChildren() override;
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 
 #ifdef HAVE_GUI
     QList<QAction *> actions( QWidget *parent ) override;
 #endif
 
-    virtual bool acceptDrop() override { return true; }
-    virtual bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
+    bool acceptDrop() override { return true; }
+    bool handleDrop( const QMimeData *data, Qt::DropAction action ) override;
 
   public slots:
 #ifdef HAVE_GUI
@@ -68,7 +68,7 @@ class QgsSLRootItem : public QgsDataCollectionItem
     QVector<QgsDataItem *> createChildren() override;
 
 #ifdef HAVE_GUI
-    virtual QWidget *paramWidget() override;
+    QWidget *paramWidget() override;
     QList<QAction *> actions( QWidget *parent ) override;
 #endif
 

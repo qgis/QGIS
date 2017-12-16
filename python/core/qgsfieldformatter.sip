@@ -39,8 +39,6 @@ Return a unique id for this field formatter.
 This id will later be used to identify this field formatter in the registry with QgsFieldFormatterRegistry.fieldFormatter().
 
 This id matches the id of a QgsEditorWidgetFactory.
-
-:rtype: str
 %End
 
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
@@ -48,8 +46,6 @@ This id matches the id of a QgsEditorWidgetFactory.
 Create a pretty String representation of the value.
 
 :return: By default the string representation of the provided value as implied by the field definition is returned.
-:rtype: str
-
 
 .. versionadded:: 3.0
 %End
@@ -59,8 +55,6 @@ Create a pretty String representation of the value.
 If the default sort order should be overwritten for this widget, you can transform the value in here.
 
 :return: an unmodified value by default.
-:rtype: QVariant
-
 
 .. versionadded:: 3.0
 %End
@@ -69,8 +63,6 @@ If the default sort order should be overwritten for this widget, you can transfo
 %Docstring
 Return the alignment for a particular field. By default this will consider the field type but can be overwritten if mapped
 values are represented.
-
-:rtype: Qt.AlignmentFlag
 
 .. versionadded:: 3.0
 %End
@@ -86,8 +78,6 @@ For example, the attribute table will create a cache once for each field and the
 cache for representation. The QgsValueRelationFieldFormatter and QgsValueRelationEditorWidget
 implement this functionality to create a lookuptable once (a QVariantMap / dict) and are
 make use of a cache if present.
-
-:rtype: QVariant
 
 .. versionadded:: 3.0
 %End

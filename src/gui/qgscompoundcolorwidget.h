@@ -52,7 +52,7 @@ class GUI_EXPORT QgsCompoundColorWidget : public QgsPanelWidget, private Ui::Qgs
      */
     QgsCompoundColorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, const QColor &color = QColor(), Layout layout = LayoutDefault );
 
-    ~QgsCompoundColorWidget();
+    ~QgsCompoundColorWidget() override;
 
     /**
      * Returns the current color for the dialog

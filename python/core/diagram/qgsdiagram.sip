@@ -26,8 +26,6 @@ Base class for all diagram types*
 %Docstring
 Returns an instance that is equivalent to this one
 
-:rtype: QgsDiagram
-
 .. versionadded:: 2.4
 %End
 
@@ -36,10 +34,9 @@ Returns an instance that is equivalent to this one
     QgsExpression *getExpression( const QString &expression, const QgsExpressionContext &context );
 %Docstring
 Returns a prepared expression for the specified context.
+
 :param expression: expression string
 :param context: expression context
-
-:rtype: QgsExpression
 
 .. versionadded:: 2.12
 %End
@@ -52,30 +49,23 @@ Draws the diagram at the given position (in pixel coordinates)
     virtual QString diagramName() const = 0;
 %Docstring
 Get a descriptive name for this diagram type.
-
-:rtype: str
 %End
     virtual QSizeF diagramSize( const QgsAttributes &attributes, const QgsRenderContext &c, const QgsDiagramSettings &s ) = 0;
 %Docstring
 Returns the size in map units the diagram will use to render.
-
-:rtype: QSizeF
 %End
     virtual QSizeF diagramSize( const QgsFeature &feature, const QgsRenderContext &c, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) = 0;
 %Docstring
 Returns the size in map units the diagram will use to render. Interpolate size
-
-:rtype: QSizeF
 %End
 
     virtual double legendSize( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const = 0;
 %Docstring
 Returns the size of the legend item for the diagram corresponding to a specified value.
+
 :param value: value to return legend item size for
 :param s: diagram settings
 :param is: interpolation settings
-
-:rtype: float
 
 .. versionadded:: 2.16
 %End
@@ -91,6 +81,7 @@ Constructor for QgsDiagram.
     void setPenWidth( QPen &pen, const QgsDiagramSettings &s, const QgsRenderContext &c );
 %Docstring
 Changes the pen width to match the current settings and rendering context
+
 :param pen: The pen to modify
 :param s:   The settings that specify the pen width
 :param c:   The rendering specifying the proper scale units for pixel conversion
@@ -99,46 +90,42 @@ Changes the pen width to match the current settings and rendering context
     QSizeF sizePainterUnits( QSizeF size, const QgsDiagramSettings &s, const QgsRenderContext &c );
 %Docstring
 Calculates a size to match the current settings and rendering context
+
 :param size: The size to convert
 :param s:    The settings that specify the size type
 :param c:    The rendering specifying the proper scale units for pixel conversion
 
 :return: The converted size for rendering
-:rtype: QSizeF
-
 %End
 
     double sizePainterUnits( double l, const QgsDiagramSettings &s, const QgsRenderContext &c );
 %Docstring
 Calculates a length to match the current settings and rendering context
+
 :param l:    The length to convert
 :param s:    Unused
 :param c:    The rendering specifying the proper scale units for pixel conversion
 
 :return: The converted length for rendering
-:rtype: float
-
 %End
 
     QFont scaledFont( const QgsDiagramSettings &s, const QgsRenderContext &c );
 %Docstring
 Calculates a size to match the current settings and rendering context
+
 :param s:    The settings that contain the font size and size type
 :param c:    The rendering specifying the proper scale units for pixel conversion
 
 :return: The properly scaled font for rendering
-:rtype: QFont
-
 %End
 
     QSizeF sizeForValue( double value, const QgsDiagramSettings &s, const QgsDiagramInterpolationSettings &is ) const;
 %Docstring
 Returns the scaled size of a diagram for a value, respecting the specified diagram interpolation settings.
+
 :param value: value to calculate corresponding circular size for
 :param s: diagram settings
 :param is: interpolation settings
-
-:rtype: QSizeF
 
 .. versionadded:: 2.16
 %End

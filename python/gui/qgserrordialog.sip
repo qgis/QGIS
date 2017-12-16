@@ -25,6 +25,7 @@ Constructor for QgsErrorDialog
     static void show( const QgsError &error, const QString &title, QWidget *parent = 0, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 %Docstring
 Show dialog with error
+
 :param error: error
 :param title: title
 :param parent: parent object

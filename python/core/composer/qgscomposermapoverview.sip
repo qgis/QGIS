@@ -30,6 +30,7 @@ order they are drawn in.
     QgsComposerMapOverviewStack( QgsComposerMap *map );
 %Docstring
 Constructor for QgsComposerMapOverviewStack.
+
 :param map: QgsComposerMap the overview stack is attached to
 %End
 
@@ -38,6 +39,7 @@ Constructor for QgsComposerMapOverviewStack.
 Adds a new map overview to the stack and takes ownership of the overview.
 The overview will be added to the end of the stack, and rendered
 above any existing map overviews already present in the stack.
+
 :param overview: QgsComposerMapOverview to add to the stack
 
 .. note::
@@ -51,6 +53,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
     void removeOverview( const QString &overviewId );
 %Docstring
 Removes an overview from the stack and deletes the corresponding QgsComposerMapOverview
+
 :param overviewId: id for the QgsComposerMapOverview to remove
 
 .. note::
@@ -64,6 +67,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
     void moveOverviewUp( const QString &overviewId );
 %Docstring
 Moves an overview up the stack, causing it to be rendered above other overviews
+
 :param overviewId: id for the QgsComposerMapOverview to move up
 
 .. note::
@@ -77,6 +81,7 @@ called for the QgsComposerMap to redraw the map with the new overview stack orde
     void moveOverviewDown( const QString &overviewId );
 %Docstring
 Moves an overview down the stack, causing it to be rendered below other overviews
+
 :param overviewId: id for the QgsComposerMapOverview to move down
 
 .. note::
@@ -90,11 +95,10 @@ called for the QgsComposerMap to redraw the map with the new overview stack orde
     const QgsComposerMapOverview *constOverview( const QString &overviewId ) const;
 %Docstring
 Returns a const reference to an overview within the stack
+
 :param overviewId: id for the QgsComposerMapOverview to find
 
 :return: const reference to overview, if found
-:rtype: QgsComposerMapOverview
-
 
 .. seealso:: :py:func:`overview`
 %End
@@ -102,11 +106,10 @@ Returns a const reference to an overview within the stack
     QgsComposerMapOverview *overview( const QString &overviewId ) const;
 %Docstring
 Returns a reference to an overview within the stack
+
 :param overviewId: id for the QgsComposerMapOverview to find
 
 :return: reference to overview if found
-:rtype: QgsComposerMapOverview
-
 
 .. seealso:: :py:func:`constOverview`
 %End
@@ -114,11 +117,10 @@ Returns a reference to an overview within the stack
     QgsComposerMapOverview *overview( const int index ) const;
 %Docstring
 Returns a reference to an overview within the stack
+
 :param index: overview position in the stack
 
 :return: reference to overview if found
-:rtype: QgsComposerMapOverview
-
 
 .. seealso:: :py:func:`constOverview`
 %End
@@ -130,20 +132,17 @@ Returns a reference to an overview within the stack
 Returns a list of QgsComposerMapOverviews contained by the stack
 
 :return: list of overviews
-:rtype: list of QgsComposerMapOverview
-
 %End
 
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc );
 
 %Docstring
 Sets the overview stack's state from a DOM document
+
 :param elem: is DOM node corresponding to a 'ComposerMap' tag
 :param doc: DOM document
 
 :return: true if read was successful
-:rtype: bool
-
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -169,16 +168,18 @@ QgsComposerMap, and shows the extent of another QgsComposerMap.
     QgsComposerMapOverview( const QString &name, QgsComposerMap *map );
 %Docstring
 Constructor for QgsComposerMapOverview.
+
 :param name: friendly display name for overview
 :param map: QgsComposerMap the overview is attached to
 %End
 
-    virtual ~QgsComposerMapOverview();
+    ~QgsComposerMapOverview();
 
     virtual void draw( QPainter *painter );
 
 %Docstring
 Draws an overview
+
 :param painter: destination QPainter
 %End
 
@@ -186,10 +187,9 @@ Draws an overview
 
 %Docstring
 Stores overview state in DOM element
+
 :param elem: is DOM element corresponding to a 'ComposerMap' tag
 :param doc: DOM document
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -198,10 +198,9 @@ Stores overview state in DOM element
 
 %Docstring
 Sets overview state from a DOM document
+
 :param itemElem: is DOM node corresponding to a 'ComposerMapOverview' tag
 :param doc: is DOM document
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -212,6 +211,7 @@ Sets overview state from a DOM document
     void setFrameMap( const int mapId );
 %Docstring
 Sets overview frame map.
+
 :param mapId: source map id. -1 disables the overview frame
 
 .. seealso:: :py:func:`frameMapId`
@@ -222,13 +222,12 @@ Sets overview frame map.
 Returns id of source map.
 
 :return: source map id, or -1 if no source map set
-:rtype: int
-
 %End
 
     void setFrameSymbol( QgsFillSymbol *symbol /Transfer/ );
 %Docstring
 Sets the fill symbol used for drawing the overview extent.
+
 :param symbol: fill symbol for overview
 
 .. seealso:: :py:func:`frameSymbol`
@@ -239,8 +238,6 @@ Sets the fill symbol used for drawing the overview extent.
 Gets the fill symbol used for drawing the overview extent.
 
 :return: fill symbol for overview
-:rtype: QgsFillSymbol
-
 
 .. seealso:: :py:func:`setFrameSymbol`
 %End
@@ -251,8 +248,6 @@ Gets the fill symbol used for drawing the overview extent.
 Retrieves the blending mode used for drawing the overview.
 
 :return: blending mode for overview
-:rtype: QPainter.CompositionMode
-
 
 .. seealso:: :py:func:`setBlendMode`
 %End
@@ -260,6 +255,7 @@ Retrieves the blending mode used for drawing the overview.
     void setBlendMode( const QPainter::CompositionMode blendMode );
 %Docstring
 Sets the blending mode used for drawing the overview.
+
 :param blendMode: blending mode for overview
 
 .. seealso:: :py:func:`blendMode`
@@ -271,8 +267,6 @@ Returns whether the overview frame is inverted, ie, whether the shaded area is d
 the extent of the overview map.
 
 :return: true if overview frame is inverted
-:rtype: bool
-
 
 .. seealso:: :py:func:`setInverted`
 %End
@@ -281,6 +275,7 @@ the extent of the overview map.
 %Docstring
 Sets whether the overview frame is inverted, ie, whether the shaded area is drawn outside
 the extent of the overview map.
+
 :param inverted: set to true if overview frame is to be inverted
 
 .. seealso:: :py:func:`inverted`
@@ -291,8 +286,6 @@ the extent of the overview map.
 Returns whether the extent of the map is forced to center on the overview
 
 :return: true if map will be centered on overview
-:rtype: bool
-
 
 .. seealso:: :py:func:`setCentered`
 %End
@@ -300,6 +293,7 @@ Returns whether the extent of the map is forced to center on the overview
     void setCentered( const bool centered );
 %Docstring
 Sets whether the extent of the map is forced to center on the overview
+
 :param centered: set to true if map will be centered on overview
 
 .. seealso:: :py:func:`centered`

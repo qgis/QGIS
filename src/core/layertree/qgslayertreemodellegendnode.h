@@ -166,19 +166,19 @@ class CORE_EXPORT QgsSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsLegendSymbolItem &item, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual Qt::ItemFlags flags() const override;
-    virtual QVariant data( int role ) const override;
-    virtual bool setData( const QVariant &value, int role ) override;
+    Qt::ItemFlags flags() const override;
+    QVariant data( int role ) const override;
+    bool setData( const QVariant &value, int role ) override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    virtual void setEmbeddedInParent( bool embedded ) override;
+    void setEmbeddedInParent( bool embedded ) override;
 
     void setUserLabel( const QString &userLabel ) override { mUserLabel = userLabel; updateLabel(); }
 
-    virtual bool isScaleOK( double scale ) const override { return mItem.isScaleOK( scale ); }
+    bool isScaleOK( double scale ) const override { return mItem.isScaleOK( scale ); }
 
-    virtual void invalidateMapBasedData() override;
+    void invalidateMapBasedData() override;
 
     /**
      * Set the icon size
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsSimpleLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsSimpleLegendNode( QgsLayerTreeLayer *nodeLayer, const QString &label, const QIcon &icon = QIcon(), QObject *parent SIP_TRANSFERTHIS = nullptr, const QString &key = QString() );
 
-    virtual QVariant data( int role ) const override;
+    QVariant data( int role ) const override;
 
   private:
     QString mLabel;
@@ -310,7 +310,7 @@ class CORE_EXPORT QgsImageLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsImageLegendNode( QgsLayerTreeLayer *nodeLayer, const QImage &img, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual QVariant data( int role ) const override;
+    QVariant data( int role ) const override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
@@ -339,7 +339,7 @@ class CORE_EXPORT QgsRasterSymbolLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsRasterSymbolLegendNode( QgsLayerTreeLayer *nodeLayer, const QColor &color, const QString &label, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual QVariant data( int role ) const override;
+    QVariant data( int role ) const override;
 
     QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
@@ -369,11 +369,11 @@ class CORE_EXPORT QgsWmsLegendNode : public QgsLayerTreeModelLegendNode
      */
     QgsWmsLegendNode( QgsLayerTreeLayer *nodeLayer, QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual QVariant data( int role ) const override;
+    QVariant data( int role ) const override;
 
-    virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
+    QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const override;
 
-    virtual void invalidateMapBasedData() override;
+    void invalidateMapBasedData() override;
 
   private slots:
 
@@ -408,9 +408,9 @@ class CORE_EXPORT QgsDataDefinedSizeLegendNode : public QgsLayerTreeModelLegendN
   public:
     //! Construct the node using QgsDataDefinedSizeLegend as definition of the node's appearance
     QgsDataDefinedSizeLegendNode( QgsLayerTreeLayer *nodeLayer, const QgsDataDefinedSizeLegend &settings, QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsDataDefinedSizeLegendNode();
+    ~QgsDataDefinedSizeLegendNode() override;
 
-    virtual QVariant data( int role ) const override;
+    QVariant data( int role ) const override;
 
     ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx ) override;
 

@@ -53,10 +53,10 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     //! constructor
     QgsMapToolCapture( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget, CaptureMode mode );
 
-    virtual ~QgsMapToolCapture();
+    ~QgsMapToolCapture() override;
 
-    virtual void activate() override;
-    virtual void deactivate() override;
+    void activate() override;
+    void deactivate() override;
 
     /**
      * The capture mode
@@ -89,13 +89,13 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
      */
     QList<QgsPointLocator::Match> snappingMatches() const;
 
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     /**
      * Intercept key events like Esc or Del to delete the last point
      * \param e key event
      */
-    virtual void keyPressEvent( QKeyEvent *e ) override;
+    void keyPressEvent( QKeyEvent *e ) override;
 
 #ifdef Q_OS_WIN
     virtual bool eventFilter( QObject *obj, QEvent *e ) override;
@@ -107,7 +107,7 @@ class GUI_EXPORT QgsMapToolCapture : public QgsMapToolAdvancedDigitizing
     void deleteTempRubberBand();
 
     //! convenient method to clean members
-    virtual void clean() override;
+    void clean() override;
 
   private slots:
     void validationFinished();

@@ -37,37 +37,17 @@ copy constructor
 
 
     QVariant value() const;
-%Docstring
-
-:rtype: QVariant
-%End
     QgsSymbol *symbol() const;
-%Docstring
-
-:rtype: QgsSymbol
-%End
     QString label() const;
-%Docstring
-
-:rtype: str
-%End
 
     void setValue( const QVariant &value );
     void setSymbol( QgsSymbol *s /Transfer/ );
     void setLabel( const QString &label );
 
     bool renderState() const;
-%Docstring
-
-:rtype: bool
-%End
     void setRenderState( bool render );
 
     QString dump() const;
-%Docstring
-
-:rtype: str
-%End
 
     void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
 
@@ -89,78 +69,63 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
     virtual QString dump() const;
+
     virtual QgsCategorizedSymbolRenderer *clone() const /Factory/;
+
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QString filter( const QgsFields &fields = QgsFields() );
+
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
 
     void updateSymbols( QgsSymbol *sym );
 %Docstring
 Update all the symbols but leave categories and colors. This method also sets the source
 symbol for the renderer.
+
 :param sym: source symbol to use for categories. Ownership is not transferred.
 
 .. seealso:: :py:func:`setSourceSymbol()`
 %End
 
     const QgsCategoryList &categories() const;
-%Docstring
-
-:rtype: QgsCategoryList
-%End
 
     int categoryIndexForValue( const QVariant &val );
 %Docstring
 return index of category with specified value (-1 if not found)
-
-:rtype: int
 %End
 
     int categoryIndexForLabel( const QString &val );
 %Docstring
 return index of category with specified label (-1 if not found or not unique)
 
-:rtype: int
-
 .. versionadded:: 2.5
 %End
 
     bool updateCategoryValue( int catIndex, const QVariant &value );
-%Docstring
-
-:rtype: bool
-%End
     bool updateCategorySymbol( int catIndex, QgsSymbol *symbol /Transfer/ );
-%Docstring
-
-:rtype: bool
-%End
     bool updateCategoryLabel( int catIndex, const QString &label );
-%Docstring
-
-:rtype: bool
-%End
 
     bool updateCategoryRenderState( int catIndex, bool render );
 %Docstring
-
-:rtype: bool
 
 .. versionadded:: 2.5
 %End
 
     void addCategory( const QgsRendererCategory &category );
     bool deleteCategory( int catIndex );
-%Docstring
-
-:rtype: bool
-%End
     void deleteAllCategories();
 
     void moveCategory( int from, int to );
@@ -172,30 +137,24 @@ Moves the category at index position from to index position to.
     void sortByLabel( Qt::SortOrder order = Qt::AscendingOrder );
 
     QString classAttribute() const;
-%Docstring
-
-:rtype: str
-%End
     void setClassAttribute( const QString &attr );
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 create renderer from XML element
-
-:rtype: QgsFeatureRenderer
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+
 
     QgsSymbol *sourceSymbol();
 %Docstring
 Returns the renderer's source symbol, which is the base symbol used for the each categories' symbol before applying
 the categories' color.
-
-:rtype: QgsSymbol
 
 .. seealso:: :py:func:`setSourceSymbol()`
 
@@ -206,6 +165,7 @@ the categories' color.
 %Docstring
 Sets the source symbol for the renderer, which is the base symbol used for the each categories' symbol before applying
 the categories' color.
+
 :param sym: source symbol, ownership is transferred to the renderer
 
 .. seealso:: :py:func:`sourceSymbol()`
@@ -217,8 +177,6 @@ the categories' color.
 %Docstring
 Returns the source color ramp, from which each categories' color is derived.
 
-:rtype: QgsColorRamp
-
 .. seealso:: :py:func:`setSourceColorRamp()`
 
 .. seealso:: :py:func:`sourceSymbol()`
@@ -227,6 +185,7 @@ Returns the source color ramp, from which each categories' color is derived.
     void setSourceColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
 Sets the source color ramp.
+
 :param ramp: color ramp. Ownership is transferred to the renderer
 
 .. seealso:: :py:func:`sourceColorRamp()`
@@ -237,22 +196,25 @@ Sets the source color ramp.
     void updateColorRamp( QgsColorRamp *ramp /Transfer/ );
 %Docstring
 Update the color ramp used and all symbols colors.
+
 :param ramp: color ramp. Ownership is transferred to the renderer
 
 .. versionadded:: 2.5
 %End
 
     virtual bool legendSymbolItemsCheckable() const;
+
     virtual bool legendSymbolItemChecked( const QString &key );
+
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
+
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
+
     virtual QString legendClassificationAttribute() const;
 
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 creates a QgsCategorizedSymbolRenderer from an existing renderer.
-
-:rtype: QgsCategorizedSymbolRenderer
 
 .. versionadded:: 2.5
 
@@ -277,8 +239,6 @@ size legend.
 Returns configuration of appearance of legend when using data-defined size for marker symbols.
 Will return null if the functionality is disabled.
 
-:rtype: QgsDataDefinedSizeLegend
-
 .. versionadded:: 3.0
 %End
 
@@ -293,24 +253,12 @@ hashtable for faster access to symbols
 %End
 
     QgsSymbol *skipRender();
-%Docstring
-
-:rtype: QgsSymbol
-%End
 
     QgsSymbol *symbolForValue( const QVariant &value );
-%Docstring
-
-:rtype: QgsSymbol
-%End
 
   private:
     QgsCategorizedSymbolRenderer( const QgsCategorizedSymbolRenderer & );
     QgsCategorizedSymbolRenderer &operator=( const QgsCategorizedSymbolRenderer & );
-%Docstring
-
-:rtype: QgsCategorizedSymbolRenderer
-%End
 };
 
 /************************************************************************

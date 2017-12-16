@@ -30,28 +30,23 @@ A user profile is all settings and anything that used to be found in .qgis3 in t
 %Docstring
 Reference to a existing user profile folder.
 Profile folder should be created using QgsProfileManager.
+
 :param folder: An existing profile folder as the base of the user profile.
 %End
 
     const QString folder() const;
 %Docstring
 The base folder for the user profile.
-
-:rtype: str
 %End
 
     QgsError validate() const;
 %Docstring
 Check of the profile is in a valid state.
-
-:rtype: QgsError
 %End
 
     const QString name() const;
 %Docstring
 The name for the user profile.
-
-:rtype: str
 %End
 
     void initSettings() const;
@@ -64,18 +59,15 @@ Init the settings from the user folder.
 Return the alias for the user profile.
 
 :return: If no alias is set name() is returned.
-:rtype: str
-
 %End
 
     QgsError setAlias( const QString &alias );
 %Docstring
 Set the alias of the profile. The alias is a user friendly name.
+
 :param alias: A user friendly name for the profile.
 
 :return: True of setting the alias was successful.
-:rtype: QgsError
-
 %End
 
     const QIcon icon() const;
@@ -83,8 +75,6 @@ Set the alias of the profile. The alias is a user friendly name.
 The icon for the user profile.
 
 :return: A QIcon for the users
-:rtype: QIcon
-
 %End
 
 };

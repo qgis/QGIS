@@ -44,7 +44,7 @@ class QgsSelectedFeature: public QObject
 
   public:
     QgsSelectedFeature( QgsFeatureId id, QgsVectorLayer *layer, QgsMapCanvas *canvas );
-    ~QgsSelectedFeature();
+    ~QgsSelectedFeature() override;
 
     /**
      * Setting selected feature

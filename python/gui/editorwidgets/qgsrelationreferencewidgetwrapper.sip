@@ -42,8 +42,11 @@ Constructor for QgsRelationReferenceWidgetWrapper
 %End
 
     virtual QWidget *createWidget( QWidget *parent );
+
     virtual void initWidget( QWidget *editor );
+
     virtual QVariant value() const;
+
     virtual bool valid() const;
 
     virtual void showIndeterminateState();
@@ -51,7 +54,9 @@ Constructor for QgsRelationReferenceWidgetWrapper
 
   public slots:
     virtual void setValue( const QVariant &value );
+
     virtual void setEnabled( bool enabled );
+
 
   protected:
 

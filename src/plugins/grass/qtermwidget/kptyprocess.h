@@ -88,7 +88,7 @@ public:
     /**
      * Destructor
      */
-    virtual ~KPtyProcess();
+    ~KPtyProcess() override;
 
     /**
      * Set to which channels the PTY should be assigned.
@@ -144,7 +144,7 @@ protected:
     /**
      * @reimp
      */
-    virtual void setupChildProcess();
+    void setupChildProcess() override;
 
 private:
     Q_PRIVATE_SLOT(d_func(), void _k_onStateChanged(QProcess::ProcessState))

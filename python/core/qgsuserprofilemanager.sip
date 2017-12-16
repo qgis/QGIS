@@ -37,11 +37,10 @@ User profile manager used to manage user profiles for the instance of QGIS.
     static QString resolveProfilesFolder( const QString &basePath = QString() );
 %Docstring
 Resolves the profiles folder for the given path. Path will have \\profiles appended to the path
+
 :param basePath: The base path to resolve the path from to append the \\profiles folder to.
 
 :return: The root path to store user profiles.
-:rtype: str
-
 %End
 
     QgsUserProfile *getProfile( const QString &defaultProfile = "default", bool createNew = true, bool initSettings = true ) /Factory/;
@@ -51,11 +50,10 @@ If no name is given it returns a profile called "default".
 By default will create the profile folder if not found.
 By default will init the user settings.
 
-:rtype: QgsUserProfile
-
 .. note::
 
    Returns a new QgsUserProfile. Ownership transferred to caller.
+
 :param defaultProfile: The profile name to find. Empty profile name will return "default" for the name.
 :param createNew: Create the profile folder if it doesn't exist.
 :param initSettings: if the settings should be initialized
@@ -67,6 +65,7 @@ By default will init the user settings.
 %Docstring
 Set the root profile location for the profile manager. All profiles are loaded from this
 location. Will also contain a profiles.ini for holding profile settings.
+
 :param rootProfileLocation: Path to the top level profile folder which contains folders for each profile.
 %End
 
@@ -75,8 +74,6 @@ location. Will also contain a profiles.ini for holding profile settings.
 Returns the path to the root profiles location.
 
 :return: The root path to the profiles folder.
-:rtype: str
-
 %End
 
     void setNewProfileNotificationEnabled( bool enabled );
@@ -97,8 +94,6 @@ Returns whether the manager is watching for the creation of new user profiles an
 the profilesChanged() signal when this occurs. By default new profile notification
 is disabled.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setNewProfileNotificationEnabled()`
 %End
 
@@ -107,8 +102,6 @@ is disabled.
 Check if the root location has been set for the manager.
 
 :return: True if the root location has been set.
-:rtype: bool
-
 %End
 
     QStringList allProfiles() const;
@@ -116,8 +109,6 @@ Check if the root location has been set for the manager.
 A list of all found profile names.
 
 :return:
-:rtype: list of str
-
 %End
 
     bool profileExists( const QString &name ) const;
@@ -125,8 +116,6 @@ A list of all found profile names.
 Check if a profile exists.
 
 :return: False if the profile can't be found.
-:rtype: bool
-
 %End
 
     QString defaultProfileName() const;
@@ -135,8 +124,6 @@ Returns the name of the default profile that has been set in .default.
 First checks profile.ini in \\profiles folder
 Then checks defaultProfile in global settings
 Finally returns "default" if all else fails
-
-:rtype: str
 
 .. note::
 
@@ -149,6 +136,7 @@ Finally returns "default" if all else fails
 %Docstring
 Sets the default profile name. The default profile name is used when loading QGIS
 with no arguments.
+
 :param name: The name of the profile to save.
 %End
 
@@ -160,32 +148,29 @@ Set the default profile name from the current active profile.
     QgsUserProfile *profileForName( const QString &name ) const /Factory/;
 %Docstring
 Return the profile found for a given name.
+
 :param name: The name of the profile to return.
 
 :return: A QgsUserprofile pointing to the location of the user profile.
-:rtype: QgsUserProfile
-
 %End
 
     QgsError createUserProfile( const QString &name );
 %Docstring
 Create a user profile given by the name
+
 :param name:
 
 :return: A QgsError which report if there was any error creating the user profile.
-:rtype: QgsError
-
 %End
 
     QgsError deleteProfile( const QString &name );
 %Docstring
 Deletes a profile from the root profiles folder.
 
-:rtype: QgsError
-
 .. note::
 
    There is no undo on this as it deletes the folder from the machine.
+
 :param name: The name of the profile to delete.
 
 :return: A QgsError with a message if the profile failed to be deleted.
@@ -196,8 +181,6 @@ Deletes a profile from the root profiles folder.
 The currently active user profile.
 
 :return: The currently active user profile.
-:rtype: QgsUserProfile
-
 %End
 
     void setActiveUserProfile( const QString &profile );
@@ -212,6 +195,7 @@ Setting this again does nothing.
     void loadUserProfile( const QString &name );
 %Docstring
 Starts a new instance of QGIS for the given profile.
+
 :param name: The profile to start QGIS with.
 %End
 

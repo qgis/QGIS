@@ -21,12 +21,14 @@ class QgsPanelWidget : QWidget
     QgsPanelWidget( QWidget *parent = 0 );
 %Docstring
  Base class for any widget that can be shown as a inline panel
+
 :param parent: Parent widget.
 %End
 
     void setPanelTitle( const QString &panelTitle );
 %Docstring
 Set the title of the panel when shown in the interface.
+
 :param panelTitle: The panel title.
 %End
 
@@ -35,8 +37,6 @@ Set the title of the panel when shown in the interface.
 The title of the panel.
 
 :return: The title pf the panel.
-:rtype: str
-
 %End
 
     void connectChildPanels( const QList<QgsPanelWidget *> &panels );
@@ -45,6 +45,7 @@ Connect the given sub panel widgets showPanel signals to this current panels
 main showPanel event to bubble up to the user.
 
 Use this method if you have children widgets that need to show a panel to the user.
+
 :param panels: A list of panel widgets to connect.
 %End
 
@@ -54,6 +55,7 @@ Connect the given sub panel widgets showPanel signals to this current panels
 main showPanel event to bubble up to the user.
 
 Use this method if you have children widgets that need to show a panel to the user.
+
 :param panel: The panel to connect.
 %End
 
@@ -61,6 +63,7 @@ Use this method if you have children widgets that need to show a panel to the us
 %Docstring
 Set the widget in dock mode which tells the widget to emit panel
 widgets and not open dialogs
+
 :param dockMode: True to enable dock mode.
 %End
 
@@ -69,8 +72,6 @@ widgets and not open dialogs
 Return the dock mode state.
 
 :return: True if in dock mode.  If in dock mode the widget
-:rtype: bool
-
 will emit the showPanel signal to handle panel opening
 If false it will open dialogs when openPanel is called.
 %End
@@ -80,6 +81,7 @@ If false it will open dialogs when openPanel is called.
 The the auto delete property on the widget. True by default.
 When auto delete is enabled when a panel is removed from the stack
 it will be deleted.
+
 :param autoDelete: Enable or disable auto delete on the panel.
 %End
 
@@ -90,19 +92,16 @@ When auto delete is enabled when a panel is removed from the stack
 it will be deleted.
 
 :return: The auto delete value for the widget.
-:rtype: bool
-
 %End
 
     static QgsPanelWidget *findParentPanel( QWidget *widget );
 %Docstring
 Traces through the parents of a widget to find if it is contained within a QgsPanelWidget
 widget.
+
 :param widget: widget which may be contained within a panel widget
 
 :return: parent panel widget if found, otherwise None
-:rtype: QgsPanelWidget
-
 
 .. versionadded:: 3.0
 %End
@@ -112,6 +111,7 @@ widget.
     void panelAccepted( QgsPanelWidget *panel );
 %Docstring
 Emitted when the panel is accepted by the user.
+
 :param panel: The panel widget that was accepted.
 
 .. note::
@@ -129,6 +129,7 @@ will not emit panelAccepted when the second panel is accepted.
     void showPanel( QgsPanelWidget *panel );
 %Docstring
 Emit when you require a panel to be show in the interface.
+
 :param panel: The panel widget to show.
 
 .. note::
@@ -171,6 +172,7 @@ Widgets are normally removed form the interface using the panel manager or the c
 
 %Docstring
  Overridden key press event to handle the esc event on the widget.
+
 :param event: The key event
 %End
 
@@ -198,6 +200,7 @@ and only use this wrapper if you can't update your code.
 %Docstring
  Wrapper widget for existing widgets which can't have
 the inheritance tree changed, e.g dialogs.
+
 :param widget: The widget to wrap.
 :param parent: The parent widget.
 %End
@@ -207,8 +210,6 @@ the inheritance tree changed, e.g dialogs.
 Returns the internal widget that is wrapped in this panel.
 
 :return: The internal widget. Can be None.
-:rtype: QWidget
-
 %End
 
 };

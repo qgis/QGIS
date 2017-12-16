@@ -88,7 +88,7 @@ class CORE_EXPORT QgsDataItem : public QObject
 
     //! Create new data item.
     QgsDataItem( QgsDataItem::Type type, QgsDataItem *parent SIP_TRANSFERTHIS, const QString &name, const QString &path );
-    virtual ~QgsDataItem();
+    ~QgsDataItem() override;
 
     bool hasChildren();
 
@@ -431,11 +431,11 @@ class CORE_EXPORT QgsLayerItem : public QgsDataItem
 
     // --- reimplemented from QgsDataItem ---
 
-    virtual bool equal( const QgsDataItem *other ) override;
+    bool equal( const QgsDataItem *other ) override;
 
-    virtual bool hasDragEnabled() const override { return true; }
+    bool hasDragEnabled() const override { return true; }
 
-    virtual QgsMimeDataUtils::Uri mimeUri() const override;
+    QgsMimeDataUtils::Uri mimeUri() const override;
 
     // --- New virtual methods for layer item derived classes ---
 
@@ -513,7 +513,7 @@ class CORE_EXPORT QgsDataCollectionItem : public QgsDataItem
     Q_OBJECT
   public:
     QgsDataCollectionItem( QgsDataItem *parent, const QString &name, const QString &path = QString() );
-    ~QgsDataCollectionItem();
+    ~QgsDataCollectionItem() override;
 
     void addChild( QgsDataItem *item SIP_TRANSFER ) { mChildren.append( item ); }
 
@@ -550,14 +550,14 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
      * \param path item path in the tree, it may be dirPath or dirPath with some prefix, e.g. favorites: */
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
 
-    virtual void setState( State state ) override;
+    void setState( State state ) override;
 
     QVector<QgsDataItem *> createChildren() override;
 
     QString dirPath() const { return mDirPath; }
-    virtual bool equal( const QgsDataItem *other ) override;
-    virtual QIcon icon() override;
-    virtual QWidget *paramWidget() override SIP_FACTORY;
+    bool equal( const QgsDataItem *other ) override;
+    QIcon icon() override;
+    QWidget *paramWidget() override SIP_FACTORY;
 
     //! Check if the given path is hidden from the browser model
     static bool hiddenPath( const QString &path );
@@ -566,7 +566,7 @@ class CORE_EXPORT QgsDirectoryItem : public QgsDataCollectionItem
 
 
   public slots:
-    virtual void childrenCreated() override;
+    void childrenCreated() override;
     void directoryChanged();
 
   protected:
@@ -596,7 +596,7 @@ class CORE_EXPORT QgsProjectItem : public QgsDataItem
      */
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 
-    virtual bool hasDragEnabled() const override { return true; }
+    bool hasDragEnabled() const override { return true; }
 
 };
 

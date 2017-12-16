@@ -37,7 +37,7 @@ class CORE_EXPORT QgsGeometryCollection: public QgsAbstractGeometry
     QgsGeometryCollection();
     QgsGeometryCollection( const QgsGeometryCollection &c );
     QgsGeometryCollection &operator=( const QgsGeometryCollection &c );
-    virtual ~QgsGeometryCollection();
+    ~QgsGeometryCollection() override;
 
     QgsGeometryCollection *clone() const override SIP_FACTORY;
 

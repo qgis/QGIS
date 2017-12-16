@@ -177,29 +177,25 @@ Constructor
         virtual QgsField fieldDefinition( const QgsField &field );
 %Docstring
 Return a possibly modified field definition. Default implementation will return provided field unmodified.
+
 :param field: original field definition
 
 :return: possibly modified field definition
-:rtype: QgsField
-
 %End
 
         virtual QVariant convert( int fieldIdxInLayer, const QVariant &value );
 %Docstring
 Convert the provided value, for field fieldIdxInLayer. Default implementation will return provided value unmodified.
+
 :param fieldIdxInLayer: field index
 :param value: original raw value
 
 :return: possibly modified value.
-:rtype: QVariant
-
 %End
 
         virtual QgsVectorFileWriter::FieldValueConverter *clone() const /Factory/;
 %Docstring
 Creates a clone of the FieldValueConverter.
-
-:rtype: QgsVectorFileWriter.FieldValueConverter
 %End
     };
 
@@ -258,6 +254,7 @@ Creates a clone of the FieldValueConverter.
                                                                );
 %Docstring
 Write contents of vector layer to an (OGR supported) vector formt
+
 :param layer: layer to write
 :param fileName: file name to write to
 :param fileEncoding: encoding to use
@@ -278,8 +275,6 @@ allows for conversion of geometryless tables to null geometries, etc (added in Q
 :param includeZ: set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
-
-:rtype: QgsVectorFileWriter.WriterError
 %End
 
     static QgsVectorFileWriter::WriterError writeAsVectorFormat( QgsVectorLayer *layer,
@@ -304,6 +299,7 @@ allows for conversion of geometryless tables to null geometries, etc (added in Q
                                                                );
 %Docstring
 Writes a layer out to a vector file.
+
 :param layer: layer to write
 :param fileName: file name to write to
 :param fileEncoding: encoding to use
@@ -325,8 +321,6 @@ allows for conversion of geometryless tables to null geometries, etc (added in Q
 :param includeZ: set to true to include z dimension in output. This option is only valid if overrideGeometryType is set. (added in QGIS 2.14)
 :param attributes: attributes to export (empty means all unless skipAttributeCreation is set)
 :param fieldValueConverter: field value converter (added in QGIS 2.16)
-
-:rtype: QgsVectorFileWriter.WriterError
 
 .. versionadded:: 2.2
 %End
@@ -454,13 +448,12 @@ Optional feedback object allowing cancelation of layer save
         QString *errorMessage /Out/ = 0 );
 %Docstring
 Writes a layer out to a vector file.
+
 :param layer: source layer to write
 :param fileName: file name to write to
 :param options: options.
 :param newFilename: QString pointer which will contain the new file name created (in case it is different to fileName).
 :param errorMessage: pointer to buffer fo error message
-
-:rtype: QgsVectorFileWriter.WriterError
 
 .. versionadded:: 3.0
 %End
@@ -502,8 +495,6 @@ Returns a list or pairs, with format filter string as first element and OGR form
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
 
-:rtype: list of QgsVectorFileWriter.FilterFormatDetails
-
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
 %End
 
@@ -513,8 +504,6 @@ Returns a list of file extensions for supported formats.
 
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
-
-:rtype: list of str
 
 .. versionadded:: 3.0
 
@@ -526,8 +515,6 @@ returned formats.
 Returns true if the specified ``driverName`` supports feature styles.
 
 The ``driverName`` argument must be a valid GDAL driver name.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -556,8 +543,6 @@ display name for the format) and internal driver short name.
 
 The ``options`` argument can be used to control the sorting and filtering of
 returned drivers.
-
-:rtype: list of QgsVectorFileWriter.DriverDetails
 %End
 
     static QString driverForExtension( const QString &extension );
@@ -565,8 +550,6 @@ returned drivers.
 Returns the OGR driver name for a specified file ``extension``. E.g. the
 driver name for the ".shp" extension is "ESRI Shapefile".
 If no suitable drivers are found then an empty string is returned.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -577,36 +560,26 @@ Returns filter string that can be used for dialogs.
 
 The ``options`` argument can be used to control the sorting and filtering of
 returned drivers.
-
-:rtype: str
 %End
 
     static QString filterForDriver( const QString &driverName );
 %Docstring
 Creates a filter for an OGR driver key
-
-:rtype: str
 %End
 
     static QString convertCodecNameForEncodingOption( const QString &codecName );
 %Docstring
 Converts codec name to string passed to ENCODING layer creation option of OGR Shapefile
-
-:rtype: str
 %End
 
     QgsVectorFileWriter::WriterError hasError();
 %Docstring
 Checks whether there were any errors in constructor
-
-:rtype: QgsVectorFileWriter.WriterError
 %End
 
     QString errorMessage();
 %Docstring
 Retrieves error message
-
-:rtype: str
 %End
 
     virtual bool addFeature( QgsFeature &feature, QgsFeatureSink::Flags flags = 0 );
@@ -617,8 +590,6 @@ Retrieves error message
     bool addFeatureWithStyle( QgsFeature &feature, QgsFeatureRenderer *renderer, QgsUnitTypes::DistanceUnit outputUnit = QgsUnitTypes::DistanceMeters );
 %Docstring
 Adds a ``feature`` to the currently opened data source, using the style from a specified ``renderer``.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -632,26 +603,19 @@ Close opened shapefile for writing
     static bool deleteShapeFile( const QString &fileName );
 %Docstring
 Delete a shapefile (and its accompanying shx / dbf / prf)
+
 :param fileName: /path/to/file.shp
 
 :return: bool true if the file was deleted successfully
-:rtype: bool
-
 %End
 
     QgsVectorFileWriter::SymbologyExport symbologyExport() const;
-%Docstring
-
-:rtype: QgsVectorFileWriter.SymbologyExport
-%End
     void setSymbologyExport( QgsVectorFileWriter::SymbologyExport symExport );
 
     double symbologyScale() const;
 %Docstring
 Returns the reference scale for output.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 
 .. versionadded:: 3.0
 
@@ -669,17 +633,12 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 %End
 
     static bool driverMetadata( const QString &driverName, MetaData &driverMetadata );
-%Docstring
-
-:rtype: bool
-%End
 
     static QStringList defaultDatasetOptions( const QString &driverName );
 %Docstring
 Returns a list of the default dataset options for a specified driver.
-:param driverName: name of OGR driver
 
-:rtype: list of str
+:param driverName: name of OGR driver
 
 .. versionadded:: 3.0
 
@@ -689,9 +648,8 @@ Returns a list of the default dataset options for a specified driver.
     static QStringList defaultLayerOptions( const QString &driverName );
 %Docstring
 Returns a list of the default layer options for a specified driver.
-:param driverName: name of OGR driver
 
-:rtype: list of str
+:param driverName: name of OGR driver
 
 .. versionadded:: 3.0
 
@@ -703,8 +661,6 @@ Returns a list of the default layer options for a specified driver.
 %Docstring
 Return edition capabilities for an existing dataset name.
 
-:rtype: QgsVectorFileWriter.EditionCapabilities
-
 .. versionadded:: 3.0
 %End
 
@@ -712,8 +668,6 @@ Return edition capabilities for an existing dataset name.
                                    const QString &layerName );
 %Docstring
 Returns whether the target layer already exists.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -724,8 +678,6 @@ Returns whether the target layer already exists.
                                            const QgsAttributeList &attributes );
 %Docstring
 Returns whether there are among the attributes specified some that do not exist yet in the layer
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End

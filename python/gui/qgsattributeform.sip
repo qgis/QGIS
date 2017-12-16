@@ -42,10 +42,6 @@ class QgsAttributeForm : QWidget
     ~QgsAttributeForm();
 
     const QgsFeature &feature();
-%Docstring
-
-:rtype: QgsFeature
-%End
 
     void hideButtonBox();
 
@@ -56,6 +52,7 @@ class QgsAttributeForm : QWidget
     void addInterface( QgsAttributeFormInterface *iface /Transfer/ );
 %Docstring
 Takes ownership
+
 :param iface:
 %End
 
@@ -64,8 +61,6 @@ Takes ownership
 Returns the layer for which this form is shown
 
 :return:  Layer
-:rtype: QgsVectorLayer
-
 %End
 
     bool editable();
@@ -73,15 +68,11 @@ Returns the layer for which this form is shown
 Returns if the form is currently in editable mode.
 
 :return: Editable mode of this form
-:rtype: bool
-
 %End
 
     Mode mode() const;
 %Docstring
 Returns the current mode of the form.
-
-:rtype: Mode
 
 .. versionadded:: 2.16
 
@@ -91,6 +82,7 @@ Returns the current mode of the form.
     void setMode( Mode mode );
 %Docstring
 Sets the current mode of the form.
+
 :param mode: form mode
 
 .. versionadded:: 2.16
@@ -114,13 +106,12 @@ Intercepts keypress on custom form (escape should not close it)
 :param event:    The event which is being filtered
 
 :return:         true if the event has been handled (key was ESC)
-:rtype: bool
-
 %End
 
     void setMultiEditFeatureIds( const QgsFeatureIds &fids );
 %Docstring
 Sets all feature IDs which are to be edited if the form is in multiedit mode
+
 :param fids: feature ID list
 
 .. versionadded:: 2.16
@@ -130,6 +121,7 @@ Sets all feature IDs which are to be edited if the form is in multiedit mode
 %Docstring
 Sets the message bar to display feedback from the form in. This is used in the search/filter
 mode to display the count of selected features.
+
 :param messageBar: target message bar
 
 .. versionadded:: 2.16
@@ -140,8 +132,6 @@ mode to display the count of selected features.
 The aggregate filter is only useful if the form is in AggregateFilter mode.
 In this case it will return a combined expression according to the chosen filters
 on all attribute widgets.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -165,6 +155,7 @@ Is emitted, when a feature is changed or added
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 %Docstring
 Is emitted when a filter expression is set using the form.
+
 :param expression: filter expression
 :param type: filter type
 
@@ -174,6 +165,7 @@ Is emitted when a filter expression is set using the form.
     void modeChanged( QgsAttributeForm::Mode mode );
 %Docstring
 Emitted when the form changes mode.
+
 :param mode: new mode
 %End
 
@@ -221,8 +213,6 @@ Update all editors to correspond to a different feature.
 Save all the values from the editors to the layer.
 
 :return: True if successful
-:rtype: bool
-
 %End
 
     void resetValues();

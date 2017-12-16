@@ -92,7 +92,7 @@ class GUI_EXPORT QgsMapCanvas : public QGraphicsView
     //! Constructor
     QgsMapCanvas( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsMapCanvas();
+    ~QgsMapCanvas() override;
 
     /**
      * Returns the magnification factor

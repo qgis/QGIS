@@ -41,6 +41,7 @@ Calls QSortFilterProxyModel.setFilterRegExp and triggers update
 
   protected:
     virtual bool filterAcceptsRow( int row, const QModelIndex &source_parent ) const;
+
 };
 
 /************************************************************************

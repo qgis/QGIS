@@ -26,6 +26,7 @@ shapes such as polygon or polylines.
     QgsComposerNodesItem( const QString &mTagName, QgsComposition *c );
 %Docstring
 Constructor
+
 :param mTagName: tag used in XML file
 :param c: parent composition
 %End
@@ -33,6 +34,7 @@ Constructor
     QgsComposerNodesItem( const QString &mTagName, const QPolygonF &polygon, QgsComposition *c );
 %Docstring
 Constructor
+
 :param mTagName: tag used in XML file
 :param polygon: nodes of the shape
 :param c: parent composition
@@ -41,28 +43,27 @@ Constructor
     bool addNode( QPointF pt, const bool checkArea = true, const double radius = 10 );
 %Docstring
 Add a node in current shape.
+
 :param pt: is the location of the new node
 :param checkArea: is a flag to indicate if there's a space constraint.
 :param radius: is the space contraint and is used only if checkArea is
 true. Typically, if this flag is true, the new node has to be nearest
 than radius to the shape to be added.
-
-:rtype: bool
 %End
 
     void setDisplayNodes( const bool display = true );
 %Docstring
 Set a tag to indicate if we want to draw or not the shape's nodes.
+
 :param display:
 %End
 
     bool moveNode( const int index, QPointF node );
 %Docstring
 Move a node to a new position.
+
 :param index: the index of the node to move
 :param node: is the new position in scene coordinate
-
-:rtype: bool
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -75,56 +76,49 @@ Move a node to a new position.
 %Docstring
 Search the nearest node in shape within a maximal area. Returns the
 index of the nearest node or -1.
+
 :param node: is where a shape's node is searched
 :param searchInRadius: is a flag to indicate if the area of research is
 limited in space.
 :param radius: is only used if searchInRadius is true
-
-:rtype: int
 %End
 
     bool nodePosition( const int index, QPointF &position );
 %Docstring
 Gets the position of a node in scene coordinate.
+
 :param index: of the node
 :param position: the position of the node
 
 :return: true if the index is valid and the position is set, false otherwise
-:rtype: bool
-
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
 Sets state from Dom document
+
 :param itemElem: is Dom node corresponding to item tag
 :param doc: is Dom document
-
-:rtype: bool
 %End
 
     bool removeNode( const int index );
 %Docstring
 Remove a node from the shape.
-:param index: of the node to delete
 
-:rtype: bool
+:param index: of the node to delete
 %End
 
     int nodesSize();
 %Docstring
 Returns the number of nodes in the shape.
-
-:rtype: int
 %End
 
     bool setSelectedNode( const int index );
 %Docstring
 Select a node.
-:param index: the node to select
 
-:rtype: bool
+:param index: the node to select
 %End
 
     int selectedNode();
@@ -132,8 +126,6 @@ Select a node.
 Returns the currently selected node.
 
 :return: the index of the selected node, -1 otherwise
-:rtype: int
-
 %End
 
     void deselectNode();
@@ -145,10 +137,9 @@ Deselect a node.
 
 %Docstring
 Stores state in Dom element
+
 :param elem: is Dom element corresponding to 'Composer' tag
 :param doc: write template file
-
-:rtype: bool
 %End
 
   protected:
@@ -157,15 +148,11 @@ Stores state in Dom element
     virtual bool _addNode( const int nodeIndex, QPointF newNode, const double radius ) = 0;
 %Docstring
 Method called in addNode.
-
-:rtype: bool
 %End
 
     virtual bool _removeNode( const int nodeIndex ) = 0;
 %Docstring
 Method called in removeNode.
-
-:rtype: bool
 %End
 
     virtual void _draw( QPainter *painter ) = 0;
@@ -192,8 +179,6 @@ the shape is resized thanks to the rubber band. *
     double computeDistance( QPointF pt1, QPointF pt2 ) const;
 %Docstring
 Compute an euclidian distance between 2 nodes.
-
-:rtype: float
 %End
 
     void updateSceneRect();

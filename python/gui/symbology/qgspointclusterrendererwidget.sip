@@ -27,18 +27,18 @@ A widget which allows configuration of the properties for a QgsPointClusterRende
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Returns a new QgsPointClusterRendererWidget.
+
 :param layer: associated vector layer
 :param style: style collection
 :param renderer: source QgsPointClusterRenderer renderer
 
 :return: new QgsRendererWidget
-:rtype: QgsRendererWidget
-
 %End
 
     QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 %Docstring
 Constructor for QgsPointClusterRendererWidget.
+
 :param layer: associated vector layer
 :param style: style collection
 :param renderer: source QgsPointClusterRenderer renderer

@@ -42,16 +42,12 @@ Sets the snap ``tolerance`` (in pixels) to use when snapping.
 %Docstring
 Returns the snap tolerance (in pixels) to use when snapping.
 
-:rtype: int
-
 .. seealso:: :py:func:`setSnapTolerance()`
 %End
 
     bool snapToGrid() const;
 %Docstring
 Returns true if snapping to grid is enabled.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setSnapToGrid()`
 %End
@@ -67,8 +63,6 @@ Sets whether snapping to grid is ``enabled``.
 %Docstring
 Returns true if snapping to guides is enabled.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setSnapToGuides()`
 %End
 
@@ -82,8 +76,6 @@ Sets whether snapping to guides is ``enabled``.
     bool snapToItems() const;
 %Docstring
 Returns true if snapping to items is enabled.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setSnapToItems()`
 %End
@@ -112,8 +104,6 @@ will automatically display and position these lines to indicate snapping positio
 
 A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`snapRect()`
 %End
 
@@ -137,8 +127,6 @@ will automatically display and position these lines to indicate snapping positio
 
 A list of items to ignore during the snapping can be specified via the ``ignoreItems`` list.
 
-:rtype: QRectF
-
 .. seealso:: :py:func:`snapPoint()`
 %End
 
@@ -154,8 +142,6 @@ graphics view transform().m11() value.
 
 If snapToGrid() is disabled, this method will return the point
 unchanged.
-
-:rtype: QPointF
 
 .. seealso:: :py:func:`snapPointsToGrid()`
 %End
@@ -174,8 +160,6 @@ If snapToGrid() is disabled, this method will not attempt to snap the points.
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to the grid.
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`snapPointToGrid()`
 %End
 
@@ -190,8 +174,6 @@ graphics view transform().m11() value.
 
 If snapToGuides() is disabled, this method will return the point
 unchanged.
-
-:rtype: float
 
 .. seealso:: :py:func:`snapPointsToGuides()`
 %End
@@ -209,8 +191,6 @@ If snapToGuides() is disabled, this method will not attempt to snap the points.
 
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to a guide.
-
-:rtype: float
 
 .. seealso:: :py:func:`snapPointToGuides()`
 %End
@@ -233,8 +213,6 @@ A list of items to ignore during the snapping can be specified via the ``ignoreI
 If ``snapLine`` is specified, the snapper will automatically show (or hide) the snap line
 based on the result of the snap, and position it at the correct location for the snap.
 
-:rtype: float
-
 .. seealso:: :py:func:`snapPointsToItems()`
 %End
 
@@ -253,8 +231,6 @@ If snapToItems() is disabled, this method will not attempt to snap the points.
 The returned value is the smallest delta which the points need to be shifted by in order to align
 one of the points to an item bound.
 
-:rtype: float
-
 .. seealso:: :py:func:`snapPointToItems()`
 %End
 
@@ -263,8 +239,6 @@ one of the points to an item bound.
 %Docstring
 Stores the snapper's state in a DOM element. The ``parentElement`` should refer to the parent layout's DOM element.
 
-:rtype: bool
-
 .. seealso:: :py:func:`readXml()`
 %End
 
@@ -272,8 +246,6 @@ Stores the snapper's state in a DOM element. The ``parentElement`` should refer 
 
 %Docstring
 Sets the snapper's state from a DOM element. snapperElement is the DOM node corresponding to the snapper.
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End

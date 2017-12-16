@@ -40,7 +40,7 @@ class GUI_EXPORT QgsLayoutViewToolSelect : public QgsLayoutViewTool
      * Constructor for QgsLayoutViewToolSelect.
      */
     QgsLayoutViewToolSelect( QgsLayoutView *view SIP_TRANSFERTHIS );
-    ~QgsLayoutViewToolSelect();
+    ~QgsLayoutViewToolSelect() override;
 
     void layoutPressEvent( QgsLayoutViewMouseEvent *event ) override;
     void layoutMoveEvent( QgsLayoutViewMouseEvent *event ) override;

@@ -51,7 +51,7 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
     QgsComposerPolygon( const QPolygonF &polygon, QgsComposition *c );
 
     //! Overridden to return shape name
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     //! Returns the QgsSymbol used to draw the shape.
     QgsFillSymbol *polygonStyleSymbol() { return mPolygonStyleSymbol.get(); }
@@ -60,7 +60,7 @@ class CORE_EXPORT QgsComposerPolygon: public QgsComposerNodesItem
     void setPolygonStyleSymbol( QgsFillSymbol *symbol );
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerPolygon; }
+    int type() const override { return ComposerPolygon; }
 
   protected:
 

@@ -43,15 +43,11 @@ Constructor for QgsRasterTransparency.
     QList<QgsRasterTransparency::TransparentSingleValuePixel> transparentSingleValuePixelList() const;
 %Docstring
  Accessor for transparentSingleValuePixelList
-
-:rtype: list of QgsRasterTransparency.TransparentSingleValuePixel
 %End
 
     QList<QgsRasterTransparency::TransparentThreeValuePixel> transparentThreeValuePixelList() const;
 %Docstring
  Accessor for transparentThreeValuePixelList
-
-:rtype: list of QgsRasterTransparency.TransparentThreeValuePixel
 %End
 
     void initializeTransparentPixelList( double );
@@ -77,22 +73,16 @@ Constructor for QgsRasterTransparency.
     int alphaValue( double, int globalTransparency = 255 ) const;
 %Docstring
  Returns the transparency value for a single value Pixel
-
-:rtype: int
 %End
 
     int alphaValue( double, double, double, int globalTransparency = 255 ) const;
 %Docstring
  Return the transparency value for a RGB Pixel
-
-:rtype: int
 %End
 
     bool isEmpty() const;
 %Docstring
 True if there are no entries in the pixel lists except the nodata value
-
-:rtype: bool
 %End
 
     void writeXml( QDomDocument &doc, QDomElement &parentElem ) const;

@@ -66,7 +66,7 @@ class GUI_EXPORT QgsLayoutViewTool : public QObject
     };
     Q_DECLARE_FLAGS( Flags, Flag )
 
-    virtual ~QgsLayoutViewTool();
+    ~QgsLayoutViewTool() override;
 
     /**
      * Returns the current combination of flags set for the tool.

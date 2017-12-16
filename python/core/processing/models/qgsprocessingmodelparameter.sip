@@ -35,8 +35,6 @@ parameters from the parent model.
 Returns the associated parameter name. The parameter name should match one of the
 parameters from the parent model.
 
-:rtype: str
-
 .. seealso:: :py:func:`parameterName()`
 %End
 
@@ -52,16 +50,12 @@ parameters from the parent model.
 %Docstring
 Saves this parameter to a QVariant.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`loadVariant()`
 %End
 
     bool loadVariant( const QVariantMap &map );
 %Docstring
 Loads this parameter from a QVariantMap.
-
-:rtype: bool
 
 .. seealso:: :py:func:`toVariant()`
 %End

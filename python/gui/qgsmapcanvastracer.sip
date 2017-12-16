@@ -37,8 +37,6 @@ Create tracer associated with a particular map canvas, optionally message bar fo
     QAction *actionEnableTracing() const;
 %Docstring
 Access to action that user may use to toggle tracing on/off. May be null if no action was associated
-
-:rtype: QAction
 %End
 
     void setActionEnableTracing( QAction *action );
@@ -52,8 +50,6 @@ The action is used to determine whether tracing is currently enabled by the user
 Retrieve instance of this class associated with given canvas (if any).
 The class keeps a simple registry of tracers associated with map canvas
 instances for easier access to the common tracer by various map tools
-
-:rtype: QgsMapCanvasTracer
 %End
 
     void reportError( PathError err, bool addingVertex );

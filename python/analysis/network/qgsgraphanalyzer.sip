@@ -26,6 +26,7 @@ points using different strategies with Dijkstra algorithm
     static SIP_PYLIST  dijkstra( const QgsGraph *source, int startVertexIdx, int criterionNum, QVector<int> *resultTree = 0, QVector<double> *resultCost = 0 );
 %Docstring
 Solve shortest path problem using Dijkstra algorithm
+
 :param source: source graph
 :param startVertexIdx: index of the start vertex
 :param criterionNum: index of the optimization strategy
@@ -65,11 +66,10 @@ Solve shortest path problem using Dijkstra algorithm
     static QgsGraph *shortestTree( const QgsGraph *source, int startVertexIdx, int criterionNum );
 %Docstring
 Returns shortest path tree with root-node in startVertexIdx
+
 :param source: source graph
 :param startVertexIdx: index of the start vertex
 :param criterionNum: index of the optimization strategy
-
-:rtype: QgsGraph
 %End
 };
 

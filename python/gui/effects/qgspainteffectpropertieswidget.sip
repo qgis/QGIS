@@ -27,6 +27,7 @@ class QgsPaintEffectPropertiesWidget : QWidget
     QgsPaintEffectPropertiesWidget( QgsPaintEffect *effect, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsPaintEffectPropertiesWidget constructor
+
 :param effect: QgsPaintEffect to modify in the widget
 :param parent: parent widget
 %End

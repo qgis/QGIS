@@ -44,8 +44,6 @@ class QgsChunkLoader : public QgsChunkQueueJob
     {
     }
 
-    virtual ~QgsChunkLoader() = default;
-
     /**
      * Run in main thread to use loaded data.
      * Returns entity attached to the given parent entity in disabled state

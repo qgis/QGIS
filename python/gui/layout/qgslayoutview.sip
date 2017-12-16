@@ -46,8 +46,6 @@ Constructor for QgsLayoutView.
 %Docstring
 Returns the current layout associated with the view.
 
-:rtype: QgsLayout
-
 .. seealso:: :py:func:`setCurrentLayout()`
 
 .. seealso:: :py:func:`layoutSet()`
@@ -66,8 +64,6 @@ Sets the current ``layout`` to edit in the view.
     QgsLayoutViewTool *tool();
 %Docstring
 Returns the currently active tool for the view.
-
-:rtype: QgsLayoutViewTool
 
 .. seealso:: :py:func:`setTool()`
 %End
@@ -93,6 +89,7 @@ You don't have to call it manually, QgsLayoutViewTool takes care of it.
     void setPreviewModeEnabled( bool enabled );
 %Docstring
 Sets whether a preview effect should be used to alter the view's appearance.
+
 :param enabled: Set to true to enable the preview effect on the view.
 
 .. seealso:: :py:func:`setPreviewMode()`
@@ -101,8 +98,6 @@ Sets whether a preview effect should be used to alter the view's appearance.
     bool previewModeEnabled() const;
 %Docstring
 Returns true if a preview effect is being used to alter the view's appearance.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setPreviewModeEnabled()`
 %End
@@ -121,8 +116,6 @@ if previewModeEnabled() is true.
 %Docstring
 Returns the preview mode which may be used to modify the view's appearance. Preview modes are only used
 if previewModeEnabled() is true.
-
-:rtype: QgsPreviewEffect.PreviewMode
 
 .. seealso:: :py:func:`setPreviewMode()`
 
@@ -165,8 +158,6 @@ Sets a ``provider`` for context menus. Ownership of the provider is transferred 
 %Docstring
 Returns the provider for context menus. Returned value may be None if no provider is set.
 
-:rtype: QgsLayoutViewMenuProvider
-
 .. seealso:: :py:func:`setMenuProvider()`
 %End
 
@@ -176,8 +167,6 @@ Returns the page visible in the view. This method
 considers the page at the center of the view as the current visible
 page.
 
-:rtype: int
-
 .. seealso:: :py:func:`pageChanged()`
 %End
 
@@ -185,16 +174,12 @@ page.
 %Docstring
 Returns a list of page items which are currently visible in the view.
 
-:rtype: list of QgsLayoutItemPage
-
 .. seealso:: :py:func:`visiblePageNumbers()`
 %End
 
     QList< int > visiblePageNumbers() const;
 %Docstring
 Returns a list of page numbers for pages which are currently visible in the view.
-
-:rtype: list of int
 
 .. seealso:: :py:func:`visiblePages()`
 %End
@@ -250,8 +235,6 @@ Pastes items from clipboard, using the specified ``mode``.
 
 A list of pasted items is returned.
 
-:rtype: list of QgsLayoutItem
-
 .. seealso:: :py:func:`copySelectedItems()`
 
 .. seealso:: :py:func:`hasItemsInClipboard()`
@@ -264,8 +247,6 @@ in layout units.
 
 A list of pasted items is returned.
 
-:rtype: list of QgsLayoutItem
-
 .. seealso:: :py:func:`copySelectedItems()`
 
 .. seealso:: :py:func:`hasItemsInClipboard()`
@@ -275,8 +256,6 @@ A list of pasted items is returned.
 %Docstring
 Returns true if the current clipboard contains layout items.
 
-:rtype: bool
-
 .. seealso:: :py:func:`pasteItems()`
 %End
 
@@ -284,8 +263,6 @@ Returns true if the current clipboard contains layout items.
 %Docstring
 Returns the delta (in layout coordinates) by which to move items
 for the given key ``event``.
-
-:rtype: QPointF
 %End
 
   public slots:
@@ -607,8 +584,6 @@ instances to provide custom context menus (opened upon right-click).
     virtual QMenu *createContextMenu( QWidget *parent /Transfer/, QgsLayout *layout, QPointF layoutPoint ) const = 0 /Factory/;
 %Docstring
 Return a newly created menu instance (or null pointer on error)
-
-:rtype: QMenu
 %End
 };
 

@@ -36,8 +36,6 @@ If not set, the buttons are hidden.
 Returns the selected minimum scale (i.e. most "zoomed out" scale), or 0 if minimum scale is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-:rtype: float
-
 .. seealso:: :py:func:`maximumScale()`
 
 .. seealso:: :py:func:`setMinimumScale()`
@@ -47,8 +45,6 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %Docstring
 Returns the selected maximum scale (i.e. most "zoomed in" scale), or 0 if maximum scale is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 
 .. seealso:: :py:func:`minimumScale()`
 

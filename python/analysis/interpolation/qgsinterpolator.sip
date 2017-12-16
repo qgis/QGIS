@@ -100,14 +100,13 @@ Source type
     virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback = 0 ) = 0;
 %Docstring
 Calculates interpolation value for map coordinates x, y
+
 :param x: x-coordinate (in map units)
 :param y: y-coordinate (in map units)
 :param result: out: interpolation result
 :param feedback: optional feedback object for progress and cancelation support
 
 :return: 0 in case of success*
-:rtype: int
-
 %End
 
 
@@ -122,8 +121,6 @@ An optional ``feedback`` argument may be specified to allow cancelation and
 progress reports from the cache operation.
 
 :return: Success in case of success
-:rtype: Result
-
 %End
 
 

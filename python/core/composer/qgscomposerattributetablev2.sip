@@ -26,20 +26,18 @@ Helper class for sorting tables, takes into account sorting column and ascending
 Constructor for QgsComposerAttributeTableCompareV2.
 %End
     bool operator()( const QgsComposerTableRow &m1, const QgsComposerTableRow &m2 );
-%Docstring
-
-:rtype: bool
-%End
 
     void setSortColumn( int col );
 %Docstring
 Sets column number to sort by
+
 :param col: column number for sorting
 %End
 
     void setAscending( bool asc );
 %Docstring
 Sets sort order for column sorting
+
 :param asc: set to true to sort in ascending order, false to sort in descending order
 %End
 
@@ -68,35 +66,38 @@ A table that displays attributes from a vector layer
 
     virtual QString displayName() const;
 
+
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
+
 %Docstring
 Writes properties specific to attribute tables
+
 :param elem: an existing QDomElement in which to store the attribute table's properties.
 :param doc: QDomDocument for the destination xml.
 :param ignoreFrames: ignore frames
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
+
 %Docstring
 Reads the properties specific to an attribute table from xml.
+
 :param itemElem: a QDomElement holding the attribute table's desired properties.
 :param doc: QDomDocument for the source xml.
 :param ignoreFrames: ignore frames
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml`
 %End
 
     virtual void addFrame( QgsComposerFrame *frame /Transfer/, bool recalcFrameSizes = true );
 
+
     void setSource( const ContentSource source );
 %Docstring
 Sets the source for attributes to show in table body.
+
 :param source: content source
 
 .. seealso:: :py:func:`source`
@@ -107,8 +108,6 @@ Sets the source for attributes to show in table body.
 Returns the source for attributes shown in the table body.
 
 :return: content source
-:rtype: ContentSource
-
 
 .. seealso:: :py:func:`setSource`
 %End
@@ -121,13 +120,12 @@ atlas coverage layer. If the table is set to layer attributes mode, then
 the source layer will be the user specified vector layer.
 
 :return: actual source layer
-:rtype: QgsVectorLayer
-
 %End
 
     void setVectorLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the vector layer from which to display feature attributes
+
 :param layer: Vector layer for attribute table
 
 .. seealso:: :py:func:`vectorLayer`
@@ -138,8 +136,6 @@ Sets the vector layer from which to display feature attributes
 Returns the vector layer the attribute table is currently using
 
 :return: attribute table's current vector layer
-:rtype: QgsVectorLayer
-
 
 .. seealso:: :py:func:`setVectorLayer`
 %End
@@ -147,6 +143,7 @@ Returns the vector layer the attribute table is currently using
     void setRelationId( const QString &relationId );
 %Docstring
 Sets the relation id from which to display child features
+
 :param relationId: id for relation to display child features from
 
 .. seealso:: :py:func:`relationId`
@@ -163,8 +160,6 @@ Sets the relation id from which to display child features
 Returns the relation id which the table displays child features from
 
 :return: relation id
-:rtype: str
-
 
 .. seealso:: :py:func:`setRelationId`
 
@@ -189,6 +184,7 @@ attribute table. This setting only has an effect if setDisplayOnlyVisibleFeature
 set to true. Changing the composer map forces the table to refetch features from its
 vector layer, and may result in the table changing size to accommodate the new displayed
 feature attributes.
+
 :param map: QgsComposerMap which drives the extents of the table's features
 
 .. seealso:: :py:func:`composerMap`
@@ -202,8 +198,6 @@ Returns the composer map whose extents are controlling the features shown in the
 table. The extents of the map are only used if displayOnlyVisibleFeatures() is true.
 
 :return: composer map controlling the attribute table
-:rtype: QgsComposerMap
-
 
 .. seealso:: :py:func:`setComposerMap`
 
@@ -215,6 +209,7 @@ table. The extents of the map are only used if displayOnlyVisibleFeatures() is t
 Sets the maximum number of features shown by the table. Changing this setting may result
 in the attribute table changing its size to accommodate the new number of rows, and requires
 the table to refetch features from its vector layer.
+
 :param features: maximum number of features to show in the table
 
 .. seealso:: :py:func:`maximumNumberOfFeatures`
@@ -225,8 +220,6 @@ the table to refetch features from its vector layer.
 Returns the maximum number of features to be shown by the table.
 
 :return: maximum number of features
-:rtype: int
-
 
 .. seealso:: :py:func:`setMaximumNumberOfFeatures`
 %End
@@ -234,6 +227,7 @@ Returns the maximum number of features to be shown by the table.
     void setUniqueRowsOnly( const bool uniqueOnly );
 %Docstring
 Sets attribute table to only show unique rows.
+
 :param uniqueOnly: set to true to show only unique rows. Duplicate rows
 will be stripped from the table.
 
@@ -245,8 +239,6 @@ will be stripped from the table.
 Returns true if the table is set to show only unique rows.
 
 :return: true if table only shows unique rows and is stripping out
-:rtype: bool
-
 duplicate rows.
 
 .. seealso:: :py:func:`setUniqueRowsOnly`
@@ -257,6 +249,7 @@ duplicate rows.
 Sets attribute table to only show features which are visible in a composer map item. Changing
 this setting forces the table to refetch features from its vector layer, and may result in
 the table changing size to accommodate the new displayed feature attributes.
+
 :param visibleOnly: set to true to show only visible features
 
 .. seealso:: :py:func:`displayOnlyVisibleFeatures`
@@ -270,8 +263,6 @@ Returns true if the table is set to show only features visible on a correspondin
 composer map item.
 
 :return: true if table only shows visible features
-:rtype: bool
-
 
 .. seealso:: :py:func:`composerMap`
 
@@ -282,6 +273,7 @@ composer map item.
 %Docstring
 Sets attribute table to only show features which intersect the current atlas
 feature.
+
 :param filterToAtlas: set to true to show only features which intersect
 the atlas feature
 
@@ -294,8 +286,6 @@ Returns true if the table is set to only show features which intersect the curre
 feature.
 
 :return: true if table only shows features which intersect the atlas feature
-:rtype: bool
-
 
 .. seealso:: :py:func:`setFilterToAtlasFeature`
 %End
@@ -305,8 +295,6 @@ feature.
 Returns true if a feature filter is active on the attribute table
 
 :return: bool state of the feature filter
-:rtype: bool
-
 
 .. seealso:: :py:func:`setFilterFeatures`
 
@@ -318,6 +306,7 @@ Returns true if a feature filter is active on the attribute table
 Sets whether the feature filter is active for the attribute table. Changing
 this setting forces the table to refetch features from its vector layer, and may result in
 the table changing size to accommodate the new displayed feature attributes.
+
 :param filter: Set to true to enable the feature filter
 
 .. seealso:: :py:func:`filterFeatures`
@@ -331,8 +320,6 @@ Returns the current expression used to filter features for the table. The filter
 active if filterFeatures() is true.
 
 :return: feature filter expression
-:rtype: str
-
 
 .. seealso:: :py:func:`setFeatureFilter`
 
@@ -345,6 +332,7 @@ Sets the expression used for filtering features in the table. The filter is only
 active if filterFeatures() is set to true. Changing this setting forces the table
 to refetch features from its vector layer, and may result in
 the table changing size to accommodate the new displayed feature attributes.
+
 :param expression: filter to use for selecting which features to display in the table
 
 .. seealso:: :py:func:`featureFilter`
@@ -355,6 +343,7 @@ the table changing size to accommodate the new displayed feature attributes.
     void setDisplayedFields( const QStringList &fields, bool refresh = true );
 %Docstring
 Sets the attributes to display in the table.
+
 :param fields: list of fields names from the vector layer to show.
 Set to an empty list to show all feature attributes.
 :param refresh: set to true to force the table to refetch features from its vector layer
@@ -369,6 +358,7 @@ to accommodate the new displayed feature attributes.
 %Docstring
 Sets a string to wrap the contents of the table cells by. Occurrences of this string will
 be replaced by a line break.
+
 :param wrapString: string to replace with line break
 
 .. versionadded:: 2.12
@@ -382,8 +372,6 @@ Returns the string used to wrap the contents of the table cells by. Occurrences 
 be replaced by a line break.
 
 :return: string which will be replaced with line break
-:rtype: str
-
 
 .. versionadded:: 2.12
 
@@ -392,6 +380,7 @@ be replaced by a line break.
 
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
 };
 

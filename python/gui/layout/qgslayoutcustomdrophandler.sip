@@ -27,8 +27,6 @@ Abstract base class that may be implemented to handle new types of data to be dr
 Constructor for QgsLayoutCustomDropHandler.
 %End
 
-    virtual ~QgsLayoutCustomDropHandler();
-
     virtual bool handleFileDrop( QgsLayoutDesignerInterface *iface, const QString &file );
 %Docstring
 Called when the specified ``file`` has been dropped onto a QGIS layout. If true
@@ -36,8 +34,6 @@ is returned, then the handler has accepted this file and it should not
 be further processed (e.g. by other QgsLayoutCustomDropHandler).
 
 The base class implementation does nothing.
-
-:rtype: bool
 %End
 };
 

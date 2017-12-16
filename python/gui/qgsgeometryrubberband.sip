@@ -47,8 +47,6 @@ Sets geometry (takes ownership). Geometry is expected to be in map coordinates
     const QgsAbstractGeometry *geometry();
 %Docstring
 Returns a pointer to the geometry
-
-:rtype: QgsAbstractGeometry
 %End
     void moveVertex( QgsVertexId id, const QgsPoint &newPos );
 %Docstring
@@ -81,6 +79,7 @@ Sets vertex marker icon type
 
   protected:
     virtual void paint( QPainter *painter );
+
 
 };
 

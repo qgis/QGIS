@@ -59,8 +59,6 @@ Saves current layout state as after state.
 %Docstring
 Returns the before state for the layout.
 
-:rtype: QDomDocument
-
 .. seealso:: :py:func:`saveBeforeState()`
 
 .. seealso:: :py:func:`afterState()`
@@ -70,8 +68,6 @@ Returns the before state for the layout.
 %Docstring
 Returns the after state for the layout.
 
-:rtype: QDomDocument
-
 .. seealso:: :py:func:`saveAfterState()`
 
 .. seealso:: :py:func:`beforeState()`
@@ -80,8 +76,6 @@ Returns the after state for the layout.
     virtual bool containsChange() const;
 %Docstring
 Returns true if both the before and after states are valid and different.
-
-:rtype: bool
 %End
 
   protected:
@@ -136,8 +130,6 @@ Creates a new layout undo command with the specified ``text`` and ``parent``.
 
 The ``id`` argument can be used to specify an id number for the source event - this is used to determine whether QUndoCommand
 command compression can apply to the command.
-
-:rtype: QgsAbstractLayoutUndoCommand
 %End
 };
 

@@ -232,10 +232,10 @@ class GUI_EXPORT QgsFileDropEdit: public QgsFilterLineEdit
 
   protected:
 
-    virtual void dragEnterEvent( QDragEnterEvent *event ) override;
-    virtual void dragLeaveEvent( QDragLeaveEvent *event ) override;
-    virtual void dropEvent( QDropEvent *event ) override;
-    virtual void paintEvent( QPaintEvent *e ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dragLeaveEvent( QDragLeaveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+    void paintEvent( QPaintEvent *e ) override;
 
   private:
 

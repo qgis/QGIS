@@ -60,16 +60,12 @@ and appearance.
 %Docstring
 Returns the current connection name.
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
     QString url() const;
 %Docstring
 Returns the current connection url.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -86,8 +82,6 @@ Returns the current connection url.
 Returns true if dialog settings are valid, or false if current
 settings are not valid and the dialog should not be acceptable.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -95,16 +89,12 @@ settings are not valid and the dialog should not be acceptable.
 %Docstring
 Returns the "test connection" button.
 
-:rtype: QPushButton
-
 .. versionadded:: 3.0
 %End
 
     virtual QString wfsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring
 Returns the QSettings key for WFS related settings for the connection.
-
-:rtype: str
 
 .. seealso:: :py:func:`wmsSettingsKey()`
 
@@ -114,8 +104,6 @@ Returns the QSettings key for WFS related settings for the connection.
     virtual QString wmsSettingsKey( const QString &base, const QString &connectionName ) const;
 %Docstring
 Returns the QSettings key for WMS related settings for the connection.
-
-:rtype: str
 
 .. seealso:: :py:func:`wfsSettingsKey()`
 

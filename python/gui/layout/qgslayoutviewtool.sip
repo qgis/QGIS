@@ -41,13 +41,11 @@ to QgsLayoutView widgets.
     typedef QFlags<QgsLayoutViewTool::Flag> Flags;
 
 
-    virtual ~QgsLayoutViewTool();
+    ~QgsLayoutViewTool();
 
     QgsLayoutViewTool::Flags flags() const;
 %Docstring
 Returns the current combination of flags set for the tool.
-
-:rtype: QgsLayoutViewTool.Flags
 
 .. seealso:: :py:func:`setFlags()`
 %End
@@ -109,8 +107,6 @@ the previously used toolbutton to pop out.
 %Docstring
 Returns the action associated with the tool or None if no action is associated.
 
-:rtype: QAction
-
 .. seealso:: :py:func:`setAction()`
 %End
 
@@ -134,15 +130,11 @@ Overridden implementations must take care to call the base class implementation.
     QString toolName() const;
 %Docstring
 Returns a user-visible, translated name for the tool.
-
-:rtype: str
 %End
 
     QgsLayoutView *view() const;
 %Docstring
 Returns the view associated with the tool.
-
-:rtype: QgsLayoutView
 
 .. seealso:: :py:func:`layout()`
 %End
@@ -151,8 +143,6 @@ Returns the view associated with the tool.
 %Docstring
 Returns the layout associated with the tool.
 
-:rtype: QgsLayout
-
 .. seealso:: :py:func:`view()`
 %End
 
@@ -160,8 +150,6 @@ Returns the layout associated with the tool.
 %Docstring
 Returns a list of items which should be ignored while snapping events
 for this tool.
-
-:rtype: list of QgsLayoutItem
 %End
 
   signals:
@@ -203,8 +191,6 @@ Returns true if a mouse press/release operation which started at
 ``startViewPoint`` and ended at ``endViewPoint`` should be considered
 a "click and drag". If false is returned, the operation should be
 instead treated as just a click on ``startViewPoint``.
-
-:rtype: bool
 %End
 
 };

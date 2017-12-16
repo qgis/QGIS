@@ -24,6 +24,7 @@ Widget for viewing and editing authentication identities database
     explicit QgsAuthIdentitiesEditor( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Widget for editing authentication configurations directly in database
+
 :param parent: Parent widget
 %End
 

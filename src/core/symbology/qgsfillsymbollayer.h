@@ -205,7 +205,7 @@ class CORE_EXPORT QgsGradientFillSymbolLayer : public QgsFillSymbolLayer
                                 GradientSpread gradientSpread = Pad
                               );
 
-    virtual ~QgsGradientFillSymbolLayer();
+    ~QgsGradientFillSymbolLayer() override;
 
     // static stuff
 
@@ -350,7 +350,7 @@ class CORE_EXPORT QgsShapeburstFillSymbolLayer : public QgsFillSymbolLayer
                                   ShapeburstColorType colorType = SimpleTwoColor,
                                   int blurRadius = 0, bool useWholeShape = true, double maxDistance = 5 );
 
-    virtual ~QgsShapeburstFillSymbolLayer();
+    ~QgsShapeburstFillSymbolLayer() override;
 
     // static stuff
 
@@ -619,8 +619,8 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     QgsImageFillSymbolLayer();
     void renderPolygon( const QPolygonF &points, QList<QPolygonF> *rings, QgsSymbolRenderContext &context ) override;
 
-    virtual QgsSymbol *subSymbol() override { return mStroke.get(); }
-    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+    QgsSymbol *subSymbol() override { return mStroke.get(); }
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**
      * Sets the units for the symbol's stroke width.
@@ -644,7 +644,7 @@ class CORE_EXPORT QgsImageFillSymbolLayer: public QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    virtual double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const override;
     QColor dxfColor( QgsSymbolRenderContext &context ) const override;
@@ -700,11 +700,11 @@ class CORE_EXPORT QgsRasterFillSymbolLayer: public QgsImageFillSymbolLayer
     void stopRender( QgsSymbolRenderContext &context ) override;
     QgsStringMap properties() const override;
     QgsRasterFillSymbolLayer *clone() const override SIP_FACTORY;
-    virtual double estimateMaxBleed( const QgsRenderContext &context ) const override;
+    double estimateMaxBleed( const QgsRenderContext &context ) const override;
 
     //override QgsImageFillSymbolLayer's support for sub symbols
-    virtual QgsSymbol *subSymbol() override { return nullptr; }
-    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+    QgsSymbol *subSymbol() override { return nullptr; }
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
     /**
      * Sets the path to the raster image used for the fill.
@@ -894,7 +894,7 @@ class CORE_EXPORT QgsSVGFillSymbolLayer: public QgsImageFillSymbolLayer
     //! Constructs SVG fill symbol layer with picture from given absolute path to a SVG file
     QgsSVGFillSymbolLayer( const QString &svgFilePath, double width = 20, double rotation = 0.0 );
     QgsSVGFillSymbolLayer( const QByteArray &svgData, double width = 20, double rotation = 0.0 );
-    ~QgsSVGFillSymbolLayer();
+    ~QgsSVGFillSymbolLayer() override;
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
@@ -1013,7 +1013,7 @@ class CORE_EXPORT QgsLinePatternFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
     QgsLinePatternFillSymbolLayer();
-    ~QgsLinePatternFillSymbolLayer();
+    ~QgsLinePatternFillSymbolLayer() override;
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
@@ -1160,7 +1160,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
 {
   public:
     QgsPointPatternFillSymbolLayer();
-    ~QgsPointPatternFillSymbolLayer();
+    ~QgsPointPatternFillSymbolLayer() override;
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
     static QgsSymbolLayer *createFromSld( QDomElement &element ) SIP_FACTORY;
@@ -1193,7 +1193,7 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setDisplacementY( double d ) { mDisplacementY = d; }
 
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-    virtual QgsSymbol *subSymbol() override { return mMarkerSymbol; }
+    QgsSymbol *subSymbol() override { return mMarkerSymbol; }
 
     /**
      * Sets the units for the horizontal distance between points in the pattern.
@@ -1273,9 +1273,9 @@ class CORE_EXPORT QgsPointPatternFillSymbolLayer: public QgsImageFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
     void setColor( const QColor &c ) override;
-    virtual QColor color() const override;
+    QColor color() const override;
 
   protected:
     QgsMarkerSymbol *mMarkerSymbol = nullptr;
@@ -1345,7 +1345,7 @@ class CORE_EXPORT QgsCentroidFillSymbolLayer : public QgsFillSymbolLayer
     void setMapUnitScale( const QgsMapUnitScale &scale ) override;
     QgsMapUnitScale mapUnitScale() const override;
 
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     void setPointOnSurface( bool pointOnSurface ) { mPointOnSurface = pointOnSurface; }
     bool pointOnSurface() const { return mPointOnSurface; }

@@ -38,15 +38,7 @@ Constructor: does not take ownership of the layer tree nor canvas
 %End
 
     QgsLayerTree *rootGroup() const;
-%Docstring
-
-:rtype: QgsLayerTree
-%End
     QgsMapCanvas *mapCanvas() const;
-%Docstring
-
-:rtype: QgsMapCanvas
-%End
 
     void setOvervewCanvas( QgsMapOverviewCanvas *overviewCanvas );
 %Docstring
@@ -59,8 +51,6 @@ Associates overview canvas with the bridge, so the overview will be updated when
 %Docstring
 Returns associated overview canvas (may be null)
 
-:rtype: QgsMapOverviewCanvas
-
 .. versionadded:: 3.0
 %End
 
@@ -70,10 +60,6 @@ if enabled, will automatically set full canvas extent and destination CRS + map 
 when first layer(s) are added
 %End
     bool autoSetupOnFirstLayer() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setCanvasLayers();
 %Docstring

@@ -40,6 +40,7 @@ to an authentication configuration.
 %Docstring
 Create a dialog for setting an associated authentication config, either
 from existing configs, or creating/removing them from auth database
+
 :param parent: Parent widget
 :param configId: authentication configuration id
 :param username:
@@ -50,6 +51,7 @@ from existing configs, or creating/removing them from auth database
     void setWarningText( const QString &warningText );
 %Docstring
  setWarningText set the text of the warning label
+
 :param warningText: the text of the warning label
 
 .. seealso:: :py:func:`formattedWarning()`
@@ -58,6 +60,7 @@ from existing configs, or creating/removing them from auth database
     void setBasicText( const QString &basicText );
 %Docstring
  setBasicText set the text of the warning label
+
 :param basicText: the text of the basic tab label
 %End
 
@@ -66,13 +69,12 @@ from existing configs, or creating/removing them from auth database
  username
 
 :return: basic authentication username
-:rtype: str
-
 %End
 
     void setUsername( const QString &username );
 %Docstring
  setUsername set the username
+
 :param username: the user name
 %End
 
@@ -81,13 +83,12 @@ from existing configs, or creating/removing them from auth database
  password
 
 :return: basic authentication password
-:rtype: str
-
 %End
 
     void setPassword( const QString &password );
 %Docstring
  setPassword set the password
+
 :param password: the password
 %End
 
@@ -96,8 +97,6 @@ from existing configs, or creating/removing them from auth database
  configId
 
 :return: authentication configuration id
-:rtype: str
-
 %End
 
     void setConfigId( const QString &configId );
@@ -109,6 +108,7 @@ param configId the authentication configuration id
     void setDataprovider( const QString &dataprovider );
 %Docstring
  setDataprovider set the data provider key for filtering compatible authentication configurations
+
 :param dataprovider: data provider key
 %End
 
@@ -117,18 +117,15 @@ param configId the authentication configuration id
  dataprovider
 
 :return: the data provider key used to filter compatible authentication configurations
-:rtype: str
-
 %End
 
     static const QString formattedWarning( WarningType warning );
 %Docstring
  warning text message based upon where credentials are stored
+
 :param warning: enum of warning type
 
 :return: pre-formatted warning text
-:rtype: str
-
 %End
 
     bool btnConvertToEncryptedIsEnabled( ) const;
@@ -136,8 +133,6 @@ param configId the authentication configuration id
  convertButtonEnabled, mainly useful for unit tests
 
 :return: true if the convert button is enabled
-:rtype: bool
-
 %End
 
     void showStoreCheckboxes( bool enabled );
@@ -146,12 +141,14 @@ param configId the authentication configuration id
 Some connection configurations allow the user to enter credentials
 for testing the connection without storing them in the project.
 "Store" checkboxes are disabled by default.
+
 :param enabled:
 %End
 
     void setStoreUsernameChecked( bool checked );
 %Docstring
  setStoreUsernameChecked check the "Store" checkbox for the username
+
 :param checked:
 
 .. seealso:: :py:func:`showStoreCheckboxes`
@@ -160,6 +157,7 @@ for testing the connection without storing them in the project.
     void setStorePasswordChecked( bool checked );
 %Docstring
  setStorePasswordCheched check the "Store" checkbox for the password
+
 :param checked:
 
 .. seealso:: :py:func:`showStoreCheckboxes`
@@ -170,8 +168,6 @@ for testing the connection without storing them in the project.
  storePassword
 
 :return: true if "Store" checkbox for the password is checked
-:rtype: bool
-
 %End
 
     bool storeUsernameIsChecked( ) const;
@@ -179,8 +175,6 @@ for testing the connection without storing them in the project.
  storeUsername
 
 :return: true if "Store" checkbox for the username is checked
-:rtype: bool
-
 %End
 
     bool configurationTabIsSelected( );
@@ -188,8 +182,6 @@ for testing the connection without storing them in the project.
  configurationTabIsSelected
 
 :return: true if the configuration tab is the currently selected tab
-:rtype: bool
-
 %End
 
   public slots:
@@ -201,8 +193,6 @@ clicked and it creates a Basic authentication configuration from
 username and password specified in the Basic tab
 
 :return: return true on success
-:rtype: bool
-
 %End
 
 

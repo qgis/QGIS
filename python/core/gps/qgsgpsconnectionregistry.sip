@@ -43,10 +43,6 @@ Unregisters connection. The registry does no longer own the connection
 %End
 
     QList< QgsGPSConnection *> connectionList() const;
-%Docstring
-
-:rtype: list of QgsGPSConnection
-%End
 
   private:
     QgsGPSConnectionRegistry( const QgsGPSConnectionRegistry &rh );

@@ -27,8 +27,6 @@ Create a new animated icon. Optionally, the ``iconPath`` can already be specifie
     QString iconPath() const;
 %Docstring
 Path to a movie, e.g. animated GIF
-
-:rtype: str
 %End
 
     void setIconPath( const QString &iconPath );
@@ -41,8 +39,6 @@ Path to a movie, e.g. animated GIF
 Get the icons representation in the current frame.
 This will need to be called repeatedly, whenever a frameChanged()
 signal is emitted.
-
-:rtype: QIcon
 %End
 
 
@@ -54,16 +50,12 @@ request the current icon and trigger UI updates.
 Connect to the frame changed signal with this method and not directly. This method
 makes sure the annimation is started.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     bool disconnectFrameChanged( const QObject *receiver, const char *method );
 %Docstring
 Convenience function to disconnect the same style that the frame change connection was established.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -73,16 +65,12 @@ Convenience function to disconnect the same style that the frame change connecti
 %Docstring
 The native width of the icon.
 
-:rtype: int
-
 .. versionadded:: 3.0
 %End
 
     int height() const;
 %Docstring
 The native height of the icon.
-
-:rtype: int
 
 .. versionadded:: 3.0
 %End

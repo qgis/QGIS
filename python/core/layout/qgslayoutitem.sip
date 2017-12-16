@@ -265,16 +265,12 @@ tasks.
 Return unique graphics item type identifier.
 
 Plugin based subclasses should return an identifier greater than QgsLayoutItemRegistry.PluginItem.
-
-:rtype: int
 %End
 
     virtual QString uuid() const;
 %Docstring
 Returns the item identification string. This is a unique random string set for the item
 upon creation.
-
-:rtype: str
 
 .. note::
 
@@ -294,8 +290,6 @@ for items which have been added to an existing layout from a template. In this c
 templateUuid() returns the original item UUID at the time the template was created,
 while uuid() returns the current instance of the item's unique identifier.
 
-:rtype: str
-
 .. seealso:: :py:func:`uuid()`
 %End
 
@@ -303,8 +297,6 @@ while uuid() returns the current instance of the item's unique identifier.
 %Docstring
 Returns the item's ID name. This is not necessarily unique, and duplicate ID names may exist
 for a layout.
-
-:rtype: str
 
 .. seealso:: :py:func:`setId()`
 
@@ -325,8 +317,6 @@ for a layout.
 %Docstring
 Get item display name. This is the item's id if set, and if
 not, a user-friendly string identifying item type.
-
-:rtype: str
 
 .. seealso:: :py:func:`id()`
 
@@ -362,8 +352,6 @@ Sets whether the item is ``locked``, preventing mouse interactions with the item
 %Docstring
 Returns true if the item is locked, and cannot be interacted with using the mouse.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setLocked()`
 
 .. seealso:: :py:func:`lockChanged()`
@@ -373,8 +361,6 @@ Returns true if the item is locked, and cannot be interacted with using the mous
 %Docstring
 Returns true if the item is part of a QgsLayoutItemGroup group.
 
-:rtype: bool
-
 .. seealso:: :py:func:`parentGroup()`
 
 .. seealso:: :py:func:`setParentGroup()`
@@ -383,8 +369,6 @@ Returns true if the item is part of a QgsLayoutItemGroup group.
     QgsLayoutItemGroup *parentGroup() const;
 %Docstring
 Returns the item's parent group, if the item is part of a QgsLayoutItemGroup group.
-
-:rtype: QgsLayoutItemGroup
 
 .. seealso:: :py:func:`isGroupMember()`
 
@@ -408,8 +392,6 @@ Returns 0 if this item is to be placed on the same layer as the previous item,
 
 Items which require multiply layers should check QgsLayoutContext.currentExportLayer() during
 their rendering to determine which layer should be drawn.
-
-:rtype: int
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -435,8 +417,6 @@ Returns the reference point for positioning of the layout item. This point is al
 fixed during resizing of the item, and any size changes will be performed
 so that the position of the reference point within the layout remains unchanged.
 
-:rtype: ReferencePoint
-
 .. seealso:: :py:func:`setReferencePoint()`
 %End
 
@@ -444,8 +424,6 @@ so that the position of the reference point within the layout remains unchanged.
 %Docstring
 Returns the fixed size of the item, if applicable, or an empty size if item can be freely
 resized.
-
-:rtype: QgsLayoutSize
 
 .. seealso:: :py:func:`setFixedSize()`
 
@@ -456,8 +434,6 @@ resized.
 %Docstring
 Returns the minimum allowed size of the item, if applicable, or an empty size if item can be freely
 resized.
-
-:rtype: QgsLayoutSize
 
 .. seealso:: :py:func:`setMinimumSize()`
 
@@ -556,8 +532,6 @@ Returns the item's current position, including units. The position returned
 is the position of the item's reference point, which may not necessarily be the top
 left corner of the item.
 
-:rtype: QgsLayoutPoint
-
 .. seealso:: :py:func:`attemptMove()`
 
 .. seealso:: :py:func:`referencePoint()`
@@ -569,16 +543,12 @@ left corner of the item.
 %Docstring
 Returns the page the item is currently on, with the first page returning 0.
 
-:rtype: int
-
 .. seealso:: :py:func:`pagePos()`
 %End
 
     QPointF pagePos() const;
 %Docstring
 Returns the item's position (in layout units) relative to the top left corner of its current page.
-
-:rtype: QPointF
 
 .. seealso:: :py:func:`page()`
 
@@ -589,8 +559,6 @@ Returns the item's position (in layout units) relative to the top left corner of
 %Docstring
 Returns the item's position (in item units) relative to the top left corner of its current page.
 
-:rtype: QgsLayoutPoint
-
 .. seealso:: :py:func:`page()`
 
 .. seealso:: :py:func:`pagePos()`
@@ -599,8 +567,6 @@ Returns the item's position (in item units) relative to the top left corner of i
     QgsLayoutSize sizeWithUnits() const;
 %Docstring
 Returns the item's current size, including units.
-
-:rtype: QgsLayoutSize
 
 .. seealso:: :py:func:`attemptResize()`
 
@@ -616,19 +582,16 @@ which may differ from the current item rotation (if data defined rotation
 settings are present). Use QGraphicsItem.rotation() to obtain the current
 item rotation.
 
-:rtype: float
-
 .. seealso:: :py:func:`setItemRotation()`
 %End
 
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores the item state in a DOM element.
+
 :param parentElement: parent DOM element (e.g. 'Layout' element)
 :param document: DOM document
 :param context: read write context
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -636,6 +599,7 @@ Stores the item state in a DOM element.
     bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets the item state from a DOM element.
+
 :param itemElement: is the DOM node corresponding to item (e.g. 'LayoutItem' element)
 :param document: DOM document
 :param context: read write context
@@ -645,8 +609,6 @@ layout at the time this method is called. Instead, any connections and links to
 other items must be made in the finalizeRestoreFromXml() method. E.g. when restoring
 a scalebar, the connection to the linked map's signals should be implemented
 in finalizeRestoreFromXml(), not readXml().
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 
@@ -670,8 +632,6 @@ map item after restoration from XML.
     bool hasFrame() const;
 %Docstring
 Returns true if the item includes a frame.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setFrameEnabled()`
 
@@ -712,8 +672,6 @@ Sets the frame stroke ``color``.
 %Docstring
 Returns the frame's stroke color. This is only used if hasFrame() returns true.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`hasFrame()`
 
 .. seealso:: :py:func:`setFrameStrokeColor()`
@@ -740,8 +698,6 @@ Sets the frame stroke ``width``.
 %Docstring
 Returns the frame's stroke width. This is only used if hasFrame() returns true.
 
-:rtype: QgsLayoutMeasurement
-
 .. seealso:: :py:func:`hasFrame()`
 
 .. seealso:: :py:func:`setFrameStrokeWidth()`
@@ -754,8 +710,6 @@ Returns the frame's stroke width. This is only used if hasFrame() returns true.
     Qt::PenJoinStyle frameJoinStyle() const;
 %Docstring
 Returns the join style used for drawing the item's frame.
-
-:rtype: Qt.PenJoinStyle
 
 .. seealso:: :py:func:`hasFrame()`
 
@@ -783,8 +737,6 @@ Sets the join ``style`` used when drawing the item's frame.
 %Docstring
 Returns true if the item has a background.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setBackgroundEnabled()`
 
 .. seealso:: :py:func:`backgroundColor()`
@@ -804,8 +756,6 @@ Sets whether this item has a background drawn under it or not.
 Returns the background color for this item. This is only used if hasBackground()
 returns true.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setBackgroundColor()`
 
 .. seealso:: :py:func:`hasBackground()`
@@ -824,8 +774,6 @@ Sets the background ``color`` for this item.
 %Docstring
 Returns the item's composition blending mode.
 
-:rtype: QPainter.CompositionMode
-
 .. seealso:: :py:func:`setBlendMode()`
 %End
 
@@ -843,8 +791,6 @@ QGraphicsItem.opacity() as any data defined overrides will be
 respected.
 
 :return: opacity as double between 1.0 (opaque) and 0 (transparent).
-:rtype: float
-
 
 .. seealso:: :py:func:`setItemOpacity()`
 %End
@@ -854,6 +800,7 @@ respected.
 Sets the item's ``opacity``. This method should be used instead of
 QGraphicsItem.setOpacity() as any data defined overrides will be
 respected.
+
 :param opacity: double between 1.0 (opaque) and 0 (transparent).
 
 .. seealso:: :py:func:`itemOpacity()`
@@ -862,8 +809,6 @@ respected.
     bool excludeFromExports() const;
 %Docstring
 Returns whether the item should be excluded from layout exports and prints.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setExcludeFromExports()`
 %End
@@ -884,8 +829,6 @@ return value will be 1.0.
 
 Returned values are in layout units.
 
-:rtype: float
-
 .. seealso:: :py:func:`rectWithFrame()`
 %End
 
@@ -896,8 +839,6 @@ The bounds are returned in the item's coordinate system (see Qt's QGraphicsItem 
 more details about QGraphicsItem coordinate systems). The results differ from Qt's rect()
 function, as rect() makes no allowances for the portion of outlines which are drawn
 outside of the item.
-
-:rtype: QRectF
 
 .. seealso:: :py:func:`estimatedFrameBleed()`
 %End
@@ -924,6 +865,7 @@ The default implementation has no effect.
     virtual void zoomContent( double factor, QPointF point );
 %Docstring
 Zooms content of item. Does nothing by default.
+
 :param factor: zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
 :param point: item point for zoom center
 
@@ -1040,6 +982,7 @@ Emitted when the item's size or position changes.
 %Docstring
 Draws a debugging rectangle of the item's current bounds within the specified
 painter.
+
 :param painter: destination QPainter
 %End
 
@@ -1086,8 +1029,6 @@ Applies any item-specific size constraint handling to a given ``targetSize`` in 
 Subclasses can override this method if they need to apply advanced logic regarding item
 sizes, which cannot be covered by setFixedSize() or setMinimumSize().
 Item size constraints are applied after fixed, minimum and data defined size constraints.
-
-:rtype: QSizeF
 
 .. seealso:: :py:func:`setFixedSize()`
 
@@ -1157,33 +1098,26 @@ Refresh item's blend mode, considering data defined blend mode.
 %Docstring
 Adjusts the specified ``point`` at which a ``reference`` position of the item
 sits and returns the top left corner of the item, if reference point were placed at the specified position.
-
-:rtype: QPointF
 %End
 
     QPointF positionAtReferencePoint( const ReferencePoint &reference ) const;
 %Docstring
 Returns the current position (in layout units) of a ``reference`` point for the item.
-
-:rtype: QPointF
 %End
 
     QgsLayoutPoint topLeftToReferencePoint( const QgsLayoutPoint &point ) const;
 %Docstring
 Returns the position for the reference point of the item, if the top-left of the item
 was placed at the specified ``point``.
-
-:rtype: QgsLayoutPoint
 %End
 
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores item state within an XML DOM element.
+
 :param element: is the DOM element to store the item's properties in
 :param document: DOM document
 :param context: read write context
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 
@@ -1193,6 +1127,7 @@ Stores item state within an XML DOM element.
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets item state from a DOM element.
+
 :param element: is the DOM element for the item
 :param document: DOM document
 :param context: read write context
@@ -1203,8 +1138,6 @@ other items must be made in the finalizeRestoreFromXml() method. E.g. when resto
 a scalebar, the connection to the linked map's signals should be implemented
 in finalizeRestoreFromXml(), not readPropertiesFromElement().
 
-:rtype: bool
-
 .. seealso:: :py:func:`writePropertiesToElement()`
 
 .. seealso:: :py:func:`readXml()`
@@ -1213,15 +1146,11 @@ in finalizeRestoreFromXml(), not readPropertiesFromElement().
     bool shouldDrawItem() const;
 %Docstring
 Returns whether the item should be drawn in the current context.
-
-:rtype: bool
 %End
 
     QgsLayoutSize applyDataDefinedSize( const QgsLayoutSize &size );
 %Docstring
 Applies any present data defined size overrides to the specified layout ``size``.
-
-:rtype: QgsLayoutSize
 %End
 
 };

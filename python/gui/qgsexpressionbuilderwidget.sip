@@ -37,18 +37,12 @@ An expression item that can be used in the QgsExpressionBuilderWidget tree.
                        QgsExpressionItem::ItemType itemType = ExpressionNode );
 
     QString getExpressionText() const;
-%Docstring
-
-:rtype: str
-%End
 
     QString getHelpText() const;
 %Docstring
 Get the help text that is associated with this expression item.
 
 :return: The help text.
-:rtype: str
-
 %End
 
     void setHelpText( const QString &helpText );
@@ -65,8 +59,6 @@ Set the help text for the current item
 Get the type of expression item, e.g., header, field, ExpressionNode.
 
 :return: The QgsExpressionItem.ItemType
-:rtype: QgsExpressionItem.ItemType
-
 %End
 
     static const int CUSTOM_SORT_ROLE;
@@ -160,8 +152,6 @@ Sets geometry calculator used in distance/area calculations.
 Gets the expression string that has been set in the expression area.
 
 :return: The expression as a string. *
-:rtype: str
-
 %End
 
     void setExpressionText( const QString &expression );
@@ -174,8 +164,6 @@ Sets the expression string for the widget
 Returns the expression context for the widget. The context is used for the expression
 preview result and for populating the list of available functions and variables.
 
-:rtype: QgsExpressionContext
-
 .. seealso:: :py:func:`setExpressionContext`
 
 .. versionadded:: 2.12
@@ -185,6 +173,7 @@ preview result and for populating the list of available functions and variables.
 %Docstring
 Sets the expression context for the widget. The context is used for the expression
 preview result and for populating the list of available functions and variables.
+
 :param context: expression context
 
 .. seealso:: :py:func:`expressionContext`
@@ -198,6 +187,7 @@ preview result and for populating the list of available functions and variables.
                        bool highlightedItem = false, int sortOrder = 1 );
 %Docstring
 Registers a node item for the expression builder.
+
 :param group: The group the item will be show in the tree view.  If the group doesn't exsit it will be created.
 :param label: The label that is show to the user for the item in the tree.
 :param expressionText: The text that is inserted into the expression area when the user double clicks on the item.
@@ -208,10 +198,6 @@ Registers a node item for the expression builder.
 %End
 
     bool isExpressionValid();
-%Docstring
-
-:rtype: bool
-%End
 
     void saveToRecent( const QString &collection = "generic" );
 %Docstring
@@ -255,16 +241,12 @@ Update the list of function files found at the given path
 Returns a pointer to the dialog's function item model.
 This method is exposed for testing purposes only - it should not be used to modify the model.
 
-:rtype: QStandardItemModel
-
 .. versionadded:: 3.0
 %End
 
     QgsProject *project();
 %Docstring
 Returns the project currently associated with the widget.
-
-:rtype: QgsProject
 
 .. seealso:: :py:func:`setProject()`
 
@@ -286,8 +268,6 @@ controls which layers and relations and other project-specific items are shown i
 Will be set to true if the current expression text reported an eval error
 with the context.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -295,8 +275,6 @@ with the context.
 %Docstring
 Will be set to true if the current expression text reports a parser error
 with the context.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -322,6 +300,7 @@ Auto save the current Python function code.
 %Docstring
 Enabled or disable auto saving. When enabled Python scripts will be auto saved
 when text changes.
+
 :param enabled: True to enable auto saving.
 %End
 
@@ -332,6 +311,7 @@ when text changes.
 Emitted when the user changes the expression in the widget.
 Users of this widget should connect to this signal to decide if to let the user
 continue.
+
 :param isValid: Is true if the expression the user has typed is valid.
 %End
 

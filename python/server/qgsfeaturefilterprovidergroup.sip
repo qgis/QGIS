@@ -31,6 +31,7 @@ Constructor
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
 %Docstring
 Filter the features of the layer
+
 :param layer: the layer to control
 :param filterFeatures: the request to fill
 %End
@@ -40,18 +41,15 @@ Filter the features of the layer
 Return a clone of the object
 
 :return: A clone
-:rtype: QgsFeatureFilterProvider
-
 %End
 
     QgsFeatureFilterProviderGroup &addProvider( const QgsFeatureFilterProvider *provider );
 %Docstring
 Add another filter provider to the group
+
 :param provider: The provider to add
 
 :return: itself
-:rtype: QgsFeatureFilterProviderGroup
-
 %End
 
 };

@@ -29,16 +29,16 @@ class APP_EXPORT QgsMapToolSelectFreehand : public QgsMapTool
   public:
     QgsMapToolSelectFreehand( QgsMapCanvas *canvas );
 
-    virtual ~QgsMapToolSelectFreehand();
+    ~QgsMapToolSelectFreehand() override;
 
     //! Overridden mouse move event
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse press event
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
 

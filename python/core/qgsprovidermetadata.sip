@@ -43,8 +43,6 @@ library object.
 This returns the unique key associated with the provider
 
 This key string is used for the associative container in QgsProviderRegistry
-
-:rtype: str
 %End
 
     QString description() const;
@@ -52,8 +50,6 @@ This key string is used for the associative container in QgsProviderRegistry
 This returns descriptive text for the provider
 
 This is used to provide a descriptive list of available data providers.
-
-:rtype: str
 %End
 
     QString library() const;
@@ -61,8 +57,6 @@ This is used to provide a descriptive list of available data providers.
 This returns the library file name
 
 This is used to QLibrary calls to load the data provider.
-
-:rtype: str
 %End
 
 

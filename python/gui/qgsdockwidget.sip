@@ -25,6 +25,7 @@ QgsDockWidget subclass with more fine-grained control over how the widget is clo
     explicit QgsDockWidget( QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
 %Docstring
 Constructor for QgsDockWidget.
+
 :param parent: parent widget
 :param flags: window flags
 %End
@@ -32,6 +33,7 @@ Constructor for QgsDockWidget.
     explicit QgsDockWidget( const QString &title, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = 0 );
 %Docstring
 Constructor for QgsDockWidget.
+
 :param title: dock title
 :param parent: parent widget
 :param flags: window flags
@@ -42,8 +44,6 @@ Constructor for QgsDockWidget.
 Returns true if the dock is both opened and raised to the front (ie not hidden by
 any other tabs.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setUserVisible()`
 %End
 
@@ -52,6 +52,7 @@ any other tabs.
     void setUserVisible( bool visible );
 %Docstring
 Sets the dock widget as visible to a user, ie both shown and raised to the front.
+
 :param visible: set to true to show the dock to the user, or false to hide the dock.
 When setting a dock as user visible, the dock will be opened (if it is not already
 opened) and raised to the front.
@@ -68,7 +69,9 @@ be closed
   protected:
 
     virtual void closeEvent( QCloseEvent * );
+
     virtual void showEvent( QShowEvent *event );
+
 
   signals:
 
@@ -84,6 +87,7 @@ Emitted when dock widget is closed.
     void closedStateChanged( bool wasClosed );
 %Docstring
 Emitted when dock widget is closed (or opened).
+
 :param wasClosed: will be true if dock widget was closed, or false if dock widget was opened
 
 .. seealso:: :py:func:`closed()`
@@ -103,6 +107,7 @@ Emitted when dock widget is opened.
     void openedStateChanged( bool wasOpened );
 %Docstring
 Emitted when dock widget is opened (or closed).
+
 :param wasOpened: will be true if dock widget was opened, or false if dock widget was closed
 
 .. seealso:: :py:func:`closedStateChanged()`

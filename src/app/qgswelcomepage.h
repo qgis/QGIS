@@ -31,7 +31,7 @@ class QgsWelcomePage : public QWidget
   public:
     explicit QgsWelcomePage( bool skipVersionCheck = false, QWidget *parent = nullptr );
 
-    ~QgsWelcomePage();
+    ~QgsWelcomePage() override;
 
     void setRecentProjects( const QList<QgsWelcomePageItemsModel::RecentProjectData> &recentProjects );
 

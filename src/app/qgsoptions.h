@@ -53,7 +53,7 @@ class APP_EXPORT QgsOptions : public QgsOptionsDialogBase, private Ui::QgsOption
     QgsOptions( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags,
                 const QList<QgsOptionsWidgetFactory *> &optionsFactories = QList<QgsOptionsWidgetFactory *>() );
 
-    ~QgsOptions();
+    ~QgsOptions() override;
 
     /**
      * Sets the page with the specified widget name as the current page

@@ -39,8 +39,6 @@ and ``layout``.
 Returns a new polygon item for the specified ``layout``.
 
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsLayoutItemPolygon
 %End
 
     virtual int type() const;
@@ -51,8 +49,6 @@ The caller takes responsibility for deleting the returned object.
     QgsFillSymbol *symbol();
 %Docstring
 Returns the fill symbol used to draw the shape.
-
-:rtype: QgsFillSymbol
 
 .. seealso:: :py:func:`setSymbol()`
 %End

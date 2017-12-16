@@ -31,14 +31,10 @@ Constructor for QgsDialog.
     QVBoxLayout *layout();
 %Docstring
 Returns the central layout. Widgets added to it must have this dialog as parent.
-
-:rtype: QVBoxLayout
 %End
     QDialogButtonBox *buttonBox();
 %Docstring
 Returns the button box.
-
-:rtype: QDialogButtonBox
 %End
 
   protected:

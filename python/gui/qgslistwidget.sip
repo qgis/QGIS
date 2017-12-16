@@ -39,8 +39,6 @@ Set the initial value of the widget.
 Get the edit value.
 
 :return: the QVariantList
-:rtype: QVariantList
-
 %End
 
     bool valid() const;
@@ -48,8 +46,6 @@ Get the edit value.
 Check the content is valid
 
 :return: true if valid
-:rtype: bool
-
 %End
 
 };

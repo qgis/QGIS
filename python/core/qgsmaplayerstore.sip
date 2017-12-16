@@ -35,16 +35,12 @@ Constructor for QgsMapLayerStore.
     int count() const;
 %Docstring
 Returns the number of layers contained in the store.
-
-:rtype: int
 %End
 
 
     int __len__() const;
 %Docstring
 Returns the number of layers contained in the store.
-
-:rtype: int
 %End
 %MethodCode
     sipRes = sipCpp->count();
@@ -53,11 +49,10 @@ Returns the number of layers contained in the store.
     QgsMapLayer *mapLayer( const QString &id ) const;
 %Docstring
 Retrieve a pointer to a layer by layer ``id``.
+
 :param id: ID of layer to retrieve
 
 :return: matching layer, or None if no matching layer found
-:rtype: QgsMapLayer
-
 
 .. seealso:: :py:func:`mapLayersByName()`
 
@@ -67,11 +62,10 @@ Retrieve a pointer to a layer by layer ``id``.
     QList<QgsMapLayer *> mapLayersByName( const QString &name ) const;
 %Docstring
 Retrieve a list of matching layers by layer ``name``.
+
 :param name: name of layers to match
 
 :return: list of matching layers
-:rtype: list of QgsMapLayer
-
 
 .. seealso:: :py:func:`mapLayer()`
 
@@ -81,8 +75,6 @@ Retrieve a list of matching layers by layer ``name``.
     QMap<QString, QgsMapLayer *> mapLayers() const;
 %Docstring
 Returns a map of all layers by layer ID.
-
-:rtype: QMap<str, QgsMapLayer *>
 
 .. seealso:: :py:func:`mapLayer()`
 
@@ -107,10 +99,9 @@ If you specify false here you have take care of deleting
 the layers yourself. Not available in Python.
 
 :return: a list of the map layers that were added
-:rtype: list of QgsMapLayer
-
 successfully. If a layer is invalid, or already exists in the store,
 it will not be part of the returned list.
+
 
 .. seealso:: :py:func:`addMapLayer()`
 %End
@@ -132,7 +123,6 @@ If you specify false here you have take care of deleting
 the layers yourself. Not available in Python.
 
 :return: None if unable to add layer, otherwise pointer to newly added layer
-:rtype: QgsMapLayer
 
 
 .. seealso:: :py:func:`addMapLayers`
@@ -220,8 +210,6 @@ The specified layer will be removed from the store. The layer will also be delet
 Takes a ``layer`` from the store. If the layer was owned by the store, the
 layer will be returned without deleting it. The caller takes ownership of
 the layer and is responsible for deleting it.
-
-:rtype: QgsMapLayer
 
 .. seealso:: :py:func:`removeMapLayer()`
 %End

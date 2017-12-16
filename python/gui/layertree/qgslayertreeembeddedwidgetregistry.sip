@@ -30,15 +30,11 @@ Embedded widgets are assigned per individual map layers and they are shown befor
     virtual QString id() const = 0;
 %Docstring
 Unique name of the provider (among other providers)
-
-:rtype: str
 %End
 
     virtual QString name() const = 0;
 %Docstring
 Human readable name - may be translatable with tr()
-
-:rtype: str
 %End
 
     virtual QWidget *createWidget( QgsMapLayer *layer, int widgetIndex ) = 0 /Factory/;
@@ -46,15 +42,11 @@ Human readable name - may be translatable with tr()
 Factory to create widgets. The returned widget is owned by the caller.
 The widgetIndex argument may be used to identify which widget is being
 created (useful when using multiple widgets from the same provider for one layer).
-
-:rtype: QWidget
 %End
 
     virtual bool supportsLayer( QgsMapLayer *layer ) = 0;
 %Docstring
 Whether it makes sense to use this widget for a particular layer
-
-:rtype: bool
 %End
 };
 
@@ -92,31 +84,23 @@ QgsGui.layerTreeEmbeddedWidgetRegistry().
     QStringList providers() const;
 %Docstring
 Return list of all registered providers
-
-:rtype: list of str
 %End
 
     QgsLayerTreeEmbeddedWidgetProvider *provider( const QString &providerId ) const;
 %Docstring
 Get provider object from the provider's ID
-
-:rtype: QgsLayerTreeEmbeddedWidgetProvider
 %End
 
     bool addProvider( QgsLayerTreeEmbeddedWidgetProvider *provider /Transfer/ );
 %Docstring
 Register a provider, takes ownership of the object.
 Returns true on success, false if the provider is already registered. *
-
-:rtype: bool
 %End
 
     bool removeProvider( const QString &providerId );
 %Docstring
 Unregister a provider, the provider object is deleted.
 Returns true on success, false if the provider was not registered. *
-
-:rtype: bool
 %End
 
   protected:

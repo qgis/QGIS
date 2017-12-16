@@ -131,12 +131,12 @@ sub processDoxygenLine {
     $line =~ s/\s*\\return(s)?/\n:return:/;
 
     if ( $line =~ m/\\param / ){
+        $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
         if ( $COMMENT_PARAM_LIST == 0 )
         {
             $line = "\n$line";
         }
         $COMMENT_PARAM_LIST = 1;
-        $line =~ s/\s*\\param (\w+)\b/:param $1:/g;
     }
 
 
@@ -947,27 +947,27 @@ while ($LINE_IDX < $LINE_COUNT){
         }
         else {
             dbg_info('writing comment');
-            write_output("CM1", "%Docstring\n");
             if ( $COMMENT !~ m/^\s*$/ ){
+                write_output("CM1", "%Docstring\n");
                 my @comment_lines = split /\n/, $COMMENT;
                 foreach my $comment_line (@comment_lines) {
-                  if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
-                      # return type must be added before any other paragraph-level markup
-                      write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
-                      $RETURN_TYPE = '';
-                  }
+                  # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
+                  #     # return type must be added before any other paragraph-level markup
+                  #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
+                  #     $RETURN_TYPE = '';
+                  # }
                   write_output("CM2", "$comment_line\n");
-                  if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
-                      # return type must be added before any other paragraph-level markup
-                      write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
-                      $RETURN_TYPE = '';
-                  }
+                  # if ( $RETURN_TYPE ne '' && $comment_line =~ m/:return:/ ){
+                  #     # return type must be added before any other paragraph-level markup
+                  #     write_output("CM5", ":rtype: $RETURN_TYPE\n\n");
+                  #     $RETURN_TYPE = '';
+                  # }
                 }
-            }
-            if ( $RETURN_TYPE ne '' ){
-                write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
-            }
             write_output("CM4", "%End\n");
+            }
+            # if ( $RETURN_TYPE ne '' ){
+            #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
+            # }
         }
         $COMMENT = '';
         $RETURN_TYPE = '';

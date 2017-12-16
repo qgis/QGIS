@@ -83,17 +83,17 @@ class CORE_EXPORT QgsLayerTreeLayer : public QgsLayerTreeNode
      */
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) SIP_FACTORY;
 
-    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
-    virtual QString dump() const override;
+    QString dump() const override;
 
-    virtual QgsLayerTreeLayer *clone() const override SIP_FACTORY;
+    QgsLayerTreeLayer *clone() const override SIP_FACTORY;
 
     /**
      * Resolves reference to layer from stored layer ID (if it has not been resolved already)
      * \since QGIS 3.0
      */
-    virtual void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
+    void resolveReferences( const QgsProject *project, bool looseMatching = false ) override;
 
   signals:
 

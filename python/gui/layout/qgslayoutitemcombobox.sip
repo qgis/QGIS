@@ -38,6 +38,7 @@ Sets the ``layout`` containing the items to list in the combo box.
     void setItemType( QgsLayoutItemRegistry::ItemType itemType );
 %Docstring
 Sets a filter for the item type to show in the combo box.
+
 :param itemType: type of items to show. Set to QgsLayoutItemRegistry.LayoutItem to
 show all items.
 
@@ -47,8 +48,6 @@ show all items.
     QgsLayoutItemRegistry::ItemType itemType() const;
 %Docstring
 Returns the filter for the item types to show in the combo box.
-
-:rtype: QgsLayoutItemRegistry.ItemType
 
 .. seealso:: :py:func:`setItemType()`
 %End
@@ -64,8 +63,6 @@ Sets a list of specific items to exclude from the combo box.
 %Docstring
 Returns the list of specific items excluded from the combo box.
 
-:rtype: list of QgsLayoutItem
-
 .. seealso:: :py:func:`setExceptedItemList()`
 %End
 
@@ -73,16 +70,12 @@ Returns the list of specific items excluded from the combo box.
 %Docstring
 Return the item currently shown at the specified ``index`` within the combo box.
 
-:rtype: QgsLayoutItem
-
 .. seealso:: :py:func:`currentItem()`
 %End
 
     QgsLayoutItem *currentItem() const;
 %Docstring
 Returns the item currently selected in the combo box.
-
-:rtype: QgsLayoutItem
 %End
 
   public slots:

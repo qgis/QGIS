@@ -39,13 +39,12 @@ Constructor for QgsFeatureSelectionDlg
 Get the selected features
 
 :return: The selected feature ids
-:rtype: QgsFeatureIds
-
 %End
 
     void setSelectedFeatures( const QgsFeatureIds &ids );
 %Docstring
 Set the selected features
+
 :param ids: The feature ids to select
 %End
 

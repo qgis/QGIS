@@ -27,12 +27,11 @@ In order to be readable from project files, they should set these attributes in 
     ~QgsPluginLayer();
 
     virtual QgsPluginLayer *clone() const = 0;
+
 %Docstring
 Returns a new instance equivalent to this one.
 
 :return: a new layer instance
-:rtype: QgsPluginLayer
-
 
 .. versionadded:: 3.0
 %End
@@ -40,8 +39,6 @@ Returns a new instance equivalent to this one.
     QString pluginLayerType();
 %Docstring
 Return plugin layer type (the same as used in QgsPluginLayerRegistry)
-
-:rtype: str
 %End
 
     virtual void setExtent( const QgsRectangle &extent );

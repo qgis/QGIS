@@ -27,6 +27,7 @@ Wraps a checkbox edit widget for searching.
     explicit QgsCheckboxSearchWidgetWrapper( QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCheckboxSearchWidgetWrapper.
+
 :param vl: associated vector layer
 :param fieldIdx: index of associated field
 :param parent: parent widget
@@ -35,8 +36,6 @@ Constructor for QgsCheckboxSearchWidgetWrapper.
     QVariant value() const;
 %Docstring
 Returns a variant representing the current state of the widget.
-
-:rtype: QVariant
 
 .. note::
 
@@ -57,10 +56,13 @@ the editor widget configuration.
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
 
     virtual void clearWidget();
+
     virtual void setEnabled( bool enabled );
+
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );

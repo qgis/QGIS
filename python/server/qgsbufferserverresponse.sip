@@ -42,37 +42,30 @@ Undo a previous 'setHeader' call
 
 %Docstring
 Return the header value
-
-:rtype: str
 %End
 
     virtual QMap<QString, QString> headers() const;
 %Docstring
 Return all the headers
-
-:rtype: QMap<str, QString>
 %End
 
     virtual bool headersSent() const;
 
 %Docstring
 Return true if the headers have alredy been sent
-
-:rtype: bool
 %End
 
     virtual void setStatusCode( int code );
 
 %Docstring
 Set the http status code
+
 :param code: HTTP status code value
 %End
 
     virtual int statusCode() const;
 %Docstring
 Return the http status code
-
-:rtype: int
 %End
 
     virtual void sendError( int code,  const QString &message );
@@ -83,6 +76,7 @@ This method delegates error handling at the server level. This is different
 from calling setReturnCode() which let you return a specific response body.
 Calling sendError() will end the transaction and any attempt to write data
 or set headers will be an error.
+
 :param code: HHTP return code value
 :param message: An informative error message
 %End
@@ -91,8 +85,6 @@ or set headers will be an error.
 
 %Docstring
 Return the underlying QIODevice
-
-:rtype: QIODevice
 %End
 
     virtual void finish();
@@ -126,8 +118,6 @@ give access to the underlying and return an empty array.
 
 Note that each call to 'flush' may empty the buffer and in case
 of streaming process you may get partial content
-
-:rtype: QByteArray
 %End
 
     virtual void truncate();
@@ -141,8 +131,6 @@ Clear internal buffer
     QByteArray body() const;
 %Docstring
 Return body
-
-:rtype: QByteArray
 %End
 
 

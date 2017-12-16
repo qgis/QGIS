@@ -34,6 +34,7 @@ QgsGraphBuilder and QgsGraphDirector both use a "builder" design pattern
     QgsGraphBuilderInterface( const QgsCoordinateReferenceSystem &crs, bool ctfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 %Docstring
 Default constructor
+
 :param crs: Coordinate reference system for new graph vertex
 :param ctfEnabled: enable coordinate transform from source graph CRS to CRS graph
 :param topologyTolerance: sqrt distance between source point as one graph vertex
@@ -45,34 +46,27 @@ Default constructor
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
 Returns destinaltion CRS
-
-:rtype: QgsCoordinateReferenceSystem
 %End
 
     bool coordinateTransformationEnabled();
 %Docstring
 Returns coordinate transformation enabled
-
-:rtype: bool
 %End
 
     double topologyTolerance();
 %Docstring
 Returns topology tolerance
-
-:rtype: float
 %End
 
     QgsDistanceArea *distanceArea();
 %Docstring
 Returns measurement tool
-
-:rtype: QgsDistanceArea
 %End
 
     virtual void addVertex( int id, const QgsPointXY &pt );
 %Docstring
 Add vertex to the graph
+
 :param id: vertex identifier
 :param pt: vertex coordinates
 
@@ -84,6 +78,7 @@ Add vertex to the graph
     virtual void addEdge( int pt1id, const QgsPointXY &pt1, int pt2id, const QgsPointXY &pt2, const QVector< QVariant > &strategies );
 %Docstring
 Add edge to the graph
+
 :param pt1id: first vertex identificator
 :param pt1:   first vertex coordinates
 :param pt2id: second vertex identificator

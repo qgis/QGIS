@@ -43,7 +43,7 @@ class QgsOgrDbSourceSelect: public QgsAbstractDataSourceWidget, private Ui::QgsD
      */
     QgsOgrDbSourceSelect( const QString &theOgrDriverName, const QString &theName, const QString &theExtensions, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode theWidgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsOgrDbSourceSelect();
+    ~QgsOgrDbSourceSelect() override;
 
     QString layerURI( const QModelIndex &index );
 

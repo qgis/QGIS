@@ -19,9 +19,13 @@ class QgsCacheIndexFeatureId : QgsAbstractCacheIndex
     QgsCacheIndexFeatureId( QgsVectorLayerCache * );
 
     virtual void flushFeature( const QgsFeatureId fid );
+
     virtual void flush();
+
     virtual void requestCompleted( const QgsFeatureRequest &featureRequest, const QgsFeatureIds &fids );
+
     virtual bool getCacheIterator( QgsFeatureIterator &featureIterator, const QgsFeatureRequest &featureRequest );
+
 
 };
 

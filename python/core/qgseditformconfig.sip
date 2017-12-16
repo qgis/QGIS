@@ -85,8 +85,6 @@ This is only useful in combination with EditorLayout.TabLayout.
     QList< QgsAttributeEditorElement * > tabs() const;
 %Docstring
 Returns a list of tabs for EditorLayout.TabLayout obtained from the invisible root container.
-
-:rtype: list of QgsAttributeEditorElement
 %End
 
     void clearTabs();
@@ -98,16 +96,12 @@ Clears all the tabs for the attribute editor form with EditorLayout.TabLayout.
 %Docstring
 Get the invisible root container for the drag and drop designer form (EditorLayout.TabLayout).
 
-:rtype: QgsAttributeEditorContainer
-
 .. versionadded:: 3
 %End
 
     EditorLayout layout() const;
 %Docstring
 Get the active layout style for the attribute editor for this layer
-
-:rtype: EditorLayout
 %End
 
     void setLayout( EditorLayout editorLayout );
@@ -118,8 +112,6 @@ Set the active layout style for the attribute editor for this layer
     QString uiForm() const;
 %Docstring
 Get path to the .ui form. Only meaningful with EditorLayout.UiFileLayout.
-
-:rtype: str
 %End
 
     void setUiForm( const QString &ui );
@@ -145,8 +137,6 @@ layer.setEditFormConfig(editFormConfig)
 :param config:      The config to set for this widget
 
 :return: false if a field exists with the provided widgetName. In this case
-:rtype: bool
-
 QgsVectorLayer.setEditorWidgetSetup should be used.
 
 .. seealso:: :py:func:`QgsVectorLayer.setEditorWidgetSetup()`
@@ -159,8 +149,6 @@ Get the configuration for the editor widget with the given name.
 :param widgetName: The name of the widget.
 
 :return: The configuration for the editor widget or an empty config if the field does not exist
-:rtype: QVariantMap
-
 %End
 
     bool removeWidgetConfig( const QString &widgetName );
@@ -170,16 +158,12 @@ Remove the configuration for the editor widget with the given name
 :param widgetName: The name of the widget.
 
 :return: true if a configuration has been removed
-:rtype: bool
-
 %End
 
     bool readOnly( int idx ) const;
 %Docstring
 This returns true if the field is manually set to read only or if the field
 does not support editing like joins or virtual fields.
-
-:rtype: bool
 %End
 
     void setReadOnly( int idx, bool readOnly = true );
@@ -193,8 +177,6 @@ If this returns true, the widget at the given index will receive its label on th
 while if it returns false, the widget will receive its label on the left hand side.
 Labeling on top leaves more horizontal space for the widget itself.
 *
-
-:rtype: bool
 %End
 
     void setLabelOnTop( int idx, bool onTop );
@@ -214,8 +196,6 @@ Get Python function for edit form initialization.
 Will be looked up in a Python file relative to the project folder if it
 includes a module name or if it's a pure function name it will searched
 in the Python code set with setInitCode().
-
-:rtype: str
 %End
 
     void setInitFunction( const QString &function );
@@ -229,8 +209,6 @@ in the Python code set with setInitCode().
     QString initCode() const;
 %Docstring
 Get Python code for edit form initialization.
-
-:rtype: str
 %End
 
     void setInitCode( const QString &code );
@@ -243,8 +221,6 @@ setInitFunction().
     QString initFilePath() const;
 %Docstring
 Get Python external file path for edit form initialization.
-
-:rtype: str
 %End
 
     void setInitFilePath( const QString &filePath );
@@ -259,8 +235,6 @@ setInitFunction().
 Return Python code source for edit form initialization
 (if it shall be loaded from a file, read from the
 provided dialog editor or inherited from the environment)
-
-:rtype: PythonInitCodeSource
 %End
 
     void setInitCodeSource( PythonInitCodeSource initCodeSource );
@@ -271,8 +245,6 @@ Set if Python code shall be used for edit form initialization and its origin
     FeatureFormSuppress suppress() const;
 %Docstring
 Type of feature form pop-up suppression after feature creation (overrides app setting)
-
-:rtype: FeatureFormSuppress
 %End
     void setSuppress( FeatureFormSuppress s );
 %Docstring
@@ -295,8 +267,6 @@ Serialize on project save
     QgsAttributeEditorElement *attributeEditorElementFromDomElement( QDomElement &elem, QgsAttributeEditorElement *parent );
 %Docstring
 Deserialize drag and drop designer elements.
-
-:rtype: QgsAttributeEditorElement
 %End
 
     explicit QgsEditFormConfig();

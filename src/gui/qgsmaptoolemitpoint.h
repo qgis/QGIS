@@ -35,10 +35,10 @@ class GUI_EXPORT QgsMapToolEmitPoint : public QgsMapTool
     //! constructor
     QgsMapToolEmitPoint( QgsMapCanvas *canvas );
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   signals:
     //! signal emitted on canvas click

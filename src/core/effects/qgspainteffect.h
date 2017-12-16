@@ -336,10 +336,10 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
      */
     static QgsPaintEffect *create( const QgsStringMap &map ) SIP_FACTORY;
 
-    virtual QString type() const override { return QStringLiteral( "drawSource" ); }
-    virtual QgsDrawSourceEffect *clone() const override SIP_FACTORY;
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap &props ) override;
+    QString type() const override { return QStringLiteral( "drawSource" ); }
+    QgsDrawSourceEffect *clone() const override SIP_FACTORY;
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
 
     /**
      * Sets the \a opacity for the effect.
@@ -375,7 +375,7 @@ class CORE_EXPORT QgsDrawSourceEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext &context ) override;
+    void draw( QgsRenderContext &context ) override;
 
   private:
 

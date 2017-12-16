@@ -96,7 +96,7 @@ class eVis: public QObject, public QgisPlugin
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
 
     //! Main button actions
     void launchDatabaseConnection();

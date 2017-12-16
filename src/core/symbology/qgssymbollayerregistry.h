@@ -112,10 +112,10 @@ class CORE_EXPORT QgsSymbolLayerMetadata : public QgsSymbolLayerAbstractMetadata
     //! \note not available in Python bindings
     void setWidgetFunction( QgsSymbolLayerWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
-    virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
-    virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
-    virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override SIP_FACTORY { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
-    virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
+    QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) override SIP_FACTORY { return mCreateFunc ? mCreateFunc( map ) : nullptr; }
+    QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer *vl ) override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc( vl ) : nullptr; }
+    QgsSymbolLayer *createSymbolLayerFromSld( QDomElement &elem ) override SIP_FACTORY { return mCreateFromSldFunc ? mCreateFromSldFunc( elem ) : nullptr; }
+    void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) override
     {
       if ( mPathResolverFunc )
         mPathResolverFunc( properties, pathResolver, saving );

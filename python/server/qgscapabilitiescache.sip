@@ -24,15 +24,15 @@ A cache for capabilities xml documents (by configuration file path)
     const QDomDocument *searchCapabilitiesDocument( const QString &configFilePath, const QString &key );
 %Docstring
 Returns cached capabilities document (or 0 if document for configuration file not in cache)
+
 :param configFilePath: the progect file path
 :param key: key used to separate different version in different cache
-
-:rtype: QDomDocument
 %End
 
     void insertCapabilitiesDocument( const QString &configFilePath, const QString &key, const QDomDocument *doc );
 %Docstring
 Inserts new capabilities document (creates a copy of the document, does not take ownership)
+
 :param configFilePath: the project file path
 :param key: key used to separate different version in different cache
 :param doc: the DOM document
@@ -41,6 +41,7 @@ Inserts new capabilities document (creates a copy of the document, does not take
     void removeCapabilitiesDocument( const QString &path );
 %Docstring
 Remove capabilities document
+
 :param path: the project file path
 
 .. versionadded:: 2.16

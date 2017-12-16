@@ -144,7 +144,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see createWidget
      */
-    virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; } SIP_SKIP
+    QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) override { return mCreateFunc ? mCreateFunc( map ) : nullptr; } SIP_SKIP
 
     /**
      * Creates a new paint effect properties widget for the metadata's effect class
@@ -152,7 +152,7 @@ class CORE_EXPORT QgsPaintEffectMetadata : public QgsPaintEffectAbstractMetadata
      * \note not available in Python bindings
      * \see createWidget
      */
-    virtual QgsPaintEffectWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; } SIP_SKIP
+    QgsPaintEffectWidget *createWidget() override SIP_FACTORY { return mWidgetFunc ? mWidgetFunc() : nullptr; } SIP_SKIP
 
   protected:
     QgsPaintEffectCreateFunc mCreateFunc;

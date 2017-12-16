@@ -24,6 +24,7 @@ A signal will then be emitted.
     QgsMapToolIdentifyFeature( QgsMapCanvas *canvas, QgsVectorLayer *vl = 0 );
 %Docstring
  QgsMapToolIdentifyFeature is a map tool to identify a feature on a chosen layer
+
 :param canvas: the map canvas
 :param vl: the vector layer. The map tool can be initialized without any layer and can be set afterward.
 %End
@@ -35,12 +36,14 @@ change the layer used by the map tool to identify
 
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
+
   signals:
     void featureIdentified( const QgsFeature & );
     void featureIdentified( QgsFeatureId );
 
   protected:
     virtual void keyPressEvent( QKeyEvent *e );
+
 
 };
 

@@ -34,8 +34,6 @@ Constructor
 
 %Docstring
 Returns the group's name.
-
-:rtype: str
 %End
 
     virtual void setName( const QString &n );
@@ -47,29 +45,21 @@ Sets the group's name.
     QgsLayerTreeGroup *insertGroup( int index, const QString &name );
 %Docstring
 Insert a new group node with given name at specified position. The newly created node is owned by this group.
-
-:rtype: QgsLayerTreeGroup
 %End
 
     QgsLayerTreeGroup *addGroup( const QString &name );
 %Docstring
 Append a new group node with given name. Newly created node is owned by this group.
-
-:rtype: QgsLayerTreeGroup
 %End
 
     QgsLayerTreeLayer *insertLayer( int index, QgsMapLayer *layer );
 %Docstring
 Insert a new layer node for given map layer at specified position. The newly created node is owned by this group.
-
-:rtype: QgsLayerTreeLayer
 %End
 
     QgsLayerTreeLayer *addLayer( QgsMapLayer *layer );
 %Docstring
 Append a new layer node for given map layer. The newly created node is owned by this group.
-
-:rtype: QgsLayerTreeLayer
 %End
 
     void insertChildNodes( int index, const QList<QgsLayerTreeNode *> &nodes /Transfer/ );
@@ -116,45 +106,33 @@ Remove all child nodes. The nodes will be deleted.
 %Docstring
 Find layer node representing the map layer. Searches recursively the whole sub-tree.
 
-:rtype: QgsLayerTreeLayer
-
 .. versionadded:: 3.0
 %End
 
     QgsLayerTreeLayer *findLayer( const QString &layerId ) const;
 %Docstring
 Find layer node representing the map layer specified by its ID. Searches recursively the whole sub-tree.
-
-:rtype: QgsLayerTreeLayer
 %End
 
     QList<QgsLayerTreeLayer *> findLayers() const;
 %Docstring
 Find all layer nodes. Searches recursively the whole sub-tree.
-
-:rtype: list of QgsLayerTreeLayer
 %End
 
     QStringList findLayerIds() const;
 %Docstring
 Find layer IDs used in all layer nodes. Searches recursively the whole sub-tree.
-
-:rtype: list of str
 %End
 
     QgsLayerTreeGroup *findGroup( const QString &name );
 %Docstring
 Find group node with specified name. Searches recursively the whole sub-tree.
-
-:rtype: QgsLayerTreeGroup
 %End
 
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
 Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
-
-:rtype: QgsLayerTreeGroup
 %End
 
     static QgsLayerTreeGroup *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
@@ -162,12 +140,11 @@ Does not resolve textual references to layers. Call resolveReferences() afterwar
 Read group (tree) from XML element <layer-tree-group> and return the newly created group (or null on error).
 Also resolves textual references to layers from the project (calls resolveReferences() internally).
 
-:rtype: QgsLayerTreeGroup
-
 .. versionadded:: 3.0
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
+
 %Docstring
 Write group (tree) as XML element <layer-tree-group> and add it to the given parent element
 %End
@@ -179,20 +156,19 @@ Does not resolve textual references to layers. Call resolveReferences() afterwar
 %End
 
     virtual QString dump() const;
+
 %Docstring
 Return text representation of the tree. For debugging purposes only.
-
-:rtype: str
 %End
 
     virtual QgsLayerTreeGroup *clone() const /Factory/;
+
 %Docstring
 Return a clone of the group. The children are cloned too.
-
-:rtype: QgsLayerTreeGroup
 %End
 
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
 %Docstring
 Calls resolveReferences() on child tree nodes
 
@@ -200,6 +176,7 @@ Calls resolveReferences() on child tree nodes
 %End
 
     virtual void setItemVisibilityCheckedRecursive( bool checked );
+
 %Docstring
 Check or uncheck a node and all its children (taking into account exclusion rules)
 %End
@@ -207,8 +184,6 @@ Check or uncheck a node and all its children (taking into account exclusion rule
     bool isMutuallyExclusive() const;
 %Docstring
 Return whether the group is mutually exclusive (only one child can be checked at a time)
-
-:rtype: bool
 
 .. versionadded:: 2.12
 %End

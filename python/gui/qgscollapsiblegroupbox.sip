@@ -21,17 +21,9 @@ class QgsGroupBoxCollapseButton : QToolButton
     QgsGroupBoxCollapseButton( QWidget *parent /TransferThis/ = 0 );
 
     bool altDown() const;
-%Docstring
-
-:rtype: bool
-%End
     void setAltDown( bool updown );
 
     bool shiftDown() const;
-%Docstring
-
-:rtype: bool
-%End
     void setShiftDown( bool shiftdown );
 
   protected:
@@ -64,8 +56,6 @@ bool collapsed, QString syncGroup, bool scrollOnExpand
     bool isCollapsed() const;
 %Docstring
 Returns the current collapsed state of this group box
-
-:rtype: bool
 %End
 
     void setCollapsed( bool collapse );
@@ -78,8 +68,6 @@ Collapse or uncollapse this groupbox
     QString syncGroup() const;
 %Docstring
 Named group which synchronizes collapsing action when triangle is clicked while holding alt modifier key
-
-:rtype: str
 %End
 
     void setSyncGroup( const QString &grp );
@@ -95,8 +83,6 @@ Set this to false to not automatically scroll parent QScrollArea to this widget'
     bool scrollOnExpand();
 %Docstring
 If this is set to false the parent QScrollArea will not be automatically scrolled to this widget's contents when expanded
-
-:rtype: bool
 %End
 
   signals:
@@ -129,10 +115,6 @@ Visual fixes for when group box is collapsed/expanded
 
     void updateStyle();
     QRect titleRect() const;
-%Docstring
-
-:rtype: QRect
-%End
     void clearModifiers();
 
 
@@ -180,15 +162,7 @@ Set this to true to save/restore checked state
 in multiple places or used as options for different parent objects *
 %End
     bool saveCollapsedState();
-%Docstring
-
-:rtype: bool
-%End
     bool saveCheckedState();
-%Docstring
-
-:rtype: bool
-%End
 
     void setSettingGroup( const QString &group );
 %Docstring
@@ -197,8 +171,6 @@ Set this to a defined string to share save/restore states across different paren
     QString settingGroup() const;
 %Docstring
 Returns the name of the setting group in which the collapsed state will be saved
-
-:rtype: str
 %End
 
   protected slots:
@@ -226,10 +198,6 @@ The configuration path to which it is saved is defined by
     virtual void showEvent( QShowEvent *event );
 
     QString saveKey() const;
-%Docstring
-
-:rtype: str
-%End
 
 
 };

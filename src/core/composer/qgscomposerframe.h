@@ -49,7 +49,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
     QgsComposerMultiFrame *multiFrame() const { return mMultiFrame; }
 
     //Overridden to allow multiframe to set display name
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     //Overridden to handle fixed frame sizes set by multi frame
     void setSceneRect( const QRectF &rectangle ) override;
@@ -110,7 +110,7 @@ class CORE_EXPORT QgsComposerFrame: public QgsComposerItem
      */
     bool isEmpty() const;
 
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
   private:
     QgsComposerFrame(); //forbidden

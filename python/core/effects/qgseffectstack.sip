@@ -38,11 +38,10 @@ effect will be drawn using the original picture, not the blurred version.
 %Docstring
 Creates a new QgsEffectStack effect. This method ignores
 the map parameter, and always returns an empty effect stack.
+
 :param map: unused encoded properties string map
 
 :return: new QgsEffectStack
-:rtype: QgsPaintEffect
-
 %End
 
     QgsEffectStack();
@@ -55,27 +54,31 @@ Constructor for empty QgsEffectStack.
     explicit QgsEffectStack( const QgsPaintEffect &effect );
 %Docstring
 Creates a new QgsEffectStack effect from a single initial effect.
+
 :param effect: initial effect to add to the stack. The effect will
 be cloned, so ownership is not transferred to the stack.
 
 :return: new QgsEffectStack containing initial effect
 %End
 
-    virtual ~QgsEffectStack();
+    ~QgsEffectStack();
 
     virtual QString type() const;
     virtual QgsEffectStack *clone() const /Factory/;
+
     virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
+
     virtual bool readProperties( const QDomElement &element );
 
+
     virtual QgsStringMap properties() const;
+
 %Docstring
 Unused for QgsEffectStack, will always return an empty string map
-
-:rtype: QgsStringMap
 %End
 
     virtual void readProperties( const QgsStringMap &props );
+
 %Docstring
 Unused for QgsEffectStack, props parameter will be ignored
 %End
@@ -83,6 +86,7 @@ Unused for QgsEffectStack, props parameter will be ignored
     void appendEffect( QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Appends an effect to the end of the stack.
+
 :param effect: QgsPaintEffect to append. Ownership of the effect will be
 transferred to the stack object.
 
@@ -92,11 +96,10 @@ transferred to the stack object.
     bool insertEffect( const int index, QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Inserts an effect at a specified index within the stack.
+
 :param index: position to insert the effect
 :param effect: QgsPaintEffect to insert. Ownership of the effect will be
 transferred to the stack object.
-
-:rtype: bool
 
 .. seealso:: :py:func:`appendEffect`
 %End
@@ -104,19 +107,17 @@ transferred to the stack object.
     bool changeEffect( const int index, QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Replaces the effect at a specified position within the stack.
+
 :param index: position of effect to replace
 :param effect: QgsPaintEffect to replace with. Ownership of the effect will be
 transferred to the stack object.
-
-:rtype: bool
 %End
 
     QgsPaintEffect *takeEffect( const int index /TransferBack/ );
 %Docstring
 Removes an effect from the stack and returns a pointer to it.
-:param index: position of effect to take
 
-:rtype: QgsPaintEffect
+:param index: position of effect to take
 %End
 
     QList< QgsPaintEffect * > *effectList();
@@ -125,8 +126,6 @@ Returns a pointer to the list of effects currently contained by
 the stack
 
 :return: list of QgsPaintEffects within the stack
-:rtype: list of QgsPaintEffect
-
 %End
 
     int count() const;
@@ -134,24 +133,22 @@ the stack
 Returns count of effects contained by the stack
 
 :return: count of effects
-:rtype: int
-
 %End
 
     QgsPaintEffect *effect( int index ) const;
 %Docstring
 Returns a pointer to the effect at a specified index within the stack
+
 :param index: position of effect to return
 
 :return: QgsPaintEffect at specified position
-:rtype: QgsPaintEffect
-
 %End
 
 
   protected:
 
     virtual void draw( QgsRenderContext &context );
+
 
 };
 

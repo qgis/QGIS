@@ -56,7 +56,7 @@ class GUI_EXPORT QgsPointClusterRendererWidget: public QgsRendererWidget, public
      */
     QgsPointClusterRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
 
-    ~QgsPointClusterRendererWidget();
+    ~QgsPointClusterRendererWidget() override;
 
     QgsFeatureRenderer *renderer() override;
     void setContext( const QgsSymbolWidgetContext &context ) override;

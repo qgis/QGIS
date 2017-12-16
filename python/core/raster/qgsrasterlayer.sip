@@ -186,13 +186,12 @@ The main tasks carried out by the constructor are:
     ~QgsRasterLayer();
 
     virtual QgsRasterLayer *clone() const /Factory/;
+
 %Docstring
 Returns a new instance equivalent to this one. A new provider is
 created for the same data source and renderer is cloned too.
 
 :return: a new layer instance
-:rtype: QgsRasterLayer
-
 
 .. versionadded:: 3.0
 %End
@@ -220,20 +219,12 @@ This helper checks to see whether the file name appears to be a valid
 raster file name.  If the file name looks like it could be valid,
 but some sort of error occurs in processing the file, the error is
 returned in retError.
-
-:rtype: bool
 %End
     static bool isValidRasterFileName( const QString &fileNameQString );
-%Docstring
-
-:rtype: bool
-%End
 
     static QDateTime lastModified( const QString   &name );
 %Docstring
 Return time stamp for given file name
-
-:rtype: QDateTime
 %End
 
     void setDataProvider( const QString &provider );
@@ -244,8 +235,6 @@ Return time stamp for given file name
     LayerType rasterType();
 %Docstring
   Accessor for raster layer type (which is a read only property)
-
-:rtype: LayerType
 %End
 
     void setRenderer( QgsRasterRenderer *renderer /Transfer/ );
@@ -253,62 +242,38 @@ Return time stamp for given file name
 Set raster renderer. Takes ownership of the renderer object
 %End
     QgsRasterRenderer *renderer() const;
-%Docstring
-
-:rtype: QgsRasterRenderer
-%End
 
     QgsRasterResampleFilter *resampleFilter() const;
 %Docstring
 Set raster resample filter. Takes ownership of the resample filter object
-
-:rtype: QgsRasterResampleFilter
 %End
 
     QgsBrightnessContrastFilter *brightnessFilter() const;
-%Docstring
-
-:rtype: QgsBrightnessContrastFilter
-%End
     QgsHueSaturationFilter *hueSaturationFilter() const;
-%Docstring
-
-:rtype: QgsHueSaturationFilter
-%End
 
     QgsRasterPipe *pipe();
 %Docstring
 Get raster pipe
-
-:rtype: QgsRasterPipe
 %End
 
     int width() const;
 %Docstring
  Accessor that returns the width of the (unclipped) raster
-
-:rtype: int
 %End
 
     int height() const;
 %Docstring
  Accessor that returns the height of the (unclipped) raster
-
-:rtype: int
 %End
 
     int bandCount() const;
 %Docstring
  Get the number of bands in this layer
-
-:rtype: int
 %End
 
     QString bandName( int bandNoInt ) const;
 %Docstring
  Get the name of a band given its number
-
-:rtype: str
 %End
 
     virtual QgsRasterDataProvider *dataProvider();
@@ -319,23 +284,21 @@ Get raster pipe
 %Docstring
 Returns the data provider in a const-correct manner
 
-:rtype: QgsRasterDataProvider
-
 .. note::
 
    available in Python bindings as constDataProvider()
 %End
 
     virtual void reload();
+
 %Docstring
 Synchronises with changes in the datasource
 %End
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
 %Docstring
 Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
-
-:rtype: QgsMapLayerRenderer
 
 .. versionadded:: 2.4
 %End
@@ -350,8 +313,6 @@ Return new instance of QgsMapLayerRenderer that will be used for rendering of gi
     QgsLegendColorList legendSymbologyItems() const;
 %Docstring
 Returns a list with classification items (Text and color)
-
-:rtype: QgsLegendColorList
 %End
 
     virtual bool isSpatial() const;
@@ -362,28 +323,20 @@ Returns a list with classification items (Text and color)
     QPixmap paletteAsPixmap( int bandNumber = 1 );
 %Docstring
  Get an 100x100 pixmap of the color palette. If the layer has no palette a white pixmap will be returned
-
-:rtype: QPixmap
 %End
 
     QString providerType() const;
 %Docstring
  [ data provider interface ] Which provider is being used for this Raster Layer?
-
-:rtype: str
 %End
 
     double rasterUnitsPerPixelX() const;
 %Docstring
  Returns the number of raster units per each raster pixel in X axis. In a world file, this is normally the first row (without the sign)
-
-:rtype: float
 %End
     double rasterUnitsPerPixelY() const;
 %Docstring
  Returns the number of raster units per each raster pixel in Y axis. In a world file, this is normally the first row (without the sign)
-
-:rtype: float
 %End
 
 
@@ -395,6 +348,7 @@ Returns a list with classification items (Text and color)
                                  bool generateLookupTableFlag = true );
 %Docstring
  Set contrast enhancement algorithm
+
 :param algorithm: Contrast enhancement algorithm
 :param limits: Limits
 :param extent: Extent used to calculate limits, if empty, use full layer extent
@@ -408,15 +362,12 @@ Returns a list with classification items (Text and color)
     void setDefaultContrastEnhancement();
 %Docstring
  Set default contrast enhancement
-
-:rtype: bool
 %End
 
     virtual QStringList subLayers() const;
+
 %Docstring
  Returns the sublayers of this layer - Useful for providers that manage their own layers, such as WMS
-
-:rtype: list of str
 %End
 
     QImage previewAsImage( QSize size, const QColor &bgColor = Qt::white,
@@ -424,12 +375,11 @@ Returns a list with classification items (Text and color)
 %Docstring
  Draws a preview of the rasterlayer into a QImage
 
-:rtype: QImage
-
 .. versionadded:: 2.4
 %End
 
     virtual void setLayerOrder( const QStringList &layers );
+
 %Docstring
 Reorders the *previously selected* sublayers of this layer from bottom to top
 
@@ -437,15 +387,15 @@ Reorders the *previously selected* sublayers of this layer from bottom to top
 %End
 
     virtual void setSubLayerVisibility( const QString &name, bool vis );
+
 %Docstring
 Set the visibility of the given sublayer name
 %End
 
     virtual QDateTime timestamp() const;
+
 %Docstring
 Time stamp of data source in the moment when data/metadata were loaded by provider
-
-:rtype: QDateTime
 %End
 
   public slots:
@@ -456,48 +406,36 @@ Time stamp of data source in the moment when data/metadata were loaded by provid
 
 %Docstring
  Read the symbology for the current layer from the Dom node supplied
-
-:rtype: bool
 %End
 
     virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 
 %Docstring
  Read the style information for the current layer from the Dom node supplied
-
-:rtype: bool
 %End
 
     virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
 
 %Docstring
  Reads layer specific state from project file Dom node
-
-:rtype: bool
 %End
 
     virtual bool writeSymbology( QDomNode &, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
 %Docstring
  Write the symbology for the layer into the docment provided
-
-:rtype: bool
 %End
 
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 
 %Docstring
  Write the style for the layer into the docment provided
-
-:rtype: bool
 %End
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
 
 %Docstring
  Write layer specific state to project file Dom node
-
-:rtype: bool
 %End
 
 };

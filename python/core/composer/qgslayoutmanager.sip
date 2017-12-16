@@ -45,8 +45,6 @@ Adds a composition to the manager. Ownership of the composition is transferred t
 Returns true if the addition was successful, or false if the composition could not be added (eg
 as a result of a duplicate composition name).
 
-:rtype: bool
-
 .. seealso:: :py:func:`removeComposition()`
 
 .. seealso:: :py:func:`compositionAdded()`
@@ -58,8 +56,6 @@ Adds a ``layout`` to the manager. Ownership of the layout is transferred to the 
 Returns true if the addition was successful, or false if the layout could not be added (eg
 as a result of a duplicate layout name).
 
-:rtype: bool
-
 .. seealso:: :py:func:`removeLayout()`
 
 .. seealso:: :py:func:`layoutAdded()`
@@ -70,8 +66,6 @@ as a result of a duplicate layout name).
 Removes a composition from the manager. The composition is deleted.
 Returns true if the removal was successful, or false if the removal failed (eg as a result
 of removing a composition which is not contained in the manager).
-
-:rtype: bool
 
 .. seealso:: :py:func:`addComposition()`
 
@@ -87,8 +81,6 @@ of removing a composition which is not contained in the manager).
 Removes a ``layout`` from the manager. The layout is deleted.
 Returns true if the removal was successful, or false if the removal failed (eg as a result
 of removing a layout which is not contained in the manager).
-
-:rtype: bool
 
 .. seealso:: :py:func:`addLayout()`
 
@@ -109,39 +101,29 @@ Removes and deletes all layouts from the manager.
     QList< QgsComposition * > compositions() const;
 %Docstring
 Returns a list of all compositions contained in the manager.
-
-:rtype: list of QgsComposition
 %End
 
     QList< QgsLayout * > layouts() const;
 %Docstring
 Returns a list of all layouts contained in the manager.
-
-:rtype: list of QgsLayout
 %End
 
     QgsComposition *compositionByName( const QString &name ) const;
 %Docstring
 Returns the composition with a matching name, or None if no matching compositions
 were found.
-
-:rtype: QgsComposition
 %End
 
     QgsLayout *layoutByName( const QString &name ) const;
 %Docstring
 Returns the layout with a matching name, or None if no matching layouts
 were found.
-
-:rtype: QgsLayout
 %End
 
     bool readXml( const QDomElement &element, const QDomDocument &doc );
 %Docstring
 Reads the manager's state from a DOM element, restoring all layouts
 present in the XML document.
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End
@@ -150,8 +132,6 @@ present in the XML document.
 %Docstring
 Returns a DOM element representing the state of the manager.
 
-:rtype: QDomElement
-
 .. seealso:: :py:func:`readXml()`
 %End
 
@@ -159,8 +139,6 @@ Returns a DOM element representing the state of the manager.
 %Docstring
 Saves the composition with matching ``name`` in template format.
 Returns true if save was successful.
-
-:rtype: bool
 %End
 
     QgsComposition *duplicateComposition( const QString &name, const QString &newName );
@@ -168,8 +146,6 @@ Returns true if save was successful.
 Duplicates an existing composition from the manager. The new
 composition will automatically be stored in the manager.
 Returns new composition if duplication was successful.
-
-:rtype: QgsComposition
 %End
 
     QgsLayout *duplicateLayout( const QgsLayout *layout, const QString &newName );
@@ -177,24 +153,18 @@ Returns new composition if duplication was successful.
 Duplicates an existing ``layout`` from the manager. The new
 layout will automatically be stored in the manager.
 Returns new the layout if duplication was successful.
-
-:rtype: QgsLayout
 %End
 
     QString generateUniqueComposerTitle() const;
 %Docstring
 Generates a unique title for a new composition, which does not
 clash with any already contained by the manager.
-
-:rtype: str
 %End
 
     QString generateUniqueTitle() const;
 %Docstring
 Generates a unique title for a new layout, which does not
 clash with any already contained by the manager.
-
-:rtype: str
 %End
 
   signals:

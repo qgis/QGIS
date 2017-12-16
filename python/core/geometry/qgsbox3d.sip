@@ -66,8 +66,6 @@ Sets the maximum ``x`` value.
 %Docstring
 Returns the minimum x value.
 
-:rtype: float
-
 .. seealso:: :py:func:`setXMinimum()`
 
 .. seealso:: :py:func:`xMaximum()`
@@ -76,8 +74,6 @@ Returns the minimum x value.
     double xMaximum() const;
 %Docstring
 Returns the maximum x value.
-
-:rtype: float
 
 .. seealso:: :py:func:`setXMaximum()`
 
@@ -106,8 +102,6 @@ Sets the maximum ``y`` value.
 %Docstring
 Returns the minimum y value.
 
-:rtype: float
-
 .. seealso:: :py:func:`setYMinimum()`
 
 .. seealso:: :py:func:`yMaximum()`
@@ -116,8 +110,6 @@ Returns the minimum y value.
     double yMaximum() const;
 %Docstring
 Returns the maximum y value.
-
-:rtype: float
 
 .. seealso:: :py:func:`setYMaximum()`
 
@@ -146,8 +138,6 @@ Sets the maximum ``z`` value.
 %Docstring
 Returns the minimum z value.
 
-:rtype: float
-
 .. seealso:: :py:func:`setZMinimum()`
 
 .. seealso:: :py:func:`zMaximum()`
@@ -156,8 +146,6 @@ Returns the minimum z value.
     double zMaximum() const;
 %Docstring
 Returns the maximum z value.
-
-:rtype: float
 
 .. seealso:: :py:func:`setZMaximum()`
 
@@ -173,8 +161,6 @@ Normalize the box so it has non-negative width/height/depth.
 %Docstring
 Returns the width of the box.
 
-:rtype: float
-
 .. seealso:: :py:func:`height()`
 
 .. seealso:: :py:func:`depth()`
@@ -183,8 +169,6 @@ Returns the width of the box.
     double height() const;
 %Docstring
 Returns the height of the box.
-
-:rtype: float
 
 .. seealso:: :py:func:`width()`
 
@@ -195,8 +179,6 @@ Returns the height of the box.
 %Docstring
 Returns the depth of the box.
 
-:rtype: float
-
 .. seealso:: :py:func:`width()`
 
 .. seealso:: :py:func:`height()`
@@ -205,37 +187,27 @@ Returns the depth of the box.
     double volume() const;
 %Docstring
 Returns the volume of the box.
-
-:rtype: float
 %End
 
     QgsBox3d intersect( const QgsBox3d &other ) const;
 %Docstring
 Returns the intersection of this box and another 3D box.
-
-:rtype: QgsBox3d
 %End
 
     bool is2d() const;
 %Docstring
 Returns true if the box can be considered a 2-dimensional box, i.e.
 it has equal minimum and maximum z values.
-
-:rtype: bool
 %End
 
     bool intersects( const QgsBox3d &other ) const;
 %Docstring
 Returns true if box intersects with another box.
-
-:rtype: bool
 %End
 
     bool contains( const QgsBox3d &other ) const;
 %Docstring
 Returns true when box contains other box.
-
-:rtype: bool
 %End
 
     bool contains( const QgsPoint &point ) const;
@@ -244,15 +216,11 @@ Returns true when box contains a ``point``.
 
 If the point is a 2D point (no z-coordinate), then the containment test
 will be performed on the x/y extent of the box only.
-
-:rtype: bool
 %End
 
     QgsRectangle toRectangle() const;
 %Docstring
 Converts the box to a 2D rectangle.
-
-:rtype: QgsRectangle
 %End
 
 };

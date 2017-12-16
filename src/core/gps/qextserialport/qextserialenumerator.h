@@ -111,7 +111,7 @@ class QextSerialEnumerator : public QObject
 Q_OBJECT
     public:
         QextSerialEnumerator( );
-        ~QextSerialEnumerator( );
+        ~QextSerialEnumerator( ) override;
 
         #ifdef Q_OS_WIN
             LRESULT onDeviceChangeWin( WPARAM wParam, LPARAM lParam );

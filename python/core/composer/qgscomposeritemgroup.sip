@@ -25,8 +25,6 @@ A container for grouping several QgsComposerItems
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
-
-:rtype: int
 %End
 
     virtual void addItem( QgsComposerItem *item );
@@ -55,31 +53,26 @@ corresponds to 1 scene size unit*
 
     virtual void setVisibility( const bool visible );
 
+
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 
 %Docstring
 Stores state in Dom node
+
 :param elem: is Dom element corresponding to 'Composer' tag
 :param doc: is the Dom document
-
-:rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
 Sets state from Dom document
+
 :param itemElem: is Dom node corresponding to item tag
 :param doc: is the Dom document
-
-:rtype: bool
 %End
 
     QSet<QgsComposerItem *> items();
-%Docstring
-
-:rtype: set of QgsComposerItem
-%End
 
   signals:
     void childItemDeleted( QgsComposerItem *item );

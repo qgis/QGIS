@@ -30,38 +30,20 @@ In C++ you can use QgsSymbolLayerMetadata convenience class.
     virtual ~QgsSymbolLayerAbstractMetadata();
 
     QString name() const;
-%Docstring
-
-:rtype: str
-%End
     QString visibleName() const;
-%Docstring
-
-:rtype: str
-%End
     QgsSymbol::SymbolType type() const;
-%Docstring
-
-:rtype: QgsSymbol.SymbolType
-%End
 
     virtual QgsSymbolLayer *createSymbolLayer( const QgsStringMap &map ) = 0 /Factory/;
 %Docstring
 Create a symbol layer of this type given the map of properties.
-
-:rtype: QgsSymbolLayer
 %End
     virtual QgsSymbolLayerWidget *createSymbolLayerWidget( QgsVectorLayer * ) /Factory/;
 %Docstring
 Create widget for symbol layer of this type. Can return NULL if there's no GUI
-
-:rtype: QgsSymbolLayerWidget
 %End
     virtual QgsSymbolLayer *createSymbolLayerFromSld( QDomElement & ) /Factory/;
 %Docstring
 Create a symbol layer of this type given the map of properties.
-
-:rtype: QgsSymbolLayer
 %End
 
     virtual void resolvePaths( QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving );
@@ -125,29 +107,21 @@ QgsApplication.symbolLayerRegistry().
     QgsSymbolLayerAbstractMetadata *symbolLayerMetadata( const QString &name ) const;
 %Docstring
 return metadata for specified symbol layer. Returns NULL if not found
-
-:rtype: QgsSymbolLayerAbstractMetadata
 %End
 
     bool addSymbolLayerType( QgsSymbolLayerAbstractMetadata *metadata /Transfer/ );
 %Docstring
 register a new symbol layer type. Takes ownership of the metadata instance.
-
-:rtype: bool
 %End
 
     QgsSymbolLayer *createSymbolLayer( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const /Factory/;
 %Docstring
 create a new instance of symbol layer given symbol layer name and properties
-
-:rtype: QgsSymbolLayer
 %End
 
     QgsSymbolLayer *createSymbolLayerFromSld( const QString &name, QDomElement &element ) const /Factory/;
 %Docstring
 create a new instance of symbol layer given symbol layer name and SLD
-
-:rtype: QgsSymbolLayer
 %End
 
     void resolvePaths( const QString &name, QgsStringMap &properties, const QgsPathResolver &pathResolver, bool saving ) const;
@@ -162,15 +136,11 @@ and converting absolute paths to relative paths when saving.
     QStringList symbolLayersForType( QgsSymbol::SymbolType type );
 %Docstring
 return a list of available symbol layers for a specified symbol type
-
-:rtype: list of str
 %End
 
     static QgsSymbolLayer *defaultSymbolLayer( QgsSymbol::SymbolType type ) /Factory/;
 %Docstring
 create a new instance of symbol layer for specified symbol type with default settings
-
-:rtype: QgsSymbolLayer
 %End
 
   private:

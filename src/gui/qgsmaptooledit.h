@@ -36,7 +36,7 @@ class GUI_EXPORT QgsMapToolEdit: public QgsMapTool
   public:
     QgsMapToolEdit( QgsMapCanvas *canvas );
 
-    virtual Flags flags() const override { return QgsMapTool::EditTool; }
+    Flags flags() const override { return QgsMapTool::EditTool; }
 
     /**
      * Return default Z value

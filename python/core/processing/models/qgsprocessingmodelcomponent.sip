@@ -27,8 +27,6 @@ Represents a component of a model algorithm.
 %Docstring
 Returns the friendly description text for the component.
 
-:rtype: str
-
 .. seealso:: :py:func:`setDescription()`
 %End
 
@@ -42,8 +40,6 @@ Sets the friendly ``description`` text for the component.
     QPointF position() const;
 %Docstring
 Returns the position of the model component within the graphical modeler.
-
-:rtype: QPointF
 
 .. seealso:: :py:func:`setPosition()`
 %End

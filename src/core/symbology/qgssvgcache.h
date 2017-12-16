@@ -136,7 +136,7 @@ class CORE_EXPORT QgsSvgCache : public QObject
      */
     QgsSvgCache( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsSvgCache();
+    ~QgsSvgCache() override;
 
     /**
      * Get SVG as QImage.

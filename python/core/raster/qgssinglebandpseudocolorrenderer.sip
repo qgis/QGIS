@@ -31,15 +31,9 @@ Note: takes ownership of QgsRasterShader
 
 %Docstring
 QgsSingleBandPseudoColorRenderer cannot be copied. Use clone() instead.
-
-:rtype: QgsSingleBandPseudoColorRenderer
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
-%Docstring
-
-:rtype: QgsRasterRenderer
-%End
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
@@ -52,14 +46,10 @@ Takes ownership of the shader
     QgsRasterShader *shader();
 %Docstring
 Returns the raster shader
-
-:rtype: QgsRasterShader
 %End
 
     const QgsRasterShader *shader() const /PyName=constShader/;
 %Docstring
-
-:rtype: QgsRasterShader
 
 .. note::
 
@@ -74,6 +64,7 @@ Returns the raster shader
                        const QgsRectangle &extent = QgsRectangle() );
 %Docstring
 Creates a color ramp shader
+
 :param colorRamp: vector color ramp
 :param colorRampType: type of color ramp shader
 :param classificationMode: classification mode
@@ -95,8 +86,6 @@ Creates a color ramp shader
 %Docstring
 Returns the band used by the renderer
 
-:rtype: int
-
 .. versionadded:: 2.7
 %End
 
@@ -110,25 +99,13 @@ Sets the band used by the renderer.
 %End
 
     double classificationMin() const;
-%Docstring
-
-:rtype: float
-%End
     double classificationMax() const;
-%Docstring
-
-:rtype: float
-%End
     void setClassificationMin( double min );
     void setClassificationMax( double max );
 
   private:
     QgsSingleBandPseudoColorRenderer( const QgsSingleBandPseudoColorRenderer & );
     const QgsSingleBandPseudoColorRenderer &operator=( const QgsSingleBandPseudoColorRenderer & );
-%Docstring
-
-:rtype: QgsSingleBandPseudoColorRenderer
-%End
 };
 
 /************************************************************************

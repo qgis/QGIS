@@ -47,11 +47,11 @@ class CORE_EXPORT QgsVectorLayerLabelProvider : public QgsAbstractLabelProvider
                                           const QgsPalLayerSettings *settings,
                                           const QString &layerName = QString() );
 
-    ~QgsVectorLayerLabelProvider();
+    ~QgsVectorLayerLabelProvider() override;
 
-    virtual QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
+    QList<QgsLabelFeature *> labelFeatures( QgsRenderContext &context ) override;
 
-    virtual void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
+    void drawLabel( QgsRenderContext &context, pal::LabelPosition *label ) const override;
 
     // new virtual methods
 

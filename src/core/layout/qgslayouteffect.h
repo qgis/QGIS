@@ -59,7 +59,7 @@ class CORE_EXPORT QgsLayoutEffect : public QGraphicsEffect
 
   protected:
 
-    virtual void draw( QPainter *painter ) override;
+    void draw( QPainter *painter ) override;
 
   private:
 

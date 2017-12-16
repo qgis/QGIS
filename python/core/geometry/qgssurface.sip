@@ -22,15 +22,11 @@ class QgsSurface: QgsAbstractGeometry
 %Docstring
 Get a polygon representation of this surface.
 Ownership is transferred to the caller.
-
-:rtype: QgsPolygon
 %End
 
     virtual QgsRectangle boundingBox() const;
 %Docstring
 Returns the minimal bounding box for the geometry
-
-:rtype: QgsRectangle
 %End
 
   protected:

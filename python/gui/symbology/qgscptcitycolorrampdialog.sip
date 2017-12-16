@@ -28,6 +28,7 @@ A dialog which allows users to modify the properties of a QgsCptCityColorRamp.
     QgsCptCityColorRampDialog( const QgsCptCityColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsCptCityColorRampDialog.
+
 :param ramp: initial ramp to show in dialog
 :param parent: parent widget
 %End
@@ -36,14 +37,13 @@ Constructor for QgsCptCityColorRampDialog.
 %Docstring
 Returns a color ramp representing the current settings from the dialog.
 
-:rtype: QgsCptCityColorRamp
-
 .. seealso:: :py:func:`setRamp()`
 %End
 
     void setRamp( const QgsCptCityColorRamp &ramp );
 %Docstring
 Sets the color ramp to show in the dialog.
+
 :param ramp: color ramp
 
 .. seealso:: :py:func:`ramp()`
@@ -52,15 +52,11 @@ Sets the color ramp to show in the dialog.
     QString selectedName() const;
 %Docstring
 Returns the name of the ramp currently selected in the dialog.
-
-:rtype: str
 %End
 
     bool saveAsGradientRamp() const;
 %Docstring
 Returns true if the ramp should be converted to a QgsGradientColorRamp.
-
-:rtype: bool
 %End
 
     virtual bool eventFilter( QObject *obj, QEvent *event );

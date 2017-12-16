@@ -28,6 +28,7 @@ variables from a QgsExpressionContext.
     QgsVariableEditorWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsVariableEditorWidget.
+
 :param parent: parent widget
 %End
 
@@ -38,6 +39,7 @@ Constructor for QgsVariableEditorWidget.
 Overwrites the QgsExpressionContext for the widget. Setting a context
 allows the widget to show all inherited variables for the context,
 and highlight any overridden variables within scopes.
+
 :param context: expression context
 
 .. seealso:: :py:func:`context()`
@@ -48,8 +50,6 @@ and highlight any overridden variables within scopes.
 Returns the current expression context for the widget. QgsVariableEditorWidget widgets
 are created with an empty context by default.
 
-:rtype: QgsExpressionContext
-
 .. seealso:: :py:func:`setContext()`
 %End
 
@@ -57,6 +57,7 @@ are created with an empty context by default.
 %Docstring
 Sets the editable scope for the widget. Only variables from the editable scope can
 be modified by users.
+
 :param scopeIndex: index of current editable scope. Set to -1 to disable
 editing and make the widget read-only.
 
@@ -68,8 +69,6 @@ editing and make the widget read-only.
 Returns the current editable scope for the widget.
 
 :return: editable scope, or 0 if no editable scope is set
-:rtype: QgsExpressionContextScope
-
 
 .. seealso:: :py:func:`setEditableScopeIndex()`
 %End
@@ -79,6 +78,7 @@ Returns the current editable scope for the widget.
 Sets the setting group for the widget. QgsVariableEditorWidget widgets with
 the same setting group will synchronise their settings, e.g., the size
 of columns in the tree widget.
+
 :param group: setting group
 
 .. seealso:: :py:func:`settingGroup()`
@@ -91,8 +91,6 @@ the same setting group will synchronise their settings, e.g., the size
 of columns in the tree widget.
 
 :return: setting group name
-:rtype: str
-
 
 .. seealso:: :py:func:`setSettingGroup()`
 %End
@@ -102,8 +100,6 @@ of columns in the tree widget.
 Returns a map variables set within the editable scope. Read only variables are not
 returned. This method can be used to retrieve the variables edited an added by
 users via the widget.
-
-:rtype: QVariantMap
 %End
 
   public slots:

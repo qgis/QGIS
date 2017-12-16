@@ -53,7 +53,7 @@ class APP_EXPORT QgsAttributeTableDialog : public QDialog, private Ui::QgsAttrib
      */
     QgsAttributeTableDialog( QgsVectorLayer *layer, QgsAttributeTableFilterModel::FilterMode initialMode = QgsAttributeTableFilterModel::ShowAll, QWidget *parent = nullptr, Qt::WindowFlags flags = Qt::Window );
 
-    ~QgsAttributeTableDialog();
+    ~QgsAttributeTableDialog() override;
 
     QgsExpressionContext createExpressionContext() const override;
 
@@ -248,7 +248,7 @@ class QgsAttributeTableDock : public QgsDockWidget
   public:
     QgsAttributeTableDock( const QString &title, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
-    virtual void closeEvent( QCloseEvent *ev ) override;
+    void closeEvent( QCloseEvent *ev ) override;
 };
 
 

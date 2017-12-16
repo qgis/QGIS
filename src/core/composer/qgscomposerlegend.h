@@ -43,10 +43,10 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
 
   public:
     QgsComposerLegend( QgsComposition *composition SIP_TRANSFERTHIS );
-    ~QgsComposerLegend();
+    ~QgsComposerLegend() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerLegend; }
+    int type() const override { return ComposerLegend; }
 
     //! \brief Reimplementation of QCanvasItem::paint
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;
@@ -100,7 +100,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
      * Update() overloading. Use it rather than update()
      * \since QGIS 2.12
      */
-    virtual void updateItem() override;
+    void updateItem() override;
 
     /**
      * When set to true, during an atlas rendering, it will filter out legend elements
@@ -280,7 +280,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     bool readXml( const QDomElement &itemElem, const QDomDocument &doc ) override;
 
     //Overridden to show legend title
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     /**
      * Returns the legend's renderer settings object.
@@ -294,7 +294,7 @@ class CORE_EXPORT QgsComposerLegend : public QgsComposerItem
     //! Sets mCompositionMap to 0 if the map is deleted
     void invalidateCurrentMap();
 
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
 
   private slots:

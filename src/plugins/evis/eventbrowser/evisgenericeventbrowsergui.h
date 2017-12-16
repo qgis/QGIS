@@ -61,7 +61,7 @@ class eVisGenericEventBrowserGui : public QDialog, private Ui::eVisGenericEventB
     //! \brief Constructor called when new browser is requested by the eVisEventIdTool
     eVisGenericEventBrowserGui( QWidget *parent, QgsMapCanvas *canvas, Qt::WindowFlags fl );
 
-    ~eVisGenericEventBrowserGui();
+    ~eVisGenericEventBrowserGui() override;
 
   protected:
     void closeEvent( QCloseEvent *event ) override;

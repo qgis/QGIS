@@ -46,42 +46,37 @@ when converting measurements to and from pixels.
 Returns the Dots per inch (DPI) of the measurement converter. This is used
 when converting measurements to and from pixels.
 
-:rtype: float
-
 .. seealso:: :py:func:`setDpi()`
 %End
 
     QgsLayoutMeasurement convert( const QgsLayoutMeasurement &measurement, const QgsUnitTypes::LayoutUnit targetUnits ) const;
 %Docstring
 Converts a measurement from one unit to another.
+
 :param measurement: measurement to convert
 :param targetUnits: units to convert measurement into
 
 :return: measurement converted to target units
-:rtype: QgsLayoutMeasurement
-
 %End
 
     QgsLayoutSize convert( const QgsLayoutSize &size, const QgsUnitTypes::LayoutUnit targetUnits ) const;
 %Docstring
 Converts a layout size from one unit to another.
+
 :param size: layout size to convert
 :param targetUnits: units to convert size into
 
 :return: size converted to target units
-:rtype: QgsLayoutSize
-
 %End
 
     QgsLayoutPoint convert( const QgsLayoutPoint &point, const QgsUnitTypes::LayoutUnit targetUnits ) const;
 %Docstring
 Converts a layout point from one unit to another.
+
 :param point: layout point to convert
 :param targetUnits: units to convert point into
 
 :return: point converted to target units
-:rtype: QgsLayoutPoint
-
 %End
 
 };

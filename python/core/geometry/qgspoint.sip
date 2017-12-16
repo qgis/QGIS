@@ -87,16 +87,10 @@ Construct a QgsPoint from a QPointF
 
     bool operator==( const QgsPoint &pt ) const;
     bool operator!=( const QgsPoint &pt ) const;
-%Docstring
-
-:rtype: bool
-%End
 
     double x() const;
 %Docstring
 Returns the point's x-coordinate.
-
-:rtype: float
 
 .. seealso:: :py:func:`setX()`
 
@@ -107,8 +101,6 @@ Returns the point's x-coordinate.
 %Docstring
 Returns the point's y-coordinate.
 
-:rtype: float
-
 .. seealso:: :py:func:`setY()`
 
 .. seealso:: :py:func:`ry()`
@@ -118,8 +110,6 @@ Returns the point's y-coordinate.
 %Docstring
 Returns the point's z-coordinate.
 
-:rtype: float
-
 .. seealso:: :py:func:`setZ()`
 
 .. seealso:: :py:func:`rz()`
@@ -128,8 +118,6 @@ Returns the point's z-coordinate.
     double m() const;
 %Docstring
 Returns the point's m value.
-
-:rtype: float
 
 .. seealso:: :py:func:`setM()`
 
@@ -190,8 +178,6 @@ add a m value and force the point to have an m dimension.
 %Docstring
 Returns the point as a QPointF.
 
-:rtype: QPointF
-
 .. versionadded:: 2.14
 %End
 
@@ -200,8 +186,6 @@ Returns the point as a QPointF.
 Returns the distance between this point and a specified x, y coordinate. In certain
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
-
-:rtype: float
 
 .. versionadded:: 3.0
 
@@ -214,8 +198,6 @@ Returns the 2D distance between this point and another point. In certain
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
-:rtype: float
-
 .. versionadded:: 3.0
 %End
 
@@ -224,8 +206,6 @@ when comparing distances.
 Returns the squared distance between this point a specified x, y coordinate. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
-
-:rtype: float
 
 .. seealso:: :py:func:`distance()`
 
@@ -238,8 +218,6 @@ Returns the squared distance between this point another point. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
-:rtype: float
-
 .. seealso:: :py:func:`distance()`
 
 .. versionadded:: 3.0
@@ -250,8 +228,6 @@ distances where the extra expense of calling distance() is not required.
 Returns the 3D distance between this point and a specified x, y, z coordinate. In certain
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
-
-:rtype: float
 
 .. versionadded:: 3.0
 
@@ -264,8 +240,6 @@ Returns the 3D distance between this point and another point. In certain
 cases it may be more appropriate to call the faster distanceSquared() method, e.g.,
 when comparing distances.
 
-:rtype: float
-
 .. versionadded:: 3.0
 %End
 
@@ -274,8 +248,6 @@ when comparing distances.
 Returns the 3D squared distance between this point a specified x, y, z coordinate. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
-
-:rtype: float
 
 .. seealso:: :py:func:`distance()`
 
@@ -288,8 +260,6 @@ Returns the 3D squared distance between this point another point. Calling
 this is faster than calling distance(), and may be useful in use cases such as comparing
 distances where the extra expense of calling distance() is not required.
 
-:rtype: float
-
 .. seealso:: :py:func:`distance()`
 
 .. versionadded:: 3.0
@@ -299,8 +269,6 @@ distances where the extra expense of calling distance() is not required.
 %Docstring
 Calculates azimuth between this point and other one (clockwise in degree, starting from north)
 
-:rtype: float
-
 .. versionadded:: 3.0
 %End
 
@@ -308,8 +276,6 @@ Calculates azimuth between this point and other one (clockwise in degree, starti
 %Docstring
 Calculates inclination between this point and other one (starting from zenith = 0 to nadir = 180. Horizon = 90)
 Returns 90.0 if the distance between this point and other one is equal to 0 (same point).
-
-:rtype: float
 
 .. versionadded:: 3.0
 %End
@@ -319,13 +285,12 @@ Returns 90.0 if the distance between this point and other one is equal to 0 (sam
 Returns a new point which correspond to this point projected by a specified distance
 with specified angles (azimuth and inclination).
 M value is preserved.
+
 :param distance: distance to project
 :param azimuth: angle to project in X Y, clockwise in degrees starting from north
 :param inclination: angle to project in Z (3D). If the point is 2D, the Z value is assumed to be 0.
 
 :return: The point projected. If a 2D point is projected a 3D point will be returned except if
-:rtype: QgsPoint
-
 inclination is 90. A 3D point is always returned if a 3D point is projected.
 Example:
 \code{.py}
@@ -352,16 +317,12 @@ pr = p.project (1, 0, 0 )
 %Docstring
 Calculates the vector obtained by subtracting a point from this point.
 
-:rtype: QgsVector
-
 .. versionadded:: 3.0
 %End
 
     QgsPoint &operator+=( QgsVector v );
 %Docstring
 Adds a vector to this point in place.
-
-:rtype: QgsPoint
 
 .. versionadded:: 3.0
 %End
@@ -370,8 +331,6 @@ Adds a vector to this point in place.
 %Docstring
 Subtracts a vector from this point in place.
 
-:rtype: QgsPoint
-
 .. versionadded:: 3.0
 %End
 
@@ -379,16 +338,12 @@ Subtracts a vector from this point in place.
 %Docstring
 Adds a vector to this point.
 
-:rtype: QgsPoint
-
 .. versionadded:: 3.0
 %End
 
     QgsPoint operator-( QgsVector v ) const;
 %Docstring
 Subtracts a vector from this point.
-
-:rtype: QgsPoint
 
 .. versionadded:: 3.0
 %End
@@ -456,11 +411,10 @@ Subtracts a vector from this point.
 
 %Docstring
 Angle undefined. Always returns 0.0
+
 :param vertex: the vertex id
 
 :return: 0.0*
-:rtype: float
-
 %End
 
     virtual int vertexCount( int /*part*/ = 0, int /*ring*/ = 0 ) const;

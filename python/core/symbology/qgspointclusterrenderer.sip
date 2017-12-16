@@ -27,24 +27,22 @@ A renderer that automatically clusters points with the same geographic position.
     virtual QgsPointClusterRenderer *clone() const /Factory/;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+
     static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates a renderer from XML element
-
-:rtype: QgsFeatureRenderer
 %End
 
     QgsMarkerSymbol *clusterSymbol();
 %Docstring
 Returns the symbol used for rendering clustered groups (but not ownership of the symbol).
-
-:rtype: QgsMarkerSymbol
 
 .. seealso:: :py:func:`setClusterSymbol()`
 %End
@@ -52,6 +50,7 @@ Returns the symbol used for rendering clustered groups (but not ownership of the
     void setClusterSymbol( QgsMarkerSymbol *symbol /Transfer/ );
 %Docstring
 Sets the symbol for rendering clustered groups.
+
 :param symbol: new cluster symbol. Ownership is transferred to the renderer.
 
 .. seealso:: :py:func:`clusterSymbol()`
@@ -62,17 +61,11 @@ Sets the symbol for rendering clustered groups.
 Creates a QgsPointClusterRenderer from an existing renderer.
 
 :return: a new renderer if the conversion was possible, otherwise None.
-:rtype: QgsPointClusterRenderer
-
 %End
 
   private:
     QgsPointClusterRenderer( const QgsPointClusterRenderer & );
     QgsPointClusterRenderer &operator=( const QgsPointClusterRenderer & );
-%Docstring
-
-:rtype: QgsPointClusterRenderer
-%End
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) ;
 
 };

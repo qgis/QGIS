@@ -47,7 +47,7 @@ class QgsVectorLayer3DRendererWidget : public QgsMapLayerConfigWidget
     QgsVectorLayer3DRenderer *renderer();
 
   public slots:
-    virtual void apply() override;
+    void apply() override;
 
   private slots:
     void onEnabledClicked();

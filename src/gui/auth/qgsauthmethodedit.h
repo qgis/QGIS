@@ -66,7 +66,7 @@ class GUI_EXPORT QgsAuthMethodEdit : public QWidget
       : QWidget( parent )
     {}
 
-    virtual ~QgsAuthMethodEdit() = default;
+    ~QgsAuthMethodEdit() override = default;
 };
 
 #endif // QGSAUTHMETHODEDIT_H

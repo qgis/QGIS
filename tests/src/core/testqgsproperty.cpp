@@ -42,16 +42,16 @@ class TestTransformer : public QgsPropertyTransformer
 
     }
 
-    virtual Type transformerType() const override { return SizeScaleTransformer; }
-    virtual TestTransformer *clone() const override
+    Type transformerType() const override { return SizeScaleTransformer; }
+    TestTransformer *clone() const override
     {
       return new TestTransformer( mMinValue, mMaxValue );
     }
-    virtual QString toExpression( const QString & ) const override { return QString(); }
+    QString toExpression( const QString & ) const override { return QString(); }
 
   private:
 
-    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override
+    QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override
     {
       Q_UNUSED( context );
 

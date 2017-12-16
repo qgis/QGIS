@@ -34,6 +34,7 @@ highlight.show()
     QgsHighlight( QgsMapCanvas *mapCanvas, const QgsGeometry &geom, QgsMapLayer *layer );
 %Docstring
 Constructor for QgsHighlight
+
 :param mapCanvas: associated map canvas
 :param geom: initial geometry of highlight
 :param layer: associated map layer
@@ -43,6 +44,7 @@ Constructor for QgsHighlight
 %Docstring
 Constructor for highlighting true feature shape using feature attributes
 and renderer.
+
 :param mapCanvas: map canvas
 :param feature:
 :param layer: vector layer
@@ -89,14 +91,14 @@ Set minimum line / stroke width in millimeters.
     QgsMapLayer *layer() const;
 %Docstring
 Return the layer for which this highlight has been created.
-
-:rtype: QgsMapLayer
 %End
 
     virtual void updatePosition();
 
+
   protected:
     virtual void paint( QPainter *p );
+
 
     void updateRect();
 %Docstring

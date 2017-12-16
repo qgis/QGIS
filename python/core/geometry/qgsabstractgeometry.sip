@@ -75,8 +75,6 @@ Constructor for QgsAbstractGeometry.
     virtual QgsAbstractGeometry *clone() const = 0 /Factory/;
 %Docstring
 Clones the geometry by performing a deep copy
-
-:rtype: QgsAbstractGeometry
 %End
 
     virtual void clear() = 0;
@@ -87,8 +85,6 @@ Clears the geometry, ie reset it to a null geometry
     virtual QgsRectangle boundingBox() const = 0;
 %Docstring
 Returns the minimal bounding box for the geometry
-
-:rtype: QgsRectangle
 %End
 
 
@@ -96,15 +92,11 @@ Returns the minimal bounding box for the geometry
 %Docstring
 Returns the inherent dimension of the geometry. For example, this is 0 for a point geometry,
 1 for a linestring and 2 for a polygon.
-
-:rtype: int
 %End
 
     virtual QString geometryType() const = 0;
 %Docstring
 Returns a unique string representing the geometry type.
-
-:rtype: str
 
 .. seealso:: :py:func:`wkbType`
 
@@ -115,8 +107,6 @@ Returns a unique string representing the geometry type.
 %Docstring
 Returns the WKB type of the geometry.
 
-:rtype: QgsWkbTypes.Type
-
 .. seealso:: :py:func:`geometryType`
 
 .. seealso:: :py:func:`wktTypeStr`
@@ -125,8 +115,6 @@ Returns the WKB type of the geometry.
     QString wktTypeStr() const;
 %Docstring
 Returns the WKT type string of the geometry.
-
-:rtype: str
 
 .. seealso:: :py:func:`geometryType`
 
@@ -137,16 +125,12 @@ Returns the WKT type string of the geometry.
 %Docstring
 Returns true if the geometry is 3D and contains a z-value.
 
-:rtype: bool
-
 .. seealso:: :py:func:`isMeasure`
 %End
 
     bool isMeasure() const;
 %Docstring
 Returns true if the geometry contains m values.
-
-:rtype: bool
 
 .. seealso:: :py:func:`is3D`
 %End
@@ -157,8 +141,6 @@ Returns the closure of the combinatorial boundary of the geometry (ie the topolo
 For instance, a polygon geometry will have a boundary consisting of the linestrings for each ring in the polygon.
 
 :return: boundary for geometry. May be null for some geometry types.
-:rtype: QgsAbstractGeometry
-
 
 .. versionadded:: 3.0
 %End
@@ -169,16 +151,12 @@ For instance, a polygon geometry will have a boundary consisting of the linestri
 Sets the geometry from a WKB string.
 After successful read the wkb argument will be at the position where the reading has stopped.
 
-:rtype: bool
-
 .. seealso:: :py:func:`fromWkt`
 %End
 
     virtual bool fromWkt( const QString &wkt ) = 0;
 %Docstring
 Sets the geometry from a WKT string.
-
-:rtype: bool
 
 .. seealso:: :py:func:`fromWkb`
 %End
@@ -187,8 +165,6 @@ Sets the geometry from a WKT string.
     virtual QByteArray asWkb() const = 0;
 %Docstring
 Returns a WKB representation of the geometry.
-
-:rtype: QByteArray
 
 .. seealso:: :py:func:`asWkt`
 
@@ -204,9 +180,8 @@ Returns a WKB representation of the geometry.
     virtual QString asWkt( int precision = 17 ) const = 0;
 %Docstring
 Returns a WKT representation of the geometry.
-:param precision: number of decimal places for coordinates
 
-:rtype: str
+:param precision: number of decimal places for coordinates
 
 .. seealso:: :py:func:`asWkb()`
 
@@ -220,11 +195,10 @@ Returns a WKT representation of the geometry.
     virtual QDomElement asGml2( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 %Docstring
 Returns a GML2 representation of the geometry.
+
 :param doc: DOM document
 :param precision: number of decimal places for coordinates
 :param ns: XML namespace
-
-:rtype: QDomElement
 
 .. seealso:: :py:func:`asWkb()`
 
@@ -238,11 +212,10 @@ Returns a GML2 representation of the geometry.
     virtual QDomElement asGml3( QDomDocument &doc, int precision = 17, const QString &ns = "gml" ) const = 0;
 %Docstring
 Returns a GML3 representation of the geometry.
+
 :param doc: DOM document
 :param precision: number of decimal places for coordinates
 :param ns: XML namespace
-
-:rtype: QDomElement
 
 .. seealso:: :py:func:`asWkb()`
 
@@ -256,9 +229,8 @@ Returns a GML3 representation of the geometry.
     virtual QString asJson( int precision = 17 ) const = 0;
 %Docstring
 Returns a GeoJSON representation of the geometry.
-:param precision: number of decimal places for coordinates
 
-:rtype: str
+:param precision: number of decimal places for coordinates
 
 .. seealso:: :py:func:`asWkb()`
 
@@ -275,6 +247,7 @@ Returns a GeoJSON representation of the geometry.
                             bool transformZ = false ) = 0;
 %Docstring
 Transforms the geometry using a coordinate transform
+
 :param ct: coordinate transform
 :param d: transformation direction
 :param transformZ: set to true to also transform z coordinates. This requires that
@@ -296,6 +269,7 @@ Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate
     virtual void draw( QPainter &p ) const = 0;
 %Docstring
 Draws the geometry using the specified QPainter.
+
 :param p: destination QPainter
 %End
 
@@ -308,21 +282,18 @@ to the first vertex.
 
 Returns -1 if a corresponding vertex could not be found.
 
-:rtype: int
-
 .. versionadded:: 3.0
 %End
 
     virtual bool nextVertex( QgsVertexId &id, QgsPoint &vertex /Out/ ) const = 0;
 %Docstring
 Returns next vertex id and coordinates
+
 :param id: initial value should be the starting vertex id. The next vertex id will be stored
 in this variable if found.
 :param vertex: container for found node
 
 :return: false if at end
-:rtype: bool
-
 %End
 
     virtual void adjacentVertices( QgsVertexId vertex, QgsVertexId &previousVertex /Out/, QgsVertexId &nextVertex /Out/ ) const = 0;
@@ -337,22 +308,16 @@ Returns the vertices adjacent to a specified ``vertex`` within a geometry.
 Retrieves the sequence of geometries, rings and nodes.
 
 :return: coordinate sequence
-:rtype: QgsCoordinateSequence
-
 %End
 
     virtual int nCoordinates() const;
 %Docstring
 Returns the number of nodes contained in the geometry
-
-:rtype: int
 %End
 
     virtual QgsPoint vertexAt( QgsVertexId id ) const = 0;
 %Docstring
 Returns the point corresponding to a specified vertex id
-
-:rtype: QgsPoint
 %End
 
     virtual double closestSegment( const QgsPoint &pt, QgsPoint &segmentPt /Out/,
@@ -360,6 +325,7 @@ Returns the point corresponding to a specified vertex id
                                    int *leftOf /Out/ = 0, double epsilon = 4 * DBL_EPSILON ) const = 0;
 %Docstring
 Searches for the closest segment of the geometry to a given point.
+
 :param pt: specifies the point to find closest segment to
 :param segmentPt: storage for the closest point within the geometry
 :param vertexAfter: storage for the ID of the vertex at the end of the closest segment
@@ -370,20 +336,17 @@ false if point is to right of segment)
 :param epsilon: epsilon for segment snapping
 
 :return: squared distance to closest segment or negative value on error
-:rtype: float
-
 %End
 
 
     virtual bool insertVertex( QgsVertexId position, const QgsPoint &vertex ) = 0;
 %Docstring
 Inserts a vertex into the geometry
+
 :param position: vertex id for position of inserted vertex
 :param vertex: vertex to insert
 
 :return: true if insert was successful
-:rtype: bool
-
 
 .. seealso:: :py:func:`moveVertex`
 
@@ -393,12 +356,11 @@ Inserts a vertex into the geometry
     virtual bool moveVertex( QgsVertexId position, const QgsPoint &newPos ) = 0;
 %Docstring
 Moves a vertex within the geometry
+
 :param position: vertex id for vertex to move
 :param newPos: new position of vertex
 
 :return: true if move was successful
-:rtype: bool
-
 
 .. seealso:: :py:func:`insertVertex`
 
@@ -408,11 +370,10 @@ Moves a vertex within the geometry
     virtual bool deleteVertex( QgsVertexId position ) = 0;
 %Docstring
 Deletes a vertex within the geometry
+
 :param position: vertex id for vertex to delete
 
 :return: true if delete was successful
-:rtype: bool
-
 
 .. seealso:: :py:func:`insertVertex`
 
@@ -423,8 +384,6 @@ Deletes a vertex within the geometry
 %Docstring
 Returns the length of the geometry.
 
-:rtype: float
-
 .. seealso:: :py:func:`area()`
 
 .. seealso:: :py:func:`perimeter()`
@@ -433,8 +392,6 @@ Returns the length of the geometry.
     virtual double perimeter() const;
 %Docstring
 Returns the perimeter of the geometry.
-
-:rtype: float
 
 .. seealso:: :py:func:`area()`
 
@@ -445,8 +402,6 @@ Returns the perimeter of the geometry.
 %Docstring
 Returns the area of the geometry.
 
-:rtype: float
-
 .. seealso:: :py:func:`length()`
 
 .. seealso:: :py:func:`perimeter()`
@@ -456,40 +411,31 @@ Returns the area of the geometry.
 %Docstring
 Returns the length of the segment of the geometry which begins at ``startVertex``.
 
-:rtype: float
-
 .. versionadded:: 3.0
 %End
 
     virtual QgsPoint centroid() const;
 %Docstring
 Returns the centroid of the geometry
-
-:rtype: QgsPoint
 %End
 
     virtual bool isEmpty() const;
 %Docstring
 Returns true if the geometry is empty
-
-:rtype: bool
 %End
 
     virtual bool hasCurvedSegments() const;
 %Docstring
 Returns true if the geometry contains curved segments
-
-:rtype: bool
 %End
 
     virtual QgsAbstractGeometry *segmentize( double tolerance = M_PI / 180., SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
 Returns a version of the geometry without curves. Caller takes ownership of
 the returned geometry.
+
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
-
-:rtype: QgsAbstractGeometry
 %End
 
     virtual QgsAbstractGeometry *toCurveType() const = 0 /Factory/;
@@ -499,8 +445,6 @@ E.g. QgsLineString -> QgsCompoundCurve, QgsPolygon -> QgsCurvePolygon,
 QgsMultiLineString -> QgsMultiCurve, QgsMultiPolygon -> QgsMultiSurface
 
 :return: the converted geometry. Caller takes ownership
-:rtype: QgsAbstractGeometry
-
 %End
 
     virtual QgsAbstractGeometry *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const = 0 /Factory/;
@@ -517,12 +461,11 @@ geometry->snappedToGrid(1, 1);
 \endcode
 In this case we use a 2D grid of 1x1 to gridify.
 In this case, it can be thought like rounding the x and y of all the points/vertices to full units (remove all decimals).
+
 :param hSpacing: Horizontal spacing of the grid (x axis). 0 to disable.
 :param vSpacing: Vertical spacing of the grid (y axis). 0 to disable.
 :param dSpacing: Depth spacing of the grid (z axis). 0 (default) to disable.
 :param mSpacing: Custom dimension spacing of the grid (m axis). 0 (default) to disable.
-
-:rtype: QgsAbstractGeometry
 
 .. versionadded:: 3.0
 %End
@@ -546,8 +489,6 @@ a multipoint geometry with overlapping points will not be changed by this method
 The function will return true if nodes were removed, or false if no duplicate nodes
 were found.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -556,32 +497,25 @@ were found.
 Returns approximate angle at a vertex. This is usually the average angle between adjacent
 segments, and can be pictured as the orientation of a line following the curvature of the
 geometry at the specified vertex.
+
 :param vertex: the vertex id
 
 :return: rotation in radians, clockwise from north
-:rtype: float
-
 %End
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const = 0;
 %Docstring
 Returns the number of vertices of which this geometry is built.
-
-:rtype: int
 %End
 
     virtual int ringCount( int part = 0 ) const = 0;
 %Docstring
 Returns the number of rings of which this geometry is built.
-
-:rtype: int
 %End
 
     virtual int partCount() const = 0;
 %Docstring
 Returns count of parts contained in the geometry.
-
-:rtype: int
 
 .. seealso:: :py:func:`vertexCount`
 
@@ -591,11 +525,10 @@ Returns count of parts contained in the geometry.
     virtual bool addZValue( double zValue = 0 ) = 0;
 %Docstring
 Adds a z-dimension to the geometry, initialized to a preset value.
+
 :param zValue: initial z-value for all nodes
 
 :return: true on success
-:rtype: bool
-
 
 .. versionadded:: 2.12
 
@@ -607,11 +540,10 @@ Adds a z-dimension to the geometry, initialized to a preset value.
     virtual bool addMValue( double mValue = 0 ) = 0;
 %Docstring
 Adds a measure to the geometry, initialized to a preset value.
+
 :param mValue: initial m-value for all nodes
 
 :return: true on success
-:rtype: bool
-
 
 .. versionadded:: 2.12
 
@@ -625,8 +557,6 @@ Adds a measure to the geometry, initialized to a preset value.
 Drops any z-dimensions which exist in the geometry.
 
 :return: true if Z values were present and have been removed
-:rtype: bool
-
 
 .. seealso:: :py:func:`addZValue()`
 
@@ -640,8 +570,6 @@ Drops any z-dimensions which exist in the geometry.
 Drops any measure values which exist in the geometry.
 
 :return: true if m-values were present and have been removed
-:rtype: bool
-
 
 .. seealso:: :py:func:`addMValue()`
 
@@ -655,8 +583,6 @@ Drops any measure values which exist in the geometry.
 Converts the geometry to a specified type.
 
 :return: true if conversion was successful
-:rtype: bool
-
 
 .. versionadded:: 2.14
 %End
@@ -665,8 +591,6 @@ Converts the geometry to a specified type.
     QgsVertexIterator vertices() const;
 %Docstring
 Returns Java-style iterator for traversal of vertices of the geometry
-
-:rtype: QgsVertexIterator
 
 .. versionadded:: 3.0
 %End
@@ -677,8 +601,6 @@ Returns Java-style iterator for traversal of vertices of the geometry
 %Docstring
 Creates a new geometry with the same class and same WKB type as the original and transfers ownership.
 To create it, the geometry is default constructed and then the WKB is changed.
-
-:rtype: QgsAbstractGeometry
 
 .. seealso:: :py:func:`clone()`
 
@@ -693,8 +615,6 @@ To create it, the geometry is default constructed and then the WKB is changed.
 %Docstring
 Returns whether the geometry has any child geometries (false for point / curve, true otherwise)
 
-:rtype: bool
-
 .. note::
 
    used for vertex_iterator implementation
@@ -705,8 +625,6 @@ Returns whether the geometry has any child geometries (false for point / curve, 
     virtual int childCount() const;
 %Docstring
 Returns number of child geometries (for geometries with child geometries) or child points (for geometries without child geometries - i.e. curve / point)
-
-:rtype: int
 
 .. note::
 
@@ -719,8 +637,6 @@ Returns number of child geometries (for geometries with child geometries) or chi
 %Docstring
 Returns pointer to child geometry (for geometries with child geometries - i.e. geom. collection / polygon)
 
-:rtype: QgsAbstractGeometry
-
 .. note::
 
    used for vertex_iterator implementation
@@ -731,8 +647,6 @@ Returns pointer to child geometry (for geometries with child geometries - i.e. g
     virtual QgsPoint childPoint( int index ) const;
 %Docstring
 Returns point at index (for geometries without child geometries - i.e. curve / point)
-
-:rtype: QgsPoint
 
 .. note::
 
@@ -752,8 +666,6 @@ Updates the geometry type based on whether sub geometries contain z or m values.
 %Docstring
 Default calculator for the minimal bounding box for the geometry. Derived classes should override this method
 if a more efficient bounding box calculation is available.
-
-:rtype: QgsRectangle
 %End
 
     virtual void clearCache() const;
@@ -777,36 +689,14 @@ struct QgsVertexId
   bool isValid() const;
 %Docstring
 Returns true if the vertex id is valid
-
-:rtype: bool
 %End
 
   bool operator==( QgsVertexId other ) const;
   bool operator!=( QgsVertexId other ) const;
-%Docstring
-
-:rtype: bool
-%End
   bool partEqual( QgsVertexId o ) const;
-%Docstring
-
-:rtype: bool
-%End
   bool ringEqual( QgsVertexId o ) const;
-%Docstring
-
-:rtype: bool
-%End
   bool vertexEqual( QgsVertexId o ) const;
-%Docstring
-
-:rtype: bool
-%End
   bool isValid( const QgsAbstractGeometry *geom ) const;
-%Docstring
-
-:rtype: bool
-%End
 
   int part;
   int ring;
@@ -841,22 +731,14 @@ Constructs iterator for the given geometry
     bool hasNext() const;
 %Docstring
 Find out whether there are more vertices
-
-:rtype: bool
 %End
 
     QgsPoint next();
 %Docstring
 Return next vertex of the geometry (undefined behavior if hasNext() returns false before calling next())
-
-:rtype: QgsPoint
 %End
 
     QgsVertexIterator *__iter__();
-%Docstring
-
-:rtype: QgsVertexIterator
-%End
 %MethodCode
     sipRes = sipCpp;
 %End

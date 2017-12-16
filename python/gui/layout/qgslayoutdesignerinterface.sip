@@ -31,13 +31,9 @@ open layout designer dialogs.
 Constructor for QgsLayoutDesignerInterface.
 %End
 
-    virtual ~QgsLayoutDesignerInterface();
-
     virtual QgsLayout *layout() = 0;
 %Docstring
 Returns the layout displayed in the designer.
-
-:rtype: QgsLayout
 
 .. seealso:: :py:func:`view()`
 %End
@@ -46,8 +42,6 @@ Returns the layout displayed in the designer.
     virtual QgsLayoutView *view() = 0;
 %Docstring
 Returns the layout view utilized by the designer.
-
-:rtype: QgsLayoutView
 
 .. seealso:: :py:func:`layout()`
 %End

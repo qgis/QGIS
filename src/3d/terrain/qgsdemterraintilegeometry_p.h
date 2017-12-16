@@ -56,7 +56,6 @@ class DemTerrainTileGeometry : public Qt3DRender::QGeometry
      * heightMap is array of float values with one height value for each vertex
      */
     explicit DemTerrainTileGeometry( int resolution, float skirtHeight, const QByteArray &heightMap, QNode *parent = nullptr );
-    ~DemTerrainTileGeometry() = default;
 
   private:
     void init();

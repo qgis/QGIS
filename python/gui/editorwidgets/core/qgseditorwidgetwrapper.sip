@@ -54,8 +54,6 @@ If an invalid variant is returned this will be interpreted as no change.
 Be sure to return a NULL QVariant if it should be set to NULL.
 
 :return: The current value the widget represents
-:rtype: QVariant
-
 %End
 
     int fieldIdx() const;
@@ -63,8 +61,6 @@ Be sure to return a NULL QVariant if it should be set to NULL.
 Access the field index.
 
 :return: The index of the field you are working on
-:rtype: int
-
 
 .. seealso:: :py:func:`layer()`
 %End
@@ -74,8 +70,6 @@ Access the field index.
 Access the field.
 
 :return: The field you are working on
-:rtype: QgsField
-
 
 .. seealso:: :py:func:`layer()`
 %End
@@ -85,8 +79,6 @@ Access the field.
 Access the default value of the field.
 
 :return: the default value of the field
-:rtype: QVariant
-
 
 .. seealso:: :py:func:`layer()`
 %End
@@ -94,24 +86,23 @@ Access the default value of the field.
     static QgsEditorWidgetWrapper *fromWidget( QWidget *widget );
 %Docstring
 Will return a wrapper for a given widget
+
 :param widget: The widget which was created by a wrapper
 
 :return: The wrapper for the widget or NULL
-:rtype: QgsEditorWidgetWrapper
-
 %End
 
     static bool isInTable( const QWidget *parent );
 %Docstring
 Check if the given widget or one of its parent is a QTableView.
+
 :param parent: the widget to check
 
 :return: true if yes
-:rtype: bool
-
 %End
 
     virtual void setEnabled( bool enabled );
+
 %Docstring
 Is used to enable or disable the edit functionality of the managed widget.
 By default this will enable or disable the whole widget
@@ -129,6 +120,7 @@ Sets the widget to display in an indeterminate "mixed value" state.
     void updateConstraint( const QgsFeature &featureContext, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 %Docstring
 Update constraint.
+
 :param featureContext: the feature to use to evaluate the constraint
 :param constraintOrigin: optional origin for constraints to check. This can be used to limit the constraints tested
 to only provider or layer based constraints.
@@ -139,6 +131,7 @@ to only provider or layer based constraints.
     void updateConstraint( const QgsVectorLayer *layer, int index, const QgsFeature &feature, QgsFieldConstraints::ConstraintOrigin constraintOrigin = QgsFieldConstraints::ConstraintOriginNotSet );
 %Docstring
 Update constraint on a feature coming from a specific layer.
+
 :param layer: The vector layer where the feature is defined
 :param index: The index of the field to check
 :param feature: The feature to use to evaluate the constraint
@@ -154,8 +147,6 @@ based constraints.
 Get the current constraint status.
 
 :return: true if the constraint is valid or if there's no constraint,
-:rtype: bool
-
 false otherwise
 
 .. versionadded:: 2.16
@@ -170,8 +161,6 @@ false otherwise
 Returns true if the widget is preventing the feature from being committed. This may be true as a result
 of attribute values failing enforced field constraints.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`isValidConstraint()`
@@ -182,8 +171,6 @@ of attribute values failing enforced field constraints.
 Returns the reason why a constraint check has failed (or an empty string
 if constraint check was successful).
 
-:rtype: str
-
 .. seealso:: :py:func:`isValidConstraint()`
 
 .. versionadded:: 3.0
@@ -192,6 +179,7 @@ if constraint check was successful).
     virtual void setHint( const QString &hintText );
 %Docstring
 Add a hint text on the widget
+
 :param hintText: The hint text to display
 
 .. versionadded:: 3.0
@@ -202,8 +190,6 @@ Add a hint text on the widget
 Getter of constraintResult
 It's the current result of the constraint on the widget influencing it's visualization.
 
-:rtype: ConstraintResult
-
 .. versionadded:: 3.0
 %End
 
@@ -213,8 +199,6 @@ Getter of constraintResultVisible
 Defines if the constraint result should be visualized on the widget (with color).
 This will be disabled when the form is not editable.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -223,6 +207,7 @@ This will be disabled when the form is not editable.
 Setter of constraintResultVisible
 Defines if the constraint result should be visualized on the widget (with color).
 This will be disabled when the form is not editable.
+
 :param constraintResultVisible: if constraintResult should be displayed (mostly editable status)
 
 .. versionadded:: 3.0
@@ -241,6 +226,7 @@ Emit this signal, whenever the value changed.
 %Docstring
 Emit this signal when the constraint status changed.
  constraintStatusChanged
+
 :param constraint: represented as a string
 :param desc: is the constraint description
 :param err: the error represented as a string. Empty if none.
@@ -255,6 +241,7 @@ Emit this signal when the constraint result visibility changed.
   public slots:
 
     virtual void setFeature( const QgsFeature &feature );
+
 %Docstring
 Will be called when the feature changes
 

@@ -39,11 +39,10 @@ Constructor for QgsLayoutItemShape, with the specified parent ``layout``.
 
     virtual QString displayName() const;
 
+
     QgsLayoutItemShape::Shape shapeType() const;
 %Docstring
 Returns the type of shape (e.g. rectangle, ellipse, etc).
-
-:rtype: QgsLayoutItemShape.Shape
 
 .. seealso:: :py:func:`setShapeType()`
 %End
@@ -67,8 +66,6 @@ and a clone of the symbol is made.
 %Docstring
 Returns the fill symbol used to draw the shape.
 
-:rtype: QgsFillSymbol
-
 .. seealso:: :py:func:`setSymbol()`
 %End
 
@@ -82,8 +79,6 @@ Sets the corner ``radius`` for rounded rectangle corners.
     QgsLayoutMeasurement cornerRadius() const;
 %Docstring
 Returns the corner radius for rounded rectangle corners.
-
-:rtype: QgsLayoutMeasurement
 
 .. seealso:: :py:func:`setCornerRadius()`
 %End

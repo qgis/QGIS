@@ -48,8 +48,6 @@ Dumps out the keys and values
 %Docstring
 Returns true if the property is a QgsProjectPropertyKey.
 
-:rtype: bool
-
 .. seealso:: :py:func:`isValue()`
 
 .. seealso:: :py:func:`isLeaf()`
@@ -58,8 +56,6 @@ Returns true if the property is a QgsProjectPropertyKey.
     virtual bool isValue() const = 0;
 %Docstring
 Returns true if the property is a QgsProjectPropertyValue.
-
-:rtype: bool
 
 .. seealso:: :py:func:`isKey()`
 
@@ -74,8 +70,6 @@ A leaf node is a key node that has either no value or only a single value.
 A non-leaf node would be a key node with key sub-nodes.
 
 This is used for entryList() and subkeyList() implementation.
-
-:rtype: bool
 %End
 
     virtual bool readXml( const QDomNode &keyNode ) = 0;
@@ -83,8 +77,6 @@ This is used for entryList() and subkeyList() implementation.
 Restores the property hierarchy from a specified DOM node.
 
 Used for restoring properties from project file
-
-:rtype: bool
 %End
 
     virtual bool writeXml( const QString &nodeName,
@@ -98,8 +90,6 @@ Used for saving properties to project file.
 :param nodeName: the tag name associated with this element
 :param element: the parent (or encompassing) property element
 :param document: the overall project file Dom document
-
-:rtype: bool
 %End
 
     virtual QVariant value() const = 0;
@@ -111,8 +101,6 @@ embedded QVariant, _value.  For QgsProjectPropertyKey, this means returning
 the QgsProjectPropertyValue _value that is keyed by its name, if it exists;
 i.e., QgsProjectPropertyKey "foo" will return the property value mapped to its
 name, "foo", in its QHash of QProperties.
-
-:rtype: QVariant
 %End
 
 };
@@ -188,13 +176,11 @@ that will contain a QgsProjectPropertyValue.
 %Docstring
 Create a new QgsProjectPropertyKey with the specified identifier.
 %End
-    virtual ~QgsProjectPropertyKey();
+    ~QgsProjectPropertyKey();
 
     QString name() const;
 %Docstring
 The name of the property is used as identifier.
-
-:rtype: str
 
 .. seealso:: :py:func:`setName()`
 %End
@@ -213,15 +199,11 @@ The name of the property is used as identifier.
 %Docstring
 If this key has a value, it will be stored by its name in its
 properties
-
-:rtype: QVariant
 %End
 
     QgsProjectPropertyKey *addKey( const QString &keyName );
 %Docstring
 Adds the specified property key as a sub-key.
-
-:rtype: QgsProjectPropertyKey
 %End
 
     void removeKey( const QString &keyName );
@@ -232,19 +214,16 @@ Removes the specified key.
     QgsProjectPropertyValue *setValue( const QString &name, const QVariant &value );
 %Docstring
 Sets the value associated with this key.
+
 :param name: is the key name
 :param value: is the value to set
 
 :return: pointer to property value
-:rtype: QgsProjectPropertyValue
-
 %End
 
     QgsProjectPropertyValue *setValue( const QVariant &value );
 %Docstring
 Set the value associated with this key
-
-:rtype: QgsProjectPropertyValue
 
 .. note::
 
@@ -262,15 +241,11 @@ stored keyed by the current key name
     int count() const;
 %Docstring
 Returns the number of sub-keys contained by this property.
-
-:rtype: int
 %End
 
     bool isEmpty() const;
 %Docstring
 Returns true if this property contains no sub-keys.
-
-:rtype: bool
 %End
 
     virtual bool isKey() const;
@@ -305,8 +280,6 @@ Deletes any sub-nodes from the property.
     QgsProjectProperty *find( const QString &propertyName ) const;
 %Docstring
 Attempts to find a property with a matching sub-key name.
-
-:rtype: QgsProjectProperty
 %End
 
 };

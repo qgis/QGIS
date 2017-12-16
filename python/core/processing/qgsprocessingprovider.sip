@@ -29,14 +29,12 @@ to a common area of analysis.
 Constructor for QgsProcessingProvider.
 %End
 
-    virtual ~QgsProcessingProvider();
+    ~QgsProcessingProvider();
 
 
     virtual QIcon icon() const;
 %Docstring
 Returns an icon for the provider.
-
-:rtype: QIcon
 
 .. seealso:: :py:func:`svgIconPath()`
 %End
@@ -44,8 +42,6 @@ Returns an icon for the provider.
     virtual QString svgIconPath() const;
 %Docstring
 Returns a path to an SVG version of the provider's icon.
-
-:rtype: str
 
 .. seealso:: :py:func:`icon()`
 %End
@@ -56,8 +52,6 @@ Returns the unique provider id, used for identifying the provider. This string
 should be a unique, short, character only string, eg "qgis" or "gdal". This
 string should not be localised.
 
-:rtype: str
-
 .. seealso:: :py:func:`name()`
 %End
 
@@ -65,8 +59,6 @@ string should not be localised.
 %Docstring
 Returns the provider name, which is used to describe the provider within the GUI.
 This string should be short (e.g. "Lastools") and localised.
-
-:rtype: str
 
 .. seealso:: :py:func:`longName()`
 
@@ -81,8 +73,6 @@ This string should be localised.
 
 The default implementation returns the same string as name().
 
-:rtype: str
-
 .. seealso:: :py:func:`name()`
 
 .. seealso:: :py:func:`id()`
@@ -93,23 +83,17 @@ The default implementation returns the same string as name().
 Returns true if the provider can be activated, or false if it cannot be activated (e.g. due to
 missing external dependencies).
 
-:rtype: bool
-
 .. seealso:: :py:func:`isActive()`
 %End
 
     virtual bool isActive() const;
 %Docstring
 Returns true if the provider is active and able to run algorithms.
-
-:rtype: bool
 %End
 
     virtual QStringList supportedOutputRasterLayerExtensions() const;
 %Docstring
 Returns a list of the raster format file extensions supported by this provider.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
 %End
@@ -117,8 +101,6 @@ Returns a list of the raster format file extensions supported by this provider.
     virtual QStringList supportedOutputVectorLayerExtensions() const;
 %Docstring
 Returns a list of the vector format file extensions supported by this provider.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`defaultVectorFileExtension()`
 
@@ -139,8 +121,6 @@ The default implementation returns the user's default Processing vector output f
 setting, if it's supported by the provider (see supportedOutputVectorLayerExtensions()).
 Otherwise the first reported supported vector format will be used.
 
-:rtype: str
-
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
 
 .. seealso:: :py:func:`defaultRasterFileExtension()`
@@ -155,8 +135,6 @@ The default implementation returns the user's default Processing raster output f
 setting, if it's supported by the provider (see supportedOutputRasterLayerExtensions()).
 Otherwise the first reported supported raster format will be used.
 
-:rtype: str
-
 .. seealso:: :py:func:`supportedOutputRasterLayerExtensions()`
 
 .. seealso:: :py:func:`defaultVectorFileExtension()`
@@ -166,8 +144,6 @@ Otherwise the first reported supported raster format will be used.
 %Docstring
 Returns true if the provider supports non-file based outputs (such as memory layers
 or direct database outputs).
-
-:rtype: bool
 
 .. seealso:: :py:func:`supportedOutputVectorLayerExtensions()`
 %End
@@ -181,8 +157,6 @@ occur within the loadAlgorithms() method. Instead, subclasses should call refres
 from any overloaded load() method to trigger an initial load of the provider's algorithms.
 
 :return: true if provider could be successfully loaded
-:rtype: bool
-
 
 .. seealso:: :py:func:`unload()`
 %End
@@ -203,8 +177,6 @@ Refreshes the algorithms available from the provider, causing it to re-populate 
 %Docstring
 Returns a list of algorithms supplied by this provider.
 
-:rtype: list of const QgsProcessingAlgorithm
-
 .. seealso:: :py:func:`algorithm()`
 %End
 
@@ -212,8 +184,6 @@ Returns a list of algorithms supplied by this provider.
 %Docstring
 Returns the matching algorithm by ``name``, or a None if no matching
 algorithm is contained by this provider.
-
-:rtype: QgsProcessingAlgorithm
 
 .. seealso:: :py:func:`algorithms()`
 %End
@@ -239,8 +209,6 @@ addAlgorithm() to register all their associated algorithms.
     bool addAlgorithm( QgsProcessingAlgorithm *algorithm /Transfer/ );
 %Docstring
 Adds an ``algorithm`` to the provider. Ownership of the algorithm is transferred to the provider.
-
-:rtype: bool
 %End
 
   private:

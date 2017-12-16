@@ -29,16 +29,12 @@ Base metadata class for 3D renderers. Instances of derived classes may be regist
     QString type() const;
 %Docstring
 Returns unique identifier of the 3D renderer class
-
-:rtype: str
 %End
 
     virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) = 0 /Factory/;
 %Docstring
 Returns new instance of the renderer given the DOM element. Returns NULL on error.
 Pure virtual function: must be implemented in derived classes.
-
-:rtype: QgsAbstract3DRenderer
 %End
 
   protected:
@@ -84,15 +80,11 @@ Unregisters a 3D renderer type
     Qgs3DRendererAbstractMetadata *rendererMetadata( const QString &type ) const;
 %Docstring
 Returns metadata for a 3D renderer type (may be used to create a new instance of the type)
-
-:rtype: Qgs3DRendererAbstractMetadata
 %End
 
     QStringList renderersList() const;
 %Docstring
 Returns a list of all available 3D renderer types.
-
-:rtype: list of str
 %End
 
 };

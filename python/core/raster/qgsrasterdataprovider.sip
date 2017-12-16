@@ -45,6 +45,7 @@ Starts the image download
     void finish( const QImage &legend );
 %Docstring
 Emitted when the download completes
+
 :param legend: The downloaded legend image *
 %End
     void progress( qint64 received, qint64 total );
@@ -74,60 +75,44 @@ Base class for raster data providers.
 
     virtual QgsRasterInterface *clone() const = 0;
 
+
     virtual bool setInput( QgsRasterInterface *input );
 %Docstring
 It makes no sense to set input on provider */
-
-:rtype: bool
 %End
 
     virtual QgsRectangle extent() const = 0;
 
+
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
+
 %Docstring
 Returns data type for the band specified by number
-
-:rtype: Qgis.DataType
 %End
 
     virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
+
 %Docstring
 Returns source data type for the band specified by number,
 source data type may be shorter than dataType
-
-:rtype: Qgis.DataType
 %End
 
     virtual int colorInterpretation( int bandNo ) const;
 %Docstring
 Returns data type for the band specified by number
-
-:rtype: int
 %End
 
     QString colorName( int colorInterpretation ) const;
-%Docstring
-
-:rtype: str
-%End
     virtual bool reload();
 %Docstring
 Reload data (data could change)
-
-:rtype: bool
 %End
 
     virtual QString colorInterpretationName( int bandNo ) const;
-%Docstring
-
-:rtype: str
-%End
 
     virtual double bandScale( int bandNo ) const;
 %Docstring
 Read band scale for raster value
-
-:rtype: float
 
 .. versionadded:: 2.3
 %End
@@ -136,31 +121,24 @@ Read band scale for raster value
 %Docstring
 Read band offset for raster value
 
-:rtype: float
-
 .. versionadded:: 2.3
 %End
 
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = 0 );
+
 %Docstring
 Read block of data using given extent and size.
-
-:rtype: QgsRasterBlock
 %End
 
     virtual bool sourceHasNoDataValue( int bandNo ) const;
 %Docstring
 Return true if source band has no data value
-
-:rtype: bool
 %End
 
     virtual bool useSourceNoDataValue( int bandNo ) const;
 %Docstring
  Get source nodata value usage
-
-:rtype: bool
 %End
 
     virtual void setUseSourceNoDataValue( int bandNo, bool use );
@@ -171,8 +149,6 @@ Return true if source band has no data value
     virtual double sourceNoDataValue( int bandNo ) const;
 %Docstring
 Value representing no data value.
-
-:rtype: float
 %End
 
     virtual void setUserNoDataValue( int bandNo, const QgsRasterRangeList &noData );
@@ -180,29 +156,19 @@ Value representing no data value.
     virtual QgsRasterRangeList userNoDataValues( int bandNo ) const;
 %Docstring
 Get list of user no data value ranges
-
-:rtype: QgsRasterRangeList
 %End
 
     virtual QList<QgsColorRampShader::ColorRampItem> colorTable( int bandNo ) const;
-%Docstring
-
-:rtype: list of QgsColorRampShader.ColorRampItem
-%End
 
     virtual QStringList subLayers() const;
 %Docstring
  Returns the sublayers of this layer - useful for providers that manage
 their own layers, such as WMS *
-
-:rtype: list of str
 %End
 
     virtual bool supportsLegendGraphic() const;
 %Docstring
  Returns whether the provider supplies a legend graphic
-
-:rtype: bool
 %End
 
 
@@ -214,10 +180,9 @@ their own layers, such as WMS *
 contextual legends.
 
 :return: a download handler or null if the provider does not support
-:rtype: QgsImageFetcher
-
 legend at all. Ownership of the returned object is transferred
 to caller.
+
 
 .. versionadded:: 2.8
 %End
@@ -229,42 +194,31 @@ to caller.
                                    QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
  Create pyramid overviews
-
-:rtype: str
 %End
 
     virtual QList<QgsRasterPyramid> buildPyramidList( QList<int> overviewList = QList<int>() );
 %Docstring
  Accessor for the raster layers pyramid list.
+
 :param overviewList: used to construct the pyramid list (optional), when empty the list is defined by the provider.
 A pyramid list defines the
 POTENTIAL pyramids that can be in a raster. To know which of the pyramid layers
 ACTUALLY exists you need to look at the existsFlag member in each struct stored in the
 list.
-
-:rtype: list of QgsRasterPyramid
 %End
 
     bool hasPyramids();
 %Docstring
  Returns true if raster has at least one populated histogram.
-
-:rtype: bool
 %End
 
     virtual QString htmlMetadata() = 0;
 %Docstring
 Get metadata in a format suitable for feeding directly
 into a subset of the GUI raster properties "Metadata" tab.
-
-:rtype: str
 %End
 
     virtual QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 );
-%Docstring
-
-:rtype: QgsRasterIdentifyResult
-%End
 
     virtual QString lastErrorTitle() = 0;
 %Docstring
@@ -274,8 +228,6 @@ If an operation returns 0 (e.g. draw()), this function
 returns the text of the error associated with the failure.
 Interactive users of this provider can then, for example,
 call a QMessageBox to display the contents.
-
-:rtype: str
 %End
 
     virtual QString lastError() = 0;
@@ -286,22 +238,16 @@ If an operation returns 0 (e.g. draw()), this function
 returns the text of the error associated with the failure.
 Interactive users of this provider can then, for example,
 call a QMessageBox to display the contents.
-
-:rtype: str
 %End
 
     virtual QString lastErrorFormat();
 %Docstring
 Returns the format of the error text for the last error in this provider
-
-:rtype: str
 %End
 
     int dpi() const;
 %Docstring
 Returns the dpi of the output device.
-
-:rtype: int
 %End
 
     void setDpi( int dpi );
@@ -312,23 +258,17 @@ Sets the output device resolution.
     virtual QDateTime timestamp() const;
 %Docstring
 Time stamp of data source in the moment when data/metadata were loaded by provider
-
-:rtype: QDateTime
 %End
 
     virtual QDateTime dataTimestamp() const;
 %Docstring
 Current time stamp of data source
-
-:rtype: QDateTime
 %End
 
     virtual bool isEditable() const;
 %Docstring
 Checks whether the provider is in editing mode, i.e. raster write operations will be accepted.
 By default providers are not editable. Use setEditable() method to enable/disable editing.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setEditable()`
 
@@ -339,8 +279,6 @@ By default providers are not editable. Use setEditable() method to enable/disabl
 %Docstring
 Turns on/off editing mode of the provider. When in editing mode, it is possible
 to overwrite data of the provider using writeBlock() calls.
-
-:rtype: bool
 
 .. note::
 
@@ -356,10 +294,6 @@ value whether the operation was successful.
 %End
 
     virtual bool write( void *data, int band, int width, int height, int xOffset, int yOffset );
-%Docstring
-
-:rtype: bool
-%End
 
     bool writeBlock( QgsRasterBlock *block, int band, int xOffset = 0, int yOffset = 0 );
 %Docstring
@@ -374,8 +308,6 @@ xOffset and yOffset values.
 
 Writing is supported only by some data providers. Provider has to be in editing mode
 in order to allow write operations.
-
-:rtype: bool
 
 .. seealso:: :py:func:`isEditable()`
 
@@ -393,39 +325,30 @@ in order to allow write operations.
                                           const QStringList &createOptions = QStringList() );
 %Docstring
 Creates a new dataset with mDataSourceURI
-
-:rtype: QgsRasterDataProvider
 %End
 
     virtual bool setNoDataValue( int bandNo, double noDataValue );
 %Docstring
 Set no data value on created dataset
+
 :param bandNo: band number
 :param noDataValue: no data value
-
-:rtype: bool
 %End
 
     virtual bool remove();
 %Docstring
 Remove dataset
-
-:rtype: bool
 %End
 
     static QList<QPair<QString, QString> > pyramidResamplingMethods( const QString &providerKey );
 %Docstring
 Returns a list of pyramid resampling method name and label pairs
 for given provider
-
-:rtype: list of QPair<str, QString>
 %End
 
     virtual QString validateCreationOptions( const QStringList &createOptions, const QString &format );
 %Docstring
 Validates creation options for a specific dataset and destination format.
-
-:rtype: str
 
 .. note::
 
@@ -441,39 +364,19 @@ Validates creation options for a specific dataset and destination format.
 %Docstring
 Validates pyramid creation options for a specific dataset and destination format
 
-:rtype: str
-
 .. note::
 
    used by GDAL provider only
 %End
 
     static QString identifyFormatName( QgsRaster::IdentifyFormat format );
-%Docstring
-
-:rtype: str
-%End
     static QgsRaster::IdentifyFormat identifyFormatFromName( const QString &formatName );
-%Docstring
-
-:rtype: QgsRaster.IdentifyFormat
-%End
     static QString identifyFormatLabel( QgsRaster::IdentifyFormat format );
-%Docstring
-
-:rtype: str
-%End
     static Capability identifyFormatToCapability( QgsRaster::IdentifyFormat format );
-%Docstring
-
-:rtype: Capability
-%End
 
     virtual int stepWidth() const;
 %Docstring
 Step width for raster iterations.
-
-:rtype: int
 
 .. seealso:: :py:func:`stepHeight()`
 
@@ -483,8 +386,6 @@ Step width for raster iterations.
     virtual int stepHeight() const;
 %Docstring
 Step height for raster iterations.
-
-:rtype: int
 
 .. seealso:: :py:func:`stepWidth()`
 
@@ -507,8 +408,6 @@ Emit a message to be displayed on status bar, usually used by network providers 
     bool userNoDataValuesContains( int bandNo, double value ) const;
 %Docstring
 Returns true if user no data contains value
-
-:rtype: bool
 %End
 
     void copyBaseSettings( const QgsRasterDataProvider &other );

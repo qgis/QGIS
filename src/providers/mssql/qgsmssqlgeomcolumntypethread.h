@@ -17,7 +17,7 @@ class QgsMssqlGeomColumnTypeThread : public QThread
 
     // These functions get the layer types and pass that information out
     // by emitting the setLayerType() signal.
-    virtual void run() override;
+    void run() override;
 
   signals:
     void setLayerType( const QgsMssqlLayerProperty &layerProperty );

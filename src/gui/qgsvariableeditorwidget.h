@@ -53,7 +53,7 @@ class GUI_EXPORT QgsVariableEditorWidget : public QWidget
      */
     QgsVariableEditorWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsVariableEditorWidget();
+    ~QgsVariableEditorWidget() override;
 
     /**
      * Overwrites the QgsExpressionContext for the widget. Setting a context

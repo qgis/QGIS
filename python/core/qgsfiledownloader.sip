@@ -37,6 +37,7 @@ An optional authentication configuration can be specified.
     QgsFileDownloader( const QUrl &url, const QString &outputFileName, const QString &authcfg = QString(), bool delayStart = false );
 %Docstring
 QgsFileDownloader
+
 :param url: the download url
 :param outputFileName: file name where the downloaded content will be stored
 :param authcfg: optionally apply this authentication configuration

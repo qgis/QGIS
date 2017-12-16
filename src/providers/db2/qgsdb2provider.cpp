@@ -1755,11 +1755,11 @@ class QgsDb2SourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "DB2" ); }
-    virtual QString text() const override { return QObject::tr( "DB2" ); }
-    virtual int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 40; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "DB2" ); }
+    QString text() const override { return QObject::tr( "DB2" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderDatabaseProvider + 40; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddDb2Layer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsDb2SourceSelect( parent, fl, widgetMode );
     }

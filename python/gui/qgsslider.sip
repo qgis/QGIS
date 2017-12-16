@@ -32,16 +32,13 @@ Constructor for QgsSlider
     void setSingleStep( const QVariant &step );
     void setValue( const QVariant &value );
     QVariant variantValue() const;
-%Docstring
-
-:rtype: QVariant
-%End
 
   signals:
     void valueChanged( const QVariant & );
 
   protected:
     virtual void paintEvent( QPaintEvent *event );
+
 
 };
 /************************************************************************

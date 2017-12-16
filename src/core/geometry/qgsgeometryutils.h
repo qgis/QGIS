@@ -92,13 +92,13 @@ class CORE_EXPORT QgsGeometryUtils
     /**
      * \brief Compute the intersection between two lines
      * \param p1 Point on the first line
-     * \param v Direction vector of the first line
-     * \param q1 Point on the second line
-     * \param w Direction vector of the second line
-     * \param inter Output parameter, the intersection point
+     * \param v1 Direction vector of the first line
+     * \param p2 Point on the second line
+     * \param v2 Direction vector of the second line
+     * \param intersection Output parameter, the intersection point
      * \returns Whether the lines intersect
      */
-    static bool lineIntersection( const QgsPoint &p1, QgsVector v, const QgsPoint &q1, QgsVector w, QgsPoint &inter SIP_OUT );
+    static bool lineIntersection( const QgsPoint &p1, QgsVector v1, const QgsPoint &p2, QgsVector v2, QgsPoint &intersection SIP_OUT );
 
     /**
      * \brief Compute the intersection between two segments

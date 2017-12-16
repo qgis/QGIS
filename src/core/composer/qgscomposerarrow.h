@@ -57,10 +57,10 @@ class CORE_EXPORT QgsComposerArrow: public QgsComposerItem
      */
     QgsComposerArrow( QPointF startPoint, QPointF stopPoint, QgsComposition *c SIP_TRANSFERTHIS );
 
-    ~QgsComposerArrow();
+    ~QgsComposerArrow() override;
 
     //! Return composer item type.
-    virtual int type() const override { return ComposerArrow; }
+    int type() const override { return ComposerArrow; }
 
     //! \brief Reimplementation of QCanvasItem::paint - draw on canvas
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget ) override;

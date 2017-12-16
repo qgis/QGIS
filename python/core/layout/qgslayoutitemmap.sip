@@ -47,13 +47,12 @@ Sets the map id() to a number not yet used in the layout. The existing id() is k
 
     virtual QString displayName() const;
 
+
     static QgsLayoutItemMap *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new map item for the specified ``layout``.
 
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsLayoutItemMap
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -68,8 +67,6 @@ The caller takes responsibility for deleting the returned object.
 %Docstring
 Returns the map scale.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 
 .. seealso:: :py:func:`setScale()`
 %End
@@ -108,8 +105,6 @@ map scale.
 %Docstring
 Returns the current map extent.
 
-:rtype: QgsRectangle
-
 .. seealso:: :py:func:`visibleExtentPolygon()`
 
 .. seealso:: :py:func:`extentChanged()`
@@ -122,8 +117,6 @@ Returns a polygon representing the current visible map extent, considering map e
 If the map rotation is 0, the result is the same as currentMapExtent
 
 :return: polygon with the four corner points representing the visible map extent. The points are
-:rtype: QPolygonF
-
 clockwise, starting at the top-left point
 
 .. seealso:: :py:func:`extent()`
@@ -136,8 +129,6 @@ This will match the presetCrs() if that is set, or if a preset
 CRS is not set then the map's CRS will follow the composition's
 project's CRS.
 
-:rtype: QgsCoordinateReferenceSystem
-
 .. seealso:: :py:func:`presetCrs()`
 
 .. seealso:: :py:func:`setCrs()`
@@ -149,8 +140,6 @@ Returns the map's preset coordinate reference system. If set, this
 CRS will be used to render the map regardless of any project CRS
 setting. If the returned CRS is not valid then the project CRS
 will be used to render the map.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. seealso:: :py:func:`crs()`
 
@@ -175,8 +164,6 @@ or the current layer set from the project associated with the layout. This is ju
 and itself does not change which layers are rendered in the map.
 Instead, use setLayers() to control which layers are rendered.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setKeepLayerSet()`
 
 .. seealso:: :py:func:`layers()`
@@ -199,8 +186,6 @@ Instead, use setLayers() to control which layers are rendered.
 Returns the stored layer set. If empty, the current project layers will
 be used instead.
 
-:rtype: list of QgsMapLayer
-
 .. seealso:: :py:func:`setLayers()`
 
 .. seealso:: :py:func:`keepLayerSet()`
@@ -220,8 +205,6 @@ be used instead.
 %Docstring
 Returns whether current styles of layers should be overridden by previously stored styles.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setKeepLayerStyles()`
 %End
 
@@ -235,8 +218,6 @@ Sets whether current styles of layers should be overridden by previously stored 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
 Returns stored overrides of styles for layers.
-
-:rtype: QMap<str, QString>
 
 .. seealso:: :py:func:`setLayerStyleOverrides()`
 %End
@@ -263,8 +244,6 @@ At most one of the flags keepLayerSet() and followVisibilityPreset() should be e
 at any time since they are alternative approaches - if both are enabled,
 following map theme has higher priority. If neither is enabled (or if preset name is not set),
 map will use the same configuration as the map canvas uses.
-
-:rtype: bool
 %End
 
     void setFollowVisibilityPreset( bool follow );
@@ -276,8 +255,6 @@ Sets whether the map should follow a map theme. See followVisibilityPreset() for
 %Docstring
 Preset name that decides which layers and layer styles are used for map rendering. It is only
 used when followVisibilityPreset() returns true.
-
-:rtype: str
 
 .. seealso:: :py:func:`setFollowVisibilityPresetName()`
 %End
@@ -301,15 +278,11 @@ Sets preset name for map rendering. See followVisibilityPresetName() for more de
     bool containsWmsLayer() const;
 %Docstring
 Returns true if the map contains a WMS layer.
-
-:rtype: bool
 %End
 
     bool containsAdvancedEffects() const;
 %Docstring
 Returns true if the map contains layers with blend modes or flattened layers for vectors
-
-:rtype: bool
 %End
 
     void setMapRotation( double rotation );
@@ -325,11 +298,10 @@ way the map is drawn within the item. Rotation is in degrees, clockwise.
     double mapRotation( QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue ) const;
 %Docstring
 Returns the rotation used for drawing the map within the composer item, in degrees clockwise.
+
 :param valueType: controls whether the returned value is the user specified rotation,
 or the current evaluated rotation (which may be affected by data driven rotation
 settings).
-
-:rtype: float
 
 .. seealso:: :py:func:`setMapRotation()`
 
@@ -347,8 +319,6 @@ Sets whether annotations are drawn within the composer map.
 %Docstring
 Returns whether annotations are drawn within the composer map.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setDrawAnnotations()`
 %End
 
@@ -358,8 +328,6 @@ Returns whether annotations are drawn within the composer map.
 Returns whether the map extent is set to follow the current atlas feature.
 
 :return: true if map will follow the current atlas feature.
-:rtype: bool
-
 
 .. seealso:: :py:func:`setAtlasDriven`
 
@@ -369,6 +337,7 @@ Returns whether the map extent is set to follow the current atlas feature.
     void setAtlasDriven( bool enabled );
 %Docstring
 Sets whether the map extent will follow the current atlas feature.
+
 :param enabled: set to true if the map extents should be set by the current atlas feature.
 
 .. seealso:: :py:func:`atlasDriven`
@@ -383,8 +352,6 @@ are calculated for the current atlas feature when an atlas composition
 is enabled.
 
 :return: the current scaling mode
-:rtype: AtlasScalingMode
-
 
 .. note::
 
@@ -400,6 +367,7 @@ is enabled.
 Sets the current atlas scaling mode. This controls how the map's extents
 are calculated for the current atlas feature when an atlas composition
 is enabled.
+
 :param mode: atlas scaling mode to set
 
 .. note::
@@ -414,13 +382,12 @@ is enabled.
     double atlasMargin( const QgsLayoutObject::PropertyValueType valueType = QgsLayoutObject::EvaluatedValue );
 %Docstring
 Returns the margin size (percentage) used when the map is in atlas mode.
+
 :param valueType: controls whether the returned value is the user specified atlas margin,
 or the current evaluated atlas margin (which may be affected by data driven atlas margin
 settings).
 
 :return: margin size in percentage to leave around the atlas feature's extent
-:rtype: float
-
 
 .. note::
 
@@ -434,6 +401,7 @@ settings).
     void setAtlasMargin( double margin );
 %Docstring
 Sets the margin size (percentage) used when the map is in atlas mode.
+
 :param margin: size in percentage to leave around the atlas feature's extent
 
 .. note::
@@ -450,16 +418,12 @@ Sets the margin size (percentage) used when the map is in atlas mode.
 Returns the map item's grid stack, which is used to control how grids
 are drawn over the map's contents.
 
-:rtype: QgsLayoutItemMapGridStack
-
 .. seealso:: :py:func:`grid()`
 %End
 
     QgsLayoutItemMapGrid *grid();
 %Docstring
 Returns the map item's first grid. This is a convenience function.
-
-:rtype: QgsLayoutItemMapGrid
 
 .. seealso:: :py:func:`grids()`
 %End
@@ -470,8 +434,6 @@ Returns the map item's overview stack, which is used to control how overviews
 are drawn over the map's contents.
 
 :return: pointer to overview stack
-:rtype: QgsLayoutItemMapOverviewStack
-
 
 .. seealso:: :py:func:`overview()`
 %End
@@ -481,8 +443,6 @@ are drawn over the map's contents.
 Returns the map item's first overview. This is a convenience function.
 
 :return: pointer to first overview for map item
-:rtype: QgsLayoutItemMapOverview
-
 
 .. seealso:: :py:func:`overviews()`
 %End
@@ -495,15 +455,11 @@ Returns the map item's first overview. This is a convenience function.
 Returns the conversion factor from map units to layout units.
 This is calculated using the width of the map item and the width of the
 current visible map extent.
-
-:rtype: float
 %End
 
     QgsMapSettings mapSettings( const QgsRectangle &extent, QSizeF size, int dpi ) const;
 %Docstring
 Return map settings that will be used for drawing of the map.
-
-:rtype: QgsMapSettings
 %End
 
     virtual void finalizeRestoreFromXml();
@@ -521,8 +477,6 @@ Return map settings that will be used for drawing of the map.
     bool isDrawing() const;
 %Docstring
 True if a draw is already in progress
-
-:rtype: bool
 %End
 
 
@@ -532,22 +486,16 @@ True if a draw is already in progress
     QPolygonF transformedMapPolygon() const;
 %Docstring
 Returns extent that considers rotation and shift with mOffsetX / mOffsetY
-
-:rtype: QPolygonF
 %End
 
     QPointF mapToItemCoords( QPointF mapCoords ) const;
 %Docstring
 Transforms map coordinates to item coordinates (considering rotation and move offset)
-
-:rtype: QPointF
 %End
 
     QgsRectangle requestedExtent() const;
 %Docstring
 Calculates the extent to request and the yShift of the top-left point in case of rotation.
-
-:rtype: QgsRectangle
 %End
 
   signals:

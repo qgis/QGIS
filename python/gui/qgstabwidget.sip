@@ -55,12 +55,11 @@ Returns the index of the tab with the given widget.
 This index is not the same as the one provided to insertTab and removeTab
 since these methods are not aware of hidden tabs.
 
-:rtype: int
-
 .. versionadded:: 3.0
 %End
 
     virtual void tabInserted( int index );
+
 %Docstring
 Is called internally whenever a new tab has been inserted.
 
@@ -70,6 +69,7 @@ Is used to keep track of currently available and visible tabs.
 %End
 
     virtual void tabRemoved( int index );
+
 %Docstring
 Is called internally whenever a tab has been removed.
 

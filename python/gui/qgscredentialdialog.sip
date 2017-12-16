@@ -29,7 +29,9 @@ QgsCredentialDialog constructor
   protected:
     virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
 
+
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
+
 
 };
 

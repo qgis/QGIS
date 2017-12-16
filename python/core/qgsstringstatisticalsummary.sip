@@ -47,6 +47,7 @@ specifying the statistic in the constructor or via setStatistics().
     QgsStringStatisticalSummary( QgsStringStatisticalSummary::Statistics stats = QgsStringStatisticalSummary::All );
 %Docstring
 Constructor for QgsStringStatistics
+
 :param stats: flags for statistics to calculate
 %End
 
@@ -55,8 +56,6 @@ Constructor for QgsStringStatistics
 Returns flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., count).
 
-:rtype: Statistics
-
 .. seealso:: :py:func:`setStatistics`
 %End
 
@@ -64,6 +63,7 @@ are always calculated (e.g., count).
 %Docstring
 Sets flags which specify which statistics will be calculated. Some statistics
 are always calculated (e.g., count).
+
 :param stats: flags for statistics to calculate
 
 .. seealso:: :py:func:`statistics`
@@ -77,6 +77,7 @@ Resets the calculated values
     void calculate( const QStringList &values );
 %Docstring
 Calculates summary statistics for an entire list of strings at once.
+
 :param values: list of strings
 
 .. seealso:: :py:func:`calculateFromVariants()`
@@ -88,6 +89,7 @@ Calculates summary statistics for an entire list of strings at once.
 %Docstring
 Calculates summary statistics for an entire list of variants at once. Any
 non-string variants will be ignored.
+
 :param values: list of variants
 
 .. seealso:: :py:func:`calculate()`
@@ -101,6 +103,7 @@ Adds a single string to the statistics calculation. Calling this method
 allows strings to be added to the calculation one at a time. For large
 quantities of strings this may be more efficient then first adding all the
 strings to a list and calling calculate().
+
 :param string: string to add
 
 .. note::
@@ -126,6 +129,7 @@ Adds a single variant to the statistics calculation. Calling this method
 allows variants to be added to the calculation one at a time. For large
 quantities of variants this may be more efficient then first adding all the
 variants to a list and calling calculateFromVariants().
+
 :param value: variant to add
 
 .. note::
@@ -154,25 +158,20 @@ any calculated string statistics.
     QVariant statistic( QgsStringStatisticalSummary::Statistic stat ) const;
 %Docstring
 Returns the value of a specified statistic
+
 :param stat: statistic to return
 
 :return: calculated value of statistic
-:rtype: QVariant
-
 %End
 
     int count() const;
 %Docstring
 Returns the calculated count of values.
-
-:rtype: int
 %End
 
     int countDistinct() const;
 %Docstring
 Returns the number of distinct string values.
-
-:rtype: int
 
 .. seealso:: :py:func:`distinctValues()`
 %End
@@ -181,51 +180,37 @@ Returns the number of distinct string values.
 %Docstring
 Returns the set of distinct string values.
 
-:rtype: set of str
-
 .. seealso:: :py:func:`countDistinct()`
 %End
 
     int countMissing() const;
 %Docstring
 Returns the number of missing (null) string values.
-
-:rtype: int
 %End
 
     QString min() const;
 %Docstring
 Returns the minimum (non-null) string value.
-
-:rtype: str
 %End
 
     QString max() const;
 %Docstring
 Returns the maximum (non-null) string value.
-
-:rtype: str
 %End
 
     int minLength() const;
 %Docstring
 Returns the minimum length of strings.
-
-:rtype: int
 %End
 
     int maxLength() const;
 %Docstring
 Returns the maximum length of strings.
-
-:rtype: int
 %End
 
     double meanLength() const;
 %Docstring
 Returns the mean length of strings.
-
-:rtype: float
 
 .. versionadded:: 3.0
 %End
@@ -233,9 +218,8 @@ Returns the mean length of strings.
     static QString displayName( QgsStringStatisticalSummary::Statistic statistic );
 %Docstring
 Returns the friendly display name for a statistic
-:param statistic: statistic to return name for
 
-:rtype: str
+:param statistic: statistic to return name for
 %End
 
 };

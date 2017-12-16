@@ -60,8 +60,6 @@ Construct a new multiframe item, attached to the specified ``layout``.
 Returns the multiframe identification string. This is a unique random string set for the multiframe
 upon creation.
 
-:rtype: str
-
 .. note::
 
    There is no corresponding setter for the uuid - it's created automatically.
@@ -70,26 +68,21 @@ upon creation.
     virtual QSizeF totalSize() const = 0;
 %Docstring
 Returns the total size of the multiframe's content, in layout units.
-
-:rtype: QSizeF
 %End
 
     virtual int type() const = 0;
 %Docstring
 Returns unique multiframe type id.
-
-:rtype: int
 %End
 
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 %Docstring
 Returns the fixed size for a frame, if desired. If the fixed frame size changes,
 the sizes of all frames can be recalculated by calling recalculateFrameRects().
+
 :param frameIndex: frame number
 
 :return: fixed size for frame. If the size has a width or height of 0, then
-:rtype: QSizeF
-
 the frame size is not fixed in that direction and frames can have variable width
 or height accordingly.
 
@@ -103,11 +96,10 @@ or height accordingly.
 Returns the minimum size for a frames, if desired. If the minimum
 size changes, the sizes of all frames can be recalculated by calling
 recalculateFrameRects().
+
 :param frameIndex: frame number
 
 :return: minimum size for frame. If the size has a width or height of 0, then
-:rtype: QSizeF
-
 the frame size has no minimum in that direction.
 
 .. seealso:: :py:func:`fixedFrameSize()`
@@ -119,6 +111,7 @@ the frame size has no minimum in that direction.
                          const QStyleOptionGraphicsItem *itemStyle = 0 ) = 0;
 %Docstring
 Renders a portion of the multiframe's content into a render ``context``.
+
 :param context: destination render painter
 :param renderExtent: visible extent of content to render into the painter.
 :param frameIndex: frame number for content
@@ -137,11 +130,10 @@ If ``recalcFrameSizes`` is set to true, then a recalculation of all existing fra
     virtual double findNearbyPageBreak( double yPos );
 %Docstring
 Finds the optimal position to break a frame at.
+
 :param yPos: maximum vertical position for break, in layout units.
 
 :return: the optimal breakable position which occurs in the multi frame close
-:rtype: float
-
 to and before the specified yPos
 %End
 
@@ -176,20 +168,17 @@ Sets the resize ``mode`` for the multiframe, and recalculates frame sizes to mat
 %Docstring
 Returns the resize mode for the multiframe.
 
-:rtype: ResizeMode
-
 .. seealso:: :py:func:`setResizeMode()`
 %End
 
     bool writeXml( QDomElement &parentElement, QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false ) const;
 %Docstring
 Stores the multiframe state in a DOM element.
+
 :param parentElement: parent DOM element (e.g. 'Layout' element)
 :param document: DOM document
 :param context: read write context
 :param ignoreFrames: set to false to avoid writing state information about child frames into DOM
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -197,12 +186,11 @@ Stores the multiframe state in a DOM element.
     bool readXml( const QDomElement &itemElement, const QDomDocument &document, const QgsReadWriteContext &context, bool ignoreFrames = false );
 %Docstring
 Sets the item state from a DOM element.
+
 :param itemElement: is the DOM node corresponding to item (e.g. 'LayoutItem' element)
 :param document: DOM document
 :param context: read write context
 :param ignoreFrames: set to false to avoid read state information about child frames from DOM
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End
@@ -211,8 +199,6 @@ Sets the item state from a DOM element.
 %Docstring
 Returns a list of all child frames for this multiframe.
 
-:rtype: list of QgsLayoutFrame
-
 .. seealso:: :py:func:`frameCount()`
 %End
 
@@ -220,16 +206,12 @@ Returns a list of all child frames for this multiframe.
 %Docstring
 Returns the number of frames associated with this multiframe.
 
-:rtype: int
-
 .. seealso:: :py:func:`frames()`
 %End
 
     QgsLayoutFrame *frame( int index ) const;
 %Docstring
 Returns the child frame at a specified ``index`` from the multiframe.
-
-:rtype: QgsLayoutFrame
 
 .. seealso:: :py:func:`frameIndex()`
 %End
@@ -239,8 +221,6 @@ Returns the child frame at a specified ``index`` from the multiframe.
 Returns the index of a ``frame`` within the multiframe.
 
 :return: index for frame if found, -1 if frame not found in multiframe
-:rtype: int
-
 
 .. seealso:: :py:func:`frame()`
 %End
@@ -248,19 +228,16 @@ Returns the index of a ``frame`` within the multiframe.
     QgsLayoutFrame *createNewFrame( QgsLayoutFrame *currentFrame, QPointF pos, QSizeF size );
 %Docstring
 Creates a new frame and adds it to the multi frame and layout.
+
 :param currentFrame: an existing QgsLayoutFrame from which to copy the size
 and general frame properties (e.g., frame style, background, rendering settings).
 :param pos: position of top-left corner of the new frame, in layout units
 :param size: size of the new frame, in layout units
-
-:rtype: QgsLayoutFrame
 %End
 
     virtual QString displayName() const;
 %Docstring
 Returns the multiframe display name.
-
-:rtype: str
 %End
 
     virtual QgsAbstractLayoutUndoCommand *createCommand( const QString &text, int id, QUndoCommand *parent = 0 ) /Factory/;
@@ -370,11 +347,10 @@ must be redrawn.
     virtual bool writePropertiesToElement( QDomElement &element, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores multiframe state within an XML DOM element.
+
 :param element: is the DOM element to store the multiframe's properties in
 :param document: DOM document
 :param context: read write context
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 
@@ -384,11 +360,10 @@ Stores multiframe state within an XML DOM element.
     virtual bool readPropertiesFromElement( const QDomElement &element, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets multiframe state from a DOM element.
+
 :param element: is the DOM element for the multiframe
 :param document: DOM document
 :param context: read write context
-
-:rtype: bool
 
 .. seealso:: :py:func:`writePropertiesToElement()`
 

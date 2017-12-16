@@ -29,7 +29,9 @@ Constructor for QgsMenuHeader, showing the specified ``text``.
 %End
 
     virtual QSize minimumSizeHint() const;
+
     virtual QSize sizeHint() const;
+
 
   protected:
 

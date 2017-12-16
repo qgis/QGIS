@@ -63,20 +63,12 @@ Constructor for ActionData
 define if the menu executed can return multiple results (e.g. all results or all identified features of a vector layer)
 %End
     bool allowMultipleReturn();
-%Docstring
-
-:rtype: bool
-%End
 
     void setExecWithSingleResult( bool execWithSingleResult );
 %Docstring
 define if the menu will be shown with a single idetify result
 %End
     bool execWithSingleResult();
-%Docstring
-
-:rtype: bool
-%End
 
     void setExpressionContextScope( const QgsExpressionContextScope &scope );
 %Docstring
@@ -88,8 +80,6 @@ Sets an expression context scope used to resolve underlying actions.
     QgsExpressionContextScope expressionContextScope() const;
 %Docstring
 Returns an expression context scope used to resolve underlying actions.
-
-:rtype: QgsExpressionContextScope
 
 .. versionadded:: 3.0
 %End
@@ -107,10 +97,6 @@ Returns an expression context scope used to resolve underlying actions.
 .. seealso:: :py:class:`QgsMapLayerActionRegistry`
 %End
     bool showFeatureActions();
-%Docstring
-
-:rtype: bool
-%End
 
     void setResultsIfExternalAction( bool resultsIfExternalAction );
 %Docstring
@@ -119,10 +105,6 @@ Returns an expression context scope used to resolve underlying actions.
 .. seealso:: :py:func:`setShowFeatureActions`
 %End
     bool resultsIfExternalAction();
-%Docstring
-
-:rtype: bool
-%End
 
     void setMaxLayerDisplay( int maxLayerDisplay );
 %Docstring
@@ -133,10 +115,6 @@ Defines the maximum number of layers displayed in the menu (default is 10).
    0 is unlimited.
 %End
     int maxLayerDisplay();
-%Docstring
-
-:rtype: int
-%End
 
     void setMaxFeatureDisplay( int maxFeatureDisplay );
 %Docstring
@@ -147,10 +125,6 @@ Defines the maximum number of features displayed in the menu for vector layers (
    0 is unlimited.
 %End
     int maxFeatureDisplay();
-%Docstring
-
-:rtype: int
-%End
 
     void addCustomAction( QgsMapLayerAction *action );
 %Docstring
@@ -165,14 +139,14 @@ remove all custom actions from the menu to be built
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 %Docstring
  exec
+
 :param idResults: the list of identify results to choose within
 :param pos: the position where the menu will be executed
-
-:rtype: list of QgsMapToolIdentify.IdentifyResult
 %End
 
   protected:
     virtual void closeEvent( QCloseEvent *e );
+
 
 };
 

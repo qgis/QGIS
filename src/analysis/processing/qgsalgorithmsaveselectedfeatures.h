@@ -45,8 +45,8 @@ class QgsSaveSelectedFeatures : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback *feedback ) override;
 };
 
 ///@endcond PRIVATE

@@ -45,6 +45,7 @@ for tracking the mouse while drawing polylines or polygons.
     QgsRubberBand( QgsMapCanvas *mapCanvas /TransferThis/, QgsWkbTypes::GeometryType geometryType = QgsWkbTypes::LineGeometry );
 %Docstring
 Creates a new RubberBand.
+
 :param mapCanvas: The map canvas to draw onto. It's CRS will be used map points onto screen coordinates.
 :param geometryType: Defines how the data should be drawn onto the screen. (Use Qgis.Line, Qgis.Polygon or Qgis.Point)
 %End
@@ -52,12 +53,14 @@ Creates a new RubberBand.
     void setColor( const QColor &color );
 %Docstring
 Sets the color for the rubberband
+
 :param color:  The color used to render this rubberband
 %End
 
     void setFillColor( const QColor &color );
 %Docstring
 Sets the fill color for the rubberband
+
 :param color:  The color used to render this rubberband
 
 .. versionadded:: 2.6
@@ -66,13 +69,12 @@ Sets the fill color for the rubberband
     QColor fillColor() const;
 %Docstring
 Returns the current fill color.
-
-:rtype: QColor
 %End
 
     void setStrokeColor( const QColor &color );
 %Docstring
 Sets the stroke color for the rubberband
+
 :param color:  The color used to render this rubberband
 
 .. versionadded:: 2.6
@@ -81,14 +83,13 @@ Sets the stroke color for the rubberband
     QColor strokeColor() const;
 %Docstring
 Returns the current stroke color.
-
-:rtype: QColor
 %End
 
     void setSecondaryStrokeColor( const QColor &color );
 %Docstring
 Sets a secondary stroke color for the rubberband which will be drawn under the main stroke color.
 Set to an invalid color to avoid drawing the secondary stroke.
+
 :param color:  The color used to render a secondary stroke color to this rubberband
 
 .. versionadded:: 3.0
@@ -97,26 +98,24 @@ Set to an invalid color to avoid drawing the secondary stroke.
     QColor secondaryStrokeColor() const;
 %Docstring
 Returns the current secondary stroke color.
-
-:rtype: QColor
 %End
 
     void setWidth( int width );
 %Docstring
 Sets the width of the line. Stroke width for polygon.
+
 :param width: The width for any lines painted for this rubberband
 %End
 
     int width() const;
 %Docstring
 Returns the current width of the line or stroke width for polygon.
-
-:rtype: int
 %End
 
     void setIcon( IconType icon );
 %Docstring
 Sets the icon type to highlight point geometries.
+
 :param icon: The icon to visualize point geometries
 %End
 
@@ -124,8 +123,6 @@ Sets the icon type to highlight point geometries.
     IconType icon() const;
 %Docstring
 Returns the current icon type to highlight point geometries.
-
-:rtype: IconType
 %End
 
     void setIconSize( int iconSize );
@@ -136,8 +133,6 @@ Sets the size of the point icons
     int iconSize() const;
 %Docstring
 Returns the current icon size of the point icons.
-
-:rtype: int
 %End
 
     void setLineStyle( Qt::PenStyle penStyle );
@@ -154,6 +149,7 @@ Sets the style of the brush
 %Docstring
 Clears all the geometries in this rubberband.
 Sets the representation type according to geometryType.
+
 :param geometryType: Defines how the data should be drawn onto the screen. (Use Qgis.Line, Qgis.Polygon or Qgis.Point)
 %End
 
@@ -162,6 +158,7 @@ Sets the representation type according to geometryType.
 Adds a vertex to the rubberband and update canvas.
 The rendering of the vertex depends on the current GeometryType and icon.
 If adding more points consider using update=false for better performance
+
 :param p:             The vertex/point to add
 :param doUpdate:      Should the map canvas be updated immediately?
 :param geometryIndex: The index of the feature part (in case of multipart geometries)
@@ -171,6 +168,7 @@ If adding more points consider using update=false for better performance
 %Docstring
 Ensures that a polygon geometry is closed and that the last vertex equals the
 first vertex.
+
 :param doUpdate: set to true to update the map canvas immediately
 :param geometryIndex: index of the feature part (in case of multipart geometries)
 
@@ -180,6 +178,7 @@ first vertex.
     void removePoint( int index = 0, bool doUpdate = true, int geometryIndex = 0 );
 %Docstring
 Removes a vertex from the rubberband and (optionally) updates canvas.
+
 :param index: The index of the vertex/point to remove, negative indexes start at end
 :param doUpdate: Should the map canvas be updated immediately?
 :param geometryIndex: The index of the feature part (in case of multipart geometries)
@@ -205,11 +204,10 @@ not used to track the last mouse position, the first point of the rubber band ha
     int partSize( int geometryIndex ) const;
 %Docstring
 Returns number of vertices in feature part
+
 :param geometryIndex: The index of the feature part (in case of multipart geometries)
 
 :return: number of vertices
-:rtype: int
-
 %End
 
     void setToGeometry( const QgsGeometry &geom, QgsVectorLayer *layer );
@@ -217,6 +215,7 @@ Returns number of vertices in feature part
 Sets this rubber band to the geometry of an existing feature.
 This is useful for feature highlighting.
 In contrast to addGeometry(), this method does also change the geometry type of the rubberband.
+
 :param geom: the geometry object
 :param layer: the layer containing the feature, used for coord transformation to map
 crs. In case of 0 pointer, the coordinates are not going to be transformed.
@@ -225,6 +224,7 @@ crs. In case of 0 pointer, the coordinates are not going to be transformed.
     void setToCanvasRectangle( QRect rect );
 %Docstring
 Sets this rubber band to a map canvas rectangle
+
 :param rect: rectangle in canvas coordinates
 %End
 
@@ -254,6 +254,7 @@ to the canvas CRS.
     void setTranslationOffset( double dx, double dy );
 %Docstring
 Adds translation to original coordinates (all in map coordinates)
+
 :param dx:  x translation
 :param dy:  y translation
 %End
@@ -263,8 +264,6 @@ Adds translation to original coordinates (all in map coordinates)
 Returns number of geometries
 
 :return: number of geometries
-:rtype: int
-
 %End
 
     int numberOfVertices() const;
@@ -272,17 +271,14 @@ Returns number of geometries
 Returns count of vertices in all lists of mPoint
 
 :return: The total number of vertices
-:rtype: int
-
 %End
 
     const QgsPointXY *getPoint( int i, int j = 0 ) const;
 %Docstring
 Returns a vertex
+
 :param i:   The geometry index
 :param j:   The vertex index within geometry i
-
-:rtype: QgsPointXY
 %End
 
     QgsGeometry asGeometry() const;
@@ -290,23 +286,25 @@ Returns a vertex
 Returns the rubberband as a Geometry
 
 :return: A geometry object which reflects the current state of the rubberband.
-:rtype: QgsGeometry
-
 %End
 
     virtual void updatePosition();
 
+
   protected:
 
     virtual void paint( QPainter *p );
+
 %Docstring
 Paints the rubber band in response to an update event.
+
 :param p: The QPainter object
 %End
 
     void drawShape( QPainter *p, const QVector<QPointF> &pts );
 %Docstring
 Draws shape of the rubber band.
+
 :param p: The QPainter object
 :param pts: A list of points used to draw the shape
 %End

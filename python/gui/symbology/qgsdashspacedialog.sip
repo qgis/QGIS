@@ -25,10 +25,6 @@ Constructor for QgsDashSpaceDialog
 %End
 
     QVector<qreal> dashDotVector() const;
-%Docstring
-
-:rtype: list of qreal
-%End
 
 };
 

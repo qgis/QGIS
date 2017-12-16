@@ -30,6 +30,7 @@ Constructor for QgsBrowserTreeView
 %End
 
     virtual void setModel( QAbstractItemModel *model );
+
     void setBrowserModel( QgsBrowserModel *model );
 %Docstring
 Set the browser model
@@ -37,22 +38,19 @@ Set the browser model
     QgsBrowserModel *browserModel();
 %Docstring
 Return the browser model
-
-:rtype: QgsBrowserModel
 %End
     virtual void showEvent( QShowEvent *e );
+
     virtual void hideEvent( QHideEvent *e );
 
-    bool hasExpandedDescendant( const QModelIndex &index ) const;
-%Docstring
 
-:rtype: bool
-%End
+    bool hasExpandedDescendant( const QModelIndex &index ) const;
 
     void setSettingsSection( const QString &section );
 
   protected slots:
     virtual void rowsInserted( const QModelIndex &parentIndex, int start, int end );
+
 
 };
 

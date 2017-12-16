@@ -70,8 +70,6 @@ Display the blocking message to the user.
 %Docstring
 function that returns new class derived from QgsMessageOutput
 (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
-
-:rtype: QgsMessageOutput
 %End
 
 };
@@ -98,11 +96,15 @@ Constructor for QgsMessageOutputConsole.
 
     virtual void setMessage( const QString &message, MessageType msgType );
 
+
     virtual void appendMessage( const QString &message );
+
 
     virtual void setTitle( const QString &title );
 
+
     virtual void showMessage( bool blocking = true );
+
 %Docstring
 sends the message to the standard output
 %End

@@ -24,10 +24,6 @@ A dialog for selecting a single character from a single font
 
   public slots:
     const QChar &selectCharacter( bool *gotChar, const QFont &font, const QString &style );
-%Docstring
-
-:rtype: QChar
-%End
 
   protected:
 };

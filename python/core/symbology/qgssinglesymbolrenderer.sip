@@ -18,48 +18,49 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     QgsSingleSymbolRenderer( QgsSymbol *symbol /Transfer/ );
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
-    QgsSymbol *symbol() const;
-%Docstring
 
-:rtype: QgsSymbol
-%End
+    QgsSymbol *symbol() const;
     void setSymbol( QgsSymbol *s /Transfer/ );
 
     virtual QString dump() const;
 
+
     virtual QgsSingleSymbolRenderer *clone() const /Factory/;
 
-    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
-    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
-%Docstring
 
-:rtype: QgsFeatureRenderer
-%End
+    virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
+    static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
+
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 create renderer from XML element
-
-:rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
     virtual QgsLegendSymbolList legendSymbolItems() const;
+
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
+
 
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 creates a QgsSingleSymbolRenderer from an existing renderer.
-
-:rtype: QgsSingleSymbolRenderer
 
 .. versionadded:: 2.5
 
@@ -84,8 +85,6 @@ size legend.
 Returns configuration of appearance of legend when using data-defined size for marker symbols.
 Will return null if the functionality is disabled.
 
-:rtype: QgsDataDefinedSizeLegend
-
 .. versionadded:: 3.0
 %End
 
@@ -94,10 +93,6 @@ Will return null if the functionality is disabled.
   private:
     QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer & );
     QgsSingleSymbolRenderer &operator=( const QgsSingleSymbolRenderer & );
-%Docstring
-
-:rtype: QgsSingleSymbolRenderer
-%End
 };
 
 

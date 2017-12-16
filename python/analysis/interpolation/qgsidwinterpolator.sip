@@ -48,8 +48,6 @@ The default is a coefficient of 2.
 
 Point values are weighted by 1 / ( distance ^ coefficient ).
 
-:rtype: float
-
 .. seealso:: :py:func:`setDistanceCoefficient()`
 
 .. versionadded:: 3.0

@@ -37,6 +37,7 @@ paper and screen units can be correctly performed.
     QgsLayoutSize( const double width, const double height, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for QgsLayoutSize.
+
 :param width: width
 :param height: height
 :param units: units for width and height
@@ -50,6 +51,7 @@ Constructor for QgsLayoutSize.
     explicit QgsLayoutSize( const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for an empty layout size
+
 :param units: units for measurement
 %End
 
@@ -67,8 +69,6 @@ Sets new ``width`` and ``height`` for the size.
     double width() const;
 %Docstring
 Returns the width of the size.
-
-:rtype: float
 
 .. seealso:: :py:func:`setWidth()`
 
@@ -88,8 +88,6 @@ Sets the ``width`` for the size.
 %Docstring
 Returns the height of the size.
 
-:rtype: float
-
 .. seealso:: :py:func:`setHeight()`
 
 .. seealso:: :py:func:`width()`
@@ -108,8 +106,6 @@ Sets the ``height`` for the size.
 %Docstring
 Returns the units for the size.
 
-:rtype: QgsUnitTypes.LayoutUnit
-
 .. seealso:: :py:func:`setUnits()`
 %End
 
@@ -127,8 +123,6 @@ Tests whether the size is empty, ie both its width and height
 are zero.
 
 :return: true if size is empty
-:rtype: bool
-
 %End
 
     QSizeF toQSizeF() const;
@@ -137,15 +131,11 @@ Converts the layout size to a QSizeF. The unit information is discarded
 during this operation.
 
 :return: QSizeF with same dimensions as layout size
-:rtype: QSizeF
-
 %End
 
     QString encodeSize() const;
 %Docstring
 Encodes the layout size to a string
-
-:rtype: str
 
 .. seealso:: :py:func:`decodeSize()`
 %End
@@ -154,44 +144,30 @@ Encodes the layout size to a string
 %Docstring
 Decodes a size from a ``string``.
 
-:rtype: QgsLayoutSize
-
 .. seealso:: :py:func:`encodeSize()`
 %End
 
     bool operator==( const QgsLayoutSize &other ) const;
     bool operator!=( const QgsLayoutSize &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
     QgsLayoutSize operator*( const double v ) const;
 %Docstring
 Multiplies the width and height by a scalar value.
-
-:rtype: QgsLayoutSize
 %End
 
     QgsLayoutSize operator*=( const double v );
 %Docstring
 Multiplies the width and height by a scalar value.
-
-:rtype: QgsLayoutSize
 %End
 
     QgsLayoutSize operator/( const double v ) const;
 %Docstring
 Divides the width and height by a scalar value.
-
-:rtype: QgsLayoutSize
 %End
 
     QgsLayoutSize operator/=( const double v );
 %Docstring
 Divides the width and height by a scalar value.
-
-:rtype: QgsLayoutSize
 %End
 
 };

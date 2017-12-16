@@ -245,7 +245,7 @@ class CORE_EXPORT QgsWebPage : public QWebPage
 
   protected:
 
-    virtual void javaScriptConsoleMessage( const QString &message, int lineNumber, const QString & ) override
+    void javaScriptConsoleMessage( const QString &message, int lineNumber, const QString & ) override
     {
       if ( mIdentifier.isEmpty() )
         QgsMessageLog::logMessage( tr( "Line %1: %2" ).arg( lineNumber ).arg( message ), tr( "JavaScript" ) );

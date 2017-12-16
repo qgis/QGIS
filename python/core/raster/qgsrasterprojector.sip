@@ -52,28 +52,16 @@ which are used to calculate affine transformation matrices.
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
  Get source CRS
-
-:rtype: QgsCoordinateReferenceSystem
 %End
 
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
  Get destination CRS
-
-:rtype: QgsCoordinateReferenceSystem
 %End
 
     Precision precision() const;
-%Docstring
-
-:rtype: Precision
-%End
     void setPrecision( Precision precision );
     static QString precisionLabel( Precision precision );
-%Docstring
-
-:rtype: str
-%End
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &extent, int width, int height, QgsRasterBlockFeedback *feedback = 0 ) /Factory/;
 
@@ -82,8 +70,6 @@ which are used to calculate affine transformation matrices.
                          QgsRectangle &destExtent /Out/, int &destXSize /Out/, int &destYSize /Out/ );
 %Docstring
 Calculate destination extent and size from source extent and size
-
-:rtype: bool
 %End
 
     static bool extentSize( const QgsCoordinateTransform &ct,
@@ -91,8 +77,6 @@ Calculate destination extent and size from source extent and size
                             QgsRectangle &destExtent /Out/, int &destXSize /Out/, int &destYSize /Out/ );
 %Docstring
 Calculate destination extent and size from source extent and size
-
-:rtype: bool
 %End
 
 };

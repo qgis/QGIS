@@ -121,7 +121,7 @@ class QgsGrassModuleInputPopup : public QTreeView
   public:
     explicit QgsGrassModuleInputPopup( QWidget *parent = nullptr );
 
-    virtual void setModel( QAbstractItemModel *model ) override;
+    void setModel( QAbstractItemModel *model ) override;
 };
 
 // Flattens tree to list of maps for completer
@@ -131,16 +131,16 @@ class QgsGrassModuleInputCompleterProxy : public QAbstractProxyModel
   public:
     explicit QgsGrassModuleInputCompleterProxy( QObject *parent = nullptr );
 
-    virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const override { Q_UNUSED( parent ); return 1; }
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
-    virtual QModelIndex parent( const QModelIndex &index ) const override;
+    int columnCount( const QModelIndex &parent = QModelIndex() ) const override { Q_UNUSED( parent ); return 1; }
+    int rowCount( const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex index( int row, int column, const QModelIndex &parent = QModelIndex() ) const override;
+    QModelIndex parent( const QModelIndex &index ) const override;
 
 
-    virtual void setSourceModel( QAbstractItemModel *sourceModel ) override;
+    void setSourceModel( QAbstractItemModel *sourceModel ) override;
 
-    virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
-    virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
+    QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const override;
+    QModelIndex mapToSource( const QModelIndex &proxyIndex ) const override;
 
   private:
     void refreshMapping();
@@ -156,7 +156,7 @@ class QgsGrassModuleInputCompleter : public QCompleter
   public:
     explicit QgsGrassModuleInputCompleter( QAbstractItemModel *model, QWidget *parent = nullptr );
 
-    virtual bool eventFilter( QObject *watched, QEvent *event ) override;
+    bool eventFilter( QObject *watched, QEvent *event ) override;
 };
 
 class QgsGrassModuleInputComboBox : public QComboBox
@@ -166,9 +166,9 @@ class QgsGrassModuleInputComboBox : public QComboBox
   public:
     explicit QgsGrassModuleInputComboBox( QgsGrassObject::Type type, QWidget *parent = nullptr );
 
-    virtual bool eventFilter( QObject *watched, QEvent *event ) override;
-    virtual void showPopup() override;
-    virtual void hidePopup() override;
+    bool eventFilter( QObject *watched, QEvent *event ) override;
+    void showPopup() override;
+    void hidePopup() override;
 
     // set current index
     void setCurrent( const QModelIndex &proxyIndex );
@@ -243,7 +243,7 @@ class QgsGrassModuleInput : public QgsGrassModuleGroupBoxItem
                          bool direct, QWidget *parent = nullptr );
 
     //! Returns list of options which will be passed to module
-    virtual QStringList options() override;
+    QStringList options() override;
 
     // ! Return vector of attribute fields of current vector
     QgsFields currentFields();

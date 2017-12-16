@@ -42,7 +42,7 @@ class CORE_EXPORT QgsProcessingProvider : public QObject
      */
     QgsProcessingProvider( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsProcessingProvider();
+    ~QgsProcessingProvider() override;
 
     //! Providers cannot be copied
     QgsProcessingProvider( const QgsProcessingProvider &other ) = delete;

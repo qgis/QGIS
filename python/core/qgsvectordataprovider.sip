@@ -69,6 +69,7 @@ Bitmask of all provider's editing capabilities
     QgsVectorDataProvider( const QString &uri = QString() );
 %Docstring
 Constructor of the vector provider
+
 :param uri:  uniform resource locator (URI) for a dataset
 %End
 
@@ -86,8 +87,6 @@ In such cases, the implementation must ensure that the data is not susceptible t
 if it is possible that both feature source and provider may need reading/writing to some shared data at the
 same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
 
-:rtype: QgsAbstractFeatureSource
-
 .. versionadded:: 2.4
 
 :return: new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
@@ -96,41 +95,36 @@ same time, some synchronization mechanisms must be used (e.g. mutexes) to preven
     virtual QString storageType() const;
 %Docstring
 Returns the permanent storage type for this layer as a friendly name.
-
-:rtype: str
 %End
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const = 0;
+
 %Docstring
 Query the provider for features specified in request.
+
 :param request: feature request describing parameters of features to return
 
 :return: iterator for matching features from provider
-:rtype: QgsFeatureIterator
-
 %End
 
     virtual QgsWkbTypes::Type wkbType() const = 0;
+
 %Docstring
 Returns the geometry type which is returned by this layer
-
-:rtype: QgsWkbTypes.Type
 %End
 
     virtual long featureCount() const = 0;
+
 %Docstring
 Number of features in the layer
 
 :return: long containing number of features
-:rtype: long
-
 %End
 
     virtual QgsFields fields() const = 0;
+
 %Docstring
 Returns the fields associated with this data provider.
-
-:rtype: QgsFields
 %End
 
     virtual QgsCoordinateReferenceSystem sourceCrs() const;
@@ -143,32 +137,30 @@ Returns the fields associated with this data provider.
 %Docstring
 Return a short comment for the data that this provider is
 providing access to (e.g. the comment for postgres table).
-
-:rtype: str
 %End
 
     virtual QVariant minimumValue( int index ) const;
+
 %Docstring
 Returns the minimum value of an attribute
+
 :param index: the index of the attribute
 
 Default implementation walks all numeric attributes and caches minimal
 and maximal values. If provider has facilities to retrieve minimal
 value directly, override this function.
-
-:rtype: QVariant
 %End
 
     virtual QVariant maximumValue( int index ) const;
+
 %Docstring
 Returns the maximum value of an attribute
+
 :param index: the index of the attribute
 
 Default implementation walks all numeric attributes and caches minimal
 and maximal values. If provider has facilities to retrieve maximal
 value directly, override this function.
-
-:rtype: QVariant
 %End
 
     virtual QStringList uniqueStringsMatching( int index, const QString &substring, int limit = -1,
@@ -176,14 +168,13 @@ value directly, override this function.
 %Docstring
 Returns unique string values of an attribute which contain a specified subset string. Subset
 matching is done in a case-insensitive manner.
+
 :param index: the index of the attribute
 :param substring: substring to match (case insensitive)
 :param limit: maxmum number of the values to return, or -1 to return all unique values
 :param feedback: optional feedback object for canceling request
 
 :return: list of unique strings containing substring
-:rtype: list of str
-
 %End
 
     virtual QVariant aggregate( QgsAggregateCalculator::Aggregate aggregate,
@@ -194,6 +185,7 @@ matching is done in a case-insensitive manner.
 %Docstring
 Calculates an aggregated value from the layer's features. The base implementation does nothing,
 but subclasses can override this method to handoff calculation of aggregates to the provider.
+
 :param aggregate: aggregate to calculate
 :param index: the index of the attribute to calculate aggregate over
 :param parameters: parameters controlling aggregate calculation
@@ -201,8 +193,6 @@ but subclasses can override this method to handoff calculation of aggregates to 
 :param ok: will be set to true if calculation was successfully performed by the data provider
 
 :return: calculated aggregate value
-:rtype: QVariant
-
 
 .. versionadded:: 2.16
 %End
@@ -211,20 +201,21 @@ but subclasses can override this method to handoff calculation of aggregates to 
 %Docstring
 Returns the possible enum values of an attribute. Returns an empty stringlist if a provider does not support enum types
 or if the given attribute is not an enum type.
+
 :param index: the index of the attribute
 :param enumList: reference to the list to fill
 %End
 
     virtual bool addFeatures( QgsFeatureList &flist /In,Out/, QgsFeatureSink::Flags flags = 0 );
 
+
     virtual bool deleteFeatures( const QgsFeatureIds &id );
 %Docstring
 Deletes one or more features from the provider. This requires the DeleteFeatures capability.
+
 :param id: list containing feature ids to delete
 
 :return: true in case of success and false in case of failure
-:rtype: bool
-
 
 .. seealso:: :py:func:`truncate()`
 %End
@@ -235,8 +226,6 @@ Removes all features from the layer. This requires either the FastTruncate or De
 Providers with the FastTruncate capability will use an optimised method to truncate the layer.
 
 :return: true in case of success and false in case of failure.
-:rtype: bool
-
 
 .. versionadded:: 3.0
 
@@ -248,8 +237,6 @@ Providers with the FastTruncate capability will use an optimised method to trunc
 Adds new ``attributes`` to the provider. Returns true in case of success and false in case of failure.
 If attributes are added using this method then QgsVectorLayer.updateFields() must be called
 manually to ensure that the layer's field are correctly reported.
-
-:rtype: bool
 %End
 
     virtual bool deleteAttributes( const QgsAttributeIds &attributes );
@@ -257,11 +244,10 @@ manually to ensure that the layer's field are correctly reported.
 Deletes existing ``attributes`` from the provider.
 If attributes are deleted using this method then QgsVectorLayer.updateFields() must be called
 manually to ensure that the layer's field are correctly reported.
+
 :param attributes: a set containing indices of attributes
 
 :return: true in case of success and false in case of failure
-:rtype: bool
-
 %End
 
     virtual bool renameAttributes( const QgsFieldNameMap &renamedAttributes );
@@ -269,11 +255,10 @@ manually to ensure that the layer's field are correctly reported.
 Renames existing attributes.
 If attributes are renamed using this method then QgsVectorLayer.updateFields() must be called
 manually to ensure that the layer's field are correctly reported.
+
 :param renamedAttributes: map of attribute index to new attribute name
 
 :return: true in case of success and false in case of failure
-:rtype: bool
-
 
 .. versionadded:: 2.16
 %End
@@ -282,11 +267,10 @@ manually to ensure that the layer's field are correctly reported.
 %Docstring
 Changes attribute values of existing features. This should
 succeed if the provider reports the ChangeAttributeValues capability.
+
 :param attr_map: a map containing changed attributes
 
 :return: true in case of success and false in case of failure
-:rtype: bool
-
 %End
 
     virtual bool changeFeatures( const QgsChangedAttributesMap &attr_map,
@@ -296,14 +280,13 @@ Changes attribute values and geometries of existing features. This should
 succeed if the provider reports both the ChangeAttributeValues and
 ChangeGeometries capabilities. Providers which report the ChangeFeatures
 capability implement an optimised version of this method.
+
 :param attr_map: a map containing changed attributes
 :param geometry_map:   A QgsGeometryMap whose index contains the feature IDs
 that will have their geometries changed.
 The second map parameter being the new geometries themselves
 
 :return: true in case of success and false in case of failure
-:rtype: bool
-
 %End
 
     virtual QVariant defaultValue( int fieldIndex ) const;
@@ -317,8 +300,6 @@ is calculated as a result of a sequence). It is recommended that you instead use
 in QgsVectorLayerUtils such as QgsVectorLayerUtils.createFeature()
 so that default value handling and validation is automatically carried out.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`defaultValueClause()`
 %End
 
@@ -327,8 +308,6 @@ so that default value handling and validation is automatically carried out.
 Returns any default value clauses which are present at the provider for a specified
 field index. These clauses are usually SQL fragments which must be evaluated by the
 provider, e.g., sequence values.
-
-:rtype: str
 
 .. seealso:: :py:func:`defaultValue()`
 
@@ -339,8 +318,6 @@ provider, e.g., sequence values.
 %Docstring
 Returns any constraints which are present at the provider for a specified
 field index.
-
-:rtype: QgsFieldConstraints.Constraints
 
 .. versionadded:: 3.0
 
@@ -353,8 +330,6 @@ Returns true if a constraint check should be skipped for a specified field (e.g.
 the value returned by defaultValue() is trusted implicitly. An optional attribute value can be
 passed which can help refine the skip constraint check.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`fieldConstraints()`
@@ -363,13 +338,12 @@ passed which can help refine the skip constraint check.
     virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map );
 %Docstring
 Changes geometries of existing features
+
 :param geometry_map:   A QgsGeometryMap whose index contains the feature IDs
 that will have their geometries changed.
 The second map parameter being the new geometries themselves
 
 :return:               True in case of success and false in case of failure
-:rtype: bool
-
 %End
 
     virtual bool createSpatialIndex();
@@ -377,15 +351,11 @@ The second map parameter being the new geometries themselves
 Creates a spatial index on the datasource (if supported by the provider type).
 
 :return: true in case of success
-:rtype: bool
-
 %End
 
     virtual bool createAttributeIndex( int field );
 %Docstring
 Create an attribute index on the datasource
-
-:rtype: bool
 %End
 
     virtual QgsVectorDataProvider::Capabilities capabilities() const;
@@ -394,15 +364,11 @@ Returns flags containing the supported capabilities
 \note, some capabilities may change depending on whether
 a spatial filter is active on this provider, so it may
 be prudent to check this value per intended operation.
-
-:rtype: QgsVectorDataProvider.Capabilities
 %End
 
     QString capabilitiesString() const;
 %Docstring
 Returns the above in friendly format.
-
-:rtype: str
 %End
 
     virtual void setEncoding( const QString &e );
@@ -413,50 +379,36 @@ Set encoding used for accessing data from layer
     QString encoding() const;
 %Docstring
 Get encoding which is used for accessing data
-
-:rtype: str
 %End
 
     int fieldNameIndex( const QString &fieldName ) const;
 %Docstring
 Returns the index of a field name or -1 if the field does not exist
-
-:rtype: int
 %End
 
     QMap<QString, int> fieldNameMap() const;
 %Docstring
 Return a map where the key is the name of the field and the value is its index
-
-:rtype: QMap<str, int>
 %End
 
     virtual QgsAttributeList attributeIndexes() const;
 %Docstring
 Return list of indexes to fetch all attributes in nextFeature()
-
-:rtype: QgsAttributeList
 %End
 
     virtual QgsAttributeList pkAttributeIndexes() const;
 %Docstring
 Return list of indexes of fields that make up the primary key
-
-:rtype: QgsAttributeList
 %End
 
     virtual QgsAttrPalIndexNameHash palAttributeIndexNames() const;
 %Docstring
 Return list of indexes to names for QgsPalLabeling fix
-
-:rtype: QgsAttrPalIndexNameHash
 %End
 
     bool supportedType( const QgsField &field ) const;
 %Docstring
 check if provider supports type of field
-
-:rtype: bool
 %End
 
     struct NativeType
@@ -476,30 +428,22 @@ check if provider supports type of field
     QList< QgsVectorDataProvider::NativeType > nativeTypes() const;
 %Docstring
 Returns the names of the supported types
-
-:rtype: list of QgsVectorDataProvider.NativeType
 %End
 
     virtual bool doesStrictFeatureTypeCheck() const;
 %Docstring
 Returns true if the provider is strict about the type of inserted features
 (e.g. no multipolygon in a polygon layer)
-
-:rtype: bool
 %End
 
     static QStringList availableEncodings();
 %Docstring
 Returns a list of available encodings
-
-:rtype: list of str
 %End
 
     bool hasErrors() const;
 %Docstring
 Provider has errors to report
-
-:rtype: bool
 %End
 
     void clearErrors();
@@ -510,37 +454,25 @@ Clear recorded errors
     QStringList errors() const;
 %Docstring
 Get recorded errors
-
-:rtype: list of str
 %End
 
     virtual bool isSaveAndLoadStyleToDatabaseSupported() const;
 %Docstring
 It returns false by default.
 Must be implemented by providers that support saving and loading styles to db returning true
-
-:rtype: bool
 %End
 
     virtual bool isDeleteStyleFromDatabaseSupported() const;
 %Docstring
 It returns false by default.
 Must be implemented by providers that support delete styles from db returning true
-
-:rtype: bool
 %End
 
     static QVariant convertValue( QVariant::Type type, const QString &value );
-%Docstring
-
-:rtype: QVariant
-%End
 
     virtual QgsTransaction *transaction() const;
 %Docstring
 Returns the transaction this data provider is included in, if any.
-
-:rtype: QgsTransaction
 %End
 
     virtual void forceReload();
@@ -555,19 +487,16 @@ This can be required if the underlying file is replaced.
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
 Get the list of layer ids on which this layer depends. This in particular determines the order of layer loading.
-
-:rtype: set of QgsMapLayerDependency
 %End
 
     virtual QList<QgsRelation> discoverRelations( const QgsVectorLayer *self, const QList<QgsVectorLayer *> &layers ) const;
 %Docstring
 Discover the available relations with the given layers.
+
 :param self: the layer using this data provider.
 :param layers: the other layers.
 
 :return: the list of N-1 relations from this provider.
-:rtype: list of QgsRelation
-
 
 .. versionadded:: 3.0
 %End
@@ -577,29 +506,25 @@ Discover the available relations with the given layers.
 Get metadata, dependent on the provider type, that will be display in the metadata tab of the layer properties.
 
 :return: The provider metadata
-:rtype: QVariantMap
-
 %End
 
     virtual QString translateMetadataKey( const QString &mdKey ) const;
 %Docstring
 Get the translated metadata key.
+
 :param mdKey: The metadata key
 
 :return: The translated metadata value
-:rtype: str
-
 %End
 
     virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const;
 %Docstring
 Get the translated metadata value.
+
 :param mdKey: The metadata key
 :param value: The metadata value
 
 :return: The translated metadata value
-:rtype: str
-
 %End
 
     virtual bool hasMetadata() const;
@@ -607,8 +532,6 @@ Get the translated metadata value.
 Returns true if the data source has metadata, false otherwise.
 
 :return: true if data source has metadata, false otherwise.
-:rtype: bool
-
 
 .. versionadded:: 3.0
 %End
@@ -651,8 +574,6 @@ For general debug information use QgsMessageLog.logMessage() instead.
 Converts the geometry to the provider type if possible / necessary
 
 :return: the converted geometry or None if no conversion was necessary or possible
-:rtype: QgsGeometry
-
 %End
 
     void setNativeTypes( const QList<QgsVectorDataProvider::NativeType> &nativeTypes );
@@ -666,8 +587,6 @@ Usually done in the constructor.
     QTextCodec *textEncoding() const;
 %Docstring
 Get this providers encoding
-
-:rtype: QTextCodec
 
 .. versionadded:: 3.0
 %End

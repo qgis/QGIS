@@ -31,7 +31,9 @@ Use ``dialogTitle`` string to define the title to show in the symbol settings di
 %End
 
     virtual QSize minimumSizeHint() const;
+
     virtual QSize sizeHint() const;
+
 
     void setSymbolType( QgsSymbol::SymbolType type );
 %Docstring
@@ -45,8 +47,6 @@ to a default symbol style of the new type.
     QgsSymbol::SymbolType symbolType() const;
 %Docstring
 Returns the symbol type which the button requires.
-
-:rtype: QgsSymbol.SymbolType
 
 .. seealso:: :py:func:`setSymbolType()`
 %End
@@ -62,16 +62,12 @@ Sets the ``title`` for the symbol settings dialog window.
 %Docstring
 Returns the title for the symbol settings dialog window.
 
-:rtype: str
-
 .. seealso:: :py:func:`setDialogTitle()`
 %End
 
     QgsSymbol *symbol();
 %Docstring
 Returns the current symbol defined by the button.
-
-:rtype: QgsSymbol
 
 .. seealso:: :py:func:`setSymbol()`
 
@@ -82,8 +78,6 @@ Returns the current symbol defined by the button.
     QgsMapCanvas *mapCanvas() const;
 %Docstring
 Returns the map canvas associated with the widget.
-
-:rtype: QgsMapCanvas
 
 .. seealso:: :py:func:`setMapCanvas()`
 %End
@@ -99,8 +93,6 @@ widget to fetch current settings from the map canvas, such as current scale.
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the layer associated with the widget.
-
-:rtype: QgsVectorLayer
 
 .. seealso:: :py:func:`setLayer()`
 %End

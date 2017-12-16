@@ -26,6 +26,7 @@ A widget for customising conditional formatting options.
     explicit QgsFieldConditionalFormatWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldConditionalFormatWidget.
+
 :param parent: parent widget
 %End
 
@@ -37,18 +38,21 @@ Switches the widget to the rules page.
     void setLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the vector layer associated with the widget.
+
 :param layer: vector layer
 %End
 
     void editStyle( int index, const QgsConditionalStyle &style );
 %Docstring
 Switches the widget to the edit style mode for the specified style.
+
 :param index: index of conditional style to edit
 :param style: initial conditional styling options
 %End
 
     void loadStyle( const QgsConditionalStyle &style );
 %Docstring
+
 :param style: initial conditional styling options
 %End
 
@@ -60,6 +64,7 @@ Resets the formatting options to their default state.
     void setPresets( const QList<QgsConditionalStyle> &styles );
 %Docstring
  Set the presets that can be used for quick pick
+
 :param styles: A list of styles used as presets
 %End
 
@@ -69,8 +74,6 @@ Resets the formatting options to their default state.
 created however called setPresets will override the default styles.
 
 :return: List of default presets.
-:rtype: list of QgsConditionalStyle
-
 %End
 
   signals:
@@ -78,6 +81,7 @@ created however called setPresets will override the default styles.
     void rulesUpdated( const QString &fieldName );
 %Docstring
 Emitted when the conditional styling rules are updated.
+
 :param fieldName: name of field whose rules have been modified.
 %End
 

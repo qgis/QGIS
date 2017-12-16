@@ -47,6 +47,7 @@ This value can then be handled by a special value text.
     explicit QgsSpinBox( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSpinBox.
+
 :param parent: parent widget
 %End
 
@@ -54,6 +55,7 @@ Constructor for QgsSpinBox.
 %Docstring
 Sets whether the widget will show a clear button. The clear button
 allows users to reset the widget to a default or empty state.
+
 :param showClearButton: set to true to show the clear button, or false to hide it
 
 .. seealso:: :py:func:`showClearButton()`
@@ -63,8 +65,6 @@ allows users to reset the widget to a default or empty state.
 %Docstring
 Returns whether the widget is showing a clear button.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setShowClearButton()`
 %End
 
@@ -72,6 +72,7 @@ Returns whether the widget is showing a clear button.
 %Docstring
 Sets if the widget will allow entry of simple expressions, which are
 evaluated and then discarded.
+
 :param enabled: set to true to allow expression entry
 
 .. versionadded:: 2.7
@@ -83,13 +84,12 @@ Returns whether the widget will allow entry of simple expressions, which are
 evaluated and then discarded.
 
 :return: true if spin box allows expression entry
-:rtype: bool
-
 
 .. versionadded:: 2.7
 %End
 
     virtual void clear();
+
 %Docstring
 Set the current value to the value defined by the clear value.
 %End
@@ -97,6 +97,7 @@ Set the current value to the value defined by the clear value.
     void setClearValue( int customValue, const QString &clearValueText = QString() );
 %Docstring
 Defines the clear value as a custom value and will automatically set the clear value mode to CustomValue.
+
 :param customValue: defines the numerical value used as the clear value
 :param clearValueText: is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
 
@@ -106,6 +107,7 @@ Defines the clear value as a custom value and will automatically set the clear v
     void setClearValueMode( ClearValueMode mode, const QString &clearValueText = QString() );
 %Docstring
 Defines if the clear value should be the minimum or maximum values of the widget or a custom value.
+
 :param mode: mode to user for clear value
 :param clearValueText: is the text displayed when the spin box is at the clear value. If not specified, no special value text is used.
 %End
@@ -114,18 +116,20 @@ Defines if the clear value should be the minimum or maximum values of the widget
 %Docstring
 Returns the value used when clear() is called.
 
-:rtype: int
-
 .. seealso:: :py:func:`setClearValue()`
 %End
 
     virtual int valueFromText( const QString &text ) const;
+
     virtual QValidator::State validate( QString &input, int &pos ) const;
+
 
   protected:
 
     virtual void changeEvent( QEvent *event );
+
     virtual void paintEvent( QPaintEvent *event );
+
     virtual void wheelEvent( QWheelEvent *event );
 
 

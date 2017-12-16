@@ -61,22 +61,16 @@ Create a new QgsAction
     QString name() const;
 %Docstring
 The name of the action. This may be a longer description.
-
-:rtype: str
 %End
 
     QString shortTitle() const;
 %Docstring
 The short title is used to label user interface elements like buttons
-
-:rtype: str
 %End
 
     QUuid id() const;
 %Docstring
 Returns a unique id for this action.
-
-:rtype: QUuid
 
 .. versionadded:: 3.0
 %End
@@ -85,23 +79,17 @@ Returns a unique id for this action.
 %Docstring
 Returns true if this action was a default constructed one.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     QString iconPath() const;
 %Docstring
 The path to the icon
-
-:rtype: str
 %End
 
     QIcon icon() const;
 %Docstring
 The icon
-
-:rtype: QIcon
 %End
 
     QString command() const;
@@ -110,8 +98,6 @@ Returns the command that is executed by this action.
 How the content is interpreted depends on the type() and
 the actionScope().
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
@@ -119,30 +105,22 @@ the actionScope().
 %Docstring
 Returns the notification message that triggers the action
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
     ActionType type() const;
 %Docstring
 The action type
-
-:rtype: ActionType
 %End
 
     bool capture() const;
 %Docstring
 Whether to capture output for display when this action is run
-
-:rtype: bool
 %End
 
     bool runable() const;
 %Docstring
 Checks if the action is runable on the current platform
-
-:rtype: bool
 %End
 
     void run( QgsVectorLayer *layer, const QgsFeature &feature, const QgsExpressionContext &expressionContext ) const;
@@ -164,8 +142,6 @@ Run this action.
 The action scopes define where an action will be available.
 Action scopes may offer additional variables like the clicked
 coordinate.
-
-:rtype: set of str
 
 .. seealso:: :py:class:`QgsActionScope`
 
@@ -207,8 +183,6 @@ Sets an expression context scope to use for running the action.
     QgsExpressionContextScope expressionContextScope() const;
 %Docstring
 Returns an expression context scope used for running the action.
-
-:rtype: QgsExpressionContextScope
 
 .. versionadded:: 3.0
 %End

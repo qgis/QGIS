@@ -24,15 +24,7 @@ class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
 
 
     virtual QString layerType() const;
@@ -77,36 +69,21 @@ class QgsSimpleLineSymbolLayer : QgsLineSymbolLayer
 
 
     Qt::PenStyle penStyle() const;
-%Docstring
-
-:rtype: Qt.PenStyle
-%End
     void setPenStyle( Qt::PenStyle style );
 
     Qt::PenJoinStyle penJoinStyle() const;
-%Docstring
-
-:rtype: Qt.PenJoinStyle
-%End
     void setPenJoinStyle( Qt::PenJoinStyle style );
 
     Qt::PenCapStyle penCapStyle() const;
-%Docstring
-
-:rtype: Qt.PenCapStyle
-%End
     void setPenCapStyle( Qt::PenCapStyle style );
 
     bool useCustomDashPattern() const;
-%Docstring
-
-:rtype: bool
-%End
     void setUseCustomDashPattern( bool b );
 
     void setCustomDashPatternUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for lengths used in the custom dash pattern.
+
 :param unit: length units
 
 .. seealso:: :py:func:`customDashPatternUnit()`
@@ -116,30 +93,16 @@ Sets the units for lengths used in the custom dash pattern.
 %Docstring
 Returns the units for lengths used in the custom dash pattern.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setCustomDashPatternUnit()`
 %End
 
     const QgsMapUnitScale &customDashPatternMapUnitScale() const;
-%Docstring
-
-:rtype: QgsMapUnitScale
-%End
     void setCustomDashPatternMapUnitScale( const QgsMapUnitScale &scale );
 
     QVector<qreal> customDashVector() const;
-%Docstring
-
-:rtype: list of qreal
-%End
     void setCustomDashVector( const QVector<qreal> &vector );
 
     bool drawInsidePolygon() const;
-%Docstring
-
-:rtype: bool
-%End
     void setDrawInsidePolygon( bool drawInsidePolygon );
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
@@ -191,8 +154,6 @@ Create a new MarkerLineSymbolLayerV2
 :param properties: A property map to deserialize saved information from properties()
 
 :return: A new MarkerLineSymbolLayerV2
-:rtype: QgsSymbolLayer
-
 %End
 
     static QgsSymbolLayer *createFromSld( QDomElement &element ) /Factory/;
@@ -202,8 +163,6 @@ Create a new MarkerLineSymbolLayerV2 from SLD
 :param element: An SLD XML DOM element
 
 :return: A new MarkerLineSymbolLayerV2
-:rtype: QgsSymbolLayer
-
 %End
 
 
@@ -235,13 +194,16 @@ Create a new MarkerLineSymbolLayerV2 from SLD
 
     virtual QColor color() const;
 
+
     virtual QgsSymbol *subSymbol();
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
 
     virtual void setWidth( double width );
+
     virtual double width() const;
+
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
@@ -252,8 +214,6 @@ Create a new MarkerLineSymbolLayerV2 from SLD
 Shall the marker be rotated.
 
 :return: True if the marker should be rotated.
-:rtype: bool
-
 %End
 
     void setRotateMarker( bool rotate );
@@ -265,8 +225,6 @@ Shall the marker be rotated.
 %Docstring
 Returns the interval between individual markers. Units are specified through intervalUnits().
 
-:rtype: float
-
 .. seealso:: :py:func:`setInterval()`
 
 .. seealso:: :py:func:`intervalUnit()`
@@ -275,6 +233,7 @@ Returns the interval between individual markers. Units are specified through int
     void setInterval( double interval );
 %Docstring
 Sets the interval between individual markers.
+
 :param interval: interval size. Units are specified through setIntervalUnits()
 
 .. seealso:: :py:func:`interval()`
@@ -285,8 +244,6 @@ Sets the interval between individual markers.
     Placement placement() const;
 %Docstring
 The placement of the markers.
-
-:rtype: Placement
 %End
 
     void setPlacement( Placement p );
@@ -302,8 +259,6 @@ distance between the marker and the start of the line or the end of the line res
 This setting has no effect for Vertex or CentralPoint placements.
 
 :return: The offset along the line. The unit for the offset is retrievable via offsetAlongLineUnit.
-:rtype: float
-
 
 .. versionadded:: 2.3
 
@@ -320,6 +275,7 @@ Sets the the offset along the line for the marker placement. For Interval placem
 between the start of the line and the first marker. For FirstVertex and LastVertex placements, this is the
 distance between the marker and the start of the line or the end of the line respectively.
 This setting has no effect for Vertex or CentralPoint placements.
+
 :param offsetAlongLine: Distance to offset markers along the line. The offset
 unit is set via setOffsetAlongLineUnit.
 
@@ -337,8 +293,6 @@ unit is set via setOffsetAlongLineUnit.
 Returns the unit used for calculating the offset along line for markers.
 
 :return: Offset along line unit type.
-:rtype: QgsUnitTypes.RenderUnit
-
 
 .. seealso:: :py:func:`setOffsetAlongLineUnit`
 
@@ -348,6 +302,7 @@ Returns the unit used for calculating the offset along line for markers.
     void setOffsetAlongLineUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the unit used for calculating the offset along line for markers.
+
 :param unit: Offset along line unit type.
 
 .. seealso:: :py:func:`offsetAlongLineUnit`
@@ -360,19 +315,19 @@ Sets the unit used for calculating the offset along line for markers.
 Returns the map unit scale used for calculating the offset in map units along line for markers.
 
 :return: Offset along line map unit scale.
-:rtype: QgsMapUnitScale
-
 %End
 
     void setOffsetAlongLineMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale used for calculating the offset in map units along line for markers.
+
 :param scale: Offset along line map unit scale.
 %End
 
     void setIntervalUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the interval between markers.
+
 :param unit: interval units
 
 .. seealso:: :py:func:`intervalUnit()`
@@ -384,8 +339,6 @@ Sets the units for the interval between markers.
 %Docstring
 Returns the units for the interval between markers.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setIntervalUnit()`
 
 .. seealso:: :py:func:`interval()`
@@ -393,10 +346,6 @@ Returns the units for the interval between markers.
 
     void setIntervalMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &intervalMapUnitScale() const;
-%Docstring
-
-:rtype: QgsMapUnitScale
-%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
@@ -421,10 +370,6 @@ Returns the units for the interval between markers.
     void renderPolylineVertex( const QPolygonF &points, QgsSymbolRenderContext &context, Placement placement = Vertex );
     void renderPolylineCentral( const QPolygonF &points, QgsSymbolRenderContext &context );
     double markerAngle( const QPolygonF &points, bool isRing, int vertex );
-%Docstring
-
-:rtype: float
-%End
 
 
   private:

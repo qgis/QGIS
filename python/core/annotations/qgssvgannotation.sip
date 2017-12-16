@@ -31,7 +31,9 @@ Constructor for QgsSvgAnnotation.
 
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
     virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context );
+
 
     void setFilePath( const QString &file );
 %Docstring
@@ -44,16 +46,12 @@ Sets the file path for the source SVG file.
 %Docstring
 Returns the file path for the source SVG file.
 
-:rtype: str
-
 .. seealso:: :py:func:`setFilePath()`
 %End
 
     static QgsSvgAnnotation *create() /Factory/;
 %Docstring
 Returns a new QgsSvgAnnotation object.
-
-:rtype: QgsSvgAnnotation
 %End
 
   protected:

@@ -73,10 +73,9 @@ class QgsCompoundCurve: QgsCurve
 %Docstring
 Returns a new line string geometry corresponding to a segmentized approximation
 of the curve.
+
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
-
-:rtype: QgsLineString
 %End
 
     virtual QgsCompoundCurve *snappedToGrid( double hSpacing, double vSpacing, double dSpacing = 0, double mSpacing = 0 ) const /Factory/;
@@ -87,15 +86,11 @@ of the curve.
     int nCurves() const;
 %Docstring
 Returns the number of curves in the geometry.
-
-:rtype: int
 %End
 
     const QgsCurve *curveAt( int i ) const;
 %Docstring
 Returns the curve at the specified index.
-
-:rtype: QgsCurve
 %End
 
     void addCurve( QgsCurve *c /Transfer/ );
@@ -106,6 +101,7 @@ Adds a curve to the geometry (takes ownership)
     void removeCurve( int i );
 %Docstring
 Removes a curve from the geometry.
+
 :param i: index of curve to remove
 %End
 

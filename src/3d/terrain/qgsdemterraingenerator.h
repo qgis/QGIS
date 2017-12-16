@@ -38,7 +38,7 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
   public:
     //! Constructor for QgsDemTerrainGenerator
     QgsDemTerrainGenerator() = default;
-    ~QgsDemTerrainGenerator();
+    ~QgsDemTerrainGenerator() override;
 
     //! Sets raster layer with elevation model to be used for terrain generation
     void setLayer( QgsRasterLayer *layer );
@@ -61,15 +61,15 @@ class _3D_EXPORT QgsDemTerrainGenerator : public QgsTerrainGenerator
     //! Returns height map generator object - takes care of extraction of elevations from the layer)
     QgsDemHeightMapGenerator *heightMapGenerator() { return mHeightMapGenerator; }
 
-    virtual QgsTerrainGenerator *clone() const override SIP_FACTORY;
+    QgsTerrainGenerator *clone() const override SIP_FACTORY;
     Type type() const override;
     QgsRectangle extent() const override;
     float heightAt( double x, double y, const Qgs3DMapSettings &map ) const override;
-    virtual void writeXml( QDomElement &elem ) const override;
-    virtual void readXml( const QDomElement &elem ) override;
-    virtual void resolveReferences( const QgsProject &project ) override;
+    void writeXml( QDomElement &elem ) const override;
+    void readXml( const QDomElement &elem ) override;
+    void resolveReferences( const QgsProject &project ) override;
 
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
   private:
     void updateGenerator();

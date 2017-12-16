@@ -54,8 +54,6 @@ Populate the table with layers
 %Docstring
 Returns list of selected layers
 
-:rtype: LayerDefinitionList
-
 .. versionadded:: 2.16
 %End
 
@@ -70,8 +68,6 @@ Set if we should display the add to group checkbox
 %Docstring
 If we should display the add to group checkbox
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -79,16 +75,12 @@ If we should display the add to group checkbox
 %Docstring
 If we should add layers in a group
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     int countColumn() const;
 %Docstring
 Return column with count or -1
-
-:rtype: int
 
 .. versionadded:: 3.0
 %End

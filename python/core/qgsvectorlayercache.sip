@@ -46,8 +46,6 @@ Returns the maximum number of features this cache will hold.
 In case full caching is enabled, this number can change, as new features get added.
 
 :return: int
-:rtype: int
-
 %End
 
     void setCacheGeometry( bool cacheGeometry );
@@ -62,8 +60,6 @@ Enable or disable the caching of geometries
     bool cacheGeometry() const;
 %Docstring
 Returns true if the cache will fetch and cache feature geometries.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 
@@ -110,8 +106,6 @@ Returns true if the cache is complete, ie it contains all features. This may hap
 a result of a call to setFullCache() or by through a feature request which resulted in
 all available features being cached.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setFullCache()`
 
 .. versionadded:: 3.0
@@ -134,40 +128,31 @@ If the VectorLayerCache (and moreover any of its indices) is able to satisfy
 the request, the returned QgsFeatureIterator will iterate over cached features.
 If it's not possible to fully satisfy the request from the cache, part or all of the features
 will be requested from the data provider.
+
 :param featureRequest:  The request specifying filter and required data.
 
 :return: An iterator over the requested data.
-:rtype: QgsFeatureIterator
-
 %End
 
     QgsFeatureIterator getFeatures( const QString &expression );
 %Docstring
 Query the layer for features matching a given expression.
-
-:rtype: QgsFeatureIterator
 %End
 
     QgsFeature getFeature( QgsFeatureId fid );
 %Docstring
 Query the layer for the feature with the given id.
 If there is no such feature, the returned feature will be invalid.
-
-:rtype: QgsFeature
 %End
 
     QgsFeatureIterator getFeatures( const QgsFeatureIds &fids );
 %Docstring
 Query the layer for the features with the given ids.
-
-:rtype: QgsFeatureIterator
 %End
 
     QgsFeatureIterator getFeatures( const QgsRectangle &rectangle );
 %Docstring
 Query the layer for the features which intersect the specified rectangle.
-
-:rtype: QgsFeatureIterator
 %End
 
     bool isFidCached( const QgsFeatureId fid ) const;
@@ -177,8 +162,6 @@ Check if a certain feature id is cached.
 \param  fid The feature id to look for
 
 :return: True if this id is in the cache
-:rtype: bool
-
 
 .. seealso:: :py:func:`cachedFeatureIds()`
 %End
@@ -186,8 +169,6 @@ Check if a certain feature id is cached.
     QgsFeatureIds cachedFeatureIds() const;
 %Docstring
 Returns the set of feature IDs for features which are cached.
-
-:rtype: QgsFeatureIds
 
 .. versionadded:: 3.0
 
@@ -197,51 +178,41 @@ Returns the set of feature IDs for features which are cached.
     bool featureAtId( QgsFeatureId featureId, QgsFeature &feature, bool skipCache = false );
 %Docstring
 Gets the feature at the given feature id. Considers the changed, added, deleted and permanent features
+
 :param featureId: The id of the feature to query
 :param feature:   The result of the operation will be written to this feature
 :param skipCache: Will query the layer regardless if the feature is in the cache already
 
 :return: true in case of success
-:rtype: bool
-
 %End
 
     bool removeCachedFeature( QgsFeatureId fid );
 %Docstring
 Removes the feature identified by fid from the cache if present.
+
 :param fid: The id of the feature to delete
 
 :return: true if the feature was removed, false if the feature id was not found in the cache
-:rtype: bool
-
 %End
 
     QgsVectorLayer *layer();
 %Docstring
 Returns the layer to which this cache belongs
-
-:rtype: QgsVectorLayer
 %End
 
     QgsCoordinateReferenceSystem sourceCrs() const;
 %Docstring
 Returns the coordinate reference system for features in the cache.
-
-:rtype: QgsCoordinateReferenceSystem
 %End
 
     QgsFields fields() const;
 %Docstring
 Returns the fields associated with features in the cache.
-
-:rtype: QgsFields
 %End
 
     QgsWkbTypes::Type wkbType() const;
 %Docstring
 Returns the geometry type for features in the cache.
-
-:rtype: QgsWkbTypes.Type
 %End
 
 
@@ -249,8 +220,6 @@ Returns the geometry type for features in the cache.
 %Docstring
 Returns the number of features contained in the source, or -1
 if the feature count is unknown.
-
-:rtype: int
 %End
 %MethodCode
     sipRes = sipCpp->featureCount();
@@ -260,8 +229,6 @@ if the feature count is unknown.
 %Docstring
 Returns the number of features contained in the source, or -1
 if the feature count is unknown.
-
-:rtype: long
 %End
 
   protected:
@@ -295,8 +262,6 @@ Please note, that this does not check, if the requested features are cached.
 :param featureRequest:  The QgsFeatureRequest to be answered
 
 :return:                True if the information is being cached, false if not
-:rtype: bool
-
 %End
 
 

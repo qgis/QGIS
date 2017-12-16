@@ -47,33 +47,25 @@ this dialog box was used.
     void setHighlight( QgsHighlight *h );
 %Docstring
  setHighlight
+
 :param h: The highlight. Ownership is taken.
 %End
 
     QgsAttributeForm *attributeForm();
-%Docstring
-
-:rtype: QgsAttributeForm
-%End
 
     const QgsFeature *feature();
-%Docstring
-
-:rtype: QgsFeature
-%End
 
     bool editable();
 %Docstring
 Is this dialog editable?
 
 :return: returns true, if this dialog was created in an editable manner.
-:rtype: bool
-
 %End
 
     void setMode( QgsAttributeForm::Mode mode );
 %Docstring
 Toggles the form mode.
+
 :param mode: form mode. For example, if set to QgsAttributeForm.AddFeatureMode, the dialog will be editable even with an invalid feature and
 will add a new feature when the form is accepted.
 %End
@@ -86,14 +78,13 @@ Sets the edit command message (Undo) that will be used when the dialog is accept
 %End
 
     virtual bool event( QEvent *e );
+
 %Docstring
 Intercept window activate/deactive events to show/hide the highlighted feature.
 
 :param e: The event
 
 :return: The same as the parent QDialog
-:rtype: bool
-
 %End
 
   public slots:

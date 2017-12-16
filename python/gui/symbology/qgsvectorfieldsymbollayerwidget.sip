@@ -19,6 +19,7 @@ class QgsVectorFieldSymbolLayerWidget: QgsSymbolLayerWidget
     QgsVectorFieldSymbolLayerWidget( QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsVectorFieldSymbolLayerWidget.
+
 :param vl: associated vector layer
 :param parent: parent widget
 %End
@@ -26,13 +27,14 @@ Constructor for QgsVectorFieldSymbolLayerWidget.
     static QgsSymbolLayerWidget *create( QgsVectorLayer *vl ) /Factory/;
 %Docstring
 Creates a new QgsVectorFieldSymbolLayerWidget.
-:param vl: associated vector layer
 
-:rtype: QgsSymbolLayerWidget
+:param vl: associated vector layer
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 

@@ -39,6 +39,7 @@ Constructor for QgsSvgCache.
                        double widthScaleFactor, bool &fitsInCache, double fixedAspectRatio = 0 );
 %Docstring
 Get SVG as QImage.
+
 :param path: Absolute path to SVG file.
 :param size: size of cached image
 :param fill: color of fill
@@ -47,14 +48,13 @@ Get SVG as QImage.
 :param widthScaleFactor: width scale factor
 :param fitsInCache:
 :param fixedAspectRatio: fixed aspect ratio (optional)
-
-:rtype: QImage
 %End
 
     QPicture svgAsPicture( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, bool forceVectorOutput = false, double fixedAspectRatio = 0 );
 %Docstring
 Get SVG  as QPicture&.
+
 :param path: Absolute path to SVG file.
 :param size: size of cached image
 :param fill: color of fill
@@ -63,14 +63,13 @@ Get SVG  as QPicture&.
 :param widthScaleFactor: width scale factor
 :param forceVectorOutput:
 :param fixedAspectRatio: fixed aspect ratio (optional)
-
-:rtype: QPicture
 %End
 
     QSizeF svgViewboxSize( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, double fixedAspectRatio = 0 );
 %Docstring
 Calculates the viewbox size of a (possibly cached) SVG file.
+
 :param path: Absolute path to SVG file.
 :param size: size of cached image
 :param fill: color of fill
@@ -80,8 +79,6 @@ Calculates the viewbox size of a (possibly cached) SVG file.
 :param fixedAspectRatio: fixed aspect ratio (optional)
 
 :return: viewbox size set in SVG file
-:rtype: QSizeF
-
 
 .. versionadded:: 2.14
 %End
@@ -101,6 +98,7 @@ default values in the svg file, only the first one is considered*
 %Docstring
 Tests if an svg file contains parameters for fill, stroke color, stroke width. If yes, possible default values are returned. If there are several
 default values in the svg file, only the first one is considered.
+
 :param path: path to SVG file
 :param hasFillParam: will be true if fill param present in SVG
 :param hasDefaultFillParam: will be true if fill param has a default value specified
@@ -128,16 +126,12 @@ default values in the svg file, only the first one is considered.
     QByteArray getImageData( const QString &path ) const;
 %Docstring
 Get image data
-
-:rtype: QByteArray
 %End
 
     QByteArray svgContent( const QString &path, double size, const QColor &fill, const QColor &stroke, double strokeWidth,
                            double widthScaleFactor, double fixedAspectRatio = 0 );
 %Docstring
 Get SVG content
-
-:rtype: QByteArray
 %End
 
   signals:

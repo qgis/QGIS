@@ -33,6 +33,7 @@ in the desired style.
         GroupedFeature( const QgsFeature &feature, QgsMarkerSymbol *symbol /Transfer/, bool isSelected, const QString &label = QString() );
 %Docstring
 Constructor for GroupedFeature.
+
 :param feature: feature
 :param symbol: base symbol for rendering feature (owned by GroupedFeature)
 :param isSelected: set to true if feature is selected and should be rendered in a selected state
@@ -47,8 +48,6 @@ Feature
         QgsMarkerSymbol *symbol() const;
 %Docstring
 Base symbol for rendering feature
-
-:rtype: QgsMarkerSymbol
 %End
 
         bool isSelected;
@@ -68,26 +67,39 @@ Optional label text
     QgsPointDistanceRenderer( const QString &rendererName, const QString &labelAttributeName = QString() );
 %Docstring
 Constructor for QgsPointDistanceRenderer.
+
 :param rendererName: name of renderer for registry
 :param labelAttributeName: optional attribute for labeling points
 %End
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
     virtual QgsFeatureRenderer::Capabilities capabilities();
+
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
+
     virtual void setEmbeddedRenderer( QgsFeatureRenderer *r /Transfer/ );
 
     virtual const QgsFeatureRenderer *embeddedRenderer() const;
@@ -102,9 +114,11 @@ Constructor for QgsPointDistanceRenderer.
 
     virtual QString filter( const QgsFields &fields = QgsFields() );
 
+
     void setLabelAttributeName( const QString &name );
 %Docstring
 Sets the attribute name for labeling points.
+
 :param name: attribute name, or empty string to avoid labeling features by the renderer
 
 .. seealso:: :py:func:`labelAttributeName()`
@@ -121,8 +135,6 @@ Sets the attribute name for labeling points.
 Returns the attribute name used for labeling points, or an empty string if no labeling
 will be done by the renderer.
 
-:rtype: str
-
 .. seealso:: :py:func:`setLabelAttributeName()`
 
 .. seealso:: :py:func:`labelFont()`
@@ -135,6 +147,7 @@ will be done by the renderer.
     void setLabelFont( const QFont &font );
 %Docstring
 Sets the font used for labeling points.
+
 :param font: label font
 
 .. seealso:: :py:func:`labelFont()`
@@ -147,8 +160,6 @@ Sets the font used for labeling points.
     QFont labelFont() const;
 %Docstring
 Returns the font used for labeling points.
-
-:rtype: QFont
 
 .. seealso:: :py:func:`setLabelFont()`
 
@@ -172,8 +183,6 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 Returns the minimum map scale (i.e. most "zoomed out") at which points should be labeled by the renderer.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-:rtype: float
-
 .. seealso:: :py:func:`setMinimumLabelScale()`
 
 .. seealso:: :py:func:`labelAttributeName()`
@@ -182,6 +191,7 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
     void setLabelColor( const QColor &color );
 %Docstring
 Sets the color to use for for labeling points.
+
 :param color: label color
 
 .. seealso:: :py:func:`labelColor()`
@@ -195,8 +205,6 @@ Sets the color to use for for labeling points.
 %Docstring
 Returns the color used for for labeling points.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setLabelColor()`
 
 .. seealso:: :py:func:`labelAttributeName()`
@@ -208,6 +216,7 @@ Returns the color used for for labeling points.
 %Docstring
 Sets the tolerance distance for grouping points. Units are specified using
 setToleranceUnit().
+
 :param distance: tolerance distance
 
 .. seealso:: :py:func:`tolerance()`
@@ -220,8 +229,6 @@ setToleranceUnit().
 Returns the tolerance distance for grouping points. Units are retrieved using
 toleranceUnit().
 
-:rtype: float
-
 .. seealso:: :py:func:`setTolerance()`
 
 .. seealso:: :py:func:`toleranceUnit()`
@@ -230,6 +237,7 @@ toleranceUnit().
     void setToleranceUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the tolerance distance.
+
 :param unit: tolerance distance units
 
 .. seealso:: :py:func:`setTolerance()`
@@ -243,8 +251,6 @@ Sets the units for the tolerance distance.
 %Docstring
 Returns the units for the tolerance distance.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`tolerance()`
 
 .. seealso:: :py:func:`setToleranceUnit()`
@@ -256,6 +262,7 @@ Returns the units for the tolerance distance.
 %Docstring
 Sets the map unit scale object for the distance tolerance. This is only used if the
 toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
+
 :param scale: scale for distance tolerance
 
 .. seealso:: :py:func:`toleranceMapUnitScale()`
@@ -267,8 +274,6 @@ toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
 %Docstring
 Returns the map unit scale object for the distance tolerance. This is only used if the
 toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
-
-:rtype: QgsMapUnitScale
 
 .. seealso:: :py:func:`setToleranceMapUnitScale()`
 
@@ -289,6 +294,7 @@ toleranceUnit() is set to QgsUnitTypes.RenderMapUnits.
     void drawLabels( QPointF centerPoint, QgsSymbolRenderContext &context, const QList<QPointF> &labelShifts, const ClusteredGroup &group );
 %Docstring
 Renders the labels for a group.
+
 :param centerPoint: center point of group
 :param context: destination render context
 :param labelShifts: displacement for individual label positions
@@ -303,6 +309,7 @@ Renders the labels for a group.
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const ClusteredGroup &group ) = 0 ;
 %Docstring
 Draws a group of clustered points.
+
 :param centerPoint: central point (geographic centroid) of all points contained within the cluster
 :param context: destination render context
 :param group: contents of group

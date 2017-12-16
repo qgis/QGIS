@@ -39,6 +39,7 @@ class QgsVectorLayerDirector : QgsGraphDirector
                           );
 %Docstring
 Default constructor
+
 :param source: feature source representing network
 :param directionFieldId: field containing direction value
 :param directDirectionValue: value for direct one-way road
@@ -47,8 +48,6 @@ Default constructor
 :param defaultDirection: default direction. Will be used if corresponding
 attribute value is not set or does not equal to the given values
 %End
-
-    virtual ~QgsVectorLayerDirector();
 
      virtual void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPointXY > &additionalPoints,

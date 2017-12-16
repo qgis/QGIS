@@ -28,17 +28,20 @@ caught using the emitted signals.
     explicit QgsFocusWatcher( QObject *parent /TransferThis/ );
 %Docstring
 Constructor for QgsFocusWatcher.
+
 :param parent: parent widget to catch focus events for. This class will automatically be
 installed as an event filter for parent.
 %End
 
     virtual bool eventFilter( QObject *obj, QEvent *event );
 
+
   signals:
 
     void focusChanged( bool focused );
 %Docstring
 Emitted when parent object's focus changes.
+
 :param focused: true if object gained focus, false if object lost focus
 %End
 

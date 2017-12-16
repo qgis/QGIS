@@ -34,7 +34,7 @@ class Qgs3DMapCanvas : public QWidget
     Q_OBJECT
   public:
     Qgs3DMapCanvas( QWidget *parent = nullptr );
-    ~Qgs3DMapCanvas();
+    ~Qgs3DMapCanvas() override;
 
     //! Configure map scene being displayed. Takes ownership.
     void setMap( Qgs3DMapSettings *map );

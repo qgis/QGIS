@@ -33,7 +33,7 @@ class APP_EXPORT QgsTextAnnotationDialog: public QDialog, private Ui::QgsTextAnn
 
   protected:
 
-    virtual void showEvent( QShowEvent *event ) override;
+    void showEvent( QShowEvent *event ) override;
 
   private:
     QgsMapCanvasAnnotationItem *mItem = nullptr;

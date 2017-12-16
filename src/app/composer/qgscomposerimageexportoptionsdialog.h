@@ -39,7 +39,7 @@ class QgsComposerImageExportOptionsDialog: public QDialog, private Ui::QgsCompos
      */
     QgsComposerImageExportOptionsDialog( QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
-    ~QgsComposerImageExportOptionsDialog();
+    ~QgsComposerImageExportOptionsDialog() override;
 
     /**
      * Sets the initial resolution displayed in the dialog.

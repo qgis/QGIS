@@ -44,7 +44,7 @@ class CORE_EXPORT QgsProcessingRegistry : public QObject
      */
     QgsProcessingRegistry( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsProcessingRegistry();
+    ~QgsProcessingRegistry() override;
 
     //! Registry cannot be copied
     QgsProcessingRegistry( const QgsProcessingRegistry &other ) = delete;

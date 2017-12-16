@@ -103,7 +103,7 @@ class CORE_EXPORT QgsProject : public QObject, public QgsExpressionContextGenera
      */
     explicit QgsProject( QObject *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsProject();
+    ~QgsProject() override;
 
     /**
      * Sets the project's title.

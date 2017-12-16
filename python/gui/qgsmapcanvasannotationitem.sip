@@ -47,8 +47,6 @@ Constructor for QgsMapCanvasAnnotationItem.
     QgsAnnotation *annotation();
 %Docstring
 Returns the item's annotation.
-
-:rtype: QgsAnnotation
 %End
 
     virtual void updatePosition();
@@ -63,15 +61,11 @@ Returns the item's annotation.
     MouseMoveAction moveActionForPosition( QPointF pos ) const;
 %Docstring
 Returns the mouse move behavior for a given position in scene coordinates
-
-:rtype: MouseMoveAction
 %End
 
     Qt::CursorShape cursorShapeForAction( MouseMoveAction moveAction ) const;
 %Docstring
 Returns matching cursor shape for a mouse move action.
-
-:rtype: Qt.CursorShape
 %End
 
 };

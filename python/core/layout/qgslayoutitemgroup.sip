@@ -39,8 +39,6 @@ Constructor for QgsLayoutItemGroup, belonging to the specified ``layout``.
 Returns a new group item for the specified ``layout``.
 
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsLayoutItemGroup
 %End
 
     void addItem( QgsLayoutItem *item /Transfer/ );
@@ -58,8 +56,6 @@ Items remain in the scene but are no longer grouped together
     QList<QgsLayoutItem *> items() const;
 %Docstring
 Returns a list of items contained by the group.
-
-:rtype: list of QgsLayoutItem
 %End
 
     virtual void setVisibility( const bool visible );

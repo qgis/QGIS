@@ -51,7 +51,7 @@ class QgsPluginManager : public QgsOptionsDialogBase, private Ui::QgsPluginManag
     //! Constructor; set pluginsAreEnabled to false in --noplugins mode
     QgsPluginManager( QWidget *parent = nullptr, bool pluginsAreEnabled = true, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsPluginManager();
+    ~QgsPluginManager() override;
 
     //! Save pointer to Python utils and enable Python support
     void setPythonUtils( QgsPythonUtils *pythonUtils );

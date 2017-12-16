@@ -25,22 +25,16 @@ Abstract base class for simplify geometries using a specific algorithm
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const = 0;
 %Docstring
 Returns a simplified version the specified geometry
-
-:rtype: QgsGeometry
 %End
 
   public:
     static bool isGeneralizableByDeviceBoundingBox( const QgsRectangle &envelope, float mapToPixelTol = 1.0f );
 %Docstring
 Returns whether the device-envelope can be replaced by its BBOX when is applied the specified tolerance
-
-:rtype: bool
 %End
     static bool isGeneralizableByDeviceBoundingBox( const QVector<QPointF> &points, float mapToPixelTol = 1.0f );
 %Docstring
 Returns whether the device-geometry can be replaced by its BBOX when is applied the specified tolerance
-
-:rtype: bool
 %End
 };
 
@@ -66,6 +60,7 @@ is specified in layer units.
 %End
 
     virtual QgsGeometry simplify( const QgsGeometry &geometry ) const;
+
 
   protected:
 

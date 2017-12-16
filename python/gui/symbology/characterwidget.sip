@@ -33,22 +33,16 @@ Constructor for CharacterWidget.
     int columns() const;
 %Docstring
 Returns the number of columns of characters shown in the widget.
-
-:rtype: int
 %End
 
     int squareSize() const;
 %Docstring
 Returns the size (in pixels) of the square used to render each character preview.
-
-:rtype: int
 %End
 
     QChar character() const;
 %Docstring
 Returns the currently selected character in the widget.
-
-:rtype: QChar
 
 .. seealso:: :py:func:`setCharacter()`
 
@@ -58,8 +52,6 @@ Returns the currently selected character in the widget.
     QFont font() const;
 %Docstring
 Returns the font shown in the widget
-
-:rtype: QFont
 
 .. seealso:: :py:func:`setFont()`
 

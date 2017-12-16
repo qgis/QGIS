@@ -77,8 +77,6 @@ required for transformations for that source or destination.
 to use for a coordinate transform. Instead, always use calculateDatumTransforms()
 to determine this.
 
-:rtype: QMap< QPair< str, QString>, QgsCoordinateTransform.TransformPair >
-
 .. seealso:: :py:func:`addSourceDestinationDatumTransform()`
 %End
 
@@ -94,8 +92,6 @@ If either ``sourceTransformId`` or ``destinationTransformId`` is -1, then no dat
 required for transformations for that source or destination.
 
 Returns true if the new transform pair was added successfully.
-
-:rtype: bool
 
 .. note::
 
@@ -122,8 +118,6 @@ Removes the source to destination datum transform pair for the specified ``sourc
 Returns true if the context has a valid datum transform to use
 when transforming from the specified ``source`` CRS to ``destination`` CRS.
 
-:rtype: bool
-
 .. note::
 
    source and destination are reversible.
@@ -138,8 +132,6 @@ for a transform from the specified ``source`` CRS to ``destination`` CRS.
 Returns an ID of -1 if a datum transform should not be used for the source or
 destination.
 
-:rtype: QgsCoordinateTransform.TransformPair
-
 .. note::
 
    source and destination are reversible.
@@ -151,8 +143,6 @@ Reads the context's state from a DOM ``element``.
 
 Returns false if transforms stored in the XML are not available. In this case ``missingTransforms`` will be
 filled with missing datum transform strings.
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End

@@ -37,17 +37,9 @@ Create the instance that synchronizes given project with a layer tree root
 
     void setEnabled( bool enabled );
     bool isEnabled() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setNewLayersVisible( bool enabled );
     bool newLayersVisible() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setLayerInsertionPoint( QgsLayerTreeGroup *parentGroup, int index );
 %Docstring

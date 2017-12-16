@@ -41,10 +41,6 @@ Removes and deletes all the entries
     QgsLabelSearchTree( const QgsLabelSearchTree &rh );
     //! QgsLabelSearchTree cannot be copied.
     QgsLabelSearchTree &operator=( const QgsLabelSearchTree & );
-%Docstring
-
-:rtype: QgsLabelSearchTree
-%End
 };
 
 /************************************************************************

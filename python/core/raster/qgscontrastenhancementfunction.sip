@@ -29,15 +29,11 @@ a specified bounding range.
     virtual int enhance( double );
 %Docstring
  A customizable method that takes in a double and returns a int between 0 and 255
-
-:rtype: int
 %End
 
     virtual bool isValueInDisplayableRange( double );
 %Docstring
  A customicable method to indicate if the pixels is displayable
-
-:rtype: bool
 %End
 
     void setMaximumValue( double );

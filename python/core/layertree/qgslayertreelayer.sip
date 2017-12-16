@@ -39,23 +39,13 @@ Constructor for QgsLayerTreeLayer using weak references to layer ID, ``name``, p
 %End
 
     QString layerId() const;
-%Docstring
-
-:rtype: str
-%End
 
     QgsMapLayer *layer() const;
-%Docstring
-
-:rtype: QgsMapLayer
-%End
 
     virtual QString name() const;
 
 %Docstring
 Returns the layer's name.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -72,8 +62,6 @@ Sets the layer's name.
 %Docstring
 Read layer node from XML. Returns new instance.
 Does not resolve textual references to layers. Call resolveReferences() afterwards to do it.
-
-:rtype: QgsLayerTreeLayer
 %End
 
     static QgsLayerTreeLayer *readXml( QDomElement &element, const QgsProject *project, const QgsReadWriteContext &context ) /Factory/;
@@ -81,18 +69,20 @@ Does not resolve textual references to layers. Call resolveReferences() afterwar
 Read layer node from XML. Returns new instance.
 Also resolves textual references to layers from the project (calls resolveReferences() internally).
 
-:rtype: QgsLayerTreeLayer
-
 .. versionadded:: 3.0
 %End
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
 
+
     virtual QString dump() const;
+
 
     virtual QgsLayerTreeLayer *clone() const /Factory/;
 
+
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
 %Docstring
 Resolves reference to layer from stored layer ID (if it has not been resolved already)
 

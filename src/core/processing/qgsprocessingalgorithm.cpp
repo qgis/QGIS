@@ -561,7 +561,7 @@ QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsCrs( const QVari
 
 QgsCoordinateReferenceSystem QgsProcessingAlgorithm::parameterAsExtentCrs( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context )
 {
-  return QgsProcessingParameters::parameterAsCrs( parameterDefinition( name ), parameters, context );
+  return QgsProcessingParameters::parameterAsExtentCrs( parameterDefinition( name ), parameters, context );
 }
 
 QgsRectangle QgsProcessingAlgorithm::parameterAsExtent( const QVariantMap &parameters, const QString &name, QgsProcessingContext &context, const QgsCoordinateReferenceSystem &crs ) const

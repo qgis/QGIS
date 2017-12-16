@@ -145,7 +145,7 @@ class CORE_EXPORT QgsApplication : public QApplication
     % End
 #endif
 
-    virtual ~QgsApplication();
+    ~QgsApplication() override;
 
     /**
      * Returns the singleton instance of the QgsApplication.
@@ -164,10 +164,10 @@ class CORE_EXPORT QgsApplication : public QApplication
     static void init( QString profileFolder = QString() ) SIP_SKIP;
 
     //! Watch for QFileOpenEvent.
-    virtual bool event( QEvent *event ) override;
+    bool event( QEvent *event ) override;
 
     //! Catch exceptions when sending event to receiver.
-    virtual bool notify( QObject *receiver, QEvent *event ) override;
+    bool notify( QObject *receiver, QEvent *event ) override;
 
     //! Set the FileOpen event receiver
     static void setFileOpenEventReceiver( QObject *receiver );

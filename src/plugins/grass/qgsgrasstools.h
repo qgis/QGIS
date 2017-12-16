@@ -49,7 +49,7 @@ class QgsGrassTools: public QgsDockWidget, public Ui::QgsGrassToolsBase
                    QWidget *parent = nullptr, const char *name = nullptr, Qt::WindowFlags f = nullptr );
 
 
-    ~QgsGrassTools();
+    ~QgsGrassTools() override;
 
     //! Append item to model or parent
     void appendItem( QStandardItemModel *treeModel, QStandardItem *parent, QStandardItem *item );

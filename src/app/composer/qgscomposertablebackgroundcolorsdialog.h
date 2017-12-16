@@ -42,7 +42,7 @@ class QgsComposerTableBackgroundColorsDialog: public QDialog, private Ui::QgsCom
      */
     QgsComposerTableBackgroundColorsDialog( QgsComposerTableV2 *table, QWidget *parent = nullptr, Qt::WindowFlags flags = nullptr );
 
-    ~QgsComposerTableBackgroundColorsDialog();
+    ~QgsComposerTableBackgroundColorsDialog() override;
 
   private slots:
 

@@ -57,8 +57,6 @@ Sets the original extent and coordinate reference system for the widget. This sh
 %Docstring
 Returns the original extent set for the widget.
 
-:rtype: QgsRectangle
-
 .. seealso:: :py:func:`setOriginalExtent()`
 
 .. seealso:: :py:func:`originalCrs()`
@@ -67,8 +65,6 @@ Returns the original extent set for the widget.
     QgsCoordinateReferenceSystem originalCrs() const;
 %Docstring
 Returns the original coordinate reference system set for the widget.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. seealso:: :py:func:`originalExtent()`
 
@@ -90,8 +86,6 @@ The current extent is usually set to match the current map canvas extent.
 Returns the current extent set for the widget. The current extent is usually set to match the
 current map canvas extent.
 
-:rtype: QgsRectangle
-
 .. seealso:: :py:func:`setCurrentExtent()`
 
 .. seealso:: :py:func:`currentCrs()`
@@ -101,8 +95,6 @@ current map canvas extent.
 %Docstring
 Returns the coordinate reference system for the current extent set for the widget. The current
 extent and CRS usually reflects the map canvas extent and CRS.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. seealso:: :py:func:`setCurrentExtent()`
 
@@ -120,16 +112,12 @@ The current extent will be reprojected into the new output CRS.
 %Docstring
 Returns the extent shown in the widget - in output CRS coordinates.
 
-:rtype: QgsRectangle
-
 .. seealso:: :py:func:`outputCrs`
 %End
 
     QgsCoordinateReferenceSystem outputCrs() const;
 %Docstring
 Returns the current output CRS, used in the display.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. seealso:: :py:func:`outputExtent`
 
@@ -139,8 +127,6 @@ Returns the current output CRS, used in the display.
     QgsExtentGroupBox::ExtentState extentState() const;
 %Docstring
 Returns the currently selected state for the widget's extent.
-
-:rtype: QgsExtentGroupBox.ExtentState
 %End
 
     void setTitleBase( const QString &title );
@@ -156,8 +142,6 @@ Sets the base part of ``title`` of the group box (will be appended with extent s
 %Docstring
 Returns the base part of title of the group box (will be appended with extent state).
 
-:rtype: str
-
 .. versionadded:: 2.12
 
 .. seealso:: :py:func:`setTitleBase()`
@@ -166,6 +150,7 @@ Returns the base part of title of the group box (will be appended with extent st
     void setMapCanvas( QgsMapCanvas *canvas );
 %Docstring
 Sets the map canvas to enable dragging of extent on a canvas.
+
 :param canvas: the map canvas
 
 .. versionadded:: 3.0
@@ -175,8 +160,6 @@ Sets the map canvas to enable dragging of extent on a canvas.
 %Docstring
 Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
 If the aspect ratio isn't fixed, the width and height will be set to zero.
-
-:rtype: QSize
 
 .. versionadded:: 3.0
 *
@@ -217,6 +200,7 @@ Sets the output extent by dragging on the canvas.
 %Docstring
 Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
 To unset a fixed aspect ratio, set the width and height to zero.
+
 :param ratio: aspect ratio's width and height
 
 .. versionadded:: 3.0

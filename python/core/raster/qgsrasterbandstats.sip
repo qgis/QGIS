@@ -40,8 +40,6 @@ raster band.
     bool contains( const QgsRasterBandStats &s ) const;
 %Docstring
 Compares region, size etc. not collected statistics
-
-:rtype: bool
 %End
 
     int bandNumber;

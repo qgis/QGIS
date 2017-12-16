@@ -24,6 +24,7 @@ Widget for viewing and editing authentication identities database
     explicit QgsAuthAuthoritiesEditor( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Widget for viewing and editing certificate authorities directly in database
+
 :param parent: Parent widget
 %End
 

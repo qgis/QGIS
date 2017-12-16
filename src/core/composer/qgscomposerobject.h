@@ -116,7 +116,6 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * \param composition parent composition
      */
     QgsComposerObject( QgsComposition *composition );
-    virtual ~QgsComposerObject() = default;
 
     /**
      * Returns the composition the item is attached to.
@@ -210,7 +209,7 @@ class CORE_EXPORT QgsComposerObject: public QObject, public QgsExpressionContext
      * scopes for global, project and composition properties.
      * \since QGIS 2.12
      */
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
   public slots:
 

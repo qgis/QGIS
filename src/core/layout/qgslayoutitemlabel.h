@@ -58,7 +58,7 @@ class CORE_EXPORT QgsLayoutItemLabel: public QgsLayoutItem
 
     int type() const override;
     //Overridden to contain part of label's text
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     /**
      * Resizes the item so that the label's text fits to the item. Keeps the top left point stationary.

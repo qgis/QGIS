@@ -32,8 +32,6 @@ using "builder" design patter.
 %End
   public:
 
-    virtual ~QgsGraphDirector();
-
     virtual void makeGraph( QgsGraphBuilderInterface *builder,
                             const QVector< QgsPointXY > &additionalPoints,
                             QVector< QgsPointXY > &snappedPoints /Out/,
@@ -59,8 +57,6 @@ Add optimization strategy
     virtual QString name() const = 0;
 %Docstring
 Returns director name
-
-:rtype: str
 %End
 
   protected:

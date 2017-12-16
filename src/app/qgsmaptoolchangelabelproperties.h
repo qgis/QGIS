@@ -28,8 +28,8 @@ class APP_EXPORT QgsMapToolChangeLabelProperties: public QgsMapToolLabel
   public:
     QgsMapToolChangeLabelProperties( QgsMapCanvas *canvas );
 
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   protected:
 

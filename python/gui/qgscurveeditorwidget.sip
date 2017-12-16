@@ -35,8 +35,6 @@ Constructor for QgsCurveEditorWidget.
 %Docstring
 Returns a curve representing the current curve from the widget.
 
-:rtype: QgsCurveTransform
-
 .. seealso:: :py:func:`setCurve()`
 %End
 
@@ -62,8 +60,6 @@ the widget responsive.
 %Docstring
 Returns the minimum expected value for the range of values shown in the histogram.
 
-:rtype: float
-
 .. seealso:: :py:func:`maxHistogramValueRange()`
 
 .. seealso:: :py:func:`setMinHistogramValueRange()`
@@ -72,8 +68,6 @@ Returns the minimum expected value for the range of values shown in the histogra
     double maxHistogramValueRange() const;
 %Docstring
 Returns the maximum expected value for the range of values shown in the histogram.
-
-:rtype: float
 
 .. seealso:: :py:func:`minHistogramValueRange()`
 
@@ -110,6 +104,7 @@ Emitted when the widget curve changes
   protected:
 
     virtual void keyPressEvent( QKeyEvent *event );
+
 
 };
 

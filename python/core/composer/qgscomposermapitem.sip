@@ -23,6 +23,7 @@ class QgsComposerMapItem : QgsComposerObject
     QgsComposerMapItem( const QString &name, QgsComposerMap *map );
 %Docstring
 Constructor for QgsComposerMapItem.
+
 :param name: friendly display name for item
 :param map: QgsComposerMap the item is attached to
 %End
@@ -30,27 +31,28 @@ Constructor for QgsComposerMapItem.
     virtual void draw( QPainter *painter ) = 0;
 %Docstring
 Draws the item on to a painter
+
 :param painter: destination QPainter
 %End
 
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
+
 %Docstring
 Stores map item state in DOM element
+
 :param elem: is DOM element corresponding to a 'ComposerMap' tag
 :param doc: DOM document
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml`
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
+
 %Docstring
 Sets map item state from a DOM document
+
 :param itemElem: is DOM node corresponding to a 'ComposerMapGrid' tag
 :param doc: is DOM document
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -58,6 +60,7 @@ Sets map item state from a DOM document
     virtual void setComposerMap( QgsComposerMap *map );
 %Docstring
 Sets composer map for the item
+
 :param map: composer map
 
 .. seealso:: :py:func:`composerMap`
@@ -68,8 +71,6 @@ Sets composer map for the item
 Get composer map for the item
 
 :return: composer map
-:rtype: QgsComposerMap
-
 
 .. seealso:: :py:func:`setComposerMap`
 %End
@@ -79,13 +80,12 @@ Get composer map for the item
 Get the unique id for the map item
 
 :return: unique id
-:rtype: str
-
 %End
 
     virtual void setName( const QString &name );
 %Docstring
 Sets the friendly display name for the item
+
 :param name: display name
 
 .. seealso:: :py:func:`name`
@@ -96,8 +96,6 @@ Sets the friendly display name for the item
 Get friendly display name for the item
 
 :return: display name
-:rtype: str
-
 
 .. seealso:: :py:func:`setName`
 %End
@@ -105,6 +103,7 @@ Get friendly display name for the item
     virtual void setEnabled( const bool enabled );
 %Docstring
 Controls whether the item will be drawn
+
 :param enabled: set to true to enable drawing of the item
 
 .. seealso:: :py:func:`enabled`
@@ -115,8 +114,6 @@ Controls whether the item will be drawn
 Returns whether the item will be drawn
 
 :return: true if item will be drawn on the map
-:rtype: bool
-
 
 .. seealso:: :py:func:`setEnabled`
 %End
@@ -126,8 +123,6 @@ Returns whether the item will be drawn
 Returns true if the item is drawn using advanced effects, such as blend modes.
 
 :return: true if item uses advanced effects
-:rtype: bool
-
 %End
 
   protected:
@@ -160,6 +155,7 @@ order they are drawn in.
     QgsComposerMapItemStack( QgsComposerMap *map );
 %Docstring
 Constructor for QgsComposerMapItemStack.
+
 :param map: QgsComposerMap the item stack is attached to
 %End
 
@@ -170,19 +166,16 @@ Constructor for QgsComposerMapItemStack.
 Returns the number of items in the stack
 
 :return: number of items in the stack
-:rtype: int
-
 %End
 
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc ) const;
 %Docstring
 Stores the state of the item stack in a DOM node
+
 :param elem: is DOM element corresponding to a 'ComposerMap' tag
 :param doc: DOM document
 
 :return: true if write was successful
-:rtype: bool
-
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -190,12 +183,11 @@ Stores the state of the item stack in a DOM node
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc ) = 0;
 %Docstring
 Sets the item stack's state from a DOM document
+
 :param elem: is DOM node corresponding to 'a ComposerMap' tag
 :param doc: DOM document
 
 :return: true if read was successful
-:rtype: bool
-
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -203,6 +195,7 @@ Sets the item stack's state from a DOM document
     void drawItems( QPainter *painter );
 %Docstring
 Draws the items from the stack on a specified painter
+
 :param painter: destination QPainter
 %End
 
@@ -212,8 +205,6 @@ Returns whether any items within the stack contain advanced effects,
 such as blending modes
 
 :return: true if item stack contains advanced effects
-:rtype: bool
-
 %End
 
   protected:
@@ -223,6 +214,7 @@ such as blending modes
 Adds a new map item to the stack and takes ownership of the item.
 The item will be added to the end of the stack, and rendered
 above any existing map items already present in the stack.
+
 :param item: QgsComposerMapItem to add to the stack
 
 .. note::
@@ -236,6 +228,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
     void removeItem( const QString &itemId );
 %Docstring
 Removes an item from the stack and deletes the corresponding QgsComposerMapItem
+
 :param itemId: id for the QgsComposerMapItem to remove
 
 .. note::
@@ -249,6 +242,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
     void moveItemUp( const QString &itemId );
 %Docstring
 Moves an item up the stack, causing it to be rendered above other items
+
 :param itemId: id for the QgsComposerMapItem to move up
 
 .. note::
@@ -262,6 +256,7 @@ called for the QgsComposerMap to redraw the map with the new item stack order
     void moveItemDown( const QString &itemId );
 %Docstring
 Moves an item up the stack, causing it to be rendered above other items
+
 :param itemId: id for the QgsComposerMapItem to move down
 
 .. note::
@@ -275,11 +270,10 @@ called for the QgsComposerMap to redraw the map with the new item stack order
     const QgsComposerMapItem *constItem( const QString &itemId ) const;
 %Docstring
 Returns a const reference to an item within the stack
+
 :param itemId: id for the QgsComposerMapItem to find
 
 :return: const reference to item, if found
-:rtype: QgsComposerMapItem
-
 
 .. seealso:: :py:func:`item`
 %End
@@ -287,11 +281,10 @@ Returns a const reference to an item within the stack
     QgsComposerMapItem *item( const QString &itemId ) const;
 %Docstring
 Returns a reference to an item within the stack
+
 :param itemId: id for the QgsComposerMapItem to find
 
 :return: reference to item if found
-:rtype: QgsComposerMapItem
-
 
 .. seealso:: :py:func:`constItem`
 %End
@@ -299,11 +292,10 @@ Returns a reference to an item within the stack
     QgsComposerMapItem *item( const int index ) const;
 %Docstring
 Returns a reference to an item within the stack
+
 :param index: item position in the stack
 
 :return: reference to item if found
-:rtype: QgsComposerMapItem
-
 
 .. seealso:: :py:func:`constItem`
 %End
@@ -314,8 +306,6 @@ Returns a reference to an item within the stack
 Returns a list of QgsComposerMapItems contained by the stack
 
 :return: list of items
-:rtype: list of QgsComposerMapItem
-
 %End
 
   protected:

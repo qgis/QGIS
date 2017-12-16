@@ -60,8 +60,6 @@ Boolean operator. Will return true if this optional is enabled.
 %Docstring
 Check if this optional is enabled
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -76,8 +74,6 @@ Set if this optional is enabled
     T data() const;
 %Docstring
 Access the payload data
-
-:rtype: T
 
 .. versionadded:: 3.0
 %End

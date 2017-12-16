@@ -44,24 +44,18 @@ Destructor
 %Docstring
 
 :return: the name of the service
-:rtype: str
-
 %End
 
     virtual QString version() const = 0;
 %Docstring
 
 :return: the version of the service
-:rtype: str
-
 %End
 
     virtual bool allowMethod( QgsServerRequest::Method ) const = 0;
 %Docstring
 Return true if the given method is supported for that
 service.
-
-:rtype: bool
 %End
 
     virtual void executeRequest( const QgsServerRequest &request,

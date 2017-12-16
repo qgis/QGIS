@@ -43,10 +43,6 @@ Raster pipe that deals with null values.
     void setNoData( int bandNo, const QgsRasterRangeList &noData );
 
     QgsRasterRangeList noData( int bandNo ) const;
-%Docstring
-
-:rtype: QgsRasterRangeList
-%End
 
     void setOutputNoDataValue( int bandNo, double noData );
 %Docstring

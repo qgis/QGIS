@@ -40,7 +40,7 @@ class QgsAfsSourceSelect: public QgsArcGisServiceSourceSelect
                          const QgsRectangle &bBox = QgsRectangle() ) const override;
   private:
     //! A layer is added from the dialog
-    virtual void addServiceLayer( QString uri, QString typeName ) override;
+    void addServiceLayer( QString uri, QString typeName ) override;
 
 };
 

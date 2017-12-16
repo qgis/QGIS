@@ -47,21 +47,11 @@ Saves current item state as after state
 %End
 
     QDomDocument previousState() const;
-%Docstring
-
-:rtype: QDomDocument
-%End
     QDomDocument afterState() const;
-%Docstring
-
-:rtype: QDomDocument
-%End
 
     bool containsChange() const;
 %Docstring
 Returns true if previous state and after state are valid and different
-
-:rtype: bool
 %End
 
     QgsComposerItem *item() const;
@@ -69,8 +59,6 @@ Returns true if previous state and after state are valid and different
 Returns the target item the command applies to.
 
 :return: target composer item
-:rtype: QgsComposerItem
-
 %End
 
   protected:

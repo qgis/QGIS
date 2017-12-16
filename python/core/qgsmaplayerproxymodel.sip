@@ -47,24 +47,17 @@ It can be used to filter the layers list in a widget.
     QgsMapLayerModel *sourceLayerModel() const;
 %Docstring
  layerModel returns the QgsMapLayerModel used in this QSortFilterProxyModel
-
-:rtype: QgsMapLayerModel
 %End
 
     QgsMapLayerProxyModel *setFilters( QgsMapLayerProxyModel::Filters filters );
 %Docstring
  setFilters set flags that affect how layers are filtered
-:param filters: are Filter flags
 
-:rtype: QgsMapLayerProxyModel
+:param filters: are Filter flags
 
 .. versionadded:: 2.3
 %End
     const Filters &filters() const;
-%Docstring
-
-:rtype: Filters
-%End
 
     void setExceptedLayerList( const QList<QgsMapLayer *> &exceptList );
 %Docstring
@@ -73,8 +66,6 @@ offer the possibility to except some layers to be listed
     QList<QgsMapLayer *> exceptedLayerList();
 %Docstring
 Get the list of maplayers which are excluded from the list
-
-:rtype: list of QgsMapLayer
 %End
 
     void setExceptedLayerIds( const QStringList &ids );
@@ -84,8 +75,6 @@ Set the list of maplayer ids which are excluded from the list
     QStringList exceptedLayerIds() const;
 %Docstring
 Get the list of maplayer ids which are excluded from the list
-
-:rtype: list of str
 %End
 
     void setExcludedProviders( const QStringList &providers );
@@ -100,8 +89,6 @@ Sets a list of data providers which should be excluded from the model.
     QStringList excludedProviders() const;
 %Docstring
 Returns the list of data providers which are excluded from the model.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`setExcludedProviders()`
 

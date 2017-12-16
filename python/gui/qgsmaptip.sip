@@ -46,6 +46,7 @@ Default constructor
                      QgsMapCanvas *mpMapCanvas );
 %Docstring
 Show a maptip at a given point on the map canvas
+
 :param thepLayer: a qgis vector map layer pointer that will
 be used to provide the attribute data for the map tip.
 :param mapPosition: a reference to the position of the cursor
@@ -58,6 +59,7 @@ in pixel coordinates.
     void clear( QgsMapCanvas *mpMapCanvas = 0 );
 %Docstring
 Clear the current maptip if it exists
+
 :param mpMapCanvas: the canvas from which the tip should be cleared.
 %End
 };

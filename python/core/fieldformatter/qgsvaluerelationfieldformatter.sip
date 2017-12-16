@@ -62,8 +62,6 @@ Create a cache for a value relation field.
 This can be used to keep the value map in the local memory
 if doing multiple lookups in a loop.
 
-:rtype: QgsValueRelationFieldFormatter.ValueRelationCache
-
 .. versionadded:: 3.0
 %End
 };

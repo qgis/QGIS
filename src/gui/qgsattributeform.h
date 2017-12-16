@@ -69,7 +69,7 @@ class GUI_EXPORT QgsAttributeForm : public QWidget
                                const QgsFeature &feature = QgsFeature(),
                                const QgsAttributeEditorContext &context = QgsAttributeEditorContext(),
                                QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsAttributeForm();
+    ~QgsAttributeForm() override;
 
     const QgsFeature &feature() { return mFeature; }
 

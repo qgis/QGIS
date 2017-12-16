@@ -52,6 +52,7 @@ This is a container of advanced configuration (per layer) of the snapping of the
         IndividualLayerSettings( bool enabled, QgsSnappingConfig::SnappingType type, double tolerance, QgsTolerance::UnitType units );
 %Docstring
  IndividualLayerSettings
+
 :param enabled:
 :param type:
 :param tolerance:
@@ -66,15 +67,11 @@ Constructs an invalid setting
         bool valid() const;
 %Docstring
 return if settings are valid
-
-:rtype: bool
 %End
 
         bool enabled() const;
 %Docstring
 return if snapping is enabled
-
-:rtype: bool
 %End
 
         void setEnabled( bool enabled );
@@ -85,8 +82,6 @@ enables the snapping
         QgsSnappingConfig::SnappingType type() const;
 %Docstring
 return the type (vertices and/or segments)
-
-:rtype: QgsSnappingConfig.SnappingType
 %End
 
         void setType( QgsSnappingConfig::SnappingType type );
@@ -97,8 +92,6 @@ define the type of snapping
         double tolerance() const;
 %Docstring
 return the tolerance
-
-:rtype: float
 %End
 
         void setTolerance( double tolerance );
@@ -109,8 +102,6 @@ set the tolerance
         QgsTolerance::UnitType units() const;
 %Docstring
 return the type of units
-
-:rtype: QgsTolerance.UnitType
 %End
 
         void setUnits( QgsTolerance::UnitType units );
@@ -142,8 +133,6 @@ reset to default values
     bool enabled() const;
 %Docstring
 return if snapping is enabled
-
-:rtype: bool
 %End
 
     void setEnabled( bool enabled );
@@ -154,8 +143,6 @@ enables the snapping
     SnappingMode mode() const;
 %Docstring
 return the mode (all layers, active layer, per layer settings)
-
-:rtype: SnappingMode
 %End
 
     void setMode( SnappingMode mode );
@@ -166,8 +153,6 @@ define the mode of snapping
     SnappingType type() const;
 %Docstring
 return the type (vertices and/or segments)
-
-:rtype: SnappingType
 %End
 
     void setType( SnappingType type );
@@ -178,8 +163,6 @@ define the type of snapping
     double tolerance() const;
 %Docstring
 return the tolerance
-
-:rtype: float
 %End
 
     void setTolerance( double tolerance );
@@ -190,8 +173,6 @@ set the tolerance
     QgsTolerance::UnitType units() const;
 %Docstring
 return the type of units
-
-:rtype: QgsTolerance.UnitType
 %End
 
     void setUnits( QgsTolerance::UnitType units );
@@ -202,8 +183,6 @@ set the type of units
     bool intersectionSnapping() const;
 %Docstring
 return if the snapping on intersection is enabled
-
-:rtype: bool
 %End
 
     void setIntersectionSnapping( bool enabled );
@@ -214,8 +193,6 @@ set if the snapping on intersection is enabled
     SIP_PYDICT individualLayerSettings() const;
 %Docstring
 return individual snapping settings for all layers
-
-:rtype: SIP_PYDICT
 %End
 %MethodCode
     // Create the dictionary.
@@ -260,8 +237,6 @@ return individual snapping settings for all layers
     QgsSnappingConfig::IndividualLayerSettings individualLayerSettings( QgsVectorLayer *vl ) const;
 %Docstring
 return individual layer snappings settings (applied if mode is AdvancedConfiguration)
-
-:rtype: QgsSnappingConfig.IndividualLayerSettings
 %End
 
     void setIndividualLayerSettings( QgsVectorLayer *vl, const QgsSnappingConfig::IndividualLayerSettings &individualLayerSettings );
@@ -296,8 +271,6 @@ When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
 it is best to directly feed this with information from the layer registry.
 
 :return: True if changes have been done.
-:rtype: bool
-
 
 .. versionadded:: 3.0
 %End
@@ -310,8 +283,6 @@ When implementing a long-living QgsSnappingConfig (like the one in QgsProject)
 it is best to directly feed this with information from the layer registry.
 
 :return: True if changes have been done.
-:rtype: bool
-
 
 .. versionadded:: 3.0
 %End
@@ -319,8 +290,6 @@ it is best to directly feed this with information from the layer registry.
     QgsProject *project() const;
 %Docstring
 The project from which the snapped layers should be retrieved
-
-:rtype: QgsProject
 
 .. versionadded:: 3.0
 %End

@@ -28,14 +28,16 @@ interaction with the widget.
     QgsFieldValuesLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsFieldValuesLineEdit
+
 :param parent: parent widget
 %End
 
-    virtual ~QgsFieldValuesLineEdit();
+    ~QgsFieldValuesLineEdit();
 
     void setLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the layer containing the field that values will be shown from.
+
 :param layer: vector layer
 
 .. seealso:: :py:func:`layer()`
@@ -47,8 +49,6 @@ Sets the layer containing the field that values will be shown from.
 %Docstring
 Returns the layer containing the field that values will be shown from.
 
-:rtype: QgsVectorLayer
-
 .. seealso:: :py:func:`setLayer()`
 
 .. seealso:: :py:func:`attributeIndex()`
@@ -57,6 +57,7 @@ Returns the layer containing the field that values will be shown from.
     void setAttributeIndex( int index );
 %Docstring
 Sets the attribute index for the field containing values to show in the widget.
+
 :param index: index of attribute
 
 .. seealso:: :py:func:`attributeIndex()`
@@ -68,8 +69,6 @@ Sets the attribute index for the field containing values to show in the widget.
 %Docstring
 Returns the attribute index for the field containing values shown in the widget.
 
-:rtype: int
-
 .. seealso:: :py:func:`setAttributeIndex()`
 
 .. seealso:: :py:func:`layer()`
@@ -80,12 +79,14 @@ Returns the attribute index for the field containing values shown in the widget.
     void layerChanged( QgsVectorLayer *layer );
 %Docstring
 Emitted when the layer associated with the widget changes.
+
 :param layer: vector layer
 %End
 
     void attributeIndexChanged( int index );
 %Docstring
 Emitted when the field associated with the widget changes.
+
 :param index: new attribute index for field
 %End
 

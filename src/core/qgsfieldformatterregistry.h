@@ -45,7 +45,7 @@ class CORE_EXPORT QgsFieldFormatterRegistry : public QObject
      * Use the one provided by `QgsApplication::fieldFormatterRegistry()` instead.
      */
     explicit QgsFieldFormatterRegistry( QObject *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsFieldFormatterRegistry();
+    ~QgsFieldFormatterRegistry() override;
 
     /**
      * They will take precedence in order of adding them.

@@ -144,7 +144,7 @@ class APP_EXPORT QgsBookmarks : public QgsDockWidget, private Ui::QgsBookmarksBa
 
   public:
     QgsBookmarks( QWidget *parent = nullptr );
-    ~QgsBookmarks();
+    ~QgsBookmarks() override;
 
   public slots:
     void addClicked();

@@ -31,15 +31,21 @@ constructor
 
     virtual Flags flags() const;
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
+
     virtual void canvasPressEvent( QgsMapMouseEvent *e );
+
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
+
     virtual void activate();
+
     virtual void deactivate();
+
 
     void setRatio( QSize ratio );
 %Docstring
 Sets a fixed aspect ratio to be used when dragging extent onto the canvas.
 To unset a fixed aspect ratio, set the width and height to zero.
+
 :param ratio: aspect ratio's width and height
 *
 %End
@@ -49,15 +55,11 @@ To unset a fixed aspect ratio, set the width and height to zero.
 Returns the current fixed aspect ratio to be used when dragging extent onto the canvas.
 If the aspect ratio isn't fixed, the width and height will be set to zero.
 *
-
-:rtype: QSize
 %End
 
     QgsRectangle extent() const;
 %Docstring
 Returns the current extent drawn onto the canvas.
-
-:rtype: QgsRectangle
 %End
 
   signals:

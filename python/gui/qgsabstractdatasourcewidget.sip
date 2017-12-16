@@ -27,11 +27,6 @@ and add layers.
 %End
   public:
 
-    ~QgsAbstractDataSourceWidget();
-%Docstring
-Destructor
-%End
-
     void setMapCanvas( const QgsMapCanvas *mapCanvas );
 %Docstring
 Store a pointer to the map canvas to retrieve extent and CRS
@@ -84,6 +79,7 @@ will be used.
     void addVectorLayers( const QStringList &layerList, const QString &encoding, const QString &dataSourceType );
 %Docstring
 Emitted when one or more OGR supported layers are selected for addition
+
 :param layerList: list of layers protocol URIs
 :param encoding: encoding
 :param dataSourceType: string (can be "file" or "database")
@@ -92,6 +88,7 @@ Emitted when one or more OGR supported layers are selected for addition
     void replaceVectorLayer( const QString &oldId, const QString &source, const QString &name, const QString &provider );
 %Docstring
 Emitted when a layer needs to be replaced
+
 :param oldId: old layer ID
 :param source: URI of the layer
 :param name: of the layer
@@ -125,15 +122,11 @@ Constructor
     QgsProviderRegistry::WidgetMode widgetMode() const;
 %Docstring
 Return the widget mode
-
-:rtype: QgsProviderRegistry.WidgetMode
 %End
 
     const QgsMapCanvas *mapCanvas() const;
 %Docstring
 Return the map canvas (can be null)
-
-:rtype: QgsMapCanvas
 %End
 
     void setupButtons( QDialogButtonBox *buttonBox );
@@ -144,8 +137,6 @@ Connect the ok and apply/add buttons to the slots
     QPushButton *addButton( ) const;
 %Docstring
 Return the add Button
-
-:rtype: QPushButton
 %End
 
 };

@@ -30,7 +30,9 @@ E.g. "color: yellow, amount: 5"
 Default constructor of field formatter for a key value field.
 %End
     virtual QString id() const;
+
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
 };
 
 /************************************************************************

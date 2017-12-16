@@ -34,6 +34,7 @@ and reordering effects within the stack.
     QgsEffectStackPropertiesWidget( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsEffectStackPropertiesWidget constructor
+
 :param stack: QgsEffectStack to modify in the widget
 :param parent: parent widget
 %End
@@ -45,13 +46,12 @@ QgsEffectStackPropertiesWidget constructor
 Returns effect stack attached to the widget
 
 :return: QgsEffectStack modified by the widget
-:rtype: QgsEffectStack
-
 %End
 
     void setPreviewPicture( const QPicture &picture );
 %Docstring
 Sets the picture to use for effect previews for the dialog
+
 :param picture: preview picture
 %End
 
@@ -90,6 +90,7 @@ Updates the effect preview icon.
     void changeEffect( QgsPaintEffect *newEffect );
 %Docstring
 Updates the effect stack when the currently selected effect changes properties.
+
 :param newEffect: new effect to replace existing effect at selected position within the stack.
 %End
 
@@ -104,6 +105,7 @@ Refreshes the widget to reflect the current state of the stack.
     void loadStack( QgsEffectStack *stack );
 %Docstring
 Refreshes the widget to reflect the current state of a specified stack.
+
 :param stack: QgsEffectStack for widget
 %End
 
@@ -150,6 +152,7 @@ and reordering effects within the stack.
     QgsEffectStackPropertiesDialog( QgsEffectStack *stack, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags f = 0 );
 %Docstring
 QgsEffectStackPropertiesDialog constructor
+
 :param stack: QgsEffectStack to modify in the dialog
 :param parent: parent widget
 :param f: window flags
@@ -160,13 +163,12 @@ QgsEffectStackPropertiesDialog constructor
 Returns effect stack attached to the dialog
 
 :return: QgsEffectStack modified by the dialog
-:rtype: QgsEffectStack
-
 %End
 
     void setPreviewPicture( const QPicture &picture );
 %Docstring
 Sets the picture to use for effect previews for the dialog
+
 :param picture: preview picture
 %End
 
@@ -200,6 +202,7 @@ and a button for opening an effect stack customisation dialog.
     QgsEffectStackCompactWidget( QWidget *parent /TransferThis/ = 0, QgsPaintEffect *effect = 0 );
 %Docstring
 QgsEffectStackCompactWidget constructor
+
 :param parent: parent widget
 :param effect: QgsPaintEffect for modification by the widget. If the effect
 is not a QgsEffectStack, it will be automatically converted to an effect
@@ -210,6 +213,7 @@ stack consisting of the original effect
     void setPaintEffect( QgsPaintEffect *effect );
 %Docstring
 Sets paint effect attached to the widget,
+
 :param effect: QgsPaintEffect for modification by the widget. If the effect
 is not a QgsEffectStack, it will be automatically converted to an effect
 stack consisting of the original effect
@@ -222,8 +226,6 @@ stack consisting of the original effect
 Returns paint effect attached to the widget
 
 :return: QgsPaintEffect modified by the widget
-:rtype: QgsPaintEffect
-
 
 .. seealso:: :py:func:`setPaintEffect`
 %End
@@ -231,6 +233,7 @@ Returns paint effect attached to the widget
     void setPreviewPicture( const QPicture &picture );
 %Docstring
 Sets the picture to use for effect previews for the dialog
+
 :param picture: preview picture
 %End
 

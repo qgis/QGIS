@@ -29,6 +29,7 @@ will be returned.
 %Docstring
 This constructor is used when the query builder is called from the
 vector layer properties dialog
+
 :param layer: existing vector layer
 :param parent: Parent widget
 :param fl: dialog flags
@@ -40,10 +41,6 @@ vector layer properties dialog
 
 
     QString sql();
-%Docstring
-
-:rtype: str
-%End
     void setSql( const QString &sqlStatement );
 
   public slots:

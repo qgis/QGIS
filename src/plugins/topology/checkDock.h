@@ -49,7 +49,7 @@ class checkDock : public QgsDockWidget, private Ui::checkDock
      * \param parent parent object
      */
     checkDock( QgisInterface *qIface, QWidget *parent = nullptr );
-    ~checkDock();
+    ~checkDock() override;
 
   private slots:
 

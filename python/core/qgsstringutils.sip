@@ -29,6 +29,7 @@ class QgsStringReplacement
                           bool wholeWordOnly = false );
 %Docstring
 Constructor for QgsStringReplacement.
+
 :param match: string to match
 :param replacement: string to replace match with
 :param caseSensitive: set to true for a case sensitive match
@@ -38,39 +39,30 @@ Constructor for QgsStringReplacement.
     QString match() const;
 %Docstring
 Returns the string matched by this object
-
-:rtype: str
 %End
 
     QString replacement() const;
 %Docstring
 Returns the string to replace matches with
-
-:rtype: str
 %End
 
     bool caseSensitive() const;
 %Docstring
 Returns true if match is case sensitive
-
-:rtype: bool
 %End
 
     bool wholeWordOnly() const;
 %Docstring
 Returns true if match only applies to whole words, or false if partial word matches are permitted
-
-:rtype: bool
 %End
 
     QString process( const QString &input ) const;
 %Docstring
 Processes a given input string, applying any valid replacements which should be made.
+
 :param input: input string
 
 :return: input string with any matches replaced by replacement string
-:rtype: str
-
 %End
 
     bool operator==( const QgsStringReplacement &other );
@@ -79,16 +71,12 @@ Processes a given input string, applying any valid replacements which should be 
 %Docstring
 Returns a map of the replacement properties.
 
-:rtype: QgsStringMap
-
 .. seealso:: :py:func:`fromProperties()`
 %End
 
     static QgsStringReplacement fromProperties( const QgsStringMap &properties );
 %Docstring
 Creates a new QgsStringReplacement from an encoded properties map.
-
-:rtype: QgsStringReplacement
 
 .. seealso:: :py:func:`properties()`
 %End
@@ -113,6 +101,7 @@ class QgsStringReplacementCollection
     QgsStringReplacementCollection( const QList< QgsStringReplacement > &replacements = QList< QgsStringReplacement >() );
 %Docstring
 Constructor for QgsStringReplacementCollection
+
 :param replacements: initial list of string replacements
 %End
 
@@ -120,14 +109,13 @@ Constructor for QgsStringReplacementCollection
 %Docstring
 Returns the list of string replacements in this collection.
 
-:rtype: list of QgsStringReplacement
-
 .. seealso:: :py:func:`setReplacements()`
 %End
 
     void setReplacements( const QList< QgsStringReplacement > &replacements );
 %Docstring
 Sets the list of string replacements in this collection.
+
 :param replacements: list of string replacements to apply. Replacements are applied in the
 order they are specified here.
 
@@ -139,16 +127,16 @@ order they are specified here.
 Processes a given input string, applying any valid replacements which should be made
 using QgsStringReplacement objects contained by this collection. Replacements
 are made in order of the QgsStringReplacement objects contained in the collection.
+
 :param input: input string
 
 :return: input string with any matches replaced by replacement string
-:rtype: str
-
 %End
 
     void writeXml( QDomElement &elem, QDomDocument &doc ) const;
 %Docstring
 Writes the collection state to an XML element.
+
 :param elem: target DOM element
 :param doc: DOM document
 
@@ -158,6 +146,7 @@ Writes the collection state to an XML element.
     void readXml( const QDomElement &elem );
 %Docstring
 Reads the collection state from an XML element.
+
 :param elem: DOM element
 
 .. seealso:: :py:func:`writeXml()`
@@ -190,12 +179,11 @@ class QgsStringUtils
     static QString capitalize( const QString &string, Capitalization capitalization );
 %Docstring
 Converts a string by applying capitalization rules to the string.
+
 :param string: input string
 :param capitalization: capitalization type to apply
 
 :return: capitalized string
-:rtype: str
-
 
 .. versionadded:: 3.0
 %End
@@ -205,13 +193,12 @@ Converts a string by applying capitalization rules to the string.
 Returns the Levenshtein edit distance between two strings. This equates to the minimum
 number of character edits (insertions, deletions or substitutions) required to change
 one string to another.
+
 :param string1: first string
 :param string2: second string
 :param caseSensitive: set to true for case sensitive comparison
 
 :return: edit distance. Lower distances indicate more similar strings.
-:rtype: int
-
 %End
 
     static QString longestCommonSubstring( const QString &string1, const QString &string2, bool caseSensitive = false );
@@ -219,13 +206,12 @@ one string to another.
 Returns the longest common substring between two strings. This substring is the longest
 string that is a substring of the two input strings. For example, the longest common substring
 of "ABABC" and "BABCA" is "ABC".
+
 :param string1: first string
 :param string2: second string
 :param caseSensitive: set to true for case sensitive comparison
 
 :return: longest common substring
-:rtype: str
-
 %End
 
     static int hammingDistance( const QString &string1, const QString &string2, bool caseSensitive = false );
@@ -233,36 +219,33 @@ of "ABABC" and "BABCA" is "ABC".
 Returns the Hamming distance between two strings. This equates to the number of characters at
 corresponding positions within the input strings where the characters are different. The input
 strings must be the same length.
+
 :param string1: first string
 :param string2: second string
 :param caseSensitive: set to true for case sensitive comparison
 
 :return: Hamming distance between strings, or -1 if strings are different lengths.
-:rtype: int
-
 %End
 
     static QString soundex( const QString &string );
 %Docstring
 Returns the Soundex representation of a string. Soundex is a phonetic matching algorithm,
 so strings with similar sounds should be represented by the same Soundex code.
+
 :param string: input string
 
 :return: 4 letter Soundex code
-:rtype: str
-
 %End
 
     static QString insertLinks( const QString &string, bool *foundLinks = 0 );
 %Docstring
 Returns a string with any URL (e.g., http(s)/ftp) and mailto: text converted to valid HTML <a ...>
 links.
+
 :param string: string to insert links into
 :param foundLinks: if specified, will be set to true if any links were inserted into the string
 
 :return: string with inserted links
-:rtype: str
-
 
 .. versionadded:: 3.0
 %End

@@ -49,7 +49,6 @@ Update underlying data with a SQL query embedded in a transaction.
 :param sql: The SQL query updating data
 
 :return: true if the undo/redo command is well added to the stack, false otherwise
-:rtype: bool
 
 
 .. versionadded:: 3.0

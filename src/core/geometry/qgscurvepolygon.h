@@ -41,7 +41,7 @@ class CORE_EXPORT QgsCurvePolygon: public QgsSurface
     bool operator==( const QgsCurvePolygon &other ) const;
     bool operator!=( const QgsCurvePolygon &other ) const;
 
-    ~QgsCurvePolygon();
+    ~QgsCurvePolygon() override;
 
     QString geometryType() const override;
     int dimension() const override;

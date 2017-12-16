@@ -42,8 +42,6 @@ class QgsPolygon: QgsCurvePolygon
 Returns the geometry converted to the more generic curve type QgsCurvePolygon
 
 :return: the converted geometry. Caller takes ownership*
-:rtype: QgsCurvePolygon
-
 %End
 
     virtual void addInteriorRing( QgsCurve *ring /Transfer/ );
@@ -59,8 +57,6 @@ Returns the geometry converted to the more generic curve type QgsCurvePolygon
 Returns the distance from a point to the boundary of the polygon (either the
 exterior ring or any closer interior rings). The returned distance will be
 negative if the point lies outside the polygon.
-
-:rtype: float
 
 .. versionadded:: 3.0
 %End

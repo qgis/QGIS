@@ -53,7 +53,7 @@ class APP_EXPORT QgsRasterLayerProperties : public QgsOptionsDialogBase, private
      */
     QgsRasterLayerProperties( QgsMapLayer *lyr, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags = QgsGuiUtils::ModalDialogFlags );
 
-    ~QgsRasterLayerProperties();
+    ~QgsRasterLayerProperties() override;
 
     //! Synchronize state with associated raster layer
     void sync();

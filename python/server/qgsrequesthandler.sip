@@ -59,15 +59,11 @@ Remove an HTTP response header
     QString responseHeader( const QString &name ) const;
 %Docstring
 Retrieve response header value
-
-:rtype: str
 %End
 
     QMap<QString, QString> responseHeaders() const;
 %Docstring
 Return the response headers
-
-:rtype: QMap<str, QString>
 %End
 
     void setRequestHeader( const QString &name, const QString &value );
@@ -83,15 +79,11 @@ Remove an HTTP request header
     QString requestHeader( const QString &name ) const;
 %Docstring
 Retrieve request header value
-
-:rtype: str
 %End
 
     QMap<QString, QString> requestHeaders() const;
 %Docstring
 Return the Request headers
-
-:rtype: QMap<str, QString>
 %End
 
     void clear();
@@ -107,8 +99,6 @@ Set the info format string such as "text/xml"
     bool exceptionRaised() const;
 %Docstring
 Pointer to last raised exception
-
-:rtype: bool
 %End
 
     void clearBody();
@@ -119,22 +109,16 @@ Clear response buffer
     QByteArray body() const;
 %Docstring
 Return response body data
-
-:rtype: QByteArray
 %End
 
     QByteArray data() const;
 %Docstring
 Return request POST data (can be null)
-
-:rtype: QByteArray
 %End
 
     QString url() const;
 %Docstring
 Return request url
-
-:rtype: str
 %End
 
     void setStatusCode( int code );
@@ -145,8 +129,6 @@ Set response http status code
     int statusCode() const;
 %Docstring
 Return response http status code
-
-:rtype: int
 %End
 
     QMap<QString, QString> parameterMap() const;
@@ -154,8 +136,6 @@ Return response http status code
 Return the parsed parameters as a key-value pair, to modify
 a parameter setParameter( const QString &key, const QString &value)
 and removeParameter(const QString &key) must be used
-
-:rtype: QMap<str, QString>
 %End
 
     void setParameter( const QString &key, const QString &value );
@@ -166,8 +146,6 @@ Set a request parameter
     QString parameter( const QString &key ) const;
 %Docstring
 Return a request parameter
-
-:rtype: str
 %End
 
     void removeParameter( const QString &key );
@@ -179,15 +157,11 @@ Remove a request parameter
     QString format() const;
 %Docstring
 Return the requested format string
-
-:rtype: str
 %End
 
     bool headersSent() const;
 %Docstring
 Return true if the HTTP headers were already sent to the client
-
-:rtype: bool
 %End
 
 };

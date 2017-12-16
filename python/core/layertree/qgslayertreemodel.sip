@@ -103,28 +103,20 @@ Enable or disable a model flag
     Flags flags() const;
 %Docstring
 Return OR-ed combination of model flags
-
-:rtype: Flags
 %End
     bool testFlag( Flag f ) const;
 %Docstring
 Check whether a flag is enabled
-
-:rtype: bool
 %End
 
     QgsLayerTreeNode *index2node( const QModelIndex &index ) const;
 %Docstring
 Return layer tree node for given index. Returns root node for invalid index.
 Returns null pointer if index does not refer to a layer tree node (e.g. it is a legend node)
-
-:rtype: QgsLayerTreeNode
 %End
     QModelIndex node2index( QgsLayerTreeNode *node ) const;
 %Docstring
 Return index for a given node. If the node does not belong to the layer tree, the result is undefined
-
-:rtype: QModelIndex
 %End
 
     QList<QgsLayerTreeNode *> indexes2nodes( const QModelIndexList &list, bool skipInternal = false ) const;
@@ -132,15 +124,11 @@ Return index for a given node. If the node does not belong to the layer tree, th
 Convert a ``list`` of indexes to a list of layer tree nodes.
 Indices that do not represent layer tree nodes are skipped.
 If ``skipInternal`` is true, a node is included in the output list only if no parent node is in the list.
-
-:rtype: list of QgsLayerTreeNode
 %End
 
     static QgsLayerTreeModelLegendNode *index2legendNode( const QModelIndex &index );
 %Docstring
 Return legend node for given index. Returns null for invalid index
-
-:rtype: QgsLayerTreeModelLegendNode
 
 .. versionadded:: 2.6
 %End
@@ -150,8 +138,6 @@ Return legend node for given index. Returns null for invalid index
 Return index for a given legend node. If the legend node does not belong to the layer tree, the result is undefined.
 If the legend node is belongs to the tree but it is filtered out, invalid model index is returned.
 
-:rtype: QModelIndex
-
 .. versionadded:: 2.6
 %End
 
@@ -159,8 +145,6 @@ If the legend node is belongs to the tree but it is filtered out, invalid model 
 %Docstring
 Return filtered list of active legend nodes attached to a particular layer node
 (by default it returns also legend node embedded in parent layer node (if any) unless skipNodeEmbeddedInParent is true)
-
-:rtype: list of QgsLayerTreeModelLegendNode
 
 .. versionadded:: 2.6
 
@@ -175,8 +159,6 @@ Return filtered list of active legend nodes attached to a particular layer node
 %Docstring
 Return original (unfiltered) list of legend nodes attached to a particular layer node
 
-:rtype: list of QgsLayerTreeModelLegendNode
-
 .. versionadded:: 2.14
 
 .. seealso:: :py:func:`layerLegendNodes()`
@@ -186,8 +168,6 @@ Return original (unfiltered) list of legend nodes attached to a particular layer
 %Docstring
 Return legend node that may be embedded in parent (i.e. its icon will be used for layer's icon).
 
-:rtype: QgsLayerTreeModelLegendNode
-
 .. versionadded:: 2.18
 %End
 
@@ -195,12 +175,11 @@ Return legend node that may be embedded in parent (i.e. its icon will be used fo
 %Docstring
 Searches through the layer tree to find a legend node with a matching layer ID
 and rule key.
+
 :param layerId: map layer ID
 :param ruleKey: legend node rule key
 
 :return: QgsLayerTreeModelLegendNode if found
-:rtype: QgsLayerTreeModelLegendNode
-
 
 .. versionadded:: 2.14
 %End
@@ -208,8 +187,6 @@ and rule key.
     QgsLayerTree *rootGroup() const;
 %Docstring
 Return pointer to the root node of the layer tree. Always a non-null pointer.
-
-:rtype: QgsLayerTree
 %End
 
     void setRootGroup( QgsLayerTree *newRootGroup );
@@ -228,8 +205,6 @@ Not necessary to call when layer's renderer is changed as the model listens to t
     QModelIndex currentIndex() const;
 %Docstring
 Get index of the item marked as current. Item marked as current is underlined.
-
-:rtype: QModelIndex
 %End
     void setCurrentIndex( const QModelIndex &currentIndex );
 %Docstring
@@ -243,8 +218,6 @@ Set font for a particular type of layer tree node. nodeType should come from Qgs
     QFont layerTreeNodeFont( int nodeType ) const;
 %Docstring
 Get font for a particular type of layer tree node. nodeType should come from QgsLayerTreeNode.NodeType enumeration
-
-:rtype: QFont
 %End
 
     void setAutoCollapseLegendNodes( int nodeCount );
@@ -254,8 +227,6 @@ Set at what number of legend nodes the layer node should be collapsed. Setting -
     int autoCollapseLegendNodes() const;
 %Docstring
 Return at what number of legend nodes the layer node should be collapsed. -1 means no auto-collapse (default).
-
-:rtype: int
 %End
 
     void setLegendFilterByScale( double scale );
@@ -275,8 +246,6 @@ Returns the scale which restricts the legend nodes which are visible.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale <= 0 indicates that no scale filtering is being performed.
 
-:rtype: float
-
 .. versionadded:: 2.6
 
 .. seealso:: :py:func:`setLegendFilterByScale()`
@@ -294,6 +263,7 @@ Ownership of map settings pointer does not change, a copy is made.
     void setLegendFilter( const QgsMapSettings *settings, bool useExtent = true, const QgsGeometry &polygon = QgsGeometry(), bool useExpressions = true );
 %Docstring
 Filter display of legend nodes for given map settings
+
 :param settings: Map settings. Setting a null pointer or invalid settings will disable any filter. Ownership is not changed, a copy is made
 :param useExtent: Whether to use the extent of the map settings as a first spatial filter on legend nodes
 :param polygon: If not empty, this polygon will be used instead of the map extent to filter legend nodes
@@ -305,8 +275,6 @@ Filter display of legend nodes for given map settings
     const QgsMapSettings *legendFilterMapSettings() const;
 %Docstring
 Returns the current map settings used for the current legend filter (or null if none is enabled)
-
-:rtype: QgsMapSettings
 
 .. versionadded:: 2.14
 %End
@@ -330,8 +298,6 @@ If there are no valid map view data (from previous call to setLegendMapViewData(
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
 Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
-
-:rtype: QMap<str, QString>
 
 .. versionadded:: 2.10
 %End
@@ -396,69 +362,23 @@ Emits dataChanged() for all scale dependent layers.
 %End
 
     static QIcon iconGroup();
-%Docstring
-
-:rtype: QIcon
-%End
 
     QList<QgsLayerTreeModelLegendNode *> filterLegendNodes( const QList<QgsLayerTreeModelLegendNode *> &nodes );
 %Docstring
 Filter nodes from QgsMapLayerLegend according to the current filtering rules
-
-:rtype: list of QgsLayerTreeModelLegendNode
 %End
 
     QModelIndex indexOfParentLayerTreeNode( QgsLayerTreeNode *parentNode ) const;
-%Docstring
-
-:rtype: QModelIndex
-%End
 
     int legendRootRowCount( QgsLayerTreeLayer *nL ) const;
-%Docstring
-
-:rtype: int
-%End
     int legendNodeRowCount( QgsLayerTreeModelLegendNode *node ) const;
-%Docstring
-
-:rtype: int
-%End
     QModelIndex legendRootIndex( int row, int column, QgsLayerTreeLayer *nL ) const;
-%Docstring
-
-:rtype: QModelIndex
-%End
     QModelIndex legendNodeIndex( int row, int column, QgsLayerTreeModelLegendNode *node ) const;
-%Docstring
-
-:rtype: QModelIndex
-%End
     QModelIndex legendParent( QgsLayerTreeModelLegendNode *legendNode ) const;
-%Docstring
-
-:rtype: QModelIndex
-%End
     QVariant legendNodeData( QgsLayerTreeModelLegendNode *node, int role ) const;
-%Docstring
-
-:rtype: QVariant
-%End
     Qt::ItemFlags legendNodeFlags( QgsLayerTreeModelLegendNode *node ) const;
-%Docstring
-
-:rtype: Qt.ItemFlags
-%End
     bool legendEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
-%Docstring
-
-:rtype: bool
-%End
     QIcon legendIconEmbeddedInParent( QgsLayerTreeLayer *nodeLayer ) const;
-%Docstring
-
-:rtype: QIcon
-%End
     void legendCleanup();
     void legendInvalidateMapBasedData();
 

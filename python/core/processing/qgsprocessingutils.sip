@@ -33,8 +33,6 @@ framework.
 If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
 value.
 
-:rtype: list of QgsRasterLayer
-
 .. seealso:: :py:func:`compatibleVectorLayers()`
 
 .. seealso:: :py:func:`compatibleLayers()`
@@ -54,8 +52,6 @@ list empty will cause all vector layers, regardless of their geometry type, to b
 If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
 value.
 
-:rtype: list of QgsVectorLayer
-
 .. seealso:: :py:func:`compatibleRasterLayers()`
 
 .. seealso:: :py:func:`compatibleLayers()`
@@ -68,8 +64,6 @@ framework.
 
 If the ``sort`` argument is true then the layers will be sorted by their QgsMapLayer.name()
 value.
-
-:rtype: list of QgsMapLayer
 
 .. seealso:: :py:func:`compatibleRasterLayers()`
 
@@ -86,8 +80,6 @@ within the context's project or temporary layer store then this layer will be re
 If the string is a file path and ``allowLoadingNewLayers`` is true, then the layer at this
 file path will be loaded and added to the context's temporary layer store.
 Ownership of the layer remains with the ``context`` or the context's current project.
-
-:rtype: QgsMapLayer
 %End
 
     static QgsProcessingFeatureSource *variantToSource( const QVariant &value, QgsProcessingContext &context, const QVariant &fallbackValue = QVariant() ) /Factory/;
@@ -101,23 +93,17 @@ The optional ``fallbackValue`` can be used to specify a "default" value which is
 if ``value`` cannot be successfully converted to a source.
 
 This function creates a new object and the caller takes responsibility for deleting the returned object.
-
-:rtype: QgsProcessingFeatureSource
 %End
 
     static QString normalizeLayerSource( const QString &source );
 %Docstring
 Normalizes a layer ``source`` string for safe comparison across different
 operating system environments.
-
-:rtype: str
 %End
 
     static QString stringToPythonLiteral( const QString &string );
 %Docstring
 Converts a string to a Python string literal. E.g. by replacing ' with \'.
-
-:rtype: str
 %End
 
 
@@ -158,8 +144,6 @@ SIP bindings. c++ code should call the other createFeatureSink() version.
 %Docstring
 Combines the extent of several map ``layers``. If specified, the target ``crs``
 will be used to transform the layer's extent to the desired output reference system.
-
-:rtype: QgsRectangle
 %End
 
     static QVariant generateIteratingDestination( const QVariant &input, const QVariant &id, QgsProcessingContext &context );
@@ -168,15 +152,11 @@ Converts an ``input`` parameter value for use in source iterating mode, where on
 is created per input feature.
 The ``id`` parameter represents the unique ID for this output, which is embedded into the resulting
 parameter value.
-
-:rtype: QVariant
 %End
 
     static QString tempFolder();
 %Docstring
 Returns a session specific processing temporary folder for use in processing algorithms.
-
-:rtype: str
 
 .. seealso:: :py:func:`generateTempFileName()`
 %End
@@ -187,8 +167,6 @@ Returns a temporary filename for a given file, putting it into
 a temporary folder (creating that folder in the process),
 but not changing the ``basename``.
 
-:rtype: str
-
 .. seealso:: :py:func:`tempFolder()`
 %End
 
@@ -196,8 +174,6 @@ but not changing the ``basename``.
 %Docstring
 Returns a HTML formatted version of the help text encoded in a variant ``map`` for
 a specified ``algorithm``.
-
-:rtype: str
 %End
 
     static QString convertToCompatibleFormat( const QgsVectorLayer *layer,
@@ -218,8 +194,6 @@ in a temporary location using ``baseName``. The function will then return the pa
 
 The ``preferredFormat`` argument is used to specify to desired file extension to use when a temporary
 layer export is required. This defaults to shapefiles.
-
-:rtype: str
 %End
 
     static QgsFields combineFields( const QgsFields &fieldsA, const QgsFields &fieldsB );
@@ -228,8 +202,6 @@ Combines two field lists, avoiding duplicate field names (in a case-insensitive 
 
 Duplicate field names will be altered to "name_2", "name_3", etc, finding the first
 non-duplicate name.
-
-:rtype: QgsFields
 
 .. note::
 
@@ -277,8 +249,6 @@ If ``ownsOriginalSource`` is true, then this object will take ownership of ``ori
 Returns an iterator for the features in the source, respecting the supplied feature ``flags``.
 An optional ``request`` can be used to optimise the returned
 iterator, eg by restricting the returned attributes or geometry.
-
-:rtype: QgsFeatureIterator
 %End
 
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const;
@@ -307,8 +277,6 @@ iterator, eg by restricting the returned attributes or geometry.
     QgsExpressionContextScope *createExpressionContextScope() const /Factory/;
 %Docstring
 Returns an expression context scope suitable for this source.
-
-:rtype: QgsExpressionContextScope
 %End
 
 };

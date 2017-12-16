@@ -33,10 +33,6 @@ that the fallback proxy should not be used for, then no proxy will be used.
 %End
   public:
     static QgsNetworkAccessManager *instance();
-%Docstring
-
-:rtype: QgsNetworkAccessManager
-%End
 
     QgsNetworkAccessManager( QObject *parent = 0 );
 
@@ -53,22 +49,16 @@ remove a factory from the proxy factories list
     const QList<QNetworkProxyFactory *> proxyFactories() const;
 %Docstring
 retrieve proxy factory list
-
-:rtype: list of QNetworkProxyFactory
 %End
 
     const QNetworkProxy &fallbackProxy() const;
 %Docstring
 retrieve fall back proxy (for urls that no factory returned proxies for)
-
-:rtype: QNetworkProxy
 %End
 
     QStringList excludeList() const;
 %Docstring
 retrieve exclude list (urls shouldn't use the fallback proxy)
-
-:rtype: list of str
 %End
 
     void setFallbackProxyAndExcludes( const QNetworkProxy &proxy, const QStringList &excludes );
@@ -79,15 +69,11 @@ set fallback proxy and URL that shouldn't use it.
     static QString cacheLoadControlName( QNetworkRequest::CacheLoadControl control );
 %Docstring
 Get name for QNetworkRequest.CacheLoadControl
-
-:rtype: str
 %End
 
     static QNetworkRequest::CacheLoadControl cacheLoadControlFromName( const QString &name );
 %Docstring
 Get QNetworkRequest.CacheLoadControl from name
-
-:rtype: QNetworkRequest.CacheLoadControl
 %End
 
     void setupDefaultProxyAndCache();
@@ -98,8 +84,6 @@ Setup the NAM according to the user's settings
     bool useSystemProxy() const;
 %Docstring
 return whether the system proxy should be used
-
-:rtype: bool
 %End
 
   signals:
@@ -109,6 +93,7 @@ return whether the system proxy should be used
 
   protected:
     virtual QNetworkReply *createRequest( QNetworkAccessManager::Operation op, const QNetworkRequest &req, QIODevice *outgoingData = 0 );
+
 
 };
 

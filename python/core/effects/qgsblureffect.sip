@@ -32,11 +32,10 @@ methods.
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 %Docstring
 Creates a new QgsBlurEffect effect from a properties string map.
+
 :param map: encoded properties string map
 
 :return: new QgsBlurEffect
-:rtype: QgsPaintEffect
-
 %End
 
     QgsBlurEffect();
@@ -46,12 +45,16 @@ Constructor for QgsBlurEffect.
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
     virtual QgsBlurEffect *clone() const /Factory/;
+
 
     void setBlurLevel( const int level );
 %Docstring
 Sets blur level (strength)
+
 :param level: blur level. Depending on the current blurMethod(), this parameter
 has different effects
 
@@ -65,8 +68,6 @@ has different effects
 Returns the blur level (strength)
 
 :return: blur level. Depending on the current blurMethod(), this parameter
-:rtype: int
-
 has different effects
 
 .. seealso:: :py:func:`setBlurLevel`
@@ -77,6 +78,7 @@ has different effects
     void setBlurMethod( const BlurMethod method );
 %Docstring
 Sets the blur method (algorithm) to use for performing the blur.
+
 :param method: blur method
 
 .. seealso:: :py:func:`blurMethod`
@@ -87,8 +89,6 @@ Sets the blur method (algorithm) to use for performing the blur.
 Returns the blur method (algorithm) used for performing the blur.
 
 :return: blur method
-:rtype: BlurMethod
-
 
 .. seealso:: :py:func:`setBlurMethod`
 %End
@@ -96,6 +96,7 @@ Returns the blur method (algorithm) used for performing the blur.
     void setOpacity( const double opacity );
 %Docstring
 Sets the ``opacity`` for the effect.
+
 :param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
 and 1 is fully opaque
 
@@ -107,8 +108,6 @@ and 1 is fully opaque
 Returns the opacity for the effect.
 
 :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-:rtype: float
-
 and 1 is fully opaque
 
 .. seealso:: :py:func:`setOpacity()`
@@ -117,6 +116,7 @@ and 1 is fully opaque
     void setBlendMode( const QPainter::CompositionMode mode );
 %Docstring
 Sets the blend mode for the effect
+
 :param mode: blend mode used for drawing the effect on to a destination
 paint device
 
@@ -128,8 +128,6 @@ paint device
 Returns the blend mode for the effect
 
 :return: blend mode used for drawing the effect on to a destination
-:rtype: QPainter.CompositionMode
-
 paint device
 
 .. seealso:: :py:func:`setBlendMode`
@@ -138,7 +136,9 @@ paint device
   protected:
 
     virtual void draw( QgsRenderContext &context );
+
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+
 
 };
 

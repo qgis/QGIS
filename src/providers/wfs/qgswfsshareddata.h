@@ -50,7 +50,7 @@ class QgsWFSSharedData : public QObject
     Q_OBJECT
   public:
     explicit QgsWFSSharedData( const QString &uri );
-    ~QgsWFSSharedData();
+    ~QgsWFSSharedData() override;
 
     /**
      * Used by a QgsWFSFeatureIterator to start a downloader and get the
@@ -270,7 +270,7 @@ class QgsWFSFeatureHitsRequest: public QgsWfsRequest
     int getFeatureCount( const QString &WFSVersion, const QString &filter );
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 };
 
 /**
@@ -286,7 +286,7 @@ class QgsWFSSingleFeatureRequest: public QgsWfsRequest
     QgsRectangle getExtent();
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 
   private:
     QgsWFSSharedData *mShared = nullptr;

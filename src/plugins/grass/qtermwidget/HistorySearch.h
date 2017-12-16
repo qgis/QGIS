@@ -41,7 +41,7 @@ public:
     explicit HistorySearch(EmulationPtr emulation, QRegExp regExp, bool forwards,
                            int startColumn, int startLine, QObject* parent);
 
-    ~HistorySearch();
+    ~HistorySearch() override;
 
     void search();
 

@@ -182,9 +182,9 @@ class CORE_EXPORT QgsLayerTree : public QgsLayerTreeGroup
      */
     void readLayerOrderFromXml( const QDomElement &doc );
 
-    virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
+    void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context ) override;
 
-    virtual QgsLayerTree *clone() const override SIP_FACTORY;
+    QgsLayerTree *clone() const override SIP_FACTORY;
 
     /**
      * Clear any information from this layer tree.

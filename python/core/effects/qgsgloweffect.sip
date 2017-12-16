@@ -33,14 +33,17 @@ picture.
 
     QgsGlowEffect();
     QgsGlowEffect( const QgsGlowEffect &other );
-    virtual ~QgsGlowEffect();
+    ~QgsGlowEffect();
 
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
 
     void setSpread( const double spread );
 %Docstring
 Sets the spread distance for drawing the glow effect.
+
 :param spread: spread distance. Units are specified via setSpreadUnit()
 
 .. seealso:: :py:func:`spread`
@@ -55,8 +58,6 @@ Sets the spread distance for drawing the glow effect.
 Returns the spread distance used for drawing the glow effect.
 
 :return: spread distance. Units are retrieved via spreadUnit()
-:rtype: float
-
 
 .. seealso:: :py:func:`setSpread`
 
@@ -68,6 +69,7 @@ Returns the spread distance used for drawing the glow effect.
     void setSpreadUnit( const QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units used for the glow spread distance.
+
 :param unit: units for spread distance
 
 .. seealso:: :py:func:`spreadUnit`
@@ -82,8 +84,6 @@ Sets the units used for the glow spread distance.
 Returns the units used for the glow spread distance.
 
 :return: units for spread distance
-:rtype: QgsUnitTypes.RenderUnit
-
 
 .. seealso:: :py:func:`setSpreadUnit`
 
@@ -95,6 +95,7 @@ Returns the units used for the glow spread distance.
     void setSpreadMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale used for the spread distance.
+
 :param scale: map unit scale for spread distance
 
 .. seealso:: :py:func:`spreadMapUnitScale`
@@ -109,8 +110,6 @@ Sets the map unit scale used for the spread distance.
 Returns the map unit scale used for the spread distance.
 
 :return: map unit scale for spread distance
-:rtype: QgsMapUnitScale
-
 
 .. seealso:: :py:func:`setSpreadMapUnitScale`
 
@@ -123,6 +122,7 @@ Returns the map unit scale used for the spread distance.
 %Docstring
 Sets blur level (strength) for the glow. This can be used to smooth the
 output from the glow effect.
+
 :param level: blur level. Values between 0 and 16 are valid, with larger
 values indicating greater blur strength.
 
@@ -134,8 +134,6 @@ values indicating greater blur strength.
 Returns the blur level (strength) for the glow.
 
 :return: blur level. Value will be between 0 and 16, with larger
-:rtype: int
-
 values indicating greater blur strength.
 
 .. seealso:: :py:func:`setBlurLevel`
@@ -144,6 +142,7 @@ values indicating greater blur strength.
     void setOpacity( const double opacity );
 %Docstring
 Sets the ``opacity`` for the effect.
+
 :param opacity: double between 0 and 1 inclusive, where 0 is fully transparent
 and 1 is fully opaque
 
@@ -155,8 +154,6 @@ and 1 is fully opaque
 Returns the opacity for the effect.
 
 :return: opacity value between 0 and 1 inclusive, where 0 is fully transparent
-:rtype: float
-
 and 1 is fully opaque
 
 .. seealso:: :py:func:`setOpacity()`
@@ -167,6 +164,7 @@ and 1 is fully opaque
 Sets the color for the glow. This only applies if the colorType()
 is set to SingleColor. The glow will fade between the specified color and
 a totally transparent version of the color.
+
 :param color: glow color
 
 .. seealso:: :py:func:`color`
@@ -181,8 +179,6 @@ is set to SingleColor. The glow will fade between the specified color and
 a totally transparent version of the color.
 
 :return: glow color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setColor`
 
@@ -193,6 +189,7 @@ a totally transparent version of the color.
 %Docstring
 Sets the color ramp for the glow. This only applies if the colorType()
 is set to ColorRamp. The glow will utilize colors from the ramp.
+
 :param ramp: color ramp for glow. Ownership of the ramp is transferred to the effect.
 
 .. seealso:: :py:func:`ramp`
@@ -206,8 +203,6 @@ Returns the color ramp used for the glow. This only applies if the colorType()
 is set to ColorRamp. The glow will utilize colors from the ramp.
 
 :return: color ramp for glow
-:rtype: QgsColorRamp
-
 
 .. seealso:: :py:func:`setRamp`
 
@@ -217,6 +212,7 @@ is set to ColorRamp. The glow will utilize colors from the ramp.
     void setBlendMode( const QPainter::CompositionMode mode );
 %Docstring
 Sets the blend mode for the effect
+
 :param mode: blend mode used for drawing the effect on to a destination
 paint device
 
@@ -228,8 +224,6 @@ paint device
 Returns the blend mode for the effect
 
 :return: blend mode used for drawing the effect on to a destination
-:rtype: QPainter.CompositionMode
-
 paint device
 
 .. seealso:: :py:func:`setBlendMode`
@@ -240,6 +234,7 @@ paint device
 Sets the color mode to use for the glow. The glow can either be drawn using a QgsColorRamp
 color ramp or by simply specificing a single color. setColorType is used to specify which mode to use
 for the glow.
+
 :param colorType: color type to use for glow
 
 .. seealso:: :py:func:`colorType`
@@ -255,8 +250,6 @@ Returns the color mode used for the glow. The glow can either be drawn using a Q
 color ramp or by specificing a single color.
 
 :return: current color mode used for the glow
-:rtype: GlowColorType
-
 
 .. seealso:: :py:func:`setColorType`
 
@@ -269,7 +262,9 @@ color ramp or by specificing a single color.
   protected:
 
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+
     virtual void draw( QgsRenderContext &context );
+
 
     virtual bool shadeExterior() const = 0;
 %Docstring
@@ -277,8 +272,6 @@ Specifies whether the glow is drawn outside the picture or within
 the picture.
 
 :return: true if glow is to be drawn outside the picture, or false
-:rtype: bool
-
 to draw glow within the picture
 %End
 
@@ -303,17 +296,17 @@ class QgsOuterGlowEffect : QgsGlowEffect
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 %Docstring
 Creates a new QgsOuterGlowEffect effect from a properties string map.
+
 :param map: encoded properties string map
 
 :return: new QgsOuterGlowEffect
-:rtype: QgsPaintEffect
-
 %End
 
     QgsOuterGlowEffect();
 
     virtual QString type() const;
     virtual QgsOuterGlowEffect *clone() const /Factory/;
+
 
   protected:
 
@@ -339,17 +332,17 @@ class QgsInnerGlowEffect : QgsGlowEffect
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 %Docstring
 Creates a new QgsInnerGlowEffect effect from a properties string map.
+
 :param map: encoded properties string map
 
 :return: new QgsInnerGlowEffect
-:rtype: QgsPaintEffect
-
 %End
 
     QgsInnerGlowEffect();
 
     virtual QString type() const;
     virtual QgsInnerGlowEffect *clone() const /Factory/;
+
 
   protected:
 

@@ -82,7 +82,7 @@ public:
     /**
      * Destructor
      */
-    virtual ~KProcess();
+    ~KProcess() override;
 
     /**
      * Set how to handle the output channels of the child process.

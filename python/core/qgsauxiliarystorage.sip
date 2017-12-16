@@ -53,11 +53,6 @@ Constructor
 :param vlayer: The target vector layer in join definition
 %End
 
-    virtual ~QgsAuxiliaryLayer();
-%Docstring
-Destructor
-%End
-
 
 
     QgsAuxiliaryLayer *clone( QgsVectorLayer *layer ) const /Factory/;
@@ -67,8 +62,6 @@ is duplicate for the layer given in parameter. Note that the current
 auxiliary layer should be saved to have a proper duplicated table.
 
 :param layer: The layer for which the clone is made
-
-:rtype: QgsAuxiliaryLayer
 %End
 
     QgsVectorLayer *toSpatialLayer() const;
@@ -77,8 +70,6 @@ An auxiliary layer is not spatial. This method returns a spatial
 representation of auxiliary data.
 
 :return: A new spatial vector layer
-:rtype: QgsVectorLayer
-
 %End
 
     bool clear();
@@ -87,15 +78,11 @@ Deletes all features from the layer. Changes are automatically committed
 and the layer remains editable.
 
 :return: true if changes are committed without error, false otherwise.
-:rtype: bool
-
 %End
 
     QgsVectorLayerJoinInfo joinInfo() const;
 %Docstring
 Returns information to use for joining with primary key and so on.
-
-:rtype: QgsVectorLayerJoinInfo
 %End
 
     bool exists( const QgsPropertyDefinition &definition ) const;
@@ -106,8 +93,6 @@ otherwise.
 :param definition: The property definition to check
 
 :return: true if the property is stored, false otherwise
-:rtype: bool
-
 %End
 
     bool addAuxiliaryField( const QgsPropertyDefinition &definition );
@@ -119,15 +104,11 @@ table config to hide auxiliary fields by default.
 :param definition: The definition of the property to add
 
 :return: true if the auxiliary field is well added, false otherwise
-:rtype: bool
-
 %End
 
     QgsFields auxiliaryFields() const;
 %Docstring
 Returns a list of all auxiliary fields currently managed by the layer.
-
-:rtype: QgsFields
 %End
 
     bool save();
@@ -135,11 +116,10 @@ Returns a list of all auxiliary fields currently managed by the layer.
 Commits changes and starts editing then.
 
 :return: true if commit step passed, false otherwise
-:rtype: bool
-
 %End
 
     virtual bool deleteAttribute( int attr );
+
 %Docstring
 Removes attribute from the layer and commits changes. The layer remains
 editable.
@@ -147,8 +127,6 @@ editable.
 :param attr: The index of the attribute to remove
 
 :return: true if the attribute is well deleted, false otherwise
-:rtype: bool
-
 %End
 
     bool isHiddenProperty( int index ) const;
@@ -157,8 +135,6 @@ Returns true if the underlying field has to be hidden from editing
 tools like attribute table, false otherwise.
 
 :param index: The index of the field for which visibility is checked
-
-:rtype: bool
 %End
 
     int indexOfPropertyDefinition( const QgsPropertyDefinition &definition ) const;
@@ -169,8 +145,6 @@ definition.
 :param definition: The property definition
 
 :return: The index of the field corresponding to the property or -1
-:rtype: int
-
 %End
 
     int propertyFromIndex( int index ) const;
@@ -181,8 +155,6 @@ property definition of the field. The key -1 is returned if an error
 happened.
 
 :param index: The index of the field
-
-:rtype: int
 %End
 
     QgsPropertyDefinition propertyDefinitionFromIndex( int index ) const;
@@ -190,8 +162,6 @@ happened.
 Returns the property definition for the underlying field index.
 
 :param index: The index of the field
-
-:rtype: QgsPropertyDefinition
 %End
 
     static int createProperty( QgsPalLayerSettings::Property property, QgsVectorLayer *vlayer );
@@ -203,8 +173,6 @@ activates this property in settings.
 :param vlayer: The vector layer
 
 :return: The index of the auxiliary field or -1
-:rtype: int
-
 %End
 
     static int createProperty( QgsDiagramLayerSettings::Property property, QgsVectorLayer *vlayer );
@@ -216,8 +184,6 @@ activates this property in settings.
 :param vlayer: The vector layer
 
 :return: The index of the auxiliary field or -1
-:rtype: int
-
 %End
 
     static QgsField createAuxiliaryField( const QgsPropertyDefinition &definition );
@@ -225,8 +191,6 @@ activates this property in settings.
 Creates a new auxiliary field from a property definition.
 
 :param definition: The property definition of the auxiliary field to create
-
-:rtype: QgsField
 %End
 
     static QgsField createAuxiliaryField( const QgsField &field );
@@ -234,8 +198,6 @@ Creates a new auxiliary field from a property definition.
 Creates a new auxiliary field from a field.
 
 :param field: The field to use to create the auxiliary field
-
-:rtype: QgsField
 %End
 
     static QString nameFromProperty( const QgsPropertyDefinition &def, bool joined = false );
@@ -244,8 +206,6 @@ Returns the name of the auxiliary field for a property definition.
 
 :param def: The property definition
 :param joined: The join prefix is taken into account if true
-
-:rtype: str
 %End
 
     static QgsPropertyDefinition propertyDefinitionFromField( const QgsField &field );
@@ -253,8 +213,6 @@ Returns the name of the auxiliary field for a property definition.
 Returns the property definition from an auxiliary field.
 
 :param field: The auxiliary field
-
-:rtype: QgsPropertyDefinition
 %End
 
 };
@@ -321,23 +279,17 @@ Destructor.
 Returns the status of the auxiliary storage currently defined.
 
 :return: true if the auxiliary storage is valid, false otherwise
-:rtype: bool
-
 %End
 
     QString fileName() const;
 %Docstring
 Returns the target filename of the database.
-
-:rtype: str
 %End
 
     QString currentFileName() const;
 %Docstring
 Returns the path of the current database used. It may be different from
 the target filename if the auxiliary storage is opened in copy mode.
-
-:rtype: str
 %End
 
     bool saveAs( const QString &filename ) const;
@@ -345,8 +297,6 @@ the target filename if the auxiliary storage is opened in copy mode.
 Saves the current database to a new path.
 
 :return: true if everything is saved, false otherwise
-:rtype: bool
-
 %End
 
     bool saveAs( const QgsProject &project ) const;
@@ -356,8 +306,6 @@ Actually, the current filename of the project is used to deduce the
 path of the database to save.
 
 :return: true if everything is saved, false otherwise
-:rtype: bool
-
 %End
 
     bool save() const;
@@ -365,8 +313,6 @@ path of the database to save.
 Saves the current database.
 
 :return: true if everything is saved, false otherwise
-:rtype: bool
-
 %End
 
     QgsAuxiliaryLayer *createAuxiliaryLayer( const QgsField &field, QgsVectorLayer *layer ) const /Factory/;
@@ -379,8 +325,6 @@ given in parameter.
 :param layer: The vector layer for which the auxiliary layer has to be created
 
 :return: A new auxiliary layer or a None if an error happened.
-:rtype: QgsAuxiliaryLayer
-
 %End
 
     static bool deleteTable( const QgsDataSourceUri &uri );
@@ -390,8 +334,6 @@ Removes a table from the auxiliary storage.
 :param uri: The uri of the table to remove
 
 :return: true if the table is well deleted, false otherwise
-:rtype: bool
-
 %End
 
     static bool duplicateTable( const QgsDataSourceUri &uri, const QString &newTable );
@@ -402,15 +344,11 @@ Duplicates a table and its content.
 :param newTable: The name of the new table
 
 :return: true if the table is well duplicated, false otherwise
-:rtype: bool
-
 %End
 
     static QString extension();
 %Docstring
 Returns the extension used for auxiliary databases.
-
-:rtype: str
 %End
 
 };

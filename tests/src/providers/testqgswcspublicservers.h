@@ -61,7 +61,7 @@ class TestQgsWcsPublicServers: public QObject
 
     TestQgsWcsPublicServers( const QString &cacheDirPath, int maxCoverages, const QString &server = QString(), const QString &coverage = QString(), const QString &version = QString(), bool force = false );
 
-    ~TestQgsWcsPublicServers();
+    ~TestQgsWcsPublicServers() override;
 
     void init();
     void test();

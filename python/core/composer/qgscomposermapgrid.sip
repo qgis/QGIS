@@ -30,6 +30,7 @@ order they are drawn in.
     QgsComposerMapGridStack( QgsComposerMap *map );
 %Docstring
 Constructor for QgsComposerMapGridStack.
+
 :param map: QgsComposerMap the grid stack is attached to
 %End
 
@@ -38,6 +39,7 @@ Constructor for QgsComposerMapGridStack.
 Adds a new map grid to the stack and takes ownership of the grid.
 The grid will be added to the end of the stack, and rendered
 above any existing map grids already present in the stack.
+
 :param grid: QgsComposerMapGrid to add to the stack
 
 .. note::
@@ -51,6 +53,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
     void removeGrid( const QString &gridId );
 %Docstring
 Removes a grid from the stack and deletes the corresponding QgsComposerMapGrid
+
 :param gridId: id for the QgsComposerMapGrid to remove
 
 .. note::
@@ -64,6 +67,7 @@ should be called for the QgsComposerMap to prevent rendering artifacts
     void moveGridUp( const QString &gridId );
 %Docstring
 Moves a grid up the stack, causing it to be rendered above other grids
+
 :param gridId: id for the QgsComposerMapGrid to move up
 
 .. note::
@@ -77,6 +81,7 @@ called for the QgsComposerMap to redraw the map with the new grid stack order
     void moveGridDown( const QString &gridId );
 %Docstring
 Moves a grid down the stack, causing it to be rendered below other grids
+
 :param gridId: id for the QgsComposerMapGrid to move down
 
 .. note::
@@ -90,11 +95,10 @@ called for the QgsComposerMap to redraw the map with the new grid stack order
     const QgsComposerMapGrid *constGrid( const QString &gridId ) const;
 %Docstring
 Returns a const reference to a grid within the stack
+
 :param gridId: id for the QgsComposerMapGrid to find
 
 :return: const reference to grid, if found
-:rtype: QgsComposerMapGrid
-
 
 .. seealso:: :py:func:`grid`
 %End
@@ -102,11 +106,10 @@ Returns a const reference to a grid within the stack
     QgsComposerMapGrid *grid( const QString &gridId ) const;
 %Docstring
 Returns a reference to a grid within the stack
+
 :param gridId: id for the QgsComposerMapGrid to find
 
 :return: reference to grid if found
-:rtype: QgsComposerMapGrid
-
 
 .. seealso:: :py:func:`constGrid`
 %End
@@ -114,11 +117,10 @@ Returns a reference to a grid within the stack
     QgsComposerMapGrid *grid( const int index ) const;
 %Docstring
 Returns a reference to a grid within the stack
+
 :param index: grid position in the stack
 
 :return: reference to grid if found
-:rtype: QgsComposerMapGrid
-
 
 .. seealso:: :py:func:`constGrid`
 %End
@@ -130,20 +132,17 @@ Returns a reference to a grid within the stack
 Returns a list of QgsComposerMapGrids contained by the stack
 
 :return: list of grids
-:rtype: list of QgsComposerMapGrid
-
 %End
 
     virtual bool readXml( const QDomElement &elem, const QDomDocument &doc );
 
 %Docstring
 Sets the grid stack's state from a DOM document
+
 :param elem: is DOM node corresponding to 'a ComposerMap' tag
 :param doc: DOM document
 
 :return: true if read was successful
-:rtype: bool
-
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -154,8 +153,6 @@ Calculates the maximum distance grids within the stack extend
 beyond the QgsComposerMap's item rect
 
 :return: maximum grid extension
-:rtype: float
-
 
 .. seealso:: :py:func:`calculateMaxGridExtension()`
 %End
@@ -165,6 +162,7 @@ beyond the QgsComposerMap's item rect
 Calculates the maximum distance grids within the stack extend beyond the
 QgsComposerMap's item rect. This method calculates the distance for each side of the
 map item separately
+
 :param top: storage for top extension
 :param right: storage for right extension
 :param bottom: storage for bottom extension
@@ -280,16 +278,18 @@ QgsComposerMap.
     QgsComposerMapGrid( const QString &name, QgsComposerMap *map );
 %Docstring
 Constructor for QgsComposerMapGrid.
+
 :param name: friendly display name for grid
 :param map: QgsComposerMap the grid is attached to
 %End
 
-    virtual ~QgsComposerMapGrid();
+    ~QgsComposerMapGrid();
 
     virtual void draw( QPainter *painter );
 
 %Docstring
 Draws a grid
+
 :param painter: destination QPainter
 %End
 
@@ -297,10 +297,9 @@ Draws a grid
 
 %Docstring
 Stores grid state in DOM element
+
 :param elem: is DOM element corresponding to a 'ComposerMap' tag
 :param doc: DOM document
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -309,10 +308,9 @@ Stores grid state in DOM element
 
 %Docstring
 Sets grid state from a DOM document
+
 :param itemElem: is DOM node corresponding to a 'ComposerMapGrid' tag
 :param doc: is DOM document
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -320,6 +318,7 @@ Sets grid state from a DOM document
     void setCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
 Sets the CRS for the grid.
+
 :param crs: coordinate reference system for grid
 
 .. seealso:: :py:func:`crs`
@@ -330,8 +329,6 @@ Sets the CRS for the grid.
 Retrieves the CRS for the grid.
 
 :return: coordinate reference system for grid
-:rtype: QgsCoordinateReferenceSystem
-
 
 .. seealso:: :py:func:`setCrs`
 %End
@@ -339,6 +336,7 @@ Retrieves the CRS for the grid.
     void setBlendMode( const QPainter::CompositionMode mode );
 %Docstring
 Sets the blending mode used for drawing the grid.
+
 :param mode: blending mode for grid
 
 .. seealso:: :py:func:`blendMode`
@@ -349,8 +347,6 @@ Sets the blending mode used for drawing the grid.
 Retrieves the blending mode used for drawing the grid.
 
 :return: blending mode for grid
-:rtype: QPainter.CompositionMode
-
 
 .. seealso:: :py:func:`setBlendMode`
 %End
@@ -364,8 +360,6 @@ Calculates the maximum distance the grid extends beyond the QgsComposerMap's
 item rect
 
 :return: maximum extension in millimeters
-:rtype: float
-
 %End
 
     void calculateMaxExtension( double &top, double &right, double &bottom, double &left );
@@ -373,6 +367,7 @@ item rect
 Calculates the maximum distance the grid extends beyond the
 QgsComposerMap's item rect. This method calculates the distance for each side of the
 map item separately
+
 :param top: storage for top extension
 :param right: storage for right extension
 :param bottom: storage for bottom extension
@@ -388,6 +383,7 @@ map item separately
 %Docstring
 Sets the units to use for grid measurements such as the interval
 and offset for grid lines.
+
 :param unit: unit for grid measurements
 
 .. seealso:: :py:func:`units`
@@ -399,8 +395,6 @@ Gets the units used for grid measurements such as the interval
 and offset for grid lines.
 
 :return: for grid measurements
-:rtype: GridUnit
-
 
 .. seealso:: :py:func:`setUnits`
 %End
@@ -409,6 +403,7 @@ and offset for grid lines.
 %Docstring
 Sets the interval between grid lines in the x-direction. The units
 are controlled through the setUnits method
+
 :param interval: interval between horizontal grid lines
 
 .. seealso:: :py:func:`setIntervalY`
@@ -422,8 +417,6 @@ Gets the interval between grid lines in the x-direction. The units
 are retrieved through the units() method.
 
 :return: interval between horizontal grid lines
-:rtype: float
-
 
 .. seealso:: :py:func:`setIntervalX`
 
@@ -434,6 +427,7 @@ are retrieved through the units() method.
 %Docstring
 Sets the interval between grid lines in the y-direction. The units
 are controlled through the setUnits method
+
 :param interval: interval between vertical grid lines
 
 .. seealso:: :py:func:`setIntervalX`
@@ -447,8 +441,6 @@ Gets the interval between grid lines in the y-direction. The units
 are retrieved through the units() method.
 
 :return: interval between vertical grid lines
-:rtype: float
-
 
 .. seealso:: :py:func:`setIntervalY`
 
@@ -459,6 +451,7 @@ are retrieved through the units() method.
 %Docstring
 Sets the offset for grid lines in the x-direction. The units
 are controlled through the setUnits method
+
 :param offset: offset for horizontal grid lines
 
 .. seealso:: :py:func:`setOffsetY`
@@ -472,8 +465,6 @@ Gets the offset for grid lines in the x-direction. The units
 are retrieved through the units() method.
 
 :return: offset for horizontal grid lines
-:rtype: float
-
 
 .. seealso:: :py:func:`setOffsetX`
 
@@ -484,6 +475,7 @@ are retrieved through the units() method.
 %Docstring
 Sets the offset for grid lines in the y-direction. The units
 are controlled through the setUnits method
+
 :param offset: offset for vertical grid lines
 
 .. seealso:: :py:func:`setOffsetX`
@@ -497,8 +489,6 @@ Gets the offset for grid lines in the y-direction. The units
 are retrieved through the units() method.
 
 :return: offset for vertical grid lines
-:rtype: float
-
 
 .. seealso:: :py:func:`setOffsetY`
 
@@ -510,6 +500,7 @@ are retrieved through the units() method.
 %Docstring
 Sets the grid style, which controls how the grid is drawn
 over the map's contents
+
 :param style: desired grid style
 
 .. seealso:: :py:func:`style`
@@ -521,8 +512,6 @@ Gets the grid's style, which controls how the grid is drawn
 over the map's contents
 
 :return: current grid style
-:rtype: GridStyle
-
 
 .. seealso:: :py:func:`setStyle`
 %End
@@ -531,6 +520,7 @@ over the map's contents
 %Docstring
 Sets the length of the cross segments drawn for the grid. This is only used for grids
 with QgsComposerMapGrid.Cross styles
+
 :param length: cross length in millimeters
 
 .. seealso:: :py:func:`crossLength`
@@ -542,8 +532,6 @@ Retrieves the length of the cross segments drawn for the grid. This is only used
 with QgsComposerMapGrid.Cross styles
 
 :return: cross length in millimeters
-:rtype: float
-
 
 .. seealso:: :py:func:`setCrossLength`
 %End
@@ -553,6 +541,7 @@ with QgsComposerMapGrid.Cross styles
 Sets width of grid lines. This is only used for grids with QgsComposerMapGrid.Solid
 or QgsComposerMapGrid.Cross styles. For more control over grid line appearance, use
 setLineSymbol instead.
+
 :param width: grid line width
 
 .. seealso:: :py:func:`setLineSymbol`
@@ -565,6 +554,7 @@ setLineSymbol instead.
 Sets color of grid lines. This is only used for grids with QgsComposerMapGrid.Solid
 or QgsComposerMapGrid.Cross styles. For more control over grid line appearance, use
 setLineSymbol instead.
+
 :param color: color of grid lines
 
 .. seealso:: :py:func:`setLineSymbol`
@@ -576,6 +566,7 @@ setLineSymbol instead.
 %Docstring
 Sets the line symbol used for drawing grid lines. This is only used for grids with
 QgsComposerMapGrid.Solid or QgsComposerMapGrid.Cross styles.
+
 :param symbol: line symbol for grid lines
 
 .. seealso:: :py:func:`lineSymbol`
@@ -592,8 +583,6 @@ Gets the line symbol used for drawing grid lines. This is only used for grids wi
 QgsComposerMapGrid.Solid or QgsComposerMapGrid.Cross styles.
 
 :return: line symbol for grid lines
-:rtype: QgsLineSymbol
-
 
 .. seealso:: :py:func:`setLineSymbol`
 
@@ -606,6 +595,7 @@ QgsComposerMapGrid.Solid or QgsComposerMapGrid.Cross styles.
 %Docstring
 Sets the marker symbol used for drawing grid points. This is only used for grids with a
 QgsComposerMapGrid.Markers style.
+
 :param symbol: marker symbol for grid intersection points
 
 .. seealso:: :py:func:`markerSymbol`
@@ -622,8 +612,6 @@ Gets the marker symbol used for drawing grid points. This is only used for grids
 QgsComposerMapGrid.Markers style.
 
 :return: marker symbol for grid intersection points
-:rtype: QgsMarkerSymbol
-
 
 .. seealso:: :py:func:`setMarkerSymbol`
 
@@ -636,6 +624,7 @@ QgsComposerMapGrid.Markers style.
     void setAnnotationEnabled( const bool enabled );
 %Docstring
 Sets whether annotations should be shown for the grid.
+
 :param enabled: set to true to draw annotations for the grid
 
 .. seealso:: :py:func:`annotationEnabled`
@@ -646,8 +635,6 @@ Sets whether annotations should be shown for the grid.
 Gets whether annotations are shown for the grid.
 
 :return: true if annotations are drawn for the grid
-:rtype: bool
-
 
 .. seealso:: :py:func:`setAnnotationEnabled`
 %End
@@ -655,6 +642,7 @@ Gets whether annotations are shown for the grid.
     void setAnnotationFont( const QFont &font );
 %Docstring
 Sets the font used for drawing grid annotations
+
 :param font: font for annotations
 
 .. seealso:: :py:func:`annotationFont`
@@ -665,8 +653,6 @@ Sets the font used for drawing grid annotations
 Gets the font used for drawing grid annotations
 
 :return: font for annotations
-:rtype: QFont
-
 
 .. seealso:: :py:func:`setAnnotationFont`
 %End
@@ -674,6 +660,7 @@ Gets the font used for drawing grid annotations
     void setAnnotationFontColor( const QColor &color );
 %Docstring
 Sets the font color used for drawing grid annotations
+
 :param color: font color for annotations
 
 .. seealso:: :py:func:`annotationFontColor`
@@ -684,8 +671,6 @@ Sets the font color used for drawing grid annotations
 Gets the font color used for drawing grid annotations
 
 :return: font color for annotations
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setAnnotationFontColor`
 %End
@@ -693,6 +678,7 @@ Gets the font color used for drawing grid annotations
     void setAnnotationPrecision( const int precision );
 %Docstring
 Sets the coordinate precision for grid annotations
+
 :param precision: number of decimal places to show when drawing grid annotations
 
 .. seealso:: :py:func:`annotationPrecision`
@@ -703,8 +689,6 @@ Sets the coordinate precision for grid annotations
 Returns the coordinate precision for grid annotations
 
 :return: number of decimal places shown when drawing grid annotations
-:rtype: int
-
 
 .. seealso:: :py:func:`setAnnotationPrecision`
 %End
@@ -713,6 +697,7 @@ Returns the coordinate precision for grid annotations
 %Docstring
 Sets what types of grid annotations should be drawn for a specified side of the map frame,
 or whether grid annotations should be disabled for the side.
+
 :param display: display mode for annotations
 :param border: side of map for annotations
 
@@ -726,11 +711,10 @@ or whether grid annotations should be disabled for the side.
 Gets the display mode for the grid annotations on a specified side of the map
 frame. This property also specifies whether annotations have been disabled
 from a side of the map frame.
+
 :param border: side of map for annotations
 
 :return: display mode for grid annotations
-:rtype: DisplayMode
-
 
 .. seealso:: :py:func:`setAnnotationDisplay`
 
@@ -741,6 +725,7 @@ from a side of the map frame.
 %Docstring
 Sets the position for the grid annotations on a specified side of the map
 frame.
+
 :param position: position to draw grid annotations
 :param border: side of map for annotations
 
@@ -751,11 +736,10 @@ frame.
 %Docstring
 Gets the position for the grid annotations on a specified side of the map
 frame.
+
 :param border: side of map for annotations
 
 :return: position that grid annotations are drawn in
-:rtype: AnnotationPosition
-
 
 .. seealso:: :py:func:`setAnnotationPosition`
 %End
@@ -763,6 +747,7 @@ frame.
     void setAnnotationFrameDistance( const double distance );
 %Docstring
 Sets the distance between the map frame and annotations. Units are in millimeters.
+
 :param distance: margin between map frame and annotations
 
 .. seealso:: :py:func:`annotationFrameDistance`
@@ -773,8 +758,6 @@ Sets the distance between the map frame and annotations. Units are in millimeter
 Gets the distance between the map frame and annotations. Units are in millimeters.
 
 :return: margin between map frame and annotations
-:rtype: float
-
 
 .. seealso:: :py:func:`setAnnotationFrameDistance`
 %End
@@ -782,6 +765,7 @@ Gets the distance between the map frame and annotations. Units are in millimeter
     void setAnnotationDirection( const AnnotationDirection direction, const BorderSide border );
 %Docstring
 Sets the direction for drawing frame annotations.
+
 :param direction: direction for frame annotations
 :param border: side of map for annotations
 
@@ -791,6 +775,7 @@ Sets the direction for drawing frame annotations.
     void setAnnotationDirection( const AnnotationDirection direction );
 %Docstring
 Sets the direction for drawing all frame annotations.
+
 :param direction: direction for frame annotations
 
 .. seealso:: :py:func:`annotationDirection`
@@ -799,11 +784,10 @@ Sets the direction for drawing all frame annotations.
     AnnotationDirection annotationDirection( const BorderSide border ) const;
 %Docstring
 Gets the direction for drawing frame annotations.
+
 :param border: side of map for annotations
 
 :return: direction for frame annotations
-:rtype: AnnotationDirection
-
 
 .. seealso:: :py:func:`setAnnotationDirection`
 %End
@@ -811,6 +795,7 @@ Gets the direction for drawing frame annotations.
     void setAnnotationFormat( const AnnotationFormat format );
 %Docstring
 Sets the format for drawing grid annotations.
+
 :param format: format for grid annotations
 
 .. seealso:: :py:func:`annotationFormat`
@@ -821,8 +806,6 @@ Sets the format for drawing grid annotations.
 Gets the format for drawing grid annotations.
 
 :return: format for grid annotations
-:rtype: AnnotationFormat
-
 
 .. seealso:: :py:func:`setAnnotationFormat`
 %End
@@ -831,6 +814,7 @@ Gets the format for drawing grid annotations.
 %Docstring
 Sets the expression used for drawing grid annotations. This is only used when annotationFormat()
 is QgsComposerMapGrid.CustomFormat.
+
 :param expression: expression for evaluating custom grid annotations
 
 .. seealso:: :py:func:`annotationExpression`
@@ -844,8 +828,6 @@ Returns the expression used for drawing grid annotations. This is only used when
 is QgsComposerMapGrid.CustomFormat.
 
 :return: expression for evaluating custom grid annotations
-:rtype: str
-
 
 .. seealso:: :py:func:`setAnnotationExpression`
 
@@ -856,6 +838,7 @@ is QgsComposerMapGrid.CustomFormat.
     void setFrameStyle( const FrameStyle style );
 %Docstring
 Sets the grid frame style.
+
 :param style: style for grid frame
 
 .. seealso:: :py:func:`frameStyle`
@@ -866,8 +849,6 @@ Sets the grid frame style.
 Gets the grid frame style.
 
 :return: style for grid frame
-:rtype: FrameStyle
-
 
 .. seealso:: :py:func:`setFrameStyle`
 %End
@@ -875,6 +856,7 @@ Gets the grid frame style.
     void setFrameDivisions( const DisplayMode divisions, const BorderSide border );
 %Docstring
 Sets what type of grid divisions should be used for frames on a specified side of the map.
+
 :param divisions: grid divisions for frame
 :param border: side of map for frame
 
@@ -886,11 +868,10 @@ Sets what type of grid divisions should be used for frames on a specified side o
     DisplayMode frameDivisions( const BorderSide border ) const;
 %Docstring
 Gets the type of grid divisions which are used for frames on a specified side of the map.
+
 :param border: side of map for frame
 
 :return: grid divisions for frame
-:rtype: DisplayMode
-
 
 .. seealso:: :py:func:`setFrameDivisions`
 
@@ -901,6 +882,7 @@ Gets the type of grid divisions which are used for frames on a specified side of
 %Docstring
 Sets flags for grid frame sides. Setting these flags controls which sides
 of the map item the grid frame is drawn on.
+
 :param flags: flags for grid frame sides
 
 .. seealso:: :py:func:`setFrameSideFlag`
@@ -913,6 +895,7 @@ of the map item the grid frame is drawn on.
     void setFrameSideFlag( const FrameSideFlag flag, bool on = true );
 %Docstring
 Sets whether the grid frame is drawn for a certain side of the map item.
+
 :param flag: flag for grid frame side
 :param on: set to true to draw grid frame on that side of the map
 
@@ -929,8 +912,6 @@ Returns the flags which control which sides of the map item the grid frame
 is drawn on.
 
 :return: flags for side of map grid is drawn on
-:rtype: FrameSideFlags
-
 
 .. seealso:: :py:func:`setFrameSideFlags`
 
@@ -943,11 +924,10 @@ is drawn on.
 %Docstring
 Tests whether the grid frame should be drawn on a specified side of the map
 item.
+
 :param flag: flag for grid frame side
 
 :return: true if grid frame should be drawn for that side of the map
-:rtype: bool
-
 
 .. seealso:: :py:func:`setFrameSideFlags`
 
@@ -961,6 +941,7 @@ item.
 Sets the grid frame width. This property controls how wide the grid frame is.
 The size of the line outlines drawn in the frame is controlled through the
 setFramePenSize method.
+
 :param width: width of grid frame in millimeters
 
 .. seealso:: :py:func:`frameWidth`
@@ -973,8 +954,6 @@ The size of the line outlines drawn in the frame can be retrieved via the
 framePenSize method.
 
 :return: width of grid frame in millimeters
-:rtype: float
-
 
 .. seealso:: :py:func:`setFrameWidth`
 %End
@@ -982,6 +961,7 @@ framePenSize method.
     void setFramePenSize( const double width );
 %Docstring
 Sets the width of the stroke drawn in the grid frame.
+
 :param width: width of grid frame stroke
 
 .. seealso:: :py:func:`framePenSize`
@@ -994,8 +974,6 @@ Sets the width of the stroke drawn in the grid frame.
 Retrieves the width of the stroke drawn in the grid frame.
 
 :return: width of grid frame stroke
-:rtype: float
-
 
 .. seealso:: :py:func:`setFramePenSize`
 
@@ -1005,6 +983,7 @@ Retrieves the width of the stroke drawn in the grid frame.
     void setFramePenColor( const QColor &color );
 %Docstring
 Sets the color of the stroke drawn in the grid frame.
+
 :param color: color of grid frame stroke
 
 .. seealso:: :py:func:`framePenColor`
@@ -1021,8 +1000,6 @@ Sets the color of the stroke drawn in the grid frame.
 Retrieves the color of the stroke drawn in the grid frame.
 
 :return: color of grid frame stroke
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setFramePenColor`
 
@@ -1036,6 +1013,7 @@ Retrieves the color of the stroke drawn in the grid frame.
     void setFrameFillColor1( const QColor &color );
 %Docstring
 Sets the first fill color used for the grid frame.
+
 :param color: first fill color for grid frame
 
 .. seealso:: :py:func:`frameFillColor1`
@@ -1050,8 +1028,6 @@ Sets the first fill color used for the grid frame.
 Retrieves the first fill color for the grid frame.
 
 :return: first fill color for grid frame
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setFrameFillColor1`
 
@@ -1063,6 +1039,7 @@ Retrieves the first fill color for the grid frame.
     void setFrameFillColor2( const QColor &color );
 %Docstring
 Sets the second fill color used for the grid frame.
+
 :param color: second fill color for grid frame
 
 .. seealso:: :py:func:`frameFillColor2`
@@ -1077,8 +1054,6 @@ Sets the second fill color used for the grid frame.
 Retrieves the second fill color for the grid frame.
 
 :return: second fill color for grid frame
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setFrameFillColor2`
 
@@ -1088,6 +1063,7 @@ Retrieves the second fill color for the grid frame.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
       public:
 };

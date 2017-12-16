@@ -34,6 +34,7 @@ color blindness modes.
     void setMode( PreviewMode mode );
 %Docstring
 Sets the mode for the preview effect, which controls how the effect modifies a widgets appearance.
+
 :param mode: PreviewMode to use to draw the widget
 
 .. versionadded:: 2.3
@@ -46,8 +47,6 @@ Sets the mode for the preview effect, which controls how the effect modifies a w
 Returns the mode used for the preview effect.
 
 :return: PreviewMode currently used by the effect
-:rtype: PreviewMode
-
 
 .. versionadded:: 2.3
 
@@ -56,6 +55,7 @@ Returns the mode used for the preview effect.
 
   protected:
     virtual void draw( QPainter *painter );
+
 
 };
 

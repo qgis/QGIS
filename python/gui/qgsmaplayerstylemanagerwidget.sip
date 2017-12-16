@@ -25,6 +25,7 @@ the layer styles.
     QgsMapLayerStyleManagerWidget( QgsMapLayer *layer, QgsMapCanvas *canvas, QWidget *parent = 0 );
 %Docstring
  Style manager widget to manage the layers styles.
+
 :param layer: The layer for the widget
 :param canvas: The canvas object.
 :param parent: The parent.

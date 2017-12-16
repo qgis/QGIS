@@ -35,12 +35,14 @@ is too complex or large for use.
     explicit QgsExpressionLineEdit( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsExpressionLineEdit.
+
 :param parent: parent widget
 %End
 
     void setExpressionDialogTitle( const QString &title );
 %Docstring
 Sets the title used in the expression builder dialog
+
 :param title: dialog title
 
 .. seealso:: :py:func:`expressionDialogTitle()`
@@ -50,14 +52,13 @@ Sets the title used in the expression builder dialog
 %Docstring
 Returns the title used for the expression dialog.
 
-:rtype: str
-
 .. seealso:: :py:func:`setExpressionDialogTitle()`
 %End
 
     void setMultiLine( bool multiLine );
 %Docstring
 Sets whether the widget should show a multiline text editor.
+
 :param multiLine: set to true to show multiline editor, or false
 to show single line editor (the default).
 %End
@@ -65,6 +66,7 @@ to show single line editor (the default).
     void setGeomCalculator( const QgsDistanceArea &distanceArea );
 %Docstring
 Set the geometry calculator used in the expression dialog.
+
 :param distanceArea: calculator
 %End
 
@@ -82,23 +84,21 @@ no generator has been set before or the previous layer has been used as generato
 %Docstring
 Returns the current expression shown in the widget.
 
-:rtype: str
-
 .. seealso:: :py:func:`setExpression()`
 %End
 
     bool isValidExpression( QString *expressionError /Out/ = 0 ) const;
 %Docstring
 Returns true if the current expression is valid.
-:param expressionError: will be set to any generated error message if specified
 
-:rtype: bool
+:param expressionError: will be set to any generated error message if specified
 %End
 
     void registerExpressionContextGenerator( const QgsExpressionContextGenerator *generator );
 %Docstring
 Register an expression context generator class that will be used to retrieve
 an expression context for the widget.
+
 :param generator: A QgsExpressionContextGenerator class that will be used to
 create an expression context when required.
 %End
@@ -108,6 +108,7 @@ create an expression context when required.
     void expressionChanged( const QString &expression );
 %Docstring
 Emitted when the expression is changed.
+
 :param expression: new expression
 %End
 
@@ -116,6 +117,7 @@ Emitted when the expression is changed.
     void setExpression( const QString &expression );
 %Docstring
 Sets the current expression to show in the widget.
+
 :param expression: expression string
 
 .. seealso:: :py:func:`expression()`

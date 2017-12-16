@@ -37,7 +37,7 @@ class APP_EXPORT QgsDecorationGrid: public QgsDecorationItem
     //! Constructor
     QgsDecorationGrid( QObject *parent = nullptr );
 
-    virtual ~ QgsDecorationGrid();
+    ~ QgsDecorationGrid() override;
 
     enum GridStyle
     {

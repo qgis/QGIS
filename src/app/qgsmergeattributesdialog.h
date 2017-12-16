@@ -44,7 +44,7 @@ class APP_EXPORT QgsMergeAttributesDialog: public QDialog, private Ui::QgsMergeA
 
 
     QgsMergeAttributesDialog( const QgsFeatureList &features, QgsVectorLayer *vl, QgsMapCanvas *canvas, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
-    ~QgsMergeAttributesDialog();
+    ~QgsMergeAttributesDialog() override;
 
     QgsAttributes mergedAttributes() const;
 

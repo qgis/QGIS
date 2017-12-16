@@ -54,7 +54,7 @@ class _3D_EXPORT Qgs3DMapSettings : public QObject
     Qgs3DMapSettings() = default;
     //! Copy constructor
     Qgs3DMapSettings( const Qgs3DMapSettings &other );
-    ~Qgs3DMapSettings();
+    ~Qgs3DMapSettings() override;
 
     //! Reads configuration from a DOM element previously written by writeXml()
     void readXml( const QDomElement &elem, const QgsReadWriteContext &context );

@@ -26,15 +26,7 @@ class QgsSymbolLevelItem
   public:
     QgsSymbolLevelItem( QgsSymbol *symbol, int layer );
     QgsSymbol *symbol();
-%Docstring
-
-:rtype: QgsSymbol
-%End
     int layer();
-%Docstring
-
-:rtype: int
-%End
   protected:
 };
 
@@ -79,27 +71,20 @@ class QgsFeatureRenderer
     static QgsFeatureRenderer *defaultRenderer( QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
 return a new renderer - used by default in vector layers
-
-:rtype: QgsFeatureRenderer
 %End
 
     QString type() const;
-%Docstring
-
-:rtype: str
-%End
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context ) = 0;
 %Docstring
 To be overridden
 
 Must be called between startRender() and stopRender() calls.
+
 :param feature: feature
 :param context: render context
 
 :return: returns pointer to symbol or 0 if symbol was not found
-:rtype: QgsSymbol
-
 
 .. versionadded:: 2.12
 %End
@@ -110,16 +95,12 @@ Return symbol for feature. The difference compared to symbolForFeature() is that
 symbol which can be used as an identifier for renderer's rule - the former may return a temporary replacement
 of a symbol for use in rendering.
 
-:rtype: QgsSymbol
-
 .. versionadded:: 2.12
 %End
 
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
 %Docstring
 Return legend keys matching a specified feature.
-
-:rtype: set of str
 
 .. versionadded:: 2.14
 %End
@@ -161,8 +142,6 @@ You do not need to specify the extent in here, this is taken care of separately 
 will be combined with a filter returned from this method.
 
 :return: An expression used as where clause
-:rtype: str
-
 %End
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const = 0;
@@ -171,15 +150,11 @@ Return a list of attributes required by this renderer. Attributes not listed in 
 not have been requested from the provider at rendering time.
 
 :return: A set of attributes
-:rtype: set of str
-
 %End
 
     virtual bool filterNeedsGeometry() const;
 %Docstring
 Returns true if this renderer requires the geometry to apply the filter.
-
-:rtype: bool
 %End
 
     virtual ~QgsFeatureRenderer();
@@ -190,8 +165,6 @@ Create a deep copy of this renderer. Should be implemented by all subclasses
 and generate a proper subclass.
 
 :return: A copy of this renderer
-:rtype: QgsFeatureRenderer
-
 %End
 
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
@@ -205,8 +178,6 @@ to determine whether the feature may be labelled).
 If layer is not -1, the renderer should draw only a particula layer from symbols
 (in order to support symbol level rendering).
 
-:rtype: bool
-
 .. seealso:: :py:func:`startRender()`
 
 .. seealso:: :py:func:`stopRender()`
@@ -215,8 +186,6 @@ If layer is not -1, the renderer should draw only a particula layer from symbols
     virtual QString dump() const;
 %Docstring
 Returns debug information about this renderer
-
-:rtype: str
 %End
 
     enum Capability
@@ -242,46 +211,33 @@ deal_with_my_feature()
 else:
 skip_the_curren_feature()
 ~~~
-
-:rtype: QgsFeatureRenderer.Capabilities
 %End
 
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 %Docstring
 Returns list of symbols used by the renderer.
-:param context: render context
 
-:rtype: QgsSymbolList
+:param context: render context
 
 .. versionadded:: 2.12
 %End
 
     bool usingSymbolLevels() const;
-%Docstring
-
-:rtype: bool
-%End
     void setUsingSymbolLevels( bool usingSymbolLevels );
 
     static QgsFeatureRenderer *load( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 create a renderer from XML element
-
-:rtype: QgsFeatureRenderer
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 %Docstring
 store renderer info to XML element
-
-:rtype: QDomElement
 %End
 
     virtual QDomElement writeSld( QDomDocument &doc, const QString &styleName, const QgsStringMap &props = QgsStringMap() ) const;
 %Docstring
 create the SLD UserStyle element following the SLD v1.1 specs with the given name
-
-:rtype: QDomElement
 
 .. versionadded:: 2.8
 %End
@@ -290,6 +246,7 @@ create the SLD UserStyle element following the SLD v1.1 specs with the given nam
 %Docstring
 Create a new renderer according to the information contained in
 the UserStyle element of a SLD style document
+
 :param node: the node in the SLD document whose the UserStyle element
 is a child
 :param geomType: the geometry type of the features, used to convert
@@ -298,8 +255,6 @@ Symbolizer elements
 went wrong
 
 :return: the renderer
-:rtype: QgsFeatureRenderer
-
 %End
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
@@ -311,16 +266,12 @@ used from subclasses to create SLD Rule elements following SLD v1.1 specs
 %Docstring
 items of symbology items in legend should be checkable
 
-:rtype: bool
-
 .. versionadded:: 2.5
 %End
 
     virtual bool legendSymbolItemChecked( const QString &key );
 %Docstring
 items of symbology items in legend is checked
-
-:rtype: bool
 
 .. versionadded:: 2.5
 %End
@@ -335,6 +286,7 @@ item in symbology was checked
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
 %Docstring
 Sets the symbol to be used for a legend symbol item.
+
 :param key: rule key for legend symbol
 :param symbol: new symbol for legend item. Ownership is transferred to renderer.
 
@@ -345,16 +297,12 @@ Sets the symbol to be used for a legend symbol item.
 %Docstring
 Returns a list of symbology items for the legend
 
-:rtype: QgsLegendSymbolList
-
 .. versionadded:: 2.6
 %End
 
     virtual QString legendClassificationAttribute() const;
 %Docstring
 If supported by the renderer, return classification attribute for the use in legend
-
-:rtype: str
 
 .. versionadded:: 2.6
 %End
@@ -370,8 +318,6 @@ Returns whether the renderer will render a feature or not.
 Must be called between startRender() and stopRender() calls.
 Default implementation uses symbolForFeature().
 
-:rtype: bool
-
 .. versionadded:: 2.12
 %End
 
@@ -381,8 +327,6 @@ Returns list of symbols used for rendering the feature.
 For renderers that do not support MoreSymbolsPerFeature it is more efficient
 to use symbolForFeature()
 
-:rtype: QgsSymbolList
-
 .. versionadded:: 2.12
 %End
 
@@ -391,14 +335,13 @@ to use symbolForFeature()
 Equivalent of originalSymbolsForFeature() call
 extended to support renderers that may use more symbols per feature - similar to symbolsForFeature()
 
-:rtype: QgsSymbolList
-
 .. versionadded:: 2.12
 %End
 
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
 %Docstring
 Allows for a renderer to modify the extent of a feature request prior to rendering
+
 :param extent: reference to request's filter extent. Modify extent to change the
 extent of feature request
 :param context: render context
@@ -411,8 +354,6 @@ extent of feature request
 Returns the current paint effect for the renderer.
 
 :return: paint effect
-:rtype: QgsPaintEffect
-
 
 .. versionadded:: 2.9
 
@@ -422,6 +363,7 @@ Returns the current paint effect for the renderer.
     void setPaintEffect( QgsPaintEffect *effect );
 %Docstring
 Sets the current paint effect for the renderer.
+
 :param effect: paint effect. Ownership is transferred to the renderer.
 
 .. versionadded:: 2.9
@@ -433,8 +375,6 @@ Sets the current paint effect for the renderer.
 %Docstring
 Returns whether the renderer must render as a raster.
 
-:rtype: bool
-
 .. versionadded:: 2.12
 
 .. seealso:: :py:func:`setForceRasterRender`
@@ -443,6 +383,7 @@ Returns whether the renderer must render as a raster.
     void setForceRasterRender( bool forceRaster );
 %Docstring
 Sets whether the renderer should be rendered to a raster destination.
+
 :param forceRaster: set to true if renderer must be drawn on a raster surface.
 This may be desirable for highly detailed layers where rendering as a vector
 would result in a large, complex vector output.
@@ -455,8 +396,6 @@ would result in a large, complex vector output.
     QgsFeatureRequest::OrderBy orderBy() const;
 %Docstring
 Get the order in which features shall be processed by this renderer.
-
-:rtype: QgsFeatureRequest.OrderBy
 
 .. versionadded:: 2.14
 
@@ -484,8 +423,6 @@ Define the order in which features shall be processed by this renderer.
 %Docstring
 Returns whether custom ordering will be applied before features are processed by this renderer.
 
-:rtype: bool
-
 .. versionadded:: 2.14
 
 .. seealso:: :py:func:`orderBy()`
@@ -496,6 +433,7 @@ Returns whether custom ordering will be applied before features are processed by
     void setOrderByEnabled( bool enabled );
 %Docstring
 Sets whether custom ordering should be applied before features are processed by this renderer.
+
 :param enabled: set to true to enable custom feature ordering
 
 .. versionadded:: 2.14
@@ -509,6 +447,7 @@ Sets whether custom ordering should be applied before features are processed by 
 %Docstring
 Sets an embedded renderer (subrenderer) for this feature renderer. The base class implementation
 does nothing with subrenderers, but individual derived classes can use these to modify their behavior.
+
 :param subRenderer: the embedded renderer. Ownership will be transferred.
 
 .. seealso:: :py:func:`embeddedRenderer()`
@@ -520,8 +459,6 @@ does nothing with subrenderers, but individual derived classes can use these to 
 %Docstring
 Returns the current embedded renderer (subrenderer) for this feature renderer. The base class
 implementation does not use subrenderers and will always return null.
-
-:rtype: QgsFeatureRenderer
 
 .. seealso:: :py:func:`setEmbeddedRenderer()`
 
@@ -555,8 +492,6 @@ render editing vertex marker for a polygon
 %Docstring
 Creates a point in screen coordinates from a wkb string in map
 coordinates
-
-:rtype: QPointF
 %End
 
     void copyRendererData( QgsFeatureRenderer *destRenderer ) const;
@@ -597,10 +532,6 @@ level DataDefined angle
   private:
     QgsFeatureRenderer( const QgsFeatureRenderer & );
     QgsFeatureRenderer &operator=( const QgsFeatureRenderer & );
-%Docstring
-
-:rtype: QgsFeatureRenderer
-%End
 };
 
 QFlags<QgsFeatureRenderer::Capability> operator|(QgsFeatureRenderer::Capability f1, QFlags<QgsFeatureRenderer::Capability> f2);

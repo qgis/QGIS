@@ -23,8 +23,6 @@ Create a new 2.5D renderer from XML
 
 :param element: XML information
 :param context: reading context
-
-:rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
@@ -40,13 +38,13 @@ Create a new 2.5D renderer from XML
 
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
 
     QColor roofColor() const;
 %Docstring
 Get the roof color
-
-:rtype: QColor
 %End
 
     void setRoofColor( const QColor &roofColor );
@@ -57,8 +55,6 @@ Set the roof color
     QColor wallColor() const;
 %Docstring
 Get the wall color
-
-:rtype: QColor
 %End
 
     void setWallColor( const QColor &wallColor );
@@ -74,15 +70,11 @@ Set wall shading enabled
     bool wallShadingEnabled() const;
 %Docstring
 Get wall shading enabled
-
-:rtype: bool
 %End
 
     QColor shadowColor() const;
 %Docstring
 Get the shadow's color
-
-:rtype: QColor
 %End
 
     void setShadowColor( const QColor &shadowColor );
@@ -93,8 +85,6 @@ Set the shadow's color
     double shadowSpread() const;
 %Docstring
 Get the shadow's spread distance in map units
-
-:rtype: float
 %End
 
     void setShadowSpread( double shadowSpread );
@@ -107,15 +97,11 @@ Set the shadow's spread distance in map units
 Try to convert from an existing renderer. If it is not of the same type
 we assume that the internals are not compatible and create a new default
 2.5D renderer.
-
-:rtype: Qgs25DRenderer
 %End
 
     bool shadowEnabled() const;
 %Docstring
 Is the shadow enabled
-
-:rtype: bool
 %End
 
     void setShadowEnabled( bool value );

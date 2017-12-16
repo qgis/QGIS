@@ -18,19 +18,11 @@ class QgsPenStyleComboBox : QComboBox
     QgsPenStyleComboBox( QWidget *parent /TransferThis/ = 0 );
 
     Qt::PenStyle penStyle() const;
-%Docstring
-
-:rtype: Qt.PenStyle
-%End
 
     void setPenStyle( Qt::PenStyle style );
 
   protected:
     QIcon iconForPen( Qt::PenStyle style );
-%Docstring
-
-:rtype: QIcon
-%End
 
 };
 
@@ -44,10 +36,6 @@ class QgsPenJoinStyleComboBox : QComboBox
     QgsPenJoinStyleComboBox( QWidget *parent /TransferThis/ = 0 );
 
     Qt::PenJoinStyle penJoinStyle() const;
-%Docstring
-
-:rtype: Qt.PenJoinStyle
-%End
 
     void setPenJoinStyle( Qt::PenJoinStyle style );
 };
@@ -62,10 +50,6 @@ class QgsPenCapStyleComboBox : QComboBox
     QgsPenCapStyleComboBox( QWidget *parent /TransferThis/ = 0 );
 
     Qt::PenCapStyle penCapStyle() const;
-%Docstring
-
-:rtype: Qt.PenCapStyle
-%End
 
     void setPenCapStyle( Qt::PenCapStyle style );
 };

@@ -57,6 +57,7 @@ entire layer to the destination provider.
                                   );
 %Docstring
 Writes the contents of vector layer to a different datasource.
+
 :param layer: source layer
 :param uri: URI for destination data source
 :param providerKey: string key for destination data provider
@@ -68,8 +69,6 @@ not available
 :param feedback: optional feedback object to show progress and cancelation of export
 
 :return: NoError for a successful export, or encountered error
-:rtype: ExportError
-
 %End
 
     QgsVectorLayerExporter( const QString &uri,
@@ -81,6 +80,7 @@ not available
                             const QMap<QString, QVariant> &options = QMap<QString, QVariant>() );
 %Docstring
 Constructor for QgsVectorLayerExporter.
+
 :param uri: URI for destination data source
 :param provider: string key for destination data provider
 :param fields: fields to include in created layer
@@ -96,8 +96,6 @@ not available
 %Docstring
 Returns any encountered error code, or false if no error was encountered.
 
-:rtype: ExportError
-
 .. seealso:: :py:func:`errorMessage()`
 
 .. seealso:: :py:func:`errorCount()`
@@ -107,8 +105,6 @@ Returns any encountered error code, or false if no error was encountered.
 %Docstring
 Returns any error message encountered during the export.
 
-:rtype: str
-
 .. seealso:: :py:func:`errorCount()`
 
 .. seealso:: :py:func:`errorCode()`
@@ -117,8 +113,6 @@ Returns any error message encountered during the export.
     int errorCount() const;
 %Docstring
 Returns the number of error messages encountered during the export.
-
-:rtype: int
 
 .. seealso:: :py:func:`errorMessage()`
 
@@ -185,11 +179,10 @@ Creates a new QgsVectorLayerExporterTask which has ownership over a source ``lay
 When the export task has completed (successfully or otherwise) ``layer`` will be
 deleted. The destination ``uri`` and ``providerKey``, and various export related parameters such as destination CRS
 and export ``options`` must be specified.
-
-:rtype: QgsVectorLayerExporterTask
 %End
 
     virtual void cancel();
+
 
   signals:
 
@@ -207,7 +200,9 @@ the task is canceled). The export ``error`` and ``errorMessage`` will be reporte
   protected:
 
     virtual bool run();
+
     virtual void finished( bool result );
+
 
 };
 

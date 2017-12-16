@@ -29,29 +29,13 @@ Constructor for QgsRenderChecker.
 %End
 
     QString controlImagePath() const;
-%Docstring
-
-:rtype: str
-%End
 
     QString report();
-%Docstring
-
-:rtype: str
-%End
 
     float matchPercent();
-%Docstring
-
-:rtype: float
-%End
     unsigned int mismatchCount();
     unsigned int matchTarget();
     int elapsedTime();
-%Docstring
-
-:rtype: int
-%End
     void setElapsedTimeTarget( int target );
 
     void setControlName( const QString &name );
@@ -72,8 +56,6 @@ This will be appended to controlImagePath
     QString imageToHash( const QString &imageFile );
 %Docstring
 Get an md5 hash that uniquely identifies an image
-
-:rtype: str
 %End
 
     void setRenderedImage( const QString &imageFileName );
@@ -84,8 +66,6 @@ The path of the rendered image can be retrieved through that method.
 Will return the path set with setRenderedImage() or generated in runTest()
 
 :return: The path to the rendered image
-:rtype: str
-
 %End
 
     void setMapSettings( const QgsMapSettings &mapSettings );
@@ -98,6 +78,7 @@ Will return the path set with setRenderedImage() or generated in runTest()
 %Docstring
 Set tolerance for color components used by runTest() and compareImages().
 Default value is 0.
+
 :param colorTolerance: is maximum difference for each color component
 including alpha to be considered correct.
 
@@ -107,6 +88,7 @@ including alpha to be considered correct.
     void setSizeTolerance( int xTolerance, int yTolerance );
 %Docstring
 Sets the largest allowable difference in size between the rendered and the expected image.
+
 :param xTolerance: x tolerance in pixels
 :param yTolerance: y tolerance in pixels
 
@@ -116,14 +98,13 @@ Sets the largest allowable difference in size between the rendered and the expec
     bool runTest( const QString &testName, unsigned int mismatchCount = 0 );
 %Docstring
 Test using renderer to generate the image to be compared.
+
 :param testName: - to be used as the basis for writing a file to
 e.g. /tmp/theTestName.png
 :param mismatchCount: - defaults to 0 - the number of pixels that
 are allowed to be different from the control image. In some cases
 rendering may be non-deterministic. This parameter allows you to account
 for that by providing a tolerance.
-
-:rtype: bool
 
 .. note::
 
@@ -133,6 +114,7 @@ for that by providing a tolerance.
     bool compareImages( const QString &testName, unsigned int mismatchCount = 0, const QString &renderedImageFile = QString() );
 %Docstring
 Test using two arbitrary images (map renderer will not be used)
+
 :param testName: - to be used as the basis for writing a file to
 e.g. /tmp/theTestName.png
 :param mismatchCount: - defaults to 0 - the number of pixels that
@@ -141,8 +123,6 @@ rendering may be non-deterministic. This parameter allows you to account
 for that by providing a tolerance.
 :param renderedImageFile: to optionally override the output filename
 \note: make sure to call setExpectedImage and setRenderedImage first.
-
-:rtype: bool
 %End
 
     bool isKnownAnomaly( const QString &diffImageFile );
@@ -154,8 +134,6 @@ diff matches one of these anomalies we will still consider it to be
 acceptable.
 
 :return: a bool indicating if the diff matched one of the anomaly files
-:rtype: bool
-
 %End
 
     static void drawBackground( QImage *image );
@@ -169,8 +147,6 @@ without requiring a transparent background for the image
 Returns the path to the expected image file
 
 :return: Path to the expected image file
-:rtype: str
-
 %End
 
     void enableDashBuffering( bool enable );
@@ -188,8 +164,6 @@ Get access to buffered dash messages.
 Only will return something if you call enableDashBuffering( true ); before.
 
 :return: buffered dash messages
-:rtype: list of QgsDartMeasurement
-
 
 .. note::
 
@@ -205,13 +179,12 @@ Only will return something if you call enableDashBuffering( true ); before.
 bool compareWkt( const QString &a, const QString &b, double tolerance = 0.000001 );
 %Docstring
 Compare two WKT strings with some tolerance
+
 :param a: first WKT string
 :param b: second WKT string
 :param tolerance: tolerance to use (optional, defaults to 0.000001)
 
 :return: bool indicating if the WKT are sufficiently equal
-:rtype: bool
-
 %End
 
 /************************************************************************

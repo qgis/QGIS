@@ -94,10 +94,9 @@ Get value representable by given data type.
 Supported are numerical types Byte, UInt16, Int16, UInt32, Int32, Float32, Float64.
 This is done through C casting, so you have to be sure that the provided value is
 representable in the output data type. This can be checked with isRepresentableValue().
+
 :param value:
 :param dataType:
-
-:rtype: float
 
 .. versionadded:: 2.1
 %End

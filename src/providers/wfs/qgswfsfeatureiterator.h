@@ -55,7 +55,7 @@ class QgsWFSFeatureHitsAsyncRequest: public QgsWfsRequest
     void hitsReplyFinished();
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 
   private:
     int mNumberMatched;
@@ -93,7 +93,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     Q_OBJECT
   public:
     explicit QgsWFSFeatureDownloader( QgsWFSSharedData *shared );
-    ~QgsWFSFeatureDownloader();
+    ~QgsWFSFeatureDownloader() override;
 
     /**
      * Start the download.
@@ -125,7 +125,7 @@ class QgsWFSFeatureDownloader: public QgsWfsRequest
     void updateProgress( int totalFeatureCount );
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
+    QString errorMessageWithReason( const QString &reason ) override;
 
   private slots:
     void createProgressDialog();
@@ -165,7 +165,7 @@ class QgsWFSThreadedFeatureDownloader: public QThread
     Q_OBJECT
   public:
     explicit QgsWFSThreadedFeatureDownloader( QgsWFSSharedData *shared );
-    ~QgsWFSThreadedFeatureDownloader();
+    ~QgsWFSThreadedFeatureDownloader() override;
 
     //! Return downloader object
     QgsWFSFeatureDownloader *downloader() { return mDownloader; }
@@ -200,7 +200,7 @@ class QgsWFSFeatureIterator : public QObject,
     Q_OBJECT
   public:
     explicit QgsWFSFeatureIterator( QgsWFSFeatureSource *source, bool ownSource, const QgsFeatureRequest &request );
-    ~QgsWFSFeatureIterator();
+    ~QgsWFSFeatureIterator() override;
 
     bool rewind() override;
 

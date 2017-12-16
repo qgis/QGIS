@@ -26,6 +26,7 @@ scrollbar and fits the width to the contents.
     QgsVScrollArea( QWidget *parent = 0 );
 %Docstring
 QgsVScrollArea
+
 :param parent: The parent widget
 %End
 

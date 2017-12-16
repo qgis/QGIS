@@ -25,11 +25,15 @@ A generic message view for displaying QGIS messages.
 
     virtual void setMessage( const QString &message, MessageType msgType );
 
+
     virtual void appendMessage( const QString &message );
+
 
     virtual void showMessage( bool blocking = true );
 
+
     virtual void setTitle( const QString &title );
+
 
 
     void setMessageAsHtml( const QString &msg );
@@ -38,10 +42,6 @@ A generic message view for displaying QGIS messages.
     void setCheckBoxVisible( bool visible );
     void setCheckBoxState( Qt::CheckState state );
     Qt::CheckState checkBoxState();
-%Docstring
-
-:rtype: Qt.CheckState
-%End
     void setCheckBoxQgsSettingsLabel( const QString &label );
 
 };

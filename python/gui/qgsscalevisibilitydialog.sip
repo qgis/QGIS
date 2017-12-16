@@ -30,16 +30,12 @@ within the dialog.
     bool hasScaleVisibility() const;
 %Docstring
 Return true if scale based visibilty is enabled.
-
-:rtype: bool
 %End
 
     double minimumScale() const;
 %Docstring
 Returns the selected minimum scale, or 0 if minimum scale is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 
 .. seealso:: :py:func:`maximumScale()`
 
@@ -50,8 +46,6 @@ The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 %Docstring
 Returns the selected maximum scale, or 0 if maximum scale is not set.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 
 .. seealso:: :py:func:`minimumScale()`
 

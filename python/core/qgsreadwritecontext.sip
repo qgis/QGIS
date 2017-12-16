@@ -30,8 +30,6 @@ Constructor for QgsReadWriteContext.
     const QgsPathResolver &pathResolver() const;
 %Docstring
 Returns path resolver for conversion between relative and absolute paths
-
-:rtype: QgsPathResolver
 %End
 
     void setPathResolver( const QgsPathResolver &resolver );

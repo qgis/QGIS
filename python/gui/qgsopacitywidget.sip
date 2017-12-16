@@ -32,8 +32,6 @@ Constructor for QgsOpacityWidget.
 Returns the current opacity selected in the widget, where opacity ranges from 0.0 (transparent)
 to 1.0 (opaque).
 
-:rtype: float
-
 .. seealso:: :py:func:`setOpacity()`
 
 .. seealso:: :py:func:`opacityChanged()`

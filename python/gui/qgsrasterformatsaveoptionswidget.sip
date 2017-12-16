@@ -61,8 +61,6 @@ Set output raster file name
 %Docstring
 Returns list of selected options
 
-:rtype: list of str
-
 .. seealso:: :py:func:`setOptions()`
 %End
 
@@ -99,8 +97,6 @@ and output format
     QString validateOptions( bool gui = true, bool reportOk = true );
 %Docstring
 Validates options correctness
-
-:rtype: str
 %End
 
     void updateProfiles();
@@ -123,41 +119,22 @@ Reloads profiles list from QGIS settings
   protected:
     virtual void showEvent( QShowEvent *event );
 
+
   signals:
     void optionsChanged();
 
   private:
     QString settingsKey( QString profile ) const ;
-%Docstring
-
-:rtype: str
-%End
     QString currentProfileKey() const ;
-%Docstring
-
-:rtype: str
-%End
     QString createOptions( const QString &profile ) const ;
-%Docstring
-
-:rtype: str
-%End
     void deleteCreateOptions( const QString &profile ) ;
     void setCreateOptions() ;
     void setCreateOptions( const QString &profile, const QString &options ) ;
     void setCreateOptions( const QString &profile, const QStringList &list ) ;
     QStringList profiles() const ;
-%Docstring
-
-:rtype: list of str
-%End
     virtual bool eventFilter( QObject *obj, QEvent *event ) ;
 
     QString pseudoFormat() const ;
-%Docstring
-
-:rtype: str
-%End
 };
 
 

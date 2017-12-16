@@ -147,15 +147,9 @@ A multiline method signature
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
 %Docstring
 Factory annotation
-
-:rtype: QgsMapLayerRenderer
 %End
 
     SomeObject *createAnother() /Factory/;
-%Docstring
-
-:rtype: SomeObject
-%End
 
     virtual SomeObject *createAnother2() /Factory/;
 
@@ -178,15 +172,9 @@ Here's some comment mentioning another class QgsAutoAwesomemater.makeLessAwesome
 I return a pointer. If something bad happens, I return None.
 
 :return: pointer to something cool
-:rtype: MyPointer
-
 %End
 
     bool isOKwithErrMesg( QString &ErrMsg /Out/ );
-%Docstring
-
-:rtype: bool
-%End
 
     void InOutParam( bool &ok = true /In,Out/ );
 
@@ -202,26 +190,14 @@ complex default value and type (i.e. containing commas) should be given as a str
 %End
 
     int inlineKeyWordShouldNotAppear();
-%Docstring
-
-:rtype: int
-%End
 
     QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
-%Docstring
-
-:rtype: str
-%End
 
     void setComposition( QgsComposition *c /KeepReference/ );
 
     void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ );
-%Docstring
-
-:rtype: bool
-%End
 
 
     void multilineBodyAndDefinition( const QList<int,
@@ -232,22 +208,16 @@ complex default value and type (i.e. containing commas) should be given as a str
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
 %Docstring
 Removing function body with namespaced return value
-
-:rtype: QgsRaster.RasterBuildPyramids
 %End
 
     virtual const QgsLayerMetadata &metadata() const;
 %Docstring
 Removing function body with virtual const reference
-
-:rtype: QgsLayerMetadata
 %End
 
     bool myMultiLineBody();
 %Docstring
 Mulitline body
-
-:rtype: bool
 %End
 
 
@@ -260,48 +230,20 @@ Mulitline body
                                          const QList<int, QString> &list2 );
 
     QString returnTypeString() const;
-%Docstring
-
-:rtype: str
-%End
 
     double returnTypeDouble() const;
-%Docstring
-
-:rtype: float
-%End
 
     QList< QgsAnnotation * > returnTypeList();
-%Docstring
-
-:rtype: list of QgsAnnotation
-%End
 
     QVector< QgsAnnotation > returnTypeVector();
-%Docstring
-
-:rtype: list of QgsAnnotation
-%End
 
     QStringList returnTypeStringList();
-%Docstring
-
-:rtype: list of str
-%End
 
     QSet<QgsActionScope> returnTypeSet();
-%Docstring
-
-:rtype: set of QgsActionScope
-%End
 
     This<Member> shouldBeIncluded;
 
     static QString invokableMethod();
-%Docstring
-
-:rtype: str
-%End
 
     bool initializedMember;
 
@@ -310,10 +252,6 @@ Mulitline body
       explicit PublicStruct( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex );
 
       bool isValid( const QgsAbstractGeometry *geom ) const;
-%Docstring
-
-:rtype: bool
-%End
 
       int part;
       int ring;
@@ -361,10 +299,6 @@ remove argument
 
   protected:
     bool thisShouldBeListed();
-%Docstring
-
-:rtype: bool
-%End
 
 
   private:

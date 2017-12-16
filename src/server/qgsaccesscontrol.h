@@ -59,7 +59,7 @@ class SERVER_EXPORT QgsAccessControl : public QgsFeatureFilterProvider
     }
 
 
-    ~QgsAccessControl()
+    ~QgsAccessControl() override
     {
       delete mPluginsAccessControls;
     }

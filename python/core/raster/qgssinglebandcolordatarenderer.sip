@@ -27,15 +27,9 @@ Raster renderer pipe for single band color.
 
 %Docstring
 QgsSingleBandColorDataRenderer cannot be copied. Use clone() instead.
-
-:rtype: QgsSingleBandColorDataRenderer
 %End
 
     static QgsRasterRenderer *create( const QDomElement &elem, QgsRasterInterface *input ) /Factory/;
-%Docstring
-
-:rtype: QgsRasterRenderer
-%End
 
     virtual bool setInput( QgsRasterInterface *input );
 
@@ -52,10 +46,6 @@ QgsSingleBandColorDataRenderer cannot be copied. Use clone() instead.
   private:
     QgsSingleBandColorDataRenderer( const QgsSingleBandColorDataRenderer & );
     const QgsSingleBandColorDataRenderer &operator=( const QgsSingleBandColorDataRenderer & );
-%Docstring
-
-:rtype: QgsSingleBandColorDataRenderer
-%End
 };
 
 /************************************************************************

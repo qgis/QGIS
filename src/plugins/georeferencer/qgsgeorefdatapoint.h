@@ -30,7 +30,7 @@ class QgsGeorefDataPoint : public QObject
                         const QgsPointXY &pixelCoords, const QgsPointXY &mapCoords,
                         bool enable );
     QgsGeorefDataPoint( const QgsGeorefDataPoint &p );
-    ~QgsGeorefDataPoint();
+    ~QgsGeorefDataPoint() override;
 
     //! returns coordinates of the point
     QgsPointXY pixelCoords() const { return mPixelCoords; }

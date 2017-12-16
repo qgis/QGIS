@@ -27,6 +27,7 @@ A widget which displays tasks from a QgsTaskManager and allows for interaction w
     QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsTaskManagerWidget
+
 :param manager: task manager associated with widget
 :param parent: parent widget
 %End

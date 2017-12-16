@@ -44,8 +44,6 @@ Constructor for QgsLayoutItemPage, with the specified parent ``layout``.
 Returns a new page item for the specified ``layout``.
 
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsLayoutItemPage
 %End
 
     virtual int type() const;
@@ -67,8 +65,6 @@ The function returns true if ``size`` was a valid page size and the page
 size was changed. If false is returned then ``size`` could not be matched
 to a known page size.
 
-:rtype: bool
-
 .. seealso:: :py:func:`pageSize()`
 %End
 
@@ -76,16 +72,12 @@ to a known page size.
 %Docstring
 Returns the size of the page.
 
-:rtype: QgsLayoutSize
-
 .. seealso:: :py:func:`setPageSize()`
 %End
 
     Orientation orientation() const;
 %Docstring
 Returns the page orientiation.
-
-:rtype: Orientation
 
 .. note::
 
@@ -97,8 +89,6 @@ Returns the page orientiation.
 Decodes a ``string`` representing a page orientation. If specified, ``ok``
 will be set to true if string could be successfully interpreted as a
 page orientation.
-
-:rtype: QgsLayoutItemPage.Orientation
 %End
 
     virtual void attemptResize( const QgsLayoutSize &size, bool includesFrame = false );

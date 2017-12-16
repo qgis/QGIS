@@ -56,8 +56,6 @@ Constructor for QgsZonalStatistics.
 Starts the calculation
 
 :return: 0 in case of success*
-:rtype: int
-
 %End
 
       public:

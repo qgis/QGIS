@@ -26,6 +26,7 @@ Widget for listing trusted Certificate (Intermediate) Authorities used in secure
                                       const QList<QSslCertificate> &trustedCAs = QList<QSslCertificate>() );
 %Docstring
 Construct a dialog that will list the trusted Certificate Authorities
+
 :param parent: Parent widget
 :param trustedCAs: List of trusted Certificate Authorities objects
 %End

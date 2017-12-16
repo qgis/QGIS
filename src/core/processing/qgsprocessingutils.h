@@ -300,7 +300,7 @@ class CORE_EXPORT QgsProcessingFeatureSource : public QgsFeatureSource
      */
     QgsProcessingFeatureSource( QgsFeatureSource *originalSource, const QgsProcessingContext &context, bool ownsOriginalSource = false );
 
-    ~QgsProcessingFeatureSource();
+    ~QgsProcessingFeatureSource() override;
 
     /**
      * Returns an iterator for the features in the source, respecting the supplied feature \a flags.

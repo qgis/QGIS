@@ -135,8 +135,6 @@ class QgsSymbolLayer
 %Docstring
 Returns the symbol layer property definitions.
 
-:rtype: QgsPropertiesDefinition
-
 .. versionadded:: 3.0
 %End
 
@@ -145,8 +143,6 @@ Returns the symbol layer property definitions.
     bool enabled() const;
 %Docstring
 Returns true if symbol layer is enabled and will be drawn.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 
@@ -167,8 +163,6 @@ when desired.
     virtual QColor color() const;
 %Docstring
 The fill color.
-
-:rtype: QColor
 %End
 
     virtual void setColor( const QColor &color );
@@ -187,8 +181,6 @@ Set stroke color. Supported by marker and fill layers.
 %Docstring
 Get stroke color. Supported by marker and fill layers.
 
-:rtype: QColor
-
 .. versionadded:: 2.1
 %End
 
@@ -203,8 +195,6 @@ Set fill color. Supported by marker and fill layers.
 %Docstring
 Get fill color. Supported by marker and fill layers.
 
-:rtype: QColor
-
 .. versionadded:: 2.1
 %End
 
@@ -212,8 +202,6 @@ Get fill color. Supported by marker and fill layers.
 %Docstring
 Returns a string that represents this layer type. Used for serialization.
 Should match with the string used to register this symbol layer in the registry.
-
-:rtype: str
 %End
 
     virtual void startRender( QgsSymbolRenderContext &context ) = 0;
@@ -222,25 +210,17 @@ Should match with the string used to register this symbol layer in the registry.
     virtual QgsSymbolLayer *clone() const = 0 /Factory/;
 %Docstring
 Shall be reimplemented by subclasses to create a deep copy of the instance.
-
-:rtype: QgsSymbolLayer
 %End
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
     virtual QString ogrFeatureStyle( double mmScaleFactor, double mapUnitScaleFactor ) const;
-%Docstring
-
-:rtype: str
-%End
 
     virtual QgsStringMap properties() const = 0;
 %Docstring
 Should be reimplemented by subclasses to return a string map that
 contains the configuration information for the symbol layer. This
 is used to serialize a symbol layer perstistently.
-
-:rtype: QgsStringMap
 %End
 
     virtual void drawPreviewIcon( QgsSymbolRenderContext &context, QSize size ) = 0;
@@ -248,36 +228,22 @@ is used to serialize a symbol layer perstistently.
     virtual QgsSymbol *subSymbol();
 %Docstring
 Returns the symbol's sub symbol, if present.
-
-:rtype: QgsSymbol
 %End
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 %Docstring
 set layer's subsymbol. takes ownership of the passed symbol
-
-:rtype: bool
 %End
 
     QgsSymbol::SymbolType type() const;
-%Docstring
-
-:rtype: QgsSymbol.SymbolType
-%End
 
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 %Docstring
 Returns if the layer can be used below the specified symbol
-
-:rtype: bool
 %End
 
     void setLocked( bool locked );
     bool isLocked() const;
-%Docstring
-
-:rtype: bool
-%End
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 %Docstring
@@ -286,8 +252,6 @@ the drawn shape when drawn in the specified /a context. For example, polygons
 drawn with an stroke will draw half the width
 of the stroke outside of the polygon. This amount is estimated, since it may
 be affected by data defined symbology rules.*
-
-:rtype: float
 %End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
@@ -296,6 +260,7 @@ Sets the units to use for sizes and widths within the symbol layer. Individual
 symbol layer subclasses will interpret this in different ways, e.g., a marker symbol
 layer may use it to specify the units for the marker size, while a line symbol
 layer may use it to specify the units for the line width.
+
 :param unit: output units
 
 .. seealso:: :py:func:`outputUnit()`
@@ -309,32 +274,20 @@ layer may use it to specify the units for the marker size, while a line symbol
 layer may use it to specify the units for the line width.
 
 :return: output unit, or QgsUnitTypes.RenderUnknownUnit if the symbol layer contains mixed units
-:rtype: QgsUnitTypes.RenderUnit
-
 
 .. seealso:: :py:func:`setOutputUnit()`
 %End
 
     virtual void setMapUnitScale( const QgsMapUnitScale &scale );
     virtual QgsMapUnitScale mapUnitScale() const;
-%Docstring
-
-:rtype: QgsMapUnitScale
-%End
 
     void setRenderingPass( int renderingPass );
     int renderingPass() const;
-%Docstring
-
-:rtype: int
-%End
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 %Docstring
 Returns the set of attributes referenced by the layer. This includes attributes
 required by any data defined properties associated with the layer.
-
-:rtype: set of str
 %End
 
     virtual void setDataDefinedProperty( Property key, const QgsProperty &property );
@@ -352,64 +305,46 @@ will be overwritten.
     virtual bool writeDxf( QgsDxfExport &e, double mmMapUnitScaleFactor, const QString &layerName, QgsSymbolRenderContext &context, QPointF shift = QPointF( 0.0, 0.0 ) ) const;
 %Docstring
 write as DXF
-
-:rtype: bool
 %End
 
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 %Docstring
 get line width
-
-:rtype: float
 %End
 
     virtual double dxfOffset( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 %Docstring
 get offset
-
-:rtype: float
 %End
 
     virtual QColor dxfColor( QgsSymbolRenderContext &context ) const;
 %Docstring
 get color
-
-:rtype: QColor
 %End
 
     virtual double dxfAngle( QgsSymbolRenderContext &context ) const;
 %Docstring
 get angle
-
-:rtype: float
 %End
 
     virtual QVector<qreal> dxfCustomDashPattern( QgsUnitTypes::RenderUnit &unit ) const;
 %Docstring
 get dash pattern
-
-:rtype: list of qreal
 %End
 
     virtual Qt::PenStyle dxfPenStyle() const;
 %Docstring
 get pen style
-
-:rtype: Qt.PenStyle
 %End
 
     virtual QColor dxfBrushColor( QgsSymbolRenderContext &context ) const;
 %Docstring
 get brush/fill color
-
-:rtype: QColor
 %End
 
     virtual Qt::BrushStyle dxfBrushStyle() const;
 %Docstring
 get brush/fill style
-
-:rtype: Qt.BrushStyle
 %End
 
     QgsPaintEffect *paintEffect() const;
@@ -417,8 +352,6 @@ get brush/fill style
 Returns the current paint effect for the layer.
 
 :return: paint effect
-:rtype: QgsPaintEffect
-
 
 .. versionadded:: 2.9
 
@@ -428,6 +361,7 @@ Returns the current paint effect for the layer.
     void setPaintEffect( QgsPaintEffect *effect /Transfer/ );
 %Docstring
 Sets the current paint effect for the layer.
+
 :param effect: paint effect. Ownership is transferred to the layer.
 
 .. versionadded:: 2.9
@@ -439,6 +373,7 @@ Sets the current paint effect for the layer.
 %Docstring
 Prepares all data defined property expressions for evaluation. This should
 be called prior to evaluating data defined properties.
+
 :param context: symbol render context
 
 .. versionadded:: 2.12
@@ -447,8 +382,6 @@ be called prior to evaluating data defined properties.
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
 Returns a reference to the symbol layer's property collection, used for data defined overrides.
-
-:rtype: QgsPropertyCollection
 
 .. versionadded:: 3.0
 
@@ -459,6 +392,7 @@ Returns a reference to the symbol layer's property collection, used for data def
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
 Sets the symbol layer's property collection, used for data defined overrides.
+
 :param collection: property collection. Existing properties will be replaced.
 
 .. versionadded:: 3.0
@@ -486,12 +420,14 @@ Restores older data defined properties from string map.
     void copyDataDefinedProperties( QgsSymbolLayer *destLayer ) const;
 %Docstring
 Copies all data defined properties of this layer to another symbol layer.
+
 :param destLayer: destination layer
 %End
 
     void copyPaintEffect( QgsSymbolLayer *destLayer ) const;
 %Docstring
 Copies paint effect of this layer to another symbol layer
+
 :param destLayer: destination layer
 
 .. versionadded:: 2.9
@@ -532,6 +468,7 @@ class QgsMarkerSymbolLayer : QgsSymbolLayer
 %Docstring
 Renders a marker at the specified point. Derived classes must implement this to
 handle drawing the point.
+
 :param point: position at which to render point, in painter units
 :param context: symbol render context
 %End
@@ -542,6 +479,7 @@ handle drawing the point.
     void setAngle( double angle );
 %Docstring
 Sets the rotation angle for the marker.
+
 :param angle: angle in degrees clockwise from north.
 
 .. seealso:: :py:func:`angle()`
@@ -553,8 +491,6 @@ Sets the rotation angle for the marker.
 %Docstring
 Returns the rotation angle for the marker, in degrees clockwise from north.
 
-:rtype: float
-
 .. seealso:: :py:func:`setAngle()`
 %End
 
@@ -563,6 +499,7 @@ Returns the rotation angle for the marker, in degrees clockwise from north.
 Sets the line angle modification for the symbol's angle. This angle is added to
 the marker's rotation and data defined rotation before rendering the symbol, and
 is usually used for orienting symbols to match a line's angle.
+
 :param lineAngle: Angle in degrees clockwise from north, valid values are between 0 and 360
 
 .. versionadded:: 2.9
@@ -575,6 +512,7 @@ is usually used for orienting symbols to match a line's angle.
     void setSize( double size );
 %Docstring
 Sets the symbol size.
+
 :param size: symbol size. Units are specified by sizeUnit().
 
 .. seealso:: :py:func:`size()`
@@ -588,8 +526,6 @@ Sets the symbol size.
 %Docstring
 Returns the symbol size. Units are specified by sizeUnit().
 
-:rtype: float
-
 .. seealso:: :py:func:`setSize()`
 
 .. seealso:: :py:func:`sizeUnit()`
@@ -600,6 +536,7 @@ Returns the symbol size. Units are specified by sizeUnit().
     void setSizeUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the symbol's size.
+
 :param unit: size units
 
 .. seealso:: :py:func:`sizeUnit()`
@@ -613,8 +550,6 @@ Sets the units for the symbol's size.
 %Docstring
 Returns the units for the symbol's size.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setSizeUnit()`
 
 .. seealso:: :py:func:`size()`
@@ -625,6 +560,7 @@ Returns the units for the symbol's size.
     void setSizeMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale for the symbol's size.
+
 :param scale: size map unit scale
 
 .. seealso:: :py:func:`sizeMapUnitScale()`
@@ -638,8 +574,6 @@ Sets the map unit scale for the symbol's size.
 %Docstring
 Returns the map unit scale for the symbol's size.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setSizeMapUnitScale()`
 
 .. seealso:: :py:func:`size()`
@@ -650,6 +584,7 @@ Returns the map unit scale for the symbol's size.
     void setScaleMethod( QgsSymbol::ScaleMethod scaleMethod );
 %Docstring
 Sets the method to use for scaling the marker's size.
+
 :param scaleMethod: scale method
 
 .. seealso:: :py:func:`scaleMethod()`
@@ -659,8 +594,6 @@ Sets the method to use for scaling the marker's size.
 %Docstring
 Returns the method to use for scaling the marker's size.
 
-:rtype: QgsSymbol.ScaleMethod
-
 .. seealso:: :py:func:`setScaleMethod()`
 %End
 
@@ -668,6 +601,7 @@ Returns the method to use for scaling the marker's size.
 %Docstring
 Sets the marker's offset, which is the horizontal and vertical displacement which the rendered marker
 should have from the original feature's geometry.
+
 :param offset: marker offset. Units are specified by offsetUnit()
 
 .. seealso:: :py:func:`offset()`
@@ -682,8 +616,6 @@ should have from the original feature's geometry.
 Returns the marker's offset, which is the horizontal and vertical displacement which the rendered marker
 will have from the original feature's geometry. Units are specified by offsetUnit().
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`setOffset()`
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -694,6 +626,7 @@ will have from the original feature's geometry. Units are specified by offsetUni
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the symbol's offset.
+
 :param unit: offset units
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -707,8 +640,6 @@ Sets the units for the symbol's offset.
 %Docstring
 Returns the units for the symbol's offset.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setOffsetUnit()`
 
 .. seealso:: :py:func:`offset()`
@@ -719,6 +650,7 @@ Returns the units for the symbol's offset.
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale for the symbol's offset.
+
 :param scale: offset map unit scale
 
 .. seealso:: :py:func:`offsetMapUnitScale()`
@@ -732,8 +664,6 @@ Sets the map unit scale for the symbol's offset.
 %Docstring
 Returns the map unit scale for the symbol's offset.
 
-:rtype: QgsMapUnitScale
-
 .. seealso:: :py:func:`setOffsetMapUnitScale()`
 
 .. seealso:: :py:func:`offset()`
@@ -744,6 +674,7 @@ Returns the map unit scale for the symbol's offset.
     void setHorizontalAnchorPoint( HorizontalAnchorPoint h );
 %Docstring
 Sets the horizontal anchor point for positioning the symbol.
+
 :param h: anchor point. Symbol will be drawn so that the horizontal anchor point is aligned with
 the marker's desired location.
 
@@ -757,8 +688,6 @@ the marker's desired location.
 Returns the horizontal anchor point for positioning the symbol. The symbol will be drawn so that
 the horizontal anchor point is aligned with the marker's desired location.
 
-:rtype: HorizontalAnchorPoint
-
 .. seealso:: :py:func:`setHorizontalAnchorPoint()`
 
 .. seealso:: :py:func:`verticalAnchorPoint()`
@@ -767,6 +696,7 @@ the horizontal anchor point is aligned with the marker's desired location.
     void setVerticalAnchorPoint( VerticalAnchorPoint v );
 %Docstring
 Sets the vertical anchor point for positioning the symbol.
+
 :param v: anchor point. Symbol will be drawn so that the vertical anchor point is aligned with
 the marker's desired location.
 
@@ -780,8 +710,6 @@ the marker's desired location.
 Returns the vertical anchor point for positioning the symbol. The symbol will be drawn so that
 the vertical anchor point is aligned with the marker's desired location.
 
-:rtype: VerticalAnchorPoint
-
 .. seealso:: :py:func:`setVerticalAnchorPoint()`
 
 .. seealso:: :py:func:`horizontalAnchorPoint()`
@@ -789,9 +717,11 @@ the vertical anchor point is aligned with the marker's desired location.
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
+
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 %Docstring
 Writes the symbol layer definition as a SLD XML element.
+
 :param doc: XML document
 :param element: parent XML element
 :param props: symbol layer definition (see properties())
@@ -812,8 +742,6 @@ Returns the approximate bounding box of the marker symbol layer, taking into acc
 any data defined overrides and offsets which are set for the marker layer.
 
 :return: approximate symbol bounds, in painter units
-:rtype: QRectF
-
 
 .. versionadded:: 2.14
 %End
@@ -823,6 +751,7 @@ any data defined overrides and offsets which are set for the marker layer.
     QgsMarkerSymbolLayer( bool locked = false );
 %Docstring
 Constructor for QgsMarkerSymbolLayer.
+
 :param locked: set to true to lock symbol color
 %End
 
@@ -830,6 +759,7 @@ Constructor for QgsMarkerSymbolLayer.
 %Docstring
 Calculates the required marker offset, including both the symbol offset
 and any displacement required to align with the marker's anchor point.
+
 :param context: symbol render context
 :param offsetX: will be set to required horizontal offset (in painter units)
 :param offsetY: will be set to required vertical offset (in painter units)
@@ -839,6 +769,7 @@ and any displacement required to align with the marker's anchor point.
 %Docstring
 Calculates the required marker offset, including both the symbol offset
 and any displacement required to align with the marker's anchor point.
+
 :param context: symbol render context
 :param width: marker width
 :param height: marker height
@@ -864,12 +795,11 @@ and any displacement required to align with the marker's anchor point.
     static QPointF _rotatedOffset( QPointF offset, double angle );
 %Docstring
 Adjusts a marker offset to account for rotation.
+
 :param offset: offset prior to rotation
 :param angle: rotation angle in degrees clockwise from north
 
 :return: adjusted offset
-:rtype: QPointF
-
 %End
 
 
@@ -888,21 +818,14 @@ class QgsLineSymbolLayer : QgsSymbolLayer
 
     virtual void setWidth( double width );
     virtual double width() const;
-%Docstring
-
-:rtype: float
-%End
 
     double offset() const;
-%Docstring
-
-:rtype: float
-%End
     void setOffset( double offset );
 
     void setWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the line's width.
+
 :param unit: width units
 
 .. seealso:: :py:func:`widthUnit()`
@@ -912,21 +835,16 @@ Sets the units for the line's width.
 %Docstring
 Returns the units for the line's width.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setWidthUnit()`
 %End
 
     void setWidthMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &widthMapUnitScale() const;
-%Docstring
-
-:rtype: QgsMapUnitScale
-%End
 
     void setOffsetUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the line's offset.
+
 :param unit: offset units
 
 .. seealso:: :py:func:`offsetUnit()`
@@ -936,17 +854,11 @@ Sets the units for the line's offset.
 %Docstring
 Returns the units for the line's offset.
 
-:rtype: QgsUnitTypes.RenderUnit
-
 .. seealso:: :py:func:`setOffsetUnit()`
 %End
 
     void setOffsetMapUnitScale( const QgsMapUnitScale &scale );
     const QgsMapUnitScale &offsetMapUnitScale() const;
-%Docstring
-
-:rtype: QgsMapUnitScale
-%End
 
     virtual void setOutputUnit( QgsUnitTypes::RenderUnit unit );
 
@@ -962,6 +874,7 @@ Returns the units for the line's offset.
 
 
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+
 
   protected:
     QgsLineSymbolLayer( bool locked = false );
@@ -982,10 +895,6 @@ class QgsFillSymbolLayer : QgsSymbolLayer
 
     void setAngle( double angle );
     double angle() const;
-%Docstring
-
-:rtype: float
-%End
 
   protected:
     QgsFillSymbolLayer( bool locked = false );

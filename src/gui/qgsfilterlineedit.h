@@ -315,7 +315,7 @@ class SIP_SKIP QgsSpinBoxLineEdit : public QgsFilterLineEdit
 
   public slots:
 
-    virtual void clearValue() override
+    void clearValue() override
     {
       // don't change the value - let spin boxes handle that by detecting cleared() signal
       setCursor( Qt::IBeamCursor );

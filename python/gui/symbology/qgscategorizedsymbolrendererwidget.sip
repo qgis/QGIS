@@ -19,25 +19,21 @@ class QgsCategorizedSymbolRendererWidget : QgsRendererWidget
 %End
   public:
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
-%Docstring
-
-:rtype: QgsRendererWidget
-%End
 
     QgsCategorizedSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsCategorizedSymbolRendererWidget();
 
     virtual QgsFeatureRenderer *renderer();
 
+
     int matchToSymbols( QgsStyle *style );
 %Docstring
 Replaces category symbols with the symbols from a style that have a matching
 name.
+
 :param style: style containing symbols to match with
 
 :return: number of symbols matched
-:rtype: int
-
 
 .. seealso:: :py:func:`matchToSymbolsFromLibrary`
 
@@ -100,15 +96,11 @@ from the XML file with a matching name.
     int currentCategoryRow();
 %Docstring
 return row index for the currently selected category (-1 if on no selection)
-
-:rtype: int
 %End
 
     QList<int> selectedCategories();
 %Docstring
 return a list of indexes for the categories unders selection
-
-:rtype: list of int
 %End
 
     void changeSelectedSymbols();
@@ -121,10 +113,6 @@ change the selected symbols alone for the change button, if there is a selection
     virtual QList<QgsSymbol *> selectedSymbols();
 
     QgsCategoryList selectedCategoryList();
-%Docstring
-
-:rtype: QgsCategoryList
-%End
     virtual void refreshSymbolView();
 
     virtual void keyPressEvent( QKeyEvent *event );

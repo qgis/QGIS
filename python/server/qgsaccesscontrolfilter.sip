@@ -51,60 +51,53 @@ and must be passed to QgsAccessControlFilter instances.
     const QgsServerInterface *serverInterface() const;
 %Docstring
 Return the QgsServerInterface instance
-
-:rtype: QgsServerInterface
 %End
 
     virtual QString layerFilterExpression( const QgsVectorLayer *layer ) const;
 %Docstring
 Return an additional expression filter
+
 :param layer: the layer to control
 
 :return: the filter expression
-:rtype: str
-
 %End
 
     virtual QString layerFilterSubsetString( const QgsVectorLayer *layer ) const;
 %Docstring
 Return an additional subset string (typically SQL) filter
+
 :param layer: the layer to control
 
 :return: the subset string
-:rtype: str
-
 %End
 
     virtual LayerPermissions layerPermissions( const QgsMapLayer *layer ) const;
 %Docstring
 Return the layer permissions
+
 :param layer: the layer to control
 
 :return: the permission to use on the layer
-:rtype: LayerPermissions
-
 %End
 
     virtual QStringList authorizedLayerAttributes( const QgsVectorLayer *layer, const QStringList &attributes ) const;
 %Docstring
 Return the authorized layer attributes
+
 :param layer: the layer to control
 :param attributes: the current list of visible attribute
 
 :return: the new list of visible attributes
-:rtype: list of str
-
 %End
 
     virtual bool allowToEdit( const QgsVectorLayer *layer, const QgsFeature &feature ) const;
 %Docstring
 Are we authorized to modify the following geometry
+
 :param layer: the layer to control
 :param feature: the concerned feature
 
 :return: true if we are allowed to edit
-:rtype: bool
-
 %End
 
     virtual QString cacheKey() const;
@@ -112,8 +105,6 @@ Are we authorized to modify the following geometry
 Cache key to used to create the capabilities cache
 
 :return: the cache key, "" for no cache
-:rtype: str
-
 %End
 
 };

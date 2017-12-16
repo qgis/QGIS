@@ -32,7 +32,7 @@ class QgsMapToolAddCircle: public QgsMapToolCapture
 
   public:
     QgsMapToolAddCircle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolAddCircle();
+    ~QgsMapToolAddCircle() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;

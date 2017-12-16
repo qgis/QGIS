@@ -61,7 +61,7 @@ class GUI_EXPORT QgsHistogramWidget : public QWidget, private Ui::QgsHistogramWi
      */
     QgsHistogramWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsVectorLayer *layer = nullptr, const QString &fieldOrExp = QString() );
 
-    ~QgsHistogramWidget();
+    ~QgsHistogramWidget() override;
 
     /**
      * Returns the layer currently associated with the widget.

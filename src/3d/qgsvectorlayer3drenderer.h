@@ -43,7 +43,7 @@ class _3D_EXPORT QgsVectorLayer3DRendererMetadata : public Qgs3DRendererAbstract
     QgsVectorLayer3DRendererMetadata();
 
     //! Creates an instance of a 3D renderer based on a DOM element with renderer configuration
-    virtual QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY;
+    QgsAbstract3DRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY;
 };
 
 
@@ -58,7 +58,6 @@ class _3D_EXPORT QgsVectorLayer3DRenderer : public QgsAbstract3DRenderer
   public:
     //! Takes ownership of the symbol object
     explicit QgsVectorLayer3DRenderer( QgsAbstract3DSymbol *s SIP_TRANSFER = nullptr );
-    ~QgsVectorLayer3DRenderer() = default;
 
     //! Sets vector layer associated with the renderer
     void setLayer( QgsVectorLayer *layer );

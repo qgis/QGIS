@@ -46,7 +46,7 @@ class APP_EXPORT QgsProjectProperties : public QgsOptionsDialogBase, private Ui:
     QgsProjectProperties( QgsMapCanvas *mapCanvas, QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
 
-    ~QgsProjectProperties();
+    ~QgsProjectProperties() override;
 
     /**
        Every project has a title

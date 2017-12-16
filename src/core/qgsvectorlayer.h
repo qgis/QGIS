@@ -425,7 +425,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
                              const QString &providerLib = "ogr", const QgsVectorLayer::LayerOptions &options = QgsVectorLayer::LayerOptions() );
 
 
-    virtual ~QgsVectorLayer();
+    ~QgsVectorLayer() override;
 
     //! QgsVectorLayer cannot be copied.
     QgsVectorLayer( const QgsVectorLayer &rhs ) = delete;
@@ -440,7 +440,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns a new layer instance
      * \since QGIS 3.0
      */
-    virtual QgsVectorLayer *clone() const override SIP_FACTORY;
+    QgsVectorLayer *clone() const override SIP_FACTORY;
 
     /**
      * Returns the permanent storage type for this layer as a friendly name.
@@ -519,7 +519,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns false if a dependency cycle has been detected
      * \since QGIS 3.0
      */
-    virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) override;
+    bool setDependencies( const QSet<QgsMapLayerDependency> &layers ) override;
 
     /**
      * Gets the list of dependencies. This includes data dependencies set by the user (\see setDataDependencies)
@@ -528,7 +528,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * \returns a set of QgsMapLayerDependency
      * \since QGIS 3.0
      */
-    virtual QSet<QgsMapLayerDependency> dependencies() const override;
+    QSet<QgsMapLayerDependency> dependencies() const override;
 
     /**
      * Add a new field which is calculated by the expression specified
@@ -744,19 +744,19 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Reads vector layer specific state from project file Dom node.
      * \note Called by QgsMapLayer::readXml().
      */
-    virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
+    bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context ) override;
 
     /**
      * Write vector layer specific state to project file Dom node.
      * \note Called by QgsMapLayer::writeXml().
      */
-    virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
+    bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const override;
 
     /**
      * Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
      * \since QGIS 3.0
      */
-    virtual void resolveReferences( QgsProject *project ) override;
+    void resolveReferences( QgsProject *project ) override;
 
     /**
      * Save named and sld style of the layer to the style table in the db.
@@ -807,7 +807,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
      * Calls loadNamedStyle( theURI, resultFlag, false );
      * Retained for backward compatibility
      */
-    virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
+    QString loadNamedStyle( const QString &theURI, bool &resultFlag SIP_OUT ) override;
 
     /**
      * Loads the auxiliary layer for this vector layer. If there's no
@@ -1185,10 +1185,10 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     void setLabeling( QgsAbstractVectorLayerLabeling *labeling SIP_TRANSFER );
 
     //! Returns true if the provider is in editing mode
-    virtual bool isEditable() const override;
+    bool isEditable() const override;
 
     //! Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
-    virtual bool isSpatial() const override;
+    bool isSpatial() const override;
 
     //! Returns true if the provider has been modified since the last commit
     virtual bool isModified() const;
@@ -1202,13 +1202,13 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     bool isAuxiliaryField( int index, int &srcIndex ) const;
 
     //! Synchronises with changes in the datasource
-    virtual void reload() override;
+    void reload() override;
 
     /**
      * Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
      * \since QGIS 2.4
      */
-    virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
+    QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) override SIP_FACTORY;
 
     QgsRectangle extent() const override;
     QgsRectangle sourceExtent() const override;
@@ -2112,7 +2112,7 @@ class CORE_EXPORT QgsVectorLayer : public QgsMapLayer, public QgsExpressionConte
     /**
      * Returns true if the provider is in read-only mode
      */
-    virtual bool isReadOnly() const override;
+    bool isReadOnly() const override;
 
     /**
      * Bind layer to a specific data provider

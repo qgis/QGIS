@@ -82,6 +82,7 @@ A item that forms part of a map composition.
     QgsComposerItem( QgsComposition *composition /TransferThis/, bool manageZValue = true );
 %Docstring
 Constructor
+
 :param composition: parent composition
 :param manageZValue: true if the z-Value of this object should be managed by mComposition*
 %End
@@ -89,6 +90,7 @@ Constructor
     QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition /TransferThis/, bool manageZValue = true );
 %Docstring
 Constructor with box position and composer object
+
 :param x: x coordinate of item
 :param y: y coordinate of item
 :param width: width of item
@@ -96,13 +98,11 @@ Constructor with box position and composer object
 :param composition: parent composition
 :param manageZValue: true if the z-Value of this object should be managed by mComposition*
 %End
-    virtual ~QgsComposerItem();
+    ~QgsComposerItem();
 
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
-
-:rtype: int
 %End
 
     virtual bool isRemoved() const;
@@ -112,8 +112,6 @@ from the composition are not deleted so that they can be restored via an undo
 command.
 
 :return: true if the item has been removed from the composition
-:rtype: bool
-
 
 .. versionadded:: 2.5
 
@@ -125,6 +123,7 @@ command.
 Sets whether this item has been removed from the composition. Items removed
 from the composition are not deleted so that they can be restored via an undo
 command.
+
 :param removed: set to true if the item has been removed from the composition
 
 .. versionadded:: 2.5
@@ -140,8 +139,6 @@ command.
     virtual bool selected() const;
 %Docstring
  Is selected
-
-:rtype: bool
 %End
 
     void move( double dx, double dy );
@@ -152,6 +149,7 @@ Moves item in canvas coordinates
     virtual void moveContent( double dx, double dy );
 %Docstring
 Move Content of item. Does nothing per default (but implemented in composer map)
+
 :param dx: move in x-direction (canvas coordinates)
 :param dy: move in y-direction(canvas coordinates)*
 %End
@@ -159,6 +157,7 @@ Move Content of item. Does nothing per default (but implemented in composer map)
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom );
 %Docstring
 Zoom content of item. Does nothing per default (but implemented in composer map)
+
 :param factor: zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
 :param point: item point for zoom center
 :param mode: zoom mode
@@ -171,8 +170,6 @@ Zoom content of item. Does nothing per default (but implemented in composer map)
 Gets the page the item is currently on.
 
 :return: page number for item, beginning on page 1
-:rtype: int
-
 
 .. seealso:: :py:func:`pagePos`
 
@@ -186,8 +183,6 @@ Gets the page the item is currently on.
 Returns the item's position relative to its current page.
 
 :return: position relative to the page's top left corner.
-:rtype: QPointF
-
 
 .. seealso:: :py:func:`page`
 
@@ -200,6 +195,7 @@ Returns the item's position relative to its current page.
 %Docstring
 Moves the item so that it retains its relative position on the page
 when the paper size changes.
+
 :param newPageWidth: new width of the page in mm
 :param newPageHeight: new height of the page in mm
 
@@ -213,6 +209,7 @@ when the paper size changes.
     void setItemPosition( double x, double y, ItemPositionMode itemPoint = UpperLeft, int page = -1 );
 %Docstring
 Moves the item to a new position (in canvas coordinates)
+
 :param x: item position x (mm)
 :param y: item position y (mm)
 :param itemPoint: reference point which coincides with specified position
@@ -223,6 +220,7 @@ a page number of 1 corresponds to the first page.
     void setItemPosition( double x, double y, double width, double height, ItemPositionMode itemPoint = UpperLeft, bool posIncludesFrame = false, int page = -1 );
 %Docstring
 Sets item position and width / height in one go
+
 :param x: item position x (mm)
 :param y: item position y (mm)
 :param width: item width (mm)
@@ -237,8 +235,6 @@ a page number of 1 corresponds to the first page.
 %Docstring
 Returns item's last used position mode.
 \note: This property has no effect on actual's item position, which is always the top-left corner. *
-
-:rtype: ItemPositionMode
 %End
 
     virtual void setSceneRect( const QRectF &rectangle );
@@ -250,15 +246,11 @@ corresponds to 1 scene size unit*
     bool _writeXml( QDomElement &itemElem, QDomDocument &doc ) const;
 %Docstring
 Writes parameter that are not subclass specific in document. Usually called from writeXml methods of subclasses
-
-:rtype: bool
 %End
 
     bool _readXml( const QDomElement &itemElem, const QDomDocument &doc );
 %Docstring
 Reads parameter that are not subclass specific in document. Usually called from readXml methods of subclasses
-
-:rtype: bool
 %End
 
     bool hasFrame() const;
@@ -266,8 +258,6 @@ Reads parameter that are not subclass specific in document. Usually called from 
 Whether this item has a frame or not.
 
 :return: true if there is a frame around this item, otherwise false.
-:rtype: bool
-
 
 .. seealso:: :py:func:`setFrameEnabled`
 
@@ -281,6 +271,7 @@ Whether this item has a frame or not.
     virtual void setFrameEnabled( const bool drawFrame );
 %Docstring
 Set whether this item has a frame drawn around it or not.
+
 :param drawFrame: draw frame
 
 .. seealso:: :py:func:`hasFrame`
@@ -295,6 +286,7 @@ Set whether this item has a frame drawn around it or not.
     virtual void setFrameStrokeColor( const QColor &color );
 %Docstring
 Sets frame stroke color
+
 :param color: new color for stroke frame
 
 .. versionadded:: 2.6
@@ -313,8 +305,6 @@ Sets frame stroke color
 Returns the frame's stroke color. Only used if hasFrame is true.
 
 :return: frame stroke color
-:rtype: QColor
-
 
 .. versionadded:: 2.6
 
@@ -330,6 +320,7 @@ Returns the frame's stroke color. Only used if hasFrame is true.
     virtual void setFrameStrokeWidth( const double strokeWidth );
 %Docstring
 Sets frame stroke width
+
 :param strokeWidth: new width for stroke frame
 
 .. versionadded:: 2.2
@@ -348,8 +339,6 @@ Sets frame stroke width
 Returns the frame's stroke width. Only used if hasFrame is true.
 
 :return: Frame stroke width
-:rtype: float
-
 
 .. versionadded:: 2.3
 
@@ -367,8 +356,6 @@ Returns the frame's stroke width. Only used if hasFrame is true.
 Returns the join style used for drawing the item's frame
 
 :return: Join style for stroke frame
-:rtype: Qt.PenJoinStyle
-
 
 .. versionadded:: 2.3
 
@@ -384,6 +371,7 @@ Returns the join style used for drawing the item's frame
     void setFrameJoinStyle( const Qt::PenJoinStyle style );
 %Docstring
 Sets join style used when drawing the item's frame
+
 :param style: Join style for stroke frame
 
 .. versionadded:: 2.3
@@ -404,8 +392,6 @@ actual rectangle. For instance, if the item has a 2mm frame stroke, then
 1mm of this frame is drawn outside the item's rect. In this case the
 return value will be 1.0
 
-:rtype: float
-
 .. versionadded:: 2.2
 
 .. seealso:: :py:func:`rectWithFrame`
@@ -419,8 +405,6 @@ more details about QGraphicsItem coordinate systems). The results differ from Qt
 function, as rect() makes no allowances for the portion of outlines which are drawn
 outside of the item.
 
-:rtype: QRectF
-
 .. versionadded:: 2.2
 
 .. seealso:: :py:func:`estimatedFrameBleed`
@@ -431,8 +415,6 @@ outside of the item.
 Whether this item has a Background or not.
 
 :return: true if there is a Background around this item, otherwise false.
-:rtype: bool
-
 
 .. seealso:: :py:func:`setBackgroundEnabled`
 
@@ -442,6 +424,7 @@ Whether this item has a Background or not.
     void setBackgroundEnabled( const bool drawBackground );
 %Docstring
 Set whether this item has a Background drawn around it or not.
+
 :param drawBackground: draw Background
 
 :return: nothing
@@ -456,8 +439,6 @@ Set whether this item has a Background drawn around it or not.
 Gets the background color for this item
 
 :return: background color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setBackgroundColor`
 
@@ -467,6 +448,7 @@ Gets the background color for this item
     void setBackgroundColor( const QColor &backgroundColor );
 %Docstring
 Sets the background color for this item
+
 :param backgroundColor: new background color
 
 :return: nothing
@@ -481,8 +463,6 @@ Sets the background color for this item
 Returns the item's composition blending mode.
 
 :return: item blending mode
-:rtype: QPainter.CompositionMode
-
 
 .. seealso:: :py:func:`setBlendMode`
 %End
@@ -490,6 +470,7 @@ Returns the item's composition blending mode.
     void setBlendMode( const QPainter::CompositionMode blendMode );
 %Docstring
 Sets the item's composition blending mode
+
 :param blendMode: blending mode for item
 
 .. seealso:: :py:func:`blendMode`
@@ -502,8 +483,6 @@ QGraphicsItem.opacity() as any data defined overrides will be
 respected.
 
 :return: opacity as double between 1.0 (opaque) and 0 (transparent).
-:rtype: float
-
 
 .. seealso:: :py:func:`setItemOpacity()`
 %End
@@ -513,6 +492,7 @@ respected.
 Sets the item's ``opacity``. This method should be used instead of
 QGraphicsItem.setOpacity() as any data defined overrides will be
 respected.
+
 :param opacity: double between 1.0 (opaque) and 0 (transparent).
 
 .. seealso:: :py:func:`itemOpacity()`
@@ -523,8 +503,6 @@ respected.
 Returns whether effects (e.g., blend modes) are enabled for the item
 
 :return: true if effects are enabled
-:rtype: bool
-
 
 .. seealso:: :py:func:`setEffectsEnabled`
 
@@ -536,6 +514,7 @@ Returns whether effects (e.g., blend modes) are enabled for the item
     void setEffectsEnabled( const bool effectsEnabled );
 %Docstring
 Sets whether effects (e.g., blend modes) are enabled for the item
+
 :param effectsEnabled: set to true to enable effects
 
 .. seealso:: :py:func:`effectsEnabled`
@@ -556,6 +535,7 @@ Composite operations for item groups do nothing per default
     void beginCommand( const QString &commandText, QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 %Docstring
 Starts new composer undo command
+
 :param commandText: command title
 :param c: context for mergeable commands (unknown for non-mergeable commands*
 %End
@@ -571,6 +551,7 @@ Finish current command and push it onto the undo stack
     void setPositionLock( const bool lock );
 %Docstring
 Locks / unlocks the item position for mouse drags
+
 :param lock: set to true to prevent item movement and resizing via the mouse
 
 .. seealso:: :py:func:`positionLock`
@@ -581,19 +562,16 @@ Locks / unlocks the item position for mouse drags
 Returns whether position lock for mouse drags is enabled
 returns true if item is locked for mouse movement and resizing
 
-:rtype: bool
-
 .. seealso:: :py:func:`setPositionLock`
 %End
 
     double itemRotation( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue ) const;
 %Docstring
 Returns the current rotation for the composer item, in degrees clockwise.
+
 :param valueType: controls whether the returned value is the user specified rotation,
 or the current evaluated rotation (which may be affected by data driven rotation
 settings).
-
-:rtype: float
 
 .. versionadded:: 2.1
 
@@ -612,8 +590,6 @@ currently permitted for the item.
 Get item's id (which is not necessarly unique)
 
 :return: item id
-:rtype: str
-
 
 .. seealso:: :py:func:`setId`
 %End
@@ -621,6 +597,7 @@ Get item's id (which is not necessarly unique)
     virtual void setId( const QString &id );
 %Docstring
 Set item's id (which is not necessarly unique)
+
 :param id: new id for item
 
 .. seealso:: :py:func:`id`
@@ -631,8 +608,6 @@ Set item's id (which is not necessarly unique)
 Get item identification name
 
 :return: unique item identification string
-:rtype: str
-
 
 .. note::
 
@@ -649,8 +624,6 @@ Get item display name. This is the item's id if set, and if
 not, a user-friendly string identifying item type.
 
 :return: display name for item
-:rtype: str
-
 
 .. seealso:: :py:func:`id`
 
@@ -662,6 +635,7 @@ not, a user-friendly string identifying item type.
     virtual void setVisibility( const bool visible );
 %Docstring
 Sets visibility for item.
+
 :param visible: set to true to show item, false to hide item
 
 .. note::
@@ -676,12 +650,11 @@ the visibility toggle.
     bool excludeFromExports( const QgsComposerObject::PropertyValueType valueType = QgsComposerObject::EvaluatedValue );
 %Docstring
 Returns whether the item should be excluded from composer exports and prints
+
 :param valueType: controls whether the returned value is the user specified value,
 or the current evaluated value (which may be affected by data driven settings).
 
 :return: true if item should be excluded
-:rtype: bool
-
 
 .. versionadded:: 2.5
 
@@ -691,6 +664,7 @@ or the current evaluated value (which may be affected by data driven settings).
     virtual void setExcludeFromExports( const bool exclude );
 %Docstring
 Sets whether the item should be excluded from composer exports and prints
+
 :param exclude: set to true to exclude the item from exports
 
 .. versionadded:: 2.5
@@ -703,8 +677,6 @@ Sets whether the item should be excluded from composer exports and prints
 Returns whether this item is part of a group
 
 :return: true if item is in a group
-:rtype: bool
-
 
 .. versionadded:: 2.5
 
@@ -714,6 +686,7 @@ Returns whether this item is part of a group
     void setIsGroupMember( const bool isGroupMember );
 %Docstring
 Sets whether this item is part of a group
+
 :param isGroupMember: set to true if item is in a group
 
 .. versionadded:: 2.5
@@ -726,8 +699,6 @@ Sets whether this item is part of a group
 Get the number of layers that this item requires for exporting as layers
 
 :return: 0 if this item is to be placed on the same layer as the previous item,
-:rtype: int
-
 1 if it should be placed on its own layer, and >1 if it requires multiple export layers
 
 .. versionadded:: 2.4
@@ -738,6 +709,7 @@ Get the number of layers that this item requires for exporting as layers
     virtual void setCurrentExportLayer( const int layerIdx = -1 );
 %Docstring
 Sets the current layer to draw for exporting
+
 :param layerIdx: can be set to -1 to draw all item layers, and must be less than numberExportLayers()
 
 .. versionadded:: 2.4
@@ -746,11 +718,10 @@ Sets the current layer to draw for exporting
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 %Docstring
 Creates an expression context relating to the item's current state. The context includes
 scopes for global, project, composition, atlas and item properties.
-
-:rtype: QgsExpressionContext
 
 .. versionadded:: 2.12
 %End
@@ -774,8 +745,6 @@ the item will not be redrawn. This can be used to prevent
 multiple item updates when many settings for an item are
 changed sequentially.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setUpdatesEnabled()`
@@ -786,6 +755,7 @@ changed sequentially.
     virtual void setItemRotation( const double rotation, const bool adjustPosition = false );
 %Docstring
 Sets the item ``rotation``, in degrees clockwise.
+
 :param rotation: item rotation in degrees
 :param adjustPosition: set to true if item should be shifted so that rotation occurs
 around item center. If false, rotation occurs around item origin
@@ -799,9 +769,11 @@ around item center. If false, rotation occurs around item origin
 
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
+
 %Docstring
 Refreshes a data defined property for the item by reevaluating the property's value
 and redrawing the item with this new value.
+
 :param property: data defined property to refresh. If property is set to
 QgsComposerItem.AllProperties then all data defined properties for the item will be
 refreshed.
@@ -847,8 +819,6 @@ Draw background
 %Docstring
 Returns the current (zoom level dependent) tolerance to decide if mouse position is close enough to the
 item border for resizing*
-
-:rtype: float
 %End
 
     double horizontalViewScaleFactor() const;
@@ -856,23 +826,17 @@ item border for resizing*
 Returns the zoom factor of the graphics view.
 
 :return: the factor or -1 in case of error (e.g. graphic view does not exist)
-:rtype: float
-
 %End
 
 
     QGraphicsLineItem *hAlignSnapItem();
 %Docstring
 Return horizontal align snap item. Creates a new graphics line if 0
-
-:rtype: QGraphicsLineItem
 %End
     void deleteHAlignSnapItem();
     QGraphicsLineItem *vAlignSnapItem();
 %Docstring
 Return vertical align snap item. Creates a new graphics line if 0
-
-:rtype: QGraphicsLineItem
 %End
     void deleteVAlignSnapItem();
     void deleteAlignItems();
@@ -881,6 +845,7 @@ Return vertical align snap item. Creates a new graphics line if 0
 %Docstring
 Evaluates an item's bounding rect to consider data defined position and size of item
 and reference point
+
 :param newRect: target bounding rect for item
 :param resizeOnly: set to true if the item is only being resized. If true then
 the position of the returned rect will be adjusted to account for the item's
@@ -888,8 +853,6 @@ position mode
 :param context: expression context for evaluating data defined expressions
 
 :return: bounding box rectangle for item after data defined size and position have been
-:rtype: QRectF
-
 set and position mode has been accounted for
 
 .. versionadded:: 2.5
@@ -900,8 +863,6 @@ set and position mode has been accounted for
 Returns whether the item should be drawn in the current context
 
 :return: true if item should be drawn
-:rtype: bool
-
 
 .. versionadded:: 2.5
 %End

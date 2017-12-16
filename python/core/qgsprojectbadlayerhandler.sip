@@ -58,8 +58,6 @@ Returns data type associated with the given QgsProject file Dom node
 
 The Dom node should represent the state associated with a specific layer.
 
-:rtype: DataType
-
 .. versionadded:: 3.0
 %End
 
@@ -70,8 +68,6 @@ Return the data source for the given layer
 The QDomNode is a QgsProject Dom node corresponding to a map layer state.
 
 Essentially dumps datasource tag.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -90,8 +86,6 @@ provider tag.  It will always have an associated file.
 If the layer doesn't fall into either of the previous two categories, then
 it's either a database or URL.  If the datasource tag has "url=", then it's
 URL based and if it has "dbname=">, then the layer data is in a database.
-
-:rtype: ProviderType
 
 .. versionadded:: 3.0
 %End

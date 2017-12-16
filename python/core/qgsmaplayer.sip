@@ -58,12 +58,13 @@ This is the base class for all map layer types (vector, raster).
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 %Docstring
 Constructor for QgsMapLayer
+
 :param type: layer type
 :param name: display name for the layer
 :param source: datasource of layer
 %End
 
-    virtual ~QgsMapLayer();
+    ~QgsMapLayer();
 
 
     virtual QgsMapLayer *clone() const = 0;
@@ -72,8 +73,6 @@ Returns a new instance equivalent to this one except for the id which
 is still unique.
 
 :return: a new layer instance
-:rtype: QgsMapLayer
-
 
 .. versionadded:: 3.0
 %End
@@ -81,15 +80,11 @@ is still unique.
     QgsMapLayer::LayerType type() const;
 %Docstring
 Returns the type of the layer.
-
-:rtype: QgsMapLayer.LayerType
 %End
 
     QString id() const;
 %Docstring
 Returns the layer's unique ID, which is used to access this layer from QgsProject.
-
-:rtype: str
 %End
 
     void setName( const QString &name );
@@ -105,16 +100,12 @@ Set the display ``name`` of the layer.
 %Docstring
 Returns the display name of the layer.
 
-:rtype: str
-
 .. seealso:: :py:func:`setName()`
 %End
 
     virtual QgsDataProvider *dataProvider();
 %Docstring
 Returns the layer's data provider.
-
-:rtype: QgsDataProvider
 %End
 
 
@@ -133,8 +124,6 @@ used by QGIS Server to identify the layer.
 Returns the short name of the layer
 used by QGIS Server to identify the layer.
 
-:rtype: str
-
 .. seealso:: :py:func:`setShortName()`
 %End
 
@@ -152,8 +141,6 @@ Returns the title of the layer
 used by QGIS Server in GetCapabilities request.
 
 :return: the layer title
-:rtype: str
-
 
 .. seealso:: :py:func:`setTitle()`
 %End
@@ -174,8 +161,6 @@ Returns the abstract of the layer
 used by QGIS Server in GetCapabilities request.
 
 :return: the layer abstract
-:rtype: str
-
 
 .. seealso:: :py:func:`setAbstract()`
 %End
@@ -196,8 +181,6 @@ Returns the keyword list of the layer
 used by QGIS Server in GetCapabilities request.
 
 :return: the layer keyword list
-:rtype: str
-
 
 .. seealso:: :py:func:`setKeywordList()`
 %End
@@ -221,8 +204,6 @@ used by QGIS Server in GetCapabilities request.
 DataUrl is a a link to the underlying data represented by a particular layer.
 
 :return: the layer DataUrl
-:rtype: str
-
 
 .. seealso:: :py:func:`setDataUrl()`
 %End
@@ -245,8 +226,6 @@ used by QGIS Server in GetCapabilities request.
 DataUrl is a a link to the underlying data represented by a particular layer.
 
 :return: the layer DataUrl format
-:rtype: str
-
 
 .. seealso:: :py:func:`setDataUrlFormat()`
 %End
@@ -270,8 +249,6 @@ used by QGIS Server in GetCapabilities request.
 Attribution indicates the provider of a layer or collection of layers.
 
 :return: the layer attribution
-:rtype: str
-
 
 .. seealso:: :py:func:`setAttribution()`
 %End
@@ -294,8 +271,6 @@ used by QGIS Server in GetCapabilities request.
 Attribution indicates the provider of a layer or collection of layers.
 
 :return: the layer attribution URL
-:rtype: str
-
 
 .. seealso:: :py:func:`setAttributionUrl()`
 %End
@@ -319,8 +294,6 @@ used by QGIS Server in GetCapabilities request.
 MetadataUrl is a a link to the detailed, standardized metadata about the data.
 
 :return: the layer metadata URL
-:rtype: str
-
 
 .. seealso:: :py:func:`setMetadataUrl()`
 %End
@@ -343,8 +316,6 @@ used by QGIS Server in GetCapabilities request.
 MetadataUrlType indicates the standard to which the metadata complies.
 
 :return: the layer metadata type
-:rtype: str
-
 
 .. seealso:: :py:func:`setMetadataUrlType()`
 %End
@@ -367,8 +338,6 @@ used by QGIS Server in GetCapabilities request.
 MetadataUrlType indicates how the metadata is structured.
 
 :return: the layer metadata format
-:rtype: str
-
 
 .. seealso:: :py:func:`setMetadataUrlFormat()`
 %End
@@ -376,6 +345,7 @@ MetadataUrlType indicates how the metadata is structured.
     void setBlendMode( QPainter::CompositionMode blendMode );
 %Docstring
 Set the blending mode used for rendering a layer.
+
 :param blendMode: new blending mode
 
 .. seealso:: :py:func:`blendMode()`
@@ -385,16 +355,12 @@ Set the blending mode used for rendering a layer.
 %Docstring
 Returns the current blending mode for a layer.
 
-:rtype: QPainter.CompositionMode
-
 .. seealso:: :py:func:`setBlendMode()`
 %End
 
     bool readOnly() const;
 %Docstring
 Returns if this layer is read only.
-
-:rtype: bool
 %End
 
     virtual void reload();
@@ -406,16 +372,12 @@ Synchronises with changes in the datasource
 %Docstring
 Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
 
-:rtype: QgsMapLayerRenderer
-
 .. versionadded:: 2.4
 %End
 
     virtual QgsRectangle extent() const;
 %Docstring
 Returns the extent of the layer.
-
-:rtype: QgsRectangle
 %End
 
     bool isValid() const;
@@ -424,8 +386,6 @@ Return the status of the layer. An invalid layer is one which has a bad datasour
 or other problem. Child classes set this flag when initialized.
 
 :return: true if the layer is valid and can be accessed
-:rtype: bool
-
 %End
 
     QString publicSource() const;
@@ -433,8 +393,6 @@ or other problem. Child classes set this flag when initialized.
 Gets a version of the internal layer definition that has sensitive
 bits removed (for example, the password). This function should
 be used when displaying the source name for general viewing.
-
-:rtype: str
 
 .. seealso:: :py:func:`source()`
 %End
@@ -444,8 +402,6 @@ be used when displaying the source name for general viewing.
 Returns the source for the layer. This source may contain usernames, passwords
 and other sensitive information.
 
-:rtype: str
-
 .. seealso:: :py:func:`publicSource()`
 %End
 
@@ -453,8 +409,6 @@ and other sensitive information.
 %Docstring
 Returns the sublayers of this layer.
 (Useful for providers that manage their own layers, such as WMS).
-
-:rtype: list of str
 %End
 
     virtual void setLayerOrder( const QStringList &layers );
@@ -466,6 +420,7 @@ Reorders the *previously selected* sublayers of this layer from bottom to top.
     virtual void setSubLayerVisibility( const QString &name, bool visible );
 %Docstring
 Set the visibility of the given sublayer name.
+
 :param name: sublayer name
 :param visible: sublayer visibility
 %End
@@ -473,15 +428,11 @@ Set the visibility of the given sublayer name.
     virtual bool isEditable() const;
 %Docstring
 Returns true if the layer can be edited.
-
-:rtype: bool
 %End
 
     virtual bool isSpatial() const;
 %Docstring
 Returns true if the layer is considered a spatial layer, ie it has some form of geometry associated with it.
-
-:rtype: bool
 
 .. versionadded:: 2.16
 %End
@@ -489,6 +440,7 @@ Returns true if the layer is considered a spatial layer, ie it has some form of 
     bool readLayerXml( const QDomElement &layerElement, const QgsReadWriteContext &context );
 %Docstring
 Sets state from Dom document
+
 :param layerElement: The Dom element corresponding to ``maplayer'' tag
 :param context: writing context (e.g. for conversion between relative and absolute paths)
 \note
@@ -502,13 +454,12 @@ that they can read their own specific state from the given Dom node.
 Invoked by QgsProject.read().
 
 :return: true if successful
-:rtype: bool
-
 %End
 
     bool writeLayerXml( QDomElement &layerElement, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Stores state in Dom node
+
 :param layerElement: is a Dom element corresponding to ``maplayer'' tag
 :param document: is a the dom document being written
 :param context: reading context (e.g. for conversion between relative and absolute paths)
@@ -523,8 +474,6 @@ that they can write their own specific state to the given Dom node.
 Invoked by QgsProject.write().
 
 :return: true if successful
-:rtype: bool
-
 %End
 
     virtual void resolveReferences( QgsProject *project );
@@ -537,8 +486,6 @@ Resolve references to other layers (kept as layer IDs after reading XML) into la
     QStringList customPropertyKeys() const;
 %Docstring
 Returns list of all keys within custom properties. Properties are stored in a map and saved in project file.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`customProperty()`
 
@@ -557,8 +504,6 @@ Set a custom property for layer. Properties are stored in a map and saved in pro
     QVariant customProperty( const QString &value, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
 Read a custom property from layer. Properties are stored in a map and saved in project file.
-
-:rtype: QVariant
 
 .. seealso:: :py:func:`setCustomProperty()`
 %End
@@ -582,15 +527,11 @@ Remove a custom property from layer. Properties are stored in a map and saved in
 Get current status error. This error describes some principal problem
 for which layer cannot work and thus is not valid. It is not last error
 after accessing data by draw() etc.
-
-:rtype: QgsError
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns the layer's spatial reference system.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. versionadded:: 1.4
 %End
@@ -604,8 +545,6 @@ Sets layer's spatial reference system
 %Docstring
 A convenience function to capitalize and format a layer ``name``.
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
@@ -616,8 +555,6 @@ Retrieve the style URI for this layer
 record in the users style table in their personal qgis.db)
 
 :return: a QString with the style file name
-:rtype: str
-
 
 .. seealso:: :py:func:`also`
 %End
@@ -627,12 +564,11 @@ record in the users style table in their personal qgis.db)
 Retrieve the default style for this layer if one
 exists (either as a .qml file on disk or as a
 record in the users style table in their personal qgis.db)
+
 :param resultFlag: a reference to a flag that will be set to false if
 we did not manage to load the default style.
 
 :return: a QString with any status messages
-:rtype: str
-
 
 .. seealso:: :py:func:`also`
 %End
@@ -642,6 +578,7 @@ we did not manage to load the default style.
 Retrieve a named style for this layer if one
 exists (either as a .qml file on disk or as a
 record in the users style table in their personal qgis.db)
+
 :param uri: - the file name or other URI for the
 style file. First an attempt will be made to see if this
 is a file and load that, if that fails the qgis.db styles
@@ -651,8 +588,6 @@ key matches the URI.
 we did not manage to load the default style.
 
 :return: a QString with any status messages
-:rtype: str
-
 
 .. seealso:: :py:func:`also`
 %End
@@ -660,25 +595,23 @@ we did not manage to load the default style.
     virtual bool loadNamedStyleFromDatabase( const QString &db, const QString &uri, QString &qml /Out/ );
 %Docstring
 Retrieve a named style for this layer from a sqlite database.
+
 :param db: path to sqlite database
 :param uri: uri for table
 :param qml: will be set to QML style content from database
 
 :return: true if style was successfully loaded
-:rtype: bool
-
 %End
 
     virtual bool importNamedStyle( QDomDocument &doc, QString &errorMsg /Out/ );
 %Docstring
 Import the properties of this layer from a QDomDocument
+
 :param doc: source QDomDocument
 :param errorMsg: this QString will be initialized on error
 during the execution of readSymbology
 
 :return: true on success
-:rtype: bool
-
 
 .. versionadded:: 2.8
 %End
@@ -686,6 +619,7 @@ during the execution of readSymbology
     virtual void exportNamedStyle( QDomDocument &doc, QString &errorMsg ) const;
 %Docstring
 Export the properties of this layer as named style in a QDomDocument
+
 :param doc: the target QDomDocument
 :param errorMsg: this QString will be initialized on error
 during the execution of writeSymbology
@@ -695,6 +629,7 @@ during the execution of writeSymbology
     virtual void exportSldStyle( QDomDocument &doc, QString &errorMsg ) const;
 %Docstring
 Export the properties of this layer as SLD style in a QDomDocument
+
 :param doc: the target QDomDocument
 :param errorMsg: this QString will be initialized on error
 during the execution of writeSymbology
@@ -705,12 +640,11 @@ during the execution of writeSymbology
 Save the properties of this layer as the default style
 (either as a .qml file on disk or as a
 record in the users style table in their personal qgis.db)
+
 :param resultFlag: a reference to a flag that will be set to false if
 we did not manage to save the default style.
 
 :return: a QString with any status messages
-:rtype: str
-
 
 .. seealso:: :py:func:`loadNamedStyle()`
 %End
@@ -720,6 +654,7 @@ we did not manage to save the default style.
 Save the properties of this layer as a named style
 (either as a .qml file on disk or as a
 record in the users style table in their personal qgis.db)
+
 :param uri: the file name or other URI for the
 style file. First an attempt will be made to see if this
 is a file and save to that, if that fails the qgis.db styles
@@ -729,8 +664,6 @@ key matches the URI.
 we did not manage to save the default style.
 
 :return: a QString with any status messages
-:rtype: str
-
 
 .. seealso:: :py:func:`saveDefaultStyle()`
 %End
@@ -738,13 +671,12 @@ we did not manage to save the default style.
     virtual QString saveSldStyle( const QString &uri, bool &resultFlag ) const;
 %Docstring
 Saves the properties of this layer to an SLD format file.
+
 :param uri: uri of destination for exported SLD file.
 :param resultFlag: a reference to a flag that will be set to false if
 the SLD file could not be generated
 
 :return: a string with any status or error messages
-:rtype: str
-
 
 .. seealso:: :py:func:`loadSldStyle()`
 %End
@@ -752,47 +684,40 @@ the SLD file could not be generated
     virtual QString loadSldStyle( const QString &uri, bool &resultFlag );
 %Docstring
 Attempts to style the layer using the formatting from an SLD type file.
+
 :param uri: uri of source SLD file
 :param resultFlag: a reference to a flag that will be set to false if
 the SLD file could not be loaded
 
 :return: a string with any status or error messages
-:rtype: str
-
 
 .. seealso:: :py:func:`saveSldStyle()`
 %End
 
     virtual bool readSld( const QDomNode &node, QString &errorMessage );
-%Docstring
-
-:rtype: bool
-%End
 
 
 
     virtual bool readSymbology( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context ) = 0;
 %Docstring
 Read the symbology for the current layer from the Dom node supplied.
+
 :param node: node that will contain the symbology definition for this layer.
 :param errorMessage: reference to string that will be updated with any error messages
 :param context: reading context (used for transform from relative to absolute paths)
 
 :return: true in case of success.
-:rtype: bool
-
 %End
 
     virtual bool readStyle( const QDomNode &node, QString &errorMessage, const QgsReadWriteContext &context );
 %Docstring
 Read the style for the current layer from the Dom node supplied.
+
 :param node: node that will contain the style definition for this layer.
 :param errorMessage: reference to string that will be updated with any error messages
 :param context: reading context (used for transform from relative to absolute paths)
 
 :return: true in case of success.
-:rtype: bool
-
 
 .. versionadded:: 2.16
 
@@ -804,27 +729,25 @@ Read the style for the current layer from the Dom node supplied.
     virtual bool writeSymbology( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const = 0;
 %Docstring
 Write the symbology for the layer into the docment provided.
+
 :param node: the node that will have the style element added to it.
 :param doc: the document that will have the QDomNode added.
 :param errorMessage: reference to string that will be updated with any error messages
 :param context: writing context (used for transform from absolute to relative paths)
 
 :return: true in case of success.
-:rtype: bool
-
 %End
 
     virtual bool writeStyle( QDomNode &node, QDomDocument &doc, QString &errorMessage, const QgsReadWriteContext &context ) const;
 %Docstring
 Write just the style information for the layer into the document
+
 :param node: the node that will have the style element added to it.
 :param doc: the document that will have the QDomNode added.
 :param errorMessage: reference to string that will be updated with any error messages
 :param context: writing context (used for transform from absolute to relative paths)
 
 :return: true in case of success.
-:rtype: bool
-
 
 .. versionadded:: 2.16
 
@@ -836,15 +759,11 @@ Write just the style information for the layer into the document
     QUndoStack *undoStack();
 %Docstring
 Return pointer to layer's undo stack
-
-:rtype: QUndoStack
 %End
 
     QUndoStack *undoStackStyles();
 %Docstring
 Return pointer to layer's style undo stack
-
-:rtype: QUndoStack
 
 .. versionadded:: 2.16
 %End
@@ -857,8 +776,6 @@ Sets the URL for the layer's legend.
     QString legendUrl() const;
 %Docstring
 Returns the URL for the layer's legend.
-
-:rtype: str
 %End
 
     void setLegendUrlFormat( const QString &legendUrlFormat );
@@ -869,13 +786,12 @@ Sets the format for a URL based layer legend.
     QString legendUrlFormat() const;
 %Docstring
 Returns the format for a URL based layer legend.
-
-:rtype: str
 %End
 
     void setLegend( QgsMapLayerLegend *legend /Transfer/ );
 %Docstring
 Assign a legend controller to the map layer. The object will be responsible for providing legend items.
+
 :param legend: Takes ownership of the object. Can be null pointer
 
 .. versionadded:: 2.6
@@ -885,16 +801,12 @@ Assign a legend controller to the map layer. The object will be responsible for 
 %Docstring
 Can be null.
 
-:rtype: QgsMapLayerLegend
-
 .. versionadded:: 2.6
 %End
 
     QgsMapLayerStyleManager *styleManager() const;
 %Docstring
 Get access to the layer's style manager. Style manager allows switching between multiple styles.
-
-:rtype: QgsMapLayerStyleManager
 
 .. versionadded:: 2.8
 %End
@@ -910,8 +822,6 @@ Sets 3D renderer for the layer. Takes ownership of the renderer.
 %Docstring
 Returns 3D renderer associated with the layer. May be null.
 
-:rtype: QgsAbstract3DRenderer
-
 .. versionadded:: 3.0
 %End
 
@@ -921,8 +831,6 @@ Tests whether the layer should be visible at the specified ``scale``.
 The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
 :return: true if the layer is visible at the given scale.
-:rtype: bool
-
 
 .. versionadded:: 2.16
 
@@ -938,8 +846,6 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 Returns the minimum map scale (i.e. most "zoomed out" scale) at which the layer will be visible.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no minimum scale visibility.
-
-:rtype: float
 
 .. note::
 
@@ -960,8 +866,6 @@ Returns the maximum map scale (i.e. most "zoomed in" scale) at which the layer w
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no maximum scale visibility.
 
-:rtype: float
-
 .. note::
 
    Scale based visibility is only used if setScaleBasedVisibility() is set to true.
@@ -980,8 +884,6 @@ A scale of 0 indicates no maximum scale visibility.
 Returns whether scale based visibility is enabled for the layer.
 
 :return: true if scale based visibility is enabled
-:rtype: bool
-
 
 .. seealso:: :py:func:`minimumScale()`
 
@@ -996,8 +898,6 @@ Returns whether scale based visibility is enabled for the layer.
 %Docstring
 Returns true if auto refresh is enabled for the layer.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`autoRefreshInterval()`
@@ -1009,8 +909,6 @@ Returns true if auto refresh is enabled for the layer.
 %Docstring
 Returns the auto refresh interval (in milliseconds). Note that
 auto refresh is only active when hasAutoRefreshEnabled() is true.
-
-:rtype: int
 
 .. versionadded:: 3.0
 
@@ -1050,8 +948,6 @@ Sets whether auto refresh is enabled for the layer.
 %Docstring
 Returns a reference to the layer's metadata store.
 
-:rtype: QgsLayerMetadata
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setMetadata()`
@@ -1074,22 +970,16 @@ Sets the layer's ``metadata`` store.
 %Docstring
 Obtain a formatted HTML string containing assorted metadata for this layer.
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
     virtual QDateTime timestamp() const;
 %Docstring
 Time stamp of data source in the moment when data/metadata were loaded by provider
-
-:rtype: QDateTime
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
 %Docstring
-
-:rtype: set of QgsMapLayerDependency
 
 .. seealso:: :py:func:`setDataDependencies`
 as well as dependencies given by the provider
@@ -1103,16 +993,12 @@ as well as dependencies given by the provider
 %Docstring
 Returns the message that should be notified by the provider to triggerRepaint
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
     bool isRefreshOnNotifyEnabled() const;
 %Docstring
 Returns true if the refresh on provider nofification is enabled
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -1156,6 +1042,7 @@ A ``scale`` of 0 indicates no maximum scale visibility.
     void setScaleBasedVisibility( const bool enabled );
 %Docstring
 Sets whether scale based visibility is enabled for the layer.
+
 :param enabled: set to true to enable scale based visibility
 
 .. seealso:: :py:func:`setMinimumScale`
@@ -1187,8 +1074,6 @@ Triggers an emission of the styleChanged() signal.
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
 %Docstring
 Sets the list of dependencies.
-
-:rtype: bool
 
 .. seealso:: :py:func:`dependencies()`
 
@@ -1335,6 +1220,7 @@ Emitted when the layer's metadata is changed.
     void clone( QgsMapLayer *layer ) const;
 %Docstring
 Copies attributes like name, short name, ... into another layer.
+
 :param layer: The copy recipient
 
 .. versionadded:: 3.0
@@ -1354,21 +1240,18 @@ Set whether layer is valid or not - should be used in constructor.
 %Docstring
 Called by readLayerXML(), used by children to read state specific to them from
 project files.
-
-:rtype: bool
 %End
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Called by writeLayerXML(), used by children to write state specific to them to
 project files.
-
-:rtype: bool
 %End
 
     void readCustomProperties( const QDomNode &layerNode, const QString &keyStartsWith = QString() );
 %Docstring
 Read custom properties from project file.
+
 :param layerNode: note to read from
 :param keyStartsWith: reads only properties starting with the specified string (or all if the string is empty)*
 %End
@@ -1426,8 +1309,6 @@ Set error message
     bool hasDependencyCycle( const QSet<QgsMapLayerDependency> &layers ) const;
 %Docstring
 Checks whether a new set of dependencies will introduce a cycle
-
-:rtype: bool
 %End
 
 

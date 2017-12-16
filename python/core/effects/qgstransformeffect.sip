@@ -26,11 +26,10 @@ scale and rotate) to a picture.
     static QgsPaintEffect *create( const QgsStringMap &map ) /Factory/;
 %Docstring
 Creates a new QgsTransformEffect effect from a properties string map.
+
 :param map: encoded properties string map
 
 :return: new QgsTransformEffect
-:rtype: QgsPaintEffect
-
 %End
 
     QgsTransformEffect();
@@ -40,12 +39,16 @@ Constructor for QgsTransformEffect.
 
     virtual QString type() const;
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
     virtual QgsTransformEffect *clone() const /Factory/;
+
 
     void setTranslateX( const double translateX );
 %Docstring
 Sets the transform x translation.
+
 :param translateX: distance to translate along the x axis
 
 .. seealso:: :py:func:`translateX`
@@ -62,8 +65,6 @@ Sets the transform x translation.
 Returns the transform x translation.
 
 :return: X distance translated along the x axis
-:rtype: float
-
 
 .. seealso:: :py:func:`setTranslateX`
 
@@ -77,6 +78,7 @@ Returns the transform x translation.
     void setTranslateY( const double translateY );
 %Docstring
 Sets the transform y translation.
+
 :param translateY: distance to translate along the y axis
 
 .. seealso:: :py:func:`translateY`
@@ -93,8 +95,6 @@ Sets the transform y translation.
 Returns the transform y translation.
 
 :return: Y distance translated along the y axis
-:rtype: float
-
 
 .. seealso:: :py:func:`setTranslateY`
 
@@ -108,6 +108,7 @@ Returns the transform y translation.
     void setTranslateUnit( const QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units used for the transform translation.
+
 :param unit: units for translation
 
 .. seealso:: :py:func:`translateUnit`
@@ -124,8 +125,6 @@ Sets the units used for the transform translation.
 Returns the units used for the transform translation.
 
 :return: units for translation
-:rtype: QgsUnitTypes.RenderUnit
-
 
 .. seealso:: :py:func:`setTranslateUnit`
 
@@ -139,6 +138,7 @@ Returns the units used for the transform translation.
     void setTranslateMapUnitScale( const QgsMapUnitScale &scale );
 %Docstring
 Sets the map unit scale used for the transform translation.
+
 :param scale: map unit scale for translation
 
 .. seealso:: :py:func:`translateMapUnitScale`
@@ -155,8 +155,6 @@ Sets the map unit scale used for the transform translation.
 Returns the map unit scale used for the transform translation.
 
 :return: map unit scale for translation
-:rtype: QgsMapUnitScale
-
 
 .. seealso:: :py:func:`setTranslateMapUnitScale`
 
@@ -170,6 +168,7 @@ Returns the map unit scale used for the transform translation.
     void setScaleX( const double scaleX );
 %Docstring
 Sets the x axis scaling factor.
+
 :param scaleX: factor to scale x axis by, where 1.0 = no scaling
 
 .. seealso:: :py:func:`scaleX`
@@ -182,8 +181,6 @@ Sets the x axis scaling factor.
 Returns the x axis scaling factor.
 
 :return: x axis scaling factor, where 1.0 = no scaling
-:rtype: float
-
 
 .. seealso:: :py:func:`setScaleX`
 
@@ -193,6 +190,7 @@ Returns the x axis scaling factor.
     void setScaleY( const double scaleY );
 %Docstring
 Sets the y axis scaling factor.
+
 :param scaleY: factor to scale y axis by, where 1.0 = no scaling
 
 .. seealso:: :py:func:`scaleX`
@@ -203,8 +201,6 @@ Sets the y axis scaling factor.
 Returns the y axis scaling factor.
 
 :return: y axis scaling factor, where 1.0 = no scaling
-:rtype: float
-
 
 .. seealso:: :py:func:`setScaleY`
 
@@ -222,14 +218,13 @@ Sets the transform ``rotation``, in degrees clockwise.
 %Docstring
 Returns the transform rotation, in degrees clockwise.
 
-:rtype: float
-
 .. seealso:: :py:func:`setRotation()`
 %End
 
     void setShearX( const double shearX );
 %Docstring
 Sets the x axis shearing factor.
+
 :param shearX: x axis shearing
 
 .. seealso:: :py:func:`shearX`
@@ -242,8 +237,6 @@ Sets the x axis shearing factor.
 Returns the x axis shearing factor.
 
 :return: x axis shearing
-:rtype: float
-
 
 .. seealso:: :py:func:`setShearX`
 
@@ -253,6 +246,7 @@ Returns the x axis shearing factor.
     void setShearY( const double shearY );
 %Docstring
 Sets the y axis shearing factor.
+
 :param shearY: y axis shearing
 
 .. seealso:: :py:func:`shearY`
@@ -265,8 +259,6 @@ Sets the y axis shearing factor.
 Returns the y axis shearing factor.
 
 :return: y axis shearing
-:rtype: float
-
 
 .. seealso:: :py:func:`setShearY`
 
@@ -276,6 +268,7 @@ Returns the y axis shearing factor.
     void setReflectX( const bool reflectX );
 %Docstring
 Sets whether to reflect along the x-axis
+
 :param reflectX: true to reflect horizontally
 
 .. seealso:: :py:func:`reflectX`
@@ -288,8 +281,6 @@ Sets whether to reflect along the x-axis
 Returns whether transform will be reflected along the x-axis
 
 :return: true if transform will reflect horizontally
-:rtype: bool
-
 
 .. seealso:: :py:func:`setReflectX`
 
@@ -299,6 +290,7 @@ Returns whether transform will be reflected along the x-axis
     void setReflectY( const bool reflectY );
 %Docstring
 Sets whether to reflect along the y-axis
+
 :param reflectY: true to reflect horizontally
 
 .. seealso:: :py:func:`reflectY`
@@ -311,8 +303,6 @@ Sets whether to reflect along the y-axis
 Returns whether transform will be reflected along the y-axis
 
 :return: true if transform will reflect horizontally
-:rtype: bool
-
 
 .. seealso:: :py:func:`setReflectY`
 
@@ -322,7 +312,9 @@ Returns whether transform will be reflected along the y-axis
   protected:
 
     virtual void draw( QgsRenderContext &context );
+
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+
 
 };
 

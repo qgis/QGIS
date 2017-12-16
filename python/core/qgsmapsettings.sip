@@ -41,8 +41,6 @@ Return geographical coordinates of the rectangle that should be rendered.
 The actual visible extent used for rendering could be slightly different
 since the given extent may be expanded in order to fit the aspect ratio
 of output size. Use visibleExtent() to get the resulting extent.
-
-:rtype: QgsRectangle
 %End
 
     void setExtent( const QgsRectangle &rect, bool magnified = true );
@@ -56,8 +54,6 @@ of output size. Use visibleExtent() to get the resulting extent.
     QSize outputSize() const;
 %Docstring
 Return the size of the resulting map image
-
-:rtype: QSize
 %End
     void setOutputSize( QSize size );
 %Docstring
@@ -67,8 +63,6 @@ Set the size of the resulting map image
     double rotation() const;
 %Docstring
 Returns the rotation of the resulting map image, in degrees clockwise.
-
-:rtype: float
 
 .. versionadded:: 2.8
 
@@ -88,8 +82,6 @@ Sets the ``rotation`` of the resulting map image, in degrees clockwise.
 %Docstring
 Return DPI used for conversion between real world units (e.g. mm) and pixels
 Default value is 96
-
-:rtype: float
 %End
     void setOutputDpi( double dpi );
 %Docstring
@@ -99,6 +91,7 @@ Set DPI used for conversion between real world units (e.g. mm) and pixels
     void setMagnificationFactor( double factor );
 %Docstring
 Set the magnification factor.
+
 :param factor: the factor of magnification
 
 .. versionadded:: 2.16
@@ -110,8 +103,6 @@ Set the magnification factor.
 %Docstring
 Return the magnification factor.
 
-:rtype: float
-
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`setMagnificationFactor()`
@@ -121,16 +112,12 @@ Return the magnification factor.
 %Docstring
 Get list of layer IDs for map rendering
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
-
-:rtype: list of str
 %End
 
     QList<QgsMapLayer *> layers() const;
 %Docstring
 Get list of layers for map rendering
 The layers are stored in the reverse order of how they are rendered (layer with index 0 will be on top)
-
-:rtype: list of QgsMapLayer
 %End
 
     void setLayers( const QList<QgsMapLayer *> &layers );
@@ -142,8 +129,6 @@ The layers are stored in the reverse order of how they are rendered (layer with 
     QMap<QString, QString> layerStyleOverrides() const;
 %Docstring
 Get map of map layer style overrides (key: layer ID, value: style name) where a different style should be used instead of the current one
-
-:rtype: QMap<str, QString>
 
 .. versionadded:: 2.8
 %End
@@ -160,8 +145,6 @@ Set map of map layer style overrides (key: layer ID, value: style name) where a 
 Get custom rendering flags. Layers might honour these to alter their rendering.
 
 :return: custom flags strings, separated by ';'
-:rtype: str
-
 
 .. versionadded:: 2.16
 
@@ -171,6 +154,7 @@ Get custom rendering flags. Layers might honour these to alter their rendering.
     void setCustomRenderFlags( const QString &customRenderFlags );
 %Docstring
 Sets the custom rendering flags. Layers might honour these to alter their rendering.
+
 :param customRenderFlags: custom flags strings, separated by ';'
 
 .. versionadded:: 2.16
@@ -185,15 +169,11 @@ sets destination coordinate reference system
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
 returns CRS of destination coordinate reference system
-
-:rtype: QgsCoordinateReferenceSystem
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
 %Docstring
 Get units of map's geographical coordinates - used for scale calculation
-
-:rtype: QgsUnitTypes.DistanceUnit
 %End
 
     bool setEllipsoid( const QString &ellipsoid );
@@ -203,8 +183,6 @@ retrieved using QgsEllipsoidUtils.acronyms().
 Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 
 :return: true if ellipsoid was successfully set
-:rtype: bool
-
 
 .. versionadded:: 3.0
 
@@ -215,8 +193,6 @@ Calculations will only use the ellipsoid if a valid ellipsoid has been set.
 %Docstring
 Returns ellipsoid's acronym. Calculations will only use the
 ellipsoid if a valid ellipsoid has been set.
-
-:rtype: str
 
 .. versionadded:: 3.0
 
@@ -230,8 +206,6 @@ Set the background color of the map
     QColor backgroundColor() const;
 %Docstring
 Get the background color of the map
-
-:rtype: QColor
 %End
 
     void setSelectionColor( const QColor &color );
@@ -241,8 +215,6 @@ Set color that is used for drawing of selected vector features
     QColor selectionColor() const;
 %Docstring
 Get color that is used for drawing of selected vector features
-
-:rtype: QColor
 %End
 
     enum Flag
@@ -274,14 +246,10 @@ Enable or disable a particular flag (other flags are not affected)
     Flags flags() const;
 %Docstring
 Return combination of flags used for rendering
-
-:rtype: Flags
 %End
     bool testFlag( Flag flag ) const;
 %Docstring
 Check whether a particular flag is enabled
-
-:rtype: bool
 %End
 
     void setOutputImageFormat( QImage::Format format );
@@ -291,44 +259,32 @@ sets format of internal QImage
     QImage::Format outputImageFormat() const;
 %Docstring
 format of internal QImage, default QImage.Format_ARGB32_Premultiplied
-
-:rtype: QImage.Format
 %End
 
     bool hasValidSettings() const;
 %Docstring
 Check whether the map settings are valid and can be used for rendering
-
-:rtype: bool
 %End
     QgsRectangle visibleExtent() const;
 %Docstring
 Return the actual extent derived from requested extent that takes takes output image size into account
-
-:rtype: QgsRectangle
 %End
 
     QPolygonF visiblePolygon() const;
 %Docstring
 Return the visible area as a polygon (may be rotated)
 
-:rtype: QPolygonF
-
 .. versionadded:: 2.8
 %End
     double mapUnitsPerPixel() const;
 %Docstring
 Return the distance in geographical coordinates that equals to one pixel in the map
-
-:rtype: float
 %End
 
     double scale() const;
 %Docstring
 Returns the calculated map scale.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 %End
 
     void setExpressionContext( const QgsExpressionContext &context );
@@ -346,8 +302,6 @@ associated with this map settings.
 Gets the expression context. This context should be used for all expression evaluation
 associated with this map settings.
 
-:rtype: QgsExpressionContext
-
 .. seealso:: :py:func:`setExpressionContext()`
 
 .. versionadded:: 2.12
@@ -358,8 +312,6 @@ associated with this map settings.
 Returns the coordinate transform context, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
-
-:rtype: QgsCoordinateTransformContext
 
 .. versionadded:: 3.0
 
@@ -378,18 +330,13 @@ from a source to destination coordinate reference system.
 %End
 
     const QgsMapToPixel &mapToPixel() const;
-%Docstring
-
-:rtype: QgsMapToPixel
-%End
 
     double layerToMapUnits( const QgsMapLayer *layer, const QgsRectangle &referenceExtent = QgsRectangle() ) const;
 %Docstring
 Computes an *estimated* conversion factor between layer and map units: layerUnits * layerToMapUnits = mapUnits
+
 :param layer: The layer
 :param referenceExtent: A reference extent based on which to perform the computation. If not specified, the layer extent is used
-
-:rtype: float
 
 .. versionadded:: 2.12
 %End
@@ -397,8 +344,6 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
     QgsRectangle layerExtentToOutputExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 %Docstring
  transform bounding box from layer's CRS to output CRS
-
-:rtype: QgsRectangle
 
 .. seealso:: :py:func:`layerToMapCoordinates`
 
@@ -408,8 +353,6 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
     QgsRectangle outputExtentToLayerExtent( const QgsMapLayer *layer, QgsRectangle extent ) const;
 %Docstring
  transform bounding box from output CRS to layer's CRS
-
-:rtype: QgsRectangle
 
 .. seealso:: :py:func:`mapToLayerCoordinates`
 
@@ -421,15 +364,11 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
  transform point coordinates from layer's CRS to output CRS
 
 :return: the transformed point
-:rtype: QgsPointXY
-
 %End
 
     QgsRectangle layerToMapCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 %Docstring
  transform rectangle from layer's CRS to output CRS
-
-:rtype: QgsRectangle
 
 .. seealso:: :py:func:`layerExtentToOutputExtent()`
 
@@ -441,15 +380,11 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
  transform point coordinates from output CRS to layer's CRS
 
 :return: the transformed point
-:rtype: QgsPointXY
-
 %End
 
     QgsRectangle mapToLayerCoordinates( const QgsMapLayer *layer, QgsRectangle rect ) const;
 %Docstring
  transform rectangle from output CRS to layer's CRS
-
-:rtype: QgsRectangle
 
 .. seealso:: :py:func:`outputExtentToLayerExtent()`
 
@@ -459,18 +394,15 @@ Computes an *estimated* conversion factor between layer and map units: layerUnit
     QgsCoordinateTransform layerTransform( const QgsMapLayer *layer ) const;
 %Docstring
  Return coordinate transform from layer's CRS to destination CRS
+
 :param layer:
 
 :return: transform - may be invalid if the transform is not needed
-:rtype: QgsCoordinateTransform
-
 %End
 
     QgsRectangle fullExtent() const;
 %Docstring
 returns current extent of layer set
-
-:rtype: QgsRectangle
 %End
 
 
@@ -484,25 +416,23 @@ serialization */
     void setSegmentationTolerance( double tolerance );
 %Docstring
 Sets the segmentation tolerance applied when rendering curved geometries
+
 :param tolerance: the segmentation tolerance*
 %End
     double segmentationTolerance() const;
 %Docstring
 Gets the segmentation tolerance applied when rendering curved geometries
-
-:rtype: float
 %End
 
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 %Docstring
 Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+
 :param type: the segmentation tolerance typename*
 %End
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 %Docstring
 Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-
-:rtype: QgsAbstractGeometry.SegmentationToleranceType
 %End
 
     void setLabelingEngineSettings( const QgsLabelingEngineSettings &settings );
@@ -515,8 +445,6 @@ Sets global configuration of the labeling engine
     const QgsLabelingEngineSettings &labelingEngineSettings() const;
 %Docstring
 Returns global configuration of the labeling engine
-
-:rtype: QgsLabelingEngineSettings
 
 .. versionadded:: 3.0
 %End

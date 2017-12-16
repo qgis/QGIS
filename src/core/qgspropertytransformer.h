@@ -360,12 +360,12 @@ class CORE_EXPORT QgsGenericNumericTransformer : public QgsPropertyTransformer
                                   double nullOutput = 0.0,
                                   double exponent = 1.0 );
 
-    virtual Type transformerType() const override { return GenericNumericTransformer; }
-    virtual QgsGenericNumericTransformer *clone() const override SIP_FACTORY;
-    virtual QVariant toVariant() const override;
-    virtual bool loadVariant( const QVariant &definition ) override;
-    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
-    virtual QString toExpression( const QString &baseExpression ) const override;
+    Type transformerType() const override { return GenericNumericTransformer; }
+    QgsGenericNumericTransformer *clone() const override SIP_FACTORY;
+    QVariant toVariant() const override;
+    bool loadVariant( const QVariant &definition ) override;
+    QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
@@ -490,12 +490,12 @@ class CORE_EXPORT QgsSizeScaleTransformer : public QgsPropertyTransformer
                              double nullSize = 0.0,
                              double exponent = 1.0 );
 
-    virtual Type transformerType() const override { return SizeScaleTransformer; }
-    virtual QgsSizeScaleTransformer *clone() const override SIP_FACTORY;
-    virtual QVariant toVariant() const override;
-    virtual bool loadVariant( const QVariant &definition ) override;
-    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
-    virtual QString toExpression( const QString &baseExpression ) const override;
+    Type transformerType() const override { return SizeScaleTransformer; }
+    QgsSizeScaleTransformer *clone() const override SIP_FACTORY;
+    QVariant toVariant() const override;
+    bool loadVariant( const QVariant &definition ) override;
+    QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Attempts to parse an expression into a corresponding QgsSizeScaleTransformer.
@@ -627,12 +627,12 @@ class CORE_EXPORT QgsColorRampTransformer : public QgsPropertyTransformer
 
     QgsColorRampTransformer &operator=( const QgsColorRampTransformer &other );
 
-    virtual Type transformerType() const override { return ColorRampTransformer; }
-    virtual QgsColorRampTransformer *clone() const override SIP_FACTORY;
-    virtual QVariant toVariant() const override;
-    virtual bool loadVariant( const QVariant &definition ) override;
-    virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
-    virtual QString toExpression( const QString &baseExpression ) const override;
+    Type transformerType() const override { return ColorRampTransformer; }
+    QgsColorRampTransformer *clone() const override SIP_FACTORY;
+    QVariant toVariant() const override;
+    bool loadVariant( const QVariant &definition ) override;
+    QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const override;
+    QString toExpression( const QString &baseExpression ) const override;
 
     /**
      * Calculates the color corresponding to a specific value.

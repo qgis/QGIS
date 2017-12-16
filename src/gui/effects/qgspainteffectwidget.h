@@ -76,7 +76,7 @@ class GUI_EXPORT QgsDrawSourceWidget : public QgsPaintEffectWidget, private Ui::
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsDrawSourceWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
     QgsDrawSourceEffect *mEffect = nullptr;
@@ -109,7 +109,7 @@ class GUI_EXPORT QgsBlurWidget : public QgsPaintEffectWidget, private Ui::Widget
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsBlurWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
     QgsBlurEffect *mEffect = nullptr;
@@ -144,7 +144,7 @@ class GUI_EXPORT QgsShadowEffectWidget : public QgsPaintEffectWidget, private Ui
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsShadowEffectWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
     QgsShadowEffect *mEffect = nullptr;
@@ -180,7 +180,7 @@ class GUI_EXPORT QgsGlowWidget : public QgsPaintEffectWidget, private Ui::Widget
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsGlowWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
     QgsGlowEffect *mEffect = nullptr;
@@ -216,7 +216,7 @@ class GUI_EXPORT QgsTransformWidget : public QgsPaintEffectWidget, private Ui::W
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsTransformWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
     QgsTransformEffect *mEffect = nullptr;
@@ -256,7 +256,7 @@ class GUI_EXPORT QgsColorEffectWidget : public QgsPaintEffectWidget, private Ui:
 
     static QgsPaintEffectWidget *create() SIP_FACTORY { return new QgsColorEffectWidget(); }
 
-    virtual void setPaintEffect( QgsPaintEffect *effect ) override;
+    void setPaintEffect( QgsPaintEffect *effect ) override;
 
   private:
     QgsColorEffect *mEffect = nullptr;

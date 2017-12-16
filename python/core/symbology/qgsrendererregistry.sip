@@ -40,28 +40,14 @@ In C++ you can use QgsRendererMetadata convenience class.
     virtual ~QgsRendererAbstractMetadata();
 
     QString name() const;
-%Docstring
-
-:rtype: str
-%End
     QString visibleName() const;
-%Docstring
-
-:rtype: str
-%End
 
     QIcon icon() const;
-%Docstring
-
-:rtype: QIcon
-%End
     void setIcon( const QIcon &icon );
 
     virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const;
 %Docstring
 Returns flags indicating the types of layer the renderer is compatible with.
-
-:rtype: QgsRendererAbstractMetadata.LayerTypes
 
 .. versionadded:: 2.16
 %End
@@ -70,8 +56,6 @@ Returns flags indicating the types of layer the renderer is compatible with.
 %Docstring
 Return new instance of the renderer given the DOM element. Returns NULL on error.
 Pure virtual function: must be implemented in derived classes.  *
-
-:rtype: QgsFeatureRenderer
 %End
 
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *oldRenderer ) /Factory/;
@@ -82,15 +66,9 @@ The ``oldRenderer`` argument may refer to previously used renderer (or it is nul
 If not null, it may be used to initialize GUI of the widget from the previous settings.
 The old renderer does not have to be of the same type as returned by createRenderer().
 When using ``oldRenderer`` make sure to make a copy of it - it will be deleted afterwards.
-
-:rtype: QgsRendererWidget
 %End
 
     virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) /Factory/;
-%Docstring
-
-:rtype: QgsFeatureRenderer
-%End
 
   protected:
 };
@@ -113,8 +91,6 @@ Convenience metadata class that uses static functions to create renderer and its
   public:
 
 
-
-    virtual ~QgsRendererMetadata();
 
     virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) /Factory/;
     virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
@@ -153,22 +129,20 @@ QgsApplication.rendererRegistry().
     bool addRenderer( QgsRendererAbstractMetadata *metadata /Transfer/ );
 %Docstring
 Adds a renderer to the registry. Takes ownership of the metadata object.
+
 :param metadata: renderer metadata
 
 :return: true if renderer was added successfully, or false if renderer could not
-:rtype: bool
-
 be added (e.g., a renderer with a duplicate name already exists)
 %End
 
     bool removeRenderer( const QString &rendererName );
 %Docstring
 Removes a renderer from registry.
+
 :param rendererName: name of renderer to remove from registry
 
 :return: true if renderer was successfully removed, or false if matching
-:rtype: bool
-
 renderer could not be found
 %End
 
@@ -176,24 +150,20 @@ renderer could not be found
 %Docstring
 Returns the metadata for a specified renderer. Returns NULL if a matching
 renderer was not found in the registry.
-
-:rtype: QgsRendererAbstractMetadata
 %End
 
     QStringList renderersList( QgsRendererAbstractMetadata::LayerTypes layerTypes = QgsRendererAbstractMetadata::All ) const;
 %Docstring
 Returns a list of available renderers.
-:param layerTypes: flags to filter the renderers by compatible layer types
 
-:rtype: list of str
+:param layerTypes: flags to filter the renderers by compatible layer types
 %End
 
     QStringList renderersList( const QgsVectorLayer *layer ) const;
 %Docstring
 Returns a list of available renderers which are compatible with a specified layer.
-:param layer: vector layer
 
-:rtype: list of str
+:param layer: vector layer
 
 .. versionadded:: 2.16
 %End

@@ -49,7 +49,7 @@ class GRASS_LIB_EXPORT QgsGrassVectorMap : public QObject
     };
 
     QgsGrassVectorMap( const QgsGrassObject &grassObject );
-    ~QgsGrassVectorMap();
+    ~QgsGrassVectorMap() override;
 
     QgsGrassObject grassObject() const { return mGrassObject; }
     struct Map_info *map() { return mMap; }

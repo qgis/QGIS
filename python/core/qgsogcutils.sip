@@ -35,32 +35,25 @@ Currently supported standards:
     static QgsGeometry geometryFromGML( const QString &xmlString );
 %Docstring
 Static method that creates geometry from GML
+
 :param xmlString: xml representation of the geometry. GML elements are expected to be
 in default namespace (\verbatim {<Point>...</Point> \endverbatim) or in
 "gml" namespace (\verbatim <gml:Point>...</gml:Point> \endverbatim)
-
-:rtype: QgsGeometry
 %End
 
     static QgsGeometry geometryFromGML( const QDomNode &geometryNode );
 %Docstring
 Static method that creates geometry from GML
-
-:rtype: QgsGeometry
 %End
 
     static QgsRectangle rectangleFromGMLBox( const QDomNode &boxNode );
 %Docstring
 Read rectangle from GML2 Box
-
-:rtype: QgsRectangle
 %End
 
     static QgsRectangle rectangleFromGMLEnvelope( const QDomNode &envelopeNode );
 %Docstring
 Read rectangle from GML3 Envelope
-
-:rtype: QgsRectangle
 %End
 
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc,
@@ -73,8 +66,6 @@ Read rectangle from GML3 Envelope
 Exports the geometry to GML
 
 :return: QDomElement
-:rtype: QDomElement
-
 
 .. versionadded:: 2.16
 %End
@@ -84,8 +75,6 @@ Exports the geometry to GML
 Exports the geometry to GML2 or GML3
 
 :return: QDomElement
-:rtype: QDomElement
-
 %End
 
     static QDomElement geometryToGML( const QgsGeometry &geometry, QDomDocument &doc, int precision = 17 );
@@ -93,8 +82,6 @@ Exports the geometry to GML2 or GML3
 Exports the geometry to GML2
 
 :return: QDomElement
-:rtype: QDomElement
-
 %End
 
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc, int precision = 17 );
@@ -102,8 +89,6 @@ Exports the geometry to GML2
 Exports the rectangle to GML2 Box
 
 :return: QDomElement
-:rtype: QDomElement
-
 %End
 
     static QDomElement rectangleToGMLBox( QgsRectangle *box, QDomDocument &doc,
@@ -114,8 +99,6 @@ Exports the rectangle to GML2 Box
 Exports the rectangle to GML2 Box
 
 :return: QDomElement
-:rtype: QDomElement
-
 
 .. versionadded:: 2.16
 %End
@@ -125,8 +108,6 @@ Exports the rectangle to GML2 Box
 Exports the rectangle to GML3 Envelope
 
 :return: QDomElement
-:rtype: QDomElement
-
 %End
 
     static QDomElement rectangleToGMLEnvelope( QgsRectangle *env, QDomDocument &doc,
@@ -137,8 +118,6 @@ Exports the rectangle to GML3 Envelope
 Exports the rectangle to GML3 Envelope
 
 :return: QDomElement
-:rtype: QDomElement
-
 
 .. versionadded:: 2.16
 %End
@@ -147,15 +126,11 @@ Exports the rectangle to GML3 Envelope
     static QColor colorFromOgcFill( const QDomElement &fillElement );
 %Docstring
 Parse XML with OGC fill into QColor
-
-:rtype: QColor
 %End
 
     static QgsExpression *expressionFromOgcFilter( const QDomElement &element ) /Factory/;
 %Docstring
 Parse XML with OGC filter into QGIS expression
-
-:rtype: QgsExpression
 %End
 
     static QDomElement expressionToOgcFilter( const QgsExpression &exp, QDomDocument &doc, QString *errorMessage = 0 );
@@ -164,8 +139,6 @@ Creates OGC filter XML element. Supports minimum standard filter
 according to the OGC filter specs (=,!=,<,>,<=,>=,AND,OR,NOT)
 
 :return: valid \verbatim <Filter> \endverbatim QDomElement on success,
-:rtype: QDomElement
-
 otherwise null QDomElement
 %End
 
@@ -182,8 +155,6 @@ otherwise null QDomElement
 Creates an OGC expression XML element.
 
 :return: valid OGC expression QDomElement on success,
-:rtype: QDomElement
-
 otherwise null QDomElement
 %End
 
@@ -200,8 +171,6 @@ otherwise null QDomElement
 Creates an OGC expression XML element.
 
 :return: valid OGC expression QDomElement on success,
-:rtype: QDomElement
-
 otherwise null QDomElement
 %End
 

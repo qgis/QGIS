@@ -140,7 +140,7 @@ class CORE_EXPORT QgsSettings : public QObject
      * format used by this constructor.
      */
     explicit QgsSettings( QObject *parent = nullptr );
-    ~QgsSettings();
+    ~QgsSettings() override;
 
     /**
      * Appends prefix to the current group.

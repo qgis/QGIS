@@ -26,28 +26,27 @@ Composer item for polylines.
     QgsComposerPolyline( QgsComposition *c );
 %Docstring
 Constructor
+
 :param c: parent composition
 %End
 
     QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c );
 %Docstring
 Constructor
+
 :param polyline: nodes of the shape
 :param c: parent composition
 %End
 
     virtual QString displayName() const;
+
 %Docstring
 Overridden to return shape name
-
-:rtype: str
 %End
 
     QgsLineSymbol *polylineStyleSymbol();
 %Docstring
 Returns the QgsSymbol used to draw the shape.
-
-:rtype: QgsLineSymbol
 %End
 
     void setPolylineStyleSymbol( QgsLineSymbol *symbol );
@@ -58,8 +57,6 @@ Set the QgsSymbol used to draw the shape.
     virtual int type() const;
 %Docstring
 Overridden to return shape type
-
-:rtype: int
 %End
 
   protected:
@@ -70,8 +67,6 @@ Overridden to return shape type
 %Docstring
 Add the node newPoint at the given position according to some
 criteres. *
-
-:rtype: bool
 %End
 
     virtual bool _removeNode( const int nodeIndex );

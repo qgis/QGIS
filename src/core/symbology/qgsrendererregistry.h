@@ -149,13 +149,11 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     , mLayerTypes( layerTypes )
     {}
 
-    virtual ~QgsRendererMetadata() = default;
-
-    virtual QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY
+    QgsFeatureRenderer *createRenderer( QDomElement &elem, const QgsReadWriteContext &context ) override SIP_FACTORY
     { return mCreateFunc ? mCreateFunc( elem, context ) : nullptr; }
-    virtual QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override SIP_FACTORY
+    QgsRendererWidget *createRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) override SIP_FACTORY
     { return mWidgetFunc ? mWidgetFunc( layer, style, renderer ) : nullptr; }
-    virtual QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override SIP_FACTORY
+    QgsFeatureRenderer *createRendererFromSld( QDomElement &elem, QgsWkbTypes::GeometryType geomType ) override SIP_FACTORY
     { return mCreateFromSldFunc ? mCreateFromSldFunc( elem, geomType ) : nullptr; }
 
     //! \note not available in Python bindings
@@ -168,7 +166,7 @@ class CORE_EXPORT QgsRendererMetadata : public QgsRendererAbstractMetadata
     //! \note not available in Python bindings
     void setWidgetFunction( QgsRendererWidgetFunc f ) { mWidgetFunc = f; } SIP_SKIP
 
-    virtual QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
+    QgsRendererAbstractMetadata::LayerTypes compatibleLayerTypes() const override { return mLayerTypes; }
 
   protected:
     //! pointer to function that creates an instance of the renderer when loading project / style

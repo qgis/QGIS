@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT QgsGraphBuilder : public QgsGraphBuilderInterface
      */
     QgsGraphBuilder( const QgsCoordinateReferenceSystem &crs, bool otfEnabled = true, double topologyTolerance = 0.0, const QString &ellipsoidID = "WGS84" );
 
-    ~QgsGraphBuilder();
+    ~QgsGraphBuilder() override;
 
     /*
      * MANDATORY BUILDER PROPERTY DECLARATION

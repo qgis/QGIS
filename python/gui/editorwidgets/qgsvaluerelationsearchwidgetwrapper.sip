@@ -35,19 +35,18 @@ Constructor for QgsValueRelationSearchWidgetWrapper
     virtual bool valid() const;
 
     QVariant value() const;
-%Docstring
-
-:rtype: QVariant
-%End
     virtual QgsSearchWidgetWrapper::FilterFlags supportedFlags() const;
 
     virtual QgsSearchWidgetWrapper::FilterFlags defaultFlags() const;
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
     virtual void clearWidget();
+
     virtual void setEnabled( bool enabled );
+
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );

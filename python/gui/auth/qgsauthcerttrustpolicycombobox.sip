@@ -25,6 +25,7 @@ Widget for editing the trust policy associated with a Certificate (Intermediate)
       QgsAuthCertUtils::CertTrustPolicy defaultpolicy = QgsAuthCertUtils::DefaultTrust );
 %Docstring
 Construct a combo box for defining certificate trust policy
+
 :param parent: Parent widget
 :param policy: Defined trust policy
 :param defaultpolicy: Default trust policy
@@ -33,15 +34,11 @@ Construct a combo box for defining certificate trust policy
     QgsAuthCertUtils::CertTrustPolicy trustPolicy();
 %Docstring
 Get currently set trust policy
-
-:rtype: QgsAuthCertUtils.CertTrustPolicy
 %End
 
     QgsAuthCertUtils::CertTrustPolicy trustPolicyForIndex( int indx );
 %Docstring
 Get trust policy for a given index of combobox
-
-:rtype: QgsAuthCertUtils.CertTrustPolicy
 %End
 
   public slots:

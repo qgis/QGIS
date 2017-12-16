@@ -26,6 +26,7 @@ Utilities for layouts.
     static void rotate( double angle, double &x, double &y );
 %Docstring
 Rotates a point / vector around the origin.
+
 :param angle: rotation angle in degrees, counterclockwise
 :param x: in/out: x coordinate before / after the rotation
 :param y: in/out: y coordinate before / after the rotation
@@ -36,8 +37,6 @@ Rotates a point / vector around the origin.
 Ensures that an ``angle`` (in degrees) is in the range 0 <= angle < 360.
 If ``allowNegative`` is true then angles between (-360, 360) are allowed. If false,
 angles are converted to positive angles in the range [0, 360).
-
-:rtype: float
 %End
 
     static double snappedAngle( double angle );
@@ -45,8 +44,6 @@ angles are converted to positive angles in the range [0, 360).
 Snaps an ``angle`` (in degrees) to its closest 45 degree angle.
 
 :return: angle snapped to 0, 45/90/135/180/225/270 or 315 degrees
-:rtype: float
-
 %End
 
     static QgsRenderContext createRenderContextForMap( QgsLayoutItemMap *map, QPainter *painter, double dpi = -1 );
@@ -55,8 +52,6 @@ Creates a render context suitable for the specified layout ``map`` and ``painter
 This method returns a new QgsRenderContext which matches the scale and settings of the
 target map. If the ``dpi`` argument is not specified then the dpi will be taken from the destination
 painter device.
-
-:rtype: QgsRenderContext
 
 .. seealso:: :py:func:`createRenderContextForLayout()`
 %End
@@ -69,14 +64,13 @@ QgsLayout.referenceMap().
 If the ``dpi`` argument is not specified then the dpi will be taken from the destination
 painter device.
 
-:rtype: QgsRenderContext
-
 .. seealso:: :py:func:`createRenderContextForMap()`
 %End
 
     static void relativeResizeRect( QRectF &rectToResize, const QRectF &boundsBefore, const QRectF &boundsAfter );
 %Docstring
 Resizes a QRectF relative to a resized bounding rectangle.
+
 :param rectToResize: QRectF to resize, contained within boundsBefore. The
 rectangle is linearly scaled to retain its relative position and size within
 boundsAfter.
@@ -87,6 +81,7 @@ boundsAfter.
     static double relativePosition( const double position, const double beforeMin, const double beforeMax, const double afterMin, const double afterMax );
 %Docstring
 Returns a scaled position given a before and after range
+
 :param position: initial position within before range to scale
 :param beforeMin: minimum value in before range
 :param beforeMax: maximum value in before range
@@ -94,8 +89,6 @@ Returns a scaled position given a before and after range
 :param afterMax: maximum value in after range
 
 :return: position scaled to range specified by afterMin and afterMax
-:rtype: float
-
 %End
 
     static QFont scaledFontPixelSize( const QFont &font );
@@ -103,15 +96,11 @@ Returns a scaled position given a before and after range
 Returns a ``font`` where size is set in points and the size has been upscaled with FONT_WORKAROUND_SCALE
 to workaround QT font rendering bugs.
 Returns a font with size set in pixels.
-
-:rtype: QFont
 %End
 
     static double fontAscentMM( const QFont &font );
 %Docstring
 Calculates a ``font`` ascent in millimeters, including workarounds for QT font rendering issues.
-
-:rtype: float
 
 .. seealso:: :py:func:`fontDescentMM()`
 
@@ -125,8 +114,6 @@ Calculates a ``font`` ascent in millimeters, including workarounds for QT font r
     static double fontDescentMM( const QFont &font );
 %Docstring
 Calculate a ``font`` descent in millimeters, including workarounds for QT font rendering issues.
-
-:rtype: float
 
 .. seealso:: :py:func:`fontAscentMM()`
 
@@ -142,8 +129,6 @@ Calculate a ``font`` descent in millimeters, including workarounds for QT font r
 Calculate a ``font`` height in millimeters, including workarounds for QT font rendering issues.
 The font height is the font ascent + descent + 1 (for the baseline).
 
-:rtype: float
-
 .. seealso:: :py:func:`fontAscentMM()`
 
 .. seealso:: :py:func:`fontDescentMM()`
@@ -158,8 +143,6 @@ The font height is the font ascent + descent + 1 (for the baseline).
 Calculate a ``font`` height in millimeters of a single ``character``, including workarounds for QT font
 rendering issues.
 
-:rtype: float
-
 .. seealso:: :py:func:`fontAscentMM()`
 
 .. seealso:: :py:func:`fontDescentMM()`
@@ -173,8 +156,6 @@ rendering issues.
 %Docstring
 Calculate a ``font`` width in millimeters for a ``text`` string, including workarounds for QT font
 rendering issues.
-
-:rtype: float
 
 .. seealso:: :py:func:`fontAscentMM()`
 
@@ -194,8 +175,6 @@ rendering issues. Note that this method uses a non-standard measure of text heig
 where only the font ascent is considered for the first line of text.
 
 The ``multiLineHeight`` parameter specifies the line spacing factor.
-
-:rtype: float
 
 .. seealso:: :py:func:`textWidthMM()`
 %End
@@ -227,13 +206,12 @@ The ``flags`` parameter allows for passing Qt.TextFlags to control appearance of
 %Docstring
 Calculates the largest scaled version of ``originalRect`` which fits within ``boundsRect``, when it is rotated by
 the a specified ``rotation`` amount.
+
 :param originalRect: QRectF to be rotated and scaled
 :param boundsRect: QRectF specifying the bounds which the rotated and scaled rectangle must fit within
 :param rotation: the rotation in degrees to be applied to the rectangle
 
 :return: largest scaled version of the rectangle possible
-:rtype: QRectF
-
 %End
 
 

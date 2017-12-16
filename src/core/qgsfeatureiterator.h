@@ -245,7 +245,7 @@ class QgsAbstractFeatureIteratorFromSource : public QgsAbstractFeatureIterator
       mSource->iteratorOpened( this );
     }
 
-    ~QgsAbstractFeatureIteratorFromSource()
+    ~QgsAbstractFeatureIteratorFromSource() override
     {
       if ( mOwnSource )
         delete mSource;

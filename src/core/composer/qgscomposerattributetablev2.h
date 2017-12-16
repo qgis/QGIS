@@ -81,7 +81,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
 
     QgsComposerAttributeTableV2( QgsComposition *composition SIP_TRANSFERTHIS, bool createUndoCommands );
 
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     /**
      * Writes properties specific to attribute tables
@@ -90,7 +90,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * \param ignoreFrames ignore frames
      * \see readXml
      */
-    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
 
     /**
      * Reads the properties specific to an attribute table from xml.
@@ -99,9 +99,9 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      * \param ignoreFrames ignore frames
      * \see writeXml
      */
-    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
 
-    virtual void addFrame( QgsComposerFrame *frame SIP_TRANSFER, bool recalcFrameSizes = true ) override;
+    void addFrame( QgsComposerFrame *frame SIP_TRANSFER, bool recalcFrameSizes = true ) override;
 
     /**
      * Sets the source for attributes to show in table body.
@@ -337,7 +337,7 @@ class CORE_EXPORT QgsComposerAttributeTableV2: public QgsComposerTableV2
      */
     bool getTableContents( QgsComposerTableContents &contents ) override SIP_SKIP;
 
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
   private:
 

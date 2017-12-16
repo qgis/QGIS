@@ -35,8 +35,6 @@ Constructor for QgsFormAnnotation.
     QSizeF preferredFrameSize() const;
 %Docstring
 Returns the optimal frame size
-
-:rtype: QSizeF
 %End
 
     void setDesignerForm( const QString &uiFile );
@@ -50,13 +48,13 @@ Sets the path to the Qt Designer UI file to show in the annotation.
 %Docstring
 Returns the path to the Qt Designer UI file to show in the annotation.
 
-:rtype: str
-
 .. seealso:: :py:func:`setDesignerForm()`
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
     virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context );
+
 
     virtual void setAssociatedFeature( const QgsFeature &feature );
 
@@ -64,8 +62,6 @@ Returns the path to the Qt Designer UI file to show in the annotation.
     static QgsFormAnnotation *create() /Factory/;
 %Docstring
 Returns a new QgsFormAnnotation object.
-
-:rtype: QgsFormAnnotation
 %End
 
   protected:

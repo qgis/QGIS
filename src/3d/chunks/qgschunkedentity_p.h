@@ -54,7 +54,7 @@ class QgsChunkedEntity : public Qt3DCore::QEntity
   public:
     //! Constructs a chunked entity
     QgsChunkedEntity( const QgsAABB &rootBbox, float rootError, float mTau, int mMaxLevel, QgsChunkLoaderFactory *loaderFactory, Qt3DCore::QNode *parent = nullptr );
-    ~QgsChunkedEntity();
+    ~QgsChunkedEntity() override;
 
     //! Records some bits about the scene (context for update() method)
     struct SceneState

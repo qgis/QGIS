@@ -56,8 +56,6 @@ The ``precision`` argument gives the number of decimal places to include for coo
 
 Optional ``flags`` can be specified to control the output format.
 
-:rtype: str
-
 .. seealso:: :py:func:`formatY()`
 %End
 
@@ -71,8 +69,6 @@ The ``precision`` argument gives the number of decimal places to include for coo
 
 Optional ``flags`` can be specified to control the output format.
 
-:rtype: str
-
 .. seealso:: :py:func:`formatX()`
 %End
 
@@ -85,16 +81,12 @@ The ``format`` argument indicates the desired display format for the coordinate.
 The ``precision`` argument gives the number of decimal places to include for coordinates.
 
 Optional ``flags`` can be specified to control the output format.
-
-:rtype: str
 %End
 
     static QString asPair( double x, double y, int precision = 12 );
 %Docstring
 Formats coordinates as an "``x``,``y``" pair, with optional decimal ``precision`` (number
 of decimal places to include).
-
-:rtype: str
 %End
 
 };
