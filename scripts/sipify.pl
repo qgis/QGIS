@@ -947,8 +947,8 @@ while ($LINE_IDX < $LINE_COUNT){
         }
         else {
             dbg_info('writing comment');
-            write_output("CM1", "%Docstring\n");
             if ( $COMMENT !~ m/^\s*$/ ){
+                write_output("CM1", "%Docstring\n");
                 my @comment_lines = split /\n/, $COMMENT;
                 foreach my $comment_line (@comment_lines) {
                   # if ( $RETURN_TYPE ne '' && $comment_line =~ m/^\s*\.\. \w/ ){
@@ -963,11 +963,11 @@ while ($LINE_IDX < $LINE_COUNT){
                   #     $RETURN_TYPE = '';
                   # }
                 }
+            write_output("CM4", "%End\n");
             }
             # if ( $RETURN_TYPE ne '' ){
             #     write_output("CM3", "\n:rtype: $RETURN_TYPE\n");
             # }
-            write_output("CM4", "%End\n");
         }
         $COMMENT = '';
         $RETURN_TYPE = '';
