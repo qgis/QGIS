@@ -150,8 +150,6 @@ Factory annotation
 %End
 
     SomeObject *createAnother() /Factory/;
-%Docstring
-%End
 
     virtual SomeObject *createAnother2() /Factory/;
 
@@ -177,8 +175,6 @@ I return a pointer. If something bad happens, I return None.
 %End
 
     bool isOKwithErrMesg( QString &ErrMsg /Out/ );
-%Docstring
-%End
 
     void InOutParam( bool &ok = true /In,Out/ );
 
@@ -194,20 +190,14 @@ complex default value and type (i.e. containing commas) should be given as a str
 %End
 
     int inlineKeyWordShouldNotAppear();
-%Docstring
-%End
 
     QString labelForRange( double lower, double upper ) const /PyName=labelForLowerUpper/;
-%Docstring
-%End
 
     void setComposition( QgsComposition *c /KeepReference/ );
 
     void removeProxyFactory( QNetworkProxyFactory *factory /TransferBack/ );
 
     bool removeFunctionBody( const QList<int, QString> &list, QgsVectorLayer *vl, Some::Thing _part = -1 /*default =-1*/ );
-%Docstring
-%End
 
 
     void multilineBodyAndDefinition( const QList<int,
@@ -240,34 +230,20 @@ Mulitline body
                                          const QList<int, QString> &list2 );
 
     QString returnTypeString() const;
-%Docstring
-%End
 
     double returnTypeDouble() const;
-%Docstring
-%End
 
     QList< QgsAnnotation * > returnTypeList();
-%Docstring
-%End
 
     QVector< QgsAnnotation > returnTypeVector();
-%Docstring
-%End
 
     QStringList returnTypeStringList();
-%Docstring
-%End
 
     QSet<QgsActionScope> returnTypeSet();
-%Docstring
-%End
 
     This<Member> shouldBeIncluded;
 
     static QString invokableMethod();
-%Docstring
-%End
 
     bool initializedMember;
 
@@ -276,8 +252,6 @@ Mulitline body
       explicit PublicStruct( int _part = -1, int _ring = -1, int _vertex = -1, VertexType _type = SegmentVertex );
 
       bool isValid( const QgsAbstractGeometry *geom ) const;
-%Docstring
-%End
 
       int part;
       int ring;
@@ -325,8 +299,6 @@ remove argument
 
   protected:
     bool thisShouldBeListed();
-%Docstring
-%End
 
 
   private:
