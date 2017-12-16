@@ -1085,7 +1085,7 @@ QgsProjectItem::QgsProjectItem( QgsDataItem *parent, const QString &name, const 
   : QgsDataItem( QgsDataItem::Project, parent, name, path )
 {
   mIconName = QStringLiteral( ":/images/icons/qgis-icon-16x16.png" );
-
+  setToolTip( QDir::toNativeSeparators( path ) );
   setState( Populated ); // no more children
 }
 
