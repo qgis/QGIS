@@ -114,7 +114,7 @@ class ProcessingLog:
         entries = ProcessingLog.getLogEntries()
         with codecs.open(fileName, 'w', encoding='utf-8') as f:
             for entry in entries:
-                f.write('ALGORITHM{}{}{}{}\n'.format(LOG_SEPARATOR, entry.date, LOG_SEPARATORentry.text))
+                f.write('ALGORITHM{}{}{}{}\n'.format(LOG_SEPARATOR, entry.date, LOG_SEPARATOR, entry.text))
 
     @staticmethod
     def tr(string, context=''):
