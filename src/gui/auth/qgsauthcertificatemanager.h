@@ -44,7 +44,7 @@ class GUI_EXPORT QgsAuthCertEditors : public QWidget, private Ui::QgsAuthCertMan
     /**
      * Destructor: store last selected tab
      */
-    ~QgsAuthCertEditors( );
+    ~QgsAuthCertEditors( ) override;
 
 };
 

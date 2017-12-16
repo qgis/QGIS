@@ -93,7 +93,7 @@ class QgsNetworkDiskCache : public QNetworkDiskCache
 
   protected:
     //! \see QNetworkDiskCache::expire()
-    virtual qint64 expire() override;
+    qint64 expire() override;
 
   private:
     explicit QgsNetworkDiskCache( QObject *parent );

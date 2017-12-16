@@ -88,11 +88,15 @@ Also resolves textual references to layers from the project (calls resolveRefere
 
     virtual void writeXml( QDomElement &parentElement, const QgsReadWriteContext &context );
 
+
     virtual QString dump() const;
+
 
     virtual QgsLayerTreeLayer *clone() const /Factory/;
 
+
     virtual void resolveReferences( const QgsProject *project, bool looseMatching = false );
+
 %Docstring
 Resolves reference to layer from stored layer ID (if it has not been resolved already)
 

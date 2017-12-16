@@ -29,7 +29,7 @@ class APP_EXPORT QgsMapToolSelect : public QgsMapTool
     QgsMapToolSelect( QgsMapCanvas *canvas );
 
     //! Overridden mouse release event
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
 
   private:
     QColor mFillColor;

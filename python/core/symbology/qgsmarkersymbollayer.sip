@@ -299,6 +299,7 @@ Creates a new QgsSimpleMarkerSymbolLayer from an SLD XML element.
     virtual QColor color() const;
 
 
+
     virtual QColor strokeColor() const;
 %Docstring
 Returns the marker's stroke color.
@@ -484,6 +485,7 @@ Prepares cache image
 
   private:
     virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) ;
+
 };
 
 class QgsFilledMarkerSymbolLayer : QgsSimpleMarkerSymbolLayerBase
@@ -533,17 +535,22 @@ Creates a new QgsFilledMarkerSymbolLayer.
     virtual QgsFilledMarkerSymbolLayer *clone() const /Factory/;
 
     virtual QgsSymbol *subSymbol();
+
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
     virtual void setColor( const QColor &c );
 
     virtual QColor color() const;
 
+
   private:
     QgsFilledMarkerSymbolLayer( const QgsFilledMarkerSymbolLayer & );
     virtual void draw( QgsSymbolRenderContext &context, QgsSimpleMarkerSymbolLayerBase::Shape shape, const QPolygonF &polygon, const QPainterPath &path ) ;
+
 };
 
 

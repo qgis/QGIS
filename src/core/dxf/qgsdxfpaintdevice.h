@@ -38,7 +38,7 @@ class CORE_EXPORT QgsDxfPaintDevice: public QPaintDevice
 {
   public:
     QgsDxfPaintDevice( QgsDxfExport *dxf );
-    ~QgsDxfPaintDevice();
+    ~QgsDxfPaintDevice() override;
 
     QPaintEngine *paintEngine() const override;
 

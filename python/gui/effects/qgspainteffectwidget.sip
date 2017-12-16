@@ -59,6 +59,7 @@ class QgsDrawSourceWidget : QgsPaintEffectWidget
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
 
+
 };
 
 
@@ -80,6 +81,7 @@ class QgsBlurWidget : QgsPaintEffectWidget
 %End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 
@@ -103,6 +105,7 @@ class QgsShadowEffectWidget : QgsPaintEffectWidget
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
 
+
 };
 
 
@@ -124,6 +127,7 @@ class QgsGlowWidget : QgsPaintEffectWidget
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
 
+
 };
 
 
@@ -143,6 +147,7 @@ class QgsTransformWidget : QgsPaintEffectWidget
 %End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 
@@ -164,6 +169,7 @@ class QgsColorEffectWidget : QgsPaintEffectWidget
 %End
 
     virtual void setPaintEffect( QgsPaintEffect *effect );
+
 
 };
 

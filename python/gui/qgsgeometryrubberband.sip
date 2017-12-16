@@ -82,6 +82,7 @@ Sets vertex marker icon type
   protected:
     virtual void paint( QPainter *painter );
 
+
 };
 
 /************************************************************************

@@ -45,7 +45,7 @@ class CORE_EXPORT QgsNetworkContentFetcher : public QObject
      */
     QgsNetworkContentFetcher() = default;
 
-    virtual ~QgsNetworkContentFetcher();
+    ~QgsNetworkContentFetcher() override;
 
     /**
      * Fetches content from a remote URL and handles redirects. The finished()

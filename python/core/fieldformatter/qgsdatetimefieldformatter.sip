@@ -32,7 +32,9 @@ Default constructor of field formatter for a date time field.
 
     virtual QString id() const;
 
+
     virtual QString representValue( QgsVectorLayer *layer, int fieldIndex, const QVariantMap &config, const QVariant &cache, const QVariant &value ) const;
+
 
     static QString defaultFormat( QVariant::Type type );
 %Docstring

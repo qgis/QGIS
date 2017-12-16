@@ -93,7 +93,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
      */
     explicit QgsIdentifyMenu( QgsMapCanvas *canvas );
 
-    ~QgsIdentifyMenu();
+    ~QgsIdentifyMenu() override;
 
     //! define if the menu executed can return multiple results (e.g. all results or all identified features of a vector layer)
     void setAllowMultipleReturn( bool multipleReturn ) { mAllowMultipleReturn = multipleReturn;}
@@ -161,7 +161,7 @@ class GUI_EXPORT QgsIdentifyMenu : public QMenu
     QList<QgsMapToolIdentify::IdentifyResult> exec( const QList<QgsMapToolIdentify::IdentifyResult> &idResults, QPoint pos );
 
   protected:
-    virtual void closeEvent( QCloseEvent *e ) override;
+    void closeEvent( QCloseEvent *e ) override;
 
   private slots:
     void handleMenuHover();

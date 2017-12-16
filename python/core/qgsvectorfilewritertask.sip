@@ -38,6 +38,7 @@ and save ``options``.
 
     virtual void cancel();
 
+
   signals:
 
     void writeComplete( const QString &newFilename );
@@ -55,7 +56,9 @@ the task is canceled). The writing ``error`` and ``errorMessage`` will be report
   protected:
 
     virtual bool run();
+
     virtual void finished( bool result );
+
 
 };
 

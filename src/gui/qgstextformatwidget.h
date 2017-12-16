@@ -61,7 +61,7 @@ class GUI_EXPORT QgsTextFormatWidget : public QWidget, protected Ui::QgsTextForm
      */
     QgsTextFormatWidget( const QgsTextFormat &format = QgsTextFormat(), QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsTextFormatWidget();
+    ~QgsTextFormatWidget() override;
 
     /**
      * Returns the current formatting settings defined by the widget.
@@ -234,7 +234,7 @@ class GUI_EXPORT QgsTextFormatDialog : public QDialog
      */
     QgsTextFormatDialog( const QgsTextFormat &format, QgsMapCanvas *mapCanvas = nullptr, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
 
-    virtual ~QgsTextFormatDialog();
+    ~QgsTextFormatDialog() override;
 
     /**
      * Returns the current formatting settings defined by the widget.
@@ -277,7 +277,7 @@ class GUI_EXPORT QgsTextFormatPanelWidget : public QgsPanelWidgetWrapper
      */
     QgsTextFormat format() const;
 
-    virtual void setDockMode( bool dockMode ) override;
+    void setDockMode( bool dockMode ) override;
 
   private:
 

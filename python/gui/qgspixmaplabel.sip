@@ -26,6 +26,7 @@ Constructor for QgsPixmapLabel
 %End
 
     virtual int heightForWidth( int width ) const;
+
 %Docstring
 Calculates the height for the given width.
 
@@ -37,6 +38,7 @@ Calculates the height for the given width.
 %End
 
     virtual QSize sizeHint() const;
+
 %Docstring
 An optimal size for the widget. Effectively using the height
 determined from the width with the given aspect ratio.

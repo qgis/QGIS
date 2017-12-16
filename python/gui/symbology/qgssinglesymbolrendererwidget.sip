@@ -27,9 +27,12 @@ class QgsSingleSymbolRendererWidget : QgsRendererWidget
 
     virtual QgsFeatureRenderer *renderer();
 
+
     virtual void setContext( const QgsSymbolWidgetContext &context );
 
+
     virtual void setDockMode( bool dockMode );
+
 %Docstring
 Set the widget in dock mode which tells the widget to emit panel
 widgets and not open dialogs

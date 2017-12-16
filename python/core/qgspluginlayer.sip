@@ -27,6 +27,7 @@ In order to be readable from project files, they should set these attributes in 
     ~QgsPluginLayer();
 
     virtual QgsPluginLayer *clone() const = 0;
+
 %Docstring
 Returns a new instance equivalent to this one.
 

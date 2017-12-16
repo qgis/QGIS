@@ -46,6 +46,7 @@ The caller takes responsibility for deleting the returned object.
 
     virtual QString displayName() const;
 
+
     void adjustSizeToText();
 %Docstring
 Resizes the item so that the label's text fits to the item. Keeps the top left point stationary.

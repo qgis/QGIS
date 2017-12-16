@@ -47,8 +47,6 @@ class GUI_EXPORT QgsComposerInterface: public QObject
       : QObject( parent )
     {}
 
-    virtual ~QgsComposerInterface() = default;
-
     /**
      * Returns the composer's QgsComposerView editor widget.
      */

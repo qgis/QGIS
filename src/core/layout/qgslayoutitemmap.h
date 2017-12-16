@@ -67,7 +67,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
      * Constructor for QgsLayoutItemMap, with the specified parent \a layout.
      */
     explicit QgsLayoutItemMap( QgsLayout *layout );
-    ~QgsLayoutItemMap();
+    ~QgsLayoutItemMap() override;
 
     int type() const override;
 
@@ -77,7 +77,7 @@ class CORE_EXPORT QgsLayoutItemMap : public QgsLayoutItem
     void assignFreeId();
 
     //overridden to show "Map 1" type names
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     /**
      * Returns a new map item for the specified \a layout.

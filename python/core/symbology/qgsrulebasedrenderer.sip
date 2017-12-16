@@ -518,6 +518,7 @@ Constructor for convenience. Creates a root rule and adds a default rule with sy
     ~QgsRuleBasedRenderer();
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
 %Docstring
 return symbol for current feature. Should not be used individually: there could be more symbols for a feature
 
@@ -526,19 +527,27 @@ return symbol for current feature. Should not be used individually: there could 
 
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
 
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
 
     virtual void stopRender( QgsRenderContext &context );
 
+
     virtual QString filter( const QgsFields &fields = QgsFields() );
+
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
 
+
     virtual bool filterNeedsGeometry() const;
+
 
     virtual QgsRuleBasedRenderer *clone() const /Factory/;
 
+
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
@@ -548,18 +557,30 @@ return symbol for current feature. Should not be used individually: there could 
 
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
+
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
     virtual bool legendSymbolItemsCheckable() const;
+
     virtual bool legendSymbolItemChecked( const QString &key );
+
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
 
+
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
+
     virtual QgsLegendSymbolList legendSymbolItems() const;
+
     virtual QString dump() const;
+
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
+
     virtual QSet<QString> legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsFeatureRenderer::Capabilities capabilities();
 
 

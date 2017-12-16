@@ -502,6 +502,7 @@ Sets mCompositionMap to 0 if the map is deleted
 %End
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
 
+
 };
 
 

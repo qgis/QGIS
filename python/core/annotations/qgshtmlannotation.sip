@@ -30,8 +30,6 @@ An annotation item that embeds HTML content.
 Constructor for QgsHtmlAnnotation.
 %End
 
-    ~QgsHtmlAnnotation();
-
     virtual QgsHtmlAnnotation *clone() const /Factory/;
 
 
@@ -55,7 +53,9 @@ Returns the file path for the source HTML file.
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
     virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context );
+
 
     virtual void setAssociatedFeature( const QgsFeature &feature );
 

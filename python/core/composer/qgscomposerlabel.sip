@@ -198,6 +198,7 @@ Sets state from Dom document
 
     virtual QString displayName() const;
 
+
     virtual QRectF boundingRect() const;
 
 %Docstring
@@ -208,11 +209,13 @@ label's frame
 %End
 
     virtual void setFrameEnabled( const bool drawFrame );
+
 %Docstring
 Reimplemented to call prepareGeometryChange after toggling frame
 %End
 
     virtual void setFrameStrokeWidth( const double strokeWidth );
+
 %Docstring
 Reimplemented to call prepareGeometryChange after changing stroke width
 %End

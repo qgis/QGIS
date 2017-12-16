@@ -107,6 +107,7 @@ applies to some icon types.
 
     virtual void updatePosition();
 
+
 };
 
 /************************************************************************

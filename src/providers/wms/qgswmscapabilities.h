@@ -775,7 +775,7 @@ class QgsWmsCapabilitiesDownload : public QObject
 
     QgsWmsCapabilitiesDownload( const QString &baseUrl, const QgsWmsAuthorization &auth, bool forceRefresh, QObject *parent = nullptr );
 
-    virtual ~QgsWmsCapabilitiesDownload();
+    ~QgsWmsCapabilitiesDownload() override;
 
     bool downloadCapabilities();
 

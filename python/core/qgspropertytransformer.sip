@@ -378,10 +378,15 @@ Constructor for QgsGenericNumericTransformer.
 
     virtual Type transformerType() const;
     virtual QgsGenericNumericTransformer *clone() const /Factory/;
+
     virtual QVariant toVariant() const;
+
     virtual bool loadVariant( const QVariant &definition );
+
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+
     virtual QString toExpression( const QString &baseExpression ) const;
+
 
     static QgsGenericNumericTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
@@ -530,10 +535,15 @@ Constructor for QgsSizeScaleTransformer.
 
     virtual Type transformerType() const;
     virtual QgsSizeScaleTransformer *clone() const /Factory/;
+
     virtual QVariant toVariant() const;
+
     virtual bool loadVariant( const QVariant &definition );
+
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+
     virtual QString toExpression( const QString &baseExpression ) const;
+
 
     static QgsSizeScaleTransformer *fromExpression( const QString &expression, QString &baseExpression /Out/, QString &fieldName /Out/ ) /Factory/;
 %Docstring
@@ -694,10 +704,15 @@ Copy constructor
 
     virtual Type transformerType() const;
     virtual QgsColorRampTransformer *clone() const /Factory/;
+
     virtual QVariant toVariant() const;
+
     virtual bool loadVariant( const QVariant &definition );
+
     virtual QVariant transform( const QgsExpressionContext &context, const QVariant &value ) const;
+
     virtual QString toExpression( const QString &baseExpression ) const;
+
 
     QColor color( double value ) const;
 %Docstring

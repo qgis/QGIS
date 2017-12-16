@@ -32,7 +32,9 @@ Static creation method
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
 };
 

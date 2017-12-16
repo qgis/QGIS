@@ -166,11 +166,15 @@ Returns the feature id for a given model index.
 
     virtual QModelIndex mapToSource( const QModelIndex &proxyIndex ) const;
 
+
     virtual QModelIndex mapFromSource( const QModelIndex &sourceIndex ) const;
+
 
     virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
 
+
     virtual void sort( int column, Qt::SortOrder order = Qt::AscendingOrder );
+
 %Docstring
 Sort by the given column using the given order.
 Prefetches all the data from the layer to speed up sorting.
@@ -203,6 +207,7 @@ Returns the map canvas
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
+
 
     virtual QVariant headerData( int section, Qt::Orientation orientation, int role ) const;
 

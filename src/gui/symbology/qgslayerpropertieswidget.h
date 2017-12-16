@@ -73,7 +73,7 @@ class GUI_EXPORT QgsLayerPropertiesWidget : public QgsPanelWidget, public QgsExp
      * widgets and not open dialogs
      * \param dockMode True to enable dock mode.
      */
-    virtual void setDockMode( bool dockMode ) override;
+    void setDockMode( bool dockMode ) override;
 
   public slots:
     void layerTypeChanged();

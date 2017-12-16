@@ -28,9 +28,9 @@ class QgsMapToolCircularStringRadius: public QgsMapToolAddCircularString
   public:
     QgsMapToolCircularStringRadius( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
 
-    virtual void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void deactivate() override;
+    void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void deactivate() override;
 
   private slots:
     void updateRadiusFromSpinBox( double radius );

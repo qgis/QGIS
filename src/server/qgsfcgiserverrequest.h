@@ -36,7 +36,7 @@ class SERVER_EXPORT QgsFcgiServerRequest: public QgsServerRequest
   public:
     QgsFcgiServerRequest();
 
-    virtual QByteArray data() const override;
+    QByteArray data() const override;
 
     /**
      * Return true if an error occurred during initialization

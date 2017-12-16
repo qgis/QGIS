@@ -46,7 +46,7 @@ class CORE_EXPORT QgsTracer : public QObject
      * Constructor for QgsTracer.
      */
     QgsTracer();
-    ~QgsTracer();
+    ~QgsTracer() override;
 
     //! Get layers used for tracing
     QList<QgsVectorLayer *> layers() const { return mLayers; }

@@ -50,7 +50,7 @@ class GUI_EXPORT QgsTaskManagerWidget : public QWidget
      */
     QgsTaskManagerWidget( QgsTaskManager *manager, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsTaskManagerWidget();
+    ~QgsTaskManagerWidget() override;
 
   private slots:
 

@@ -50,6 +50,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 %End
 
     virtual void setDockMode( bool dockMode );
+
 %Docstring
 Set the widget in dock mode which tells the widget to emit panel
 widgets and not open dialogs

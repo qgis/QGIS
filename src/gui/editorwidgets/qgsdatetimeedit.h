@@ -57,7 +57,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
      * Set the current date as NULL
      * \note if the widget is not configured to accept NULL dates, this will have no effect
      */
-    virtual void clear() override;
+    void clear() override;
 
     /**
      * Resets the widget to show no value (ie, an "unknown" state).
@@ -66,7 +66,7 @@ class GUI_EXPORT QgsDateTimeEdit : public QDateTimeEdit
     void setEmpty();
 
   protected:
-    virtual void resizeEvent( QResizeEvent *event ) override;
+    void resizeEvent( QResizeEvent *event ) override;
 
     void mousePressEvent( QMouseEvent *event ) override;
 

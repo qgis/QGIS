@@ -25,7 +25,9 @@ class QgsShadowEffect : QgsPaintEffect
     QgsShadowEffect();
 
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
 
     void setBlurLevel( const int level );
 %Docstring
@@ -216,7 +218,9 @@ paint device
   protected:
 
     virtual QRectF boundingRect( const QRectF &rect, const QgsRenderContext &context ) const;
+
     virtual void draw( QgsRenderContext &context );
+
 
     virtual bool exteriorShadow() const = 0;
 %Docstring
@@ -259,11 +263,14 @@ Creates a new QgsDropShadowEffect effect from a properties string map.
     QgsDropShadowEffect();
 
     virtual QString type() const;
+
     virtual QgsDropShadowEffect *clone() const /Factory/;
+
 
   protected:
 
     virtual bool exteriorShadow() const;
+
 
 };
 
@@ -294,11 +301,14 @@ Creates a new QgsInnerShadowEffect effect from a properties string map.
     QgsInnerShadowEffect();
 
     virtual QString type() const;
+
     virtual QgsInnerShadowEffect *clone() const /Factory/;
+
 
   protected:
 
     virtual bool exteriorShadow() const;
+
 
 };
 

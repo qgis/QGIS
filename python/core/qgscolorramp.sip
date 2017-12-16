@@ -162,11 +162,16 @@ Creates a new QgsColorRamp from a map of properties
 
     virtual int count() const;
     virtual double value( int index ) const;
+
     virtual QColor color( double value ) const;
+
     virtual QString type() const;
     virtual void invert();
+
     virtual QgsGradientColorRamp *clone() const /Factory/;
+
     virtual QgsStringMap properties() const;
+
 
     QColor color1() const;
 %Docstring
@@ -332,10 +337,14 @@ map.
 %End
 
     virtual double value( int index ) const;
+
     virtual QColor color( double value ) const;
+
     virtual QString type() const;
     virtual QgsLimitedRandomColorRamp *clone() const /Factory/;
+
     virtual QgsStringMap properties() const;
+
     virtual int count() const;
 
     static QList<QColor> randomColors( int count,
@@ -503,7 +512,9 @@ by subsequent calls to color().
 
     virtual QgsRandomColorRamp *clone() const /Factory/;
 
+
     virtual QgsStringMap properties() const;
+
 
   protected:
 
@@ -571,11 +582,16 @@ Returns the list of colors used by the ramp.
 %End
 
     virtual double value( int index ) const;
+
     virtual QColor color( double value ) const;
+
     virtual QString type() const;
     virtual void invert();
+
     virtual QgsPresetSchemeColorRamp *clone() const /Factory/;
+
     virtual QgsStringMap properties() const;
+
     virtual int count() const;
 
 
@@ -623,11 +639,16 @@ map.
 %End
 
     virtual double value( int index ) const;
+
     virtual QColor color( double value ) const;
+
     virtual QString type() const;
     virtual void invert();
+
     virtual QgsColorBrewerColorRamp *clone() const /Factory/;
+
     virtual QgsStringMap properties() const;
+
     virtual int count() const;
 
     QString schemeName() const;
@@ -740,7 +761,9 @@ Constructor for QgsCptCityColorRamp
 
     virtual void invert();
 
+
     virtual QgsCptCityColorRamp *clone() const /Factory/;
+
     void copy( const QgsCptCityColorRamp *other );
     QgsGradientColorRamp *cloneGradientRamp() const /Factory/;
 %Docstring
@@ -749,6 +772,7 @@ Constructor for QgsCptCityColorRamp
 %End
 
     virtual QgsStringMap properties() const;
+
 
     QString schemeName() const;
 %Docstring

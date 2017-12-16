@@ -22,14 +22,19 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
   public:
 
     QgsHeatmapRenderer();
-    virtual ~QgsHeatmapRenderer();
+    ~QgsHeatmapRenderer();
 
 
     virtual QgsHeatmapRenderer *clone() const /Factory/;
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
+
     virtual void stopRender( QgsRenderContext &context );
+
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
 %Docstring
 
 :rtype: QgsSymbol
@@ -39,6 +44,7 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
    symbolForFeature2 in Python bindings
 %End
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
 %Docstring
 
 :rtype: QgsSymbolList
@@ -48,7 +54,9 @@ class QgsHeatmapRenderer : QgsFeatureRenderer
    symbol2 in Python bindings
 %End
     virtual QString dump() const;
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates a new heatmap renderer instance from XML
@@ -56,6 +64,7 @@ Creates a new heatmap renderer instance from XML
 :rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
     static QgsHeatmapRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 
@@ -63,6 +72,7 @@ Creates a new heatmap renderer instance from XML
 %End
 
     virtual void modifyRequestExtent( QgsRectangle &extent, QgsRenderContext &context );
+
 
 
     QgsColorRamp *colorRamp() const;

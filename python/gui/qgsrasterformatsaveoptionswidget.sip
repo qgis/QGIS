@@ -123,6 +123,7 @@ Reloads profiles list from QGIS settings
   protected:
     virtual void showEvent( QShowEvent *event );
 
+
   signals:
     void optionsChanged();
 

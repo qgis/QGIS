@@ -219,7 +219,7 @@ class GUI_EXPORT QgsSearchWidgetWrapper : public QgsWidgetWrapper
      * Toggles whether the search widget is enabled or disabled.
      * \param enabled set to true to enable widget
      */
-    virtual void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
+    void setEnabled( bool enabled ) override { Q_UNUSED( enabled ); }
 
   signals:
 

@@ -52,6 +52,7 @@ Sets the contents of the text table.
 
     virtual void addFrame( QgsComposerFrame *frame, bool recalcFrameSizes = true );
 
+
 };
 
 /************************************************************************

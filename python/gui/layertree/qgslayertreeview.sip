@@ -46,6 +46,7 @@ Constructor for QgsLayerTreeView
     ~QgsLayerTreeView();
 
     virtual void setModel( QAbstractItemModel *model );
+
 %Docstring
 Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable model.
 %End

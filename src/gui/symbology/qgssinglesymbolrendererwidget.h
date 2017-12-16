@@ -36,18 +36,18 @@ class GUI_EXPORT QgsSingleSymbolRendererWidget : public QgsRendererWidget
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) SIP_FACTORY;
 
     QgsSingleSymbolRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
-    ~QgsSingleSymbolRendererWidget();
+    ~QgsSingleSymbolRendererWidget() override;
 
-    virtual QgsFeatureRenderer *renderer() override;
+    QgsFeatureRenderer *renderer() override;
 
-    virtual void setContext( const QgsSymbolWidgetContext &context ) override;
+    void setContext( const QgsSymbolWidgetContext &context ) override;
 
     /**
      * Set the widget in dock mode which tells the widget to emit panel
      * widgets and not open dialogs
      * \param dockMode True to enable dock mode.
      */
-    virtual void setDockMode( bool dockMode ) override;
+    void setDockMode( bool dockMode ) override;
 
   private slots:
     void changeSingleSymbol();

@@ -66,6 +66,7 @@ Returns details about the currently selected stop.
 %End
 
     virtual QSize sizeHint() const;
+
     virtual void paintEvent( QPaintEvent *event );
 
 
@@ -149,9 +150,13 @@ Emitted when the current selected stop changes.
   protected:
 
     virtual void mouseMoveEvent( QMouseEvent *event );
+
     virtual void mousePressEvent( QMouseEvent *event );
+
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
+
     virtual void keyPressEvent( QKeyEvent *event );
+
 
     virtual void dragEnterEvent( QDragEnterEvent *e );
 

@@ -30,7 +30,9 @@ Constructor
 %End
 
     virtual void createSearchWidgetWrappers();
+
     virtual QString currentFilterExpression() const;
+
 
 };
 

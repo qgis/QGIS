@@ -40,14 +40,14 @@ class GUI_EXPORT QgsPixmapLabel : public QLabel
      * \param width The width for the widget
      * \returns An appropriate height
      */
-    virtual int heightForWidth( int width ) const override;
+    int heightForWidth( int width ) const override;
 
     /**
      * An optimal size for the widget. Effectively using the height
      * determined from the width with the given aspect ratio.
      * \returns A size hint
      */
-    virtual QSize sizeHint() const override;
+    QSize sizeHint() const override;
 
   public slots:
     void setPixmap( const QPixmap & );

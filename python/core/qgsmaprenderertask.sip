@@ -77,7 +77,9 @@ Emitted when map rendering failed.
   protected:
 
     virtual bool run();
+
     virtual void finished( bool result );
+
 
 };
 

@@ -64,11 +64,11 @@ class QgsWFSProvider : public QgsVectorDataProvider
   public:
 
     explicit QgsWFSProvider( const QString &uri, const QgsWfsCapabilities::Capabilities &caps = QgsWfsCapabilities::Capabilities() );
-    ~QgsWFSProvider();
+    ~QgsWFSProvider() override;
 
     /* Inherited from QgsVectorDataProvider */
 
-    virtual QgsAbstractFeatureSource *featureSource() const override;
+    QgsAbstractFeatureSource *featureSource() const override;
 
     QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) const override;
 
@@ -77,12 +77,12 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     QgsFields fields() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
-    virtual QString subsetString() const override;
-    virtual bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
+    QString subsetString() const override;
+    bool setSubsetString( const QString &theSQL, bool updateFeatureCount = true ) override;
 
-    virtual bool supportsSubsetString() const override { return true; }
+    bool supportsSubsetString() const override { return true; }
 
     /* Inherited from QgsDataProvider */
 
@@ -91,7 +91,7 @@ class QgsWFSProvider : public QgsVectorDataProvider
     QString name() const override;
     QString description() const override;
 
-    virtual QgsVectorDataProvider::Capabilities capabilities() const override;
+    QgsVectorDataProvider::Capabilities capabilities() const override;
 
     /* new functions */
 
@@ -103,17 +103,17 @@ class QgsWFSProvider : public QgsVectorDataProvider
 
     //Editing operations
 
-    virtual bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
-    virtual bool deleteFeatures( const QgsFeatureIds &id ) override;
-    virtual bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
-    virtual bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
-    virtual QVariantMap metadata() const override;
-    virtual QString translateMetadataKey( const QString &mdKey ) const override;
-    virtual QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const override;
+    bool addFeatures( QgsFeatureList &flist, QgsFeatureSink::Flags flags = nullptr ) override;
+    bool deleteFeatures( const QgsFeatureIds &id ) override;
+    bool changeGeometryValues( const QgsGeometryMap &geometry_map ) override;
+    bool changeAttributeValues( const QgsChangedAttributesMap &attr_map ) override;
+    QVariantMap metadata() const override;
+    QString translateMetadataKey( const QString &mdKey ) const override;
+    QString translateMetadataValue( const QString &mdKey, const QVariant &value ) const override;
 
   public slots:
 
-    virtual void reloadData() override;
+    void reloadData() override;
 
   private slots:
 

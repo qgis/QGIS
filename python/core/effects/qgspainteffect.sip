@@ -363,8 +363,11 @@ Creates a new QgsDrawSource effect from a properties string map.
 
     virtual QString type() const;
     virtual QgsDrawSourceEffect *clone() const /Factory/;
+
     virtual QgsStringMap properties() const;
+
     virtual void readProperties( const QgsStringMap &props );
+
 
     void setOpacity( const double opacity );
 %Docstring
@@ -411,6 +414,7 @@ paint device
   protected:
 
     virtual void draw( QgsRenderContext &context );
+
 
 };
 

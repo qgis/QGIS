@@ -139,7 +139,7 @@ class GUI_EXPORT QgsExpressionBuilderWidget : public QWidget, private Ui::QgsExp
      * Create a new expression builder widget with an optional parent.
      */
     QgsExpressionBuilderWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsExpressionBuilderWidget();
+    ~QgsExpressionBuilderWidget() override;
 
     /**
      * Sets layer in order to get the fields and values

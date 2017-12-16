@@ -32,9 +32,10 @@ Use ``parent`` to attach a parent QWidget to the dialog.
 Use ``dialogTitle`` string  to define the title to show in the color ramp dialog
 %End
 
-    virtual ~QgsColorRampButton();
+    ~QgsColorRampButton();
 
     virtual QSize sizeHint() const;
+
 
     QgsColorRamp *colorRamp() const /Factory/;
 %Docstring

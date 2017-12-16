@@ -43,12 +43,12 @@ class GUI_EXPORT QgsRelationAggregateSearchWidgetWrapper : public QgsSearchWidge
      */
     explicit QgsRelationAggregateSearchWidgetWrapper( QgsVectorLayer *layer, QgsRelationWidgetWrapper *wrapper, QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual QString expression() const override;
+    QString expression() const override;
 
-    virtual bool valid() const override;
-    virtual QWidget *createWidget( QWidget *parent ) override;
-    virtual bool applyDirectly() override;
-    virtual void setExpression( const QString &value ) override;
+    bool valid() const override;
+    QWidget *createWidget( QWidget *parent ) override;
+    bool applyDirectly() override;
+    void setExpression( const QString &value ) override;
 
   private:
     QgsRelationWidgetWrapper *mWrapper = nullptr;

@@ -210,13 +210,13 @@ class CORE_EXPORT QgsMarkerLineSymbolLayer : public QgsLineSymbolLayer
     void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const override;
 
     void setColor( const QColor &color ) override;
-    virtual QColor color() const override;
+    QColor color() const override;
 
     QgsSymbol *subSymbol() override;
     bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
 
-    virtual void setWidth( double width ) override;
-    virtual double width() const override;
+    void setWidth( double width ) override;
+    double width() const override;
 
     double estimateMaxBleed( const QgsRenderContext &context ) const override;
 

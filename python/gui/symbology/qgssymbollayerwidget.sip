@@ -123,7 +123,9 @@ Creates a new QgsSimpleLineSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 
@@ -158,7 +160,9 @@ Creates a new QgsSimpleMarkerSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   public slots:
 
@@ -196,7 +200,9 @@ Creates a new QgsSimpleFillSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   public slots:
     void setColor( const QColor &color );
@@ -239,7 +245,9 @@ Creates a new QgsFilledMarkerSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 
@@ -272,7 +280,9 @@ Creates a new QgsGradientFillSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   public slots:
     void setColor( const QColor &color );
@@ -317,7 +327,9 @@ Creates a new QgsShapeburstFillSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   public slots:
     void setColor( const QColor &color );
@@ -354,7 +366,9 @@ Creates a new QgsMarkerLineSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   public slots:
 
@@ -394,7 +408,9 @@ Creates a new QgsSvgMarkerSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 
@@ -431,7 +447,9 @@ Creates a new QgsRasterFillSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 
@@ -464,7 +482,9 @@ Creates a new QgsSVGFillSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
     void insertIcons();
@@ -506,7 +526,9 @@ Creates a new QgsLinePatternFillSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 
@@ -539,7 +561,9 @@ Creates a new QgsPointPatternFillSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 
@@ -572,7 +596,9 @@ Creates a new QgsFontMarkerSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   public slots:
     void setFontFamily( const QFont &font );
@@ -620,7 +646,9 @@ Creates a new QgsCentroidFillSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 
@@ -652,7 +680,9 @@ Will be registered as factory
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
 };
 

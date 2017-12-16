@@ -50,7 +50,7 @@ class GUI_EXPORT QgsDial : public QDial
     void onValueChanged( int );
 
   protected:
-    virtual void paintEvent( QPaintEvent *event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
   private:
     void update();

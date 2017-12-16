@@ -55,7 +55,7 @@ class TestQgsMapRendererJob : public QObject
   public:
     TestQgsMapRendererJob() = default;
 
-    ~TestQgsMapRendererJob()
+    ~TestQgsMapRendererJob() override
     {
       delete mMapSettings;
     }

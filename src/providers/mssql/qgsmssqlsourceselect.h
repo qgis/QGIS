@@ -71,7 +71,7 @@ class QgsMssqlSourceSelect : public QgsAbstractDataSourceWidget, private Ui::Qgs
     //! Constructor
     QgsMssqlSourceSelect( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::None );
 
-    ~QgsMssqlSourceSelect();
+    ~QgsMssqlSourceSelect() override;
     //! Populate the connection list combo box
     void populateConnectionList();
     //! String list containing the selected tables

@@ -117,7 +117,7 @@ class QgsComposerLegendMenuProvider : public QgsLayerTreeViewMenuProvider
   public:
     QgsComposerLegendMenuProvider( QgsLayerTreeView *view, QgsComposerLegendWidget *w );
 
-    virtual QMenu *createContextMenu() override;
+    QMenu *createContextMenu() override;
 
   protected:
     QgsLayerTreeView *mView = nullptr;

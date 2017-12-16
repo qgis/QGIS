@@ -614,7 +614,7 @@ class CORE_EXPORT QgsVectorFileWriter : public QgsFeatureSink
     QMap<int, int> attrIdxToOgrIdx() { return mAttrIdxToOgrIdx; } SIP_SKIP
 
     //! Close opened shapefile for writing
-    ~QgsVectorFileWriter();
+    ~QgsVectorFileWriter() override;
 
     /**
      * Delete a shapefile (and its accompanying shx / dbf / prf)

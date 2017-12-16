@@ -75,8 +75,8 @@ class GUI_EXPORT QgsDockWidget : public QDockWidget
 
   protected:
 
-    virtual void closeEvent( QCloseEvent * ) override;
-    virtual void showEvent( QShowEvent *event ) override;
+    void closeEvent( QCloseEvent * ) override;
+    void showEvent( QShowEvent *event ) override;
 
   signals:
 

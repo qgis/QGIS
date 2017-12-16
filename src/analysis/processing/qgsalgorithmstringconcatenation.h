@@ -36,7 +36,7 @@ class QgsStringConcatenationAlgorithm : public QgsProcessingAlgorithm
     Flags flags() const override;
     QString name() const override;
     QString displayName() const override;
-    virtual QStringList tags() const override;
+    QStringList tags() const override;
     QString group() const override;
     QString groupId() const override;
     QString shortHelpString() const override;
@@ -44,8 +44,8 @@ class QgsStringConcatenationAlgorithm : public QgsProcessingAlgorithm
 
   protected:
 
-    virtual QVariantMap processAlgorithm( const QVariantMap &parameters,
-                                          QgsProcessingContext &context, QgsProcessingFeedback * ) override;
+    QVariantMap processAlgorithm( const QVariantMap &parameters,
+                                  QgsProcessingContext &context, QgsProcessingFeedback * ) override;
 
 };
 

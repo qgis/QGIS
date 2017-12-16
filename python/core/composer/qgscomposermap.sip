@@ -28,7 +28,7 @@ Constructor.
 %Docstring
 Constructor. Settings are read from project.
 %End
-    virtual ~QgsComposerMap();
+    ~QgsComposerMap();
 
     virtual int type() const;
 %Docstring
@@ -96,6 +96,7 @@ Move content of map
 %End
 
     virtual void zoomContent( const double factor, const QPointF point, const ZoomMode mode = QgsComposerItem::Zoom );
+
 %Docstring
 Zoom content of item. Does nothing per default (but implemented in composer map)
 :param factor: zoom factor, where > 1 results in a zoom in and < 1 results in a zoom out
@@ -444,6 +445,7 @@ In case of annotations, the bounding rectangle can be larger than the map item r
 %End
 
     virtual void setFrameStrokeWidth( const double strokeWidth );
+
 %Docstring
 reimplement setFrameStrokeWidth, so that updateBoundingRect() is called after setting the frame width */
 %End
@@ -619,6 +621,7 @@ clockwise, starting at the top-left point
 
     virtual QString displayName() const;
 
+
     QPolygonF transformedMapPolygon() const;
 %Docstring
 Returns extent that considers rotation and shift with mOffsetX / mOffsetY
@@ -641,6 +644,7 @@ Calculates the extent to request and the yShift of the top-left point in case of
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
   signals:
     void extentChanged();
@@ -678,6 +682,7 @@ Updates the bounding rect of this item. Call this function before doing any chan
 %End
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
+
 
 };
 

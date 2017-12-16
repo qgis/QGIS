@@ -39,7 +39,6 @@ quickly and defer any intensive or slow processing.
 #include "qgscustomdrophandler.h"
 %End
   public:
-    virtual ~QgsCustomDropHandler();
 
     virtual QString customUriProviderKey() const;
 %Docstring

@@ -71,7 +71,7 @@ class GUI_EXPORT QgsEditorWidgetRegistry : public QObject
      *
      * Deletes all the registered widgets
      */
-    ~QgsEditorWidgetRegistry();
+    ~QgsEditorWidgetRegistry() override;
 
     /**
      * Find the best editor widget and its configuration for a given field.

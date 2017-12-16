@@ -284,7 +284,7 @@ Constructor for QgsComposerMapGrid.
 :param map: QgsComposerMap the grid is attached to
 %End
 
-    virtual ~QgsComposerMapGrid();
+    ~QgsComposerMapGrid();
 
     virtual void draw( QPainter *painter );
 
@@ -1088,6 +1088,7 @@ Retrieves the second fill color for the grid frame.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 
       public:
 };

@@ -49,7 +49,7 @@ class GUI_EXPORT QgsProjectionSelectionTreeWidget : public QWidget, private Ui::
      */
     QgsProjectionSelectionTreeWidget( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsProjectionSelectionTreeWidget();
+    ~QgsProjectionSelectionTreeWidget() override;
 
     /**
      * Returns the CRS currently selected in the widget.

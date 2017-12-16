@@ -119,11 +119,11 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     explicit QgsWcsProvider( const QString &uri = QString() );
 
 
-    virtual ~QgsWcsProvider();
+    ~QgsWcsProvider() override;
 
     QgsWcsProvider *clone() const override;
 
-    virtual QgsCoordinateReferenceSystem crs() const override;
+    QgsCoordinateReferenceSystem crs() const override;
 
     /**
      * Get the coverage format used in the transfer from the WCS server
@@ -151,7 +151,7 @@ class QgsWcsProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     //! Download cache
     void getCache( int bandNo, QgsRectangle  const &viewExtent, int width, int height, QString crs = QString(), QgsRasterBlockFeedback *feedback = nullptr ) const;
 
-    virtual QgsRectangle extent() const override;
+    QgsRectangle extent() const override;
 
     bool isValid() const override;
 
@@ -401,7 +401,7 @@ class QgsWcsDownloadHandler : public QObject
     Q_OBJECT
   public:
     QgsWcsDownloadHandler( const QUrl &url, QgsWcsAuthorization &auth, QNetworkRequest::CacheLoadControl cacheLoadControl, QByteArray &cachedData, const QString &wcsVersion, QgsError &cachedError, QgsRasterBlockFeedback *feedback );
-    ~QgsWcsDownloadHandler();
+    ~QgsWcsDownloadHandler() override;
 
     void blockingDownload();
 

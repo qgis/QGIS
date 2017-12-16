@@ -109,7 +109,7 @@ class GUI_EXPORT QgsSQLComposerDialog : public QDialog, private Ui::QgsSQLCompos
 
     //! constructor
     explicit QgsSQLComposerDialog( QWidget *parent = nullptr, Qt::WindowFlags fl = QgsGuiUtils::ModalDialogFlags );
-    virtual ~QgsSQLComposerDialog();
+    ~QgsSQLComposerDialog() override;
 
     //! initialize the SQL statement
     void setSql( const QString &sql );

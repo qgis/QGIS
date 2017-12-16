@@ -122,6 +122,7 @@ Default legend implementation for vector layers
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
 
+
 };
 
 
@@ -140,6 +141,7 @@ Default legend implementation for raster layers
     explicit QgsDefaultRasterLayerLegend( QgsRasterLayer *rl );
 
     virtual QList<QgsLayerTreeModelLegendNode *> createLayerTreeModelLegendNodes( QgsLayerTreeLayer *nodeLayer ) /Factory/;
+
 
 };
 

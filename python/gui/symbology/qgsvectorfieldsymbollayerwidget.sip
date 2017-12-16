@@ -32,7 +32,9 @@ Creates a new QgsVectorFieldSymbolLayerWidget.
 %End
 
     virtual void setSymbolLayer( QgsSymbolLayer *layer );
+
     virtual QgsSymbolLayer *symbolLayer();
+
 
   protected:
 

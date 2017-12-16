@@ -32,6 +32,7 @@ Create a new feature counter for ``layer``.
     virtual bool run();
 
 
+
     long featureCount( const QString &legendKey ) const;
 %Docstring
 Get the feature count for a particular ``legendKey``.

@@ -45,7 +45,9 @@ the button will use the global color scheme registry instead
 %End
 
     virtual QSize minimumSizeHint() const;
+
     virtual QSize sizeHint() const;
+
 
     QColor color() const;
 %Docstring

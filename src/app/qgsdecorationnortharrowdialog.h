@@ -23,7 +23,7 @@ class APP_EXPORT QgsDecorationNorthArrowDialog : public QDialog, private Ui::Qgs
 
   public:
     QgsDecorationNorthArrowDialog( QgsDecorationNorthArrow &deco, QWidget *parent = nullptr );
-    ~QgsDecorationNorthArrowDialog();
+    ~QgsDecorationNorthArrowDialog() override;
 
   private:
     void drawNorthArrow();

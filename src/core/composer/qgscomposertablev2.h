@@ -166,7 +166,7 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     QgsComposerTableV2( QgsComposition *composition SIP_TRANSFERTHIS, bool createUndoCommands );
     QgsComposerTableV2();
 
-    virtual ~QgsComposerTableV2();
+    ~QgsComposerTableV2() override;
 
     /**
      * Sets the margin distance between cell borders and their contents.
@@ -515,15 +515,15 @@ class CORE_EXPORT QgsComposerTableV2: public QgsComposerMultiFrame
     QgsComposerTableContents *contents() { return &mTableContents; }
 
     //reimplemented to return fixed table width
-    virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const override;
+    QSizeF fixedFrameSize( const int frameIndex = -1 ) const override;
 
     //reimplemented to return min frame height
-    virtual QSizeF minFrameSize( const int frameIndex = -1 ) const override;
+    QSizeF minFrameSize( const int frameIndex = -1 ) const override;
 
-    virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
-    virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
-    virtual QSizeF totalSize() const override;
-    virtual void render( QPainter *p, const QRectF &renderExtent, const int frameIndex ) override;
+    bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const override;
+    bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false ) override;
+    QSizeF totalSize() const override;
+    void render( QPainter *p, const QRectF &renderExtent, const int frameIndex ) override;
 
   public slots:
 

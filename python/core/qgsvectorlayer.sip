@@ -353,10 +353,11 @@ parameters used by the data provider as url query items.
 %End
 
 
-    virtual ~QgsVectorLayer();
+    ~QgsVectorLayer();
 
 
     virtual QgsVectorLayer *clone() const /Factory/;
+
 %Docstring
 Returns a new instance equivalent to this one. A new provider is
 created for the same data source and renderers for features and diagrams
@@ -471,6 +472,7 @@ Accessor to the join buffer object
 %End
 
     virtual bool setDependencies( const QSet<QgsMapLayerDependency> &layers );
+
 %Docstring
 Sets the list of dependencies.
 
@@ -486,6 +488,7 @@ Sets the list of dependencies.
 %End
 
     virtual QSet<QgsMapLayerDependency> dependencies() const;
+
 %Docstring
 
 :rtype: set of QgsMapLayerDependency
@@ -773,6 +776,7 @@ Return the provider type for this layer
 
 
     virtual bool readXml( const QDomNode &layer_node, const QgsReadWriteContext &context );
+
 %Docstring
 Reads vector layer specific state from project file Dom node.
 
@@ -784,6 +788,7 @@ Reads vector layer specific state from project file Dom node.
 %End
 
     virtual bool writeXml( QDomNode &layer_node, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
 %Docstring
 Write vector layer specific state to project file Dom node.
 
@@ -795,6 +800,7 @@ Write vector layer specific state to project file Dom node.
 %End
 
     virtual void resolveReferences( QgsProject *project );
+
 %Docstring
 Resolve references to other layers (kept as layer IDs after reading XML) into layer objects.
 
@@ -858,6 +864,7 @@ Load a named style from file/local db/datasource db
 %End
 
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/ );
+
 %Docstring
 Calls loadNamedStyle( theURI, resultFlag, false );
 Retained for backward compatibility
@@ -1333,6 +1340,7 @@ Set labeling configuration. Takes ownership of the object.
 %End
 
     virtual bool isEditable() const;
+
 %Docstring
 Returns true if the provider is in editing mode
 
@@ -1340,6 +1348,7 @@ Returns true if the provider is in editing mode
 %End
 
     virtual bool isSpatial() const;
+
 %Docstring
 Returns true if this is a geometry layer and false in case of NoGeometry (table only) or UnknownGeometry
 
@@ -1364,11 +1373,13 @@ false otherwise.
 %End
 
     virtual void reload();
+
 %Docstring
 Synchronises with changes in the datasource
 %End
 
     virtual QgsMapLayerRenderer *createMapRenderer( QgsRenderContext &rendererContext ) /Factory/;
+
 %Docstring
 Return new instance of QgsMapLayerRenderer that will be used for rendering of given context
 

@@ -63,7 +63,7 @@ class CORE_EXPORT QgsPointLocator : public QObject
     explicit QgsPointLocator( QgsVectorLayer *layer, const QgsCoordinateReferenceSystem &destinationCrs = QgsCoordinateReferenceSystem(),
                               const QgsRectangle *extent = nullptr );
 
-    ~QgsPointLocator();
+    ~QgsPointLocator() override;
 
     /**
      * Get associated layer

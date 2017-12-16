@@ -23,8 +23,6 @@ An interface for layout objects which can be stored and read from DOM elements.
 %End
   public:
 
-    virtual ~QgsLayoutSerializableObject();
-
     virtual QString stringType() const = 0;
 %Docstring
 Return the object type as a string.

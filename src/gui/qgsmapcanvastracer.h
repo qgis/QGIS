@@ -44,7 +44,7 @@ class GUI_EXPORT QgsMapCanvasTracer : public QgsTracer
   public:
     //! Create tracer associated with a particular map canvas, optionally message bar for reporting
     explicit QgsMapCanvasTracer( QgsMapCanvas *canvas, QgsMessageBar *messageBar = nullptr );
-    ~QgsMapCanvasTracer();
+    ~QgsMapCanvasTracer() override;
 
     //! Access to action that user may use to toggle tracing on/off. May be null if no action was associated
     QAction *actionEnableTracing() const { return mActionEnableTracing; }

@@ -89,16 +89,26 @@ class QgsCategorizedSymbolRenderer : QgsFeatureRenderer
     QgsCategorizedSymbolRenderer( const QString &attrName = QString(), const QgsCategoryList &categories = QgsCategoryList() );
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
     virtual QString dump() const;
+
     virtual QgsCategorizedSymbolRenderer *clone() const /Factory/;
+
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QString filter( const QgsFields &fields = QgsFields() );
+
     virtual QgsSymbolList symbols( QgsRenderContext &context );
+
 
     void updateSymbols( QgsSymbol *sym );
 %Docstring
@@ -186,9 +196,11 @@ create renderer from XML element
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+
 
     QgsSymbol *sourceSymbol();
 %Docstring
@@ -243,9 +255,13 @@ Update the color ramp used and all symbols colors.
 %End
 
     virtual bool legendSymbolItemsCheckable() const;
+
     virtual bool legendSymbolItemChecked( const QString &key );
+
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
+
     virtual void checkLegendSymbolItem( const QString &key, bool state = true );
+
     virtual QString legendClassificationAttribute() const;
 
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;

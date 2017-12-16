@@ -30,6 +30,7 @@ This constructor creates a feature iterator, that delivers all cached features. 
 %End
 
     virtual bool rewind();
+
 %Docstring
 Rewind to the beginning of the iterator
 
@@ -39,6 +40,7 @@ Rewind to the beginning of the iterator
 %End
 
     virtual bool close();
+
 %Docstring
 Close this iterator. No further features will be available.
 
@@ -50,6 +52,7 @@ Close this iterator. No further features will be available.
   protected:
 
     virtual bool fetchFeature( QgsFeature &f );
+
 %Docstring
 Implementation for fetching a feature.
 
@@ -96,6 +99,7 @@ This constructor creates a feature iterator, which queries the backend and cache
 %End
 
     virtual bool rewind();
+
 %Docstring
 Rewind to the beginning of the iterator
 
@@ -105,6 +109,7 @@ Rewind to the beginning of the iterator
 %End
 
     virtual bool close();
+
 %Docstring
 Close this iterator. No further features will be available.
 
@@ -116,6 +121,7 @@ Close this iterator. No further features will be available.
   protected:
 
     virtual bool fetchFeature( QgsFeature &f );
+
 %Docstring
 Implementation for fetching a feature.
 

@@ -22,10 +22,10 @@ class QuantizedMeshTerrainGenerator : public QgsTerrainGenerator
 
     QgsTerrainGenerator::Type type() const override;
     QgsRectangle extent() const override;
-    virtual void writeXml( QDomElement &elem ) const override;
-    virtual void readXml( const QDomElement &elem ) override;
+    void writeXml( QDomElement &elem ) const override;
+    void readXml( const QDomElement &elem ) override;
 
-    virtual QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
+    QgsChunkLoader *createChunkLoader( QgsChunkNode *node ) const override SIP_FACTORY;
 
     int terrainBaseX, terrainBaseY, terrainBaseZ;   //!< Coordinates of the base tile
 };

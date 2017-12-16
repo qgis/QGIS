@@ -789,6 +789,7 @@ the vertical anchor point is aligned with the marker's desired location.
 
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 
+
     virtual void writeSldMarker( QDomDocument &doc, QDomElement &element, const QgsStringMap &props ) const;
 %Docstring
 Writes the symbol layer definition as a SLD XML element.
@@ -962,6 +963,7 @@ Returns the units for the line's offset.
 
 
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
+
 
   protected:
     QgsLineSymbolLayer( bool locked = false );

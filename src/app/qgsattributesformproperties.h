@@ -252,15 +252,15 @@ class DnDTree : public QTreeWidget
     void setType( const Type &value );
 
   protected:
-    virtual void dragMoveEvent( QDragMoveEvent *event ) override;
-    virtual void dropEvent( QDropEvent *event ) override;
-    virtual bool dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action ) override;
+    void dragMoveEvent( QDragMoveEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
+    bool dropMimeData( QTreeWidgetItem *parent, int index, const QMimeData *data, Qt::DropAction action ) override;
     /* Qt::DropActions supportedDropActions() const;*/
 
     // QTreeWidget interface
   protected:
-    virtual QStringList mimeTypes() const override;
-    virtual QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
+    QStringList mimeTypes() const override;
+    QMimeData *mimeData( const QList<QTreeWidgetItem *> items ) const override;
 
 
   private slots:

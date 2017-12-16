@@ -28,7 +28,7 @@ class APP_EXPORT QgsMapToolDeleteRing : public QgsMapToolEdit
 
   public:
     QgsMapToolDeleteRing( QgsMapCanvas *canvas );
-    virtual ~QgsMapToolDeleteRing();
+    ~QgsMapToolDeleteRing() override;
 
     void canvasMoveEvent( QgsMapMouseEvent *e ) override;
 

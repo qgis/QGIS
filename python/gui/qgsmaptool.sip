@@ -65,7 +65,7 @@ Returns the flags for the map tool.
 .. versionadded:: 2.16
 %End
 
-    virtual ~QgsMapTool();
+    ~QgsMapTool();
 
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );
 %Docstring

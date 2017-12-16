@@ -47,7 +47,7 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
                              const QString &fileName,
                              const QgsVectorFileWriter::SaveVectorOptions &options );
 
-    virtual void cancel() override;
+    void cancel() override;
 
   signals:
 
@@ -65,8 +65,8 @@ class CORE_EXPORT QgsVectorFileWriterTask : public QgsTask
 
   protected:
 
-    virtual bool run() override;
-    virtual void finished( bool result ) override;
+    bool run() override;
+    void finished( bool result ) override;
 
   private:
 

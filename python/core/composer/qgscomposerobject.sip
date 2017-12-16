@@ -92,7 +92,6 @@ Returns the composer object property definitions.
 Constructor
 :param composition: parent composition
 %End
-    virtual ~QgsComposerObject();
 
     const QgsComposition *composition() const;
 %Docstring
@@ -208,6 +207,7 @@ Return list of keys stored in custom properties for the object.
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 %Docstring
 Creates an expression context relating to the objects' current state. The context includes
 scopes for global, project and composition properties.

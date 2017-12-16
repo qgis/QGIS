@@ -47,6 +47,7 @@ Sets the map id() to a number not yet used in the layout. The existing id() is k
 
     virtual QString displayName() const;
 
+
     static QgsLayoutItemMap *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new map item for the specified ``layout``.

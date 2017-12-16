@@ -124,7 +124,7 @@ class GUI_EXPORT QgsOptionsDialogBase : public QDialog
      * \param settings custom QgsSettings pointer
      */
     QgsOptionsDialogBase( const QString &settingsKey, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags fl = nullptr, QgsSettings *settings = nullptr );
-    ~QgsOptionsDialogBase();
+    ~QgsOptionsDialogBase() override;
 
     /**
      * Set up the base ui connections for vertical tabs.

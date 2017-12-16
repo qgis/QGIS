@@ -77,7 +77,7 @@ Abstract base class for connection to a GPS device*
 Constructor
 :param dev: input device for the connection (e.g. serial device). The class takes ownership of the object
 %End
-    virtual ~QgsGPSConnection();
+    ~QgsGPSConnection();
     bool connect();
 %Docstring
 Opens connection to device

@@ -22,6 +22,7 @@ used for finding shortest path between two points.
 %End
   public:
     virtual QVariant cost( double distance, const QgsFeature & ) const;
+
 };
 
 /************************************************************************

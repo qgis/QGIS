@@ -29,7 +29,7 @@ class APP_EXPORT QgsMapToolOffsetCurve: public QgsMapToolEdit
     Q_OBJECT
   public:
     QgsMapToolOffsetCurve( QgsMapCanvas *canvas );
-    ~QgsMapToolOffsetCurve();
+    ~QgsMapToolOffsetCurve() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
     void canvasReleaseEvent( QgsMapMouseEvent *e ) override;

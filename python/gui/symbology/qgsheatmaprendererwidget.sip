@@ -35,7 +35,9 @@ Constructor
 %End
 
     virtual QgsFeatureRenderer *renderer();
+
     virtual void setContext( const QgsSymbolWidgetContext &context );
+
 
 };
 

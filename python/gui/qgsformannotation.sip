@@ -56,7 +56,9 @@ Returns the path to the Qt Designer UI file to show in the annotation.
 %End
 
     virtual void writeXml( QDomElement &elem, QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
     virtual void readXml( const QDomElement &itemElem, const QgsReadWriteContext &context );
+
 
     virtual void setAssociatedFeature( const QgsFeature &feature );
 

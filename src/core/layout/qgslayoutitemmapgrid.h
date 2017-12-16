@@ -791,7 +791,7 @@ class CORE_EXPORT QgsLayoutItemMapGrid : public QgsLayoutItemMapItem
      */
     QColor frameFillColor2() const { return mGridFrameFillColor2; }
 
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
   private:
 

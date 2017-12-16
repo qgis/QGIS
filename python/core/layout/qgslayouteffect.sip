@@ -52,6 +52,7 @@ the item.
 
     virtual void draw( QPainter *painter );
 
+
 };
 
 

@@ -67,7 +67,7 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 
-    virtual QList<QAction *> actions( QWidget *parent ) override;
+    QList<QAction *> actions( QWidget *parent ) override;
 
   private slots:
     void newConnection();
@@ -77,11 +77,11 @@ class QgsGeoNodeRootItem : public QgsDataCollectionItem
 class QgsGeoNodeDataItemProvider : public QgsDataItemProvider
 {
   public:
-    virtual QString name() override { return QStringLiteral( "GeoNode" ); }
+    QString name() override { return QStringLiteral( "GeoNode" ); }
 
-    virtual int capabilities() override { return QgsDataProvider::Net; }
+    int capabilities() override { return QgsDataProvider::Net; }
 
-    virtual QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
+    QgsDataItem *createDataItem( const QString &path, QgsDataItem *parentItem ) override;
 };
 
 #endif //QGSGEONODEDATAITEMS_H

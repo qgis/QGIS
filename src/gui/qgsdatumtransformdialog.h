@@ -43,7 +43,7 @@ class GUI_EXPORT QgsDatumTransformDialog : public QDialog, private Ui::QgsDatumT
                              QPair<int, int> selectedDatumTransforms = qMakePair( -1, -1 ),
                              QWidget *parent = nullptr,
                              Qt::WindowFlags f = nullptr );
-    ~QgsDatumTransformDialog();
+    ~QgsDatumTransformDialog() override;
 
     /**
      * Returns the number of possible datum transformation for currently selected source and destination CRS

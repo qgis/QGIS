@@ -61,14 +61,18 @@ be cloned, so ownership is not transferred to the stack.
 :return: new QgsEffectStack containing initial effect
 %End
 
-    virtual ~QgsEffectStack();
+    ~QgsEffectStack();
 
     virtual QString type() const;
     virtual QgsEffectStack *clone() const /Factory/;
+
     virtual bool saveProperties( QDomDocument &doc, QDomElement &element ) const;
+
     virtual bool readProperties( const QDomElement &element );
 
+
     virtual QgsStringMap properties() const;
+
 %Docstring
 Unused for QgsEffectStack, will always return an empty string map
 
@@ -76,6 +80,7 @@ Unused for QgsEffectStack, will always return an empty string map
 %End
 
     virtual void readProperties( const QgsStringMap &props );
+
 %Docstring
 Unused for QgsEffectStack, props parameter will be ignored
 %End
@@ -152,6 +157,7 @@ Returns a pointer to the effect at a specified index within the stack
   protected:
 
     virtual void draw( QgsRenderContext &context );
+
 
 };
 

@@ -35,12 +35,14 @@ change the layer used by the map tool to identify
 
     virtual void canvasReleaseEvent( QgsMapMouseEvent *e );
 
+
   signals:
     void featureIdentified( const QgsFeature & );
     void featureIdentified( QgsFeatureId );
 
   protected:
     virtual void keyPressEvent( QKeyEvent *e );
+
 
 };
 

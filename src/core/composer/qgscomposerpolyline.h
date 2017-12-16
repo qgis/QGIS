@@ -50,7 +50,7 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     QgsComposerPolyline( const QPolygonF &polyline, QgsComposition *c );
 
     //! Overridden to return shape name
-    virtual QString displayName() const override;
+    QString displayName() const override;
 
     //! Returns the QgsSymbol used to draw the shape.
     QgsLineSymbol *polylineStyleSymbol() { return mPolylineStyleSymbol.get(); }
@@ -59,7 +59,7 @@ class CORE_EXPORT QgsComposerPolyline: public QgsComposerNodesItem
     void setPolylineStyleSymbol( QgsLineSymbol *symbol );
 
     //! Overridden to return shape type
-    virtual int type() const override { return ComposerPolyline; }
+    int type() const override { return ComposerPolyline; }
 
   protected:
 

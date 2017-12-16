@@ -28,7 +28,7 @@ class QgsMapToolAddRectangle: public QgsMapToolCapture
 
   public:
     QgsMapToolAddRectangle( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolAddRectangle();
+    ~QgsMapToolAddRectangle() override;
 
     void keyPressEvent( QKeyEvent *e ) override;
     void keyReleaseEvent( QKeyEvent *e ) override;

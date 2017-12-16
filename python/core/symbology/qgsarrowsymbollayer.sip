@@ -39,9 +39,12 @@ Create a new QgsArrowSymbolLayer
 %End
 
     virtual QgsArrowSymbolLayer *clone() const /Factory/;
+
     virtual QgsSymbol *subSymbol();
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
 
     double arrowWidth() const;
 %Docstring
@@ -238,6 +241,7 @@ Set the arrow type
     virtual void setColor( const QColor &c );
 
     virtual QColor color() const;
+
 
   private:
     QgsArrowSymbolLayer( const QgsArrowSymbolLayer & );

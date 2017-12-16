@@ -46,10 +46,10 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
     QgsColorEffect();
 
-    virtual QString type() const override { return QStringLiteral( "color" ); }
-    virtual QgsStringMap properties() const override;
-    virtual void readProperties( const QgsStringMap &props ) override;
-    virtual QgsColorEffect *clone() const override SIP_FACTORY;
+    QString type() const override { return QStringLiteral( "color" ); }
+    QgsStringMap properties() const override;
+    void readProperties( const QgsStringMap &props ) override;
+    QgsColorEffect *clone() const override SIP_FACTORY;
 
     /**
      * Sets the brightness modification for the effect.
@@ -211,7 +211,7 @@ class CORE_EXPORT QgsColorEffect : public QgsPaintEffect
 
   protected:
 
-    virtual void draw( QgsRenderContext &context ) override;
+    void draw( QgsRenderContext &context ) override;
 
   private:
 

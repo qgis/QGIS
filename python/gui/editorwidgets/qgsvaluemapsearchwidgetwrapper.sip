@@ -38,10 +38,13 @@ Constructor for QgsValueMapSearchWidgetWrapper
 
     virtual QString createExpression( QgsSearchWidgetWrapper::FilterFlags flags ) const;
 
+
   public slots:
 
     virtual void clearWidget();
+
     virtual void setEnabled( bool enabled );
+
 
   protected:
     virtual QWidget *createWidget( QWidget *parent );

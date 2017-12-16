@@ -181,7 +181,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     //! Constructor for unit tests
     QgisApp();
 
-    ~QgisApp();
+    ~QgisApp() override;
 
     QgisApp( QgisApp const & ) = delete;
     QgisApp &operator=( QgisApp const & ) = delete;
@@ -868,7 +868,7 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
     void legendLayerSelectionChanged();
 
     //! Watch for QFileOpenEvent.
-    virtual bool event( QEvent *event ) override;
+    bool event( QEvent *event ) override;
 
 
     /**
@@ -958,15 +958,15 @@ class APP_EXPORT QgisApp : public QMainWindow, private Ui::MainWindow
   protected:
 
     //! Handle state changes (WindowTitleChange)
-    virtual void changeEvent( QEvent *event ) override;
+    void changeEvent( QEvent *event ) override;
     //! Have some control over closing of the application
-    virtual void closeEvent( QCloseEvent *event ) override;
+    void closeEvent( QCloseEvent *event ) override;
 
-    virtual void dragEnterEvent( QDragEnterEvent *event ) override;
-    virtual void dropEvent( QDropEvent *event ) override;
+    void dragEnterEvent( QDragEnterEvent *event ) override;
+    void dropEvent( QDropEvent *event ) override;
 
     //! reimplements widget keyPress event so we can check if cancel was pressed
-    virtual void keyPressEvent( QKeyEvent *event ) override;
+    void keyPressEvent( QKeyEvent *event ) override;
 
 #ifdef ANDROID
     //! reimplements widget keyReleaseEvent event so we can check if back was pressed

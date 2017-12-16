@@ -34,12 +34,12 @@ class GUI_EXPORT QgsRangeWidgetFactory : public QgsEditorWidgetFactory
 
     // QgsEditorWidgetFactory interface
   public:
-    virtual QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
-    virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
-    virtual QHash<const char *, int> supportedWidgetTypes() override;
+    QgsEditorWidgetWrapper *create( QgsVectorLayer *vl, int fieldIdx, QWidget *editor, QWidget *parent ) const override;
+    QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const override;
+    QHash<const char *, int> supportedWidgetTypes() override;
 
   private:
-    virtual unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
+    unsigned int fieldScore( const QgsVectorLayer *vl, int fieldIdx ) const override;
 };
 
 #endif // QGSRANGEWIDGETFACTORY_H

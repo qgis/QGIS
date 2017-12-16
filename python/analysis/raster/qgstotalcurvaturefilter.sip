@@ -20,7 +20,6 @@ Calculates total curvature as described by Wilson, Gallant (2000): terrain analy
 %End
   public:
     QgsTotalCurvatureFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
-    ~QgsTotalCurvatureFilter();
 
   protected:
 

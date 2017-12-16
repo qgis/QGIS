@@ -53,7 +53,7 @@ class QgsGrassModule : public QWidget, private  Ui::QgsGrassModuleBase
                     bool direct, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
 
-    ~QgsGrassModule();
+    ~QgsGrassModule() override;
 
     QString translate( QString string );
 

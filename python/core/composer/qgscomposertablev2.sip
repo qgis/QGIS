@@ -125,7 +125,7 @@ the table to span over multiple frames
     QgsComposerTableV2( QgsComposition *composition /TransferThis/, bool createUndoCommands );
     QgsComposerTableV2();
 
-    virtual ~QgsComposerTableV2();
+    ~QgsComposerTableV2();
 
     void setCellMargin( const double margin );
 %Docstring
@@ -616,12 +616,18 @@ Returns the current contents of the table. Excludes header cells.
 
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 
+
     virtual QSizeF minFrameSize( const int frameIndex = -1 ) const;
 
+
     virtual bool writeXml( QDomElement &elem, QDomDocument &doc, bool ignoreFrames = false ) const;
+
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc, bool ignoreFrames = false );
+
     virtual QSizeF totalSize() const;
+
     virtual void render( QPainter *p, const QRectF &renderExtent, const int frameIndex );
+
 
   public slots:
 

@@ -95,7 +95,7 @@ class CORE_EXPORT QgsGeoNodeRequest : public QObject
      */
     QgsGeoNodeRequest( const QString &baseUrl, bool forceRefresh, QObject *parent = nullptr );
 
-    virtual ~QgsGeoNodeRequest();
+    ~QgsGeoNodeRequest() override;
 
     /**
      * Triggers a new request to the GeoNode server, with the requested \a endPoint.

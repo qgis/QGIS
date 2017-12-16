@@ -29,8 +29,8 @@ class QgsAmsRootItem : public QgsDataCollectionItem
 
     QVector<QgsDataItem *> createChildren() override;
 #ifdef HAVE_GUI
-    virtual QList<QAction *> actions( QWidget *parent ) override;
-    virtual QWidget *paramWidget() override;
+    QList<QAction *> actions( QWidget *parent ) override;
+    QWidget *paramWidget() override;
 #endif
 
   public slots:

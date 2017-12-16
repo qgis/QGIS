@@ -20,6 +20,7 @@ class QgsPieDiagram: QgsDiagram
 
     virtual QgsPieDiagram *clone() const /Factory/;
 
+
     virtual void renderDiagram( const QgsFeature &feature, QgsRenderContext &c, const QgsDiagramSettings &s, QPointF position );
 
 

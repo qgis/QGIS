@@ -44,7 +44,7 @@ class CORE_EXPORT QgsAddRemoveItemCommand: public QObject, public QUndoCommand
 
     //! Constructor for QgsAddRemoveItemCommand
     QgsAddRemoveItemCommand( State s, QgsComposerItem *item, QgsComposition *c, const QString &text, QUndoCommand *parent SIP_TRANSFERTHIS = nullptr );
-    ~QgsAddRemoveItemCommand();
+    ~QgsAddRemoveItemCommand() override;
 
     void redo() override;
     void undo() override;

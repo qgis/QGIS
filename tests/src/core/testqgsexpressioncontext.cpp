@@ -63,7 +63,7 @@ class TestQgsExpressionContext : public QObject
         GetTestValueFunction()
           : QgsScopedExpressionFunction( QStringLiteral( "get_test_value" ), 1, QStringLiteral( "test" ) ) {}
 
-        virtual QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
+        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
         {
           return 42;
         }
@@ -81,7 +81,7 @@ class TestQgsExpressionContext : public QObject
         GetTestValueFunction2()
           : QgsScopedExpressionFunction( QStringLiteral( "get_test_value" ), 1, QStringLiteral( "test" ) ) {}
 
-        virtual QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
+        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
         {
           return 43;
         }
@@ -100,7 +100,7 @@ class TestQgsExpressionContext : public QObject
           , mVal( v )
         {}
 
-        virtual QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
+        QVariant func( const QVariantList &, const QgsExpressionContext *, QgsExpression *, const QgsExpressionNodeFunction * ) override
         {
           if ( !mVal )
             return QVariant();
@@ -116,7 +116,7 @@ class TestQgsExpressionContext : public QObject
         /**
          * This function is not static, it's value changes with every invocation.
          */
-        virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override
+        bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const override
         {
           Q_UNUSED( node )
           Q_UNUSED( parent )

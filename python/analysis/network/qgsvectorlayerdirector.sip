@@ -48,8 +48,6 @@ Default constructor
 attribute value is not set or does not equal to the given values
 %End
 
-    virtual ~QgsVectorLayerDirector();
-
      virtual void makeGraph( QgsGraphBuilderInterface *builder,
                     const QVector< QgsPointXY > &additionalPoints,
                     QVector< QgsPointXY> &snappedPoints /Out/,

@@ -118,8 +118,8 @@ class QgsWfsCapabilities : public QgsWfsRequest
     void capabilitiesReplyFinished();
 
   protected:
-    virtual QString errorMessageWithReason( const QString &reason ) override;
-    virtual int defaultExpirationInSec() override;
+    QString errorMessageWithReason( const QString &reason ) override;
+    int defaultExpirationInSec() override;
 
   private:
     Capabilities mCaps;

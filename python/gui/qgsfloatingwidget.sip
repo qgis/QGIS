@@ -123,6 +123,7 @@ Emitted when the anchor widget point changes
 
     virtual void paintEvent( QPaintEvent *e );
 
+
 };
 
 

@@ -53,8 +53,8 @@ class APP_EXPORT QgsVersionMigration
 class Qgs2To3Migration : public QgsVersionMigration
 {
   public:
-    virtual QgsError runMigration() override;
-    virtual bool requiresMigration() override;
+    QgsError runMigration() override;
+    bool requiresMigration() override;
   private:
     QgsError migrateStyles();
     QgsError migrateSettings();

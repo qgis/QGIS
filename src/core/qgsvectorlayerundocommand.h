@@ -53,8 +53,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommand : public QUndoCommand
     //! Returns the layer associated with the undo command
     inline QgsVectorLayer *layer() { return mBuffer->L; }
 
-    virtual int id() const override { return -1; }
-    virtual bool mergeWith( const QUndoCommand * ) override { return false; }
+    int id() const override { return -1; }
+    bool mergeWith( const QUndoCommand * ) override { return false; }
 
   protected:
     //! Associated edit buffer
@@ -79,8 +79,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandAddFeature : public QgsVectorLayerUnd
      */
     QgsVectorLayerUndoCommandAddFeature( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeature &f );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     QgsFeature mFeature;
@@ -104,8 +104,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteFeature : public QgsVectorLayer
      */
     QgsVectorLayerUndoCommandDeleteFeature( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     QgsFeatureId mFid;
@@ -130,10 +130,10 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeGeometry : public QgsVectorLaye
      */
     QgsVectorLayerUndoCommandChangeGeometry( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, const QgsGeometry &newGeom );
 
-    virtual void undo() override;
-    virtual void redo() override;
-    virtual int id() const override;
-    virtual bool mergeWith( const QUndoCommand * ) override;
+    void undo() override;
+    void redo() override;
+    int id() const override;
+    bool mergeWith( const QUndoCommand * ) override;
 
   private:
     QgsFeatureId mFid;
@@ -161,8 +161,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandChangeAttribute : public QgsVectorLay
      * \param oldValue previous value of attribute
      */
     QgsVectorLayerUndoCommandChangeAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, QgsFeatureId fid, int fieldIndex, const QVariant &newValue, const QVariant &oldValue );
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     QgsFeatureId mFid;
@@ -189,8 +189,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandAddAttribute : public QgsVectorLayerU
      */
     QgsVectorLayerUndoCommandAddAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, const QgsField &field );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     QgsField mField;
@@ -214,8 +214,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandDeleteAttribute : public QgsVectorLay
      */
     QgsVectorLayerUndoCommandDeleteAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, int fieldIndex );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     int mFieldIndex;
@@ -249,8 +249,8 @@ class CORE_EXPORT QgsVectorLayerUndoCommandRenameAttribute : public QgsVectorLay
      */
     QgsVectorLayerUndoCommandRenameAttribute( QgsVectorLayerEditBuffer *buffer SIP_TRANSFER, int fieldIndex, const QString &newName );
 
-    virtual void undo() override;
-    virtual void redo() override;
+    void undo() override;
+    void redo() override;
 
   private:
     int mFieldIndex;

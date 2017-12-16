@@ -29,7 +29,7 @@ Raster renderer pipe that applies colors to a raster.
 %Docstring
 Constructor for QgsRasterRenderer.
 %End
-    virtual ~QgsRasterRenderer();
+    ~QgsRasterRenderer();
 
 
     virtual QgsRasterRenderer *clone() const = 0 /Factory/;
@@ -42,7 +42,9 @@ QgsRasterRenderer cannot be copied. Use clone() instead.
 
     virtual int bandCount() const;
 
+
     virtual Qgis::DataType dataType( int bandNo ) const;
+
 
     virtual QString type() const;
 %Docstring
@@ -52,11 +54,12 @@ QgsRasterRenderer cannot be copied. Use clone() instead.
 
     virtual bool setInput( QgsRasterInterface *input );
 
-    virtual QgsRasterBlock *block( int bandNo,
-                                   const QgsRectangle &extent,
-                                   int width,
-                                   int height,
-                                   QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
+
+     virtual QgsRasterBlock *block( int bandNo,
+                           const QgsRectangle &extent,
+                           int width,
+                           int height,
+                           QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
 
     bool usesTransparency() const;
 %Docstring

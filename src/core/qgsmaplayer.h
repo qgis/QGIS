@@ -106,7 +106,7 @@ class CORE_EXPORT QgsMapLayer : public QObject
      */
     QgsMapLayer( QgsMapLayer::LayerType type = VectorLayer, const QString &name = QString(), const QString &source = QString() );
 
-    virtual ~QgsMapLayer();
+    ~QgsMapLayer() override;
 
     //! QgsMapLayer cannot be copied
     QgsMapLayer( QgsMapLayer const & ) = delete;

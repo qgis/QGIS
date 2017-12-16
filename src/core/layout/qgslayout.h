@@ -66,7 +66,7 @@ class CORE_EXPORT QgsLayout : public QGraphicsScene, public QgsExpressionContext
      */
     QgsLayout( QgsProject *project );
 
-    ~QgsLayout();
+    ~QgsLayout() override;
 
     /**
      * Initializes an empty layout, e.g. by adding a default page to the layout. This should be called after creating

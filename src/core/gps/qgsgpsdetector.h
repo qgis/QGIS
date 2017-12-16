@@ -37,7 +37,7 @@ class CORE_EXPORT QgsGPSDetector : public QObject
     Q_OBJECT
   public:
     QgsGPSDetector( const QString &portName );
-    ~QgsGPSDetector();
+    ~QgsGPSDetector() override;
 
     static QList< QPair<QString, QString> > availablePorts();
 

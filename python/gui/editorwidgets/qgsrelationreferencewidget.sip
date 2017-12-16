@@ -174,6 +174,7 @@ unset the currently related feature
   protected:
     virtual void showEvent( QShowEvent *e );
 
+
     void init();
 
   signals:

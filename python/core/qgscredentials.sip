@@ -132,7 +132,9 @@ signals that object will be destroyed and shouldn't be used anymore
 
   protected:
     virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
+
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
+
 };
 
 
@@ -160,7 +162,9 @@ signals that object will be destroyed and shouldn't be used anymore
 
   protected:
     virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
+
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false );
+
 };
 
 /************************************************************************

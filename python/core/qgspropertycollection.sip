@@ -386,6 +386,7 @@ int and used for the key value.
     virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const;
 
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
+
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
     virtual bool isActive( int key ) const;
@@ -566,6 +567,7 @@ Returns the set of any fields referenced by the active properties from the stack
 %End
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
+
     virtual QSet<int> propertyKeys() const;
 
     virtual bool hasProperty( int key ) const;
@@ -573,7 +575,9 @@ Returns the set of any fields referenced by the active properties from the stack
 
     virtual QVariant toVariant( const QgsPropertiesDefinition &definitions ) const;
 
+
     virtual bool loadVariant( const QVariant &collection, const QgsPropertiesDefinition &definitions );
+
 
 };
 

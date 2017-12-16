@@ -156,13 +156,13 @@ class CORE_EXPORT QgsGradientColorRamp : public QgsColorRamp
     //! Creates a new QgsColorRamp from a map of properties
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
-    virtual int count() const override { return mStops.count() + 2; }
-    virtual double value( int index ) const override;
-    virtual QColor color( double value ) const override;
-    virtual QString type() const override { return QStringLiteral( "gradient" ); }
-    virtual void invert() override;
-    virtual QgsGradientColorRamp *clone() const override SIP_FACTORY;
-    virtual QgsStringMap properties() const override;
+    int count() const override { return mStops.count() + 2; }
+    double value( int index ) const override;
+    QColor color( double value ) const override;
+    QString type() const override { return QStringLiteral( "gradient" ); }
+    void invert() override;
+    QgsGradientColorRamp *clone() const override SIP_FACTORY;
+    QgsStringMap properties() const override;
 
     /**
      * Returns the gradient start color.
@@ -307,11 +307,11 @@ class CORE_EXPORT QgsLimitedRandomColorRamp : public QgsColorRamp
      */
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
-    virtual double value( int index ) const override;
-    virtual QColor color( double value ) const override;
-    virtual QString type() const override { return QStringLiteral( "random" ); }
-    virtual QgsLimitedRandomColorRamp *clone() const override SIP_FACTORY;
-    virtual QgsStringMap properties() const override;
+    double value( int index ) const override;
+    QColor color( double value ) const override;
+    QString type() const override { return QStringLiteral( "random" ); }
+    QgsLimitedRandomColorRamp *clone() const override SIP_FACTORY;
+    QgsStringMap properties() const override;
     int count() const override { return mCount; }
 
     /**
@@ -450,9 +450,9 @@ class CORE_EXPORT QgsRandomColorRamp: public QgsColorRamp
 
     QString type() const override;
 
-    virtual QgsRandomColorRamp *clone() const override SIP_FACTORY;
+    QgsRandomColorRamp *clone() const override SIP_FACTORY;
 
-    virtual QgsStringMap properties() const override;
+    QgsStringMap properties() const override;
 
   protected:
 
@@ -506,12 +506,12 @@ class CORE_EXPORT QgsPresetSchemeColorRamp : public QgsColorRamp, public QgsColo
      */
     QList< QColor > colors() const;
 
-    virtual double value( int index ) const override;
-    virtual QColor color( double value ) const override;
-    virtual QString type() const override { return QStringLiteral( "preset" ); }
-    virtual void invert() override;
-    virtual QgsPresetSchemeColorRamp *clone() const override SIP_FACTORY;
-    virtual QgsStringMap properties() const override;
+    double value( int index ) const override;
+    QColor color( double value ) const override;
+    QString type() const override { return QStringLiteral( "preset" ); }
+    void invert() override;
+    QgsPresetSchemeColorRamp *clone() const override SIP_FACTORY;
+    QgsStringMap properties() const override;
     int count() const override;
 
     QString schemeName() const override { return QStringLiteral( "preset" ); }
@@ -555,13 +555,13 @@ class CORE_EXPORT QgsColorBrewerColorRamp : public QgsColorRamp
      */
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
-    virtual double value( int index ) const override;
-    virtual QColor color( double value ) const override;
-    virtual QString type() const override { return QStringLiteral( "colorbrewer" ); }
-    virtual void invert() override;
-    virtual QgsColorBrewerColorRamp *clone() const override SIP_FACTORY;
-    virtual QgsStringMap properties() const override;
-    virtual int count() const override { return mColors; }
+    double value( int index ) const override;
+    QColor color( double value ) const override;
+    QString type() const override { return QStringLiteral( "colorbrewer" ); }
+    void invert() override;
+    QgsColorBrewerColorRamp *clone() const override SIP_FACTORY;
+    QgsStringMap properties() const override;
+    int count() const override { return mColors; }
 
     /**
      * Returns the name of the color brewer color scheme.
@@ -654,15 +654,15 @@ class CORE_EXPORT QgsCptCityColorRamp : public QgsGradientColorRamp
 
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
-    virtual QString type() const override { return QStringLiteral( "cpt-city" ); }
+    QString type() const override { return QStringLiteral( "cpt-city" ); }
 
-    virtual void invert() override;
+    void invert() override;
 
-    virtual QgsCptCityColorRamp *clone() const override SIP_FACTORY;
+    QgsCptCityColorRamp *clone() const override SIP_FACTORY;
     void copy( const QgsCptCityColorRamp *other );
     QgsGradientColorRamp *cloneGradientRamp() const SIP_FACTORY;
 
-    virtual QgsStringMap properties() const override;
+    QgsStringMap properties() const override;
 
     QString schemeName() const { return mSchemeName; }
     QString variantName() const { return mVariantName; }

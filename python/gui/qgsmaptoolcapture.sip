@@ -32,10 +32,12 @@ class QgsMapToolCapture : QgsMapToolAdvancedDigitizing
 constructor
 %End
 
-    virtual ~QgsMapToolCapture();
+    ~QgsMapToolCapture();
 
     virtual void activate();
+
     virtual void deactivate();
+
 
     CaptureMode mode() const;
 %Docstring
@@ -80,7 +82,9 @@ Return a list of matches for each point on the captureCurve.
 
     virtual void cadCanvasMoveEvent( QgsMapMouseEvent *e );
 
+
     virtual void keyPressEvent( QKeyEvent *e );
+
 %Docstring
 Intercept key events like Esc or Del to delete the last point
 :param e: key event
@@ -94,6 +98,7 @@ Clean a temporary rubberband
 %End
 
     virtual void clean();
+
 %Docstring
 convenient method to clean members
 %End

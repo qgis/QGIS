@@ -20,10 +20,10 @@ Adds the ability to calculate derivatives in x- and y-directions. Needs to be su
 %End
   public:
     QgsDerivativeFilter( const QString &inputFile, const QString &outputFile, const QString &outputFormat );
-    virtual ~QgsDerivativeFilter();
-    virtual float processNineCellWindow( float *x11, float *x21, float *x31,
-                                         float *x12, float *x22, float *x32,
-                                         float *x13, float *x23, float *x33 ) = 0;
+
+     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
+                                 float *x12, float *x22, float *x32,
+                                 float *x13, float *x23, float *x33 ) = 0;
 
   protected:
     float calcFirstDerX( float *x11, float *x21, float *x31, float *x12, float *x22, float *x32, float *x13, float *x23, float *x33 );

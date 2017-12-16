@@ -40,12 +40,12 @@ class GUI_EXPORT QgsMapToolExtent : public QgsMapTool
     //! constructor
     QgsMapToolExtent( QgsMapCanvas *canvas );
 
-    virtual Flags flags() const override { return QgsMapTool::AllowZoomRect; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    virtual void activate() override;
-    virtual void deactivate() override;
+    Flags flags() const override { return QgsMapTool::AllowZoomRect; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void activate() override;
+    void deactivate() override;
 
     /**
      * Sets a fixed aspect ratio to be used when dragging extent onto the canvas.

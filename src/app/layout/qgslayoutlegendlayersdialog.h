@@ -30,7 +30,7 @@ class QgsLayoutLegendLayersDialog: public QDialog, private Ui::QgsLayoutLegendLa
 
   public:
     QgsLayoutLegendLayersDialog( QWidget *parent = nullptr );
-    ~QgsLayoutLegendLayersDialog();
+    ~QgsLayoutLegendLayersDialog() override;
 
     QList< QgsMapLayer * > selectedLayers() const;
 

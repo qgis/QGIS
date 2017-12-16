@@ -25,7 +25,7 @@ class QgsMapToolRegularPolygonCenterPoint: public QgsMapToolAddRegularPolygon
 
   public:
     QgsMapToolRegularPolygonCenterPoint( QgsMapToolCapture *parentTool, QgsMapCanvas *canvas, CaptureMode mode = CaptureLine );
-    ~QgsMapToolRegularPolygonCenterPoint();
+    ~QgsMapToolRegularPolygonCenterPoint() override;
 
     void cadCanvasReleaseEvent( QgsMapMouseEvent *e ) override;
     void cadCanvasMoveEvent( QgsMapMouseEvent *e ) override;

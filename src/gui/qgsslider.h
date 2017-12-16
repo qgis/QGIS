@@ -50,7 +50,7 @@ class GUI_EXPORT QgsSlider : public QSlider
     void onValueChanged( int );
 
   protected:
-    virtual void paintEvent( QPaintEvent *event ) override;
+    void paintEvent( QPaintEvent *event ) override;
 
   private:
     void update();

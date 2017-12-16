@@ -112,6 +112,7 @@ Check if the given widget or one of its parent is a QTableView.
 %End
 
     virtual void setEnabled( bool enabled );
+
 %Docstring
 Is used to enable or disable the edit functionality of the managed widget.
 By default this will enable or disable the whole widget
@@ -255,6 +256,7 @@ Emit this signal when the constraint result visibility changed.
   public slots:
 
     virtual void setFeature( const QgsFeature &feature );
+
 %Docstring
 Will be called when the feature changes
 

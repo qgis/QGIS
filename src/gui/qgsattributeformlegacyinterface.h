@@ -33,7 +33,7 @@ class GUI_EXPORT QgsAttributeFormLegacyInterface : public QgsAttributeFormInterf
 {
   public:
     explicit QgsAttributeFormLegacyInterface( const QString &function, const QString &pyFormName, QgsAttributeForm *form );
-    ~QgsAttributeFormLegacyInterface();
+    ~QgsAttributeFormLegacyInterface() override;
 
     // QgsAttributeFormInterface interface
     void featureChanged() override;

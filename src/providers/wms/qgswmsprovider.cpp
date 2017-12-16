@@ -4239,11 +4239,11 @@ class QgsWmsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "wms" ); }
-    virtual QString text() const override { return QObject::tr( "WMS" ); }
-    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "wms" ); }
+    QString text() const override { return QObject::tr( "WMS" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 10; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWmsLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsWMSSourceSelect( parent, fl, widgetMode );
     }

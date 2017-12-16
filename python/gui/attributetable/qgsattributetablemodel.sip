@@ -45,6 +45,7 @@ Constructor
 %End
 
     virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
+
 %Docstring
 Returns the number of rows
 :param parent: parent index
@@ -73,6 +74,7 @@ Returns header data
 %End
 
     virtual QVariant data( const QModelIndex &index, int role ) const;
+
 %Docstring
 Returns data on the given index
 :param index: model index
@@ -82,6 +84,7 @@ Returns data on the given index
 %End
 
     virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+
 %Docstring
 Updates data on given index
 :param index: model index

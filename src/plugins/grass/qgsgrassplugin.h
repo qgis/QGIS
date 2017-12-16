@@ -79,14 +79,14 @@ class QgsGrassPlugin : public QObject, public QgisPlugin
      */
     virtual int type();
 
-    virtual ~QgsGrassPlugin();
+    ~QgsGrassPlugin() override;
 
     //! Get an icon from the active theme if possible
     static QIcon getThemeIcon( const QString &name );
 
   public slots:
     //! init the gui
-    virtual void initGui() override;
+    void initGui() override;
     //! unload the plugin
     void unload() override;
     //! show the help document

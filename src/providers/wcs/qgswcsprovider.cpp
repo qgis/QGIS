@@ -1915,11 +1915,11 @@ class QgsWcsSourceSelectProvider : public QgsSourceSelectProvider
 {
   public:
 
-    virtual QString providerKey() const override { return QStringLiteral( "wcs" ); }
-    virtual QString text() const override { return QObject::tr( "WCS" ); }
-    virtual int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
-    virtual QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
-    virtual QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
+    QString providerKey() const override { return QStringLiteral( "wcs" ); }
+    QString text() const override { return QObject::tr( "WCS" ); }
+    int ordering() const override { return QgsSourceSelectProvider::OrderRemoteProvider + 20; }
+    QIcon icon() const override { return QgsApplication::getThemeIcon( QStringLiteral( "/mActionAddWcsLayer.svg" ) ); }
+    QgsAbstractDataSourceWidget *createDataSourceWidget( QWidget *parent = nullptr, Qt::WindowFlags fl = Qt::Widget, QgsProviderRegistry::WidgetMode widgetMode = QgsProviderRegistry::WidgetMode::Embedded ) const override
     {
       return new QgsWCSSourceSelect( parent, fl, widgetMode );
     }

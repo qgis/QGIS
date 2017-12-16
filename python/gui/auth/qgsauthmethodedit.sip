@@ -69,7 +69,7 @@ Construct widget to edit an authentication method configuration
 :param parent: Parent widget
 %End
 
-    virtual ~QgsAuthMethodEdit();
+    ~QgsAuthMethodEdit();
 };
 
 /************************************************************************

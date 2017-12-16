@@ -191,6 +191,7 @@ and export ``options`` must be specified.
 
     virtual void cancel();
 
+
   signals:
 
     void exportComplete();
@@ -207,7 +208,9 @@ the task is canceled). The export ``error`` and ``errorMessage`` will be reporte
   protected:
 
     virtual bool run();
+
     virtual void finished( bool result );
+
 
 };
 

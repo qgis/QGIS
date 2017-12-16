@@ -96,7 +96,7 @@ Constructor with box position and composer object
 :param composition: parent composition
 :param manageZValue: true if the z-Value of this object should be managed by mComposition*
 %End
-    virtual ~QgsComposerItem();
+    ~QgsComposerItem();
 
     virtual int type() const;
 %Docstring
@@ -746,6 +746,7 @@ Sets the current layer to draw for exporting
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
+
 %Docstring
 Creates an expression context relating to the item's current state. The context includes
 scopes for global, project, composition, atlas and item properties.
@@ -799,6 +800,7 @@ around item center. If false, rotation occurs around item origin
 
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
+
 %Docstring
 Refreshes a data defined property for the item by reevaluating the property's value
 and redrawing the item with this new value.

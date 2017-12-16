@@ -18,10 +18,15 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     QgsSingleSymbolRenderer( QgsSymbol *symbol /Transfer/ );
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
 
     QgsSymbol *symbol() const;
 %Docstring
@@ -32,9 +37,12 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
     virtual QString dump() const;
 
+
     virtual QgsSingleSymbolRenderer *clone() const /Factory/;
 
+
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
+
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
 %Docstring
 
@@ -44,6 +52,7 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
+
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 create renderer from XML element
@@ -51,9 +60,13 @@ create renderer from XML element
 :rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
+
     virtual QgsLegendSymbolList legendSymbolItems() const;
+
     virtual QSet< QString > legendKeysForFeature( QgsFeature &feature, QgsRenderContext &context );
+
     virtual void setLegendSymbolItem( const QString &key, QgsSymbol *symbol /Transfer/ );
+
 
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring

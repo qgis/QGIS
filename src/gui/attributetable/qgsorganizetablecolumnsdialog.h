@@ -46,7 +46,7 @@ class GUI_EXPORT QgsOrganizeTableColumnsDialog : public QDialog, private Ui::Qgs
      */
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent SIP_TRANSFERTHIS = nullptr, Qt::WindowFlags flags = Qt::Window );
 
-    ~QgsOrganizeTableColumnsDialog();
+    ~QgsOrganizeTableColumnsDialog() override;
 
     /**
      * Get the updated configuration

@@ -57,6 +57,7 @@ Returns the mode used for the preview effect.
   protected:
     virtual void draw( QPainter *painter );
 
+
 };
 
 /************************************************************************

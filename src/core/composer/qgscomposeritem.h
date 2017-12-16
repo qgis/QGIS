@@ -123,10 +123,10 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      \param composition parent composition
      \param manageZValue true if the z-Value of this object should be managed by mComposition*/
     QgsComposerItem( qreal x, qreal y, qreal width, qreal height, QgsComposition *composition SIP_TRANSFERTHIS, bool manageZValue = true );
-    virtual ~QgsComposerItem();
+    ~QgsComposerItem() override;
 
     //! Return correct graphics item type.
-    virtual int type() const override { return ComposerItem; }
+    int type() const override { return ComposerItem; }
 
     /**
      * Returns whether this item has been removed from the composition. Items removed
@@ -581,7 +581,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * scopes for global, project, composition, atlas and item properties.
      * \since QGIS 2.12
      */
-    virtual QgsExpressionContext createExpressionContext() const override;
+    QgsExpressionContext createExpressionContext() const override;
 
     /**
      * Sets whether updates to the item are enabled. If false,
@@ -626,7 +626,7 @@ class CORE_EXPORT QgsComposerItem: public QgsComposerObject, public QGraphicsRec
      * \param context expression context for evaluating data defined expressions
      * \since QGIS 2.5
      */
-    virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
+    void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = nullptr ) override;
 
   protected:
     //! True if item has been removed from the composition

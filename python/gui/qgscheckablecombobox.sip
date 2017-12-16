@@ -111,12 +111,14 @@ Toggles the item check state
 %End
 
     virtual void hidePopup();
+
 %Docstring
 Hides the list of items in the combobox if it is currently
 visible and resets the internal state.
 %End
 
     virtual bool eventFilter( QObject *object, QEvent *event );
+
 %Docstring
 Filters events to enable context menu
 
@@ -143,6 +145,7 @@ Set items which should be checked/selected.
   protected:
 
     virtual void resizeEvent( QResizeEvent *event );
+
 %Docstring
 Handler for widget resizing
 %End

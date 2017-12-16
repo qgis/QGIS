@@ -41,7 +41,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     enum PointState {Normal, BreakLine, EndPoint};
     NormVecDecorator();
     NormVecDecorator( Triangulation *tin );
-    virtual ~NormVecDecorator();
+    ~NormVecDecorator() override;
     int addPoint( const QgsPoint &p ) override;
     //! Calculates the normal at a point on the surface and assigns it to 'result'. Returns true in case of success and false in case of failure
     bool calcNormal( double x, double y, Vector3D *result SIP_OUT ) override;
@@ -49,7 +49,7 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     bool calcNormalForPoint( double x, double y, int point, Vector3D *result SIP_OUT );
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Eliminates the horizontal triangles by swapping or by insertion of new points. If alreadyestimated is true, a re-estimation of the normals will be done
-    virtual void eliminateHorizontalTriangles() override;
+    void eliminateHorizontalTriangles() override;
     //! Estimates the first derivative a point. Return true in case of succes and false otherwise
     bool estimateFirstDerivative( int pointno );
     //! This method adds the functionality of estimating normals at the data points. Return true in the case of success and false otherwise
@@ -65,9 +65,9 @@ class ANALYSIS_EXPORT NormVecDecorator: public TriDecorator
     //! Sets an interpolator
     void setTriangleInterpolator( TriangleInterpolator *inter ) override;
     //! Swaps the edge which is closest to the point with x and y coordinates (if this is possible) and forces recalculation of the concerned normals (if alreadyestimated is true)
-    virtual bool swapEdge( double x, double y ) override;
+    bool swapEdge( double x, double y ) override;
 
-    virtual bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
+    bool saveTriangulation( QgsFeatureSink *sink, QgsFeedback *feedback = nullptr ) const override;
 
   protected:
     //! Is true, if the normals already have been estimated

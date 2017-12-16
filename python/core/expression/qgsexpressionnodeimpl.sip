@@ -44,16 +44,25 @@ A node unary operator is modifying the value of ``operand`` by negating it with 
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
+
     virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QString dump() const;
 
+
     virtual QSet<QString> referencedColumns() const;
+
     virtual QSet<QString> referencedVariables() const;
+
     virtual bool needsGeometry() const;
+
     virtual QgsExpressionNode *clone() const /Factory/;
 
+
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
     QString text() const;
 %Docstring
@@ -130,15 +139,24 @@ Binary combination of the left and the right with op.
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
+
     virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QString dump() const;
 
+
     virtual QSet<QString> referencedColumns() const;
+
     virtual QSet<QString> referencedVariables() const;
+
     virtual bool needsGeometry() const;
+
     virtual QgsExpressionNode *clone() const /Factory/;
+
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
     int precedence() const;
 %Docstring
@@ -173,7 +191,7 @@ class QgsExpressionNodeInOperator : QgsExpressionNode
 %Docstring
 This node tests if the result of ``node`` is in the result of ``list``. Optionally it can be inverted with ``notin`` which by default is false.
 %End
-    virtual ~QgsExpressionNodeInOperator();
+    ~QgsExpressionNodeInOperator();
 
     QgsExpressionNode *node() const;
 %Docstring
@@ -192,15 +210,24 @@ This node tests if the result of ``node`` is in the result of ``list``. Optional
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
+
     virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QString dump() const;
 
+
     virtual QSet<QString> referencedColumns() const;
+
     virtual QSet<QString> referencedVariables() const;
+
     virtual bool needsGeometry() const;
+
     virtual QgsExpressionNode *clone() const /Factory/;
+
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
 };
 
@@ -218,7 +245,7 @@ A function node consists of an index of the function in the global function arra
 a list of arguments that will be passed to it.
 %End
 
-    virtual ~QgsExpressionNodeFunction();
+    ~QgsExpressionNodeFunction();
 
     int fnIndex() const;
 %Docstring
@@ -232,15 +259,24 @@ a list of arguments that will be passed to it.
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
+
     virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QString dump() const;
 
+
     virtual QSet<QString> referencedColumns() const;
+
     virtual QSet<QString> referencedVariables() const;
+
     virtual bool needsGeometry() const;
+
     virtual QgsExpressionNode *clone() const /Factory/;
+
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
 %Docstring
@@ -268,15 +304,24 @@ The value of the literal.
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
+
     virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QString dump() const;
 
+
     virtual QSet<QString> referencedColumns() const;
+
     virtual QSet<QString> referencedVariables() const;
+
     virtual bool needsGeometry() const;
+
     virtual QgsExpressionNode *clone() const /Factory/;
+
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
 };
 
@@ -297,16 +342,25 @@ The name of the column.
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
+
     virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QString dump() const;
 
+
     virtual QSet<QString> referencedColumns() const;
+
     virtual QSet<QString> referencedVariables() const;
+
     virtual bool needsGeometry() const;
 
+
     virtual QgsExpressionNode *clone() const /Factory/;
+
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
 };
 
@@ -353,15 +407,24 @@ Create a new node with the given list of ``conditions`` and an optional ``elseEx
     ~QgsExpressionNodeCondition();
 
     virtual QgsExpressionNode::NodeType nodeType() const;
+
     virtual QVariant evalNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual bool prepareNode( QgsExpression *parent, const QgsExpressionContext *context );
+
     virtual QString dump() const;
 
+
     virtual QSet<QString> referencedColumns() const;
+
     virtual QSet<QString> referencedVariables() const;
+
     virtual bool needsGeometry() const;
+
     virtual QgsExpressionNode *clone() const /Factory/;
+
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
 };
 

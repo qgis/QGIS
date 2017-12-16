@@ -75,7 +75,9 @@ Get the expression to generate this geometry.
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
+
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
 
     virtual bool isCompatibleWithSymbol( QgsSymbol *symbol ) const;
 

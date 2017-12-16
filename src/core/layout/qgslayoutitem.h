@@ -283,7 +283,7 @@ class CORE_EXPORT QgsLayoutItem : public QgsLayoutObject, public QGraphicsRectIt
      */
     explicit QgsLayoutItem( QgsLayout *layout, bool manageZValue = true );
 
-    ~QgsLayoutItem();
+    ~QgsLayoutItem() override;
 
     /**
      * Called just before a batch of items are deleted, allowing them to run cleanup

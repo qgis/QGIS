@@ -110,6 +110,7 @@ Find out whether legend items are filtered to show just the ones visible in the 
 %End
 
     virtual void updateItem();
+
 %Docstring
 Update() overloading. Use it rather than update()
 
@@ -418,6 +419,7 @@ Sets state from Dom document
 
     virtual QString displayName() const;
 
+
     const QgsLegendSettings &legendSettings() const;
 %Docstring
 Returns the legend's renderer settings object.
@@ -438,6 +440,7 @@ Sets mCompositionMap to 0 if the map is deleted
 %End
 
     virtual void refreshDataDefinedProperty( const QgsComposerObject::DataDefinedProperty property = QgsComposerObject::AllProperties, const QgsExpressionContext *context = 0 );
+
 
 
 };

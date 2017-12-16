@@ -227,7 +227,7 @@ class QgsGradientFillSymbolLayer : QgsFillSymbolLayer
                                 GradientSpread gradientSpread = Pad
                               );
 
-    virtual ~QgsGradientFillSymbolLayer();
+    ~QgsGradientFillSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
@@ -423,7 +423,7 @@ class QgsShapeburstFillSymbolLayer : QgsFillSymbolLayer
                                   ShapeburstColorType colorType = SimpleTwoColor,
                                   int blurRadius = 0, bool useWholeShape = true, double maxDistance = 5 );
 
-    virtual ~QgsShapeburstFillSymbolLayer();
+    ~QgsShapeburstFillSymbolLayer();
 
 
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
@@ -783,6 +783,7 @@ Base class for polygon renderers generating texture images*
     virtual QgsSymbol *subSymbol();
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
+
     void setStrokeWidthUnit( QgsUnitTypes::RenderUnit unit );
 %Docstring
 Sets the units for the symbol's stroke width.
@@ -818,6 +819,7 @@ Returns the units for the symbol's stroke width.
 
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
+
 
     virtual double dxfWidth( const QgsDxfExport &e, QgsSymbolRenderContext &context ) const;
 
@@ -884,8 +886,10 @@ class QgsRasterFillSymbolLayer: QgsImageFillSymbolLayer
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 
+
     virtual QgsSymbol *subSymbol();
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
+
 
     void setImageFilePath( const QString &imagePath );
 %Docstring
@@ -1674,9 +1678,11 @@ Returns the units for the vertical displacement between rows in the pattern.
 
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
     virtual void setColor( const QColor &c );
 
     virtual QColor color() const;
+
 
   protected:
 
@@ -1751,6 +1757,7 @@ class QgsCentroidFillSymbolLayer : QgsFillSymbolLayer
 
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
 
     void setPointOnSurface( bool pointOnSurface );
     bool pointOnSurface() const;

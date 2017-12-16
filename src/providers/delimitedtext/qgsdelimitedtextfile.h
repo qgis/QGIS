@@ -96,7 +96,7 @@ class QgsDelimitedTextFile : public QObject
 
     explicit QgsDelimitedTextFile( const QString &url = QString() );
 
-    virtual ~QgsDelimitedTextFile();
+    ~QgsDelimitedTextFile() override;
 
     /**
      * Set the filename

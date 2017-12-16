@@ -43,7 +43,7 @@ class QgsServerInterfaceImpl : public QgsServerInterface
                                      QgsServerSettings *serverSettings );
 
 
-    ~QgsServerInterfaceImpl();
+    ~QgsServerInterfaceImpl() override;
 
     void setRequestHandler( QgsRequestHandler *requestHandler ) override;
     void clearRequestHandler() override;

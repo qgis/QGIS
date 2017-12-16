@@ -26,6 +26,7 @@ The values will be returned unmodified.
 Default constructor of field formatter as a fallback when no specialized formatter is defined.
 %End
     virtual QString id() const;
+
 };
 
 /************************************************************************

@@ -41,7 +41,7 @@ to QgsLayoutView widgets.
     typedef QFlags<QgsLayoutViewTool::Flag> Flags;
 
 
-    virtual ~QgsLayoutViewTool();
+    ~QgsLayoutViewTool();
 
     QgsLayoutViewTool::Flags flags() const;
 %Docstring

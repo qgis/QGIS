@@ -198,19 +198,24 @@ Constructor for QgsSymbolLegendNode.
 %End
 
     virtual Qt::ItemFlags flags() const;
+
     virtual QVariant data( int role ) const;
+
     virtual bool setData( const QVariant &value, int role );
+
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
     virtual void setEmbeddedInParent( bool embedded );
 
+
     virtual void setUserLabel( const QString &userLabel );
 
     virtual bool isScaleOK( double scale ) const;
 
     virtual void invalidateMapBasedData();
+
 
     void setIconSize( QSize sz );
 %Docstring
@@ -319,6 +324,7 @@ Constructor for QgsSimpleLegendNode.
 
     virtual QVariant data( int role ) const;
 
+
 };
 
 
@@ -344,6 +350,7 @@ Constructor for QgsImageLegendNode.
 %End
 
     virtual QVariant data( int role ) const;
+
 
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
@@ -374,6 +381,7 @@ Constructor for QgsRasterSymbolLegendNode.
 
     virtual QVariant data( int role ) const;
 
+
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
 
@@ -402,9 +410,12 @@ Constructor for QgsWmsLegendNode.
 
     virtual QVariant data( int role ) const;
 
+
     virtual QSizeF drawSymbol( const QgsLegendSettings &settings, ItemContext *ctx, double itemHeight ) const;
 
+
     virtual void invalidateMapBasedData();
+
 
 };
 
@@ -428,6 +439,7 @@ Construct the node using QgsDataDefinedSizeLegend as definition of the node's ap
     ~QgsDataDefinedSizeLegendNode();
 
     virtual QVariant data( int role ) const;
+
 
     virtual ItemMetrics draw( const QgsLegendSettings &settings, ItemContext *ctx );
 

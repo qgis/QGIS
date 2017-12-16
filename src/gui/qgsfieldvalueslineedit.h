@@ -55,7 +55,7 @@ class QgsFieldValuesLineEditValuesGatherer: public QThread
      */
     void setSubstring( const QString &string ) { mSubstring = string; }
 
-    virtual void run() override
+    void run() override
     {
       mWasCanceled = false;
       if ( mSubstring.isEmpty() )
@@ -139,7 +139,7 @@ class GUI_EXPORT QgsFieldValuesLineEdit: public QgsFilterLineEdit
      */
     QgsFieldValuesLineEdit( QWidget *parent SIP_TRANSFERTHIS = nullptr );
 
-    virtual ~QgsFieldValuesLineEdit();
+    ~QgsFieldValuesLineEdit() override;
 
     /**
      * Sets the layer containing the field that values will be shown from.

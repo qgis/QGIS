@@ -43,6 +43,7 @@ Constructor for QgsSlider
   protected:
     virtual void paintEvent( QPaintEvent *event );
 
+
 };
 /************************************************************************
  * This file has been generated automatically from                      *

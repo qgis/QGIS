@@ -74,6 +74,7 @@ Base class for raster data providers.
 
     virtual QgsRasterInterface *clone() const = 0;
 
+
     virtual bool setInput( QgsRasterInterface *input );
 %Docstring
 It makes no sense to set input on provider */
@@ -83,7 +84,9 @@ It makes no sense to set input on provider */
 
     virtual QgsRectangle extent() const = 0;
 
+
     virtual Qgis::DataType dataType( int bandNo ) const = 0;
+
 %Docstring
 Returns data type for the band specified by number
 
@@ -91,6 +94,7 @@ Returns data type for the band specified by number
 %End
 
     virtual Qgis::DataType sourceDataType( int bandNo ) const = 0;
+
 %Docstring
 Returns source data type for the band specified by number,
 source data type may be shorter than dataType
@@ -143,6 +147,7 @@ Read band offset for raster value
 
 
     virtual QgsRasterBlock *block( int bandNo, const QgsRectangle &boundingBox, int width, int height, QgsRasterBlockFeedback *feedback = 0 );
+
 %Docstring
 Read block of data using given extent and size.
 

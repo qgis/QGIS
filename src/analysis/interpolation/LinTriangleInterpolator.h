@@ -36,7 +36,7 @@ class ANALYSIS_EXPORT LinTriangleInterpolator : public TriangleInterpolator
     //! Constructor with reference to a DualEdgeTriangulation object
     LinTriangleInterpolator( DualEdgeTriangulation *tin );
     //! Calculates the normal vector and assigns it to vec
-    virtual bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
+    bool calcNormVec( double x, double y, Vector3D *result SIP_OUT ) override;
     bool calcPoint( double x, double y, QgsPoint &result SIP_OUT ) override;
     //! Returns a pointer to the current Triangulation object
     virtual DualEdgeTriangulation *getTriangulation() const;

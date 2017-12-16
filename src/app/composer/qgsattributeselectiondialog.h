@@ -115,7 +115,7 @@ class QgsAttributeSelectionDialog: public QDialog, private Ui::QgsAttributeSelec
   public:
     QgsAttributeSelectionDialog( QgsComposerAttributeTableV2 *table, QgsVectorLayer *vLayer, QWidget *parent = nullptr, Qt::WindowFlags f = nullptr );
 
-    ~QgsAttributeSelectionDialog();
+    ~QgsAttributeSelectionDialog() override;
 
   private slots:
     void mRemoveColumnPushButton_clicked();

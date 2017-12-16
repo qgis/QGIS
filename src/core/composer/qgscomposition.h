@@ -122,7 +122,7 @@ class CORE_EXPORT QgsComposition : public QGraphicsScene, public QgsExpressionCo
       ExportAtlas   // The composition is being exported as an atlas
     };
 
-    ~QgsComposition();
+    ~QgsComposition() override;
 
     /**
      * The project associated with the composition. Used to get access to layers, map themes,

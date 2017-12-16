@@ -63,7 +63,7 @@ Constructor for QgsMapLayer
 :param source: datasource of layer
 %End
 
-    virtual ~QgsMapLayer();
+    ~QgsMapLayer();
 
 
     virtual QgsMapLayer *clone() const = 0;

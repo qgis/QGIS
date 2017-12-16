@@ -66,7 +66,9 @@ Constructor for a QgsLayoutModel attached to the specified ``layout``.
     virtual Qt::DropActions supportedDropActions() const;
 
     virtual QStringList mimeTypes() const;
+
     virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+
     virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column, const QModelIndex &parent );
 
     virtual bool removeRows( int row, int count, const QModelIndex &parent = QModelIndex() );

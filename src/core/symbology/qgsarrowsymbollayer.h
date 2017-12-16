@@ -43,10 +43,10 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
      */
     static QgsSymbolLayer *create( const QgsStringMap &properties = QgsStringMap() ) SIP_FACTORY;
 
-    virtual QgsArrowSymbolLayer *clone() const override SIP_FACTORY;
-    virtual QgsSymbol *subSymbol() override { return mSymbol.get(); }
-    virtual bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
-    virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
+    QgsArrowSymbolLayer *clone() const override SIP_FACTORY;
+    QgsSymbol *subSymbol() override { return mSymbol.get(); }
+    bool setSubSymbol( QgsSymbol *symbol SIP_TRANSFER ) override;
+    QSet<QString> usedAttributes( const QgsRenderContext &context ) const override;
 
     //! Get current arrow width
     double arrowWidth() const { return mArrowWidth; }
@@ -142,7 +142,7 @@ class CORE_EXPORT QgsArrowSymbolLayer : public QgsLineSymbolLayer
     void stopRender( QgsSymbolRenderContext &context ) override;
     void renderPolyline( const QPolygonF &points, QgsSymbolRenderContext &context ) override;
     void setColor( const QColor &c ) override;
-    virtual QColor color() const override;
+    QColor color() const override;
 
   private:
 #ifdef SIP_RUN

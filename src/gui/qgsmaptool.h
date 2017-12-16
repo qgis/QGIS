@@ -102,7 +102,7 @@ class GUI_EXPORT QgsMapTool : public QObject
      */
     virtual Flags flags() const { return Flags(); }
 
-    virtual ~QgsMapTool();
+    ~QgsMapTool() override;
 
     //! Mouse move event for overriding. Default implementation does nothing.
     virtual void canvasMoveEvent( QgsMapMouseEvent *e );

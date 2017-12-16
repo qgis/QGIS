@@ -56,6 +56,7 @@ Create a new QgsScopedExpressionFunction using named parameters.
 
     virtual QVariant func( const QVariantList &values, const QgsExpressionContext *context, QgsExpression *parent, const QgsExpressionNodeFunction *node ) = 0;
 
+
     virtual QgsScopedExpressionFunction *clone() const = 0 /Factory/;
 %Docstring
 Returns a clone of the function.
@@ -65,9 +66,12 @@ Returns a clone of the function.
 
     virtual bool usesGeometry( const QgsExpressionNodeFunction *node ) const;
 
+
     virtual QSet<QString> referencedColumns( const QgsExpressionNodeFunction *node ) const;
 
+
     virtual bool isStatic( const QgsExpressionNodeFunction *node, QgsExpression *parent, const QgsExpressionContext *context ) const;
+
 
 };
 

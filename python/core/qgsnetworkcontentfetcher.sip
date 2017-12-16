@@ -32,7 +32,7 @@ handled.
 Constructor for QgsNetworkContentFetcher.
 %End
 
-    virtual ~QgsNetworkContentFetcher();
+    ~QgsNetworkContentFetcher();
 
     void fetchContent( const QUrl &url );
 %Docstring

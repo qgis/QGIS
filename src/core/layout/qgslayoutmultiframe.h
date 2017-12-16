@@ -83,7 +83,7 @@ class CORE_EXPORT QgsLayoutMultiFrame: public QgsLayoutObject, public QgsLayoutU
      */
     QgsLayoutMultiFrame( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    ~QgsLayoutMultiFrame();
+    ~QgsLayoutMultiFrame() override;
 
     /**
      * Returns the multiframe identification string. This is a unique random string set for the multiframe

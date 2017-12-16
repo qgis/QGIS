@@ -337,7 +337,7 @@ class CORE_EXPORT QgsLayoutItemRegistry : public QObject
     */
     QgsLayoutItemRegistry( QObject *parent = nullptr );
 
-    ~QgsLayoutItemRegistry();
+    ~QgsLayoutItemRegistry() override;
 
     /**
      * Populates the registry with standard item types. If called on a non-empty registry

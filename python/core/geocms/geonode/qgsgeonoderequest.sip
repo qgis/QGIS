@@ -94,7 +94,7 @@ Constructor for QgsGeoNodeRequest.
 If ``forceRefresh`` is false, then cached copies of the request may be reused.
 %End
 
-    virtual ~QgsGeoNodeRequest();
+    ~QgsGeoNodeRequest();
 
     void request( const QString &endPoint );
 %Docstring

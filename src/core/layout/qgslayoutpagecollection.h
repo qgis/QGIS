@@ -46,7 +46,7 @@ class CORE_EXPORT QgsLayoutPageCollection : public QObject, public QgsLayoutSeri
      */
     explicit QgsLayoutPageCollection( QgsLayout *layout SIP_TRANSFERTHIS );
 
-    ~QgsLayoutPageCollection();
+    ~QgsLayoutPageCollection() override;
 
     QString stringType() const override { return QStringLiteral( "LayoutPageCollection" ); }
     QgsLayout *layout() override;

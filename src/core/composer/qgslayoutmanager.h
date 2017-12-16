@@ -51,7 +51,7 @@ class CORE_EXPORT QgsLayoutManager : public QObject
      */
     explicit QgsLayoutManager( QgsProject *project SIP_TRANSFERTHIS = nullptr );
 
-    ~QgsLayoutManager();
+    ~QgsLayoutManager() override;
 
     /**
      * Adds a composition to the manager. Ownership of the composition is transferred to the manager.

@@ -197,7 +197,7 @@ class GUI_EXPORT QgsCollapsibleGroupBox : public QgsCollapsibleGroupBoxBasic
   public:
     QgsCollapsibleGroupBox( QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsSettings *settings = nullptr );
     QgsCollapsibleGroupBox( const QString &title, QWidget *parent SIP_TRANSFERTHIS = nullptr, QgsSettings *settings = nullptr );
-    ~QgsCollapsibleGroupBox();
+    ~QgsCollapsibleGroupBox() override;
 
     // set custom QgsSettings pointer if group box was already created from QtDesigner promotion
     void setSettings( QgsSettings *settings );

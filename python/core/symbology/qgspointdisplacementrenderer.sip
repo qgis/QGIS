@@ -36,11 +36,13 @@ Constructor for QgsPointDisplacementRenderer.
     virtual QgsPointDisplacementRenderer *clone() const /Factory/;
 
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
+
     virtual void stopRender( QgsRenderContext &context );
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
     virtual QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
+
 
     static QgsFeatureRenderer *create( QDomElement &symbologyElem, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
@@ -165,6 +167,7 @@ Creates a QgsPointDisplacementRenderer from an existing renderer.
 :rtype: QgsPointDisplacementRenderer
 %End
     virtual void drawGroup( QPointF centerPoint, QgsRenderContext &context, const QgsPointDistanceRenderer::ClusteredGroup &group ) ;
+
 };
 
 /************************************************************************

@@ -263,6 +263,7 @@ Emitted when the form changes mode.
   protected:
     virtual void hideEvent( QHideEvent *event );
 
+
 };
 
 class QgsAttributeTableAction : QAction

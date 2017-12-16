@@ -76,7 +76,7 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
     QgsGdalProvider( QString const &uri, const QgsError &error );
 
 
-    ~QgsGdalProvider();
+    ~QgsGdalProvider() override;
 
     /**
      * Clone the provider.
@@ -88,8 +88,8 @@ class QgsGdalProvider : public QgsRasterDataProvider, QgsGdalProviderBase
 
     QString name() const override;
     QString description() const override;
-    virtual QgsCoordinateReferenceSystem crs() const override;
-    virtual QgsRectangle extent() const override;
+    QgsCoordinateReferenceSystem crs() const override;
+    QgsRectangle extent() const override;
     bool isValid() const override;
     QgsRasterIdentifyResult identify( const QgsPointXY &point, QgsRaster::IdentifyFormat format, const QgsRectangle &boundingBox = QgsRectangle(), int width = 0, int height = 0, int dpi = 96 ) override;
     QString lastErrorTitle() override;

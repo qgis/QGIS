@@ -235,13 +235,16 @@ Create a new MarkerLineSymbolLayerV2 from SLD
 
     virtual QColor color() const;
 
+
     virtual QgsSymbol *subSymbol();
 
     virtual bool setSubSymbol( QgsSymbol *symbol /Transfer/ );
 
 
     virtual void setWidth( double width );
+
     virtual double width() const;
+
 
     virtual double estimateMaxBleed( const QgsRenderContext &context ) const;
 

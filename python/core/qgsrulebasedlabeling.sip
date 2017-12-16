@@ -315,12 +315,18 @@ Create the instance from a DOM element with saved configuration
 
 
     virtual QString type() const;
+
     virtual QgsRuleBasedLabeling *clone() const /Factory/;
+
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context ) const;
+
     virtual QStringList subProviders() const;
+
     virtual QgsPalLayerSettings settings( const QString &providerId = QString() ) const;
 
+
     virtual void setSettings( QgsPalLayerSettings *settings /Transfer/, const QString &providerId = QString() );
+
 %Docstring
 Set pal settings for a specific provider (takes ownership).
 
@@ -332,6 +338,7 @@ Set pal settings for a specific provider (takes ownership).
     virtual bool requiresAdvancedEffects() const;
 
     virtual void toSld( QDomNode &parent, const QgsStringMap &props ) const;
+
 
   protected:
 };

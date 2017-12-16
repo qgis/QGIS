@@ -79,6 +79,7 @@ Sets state from Dom document
 
     virtual void setSceneRect( const QRectF &rectangle );
 
+
 };
 
 /************************************************************************

@@ -262,7 +262,7 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
     enum OutputType { None, Vector, Raster };
 
     //! Returns list of options which will be passed to module
-    virtual QStringList options() override;
+    QStringList options() override;
 
     //! True if this option is output
     bool isOutput() { return mIsOutput; }
@@ -289,10 +289,10 @@ class QgsGrassModuleOption : public QgsGrassModuleMultiParam
 
   public slots:
     // Add new line edit for multiple options
-    virtual void addRow() override;
+    void addRow() override;
 
     // Remove one line edit for multiple options
-    virtual void removeRow() override;
+    void removeRow() override;
 
     // Browse output
     void browse( bool checked );
@@ -358,7 +358,7 @@ class QgsGrassModuleFlag : public QgsGrassModuleCheckBox, public QgsGrassModuleP
                         bool direct, QWidget *parent = nullptr );
 
     //! Returns list of options which will be passed to module
-    virtual QStringList options() override;
+    QStringList options() override;
 
 };
 
@@ -470,7 +470,7 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
                                bool direct, QWidget *parent = nullptr );
 
     //! Returns list of options which will be passed to module
-    virtual QStringList options() override;
+    QStringList options() override;
 
     void setLayerInput( QgsGrassModuleInput *layerInput ) { mLayerInput = layerInput; }
     QgsGrassModuleInput *layerInput() const { return mLayerInput; }
@@ -480,10 +480,10 @@ class QgsGrassModuleVectorField : public QgsGrassModuleMultiParam
     void updateFields();
 
     // Add new combo for multiple options
-    virtual void addRow() override;
+    void addRow() override;
 
     // Remove one combo for multiple options
-    virtual void removeRow() override;
+    void removeRow() override;
 
   private:
     // Module options
@@ -534,7 +534,7 @@ class QgsGrassModuleSelection : public QgsGrassModuleGroupBoxItem
                              bool direct, QWidget *parent = nullptr );
 
     //! Returns list of options which will be passed to module
-    virtual QStringList options() override;
+    QStringList options() override;
 
   public slots:
     // selected input layer changed

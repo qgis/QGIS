@@ -58,7 +58,7 @@ class GUI_EXPORT QgsMapLayerAction : public QAction
     //! Creates a map layer action which can run on a specific type of layer
     QgsMapLayerAction( const QString &name, QObject *parent SIP_TRANSFERTHIS, QgsMapLayer::LayerType layerType, Targets targets = AllActions, const QIcon &icon = QIcon() );
 
-    ~QgsMapLayerAction();
+    ~QgsMapLayerAction() override;
 
     //! True if action can run using the specified layer
     bool canRunUsingLayer( QgsMapLayer *layer ) const;

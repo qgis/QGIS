@@ -49,7 +49,7 @@ class QgsArcGisAsyncQuery : public QObject
     Q_OBJECT
   public:
     QgsArcGisAsyncQuery( QObject *parent = nullptr );
-    ~QgsArcGisAsyncQuery();
+    ~QgsArcGisAsyncQuery() override;
 
     void start( const QUrl &url, QByteArray *result, bool allowCache = false );
   signals:

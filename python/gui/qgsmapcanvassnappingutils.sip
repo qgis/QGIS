@@ -26,7 +26,9 @@ Snapping utils instance that is connected to a canvas and updates the configurat
 
   protected:
     virtual void prepareIndexStarting( int count );
+
     virtual void prepareIndexProgress( int index );
+
 
 };
 

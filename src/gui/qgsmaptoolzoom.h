@@ -34,13 +34,13 @@ class GUI_EXPORT QgsMapToolZoom : public QgsMapTool
   public:
     //! constructor
     QgsMapToolZoom( QgsMapCanvas *canvas, bool zoomOut );
-    ~QgsMapToolZoom();
+    ~QgsMapToolZoom() override;
 
-    virtual Flags flags() const override { return QgsMapTool::Transient; }
-    virtual void canvasMoveEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasPressEvent( QgsMapMouseEvent *e ) override;
-    virtual void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
-    virtual void deactivate() override;
+    Flags flags() const override { return QgsMapTool::Transient; }
+    void canvasMoveEvent( QgsMapMouseEvent *e ) override;
+    void canvasPressEvent( QgsMapMouseEvent *e ) override;
+    void canvasReleaseEvent( QgsMapMouseEvent *e ) override;
+    void deactivate() override;
 
   protected:
     //! stores actual zoom rect

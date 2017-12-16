@@ -321,7 +321,7 @@ Constructor for QgsTaskManager.
 :param parent: parent QObject
 %End
 
-    virtual ~QgsTaskManager();
+    ~QgsTaskManager();
 
     struct TaskDefinition
     {
