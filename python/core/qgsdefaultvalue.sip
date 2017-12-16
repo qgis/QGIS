@@ -50,8 +50,6 @@ Create a new default value with the given ``expression`` and ``applyOnUpdate`` f
 %Docstring
 The expression will be evaluated whenever a default value needs
 to be calculated for a field.
-
-:rtype: str
 %End
 
     void setExpression( const QString &expression );
@@ -64,8 +62,6 @@ to be calculated for a field.
 %Docstring
 The applyOnUpdate flag determines if this expression should also be
 applied when a feature is updated or only when it's created.
-
-:rtype: bool
 %End
 
     void setApplyOnUpdate( bool applyOnUpdate );
@@ -79,8 +75,6 @@ applied when a feature is updated or only when it's created.
 Returns if this default value should be applied.
 
 :return: false if the expression is a null string.
-:rtype: bool
-
 %End
 
     operator bool() const;

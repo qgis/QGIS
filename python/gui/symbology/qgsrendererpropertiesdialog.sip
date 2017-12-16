@@ -23,6 +23,7 @@ class QgsRendererPropertiesDialog : QDialog
     QgsRendererPropertiesDialog( QgsVectorLayer *layer, QgsStyle *style, bool embedded = false, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsRendererPropertiesDialog.
+
 :param layer: associated layer
 :param style: style collection
 :param embedded: set to true to indicate that the dialog will be embedded in another widget, rather
@@ -35,6 +36,7 @@ than shown as a dialog by itself
 %Docstring
 Sets the map canvas associated with the dialog. This allows the widget to retrieve the current
 map scale and other properties from the canvas.
+
 :param canvas: map canvas
 
 .. versionadded:: 2.12
@@ -44,6 +46,7 @@ map scale and other properties from the canvas.
 %Docstring
 Set the widget in dock mode which tells the widget to emit panel
 widgets and not open dialogs
+
 :param dockMode: True to enable dock mode.
 %End
 
@@ -65,6 +68,7 @@ All widgets will fire this event to notify of an internal change.
     void showPanel( QgsPanelWidget *panel );
 %Docstring
 Emit when you require a panel to be show in the interface.
+
 :param panel: The panel widget to show.
 
 .. note::

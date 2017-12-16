@@ -41,15 +41,15 @@ Construct a new Python editor.
     void loadAPIs( const QList<QString> &filenames );
 %Docstring
 Load APIs from one or more files
+
 :param filenames: The list of apis files to load for the Python lexer
 %End
 
     bool loadScript( const QString &script );
 %Docstring
 Load a script file
-:param script: The script file to load
 
-:rtype: bool
+:param script: The script file to load
 %End
 
 };

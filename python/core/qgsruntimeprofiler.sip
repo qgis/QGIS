@@ -25,6 +25,7 @@ Constructor to create a new runtime profiler.
 %Docstring
  Begin the group for the profiler. Groups will append {GroupName}/ to the
 front of the profile tag set using start.
+
 :param name: The name of the group.
 %End
 
@@ -36,6 +37,7 @@ front of the profile tag set using start.
     void start( const QString &name );
 %Docstring
  Start a profile event with the given name.
+
 :param name: The name of the profile event. Will have the name of
 the active group appended after ending.
 %End
@@ -56,8 +58,6 @@ the active group appended after ending.
  The current total time collected in the profiler.
 
 :return: The current total time collected in the profiler.
-:rtype: float
-
 %End
 
 };

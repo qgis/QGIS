@@ -90,8 +90,6 @@ Cancels the active command, discarding it without pushing to the undo history.
     QUndoStack *stack();
 %Docstring
 Returns a pointer to the internal QUndoStack.
-
-:rtype: QUndoStack
 %End
 
     void notifyUndoRedoOccurred( QgsLayoutItem *item );
@@ -115,8 +113,6 @@ will take two calls unblocking commands in order to release the block.
     bool isBlocked() const;
 %Docstring
 Returns true if undo commands are currently blocked.
-
-:rtype: bool
 
 .. seealso:: :py:func:`blockCommands()`
 %End

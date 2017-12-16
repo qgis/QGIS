@@ -30,12 +30,11 @@ Utility functions for use with the memory vector data provider.
 %Docstring
 Creates a new memory layer using the specified parameters. The caller takes responsibility
 for deleting the newly created layer.
+
 :param name: layer name
 :param fields: fields for layer
 :param geometryType: optional layer geometry type
 :param crs: optional layer CRS for layers with geometry
-
-:rtype: QgsVectorLayer
 %End
 };
 

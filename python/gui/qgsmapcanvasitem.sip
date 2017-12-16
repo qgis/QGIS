@@ -45,12 +45,11 @@ schedules map canvas for repaint
     bool setRenderContextVariables( QPainter *p, QgsRenderContext &context ) const;
 %Docstring
 Sets render context parameters
+
 :param p: painter for rendering
 :param context: out: configured context
 
 :return: true in case of success *
-:rtype: bool
-
 %End
 
   public:
@@ -66,8 +65,6 @@ called on changed extent or resize event to update position of the item
     QgsRectangle rect() const;
 %Docstring
 returns canvas item rectangle in map units
-
-:rtype: QgsRectangle
 %End
 
     void setRect( const QgsRectangle &r, bool resetRotation = true );
@@ -78,15 +75,11 @@ sets canvas item rectangle in map units
     QgsPointXY toMapCoordinates( QPoint point ) const;
 %Docstring
 transformation from screen coordinates to map coordinates
-
-:rtype: QgsPointXY
 %End
 
     QPointF toCanvasCoordinates( const QgsPointXY &point ) const;
 %Docstring
 transformation from map coordinates to screen coordinates
-
-:rtype: QPointF
 %End
 
   protected:

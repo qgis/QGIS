@@ -50,10 +50,9 @@ Cell background color
     bool writeXml( QDomElement &styleElem, QDomDocument &doc ) const;
 %Docstring
 Writes the style's properties to XML for storage.
+
 :param styleElem: an existing QDomElement in which to store the style's properties.
 :param doc: QDomDocument for the destination XML.
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -61,9 +60,8 @@ Writes the style's properties to XML for storage.
     bool readXml( const QDomElement &styleElem );
 %Docstring
 Reads the style's properties from XML.
-:param styleElem: a QDomElement holding the style's desired properties.
 
-:rtype: bool
+:param styleElem: a QDomElement holding the style's desired properties.
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -143,8 +141,6 @@ Sets the ``margin`` distance in mm between cell borders and their contents.
 %Docstring
 Returns the margin distance between cell borders and their contents in mm.
 
-:rtype: float
-
 .. seealso:: :py:func:`setCellMargin()`
 %End
 
@@ -159,8 +155,6 @@ Sets the behavior ``mode`` for empty tables with no content rows.
 %Docstring
 Returns the behavior mode for empty tables. This property controls
 how the table is drawn if it contains no content rows.
-
-:rtype: EmptyTableMode
 
 .. seealso:: :py:func:`setEmptyTableBehavior()`
 %End
@@ -182,8 +176,6 @@ Returns the message for empty tables with no content rows. This message
 is displayed in the table body if the empty table behavior is
 set to ShowMessage.
 
-:rtype: str
-
 .. seealso:: :py:func:`setEmptyTableMessage()`
 
 .. seealso:: :py:func:`emptyTableBehavior()`
@@ -192,6 +184,7 @@ set to ShowMessage.
     void setShowEmptyRows( const bool showEmpty );
 %Docstring
 Sets whether empty rows should be drawn. Tables default to hiding empty rows.
+
 :param showEmpty: set to true to show empty rows in the table
 
 .. seealso:: :py:func:`showEmptyRows()`
@@ -200,8 +193,6 @@ Sets whether empty rows should be drawn. Tables default to hiding empty rows.
     bool showEmptyRows() const;
 %Docstring
 Returns whether empty rows are drawn in the table.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setShowEmptyRows()`
 %End
@@ -218,8 +209,6 @@ Sets the ``font`` used to draw header text in the table.
     QFont headerFont() const;
 %Docstring
 Returns the font used to draw header text in the table.
-
-:rtype: QFont
 
 .. seealso:: :py:func:`setHeaderFont()`
 
@@ -241,8 +230,6 @@ Sets the ``color`` used to draw header text in the table.
 %Docstring
 Returns the color used to draw header text in the table.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setHeaderFontColor()`
 
 .. seealso:: :py:func:`headerFont()`
@@ -261,8 +248,6 @@ Sets the horizontal ``alignment`` for table headers.
 %Docstring
 Returns the horizontal alignment for table headers.
 
-:rtype: HeaderHAlignment
-
 .. seealso:: :py:func:`setHeaderHAlignment()`
 %End
 
@@ -279,8 +264,6 @@ if and where headers are shown in the table.
 Returns the display mode for headers in the table. This property controls
 if and where headers are shown in the table.
 
-:rtype: HeaderMode
-
 .. seealso:: :py:func:`setHeaderMode()`
 %End
 
@@ -296,8 +279,6 @@ Sets the ``font`` used to draw text in table body cells.
     QFont contentFont() const;
 %Docstring
 Returns the font used to draw text in table body cells.
-
-:rtype: QFont
 
 .. seealso:: :py:func:`setContentFont()`
 
@@ -319,8 +300,6 @@ Sets the ``color`` used to draw text in table body cells.
 %Docstring
 Returns the color used to draw text in table body cells.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setContentFontColor()`
 
 .. seealso:: :py:func:`contentFont()`
@@ -331,6 +310,7 @@ Returns the color used to draw text in table body cells.
     void setShowGrid( const bool showGrid );
 %Docstring
 Sets whether grid lines should be drawn in the table
+
 :param showGrid: set to true to show grid lines
 
 .. seealso:: :py:func:`showGrid()`
@@ -343,8 +323,6 @@ Sets whether grid lines should be drawn in the table
     bool showGrid() const;
 %Docstring
 Returns whether grid lines are drawn in the table
-
-:rtype: bool
 
 .. seealso:: :py:func:`setShowGrid()`
 
@@ -368,8 +346,6 @@ Sets the ``width`` in mm for grid lines in the table.
 %Docstring
 Returns the width of grid lines in the table in mm.
 
-:rtype: float
-
 .. seealso:: :py:func:`setGridStrokeWidth()`
 
 .. seealso:: :py:func:`showGrid()`
@@ -392,8 +368,6 @@ Sets the ``color`` used for grid lines in the table.
 %Docstring
 Returns the color used for grid lines in the table.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setGridColor()`
 
 .. seealso:: :py:func:`showGrid()`
@@ -404,6 +378,7 @@ Returns the color used for grid lines in the table.
     void setHorizontalGrid( const bool horizontalGrid );
 %Docstring
 Sets whether the grid's horizontal lines should be drawn in the table
+
 :param horizontalGrid: set to true to draw grid's horizontal lines
 
 .. seealso:: :py:func:`setShowGrid()`
@@ -419,8 +394,6 @@ Sets whether the grid's horizontal lines should be drawn in the table
 %Docstring
 Returns whether the grid's horizontal lines are drawn in the table.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setShowGrid()`
 
 .. seealso:: :py:func:`setGridStrokeWidth()`
@@ -433,6 +406,7 @@ Returns whether the grid's horizontal lines are drawn in the table.
     void setVerticalGrid( const bool verticalGrid );
 %Docstring
 Sets whether the grid's vertical lines should be drawn in the table
+
 :param verticalGrid: set to true to draw grid's vertical lines
 
 .. seealso:: :py:func:`setShowGrid()`
@@ -447,8 +421,6 @@ Sets whether the grid's vertical lines should be drawn in the table
     bool verticalGrid() const;
 %Docstring
 Returns whether the grid's vertical lines are drawn in the table.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setShowGrid()`
 
@@ -472,8 +444,6 @@ Sets the ``color`` used for background of table.
 %Docstring
 Returns the color used for the background of the table.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setBackgroundColor()`
 
 .. seealso:: :py:func:`gridColor()`
@@ -492,8 +462,6 @@ automatically wrapped.
 Returns the wrap behavior for the table, which controls how text within cells is
 automatically wrapped.
 
-:rtype: WrapBehavior
-
 .. seealso:: :py:func:`setWrapBehavior()`
 %End
 
@@ -501,14 +469,13 @@ automatically wrapped.
 %Docstring
 Returns a reference to the list of QgsLayoutTableColumns shown in the table
 
-:rtype: QgsLayoutTableColumns
-
 .. seealso:: :py:func:`setColumns()`
 %End
 
     void setColumns( const QgsLayoutTableColumns &columns );
 %Docstring
 Replaces the columns in the table with a specified list of QgsLayoutTableColumns.
+
 :param columns: list of QgsLayoutTableColumns to show in table.
 
 .. seealso:: :py:func:`columns()`
@@ -525,8 +492,6 @@ Sets the cell ``style`` for a cell ``group``.
 %Docstring
 Returns the cell style for a cell ``group``.
 
-:rtype: QgsLayoutTableStyle
-
 .. seealso:: :py:func:`setCellStyle()`
 %End
 
@@ -536,7 +501,6 @@ Returns the cell style for a cell ``group``.
 Fetches the contents used for the cells in the table.
 
 :return: true if table contents were successfully retrieved.
-:rtype: bool
 
 :param contents: QgsLayoutTableContents to store retrieved row data in
 %End
@@ -544,8 +508,6 @@ Fetches the contents used for the cells in the table.
     QgsLayoutTableContents &contents();
 %Docstring
 Returns the current contents of the table. Excludes header cells.
-
-:rtype: QgsLayoutTableContents
 %End
 
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
@@ -606,33 +568,22 @@ new data.
     virtual bool calculateMaxColumnWidths();
 %Docstring
 Calculates the maximum width of text shown in columns.
-
-:rtype: bool
 %End
 
     virtual bool calculateMaxRowHeights();
 %Docstring
 Calculates the maximum height of text shown in rows.
-
-:rtype: bool
 %End
 
     double totalWidth();
-%Docstring
-
-:rtype: float
-%End
 
     double totalHeight();
-%Docstring
-
-:rtype: float
-%End
 
     int rowsVisible( double frameHeight, int firstRow, bool includeHeader, bool includeEmptyRows ) const;
 %Docstring
 Calculates how many content rows would be visible within a frame of the specified
 height.
+
 :param frameHeight: height of frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
 :param includeHeader: set to true if frame would include a header row
@@ -641,13 +592,12 @@ if the frame would include all table content rows and have space left for extra 
 to true would also include a count of these extra blank rows.
 
 :return: number of visible content rows (excluding header row)
-:rtype: int
-
 %End
 
     int rowsVisible( int frameIndex, int firstRow, bool includeEmptyRows ) const;
 %Docstring
 Calculates how many content rows are visible within a given frame.
+
 :param frameIndex: index number for frame
 :param firstRow: index of first row visible in frame (where 0 = first row in table)
 :param includeEmptyRows: set to true to also include rows which would be empty in the returned count. For instance,
@@ -655,23 +605,21 @@ if the frame would include all table content rows and have space left for extra 
 to true would also include a count of these extra blank rows.
 
 :return: number of visible content rows (excludes header rows)
-:rtype: int
-
 %End
 
     QPair<int, int> rowRange( const int frameIndex ) const;
 %Docstring
 Calculates a range of rows which should be visible in a given frame.
+
 :param frameIndex: index number for frame
 
 :return: row range
-:rtype: QPair<int, int>
-
 %End
 
     void drawHorizontalGridLines( QPainter *painter, int firstRow, int lastRow, bool drawHeaderLines ) const;
 %Docstring
 Draws the horizontal grid lines for the table.
+
 :param painter: destination painter for grid lines
 :param firstRow: index corresponding to first row shown in frame
 :param lastRow: index corresponding to last row shown in frame. If greater than the number of content rows in the
@@ -690,12 +638,11 @@ Recalculates and updates the size of the table and all table frames.
     bool contentsContainsRow( const QgsLayoutTableContents &contents, const QgsLayoutTableRow &row ) const;
 %Docstring
 Checks whether a table contents contains a given row
+
 :param contents: table contents to check
 :param row: row to check for
 
 :return: true if contents contains rows
-:rtype: bool
-
 %End
 
 };

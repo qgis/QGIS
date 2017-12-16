@@ -25,6 +25,7 @@ Frame item for a composer multiframe item.
 %Docstring
 Sets the visible part of the multiframe's content which is visible within
 this frame (relative to the total multiframe extent in mm).
+
 :param section: visible portion of content
 
 .. seealso:: :py:func:`extent`
@@ -35,8 +36,6 @@ this frame (relative to the total multiframe extent in mm).
 Returns the parent multiframe for the frame.
 
 :return: parent multiframe
-:rtype: QgsComposerMultiFrame
-
 %End
 
     virtual QString displayName() const;
@@ -63,8 +62,6 @@ Returns the visible portion of the multi frame's content which
 is shown in this frame.
 
 :return: extent of visible portion
-:rtype: QRectF
-
 
 .. versionadded:: 2.5
 
@@ -76,8 +73,6 @@ is shown in this frame.
 Returns whether the page should be hidden (ie, not included in composer exports) if this frame is empty
 
 :return: true if page should be hidden if frame is empty
-:rtype: bool
-
 
 .. versionadded:: 2.5
 
@@ -87,6 +82,7 @@ Returns whether the page should be hidden (ie, not included in composer exports)
     void setHidePageIfEmpty( const bool hidePageIfEmpty );
 %Docstring
 Sets whether the page should be hidden (ie, not included in composer exports) if this frame is empty
+
 :param hidePageIfEmpty: set to true if page should be hidden if frame is empty
 
 .. versionadded:: 2.5
@@ -99,8 +95,6 @@ Sets whether the page should be hidden (ie, not included in composer exports) if
 Returns whether the background and frame stroke should be hidden if this frame is empty
 
 :return: true if background and stroke should be hidden if frame is empty
-:rtype: bool
-
 
 .. versionadded:: 2.5
 
@@ -110,6 +104,7 @@ Returns whether the background and frame stroke should be hidden if this frame i
     void setHideBackgroundIfEmpty( const bool hideBackgroundIfEmpty );
 %Docstring
 Sets whether the background and frame stroke should be hidden if this frame is empty
+
 :param hideBackgroundIfEmpty: set to true if background and stroke should be hidden if frame is empty
 
 .. versionadded:: 2.5
@@ -122,8 +117,6 @@ Sets whether the background and frame stroke should be hidden if this frame is e
 Returns whether the frame is empty
 
 :return: true if frame is empty
-:rtype: bool
-
 
 .. versionadded:: 2.5
 

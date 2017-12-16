@@ -28,6 +28,7 @@ the map scale.
     explicit QgsMapUnitScale( double minScale = 0.0, double maxScale = 0.0 );
 %Docstring
 Constructor for QgsMapUnitScale
+
 :param minScale: minimum allowed scale, or 0.0 if no minimum scale set
 :param maxScale: maximum allowed scale, or 0.0 if no maximum scale set
 The scale values indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
@@ -66,20 +67,15 @@ The maximum size in millimeters, or 0.0 if unset
 %Docstring
 Computes a map units per pixel scaling factor, respecting the minimum and maximum scales
 set for the object.
+
 :param c: render context
 
 :return: map units per pixel, limited between minimum and maximum scales
-:rtype: float
-
 %End
 
     bool operator==( const QgsMapUnitScale &other ) const;
 
     bool operator!=( const QgsMapUnitScale &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 };
 
 

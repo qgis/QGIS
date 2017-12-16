@@ -32,8 +32,6 @@ Constructor
 %Docstring
 
 :return: the return HTTP response code associated with this exception
-:rtype: int
-
 %End
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
@@ -43,8 +41,6 @@ Format the exception for sending to client
 :param responseFormat: QString to store the content type of the response format.
 
 :return: QByteArray the fermatted response.
-:rtype: QByteArray
-
 
 The defaolt implementation return text/xml format.
 %End
@@ -76,39 +72,29 @@ Construction
 %Docstring
 
 :return: message
-:rtype: str
-
 %End
 
     QString code()    const;
 %Docstring
 
 :return: code
-:rtype: str
-
 %End
 
     QString locator() const;
 %Docstring
 
 :return: locator
-:rtype: str
-
 %End
 
     QString version() const;
 %Docstring
 return exception version
-
-:rtype: str
 %End
 
     virtual QByteArray formatResponse( QString &responseFormat /Out/ ) const;
 
 %Docstring
 Overridden from QgsServerException
-
-:rtype: QByteArray
 %End
 
 };

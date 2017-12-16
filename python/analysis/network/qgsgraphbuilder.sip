@@ -41,8 +41,6 @@ MANDATORY BUILDER PROPERTY DECLARATION
     QgsGraph *graph() /Factory/;
 %Docstring
 Returns generated QgsGraph
-
-:rtype: QgsGraph
 %End
 
 };

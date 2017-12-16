@@ -48,12 +48,11 @@ and diagrams for the layer. Selected features will also be drawn with a default 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates a null renderer from XML element.
+
 :param element: DOM element
 :param context: reading context
 
 :return: new null symbol renderer
-:rtype: QgsFeatureRenderer
-
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
@@ -62,11 +61,10 @@ Creates a null renderer from XML element.
     static QgsNullSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Creates a QgsNullSymbolRenderer from an existing renderer.
+
 :param renderer: renderer to convert from
 
 :return: a new renderer if the conversion was possible, otherwise None.
-:rtype: QgsNullSymbolRenderer
-
 %End
 
 };

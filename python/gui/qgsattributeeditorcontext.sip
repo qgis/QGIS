@@ -50,35 +50,17 @@ Constructor for QgsAttributeEditorContext
     void setDistanceArea( const QgsDistanceArea &distanceArea );
 
     const QgsDistanceArea &distanceArea() const;
-%Docstring
-
-:rtype: QgsDistanceArea
-%End
 
     void setVectorLayerTools( QgsVectorLayerTools *vlTools );
     const QgsVectorLayerTools *vectorLayerTools() const;
-%Docstring
-
-:rtype: QgsVectorLayerTools
-%End
 
     void setRelation( const QgsRelation &relation, RelationMode mode );
     const QgsRelation &relation() const;
-%Docstring
-
-:rtype: QgsRelation
-%End
     RelationMode relationMode() const;
-%Docstring
-
-:rtype: RelationMode
-%End
 
     FormMode formMode() const;
 %Docstring
 Returns the form mode.
-
-:rtype: FormMode
 
 .. seealso:: :py:func:`setFormMode()`
 %End
@@ -86,6 +68,7 @@ Returns the form mode.
     void setFormMode( FormMode mode );
 %Docstring
 Sets the form mode.
+
 :param mode: form mode
 
 .. seealso:: :py:func:`formMode()`
@@ -97,8 +80,6 @@ Sets the form mode.
 %Docstring
 Returns true if the attribute editor should permit use of custom UI forms.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setAllowCustomUi()`
 
 .. versionadded:: 2.16
@@ -107,6 +88,7 @@ Returns true if the attribute editor should permit use of custom UI forms.
     void setAllowCustomUi( bool allow );
 %Docstring
 Sets whether the attribute editor should permit use of custom UI forms.
+
 :param allow: set to true to allow custom UI forms, or false to disable them and use default generated
 QGIS forms
 
@@ -116,10 +98,6 @@ QGIS forms
 %End
 
     const QgsAttributeEditorContext *parentContext() const;
-%Docstring
-
-:rtype: QgsAttributeEditorContext
-%End
 
 };
 

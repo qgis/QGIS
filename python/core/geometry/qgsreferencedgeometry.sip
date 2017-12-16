@@ -38,8 +38,6 @@ Constructor for QgsReferencedGeometryBase, with the specified ``crs``.
 Returns the associated coordinate reference system, or an invalid CRS if
 no reference system is set.
 
-:rtype: QgsCoordinateReferenceSystem
-
 .. seealso:: :py:func:`setCrs()`
 %End
 

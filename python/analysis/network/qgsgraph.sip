@@ -32,23 +32,18 @@ Constructor for QgsGraphEdge.
     QVariant cost( int strategyIndex ) const;
 %Docstring
 Returns edge cost calculated using specified strategy
-:param strategyIndex: strategy index
 
-:rtype: QVariant
+:param strategyIndex: strategy index
 %End
 
     QVector< QVariant > strategies() const;
 %Docstring
 Returns array of available strategies
-
-:rtype: list of QVariant
 %End
 
     int toVertex() const;
 %Docstring
 Returns the index of the vertex at the end of this edge.
-
-:rtype: int
 
 .. seealso:: :py:func:`fromVertex()`
 %End
@@ -56,8 +51,6 @@ Returns the index of the vertex at the end of this edge.
     int fromVertex() const;
 %Docstring
 Returns the index of the vertex at the start of this edge.
-
-:rtype: int
 
 .. seealso:: :py:func:`toVertex()`
 %End
@@ -95,8 +88,6 @@ This constructor initializes QgsGraphVertex object and associates a vertex with 
 %Docstring
 Returns the incoming edge ids, i.e. edges which end at this node.
 
-:rtype: QgsGraphEdgeIds
-
 .. seealso:: :py:func:`outgoingEdges()`
 %End
 
@@ -104,16 +95,12 @@ Returns the incoming edge ids, i.e. edges which end at this node.
 %Docstring
 Returns outgoing edge ids, i.e. edges which start at this node.
 
-:rtype: QgsGraphEdgeIds
-
 .. seealso:: :py:func:`incomingEdges()`
 %End
 
     QgsPointXY point() const;
 %Docstring
 Returns point associated with graph vertex.
-
-:rtype: QgsPointXY
 %End
 
 };
@@ -141,44 +128,32 @@ Constructor for QgsGraph.
     int addVertex( const QgsPointXY &pt );
 %Docstring
 Add a vertex to the graph
-
-:rtype: int
 %End
 
     int addEdge( int fromVertexIdx, int toVertexIdx, const QVector< QVariant > &strategies );
 %Docstring
 Add an edge to the graph, going from the ``fromVertexIdx``
 to ``toVertexIdx``.
-
-:rtype: int
 %End
 
     int vertexCount() const;
 %Docstring
 Returns number of graph vertices
-
-:rtype: int
 %End
 
     const QgsGraphVertex &vertex( int idx ) const;
 %Docstring
 Returns vertex at given index
-
-:rtype: QgsGraphVertex
 %End
 
     int edgeCount() const;
 %Docstring
 Returns number of graph edges
-
-:rtype: int
 %End
 
     const QgsGraphEdge &edge( int idx ) const;
 %Docstring
 Returns edge at given index
-
-:rtype: QgsGraphEdge
 %End
 
     int findVertex( const QgsPointXY &pt ) const;
@@ -186,8 +161,6 @@ Returns edge at given index
 Find vertex by associated point
 
 :return: vertex index
-:rtype: int
-
 %End
 
 };

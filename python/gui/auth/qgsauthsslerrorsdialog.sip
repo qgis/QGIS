@@ -28,6 +28,7 @@ Widget for reporting SSL errors and offering an option to store an SSL server ex
                             const QString &hostport = QString() );
 %Docstring
 Construct a dialog to handle SSL errors and saving SSL server certificate exceptions
+
 :param reply: Network reply that hand error(s)
 :param sslErrors: SSL errors that occurred
 :param parent: Parent widget

@@ -32,6 +32,7 @@ simplify creation of the metadata.
     QgsPaintEffectAbstractMetadata( const QString &name, const QString &visibleName );
 %Docstring
 Construct a new QgsPaintEffectAbstractMetadata
+
 :param name: unique string representing paint effect class
 :param visibleName: user visible name representing paint effect class
 %End
@@ -43,8 +44,6 @@ Construct a new QgsPaintEffectAbstractMetadata
 Returns the unique string representing the paint effect class
 
 :return: unique string
-:rtype: str
-
 
 .. seealso:: :py:func:`visibleName`
 %End
@@ -54,8 +53,6 @@ Returns the unique string representing the paint effect class
 Returns the user visible string representing the paint effect class
 
 :return: friendly user visible string
-:rtype: str
-
 
 .. seealso:: :py:func:`name`
 %End
@@ -63,11 +60,10 @@ Returns the user visible string representing the paint effect class
     virtual QgsPaintEffect *createPaintEffect( const QgsStringMap &map ) = 0 /Factory/;
 %Docstring
 Create a paint effect of this class given an encoded map of properties.
+
 :param map: properties string map
 
 :return: new paint effect
-:rtype: QgsPaintEffect
-
 %End
 
     virtual QgsPaintEffectWidget *createWidget() /Factory/;
@@ -76,8 +72,6 @@ Create configuration widget for paint effect of this class. Can return None
 if there's no GUI for the paint effect class.
 
 :return: configuration widget
-:rtype: QgsPaintEffectWidget
-
 %End
 
   protected:
@@ -110,32 +104,29 @@ QgsApplication.paintEffectRegistry().
     QgsPaintEffectAbstractMetadata *effectMetadata( const QString &name ) const;
 %Docstring
 Returns the metadata for a specific effect.
+
 :param name: unique string name for paint effect class
 
 :return: paint effect metadata if found, otherwise None
-:rtype: QgsPaintEffectAbstractMetadata
-
 %End
 
     bool addEffectType( QgsPaintEffectAbstractMetadata *metadata /Transfer/ );
 %Docstring
 Registers a new effect type.
+
 :param metadata: effect metadata. Ownership is transferred to the registry.
 
 :return: true if add was successful.
-:rtype: bool
-
 %End
 
     QgsPaintEffect *createEffect( const QString &name, const QgsStringMap &properties = QgsStringMap() ) const /Factory/;
 %Docstring
 Creates a new paint effect given the effect name and properties map.
+
 :param name: unique name representing paint effect class
 :param properties: encoded string map of effect properties
 
 :return: new paint effect of specified class, or None if matching
-:rtype: QgsPaintEffect
-
 paint effect could not be created
 %End
 
@@ -143,11 +134,10 @@ paint effect could not be created
 %Docstring
 Creates a new paint effect given a DOM element storing paint effect
 properties.
+
 :param element: encoded DOM element of effect properties
 
 :return: new paint effect, or None if matching
-:rtype: QgsPaintEffect
-
 paint effect could not be created
 %End
 
@@ -156,8 +146,6 @@ paint effect could not be created
 Returns a list of known paint effects.
 
 :return: list of paint effect names
-:rtype: list of str
-
 %End
 
     static QgsPaintEffect *defaultStack() /Factory/;
@@ -167,8 +155,6 @@ effects. All effects except the standard draw source effect are disabled,
 but are included so that they can be easily drawn just by enabling the effect.
 
 :return: default effects stack
-:rtype: QgsPaintEffect
-
 
 .. seealso:: :py:func:`isDefaultStack()`
 %End
@@ -176,11 +162,10 @@ but are included so that they can be easily drawn just by enabling the effect.
     static bool isDefaultStack( QgsPaintEffect *effect );
 %Docstring
 Tests whether a paint effect matches the default effects stack.
+
 :param effect: paint effect to test
 
 :return: true if effect is default stack
-:rtype: bool
-
 
 .. versionadded:: 2.12
 

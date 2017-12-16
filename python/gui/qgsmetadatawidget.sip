@@ -36,8 +36,6 @@ Save all fields in a QgsLayerMetadata object.
     bool checkMetadata() const;
 %Docstring
 Check if values in the wizard are correct.
-
-:rtype: bool
 %End
 
     void acceptMetadata();
@@ -48,22 +46,16 @@ Saves the metadata to the layer.
     static QMap<QString, QString> parseLanguages();
 %Docstring
 Returns a list of languages available by default in the wizard.
-
-:rtype: QMap<str, QString>
 %End
 
     static QStringList parseLicenses();
 %Docstring
 Returns a list of licences available by default in the wizard.
-
-:rtype: list of str
 %End
 
     static QStringList parseLinkTypes();
 %Docstring
 Returns a list of link types available by default in the wizard.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`https`
 %End
@@ -72,16 +64,12 @@ Returns a list of link types available by default in the wizard.
 %Docstring
 Returns a list of MIME types available by default in the wizard.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`https`
 %End
 
     static QMap<QString, QString> parseTypes();
 %Docstring
 Returns a list of types available by default in the wizard.
-
-:rtype: QMap<str, QString>
 %End
 
 };

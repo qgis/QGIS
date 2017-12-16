@@ -24,6 +24,7 @@ This class manages a set of relations between layers.
     explicit QgsRelationManager( QgsProject *project = 0 );
 %Docstring
 Constructor for QgsRelationManager.
+
 :param project: associated project (used to notify project of changes)
 %End
 
@@ -39,8 +40,6 @@ Will set the specified relations and remove any relation currently set.
 Get access to the relations managed by this class.
 
 :return: A QMap where the key is the relation id, the value the relation object.
-:rtype: QMap<str, QgsRelation>
-
 %End
 
     void addRelation( const QgsRelation &relation );
@@ -71,8 +70,6 @@ Get access to a relation by its id.
 :param id: The id to search for
 
 :return: A relation. Invalid if not found.
-:rtype: QgsRelation
-
 
 .. seealso:: :py:func:`relationsByName()`
 %End
@@ -80,11 +77,10 @@ Get access to a relation by its id.
     QList<QgsRelation> relationsByName( const QString &name ) const;
 %Docstring
 Returns a list of relations with matching names.
+
 :param name: relation name to search for. Searching is case insensitive.
 
 :return: a list of matching relations
-:rtype: list of QgsRelation
-
 
 .. versionadded:: 2.16
 
@@ -104,8 +100,6 @@ Get all relations where the specified layer (and field) is the referencing part 
 :param fieldIdx:  The field which should be part of the foreign key. If not set will return all relations.
 
 :return: A list of relations matching the given layer and fieldIdx.
-:rtype: list of QgsRelation
-
 %End
 
     QList<QgsRelation> referencedRelations( QgsVectorLayer *layer = 0 ) const;
@@ -115,8 +109,6 @@ Get all relations where this layer is the referenced part (i.e. the parent table
 :param layer:   The layer which should be searched for.
 
 :return: A list of relations where the specified layer is the referenced part.
-:rtype: list of QgsRelation
-
 %End
 
     static QList<QgsRelation> discoverRelations( const QList<QgsRelation> &existingRelations, const QList<QgsVectorLayer *> &layers );
@@ -127,8 +119,6 @@ Discover all the relations available from the current layers.
 :param layers: the current layers
 
 :return: the list of discovered relations
-:rtype: list of QgsRelation
-
 
 .. versionadded:: 3.0
 %End

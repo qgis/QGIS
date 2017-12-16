@@ -55,8 +55,6 @@ Constructor for QgsScaleBarRenderer.
     virtual QString name() const = 0;
 %Docstring
 Returns the unique name for this style.
-
-:rtype: str
 %End
 
     virtual void draw( QgsRenderContext &context,
@@ -70,8 +68,6 @@ Draws the scalebar using the specified ``settings`` and ``scaleContext`` to a de
                                      const QgsScaleBarRenderer::ScaleBarContext &scaleContext ) const;
 %Docstring
 Calculates the required box size (in millimeters) for a scalebar using the specified ``settings`` and ``scaleContext``.
-
-:rtype: QSizeF
 %End
 
   protected:
@@ -86,29 +82,21 @@ Draws default scalebar labels using the specified ``settings`` and ``scaleContex
     QString firstLabelString( const QgsScaleBarSettings &settings ) const;
 %Docstring
 Returns the text used for the first label in the scalebar.
-
-:rtype: str
 %End
 
     double firstLabelXOffset( const QgsScaleBarSettings &settings ) const;
 %Docstring
 Returns the x-offset (in millimeters) used for the first label in the scalebar.
-
-:rtype: float
 %End
 
     QList<double> segmentPositions( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
 %Docstring
 Returns a list of positions for each segment within the scalebar.
-
-:rtype: list of float
 %End
 
     QList<double> segmentWidths( const QgsScaleBarRenderer::ScaleBarContext &scaleContext, const QgsScaleBarSettings &settings ) const;
 %Docstring
 Returns a list of widths of each segment of the scalebar.
-
-:rtype: list of float
 %End
 
 };

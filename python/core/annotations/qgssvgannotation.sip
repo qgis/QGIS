@@ -46,16 +46,12 @@ Sets the file path for the source SVG file.
 %Docstring
 Returns the file path for the source SVG file.
 
-:rtype: str
-
 .. seealso:: :py:func:`setFilePath()`
 %End
 
     static QgsSvgAnnotation *create() /Factory/;
 %Docstring
 Returns a new QgsSvgAnnotation object.
-
-:rtype: QgsSvgAnnotation
 %End
 
   protected:

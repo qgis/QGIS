@@ -44,15 +44,11 @@ constructor
 The capture mode
 
 :return: Capture mode
-:rtype: CaptureMode
-
 %End
 
     int addCurve( QgsCurve *c );
 %Docstring
 Adds a whole curve (e.g. circularstring) to the captured geometry. Curve must be in map CRS
-
-:rtype: int
 %End
 
     void clearCurve( );
@@ -67,15 +63,11 @@ Clear capture curve.
 Get the capture curve
 
 :return: Capture curve
-:rtype: QgsCompoundCurve
-
 %End
 
     QList<QgsPointLocator::Match> snappingMatches() const;
 %Docstring
 Return a list of matches for each point on the captureCurve.
-
-:rtype: list of QgsPointLocator.Match
 
 .. versionadded:: 3.0
 %End
@@ -87,6 +79,7 @@ Return a list of matches for each point on the captureCurve.
 
 %Docstring
 Intercept key events like Esc or Del to delete the last point
+
 :param e: key event
 %End
 
@@ -106,36 +99,19 @@ convenient method to clean members
   protected:
 
     int nextPoint( const QgsPoint &mapPoint, QgsPoint &layerPoint );
-%Docstring
-
-:rtype: int
-%End
 
     int nextPoint( QPoint p, QgsPoint &layerPoint, QgsPoint &mapPoint );
-%Docstring
-
-:rtype: int
-%End
 
     int fetchLayerPoint( const QgsPointLocator::Match &match, QgsPoint &layerPoint );
-%Docstring
-
-:rtype: int
-%End
 
     int addVertex( const QgsPointXY &point );
-%Docstring
-
-:rtype: int
-%End
 
     int addVertex( const QgsPointXY &mapPoint, const QgsPointLocator::Match &match );
 %Docstring
 Variant to supply more information in the case of snapping
+
 :param mapPoint: The vertex to add in map coordinates
 :param match: Data about the snapping match. Can be an invalid match, if point not snapped.
-
-:rtype: int
 
 .. versionadded:: 2.14
 %End
@@ -155,8 +131,6 @@ Start capturing
 Are we currently capturing?
 
 :return: Is the tool in capture mode?
-:rtype: bool
-
 %End
 
     int size();
@@ -164,8 +138,6 @@ Are we currently capturing?
 Number of points digitized
 
 :return: Number of points
-:rtype: int
-
 %End
 
     QVector<QgsPointXY> points() const;
@@ -173,8 +145,6 @@ Number of points digitized
 List of digitized points
 
 :return: List of points
-:rtype: list of QgsPointXY
-
 %End
 
     void setPoints( const QVector<QgsPointXY> &pointList );

@@ -36,8 +36,6 @@ Creates a feature list view
 Returns the layer cache
 
 :return: the layer cache used as backend
-:rtype: QgsVectorLayerCache
-
 %End
 
     virtual void setModel( QgsFeatureListModel *featureListModel );
@@ -52,8 +50,6 @@ Set the QgsFeatureListModel which is used to retrieve information
 Get the featureListModel used by this view
 
 :return: The model in use
-:rtype: QgsFeatureListModel
-
 %End
 
     bool setDisplayExpression( const QString &displayExpression );
@@ -63,8 +59,6 @@ which is displaied.
 
 :param displayExpression:  The expression used to render the feature
 
-:rtype: bool
-
 .. seealso:: :py:class:`QgsExpression`
 %End
 
@@ -73,8 +67,6 @@ which is displaied.
 Returns the expression which is currently used to render the features.
 
 :return: A string containing the currend display expression
-:rtype: str
-
 
 .. seealso:: :py:class:`QgsExpression`
 %End
@@ -84,8 +76,6 @@ Returns the expression which is currently used to render the features.
 Returns a detailed message about errors while parsing a QgsExpression.
 
 :return: A message containing information about the parser error.
-:rtype: str
-
 %End
 
     QgsFeatureIds currentEditSelection();
@@ -93,8 +83,6 @@ Returns a detailed message about errors while parsing a QgsExpression.
 Get the currentEditSelection
 
 :return: A list of edited feature ids
-:rtype: QgsFeatureIds
-
 %End
 
     void setCurrentFeatureEdited( bool state );
@@ -107,6 +95,7 @@ Sets if the currently shown form has received any edit events so far.
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
 %Docstring
  setFeatureSelectionManager
+
 :param featureSelectionManager: We will take ownership
 %End
 
@@ -134,6 +123,7 @@ Is emitted, whenever the current edit selection has been changed.
     void displayExpressionChanged( const QString &expression );
 %Docstring
 Is emitted, whenever the display expression is successfully changed
+
 :param expression: The expression that was applied
 %End
 

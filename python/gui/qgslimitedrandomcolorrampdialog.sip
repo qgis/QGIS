@@ -24,6 +24,7 @@ A widget which allows users to modify the properties of a QgsLimitedRandomColorR
     QgsLimitedRandomColorRampWidget( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLimitedRandomColorRampWidget.
+
 :param ramp: initial ramp to show in dialog
 :param parent: parent widget
 %End
@@ -32,14 +33,13 @@ Constructor for QgsLimitedRandomColorRampWidget.
 %Docstring
 Returns a color ramp representing the current settings from the dialog.
 
-:rtype: QgsLimitedRandomColorRamp
-
 .. seealso:: :py:func:`setRamp()`
 %End
 
     void setRamp( const QgsLimitedRandomColorRamp &ramp );
 %Docstring
 Sets the color ramp to show in the dialog.
+
 :param ramp: color ramp
 
 .. seealso:: :py:func:`ramp()`
@@ -102,6 +102,7 @@ A dialog which allows users to modify the properties of a QgsLimitedRandomColorR
     QgsLimitedRandomColorRampDialog( const QgsLimitedRandomColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLimitedRandomColorRampDialog.
+
 :param ramp: initial ramp to show in dialog
 :param parent: parent widget
 %End
@@ -110,14 +111,13 @@ Constructor for QgsLimitedRandomColorRampDialog.
 %Docstring
 Returns a color ramp representing the current settings from the dialog.
 
-:rtype: QgsLimitedRandomColorRamp
-
 .. seealso:: :py:func:`setRamp()`
 %End
 
     void setRamp( const QgsLimitedRandomColorRamp &ramp );
 %Docstring
 Sets the color ramp to show in the dialog.
+
 :param ramp: color ramp
 
 .. seealso:: :py:func:`ramp()`

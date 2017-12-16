@@ -32,6 +32,7 @@ during renderFeature() and rendered on stopRender().
     QgsInvertedPolygonRenderer( QgsFeatureRenderer *embeddedRenderer /Transfer/ = 0 );
 %Docstring
 Constructor
+
 :param embeddedRenderer: optional embeddedRenderer. If null, a default one will be assigned.
 Ownership will be transferred.
 %End
@@ -41,8 +42,6 @@ Ownership will be transferred.
 
 %Docstring
 Direct copies are forbidden. Use clone() instead.
-
-:rtype: QgsInvertedPolygonRenderer
 %End
     virtual void startRender( QgsRenderContext &context, const QgsFields &fields );
 
@@ -52,6 +51,7 @@ Direct copies are forbidden. Use clone() instead.
 %Docstring
 Renders a given feature.
 This will here collect features. The actual rendering will be postponed to stopRender()
+
 :param feature: the feature to render
 :param context: the rendering context
 :param layer: the symbol layer to render, if that makes sense
@@ -59,8 +59,6 @@ This will here collect features. The actual rendering will be postponed to stopR
 :param drawVertexMarker: whether this feature has vertex markers (in edit mode usually)
 
 :return: true if the rendering was OK
-:rtype: bool
-
 %End
 
     virtual void stopRender( QgsRenderContext &context );
@@ -77,78 +75,58 @@ Features collected during renderFeature() are rendered using the embedded featur
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: set of str
 %End
     virtual QgsFeatureRenderer::Capabilities capabilities();
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: QgsFeatureRenderer.Capabilities
 %End
 
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: QgsSymbolList
 %End
 
     virtual QgsSymbol *symbolForFeature( QgsFeature &feature, QgsRenderContext &context );
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: QgsSymbol
 %End
 
     virtual QgsSymbol *originalSymbolForFeature( QgsFeature &feat, QgsRenderContext &context );
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: QgsSymbol
 %End
 
     virtual QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: QgsSymbolList
 %End
 
     virtual QgsSymbolList originalSymbolsForFeature( QgsFeature &feat, QgsRenderContext &context );
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: QgsSymbolList
 %End
 
     virtual QgsLegendSymbolList legendSymbolItems() const;
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: QgsLegendSymbolList
 %End
 
     virtual bool willRenderFeature( QgsFeature &feat, QgsRenderContext &context );
 
 %Docstring
 Proxy that will call this method on the embedded renderer.
-
-:rtype: bool
 %End
 
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates a renderer out of an XML, for loading
-
-:rtype: QgsFeatureRenderer
 %End
 
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
@@ -173,12 +151,11 @@ Creates a renderer out of an XML, for loading
 %Docstring
 
 :return: true if the geometries are to be preprocessed (merged with an union) before rendering.
-:rtype: bool
-
 %End
 
     void setPreprocessingEnabled( bool enabled );
 %Docstring
+
 :param enabled: enables or disables the preprocessing.
 When enabled, geometries will be merged with an union before being rendered.
 It allows fixing some rendering artifacts (when rendering overlapping polygons for instance).
@@ -188,8 +165,6 @@ This will involve some CPU-demanding computations and is thus disabled by defaul
     static QgsInvertedPolygonRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
-
-:rtype: QgsInvertedPolygonRenderer
 
 .. versionadded:: 2.5
 

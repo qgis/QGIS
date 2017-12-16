@@ -264,8 +264,6 @@ class QgsPalLayerSettings
 %Docstring
 Returns the labeling property definitions.
 
-:rtype: QgsPropertiesDefinition
-
 .. versionadded:: 3.0
 %End
 
@@ -299,8 +297,6 @@ True if this label is made from a expression string, e.g., FieldName || 'mm'
     QgsExpression *getLabelExpression();
 %Docstring
 Returns the QgsExpression for this label settings. May be None if isExpression is false.
-
-:rtype: QgsExpression
 %End
 
     QColor previewBkgrdColor;
@@ -703,6 +699,7 @@ Z-Index of label, where labels with a higher z-index are rendered on top of labe
 
 %Docstring
 Register a feature for labeling.
+
 :param f: feature to label
 :param context: render context. The QgsExpressionContext contained within the render context
 must have already had the feature and fields sets prior to calling this method.
@@ -726,16 +723,12 @@ Read settings from a DOM element
 %Docstring
 Write settings into a DOM element
 
-:rtype: QDomElement
-
 .. versionadded:: 2.12
 %End
 
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
 Returns a reference to the label's property collection, used for data defined overrides.
-
-:rtype: QgsPropertyCollection
 
 .. versionadded:: 3.0
 
@@ -746,6 +739,7 @@ Returns a reference to the label's property collection, used for data defined ov
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
 Sets the label's property collection, used for data defined overrides.
+
 :param collection: property collection. Existing properties will be replaced.
 
 .. versionadded:: 3.0
@@ -757,8 +751,6 @@ Sets the label's property collection, used for data defined overrides.
 %Docstring
 Returns the label text formatting settings, e.g., font settings, buffer settings, etc.
 
-:rtype: QgsTextFormat
-
 .. seealso:: :py:func:`setFormat()`
 
 .. versionadded:: 3.0
@@ -767,6 +759,7 @@ Returns the label text formatting settings, e.g., font settings, buffer settings
     void setFormat( const QgsTextFormat &format );
 %Docstring
 Sets the label text formatting settings, e.g., font settings, buffer settings, etc.
+
 :param format: label text format
 
 .. seealso:: :py:func:`format()`
@@ -824,14 +817,10 @@ Class that stores computed placement from labeling engine.
     QList<QgsLabelPosition> labelsAtPosition( const QgsPointXY &p ) const;
 %Docstring
 return infos about labels at a given (map) position
-
-:rtype: list of QgsLabelPosition
 %End
     QList<QgsLabelPosition> labelsWithinRect( const QgsRectangle &r ) const;
 %Docstring
 return infos about labels within a given (map) rectangle
-
-:rtype: list of QgsLabelPosition
 %End
 
   private:
@@ -850,8 +839,6 @@ class QgsPalLabeling
 %Docstring
 called to find out whether the layer is used for labeling
 
-:rtype: bool
-
 .. versionadded:: 2.4
 %End
 
@@ -859,14 +846,13 @@ called to find out whether the layer is used for labeling
     static QgsGeometry prepareGeometry( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() ) /Factory/;
 %Docstring
 Prepares a geometry for registration with PAL. Handles reprojection, rotation, clipping, etc.
+
 :param geometry: geometry to prepare
 :param context: render context
 :param ct: coordinate transform, or invalid transform if no transformation required
 :param clipGeometry: geometry to clip features to, if applicable
 
 :return: prepared geometry
-:rtype: QgsGeometry
-
 
 .. versionadded:: 2.9
 %End
@@ -874,14 +860,13 @@ Prepares a geometry for registration with PAL. Handles reprojection, rotation, c
     static bool geometryRequiresPreparation( const QgsGeometry &geometry, QgsRenderContext &context, const QgsCoordinateTransform &ct, const QgsGeometry &clipGeometry = QgsGeometry() );
 %Docstring
 Checks whether a geometry requires preparation before registration with PAL
+
 :param geometry: geometry to prepare
 :param context: render context
 :param ct: coordinate transform, or invalid transform if no transformation required
 :param clipGeometry: geometry to clip features to, if applicable
 
 :return: true if geometry requires preparation
-:rtype: bool
-
 
 .. versionadded:: 2.9
 %End
@@ -890,12 +875,11 @@ Checks whether a geometry requires preparation before registration with PAL
 %Docstring
 Splits a text string to a list of separate lines, using a specified wrap character.
 The text string will be split on either newline characters or the wrap character.
+
 :param text: text string to split
 :param wrapCharacter: additional character to wrap on
 
 :return: list of text split to lines
-:rtype: list of str
-
 
 .. versionadded:: 2.9
 %End
@@ -905,11 +889,10 @@ The text string will be split on either newline characters or the wrap character
 Splits a text string to a list of graphemes, which are the smallest allowable character
 divisions in the string. This accounts for scripts were individual characters are not
 allowed to be split apart (e.g., Arabic and Indic based scripts)
+
 :param text: string to split
 
 :return: list of graphemes
-:rtype: list of str
-
 
 .. versionadded:: 2.10
 %End

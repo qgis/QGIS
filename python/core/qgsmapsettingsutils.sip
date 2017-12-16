@@ -26,17 +26,15 @@ Utilities for map settings.
     static const QStringList containsAdvancedEffects( const QgsMapSettings &mapSettings );
 %Docstring
 Checks whether any of the layers attached to a map settings object contain advanced effects
-:param mapSettings: map settings
 
-:rtype: list of str
+:param mapSettings: map settings
 %End
 
     static QString worldFileContent( const QgsMapSettings &mapSettings );
 %Docstring
 Creates the content of a world file.
-:param mapSettings: map settings
 
-:rtype: str
+:param mapSettings: map settings
 
 .. note::
 

@@ -45,27 +45,17 @@ Constructor for QgsSnappingUtils
     QgsPointLocator *locatorForLayer( QgsVectorLayer *vl );
 %Docstring
 Get a point locator for the given layer. If such locator does not exist, it will be created
-
-:rtype: QgsPointLocator
 %End
 
     QgsPointLocator::Match snapToMap( QPoint point, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
 Snap to map according to the current configuration. Optional filter allows discarding unwanted matches.
-
-:rtype: QgsPointLocator.Match
 %End
     QgsPointLocator::Match snapToMap( const QgsPointXY &pointMap, QgsPointLocator::MatchFilter *filter = 0 );
-%Docstring
-
-:rtype: QgsPointLocator.Match
-%End
 
     QgsPointLocator::Match snapToCurrentLayer( QPoint point, QgsPointLocator::Types type, QgsPointLocator::MatchFilter *filter = 0 );
 %Docstring
 Snap to current layer
-
-:rtype: QgsPointLocator.Match
 %End
 
 
@@ -74,10 +64,6 @@ Snap to current layer
 Assign current map settings to the utils - used for conversion between screen coords to map coords
 %End
     QgsMapSettings mapSettings() const;
-%Docstring
-
-:rtype: QgsMapSettings
-%End
 
     void setCurrentLayer( QgsVectorLayer *layer );
 %Docstring
@@ -86,8 +72,6 @@ Set current layer so that if mode is SnapCurrentLayer we know which layer to use
     QgsVectorLayer *currentLayer() const;
 %Docstring
 The current layer used if mode is SnapCurrentLayer
-
-:rtype: QgsVectorLayer
 %End
 
 
@@ -106,8 +90,6 @@ Set a strategy for indexing geometry data - determines how fast and memory consu
     IndexingStrategy indexingStrategy() const;
 %Docstring
 Find out which strategy is used for indexing - by default hybrid indexing is used
-
-:rtype: IndexingStrategy
 %End
 
     struct LayerConfig
@@ -134,10 +116,6 @@ snapper.setLayers([snapping_layer1, snapping_layer2])
 
       bool operator==( const QgsSnappingUtils::LayerConfig &other ) const;
       bool operator!=( const QgsSnappingUtils::LayerConfig &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
       QgsVectorLayer *layer;
 %Docstring
@@ -160,15 +138,11 @@ The units in which the tolerance is specified.
     QList<QgsSnappingUtils::LayerConfig> layers() const;
 %Docstring
 Query layers used for snapping
-
-:rtype: list of QgsSnappingUtils.LayerConfig
 %End
 
     QString dump();
 %Docstring
 Get extra information about the instance
-
-:rtype: str
 
 .. versionadded:: 2.14
 %End
@@ -176,8 +150,6 @@ Get extra information about the instance
     QgsSnappingConfig config() const;
 %Docstring
 The snapping configuration controls the behavior of this object
-
-:rtype: QgsSnappingConfig
 %End
 
   public slots:

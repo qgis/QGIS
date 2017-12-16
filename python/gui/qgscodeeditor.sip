@@ -44,45 +44,37 @@ Construct a new code editor.
     void setTitle( const QString &title );
 %Docstring
 Set the widget title
+
 :param title: widget title
 %End
 
     void setMarginVisible( bool margin );
 %Docstring
 Set margin visible state
+
 :param margin: Set margin in the editor
 %End
     bool marginVisible();
-%Docstring
-
-:rtype: bool
-%End
 
     void setFoldingVisible( bool folding );
 %Docstring
 Set folding visible state
+
 :param folding: Set folding in the editor
 %End
     bool foldingVisible();
-%Docstring
-
-:rtype: bool
-%End
 
     void insertText( const QString &text );
 %Docstring
 Insert text at cursor position, or replace any selected text if user has
 made a selection.
+
 :param text: The text to be inserted
 %End
 
   protected:
 
     bool isFixedPitch( const QFont &font );
-%Docstring
-
-:rtype: bool
-%End
 
     virtual void focusOutEvent( QFocusEvent *event );
 
@@ -90,10 +82,6 @@ made a selection.
 
 
     QFont getMonospaceFont();
-%Docstring
-
-:rtype: QFont
-%End
 
 };
 

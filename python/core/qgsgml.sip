@@ -38,6 +38,7 @@ request is finished *
 %Docstring
 Does the Http GET request to the wfs server
 Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
+
 :param uri: GML URL
 :param wkbType: wkbType to retrieve
 :param extent: retrieved extents
@@ -46,8 +47,6 @@ Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
 :param authcfg: authentication configuration id
 
 :return: 0 in case of success
-:rtype: int
-
 
 .. note::
 
@@ -58,29 +57,21 @@ Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
 %Docstring
 Read from GML data. Constructor uri param is ignored
 Supports only UTF-8, UTF-16, ISO-8859-1, ISO-8859-1 XML encodings.
-
-:rtype: int
 %End
 
     QMap<QgsFeatureId, QgsFeature * > featuresMap() const;
 %Docstring
 Get parsed features for given type name
-
-:rtype: QMap<QgsFeatureId, QgsFeature * >
 %End
 
     QMap<QgsFeatureId, QString > idsMap() const;
 %Docstring
 Get feature ids map
-
-:rtype: QMap<QgsFeatureId, str >
 %End
 
     QgsCoordinateReferenceSystem crs() const;
 %Docstring
 Returns features spatial reference system
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. versionadded:: 2.1
 %End

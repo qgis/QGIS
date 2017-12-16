@@ -34,6 +34,7 @@ additional filters to the request.
 %Docstring
 Add additional filters to the feature request to further restrict the features returned by the request.
 Derived classes must implement this method.
+
 :param layer: the layer to filter
 :param featureRequest: the feature request to update
 %End
@@ -43,8 +44,6 @@ Derived classes must implement this method.
 Create a clone of the feature filter provider
 
 :return: a new clone
-:rtype: QgsFeatureFilterProvider
-
 %End
 };
 

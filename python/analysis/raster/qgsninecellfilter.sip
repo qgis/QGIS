@@ -31,44 +31,23 @@ Constructor that takes input file, output file and output format (GDAL string)
     int processRaster( QgsFeedback *feedback = 0 );
 %Docstring
 Starts the calculation, reads from mInputFile and stores the result in mOutputFile
+
 :param feedback: feedback object that receives update and that is checked for cancelation.
 
 :return: 0 in case of success*
-:rtype: int
-
 %End
 
     double cellSizeX() const;
-%Docstring
-
-:rtype: float
-%End
     void setCellSizeX( double size );
     double cellSizeY() const;
-%Docstring
-
-:rtype: float
-%End
     void setCellSizeY( double size );
 
     double zFactor() const;
-%Docstring
-
-:rtype: float
-%End
     void setZFactor( double factor );
 
     double inputNodataValue() const;
-%Docstring
-
-:rtype: float
-%End
     void setInputNodataValue( double value );
     double outputNodataValue() const;
-%Docstring
-
-:rtype: float
-%End
     void setOutputNodataValue( double value );
 
     virtual float processNineCellWindow( float *x11, float *x21, float *x31,
@@ -77,8 +56,6 @@ Starts the calculation, reads from mInputFile and stores the result in mOutputFi
 %Docstring
 Calculates output value from nine input values. The input values and the output value can be equal to the
 nodata value if not present or outside of the border. Must be implemented by subclasses*
-
-:rtype: float
 %End
 
   protected:

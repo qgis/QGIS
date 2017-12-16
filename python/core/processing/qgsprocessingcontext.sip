@@ -49,8 +49,6 @@ Copies all settings which are safe for use across different threads from
 %Docstring
 Returns any flags set in the context.
 
-:rtype: QgsProcessingContext.Flags
-
 .. seealso:: :py:func:`setFlags()`
 %End
 
@@ -65,8 +63,6 @@ Sets ``flags`` for the context.
 %Docstring
 Returns the project in which the algorithm is being executed.
 
-:rtype: QgsProject
-
 .. seealso:: :py:func:`setProject()`
 %End
 
@@ -80,8 +76,6 @@ Sets the ``project`` in which the algorithm will be executed.
     QgsExpressionContext &expressionContext();
 %Docstring
 Returns the expression context.
-
-:rtype: QgsExpressionContext
 %End
 
 
@@ -94,8 +88,6 @@ Sets the expression ``context``.
 %Docstring
 Returns a reference to the layer store used for storing temporary layers during
 algorithm execution.
-
-:rtype: QgsMapLayerStore
 %End
 
     struct LayerDetails
@@ -127,8 +119,6 @@ Destination project
 %Docstring
 Returns a map of layers (by ID or datasource) to LayerDetails, to load into the canvas upon completion of the algorithm or model.
 
-:rtype: QMap< str, QgsProcessingContext.LayerDetails >
-
 .. seealso:: :py:func:`setLayersToLoadOnCompletion()`
 
 .. seealso:: :py:func:`addLayerToLoadOnCompletion()`
@@ -156,8 +146,6 @@ The ``details`` parameter dictates the LayerDetails.
     QgsFeatureRequest::InvalidGeometryCheck invalidGeometryCheck() const;
 %Docstring
 Returns the behavior used for checking invalid geometries in input layers.
-
-:rtype: QgsFeatureRequest.InvalidGeometryCheck
 
 .. seealso:: :py:func:`setInvalidGeometryCheck()`
 %End
@@ -223,8 +211,6 @@ called using the feature which encountered the transform error as a parameter.
 %Docstring
 Returns the default encoding to use for newly created files.
 
-:rtype: str
-
 .. seealso:: :py:func:`setDefaultEncoding()`
 %End
 
@@ -238,8 +224,6 @@ Sets the default ``encoding`` to use for newly created files.
     QgsProcessingFeedback *feedback();
 %Docstring
 Returns the associated feedback object.
-
-:rtype: QgsProcessingFeedback
 
 .. seealso:: :py:func:`setFeedback()`
 %End
@@ -258,8 +242,6 @@ Ownership of ``feedback`` is not transferred.
     QThread *thread();
 %Docstring
 Returns the thread in which the context lives.
-
-:rtype: QThread
 
 .. seealso:: :py:func:`pushToThread()`
 %End
@@ -288,8 +270,6 @@ Takes the result map layer with matching ``id`` from the context and
 transfers ownership of it back to the caller. This method can be used
 to remove temporary layers which are not required for further processing
 from a context.
-
-:rtype: QgsMapLayer
 %End
 
   private:

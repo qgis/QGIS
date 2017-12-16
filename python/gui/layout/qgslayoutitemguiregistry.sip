@@ -52,58 +52,42 @@ If ``isNodeBased`` is true, then the corresponding item is a node based item.
     int type() const;
 %Docstring
 Returns the unique item type code for the layout item class.
-
-:rtype: int
 %End
 
     Flags flags() const;
 %Docstring
 Returns item flags.
-
-:rtype: Flags
 %End
 
     QString groupId() const;
 %Docstring
 Returns the item group ID, if set.
-
-:rtype: str
 %End
 
     bool isNodeBased() const;
 %Docstring
 Returns true if the associated item is a node based item.
-
-:rtype: bool
 %End
 
     QString visibleName() const;
 %Docstring
 Returns a translated, user visible name identifying the corresponding layout item.
-
-:rtype: str
 %End
 
     virtual QIcon creationIcon() const;
 %Docstring
 Returns an icon representing creation of the layout item type.
-
-:rtype: QIcon
 %End
 
     virtual QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) /Factory/;
 %Docstring
 Creates a configuration widget for an ``item`` of this type. Can return None if no configuration GUI is required.
-
-:rtype: QgsLayoutItemBaseWidget
 %End
 
     virtual QgsLayoutViewRubberBand *createRubberBand( QgsLayoutView *view ) /Factory/;
 %Docstring
 Creates a rubber band for use when creating layout items of this type. Can return None if no rubber band
 should be created. The default behavior is to create a rectangular rubber band.
-
-:rtype: QgsLayoutViewRubberBand
 
 .. seealso:: :py:func:`createNodeRubberBand()`
 %End
@@ -113,16 +97,12 @@ should be created. The default behavior is to create a rectangular rubber band.
 Creates a rubber band for use when creating layout node based items of this type. Can return None if no rubber band
 should be created. The default behavior is to return None.
 
-:rtype: QAbstractGraphicsShapeItem
-
 .. seealso:: :py:func:`createRubberBand()`
 %End
 
     virtual QgsLayoutItem *createItem( QgsLayout *layout ) /Factory/;
 %Docstring
 Creates an instance of the corresponding item type.
-
-:rtype: QgsLayoutItem
 %End
 
     virtual void newItemAddedToLayout( QgsLayoutItem *item );
@@ -218,15 +198,11 @@ QgsGui.layoutItemGuiRegistry().
 %Docstring
 Returns the metadata for the specified item ``metadataId``. Returns None if
 a corresponding ``metadataId`` was not found in the registry.
-
-:rtype: QgsLayoutItemAbstractGuiMetadata
 %End
 
     bool addLayoutItemGuiMetadata( QgsLayoutItemAbstractGuiMetadata *metadata /Transfer/ );
 %Docstring
 Registers the gui metadata for a new layout item type. Takes ownership of the metadata instance.
-
-:rtype: bool
 %End
 
     bool addItemGroup( const QgsLayoutItemGuiGroup &group );
@@ -237,8 +213,6 @@ addLayoutItemGuiMetadata() for any item types associated with the group.
 Returns true if group was added, or false if group could not be added (e.g. due to
 duplicate id value).
 
-:rtype: bool
-
 .. seealso:: :py:func:`itemGroup()`
 %End
 
@@ -246,16 +220,12 @@ duplicate id value).
 %Docstring
 Returns a reference to the item group with matching ``id``.
 
-:rtype: QgsLayoutItemGuiGroup
-
 .. seealso:: :py:func:`addItemGroup()`
 %End
 
     QgsLayoutItem *createItem( int metadataId, QgsLayout *layout ) const /Factory/;
 %Docstring
 Creates a new instance of a layout item given the item metadata ``metadataId``, target ``layout``.
-
-:rtype: QgsLayoutItem
 %End
 
     void newItemAddedToLayout( int metadataId, QgsLayoutItem *item );
@@ -269,8 +239,6 @@ called for items added from templates.
     QgsLayoutItemBaseWidget *createItemWidget( QgsLayoutItem *item ) const /Factory/;
 %Docstring
 Creates a new instance of a layout item configuration widget for the specified ``item``.
-
-:rtype: QgsLayoutItemBaseWidget
 %End
 
 
@@ -278,8 +246,6 @@ Creates a new instance of a layout item configuration widget for the specified `
     QList< int > itemMetadataIds() const;
 %Docstring
 Returns a list of available item metadata ids handled by the registry.
-
-:rtype: list of int
 %End
 
   signals:

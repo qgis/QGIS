@@ -30,6 +30,7 @@ class QgsHistogramWidget : QWidget
 %Docstring
 QgsHistogramWidget constructor. If layer and fieldOrExp are specified then the histogram
 will be initially populated with the corresponding values.
+
 :param parent: parent widget
 :param layer: source vector layer
 :param fieldOrExp: field name or expression string
@@ -41,8 +42,6 @@ will be initially populated with the corresponding values.
 %Docstring
 Returns the layer currently associated with the widget.
 
-:rtype: QgsVectorLayer
-
 .. seealso:: :py:func:`setLayer`
 
 .. seealso:: :py:func:`sourceFieldExp`
@@ -52,8 +51,6 @@ Returns the layer currently associated with the widget.
 %Docstring
 Returns the source field name or expression used to calculate values displayed
 in the histogram.
-
-:rtype: str
 
 .. seealso:: :py:func:`setSourceFieldExp`
 
@@ -65,6 +62,7 @@ in the histogram.
 Sets the pen to use when drawing histogram bars. If set to Qt.NoPen then the
 pen will be automatically calculated. If ranges have been set using setGraduatedRanges()
 then the pen and brush will have no effect.
+
 :param pen: histogram pen
 
 .. seealso:: :py:func:`pen`
@@ -76,8 +74,6 @@ then the pen and brush will have no effect.
 %Docstring
 Returns the pen used when drawing histogram bars.
 
-:rtype: QPen
-
 .. seealso:: :py:func:`setPen`
 
 .. seealso:: :py:func:`brush`
@@ -87,6 +83,7 @@ Returns the pen used when drawing histogram bars.
 %Docstring
 Sets the brush used for drawing histogram bars. If ranges have been set using setGraduatedRanges()
 then the pen and brush will have no effect.
+
 :param brush: histogram brush
 
 .. seealso:: :py:func:`brush`
@@ -98,8 +95,6 @@ then the pen and brush will have no effect.
 %Docstring
 Returns the brush used when drawing histogram bars.
 
-:rtype: QBrush
-
 .. seealso:: :py:func:`setBrush`
 
 .. seealso:: :py:func:`pen`
@@ -109,6 +104,7 @@ Returns the brush used when drawing histogram bars.
 %Docstring
 Sets the graduated ranges associated with the histogram. If set, the ranges will be used to color the histogram
 bars and for showing vertical dividers at the histogram breaks.
+
 :param ranges: graduated range list
 
 .. seealso:: :py:func:`graduatedRanges`
@@ -120,8 +116,6 @@ Returns the graduated ranges associated with the histogram. If set, the ranges w
 bars and for showing vertical dividers at the histogram breaks.
 
 :return: graduated range list
-:rtype: QgsRangeList
-
 
 .. seealso:: :py:func:`setGraduatedRanges`
 %End
@@ -129,8 +123,6 @@ bars and for showing vertical dividers at the histogram breaks.
     QString xAxisTitle() const;
 %Docstring
 Returns the title for the histogram's x-axis.
-
-:rtype: str
 
 .. seealso:: :py:func:`setXAxisTitle`
 
@@ -140,6 +132,7 @@ Returns the title for the histogram's x-axis.
     void setXAxisTitle( const QString &title );
 %Docstring
 Sets the title for the histogram's x-axis.
+
 :param title: x-axis title, or empty string to remove title
 
 .. seealso:: :py:func:`xAxisTitle`
@@ -151,8 +144,6 @@ Sets the title for the histogram's x-axis.
 %Docstring
 Returns the title for the histogram's y-axis.
 
-:rtype: str
-
 .. seealso:: :py:func:`setYAxisTitle`
 
 .. seealso:: :py:func:`xAxisTitle`
@@ -161,6 +152,7 @@ Returns the title for the histogram's y-axis.
     void setYAxisTitle( const QString &title );
 %Docstring
 Sets the title for the histogram's y-axis.
+
 :param title: y-axis title, or empty string to remove title
 
 .. seealso:: :py:func:`yAxisTitle`
@@ -184,6 +176,7 @@ for the histogram, use refreshValues() to do this.
     void setLayer( QgsVectorLayer *layer );
 %Docstring
 Sets the vector layer associated with the histogram.
+
 :param layer: source vector layer
 
 .. seealso:: :py:func:`setSourceFieldExp`
@@ -192,6 +185,7 @@ Sets the vector layer associated with the histogram.
     void setSourceFieldExp( const QString &fieldOrExp );
 %Docstring
 Sets the source field or expression to use for values in the histogram.
+
 :param fieldOrExp: field name or expression string
 
 .. seealso:: :py:func:`setLayer`

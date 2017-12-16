@@ -27,6 +27,7 @@ Dialog for organising (hiding and reordering) columns in the attributes table.
     QgsOrganizeTableColumnsDialog( const QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0, Qt::WindowFlags flags = Qt::Window );
 %Docstring
 Constructor
+
 :param vl: The concerned vector layer
 :param parent: parent object
 :param flags: window flags
@@ -37,8 +38,6 @@ Constructor
     QgsAttributeTableConfig config() const;
 %Docstring
 Get the updated configuration
-
-:rtype: QgsAttributeTableConfig
 %End
 
   public slots:

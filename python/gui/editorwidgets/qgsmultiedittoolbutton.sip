@@ -33,20 +33,20 @@ edit mode.
     explicit QgsMultiEditToolButton( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsMultiEditToolButton.
+
 :param parent: parent object
 %End
 
     State state() const;
 %Docstring
 Returns the current displayed state of the button.
-
-:rtype: State
 %End
 
     void setField( const QgsField &field );
 %Docstring
 Sets the field associated with this button. This is used to customise the widget menu
 and tooltips to match the field properties.
+
 :param field: associated field
 %End
 
@@ -55,6 +55,7 @@ and tooltips to match the field properties.
     void setIsMixed( bool mixed );
 %Docstring
 Sets whether the associated field contains mixed values.
+
 :param mixed: whether field values are mixed
 
 .. seealso:: :py:func:`isMixed()`
@@ -67,6 +68,7 @@ Sets whether the associated field contains mixed values.
     void setIsChanged( bool changed );
 %Docstring
 Sets whether the associated field has changed.
+
 :param changed: whether field has changed
 
 .. seealso:: :py:func:`isChanged()`

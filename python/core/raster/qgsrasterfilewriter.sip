@@ -53,8 +53,6 @@ Create a raster file with one band without initializing the pixel data.
 Returned provider may be used to initialize the raster using writeBlock() calls.
 Ownership of the returned provider is passed to the caller.
 
-:rtype: QgsRasterDataProvider
-
 .. note::
 
    Does not work with tiled mode enabled.
@@ -74,8 +72,6 @@ Create a raster file with given number of bands without initializing the pixel d
 Returned provider may be used to initialize the raster using writeBlock() calls.
 Ownership of the returned provider is passed to the caller.
 
-:rtype: QgsRasterDataProvider
-
 .. note::
 
    Does not work with tiled mode enabled.
@@ -89,107 +85,58 @@ Ownership of the returned provider is passed to the caller.
                              const QgsCoordinateReferenceSystem &crs, QgsRasterBlockFeedback *feedback = 0 );
 %Docstring
 Write raster file
+
 :param pipe: raster pipe
 :param nCols: number of output columns
 :param nRows: number of output rows (or -1 to automatically calculate row number to have square pixels)
 :param outputExtent: extent to output
 :param crs: crs to reproject to
 :param feedback: optional feedback object for progress reports
-
-:rtype: WriterError
 %End
 
     QString outputUrl() const;
 %Docstring
 Returns the output URL for the raster.
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
     void setOutputFormat( const QString &format );
     QString outputFormat() const;
-%Docstring
-
-:rtype: str
-%End
 
     void setOutputProviderKey( const QString &key );
     QString outputProviderKey() const;
-%Docstring
-
-:rtype: str
-%End
 
     void setTiledMode( bool t );
     bool tiledMode() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setMaxTileWidth( int w );
     int maxTileWidth() const;
-%Docstring
-
-:rtype: int
-%End
 
     QgsRaster::RasterBuildPyramids buildPyramidsFlag() const;
-%Docstring
-
-:rtype: QgsRaster.RasterBuildPyramids
-%End
     void setBuildPyramidsFlag( QgsRaster::RasterBuildPyramids f );
 
     QList< int > pyramidsList() const;
-%Docstring
-
-:rtype: list of int
-%End
     void setPyramidsList( const QList< int > &list );
 
     QString pyramidsResampling() const;
-%Docstring
-
-:rtype: str
-%End
     void setPyramidsResampling( const QString &str );
 
     QgsRaster::RasterPyramidsFormat pyramidsFormat() const;
-%Docstring
-
-:rtype: QgsRaster.RasterPyramidsFormat
-%End
     void setPyramidsFormat( QgsRaster::RasterPyramidsFormat f );
 
     void setMaxTileHeight( int h );
     int maxTileHeight() const;
-%Docstring
-
-:rtype: int
-%End
 
     void setCreateOptions( const QStringList &list );
     QStringList createOptions() const;
-%Docstring
-
-:rtype: list of str
-%End
 
     void setPyramidsConfigOptions( const QStringList &list );
     QStringList pyramidsConfigOptions() const;
-%Docstring
-
-:rtype: list of str
-%End
 
     static QString filterForDriver( const QString &driverName );
 %Docstring
 Creates a filter for an GDAL driver key
-
-:rtype: str
 %End
 
     struct FilterFormatDetails
@@ -213,8 +160,6 @@ Relies on GDAL_DMD_EXTENSIONS metadata, if it is empty corresponding driver will
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
 
-:rtype: list of QgsRasterFileWriter.FilterFormatDetails
-
 .. seealso:: :py:func:`supportedOutputRasterLayerExtensions()`
 %End
 
@@ -224,8 +169,6 @@ Returns a list of file extensions for supported formats.
 
 The ``options`` argument can be used to control the sorting and filtering of
 returned formats.
-
-:rtype: list of str
 
 .. versionadded:: 3.0
 
@@ -238,8 +181,6 @@ Returns the GDAL driver name for a specified file ``extension``. E.g. the
 driver name for the ".tif" extension is "GTiff".
 If no suitable drivers are found then an empty string is returned.
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
@@ -249,8 +190,6 @@ Returns a list of known file extensions for the given GDAL driver ``format``.
 E.g. returns "tif", "tiff" for the format "GTiff".
 
 If no matching format driver is found an empty list will be returned.
-
-:rtype: list of str
 
 .. versionadded:: 3.0
 %End

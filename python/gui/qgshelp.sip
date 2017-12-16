@@ -38,6 +38,7 @@ help system will be shown.
 %Docstring
 Opens help topic for the given help key using default system
 web browser. If help topic not found, builtin error page shown.
+
 :param key: key which identified help topic
 
 .. versionadded:: 3.0
@@ -47,9 +48,8 @@ web browser. If help topic not found, builtin error page shown.
 %Docstring
 Returns URI of the help topic for the given key. If help topic
 not found, URI of the builtin error page returned.
-:param key: key which identified help topic
 
-:rtype: QUrl
+:param key: key which identified help topic
 
 .. versionadded:: 3.0
 %End

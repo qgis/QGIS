@@ -37,8 +37,6 @@ when the symbol is given from outside rather than being set inside QgsDataDefine
     QgsDataDefinedSizeLegend *dataDefinedSizeLegend() const /Factory/;
 %Docstring
 Returns configuration as set up in the dialog (may be null). Ownership is passed to the caller.
-
-:rtype: QgsDataDefinedSizeLegend
 %End
 
   signals:

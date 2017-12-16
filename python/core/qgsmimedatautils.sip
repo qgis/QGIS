@@ -32,34 +32,28 @@ Constructs URI from encoded data
 %Docstring
 Returns whether the object contains valid data
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
       QString data() const;
 %Docstring
 Returns encoded representation of the object
-
-:rtype: str
 %End
 
       QgsVectorLayer *vectorLayer( bool &owner, QString &error ) const;
 %Docstring
 Get vector layer from uri if possible, otherwise returns 0 and error is set
+
 :param owner: set to true if caller becomes owner
 :param error: set to error message if cannot get vector
-
-:rtype: QgsVectorLayer
 %End
 
       QgsRasterLayer *rasterLayer( bool &owner, QString &error ) const;
 %Docstring
 Get raster layer from uri if possible, otherwise returns 0 and error is set
+
 :param owner: set to true if caller becomes owner
 :param error: set to error message if cannot get raster
-
-:rtype: QgsRasterLayer
 %End
 
       QString layerType;
@@ -87,28 +81,14 @@ Identifier of the data source recognized by its providerKey
     typedef QList<QgsMimeDataUtils::Uri> UriList;
 
     static QMimeData *encodeUriList( const UriList &layers );
-%Docstring
-
-:rtype: QMimeData
-%End
 
     static bool isUriList( const QMimeData *data );
-%Docstring
-
-:rtype: bool
-%End
 
     static UriList decodeUriList( const QMimeData *data );
-%Docstring
-
-:rtype: UriList
-%End
 
     static QByteArray layerTreeNodesToUriList( const QList<QgsLayerTreeNode *> &nodes );
 %Docstring
 Returns encoded URI list from a list of layer tree nodes.
-
-:rtype: QByteArray
 
 .. versionadded:: 3.0
 %End

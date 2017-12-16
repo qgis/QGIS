@@ -42,6 +42,7 @@ Constructor for QgsDxfExport.
     void setMapSettings( const QgsMapSettings &settings );
 %Docstring
 Set map settings and assign layer name attributes
+
 :param settings: map settings to apply
 %End
 
@@ -58,8 +59,6 @@ Sets the export flags.
 %Docstring
 Returns the export flags.
 
-:rtype: QgsDxfExport.Flags
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setFlags()`
@@ -68,6 +67,7 @@ Returns the export flags.
     void addLayers( const QList< QPair<QgsVectorLayer *, int > > &layers );
 %Docstring
 Add layers to export
+
 :param layers: list of layers and corresponding attribute indexes that determine the layer name (-1 for original layer name or title)
 
 .. seealso:: :py:func:`setLayerTitleAsName`
@@ -90,8 +90,6 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 Returns the reference scale for output.
 The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 
-:rtype: float
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setSymbologyScale()`
@@ -102,8 +100,6 @@ The  scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 Retrieve map units
 
 :return: unit
-:rtype: QgsUnitTypes.DistanceUnit
-
 %End
 
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
@@ -119,8 +115,6 @@ Set destination CRS
 %Docstring
 Returns the destination CRS, or an invalid CRS if no reprojection will be done.
 
-:rtype: QgsCoordinateReferenceSystem
-
 .. seealso:: :py:func:`setDestinationCrs()`
 
 .. versionadded:: 3.0
@@ -129,6 +123,7 @@ Returns the destination CRS, or an invalid CRS if no reprojection will be done.
     void setSymbologyExport( QgsDxfExport::SymbologyExport e );
 %Docstring
 Set symbology export mode
+
 :param e: the mode
 %End
 
@@ -137,8 +132,6 @@ Set symbology export mode
 Get symbology export mode
 
 :return: mode
-:rtype: QgsDxfExport.SymbologyExport
-
 
 .. seealso:: :py:func:`setSymbologyExport`
 %End
@@ -146,6 +139,7 @@ Get symbology export mode
     void setExtent( const QgsRectangle &r );
 %Docstring
 Set extent of area to export
+
 :param r: area to export
 %End
 
@@ -154,8 +148,6 @@ Set extent of area to export
 Get extent of area to export
 
 :return: area to export
-:rtype: QgsRectangle
-
 
 .. seealso:: :py:func:`setExtent`
 %End
@@ -164,6 +156,7 @@ Get extent of area to export
 %Docstring
 Enable use of title (where set) instead of layer name,
 when attribute index of corresponding layer index is -1
+
 :param layerTitleAsName: flag
 
 .. seealso:: :py:func:`addLayers`
@@ -174,8 +167,6 @@ when attribute index of corresponding layer index is -1
 Retrieve whether layer title (where set) instead of name shall be use
 
 :return: flag
-:rtype: bool
-
 
 .. seealso:: :py:func:`setLayerTitleAsName`
 %End
@@ -183,6 +174,7 @@ Retrieve whether layer title (where set) instead of name shall be use
     void setForce2d( bool force2d );
 %Docstring
 Force 2d output (eg. to support linewidth in polylines)
+
 :param force2d: flag
 
 .. seealso:: :py:func:`force2d`
@@ -193,8 +185,6 @@ Force 2d output (eg. to support linewidth in polylines)
 Retrieve whether the output should be forced to 2d
 
 :return: flag
-:rtype: bool
-
 
 .. seealso:: :py:func:`setForce2d`
 %End
@@ -202,30 +192,27 @@ Retrieve whether the output should be forced to 2d
     static int closestColorMatch( QRgb color );
 %Docstring
 Get DXF palette index of nearest entry for given color
-:param color:
 
-:rtype: int
+:param color:
 %End
 
     QString layerName( const QString &id, const QgsFeature &f ) const;
 %Docstring
 Get layer name for feature
+
 :param id: layer id of layer
 :param f: feature of layer
 
 :return: layer name for feature
-:rtype: str
-
 %End
 
     QString layerName( QgsVectorLayer *vl ) const;
 %Docstring
 Get name for layer respecting the use layer title as layer name mode
+
 :param vl: the vector layer
 
 :return: name of layer
-:rtype: str
-
 
 .. seealso:: :py:func:`setLayerTitleAsName`
 %End
@@ -233,6 +220,7 @@ Get name for layer respecting the use layer title as layer name mode
     void writeGroup( int code, int i ) /PyName=writeGroupInt/;
 %Docstring
 Write a tuple of group code and integer value
+
 :param code: group code
 :param i: integer value
 
@@ -244,6 +232,7 @@ Write a tuple of group code and integer value
     void writeGroup( int code, double d ) /PyName=writeGroupDouble/;
 %Docstring
 Write a group code with a floating point value
+
 :param code: group code
 :param d: floating point value
 
@@ -255,6 +244,7 @@ Write a group code with a floating point value
     void writeGroup( int code, const QString &s );
 %Docstring
 Write a group code with a string value
+
 :param code: group code
 :param s: string value
 %End
@@ -262,6 +252,7 @@ Write a group code with a string value
     void writeGroup( int code, const QgsPoint &p ) /PyName=writeGroupPointV2/;
 %Docstring
 Write a group code with a point
+
 :param code: group code
 :param p: point value
 
@@ -275,6 +266,7 @@ Write a group code with a point
     void writeGroup( const QColor &color, int exactMatch = 62, int rgbCode = 420, int transparencyCode = 440 );
 %Docstring
 Write a group code with color value
+
 :param color: color
 :param exactMatch: group code to use if the color has an exact match in the dxf palette
 :param rgbCode: group code to use if the color doesn't have an exact match or has a transparency component
@@ -288,36 +280,39 @@ Write a group code with color value
     void writeGroupCode( int code );
 %Docstring
 Write a group code
+
 :param code: group code value
 %End
 
     void writeInt( int i );
 %Docstring
 Write an integer value
+
 :param i: integer value
 %End
 
     void writeDouble( double d );
 %Docstring
 Write a floating point value
+
 :param d: floating point value
 %End
 
     void writeString( const QString &s );
 %Docstring
 Write a string value
+
 :param s: string value
 %End
 
     int writeHandle( int code = 5, int handle = 0 );
 %Docstring
 Write a tuple of group code and a handle
+
 :param code: group code to use
 :param handle: handle to use (0 generates a new handle)
 
 :return: the used handle
-:rtype: int
-
 %End
 
 
@@ -388,35 +383,28 @@ Write mtext (MTEXT)
 %Docstring
 Calculates a scaling factor to convert from map units to a specified symbol unit.
 The ``scale`` parameter indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 %End
 
     static QString dxfLayerName( const QString &name );
 %Docstring
 Return cleaned layer name for use in DXF
-
-:rtype: str
 %End
 
     static QString dxfEncoding( const QString &name );
 %Docstring
 return DXF encoding for Qt encoding
-
-:rtype: str
 %End
 
     static QStringList encodings();
 %Docstring
 return list of available DXF encodings
-
-:rtype: list of str
 %End
 
 
     void registerDxfLayer( const QString &layerId, QgsFeatureId fid, const QString &layer );
 %Docstring
 Register name of layer for feature
+
 :param layerId: id of layer
 :param fid: id of feature
 :param layer: dxf layer of feature

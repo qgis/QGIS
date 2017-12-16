@@ -44,8 +44,6 @@ manager.
 Adds an annotation to the manager. Ownership of the annotation is transferred to the manager.
 Returns true if the addition was successful, or false if the annotation could not be added.
 
-:rtype: bool
-
 .. seealso:: :py:func:`removeAnnotation()`
 
 .. seealso:: :py:func:`annotationAdded()`
@@ -56,8 +54,6 @@ Returns true if the addition was successful, or false if the annotation could no
 Removes an annotation from the manager. The annotation is deleted.
 Returns true if the removal was successful, or false if the removal failed (eg as a result
 of removing an annotation which is not contained in the manager).
-
-:rtype: bool
 
 .. seealso:: :py:func:`addAnnotation()`
 
@@ -79,8 +75,6 @@ Removes and deletes all annotations from the manager.
 %Docstring
 Returns a list of all annotations contained in the manager.
 
-:rtype: list of QgsAnnotation
-
 .. seealso:: :py:func:`cloneAnnotations()`
 %End
 
@@ -90,8 +84,6 @@ Returns a list containing clones of all annotations contained
 in the manager. The caller takes responsibility for deleting
 all returned annotations.
 
-:rtype: list of QgsAnnotation
-
 .. seealso:: :py:func:`annotations()`
 %End
 
@@ -100,16 +92,12 @@ all returned annotations.
 Reads the manager's state from a DOM element, restoring all annotations
 present in the XML document.
 
-:rtype: bool
-
 .. seealso:: :py:func:`writeXml()`
 %End
 
     QDomElement writeXml( QDomDocument &doc, const QgsReadWriteContext &context ) const;
 %Docstring
 Returns a DOM element representing the state of the manager.
-
-:rtype: QDomElement
 
 .. seealso:: :py:func:`readXml()`
 %End

@@ -32,6 +32,7 @@ Use ``parent`` to attach a parent QWidget to the button.
     void setLocked( const bool locked );
 %Docstring
 Sets whether the button state is locked.
+
 :param locked: locked state
 
 .. seealso:: :py:func:`locked`
@@ -42,8 +43,6 @@ Sets whether the button state is locked.
 Returns whether the button state is locked.
 
 :return: true if the button state is locked.
-:rtype: bool
-
 
 .. seealso:: :py:func:`setLocked`
 %End

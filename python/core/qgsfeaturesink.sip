@@ -36,8 +36,6 @@ An interface for objects which accept features via addFeature(s) methods.
 %Docstring
 Adds a single ``feature`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
 
-:rtype: bool
-
 .. seealso:: :py:func:`addFeatures()`
 
 :return: true in case of success and false in case of failure
@@ -46,8 +44,6 @@ Adds a single ``feature`` to the sink. Feature addition behavior is controlled b
     virtual bool addFeatures( QgsFeatureList &features, QgsFeatureSink::Flags flags = 0 ) = 0;
 %Docstring
 Adds a list of ``features`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
-
-:rtype: bool
 
 .. seealso:: :py:func:`addFeature()`
 
@@ -59,8 +55,6 @@ Adds a list of ``features`` to the sink. Feature addition behavior is controlled
 Adds all features from the specified ``iterator`` to the sink. Feature addition behavior is controlled by the specified ``flags``.
 
 :return: true if all features were added successfully, or false if any feature could not be added
-:rtype: bool
-
 %End
 
     virtual bool flushBuffer();
@@ -68,8 +62,6 @@ Adds all features from the specified ``iterator`` to the sink. Feature addition 
 Flushes any internal buffer which may exist in the sink, causing any buffered features to be added to the sink's destination.
 
 :return: false if any buffered features could not be added to the sink.
-:rtype: bool
-
 %End
 };
 
@@ -107,8 +99,6 @@ Constructs a new QgsProxyFeatureSink which forwards features onto a destination 
     QgsFeatureSink *destinationSink();
 %Docstring
 Returns the destination QgsFeatureSink which the proxy will forward features to.
-
-:rtype: QgsFeatureSink
 %End
 
 };

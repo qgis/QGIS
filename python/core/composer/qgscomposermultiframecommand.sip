@@ -33,28 +33,14 @@ Constructor for QgsComposerMultiFrameCommand
     void saveAfterState();
 
     QDomDocument previousState() const;
-%Docstring
-
-:rtype: QDomDocument
-%End
     QDomDocument afterState() const;
-%Docstring
-
-:rtype: QDomDocument
-%End
 
     bool containsChange() const;
 %Docstring
 Returns true if previous state and after state are valid and different
-
-:rtype: bool
 %End
 
     const QgsComposerMultiFrame *multiFrame() const;
-%Docstring
-
-:rtype: QgsComposerMultiFrame
-%End
 
   protected:
 
@@ -64,10 +50,6 @@ Returns true if previous state and after state are valid and different
     void saveState( QDomDocument &stateDoc );
     void restoreState( QDomDocument &stateDoc );
     bool checkFirstRun();
-%Docstring
-
-:rtype: bool
-%End
 };
 
 class QgsComposerMultiFrameMergeCommand: QgsComposerMultiFrameCommand

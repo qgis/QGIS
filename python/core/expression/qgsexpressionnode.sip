@@ -70,6 +70,7 @@ Abstract base class for all nodes that can appear in an expression.
         NamedNode( const QString &name, QgsExpressionNode *node );
 %Docstring
 Constructor for NamedNode
+
 :param name: node name
 :param node: node
 %End
@@ -108,15 +109,11 @@ Adds a named node. Takes ownership of the provided node.
         int count() const;
 %Docstring
 Returns the number of nodes in the list.
-
-:rtype: int
 %End
 
         bool hasNamedNodes() const;
 %Docstring
 Returns true if list contains any named nodes
-
-:rtype: bool
 
 .. versionadded:: 2.16
 %End
@@ -124,15 +121,11 @@ Returns true if list contains any named nodes
         QList<QgsExpressionNode *> list();
 %Docstring
 Get a list of all the nodes.
-
-:rtype: list of QgsExpressionNode
 %End
 
         QgsExpressionNode *at( int i );
 %Docstring
 Get the node at position i in the list.
-
-:rtype: QgsExpressionNode
 
 .. versionadded:: 3.0
 %End
@@ -141,23 +134,15 @@ Get the node at position i in the list.
 %Docstring
 Returns a list of names for nodes. Unnamed nodes will be indicated by an empty string in the list.
 
-:rtype: list of str
-
 .. versionadded:: 2.16
 %End
 
         QgsExpressionNode::NodeList *clone() const /Factory/;
 %Docstring
 Creates a deep copy of this list. Ownership is transferred to the caller
-
-:rtype: QgsExpressionNode.NodeList
 %End
 
         virtual QString dump() const;
-%Docstring
-
-:rtype: str
-%End
 
       public:
     };
@@ -169,8 +154,6 @@ Creates a deep copy of this list. Ownership is transferred to the caller
 Get the type of this node.
 
 :return: The type of this node
-:rtype: QgsExpressionNode.NodeType
-
 %End
 
     virtual QString dump() const = 0;
@@ -178,8 +161,6 @@ Get the type of this node.
 Dump this node into a serialized (part) of an expression.
 The returned expression does not necessarily literally match
 the original expression, it's just guaranteed to behave the same way.
-
-:rtype: str
 %End
 
     QVariant eval( QgsExpression *parent, const QgsExpressionContext *context );
@@ -187,8 +168,6 @@ the original expression, it's just guaranteed to behave the same way.
 Evaluate this node with the given context and parent.
 This will return a cached value if it has been determined to be static
 during the prepare() execution.
-
-:rtype: QVariant
 
 .. versionadded:: 2.12
 %End
@@ -199,8 +178,6 @@ Generate a clone of this node.
 Ownership is transferred to the caller.
 
 :return: a deep copy of this node.
-:rtype: QgsExpressionNode
-
 %End
 
     virtual QSet<QString> referencedColumns() const = 0;
@@ -213,15 +190,11 @@ evaluate this node and in addition recursively collect all the columns required
 to evaluate child nodes.
 
 :return: A list of columns required to evaluate this expression
-:rtype: set of str
-
 %End
 
     virtual QSet<QString> referencedVariables() const = 0;
 %Docstring
 Return a set of all variables which are used in this expression.
-
-:rtype: set of str
 %End
 
     virtual bool needsGeometry() const = 0;
@@ -232,8 +205,6 @@ this expression.
 This needs to call `needsGeometry()` recursively on any child nodes.
 
 :return: true if a geometry is required to evaluate this expression
-:rtype: bool
-
 %End
 
     virtual bool isStatic( QgsExpression *parent, const QgsExpressionContext *context ) const = 0;
@@ -242,8 +213,6 @@ Returns true if this node can be evaluated for a static value. This is used duri
 the prepare() step and in case it returns true, the value of this node will already
 be evaluated and the result cached (and therefore not re-evaluated in subsequent calls
 to eval()). In case this returns true, prepareNode() will never be called.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -254,8 +223,6 @@ Prepare this node for evaluation.
 This will check if the node content is static and in this case cache the value.
 If it's not static it will call prepareNode() to allow the node to do initialization
 work like for example resolving a column name to an attribute index.
-
-:rtype: bool
 
 .. versionadded:: 2.12
 %End

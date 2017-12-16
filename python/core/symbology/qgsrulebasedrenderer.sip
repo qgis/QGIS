@@ -92,11 +92,10 @@ Constructor takes ownership of the symbol
         QString dump( int indent = 0 ) const;
 %Docstring
 Dump for debug purpose
+
 :param indent: How many characters to indent. Will increase by two with every of the recursive calls
 
 :return: A string representing this rule
-:rtype: str
-
 %End
 
         QSet<QString> usedAttributes( const QgsRenderContext &context ) const;
@@ -104,21 +103,15 @@ Dump for debug purpose
 Return the attributes used to evaluate the expression of this rule
 
 :return: A set of attribute names
-:rtype: set of str
-
 %End
 
         bool needsGeometry() const;
 %Docstring
 Returns true if this rule or one of its chilren needs the geometry to be applied.
-
-:rtype: bool
 %End
 
         QgsSymbolList symbols( const QgsRenderContext &context = QgsRenderContext() ) const;
 %Docstring
-
-:rtype: QgsSymbolList
 
 .. note::
 
@@ -127,8 +120,6 @@ Returns true if this rule or one of its chilren needs the geometry to be applied
 
         QgsLegendSymbolList legendSymbolItems( int currentLevel = -1 ) const;
 %Docstring
-
-:rtype: QgsLegendSymbolList
 
 .. versionadded:: 2.6
 %End
@@ -141,8 +132,6 @@ Check if a given feature shall be rendered by this rule
 :param context:   The context in which the rendering happens
 
 :return:          True if the feature shall be rendered
-:rtype: bool
-
 %End
 
         bool isScaleOK( double scale ) const;
@@ -152,33 +141,17 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 If set to 0, it will always return true.
 
 :return: If the rule will be evaluated at this scale
-:rtype: bool
-
 %End
 
         QgsSymbol *symbol();
-%Docstring
-
-:rtype: QgsSymbol
-%End
         QString label() const;
-%Docstring
-
-:rtype: str
-%End
         bool dependsOnScale() const;
-%Docstring
-
-:rtype: bool
-%End
 
         double maximumScale() const;
 %Docstring
 Returns the maximum map scale (i.e. most "zoomed in" scale) at which the rule will be active.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no maximum scale visibility.
-
-:rtype: float
 
 .. seealso:: :py:func:`minimumScale()`
 
@@ -193,8 +166,6 @@ Returns the minimum map scale (i.e. most "zoomed out" scale) at which the rule w
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
 A scale of 0 indicates no minimum scale visibility.
 
-:rtype: float
-
 .. seealso:: :py:func:`maximumScale()`
 
 .. seealso:: :py:func:`setMinimumScale()`
@@ -207,8 +178,6 @@ A scale of 0 indicates no minimum scale visibility.
 A filter that will check if this rule applies
 
 :return: An expression
-:rtype: QgsExpression
-
 %End
 
         QString filterExpression() const;
@@ -216,8 +185,6 @@ A filter that will check if this rule applies
 A filter that will check if this rule applies
 
 :return: An expression
-:rtype: str
-
 %End
 
         QString description() const;
@@ -225,8 +192,6 @@ A filter that will check if this rule applies
 A human readable description for this rule
 
 :return: Description
-:rtype: str
-
 %End
 
         bool active() const;
@@ -234,15 +199,11 @@ A human readable description for this rule
 Returns if this rule is active
 
 :return: True if the rule is active
-:rtype: bool
-
 %End
 
         QString ruleKey() const;
 %Docstring
 Unique rule identifier (for identification of rule within renderer)
-
-:rtype: str
 
 .. versionadded:: 2.6
 %End
@@ -299,14 +260,13 @@ Set a human readable description for this rule
         void setActive( bool state );
 %Docstring
 Sets if this rule is active
+
 :param state: Determines if the rule should be activated or deactivated
 %End
 
         QgsRuleBasedRenderer::Rule *clone() const /Factory/;
 %Docstring
 clone this rule, return new instance
-
-:rtype: QgsRuleBasedRenderer.Rule
 %End
 
         void toSld( QDomDocument &doc, QDomElement &element, QgsStringMap props ) const;
@@ -314,28 +274,18 @@ clone this rule, return new instance
         static QgsRuleBasedRenderer::Rule *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
 %Docstring
 Create a rule from the SLD provided in element and for the specified geometry type.
-
-:rtype: QgsRuleBasedRenderer.Rule
 %End
 
         QDomElement save( QDomDocument &doc, QgsSymbolMap &symbolMap ) const;
-%Docstring
-
-:rtype: QDomElement
-%End
 
         bool startRender( QgsRenderContext &context, const QgsFields &fields, QString &filter );
 %Docstring
 prepare the rule for rendering and its children (build active children array)
-
-:rtype: bool
 %End
 
         QSet<int> collectZLevels();
 %Docstring
 get all used z-levels from this rule and children
-
-:rtype: set of int
 %End
 
 
@@ -348,30 +298,22 @@ Render a given feature, will recursively call subclasses and only render if the 
 :param renderQueue:  The rendering queue to which the feature should be added
 
 :return:             The result of the rendering. In explicit if the feature is added to the queue or
-:rtype: QgsRuleBasedRenderer.Rule.RenderResult
-
 the reason for not rendering the feature.
 %End
 
         bool willRenderFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
 %Docstring
 only tell whether a feature will be rendered without actually rendering it
-
-:rtype: bool
 %End
 
         QgsSymbolList symbolsForFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
 %Docstring
 tell which symbols will be used to render the feature
-
-:rtype: QgsSymbolList
 %End
 
         QSet< QString > legendKeysForFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
 %Docstring
 Returns which legend keys match the feature
-
-:rtype: set of str
 
 .. versionadded:: 2.14
 %End
@@ -379,8 +321,6 @@ Returns which legend keys match the feature
         QgsRuleBasedRenderer::RuleList rulesForFeature( QgsFeature &feat, QgsRenderContext *context = 0 );
 %Docstring
 tell which rules will be used to render the feature
-
-:rtype: QgsRuleBasedRenderer.RuleList
 %End
 
         void stopRender( QgsRenderContext &context );
@@ -398,8 +338,6 @@ Create a rule from an XML definition
 :param symbolMap: Symbol map
 
 :return: A new rule
-:rtype: QgsRuleBasedRenderer.Rule
-
 %End
 
         QgsRuleBasedRenderer::RuleList &children();
@@ -407,8 +345,6 @@ Create a rule from an XML definition
 Return all children rules of this rule
 
 :return: A list of rules
-:rtype: QgsRuleBasedRenderer.RuleList
-
 %End
 
         QgsRuleBasedRenderer::RuleList descendants() const;
@@ -416,8 +352,6 @@ Return all children rules of this rule
 Returns all children, grand-children, grand-grand-children, grand-gra... you get it
 
 :return: A list of descendant rules
-:rtype: QgsRuleBasedRenderer.RuleList
-
 %End
 
         QgsRuleBasedRenderer::Rule *parent();
@@ -425,8 +359,6 @@ Returns all children, grand-children, grand-grand-children, grand-gra... you get
 The parent rule
 
 :return: Parent rule
-:rtype: QgsRuleBasedRenderer.Rule
-
 %End
 
         void appendChild( QgsRuleBasedRenderer::Rule *rule /Transfer/ );
@@ -452,22 +384,16 @@ delete child rule
         QgsRuleBasedRenderer::Rule *takeChild( QgsRuleBasedRenderer::Rule *rule ) /TransferBack/;
 %Docstring
 take child rule out, set parent as null
-
-:rtype: QgsRuleBasedRenderer.Rule
 %End
 
         QgsRuleBasedRenderer::Rule *takeChildAt( int i ) /TransferBack/;
 %Docstring
 take child rule out, set parent as null
-
-:rtype: QgsRuleBasedRenderer.Rule
 %End
 
         QgsRuleBasedRenderer::Rule *findRuleByKey( const QString &key );
 %Docstring
 Try to find a rule given its unique key
-
-:rtype: QgsRuleBasedRenderer.Rule
 
 .. versionadded:: 2.6
 %End
@@ -484,8 +410,6 @@ Sets if this rule is an ELSE rule
 Check if this rule is an ELSE rule
 
 :return: True if this rule is an else rule
-:rtype: bool
-
 %End
 
       protected:
@@ -502,8 +426,6 @@ Check if this rule is an ELSE rule
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 Creates a new rule-based renderer instance from XML
-
-:rtype: QgsFeatureRenderer
 %End
 
     QgsRuleBasedRenderer( QgsRuleBasedRenderer::Rule *root /Transfer/ );
@@ -521,8 +443,6 @@ Constructor for convenience. Creates a root rule and adds a default rule with sy
 
 %Docstring
 return symbol for current feature. Should not be used individually: there could be more symbols for a feature
-
-:rtype: QgsSymbol
 %End
 
     virtual bool renderFeature( QgsFeature &feature, QgsRenderContext &context, int layer = -1, bool selected = false, bool drawVertexMarker = false );
@@ -550,10 +470,6 @@ return symbol for current feature. Should not be used individually: there could 
 
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType ) /Factory/;
-%Docstring
-
-:rtype: QgsFeatureRenderer
-%End
 
     virtual QgsSymbolList symbols( QgsRenderContext &context );
 
@@ -585,10 +501,6 @@ return symbol for current feature. Should not be used individually: there could 
 
 
     QgsRuleBasedRenderer::Rule *rootRule();
-%Docstring
-
-:rtype: QgsRuleBasedRenderer.Rule
-%End
 
 
     static void refineRuleCategories( QgsRuleBasedRenderer::Rule *initialRule, QgsCategorizedSymbolRenderer *r );
@@ -608,8 +520,6 @@ take a rule and create a list of new rules with intervals of scales given by the
 %Docstring
 creates a QgsRuleBasedRenderer from an existing renderer.
 
-:rtype: QgsRuleBasedRenderer
-
 .. versionadded:: 2.5
 
 :return: a new renderer if the conversion was possible, otherwise 0.
@@ -627,10 +537,6 @@ helper function to convert the size scale and rotation fields present in some ot
   private:
     QgsRuleBasedRenderer( const QgsRuleBasedRenderer & );
     QgsRuleBasedRenderer &operator=( const QgsRuleBasedRenderer & );
-%Docstring
-
-:rtype: QgsRuleBasedRenderer
-%End
 };
 
 /************************************************************************

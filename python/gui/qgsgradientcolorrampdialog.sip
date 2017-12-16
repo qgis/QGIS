@@ -26,6 +26,7 @@ A dialog which allows users to modify the properties of a QgsGradientColorRamp.
     QgsGradientColorRampDialog( const QgsGradientColorRamp &ramp, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsGradientColorRampDialog.
+
 :param ramp: initial ramp to show in dialog
 :param parent: parent widget
 %End
@@ -35,14 +36,13 @@ Constructor for QgsGradientColorRampDialog.
 %Docstring
 Returns a color ramp representing the current settings from the dialog.
 
-:rtype: QgsGradientColorRamp
-
 .. seealso:: :py:func:`setRamp()`
 %End
 
     void setRamp( const QgsGradientColorRamp &ramp );
 %Docstring
 Sets the color ramp to show in the dialog.
+
 :param ramp: color ramp
 
 .. seealso:: :py:func:`ramp()`

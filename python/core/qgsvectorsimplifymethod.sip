@@ -42,8 +42,6 @@ Sets the simplification hints of the vector layer managed
     SimplifyHints simplifyHints() const;
 %Docstring
 Gets the simplification hints of the vector layer managed
-
-:rtype: SimplifyHints
 %End
 
     enum SimplifyAlgorithm
@@ -60,8 +58,6 @@ Sets the local simplification algorithm of the vector layer managed
     SimplifyAlgorithm simplifyAlgorithm() const;
 %Docstring
 Gets the local simplification algorithm of the vector layer managed
-
-:rtype: SimplifyAlgorithm
 %End
 
     void setTolerance( double tolerance );
@@ -71,8 +67,6 @@ Sets the tolerance of simplification in map units. Represents the maximum distan
     double tolerance() const;
 %Docstring
 Gets the tolerance of simplification in map units. Represents the maximum distance in map units between two coordinates which can be considered equal
-
-:rtype: float
 %End
 
     void setThreshold( float threshold );
@@ -82,8 +76,6 @@ Sets the simplification threshold of the vector layer managed
     float threshold() const;
 %Docstring
 Gets the simplification threshold of the vector layer managed
-
-:rtype: float
 %End
 
     void setForceLocalOptimization( bool localOptimization );
@@ -93,8 +85,6 @@ Sets where the simplification executes, after fetch the geometries from provider
     bool forceLocalOptimization() const;
 %Docstring
 Gets where the simplification executes, after fetch the geometries from provider, or when supported, in provider before fetch the geometries
-
-:rtype: bool
 %End
 
     void setMaximumScale( float maximumScale );
@@ -104,8 +94,6 @@ Sets the maximum scale at which the layer should be simplified
     float maximumScale() const;
 %Docstring
 Gets the maximum scale at which the layer should be simplified
-
-:rtype: float
 %End
 
 };

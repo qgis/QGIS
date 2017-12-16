@@ -29,18 +29,12 @@ in QgsLegendModel class.
 
     void setTitle( const QString &t );
     QString title() const;
-%Docstring
-
-:rtype: str
-%End
 
     Qt::AlignmentFlag titleAlignment() const;
 %Docstring
 Returns the alignment of the legend title
 
 :return: Qt.AlignmentFlag for the legend title
-:rtype: Qt.AlignmentFlag
-
 
 .. seealso:: :py:func:`setTitleAlignment`
 %End
@@ -48,6 +42,7 @@ Returns the alignment of the legend title
     void setTitleAlignment( Qt::AlignmentFlag alignment );
 %Docstring
 Sets the alignment of the legend title
+
 :param alignment: Text alignment for drawing the legend title
 
 .. seealso:: :py:func:`titleAlignment`
@@ -56,72 +51,36 @@ Sets the alignment of the legend title
     QgsLegendStyle style( QgsLegendStyle::Style s ) const;
 %Docstring
 Returns style
-
-:rtype: QgsLegendStyle
 %End
     void setStyle( QgsLegendStyle::Style s, const QgsLegendStyle &style );
 
     double boxSpace() const;
-%Docstring
-
-:rtype: float
-%End
     void setBoxSpace( double s );
 
     void setWrapChar( const QString &t );
     QString wrapChar() const;
-%Docstring
-
-:rtype: str
-%End
 
     double columnSpace() const;
-%Docstring
-
-:rtype: float
-%End
     void setColumnSpace( double s );
 
     int columnCount() const;
-%Docstring
-
-:rtype: int
-%End
     void setColumnCount( int c );
 
     bool splitLayer() const;
-%Docstring
-
-:rtype: bool
-%End
     void setSplitLayer( bool s );
 
     bool equalColumnWidth() const;
-%Docstring
-
-:rtype: bool
-%End
     void setEqualColumnWidth( bool s );
 
     QColor fontColor() const;
-%Docstring
-
-:rtype: QColor
-%End
     void setFontColor( const QColor &c );
 
     QSizeF symbolSize() const;
-%Docstring
-
-:rtype: QSizeF
-%End
     void setSymbolSize( QSizeF s );
 
     bool drawRasterStroke() const;
 %Docstring
 Returns whether a stroke will be drawn around raster symbol items.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setDrawRasterStroke()`
 
@@ -135,6 +94,7 @@ Returns whether a stroke will be drawn around raster symbol items.
     void setDrawRasterStroke( bool enabled );
 %Docstring
 Sets whether a stroke will be drawn around raster symbol items.
+
 :param enabled: set to true to draw borders
 
 .. seealso:: :py:func:`drawRasterStroke()`
@@ -151,8 +111,6 @@ Sets whether a stroke will be drawn around raster symbol items.
 Returns the stroke color for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setRasterStrokeColor()`
 
 .. seealso:: :py:func:`drawRasterStroke()`
@@ -166,6 +124,7 @@ only drawn if drawRasterStroke() is true.
 %Docstring
 Sets the stroke color for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
+
 :param color: stroke color
 
 .. seealso:: :py:func:`rasterStrokeColor()`
@@ -182,8 +141,6 @@ only drawn if drawRasterStroke() is true.
 Returns the stroke width (in millimeters) for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
 
-:rtype: float
-
 .. seealso:: :py:func:`setRasterStrokeWidth()`
 
 .. seealso:: :py:func:`drawRasterStroke()`
@@ -197,6 +154,7 @@ only drawn if drawRasterStroke() is true.
 %Docstring
 Sets the stroke width for the stroke drawn around raster symbol items. The stroke is
 only drawn if drawRasterStroke() is true.
+
 :param width: stroke width in millimeters
 
 .. seealso:: :py:func:`rasterStrokeWidth()`
@@ -209,39 +167,21 @@ only drawn if drawRasterStroke() is true.
 %End
 
     QSizeF wmsLegendSize() const;
-%Docstring
-
-:rtype: QSizeF
-%End
     void setWmsLegendSize( QSizeF s );
 
     double lineSpacing() const;
-%Docstring
-
-:rtype: float
-%End
     void setLineSpacing( double s );
 
     double mmPerMapUnit() const;
-%Docstring
-
-:rtype: float
-%End
     void setMmPerMapUnit( double mmPerMapUnit );
 
     bool useAdvancedEffects() const;
-%Docstring
-
-:rtype: bool
-%End
     void setUseAdvancedEffects( bool use );
 
     double mapScale() const;
 %Docstring
 Returns the legend map scale.
 The scale value indicates the scale denominator, e.g. 1000.0 for a 1:1000 map.
-
-:rtype: float
 
 .. seealso:: :py:func:`setMapScale()`
 %End
@@ -255,10 +195,6 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 %End
 
     int dpi() const;
-%Docstring
-
-:rtype: int
-%End
     void setDpi( int dpi );
 
 
@@ -266,8 +202,6 @@ The ``scale`` value indicates the scale denominator, e.g. 1000.0 for a 1:1000 ma
 %Docstring
 Splits a string using the wrap char taking into account handling empty
 wrap char which means no wrapping
-
-:rtype: list of str
 %End
 
     void drawText( QPainter *p, double x, double y, const QString &text, const QFont &font ) const;
@@ -279,6 +213,7 @@ pixel, scaling of font and painter to work around the Qt font bug)
     void drawText( QPainter *p, const QRectF &rect, const QString &text, const QFont &font, Qt::AlignmentFlag halignment = Qt::AlignLeft, Qt::AlignmentFlag valignment = Qt::AlignTop, int flags = Qt::TextWordWrap ) const;
 %Docstring
 Like the above, but with a rectangle for multiline text
+
 :param p: painter to use
 :param rect: rectangle to draw into
 :param text: text to draw
@@ -291,43 +226,31 @@ Like the above, but with a rectangle for multiline text
     QFont scaledFontPixelSize( const QFont &font ) const;
 %Docstring
 Returns a font where size is in pixel and font size is upscaled with FONT_WORKAROUND_SCALE
-
-:rtype: QFont
 %End
 
     double pixelFontSize( double pointSize ) const;
 %Docstring
 Calculates font to from point size to pixel size
-
-:rtype: float
 %End
 
     double textWidthMillimeters( const QFont &font, const QString &text ) const;
 %Docstring
 Returns the font width in millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-
-:rtype: float
 %End
 
     double fontHeightCharacterMM( const QFont &font, QChar c ) const;
 %Docstring
 Returns the font height of a character in millimeters
-
-:rtype: float
 %End
 
     double fontAscentMillimeters( const QFont &font ) const;
 %Docstring
 Returns the font ascent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-
-:rtype: float
 %End
 
     double fontDescentMillimeters( const QFont &font ) const;
 %Docstring
 Returns the font descent in Millimeters (considers upscaling and downscaling with FONT_WORKAROUND_SCALE
-
-:rtype: float
 %End
 
 };

@@ -30,8 +30,6 @@ WORKFLOW:
     virtual QgsFeatureRenderer *renderer() = 0;
 %Docstring
 return pointer to the renderer (no transfer of ownership)
-
-:rtype: QgsFeatureRenderer
 %End
 
     void showSymbolLevelsDialog( QgsFeatureRenderer *r );
@@ -42,6 +40,7 @@ show a dialog with renderer's symbol level settings
     virtual void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
+
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context()`
@@ -53,8 +52,6 @@ Sets the context in which the renderer widget is shown, e.g., the associated map
 %Docstring
 Returns the context in which the renderer widget is shown, e.g., the associated map canvas and expression contexts.
 
-:rtype: QgsSymbolWidgetContext
-
 .. seealso:: :py:func:`setContext()`
 
 .. versionadded:: 3.0
@@ -63,8 +60,6 @@ Returns the context in which the renderer widget is shown, e.g., the associated 
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-:rtype: QgsVectorLayer
 
 .. versionadded:: 2.12
 %End
@@ -90,8 +85,6 @@ to re-synchronize with the variables.
 %Docstring
 Subclasses may provide the capability of changing multiple symbols at once by implementing the following two methods
 and by connecting the slot contextMenuViewCategories(const QPoint&)*
-
-:rtype: list of QgsSymbol
 %End
     virtual void refreshSymbolView();
 
@@ -99,8 +92,6 @@ and by connecting the slot contextMenuViewCategories(const QPoint&)*
 %Docstring
 Creates widget to setup data-defined size legend.
 Returns newly created panel - may be null if it could not be opened. Ownership is transferred to the caller.
-
-:rtype: QgsDataDefinedSizeLegendWidget
 
 .. versionadded:: 3.0
 %End
@@ -163,6 +154,7 @@ Utility classes for "en masse" size definition
     QgsDataDefinedValueDialog( const QList<QgsSymbol *> &symbolList, QgsVectorLayer *layer, const QString &label );
 %Docstring
 Constructor
+
 :param symbolList: must not be empty
 :param layer: must not be null
 :param label: value label
@@ -171,6 +163,7 @@ Constructor
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context()`
@@ -182,8 +175,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 %Docstring
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
-:rtype: QgsSymbolWidgetContext
-
 .. seealso:: :py:func:`setContext()`
 
 .. versionadded:: 3.0
@@ -192,8 +183,6 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
     const QgsVectorLayer *vectorLayer() const;
 %Docstring
 Returns the vector layer associated with the widget.
-
-:rtype: QgsVectorLayer
 
 .. versionadded:: 2.12
 %End
@@ -207,20 +196,8 @@ Returns the vector layer associated with the widget.
 
   private:
     QgsProperty symbolDataDefined() const ;
-%Docstring
-
-:rtype: QgsProperty
-%End
     virtual QgsProperty symbolDataDefined( const QgsSymbol * ) const = 0 ;
-%Docstring
-
-:rtype: QgsProperty
-%End
     virtual double value( const QgsSymbol * ) const = 0 ;
-%Docstring
-
-:rtype: float
-%End
     virtual void setDataDefined( QgsSymbol *symbol, const QgsProperty &dd ) = 0 ;
 };
 

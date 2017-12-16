@@ -36,6 +36,7 @@ Constructor for QgsHistogram.
     void setValues( const QList<double> &values );
 %Docstring
 Assigns numeric source values for the histogram.
+
 :param values: list of doubles
 %End
 
@@ -43,13 +44,12 @@ Assigns numeric source values for the histogram.
 %Docstring
 Assigns numeric source values for the histogram from a vector layer's field or as the
 result of an expression.
+
 :param layer: vector layer
 :param fieldOrExpression: field name or expression to be evaluated
 :param feedback: optional feedback object to allow cancelation of calculation
 
 :return: true if values were successfully set
-:rtype: bool
-
 %End
 
     double optimalBinWidth() const;
@@ -58,8 +58,6 @@ Calculates the optimal bin width using the Freedman-Diaconis rule. Bins widths a
 determined by the inter-quartile range of values and the number of values.
 
 :return: optimal width for bins
-:rtype: float
-
 
 .. seealso:: :py:func:`optimalNumberBins`
 
@@ -75,8 +73,6 @@ Freedman-Diaconis rule. The number of bins are determined by the inter-quartile 
 of values and the number of values.
 
 :return: optimal number of bins
-:rtype: int
-
 
 .. seealso:: :py:func:`optimalBinWidth`
 
@@ -89,11 +85,10 @@ of values and the number of values.
 %Docstring
 Returns a list of edges for the histogram for a specified number of bins. This list
 will be length bins + 1, as both the first and last value are also included.
+
 :param bins: number of bins
 
 :return: list of bin edges
-:rtype: list of float
-
 
 .. note::
 
@@ -103,11 +98,10 @@ will be length bins + 1, as both the first and last value are also included.
     QList<int> counts( int bins ) const;
 %Docstring
 Returns the calculated list of the counts for the histogram bins.
+
 :param bins: number of histogram bins
 
 :return: list of histogram counts
-:rtype: list of int
-
 
 .. note::
 

@@ -36,8 +36,6 @@ Constructor for QgsRasterRenderer.
 
 %Docstring
 QgsRasterRenderer cannot be copied. Use clone() instead.
-
-:rtype: QgsRasterRenderer
 %End
 
     virtual int bandCount() const;
@@ -47,10 +45,6 @@ QgsRasterRenderer cannot be copied. Use clone() instead.
 
 
     virtual QString type() const;
-%Docstring
-
-:rtype: str
-%End
 
     virtual bool setInput( QgsRasterInterface *input );
 
@@ -62,10 +56,6 @@ QgsRasterRenderer cannot be copied. Use clone() instead.
                            QgsRasterBlockFeedback *feedback = 0 ) = 0 /Factory/;
 
     bool usesTransparency() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setOpacity( double opacity );
 %Docstring
@@ -80,24 +70,14 @@ and 1.0 (fully opaque).
 Returns the opacity for the renderer, where opacity is a value between 0 (totally transparent)
 and 1.0 (fully opaque).
 
-:rtype: float
-
 .. seealso:: :py:func:`setOpacity()`
 %End
 
     void setRasterTransparency( QgsRasterTransparency *t /Transfer/ );
     const QgsRasterTransparency *rasterTransparency() const;
-%Docstring
-
-:rtype: QgsRasterTransparency
-%End
 
     void setAlphaBand( int band );
     int alphaBand() const;
-%Docstring
-
-:rtype: int
-%End
 
     virtual void legendSymbologyItems( QList< QPair< QString, QColor > > &symbolItems /Out/ ) const;
 %Docstring
@@ -121,15 +101,11 @@ Useful when cloning renderers.
     virtual QList<int> usesBands() const;
 %Docstring
 Returns a list of band numbers used by the renderer
-
-:rtype: list of int
 %End
 
     const QgsRasterMinMaxOrigin &minMaxOrigin() const;
 %Docstring
 Returns const reference to origin of min/max values
-
-:rtype: QgsRasterMinMaxOrigin
 %End
 
     void setMinMaxOrigin( const QgsRasterMinMaxOrigin &origin );
@@ -151,10 +127,6 @@ Write upper class info into rasterrenderer element (called by writeXml method of
   private:
     QgsRasterRenderer( const QgsRasterRenderer & );
     const QgsRasterRenderer &operator=( const QgsRasterRenderer & );
-%Docstring
-
-:rtype: QgsRasterRenderer
-%End
 };
 
 /************************************************************************

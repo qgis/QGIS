@@ -36,8 +36,6 @@ retrieved when the "help" button is clicked while this options page is active.
 
 If an empty string is returned by this method the default QGIS options
 help will be retrieved.
-
-:rtype: str
 %End
 
   public slots:
@@ -73,8 +71,6 @@ Constructor
  The icon that will be shown in the UI for the panel.
 
 :return: A QIcon for the panel icon.
-:rtype: QIcon
-
 
 .. seealso:: :py:func:`setIcon()`
 %End
@@ -90,8 +86,6 @@ Set the ``icon`` to show in the interface for the factory object.
 %Docstring
 The title of the panel.
 
-:rtype: str
-
 .. seealso:: :py:func:`setTitle()`
 %End
 
@@ -105,11 +99,10 @@ Set the ``title`` for the interface.
     virtual QgsOptionsPageWidget *createWidget( QWidget *parent = 0 ) const = 0 /Factory/;
 %Docstring
  Factory function to create the widget on demand as needed by the options dialog.
+
 :param parent: The parent of the widget.
 
 :return: A new widget to show as a page in the options dialog.
-:rtype: QgsOptionsPageWidget
-
 %End
 
 };

@@ -60,8 +60,6 @@ metadata is considered valid.
 If validation fails, the ``results`` list will be filled with a list of
 items describing why the validation failed and what needs to be rectified
 to fix the metadata.
-
-:rtype: bool
 %End
 
 };

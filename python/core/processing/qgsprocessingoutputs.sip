@@ -58,16 +58,12 @@ Constructor for QgsProcessingOutputDefinition.
     virtual QString type() const = 0;
 %Docstring
 Unique output type name.
-
-:rtype: str
 %End
 
     QString name() const;
 %Docstring
 Returns the name of the output. This is the internal identifier by which
 algorithms access this output.
-
-:rtype: str
 
 .. seealso:: :py:func:`setName()`
 %End
@@ -84,8 +80,6 @@ algorithms access this output.
 %Docstring
 Returns the description for the output. This is the user-visible string
 used to identify this output.
-
-:rtype: str
 
 .. seealso:: :py:func:`setDescription()`
 %End
@@ -130,8 +124,6 @@ Constructor for QgsProcessingOutputMapLayer.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-
-:rtype: str
 %End
 
     virtual QString type() const;
@@ -160,16 +152,12 @@ Constructor for QgsProcessingOutputVectorLayer.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-
-:rtype: str
 %End
     virtual QString type() const;
 
     QgsProcessing::SourceType dataType() const;
 %Docstring
 Returns the layer type for the output layer.
-
-:rtype: QgsProcessing.SourceType
 
 .. seealso:: :py:func:`setDataType()`
 %End
@@ -204,8 +192,6 @@ Constructor for QgsProcessingOutputRasterLayer.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-
-:rtype: str
 %End
     virtual QString type() const;
 
@@ -233,8 +219,6 @@ Constructor for QgsProcessingOutputHtml.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-
-:rtype: str
 %End
     virtual QString type() const;
 
@@ -261,8 +245,6 @@ Constructor for QgsProcessingOutputNumber.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-
-:rtype: str
 %End
     virtual QString type() const;
 };
@@ -288,8 +270,6 @@ Constructor for QgsProcessingOutputString.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-
-:rtype: str
 %End
     virtual QString type() const;
 
@@ -317,8 +297,6 @@ Constructor for QgsProcessingOutputFolder.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-
-:rtype: str
 %End
     virtual QString type() const;
 
@@ -345,8 +323,6 @@ Constructor for QgsProcessingOutputFile.
     static QString typeName();
 %Docstring
 Returns the type name for the output class.
-
-:rtype: str
 %End
     virtual QString type() const;
 

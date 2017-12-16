@@ -43,8 +43,6 @@ Ownership is transferred to the layout.
     static QgsLayoutItemHtml *create( QgsLayout *layout ) /Factory/;
 %Docstring
 Returns a new QgsLayoutItemHtml for the specified parent ``layout``.
-
-:rtype: QgsLayoutItemHtml
 %End
 
     void setContentMode( ContentMode mode );
@@ -61,8 +59,6 @@ Sets the source ``mode`` for item's HTML content.
     ContentMode contentMode() const;
 %Docstring
 Returns the source mode for item's HTML content.
-
-:rtype: ContentMode
 
 .. seealso:: :py:func:`setContentMode()`
 
@@ -86,8 +82,6 @@ HTML item refreshed after calling this function.
 %Docstring
 Returns the URL of the content displayed in the item if the item is using
 the QgsLayoutItemHtml.Url mode.
-
-:rtype: QUrl
 
 .. seealso:: :py:func:`setUrl()`
 
@@ -113,8 +107,6 @@ a refresh of the item after setting the HTML content.
 Returns the HTML source displayed in the item if the item is using
 the QgsLayoutItemHtml.ManualHtml mode.
 
-:rtype: str
-
 .. seealso:: :py:func:`setHtml()`
 
 .. seealso:: :py:func:`contentMode()`
@@ -126,8 +118,6 @@ Returns whether html item will evaluate QGIS expressions prior to rendering
 the HTML content. If set, any content inside [% %] tags will be
 treated as a QGIS expression and evaluated against the current atlas
 feature.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setEvaluateExpressions()`
 %End
@@ -146,8 +136,6 @@ feature.
 %Docstring
 Returns whether html item is using smart breaks. Smart breaks prevent
 the html frame contents from breaking mid-way though a line of text.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setUseSmartBreaks()`
 %End
@@ -181,8 +169,6 @@ in the html. This distance is the maximum amount of empty space allowed
 at the bottom of a frame after calculating the optimum break location. This setting
 is only effective if useSmartBreaks is true.
 
-:rtype: float
-
 .. seealso:: :py:func:`setMaxBreakDistance()`
 
 .. seealso:: :py:func:`useSmartBreaks()`
@@ -207,8 +193,6 @@ to trigger a refresh of the item after setting the stylesheet rules.
 Returns the user stylesheet CSS rules used while rendering the HTML content. These
 overriding the styles specified within the HTML source.
 
-:rtype: str
-
 .. seealso:: :py:func:`setUserStylesheet()`
 
 .. seealso:: :py:func:`userStylesheetEnabled()`
@@ -226,8 +210,6 @@ Sets whether user stylesheets are ``enabled`` for the HTML content.
     bool userStylesheetEnabled() const;
 %Docstring
 Returns whether user stylesheets are enabled for the HTML content.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setUserStylesheetEnabled()`
 
@@ -249,6 +231,7 @@ Returns whether user stylesheets are enabled for the HTML content.
     void loadHtml( const bool useCache = false, const QgsExpressionContext *context = 0 );
 %Docstring
 Reloads the html source from the url and redraws the item.
+
 :param useCache: set to true to use a cached copy of remote html
 content
 :param context: expression context for evaluating data defined urls and expressions in html

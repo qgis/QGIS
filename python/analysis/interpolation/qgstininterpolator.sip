@@ -46,8 +46,6 @@ Returns the fields output by features when saving the triangulation.
 These fields should be used when creating
 a suitable feature sink for setTriangulationSink()
 
-:rtype: QgsFields
-
 .. seealso:: :py:func:`setTriangulationSink()`
 
 .. versionadded:: 3.0

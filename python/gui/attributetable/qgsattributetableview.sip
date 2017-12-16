@@ -36,6 +36,7 @@ Constructor for QgsAttributeTableView
     void setFeatureSelectionManager( QgsIFeatureSelectionManager *featureSelectionManager /Transfer/ );
 %Docstring
  setFeatureSelectionManager
+
 :param featureSelectionManager: We will take ownership
 %End
 
@@ -50,8 +51,6 @@ which can be slow due to recurring canvas repaints.
 :param event:  The intercepted event
 
 :return: Returns always false, so the event gets processed
-:rtype: bool
-
 %End
 
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
@@ -114,6 +113,7 @@ so the menu can be populated by other parts of the application.
 
 %Docstring
 Saves geometry to the settings on close
+
 :param event: not used
 %End
 
@@ -132,6 +132,7 @@ In most cases, this will be a QgsAttributeTableFilterModel
     void columnResized( int column, int width );
 %Docstring
 Emitted when a column in the view has been resized.
+
 :param column: column index (starts at 0)
 :param width: new width in pixel
 

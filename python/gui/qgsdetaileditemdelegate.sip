@@ -38,25 +38,15 @@ Reimplement for parent class
                     const QModelIndex &index ) const;
 %Docstring
 Reimplement for parent class
-
-:rtype: QSize
 %End
 
     void setVerticalSpacing( int value );
 
     int verticalSpacing() const;
-%Docstring
-
-:rtype: int
-%End
 
     void setHorizontalSpacing( int value );
 
     int horizontalSpacing() const;
-%Docstring
-
-:rtype: int
-%End
 
 };
 

@@ -27,6 +27,7 @@ class to manage the panels.
 %Docstring
 A stack widget to manage panels in the interface. Handles the open and close events
 for added panels.
+
 :param parent:
 %End
 
@@ -35,6 +36,7 @@ for added panels.
 Adds the main panel widget to the stack and selects it for the user
 The main widget can not be closed and only the showPanel signal is attached
 to handle children widget opening panels.
+
 :param panel: The panel to set as the first widget in the stack.
 
 .. note::
@@ -53,8 +55,6 @@ The main panel widget that is set in the stack. The main widget can not be close
 and doesn't display a back button.
 
 :return: The main QgsPanelWidget that is active in the stack.
-:rtype: QgsPanelWidget
-
 
 .. seealso:: :py:func:`setMainPanel()`
 %End
@@ -65,8 +65,6 @@ Removes the main panel widget from the stack and transfers ownsership to the
 caller.
 
 :return: The main widget that is set in the stack.
-:rtype: QgsPanelWidget
-
 
 .. note::
 
@@ -87,8 +85,6 @@ the widget will be deleted.
     QgsPanelWidget *currentPanel();
 %Docstring
 Returns the panel currently shown in the stack.
-
-:rtype: QgsPanelWidget
 
 .. versionadded:: 3.0
 %End
@@ -118,6 +114,7 @@ remains.
 %Docstring
 Show a panel in the stack widget. Will connect to the panels showPanel event to handle
 nested panels. Auto switches the the given panel for the user.
+
 :param panel: The panel to show.
 %End
 
@@ -125,6 +122,7 @@ nested panels. Auto switches the the given panel for the user.
 %Docstring
 Closes the panel in the widget. Will also delete the widget.
 This slot is normally auto connected to panelAccepted when a panel is shown.
+
 :param panel: The panel to close.
 %End
 

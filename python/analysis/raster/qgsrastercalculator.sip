@@ -47,6 +47,7 @@ Raster calculator class*
                          const QgsRectangle &outputExtent, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 %Docstring
 QgsRasterCalculator constructor.
+
 :param formulaString: formula for raster calculation
 :param outputFile: output file path
 :param outputFormat: output file format
@@ -60,6 +61,7 @@ QgsRasterCalculator constructor.
                          const QgsRectangle &outputExtent, const QgsCoordinateReferenceSystem &outputCrs, int nOutputColumns, int nOutputRows, const QVector<QgsRasterCalculatorEntry> &rasterEntries );
 %Docstring
 QgsRasterCalculator constructor.
+
 :param formulaString: formula for raster calculation
 :param outputFile: output file path
 :param outputFormat: output file format
@@ -73,10 +75,6 @@ QgsRasterCalculator constructor.
 %End
 
     int processCalculation( QgsFeedback *feedback = 0 );
-%Docstring
-
-:rtype: int
-%End
 
 };
 

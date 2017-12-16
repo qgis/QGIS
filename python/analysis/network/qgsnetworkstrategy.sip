@@ -50,15 +50,11 @@ Default constructor
 %Docstring
 Returns a list of the source layer attributes needed for cost calculation.
 This is method called by QgsGraphDirector.
-
-:rtype: set of int
 %End
 
     virtual QVariant cost( double distance, const QgsFeature &f ) const = 0;
 %Docstring
 Returns edge cost
-
-:rtype: QVariant
 %End
 };
 

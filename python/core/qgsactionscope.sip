@@ -59,8 +59,6 @@ An expression scope may offer additional variables for an action scope.
 This can be an `field_name` for the attribute which was clicked or
 `clicked_x` and `clicked_y` for actions which are available as map canvas clicks.
 
-:rtype: QgsExpressionContextScope
-
 .. versionadded:: 3.0
 %End
 
@@ -72,8 +70,6 @@ This can be an `field_name` for the attribute which was clicked or
     QString id() const;
 %Docstring
 A unique identifier for this action scope.
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -88,8 +84,6 @@ A unique identifier for this action scope.
 The title is a human readable and translated string that will be
 presented to the user in the properties dialog.
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
     void setTitle( const QString &title );
@@ -103,8 +97,6 @@ The description should be a longer description of where actions in this scope
 are available. It is not necessary to list the available expression variables
 in here, they are extracted automatically from the expressionContextScope().
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
     void setDescription( const QString &description );
@@ -115,8 +107,6 @@ in here, they are extracted automatically from the expressionContextScope().
     bool isValid() const;
 %Docstring
 Returns if this scope is valid.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End

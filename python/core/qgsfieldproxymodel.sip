@@ -48,16 +48,13 @@ It can be used to filter the fields based on their types.
     QgsFieldModel *sourceFieldModel();
 %Docstring
 Returns the QgsFieldModel used in this QSortFilterProxyModel
-
-:rtype: QgsFieldModel
 %End
 
     QgsFieldProxyModel *setFilters( QgsFieldProxyModel::Filters filters );
 %Docstring
 Set flags that affect how fields are filtered in the model.
-:param filters: are Filter flags
 
-:rtype: QgsFieldProxyModel
+:param filters: are Filter flags
 
 .. seealso:: :py:func:`filters()`
 %End
@@ -65,8 +62,6 @@ Set flags that affect how fields are filtered in the model.
     const Filters &filters() const;
 %Docstring
 Returns the filters controlling displayed fields.
-
-:rtype: Filters
 
 .. seealso:: :py:func:`setFilters()`
 %End

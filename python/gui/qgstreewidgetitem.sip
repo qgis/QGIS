@@ -29,6 +29,7 @@ also correctly handles sorting numeric or mixed text and numeric values.
     explicit QgsTreeWidgetItem( QTreeWidget *view /TransferThis/, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
+
 :param view: parent QTreeWidget view
 :param type: item type
 %End
@@ -36,12 +37,14 @@ Constructor for QgsTreeWidgetItem
     explicit QgsTreeWidgetItem( int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
+
 :param type: item type
 %End
 
     QgsTreeWidgetItem( const QStringList &strings, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
+
 :param strings: list of strings containing text for each column in the item
 :param type: item type
 %End
@@ -49,6 +52,7 @@ Constructor for QgsTreeWidgetItem
     QgsTreeWidgetItem( QTreeWidget *view /TransferThis/, const QStringList &strings, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
+
 :param view: parent QTreeWidget view
 :param strings: list of strings containing text for each column in the item
 :param type: item type
@@ -57,6 +61,7 @@ Constructor for QgsTreeWidgetItem
     QgsTreeWidgetItem( QTreeWidget *view /TransferThis/, QTreeWidgetItem *after, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
+
 :param view: parent QTreeWidget view
 :param after: QTreeWidgetItem to place insert item after in the view
 :param type: item type
@@ -65,6 +70,7 @@ Constructor for QgsTreeWidgetItem
     explicit QgsTreeWidgetItem( QTreeWidgetItem *parent /TransferThis/, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
+
 :param parent: QTreeWidgetItem item
 :param type: item type
 %End
@@ -72,6 +78,7 @@ Constructor for QgsTreeWidgetItem
     QgsTreeWidgetItem( QTreeWidgetItem *parent /TransferThis/, const QStringList &strings, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
+
 :param parent: QTreeWidgetItem item
 :param strings: list of strings containing text for each column in the item
 :param type: item type
@@ -80,6 +87,7 @@ Constructor for QgsTreeWidgetItem
     QgsTreeWidgetItem( QTreeWidgetItem *parent /TransferThis/, QTreeWidgetItem *after, int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItem
+
 :param parent: QTreeWidgetItem item
 :param after: QTreeWidgetItem to place insert item after in the view
 :param type: item type
@@ -90,6 +98,7 @@ Constructor for QgsTreeWidgetItem
 Sets the custom sort data for a specified column. If set, this value will be used when
 sorting the item instead of the item's display text. If not set, the item's display
 text will be used when sorting.
+
 :param column: column index
 :param value: sort value
 
@@ -102,8 +111,6 @@ Returns the custom sort data for a specified column. If set, this value will be 
 sorting the item instead of the item's display text. If not set, the item's display
 text will be used when sorting.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`setSortData()`
 %End
 
@@ -111,6 +118,7 @@ text will be used when sorting.
 %Docstring
 Sets a the item to display always on top of other items in the widget, regardless of the
 sort column and sort or display value for the item.
+
 :param priority: priority for sorting always on top items. Items with a lower priority will
 be placed above items with a higher priority.
 
@@ -123,8 +131,6 @@ Returns the item's priority when it is set to show always on top. Items with a l
 be placed above items with a higher priority.
 
 :return: priority, or -1 if item is not set to show always on top
-:rtype: int
-
 
 .. seealso:: :py:func:`setAlwaysOnTopPriority()`
 %End
@@ -134,16 +140,12 @@ be placed above items with a higher priority.
 %Docstring
 Returns true if this item should appear before another item when sorting
 a list of items.
-
-:rtype: bool
 %End
 
     bool operator>=( const QTreeWidgetItem &other ) const;
 %Docstring
 Returns true if this item should appear after another item when sorting
 a list of items.
-
-:rtype: bool
 %End
 
 };
@@ -164,6 +166,7 @@ Custom QgsTreeWidgetItem with extra signals when item is edited.
     explicit QgsTreeWidgetItemObject( int type = Type );
 %Docstring
 Constructor for QgsTreeWidgetItemObject
+
 :param type: item type
 %End
 

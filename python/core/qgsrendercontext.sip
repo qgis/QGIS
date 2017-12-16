@@ -64,8 +64,6 @@ Enable or disable a particular flag (other flags are not affected)
 %Docstring
 Return combination of flags used for rendering.
 
-:rtype: Flags
-
 .. versionadded:: 2.14
 %End
 
@@ -73,16 +71,12 @@ Return combination of flags used for rendering.
 %Docstring
 Check whether a particular flag is enabled.
 
-:rtype: bool
-
 .. versionadded:: 2.14
 %End
 
     static QgsRenderContext fromMapSettings( const QgsMapSettings &mapSettings );
 %Docstring
 create initialized QgsRenderContext instance from given QgsMapSettings
-
-:rtype: QgsRenderContext
 
 .. versionadded:: 2.4
 %End
@@ -93,8 +87,6 @@ Creates a default render context given a pixel based QPainter destination.
 If no painter is specified or the painter has no device, then a default
 DPI of 88 will be assumed.
 
-:rtype: QgsRenderContext
-
 .. versionadded:: 3.0
 %End
 
@@ -103,8 +95,6 @@ DPI of 88 will be assumed.
 %Docstring
 Returns the destination QPainter for the render operation.
 
-:rtype: QPainter
-
 .. seealso:: :py:func:`setPainter()`
 %End
 
@@ -112,15 +102,11 @@ Returns the destination QPainter for the render operation.
 %Docstring
 Returns the current coordinate transform for the context, or an invalid
 transform is no coordinate transformation is required.
-
-:rtype: QgsCoordinateTransform
 %End
 
     const QgsDistanceArea &distanceArea() const;
 %Docstring
 A general purpose distance and area calculator, capable of performing ellipsoid based calculations.
-
-:rtype: QgsDistanceArea
 
 .. versionadded:: 3.0
 %End
@@ -130,8 +116,6 @@ A general purpose distance and area calculator, capable of performing ellipsoid 
 Returns the context's coordinate transform context, which stores various
 information regarding which datum transforms should be used when transforming points
 from a source to destination coordinate reference system.
-
-:rtype: QgsCoordinateTransformContext
 
 .. versionadded:: 3.0
 
@@ -150,16 +134,8 @@ from a source to destination coordinate reference system.
 %End
 
     const QgsRectangle &extent() const;
-%Docstring
-
-:rtype: QgsRectangle
-%End
 
     const QgsMapToPixel &mapToPixel() const;
-%Docstring
-
-:rtype: QgsMapToPixel
-%End
 
     double scaleFactor() const;
 %Docstring
@@ -167,28 +143,16 @@ Returns the scaling factor for the render to convert painter units
 to physical sizes. This is usually equal to the number of pixels
 per millimeter.
 
-:rtype: float
-
 .. seealso:: :py:func:`setScaleFactor()`
 %End
 
     bool renderingStopped() const;
-%Docstring
-
-:rtype: bool
-%End
 
     bool forceVectorOutput() const;
-%Docstring
-
-:rtype: bool
-%End
 
     bool useAdvancedEffects() const;
 %Docstring
 Returns true if advanced effects such as blend modes such be used
-
-:rtype: bool
 %End
 
     void setUseAdvancedEffects( bool enabled );
@@ -197,35 +161,23 @@ Used to enable or disable advanced effects such as blend modes
 %End
 
     bool drawEditingInformation() const;
-%Docstring
-
-:rtype: bool
-%End
 
     double rendererScale() const;
 %Docstring
 Returns the renderer map scale. This will match the desired scale denominator
 for the rendered map, eg 1000.0 for a 1:1000 map render.
 
-:rtype: float
-
 .. seealso:: :py:func:`setRendererScale()`
 %End
 
 
     QColor selectionColor() const;
-%Docstring
-
-:rtype: QColor
-%End
 
     bool showSelection() const;
 %Docstring
 Returns true if vector selections should be shown in the rendered map
 
 :return: true if selections should be shown
-:rtype: bool
-
 
 .. seealso:: :py:func:`setShowSelection`
 
@@ -287,6 +239,7 @@ of any rendering operations.
     void setShowSelection( const bool showSelection );
 %Docstring
 Sets whether vector selections should be shown in the rendered map
+
 :param showSelection: set to true if selections should be shown
 
 .. seealso:: :py:func:`showSelection`
@@ -299,8 +252,6 @@ Sets whether vector selections should be shown in the rendered map
     bool useRenderingOptimization() const;
 %Docstring
 Returns true if the rendering optimization (geometry simplification) can be executed
-
-:rtype: bool
 %End
 
     void setUseRenderingOptimization( bool enabled );
@@ -308,8 +259,6 @@ Returns true if the rendering optimization (geometry simplification) can be exec
     const QgsVectorSimplifyMethod &vectorSimplifyMethod() const;
 %Docstring
 Added in QGIS v2.4
-
-:rtype: QgsVectorSimplifyMethod
 %End
     void setVectorSimplifyMethod( const QgsVectorSimplifyMethod &simplifyMethod );
 
@@ -328,8 +277,6 @@ associated with this render context.
 Gets the expression context. This context should be used for all expression evaluation
 associated with this render context.
 
-:rtype: QgsExpressionContext
-
 .. seealso:: :py:func:`setExpressionContext()`
 
 .. versionadded:: 2.12
@@ -339,8 +286,6 @@ associated with this render context.
     const QgsAbstractGeometry *geometry() const;
 %Docstring
 Returns pointer to the unsegmentized geometry
-
-:rtype: QgsAbstractGeometry
 %End
     void setGeometry( const QgsAbstractGeometry *geometry );
 %Docstring
@@ -350,6 +295,7 @@ Sets pointer to original (unsegmentized) geometry
     void setFeatureFilterProvider( const QgsFeatureFilterProvider *ffp );
 %Docstring
 Set a filter feature provider used for additional filtering of rendered features.
+
 :param ffp: the filter feature provider
 
 .. versionadded:: 2.14
@@ -362,8 +308,6 @@ Set a filter feature provider used for additional filtering of rendered features
 Get the filter feature provider used for additional filtering of rendered features.
 
 :return: the filter feature provider
-:rtype: QgsFeatureFilterProvider
-
 
 .. versionadded:: 2.14
 
@@ -373,25 +317,23 @@ Get the filter feature provider used for additional filtering of rendered featur
     void setSegmentationTolerance( double tolerance );
 %Docstring
 Sets the segmentation tolerance applied when rendering curved geometries
+
 :param tolerance: the segmentation tolerance*
 %End
     double segmentationTolerance() const;
 %Docstring
 Gets the segmentation tolerance applied when rendering curved geometries
-
-:rtype: float
 %End
 
     void setSegmentationToleranceType( QgsAbstractGeometry::SegmentationToleranceType type );
 %Docstring
 Sets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
+
 :param type: the segmentation tolerance typename*
 %End
     QgsAbstractGeometry::SegmentationToleranceType segmentationToleranceType() const;
 %Docstring
 Gets segmentation tolerance type (maximum angle or maximum difference between curve and approximation)
-
-:rtype: QgsAbstractGeometry.SegmentationToleranceType
 %End
 
 
@@ -399,8 +341,6 @@ Gets segmentation tolerance type (maximum angle or maximum difference between cu
 %Docstring
 Converts a size from the specified units to painter units (pixels). The conversion respects the limits
 specified by the optional scale parameter.
-
-:rtype: float
 
 .. versionadded:: 3.0
 
@@ -412,8 +352,6 @@ specified by the optional scale parameter.
 Converts a size from the specified units to map units. The conversion respects the limits
 specified by the optional scale parameter.
 
-:rtype: float
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`convertToPainterUnits()`
@@ -422,8 +360,6 @@ specified by the optional scale parameter.
     double convertFromMapUnits( double sizeInMapUnits, QgsUnitTypes::RenderUnit outputUnit ) const;
 %Docstring
 Converts a size from map units to the specified units.
-
-:rtype: float
 
 .. versionadded:: 3.0
 
@@ -435,8 +371,6 @@ Converts a size from map units to the specified units.
 Convert meter distances to active MapUnit values for QgsUnitTypes.RenderMetersInMapUnits
 \note
 When the sourceCrs() is geographic, the center of the Extent will be used
-
-:rtype: float
 
 .. versionadded:: 3.0
 %End

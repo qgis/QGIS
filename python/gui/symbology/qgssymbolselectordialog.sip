@@ -31,6 +31,7 @@ Symbol selector widget that can be used to select and build a symbol
     QgsSymbolSelectorWidget( QgsSymbol *symbol, QgsStyle *style, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Symbol selector widget that can be used to select and build a symbol
+
 :param symbol: The symbol to load into the widget as a start point.
 :param style: The style used by the widget.
 :param vl: The vector layer for the symbol.
@@ -40,13 +41,12 @@ Symbol selector widget that can be used to select and build a symbol
     QMenu *advancedMenu();
 %Docstring
 return menu for "advanced" button - create it if doesn't exist and show the advanced button
-
-:rtype: QMenu
 %End
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context()`
@@ -58,8 +58,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 %Docstring
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
-:rtype: QgsSymbolWidgetContext
-
 .. seealso:: :py:func:`setContext()`
 
 .. versionadded:: 3.0
@@ -70,8 +68,6 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
  Return the symbol that is currently active in the widget. Can be null.
 
 :return: The active symbol.
-:rtype: QgsSymbol
-
 %End
 
   protected:
@@ -98,19 +94,19 @@ Update the lock button states based on the current symbol layer.
 The current symbol layer that is active in the interface.
 
 :return: The active symbol layer.
-:rtype: QgsSymbolLayer
-
 %End
 
     void moveLayerByOffset( int offset );
 %Docstring
 Move the current active layer by a set offset in the list.
+
 :param offset: The offset to move the layer by
 %End
 
     void setWidget( QWidget *widget );
 %Docstring
 Set the properties widget for the active symbol layer.
+
 :param widget: The widget to set to configure the active symbol layer.
 %End
 
@@ -211,13 +207,12 @@ Constructor for QgsSymbolSelectorDialog.
     QMenu *advancedMenu();
 %Docstring
 return menu for "advanced" button - create it if doesn't exist and show the advanced button
-
-:rtype: QMenu
 %End
 
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context()`
@@ -229,8 +224,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 %Docstring
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
-:rtype: QgsSymbolWidgetContext
-
 .. seealso:: :py:func:`setContext()`
 
 .. versionadded:: 3.0
@@ -241,8 +234,6 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
  Return the symbol that is currently active in the widget. Can be null.
 
 :return: The active symbol.
-:rtype: QgsSymbol
-
 %End
 
   protected:
@@ -257,10 +248,6 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
     void updateLockButton();
 
     QgsSymbolLayer *currentLayer();
-%Docstring
-
-:rtype: QgsSymbolLayer
-%End
 
     void moveLayerByOffset( int offset );
 

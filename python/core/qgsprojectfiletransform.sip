@@ -25,16 +25,13 @@ class QgsProjectFileTransform
                              const QgsProjectVersion &version );
 %Docstring
 Create an instance from a Dom and a supplied version
+
 :param domDocument: The Dom document to use as content
 :param version: Version number
 %End
 
 
     bool updateRevision( const QgsProjectVersion &version );
-%Docstring
-
-:rtype: bool
-%End
 
     void dump();
 %Docstring

@@ -139,12 +139,14 @@ geometry and a list of field/values attributes.
     QgsFeature( qint64 id = 0 );
 %Docstring
 Constructor for QgsFeature
+
 :param id: feature id
 %End
 
     QgsFeature( const QgsFields &fields, qint64 id = 0 );
 %Docstring
 Constructor for QgsFeature
+
 :param fields: feature's fields
 :param id: feature id
 %End
@@ -164,8 +166,6 @@ Copy constructor
 Get the feature ID for this feature.
 
 :return: feature ID
-:rtype: QgsFeatureId
-
 
 .. seealso:: :py:func:`setId()`
 %End
@@ -173,6 +173,7 @@ Get the feature ID for this feature.
     void setId( QgsFeatureId id );
 %Docstring
 Sets the feature ID for this feature.
+
 :param id: feature id
 
 .. seealso:: :py:func:`id`
@@ -183,8 +184,6 @@ Sets the feature ID for this feature.
 Returns the feature's attributes.
 
 :return: list of feature's attributes
-:rtype: QgsAttributes
-
 
 .. seealso:: :py:func:`setAttributes`
 
@@ -199,6 +198,7 @@ Returns the feature's attributes.
 %Docstring
 Sets the feature's attributes.
 The feature will be valid after.
+
 :param attrs: attribute list
 
 .. seealso:: :py:func:`setAttribute`
@@ -210,12 +210,11 @@ The feature will be valid after.
 %Docstring
 Set an attribute's value by field index.
 The feature will be valid if it was successful.
+
 :param field: the index of the field to set
 :param attr: the value of the attribute
 
 :return: false, if the field index does not exist
-:rtype: bool
-
 
 .. note::
 
@@ -251,12 +250,14 @@ The feature will be valid if it was successful.
     void initAttributes( int fieldCount );
 %Docstring
 Initialize this feature with the given number of fields. Discard any previously set attribute data.
+
 :param fieldCount: Number of fields to initialize
 %End
 
     void deleteAttribute( int field );
 %Docstring
 Deletes an attribute and its value.
+
 :param field: the index of the field
 
 .. seealso:: :py:func:`setAttribute`
@@ -285,14 +286,13 @@ Returns the validity of this feature. This is normally set by
 the provider to indicate some problem that makes the feature
 invalid or to indicate a null feature.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setValid`
 %End
 
     void setValid( bool validity );
 %Docstring
 Sets the validity of the feature.
+
 :param validity: set to true if feature is valid
 
 .. seealso:: :py:func:`isValid`
@@ -301,8 +301,6 @@ Sets the validity of the feature.
     bool hasGeometry() const;
 %Docstring
 Returns true if the feature has an associated geometry.
-
-:rtype: bool
 
 .. seealso:: :py:func:`geometry()`
 
@@ -314,8 +312,6 @@ Returns true if the feature has an associated geometry.
 Returns the geometry associated with this feature. If the feature has no geometry,
 an empty QgsGeometry object will be returned.
 
-:rtype: QgsGeometry
-
 .. seealso:: :py:func:`hasGeometry()`
 
 .. seealso:: :py:func:`setGeometry()`
@@ -324,6 +320,7 @@ an empty QgsGeometry object will be returned.
     void setGeometry( const QgsGeometry &geometry );
 %Docstring
 Set the feature's geometry. The feature will be valid after.
+
 :param geometry: new feature geometry
 
 .. seealso:: :py:func:`geometry()`
@@ -345,6 +342,7 @@ Removes any geometry associated with the feature.
     void setFields( const QgsFields &fields, bool initAttributes = true  );
 %Docstring
 Assign a field map with the feature to allow attribute access by attribute name.
+
 :param fields: The attribute fields which this feature holds
 :param initAttributes: If true, attributes are initialized. Clears any data previously assigned.
 C++: Defaults to false
@@ -359,8 +357,6 @@ Python: Defaults to true
 %Docstring
 Returns the field map associated with the feature.
 
-:rtype: QgsFields
-
 .. seealso:: :py:func:`setFields`
 %End
 
@@ -369,6 +365,7 @@ Returns the field map associated with the feature.
 Insert a value into attribute. Returns false if attribute name could not be converted to index.
 Field map must be associated using setFields() before this method can be used.
 The feature will be valid if it was successful
+
 :param name: The name of the field to set
 :param value: The value to set
 
@@ -408,11 +405,10 @@ The feature will be valid if it was successful
 %Docstring
 Removes an attribute value by field name. Field map must be associated using setFields()
 before this method can be used.
+
 :param name: The name of the field to delete
 
 :return: false if attribute name could not be converted to index (C++ only)
-:rtype: bool
-
 
 .. note::
 
@@ -443,6 +439,7 @@ before this method can be used.
 %Docstring
 Lookup attribute value from attribute name. Field map must be associated using setFields()
 before this method can be used.
+
 :param name: The name of the attribute to get
 
 :return: The value of the attribute (C++: Invalid variant if no such name exists )
@@ -475,6 +472,7 @@ before this method can be used.
 %Docstring
 Lookup attribute value from its index. Field map must be associated using setFields()
 before this method can be used.
+
 :param fieldIdx: The index of the attribute to get
 
 :return: The value of the attribute (C++: Invalid variant if no such index exists )
@@ -508,11 +506,10 @@ before this method can be used.
 %Docstring
 Utility method to get attribute index from name. Field map must be associated using setFields()
 before this method can be used.
+
 :param fieldName: name of field to get attribute index of
 
 :return: -1 if field does not exist or field map is not associated.
-:rtype: int
-
 
 .. seealso:: :py:func:`setFields`
 %End

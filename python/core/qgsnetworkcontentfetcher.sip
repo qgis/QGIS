@@ -38,6 +38,7 @@ Constructor for QgsNetworkContentFetcher.
 %Docstring
 Fetches content from a remote URL and handles redirects. The finished()
 signal will be emitted when content has been fetched.
+
 :param url: URL to fetch
 %End
 
@@ -46,8 +47,6 @@ signal will be emitted when content has been fetched.
 Returns a reference to the network reply
 
 :return: QNetworkReply for fetched URL content
-:rtype: QNetworkReply
-
 %End
 
     QString contentAsString() const;
@@ -55,8 +54,6 @@ Returns a reference to the network reply
 Returns the fetched content as a string
 
 :return: string containing network content
-:rtype: str
-
 %End
 
   signals:

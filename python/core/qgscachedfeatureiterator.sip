@@ -35,8 +35,6 @@ This constructor creates a feature iterator, that delivers all cached features. 
 Rewind to the beginning of the iterator
 
 :return: bool true if the operation was OK
-:rtype: bool
-
 %End
 
     virtual bool close();
@@ -45,8 +43,6 @@ Rewind to the beginning of the iterator
 Close this iterator. No further features will be available.
 
 :return: true if successful
-:rtype: bool
-
 %End
 
   protected:
@@ -59,8 +55,6 @@ Implementation for fetching a feature.
 :param f:      Will write to this feature
 
 :return: bool  true if the operation was OK
-:rtype: bool
-
 
 .. seealso:: :py:func:`bool`
 %End
@@ -72,8 +66,6 @@ We have a local special iterator for FilterFids, no need to run the generic.
 :param f:      Will write to this feature
 
 :return: bool  true if the operation was OK
-:rtype: bool
-
 %End
 
 };
@@ -104,8 +96,6 @@ This constructor creates a feature iterator, which queries the backend and cache
 Rewind to the beginning of the iterator
 
 :return: bool true if the operation was OK
-:rtype: bool
-
 %End
 
     virtual bool close();
@@ -114,8 +104,6 @@ Rewind to the beginning of the iterator
 Close this iterator. No further features will be available.
 
 :return: true if successful
-:rtype: bool
-
 %End
 
   protected:
@@ -128,8 +116,6 @@ Implementation for fetching a feature.
 :param f:      Will write to this feature
 
 :return: bool  true if the operation was OK
-:rtype: bool
-
 
 .. seealso:: :py:func:`bool`
 %End

@@ -40,8 +40,6 @@ Set the order by to manage
     QgsFeatureRequest::OrderBy orderBy();
 %Docstring
 Get the order by defined in the dialog
-
-:rtype: QgsFeatureRequest.OrderBy
 %End
 
   protected:

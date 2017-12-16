@@ -61,30 +61,22 @@ Calling this method removes all items and pages from the layout.
 %Docstring
 The project associated with the layout. Used to get access to layers, map themes,
 relations and various other bits. It is never null.
-
-:rtype: QgsProject
 %End
 
     QgsLayoutModel *itemsModel();
 %Docstring
 Returns the items model attached to the layout.
-
-:rtype: QgsLayoutModel
 %End
 
     QgsLayoutExporter &exporter();
 %Docstring
 Returns the layout's exporter, which is used for rendering the layout and exporting
 to various formats.
-
-:rtype: QgsLayoutExporter
 %End
 
     QString name() const;
 %Docstring
 Returns the layout's name.
-
-:rtype: str
 
 .. seealso:: :py:func:`setName()`
 %End
@@ -103,8 +95,6 @@ Returns list of selected layout items.
 
 If ``includeLockedItems`` is set to true, then locked items will also be included
 in the returned list.
-
-:rtype: list of QgsLayoutItem
 %End
 
     void setSelectedItem( QgsLayoutItem *item );
@@ -130,8 +120,6 @@ to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
 
-:rtype: bool
-
 .. seealso:: :py:func:`lowerItem()`
 
 .. seealso:: :py:func:`updateZValues()`
@@ -146,8 +134,6 @@ If ``deferUpdate`` is true, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
-
-:rtype: bool
 
 .. seealso:: :py:func:`raiseItem()`
 
@@ -164,8 +150,6 @@ to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
 
-:rtype: bool
-
 .. seealso:: :py:func:`moveItemToBottom()`
 
 .. seealso:: :py:func:`updateZValues()`
@@ -179,8 +163,6 @@ If ``deferUpdate`` is true, the scene will not be visibly updated
 to reflect the new stacking order. This allows multiple
 raiseItem() calls to be made in sequence without the cost of
 updating the scene for each one.
-
-:rtype: bool
 
 .. seealso:: :py:func:`moveItemToTop()`
 
@@ -202,8 +184,6 @@ if a matching item could not be found.
 If ``includeTemplateUuids`` is true, then item's QgsLayoutItem.templateUuid()
 will also be tested when trying to match the uuid.
 
-:rtype: QgsLayoutItem
-
 .. seealso:: :py:func:`multiFrameByUuid()`
 %End
 
@@ -212,8 +192,6 @@ will also be tested when trying to match the uuid.
 Returns the layout multiframe with matching ``uuid`` unique identifier, or a None
 if a matching multiframe could not be found.
 
-:rtype: QgsLayoutMultiFrame
-
 .. seealso:: :py:func:`itemByUuid()`
 %End
 
@@ -221,16 +199,12 @@ if a matching multiframe could not be found.
 %Docstring
 Returns the topmost layout item at a specified ``position``. Ignores paper items.
 If ``ignoreLocked`` is set to true any locked items will be ignored.
-
-:rtype: QgsLayoutItem
 %End
 
     QgsLayoutItem *layoutItemAt( QPointF position, const QgsLayoutItem *belowItem, const bool ignoreLocked = false ) const;
 %Docstring
 Returns the topmost composer item at a specified ``position`` which is below a specified ``item``. Ignores paper items.
 If ``ignoreLocked`` is set to true any locked items will be ignored.
-
-:rtype: QgsLayoutItem
 %End
 
     void setUnits( QgsUnitTypes::LayoutUnit units );
@@ -247,8 +221,6 @@ for measurements for the layout.
 %Docstring
 Returns the native units for the layout.
 
-:rtype: QgsUnitTypes.LayoutUnit
-
 .. seealso:: :py:func:`setUnits()`
 
 .. seealso:: :py:func:`convertToLayoutUnits()`
@@ -259,8 +231,6 @@ Returns the native units for the layout.
 Converts a measurement into the layout's native units.
 
 :return: length of measurement in layout units
-:rtype: float
-
 
 .. seealso:: :py:func:`convertFromLayoutUnits()`
 
@@ -272,8 +242,6 @@ Converts a measurement into the layout's native units.
 Converts a size into the layout's native units.
 
 :return: size of measurement in layout units
-:rtype: QSizeF
-
 
 .. seealso:: :py:func:`convertFromLayoutUnits()`
 
@@ -285,8 +253,6 @@ Converts a size into the layout's native units.
 Converts a ``point`` into the layout's native units.
 
 :return: point in layout units
-:rtype: QPointF
-
 
 .. seealso:: :py:func:`convertFromLayoutUnits()`
 
@@ -298,8 +264,6 @@ Converts a ``point`` into the layout's native units.
 Converts a ``length`` measurement from the layout's native units to a specified target ``unit``.
 
 :return: length of measurement in specified units
-:rtype: QgsLayoutMeasurement
-
 
 .. seealso:: :py:func:`convertToLayoutUnits()`
 
@@ -311,8 +275,6 @@ Converts a ``length`` measurement from the layout's native units to a specified 
 Converts a ``size`` from the layout's native units to a specified target ``unit``.
 
 :return: size of measurement in specified units
-:rtype: QgsLayoutSize
-
 
 .. seealso:: :py:func:`convertToLayoutUnits()`
 
@@ -324,8 +286,6 @@ Converts a ``size`` from the layout's native units to a specified target ``unit`
 Converts a ``point`` from the layout's native units to a specified target ``unit``.
 
 :return: point in specified units
-:rtype: QgsLayoutPoint
-
 
 .. seealso:: :py:func:`convertToLayoutUnits()`
 
@@ -336,8 +296,6 @@ Converts a ``point`` from the layout's native units to a specified target ``unit
 %Docstring
 Returns a reference to the layout's context, which stores information relating to the
 current context and rendering settings for the layout.
-
-:rtype: QgsLayoutContext
 %End
 
 
@@ -345,8 +303,6 @@ current context and rendering settings for the layout.
 %Docstring
 Returns a reference to the layout's snapper, which stores handles layout snap grids and lines
 and snapping points to the nearest matching point.
-
-:rtype: QgsLayoutSnapper
 %End
 
 
@@ -354,16 +310,12 @@ and snapping points to the nearest matching point.
 %Docstring
 Returns a reference to the layout's grid settings, which stores settings relating
 to grid appearance, spacing and offsets.
-
-:rtype: QgsLayoutGridSettings
 %End
 
 
     QgsLayoutGuideCollection &guides();
 %Docstring
 Returns a reference to the layout's guide collection, which manages page snap guides.
-
-:rtype: QgsLayoutGuideCollection
 %End
 
 
@@ -372,13 +324,12 @@ Returns a reference to the layout's guide collection, which manages page snap gu
 %Docstring
 Creates an expression context relating to the layout's current state. The context includes
 scopes for global, project, layout and layout context properties.
-
-:rtype: QgsExpressionContext
 %End
 
     void setCustomProperty( const QString &key, const QVariant &value );
 %Docstring
 Set a custom property for the layout.
+
 :param key: property key. If a property with the same key already exists it will be overwritten.
 :param value: property value
 
@@ -392,12 +343,11 @@ Set a custom property for the layout.
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
 Read a custom property from the layout.
+
 :param key: property key
 :param defaultValue: default value to return if property with matching key does not exist
 
 :return: value of matching property
-:rtype: QVariant
-
 
 .. seealso:: :py:func:`setCustomProperty()`
 
@@ -409,6 +359,7 @@ Read a custom property from the layout.
     void removeCustomProperty( const QString &key );
 %Docstring
 Remove a custom property from the layout.
+
 :param key: property key
 
 .. seealso:: :py:func:`setCustomProperty()`
@@ -422,8 +373,6 @@ Remove a custom property from the layout.
 %Docstring
 Return list of keys stored in custom properties for the layout.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`setCustomProperty()`
 
 .. seealso:: :py:func:`customProperty()`
@@ -432,10 +381,6 @@ Return list of keys stored in custom properties for the layout.
 %End
 
     QgsLayoutItemMap *referenceMap() const;
-%Docstring
-
-:rtype: QgsLayoutItemMap
-%End
 
     void setReferenceMap( QgsLayoutItemMap *map );
 
@@ -443,8 +388,6 @@ Return list of keys stored in custom properties for the layout.
 %Docstring
 Returns a pointer to the layout's page collection, which stores and manages
 page items in the layout.
-
-:rtype: QgsLayoutPageCollection
 %End
 
 
@@ -452,12 +395,11 @@ page items in the layout.
 %Docstring
 Calculates the bounds of all non-gui items in the layout. Ignores snap lines, mouse handles
 and other cosmetic items.
+
 :param ignorePages: set to true to ignore page items
 :param margin: optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
 
 :return: layout bounds, in layout units.
-:rtype: QRectF
-
 %End
 
     void addLayoutItem( QgsLayoutItem *item /Transfer/ );
@@ -495,8 +437,6 @@ Removes a ``multiFrame`` from the layout (but does not delete it).
 %Docstring
 Returns a list of multi frames contained in the layout.
 
-:rtype: list of QgsLayoutMultiFrame
-
 .. seealso:: :py:func:`addMultiFrame()`
 
 .. seealso:: :py:func:`removeMultiFrame()`
@@ -506,8 +446,6 @@ Returns a list of multi frames contained in the layout.
 %Docstring
 Saves the layout as a template at the given file ``path``.
 Returns true if save was successful.
-
-:rtype: bool
 
 .. seealso:: :py:func:`loadFromTemplate()`
 %End
@@ -523,15 +461,11 @@ from the template, without overwriting the existing items or layout settings.
 If ``ok`` is specified, it will be set to true if the load was successful.
 
 Returns a list of loaded items.
-
-:rtype: list of QgsLayoutItem
 %End
 
     QDomElement writeXml( QDomDocument &document, const QgsReadWriteContext &context ) const;
 %Docstring
 Returns the layout's state encapsulated in a DOM element.
-
-:rtype: QDomElement
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -539,8 +473,6 @@ Returns the layout's state encapsulated in a DOM element.
     bool readXml( const QDomElement &layoutElement, const QDomDocument &document, const QgsReadWriteContext &context );
 %Docstring
 Sets the collection's state from a DOM element. ``layoutElement`` is the DOM node corresponding to the layout.
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End
@@ -559,16 +491,12 @@ The ``pasteInPlace`` argument determines whether the serialized position should 
 origin of the page corresponding to the page at ``position``.
 
 A list of the newly added items is returned.
-
-:rtype: list of QgsLayoutItem
 %End
 
     QgsLayoutUndoStack *undoStack();
 %Docstring
 Returns a pointer to the layout's undo stack, which manages undo/redo states for the layout
 and it's associated objects.
-
-:rtype: QgsLayoutUndoStack
 %End
 
 
@@ -580,8 +508,6 @@ and it's associated objects.
 Creates a new group from a list of layout ``items`` and adds the group to the layout.
 If grouping was not possible, a None will be returned.
 
-:rtype: QgsLayoutItemGroup
-
 .. seealso:: :py:func:`ungroupItems()`
 %End
 
@@ -592,8 +518,6 @@ layout. Child items will remain in the layout and will not be deleted.
 
 Returns a list of the items removed from the group, or an empty list if ungrouping
 was not successful.
-
-:rtype: list of QgsLayoutItem
 
 .. seealso:: :py:func:`groupItems()`
 %End

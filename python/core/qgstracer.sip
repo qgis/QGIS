@@ -35,8 +35,6 @@ Constructor for QgsTracer.
     QList<QgsVectorLayer *> layers() const;
 %Docstring
 Get layers used for tracing
-
-:rtype: list of QgsVectorLayer
 %End
     void setLayers( const QList<QgsVectorLayer *> &layers );
 %Docstring
@@ -46,8 +44,6 @@ Set layers used for tracing
     QgsCoordinateReferenceSystem destinationCrs() const;
 %Docstring
 Get CRS used for tracing
-
-:rtype: QgsCoordinateReferenceSystem
 %End
     void setDestinationCrs( const QgsCoordinateReferenceSystem &crs );
 %Docstring
@@ -57,8 +53,6 @@ Set CRS used for tracing
     QgsRectangle extent() const;
 %Docstring
 Get extent to which graph's features will be limited (empty extent means no limit)
-
-:rtype: QgsRectangle
 %End
     void setExtent( const QgsRectangle &extent );
 %Docstring
@@ -69,8 +63,6 @@ Set extent to which graph's features will be limited (empty extent means no limi
 %Docstring
 Get offset in map units that should be applied to the traced paths returned from findShortestPath().
 Positive offset for right side, negative offset for left side.
-
-:rtype: float
 
 .. versionadded:: 3.0
 %End
@@ -100,8 +92,6 @@ Set extra parameters for offset curve algorithm (used when offset is non-zero)
     int maxFeatureCount() const;
 %Docstring
 Get maximum possible number of features in graph. If the number is exceeded, graph is not created.
-
-:rtype: int
 %End
     void setMaxFeatureCount( int count );
 %Docstring
@@ -114,23 +104,17 @@ Build the internal data structures. This may take some time
 depending on how big the input layers are. It is not necessary
 to call this method explicitly - it will be called by findShortestPath()
 if necessary.
-
-:rtype: bool
 %End
 
     bool isInitialized() const;
 %Docstring
 Whether the internal data structures have been initialized
-
-:rtype: bool
 %End
 
     bool hasTopologyProblem() const;
 %Docstring
 Whether there was an error during graph creation due to noding exception,
 indicating some input data topology problems
-
-:rtype: bool
 
 .. versionadded:: 2.16
 %End
@@ -150,15 +134,11 @@ Given two points, find the shortest path and return points on the way.
 The optional "error" argument may receive error code (PathError enum) if it is not null
 
 :return: array of points - trace of linestrings of other features (empty array one error)
-:rtype: list of QgsPointXY
-
 %End
 
     bool isPointSnapped( const QgsPointXY &pt );
 %Docstring
 Find out whether the point is snapped to a vertex or edge (i.e. it can be used for tracing start/stop)
-
-:rtype: bool
 %End
 
   protected:

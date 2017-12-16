@@ -30,10 +30,6 @@ Constructor for QgsCurve.
 
     virtual bool operator==( const QgsCurve &other ) const = 0;
     virtual bool operator!=( const QgsCurve &other ) const = 0;
-%Docstring
-
-:rtype: bool
-%End
 
     virtual QgsCurve *clone() const = 0 /Factory/;
 
@@ -42,8 +38,6 @@ Constructor for QgsCurve.
 %Docstring
 Returns the starting point of the curve.
 
-:rtype: QgsPoint
-
 .. seealso:: :py:func:`endPoint`
 %End
 
@@ -51,36 +45,29 @@ Returns the starting point of the curve.
 %Docstring
 Returns the end point of the curve.
 
-:rtype: QgsPoint
-
 .. seealso:: :py:func:`startPoint`
 %End
 
     virtual bool isClosed() const;
 %Docstring
 Returns true if the curve is closed.
-
-:rtype: bool
 %End
 
     virtual bool isRing() const;
 %Docstring
 Returns true if the curve is a ring.
-
-:rtype: bool
 %End
 
     virtual QgsLineString *curveToLine( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const = 0 /Factory/;
 %Docstring
 Returns a new line string geometry corresponding to a segmentized approximation
 of the curve.
+
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve
 
 Uses a MaximumAngle tolerance of 1 degrees by default (360
 segments in a full circle)
-
-:rtype: QgsLineString
 %End
 
     virtual void addToPainterPath( QPainterPath &path ) const = 0;
@@ -91,6 +78,7 @@ Adds a curve to a painter path.
     virtual void drawAsPolygon( QPainter &p ) const = 0;
 %Docstring
 Draws the curve as a polygon on the specified QPainter.
+
 :param p: destination QPainter
 %End
 
@@ -102,8 +90,6 @@ Returns a list of points within the curve.
     virtual int numPoints() const = 0;
 %Docstring
 Returns the number of points in the curve.
-
-:rtype: int
 %End
 
     virtual void sumUpArea( double &sum /Out/ ) const = 0;
@@ -123,20 +109,17 @@ Sums up the area of the curve by iterating over the vertices (shoelace formula).
     virtual bool pointAt( int node, QgsPoint &point /Out/, QgsVertexId::VertexType &type /Out/ ) const = 0;
 %Docstring
 Returns the point and vertex id of a point within the curve.
+
 :param node: node number, where the first node is 0
 :param point: will be set to point at corresponding node in the curve
 :param type: will be set to the vertex type of the node
 
 :return: true if node exists within the curve
-:rtype: bool
-
 %End
 
     virtual QgsCurve *reversed() const = 0 /Factory/;
 %Docstring
 Returns a reversed copy of the curve, where the direction of the curve has been flipped.
-
-:rtype: QgsCurve
 
 .. versionadded:: 2.14
 %End
@@ -148,10 +131,9 @@ Returns a reversed copy of the curve, where the direction of the curve has been 
 
 %Docstring
 Returns a geometry without curves. Caller takes ownership
+
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
-
-:rtype: QgsCurve
 %End
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;
@@ -171,11 +153,10 @@ Returns a geometry without curves. Caller takes ownership
     virtual double xAt( int index ) const = 0;
 %Docstring
 Returns the x-coordinate of the specified node in the line string.
+
 :param index: index of node, where the first node in the line is 0
 
 :return: x-coordinate of node, or 0.0 if index is out of bounds
-:rtype: float
-
 
 .. seealso:: :py:func:`setXAt()`
 %End
@@ -183,11 +164,10 @@ Returns the x-coordinate of the specified node in the line string.
     virtual double yAt( int index ) const = 0;
 %Docstring
 Returns the y-coordinate of the specified node in the line string.
+
 :param index: index of node, where the first node in the line is 0
 
 :return: y-coordinate of node, or 0.0 if index is out of bounds
-:rtype: float
-
 
 .. seealso:: :py:func:`setYAt()`
 %End
@@ -195,8 +175,6 @@ Returns the y-coordinate of the specified node in the line string.
     QPolygonF asQPolygonF() const;
 %Docstring
 Returns a QPolygonF representing the points.
-
-:rtype: QPolygonF
 %End
 
 

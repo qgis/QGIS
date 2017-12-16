@@ -98,8 +98,6 @@ are allowed to be different from the control image. In some cases
 rendering may be non-deterministic. This parameter allows you to account
 for that by providing a tolerance.
 
-:rtype: bool
-
 .. note::
 
    make sure to call setExpectedImage and setMapSettings first
@@ -110,8 +108,6 @@ for that by providing a tolerance.
 Returns a report for this test
 
 :return: A report
-:rtype: str
-
 %End
 
     QString controlImagePath() const;
@@ -119,8 +115,6 @@ Returns a report for this test
  controlImagePath
 
 :return:
-:rtype: str
-
 %End
 
     static void drawBackground( QImage *image );
@@ -150,10 +144,6 @@ Renders a composition to an image and compares with an expected output
     void setSize( QSize size );
 
     bool testComposition( QString &checkedReport, int page = 0, int pixelDiff = 0 );
-%Docstring
-
-:rtype: bool
-%End
 
 };
 
@@ -191,8 +181,6 @@ The page number is specified via ``page``, where 0 corresponds to the first
 page in the layout.
 
 Returns false if the rendered layout differs from the expected reference image.
-
-:rtype: bool
 %End
 
 };

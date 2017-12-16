@@ -26,8 +26,6 @@ class QgsHtmlUtils
 %Docstring
 Build a bullet list.
 This will return a HTML "ul" element.
-
-:rtype: str
 %End
 };
 

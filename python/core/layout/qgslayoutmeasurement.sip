@@ -29,6 +29,7 @@ using a variety of different measurement units.
     explicit QgsLayoutMeasurement( const double length, const QgsUnitTypes::LayoutUnit units = QgsUnitTypes::LayoutMillimeters );
 %Docstring
 Constructor for QgsLayoutMeasurement.
+
 :param length: measurement length
 :param units: measurement units
 %End
@@ -36,8 +37,6 @@ Constructor for QgsLayoutMeasurement.
     double length() const;
 %Docstring
 Returns the length of the measurement.
-
-:rtype: float
 
 .. seealso:: :py:func:`setLength()`
 %End
@@ -52,8 +51,6 @@ Sets the ``length`` of the measurement.
     QgsUnitTypes::LayoutUnit units() const;
 %Docstring
 Returns the units for the measurement.
-
-:rtype: QgsUnitTypes.LayoutUnit
 
 .. seealso:: :py:func:`setUnits()`
 %End
@@ -70,8 +67,6 @@ ie. no length conversion is done.
 %Docstring
 Encodes the layout measurement to a string
 
-:rtype: str
-
 .. seealso:: :py:func:`decodeMeasurement()`
 %End
 
@@ -79,72 +74,50 @@ Encodes the layout measurement to a string
 %Docstring
 Decodes a measurement from a ``string``.
 
-:rtype: QgsLayoutMeasurement
-
 .. seealso:: :py:func:`encodeMeasurement()`
 %End
 
     bool operator==( const QgsLayoutMeasurement &other ) const;
     bool operator!=( const QgsLayoutMeasurement &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
     QgsLayoutMeasurement operator+( const double v ) const;
 %Docstring
 Adds a scalar value to the measurement.
-
-:rtype: QgsLayoutMeasurement
 %End
 
     QgsLayoutMeasurement operator+=( const double v );
 %Docstring
 Adds a scalar value to the measurement.
-
-:rtype: QgsLayoutMeasurement
 %End
 
     QgsLayoutMeasurement operator-( const double v ) const;
 %Docstring
 Subtracts a scalar value from the measurement.
-
-:rtype: QgsLayoutMeasurement
 %End
 
     QgsLayoutMeasurement operator-=( const double v );
 %Docstring
 Subtracts a scalar value from the measurement.
-
-:rtype: QgsLayoutMeasurement
 %End
 
     QgsLayoutMeasurement operator*( const double v ) const;
 %Docstring
 Multiplies the measurement by a scalar value.
-
-:rtype: QgsLayoutMeasurement
 %End
 
     QgsLayoutMeasurement operator*=( const double v );
 %Docstring
 Multiplies the measurement by a scalar value.
-
-:rtype: QgsLayoutMeasurement
 %End
 
     QgsLayoutMeasurement operator/( const double v ) const;
 %Docstring
 Divides the measurement by a scalar value.
-
-:rtype: QgsLayoutMeasurement
 %End
 
     QgsLayoutMeasurement operator/=( const double v );
 %Docstring
 Divides the measurement by a scalar value.
-
-:rtype: QgsLayoutMeasurement
 %End
 
 };

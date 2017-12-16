@@ -60,23 +60,13 @@ Create new data item.
     ~QgsDataItem();
 
     bool hasChildren();
-%Docstring
-
-:rtype: bool
-%End
 
     int rowCount();
-%Docstring
-
-:rtype: int
-%End
 
     virtual QVector<QgsDataItem *> createChildren() /Factory/;
 %Docstring
 Create children. Children are not expected to have parent set.
 This method MUST BE THREAD SAFE. *
-
-:rtype: list of QgsDataItem
 %End
 
     enum State
@@ -89,14 +79,13 @@ This method MUST BE THREAD SAFE. *
     State state() const;
 %Docstring
 
-:rtype: State
-
 .. versionadded:: 2.8
 %End
 
     virtual void setState( State state );
 %Docstring
 Set item state. It also take care about starting/stopping loading icon animation.
+
 :param state:
 
 .. versionadded:: 2.8
@@ -105,6 +94,7 @@ Set item state. It also take care about starting/stopping loading icon animation
     virtual void addChildItem( QgsDataItem *child /Transfer/, bool refresh = false );
 %Docstring
 Inserts a new child item. The child will be inserted at a position using an alphabetical order based on mName.
+
 :param child: child item to insert. Ownership is transferred, and item parent will be set and relevant connections made.
 :param refresh: - set to true to refresh populated item, emitting relevant signals to the model
 
@@ -114,6 +104,7 @@ Inserts a new child item. The child will be inserted at a position using an alph
     virtual void deleteChildItem( QgsDataItem *child );
 %Docstring
 Removes and deletes a child item, emitting relevant signals to the model.
+
 :param child: child to remove. Item must exist as a current child.
 
 .. seealso:: :py:func:`addChildItem()`
@@ -122,25 +113,18 @@ Removes and deletes a child item, emitting relevant signals to the model.
     virtual QgsDataItem *removeChildItem( QgsDataItem *child ) /TransferBack/;
 %Docstring
 Removes a child item and returns it without deleting it. Emits relevant signals to model as required.
+
 :param child: child to remove
 
 :return: pointer to the removed item or null if no such item was found
-:rtype: QgsDataItem
-
 %End
 
     virtual bool equal( const QgsDataItem *other );
 %Docstring
 Returns true if this item is equal to another item (by testing item type and path).
-
-:rtype: bool
 %End
 
     virtual QWidget *paramWidget() /Factory/;
-%Docstring
-
-:rtype: QWidget
-%End
 
     virtual QList<QAction *> actions( QWidget *parent );
 %Docstring
@@ -149,8 +133,6 @@ the item. Subclasses should override this to provide actions.
 
 Subclasses should ensure that ownership of created actions is correctly handled by parenting them
 to the specified parent widget.
-
-:rtype: list of QAction
 %End
 
     virtual QList<QMenu *> menus( QWidget *parent );
@@ -158,11 +140,10 @@ to the specified parent widget.
 Returns the list of menus available for this item. This is usually used for the popup menu on right-clicking
 the item. Subclasses should override this to provide actions. Subclasses should ensure that ownership of
 created menus is correctly handled by parenting them to the specified parent widget.
+
 :param parent: a parent widget of the menu
 
 :return: list of menus
-:rtype: list of QMenu
-
 
 .. versionadded:: 3.0
 %End
@@ -172,8 +153,6 @@ created menus is correctly handled by parenting them to the specified parent wid
 Returns whether the item accepts drag and dropped layers - e.g. for importing a dataset to a provider.
 Subclasses should override this and handleDrop() to accept dropped layers.
 
-:rtype: bool
-
 .. seealso:: :py:func:`handleDrop()`
 %End
 
@@ -181,8 +160,6 @@ Subclasses should override this and handleDrop() to accept dropped layers.
 %Docstring
 Attempts to process the mime data dropped on this item. Subclasses must override this and acceptDrop() if they
 accept dropped layers.
-
-:rtype: bool
 
 .. seealso:: :py:func:`acceptDrop()`
 %End
@@ -193,8 +170,6 @@ Called when a user double clicks on the item. Subclasses should return true
 if they have implemented a double-click handler and do not want the default
 double-click behavior for items.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -203,8 +178,6 @@ double-click behavior for items.
 Returns true if the item may be dragged.
 Default implementation returns false.
 A draggable item has to implement mimeUri() that will be used to pass data.
-
-:rtype: bool
 
 .. seealso:: :py:func:`mimeUri()`
 
@@ -215,8 +188,6 @@ A draggable item has to implement mimeUri() that will be used to pass data.
 %Docstring
 Return mime URI for the data item.
 Items that return valid URI will be returned in mime data when dragging a selection from browser model.
-
-:rtype: QgsMimeDataUtils.Uri
 
 .. seealso:: :py:func:`hasDragEnabled()`
 
@@ -238,15 +209,9 @@ Items that return valid URI will be returned in mime data when dragging a select
 %Docstring
 Writes the selected crs into data source. The original data source will be modified when calling this
 method.
-
-:rtype: bool
 %End
 
     virtual Capabilities capabilities2() const;
-%Docstring
-
-:rtype: Capabilities
-%End
 
     virtual void setCapabilities( Capabilities capabilities );
 %Docstring
@@ -255,24 +220,14 @@ Sets the capabilities for the data item.
 
 
     static int findItem( QVector<QgsDataItem *> items, QgsDataItem *item );
-%Docstring
-
-:rtype: int
-%End
 
 
     Type type() const;
-%Docstring
-
-:rtype: Type
-%End
 
     QgsDataItem *parent() const;
 %Docstring
 Get item parent. QgsDataItem maintains its own items hierarchy, it does not use
 QObject hierarchy. *
-
-:rtype: QgsDataItem
 %End
 
     void setParent( QgsDataItem *parent );
@@ -281,21 +236,11 @@ Set item parent and connect / disconnect parent to / from item signals.
 It does not add itself to parents children (mChildren) *
 %End
     QVector<QgsDataItem *> children() const;
-%Docstring
-
-:rtype: list of QgsDataItem
-%End
     virtual QIcon icon();
-%Docstring
-
-:rtype: QIcon
-%End
 
     QString name() const;
 %Docstring
 Returns the name of the item (the displayed text for the item).
-
-:rtype: str
 
 .. seealso:: :py:func:`setName()`
 %End
@@ -308,16 +253,10 @@ Sets the ``name`` of the item (the displayed text for the item).
 %End
 
     QString path() const;
-%Docstring
-
-:rtype: str
-%End
     void setPath( const QString &path );
     static QString pathComponent( const QString &component );
 %Docstring
 Create path component replacing path separators
-
-:rtype: str
 %End
 
     virtual QVariant sortKey() const;
@@ -327,8 +266,6 @@ but setSortKey() can be used to set a custom sort key for the item.
 
 Alternatively subclasses can override this method to return a custom
 sort key.
-
-:rtype: QVariant
 
 .. seealso:: :py:func:`setSortKey()`
 
@@ -350,10 +287,6 @@ Sets a custom sorting ``key`` for the item.
 
     void setToolTip( const QString &msg );
     QString toolTip() const;
-%Docstring
-
-:rtype: str
-%End
 
     static void deleteLater( QVector<QgsDataItem *> &items );
 
@@ -378,8 +311,6 @@ the deferredDelete() returns true and item will be deleted once Populating finis
 Items with slow reateChildren() (for example network or database based) may
 check during createChildren() if deferredDelete() returns true and return from
 createChildren() immediately because result will be useless. *
-
-:rtype: bool
 %End
 
 
@@ -482,29 +413,21 @@ Item that represents a layer that can be opened with one of the providers
     QgsMapLayer::LayerType mapLayerType() const;
 %Docstring
 Returns QgsMapLayer.LayerType
-
-:rtype: QgsMapLayer.LayerType
 %End
 
     QString uri() const;
 %Docstring
 Returns layer uri or empty string if layer cannot be created
-
-:rtype: str
 %End
 
     QString providerKey() const;
 %Docstring
 Returns provider key
-
-:rtype: str
 %End
 
     QStringList supportedCrs() const;
 %Docstring
 Returns the supported CRS
-
-:rtype: list of str
 
 .. versionadded:: 2.8
 %End
@@ -513,16 +436,12 @@ Returns the supported CRS
 %Docstring
 Returns the supported formats
 
-:rtype: list of str
-
 .. versionadded:: 2.8
 %End
 
     virtual QString comments() const;
 %Docstring
 Returns comments of the layer
-
-:rtype: str
 
 .. versionadded:: 2.12
 %End
@@ -531,16 +450,12 @@ Returns comments of the layer
 %Docstring
 Returns the string representation of the given ``layerType``
 
-:rtype: str
-
 .. versionadded:: 3
 %End
 
     static QString iconName( const LayerType &layerType );
 %Docstring
 Returns the icon name of the given ``layerType``
-
-:rtype: str
 
 .. versionadded:: 3
 %End
@@ -550,42 +465,16 @@ Returns the icon name of the given ``layerType``
 
   public:
     static QIcon iconPoint();
-%Docstring
-
-:rtype: QIcon
-%End
     static QIcon iconLine();
-%Docstring
-
-:rtype: QIcon
-%End
     static QIcon iconPolygon();
-%Docstring
-
-:rtype: QIcon
-%End
     static QIcon iconTable();
-%Docstring
-
-:rtype: QIcon
-%End
     static QIcon iconRaster();
-%Docstring
-
-:rtype: QIcon
-%End
     static QIcon iconDefault();
-%Docstring
-
-:rtype: QIcon
-%End
 
     virtual QString layerName() const;
 %Docstring
 
 :return: the layer name
-:rtype: str
-
 %End
 };
 
@@ -635,6 +524,7 @@ A directory: contains subdirectories and layers
     QgsDirectoryItem( QgsDataItem *parent, const QString &name, const QString &dirPath, const QString &path );
 %Docstring
 Constructor.
+
 :param parent:
 :param name: directory name
 :param dirPath: path to directory in file system
@@ -648,10 +538,6 @@ Constructor.
 
 
     QString dirPath() const;
-%Docstring
-
-:rtype: str
-%End
     virtual bool equal( const QgsDataItem *other );
 
     virtual QIcon icon();
@@ -662,8 +548,6 @@ Constructor.
     static bool hiddenPath( const QString &path );
 %Docstring
 Check if the given path is hidden from the browser model
-
-:rtype: bool
 %End
 
     virtual QList<QAction *> actions( QWidget *parent );
@@ -694,6 +578,7 @@ Data item that can be used to represent QGIS projects.
     QgsProjectItem( QgsDataItem *parent, const QString &name, const QString &path );
 %Docstring
  A data item holding a reference to a QGIS project file.
+
 :param parent: The parent data item.
 :param name: The name of the of the project. Displayed to the user.
 :param path: The full path to the project.
@@ -784,8 +669,6 @@ Renames the stored favorite with corresponding ``path`` a new ``name``.
     static QIcon iconFavorites();
 %Docstring
 Icon for favorites group
-
-:rtype: QIcon
 %End
 
     virtual QVariant sortKey() const;
@@ -811,31 +694,19 @@ A zip file: contains layers, using GDAL/OGR VSIFILE mechanism
     virtual QVector<QgsDataItem *> createChildren();
 
     QStringList getZipFileList();
-%Docstring
-
-:rtype: list of str
-%End
 
     static QStringList sProviderNames;
 
     static QString vsiPrefix( const QString &uri );
-%Docstring
-
-:rtype: str
-%End
 
     static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &path, const QString &name ) /Factory/;
 %Docstring
 Creates a new data item from the specified path.
-
-:rtype: QgsDataItem
 %End
 
     static QgsDataItem *itemFromPath( QgsDataItem *parent, const QString &filePath, const QString &name, const QString &path ) /Factory,PyName=itemFromFilePath/;
 %Docstring
 Creates a new data item from the specified path.
-
-:rtype: QgsDataItem
 
 .. note::
 
@@ -843,10 +714,6 @@ Creates a new data item from the specified path.
 %End
 
     static QIcon iconZip();
-%Docstring
-
-:rtype: QIcon
-%End
 
 };
 

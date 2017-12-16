@@ -26,16 +26,16 @@ have an effect for QgsComposerAttributeTables, and have no effect for QgsCompose
     QgsComposerTableColumn( const QString &heading = QString() );
 %Docstring
 Constructor for QgsComposerTableColumn.
+
 :param heading: column heading
 %End
 
     virtual bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
 %Docstring
 Writes the column's properties to xml for storage.
+
 :param columnElem: an existing QDomElement in which to store the column's properties.
 :param doc: QDomDocument for the destination xml.
-
-:rtype: bool
 
 .. versionadded:: 2.3
 
@@ -45,9 +45,8 @@ Writes the column's properties to xml for storage.
     virtual bool readXml( const QDomElement &columnElem );
 %Docstring
 Reads the column's properties from xml.
-:param columnElem: a QDomElement holding the column's desired properties.
 
-:rtype: bool
+:param columnElem: a QDomElement holding the column's desired properties.
 
 .. versionadded:: 2.3
 
@@ -59,8 +58,6 @@ Reads the column's properties from xml.
 Returns the width for a column.
 
 :return: column width in mm, or 0 if column width is automatically calculated.
-:rtype: float
-
 
 .. versionadded:: 2.5
 
@@ -70,6 +67,7 @@ Returns the width for a column.
     void setWidth( const double width );
 %Docstring
 Sets the width for a column.
+
 :param width: column width in mm, or 0 if column width is to be automatically calculated.
 
 .. versionadded:: 2.5
@@ -83,8 +81,6 @@ Returns the heading for a column, which is the value displayed in the columns
 header cell.
 
 :return: Heading for column.
-:rtype: str
-
 
 .. versionadded:: 2.3
 
@@ -95,6 +91,7 @@ header cell.
 %Docstring
 Sets the heading for a column, which is the value displayed in the columns
 header cell.
+
 :param heading: Heading for column.
 
 .. versionadded:: 2.3
@@ -108,8 +105,6 @@ Returns the horizontal alignment for a column, which controls the alignment
 used for drawing column values within cells.
 
 :return: horizontal alignment.
-:rtype: Qt.AlignmentFlag
-
 
 .. versionadded:: 2.3
 
@@ -122,6 +117,7 @@ used for drawing column values within cells.
 %Docstring
 Sets the horizontal alignment for a column, which controls the alignment
 used for drawing column values within cells.
+
 :param alignment: horizontal alignment for cell.
 
 .. versionadded:: 2.3
@@ -137,8 +133,6 @@ Returns the vertical alignment for a column, which controls the alignment
 used for drawing column values within cells.
 
 :return: vertical alignment.
-:rtype: Qt.AlignmentFlag
-
 
 .. versionadded:: 2.12
 
@@ -151,6 +145,7 @@ used for drawing column values within cells.
 %Docstring
 Sets the vertical alignment for a column, which controls the alignment
 used for drawing column values within cells.
+
 :param alignment: vertical alignment for cell.
 
 .. versionadded:: 2.12
@@ -166,8 +161,6 @@ Returns the attribute name or expression used for the column's values. This prop
 is only used when the column is part of a QgsComposerAttributeTable.
 
 :return: attribute name or expression text for column
-:rtype: str
-
 
 .. versionadded:: 2.3
 
@@ -182,6 +175,7 @@ is only used when the column is part of a QgsComposerAttributeTable.
 %Docstring
 Sets the attribute name or expression used for the column's values. This property
 is only used when the column is part of a QgsComposerAttributeTable.
+
 :param attribute: attribute name or expression text for column
 
 .. versionadded:: 2.3
@@ -199,8 +193,6 @@ Returns the sort order for the column. This property is only used when the colum
 is part of a QgsComposerAttributeTable and when sortByRank is > 0.
 
 :return: sort order for column
-:rtype: Qt.SortOrder
-
 
 .. versionadded:: 2.3
 
@@ -217,6 +209,7 @@ is part of a QgsComposerAttributeTable and when sortByRank is > 0.
 %Docstring
 Sets the sort order for the column. This property is only used when the column
 is part of a QgsComposerAttributeTable and when sortByRank is > 0.
+
 :param sortOrder: sort order for column
 
 .. versionadded:: 2.3
@@ -239,8 +232,6 @@ having higher priority. This property is only used when the column
 is part of a QgsComposerAttributeTable.
 
 :return: sort rank for column. If sort rank is <= 0 then the column is not being
-:rtype: int
-
 sorted.
 
 .. versionadded:: 2.3
@@ -261,6 +252,7 @@ will be sorted in the table. The sort rank specifies the priority given to the
 column when the table is sorted by multiple columns, with lower sort ranks
 having higher priority. This property is only used when the column
 is part of a QgsComposerAttributeTable.
+
 :param sortByRank: sort rank for column. If sort rank is <= 0 then the column is not being
 sorted.
 
@@ -280,8 +272,6 @@ sorted.
 Creates a duplicate column which is a deep copy of this column.
 
 :return: a new QgsComposerTableColumn with same properties as this column.
-:rtype: QgsComposerTableColumn
-
 
 .. versionadded:: 2.3
 %End

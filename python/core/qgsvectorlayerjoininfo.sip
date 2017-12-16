@@ -35,8 +35,6 @@ Sets weak reference to the joined layer
     QgsVectorLayer *joinLayer() const;
 %Docstring
 Returns joined layer (may be null if the reference was set by layer ID and not resolved yet)
-
-:rtype: QgsVectorLayer
 %End
 
     void setJoinLayerId( const QString &layerId );
@@ -46,8 +44,6 @@ Sets ID of the joined layer. It will need to be overwritten by setJoinLayer() to
     QString joinLayerId() const;
 %Docstring
 ID of the joined layer - may be used to resolve reference to the joined layer
-
-:rtype: str
 %End
 
     void setTargetFieldName( const QString &fieldName );
@@ -57,8 +53,6 @@ Sets name of the field of our layer that will be used for join
     QString targetFieldName() const;
 %Docstring
 Returns name of the field of our layer that will be used for join
-
-:rtype: str
 %End
 
     void setJoinFieldName( const QString &fieldName );
@@ -68,8 +62,6 @@ Sets name of the field of joined layer that will be used for join
     QString joinFieldName() const;
 %Docstring
 Returns name of the field of joined layer that will be used for join
-
-:rtype: str
 %End
 
     void setPrefix( const QString &prefix );
@@ -79,8 +71,6 @@ Sets prefix of fields from the joined layer. If null, joined layer's name will b
     QString prefix() const;
 %Docstring
 Returns prefix of fields from the joined layer. If null, joined layer's name will be used.
-
-:rtype: str
 %End
 
     void setUsingMemoryCache( bool enabled );
@@ -90,16 +80,12 @@ Sets whether values from the joined layer should be cached in memory to speed up
     bool isUsingMemoryCache() const;
 %Docstring
 Returns whether values from the joined layer should be cached in memory to speed up lookups
-
-:rtype: bool
 %End
 
     bool isDynamicFormEnabled() const;
 %Docstring
 Returns whether the form has to be dynamically updated with joined fields
 when  a feature is being created in the target layer.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -117,8 +103,6 @@ when a feature is being created in the target layer.
 Returns whether joined fields may be edited through the form of
 the target layer.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -133,8 +117,6 @@ Sets whether the form of the target layer allows editing joined fields.
 %Docstring
 Returns whether a feature created on the target layer has to impact
 the joined layer by creating a new feature if necessary.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -152,8 +134,6 @@ the joined layer by creating a new feature if necessary.
 Returns whether a feature deleted on the target layer has to impact the
 joined layer by deleting the corresponding joined feature.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -168,11 +148,10 @@ joined layer by deleting the corresponding joined feature.
     QString prefixedFieldName( const QgsField &field ) const;
 %Docstring
 Returns the prefixed name of the field.
+
 :param field: the field
 
 :return: the prefixed name of the field
-:rtype: str
-
 
 .. versionadded:: 3.0
 %End
@@ -181,11 +160,10 @@ Returns the prefixed name of the field.
 %Docstring
 Extract the join feature from the target feature for the current
 join layer information.
+
 :param feature: A feature from the target layer
 
 :return: the corresponding joined feature
-:rtype: QgsFeature
-
 
 .. versionadded:: 3.0
 %End
@@ -201,8 +179,6 @@ Sets a list of fields to ignore whatever happens.
 %Docstring
 Returns the list of fields to ignore.
 
-:rtype: list of str
-
 .. versionadded:: 3.0
 %End
 
@@ -211,8 +187,6 @@ Returns the list of fields to ignore.
 Returns true if blacklisted fields is not empty or if a subset of names
 has been set.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -220,8 +194,6 @@ has been set.
 %Docstring
 Returns the list of field names to use for joining considering
 blacklisted fields and subset.
-
-:rtype: list of str
 
 .. versionadded:: 3.0
 %End
@@ -238,8 +210,6 @@ Set subset of fields to be used from joined layer. Takes ownership of the passed
     QStringList *joinFieldNamesSubset() const;
 %Docstring
 Get subset of fields to be used from joined layer. All fields will be used if null is returned.
-
-:rtype: list of str
 
 .. versionadded:: 2.6
 %End

@@ -52,6 +52,7 @@ Abstract base class for composer items with the ability to distribute the conten
     QgsComposerMultiFrame( QgsComposition *c /TransferThis/, bool createUndoCommands );
 %Docstring
 Construct a new multiframe item.
+
 :param c: parent composition
 :param createUndoCommands:
 %End
@@ -63,19 +64,16 @@ Construct a new multiframe item.
 Returns the total size of the multiframe's content.
 
 :return: total size required for content
-:rtype: QSizeF
-
 %End
 
     virtual QSizeF fixedFrameSize( const int frameIndex = -1 ) const;
 %Docstring
 Returns the fixed size for a frame, if desired. If the fixed frame size changes,
 the sizes of all frames can be recalculated by calling recalculateFrameRects().
+
 :param frameIndex: frame number
 
 :return: fixed size for frame. If the size has a width or height of 0, then
-:rtype: QSizeF
-
 the frame size is not fixed in that direction and frames can have variable width
 or height accordingly.
 
@@ -91,11 +89,10 @@ or height accordingly.
 Returns the minimum size for a frames, if desired. If the minimum
 size changes, the sizes of all frames can be recalculated by calling
 recalculateFrameRects().
+
 :param frameIndex: frame number
 
 :return: minimum size for frame. If the size has a width or height of 0, then
-:rtype: QSizeF
-
 the frame size has no minimum in that direction.
 
 .. versionadded:: 2.5
@@ -108,6 +105,7 @@ the frame size has no minimum in that direction.
     virtual void render( QPainter *painter, const QRectF &renderExtent, const int frameIndex ) = 0;
 %Docstring
 Renders a portion of the multiframe's content into a painter.
+
 :param painter: destination painter
 :param renderExtent: visible extent of content to render into the painter.
 :param frameIndex: frame number for content
@@ -118,6 +116,7 @@ Renders a portion of the multiframe's content into a painter.
     virtual void addFrame( QgsComposerFrame *frame /Transfer/, bool recalcFrameSizes = true ) = 0;
 %Docstring
 Adds a frame to the multiframe.
+
 :param frame: frame to add
 :param recalcFrameSizes: set to true to force recalculation of all existing frame sizes
 
@@ -127,11 +126,10 @@ Adds a frame to the multiframe.
     virtual double findNearbyPageBreak( double yPos );
 %Docstring
 Finds the optimal position to break a frame at.
+
 :param yPos: maximum vertical position for break
 
 :return: the optimal breakable position which occurs in the multi frame close
-:rtype: float
-
 to and before the specified yPos
 
 .. versionadded:: 2.3
@@ -141,6 +139,7 @@ to and before the specified yPos
 %Docstring
 Removes a frame from the multiframe. This method automatically removes the frame from the
 composition.
+
 :param i: index of frame to remove
 :param removeEmptyPages: set to true to remove pages which are empty after the frame is removed
 
@@ -159,6 +158,7 @@ Removes and deletes all child frames.
     void setResizeMode( ResizeMode mode );
 %Docstring
 Sets the resize mode for the multiframe, and recalculates frame sizes to match.
+
 :param mode: resize mode
 
 .. seealso:: :py:func:`resizeMode`
@@ -169,8 +169,6 @@ Sets the resize mode for the multiframe, and recalculates frame sizes to match.
 Returns the resize mode for the multiframe.
 
 :return: resize mode
-:rtype: ResizeMode
-
 
 .. seealso:: :py:func:`setResizeMode`
 %End
@@ -179,11 +177,10 @@ Returns the resize mode for the multiframe.
 %Docstring
 Stores state information about multiframe in DOM element. Implementations of writeXml
 should also call the _writeXML method to save general multiframe properties.
+
 :param elem: is DOM element
 :param doc: is the DOM document
 :param ignoreFrames: set to false to avoid writing state information about child frames into DOM
-
-:rtype: bool
 
 .. seealso:: _writeXML
 %End
@@ -192,11 +189,10 @@ should also call the _writeXML method to save general multiframe properties.
 %Docstring
 Stores state information about base multiframe object in DOM element. Implementations of writeXml
 should call this method.
+
 :param elem: is DOM element
 :param doc: is the DOM document
 :param ignoreFrames: set to false to avoid writing state information about child frames into DOM
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml`
 %End
@@ -205,11 +201,10 @@ should call this method.
 %Docstring
 Reads multiframe state information from a DOM element. Implementations of readXml
 should also call the _readXML method to restore general multiframe properties.
+
 :param itemElem: is DOM element
 :param doc: is the DOM document
 :param ignoreFrames: set to false to avoid read state information about child frames from DOM
-
-:rtype: bool
 
 .. seealso:: _readXML
 %End
@@ -218,11 +213,10 @@ should also call the _readXML method to restore general multiframe properties.
 %Docstring
 Restores state information about base multiframe object from a DOM element. Implementations of readXml
 should call this method.
+
 :param itemElem: is DOM element
 :param doc: is the DOM document
 :param ignoreFrames: set to false to avoid reading state information about child frames from DOM
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml`
 %End
@@ -232,8 +226,6 @@ should call this method.
 Returns the parent composition for the multiframe.
 
 :return: composition
-:rtype: QgsComposition
-
 %End
 
     bool createUndoCommands() const;
@@ -241,8 +233,6 @@ Returns the parent composition for the multiframe.
 Returns whether undo commands should be created for interactions with the multiframe.
 
 :return: true if undo commands should be created
-:rtype: bool
-
 
 .. seealso:: :py:func:`setCreateUndoCommands`
 %End
@@ -250,6 +240,7 @@ Returns whether undo commands should be created for interactions with the multif
     void setCreateUndoCommands( bool enabled );
 %Docstring
 Sets whether undo commands should be created for interactions with the multiframe.
+
 :param enabled: set to true if undo commands should be created
 
 .. seealso:: :py:func:`createUndoCommands`
@@ -260,19 +251,16 @@ Sets whether undo commands should be created for interactions with the multifram
 Returns the number of frames associated with this multiframe.
 
 :return: number of child frames
-:rtype: int
-
 *
 %End
 
     QgsComposerFrame *frame( int i ) const;
 %Docstring
 Returns a child frame from the multiframe.
+
 :param i: index of frame
 
 :return: child frame if found
-:rtype: QgsComposerFrame
-
 
 .. seealso:: :py:func:`frameIndex`
 %End
@@ -280,11 +268,10 @@ Returns a child frame from the multiframe.
     int frameIndex( QgsComposerFrame *frame ) const;
 %Docstring
 Returns the index of a frame within the multiframe
+
 :param frame: frame to find index of
 
 :return: index for frame if found, -1 if frame not found in multiframe
-:rtype: int
-
 
 .. versionadded:: 2.5
 
@@ -294,14 +281,13 @@ Returns the index of a frame within the multiframe
     QgsComposerFrame *createNewFrame( QgsComposerFrame *currentFrame, QPointF pos, QSizeF size );
 %Docstring
 Creates a new frame and adds it to the multi frame and composition.
+
 :param currentFrame: an existing QgsComposerFrame from which to copy the size
 and general frame properties (e.g., frame style, background, rendering settings).
 :param pos: position of top-left corner of the new frame
 :param size: size of the new frame
 
 :return: new QgsComposerFrame
-:rtype: QgsComposerFrame
-
 
 .. versionadded:: 2.3
 %End
@@ -311,8 +297,6 @@ and general frame properties (e.g., frame style, background, rendering settings)
 Get multiframe display name.
 
 :return: display name for item
-:rtype: str
-
 
 .. versionadded:: 2.5
 %End

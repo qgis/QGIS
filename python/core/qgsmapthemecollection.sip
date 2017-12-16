@@ -44,16 +44,10 @@ Initialize layer record with a map layer - it will be stored as a weak pointer
 
         bool operator==( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const;
         bool operator!=( const QgsMapThemeCollection::MapThemeLayerRecord &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
         QgsMapLayer *layer() const;
 %Docstring
 Returns map layer or null if the layer does not exist anymore
-
-:rtype: QgsMapLayer
 %End
 
         void setLayer( QgsMapLayer *layer );
@@ -94,16 +88,10 @@ Individual map theme record of visible layers and styles.
 
         bool operator==( const QgsMapThemeCollection::MapThemeRecord &other ) const;
         bool operator!=( const QgsMapThemeCollection::MapThemeRecord &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
         QList<QgsMapThemeCollection::MapThemeLayerRecord> layerRecords() const;
 %Docstring
 Returns a list of records for all visible layer belonging to the theme.
-
-:rtype: list of QgsMapThemeCollection.MapThemeLayerRecord
 %End
 
         void setLayerRecords( const QList<QgsMapThemeCollection::MapThemeLayerRecord> &records );
@@ -133,8 +121,6 @@ Create map theme collection that handles themes of the given project.
 %Docstring
 Returns whether a map theme with a matching name exists.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -148,6 +134,7 @@ Inserts a new map theme to the collection.
     void update( const QString &name, const QgsMapThemeCollection::MapThemeRecord &state );
 %Docstring
 Updates a map theme within the collection.
+
 :param name: name of map theme to update
 :param state: map theme record to replace existing map theme
 
@@ -170,8 +157,6 @@ Remove all map themes from the collection.
 %Docstring
 Returns a list of existing map theme names.
 
-:rtype: list of str
-
 .. versionadded:: 3.0
 %End
 
@@ -179,16 +164,12 @@ Returns a list of existing map theme names.
 %Docstring
 Returns the recorded state of a map theme.
 
-:rtype: QgsMapThemeCollection.MapThemeRecord
-
 .. versionadded:: 3.0
 %End
 
     QStringList mapThemeVisibleLayerIds( const QString &name ) const;
 %Docstring
 Returns the list of layer IDs that are visible for the specified map theme.
-
-:rtype: list of str
 
 .. note::
 
@@ -202,8 +183,6 @@ in the canvas.
 %Docstring
 Returns the list of layers that are visible for the specified map theme.
 
-:rtype: list of QgsMapLayer
-
 .. note::
 
    The order of the returned list is not guaranteed to reflect the order of layers
@@ -216,14 +195,13 @@ in the canvas.
 %Docstring
 Get layer style overrides (for QgsMapSettings) of the visible layers for given map theme.
 
-:rtype: QMap<str, QString>
-
 .. versionadded:: 3.0
 %End
 
     void readXml( const QDomDocument &doc );
 %Docstring
 Reads the map theme collection state from XML
+
 :param doc: DOM document
 
 .. seealso:: :py:func:`writeXml`
@@ -232,6 +210,7 @@ Reads the map theme collection state from XML
     void writeXml( QDomDocument &doc );
 %Docstring
 Writes the map theme collection state to XML.
+
 :param doc: DOM document
 
 .. seealso:: :py:func:`readXml`
@@ -241,8 +220,6 @@ Writes the map theme collection state to XML.
 %Docstring
 Static method to create theme from the current state of layer visibilities in layer tree,
 current style of layers and check state of legend items (from a layer tree model).
-
-:rtype: QgsMapThemeCollection.MapThemeRecord
 
 .. versionadded:: 3.0
 %End
@@ -259,8 +236,6 @@ legend items of passed layer tree model.
 %Docstring
 The QgsProject on which this map theme collection works.
 
-:rtype: QgsProject
-
 .. versionadded:: 3.0
 %End
 
@@ -276,8 +251,6 @@ The QgsProject on which this map theme collection works.
 Returns the master layer order (this will always match the project's QgsProject.layerOrder() ).
 All map themes will maintain the same layer order as the master layer order.
 
-:rtype: list of QgsMapLayer
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`masterVisibleLayers()`
@@ -288,8 +261,6 @@ All map themes will maintain the same layer order as the master layer order.
 Returns the master list of visible layers. The order of returned layers will always match those
 of masterLayerOrder(), but the returned layers are filtered to only include those visible
 in the project's layer tree.
-
-:rtype: list of QgsMapLayer
 
 .. versionadded:: 3.0
 

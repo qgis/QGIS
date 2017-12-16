@@ -28,16 +28,12 @@ with the layer tree are in QgsLayerTreeUtils class.
 %Docstring
 Check whether the node is a valid group node
 
-:rtype: bool
-
 .. versionadded:: 2.4
 %End
 
     static bool isLayer( const QgsLayerTreeNode *node );
 %Docstring
 Check whether the node is a valid layer node
-
-:rtype: bool
 
 .. versionadded:: 2.4
 %End
@@ -55,8 +51,6 @@ Create a new empty layer tree
 The order in which layers will be rendered on the canvas.
 Will only be used if the property hasCustomLayerOrder is true.
 If you need the current layer order that is active, prefer using layerOrder().
-
-:rtype: list of QgsMapLayer
 
 .. seealso:: :py:func:`setCustomLayerOrder`
 
@@ -104,8 +98,6 @@ Depending on hasCustomLayerOrder, this will return either the override
 customLayerOrder or the layer order derived from the tree.
 This property is read only.
 
-:rtype: list of QgsMapLayer
-
 .. seealso:: :py:func:`customLayerOrder`
 
 .. versionadded:: 3.0
@@ -115,8 +107,6 @@ This property is read only.
 %Docstring
 Determines if the layer order should be derived from the layer tree
 or if a custom override order shall be used instead.
-
-:rtype: bool
 
 .. seealso:: :py:func:`customLayerOrder`
 
@@ -139,8 +129,6 @@ Load the layer tree from an XML element.
 It is not required that layers are loaded at this point.
 resolveReferences() needs to be called after loading the layers and
 before using the tree.
-
-:rtype: QgsLayerTree
 
 .. versionadded:: 3.0
 %End

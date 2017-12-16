@@ -29,79 +29,35 @@ that can be used together with a layer tree view.
     QgsLayerTreeViewDefaultActions( QgsLayerTreeView *view );
 
     QAction *actionAddGroup( QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
     QAction *actionRemoveGroupOrLayer( QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
     QAction *actionShowInOverview( QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
     QAction *actionRenameGroupOrLayer( QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
     QAction *actionShowFeatureCount( QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
 
     QAction *actionCheckAndAllChildren( QObject *parent = 0 );
 %Docstring
 Action to check a group and all its children
-
-:rtype: QAction
 %End
 
     QAction *actionUncheckAndAllChildren( QObject *parent = 0 );
 %Docstring
 Action to uncheck a group and all its children
-
-:rtype: QAction
 %End
 
     QAction *actionCheckAndAllParents( QObject *parent = 0 );
 %Docstring
 Action to check a group and all its parents
-
-:rtype: QAction
 %End
 
     QAction *actionZoomToLayer( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
     QAction *actionZoomToGroup( QgsMapCanvas *canvas, QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
 
     QAction *actionMakeTopLevel( QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
     QAction *actionGroupSelected( QObject *parent = 0 ) /Factory/;
-%Docstring
-
-:rtype: QAction
-%End
 
     QAction *actionMutuallyExclusiveGroup( QObject *parent = 0 ) /Factory/;
 %Docstring
 Action to enable/disable mutually exclusive flag of a group (only one child node may be checked)
-
-:rtype: QAction
 
 .. versionadded:: 2.12
 %End
@@ -133,10 +89,6 @@ Slot to enable/disable mutually exclusive group flag
     void zoomToLayers( QgsMapCanvas *canvas, const QList<QgsMapLayer *> &layers );
 
     QString uniqueGroupName( QgsLayerTreeGroup *parentGroup );
-%Docstring
-
-:rtype: str
-%End
 
   protected:
 };

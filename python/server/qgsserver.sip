@@ -30,6 +30,7 @@ Creates the server instance
     void putenv( const QString &var, const QString &val );
 %Docstring
 Set environment variable
+
 :param var: environment variable name
 :param val: value
 
@@ -54,8 +55,6 @@ the QGIS_PROJECT_FILE setting
     QgsServerInterface  *serverInterface();
 %Docstring
 Returns a pointer to the server interface
-
-:rtype: QgsServerInterfaceImpl
 %End
 
 
@@ -68,10 +67,6 @@ Note: not in Python bindings
   private:
     QgsServer( const QgsServer & );
     QgsServer &operator=( const QgsServer & );
-%Docstring
-
-:rtype: QgsServer
-%End
 };
 /************************************************************************
  * This file has been generated automatically from                      *

@@ -40,8 +40,6 @@ construct style from QML definition (XML)
     bool isValid() const;
 %Docstring
 Tell whether the style is valid (i.e. there is something stored in it)
-
-:rtype: bool
 %End
 
     void clear();
@@ -52,8 +50,6 @@ Remove any stored style data (will get invalid)
     QString xmlData() const;
 %Docstring
 Return XML content of the style
-
-:rtype: str
 %End
 
     void readFromLayer( QgsMapLayer *layer );
@@ -113,8 +109,6 @@ Construct a style manager associated with a map layer (must not be null)
     QgsMapLayer *layer() const;
 %Docstring
 Get pointer to the associated map layer
-
-:rtype: QgsMapLayer
 %End
 
     void reset();
@@ -134,8 +128,6 @@ Write configuration (for project saving)
     QStringList styles() const;
 %Docstring
 Return list of all defined style names
-
-:rtype: list of str
 %End
 
     QMap<QString, QgsMapLayerStyle> mapLayerStyles() const;
@@ -143,8 +135,6 @@ Return list of all defined style names
 Gets available styles for the associated map layer.
 
 :return: A map of map layer style by style name
-:rtype: QMap<str, QgsMapLayerStyle>
-
 
 .. versionadded:: 3.0
 %End
@@ -152,8 +142,6 @@ Gets available styles for the associated map layer.
     QgsMapLayerStyle style( const QString &name ) const;
 %Docstring
 Return data of a stored style - accessed by its unique name
-
-:rtype: QgsMapLayerStyle
 %End
 
     bool addStyle( const QString &name, const QgsMapLayerStyle &style );
@@ -161,8 +149,6 @@ Return data of a stored style - accessed by its unique name
 Add a style with given name and data
 
 :return: true on success (name is unique and style is valid)
-:rtype: bool
-
 %End
 
     bool addStyleFromLayer( const QString &name );
@@ -170,8 +156,6 @@ Add a style with given name and data
 Add style by cloning the current one
 
 :return: true on success
-:rtype: bool
-
 %End
 
     bool removeStyle( const QString &name );
@@ -179,8 +163,6 @@ Add style by cloning the current one
 Remove a stored style
 
 :return: true on success (style exists and it is not the last one)
-:rtype: bool
-
 %End
 
     bool renameStyle( const QString &name, const QString &newName );
@@ -188,15 +170,11 @@ Remove a stored style
 Rename a stored style to a different name
 
 :return: true on success (style exists and new name is unique)
-:rtype: bool
-
 %End
 
     QString currentStyle() const;
 %Docstring
 Return name of the current style
-
-:rtype: str
 %End
 
     bool setCurrentStyle( const QString &name );
@@ -204,8 +182,6 @@ Return name of the current style
 Set a different style as the current style - will apply it to the layer
 
 :return: true on success
-:rtype: bool
-
 %End
 
     bool setOverrideStyle( const QString &styleDef );
@@ -213,14 +189,10 @@ Set a different style as the current style - will apply it to the layer
 Temporarily apply a different style to the layer. The argument
 can be either a style name or a full QML style definition.
 Each call must be paired with restoreOverrideStyle()
-
-:rtype: bool
 %End
     bool restoreOverrideStyle();
 %Docstring
 Restore the original store after a call to setOverrideStyle()
-
-:rtype: bool
 %End
 
   signals:

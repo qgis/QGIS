@@ -33,15 +33,7 @@ A node unary operator is modifying the value of ``operand`` by negating it with 
     ~QgsExpressionNodeUnaryOperator();
 
     QgsExpressionNodeUnaryOperator::UnaryOperator op() const;
-%Docstring
-
-:rtype: QgsExpressionNodeUnaryOperator.UnaryOperator
-%End
     QgsExpressionNode *operand() const;
-%Docstring
-
-:rtype: QgsExpressionNode
-%End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
 
@@ -68,8 +60,6 @@ A node unary operator is modifying the value of ``operand`` by negating it with 
 %Docstring
 Returns a the name of this operator without the operands.
 I.e. "NOT" or "-"
-
-:rtype: str
 %End
 
 };
@@ -123,20 +113,8 @@ Binary combination of the left and the right with op.
     ~QgsExpressionNodeBinaryOperator();
 
     QgsExpressionNodeBinaryOperator::BinaryOperator op() const;
-%Docstring
-
-:rtype: QgsExpressionNodeBinaryOperator.BinaryOperator
-%End
     QgsExpressionNode *opLeft() const;
-%Docstring
-
-:rtype: QgsExpressionNode
-%End
     QgsExpressionNode *opRight() const;
-%Docstring
-
-:rtype: QgsExpressionNode
-%End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
 
@@ -159,22 +137,12 @@ Binary combination of the left and the right with op.
 
 
     int precedence() const;
-%Docstring
-
-:rtype: int
-%End
     bool leftAssociative() const;
-%Docstring
-
-:rtype: bool
-%End
 
     QString text() const;
 %Docstring
 Returns a the name of this operator without the operands.
 I.e. "AND", "OR", ...
-
-:rtype: str
 %End
 
 };
@@ -194,20 +162,8 @@ This node tests if the result of ``node`` is in the result of ``list``. Optional
     ~QgsExpressionNodeInOperator();
 
     QgsExpressionNode *node() const;
-%Docstring
-
-:rtype: QgsExpressionNode
-%End
     bool isNotIn() const;
-%Docstring
-
-:rtype: bool
-%End
     QgsExpressionNode::NodeList *list() const;
-%Docstring
-
-:rtype: QgsExpressionNode.NodeList
-%End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
 
@@ -248,15 +204,7 @@ a list of arguments that will be passed to it.
     ~QgsExpressionNodeFunction();
 
     int fnIndex() const;
-%Docstring
-
-:rtype: int
-%End
     QgsExpressionNode::NodeList *args() const;
-%Docstring
-
-:rtype: QgsExpressionNode.NodeList
-%End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
 
@@ -281,8 +229,6 @@ a list of arguments that will be passed to it.
     static bool validateParams( int fnIndex, QgsExpressionNode::NodeList *args, QString &error );
 %Docstring
 Tests whether the provided argument list is valid for the matching function
-
-:rtype: bool
 %End
 
 };
@@ -299,8 +245,6 @@ class QgsExpressionNodeLiteral : QgsExpressionNode
     QVariant value() const;
 %Docstring
 The value of the literal.
-
-:rtype: QVariant
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
@@ -337,8 +281,6 @@ class QgsExpressionNodeColumnRef : QgsExpressionNode
     QString name() const;
 %Docstring
 The name of the column.
-
-:rtype: str
 %End
 
     virtual QgsExpressionNode::NodeType nodeType() const;
@@ -389,8 +331,6 @@ A combination of when and then. Simple as that.
         QgsExpressionNodeCondition::WhenThen *clone() const /Factory/;
 %Docstring
 Get a deep copy of this WhenThen combination.
-
-:rtype: QgsExpressionNodeCondition.WhenThen
 %End
 
       private:

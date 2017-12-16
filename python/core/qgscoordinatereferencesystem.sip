@@ -183,6 +183,7 @@ It supports the following formats:
 - "WKT:<wkt>" - handled with createFromWkt()
 
 If no prefix is specified, WKT definition is assumed.
+
 :param definition: A String containing a coordinate reference system definition.
 
 .. seealso:: :py:func:`createFromString()`
@@ -197,6 +198,7 @@ Constructor a CRS object using a PostGIS SRID, an EPSG code or an internal QGIS 
 
    We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
 wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
+
 :param id: The ID valid for the chosen CRS ID type
 :param type: One of the types described in CrsType
 / // TODO QGIS 3: remove type and always use EPSG code
@@ -219,8 +221,6 @@ Returns a list of all valid SRS IDs present in the CRS database. Any of the
 returned values can be safely passed to fromSrsId() to create a new, valid
 QgsCoordinateReferenceSystem object.
 
-:rtype: list of long
-
 .. seealso:: :py:func:`fromSrsId()`
 
 .. versionadded:: 3.0
@@ -230,11 +230,10 @@ QgsCoordinateReferenceSystem object.
     static QgsCoordinateReferenceSystem fromOgcWmsCrs( const QString &ogcCrs );
 %Docstring
 Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
+
 :param ogcCrs: OGR compliant CRS definition, e.g., "EPSG:4326"
 
 :return: matching CRS, or an invalid CRS if string could not be matched
-:rtype: QgsCoordinateReferenceSystem
-
 
 .. versionadded:: 3.0
 
@@ -244,11 +243,10 @@ Creates a CRS from a given OGC WMS-format Coordinate Reference System string.
     static QgsCoordinateReferenceSystem fromEpsgId( long epsg );
 %Docstring
 Creates a CRS from a given EPSG ID.
+
 :param epsg: epsg CRS ID
 
 :return: matching CRS, or an invalid CRS if string could not be matched
-:rtype: QgsCoordinateReferenceSystem
-
 
 .. versionadded:: 3.0
 %End
@@ -256,11 +254,10 @@ Creates a CRS from a given EPSG ID.
     static QgsCoordinateReferenceSystem fromProj4( const QString &proj4 );
 %Docstring
 Creates a CRS from a proj4 style formatted string.
+
 :param proj4: proj4 format string
 
 :return: matching CRS, or an invalid CRS if string could not be matched
-:rtype: QgsCoordinateReferenceSystem
-
 
 .. versionadded:: 3.0
 
@@ -270,11 +267,10 @@ Creates a CRS from a proj4 style formatted string.
     static QgsCoordinateReferenceSystem fromWkt( const QString &wkt );
 %Docstring
 Creates a CRS from a WKT spatial ref sys definition string.
+
 :param wkt: WKT for the desired spatial reference system.
 
 :return: matching CRS, or an invalid CRS if string could not be matched
-:rtype: QgsCoordinateReferenceSystem
-
 
 .. versionadded:: 3.0
 
@@ -284,11 +280,10 @@ Creates a CRS from a WKT spatial ref sys definition string.
     static QgsCoordinateReferenceSystem fromSrsId( long srsId );
 %Docstring
 Creates a CRS from a specified QGIS SRS ID.
+
 :param srsId: internal QGIS SRS ID
 
 :return: matching CRS, or an invalid CRS if ID could not be found
-:rtype: QgsCoordinateReferenceSystem
-
 
 .. versionadded:: 3.0
 
@@ -301,8 +296,6 @@ Creates a CRS from a specified QGIS SRS ID.
     bool createFromId( const long id, CrsType type = PostgisCrsId );
 %Docstring
 Sets this CRS by lookup of the given ID in the CRS database.
-
-:rtype: bool
 
 .. note::
 
@@ -321,8 +314,6 @@ Accepts both "<auth>:<code>" format and OGC URN "urn:ogc:def:crs:<auth>:[<versio
 It also recognizes "QGIS", "USER", "CUSTOM" authorities, which all have the same meaning
 and refer to QGIS internal CRS IDs.
 
-:rtype: bool
-
 .. note::
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
@@ -336,11 +327,10 @@ and refer to QGIS internal CRS IDs.
     bool createFromSrid( const long srid );
 %Docstring
 Sets this CRS by lookup of the given PostGIS SRID in the CRS database.
+
 :param srid: The PostGIS SRID for the desired spatial reference system.
 
 :return: True on success else false
-:rtype: bool
-
 /     // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
 %End
 
@@ -353,8 +343,6 @@ and createFromOgcWmsCrs() is used to initialize the object.
 Otherwise the WKT will be converted to a proj4 string and createFromProj4()
 set up the object.
 
-:rtype: bool
-
 .. note::
 
    Some members may be left blank if no match can be found in CRS database.
@@ -362,6 +350,7 @@ set up the object.
 .. note::
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
+
 :param wkt: The WKT for the desired spatial reference system.
 
 :return: True on success else false
@@ -376,11 +365,10 @@ Sets this CRS by lookup of internal QGIS CRS ID in the CRS database.
 If the srsid is < USER_CRS_START_ID, system CRS database is used, otherwise
 user's local CRS database from home directory is used.
 
-:rtype: bool
-
 .. note::
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
+
 :param srsId: The internal QGIS CRS ID for the desired spatial reference system.
 
 :return: True on success else false
@@ -406,8 +394,6 @@ We try to match the proj4 string to internal QGIS CRS ID using the following log
 a match where the parameters are in a different order
 - if none of the above match, use findMatchingProj()
 
-:rtype: bool
-
 .. note::
 
    Some members may be left blank if no match can be found in CRS database.
@@ -415,6 +401,7 @@ a match where the parameters are in a different order
 .. note::
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
+
 :param projString: A proj4 format string
 
 :return: True on success else false
@@ -434,11 +421,10 @@ It supports the following formats:
 - "WKT:<wkt>" - handled with createFromWkt()
 
 If no prefix is specified, WKT definition is assumed.
+
 :param definition: A String containing a coordinate reference system definition.
 
 :return: True on success else false
-:rtype: bool
-
 %End
 
     bool createFromUserInput( const QString &definition );
@@ -453,12 +439,11 @@ ESRI.[WKT string] (directly or in a file), "IGNF:xxx"
 For more details on supported formats see OGRSpatialReference.SetFromUserInput()
 ( http://www.gdal.org/ogr/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
 
-:rtype: bool
-
 .. note::
 
    this function generates a WKT string using OSRSetFromUserInput() and
 passes it to createFromWkt() function.
+
 :param definition: A String containing a coordinate reference system definition.
 
 :return: True on success else false
@@ -485,8 +470,6 @@ For more details refer to OGRSpatialReference.morphFromESRI() .
     bool isValid() const;
 %Docstring
 Returns whether this CRS is correctly initialized and usable
-
-:rtype: bool
 %End
 
     void validate();
@@ -511,8 +494,6 @@ Walks the CRS databases (both system and user database) trying to match
 stored PROJ.4 string to a database entry in order to fill in further
 pieces of information about CRS.
 
-:rtype: long
-
 .. note::
 
    The ellipsoid and projection acronyms must be set as well as the proj4string!
@@ -528,29 +509,25 @@ pieces of information about CRS.
 Overloaded != operator used to compare to CRS's.
 
 Returns opposite bool value to operator ==
-
-:rtype: bool
 %End
 
     bool readXml( const QDomNode &node );
 %Docstring
 Restores state from the given DOM node.
+
 :param node: The node from which state will be restored
 
 :return: bool True on success, False on failure
-:rtype: bool
-
 %End
 
     bool writeXml( QDomNode &node, QDomDocument &doc ) const;
 %Docstring
 Stores state to the given Dom node in the given document.
+
 :param node: The node in which state will be restored
 :param doc: The document in which state will be stored
 
 :return: bool True on success, False on failure
-:rtype: bool
-
 %End
 
 
@@ -562,8 +539,6 @@ Stores state to the given Dom node in the given document.
 Returns the internal CRS ID, if available.
 
 :return: the internal sqlite3 srs.db primary key for this CRS
-:rtype: long
-
 %End
 
     long postgisSrid() const;
@@ -571,8 +546,6 @@ Returns the internal CRS ID, if available.
 Returns PostGIS SRID for the CRS.
 
 :return: the PostGIS spatial_ref_sys identifier for this CRS (defaults to 0)
-:rtype: long
-
 /    // TODO QGIS 3: remove unless really necessary - let's use EPSG codes instead
 %End
 
@@ -588,8 +561,6 @@ If CRS object is a custom CRS (not found in database), the method will return
 internal QGIS CRS ID with "QGIS" authority, for example "QGIS:100005"
 
 :return: the authority identifier for this CRS
-:rtype: str
-
 
 .. seealso:: :py:func:`description()`
 %End
@@ -601,8 +572,6 @@ cases this is the best method to use when showing a friendly identifier for the 
 user.
 
 :return: descriptive name of the CRS
-:rtype: str
-
 
 .. note::
 
@@ -616,8 +585,6 @@ user.
 Returns the projection acronym for the projection used by the CRS.
 
 :return: the official proj4 acronym for the projection family
-:rtype: str
-
 
 .. note::
 
@@ -631,8 +598,6 @@ Returns the projection acronym for the projection used by the CRS.
 Returns the ellipsoid acronym for the ellipsoid used by the CRS.
 
 :return: the official proj4 acronym for the ellipoid
-:rtype: str
-
 
 .. note::
 
@@ -646,8 +611,6 @@ Returns the ellipsoid acronym for the ellipsoid used by the CRS.
 Returns a WKT representation of this CRS.
 
 :return: string containing WKT of the CRS
-:rtype: str
-
 
 .. seealso:: :py:func:`toProj4()`
 %End
@@ -661,8 +624,6 @@ they will be stripped out and the projection and ellipsoid acronyms will be
 overridden with these.
 
 :return: Proj4 format string that defines this CRS.
-:rtype: str
-
 
 .. note::
 
@@ -676,8 +637,6 @@ overridden with these.
 Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
 
 :return: true if CRS is geographic, or false if it is a projected CRS
-:rtype: bool
-
 %End
 
     bool hasAxisInverted() const;
@@ -685,15 +644,11 @@ Returns whether the CRS is a geographic CRS (using lat/lon coordinates)
 Returns whether axis is inverted (e.g., for WMS 1.3) for the CRS.
 
 :return: true if CRS axis is inverted
-:rtype: bool
-
 %End
 
     QgsUnitTypes::DistanceUnit mapUnits() const;
 %Docstring
 Returns the units for the projection used by the CRS.
-
-:rtype: QgsUnitTypes.DistanceUnit
 %End
 
     QgsRectangle bounds() const;
@@ -702,8 +657,6 @@ Returns the approximate bounds for the region the CRS is usable within.
 
 The returned bounds represent the latitude and longitude extent for the
 projection in the WGS 84 CRS.
-
-:rtype: QgsRectangle
 
 .. versionadded:: 3.0
 %End
@@ -717,8 +670,6 @@ Set user hint for validation
     QString validationHint();
 %Docstring
 Get user hint for validation
-
-:rtype: str
 %End
 
     static int syncDatabase();
@@ -726,8 +677,6 @@ Get user hint for validation
 Update proj.4 parameters in our database from proj.4
 
 :return: number of updated CRS on success and
-:rtype: int
-
 negative number of failed updates in case of errors.
 
 .. note::
@@ -741,15 +690,11 @@ negative number of failed updates in case of errors.
 Save the proj4-string as a custom CRS.
 
 Returns the new CRS srsid(), or -1 if the CRS could not be saved.
-
-:rtype: long
 %End
 
     QString geographicCrsAuthId() const;
 %Docstring
 Returns auth id of related geographic CRS
-
-:rtype: str
 %End
 
     static QStringList recentProjections();
@@ -757,8 +702,6 @@ Returns auth id of related geographic CRS
 Returns a list of recently used projections
 
 :return: list of srsid for recently used projections
-:rtype: list of str
-
 
 .. versionadded:: 2.7
 %End

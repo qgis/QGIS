@@ -33,19 +33,16 @@ class QgsOfflineEditing : QObject
     bool convertToOfflineProject( const QString &offlineDataPath, const QString &offlineDbFile, const QStringList &layerIds, bool onlySelected = false );
 %Docstring
 Convert current project for offline editing
+
 :param offlineDataPath: Path to offline db file
 :param offlineDbFile: Offline db file name
 :param layerIds: List of layer names to convert
 :param onlySelected: Only copy selected features from layers where a selection is present
-
-:rtype: bool
 %End
 
     bool isOfflineProject() const;
 %Docstring
 Return true if current project is offline
-
-:rtype: bool
 %End
 
     void synchronize();
@@ -72,6 +69,7 @@ comparing the index of the current ``layer`` to the total amount
 %Docstring
 Is emitted when the mode for the progress of the current operation is
 set.
+
 :param mode: progress mode
 :param maximum: total number of entities to process in the current operation
 %End
@@ -79,6 +77,7 @@ set.
     void progressUpdated( int progress );
 %Docstring
 Emitted with the progress of the current mode
+
 :param progress: current index of processed entities
 %End
 
@@ -90,6 +89,7 @@ Emitted when the processing of all layers has finished
     void warning( const QString &title, const QString &message );
 %Docstring
 Emitted when a warning needs to be displayed.
+
 :param title: title string for message
 :param message: A descriptive message for the warning
 %End

@@ -55,8 +55,6 @@ Returns the index of the tab with the given widget.
 This index is not the same as the one provided to insertTab and removeTab
 since these methods are not aware of hidden tabs.
 
-:rtype: int
-
 .. versionadded:: 3.0
 %End
 

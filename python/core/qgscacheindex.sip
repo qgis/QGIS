@@ -64,8 +64,6 @@ value is true.
 :param featureRequest:   The feature request, for which this index is queried.
 
 :return:   True, if this index holds the information to answer the request.
-:rtype: bool
-
 %End
 };
 

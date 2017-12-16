@@ -25,10 +25,6 @@ class QgsFieldValidator : QValidator
 
 
     QString dateFormat() const;
-%Docstring
-
-:rtype: str
-%End
 
 };
 

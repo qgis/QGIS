@@ -52,15 +52,11 @@ Constructor for QgsAnnotation.
 %Docstring
 Clones the annotation, returning a new copy of the annotation
 reflecting the annotation's current state.
-
-:rtype: QgsAnnotation
 %End
 
     bool isVisible() const;
 %Docstring
 Returns true if the annotation is visible and should be rendered.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setVisible()`
 %End
@@ -77,8 +73,6 @@ Sets whether the annotation is visible and should be rendered.
 Returns true if the annotation is attached to a fixed map position, or
 false if the annotation uses a position relative to the current map
 extent.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setHasFixedMapPosition()`
 
@@ -100,8 +94,6 @@ uses a position relative to the current map extent.
 Returns the map position of the annotation, if it is attached to a fixed map
 position.
 
-:rtype: QgsPointXY
-
 .. seealso:: :py:func:`setMapPosition()`
 
 .. seealso:: :py:func:`hasFixedMapPosition()`
@@ -122,8 +114,6 @@ position.
 Returns the CRS of the map position, or an invalid CRS if the annotation does
 not have a fixed map position.
 
-:rtype: QgsCoordinateReferenceSystem
-
 .. seealso:: :py:func:`setMapPositionCrs()`
 %End
 
@@ -139,8 +129,6 @@ Sets the CRS of the map position.
 Returns the relative position of the annotation, if it is not attached to a fixed map
 position. The coordinates in the return point should be between 0 and 1, and represent
 the relative percentage for the position compared to the map width and height.
-
-:rtype: QPointF
 
 .. seealso:: :py:func:`setRelativePosition()`
 %End
@@ -165,8 +153,6 @@ Sets the annotation's frame's offset from the mapPosition() reference point.
 %Docstring
 Returns the annotation's frame's offset from the mapPosition() reference point.
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`setFrameOffsetFromReferencePoint()`
 %End
 
@@ -182,8 +168,6 @@ the annotation's content is drawn).
 %Docstring
 Returns the size of the annotation's frame (the main area in which
 the annotation's content is drawn).
-
-:rtype: QSizeF
 
 .. seealso:: :py:func:`setFrameSize()`
 %End
@@ -201,8 +185,6 @@ content.
 Returns the margins (in millimeters) between the outside of the frame and the annotation
 content.
 
-:rtype: QgsMargins
-
 .. seealso:: :py:func:`setContentsMargin()`
 %End
 
@@ -217,8 +199,6 @@ of the symbol is transferred to the annotation.
     QgsFillSymbol *fillSymbol() const;
 %Docstring
 Returns the symbol that is used for rendering the annotation frame.
-
-:rtype: QgsFillSymbol
 
 .. seealso:: :py:func:`setFillSymbol()`
 %End
@@ -260,8 +240,6 @@ of the symbol is transferred to the annotation.
 %Docstring
 Returns the symbol that is drawn at the annotation's map position.
 
-:rtype: QgsMarkerSymbol
-
 .. seealso:: :py:func:`setMarkerSymbol()`
 %End
 
@@ -270,8 +248,6 @@ Returns the symbol that is drawn at the annotation's map position.
 Returns the map layer associated with the annotation. Annotations can be
 associated with a map layer if their visibility should be synchronized
 with the layer's visibility.
-
-:rtype: QgsMapLayer
 
 .. seealso:: :py:func:`setMapLayer()`
 %End
@@ -289,8 +265,6 @@ with the layer's visibility.
 %Docstring
 Returns the feature associated with the annotation, or an invalid
 feature if none has been set.
-
-:rtype: QgsFeature
 
 .. seealso:: :py:func:`setAssociatedFeature()`
 %End
@@ -332,8 +306,6 @@ Derived classes should implement their custom annotation drawing logic here.
 %Docstring
 Returns the minimum frame size for the annotation. Subclasses should implement this if they
 cannot be resized smaller than a certain minimum size.
-
-:rtype: QSizeF
 %End
 
     void _writeXml( QDomElement &itemElem, QDomDocument &doc, const QgsReadWriteContext &context ) const;

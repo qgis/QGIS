@@ -25,10 +25,6 @@ Class to detect the GPS port
     ~QgsGPSDetector();
 
     static QList< QPair<QString, QString> > availablePorts();
-%Docstring
-
-:rtype: list of QPair<str, QString>
-%End
 
   public slots:
     void advance();

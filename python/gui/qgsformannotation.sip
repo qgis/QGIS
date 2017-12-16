@@ -35,8 +35,6 @@ Constructor for QgsFormAnnotation.
     QSizeF preferredFrameSize() const;
 %Docstring
 Returns the optimal frame size
-
-:rtype: QSizeF
 %End
 
     void setDesignerForm( const QString &uiFile );
@@ -49,8 +47,6 @@ Sets the path to the Qt Designer UI file to show in the annotation.
     QString designerForm() const;
 %Docstring
 Returns the path to the Qt Designer UI file to show in the annotation.
-
-:rtype: str
 
 .. seealso:: :py:func:`setDesignerForm()`
 %End
@@ -66,8 +62,6 @@ Returns the path to the Qt Designer UI file to show in the annotation.
     static QgsFormAnnotation *create() /Factory/;
 %Docstring
 Returns a new QgsFormAnnotation object.
-
-:rtype: QgsFormAnnotation
 %End
 
   protected:

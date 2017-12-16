@@ -51,8 +51,6 @@ Constructor for QgsProjectionSelectionDialog.
 %Docstring
 Returns the CRS currently selected in the widget.
 
-:rtype: QgsCoordinateReferenceSystem
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setCrs()`
@@ -79,8 +77,6 @@ option is selected, calling crs() will return an invalid QgsCoordinateReferenceS
 %Docstring
 Returns whether the "no/invalid" projection option is shown. If this
 option is selected, calling crs() will return an invalid QgsCoordinateReferenceSystem.
-
-:rtype: bool
 
 .. versionadded:: 3.0
 

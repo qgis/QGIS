@@ -60,8 +60,6 @@ implemented as map tools.
 %Docstring
 Returns the flags for the map tool.
 
-:rtype: Flags
-
 .. versionadded:: 2.16
 %End
 
@@ -105,8 +103,6 @@ Key event for overriding. Default implementation does nothing.
     virtual bool gestureEvent( QGestureEvent *e );
 %Docstring
 gesture event for overriding. Default implementation does nothing.
-
-:rtype: bool
 %End
 
     void setAction( QAction *action );
@@ -120,8 +116,6 @@ the previously used toolbutton to pop out. *
     QAction *action();
 %Docstring
 Return associated action with map tool or NULL if no action is associated
-
-:rtype: QAction
 %End
 
     void setButton( QAbstractButton *button );
@@ -133,8 +127,6 @@ as setAction() function except it works with a button instead of an QAction. *
     QAbstractButton *button();
 %Docstring
 Return associated button with map tool or NULL if no button is associated
-
-:rtype: QAbstractButton
 %End
 
     virtual void setCursor( const QCursor &cursor );
@@ -160,15 +152,11 @@ convenient method to clean members
     QgsMapCanvas *canvas();
 %Docstring
 returns pointer to the tool's map canvas
-
-:rtype: QgsMapCanvas
 %End
 
     QString toolName();
 %Docstring
 Emit map tool changed with the old tool
-
-:rtype: str
 
 .. versionadded:: 2.3
 %End
@@ -179,8 +167,6 @@ Get search radius in mm. Used by identify, tip etc.
 The values is currently set in identify tool options (move somewhere else?)
 and defaults to Qgis.DEFAULT_SEARCH_RADIUS_MM.
 
-:rtype: float
-
 .. versionadded:: 2.3
 %End
 
@@ -189,8 +175,6 @@ and defaults to Qgis.DEFAULT_SEARCH_RADIUS_MM.
 Get search radius in map units for given context. Used by identify, tip etc.
 The values is calculated from searchRadiusMM().
 
-:rtype: float
-
 .. versionadded:: 2.3
 %End
 
@@ -198,8 +182,6 @@ The values is calculated from searchRadiusMM().
 %Docstring
 Get search radius in map units for given canvas. Used by identify, tip etc.
 The values is calculated from searchRadiusMM().
-
-:rtype: float
 
 .. versionadded:: 2.3
 %End
@@ -235,36 +217,26 @@ constructor takes map canvas as a parameter
     QgsPointXY toMapCoordinates( QPoint point );
 %Docstring
 transformation from screen coordinates to map coordinates
-
-:rtype: QgsPointXY
 %End
 
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, QPoint point );
 %Docstring
 transformation from screen coordinates to layer's coordinates
-
-:rtype: QgsPointXY
 %End
 
     QgsPointXY toLayerCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 %Docstring
 transformation from map coordinates to layer's coordinates
-
-:rtype: QgsPointXY
 %End
 
     QgsPointXY toMapCoordinates( const QgsMapLayer *layer, const QgsPointXY &point );
 %Docstring
 transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-
-:rtype: QgsPointXY
 %End
 
     QgsPoint toMapCoordinates( const QgsMapLayer *layer, const QgsPoint &point ) /PyName=toMapCoordinatesV2/;
 %Docstring
 transformation from layer's coordinates to map coordinates (which is different in case reprojection is used)
-
-:rtype: QgsPoint
 
 .. note::
 
@@ -274,15 +246,11 @@ transformation from layer's coordinates to map coordinates (which is different i
     QgsRectangle toLayerCoordinates( const QgsMapLayer *layer, const QgsRectangle &rect );
 %Docstring
 trnasformation of the rect from map coordinates to layer's coordinates
-
-:rtype: QgsRectangle
 %End
 
     QPoint toCanvasCoordinates( const QgsPointXY &point );
 %Docstring
 transformation from map coordinates to screen coordinates
-
-:rtype: QPoint
 %End
 
 

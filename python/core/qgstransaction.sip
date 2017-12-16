@@ -45,8 +45,6 @@ Edits on features can get rejected if another conflicting transaction is active.
 %Docstring
 Create a transaction for the specified connection string ``connString``
 and provider with ``providerKey``.
-
-:rtype: QgsTransaction
 %End
 
     static QgsTransaction *create( const QSet<QgsVectorLayer *> &layers ) /Factory/;
@@ -54,8 +52,6 @@ and provider with ``providerKey``.
 Create a transaction which includes the ``layers``.
 All layers are expected to have the same connection string and data
 provider.
-
-:rtype: QgsTransaction
 %End
 
     ~QgsTransaction();
@@ -64,8 +60,6 @@ provider.
 %Docstring
 Add the ``layer`` to the transaction. The layer must not be
 in edit mode and the connection string must match.
-
-:rtype: bool
 %End
 
     bool begin( QString &errorMsg /Out/, int statementTimeout = 20 );
@@ -78,22 +72,16 @@ statement would produce a conflicting state. In these cases, the
 statements block until the conflicting transaction is committed or
 rolled back.
 Some providers might not honour the statement timeout.
-
-:rtype: bool
 %End
 
     bool commit( QString &errorMsg /Out/ );
 %Docstring
 Commit transaction.
-
-:rtype: bool
 %End
 
     bool rollback( QString &errorMsg /Out/ );
 %Docstring
 Roll back transaction.
-
-:rtype: bool
 %End
 
     virtual bool executeSql( const QString &sql, QString &error /Out/, bool isDirty = false ) = 0;
@@ -105,15 +93,11 @@ Execute the ``sql`` string.
 :param isDirty: Flag to indicate if the underlying data will be modified
 
 :return: true if everything is OK, false otherwise
-:rtype: bool
-
 %End
 
     static bool supportsTransaction( const QgsVectorLayer *layer );
 %Docstring
 Checks if the provider of a given ``layer`` supports transactions.
-
-:rtype: bool
 %End
 
     QString createSavepoint( QString &error /Out/ );
@@ -121,8 +105,6 @@ Checks if the provider of a given ``layer`` supports transactions.
 creates a save point
 returns empty string on error
 returns the last created savepoint if it's not dirty
-
-:rtype: str
 
 .. versionadded:: 3.0
 %End
@@ -132,16 +114,12 @@ returns the last created savepoint if it's not dirty
 creates a save point
 returns empty string on error
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
     bool rollbackToSavepoint( const QString &name, QString &error /Out/ );
 %Docstring
 rollback to save point, the save point is maintained and is "undertied"
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End
@@ -157,16 +135,12 @@ dirty save point such that next call to createSavepoint will create a new one
 %Docstring
 returns savepoints
 
-:rtype: list of str
-
 .. versionadded:: 3.0
 %End
 
     bool lastSavePointIsDirty() const;
 %Docstring
 returns the last created savepoint
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End

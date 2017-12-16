@@ -42,32 +42,25 @@ class QgsColorRamp
     virtual int count() const = 0;
 %Docstring
 Returns number of defined colors, or -1 if undefined
-
-:rtype: int
 %End
 
     virtual double value( int index ) const = 0;
 %Docstring
 Returns relative value between [0,1] of color at specified index
-
-:rtype: float
 %End
 
     virtual QColor color( double value ) const = 0;
 %Docstring
 Returns the color corresponding to a specified value.
+
 :param value: value between [0, 1] inclusive
 
 :return: color for value
-:rtype: QColor
-
 %End
 
     virtual QString type() const = 0;
 %Docstring
 Returns a string representing the color ramp type.
-
-:rtype: str
 %End
 
 
@@ -79,15 +72,11 @@ Inverts the ordering of the color ramp.
     virtual QgsColorRamp *clone() const = 0 /Factory/;
 %Docstring
 Creates a clone of the color ramp.
-
-:rtype: QgsColorRamp
 %End
 
     virtual QgsStringMap properties() const = 0;
 %Docstring
 Returns a string map containing all the color ramp's properties.
-
-:rtype: QgsStringMap
 %End
 };
 
@@ -107,6 +96,7 @@ class QgsGradientStop
     QgsGradientStop( double offset, const QColor &color );
 %Docstring
 Constructor for QgsGradientStop
+
 :param offset: positional offset for stop, between 0 and 1.0
 :param color: color for stop
 %End
@@ -146,6 +136,7 @@ supports optional extra color stops.
                           const QgsGradientStopsList &stops = QgsGradientStopsList() );
 %Docstring
 Constructor for QgsGradientColorRamp
+
 :param color1: start color, corresponding to a position of 0.0
 :param color2: end color, corresponding to a position of 1.0
 :param discrete: set to true for discrete interpolation instead of smoothly
@@ -156,8 +147,6 @@ interpolating between colors
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
 %Docstring
 Creates a new QgsColorRamp from a map of properties
-
-:rtype: QgsColorRamp
 %End
 
     virtual int count() const;
@@ -177,8 +166,6 @@ Creates a new QgsColorRamp from a map of properties
 %Docstring
 Returns the gradient start color.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setColor1()`
 
 .. seealso:: :py:func:`color2()`
@@ -188,8 +175,6 @@ Returns the gradient start color.
 %Docstring
 Returns the gradient end color.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setColor2()`
 
 .. seealso:: :py:func:`color1()`
@@ -198,6 +183,7 @@ Returns the gradient end color.
     void setColor1( const QColor &color );
 %Docstring
 Sets the gradient start color.
+
 :param color: start color
 
 .. seealso:: :py:func:`color1()`
@@ -208,6 +194,7 @@ Sets the gradient start color.
     void setColor2( const QColor &color );
 %Docstring
 Sets the gradient end color.
+
 :param color: end color
 
 .. seealso:: :py:func:`color2()`
@@ -220,8 +207,6 @@ Sets the gradient end color.
 Returns true if the gradient is using discrete interpolation, rather than
 smoothly interpolating between colors.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setDiscrete()`
 %End
 
@@ -229,6 +214,7 @@ smoothly interpolating between colors.
 %Docstring
 Sets whether the gradient should use discrete interpolation, rather than
 smoothly interpolating between colors.
+
 :param discrete: set to true to use discrete interpolation
 
 .. seealso:: :py:func:`convertToDiscrete()`
@@ -240,6 +226,7 @@ smoothly interpolating between colors.
 %Docstring
 Converts a gradient with existing color stops to or from discrete
 interpolation.
+
 :param discrete: set to true to convert the gradient stops to discrete,
 or false to convert them to smooth interpolation
 
@@ -249,6 +236,7 @@ or false to convert them to smooth interpolation
     void setStops( const QgsGradientStopsList &stops );
 %Docstring
 Sets the list of intermediate gradient stops for the ramp.
+
 :param stops: list of stops. Any existing color stops will be replaced. The stop
 list will be automatically reordered so that stops are listed in ascending offset
 order.
@@ -260,8 +248,6 @@ order.
 %Docstring
 Returns the list of intermediate gradient stops for the ramp.
 
-:rtype: QgsGradientStopsList
-
 .. seealso:: :py:func:`setStops()`
 %End
 
@@ -269,14 +255,13 @@ Returns the list of intermediate gradient stops for the ramp.
 %Docstring
 Returns any additional info attached to the gradient ramp (e.g., authorship notes)
 
-:rtype: QgsStringMap
-
 .. seealso:: :py:func:`setInfo()`
 %End
 
     void setInfo( const QgsStringMap &info );
 %Docstring
 Sets additional info to attach to the gradient ramp (e.g., authorship notes)
+
 :param info: map of string info to attach
 
 .. seealso:: :py:func:`info()`
@@ -285,6 +270,7 @@ Sets additional info to attach to the gradient ramp (e.g., authorship notes)
     void addStopsToGradient( QGradient *gradient, double opacity = 1 );
 %Docstring
 Copy color ramp stops to a QGradient
+
 :param gradient: gradient to copy stops into
 :param opacity: opacity multiplier. Opacity of colors will be multiplied
 by this factor before adding to the gradient.
@@ -316,6 +302,7 @@ class QgsLimitedRandomColorRamp : QgsColorRamp
                                int valMin = DEFAULT_RANDOM_VAL_MIN, int valMax = DEFAULT_RANDOM_VAL_MAX );
 %Docstring
 Constructor for QgsLimitedRandomColorRamp
+
 :param count: number of colors in ramp
 :param hueMin: minimum hue
 :param hueMax: maximum hue
@@ -329,9 +316,8 @@ Constructor for QgsLimitedRandomColorRamp
 %Docstring
 Returns a new QgsLimitedRandomColorRamp color ramp created using the properties encoded in a string
 map.
-:param properties: color ramp properties
 
-:rtype: QgsColorRamp
+:param properties: color ramp properties
 
 .. seealso:: :py:func:`properties()`
 %End
@@ -354,8 +340,6 @@ map.
 %Docstring
 Get a list of random colors
 
-:rtype: list of QColor
-
 .. versionadded:: 2.4
 %End
 
@@ -369,16 +353,12 @@ to regenerate the list of random colors.
 %Docstring
 Returns the minimum hue for generated colors
 
-:rtype: int
-
 .. seealso:: :py:func:`setHueMin()`
 %End
 
     int hueMax() const;
 %Docstring
 Returns the maximum hue for generated colors
-
-:rtype: int
 
 .. seealso:: :py:func:`setHueMax()`
 %End
@@ -387,16 +367,12 @@ Returns the maximum hue for generated colors
 %Docstring
 Returns the minimum saturation for generated colors
 
-:rtype: int
-
 .. seealso:: :py:func:`setSatMin()`
 %End
 
     int satMax() const;
 %Docstring
 Returns the maximum saturation for generated colors
-
-:rtype: int
 
 .. seealso:: :py:func:`setSatMax()`
 %End
@@ -405,16 +381,12 @@ Returns the maximum saturation for generated colors
 %Docstring
 Returns the minimum value for generated colors
 
-:rtype: int
-
 .. seealso:: :py:func:`setValMin()`
 %End
 
     int valMax() const;
 %Docstring
 Returns the maximum value for generated colors
-
-:rtype: int
 
 .. seealso:: :py:func:`setValMax()`
 %End
@@ -502,6 +474,7 @@ Constructor for QgsRandomColorRamp.
 Sets the desired total number of unique colors for the resultant ramp. Calling
 this method pregenerates a set of visually distinct colors which are returned
 by subsequent calls to color().
+
 :param colorCount: number of unique colors
 
 .. versionadded:: 2.5
@@ -538,12 +511,14 @@ class QgsPresetSchemeColorRamp : QgsColorRamp, QgsColorScheme
     QgsPresetSchemeColorRamp( const QList< QColor > &colors = QList< QColor >() );
 %Docstring
 Constructor for QgsPresetSchemeColorRamp.
+
 :param colors: list of colors in ramp
 %End
 
     QgsPresetSchemeColorRamp( const QgsNamedColorList &colors );
 %Docstring
 Constructor for QgsPresetColorRamp.
+
 :param colors: list of named colors in ramp
 
 .. note::
@@ -555,9 +530,8 @@ Constructor for QgsPresetColorRamp.
 %Docstring
 Returns a new QgsPresetSchemeColorRamp color ramp created using the properties encoded in a string
 map.
-:param properties: color ramp properties
 
-:rtype: QgsColorRamp
+:param properties: color ramp properties
 
 .. seealso:: :py:func:`properties()`
 %End
@@ -565,9 +539,8 @@ map.
     virtual bool setColors( const QgsNamedColorList &colors, const QString & = QString(), const QColor & = QColor() );
 %Docstring
 Sets the list of colors used by the ramp.
-:param colors: list of colors
 
-:rtype: bool
+:param colors: list of colors
 
 .. seealso:: :py:func:`colors()`
 %End
@@ -575,8 +548,6 @@ Sets the list of colors used by the ramp.
     QList< QColor > colors() const;
 %Docstring
 Returns the list of colors used by the ramp.
-
-:rtype: list of QColor
 
 .. seealso:: :py:func:`setColors()`
 %End
@@ -622,6 +593,7 @@ class QgsColorBrewerColorRamp : QgsColorRamp
                              bool inverted = false );
 %Docstring
 Constructor for QgsColorBrewerColorRamp
+
 :param schemeName: color brewer scheme name
 :param colors: number of colors in ramp
 :param inverted: invert ramp ordering
@@ -631,9 +603,8 @@ Constructor for QgsColorBrewerColorRamp
 %Docstring
 Returns a new QgsColorBrewerColorRamp color ramp created using the properties encoded in a string
 map.
-:param properties: color ramp properties
 
-:rtype: QgsColorRamp
+:param properties: color ramp properties
 
 .. seealso:: :py:func:`properties()`
 %End
@@ -655,8 +626,6 @@ map.
 %Docstring
 Returns the name of the color brewer color scheme.
 
-:rtype: str
-
 .. seealso:: :py:func:`setSchemeName()`
 %End
 
@@ -664,14 +633,13 @@ Returns the name of the color brewer color scheme.
 %Docstring
 Returns the number of colors in the ramp.
 
-:rtype: int
-
 .. seealso:: :py:func:`setColors()`
 %End
 
     void setSchemeName( const QString &schemeName );
 %Docstring
 Sets the name of the color brewer color scheme.
+
 :param schemeName: scheme name, must match a valid color brewer scheme name
 
 .. seealso:: :py:func:`schemeName()`
@@ -682,6 +650,7 @@ Sets the name of the color brewer color scheme.
     void setColors( int colors );
 %Docstring
 Sets the number of colors in the ramp.
+
 :param colors: number of colors. Must match a valid value for the scheme,
 which can be retrieved using listSchemeVariants()
 
@@ -692,8 +661,6 @@ which can be retrieved using listSchemeVariants()
 %Docstring
 Returns a list of all valid color brewer scheme names.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`listSchemeVariants()`
 %End
 
@@ -701,9 +668,8 @@ Returns a list of all valid color brewer scheme names.
 %Docstring
 Returns a list of the valid variants (numbers of colors) for a specified
 color brewer scheme name
-:param schemeName: color brewer scheme name
 
-:rtype: list of int
+:param schemeName: color brewer scheme name
 
 .. seealso:: :py:func:`listSchemeNames()`
 %End
@@ -733,6 +699,7 @@ class QgsCptCityColorRamp : QgsGradientColorRamp
                          bool doLoadFile = true );
 %Docstring
 Constructor for QgsCptCityColorRamp
+
 :param schemeName: cpt-city scheme name
 :param variantName: cpt-city variant name
 :param inverted: invert ramp ordering
@@ -744,6 +711,7 @@ Constructor for QgsCptCityColorRamp
                          bool doLoadFile = true );
 %Docstring
 Constructor for QgsCptCityColorRamp
+
 :param schemeName: cpt-city scheme name
 :param variantList: cpt-city variant list
 :param variantName: cpt-city variant name
@@ -752,10 +720,6 @@ Constructor for QgsCptCityColorRamp
 %End
 
     static QgsColorRamp *create( const QgsStringMap &properties = QgsStringMap() ) /Factory/;
-%Docstring
-
-:rtype: QgsColorRamp
-%End
 
     virtual QString type() const;
 
@@ -766,29 +730,13 @@ Constructor for QgsCptCityColorRamp
 
     void copy( const QgsCptCityColorRamp *other );
     QgsGradientColorRamp *cloneGradientRamp() const /Factory/;
-%Docstring
-
-:rtype: QgsGradientColorRamp
-%End
 
     virtual QgsStringMap properties() const;
 
 
     QString schemeName() const;
-%Docstring
-
-:rtype: str
-%End
     QString variantName() const;
-%Docstring
-
-:rtype: str
-%End
     QStringList variantList() const;
-%Docstring
-
-:rtype: list of str
-%End
 
     void setSchemeName( const QString &schemeName );
     void setVariantName( const QString &variantName );
@@ -797,42 +745,14 @@ Constructor for QgsCptCityColorRamp
 
     void loadPalette();
     bool hasMultiStops() const;
-%Docstring
-
-:rtype: bool
-%End
 
     QString fileName() const;
-%Docstring
-
-:rtype: str
-%End
     bool loadFile();
-%Docstring
-
-:rtype: bool
-%End
     bool fileLoaded() const;
-%Docstring
-
-:rtype: bool
-%End
 
     QString copyingFileName() const;
-%Docstring
-
-:rtype: str
-%End
     QString descFileName() const;
-%Docstring
-
-:rtype: str
-%End
     QgsStringMap copyingInfo() const;
-%Docstring
-
-:rtype: QgsStringMap
-%End
 
   protected:
 

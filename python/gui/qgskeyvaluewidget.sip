@@ -38,8 +38,6 @@ Set the initial value of the widget.
 Get the edit value.
 
 :return: the QVariantMap
-:rtype: QVariantMap
-
 %End
 
 };

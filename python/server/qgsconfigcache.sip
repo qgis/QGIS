@@ -30,10 +30,6 @@ the Free Software Foundation; either version 2 of the License, or     *
 %End
   public:
     static QgsConfigCache *instance();
-%Docstring
-
-:rtype: QgsConfigCache
-%End
 
     void removeEntry( const QString &path );
 
@@ -41,11 +37,10 @@ the Free Software Foundation; either version 2 of the License, or     *
 %Docstring
 If the project is not cached yet, then the project is read thank to the
 path. If the project is not available, then a None is returned.
+
 :param path: the filename of the QGIS project
 
 :return: the project or None if an error happened
-:rtype: QgsProject
-
 
 .. versionadded:: 3.0
 %End

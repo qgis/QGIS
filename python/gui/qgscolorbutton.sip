@@ -54,8 +54,6 @@ the button will use the global color scheme registry instead
 Return the currently selected color.
 
 :return: currently selected color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`setColor`
 %End
@@ -64,6 +62,7 @@ Return the currently selected color.
 %Docstring
 Sets whether opacity modification (transparency) is permitted
 for the color. Defaults to false.
+
 :param allowOpacity: set to true to allow opacity modification
 
 .. seealso:: :py:func:`allowOpacity()`
@@ -77,8 +76,6 @@ Returns whether opacity modification (transparency) is permitted
 for the color.
 
 :return: true if opacity modification is allowed
-:rtype: bool
-
 
 .. seealso:: :py:func:`setAllowOpacity()`
 
@@ -88,6 +85,7 @@ for the color.
     void setColorDialogTitle( const QString &title );
 %Docstring
 Set the title for the color chooser dialog window.
+
 :param title: Title for the color chooser dialog
 
 .. seealso:: :py:func:`colorDialogTitle`
@@ -98,8 +96,6 @@ Set the title for the color chooser dialog window.
 Returns the title for the color chooser dialog window.
 
 :return: title for the color chooser dialog
-:rtype: str
-
 
 .. seealso:: :py:func:`setColorDialogTitle`
 %End
@@ -109,8 +105,6 @@ Returns the title for the color chooser dialog window.
 Returns whether the button accepts live updates from QColorDialog.
 
 :return: true if the button will be accepted immediately when the dialog's color changes
-:rtype: bool
-
 
 .. seealso:: :py:func:`setAcceptLiveUpdates`
 %End
@@ -119,6 +113,7 @@ Returns whether the button accepts live updates from QColorDialog.
 %Docstring
 Sets whether the button accepts live updates from QColorDialog. Live updates may cause changes
 that are not undoable on QColorDialog cancel.
+
 :param accept: set to true to enable live updates
 
 .. seealso:: :py:func:`acceptLiveUpdates`
@@ -128,6 +123,7 @@ that are not undoable on QColorDialog cancel.
 %Docstring
 Sets whether the drop-down menu should be shown for the button. The default behavior is to
 show the menu.
+
 :param showMenu: set to false to hide the drop-down menu
 
 .. seealso:: :py:func:`showMenu`
@@ -138,8 +134,6 @@ show the menu.
 Returns whether the drop-down menu is shown for the button.
 
 :return: true if drop-down menu is shown
-:rtype: bool
-
 
 .. seealso:: :py:func:`setShowMenu`
 %End
@@ -148,6 +142,7 @@ Returns whether the drop-down menu is shown for the button.
 %Docstring
 Sets the behavior for when the button is clicked. The default behavior is to show
 a color picker dialog.
+
 :param behavior: behavior when button is clicked
 
 .. seealso:: :py:func:`behavior`
@@ -158,8 +153,6 @@ a color picker dialog.
 Returns the behavior for when the button is clicked.
 
 :return: behavior when button is clicked
-:rtype: Behavior
-
 
 .. seealso:: :py:func:`setBehavior`
 %End
@@ -168,6 +161,7 @@ Returns the behavior for when the button is clicked.
 %Docstring
 Sets the default color for the button, which is shown in the button's drop-down menu for the
 "default color" option.
+
 :param color: default color for the button. Set to an invalid QColor to disable the default color
 option.
 
@@ -180,8 +174,6 @@ Returns the default color for the button, which is shown in the button's drop-do
 "default color" option.
 
 :return: default color for the button. Returns an invalid QColor if the default color
-:rtype: QColor
-
 option is disabled.
 
 .. seealso:: :py:func:`setDefaultColor`
@@ -191,6 +183,7 @@ option is disabled.
 %Docstring
 Sets whether the "no color" option should be shown in the button's drop-down menu. If selected,
 the "no color" option sets the color button's color to a totally transparent color.
+
 :param showNoColorOption: set to true to show the no color option. This is disabled by default.
 
 .. seealso:: :py:func:`showNoColor`
@@ -209,8 +202,6 @@ Returns whether the "no color" option is shown in the button's drop-down menu. I
 the "no color" option sets the color button's color to a totally transparent color.
 
 :return: true if the no color option is shown.
-:rtype: bool
-
 
 .. seealso:: :py:func:`setShowNoColor`
 
@@ -225,6 +216,7 @@ dialog (see setColorDialogOptions)
     void setNoColorString( const QString &noColorString );
 %Docstring
 Sets the string to use for the "no color" option in the button's drop-down menu.
+
 :param noColorString: string to use for the "no color" menu option
 
 .. seealso:: :py:func:`noColorString`
@@ -240,6 +232,7 @@ dialog (see setColorDialogOptions)
     void setShowNull( bool showNull );
 %Docstring
 Sets whether a set to null (clear) option is shown in the button's drop-down menu.
+
 :param showNull: set to true to show a null option
 
 .. versionadded:: 2.16
@@ -253,8 +246,6 @@ Sets whether a set to null (clear) option is shown in the button's drop-down men
 %Docstring
 Returns whether the set to null (clear) option is shown in the button's drop-down menu.
 
-:rtype: bool
-
 .. versionadded:: 2.16
 
 .. seealso:: :py:func:`setShowNull()`
@@ -265,8 +256,6 @@ Returns whether the set to null (clear) option is shown in the button's drop-dow
     bool isNull() const;
 %Docstring
 Returns true if the current color is null.
-
-:rtype: bool
 
 .. versionadded:: 2.16
 
@@ -280,8 +269,6 @@ Returns true if the current color is null.
 Returns the string used for the "no color" option in the button's drop-down menu.
 
 :return: string used for the "no color" menu option
-:rtype: str
-
 
 .. seealso:: :py:func:`setNoColorString`
 
@@ -298,6 +285,7 @@ dialog (see setColorDialogOptions)
 Sets the context string for the color button. The context string is passed to all color swatch
 grids shown in the button's drop-down menu, to allow them to customise their display colors
 based on the context.
+
 :param context: context string for the color button's color swatch grids
 
 .. seealso:: :py:func:`context`
@@ -310,8 +298,6 @@ grids shown in the button's drop-down menu, to allow them to customise their dis
 based on the context.
 
 :return: context string for the color button's color swatch grids
-:rtype: str
-
 
 .. seealso:: :py:func:`setContext`
 %End
@@ -320,6 +306,7 @@ based on the context.
 %Docstring
 Sets the color scheme registry for the button, which controls the color swatch grids
 that are shown in the button's drop-down menu.
+
 :param registry: color scheme registry for the button. Set to 0 to hide all color
 swatch grids from the button's drop-down menu.
 
@@ -332,8 +319,6 @@ Returns the color scheme registry for the button, which controls the color swatc
 that are shown in the button's drop-down menu.
 
 :return: color scheme registry for the button. If returned value is 0 then all color
-:rtype: QgsColorSchemeRegistry
-
 swatch grids are hidden from the button's drop-down menu.
 
 .. seealso:: :py:func:`setColorSchemeRegistry`
@@ -345,6 +330,7 @@ swatch grids are hidden from the button's drop-down menu.
 %Docstring
 Sets the current color for the button. Will emit a colorChanged signal if the color is different
 to the previous color.
+
 :param color: new color for the button
 
 .. seealso:: :py:func:`color`
@@ -356,6 +342,7 @@ Sets the background pixmap for the button based upon color and transparency.
 Call directly to update background after adding/removing QColorDialog.ShowAlphaChannel option
 but the color has not changed, i.e. setColor() wouldn't update button and
 you want the button to retain the set color's alpha component regardless
+
 :param color: Color for button background. If no color is specified, the button's current
 color will be used
 %End
@@ -420,12 +407,14 @@ Sets color to null.
 %Docstring
 Is emitted whenever a new color is set for the button. The color is always valid.
 In case the new color is the same no signal is emitted, to avoid infinite loops.
+
 :param color: New color
 %End
 
     void colorClicked( const QColor &color );
 %Docstring
 Emitted when the button is clicked, if the button's behavior is set to SignalOnly
+
 :param color: button color
 
 .. seealso:: :py:func:`setBehavior`
@@ -447,8 +436,6 @@ Emitted when the button is clicked, if the button's behavior is set to SignalOnl
     static const QPixmap &transparentBackground();
 %Docstring
 Returns a checkboard pattern pixmap for use as a background to transparent colors
-
-:rtype: QPixmap
 %End
 
     virtual void mousePressEvent( QMouseEvent *e );

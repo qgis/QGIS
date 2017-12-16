@@ -60,8 +60,6 @@ Find the best editor widget and its configuration for a given field.
 :param fieldName: The field name on the specified layer for which this widget will be created
 
 :return: The id of the widget type to use and its config
-:rtype: QgsEditorWidgetSetup
-
 %End
 
     QgsEditorWidgetWrapper *create( const QString &widgetId,
@@ -84,8 +82,6 @@ The editor may be NULL if you want the widget wrapper to create a default widget
 :param context:   The editor context (not available in Python bindings)
 
 :return: A new widget wrapper
-:rtype: QgsEditorWidgetWrapper
-
 %End
 
     QgsEditorWidgetWrapper *create( QgsVectorLayer *vl,
@@ -104,8 +100,6 @@ The editor may be NULL if you want the widget wrapper to create a default widget
 :param context:   The editor context (not available in Python bindings)
 
 :return: A new widget wrapper
-:rtype: QgsEditorWidgetWrapper
-
 %End
 
     QgsSearchWidgetWrapper *createSearchWidget( const QString &widgetId,
@@ -114,10 +108,6 @@ The editor may be NULL if you want the widget wrapper to create a default widget
         const QVariantMap &config,
         QWidget *parent /TransferThis/ ) /Factory/;
 
-%Docstring
-
-:rtype: QgsSearchWidgetWrapper
-%End
 
     QgsEditorConfigWidget *createConfigWidget( const QString &widgetId, QgsVectorLayer *vl, int fieldIdx, QWidget *parent /TransferThis/ ) /Factory/;
 %Docstring
@@ -129,8 +119,6 @@ Creates a configuration widget
 :param parent:    The parent widget for the created widget
 
 :return: A new configuration widget
-:rtype: QgsEditorConfigWidget
-
 %End
 
     QString name( const QString &widgetId );
@@ -140,8 +128,6 @@ Get the human readable name for a widget type
 :param widgetId: The widget type to get the name for
 
 :return: A human readable name
-:rtype: str
-
 %End
 
     QMap<QString, QgsEditorWidgetFactory *> factories();
@@ -149,8 +135,6 @@ Get the human readable name for a widget type
 Get access to all registered factories
 
 :return: All ids and factories
-:rtype: QMap<str, QgsEditorWidgetFactory *>
-
 %End
 
     QgsEditorWidgetFactory *factory( const QString &widgetId );
@@ -158,8 +142,6 @@ Get access to all registered factories
 Get a factory for the given widget type id.
 
 :return: A factory or Null if not existent
-:rtype: QgsEditorWidgetFactory
-
 %End
 
     bool registerWidget( const QString &widgetId, QgsEditorWidgetFactory *widgetFactory /Transfer/ );
@@ -170,8 +152,6 @@ Register a new widget factory with the given id
 :param widgetFactory: The factory which will create this widget type
 
 :return: true, if successful, false, if the widgetId is already in use or widgetFactory is NULL
-:rtype: bool
-
 %End
 
     void registerAutoConfPlugin( QgsEditorWidgetAutoConfPlugin *plugin );

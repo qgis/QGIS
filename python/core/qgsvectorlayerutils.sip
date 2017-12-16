@@ -44,16 +44,12 @@ Constructor for QgsDuplicateFeatureContext
 %Docstring
 Returns all the layers on which features have been duplicated
 
-:rtype: list of QgsVectorLayer
-
 .. versionadded:: 3.0
 %End
 
         QgsFeatureIds duplicatedFeatures( QgsVectorLayer *layer ) const;
 %Docstring
 Returns the duplicated features in the given layer
-
-:rtype: QgsFeatureIds
 
 .. versionadded:: 3.0
 %End
@@ -67,8 +63,6 @@ Returns true if the specified value already exists within a field. This method c
 of values inside a layer's attributes. An optional list of ignored feature IDs can be provided, if so, any features
 with IDs within this list are ignored when testing for existence of the value.
 
-:rtype: bool
-
 .. seealso:: :py:func:`createUniqueValue()`
 %End
 
@@ -76,8 +70,6 @@ with IDs within this list are ignored when testing for existence of the value.
 %Docstring
 Returns a new attribute value for the specified field index which is guaranteed to be unique. The optional seed
 value can be used as a basis for generated values.
-
-:rtype: QVariant
 
 .. seealso:: :py:func:`valueExists()`
 %End
@@ -89,8 +81,6 @@ value can be used as a basis for generated values.
 Tests an attribute value to check whether it passes all constraints which are present on the corresponding field.
 Returns true if the attribute value is valid for the field. Any constraint failures will be reported in the errors argument.
 If the strength or origin parameter is set then only constraints with a matching strength/origin will be checked.
-
-:rtype: bool
 %End
 
     static QgsFeature createFeature( QgsVectorLayer *layer,
@@ -103,8 +93,6 @@ Creates a new feature ready for insertion into a layer. Default values and const
 passed for the new feature to copy as many attribute values as possible from the map,
 assuming that they respect the layer's constraints. Note that the created feature is not
 automatically inserted into the layer.
-
-:rtype: QgsFeature
 %End
 
     static QgsFeature duplicateFeature( QgsVectorLayer *layer, const QgsFeature &feature, QgsProject *project, int depth, QgsDuplicateFeatureContext &duplicateFeatureContext /Out/ );
@@ -114,8 +102,6 @@ default values and constraints (e.g., unique constraints) will automatically be 
 The duplicated feature will be automatically inserted into the layer.
 ``depth`` the higher this number the deeper the level - With depth > 0 the children of the feature are not duplicated
 ``duplicateFeatureContext`` stores all the layers and the featureids of the duplicated features (incl. children)
-
-:rtype: QgsFeature
 
 .. versionadded:: 3.0
 %End

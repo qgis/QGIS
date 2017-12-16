@@ -40,8 +40,6 @@ Constructor for QgsLayoutViewRubberBand.
     virtual QgsLayoutViewRubberBand *create( QgsLayoutView *view ) const = 0 /Factory/;
 %Docstring
 Creates a new instance of the QgsLayoutViewRubberBand subclass.
-
-:rtype: QgsLayoutViewRubberBand
 %End
 
     virtual void start( QPointF position, Qt::KeyboardModifiers modifiers ) = 0;
@@ -61,15 +59,11 @@ ending ``position`` (in layout coordinate space).
 Called when a rubber band use has finished and the rubber
 band is no longer required.
 Returns the final bounding box of the rubber band.
-
-:rtype: QRectF
 %End
 
     QgsLayoutView *view() const;
 %Docstring
 Returns the view associated with the rubber band.
-
-:rtype: QgsLayoutView
 
 .. seealso:: :py:func:`layout()`
 %End
@@ -78,16 +72,12 @@ Returns the view associated with the rubber band.
 %Docstring
 Returns the layout associated with the rubber band.
 
-:rtype: QgsLayout
-
 .. seealso:: :py:func:`view()`
 %End
 
     QBrush brush() const;
 %Docstring
 Returns the brush used for drawing the rubber band.
-
-:rtype: QBrush
 
 .. seealso:: :py:func:`setBrush()`
 
@@ -106,8 +96,6 @@ Sets the ``brush`` used for drawing the rubber band.
     QPen pen() const;
 %Docstring
 Returns the pen used for drawing the rubber band.
-
-:rtype: QPen
 
 .. seealso:: :py:func:`setPen()`
 
@@ -131,8 +119,6 @@ Calculates an updated bounding box rectangle from a original ``start`` position
 and new ``position``. If ``constrainSquare`` is true then the bounding box will be
 forced to a square shape. If ``fromCenter`` is true then the original ``start``
 position will form the center point of the returned rectangle.
-
-:rtype: QRectF
 %End
 
 };

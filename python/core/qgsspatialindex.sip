@@ -67,8 +67,6 @@ Destructor finalizes work with spatial index
     bool insertFeature( const QgsFeature &f );
 %Docstring
 Add feature to index
-
-:rtype: bool
 %End
 
     bool insertFeature( QgsFeatureId id, const QgsRectangle &bounds );
@@ -76,8 +74,6 @@ Add feature to index
 Add a feature ``id`` to the index with a specified bounding box.
 
 :return: true if feature was successfully added to index.
-:rtype: bool
-
 
 .. versionadded:: 3.0
 %End
@@ -85,8 +81,6 @@ Add a feature ``id`` to the index with a specified bounding box.
     bool deleteFeature( const QgsFeature &f );
 %Docstring
 Remove feature from index
-
-:rtype: bool
 %End
 
 
@@ -94,23 +88,17 @@ Remove feature from index
     QList<QgsFeatureId> intersects( const QgsRectangle &rect ) const;
 %Docstring
 Returns features that intersect the specified rectangle
-
-:rtype: list of QgsFeatureId
 %End
 
     QList<QgsFeatureId> nearestNeighbor( const QgsPointXY &point, int neighbors ) const;
 %Docstring
 Returns nearest neighbors (their count is specified by second parameter)
-
-:rtype: list of QgsFeatureId
 %End
 
 
     int  refs() const;
 %Docstring
 get reference count - just for debugging!
-
-:rtype: QAtomicInt
 %End
 
 };

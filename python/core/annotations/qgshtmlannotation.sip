@@ -47,8 +47,6 @@ Sets the file path for the source HTML file.
 %Docstring
 Returns the file path for the source HTML file.
 
-:rtype: str
-
 .. seealso:: :py:func:`setSourceFile()`
 %End
 
@@ -63,8 +61,6 @@ Returns the file path for the source HTML file.
     static QgsHtmlAnnotation *create() /Factory/;
 %Docstring
 Returns a new QgsHtmlAnnotation object.
-
-:rtype: QgsHtmlAnnotation
 %End
 
   protected:

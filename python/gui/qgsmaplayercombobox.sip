@@ -38,8 +38,6 @@ setFilters allows fitering according to layer type and/or geometry type.
     QgsMapLayerProxyModel::Filters filters() const;
 %Docstring
 currently used filter on list layers
-
-:rtype: QgsMapLayerProxyModel.Filters
 %End
 
     void setExceptedLayerList( const QList<QgsMapLayer *> &layerList );
@@ -50,8 +48,6 @@ except a list of layers not to be listed
     QList<QgsMapLayer *> exceptedLayerList() const;
 %Docstring
 returns the list of excepted layers
-
-:rtype: list of QgsMapLayer
 %End
 
     void setExcludedProviders( const QStringList &providers );
@@ -66,8 +62,6 @@ Sets a list of data providers which should be excluded from the combobox.
     QStringList excludedProviders() const;
 %Docstring
 Returns the list of data providers which are excluded from the combobox.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`setExcludedProviders()`
 
@@ -87,8 +81,6 @@ Sets whether an optional empty layer ("not set") option is shown in the combo bo
 %Docstring
 Returns true if the combo box allows the empty layer ("not set") choice.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setAllowEmptyLayer()`
 
 .. versionadded:: 3.0
@@ -106,8 +98,6 @@ Sets whether the CRS of layers is also included in the combo box text.
     bool showCrs() const;
 %Docstring
 Returns true if the combo box shows the layer's CRS.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setShowCrs()`
 
@@ -129,8 +119,6 @@ layer registry, or paths to layers which have not yet been loaded into QGIS.
 %Docstring
 Return the list of additional (non map layer) items included at the end of the combo box.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`setAdditionalItems()`
 
 .. versionadded:: 3.0
@@ -140,17 +128,14 @@ Return the list of additional (non map layer) items included at the end of the c
 %Docstring
 Returns the current layer selected in the combo box.
 
-:rtype: QgsMapLayer
-
 .. seealso:: :py:func:`layer`
 %End
 
     QgsMapLayer *layer( int layerIndex ) const;
 %Docstring
 Return the layer currently shown at the specified index within the combo box.
-:param layerIndex: position of layer to return
 
-:rtype: QgsMapLayer
+:param layerIndex: position of layer to return
 
 .. versionadded:: 2.10
 

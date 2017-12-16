@@ -42,8 +42,6 @@ the scene with the rulers.
 %Docstring
 Returns the current layout view associated with the ruler.
 
-:rtype: QgsLayoutView
-
 .. seealso:: :py:func:`setLayoutView()`
 %End
 
@@ -58,8 +56,6 @@ Sets the current layout ``view`` to synchronize the ruler with.
 %Docstring
 Returns the ruler size (either the height of a horizontal ruler or the
 width of a vertical rule).
-
-:rtype: int
 %End
 
     void setContextMenu( QMenu *menu );

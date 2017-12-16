@@ -148,15 +148,11 @@ Creates a new OrderByClause for a QgsFeatureRequest
 The expression
 
 :return: the expression
-:rtype: QgsExpression
-
 %End
 
         bool prepare( QgsExpressionContext *context );
 %Docstring
 Prepare the expression with the given context.
-
-:rtype: bool
 
 .. seealso:: :py:func:`QgsExpression.prepare`
 
@@ -168,8 +164,6 @@ Prepare the expression with the given context.
 Order ascending
 
 :return: If ascending order is requested
-:rtype: bool
-
 %End
 
         void setAscending( bool ascending );
@@ -182,8 +176,6 @@ Set if ascending order is requested
 Set if NULLS should be returned first
 
 :return: if NULLS should be returned first
-:rtype: bool
-
 %End
 
         void setNullsFirst( bool nullsFirst );
@@ -194,8 +186,6 @@ Set if NULLS should be returned first
         QString dump() const;
 %Docstring
 Dumps the content to an SQL equivalent
-
-:rtype: str
 %End
 
 
@@ -232,8 +222,6 @@ Get a copy as a list of OrderByClauses
 
 This is only required in Python where the inheritance
 is not properly propagated and this makes it usable.
-
-:rtype: list of QgsFeatureRequest.OrderByClause
 %End
 
         void save( QDomElement &elem ) const;
@@ -249,15 +237,11 @@ Deserialize from XML
         QSet<QString> usedAttributes() const;
 %Docstring
 Returns a set of used attributes
-
-:rtype: set of str
 %End
 
         QString dump() const;
 %Docstring
 Dumps the content to an SQL equivalent syntax
-
-:rtype: str
 %End
     };
 
@@ -302,8 +286,6 @@ copy constructor
 Return the filter type which is currently set on this request
 
 :return: Filter type
-:rtype: FilterType
-
 %End
 
     QgsFeatureRequest &setFilterRect( const QgsRectangle &rectangle );
@@ -313,8 +295,6 @@ Sets the ``rectangle`` from which features will be taken. An empty rectangle rem
 When a destination CRS is set using setDestinationCrs(), ``rectangle``
 is expected to be in the same CRS as the destinationCrs(). Otherwise, ``rectangle``
 should use the same CRS as the source layer/provider.
-
-:rtype: QgsFeatureRequest
 
 .. seealso:: :py:func:`filterRect()`
 %End
@@ -328,42 +308,30 @@ When a destination CRS is set using setDestinationCrs(), the rectangle
 will be in the same CRS as the destinationCrs(). Otherwise, the rectangle
 will use the same CRS as the source layer/provider.
 
-:rtype: QgsRectangle
-
 .. seealso:: :py:func:`setFilterRect()`
 %End
 
     QgsFeatureRequest &setFilterFid( QgsFeatureId fid );
 %Docstring
 Set feature ID that should be fetched.
-
-:rtype: QgsFeatureRequest
 %End
     QgsFeatureId filterFid() const;
 %Docstring
 Get the feature ID that should be fetched.
-
-:rtype: QgsFeatureId
 %End
 
     QgsFeatureRequest &setFilterFids( const QgsFeatureIds &fids );
 %Docstring
 Set feature IDs that should be fetched.
-
-:rtype: QgsFeatureRequest
 %End
     const QgsFeatureIds &filterFids() const;
 %Docstring
 Get feature IDs that should be fetched.
-
-:rtype: QgsFeatureIds
 %End
 
     QgsFeatureRequest &setInvalidGeometryCheck( InvalidGeometryCheck check );
 %Docstring
 Sets invalid geometry checking behavior.
-
-:rtype: QgsFeatureRequest
 
 .. note::
 
@@ -379,8 +347,6 @@ directly from a QgsVectorDataProvider.
 %Docstring
 Returns the invalid geometry checking behavior.
 
-:rtype: InvalidGeometryCheck
-
 .. seealso:: :py:func:`setInvalidGeometryCheck()`
 
 .. versionadded:: 3.0
@@ -391,8 +357,6 @@ Returns the invalid geometry checking behavior.
 Sets a callback function to use when encountering an invalid geometry and
 invalidGeometryCheck() is set to GeometryAbortOnInvalid or GeometrySkipInvalid. This function will be
 called using the feature with invalid geometry as a parameter.
-
-:rtype: QgsFeatureRequest
 
 .. versionadded:: 3.0
 
@@ -417,9 +381,8 @@ called using the feature with invalid geometry as a parameter.
     QgsFeatureRequest &setFilterExpression( const QString &expression );
 %Docstring
 
-:rtype: QgsFeatureRequest
-
 .. seealso:: :py:class:`QgsExpression`
+
 :param expression: expression string
 
 .. seealso:: :py:func:`filterExpression`
@@ -430,8 +393,6 @@ called using the feature with invalid geometry as a parameter.
     QgsExpression *filterExpression() const;
 %Docstring
 Returns the filter expression if set.
-
-:rtype: QgsExpression
 
 .. seealso:: :py:func:`setFilterExpression`
 
@@ -444,16 +405,12 @@ Modifies the existing filter expression to add an additional expression filter. 
 filter expressions are combined using AND, so only features matching both
 the existing expression and the additional expression will be returned.
 
-:rtype: QgsFeatureRequest
-
 .. versionadded:: 2.14
 %End
 
     QgsExpressionContext *expressionContext();
 %Docstring
 Returns the expression context used to evaluate filter expressions.
-
-:rtype: QgsExpressionContext
 
 .. versionadded:: 2.12
 
@@ -465,8 +422,6 @@ Returns the expression context used to evaluate filter expressions.
     QgsFeatureRequest &setExpressionContext( const QgsExpressionContext &context );
 %Docstring
 Sets the expression context used to evaluate filter expressions.
-
-:rtype: QgsFeatureRequest
 
 .. versionadded:: 2.12
 
@@ -481,8 +436,6 @@ Disables filter conditions.
 The spatial filter (filterRect) will be kept in place.
 
 :return: The object the method is called on for chaining
-:rtype: QgsFeatureRequest
-
 
 .. versionadded:: 2.12
 %End
@@ -497,8 +450,6 @@ Adds a new OrderByClause, appending it as the least important one.
 If the order is ascending, by default nulls are last
 If the order is descending, by default nulls are first
 
-:rtype: QgsFeatureRequest
-
 .. versionadded:: 2.14
 %End
 
@@ -510,16 +461,12 @@ Adds a new OrderByClause, appending it as the least important one.
 :param ascending:  If the order should be ascending (1,2,3) or descending (3,2,1)
 :param nullsfirst: If true, NULLS are at the beginning, if false, NULLS are at the end
 
-:rtype: QgsFeatureRequest
-
 .. versionadded:: 2.14
 %End
 
     OrderBy orderBy() const;
 %Docstring
 Return a list of order by clauses specified for this feature request.
-
-:rtype: OrderBy
 
 .. versionadded:: 2.14
 %End
@@ -528,17 +475,14 @@ Return a list of order by clauses specified for this feature request.
 %Docstring
 Set a list of order by clauses.
 
-:rtype: QgsFeatureRequest
-
 .. versionadded:: 2.14
 %End
 
     QgsFeatureRequest &setLimit( long limit );
 %Docstring
 Set the maximum number of features to request.
-:param limit: maximum number of features, or -1 to request all features.
 
-:rtype: QgsFeatureRequest
+:param limit: maximum number of features, or -1 to request all features.
 
 .. seealso:: :py:func:`limit()`
 
@@ -549,8 +493,6 @@ Set the maximum number of features to request.
 %Docstring
 Returns the maximum number of features to request, or -1 if no limit set.
 
-:rtype: long
-
 .. seealso:: :py:func:`setLimit`
 
 .. versionadded:: 2.14
@@ -559,21 +501,13 @@ Returns the maximum number of features to request, or -1 if no limit set.
     QgsFeatureRequest &setFlags( QgsFeatureRequest::Flags flags );
 %Docstring
 Set flags that affect how features will be fetched
-
-:rtype: QgsFeatureRequest
 %End
     const Flags &flags() const;
-%Docstring
-
-:rtype: Flags
-%End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QgsAttributeList &attrs );
 %Docstring
 Set a subset of attributes that will be fetched. Empty list means that all attributes are used.
 To disable fetching attributes, reset the FetchAttributes flag (which is set by default)
-
-:rtype: QgsFeatureRequest
 %End
 
     QgsAttributeList subsetOfAttributes() const;
@@ -581,29 +515,21 @@ To disable fetching attributes, reset the FetchAttributes flag (which is set by 
 Return the subset of attributes which at least need to be fetched
 
 :return: A list of attributes to be fetched
-:rtype: QgsAttributeList
-
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QStringList &attrNames, const QgsFields &fields );
 %Docstring
 Set a subset of attributes by names that will be fetched
-
-:rtype: QgsFeatureRequest
 %End
 
     QgsFeatureRequest &setSubsetOfAttributes( const QSet<QString> &attrNames, const QgsFields &fields );
 %Docstring
 Set a subset of attributes by names that will be fetched
-
-:rtype: QgsFeatureRequest
 %End
 
     QgsFeatureRequest &setSimplifyMethod( const QgsSimplifyMethod &simplifyMethod );
 %Docstring
 Set a simplification method for geometries that will be fetched
-
-:rtype: QgsFeatureRequest
 
 .. versionadded:: 2.2
 %End
@@ -611,8 +537,6 @@ Set a simplification method for geometries that will be fetched
     const QgsSimplifyMethod &simplifyMethod() const;
 %Docstring
 Get simplification method for geometries that will be fetched
-
-:rtype: QgsSimplifyMethod
 
 .. versionadded:: 2.2
 %End
@@ -622,8 +546,6 @@ Get simplification method for geometries that will be fetched
 Returns the destination coordinate reference system for feature's geometries,
 or an invalid QgsCoordinateReferenceSystem if no reprojection will be done
 and all features will be left with their original geometry.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. seealso:: :py:func:`setDestinationCrs()`
 
@@ -651,8 +573,6 @@ destination CRS. Similarly, virtual field values will be calculated using the
 original geometry in the source CRS, so these values are not affected by
 any destination CRS transform present in the feature request.
 
-:rtype: QgsFeatureRequest
-
 .. seealso:: :py:func:`destinationCrs()`
 
 .. versionadded:: 3.0
@@ -663,8 +583,6 @@ any destination CRS transform present in the feature request.
 Sets a callback function to use when encountering a transform error when iterating
 features and a destinationCrs() is set. This function will be
 called using the feature which encountered the transform error as a parameter.
-
-:rtype: QgsFeatureRequest
 
 .. versionadded:: 3.0
 
@@ -696,7 +614,6 @@ Check if a feature is accepted by this requests filter
 :param feature:  The feature which will be tested
 
 :return: true, if the filter accepts the feature
-:rtype: bool
 
 
 .. versionadded:: 2.1
@@ -706,8 +623,6 @@ Check if a feature is accepted by this requests filter
 %Docstring
 The timeout for how long we should wait for a connection if none is available from the pool
 at this moment. A negative value (which is set by default) will wait forever.
-
-:rtype: int
 
 .. note::
 
@@ -753,11 +668,10 @@ Base class that can be used for any class that is capable of returning features
     virtual QgsFeatureIterator getFeatures( const QgsFeatureRequest &request = QgsFeatureRequest() ) = 0;
 %Docstring
 Get an iterator for features matching the specified request
+
 :param request: The request
 
 :return: A feature iterator
-:rtype: QgsFeatureIterator
-
 %End
 
   protected:

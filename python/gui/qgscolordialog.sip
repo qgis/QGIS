@@ -28,6 +28,7 @@ hue wheel supports, color swatches, and a color sampler.
                     const QColor &color = QColor() );
 %Docstring
 Create a new color picker dialog
+
 :param parent: parent widget
 :param fl: window flags
 :param color: initial color for dialog
@@ -38,13 +39,12 @@ Create a new color picker dialog
 Returns the current color for the dialog
 
 :return: dialog color
-:rtype: QColor
-
 %End
 
     void setTitle( const QString &title );
 %Docstring
 Sets the title for the color dialog
+
 :param title: title for dialog box
 %End
 
@@ -52,6 +52,7 @@ Sets the title for the color dialog
 %Docstring
 Sets whether opacity modification (transparency) is permitted
 for the color dialog. Defaults to true.
+
 :param allowOpacity: set to false to disable opacity modification
 
 .. versionadded:: 3.0
@@ -63,6 +64,7 @@ for the color dialog. Defaults to true.
                                 const bool allowOpacity = true );
 %Docstring
 Return a color selection from a color dialog, with live updating of interim selections.
+
 :param initialColor: the initial color of the selection dialog.
 :param updateObject: the receiver object of the live updating.
 :param updateSlot: the receiver object's slot for live updating (e.g. SLOT( setValidColor( const QColor& ) ) ).
@@ -71,8 +73,6 @@ Return a color selection from a color dialog, with live updating of interim sele
 :param allowOpacity: set to true to allow modification of color opacity value (transparency)
 
 :return: Selected color on accepted() or initialColor on rejected().
-:rtype: QColor
-
 
 .. seealso:: :py:func:`getColor`
 %End
@@ -81,14 +81,13 @@ Return a color selection from a color dialog, with live updating of interim sele
                             const bool allowOpacity = false );
 %Docstring
 Return a color selection from a color dialog.
+
 :param initialColor: the initial color of the selection dialog.
 :param parent: parent widget
 :param title: the title of the dialog.
 :param allowOpacity: set to true to allow modification of color opacity value (transparency)
 
 :return: Selected color on accepted() or initialColor on rejected().
-:rtype: QColor
-
 
 .. seealso:: :py:func:`getLiveColor`
 %End
@@ -98,6 +97,7 @@ Return a color selection from a color dialog.
     void currentColorChanged( const QColor &color );
 %Docstring
 Emitted when the dialog's color changes
+
 :param color: current color
 %End
 
@@ -106,6 +106,7 @@ Emitted when the dialog's color changes
     void setColor( const QColor &color );
 %Docstring
 Sets the current color for the dialog
+
 :param color: desired color
 %End
 

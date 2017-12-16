@@ -35,8 +35,6 @@ Construct legend renderer. The ownership of legend model does not change
     QSizeF minimumSize();
 %Docstring
 Run the layout algorithm and determine the size required for legend
-
-:rtype: QSizeF
 %End
 
     void setLegendSize( QSizeF s );
@@ -47,8 +45,6 @@ Set the preferred resulting legend size.
     QSizeF legendSize() const;
 %Docstring
 Find out preferred legend size set by the client. If null, the legend will be drawn with the minimum size
-
-:rtype: QSizeF
 %End
 
     void drawLegend( QPainter *painter );
@@ -60,10 +56,6 @@ Painter should be scaled beforehand so that units correspond to millimeters.
 
     static void setNodeLegendStyle( QgsLayerTreeNode *node, QgsLegendStyle::Style style );
     static QgsLegendStyle::Style nodeLegendStyle( QgsLayerTreeNode *node, QgsLayerTreeModel *model );
-%Docstring
-
-:rtype: QgsLegendStyle.Style
-%End
 
 };
 

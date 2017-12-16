@@ -27,8 +27,6 @@ Calculates aspect values in a window of 3x3 cells based on first order derivativ
 %Docstring
 Calculates output value from nine input values. The input values and the output value can be equal to the
 nodata value if not present or outside of the border. Must be implemented by subclasses*
-
-:rtype: float
 %End
 
 };

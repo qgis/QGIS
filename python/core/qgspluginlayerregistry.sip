@@ -26,23 +26,15 @@ class for creating plugin specific layers
     virtual ~QgsPluginLayerType();
 
     QString name();
-%Docstring
-
-:rtype: str
-%End
 
     virtual QgsPluginLayer *createLayer() /Factory/;
 %Docstring
 Return new layer of this type. Return NULL on error
-
-:rtype: QgsPluginLayer
 %End
 
     virtual QgsPluginLayer *createLayer( const QString &uri ) /Factory/;
 %Docstring
 Return new layer of this type, using layer URI (specific to this plugin layer type). Return NULL on error.
-
-:rtype: QgsPluginLayer
 
 .. versionadded:: 2.10
 %End
@@ -50,8 +42,6 @@ Return new layer of this type, using layer URI (specific to this plugin layer ty
     virtual bool showLayerProperties( QgsPluginLayer *layer );
 %Docstring
 Show plugin layer properties dialog. Return false if the dialog cannot be shown.
-
-:rtype: bool
 %End
 
   protected:
@@ -83,36 +73,26 @@ Constructor for QgsPluginLayerRegistry.
 %Docstring
 List all known layer types
 \since QGIS *
-
-:rtype: list of str
 %End
 
     bool addPluginLayerType( QgsPluginLayerType *pluginLayerType /Transfer/ );
 %Docstring
 Add plugin layer type (take ownership) and return true on success
-
-:rtype: bool
 %End
 
     bool removePluginLayerType( const QString &typeName );
 %Docstring
 Remove plugin layer type and return true on success
-
-:rtype: bool
 %End
 
     QgsPluginLayerType *pluginLayerType( const QString &typeName );
 %Docstring
 Return plugin layer type metadata or NULL if doesn't exist
-
-:rtype: QgsPluginLayerType
 %End
 
     QgsPluginLayer *createLayer( const QString &typeName, const QString &uri = QString() ) /Factory/;
 %Docstring
 Returns new layer if corresponding plugin has been found else returns a None.
-
-:rtype: QgsPluginLayer
 
 .. note::
 

@@ -66,8 +66,6 @@ Constructor
 Return the name of this element
 
 :return: The name for this element
-:rtype: str
-
 %End
 
     AttributeEditorType type() const;
@@ -75,15 +73,11 @@ Return the name of this element
 The type of this element
 
 :return: The type
-:rtype: AttributeEditorType
-
 %End
 
     QgsAttributeEditorElement *parent() const;
 %Docstring
 Get the parent of this element.
-
-:rtype: QgsAttributeEditorElement
 
 .. versionadded:: 3.0
 %End
@@ -95,15 +89,11 @@ Get the XML Dom element to save this element.
 :param doc: The QDomDocument which is used to create new XML elements
 
 :return: A DOM element to serialize this element
-:rtype: QDomElement
-
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const = 0 /Factory/;
 %Docstring
 Returns a clone of this element. To be implemented by subclasses.
-
-:rtype: QgsAttributeEditorElement
 
 .. versionadded:: 3.0
 %End
@@ -111,8 +101,6 @@ Returns a clone of this element. To be implemented by subclasses.
     bool showLabel() const;
 %Docstring
 Controls if this element should be labeled with a title (field, relation or groupname).
-
-:rtype: bool
 
 .. versionadded:: 2.18
 %End
@@ -171,8 +159,6 @@ Determines if this container is rendered as collapsible group box or tab in a ta
 Returns if this container is going to be rendered as a group box
 
 :return: True if it will be a group box, false if it will be a tab
-:rtype: bool
-
 %End
 
     QList<QgsAttributeEditorElement *> children() const;
@@ -180,8 +166,6 @@ Returns if this container is going to be rendered as a group box
 Get a list of the children elements of this container
 
 :return: A list of elements
-:rtype: list of QgsAttributeEditorElement
-
 %End
 
     virtual QList<QgsAttributeEditorElement *> findElements( AttributeEditorType type ) const;
@@ -191,8 +175,6 @@ Traverses the element tree to find any element of the specified type
 :param type: The type which should be searched
 
 :return: A list of elements of the type which has been searched for
-:rtype: list of QgsAttributeEditorElement
-
 %End
 
     void clear();
@@ -208,8 +190,6 @@ Change the name of this container
     int columnCount() const;
 %Docstring
 Get the number of columns in this group
-
-:rtype: int
 %End
 
     void setColumnCount( int columnCount );
@@ -222,8 +202,6 @@ Set the number of columns in this group
 %Docstring
 Creates a deep copy of this element. To be implemented by subclasses.
 
-:rtype: QgsAttributeEditorElement
-
 .. versionadded:: 3.0
 %End
 
@@ -232,8 +210,6 @@ Creates a deep copy of this element. To be implemented by subclasses.
 The visibility expression is used in the attribute form to
 show or hide this container based on an expression incorporating
 the field value controlled by editor widgets.
-
-:rtype: QgsOptionalExpression
 
 .. versionadded:: 3.0
 %End
@@ -274,8 +250,6 @@ Creates a new attribute editor element which represents a field
 Return the index of the field
 
 :return:
-:rtype: int
-
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
@@ -317,8 +291,6 @@ Creates a new element which embeds a relation.
 Get the id of the relation which shall be embedded
 
 :return: the id
-:rtype: QgsRelation
-
 %End
 
     bool init( QgsRelationManager *relManager );
@@ -328,8 +300,6 @@ Initializes the relation from the id
 :param relManager: The relation manager to use for the initialization
 
 :return: true if the relation was found in the relationmanager
-:rtype: bool
-
 %End
 
     virtual QgsAttributeEditorElement *clone( QgsAttributeEditorElement *parent ) const /Factory/;
@@ -338,8 +308,6 @@ Initializes the relation from the id
     bool showLinkButton() const;
 %Docstring
 Determines if the "link feature" button should be shown
-
-:rtype: bool
 
 .. versionadded:: 2.18
 %End
@@ -354,8 +322,6 @@ Determines if the "link feature" button should be shown
     bool showUnlinkButton() const;
 %Docstring
 Determines if the "unlink feature" button should be shown
-
-:rtype: bool
 
 .. versionadded:: 2.18
 %End

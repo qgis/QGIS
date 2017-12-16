@@ -45,8 +45,6 @@ and ``layout``.
 Returns a new polyline item for the specified ``layout``.
 
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsLayoutItemPolyline
 %End
 
     virtual int type() const;
@@ -57,8 +55,6 @@ The caller takes responsibility for deleting the returned object.
     QgsLineSymbol *symbol();
 %Docstring
 Returns the line symbol used to draw the shape.
-
-:rtype: QgsLineSymbol
 
 .. seealso:: :py:func:`setSymbol()`
 %End
@@ -74,8 +70,6 @@ Ownership of ``symbol`` is not transferred.
     MarkerMode startMarker() const;
 %Docstring
 Returns the start marker mode, which controls what marker is drawn at the start of the line.
-
-:rtype: MarkerMode
 
 .. seealso:: :py:func:`setStartMarker()`
 
@@ -94,8 +88,6 @@ Sets the start marker ``mode``, which controls what marker is drawn at the start
     MarkerMode endMarker() const;
 %Docstring
 Returns the end marker mode, which controls what marker is drawn at the end of the line.
-
-:rtype: MarkerMode
 
 .. seealso:: :py:func:`setEndMarker()`
 
@@ -122,8 +114,6 @@ Sets the ``width`` of line arrow heads in mm.
 %Docstring
 Returns the width of line arrow heads in mm.
 
-:rtype: float
-
 .. seealso:: :py:func:`setArrowHeadWidth()`
 %End
 
@@ -139,8 +129,6 @@ Sets the ``path`` to a SVG marker to draw at the start of the line.
     QString startSvgMarkerPath() const;
 %Docstring
 Returns the path the an SVG marker drawn at the start of the line.
-
-:rtype: str
 
 .. seealso:: :py:func:`setStartSvgMarkerPath()`
 
@@ -160,8 +148,6 @@ Sets the ``path`` to a SVG marker to draw at the end of the line.
 %Docstring
 Returns the path the an SVG marker drawn at the end of the line.
 
-:rtype: str
-
 .. seealso:: :py:func:`setEndSvgMarkerPath()`
 
 .. seealso:: :py:func:`startSvgMarkerPath`
@@ -170,8 +156,6 @@ Returns the path the an SVG marker drawn at the end of the line.
     QColor arrowHeadStrokeColor() const;
 %Docstring
 Returns the color used to draw the stroke around the the arrow head.
-
-:rtype: QColor
 
 .. seealso:: :py:func:`arrowHeadFillColor()`
 
@@ -190,8 +174,6 @@ Sets the ``color`` used to draw the stroke around the arrow head.
     QColor arrowHeadFillColor() const;
 %Docstring
 Returns the color used to fill the arrow head.
-
-:rtype: QColor
 
 .. seealso:: :py:func:`arrowHeadStrokeColor()`
 
@@ -219,8 +201,6 @@ Sets the pen ``width`` in millimeters for the stroke of the arrow head
     double arrowHeadStrokeWidth() const;
 %Docstring
 Returns the pen width in millimeters for the stroke of the arrow head.
-
-:rtype: float
 
 .. seealso:: :py:func:`setArrowHeadStrokeWidth()`
 

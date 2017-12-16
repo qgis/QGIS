@@ -62,8 +62,6 @@ Sets the stroke ``color`` for the marker.
 %Docstring
 Returns the stroke color for the marker.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setColor()`
 
 .. seealso:: :py:func:`fillColor()`
@@ -87,8 +85,6 @@ applies to some icon types.
 %Docstring
 Returns the fill ``color`` for the marker. This setting only
 applies to some icon types.
-
-:rtype: QColor
 
 .. versionadded:: 3.0
 

@@ -70,16 +70,12 @@ Construct a new composition linked to the specified project.
 The project associated with the composition. Used to get access to layers, map themes,
 relations and various other bits. It is never null.
 
-:rtype: QgsProject
-
 .. versionadded:: 3.0
 %End
 
     QString name() const;
 %Docstring
 Returns the composition's name.
-
-:rtype: str
 
 .. seealso:: :py:func:`setName()`
 
@@ -99,6 +95,7 @@ Sets the composition's name.
                        bool keepRelativeItemPosition = true );
 %Docstring
 Changes size of paper item.
+
 :param width: page width in mm
 :param height: page height in mm
 :param keepRelativeItemPosition: if true, all items and guides will be moved so that they retain
@@ -114,8 +111,6 @@ their same relative position to the top left corner of their current page.
 Height of paper item
 
 :return: height in mm
-:rtype: float
-
 
 .. seealso:: :py:func:`paperWidth`
 
@@ -127,8 +122,6 @@ Height of paper item
 Width of paper item
 
 :return: width in mm
-:rtype: float
-
 
 .. seealso:: :py:func:`paperHeight`
 
@@ -143,6 +136,7 @@ Calling this method resets the number of pages to 1, with the size set to the
 minimum size required to fit all existing composer items. Items will also be
 repositioned so that the new top-left bounds of the composition is at the point
 (marginLeft, marginTop). An optional margin can be specified.
+
 :param marginTop: top margin (millimeters)
 :param marginRight: right margin  (millimeters)
 :param marginBottom: bottom margin  (millimeters)
@@ -160,6 +154,7 @@ repositioned so that the new top-left bounds of the composition is at the point
 %Docstring
 Sets the resize to contents margins. These margins are saved in the composition
 so that they can be restored with the composer.
+
 :param marginTop: top margin (millimeters)
 :param marginRight: right margin  (millimeters)
 :param marginBottom: bottom margin  (millimeters)
@@ -177,6 +172,7 @@ so that they can be restored with the composer.
 %Docstring
 Returns the resize to contents margins. These margins are saved in the composition
 so that they can be restored with the composer.
+
 :param marginTop: reference for top margin (millimeters)
 :param marginRight: reference for right margin  (millimeters)
 :param marginBottom: reference for bottom margin  (millimeters)
@@ -194,13 +190,12 @@ so that they can be restored with the composer.
 Returns the vertical space between pages in a composer view
 
 :return: space between pages in mm
-:rtype: float
-
 %End
 
     void setNumPages( const int pages );
 %Docstring
 Sets the number of pages for the composition.
+
 :param pages: number of pages
 
 .. seealso:: :py:func:`numPages`
@@ -211,8 +206,6 @@ Sets the number of pages for the composition.
 Returns the number of pages in the composition.
 
 :return: number of pages
-:rtype: int
-
 
 .. seealso:: :py:func:`setNumPages`
 %End
@@ -221,11 +214,10 @@ Returns the number of pages in the composition.
 %Docstring
 Returns whether a page is empty, ie, it contains no items except for the background
 paper item.
+
 :param page: page number, starting with 1
 
 :return: true if page is empty
-:rtype: bool
-
 
 .. versionadded:: 2.5
 
@@ -239,11 +231,10 @@ paper item.
     bool shouldExportPage( const int page ) const;
 %Docstring
 Returns whether a specified page number should be included in exports of the composition.
+
 :param page: page number, starting with 1
 
 :return: true if page should be exported
-:rtype: bool
-
 
 .. versionadded:: 2.5
 
@@ -259,15 +250,11 @@ Note: added in version 2.1
     QgsFillSymbol *pageStyleSymbol();
 %Docstring
 Note: added in version 2.1
-
-:rtype: QgsFillSymbol
 %End
 
     QPointF positionOnPage( QPointF position ) const;
 %Docstring
 Returns the position within a page of a point in the composition
-
-:rtype: QPointF
 
 .. versionadded:: 2.1
 %End
@@ -275,8 +262,6 @@ Returns the position within a page of a point in the composition
     int pageNumberForPoint( QPointF position ) const;
 %Docstring
 Returns the page number corresponding to a point in the composition
-
-:rtype: int
 
 .. versionadded:: 2.1
 %End
@@ -297,47 +282,28 @@ Refreshes the composition when composer related options change
 
     void setSnapToGridEnabled( const bool b );
     bool snapToGridEnabled() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setGridVisible( const bool b );
     bool gridVisible() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setSnapLinesVisible( const bool visible );
 %Docstring
 Hides / shows custom snap lines
 %End
     bool snapLinesVisible() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setAlignmentSnap( const bool s );
     bool alignmentSnap() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setSmartGuidesEnabled( const bool b );
     bool smartGuidesEnabled() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void setPagesVisible( bool visible );
 %Docstring
 Sets whether the page items should be visible in the composition. Removing
 them will prevent both display of the page boundaries in composer views and
 will also prevent them from being rendered in composition exports.
+
 :param visible: set to true to show pages, false to hide pages
 
 .. versionadded:: 2.12
@@ -351,8 +317,6 @@ Returns whether the page items are be visible in the composition. This setting
 effects both display of the page boundaries in composer views and
 whether they will be rendered in composition exports.
 
-:rtype: bool
-
 .. versionadded:: 2.12
 
 .. seealso:: :py:func:`setPagesVisible()`
@@ -365,43 +329,24 @@ Removes all snap lines
 
     void setSnapGridResolution( const double r );
     double snapGridResolution() const;
-%Docstring
-
-:rtype: float
-%End
 
     void setSnapGridOffsetX( const double offset );
     double snapGridOffsetX() const;
-%Docstring
-
-:rtype: float
-%End
 
     void setSnapGridOffsetY( const double offset );
     double snapGridOffsetY() const;
-%Docstring
-
-:rtype: float
-%End
 
     void setGridPen( const QPen &p );
     QPen gridPen() const;
-%Docstring
-
-:rtype: QPen
-%End
 
     void setGridStyle( const GridStyle s );
     GridStyle gridStyle() const;
-%Docstring
-
-:rtype: GridStyle
-%End
 
     void setSnapTolerance( const int snapTolerance );
 %Docstring
 Sets the snap tolerance to use when automatically snapping items during movement and resizing to guides
 and the edges and centers of other items.
+
 :param snapTolerance: snap tolerance in pixels
 
 .. seealso:: :py:func:`alignmentSnapTolerance`
@@ -415,8 +360,6 @@ Returns the snap tolerance to use when automatically snapping items during movem
 and the edges and centers of other items.
 
 :return: snap tolerance in pixels
-:rtype: int
-
 
 .. seealso:: :py:func:`setAlignmentSnapTolerance`
 
@@ -426,6 +369,7 @@ and the edges and centers of other items.
     void setBoundingBoxesVisible( const bool boundsVisible );
 %Docstring
 Sets whether selection bounding boxes should be shown in the composition
+
 :param boundsVisible: set to true to show selection bounding box
 
 .. seealso:: :py:func:`boundingBoxesVisible`
@@ -438,8 +382,6 @@ Sets whether selection bounding boxes should be shown in the composition
 Returns whether selection bounding boxes should be shown in the composition
 
 :return: true if selection bounding boxes should be shown
-:rtype: bool
-
 
 .. seealso:: :py:func:`setBoundingBoxesVisible`
 
@@ -449,62 +391,51 @@ Returns whether selection bounding boxes should be shown in the composition
     QUndoStack *undoStack();
 %Docstring
 Returns pointer to undo/redo command storage
-
-:rtype: QUndoStack
 %End
 
     QgsComposerItem *composerItemAt( QPointF position, const bool ignoreLocked = false ) const;
 %Docstring
 Returns the topmost composer item at a specified position. Ignores paper items.
+
 :param position: point to search for item at
 :param ignoreLocked: set to true to ignore locked items
 
 :return: composer item at position
-:rtype: QgsComposerItem
-
 %End
 
     QgsComposerItem *composerItemAt( QPointF position, const QgsComposerItem *belowItem, const bool ignoreLocked = false ) const;
 %Docstring
 Returns the topmost composer item at a specified position which is below a specified item. Ignores paper items.
+
 :param position: point to search for item at
 :param belowItem: item to search below
 :param ignoreLocked: set to true to ignore locked items
 
 :return: composer item at position which is below specified item
-:rtype: QgsComposerItem
-
 %End
 
     int pageNumberAt( QPointF position ) const;
 %Docstring
 Returns the page number (0-based) given a coordinate
-
-:rtype: int
 %End
 
     int itemPageNumber( const QgsComposerItem * ) const;
 %Docstring
 Returns on which page number (0-based) is displayed an item
-
-:rtype: int
 %End
 
     QList<QgsComposerItem *> selectedComposerItems( const bool includeLockedItems = true );
 %Docstring
 Returns list of selected composer items
+
 :param includeLockedItems: set to true to include locked items in list
 
 :return: list of selected items
-:rtype: list of QgsComposerItem
-
 %End
 
     QList<const QgsComposerMap *> composerMapItems() const;
 %Docstring
 Returns pointers to all composer maps in the scene
-
-:rtype: list of const QgsComposerMap
 
 .. note::
 
@@ -518,49 +449,35 @@ Returns pointers to all composer maps in the scene
 Returns the composer map with specified id
 
 :return: QgsComposerMap or 0 pointer if the composer map item does not exist
-:rtype: QgsComposerMap
-
 %End
 
     const QgsComposerItem *getComposerItemById( const QString &id ) const;
 %Docstring
 Returns a composer item given its text identifier.
 Ids are not necessarely unique, but this function returns only one element.
+
 :param id: - A QString representing the identifier of the item to retrieve.
 
 :return: QgsComposerItem pointer or 0 pointer if no such item exists.
-:rtype: QgsComposerItem
-
 %End
 
     const QgsComposerItem *getComposerItemByUuid( const QString &uuid ) const;
 %Docstring
 Returns a composer item given its unique identifier.
-:param uuid: A QString representing the UUID of the item to
 
-:rtype: QgsComposerItem
+:param uuid: A QString representing the UUID of the item to
 %End
 
     int printResolution() const;
-%Docstring
-
-:rtype: int
-%End
     void setPrintResolution( const int dpi );
 
     bool printAsRaster() const;
-%Docstring
-
-:rtype: bool
-%End
     void setPrintAsRaster( const bool enabled );
 
     bool generateWorldFile() const;
 %Docstring
 Returns true if the composition will generate corresponding world files when pages
 are exported.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setGenerateWorldFile()`
 
@@ -571,6 +488,7 @@ are exported.
 %Docstring
 Sets whether the composition will generate corresponding world files when pages
 are exported.
+
 :param enabled: set to true to generate world files
 
 .. seealso:: :py:func:`generateWorldFile()`
@@ -584,8 +502,6 @@ Returns the map item which will be used to generate corresponding world files wh
 composition is exported. If no map was explicitly set via setReferenceMap(), the largest
 map in the composition will be returned (or None if there are no maps in the composition).
 
-:rtype: QgsComposerMap
-
 .. seealso:: :py:func:`setReferenceMap()`
 
 .. seealso:: :py:func:`generateWorldFile()`
@@ -595,6 +511,7 @@ map in the composition will be returned (or None if there are no maps in the com
 %Docstring
 Sets the map item which will be used to generate corresponding world files when the
 composition is exported.
+
 :param map: composer map item
 
 .. seealso:: :py:func:`referenceMap()`
@@ -605,8 +522,6 @@ composition is exported.
     bool useAdvancedEffects() const;
 %Docstring
 Returns true if a composition should use advanced effects such as blend modes
-
-:rtype: bool
 %End
     void setUseAdvancedEffects( const bool effectsEnabled );
 %Docstring
@@ -614,44 +529,36 @@ Used to enable or disable advanced effects such as blend modes in a composition
 %End
 
     QgsComposition::PlotStyle plotStyle() const;
-%Docstring
-
-:rtype: QgsComposition.PlotStyle
-%End
     void setPlotStyle( const QgsComposition::PlotStyle style );
 
     bool writeXml( QDomElement &composerElem, QDomDocument &doc );
 %Docstring
 Writes settings to xml (paper dimension)
-
-:rtype: bool
 %End
 
     bool readXml( const QDomElement &compositionElem, const QDomDocument &doc );
 %Docstring
 Reads settings from xml file
-
-:rtype: bool
 %End
 
     bool loadFromTemplate( const QDomDocument &doc, QMap<QString, QString> *substitutionMap = 0,
                            bool addUndoCommands = false, const bool clearComposition = true );
 %Docstring
 Load a template document
+
 :param doc: template document
 :param substitutionMap: map with text to replace. Text needs to be enclosed by brackets (e.g. '[text]' )
 :param addUndoCommands: whether or not to add undo commands
 :param clearComposition: set to true to clear the existing composition and read all composition and
 atlas properties from the template. Set to false to only add new items from the template, without
 overwriting the existing items or composition settings.
-
-:rtype: bool
 %End
 
     void addItemsFromXml( const QDomElement &elem, const QDomDocument &doc,
                           bool addUndoCommands = false, QPointF *pos = 0, bool pasteInPlace = false );
 %Docstring
 Add items from XML representation to the graphics scene (for project file reading, pasting items from clipboard)
+
 :param elem: items parent element, e.g. \verbatim <Composer> \endverbatim or \verbatim <ComposerItemClipboard> \endverbatim
 :param doc: xml document
 :param addUndoCommands: insert AddItem commands if true (e.g. for copy/paste)
@@ -671,40 +578,16 @@ Removes item from z list. Usually called from destructor of QgsComposerItem
     void raiseSelectedItems();
 
     bool raiseItem( QgsComposerItem *item );
-%Docstring
-
-:rtype: bool
-%End
     void lowerSelectedItems();
     bool lowerItem( QgsComposerItem *item );
-%Docstring
-
-:rtype: bool
-%End
     void moveSelectedItemsToTop();
     bool moveItemToTop( QgsComposerItem *item );
-%Docstring
-
-:rtype: bool
-%End
     void moveSelectedItemsToBottom();
     bool moveItemToBottom( QgsComposerItem *item );
-%Docstring
-
-:rtype: bool
-%End
 
     void selectNextByZOrder( const ZValueDirection direction );
     QgsComposerItem *getComposerItemBelow( QgsComposerItem *item ) const;
-%Docstring
-
-:rtype: QgsComposerItem
-%End
     QgsComposerItem *getComposerItemAbove( QgsComposerItem *item ) const;
-%Docstring
-
-:rtype: QgsComposerItem
-%End
 
     void alignSelectedItemsLeft();
     void alignSelectedItemsHCenter();
@@ -725,11 +608,10 @@ Unlock all items
     QgsComposerItemGroup *groupItems( QList<QgsComposerItem *> items );
 %Docstring
 Creates a new group from a list of composer items and adds it to the composition.
+
 :param items: items to include in group
 
 :return: QgsComposerItemGroup of grouped items, if grouping was possible
-:rtype: QgsComposerItemGroup
-
 
 .. versionadded:: 2.6
 %End
@@ -738,11 +620,10 @@ Creates a new group from a list of composer items and adds it to the composition
 %Docstring
 Ungroups items by removing them from an item group and removing the group from the
 composition.
+
 :param group: item group to ungroup
 
 :return: list of items removed from the group, or an empty list if ungrouping
-:rtype: list of QgsComposerItem
-
 was not successful
 
 .. versionadded:: 2.6
@@ -757,23 +638,17 @@ but missing from the z order list.
     QPointF snapPointToGrid( QPointF scenePoint ) const;
 %Docstring
 Snaps a scene coordinate point to grid
-
-:rtype: QPointF
 %End
 
     QList< QGraphicsLineItem * > *snapLines();
 %Docstring
 Returns pointer to snap lines collection
-
-:rtype: list of QGraphicsLineItem
 %End
 
 
     QGraphicsLineItem *addSnapLine();
 %Docstring
 Add a custom snap line (can be horizontal or vertical)
-
-:rtype: QGraphicsLineItem
 %End
     void removeSnapLine( QGraphicsLineItem *line );
 %Docstring
@@ -784,6 +659,7 @@ Remove custom snap line (and delete the object)
     void beginCommand( QgsComposerItem *item, const QString &commandText, const QgsComposerMergeCommand::Context c = QgsComposerMergeCommand::Unknown );
 %Docstring
 Allocates new item command and saves initial state in it
+
 :param item: target item
 :param commandText: descriptive command text
 :param c: context for merge commands (unknown for non-mergeable commands)
@@ -875,10 +751,6 @@ If true, prevents any mouse cursor changes by the composition or by any composer
 Used by QgsComposer and QgsComposerView to prevent unwanted cursor changes
 %End
     bool preventCursorChange() const;
-%Docstring
-
-:rtype: bool
-%End
 
     void beginPrint( QPrinter &printer, const bool evaluateDDPageSize = false );
 %Docstring
@@ -892,6 +764,7 @@ Prepare the printer for printing in a PDF
     void doPrint( QPrinter &printer, QPainter &painter, bool startNewPage = false );
 %Docstring
 Print on a preconfigured printer
+
 :param printer: QPrinter destination
 :param painter: QPainter source
 :param startNewPage: set to true to begin the print on a new page
@@ -902,8 +775,6 @@ Print on a preconfigured printer
 Convenience function that prepares the printer and prints
 
 :return: true if print was successful
-:rtype: bool
-
 %End
 
     bool exportAsPDF( const QString &file );
@@ -911,13 +782,12 @@ Convenience function that prepares the printer and prints
 Convenience function that prepares the printer for printing in PDF and prints
 
 :return: true if export was successful
-:rtype: bool
-
 %End
 
     QImage printPageAsRaster( int page, QSize imageSize = QSize(), int dpi = 0 );
 %Docstring
 Renders a composer page to an image.
+
 :param page: page number, 0 based such that the first page is page 0
 :param imageSize: optional target image size, in pixels. It is the caller's responsibility
 to ensure that the ratio of the target image size matches the ratio of the composition
@@ -926,8 +796,6 @@ page size.
 parameter has no effect if imageSize is specified.
 
 :return: rendered image, or null image if image does not fit into available memory
-:rtype: QImage
-
 
 .. seealso:: :py:func:`renderRectAsRaster()`
 
@@ -938,6 +806,7 @@ parameter has no effect if imageSize is specified.
 %Docstring
 Renders a portion of the composition to an image. This method can be used to render
 sections of pages rather than full pages.
+
 :param rect: region of composition to render
 :param imageSize: optional target image size, in pixels. It is the caller's responsibility
 to ensure that the ratio of the target image size matches the ratio of the specified
@@ -946,8 +815,6 @@ region of the composition.
 parameter has no effect if imageSize is specified.
 
 :return: rendered image, or null image if image does not fit into available memory
-:rtype: QImage
-
 
 .. versionadded:: 2.12
 
@@ -959,6 +826,7 @@ parameter has no effect if imageSize is specified.
     void renderPage( QPainter *p, int page );
 %Docstring
 Renders a full page to a paint device.
+
 :param p: destination painter
 :param page: page number, 0 based such that the first page is page 0
 
@@ -971,6 +839,7 @@ Renders a full page to a paint device.
 %Docstring
 Renders a portion of the composition to a paint device. This method can be used
 to render sections of pages rather than full pages.
+
 :param p: destination painter
 :param rect: region of composition to render
 
@@ -985,6 +854,7 @@ to render sections of pages rather than full pages.
                              const QRectF &exportRegion = QRectF(), double dpi = -1 ) const;
 %Docstring
 Georeferences a file (image of PDF) exported from the composition.
+
 :param file: filename of exported file
 :param referenceMap: map item to use for georeferencing, or leave as None to use the
 currently defined referenceMap().
@@ -1004,6 +874,7 @@ will be exported.
     void computeWorldFileParameters( const QRectF &exportRegion, double &a, double &b, double &c, double &d, double &e, double &f ) const;
 %Docstring
 Computes the world file parameters for a specified region of the composition.
+
 :param exportRegion: region of the composition which will be associated with world file
 :param a:
 :param b:
@@ -1016,18 +887,12 @@ Computes the world file parameters for a specified region of the composition.
 %End
 
     QgsAtlasComposition &atlasComposition();
-%Docstring
-
-:rtype: QgsAtlasComposition
-%End
 
     QgsComposition::AtlasMode atlasMode() const;
 %Docstring
 Returns the current atlas mode of the composition
 
 :return: current atlas mode
-:rtype: QgsComposition.AtlasMode
-
 
 .. seealso:: :py:func:`setAtlasMode`
 %End
@@ -1035,11 +900,10 @@ Returns the current atlas mode of the composition
     bool setAtlasMode( const QgsComposition::AtlasMode mode );
 %Docstring
 Sets the current atlas mode of the composition.
+
 :param mode: atlas mode to switch to
 
 :return: false if the mode could not be changed.
-:rtype: bool
-
 
 .. seealso:: :py:func:`atlasMode`
 %End
@@ -1047,8 +911,6 @@ Sets the current atlas mode of the composition.
     QList< QgsPaperItem * > pages();
 %Docstring
 Return pages in the correct order
-
-:rtype: list of QgsPaperItem
 
 .. note::
 
@@ -1062,8 +924,6 @@ Return pages in the correct order
 Returns the items model attached to the composition
 
 :return: QgsComposerModel for composition
-:rtype: QgsComposerModel
-
 
 .. versionadded:: 2.5
 %End
@@ -1071,6 +931,7 @@ Returns the items model attached to the composition
     void setCustomProperty( const QString &key, const QVariant &value );
 %Docstring
 Set a custom property for the composition.
+
 :param key: property key. If a property with the same key already exists it will be overwritten.
 :param value: property value
 
@@ -1086,12 +947,11 @@ Set a custom property for the composition.
     QVariant customProperty( const QString &key, const QVariant &defaultValue = QVariant() ) const;
 %Docstring
 Read a custom property from the composition.
+
 :param key: property key
 :param defaultValue: default value to return if property with matching key does not exist
 
 :return: value of matching property
-:rtype: QVariant
-
 
 .. seealso:: :py:func:`setCustomProperty()`
 
@@ -1105,6 +965,7 @@ Read a custom property from the composition.
     void removeCustomProperty( const QString &key );
 %Docstring
 Remove a custom property from the composition.
+
 :param key: property key
 
 .. seealso:: :py:func:`setCustomProperty()`
@@ -1120,8 +981,6 @@ Remove a custom property from the composition.
 %Docstring
 Return list of keys stored in custom properties for composition.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`setCustomProperty()`
 
 .. seealso:: :py:func:`customProperty()`
@@ -1134,10 +993,9 @@ Return list of keys stored in custom properties for composition.
     QRectF pageItemBounds( int pageNumber, bool visibleOnly = false ) const;
 %Docstring
 Returns the bounding box of the items contained on a specified page.
+
 :param pageNumber: page number, where 0 is the first page
 :param visibleOnly: set to true to only include visible items
-
-:rtype: QRectF
 
 .. versionadded:: 2.12
 %End
@@ -1145,10 +1003,9 @@ Returns the bounding box of the items contained on a specified page.
     QRectF compositionBounds( bool ignorePages = false, double margin = 0.0 ) const;
 %Docstring
 Calculates the bounds of all non-gui items in the composition. Ignores snap lines and mouse handles.
+
 :param ignorePages: set to true to ignore page items
 :param margin: optional marginal (in percent, e.g., 0.05 = 5% ) to add around items
-
-:rtype: QRectF
 %End
 
     virtual QgsExpressionContext createExpressionContext() const;
@@ -1157,16 +1014,12 @@ Calculates the bounds of all non-gui items in the composition. Ignores snap line
 Creates an expression context relating to the compositions's current state. The context includes
 scopes for global, project, composition and atlas properties.
 
-:rtype: QgsExpressionContext
-
 .. versionadded:: 2.12
 %End
 
     QgsPropertyCollection &dataDefinedProperties();
 %Docstring
 Returns a reference to the composition's property collection, used for data defined overrides.
-
-:rtype: QgsPropertyCollection
 
 .. versionadded:: 3.0
 
@@ -1200,6 +1053,7 @@ attributes within the composition.
     void setSelectedItem( QgsComposerItem *item );
 %Docstring
 Clears any selected items and sets an item as the current selection.
+
 :param item: item to set as selected
 
 .. versionadded:: 2.3
@@ -1218,6 +1072,7 @@ the composition's model to update.
 %Docstring
 Refreshes a data defined property for the composition by reevaluating the property's value
 and redrawing the composition with this new value.
+
 :param property: data defined property to refresh. If property is set to
 QgsComposerItem.AllProperties then all data defined properties for the composition will be
 refreshed.
@@ -1229,6 +1084,7 @@ refreshed.
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
 Sets the composition's property collection, used for data defined overrides.
+
 :param collection: property collection. Existing properties will be replaced.
 
 .. versionadded:: 3.0

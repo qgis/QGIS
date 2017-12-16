@@ -22,6 +22,7 @@ class QgsLayerPropertiesWidget : QgsPanelWidget, QgsExpressionContextGenerator
     QgsLayerPropertiesWidget( QgsSymbolLayer *layer, const QgsSymbol *symbol, QgsVectorLayer *vl, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsLayerPropertiesWidget.
+
 :param layer: the symbol layer
 :param symbol: the symbol
 :param vl: associated vector layer
@@ -31,6 +32,7 @@ Constructor for QgsLayerPropertiesWidget.
     void setContext( const QgsSymbolWidgetContext &context );
 %Docstring
 Sets the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
+
 :param context: symbol widget context
 
 .. seealso:: :py:func:`context()`
@@ -42,8 +44,6 @@ Sets the context in which the symbol widget is shown, e.g., the associated map c
 %Docstring
 Returns the context in which the symbol widget is shown, e.g., the associated map canvas and expression contexts.
 
-:rtype: QgsSymbolWidgetContext
-
 .. seealso:: :py:func:`setContext()`
 
 .. versionadded:: 3.0
@@ -54,6 +54,7 @@ Returns the context in which the symbol widget is shown, e.g., the associated ma
 %Docstring
 Set the widget in dock mode which tells the widget to emit panel
 widgets and not open dialogs
+
 :param dockMode: True to enable dock mode.
 %End
 

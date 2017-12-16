@@ -35,23 +35,13 @@ Destructor.
 %End
 
     bool get( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() );
-%Docstring
-
-:rtype: bool
-%End
     void put( const QString &realm, const QString &username, const QString &password );
 
     bool getMasterPassword( QString &password /In,Out/, bool stored = false );
-%Docstring
-
-:rtype: bool
-%End
 
     static QgsCredentials *instance();
 %Docstring
 retrieves instance
-
-:rtype: QgsCredentials
 %End
 
     void lock();
@@ -74,8 +64,6 @@ Unlock the instance after being locked.
 %Docstring
 Return pointer to mutex
 
-:rtype: QMutex
-
 .. versionadded:: 2.4
 %End
 
@@ -89,15 +77,11 @@ Constructor for QgsCredentials.
     virtual bool request( const QString &realm, QString &username /In,Out/, QString &password /In,Out/, const QString &message = QString() ) = 0;
 %Docstring
 request a password
-
-:rtype: bool
 %End
 
     virtual bool requestMasterPassword( QString &password /In,Out/, bool stored = false ) = 0;
 %Docstring
 request a master password
-
-:rtype: bool
 %End
 
     void setInstance( QgsCredentials *instance );

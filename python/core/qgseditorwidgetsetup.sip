@@ -35,24 +35,18 @@ Constructor for QgsEditorWidgetSetup
 %Docstring
 
 :return: the widget type to use
-:rtype: str
-
 %End
 
     QVariantMap config() const;
 %Docstring
 
 :return: the widget configuration to used
-:rtype: QVariantMap
-
 %End
 
     bool isNull() const;
 %Docstring
 
 :return: true if there is no widget configured.
-:rtype: bool
-
 %End
 
 };

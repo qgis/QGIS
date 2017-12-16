@@ -36,8 +36,6 @@ Sets snapping match that should be displayed in map canvas. Invalid match hides 
     QgsPointLocator::Match match() const;
 %Docstring
 Returns currently displayed snapping match
-
-:rtype: QgsPointLocator.Match
 %End
 
     void setVisible( bool visible = true );
@@ -47,17 +45,11 @@ Sets whether the snapping indicator is visible
     bool isVisible() const;
 %Docstring
 Returns whether the snapping indicator is visible
-
-:rtype: bool
 %End
 
   private:
     QgsSnapIndicator( const QgsSnapIndicator &rh );
     QgsSnapIndicator &operator=( const QgsSnapIndicator & );
-%Docstring
-
-:rtype: QgsSnapIndicator
-%End
 };
 
 /************************************************************************

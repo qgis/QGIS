@@ -54,15 +54,11 @@ Overridden setModel() from base class. Only QgsLayerTreeModel is an acceptable m
     QgsLayerTreeModel *layerTreeModel() const;
 %Docstring
 Get access to the model casted to QgsLayerTreeModel
-
-:rtype: QgsLayerTreeModel
 %End
 
     QgsLayerTreeViewDefaultActions *defaultActions();
 %Docstring
 Get access to the default actions that may be used with the tree view
-
-:rtype: QgsLayerTreeViewDefaultActions
 %End
 
     void setMenuProvider( QgsLayerTreeViewMenuProvider *menuProvider /Transfer/ );
@@ -72,15 +68,11 @@ Set provider for context menu. Takes ownership of the instance
     QgsLayerTreeViewMenuProvider *menuProvider() const;
 %Docstring
 Return pointer to the context menu provider. May be null
-
-:rtype: QgsLayerTreeViewMenuProvider
 %End
 
     QgsMapLayer *currentLayer() const;
 %Docstring
 Get currently selected layer. May be null
-
-:rtype: QgsMapLayer
 %End
     void setCurrentLayer( QgsMapLayer *layer );
 %Docstring
@@ -90,21 +82,15 @@ Set currently selected layer. Null pointer will deselect any layer.
     QgsLayerTreeNode *currentNode() const;
 %Docstring
 Get current node. May be null
-
-:rtype: QgsLayerTreeNode
 %End
     QgsLayerTreeGroup *currentGroupNode() const;
 %Docstring
 Get current group node. If a layer is current node, the function will return parent group. May be null.
-
-:rtype: QgsLayerTreeGroup
 %End
 
     QgsLayerTreeModelLegendNode *currentLegendNode() const;
 %Docstring
 Get current legend node. May be null if current node is not a legend node.
-
-:rtype: QgsLayerTreeModelLegendNode
 
 .. versionadded:: 2.14
 %End
@@ -112,22 +98,17 @@ Get current legend node. May be null if current node is not a legend node.
     QList<QgsLayerTreeNode *> selectedNodes( bool skipInternal = false ) const;
 %Docstring
 Return list of selected nodes
-:param skipInternal: If true, will ignore nodes which have an ancestor in the selection
 
-:rtype: list of QgsLayerTreeNode
+:param skipInternal: If true, will ignore nodes which have an ancestor in the selection
 %End
     QList<QgsLayerTreeLayer *> selectedLayerNodes() const;
 %Docstring
 Return list of selected nodes filtered to just layer nodes
-
-:rtype: list of QgsLayerTreeLayer
 %End
 
     QList<QgsMapLayer *> selectedLayers() const;
 %Docstring
 Get list of selected layers
-
-:rtype: list of QgsMapLayer
 %End
 
   public slots:
@@ -163,10 +144,6 @@ Emitted when a current layer is changed
     void updateExpandedStateFromNode( QgsLayerTreeNode *node );
 
     QgsMapLayer *layerForIndex( const QModelIndex &index ) const;
-%Docstring
-
-:rtype: QgsMapLayer
-%End
 
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
@@ -212,8 +189,6 @@ instance to provide custom context menus (opened upon right-click).
     virtual QMenu *createContextMenu() = 0 /Factory/;
 %Docstring
 Return a newly created menu instance (or null pointer on error)
-
-:rtype: QMenu
 %End
 };
 

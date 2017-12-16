@@ -47,8 +47,6 @@ class QgsMultiLineString: QgsMultiCurve
 Returns the geometry converted to the more generic curve type QgsMultiCurve
 
 :return: the converted geometry. Caller takes ownership*
-:rtype: QgsMultiCurve
-
 %End
 
   protected:

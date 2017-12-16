@@ -44,8 +44,6 @@ parameter should be set to a descriptive name for the collection.
 %Docstring
 Returns the descriptive name of the property collection.
 
-:rtype: str
-
 .. seealso:: :py:func:`setName()`
 %End
 
@@ -59,8 +57,6 @@ Sets the descriptive name for the property collection.
     virtual QSet<int> propertyKeys() const = 0;
 %Docstring
 Returns a list of property keys contained within the collection.
-
-:rtype: set of int
 %End
 
     virtual void clear() = 0;
@@ -71,10 +67,9 @@ Removes all properties from the collection.
     virtual bool hasProperty( int key ) const = 0;
 %Docstring
 Returns true if the collection contains a property with the specified key.
+
 :param key: integer key for property. The intended use case is that a context specific enum is cast to
 int and used for the key value.
-
-:rtype: bool
 
 .. seealso:: :py:func:`property()`
 %End
@@ -82,12 +77,11 @@ int and used for the key value.
     virtual QgsProperty property( int key ) const = 0;
 %Docstring
 Returns a matching property from the collection, if one exists.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 
 :return: matching property, or null if no matching, active property found.
-:rtype: QgsProperty
-
 
 .. seealso:: :py:func:`hasProperty()`
 %End
@@ -95,6 +89,7 @@ int and used for the key value.
     virtual QVariant value( int key, const QgsExpressionContext &context, const QVariant &defaultValue = QVariant() ) const = 0;
 %Docstring
 Returns the calculated value of the property with the specified key from within the collection.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 :param context: expression context to evaluate property against
@@ -102,8 +97,6 @@ int and used for the key value.
 cannot be calculated
 
 :return: calculated property value, or default value if property could not be evaluated
-:rtype: QVariant
-
 
 .. seealso:: :py:func:`valueAsString()`
 
@@ -119,6 +112,7 @@ cannot be calculated
     QString valueAsString( int key, const QgsExpressionContext &context, const QString &defaultString = QString(), bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property with the specified key and interprets it as a string.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
@@ -126,8 +120,6 @@ int and used for the key value.
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to string
-:rtype: str
-
 
 .. seealso:: :py:func:`value()`
 
@@ -143,6 +135,7 @@ int and used for the key value.
     QColor valueAsColor( int key, const QgsExpressionContext &context, const QColor &defaultColor = QColor(), bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property with the specified key and interprets it as a color.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
@@ -150,8 +143,6 @@ int and used for the key value.
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to color
-:rtype: QColor
-
 
 .. seealso:: :py:func:`value()`
 
@@ -167,6 +158,7 @@ int and used for the key value.
     double valueAsDouble( int key, const QgsExpressionContext &context, double defaultValue = 0.0, bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property with the specified key and interprets it as a double.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
@@ -174,8 +166,6 @@ int and used for the key value.
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to double
-:rtype: float
-
 
 .. seealso:: :py:func:`value()`
 
@@ -191,6 +181,7 @@ int and used for the key value.
     int valueAsInt( int key, const QgsExpressionContext &context, int defaultValue = 0, bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property with the specified key and interprets it as an integer.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
@@ -198,8 +189,6 @@ int and used for the key value.
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to integer
-:rtype: int
-
 
 .. seealso:: :py:func:`value()`
 
@@ -215,6 +204,7 @@ int and used for the key value.
     bool valueAsBool( int key, const QgsExpressionContext &context, bool defaultValue = false, bool *ok /Out/ = 0 ) const;
 %Docstring
 Calculates the current value of the property with the specified key and interprets it as an boolean.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 :param context: QgsExpressionContext to evaluate the property for.
@@ -222,8 +212,6 @@ int and used for the key value.
 :param ok: if specified, will be set to true if conversion was successful
 
 :return: value parsed to bool
-:rtype: bool
-
 
 .. seealso:: :py:func:`value()`
 
@@ -241,33 +229,27 @@ int and used for the key value.
 Prepares the collection against a specified expression context. Calling prepare before evaluating the
 collection's properties multiple times allows precalculation of expensive setup tasks such as parsing expressions.
 Returns true if preparation was successful.
-
-:rtype: bool
 %End
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const = 0;
 %Docstring
 Returns the set of any fields referenced by the active properties from the collection.
-:param context: expression context the properties will be evaluated against.
 
-:rtype: set of str
+:param context: expression context the properties will be evaluated against.
 %End
 
     virtual bool isActive( int key ) const = 0;
 %Docstring
 Returns true if the collection contains an active property with the specified key.
+
 :param key: integer key for property to test. The intended use case is that a context specific enum is cast to
 int and used for the key value.
-
-:rtype: bool
 %End
 
     virtual bool hasActiveProperties() const = 0;
 %Docstring
 Returns true if the collection has any active properties, or false if all properties
 within the collection are deactivated.
-
-:rtype: bool
 
 .. seealso:: :py:func:`hasDynamicProperties()`
 %End
@@ -277,18 +259,15 @@ within the collection are deactivated.
 Returns true if the collection has any active, non-static properties, or false if either all non-static properties
 within the collection are deactivated or if the collection only contains static properties.
 
-:rtype: bool
-
 .. seealso:: :py:func:`hasActiveProperties()`
 %End
 
     virtual bool writeXml( QDomElement &collectionElem, const QgsPropertiesDefinition &definitions ) const;
 %Docstring
 Writes the current state of the property collection into an XML element
+
 :param collectionElem: destination element for the property collection's state
 :param definitions: property definitions
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -296,10 +275,9 @@ Writes the current state of the property collection into an XML element
     virtual bool readXml( const QDomElement &collectionElem, const QgsPropertiesDefinition &definitions );
 %Docstring
 Reads property collection state from an XML element.
+
 :param collectionElem: source DOM element for property collection's state
 :param definitions: property definitions
-
-:rtype: bool
 
 .. seealso:: :py:func:`writeXml()`
 %End
@@ -309,8 +287,6 @@ Reads property collection state from an XML element.
 Saves this property collection to a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.writeVariant to save it to an XML document.
 
-:rtype: QVariant
-
 .. seealso:: :py:func:`loadVariant()`
 %End
 
@@ -318,8 +294,6 @@ You can use QgsXmlUtils.writeVariant to save it to an XML document.
 %Docstring
 Loads this property collection from a QVariantMap, wrapped in a QVariant.
 You can use QgsXmlUtils.readVariant to save it to an XML document.
-
-:rtype: bool
 
 .. seealso:: :py:func:`toVariant()`
 %End
@@ -347,6 +321,7 @@ a context specific enum is cast to int and used for the key value.
     QgsPropertyCollection( const QString &name = QString() );
 %Docstring
 Constructor for QgsPropertyCollection
+
 :param name: collection name
 %End
 
@@ -359,8 +334,6 @@ Copy constructor.
     int count() const;
 %Docstring
 Returns the number of properties contained within the collection.
-
-:rtype: int
 %End
 
     virtual QSet<int> propertyKeys() const;
@@ -373,12 +346,11 @@ Returns the number of properties contained within the collection.
     virtual QgsProperty &property( int key );
 %Docstring
 Returns a reference to a matching property from the collection, if one exists.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 
 :return: matching property, or null if no matching, active property found.
-:rtype: QgsProperty
-
 
 .. seealso:: :py:func:`hasProperty()`
 %End
@@ -404,6 +376,7 @@ int and used for the key value.
     void setProperty( int key, const QgsProperty &property );
 %Docstring
 Adds a property to the collection and takes ownership of it.
+
 :param key: integer key for property. Any existing property with the same key will be removed
 and replaced by this property. The intended use case is that a context specific enum is cast to
 int and used for the key value.
@@ -414,6 +387,7 @@ will remove the property from the collection.
     void setProperty( int key, const QVariant &value );
 %Docstring
 Convience method, creates a QgsStaticProperty and stores it within the collection.
+
 :param key: integer key for property. Any existing property with the same key will be deleted
 and replaced by this property. The intended use case is that a context specific enum is cast to
 int and used for the key value.
@@ -454,8 +428,6 @@ Copy constructor
     int count() const;
 %Docstring
 Returns the number of collections contained within the stack.
-
-:rtype: int
 %End
 
     virtual void clear();
@@ -468,28 +440,27 @@ Removes all collections from the stack.
 %Docstring
 Appends a collection to the end of the stack, and transfers ownership of the collection to the stack. Properties
 from the newly added collection will take priority over any existing properties with the same name.
+
 :param collection: collection to append. Ownership is transferred to the stack.
 %End
 
     QgsPropertyCollection *at( int index );
 %Docstring
 Returns the collection at the corresponding index from the stack.
+
 :param index: position of collection, 0 based
 
 :return: collection if one exists at the specified index
-:rtype: QgsPropertyCollection
-
 %End
 
 
     QgsPropertyCollection *collection( const QString &name );
 %Docstring
 Returns the first collection with a matching name from the stack.
+
 :param name: name of collection to find
 
 :return: collection if one exists with the specified name
-:rtype: QgsPropertyCollection
-
 %End
 
     virtual bool hasActiveProperties() const;
@@ -497,8 +468,6 @@ Returns the first collection with a matching name from the stack.
 %Docstring
 Returns true if the collection has any active properties, or false if all properties
 within the collection are deactivated.
-
-:rtype: bool
 
 .. seealso:: :py:func:`isActive()`
 
@@ -511,8 +480,6 @@ within the collection are deactivated.
 Returns true if the collection has any active, non-static properties, or false if either all non-static properties
 within the collection are deactivated or if the collection only contains static properties.
 
-:rtype: bool
-
 .. seealso:: :py:func:`hasActiveProperties()`
 %End
 
@@ -520,10 +487,9 @@ within the collection are deactivated or if the collection only contains static 
 
 %Docstring
 Returns true if the stack contains an active property with the specified key.
+
 :param key: integer key for property to test. The intended use case is that a context specific enum is cast to
 int and used for the key value.
-
-:rtype: bool
 
 .. seealso:: :py:func:`hasActiveProperties()`
 %End
@@ -532,12 +498,11 @@ int and used for the key value.
 
 %Docstring
 Returns the highest priority property with a matching key from within the stack.
+
 :param key: integer key for property to return. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 
 :return: matching property, or null if no matching, active property found.
-:rtype: QgsProperty
-
 
 .. seealso:: :py:func:`hasActiveProperty()`
 %End
@@ -546,6 +511,7 @@ int and used for the key value.
 
 %Docstring
 Returns the calculated value of the highest priority property with the specified key from within the stack.
+
 :param key: integer key for property to calculate. The intended use case is that a context specific enum is cast to
 int and used for the key value.
 :param context: expression context to evaluate property against
@@ -553,17 +519,14 @@ int and used for the key value.
 cannot be calculated
 
 :return: calculated property value, or default value if property could not be evaluated
-:rtype: QVariant
-
 %End
 
     virtual QSet< QString > referencedFields( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 
 %Docstring
 Returns the set of any fields referenced by the active properties from the stack.
-:param context: expression context the properties will be evaluated against.
 
-:rtype: set of str
+:param context: expression context the properties will be evaluated against.
 %End
     virtual bool prepare( const QgsExpressionContext &context = QgsExpressionContext() ) const;
 

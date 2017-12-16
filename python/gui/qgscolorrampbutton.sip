@@ -41,14 +41,13 @@ Use ``dialogTitle`` string  to define the title to show in the color ramp dialog
 %Docstring
 Return a copy of the current color ramp.
 
-:rtype: QgsColorRamp
-
 .. seealso:: :py:func:`setColorRamp()`
 %End
 
     void setColorRampDialogTitle( const QString &title );
 %Docstring
 Set the title for the color ramp dialog window.
+
 :param title: Title for the color ramp dialog
 
 .. seealso:: :py:func:`colorRampDialogTitle`
@@ -59,8 +58,6 @@ Set the title for the color ramp dialog window.
 Returns the title for the color ramp dialog window.
 
 :return: title for the color ramp dialog
-:rtype: str
-
 
 .. seealso:: :py:func:`setColorRampDialogTitle`
 %End
@@ -70,8 +67,6 @@ Returns the title for the color ramp dialog window.
 Returns whether the button accepts live updates from QgsColorRampDialog.
 
 :return: true if the button will be accepted immediately when the dialog's color ramp changes
-:rtype: bool
-
 
 .. seealso:: :py:func:`setAcceptLiveUpdates`
 %End
@@ -80,6 +75,7 @@ Returns whether the button accepts live updates from QgsColorRampDialog.
 %Docstring
 Sets whether the button accepts live updates from QgsColorRampDialog. Live updates may cause changes
 that are not undoable on QColorRampDialog cancel.
+
 :param accept: set to true to enable live updates
 
 .. seealso:: :py:func:`acceptLiveUpdates`
@@ -89,6 +85,7 @@ that are not undoable on QColorRampDialog cancel.
 %Docstring
 Sets whether the drop-down menu should be shown for the button. The default behavior is to
 show the menu.
+
 :param showMenu: set to false to hide the drop-down menu
 
 .. seealso:: :py:func:`showMenu`
@@ -99,8 +96,6 @@ show the menu.
 Returns whether the drop-down menu is shown for the button.
 
 :return: true if drop-down menu is shown
-:rtype: bool
-
 
 .. seealso:: :py:func:`setShowMenu`
 %End
@@ -109,6 +104,7 @@ Returns whether the drop-down menu is shown for the button.
 %Docstring
 Sets the default color ramp for the button, which is shown in the button's drop-down menu for the
 "default color ramp" option.
+
 :param colorramp: default color ramp for the button. Set to a null pointer to disable the default color
 ramp option. The ramp will be cloned and ownership is not transferred.
 
@@ -121,8 +117,6 @@ Returns a copy of the default color ramp for the button, which is shown in the b
 "default color ramp" option.
 
 :return: default color ramp for the button. Returns a null pointer if the default color ramp
-:rtype: QgsColorRamp
-
 option is disabled.
 
 .. seealso:: :py:func:`setDefaultColorRamp`
@@ -131,6 +125,7 @@ option is disabled.
     void setShowRandomColorRamp( bool showRandom );
 %Docstring
 Sets whether a random colors option is shown in the button's drop-down menu.
+
 :param showRandom: set to true to show a random colors option
 
 .. seealso:: :py:func:`showRandom()`
@@ -140,16 +135,12 @@ Sets whether a random colors option is shown in the button's drop-down menu.
 %Docstring
 Returns whether random colors option is shown in the button's drop-down menu.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setShowRandom()`
 %End
 
     bool isRandomColorRamp() const;
 %Docstring
 Returns true if the current color is null.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setShowNull()`
 
@@ -159,6 +150,7 @@ Returns true if the current color is null.
     void setShowNull( bool showNull );
 %Docstring
 Sets whether a set to null (clear) option is shown in the button's drop-down menu.
+
 :param showNull: set to true to show a null option
 
 .. seealso:: :py:func:`showNull()`
@@ -170,8 +162,6 @@ Sets whether a set to null (clear) option is shown in the button's drop-down men
 %Docstring
 Returns whether the set to null (clear) option is shown in the button's drop-down menu.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setShowNull()`
 
 .. seealso:: :py:func:`isNull()`
@@ -180,8 +170,6 @@ Returns whether the set to null (clear) option is shown in the button's drop-dow
     bool isNull() const;
 %Docstring
 Returns true if the current color is null.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setShowNull()`
 
@@ -193,6 +181,7 @@ Returns true if the current color is null.
 Sets the context string for the color ramp button. The context string is passed to all color ramp
 preview icons shown in the button's drop-down menu, to (eventually) allow them to customise their display colors
 based on the context.
+
 :param context: context string for the color dialog button's color ramp preview icons
 
 .. seealso:: :py:func:`context`
@@ -205,8 +194,6 @@ preview icons shown in the button's drop-down menu, to (eventually) allow them t
 based on the context.
 
 :return: context context string for the color dialog button's color ramp preview icons
-:rtype: str
-
 
 .. seealso:: :py:func:`setContext`
 %End
@@ -214,6 +201,7 @@ based on the context.
     void setShowGradientOnly( bool gradientonly );
 %Docstring
 Sets whether the color ramp button only shows gradient type ramps
+
 :param gradientonly: set to true to show only gradient type ramps
 
 .. seealso:: :py:func:`showGradientOnly`
@@ -223,14 +211,13 @@ Sets whether the color ramp button only shows gradient type ramps
 %Docstring
 Returns true if the color ramp button only shows gradient type ramps
 
-:rtype: bool
-
 .. seealso:: :py:func:`setShowGradientOnly`
 %End
 
     void setColorRampName( const QString &name );
 %Docstring
 Sets the name of the current color ramp when it's available in the style manager
+
 :param name: Name of the saved color ramp
 
 .. seealso:: :py:func:`colorRampName`
@@ -239,8 +226,6 @@ Sets the name of the current color ramp when it's available in the style manager
     QString colorRampName() const;
 %Docstring
 Returns the name of the current color ramp when it's available in the style manager
-
-:rtype: str
 
 .. seealso:: :py:func:`setColorRampName`
 %End
@@ -251,6 +236,7 @@ Returns the name of the current color ramp when it's available in the style mana
 %Docstring
 Sets the current color ramp for the button. Will emit a colorRampChanged() signal if the color ramp is different
 to the previous color ramp.
+
 :param colorramp: New color ramp for the button. The ramp will be cloned and ownership is not transferred.
 
 .. seealso:: :py:func:`setRandomColorRamp`
@@ -268,6 +254,7 @@ if the color ramp is different to the previous color ramp.
 %Docstring
 Sets the current color ramp for the button using a saved color ramp name. Will emit a colorRampChanged() signal
 if the color ramp is different to the previous color ramp.
+
 :param name: Name of saved color ramp
 
 .. seealso:: :py:func:`setColorRamp`
@@ -276,6 +263,7 @@ if the color ramp is different to the previous color ramp.
     void setButtonBackground( QgsColorRamp *colorramp = 0 );
 %Docstring
 Sets the background pixmap for the button based upon current color ramp.
+
 :param colorramp: Color ramp for button background. If no color ramp is specified, the button's current
 color ramp will be used
 %End

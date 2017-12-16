@@ -88,10 +88,6 @@ Adds fields with the expressions buffered in this object to a QgsFields object
 %End
 
     QList<QgsExpressionFieldBuffer::ExpressionField> expressions() const;
-%Docstring
-
-:rtype: list of QgsExpressionFieldBuffer.ExpressionField
-%End
 
 };
 

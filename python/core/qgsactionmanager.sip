@@ -37,8 +37,6 @@ Will happily have duplicate names and actions. If
 capture is true, when running the action using doAction(),
 any stdout from the process will be captured and displayed in a
 dialog box.
-
-:rtype: QUuid
 %End
 
     QUuid addAction( QgsAction::ActionType type, const QString &name, const QString &command, const QString &icon, bool capture = false );
@@ -48,8 +46,6 @@ Will happily have duplicate names and actions. If
 capture is true, when running the action using doAction(),
 any stdout from the process will be captured and displayed in a
 dialog box.
-
-:rtype: QUuid
 %End
 
     void addAction( const QgsAction &action );
@@ -82,6 +78,7 @@ Does the given action.
 %Docstring
 Does the action using the expression engine to replace any embedded expressions
 in the action definition.
+
 :param actionId: action id
 :param feature: feature to run action for
 :param context: expression context to evaluate expressions under
@@ -97,37 +94,27 @@ Removes all actions
 Return a list of actions that are available in the given action scope.
 If no action scope is provided, all actions will be returned.
 
-:rtype: list of QgsAction
-
 .. versionadded:: 3.0
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
 Return the layer
-
-:rtype: QgsVectorLayer
 %End
 
     bool writeXml( QDomNode &layer_node ) const;
 %Docstring
 Writes the actions out in XML format
-
-:rtype: bool
 %End
 
     bool readXml( const QDomNode &layer_node );
 %Docstring
 Reads the actions in in XML format
-
-:rtype: bool
 %End
 
     QgsAction action( const QUuid &id );
 %Docstring
 Get an action by its id.
-
-:rtype: QgsAction
 
 .. versionadded:: 3.0
 %End
@@ -144,8 +131,6 @@ file.
 %Docstring
 Each scope can have a default action. This will be saved in the project
 file.
-
-:rtype: QgsAction
 
 .. versionadded:: 3.0
 %End

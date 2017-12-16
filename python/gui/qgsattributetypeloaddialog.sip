@@ -29,6 +29,7 @@ values, then delegate to QDialog.accept()
     void setVectorLayer( QgsVectorLayer *layer );
 %Docstring
 Sets predefined vector layer for selection of data
+
 :param layer: Vector layer which is to be set as predefined one
 %End
 
@@ -37,8 +38,6 @@ Sets predefined vector layer for selection of data
 Getter to value map which is currently active
 
 :return: value map of vlues selected from layer
-:rtype: QMap<str, QVariant>
-
 %End
 
     bool insertNull();
@@ -46,8 +45,6 @@ Getter to value map which is currently active
 Returns true if the "Add NULL value" checkbox has been checked.
 
 :return: true if the "Add NULL value" checkbox has been checked.
-:rtype: bool
-
 %End
 
 };

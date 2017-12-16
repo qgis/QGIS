@@ -47,23 +47,15 @@ instead of calling this method directly.
 :param parent:   The parent for the wrapper class and any created widget.
 
 :return:         A new widget wrapper
-:rtype: QgsEditorWidgetWrapper
-
 %End
 
     virtual QgsSearchWidgetWrapper *createSearchWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const /Factory/;
-%Docstring
-
-:rtype: QgsSearchWidgetWrapper
-%End
 
     QString name();
 %Docstring
 Return The human readable identifier name of this widget type
 
 :return: a name
-:rtype: str
-
 %End
 
     virtual QgsEditorConfigWidget *configWidget( QgsVectorLayer *vl, int fieldIdx, QWidget *parent ) const = 0 /Factory/;
@@ -76,8 +68,6 @@ Create a new configuration widget for this widget type.
 :param parent:   The parent widget of the created config widget
 
 :return:         A configuration widget
-:rtype: QgsEditorConfigWidget
-
 %End
 
     bool supportsField( const QgsVectorLayer *vl, int fieldIdx );
@@ -88,8 +78,6 @@ Check if this editor widget type supports a certain field.
 :param fieldIdx:  The field index
 
 :return:          True if the type is supported for this field
-:rtype: bool
-
 
 .. seealso:: :py:func:`fieldScore`
 %End

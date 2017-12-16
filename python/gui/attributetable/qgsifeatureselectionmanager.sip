@@ -28,8 +28,6 @@ e.g. QgsVectorLayer implements this interface to manage its selections.
 The number of features that are selected in this layer
 
 :return: See description
-:rtype: int
-
 %End
 
     virtual void select( const QgsFeatureIds &ids ) = 0;
@@ -60,8 +58,6 @@ clearAndSelect flag set.
 Return reference to identifiers of selected features
 
 :return: A list of QgsFeatureId's
-:rtype: QgsFeatureIds
-
 
 .. seealso:: :py:func:`selectedFeatures()`
 %End

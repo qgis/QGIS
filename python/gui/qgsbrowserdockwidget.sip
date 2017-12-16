@@ -25,6 +25,7 @@ The QgsBrowserDockWidget class
     explicit QgsBrowserDockWidget( const QString &name, QgsBrowserModel *browserModel, QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsBrowserDockWidget
+
 :param name: name of the widget
 :param browserModel: instance of the (shared) browser model
 :param parent: parent widget

@@ -38,6 +38,7 @@ and the attributes for the currently selected feature are shown in a form.
     explicit QgsDualView( QWidget *parent /TransferThis/ = 0 );
 %Docstring
  Constructor
+
 :param parent:  The parent widget
 %End
 
@@ -68,8 +69,6 @@ Change the current view mode.
 %Docstring
 Returns the current view mode.
 
-:rtype: ViewMode
-
 .. seealso:: :py:func:`setView()`
 
 .. versionadded:: 2.16
@@ -87,8 +86,6 @@ Set the filter mode
 Get the filter mode
 
 :return: the filter mode
-:rtype: QgsAttributeTableFilterModel.FilterMode
-
 %End
 
     void setSelectedOnTop( bool selectedOnTop );
@@ -104,8 +101,6 @@ False: Use defined sorting column.
 Returns the number of features on the layer.
 
 :return: Number of features
-:rtype: int
-
 %End
 
     int filteredFeatureCount();
@@ -114,8 +109,6 @@ Returns the number of features which are currently visible, according to the
 filter restrictions
 
 :return: Number of features
-:rtype: int
-
 %End
 
     void setFilteredFeatures( const QgsFeatureIds &filteredFeatures );
@@ -128,8 +121,6 @@ Set a list of currently visible features
     QgsFeatureIds filteredFeatures();
 %Docstring
 Get a list of currently visible feature ids.
-
-:rtype: QgsFeatureIds
 %End
 
     QgsAttributeTableModel *masterModel() const;
@@ -137,8 +128,6 @@ Get a list of currently visible feature ids.
 Returns the model which has the information about all features (not only filtered)
 
 :return: The master model
-:rtype: QgsAttributeTableModel
-
 %End
 
     void setRequest( const QgsFeatureRequest &request );
@@ -160,8 +149,6 @@ Set the feature selection model
 Returns the table view
 
 :return: The table view
-:rtype: QgsAttributeTableView
-
 %End
 
     void setAttributeTableConfig( const QgsAttributeTableConfig &config );
@@ -178,8 +165,6 @@ Set the expression used for sorting the table and feature list.
     QString sortExpression() const;
 %Docstring
 Get the expression used for sorting the table and feature list.
-
-:rtype: str
 %End
 
   public slots:
@@ -196,8 +181,6 @@ Get the expression used for sorting the table and feature list.
  saveEditChanges
 
 :return: true if the saving was OK. false is possible due to connected
-:rtype: bool
-
 validation logic.
 %End
 
@@ -213,6 +196,7 @@ Sets whether multi edit mode is enabled.
     void toggleSearchMode( bool enabled );
 %Docstring
 Toggles whether search mode should be enabled in the form.
+
 :param enabled: set to true to switch on search mode
 
 .. versionadded:: 2.16
@@ -237,6 +221,7 @@ Cancel the progress dialog (if any)
     void displayExpressionChanged( const QString &expression );
 %Docstring
 Is emitted, whenever the display expression is successfully changed
+
 :param expression: The expression that was applied
 %End
 
@@ -248,6 +233,7 @@ Is emitted, whenever the filter changes
     void filterExpressionSet( const QString &expression, QgsAttributeForm::FilterType type );
 %Docstring
 Is emitted when a filter expression is set using the view.
+
 :param expression: filter expression
 :param type: filter type
 
@@ -257,6 +243,7 @@ Is emitted when a filter expression is set using the view.
     void formModeChanged( QgsAttributeForm::Mode mode );
 %Docstring
 Emitted when the form changes mode.
+
 :param mode: new mode
 %End
 

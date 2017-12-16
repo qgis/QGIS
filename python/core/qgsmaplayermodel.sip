@@ -69,8 +69,6 @@ Sets whether an optional empty layer ("not set") option is present in the model.
 %Docstring
 Returns true if the model allows the empty layer ("not set") choice.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setAllowEmptyLayer()`
 
 .. versionadded:: 3.0
@@ -89,8 +87,6 @@ Sets whether the CRS of layers is also included in the model's display role.
 %Docstring
 Returns true if the model includes layer's CRS in the display role.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setShowCrs()`
 
 .. versionadded:: 3.0
@@ -99,21 +95,15 @@ Returns true if the model includes layer's CRS in the display role.
     QList<QgsMapLayer *> layersChecked( Qt::CheckState checkState = Qt::Checked );
 %Docstring
  layersChecked returns the list of layers which are checked (or unchecked)
-
-:rtype: list of QgsMapLayer
 %End
     bool itemsCheckable() const;
 %Docstring
 returns if the items can be checked or not
-
-:rtype: bool
 %End
 
     QModelIndex indexFromLayer( QgsMapLayer *layer ) const;
 %Docstring
  indexFromLayer returns the model index for a given layer
-
-:rtype: QModelIndex
 
 .. seealso:: :py:func:`layerFromIndex()`
 %End
@@ -121,8 +111,6 @@ returns if the items can be checked or not
     QgsMapLayer *layerFromIndex( const QModelIndex &index ) const;
 %Docstring
 Returns the map layer corresponding to the specified ``index``.
-
-:rtype: QgsMapLayer
 
 .. versionadded:: 3.0
 
@@ -143,8 +131,6 @@ layer registry, or paths to layers which have not yet been loaded into QGIS.
     QStringList additionalItems() const;
 %Docstring
 Return the list of additional (non map layer) items included at the end of the model.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`setAdditionalItems()`
 
@@ -171,8 +157,6 @@ Return the list of additional (non map layer) items included at the end of the m
     static QIcon iconForLayer( QgsMapLayer *layer );
 %Docstring
 Returns the icon corresponding to a specified map ``layer``.
-
-:rtype: QIcon
 
 .. versionadded:: 3.0
 %End

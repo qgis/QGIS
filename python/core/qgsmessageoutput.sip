@@ -70,8 +70,6 @@ Display the blocking message to the user.
 %Docstring
 function that returns new class derived from QgsMessageOutput
 (don't forget to delete it then if showMessage(bool) is not used showMessage(bool) deletes the instance)
-
-:rtype: QgsMessageOutput
 %End
 
 };

@@ -34,8 +34,6 @@ Constructor for QgsLocatorWidget.
     QgsLocator *locator();
 %Docstring
 Returns a pointer to the locator utilized by this widget.
-
-:rtype: QgsLocator
 %End
 
     void setMapCanvas( QgsMapCanvas *canvas );

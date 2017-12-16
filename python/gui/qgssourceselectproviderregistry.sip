@@ -42,8 +42,6 @@ Constructor for QgsSourceSelectProviderRegistry.
     QList< QgsSourceSelectProvider *> providers();
 %Docstring
 Get list of available providers
-
-:rtype: list of QgsSourceSelectProvider
 %End
 
     void addProvider( QgsSourceSelectProvider *provider /Transfer/ );
@@ -56,22 +54,16 @@ Add a ``provider`` implementation. Takes ownership of the object.
 Remove ``provider`` implementation from the list (``provider`` object is deleted)
 
 :return: true if the provider was actually removed and deleted
-:rtype: bool
-
 %End
 
     QgsSourceSelectProvider *providerByName( const QString &name );
 %Docstring
 Return a provider by ``name`` or None if not found
-
-:rtype: QgsSourceSelectProvider
 %End
 
     QList<QgsSourceSelectProvider *> providersByKey( const QString &providerKey );
 %Docstring
 Return a (possibly empty) list of providers by data ``providerkey``
-
-:rtype: list of QgsSourceSelectProvider
 %End
 
 

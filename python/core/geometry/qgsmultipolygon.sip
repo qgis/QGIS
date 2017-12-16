@@ -46,8 +46,6 @@ class QgsMultiPolygon: QgsMultiSurface
 Returns the geometry converted to the more generic curve type QgsMultiSurface
 
 :return: the converted geometry. Caller takes ownership*
-:rtype: QgsMultiSurface
-
 %End
 
     virtual QgsAbstractGeometry *boundary() const /Factory/;

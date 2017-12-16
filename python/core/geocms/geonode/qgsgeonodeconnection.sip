@@ -30,8 +30,6 @@ Constructor for a QgsGeoNodeConnection with the specified ``name``.
 %Docstring
 Returns the name of the connection.
 
-:rtype: str
-
 .. seealso:: :py:func:`setConnectionName()`
 %End
 
@@ -45,8 +43,6 @@ Sets the ``name`` of the connection.
     QgsDataSourceUri uri() const;
 %Docstring
 Returns the URI for the GeoNode connection.
-
-:rtype: QgsDataSourceUri
 
 .. seealso:: :py:func:`setUri()`
 %End
@@ -62,16 +58,12 @@ Sets the ``uri`` for the GeoNode connection.
 %Docstring
 Adds uri parameters relating to the settings for a WMS layer on the connection to a QgsDataSourceUri ``uri``.
 
-:rtype: QgsDataSourceUri
-
 .. seealso:: :py:func:`addWmsWcsConnectionSettings()`
 %End
 
     QgsDataSourceUri &addWfsConnectionSettings( QgsDataSourceUri &uri ) const;
 %Docstring
 Adds uri parameters relating to the settings for a WFS layer on the connection to a QgsDataSourceUri ``uri``.
-
-:rtype: QgsDataSourceUri
 
 .. seealso:: :py:func:`addWmsWcsConnectionSettings()`
 %End
@@ -95,8 +87,6 @@ GeoNode servers associated with a QGIS install.
     static QStringList connectionList();
 %Docstring
 Returns a list of all known GeoNode connection names.
-
-:rtype: list of str
 %End
 
     static void deleteConnection( const QString &name );
@@ -107,15 +97,11 @@ Deletes the GeoNode connection with matching ``name``.
     static QString pathGeoNodeConnection();
 %Docstring
 Returns the base path for settings related to GeoNode connections.
-
-:rtype: str
 %End
 
     static QString pathGeoNodeConnectionDetails();
 %Docstring
 Returns the base path for settings related to GeoNode connection details.
-
-:rtype: str
 %End
 
 };

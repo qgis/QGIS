@@ -32,31 +32,16 @@ including min and max value.
     QgsRasterRange( double min, double max );
 %Docstring
  Constructor
+
 :param min: minimum value
 :param max: max value
 %End
 
     double min() const;
-%Docstring
-
-:rtype: float
-%End
     double max() const;
-%Docstring
-
-:rtype: float
-%End
 
     double setMin( double min );
-%Docstring
-
-:rtype: float
-%End
     double setMax( double max );
-%Docstring
-
-:rtype: float
-%End
 
     bool operator==( QgsRasterRange o ) const;
 

@@ -24,6 +24,7 @@ Wrapper widget to manage available certificate editors
     explicit QgsAuthCertEditors( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a widget to contain various certificate editors
+
 :param parent: Parent widget
 %End
 
@@ -50,14 +51,13 @@ Dialog wrapper for widget to manage available certificate editors
     explicit QgsAuthCertManager( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Construct a dialog wrapper for widget to manage available certificate editors
+
 :param parent: Parent widget
 %End
 
     QgsAuthCertEditors *certEditorsWidget();
 %Docstring
 Get access to embedded editors widget
-
-:rtype: QgsAuthCertEditors
 %End
 
 };

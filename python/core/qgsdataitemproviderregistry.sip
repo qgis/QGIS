@@ -35,8 +35,6 @@ QgsApplication.dataItemProviderRegistry().
     QList<QgsDataItemProvider *> providers() const;
 %Docstring
 Get list of available providers
-
-:rtype: list of QgsDataItemProvider
 %End
 
     void addProvider( QgsDataItemProvider *provider /Transfer/ );

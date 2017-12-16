@@ -31,31 +31,13 @@ Creates a new NULL version
     QgsProjectVersion( int major, int minor, int sub, const QString &name = "" );
     QgsProjectVersion( const QString &string );
     int majorVersion();
-%Docstring
-
-:rtype: int
-%End
     int minorVersion();
-%Docstring
-
-:rtype: int
-%End
     int subVersion();
-%Docstring
-
-:rtype: int
-%End
     QString text();
-%Docstring
-
-:rtype: str
-%End
 
     bool isNull() const;
 %Docstring
 Returns true if this is a NULL project version.
-
-:rtype: bool
 %End
 
     bool operator==( const QgsProjectVersion &other ) const;
@@ -63,22 +45,16 @@ Returns true if this is a NULL project version.
     bool operator!=( const QgsProjectVersion &other ) const;
 %Docstring
 Boolean not equal operator
-
-:rtype: bool
 %End
 
     bool operator>=( const QgsProjectVersion &other ) const;
 %Docstring
 Boolean >= operator
-
-:rtype: bool
 %End
 
     bool operator>( const QgsProjectVersion &other ) const;
 %Docstring
 Boolean > operator
-
-:rtype: bool
 %End
 
 };

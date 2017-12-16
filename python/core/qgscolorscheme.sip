@@ -64,8 +64,6 @@ Constructor for QgsColorScheme.
 Gets the name for the color scheme
 
 :return: color scheme name
-:rtype: str
-
 %End
 
     virtual SchemeFlags flags() const;
@@ -73,8 +71,6 @@ Gets the name for the color scheme
 Returns the current flags for the color scheme.
 
 :return: current flags
-:rtype: SchemeFlags
-
 %End
 
     virtual QgsNamedColorList fetchColors( const QString &context = QString(),
@@ -82,6 +78,7 @@ Returns the current flags for the color scheme.
 %Docstring
 Gets a list of colors from the scheme. The colors can optionally
 be generated using the supplied context and base color.
+
 :param context: string specifying an optional context for the returned
 colors. For instance, a "recent colors" scheme may filter returned colors
 by context so that colors used only in a "composer" context are returned.
@@ -90,8 +87,6 @@ may take advantage of this to filter or modify their returned colors
 to colors related to the base color.
 
 :return: a list of QPairs of color and color name
-:rtype: QgsNamedColorList
-
 %End
 
     virtual bool isEditable() const;
@@ -99,8 +94,6 @@ to colors related to the base color.
 Returns whether the color scheme is editable
 
 :return: true if scheme is editable
-:rtype: bool
-
 
 .. seealso:: :py:func:`setColors`
 %End
@@ -108,13 +101,12 @@ Returns whether the color scheme is editable
     virtual bool setColors( const QgsNamedColorList &colors, const QString &context = QString(), const QColor &baseColor = QColor() );
 %Docstring
 Sets the colors for the scheme. This method is only valid for editable color schemes.
+
 :param colors: list of colors for the scheme
 :param context: to set colors for
 :param baseColor: base color to set colors for
 
 :return: true if colors were set successfully
-:rtype: bool
-
 
 .. seealso:: :py:func:`isEditable`
 %End
@@ -124,8 +116,6 @@ Sets the colors for the scheme. This method is only valid for editable color sch
 Clones a color scheme
 
 :return: copy of color scheme
-:rtype: QgsColorScheme
-
 %End
 };
 
@@ -163,8 +153,6 @@ Constructor for QgsGplColorScheme.
 Returns the file path for the associated gpl palette file
 
 :return: gpl file path
-:rtype: str
-
 %End
 
 };
@@ -186,6 +174,7 @@ subfolder off the user's QGIS settings folder.
     QgsUserColorScheme( const QString &filename );
 %Docstring
 Constructs a new user color scheme, using a specified gpl palette file
+
 :param filename: filename of gpl palette file stored in the users "palettes" folder
 %End
 
@@ -203,6 +192,7 @@ Constructs a new user color scheme, using a specified gpl palette file
     void setName( const QString &name );
 %Docstring
 Sets the name for the scheme
+
 :param name: new name
 %End
 
@@ -211,13 +201,12 @@ Sets the name for the scheme
 Erases the associated gpl palette file from the users "palettes" folder
 
 :return: true if erase was successful
-:rtype: bool
-
 %End
 
     void setShowSchemeInMenu( bool show );
 %Docstring
 Sets whether a this scheme should be shown in color button menus.
+
 :param show: set to true to show in color button menus, or false to hide from menus
 
 .. versionadded:: 3.0
@@ -263,6 +252,7 @@ Constructor for QgsRecentColorScheme.
     static void addRecentColor( const QColor &color );
 %Docstring
 Adds a color to the list of recent colors.
+
 :param color: color to add
 
 .. versionadded:: 2.14
@@ -273,8 +263,6 @@ Adds a color to the list of recent colors.
     static QColor lastUsedColor();
 %Docstring
 Returns the most recently used color.
-
-:rtype: QColor
 
 .. versionadded:: 3.0
 

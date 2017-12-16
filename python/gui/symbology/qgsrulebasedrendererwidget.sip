@@ -64,10 +64,6 @@ Constructor for QgsRuleBasedRendererModel, for the specified ``renderer``.
 
 
     QgsRuleBasedRenderer::Rule *ruleForIndex( const QModelIndex &index ) const;
-%Docstring
-
-:rtype: QgsRuleBasedRenderer.Rule
-%End
 
     void insertRule( const QModelIndex &parent, int before, QgsRuleBasedRenderer::Rule *newrule );
     void updateRule( const QModelIndex &parent, int row );
@@ -94,10 +90,6 @@ class QgsRuleBasedRendererWidget : QgsRendererWidget
   public:
 
     static QgsRendererWidget *create( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer ) /Factory/;
-%Docstring
-
-:rtype: QgsRendererWidget
-%End
 
     QgsRuleBasedRendererWidget( QgsVectorLayer *layer, QgsStyle *style, QgsFeatureRenderer *renderer );
     ~QgsRuleBasedRendererWidget();
@@ -139,18 +131,10 @@ Opens the dialog for refining a rule using ranges
     void refineRuleScalesGui( const QModelIndexList &index );
 
     QgsRuleBasedRenderer::Rule *currentRule();
-%Docstring
-
-:rtype: QgsRuleBasedRenderer.Rule
-%End
 
     virtual QList<QgsSymbol *> selectedSymbols();
 
     QgsRuleBasedRenderer::RuleList selectedRules();
-%Docstring
-
-:rtype: QgsRuleBasedRenderer.RuleList
-%End
     virtual void refreshSymbolView();
 
     virtual void keyPressEvent( QKeyEvent *event );
@@ -185,6 +169,7 @@ class QgsRendererRulePropsWidget : QgsPanelWidget
                                 const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 %Docstring
 Widget to edit the details of a rule based renderer rule.
+
 :param rule: The rule to edit.
 :param layer: The layer used to pull layer related information.
 :param style: The active QGIS style.
@@ -197,8 +182,6 @@ Widget to edit the details of a rule based renderer rule.
 Return the current set rule.
 
 :return: The current rule.
-:rtype: QgsRuleBasedRenderer.Rule
-
 %End
 
   public slots:
@@ -222,6 +205,7 @@ Apply any changes from the widget to the set rule.
 
 %Docstring
 Set the widget in dock mode.
+
 :param dockMode: True for dock mode.
 %End
 
@@ -241,6 +225,7 @@ class QgsRendererRulePropsDialog : QDialog
     QgsRendererRulePropsDialog( QgsRuleBasedRenderer::Rule *rule, QgsVectorLayer *layer, QgsStyle *style, QWidget *parent /TransferThis/ = 0, const QgsSymbolWidgetContext &context = QgsSymbolWidgetContext() );
 %Docstring
 Constructor for QgsRendererRulePropsDialog
+
 :param rule: associated rule based renderer rule
 :param layer: source vector layer
 :param style: style collection
@@ -251,10 +236,6 @@ Constructor for QgsRendererRulePropsDialog
     ~QgsRendererRulePropsDialog();
 
     QgsRuleBasedRenderer::Rule *rule();
-%Docstring
-
-:rtype: QgsRuleBasedRenderer.Rule
-%End
 
   public slots:
     void testFilter();

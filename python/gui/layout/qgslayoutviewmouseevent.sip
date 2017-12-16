@@ -35,6 +35,7 @@ In addition to the coordinates in pixel space it also knows the coordinates the 
     QgsLayoutViewMouseEvent( QgsLayoutView *view, QMouseEvent *event, bool snap = false );
 %Docstring
 Constructor for QgsLayoutViewMouseEvent. Should only be required to be called from the QgsLayoutView.
+
 :param view: The view in which the event occurred.
 :param event: The original mouse event
 :param snap: set to true to snap the point using the layout's snapping settings
@@ -55,8 +56,6 @@ The ``ignoreItems`` argument can be used to specify a list of items to avoid sna
 %Docstring
 Returns the event point location in layout coordinates.
 
-:rtype: QPointF
-
 .. seealso:: :py:func:`pos()`
 %End
 
@@ -64,8 +63,6 @@ Returns the event point location in layout coordinates.
 %Docstring
 Returns the snapped event point location in layout coordinates. The snapped point will consider
 all possible snapping methods, such as snapping to grid or guide lines.
-
-:rtype: QPointF
 
 .. seealso:: :py:func:`isSnapped()`
 
@@ -75,8 +72,6 @@ all possible snapping methods, such as snapping to grid or guide lines.
     bool isSnapped() const;
 %Docstring
 Returns true if point was snapped, e.g. to grid or guide lines.
-
-:rtype: bool
 
 .. seealso:: :py:func:`snappedPoint()`
 %End

@@ -74,8 +74,6 @@ compulsory.
 %Docstring
 Spatial extents of the resource.
 
-:rtype: list of QgsLayerMetadata.SpatialExtent
-
 .. seealso:: :py:func:`setSpatialExtents()`
 %End
 
@@ -92,8 +90,6 @@ Temporal extents of the resource. Use QgsDateTimeRange.isInstant() to determine
 whether the temporal extent is a range or a single point in time.
 If QgsDateTimeRange.isInfinite() returns true then the temporal extent
 is considered to be indeterminate and continuous.
-
-:rtype: list of QgsDateTimeRange
 
 .. seealso:: :py:func:`setTemporalExtents()`
 %End
@@ -286,8 +282,6 @@ Constructor for QgsLayerMetadata.
 %Docstring
 A reference, URI, URL or some other mechanism to identify the resource.
 
-:rtype: str
-
 .. seealso:: :py:func:`setIdentifier()`
 %End
 
@@ -302,8 +296,6 @@ Sets the reference, URI, URL or some other mechanism to identify the resource.
 %Docstring
 A reference, URI, URL or some other mechanism to identify the parent resource that this resource is a part (child) of.
 Returns an empty string if no parent identifier is set.
-
-:rtype: str
 
 .. seealso:: :py:func:`setParentIdentifier()`
 %End
@@ -323,8 +315,6 @@ will follow either the ISO 639.2 or ISO 3166 specifications, e.g. 'ENG' or 'SPA'
 this is not a hard requirement and the caller must account for non compliant
 values.
 
-:rtype: str
-
 .. seealso:: :py:func:`setLanguage()`
 %End
 
@@ -342,8 +332,6 @@ e.g. 'ENG' or 'SPA' (ISO 639.2) or 'EN-AU' (ISO 3166).
 Returns the nature of the resource.  While a formal vocabulary is not imposed, it is advised
 to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
 
-:rtype: str
-
 .. seealso:: :py:func:`setType()`
 %End
 
@@ -359,8 +347,6 @@ to use the ISO 19115 MD_ScopeCode values. E.g. 'dataset' or 'series'.
 %Docstring
 Returns the human readable name of the resource, typically displayed in search results.
 
-:rtype: str
-
 .. seealso:: :py:func:`setTitle()`
 %End
 
@@ -374,8 +360,6 @@ Sets the human readable ``title`` (name) of the resource, typically displayed in
     QString abstract() const;
 %Docstring
 Returns a free-form description of the resource.
-
-:rtype: str
 
 .. seealso:: :py:func:`setAbstract()`
 %End
@@ -392,8 +376,6 @@ Sets a free-form ``abstract`` (description) of the resource.
 Returns any fees associated with using the resource.
 An empty string will be returned if no fees are set.
 
-:rtype: str
-
 .. seealso:: :py:func:`setFees()`
 %End
 
@@ -408,8 +390,6 @@ Use an empty string if no fees are set.
     QgsLayerMetadata::ConstraintList constraints() const;
 %Docstring
 Returns a list of constraints associated with using the resource.
-
-:rtype: QgsLayerMetadata.ConstraintList
 
 .. seealso:: :py:func:`setConstraints()`
 %End
@@ -434,8 +414,6 @@ Sets the list of ``constraints`` associated with using the resource.
 %Docstring
 Returns a list of attribution or copyright strings associated with the resource.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`setRights()`
 %End
 
@@ -449,8 +427,6 @@ Sets a list of ``rights`` (attribution or copyright strings) associated with the
     QStringList licenses() const;
 %Docstring
 Returns a list of licenses associated with the resource (examples: http://opendefinition.org/licenses/).
-
-:rtype: list of str
 
 .. seealso:: :py:func:`setLicenses()`
 %End
@@ -466,8 +442,6 @@ Sets a list of ``licenses`` associated with the resource.
     QStringList history() const;
 %Docstring
 Returns a freeform description of the history or lineage of the resource.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`setHistory()`
 %End
@@ -495,8 +469,6 @@ Adds a single history ``text`` to the end of the existing history list.
 %Docstring
 Returns the character encoding of the data in the resource. An empty string will be returned if no encoding is set.
 
-:rtype: str
-
 .. seealso:: :py:func:`setEncoding()`
 %End
 
@@ -511,8 +483,6 @@ Sets the character ``encoding`` of the data in the resource. Use an empty string
     QgsLayerMetadata::Extent &extent();
 %Docstring
 Returns the spatial and temporal extents associated with the resource.
-
-:rtype: QgsLayerMetadata.Extent
 
 .. seealso:: :py:func:`setExtent()`
 %End
@@ -534,8 +504,6 @@ with a different CRS described by it's accompanying metadata versus the
 CRS which is actually used to display and manipulate the layer within QGIS.
 This may be the case when a layer has an incorrect CRS within its metadata
 and a user has manually overridden the layer's CRS within QGIS.
-
-:rtype: QgsCoordinateReferenceSystem
 
 .. seealso:: :py:func:`setCrs()`
 %End
@@ -566,8 +534,6 @@ The map key is the vocabulary string and map value is a list of keywords for tha
 
 The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
 associated with keyword list.
-
-:rtype: KeywordMap
 
 .. seealso:: :py:func:`setKeywords()`
 
@@ -605,8 +571,6 @@ associated with keyword list.
 %Docstring
 Remove a vocabulary from the list.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setKeywords()`
 
 .. seealso:: :py:func:`addKeywords()`
@@ -618,8 +582,6 @@ Returns a list of keyword vocabularies contained in the metadata.
 
 The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
 associated with keyword list.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`keywords()`
 %End
@@ -633,8 +595,6 @@ list will be returned.
 The vocabulary string is a reference (URI/URL preferred) to a codelist or vocabulary
 associated with keyword list.
 
-:rtype: list of str
-
 .. seealso:: :py:func:`keywordVocabularies()`
 %End
 
@@ -642,8 +602,6 @@ associated with keyword list.
 %Docstring
 Returns categories of the resource.
 Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords.
-
-:rtype: list of str
 
 .. seealso:: :py:func:`keywords()`
 %End
@@ -659,8 +617,6 @@ Categories are stored using a special vocabulary 'gmd:topicCategory' in keywords
     QgsLayerMetadata::ContactList contacts() const;
 %Docstring
 Returns a list of contact persons or entities associated with the resource.
-
-:rtype: QgsLayerMetadata.ContactList
 
 .. seealso:: :py:func:`setContacts()`
 %End
@@ -687,8 +643,6 @@ Adds an individual ``contact`` to the existing contacts.
     QgsLayerMetadata::LinkList links() const;
 %Docstring
 Returns a list of online resources associated with the resource.
-
-:rtype: QgsLayerMetadata.LinkList
 
 .. seealso:: :py:func:`setLinks()`
 %End
@@ -729,22 +683,20 @@ Reads the metadata state from a ``layer``'s custom properties (see QgsMapLayer.c
     bool readMetadataXml( const QDomElement &metadataElement );
 %Docstring
 Sets state from Dom document
+
 :param metadataElement: The Dom element corresponding to ``resourceMetadata'' tag
 
 :return: true if successful
-:rtype: bool
-
 %End
 
     bool writeMetadataXml( QDomElement &metadataElement, QDomDocument &document ) const;
 %Docstring
 Stores state in Dom node
+
 :param metadataElement: is a Dom element corresponding to ``resourceMetadata'' tag
 :param document: is a the dom document being written
 
 :return: true if successful
-:rtype: bool
-
 %End
 
 };

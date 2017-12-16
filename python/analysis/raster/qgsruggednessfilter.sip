@@ -30,8 +30,6 @@ Algorithm from Riley et al. 1999: A terrain ruggedness index that quantifies top
 %Docstring
 Calculates output value from nine input values. The input values and the output value can be equal to the
 nodata value if not present or outside of the border. Must be implemented by subclasses*
-
-:rtype: float
 %End
 
 };

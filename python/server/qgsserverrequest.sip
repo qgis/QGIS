@@ -63,24 +63,18 @@ destructor
 %Docstring
 
 :return:  the request url
-:rtype: QUrl
-
 %End
 
     QgsServerRequest::Method method() const;
 %Docstring
 
 :return: the request method
-:rtype: QgsServerRequest.Method
-
 %End
 
     QgsServerRequest::Parameters parameters() const;
 %Docstring
 Return a map of query parameters with keys converted
 to uppercase
-
-:rtype: QgsServerRequest.Parameters
 %End
 
     void setParameter( const QString &key, const QString &value );
@@ -91,8 +85,6 @@ Set a parameter
     QString parameter( const QString &key ) const;
 %Docstring
 Get a parameter value
-
-:rtype: str
 %End
 
     void removeParameter( const QString &key );
@@ -103,15 +95,15 @@ Remove a parameter
     QString header( const QString &name ) const;
 %Docstring
 Return the header value
+
 :param name: of the header
 @return the header value or an empty string
-
-:rtype: str
 %End
 
     void setHeader( const QString &name, const QString &value );
 %Docstring
 Set an header
+
 :param name:
 :param value:
 %End
@@ -120,13 +112,12 @@ Set an header
 %Docstring
 Return the header map
 @return the headers map
-
-:rtype: QMap<str, QString>
 %End
 
     void removeHeader( const QString &name );
 %Docstring
 Remove an header
+
 :param name:
 %End
 
@@ -135,8 +126,6 @@ Remove an header
 Return post/put data
 Check for QByteArray.isNull() to check if data
 is available.
-
-:rtype: QByteArray
 %End
 
     void setUrl( const QUrl &url );

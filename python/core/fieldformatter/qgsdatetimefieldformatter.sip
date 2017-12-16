@@ -44,8 +44,6 @@ The type is expected to be one of
 - QVariant.DateTime
 - QVariant.Date
 - QVariant.Time
-
-:rtype: str
 %End
 };
 

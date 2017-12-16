@@ -25,6 +25,7 @@ QItemDelegate).
     QgsAttributeTableDelegate( QObject *parent /TransferThis/ = 0 );
 %Docstring
 Constructor
+
 :param parent: parent object
 %End
 
@@ -33,8 +34,6 @@ Constructor
 %Docstring
 Used to create an editor for when the user tries to
 change the contents of a cell
-
-:rtype: QWidget
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
@@ -47,6 +46,7 @@ Overloads the paint method form the QItemDelegate base class
 
 %Docstring
 Sets data from editor back to model. Overloads default method
+
 :param editor: editor which was created by create editor function in this class
 :param model: model where data should be updated
 :param index: index of field which is to be modified
@@ -56,6 +56,7 @@ Sets data from editor back to model. Overloads default method
 
 %Docstring
 Sets data from model into the editor. Overloads default method
+
 :param editor: editor which was created by create editor function in this class
 :param index: index of field which is to be retrieved
 %End

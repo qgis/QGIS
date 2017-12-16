@@ -118,8 +118,6 @@ Any existing request will be aborted.
 Calling this method will block while waiting for a result. It should not be
 used from any code which potentially blocks operation in the main GUI thread.
 
-:rtype: bool
-
 .. seealso:: :py:func:`request()`
 %End
 
@@ -147,8 +145,6 @@ Requests the list of available layers from the server.
 This method is blocking and will wait for results from the server before returning.
 Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
 
-:rtype: list of QgsGeoNodeRequest.ServiceLayerDetail
-
 .. seealso:: :py:func:`fetchLayers()`
 %End
 
@@ -159,8 +155,6 @@ with matching ``layerName`` from the server.
 
 This method is blocking and will wait for results from the server before returning.
 Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
-
-:rtype: list of QgsGeoNodeStyle
 %End
 
     QgsGeoNodeStyle fetchDefaultStyleBlocking( const QString &layerName );
@@ -169,8 +163,6 @@ Requests the default style for the layer with matching ``layerName`` from the se
 
 This method is blocking and will wait for results from the server before returning.
 Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
-
-:rtype: QgsGeoNodeStyle
 %End
 
     QgsGeoNodeStyle fetchStyleBlocking( const QString &styleId );
@@ -179,8 +171,6 @@ Requests the details for the style with matching ``styleId`` from the server.
 
 This method is blocking and will wait for results from the server before returning.
 Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
-
-:rtype: QgsGeoNodeStyle
 %End
 
     QStringList fetchServiceUrlsBlocking( const QString &serviceType );
@@ -189,8 +179,6 @@ Requests the list of unique URLs for available services with matching ``serviceT
 
 This method is blocking and will wait for results from the server before returning.
 Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
-
-:rtype: list of str
 %End
 
     QgsStringMap fetchServiceUrlDataBlocking( const QString &serviceType );
@@ -199,30 +187,22 @@ Obtains a map of layer name to URL for available services with matching ``servic
 
 This method is blocking and will wait for results from the server before returning.
 Accordingly it should not be used from any code which potentially blocks operation in the main GUI thread.
-
-:rtype: QgsStringMap
 %End
 
     QString lastError() const;
 %Docstring
 Returns the most recent error string for any encountered errors, or an empty string if
 no errors have been encountered.
-
-:rtype: str
 %End
 
     QByteArray lastResponse() const;
 %Docstring
 Returns the most recent response obtained from the server.
-
-:rtype: QByteArray
 %End
 
     QString protocol() const;
 %Docstring
 Returns the network protocol (e.g. 'http') used for connecting with the server.
-
-:rtype: str
 
 .. seealso:: :py:func:`setProtocol()`
 %End

@@ -27,10 +27,6 @@ class QgsCurvePolygon: QgsSurface
 
     bool operator==( const QgsCurvePolygon &other ) const;
     bool operator!=( const QgsCurvePolygon &other ) const;
-%Docstring
-
-:rtype: bool
-%End
 
     ~QgsCurvePolygon();
 
@@ -73,29 +69,16 @@ class QgsCurvePolygon: QgsSurface
 
 
     int numInteriorRings() const;
-%Docstring
-
-:rtype: int
-%End
     const QgsCurve *exteriorRing() const;
-%Docstring
-
-:rtype: QgsCurve
-%End
     const QgsCurve *interiorRing( int i ) const;
-%Docstring
-
-:rtype: QgsCurve
-%End
 
     virtual QgsPolygon *toPolygon( double tolerance = M_PI_2 / 90, SegmentationToleranceType toleranceType = MaximumAngle ) const /Factory/;
 %Docstring
 Returns a new polygon geometry corresponding to a segmentized approximation
 of the curve.
+
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
-
-:rtype: QgsPolygon
 %End
 
     virtual void setExteriorRing( QgsCurve *ring /Transfer/ );
@@ -103,6 +86,7 @@ of the curve.
 Sets the exterior ring of the polygon. The CurvePolygon type will be updated to match the dimensionality
 of the exterior ring. For instance, setting a 2D exterior ring on a 3D CurvePolygon will drop the z dimension
 from the CurvePolygon and all interior rings.
+
 :param ring: new exterior ring. Ownership is transferred to the CurvePolygon.
 
 .. seealso:: :py:func:`setInteriorRings()`
@@ -124,8 +108,6 @@ Adds an interior ring to the geometry (takes ownership)
 Removes an interior ring from the polygon. The first interior ring has index 0.
 The corresponding ring is removed from the polygon and deleted. If a ring was successfully removed
 the function will return true.  It is not possible to remove the exterior ring using this method.
-
-:rtype: bool
 
 .. seealso:: :py:func:`removeInteriorRings()`
 %End
@@ -177,21 +159,19 @@ area will be removed.
 
 %Docstring
 Returns a geometry without curves. Caller takes ownership
+
 :param tolerance: segmentation tolerance
 :param toleranceType: maximum segmentation angle or maximum difference between approximation and curve*
-
-:rtype: QgsAbstractGeometry
 %End
 
     virtual double vertexAngle( QgsVertexId vertex ) const;
 
 %Docstring
 Returns approximate rotation angle for a vertex. Usually average angle between adjacent segments.
+
 :param vertex: the vertex id
 
 :return: rotation in radians, clockwise from north
-:rtype: float
-
 %End
 
     virtual int vertexCount( int part = 0, int ring = 0 ) const;

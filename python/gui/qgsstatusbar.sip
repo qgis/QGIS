@@ -65,8 +65,6 @@ widget itself is not deleted.
 %Docstring
 Returns the current message shown in the status bar.
 
-:rtype: str
-
 .. seealso:: :py:func:`showMessage()`
 %End
 

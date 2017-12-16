@@ -39,6 +39,7 @@ class QgsVectorLayerDirector : QgsGraphDirector
                           );
 %Docstring
 Default constructor
+
 :param source: feature source representing network
 :param directionFieldId: field containing direction value
 :param directDirectionValue: value for direct one-way road

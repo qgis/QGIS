@@ -32,6 +32,7 @@ hue wheel, color swatches, and a color sampler.
     QgsCompoundColorWidget( QWidget *parent /TransferThis/ = 0, const QColor &color = QColor(), Layout layout = LayoutDefault );
 %Docstring
 Constructor for QgsCompoundColorWidget
+
 :param parent: parent widget
 :param color: initial color for dialog
 :param layout: widget layout to use
@@ -44,14 +45,13 @@ Constructor for QgsCompoundColorWidget
 Returns the current color for the dialog
 
 :return: dialog color
-:rtype: QColor
-
 %End
 
     void setAllowOpacity( const bool allowOpacity );
 %Docstring
 Sets whether opacity modification (transparency) is permitted
 for the color dialog. Defaults to true.
+
 :param allowOpacity: set to false to disable opacity modification
 
 .. versionadded:: 3.0
@@ -61,6 +61,7 @@ for the color dialog. Defaults to true.
 %Docstring
 Sets whether the widget's color has been "discarded" and the selected color should not
 be stored in the recent color list.
+
 :param discarded: set to true to avoid adding color to recent color list on widget destruction.
 
 .. versionadded:: 3.0
@@ -71,6 +72,7 @@ be stored in the recent color list.
     void currentColorChanged( const QColor &color );
 %Docstring
 Emitted when the dialog's color changes
+
 :param color: current color
 %End
 
@@ -79,12 +81,14 @@ Emitted when the dialog's color changes
     void setColor( const QColor &color );
 %Docstring
 Sets the current color for the dialog
+
 :param color: desired color
 %End
 
     void setPreviousColor( const QColor &color );
 %Docstring
 Sets the color to show in an optional "previous color" section
+
 :param color: previous color
 %End
 

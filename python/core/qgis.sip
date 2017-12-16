@@ -133,51 +133,42 @@ to account for differences in the default font sizes across different platforms.
 uint qHash( const QVariant &variant );
 %Docstring
 Hash for QVariant
-
-:rtype: uint
 %End
 
 QString qgsDoubleToString( double a, int precision = 17 );
 %Docstring
 Returns a string representation of a double
+
 :param a: double value
 :param precision: number of decimal places to retain
-
-:rtype: str
 %End
 
 bool qgsDoubleNear( double a, double b, double epsilon = 4 * DBL_EPSILON );
 %Docstring
 Compare two doubles (but allow some difference)
+
 :param a: first double
 :param b: second double
 :param epsilon: maximum difference allowable between doubles
-
-:rtype: bool
 %End
 
 bool qgsFloatNear( float a, float b, float epsilon = 4 * FLT_EPSILON );
 %Docstring
 Compare two floats (but allow some difference)
+
 :param a: first float
 :param b: second float
 :param epsilon: maximum difference allowable between floats
-
-:rtype: bool
 %End
 
 bool qgsDoubleNearSig( double a, double b, int significantDigits = 10 );
 %Docstring
 Compare two doubles using specified number of significant digits
-
-:rtype: bool
 %End
 
 double qgsRound( double number, double places );
 %Docstring
 Returns a double ``number``, rounded (as close as possible) to the specified number of ``places``.
-
-:rtype: float
 
 .. versionadded:: 3.0
 %End
@@ -188,12 +179,11 @@ double qgsPermissiveToDouble( QString string, bool &ok );
 %Docstring
 Converts a string to a double in a permissive way, e.g., allowing for incorrect
 numbers of digits between thousand separators
+
 :param string: string to convert
 :param ok: will be set to true if conversion was successful
 
 :return: string converted to double if possible
-:rtype: float
-
 
 .. versionadded:: 2.9
 
@@ -204,12 +194,11 @@ int qgsPermissiveToInt( QString string, bool &ok );
 %Docstring
 Converts a string to an integer in a permissive way, e.g., allowing for incorrect
 numbers of digits between thousand separators
+
 :param string: string to convert
 :param ok: will be set to true if conversion was successful
 
 :return: string converted to int if possible
-:rtype: int
-
 
 .. versionadded:: 2.9
 
@@ -222,8 +211,6 @@ Compares two QVariant values and returns whether the first is less than the seco
 Useful for sorting lists of variants, correctly handling sorting of the various
 QVariant data types (such as strings, numeric values, dates and times)
 
-:rtype: bool
-
 .. seealso:: :py:func:`qgsVariantGreaterThan()`
 %End
 
@@ -233,16 +220,10 @@ Compares two QVariant values and returns whether the first is greater than the s
 Useful for sorting lists of variants, correctly handling sorting of the various
 QVariant data types (such as strings, numeric values, dates and times)
 
-:rtype: bool
-
 .. seealso:: :py:func:`qgsVariantLessThan()`
 %End
 
 QString qgsVsiPrefix( const QString &path );
-%Docstring
-
-:rtype: str
-%End
 
 
 

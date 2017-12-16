@@ -28,15 +28,7 @@ class QgsLongLongValidator : QValidator
     virtual void setRange( qint64 bottom, qint64 top );
 
     qint64 bottom() const;
-%Docstring
-
-:rtype: qint64
-%End
     qint64 top() const;
-%Docstring
-
-:rtype: qint64
-%End
 
 };
 

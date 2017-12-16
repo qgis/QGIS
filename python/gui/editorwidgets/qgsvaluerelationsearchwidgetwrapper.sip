@@ -35,10 +35,6 @@ Constructor for QgsValueRelationSearchWidgetWrapper
     virtual bool valid() const;
 
     QVariant value() const;
-%Docstring
-
-:rtype: QVariant
-%End
     virtual QgsSearchWidgetWrapper::FilterFlags supportedFlags() const;
 
     virtual QgsSearchWidgetWrapper::FilterFlags defaultFlags() const;

@@ -42,8 +42,6 @@ setFilters allows fitering according to the type of field
     QgsFieldProxyModel::Filters filters() const;
 %Docstring
 currently used filter on list of fields
-
-:rtype: QgsFieldProxyModel.Filters
 %End
 
     void setAllowEmptyFieldName( bool allowEmpty );
@@ -59,8 +57,6 @@ Sets whether an optional empty field ("not set") option is shown in the combo bo
 %Docstring
 Returns true if the combo box allows the empty field ("not set") choice.
 
-:rtype: bool
-
 .. seealso:: :py:func:`setAllowEmptyFieldName()`
 
 .. versionadded:: 3.0
@@ -69,15 +65,11 @@ Returns true if the combo box allows the empty field ("not set") choice.
     QString currentField() const;
 %Docstring
 return the currently selected field
-
-:rtype: str
 %End
 
     QgsVectorLayer *layer() const;
 %Docstring
 Returns the layer currently associated with the combobox.
-
-:rtype: QgsVectorLayer
 
 .. seealso:: :py:func:`setLayer()`
 %End

@@ -27,6 +27,7 @@ a matching type from a composition.
 %Docstring
 QgsComposerItemComboBox creates a combo box to display a list of items in a
 composition. The items can optionally be filtered by type.
+
 :param parent: parent widget
 :param composition: composition to show items from. If not set, no items will be shown
 until setComposition() is called
@@ -40,6 +41,7 @@ Sets the composition containing the items to list in the combo box.
     void setItemType( QgsComposerItem::ItemType itemType );
 %Docstring
 Sets a filter for the item type to show in the combo box.
+
 :param itemType: type of items to show. Set to QgsComposerItem.ComposerItem to
 show all items.
 
@@ -50,14 +52,13 @@ show all items.
 %Docstring
 Returns the filter for the item types to show in the combo box.
 
-:rtype: QgsComposerItem.ItemType
-
 .. seealso:: :py:func:`setItemType()`
 %End
 
     void setExceptedItemList( const QList< QgsComposerItem * > &exceptList );
 %Docstring
 Sets a list of specific items to exclude from the combo box.
+
 :param exceptList: list of items to exclude
 
 .. seealso:: :py:func:`exceptedItemList()`
@@ -67,17 +68,14 @@ Sets a list of specific items to exclude from the combo box.
 %Docstring
 Returns the list of specific items excluded from the combo box.
 
-:rtype: list of QgsComposerItem
-
 .. seealso:: :py:func:`setExceptedItemList()`
 %End
 
     QgsComposerItem *item( int index ) const;
 %Docstring
 Return the item currently shown at the specified index within the combo box.
-:param index: position of item to return
 
-:rtype: QgsComposerItem
+:param index: position of item to return
 
 .. seealso:: :py:func:`currentItem()`
 %End
@@ -85,8 +83,6 @@ Return the item currently shown at the specified index within the combo box.
     QgsComposerItem *currentItem() const;
 %Docstring
 Returns the item currently selected in the combo box.
-
-:rtype: QgsComposerItem
 %End
 
   public slots:
@@ -94,6 +90,7 @@ Returns the item currently selected in the combo box.
     void setItem( const QgsComposerItem *item );
 %Docstring
 Sets the currently selected item in the combo box.
+
 :param item: selected item
 %End
 

@@ -46,32 +46,22 @@ Standard constructor
     Type type() const;
 %Docstring
 Return the dependency type
-
-:rtype: Type
 %End
 
     Origin origin() const;
 %Docstring
 Return the dependency origin
-
-:rtype: Origin
 %End
 
     QString layerId() const;
 %Docstring
 Return the ID of the layer this dependency depends on
-
-:rtype: str
 %End
 
     bool operator==( const QgsMapLayerDependency &other ) const;
 
     //! hash operator
     long __hash__() const;
-%Docstring
-
-:rtype: long
-%End
 %MethodCode
     sipRes = qHash( *sipCpp );
 %End

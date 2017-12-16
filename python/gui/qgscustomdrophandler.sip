@@ -46,8 +46,6 @@ Type of custom URI recognized by the handler. This must match
 the URI entry's providerKey in order for handleCustomUriDrop()
 to be called.
 
-:rtype: str
-
 .. seealso:: :py:func:`handleCustomUriDrop()`
 %End
 
@@ -89,8 +87,6 @@ The base class implementation does nothing.
 This method is not called directly while drop handling is occurring,
 so the limitations described in handleMimeData() about returning
 quickly do not apply.
-
-:rtype: bool
 %End
 };
 

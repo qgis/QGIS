@@ -46,8 +46,6 @@ Initialize cache: set new parameters and clears the cache if any
 parameters have changed since last initialization.
 
 :return: flag whether the parameters are the same as last time
-:rtype: bool
-
 %End
 
     void setCacheImage( const QString &cacheKey, const QImage &image, const QList< QgsMapLayer * > &dependentLayers = QList< QgsMapLayer * >() );
@@ -65,8 +63,6 @@ repaint then the cache image will be cleared.
 %Docstring
 Returns true if the cache contains an image with the specified ``cacheKey``.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`cacheImage()`
@@ -78,8 +74,6 @@ Returns the cached image for the specified ``cacheKey``. The ``cacheKey`` usuall
 matches the QgsMapLayer.id() which the image is a render of.
 Returns a null image if it is not cached.
 
-:rtype: QImage
-
 .. seealso:: :py:func:`setCacheImage()`
 
 .. seealso:: :py:func:`hasCacheImage()`
@@ -88,8 +82,6 @@ Returns a null image if it is not cached.
     QList< QgsMapLayer * > dependentLayers( const QString &cacheKey ) const;
 %Docstring
 Returns a list of map layers on which an image in the cache depends.
-
-:rtype: list of QgsMapLayer
 
 .. versionadded:: 3.0
 %End

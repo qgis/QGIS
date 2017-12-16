@@ -31,8 +31,6 @@ Constructor for QgsRasterHistogramWidget, for the specified raster ``layer``.
     bool histoSaveAsImage( const QString &filename, int width = 600, int height = 600, int quality = -1 );
 %Docstring
 Save the histogram as an image to disk
-
-:rtype: bool
 %End
 
     void setRendererWidget( const QString &name, QgsRasterRendererWidget *rendererWidget = 0 );
@@ -48,8 +46,6 @@ Activate the histogram widget
     bool computeHistogram( bool forceComputeFlag );
 %Docstring
  Compute the histogram on demand.
-
-:rtype: bool
 %End
 
     void histoAction( const QString &actionName, bool actionFlag = true );

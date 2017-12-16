@@ -24,6 +24,7 @@ Widget for editing authentication configuration database
     explicit QgsAuthConfigEditor( QWidget *parent /TransferThis/ = 0, bool showUtilities = true, bool relayMessages = true );
 %Docstring
 Widget for editing authentication configurations directly in database
+
 :param parent: Parent widget
 :param showUtilities: Whether to show the widget's utilities button
 :param relayMessages: Whether to relay auth manager messages to internal message bar

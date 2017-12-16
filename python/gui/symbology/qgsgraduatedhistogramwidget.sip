@@ -27,6 +27,7 @@ editing range breaks for a QgsGraduatedSymbolRenderer renderer.
     QgsGraduatedHistogramWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 QgsGraduatedHistogramWidget constructor
+
 :param parent: parent widget
 %End
 
@@ -34,6 +35,7 @@ QgsGraduatedHistogramWidget constructor
 %Docstring
 Sets the QgsGraduatedSymbolRenderer renderer associated with the histogram.
 The histogram will fetch the ranges from the renderer before every refresh.
+
 :param renderer: associated QgsGraduatedSymbolRenderer
 %End
 
@@ -42,6 +44,7 @@ The histogram will fetch the ranges from the renderer before every refresh.
     void rangesModified( bool rangesAdded );
 %Docstring
 Emitted when the user modifies the graduated ranges using the histogram widget.
+
 :param rangesAdded: true if the user has added ranges, false if the user has just
 modified existing range breaks
 %End

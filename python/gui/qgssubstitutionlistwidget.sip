@@ -27,12 +27,14 @@ options for exporting and importing substitution lists.
     QgsSubstitutionListWidget( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSubstitutionListWidget.
+
 :param parent: parent widget
 %End
 
     void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 %Docstring
 Sets the list of substitutions to show in the widget.
+
 :param substitutions: substitution list
 
 .. seealso:: :py:func:`substitutions()`
@@ -41,8 +43,6 @@ Sets the list of substitutions to show in the widget.
     QgsStringReplacementCollection substitutions() const;
 %Docstring
 Returns the list of substitutions currently defined by the widget.
-
-:rtype: QgsStringReplacementCollection
 
 .. seealso:: :py:func:`setSubstitutions()`
 %End
@@ -75,12 +75,14 @@ options for exporting and importing substitution lists.
     QgsSubstitutionListDialog( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSubstitutionListDialog.
+
 :param parent: parent widget
 %End
 
     void setSubstitutions( const QgsStringReplacementCollection &substitutions );
 %Docstring
 Sets the list of substitutions to show in the dialog.
+
 :param substitutions: substitution list
 
 .. seealso:: :py:func:`substitutions()`
@@ -89,8 +91,6 @@ Sets the list of substitutions to show in the dialog.
     QgsStringReplacementCollection substitutions() const;
 %Docstring
 Returns the list of substitutions currently defined by the dialog.
-
-:rtype: QgsStringReplacementCollection
 
 .. seealso:: :py:func:`setSubstitutions()`
 %End

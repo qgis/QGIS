@@ -48,8 +48,6 @@ A composer class that displays svg files or raster format (jpg, png, ...)
     virtual int type() const;
 %Docstring
 Return correct graphics item type.
-
-:rtype: int
 %End
 
     virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *itemStyle, QWidget *pWidget );
@@ -63,6 +61,7 @@ Reimplementation of QCanvasItem.paint
 Sets the source path of the image (may be svg or a raster format). Data defined
 picture source may override this value. The path can either be a local path
 or a remote (http) path.
+
 :param path: path for the source image
 
 .. seealso:: :py:func:`usePictureExpression`
@@ -78,8 +77,6 @@ Returns the path of the source image. Data defined picture source may override
 this value. The path can either be a local path or a remote (http) path.
 
 :return: path for the source image
-:rtype: str
-
 
 .. seealso:: :py:func:`usePictureExpression`
 
@@ -99,28 +96,24 @@ corresponds to 1 scene size unit and resizes the svg symbol / image
 
 %Docstring
 Stores state in Dom element
+
 :param elem: is Dom element corresponding to 'Composer' tag
 :param doc: is Dom document
-
-:rtype: bool
 %End
 
     virtual bool readXml( const QDomElement &itemElem, const QDomDocument &doc );
 
 %Docstring
 Sets state from Dom document
+
 :param itemElem: is Dom node corresponding to item tag
 :param doc: is Dom document
-
-:rtype: bool
 %End
 
     double pictureRotation() const;
 %Docstring
 Returns the rotation used for drawing the picture within the item's frame,
 in degrees clockwise.
-
-:rtype: float
 
 .. versionadded:: 2.2
 
@@ -135,6 +128,7 @@ Sets the map object for rotation (by id). A value of -1 disables the map
 rotation.  If this is set then the picture will be rotated by the same
 amount as the specified map object. This is useful especially for
 syncing north arrows with a map item.
+
 :param composerMapId: composer map id to sync rotation with
 
 .. seealso:: :py:func:`setPictureRotation`
@@ -149,8 +143,6 @@ disabled.  If this is set then the picture is rotated by the same amount
 as the specified map object.
 
 :return: id of map object
-:rtype: int
-
 
 .. seealso:: :py:func:`setRotationMap`
 
@@ -162,8 +154,6 @@ as the specified map object.
 True if the picture rotation is matched to a map item.
 
 :return: true if rotation map is in use
-:rtype: bool
-
 
 .. seealso:: :py:func:`rotationMap`
 
@@ -173,8 +163,6 @@ True if the picture rotation is matched to a map item.
     NorthMode northMode() const;
 %Docstring
 Returns the mode used to align the picture to a map's North.
-
-:rtype: NorthMode
 
 .. seealso:: :py:func:`setNorthMode()`
 
@@ -197,8 +185,6 @@ Sets the mode used to align the picture to a map's North.
     double northOffset() const;
 %Docstring
 Returns the offset added to the picture's rotation from a map's North.
-
-:rtype: float
 
 .. seealso:: :py:func:`setNorthOffset()`
 
@@ -224,8 +210,6 @@ Returns the resize mode used for drawing the picture within the composer
 item's frame.
 
 :return: resize mode of picture
-:rtype: ResizeMode
-
 
 .. versionadded:: 2.3
 
@@ -236,6 +220,7 @@ item's frame.
 %Docstring
 Sets the picture's anchor point, which controls how it is placed
 within the picture item's frame.
+
 :param anchor: anchor point for picture
 
 .. versionadded:: 2.3
@@ -249,8 +234,6 @@ Returns the picture's current anchor, which controls how it is placed
 within the picture item's frame.
 
 :return: anchor point for picture
-:rtype: ItemPositionMode
-
 
 .. versionadded:: 2.3
 
@@ -260,8 +243,6 @@ within the picture item's frame.
     QColor svgFillColor() const;
 %Docstring
 Returns the fill color used for parametrized SVG files.
-
-:rtype: QColor
 
 .. seealso:: :py:func:`setSvgFillColor()`
 
@@ -273,6 +254,7 @@ Returns the fill color used for parametrized SVG files.
     void setSvgFillColor( const QColor &color );
 %Docstring
 Sets the fill color used for parametrized SVG files.
+
 :param color: fill color.
 
 .. note::
@@ -291,8 +273,6 @@ non-parametrized SVG files.
 %Docstring
 Returns the stroke color used for parametrized SVG files.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setSvgStrokeColor()`
 
 .. seealso:: :py:func:`svgFillColor()`
@@ -303,6 +283,7 @@ Returns the stroke color used for parametrized SVG files.
     void setSvgStrokeColor( const QColor &color );
 %Docstring
 Sets the stroke color used for parametrized SVG files.
+
 :param color: stroke color.
 
 .. note::
@@ -321,8 +302,6 @@ non-parametrized SVG files.
 %Docstring
 Returns the stroke width (in mm) used for parametrized SVG files.
 
-:rtype: float
-
 .. seealso:: :py:func:`setSvgStrokeWidth()`
 
 .. seealso:: :py:func:`svgStrokeColor()`
@@ -333,6 +312,7 @@ Returns the stroke width (in mm) used for parametrized SVG files.
     void setSvgStrokeWidth( double width );
 %Docstring
 Sets the stroke width used for parametrized SVG files.
+
 :param width: stroke width in mm
 
 .. note::
@@ -352,8 +332,6 @@ non-parametrized SVG files.
 Returns the current picture mode (image format).
 
 :return: picture mode
-:rtype: Mode
-
 
 .. versionadded:: 2.3
 %End
@@ -373,6 +351,7 @@ the item's frame, only the way the picture is drawn within the item.
     virtual void setResizeMode( ResizeMode mode );
 %Docstring
 Sets the resize mode used for drawing the picture within the item bounds.
+
 :param mode: ResizeMode to use for image file
 
 .. versionadded:: 2.3
@@ -384,6 +363,7 @@ Sets the resize mode used for drawing the picture within the item bounds.
 %Docstring
 Recalculates the source image (if using an expression for picture's source)
 and reloads and redraws the picture.
+
 :param context: expression context for evaluating data defined picture sources
 
 .. versionadded:: 2.3

@@ -28,16 +28,16 @@ have an effect for QgsLayoutItemAttributeTables, and have no effect for QgsLayou
     QgsLayoutTableColumn( const QString &heading = QString() );
 %Docstring
 Constructor for QgsLayoutTableColumn.
+
 :param heading: column heading
 %End
 
     bool writeXml( QDomElement &columnElem, QDomDocument &doc ) const;
 %Docstring
 Writes the column's properties to xml for storage.
+
 :param columnElem: an existing QDomElement in which to store the column's properties.
 :param doc: QDomDocument for the destination xml.
-
-:rtype: bool
 
 .. seealso:: :py:func:`readXml()`
 %End
@@ -45,9 +45,8 @@ Writes the column's properties to xml for storage.
     bool readXml( const QDomElement &columnElem );
 %Docstring
 Reads the column's properties from xml.
-:param columnElem: a QDomElement holding the column's desired properties.
 
-:rtype: bool
+:param columnElem: a QDomElement holding the column's desired properties.
 
 .. seealso:: :py:func:`writeXml()`
 %End
@@ -56,8 +55,6 @@ Reads the column's properties from xml.
 %Docstring
 Returns the width for the column in mm,
 or 0 if column width is automatically calculated.
-
-:rtype: float
 
 .. seealso:: :py:func:`setWidth()`
 %End
@@ -74,8 +71,6 @@ Sets the width for a column in mm. Set the ``width`` to 0 if the column width is
 Returns the heading for a column, which is the value displayed in the column's
 header cell.
 
-:rtype: str
-
 .. seealso:: :py:func:`setHeading()`
 %End
 
@@ -91,8 +86,6 @@ header cell.
 %Docstring
 Returns the horizontal alignment for a column, which controls the alignment
 used for drawing column values within cells.
-
-:rtype: Qt.AlignmentFlag
 
 .. seealso:: :py:func:`setHAlignment()`
 
@@ -114,8 +107,6 @@ used for drawing column values within cells.
 Returns the vertical alignment for a column, which controls the alignment
 used for drawing column values within cells.
 
-:rtype: Qt.AlignmentFlag
-
 .. seealso:: :py:func:`setVAlignment()`
 
 .. seealso:: :py:func:`hAlignment()`
@@ -135,8 +126,6 @@ used for drawing column values within cells.
 %Docstring
 Returns the attribute name or expression used for the column's values. This property
 is only used when the column is part of a QgsLayoutItemAttributeTable.
-
-:rtype: str
 
 .. note::
 
@@ -161,8 +150,6 @@ is only used when the column is part of a QgsLayoutItemAttributeTable.
 %Docstring
 Returns the sort order for the column. This property is only used when the column
 is part of a QgsLayoutItemAttributeTable and when sortByRank is > 0.
-
-:rtype: Qt.SortOrder
 
 .. note::
 
@@ -197,8 +184,6 @@ is part of a QgsLayoutItemAttributeTable.
 
 If sort rank is <= 0 then the column is not being sorted.
 
-:rtype: int
-
 .. note::
 
    only applicable when used in a QgsLayoutItemAttributeTable
@@ -231,8 +216,6 @@ If the sort ``rank`` is <= 0 then the column is not being sorted.
 Creates a duplicate column which is a deep copy of this column.
 
 :return: a new QgsLayoutTableColumn with same properties as this column.
-:rtype: QgsLayoutTableColumn
-
 %End
 
 };

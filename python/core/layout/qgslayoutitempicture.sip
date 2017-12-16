@@ -57,8 +57,6 @@ Constructor for QgsLayoutItemPicture, with the specified parent ``layout``.
 Returns a new picture item for the specified ``layout``.
 
 The caller takes responsibility for deleting the returned object.
-
-:rtype: QgsLayoutItemPicture
 %End
 
 
@@ -77,8 +75,6 @@ Returns the path of the source image. Data defined picture source may override
 this value. The path can either be a local path or a remote (http) path.
 
 :return: path for the source image
-:rtype: str
-
 
 .. seealso:: :py:func:`usePictureExpression()`
 
@@ -89,8 +85,6 @@ this value. The path can either be a local path or a remote (http) path.
 %Docstring
 Returns the rotation used for drawing the picture within the item's frame,
 in degrees clockwise.
-
-:rtype: float
 
 .. seealso:: :py:func:`setPictureRotation()`
 
@@ -115,8 +109,6 @@ Returns the uuid of the rotation map. An empty string means map rotation is
 disabled.  If this is set then the picture is rotated by the same amount
 as the specified map object.
 
-:rtype: str
-
 .. seealso:: :py:func:`setRotationMap()`
 
 .. seealso:: :py:func:`useRotationMap()`
@@ -126,8 +118,6 @@ as the specified map object.
 %Docstring
 True if the picture rotation is matched to a map item.
 
-:rtype: bool
-
 .. seealso:: :py:func:`rotationMap()`
 
 .. seealso:: :py:func:`setRotationMap()`
@@ -136,8 +126,6 @@ True if the picture rotation is matched to a map item.
     NorthMode northMode() const;
 %Docstring
 Returns the mode used to align the picture to a map's North.
-
-:rtype: NorthMode
 
 .. seealso:: :py:func:`setNorthMode()`
 
@@ -156,8 +144,6 @@ Sets the ``mode`` used to align the picture to a map's North.
     double northOffset() const;
 %Docstring
 Returns the offset added to the picture's rotation from a map's North.
-
-:rtype: float
 
 .. seealso:: :py:func:`setNorthOffset()`
 
@@ -178,8 +164,6 @@ Sets the ``offset`` added to the picture's rotation from a map's North.
 Returns the resize mode used for drawing the picture within the composer
 item's frame.
 
-:rtype: ResizeMode
-
 .. seealso:: :py:func:`setResizeMode()`
 %End
 
@@ -196,16 +180,12 @@ within the picture item's frame.
 Returns the picture's current anchor, which controls how it is placed
 within the picture item's frame.
 
-:rtype: QgsLayoutItem.ReferencePoint
-
 .. seealso:: :py:func:`setPictureAnchor()`
 %End
 
     QColor svgFillColor() const;
 %Docstring
 Returns the fill color used for parametrized SVG files.
-
-:rtype: QColor
 
 .. seealso:: :py:func:`setSvgFillColor()`
 
@@ -230,8 +210,6 @@ non-parametrized SVG files.
 %Docstring
 Returns the stroke color used for parametrized SVG files.
 
-:rtype: QColor
-
 .. seealso:: :py:func:`setSvgStrokeColor()`
 
 .. seealso:: :py:func:`svgFillColor()`
@@ -240,6 +218,7 @@ Returns the stroke color used for parametrized SVG files.
     void setSvgStrokeColor( const QColor &color );
 %Docstring
 Sets the stroke ``color`` used for parametrized SVG files.
+
 :param color: stroke color.
 
 .. note::
@@ -255,8 +234,6 @@ non-parametrized SVG files.
     double svgStrokeWidth() const;
 %Docstring
 Returns the stroke width (in layout units) used for parametrized SVG files.
-
-:rtype: float
 
 .. seealso:: :py:func:`setSvgStrokeWidth()`
 
@@ -280,8 +257,6 @@ non-parametrized SVG files.
     Format mode() const;
 %Docstring
 Returns the current picture mode (image format).
-
-:rtype: Format
 %End
 
     virtual void finalizeRestoreFromXml();
@@ -300,6 +275,7 @@ the item's frame, only the way the picture is drawn within the item.
     void setResizeMode( ResizeMode mode );
 %Docstring
 Sets the resize ``mode`` used for drawing the picture within the item bounds.
+
 :param mode: ResizeMode to use for image file
 
 .. seealso:: :py:func:`resizeMode`
@@ -309,6 +285,7 @@ Sets the resize ``mode`` used for drawing the picture within the item bounds.
 %Docstring
 Recalculates the source image (if using an expression for picture's source)
 and reloads and redraws the picture.
+
 :param context: expression context for evaluating data defined picture sources
 %End
 

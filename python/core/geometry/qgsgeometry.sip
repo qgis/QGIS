@@ -94,8 +94,6 @@ Returns a non-modifiable (const) reference to the underlying abstract geometry p
 
 This is much faster then calling the non-const get() method.
 
-:rtype: QgsAbstractGeometry
-
 .. note::
 
    In QGIS 2.x this method was named geometry().
@@ -113,8 +111,6 @@ Returns a modifiable (non-const) reference to the underlying abstract geometry p
 
 This method can be slow to call, as it may trigger a detachment of the geometry
 and a deep copy. Where possible, use constGet() instead.
-
-:rtype: QgsAbstractGeometry
 
 .. note::
 
@@ -147,8 +143,6 @@ Sets the underlying geometry store. Ownership of geometry is transferred.
 Returns true if the geometry is null (ie, contains no underlying geometry
 accessible via geometry() ).
 
-:rtype: bool
-
 .. seealso:: :py:func:`geometry`
 
 .. versionadded:: 2.10
@@ -159,20 +153,14 @@ accessible via geometry() ).
     static QgsGeometry fromWkt( const QString &wkt );
 %Docstring
 Creates a new geometry from a WKT string
-
-:rtype: QgsGeometry
 %End
     static QgsGeometry fromPointXY( const QgsPointXY &point );
 %Docstring
 Creates a new geometry from a QgsPointXY object
-
-:rtype: QgsGeometry
 %End
     static QgsGeometry fromMultiPointXY( const QgsMultiPointXY &multipoint );
 %Docstring
 Creates a new geometry from a QgsMultiPointXY object
-
-:rtype: QgsGeometry
 %End
 
     static QgsGeometry fromPolylineXY( const QgsPolylineXY &polyline );
@@ -181,8 +169,6 @@ Creates a new LineString geometry from a list of QgsPointXY points.
 
 Using fromPolyline() is preferred, as fromPolyline() is more efficient
 and will respect any Z or M dimensions present in the input points.
-
-:rtype: QgsGeometry
 
 .. note::
 
@@ -201,40 +187,28 @@ This method will respect any Z or M dimensions present in the input points.
 E.g. if input points are PointZ type, the resultant linestring will be
 a LineStringZ type.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 3.0
 %End
 
     static QgsGeometry fromMultiPolylineXY( const QgsMultiPolylineXY &multiline );
 %Docstring
 Creates a new geometry from a QgsMultiPolylineXY object
-
-:rtype: QgsGeometry
 %End
     static QgsGeometry fromPolygonXY( const QgsPolygonXY &polygon );
 %Docstring
 Creates a new geometry from a QgsPolygon
-
-:rtype: QgsGeometry
 %End
     static QgsGeometry fromMultiPolygonXY( const QgsMultiPolygonXY &multipoly );
 %Docstring
 Creates a new geometry from a QgsMultiPolygon
-
-:rtype: QgsGeometry
 %End
     static QgsGeometry fromRect( const QgsRectangle &rect );
 %Docstring
 Creates a new geometry from a QgsRectangle
-
-:rtype: QgsGeometry
 %End
     static QgsGeometry collectGeometry( const QVector<QgsGeometry> &geometries );
 %Docstring
 Creates a new multipart geometry from a list of QgsGeometry objects
-
-:rtype: QgsGeometry
 %End
 
 
@@ -251,16 +225,12 @@ Set the geometry, feeding in the buffer containing OGC Well-Known Binary
 %Docstring
 Returns type of the geometry as a WKB type (point / linestring / polygon etc.)
 
-:rtype: QgsWkbTypes.Type
-
 .. seealso:: :py:func:`type`
 %End
 
     QgsWkbTypes::GeometryType type() const;
 %Docstring
 Returns type of the geometry as a QgsWkbTypes.GeometryType
-
-:rtype: QgsWkbTypes.GeometryType
 
 .. seealso:: :py:func:`wkbType`
 %End
@@ -271,23 +241,17 @@ Returns true if the geometry is empty (eg a linestring with no vertices,
 or a collection with no geometries). A null geometry will always
 return true for isEmpty().
 
-:rtype: bool
-
 .. seealso:: :py:func:`isNull()`
 %End
 
     bool isMultipart() const;
 %Docstring
 Returns true if WKB of the geometry is of WKBMulti* type
-
-:rtype: bool
 %End
 
     bool isGeosEqual( const QgsGeometry & ) const;
 %Docstring
 Compares the geometry with another geometry using GEOS
-
-:rtype: bool
 
 .. versionadded:: 1.5
 %End
@@ -295,8 +259,6 @@ Compares the geometry with another geometry using GEOS
     bool isGeosValid() const;
 %Docstring
 Checks validity of the geometry using GEOS
-
-:rtype: bool
 
 .. versionadded:: 1.5
 %End
@@ -306,8 +268,6 @@ Checks validity of the geometry using GEOS
 Determines whether the geometry is simple (according to OGC definition),
 i.e. it has no anomalous geometric points, such as self-intersection or self-tangency.
 Uses GEOS library for the test.
-
-:rtype: bool
 
 .. note::
 
@@ -321,16 +281,12 @@ for checking anomalies in polygon geometries one can use isGeosValid().
 %Docstring
 Returns the area of the geometry using GEOS
 
-:rtype: float
-
 .. versionadded:: 1.5
 %End
 
     double length() const;
 %Docstring
 Returns the length of geometry using GEOS
-
-:rtype: float
 
 .. versionadded:: 1.5
 %End
@@ -341,16 +297,12 @@ Returns the minimum distance between this geometry and another geometry, using G
 Will return a negative value if a geometry is missing.
 
 :param geom: geometry to find minimum distance to
-
-:rtype: float
 %End
 
 
     QgsVertexIterator vertices() const;
 %Docstring
 Returns Java-style iterator for traversal of vertices of the geometry
-
-:rtype: QgsVertexIterator
 
 .. versionadded:: 3.0
 %End
@@ -369,8 +321,6 @@ and roughly equal in length. This occurs in matching linear networks.
 If the default approximate provided by this method is insufficient, use hausdorffDistanceDensify() instead.
 
 In case of error -1 will be returned.
-
-:rtype: float
 
 .. versionadded:: 3.0
 
@@ -393,27 +343,20 @@ distance returned approach the true Hausdorff distance for the geometries.
 
 In case of error -1 will be returned.
 
-:rtype: float
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`hausdorffDistance()`
 %End
 
     QgsPointXY closestVertex( const QgsPointXY &point, int &atVertex /Out/, int &beforeVertex /Out/, int &afterVertex /Out/, double &sqrDist /Out/ ) const;
-%Docstring
-
-:rtype: QgsPointXY
-%End
 
     double distanceToVertex( int vertex ) const;
 %Docstring
 Returns the distance along this geometry from its first vertex to the specified vertex.
+
 :param vertex: vertex index to calculate distance to
 
 :return: distance to vertex (following geometry), or -1 for invalid vertex numbers
-:rtype: float
-
 
 .. versionadded:: 2.16
 %End
@@ -421,11 +364,10 @@ Returns the distance along this geometry from its first vertex to the specified 
     double angleAtVertex( int vertex ) const;
 %Docstring
 Returns the bisector angle for this geometry at the specified vertex.
+
 :param vertex: vertex index to calculate bisector angle at
 
 :return: bisector angle, in radians clockwise from north
-:rtype: float
-
 
 .. versionadded:: 3.0
 
@@ -458,8 +400,6 @@ on this geometry (including if this geometry is a Point).
 It is up to the caller to distinguish between
 these error conditions.  (Or maybe we add another method to this
 object to help make the distinction?)
-
-:rtype: bool
 %End
 
     bool insertVertex( const QgsPoint &point, int beforeVertex );
@@ -474,8 +414,6 @@ on this geometry (including if this geometry is a Point).
 It is up to the caller to distinguish between
 these error conditions.  (Or maybe we add another method to this
 object to help make the distinction?)
-
-:rtype: bool
 %End
 
     bool moveVertex( double x, double y, int atVertex );
@@ -485,8 +423,6 @@ and item (first number is index 0)
 to the given coordinates.
 Returns false if atVertex does not correspond to a valid vertex
 on this geometry
-
-:rtype: bool
 %End
 
     bool moveVertex( const QgsPoint &p, int atVertex );
@@ -496,8 +432,6 @@ and item (first number is index 0)
 to the given coordinates.
 Returns false if atVertex does not correspond to a valid vertex
 on this geometry
-
-:rtype: bool
 %End
 
     bool deleteVertex( int atVertex );
@@ -506,8 +440,6 @@ Deletes the vertex at the given position number and item
 (first number is index 0)
 
 :return: false if atVertex does not correspond to a valid vertex
-:rtype: bool
-
 on this geometry (including if this geometry is a Point),
 or if the number of remaining vertices in the linestring
 would be less than two.
@@ -519,11 +451,10 @@ object to help make the distinction?)
     QgsPoint vertexAt( int atVertex ) const;
 %Docstring
 Returns coordinates of a vertex.
+
 :param atVertex: index of the vertex
 
 :return: Coordinates of the vertex or QgsPoint(0,0) on error
-:rtype: QgsPoint
-
 %End
 
     double sqrDistToVertexAt( QgsPointXY &point /In/, int atVertex ) const;
@@ -531,15 +462,11 @@ Returns coordinates of a vertex.
 Returns the squared Cartesian distance between the given point
 to the given vertex index (vertex at the given position number,
 ring and item (first number is index 0))
-
-:rtype: float
 %End
 
     QgsGeometry nearestPoint( const QgsGeometry &other ) const;
 %Docstring
 Returns the nearest point on this geometry to another geometry.
-
-:rtype: QgsGeometry
 
 .. versionadded:: 2.14
 
@@ -550,8 +477,6 @@ Returns the nearest point on this geometry to another geometry.
 %Docstring
 Returns the shortest line joining this geometry to another geometry.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 2.14
 
 .. seealso:: :py:func:`nearestPoint()`
@@ -560,17 +485,17 @@ Returns the shortest line joining this geometry to another geometry.
     double closestVertexWithContext( const QgsPointXY &point, int &atVertex /Out/ ) const;
 %Docstring
 Searches for the closest vertex in this geometry to the given point.
+
 :param point: Specifiest the point for search
 :param atVertex: Receives index of the closest vertex
 
 :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
-:rtype: float
-
 %End
 
     double closestSegmentWithContext( const QgsPointXY &point, QgsPointXY &minDistPoint /Out/, int &afterVertex /Out/, int *leftOf /Out/ = 0, double epsilon = DEFAULT_SEGMENT_EPSILON ) const;
 %Docstring
 Searches for the closest segment of geometry to the given point
+
 :param point: Specifies the point for search
 :param minDistPoint: Receives the nearest point on the segment
 :param afterVertex: Receives index of the vertex after the closest segment. The vertex
@@ -580,61 +505,54 @@ that the test was unsuccessful, e.g. for a point exactly on the line)
 :param epsilon: epsilon for segment snapping
 
 :return: The squared Cartesian distance is also returned in sqrDist, negative number on error
-:rtype: float
-
 %End
 
     OperationResult addRing( const QVector<QgsPointXY> &ring );
 %Docstring
 Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+
 :param ring: The ring to be added
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult addRing( QgsCurve *ring /Transfer/ );
 %Docstring
 Adds a new ring to this geometry. This makes only sense for polygon and multipolygons.
+
 :param ring: The ring to be added
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult addPart( const QVector<QgsPointXY> &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPointsXY/;
 %Docstring
 Adds a new part to a the geometry.
+
 :param points: points describing part to add
 :param geomType: default geometry type to create if no existing geometry
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult addPart( const QgsPointSequence &points, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry ) /PyName=addPoints/;
 %Docstring
 Adds a new part to a the geometry.
+
 :param points: points describing part to add
 :param geomType: default geometry type to create if no existing geometry
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult addPart( QgsAbstractGeometry *part /Transfer/, QgsWkbTypes::GeometryType geomType = QgsWkbTypes::UnknownGeometry );
 %Docstring
 Adds a new part to this geometry.
+
 :param part: part to add (ownership is transferred)
 :param geomType: default geometry type to create if no existing geometry
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
 
@@ -643,8 +561,6 @@ Adds a new part to this geometry.
 Adds a new island polygon to a multipolygon feature
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 
 .. note::
 
@@ -657,8 +573,6 @@ Removes the interior rings from a (multi)polygon geometry. If the minimumAllowed
 parameter is specified then only rings smaller than this minimum
 area will be removed.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 3.0
 %End
 
@@ -667,8 +581,6 @@ area will be removed.
 Translates this geometry by dx, dy, dz and dm.
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult transform( const QgsCoordinateTransform &ct );
@@ -676,8 +588,6 @@ Translates this geometry by dx, dy, dz and dm.
 Transforms this geometry as described by CoordinateTransform ct
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult transform( const QTransform &t, double zTranslate = 0.0, double zScale = 1.0, double mTranslate = 0.0, double mScale = 1.0 );
@@ -688,32 +598,28 @@ Optionally, the geometry's z values can be scaled via ``zScale`` and translated 
 Similarly, m-values can be scaled via ``mScale`` and translated via ``mTranslate``.
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult rotate( double rotation, const QgsPointXY &center );
 %Docstring
 Rotate this geometry around the Z axis
+
 :param rotation: clockwise rotation in degrees
 :param center: rotation center
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult splitGeometry( const QVector<QgsPointXY> &splitLine, QVector<QgsGeometry> &newGeometries /Out/, bool topological, QVector<QgsPointXY> &topologyTestPoints /Out/ );
 %Docstring
 Splits this geometry according to a given line.
+
 :param splitLine: the line that splits the geometry
 \param[out] newGeometries list of new geometries that have been created with the split
 :param topological: true if topological editing is enabled
 \param[out] topologyTestPoints points that need to be tested for topological completeness in the dataset
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
     OperationResult reshapeGeometry( const QgsLineString &reshapeLineString );
@@ -721,8 +627,6 @@ Splits this geometry according to a given line.
 Replaces a part of this geometry with another line
 
 :return: OperationResult a result code: success or reason of failure
-:rtype: OperationResult
-
 %End
 
 
@@ -730,11 +634,10 @@ Replaces a part of this geometry with another line
 %Docstring
 Returns the geometry formed by modifying this geometry such that it does not
 intersect the other geometry.
+
 :param other: geometry that should not be intersect
 
 :return: difference geometry, or empty geometry if difference could not be calculated
-:rtype: QgsGeometry
-
 
 .. versionadded:: 3.0
 %End
@@ -742,8 +645,6 @@ intersect the other geometry.
     QgsRectangle boundingBox() const;
 %Docstring
 Returns the bounding box of the geometry.
-
-:rtype: QgsRectangle
 
 .. seealso:: :py:func:`orientedMinimumBoundingBox()`
 %End
@@ -754,8 +655,6 @@ Returns the oriented minimum bounding box for the geometry, which is the smalles
 rotated rectangle which fully encompasses the geometry. The area, angle (clockwise in degrees from North),
 width and height of the rotated bounding box will also be returned.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`boundingBox()`
@@ -765,10 +664,9 @@ width and height of the rotated bounding box will also be returned.
     QgsGeometry minimalEnclosingCircle( QgsPointXY &center /Out/, double &radius /Out/, unsigned int segments = 36 ) const;
 %Docstring
 Returns the minimal enclosing circle for the geometry.
+
 :param center: Center of the minimal enclosing circle returneds
 :param radius: Radius of the minimal enclosing circle returned
-
-:rtype: QgsGeometry
 
 .. seealso:: :py:func:`QgsEllipse.toPolygon()`
 
@@ -784,8 +682,6 @@ either the vertices are within a specified tolerance of right angles or a set nu
 iterations is reached. The angle threshold parameter specifies how close to a right angle or
 straight line an angle must be before it is attempted to be straightened.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 3.0
 %End
 
@@ -796,12 +692,11 @@ Returns a new geometry with all points or vertices snapped to the closest point 
 If the gridified geometry could not be calculated (or was totally collapsed) an empty geometry will be returned.
 Note that snapping to grid may generate an invalid geometry in some corner cases.
 It can also be thought as rounding the edges and it may be useful for removing errors.
+
 :param hSpacing: Horizontal spacing of the grid (x axis). 0 to disable.
 :param vSpacing: Vertical spacing of the grid (y axis). 0 to disable.
 :param dSpacing: Depth spacing of the grid (z axis). 0 (default) to disable.
 :param mSpacing: Custom dimension spacing of the grid (m axis). 0 (default) to disable.
-
-:rtype: QgsGeometry
 
 .. versionadded:: 3.0
 %End
@@ -825,37 +720,27 @@ a multipoint geometry with overlapping points will not be changed by this method
 The function will return true if nodes were removed, or false if no duplicate nodes
 were found.
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
     bool intersects( const QgsRectangle &r ) const;
 %Docstring
 Tests for intersection with a rectangle (uses GEOS)
-
-:rtype: bool
 %End
 
     bool intersects( const QgsGeometry &geometry ) const;
 %Docstring
 Tests for intersection with a geometry (uses GEOS)
-
-:rtype: bool
 %End
 
     bool contains( const QgsPointXY *p ) const;
 %Docstring
 Tests for containment of a point (uses GEOS)
-
-:rtype: bool
 %End
 
     bool contains( const QgsGeometry &geometry ) const;
 %Docstring
 Tests for if geometry is contained in another (uses GEOS)
-
-:rtype: bool
 
 .. versionadded:: 1.5
 %End
@@ -864,16 +749,12 @@ Tests for if geometry is contained in another (uses GEOS)
 %Docstring
 Tests for if geometry is disjoint of another (uses GEOS)
 
-:rtype: bool
-
 .. versionadded:: 1.5
 %End
 
     bool equals( const QgsGeometry &geometry ) const;
 %Docstring
 Test for if geometry equals another (uses GEOS)
-
-:rtype: bool
 
 .. versionadded:: 1.5
 %End
@@ -882,16 +763,12 @@ Test for if geometry equals another (uses GEOS)
 %Docstring
 Test for if geometry touch another (uses GEOS)
 
-:rtype: bool
-
 .. versionadded:: 1.5
 %End
 
     bool overlaps( const QgsGeometry &geometry ) const;
 %Docstring
 Test for if geometry overlaps another (uses GEOS)
-
-:rtype: bool
 
 .. versionadded:: 1.5
 %End
@@ -900,16 +777,12 @@ Test for if geometry overlaps another (uses GEOS)
 %Docstring
 Test for if geometry is within another (uses GEOS)
 
-:rtype: bool
-
 .. versionadded:: 1.5
 %End
 
     bool crosses( const QgsGeometry &geometry ) const;
 %Docstring
 Test for if geometry crosses another (uses GEOS)
-
-:rtype: bool
 
 .. versionadded:: 1.5
 %End
@@ -938,20 +811,17 @@ Test for if geometry crosses another (uses GEOS)
 %Docstring
 Returns a buffer region around this geometry having the given width and with a specified number
 of segments used to approximate curves
-
-:rtype: QgsGeometry
 %End
 
     QgsGeometry buffer( double distance, int segments, EndCapStyle endCapStyle, JoinStyle joinStyle, double miterLimit ) const;
 %Docstring
 Returns a buffer region around the geometry, with additional style options.
+
 :param distance:    buffer distance
 :param segments:    for round joins, number of segments to approximate quarter-circle
 :param endCapStyle: end cap style
 :param joinStyle:   join style for corners in geometry
 :param miterLimit:  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
-
-:rtype: QgsGeometry
 
 .. versionadded:: 2.4
 %End
@@ -959,12 +829,11 @@ Returns a buffer region around the geometry, with additional style options.
     QgsGeometry offsetCurve( double distance, int segments, JoinStyle joinStyle, double miterLimit ) const;
 %Docstring
 Returns an offset line at a given distance and side from an input line.
+
 :param distance:    buffer distance
 :param segments:    for round joins, number of segments to approximate quarter-circle
 :param joinStyle:   join style for corners in geometry
 :param miterLimit:  limit on the miter ratio used for very sharp corners (JoinStyleMiter only)
-
-:rtype: QgsGeometry
 
 .. versionadded:: 2.4
 %End
@@ -975,6 +844,7 @@ Returns an offset line at a given distance and side from an input line.
 %Docstring
 Returns a single sided buffer for a (multi)line geometry. The buffer is only
 applied to one side of the line.
+
 :param distance: buffer distance
 :param segments: for round joins, number of segments to approximate quarter-circle
 :param side: side of geometry to buffer
@@ -982,8 +852,6 @@ applied to one side of the line.
 :param miterLimit: limit on the miter ratio used for very sharp corners
 
 :return: buffered geometry, or an empty geometry if buffer could not be
-:rtype: QgsGeometry
-
 calculated
 
 .. versionadded:: 3.0
@@ -995,16 +863,12 @@ Extends a (multi)line geometry by extrapolating out the start or end of the line
 by a specified distance. Lines are extended using the bearing of the first or last
 segment in the line.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 3.0
 %End
 
     QgsGeometry simplify( double tolerance ) const;
 %Docstring
 Returns a simplified version of this geometry using a specified tolerance value
-
-:rtype: QgsGeometry
 %End
 
     QgsGeometry densifyByCount( int extraNodesPerSegment ) const;
@@ -1014,8 +878,6 @@ number of extra nodes within each segment of the geometry.
 If the geometry has z or m values present then these will be linearly interpolated
 at the added nodes.
 Curved geometry types are automatically segmentized by this routine.
-
-:rtype: QgsGeometry
 
 .. versionadded:: 3.0
 
@@ -1035,8 +897,6 @@ If the geometry has z or m values present then these will be linearly interpolat
 at the added nodes.
 Curved geometry types are automatically segmentized by this routine.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`densifyByCount()`
@@ -1050,8 +910,6 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
-
-:rtype: QgsGeometry
 
 .. note::
 
@@ -1074,8 +932,6 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
 
-:rtype: QgsGeometry
-
 .. seealso:: :py:func:`centroid()`
 
 .. seealso:: :py:func:`poleOfInaccessibility()`
@@ -1090,8 +946,6 @@ approach guaranteed to find the true pole of inaccessibility within a specified
 tolerance. More precise tolerances require more iterations and will take longer
 to calculate.
 Optionally, the distance to the polygon boundary from the pole can be stored.
-
-:rtype: QgsGeometry
 
 .. seealso:: :py:func:`centroid()`
 
@@ -1108,8 +962,6 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
-
-:rtype: QgsGeometry
 %End
 
     QgsGeometry voronoiDiagram( const QgsGeometry &extent = QgsGeometry(), double tolerance = 0.0, bool edgesOnly = false ) const;
@@ -1127,8 +979,6 @@ If ``edgesOnly`` is true than line string boundary geometries will be returned
 instead of polygons.
 An empty geometry will be returned if the diagram could not be calculated.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 3.0
 %End
 
@@ -1140,8 +990,6 @@ be used to improve the robustness of the triangulation.
 If ``edgesOnly`` is true than line string boundary geometries will be returned
 instead of polygons.
 An empty geometry will be returned if the diagram could not be calculated.
-
-:rtype: QgsGeometry
 
 .. versionadded:: 3.0
 %End
@@ -1164,8 +1012,6 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 3.0
 %End
 
@@ -1178,8 +1024,6 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
 
-:rtype: QgsGeometry
-
 .. versionadded:: 2.0
 
 .. seealso:: :py:func:`lineLocatePoint()`
@@ -1191,11 +1035,10 @@ Returns a distance representing the location along this linestring of the closes
 on this linestring geometry to the specified point. Ie, the returned value indicates
 how far along this linestring you need to traverse to get to the closest location
 where this linestring comes to the specified point.
+
 :param point: point to seek proximity to
 
 :return: distance along line, or -1 on error
-:rtype: float
-
 
 .. note::
 
@@ -1212,9 +1055,8 @@ Returns the angle parallel to the linestring or polygon boundary at the specifie
 along the geometry. Angles are in radians, clockwise from north.
 If the distance coincides precisely at a node then the average angle from the segment either side
 of the node is returned.
-:param distance: distance along geometry
 
-:rtype: float
+:param distance: distance along geometry
 
 .. versionadded:: 3.0
 
@@ -1229,8 +1071,6 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
-
-:rtype: QgsGeometry
 %End
 
     QgsGeometry clipped( const QgsRectangle &rectangle );
@@ -1239,8 +1079,6 @@ Clips the geometry using the specified ``rectangle``.
 
 Performs a fast, non-robust intersection between the geometry and
 a ``rectangle``. The returned geometry may be invalid.
-
-:rtype: QgsGeometry
 
 .. versionadded:: 3.0
 %End
@@ -1255,8 +1093,6 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
 
-:rtype: QgsGeometry
-
 .. note::
 
    this operation is not called union since its a reserved word in C++.
@@ -1268,8 +1104,6 @@ Merges any connected lines in a LineString/MultiLineString geometry and
 converts them to single line strings.
 
 :return: a LineString or MultiLineString geometry, with any connected lines
-:rtype: QgsGeometry
-
 joined. An empty geometry will be returned if the input geometry was not a
 MultiLineString geometry.
 
@@ -1284,8 +1118,6 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
-
-:rtype: QgsGeometry
 %End
 
     QgsGeometry symDifference( const QgsGeometry &geometry ) const;
@@ -1296,22 +1128,16 @@ If the input is a NULL geometry, the output will also be a NULL geometry.
 
 If an error was encountered while creating the result, more information can be retrieved
 by calling `error()` on the returned geometry.
-
-:rtype: QgsGeometry
 %End
 
     QgsGeometry extrude( double x, double y );
 %Docstring
 Returns an extruded version of this geometry.
-
-:rtype: QgsGeometry
 %End
 
     QByteArray asWkb() const;
 %Docstring
 Export the geometry to WKB
-
-:rtype: QByteArray
 
 .. versionadded:: 3.0
 %End
@@ -1319,8 +1145,6 @@ Export the geometry to WKB
     QString asWkt( int precision = 17 ) const;
 %Docstring
 Exports the geometry to WKT
-
-:rtype: str
 
 .. note::
 
@@ -1332,19 +1156,16 @@ Exports the geometry to WKT
     QString asJson( int precision = 17 ) const;
 %Docstring
 Exports the geometry to a GeoJSON string.
-
-:rtype: str
 %End
 
     QgsGeometry convertToType( QgsWkbTypes::GeometryType destType, bool destMultipart = false ) const /Factory/;
 %Docstring
 Try to convert the geometry to the requested type
+
 :param destType: the geometry type to be converted to
 :param destMultipart: determines if the output geometry will be multipart or not
 
 :return: the converted geometry or None if the conversion fails.
-:rtype: QgsGeometry
-
 
 .. versionadded:: 2.2
 %End
@@ -1354,55 +1175,41 @@ Try to convert the geometry to the requested type
 %Docstring
 Returns contents of the geometry as a point
 if wkbType is WKBPoint, otherwise returns [0,0]
-
-:rtype: QgsPointXY
 %End
 
     QgsPolylineXY asPolyline() const;
 %Docstring
 Returns contents of the geometry as a polyline
 if wkbType is WKBLineString, otherwise an empty list
-
-:rtype: QgsPolylineXY
 %End
 
     QgsPolygonXY asPolygon() const;
 %Docstring
 Returns contents of the geometry as a polygon
 if wkbType is WKBPolygon, otherwise an empty list
-
-:rtype: QgsPolygonXY
 %End
 
     QgsMultiPointXY asMultiPoint() const;
 %Docstring
 Returns contents of the geometry as a multi point
 if wkbType is WKBMultiPoint, otherwise an empty list
-
-:rtype: QgsMultiPointXY
 %End
 
     QgsMultiPolylineXY asMultiPolyline() const;
 %Docstring
 Returns contents of the geometry as a multi linestring
 if wkbType is WKBMultiLineString, otherwise an empty list
-
-:rtype: QgsMultiPolylineXY
 %End
 
     QgsMultiPolygonXY asMultiPolygon() const;
 %Docstring
 Returns contents of the geometry as a multi polygon
 if wkbType is WKBMultiPolygon, otherwise an empty list
-
-:rtype: QgsMultiPolygonXY
 %End
 
     QVector<QgsGeometry> asGeometryCollection() const;
 %Docstring
 Return contents of the geometry as a list of geometries
-
-:rtype: list of QgsGeometry
 
 .. versionadded:: 1.1
 %End
@@ -1411,8 +1218,6 @@ Return contents of the geometry as a list of geometries
 %Docstring
 Returns contents of the geometry as a QPointF if wkbType is WKBPoint,
 otherwise returns a null QPointF.
-
-:rtype: QPointF
 
 .. versionadded:: 2.7
 %End
@@ -1423,8 +1228,6 @@ Returns contents of the geometry as a QPolygonF. If geometry is a linestring,
 then the result will be an open QPolygonF. If the geometry is a polygon,
 then the result will be a closed QPolygonF of the geometry's exterior ring.
 
-:rtype: QPolygonF
-
 .. versionadded:: 2.7
 %End
 
@@ -1434,8 +1237,6 @@ Deletes a ring in polygon or multipolygon.
 Ring 0 is outer ring and can't be deleted.
 
 :return: true on success
-:rtype: bool
-
 
 .. versionadded:: 1.2
 %End
@@ -1445,8 +1246,6 @@ Ring 0 is outer ring and can't be deleted.
 Deletes part identified by the part number
 
 :return: true on success
-:rtype: bool
-
 
 .. versionadded:: 1.2
 %End
@@ -1459,8 +1258,6 @@ If it is already a multipart geometry, it will return true and
 not change the geometry.
 
 :return: true in case of success and false else
-:rtype: bool
-
 %End
 
     bool convertToSingleType();
@@ -1472,8 +1269,6 @@ If it is already a single part geometry, it will return true and
 not change the geometry.
 
 :return: true in case of success and false else
-:rtype: bool
-
 %End
 
     int avoidIntersections( const QList<QgsVectorLayer *> &avoidIntersectionsLayers );
@@ -1482,11 +1277,10 @@ not change the geometry.
 Modifies geometry to avoid intersections with the layers specified in project properties
 
 :return: 0 in case of success,
-:rtype: int
-
 1 if geometry is not of polygon type,
 2 if avoid intersection would change the geometry type,
 3 other error during intersection removal
+
 :param avoidIntersectionsLayers: list of layers to check for intersections
 :param ignoreFeatures: possibility to give a list of features where intersections should be ignored (not available in Python bindings)
 
@@ -1507,8 +1301,6 @@ If an error was encountered during the process, more information can be retrieve
 by calling `error()` on the returned geometry.
 
 :return: new valid QgsGeometry or null geometry on error
-:rtype: QgsGeometry
-
 
 .. note::
 
@@ -1531,20 +1323,8 @@ by calling `error()` on the returned geometry.
 
         Error( const QString &m, const QgsPointXY &p );
         QString what();
-%Docstring
-
-:rtype: str
-%End
         QgsPointXY where();
-%Docstring
-
-:rtype: QgsPointXY
-%End
         bool hasWhere();
-%Docstring
-
-:rtype: bool
-%End
     };
 
     enum ValidationMethod
@@ -1571,8 +1351,6 @@ The ``method`` argument dictates which validator to utilize.
 Compute the unary union on a list of ``geometries``. May be faster than an iterative union on a set of geometries.
 The returned geometry will be fully noded, i.e. a node will be created at every common intersection of the
 input geometries. An empty geometry will be returned in the case of errors.
-
-:rtype: QgsGeometry
 %End
 
     static QgsGeometry polygonize( const QVector<QgsGeometry> &geometries );
@@ -1582,8 +1360,6 @@ linework of a set of ``geometries``. The input geometries must be fully noded (i
 at every common intersection of the geometries). The easiest way to ensure this is to first
 call unaryUnion() on the set of input geometries and then pass the result to polygonize().
 An empty geometry will be returned in the case of errors.
-
-:rtype: QgsGeometry
 
 .. versionadded:: 3.0
 %End
@@ -1602,8 +1378,6 @@ Converts the geometry to straight line segments, if it is a curved geometry type
 Returns true if the geometry is a curved geometry type which requires conversion to
 display as straight line segments.
 
-:rtype: bool
-
 .. versionadded:: 2.10
 
 .. seealso:: :py:func:`convertToStraightSegment`
@@ -1612,6 +1386,7 @@ display as straight line segments.
     void mapToPixel( const QgsMapToPixel &mtp );
 %Docstring
 Transforms the geometry from map units to pixels in place.
+
 :param mtp: map to pixel transform
 
 .. versionadded:: 2.10
@@ -1620,6 +1395,7 @@ Transforms the geometry from map units to pixels in place.
     void draw( QPainter &p ) const;
 %Docstring
 Draws the geometry onto a QPainter
+
 :param p: destination QPainter
 
 .. versionadded:: 2.10
@@ -1632,8 +1408,6 @@ Calculates the vertex ID from a vertex ``number``.
 If a matching vertex was found, it will be stored in ``id``.
 
 Returns true if vertex was found.
-
-:rtype: bool
 
 .. versionadded:: 2.10
 
@@ -1649,8 +1423,6 @@ to the first vertex.
 
 Returns -1 if a corresponding vertex could not be found.
 
-:rtype: int
-
 .. versionadded:: 2.10
 
 .. seealso:: :py:func:`vertexIdFromVertexNr()`
@@ -1662,8 +1434,6 @@ Returns an error string referring to the last error encountered
 either when this geometry was created or when an operation
 was performed on the geometry.
 
-:rtype: str
-
 .. versionadded:: 3.0
 %End
 
@@ -1671,9 +1441,8 @@ was performed on the geometry.
     static QgsGeometry fromQPointF( QPointF point );
 %Docstring
 Construct geometry from a QPointF
-:param point: source QPointF
 
-:rtype: QgsGeometry
+:param point: source QPointF
 
 .. versionadded:: 2.7
 %End
@@ -1683,9 +1452,8 @@ Construct geometry from a QPointF
 Construct geometry from a QPolygonF. If the polygon is closed than
 the resultant geometry will be a polygon, if it is open than the
 geometry will be a polyline.
-:param polygon: source QPolygonF
 
-:rtype: QgsGeometry
+:param polygon: source QPolygonF
 
 .. versionadded:: 2.7
 %End
@@ -1693,11 +1461,10 @@ geometry will be a polyline.
     static QgsPolylineXY createPolylineFromQPolygonF( const QPolygonF &polygon ) /Factory/;
 %Docstring
 Creates a QgsPolylineXY from a QPolygonF.
+
 :param polygon: source polygon
 
 :return: QgsPolylineXY
-:rtype: QgsPolylineXY
-
 
 .. seealso:: :py:func:`createPolygonFromQPolygonF`
 %End
@@ -1705,11 +1472,10 @@ Creates a QgsPolylineXY from a QPolygonF.
     static QgsPolygonXY createPolygonFromQPolygonF( const QPolygonF &polygon ) /Factory/;
 %Docstring
 Creates a QgsPolygonXYfrom a QPolygonF.
+
 :param polygon: source polygon
 
 :return: QgsPolygon
-:rtype: QgsPolygonXY
-
 
 .. seealso:: :py:func:`createPolylineFromQPolygonF`
 %End
@@ -1720,13 +1486,12 @@ Creates a QgsPolygonXYfrom a QPolygonF.
 Compares two geometry objects for equality within a specified tolerance.
 The objects can be of type QgsPolylineXY, QgsPolygonXYor QgsMultiPolygon.
 The 2 types should match.
+
 :param p1: first geometry object
 :param p2: second geometry object
 :param epsilon: maximum difference for coordinates between the objects
 
 :return: true if objects are
-:rtype: bool
-
 - polylines and have the same number of points and all
 points are equal within the specified tolerance
 - polygons and have the same number of points and all
@@ -1840,6 +1605,7 @@ tolerance
 %Docstring
 Smooths a geometry by rounding off corners using the Chaikin algorithm. This operation
 roughly doubles the number of vertices in a geometry.
+
 :param iterations: number of smoothing iterations to run. More iterations results
 in a smoother geometry
 :param offset: fraction of line to create new vertices along, between 0 and 1.0,
@@ -1848,21 +1614,18 @@ of the geometry for each iteration. Smaller values result in "tighter" smoothing
 :param minimumDistance: minimum segment length to apply smoothing to
 :param maxAngle: maximum angle at node (0-180) at which smoothing will be applied
 
-:rtype: QgsGeometry
-
 .. versionadded:: 2.9
 %End
 
     static QgsGeometryEngine *createGeometryEngine( const QgsAbstractGeometry *geometry ) /Factory/;
 %Docstring
 Creates and returns a new geometry engine
-
-:rtype: QgsGeometryEngine
 %End
 
     static void convertPointList( const QVector<QgsPointXY> &input, QgsPointSequence &output );
 %Docstring
 Upgrades a point list from QgsPointXY to QgsPoint
+
 :param input: list of QgsPointXY objects to be upgraded
 :param output: destination for list of points converted to QgsPoint
 %End
@@ -1870,6 +1633,7 @@ Upgrades a point list from QgsPointXY to QgsPoint
     static void convertPointList( const QgsPointSequence &input, QVector<QgsPointXY> &output );
 %Docstring
 Downgrades a point list from QgsPoint to QgsPointXY
+
 :param input: list of QgsPoint objects to be downgraded
 :param output: destination for list of points converted to QgsPointXY
 %End

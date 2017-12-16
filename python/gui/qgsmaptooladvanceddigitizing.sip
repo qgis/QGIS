@@ -34,6 +34,7 @@ Events are then forwarded to corresponding virtual methods which can be reimplem
     explicit QgsMapToolAdvancedDigitizing( QgsMapCanvas *canvas, QgsAdvancedDigitizingDockWidget *cadDockWidget );
 %Docstring
 Creates an advanced digitizing maptool
+
 :param canvas:         The map canvas on which the tool works
 :param cadDockWidget:  The cad dock widget which will be used to adjust mouse events
 %End
@@ -67,10 +68,6 @@ Unregisters this maptool from the cad dock widget
 %End
 
     QgsAdvancedDigitizingDockWidget *cadDockWidget() const;
-%Docstring
-
-:rtype: QgsAdvancedDigitizingDockWidget
-%End
 
     bool isAdvancedDigitizingAllowed() const;
 %Docstring
@@ -85,8 +82,6 @@ If true is returned, that does not mean that advanced digitizing is actually act
 because it is up to the user to enable/disable it when it is allowed.
 \sa setAdvancedDigitizingAllowed()
 
-:rtype: bool
-
 .. versionadded:: 3.0
 %End
 
@@ -97,8 +92,6 @@ Returns whether mouse events (press/move/release) should automatically try to sn
 to the tool. This may be desirable default behavior for some map tools, but not for other map tools.
 It is therefore possible to configure the behavior by the map tool.
 \sa isAutoSnapEnabled()
-
-:rtype: bool
 
 .. versionadded:: 3.0
 %End

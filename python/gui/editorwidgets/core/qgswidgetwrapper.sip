@@ -52,8 +52,6 @@ changed status of the widget will be saved.
 %Docstring
 Returns the editor widget property definitions.
 
-:rtype: QgsPropertiesDefinition
-
 .. versionadded:: 3.0
 %End
 
@@ -71,8 +69,6 @@ Create a new widget wrapper
  Access the widget managed by this wrapper
 
 :return: The widget
-:rtype: QWidget
-
 %End
 
 
@@ -98,8 +94,6 @@ Use this inside your overridden classes to access the configuration.
 :param defaultVal:  Default value
 
 :return: the value assigned to this configuration option
-:rtype: QVariant
-
 %End
 
     QVariantMap config() const;
@@ -107,8 +101,6 @@ Use this inside your overridden classes to access the configuration.
 Returns the whole config
 
 :return: The configuration
-:rtype: QVariantMap
-
 %End
 
     const QgsAttributeEditorContext &context() const;
@@ -116,8 +108,6 @@ Returns the whole config
 Returns information about the context in which this widget is shown
 
 :return: context information
-:rtype: QgsAttributeEditorContext
-
 %End
 
     QgsVectorLayer *layer() const;
@@ -125,8 +115,6 @@ Returns information about the context in which this widget is shown
 Access the QgsVectorLayer, you are working on
 
 :return: The layer
-:rtype: QgsVectorLayer
-
 
 .. seealso:: :py:func:`field()`
 %End
@@ -134,11 +122,10 @@ Access the QgsVectorLayer, you are working on
     static QgsWidgetWrapper *fromWidget( QWidget *widget );
 %Docstring
 Will return a wrapper for a given widget
+
 :param widget: The widget which was created by a wrapper
 
 :return: The wrapper for the widget or NULL
-:rtype: QgsWidgetWrapper
-
 %End
 
     virtual bool valid() const = 0;
@@ -150,8 +137,6 @@ If it cannot be used this is a hint to the caller that he may try to find
 another suitable widget type instead.
 
 :return: Validity status of this widget.
-:rtype: bool
-
 
 .. versionadded:: 2.12
 %End
@@ -162,8 +147,6 @@ another suitable widget type instead.
 %Docstring
 Returns a reference to the editor widget's property collection, used for data defined overrides.
 
-:rtype: QgsPropertyCollection
-
 .. versionadded:: 3.0
 
 .. seealso:: :py:func:`setDataDefinedProperties()`
@@ -172,6 +155,7 @@ Returns a reference to the editor widget's property collection, used for data de
     void setDataDefinedProperties( const QgsPropertyCollection &collection );
 %Docstring
 Sets the editor widget's property collection, used for data defined overrides.
+
 :param collection: property collection. Existing properties will be replaced.
 
 .. versionadded:: 3.0
@@ -193,8 +177,6 @@ in initWidget().
 :param parent: You should set this parent on the created widget.
 
 :return: A new widget
-:rtype: QWidget
-
 %End
 
     virtual void initWidget( QWidget *editor );

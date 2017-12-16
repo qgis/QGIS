@@ -43,8 +43,6 @@ the item.
 Returns the composition (blending) mode used for rendering
 the item.
 
-:rtype: QPainter.CompositionMode
-
 .. seealso:: :py:func:`setCompositionMode()`
 %End
 

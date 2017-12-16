@@ -40,8 +40,6 @@ By default this will be set to Qt.DisplayRole
 %Docstring
 Get the role by which the items should be sorted.
 By default this will be Qt.DisplayRole
-
-:rtype: int
 %End
 
     virtual bool operator <( const QTableWidgetItem &other ) const;

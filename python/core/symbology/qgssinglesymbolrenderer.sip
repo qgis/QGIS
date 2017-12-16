@@ -29,10 +29,6 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
 
 
     QgsSymbol *symbol() const;
-%Docstring
-
-:rtype: QgsSymbol
-%End
     void setSymbol( QgsSymbol *s /Transfer/ );
 
     virtual QString dump() const;
@@ -44,10 +40,6 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     virtual void toSld( QDomDocument &doc, QDomElement &element, const QgsStringMap &props = QgsStringMap() ) const;
 
     static QgsFeatureRenderer *createFromSld( QDomElement &element, QgsWkbTypes::GeometryType geomType );
-%Docstring
-
-:rtype: QgsFeatureRenderer
-%End
 
     virtual QgsFeatureRenderer::Capabilities capabilities();
     virtual QgsSymbolList symbols( QgsRenderContext &context );
@@ -56,8 +48,6 @@ class QgsSingleSymbolRenderer : QgsFeatureRenderer
     static QgsFeatureRenderer *create( QDomElement &element, const QgsReadWriteContext &context ) /Factory/;
 %Docstring
 create renderer from XML element
-
-:rtype: QgsFeatureRenderer
 %End
     virtual QDomElement save( QDomDocument &doc, const QgsReadWriteContext &context );
 
@@ -71,8 +61,6 @@ create renderer from XML element
     static QgsSingleSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) /Factory/;
 %Docstring
 creates a QgsSingleSymbolRenderer from an existing renderer.
-
-:rtype: QgsSingleSymbolRenderer
 
 .. versionadded:: 2.5
 
@@ -97,8 +85,6 @@ size legend.
 Returns configuration of appearance of legend when using data-defined size for marker symbols.
 Will return null if the functionality is disabled.
 
-:rtype: QgsDataDefinedSizeLegend
-
 .. versionadded:: 3.0
 %End
 
@@ -107,10 +93,6 @@ Will return null if the functionality is disabled.
   private:
     QgsSingleSymbolRenderer( const QgsSingleSymbolRenderer & );
     QgsSingleSymbolRenderer &operator=( const QgsSingleSymbolRenderer & );
-%Docstring
-
-:rtype: QgsSingleSymbolRenderer
-%End
 };
 
 

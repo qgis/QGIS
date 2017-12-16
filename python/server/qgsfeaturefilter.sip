@@ -32,6 +32,7 @@ Constructor
     void filterFeatures( const QgsVectorLayer *layer, QgsFeatureRequest &filterFeatures ) const;
 %Docstring
 Filter the features of the layer
+
 :param layer: the layer to control
 :param filterFeatures: the request to fill
 %End
@@ -41,13 +42,12 @@ Filter the features of the layer
 Return a clone of the object
 
 :return: A clone
-:rtype: QgsFeatureFilterProvider
-
 %End
 
     void setFilter( const QgsVectorLayer *layer, const QgsExpression &expression );
 %Docstring
 Set a filter for the given layer.
+
 :param layer: the layer to filter
 :param expression: the filter expression
 %End

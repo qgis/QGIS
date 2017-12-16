@@ -36,6 +36,7 @@ operates.
     explicit QgsSearchWidgetToolButton( QWidget *parent /TransferThis/ = 0 );
 %Docstring
 Constructor for QgsSearchWidgetToolButton.
+
 :param parent: parent object
 %End
 
@@ -44,6 +45,7 @@ Constructor for QgsSearchWidgetToolButton.
 Sets the available filter flags to show in the widget. Any active flags
 (see activeFlags()) which are not present in the new available filter
 flags will be cleared;
+
 :param flags: available flags to show in widget
 
 .. seealso:: :py:func:`availableFlags()`
@@ -56,6 +58,7 @@ flags will be cleared;
     void setDefaultFlags( QgsSearchWidgetWrapper::FilterFlags flags );
 %Docstring
 Sets the default filter flags to show in the widget.
+
 :param flags: default flags to show in widget
 
 .. seealso:: :py:func:`setAvailableFlags()`
@@ -67,8 +70,6 @@ Sets the default filter flags to show in the widget.
 %Docstring
 Returns the available filter flags shown in the widget.
 
-:rtype: QgsSearchWidgetWrapper.FilterFlags
-
 .. seealso:: :py:func:`setAvailableFlags()`
 
 .. seealso:: :py:func:`activeFlags()`
@@ -79,6 +80,7 @@ Returns the available filter flags shown in the widget.
 Sets the current active filter flags for the widget. Any flags
 which are not present in the available filter flags (see availableFlags())
 will not be set.
+
 :param flags: active flags to show in widget
 
 .. seealso:: :py:func:`toggleFlag()`
@@ -94,6 +96,7 @@ Toggles an individual active filter flag for the widget. Any flags
 which are not present in the available filter flags (see availableFlags())
 will be ignore. Other flags may be cleared if they conflict with the newly
 toggled flag.
+
 :param flag: flag to toggle
 
 .. seealso:: :py:func:`setActiveFlags()`
@@ -105,8 +108,6 @@ toggled flag.
 %Docstring
 Returns the active filter flags shown in the widget.
 
-:rtype: QgsSearchWidgetWrapper.FilterFlags
-
 .. seealso:: :py:func:`setActiveFlags()`
 
 .. seealso:: :py:func:`toggleFlag()`
@@ -117,8 +118,6 @@ Returns the active filter flags shown in the widget.
     bool isActive() const;
 %Docstring
 Returns true if the widget is set to be included in the search.
-
-:rtype: bool
 
 .. seealso:: :py:func:`setInactive()`
 
@@ -150,6 +149,7 @@ Sets the search widget as active by selecting the first available search type.
     void activeFlagsChanged( QgsSearchWidgetWrapper::FilterFlags flags );
 %Docstring
 Emitted when the active flags selected in the widget is changed
+
 :param flags: active flags
 %End
 

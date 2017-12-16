@@ -30,8 +30,6 @@ Constructor for QgsLayoutUnitsComboBox.
 %Docstring
 Returns the unit currently selected in the combo box.
 
-:rtype: QgsUnitTypes.LayoutUnit
-
 .. seealso:: :py:func:`setUnit()`
 %End
 
@@ -57,8 +55,6 @@ A measurement converter() must be set in order for the automatic unit conversion
     QgsLayoutMeasurementConverter *converter() const;
 %Docstring
 Returns the converter used when automatically converting units for linked widgets.
-
-:rtype: QgsLayoutMeasurementConverter
 
 .. seealso:: :py:func:`setConverter()`
 %End

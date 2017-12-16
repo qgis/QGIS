@@ -67,6 +67,7 @@ Creates schemes for all gpl palettes in the user's palettes folder.
 %Docstring
 Adds a color scheme to the registry. Ownership of the scheme is transferred
 to the registry.
+
 :param scheme: color scheme to add
 
 .. seealso:: :py:func:`populateFromInstance`
@@ -77,11 +78,10 @@ to the registry.
     bool removeColorScheme( QgsColorScheme *scheme );
 %Docstring
 Removes all matching color schemes from the registry
+
 :param scheme: color scheme to remove
 
 :return: true if scheme was found and removed
-:rtype: bool
-
 
 .. seealso:: :py:func:`addColorScheme`
 %End
@@ -91,18 +91,15 @@ Removes all matching color schemes from the registry
 Returns all color schemes in the registry
 
 :return: list of color schemes
-:rtype: list of QgsColorScheme
-
 %End
 
     QList<QgsColorScheme *> schemes( const QgsColorScheme::SchemeFlag flag ) const;
 %Docstring
 Returns all color schemes in the registry which have a specified flag set
+
 :param flag: flag to match
 
 :return: list of color schemes with flag set
-:rtype: list of QgsColorScheme
-
 %End
 
 

@@ -73,8 +73,6 @@ deregisterFilter() to deregister their filters upon plugin unload to avoid crash
 %Docstring
 Returns the list of filters registered in the locator.
 
-:rtype: list of QgsLocatorFilter
-
 .. seealso:: :py:func:`prefixedFilters()`
 %End
 
@@ -82,8 +80,6 @@ Returns the list of filters registered in the locator.
 %Docstring
 Returns a map of prefix to filter, for all registered filters
 with valid prefixes.
-
-:rtype: QMap< str, QgsLocatorFilter *>
 
 .. seealso:: :py:func:`filters()`
 %End
@@ -119,8 +115,6 @@ take some time to cancel after calling this.
     bool isRunning() const;
 %Docstring
 Returns true if a query is currently being executed by the locator.
-
-:rtype: bool
 %End
 
   signals:
