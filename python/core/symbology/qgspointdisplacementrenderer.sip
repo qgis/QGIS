@@ -146,9 +146,9 @@ Sets the center symbol for a displacement group.
 %Docstring
 Creates a QgsPointDisplacementRenderer from an existing renderer.
 
-.. versionadded:: 2.5
-
 :return: a new renderer if the conversion was possible, otherwise None.
+
+.. versionadded:: 2.5
 %End
 
   private:

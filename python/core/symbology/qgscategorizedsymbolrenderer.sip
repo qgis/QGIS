@@ -216,9 +216,9 @@ Update the color ramp used and all symbols colors.
 %Docstring
 creates a QgsCategorizedSymbolRenderer from an existing renderer.
 
-.. versionadded:: 2.5
-
 :return: a new renderer if the conversion was possible, otherwise 0.
+
+.. versionadded:: 2.5
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );

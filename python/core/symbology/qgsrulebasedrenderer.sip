@@ -520,9 +520,9 @@ take a rule and create a list of new rules with intervals of scales given by the
 %Docstring
 creates a QgsRuleBasedRenderer from an existing renderer.
 
-.. versionadded:: 2.5
-
 :return: a new renderer if the conversion was possible, otherwise 0.
+
+.. versionadded:: 2.5
 %End
 
     static void convertToDataDefinedSymbology( QgsSymbol *symbol, const QString &sizeScaleField, const QString &rotationField = QString() );

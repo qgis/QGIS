@@ -52,11 +52,11 @@ Set the icon for the factory object.
 %Docstring
  The title of the panel.
 
+:return: Title of the panel
+
 .. note::
 
    This may or may not be shown to the user.
-
-:return: Title of the panel
 %End
 
     void setTitle( const QString &title );
@@ -112,16 +112,16 @@ Set support flag for style dock
 %Docstring
  Factory function to create the widget on demand as needed by the dock.
 
-.. note::
-
-   This function is called each time the panel is selected. Keep it light for better UX.
-
 :param layer: The active layer in the dock.
 :param canvas: The map canvas.
 :param dockWidget: True of the widget will be shown a dock style widget.
 :param parent: The parent of the widget.
 
 :return: A new QgsMapStylePanel which is shown in the map style dock.
+
+.. note::
+
+   This function is called each time the panel is selected. Keep it light for better UX.
 %End
 
 };
