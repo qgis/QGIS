@@ -1146,11 +1146,11 @@ Export the geometry to WKB
 %Docstring
 Exports the geometry to WKT
 
+:return: true in case of success and false else
+
 .. note::
 
    precision parameter added in QGIS 2.4
-
-:return: true in case of success and false else
 %End
 
     QString asJson( int precision = 17 ) const;

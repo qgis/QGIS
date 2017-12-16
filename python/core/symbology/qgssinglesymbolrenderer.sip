@@ -62,9 +62,9 @@ create renderer from XML element
 %Docstring
 creates a QgsSingleSymbolRenderer from an existing renderer.
 
-.. versionadded:: 2.5
-
 :return: a new renderer if the conversion was possible, otherwise 0.
+
+.. versionadded:: 2.5
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );

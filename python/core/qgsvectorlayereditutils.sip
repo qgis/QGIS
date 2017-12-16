@@ -178,11 +178,11 @@ Adds topological points for every vertex of the geometry.
 
 :param geom: the geometry where each vertex is added to segments of other features
 
+:return: 0 in case of success
+
 .. note::
 
    geom is not going to be modified by the function
-
-:return: 0 in case of success
 %End
 
     int addTopologicalPoints( const QgsPointXY &p );

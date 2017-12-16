@@ -166,9 +166,9 @@ This will involve some CPU-demanding computations and is thus disabled by defaul
 %Docstring
 Creates a QgsInvertedPolygonRenderer by a conversion from an existing renderer.
 
-.. versionadded:: 2.5
-
 :return: a new renderer if the conversion was possible, otherwise 0.
+
+.. versionadded:: 2.5
 %End
 
 };

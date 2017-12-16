@@ -222,7 +222,7 @@ into a subset of the GUI raster properties "Metadata" tab.
 
     virtual QString lastErrorTitle() = 0;
 %Docstring
-   Returns the caption error text for the last error in this provider
+ Returns the caption error text for the last error in this provider
 
 If an operation returns 0 (e.g. draw()), this function
 returns the text of the error associated with the failure.
@@ -280,13 +280,13 @@ By default providers are not editable. Use setEditable() method to enable/disabl
 Turns on/off editing mode of the provider. When in editing mode, it is possible
 to overwrite data of the provider using writeBlock() calls.
 
+:return: true if the switch to/from editing mode was successful
+
 .. note::
 
    Only some providers support editing mode and even those may fail to turn
 the underlying data source into editing mode, so it is necessary to check the return
 value whether the operation was successful.
-
-:return: true if the switch to/from editing mode was successful
 
 .. seealso:: :py:func:`isEditable()`
 

@@ -783,12 +783,12 @@ Will return the named style corresponding to style id provided
 %Docstring
 Delete a style from the database
 
-.. versionadded:: 3.0
-
 :param styleId: the provider's layer_styles table id of the style to delete
 :param msgError: reference to string that will be updated with any error messages
 
 :return: true in case of success
+
+.. versionadded:: 3.0
 %End
 
     virtual QString loadNamedStyle( const QString &theURI, bool &resultFlag /Out/, bool loadFromLocalDb );
@@ -1189,11 +1189,11 @@ Adds topological points for every vertex of the geometry.
 
 :param geom: the geometry where each vertex is added to segments of other features
 
+:return: 0 in case of success
+
 .. note::
 
    geom is not going to be modified by the function
-
-:return: 0 in case of success
 %End
 
     int addTopologicalPoints( const QgsPointXY &p );

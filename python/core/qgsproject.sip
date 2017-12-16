@@ -211,6 +211,8 @@ Writes the project to a file.
 
 :param filename: destination file
 
+:return: true if project was written successfully
+
 .. note::
 
    calling this implicitly sets the project's filename (see setFileName() )
@@ -219,8 +221,6 @@ Writes the project to a file.
 
    isDirty() will be set to false if project is successfully written
 
-:return: true if project was written successfully
-
 .. versionadded:: 3.0
 %End
 
@@ -228,11 +228,11 @@ Writes the project to a file.
 %Docstring
 Writes the project to its current associated file (see fileName() ).
 
+:return: true if project was written successfully
+
 .. note::
 
    isDirty() will be set to false if project is successfully written
-
-:return: true if project was written successfully
 %End
 
     bool writeEntry( const QString &scope, const QString &key, bool value ) /PyName=writeEntryBool/;

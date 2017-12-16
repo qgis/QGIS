@@ -50,15 +50,15 @@ If no name is given it returns a profile called "default".
 By default will create the profile folder if not found.
 By default will init the user settings.
 
-.. note::
-
-   Returns a new QgsUserProfile. Ownership transferred to caller.
-
 :param defaultProfile: The profile name to find. Empty profile name will return "default" for the name.
 :param createNew: Create the profile folder if it doesn't exist.
 :param initSettings: if the settings should be initialized
 
 :return: The user profile
+
+.. note::
+
+   Returns a new QgsUserProfile. Ownership transferred to caller.
 %End
 
     void setRootLocation( const QString &rootProfileLocation );
@@ -125,11 +125,11 @@ First checks profile.ini in \\profiles folder
 Then checks defaultProfile in global settings
 Finally returns "default" if all else fails
 
+:return: The name of the default profile.
+
 .. note::
 
    Setting overrideLocalProfile in global settings will always ignore profiles.ini
-
-:return: The name of the default profile.
 %End
 
     void setDefaultProfileName( const QString &name );
@@ -167,13 +167,13 @@ Create a user profile given by the name
 %Docstring
 Deletes a profile from the root profiles folder.
 
-.. note::
-
-   There is no undo on this as it deletes the folder from the machine.
-
 :param name: The name of the profile to delete.
 
 :return: A QgsError with a message if the profile failed to be deleted.
+
+.. note::
+
+   There is no undo on this as it deletes the folder from the machine.
 %End
 
     QgsUserProfile *userProfile();

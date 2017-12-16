@@ -217,10 +217,6 @@ Measures the distance between two points.
 Calculates the distance from one point with distance in meters and azimuth (direction)
 When the sourceCrs() is geographic, computeSpheroidProject() will be called
 otherwise QgsPoint.project() will be called after QgsUnitTypes.fromUnitToUnitFactor() has been applied to the distance
-\note:
-The input Point must be in the coordinate reference system being used
-
-.. versionadded:: 3.0
 
 :param p1: start point [can be Cartesian or Geographic]
 :param distance: must be in meters
@@ -232,15 +228,21 @@ The input Point must be in the coordinate reference system being used
 .. seealso:: :py:func:`sourceCrs()`
 
 .. seealso:: :py:func:`computeSpheroidProject()`
+
+.. note::
+
+   The input Point must be in the coordinate reference system being used
+
+.. versionadded:: 3.0
 %End
 
     QgsUnitTypes::DistanceUnit lengthUnits() const;
 %Docstring
 Returns the units of distance for length calculations made by this object.
 
-.. versionadded:: 2.14
-
 .. seealso:: :py:func:`areaUnits()`
+
+.. versionadded:: 2.14
 %End
 
     QgsUnitTypes::AreaUnit areaUnits() const;
@@ -335,6 +337,12 @@ location of the projected point. Based on Vincenty's formula
 for the geodetic direct problem as described in "Geocentric
 Datum of Australia Technical Manual", Chapter 4.
 
+:param p1: - location of first geographic (latitude/longitude) point as degrees.
+:param distance: - distance in meters.
+:param azimuth: - azimuth in radians, clockwise from North
+
+:return: p2 - location of projected point as longitude/latitude.
+
 .. note::
 
    code (and documentation) taken from rttopo project
@@ -345,12 +353,6 @@ https://git.osgeo.org/gogs/rttopo/librttopo
 --> latitudes outside these bounds cause the calculations to become unstable and can return invalid results
 
 .. versionadded:: 3.0
-
-:param p1: - location of first geographic (latitude/longitude) point as degrees.
-:param distance: - distance in meters.
-:param azimuth: - azimuth in radians, clockwise from North
-
-:return: p2 - location of projected point as longitude/latitude.
 %End
 
 };

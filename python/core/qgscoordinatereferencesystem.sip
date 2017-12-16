@@ -297,12 +297,12 @@ Creates a CRS from a specified QGIS SRS ID.
 %Docstring
 Sets this CRS by lookup of the given ID in the CRS database.
 
+:return: True on success else false
+
 .. note::
 
    We encourage you to use EPSG code, WKT or Proj4 to describe CRS's in your code
 wherever possible. Internal QGIS CRS IDs are not guaranteed to be permanent / involatile.
-
-:return: True on success else false
 /     // TODO QGIS 3: remove type and always use EPSG code, rename to createFromEpsg
 %End
 
@@ -314,11 +314,11 @@ Accepts both "<auth>:<code>" format and OGC URN "urn:ogc:def:crs:<auth>:[<versio
 It also recognizes "QGIS", "USER", "CUSTOM" authorities, which all have the same meaning
 and refer to QGIS internal CRS IDs.
 
+:return: True on success else false
+
 .. note::
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
-
-:return: True on success else false
 
 .. seealso:: :py:func:`fromOgcWmsCrs()`
 /     // TODO QGIS 3: remove "QGIS" and "CUSTOM", only support "USER" (also returned by authid())
@@ -343,6 +343,10 @@ and createFromOgcWmsCrs() is used to initialize the object.
 Otherwise the WKT will be converted to a proj4 string and createFromProj4()
 set up the object.
 
+:param wkt: The WKT for the desired spatial reference system.
+
+:return: True on success else false
+
 .. note::
 
    Some members may be left blank if no match can be found in CRS database.
@@ -350,10 +354,6 @@ set up the object.
 .. note::
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
-
-:param wkt: The WKT for the desired spatial reference system.
-
-:return: True on success else false
 
 .. seealso:: :py:func:`fromWkt()`
 %End
@@ -365,13 +365,13 @@ Sets this CRS by lookup of internal QGIS CRS ID in the CRS database.
 If the srsid is < USER_CRS_START_ID, system CRS database is used, otherwise
 user's local CRS database from home directory is used.
 
-.. note::
-
-   this method uses an internal cache. Call invalidateCache() to clear the cache.
-
 :param srsId: The internal QGIS CRS ID for the desired spatial reference system.
 
 :return: True on success else false
+
+.. note::
+
+   this method uses an internal cache. Call invalidateCache() to clear the cache.
 
 .. seealso:: :py:func:`fromSrsId()`
 %End
@@ -394,6 +394,10 @@ We try to match the proj4 string to internal QGIS CRS ID using the following log
 a match where the parameters are in a different order
 - if none of the above match, use findMatchingProj()
 
+:param projString: A proj4 format string
+
+:return: True on success else false
+
 .. note::
 
    Some members may be left blank if no match can be found in CRS database.
@@ -401,10 +405,6 @@ a match where the parameters are in a different order
 .. note::
 
    this method uses an internal cache. Call invalidateCache() to clear the cache.
-
-:param projString: A proj4 format string
-
-:return: True on success else false
 
 .. seealso:: :py:func:`fromProj4()`
 %End
@@ -439,14 +439,14 @@ ESRI.[WKT string] (directly or in a file), "IGNF:xxx"
 For more details on supported formats see OGRSpatialReference.SetFromUserInput()
 ( http://www.gdal.org/ogr/classOGRSpatialReference.html#aec3c6a49533fe457ddc763d699ff8796 )
 
+:param definition: A String containing a coordinate reference system definition.
+
+:return: True on success else false
+
 .. note::
 
    this function generates a WKT string using OSRSetFromUserInput() and
 passes it to createFromWkt() function.
-
-:param definition: A String containing a coordinate reference system definition.
-
-:return: True on success else false
 /    // TODO QGIS3: rename to createFromStringOGR so it is clear it's similar to createFromString, just different backend
 %End
 

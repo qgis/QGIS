@@ -68,11 +68,11 @@ Retrieves the vertices which are before and after the interpolated point at a sp
 :param previousVertex: will be set to previous vertex ID
 :param nextVertex: will be set to next vertex ID
 
+:return: true if vertices were successfully retrieved
+
 .. note::
 
    if the distance coincides exactly with a vertex, then both previousVertex and nextVertex will be set to this vertex
-
-:return: true if vertices were successfully retrieved
 
 .. versionadded:: 3.0
 %End

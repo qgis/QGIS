@@ -170,11 +170,11 @@ on load.
  All themes found in ~/.qgis3/themes folder.
 The path is to the root folder for the theme
 
+:return: A hash of theme name and theme path. Valid theme folders contain style.qss
+
 .. note::
 
    Valid theme folders must contain a style.qss file.
-
-:return: A hash of theme name and theme path. Valid theme folders contain style.qss
 %End
 
     static QString authorsFilePath();

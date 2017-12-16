@@ -87,9 +87,9 @@ In such cases, the implementation must ensure that the data is not susceptible t
 if it is possible that both feature source and provider may need reading/writing to some shared data at the
 same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
 
-.. versionadded:: 2.4
-
 :return: new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
+
+.. versionadded:: 2.4
 %End
 
     virtual QString storageType() const;

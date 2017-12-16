@@ -410,9 +410,9 @@ set the method used for graduation (either size or color)
 %Docstring
 creates a QgsGraduatedSymbolRenderer from an existing renderer.
 
-.. versionadded:: 2.6
-
 :return: a new renderer if the conversion was possible, otherwise 0.
+
+.. versionadded:: 2.6
 %End
 
     void setDataDefinedSizeLegend( QgsDataDefinedSizeLegend *settings /Transfer/ );
