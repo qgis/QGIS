@@ -100,7 +100,7 @@ QgsDataItem *QgsQptDataItemProvider::createDataItem( const QString &path, QgsDat
 
   if ( fileInfo.suffix().compare( QStringLiteral( "qpt" ), Qt::CaseInsensitive ) == 0 )
   {
-    return new QgsQptDataItem( parentItem, fileInfo.fileName(), path );
+    return new QgsQptDataItem( parentItem, fileInfo.baseName(), path );
   }
   return nullptr;
 }
@@ -242,7 +242,7 @@ QgsDataItem *QgsPyDataItemProvider::createDataItem( const QString &path, QgsData
 
   if ( fileInfo.suffix().compare( QStringLiteral( "py" ), Qt::CaseInsensitive ) == 0 )
   {
-    return new QgsPyDataItem( parentItem, fileInfo.fileName(), path );
+    return new QgsPyDataItem( parentItem, fileInfo.baseName(), path );
   }
   return nullptr;
 }
