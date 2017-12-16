@@ -166,8 +166,8 @@ class CORE_EXPORT QgsVectorLayerEditUtils
     /**
      * Adds topological points for every vertex of the geometry.
      * \param geom the geometry where each vertex is added to segments of other features
+     * \return 0 in case of success
      * \note geom is not going to be modified by the function
-     * \returns 0 in case of success
      */
     int addTopologicalPoints( const QgsGeometry &geom );
 
@@ -177,7 +177,7 @@ class CORE_EXPORT QgsVectorLayerEditUtils
      * no additional vertex is inserted. This method is useful for topological
      * editing.
      * \param p position of the vertex
-     * \returns 0 in case of success
+     * \return 0 in case of success
      */
     int addTopologicalPoints( const QgsPointXY &p );
 

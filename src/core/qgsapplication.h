@@ -205,8 +205,8 @@ class CORE_EXPORT QgsApplication : public QApplication
     /**
      * \brief All themes found in ~/.qgis3/themes folder.
      * The path is to the root folder for the theme
-     * \note Valid theme folders must contain a style.qss file.
      * \returns A hash of theme name and theme path. Valid theme folders contain style.qss
+     * \note Valid theme folders must contain a style.qss file.
      */
     static QHash<QString, QString> uiThemes();
 

@@ -191,8 +191,8 @@ class CORE_EXPORT QgsCategorizedSymbolRenderer : public QgsFeatureRenderer
 
     /**
      * creates a QgsCategorizedSymbolRenderer from an existing renderer.
-     * \since QGIS 2.5
      * \returns a new renderer if the conversion was possible, otherwise 0.
+     * \since QGIS 2.5
      */
     static QgsCategorizedSymbolRenderer *convertFromRenderer( const QgsFeatureRenderer *renderer ) SIP_FACTORY;
 

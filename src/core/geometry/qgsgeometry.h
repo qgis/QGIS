@@ -1137,8 +1137,8 @@ class CORE_EXPORT QgsGeometry
 
     /**
      * Exports the geometry to WKT
-     * \note precision parameter added in QGIS 2.4
      * \returns true in case of success and false else
+     * \note precision parameter added in QGIS 2.4
      */
     QString asWkt( int precision = 17 ) const;
 

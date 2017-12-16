@@ -127,8 +127,8 @@ class CORE_EXPORT QgsVectorDataProvider : public QgsDataProvider, public QgsFeat
      * if it is possible that both feature source and provider may need reading/writing to some shared data at the
      * same time, some synchronization mechanisms must be used (e.g. mutexes) to prevent data corruption.
      *
-     * \since QGIS 2.4
      * \returns new instance of QgsAbstractFeatureSource (caller is responsible for deleting it)
+     * \since QGIS 2.4
      */
     virtual QgsAbstractFeatureSource *featureSource() const = 0 SIP_FACTORY;
 
