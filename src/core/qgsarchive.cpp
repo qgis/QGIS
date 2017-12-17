@@ -22,6 +22,9 @@
 #include "qgsauxiliarystorage.h"
 #include <iostream>
 
+#include <QStandardPaths>
+#include <QUuid>
+
 QgsArchive::QgsArchive()
   : mDir( new QTemporaryDir() )
 {
@@ -54,10 +57,9 @@ void QgsArchive::clear()
 
 bool QgsArchive::zip( const QString &filename )
 {
-  // create a temporary path
-  QTemporaryFile tmpFile;
-  tmpFile.open();
-  tmpFile.close();
+  QString tempPath = QStandardPaths::standardLocations( QStandardPaths::TempLocation ).at( 0 );
+  QString uuid = QUuid::createUuid().toString();
+  QFile tmpFile( tempPath + QDir::separator() + uuid );
 
   // zip content
   if ( ! QgsZipUtils::zip( tmpFile.fileName(), mFiles ) )
@@ -78,9 +80,6 @@ bool QgsArchive::zip( const QString &filename )
     QgsMessageLog::logMessage( err, QStringLiteral( "QgsArchive" ) );
     return false;
   }
-
-  // keep the zip filename
-  tmpFile.setAutoRemove( false );
 
   return true;
 }
