@@ -28,6 +28,7 @@
 #include <QRegExp>
 #include <QTextStream>
 #include <QFile>
+#include <QRegularExpression>
 
 #include "qgsapplication.h"
 #include "qgslogger.h"
@@ -220,26 +221,28 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   sCrsStringLock.unlock();
 
   bool result = false;
-  QRegExp reCrsId( "^(epsg|postgis|internal|user)\\:(\\d+)$", Qt::CaseInsensitive );
-  if ( reCrsId.indexIn( definition ) == 0 )
+  QRegularExpression reCrsId( "^(epsg|postgis|internal|user)\\:(\\d+)$", QRegularExpression::CaseInsensitiveOption );
+  QRegularExpressionMatch match = reCrsId.match( definition );
+  if ( match.capturedStart() == 0 )
   {
-    QString authName = reCrsId.cap( 1 ).toLower();
+    QString authName = match.captured( 1 ).toLower();
     CrsType type = InternalCrsId;
     if ( authName == QLatin1String( "epsg" ) )
       type = EpsgCrsId;
     if ( authName == QLatin1String( "postgis" ) )
       type = PostgisCrsId;
-    long id = reCrsId.cap( 2 ).toLong();
+    long id = match.captured( 2 ).toLong();
     result = createFromId( id, type );
   }
   else
   {
-    QRegExp reCrsStr( "^(?:(wkt|proj4)\\:)?(.+)$", Qt::CaseInsensitive );
-    if ( reCrsStr.indexIn( definition ) == 0 )
+    QRegularExpression reCrsStr( "^(?:(wkt|proj4)\\:)?(.+)$", QRegularExpression::CaseInsensitiveOption );
+    match = reCrsStr.match( definition );
+    if ( match.capturedStart() == 0 )
     {
-      if ( reCrsStr.cap( 1 ).toLower() == QLatin1String( "proj4" ) )
+      if ( match.captured( 1 ).toLower() == QLatin1String( "proj4" ) )
       {
-        result = createFromProj4( reCrsStr.cap( 2 ) );
+        result = createFromProj4( match.captured( 2 ) );
         //TODO: createFromProj4 used to save to the user database any new CRS
         // this behavior was changed in order to separate creation and saving.
         // Not sure if it necessary to save it here, should be checked by someone
@@ -254,7 +257,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
       }
       else
       {
-        result = createFromWkt( reCrsStr.cap( 2 ) );
+        result = createFromWkt( match.captured( 2 ) );
       }
     }
   }
