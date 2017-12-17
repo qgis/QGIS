@@ -222,16 +222,44 @@ class CORE_EXPORT QgsGraduatedSymbolRenderer : public QgsFeatureRenderer
     Mode mode() const { return mMode; }
     void setMode( Mode mode ) { mMode = mode; }
 
+    /**
+     * get mUseSymmetricMode, which says if we want to classify symmetric around a given value
+     */
     bool useSymmetricMode() { return mUseSymmetricMode; }
+
+    /**
+     * set mUseSymmetricMode, which says if we want to classify symmetric around a given value
+     */
     void setUseSymmetricMode( bool useSymmetricMode ) { mUseSymmetricMode = useSymmetricMode; }
 
+    /**
+     * get mSymmetryPoint, the pivot value for symmetric classification
+     */
     double symmetryPoint() { return mSymmetryPoint; }
+
+    /**
+     * set the pivot point
+     */
     void setSymmetryPoint( double symmetryPoint ) { mSymmetryPoint = symmetryPoint; }
 
+    /**
+     * get mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+     */
     QStringList listForCboPrettyBreaks() { return mListForCboPrettyBreaks; }
+
+    /**
+     * set mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+     */
     void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks ) { mListForCboPrettyBreaks = listForCboPrettyBreaks; }
 
+    /**
+     *  get mAstride, a bool saying if we want to have a central class astride the pivot value
+     */
     bool astride() { return mAstride; }
+
+    /**
+     * set mAstride, a bool saying if we want to have a central class astride the pivot value
+     */
     void setAstride( bool astride ) { mAstride = astride; }
 
     /**

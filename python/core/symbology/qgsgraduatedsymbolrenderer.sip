@@ -270,27 +270,47 @@ Moves the category at index position from to index position to.
 
     bool useSymmetricMode();
 %Docstring
+ get mUseSymmetricMode, which says if we want to classify symmetric around a given value
  :rtype: bool
 %End
+
     void setUseSymmetricMode( bool useSymmetricMode );
+%Docstring
+ set mUseSymmetricMode, which says if we want to classify symmetric around a given value
+%End
 
     double symmetryPoint();
 %Docstring
+ get mSymmetryPoint, the pivot value for symmetric classification
  :rtype: float
 %End
+
     void setSymmetryPoint( double symmetryPoint );
+%Docstring
+ set the pivot point
+%End
 
     QStringList listForCboPrettyBreaks();
 %Docstring
+ get mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
  :rtype: list of str
 %End
+
     void setListForCboPrettyBreaks( QStringList listForCboPrettyBreaks );
+%Docstring
+ set mListForCboPrettyBreaks, which is need to recover this list in saved configuration, or when property window in closed and reopened
+%End
 
     bool astride();
 %Docstring
+  get mAstride, a bool saying if we want to have a central class astride the pivot value
  :rtype: bool
 %End
+
     void setAstride( bool astride );
+%Docstring
+ set mAstride, a bool saying if we want to have a central class astride the pivot value
+%End
 
     void updateClasses( QgsVectorLayer *vlayer, Mode mode, int nclasses, bool useSymmetricMode = false, double symmetryPoint = 0.0, bool astride = false );
 %Docstring
