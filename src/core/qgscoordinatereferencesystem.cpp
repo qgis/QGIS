@@ -220,7 +220,7 @@ bool QgsCoordinateReferenceSystem::createFromString( const QString &definition )
   sCrsStringLock.unlock();
 
   bool result = false;
-  QRegExp reCrsId( "^(epsg|postgis|internal)\\:(\\d+)$", Qt::CaseInsensitive );
+  QRegExp reCrsId( "^(epsg|postgis|internal|user)\\:(\\d+)$", Qt::CaseInsensitive );
   if ( reCrsId.indexIn( definition ) == 0 )
   {
     QString authName = reCrsId.cap( 1 ).toLower();
