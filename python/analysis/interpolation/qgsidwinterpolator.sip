@@ -25,7 +25,7 @@ Inverse distance weight interpolator.
 Constructor for QgsIDWInterpolator, with the specified ``layerData`` sources.
 %End
 
-    virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback = 0 );
+    virtual int interpolatePoint( double x, double y, double &result /Out/, QgsFeedback *feedback = 0 );
 
 
     void setDistanceCoefficient( double coefficient );

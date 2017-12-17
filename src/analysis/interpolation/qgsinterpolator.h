@@ -113,7 +113,7 @@ class ANALYSIS_EXPORT QgsInterpolator
      * \param result out: interpolation result
      * \param feedback optional feedback object for progress and cancelation support
      * \returns 0 in case of success*/
-    virtual int interpolatePoint( double x, double y, double &result, QgsFeedback *feedback = nullptr ) = 0;
+    virtual int interpolatePoint( double x, double y, double &result SIP_OUT, QgsFeedback *feedback = nullptr ) = 0;
 
     //! \note not available in Python bindings
     QList<LayerData> layerData() const { return mLayerData; } SIP_SKIP
