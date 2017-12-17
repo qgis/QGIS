@@ -29,6 +29,7 @@
 #include "qgslogger.h"
 #include "qgsproject.h"
 #include "qgsapplication.h"
+#include "qgsfileutils.h"
 
 QgsFileWidget::QgsFileWidget( QWidget *parent )
   : QWidget( parent )
@@ -263,16 +264,23 @@ void QgsFileWidget::openFileDialog()
       fileName = QFileDialog::getExistingDirectory( this, title, QFileInfo( oldPath ).absoluteFilePath(),  QFileDialog::ShowDirsOnly );
       break;
     case SaveFile:
+    {
+      QString filter;
       title = !mDialogTitle.isEmpty() ? mDialogTitle : tr( "Create or select a file" );
       if ( !confirmOverwrite() )
       {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, nullptr, QFileDialog::DontConfirmOverwrite );
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &filter, QFileDialog::DontConfirmOverwrite );
       }
       else
       {
-        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter );
+        fileName = QFileDialog::getSaveFileName( this, title, QFileInfo( oldPath ).absoluteFilePath(), mFilter, &filter );
       }
-      break;
+
+      // make sure filename ends with filter. This isn't automatically done by
+      // getSaveFileName on some platforms (e.g. gnome)
+      fileName = QgsFileUtils::addExtensionFromFilter( fileName, filter );
+    }
+    break;
   }
 
   if ( fileName.isEmpty() && fileNames.isEmpty( ) )
